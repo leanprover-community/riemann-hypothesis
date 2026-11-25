@@ -797,7 +797,8 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 namespace GlobalTheory.UPel.HT.SympAct
 
 theorem exists_smul_iff {h : ℕ} (M : ℕ) (w : Fin h ⊕ Fin h → ℤ) : (∃ c, w = M • c) ↔ reduceMod M w = 0 := by
-  exact (GlobalTheory.HTLocSim.reduceMod_eq_zero_iff w).symm
+  intros
+  refine (@_root_.GlobalTheory.HTLocSim.reduceMod_eq_zero_iff ?_ ?_ ?_).symm <;> first | assumption | infer_instance
 
 theorem lev_eq_of_reduce {h : ℕ} {T : Type*} [Monoid T] {M : ℕ} (hM : 0 < M) (lev : (Fin h ⊕ Fin h → ℤ) → T)
     (hadd : ∀ a b, lev (a + b) = lev a * lev b) (htor : ∀ a, lev a ^ M = 1) {x y : Fin h ⊕ Fin h → ℤ}

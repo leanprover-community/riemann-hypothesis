@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraitLatticesIsoFormsProportionalRamification
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FormalEnd
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsToricRankOne
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsWithoutCohomology
@@ -792,15 +793,7 @@ theorem pull_pol : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (f : Sp R �
     kTriv_pull hα A.isLB (pull_isLB A.isLB α) hw A.ktriv⟩
 
 theorem isSquare_unique : ∀ {S S' : Scheme.{0}} {G' : Over S'} {G : Over S} (φ : G'.left ⟶ G.left) (φ₂ φ₂' : (G' ⊗ G').left ⟶ (G ⊗ G).left), IsSquare φ φ₂ → IsSquare φ φ₂' → φ₂ = φ₂' := by
-  intro S S' G' G φ φ₂ φ₂' h h'
-  have e : φ₂ ≫ (G ⊗ G).hom = φ₂' ≫ (G ⊗ G).hom := by
-    rw [← Over.w (fst G G), ← Category.assoc, ← Category.assoc, h.1, h'.1]
-  let u : Over.mk (φ₂ ≫ (G ⊗ G).hom) ⟶ G ⊗ G := Over.homMk φ₂ rfl
-  let v : Over.mk (φ₂ ≫ (G ⊗ G).hom) ⟶ G ⊗ G := Over.homMk φ₂' e.symm
-  have : u = v := CartesianMonoidalCategory.hom_ext _ _
-    (Over.OverMorphism.ext (by simpa [u, v] using h.1.trans h'.1.symm))
-    (Over.OverMorphism.ext (by simpa [u, v] using h.2.trans h'.2.symm))
-  exact congrArg (fun z => z.left) this
+  apply _root_.GlobalTheory.UnifLamFibre.isSquare_unique <;> assumption
 end GlobalTheory.SymFinExt
 
 namespace GlobalTheory.SymFinExt

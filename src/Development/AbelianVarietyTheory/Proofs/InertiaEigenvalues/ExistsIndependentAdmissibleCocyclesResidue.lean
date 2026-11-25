@@ -1914,6 +1914,7 @@ theorem exists_independent_admissible_cocycles_residue {Qp K₀ K : Type} [Field
   obtain ⟨L, hL⟩ := hmod E _ _ e (hadm a) he
   exact ⟨E, L, hE, hL⟩
 
+set_option synthInstance.maxHeartbeats 400000 in
 theorem resBound_dsum : GlobalTheory.IndefiniteRowSideFullHecke.OnePlusPowerCharacters.LemmaPsi → ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (S : TopSit P),
     S.Real → S.Lem0 S.Γ.W₀ → S.ResBound S.Γ.W₀ S.D.dsum := by
   intro hψ l _ P S hR h0 s c hc hi

@@ -62,16 +62,12 @@ theorem unimodAt_of_unimod {V : Type} [AddCommGroup V] [Module E V] [Module (�
   rw [hu] at e1 e2
   exact le_antisymm e2 e1
 
-private theorem rows_span_eq_top_of_unimodular (S : Formalism.BasicNotions.HSpace E) {Λ : Submodule (𝓞 E) S.V}
-    (hL : Λ.FG) (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) :
-    Submodule.span E (Λ : Set S.V) = ⊤ := by
-  exact Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top hU S.herm hL
-
-
 theorem unimod_mem_genus (hU : LocUnimod) (hc : Formalism.BasicNotions.CMData F E) (S : Formalism.BasicNotions.HSpace E)
     (L M : Submodule (𝓞 E) S.V) (hL : Submodule.IsLattice E L) (hM : Submodule.IsLattice E M)
     (huL : IsUnimodular S.hT L) (huM : IsUnimodular S.hT M) : M ∈ genus S.hT L :=
-  ⟨{ toIsLattice := hM, span_eq_top := rows_span_eq_top_of_unimodular S hM.fg huM }, fun p hp => hU F E hc S L M hL hM p hp (unimodAt_of_unimod S.hT L hL huL p) (unimodAt_of_unimod S.hT M hM huM p)⟩
+  ⟨{ toIsLattice := hM, span_eq_top := IsUnimodular.span_eq_top huM S.herm hM.fg },
+    fun p hp => hU F E hc S L M hL hM p hp (unimodAt_of_unimod S.hT L hL huL p)
+      (unimodAt_of_unimod S.hT M hM huM p)⟩
 
 theorem unimodular_mem_genus (hU : LocUnimod) (hc : Formalism.BasicNotions.CMData F E) (S : Formalism.BasicNotions.HSpace E)
     (M : Submodule (𝓞 E) S.V) (hM : Submodule.IsLattice E M) (huM : IsUnimodular S.hT M) : M ∈ genus S.hT S.L0 :=

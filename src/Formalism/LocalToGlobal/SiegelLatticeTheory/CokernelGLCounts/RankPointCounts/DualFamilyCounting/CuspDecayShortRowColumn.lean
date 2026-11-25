@@ -176,14 +176,16 @@ theorem exists_orth_gen (hS : IsHermSemilocal S) (hπ : IsUnif S π) :
         induction j using Fin.cases with
         | zero => exact absurd rfl hij
         | succ l =>
-          simpa only [Fin.cons_zero, Fin.cons_succ] using hfz l
+          simp only [Fin.cons_zero, Fin.cons_succ]
+          exact hfz l
       | succ k =>
         induction j using Fin.cases with
         | zero =>
           simp only [Fin.cons_zero, Fin.cons_succ]
           rw [← hs.eq f (z k), hfz k, map_zero]
         | succ l =>
-          simpa only [Fin.cons_succ] using hzo k l (fun hkl => hij (by rw [hkl]))
+          simp only [Fin.cons_succ]
+          exact hzo k l (fun hkl => hij (by rw [hkl]))
     · rw [spanS_cons, hzs, ← spanS_cons, hspan]
 
 end Formalism.L2.SG.Pf.G1
@@ -249,7 +251,9 @@ theorem exists_basis_in {X : Submodule K V} {L : Submodule (𝓞 K) V} (hL : Cnt
   have hmapN : (L.comap (X.subtype.restrictScalars (𝓞 K))).map
       (X.subtype.restrictScalars (𝓞 K)) = L := by
     rw [Submodule.map_comap_eq]
-    exact inf_eq_right.mpr (fun v hv => ⟨⟨v, hLX v hv⟩, rfl⟩)
+    refine inf_eq_right.mpr ?_
+    intro v hv
+    exact ⟨⟨v, hLX v hv⟩, rfl⟩
   have hinj : Function.Injective (X.subtype.restrictScalars (𝓞 K)) := X.injective_subtype
   have hfgN : (L.comap (X.subtype.restrictScalars (𝓞 K))).FG :=
     Submodule.fg_of_fg_map_injective _ hinj (by rw [hmapN]; exact hfg)
@@ -259,7 +263,8 @@ theorem exists_basis_in {X : Submodule K V} {L : Submodule (𝓞 K) V} (hL : Cnt
     constructor
     · rintro ⟨w, hw, rfl⟩
       exact hw
-    · exact fun hv => ⟨⟨v, hLX v hv⟩, hv, rfl⟩
+    · intro hv
+      exact ⟨⟨v, hLX v hv⟩, hv, rfl⟩
   have hspanN : Submodule.span K
       ((L.comap (X.subtype.restrictScalars (𝓞 K)) : Submodule (𝓞 K) X) : Set X) = ⊤ := by
     apply Submodule.map_injective_of_injective X.injective_subtype
@@ -331,15 +336,8 @@ theorem exists_over (𝔭 : Ideal (𝓞 F)) (h𝔭 : 𝔭.IsMaximal) :
     ∃ P : Ideal (𝓞 K), P.IsMaximal ∧ P.comap (algebraMap (𝓞 F) (𝓞 K)) = 𝔭 := by
   haveI := h𝔭
   refine Ideal.exists_ideal_over_maximal_of_isIntegral 𝔭 ?_
-  intro t ht
-  rw [RingHom.mem_ker] at ht
-  have h1 : algebraMap F K (t : F) = 0 := by
-    have h2 := congrArg (algebraMap (𝓞 K) K) ht
-    rwa [map_zero] at h2
-  have h3 : (t : F) = 0 := (algebraMap F K).injective (by rw [h1, map_zero])
-  have h4 : t = 0 := by exact_mod_cast h3
-  rw [h4]
-  exact 𝔭.zero_mem
+  rw [(RingHom.injective_iff_ker_eq_bot _).1 (FaithfulSMul.algebraMap_injective (𝓞 F) (𝓞 K))]
+  exact bot_le
 
 variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]

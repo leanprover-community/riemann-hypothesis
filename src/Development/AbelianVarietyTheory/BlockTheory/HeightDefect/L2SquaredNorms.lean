@@ -48,8 +48,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.L2SquaredNorms
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory NumberField
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Norms
 
 variable {K₁ : Type} [Field K₁]

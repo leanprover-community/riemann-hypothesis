@@ -108,11 +108,6 @@ theorem unimodularBlock_comp_val_eq_mul {a b : ℕ} {A : Type} [CommRing A] {u v
 theorem unimodularBlock_eqToHom_val_eq_one {a b : ℕ} {A : Type} [CommRing A] {v w : U1 a b A} (h : v = w) : (eqToHom h).1 = 1 := by
   subst h; rfl
 
-theorem Um_comp_val {N : ℕ} {A : Type} [CommRing A] {u v w : Um N A} (f : u ⟶ v) (g : v ⟶ w) : (f ≫ g).1 = g.1 * f.1 := rfl
-
-theorem Um_eqToHom_val {N : ℕ} {A : Type} [CommRing A] {v w : Um N A} (h : v = w) : (eqToHom h).1 = 1 := by
-  subst h; rfl
-
 theorem Um_comp_eqToHom {N : ℕ} {A : Type} [CommRing A] {u v w : Um N A} (p : u ⟶ v) (h : v = w) :
     (p ≫ eqToHom h).1 = p.1 := by
   subst h; simp

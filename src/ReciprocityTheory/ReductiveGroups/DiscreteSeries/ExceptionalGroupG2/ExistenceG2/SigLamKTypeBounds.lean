@@ -32,9 +32,10 @@ variable {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} {v₀ : T.V}
 
 theorem rreg_mem_Hlam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) :
     ∀ g ∈ UJset ε, ∀ x ∈ Hlam ε Ψ v₀, rreg ε g x ∈ Hlam ε Ψ v₀ :=
-  ReciprocityTheory.ChartRestriction.DS.G2.closGen_stable (ReciprocityTheory.ChartRestriction.DS.rreg_isURepOn ε)
+  ReciprocityTheory.ChartRestriction.DS.G2.closGen_stable hgap (ReciprocityTheory.ChartRestriction.DS.rreg_isURepOn ε)
     (ReciprocityTheory.ChartRestriction.DS.isDerivedOn_smE (ReciprocityTheory.ChartRestriction.DS.rreg_isURepOn ε))
     (ReciprocityTheory.ChartRestriction.DS.datumV_isKIrrHW hP hv₀) (ReciprocityTheory.ChartRestriction.DS.datumV_casimir hP v₀)
+    (ReciprocityTheory.ChartRestriction.DS.datumV_kStable hP v₀)
 
 theorem sigLam_coe (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (x : Hlam ε Ψ v₀) :
     ((sigLam ε Ψ v₀ g x : Hlam ε Ψ v₀) : L2 ε) = rreg ε g x := by

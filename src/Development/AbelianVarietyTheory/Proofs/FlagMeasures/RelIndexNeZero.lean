@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerStabilizersCommensurableVolume
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIntSmulLe
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
@@ -216,19 +217,7 @@ theorem exists_den {s : V ≃ₗ[K] V} {n : ℕ} (hs : ((s : V →ₗ[K] V) - 1)
 
 theorem inf_stab_smul {Γ X : Type} [Group Γ] [MulAction Γ X] (G : Subgroup Γ) {s : Γ} (hs : s ∈ G) (x : X) :
     G ⊓ MulAction.stabilizer Γ (s • x) = MulAut.conj s • (G ⊓ MulAction.stabilizer Γ x) := by
-  ext g
-  rw [Subgroup.mem_pointwise_smul_iff_inv_smul_mem]
-  simp only [Subgroup.mem_inf, MulAction.mem_stabilizer_iff, MulAut.smul_def, MulAut.conj_inv_apply]
-  constructor
-  · rintro ⟨h1, h2⟩
-    refine ⟨G.mul_mem (G.mul_mem (G.inv_mem hs) h1) hs, ?_⟩
-    rw [mul_smul, mul_smul, h2, inv_smul_smul]
-  · rintro ⟨h1, h2⟩
-    refine ⟨?_, ?_⟩
-    · have := G.mul_mem (G.mul_mem hs h1) (G.inv_mem hs)
-      simpa [mul_assoc] using this
-    · rw [mul_smul, mul_smul, inv_smul_eq_iff] at h2
-      exact h2
+  apply _root_.GlobalTheory.HL.volSt_inf_stab_smul <;> assumption
 
 theorem invVol_smul : ∀ (K V : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (G : Subgroup (V ≃ₗ[K] V)) (n : ℕ), (∀ s ∈ G, ((s : V →ₗ[K] V) - 1) ^ n = 0) → ∀ Λ Λ' : Submodule (𝓞 K) V, Submodule.IsFullLattice K Λ → Submodule.IsFullLattice K Λ' → (G ⊓ MulAction.stabilizer (V ≃ₗ[K] V) Λ).relIndex (G ⊓ MulAction.stabilizer (V ≃ₗ[K] V) Λ') ≠ 0 ∧ ∀ s ∈ G, GlobalTheory.HL.invVol (G ⊓ MulAction.stabilizer (V ≃ₗ[K] V) Λ') (G ⊓ MulAction.stabilizer (V ≃ₗ[K] V) (s • Λ)) = GlobalTheory.HL.invVol (G ⊓ MulAction.stabilizer (V ≃ₗ[K] V) Λ') (G ⊓ MulAction.stabilizer (V ≃ₗ[K] V) Λ) := by
   intro K V _ _ _ _ _ _ _ G n hG Λ Λ' hΛ hΛ'

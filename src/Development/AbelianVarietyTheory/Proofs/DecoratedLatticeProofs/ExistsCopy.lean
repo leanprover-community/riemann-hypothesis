@@ -140,7 +140,6 @@ theorem exists_copy {A : Type} [CommRing A] {n n' : ℕ} (e : n' = n) (g : GL (F
   exact ⟨g, fun _ _ => rfl⟩
 
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE in
 
 theorem rd_all {B : Base} {X : PreX B.toPre} (I : TC B X) [NeZero (B.R.N B.R.m - 1)] {Lb U chi y lat st}
     (h : I.ReadsP I.mu0 Lb U chi y lat st) (c : (I.stX I.mu0).Cl) :

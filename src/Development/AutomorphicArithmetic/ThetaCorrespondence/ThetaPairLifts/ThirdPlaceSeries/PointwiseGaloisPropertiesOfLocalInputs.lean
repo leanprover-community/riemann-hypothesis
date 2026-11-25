@@ -200,7 +200,7 @@ theorem nonempty_divX (Z : RationalReadingWithoutCongruence R F X0 Y) (hP : Pins
   exact ⟨GlobalTheory.provisionalDivX D G V (fun p _ => (GlobalTheory.WittFracComplex.nonempty_ringHom_complex p).some)
     fun k =>
     ⟨mjH_noEta Z k, jM_noEta Z k, mjH_good_noEta Z hH k, jM_basis_noEta Z hH k, jM_lat_noEta Z hP hH k,
-      mjLat_sub_noEta Z hP hH k, MjModel.jM_metric_all_noEta Z hH k⟩⟩
+      mjLat_sub_noEta Z hP hH k⟩⟩
 
 theorem nonempty_ix (hH : Holds R F) : Nonempty A3.A.fam.base.Ix := by
   obtain ⟨p⟩ := GlobalTheory.Div.nonempty_ix_of_pos A3 F.P0 F.ψ0 (R.toCx3 F).zs hH.ok hH.prim.block (hH.prim.pos false)

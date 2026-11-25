@@ -941,7 +941,7 @@ theorem gSup_holds : GSupStatement := gSup Ext.all.1
 
 theorem propA_holds : PropAStatement := propA Ext.all.1 Ext.all.2.1
 
-theorem split_holds : SplitStatement := split
+theorem split_holds : SplitStatement := split Ext.all
 
 theorem char_holds : CharStatement := char Ext.all
 

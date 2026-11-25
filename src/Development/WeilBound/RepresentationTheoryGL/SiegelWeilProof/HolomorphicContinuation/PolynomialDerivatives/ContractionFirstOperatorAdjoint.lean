@@ -60,7 +60,7 @@ open PositivityTheory.Rg.Sw G
 
 variable {m n : ℕ}
 
-theorem tA (ε : Fin m → Bool) {c : ℝ} {a b : Fin m} (ha : ε a = true) (hb : ε b = true) (i : Fin n)
+theorem tA (ε : Fin m → Bool) {c : ℝ} (hc : 0 < c) {a b : Fin m} (ha : ε a = true) (hb : ε b = true) (i : Fin n)
     {h g : PX m n} (hh : h ∈ F1 ε) (hg : g ∈ F2 ε) :
     contr c (X (a, i, false) * pderiv (b, i, false) h * g) = contr c (h * (X (b, i, true) * pderiv (a, i, true) g)) := by
   have h1 := T1 ε (c := c) (k := (a, i, false)) (by simp [inF1, ha]) (partial_deriv_mem_first_family ε (b, i, false) hh) hg
@@ -111,7 +111,7 @@ theorem contraction_first_operator_adjoint (ε : Fin m → Bool) {c : ℝ} (hc :
       simp only [ite_true]
       rw [neg_mul, contr_neg, Finset.sum_mul, contr_sum, Finset.mul_sum, contr_sum]
       congr 1
-      exact Finset.sum_congr rfl fun i _ => tA ε ha hb i hh hg
+      exact Finset.sum_congr rfl fun i _ => tA ε hc ha hb i hh hg
   · rw [ite_eq_right hab, ite_eq_right hab]
     cases ha : ε a
     · have hb : ε b = true := by cases h' : ε b <;> simp_all

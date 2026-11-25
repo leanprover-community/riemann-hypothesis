@@ -27,17 +27,6 @@ theorem hfs_map_blockEmb (s : σ) (f : MvPolynomial (Fin n × Fin n) K) :
   unfold Formalism.GradedWeylDivisibility.blockEmb
   exact MvPolynomial.map_rename _ _ _
 
-private lemma map_aeval_eq_aeval_map' {α β : Type} (g : α → MvPolynomial β K) (g' : α → MvPolynomial β L)
-    (hg : ∀ v, MvPolynomial.map ι (g v) = g' v) (F : MvPolynomial α K) :
-    MvPolynomial.map ι (MvPolynomial.aeval g F) = MvPolynomial.aeval g' (MvPolynomial.map ι F) := by
-  induction F using MvPolynomial.induction_on with
-  | C a =>
-    simp only [MvPolynomial.aeval_C, MvPolynomial.map_C, MvPolynomial.algebraMap_eq]
-  | add p q hp hq =>
-    simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp =>
-    simp only [map_mul, MvPolynomial.aeval_X, MvPolynomial.map_X, hp, hg]
-
 private lemma map_mem_dualWeyl' {r m : ℕ} {ν : Fin m → ℕ} {f : MvPolynomial (Fin r × Fin m) K}
     (hf : f ∈ Formalism.GradedWeylDivisibility.dualWeyl K r m ν) : MvPolynomial.map ι f ∈ Formalism.GradedWeylDivisibility.dualWeyl L r m ν := by
   unfold Formalism.GradedWeylDivisibility.dualWeyl at hf ⊢
@@ -58,7 +47,9 @@ private lemma map_mem_dualWeyl' {r m : ℕ} {ν : Fin m → ℕ} {f : MvPolynomi
     simp only [AlgHom.toLinearMap_apply] at h3 ⊢
     rw [← MvPolynomial.map_rename, ← h3]
     unfold Formalism.GradedWeylDivisibility.colAddGen
-    refine (map_aeval_eq_aeval_map' ι _ _ (fun v => ?_) f).symm
+    rw [MvPolynomial.map_aeval_eq_aeval_map ι (MvPolynomial.map ι)
+      (by ext x; simp [MvPolynomial.algebraMap_eq])]
+    refine congrArg (fun g => MvPolynomial.aeval g _) (funext fun v => ?_)
     split_ifs <;> simp
 
 theorem hfs_map_mem_VV {F : Pol K σ n} (hF : F ∈ VV K lam) : MvPolynomial.map ι F ∈ VV L lam := by
@@ -136,8 +127,9 @@ variable {K L : Type} [Field K] [Field L] (ι : K →+* L) {σ : Type} [Fintype 
 theorem hfs_map_trAct (g : σ → GL (Fin n) K) (F : Pol K σ n) :
     MvPolynomial.map ι (trAct g F) = trAct (fun τ => Formalism.UG.bc ι (g τ)) (MvPolynomial.map ι F) := by
   unfold trAct Formalism.GradedWeylDivisibility.blockAct
-  refine map_aeval_eq_aeval_map' ι _ _ (fun v => ?_) F
-
+  rw [MvPolynomial.map_aeval_eq_aeval_map ι (MvPolynomial.map ι)
+    (by ext x; simp [MvPolynomial.algebraMap_eq])]
+  refine congrArg (fun g => MvPolynomial.aeval g _) (funext fun v => ?_)
   simp [map_sum, Formalism.UG.bc, Matrix.transpose_apply]
 
 theorem hfs_detPow_bc (g : GL (Fin n) K) (c : ℤ) : detPow L n (Formalism.UG.bc ι g) c = ι (detPow K n g c) := by

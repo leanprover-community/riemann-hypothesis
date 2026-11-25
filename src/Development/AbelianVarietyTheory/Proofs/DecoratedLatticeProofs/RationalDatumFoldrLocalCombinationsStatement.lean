@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceAt
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsRatDatum
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourModel
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsFiniteRepsHalfStandardHomModNsmul
@@ -128,26 +129,10 @@ theorem half_inf_half {e : AE D} (he : e * cA D e = 0) (S T : HSp D) {u : WO S T
 
 theorem half_div' (S T : HSp D) {e : AE D} {k : ℕ} (hk : 0 < k) {s : WO S T} (hs : IsHalf e s) :
     ∃ t, IsHalf e t ∧ k • t = s := by
-  refine ⟨s.map (fun a => algebraMap D.host.F (AE D) (k : D.host.F)⁻¹ * a), fun i j => ?_, ?_⟩
-  · simp only [Matrix.map_apply]
-    rw [mul_left_comm, hs i j]
-  · ext i j
-    rw [Matrix.smul_apply, Matrix.map_apply, nsmul_eq_mul, ← mul_assoc]
-    have h1 : (k : AE D) * algebraMap D.host.F (AE D) (k : D.host.F)⁻¹ = 1 := by
-      rw [show (k : AE D) = algebraMap D.host.F (AE D) (k : D.host.F) by simp, ← map_mul,
-        mul_inv_cancel₀ (Nat.cast_ne_zero.2 hk.ne'), map_one]
-    rw [h1, one_mul]
+  first | exact _root_.Formalism.IndefR.Fin.half_div | exact @_root_.Formalism.IndefR.Fin.half_div | apply _root_.Formalism.IndefR.Fin.half_div <;> assumption
 
 theorem nsmul_eq_zero' (S T : HSp D) {k : ℕ} (hk : 0 < k) {t : WO S T} (h : k • t = 0) : t = 0 := by
-  have hu : IsUnit (k : AE D) := by
-    have e1 : (k : AE D) = algebraMap D.host.F (AE D) (k : D.host.F) := by simp
-    rw [e1]
-    exact (IsUnit.mk0 _ (Nat.cast_ne_zero.2 hk.ne')).map _
-  ext i j
-  have := congrFun (congrFun h i) j
-  rw [Matrix.smul_apply, nsmul_eq_mul, Matrix.zero_apply] at this
-  rw [Matrix.zero_apply]
-  exact (hu.mul_right_eq_zero).1 this
+  first | exact _root_.GlobalTheory.AnnConjHalf.nsmul_eq_zero_WO | exact @_root_.GlobalTheory.AnnConjHalf.nsmul_eq_zero_WO | apply _root_.GlobalTheory.AnnConjHalf.nsmul_eq_zero_WO <;> assumption
 
 theorem finite_qt' {W : Type*} [AddCommGroup W] {H : AddSubgroup W} {k : ℕ} (R : Finset W)
     (hR : ∀ u ∈ H, ∃ r ∈ R, ∃ v ∈ H, u = r + k • v) : Finite (Four.Qt k H) := by

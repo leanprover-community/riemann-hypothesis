@@ -53,21 +53,12 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Globa
 
 namespace GlobalTheory.CompanionTheory.Ar.Top
 
-private theorem card_lt_lemma {N j : ℕ} (hj : j ≤ N) :
-    (Finset.univ.filter fun i : Fin N => (i : ℕ) < j).card = j := by
-  rw [← Fintype.card_subtype]
-  rw [Fintype.card_congr (show {i : Fin N // (i : ℕ) < j} ≃ Fin j from
-    { toFun := fun x => ⟨x.1, x.2⟩
-      invFun := fun y => ⟨⟨y.1, lt_of_lt_of_le y.2 hj⟩, y.2⟩
-      left_inv := fun x => rfl
-      right_inv := fun y => rfl })]
-  exact Fintype.card_fin j
-
 theorem flag_degree_low_zero {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (j : ℕ) (hj : j ≤ N) (τ : Ψ) (Q : RP Ψ N) :
     degFl (pkLow j τ 0 * Q) = j * degFl Q := by
   have hp : (pkLow j τ 0 : RP Ψ N) = C (j : ℝ) := by
     unfold pkLow
-    simp only [pow_zero, Finset.sum_const, card_lt_lemma hj, nsmul_eq_mul, mul_one]
+    simp only [pow_zero, Finset.sum_const, Fin.card_filter_val_lt, min_eq_right hj,
+      nsmul_eq_mul, mul_one]
     exact (map_natCast C j).symm
   rw [hp]
   unfold degFl

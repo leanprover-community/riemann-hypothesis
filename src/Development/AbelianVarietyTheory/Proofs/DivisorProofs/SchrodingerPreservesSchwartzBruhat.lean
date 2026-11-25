@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
@@ -59,27 +60,7 @@ namespace GlobalTheory.SchrSB
 
 theorem isLocallyConstant_addChar {G : Type} [AddCommGroup G] [TopologicalSpace G] [NonarchimedeanAddGroup G]
     (ψ : AddChar G ℂ) (hψ : Continuous ψ) : IsLocallyConstant ψ := by
-  have hU : (⇑ψ) ⁻¹' Metric.ball 1 (1 / 2) ∈ nhds (0 : G) := by
-    apply hψ.continuousAt.preimage_mem_nhds
-    rw [AddChar.map_zero_eq_one]
-    exact Metric.ball_mem_nhds _ (by norm_num)
-  obtain ⟨V, hV⟩ := NonarchimedeanAddGroup.is_nonarchimedean _ hU
-  have hker : ∀ y ∈ V, ψ y = 1 := by
-    intro y hy
-    apply _root_.GlobalTheory.IterativeScalingBound.main
-    intro k
-    have hm : (2 ^ k) • y ∈ V := V.toAddSubgroup.nsmul_mem hy _
-    have := hV hm
-    rw [Set.mem_preimage, Metric.mem_ball, dist_eq_norm, AddChar.map_nsmul_eq_pow] at this
-    exact this
-  rw [IsLocallyConstant.iff_eventually_eq]
-  intro x
-  have hx : Filter.Tendsto (fun y => y - x) (nhds x) (nhds 0) := by
-    have h := ((continuous_sub_right x).tendsto x)
-    rwa [sub_self] at h
-  filter_upwards [hx (V.isOpen.mem_nhds V.zero_mem)] with y hy
-  have e : y = x + (y - x) := by abel
-  rw [e, AddChar.map_add_eq_mul, hker _ hy, mul_one]
+  apply _root_.GlobalTheory.WeilM.isLocallyConstant_addChar <;> assumption
 
 theorem continuous_psiAt {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (hψ : Continuous ψ)
     (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : Continuous (GlobalTheory.LatVac.psiAt ψ v) := by

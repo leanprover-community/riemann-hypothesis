@@ -102,14 +102,10 @@ theorem piTensor_rep_isIrreducible (hA : GlobalTheory.Published.IrreducibleAdmis
     · rw [Units.isEmbedding_embedProduct.isInducing.isCompact_iff]
       let S : Set (Matrix (Fin N) (Fin N) k) := {A | ∀ i j, A i j ∈ O}
       have hS : IsCompact S := by
-        have h := isCompact_univ_pi (fun _ : Fin N => isCompact_univ_pi (fun _ : Fin N => hOc))
-        have hSe : S = Set.univ.pi (fun _ : Fin N => Set.univ.pi fun _ : Fin N => (O : Set k)) := by
+        rw [show S = Set.univ.pi fun _ : Fin N => Set.univ.pi fun _ => (O : Set k) by
           ext A
-          show (∀ i j, A i j ∈ O) ↔ ∀ i ∈ (Set.univ : Set (Fin N)), ∀ j ∈ (Set.univ : Set (Fin N)), A i j ∈ (O : Set k)
-          constructor
-          · exact fun hA i _ j _ => hA i j
-          · exact fun hA i j => hA i (Set.mem_univ i) j (Set.mem_univ j)
-        rwa [hSe]
+          exact ⟨fun h _ _ _ _ => h _ _, fun h i j => h i trivial j trivial⟩]
+        exact isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => hOc
       have hsub : Units.embedProduct (Matrix (Fin N) (Fin N) k) '' (K : Set (GL (Fin N) k)) =
           (S ×ˢ (MulOpposite.op '' S)) ∩
             {p | p.1 * MulOpposite.unop p.2 = 1 ∧ MulOpposite.unop p.2 * p.1 = 1} := by
@@ -120,7 +116,8 @@ theorem piTensor_rep_isIrreducible (hA : GlobalTheory.Published.IrreducibleAdmis
         · rintro ⟨⟨hA, B, hB, hBp⟩, h1, h2⟩
           refine ⟨⟨p.1, MulOpposite.unop p.2, h1, h2⟩, ⟨hA, ?_⟩, rfl⟩
           show ∀ i j, (MulOpposite.unop p.2) i j ∈ O
-          rwa [← hBp]
+          rw [← hBp]
+          exact hB
       rw [hsub]
       refine (hS.prod (hS.image MulOpposite.continuous_op)).inter_right ?_
       exact (isClosed_eq (continuous_fst.mul (MulOpposite.continuous_unop.comp continuous_snd))
@@ -224,6 +221,7 @@ theorem one_le_jm : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace 
   let f' : τ.IntertwiningMap (parInd (stdBlocks (fun a => (x a).1) hd) (piTensor fun a => (x a).rep)) := f
   obtain ⟨y, hy⟩ := frobMap_ne_zero _ f' hf
   have hs := surjective_of_ne_zero (piTensor_rep_isIrreducible hA x) (frobMap _ f') ⟨y, hy⟩
-  exact Order.one_le_iff_ne_zero.2 (jhMult_ne_zero_iff.2 (IsSubquotient.of_surjective _ hs))
+  have hq := jhMult_ne_zero_iff.2 (IsSubquotient.of_surjective _ hs)
+  exact Order.one_le_iff_ne_zero.2 hq
 
 end GlobalTheory.CompanionTheory.FrobJm

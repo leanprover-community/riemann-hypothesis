@@ -51,8 +51,9 @@ noncomputable section
 namespace BranchChartInt
 
 theorem analyticOnNhd_of_differentiableOn {k m : ℕ} {U : Set (Fin k → ℂ)} {f : (Fin k → ℂ) → Fin m → ℂ}
-    (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) : AnalyticOnNhd ℂ f U := by
-  exact GroundTheory.Heights₂.Heights.SheetOnlyNull.analyticOnNhd_of_differentiableOn hU hf
+    (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) : AnalyticOnNhd ℂ f U :=
+  analyticOnNhd_pi_iff.2 fun j =>
+    ReciprocityTheory.AnForm.Osgood.osgood k U _ hU (differentiableOn_pi.1 hf j)
 
 theorem differentiable_mulVec {d n : ℕ} (A : Matrix (Fin d) (Fin n) ℂ) :
     Differentiable ℂ (fun x : Fin n → ℂ => A *ᵥ x) :=
@@ -178,7 +179,7 @@ theorem BranchChartInt.proof (hA : HolomorphicFibreSumInt.Statement) (hS : Branc
   have hae : ∀ᵐ t ∂(volume.restrict Δ), (g ∘ γ.toFun) t * ReciprocityTheory.AnForm.maDens (fun k => φ k ∘ γ.toFun) t =
       Complex.normSq (jacC τ t).det * H t := by
     filter_upwards [hS n d J A p γ hJ hdim hfin, ae_restrict_mem measurableSet_ball] with t hts htΔ
-    simp only [hH, dite_eq_left hts, Function.comp_apply]
+    simp only [hH, dif_pos hts, Function.comp_apply]
     rw [maDens_branch_eq γ hφ htΔ hts.choose_spec]
     ring
   have hint : IntegrableOn (fun t => Complex.normSq (jacC τ t).det * H t) Δ :=

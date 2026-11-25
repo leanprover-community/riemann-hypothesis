@@ -31,18 +31,8 @@ theorem pullDeg_comp_of_eq_zero {K K' : Type*} (j : K ↪ K') (b : K' → ℤ)
 
 theorem withBot_le_of_lt_succ (a : WithBot ℕ∞) (m : ℕ) (h : a < ((m + 1 : ℕ) : WithBot ℕ∞)) :
     a ≤ ((m : ℕ) : WithBot ℕ∞) := by
-  induction a using WithBot.recBotCoe with
-  | bot => exact bot_le
-  | coe b =>
-    induction b using ENat.recTopCoe with
-    | top =>
-      exfalso
-      have h' : ((⊤ : ℕ∞) : WithBot ℕ∞) < (((m + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := h
-      exact absurd (WithBot.coe_lt_coe.mp h') (by simp)
-    | coe c =>
-      have h' : (((c : ℕ) : ℕ∞) : WithBot ℕ∞) < (((m + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := h
-      have hc : c < m + 1 := by exact_mod_cast WithBot.coe_lt_coe.mp h'
-      exact WithBot.coe_le_coe.mpr (by exact_mod_cast (by omega : c ≤ m))
+  rw [Nat.cast_add, Nat.cast_one] at h
+  exact ENat.WithBot.lt_add_one_iff.mp h
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   {K' : Type} [Fintype K'] [DecidableEq K'] {ι' : K' → Type} [∀ o, Fintype (ι' o)]
@@ -87,7 +77,8 @@ theorem vNumL_eq_zero_of_contract {ϖ : O} (hϖ : Irreducible ϖ) {P W : Ideal (
     rw [SpecialQuotDim.full O ϖ hϖ K' ι' W hϖW]
     refine lt_natCast_of_add_one_le ?_
     have e : l.length + Fintype.card K' + 1 = l.length + 1 + Fintype.card K' := by omega
-    rwa [e]
+    rw [e]
+    exact hdrop
   change intNum (IsLocalRing.ResidueField O) (specialIdeal W) l.get = 0
   by_cases hcase : ¬ IsRelevant (specialIdeal W) ∨ ringKrullDim (MRing ι' (IsLocalRing.ResidueField O) ⧸ specialIdeal W) <
       ((l.length + Fintype.card K' : ℕ) : WithBot ℕ∞)

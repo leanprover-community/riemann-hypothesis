@@ -626,11 +626,7 @@ variable {K V Ω : Type} [Field K] [AddCommGroup V] [Module K V] [Field Ω] [Alg
 
 theorem X_pow_mul_C_mem (ev : V →ₗ[K] Ω) {d : ℕ} {t : Ω} (ht : t ∈ ((LinearMap.range ev) ^ d : Submodule K Ω)) :
     (Polynomial.X ^ d * Polynomial.C t : Polynomial Ω) ∈ coneAlg ev := by
-  refine (_root_.GlobalTheory.DegCmp.mem_coneAlg_iff_coeff K V Ω ev _).2 fun n => ?_
-  rw [Polynomial.coeff_mul_C, Polynomial.coeff_X_pow]
-  split_ifs with h
-  · rw [one_mul, h]; exact ht
-  · rw [zero_mul]; exact zero_mem _
+  apply _root_.GlobalTheory.DegCmp.X_pow_mul_C_mem_coneAlg <;> assumption
 
 theorem finiteType_coneAlg [FiniteDimensional K V] (ev : V →ₗ[K] Ω) : Algebra.FiniteType K (coneAlg ev) := by
   let b := Module.finBasis K V

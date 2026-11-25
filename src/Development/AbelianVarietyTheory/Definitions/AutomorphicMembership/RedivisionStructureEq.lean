@@ -68,10 +68,7 @@ variable {D : D7} (Z : New D)
 
 def wd (u : D.what₂.Word) : (reD D Z).what₂.Word := u
 
-def New.self (D : D7) : New D := ⟨SNew.self D, fun u => (D.div.Nu u).L, D.div.h⟩
-
 def New.ofDiv (D : D7) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ) : New D := ⟨SNew.self D, N, h⟩
-
 
 
 def reX (X : HidaSetting D) : HidaSetting (reD D Z) := { X with }

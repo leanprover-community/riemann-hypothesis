@@ -87,15 +87,6 @@ theorem v_int_nonneg (a : ℤ) : (0 : WithTop ℚ) ≤ v (a : LL) := by
 private theorem withTop_rat_add_pos_of_nonneg_of_pos {a b : WithTop ℚ} (ha : 0 ≤ a) (hb : 0 < b) : 0 < a + b :=
   lt_of_lt_of_le hb (le_add_of_nonneg_left ha)
 
-private theorem exists_int_bezout_of_coprime (p m : ℕ) (h : Nat.Coprime p m) :
-    ∃ a b : ℤ, a * (p : ℤ) + b * (m : ℤ) = 1 := by
-  refine ⟨Nat.gcdA p m, Nat.gcdB p m, ?_⟩
-  have h2 := Nat.gcd_eq_gcd_ab p m
-  rw [Nat.Coprime.gcd_eq_one h] at h2
-  push_cast at h2
-  first
-  | linear_combination -h2
-
 theorem v_nat_eq_zero (p : ℕ) (hp : p.Prime) (hvp : 0 < v (p : LL)) (m : ℕ) (hm : ¬ p ∣ m) :
     v (m : LL) = 0 := by
   have hcop : Nat.Coprime p m := (Nat.Prime.coprime_iff_not_dvd hp).mpr hm

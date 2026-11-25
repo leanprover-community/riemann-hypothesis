@@ -340,14 +340,19 @@ theorem GlobalTheory.Mem.Top.Bl.bWit_zsc_F0_heq_F0K_of_sc_eq : ∀ (hL : _root_.
   letI := a.x.grp
   letI := a.x.fin
   have hX' : ∀ Zs : DefSub a.x.A3.fam3.amb3, HEq (a.x.F.Zsc Zs).F0 (F0K K.s (q.w.D q.Z)) := hX
-  dsimp only
-  clear * - hX'
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x', pack, _⟩ := a
-  dsimp only at hX' ⊢
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, _⟩ := x'
-  dsimp only at pack hX' ⊢
-  cases pack
-  exact hX' _
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (q.w.st q.Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (q.w.st q.Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (q.w.st q.Z).toD7) (_ : Algebra C.Q.c.F (q.w.st q.Z).toD7.what₂.LL)
+      (R : RealDat3 (q.w.st q.Z).toD7 A3 C.Q.c.F) (_ : Face3 (q.w.st q.Z).toD7 A3),
+      G0 R.Pg (q.w.st q.Z).toD7.R.r ≃* G0g (q.w.st q.Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, A3, _, _, _, F, _⟩ =>
+      ∀ Zs : DefSub A3.fam3.amb3, HEq (F.Zsc Zs).F0 (F0K K.s (q.w.D q.Z))
+  have hP : P ⟨_, _, _, _, _, _, R3.famT q.x.what₂, q.x.what₂.r.z.core, q.x.what₂.r.z.alg,
+      (q.x.what₂.r.z.R.updS q.x.what₂.r.z.R.kap a.lam).withErr a.err,
+      R3.reFace q.x.what₂.r.z.F a.Dc a.Sp a.Zsc, q.x.what₂.r.z.cG⟩ := by
+    rw [← a.pack]
+    exact hX'
+  exact hP (zsOf q.x.what₂.r.z.R q.x.what₂.r.z.F)
 end
 end -- clump:auto
 end -- clump:auto
@@ -384,14 +389,16 @@ theorem bwit_cf_eq_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (p : 
   have hR : b.R.T.n.cf = GlobalTheory.Mem.Col2.TC.cf q.w.I q.w.l q.Z := congrArg Sigma.fst w.recPin.s.chr
   rw [hR]
   have hC : q.x.what₂.r.z.R.toRealDat.C = GlobalTheory.Mem.Col2.TC.cf q.w.I q.w.l q.Z := q.x.what₂.r.z.lev.C
-  rw [← hC]
-  obtain ⟨x, a, ax, y⟩ := w
-  cases ax
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x, pack, _⟩ := a
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, _⟩ := x
-  dsimp only at pack ⊢
-  cases pack
-  rfl
+  rw [← hC, ← eq_of_heq w.ax]
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (q.w.st q.Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (q.w.st q.Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (q.w.st q.Z).toD7) (_ : Algebra C.Q.c.F (q.w.st q.Z).toD7.what₂.LL)
+      (R : RealDat3 (q.w.st q.Z).toD7 A3 C.Q.c.F) (_ : Face3 (q.w.st q.Z).toD7 A3),
+      G0 R.Pg (q.w.st q.Z).toD7.R.r ≃* G0g (q.w.st q.Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, _, _, _, R, _, _⟩ => R.C = q.x.what₂.r.z.R.toRealDat.C
+  have hP : P ⟨w.a.x.G, w.a.x.grp, w.a.x.fin, w.a.x.Pl0, w.a.x.I0, w.a.x.T, w.a.x.A3, w.a.x.core, w.a.x.alg, w.a.x.R, w.a.x.F, w.a.x.cG⟩ := by
+    rw [w.a.pack]; rfl
+  exact hP
 end GlobalTheory.Mem.Top.Bl
 end
 end -- clump:auto
@@ -508,13 +515,16 @@ theorem pgEq_of_linked_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (
   have hk := w.recPin.k.std
   rw [image_congr hk.X_eq hk.seam hk.Pr]
   have hl := q.x.what₂.r.z.lev.Pg
-  obtain ⟨x, a, ax, y, _⟩ := w
-  cases ax
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x, pack, _⟩ := a
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, _⟩ := x
-  dsimp only at pack ⊢
-  cases pack
-  exact hl.trans (image_refl _ rfl _).symm
+  rw [← eq_of_heq w.ax]
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (q.w.st q.Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (q.w.st q.Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (q.w.st q.Z).toD7) (_ : Algebra C.Q.c.F (q.w.st q.Z).toD7.what₂.LL)
+      (R : RealDat3 (q.w.st q.Z).toD7 A3 C.Q.c.F) (_ : Face3 (q.w.st q.Z).toD7 A3),
+      G0 R.Pg (q.w.st q.Z).toD7.R.r ≃* G0g (q.w.st q.Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, _, _, _, R, _, _⟩ => R.Pg = q.x.what₂.r.z.R.Pg
+  have hP : P ⟨w.a.x.G, w.a.x.grp, w.a.x.fin, w.a.x.Pl0, w.a.x.I0, w.a.x.T, w.a.x.A3, w.a.x.core, w.a.x.alg, w.a.x.R, w.a.x.F, w.a.x.cG⟩ := by
+    rw [w.a.pack]; rfl
+  exact hP.trans (hl.trans (image_refl _ rfl _).symm)
 end GlobalTheory.Div.PgTie
 end
 end -- clump:auto
@@ -570,14 +580,22 @@ theorem rowLocPin_twArgs_alt {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B}
       (fun s => levS _ (a.x.R.βY 0) (a.x.R.dat0 (a.x.R.toRealDat.levR a.x.F.lv2 s)))
       (fun s => Formalism.IndefR.Lev.levChi _ (a.x.R.βY 0) (a.x.R.dat0 (a.x.R.toRealDat.levR a.x.F.lv2 s)))
       (fun _ => a.x.R.e0) a.x.Y.eFT := by
-  have hPY := a.PY
-  have hE := a.eFT
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x, pack, _⟩ := a
-  dsimp only at hPY hE ⊢
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, Y, _⟩ := x
-  dsimp only at pack hPY hE ⊢
-  cases pack
-  exact _root_.GlobalTheory.Mem.Top.Bl.rowLocPin_congr_alt rfl (eq_of_heq hPY).symm rfl rfl rfl rfl hE.symm hr
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (w.st Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (w.st Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (w.st Z).toD7) (_ : Algebra C.Q.c.F (w.st Z).toD7.what₂.LL)
+      (R : RealDat3 (w.st Z).toD7 A3 C.Q.c.F) (_ : Face3 (w.st Z).toD7 A3),
+      G0 R.Pg (w.st Z).toD7.R.r ≃* G0g (w.st Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, _, _, _, R, F, _⟩ =>
+      ∀ {PY eFT}, HEq PY t.r.Y.PY → HEq eFT t.r.Y.eFT →
+        _root_.Formalism.IndefR.principalLevelFrame.RowLocPinAlt R.θ PY (R.MY 0)
+          (fun s => levS _ (R.βY 0) (R.dat0 (R.toRealDat.levR F.lv2 s)))
+          (fun s => Formalism.IndefR.Lev.levChi _ (R.βY 0) (R.dat0 (R.toRealDat.levR F.lv2 s)))
+          (fun _ => R.e0) eFT
+  have hP : P ⟨a.x.G, a.x.grp, a.x.fin, a.x.Pl0, a.x.I0, a.x.T, a.x.A3, a.x.core, a.x.alg, a.x.R, a.x.F, a.x.cG⟩ := by
+    rw [a.pack]
+    intro PY eFT hPY hE
+    exact _root_.GlobalTheory.Mem.Top.Bl.rowLocPin_congr_alt rfl (eq_of_heq hPY).symm rfl rfl rfl rfl hE.symm hr
+  exact hP a.PY a.eFT
 
 theorem locPin_level_character_of_bWit : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (p : _root_.GlobalTheory.Mem.Top.Bl.Parameters hL), GlobalTheory.Fc.EvP fun _ K => ∀ (q : WPt p.s K) (c : ℝ) (b : _root_.GlobalTheory.Fc.BundleCondition (q.w.D q.Z) q.O c) (w : _root_.GlobalTheory.Mem.Top.Bl.BundleWitness q b), q.O.L.sc = K.s → _root_.Formalism.IndefR.principalLevelFrame.RowLocPinAlt w.x.R.θ w.x.Y.PY (w.x.R.MY 0) (fun s => levS _ (w.x.R.βY 0) (w.x.R.dat0 (w.x.R.toRealDat.levR w.x.F.lv2 s))) (fun s => Formalism.IndefR.Lev.levChi _ (w.x.R.βY 0) (w.x.R.dat0 (w.x.R.toRealDat.levR w.x.F.lv2 s))) (fun _ => w.x.R.e0) w.x.Y.eFT := by
   intro hL p
@@ -678,11 +696,20 @@ theorem levels_of_twArgs {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w 
       (Formalism.L2.SG.RowsJoinPinned.iotaX X h ⁻¹' GlobalTheory.Mem.SRe.concreteLevelAdelicSubset X) (fun k => GlobalTheory.Mem.SRe.adelicCharacterOfHidaSetting X (Formalism.L2.SG.RowsJoinPinned.iotaX X h k)) ∧
       Formalism.L2.SG.RowLevelMatch.RowLevelMatchAt x.R.toRealDat x.F.lv2 X h s := by
   cases ax
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x, pack, _⟩ := a
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, _⟩ := x
-  dsimp only at pack ⊢
-  cases pack
-  exact (levels_withErr_updS _ _ _ _ _ _ _ _ _ _ _).2 hs
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (w.st Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (w.st Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (w.st Z).toD7) (_ : Algebra C.Q.c.F (w.st Z).toD7.what₂.LL)
+      (R : RealDat3 (w.st Z).toD7 A3 C.Q.c.F) (_ : Face3 (w.st Z).toD7 A3),
+      G0 R.Pg (w.st Z).toD7.R.r ≃* G0g (w.st Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, _, _, _, R, F, _⟩ =>
+      Formalism.IndefR.AutomorphicEvaluation.ConjLevel s⁻¹ (levS _ (R.βY 0) (R.dat0 (R.toRealDat.levR F.lv2 true)))
+        (Formalism.IndefR.Lev.levChi _ (R.βY 0) (R.dat0 (R.toRealDat.levR F.lv2 true)))
+        (Formalism.L2.SG.RowsJoinPinned.iotaX X h ⁻¹' GlobalTheory.Mem.SRe.concreteLevelAdelicSubset X) (fun k => GlobalTheory.Mem.SRe.adelicCharacterOfHidaSetting X (Formalism.L2.SG.RowsJoinPinned.iotaX X h k)) ∧
+        Formalism.L2.SG.RowLevelMatch.RowLevelMatchAt R.toRealDat F.lv2 X h s
+  have hP : P ⟨a.x.G, a.x.grp, a.x.fin, a.x.Pl0, a.x.I0, a.x.T, a.x.A3, a.x.core, a.x.alg, a.x.R, a.x.F, a.x.cG⟩ := by
+    rw [a.pack]
+    exact (levels_withErr_updS _ _ _ _ _ _ _ _ _ _ _).2 hs
+  exact hP
 
 end GlobalTheory.Mem.R3.LinkLev
 

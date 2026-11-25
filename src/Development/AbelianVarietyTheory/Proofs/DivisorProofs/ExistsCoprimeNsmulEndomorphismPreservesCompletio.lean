@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudeActionAdelicLattice
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDivPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HopfOrderPullbackAlongHom
 import Mathlib.Algebra.Order.Floor.Extended
@@ -62,15 +63,7 @@ theorem inAf_mem (D : Datum p) (x : D.La) : inAf D x ∈ LaHat D :=
 
 theorem smul_mem (D : Datum p) {a : AfP p} (ha : IsIntAf a) {v : AfP p ⊗[ℚ] VQ D} (hv : v ∈ LaHat D) :
     a • v ∈ LaHat D := by
-  induction hv using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨c, x, hc, rfl⟩ := hz
-    refine AddSubgroup.subset_closure ⟨a * c, x, fun w => ?_, ?_⟩
-    · rw [map_mul]; exact mul_mem (ha w) (hc w)
-    · rw [TensorProduct.smul_tmul', smul_eq_mul]
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | neg x _ hx => rw [smul_neg]; exact neg_mem hx
+  apply _root_.GlobalTheory.AdelicLimitCompactness.smul_mem <;> assumption
 
 theorem exists_nsmul_mem (D : Datum p) (v : AfP p ⊗[ℚ] VQ D) : ∃ d : ℕ, 0 < d ∧ d • v ∈ LaHat D := by
   have hadd : ∀ u w : AfP p ⊗[ℚ] VQ D, (∃ d : ℕ, 0 < d ∧ d • u ∈ LaHat D) → (∃ d : ℕ, 0 < d ∧ d • w ∈ LaHat D) →

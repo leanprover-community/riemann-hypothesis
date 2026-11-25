@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivationContractionLieDerivativeDeRhamRules
 public import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
 public import Mathlib.RingTheory.Derivation.Basic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DivPowerCompatTwoFormDerivativeCompOneForm
@@ -162,21 +163,7 @@ theorem ctr_ι' (v : Derivation R B B) (ω : Ω[B⁄R]) :
 
 theorem ctr_mul' (v : Derivation R B B) (x y : DR R B) :
     ctr v (x * y) = ctr v x * y + sgn x * ctr v y := by
-  induction x using indDR generalizing y with
-  | h b =>
-    rw [← Algebra.smul_def, map_smul, ctr_algebraMap', zero_mul, zero_add, AlgHom.commutes, Algebra.smul_def]
-  | hd b =>
-    rw [ctr_ι', sgn_ι]
-    rw [show ctr v (ι1 (D R B b) * y) = _ from CliffordAlgebra.contractLeft_ι_mul _ _ _]
-    rw [Algebra.smul_def, neg_mul, sub_eq_add_neg]
-    rfl
-  | hm x z hx hz =>
-    rw [mul_assoc, hx, hz, hx, map_mul]
-    simp only [mul_add, add_mul, mul_assoc]
-    abel
-  | ha x z hx hz =>
-    rw [add_mul, map_add (f := _), hx, hz, map_add (f := _), map_add (f := _), add_mul, add_mul]
-    abel
+  apply _root_.GlobalTheory.PDForm.ctr_mul <;> assumption
 
 theorem ctr_mem_of_span (v : Derivation R B B) {S : Set (DR R B)} {T : Ideal (DR R B)}
     (hST : Ideal.span S ≤ T) (hS : ∀ s ∈ S, ctr v s ∈ T) : ∀ x ∈ Ideal.span S, ctr v x ∈ T := by

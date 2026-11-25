@@ -64,17 +64,8 @@ abbrev Ix (m n : ℕ) := Fin m × Fin n × Bool
 
 abbrev Dk (k : Ix m n) : Module.End ℂ (PX m n) := (pderiv (R := ℂ) k).toLinearMap
 
-theorem pderiv_comm (i j : Ix m n) (p : PX m n) : pderiv i (pderiv j p) = pderiv j (pderiv i p) := by
-  induction p using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p k hp =>
-    have hc : ∀ a b : Ix m n, pderiv a (pderiv b (X k : PX m n)) = 0 := by
-      intro a b; rw [pderiv_X]; by_cases h : b = k
-      · subst h; simp
-      · simp [h]
-    simp only [pderiv_mul, map_add (f := _), hp, hc, mul_zero, add_zero]
-    ring
+theorem pderiv_comm (i j : Ix m n) (p : PX m n) : pderiv i (pderiv j p) = pderiv j (pderiv i p) :=
+  MvPolynomial.pderiv_comm i j p
 
 theorem dk_comm (i j : Ix m n) : Commute (Dk i) (Dk j) :=
   LinearMap.ext fun p => pderiv_comm i j p
@@ -181,28 +172,24 @@ theorem op_C (a : ℂ) (f : PX m n) : op (C a : Sym m n) f = a • f := by
 theorem comapDomain_inl_add (t s : Ix m n ⊕ Ix m n →₀ ℕ) :
     (t + s).comapDomain Sum.inl Sum.inl_injective.injOn =
       t.comapDomain Sum.inl Sum.inl_injective.injOn + s.comapDomain Sum.inl Sum.inl_injective.injOn := by
-  ext k; simp [Finsupp.comapDomain_apply]
+  exact Finsupp.comapDomain_add_of_injective Sum.inl_injective t s
 
 theorem opMono_add_inl (t : Ix m n ⊕ Ix m n →₀ ℕ) (k : Ix m n) (f : PX m n) :
     opMono (t + Finsupp.single (Sum.inl k) 1) f = X k * opMono t f := by
-  rw [opMono_eq, opMono_eq, comapDomain_inl_add]
-  have h1 : (Finsupp.single (Sum.inl k) 1 : Ix m n ⊕ Ix m n →₀ ℕ).comapDomain Sum.inl Sum.inl_injective.injOn =
-      Finsupp.single k 1 := by
-    ext j; simp [Finsupp.single_apply]
+  rw [opMono_eq, opMono_eq, comapDomain_inl_add, Finsupp.comapDomain_single]
   have h2 : (fun j : Ix m n => (t + Finsupp.single (Sum.inl k) 1 : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inr j)) = fun j => t (Sum.inr j) := by
     ext j; simp
-  rw [h1, h2, monomial_add_single, pow_one]
+  rw [h2, monomial_add_single, pow_one]
   ring
 
 theorem opMono_add_inr (t : Ix m n ⊕ Ix m n →₀ ℕ) (k : Ix m n) (f : PX m n) :
     opMono (t + Finsupp.single (Sum.inr k) 1) f = opMono t (pderiv k f) := by
-  rw [opMono_eq, opMono_eq, comapDomain_inl_add]
-  have h1 : (Finsupp.single (Sum.inr k) 1 : Ix m n ⊕ Ix m n →₀ ℕ).comapDomain Sum.inl Sum.inl_injective.injOn = 0 := by
-    ext j; simp
+  rw [opMono_eq, opMono_eq, comapDomain_inl_add,
+    Finsupp.comapDomain_single_of_notMem_range (fun ⟨_, h⟩ => by cases h)]
   have h2 : (fun j : Ix m n => (t + Finsupp.single (Sum.inr k) 1 : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inr j)) =
       (fun j => t (Sum.inr j)) + Pi.single k 1 := by
     ext j; simp [Finsupp.single_apply, Pi.single_apply, eq_comm]
-  rw [h1, add_zero, h2, ← dvE_mul, dvE_single]
+  rw [add_zero, h2, ← dvE_mul, dvE_single]
   rfl
 
 theorem op_mul_inl (u : Sym m n) (k : Ix m n) (f : PX m n) : op (u * X (Sum.inl k)) f = X k * op u f := by

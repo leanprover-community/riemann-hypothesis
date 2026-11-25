@@ -8,7 +8,7 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfB
 public import Formalism.LocalToGlobal.ProjectiveLattices.TowerOfAt
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsFormalBiextMap
-public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.PderivSecondEvFirstPointEqZero
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.PderivSecondEvFirstPointEqZero
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ChartLocalDepthLeOfValuedExtensionBound
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonemptyClosedValuedExtensionOfCDVR
 public import Formalism.LocalToGlobal.ProjectiveLattices.SatLeaves
@@ -68,18 +68,19 @@ open GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.LawLog
 section Log
 
 open MvPowerSeries
+open ReciprocityTheory.ChartRestriction.G.TB
 
 variable {C : Type} [Field C] [CharZero C] {d : ℕ}
 
 def logFGLOf (v : AddValuation C (WithTop ℝ)) (G : FGLaw C d)
     (hG : ∀ a, MvIsInt v (subst (twoVars C d) (G.F a))) : LogFGL v d where
-  lg a := subst (oneVar C d) (GlobalTheory.FormalLog.logOf G a)
-  lg_const a := constantCoeff_subst_eq_zero hs_oneVar cc_oneVar (GlobalTheory.FormalLog.constantCoeff_prim _)
+  lg a := subst (oneVar C d) (LogPf.logOf G a)
+  lg_const a := constantCoeff_subst_eq_zero hs_oneVar cc_oneVar (LogPf.constantCoeff_prim _)
   lg_lin a b := by
     rw [coeff_single_oneVar]
-    have h := congrArg constantCoeff (GlobalTheory.FormalLog.pderiv_logOf G a b)
+    have h := congrArg constantCoeff (LogPf.pderiv_logOf G a b)
     rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv, zero_add] at h
-    have h2 := congrFun (congrFun (GlobalTheory.FormalLog.cc_om G) a) b
+    have h2 := congrFun (congrFun (LogPf.cc_om G) a) b
     simp only [Matrix.map_apply, Matrix.one_apply] at h2
     simpa [h2] using h
   F a := subst (twoVars C d) (G.F a)
@@ -96,7 +97,7 @@ def logFGLOf (v : AddValuation C (WithTop ℝ)) (G : FGLaw C d)
     rw [e0, e1, subst_oneVar _ cc_twoVars _ G.const, subst_oneVar _ cc_twoVars _ (hp 0),
       subst_oneVar _ cc_twoVars _ (hp 1), ← subst_add hs_twoVars]
     congr 1
-    exact GlobalTheory.FormalLog.logOf_add G a
+    exact LogPf.logOf_add G a
 
 end Log
 

@@ -361,7 +361,7 @@ theorem tf_trace_data (dual : Bool) {lam : Fin n → ℝ} [CompleteSpace H] {ε 
   have hyG : y ∈ genSub E V := rorth_le_genSub hyV
   have hyC : (y : H) ∈ closGen E V := Submodule.le_topologicalClosure _ ⟨y, hyG, rfl⟩
   exact tf_trace_data_of_closed_stability dual hσ hP hPP hPB hc0 hyV hy0 hd
-    (closGen_stable hσ hD hV hc)
+    (closGen_stable hgap hσ hD hV hc hVK)
     (tf_closure_stable dual hσ hD hsm hgap hV hc hVK hW hP hEP hyG)
     (fun hf => tf_ph_memLp dual hσ hD hsm hgap hV hc hVK hW hyG hf)
     (fun hζ hζ' hm hm' => tensor_functor_separation dual hσ hD hgap hV hc hVK hd hyC hζ hζ' hm hm')

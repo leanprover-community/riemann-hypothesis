@@ -129,7 +129,8 @@ theorem isAddFundamentalDomain_levelDomain :
       algebraMap ℚ (InfiniteAdeleRing ℚ) q' + a.1 := fun _ => rfl
   have hfin : ∀ q' : ℚ, ((algebraMap ℚ 𝔸[ℚ] q' + a : 𝔸[ℚ]).2) = algebraMap ℚ 𝔸ᶠ[ℚ] q' + a.2 :=
     fun _ => rfl
-  have hr : RationalIdeles.realEquiv ((algebraMap ℚ 𝔸[ℚ] q + a : 𝔸[ℚ]).1) ∈ Set.Ico (0 : ℝ) N := by
+  have hr :
+      RationalIdeles.realEquiv ((algebraMap ℚ 𝔸[ℚ] q + a : 𝔸[ℚ]).1) ∈ Set.Ico (0 : ℝ) N := by
     rw [hreal, map_add (f := _), realEquiv_algebraMap]
     have h1 : (m : ℝ) ≤ r / N := Int.floor_le _
     have h2 : r / N < m + 1 := Int.lt_floor_add_one _
@@ -139,37 +140,38 @@ theorem isAddFundamentalDomain_levelDomain :
     constructor <;> nlinarith
   have hf : (algebraMap ℚ 𝔸[ℚ] q + a : 𝔸[ℚ]).2 ∈ levelIdeal N := by
     rw [hfin]
-    have : algebraMap ℚ 𝔸ᶠ[ℚ] q + a.2 = (a.2 + algebraMap ℚ 𝔸ᶠ[ℚ] q₀) - (N : 𝔸ᶠ[ℚ]) * (m : 𝔸ᶠ[ℚ]) := by
+    have : algebraMap ℚ 𝔸ᶠ[ℚ] q + a.2 =
+        (a.2 + algebraMap ℚ 𝔸ᶠ[ℚ] q₀) - (N : 𝔸ᶠ[ℚ]) * (m : 𝔸ᶠ[ℚ]) := by
       simp only [q, map_sub, map_mul, map_natCast, map_intCast]
       ring
     rw [this]
     exact sub_mem_levelIdeal hq₀ (natCast_mul_intCast_mem_levelIdeal N m)
   refine ⟨⟨algebraMap ℚ 𝔸[ℚ] q, q, rfl⟩, ⟨hr, hf⟩, ?_⟩
-  rintro ⟨_, q', rfl⟩ ⟨hr', hf'⟩
-  change RationalIdeles.realEquiv ((algebraMap ℚ 𝔸[ℚ] q' + a : 𝔸[ℚ]).1) ∈ Set.Ico (0 : ℝ) N at hr'
-  change (algebraMap ℚ 𝔸[ℚ] q' + a : 𝔸[ℚ]).2 ∈ levelIdeal N at hf'
-  rw [hreal, map_add (f := _), realEquiv_algebraMap] at hr hr'
-  rw [hfin] at hf hf'
-  have hdiff := sub_mem_levelIdeal hf' hf
-  rw [add_sub_add_right_eq_sub, ← map_sub] at hdiff
-  obtain ⟨m', hm'⟩ := exists_int_of_mem_levelIdeal N hdiff
-  have hm'0 : m' = 0 := by
-    have hmr : ((q' - q : ℚ) : ℝ) = N * m' := by rw [hm']; push_cast; ring
-    push_cast at hmr
-    have hlt : |(N : ℝ) * m'| < N := by
-      rw [← hmr, abs_lt]
-      constructor <;> linarith [hr.1, hr.2, hr'.1, hr'.2]
-    rw [abs_mul, Nat.abs_cast] at hlt
-    have : |(m' : ℝ)| < 1 := by
-      by_contra hc
-      push Not at hc
-      nlinarith
-    have : |m'| < 1 := by exact_mod_cast this
-    exact Int.abs_lt_one_iff.1 this
-  have : q' = q := by
-    rw [hm'0, Int.cast_zero, mul_zero, sub_eq_zero] at hm'
-    exact hm'
-  exact Subtype.ext (by simp only [this])
+  · rintro ⟨_, q', rfl⟩ ⟨hr', hf'⟩
+    change RationalIdeles.realEquiv ((algebraMap ℚ 𝔸[ℚ] q' + a : 𝔸[ℚ]).1) ∈ Set.Ico (0 : ℝ) N at hr'
+    change (algebraMap ℚ 𝔸[ℚ] q' + a : 𝔸[ℚ]).2 ∈ levelIdeal N at hf'
+    rw [hreal, map_add (f := _), realEquiv_algebraMap] at hr hr'
+    rw [hfin] at hf hf'
+    have hdiff := sub_mem_levelIdeal hf' hf
+    rw [add_sub_add_right_eq_sub, ← map_sub] at hdiff
+    obtain ⟨m', hm'⟩ := exists_int_of_mem_levelIdeal N hdiff
+    have hm'0 : m' = 0 := by
+      have hmr : ((q' - q : ℚ) : ℝ) = N * m' := by rw [hm']; push_cast; ring
+      push_cast at hmr
+      have hlt : |(N : ℝ) * m'| < N := by
+        rw [← hmr, abs_lt]
+        constructor <;> linarith [hr.1, hr.2, hr'.1, hr'.2]
+      rw [abs_mul, Nat.abs_cast] at hlt
+      have : |(m' : ℝ)| < 1 := by
+        by_contra hc
+        push Not at hc
+        nlinarith
+      have : |m'| < 1 := by exact_mod_cast this
+      exact Int.abs_lt_one_iff.1 this
+    have : q' = q := by
+      rw [hm'0, Int.cast_zero, mul_zero, sub_eq_zero] at hm'
+      exact hm'
+    exact Subtype.ext (by simp only [this])
 
 
 instance isAddHaarMeasure_map_realHomeomorph :

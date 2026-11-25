@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergStableRelationOfVacua
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocIsoRefl
 public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
@@ -232,15 +233,7 @@ theorem locCo_form {W : Type} [AddCommGroup W] [Module (AF F) W]
 theorem locCo_surj {W : Type} [AddCommGroup W] [Module (AF F) W]
     {B : W → W → AF F} {κ : Type} [Fintype κ] (co : Darboux B κ) (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F))
     (w : (κ → Fv F v) × (κ → Fv F v)) : ∃ u : W, At (evFin F v) u ∧ GlobalTheory.LatVac.locCo co v u = w := by
-  refine ⟨co.e.symm (fun k => GlobalTheory.LatVac.liftV v (w.1 k), fun k => GlobalTheory.LatVac.liftV v (w.2 k)), ?_, ?_⟩
-  · intro a ha
-    rw [← LinearEquiv.map_smul, ← co.e.symm.map_zero]
-    congr 1
-    refine Prod.ext (funext fun k => ?_) (funext fun k => ?_)
-    · exact GlobalTheory.LatVac.at_liftV v _ a ha
-    · exact GlobalTheory.LatVac.at_liftV v _ a ha
-  · refine Prod.ext (funext fun k => ?_) (funext fun k => ?_) <;>
-      simp [GlobalTheory.LatVac.locCo, GlobalTheory.LatVac.evFin_liftV]
+  apply _root_.GlobalTheory.InductLagr.exists_at_locCo <;> assumption
 
 theorem at_symp (σ : E →ₐ[F] E) {n d : ℕ} (JA : Matrix (Fin n) (Fin n) (AE F E)) (JB : Matrix (Fin d) (Fin d) (AE F E))
     {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} (x u : Matrix (Fin n) (Fin d) (AE F E)) (hx : At (evFin F v) x) :

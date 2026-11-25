@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.TorusConjugacy
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.FramesTor
 import Mathlib.Algebra.Order.Floor.Extended
@@ -186,17 +187,8 @@ theorem Hpk_outer (i j p : Fin (2 * r + k + 1)) (hj : j.val < r ∨ r + k < j.va
 theorem UW_row {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) (i j : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :
     h i j = if j = i then 1 else 0 := by
-  have hi0 := i.isLt
-  let q : Fin (2 * r + k + 1) := ⟨2 * r + k - i.val, by omega⟩
-  have hq : q.val < r ∨ r + k < q.val := by show 2 * r + k - i.val < r ∨ r + k < 2 * r + k - i.val; omega
-  have hiq : i.val + q.val = 2 * r + k := by show i.val + (2 * r + k - i.val) = _; omega
-  have hU : hᴴ * Hpk k r * h = Hpk k r := hh.1
-  have := congrFun (congrFun hU q) j
-  rw [Hpk_outer i q j hq hiq, Matrix.mul_assoc, Matrix.mul_apply] at this
-  simp only [Matrix.conjTranspose_apply, UW_col hh _ q hq] at this
-  rw [Finset.sum_eq_single q (fun b _ hb => by simp [hb]) (by simp), Matrix.mul_apply] at this
-  simp only [Hpk_outer i q _ hq hiq] at this
-  simpa using this
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.BmuTorConj.uw_row <;> assumption
 
 theorem dS_comm (l : ℂ) {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) : diagonal (dS k r l) * h = h * diagonal (dS k r l) := by

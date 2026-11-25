@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumMultPullbackRationalSectionPushforward
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsLogMult
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,19 +56,7 @@ namespace GlobalTheory.Discrepancy.MultIso
 
 theorem ord_ringEquiv {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B) (a : A) :
     Ring.ord B (e a) = Ring.ord A a := by
-  have : RingHomSurjective (e : A →+* B) := ⟨e.surjective⟩
-  have hIJ : Ideal.span {e a} = (Ideal.span {a}).map (e : A →+* B) := by
-    rw [Ideal.map_span, Set.image_singleton]; rfl
-  let q := Ideal.quotientEquiv (Ideal.span {a}) (Ideal.span {e a}) e hIJ
-  let f : (A ⧸ Ideal.span {a}) →ₛₗ[(e : A →+* B)] (B ⧸ Ideal.span {e a}) :=
-    { toFun := q
-      map_add' := q.map_add
-      map_smul' := fun r x => by
-        obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
-        show q (Ideal.Quotient.mk _ (r * y)) = Ideal.Quotient.mk _ (e r) * q (Ideal.Quotient.mk _ y)
-        rw [Ideal.quotientEquiv_mk, Ideal.quotientEquiv_mk, map_mul, map_mul] }
-  rw [Ring.ord, Ring.ord, Module.length, Module.length, WithBot.unbot_inj,
-    Order.krullDim_eq_of_orderIso (Submodule.orderIsoMapComapOfBijective f q.bijective)]
+  apply _root_.GlobalTheory.OrdPull.ord_ringEquiv <;> assumption
 
 theorem ordFrac_ringEquiv {A B K L : Type} [CommRing A] [CommRing B] [IsDomain A] [IsDomain B]
     [IsNoetherianRing A] [IsNoetherianRing B] [Ring.KrullDimLE 1 A] [Ring.KrullDimLE 1 B]

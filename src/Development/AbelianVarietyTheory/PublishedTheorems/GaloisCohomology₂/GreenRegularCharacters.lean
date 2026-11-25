@@ -58,13 +58,7 @@ map `θ ↦ τ θ` to functions on `GL_d(𝔽_g)` such that:
   is irreducible with a root `z ∈ Kˣ` it takes the value
   `(-1) ^ (d - 1) * (θ z + θ (z ^ g) + ⋯ + θ (z ^ (g ^ (d - 1))))`;
 * for regular `θ` and `θ'`, `τ θ = τ θ'` exactly when `θ' = θ ^ (g ^ i)` for some `i < d`;
-* every irreducible cuspidal character of `GL_d(𝔽_g)` is `τ θ` for some regular `θ`.
-
-Green's theorem covers `GL_d(𝔽_q)` for every prime power `q`; the Lean statement is the case
-where `q = g` is prime.
-
-Proposed reference:
-[J. A. Green, *The characters of the finite general linear groups*][green1955]. -/
+* every irreducible cuspidal character of `GL_d(𝔽_g)` is `τ θ` for some regular `θ`. -/
 def GreenRegularCharacters : Prop :=
   ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d → ∀ (K : Type) [Field K] [Algebra (ZMod g) K], Module.finrank (ZMod g) K = d →
     ∃ τ : (Kˣ →* ℂˣ) → Gn g d → ℂ,

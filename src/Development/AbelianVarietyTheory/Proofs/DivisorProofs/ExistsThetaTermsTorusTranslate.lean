@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedSumExponentsDifferAffineTwoMembersStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsActIffIsDiagEnd
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFrameRatio
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFramesOnUniformisedModelFibre
@@ -70,31 +71,7 @@ theorem exists_frAt_ratio {R : Type} [CommRing R] [IsDomain R] {A : PolAV (Spec 
     {K : Type} [Field K] [Algebra (FractionRing R) K] {x : TFK (R := R) K ⟶ A.A} {e e' : FrAt x} (he : e.IsGen)
     (he' : e'.IsGen) : ∃ c : K, c ≠ 0 ∧ ∀ z J, Good A.L z J → (val e' (𝟙 _) z J).val =
       @id ((TFK (R := R) K).left.presheaf.stalk z) (cstH (R := R) z c) * (val e (𝟙 _) z J).val := by
-  classical
-  obtain ⟨z₀⟩ := exists_pt (R := R) (F := K)
-  obtain ⟨J₀, hJ₀⟩ := exists_good' A.isLB (z₀ : (TFK (R := R) K).left)
-  set u := val e' (𝟙 _) z₀ J₀ * (val e (𝟙 _) z₀ J₀)⁻¹ with hu
-  obtain ⟨c, hc⟩ := cstH_surj (R := R) z₀ u.val
-  refine ⟨c, ?_, ?_⟩
-  · rintro rfl
-    rw [map_zero] at hc
-    have h1 : (1 : (TF (R := R) K).left.presheaf.stalk z₀) = 0 := by
-      rw [← u.val_inv, ← hc, zero_mul]
-    have := cstH_inj (R := R) z₀ (show cstH (R := R) z₀ 1 = cstH (R := R) z₀ 0 by rw [map_one, map_zero]; exact h1)
-    exact one_ne_zero this
-  · intro z J hJ
-    obtain rfl := pt_eq (R := R) (F := K) z z₀
-    have h1 := val_tr he' (𝟙 _) hJ hJ₀
-    have h2 := val_tr he (𝟙 _) hJ hJ₀
-    have hcomm : ∀ (y : (TFK (R := R) K).left) (P a b : ((TFK (R := R) K).left.presheaf.stalk y)ˣ),
-        P * a = a * b⁻¹ * (P * b) := by
-      intro y P a b
-      rw [_root_.mul_comm P b, ← _root_.mul_assoc, inv_mul_cancel_right, _root_.mul_comm]
-    have key : val e' (𝟙 _) z J = u * val e (𝟙 _) z J := by
-      rw [h1, h2, hu]
-      exact hcomm _ _ _ _
-    show _ = cstH (R := R) z c * _
-    rw [key, Units.val_mul, hc]
+  apply _root_.GlobalTheory.GSep.TermsExt.exists_frAt_ratio <;> assumption
 
 theorem over_scale {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}} {i : F.X ⟶ Z}
     {X₁ : Setup F W i} {z₁ : X₁.M.Z} {act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)}

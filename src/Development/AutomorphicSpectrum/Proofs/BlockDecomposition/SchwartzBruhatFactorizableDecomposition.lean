@@ -64,43 +64,6 @@ open scoped Topology
 variable {F : Type} [Field F] [NumberField F]
 variable {E : Type} [Field E] [Algebra F E] [FiniteDimensional F E] {d : ℕ} (b : Module.Basis (Fin d) F E)
 
-def lvN (v : HeightOneSpectrum (𝓞 F)) (P : AddSubgroup (Fv F v)) (n M : ℕ) :
-    AddSubgroup (Fin n → Fin M → Fv F v ⊗[F] E) where
-  carrier := {Z | ∀ a i k, crd b (Fv F v) (Z a i) k ∈ P}
-  add_mem' hx hy a i k := by
-    rw [Pi.add_apply, Pi.add_apply, crd_add]
-    exact add_mem (hx a i k) (hy a i k)
-  zero_mem' a i k := by
-    rw [Pi.zero_apply, Pi.zero_apply, crd_zero]
-    exact zero_mem P
-  neg_mem' hx a i k := by
-    rw [Pi.neg_apply, Pi.neg_apply, crd_neg]
-    exact neg_mem (hx a i k)
-
-theorem isClopen_lvN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) (n M : ℕ) :
-    IsClopen (lvN b v (P : AddSubgroup (Fv F v)) n M : Set (Fin n → Fin M → Fv F v ⊗[F] E)) := by
-  apply _root_.GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box.isClopen_lvN
-
-theorem isCompact_lvN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) (hP : P ≤ intSub v) (n M : ℕ) :
-    IsCompact (lvN b v (P : AddSubgroup (Fv F v)) n M : Set (Fin n → Fin M → Fv F v ⊗[F] E)) := by
-  apply _root_.GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box.isCompact_lvN <;> assumption
-
-theorem projV_subN (v : HeightOneSpectrum (𝓞 F)) {n M : ℕ} (X Y : Fin n → Fin M → Af F ⊗[F] E) :
-    projV v (X - Y) = projV v X - projV v Y := by
-  apply _root_.GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box.projV_subN
-
-def cosVN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) {n M : ℕ}
-    (a : Fin n → Fin M → Fv F v ⊗[F] E) : Set (Fin n → Fin M → Fv F v ⊗[F] E) :=
-  {Z | Z - a ∈ lvN b v (P : AddSubgroup (Fv F v)) n M}
-
-theorem isCompact_isOpen_cosVN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) (hP : P ≤ intSub v)
-    {n M : ℕ} (a : Fin n → Fin M → Fv F v ⊗[F] E) : IsCompact (cosVN b v P a) ∧ IsOpen (cosVN b v P a) := by
-  apply _root_.GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box.isCompact_isOpen_cosVN <;> assumption
-
-theorem cosVN_intSub (v : HeightOneSpectrum (𝓞 F)) {n M : ℕ} {a : Fin n → Fin M → Fv F v ⊗[F] E}
-    (ha : a ∈ latV b v) : cosVN b v (intSub v) a = latV b v := by
-  apply _root_.GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box.cosVN_intSub <;> assumption
-
 theorem exists_box_combN {n M : ℕ} (g : (Fin n → Fin M → Af F ⊗[F] E) → ℂ) (hg : IsSB g) :
     ∃ (s : Finset (Fin n → Fin M → Af F ⊗[F] E))
       (A : (Fin n → Fin M → Af F ⊗[F] E) → ∀ v : HeightOneSpectrum (𝓞 F), Set (Fin n → Fin M → Fv F v ⊗[F] E))

@@ -407,10 +407,6 @@ structure ChainArgs (K : Type) [Field K] [NumberField K] (J : Type) (nZ : J → 
 
   ad : ℕ → ℝ
 
-def ChainArgs.ofObj {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df}
-    {P : Type} [Group P] [Finite P] {c : OnConst} (O : OnObj S P c) : ChainArgs K Bs.J O.nZ :=
-  { O with }
-
 section Objects
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

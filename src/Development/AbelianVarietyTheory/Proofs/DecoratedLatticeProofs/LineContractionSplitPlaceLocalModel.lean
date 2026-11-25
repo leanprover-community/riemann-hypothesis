@@ -570,7 +570,7 @@ variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
   (p : Place D k)
 
 theorem incA_mul_ι (b : D.host.E) (x : k) : incA D b * p.ι x = p.ι (p.pr b * x) := by
-  exact GlobalTheory.LocMod.BoxModel.incA_mul_ι p b x
+  apply _root_.GlobalTheory.LineRowFrame.incA_mul_ι <;> assumption
 
 theorem map_rat_mul_ι {a b c : Type} [Fintype b] (N : Matrix a b D.host.E) (M : Matrix b c k) :
     N.map (incA D) * M.map p.ι = (N.map p.pr * M).map p.ι := by
@@ -591,7 +591,7 @@ theorem core_β {ρ : ℕ} (B : BesLev D ρ) {s : k} (FA : Frame k B.A.rank n') 
 theorem core_qA {ρ : ℕ} (B : BesLev D ρ) {s : k} (FA : Frame k B.A.rank n') (F₀ : Frame k B.V₀.rank (n' ⊕ Unit))
     (h : p.IsCoreFrame B s FA F₀) :
     FA.γ * B.o.qA.map p.pr * F₀.β = fromCols (1 : Matrix n' n' k) (0 : Matrix n' Unit k) := by
-  exact GlobalTheory.ContrModL.core_qA p B FA F₀ h
+  first | exact _root_.GlobalTheory.ContrModL.core_qA | exact @_root_.GlobalTheory.ContrModL.core_qA | apply _root_.GlobalTheory.ContrModL.core_qA <;> assumption
 
 end SlopeTestRemainingChoices
 

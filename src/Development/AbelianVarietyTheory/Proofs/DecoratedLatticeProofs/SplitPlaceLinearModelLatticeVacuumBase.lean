@@ -362,7 +362,7 @@ theorem idOff_mul_eq_zero {v : Pl D} {ε : AF D.host.F} (hε : IsPlaceIdem D v �
     (hx : x ∈ idOff D (· = v)) (hy : algebraMap (AF D.host.F) (AE D) ε * y = y) : x * y = 0 := by
   classical
   obtain ⟨α, hεα, hv, hw⟩ := hε
-  obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D ε α hεα
+  obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D v ε α hεα
   have hc' : ∀ w, compAt D w (algebraMap (AF D.host.F) (AE D) ε) = if w = v then 1 else 0 := by
     intro w
     rw [hc w]
@@ -384,7 +384,7 @@ theorem supp_of_mem {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
     | mem w hw =>
       obtain ⟨α, -, hα0, a, -, s, -, t, -, rfl⟩ := hw
       have hmem : algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 α) ∈ idAt D (· = p.v) := by
-        obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D _ α rfl
+        obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D p.v _ α rfl
         rw [mem_supportedOnPlacesIdeal_iff_components_zero_elsewhere]
         exact ⟨h0, fun w hw => by rw [hc w, hα0 w hw, TensorProduct.zero_tmul]⟩
       rw [Matrix.of_apply]

@@ -56,7 +56,7 @@ def WitOff (u : Plc (Lp F)) (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) 
     ∀ π : CuspSub F n, (CG.mk π).IsRegAlg → AttC ι r π → ∃ t : ℝ, ∀ v : Plc F, v.under (𝓞 (Lp F)) ≠ u →
       (((l : ℕ) : 𝓞 F) ∉ v.asIdeal ∨ PotUnl r v) → WinAt π t v
 
-def AutOff (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop := IsAutCsd ι r
+def AutOff (_u : Plc (Lp F)) (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop := IsAutCsd ι r
 
 def AutOffN (u : Plc (Lp F)) (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop :=
   AutCsd0 ι r ∧ (Continuous r → WitOff u ι r)
@@ -92,7 +92,7 @@ def IrrArithPointsAutomorphicAway : Prop :=
 variable {B ι J}
 
 theorem end2o (_ : r.V0ok) (H : B.arithmeticPointClassicality ι J) (x : B.Pt) (h : s.Wt n) (ρ : G L Ω →* GL (Fin n) (Qbar l)) :
-    J ≤ RingHom.ker x → x.Arith h → x.IsRep ρ → Af.IsIrr ρ → AutOff ι ρ := H x h ρ
+    J ≤ RingHom.ker x → x.Arith h → x.IsRep ρ → Af.IsIrr ρ → AutOff s.v0 ι ρ := H x h ρ
 theorem end2oN (_ : r.V0ok) (H : IrrArithPointsAutomorphicAway B ι J) (x : B.Pt) (h : s.Wt n) (ρ : G L Ω →* GL (Fin n) (Qbar l)) :
     J ≤ RingHom.ker x → x.Arith h → x.IsRep ρ → Af.IsIrr ρ → AutOffN s.v0 ι ρ := H x h ρ
 

@@ -513,8 +513,6 @@ open UpperTheory.V.W (Plc Lp)
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-attribute [-instance] UpperTheory.V.Z.Sym.Glob.rpMul UpperTheory.V.Z.Sym.Glob.rpInv
-
 theorem UpperTheory.V.Z.Sym.Dict.Br.integral_congr_of_forall_above :
     ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (B : Bridge L), ∀ (y : DA B.Δ) (m₀ : ℕ), m₀ ≠ 0 → ∃ m : ℕ, m ≠ 0 ∧ ∀ (g : SA B.Δ) (v : Pl (Lp L)), (∀ w, un w = v → ∀ i j, ∃ a ∈ w.adicCompletionIntegers L, (mL w (B.bS g : UA L 2) - 1) i j = (m : Kw w) * a) → ∀ i j, ∃ a, IsIntegral (Ov v) a ∧ (mt ((y⁻¹ * g * y : DA B.Δ).1 v) - 1) i j = (m₀ : Lsq (Kv v) (cv v B.Δ)) * a := by
   intro L _ _ _ B y m₀ hm₀

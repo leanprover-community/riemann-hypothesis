@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BigRouteKernelEqConstMulThetaStatement
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareStanding
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicWeilRepUnitaryPairSchroedingerModelStatement
@@ -72,15 +73,7 @@ theorem isHecke_div {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F 
 theorem resEtaPow_div {R E : Type} [CommRing R] [CommRing E] [Algebra R E] {K : Subgroup Rˣ}
     {χ χ' : Eˣ →* Circle} {n m : ℕ} (h : GlobalTheory.WeilM.ResEtaPow K χ n) (h' : GlobalTheory.WeilM.ResEtaPow K χ' m) :
     GlobalTheory.WeilM.ResEtaPow K (χ / χ') (n + m) := by
-  intro a
-  have e1 := h a
-  have e2 := h' a
-  simp only [MonoidHom.div_apply, Circle.coe_div] at *
-  rw [e1, e2]
-  split_ifs
-  · simp
-  · have hm : ((-1 : ℂ) ^ m) * ((-1 : ℂ) ^ m) = 1 := by rw [← pow_add, ← two_mul, pow_mul]; simp
-    rw [div_eq_iff (by simp), pow_add, mul_assoc, hm, mul_one]
+  apply _root_.GlobalTheory.BigKernel.resEtaPow_div <;> assumption
 
 end GlobalTheory.WeilTripleW
 

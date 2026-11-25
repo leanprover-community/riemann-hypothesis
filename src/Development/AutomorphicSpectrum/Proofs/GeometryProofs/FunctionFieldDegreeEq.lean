@@ -105,7 +105,8 @@ theorem finite_closure (k K A : Type) [Field k] [Field K] [CommRing A] [IsDomain
     fun _ => rfl
   have hfs : FaithfulSMul (Algebra.EssFiniteType.subalgebra k A) K := by
     rw [faithfulSMul_iff_algebraMap_injective]
-    exact fun a b h => Subtype.ext (hinj h)
+    intro a b h
+    exact Subtype.ext (hinj h)
   have hfr : IsFractionRing (Algebra.EssFiniteType.subalgebra k A) K := by
     refine IsFractionRing.of_field _ K fun z => ?_
     obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := A) z
@@ -135,7 +136,8 @@ theorem finite_closure (k K A : Type) [Field k] [Field K] [CommRing A] [IsDomain
   have : (integralClosure A K).toSubmodule.FG := by
     refine ⟨t, le_antisymm ?_ ?_⟩
     · rw [Submodule.span_le]
-      exact fun x hx => ((hmem x).2 (Submodule.subset_span hx)).tower_top
+      intro x hx
+      exact ((hmem x).2 (Submodule.subset_span hx)).tower_top
     · intro x hx
       have hx' : IsIntegral A x := hx
       obtain ⟨m, hm⟩ := hx'.exists_multiple_integral_of_isLocalization
@@ -145,7 +147,8 @@ theorem finite_closure (k K A : Type) [Field k] [Field K] [CommRing A] [IsDomain
       have hu : IsUnit ((m.1 : Algebra.EssFiniteType.subalgebra k A) : A) := m.2
       obtain ⟨u, hu⟩ := hu
       have h2 : (u : A) • x ∈ Submodule.span A (t : Set K) := by
-        rwa [hu]
+        rw [hu]
+        exact h1
       have h3 := Submodule.smul_mem _ ((u⁻¹ : Aˣ) : A) h2
       rwa [smul_smul, Units.inv_mul, one_smul] at h3
   exact Module.Finite.iff_fg.2 this
@@ -286,7 +289,8 @@ theorem deg_ofHeightOneSpectrum (B : Type) [CommRing B] [IsDedekindDomain B] [Al
     obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective x
     refine ⟨b, ?_⟩
     rw [hres]
-    rwa [IsLocalization.AtPrime.equivQuotMaximalIdeal_apply_mk] at hx
+    rw [IsLocalization.AtPrime.equivQuotMaximalIdeal_apply_mk] at hx
+    exact hx
   exact deg_eq_of_surjective B (Place.ofHeightOneSpectrum B hk P) hv P.asIdeal hp hs
 
 private theorem length_quotient_pow_eq_mul_inertiaDeg {A B : Type} [CommRing A] [IsLocalRing A] [CommRing B]
@@ -302,7 +306,8 @@ private theorem length_quotient_pow_eq_mul_inertiaDeg {A B : Type} [CommRing A] 
     simp
   | succ n ih =>
     obtain ⟨a, ha, hna⟩ : ∃ a ∈ P ^ n, a ∉ P ^ (n + 1) := by
-      by_contra! h
+      by_contra h
+      push_neg at h
       exact (Ideal.pow_succ_lt_pow hP n).not_ge h
     let φ : (B ⧸ P) →ₗ[B] (B ⧸ P ^ (n + 1)) :=
       Submodule.mapQ P (P ^ (n + 1)) (LinearMap.mulLeft B a) (by
@@ -360,92 +365,14 @@ private theorem length_quotient_pow_eq_mul_inertiaDeg {A B : Type} [CommRing A] 
     push_cast
     ring
 
-private theorem valuation_eq_of_isEquiv_of_uniformizers {K : Type} [Field K]
-    (v w : Valuation K (WithZero (Multiplicative ℤ))) (h : v.IsEquiv w)
-    (π : K) (hπ : v π = WithZero.exp (-1)) (ρ : K) (hρ : w ρ = WithZero.exp (-1)) :
-    v = w := by
-  have key : ∀ x y : K, v x = v y → w x = w y := fun x y hxy => (Valuation.IsEquiv.eq_iff h).mp hxy
-  have hπ0 : π ≠ 0 := by
-    rintro rfl
-    rw [map_zero] at hπ
-    exact WithZero.exp_ne_zero hπ.symm
-  have hexp : ∀ (c : ℤ) (a : ℤ), (WithZero.exp c) ^ a = WithZero.exp (a * c) := by
-    intro c a
-    rw [← WithZero.exp_zsmul, smul_eq_mul]
-  have hvπ : ∀ a : ℤ, v (π ^ a) = WithZero.exp (-a) := by
-    intro a
-    rw [map_zpow₀, hπ, hexp]
-    ring_nf
-  have hwπ0 : w π ≠ 0 := (Valuation.ne_zero_iff w).mpr hπ0
-  have hwπ : w π = WithZero.exp (WithZero.log (w π)) := (WithZero.exp_log hwπ0).symm
-  have hρ0 : ρ ≠ 0 := by
-    rintro rfl
-    rw [map_zero] at hρ
-    exact WithZero.exp_ne_zero hρ.symm
-  have hvρ : v ρ = WithZero.exp (WithZero.log (v ρ)) :=
-    (WithZero.exp_log ((Valuation.ne_zero_iff v).mpr hρ0)).symm
-  have h1 : w ρ = w (π ^ (-WithZero.log (v ρ))) := key _ _ (by rw [hvπ, neg_neg]; exact hvρ)
-  rw [hρ, map_zpow₀, hwπ, hexp, WithZero.exp_inj] at h1
-  have hc : WithZero.log (w π) = 1 ∨ WithZero.log (w π) = -1 := by
-    have hm : WithZero.log (w π) * WithZero.log (v ρ) = 1 := by linear_combination h1
-    exact Int.eq_one_or_neg_one_of_mul_eq_one hm
-  have hc' : WithZero.log (w π) = -1 := by
-    rcases hc with hc | hc
-    · exfalso
-      have hle : v π ≤ v 1 := by
-        rw [hπ, map_one, ← WithZero.exp_zero, WithZero.exp_le_exp]
-        norm_num
-      have hle' := (h π 1).mp hle
-      rw [hwπ, hc, map_one, ← WithZero.exp_zero, WithZero.exp_le_exp] at hle'
-      norm_num at hle'
-    · exact hc
-  ext x
-  by_cases hx : x = 0
-  · simp [hx]
-  have hvx : v x = WithZero.exp (WithZero.log (v x)) :=
-    (WithZero.exp_log ((Valuation.ne_zero_iff v).mpr hx)).symm
-  have h2 : w x = w (π ^ (-WithZero.log (v x))) := key _ _ (by rw [hvπ, neg_neg]; exact hvx)
-  rw [h2, map_zpow₀, hwπ, hexp, hc', hvx, WithZero.log_exp]
-  ring_nf
-
-private theorem place_valuation_valuationSubring_eq_ring {k K : Type} [Field k] [Field K] [Algebra k K]
-    [IsFunctionField k K] (v : Place k K) : v.valuation.valuationSubring = v.ring := by
-  ext x
-  rw [Valuation.mem_valuationSubring_iff]
-  by_cases hx : x = 0
-  · simpa only [hx, map_zero, zero_le', true_iff] using v.ring.zero_mem
-  · rw [← v.ord_nonneg_iff hx, Place.ord]
-    have hne : v.valuation x ≠ 0 := (Valuation.ne_zero_iff _).mpr hx
-    conv_lhs => rw [← WithZero.exp_log hne]
-    rw [← WithZero.exp_zero, WithZero.exp_le_exp]
-    omega
-
-private theorem ofHeightOneSpectrum_valuation_eq {k K B : Type} [Field k] [Field K] [Algebra k K]
-    [IsFunctionField k K] [CommRing B] [IsDedekindDomain B] [Algebra B K] [IsFractionRing B K]
-    (hk : ∀ c : k, algebraMap k K c ∈ (algebraMap B K).range) (P : HeightOneSpectrum B) :
-    (Place.ofHeightOneSpectrum B hk P).valuation = P.valuation K := by
-  set v := Place.ofHeightOneSpectrum B hk P with hv
-  obtain ⟨π, hπ⟩ := v.exists_ord_eq_one
-  have hπ0 : π ≠ 0 := by
-    rintro rfl
-    rw [v.ord_zero] at hπ
-    exact zero_ne_one hπ
-  obtain ⟨ρ, hρ⟩ := P.valuation_exists_uniformizer K
-  refine valuation_eq_of_isEquiv_of_uniformizers _ _ ?_ π ?_ ρ hρ
-  · rw [Valuation.isEquiv_iff_valuationSubring, place_valuation_valuationSubring_eq_ring,
-      ← HeightOneSpectrum.valuationSubringAtPrime_eq_valuationSubring]
-  · have hne : v.valuation π ≠ 0 := (Valuation.ne_zero_iff _).mpr hπ0
-    rw [← WithZero.exp_log hne, WithZero.exp_inj]
-    rw [Place.ord] at hπ
-    omega
-
 private theorem ofHeightOneSpectrum_ord_eq_count {k K B : Type} [Field k] [Field K] [Algebra k K]
     [IsFunctionField k K] [CommRing B] [IsDedekindDomain B] [Algebra B K] [IsFractionRing B K]
     (hk : ∀ c : k, algebraMap k K c ∈ (algebraMap B K).range) (P : HeightOneSpectrum B)
     (b : B) (hb : b ≠ 0) :
     (Place.ofHeightOneSpectrum B hk P).ord (algebraMap B K b) =
       ((Associates.mk P.asIdeal).count (Associates.mk (Ideal.span {b})).factors : ℤ) := by
-  rw [Place.ord, ofHeightOneSpectrum_valuation_eq, HeightOneSpectrum.valuation_of_algebraMap,
+  rw [Place.ord, Place.valuation_ofHeightOneSpectrum B hk P,
+    HeightOneSpectrum.valuation_of_algebraMap,
     HeightOneSpectrum.intValuation_if_neg _ hb, WithZero.log_exp, neg_neg]
 
 private theorem length_quotient_eq_sum_count_mul_inertiaDeg {A B : Type} [CommRing A] [IsLocalRing A] [CommRing B]
@@ -457,7 +384,8 @@ private theorem length_quotient_eq_sum_count_mul_inertiaDeg {A B : Type} [CommRi
   let e : HeightOneSpectrum B → ℕ := fun P => (Associates.mk P.asIdeal).count (Associates.mk I).factors
   have hprod : ∏ P, P.asIdeal ^ e P = I := by
     have h := Ideal.finprod_heightOneSpectrum_factorization hI
-    rwa [finprod_eq_prod_of_fintype] at h
+    rw [finprod_eq_prod_of_fintype] at h
+    exact h
   let φ := HeightOneSpectrum.quotientEquivPiOfProdEq I (fun P => P) e (fun _ _ h => h) hprod
   let ψ : (B ⧸ I) ≃ₗ[A] (∀ P : HeightOneSpectrum B, B ⧸ P.asIdeal ^ e P) :=
     { φ.toAddEquiv with
@@ -625,7 +553,8 @@ theorem length_places (A B : Type) [CommRing A] [IsDomain A] [Algebra k A] [Alge
     show P.asIdeal ∣ Ideal.span {algebraMap A B a0}
     rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
     have h1 : a0 ∈ P.asIdeal.comap (algebraMap A B) := by
-      rwa [hover P]
+      rw [hover P]
+      exact ha0m
     exact h1
   haveI : Fintype (HeightOneSpectrum B) := Fintype.ofFinite _
   have hlenfin : ∀ I : Ideal B, I ≠ ⊥ → Module.length A (B ⧸ I) ≠ ⊤ := by
@@ -662,11 +591,13 @@ theorem length_places (A B : Type) [CommRing A] [IsDomain A] [Algebra k A] [Alge
     have hq : Function.Surjective q :=
       (Submodule.factor_surjective hle).comp (LinearEquiv.surjective _)
     have hspan : Ideal.span {algebraMap A B c} ≠ ⊥ := by
-      rwa [Ne, Ideal.span_singleton_eq_bot]
+      rw [Ne, Ideal.span_singleton_eq_bot]
+      exact hc0
     exact ne_top_of_le_ne_top (hlenfin _ hspan) (Module.length_le_of_surjective q hq)
   have hX := length_quotient_span_eq_of_finite_length_coker hAB f hg0 hfin
   have hspan : Ideal.span {algebraMap A B f} ≠ ⊥ := by
-    rwa [Ne, Ideal.span_singleton_eq_bot]
+    rw [Ne, Ideal.span_singleton_eq_bot]
+    exact hg0
   have hY := length_quotient_eq_sum_count_mul_inertiaDeg (A := A) (Ideal.span {algebraMap A B f}) hspan
   rw [hX, hY, ← Nat.cast_sum, ENat.toNat_coe]
   set φ : HeightOneSpectrum B → Place k K := fun P => Place.ofHeightOneSpectrum B hk P with hφ
@@ -684,22 +615,21 @@ theorem length_places (A B : Type) [CommRing A] [IsDomain A] [Algebra k A] [Alge
     ext v
     constructor
     · rintro ⟨h1, _⟩
-      have hA' : ∀ a : A, algebraMap A K a ∈ v.ring := by
-        intro a
-        rw [← place_valuation_valuationSubring_eq_ring v]
-        exact h1 a
+      have hA' : ∀ a : A, algebraMap A K a ∈ v.ring :=
+        fun a => (v.valuation_le_one_iff _).1 (h1 a)
       have hB' : ∀ b : B, algebraMap B K b ∈ v.ring := algebraMap_mem_place_ring_of_isIntegral v hA'
       exact ⟨Place.center B v hB', Place.ofHeightOneSpectrum_center B hk v hB'⟩
     · rintro ⟨P, rfl⟩
       refine ⟨fun a => ?_, fun a ha => ?_⟩
       · simp only [φ]
-        rw [ofHeightOneSpectrum_valuation_eq, IsScalarTower.algebraMap_apply A B K]
+        rw [Place.valuation_ofHeightOneSpectrum B hk P, IsScalarTower.algebraMap_apply A B K]
         exact HeightOneSpectrum.valuation_le_one _ _
       · simp only [φ]
-        rw [ofHeightOneSpectrum_valuation_eq, IsScalarTower.algebraMap_apply A B K,
+        rw [Place.valuation_ofHeightOneSpectrum B hk P, IsScalarTower.algebraMap_apply A B K,
           HeightOneSpectrum.valuation_lt_one_iff_mem]
         have h2 : a ∈ P.asIdeal.comap (algebraMap A B) := by
-          rwa [hover P]
+          rw [hover P]
+          exact ha
         exact h2
   rw [hS, finsum_mem_range hφinj, finsum_eq_sum_of_fintype]
   push_cast
@@ -1537,7 +1467,9 @@ theorem block_sum (local_term : ∀ (w : (Σ k, J k) → K), Birational w → �
     by_contra hvU
     exact hv (by simp [hS1 v hvU])
   have hF2 : (Function.support fun v : Place (ZMod p) K => (v.deg : ℤ) * WithZero.log (v.valuation (w ⟨k, c⟩))).Finite := by
-    exact (hfin _ hc).subset fun v hv => fun h => hv (by simp [h])
+    refine (hfin _ hc).subset fun v hv => ?_
+    intro h
+    exact hv (by simp [h])
   calc _ = ∑ᶠ W ∈ divSupp (mCoordIdeal w) (X ⟨k, c⟩), ∑ᶠ v ∈ {v : Place (ZMod p) K | Dom v w W}, f v :=
         finsum_mem_congr rfl hmain
     _ = ∑ᶠ v ∈ ⋃ W ∈ divSupp (mCoordIdeal w) (X ⟨k, c⟩), {v : Place (ZMod p) K | Dom v w W}, f v :=

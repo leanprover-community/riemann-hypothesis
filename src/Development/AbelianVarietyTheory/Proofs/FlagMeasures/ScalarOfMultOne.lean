@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjugateUnitaryKTypeSameWeight
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IndefiniteUnitaryPreservesForm
 import Mathlib.Algebra.Order.Floor.Extended
@@ -79,18 +80,11 @@ lemma UJ_star {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (h : g ∈ 
   show (g.map star)ᴴ * Formalism.REAL.Jm ε * g.map star = Formalism.REAL.Jm ε
   have e := congrArg (fun m : Matrix (Fin n) (Fin n) ℂ => m.map star) h'
   simp only [map_star_mul, Jm_star] at e
-  rwa [map_star_ct]
+  rw [map_star_ct]
+  exact e
 
 lemma K_star {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (h : g ∈ Kset ε) : g.map star ∈ Kset ε := by
-  have h' : g ∈ Matrix.unitaryGroup (Fin n) ℂ ∧ g * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * g := h
-  obtain ⟨hu, hc⟩ := h'
-  refine ⟨?_, ?_⟩
-  · rw [Matrix.mem_unitaryGroup_iff] at hu ⊢
-    have e := congrArg (fun m : Matrix (Fin n) (Fin n) ℂ => m.map star) hu
-    simp only [map_star_mul, map_star_one, Matrix.star_eq_conjTranspose] at e
-    rwa [Matrix.star_eq_conjTranspose, map_star_ct]
-  · have e := congrArg (fun m : Matrix (Fin n) (Fin n) ℂ => m.map star) hc
-    simpa only [map_star_mul, Jm_star] using e
+  first | exact _root_.GlobalTheory.ConjugateType.map_star_mem_K | exact @_root_.GlobalTheory.ConjugateType.map_star_mem_K | apply _root_.GlobalTheory.ConjugateType.map_star_mem_K <;> assumption
 
 lemma P_star {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (h : inP ε X) : inP ε (X.map star) := by
   have h' : (Xᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * X = 0) ∧ X * Formalism.REAL.Jm ε = -(Formalism.REAL.Jm ε * X) := h
@@ -107,7 +101,8 @@ lemma P_star {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (h : inP ε 
       ext i j
       simp
     simp only [ha, hz, map_star_mul, Jm_star] at e
-    rwa [map_star_ct]
+    rw [map_star_ct]
+    exact e
   · have e := congrArg (fun m : Matrix (Fin n) (Fin n) ℂ => m.map star) hp
     have hn : ∀ M : Matrix (Fin n) (Fin n) ℂ, (-M).map star = -(M.map star) := fun M => by
       ext i j

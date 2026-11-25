@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergTranslateUnitVectorCongrUnimodular
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmFiniteAdeleStrongApproxModAdelicIdeal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVecEq
@@ -88,7 +89,7 @@ namespace GlobalTheory.FunObj.CosetApprox
 
 theorem exists_mem_approx (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) (m : ℕ) (hm : 0 < m) (y : AE D)
     (hy : y ∈ hatId D 𝔪) : ∃ b ∈ 𝔪, ∃ t ∈ IhE D ⊤, inc D (b : D.host.E) - y = (m : AE D) * t := by
-  exact GlobalTheory.CongApprox.exists_mem_approx D 𝔪 m hm y hy
+  apply _root_.GlobalTheory.CongApprox.exists_mem_approx <;> assumption
 
 theorem matrix_approx : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) {a d : ℕ} (Y : Matrix (Fin d) (Fin a) (AE D)),
     (∀ i j, Y i j ∈ hatId D 𝔪) → ∀ m : ℕ, 0 < m → ∃ w : Matrix (Fin d) (Fin a) D.host.E,
@@ -275,7 +276,8 @@ theorem exists_idem : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)), 𝔪 ≠ ⊥ 
       · exact h0
     obtain ⟨w, hw, h⟩ := exists_of_mk_eq D (Ideal.absNorm 𝔪) (ys * gs) (ys ^ (2 * (R (Ideal.absNorm 𝔪)).factorial))
       (by rw [map_pow]; exact hyg _ hN0)
-    have h' : y * g = y ^ (2 * (R (Ideal.absNorm 𝔪)).factorial) + (Ideal.absNorm 𝔪 : AE D) * w := h
+    have h' : y * g = y ^ (2 * (R (Ideal.absNorm 𝔪)).factorial) + (Ideal.absNorm 𝔪 : AE D) * w := by
+      exact h
     have hmem : (Ideal.absNorm 𝔪 : AE D) * w ∈ hatId D 𝔪 := by
       refine AddSubgroup.subset_closure ⟨(Ideal.absNorm 𝔪 : 𝓞 D.host.E), Ideal.absNorm_mem 𝔪, w, hw, ?_⟩
       congr 1
@@ -473,9 +475,11 @@ theorem exists_unitary_near {a : ℕ} (𝔪 : Ideal (𝓞 D.host.E)) (h𝔪 : �
   have hmem : kGL ∈ GA D a := by
     rw [PtsMem.mem_GA]
     show (((K.map (sgA D)).transpose).map (sgA D)).transpose * (K.map (sgA D)).transpose = 1
-    rwa [ct_ct (sgA D) (VacMove.sgA_sgA D)]
+    rw [ct_ct (sgA D) (VacMove.sgA_sgA D)]
+    exact hKK
   refine ⟨⟨kGL, hmem⟩, (mem_intG _).2 fun i j => ⟨?_, hKO i j⟩, fun i j => ?_⟩
-  · exact VacMove.sgA_mem D (hKO j i)
+  · show sgA D (K j i) ∈ OhE D
+    exact VacMove.sgA_mem D (hKO j i)
   · show (A - K) i j ∈ hatId D 𝔪
     have e2 : (A - K) i j = (1 - f) * A i j - sgA D f * sgA D (B j i) -
         e * (1 : Matrix (Fin a) (Fin a) (AE D)) i j := by
@@ -561,31 +565,7 @@ namespace GlobalTheory.FunObj.CosetMove
 
 theorem wd_wd_norm (D : D7) (T : Tor D) {N N' : ℕ} (a b : VC D N N') :
     ∃ φ : ℂ, ‖φ‖ = 1 ∧ ∀ F, Wd D T a (Wd D T b F) = φ • Wd D T (a + b) F := by
-  have h0 : wdPh D T (a + b) ≠ 0 := Complex.exp_ne_zero _
-  have hn : ∀ x : VC D N N', ‖wdPh D T x‖ = 1 := fun x => by
-    simp [wdPh, ee, Complex.norm_exp]
-  have hc : Hf D T b a = (starRingEnd ℂ) (Hf D T a b) := by
-
-    simp only [Hf, map_div₀, map_sum, map_mul, Complex.conj_conj, Complex.conj_ofReal]
-    congr 1
-    refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => mul_comm _ _
-  refine ⟨wdPh D T a * wdPh D T b / wdPh D T (a + b) *
-    Complex.exp ((Real.pi : ℂ) * (Hf D T b a - Hf D T a b) / 2), ?_, fun F => ?_⟩
-  · rw [norm_mul, norm_div, norm_mul, hn, hn, hn, Complex.norm_exp, hc]
-    have : (((Real.pi : ℂ) * ((starRingEnd ℂ) (Hf D T a b) - Hf D T a b) / 2)).re = 0 := by
-      simp [Complex.mul_re, Complex.sub_re, Complex.conj_re]
-    rw [this]; simp
-  funext z
-  simp only [Wd, U, Pi.smul_apply, smul_eq_mul, VacMove.hf_add_left, VacMove.hf_add_right, add_assoc]
-  have : Complex.exp (-(Real.pi : ℂ) * (Hf D T z b + Hf D T a b) - (Real.pi : ℂ) * Hf D T b b / 2) *
-      Complex.exp (-(Real.pi : ℂ) * Hf D T z a - (Real.pi : ℂ) * Hf D T a a / 2) =
-      Complex.exp ((Real.pi : ℂ) * (Hf D T b a - Hf D T a b) / 2) *
-      Complex.exp (-(Real.pi : ℂ) * (Hf D T z a + Hf D T z b) -
-        (Real.pi : ℂ) * (Hf D T a a + (Hf D T b a + (Hf D T a b + Hf D T b b))) / 2) := by
-    rw [← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
-  field_simp
-  field_simp at this
-  linear_combination (wdPh D T a * wdPh D T b * F (z + (a + b))) * this
+  apply _root_.GlobalTheory.HeisTranslate.wd_wd_unimod <;> assumption
 
 
 
@@ -680,7 +660,8 @@ theorem om_cosetV_block : ∀ (D : D7) (δ t0 : ℂ), Crv D ⊤ δ → ∀ {a d 
   have hWT : Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ x₀) G ∈ TT D (tor0 D ⊤ δ) a d :=
     GlobalTheory.FinWeil.RatTransl.wd_mem_TT D h1 ⊤ δ hc a d _ _ hJT
   unfold cosetV
-  rw [← hx₀, ← hGdef, W.smul _ _ _ _ hWT, W.smul _ _ _ _ hWT]
+  rw [← hx₀, ← hGdef]
+  rw [W.smul _ _ _ _ hWT, W.smul _ _ _ _ hWT]
   change _ • W.Om 1 h (Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ x₀) G) = _ • _ • W.Om k 1 (Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ x₀) G)
   rw [hWh, hWk, hzw, smul_smul, smul_smul, smul_smul, smul_smul]
   congr 1
@@ -728,7 +709,8 @@ theorem sum_mul_right_eq {G M : Type} [Group G] [AddCommMonoid M] (H K : Subgrou
       have := hn g⁻¹ (inv_mem hg) _ h3
       simpa [mul_assoc] using this
     have u1 := hσu r1 (hR r1 h1) r1 ⟨h1, by simpa using K.one_mem⟩
-    exact u1.trans (hσu r1 (hR r1 h1) r2 ⟨h2, by simpa using inv_mem h4⟩).symm
+    have u2 := hσu r1 (hR r1 h1) r2 ⟨h2, by simpa using inv_mem h4⟩
+    exact u1.trans u2.symm
   · intro r' hr'
     have hx : r' * g⁻¹ ∈ H := mul_mem (hR r' hr') (inv_mem hg)
     obtain ⟨hr, hk⟩ := hσ _ hx

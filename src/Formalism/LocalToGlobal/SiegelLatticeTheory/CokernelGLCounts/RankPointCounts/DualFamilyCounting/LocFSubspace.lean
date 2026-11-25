@@ -108,7 +108,7 @@ private lemma ne_zero_lemma_4 {𝔭 : Ideal (𝓞 F)} {s : 𝓞 K}
   | one => simp
   | mul x y _ _ hx hy => rw [map_mul]; exact mul_ne_zero hx hy
 
-theorem locF_subspace (U : Submodule K V) {𝔭 : Ideal (𝓞 F)} :
+theorem locF_subspace (U : Submodule K V) {𝔭 : Ideal (𝓞 F)} (hp : 𝔭.IsPrime) :
     locF 𝔭 (U.restrictScalars (𝓞 K)) = U.restrictScalars (𝓞 K) := by
   ext x
   rw [mem_locF_lemma]

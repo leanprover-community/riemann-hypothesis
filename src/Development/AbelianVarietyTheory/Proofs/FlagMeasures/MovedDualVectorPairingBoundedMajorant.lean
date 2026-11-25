@@ -53,6 +53,7 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerSetEqRangeNormalForm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormLeadingMinorMonomial, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedDualVectorPairingBoundedMajorant
@@ -326,14 +327,7 @@ lemma esI_inj (k r : ℕ) : Function.Injective (esI k r) := by
 
 lemma XstJ_eq {k r j : ℕ} {v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ XstJ k r j) (i : Fin (2 * r + k + 1))
     (hi : ∀ c : Fin r, c.val < j → i ≠ esI k r c) : v i = 0 := by
-  unfold XstJ at hv
-  induction hv using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨c, rfl⟩ := hx
-    exact Pi.single_eq_of_ne (hi c.1 c.2) _
-  | zero => rfl
-  | add x y _ _ hx hy => simp [hx, hy]
-  | smul c x _ hx => simp [hx]
+  apply _root_.GlobalTheory.Amp.CommonStab.xst_coord <;> assumption
 
 lemma pluck_flag {k r n : ℕ} (hn : n ≤ r) (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (x : Mat k r)
     (hx : x ∈ GG k r) (R : ℝ) (hR : Sg k r z x ≤ R) (y : Fin n → Fin (2 * r + k + 1) → ℂ)

@@ -362,17 +362,7 @@ open scoped ContDiff Matrix in
 set_option autoImplicit false in
 private lemma logCutoff_eq_zero_of_norm_le_exp_neg_two_mul (k : ℕ) {z : ℂ}
     (hz : ‖z‖ ≤ Real.exp (-2 * ((k : ℝ) + 1))) : _root_.GlobalTheory.GoodTop.logCutoff k z = 0 := by
-  unfold _root_.GlobalTheory.GoodTop.logCutoff
-  split_ifs with h0
-  · rfl
-  apply Real.smoothTransition.zero_of_nonpos
-  have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
-  have hlog : Real.log ‖z‖ ≤ -2 * ((k : ℝ) + 1) := by
-    rw [← Real.log_exp (-2 * ((k : ℝ) + 1))]
-    exact Real.log_le_log (norm_pos_iff.mpr h0) hz
-  rw [← sub_nonneg, show 0 - (2 + Real.log ‖z‖ / ((k : ℝ) + 1)) =
-    (-2 * ((k : ℝ) + 1) - Real.log ‖z‖) / ((k : ℝ) + 1) by field_simp; ring]
-  exact div_nonneg (by linarith) hk.le
+  apply _root_.GlobalTheory.GoodTop.logCutoff_eq_zero_of_norm_le <;> assumption
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in

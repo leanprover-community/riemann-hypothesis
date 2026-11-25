@@ -37,16 +37,6 @@ def JointAmplitudeFactorizationRotated {τ₀ Rw I₀ H H₁ : Type} [Fintype I�
         RMeas D (W τ) (g τ) (θ' τ) (νR τ)) ∧
       ENNReal.ofReal (N.jacobianSquareBound γ) ≤ ENNReal.ofReal Cfac * ∏ τ, ENNReal.ofReal (hsNormSq ((A τ).J (νR τ) (g τ)))
 
-private lemma prod_ofReal_le_lemma {ι : Type*} (s : Finset ι) (x : ι → ℝ) :
-    ∏ i ∈ s, ENNReal.ofReal (x i) ≤ ENNReal.ofReal (∏ i ∈ s, x i) := by
-  classical
-  refine Finset.induction_on s (by simp) ?_
-  intro a s ha ih
-  rw [Finset.prod_insert ha, Finset.prod_insert ha]
-  rcases le_or_gt 0 (x a) with h | h
-  · rw [ENNReal.ofReal_mul h]; gcongr
-  · rw [ENNReal.ofReal_of_nonpos h.le, zero_mul]; simp
-
 theorem jointAmplitude_bound_rotated {τ₀ Rw I₀ H H₁ : Type} [Fintype I₀] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (X : Formalism.FourierDecayAlt.PB.Terms τ₀ Rw I₀ H H₁)
     {Cl Nu : Type} (N : Formalism.FourierDecayAlt.PN.NGData τ₀ D.host.E D.R.rS Cl Nu) {large₂ : SizeData₂ D} {C1 Ca Ch Cg b : ℝ}
@@ -67,7 +57,10 @@ theorem jointAmplitude_bound_rotated {τ₀ Rw I₀ H H₁ : Type} [Fintype I₀
       exact le_trans (I.hJ τ (g τ) (ptLoc D τ w) (hτ τ).1 (θ' τ) (hτ τ).2.1 (νR τ) (hτ τ).2.2)
         (by gcongr; exact orbSqO_le_bdOf I.toInputs hok hka τ _)
     rw [Finset.prod_mul_distrib] at h1
-    have h2 := prod_ofReal_le_lemma Finset.univ (fun τ => I.K τ * large₂.sc.b ^ (Ca * (D.R.m : ℝ) ^ 2))
+    have h2 : (∏ τ, ENNReal.ofReal (I.K τ * large₂.sc.b ^ (Ca * (D.R.m : ℝ) ^ 2))) ≤
+        ENNReal.ofReal (∏ τ, (I.K τ * large₂.sc.b ^ (Ca * (D.R.m : ℝ) ^ 2))) :=
+      (ENNReal.ofReal_prod_of_nonneg fun τ _ => mul_nonneg (I.hK τ).le
+        (Real.rpow_nonneg (zero_le_two.trans (two_le_scb large₂)) _)).symm.le
     calc ENNReal.ofReal (N.jacobianSquareBound γ)
         ≤ ENNReal.ofReal Cfac * ∏ τ, ENNReal.ofReal (hsNormSq ((I.A τ).J (νR τ) (g τ))) := hle
       _ ≤ ENNReal.ofReal Cfac * ((∏ τ, ENNReal.ofReal (I.K τ * large₂.sc.b ^ (Ca * (D.R.m : ℝ) ^ 2))) *
@@ -94,22 +87,6 @@ def RelPtExPR (u u' : D.what₂.Word) {θ : ℝ} (C : Choice X θ) : Prop :=
     (∃ g, Formalism.L2.SG.RealObj.IsPtRep X u u' w g) → ∀ τ,
       RelPt D (zB X (C.Qi τ) u τ) (zB X (C.Qi τ) u' τ) (gamP C u u' w τ) (ptLoc D τ w)
 
-private lemma toPts_inj_lemma {K : Type} [Zero K] {i : ℕ} (p q : Formalism.MainNotions.S.Point K (i + 1))
-    (h : Formalism.L2.SG.RowsConc.toPts p = Formalism.L2.SG.RowsConc.toPts q) : p = q := by
-  have h1 : p.1.map Prod.snd = q.1.map Prod.snd := congrArg (fun s => s.1.blocks) h
-  have key : ∀ r : Formalism.MainNotions.S.Point K (i + 1), List.ofFn (Formalism.L2.SG.RowsConc.toPts r).2 = r.1.map Prod.fst := by
-    intro r
-    apply List.ext_get
-    · simp [Formalism.L2.SG.RowsConc.toPts, Composition.length]
-    · intro n h1 h2
-      simp [Formalism.L2.SG.RowsConc.toPts]
-  have h2 : p.1.map Prod.fst = q.1.map Prod.fst := by
-    rw [← key p, ← key q]
-    exact congrArg (fun s : (Σ c : Composition (i + 1), (Fin c.length → K)) => List.ofFn s.2) h
-  apply Subtype.ext
-  rw [← List.zip_unzip p.1, ← List.zip_unzip q.1, List.unzip_fst, List.unzip_snd, List.unzip_fst,
-    List.unzip_snd, h1, h2]
-
 theorem jointAmplitudeFactorizationRotated_of (Y : Full X) (u u' : D.what₂.Word) (large₂ : SizeData₂ D) (C1 : ℝ) {θ : ℝ} (C : Choice X θ)
     (hB : WuBessel C) (ν νL : X.B.I.Ginf → Measure X.B.I.Ginf) (ng : Formalism.FourierDecayAlt.PN.Pts D.host.E D.R.rS → ℝ)
     (hR : RelPtExPR u u' C) (hM : RMeasExP u u' C) (hP : LocalAmplitudesPositive Y u u' ν C hB) (hT : ThetaWinP Y u u' ν C hB large₂ C1) :
@@ -119,7 +96,7 @@ theorem jointAmplitudeFactorizationRotated_of (Y : Full X) (u u' : D.what₂.Wor
   rw [hJB] at hpos ⊢
   subst hw
   obtain ⟨w', hw', hrep⟩ := isPtRep_of_J2of hpos
-  have hww : w' = w := toPts_inj_lemma w' w hw'
+  have hww : w' = w := toPts_injective hw'
   subst hww
   have hP1 : 0 < localAmplitudeProduct u u' hB w' := hP w' hrow hpos
   haveI := Formalism.L2.SG.Pf.LTL.tau_nonempty D

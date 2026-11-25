@@ -33,7 +33,7 @@ theorem colSum_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
   simp only [harmK, Submodule.mem_iInf, LinearMap.mem_ker] at h0
   have h1 := h0 τ hτ i i'
   rw [← h1]
-  simp only [lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  simp only [lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   rw [LinearMap.sum_apply]
   rfl
 
@@ -123,7 +123,8 @@ theorem dAdd_single {S : Type} [CommRing S] {d n : ℕ} (j : Fin d) (b : Fin n) 
   · simp
   · intro j' _ hj'
     simp [hj']
-  · exact fun h => absurd (Finset.mem_univ j) h
+  · intro h
+    exact absurd (Finset.mem_univ j) h
 
 theorem dAdd_single' {S : Type} [CommRing S] {d n : ℕ} (j : Fin d) (b : Fin n) :
     (TB.dAdd (Pi.single j 1) b : Germ.PS S n d → Germ.PS S n d) = pderiv (R := S) (b, j) :=
@@ -240,7 +241,8 @@ theorem colSum_conj {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
   rcases hPsi ℓ.1 with h1 | h1
   · exact hgen ℓ ℓ' h1 hℓ
   · have h2 := hgen ℓ' ℓ (by rw [hℓ]; exact h1) (by rw [hℓ, conj_conj])
-    rwa [Finset.sum_congr rfl fun b _ => pderiv_comm (ℓ, b) (ℓ', b) (encP P)]
+    rw [Finset.sum_congr rfl fun b _ => pderiv_comm (ℓ, b) (ℓ', b) (encP P)]
+    exact h2
 
 theorem secondOrder_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
     {l : Level H} (c : Coeff l) {S : Type} [CommRing S] [Algebra c.F S] (hPsi : PsiCoverSt H)
@@ -269,7 +271,7 @@ theorem secondOrder_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
     simp [dotProduct, Matrix.mulVec, Pi.single_apply]
   unfold TB.secondOrder
   simp only [hdot, Fintype.sum_prod_type, apply_ite MvPolynomial.C, map_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+    Finset.sum_ite_eq, Finset.mem_univ, if_true]
   refine Finset.sum_eq_zero fun ℓ _ => ?_
   rw [Finset.sum_comm]
   refine Finset.sum_eq_zero fun ℓ' _ => ?_
@@ -307,20 +309,6 @@ theorem colEmb_inj {n d : ℕ} (b : Fin n) : Function.Injective (fun p : Fin 1 �
 def colPart {n d : ℕ} (b : Fin n) (M : Fin n × Fin d →₀ ℕ) : Fin 1 × Fin d →₀ ℕ :=
   Finsupp.comapDomain (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) M (colEmb_inj b).injOn
 
-private theorem coeff_rename_mapDomain_lemma {σ τ R : Type} (f : σ → τ) [Filter.TendstoCofinite f]
-    [CommSemiring R] (hf : Function.Injective f) (p : MvPowerSeries σ R) (x : σ →₀ ℕ) :
-    coeff (Finsupp.mapDomain f x) (rename f p) = coeff x p := by
-  classical
-  rw [MvPowerSeries.coeff_rename, Finset.sum_eq_single x]
-  · intro y hy hne
-    exfalso
-    simp only [Set.Finite.mem_toFinset] at hy
-    exact hne (Finsupp.mapDomain_injective hf hy)
-  · intro h
-    exfalso
-    apply h
-    simp
-
 theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPowerSeries (Fin 1 × Fin d) S)
     (M : Fin n × Fin d →₀ ℕ) :
     coeff M (∏ b, rename (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) (g b)) =
@@ -333,19 +321,22 @@ theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPow
     obtain ⟨b', j⟩ := q
     by_cases h : b' = b
     · subst h
-      rw [ite_eq_left rfl]
+      rw [if_pos rfl]
       show Finsupp.mapDomain (ι b') (colPart b' M) (ι b' (0, j)) = M (b', j)
       rw [Finsupp.mapDomain_apply_of_injective (colEmb_inj b')]
       simp [colPart, Finsupp.comapDomain_apply]
-    · rw [ite_eq_right h]
+    · rw [if_neg h]
       apply Finsupp.mapDomain_notin_range
       rintro ⟨p, hp⟩
       simp only [ι, Prod.mk.injEq] at hp
       exact h hp.1.symm
-  rw [MvPowerSeries.coeff_prod, Finset.sum_eq_single (Finsupp.equivFunOnFinite.symm Mb)]
+  rw [MvPowerSeries.coeff_prod]
+  rw [Finset.sum_eq_single (Finsupp.equivFunOnFinite.symm Mb)]
   · refine Finset.prod_congr rfl fun b _ => ?_
     rw [Finsupp.coe_equivFunOnFinite_symm]
-    exact coeff_rename_mapDomain_lemma _ (colEmb_inj b) _ _
+    dsimp only [Mb, ι]
+    simpa only [Finsupp.embDomain_eq_mapDomain, Function.Embedding.coeFn_mk] using
+      MvPowerSeries.coeff_embDomain_rename ⟨fun p => (b, p.2), colEmb_inj b⟩ (g b) (colPart b M)
   · intro l hl hne
     by_contra hprod
     apply hne

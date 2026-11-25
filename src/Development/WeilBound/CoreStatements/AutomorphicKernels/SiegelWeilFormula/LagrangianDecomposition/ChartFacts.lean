@@ -67,7 +67,7 @@ def eK (m : ℕ) {n N : ℕ} (h : n + 1 = N) : K1 m n ≃ Fin m × Fin N × Fin 
       subst this
       simp [i0]
 
-def ext0 {m n N : ℕ} (X : Mx F E m n) : Mx F E m N :=
+def ext0 {m n N : ℕ} (h : n + 1 = N) (X : Mx F E m n) : Mx F E m N :=
   fun a i => if hi : i.1 < n then X a ⟨i.1, hi⟩ else 0
 
 def frQ {m n : ℕ} (b : GL (Fin n ⊕ Fin n) E) (w : Matrix (Fin m) (Fin n ⊕ Fin n) (AE F E)) :
@@ -75,7 +75,7 @@ def frQ {m n : ℕ} (b : GL (Fin n ⊕ Fin n) E) (w : Matrix (Fin m) (Fin n ⊕ 
 
 def emb {m n N : ℕ} (h : n + 1 = N) (b : GL (Fin n ⊕ Fin n) E) (bd : GL (Fin N ⊕ Fin N) E)
     (w : Matrix (Fin m) (Fin n ⊕ Fin n) (AE F E)) : Matrix (Fin m) (Fin N ⊕ Fin N) (AE F E) :=
-  ext0 (frQ b w).toCols₁ * ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) bd.1.toCols₁)ᵀ + ext0 (frQ b w).toCols₂ * ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) bd.1.toCols₂)ᵀ
+  ext0 h (frQ b w).toCols₁ * ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) bd.1.toCols₁)ᵀ + ext0 h (frQ b w).toCols₂ * ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) bd.1.toCols₂)ᵀ
 
 end PositivityTheory.SiegelWeilFormula.Ald
 

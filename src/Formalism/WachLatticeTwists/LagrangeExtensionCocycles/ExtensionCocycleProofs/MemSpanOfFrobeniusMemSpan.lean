@@ -11,18 +11,6 @@ namespace Formalism.RepresentationBoundsCohomology.N2
 
 open Polynomial
 
-private theorem assoc_prod_lemma {O : Type} [CommMonoid O] (s : Finset ℤ) (f : ℤ → O) (y : O)
-    (e : ℤ → ℕ) (h : ∀ b ∈ s, Associated (f b) (y ^ e b)) :
-    Associated (∏ b ∈ s, f b) (y ^ ∑ b ∈ s, e b) := by
-  classical
-  revert h
-  refine Finset.induction_on s ?_ ?_
-  · exact fun _ => ⟨1, by simp⟩
-  · intro b s hb ih h
-    rw [Finset.prod_insert hb, Finset.sum_insert hb, pow_add]
-    exact (h b (Finset.mem_insert_self b s)).mul_mul
-      (ih fun x hx => h x (Finset.mem_insert_of_mem hx))
-
 private theorem prod_dvd_lemma_2 {O : Type} [CommRing O] [IsDomain O] (S : Finset ℤ) (c : ℤ → O)
     (hc : ∀ a ∈ S, ∀ b ∈ S, c a = c b → a = b) (h : O[X])
     (hr : ∀ a ∈ S, h.eval (c a) = 0) : (∏ a ∈ S, (X - C (c a))) ∣ h := by
@@ -36,7 +24,8 @@ private theorem prod_dvd_lemma_2 {O : Type} [CommRing O] [IsDomain O] (S : Finse
     obtain ⟨a, ha, rfl⟩ := Multiset.mem_map.1 hx
     exact (mem_roots h0).2 (hr a ha)
   have h1 := (Multiset.prod_X_sub_C_dvd_iff_le_roots h0 (S.val.map c)).2 hle
-  rwa [Multiset.map_map] at h1
+  rw [Multiset.map_map] at h1
+  exact h1
 
 theorem lagrange_annihilation : StatLagrange := by
   intro ℓ _ O _ _ S₁ S₂ c sg hdisj hassoc
@@ -70,16 +59,17 @@ theorem lagrange_annihilation : StatLagrange := by
     by_cases ha : a ∈ S₁
     · have h2 : Associated (∏ b ∈ S₂, (c a - c b))
           ((ℓ : O) ^ ∑ b ∈ S₂, (sg + padicValInt ℓ (a - b))) :=
-        assoc_prod_lemma S₂ (fun b => c a - c b) (ℓ : O) (fun b => sg + padicValInt ℓ (a - b))
-          (fun b hb => hassoc a (Finset.mem_union_left _ ha) b (Finset.mem_union_right _ hb)
-            (fun h => Finset.disjoint_left.1 hdisj ha (by rw [h]; exact hb)))
+        (Associated.prod S₂ _ _ fun b hb =>
+          hassoc a (Finset.mem_union_left _ ha) b (Finset.mem_union_right _ hb)
+            (fun h => Finset.disjoint_left.1 hdisj ha (by rw [h]; exact hb))).trans
+          (Associated.of_eq (Finset.prod_pow_eq_pow_sum _ _ _))
       have h1 : Associated (∏ b ∈ S₁.erase a, (c a - c b))
           ((ℓ : O) ^ ∑ b ∈ S₁.erase a, (sg + padicValInt ℓ (a - b))) :=
-        assoc_prod_lemma (S₁.erase a) (fun b => c a - c b) (ℓ : O)
-          (fun b => sg + padicValInt ℓ (a - b))
-          (fun b hb => hassoc a (Finset.mem_union_left _ ha) b
+        (Associated.prod (S₁.erase a) _ _ fun b hb =>
+          hassoc a (Finset.mem_union_left _ ha) b
             (Finset.mem_union_left _ (Finset.mem_of_mem_erase hb))
-            (fun h => Finset.ne_of_mem_erase hb h.symm))
+            (fun h => Finset.ne_of_mem_erase hb h.symm)).trans
+          (Associated.of_eq (Finset.prod_pow_eq_pow_sum _ _ _))
       obtain ⟨u, hu⟩ := h2.mul_mul h1
       refine ⟨(u : O) * (ℓ : O) ^ (lagE ℓ sg S₁ S₂ - ((∑ b ∈ S₂, (sg + padicValInt ℓ (a - b))) +
         ∑ b ∈ S₁.erase a, (sg + padicValInt ℓ (a - b)))), fun _ => ?_⟩
@@ -178,7 +168,8 @@ theorem unit_lemma_case_b_holds : StatWB := by
   have h' : n₁ = ((ℓ : ℤ_[ℓ]) ^ eWB ℓ H s) • n := h
   have e : ((ℓ : ℤ_[ℓ]) ^ eWB ℓ H s) • n = ((ℓ : A) ^ eWB ℓ H s) • n := by
     rw [← algebraMap_smul A ((ℓ : ℤ_[ℓ]) ^ eWB ℓ H s) n, map_pow, map_natCast]
-  rwa [← e, ← h']
+  rw [← e, ← h']
+  exact hn₁
 
 theorem add_mul_pow_exists {A : Type} [CommRing A] (a X t : A) (k : ℕ) :
     ∃ t', (a + X * t) ^ k = a ^ k + X * t' := by
@@ -237,7 +228,8 @@ theorem mem_span_of_frobenius_mem_span : StatDescent := by
           (∏ k ∈ Finset.Ioc (i + 1) s, ((G.u : ℤ_[ℓ]) ^ k - 1)) * ((G.u : ℤ_[ℓ]) ^ (i + 1) - 1) := by
         rw [← Finset.prod_Ioc_consecutive _ (by omega : i ≤ i + 1) (by omega : i + 1 ≤ s),
           Nat.Ioc_succ_singleton, Finset.prod_singleton, mul_comm]
-      rwa [h3]
+      rw [h3]
+      exact h2
   exact key (s - j) j (by omega)
 
 end Formalism.RepresentationBoundsCohomology.N2

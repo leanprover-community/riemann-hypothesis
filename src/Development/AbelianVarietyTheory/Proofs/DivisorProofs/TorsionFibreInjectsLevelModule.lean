@@ -1119,7 +1119,7 @@ namespace GlobalTheory.TorsSpec
 
 theorem valAt_unique {X' : Scheme.{0}} [IsIntegral X'] [GlobalTheory.IsNormalScheme X'] (G : Over X') [GrpObj G]
     [IsCommMonObj G] [Smooth G.hom] (n : ℕ) (hn : IsUnit (n : Γ(X', ⊤))) {V : Scheme.{0}} [Nonempty V]
-    (ℓ : V ⟶ X') [IsOpenImmersion ℓ] {M : Type} (w : M → (V ⟶ G.left))
+    (ℓ : V ⟶ X') [IsOpenImmersion ℓ] {M : Type} (w : M → (V ⟶ G.left)) (hw : ∀ c, w c ≫ G.hom = ℓ)
     (hun : ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] (x : Sp Ω ⟶ V) (c c' : M), x ≫ w c = x ≫ w c' → c = c')
     (p : (torsion G n).left) (c c' : M) (h : GlobalTheory.TorsSpec.ValAt G n ℓ w p c)
     (h' : GlobalTheory.TorsSpec.ValAt G n ℓ w p c') : c = c' := by
@@ -1225,7 +1225,7 @@ theorem class_move : ∀ {E : Type} [Field E] {X' : Scheme.{0}} [IsIntegral X'] 
       exact h1
     · simp only [Category.assoc, hw, hιh]
       exact hyz
-  rw [valAt_unique G n hn ℓ w hun (PT x) cP _ hcP hval, LinearEquiv.apply_symm_apply]
+  rw [valAt_unique G n hn ℓ w hw hun (PT x) cP _ hcP hval, LinearEquiv.apply_symm_apply]
 
 end GlobalTheory.TorsSpec
 end -- clump:auto

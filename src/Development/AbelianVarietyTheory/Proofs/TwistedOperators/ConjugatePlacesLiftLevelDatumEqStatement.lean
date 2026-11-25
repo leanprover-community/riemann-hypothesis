@@ -779,7 +779,6 @@ theorem sum_mem_of_coeff {𝔪 : Ideal (𝓞 E)} {m : ℕ} (β : Fin m → Fin r
 end CongLemmas
 
 section Mat
-open GlobalTheory.LiftLevel GlobalTheory.LiftDat
 variable {D : D7}
 
 theorem mk_conjI_eq_iff (P : Ideal (𝓞 D.host.E)) (x y : 𝓞 D.host.E) :

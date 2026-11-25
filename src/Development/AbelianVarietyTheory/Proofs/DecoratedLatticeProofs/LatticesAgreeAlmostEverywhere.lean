@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticeLocalEqIntegralAlmostAll
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,27 +57,7 @@ variable {E : Type} [Field E] [NumberField E] {V : Type} [AddCommGroup V] [Modul
 
 theorem exists_int_smul_mem_of_mem_span (M : Submodule (𝓞 E) V) {y : V}
     (hy : y ∈ Submodule.span E (M : Set V)) : ∃ c : ℤ, c ≠ 0 ∧ c • y ∈ M := by
-  induction hy using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
-  | zero => exact ⟨1, one_ne_zero, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨a, ha, hax⟩ := hx
-    obtain ⟨b, hb, hby⟩ := hy
-    refine ⟨a * b, mul_ne_zero ha hb, ?_⟩
-    have h1 : (a * b) • x = b • (a • x) := by rw [mul_comm, mul_smul]
-    have h2 : (a * b) • y = a • (b • y) := by rw [mul_smul]
-    rw [smul_add, h1, h2]
-    exact M.add_mem (zsmul_mem hax b) (zsmul_mem hby a)
-  | smul e x _ hx =>
-    obtain ⟨a, ha, hax⟩ := hx
-    obtain ⟨c, hc, hint⟩ := exists_integral_multiples ℤ ℚ ({e} : Finset E)
-    have he : IsIntegral ℤ (c • e) := hint e (by simp)
-    refine ⟨c * a, mul_ne_zero hc ha, ?_⟩
-    obtain ⟨o, ho⟩ : ∃ o : 𝓞 E, algebraMap (𝓞 E) E o = c • e := ⟨⟨c • e, he⟩, rfl⟩
-    have h : (c * a) • (e • x) = o • (a • x) := by
-      rw [← algebraMap_smul E o (a • x), ho, mul_smul, smul_comm a e x, smul_assoc]
-    rw [h]
-    exact M.smul_mem o hax
+  first | exact _root_.GlobalTheory.LatAlmostStd.exists_zsmul_mem_of_span | exact @_root_.GlobalTheory.LatAlmostStd.exists_zsmul_mem_of_span | apply _root_.GlobalTheory.LatAlmostStd.exists_zsmul_mem_of_span <;> assumption
 
 theorem exists_int_smul_le (L M : Submodule (𝓞 E) V) (hL : L.FG)
     (hM : Submodule.span E (M : Set V) = ⊤) : ∃ d : ℤ, d ≠ 0 ∧ ∀ x ∈ L, d • x ∈ M := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameAdaptedIsometryOfFixingBothFrames
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesSameInnerDifferByRationalUnipotentStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowRepresentativesUpToFrameAdaptedIsometryStatement
@@ -67,7 +68,8 @@ theorem adapt_map_flag (D : D7) (T : D.host.E) (F G : LFlag (D.sp.Y 0) D.R.rS T)
     intro H a b hab
     exact Submodule.span_mono (Set.image_mono fun i (hi : i.1 < a) => (lt_of_lt_of_le hi hab : i.1 < b))
   have hmem : ∀ (H : LFlag (D.sp.Y 0) D.R.rS T) (i : Fin D.R.rS) {j : ℕ}, i.1 < j → H.fl.e i ∈ Xflag H j := by
-    exact fun H i j hij => Submodule.subset_span ⟨i, hij, rfl⟩
+    intro H i j hij
+    exact Submodule.subset_span ⟨i, hij, rfl⟩
   have hX : ∀ H : LFlag (D.sp.Y 0) D.R.rS T, Xsp H = Xflag H D.R.rS := by
     intro H
     show Submodule.span _ (Set.range H.fl.e) = Submodule.span _ (H.fl.e '' {i | i.1 < D.R.rS})
@@ -128,6 +130,8 @@ open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
+theorem _root_.GlobalTheory.T.frameAdaptedIsometry_map_flagSpaces : ∀ (D : D7) (T : D.host.E) (F G : LFlag (D.sp.Y 0) D.R.rS T) (g : GV D), Adapt g F G → (∀ j : ℕ, (Xflag F j).map (g : (VS D).V →ₗ[D.host.E] (VS D).V) = Xflag G j) ∧ (Xsp F).map (g : (VS D).V →ₗ[D.host.E] (VS D).V) = Xsp G := by
+  first | exact @GlobalTheory.adapt_map_flag
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameAdaptedIsometryMapFlagSpacesStatement =====
@@ -155,7 +159,8 @@ theorem mem_map_iff (ψ : S.V ≃ₗ[E] S.V) (U : Submodule E S.V) (x : S.V) :
   constructor
   · rintro ⟨y, hy, rfl⟩
     simpa using hy
-  · exact fun h => ⟨ψ.symm x, h, by simp⟩
+  · intro h
+    exact ⟨ψ.symm x, h, by simp⟩
 
 theorem mem_orth_map (ψ : S.V ≃ₗ[E] S.V) (hψ : ψ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (U : Submodule E S.V)
     (x : S.V) : x ∈ orth S (U.map (ψ : S.V →ₗ[E] S.V)) ↔ ψ.symm x ∈ orth S U := by
@@ -237,7 +242,8 @@ theorem mem_graph_iff (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R
     have e : l - x' = (l - l₀) + (l₀ - l') - (x' - l') := by abel
     rw [e]
     exact Submodule.sub_mem _ (Submodule.add_mem _ b2 h3) b1
-  · exact fun h => ⟨x', hx', l, hl, by simp, by simp, h⟩
+  · intro h
+    exact ⟨x', hx', l, hl, by simp, by simp, h⟩
 
 theorem mem_graph_of_sub (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Λ : LV D)
     {p q : (VS D).V × (VS D).V} (h1 : q.1 - p.1 ∈ Xsp F') (h2 : q.2 - p.2 ∈ Xsp F)
@@ -526,7 +532,8 @@ theorem map_xflag_le {T : D.host.E} {F G : LFlag (D.sp.Y 0) D.R.rS T} {g : GV D}
     simp
   rw [e]
   refine add_mem ?_ (Submodule.subset_span ⟨i, hi, rfl⟩)
-  exact (xflag_mono G (show (Fin.castSucc i).val ≤ j from le_of_lt hi)) h1
+  have hle := xflag_mono G (show (Fin.castSucc i).val ≤ j from le_of_lt hi)
+  exact hle h1
 
 theorem map_xflag {T : D.host.E} {F G : LFlag (D.sp.Y 0) D.R.rS T} {g : GV D} (hg : Adapt g F G) (j : ℕ) :
     (Xflag F j).map (g : (VS D).V →ₗ[D.host.E] (VS D).V) = Xflag G j := by
@@ -553,18 +560,7 @@ theorem adapt_mul {T : D.host.E} {F G H : LFlag (D.sp.Y 0) D.R.rS T} {g g' : GV 
 
 theorem adapt_inv {T : D.host.E} {F G : LFlag (D.sp.Y 0) D.R.rS T} {g : GV D} (hg : Adapt g F G) :
     Adapt g⁻¹ G F := by
-  refine ⟨inv_mem hg.1, fun a => ?_⟩
-  have hm := map_xflag hg a.val
-  have h2 := hg.2 a
-  rw [← hm] at h2
-  obtain ⟨y, hy, hye⟩ := h2
-  have e : g⁻¹ (frame G a) - frame F a = -y := by
-    have : g (frame F a - y) = frame G a := by
-      rw [map_sub]; simp only [LinearEquiv.coe_coe] at hye; rw [hye]; abel
-    rw [← this]
-    show g.symm (g (frame F a - y)) - frame F a = -y
-    rw [LinearEquiv.symm_apply_apply]; abel
-  rw [e]; exact neg_mem hy
+  first | exact _root_.GlobalTheory.StabCnt.adapt_inv | exact @_root_.GlobalTheory.StabCnt.adapt_inv | apply _root_.GlobalTheory.StabCnt.adapt_inv <;> assumption
 
 theorem z_mem_orth {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) : F.fl.z ∈ orth (VS D) (Xsp F) := by
   simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
@@ -630,7 +626,8 @@ theorem side : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (v : D.what₂.Word
   have As : Adapt (ψ₁⁻¹ * ψ₀) (lf D (X.Fu v)) (lf D (X.Fu v)) := adapt_mul A0 (adapt_inv A1)
   have hsub : Lsub (Formalism.HermitianLatticesTheory.gmap (ψ₁⁻¹ * ψ₀) Λa) (lf D (X.Fu v)) = Lsub Λb (lf D (X.Fu v)) := by
     apply gmap_inj ψ₁
-    rwa [← lsub_map A1, ← lsub_map A1, ← gmap_mul, mul_inv_cancel_left]
+    rw [← lsub_map A1, ← lsub_map A1, ← gmap_mul, mul_inv_cancel_left]
+    exact hL
   obtain ⟨n, hn, hnΛ⟩ := GlobalTheory.T.row_lattices_same_inner_differ_by_rational_unipotent D _ (X.Fu v) Λa Λb (ψ₁⁻¹ * ψ₀) ((Y.rowsOK v).1 Λa ha)
     ((Y.rowsOK v).1 Λb hb) As hsub
   have Ans : Adapt (n * (ψ₁⁻¹ * ψ₀)) (lf D (X.Fu v)) (lf D (X.Fu v)) := adapt_mul As (nrat_adapt hn)
@@ -779,7 +776,8 @@ theorem gmap_inv_of {a : GV D} {M N : LV D} (h : Formalism.HermitianLatticesTheo
   rw [← h, ← gmap_mul, inv_mul_cancel, _root_.GlobalTheory.Unfold.SideEq.gmap_one]
 
 theorem adapt_mul {T : D.host.E} {F G H : LFlag (D.sp.Y 0) D.R.rS T} {g g' : GV D} (hg : Adapt g F G)
-    (hg' : Adapt g' G H) : Adapt (g' * g) F H := GlobalTheory.Unfold.SideEq.adapt_mul hg hg'
+    (hg' : Adapt g' G H) : Adapt (g' * g) F H := by
+  apply _root_.GlobalTheory.Unfold.SideEq.adapt_mul <;> assumption
 
 theorem adapt_fix {T : D.host.E} {F : LFlag (D.sp.Y 0) D.R.rS T} {h : GV D} (hi : h ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
     (hf : ∀ a, h (frame F a) = frame F a) : Adapt h F F := by
@@ -789,7 +787,7 @@ theorem adapt_fix {T : D.host.E} {F : LFlag (D.sp.Y 0) D.R.rS T} {h : GV D} (hi 
 
 theorem frame_mapLF {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) {γ : GV D} (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
     (a : Fin (D.R.rS + 1)) : frame (mapLF γ F) a = γ (frame F a) := by
-  simp only [frame, mapLF, dite_eq_left hγ, Formalism.MainNotions.S.FlagG.fvec]
+  simp only [frame, mapLF, dif_pos hγ, Formalism.MainNotions.S.FlagG.fvec]
   refine Fin.lastCases ?_ (fun i => ?_) a
   · simp only [Fin.snoc_last]
     rfl
@@ -798,7 +796,7 @@ theorem frame_mapLF {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) {γ : GV D} (
 
 theorem xsp_mapLF {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) {γ : GV D} (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) :
     Xsp (mapLF γ F) = (Xsp F).map (γ : (VS D).V →ₗ[D.host.E] (VS D).V) := by
-  simp only [Xsp, mapLF, dite_eq_left hγ, Formalism.MainNotions.S.FlagG.X, Submodule.map_span, ← Set.range_comp]
+  simp only [Xsp, mapLF, dif_pos hγ, Formalism.MainNotions.S.FlagG.X, Submodule.map_span, ← Set.range_comp]
   rfl
 
 theorem adapt_mapLF {T : D.host.E} {F G : LFlag (D.sp.Y 0) D.R.rS T} {γ g : GV D}
@@ -846,7 +844,8 @@ theorem translates : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wha
   have q₁ : Formalism.HermitianLatticesTheory.gmap (ψ₁ * t.lin) t.lam' = Formalism.HermitianLatticesTheory.gmap ψ₁ t.lam :=
     (gmap_mul ψ₁ t.lin t.lam').trans (congrArg (Formalism.HermitianLatticesTheory.gmap ψ₁) lg)
   have e2' : Lsub (Formalism.HermitianLatticesTheory.gmap (ψ₀ * t₀.lin) t₀.lam') F' = Lsub (Formalism.HermitianLatticesTheory.gmap (ψ₁ * t.lin) t.lam') F' := by
-    rwa [q₀, q₁]
+    rw [q₀, q₁]
+    exact e2
   obtain ⟨hlam', n', hn', hA'⟩ :=
     GlobalTheory.T.rowLattices_eq_of_adaptedIsometry_innerLattices_eq D X Y u' F' (ψ₀ * t₀.lin) (ψ₁ * t.lin) t₀.lam' t.lam' t₀.mem' t.mem' hψ₀b' hψ₁b' e2'
   refine ⟨hlam, hlam', n * (ψ₁⁻¹ * ψ₀), hA, n' * ((ψ₁ * t.lin)⁻¹ * (ψ₀ * t₀.lin)), hA', ?_⟩
@@ -872,7 +871,8 @@ theorem translates : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wha
     refine (adapt_mapLF (F := lf D (X.Fu u')) (G := F') (g := ψ₁ * n⁻¹) hγi).2 ?_
     have : ψ₁ * n⁻¹ * (n * t.lin * n'⁻¹) = ψ₁ * t.lin * n'⁻¹ := by group
     have key := _root_.GlobalTheory.Unfold.SideEq.adapt_mul hn'iN.1 hψ₁b'
-    rwa [← this] at key
+    rw [← this] at key
+    exact key
   have hg1 : Formalism.HermitianLatticesTheory.gmap (ψ₁ * n⁻¹) t₀.lam = Formalism.HermitianLatticesTheory.gmap ψ₀ t₀.lam := by
     have : ψ₁ * n⁻¹ = ψ₀ * (n * (ψ₁⁻¹ * ψ₀))⁻¹ := by group
     rw [this, gmap_mul, gmap_inv_of hA2]
@@ -902,12 +902,14 @@ theorem translates : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wha
   · intro l hl
     have : ψ₁⁻¹ * (ψ₁ * n⁻¹) = n⁻¹ := by group
     have key := hnN.2.2.2 l (Submodule.mem_inf.mp hl).2
-    rwa [← this] at key
+    rw [← this] at key
+    exact key
   · intro x' hx'
     have : ψ₁⁻¹ * (ψ₁ * n⁻¹) = n⁻¹ := by group
     have key := GlobalTheory.T.unipotent_right_change_moves_flag_complement D _ (lf D (X.Fu u')) (n * t.lin * n'⁻¹) t.lin n⁻¹ n' hγi hni hn' (by group) x'
       (Submodule.mem_inf.mp hx').2
-    rwa [← this] at key
+    rw [← this] at key
+    exact key
 
 end GlobalTheory.Unfold.CntC
 end -- clump:auto

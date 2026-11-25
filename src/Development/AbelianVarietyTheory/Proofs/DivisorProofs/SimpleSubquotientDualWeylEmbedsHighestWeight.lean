@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylLatticeExactExponentBlockCut
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDualWeylWeightProjector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
@@ -90,7 +91,7 @@ theorem rowWeight_le_colSum (N : ℕ) (d : Fin N × Fin N →₀ ℕ) (a : Fin N
   apply Finset.sum_le_sum
   intro i _
   rw [← Finset.mul_sum]
-  simp only [rowW, colW, Finset.sum_pi_single', Finset.mem_univ, ite_true]
+  simp only [rowW, colW, Finset.sum_pi_single', Finset.mem_univ, if_true]
   apply Nat.mul_le_mul_left
   rw [Pi.single_apply]
   split_ifs <;> omega
@@ -263,7 +264,8 @@ def PSh (a b : Fin N) (u : Fin N → ℤ) (P : Polynomial (MvPolynomial (Fin N �
 theorem PSh.mul {a b : Fin N} {u u' : Fin N → ℤ} {P Q : Polynomial (MvPolynomial (Fin N × Fin N) O)}
     (hP : PSh a b u P) (hQ : PSh a b u' Q) : PSh a b (u + u') (P * Q) := by
   intro j
-  rw [Polynomial.coeff_mul, ← mem_weightedHomogeneousSubmodule]
+  rw [Polynomial.coeff_mul]
+  rw [← mem_weightedHomogeneousSubmodule]
   refine Submodule.sum_mem _ fun x hx => ?_
   rw [mem_weightedHomogeneousSubmodule]
   have h := (hP x.1).mul (hQ x.2)
@@ -275,7 +277,7 @@ theorem PSh.one (a b : Fin N) : PSh (O := O) a b 0 1 := by
   intro j
   rcases j with _ | j
   · simpa using isWeightedHomogeneous_one O (wZ N)
-  · rw [Polynomial.coeff_one, ite_eq_right (Nat.succ_ne_zero j)]
+  · rw [Polynomial.coeff_one, if_neg (Nat.succ_ne_zero j)]
     exact isWeightedHomogeneous_zero _ _ _
 
 theorem PSh.pow {a b : Fin N} {u : Fin N → ℤ} {P : Polynomial (MvPolynomial (Fin N × Fin N) O)}
@@ -308,7 +310,8 @@ theorem PSh_rowGen_X (a b : Fin N) (v : Fin N × Fin N) :
       simp [wZ, δ, hv]
     · simp [hv]; exact isWeightedHomogeneous_zero _ _ _
   · by_cases hv : v.1 = b
-    · simpa [hv] using isWeightedHomogeneous_zero _ _ _
+    · simp [hv]
+      exact isWeightedHomogeneous_zero _ _ _
     · simp [hv]; exact isWeightedHomogeneous_zero _ _ _
 
 theorem PSh.add {a b : Fin N} {u : Fin N → ℤ} {P Q : Polynomial (MvPolynomial (Fin N × Fin N) O)}
@@ -420,13 +423,7 @@ theorem proj_rowAct (a b : Fin N) (hab : a ≠ b) (k : ℕ) (w : Fin N → ℕ) 
 
 theorem rowW_le_total (d : Fin N × Fin N →₀ ℕ) (c : Fin N) :
     Finsupp.weight (rowW N N) d c ≤ ∑ s, Finsupp.weight (colW N N) d s := by
-  classical
-  simp only [Finsupp.weight_apply, Finsupp.sum, Finset.sum_apply, Pi.smul_apply, rowW, colW, smul_eq_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_le_sum fun v _ => ?_
-  rw [← Finset.mul_sum]
-  simp [Pi.single_apply]
-  split_ifs <;> simp
+  apply _root_.GlobalTheory.HighWt.rowWeight_le_colSum <;> assumption
 
 def box (ν : Fin N → ℕ) : Finset (Fin N → ℕ) :=
   Fintype.piFinset fun _ : Fin N => Finset.range (∑ s, ν s + 1)
@@ -542,7 +539,7 @@ namespace GlobalTheory.GenCoef.LduLead
 theorem key_lt_diag {N : ℕ} {j : Fin N × Fin N} {d : Fin N} (h : key N j < key N (d, d)) :
     j = (j.1, j.1) ∧ d < j.1 := by
   obtain ⟨x, y⟩ := j
-  simp only [key, ite_true] at h
+  simp only [key, if_true] at h
   split_ifs at h with hxy
   · subst hxy; refine ⟨rfl, ?_⟩
     rw [Fin.lt_def]; have := d.2; have := x.2; simp at h ⊢; omega
@@ -641,7 +638,8 @@ theorem entry_lead [Nontrivial O] (a b : Fin N) :
             · exact absurd hca (not_le.2 h)
             · exact h
           simp [upGen, hbc.ne', not_lt.2 hbc.le]
-      rwa [hz, MonomialOrder.degree_zero, map_zero]
+      rw [hz, MonomialOrder.degree_zero, map_zero]
+      exact hpos
   have hsum := lduHom_X O N (a, b)
   dsimp only at hsum
   rw [hsum, ← Finset.add_sum_erase _ _ (Finset.mem_univ d), ht]
@@ -735,7 +733,8 @@ theorem lduHom_coeff_smul_injective : ∀ (O : Type) [CommRing O] (N : ℕ) (M :
   · intro m _
     rw [← one_smul O (c m), Subsingleton.elim (1 : O) 0, zero_smul]
   classical
-  by_contra! hne
+  by_contra hne
+  push_neg at hne
   obtain ⟨m1, hm1, hc1⟩ := hne
   have hT : (s.filter fun m => c m ≠ 0).Nonempty := ⟨m1, Finset.mem_filter.2 ⟨hm1, hc1⟩⟩
   obtain ⟨m0, hm0, hmax⟩ := Finset.exists_max_image _ (fun m => (ord N).toSyn (leadExp N m)) hT
@@ -810,7 +809,8 @@ theorem genSub_coeff_le : ∀ (O : Type) [CommRing O] (N : ℕ) (D : ℕ) (f : M
     intro i
     refine totalDegree_finsetSum_le fun b _ => ?_
     refine (totalDegree_mul _ _).trans ?_
-    rw [totalDegree_C, add_zero, X]
+    rw [totalDegree_C, add_zero]
+    rw [X]
     exact (totalDegree_monomial_le _ _).trans (by simp)
   have hdeg := GlobalTheory.SZShift.totalDegree_aeval_le_of_deg_le_one _ hg f
   have h1 : m.degree ≤ (GlobalTheory.HighWt.genSub O N f).totalDegree := by
@@ -840,7 +840,7 @@ namespace GlobalTheory.DiagRowSubst
 
 theorem diag_var (N : ℕ) (R : Type) [CommRing R] (d : Fin N → R) (v : Fin N × Fin N) :
     (∑ b : Fin N, C (Matrix.diagonal d v.1 b) * X (b, v.2) : MvPolynomial (Fin N × Fin N) R) = C (d v.1) * X v := by
-  simp only [Matrix.diagonal_apply, apply_ite C, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  simp only [Matrix.diagonal_apply, apply_ite C, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 theorem weight_prod (N : ℕ) (R : Type) [CommRing R] (d : Fin N → R) (m : Fin N × Fin N →₀ ℕ) :
     ∏ a, d a ^ Finsupp.weight (rowW N N) m a = m.prod (fun v e => d v.1 ^ e) := by
@@ -885,7 +885,7 @@ theorem rowSubst_diagonal_eq_sum_components : ∀ (O : Type) [CommRing O] (N : �
   Finset.sum_filter]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun m hm => ?_
-  rw [Finset.sum_ite_eq, ite_eq_left, mul_comm]
+  rw [Finset.sum_ite_eq, if_pos, mul_comm]
   rw [Fintype.mem_piFinset]
   intro a
   rw [Finset.mem_range, Nat.lt_succ_iff]
@@ -1000,7 +1000,7 @@ theorem rowSubst_transvection (O : Type) [CommRing O] (N : ℕ) (R : Type) [Comm
         Finset.sum_add_distrib, add_mul, ite_mul, Finset.sum_ite_eq]
       by_cases h : v.1 = a
       · have h' : a = v.1 := h.symm
-        simp only [h', true_and, ite_true]
+        simp only [h', true_and, if_true]
         simp [apply_ite C, ite_mul]
         ring
       · have h' : ¬ a = v.1 := fun e => h e.symm
@@ -1269,15 +1269,7 @@ namespace GlobalTheory.DualWeylDeg
 
 theorem weight_colW_apply {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (t : Fin N) :
     (Finsupp.weight (colW N N) m) t = ∑ a : Fin N, m (a, t) := by
-  classical
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp)]
-  simp only [Finset.sum_apply, Pi.smul_apply, colW, smul_eq_mul]
-  rw [Fintype.sum_prod_type]
-  simp only [Pi.single_apply]
-  rw [Finset.sum_comm, Finset.sum_eq_single t]
-  · simp
-  · intro b _ hb; simp; intro h; exact absurd h.symm hb
-  · simp
+  apply _root_.GlobalTheory.LeviCut.weight_colW_apply <;> assumption
 
 theorem totalDegree_le_of_mem_dualWeyl : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ)
     (f : MvPolynomial (Fin N × Fin N) O), f ∈ dualWeyl O N N ν → f.totalDegree ≤ ∑ a, ν a := by
@@ -1547,7 +1539,8 @@ theorem coefIn_of_domain : ∀ (O : Type) [CommRing O] [IsDomain O] [CharZero O]
   funext σ
   by_cases h : σ = τ
   · subst h
-    simpa only [Function.update_self] using Subtype.ext ((hpf _).trans hy.symm)
+    simp only [Function.update_self]
+    exact Subtype.ext ((hpf _).trans hy.symm)
   · simp [Function.update_of_ne h]
 
 end GlobalTheory.HighWt
@@ -1601,7 +1594,8 @@ theorem baseChange_holds : BaseChange := by
       Ideal.mem_span_singleton'] at hk
     obtain ⟨h, hh⟩ := hk
     have hgh : g = ϖ • h := by rw [smul_eq_C_mul, ← hh, mul_comm]
-    exact ⟨h, dualWeylSat O N N ν ϖ h hϖ.ne_zero (hgh ▸ hg), hgh⟩
+    refine ⟨h, ?_, hgh⟩
+    exact dualWeylSat O N N ν ϖ h hϖ.ne_zero (hgh ▸ hg)
 
 end GlobalTheory.HighWt
 
@@ -1632,7 +1626,8 @@ theorem dualWeyl_rowDeg_dominance (O : Type) [CommRing O] [IsDomain O] (N : ℕ)
     obtain ⟨K, sz, hsz, I, hshape, rfl⟩ := hx
     intro m hm
     have h := bideterminantDominance O N N K sz hsz I m hm
-    rwa [hshape] at h
+    rw [hshape] at h
+    exact h
   | zero =>
     intro m hm
     simp at hm
@@ -1642,7 +1637,8 @@ theorem dualWeyl_rowDeg_dominance (O : Type) [CommRing O] [IsDomain O] (N : ℕ)
     · exact hx m h
     · exact hy m h
   | smul c x _ hx =>
-    exact fun m hm => hx m (support_smul hm)
+    intro m hm
+    exact hx m (support_smul hm)
 
 theorem rename_rowPerm_mem (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ) (σ : Equiv.Perm (Fin N))
     (f : MvPolynomial (Fin N × Fin N) O) (hf : f ∈ dualWeyl O N N ν) :
@@ -1697,7 +1693,8 @@ theorem jointWt_bounds : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteVal
   have hmem : a0 ∈ alg O N lam := Algebra.subset_adjoin (Or.inr ⟨τ, w τ, ha0⟩)
   have hex : ∃ x : ∀ τ, dualWeyl O N N (res N (lam τ)),
       weightedHomogeneousComponent (rowW N N) (w τ) (x τ : MvPolynomial (Fin N × Fin N) O) ≠ 0 := by
-    by_contra! hne
+    by_contra hne
+    push_neg at hne
     have ha0z : a0 = 0 := by
       apply PiTensorProduct.ext
       apply MultilinearMap.ext
@@ -1736,10 +1733,12 @@ theorem jointWt_bounds : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteVal
       have : (b, s) = e (σ.symm b, s) := by simp [e]
       rw [this, Finsupp.mapDomain_apply_of_injective he]
     have hd := dualWeyl_rowDeg_dominance O N _ _ (rename_rowPerm_mem O N _ σ f hfmem) _ hm'
-    simpa only [hrd'] using hd
+    simp only [hrd'] at hd
+    exact hd
   have hres : ∀ t : Fin N, res N (lam τ) t = lam τ t := fun t => rfl
   refine ⟨?_, fun a => ⟨?_, ?_⟩⟩
-  · simpa [hres] using (key (Equiv.refl _)).2
+  · have h := (key (Equiv.refl _)).2
+    simpa [hres] using h
   · have hN : 0 < N := lt_of_le_of_lt (Nat.zero_le _) a.isLt
     obtain ⟨h1, h2⟩ := key (Equiv.swap ⟨N - 1, by omega⟩ a)
     have h3 := h1 (N - 1)
@@ -1799,7 +1798,8 @@ theorem GlobalTheory.HighWt.simpleSubquot_embeds : ∀ (O : Type) [CommRing O] [
     obtain ⟨z, hz, hfix⟩ := hwS
     let e : alg O N lam := ⟨a, Algebra.subset_adjoin (Or.inr ⟨τ, w τ, ha⟩)⟩
     refine ⟨e, z, ha, ?_⟩
-    rwa [hfix τ e ha]
+    rw [hfix τ e ha]
+    exact hz
 
 end
 end -- clump:auto

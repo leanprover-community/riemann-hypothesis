@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAffineHomOfField
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -59,31 +60,8 @@ namespace GlobalTheory.Heat.InvWt
 
 theorem top_le_preimage_of_fst {S : Type} [CommRing S] {X : Scheme.{0}} (w : Sp (DualNumber S) ⟶ X) (a : Sp S ⟶ X) (U : X.Opens)
     (h : spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ w = a) (ha : ⊤ ≤ a ⁻¹ᵁ U) : ⊤ ≤ w ⁻¹ᵁ U := by
-  intro p _
-  let p0 : PrimeSpectrum S := PrimeSpectrum.comap (algebraMap S (DualNumber S)) p
-  have hp : (spMap (TrivSqZeroExt.fstHom S S S).toRingHom) p0 = p := by
-    apply PrimeSpectrum.ext
-    ext z
-    show algebraMap S (DualNumber S) (TrivSqZeroExt.fst z) ∈ p.asIdeal ↔ z ∈ p.asIdeal
-    have hz : TrivSqZeroExt.inr (TrivSqZeroExt.snd z) ∈ p.asIdeal := by
-      apply p.isPrime.mem_of_pow_mem 2
-      rw [pow_two, TrivSqZeroExt.inr_mul_inr]
-      exact p.asIdeal.zero_mem
-    rw [TrivSqZeroExt.algebraMap_eq_inl]
-    constructor
-    · intro h1
-      rw [← TrivSqZeroExt.inl_fst_add_inr_snd_eq z]
-      exact p.asIdeal.add_mem h1 hz
-    · intro h1
-      have e : TrivSqZeroExt.inl (TrivSqZeroExt.fst z) = z - TrivSqZeroExt.inr (TrivSqZeroExt.snd z) := by
-        rw [eq_sub_iff_add_eq, TrivSqZeroExt.inl_fst_add_inr_snd_eq]
-      rw [e]
-      exact p.asIdeal.sub_mem h1 hz
-  have hm : p0 ∈ a ⁻¹ᵁ U := ha (Set.mem_univ _)
-  rw [← h] at hm
-  show w p ∈ U
-  rw [← hp]
-  exact hm
+  intros
+  apply _root_.GlobalTheory.CechKS.le_preimage_of_red <;> assumption
 
 theorem map_unitOn {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (u : Aˣ) :
     Units.map (spMap f).appTop.hom.toMonoidHom (unitOn u) = unitOn (Units.map f.toMonoidHom u) := by

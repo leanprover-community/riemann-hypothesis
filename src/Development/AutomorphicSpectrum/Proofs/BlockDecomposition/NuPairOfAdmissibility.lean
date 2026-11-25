@@ -242,50 +242,8 @@ theorem comap_twKer_phiMinus (ψ : AddChar k Circle) {m n : ℕ} (hnm : n ≤ m)
     (twKer (phiMinus k ψ τ) (derUnipM k m n) (derCharM k ψ m n)).comap
         (twKer τ (MirUin k (m + 1)) (mirChar k ψ m)).mkQ =
       twKer τ (derUnipM k (m + 1) n) (derCharM k ψ (m + 1) n) := by
-  have twKer_eq_map {G M W : Type} [Group G] [Group M] [AddCommGroup W] [Module ℂ W]
-      (ρ : Representation ℂ G W) (N₁ : Subgroup G) (θ₁ : N₁ →* ℂˣ) (s : M →* G)
-      (hs : ∀ (m : M) (n : N₁), ∃ h : s m * (n : G) * (s m)⁻¹ ∈ N₁, θ₁ ⟨_, h⟩ = θ₁ n)
-      (N₂ : Subgroup M) (θ₂ : N₂ →* ℂˣ) (N : Subgroup G) (θ : N →* ℂˣ)
-      (h1 : ∀ u : N₁, ∃ h : (u : G) ∈ N, θ ⟨u, h⟩ = θ₁ u)
-      (h2 : ∀ a : N₂, ∃ h : s a ∈ N, θ ⟨s a, h⟩ = θ₂ a)
-      (h3 : ∀ u : N, ∃ u₁ : N₁, ∃ a : N₂, (u : G) = u₁ * s a) :
-      twKer (twAct ρ N₁ θ₁ s hs) N₂ θ₂ = (twKer ρ N θ).map (twKer ρ N₁ θ₁).mkQ ∧
-        twKer ρ N₁ θ₁ ≤ twKer ρ N θ := by
-    refine ⟨le_antisymm ?_ ?_, ?_⟩
-    · refine Submodule.span_le.2 ?_
-      rintro w ⟨a, x, rfl⟩
-      induction x using Submodule.Quotient.induction_on with
-      | H v =>
-        obtain ⟨h, hθ⟩ := h2 a
-        refine ⟨ρ (s a) v - ((θ ⟨s a, h⟩ : ℂˣ) : ℂ) • v, Submodule.subset_span ⟨⟨_, h⟩, v, rfl⟩, ?_⟩
-        rw [hθ, Submodule.mkQ_apply, Submodule.Quotient.mk_sub, Submodule.Quotient.mk_smul]
-        rfl
-    · rw [Submodule.map_le_iff_le_comap]
-      refine Submodule.span_le.2 ?_
-      rintro w ⟨u, v, rfl⟩
-      obtain ⟨u₁, a, hu⟩ := h3 u
-      obtain ⟨hu₁, e1⟩ := h1 u₁
-      obtain ⟨ha, e2⟩ := h2 a
-      have hθ : θ u = θ₁ u₁ * θ₂ a := by
-        have : u = ⟨u₁, hu₁⟩ * ⟨s a, ha⟩ := Subtype.ext hu
-        rw [this, map_mul, e1, e2]
-      have hdec : ρ (u : G) v - ((θ u : ℂˣ) : ℂ) • v =
-          (ρ (u₁ : G) (ρ (s a) v) - ((θ₁ u₁ : ℂˣ) : ℂ) • ρ (s a) v) +
-            ((θ₁ u₁ : ℂˣ) : ℂ) • (ρ (s a) v - ((θ₂ a : ℂˣ) : ℂ) • v) := by
-        rw [hθ, hu, map_mul, mul_apply_eq_comp, Units.val_mul, smul_sub, mul_smul]
-        abel
-      have hz : ρ (u₁ : G) (ρ (s a) v) - ((θ₁ u₁ : ℂˣ) : ℂ) • ρ (s a) v ∈ twKer ρ N₁ θ₁ :=
-        Submodule.subset_span ⟨u₁, _, rfl⟩
-      show (twKer ρ N₁ θ₁).mkQ _ ∈ twKer (twAct ρ N₁ θ₁ s hs) N₂ θ₂
-      rw [hdec, map_add (f := _), Submodule.mkQ_apply, (Submodule.Quotient.mk_eq_zero _).2 hz, zero_add, map_smul]
-      refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, Submodule.Quotient.mk v, ?_⟩)
-      rw [Submodule.mkQ_apply, Submodule.Quotient.mk_sub, Submodule.Quotient.mk_smul]
-      rfl
-    · refine Submodule.span_le.2 ?_
-      rintro w ⟨u, v, rfl⟩
-      obtain ⟨h, hθ⟩ := h1 u
-      exact Submodule.subset_span ⟨⟨u, h⟩, v, by rw [hθ]⟩
-  obtain ⟨e, hle⟩ := twKer_eq_map τ (MirUin k (m + 1)) (mirChar k ψ m) _ (levi_stab ψ m)
+  obtain ⟨e, hle⟩ := _root_.GlobalTheory.CompanionTheory.BZMirStep.twKer_twAct_eq_map
+    τ (MirUin k (m + 1)) (mirChar k ψ m) _ (levi_stab ψ m)
     (derUnipM k m n) (derCharM k ψ m n) (derUnipM k (m + 1) n) (derCharM k ψ (m + 1) n)
     (GlobalTheory.CompanionTheory.BZMirStep.MirUin_step ψ hnm) (GlobalTheory.CompanionTheory.BZMirStep.levi_step ψ hnm)
     (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp hnm)

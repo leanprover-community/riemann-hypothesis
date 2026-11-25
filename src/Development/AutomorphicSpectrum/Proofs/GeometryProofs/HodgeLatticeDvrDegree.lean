@@ -57,7 +57,6 @@ import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -69,14 +68,8 @@ theorem toH_rhoH {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
     {t : SAB H X} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {d r : ℕ} {M : LieModel t.G ξ (Fin d → Ω)} (S : GermSys t ξ M)
     {ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)} {𝓗 : HodgeLat M.lat ρ H.bar r} (hg : S.Gives 𝓗) (p : Cpt ξ) (a : 𝓞 E)
     (y : (Fin d → X.presheaf.stalk p.1) × (Fin d → X.presheaf.stalk p.1)) :
-    toH S p (rhoH (S.g p).B a y) = 𝓗.ρH a (toH S p y) := by
-  have h1 := (_root_.GlobalTheory.CompanionTheory.Ar.Conj.Iso.rho_pairing _ _ _ _ _ _ _ _ (S.iso p)).2.2.2.2.1 a
-  have h2 := hg.1 a (transH (S.φ p) (S.ψ p) (S.lam p) (vmap (genMap ξ p) y))
-  have h3 := LinearMap.congr_fun h1 (vmap (genMap ξ p) y)
-  simp only [LinearMap.comp_apply] at h3
-  have h4 := vmap_rhoH (S.mapK p) a y
-  refine (congrArg (fun z => toVec Ω d (transH (S.φ p) (S.ψ p) (S.lam p) z)) h4).trans ?_
-  exact (congrArg (toVec Ω d) h3.symm).trans h2.symm
+    toH S p (rhoH (S.g p).B a y) = 𝓗.ρH a (toH S p y) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.Frame.toH_rhoH S hg p a y
 
 
 open GlobalTheory.CompanionTheory.Ar.Flat.DegZ in
@@ -102,7 +95,8 @@ theorem eigProj_toH_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {
     rw [map_sub, map_smul, hc, hm, sub_self]
   · exact (congrArg _ (toH_zero S p)).trans (map_zero _)
   · intro y y' h1 h2
-    exact (congrArg _ (toH_add S p y y')).trans ((map_add _ _ _).trans (by rw [h1, h2, add_zero]))
+    refine (congrArg _ (toH_add S p y y')).trans ?_
+    exact (map_add _ _ _).trans (by rw [h1, h2, add_zero])
 
 end GlobalTheory.CompanionTheory.Ar.Flat
 

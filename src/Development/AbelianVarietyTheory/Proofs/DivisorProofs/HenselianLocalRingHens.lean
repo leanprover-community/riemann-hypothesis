@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointedEtaleNbhdTransitionMapDirectedSystem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstPreorder
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BijectiveResidueCompEtaleHenselian
 public import Mathlib.RingTheory.Henselian
@@ -78,7 +79,7 @@ variable {R : Type} [CommRing R] [IsLocalRing R]
 theorem trans_algebraMap_eq_of_comp {i j : EtNbhd R} (hij : i ≤ j) (φ : i.A →ₐ[R] j.A)
     (hφ : j.pt.comp φ = i.pt) (a : i.A) :
     EtNbhd.trans hij (algebraMap i.A i.B a) = algebraMap j.A j.B (φ a) := by
-  exact GlobalTheory.Henselisation.EtNbhd.trans_algebraMap_eq_of_pt hij φ hφ a
+  apply _root_.GlobalTheory.Henselisation.EtNbhd.trans_algebraMap_eq_of_pt <;> assumption
 
 end StageHensel
 

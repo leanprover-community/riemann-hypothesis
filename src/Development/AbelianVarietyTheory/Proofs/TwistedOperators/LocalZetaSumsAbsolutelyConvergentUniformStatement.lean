@@ -411,7 +411,6 @@ noncomputable section
 
 namespace GlobalTheory.FinZeta.UnitaryBound
 
-open GlobalTheory.LFun
 
 theorem norm_prod_sub_one_le (c : ℝ) (M : Multiset ℂ) (h : ∀ z ∈ M, ‖z - 1‖ ≤ c) :
     ‖M.prod - 1‖ ≤ (1 + c) ^ M.card - 1 := by

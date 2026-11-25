@@ -98,7 +98,11 @@ theorem coeff_single_frob {Q : Type} [CommRing Q] (p : ℕ) (hp : p ≠ 0) (s : 
 theorem coeff_comb {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {σ ι : Type} [Fintype ι]
     (b : ι → B) (e : ι → MvPowerSeries σ Q) (α : σ →₀ ℕ) :
     coeff α (comb b e) = ∑ l, algebraMap B Q (b l) * coeff α (e l) := by
-  exact GlobalTheory.BasisLift.coeff_comb b e α
+  unfold comb
+
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun l _ => ?_
+  rw [MvPowerSeries.coeff_smul]
 
 end GlobalTheory.QLog.SmallFirst
 
@@ -170,7 +174,7 @@ theorem GlobalTheory.QLog.small_first_of_frob : ∀ (p : ℕ) [Fact p.Prime] (C 
         rw [key, map_mul, map_sub, map_natCast, ← hteq]; ring
       have h4 := F.frame.inj h3
       have hne : (Sum.inr j : Fin d ⊕ Fin k) ≠ Sum.inl i := Sum.inr_ne_inl
-      rw [ite_eq_right hne, sub_zero, h4]
+      rw [if_neg hne, sub_zero, h4]
       exact J.mul_mem_right _ hpJ
 
   have hW : ∑ m, F.σ (w m) * ∑ l, U l m * cc l ∈ J := by
@@ -187,7 +191,7 @@ theorem GlobalTheory.QLog.small_first_of_frob : ∀ (p : ℕ) [Fact p.Prime] (C 
     have : F.σ (w (Sum.inl i)) = (∑ m, F.σ (w m) * ∑ l, U l m * cc l) -
         ∑ m, F.σ (w m) * ((∑ l, U l m * cc l) - (if m = Sum.inl i then 1 else 0)) := by
       simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, ite_true]
+        Finset.mem_univ, if_true]
       ring
     rw [this]
     exact J.sub_mem hW hD
@@ -391,10 +395,11 @@ theorem coeff_smul_pow_char {σ k : Type} [DecidableEq σ] [Field k] (p : ℕ) [
   classical
   have hp0 : p ≠ 0 := (Fact.out : p.Prime).ne_zero
   rw [coeff_pow_char_sum, Finset.sum_eq_single β]
-  · rw [ite_eq_left rfl]
+  · rw [if_pos rfl]
   · intro b _ hb
-    rw [ite_eq_right]
-    exact fun hα => hb (smul_right_injective _ hp0 hα).symm
+    rw [if_neg]
+    intro hα
+    exact hb (smul_right_injective _ hp0 hα).symm
   · intro hn
     exact absurd (Finset.mem_Iic.2 (le_smul_of_one_le_left zero_le (Nat.one_le_iff_ne_zero.2 hp0))) hn
 
@@ -403,7 +408,7 @@ theorem coeff_pow_char_of_not {σ k : Type} [DecidableEq σ] [Field k] (p : ℕ)
   classical
   rw [coeff_pow_char_sum]
   refine Finset.sum_eq_zero fun b _ => ?_
-  rw [ite_eq_right]
+  rw [if_neg]
   intro hα; exact h ⟨b, hα.symm⟩
 
 end GlobalTheory.SmallSecondRoot
@@ -443,7 +448,8 @@ theorem exists_integral_cob1_congr_of_frobenius_congr : ∀ (p : ℕ) [Fact p.Pr
       rw [coeff_smul_pow_char, coeff_map, hu, ← map_pow, hrt]
     · rw [coeff_pow_char_of_not _ _ _ h, ← hres]
       apply ht
-      by_contra! hall
+      by_contra hall
+      push_neg at hall
       refine h ⟨Finsupp.mapRange (· / p) (Nat.zero_div p) γ, ?_⟩
       ext i
       simp [Nat.mul_div_cancel' (hall i)]
@@ -705,7 +711,11 @@ theorem hasSubst_yZero : HasSubst (yZero (O := O) (d := d)) :=
 theorem constantCoeff_subst_of {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ O}
     (ha : ∀ i, constantCoeff (a i) = 0) (f : MvPowerSeries σ O) :
     constantCoeff (subst a f) = constantCoeff f := by
-  exact GlobalTheory.Katz.SubstCalc.constantCoeff_subst_of_zero ha f
+  have hs : HasSubst a := hasSubst_of_constantCoeff_zero ha
+  have h1 : f = (f - C (constantCoeff f)) + C (constantCoeff f) := by ring
+  conv_lhs => rw [h1]
+  rw [subst_add hs, map_add (f := _), constantCoeff_subst_eq_zero hs ha (by simp), subst_C, zero_add]
+  simp
 
 theorem constantCoeff_pderiv {σ : Type} (i : σ) (f : MvPowerSeries σ O) :
     constantCoeff (MvPowerSeries.pderiv i f) = coeff (Finsupp.single i 1) f := by
@@ -751,7 +761,8 @@ theorem yZero_subst (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ : Is
   have : (fun s => subst (yZero (O := O) (d := d)) (μ s)) = fun i => X i := by
     have h := hμ.unit
     funext i
-    simpa [op, at2, yZero] using congrFun h i
+    have hi := congrFun h i
+    simpa [op, at2, yZero] using hi
   rw [this, subst_X_self]
 
 theorem yZero_inR (g : MvPowerSeries (Fin d) O) :
@@ -780,7 +791,7 @@ theorem linear_coeff_law (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ
     simp only [Fintype.sum_sum_type, yZero,
     Sum.elim_inl, Sum.elim_inr, map_zero, mul_zero, Finset.sum_const_zero, add_zero, pderiv_X] at h2
     simp only [Pi.single_apply, apply_ite, map_one, map_zero, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
+      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
     split_ifs at h2 ⊢ <;> exact h2
   have hsw : ∀ k : Fin d ⊕ Fin d, constantCoeff ((Sum.elim (fun i => (X (Sum.inr i) : MvPowerSeries (Fin d ⊕ Fin d) O))
       (fun i => X (Sum.inl i))) k) = 0 := by
@@ -792,7 +803,7 @@ theorem linear_coeff_law (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ
   rw [ReciprocityTheory.ChartRestriction.G.TB.ChartChgPfTP.pderiv_subst _ hsw, map_sum] at h2
   simp only [map_mul, constantCoeff_subst_of hsw] at h2
   simp only [Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, pderiv_X, Pi.single_apply, Sum.inr.injEq,
-    reduceCtorEq, ite_false, map_zero, mul_zero, Finset.sum_const_zero, add_zero, apply_ite, map_one, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
+    reduceCtorEq, if_false, map_zero, mul_zero, Finset.sum_const_zero, add_zero, apply_ite, map_one, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
   rw [← h2, hx]
 
 end GlobalTheory.Katz.SmallDeriv
@@ -803,7 +814,8 @@ theorem isLocalRing_of_integers {C : Type} [Field C] (v : Valuation C NNReal) (O
     [Algebra O C] (hv : v.Integers O) : IsLocalRing O := by
   haveI : Nontrivial O := (algebraMap O C).domain_nontrivial
   refine IsLocalRing.of_isUnit_or_isUnit_one_sub_self fun a => ?_
-  by_contra! h
+  by_contra h
+  push_neg at h
   have h1 : v (algebraMap O C a) < 1 :=
     lt_of_le_of_ne (hv.map_le_one a) (fun e => h.1 (hv.isUnit_of_one' e))
   have h2 : v (algebraMap O C (1 - a)) < 1 :=
@@ -853,7 +865,8 @@ theorem GlobalTheory.Katz.not_isUnit_coeff_of_coboundary_small : ∀ (p : ℕ) [
     map_C] at e
     have hl : π (coeff (Finsupp.single j 1) t) = 0 := (hmem _).2 (hlin j)
     rw [hl, map_zero, sub_zero] at e
-    simpa only [Matrix.vecMul, dotProduct, Pi.zero_apply, N, w, Matrix.of_apply] using e.symm
+    simp only [Matrix.vecMul, dotProduct, Pi.zero_apply, N, w, Matrix.of_apply]
+    exact e.symm
   have hN0 : (constantCoeff : MvPowerSeries (Fin d) (IsLocalRing.ResidueField O) →+* _).mapMatrix N = 1 := by
     ext s j
     simp only [RingHom.mapMatrix_apply, Matrix.map_apply, N, Matrix.of_apply, constantCoeff_map,
@@ -867,7 +880,7 @@ theorem GlobalTheory.Katz.not_isUnit_coeff_of_coboundary_small : ∀ (p : ℕ) [
     simp only [Matrix.vecMul_vecMul, Matrix.mul_adjugate, Matrix.zero_vecMul] at h1
     have h2 := congrFun h1 i
     simp only [Matrix.vecMul, dotProduct, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Pi.zero_apply] at h2
+      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, Pi.zero_apply] at h2
     exact (hdet.mul_right_eq_zero).1 (by rw [mul_comm]; exact h2)
   have hαi : 1 ≤ α i := Nat.pos_of_ne_zero (fun h => hi (h ▸ dvd_zero p))
   have hsub : α - Finsupp.single i 1 + Finsupp.single i 1 = α :=
@@ -876,7 +889,8 @@ theorem GlobalTheory.Katz.not_isUnit_coeff_of_coboundary_small : ∀ (p : ℕ) [
   simp only [w] at hc
   rw [coeff_map, coeff_pderiv, coeff_zero, hsub, map_mul] at hc
   have hcast : (((α - Finsupp.single i 1 : Fin d →₀ ℕ) i : ℕ) : O) + 1 = ((α i : ℕ) : O) := by
-    rw [Finsupp.tsub_apply, Finsupp.single_eq_same, ← Nat.cast_add_one, Nat.sub_add_cancel hαi]
+    rw [Finsupp.tsub_apply, Finsupp.single_eq_same]
+    rw [← Nat.cast_add_one, Nat.sub_add_cancel hαi]
   rw [hcast, map_natCast] at hc
   have hne : ((α i : ℕ) : IsLocalRing.ResidueField O) ≠ 0 := by
     obtain ⟨u, u', h⟩ := Nat.isCoprime_iff_coprime.2 ((Nat.Prime.coprime_iff_not_dvd hpr.out).2 hi)
@@ -1027,14 +1041,35 @@ open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory
 
 namespace GlobalTheory.TangentComb
 
+theorem in_top_add_smul {O Q σ : Type} [CommRing O] [CommRing Q] [Algebra O Q]
+    {f g : MvPowerSeries σ Q} (hf : In (⊤ : Ideal O) f) (hg : In (⊤ : Ideal O) g) (a : O) :
+    In (⊤ : Ideal O) (f + algebraMap O Q a • g) := by
+  intro α
+  obtain ⟨b, -, hb⟩ := hf α
+  obtain ⟨b', -, hb'⟩ := hg α
+  refine ⟨b + a * b', trivial, ?_⟩
+  rw [map_add (f := _), map_smul, hb, hb', map_add (f := _), map_mul, smul_eq_mul]
+
 theorem ql_add_smul {O Q : Type} [CommRing O] [CommRing Q] [Algebra O Q] {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O} (hμ : ∀ i, constantCoeff (μ i) = 0)
     {f g : MvPowerSeries (Fin d) Q} (hf : QL μ ⊤ f) (hg : QL μ ⊤ g) (a : O) :
-    QL μ ⊤ (f + algebraMap O Q a • g) := GlobalTheory.QLogBasis.ql_add_smul hμ hf hg a
+    QL μ ⊤ (f + algebraMap O Q a • g) := by
+  intros
+  apply _root_.GlobalTheory.TangentIndep.QL_comb <;> assumption
 
 theorem ql_zero {O Q : Type} [CommRing O] [CommRing Q] [Algebra O Q] {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O} (hμ : ∀ i, constantCoeff (μ i) = 0) :
-    QL μ ⊤ (0 : MvPowerSeries (Fin d) Q) := GlobalTheory.QLogBasis.ql_zero hμ
+    QL μ ⊤ (0 : MvPowerSeries (Fin d) Q) := by
+  have hμ' : ∀ i, constantCoeff (up Q μ i) = 0 := fun i => by
+    rw [up, ← coeff_zero_eq_constantCoeff_apply, coeff_map, coeff_zero_eq_constantCoeff_apply,
+      hμ, map_zero]
+  have h0 : cob1 (up Q μ) (0 : MvPowerSeries (Fin d) Q) = 0 := by
+    have := formalCoboundary_smul hμ' (0 : Q) (0 : MvPowerSeries (Fin d) Q)
+    rwa [zero_smul, zero_smul] at this
+  refine ⟨map_zero _, fun i => ⟨0, trivial, ?_⟩, ?_⟩
+  · simp [lin]
+  · rw [h0]
+    exact In.top_iff.2 ⟨0, map_zero _⟩
 
 end GlobalTheory.TangentComb
 
@@ -1051,7 +1086,8 @@ theorem GlobalTheory.TangentComb.main : ∀ (p : ℕ) [Fact p.Prime] (C : Type) 
     intro s
     induction s using Finset.induction_on with
     | empty =>
-      simpa only [Finset.sum_empty] using ⟨ql_zero hμ, c.isLie_zero hF.inj⟩
+      simp only [Finset.sum_empty]
+      exact ⟨ql_zero hμ, c.isLie_zero hF.inj⟩
     | insert j s hj ih =>
       rw [Finset.sum_insert hj, Finset.sum_insert hj, add_comm, add_comm (a j • L j)]
       exact ⟨ql_add_smul hμ ih.1 (he j) (a j),
@@ -1220,7 +1256,14 @@ theorem isUnit_of_isUnit_map {p : ℕ} {B O Q : Type} [CommRing B] [CommRing Q] 
 
 theorem exists_pow_eq {p : ℕ} [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C]
     {v : Valuation C NNReal} {O : Type} [CommRing O] [Algebra O C] (hv : v.Integers O) (a : O) :
-    ∃ r : O, r ^ p = a := ReciprocityTheory.PGsh.exists_root C v O hv a
+    ∃ r : O, r ^ p = a := by
+  obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (algebraMap O C a) (Fact.out : p.Prime).pos
+  have h1 : v z ≤ 1 := by
+    have := hv.map_le_one a
+    rw [← hz, map_pow] at this
+    exact (pow_le_one_iff_of_nonneg zero_le' (Fact.out : p.Prime).ne_zero).1 this
+  obtain ⟨r, hr⟩ := hv.exists_of_le_one h1
+  exact ⟨r, hv.hom_inj (by rw [map_pow, hr, hz])⟩
 
 theorem frob_matrix_isUnit : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (_ : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (G : PDivGroup p O) (d : ℕ) (c : QLog.Chart G d) (μ' : Fin d → MvPowerSeries (Fin d ⊕ Fin d) F.B), IsLift F.θ μ' → (∀ i, map F.θ (μ' i) = c.μ i) → ∀ (k : ℕ) (e : Fin d ⊕ Fin k → MvPowerSeries (Fin d) F.Q), IsBasis μ' e → IsAdapted F.θ μ' e → ∀ U : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B, (∀ i, In (⊤ : Ideal F.B) (frob p F.s (e i) - comb (fun l => (U * blk d k (p : F.B) 1) l i) e) ∧ ∀ i', i = Sum.inl i' → In (Ideal.span {(p : F.B)}) (frob p F.s (e i) - comb (fun l => (U * blk d k (p : F.B) 1) l i) e)) → IsUnit U := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F G d c μ' hL hμ k e hB hA U hU

@@ -155,21 +155,13 @@ theorem cmul (a b : 𝓞 F) : ((a * b : 𝓞 F) : F) = (a : F) * (b : F) := by
   | rfl
   | push_cast; ring
 
-private theorem vle_iff_valuation_le (x y : A.Fp) : (x ≤ᵥ y) ↔ valuation A.Fp x ≤ valuation A.Fp y := by
-  first
-  | exact Valuation.Compatible.vle_iff_le x y
-
-private theorem mem_valuationSubring_iff_valuation_le_one (x : A.Fp) : x ∈ 𝒪[A.Fp] ↔ valuation A.Fp x ≤ 1 := by
-  first
-  | exact Valuation.mem_integer_iff _ _
-
 theorem val_iff (a b : F) : valuation A.Fp (A.ιF a) ≤ valuation A.Fp (A.ιF b) ↔ p.valuation F a ≤ p.valuation F b := by
-  exact (vle_iff_valuation_le A _ _).symm.trans (A.val a b)
+  exact (Valuation.Compatible.vle_iff_le (v := valuation A.Fp) _ _).symm.trans (A.val a b)
 
 theorem mem_OF_iff (a : F) : A.ιF a ∈ 𝒪[A.Fp] ↔ p.valuation F a ≤ 1 := by
   have h := val_iff A a 1
   simp only [map_one] at h
-  rw [mem_valuationSubring_iff_valuation_le_one A]
+  rw [Valuation.mem_integer_iff]
   exact h
 
 theorem val_eq_one (a : 𝓞 F) (ha : a ∉ p.asIdeal) : p.valuation F (a : F) = 1 := by
@@ -225,7 +217,7 @@ theorem scal_iff (S : Set A.Ep) (hS : ∀ b ∈ 𝒪[A.Fp], ∀ z ∈ S, algebra
       algebraMap A.Fp A.Ep c * z ∈ S → algebraMap A.Fp A.Ep c' * z ∈ S := by
     intro c c' hc hv h
     have hu : c' / c ∈ 𝒪[A.Fp] := by
-      (rw [mem_valuationSubring_iff_valuation_le_one A, map_div₀, ← hv, div_self ((Valuation.ne_zero_iff _).2 hc)])
+      rw [Valuation.mem_integer_iff, map_div₀, ← hv, div_self ((Valuation.ne_zero_iff _).2 hc)]
     have h2 := hS _ hu _ h
     have e : c' / c * c = c' := by field_simp
     rwa [← mul_assoc, ← map_mul, e] at h2
@@ -291,7 +283,7 @@ theorem int_iff (hinv : ∀ x, sig (sig x) = x) (hfix : ∀ x : E, sig x = x →
     rw [map_mul, A.compat] at hzO
     have hv : valuation A.Fp (A.ιF (a : F)) = 1 := vFp_eq_one A _ (val_eq_one a ha)
     have hinvO : (A.ιF (a : F))⁻¹ ∈ 𝒪[A.Fp] := by
-      (rw [mem_valuationSubring_iff_valuation_le_one A, map_inv₀, hv, inv_one])
+      rw [Valuation.mem_integer_iff, map_inv₀, hv, inv_one]
     have hne : A.ιF (a : F) ≠ 0 := by
       intro h0
       rw [h0, map_zero] at hv

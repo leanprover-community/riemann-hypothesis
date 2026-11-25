@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsInvInvariantOfRight
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SemiMeasFiniteOnCompactsAndOpenPos
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SemiMeasIsMulLeftInvariant
@@ -88,24 +89,7 @@ theorem rightInv_of_fd (Γ : Subgroup N) [Countable Γ] (ν : Measure N) [ν.IsH
   exact map_eq_self_of_fd Γ ν h𝓝 hfin (Homeomorph.mulRight n₀) id bijective_id fun g x => mul_assoc _ _ _⟩
 
 theorem invInv_of_rightInv (ν : Measure N) [ν.IsHaarMeasure] [ν.IsMulRightInvariant] : ν.IsInvInvariant := by
-  haveI : IsFiniteMeasureOnCompacts ν.inv := Measure.IsFiniteMeasureOnCompacts.map ν (Homeomorph.inv N)
-  have hc := Measure.isMulLeftInvariant_eq_smul ν.inv ν
-  generalize Measure.haarScalarFactor ν.inv ν = c at hc
-  obtain ⟨K⟩ : Nonempty (TopologicalSpace.PositiveCompacts N) := inferInstance
-  have h0 : ν K ≠ 0 := (Measure.measure_pos_of_nonempty_interior ν K.interior_nonempty).ne'
-  have hf : ν K ≠ ⊤ := K.isCompact.measure_lt_top.ne
-  have h2 : ν = (c * c) • ν := by
-    have h : (c • ν).inv = c • ν.inv := Measure.map_smul _ (continuous_inv.measurable.aemeasurable)
-    rw [mul_smul, ← hc, ← h, ← hc, Measure.inv_inv]
-  have h3 : ((c * c : ℝ≥0) : ℝ≥0∞) * ν K = 1 * ν K := by
-    rw [one_mul]; conv_rhs => rw [h2]
-    simp
-  have h4 : c * c = 1 := by exact_mod_cast (ENNReal.mul_left_inj h0 hf).1 h3
-  have h5 : c = 1 := by
-    have : (c : ℝ) * c = 1 := by exact_mod_cast h4
-    have h6 : (c : ℝ) = 1 := by nlinarith [c.coe_nonneg]
-    exact_mod_cast h6
-  exact ⟨by rw [hc, h5, one_smul]⟩
+  apply _root_.GlobalTheory.CartanInt.isInvInvariant_of_right <;> assumption
 
 
 omit [LocallyCompactSpace N] [SecondCountableTopology N] [T2Space N] in

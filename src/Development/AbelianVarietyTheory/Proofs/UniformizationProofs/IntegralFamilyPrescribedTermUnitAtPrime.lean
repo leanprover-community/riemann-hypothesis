@@ -71,7 +71,7 @@ namespace GlobalTheory
 
 namespace FamIntAt
 
-theorem exists_extend {X Y Z : Scheme.{0}} [IsReduced Y] {L : LB X} (ζ : Z ⟶ Y) (ξ : Z)
+theorem exists_extend {X Y Z : Scheme.{0}} [IsReduced Y] {L : LB X} (hL : L.IsLB) (ζ : Z ⟶ Y) (ξ : Z)
     (hξ : ∀ z : Z, z = ξ) (hd : ∀ U : Y.Opens, U ≠ ⊥ → ζ ξ ∈ U) {K : Type} [Fintype K] (φ : K → (Y ⟶ X))
     (ε : K → ℤ) (t : LB.Sec (LB.LinComb L (fun k => ζ ≫ φ k) ε))
     (H : ∀ q : Y, ∃ (j : K → L.ι) (V : Y.Opens) (a : Γ(Y, V)), q ∈ V ∧ V ≤ LB.wchart L φ j ∧
@@ -142,7 +142,7 @@ theorem exists_psi_of_psiIn {D : DegPre R} {χ : D.X} {I : Ideal R} (h : D.PsiIn
     ∃ Ψ : LB.Sec (LB.LinComb D.P.L (Y := Spec (CommRingCat.of R)) (K := PUnit) (fun _ => (D.c χ).left) (fun _ => -1)),
       ∀ (T : Scheme.{0}) (r : T ⟶ (TK R).left) (z : T) (J), Good D.P.L z J →
         sval Ψ (r ≫ jK R) z J = (val (D.psi χ) r z J).val := by
-  obtain ⟨s, hs⟩ := exists_extend (jK R) (genPt R) eq_genPt (PsiInPull.jK_mem _) (K := PUnit)
+  obtain ⟨s, hs⟩ := exists_extend D.P.isLB (jK R) (genPt R) eq_genPt (PsiInPull.jK_mem _) (K := PUnit)
     (fun _ => (D.c χ).left) (fun _ => -1) (Geo.Tor.genSec (D.psi χ) (D.psi_gen χ)) (fun q => by
       obtain ⟨p, hp⟩ := exists_chart D.P.isLB ((D.c χ).left q)
       obtain ⟨_, ⟨V, hV, rfl⟩, hvV, hVp⟩ := (Spec (CommRingCat.of R)).isBasis_affineOpens.exists_subset_of_mem_open
@@ -241,7 +241,7 @@ theorem exists_inv {D : DegPre R} {W : (Spec (CommRingCat.of R)).Opens} (ψ : Ps
   have hc : ∀ (T : Scheme.{0}) (τ : T ⟶ (TK R).left) (z : T), gs τ z ⊤ (scal (jK R) (r₀ ^ (∑ q ∈ S, n q))) =
       gs (τ ≫ jK R) z ⊤ ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom (r₀ ^ (∑ q ∈ S, n q))) := fun T τ z =>
     gs_pull τ (jK R) z ⊤ trivial _
-  obtain ⟨s, hs⟩ := exists_extend (jK R) (genPt R) eq_genPt (PsiInPull.jK_mem _) (K := PUnit)
+  obtain ⟨s, hs⟩ := exists_extend D.P.isLB (jK R) (genPt R) eq_genPt (PsiInPull.jK_mem _) (K := PUnit)
     (fun _ => (D.c ρ).left) (fun _ => - -1) (SecOps.secScale (scal (jK R) (r₀ ^ (∑ q ∈ S, n q)))
       (Geo.Tor.genSec (LB.invGen D.P.L _ _ (D.psi ρ)) (invGen_isGen _ _ _ _ (D.psi_gen ρ)))) (fun q => by
       obtain ⟨q', hq', hqq⟩ : ∃ q' ∈ S, q ∈ V q' := by simpa using hS (Set.mem_univ q)

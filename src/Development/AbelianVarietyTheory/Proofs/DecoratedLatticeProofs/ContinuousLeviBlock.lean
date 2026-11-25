@@ -43,6 +43,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HeckeFormNSOfHeckeForm
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MixSDblDecZero
+import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicConjTransposeBlockMatrixTwoByTwoFin
 
 @[expose] public section
 
@@ -59,14 +60,7 @@ variable {D : D7} {n : ℕ}
 
 theorem lower_eq_zero {p : G D n} (hp : p ∈ P D n) (i j : Fin n) :
     mat p (finSumFinEquiv (.inr i)) (finSumFinEquiv (.inl j)) = 0 := by
-  have h := (hp (Pi.single (finSumFinEquiv (.inl j)) 1)).1 (by
-    ext k
-    have : (finSumFinEquiv (Sum.inr k : Fin n ⊕ Fin n)) ≠ finSumFinEquiv (.inl j) := by
-      rw [Ne, finSumFinEquiv.apply_eq_iff_eq]; simp
-    simp only [LinearMap.funLeft_apply, Pi.single_eq_of_ne this, Pi.zero_apply])
-  have h2 := congrFun h i
-  simp only [LinearMap.funLeft_apply, Matrix.mulVec_single_one, Pi.zero_apply] at h2
-  exact h2
+  apply _root_.GlobalTheory.StdUnn.Model.lower_eq_zero <;> assumption
 
 theorem blkA_mul {p q : G D n} (hq : q ∈ P D n) : blkA (mat (p * q)) = blkA (mat p) * blkA (mat q) := by
   ext i j
@@ -104,24 +98,7 @@ theorem isCompact_K : IsCompact (K D n : Set (G D n)) :=
   isCompact_levelAll (isCMExt_host D) _ _ _
 
 theorem isClosed_P : IsClosed (P D n : Set (G D n)) := by
-  haveI := t2Space_adeleRing' (F := D.host.F)
-  haveI := isTopologicalRing_tens (F := D.host.F) (E := D.host.E) (R := AF D.host.F)
-  haveI := t2Space_tensorProduct_finiteExtension (F := D.host.F) (E := D.host.E) (R := AF D.host.F)
-  have : (P D n : Set (G D n)) = ⋂ x ∈ upperHalf D n, ({g | (mat g).mulVec x ∈ upperHalf D n} ∩
-      {g | (mat g⁻¹).mulVec x ∈ upperHalf D n}) := by
-    ext g
-    simp only [Set.mem_iInter, Set.mem_inter_iff, Set.mem_setOf_eq, SetLike.mem_coe]
-    refine ⟨fun h x hx => ⟨(h x).1 hx, ((P D n).inv_mem h x).1 hx⟩, fun h x => ⟨fun hx => (h x hx).1, fun hx => ?_⟩⟩
-    have := (h _ hx).2
-    change (mat g⁻¹).mulVec ((mat g).mulVec x) ∈ _ at this
-    rwa [Matrix.mulVec_mulVec, show mat g⁻¹ * mat g = mat (g⁻¹ * g) from rfl, inv_mul_cancel,
-      show mat (1 : G D n) = 1 from rfl, Matrix.one_mulVec] at this
-  have hU : IsClosed (upperHalf D n : Set (Fin (n + n) → AE D)) :=
-    isClosed_eq (f := fun (x : Fin (n + n) → AE D) (i : Fin n) => x (finSumFinEquiv (Sum.inr i : Fin n ⊕ Fin n)))
-      (g := fun _ => 0) (continuous_pi fun i => continuous_apply _) continuous_const
-  rw [this]
-  exact isClosed_biInter fun x _ => (hU.preimage (continuous_mat.matrix_mulVec continuous_const)).inter
-    (hU.preimage ((continuous_mat.comp continuous_inv).matrix_mulVec continuous_const))
+  apply _root_.GlobalTheory.StdUnn.Model.isClosed_P <;> assumption
 
 end GlobalTheory.StdUnn.HeightExists
 

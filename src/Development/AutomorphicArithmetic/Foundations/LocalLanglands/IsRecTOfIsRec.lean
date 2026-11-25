@@ -145,11 +145,8 @@ def IsRecT (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop := ∃ a ha, L
 representations of the groups `GL_n(E_w)` to Weil–Deligne representations satisfying `IsRecT`.
 
 This is the form of the local Langlands correspondence for `GL_n` that the proof of the main
-theorems uses, and it is proved in this repository as `UpperTheory.Zero.LLC.recTExists`. The full
-correspondence, characterized by `GlobalTheory.LocLanglands.IsRecLit`, exists by
-[Harris and Taylor, *The geometry and cohomology of some simple Shimura varieties*][harris2001]
-and [Henniart, *Une preuve simple des conjectures de Langlands pour GL(n) sur un corps
-p-adique*][henniart2000]; the proof does not use it. -/
+theorems uses, and it is proved in this repository as `UpperTheory.Zero.LLC.recTExists`. The proof
+does not use the full correspondence, characterized by `GlobalTheory.LocLanglands.IsRecLit`. -/
 def RecTExists : Prop :=
   ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω)
     (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w), ∃ rc, IsRecT h rc

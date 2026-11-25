@@ -4,7 +4,8 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocCl
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameFactorsLocalUnitsAlmostAll
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocalDenominators
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExists
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LatExistsOfSteps
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnramifiedDegreeOneOfNcardPlacesOver
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
@@ -140,7 +141,8 @@ variable {D : D7}
 theorem exists_diff_not_mem (P : HeightOneSpectrum (𝓞 D.host.E))
     (hP : ((gS D : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal) :
     ∃ m : 𝓞 D.host.F, m ∈ differentIdeal ℤ (𝓞 D.host.F) ∧ m ∉ (below D P).asIdeal := by
-  have h := Formalism.L2.SG.Pf.LatEx.ddG_of D Formalism.L2.SG.Pf.LatEx.splitDiff_holds P hP
+  have h := GlobalTheory.St.Lat.ddG_of D GlobalTheory.unramified_degree_one_of_ncard_placesOver
+    Formalism.L2.SG.Pf.LatEx.splitDiff_holds P hP
   rw [Ideal.map_le_iff_le_comap] at h
   obtain ⟨m, hm, hmP⟩ := Set.not_subset.1 h
   exact ⟨m, hm, hmP⟩

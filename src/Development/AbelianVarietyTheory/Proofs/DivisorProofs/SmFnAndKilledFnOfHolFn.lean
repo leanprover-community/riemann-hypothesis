@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegativeFrameDomainProductOpenPreconnectedStable
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Mathlib.Algebra.Order.Floor.Extended
@@ -85,16 +86,7 @@ theorem hasDerivAt_exp_entry (X : Mt n) (a b : Fin n) :
   exact (LinearMap.toContinuousLinearMap L).hasFDerivAt.comp_hasDerivAt (0 : ℝ) h
 
 private theorem isOpen_frDom' (H : Mt n) (q : ℕ) : IsOpen (frDom H q) := by
-  have e : frDom H q = {x : Mt n | x.det ≠ 0} ∩ ⋂ i : Fin (n + 1), {x : Mt n |
-      0 < ReciprocityTheory.ChartRestriction.G.FD.psgn q i * (ReciprocityTheory.ChartRestriction.G.FD.lminor (-(xᴴ * H * x)) i).re} := by
-    ext x
-    simp only [frDom, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_iInter]
-  rw [e]
-  refine IsOpen.inter (isOpen_ne_fun continuous_id.matrix_det continuous_const)
-    (isOpen_iInter_of_finite fun i => ?_)
-  refine isOpen_lt continuous_const (continuous_const.mul (Complex.continuous_re.comp ?_))
-  exact ((((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul
-    continuous_id).neg).matrix_submatrix _ _).matrix_det
+  apply _root_.GlobalTheory.HolDict.FrameDom.isOpen_frDom <;> assumption
 
 theorem isOpen_frDoms (Hm : ι → Mt n) (q : ι → ℕ) : IsOpen (frDoms Hm q) := by
   have e : frDoms Hm q = ⋂ τ, (fun x : ι → Fin n → Fin n → ℂ => (Matrix.of (x τ) : Mt n)) ⁻¹' frDom (Hm τ) (q τ) := by

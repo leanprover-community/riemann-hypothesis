@@ -1249,10 +1249,7 @@ theorem tanScal_iff_lieAt (act : OActN D.O A) (c : 𝓞 D.F) (r : R') (v : epsPt
   rw [t1, t2]
 
 theorem tv_sum_lieAt {κ : Type} (s : Finset κ) (f : κ → TanM x A) : tv (∑ i ∈ s, f i) = ∏ i ∈ s, tv (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [tv_zero]
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.prod_insert hi, tv_add, ih]
+  apply _root_.GlobalTheory.LieFrameCoord.tangent_vector_finset_sum_eq_prod <;> assumption
 
 theorem eig_iff_lieAt (act : OActN D.O A) (c : 𝓞 D.F) (r : R') (u : TanM x A) :
     ReciprocityTheory.ChartRestriction.G.PullbackSections.actR (x0 := x) (S := R') (act.toF D) c u = r • u ↔

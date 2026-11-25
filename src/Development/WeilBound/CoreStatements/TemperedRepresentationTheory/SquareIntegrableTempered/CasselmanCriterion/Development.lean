@@ -127,7 +127,7 @@ theorem exists_coeff_geometric : ∀ (k : Type) [Field k] [ValuativeRel k] [Topo
       f y = 1 := by
     have h0 : ¬ ∀ f : Module.Dual ℂ (GroundTheory.Automorphic.Parabolic.JacquetModule k N β π), f y = 0 :=
       fun h' => hy ((Module.forall_dual_apply_eq_zero_iff ℂ y).1 h')
-    push Not at h0
+    push_neg at h0
     obtain ⟨f, hf⟩ := h0
     exact ⟨(f y)⁻¹ • f, by simp [hf]⟩
 
@@ -401,24 +401,24 @@ theorem leviEmb_zj {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (t : k�
     · subst hil
       rw [diagonal_apply_eq]
       by_cases hj : a ≤ j
-      · have hz : Zl.JC.zj d t j a = Matrix.GeneralLinearGroup.scalar (Fin (d a)) t := ite_eq_left hj
+      · have hz : Zl.JC.zj d t j a = Matrix.GeneralLinearGroup.scalar (Fin (d a)) t := if_pos hj
         have hD : zjDiag d hd t j (stdBlocks d hd ⟨a, i⟩) = t := by
-          simp only [zjDiag, hb, ite_eq_left hj]
+          simp only [zjDiag, hb, if_pos hj]
         rw [hz, hD]
         simp
-      · have hz : Zl.JC.zj d t j a = 1 := ite_eq_right hj
+      · have hz : Zl.JC.zj d t j a = 1 := if_neg hj
         have hD : zjDiag d hd t j (stdBlocks d hd ⟨a, i⟩) = 1 := by
-          simp only [zjDiag, hb, ite_eq_right hj]
+          simp only [zjDiag, hb, if_neg hj]
         rw [hz, hD]
         simp
     · have hne : stdBlocks d hd ⟨a, i⟩ ≠ stdBlocks d hd ⟨a, l⟩ := fun e =>
         hil (by simpa using (stdBlocks d hd).injective e)
       rw [diagonal_apply_ne _ hne]
       by_cases hj : a ≤ j
-      · have hz : Zl.JC.zj d t j a = Matrix.GeneralLinearGroup.scalar (Fin (d a)) t := ite_eq_left hj
+      · have hz : Zl.JC.zj d t j a = Matrix.GeneralLinearGroup.scalar (Fin (d a)) t := if_pos hj
         rw [hz]
         simp [hil]
-      · have hz : Zl.JC.zj d t j a = 1 := ite_eq_right hj
+      · have hz : Zl.JC.zj d t j a = 1 := if_neg hj
         rw [hz]
         simp [hil]
   · rw [leviEmb_apply_ne k _ _ hab, diagonal_apply_ne]
@@ -432,10 +432,10 @@ theorem zjDiag_ratio {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) {t : 
   unfold zjDiag
   by_cases hi : Zl.JC.blockIdx d hd i ≤ j
   · by_cases hl : Zl.JC.blockIdx d hd l ≤ j
-    · simp [ite_eq_left hi, ite_eq_left hl]
-    · simpa [ite_eq_left hi, ite_eq_right hl] using ht
+    · simp [if_pos hi, if_pos hl]
+    · simpa [if_pos hi, if_neg hl] using ht
   · have hl : ¬ Zl.JC.blockIdx d hd l ≤ j := fun e => hi (hil.le.trans e)
-    simp [ite_eq_right hi, ite_eq_right hl]
+    simp [if_neg hi, if_neg hl]
 
 theorem zjDiag_eq {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (t : kˣ) (j : Fin h) {i l : Fin N}
     (hil : Zl.JC.blockIdx d hd i = Zl.JC.blockIdx d hd l) :
@@ -688,8 +688,8 @@ theorem le_of_mk_eq {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (hpos 
     (coe_leviEmb_zj d hd t j)
     (mul_mem (inv_mem (hK hx')) (hK hx)) (mul_mem (hK hy) (inv_mem (hK hy'))) hz heq
   · by_cases hi : Zl.JC.blockIdx d hd i ≤ j
-    · exact Or.inl (ite_eq_left hi)
-    · exact Or.inr (ite_eq_right hi)
+    · exact Or.inl (if_pos hi)
+    · exact Or.inr (if_neg hi)
   · simp [Zl.JC.blockIdx]
   · have : ¬ (⟨j.val + 1, hj⟩ : Fin h) ≤ j := by
       rw [Fin.le_def]; simp
@@ -740,9 +740,9 @@ theorem le_of_mk_eq {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (hpos 
     (hy' : y' ∈ congruenceSubgroup k N m) {r r' : ℕ}
     (e : (QuotientGroup.mk (x * (leviEmb k (stdBlocks d hd) (Zl.JC.zj d t j)) ^ r * y) : AdGL k N) =
       QuotientGroup.mk (x' * (leviEmb k (stdBlocks d hd) (Zl.JC.zj d t j)) ^ r' * y')) :
-    r' ≤ r := by
-  exact GlobalTheory.CompanionTheory.ContractingCosets.le_of_mk_eq d hd hpos t ht j hj m hx hy hx'
-    hy' e
+    r' ≤ r :=
+  GlobalTheory.CompanionTheory.ContractingCosets.le_of_mk_eq
+    d hd hpos t ht j hj m hx hy hx' hy' e
 
 end ContractingCosetsPort
 
@@ -1158,9 +1158,9 @@ theorem modulus_zj_lt_one : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologic
     · have h1 : Matrix.GeneralLinearGroup.det (Zl.JC.zj d t j a) = t ^ d a := by
         apply Units.ext
         simp [Zl.JC.zj, ha, Matrix.GeneralLinearGroup.scalar, Matrix.scalar_apply, Matrix.det_diagonal]
-      rw [h1, hpow, ite_eq_left ha]
+      rw [h1, hpow, if_pos ha]
     · have h1 : Zl.JC.zj d t j a = 1 := by simp [Zl.JC.zj, ha]
-      rw [h1, ite_eq_right ha, map_one]
+      rw [h1, if_neg ha, map_one]
       exact (hone 1).2 (by simp)
   have hE : 0 < (∑ a with a ≤ j, (d a : ℤ)) * ∑ b with j < b, (d b : ℤ) := by
     refine mul_pos (Finset.sum_pos (fun a _ => by exact_mod_cast hpos a) ⟨j, by simp⟩)
@@ -1263,9 +1263,9 @@ theorem piTensor_zj : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpac
         = (if a ≤ j then c a else 1) • f a := by
       intro a
       by_cases ha : a ≤ j
-      · simp only [Zl.JC.zj, ite_eq_left ha]
+      · simp only [Zl.JC.zj, if_pos ha]
         exact hc a (f a)
-      · simp [Zl.JC.zj, ite_eq_right ha]
+      · simp [Zl.JC.zj, if_neg ha]
     simp only [hf]
     rw [MultilinearMap.map_smul_univ, Finset.prod_filter]
     simp only [RingHom.id_apply]
@@ -1313,7 +1313,7 @@ theorem exists_mem_not_mem_of_subQuot_equiv :
   intro M W X _ _ _ _ _ ρ σ S T hE hX
   obtain ⟨e⟩ := hE
   by_contra h
-  push Not at h
+  push_neg at h
   have hle : S.toSubmodule ≤ T.toSubmodule := fun s hs => h s hs
   haveI : Subsingleton (S.toSubmodule ⧸ T.toSubmodule.comap S.toSubmodule.subtype) :=
     Submodule.Quotient.subsingleton_iff.mpr (Submodule.comap_subtype_eq_top.mpr hle)

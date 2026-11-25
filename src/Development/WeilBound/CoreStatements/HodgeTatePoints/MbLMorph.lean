@@ -66,12 +66,16 @@ theorem hom_eq_of_points {ξ : Spec (CommRingCat.of Ω) ⟶ X} {ξ' : Spec (Comm
 variable {o : Type} [CommRing o] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω}
   {o' : Type} [CommRing o'] [Algebra o' Ω'] {κ' : Type} {y : κ' → Ω'}
 
+theorem specializes_of_dominates (M : PModel o x) (M' : PModel o' y) {i : Ω →+* Ω'} {f g : M'.X ⟶ M.X}
+    (hf : Dominates M'.ξ M.ξ f i) (hg : Dominates M'.ξ M.ξ g i) (q : M'.X) : g q ⤳ f q := by
+  apply GlobalTheory.CompanionTheory.Ar.ChMorph.specializes_of_dominates <;> assumption
+
 theorem existsUnique_dominates :
     ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x)
       (o' : Type) [CommRing o'] (Ω' : Type) [Field Ω'] [Algebra o' Ω'] (κ' : Type) [Finite κ'] (y : κ' → Ω')
       (M' : PModel o' y) (i : Ω →+* Ω'), (∀ p', p' ∈ ctrSet o x i M'.ξ) →
-      ∃! f : M'.X ⟶ M.X, Dominates M'.ξ M.ξ f i := by
-  exact GlobalTheory.CompanionTheory.Ar.ChMorph.existsUnique_dominates
+      ∃! f : M'.X ⟶ M.X, Dominates M'.ξ M.ξ f i :=
+  _root_.GlobalTheory.CompanionTheory.Ar.ChMorph.existsUnique_dominates
 
 end PositivityTheory.HtPt.Mb.LMorph.ChMorph
 

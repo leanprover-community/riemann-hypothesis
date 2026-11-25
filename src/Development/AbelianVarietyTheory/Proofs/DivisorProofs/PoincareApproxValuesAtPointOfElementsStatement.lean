@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApproximateSeriesLeadingTermFourierSystem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCorrectionApproximateIdealSections
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothConeInteriorDefiniteBalancedForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothConeFaceOfInteriorCommonPoint
@@ -226,7 +228,7 @@ theorem exists_gap : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero 
         rw [hj, mul_assoc, hS.eq j]
         have := hlam j
         exact_mod_cast (le_add_of_nonneg_right this)
-      · push Not at h
+      · push_neg at h
         have hc : IsCone bar φ ![δ i] := by
           have := hF.face _ _ δ ⟨fun _ : Fin 1 => i, fun _ _ _ => Subsingleton.elim _ _⟩ hδ
           convert this using 1
@@ -432,7 +434,8 @@ theorem exists_dominant (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O
     have hc : IsCone bar φ ![pull e.toLinearMap (γ j)] := by
       have := (hφ.face _ 1 γ ⟨fun _ => j, fun _ _ _ => Subsingleton.elim _ _⟩ hγ).pull_equiv e
       have h0 : ![pull e.toLinearMap (γ j)] = fun _ : Fin 1 => pull e.toLinearMap (γ j) := funext fun i => by simp
-      rwa [h0]
+      rw [h0]
+      exact this
     have h1 := hgap _ hc fun j' hj => h ⟨j', hj⟩
     rw [← hlin' _ (pull_mem _ (hγ.mem j)), evalZ_pull φ (r := e.toLinearMap) e.surjective, mul_assoc, hs.eq j] at h1
     have h2 : D * ∑ i, γ j (a₀ i) (a₀ i) + (∑ j, lam' (γ j) + 1) ≤ lin W a (pull e.toLinearMap (γ j)) := by
@@ -479,26 +482,14 @@ open IsLocalRing in
 variable {V : Type} [CommRing V] [IsLocalRing V] [IsNoetherianRing V] in
 private theorem mem_of_forall_mem_sup_maximalIdeal_pow' (N : Ideal V) (x : V)
     (hx : ∀ e : ℕ, x ∈ N ⊔ maximalIdeal V ^ e) : x ∈ N := by
-  have hbot := Ideal.iInf_pow_smul_eq_bot_of_isLocalRing (R := V) (M := V ⧸ N) (maximalIdeal V)
-    (maximalIdeal.isMaximal V).ne_top
-  rw [← Ideal.Quotient.eq_zero_iff_mem]
-  have hmem : Ideal.Quotient.mk N x ∈
-      ⨅ i : ℕ, (maximalIdeal V ^ i • ⊤ : Submodule V (V ⧸ N)) := by
-    refine Submodule.mem_iInf _ |>.2 fun e => ?_
-    obtain ⟨a, ha, y, hy, rfl⟩ := Submodule.mem_sup.1 (hx e)
-    have h1 : Ideal.Quotient.mk N (a + y) = y • Ideal.Quotient.mk N 1 := by
-      rw [map_add (f := _), Ideal.Quotient.eq_zero_iff_mem.2 ha, zero_add, Algebra.smul_def, map_one,
-        mul_one]
-      rfl
-    rw [h1]
-    exact Submodule.smul_mem_smul hy Submodule.mem_top
-  rwa [hbot] at hmem
+  apply _root_.GlobalTheory.ApproxCorr.mem_of_forall_mem_sup <;> assumption
 
 open IsLocalRing in
 variable {V : Type} [CommRing V] [IsLocalRing V] [IsNoetherianRing V] in
 private theorem exists_not_mem_span_mul_maximalIdeal_sup_pow [IsDomain V] {g : V} (hg : g ≠ 0) :
     ∃ e : ℕ, g ∉ Ideal.span {g} * maximalIdeal V ⊔ maximalIdeal V ^ e := by
-  by_contra! h
+  by_contra h
+  push_neg at h
   have hg' := mem_of_forall_mem_sup_maximalIdeal_pow' _ g h
   obtain ⟨z, hz, hgz⟩ := Ideal.mem_span_singleton_mul.1 hg'
   have hz1 : z = 1 := by
@@ -685,15 +676,7 @@ theorem lin_smul {s l : ℕ} (W : Matrix (Fin s) (Fin s) ℤ) {X : Type} [AddCom
 theorem prod_mono {s l m : ℕ} (W : Matrix (Fin s) (Fin s) ℤ) {X V : Type} [AddCommGroup X] [CommRing V] (t : Fin m → V)
     (δ : Fin m → LinearMap.BilinForm ℤ X) (h : ∀ i y, 0 ≤ qW W (δ i) y) (a : Fin l × Fin s → X) :
     ∏ i, mono W t δ (fun v => a (i, v)) = ∏ j, t j ^ (lin W a (δ j)).toNat := by
-  simp only [mono]
-  rw [Finset.prod_comm]
-  refine Finset.prod_congr rfl fun j _ => ?_
-  rw [Finset.prod_pow_eq_pow_sum]
-  congr 1
-  have h0 : 0 ≤ lin W a (δ j) := Finset.sum_nonneg fun i _ => h j _
-  apply Int.natCast_inj.1
-  rw [Int.toNat_of_nonneg h0, lin, Nat.cast_sum]
-  exact Finset.sum_congr rfl fun i _ => Int.toNat_of_nonneg (h j _)
+  apply _root_.GlobalTheory.Poinc.leadingTermLemmas.prod_mono <;> assumption
 
 end GlobalTheory.Poinc.ValuationRepresentative
 
@@ -826,7 +809,8 @@ theorem GlobalTheory.Poinc.Sep.values_of_elements : ∀ (O : Type) [CommRing O] 
       Finset.prod_induction _ IsUnit (fun _ _ => IsUnit.mul) isUnit_one fun i _ => (Φ.u_unit y _).choose_spec
     obtain ⟨h, hh, hhp⟩ := (hc (Function.update c₀ i₀ c)).2 hIp
     obtain ⟨h', hh', hhp'⟩ := (hc (Function.update c₀ i₀ c')).2 hIp
-    rw [hsplit, hzero, _root_.mul_one, RingHom.mem_ker, map_sub, sub_eq_zero] at hhp hhp'
+    rw [hsplit, hzero, _root_.mul_one] at hhp hhp'
+    rw [RingHom.mem_ker, map_sub, sub_eq_zero] at hhp hhp'
     have hUe : ev (∏ i ∈ Finset.univ.erase i₀, Φ.u y (fun v => a (i, v)) (c₀ i)) ≠ 0 := (hU.map ev).ne_zero
     have hce : ev (Φ.u y mu c') ≠ 0 := (hc'.map ev).ne_zero
     refine ⟨ev h / ev h', div_mem (hO' h hh).1 (hO' h' hh').1, ?_⟩

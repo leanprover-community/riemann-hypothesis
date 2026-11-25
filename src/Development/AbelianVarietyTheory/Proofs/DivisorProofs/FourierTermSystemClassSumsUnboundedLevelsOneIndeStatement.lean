@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateSimilitudeGeometricPointsOfGenericDvr
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasTraitsOnOfHasTraitsP
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.NormNatCastPadicAlgClOfCoprime
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsClassicalPointCentredClosedPointArithmetic
@@ -244,7 +245,8 @@ theorem tower_same {I : Type} {X₁ : GlobalTheory.GSep.GSet} {act : I → (X₁
   refine ⟨P₀, a' ≫ 𝔗.φ, a', fun _ => 𝟙 _, ?_, ha', ?_, hr, ?_, ?_⟩
   · exact (ha'.comp 𝔗.cart).congr hsp.symm rfl
   · exact LBIso.trans P₀.isLB (pull_isLB 𝔗.X₂.ρ.P.isLB _) (pull_isLB X₁.ρ.P.isLB _) hr (lbIso_pull_comp 𝔗.lb a')
-  · exact fun E => ⟨by simp, by simp⟩
+  · intro E
+    exact ⟨by simp, by simp⟩
   · intro x
     have hc : (f₂ ≫ (𝔗.X₂.ρ.pt (𝔗.lam x)).left) ≫ 𝔗.X₂.ρ.P.A.hom = 𝟙 _ ≫ f₂ := by
       rw [Category.assoc, Over.w (𝔗.X₂.ρ.pt (𝔗.lam x))]
@@ -553,17 +555,7 @@ theorem sum_pow_val_eq_zero {V : Type} [CommRing V] [IsDomain V] {m : ℕ} [NeZe
 
 theorem isPrimitiveRoot_map {o V : Type} [CommRing o] [IsDomain o] [CommRing V] [IsDomain V] (φ : o →+* V)
     {m : ℕ} (hm : 0 < m) {q : o} (hq : IsPrimitiveRoot q m) (hu : IsUnit (m : o)) : IsPrimitiveRoot (φ q) m := by
-  obtain ⟨n, rfl⟩ : ∃ n, m = n + 1 := ⟨m - 1, by omega⟩
-  refine IsPrimitiveRoot.mk_of_lt _ hm (by rw [← map_pow, hq.pow_eq_one, map_one]) fun l hl hlt h1 => ?_
-  have hp := congrArg φ hq.prod_one_sub_pow_eq_order
-  rw [map_prod] at hp
-  have hz : ∏ k ∈ Finset.range n, φ (1 - q ^ (k + 1)) = 0 := by
-    refine Finset.prod_eq_zero (i := l - 1) (Finset.mem_range.2 (by omega)) ?_
-    rw [map_sub, map_one, map_pow, Nat.sub_add_cancel hl, h1, sub_self]
-  rw [hz] at hp
-  have hu' : IsUnit (φ ((n : o) + 1)) := by
-    have := hu.map φ; simpa using this
-  exact hu'.ne_zero hp.symm
+  apply _root_.GlobalTheory.isPrimitiveRoot_map_of_isUnit_order' <;> assumption
 
 theorem eStd_sub_right (g m : ℕ) (x a b : Fin g ⊕ Fin g → ZMod m) :
     eStd g m x (a - b) = eStd g m x a - eStd g m x b := by
@@ -698,7 +690,8 @@ theorem exists_classSum_fun : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z�
       · have hd' : d ∉ X₁.S.perp (X₁.S.TT X₁.M z₁) := by
           rwa [show X₁.S.TT X₁.M z₁ = X₁.S.perp (X₁.S.HH X₁.M z₁) from rfl, TestBasis.perp_perp]
         have hex' : ∃ τ ∈ X₁.S.TT X₁.M z₁, eStd X₁.S.g _ d τ ≠ 0 := by
-          by_contra! hc
+          by_contra hc
+          push_neg at hc
           exact hd' hc
         obtain ⟨τ₀, hτ₀, h₀⟩ := hex'
         have h₀' : eStd X₁.S.g _ τ₀ d ≠ 0 := by
@@ -728,8 +721,9 @@ theorem exists_classSum_fun : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z�
       rw [smul_eq_zero] at h2
       exact sub_eq_zero.1 (h2.resolve_left (by exact_mod_cast hm0.ne'))
     have key := sumI_comp hinj (fun mu hmu => ?_) hsum
-    · simpa only [hfam, hin, ite_true] using key
-    · rw [hfam, ite_eq_right]
+    · simp only [hfam, hin, ite_true] at key
+      exact key
+    · rw [hfam, if_neg]
       intro hd
       apply hmu
       have h1 := (hcong _ _ 0 (hsub _ _ _ _ (hA mu) hκ)).1 ((hint _).1 hd)
@@ -998,7 +992,7 @@ theorem injective_of_ker_le {X Y : Type} [AddCommGroup X] [Module.Free ℤ X] [M
 
 theorem isPrimitiveRoot_map_of_isUnit_order {o K : Type} [CommRing o] [IsDomain o] [CommRing K] [IsDomain K] (φ : o →+* K)
     {m : ℕ} (hm : 0 < m) {q : o} (hq : IsPrimitiveRoot q m) (hu : IsUnit (m : o)) : IsPrimitiveRoot (φ q) m := by
-  exact GlobalTheory.GSep.ClassSumFun.isPrimitiveRoot_map φ hm hq hu
+  apply _root_.GlobalTheory.isPrimitiveRoot_map_of_isUnit_order' <;> assumption
 
 theorem intCast_eq_of_zpow_eq {K : Type} [Field K] {m : ℕ} [NeZero m] {z : K} (hz : IsPrimitiveRoot z m) {a : ℤ}
     {b : ZMod m} (h : z ^ a = z ^ (b.val : ℤ)) : (a : ZMod m) = b := by
@@ -1006,7 +1000,8 @@ theorem intCast_eq_of_zpow_eq {K : Type} [Field K] {m : ℕ} [NeZero m] {z : K} 
   have h1 : z ^ (a - (b.val : ℤ)) = 1 := by rw [zpow_sub₀ hz0, h, div_self (zpow_ne_zero _ hz0)]
   have h2 := (hz.zpow_eq_one_iff_dvd _).1 h1
   have h3 : ((a - (b.val : ℤ) : ℤ) : ZMod m) = 0 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 h2
-  rwa [Int.cast_sub, sub_eq_zero, Int.cast_natCast, ZMod.natCast_zmod_val] at h3
+  rw [Int.cast_sub, sub_eq_zero, Int.cast_natCast, ZMod.natCast_zmod_val] at h3
+  exact h3
 
 variable {I : Type} {X₁ : GSet} {z₁ : X₁.M.Z} {act : I → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)}
   {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {ev : X₁.M.Z.presheaf.stalk z₁ →+* V}
@@ -1080,7 +1075,8 @@ theorem exists_link (hO : X₁.S.Over₀ Y U₀) (hπ : X₁.M.IsHom Y (AlgHom.i
   have e : (jK V ≫ ξ) ≫ πY = jK V ≫ spMap ev ≫ X₁.M.Z.fromSpecStalk z₁ := by rw [Category.assoc, hξ]
   have hreg : ∀ a ∈ X₁.S.R, a ∈ X₁.M.O (πY ((jK V ≫ ξ) (closedPoint (FractionRing V)))) := fun a ha => by
     have := 𝔫.reg a ha
-    rwa [← e] at this
+    rw [← e] at this
+    exact this
   obtain ⟨O, _, _, _, _, _, _, xO, u, v, h₁, h₂, h₃, h₄⟩ := exists_stalk_factor X₁.o₁ X₁.Ω₁ Y hO.normal X₁.S.R
     (FractionRing V) (jK V ≫ ξ) 𝔫.yK (fun a ha => hπ.map_mem_O (hreg a ha)) (fun a => by
       rw [𝔫.yK_eq, ← e]
@@ -1640,7 +1636,8 @@ theorem classSums_deeper : ∀ (O : Type) [CommRing O] (bar : O → O) (q : ℕ)
     intro y a κ h
     by_cases hy : y₀ = y
     · subst hy
-      rwa [hkk₀]
+      rw [hkk₀]
+      exact h
     · have := hKyy y a κ h
       rw [apply_eq_one] at this
       simpa [kk, hy] using this
@@ -1651,7 +1648,7 @@ theorem classSums_deeper : ∀ (O : Type) [CommRing O] (bar : O → O) (q : ℕ)
       rw [hkk₀]
       rfl
     · have := congrFun (hKlin y c (fun _ => x)) 0
-      simp only [kk, hy, dite_eq_right, not_false_eq_true, one_apply]
+      simp only [kk, hy, dif_neg, not_false_eq_true, one_apply]
       exact this
   choose aκ haκ using (hyy y₀).2.1
   have hper : ∀ κ κ' c, (∀ v, CongMod L₂ (κ v) (κ' v)) → Fv (aκ κ) c = Fv (aκ κ') c := by

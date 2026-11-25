@@ -57,8 +57,8 @@ theorem standardCosocleGL_of_seg (hZ : GlobalTheory.Published.SegmentRepresentat
 theorem langlandsExhaustionGL_of_seg (hZ : GlobalTheory.Published.SegmentRepresentation) : GlobalTheory.Published.LanglandsExhaustionGL := by
   have hU := lUnlinkedIrr_of_seg hZ
   exact exhaustion_of_three hZ hU fun k _ _ _ _ =>
-    ⟨midP' k irreducibleAdmissibleGL, refineP' k,
-      swapP' k (GlobalTheory.CompanionTheory.BZSegComm.lUnlinkedComm k irreducibleAdmissibleGL (hU k))⟩
+    ⟨CompanionTheory.Exh.midP' k irreducibleAdmissibleGL, CompanionTheory.Exh.refineP' k,
+      CompanionTheory.Exh.swapP' k (GlobalTheory.CompanionTheory.BZSegComm.lUnlinkedComm k irreducibleAdmissibleGL (hU k))⟩
 
 theorem langlandsMultisegments_of_seg (hZ : GlobalTheory.Published.SegmentRepresentation) : GlobalTheory.Published.LanglandsMultisegments :=
   multisegments_of hZ (lUnlinkedIrr_of_seg hZ) (langlandsExhaustionGL_of_seg hZ)

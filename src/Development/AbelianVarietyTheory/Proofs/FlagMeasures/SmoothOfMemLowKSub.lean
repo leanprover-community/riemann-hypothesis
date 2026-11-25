@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.NumRho
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
@@ -69,6 +70,7 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.SumOfSquaresIdentityHolds
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothVecUnitaryModule
 import Mathlib.MeasureTheory.Function.L2Space
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EventuallyBallSubset
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContDiffExtension, Development.AbelianVarietyTheory.Proofs.FlagMeasures.KtypesWithinSteps, Development.AbelianVarietyTheory.Proofs.FlagMeasures.RhoNNormLeAndCasimirArith, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SqrtNsqLeOfAbsLe, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumNormSqOfIsometry, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothOfMemLowKSub
@@ -387,18 +389,7 @@ theorem sqrt_nsq_add_le {n : ℕ} (v w : Fin n → ℝ) :
   exact norm_add_le _ _
 
 theorem nsq_root {n : ℕ} {a b : Fin n} (hab : a ≠ b) : nsq (root a b) = 2 := by
-  have h : ∀ c, root a b c * root a b c =
-      (if c = a then (1 : ℝ) else 0) + (if c = b then (1 : ℝ) else 0) := by
-    intro c
-    by_cases h1 : c = a
-    · subst h1
-      simp [root, hab]
-    · by_cases h2 : c = b
-      · subst h2
-        simp [root, h1]
-      · simp [root, h1, h2]
-  simp only [nsq, dot, h, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-  norm_num
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.nsq_root <;> assumption
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {n : ℕ}
 
@@ -733,19 +724,7 @@ theorem conjTranspose_eq_of_inG {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin
 
 theorem trace_im_eq_zero {n : ℕ} {ε : Fin n → Bool} {A B : Matrix (Fin n) (Fin n) ℂ}
     (hA : inG ε A) (hB : inG ε B) : (Matrix.trace (A * Bᴴ)).im = 0 := by
-  have hA' := conjTranspose_eq_of_inG hA
-  have hB' := conjTranspose_eq_of_inG hB
-  have swap : Matrix.trace (B * Aᴴ) = Matrix.trace (A * Bᴴ) := by
-    rw [hA', hB', Matrix.mul_neg, Matrix.mul_neg, Matrix.trace_neg, Matrix.trace_neg, neg_inj]
-    calc Matrix.trace (B * (Jm ε * A * Jm ε)) = Matrix.trace ((B * Jm ε * A) * Jm ε) := by
-          simp only [Matrix.mul_assoc]
-      _ = Matrix.trace (Jm ε * (B * Jm ε * A)) := Matrix.trace_mul_comm _ _
-      _ = Matrix.trace ((Jm ε * B * Jm ε) * A) := by simp only [Matrix.mul_assoc]
-      _ = Matrix.trace (A * (Jm ε * B * Jm ε)) := Matrix.trace_mul_comm _ _
-  have hstar : (starRingEnd ℂ) (Matrix.trace (A * Bᴴ)) = Matrix.trace (A * Bᴴ) := by
-    rw [← Complex.star_def, ← Matrix.trace_conjTranspose, Matrix.conjTranspose_mul,
-      Matrix.conjTranspose_conjTranspose, swap]
-  exact Complex.conj_eq_iff_im.mp hstar
+  apply _root_.GlobalTheory.ProductChart.trace_im_eq_zero <;> assumption
 
 theorem sum_norm_sq_of_isometry {ι κ : Type} [Fintype ι] [Fintype κ] [DecidableEq κ]
     {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] (M : Matrix ι κ ℂ) (hM : Mᴴ * M = 1)
@@ -771,7 +750,7 @@ theorem sum_norm_sq_of_isometry {ι κ : Type} [Fintype ι] [Fintype κ] [Decida
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [Finset.sum_comm]
   simp_rw [← Finset.sum_mul, key]
-  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 theorem onb_sum : ∀ (n : ℕ) (ε : Fin n → Bool) (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (y : Fin n → Fin n → V), (∀ F : Fin (n ^ 2) → Matrix (Fin n) (Fin n) ℂ, GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.IsONFamily ε F → ∑ i, ‖∑ a, ∑ b, F i a b • y a b‖ ^ 2 = ∑ a, ∑ b, ‖y a b‖ ^ 2) ∧ ∀ X : Matrix (Fin n) (Fin n) ℂ, ‖∑ a, ∑ b, X a b • y a b‖ ^ 2 ≤ hs X * ∑ a, ∑ b, ‖y a b‖ ^ 2 := by
   intro n ε V _ _ y
@@ -790,7 +769,8 @@ theorem onb_sum : ∀ (n : ℕ) (ε : Fin n → Bool) (V : Type) [NormedAddCommG
       · rw [him]; split_ifs <;> simp
     have e : Fin n × Fin n ≃ Fin (n ^ 2) := Fintype.equivOfCardEq (by simp [sq])
     have hcol : Mᴴ * M = 1 := (Matrix.mul_eq_one_comm_of_equiv e.symm).mp hrow
-    simpa only [M, Fintype.sum_prod_type] using sum_norm_sq_of_isometry M hcol (fun p => y p.1 p.2)
+    have hiso := sum_norm_sq_of_isometry M hcol (fun p => y p.1 p.2)
+    simpa only [M, Fintype.sum_prod_type] using hiso
   · have h1 : ‖∑ a, ∑ b, X a b • y a b‖ ≤ ∑ a, ∑ b, ‖X a b‖ * ‖y a b‖ :=
       (norm_sum_le _ _).trans (Finset.sum_le_sum fun a _ =>
         (norm_sum_le _ _).trans (Finset.sum_le_sum fun b _ => (norm_smul (X a b) (y a b)).le))
@@ -843,7 +823,8 @@ theorem stepSpace_le {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) {H : 
       rw [← hu] at hw
       obtain ⟨x, hx, hxw⟩ := Submodule.mem_map.mp hw
       refine ⟨x, ?_, ?_⟩
-      · rwa [List.length_nil, poincare_filtration_zero]
+      · rw [List.length_nil, poincare_filtration_zero]
+        exact hx
       · exact hxw
     | cons X l ih =>
       intro hl w hw
@@ -881,7 +862,8 @@ theorem smooth_of_mem_lowKSub {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → �
     rw [← integral_inner hint y, ← hfix v hv y]
     simp only [inner_smul_right]
   have hsm := GlobalTheory.GardingSmooth.garding_smooth n ε H σ hU α hα hαc v
-  rwa [← hv] at hsm
+  rw [← hv] at hsm
+  exact hsm
 
 theorem stepBound_of_eigen : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (lam : Fin n → ℝ) (b : ℝ), IsURepOn (UJset ε) σ → IsKTypeOf ε σ (lowK ε lam) (lowKSub ε lam σ) → (∀ s ∈ lowKSub ε lam σ, ∀ y : H, IsZEigen ε (fun a => (lam a : ℂ)) (fun g => ⟪y, σ g s⟫_ℂ)) → (∀ a, |lam a| ≤ b ^ 2) → (∀ P : ℕ, FiniteDimensional ℂ (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.stepSpace ε lam σ P) ∧ (∀ w ∈ GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.stepSpace ε lam σ P, GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.IsDiffVec ε σ w) ∧ (∀ F : Fin (n ^ 2) → Matrix (Fin n) (Fin n) ℂ, GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.IsONFamily ε F → ∀ w ∈ GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.stepSpace ε lam σ P, ∑ i, ‖GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.dAct σ (F i) w‖ ^ 2 ≤ GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.stepConst n b P ^ 2 * ‖w‖ ^ 2) ∧ ∀ X, Formalism.REAL.inG ε X → ∀ w ∈ GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.stepSpace ε lam σ P, ‖GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.dAct σ X w‖ ≤ Real.sqrt (Formalism.REAL.hs X) * GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.stepConst n b P * ‖w‖) := by
   intro n ε H _ _ _ σ lam b hU hS heig hb

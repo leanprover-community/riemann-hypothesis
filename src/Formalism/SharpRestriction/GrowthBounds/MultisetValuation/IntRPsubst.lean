@@ -94,13 +94,6 @@ section Mu
 
 variable (p : ℕ) [hp : Fact p.Prime] (K' : Type) [Field K'] [Algebra (K0 p) K']
 
-private theorem mul_add_one_le_succ_pow (b j : ℕ) : b * j + 1 ≤ (b + 1) ^ j := by
-  induction j with
-  | zero => simp
-  | succ k ih =>
-    rw [pow_succ]
-    nlinarith [Nat.mul_le_mul_right (b + 1) ih, Nat.zero_le (b * b * k)]
-
 theorem lamF_mem (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (n : ℕ) :
     PowerSeries.coeff n (lamF p vp) ∈ Rp p K' vp := by
   have hvpR : vp ∈ Rp p K' vp := by
@@ -111,8 +104,9 @@ theorem lamF_mem (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (n : ℕ) :
   split_ifs with h
   · have hp1 : 1 ≤ p ^ 2 := Nat.one_le_pow _ _ hp.out.pos
     have hle : (p ^ 2 - 1) * j + 1 ≤ (p ^ 2) ^ j := by
-      have := mul_add_one_le_succ_pow (p ^ 2 - 1) j
-      rwa [Nat.sub_add_cancel hp1] at this
+      have h1 := one_add_le_pow_of_two_add_nonneg (a := p ^ 2 - 1) (Nat.zero_le _) j
+      rwa [add_comm 1 (p ^ 2 - 1), Nat.sub_add_cancel hp1, add_comm 1 _,
+        mul_comm _ (p ^ 2 - 1)] at h1
     obtain ⟨m, hm⟩ : ∃ m, n - 1 = (p ^ 2 - 1) * j + m := by
       refine ⟨n - 1 - (p ^ 2 - 1) * j, ?_⟩
       rw [h]

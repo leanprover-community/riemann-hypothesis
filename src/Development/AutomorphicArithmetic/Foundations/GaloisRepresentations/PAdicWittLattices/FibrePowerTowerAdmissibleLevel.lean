@@ -1312,18 +1312,6 @@ private theorem pol_one {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommR
   unfold Hecke.lbPow LB.pull
   exact (GlobalTheory.PrimNorm.lbIso_iff o.isLB _ _ _ _).2 rfl
 
-private theorem gTateIso_ev_nsmul' {G : GDatum} {k : Type} [Field k] {Q : Type} [Group Q]
-    {act : G.O → Q → Q} {e : ℕ → Q → Q → kˣ → Prop} (I : GTateIso G k Q act e) (n c : ℕ)
-    (y : G.La) : I.ev n (c • y) = I.ev n y ^ c := by
-  induction c with
-  | zero =>
-    have h := I.add n 0 0
-    rw [add_zero] at h
-    have h1 : I.ev n 0 = 1 :=
-      mul_left_cancel (a := I.ev n 0) (by rw [_root_.mul_one]; exact h.symm)
-    rw [zero_smul, pow_zero, h1]
-  | succ c ih => rw [succ_nsmul, I.add, ih, pow_succ]
-
 theorem UpperTheory.Gal.G3.pTransSelf :
     MultBasic → RelComp → TateTwist → TransSelf := by
   intro hM hR hT p _ D G L R _ _ gb S s N
@@ -1349,7 +1337,7 @@ theorem UpperTheory.Gal.G3.pTransSelf :
     have hInt : UpperTheory.Gal.Int.Geo.Integ L 1 := UpperTheory.Gal.Int.Geo.integ_of_mem (one_mem _)
     refine ⟨I, I, hI, fun y => ?_, ?_⟩
     · show toUnit _ ≫ o.eta (c • y) = _
-      rw [hI, gTateIso_ev_nsmul', I.tower _ _ hN hc]
+      rw [hI, _root_.GlobalTheory.W2.gTateIso_ev_nsmul, I.tower _ _ hN hc]
     · exact (hR p D G L R gb S s _ _ _ o o o k x I I I (𝟙 _) (𝟙 _) 1 1 hmon hmon hInt).1
 end -- clump:auto
 end -- clump:auto

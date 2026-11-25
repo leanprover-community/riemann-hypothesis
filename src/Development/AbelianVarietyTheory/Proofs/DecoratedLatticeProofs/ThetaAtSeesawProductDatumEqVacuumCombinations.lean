@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchrodingerIntertwinerSchwartzBruhatIsThetaStatement
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCombAt
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSplitPointWeilCharConductorOneOfUnits
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ProdDat
@@ -228,11 +229,11 @@ theorem tensorAt_halfInd (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) {e : A
   unfold halfInd
   by_cases hR : t ∈ Λ ∧ IsHalf (e + p.e) t
   · obtain ⟨⟨h1, h2⟩, h3⟩ := key.2 hR
-    rw [ite_eq_left hR, ite_eq_left ⟨h1, h2⟩, ite_eq_left h3, mul_one]
-  · rw [ite_eq_right hR]
+    rw [if_pos hR, if_pos ⟨h1, h2⟩, if_pos h3, mul_one]
+  · rw [if_neg hR]
     by_cases h3 : M ∈ Λv
-    · rw [ite_eq_left h3, mul_one, ite_eq_right fun h => hR (key.1 ⟨h, h3⟩)]
-    · rw [ite_eq_right h3, mul_zero]
+    · rw [if_pos h3, mul_one, if_neg fun h => hR (key.1 ⟨h, h3⟩)]
+    · rw [if_neg h3, mul_zero]
 
 end GlobalTheory.LatIdemVac
 
@@ -312,113 +313,8 @@ theorem isThetaFunO_placeModel_apply : ∀ {D : D7} {ψ : AddChar (AF D.host.F) 
     IsThetaFunO ψ A B f₀ →
     IsSBHalf e (latO A B (ΛA : Set (Fin A.rank → D.host.E)) (ΛB : Set (Fin B.rank → D.host.E)) fun _ => True) Φ →
     IsThetaFunO ψ A B (Tm Φ) := by
-  intro D ψ hψ S T ΛS ΛT hS hT a f₀ Φ Tm ha hinf h₁ hf₀ hΦ
-  have hdual := (GlobalTheory.LatVac.latO_selfDual_approx_sign D ψ S T _ _ hψ hS hT).1
-  have hfin := GlobalTheory.LatFinMod.latO_finite_mod D S T _ _ hS.1.fg hT.1.fg fun _ => True
-  have hmul := exists_nsmul_mem_latO (selfDual_isFullLattice S ΛS hS) (selfDual_isFullLattice T ΛT hT)
-  have hsm : ∀ {b : AE D}, b * b = b → ∀ u ∈ (latO S T ΛS ΛT fun _ => True),
-      b • u ∈ (latO S T ΛS ΛT fun _ => True) ⊓ half S T b := fun {b} hb u hu =>
-    ⟨GlobalTheory.LatticeStable.smul_mem_latO D S T _ _ _ b
-      (GlobalTheory.AdIdem.idempotent_mem_intAE D _ (by rw [← RingHom.map_mul, hb])) u hu,
-      (mem_half S T).2 (by rw [smul_smul, hb])⟩
-  generalize (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True) = Λ at *
-  have ha' : cA D a * cA D a = cA D a := by rw [← RingHom.map_mul, ha]
-  have hb : IsBichar (fun x y : WO S T => ψ (symplO S T x y)) := by
-    refine ⟨?_, ?_, ?_, ?_⟩
-    · intro x y z; rw [symplO_add_left, AddChar.map_add_eq_mul]
-    · intro x y z; rw [symplO_add_right, AddChar.map_add_eq_mul]
-    · intro y
-      have hz : symplO S T 0 y = 0 := by simpa using symplO_add_left S T 0 0 y
-      rw [hz, AddChar.map_zero_eq_one]
-    · intro y
-      have hz : symplO S T y 0 = 0 := by simpa using symplO_add_right S T y 0 0
-      rw [hz, AddChar.map_zero_eq_one]
-  have tf : ∀ k : ℕ, 0 < k → Function.Injective fun t : WO S T => k • t := fun k hk x y hxy => by
-    rw [← inv_smul_nsmul S T hk x, ← inv_smul_nsmul S T hk y]
-    exact congrArg _ hxy
-  have hLL' : ∀ u ∈ Λ ⊓ half S T a, ∀ y ∈ Λ, ψ (symplO S T u y) = 1 := fun u hu y hy =>
-    (hdual u (half_infPart hinf hu.2)).1 hu.1 y hy
-  have hmem := mem_waveSpan (X := half S T a) (Y := half S T (cA D a)) (L := Λ ⊓ half S T a)
-    (L' := Λ ⊓ half S T (cA D a)) hb inf_le_right inf_le_right (fun u hu y hy => hLL' u hu y hy.1)
-    (fun x hx h => ⟨(hdual x (half_infPart hinf hx)).2 fun u hu => by
-      have := h _ (hsm ha' u hu)
-      rwa [← symplO_smul, (mem_half S T).1 hx] at this, hx⟩)
-    (half_div S T a) (half_div S T _) tf (fun k hk => by
-      obtain ⟨R, hR, h⟩ := hfin k hk
-      refine ⟨(fun r => a • r) '' R, hR.image _, fun t ht => ?_⟩
-      obtain ⟨r, hr, u, hu, htr⟩ := h t ht.1
-      refine ⟨_, ⟨r, hr, rfl⟩, a • u, hsm ha u hu, ?_⟩
-      have := (mem_half S T).1 ht.2
-      rw [← this, htr, smul_add, smul_comm a k u])
-    Φ (fun t ht => (isHalf_iff S T).1 (hΦ.1 t ht)) _ hΦ.2.choose_spec.1
-      (fun u hu => hΦ.2.choose_spec.2.1 u hu.1 ((isHalf_iff S T).2 hu.2))
-      fun t ht => ⟨hΦ.2.choose_spec.2.2 t ht, (half S T a).nsmul_mem ((isHalf_iff S T).1 (hΦ.1 t ht)) _⟩
-  let P : Submodule ℂ (WO S T → ℂ) :=
-    { carrier := {g | IsThetaFunO ψ S T (Tm g)}
-      add_mem' := fun {g g'} hg hg' => by
-        show IsThetaFunO ψ S T (Tm (g + g'))
-        rw [map_add (f := _)]
-        exact {
-          quasi γ w := by simp only [Pi.add_apply, hg.quasi, hg'.quasi, mul_add]
-          level := by
-            obtain ⟨U, hU, h1⟩ := hg.level
-            obtain ⟨U', hU', h2⟩ := hg'.level
-            refine ⟨U ⊓ U', hU.inter hU', fun u hu h0 => ?_⟩
-            funext w
-            have e1 := congrFun (h1 u hu.1 h0) w
-            have e2 := congrFun (h2 u hu.2 h0) w
-            unfold heisO at e1 e2 ⊢
-            rw [Pi.add_apply, Pi.add_apply, mul_add, e1, e2]
-          cont := hg.cont.add hg'.cont
-          smooth k L h1 h2 w := (hg.smooth k L h1 h2 w).add (hg'.smooth k L h1 h2 w) }
-      zero_mem' := by
-        show IsThetaFunO ψ S T (Tm 0)
-        rw [map_zero]
-        exact {
-          quasi γ w := by simp only [Pi.zero_apply, mul_zero]
-          level := ⟨⊤, isOpen_univ, fun u _ _ => by funext w; simp only [heisO, Pi.zero_apply, mul_zero]⟩
-          cont := continuous_const
-          smooth k L _ _ w := contDiff_const }
-      smul_mem' := fun c g hg => by
-        show IsThetaFunO ψ S T (Tm (c • g))
-        rw [map_smul]
-        exact {
-          quasi γ w := by rw [Pi.smul_apply, Pi.smul_apply, hg.quasi, smul_eq_mul, smul_eq_mul, mul_left_comm]
-          level := by
-            obtain ⟨U, hU, h1⟩ := hg.level
-            refine ⟨U, hU, fun u hu h0 => ?_⟩
-            funext w
-            have e1 := congrFun (h1 u hu h0) w
-            unfold heisO at e1 ⊢
-            rw [Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul, mul_left_comm, e1]
-          cont := hg.cont.const_smul c
-          smooth k L h1 h2 w := contDiff_const.mul (hg.smooth k L h1 h2 w) } }
-  have hsub : waveSpan (fun x y => ψ (symplO S T x y)) (half S T a) (half S T (cA D a)) (Λ ⊓ half S T a) ≤ P := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨x, hx, y, hy, rfl⟩
-    have hSB : IsSBHalf a Λ fun t => ψ (symplO S T t y) * halfInd a Λ t := by
-      obtain ⟨k, hk, hky⟩ := hmul y (half_infPart (infPart_cA hinf) hy)
-      have hne : ∀ t, ψ (symplO S T t y) * halfInd a Λ t ≠ 0 → t ∈ Λ ⊓ half S T a := fun t ht => by
-        by_contra hn
-        rw [halfInd_eq_ind, ind, ite_eq_right hn, mul_zero] at ht
-        exact ht rfl
-      refine ⟨fun t ht => (isHalf_iff S T).2 (hne t ht).2, k, hk, fun u hu hu' t => ?_,
-        fun t ht => nsmul_mem (hne t ht).1 k⟩
-      have hu'' : u ∈ Λ ⊓ half S T a := ⟨hu, (isHalf_iff S T).1 hu'⟩
-      have e1 := hb.left t (k • u) y
-      have e2 := hb.nsmul k u y
-      beta_reduce at e1 e2 ⊢
-      rw [e1, e2, hLL' u hu'' _ hky, mul_one, halfInd_eq_ind, ind_add _ _ (nsmul_mem hu'' k)]
-    have key : Tm (wave (fun x y => ψ (symplO S T x y)) (Λ ⊓ half S T a) x y) = heisO ψ S T x (heisO ψ S T y f₀) := by
-      have e1 := h₁.trans _ hSB x ((isHalf_iff S T).2 hx)
-      have e2 := h₁.modul _ (GlobalTheory.isSBHalf_halfInd a Λ) y ((isHalf_iff S T).2 hy)
-      have e3 := h₁.vac
-      rw [one_smul] at e3
-      rwa [e2, e3, halfInd_eq_ind] at e1
-    show IsThetaFunO ψ S T (Tm _)
-    rw [key]
-    exact GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hψ (GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hψ hf₀ y) x
-  exact hsub hmem
+  intros
+  apply _root_.GlobalTheory.T.schrodingerIntertwiner_schwartzBruhat_isTheta <;> assumption
 
 end GlobalTheory.PlaceThetaVal
 end -- clump:auto
@@ -718,9 +614,9 @@ theorem prodDat_zero (L : Fin 0 → LocPl ψ S T M M') (Λ : AddSubgroup (WO S T
   by_cases hx : x = 0
   · subst hx
     have h1 : IsHalf (∑ i, (L i).q.e) (0 : WO S T) := by rw [hs]; exact (isHalf_zero_iff _).2 rfl
-    rw [ite_eq_left h1, ite_eq_left ⟨Λ.zero_mem, (isHalf_zero_iff _).2 rfl⟩, Fin.prod_univ_zero]
+    rw [if_pos h1, if_pos ⟨Λ.zero_mem, (isHalf_zero_iff _).2 rfl⟩, Fin.prod_univ_zero]
   · have h1 : ¬ IsHalf (∑ i, (L i).q.e) x := by rw [hs]; exact fun h => hx ((isHalf_zero_iff _).1 h)
-    rw [ite_eq_right h1, ite_eq_right (fun h => hx ((isHalf_zero_iff _).1 h.2))]
+    rw [if_neg h1, if_neg (fun h => hx ((isHalf_zero_iff _).1 h.2))]
 
 theorem prodDat_succ {n : ℕ} (L : Fin (n+1) → LocPl ψ S T M M') (hinj : Function.Injective fun i => (L i).q.v) :
     prodDat L = (ofSplit (L 0).q).tensorAt (L 0).FS (L 0).FT (prodDat fun i : Fin n => L i.succ) (L 0).Φ.1 := by
@@ -736,9 +632,9 @@ theorem prodDat_succ {n : ℕ} (L : Fin (n+1) → LocPl ψ S T M M') (hinj : Fun
   rw [Fin.sum_univ_succ, Fin.prod_univ_succ]
   have hiff := isHalf_add_iff (a := (L 0).q.e) (b := ∑ i : Fin n, (L i.succ).q.e) (orth_sum L hinj) t
   by_cases h : IsHalf ((L 0).q.e + ∑ i : Fin n, (L i.succ).q.e) t
-  · rw [ite_eq_left h, ite_eq_left (hiff.1 h)]
+  · rw [if_pos h, if_pos (hiff.1 h)]
     ring
-  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hiff.2 h')), zero_mul]
+  · rw [if_neg h, if_neg (fun h' => h (hiff.2 h')), zero_mul]
 
 theorem halfInd_zero_isSBHalf (Λ : AddSubgroup (WO S T)) : IsSBHalf (0 : AE D) Λ (halfInd 0 Λ) := by
   refine ⟨fun t h => ?_, 1, one_pos, fun u _ hh t => ?_, fun t h => ?_⟩
@@ -844,7 +740,11 @@ section Fin2
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {M : Lat S} {M' : Lat T}
 
 theorem comb_single_zero (f : WO S T → ℂ) : comb ψ S T (Finsupp.single 0 1) f = f := by
-  exact GlobalTheory.FinPl.OffTest.comb_single_zero ψ S T f
+  have h0 : ∀ w : WO S T, symplOH S T w 0 = 0 := fun w => by simp [symplOH, symplO, hO]
+  unfold comb
+  rw [Finsupp.support_single_ne_zero _ one_ne_zero, Finset.sum_singleton, Finsupp.single_eq_same, one_smul]
+  funext w
+  simp only [heisO, add_zero, h0, AddChar.map_zero_eq_one, one_mul]
 
 noncomputable def oneLoc (P : LocPl ψ S T M M') : LocPl ψ S T M M' where
   k := P.k
@@ -911,14 +811,17 @@ theorem thetaAt_prodDat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdCh
     let σ : Equiv.Perm (Fin (m+1)) := Equiv.swap 0 j
     have hinjσ : Function.Injective fun i => (L1 (σ i)).q.v := hinj.comp σ.injective
     have hTσ : IsPlaceModel ψ (symplO S T) (heisO ψ S T) (∑ i, (L1 (σ i)).q.e) (latO S T (M : Set _) (M' : Set _) fun _ => True) 1 f₀ T' := by
-      rwa [Equiv.sum_comp σ (fun i => (L1 i).q.e)]
+      rw [Equiv.sum_comp σ (fun i => (L1 i).q.e)]
+      exact hT'
     obtain ⟨Tm, hTm, hTmΦ, -⟩ := step hψ hM hM' (fun i => L1 (σ i)) hinjσ f₀ hf₀ T' hTσ
     have hval : Tm (L1 (σ 0)).Φ = (List.finRange (m+1)).foldr (fun i g => comb ψ S T (L i).o g) f₀ := by
-      rwa [hTmΦ, prodDat_perm L1 σ]
+      rw [hTmΦ, prodDat_perm L1 σ]
+      exact hg1
     have hv := vac_at_of_model hψ (L1 (σ 0)) N N' hN hN' (hI (σ 0)) _ Tm hTm hval
     have h0 : σ 0 = j := Equiv.swap_apply_left _ _
     have hq : (L1 (σ 0)).q.v = (L j).q.v := by rw [h0]; rfl
-    rwa [hq] at hv
+    rw [hq] at hv
+    exact hv
 
   have hQc : Vac ψ S T N N' (fun p => ∀ i, p ≠ (L i).q.v)
       ((List.finRange n).foldr (fun i g => comb ψ S T (L i).o g) f₀) := by
@@ -963,7 +866,8 @@ theorem thetaAt_prodDat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdCh
           fun p => ∀ i, p ≠ (L i).q.v := by
         funext p
         simp
-      rwa [hfun]
+      rw [hfun]
+      exact hQc
     | succ j ih =>
       intro hj
       have hj' : j < n := hj
@@ -1004,7 +908,8 @@ theorem thetaAt_prodDat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdCh
       · obtain ⟨i, hi⟩ := h
         exact Or.inr ⟨i, i.isLt, hi⟩
       · exact Or.inl fun i hi => h ⟨i, hi⟩
-  rwa [hfun] at hfin
+  rw [hfun] at hfin
+  exact hfin
 
 end GlobalTheory.VecProd
 

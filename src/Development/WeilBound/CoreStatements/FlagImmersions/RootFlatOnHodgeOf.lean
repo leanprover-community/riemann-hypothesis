@@ -235,7 +235,8 @@ theorem tendsto_words (hE : ResExistsStatement) {e : ℕ} (R : AnLogRes P J e) (
       intro a
       refine ih (fun t => Function.update (L t) j (ℓ a t)) (fun i hi => ?_) fun i hi => ?_
       · have hij : i ≠ j := fun h => hj (h ▸ hi)
-        simpa only [Function.update_of_ne hij] using h1 i (Finset.mem_insert_of_mem hi)
+        simp only [Function.update_of_ne hij]
+        exact h1 i (Finset.mem_insert_of_mem hi)
       · by_cases hij : i = j
         · subst hij
           exact ⟨a, fun t => Function.update_self _ _ _⟩
@@ -529,7 +530,8 @@ theorem germ_degZero_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   · have : ∀ i, (Γ.C.w i : ℤ) * (-WithZero.log (Γ.C.v i ((N i).det)⁻¹)) =
         (Γ.C.w i : ℤ) * WithZero.log (Γ.C.v i (N i).det) := fun i => by
       rw [map_inv₀, WithZero.log_inv, neg_neg]
-    simpa only [this] using hsum
+    simp only [this]
+    exact hsum
 
 end Germ
 
@@ -543,7 +545,8 @@ theorem eigProj_mem_dual {K : Type} [Field K] {A : Subring K} {W : Type} [AddCom
     (h : HT.IsFreeOn ρ Y t) (σ : E →+* K) (hσ : ∀ k, σ (HT.dualInt E k) ∈ A) {y : W} (hy : y ∈ Y) :
     HT.eigProj ρ σ y ∈ Y := by
   simp only [HT.eigProj, LinearMap.sum_apply, LinearMap.smul_apply]
-  exact Submodule.sum_mem _ fun k _ => Y.smul_mem (⟨_, hσ k⟩ : A) (act_mem_of_free h _ hy)
+  refine Submodule.sum_mem _ fun k _ => ?_
+  exact Y.smul_mem (⟨_, hσ k⟩ : A) (act_mem_of_free h _ hy)
 
 theorem quot_eig_dual : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) [CharZero Ω] (E : Type) [Field E] [NumberField E] (V : Type) [AddCommGroup V] [Module Ω V] [FiniteDimensional Ω V] (L : Lat ξ V) (ρ : 𝓞 E →+* Module.End Ω V) (bar : 𝓞 E ≃+* 𝓞 E) (r : ℕ) (𝓗 : HodgeLat L ρ bar r) (σ : E →+* Ω) (x : Cpt ξ), (∀ k, σ (HT.dualInt E k) ∈ regAt ξ x) → (∀ y, y ∈ 𝓗.quot σ x ↔ y ∈ 𝓗.HL x ∧ y ∈ HT.eigSp 𝓗.ρH σ) ∧ (∀ z ∈ L x, HT.eigProj ρ σ z ∈ L x) ∧ (𝓗.quot σ x).map ((LinearMap.fst Ω V (Module.Dual Ω V)).restrictScalars (regAt ξ x)) = (L.inter (HT.eigSp ρ σ)) x := by
   intro X Ω _ ξ _ E _ _ V _ _ _ L ρ bar r 𝓗 σ x hσ
@@ -850,11 +853,21 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem mem_abLocus_of_map {X Y : Scheme.{0}} {G : Over X} {G' : Over Y} {f : X ⟶ Y} {φ : G.left ⟶ G'.left}
-    (h : IsPullback φ G.hom G'.hom f) {x : X} (hx : f x ∈ abLocus G') : x ∈ abLocus G := by
-  exact GlobalTheory.CompanionTheory.Ar.HodgeBasic.mem_abLocus_of_map h hx
+    (h : IsPullback φ G.hom G'.hom f) {x : X} (hx : f x ∈ abLocus G') : x ∈ abLocus G :=
+  _root_.GlobalTheory.CompanionTheory.Ar.HodgeBasic.mem_abLocus_of_map h hx
 
 theorem genPt_max {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (h : IsCptGen ξ) (z : X)
-    (hz : z ⤳ genPt ξ) : z = genPt ξ := GlobalTheory.CompanionTheory.Ar.CptInh.nogen ξ h z hz
+    (hz : z ⤳ genPt ξ) : z = genPt ξ := by
+  have hF : IsField (X.presheaf.stalk (genPt ξ)) :=
+    (RingEquiv.ofBijective _ h.bij).toMulEquiv.isField (Field.toIsField Ω)
+  have h1 : z ∈ Set.range (X.fromSpecStalk (genPt ξ)) := by
+    rw [Scheme.range_fromSpecStalk]
+    exact hz
+  obtain ⟨w, rfl⟩ := h1
+  have h2 : w = IsLocalRing.closedPoint (X.presheaf.stalk (genPt ξ)) := by
+    letI := hF.toField
+    exact Subsingleton.elim (α := PrimeSpectrum (X.presheaf.stalk (genPt ξ))) _ _
+  rw [h2, Scheme.fromSpecStalk_closedPoint]
 
 theorem eigSp_eq {E : Type} [Field E] [NumberField E] {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V]
     (ρ : 𝓞 E →+* Module.End Ω V) (s : E →+* Ω) (χ : 𝓞 E →+* Ω) (hχ : ∀ a : 𝓞 E, χ a = s (a : E)) :

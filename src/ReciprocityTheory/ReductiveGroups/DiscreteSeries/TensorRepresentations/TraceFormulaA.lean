@@ -47,7 +47,7 @@ theorem tfClRep_isURepOn (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) :
     IsURepOn (UJset ε) (tfClRep σ (closGen E V)) := by
-  have hst := closGen_stable hσ hD hV hc
+  have hst := closGen_stable hgap hσ hD hV hc hVK
   have h1 : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := by
     show inUJ ε 1
     simp [inUJ]
@@ -70,7 +70,7 @@ theorem tfClRep_irred (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD 
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) :
     Formalism.MainNotions.S.IsIrredOn (Formalism.MainNotions.S.UJset ε) (tfClRep σ (closGen E V)) := by
-  have hst := closGen_stable hσ hD hV hc
+  have hst := closGen_stable hgap hσ hD hV hc hVK
   intro S hSc hSG
   have hinj : Function.Injective (closGen E V).subtype := Subtype.val_injective
   have hcl : IsClosed ((S.map (closGen E V).subtype : Submodule ℂ H) : Set H) := by
@@ -118,7 +118,7 @@ theorem tfClRep_schur (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD 
       (Formalism.REAL.muG ε) ∧
     ∫ g, inner ℂ u (σ (Formalism.MainNotions.S.umat g) v) * star (inner ℂ u' (σ (Formalism.MainNotions.S.umat g) v')) ∂(Formalism.REAL.muG ε) =
       inner ℂ v' v * inner ℂ u u' / (d : ℂ) := by
-  have hst := closGen_stable hσ hD hV hc
+  have hst := closGen_stable hgap hσ hD hV hc hVK
   obtain ⟨-, h⟩ := hd
   obtain ⟨h1, h2⟩ := h ⟨v, hv⟩ ⟨u, hu⟩ ⟨v', hv'⟩ ⟨u', hu'⟩
   have e : ∀ (x y : closGen E V) (g : Formalism.REAL.UJ ε),

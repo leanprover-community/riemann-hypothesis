@@ -92,12 +92,6 @@ theorem frob_comm {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (
   rw [← AlgHom.comp_apply, ← AlgHom.comp_apply, ← Algebra.TensorProduct.map_comp,
     ← Algebra.TensorProduct.map_comp, hc]
 
-private theorem mem_fixSub_lemma {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P)
-    (LL : FinExt l) (H : Set (GQ l)) (x : RW LL) :
-    x ∈ fixSub AI LL H ↔ ∀ g ∈ H, AI.gRW LL g x = x := by
-  unfold fixSub
-  simp [Subring.mem_iInf, RingHom.mem_eqLocus]
-
 theorem fixSub_ladic (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (LL : FinExt l)
     (H : Set (GQ l)) :
     (∀ x, (l : RW LL) * x ∈ fixSub AI LL H → x ∈ fixSub AI LL H) ∧
@@ -107,19 +101,19 @@ theorem fixSub_ladic (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P
   obtain ⟨h0, h1, h2⟩ := GlobalTheory.Decompl.LAdic.ladic_RW l LL
   refine ⟨?_, ?_, ?_⟩
   · intro x hx
-    rw [mem_fixSub_lemma] at hx ⊢
+    rw [mem_fixSub] at hx ⊢
     intro g hg
     exact fix_of_mul l h0 (AI.gRW LL g : RW LL →+* RW LL) x (hx g hg)
   · intro x hx
-    rw [mem_fixSub_lemma] at hx ⊢
+    rw [mem_fixSub] at hx ⊢
     intro g hg
     rw [frob_comm, hx g hg]
   · intro x hx
     obtain ⟨s, hs⟩ := h2 x
     refine ⟨s, ?_, hs⟩
-    rw [mem_fixSub_lemma]
+    rw [mem_fixSub]
     intro g hg
     exact fix_of_sum l h1 (AI.gRW LL g : RW LL →+* RW LL) x
-      (fun i => (mem_fixSub_lemma AI LL H (x i)).1 (hx i) g hg) s hs
+      (fun i => mem_fixSub.1 (hx i) g hg) s hs
 
 end GlobalTheory.Decompl.FixL

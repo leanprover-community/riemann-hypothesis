@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualLatticeStabilizersFixWeilVacuumOnPlaceSe
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HzUnit
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicPointComponentsAtPlacesLatticesVacua
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.InLatticeStabilizerAtPlacesIffPlaceSetProd
@@ -58,16 +59,7 @@ variable {D : D7}
 theorem mem_latV_iff_at (S : HSp D) (N : Lat S) {P : Pl D → Prop} {v : Pl D} (hv : P v)
     (y : Fin S.rank → AE D) (hy : ∀ i, y i ∈ idAt D (· = v)) :
     y ∈ latV S N P ↔ y ∈ latV S N (· = v) := by
-  constructor
-  · intro h
-    have h2 := GlobalTheory.FinPlLoc.smul_latV v (GlobalTheory.FinPlLoc.idem_mem_intAt (D := D) (· = v)) h
-    have e : GlobalTheory.FinPlLoc.idem D (· = v) • y = y := by
-      funext i
-      rw [Pi.smul_apply, smul_eq_mul]
-      exact (GlobalTheory.FinPlLoc.mem_idAt_iff _ _).1 (hy i)
-    rwa [e] at h2
-  · intro h
-    exact GlobalTheory.FinPl.KSplit.latV_mono S N (fun w hw => by subst hw; exact hv) h
+  apply _root_.GlobalTheory.PlaceProducts.latV_iff <;> assumption
 
 section
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

@@ -915,7 +915,7 @@ theorem identity_holds : Ident := by
   have hcas : CasOnSmooth ε mu σ := casOnSmooth_of_isDS hσ hstd
   obtain ⟨V₂, hV₂, hV₂0, hVK₂, hc₂⟩ := arb_datum hσ hcas
   have hD₂ := isDerivedOn_smE hσU
-  obtain ⟨Uq, hUq⟩ := data_unitary_equiv hstd hρ hD hV hc₁ hVK₁ hV₁0 hσU hD₂ hV₂ hc₂ hVK₂
+  obtain ⟨Uq, hUq⟩ := data_unitary_equiv hstd hρ hD hV hc₁ hVK₁ hV₁0 hσU hD₂ hV₂ hc₂ hVK₂ hV₂0
   have htop : closGen (smE ε σ) V₂ = ⊤ :=
     data_closGen_eq_top hstd hσU hD₂ hV₂ hc₂ hVK₂ hσ.2.2.2.1 hV₂0
 
@@ -942,7 +942,7 @@ theorem identity_holds : Ident := by
 
     set y : closGen (smE ε ρ) V := Uq.symm (e₂ x) with hy
     have hmem : ρ g (y : H) ∈ closGen (smE ε ρ) V :=
-      closGen_stable hρ hD hV hc₁ g hg _ y.2
+      closGen_stable hstd hρ hD hV hc₁ hVK₁ g hg _ y.2
     let y' : closGen (smE ε ρ) V := ⟨ρ g (y : H), hmem⟩
     have key := hUq g hg y' y rfl
     have e1 : ((Uq y : closGen (smE ε σ) V₂) : H') = x := by

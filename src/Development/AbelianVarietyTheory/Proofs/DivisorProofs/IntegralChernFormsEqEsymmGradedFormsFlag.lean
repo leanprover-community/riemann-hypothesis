@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarChainRuleHolomorphicPullback
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsMetricFrOfIsMetricOn
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernFormTriangularEqEsymmFirstChernForms
@@ -174,7 +175,7 @@ theorem exists_smooth_bump [T2Space M] (x : M) :
       refine ((hβ.comp_contDiffOn (A.contDiffOn_real_transition k i)).mono inter_subset_right).congr
         fun v hv => ?_
       have hv1 : (A.e k).symm v ∈ e.source := hv.2.2
-      simp only [Function.comp, ψ, ite_eq_left hv1]
+      simp only [Function.comp, ψ, if_pos hv1]
       rfl
     · refine ⟨(A.e k).target ∩ (A.e k).symm ⁻¹' Cᶜ,
         (A.e k).isOpen_inter_preimage_symm hCc.isClosed.isOpen_compl,
@@ -187,7 +188,7 @@ theorem exists_smooth_bump [T2Space M] (x : M) :
   · have ho : IsOpen (e.source ∩ e ⁻¹' Metric.ball (e x) (ε / 4)) :=
       e.isOpen_inter_preimage Metric.isOpen_ball
     filter_upwards [ho.mem_nhds ⟨hxe, Set.mem_preimage.mpr (Metric.mem_ball_self (by linarith))⟩] with w hw
-    simp only [ψ, ite_eq_left hw.1]
+    simp only [ψ, if_pos hw.1]
     exact β.one_of_mem_closedBall (Metric.ball_subset_closedBall hw.2)
 
 end GlobalTheory.CxForm.HolAtlas
@@ -243,7 +244,7 @@ theorem del_finset_sum {M : Type} [TopologicalSpace M] {n : ℕ} (A : GlobalTheo
   have hloc : ∀ w, A.loc (∑ j, α j) x.1.1 w = ∑ j, A.loc (α j) x.1.1 w := by
     intro w
     by_cases hw : w ∈ (A.e x.1.1).target
-    · simp only [GlobalTheory.CxForm.HolAtlas.loc, hw, dite_eq_left]
+    · simp only [GlobalTheory.CxForm.HolAtlas.loc, hw, dif_pos]
       exact Finset.sum_apply _ _ _
     · simp [GlobalTheory.CxForm.HolAtlas.loc, hw]
   have hx : x.crd ∈ (A.e x.1.1).target := x.ch.map_source x.2
@@ -322,7 +323,7 @@ private theorem isForm_add' {α β : A.Fld}
     unfold _root_.GlobalTheory.CxForm.HolAtlas.loc at h1 h2
     refine (h1.add h2).congr ?_
     intro v hv
-    simp only [dite_eq_left hv]
+    simp only [dif_pos hv]
     erw [Pi.add_apply, map_add, Finsupp.add_apply]
   · intro x x' hx
     simp [ha.compat x x' hx, hb.compat x x' hx]
@@ -342,7 +343,7 @@ private theorem isForm_sub' {α β : A.Fld}
     unfold _root_.GlobalTheory.CxForm.HolAtlas.loc at h1 h2
     refine (h1.sub h2).congr ?_
     intro v hv
-    simp only [dite_eq_left hv]
+    simp only [dif_pos hv]
     erw [Pi.sub_apply, map_sub, Finsupp.sub_apply]
   · intro x x' hx
     simp [ha.compat x x' hx, hb.compat x x' hx]
@@ -481,7 +482,7 @@ theorem integral_eq_integral_chart_of_support : ∀ {M : Type} [TopologicalSpace
       rwa [(A.e i).right_inv ht] at this
     · have hl : A.loc α i v = 0 := by
         unfold loc
-        exact dite_eq_right ht
+        exact dif_neg ht
       simp only [hr, hl, dens_zero, Complex.zero_re]
   have hcon : ContinuousOn (r i) (A.e i).target :=
     Complex.continuous_re.comp_continuousOn ((hα.smooth i Finset.univ).continuousOn.div_const _)
@@ -787,7 +788,8 @@ theorem delAt_ι {u : V n → (Fin n ⊕ Fin n → ℂ)} {v : V n}
   exact Finset.sum_congr rfl fun i _ => del_mul_const (hu i) _ _
 
 theorem sum_symm_dz_mul (s : Fin n → Fin n → ℂ) (hs : ∀ a b, s a b = s b a) :
-    ∑ a, ∑ b, s a b • (dz a * dz b) = 0 := GlobalTheory.CxForm.PullDelClosed.sum_symm_dz hs
+    ∑ a, ∑ b, s a b • (dz a * dz b) = 0 := by
+  apply _root_.GlobalTheory.CxForm.PullDelClosed.sum_symm_dz <;> assumption
 
 theorem delAt_pull_fderiv_ι {φ : V n → V n} {v : V n} (hφ : ContDiffAt ℂ 2 φ v) (m : Fin n ⊕ Fin n → ℂ) :
     delAt (fun w => pull (fderiv ℂ φ w) (ExteriorAlgebra.ι ℂ m)) v = 0 := by

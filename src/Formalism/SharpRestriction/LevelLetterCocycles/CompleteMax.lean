@@ -55,49 +55,6 @@ namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.DLev
 
 open Module Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc IsLocalRing
 
-private theorem isPrecomplete_of_module_finite {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
-    (I : Ideal R) [hR : IsPrecomplete I R] [Module.Finite R M] : IsPrecomplete I M := by
-  classical
-  obtain ⟨n, s, hs⟩ := Module.Finite.exists_fin (R := R) (M := M)
-  refine ⟨fun g hg => ?_⟩
-  have hd : ∀ k, g (k + 1) - g k ∈ I ^ k • Submodule.span R (Set.range s) := by
-    intro k
-    rw [hs]
-    have h := SModEq.sub_mem.1 (hg (Nat.le_succ k))
-    have h2 := neg_mem h
-    rwa [neg_sub] at h2
-  choose A hA hAs using fun k =>
-    (Submodule.mem_ideal_smul_span_iff_exists_sum (I ^ k) s (g (k + 1) - g k)).1 (hd k)
-  have hc : ∀ i : Fin n, ∀ {a b : ℕ}, a ≤ b →
-      (∑ k ∈ Finset.range a, A k i) ≡ (∑ k ∈ Finset.range b, A k i) [SMOD (I ^ a • ⊤ : Submodule R R)] := by
-    intro i a b hab
-    rw [SModEq.sub_mem, Ideal.smul_eq_mul, Ideal.mul_top, ← Finset.sum_range_add_sum_Ico _ hab,
-      sub_add_cancel_left]
-    refine neg_mem (sum_mem fun k hk => ?_)
-    exact Ideal.pow_le_pow_right (Finset.mem_Ico.1 hk).1 (hA k i)
-  choose C hC using fun i : Fin n => hR.prec' _ (hc i)
-  refine ⟨g 0 + ∑ i, C i • s i, fun K => ?_⟩
-  rw [SModEq.sub_mem]
-  have hgK : g K = g 0 + ∑ i, (∑ k ∈ Finset.range K, A k i) • s i := by
-    have h1 : ∑ k ∈ Finset.range K, (g (k + 1) - g k) = g K - g 0 := Finset.sum_range_sub g K
-    have h2 : ∑ k ∈ Finset.range K, (g (k + 1) - g k) =
-        ∑ i, (∑ k ∈ Finset.range K, A k i) • s i := by
-      simp only [← hAs, Finsupp.sum_fintype, zero_smul, implies_true, Finset.sum_smul]
-      exact Finset.sum_comm
-    rw [← h2, h1]
-    abel
-  rw [hgK]
-  have hsplit : g 0 + ∑ i, (∑ k ∈ Finset.range K, A k i) • s i - (g 0 + ∑ i, C i • s i) =
-      ∑ i, ((∑ k ∈ Finset.range K, A k i) - C i) • s i := by
-    simp only [sub_smul, Finset.sum_sub_distrib]
-    abel
-  rw [hsplit]
-  refine sum_mem fun i _ => Submodule.smul_mem_smul ?_ Submodule.mem_top
-  have h := SModEq.sub_mem.1 (hC i K)
-  rwa [Ideal.smul_eq_mul, Ideal.mul_top] at h
-
-
-
 theorem complete_max {l : ℕ} [Fact l.Prime] (LL : FinExt l) :
     IsAdicComplete (IsLocalRing.maximalIdeal ↥(OL LL)) ↥(OL LL) := by
   apply Formalism.MainNotions.N.Ln17.isAdicComplete_integers_local

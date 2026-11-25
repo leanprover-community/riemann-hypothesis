@@ -315,17 +315,9 @@ theorem Sc_nonneg : 0 ≤ N.Sc := by
   positivity
 
 theorem wN_cast {j : ℕ} (z : RPl N.R) (h0 : 0 ≤ N.w j z) : (N.wN j z : ℝ) = N.w j z := by
-  have hq : ∃ a : ℤ, N.eQ j z = a := by
-    unfold eQ
-    split
-    · first
-      | exact (N.hc z).e_int _
-    · exact ⟨0, by simp⟩
-  have h0' : (0 : ℚ) ≤ N.eQ j z := by
-    have : (0 : ℝ) ≤ ((N.eQ j z : ℚ) : ℝ) := h0
-    exact_mod_cast this
+  unfold w at h0
   unfold wN
-  exact toNat_floor_cast hq h0'
+  exact toNat_floor_cast (N.eQ_int j z) (by exact_mod_cast h0)
 
 theorem nuN_cast (δ : Code N) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ N.R.m) (z : RPl N.R) {i : ℕ} (hi : i < N.R.N (j - 1))
     (h0 : 0 ≤ N.nu δ j z i) : (N.nuN δ j z i : ℝ) = ((N.nu δ j z i : ℚ) : ℝ) := by
@@ -670,12 +662,8 @@ def RecNums.ofNum (N : NumDatum) {J : Type} [Fintype J] (eJ : J ≃ Fin N.R.m) (
   c3 := H.c3
   c4 := H.c4
   c5 := H.c5
-  sE j ρ := by
-    have := (N.stepE_num δ H (eJ j) ρ).1
-    exact this
-  sδ j ρ := by
-    have := (N.stepE_num δ H (eJ j) ρ).2
-    exact this
+  sE j ρ := (N.stepE_num δ H (eJ j) ρ).1
+  sδ j ρ := (N.stepE_num δ H (eJ j) ρ).2
 
 namespace RecNums
 

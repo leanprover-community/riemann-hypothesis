@@ -121,21 +121,11 @@ private theorem pchar_mk_eq_of_changeLevel_eq_of_level_eq {M d e : ℕ} [NeZero 
   subst hq
   rfl
 
-private theorem conductor_inv_dvd_conductor {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M) :
-    χ⁻¹.conductor ∣ χ.conductor := by
-  apply DirichletCharacter.conductor_dvd_of_mem_conductorSet
-  exact ⟨χ.conductor_dvd_level, χ.primitiveCharacter⁻¹,
-    by rw [map_inv, DirichletCharacter.changeLevel_primitiveCharacter]⟩
-
-private theorem conductor_inv_eq_conductor {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M) :
-    χ⁻¹.conductor = χ.conductor := by
-  exact Nat.dvd_antisymm (conductor_inv_dvd_conductor χ) (by simpa using conductor_inv_dvd_conductor χ⁻¹)
-
 theorem PChar.of_inv {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M) : PChar.of χ⁻¹ = (PChar.of χ).inv := by
   haveI : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩
   haveI : NeZero χ⁻¹.conductor := ⟨χ⁻¹.conductor_ne_zero⟩
   exact pchar_mk_eq_of_changeLevel_eq_of_level_eq χ⁻¹ χ⁻¹.primitiveCharacter χ.primitiveCharacter⁻¹ χ⁻¹.conductor_dvd_level
-    χ.conductor_dvd_level (conductor_inv_eq_conductor χ) χ⁻¹.changeLevel_primitiveCharacter
+    χ.conductor_dvd_level χ.conductor_inv χ⁻¹.changeLevel_primitiveCharacter
     (by rw [map_inv, DirichletCharacter.changeLevel_primitiveCharacter]) _ _
 
 

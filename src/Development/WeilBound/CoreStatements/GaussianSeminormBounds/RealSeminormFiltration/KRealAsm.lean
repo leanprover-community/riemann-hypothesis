@@ -76,6 +76,7 @@ import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNontrivialLiftModule
+import Development.WeilBound.ThetaLifts.LocalTheory.ToralCohomology.PiInfUnitNe
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorIrreducibleModules, Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreLM, Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.KRealAsmOne, Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.KRealAsm
@@ -547,17 +548,7 @@ theorem incM_map_piInf {n m : Type} (J : Matrix n m E) {w : InfinitePlace F} (τ
 
 theorem hasExp_div (τ : ∀ w : InfinitePlace F, EmbOver E w) {χ χ' : Chr F E} {m m' : InfinitePlace F → ℤ}
     (h : HasExp τ χ m) (h' : HasExp τ χ' m') : HasExp τ (χ / χ') (fun w => m w - m' w) := by
-  intro z hz
-  rw [MonoidHom.div_apply, Circle.coe_div, h z hz, h' z hz, ← Finset.prod_div_distrib]
-  refine Finset.prod_congr rfl fun w _ => ?_
-  have : piInf (τ w) (z : AE F E) / (‖piInf (τ w) (z : AE F E)‖ : ℂ) ≠ 0 := by
-    have h0 : piInf (τ w) (z : AE F E) ≠ 0 := by
-      intro e
-      have := congrArg (piInf (τ w)) z.mul_inv
-      rw [map_mul, e, zero_mul, map_one] at this
-      exact zero_ne_one this
-    exact div_ne_zero h0 (by exact_mod_cast norm_ne_zero_iff.2 h0)
-  rw [zpow_sub₀ this]
+  apply _root_.PositivityTheory.ThKG.CayleyTransformDarboux.hasExp_div <;> assumption
 
 section Tensor
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V W : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]

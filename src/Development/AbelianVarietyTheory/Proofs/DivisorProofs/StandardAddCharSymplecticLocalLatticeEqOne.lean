@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalIdempotentCharacterValue
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddCharTrivialIntegralFiniteAdeleMul
@@ -193,17 +194,7 @@ theorem trace_int_of_lat (蟽 : E 鈫掆倫[F] E) (B : Base F E) {n d r s r' s' : 鈩
 
 theorem liftV_one_mul (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (w : AF F) :
     GlobalTheory.LatVac.liftV v 1 * w = GlobalTheory.LatVac.liftV v (GlobalTheory.AdelicU.evFin F v w) := by
-  refine Prod.ext ?_ ?_
-  路 change (0 : Ainf F) * w.1 = 0
-    rw [zero_mul]
-  路 change GlobalTheory.AdelicU.singleFin v 1 * w.2 = GlobalTheory.AdelicU.singleFin v (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v w.2)
-    apply GlobalTheory.AdelicU.af_ext
-    intro u
-    rw [map_mul]
-    by_cases hu : u = v
-    路 subst hu
-      rw [GlobalTheory.AdelicU.evalV_singleFin_self, GlobalTheory.AdelicU.evalV_singleFin_self, one_mul]
-    路 rw [GlobalTheory.AdelicU.evalV_singleFin_ne hu, GlobalTheory.AdelicU.evalV_singleFin_ne hu, zero_mul]
+  apply _root_.GlobalTheory.SwapAtPlace.liftV_one_mul <;> assumption
 
 theorem eq_liftV_of_at {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} {a : AF F} (ha : At (GlobalTheory.AdelicU.evFin F v) a) :
     a = GlobalTheory.LatVac.liftV v 1 * a := by

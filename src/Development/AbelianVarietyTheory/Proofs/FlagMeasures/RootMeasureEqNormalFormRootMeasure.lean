@@ -470,7 +470,7 @@ theorem conj_entry (q : PPar k r) (u : Matrix (Fin r) (Fin r) ℂ) (a b : Fin r)
   simp only [Matrix.mulVec_smul, pOf_inv_e]
   simp [bvec, Pi.single_apply, UEmb.eI_inj, Finset.sum_apply]
 
-theorem conj_mem {P Q g x : Mat k r} (hP : P ∈ Nset k r) (hQ : Q ∈ Nset k r) (hx : x ∈ Rset k r g) :
+theorem conj_mem {P Q g x : Mat k r} (hP : P ∈ Nset k r) (hQ : Q ∈ Nset k r) (hg : g ∈ GG k r) (hx : x ∈ Rset k r g) :
     P * x * P⁻¹ ∈ Rset k r (Q * g * P⁻¹) := by
   have N := nSubgroup k r
   refine ⟨N.2.1 _ (N.2.1 _ hP _ hx.1) _ (N.2.2 _ hP), ?_⟩
@@ -498,7 +498,7 @@ theorem eq_map (z' : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1))
   have key : ∀ x : Mt k r, Matrix.of x ∈ Rset k r g →
       conjM (pOf k r p₀)⁻¹ (Matrix.of.symm (uEmb k r (upperIn β (E (rootCoords k r z' p x))))) = x := by
     intro x hx
-    have h2 := conj_mem (pOf_mem p₀) (pOf_mem p₁) hx
+    have h2 := conj_mem (pOf_mem p₀) (pOf_mem p₁) hg hx
     rw [(_root_.GlobalTheory.Amp.StabNormal.stabiliser_normal k r _ _ hN).1] at h2
     obtain ⟨y, hy⟩ := h2
     have hx' : Matrix.of x = (pOf k r p₀)⁻¹ * uEmb k r (upperIn β y) * pOf k r p₀ := by

@@ -110,7 +110,6 @@ noncomputable section
 
 namespace GlobalTheory.AvgCoeff
 
-open MeasureTheory
 
 theorem exists_finset_sep {K : Type} (S : Submodule ℂ (K → ℂ)) [FiniteDimensional ℂ S] :
     ∃ T : Finset K, ∀ s ∈ S, (∀ t ∈ T, s t = 0) → s = 0 := by

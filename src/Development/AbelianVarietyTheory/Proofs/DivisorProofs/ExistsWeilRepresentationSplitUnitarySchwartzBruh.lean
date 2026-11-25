@@ -664,10 +664,7 @@ theorem compact_subset_cball {F : Type} [Field F] [ValuativeRel F] [TopologicalS
 
 theorem punctured_neBot (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
     [IsNonarchimedeanLocalField F] : (𝓝[≠] (0 : F)).NeBot := by
-  by_contra h
-  rw [Filter.not_neBot, ← isOpen_singleton_iff_punctured_nhds] at h
-  obtain ⟨s, hs⟩ := GlobalTheory.SplitWeil.exists_cball_subset (h.mem_nhds rfl)
-  exact s.ne_zero (hs (by simp [GlobalTheory.SplitWeil.cball]))
+  apply _root_.GlobalTheory.KSp.Homog.nhdsNE_neBot <;> assumption
 
 theorem mul_mem_cball_iff {F : Type} [Field F] [ValuativeRel F] (a s : Fˣ) (x : F) :
     valuation F ((a : F) * x) ≤ valuation F (s : F) ↔ valuation F x ≤ valuation F ((a⁻¹ * s : Fˣ) : F) := by

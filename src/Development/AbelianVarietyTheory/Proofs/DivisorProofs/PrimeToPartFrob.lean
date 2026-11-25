@@ -85,7 +85,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 theorem theta_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {x : Fbar p} (hx : x ^ (p ^ d - 1) = 1)
     (n : ℕ) : GlobalTheory.GLq.thetaOf L d x (L.gen d ^ n) = L.teich x ^ n := by
-  exact GlobalTheory.ParamLabel.Congr.thetaOf_gen L hd hx n
+  apply _root_.GlobalTheory.ParamLabel.Congr.thetaOf_gen <;> assumption
 
 theorem exists_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {z : Fbar p} (hz : z ^ (p ^ d - 1) = 1) :
     ∃ n : ℕ, z = L.gen d ^ n := by

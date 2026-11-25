@@ -326,11 +326,8 @@ variable {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X]
 theorem diffOn_fprod {ι : Type} (u : Finset ι) {f : ι → X → ℂ} {s : Set X}
     (h : ∀ i ∈ u, DifferentiableOn ℂ (f i) s) : DifferentiableOn ℂ (fun x => ∏ i ∈ u, f i x) s := by
   classical
-  induction u using Finset.induction_on with
-  | empty => simpa using differentiableOn_const (c := (1 : ℂ))
-  | insert a u ha ih =>
-    simp only [Finset.prod_insert ha]
-    exact (h a (by simp)).mul (ih fun i hi => h i (by simp [hi]))
+  exact fun x hx => (HasFDerivWithinAt.finsetProd fun i hi =>
+    (h i hi x hx).hasFDerivWithinAt).differentiableWithinAt
 
 theorem diffOn_det {k : ℕ} {s : Set X} (m : X → Matrix (Fin k) (Fin k) ℂ)
     (hm : ∀ i j, DifferentiableOn ℂ (fun x => m x i j) s) : DifferentiableOn ℂ (fun x => (m x).det) s := by

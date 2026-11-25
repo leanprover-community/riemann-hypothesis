@@ -1221,19 +1221,13 @@ namespace GlobalTheory.AbCoh.PrimLift
 
 theorem pO1_comp {R : Type} [CommRing R] {Y A B : Over (Sp R)} (f : Y ⟶ A) (g : A ⟶ B) (a : HO1 B.hom) :
     pO1 (f ≫ g) a = pO1 f (pO1 g a) := by
-  unfold pO1
-  exact ((GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.1 R R B.left A.left B.hom A.hom (RingHom.id R) g.left (ovw g) R Y.left Y.hom
-    (RingHom.id R) f.left (ovw f) (RingHom.id R) (f ≫ g).left (ovw (f ≫ g)) (by simp)
-    (fun _ => rfl)).1 a).symm
+  apply _root_.GlobalTheory.AbCoh.StepPrim.pO1_comp <;> assumption
 
 theorem pO1_id {R : Type} [CommRing R] {A : Over (Sp R)} (a : HO1 A.hom) : pO1 (𝟙 A) a = a :=
   (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.2.2 R A).1 a
 
 theorem pO1_unit_eq_zero {R : Type} [CommRing R] (a : HO1 (𝟙_ (Over (Sp R))).hom) : a = 0 := by
-  haveI : IsAffine (𝟙_ (Over (Sp R))).left := by
-    show IsAffine (Sp R)
-    infer_instance
-  exact (GlobalTheory.AbCoh.Vanish.main.1 R _ _ this).1.elim a 0
+  apply _root_.GlobalTheory.AbCoh.StepPrim.eq_zero_of_base <;> assumption
 
 theorem primO1_of_axesO1 : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A], AxesVanishingStructureSheafDegOne A → StructureSheafH1Primitive A := by
   intro R _ A _ hax x

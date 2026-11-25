@@ -205,7 +205,8 @@ theorem exists_gen (B : Ideal (𝓞 D.host.E)) (hB : B ≠ ⊥) : ∃ a a' : EAf
       refine int_of_mul Q hn (o := d) ?_
       have hd' := congrArg (algebraMap (𝓞 D.host.E) D.host.E) hd
       rw [map_mul, map_mul] at hd'
-      rwa [← mul_assoc, mul_inv_eq_iff_eq_mul₀ hβE, mul_comm (d : D.host.E)]
+      rw [← mul_assoc, mul_inv_eq_iff_eq_mul₀ hβE, mul_comm (d : D.host.E)]
+      exact hd'
     · rw [c0 _ Q hQ, mul_one]
       exact int_of_eq Q (o := b) rfl
   · have hB' : (B : FI D) ≠ 0 := FractionalIdeal.coeIdeal_ne_zero.2 hB
@@ -417,7 +418,7 @@ def scal (V : HSp D) (U : AE D) (hU : U * cA D U = 1) : GA D V :=
       simp only [Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
       by_cases h1 : j = i
       · subst h1; simp
-      · rw [ite_eq_right h1, ite_eq_right (Ne.symm h1)]; simp
+      · rw [if_neg h1, if_neg (Ne.symm h1)]; simp
     rw [hm, Matrix.smul_mul, Matrix.one_mul, Matrix.mul_smul, Matrix.mul_one, smul_smul, hU, one_smul]⟩
 
 theorem act_blk {S A B : HSp D} {U : AE D} (hU : U * cA D U = 1) (x : WO S (GlobalTheory.Doubling.hsum A B)) :
@@ -624,7 +625,8 @@ theorem cpt_prodId_mem (S : Finset (Pl D.host.E)) (y : ∀ w : S, (Kw w.1)ˣ) (Q
   · intro b _ hb
     rw [cpt_locIdele]
     exact finSingle_ne (fun h => hb (Subtype.ext h.symm)) _
-  · exact fun h => absurd (Finset.mem_univ _) h
+  · intro h
+    exact absurd (Finset.mem_univ _) h
 
 theorem cpt_prodId_notMem (S : Finset (Pl D.host.E)) (y : ∀ w : S, (Kw w.1)ˣ) {Q : Pl D.host.E} (hQ : Q ∉ S) :
     cpt (D := D) Q (toEAf D (prodId S y : AE D)) = 1 := by
@@ -713,7 +715,8 @@ theorem inId_iff (S : Finset (Pl D.host.E)) (c : Pl D.host.E → ℕ) {z : EAf D
   constructor
   · rintro ⟨h1, h2⟩ w hw
     exact v_le_of_mem_idS (s := ⟨z, h1⟩) (h.le.trans (Finset.inf_le hw)) h2
-  · exact fun H => ⟨hz, mem_idS_of_v_le (w := fun w => w) h0 h (s := ⟨z, hz⟩) H⟩
+  · intro H
+    exact ⟨hz, mem_idS_of_v_le (w := fun w => w) h0 h (s := ⟨z, hz⟩) H⟩
 
 
 open Classical in
@@ -989,8 +992,10 @@ theorem cpt_prod_locIdele (S : Finset (Pl D.host.E)) (u : ∀ w : S, (Kw (D := D
   refine ⟨fun hQ => ?_, fun hQ => ?_⟩
   · rw [Finset.prod_eq_single ⟨Q, hQ⟩]
     · rw [GlobalTheory.LFun.finSingle_self]
-    · exact fun b _ hb => GlobalTheory.LFun.finSingle_ne (fun h => hb (Subtype.ext h.symm)) _
-    · exact fun h => absurd (Finset.mem_univ _) h
+    · intro b _ hb
+      exact GlobalTheory.LFun.finSingle_ne (fun h => hb (Subtype.ext h.symm)) _
+    · intro h
+      exact absurd (Finset.mem_univ _) h
   · exact Finset.prod_eq_one fun w _ => GlobalTheory.LFun.finSingle_ne (fun h => hQ (by rw [h]; exact w.2)) _
 
 theorem infPart_prod_locIdele (S : Finset (Pl D.host.E)) (u : ∀ w : S, (Kw (D := D) w.1)ˣ) :
@@ -1040,7 +1045,7 @@ theorem unitChar_eq_prod (ν : (AE D)ˣ →* Circle) {e : AE D} {S : Finset (Pl 
   have hx := isUnitDet_prod he N u hu hv
   have hex : ∃ x, IsUnitDet e N x := ⟨_, hx⟩
   unfold unitChar
-  rw [dite_eq_left hex, isUnitDet_unique hex.choose_spec hx]
+  rw [dif_pos hex, isUnitDet_unique hex.choose_spec hx]
   exact char_prod_inv ν _
 
 theorem v_det_of_isUnitDet {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) {k : ℕ}
@@ -1060,10 +1065,7 @@ theorem v_det_of_isUnitDet {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum
 
 theorem mem_cball_pow (w : Pl D.host.E) (c : ℕ) (z : Kw (D := D) w) :
     z ∈ cball (unifAt (D := D) w ^ c) ↔ Valued.v z ≤ WithZero.exp (-(c : ℤ)) := by
-  have h : Valued.v (unifAt (D := D) w : Kw (D := D) w) = WithZero.exp (-1 : ℤ) := Formalism.L2.Host.unif_spec w
-  refine (vEq w _ _).trans ?_
-  rw [Units.val_pow_eq_pow_val, map_pow, h, ← WithZero.exp_nsmul]
-  simp
+  apply _root_.GlobalTheory.TopFlip.StdLoc.mem_cball_iff <;> assumption
 
 theorem mem_integer_iff (w : Pl D.host.E) (z : Kw (D := D) w) : z ∈ (ValuativeRel.valuation (Kw (D := D) w)).integer ↔ Valued.v z ≤ 1 := by
   rw [Valuation.mem_integer_iff, (vEq w).le_one_iff_le_one]
@@ -1087,7 +1089,7 @@ theorem std_eq_prod (ν : (AE D)ˣ →* Circle) {e : AE D} {S : Finset (Pl D.hos
     (c : Pl D.host.E → ℕ) {a a' : ℕ} (Y : Matrix (Fin a') (Fin (a + a')) (EAf D)) (hY : ∀ i j, toEAf D e * Y i j = Y i j) :
     (if IsIntM Y ∧ ∀ i j, j.1 < a → InId (∏ w ∈ S, w.asIdeal ^ c w) (Y i j) then unitChar ν e (rightBlock a Y) else 0) =
       ∏ w ∈ S, stdB (locChar ν w) (unifAt (D := D) w) (c w) a a' (Y.map (cpt (D := D) w)) := by
-  have hb : ∀ i j, rightBlock a Y i j = Y i (Fin.natAdd a j) := fun i j => dite_eq_left (Fin.natAdd a j).2
+  have hb : ∀ i j, rightBlock a Y i j = Y i (Fin.natAdd a j) := fun i j => dif_pos (Fin.natAdd a j).2
   have hdet : ∀ w, (blk₂ (Y.map (cpt (D := D) w))).det = cpt (D := D) w (rightBlock a Y).det := fun w => by
     rw [RingHom.map_det]
     congr 1
@@ -1106,20 +1108,20 @@ theorem std_eq_prod (ν : (AE D)ˣ →* Circle) {e : AE D} {S : Finset (Pl D.hos
         · exact (mem_integer_iff Q _).1 ((H Q hQ).2.1.1 i j)
       · rw [← hY, RingHom.map_mul, (cpt_idemSum he Q).2 hQ, zero_mul, Valuation.map_zero]
         exact zero_le_one
-    rw [ite_eq_left ⟨hint, fun i j hj => (inId_prod_iff S c (hint i j)).2 fun w hw =>
+    rw [if_pos ⟨hint, fun i j hj => (inId_prod_iff S c (hint i j)).2 fun w hw =>
       (mem_cball_pow w _ _).1 ((H w hw).2.2 i ⟨j.1, hj⟩)⟩,
       unitChar_eq_prod ν he _ (fun w => Units.mk0 _ (H w.1 w.2).1) (fun w => hdet w.1)
         (fun w => (vEq w.1).eq_one_iff_eq_one.1 (H w.1 w.2).2.1.2), ← Finset.prod_coe_sort S]
     refine Finset.prod_congr rfl fun w _ => ?_
     unfold stdB
-    rw [dite_eq_left (H w.1 w.2)]
+    rw [dif_pos (H w.1 w.2)]
   · obtain ⟨w, hw⟩ := not_forall.1 H
     obtain ⟨hw, hn⟩ := Classical.not_imp.1 hw
     rw [Finset.prod_eq_zero (f := fun w => stdB (locChar ν w) (unifAt (D := D) w) (c w) a a' (Y.map (cpt (D := D) w))) hw
-      (by unfold stdB; exact dite_eq_right hn)]
+      (by unfold stdB; exact dif_neg hn)]
     split_ifs with hc
     · unfold unitChar
-      refine dite_eq_right fun ⟨x, hx⟩ => hn ?_
+      refine dif_neg fun ⟨x, hx⟩ => hn ?_
       have hi : ∀ i j, blk₂ (Y.map (cpt (D := D) w)) i j ∈ (ValuativeRel.valuation (Kw (D := D) w)).integer := fun i j =>
         (mem_integer_iff w _).2 ((mem_OA_iff _).1 (hc.1 i _) w)
       have hd : (blk₂ (Y.map (cpt (D := D) w))).det ∈ (ValuativeRel.valuation (Kw (D := D) w)).integer := by
@@ -1151,7 +1153,8 @@ theorem std_eq_prod' (ν : (AE D)ˣ →* Circle) {e : AE D} {S : Finset (Pl D.ho
     obtain ⟨r', s', h1, h2, h3⟩ := hZ w r s
     rw [h3, Fin.ext h1, Fin.ext h2]
     rfl
-  simpa only [this] using std_eq_prod ν he c Y hY
+  simp only [this]
+  exact std_eq_prod ν he c Y hY
 
 theorem change_frames {R K : Type} [CommRing R] [Field K] (f : R →+* K) {n d : ℕ} (β β' : GL (Fin n) R) (γ γ' : GL (Fin d) R)
     (M : Matrix (Fin n) (Fin d) R) (ξ : R) (x : K) (hx : f ξ = x) (hξ : x ≠ 0) :
@@ -1184,7 +1187,7 @@ variable {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : Grid
 
 theorem locChar_nu {μ₀ : T} (hL : L.Is μ₀) (t : T) (i j : Fin D.R.m) (w : Pl D.host.E) :
     locChar (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.alpha G t i j / GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.beta G i j) w = (locGrid G t w).nu i j := by
-  exact GlobalTheory.TopFlip.StdLoc.locChar_nu hL t i j w
+  apply _root_.GlobalTheory.TopFlip.StdLoc.locChar_nu <;> assumption
 
 theorem val_colX_ordX (t : T) (i j : Fin D.R.m) (w : Pl D.host.E)
     (s : Fin ((locGrid G t w).rank (i + 1, j + 1) + (locGrid G t w).rank (i, j))) :
@@ -1205,7 +1208,7 @@ theorem stdSnd_eq_prodB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTh
   funext y
   unfold stdSnd prodB
   by_cases hy : IsHalf (cA D ε) y
-  · rw [ite_eq_left hy]
+  · rw [if_pos hy]
     obtain ⟨P, hP⟩ := Ideal.exists_maximal (𝓞 D.host.E)
     have w₀ : Pl D.host.E := ⟨P, hP.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField _)⟩
     have hd : (spX G i j).rank = (spW G i j).rank + (spW₁ G i j).rank := by
@@ -1228,7 +1231,7 @@ theorem stdSnd_eq_prodB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTh
     · exact @if_congr _ _ _ (_) (_) _ _ _ _ (and_iff_right hy) rfl rfl
     · rw [locChar_nu hL]
       rfl
-  · rw [ite_eq_right hy, ite_eq_right fun h => hy h.1]
+  · rw [if_neg hy, if_neg fun h => hy h.1]
 
 end GlobalTheory.TopFlip.StdSnd
 
@@ -1347,7 +1350,7 @@ theorem eq_smul_of_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
     intro g hg hl v hv z
     have hv' : finRat S T (-v) ∈ Λ := (Λ.comap (finRat S T)).neg_mem hv
     rw [apply_add_infRat h hψ hg v (hε2 _ hv' g hl) z, ← j2]
-    simp only [c, dite_eq_left hv']
+    simp only [c, dif_pos hv']
   have hli := _root_.GlobalTheory.VacuumLine.not_linearIndependent (RW T S) (jO S T sS sT) (omO S T) j1 j2 j3 j4 (Matrix (Fin T.rank) (Fin S.rank) D.host.E)
     (infRat S T) (infRat_injective S T) hsp (Λ.comap (finRat S T))
     (fun x => by
@@ -1358,7 +1361,7 @@ theorem eq_smul_of_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
     (fun k => by fin_cases k; exacts [a1.1, a2.1]) (fun k => by fin_cases k; exacts [a1.2, a2.2])
     (fun k => by fin_cases k; exacts [law f hf.2.theta hlat, law f' hth hlat'])
   rw [LinearIndependent.pair_iff' hne] at hli
-  push Not at hli
+  push_neg at hli
   obtain ⟨a, ha⟩ := hli
   exact ⟨a, det f f' a hf.2.theta hth hlat hlat' fun z => (congrFun ha z).symm⟩
 

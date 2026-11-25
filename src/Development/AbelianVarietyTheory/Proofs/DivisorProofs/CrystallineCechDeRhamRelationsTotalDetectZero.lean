@@ -873,11 +873,11 @@ theorem restrict_upwardClosed_subcategory_pull1_bijective : ∀ (R : Type) [Comm
       obtain ⟨x, hx⟩ := glue T (fun S u ↦ if hS : P S then g S hS - f.1 T S u else 0)
         fun S S' u ψ hS ↦ by
           have hS' := hP _ _ ψ hS
-          simp only [dite_eq_left hS, dite_eq_left hS', map_sub]
+          simp only [dif_pos hS, dif_pos hS', map_sub]
           have k1 := Z1.comp f u ψ
           have k2 := hg' S S' hS hS' ψ
           linear_combination k2 - k1
-      exact ⟨x, fun S u hS ↦ by rw [hx S u hS, dite_eq_left hS]⟩
+      exact ⟨x, fun S u hS ↦ by rw [hx S u hS, dif_pos hS]⟩
     choose x hx using h1
     refine H1.mk_eq_zero.2 ⟨x, ?_⟩
     funext T T' φ
@@ -897,12 +897,12 @@ theorem restrict_upwardClosed_subcategory_pull1_bijective : ∀ (R : Type) [Comm
         z S S'' (ψ ≫ χ) = mp F χ (z S S' ψ) + z S' S'' χ := by
       intro S S' S'' ψ χ hp
       have hp' := hP _ _ ψ hp
-      simp only [z, dite_eq_left hp, dite_eq_left hp']
+      simp only [z, dif_pos hp, dif_pos hp']
       exact y.2 (T := ⟨S, hp⟩) (T' := ⟨S', hp'⟩) (T'' := ⟨S'', hP _ _ χ hp'⟩)
         (ObjectProperty.homMk ψ) (ObjectProperty.homMk χ)
     have hzy : ∀ (S S' : P.FullSubcategory) (ψ : S ⟶ S'), z S.obj S'.obj ψ.hom = y.1 S S' ψ := by
       intro S S' ψ
-      simp only [z, dite_eq_left S.property]
+      simp only [z, dif_pos S.property]
       rfl
     have h1 : ∀ T : C, ∃ b : ∀ S, (T ⟶ S) → F.obj S, (∀ S S' u ψ, P S →
         b S' (u ≫ ψ) - mp F ψ (b S u) = z S S' ψ) ∧ (P T → ∀ S u, b S u = z T S u) := by
@@ -971,7 +971,8 @@ theorem smAff_up (S S' : (IsSm κ t i).FullSubcategory) (f : S ⟶ S') (h : smAf
   · exact h'
   · have e : S'.obj.U = S.obj.U := le_antisymm f.hom.2 (h' ▸ le_top)
     change IsAffineOpen S'.obj.U
-    rwa [e]
+    rw [e]
+    exact h
 
 abbrev coefSm : (IsSm κ t i).FullSubcategory ⥤ CommAlgCat.{0} R := (IsSm κ t i).ι ⋙ Pr.fgt κ t i ⋙ O κ t
 
@@ -1036,14 +1037,16 @@ theorem crystallineCohomology_computed_on_affinePairs : ∀ (R : Type) [CommRing
         (CoefMap.restrict (O κ t) ((IsSm κ t i).ι ⋙ Pr.fgt κ t i)).pull1 := by
       funext c
       obtain ⟨a, rfl⟩ := H1.mk_surjective _ c; rfl
-    rwa [e]
+    rw [e]
+    exact h
   · have h := (mapTo_pull2 κ t i).comp (h2.comp ha.2)
     have e : ⇑(CoefMap.restrict (O κ t) (pE κ t i)).pull2 = (mapTo κ t i).pull2 ∘
         (CoefMap.restrict (coefSm κ t i) (smAff κ t i).ι).pull2 ∘
         (CoefMap.restrict (O κ t) ((IsSm κ t i).ι ⋙ Pr.fgt κ t i)).pull2 := by
       funext c
       obtain ⟨a, rfl⟩ := H2.mk_surjective _ c; rfl
-    rwa [e]
+    rw [e]
+    exact h
 
 end GlobalTheory.PDForm
 end -- clump:auto
@@ -1073,14 +1076,20 @@ theorem exists_cocycle_of_h0_surjective (m : CxMap K K') (hm : Function.Surjecti
 
 theorem exists_primitive_of_h1_injective (m : CxMap K K') (hm : Function.Injective m.h1) (z : K.T1) (hz : z ∈ K.Z1)
     (g : K'.M0.c0) (h : m.p1 z = K'.D0 g) : ∃ g', K.D0 g' = z := by
-  exact GlobalTheory.CxTowerTwo.inj1 m hm z hz g h
+  have h0 : m.h1 (QuotientAddGroup.mk ⟨z, hz⟩ : K.H1) = 0 := by
+    change (QuotientAddGroup.mk (m.z1 ⟨z, hz⟩) : K'.H1) = 0
+    rw [QuotientAddGroup.eq_zero_iff]
+    exact ⟨g, h.symm⟩
+  have h1 := hm (h0.trans (map_zero m.h1).symm)
+  rw [QuotientAddGroup.eq_zero_iff] at h1
+  exact h1
 
 theorem exists_cocycle_of_h1_surjective (m : CxMap K K') (hm : Function.Surjective m.h1) (z' : K'.T1)
     (hz : z' ∈ K'.Z1) : ∃ z ∈ K.Z1, ∃ g, z' = m.p1 z + K'.D0 g := by
-  exact GlobalTheory.CxTowerTwo.surj1 m hm z' hz
+  apply _root_.GlobalTheory.CxTowerTwo.surj1 <;> assumption
 
 theorem cx_D1_D0_eq_zero (K : Cx C) (g : K.M0.c0) : K.D1 (K.D0 g) = 0 := by
-  exact GlobalTheory.CxTowerTwo.cx_D1_D0_eq_zero K g
+  apply _root_.GlobalTheory.CxTowerTwo.cx_D1_D0_eq_zero <;> assumption
 
 end GlobalTheory.CxCoh.TowerOne
 
@@ -1122,7 +1131,8 @@ theorem tower (K : Cx C) (Q : ℕ → ObjectProperty C) (hQ : ∀ n, Q n ≤ Q (
     obtain ⟨⟨z, hz⟩, rfl⟩ := QuotientAddGroup.mk_surjective x
     have hx' : (K.resMap (Q 0).ι).p1 z ∈ (K.res (Q 0).ι).D0.range := by
       change (QuotientAddGroup.mk ((K.resMap (Q 0).ι).z1 ⟨z, hz⟩) : (K.res (Q 0).ι).H1) = 0 at hx
-      rwa [QuotientAddGroup.eq_zero_iff] at hx
+      rw [QuotientAddGroup.eq_zero_iff] at hx
+      exact hx
     have hb : ∀ n, ∃ a, (K.res (Q n).ι).D0 a = (K.resMap (Q n).ι).p1 z := by
       intro n
       induction n with
@@ -1164,12 +1174,14 @@ theorem tower (K : Cx C) (Q : ℕ → ObjectProperty C) (hQ : ∀ n, Q n ≤ Q (
         obtain ⟨n, h, h'⟩ := hex2 T T'
         have e := congrArg (fun w ↦ w.1 ⟨T, h⟩ ⟨T', h'⟩ (homMk φ)) (had n)
         show g T' - K.M0.map φ (g T) = z.1 T T' φ
-        rwa [hg n T h, hg n T' h']
+        rw [hg n T h, hg n T' h']
+        exact e
       · funext T
         obtain ⟨n, h⟩ := hex T
         have e := congrArg (fun w ↦ w.2 ⟨T, h⟩) (had n)
         show K.d0 T (g T) = z.2 T
-        rwa [hg n T h]
+        rw [hg n T h]
+        exact e
     change (QuotientAddGroup.mk ⟨z, hz⟩ : K.H1) = 0
     rw [QuotientAddGroup.eq_zero_iff]
     exact ⟨g, hgz⟩
@@ -1237,18 +1249,21 @@ theorem tower (K : Cx C) (Q : ℕ → ObjectProperty C) (hQ : ∀ n, Q n ≤ Q (
         have e := congrArg (fun w ↦ w.1 ⟨T, h⟩ ⟨T', h'⟩ ⟨T'', h''⟩ (homMk φ) (homMk ψ))
           (hbZ n : (K.res (Q n).ι).D1 (b n) = 0)
         show K.M0.map ψ (c.1 T T' φ) - c.1 T T'' (φ ≫ ψ) + c.1 T' T'' ψ = 0
-        rwa [hc1 n T T' h h', hc1 n T T'' h h'', hc1 n T' T'' h' h'']
+        rw [hc1 n T T' h h', hc1 n T T'' h h'', hc1 n T' T'' h' h'']
+        exact e
       · funext T T' φ
         obtain ⟨n, h, h'⟩ := hex2 T T'
         have e := congrArg (fun w ↦ w.2.1 ⟨T, h⟩ ⟨T', h'⟩ (homMk φ))
           (hbZ n : (K.res (Q n).ι).D1 (b n) = 0)
         show c.2 T' - K.M1.map φ (c.2 T) - K.d0 T' (c.1 T T' φ) = 0
-        rwa [hc1 n T T' h h', hc2 n T h, hc2 n T' h']
+        rw [hc1 n T T' h h', hc2 n T h, hc2 n T' h']
+        exact e
       · funext T
         obtain ⟨n, h⟩ := hex T
         have e := congrArg (fun w ↦ w.2.2 ⟨T, h⟩) (hbZ n : (K.res (Q n).ι).D1 (b n) = 0)
         show K.d1 T (c.2 T) = 0
-        rwa [hc2 n T h]
+        rw [hc2 n T h]
+        exact e
     refine ⟨QuotientAddGroup.mk ⟨c, hc⟩, ?_⟩
     change (QuotientAddGroup.mk ((K.resMap (Q 0).ι).z1 ⟨c, hc⟩) : (K.res (Q 0).ι).H1) = _
     congr 1

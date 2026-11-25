@@ -279,17 +279,6 @@ theorem support_finite (w : (Σ k, ι k) → L) (hw : ∀ k, ∃ i, w ⟨k, i⟩
 
 theorem product_formula (κ : L) (hκ : κ ≠ 0) :
     ∑ᶠ v : FinitePlace L, Real.log (v κ) = -∑ σ : L →+* ℂ, Real.log ‖σ κ‖ := by
-  have hmul : (Function.mulSupport fun v : FinitePlace L => v κ).Finite :=
-    FinitePlace.hasFiniteMulSupport hκ
-  have h1 : ∑ᶠ v : FinitePlace L, Real.log (v κ) = Real.log (∏ᶠ v : FinitePlace L, v κ) := by
-    rw [finsum_eq_sum_of_support_subset (s := hmul.toFinset),
-      finprod_eq_prod_of_mulSupport_subset (s := hmul.toFinset) _ (by simp),
-      Real.log_prod (fun v _ => (FinitePlace.pos_iff.2 hκ).ne')]
-    intro v hv
-    simp only [Set.Finite.coe_toFinset, Function.mem_mulSupport]
-    intro h1
-    apply hv
-    simp [h1]
   have h2 : ∑ φ : L →+* ℂ, Real.log ‖φ κ‖ = Real.log |Algebra.norm ℚ κ| := by
     rw [← Real.log_prod (fun φ _ => norm_ne_zero_iff.2 ((map_ne_zero φ).2 hκ))]
     congr 1
@@ -298,7 +287,8 @@ theorem product_formula (κ : L) (hκ : κ ≠ 0) :
     rw [Fintype.prod_equiv (RingHom.equivRatAlgHom L ℂ) (fun φ => ‖φ κ‖) (fun φ => ‖φ κ‖)
       (fun _ => by simp [RingHom.equivRatAlgHom_apply]), ← this]
     rw [eq_ratCast, ← Complex.ofReal_ratCast, Complex.norm_real, Real.norm_eq_abs]
-  rw [h1, h2, FinitePlace.prod_eq_inv_abs_norm hκ]
+  rw [← Real.log_finprod fun _ : FinitePlace L => FinitePlace.pos_iff.2 hκ, h2,
+    FinitePlace.prod_eq_inv_abs_norm hκ]
   push_cast
   rw [Real.log_inv]
 

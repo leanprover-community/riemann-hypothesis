@@ -103,18 +103,11 @@ section Forms
 variable (F K : Type) [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] {d : ℕ}
   (x : Fin (d + 1) → F)
 
-def XZ (l : Fin (d + 1)) : Module.End ℂ (DR ℂ K ⊗[ℂ] DR ℂ K) :=
-  LinearMap.rTensor _ ((Algebra.lsmul ℂ ℂ (DR ℂ K)) (algebraMap F K (x l)))
-
 def actZ : K ⊗[ℂ] K →ₐ[ℂ] Module.End ℂ (DR ℂ K ⊗[ℂ] DR ℂ K) :=
   (Module.endTensorEndAlgHom).comp (Algebra.TensorProduct.map (Algebra.lsmul ℂ ℂ (DR ℂ K)) (Algebra.lsmul ℂ ℂ (DR ℂ K)))
 
 def MZ (a : ℕ) (I J : Finset (Fin (d + 1))) : Submodule ℂ (DR ℂ K ⊗[ℂ] DR ℂ K) :=
   Submodule.map₂ (TensorProduct.mk ℂ _ _) (omB ℂ K (rB ℂ K x I) (d - a)) (omB ℂ K (rB ℂ K x J) a)
-
-def ctr (τ : DR ℂ K →ₗ[K] K) (w : DR ℂ K) : DR ℂ K ⊗[ℂ] DR ℂ K →ₗ[ℂ] DR ℂ K :=
-  TensorProduct.lift ((Algebra.lsmul ℂ ℂ (DR ℂ K)).toLinearMap ∘ₗ ((Algebra.linearMap F K).restrictScalars ℂ ∘ₗ
-    (Algebra.trace F K).restrictScalars ℂ ∘ₗ τ.restrictScalars ℂ ∘ₗ LinearMap.mulLeft ℂ w))
 
 end Forms
 

@@ -200,7 +200,7 @@ theorem val_one {p : HeightOneSpectrum (𝓞 K)} {s : 𝓞 K} (hs : s ∉ p.asId
 
 theorem mem_locR {p : HeightOneSpectrum (𝓞 K)} (hc : conjIdeal (K := K) p.asIdeal = p.asIdeal)
     (a : K) : a ∈ locR (K := K) p.asIdeal ↔ p.valuation K a ≤ 1 := by
-  exact GlobalTheory.MaxLatDet.mem_locR_iff_le p hc a
+  apply _root_.GlobalTheory.MaxLatDet.mem_locR_iff_le <;> assumption
 
 theorem star_notMem {p : HeightOneSpectrum (𝓞 K)} (hc : conjIdeal (K := K) p.asIdeal = p.asIdeal)
     {s t : 𝓞 K} (e : algebraMap (𝓞 K) K t = star (algebraMap (𝓞 K) K s)) (hs : s ∉ p.asIdeal) :
@@ -231,7 +231,13 @@ theorem smul_mem_loc {p : HeightOneSpectrum (𝓞 K)} (hc : conjIdeal (K := K) p
 
 theorem val_unif {p : HeightOneSpectrum (𝓞 K)} {a : 𝓞 K} (h1 : a ∈ p.asIdeal) (h2 : a ∉ p.asIdeal ^ 2) :
     p.valuation K (algebraMap (𝓞 K) K a) = WithZero.exp (-1 : ℤ) := by
-  apply GlobalTheory.MaxLatDet.val_unif <;> assumption
+  rw [HeightOneSpectrum.valuation_of_algebraMap]
+  have a1 := (p.intValuation_le_pow_iff_mem a 1).2 (by simpa using h1)
+  have a2 := mt (p.intValuation_le_pow_iff_mem a 2).1 h2
+  have a0 : p.intValuation a ≠ 0 := fun e => a2 (by rw [e]; exact zero_le)
+  rw [← WithZero.exp_log a0, WithZero.exp_le_exp] at a1 a2
+  rw [← WithZero.exp_log a0, WithZero.exp_inj]
+  omega
 
 theorem le_of_lt_one {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZero.exp (-1 : ℤ) := by
   by_cases a0 : x = 0

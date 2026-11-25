@@ -145,7 +145,6 @@ namespace GlobalTheory.FlipRun
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open GlobalTheory.ChiGrid GlobalTheory.FunObj
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
 

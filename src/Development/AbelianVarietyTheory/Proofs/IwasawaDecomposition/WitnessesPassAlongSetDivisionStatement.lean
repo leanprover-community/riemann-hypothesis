@@ -341,7 +341,6 @@ def allTiedTr {X : ThetaX (w.D Z)} {A : TH.ProvA} (a : AllTied (w.D Z) X A) : Al
   sm := ⟨a.sm.1, fun θ hθ V hV => (a.sm.2 θ hθ V hV).trans (Set.ext fun _ => isAutFunSm_tr w Z N h)⟩
   ty := { a.ty with }
   W := weilTiedTr w Z N h a.W
-  unr := a.unr
   kf := { a.kf with }
   phiUp := a.phiUp
   B := { a.B with dat := fun A B ι ho p => besDatTr w Z N h (a.B.dat A B ι ho p) }

@@ -80,7 +80,7 @@ theorem norm_psi_inf {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : Ainf F) : �
   rw [psi_pairA hψ]; exact PositivityTheory.ThKEst.W.norm_exp_real _
 
 theorem norm_psi_fin {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (y : Af F) : ‖ψ (pairA F 0 y)‖ = 1 := by
-  exact PositivityTheory.ThKEst.W.norm_psi_fin hψ y
+  apply _root_.PositivityTheory.ThKEst.W.norm_psi_fin <;> assumption
 
 theorem norm_psi {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : AF F) : ‖ψ x‖ = 1 := by
   rw [PositivityTheory.ThKEst.W.pairA_split x, AddChar.map_add_eq_mul, norm_mul, norm_psi_inf hψ, norm_psi_fin hψ, one_mul]

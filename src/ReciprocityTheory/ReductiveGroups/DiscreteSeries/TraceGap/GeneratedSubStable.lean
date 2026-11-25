@@ -144,7 +144,7 @@ theorem datum_link_std {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {h 
     le_antisymm (LinearMap.finrank_le_finrank_of_injective hφi)
       (LinearMap.finrank_le_finrank_of_injective hψi)
   let e : V ≃ₗ[ℂ] V₂ := φ.linearEquivOfInjective hφi hrk
-  have hU := rigid_universal hσ hD hV hc hVK hσ₂ hD₂ hc₂ hstd φ hφK hφI
+  have hU := rigid_universal hσ hD hV hc hVK hσ₂ hD₂ hV₂ hc₂ hVK₂ hstd φ hφK hφI
   have h1J : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := by
     show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * Jm ε * 1 = Jm ε
     simp

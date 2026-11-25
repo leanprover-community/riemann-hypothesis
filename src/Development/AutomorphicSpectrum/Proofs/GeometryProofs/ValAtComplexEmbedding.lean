@@ -92,12 +92,6 @@ theorem stalkSpecializes_stalkClosedPointTo {K : Type} [Field K] (x : X)
     TopCat.Presheaf.stalkCongr_hom]
   exact stalkSpecializes_comp_comp_eq_of_eq _ _ hc.symm φ
 
-private theorem isLocalHom_of_field' {K K' : Type} [Field K] [Field K'] (f : K →+* K') : IsLocalHom f :=
-  ⟨fun a ha => by
-    rcases eq_or_ne a 0 with rfl | h
-    · simp at ha
-    · exact h.isUnit⟩
-
 theorem valAt_of_field_map {K K' : Type} [Field K] [Field K'] (ξ : Spec (CommRingCat.of Ω) ⟶ X)
     (w : Spec (CommRingCat.of K) ⟶ X) (w' : Spec (CommRingCat.of K') ⟶ X) (f : K →+* K')
     (e : Spec.map (CommRingCat.ofHom f) ≫ w = w') {a : Ω} {u : K} (hv : ValAt ξ w a u) :
@@ -106,14 +100,10 @@ theorem valAt_of_field_map {K K' : Type} [Field K] [Field K'] (ξ : Spec (CommRi
   subst e
   obtain ⟨ψ, hψ⟩ : ∃ ψ : X.presheaf.stalk (centre w) ⟶ CommRingCat.of K',
       ψ = Scheme.stalkClosedPointTo w ≫ CommRingCat.ofHom f := ⟨_, rfl⟩
-  haveI : IsLocalHom ψ.hom := by
-    haveI := isLocalHom_of_field' f
-    have hh : ψ.hom = f.comp (Scheme.stalkClosedPointTo w).hom := by
-      subst hψ
-      rfl
-    rw [hh]
-    exact @RingHom.isLocalHom_comp _ _ _ _ _ _ f (Scheme.stalkClosedPointTo w).hom (isLocalHom_of_field' f)
-      (Scheme.isLocalHom_stalkClosedPointTo w)
+  have : IsLocalHom ψ.hom := by
+    rw [show ψ.hom = f.comp (Scheme.stalkClosedPointTo w).hom by subst hψ; rfl]
+    exact @RingHom.isLocalHom_comp _ _ _ _ _ _ f (Scheme.stalkClosedPointTo w).hom
+      inferInstance (Scheme.isLocalHom_stalkClosedPointTo' (R := K) w)
   have hφ := Scheme.Spec_stalkClosedPointTo_fromSpecStalk w
   have hw' : Spec.map (CommRingCat.ofHom f) ≫ w = Spec.map ψ ≫ X.fromSpecStalk (centre w) := by
     rw [hψ]

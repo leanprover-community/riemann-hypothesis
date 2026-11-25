@@ -128,11 +128,6 @@ theorem RiemLat.quad_nonneg (R : RiemLat E g Λ) (z : Fin g → ℂ) : 0 ≤ (z 
 
 theorem RiemLat.normSq_nonneg (R : RiemLat E g Λ) (x : Λ) : 0 ≤ R.normSq x := R.quad_nonneg _
 
-theorem RiemLat.form_antisymm (R : RiemLat E g Λ) (x y : Λ) : R.form y x = - R.form x y := by
-  have h := R.alt (x + y)
-  simp only [map_add (f := _), LinearMap.add_apply, R.alt] at h
-  linarith
-
 theorem RiemLat.form_sq_le (R : RiemLat E g Λ) (x y : Λ) :
     ((R.form x y : ℤ) : ℝ) ^ 2 ≤ R.normSq x * R.normSq y := by
   apply GlobalTheory.CompanionTheory.Ar.Cusp.RiemLat.integral_form_sq_le_mul_normSq

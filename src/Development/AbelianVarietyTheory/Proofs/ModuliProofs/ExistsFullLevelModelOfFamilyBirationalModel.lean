@@ -369,7 +369,7 @@ theorem exists_restrict (l : Level H) (n : ℕ) (β : RZ H n l.A →+* KA l)
   exact ⟨((KA l).val.toRingHom.comp (σ.comp β)).codRestrict _ hm, RingHom.ext fun x => Subtype.ext (hβ _)⟩
 
 theorem exists_extend (l : Level H) (n : ℕ) (β : RZ H n l.A →+* KA l)
-    (hd : IsDedFrac β) {k : Type} [Field k] [CharZero k]
+    (hβ : IsInc (RZ H n l.A).subtype (KA l).val.toRingHom β) (hd : IsDedFrac β) {k : Type} [Field k] [CharZero k]
     (δ : RZ H n l.A →+* k) : ∃ gam : KA l →+* k, gam.comp β = δ := by
   letI := β.toAlgebra
   have := hd.2.2
@@ -426,7 +426,7 @@ theorem GlobalTheory.famCore_exists_aut : Out.Laws → Out.Laws2 → ∀ (E : Ty
   have hl : ∀ (k : Type) [Field k] [IsAlgClosed k] [CharZero k] (x : Sp k ⟶ MM), ∃ y, y ≫ a = x := by
     intro k _ _ _ x
     obtain ⟨δ, hδ⟩ := exists_spMap (x ≫ sM)
-    obtain ⟨gam, rfl⟩ := exists_extend l n β hd δ
+    obtain ⟨gam, rfl⟩ := exists_extend l n β hβ hd δ
     have : LocallyOfFiniteType (pullback.lift a _ h ≫ pullback.snd _ _) := by
       rw [pullback.lift_snd]; infer_instance
     have := locallyOfFiniteType_of_comp (pullback.lift a _ h) (pullback.snd _ _)

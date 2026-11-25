@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalRingExistsAevalOfCommuteSeparable
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyUnitaryConjOfSameEllipticCharpolyInert
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftMulMatrixTransfer
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnramifiedQuadraticDatumAtInertPlace
@@ -74,16 +76,8 @@ variable {O : Type} [CommRing O] {n : ℕ}
 open GlobalTheory.ClassParam in
 theorem exists_cyclic [IsLocalRing O] (M : Matrix (Fin n) (Fin n) O) (hs : M.charpoly.Separable) :
     ∃ v, IsUnit (krylov M v) := by
-  haveI : Subsingleton (MaximalSpectrum O) := ⟨fun a b =>
-    MaximalSpectrum.ext ((IsLocalRing.eq_maximalIdeal a.isMaximal).trans
-      (IsLocalRing.eq_maximalIdeal b.isMaximal).symm)⟩
-  obtain ⟨w, hw⟩ := GlobalTheory.RegSS.Semilocal.cyclicSemilocal_of_cyclicField GlobalTheory.RegSS.cyclicField _ (Fin n) M hs
-  let σ : Equiv.Perm (Fin n) := (Fintype.equivFin (Fin n)).trans (finCongr (Fintype.card_fin n))
-  have hk : GlobalTheory.RegSS.krylov M w = (krylov M w).submatrix id σ := by
-    ext i j
-    simp [GlobalTheory.RegSS.krylov, krylov, σ]
-  rw [hk, Matrix.det_permute'] at hw
-  exact ⟨w, (Matrix.isUnit_iff_isUnit_det _).2 (isUnit_of_mul_isUnit_right hw)⟩
+  intros
+  apply _root_.GlobalTheory.LocalCommutant.exists_isUnit_krylov <;> assumption
 
 theorem conj_of_charpoly [IsLocalRing O] (a b : GL (Fin n) O) (hs : a.val.charpoly.Separable)
     (h : b.val.charpoly = a.val.charpoly) : ∃ g, b = g⁻¹ * a * g := by
@@ -252,17 +246,7 @@ theorem eventually_int (x : E) :
 
 theorem eventually_lift (p : E[X]) : ∀ᶠ w : Pl E in cofinite, ∃ q : (w.adicCompletionIntegers E)[X],
     q.map (algebraMap _ (w.adicCompletion E)) = atPl w p := by
-  have h : ∀ᶠ w : Pl E in cofinite, ∀ i ∈ p.support,
-      algebraMap E (w.adicCompletion E) (p.coeff i) ∈ w.adicCompletionIntegers E := by
-    rw [eventually_all_finset]
-    exact fun i _ => eventually_int _
-  filter_upwards [h] with w hw
-  refine (Polynomial.mem_lifts _).1 ((Polynomial.lifts_iff_coeff_lifts _).2 fun i => ?_)
-  rw [coeff_map]
-  by_cases hi : i ∈ p.support
-  · exact ⟨⟨_, hw i hi⟩, rfl⟩
-  · rw [notMem_support_iff.1 hi, map_zero]
-    exact ⟨0, map_zero _⟩
+  apply _root_.GlobalTheory.BCT.UnitInert.eventually_lift <;> assumption
 
 theorem eventually_separable (P : E[X]) (hP : P.Separable) : ∀ᶠ w : Pl E in cofinite,
     ∀ q : (w.adicCompletionIntegers E)[X], q.map (algebraMap _ (w.adicCompletion E)) = atPl w P → q.Separable := by

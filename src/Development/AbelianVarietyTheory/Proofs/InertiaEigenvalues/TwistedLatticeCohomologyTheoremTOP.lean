@@ -911,6 +911,7 @@ theorem zero_mem {O N : Type} [CommRing O] [AddCommGroup N] [Module O N] {s : Se
   obtain ⟨A, rfl⟩ := h
   exact A.zero_mem
 
+set_option synthInstance.maxHeartbeats 400000 in
 theorem cls_eq_zero_of_flat {l : ℕ} [Fact l.Prime] {P : LocPrime l} (S : TopSit P) {M : Type} [AddCommGroup M]
     [Module S.O M] [Module.Flat S.O M] (W : Representation S.O S.G M) (hL : S.Lem0 W) (hR : S.ResBound W 0)
     (hlc : ∀ (X : Type) [AddCommGroup X] [Module S.O X] [Finite X] (m : M ⊗[S.O] X),

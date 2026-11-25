@@ -260,10 +260,7 @@ theorem blockRed_eq_rename (O : Type) [CommRing O] (N : ℕ) {ι : Type} (ϖ : O
     (g : MvPolynomial (Fin N × Fin N) O) :
     blockRed O N ϖ τ g = rename (fun v : Fin N × Fin N => ((τ, v) : BVar N ι))
       (MvPolynomial.map (Ideal.Quotient.mk (Ideal.span {ϖ})) g) := by
-  induction g using MvPolynomial.induction_on with
-  | C a => simp [blockRed, MvPolynomial.algebraMap_eq]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp => simp only [map_mul, hp, blockRed, aeval_X, map_X, rename_X] at hp ⊢
+  apply _root_.GlobalTheory.HighWtEmb.blockRed_eq_rename_map <;> assumption
 
 theorem redT_tprod (O : Type) [CommRing O] (N : ℕ) {ι : Type} [Fintype ι] [DecidableEq ι] (mu : ι → ℕ → ℕ) (ϖ : O)
     (x : ∀ τ, dualWeyl O N N (res N (mu τ))) :
@@ -1773,10 +1770,7 @@ theorem linearIndependent_prod_rename : ∀ (k : Type) [Field k] (ι : Type) [Fi
 
 theorem blockRed_eq (O : Type) [CommRing O] (N : ℕ) {ι : Type} (ϖ : O) (τ : ι) (g : MvPolynomial (Fin N × Fin N) O) :
     blockRed O N ϖ τ g = rename (fun s : Fin N × Fin N => ((τ, s) : BVar N ι)) (MvPolynomial.map (Ideal.Quotient.mk (Ideal.span {ϖ})) g) := by
-  induction g using MvPolynomial.induction_on with
-  | C a => simp [blockRed, MvPolynomial.algebraMap_eq]
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p s hp => simp [hp, blockRed] at *
+  apply _root_.GlobalTheory.HighWtEmb.blockRed_eq_rename_map <;> assumption
 
 theorem mem_smul_top_of_redT_eq_zero : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (N : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
     (mu : ι → ℕ → ℕ) (ϖ : O), Irreducible ϖ → (∀ τ, Antitone (res N (mu τ))) → GlobalTheory.HighWt.BaseChange →

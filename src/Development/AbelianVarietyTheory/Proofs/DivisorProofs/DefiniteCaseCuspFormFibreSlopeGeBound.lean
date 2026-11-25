@@ -253,7 +253,8 @@ theorem mul_norm_tval_le_fibNorm : ∀ (T : Type) [Fintype T] [DecidableEq T] (N
   refine (norm_sum_mul_le _ _).trans ?_
   calc _ ≤ Real.sqrt (∑ I, ‖(fibY la s X *ᵥ x) I‖ ^ 2) * 1 := by
         refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
-        rwa [Real.sqrt_le_one]
+        rw [Real.sqrt_le_one]
+        exact h3
     _ = _ := mul_one _
 
 end GlobalTheory.TSup
@@ -356,7 +357,7 @@ theorem mem_range_of_le_one {w : HeightOneSpectrum (𝓞 c.F)} {T : CDVR} {io : 
 theorem map_tval {T : Type} [Fintype T] [DecidableEq T] {N : T → ℕ} (la : ∀ t, Fin (N t) → ℕ) {S S' : Type} [CommRing S]
     [CommRing S'] (φ : S →+* S') (x : TIdx la → S) (y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) S) :
     φ (tval la x y) = tval la (fun I => φ (x I)) fun t => (y t).map φ := by
-  exact GlobalTheory.DefPt.ReadsPt.tval_map la φ x y
+  apply _root_.GlobalTheory.DefPt.ReadsPt.tval_map <;> assumption
 
 theorem val_nonneg {Z : Comp Xo c} (P : PtData Z) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {x : TIdx (part Dw a) → c.F} {f : Rul Xo c}
     (hr : Reads Z P.y₀ a n x f) (hx : x ∈ locLat (P.matA a n)) (w : HeightOneSpectrum (𝓞 c.F)) :
@@ -423,7 +424,8 @@ theorem cabs_le_matNorm_conj (hpq : 1 ≤ Dw.p + Dw.q) {Z : Comp Xo c} (P : PtDa
   have hev := evR_frMap (GlobalTheory.Frames.algebraic_laws hB E H Dw l Xo c).2.2.1 f hf.1
     (GlobalTheory.FrameNorm.conjAlg σ) y (GlobalTheory.Frames.allTest_of_secBaseChange hB E H Dw l Xo c (CAt σ) y) y' hy'
   rw [hev] at hb
-  exact le_trans (le_of_eq (Complex.norm_conj _).symm) hb
+  refine le_trans (le_of_eq ?_) hb
+  exact (Complex.norm_conj _).symm
 
 theorem exists_ortho {σ : c.F →+* ℂ} {r : ℕ} {U : Unf Xo c σ r} {ξ : ℝ} (hσ : GoodEmb c σ) (hU : IsUnf U)
     (hξ : ∀ k (τ : E →+* ℂ), ‖τ (U.X k).ξ0‖ = ξ) (hpq : 1 ≤ Dw.p + Dw.q) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} (hd : Dom a n)
@@ -498,7 +500,7 @@ theorem exists_ortho {σ : c.F →+* ℂ} {r : ℕ} {U : Unf Xo c σ r} {ξ : �
     rw [h2]
     rfl
   have hrd : ‖rdU U f k z‖ = cabs (evR Xo c f (U.un k ⟨z, hz⟩)) := by
-    have e : rdU U f k z = toC (evR Xo c f (U.un k ⟨z, hz⟩)) := dite_eq_left hz
+    have e : rdU U f k z = toC (evR Xo c f (U.un k ⟨z, hz⟩)) := dif_pos hz
     rw [e]; rfl
   rw [ReciprocityTheory.ChartRestriction.G.PullbackSections.PfSupAtUnit.pnorm_unit _ _ _ (ReciprocityTheory.ChartRestriction.G.PullbackSections.PfSupAtUnit.dmin_ortho _ ho), hrd] at hp
   rw [hev, GlobalTheory.FrameNorm.Comparison₂.cabs_mul, hw, homN, lieFacZ_wtZ, modelWt_wtZ, hp]
@@ -515,10 +517,10 @@ theorem integral_and_norm_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   refine le_trans (le_of_eq hn) ?_
   clear hn hy hZ
   by_cases hσ : GoodEmb c σ
-  · have e : goodOf c σ = σ := ite_eq_left hσ
+  · have e : goodOf c σ = σ := if_pos hσ
     have := cabs_le_matNorm P hd hr hx hm
     exact this.trans (le_of_eq (by rw [e]))
-  · have e : goodOf c σ = (starRingEnd ℂ).comp σ := ite_eq_right hσ
+  · have e : goodOf c σ = (starRingEnd ℂ).comp σ := if_neg hσ
     exact cabs_le_matNorm_conj hpq P hd hf hr (by rw [e]; ext b; simp) hx hm
 
 end GlobalTheory.DefPt.IntNorm
@@ -1150,7 +1152,7 @@ theorem matChar_transvection [CharZero K] {i j : Fin n} (hij : i ≠ j) (c : K) 
       simp only [and_self, ite_true]
       ring
     · have h' : ¬(i = a ∧ j = b) := fun h' => h ⟨h'.1.symm, h'.2.symm⟩
-      rw [ite_eq_right h', ite_eq_right h']
+      rw [if_neg h', if_neg h']
       simp only [add_zero]
       by_cases hab : a = b
       · subst hab; ring
@@ -1616,7 +1618,8 @@ theorem norm_rule_of_isMetricAt {κ : KeyRule} (hκ : IsKeyRule κ) {g : ℕ} (e
     rw [eq_inv_of_mul_eq_one_left hvol, eq_inv_of_mul_eq_one_left hdet.symm]
     exact (div_self (inv_ne_zero (right_ne_zero_of_mul_eq_one hvol))).symm
   have key := hκ.2.2.2.2 (FibKey.key { Φ with v := _, basis := hv }) u Hm W' χ θ Fd N 1 hA hR hF (fun j => (h7 _ _).2) hD hN h1
-  rwa [one_pow, mul_one] at key
+  rw [one_pow, mul_one] at key
+  exact key
 
 theorem norm_rule_of_isMetric {κ : KeyRule} (hκ : IsKeyRule κ) {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
     {σ : c.F →+* ℂ} (y : FrPt Xo c (CAt σ)) {N : ℝ} (h : IsMetric y N fun _ => 1) :
@@ -1794,11 +1797,11 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Recip
   have hsub : ∀ f : (E →+* ℂ) → ℝ, (∀ τ, Dw.mult τ = 0 → f τ = 0) → ∑ τ, f τ = ∑ τ : Psi H, f τ.1 := fun f hf => by
     rw [← Fintype.sum_subtype_add_sum_subtype (fun τ : E →+* ℂ => τ (H.rt : E) = H.rt0) f,
       Finset.sum_eq_zero (s := Finset.univ) (f := fun τ : {τ : E →+* ℂ // ¬ τ (H.rt : E) = H.rt0} => f τ.1)
-        fun τ _ => hf _ (by rw [Datum.mult, ite_eq_right τ.2, h.q]), add_zero]
+        fun τ _ => hf _ (by rw [Datum.mult, if_neg τ.2, h.q]), add_zero]
     convert rfl
   have h1 : ∑ τ, (Dw.mult τ : ℝ) = (Fintype.card (Psi H) : ℝ) * Dw.p := by
     rw [hsub _ fun τ h => by rw [h, Nat.cast_zero],
-      Finset.sum_congr rfl fun (τ : Psi H) _ => show (Dw.mult τ.1 : ℝ) = Dw.p by rw [Datum.mult, ite_eq_left τ.2]]
+      Finset.sum_congr rfl fun (τ : Psi H) _ => show (Dw.mult τ.1 : ℝ) = Dw.p by rw [Datum.mult, if_pos τ.2]]
     simp
   have h2 : (Fintype.card (Σ τ : E →+* ℂ, Fin (Dw.mult τ)) : ℝ) = (Fintype.card (Psi H) : ℝ) * Dw.p := by
     rw [← h1]; simp [Fintype.card_sigma]

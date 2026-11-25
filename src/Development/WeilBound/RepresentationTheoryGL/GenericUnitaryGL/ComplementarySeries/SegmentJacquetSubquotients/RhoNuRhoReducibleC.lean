@@ -532,55 +532,21 @@ theorem rc_mul (m m' : Levi k fun _ : Fin 2 => Fin d) : rc (m * m') = rc m * rc 
 
 theorem chi_val (s : ℝ) (m : Levi k fun _ : Fin 2 => Fin d) :
     ((chi k d s m : ℂˣ) : ℂ) = ((rc m ^ s : ℝ) : ℂ) := by
-  have e : -(s : ℂ) = ((-s : ℝ) : ℂ) := by push_cast; ring
-  simp only [chi, MonoidHom.mul_apply, Units.val_mul, MonoidHom.comp_apply, Pi.evalMonoidHom_apply,
-    detChar_apply]
-  rw [e, val_absPow_ofReal, val_absPow_ofReal, ← Complex.ofReal_mul]
-  congr 1
-  unfold rc
-  have h0 := (nabs_pos' k (Matrix.GeneralLinearGroup.det (m 0))).le
-  have h1 := (nabs_pos' k (Matrix.GeneralLinearGroup.det (m 1))).le
-  rw [Real.mul_rpow (inv_nonneg.2 h0) h1, Real.inv_rpow h0, Real.rpow_neg h0]
+  exact CompanionTheory.RgGu.NR.Compact.chi_val s m
 
 theorem rc_of_KO (q : parab k (blk2 d)) (hq : (q : GL (Fin (d + d)) k) ∈ KO k (Fin (d + d))) :
     rc (leviProj k (blk2 d) q) = 1 := by
-  have hK : ∀ a, leviProj k (blk2 d) q a ∈ KO k (Fin d) := by
-    intro a
-    rw [GlobalTheory.SplitFlip.mem_KO_iff]
-    obtain ⟨h1, h2⟩ := (GlobalTheory.SplitFlip.mem_KO_iff _).1 hq
-    refine ⟨fun i j => ?_, fun i j => ?_⟩
-    · rw [leviProj_apply]; exact h1 _ _
-    · have e : (leviProj k (blk2 d) q a)⁻¹ = leviProj k (blk2 d) q⁻¹ a := by rw [map_inv]; rfl
-      rw [e, leviProj_apply]
-      exact h2 _ _
-  unfold rc
-  rw [GlobalTheory.LGrp.nabs_det_of_mem_KO (hK 0), GlobalTheory.LGrp.nabs_det_of_mem_KO (hK 1)]
-  simp
+  exact CompanionTheory.RgGu.NR.Compact.rc_of_KO q hq
 
 theorem exists_pw (x : GL (Fin (d + d)) k) :
     ∃ p : parab k (blk2 d), ∃ w ∈ KO k (Fin (d + d)), x = (p : GL (Fin (d + d)) k) * w := by
-  obtain ⟨u, g, w, hw, rfl⟩ := GlobalTheory.SmGL.UnitInd.exists_iwasawa (blk2 d) x
-  have hg : leviEmb k (blk2 d) g ∈ parab k (blk2 d) :=
-    mem_parab_iff.2 fun _ _ i j hab => by
-      simp [leviEmb, Matrix.blockDiagonal'_apply', hab.ne']
-  exact ⟨⟨(u : GL (Fin (d + d)) k) * leviEmb k (blk2 d) g,
-    mul_mem (unipRad_le_parab k (blk2 d) u.2) hg⟩, w, hw, rfl⟩
+  exact CompanionTheory.RgGu.NR.Compact.exists_pw x
 
 def hh (x : GL (Fin (d + d)) k) : ℝ := rc (leviProj k (blk2 d) (Classical.choose (exists_pw x)))
 
 theorem hh_spec (p : parab k (blk2 d)) (w : GL (Fin (d + d)) k) (hw : w ∈ KO k (Fin (d + d))) :
     hh ((p : GL (Fin (d + d)) k) * w) = rc (leviProj k (blk2 d) p) := by
-  obtain ⟨w', hw', e⟩ := Classical.choose_spec (exists_pw ((p : GL (Fin (d + d)) k) * w))
-  set p' := Classical.choose (exists_pw ((p : GL (Fin (d + d)) k) * w))
-  have hq : ((p'⁻¹ * p : parab k (blk2 d)) : GL (Fin (d + d)) k) ∈ KO k (Fin (d + d)) := by
-    have : ((p'⁻¹ * p : parab k (blk2 d)) : GL (Fin (d + d)) k) = w' * w⁻¹ := by
-      rw [Subgroup.coe_mul, Subgroup.coe_inv, inv_mul_eq_iff_eq_mul, ← mul_assoc, ← e]
-      group
-    rw [this]
-    exact mul_mem hw' (inv_mem hw)
-  have h1 : p = p' * (p'⁻¹ * p) := by group
-  show rc (leviProj k (blk2 d) p') = _
-  conv_rhs => rw [h1, map_mul, rc_mul, rc_of_KO _ hq, mul_one]
+  exact CompanionTheory.RgGu.NR.Compact.hh_spec p w hw
 
 theorem hh_pos (x : GL (Fin (d + d)) k) : 0 < hh x := rc_pos _
 
@@ -601,32 +567,13 @@ theorem mulFun_mem (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : F
     (hrel : ∀ m v, τ₂ m v = ((rc m ^ a : ℝ) : ℂ) • τ₁ m v) (f : IndSp (blk2 d) τ₁) :
     mulFun a f.1.1 ∈ indSpace (parab k (blk2 d)) ((twist τ₂ (deltaHalf k fun _ : Fin 2 => Fin d)).comp
       (leviProj k (blk2 d))) := by
-  intro p g
-  show ((hh ((p : GL (Fin (d + d)) k) * g) ^ a : ℝ) : ℂ) • f.1.1 ((p : GL (Fin (d + d)) k) * g) =
-    (deltaHalf k (fun _ : Fin 2 => Fin d) (leviProj k (blk2 d) p) : ℂ) •
-      τ₂ (leviProj k (blk2 d) p) (((hh g ^ a : ℝ) : ℂ) • f.1.1 g)
-  have hf : f.1.1 ((p : GL (Fin (d + d)) k) * g) =
-      (deltaHalf k (fun _ : Fin 2 => Fin d) (leviProj k (blk2 d) p) : ℂ) • τ₁ (leviProj k (blk2 d) p) (f.1.1 g) :=
-    f.1.2 p g
-  rw [hf, hrel, hh_mul_left, Real.mul_rpow (rc_pos _).le (hh_pos _).le]
-  simp only [map_smul, smul_smul, Complex.ofReal_mul]
-  congr 1
-  ring
+  exact CompanionTheory.RgGu.NR.Compact.mulFun_mem a τ₁ τ₂ hrel f
 
 theorem mulFun_smooth (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : Fin 2 => Fin d) W)
     (hrel : ∀ m v, τ₂ m v = ((rc m ^ a : ℝ) : ℂ) • τ₁ m v) (f : IndSp (blk2 d) τ₁) :
     (⟨mulFun a f.1.1, mulFun_mem a τ₁ τ₂ hrel f⟩ : indSpace _ _) ∈ smoothPart (ind (parab k (blk2 d))
       ((twist τ₂ (deltaHalf k fun _ : Fin 2 => Fin d)).comp (leviProj k (blk2 d)))) := by
-  have hf2 : IsOpen {g : GL (Fin (d + d)) k | ind (parab k (blk2 d))
-      ((twist τ₁ (deltaHalf k fun _ : Fin 2 => Fin d)).comp (leviProj k (blk2 d))) g f.1 = f.1} := f.2
-  refine isOpen_fix (ind (parab k (blk2 d)) ((twist τ₂ (deltaHalf k fun _ : Fin 2 => Fin d)).comp
-      (leviProj k (blk2 d)))) _ _ (hf2.inter GlobalTheory.SplitFlip.isOpen_KO) ⟨by simp, one_mem _⟩ ?_
-  rintro u ⟨hu1, hu2⟩
-  apply Subtype.ext
-  funext x
-  show ((hh (x * u) ^ a : ℝ) : ℂ) • f.1.1 (x * u) = ((hh x ^ a : ℝ) : ℂ) • f.1.1 x
-  have hf : f.1.1 (x * u) = f.1.1 x := congrFun (congrArg Subtype.val hu1) x
-  rw [hh_mul_right x u hu2, hf]
+  exact CompanionTheory.RgGu.NR.Compact.mulFun_smooth a τ₁ τ₂ hrel f
 
 def mulMap (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : Fin 2 => Fin d) W)
     (hrel : ∀ m v, τ₂ m v = ((rc m ^ a : ℝ) : ℂ) • τ₁ m v) : IndSp (blk2 d) τ₁ →ₗ[ℂ] IndSp (blk2 d) τ₂ where
@@ -643,9 +590,7 @@ def mulMap (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : Fin 2 => 
 theorem rel_symm (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : Fin 2 => Fin d) W)
     (hrel : ∀ m v, τ₂ m v = ((rc m ^ a : ℝ) : ℂ) • τ₁ m v) :
     ∀ m v, τ₁ m v = ((rc m ^ (-a) : ℝ) : ℂ) • τ₂ m v := by
-  intro m v
-  rw [hrel, smul_smul, ← Complex.ofReal_mul, ← Real.rpow_add (rc_pos m), neg_add_cancel, Real.rpow_zero,
-    Complex.ofReal_one, one_smul]
+  exact CompanionTheory.RgGu.NR.Compact.rel_symm a τ₁ τ₂ hrel
 
 def mulEquiv (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : Fin 2 => Fin d) W)
     (hrel : ∀ m v, τ₂ m v = ((rc m ^ a : ℝ) : ℂ) • τ₁ m v) : IndSp (blk2 d) τ₁ ≃ₗ[ℂ] IndSp (blk2 d) τ₂ :=
@@ -665,9 +610,7 @@ def mulEquiv (a : ℝ) (τ₁ τ₂ : Representation ℂ (Levi k fun _ : Fin 2 =
 variable (τ : Representation ℂ (Levi k fun _ : Fin 2 => Fin d) W)
 
 theorem relChi (s : ℝ) : ∀ m v, twist τ (chi k d s) m v = ((rc m ^ s : ℝ) : ℂ) • τ m v := by
-  intro m v
-  show ((chi k d s m : ℂˣ) : ℂ) • τ m v = _
-  rw [chi_val]
+  exact CompanionTheory.RgGu.NR.Compact.relChi τ s
 
 def E (s : ℝ) : IndSp (blk2 d) τ ≃ₗ[ℂ] IndSp (blk2 d) (twist τ (chi k d s)) :=
   mulEquiv s τ (twist τ (chi k d s)) (relChi τ s)

@@ -718,18 +718,6 @@ theorem exists_field_scheme (L : Type) [Field L] [NumberField L] (σ : L →+* �
 
 end PositivityTheory.Xgn.TorsionFieldOfDefinition
 
-private theorem comp_mulN_lemma {S : Scheme} {G : Over S} [GrpObj G] {X : Over S} (x : X ⟶ G) (n : ℕ) :
-    x ≫ mulN G n = x ^ n := by
-  induction n with
-  | zero =>
-    rw [pow_zero, Hom.one_def]
-    show x ≫ (toUnit G ≫ η) = _
-    rw [← Category.assoc, CartesianMonoidalCategory.comp_toUnit]
-  | succ k ih =>
-    rw [pow_succ, Hom.mul_def, ← ih]
-    show x ≫ (CartesianMonoidalCategory.lift (mulN G k) (𝟙 G) ≫ μ) = _
-    rw [← Category.assoc, CartesianMonoidalCategory.comp_lift, Category.comp_id]
-
 theorem PositivityTheory.Xgn.torsion_field_of_definition : ∀ (L : Type) [Field L] [NumberField L] (σ : L →+* ℂ) (P : Out.PolAV (Sp L)) (n : ℕ), 0 < n → ∃ (F : IntermediateField ℚ ℂ) (_ : FiniteDimensional ℚ F) (e : L →+* F), (∀ x, ((e x : F) : ℂ) = σ x) ∧ ∀ x : Over.mk (spMap σ) ⟶ P.A, x ^ n = 1 → ∃ y : Sp F ⟶ P.A.left, y ≫ P.A.hom = spMap e ∧ spMap (algebraMap F ℂ) ≫ y = x.left := by
   intro L _ _ σ P n hn
   haveI := P.isAb.comm
@@ -744,7 +732,7 @@ theorem PositivityTheory.Xgn.torsion_field_of_definition : ∀ (L : Type) [Field
     PositivityTheory.Xgn.TorsionFieldOfDefinition.exists_field_scheme L σ (torsion P.A n).left (torsion P.A n).hom
   refine ⟨F, hF, e, he, fun x hx => ?_⟩
   have hx' : x ≫ mulN P.A n = (toUnit _ ≫ η : Over.mk (spMap σ) ⟶ P.A) := by
-    rw [comp_mulN_lemma, hx, Hom.one_def]
+    rw [GlobalTheory.GrpTangent.comp_mulN, hx, Hom.one_def]
   let t : Over.mk (spMap σ) ⟶ torsion P.A n := pullback.lift x (toUnit _) hx'
   obtain ⟨y, hy1, hy2⟩ := hlift t.left (Over.w t)
   refine ⟨y ≫ (torsion.ι P.A n).left, ?_, ?_⟩

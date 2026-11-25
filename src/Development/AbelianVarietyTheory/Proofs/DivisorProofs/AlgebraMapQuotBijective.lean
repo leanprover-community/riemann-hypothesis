@@ -95,7 +95,7 @@ private theorem algebraMap_quotient_bijective_of_isMaximal_of_isAlgClosed (k A :
     Function.Bijective (algebraMap k (A ⧸ P)) := by
   letI := Ideal.Quotient.field P
   haveI : Module.Finite k (A ⧸ P) := finite_of_finite_type_of_isJacobsonRing k (A ⧸ P)
-  exact ⟨(algebraMap k (A ⧸ P)).injective, IsSepClosed.algebraMap_surjective k (A ⧸ P)⟩
+  exact IsAlgClosed.algebraMap_bijective_of_isIntegral
 
 private theorem mul_sup_span_singleton_eq_of_mem_of_not_mem_mul (A : Type) [CommRing A] [IsDedekindDomain A]
     (I P : Ideal A) (hI : I ≠ ⊥) (hP : P.IsMaximal) (hP0 : P ≠ ⊥) {x : A} (hxI : x ∈ I)
@@ -137,10 +137,6 @@ private theorem finrank_quotient_mul_maximal_eq_finrank_add_one (k A : Type) [Fi
     exact hP.ne_top (mul_left_cancel₀ hI hIP)
   let f : (A ⧸ I * P) →ₗ[k] (A ⧸ I) :=
     (Ideal.Quotient.factorₐ k (Ideal.mul_le_inf.trans inf_le_left : I * P ≤ I)).toLinearMap
-  have hsurj : Function.Surjective f := by
-    intro y
-    obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective y
-    exact ⟨Ideal.Quotient.mk _ a, rfl⟩
   have hker : LinearMap.ker f = k ∙ Ideal.Quotient.mk (I * P) x := by
     apply le_antisymm
     · intro z hz
@@ -161,7 +157,9 @@ private theorem finrank_quotient_mul_maximal_eq_finrank_add_one (k A : Type) [Fi
       exact Ideal.Quotient.eq_zero_iff_mem.mpr hxI
   have hx0 : Ideal.Quotient.mk (I * P) x ≠ 0 := fun h => hxIP (Ideal.Quotient.eq_zero_iff_mem.mp h)
   have h := LinearMap.finrank_range_add_finrank_ker f
-  rw [LinearMap.range_eq_top.mpr hsurj, finrank_top, hker, finrank_span_singleton hx0] at h
+  rw [LinearMap.range_eq_top.mpr (Ideal.Quotient.factor_surjective
+      (Ideal.mul_le_inf.trans inf_le_left) : Function.Surjective f),
+    finrank_top, hker, finrank_span_singleton hx0] at h
   exact h.symm
 
 theorem _root_.GlobalTheory.DedekindCodimG.dedekind_finiteType_codim (k A : Type) [Field k]
@@ -202,12 +200,10 @@ theorem _root_.GlobalTheory.DedekindCodimG.dedekind_finiteType_codim (k A : Type
     haveI := module_finite_quotient_of_ne_bot_of_isDedekindDomain k A I hI
     haveI := module_finite_quotient_of_ne_bot_of_isDedekindDomain k A J hJ
     let f : (A ⧸ I) →ₗ[k] (A ⧸ J) := (Ideal.Quotient.factorₐ k hIJ).toLinearMap
-    have hsurj : Function.Surjective f := by
-      intro y
-      obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective y
-      exact ⟨Ideal.Quotient.mk _ a, rfl⟩
     have h := LinearMap.finrank_range_add_finrank_ker f
-    rw [LinearMap.range_eq_top.mpr hsurj, finrank_top] at h
+    rw [LinearMap.range_eq_top.mpr
+        (Ideal.Quotient.factor_surjective hIJ : Function.Surjective f),
+      finrank_top] at h
     have hker : LinearMap.ker f = ⊥ := Submodule.finrank_eq_zero.mp (by omega)
     refine le_antisymm hIJ fun a ha => ?_
     have hmem : Ideal.Quotient.mk I a ∈ LinearMap.ker f :=

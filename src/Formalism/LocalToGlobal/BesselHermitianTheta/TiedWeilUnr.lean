@@ -25,13 +25,6 @@ def UnramOutside (D : D7) (χ : (AE D)ˣ →* Circle) (S : Finset (HeightOneSpec
     (∀ v ∈ S, Algebra.TensorProduct.map (evalV D.host.F v) (AlgHom.id D.host.F D.host.E) (finPart D (x : AE D)) = 1) →
     χ x = 1
 
-def WeilUnramifiedCondition {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) : Prop :=
-  ∀ (V W : HSp D) χ χ', V.rank ≠ W.rank → ResEta D (T.eChr χ) V.rank → ResEta D (T.eChr χ') W.rank →
-    ∀ S, UnramOutside D (T.eChr χ) S → UnramOutside D (T.eChr χ') S →
-    ∀ k ∈ KsphC V S, ∀ k' ∈ KsphC W S, ∀ Φ : X.Sch V W,
-      (∀ u ∈ latVWS V W S, Heisenberg₂ Wl.ψ V W u (Wl.evS V W Φ) = Wl.evS V W Φ) →
-      Wl.om V W χ χ' (k, k') Φ = Φ
-
 end Formalism.L2.Theta
 
 end

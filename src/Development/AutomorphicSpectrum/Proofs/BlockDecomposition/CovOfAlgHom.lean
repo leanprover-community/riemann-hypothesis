@@ -54,12 +54,9 @@ theorem cov_self (p : ℕ) (A : Type) [CommRing A] (r : ℕ → A) : Cov p r A :
   intro K₁ K₀ _ _ _ _ _ _ d _ z hz k
   obtain ⟨w, hw⟩ := hz
   have key : z = d (TensorProduct.lid A K₁ w) := by
-    have h1 : TensorProduct.lid A K₀ (d.lTensor A w) = d (TensorProduct.lid A K₁ w) := by
-      clear hw
-      induction w using TensorProduct.induction_on with
-      | zero => simp
-      | tmul a x => simp
-      | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    have h1 : TensorProduct.lid A K₀ (d.lTensor A w) = d (TensorProduct.lid A K₁ w) :=
+      LinearMap.congr_fun (show (TensorProduct.lid A K₀).toLinearMap ∘ₗ d.lTensor A =
+        d ∘ₗ (TensorProduct.lid A K₁).toLinearMap from TensorProduct.ext' fun _ _ => by simp) w
     rw [hw] at h1
     simpa using h1
   rw [key, ← map_smul]
@@ -71,12 +68,10 @@ theorem cov_of_algHom (p : ℕ) (A : Type) [CommRing A] (r : ℕ → A)
   intro K₁ K₀ _ _ _ _ hK₁ hK₀ d hd z hz k
   obtain ⟨w, hw⟩ := hz
   refine h K₁ K₀ hK₁ hK₀ d hd z ⟨φ.toLinearMap.rTensor K₁ w, ?_⟩ k
-  have h1 : φ.toLinearMap.rTensor K₀ (d.lTensor B w) = d.lTensor B₁ (φ.toLinearMap.rTensor K₁ w) := by
-    clear hw
-    induction w using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a x => simp
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
+  have h1 :
+      φ.toLinearMap.rTensor K₀ (d.lTensor B w) = d.lTensor B₁ (φ.toLinearMap.rTensor K₁ w) :=
+    LinearMap.congr_fun ((LinearMap.rTensor_comp_lTensor (f := φ.toLinearMap) (g := d)).trans
+      (LinearMap.lTensor_comp_rTensor (f := φ.toLinearMap) (g := d)).symm) w
   rw [← h1, hw]
   simp
 

@@ -1149,13 +1149,7 @@ private theorem WindowHypU.mono {g : ℝ → ℝ} {θ θ' δ : ℝ} (hW : Window
   · simpa only [hweight] using hRbound
 
 /-- A criterion of Landau type on windows: under the pole data `hP : PoleData g Φ Z` and the window
-hypothesis `hW`, every `ρ ∈ Z` has real part at most `θ`.
-
-The classical theorem behind it is
-[E. Landau, *Über einen Satz von Tschebyschef* (§2, Satz)][landau1905]: a Dirichlet series whose
-coefficients are eventually positive has a singularity at the real point of its line of
-convergence. Landau's theorem does not state this lemma, which asks for an upper bound on windows
-only. This reference is a reader's proposal and has not been checked by a mathematician. -/
+hypothesis `hW`, every `ρ ∈ Z` has real part at most `θ`. -/
 theorem landau_window {g : ℝ → ℝ} {Φ : ℂ → ℂ} {Z : Set ℂ}
     (hP : PoleData g Φ Z) {θ δ : ℝ} (hδ : 0 < δ) (hW : WindowHypU g θ δ) :
     ∀ ρ ∈ Z, ρ.re ≤ θ := by

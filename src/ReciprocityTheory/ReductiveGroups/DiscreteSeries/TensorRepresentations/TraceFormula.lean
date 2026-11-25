@@ -426,12 +426,12 @@ theorem trace_ge (dual : Bool) {lam lam' : Fin n → ℝ} {H : Type*} [NormedAdd
     exact (Submodule.mem_bot ℂ).1 hub
   have hR := tfRdiag_isURepOn ε
   have hDR := isDerivedOn_smE hR
-  obtain ⟨U, hU⟩ := data_unitary_equiv hgap' hσ hD hV' hc' hVK' hV'0 hR hDR hV₂ hc₂ hVK₂
+  obtain ⟨U, hU⟩ := data_unitary_equiv hgap' hσ hD hV' hc' hVK' hV'0 hR hDR hV₂ hc₂ hVK₂ hV₂0
   have hschur := tf_schur_transfer (closGen E V') (closGen (smE ε (tfRdiag ε)) V₂) U hU
-    (closGen_stable hσ hD hV' hc') hd'
+    (closGen_stable hgap' hσ hD hV' hc' hVK') hd'
   have hH'c : IsClosed ((closGen (smE ε (tfRdiag ε)) V₂ : Submodule ℂ (tfL2n ε)) : Set (tfL2n ε)) :=
     Submodule.isClosed_topologicalClosure _
-  have hst2 := closGen_stable hR hDR hV₂ hc₂
+  have hst2 := closGen_stable hgap' hR hDR hV₂ hc₂ hVK₂
   have hH'P : closGen (smE ε (tfRdiag ε)) V₂ ≤ HP := by
     refine Submodule.topologicalClosure_minimal _ ?_ hHPc
     rintro _ ⟨v, hv, rfl⟩

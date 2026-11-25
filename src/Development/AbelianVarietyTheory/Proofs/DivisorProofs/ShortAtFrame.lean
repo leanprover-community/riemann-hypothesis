@@ -1641,7 +1641,7 @@ theorem short_at_frame : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 :
   have hU' : IsUnf (T.J.U ((i : ℕ) + 1) (O i).s0) := hTi.laws.unf _ (inR i) (O i).s0 hσ
   obtain ⟨hX, hon, hinv, hp, hrk', hpq, h1, hrt, -, hbas, hD, -⟩ := hmod ((O i).dict g).1
   obtain ⟨hx, g', Dc, γ, mk, vv, ϑ, κ', B, hat, hsd, hm, hBm, hma, hϑ, hvv, hκ, hrd⟩ :=
-    exists_point (T.J.U ((i : ℕ) + 1) (O i).s0) hσ hU' h1 R.θ (Vc D i) (Wc D i) (rank_Wc i) (O i).dict
+    exists_point (T.J.U ((i : ℕ) + 1) (O i).s0) hσ hU' h1 hTi.laws.pins.2.1.2 R.θ (Vc D i) (Wc D i) (rank_Wc i) (O i).dict
       (iotaW T.J i) (T.J.x₀ ((i : ℕ) + 1) (O i).s0) (fun Wt k => hmk R.θ hC.models.inf (fun k => (hmod k).1) h1 Wt k)
       (wtA (κ i)) hD (O i).mu (R.ωP i A.μ0) (R.vacP i) cc hcc g
   obtain ⟨hγ, hΛ, hfr⟩ := hat

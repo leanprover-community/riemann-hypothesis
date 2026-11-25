@@ -168,8 +168,9 @@ section Fam
 
 variable {g : ℕ}
 
-theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0) :
-    IsTayF θ (fun p : Fin 1 × Fin g => (Pi.single p.2 1 : Fin g → ℂ)) (tay θ 0) := by
+private theorem pderiv_tay_eq_tay_cons_single (θ : (Fin g → ℂ) → ℂ) (s : Multiset (Fin g → ℂ))
+    (q : Fin 1 × Fin g) :
+    pderiv q (tay θ s) = tay θ ((Pi.single q.2 1 : Fin g → ℂ) ::ₘ s) := by
   have hc : ∀ (s : Multiset (Fin g → ℂ)) (k : Fin 1 × Fin g →₀ ℕ),
       coeff k (tay θ s) = mD θ 0 (dirs k + s) / fct k := fun _ _ => rfl
   have hd : ∀ (k : Fin 1 × Fin g →₀ ℕ) (q : Fin 1 × Fin g),
@@ -177,8 +178,8 @@ theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0)
     intro k q
     unfold dirs
     first
-      | (rw [map_add (f := _), Finsupp.toMultiset_single, Multiset.map_add (f := _), one_nsmul, Multiset.map_singleton, add_comm,
-          Multiset.singleton_add])
+      | (rw [map_add (f := _), Finsupp.toMultiset_single, Multiset.map_add (f := _), one_nsmul,
+          Multiset.map_singleton, add_comm, Multiset.singleton_add])
   have hf : ∀ (k : Fin 1 × Fin g →₀ ℕ) (q : Fin 1 × Fin g),
       fct (k + Finsupp.single q 1) = fct k * ((k q : ℂ) + 1) := by
     intro k q
@@ -187,10 +188,10 @@ theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0)
       intro p
       by_cases hp : p = q
       · subst hp
-        rw [ite_eq_left rfl, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
+        rw [if_pos rfl, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
         push_cast
         ring
-      · rw [ite_eq_right hp, Finsupp.add_apply, mul_one]
+      · rw [if_neg hp, Finsupp.add_apply, mul_one]
         simp [Ne.symm hp]
     unfold fct
     rw [Finset.prod_congr rfl (fun p _ => h p), Finset.prod_mul_distrib, Finset.prod_ite_eq']
@@ -199,14 +200,18 @@ theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0)
     intro k
     unfold fct
     exact Finset.prod_ne_zero_iff.mpr fun p _ => by exact_mod_cast Nat.factorial_ne_zero _
-  refine isTayF_family θ _ (tay θ) (fun q s => ?_) (fun s => ?_)
-  · ext k
-    have h1 : ((k q : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero _
-    have h2 := hf0 k
-    rw [MvPowerSeries.coeff_pderiv, hc, hc, hd, hf, Multiset.cons_add, ← Multiset.add_cons]
-    field_simp
-  · rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hc]
-    simp [dirs, fct]
+  ext k
+  have h1 : ((k q : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero _
+  have h2 := hf0 k
+  rw [MvPowerSeries.coeff_pderiv, hc, hc, hd, hf, Multiset.cons_add, ← Multiset.add_cons]
+  field_simp
+
+theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0) :
+    IsTayF θ (fun p : Fin 1 × Fin g => (Pi.single p.2 1 : Fin g → ℂ)) (tay θ 0) := by
+  refine isTayF_family θ _ (tay θ) (fun q s => pderiv_tay_eq_tay_cons_single θ s q) fun s => ?_
+  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
+  change mD θ 0 (dirs (0 : Fin 1 × Fin g →₀ ℕ) + s) / fct (0 : Fin 1 × Fin g →₀ ℕ) = _
+  simp [dirs, fct]
 
 variable {n : ℕ}
 
@@ -221,50 +226,13 @@ theorem cc_subst {σ τ : Type} [Fintype σ] {L : σ → MvPowerSeries τ ℂ} (
   · intro e he
     obtain ⟨p, hp⟩ : ∃ p, e p ≠ 0 := by
       by_contra hn
-      push Not at hn
+      push_neg at hn
       exact he (Finsupp.ext hn)
     have hz : constantCoeff (e.prod fun s n => L s ^ n) = 0 := by
       rw [Finsupp.prod, map_prod]
       apply Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hp)
       rw [map_pow, hL0, zero_pow hp]
     rw [hz, smul_zero]
-
-private theorem pderiv_tay_eq_tay_cons_single (θ : (Fin g → ℂ) → ℂ) (s : Multiset (Fin g → ℂ)) (q : Fin 1 × Fin g) :
-    pderiv q (tay θ s) = tay θ ((Pi.single q.2 1 : Fin g → ℂ) ::ₘ s) := by
-  have hc : ∀ (s : Multiset (Fin g → ℂ)) (k : Fin 1 × Fin g →₀ ℕ),
-      coeff k (tay θ s) = mD θ 0 (dirs k + s) / fct k := fun _ _ => rfl
-  have hd : ∀ (k : Fin 1 × Fin g →₀ ℕ) (q : Fin 1 × Fin g),
-      dirs (k + Finsupp.single q 1) = (Pi.single q.2 1 : Fin g → ℂ) ::ₘ dirs k := by
-    intro k q
-    unfold dirs
-    first
-      | (rw [map_add (f := _), Finsupp.toMultiset_single, Multiset.map_add (f := _), one_nsmul, Multiset.map_singleton, add_comm,
-          Multiset.singleton_add])
-  have hf : ∀ (k : Fin 1 × Fin g →₀ ℕ) (q : Fin 1 × Fin g),
-      fct (k + Finsupp.single q 1) = fct k * ((k q : ℂ) + 1) := by
-    intro k q
-    have h : ∀ p, (((k + Finsupp.single q 1 : Fin 1 × Fin g →₀ ℕ) p).factorial : ℂ) =
-        ((k p).factorial : ℂ) * (if p = q then ((k q : ℂ) + 1) else 1) := by
-      intro p
-      by_cases hp : p = q
-      · subst hp
-        rw [ite_eq_left rfl, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
-        push_cast
-        ring
-      · rw [ite_eq_right hp, Finsupp.add_apply, mul_one]
-        simp [Ne.symm hp]
-    unfold fct
-    rw [Finset.prod_congr rfl (fun p _ => h p), Finset.prod_mul_distrib, Finset.prod_ite_eq']
-    simp
-  have hf0 : ∀ k : Fin 1 × Fin g →₀ ℕ, fct k ≠ 0 := by
-    intro k
-    unfold fct
-    exact Finset.prod_ne_zero_iff.mpr fun p _ => by exact_mod_cast Nat.factorial_ne_zero _
-  ext k
-  have h1 : ((k q : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero _
-  have h2 := hf0 k
-  rw [MvPowerSeries.coeff_pderiv, hc, hc, hd, hf, Multiset.cons_add, ← Multiset.add_cons]
-  field_simp
 
 theorem isTayF_subst {τ : Type} [Fintype τ] (f : (Fin g → ℂ) → ℂ) (hf : ContDiffAt ℂ ω f 0)
     (L : Fin 1 × Fin g → MvPowerSeries τ ℂ) (a : Fin 1 × Fin g → τ → ℂ) (hL0 : ∀ p, constantCoeff (L p) = 0)
@@ -393,7 +361,7 @@ theorem partA (f : (Fin g → ℂ) → ℂ) (hf : ContDiffAt ℂ ω f 0) (c : Fi
       ∑ p : Fin 1 × Fin g, (if p = q then c p.2 else 0) • (Pi.single p.2 1 : Fin g → ℂ) := by
     intro q
     rw [diagCLM_apply]
-    simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     funext i
     by_cases h : i = q.2 <;> simp [h]
   have h3 := isTayF_comp hf (diagCLM c) (w := fun p : Fin 1 × Fin g => (Pi.single p.2 1 : Fin g → ℂ)) hv h2

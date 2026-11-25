@@ -82,7 +82,7 @@ theorem data_closGen_eq_top (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (hirr : Formalism.MainNotions.S.IsIrredOn (UJset ε) σ) (hV0 : V ≠ ⊥) :
     closGen E V = ⊤ := by
   rcases hirr (closGen E V) (Submodule.isClosed_topologicalClosure _)
-      (closGen_stable hσ hD hV hc) with h | h
+      (closGen_stable hgap hσ hD hV hc hVK) with h | h
   · exfalso
     obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hV0
     have h2 : ((v : D) : H) ∈ closGen E V := UnitaryGroupOfForm.mem_closGen (E := E) V v hv

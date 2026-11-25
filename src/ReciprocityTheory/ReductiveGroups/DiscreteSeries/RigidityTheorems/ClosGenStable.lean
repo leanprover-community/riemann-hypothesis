@@ -55,12 +55,12 @@ namespace ReciprocityTheory.ChartRestriction.DS
 variable {n : ℕ}
 
 theorem closGen_stable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    {ε : Fin n → Bool} {lam : Fin n → ℝ}
+    {ε : Fin n → Bool} {lam : Fin n → ℝ} (hgap : StdGap ε lam)
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
     {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D} (hD : IsDerivedOn ε σ D E)
     {V : Submodule ℂ D} (hV : IsKIrrHW ε E (lowK ε lam) V)
     (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    :
+    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) :
     ∀ g ∈ UJset ε, ∀ x ∈ closGen E V, σ g x ∈ closGen E V :=
   closure_genSub_stable hσ hD hV.1 hV.2.1 hc
 

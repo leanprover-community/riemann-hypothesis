@@ -157,7 +157,7 @@ theorem lat_act (M : LieModel G ξ E) (f : G ⟶ G) [IsMonHom f] (T : E →ₗ[�
     (he : e ∈ M.lat p) : T e ∈ M.lat p := by
   apply (config := { allowSynthFailures := true }) GlobalTheory.CompanionTheory.Ar.Flat.EigVb.lat_stable <;> assumption
 
-theorem val_smul {e : E} {w : EC} {a : Ω} {r : V} (ha : ValAt ξ z a r)
+theorem val_smul (hξ : IsCptGen ξ) {e : E} {w : EC} {a : Ω} {r : V} (ha : ValAt ξ z a r)
     (h : M.ValAt (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z) e (MC.pt w)) :
     M.ValAt (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z) (a • e) (MC.pt (r • w)) := by
   obtain ⟨hc, -⟩ := id h
@@ -205,7 +205,7 @@ theorem val_mem_span (hξ : IsCptGen ξ) (h : genPt ξ ⤳ centre z)
   choose s hs using hs
   have hval : ∀ k, M.ValAt (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z) ((c k : Ω) • b k)
       (MC.pt ((CommRingCat.Hom.hom (Scheme.stalkClosedPointTo z)) (s k) • x k)) :=
-    fun k => val_smul ⟨h, s k, hs k, rfl⟩ (hx k)
+    fun k => val_smul hξ ⟨h, s k, hs k, rfl⟩ (hx k)
   have hsum := val_sum h' Finset.univ _ _ hval
   have he' : ∑ k, (c k : Ω) • b k = e := by
     rw [← hc]
@@ -231,7 +231,7 @@ theorem val_eig (hξ : IsCptGen ξ) {O : Type} [CommRing O] {act : O → (G ⟶ 
       simp
     · rw [h1 a e, Over.comp_left, hv2, Category.assoc, Over.comp_left]
     · rw [h2 a w, Over.comp_left, hv3, Category.assoc, Over.comp_left]
-  have hB := val_smul (hσ a) hw
+  have hB := val_smul hξ (hσ a) hw
   rw [← he a] at hB
   have heq := MC.inj (LieModel.ValAt.unique hξ hA hB)
   rw [heq, RingHom.comp_apply, algebraMap_smul]
@@ -457,7 +457,7 @@ theorem fibSandwich : FibSandwich := by
             exact PositivityTheory.HtPt.Gh.valAt_act 𝔐.M MC (𝔐.t.act.act (bb k)) (𝔐.ρ (bb k)) (ρC (bb k)) (𝔐.act (bb k))
               (hact (bb k)) hwe
           have hsum := val_sum hc' Finset.univ (fun k => 𝔐.emb s (zz k) • 𝔐.ρ (bb k) e)
-            (fun k => σ (zz k) • ρC (bb k) w') (fun k => val_smul (hσ (zz k)) (hact2 k))
+            (fun k => σ (zz k) • ρC (bb k) w') (fun k => val_smul hξ (hσ (zz k)) (hact2 k))
           have hmem : (∑ k, 𝔐.emb s (zz k) • 𝔐.ρ (bb k) e) ∈
               Submodule.span (regAt 𝔐.ξ ⟨centre z, hc⟩) (Set.range b) := by
             rw [← hbq, hVq]
@@ -546,7 +546,7 @@ theorem fibSandwich : FibSandwich := by
           rw [hVq] at he
           change e ∈ 𝔐.M.htW _ _ _ _ (differentIdeal ℤ (𝓞 E)) _ at he
           have he2 := hW2 e he
-          exact Submodule.subset_span ⟨hc, _, he2, val_smul (hσ d) hwe⟩
+          exact Submodule.subset_span ⟨hc, _, he2, val_smul hξ (hσ d) hwe⟩
         | zero => simp
         | add w1 w2 _ _ h1 h2 =>
           rw [smul_add]

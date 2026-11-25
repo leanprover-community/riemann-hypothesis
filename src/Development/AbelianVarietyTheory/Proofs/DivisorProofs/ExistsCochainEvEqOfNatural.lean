@@ -53,6 +53,6 @@ theorem exists_cochain_ev_eq_of_natural :
       (∀ p s h (V U : Scheme.{0}) (g : V ⟶ U) (x : Sx E p U),
         Sec.res g (a p s h U x) = a p s h V (x.res g)) →
       ∃ α : Cochain ((chains R).obj E) I n, ∀ p s h U x, ev α p s h U x = a p s h U x := by
-  apply GlobalTheory.EtC.CupSpec.ev_exists
+  apply _root_.GlobalTheory.EtC.CupSpec.ev_exists <;> assumption
 
 end GlobalTheory.EtC

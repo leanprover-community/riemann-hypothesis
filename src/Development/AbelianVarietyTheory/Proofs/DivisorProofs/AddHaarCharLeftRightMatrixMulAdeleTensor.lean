@@ -211,19 +211,7 @@ theorem chi_adele (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ] 
 theorem addEquivAddHaarChar_mulVecCE_adele (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ]
     [DecidableEq κ] (M : Matrix κ κ (AF F)) (hM : IsUnit M.det) :
     addEquivAddHaarChar (mulVecCE M hM) = distribHaarChar (AF F) hM.unit := by
-  let N : Matrix Unit Unit (AF F) := fun _ _ => M.det
-  have hdet : N.det = M.det := Matrix.det_unique N
-  have hN : IsUnit N.det := hdet ▸ hM
-  have htr := GlobalTheory.ModuLR.addEquivAddHaarChar_transport (GlobalTheory.ModuNorm.evalUnitCE (AF F)) (mulVecCE N hN)
-  have hext : ((GlobalTheory.ModuNorm.evalUnitCE (AF F)).symm.trans (mulVecCE N hN)).trans (GlobalTheory.ModuNorm.evalUnitCE (AF F)) =
-      GlobalTheory.ModuNorm.mulUnitCE hM.unit := by
-    ext x
-    show (N *ᵥ fun _ => x) () = M.det * x
-    simp [Matrix.mulVec, dotProduct, N]
-  rw [hext] at htr
-  rw [GlobalTheory.ModuNorm.distribHaarChar_eq_addEquivAddHaarChar, htr]
-  apply NNReal.coe_injective
-  rw [chi_adele, chi_adele, hdet]
+  apply _root_.GlobalTheory.JacSubst.chi_AF_det <;> assumption
 
 end Gen
 

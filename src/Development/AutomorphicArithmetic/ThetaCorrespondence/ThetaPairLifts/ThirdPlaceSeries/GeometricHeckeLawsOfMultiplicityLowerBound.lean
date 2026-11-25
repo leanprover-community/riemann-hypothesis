@@ -180,9 +180,6 @@ def tors {S : Scheme.{0}} (P : PolAV S) (T : Over S) (k : ℕ) : Subgroup (T ⟶
     show x⁻¹ ^ k = 1
     rw [inv_pow, hx', inv_one]
 
-def unitSpec {K : Type} [CommRing K] (u : Kˣ) : Γ(Spec (CommRingCat.of K), ⊤)ˣ :=
-  Units.map (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom.toMonoidHom u
-
 end GlobalTheory.IndefiniteRowSideFullHecke.WeilPairingLaws
 end -- clump:auto
 end -- clump:auto

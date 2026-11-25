@@ -129,7 +129,7 @@ theorem exists_inverse_conj_mem_closure_of_isCompact :
     exact (isClosed_eq (continuous_fst.mul continuous_snd) continuous_const).inter
       (isClosed_eq (continuous_snd.mul continuous_fst) continuous_const)
   by_contra hne
-  push Not at hne
+  push_neg at hne
   have hcont : Continuous fun z : X × (X × X) => z.2.1 * z.1 * z.2.2 :=
     ((continuous_snd.fst).mul continuous_fst).mul continuous_snd.snd
   have hP : ∀ y ∈ K, ∀ᶠ z : X × (X × X) in 𝓝 (g, y), z.2.1 * z.1 * z.2.2 ∈ (closure H)ᶜ := by
@@ -1083,7 +1083,7 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem isPlacesIdem_idem {S₁ : Finset (InfinitePlace F)} {S₂ : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F}
     (h : IsPlacesIdem S₁ S₂ ε) : ε * ε = ε := by
-  exact GlobalTheory.StrongApproximationSL2.idem_of_isPlacesIdem h
+  apply _root_.GlobalTheory.QSAStep.idem_of_isPlacesIdem <;> assumption
 
 theorem continuous_smul_const {R : Type*} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] {a b : R}
     (x : ℍ[R, a, b]) : Continuous fun t : R => t • x := by

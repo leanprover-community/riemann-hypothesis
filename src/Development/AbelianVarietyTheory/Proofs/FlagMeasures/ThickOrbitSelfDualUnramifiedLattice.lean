@@ -86,7 +86,7 @@ theorem exists_pow_smul_mem [IsNonarchimedeanLocalField F] [CharZero F] (L : Loc
     {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) {n : ℕ} {Λ : Submodule L.O (Fin n → E)}
     (hΛ : GlobalTheory.HL.IsLat L Λ) (v : Fin n → E) :
     ∃ k : ℕ, algebraMap F E ((ϖ : F) ^ k) • v ∈ Λ := by
-  apply GlobalTheory.PowSmulMemLattice.exists_pow_smul_mem_of_isLat <;> assumption
+  apply _root_.GlobalTheory.PowSmulMemLattice.exists_pow_smul_mem_of_isLat <;> assumption
 
 end GlobalTheory.PowMulMem
 end -- clump:auto

@@ -270,13 +270,9 @@ end Stalk
 
 theorem not_inFibre {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {L : Type} [Field L] [CharZero L]
     (z : Sp L ⟶ X) (h : genPt ξ ⤳ centre z) (r : ℕ) (hr : r.Prime) : ¬ InFibre ξ r ⟨centre z, h⟩ := by
-  have hu : IsUnit ((r : X.presheaf.stalk (centre z))) := by
-    have hv : IsUnit ((Scheme.stalkClosedPointTo z).hom (r : X.presheaf.stalk (centre z))) := by
-      rw [map_natCast]
-      exact (Nat.cast_ne_zero.2 hr.ne_zero).isUnit
-    haveI : IsLocalHom (Scheme.stalkClosedPointTo z).hom :=
-      inferInstanceAs (IsLocalHom (Scheme.stalkClosedPointTo z).hom)
-    exact isUnit_of_map_unit _ _ hv
+  have hu : IsUnit (r : X.presheaf.stalk (centre z)) :=
+    (Scheme.isLocalHom_stalkClosedPointTo' (R := L) z).map_nonunit _
+      (by rw [map_natCast]; exact (Nat.cast_ne_zero.2 hr.ne_zero).isUnit)
   obtain ⟨g, hg⟩ := hu.exists_right_inv
   have h1 : (r : Ω) * genMap ξ ⟨centre z, h⟩ g = 1 := by
     have := congrArg (genMap ξ ⟨centre z, h⟩) hg

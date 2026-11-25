@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothOfRelativeDimensionOfHolUnif
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannTheoremNonprincipalPolarisedTorus
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeMapGivesHomomorphism
@@ -99,18 +100,8 @@ namespace GlobalTheory.AHPos
 
 theorem smoothOfRelativeDimension_of_holUnif {g : ℕ} {A : Over (Sp ℂ)} [GrpObj A] (hA : IsAbelianScheme A)
     {L : LB A.left} (u : HolUnif A L g) : SmoothOfRelativeDimension g A.hom := by
-  obtain ⟨D, hD⟩ := GlobalTheory.AbelianDim.exists_relDim ℂ A hA
-  obtain ⟨c, hc⟩ := GlobalTheory.AlgChart.exists_mem_source (p := A.hom) (σ := RingHom.id ℂ) (D := D)
-    (GlobalTheory.HolUnifSec.pt u 0)
-  have h1 : D ≤ g := GlobalTheory.HolUnifSec.dim_le u c hc
-  have h2 : g ≤ D := by
-    have hi : Function.Injective (fderiv ℂ (c.e ∘ GlobalTheory.HolUnifSec.pt u) 0).toLinearMap := by
-      rw [ContinuousLinearMap.coe_coe]
-      exact GlobalTheory.HolUnifSec.injective_fderiv u c hc
-    have := LinearMap.finrank_le_finrank_of_injective hi
-    simpa using this
-  obtain rfl : D = g := le_antisymm h1 h2
-  exact hD
+  intros
+  apply _root_.GlobalTheory.TorusAction.smoothOfRelativeDimension_of_holUnif <;> assumption
 
 end GlobalTheory.AHPos
 

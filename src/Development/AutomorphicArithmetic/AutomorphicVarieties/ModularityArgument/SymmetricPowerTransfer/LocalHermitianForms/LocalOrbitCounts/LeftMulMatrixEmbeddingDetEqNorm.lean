@@ -72,14 +72,6 @@ private def Ent (g : GL (Fin 2) K) : Prop := ∀ s t, (g : Matrix (Fin 2) (Fin 2
 
 private abbrev sc (s : Kˣ) : GL (Fin 2) K := GeneralLinearGroup.scalar (Fin 2) s
 
-private theorem sc_val (s : Kˣ) : ((sc s : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K) = (s : K) • 1 := by
-  ext i j
-  by_cases h : i = j <;> simp [sc, GeneralLinearGroup.scalar, h]
-
-private theorem sc_comm (s : Kˣ) (g : GL (Fin 2) K) : sc s * g = g * sc s := by
-  apply Units.ext
-  rw [Units.val_mul, Units.val_mul, sc_val, smul_mul_assoc, mul_smul_comm, one_mul, mul_one]
-
 private theorem kg_ent {g : GL (Fin 2) K} (h : g ∈ KG O K) : Ent O g := by
   obtain ⟨a, rfl⟩ := h
   exact fun s t => ⟨(a : Matrix (Fin 2) (Fin 2) O) s t, rfl⟩
@@ -121,7 +113,7 @@ private theorem zk_iff {g : GL (Fin 2) K} : g ∈ ZK O K ↔ ∃ s : Kˣ, ∃ k 
   · intro h
     haveI : (GeneralLinearGroup.scalar (Fin 2) : Kˣ →* GL (Fin 2) K).range.Normal := ⟨by
       rintro _ ⟨s, rfl⟩ g
-      exact ⟨s, by rw [← sc_comm s g, mul_inv_cancel_right]⟩⟩
+      exact ⟨s, by rw [← GeneralLinearGroup.scalar_commute s g, mul_inv_cancel_right]⟩⟩
     have h' : g ∈ ((ZK O K : Subgroup _) : Set (GL (Fin 2) K)) := h
     rw [ZK, Subgroup.normal_mul] at h'
     obtain ⟨_, ⟨s, rfl⟩, k, hk, rfl⟩ := h'
@@ -136,7 +128,8 @@ private theorem ent_of_zk [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRi
   have hw : ∃ r : O, algebraMap O K r = w := by
     rcases ValuationRing.isInteger_or_isInteger O (w : K) with h | ⟨r, hr⟩
     · exact h
-    · rw [Units.val_mul, sc_val, det_mul, det_smul, hv] at hu
+    · rw [Units.val_mul, det_mul, sc, GeneralLinearGroup.coe_scalar, Matrix.scalar_apply,
+        det_diagonal, hv] at hu
       have : r * (r * u) = v := by
         apply IsFractionRing.injective O K
         rw [map_mul, map_mul, hr, ← hu]
@@ -179,11 +172,8 @@ private def su (s : Kˣ) : (Etau K τ)ˣ := Units.map (algebraMap K (Etau K τ) 
 private theorem su_mul (s : Kˣ) (x : Etau K τ) : (su τ s : Etau K τ) * x = (s : K) • x := by
   simp [su, Algebra.smul_def]
 
-private theorem jU_su (s : Kˣ) : jU (j0 τ) (su τ s) = sc s := by
-  apply Units.ext
-  rw [sc_val]
-  change j0 τ (algebraMap K _ (s : K)) = _
-  rw [AlgHom.commutes, Algebra.algebraMap_eq_smul_one]
+private theorem jU_su (s : Kˣ) : jU (j0 τ) (su τ s) = sc s :=
+  Units.ext (AlgHom.commutes (j0 τ) (s : K))
 
 variable (O τ) in
 private def LL (g : GL (Fin 2) K) : Set (Etau K τ) :=
@@ -299,12 +289,13 @@ private theorem cls_lat [IsFractionRing O K] {g g' : GL (Fin 2) K} :
     refine zk_iff.2 ⟨s, (sc s * g)⁻¹ * g', kg_of_inv (lat_le.1 hs.subset) ?_, ?_⟩
     · have := lat_le.1 hs.superset
       rwa [_root_.mul_inv_rev, inv_inv]
-    · rw [← mul_assoc, sc_comm s (sc s * g)⁻¹]
+    · rw [← mul_assoc, GeneralLinearGroup.scalar_commute s (sc s * g)⁻¹]
       group
   · intro h
     obtain ⟨s, k, hk, e⟩ := zk_iff.1 h
     have e' : (sc s * g)⁻¹ * g' = k := by
-      rw [sc_comm, _root_.mul_inv_rev, mul_assoc, e, inv_mul_cancel_left]
+      rw [GeneralLinearGroup.scalar_commute, _root_.mul_inv_rev, mul_assoc, e,
+        inv_mul_cancel_left]
     have : LL O τ g' = LL O τ (sc s * g) := by
       refine Set.Subset.antisymm (lat_le.2 (e' ▸ kg_ent hk)) (lat_le.2 ?_)
       have := kg_ent ((KG O K).inv_mem hk)
@@ -334,7 +325,7 @@ private theorem val_eq [IsDomain O] [IsDiscreteValuationRing O] {Δ : K} (hL : I
   haveI := hL.frac
   obtain ⟨h0, h1⟩ := fzkLaw O K Δ hL χ hχ
   have e : g⁻¹ * jU (j0 τ) (su τ s * u) * g = sc s * (g⁻¹ * (jU (j0 τ) u * g)) := by
-    rw [map_mul, jU_su, ← mul_assoc, ← sc_comm]
+    rw [map_mul, jU_su, ← mul_assoc, ← GeneralLinearGroup.scalar_commute]
     group
   have hd : ((g⁻¹ * (jU (j0 τ) u * g) : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K).det = algebraMap O K ε := by
     rw [Units.val_mul, Units.val_mul, ← mul_assoc, det_units_conj', ← hu, ← leftMulMatrixEmbedding_det_eq_norm]

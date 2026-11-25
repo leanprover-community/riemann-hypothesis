@@ -133,20 +133,7 @@ theorem natAbs_discr_of_finrank_one (F : Type) [Field F] [NumberField F] (h : Mo
 
 theorem two_le_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] (h : UnramFin E) :
     2 ≤ Module.finrank ℚ (maximalRealSubfield E) := by
-  by_contra hlt
-  have h1 : Module.finrank ℚ (maximalRealSubfield E) = 1 := by
-    have := Module.finrank_pos (R := ℚ) (M := maximalRealSubfield E)
-    omega
-  have hE := NumberField.natAbs_discr_eq_absNorm_differentIdeal_mul_natAbs_discr_pow (maximalRealSubfield E)
-    (𝓞 (maximalRealSubfield E)) E (𝓞 E)
-  have hU : differentIdeal (𝓞 (maximalRealSubfield E)) (𝓞 E) = ⊤ := h
-  rw [hU, Ideal.absNorm_top, one_mul, natAbs_discr_of_finrank_one _ h1, one_pow] at hE
-  have h2 : Module.finrank ℚ E = 2 := by
-    rw [← (letI : Module.Free (maximalRealSubfield E) E := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank ℚ (maximalRealSubfield E) E),
-      Algebra.IsQuadraticExtension.finrank_eq_two (maximalRealSubfield E) E, h1]
-  have h3 := NumberField.abs_discr_gt_two (K := E) (by omega)
-  have h4 : |(discr E : ℤ)| = 1 := by rw [Int.abs_eq_natAbs, hE]; rfl
-  omega
+  apply _root_.GlobalTheory.LatConjOne.two_le_finrank_of_unramFin <;> assumption
 
 theorem card_eq_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [Fintype I]
     {φ : I → E →+* ℂ} (h : IsCMType φ) : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E) := by

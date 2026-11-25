@@ -192,12 +192,8 @@ end Artin
 section GSAux
 
 theorem exists_card_eq_pow' {ℓ : ℕ} [Fact ℓ.Prime] {X : Type*} [AddCommGroup X] [Finite X]
-    (h : ∀ m : X, ℓ • m = 0) : ∃ n : ℕ, Nat.card X = ℓ ^ n := by
-  have hp : IsPGroup ℓ (Multiplicative X) := fun g => ⟨1, by
-    show Multiplicative.toAdd (g ^ (ℓ ^ 1)) = Multiplicative.toAdd 1
-    rw [toAdd_pow, pow_one]; exact h _⟩
-  obtain ⟨n, hn⟩ := hp.exists_card_eq
-  exact ⟨n, by rw [← hn]; rfl⟩
+    (h : ∀ m : X, ℓ • m = 0) : ∃ n : ℕ, Nat.card X = ℓ ^ n :=
+  _root_.PositivityTheory.Lit1.GEN.W_multl.exists_card_eq_pow (r := 1) (by simpa using h)
 
 theorem gs_multKilled (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (hS : S.Finite) (hSl : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)

@@ -637,19 +637,7 @@ private lemma eq_lr_take_drop_of_map_fst_eq_replicate {D : D7} : ∃ Ψ : AE D �
 
 private lemma exists_unit_infPart_one_toEAf_eq {D : D7} {u w : EAf D} (huw : u * w = 1) :
     ∃ x : (AE D)ˣ, infPart D (x : AE D) = 1 ∧ toEAf D (x : AE D) = u ∧ toEAf D ((x⁻¹ : (AE D)ˣ) : AE D) = w := by
-  obtain ⟨Ψ, hΨ⟩ := eq_lr_take_drop_of_map_fst_eq_replicate (D := D)
-  have hwu : w * u = 1 := by rw [mul_comm, huw]
-  refine ⟨⟨Ψ.symm (1, u), Ψ.symm (1, w), ?_, ?_⟩, ?_, ?_, ?_⟩
-  · apply Ψ.injective
-    simp [huw]
-  · apply Ψ.injective
-    simp [hwu]
-  · show infPart D (Ψ.symm (1, u)) = 1
-    rw [(hΨ _).1, RingEquiv.apply_symm_apply, map_one]
-  · show toEAf D (Ψ.symm (1, u)) = u
-    rw [(hΨ _).2, RingEquiv.apply_symm_apply]
-  · show toEAf D (Ψ.symm (1, w)) = w
-    rw [(hΨ _).2, RingEquiv.apply_symm_apply]
+  apply _root_.StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.exists_unit <;> assumption
 
 theorem exists_isUnitDet {e : AE D} (he : e * e = e) (hE : toEAf D e ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) {k : ℕ}
     {A : Matrix (Fin k) (Fin k) (EAf D)} {v : EAf D} (hv : v ∈ Formalism.L2.Herm.intAf D.host.F D.host.E)

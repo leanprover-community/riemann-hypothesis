@@ -55,10 +55,7 @@ namespace GlobalTheory.Published
 
 /-- **Fontaine's de Rham conjecture** (or the **$p$-adic monodromy theorem**, proven by Berger):
 every continuous de Rham $p$-adic representation of the absolute Galois group of a $p$-adic local field
-is potentially semistable (`IsDR → IsPst`).
-
-Proposed reference:
-[L. Berger, *Représentations p-adiques et équations différentielles*][berger2002]. -/
+is potentially semistable (`IsDR → IsPst`). -/
 def DeRhamPotSemistable : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) →
     ∀ (K : FinExt l) (V : Type) [AddCommGroup V] [Module ℚ_[l] V] [FiniteDimensional ℚ_[l] V]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictedFinprodPureTensorAdelicSchwartz
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinRel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyIntegralPointsIndicatorIsVacuum
@@ -56,18 +57,8 @@ namespace GlobalTheory.ThK.EvUniqInf
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
 theorem evFin_eq_zero_of_at (z : κ → AF F) (hz : At (evI F) z) (v : Pl (F := F)) (i : κ) : evFin F v (z i) = 0 := by
-  set u : AF F := LinearMap.inr F (Ainf F) (Af F) 1 with hu
-  have h0 : evI F u = 0 := by
-    show (InfiniteAdeleRing.ringEquiv_mixedSpace F) (0 : Ainf F) = 0
-    exact map_zero _
-  have hzi : u * z i = 0 := by
-    have := congrFun (hz u h0) i
-    simpa using this
-  have h1 : evFin F v u = 1 := by
-    show evalV F v (1 : Af F) = 1
-    exact map_one _
-  have := congrArg (evFin F v) hzi
-  rwa [map_mul, h1, one_mul, map_zero] at this
+  intros
+  apply _root_.GlobalTheory.RestPure.evFin_eq_zero <;> assumption
 
 theorem rest_pure (g : SInf F κ) (φ : ∀ v : Pl (F := F), (κ → Fv F v) → ℂ) (hSB : ∀ v, φ v ∈ SB _)
     (hstd : ∀ᶠ v in cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1) :

@@ -314,7 +314,7 @@ theorem integrableOn_mul_star {X : Type} [TopologicalSpace X] [MeasurableSpace X
 theorem isBiTheta_left {A S A' : HSp D} {χA χS : (AE D)ˣ →* Circle} {oma : Om A S}
     (hA : IsWeilDatumO ψ A S χA χS oma) {C : WO A S → WO S A' → ℂ} (hC : IsBiTheta ψ A S A' C) (p : GA D A × GA D S) :
     IsBiTheta ψ A S A' fun u v => oma p (fun u' => C u' v) u := by
-  exact GlobalTheory.BiTransfer.isBiTheta_act_left D ψ A S A' χA χS oma hA C hC p
+  apply _root_.GlobalTheory.BiTransfer.isBiTheta_act_left <;> assumption
 
 theorem slice_right {A S A' : HSp D} {K : WO A S → WO S A' → ℂ} (hK : IsBiTheta ψ A S A' K) (u : WO A S) :
     IsThetaFunO ψ S A' (K u) := by

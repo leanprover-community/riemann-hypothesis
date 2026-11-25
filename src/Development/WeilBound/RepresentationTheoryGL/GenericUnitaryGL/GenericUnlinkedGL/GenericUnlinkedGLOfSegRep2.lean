@@ -178,7 +178,7 @@ theorem isLSeg_fine (G : Segment k) (a : Fin G.len) :
     IsLSeg (topCut G (fun _ => 1) (fun _ => one_pos) a) (dec G a).rep := by
   have hc : (dec G a).IsCusp := G.isCusp_term _
   have e : topCut G (fun _ => 1) (fun _ => one_pos) a = Segment.single (dec G a) hc := by
-    refine Segment.ext_first ?_ rfl
+    refine Segment.ext_first ?_ (@Eq.trans ℕ _ 1 _ rfl rfl)
     show G.first.nu ((∑ b ∈ Finset.univ.filter (fun b => a < b), 1 : ℕ) : ℂ) = G.first.nu ((Fin.rev a : ℕ) : ℂ)
     rw [card_after]
   rw [e]

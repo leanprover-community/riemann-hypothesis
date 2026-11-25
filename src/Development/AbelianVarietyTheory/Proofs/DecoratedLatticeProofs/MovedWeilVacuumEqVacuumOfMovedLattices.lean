@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepThetaDatumHalfEqSmul
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PerCEmb
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmAtSmulRight
@@ -165,33 +166,8 @@ namespace GlobalTheory.MovedVac
 
 theorem halfBack : ∀ (D : D7) (S T : HSp D) (g : GA D S) (h : GA D T) (e : AE D) (u : WO S T),
     IsHalf e (actO S T g h u) → IsHalf e u := by
-  intro D S T g h e u hu
-  have hA : Formalism.L2.Theta.mt T h⁻¹ * Formalism.L2.Theta.mt T h = 1 := by
-    simp only [Formalism.L2.Theta.mt, map_inv]
-    exact congrArg Units.val (inv_mul_cancel (matHom T h))
-  have hB : Formalism.L2.Theta.mt S g⁻¹ * Formalism.L2.Theta.mt S g = 1 := by
-    simp only [Formalism.L2.Theta.mt, map_inv]
-    exact congrArg Units.val (inv_mul_cancel (matHom S g))
-  have cancel : ∀ X : Matrix (Fin T.rank) (Fin S.rank) (AE D),
-      HMul.hMul (HMul.hMul (Formalism.L2.Theta.mt T h⁻¹) (HMul.hMul (HMul.hMul (Formalism.L2.Theta.mt T h) X)
-        (Formalism.L2.Theta.mt S g⁻¹))) (Formalism.L2.Theta.mt S g) = X := by
-    intro X
-    simp only [Matrix.mul_assoc, hB, Matrix.mul_one]
-    rw [← Matrix.mul_assoc, hA, Matrix.one_mul]
-  have key : e • actO S T g h u = actO S T g h u := by
-    ext i j; exact hu i j
-  have key2 : e • u = u := by
-    have h1 := congrArg (fun M : Matrix (Fin T.rank) (Fin S.rank) (AE D) =>
-      HMul.hMul (HMul.hMul (Formalism.L2.Theta.mt T h⁻¹) M) (Formalism.L2.Theta.mt S g)) key
-    simp only [actO] at h1
-    rw [cancel u] at h1
-    simp only [Matrix.mul_smul, Matrix.smul_mul] at h1
-    rw [cancel u] at h1
-    exact h1
-  intro i j
-  have := congrFun (congrFun key2 i) j
-  rw [Matrix.smul_apply, smul_eq_mul] at this
-  exact this
+  intros
+  apply _root_.GlobalTheory.ThetaMove.isHalf_of_act <;> assumption
 
 theorem norm_weilRepresentation_thetaFunction_preserved : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (μ : (AE D)ˣ →* Circle) (om : Om S T),
     IsWeilDatumO ψ S T μ μ om → ∀ f, IsThetaFunO ψ S T f → ∀ p (m : Measure (WO S T)) (𝓕 : Set (WO S T)),

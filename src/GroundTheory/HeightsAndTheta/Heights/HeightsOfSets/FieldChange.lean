@@ -58,11 +58,6 @@ theorem finprod_iSup_algebraMap_int {ι : Type*} [Finite ι] {y : ι → 𝓞 K}
   have hL' : ∏ᶠ w : FinitePlace L, ⨆ i, w (algebraMap K L (y i)) =
       ∏ᶠ w : FinitePlace L, ⨆ i, w (y' i) := rfl
   rw [hL']
-  set N : ℝ := ((Ideal.span (Set.range y)).absNorm : ℝ)
-  have hN : N ≠ 0 := by
-    intro h
-    rw [h, zero_mul] at hK
-    exact zero_ne_one hK
   push_cast at hL
   rw [eq_inv_of_mul_eq_one_right hL, eq_inv_of_mul_eq_one_right hK, inv_pow]
 

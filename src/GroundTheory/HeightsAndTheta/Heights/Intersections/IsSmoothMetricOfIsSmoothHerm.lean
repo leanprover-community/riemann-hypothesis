@@ -40,29 +40,14 @@ theorem isProjVarQ_of_isArithVar {P : Ideal (ReciprocityTheory.ChartRestriction.
   · intro k
     obtain ⟨i, hi⟩ := hrel k
     refine ⟨i, fun h => hi ?_⟩
-    rwa [← hcomap, Ideal.mem_comap, MvPolynomial.map_X]
+    rw [← hcomap, Ideal.mem_comap, MvPolynomial.map_X]
+    exact h
   · have hd' : ringKrullDim (MvPolynomial (Σ k, ι k) ℚ ⧸
         P.map (MvPolynomial.map (Int.castRingHom ℚ))) + 1 =
         ((e + 1 + Fintype.card K : ℕ) : WithBot ℕ∞) := by
-      rwa [← hdim]
-    show ringKrullDim (MvPolynomial (Σ k, ι k) ℚ ⧸ P.map (MvPolynomial.map (Int.castRingHom ℚ))) =
-      ((e + Fintype.card K : ℕ) : WithBot ℕ∞)
-    generalize ringKrullDim (MvPolynomial (Σ k, ι k) ℚ ⧸
-      P.map (MvPolynomial.map (Int.castRingHom ℚ))) = d at hd'
-    induction d using WithBot.recBotCoe with
-    | bot =>
-      rw [WithBot.bot_add] at hd'
-      exact absurd hd' (WithBot.bot_ne_coe)
-    | coe d =>
-      induction d using ENat.recTopCoe with
-      | top =>
-        have h3 : (⊤ : ℕ∞) + 1 = ((e + 1 + Fintype.card K : ℕ) : ℕ∞) := by exact_mod_cast hd'
-        rw [top_add] at h3
-        exact absurd h3.symm (ENat.natCast_ne_top _)
-      | coe n =>
-        have h1 : n + 1 = e + 1 + Fintype.card K := by exact_mod_cast hd'
-        have h2 : n = e + Fintype.card K := by omega
-        rw [h2]
-        rfl
+      rw [← hdim]
+      exact hd
+    rw [Nat.add_right_comm e 1 (Fintype.card K), Nat.cast_add, Nat.cast_one] at hd'
+    exact ENat.WithBot.add_one_cancel.mp hd'
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

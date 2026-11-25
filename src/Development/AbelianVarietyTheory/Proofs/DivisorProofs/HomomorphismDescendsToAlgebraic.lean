@@ -49,7 +49,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
 open GlobalTheory.LatVal GlobalTheory.LatJet
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.RealMult GlobalTheory.CMVal
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HomDescentQb
 

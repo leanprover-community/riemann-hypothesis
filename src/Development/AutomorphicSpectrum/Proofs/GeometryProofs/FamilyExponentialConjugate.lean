@@ -247,13 +247,7 @@ theorem exOf_diff {b : Fin n → ℂ} (hb : b ∈ Metric.ball (0 : Fin n → ℂ
     IsDerivAt0 (fun z => (exOf e' b z).left) (Pi.single a 1)
       (spMap (dualMap (ψ b)) ≫ (M.pt (Pi.single a 1)).left) := by
   have h := e'.diff (star b) (star_mem_ball.2 hb) a
-  have hw : star (Pi.single a 1 : Fin g → ℂ) = Pi.single a 1 := by
-    ext k
-    by_cases hk : k = a
-    · subst hk
-      simp
-    · simp [Pi.single_eq_of_ne hk]
-  refine isDerivAt0_conj (fun z => (e'.ex (star b) z).left) _ hw _ _ ?_ h
+  refine isDerivAt0_conj (fun z => (e'.ex (star b) z).left) _ (by simp [Pi.star_single]) _ _ ?_ h
   have h1 : conjPts ψ (star b) = (starRingEnd ℂ).comp (ψ b) := by
     rw [conjPts, star_star]
   rw [h1, spMap_dualMap_comp, ← Category.assoc, ← Category.assoc, conj_conj_dual, Category.id_comp]

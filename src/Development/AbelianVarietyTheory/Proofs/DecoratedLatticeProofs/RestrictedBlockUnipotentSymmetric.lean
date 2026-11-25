@@ -94,25 +94,25 @@ theorem rootSum_eq {A : Type} [CommRing A] {n ρ k : ℕ} (hn : n = 2 * ρ + k +
     intro x y z hz hx; rw [hz, hx, add_zero]
   refine h3 _ _ _ (Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun j _ => ?_) ?_
   · simp only [Fin.val_natAdd]
-    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+    rw [if_neg (by omega), if_neg (by omega)]
   congr 1
   · refine Finset.sum_congr rfl fun a _ => ?_
     have ha := a.2
     rw [Finset.sum_eq_single (⟨if a.1 + 1 < ρ then a.1 + 1 else ρ + k, by split_ifs <;> omega⟩ : Fin (ρ + (k + (ρ + 1))))]
-    · rw [ite_eq_left]
+    · rw [if_pos]
       · rfl
       · simp only [Fin.val_castAdd]
         split_ifs <;> omega
     · intro j _ hj
       have hj' : j.1 ≠ if a.1 + 1 < ρ then a.1 + 1 else ρ + k := fun h => hj (Fin.ext h)
       simp only [Fin.val_castAdd]
-      rw [ite_eq_right (by split_ifs at hj' <;> omega), ite_eq_right (by omega)]
+      rw [if_neg (by split_ifs at hj' <;> omega), if_neg (by omega)]
     · intro h; exact absurd (Finset.mem_univ _) h
   · refine Finset.sum_congr rfl fun i _ => ?_
     have hi := i.2
     by_cases h : i.1 + 1 < k
     · rw [dite_eq_left h, Finset.sum_eq_single (⟨ρ + (i.1 + 1), by omega⟩ : Fin (ρ + (k + (ρ + 1))))]
-      · rw [ite_eq_right, ite_eq_left]
+      · rw [if_neg, if_pos]
         · rfl
         · simp only [Fin.val_natAdd, Fin.val_castAdd]
           omega
@@ -121,15 +121,15 @@ theorem rootSum_eq {A : Type} [CommRing A] {n ρ k : ℕ} (hn : n = 2 * ρ + k +
       · intro j _ hj
         have hj' : j.1 ≠ ρ + (i.1 + 1) := fun h => hj (Fin.ext h)
         simp only [Fin.val_natAdd, Fin.val_castAdd]
-        rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+        rw [if_neg (by omega), if_neg (by omega)]
       · intro h; exact absurd (Finset.mem_univ _) h
     · rw [dite_eq_right h]
       refine Finset.sum_eq_zero fun j _ => ?_
       simp only [Fin.val_natAdd, Fin.val_castAdd]
-      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+      rw [if_neg (by omega), if_neg (by omega)]
 
 theorem hatL_eq_Lf (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  exact GlobalTheory.LiftFrameMod.hatL_eq_Lf I
+  apply _root_.GlobalTheory.LiftFrameMod.hatL_eq_Lf <;> assumption
 
 def colOf (I : AutInst) (β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) (j : Fin I.n) : VA I :=
   fun l => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) l j
@@ -228,10 +228,10 @@ theorem pair_zmod (I : AutInst) (g ρ k : ℕ) (b : ℕ → VA I) (β : GL (Fin 
   have e1 : ∑ l, matIn I β x l q * flagGram (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F) I.n ρ k p l = matIn I β x t q := by
     rw [Finset.sum_eq_single t]
     · unfold flagGram
-      rw [ite_eq_left ht, ite_eq_right hp, mul_one]
+      rw [if_pos ht, if_neg hp, mul_one]
     · intro l _ hl
       unfold flagGram
-      rw [ite_eq_right (fun h => hl (Fin.ext (h.trans ht.symm))), mul_zero]
+      rw [if_neg (fun h => hl (Fin.ext (h.trans ht.symm))), mul_zero]
     · intro h; exact absurd (Finset.mem_univ _) h
   simp only [mul_sub] at h3
   rw [Finset.sum_sub_distrib, e1, ← hA_col] at h3
@@ -256,7 +256,7 @@ theorem chiArg_sub_rootSum : ∀ (I : AutInst) (g : ℕ) {ρ k : ℕ} (e0 f0 : F
       (by show a.1 = dualIdx ρ k (2 * ρ + k - a.1); unfold dualIdx; split_ifs <;> omega)
     have e1 : flagVec e0 f0 z0 bw bwd (2 * ρ + k - a.1) = f0 a := by
       unfold flagVec
-      rw [dite_eq_right (by omega), dite_eq_right (by omega), ite_eq_right (by omega), dite_eq_left (by omega)]
+      rw [dite_eq_right (by omega), dite_eq_right (by omega), if_neg (by omega), dite_eq_left (by omega)]
       congr 1
       apply Fin.ext
       show 2 * ρ + k - (2 * ρ + k - a.1) = a.1
@@ -264,13 +264,14 @@ theorem chiArg_sub_rootSum : ∀ (I : AutInst) (g : ℕ) {ρ k : ℕ} (e0 f0 : F
     have e2 : flagVec e0 f0 z0 bw bwd (if a.1 + 1 < ρ then a.1 + 1 else ρ + k) = nxt e0 z0 a := by
       unfold nxt
       by_cases h : a.1 + 1 < ρ
-      · rw [ite_eq_left h, dite_eq_left h]
+      · rw [if_pos h, dite_eq_left h]
         unfold flagVec
         rw [dite_eq_left h]
-      · rw [ite_eq_right h, dite_eq_right h]
+      · rw [if_neg h, dite_eq_right h]
         unfold flagVec
-        rw [dite_eq_right (by omega), dite_eq_right (by omega), ite_eq_left rfl]
-    rwa [← e1, ← e2]
+        rw [dite_eq_right (by omega), dite_eq_right (by omega), if_pos rfl]
+    rw [← e1, ← e2]
+    exact key
   · have hi := i.2
     by_cases h : i.1 + 1 < k
     swap
@@ -338,7 +339,7 @@ theorem exists_diag_frame : ∀ {D : D7} {n : ℕ} (ρ k : ℕ) (Pg : Finset (Pl
       (GlobalTheory.SeeConjScale.symEdge_uniq ρ k) (w PP) h)
     rw [Units.val_mul] at e
     rw [e]
-    simp only [w, dite_eq_left (And.intro hPP h), IsUnit.unit_spec]
+    simp only [w, dif_pos (And.intro hPP h), IsUnit.unit_spec]
   have hex : ∀ j : Fin n, ∃ u : (Formalism.L2.Herm.intAf D.host.F D.host.E)ˣ,
       ∀ PP ∈ Pg, Formalism.L2.DIV.resS D.host.F PP u = d PP j :=
     fun j => GlobalTheory.FrameRescale.exists_unit_res (D := D) Pg (fun PP => d PP j)
@@ -439,7 +440,7 @@ namespace GlobalTheory.FlagBasis.GramLift
 open Formalism.L2.SG.Pf.unitaryCongruence
 
 theorem hatL_eq (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  exact GlobalTheory.LiftFrameMod.hatL_eq_Lf I
+  apply _root_.GlobalTheory.FlagChi.hatL_eq_Lf <;> assumption
 
 theorem col_mem (I : AutInst) {β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)} (hF : IsFrame β I.L) (j : Fin I.n) :
     (fun i => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) i j) ∈ I.Lf := by
@@ -453,7 +454,8 @@ theorem col_mem (I : AutInst) {β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNot
     rw [Matrix.one_apply]; split_ifs
     · exact one_mem _
     · exact zero_mem _
-  rwa [← h2] at h3
+  rw [← h2] at h3
+  exact h3
 
 section
 variable (I : AutInst) (g : ℕ)
@@ -500,13 +502,13 @@ theorem middle {k : ℕ} {bw bwd : Fin k → VA I} {ew : (I.E ⊗[I.F] Formalism
   have h4 := Z_symm_sub I g (hdual m.rev l)
   rw [hA_add_left, hA_add_right, hA_add_right, hbb, hdd]
   by_cases hml : m = l.rev
-  · rw [ite_eq_left hml.symm] at h3
-    rw [ite_eq_left (by rw [hml, Fin.rev_rev])] at h4
-    rw [ite_eq_left hml]
+  · rw [if_pos hml.symm] at h3
+    rw [if_pos (by rw [hml, Fin.rev_rev])] at h4
+    rw [if_pos hml]
     exact Z_of_eq I g (by ring) (Z_sub I g (Z_add I g h3 h4) hsum)
-  · rw [ite_eq_right (fun h => hml h.symm)] at h3
-    rw [ite_eq_right (fun h => hml (by rw [← h, Fin.rev_rev])), map_zero] at h4
-    rw [ite_eq_right hml]
+  · rw [if_neg (fun h => hml h.symm)] at h3
+    rw [if_neg (fun h => hml (by rw [← h, Fin.rev_rev])), map_zero] at h4
+    rw [if_neg hml]
     exact Z_of_eq I g (by ring) (Z_add I g h3 h4)
 
 end
@@ -520,7 +522,7 @@ theorem flagVec_cases {V : Type} [AddCommGroup V] {ρ k : ℕ} (e0 f0 : Fin ρ �
     (∃ a : Fin ρ, j = 2 * ρ + k - a.1 ∧ dualIdx ρ k j = a.1 ∧ flagVec e0 f0 z0 bw bwd j = f0 a) := by
   by_cases h1 : j < ρ
   · refine Or.inl ⟨⟨j, h1⟩, rfl, ?_, ?_⟩
-    · unfold dualIdx; rw [ite_eq_left h1]
+    · unfold dualIdx; rw [if_pos h1]
     · unfold flagVec; rw [dite_eq_left h1]
   by_cases h2 : j - ρ < k
   · refine Or.inr (Or.inl ⟨⟨j - ρ, h2⟩, ?_, ?_, ?_⟩)
@@ -530,26 +532,26 @@ theorem flagVec_cases {V : Type} [AddCommGroup V] {ρ k : ℕ} (e0 f0 : Fin ρ �
   by_cases h3 : j = ρ + k
   · refine Or.inr (Or.inr (Or.inl ⟨h3, ?_, ?_⟩))
     · unfold dualIdx; split_ifs <;> omega
-    · unfold flagVec; rw [dite_eq_right h1, dite_eq_right h2, ite_eq_left h3]
+    · unfold flagVec; rw [dite_eq_right h1, dite_eq_right h2, if_pos h3]
   have h4 : 2 * ρ + k - j < ρ := by omega
   refine Or.inr (Or.inr (Or.inr ⟨⟨2 * ρ + k - j, h4⟩, ?_, ?_, ?_⟩))
   · show j = 2 * ρ + k - (2 * ρ + k - j); omega
   · show dualIdx ρ k j = 2 * ρ + k - j; unfold dualIdx; split_ifs <;> omega
-  · unfold flagVec; rw [dite_eq_right h1, dite_eq_right h2, ite_eq_right h3, dite_eq_left h4]
+  · unfold flagVec; rw [dite_eq_right h1, dite_eq_right h2, if_neg h3, dite_eq_left h4]
 
 section
 variable {R : Type} [CommRing R] {n ρ k : ℕ} {i j : Fin n}
 
-theorem flagGram_zero (h : j.val ≠ dualIdx ρ k i.val) : flagGram R n ρ k i j = 0 := ite_eq_right h
+theorem flagGram_zero (h : j.val ≠ dualIdx ρ k i.val) : flagGram R n ρ k i j = 0 := if_neg h
 
 theorem flagGram_neg (h : j.val = dualIdx ρ k i.val) (h' : i.val = ρ + k) : flagGram R n ρ k i j = -1 :=
-  (ite_eq_left h).trans (ite_eq_left h')
+  (if_pos h).trans (if_pos h')
 
 theorem flagGram_ite {p : Prop} [Decidable p] (h : j.val = dualIdx ρ k i.val ↔ p) (h' : i.val ≠ ρ + k) :
     flagGram R n ρ k i j = if p then 1 else 0 := by
   by_cases hp : p
-  · rw [ite_eq_left hp]; exact (ite_eq_left (h.2 hp)).trans (ite_eq_right h')
-  · rw [ite_eq_right hp]; exact ite_eq_right fun hh => hp (h.1 hh)
+  · rw [if_pos hp]; exact (if_pos (h.2 hp)).trans (if_neg h')
+  · rw [if_neg hp]; exact if_neg fun hh => hp (h.1 hh)
 
 end
 
@@ -670,14 +672,14 @@ theorem flagGram_apply (K : Type) [CommRing K] {ρ k n : ℕ} (hn : n = 2 * ρ +
 
 theorem flagGram_mul (K : Type) [CommRing K] {ρ k n : ℕ} (hn : n = 2 * ρ + k + 1) (X : Matrix (Fin n) (Fin n) K)
     (i j : Fin n) : (flagGram K n ρ k * X) i j = sgn K ρ k i * X (tau hn i) j := by
-  rw [Matrix.mul_apply]; simp only [flagGram_apply K hn, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  rw [Matrix.mul_apply]; simp only [flagGram_apply K hn, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
 
 theorem mul_flagGram (K : Type) [CommRing K] {ρ k n : ℕ} (hn : n = 2 * ρ + k + 1) (X : Matrix (Fin n) (Fin n) K)
     (i j : Fin n) : (X * flagGram K n ρ k) i j = X i (tau hn j) * sgn K ρ k j := by
   rw [Matrix.mul_apply]
   have e : ∀ b : Fin n, (j = tau hn b) ↔ (b = tau hn j) := fun b =>
     ⟨fun h => by rw [h, tau_tau], fun h => by rw [h, tau_tau]⟩
-  simp only [flagGram_apply K hn, e, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sgn_tau]
+  simp only [flagGram_apply K hn, e, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, sgn_tau]
 
 theorem flagGram_mul_self (K : Type) [CommRing K] {ρ k n : ℕ} (hn : n = 2 * ρ + k + 1) :
     flagGram K n ρ k * flagGram K n ρ k = 1 := by
@@ -843,14 +845,14 @@ theorem col_iff (B C m X : Matrix (Fin n) (Fin n) A) (hCB : C * B = 1) (hX : X *
       obtain ⟨u, i', hi', hu⟩ := h1 s hs
       have h0 : (u • fun l => B l i') ∈ Q := by
         refine ⟨0, zero_mem _, ?_⟩
-        rw [inv_mulVec_col B C hCB, ite_eq_right, mul_zero]
+        rw [inv_mulVec_col B C hCB, if_neg, mul_zero]
         rintro rfl; omega
       simpa using sub_mem h0 (hMQ hu)
     obtain ⟨t, ht, h'⟩ := sup_le hTQ hMQ h
     refine ⟨t, ht, ?_⟩
     rw [← h', Matrix.mulVec_mulVec, hCX, ← Matrix.mulVec_mulVec]
     show _ = ∑ l, m i l * (C *ᵥ (ε • fun l => B l j)) l
-    simp only [inv_mulVec_col B C hCB, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    simp only [inv_mulVec_col B C hCB, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     ring
   · intro h
     rw [hsum]
@@ -867,7 +869,7 @@ theorem col_iff (B C m X : Matrix (Fin n) (Fin n) A) (hCB : C * B = 1) (hX : X *
 end Gen
 
 theorem hatL_eq (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  exact GlobalTheory.LiftFrameMod.hatL_eq_Lf I
+  apply _root_.GlobalTheory.FlagChi.hatL_eq_Lf <;> assumption
 
 theorem mem_mL_iff (I : AutInst) (g : ℕ) (β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) (hβ : IsFrame β I.L) (y : VA I) :
     y ∈ mL I g ↔ ∀ i, ∃ t ∈ IntAf I.F I.E,
@@ -941,7 +943,7 @@ theorem k2cong_iff_flagCond (I : AutInst) (g : ℕ) {ρ k : ℕ} (e0 f0 : Fin ρ
       fun l => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) l j) - z0 ∈ mL I g := by
     intro j hj
     have := hcol j
-    rw [hj, flagVec, dite_eq_right (by omega), dite_eq_right (by omega), ite_eq_left rfl] at this
+    rw [hj, flagVec, dite_eq_right (by omega), dite_eq_right (by omega), if_pos rfl] at this
     rw [one_smul]; exact this
   have hb : ∀ (a : Fin k) (j : Fin I.n), j.val = ρ + a.val → (ew •
       fun l => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) l j) - bw a ∈ mL I g := by
@@ -1053,48 +1055,48 @@ theorem gram_col (K : Type) [CommRing K] {n ρ k : ℕ} (hn : n = 2 * ρ + k + 1
   by_cases h1 : j.val = dualIdx ρ k i.val
   · have h2 : i = tau hn j := by
       ext; show i.val = dualIdx ρ k j.val; rw [h1, hi]
-    rw [ite_eq_left h1, ite_eq_left h2]
+    rw [if_pos h1, if_pos h2]
     have h3 : (i.val = ρ + k ↔ j.val = ρ + k) := by
       rw [h1, dualIdx_eq_self_iff hn i.2]
     by_cases h4 : i.val = ρ + k
-    · rw [ite_eq_left h4, ite_eq_left (h3.1 h4)]
-    · rw [ite_eq_right h4, ite_eq_right (fun h => h4 (h3.2 h))]
+    · rw [if_pos h4, if_pos (h3.1 h4)]
+    · rw [if_neg h4, if_neg (fun h => h4 (h3.2 h))]
   · have h2 : i ≠ tau hn j := by
       intro h; apply h1; rw [h]; show j.val = dualIdx ρ k (dualIdx ρ k j.val); rw [hj]
-    rw [ite_eq_right h1, ite_eq_right h2]
+    rw [if_neg h1, if_neg h2]
 
 theorem gram_row (K : Type) [CommRing K] {n ρ k : ℕ} (hn : n = 2 * ρ + k + 1) (i j : Fin n) :
     flagGram K n ρ k i j = if j = tau hn i then sgn K ρ k i else 0 := by
   unfold flagGram sgn
   by_cases h1 : j.val = dualIdx ρ k i.val
-  · rw [ite_eq_left h1, ite_eq_left (Fin.ext h1)]
-  · rw [ite_eq_right h1, ite_eq_right (fun h => h1 (congrArg Fin.val h))]
+  · rw [if_pos h1, if_pos (Fin.ext h1)]
+  · rw [if_neg h1, if_neg (fun h => h1 (congrArg Fin.val h))]
 
 theorem gram_mul_gram (K : Type) [CommRing K] {n ρ k : ℕ} (hn : n = 2 * ρ + k + 1) :
     flagGram K n ρ k * flagGram K n ρ k = 1 := by
   ext i j
   rw [Matrix.mul_apply, Finset.sum_eq_single (tau hn i)]
-  · rw [gram_row K hn i (tau hn i), ite_eq_left rfl, gram_row K hn (tau hn i) j]
+  · rw [gram_row K hn i (tau hn i), if_pos rfl, gram_row K hn (tau hn i) j]
     have hii : tau hn (tau hn i) = i := Fin.ext (dualIdx_dualIdx hn i.2)
     rw [hii]
     by_cases hij : j = i
-    · subst hij; rw [ite_eq_left rfl, one_apply_eq]
+    · subst hij; rw [if_pos rfl, one_apply_eq]
       have : sgn K ρ k (tau hn j) = sgn K ρ k j := by
         unfold sgn tau; simp only [dualIdx_eq_self_iff hn j.2]
       rw [this, sgn_mul_self]
-    · rw [ite_eq_right hij, mul_zero, one_apply_ne (Ne.symm hij)]
-  · intro b _ hb; rw [gram_row K hn i b, ite_eq_right hb, zero_mul]
+    · rw [if_neg hij, mul_zero, one_apply_ne (Ne.symm hij)]
+  · intro b _ hb; rw [gram_row K hn i b, if_neg hb, zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem gram_conj_apply (K : Type) [CommRing K] {n ρ k : ℕ} (hn : n = 2 * ρ + k + 1)
     (A : Matrix (Fin n) (Fin n) K) (i j : Fin n) :
     (flagGram K n ρ k * A * flagGram K n ρ k) i j = sgn K ρ k i * sgn K ρ k j * A (tau hn i) (tau hn j) := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (tau hn j)]
-  · rw [gram_col K hn (tau hn j) j, ite_eq_left rfl, Matrix.mul_apply, Finset.sum_eq_single (tau hn i)]
-    · rw [gram_row K hn i (tau hn i), ite_eq_left rfl]; ring
-    · intro b _ hb; rw [gram_row K hn i b, ite_eq_right hb, zero_mul]
+  · rw [gram_col K hn (tau hn j) j, if_pos rfl, Matrix.mul_apply, Finset.sum_eq_single (tau hn i)]
+    · rw [gram_row K hn i (tau hn i), if_pos rfl]; ring
+    · intro b _ hb; rw [gram_row K hn i b, if_neg hb, zero_mul]
     · intro h; exact absurd (Finset.mem_univ _) h
-  · intro b _ hb; rw [gram_col K hn b j, ite_eq_right hb, mul_zero]
+  · intro b _ hb; rw [gram_col K hn b j, if_neg hb, mul_zero]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 end GlobalTheory.FlagDual
@@ -1180,11 +1182,12 @@ theorem mul_flagGram_apply {K : Type} [CommRing K] {ρ k : ℕ}
       A i ⟨dualIdx ρ k j.val, dualIdx_lt' j.2⟩ * (if dualIdx ρ k j.val = ρ + k then -1 else 1) := by
   rw [Matrix.mul_apply, Finset.sum_eq_single ⟨dualIdx ρ k j.val, dualIdx_lt' j.2⟩]
   · simp only [flagGram]
-    rw [ite_eq_left ((dualIdx_iff' j.2 (dualIdx_lt' j.2)).mpr rfl)]
+    rw [if_pos ((dualIdx_iff' j.2 (dualIdx_lt' j.2)).mpr rfl)]
   · intro l _ hl
     simp only [flagGram]
-    rw [ite_eq_right, mul_zero]
-    exact fun h => hl (Fin.ext ((dualIdx_iff' j.2 l.2).mp h))
+    rw [if_neg, mul_zero]
+    intro h
+    exact hl (Fin.ext ((dualIdx_iff' j.2 l.2).mp h))
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem flagGram_mul_apply {K : Type} [CommRing K] {ρ k : ℕ}
@@ -1192,11 +1195,12 @@ theorem flagGram_mul_apply {K : Type} [CommRing K] {ρ k : ℕ}
     (flagGram K (2 * ρ + k + 1) ρ k * A) i j =
       (if i.val = ρ + k then -1 else 1) * A ⟨dualIdx ρ k i.val, dualIdx_lt' i.2⟩ j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single ⟨dualIdx ρ k i.val, dualIdx_lt' i.2⟩]
-  · simp only [flagGram, ite_true]
+  · simp only [flagGram, if_true]
   · intro l _ hl
     simp only [flagGram]
-    rw [ite_eq_right, zero_mul]
-    exact fun h => hl (Fin.ext h)
+    rw [if_neg, zero_mul]
+    intro h
+    exact hl (Fin.ext h)
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem flagCond_dual_unipSym : ∀ (K : Type) [CommRing K] (n ρ k : ℕ), n = 2 * ρ + k + 1 → ∀ M M' : GL (Fin n) K,
@@ -1222,7 +1226,7 @@ theorem flagCond_dual_unipSym : ∀ (K : Type) [CommRing K] (n ρ k : ℕ), n = 
     have e1 : (⟨dualIdx ρ k (dualIdx ρ k p.val), dualIdx_lt' (dualIdx_lt' p.2)⟩ : Fin (2 * ρ + k + 1)) = p :=
       Fin.ext ((dualIdx_iff' p.2 (dualIdx_lt' p.2)).mpr rfl).symm
     have hs : (if dualIdx ρ k p.val = ρ + k then (-1 : K) else 1) = 1 :=
-      ite_eq_right (by unfold dualIdx; split_ifs <;> omega)
+      if_neg (by unfold dualIdx; split_ifs <;> omega)
     simp only at h1
     rw [e1, hs, one_mul] at h1
     have hc := hM'.1 ⟨dualIdx ρ k q.val, dualIdx_lt' q.2⟩ ⟨dualIdx ρ k p.val, dualIdx_lt' p.2⟩
@@ -1252,7 +1256,8 @@ theorem flagCond_dual_unipSym : ∀ (K : Type) [CommRing K] (n ρ k : ℕ), n = 
       have hNM : (((M⁻¹ : GL (Fin (2 * ρ + k + 1)) K) : Matrix (Fin (2 * ρ + k + 1)) (Fin (2 * ρ + k + 1)) K) * (M : Matrix (Fin (2 * ρ + k + 1)) (Fin (2 * ρ + k + 1)) K)) p q = (1 : Matrix (Fin (2 * ρ + k + 1)) (Fin (2 * ρ + k + 1)) K) p q := by
         rw [Units.inv_mul]
       rw [Matrix.mul_apply, Finset.sum_eq_single p] at hNM
-      · rwa [hN p p hp le_rfl, Matrix.one_apply_eq, one_mul] at hNM
+      · rw [hN p p hp le_rfl, Matrix.one_apply_eq, one_mul] at hNM
+        exact hNM
       · intro l _ hl
         rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hl) with h | h
         · rw [hN p l hp (le_of_lt h), Matrix.one_apply_ne (fun e => hl (e.symm)), zero_mul]
@@ -1264,11 +1269,17 @@ theorem flagCond_dual_unipSym : ∀ (K : Type) [CommRing K] (n ρ k : ℕ), n = 
     intro i j hji
     have hi2 := i.2
     by_cases h1 : j.val < ρ
-    · simpa only [Matrix.sub_apply, sub_eq_zero] using hM.1 i j h1 hji
+    · have h := hM.1 i j h1 hji
+      simp only [Matrix.sub_apply, sub_eq_zero] at h
+      exact h
     by_cases h2 : j.val < ρ + k
-    · simpa only [Matrix.sub_apply, one_mul, sub_eq_zero] using hM.2.2 i j (by omega) h2 hji
+    · have h := hM.2.2 i j (by omega) h2 hji
+      simp only [Matrix.sub_apply, one_mul, sub_eq_zero] at h
+      exact h
     by_cases h3 : j.val = ρ + k
-    · simpa only [Matrix.sub_apply, sub_eq_zero] using hM.2.1 i j h3 (by omega)
+    · have h := hM.2.1 i j h3 (by omega)
+      simp only [Matrix.sub_apply, sub_eq_zero] at h
+      exact h
     · exact hMrow (2 * ρ + k - i.val) i j (by omega) (by omega) hji
   refine ⟨⟨fun i j hij => ?_, fun i => ?_⟩, fun i j h0 h1 h2 => ?_⟩
   · have hij' : j.val < i.val := hij

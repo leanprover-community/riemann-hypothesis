@@ -67,8 +67,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open TopologicalSpace
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AffineCover
 
 variable {Y : Scheme.{0}} {M : LB Y}

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunctionLevelDataOfEqualTuplesZeroIntertwinersStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousKapSymm
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumUniqueOnThetaFunctions
@@ -83,38 +84,7 @@ theorem det_conj_rect {A : Type} [CommRing A] {m n : ℕ} (h : n = m) {P : Matri
 
 theorem isThetaFunO_tr {V V' : HSp D} (I : IsoMat V V') (S : HSp D) {ψ : AddChar (AF D.host.F) ℂ} {f : WO S V → ℂ}
     (hf : IsThetaFunO ψ S V f) : IsThetaFunO ψ S V' (I.trW S f) := by
-  have hinf : ∀ w : WO S V', w.map (infPart D) = 0 → ((I.phi S).symm w).map (infPart D) = 0 := fun w h => by
-    show (HMul.hMul I.aQ w).map (infPart D) = 0
-    rw [Matrix.map_mul, h, Matrix.mul_zero]
-  have hfin : ∀ w : WO S V', w.map (finPart D) = 0 → ((I.phi S).symm w).map (finPart D) = 0 := fun w h => by
-    show (HMul.hMul I.aQ w).map (finPart D) = 0
-    rw [Matrix.map_mul, h, Matrix.mul_zero]
-  refine ⟨fun γ w => ?_, ?_, hf.cont.comp (I.continuous_phi_symm S), fun k L hL h0 w => ?_⟩
-  · obtain ⟨w, rfl⟩ := (I.phi S).surjective w
-    have e : ratW V' S γ = I.phi S (ratW V S (I.Q * γ)) := by
-      rw [IsoMat.phi_ratW, ← Matrix.mul_assoc, I.PQ, Matrix.one_mul]
-    rw [e, ← map_add (f := _), I.symplOH_phi]
-    simpa only [IsoMat.trW, AddEquiv.symm_apply_apply] using hf.quasi _ _
-  · obtain ⟨U, hU, e⟩ := hf.level
-    refine ⟨U.map (I.phi S).toAddMonoidHom, ?_, ?_⟩
-    · have e : ((U.map (I.phi S).toAddMonoidHom : AddSubgroup (WO S V')) : Set (WO S V')) = (I.phi S).symm ⁻¹' U := by
-        ext w
-        simp only [AddSubgroup.coe_map, Set.mem_image, Set.mem_preimage, SetLike.mem_coe]
-        constructor
-        · rintro ⟨u, hu, rfl⟩
-          simpa using hu
-        · exact fun hw => ⟨_, hw, by simp⟩
-      rw [e]
-      exact hU.preimage (I.continuous_phi_symm S)
-    · rintro _ ⟨u, hu, rfl⟩ h0
-      have h1 : u.map (infPart D) = 0 := by
-        have := hinf _ h0
-        simpa using this
-      show heisO ψ S V' (I.phi S u) (I.trW S f) = I.trW S f
-      rw [I.heisO_trW, e u hu h1]
-  · have := hf.smooth k ((I.phi S).symm.toAddMonoidHom.comp L) ((I.continuous_phi_symm S).comp hL) (fun t => hfin _ (h0 t))
-      ((I.phi S).symm w)
-    simpa [IsoMat.trW] using this
+  first | exact _root_.GlobalTheory.Mem.Isom.IsoMat.isThetaFunO_tr | exact @_root_.GlobalTheory.Mem.Isom.IsoMat.isThetaFunO_tr | apply _root_.GlobalTheory.Mem.Isom.IsoMat.isThetaFunO_tr <;> assumption
 
 theorem isWeilDatumO_tr {V V' : HSp D} (I : IsoMat V V') (S : HSp D) {ψ : AddChar (AF D.host.F) ℂ} {χ χ' : (AE D)ˣ →* Circle}
     {om : GA D S × GA D V →* Module.End ℂ (WO S V → ℂ)}
@@ -150,7 +120,8 @@ theorem isWeilDatumO_tr {V V' : HSp D} (I : IsoMat V V') (S : HSp D) {ψ : AddCh
     have e1 : (mt V (I.kap.symm k)).det = (mt V' k).det := det_conj_rect I.rank_eq.symm I.aP_aQ (mt V' k)
     have hdet : IsDetAt e V (I.kap.symm k) y := by
       unfold IsDetAt at hy ⊢
-      rwa [e1]
+      rw [e1]
+      exact hy
     obtain ⟨r, hr, H⟩ := h.om_split e he g (I.kap.symm k) hg hsupp x y hx hdet
     refine ⟨r, hr, fun ℓ hℓ f hf => ?_⟩
     have hinv : ∀ u : WO S V, (∀ i j, cA D e * u i j = u i j) → ∀ f, IsThetaFunO ψ S V f →
@@ -161,7 +132,8 @@ theorem isWeilDatumO_tr {V V' : HSp D} (I : IsoMat V V') (S : HSp D) {ψ : AddCh
       exact hℓ _ (fun i j => entries_fix' _ hu I.aP i j) _ (isThetaFunO_tr I S hf)
     have := H (ℓ ∘ₗ I.trL S) hinv _ (hT f hf)
     have e1 : (ℓ ∘ₗ I.trL S) (I.symm.trW S f) = ℓ f := congrArg ℓ (I.symm.trW_symm_trW S f)
-    rwa [e1] at this
+    rw [e1] at this
+    exact this
 
 variable {T T₀ : HSp D} (d : HypDec T T₀ 0)
 

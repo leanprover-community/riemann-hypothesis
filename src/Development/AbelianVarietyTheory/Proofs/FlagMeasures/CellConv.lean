@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CompactCellConvergence.CellConvergence
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.OnePlaceKF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentNormRpowNeg
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CellDataExists
@@ -362,42 +363,7 @@ theorem core {k r : ℕ} (L : LocBessel k r) (hk : 1 ≤ k) (hκ : L.κN ≠ ⊤
 
 open Formalism.FourierDecayAlt in
 theorem cellConv : CellConv := by
-  intro k r L h μG γ μR νR ν hκ hok hgap hC hmono
-  obtain ⟨hγ, hpos, -, -, hR, hQ, -⟩ := hC
-  have hk : 1 ≤ k := hok.1
-  have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
-  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
-  have hdN : ThreeDimData.dN k r = 2 * (r : ℝ) ^ 2 + 2 * r * k + r := by unfold ThreeDimData.dN; ring
-  have hAS : ThreeDimData.AS k r = ((2 * r + k : ℕ) : ℝ) * (2 * (r : ℝ) ^ 2 + 2 * r * k + r) := by
-    unfold ThreeDimData.AS; rw [hdN]
-  have hAS0 : 0 ≤ ThreeDimData.AS k r := by rw [hAS]; positivity
-  have hAG : ThreeDimData.AG k r = 4 * ((k : ℝ) + r) * ((r : ℝ) + 1) := rfl
-  have hAG0 : 0 ≤ ThreeDimData.AG k r := by rw [hAG]; positivity
-  have he : ((5 * (r + 1) ^ 2 : ℕ) : ℝ) = 5 * ((r : ℝ) + 1) ^ 2 := by push_cast; ring
-  have hepos : 0 < ((5 * (r + 1) ^ 2 : ℕ) : ℝ) := by rw [he]; positivity
-  unfold GapCell at hgap
-  have hRA : 0 ≤ ((r : ℝ) + 1) ^ 2 * (ThreeDimData.AS k r + ThreeDimData.AG k r) := by positivity
-  have hbe : 2 * (ThreeDimData.AS k r + ThreeDimData.AG k r) ≤
-      (ThreeDimData.aOf r h - ThreeDimData.AG k r - 5 / 2) / ((5 * (r + 1) ^ 2 : ℕ) : ℝ) := by
-    rw [le_div_iff₀ hepos, he]; nlinarith
-  refine ⟨ThreeDimData.aOf r h - ThreeDimData.AG k r - 5 / 2, by nlinarith, by linarith, ?_⟩
-  rcases Nat.eq_zero_or_pos r with hr | hr
-  · subst hr
-    have hAG' : ThreeDimData.AG k 0 = 4 * (k : ℝ) := by rw [hAG]; push_cast; ring
-    refine core L hk hκ hγ hpos hmono hR hQ le_rfl
-      (fun a ha => intN_zero (P.nilpotent_measure_is_haar k 0) ha) (by linarith) ?_
-    push_cast; nlinarith
-  · have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
-    have hAB : B.AB k r = ThreeDimData.AG k r / 2 + 1 := by unfold B.AB; rw [hAG]; ring
-    have hA2 : 2 ≤ ThreeDimData.AS k r := by
-      rw [hAS]
-      have h3 : (3 : ℝ) ≤ ((2 * r + k : ℕ) : ℝ) := by push_cast; linarith
-      have h5 : (5 : ℝ) ≤ 2 * (r : ℝ) ^ 2 + 2 * r * k + r := by nlinarith
-      nlinarith
-    have hGR : 4 * ((r : ℝ) + 1) ^ 2 ≤ ThreeDimData.AG k r := by rw [hAG]; nlinarith
-    refine core L hk hκ hγ hpos hmono hR hQ (bN := B.AB k r) (by rw [hAB]; linarith)
-      (fun a ha => P.SliceLastLevel.intN k r _ (P.nilpotent_measure_is_haar k r) a ha) (by rw [hAB]; linarith) ?_
-    rw [hAB]; nlinarith
+  apply _root_.Formalism.MainNotions.S.Pv.AmpDDPf.CC.cell_convergence <;> assumption
 
 end GlobalTheory.CellMaj
 

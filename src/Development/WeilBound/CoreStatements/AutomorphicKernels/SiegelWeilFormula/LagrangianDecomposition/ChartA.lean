@@ -88,7 +88,7 @@ def embQ {R : Type*} [Zero R] {m n N : ℕ} (h : n + 1 = N) (Q : Matrix (Fin m) 
   (Matrix.fromCols Q (0 : Matrix (Fin m) (Fin 1 ⊕ Fin 1) R)).submatrix id (eB h)
 
 theorem embQ_toCols₁ {m n N : ℕ} (h : n + 1 = N) (Q : Matrix (Fin m) (Fin n ⊕ Fin n) (AE F E)) :
-    (embQ h Q).toCols₁ = ext0 Q.toCols₁ := by
+    (embQ h Q).toCols₁ = ext0 h Q.toCols₁ := by
   ext a i
   rcases idx_cases h (Sum.inl i) with ⟨u, hu⟩ | hu | hu
   · rcases u with u | u
@@ -105,7 +105,7 @@ theorem embQ_toCols₁ {m n N : ℕ} (h : n + 1 = N) (Q : Matrix (Fin m) (Fin n 
   · simp at hu
 
 theorem embQ_toCols₂ {m n N : ℕ} (h : n + 1 = N) (Q : Matrix (Fin m) (Fin n ⊕ Fin n) (AE F E)) :
-    (embQ h Q).toCols₂ = ext0 Q.toCols₂ := by
+    (embQ h Q).toCols₂ = ext0 h Q.toCols₂ := by
   ext a i
   rcases idx_cases h (Sum.inr i) with ⟨u, hu⟩ | hu | hu
   · rcases u with u | u

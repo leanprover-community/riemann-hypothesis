@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableSetNotGG
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupRepTwistedIsUnitaryRep
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnimodularBesselSubgroupsUWN
@@ -408,33 +409,7 @@ theorem inner_rankOneInnerOperator_self {Wp : Type*} [NormedAddCommGroup Wp] [In
 theorem ae_mem_GG {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {μG μS ν : Measure (Mt k r)}
     (hG : IsHaarOn (GG k r) μG) (hS : IsHaarOn (Sset k r z) μS) (hq : IsQuotMeas μG μS ν) :
     ∀ᵐ x ∂ν, (Matrix.of x : Mat k r) ∈ GG k r := by
-  set B : Set (Mt k r) := {x | (Matrix.of x : Mat k r) ∉ GG k r} with hBdef
-  have hB : MeasurableSet B := (isClosed_GG k r).measurableSet.compl
-  have h0 := hq (B.indicator 1) (measurable_one.indicator hB)
-  rw [lintegral_indicator_one hB, hG.2.2.1] at h0
-  have hc : μS Set.univ ≠ 0 := by
-    intro h; exact hS.2.1 (Measure.measure_univ_eq_zero.1 h)
-  have hle : ∀ x, B.indicator (fun _ => μS Set.univ) x ≤
-      ∫⁻ s, B.indicator 1 (fun i j => (Matrix.of s * Matrix.of x : Mat k r) i j) ∂μS := by
-    intro x
-    by_cases hx : x ∈ B
-    · rw [Set.indicator_of_mem hx]
-      calc μS Set.univ = ∫⁻ _, 1 ∂μS := (lintegral_one).symm
-        _ ≤ _ := by
-          apply lintegral_mono_ae
-          have hnull : ∀ᵐ s ∂μS, (Matrix.of s : Mat k r) ∈ Sset k r z := by
-            rw [ae_iff]; simpa using hS.2.2.1
-          filter_upwards [hnull] with s hs
-          have hmem : (fun i j => (Matrix.of s * Matrix.of x : Mat k r) i j) ∈ B := by
-            show ¬ ((Matrix.of s * Matrix.of x : Mat k r) ∈ GG k r)
-            intro h; exact hx ((mul_mem_GG_iff (Sset_subset_GG z hs)).1 h)
-          rw [Set.indicator_of_mem hmem]; rfl
-    · rw [Set.indicator_of_notMem hx]; exact zero_le
-  have hmul : μS Set.univ * ν B = 0 := by
-    rw [← lintegral_indicator_const hB]
-    exact le_antisymm ((lintegral_mono hle).trans h0.symm.le) (zero_le)
-  have hνB : ν B = 0 := (mul_eq_zero.1 hmul).resolve_left hc
-  rw [ae_iff]; simpa [hBdef] using hνB
+  first | exact _root_.GlobalTheory.SgInf.WUnfold.ae_mem_GG | exact @_root_.GlobalTheory.SgInf.WUnfold.ae_mem_GG | apply _root_.GlobalTheory.SgInf.WUnfold.ae_mem_GG <;> assumption
 
 theorem projector_line : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp] [CompleteSpace Wp] (σ : Mat k r → (H →L[ℂ] H)) (w : H) (a : ℝ) (μG : Measure (Mt k r)) (d : ℝ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (π : Mat k r → (Wp →L[ℂ] Wp)) (μS : Measure (Mt k r)) , Std σ w a μG d → Side z π μS → ∀ ν : Measure (Mt k r), IsQuotMeas μG μS ν → ∀ l : H → Wp, IsEll z (psiGen k r z c) π μS σ (DD σ w) l → (∀ u ∈ DD σ w, l2SG ν (fun x => l (σ x u)) = ENNReal.ofReal (‖u‖ ^ 2 / d)) ∧ (∀ v ∈ DD σ w, ∀ ξ : Wp, ∀ x ∈ GG k r, Afun (psiGen k r z c) π μS σ w v ξ x = ⟪l v, ξ⟫_ℂ • l (σ x w)) ∧ ∀ W : Mat k r → Wp, AEStronglyMeasurable (fun x : Mt k r => W (Matrix.of x)) μG → AEStronglyMeasurable (fun x : Mt k r => W (Matrix.of x)) ν → IsSPsiEquiv z (psiGen k r z c) π W → l2SG ν W < ⊤ → ∀ y ∈ GG k r, rconv μG (eFun μG σ w) W y = ((d : ℂ) * ∫ g, ⟪l (σ (Matrix.of g) w), W (Matrix.of g)⟫_ℂ ∂ν) • l (σ y w) := by
   intro k r H _ _ _ Wp _ _ _ _ σ w a μG d z c π μS hStd hSide ν hq l hl

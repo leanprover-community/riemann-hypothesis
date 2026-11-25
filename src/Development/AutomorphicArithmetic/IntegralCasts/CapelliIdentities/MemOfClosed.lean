@@ -54,11 +54,6 @@ public import Mathlib.NumberTheory.Padics.PadicIntegers
 
 namespace UpperTheory.Reformulated.B.Qi13
 
-theorem aux1 : ∀ (K : Type) [Field K] [ValuativeRel K]
-  [TopologicalSpace K] [IsNonarchimedeanLocalField K], IsLocalRing ↥(ValuativeRel.valuation K).integer := by
-  intro K _ _ _ _
-  infer_instance
-
 @[reducible] noncomputable def algRes : (K : Type) →
   [Field K] →
     [ValuativeRel K] →
@@ -92,10 +87,6 @@ theorem aux4 : ∀ (K : Type) [Field K] [ValuativeRel K]
   intro K _ _ _ _ l _ _
   letI := algRes K l
   exact Module.Free.of_divisionRing (ZMod l) _
-
-theorem aux5 : ∀ (l : ℕ) [Fact (Nat.Prime l)], StrongRankCondition (ZMod l) := by
-  intro l _
-  infer_instance
 
 theorem aux6 : ∀ (K : Type) [Field K] [ValuativeRel K]
   [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact (Nat.Prime l)]

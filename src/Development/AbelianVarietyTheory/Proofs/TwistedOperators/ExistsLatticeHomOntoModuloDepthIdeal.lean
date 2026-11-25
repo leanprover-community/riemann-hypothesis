@@ -320,7 +320,6 @@ noncomputable section
 
 namespace GlobalTheory.OntoModPf
 
-open NumberField
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -368,7 +367,6 @@ end GlobalTheory.OntoModPf
 
 namespace GlobalTheory.OntoModPf
 
-open NumberField
 
 variable {K : Type} [Field K] [NumberField K]
 

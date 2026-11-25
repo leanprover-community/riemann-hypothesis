@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TwistPlaceNormalisedCombinationsPreserveThetaFun
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CombAtSingleZero
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsOneComb
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsBiSmooth
@@ -176,32 +177,7 @@ theorem isFinComb_of_half {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
   exact (RingHom.mem_ker).1 (Ideal.mem_inf.1 (GlobalTheory.FinPl.SplitHalfSupp.mxAt_of_isHalf_above D k q _ _ u (hc u hu) i j)).1
 
 theorem isFinComb_aconv {S T : HSp D} (l : List (WO S T →₀ ℂ)) (hl : ∀ c ∈ l, IsFinComb c) : IsFinComb (aconv l) := by
-  induction l with
-  | nil =>
-    intro u hu
-    have : u = 0 := by simpa [aconv] using hu
-    subst this
-    ext i j
-    simp
-  | cons c l ih =>
-    intro u hu
-    have e1 : aconv [aconv l] = aconv l := by
-      show (aconv l).sum (fun g a => (Finsupp.single (0 : WO S T) (1 : ℂ)).sum fun h b => Finsupp.single (g + h) (a * b)) = aconv l
-      have : ∀ (g : WO S T) (a : ℂ), ((Finsupp.single (0 : WO S T) (1 : ℂ)).sum fun h b => Finsupp.single (g + h) (a * b)) =
-          Finsupp.single g a := fun g a => by rw [Finsupp.sum_single_index (by simp), add_zero, mul_one]
-      simp only [this, Finsupp.sum_single]
-    have e2 : aconv (c :: l) = aconv [c, aconv l] := by
-      show _ = c.sum fun g a => (aconv [aconv l]).sum fun h b => Finsupp.single (g + h) (a * b)
-      rw [e1]; rfl
-    rw [e2] at hu
-    obtain ⟨a, ha, b, hb, rfl⟩ := GlobalTheory.QValOuter.mem_support_aconv_pair _ _ hu
-    have h1 := hl c List.mem_cons_self a ha
-    have h2 := ih (fun c hc => hl c (List.mem_cons_of_mem _ hc)) b hb
-    ext i j
-    have h3 : infPart D (a i j) = 0 := congrFun (congrFun h1 i) j
-    have h4 : infPart D (b i j) = 0 := congrFun (congrFun h2 i) j
-    show infPart D (a i j + b i j) = 0
-    rw [RingHom.map_add (f := _), h3, h4, add_zero]
+  first | exact _root_.GlobalTheory.QPl.ThetaPin.isFinComb_aconv | exact @_root_.GlobalTheory.QPl.ThetaPin.isFinComb_aconv | apply _root_.GlobalTheory.QPl.ThetaPin.isFinComb_aconv <;> assumption
 
 theorem aconv_single_cons {G : Type} [AddMonoid G] (l : List (G →₀ ℂ)) : aconv (Finsupp.single 0 1 :: l) = aconv l := by
   show (Finsupp.single (0 : G) (1 : ℂ)).sum (fun g a => (aconv l).sum fun h b => Finsupp.single (g + h) (a * b)) = aconv l

@@ -296,7 +296,6 @@ theorem exists_equiv_level {T f₀ : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F)
 
 end Loc
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 theorem dualL_one {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : CMData F E)
     {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E)) : Formalism.L2.Forms.dualL (hc.sig : E →+* E) 1 L = Formalism.HermitianLatticesTheory.dual (hStd E n) L := by

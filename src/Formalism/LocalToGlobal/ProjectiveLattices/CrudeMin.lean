@@ -56,7 +56,8 @@ theorem crP_map (k : Type) [CommRing k] (β : (Σ σ : T, Fin (r σ)) → Fin n)
   rw [map_pow, RingHom.map_det, hM]
 
 theorem crX_mem {R : Type} [CommRing R] {s : Set (Letter T r n)} {ℓ : Letter T r n} (h : ℓ ∈ s) :
-    (X ℓ : MvPolynomial (Letter T r n) R) ∈ supported R s := Algebra.subset_adjoin ⟨ℓ, h, rfl⟩
+    (X ℓ : MvPolynomial (Letter T r n) R) ∈ supported R s := by
+  exact Algebra.subset_adjoin ⟨ℓ, h, rfl⟩
 
 theorem crP_mem_supported (R : Type) [CommRing R] (β : (Σ σ : T, Fin (r σ)) → Fin n) (a : T → ℕ → ℕ) :
     crP r n R β a ∈ supported R (GoodL r n β) := by
@@ -91,21 +92,6 @@ theorem crPderiv_supported {R : Type} [CommRing R] {s : Set (Letter T r n)} (i :
     rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
     exact add_mem (mul_mem hx' hy) (mul_mem hy' hx)
 
-private theorem crPderiv_zero_lemma {R : Type} [CommRing R] {s : Set (Letter T r n)} (i : Letter T r n)
-    (hi : i ∉ s) {p : MvPolynomial (Letter T r n) R} (hp : p ∈ supported R s) : pderiv i p = 0 := by
-  classical
-  have hp' : p ∈ Algebra.adjoin R ((X : Letter T r n → MvPolynomial (Letter T r n) R) '' s) := hp
-  clear hp
-  induction hp' using Algebra.adjoin_induction with
-  | mem x hx =>
-    obtain ⟨j, hj, rfl⟩ := hx
-    rw [pderiv_X, Pi.single_apply, ite_eq_right]
-    rintro rfl
-    exact hi hj
-  | algebraMap c => exact Derivation.map_algebraMap _ _
-  | add x y _ _ hx hy => rw [map_add (f := _), hx, hy, add_zero]
-  | mul x y _ _ hx hy => rw [Derivation.leibniz, hx, hy, smul_zero, smul_zero, add_zero]
-
 theorem crP_mem_harmK (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fin n) (a : T → ℕ → ℕ) (cc : T → T)
     (isX : T → Prop) (hcc : ∀ τ, isX τ → cc τ ≠ τ) (hβ : Function.Injective β) :
     crP r n k β a ∈ harmK r n k cc isX (fun _ => 1) := by
@@ -123,8 +109,9 @@ theorem crP_mem_harmK (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fin
         obtain ⟨i0, hi0⟩ := hg
         have := hβ (hi0.trans hj.symm)
         exact hcc τ hτ (Sigma.mk.inj this).1.symm
-      rw [crPderiv_zero_lemma _ hg' (crP_mem_supported k β a), map_zero, smul_zero]
-    · rw [crPderiv_zero_lemma _ hg hsup, smul_zero]
+      rw [pderiv_eq_zero_of_notMem_vars
+        (fun hv => hg' (mem_supported.mp (crP_mem_supported k β a) hv)), map_zero, smul_zero]
+    · rw [pderiv_eq_zero_of_notMem_vars (fun hv => hg (mem_supported.mp hsup hv)), smul_zero]
   · rw [Matrix.one_apply_ne hbb, zero_smul]
 
 end Part1
@@ -186,7 +173,7 @@ theorem crP_rowInv (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fin n)
   · congr 1
     ext p q
     simp only [AlgHom.mapMatrix_apply, Matrix.map_apply, crMinor, aeval_X]
-    rw [ite_eq_right]
+    rw [if_neg]
     rintro ⟨b, hb⟩
     apply hcase
     obtain ⟨h1, h2⟩ := Sigma.mk.inj hb
@@ -248,7 +235,7 @@ theorem crTele (f : ℕ → ℕ) (R : ℕ) (hf : ∀ j, j < R → f (j + 1) ≤ 
     apply Finset.sum_eq_zero
     intro j hj
     rw [Finset.mem_range] at hj
-    rw [ite_eq_right (by omega)]
+    rw [if_neg (by omega)]
   | succ d ih =>
     intro i hi
     have h1 := ih (i + 1) (by omega)
@@ -259,10 +246,10 @@ theorem crTele (f : ℕ → ℕ) (R : ℕ) (hf : ∀ j, j < R → f (j + 1) ≤ 
       · subst h
         simp
       · by_cases h' : i ≤ j
-        · rw [ite_eq_left h', ite_eq_left (by omega), ite_eq_right h, add_zero]
-        · rw [ite_eq_right h', ite_eq_right (by omega), ite_eq_right h, add_zero]
+        · rw [if_pos h', if_pos (by omega), if_neg h, add_zero]
+        · rw [if_neg h', if_neg (by omega), if_neg h, add_zero]
     rw [Finset.sum_congr rfl (fun j _ => hsplit j), Finset.sum_add_distrib, h1, Finset.sum_ite_eq',
-      ite_eq_left (Finset.mem_range.mpr (by omega))]
+      if_pos (Finset.mem_range.mpr (by omega))]
     have := hf i (by omega)
     omega
 
@@ -274,9 +261,9 @@ theorem crExpSum (a : T → ℕ → ℕ) (ha : Dom r a) (σ : T) (i : Fin (r σ)
     intro j hj
     simp only [f]
     by_cases h : j + 1 < r σ
-    · rw [ite_eq_left h, ite_eq_left hj]
+    · rw [if_pos h, if_pos hj]
       exact ha σ ⟨j, hj⟩ ⟨j + 1, h⟩ (Fin.mk_le_mk.mpr (Nat.le_succ j))
-    · rw [ite_eq_right h]
+    · rw [if_neg h]
       exact Nat.zero_le _
   have hR : f (r σ) = 0 := by simp [f]
   have key := crTele f (r σ) hf hR (r σ - i) i (by omega)
@@ -285,7 +272,7 @@ theorem crExpSum (a : T → ℕ → ℕ) (ha : Dom r a) (σ : T) (i : Fin (r σ)
     rw [← Fin.sum_univ_eq_sum_range]
     refine Finset.sum_congr rfl fun kk _ => ?_
     have hk := kk.isLt
-    simp only [f, crExp, ite_eq_left hk, Nat.lt_add_one_iff]
+    simp only [f, crExp, if_pos hk, Nat.lt_add_one_iff]
   rw [e1, key]
   simp [f, hi]
 
@@ -313,13 +300,15 @@ theorem crP_isWeightedHomogeneous_crW (R : Type) [CommRing R] (β : (Σ σ : T, 
     apply Finset.sum_eq_zero
     intro kk _
     simp [hτ]
-  · exact fun h => absurd (Finset.mem_univ σ) h
+  · intro h
+    exact absurd (Finset.mem_univ σ) h
 
 theorem crW_weight (m : Letter T r n →₀ ℕ) (σ : T) (i : Fin (r σ)) :
     Finsupp.weight (crW (r := r) (n := n) σ i.val) m = ∑ b : Fin n, m ⟨σ, i, b⟩ := by
   classical
   have hinj : Function.Injective (fun b : Fin n => (⟨σ, i, b⟩ : Letter T r n)) := by
-    exact fun b b' h => (Prod.mk.inj (eq_of_heq (Sigma.mk.inj h).2)).2
+    intro b b' h
+    exact (Prod.mk.inj (eq_of_heq (Sigma.mk.inj h).2)).2
   have hw : ∀ ℓ : Letter T r n, crW (r := r) (n := n) σ i.val ℓ =
       if ℓ ∈ Finset.univ.image (fun b : Fin n => (⟨σ, i, b⟩ : Letter T r n)) then 1 else 0 := by
     rintro ⟨τ, x, y⟩
@@ -328,11 +317,11 @@ theorem crW_weight (m : Letter T r n →₀ ℕ) (σ : T) (i : Fin (r σ)) :
     · subst h
       by_cases hx : x = i
       · subst hx
-        rw [ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨y, rfl⟩]
-      · rw [ite_eq_right (by simp [Fin.val_inj, hx]), ite_eq_right]
+        rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨y, rfl⟩]
+      · rw [if_neg (by simp [Fin.val_inj, hx]), if_neg]
         rintro ⟨b, hb⟩
         exact hx ((Prod.mk.inj (eq_of_heq (Sigma.mk.inj hb).2)).1).symm
-    · rw [ite_eq_right (by simp [h]), ite_eq_right]
+    · rw [if_neg (by simp [h]), if_neg]
       rintro ⟨b, hb⟩
       exact h (Sigma.mk.inj hb).1.symm
   rw [Finsupp.weight_apply, Finsupp.sum]
@@ -349,7 +338,8 @@ theorem crP_rowDeg (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fin n)
     (ha : Dom r a) : RowDeg r n k a (crP r n k β a) := by
   intro m hm σ i
   have h := crP_isWeightedHomogeneous_crW k β a ha σ i (MvPolynomial.mem_support_iff.mp hm)
-  rwa [crW_weight] at h
+  rw [crW_weight] at h
+  exact h
 
 end Part3
 
@@ -376,14 +366,16 @@ theorem crDiagExp_apply (β : (Σ σ : T, Fin (r σ)) → Fin n) (a : T → ℕ 
 theorem crDiagExp_dl (β : (Σ σ : T, Fin (r σ)) → Fin n) (a : T → ℕ → ℕ) (p : Σ σ : T, Fin (r σ)) :
     diagExp r n β a (crDl β p) = a p.1 p.2 := by
   rw [crDiagExp_apply, Finset.sum_eq_single p]
-  · rw [ite_eq_left rfl]
-  · exact fun q _ hq => ite_eq_right (fun h => hq (crDl_inj β h))
-  · exact fun h => absurd (Finset.mem_univ p) h
+  · rw [if_pos rfl]
+  · intro q _ hq
+    exact if_neg (fun h => hq (crDl_inj β h))
+  · intro h
+    exact absurd (Finset.mem_univ p) h
 
 theorem crDiagExp_off (β : (Σ σ : T, Fin (r σ)) → Fin n) (a : T → ℕ → ℕ) (ℓ : Letter T r n)
     (h : ∀ p, crDl β p ≠ ℓ) : diagExp r n β a ℓ = 0 := by
   rw [crDiagExp_apply]
-  exact Finset.sum_eq_zero fun p _ => ite_eq_right (h p)
+  exact Finset.sum_eq_zero fun p _ => if_neg (h p)
 
 def crRho (R : Type) [CommRing R] (β : (Σ σ : T, Fin (r σ)) → Fin n) :
     MvPolynomial (Letter T r n) R →ₐ[R] MvPolynomial (Letter T r n) R :=
@@ -400,11 +392,12 @@ theorem crRho_monomial (R : Type) [CommRing R] (β : (Σ σ : T, Fin (r σ)) →
   · rw [monomial_eq, algebraMap_eq]
     congr 1
     refine Finset.prod_congr rfl fun ℓ hℓ => ?_
-    simp only [ite_eq_left (h ℓ hℓ)]
-  · push Not at h
+    simp only [if_pos (h ℓ hℓ)]
+  · push_neg at h
     obtain ⟨ℓ, hℓ, hne⟩ := h
     rw [Finsupp.prod, Finset.prod_eq_zero hℓ, mul_zero]
-    simpa only [ite_eq_right hne] using zero_pow (Finsupp.mem_support_iff.mp hℓ)
+    simp only [if_neg hne]
+    exact zero_pow (Finsupp.mem_support_iff.mp hℓ)
 
 theorem crRho_coeff (R : Type) [CommRing R] (β : (Σ σ : T, Fin (r σ)) → Fin n)
     (p : MvPolynomial (Letter T r n) R) (m : Letter T r n →₀ ℕ)
@@ -497,7 +490,7 @@ theorem crP_coeff_diag (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fi
     intro ℓ hℓ
     exact h1 hℓ
   have hcoeffE : (crP r n k β a).coeff E = 1 := by
-    rw [← crRho_coeff k β _ E hEdiag, hE, coeff_monomial, ite_eq_left rfl]
+    rw [← crRho_coeff k β _ E hEdiag, hE, coeff_monomial, if_pos rfl]
   have hEeq : E = diagExp r n β a := by
     ext ℓ
     obtain ⟨σ, i, b⟩ := ℓ
@@ -512,7 +505,8 @@ theorem crP_coeff_diag (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fi
       · intro b' _ hb'
         by_contra hne
         exact hb' (hEdiag _ (Finsupp.mem_support_iff.mpr hne))
-      · exact fun h => absurd (Finset.mem_univ _) h
+      · intro h
+        exact absurd (Finset.mem_univ _) h
     · rw [crDiagExp_off]
       · by_contra hne
         exact hb (hEdiag _ (Finsupp.mem_support_iff.mpr hne))
@@ -523,7 +517,8 @@ theorem crP_coeff_diag (k : Type) [Field k] (β : (Σ σ : T, Fin (r σ)) → Fi
         subst h1
         obtain ⟨rfl, rfl⟩ := Prod.mk.inj (eq_of_heq h2)
         rfl
-  rwa [← hEeq]
+  rw [← hEeq]
+  exact hcoeffE
 
 end Part4
 
@@ -583,7 +578,8 @@ theorem Pmin_degree (ha : Dom r a) (m : Letter T r n →₀ ℕ)
           exact ⟨Finset.mem_univ _, by have := Fin.le_def.mp h; omega⟩]
       exact Fin.card_Iic kk
     rw [← Finset.sum_filter, Finset.sum_const, hcard, smul_eq_mul, smul_eq_mul, mul_comm]
-  rw [← hsum, ← h, Finsupp.degree_apply, Finsupp.weight_apply, Finsupp.sum]
+  rw [← hsum, ← h]
+  rw [Finsupp.degree_apply, Finsupp.weight_apply, Finsupp.sum]
   simp
 
 theorem diagExp_degree : (diagExp r n β a).degree = ∑ σ : T, ∑ i : Fin (r σ), a σ i := by

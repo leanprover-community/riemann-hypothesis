@@ -17,6 +17,7 @@ import Mathlib.MeasureTheory.Order.Group.Lattice
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Order.Star.Real
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.DiagonalTruncatedIntegral
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.SigmaFiniteInverseAbsDensity, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.HaarIcc, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.IntegralProdLog, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.UnipotentIntegrandVanishesProof
@@ -222,12 +223,6 @@ theorem measurable_Lg {I : Type} [Fintype I] : Measurable (large₂ (I := I)) :=
   exact Finset.measurable_sum _ fun v _ =>
     Real.measurable_log.comp (continuous_abs.measurable.comp (measurable_subtype_coe.comp (measurable_pi_apply v)))
 
-theorem pt_congr {a a' c c' : ℝ} (h1 : a = a') (h2 : c = c') (hc : c ≠ 0) (hc' : c' ≠ 0) :
-    pt a c hc = pt a' c' hc' := by
-  subst h1
-  subst h2
-  rfl
-
 theorem Lg_scl {I : Type} [Fintype I] (t : ℝ) (ht : 0 < t) (y : I → Y1) :
     large₂ (fun v => scl t ht.ne' (y v)) = Fintype.card I * Real.log t + large₂ y := by
   have h : ∀ v, Real.log |t * (y v).1| = Real.log t + Real.log |(y v).1| := by
@@ -302,7 +297,7 @@ theorem UpperTheory.Esk.unipotent_integrand_vanishes_proof : UpperTheory.Esk.B1a
     refine (hβinv x 0 (fun v => (y v).1) (fun v => (y v).2) 1 one_pos).trans ?_
     congr 1
     funext v
-    exact pt_congr rfl (one_mul _) _ _
+    exact UpperTheory.Esk.UnipotentTruncatedIntegral.pt_congr rfl (one_mul _) _ _
   have huΦ : ∀ (x : I → ℝ) (y : I → Y1), u (Φ (x, y)) = (if A / ∏ v, (1 + x v ^ 2) ≤ ∏ v, |(y v).1| ∧ ∏ v, |(y v).1| ≤ B then ∏ v, φ v (x v) else 0) := by
     intro x y
     rw [hΦapp]

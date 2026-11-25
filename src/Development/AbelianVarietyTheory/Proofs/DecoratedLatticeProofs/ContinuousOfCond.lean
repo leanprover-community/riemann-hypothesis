@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SliceColMem
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EntryAgree
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsGLExistsUnique
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnfoldingIntegralTwistPrimeEqDeepFiniteSum
@@ -139,7 +140,11 @@ namespace GlobalTheory.TwNormalReps
 
 theorem val_unif_of {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {ϖ : kˣ} (hϖ : GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsUnif ϖ) : valuation k (ϖ : k) = uniformizer k := by
-  exact GlobalTheory.TwBridge.PsiRat.val_unif' hϖ
+  apply le_antisymm
+  · rw [le_uniformizer_iff]; exact (hϖ _).2 le_rfl
+  · obtain ⟨x, hx⟩ := ValuativeRel.valuation_surjective (uniformizer k)
+    rw [← hx]
+    exact (hϖ x).1 (by rw [hx]; exact uniformizer_lt_one)
 
 theorem isGL_one {X : Fields} {R : Ranks} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] {ι : X.E →+* k} {j c : ℕ} {g : GL (XIx (Fin R.k) (Fin R.t) j ⊕ Fin c) k}
@@ -288,7 +293,7 @@ open GlobalTheory.SymBridge GlobalTheory.TwBridge.MatGL
 
 theorem val_unif {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {ϖ : kˣ} (hϖ : GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsUnif ϖ) : valuation k (ϖ : k) = uniformizer k := by
-  exact GlobalTheory.TwBridge.PsiRat.val_unif' hϖ
+  apply _root_.GlobalTheory.TwNormalReps.val_unif_of <;> assumption
 
 theorem denseRange_toLoc {E k : Type} [Field E] [Field k] [TopologicalSpace k] {ι : E →+* k} (hι : DenseRange ι)
     {A B : Type} {a b : ℕ} (e : A ≃ Fin a) (e' : B ≃ Fin b) : DenseRange (toLoc ι e e') := by
@@ -367,7 +372,8 @@ theorem exists_toLocGL_mem : ∀ (E k : Type) [Field E] [Field k] [ValuativeRel 
   have hne : (Subtype.val '' (F ⁻¹' U)).Nonempty := by
     refine ⟨_, ⟨g₀.val, g₀.det_ne_zero⟩, ?_, rfl⟩
     have : F ⟨g₀.val, g₀.det_ne_zero⟩ = g₀ := Units.ext rfl
-    rwa [Set.mem_preimage, this]
+    rw [Set.mem_preimage, this]
+    exact hg₀
   obtain ⟨x, M, hM, hx⟩ := (denseRange_toLoc hι e e).exists_mem_open hV hne
   have hd : LinearMap.det x ≠ 0 := by
     intro h0
@@ -378,7 +384,8 @@ theorem exists_toLocGL_mem : ∀ (E k : Type) [Field E] [Field k] [ValuativeRel 
   have hbij : Function.Bijective x := (Module.End.isUnit_iff x).1 ((LinearMap.isUnit_iff_isUnit_det x).2 hd.isUnit)
   refine ⟨LinearEquiv.ofBijective x hbij, ?_⟩
   have : toLocGL ι e (LinearEquiv.ofBijective x hbij) = F M := Units.ext hx.symm
-  rwa [this]
+  rw [this]
+  exact hM
 
 theorem exists_toLoc_ne_zero : ∀ (E k : Type) [Field E] [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (ι : E →+* k), DenseRange ι → ∀ (A B : Type) [Fintype A] [Fintype B] (a b : ℕ) (e : A ≃ Fin a) (e' : B ≃ Fin b)
@@ -404,7 +411,7 @@ theorem bounds_of_isGL : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (P : Heigh
   intro X Pr R P k _ _ _ _ ι ϖ hC hP j c n γ g' ⟨e, _, hg⟩ h1 h2 x hx
   have hmem : ∀ y, y ∈ lamYat (Pr := Pr) (R := R) j P ↔ (fun i => ι (y (e i))) ∈ latOf (1 : GL _ k) := fun y => by
     unfold lamYat LocE.lamY LocE.sclLat stdAt
-    rw [ite_eq_right hP, Submodule.mem_comap, mem_localization_standardLattice, mem_latOf_one]
+    rw [if_neg hP, Submodule.mem_comap, mem_localization_standardLattice, mem_latOf_one]
     simp only [hC.int]
     rw [e.surjective.forall]
     simp [LocE.scE]
@@ -412,7 +419,8 @@ theorem bounds_of_isGL : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (P : Heigh
   rw [hmem] at hx
   refine ⟨(hmem _).2 (mem_latOf_one.2 ?_), (hmem _).2 ?_⟩
   · have h3 : ∀ i, (toLoc ι e e γ.symm.toLinearMap *ᵥ fun i => ι (x (e i))) i ∈ 𝒪[k] := h1 hx
-    rwa [toLoc_mulVec] at h3
+    rw [toLoc_mulVec] at h3
+    exact h3
   · have h3 : (toLocGL ι e γ).val *ᵥ (fun i => ι (x (e i))) ∈ latOf (toLocGL ι e γ * 1) := (mulVec_mem_latOf _).2 hx
     rw [mul_one] at h3
     have h4 := h2 _ h3
@@ -523,14 +531,16 @@ theorem exists_rep_of_bounds : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch 
       intro P' hP'
       by_cases hPP : P' = P
       · subst hPP
-        simpa only [hh, ite_eq_left rfl] using hγ
+        simp only [hh, ite_eq_left rfl]
+        exact hγ
       · simp only [hh, ite_eq_right hPP]
         exact hL.boundQ (j + 1) b₀ P' hP')
     (by
       intro P'
       by_cases hPP : P' = P
       · subst hPP
-        simpa only [hh, ite_eq_left rfl] using hal
+        simp only [hh, ite_eq_left rfl]
+        exact hal
       · simp only [hh, ite_eq_right hPP]
         exact hL.nonvan j hj b₀ P')
   refine ⟨b, ?_⟩
@@ -683,15 +693,7 @@ theorem adapted_of_normal (hϖ : valuation k (ϖ : k) = uniformizer k) (hb : ∀
     · exact r.elim0
 
 theorem continuous_of_cond {ψ : AddChar k Circle} (h : HasConductor ψ 1) : Continuous ψ := by
-  have h0 : ∀ x ∈ (𝒪[k] : Set k), ψ x = 1 := fun x hx =>
-    (h x).2 (by simpa [Valuation.mem_integer_iff] using hx) x le_rfl
-  refine continuous_iff_continuousAt.2 fun x => ?_
-  have h1 : ∀ᶠ y in nhds x, ψ y = ψ x := by
-    have h2 : (fun y => y - x) ⁻¹' (𝒪[k] : Set k) ∈ nhds x :=
-      ((isOpen_int k).preimage (by fun_prop)).mem_nhds (by simp)
-    filter_upwards [h2] with y hy
-    rw [← sub_add_cancel y x, AddChar.map_add_eq_mul, h0 _ hy, one_mul]
-  exact (continuousAt_const (y := ψ x)).congr (h1.mono fun _ e => e.symm)
+  apply _root_.GlobalTheory.LocMod.GValProof.cont_of_cond <;> assumption
 
 end Normal
 
@@ -743,9 +745,9 @@ theorem exists_system {σ₀ : X.K →+* ℂ} {P : rowSG Pr sel mu} {k : Type} [
   have hrat : ∀ j c h, Nonempty (L.β j) → A j c h = {g | ∃ b : L.β j, IsGL ι (L.h j b P) g} := by
     rintro (_ | j) c h hne
     · exact (_root_.GlobalTheory.TwBridge.ZeroReps.reps_zero X Pr R Ch sel S₀ mu cst σ₀ P k ι s W ν hν hc hA L G hL hI c h).symm
-    · exact ite_eq_left hne
+    · exact if_pos hne
   have hneg : ∀ j c (h : j + 1 + c = s), ¬ Nonempty (L.β (j + 1)) →
-      A (j + 1) c h = σ (j + 1) c h '' ⋃ g ∈ A j (c + 1) (by omega), (W.T s R).idx W.ψ ν j c h g := fun j c h hne => ite_eq_right hne
+      A (j + 1) c h = σ (j + 1) c h '' ⋃ g ∈ A j (c + 1) (by omega), (W.T s R).idx W.ψ ν j c h g := fun j c h hne => if_neg hne
   have hsys : (W.T s R).IsRepSystem A W.ψ ν := by
     refine ⟨fun _ _ => rfl, fun j c h => ?_⟩
     by_cases hne : Nonempty (L.β (j + 1))

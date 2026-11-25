@@ -81,16 +81,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.DisoHm
 
-section Lift
-variable {R R' : Type} [CommRing R] [CommRing R'] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
-  {F : C ⥤ ModuleCat.{0} R} {F' : C' ⥤ ModuleCat.{0} R'} {σ : R →+* R'}
-
-def liftM (m : CH.Mor F F' σ) {P : ObjectProperty C} (hP : ∀ T, P (m.G.obj T)) : CH.Mor (P.ι ⋙ F) F' σ where
-  G := P.lift m.G hP
-  τ := m.τ
-  nat φ x := m.nat φ x
-end Lift
-
 section Scal
 variable {b : Base} (L : b.Fun) {Λ : Type} [CommRing Λ] (c : Λ →+* b.R)
 
@@ -107,26 +97,6 @@ def thPc : PDF Λ (Thick L) where
 variable {L}
 
 abbrev sPc (Q : ObjectProperty (Thick L)) : PDF Λ Q.FullSubcategory := (thPc L c).res Q.ι
-
-def polyC {Q : ObjectProperty (Thick L)} (P : Poly (sP Q)) : Poly (sPc c Q) where
-  P := P.P
-  j := P.j
-  X := P.X
-  X_mem := P.X_mem
-  univ := P.univ
-  span := P.span
-
-def frameC {Q : ObjectProperty (Thick L)} {d : ℕ} (E : Frame (sP Q) d) : Frame (sPc c Q) d where
-  D := E.D
-  ne := E.ne
-  τ := E.τ
-  mem := E.mem
-  add := E.add
-  nat := E.nat
-  bij := E.bij
-
-theorem polyC_crit {Q : ObjectProperty (Thick L)} (P : Poly (sP Q)) (r : ℤ)
-    (h : P.Crit (fun _ => IdF.bot _) r) : (polyC c P).Crit (fun _ => IdF.bot _) r := h
 
 end Scal
 
@@ -224,23 +194,6 @@ theorem cover_bij (m : CH.Mor F F' (RingHom.id R)) {A : Type} [Fintype A] (U : A
 end Cover
 end GlobalTheory.CompanionTheory.DisoHm
 
-namespace GlobalTheory.CompanionTheory.DisoHm
-section Ch
-variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)}
-
-theorem ev_hom {R : Type} [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ} {κ : O →+* R ⧸ I} {V : X.Opens}
-    {T T' : Thick (nlFun γ p X q κ)} (φ : T ⟶ T') (h : InU V T) (h' : InU V T') (f : Γ(X, V)) :
-    ev T' h' f = Ideal.quotientMap T'.J φ.φ φ.hle (ev T h f) := by
-  have key : ∀ (y : Spec (CommRingCat.of (T'.B ⧸ T'.J)) ⟶ X)
-      (hy : y = Spec.map (CommRingCat.ofHom (Ideal.quotientMap T'.J φ.φ φ.hle)) ≫ pt T)
-      (hh : ⊤ ≤ y ⁻¹ᵁ V), GlobalTheory.Cris.evalAt y V hh f = Ideal.quotientMap T'.J φ.φ φ.hle (ev T h f) := by
-    intro y hy hh
-    subst hy
-    exact GlobalTheory.LogCris.evalAt_map (B := CommRingCat.of (T.B ⧸ T.J)) (B' := CommRingCat.of (T'.B ⧸ T'.J)) _ (pt T) h hh f
-  exact key _ (Site.pt_hom φ) h'
-
-end Ch
-end GlobalTheory.CompanionTheory.DisoHm
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

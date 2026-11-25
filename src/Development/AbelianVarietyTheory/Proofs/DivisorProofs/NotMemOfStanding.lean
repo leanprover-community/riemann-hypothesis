@@ -1252,15 +1252,7 @@ theorem cball_mul_left {m n : ℕ} {s : kˣ} {M : Matrix (Fin m) (Fin m) k} (hM 
   exact (mul_le_mul' (hM i l) (hN' l j)).trans (by rw [one_mul])
 
 theorem mem_KO_of_isGLO {n : ℕ} (g : GL (Fin n) k) (h : IsGLO g.val) : g ∈ KO k (Fin n) := by
-  let A : Matrix (Fin n) (Fin n) 𝒪[k] := fun i j => ⟨g.val i j, h.1 i j⟩
-  have e : (algebraMap 𝒪[k] k).mapMatrix A = g.val := rfl
-  have hu : IsUnit A.det := by
-    refine (Valuation.integer.integers (valuation k)).isUnit_iff_valuation_eq_one.2 ?_
-    rw [RingHom.map_det, e]; exact h.2
-  obtain ⟨u, hu'⟩ := (Matrix.isUnit_iff_isUnit_det A).2 hu
-  refine ⟨u, Units.ext ?_⟩
-  change (algebraMap 𝒪[k] k).mapMatrix u.val = g.val
-  rw [hu', e]
+  apply _root_.GlobalTheory.StdPairZeta.mem_KO_of_isGLO <;> assumption
 
 theorem isGLO_of_mem_KO {n : ℕ} {g : GL (Fin n) k} (h : g ∈ KO k (Fin n)) : IsGLO g.val :=
   ⟨((mem_KO_iff g).1 h).1, valuation_gdet_of_mem_KO h⟩

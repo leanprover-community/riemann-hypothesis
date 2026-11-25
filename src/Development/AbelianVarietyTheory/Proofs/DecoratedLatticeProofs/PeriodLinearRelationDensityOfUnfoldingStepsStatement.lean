@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsContAutRTrans
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ThetaIdentityOfMapsAll
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselPeriodRightTranslateSobolevSepContinuous
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ValLastX
@@ -120,17 +121,7 @@ theorem isContAut_zero (V : HSp D) : IsContAut V (0 : GA D V → ℂ) :=
 
 theorem isContAut_multT {V : HSp D} {S : D.what₂.Tau → SPar} {θ : InfFam D} {M : DSModel V S} {J : Set (GA D V)}
     {χ : GA D V → ℂ} {G : SmT M →ₗ[ℂ] (GA D V → ℂ)} (hG : G ∈ MultT θ M J χ) (x : SmT M) : IsContAut V (G x) := by
-  obtain ⟨T, hT, rfl⟩ := hG
-  induction hT using Submodule.span_induction generalizing x with
-  | mem T hT =>
-    induction x using PiTensorProduct.induction_on with
-    | smul_tprod r v =>
-      rw [map_smul, LinearEquiv.coe_coe, PiTensorProduct.lift.tprod]
-      exact _root_.GlobalTheory.SeeSaw.TrcProof.contAut_smul ⟨(hT.aut v).left, (hT.aut v).cont⟩ r
-    | add x y hx hy => rw [map_add (f := _)]; exact _root_.GlobalTheory.SeeSaw.TrcProof.contAut_add hx hy
-  | zero => simpa using isContAut_zero V
-  | add T₁ T₂ _ _ h₁ h₂ => rw [map_add (f := _), LinearMap.add_apply]; exact _root_.GlobalTheory.SeeSaw.TrcProof.contAut_add (h₁ x) (h₂ x)
-  | smul c T _ h => rw [map_smul, LinearMap.smul_apply]; exact _root_.GlobalTheory.SeeSaw.TrcProof.contAut_smul (h x) c
+  apply _root_.GlobalTheory.Core.Mi.BotPin.isContAut_multT <;> assumption
 
 end GlobalTheory.SeeSaw.DenseRel
 

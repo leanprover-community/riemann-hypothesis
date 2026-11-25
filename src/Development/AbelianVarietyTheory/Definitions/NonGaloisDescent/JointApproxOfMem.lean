@@ -93,16 +93,6 @@ def matRep {K : FinExt l} (L : FinExt l) {a : ℕ} (r' : ↥(GK K) →* GL (Fin 
     Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1) :=
   ((Matrix.toLinAlgEquiv' : Matrix (Fin a) (Fin a) ↥L.1 ≃ₐ[↥L.1] _) : _ →* _).comp ((Units.coeHom _).comp r')
 
-def IsMod {K : FinExt l} {a : ℕ} (ρ : ↥(GK K) →* GL (Fin a) (Om l)) (L : FinExt l) (r' : ↥(GK K) →* GL (Fin a) ↥L.1) :
-    Prop :=
-  ∀ g i j, (((r' g).val i j : ↥L.1) : Om l) = (ρ g).val i j
-
-def CrysLe (P : LocPrime l) (K : FinExt l) {a : ℕ} (ρ : ↥(GK K) →* GL (Fin a) (Om l)) (N : ℕ) : Prop :=
-  ∃ (L : FinExt l) (r' : ↥(GK K) →* GL (Fin a) ↥L.1), IsMod ρ L r' ∧ Formalism.WeaklyAdmissibleFiltrations.IsCrys (P.PD K) (matRep L r') ∧
-    Formalism.WeaklyAdmissibleFiltrations.DdR (P.PD K) (matRep L r') ≤ Formalism.WeaklyAdmissibleFiltrations.FilV (P.PD K) (LL := ↥L.1) (V := Fin a → ↥L.1) (-(N : ℤ)) ∧
-    Formalism.WeaklyAdmissibleFiltrations.DdR (P.PD K) (matRep L r') ⊓ Formalism.WeaklyAdmissibleFiltrations.FilV (P.PD K) (LL := ↥L.1) (V := Fin a → ↥L.1) ((N : ℤ) + 1) = ⊥
-
-
 end Om
 
 def ClosedPhi : Prop :=

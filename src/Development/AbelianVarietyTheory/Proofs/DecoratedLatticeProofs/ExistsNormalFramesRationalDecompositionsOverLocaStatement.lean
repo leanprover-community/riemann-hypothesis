@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.DataPreTStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsNormalFr
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceCharacterConductorIntegers
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumLemmas
@@ -63,30 +64,7 @@ open GlobalTheory.FinPl GlobalTheory.SplitCharCond
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem val_xi (p : SplitPt D k) (hU : p.UnitAA) : valuation k (p.pr (incA D D.host.xi0)) = 1 := by
-  have hi : p.pr (incA D D.host.xi0⁻¹) ∈ 𝒪[k] := by
-    obtain ⟨η, hη, h0, h⟩ := exists_idem p
-    have hm : (pairA D.host.F 0 η ⊗ₜ[D.host.F] (1 : D.host.E) : AE D) ∈ intAt D (· = p.v) := by
-      refine ⟨⟨?_, ?_⟩, AddSubgroup.subset_closure ⟨η, hη, 1, rfl⟩⟩
-      · change (0 : Ainf D.host.F) ⊗ₜ[D.host.F] (1 : D.host.E) = 0
-        exact TensorProduct.zero_tmul _ _
-      · refine Ideal.mem_iInf.2 fun w => ?_
-        change evalV D.host.F w.1 η ⊗ₜ[D.host.F] (1 : D.host.E) = 0
-        rw [h0 w.1 w.2, TensorProduct.zero_tmul]
-    have := pr_int p (hU.1 _ hm).2.2
-    rwa [map_mul, pr_pair_tmul p h, map_one, map_one, mul_one] at this
-  have h0 : D.host.xi0 ≠ 0 := fun h => by
-    have := GlobalTheory.MixModel.HypDec.wittDecomp_trace0Unit_mul_conj_neg_inv (D := D)
-    rw [h, map_zero, zero_mul] at this
-    have h2 := congrArg p.pr this
-    rw [map_zero, map_one] at h2
-    exact zero_ne_one h2
-  have a := (Valuation.mem_integer_iff _ _).1 (xi_zero_projection_integral p hU)
-  have b := (Valuation.mem_integer_iff _ _).1 hi
-  have ab : valuation k (p.pr (incA D D.host.xi0)) * valuation k (p.pr (incA D D.host.xi0⁻¹)) = 1 := by
-    rw [← map_mul, ← map_mul, ← map_mul, mul_inv_cancel₀ h0, map_one, map_one, map_one]
-  exact le_antisymm a (by calc (1 : ValueGroupWithZero k) = _ := ab.symm
-      _ ≤ valuation k (p.pr (incA D D.host.xi0)) * 1 := mul_le_mul_right b _
-      _ = _ := mul_one _)
+  first | exact _root_.GlobalTheory.LevPrimeData.splitPlace_valuation_cmImaginaryGenerator_eq_one | exact @_root_.GlobalTheory.LevPrimeData.splitPlace_valuation_cmImaginaryGenerator_eq_one | apply _root_.GlobalTheory.LevPrimeData.splitPlace_valuation_cmImaginaryGenerator_eq_one <;> assumption
 
 theorem val_star_xi (p : SplitPt D k) (hU : p.UnitAA) : valuation k (p.pr (incA D (star D.host.xi0))) = 1 := by
   rw [Brg.star_purely_imaginary_eq_neg, map_neg, map_neg, Valuation.map_neg, val_xi p hU]

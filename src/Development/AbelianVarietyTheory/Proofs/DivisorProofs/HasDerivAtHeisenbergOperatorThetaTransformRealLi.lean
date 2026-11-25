@@ -144,7 +144,7 @@ namespace GlobalTheory.CompanionTheory.SchrLine
 variable {F : Type} [Field F] [NumberField F] {N : ℕ}
 
 theorem continuous_toMixed : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-  exact GlobalTheory.SchwartzDecay.continuous_mixed
+  apply _root_.GlobalTheory.SchwartzDecay.continuous_mixed <;> assumption
 
 def arch : AF F →+* mixedEmbedding.mixedSpace F :=
   (InfiniteAdeleRing.ringEquiv_mixedSpace F).toRingHom.comp (fstA F).toRingHom
@@ -173,7 +173,8 @@ theorem arch_line {M : ℝ →+ VA F N} (hM : IsRealLine M) (p : VA F N →+ AF 
   let f : ℝ →+ mixedEmbedding.mixedSpace F := ((arch (F := F)).toAddMonoidHom).comp (p.comp M)
   have hf : Continuous f := continuous_arch.comp (hp.comp hM.1)
   have h := map_real_smul f hf s 1
-  rwa [smul_eq_mul, mul_one] at h
+  rw [smul_eq_mul, mul_one] at h
+  exact h
 
 theorem arch_fst {M : ℝ →+ VA F N} (hM : IsRealLine M) (l : Fin N) (s : ℝ) :
     arch ((M s).1 l) = s • arch ((M 1).1 l) :=
@@ -246,7 +247,8 @@ theorem phase_line [Invertible (2 : AF F)] (hF : IsTotallyReal F) {ψ : AddChar 
         first | (rw [← hsnd]; rfl)
     _ = _ := by
         have h2 := hlam.2 (fstA F (z ⬝ᵥ (M s).2 + ⅟(2 : AF F) * ((M s).1 ⬝ᵥ (M s).2)))
-        rwa [key] at h2
+        rw [key] at h2
+        exact h2
 
 private theorem hasDerivAt_exp_quadratic_mul_schwartz_line_zero {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : SchwartzMap E ℂ) (q v : E) (a b : ℝ) (c : ℂ) :
@@ -420,7 +422,8 @@ theorem hasDerivAt_schr (hF : IsTotallyReal F) (ψ : AddChar (AF F) ℂ) {M : �
       rfl
     rw [e, sub_self]
     exact (hd (z + (M t).1)).const_mul _
-  simpa only [add_sub_cancel] using h1.comp_sub_const t t
+  have h2 := h1.comp_sub_const t t
+  simpa only [add_sub_cancel] using h2
 
 end GlobalTheory.ThetaDeriv
 

@@ -409,56 +409,6 @@ private lemma solve_eq {g m : ℕ} (A : Matrix (Fin g) (Fin m) ℂ) (C : Matrix 
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc Aᴴ, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hu,
     Matrix.one_mul]
 
-open scoped ComplexOrder in
-private lemma gram_det_ne {g m : ℕ} (M : Fin m → Fin g → ℂ) (h : LinearIndependent ℂ M) :
-    ((colMat M)ᴴ * colMat M).det ≠ 0 := by
-  have hinj : Function.Injective (colMat M).mulVec := by
-    intro x y hxy
-    have hz : ∑ i, (x - y) i • M i = 0 := by
-      funext a
-      have h1 : (colMat M *ᵥ (x - y)) a = 0 := by
-        rw [Matrix.mulVec_sub, hxy, sub_self]; rfl
-      simpa [Matrix.mulVec, dotProduct, colMat, mul_comm, Finset.sum_apply] using h1
-    funext i
-    exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 h _ hz i)
-  have hinj2 : Function.Injective ((colMat M)ᴴ * colMat M).mulVec := by
-    intro x y hxy
-    apply hinj
-    have h0 : ((colMat M)ᴴ * colMat M) *ᵥ (x - y) = 0 := by
-      rw [Matrix.mulVec_sub, hxy, sub_self]
-    have h1 := (Matrix.conjTranspose_mul_self_mulVec_eq_zero _ _).1 h0
-    rw [Matrix.mulVec_sub] at h1
-    exact sub_eq_zero.1 h1
-  have := (Matrix.mulVec_injective_iff_isUnit).1 hinj2
-  exact ((Matrix.isUnit_iff_isUnit_det _).1 this).ne_zero
-
-private lemma cat_mul {X : Type} [TopologicalSpace X] {x : X} {l k r : ℕ}
-    {A : X → Matrix (Fin l) (Fin k) ℂ} {B : X → Matrix (Fin k) (Fin r) ℂ}
-    (hA : ContinuousAt A x) (hB : ContinuousAt B x) : ContinuousAt (fun z => A z * B z) x := by
-  have c : Continuous (fun p : Matrix (Fin l) (Fin k) ℂ × Matrix (Fin k) (Fin r) ℂ => p.1 * p.2) :=
-    continuous_fst.matrix_mul continuous_snd
-  exact c.continuousAt.comp (hA.prodMk hB)
-
-private lemma cat_conj {X : Type} [TopologicalSpace X] {x : X} {l k : ℕ}
-    {A : X → Matrix (Fin l) (Fin k) ℂ} (hA : ContinuousAt A x) :
-    ContinuousAt (fun z => (A z)ᴴ) x := by
-  have c : Continuous (fun N : Matrix (Fin l) (Fin k) ℂ => Nᴴ) :=
-    continuous_id.matrix_conjTranspose
-  exact c.continuousAt.comp hA
-
-private lemma cat_det {X : Type} [TopologicalSpace X] {x : X} {k : ℕ}
-    {A : X → Matrix (Fin k) (Fin k) ℂ} (hA : ContinuousAt A x) :
-    ContinuousAt (fun z => (A z).det) x := by
-  have c : Continuous (fun N : Matrix (Fin k) (Fin k) ℂ => N.det) := continuous_id.matrix_det
-  exact c.continuousAt.comp hA
-
-private lemma cat_adj {X : Type} [TopologicalSpace X] {x : X} {k : ℕ}
-    {A : X → Matrix (Fin k) (Fin k) ℂ} (hA : ContinuousAt A x) :
-    ContinuousAt (fun z => (A z).adjugate) x := by
-  have c : Continuous (fun N : Matrix (Fin k) (Fin k) ℂ => N.adjugate) :=
-    continuous_id.matrix_adjugate
-  exact c.continuousAt.comp hA
-
 private lemma colMat_continuousAt {n g m : ℕ} (M : (Fin n → ℂ) → Fin m → Fin g → ℂ)
     (h : ∀ i, ContinuousAt (fun z => M z i) 0) : ContinuousAt (fun z => colMat (M z)) 0 := by
   refine continuousAt_pi.2 fun a => continuousAt_pi.2 fun i => ?_
@@ -472,16 +422,24 @@ theorem coeff_continuous (n g m : ℕ) (M f : (Fin n → ℂ) → Fin m → Fin 
     ∃ T : (Fin n → ℂ) → Matrix (Fin m) (Fin m) ℂ, ContinuousAt T 0 ∧ T 0 = T₀ ∧
       ∀ᶠ z in 𝓝 (0 : Fin n → ℂ), ∀ i, f z i = ∑ j, T z j i • M z j := by
   have hA : ContinuousAt (fun z => colMat (M z)) 0 := colMat_continuousAt M hM
-  have hF : ContinuousAt (fun z => colMat (f z)) 0 := colMat_continuousAt f hf
+  have hAc : ContinuousAt (fun z => (colMat (M z))ᴴ) 0 :=
+    continuous_id.matrix_conjTranspose.continuousAt.comp hA
   have hG : ContinuousAt (fun z => (colMat (M z))ᴴ * colMat (M z)) 0 :=
-    cat_mul (cat_conj hA) hA
-  have hdet : ContinuousAt (fun z => ((colMat (M z))ᴴ * colMat (M z)).det) 0 := cat_det hG
-  have hd0 := gram_det_ne (M 0) hli
+    (continuous_fst.matrix_mul continuous_snd).continuousAt.comp (hAc.prodMk hA)
+  have hdet : ContinuousAt (fun z => ((colMat (M z))ᴴ * colMat (M z)).det) 0 :=
+    continuous_id.matrix_det.continuousAt.comp hG
+  open scoped ComplexOrder in
+  have hd0 : ((colMat (M 0))ᴴ * colMat (M 0)).det ≠ 0 :=
+    ((Matrix.isUnit_iff_isUnit_det _).1
+      (Matrix.PosDef.conjTranspose_mul_self (colMat (M 0))
+        ((Matrix.mulVec_injective_iff (M := colMat (M 0))).2 hli)).isUnit).ne_zero
   have hinv : ContinuousAt (fun z => ((colMat (M z))ᴴ * colMat (M z))⁻¹) 0 := by
     simp only [Matrix.inv_def, Ring.inverse_eq_inv']
-    exact (hdet.inv₀ hd0).smul (cat_adj hG)
+    exact (hdet.inv₀ hd0).smul (continuous_id.matrix_adjugate.continuousAt.comp hG)
   refine ⟨fun z => ((colMat (M z))ᴴ * colMat (M z))⁻¹ * (colMat (M z))ᴴ * colMat (f z),
-    cat_mul (cat_mul hinv (cat_conj hA)) hF, ?_, ?_⟩
+    (continuous_fst.matrix_mul continuous_snd).continuousAt.comp
+      (((continuous_fst.matrix_mul continuous_snd).continuousAt.comp
+        (hinv.prodMk hAc)).prodMk (colMat_continuousAt f hf)), ?_, ?_⟩
   · show ((colMat (M 0))ᴴ * colMat (M 0))⁻¹ * (colMat (M 0))ᴴ * colMat (f 0) = T₀
     rw [colMat_eq_mul (M 0) (f 0) T₀ h0]
     exact solve_eq _ _ hd0

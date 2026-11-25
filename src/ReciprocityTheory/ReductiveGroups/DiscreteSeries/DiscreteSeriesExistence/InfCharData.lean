@@ -47,7 +47,7 @@ theorem data_equiv_derived (hgap : StdGap ε lam)
       ∀ (a b : Fin n) (x'' : closGen E₁ V₁), (x'' : H₁) = ((E₁ a b x : D₁) : H₁) →
         ((U x'' : closGen E₂ V₂) : H₂) = ((E₂ a b y : D₂) : H₂) := by
   classical
-  have hst₁ := closGen_stable hσ₁ hD₁ hV₁ hc₁
+  have hst₁ := closGen_stable hgap hσ₁ hD₁ hV₁ hc₁ hVK₁
   have hint : ∀ g ∈ UJset ε, ∀ z ∈ closGen E₁ V₁, ICD.ext U (σ₁ g z) = σ₂ g (ICD.ext U z) :=
     fun g hg z hz => ICD.ext_intertw U hU hst₁ hg hz
 
@@ -162,7 +162,7 @@ theorem ICD.transfer (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD :
     rw [U.apply_symm_apply] at h1
     have : x = U (sigLam ε Ψ T.w g (U.symm y)) := Subtype.ext (hxy.trans h1.symm)
     rw [this, U.symm_apply_apply, sigLam_coe hgap hP hv₀ hg]
-  have hst := closGen_stable hσ hD hV hc
+  have hst := closGen_stable hgap hσ hD hV hc hVK
   have hint : ∀ g ∈ UJset ε, ∀ z ∈ closGen E V, ICD.ext U.symm (σ g z) = rreg ε g (ICD.ext U.symm z) :=
     fun g hg z hz => ICD.ext_intertw U.symm hU' hst hg hz
   let R : D → smD ε (rreg ε) → Prop := fun x y =>

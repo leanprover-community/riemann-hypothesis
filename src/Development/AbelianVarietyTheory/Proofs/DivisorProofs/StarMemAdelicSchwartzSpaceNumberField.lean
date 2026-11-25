@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjMemAdelicSchwartzSpaceNumberFieldOfMem
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Algebra.Order.Floor.Extended
@@ -76,24 +77,6 @@ theorem conjSchwartz_apply {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
 
 theorem star_mem_schA : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ]
     (Φ : (κ → AF F) → ℂ), Φ ∈ schA F κ → (fun x => star (Φ x)) ∈ schA F κ := by
-  intro F _ _ κ _ Φ hΦ
-  induction hΦ using Submodule.span_induction with
-  | mem Ψ hΨ =>
-    obtain ⟨f, g, hg, rfl⟩ := hΨ
-    refine Submodule.subset_span ⟨conjSchwartz f, fun y => star (g y), ⟨hg.1.comp star, ?_⟩, ?_⟩
-    · exact hg.2.comp_left (g := star) (star_zero ℂ)
-    · funext x
-      simp [pureA, conjSchwartz_apply, star_mul']
-  | zero =>
-    convert (schA F κ).zero_mem using 1
-    funext x; simp
-  | add Ψ Ψ' _ _ h h' =>
-    have := (schA F κ).add_mem h h'
-    convert this using 1
-    funext x; simp [star_add]
-  | smul c Ψ _ h =>
-    have := (schA F κ).smul_mem (star c) h
-    convert this using 1
-    funext x; simp [star_mul']
+  apply _root_.GlobalTheory.star_mem_schA_main <;> assumption
 
 end GlobalTheory.SchAConj

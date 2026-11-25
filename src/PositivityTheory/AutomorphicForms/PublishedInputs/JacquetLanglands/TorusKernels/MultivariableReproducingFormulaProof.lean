@@ -3,6 +3,7 @@ module
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.MeasureTheory.Integral.Prod
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.AutomorphyFactorScalarMatrix
 
 @[expose] public section
 
@@ -18,9 +19,6 @@ theorem kap_nonneg (z w : P) : 0 ≤ kap z w := by
   split_ifs with h
   · exact div_nonneg (by linarith) (sq_nonneg _)
   · exact le_rfl
-
-theorem nrm_pos {I : Type} [Fintype I] (k : I → ℕ) (z : X I) : 0 < nrm k z :=
-  Finset.prod_pos fun v _ => Real.rpow_pos_of_pos (abs_pos.2 (z v).2) _
 
 theorem Kap_nonneg {I : Type} [Fintype I] (k : I → ℕ) (z w : X I) : 0 ≤ Kap k z w :=
   Finset.prod_nonneg fun _ _ => Real.rpow_nonneg (kap_nonneg _ _) _
@@ -53,7 +51,7 @@ theorem integrable {I : Type} [Fintype I] (hb : B1b) (hK : KapInt) (k : I → �
   refine (hKi.const_mul ((∏ v, (((k v : ℝ) - 1) / (4 * Real.pi))) * C / nrm k z)).mono'
     ((cont_qq hb k z).mul hf).aestronglyMeasurable (Filter.Eventually.of_forall fun w => ?_)
   have h1 := norm_qq hb k (fun v => le_trans (by norm_num) (hk v)) z w
-  have hn := nrm_pos k z
+  have hn := KernelLevelTransform.nrm_pos k z
   rw [norm_mul, div_mul_eq_mul_div, le_div_iff₀ hn]
   calc ‖qq k z w‖ * ‖f w‖ * nrm k z = (‖qq k z w‖ * nrm k z) * ‖f w‖ := by ring
     _ = (∏ v, (((k v : ℝ) - 1) / (4 * Real.pi))) * Kap k z w * (‖f w‖ * nrm k w) := by rw [h1]; ring
@@ -107,7 +105,7 @@ theorem fin_case (ha : B1a) (hb : B1b) (h3 : B3) (hK : KapInt) : ∀ (n : ℕ) (
         induction j using Fin.cases <;> simp
       have hbd : ∃ C', ∀ t : P, ‖f (Fin.cons t w)‖ * |t.1.im| ^ ((k 0 : ℝ) / 2) ≤ C' := by
         refine ⟨C / nrm (fun j => k j.succ) w, fun t => ?_⟩
-        rw [le_div_iff₀ (nrm_pos _ _), mul_assoc, ← nrm_cons]
+        rw [le_div_iff₀ (KernelLevelTransform.nrm_pos _ _), mul_assoc, ← nrm_cons]
         exact hC _
       have h := (h3 (k 0) (hk 0) (fun t => f (Fin.cons t w)) hol hbd (z 0)).2
       calc ∫ t, q1 (k 0) (z 0) t * qq (fun j => k j.succ) (fun j => z j.succ) w * f (Fin.cons t w)

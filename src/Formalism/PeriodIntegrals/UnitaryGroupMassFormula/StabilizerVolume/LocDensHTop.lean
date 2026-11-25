@@ -424,38 +424,6 @@ private theorem card_eq_card_sq_of_finrank_two (h2 : finrank k K = 2) :
   rw [← h2]
   exact Module.card_eq_pow_finrank
 
-private theorem add_pow_card_eq_add_pow_card (a b : K) :
-    (a + b) ^ Fintype.card k = a ^ Fintype.card k + b ^ Fintype.card k := by
-  obtain ⟨p, hp⟩ := CharP.exists k
-  obtain ⟨n, hprime, hn⟩ := FiniteField.card k p
-  haveI : Fact p.Prime := ⟨hprime⟩
-  haveI : CharP K p := charP_of_injective_algebraMap (algebraMap k K).injective p
-  rw [hn]
-  exact add_pow_char_pow a b p (n : ℕ)
-
-private theorem mem_range_algebraMap_of_pow_card_eq (d : K) (hd : d ^ Fintype.card k = d) :
-    ∃ d0 : k, algebraMap k K d0 = d := by
-  have hq1 : 1 < Fintype.card k := Fintype.one_lt_card
-  have hP : (X ^ Fintype.card k - X : K[X]) ≠ 0 := Polynomial.X_pow_sub_X_ne_zero hq1
-  have hsub : Finset.univ.image (algebraMap k K) ⊆
-      (X ^ Fintype.card k - X : K[X]).roots.toFinset := by
-    intro x hx
-    obtain ⟨y, -, rfl⟩ := Finset.mem_image.mp hx
-    rw [Multiset.mem_toFinset, mem_roots hP, IsRoot.def, eval_sub, eval_pow, eval_X, ← map_pow,
-      FiniteField.pow_card, sub_self]
-  have hcard : (X ^ Fintype.card k - X : K[X]).roots.toFinset.card ≤
-      (Finset.univ.image (algebraMap k K)).card := by
-    rw [Finset.card_image_of_injective _ (algebraMap k K).injective, Finset.card_univ]
-    calc _ ≤ Multiset.card (X ^ Fintype.card k - X : K[X]).roots := Multiset.toFinset_card_le _
-      _ ≤ (X ^ Fintype.card k - X : K[X]).natDegree := card_roots' _
-      _ = Fintype.card k := Polynomial.natDegree_X_pow_sub_X (R := K) hq1
-  have heq := Finset.eq_of_subset_of_card_le hsub hcard
-  have hmem : d ∈ (X ^ Fintype.card k - X : K[X]).roots.toFinset := by
-    rw [Multiset.mem_toFinset, mem_roots hP, IsRoot.def, eval_sub, eval_pow, eval_X, hd, sub_self]
-  rw [← heq] at hmem
-  obtain ⟨y, -, hy⟩ := Finset.mem_image.mp hmem
-  exact ⟨y, hy⟩
-
 theorem frob_of_ne (σ : K ≃ₐ[k] K) (h2 : finrank k K = 2) (hne : σ ≠ AlgEquiv.refl) :
     ∀ x, σ x = x ^ Fintype.card k := by
   apply PI.VolStabSW.FFHS.frob_of_ne <;> assumption

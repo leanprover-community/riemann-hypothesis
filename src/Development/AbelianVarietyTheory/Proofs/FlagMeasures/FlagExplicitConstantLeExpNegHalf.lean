@@ -428,10 +428,7 @@ theorem sphV_succ (i : ℕ) : sphV (i + 1) = sphV i * (2 * Real.pi ^ (i + 1) / (
   simp
 
 theorem sphV_pos (i : ℕ) : 0 < sphV i := by
-  unfold sphV
-  refine Finset.prod_pos fun l _ => ?_
-  have := Real.pi_pos
-  positivity
+  apply _root_.GlobalTheory.SphRatio.sphV_pos <;> assumption
 
 theorem le_exp : (32.5 : ℝ) ≤ Real.exp 3.49 := by
   have h := Real.sum_le_exp_of_nonneg (x := (3.49 : ℝ)) (by norm_num) 10

@@ -24,14 +24,6 @@ def wc (y : Fin n → ℂ) : Fin k → ℂ := fun i => hJ ε (F.wb i) y
 
 def mW (H : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin k) (Fin k) ℂ := fun a b => hJ ε (F.wb a) (H *ᵥ F.wb b)
 
-private lemma hJ_sum_left' {ι : Type*} (s : Finset ι) (v : ι → Fin n → ℂ) (y : Fin n → ℂ) :
-    hJ ε (∑ i ∈ s, v i) y = ∑ i ∈ s, hJ ε (v i) y := by
-  simpa only [PtRepPf.hJ_apply, Finset.sum_apply, star_sum, Finset.sum_mul] using Finset.sum_comm
-
-private lemma hJ_sum_right_root_lattice_thresholds {ι : Type*} (s : Finset ι) (x : Fin n → ℂ) (v : ι → Fin n → ℂ) :
-    hJ ε x (∑ i ∈ s, v i) = ∑ i ∈ s, hJ ε x (v i) := by
-  simpa only [PtRepPf.hJ_apply, Finset.sum_apply, Finset.mul_sum] using Finset.sum_comm
-
 private lemma hJ_sub_left_root_lattice_thresholds (x x' y : Fin n → ℂ) : hJ ε (x - x') y = hJ ε x y - hJ ε x' y := by
   simp only [PtRepPf.hJ_apply, Pi.sub_apply, star_sub, sub_mul, Finset.sum_sub_distrib]
 
@@ -41,13 +33,14 @@ private lemma eq_zero_of_hJ_frame_eq_zero (G : PtRepPf.Fr ε r k) (d : Fin n →
   intro x
   have hx'e : ∀ b, hJ ε (G.e b) (x - ∑ a, hJ ε (G.fd a) x • G.e a - ∑ a, hJ ε (G.e a) x • G.fd a) = 0 := by
     intro b
-    rw [PtRepPf.hJ_sub_right, PtRepPf.hJ_sub_right, hJ_sum_right_root_lattice_thresholds, hJ_sum_right_root_lattice_thresholds]
+    rw [PtRepPf.hJ_sub_right, PtRepPf.hJ_sub_right, PtRepPf.hJ_sum_right, PtRepPf.hJ_sum_right]
     simp only [PtRepPf.hJ_smul_right, G.ee, G.ef, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one,
-      Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
+      Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
   have h1 := G.pair _ d hx'e he
   simp only [hz, hw, mul_zero, zero_mul, Finset.sum_const_zero, add_zero] at h1
   have h2 : hJ ε x d = hJ ε (x - ∑ a, hJ ε (G.fd a) x • G.e a - ∑ a, hJ ε (G.e a) x • G.fd a) d := by
-    rw [hJ_sub_left_root_lattice_thresholds, hJ_sub_left_root_lattice_thresholds, hJ_sum_left', hJ_sum_left']
+    rw [hJ_sub_left_root_lattice_thresholds, hJ_sub_left_root_lattice_thresholds,
+      PtRepPf.hJ_sum_left, PtRepPf.hJ_sum_left]
     simp only [PtRepPf.hJ_smul_left, he, hf, mul_zero, Finset.sum_const_zero, sub_zero]
   rw [h2, h1]
 
@@ -67,7 +60,7 @@ theorem H_wb {H : Matrix (Fin n) (Fin n) ℂ} (hH : Hᴴ * Formalism.REAL.Jm ε 
   have key : ∀ x, hJ ε x (H *ᵥ F.wb i - ∑ j, mW F H j i • F.wb j) =
       hJ ε x (H *ᵥ F.wb i) - ∑ j, mW F H j i * hJ ε x (F.wb j) := by
     intro x
-    rw [PtRepPf.hJ_sub_right, hJ_sum_right_root_lattice_thresholds]
+    rw [PtRepPf.hJ_sub_right, PtRepPf.hJ_sum_right]
     simp only [PtRepPf.hJ_smul_right]
   rw [← sub_eq_zero]
   apply eq_zero_of_hJ_frame_eq_zero F
@@ -90,7 +83,7 @@ theorem wc_inv {H Hi : Matrix (Fin n) (Fin n) ℂ} (hH : Hᴴ * Formalism.REAL.J
   funext i
   show hJ ε (F.wb i) (Hi *ᵥ w) = ((mW F H)ᴴ *ᵥ wc F w) i
   rw [← isom hH (F.wb i) (Hi *ᵥ w), Matrix.mulVec_mulVec, hHi, Matrix.one_mulVec, H_wb F hH he hf hz i,
-    hJ_sum_left']
+    PtRepPf.hJ_sum_left]
   simp only [PtRepPf.hJ_smul_left, Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply]
   rfl
 
@@ -141,7 +134,7 @@ theorem trunc_eI (a : Fin r) : trunc (Formalism.QuantumDeterminants.bvec (Formal
   funext i
   simp only [trunc, Formalism.QuantumDeterminants.bvec, Pi.zero_apply]
   split_ifs with hi
-  · rw [Pi.single_apply, ite_eq_right]
+  · rw [Pi.single_apply, if_neg]
     intro h
     have h2 : i.val = a.val := congrArg Fin.val h
     have := a.isLt
@@ -152,7 +145,7 @@ theorem trunc_esI (a : Fin r) : trunc (Formalism.QuantumDeterminants.bvec (Forma
   funext i
   simp only [trunc, Formalism.QuantumDeterminants.bvec, Pi.zero_apply]
   split_ifs with hi
-  · rw [Pi.single_apply, ite_eq_right]
+  · rw [Pi.single_apply, if_neg]
     intro h
     have h2 : i.val = 2 * r + k - a.val := congrArg Fin.val h
     have := a.isLt
@@ -180,7 +173,8 @@ theorem c_ne (hT : TrHyp F Qm Qim c) (a : Fin r) : c a ≠ 0 := by
   have h := hT.he a
   rw [h0, zero_smul] at h
   have h3 : Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI k r a) = 0 := by
-    simpa [Matrix.mulVec_mulVec, hT.h1] using congrArg (Qim *ᵥ ·) h
+    have h4 := congrArg (Qim *ᵥ ·) h
+    simpa [Matrix.mulVec_mulVec, hT.h1] using h4
   have h5 := congrFun h3 (Formalism.QuantumDeterminants.eI k r a)
   simp [Formalism.QuantumDeterminants.bvec] at h5
 
@@ -218,7 +212,8 @@ private lemma herm_Hpk_bvec_eq_apply_of_antidiagonal (v : Fin (2 * r + k + 1) �
       simp only [Formalism.QuantumDeterminants.Hpk]
       split_ifs <;> first | rfl | (exfalso; (try simp only [Fin.ext_iff] at *); omega)
     rw [hm, zero_mul]
-  · exact fun h => absurd (Finset.mem_univ q) h
+  · intro h
+    exact absurd (Finset.mem_univ q) h
 
 theorem inWb_Qi' (hT : TrHyp F Qm Qim c) (w : Fin n → ℂ) (hwe : ∀ a, hJ ε (F.e a) w = 0)
     (hwf : ∀ a, hJ ε (F.fd a) w = 0) : Formalism.QuantumDeterminants.inWb k r (Qim *ᵥ w) := by
@@ -240,43 +235,10 @@ theorem inWb_Qi' (hT : TrHyp F Qm Qim c) (w : Fin n → ℂ) (hwe : ∀ a, hJ ε
 private lemma eq_frame_expansion_hJ (G : PtRepPf.Fr ε r k) (v : Fin n → ℂ) :
     v = ∑ a, hJ ε (G.fd a) v • G.e a + ∑ a, hJ ε (G.e a) v • G.fd a + (-(G.T : ℂ)⁻¹ * hJ ε G.z v) • G.z +
       ∑ i, hJ ε (G.wb i) v • G.wb i := by
-  have hT0 : (G.T : ℂ) ≠ 0 := by exact_mod_cast G.T_pos.ne'
-  have fe : ∀ a b, hJ ε (G.fd b) (G.e a) = if a = b then 1 else 0 := by
-    intro a b
-    rw [← PtRepPf.hJ_conj, G.ef]
-    split_ifs <;> simp
-  have ze : ∀ a, hJ ε G.z (G.e a) = 0 := by
-    intro a
-    rw [← PtRepPf.hJ_conj, G.ez, star_zero]
-  have zf : ∀ a, hJ ε G.z (G.fd a) = 0 := by
-    intro a
-    rw [← PtRepPf.hJ_conj, G.fz, star_zero]
-  have we : ∀ i a, hJ ε (G.wb i) (G.e a) = 0 := by
-    intro i a
-    rw [← PtRepPf.hJ_conj, G.ew, star_zero]
-  have wf : ∀ i a, hJ ε (G.wb i) (G.fd a) = 0 := by
-    intro i a
-    rw [← PtRepPf.hJ_conj, G.fw, star_zero]
-  have wz : ∀ i, hJ ε (G.wb i) G.z = 0 := by
-    intro i
-    rw [← PtRepPf.hJ_conj, G.zw, star_zero]
-  rw [← sub_eq_zero]
-  apply eq_zero_of_hJ_frame_eq_zero G
-  · intro b
-    simp only [PtRepPf.hJ_sub_right, PtRepPf.hJ_add_right, hJ_sum_right_root_lattice_thresholds, PtRepPf.hJ_smul_right, G.ee, G.ef,
-      G.ez, G.ew, mul_zero, Finset.sum_const_zero, zero_add, add_zero, mul_ite, mul_one, Finset.sum_ite_eq,
-      Finset.mem_univ, ite_true, sub_self]
-  · intro b
-    simp only [PtRepPf.hJ_sub_right, PtRepPf.hJ_add_right, hJ_sum_right_root_lattice_thresholds, PtRepPf.hJ_smul_right, fe, G.ff,
-      G.fz, G.fw, mul_zero, Finset.sum_const_zero, add_zero, mul_ite, mul_one, Finset.sum_ite_eq',
-      Finset.mem_univ, ite_true, sub_self]
-  · simp only [PtRepPf.hJ_sub_right, PtRepPf.hJ_add_right, hJ_sum_right_root_lattice_thresholds, PtRepPf.hJ_smul_right, ze, zf,
-      G.zz, G.zw, mul_zero, Finset.sum_const_zero, zero_add, add_zero]
-    linear_combination (-(hJ ε G.z v)) * inv_mul_cancel₀ hT0
-  · intro l
-    simp only [PtRepPf.hJ_sub_right, PtRepPf.hJ_add_right, hJ_sum_right_root_lattice_thresholds, PtRepPf.hJ_smul_right, we, wf,
-      wz, G.ww, mul_zero, Finset.sum_const_zero, zero_add, add_zero, mul_ite, mul_one, Finset.sum_ite_eq,
-      Finset.mem_univ, ite_true, sub_self]
+  have h := PtRepPf.expand_of_dual ε G.bv G.dv G.card_ix G.dual v
+  simp only [PtRepPf.Fr.bv, PtRepPf.Fr.dv, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr,
+    Fintype.univ_unit, Finset.sum_singleton, G.zd_left] at h
+  simpa only [add_assoc] using h
 
 theorem prW_Qi (hT : TrHyp F Qm Qim c) (w : Fin n → ℂ) :
     Formalism.FourierDecayAlt.D.prW k r (Qim *ᵥ F.z) (Qim *ᵥ w) = Qim *ᵥ ∑ i, wc F w i • F.wb i := by
@@ -294,7 +256,7 @@ theorem prW_Qi (hT : TrHyp F Qm Qim c) (w : Fin n → ℂ) :
   have hQW : Qm *ᵥ (Qim *ᵥ ∑ i, wc F w i • F.wb i) = ∑ i, wc F w i • F.wb i := by
     rw [Matrix.mulVec_mulVec, hT.h2, Matrix.one_mulVec]
   have hzW : hJ ε F.z (∑ i, wc F w i • F.wb i) = 0 := by
-    rw [hJ_sum_right_root_lattice_thresholds]
+    rw [PtRepPf.hJ_sum_right]
     simp [PtRepPf.hJ_smul_right, F.zw]
   have hT0 : (F.T : ℂ) ≠ 0 := by exact_mod_cast F.T_pos.ne'
   rw [Matrix.mulVec_add, Matrix.mulVec_smul, hQQ, hQW, PtRepPf.hJ_add_right, PtRepPf.hJ_smul_right, hzW, F.zz,
@@ -358,23 +320,10 @@ theorem zhat_cs (hT : TrHyp F Qm Qim c) (hT' : TrHyp F' Qm Qim c) {sc : ℝ} (hs
 
 theorem adj_diag {m : ℕ} (d : Fin m → ℂ) (hd : ∀ i, d i ≠ 0) :
     (Matrix.diagonal d).adjugate = Matrix.diagonal (fun i => (∏ j, d j) / d i) := by
-  have hdet : (Matrix.diagonal d).det = ∏ j, d j := Matrix.det_diagonal
-  have hP : (∏ j, d j) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun j _ => hd j)
-  have hU : IsUnit (Matrix.diagonal d).det := by rw [hdet]; exact hP.isUnit
-  have h1 : Matrix.diagonal d * Matrix.diagonal (fun i => (∏ j, d j) / d i) =
-      (Matrix.diagonal d).det • (1 : Matrix (Fin m) (Fin m) ℂ) := by
-    rw [Matrix.diagonal_mul_diagonal, hdet, Matrix.smul_one_eq_diagonal]
-    congr 1
-    funext i
-    field_simp [hd i]
-  have h2 := Matrix.mul_adjugate (Matrix.diagonal d)
-  calc (Matrix.diagonal d).adjugate
-      = (Matrix.diagonal d)⁻¹ * (Matrix.diagonal d * (Matrix.diagonal d).adjugate) := by
-        rw [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hU, Matrix.one_mul]
-    _ = (Matrix.diagonal d)⁻¹ * (Matrix.diagonal d * Matrix.diagonal (fun i => (∏ j, d j) / d i)) := by
-        rw [h2, h1]
-    _ = Matrix.diagonal (fun i => (∏ j, d j) / d i) := by
-        rw [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hU, Matrix.one_mul]
+  rw [Matrix.adjugate_diagonal]
+  congr 1; funext i
+  rw [eq_div_iff (hd i)]
+  exact Finset.prod_erase_mul Finset.univ d (Finset.mem_univ i)
 
 theorem adj_M {m : ℕ} (s l : Fin m → ℂ) (hs : ∀ i, s i ≠ 0) (hl : ∀ i, l i ≠ 0) (Z : Matrix (Fin m) (Fin m) ℂ) :
     (Matrix.diagonal s * Z * Matrix.diagonal l).adjugate =
@@ -589,7 +538,8 @@ theorem bridge_place (hT : TrHyp F Qm Qim c) (hT' : TrHyp F' Qm Qim c) {sc : ℝ
       have := (hu b).2
       rw [herm_Q hT, hz', Q_delta hT, Q_fvec hT' hsc, Matrix.mulVec_smul, PtRepPf.hJ_smul_left, hAf'] at this
       have h0 := (mul_eq_zero.mp this).resolve_left (hs0 b)
-      rwa [← isom hH, Matrix.mulVec_mulVec, hHi, Matrix.one_mulVec] at h0
+      rw [← isom hH, Matrix.mulVec_mulVec, hHi, Matrix.one_mulVec] at h0
+      exact h0
     have hfHy : ∀ a, hJ ε (f a) (H *ᵥ y) = 0 := fun a => by rw [fixed_left hH (hHf_ a), hfy a]
     have hR := h3 (H *ᵥ y) hfHy hgy
     have hWy : wc F (H *ᵥ y) = M *ᵥ wc F y := wc_fwd F hH hHi hiH hHe hHf hHz hMu y

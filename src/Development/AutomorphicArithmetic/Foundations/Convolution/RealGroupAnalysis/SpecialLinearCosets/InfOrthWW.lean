@@ -252,9 +252,6 @@ private theorem continuous_form {R : Type} [CommRing R] [TopologicalSpace R] [Is
 private theorem continuous_psi {F : Type} [Field F] [NumberField F] : Continuous (ψ : A F → ℂ) :=
   continuous_subtype_val.comp (continuous_adelicChar (K := F))
 
-private theorem norm_psi {F : Type} [Field F] [NumberField F] (x : A F) : ‖ψ x‖ = 1 :=
-  Circle.norm_coe _
-
 private theorem psi_add {F : Type} [Field F] [NumberField F] (x y : A F) :
     ψ (x + y) = ψ x * ψ y := by
   simp [ψ, AddChar.map_add_eq_mul]
@@ -289,7 +286,7 @@ theorem UpperTheory.ConvolutionTheory.R2.I.tenFt :
     rw [← hφ]
     refine (integrable_of_mem_schwartzBruhatPi φ.2).mul_bdd (c := 1) ?_ ?_
     · exact (continuous_psi.comp ((continuous_quaternaryForm_left δ Z).comp hac)).aestronglyMeasurable
-    · exact Eventually.of_forall fun y => (norm_psi _).le
+    · exact Eventually.of_forall fun y => (Circle.norm_coe _).le
   let ℓ : V4 F → SB (M2 v) →ₗ[ℂ] ℂ := fun Z =>
     { toFun := fun b => ∫ Y, ten v θ u b.1 Y * ψ (B4 δ (away v Y) Z) ∂(adeleMeasurePi F)
       map_add' := by

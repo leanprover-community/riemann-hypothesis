@@ -486,7 +486,7 @@ private theorem exists_inclusion_mul_eq_mul_inclusion_of_normal {K : Type} [Grou
   apply Subtype.ext
   simp [mul_assoc]
 
-private theorem exists_ext (ρ : Representation R G M) {U' U : Subgroup G} [U'.Normal] (h : U' ≤ U)
+private theorem exists_ext (ρ : Representation R G M) (hρ : ContAction ρ) {U' U : Subgroup G} [U'.Normal] (h : U' ≤ U)
     (ho : IsOpen (U'.subgroupOf U : Set U)) (z : Z1U ρ U') (hz : Submodule.Quotient.mk z ∈ invariantsUnderSubgroupH1 ρ U U') :
     ∃ y : U → M, Continuous y ∧ y 1 = 0 ∧
       (∀ (u : U') (g : U), y (Subgroup.inclusion h u * g) = z.1 u + ρ u (y g)) ∧
@@ -758,7 +758,7 @@ theorem length_restriction_coker_le_H2 (ρ : Representation R G M) (hρ : ContAc
       have hz3 : (Submodule.Quotient.mk z : H1U ρ U') = x := hz
       rw [hz3]
       exact x.2
-    have hex := exists_ext ρ h ho z hz'
+    have hex := exists_ext ρ hρ h ho z hz'
     obtain ⟨y, hy, hy1, hL, hR⟩ := hex
     obtain ⟨w, hw⟩ := exists_infl ρ h z.1 y hL hR
     refine ⟨⟨(z, y, w), hz', hy, fun u => ?_, hw⟩, ?_⟩

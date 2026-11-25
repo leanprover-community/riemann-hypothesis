@@ -809,7 +809,8 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points Gl
 namespace GlobalTheory.MixRec
 
 theorem injective_of_finite_int {k : Type} [CommRing k] [IsDomain k] [Module.Finite ℤ k]
-    (σ : k →+* ℂ) : Function.Injective σ := GlobalTheory.MixPolar.injective_emb σ
+    (σ : k →+* ℂ) : Function.Injective σ := by
+  apply _root_.GlobalTheory.IndexNormEmb.injective_of_ringHom <;> assumption
 
 theorem exists_extension {k : Type} [CommRing k] [IsDomain k] [Module.Finite ℤ k]
     (K : Type) [Field K] [Algebra k K] [IsFractionRing k K] (σ : k →+* ℂ) :
@@ -882,7 +883,7 @@ theorem resArch_eq_finsum_cycInt : GlobalTheory.Published.Principalisation → �
   have hc (σ : k →+* ℂ) := (_root_.GlobalTheory.Mix.cycInt_of_closedImmersion k X (clo z) p (cloι z ≫ p) σ hX.isProjOver (cloι z) rfl e
     (fun i => MLine.ofHerm (L i) σ) ((MLine.ofHerm N σ).logSec t)).2
   simp only [cloι_genericPoint] at hc
-  refine (dite_eq_left hgen).trans ?_
+  refine (dif_pos hgen).trans ?_
   rcases isArithVar_or_isEmpty hamb' hd with hv | hE
   · refine (_root_.GlobalTheory.MixPolar.mixArch_eq_sum hP k (clo z) (cloι z ≫ p) e hv (fun a => (L a).restr (cloι z)) (N.restr (cloι z))
       (Cartier.secPull t (cloι z)) hgen).trans (finsum_congr fun σ => ?_)

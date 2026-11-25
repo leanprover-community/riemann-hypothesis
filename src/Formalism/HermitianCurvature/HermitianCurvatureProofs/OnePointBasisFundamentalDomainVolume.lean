@@ -60,53 +60,6 @@ noncomputable section
 
 open Classical
 
-theorem cs_abs {V : Type} [AddCommGroup V] [Module ℂ V] (Dv : V → Prop) (β : V → V → ℂ)
-    (hadd : ∀ x y, Dv x → Dv y → Dv (x + y)) (hsmul : ∀ (c : ℂ) x, Dv x → Dv (c • x))
-    (hl : ∀ x₁ x₂ y (c : ℂ), Dv x₁ → Dv x₂ → Dv y → β (x₁ + c • x₂) y = β x₁ y + c * β x₂ y)
-    (hr : ∀ x y₁ y₂ (c : ℂ), Dv x → Dv y₁ → Dv y₂ → β x (y₁ + c • y₂) = β x y₁ + conj c * β x y₂)
-    (hpos : ∀ x, Dv x → 0 ≤ β x x) (x y : V) (hx : Dv x) (hy : Dv y) (hherm : β y x = conj (β x y)) :
-    ‖β x y‖ ^ 2 ≤ (β x x).re * (β y y).re := by
-  set b := β x y with hb
-  set a := (β x x).re
-  set c := (β y y).re
-  have hc : 0 ≤ c := (Complex.nonneg_iff.1 (hpos y hy)).1
-  have hB : ‖b‖ ^ 2 = Complex.normSq b := by rw [Complex.sq_norm]
-  have key : ∀ t : ℝ, 0 ≤ a - 2 * t * Complex.normSq b + t ^ 2 * Complex.normSq b * c := by
-    intro t
-    set μ : ℂ := -(t : ℂ) * b with hμ
-    have e1 : β x (x + μ • y) = β x x + conj μ * b := by rw [hr _ _ _ _ hx hx hy]
-    have e2 : β y (x + μ • y) = conj b + conj μ * β y y := by rw [hr _ _ _ _ hy hx hy, hherm]
-    have hz2 := hpos (x + μ • y) (hadd _ _ hx (hsmul _ _ hy))
-    rw [hl _ _ _ _ hx hy (hadd _ _ hx (hsmul _ _ hy)), e1, e2] at hz2
-    have hre := (Complex.nonneg_iff.1 hz2).1
-    have : (β x x + conj μ * b + μ * (conj b + conj μ * β y y)).re =
-        a - 2 * t * Complex.normSq b + t ^ 2 * Complex.normSq b * c := by
-      simp only [hμ, Complex.add_re, Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
-        Complex.ofReal_im, Complex.conj_re, Complex.conj_im, Complex.normSq_apply, map_mul, map_neg,
-        Complex.conj_ofReal, Complex.mul_im, Complex.add_im]
-      ring
-    linarith [this ▸ hre]
-  rw [hB]
-  rcases hc.eq_or_lt with hc0 | hc0
-  · have hb0 : Complex.normSq b = 0 := by
-      by_contra hne
-      have hpos' : 0 < Complex.normSq b := lt_of_le_of_ne (Complex.normSq_nonneg _) (Ne.symm hne)
-      have := key ((a + 1) / (2 * Complex.normSq b))
-      rw [← hc0] at this
-      field_simp at this
-      nlinarith
-    rw [hb0, ← hc0]; simp
-  · have := key (1 / c)
-    field_simp at this
-    nlinarith [Complex.normSq_nonneg b]
-
-section place
-
-variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
-
-end place
-
 theorem plusW_eq (ys : List ℝ) (w : List C.Letter) :
     KB.plusW ys w = ys.map (fun y => ((true, y) : C.Letter)) ++ w := by
   induction ys with
@@ -188,7 +141,7 @@ theorem ysOf_mem {K d : ℕ} {Y : Finset ℝ} (grid : Fin K → Fin (d + 1) → 
 
 end grid
 
-theorem scal_cs (α α₁ α₂ Pp q Q₁ Q₂ f₁ f₂ : ℝ) (hα : 0 ≤ α) (hαα : α ^ 2 = α₁ * α₂)
+theorem scal_cs (α α₁ α₂ Pp q Q₁ Q₂ f₁ f₂ : ℝ) (hα : 0 ≤ α) (hαα : α ^ 2 = α₁ * α₂) (h₁ : 0 ≤ α₁) (h₂ : 0 ≤ α₂)
     (hq : 0 < q) (hQ₁ : 0 < Q₁) (hQ₂ : 0 < Q₂) (hP : 0 ≤ Pp) (hf₁ : 0 ≤ f₁) (hf₂ : 0 ≤ f₂)
     (hcs : Pp ^ 2 * q ≤ f₁ * f₂) :
     α * Pp ≤ Real.sqrt (Q₁ * Q₂ / q) * Real.sqrt ((α₁ * f₁ / Q₁) * (α₂ * f₂ / Q₂)) := by

@@ -52,7 +52,6 @@ noncomputable section
 
 namespace GlobalTheory.LastRowVac
 
-open GlobalTheory.LastVertexMove GlobalTheory.FunObj
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 

@@ -363,12 +363,6 @@ private theorem arr_ext {j : ℕ} {F G : Arr V n j} (h : ∀ α, F α = G α) : 
   first
   | exact PiLp.ext h
 
-private theorem arr_sub_apply {j : ℕ} (F G : Arr V n j) (α : Fin j → Fin n × Fin n) :
-    (F - G) α = F α - G α := rfl
-
-private theorem arr_zero_apply {j : ℕ} (α : Fin j → Fin n × Fin n) :
-    (0 : Arr V n j) α = 0 := rfl
-
 theorem factorAction_commutator {j : ℕ} (i : Fin j) (a b c d : Fin n) :
     (factorAction i a b * factorAction i c d - factorAction i c d * factorAction i a b : Module.End ℂ (Arr V n j)) =
       (if b = c then factorAction i a d else 0) - (if d = a then factorAction i c b else 0) := by

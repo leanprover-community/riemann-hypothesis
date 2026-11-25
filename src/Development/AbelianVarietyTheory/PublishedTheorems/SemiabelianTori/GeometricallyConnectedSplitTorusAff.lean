@@ -61,11 +61,7 @@ namespace GlobalTheory.Published
 /-- **Extension of homomorphisms of semi-abelian schemes.** Let `S` be a noetherian scheme
 whose local rings are integrally closed domains, and let `U ⊆ S` be a dense open subscheme.
 If `G` and `H` are semi-abelian schemes over `S` (`IsSemiAbelian`), every homomorphism of group
-schemes `G_U → H_U` over `U` extends uniquely to a homomorphism `G → H` over `S`.
-
-Proposed reference:
-[G. Faltings and C.-L. Chai, *Degeneration of abelian varieties*
-(Chapter I, Proposition 2.7)][faltingsChai1990]. -/
+schemes `G_U → H_U` over `U` extends uniquely to a homomorphism `G → H` over `S`. -/
 def SemiAbelianHomExtension : Prop :=
   ∀ (S : Scheme.{0}) [AlgebraicGeometry.IsNoetherian S], ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme S →
     ∀ (U : S.Opens), Dense (U : Set S) →

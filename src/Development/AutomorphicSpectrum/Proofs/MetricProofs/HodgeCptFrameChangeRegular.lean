@@ -532,13 +532,8 @@ theorem minor_isUnit_of_leftInverse : ∀ {Ω : Type} [Field Ω] {n r : ℕ} (R 
     have h := hrel J₀
     rw [h0, mul_zero] at h
     exact mul_ne_zero hz hT h
-  have hCR : (C.submatrix J₀ id).det ∈ R := by
-    let M : Matrix (Fin r) (Fin r) R := Matrix.of fun i j => ⟨C (J₀ i) j, hC _ _⟩
-    have hM : R.subtype.mapMatrix M = C.submatrix J₀ id := by
-      ext i j
-      rfl
-    rw [← hM, ← RingHom.map_det]
-    exact SetLike.coe_mem M.det
+  have hCR : (C.submatrix J₀ id).det ∈ R :=
+    det_mem_subring R (C.submatrix J₀ id) fun _ _ => hC _ _
   have hratio : ∀ J : Fin r → Fin n, (C.submatrix J id).det =
       (C.submatrix J₀ id).det * ((A.submatrix J id).det / (A.submatrix J₀ id).det) := by
     intro J

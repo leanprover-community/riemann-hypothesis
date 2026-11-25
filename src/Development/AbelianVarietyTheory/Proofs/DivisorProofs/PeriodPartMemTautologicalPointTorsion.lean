@@ -216,7 +216,7 @@ theorem GlobalTheory.TInj.exists_tautPt : ∀ {o W : Type} [CommRing o] [CommRin
   have unitOn_mul : ∀ k k' : Fˣ, unitOn (k * k') = unitOn k * unitOn k' := fun k k' => map_mul _ _ _
   refine ⟨{ b := b
             s := fun χ => scaleGen (τ χ) (unitOn (kU s hs ε F (e χ) a))
-            isGen := fun χ => scaleGen_isGen _ (hτg χ) _
+            isGen := fun χ => scaleGen_isGen D.P.isLB _ (hτg χ) _
             s_zero := ?_
             mult := ?_ }, hb, fun χ => ⟨kU s hs ε F (e χ) a, rfl, fun z J J' hJ hJ' => hval χ z J J' hJ hJ'⟩⟩
   · refine corr_of_val D.P.isLB fun y J' hJ' => ?_

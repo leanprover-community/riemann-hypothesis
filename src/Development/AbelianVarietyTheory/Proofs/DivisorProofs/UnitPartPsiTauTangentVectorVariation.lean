@@ -247,7 +247,7 @@ theorem exists_sec_nonempty : ∀ (S : Scheme.{0}) (P : PolAV S) (K : Type) [Fie
 
   have nz : ∃ j, (b i₀).f j ≠ 0 := by
     by_contra hz
-    push Not at hz
+    push_neg at hz
     obtain ⟨r, -, hu⟩ := hb (b i₀)
     have h0 : ∀ r' : Fin (1 ^ P.g) → Γ(T.left, ⊤), ∀ j, (b i₀).f j = ∑ i, ((T ⊗ P.A).left.presheaf.map
         (homOfLE le_top).op).hom ((fst T P.A).left.appTop.hom (r' i)) * (b i).f j := fun r' j => by
@@ -259,7 +259,7 @@ theorem exists_sec_nonempty : ∀ (S : Scheme.{0}) (P : PolAV S) (K : Type) [Fie
   haveI : IsReduced (T ⊗ P.A).left := inferInstance
   obtain ⟨y, hy⟩ : ∃ y, y ∈ (T ⊗ P.A).left.basicOpen ((b i₀).f j) := by
     by_contra h
-    push Not at h
+    push_neg at h
     exact hj (eq_zero_of_basicOpen_eq_bot _ (eq_bot_iff.2 fun y hy' => (h y hy').elim))
   have hy₀ : y ∈ nonzeroLocus (b i₀) := TopologicalSpace.Opens.mem_iSup.2 ⟨j, hy⟩
   have hF : FormEq (![(snd T P.A).left, (translPt P.A (1 : T ⟶ P.A)).left] : Fin 2 → _)
@@ -584,7 +584,7 @@ theorem exists_sec_of_closed {X : Scheme.{0}} [CompactSpace X] (M : LB X)
     (h : ∀ z : X, IsClosed ({z} : Set X) → ∃ s : LB.Sec M, z ∈ nonzeroLocus s) (z : X) :
     ∃ s : LB.Sec M, z ∈ nonzeroLocus s := by
   by_contra hz
-  push Not at hz
+  push_neg at hz
   let C : Set X := ⋂ s : LB.Sec M, ((nonzeroLocus s : X.Opens) : Set X)ᶜ
   have hC : IsClosed C := isClosed_iInter fun s => (nonzeroLocus s).isOpen.isClosed_compl
   obtain ⟨w, hw, hcl⟩ := hC.exists_closed_singleton ⟨z, Set.mem_iInter.2 fun s => hz s⟩
@@ -667,7 +667,7 @@ theorem whisker_eq_twistLB {S : Scheme.{0}} (A : Over S) [GrpObj A] (L : LB A.le
     {T T' : Over S} (ρ : T' ⟶ T) (c : T ⟶ A) :
     LB.LinComb L (K := Fin 2) (fun k => (ρ ▷ A).left ≫ ![(snd T A).left, (translPt A c).left] k)
       ![(q : ℤ) - 1, 1] = twistLB A L q (ρ ≫ c) := by
-  exact GlobalTheory.TwistDescent.linComb_whisker A L q ρ c
+  apply _root_.GlobalTheory.TwistDescent.linComb_whisker <;> assumption
 
 theorem mem_of_isPullSecLC {X Y Y' : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
     (h : Y' ⟶ Y) (s : LB.Sec (LB.LinComb L φ ε)) (s' : LB.Sec (LB.LinComb L (fun k => h ≫ φ k) ε))
@@ -902,10 +902,10 @@ theorem monomial_eq_of_mul_unit {W : Type} [CommRing W] [Nontrivial W] {σ : Typ
       MvPowerSeries.monomial P (1 : W) * x = MvPowerSeries.monomial M 1 * x' → P ≤ M := by
     intro P M x x' hx' he
     have hc := congrArg (MvPowerSeries.coeff M) he
-    rw [MvPowerSeries.coeff_monomial_mul, MvPowerSeries.coeff_monomial_mul, ite_eq_left le_rfl, tsub_self,
+    rw [MvPowerSeries.coeff_monomial_mul, MvPowerSeries.coeff_monomial_mul, if_pos le_rfl, tsub_self,
       MvPowerSeries.coeff_zero_eq_constantCoeff_apply] at hc
     by_contra hPM
-    rw [ite_eq_right hPM, _root_.one_mul] at hc
+    rw [if_neg hPM, _root_.one_mul] at hc
     exact (hx'.map (MvPowerSeries.constantCoeff (σ := σ) (R := W))).ne_zero hc.symm
   exact le_antisymm (h1 _ _ _ _ hx' he) (h1 _ _ _ _ hx he.symm)
 
@@ -1017,7 +1017,7 @@ theorem exps_eq {σ k : Type} [Field k] [IsDomain (MvPowerSeries σ k)] {m : ℕ
     rw [Finsupp.finsetSum_apply, Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [Finsupp.single_apply, ite_eq_right]
+      rw [Finsupp.single_apply, if_neg]
       exact fun e => hj (hv e)
     · simp
   rw [hmon, hmon] at he''

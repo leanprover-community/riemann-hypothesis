@@ -128,17 +128,7 @@ namespace GlobalTheory.SelfDualIndex
 variable {E : Type} [Field E] [NumberField E] {p : ℕ}
 
 theorem bdd_of_fg {Λ : Submodule (𝓞 E) (Fin p → E)} (h : Λ.FG) : GlobalTheory.BetaEx.Bdd Λ := by
-  classical
-  obtain ⟨s, rfl⟩ := h
-  choose a ha0 ha using fun v : Fin p → E => GlobalTheory.BetaEx.exists_smul_std v
-  refine ⟨∏ v ∈ s, a v, Finset.prod_ne_zero_iff.2 fun v _ => ha0 v, fun v hv => ?_⟩
-  induction hv using Submodule.span_induction with
-  | mem x hx =>
-    rw [← Finset.mul_prod_erase s a hx, mul_comm, mul_smul]
-    exact Submodule.smul_mem _ _ (ha x)
-  | zero => simp
-  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | smul b x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ _ hx
+  apply _root_.GlobalTheory.LatIndexDeg.bdd_of_fg <;> assumption
 
 
 omit [NumberField E] in

@@ -425,7 +425,7 @@ theorem prod_cmp (f₁ g₁ : P₀.A ⟶ P₁.A) (f₂ g₂ : P₀.A ⟶ P₂.A)
         (h ((b ≫ g₂).left ≫ coprod.inr))⁻¹ * h ((1 : T ⟶ P₂.A).left ≫ coprod.inr)) *
       (h (((a ≫ f₁) * (b ≫ g₁)).left ≫ coprod.inl) * (h ((a ≫ f₁).left ≫ coprod.inl))⁻¹ *
         (h ((b ≫ g₁).left ≫ coprod.inl))⁻¹ * h ((1 : T ⟶ P₁.A).left ≫ coprod.inl))⁻¹ := by
-  exact GlobalTheory.Mum.Two.WeilCmp.AddFst.prod_cmp P₀ P₁ P₂ f₁ g₁ f₂ g₂ a b h
+  apply _root_.GlobalTheory.Mum.Two.WeilCmp.AddFst.prod_cmp <;> assumption
 
 end GlobalTheory.Mum.Two.WeilCmp
 

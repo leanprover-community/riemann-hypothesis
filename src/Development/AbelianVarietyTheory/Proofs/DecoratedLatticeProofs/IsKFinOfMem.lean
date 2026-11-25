@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsKFinOfMemKfin
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FrameTopAlt
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
@@ -56,20 +57,7 @@ open GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.PairLift GlobalTheory.
 
 theorem isKFin_of_mem {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (τ : D.what₂.Tau) {x : M.H τ}
     (hx : x ∈ GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction.kfin M τ) : Formalism.MainNotions.S.IsKFin (M.ε τ) (M.σ τ) x := by
-  induction hx using Submodule.span_induction with
-  | mem x h => exact h
-  | zero => exact ⟨⊥, inferInstance, Submodule.zero_mem _, fun g _ v hv => by
-      rw [(Submodule.mem_bot _).1 hv, map_zero]; exact Submodule.zero_mem _⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨S₁, h1, h2, h3⟩ := hx
-    obtain ⟨S₂, k1, k2, k3⟩ := hy
-    refine ⟨S₁ ⊔ S₂, inferInstance, Submodule.add_mem_sup h2 k2, fun g hg v hv => ?_⟩
-    obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.1 hv
-    rw [map_add (f := _)]
-    exact Submodule.add_mem_sup (h3 g hg a ha) (k3 g hg b hb)
-  | smul c x _ hx =>
-    obtain ⟨S₁, h1, h2, h3⟩ := hx
-    exact ⟨S₁, h1, S₁.smul_mem c h2, h3⟩
+  apply _root_.GlobalTheory.Core.Mi.StepSpans.isKFin_of_mem_kfin <;> assumption
 
 theorem itSpans_of (hDS : GlobalTheory.Published.DiscreteSeriesCover) (hHC : GlobalTheory.Published.HarishChandraModules) {D : D7} {V W : HSp D}
     {S S' : D.what₂.Tau → SPar} (M : DSModel V S) (M' : DSModel W S') (θ : InfFam D) (ψ : AddChar (AF D.host.F) ℂ)

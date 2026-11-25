@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeWeightTwoContinuationOfFunctionalEquation
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsHolFormConst
 public import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
@@ -272,15 +273,7 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem card_realEmb (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
     Fintype.card (Emb F) = Module.finrank ℚ F := by
-  rw [← NumberField.Embeddings.card F ℂ]
-  refine Fintype.card_of_bijective (f := fun τ : F →+* ℝ ↦ (Complex.ofRealHom.comp τ : F →+* ℂ)) ⟨?_, ?_⟩
-  · intro τ τ' hτ
-    ext y
-    have := DFunLike.congr_fun hτ y
-    simpa using this
-  · intro φ
-    have hr : NumberField.ComplexEmbedding.IsReal φ := IsTotallyReal.complexEmbedding_isReal φ
-    exact ⟨hr.embedding, by ext y; simp⟩
+  apply _root_.GlobalTheory.HeckeTwo.BZeroGood.card_emb_totReal <;> assumption
 
 theorem mem_split (𝔞 𝔟 : Frac F) (v : Fin 2 → F) :
     v ∈ split 𝔞 𝔟 0 ↔ v 0 ∈ (𝔟 : FractionalIdeal (𝓞 F)⁰ F) ∧ v 1 ∈ latM 𝔞 := by

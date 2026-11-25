@@ -573,7 +573,7 @@ theorem part1 (x y z : ℂ) (c : ℕ → ℂ) (h0 : c 0 = 1)
   simp only [pow_zero, mul_one] at e1
   linear_combination (1 - x * z) * e1 + (x * z) * hG'
 
-theorem part2 (x y : ℂ) (c : ℕ → ℂ) (T : ℝ) (hT0 : 0 ≤ T) (hx : ‖x‖ ^ 2 * T < 1)
+theorem part2 (x y : ℂ) (c : ℕ → ℂ) (T : ℝ) (hT0 : 0 ≤ T) (hT1 : T < 1) (hx : ‖x‖ ^ 2 * T < 1)
     (hy : ‖y‖ ^ 2 * T < 1) (h0 : c 0 = 1) (hs : ∀ r, c (r + 1) = y * c r + x ^ (r + 1)) :
     (∑' r : ℕ, ‖c r‖ ^ 2 * T ^ r) * ((1 - ‖x‖ ^ 2 * T) * (1 - ‖y‖ ^ 2 * T) * ‖1 - x * conj y * T‖ ^ 2)
       = 1 - ‖x * y‖ ^ 2 * T ^ 2 := by
@@ -673,7 +673,7 @@ theorem twoStep_eulerFactors : ∀ (x y : ℂ) (c : ℕ → ℂ) (T : ℝ), 0 �
       rw [this]
       exact mul_le_of_le_one_right (mul_nonneg (sq_nonneg _) hT0) hT1.le
     nlinarith
-  exact ⟨(part1 x y T c h0 hs (hsq x hx) (hsq y hy)).2, part2 x y c T hT0 hx hy h0 hs⟩
+  exact ⟨(part1 x y T c h0 hs (hsq x hx) (hsq y hy)).2, part2 x y c T hT0 hT1 hx hy h0 hs⟩
 
 end GlobalTheory.LocSer
 end -- clump:auto

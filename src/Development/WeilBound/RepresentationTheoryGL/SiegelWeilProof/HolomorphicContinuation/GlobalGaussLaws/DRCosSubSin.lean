@@ -287,13 +287,8 @@ theorem dR_cos_add_sin (θ : Fin n → ℝ) :
 
 theorem dR_cos_sub_sin (θ : Fin n → ℝ) :
     (dR fun j => Real.cos (θ j)) - I • (dR fun j => Real.sin (θ j)) = diagonal fun j => cexp (-(I * (θ j : ℂ))) := by
-  ext i j
-  by_cases h : i = j
-  · subst h
-    simp [dR, Matrix.diagonal_apply_eq, Complex.ofReal_cos, Complex.ofReal_sin, ← neg_mul, mul_comm I,
-      Complex.exp_mul_I, Complex.cos_neg, Complex.sin_neg]
-    ring
-  · simp [dR, Matrix.diagonal_apply_ne _ h]
+  simpa [Real.cos_neg, Real.sin_neg, ← dR_neg, smul_neg, ← sub_eq_add_neg, mul_neg] using
+    dR_cos_add_sin (fun j => -θ j)
 
 theorem uni_I (A B : Matrix (Fin n) (Fin n) ℂ) (e11 : Aᴴ * A + Bᴴ * B = 1) (e12 : Aᴴ * B + -(Bᴴ * A) = 0) :
     (A + I • B)ᴴ * (A + I • B) = 1 := by
@@ -308,14 +303,10 @@ theorem uni_I (A B : Matrix (Fin n) (Fin n) ℂ) (e11 : Aᴴ * A + Bᴴ * B = 1)
 
 theorem uni_mI (A B : Matrix (Fin n) (Fin n) ℂ) (e11 : Aᴴ * A + Bᴴ * B = 1) (e12 : Aᴴ * B + -(Bᴴ * A) = 0) :
     (A - I • B)ᴴ * (A - I • B) = 1 := by
-  have hs : star (I : ℂ) = -I := by rw [Complex.star_def, Complex.conj_I]
-  simp only [conjTranspose_sub, conjTranspose_smul, hs, sub_mul, mul_sub, Matrix.smul_mul,
-    Matrix.mul_smul, smul_smul]
-  rw [← e11, ← sub_eq_zero]
-  have hI : I * (-I) = (1 : ℂ) := by rw [mul_neg, Complex.I_mul_I, neg_neg]
-  have h2 : Aᴴ * B = Bᴴ * A := by rw [← sub_eq_zero, sub_eq_add_neg]; exact e12
-  rw [hI, one_smul, h2, neg_smul]
-  abel
+  simpa [smul_neg, ← sub_eq_add_neg] using uni_I A (-B) (by simpa [neg_mul_neg] using e11)
+    (by
+      rw [conjTranspose_neg, mul_neg, neg_mul, neg_neg, neg_add_eq_zero]
+      exact add_neg_eq_zero.1 e12)
 
 theorem kak (k : M2 n) (hk : InK k) :
     ∃ (u u' : Matrix (Fin n) (Fin n) ℂ) (θ : Fin n → ℝ), uᴴ * u = 1 ∧ u'ᴴ * u' = 1 ∧

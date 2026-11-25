@@ -45,6 +45,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvariantVectorFieldApplyConstantEqZero
 
 @[expose] public section
 
@@ -93,51 +94,7 @@ theorem eq_zero_of_valR_points {X : Scheme.{0}} (U : X.Opens) (s : Γ(X, U))
 
 theorem inv_constFn {R : Type} [CommRing R] (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (v : TanM (𝟙 (Sp R)) G)
     (dd : Fld G.left) (hinv : IsInv G v dd) (V : G.left.Opens) (r : R) : dd V (constFn G.hom V r) = 0 := by
-  refine eq_zero_of_valR_points _ _ fun S _ a hV => ?_
-  obtain ⟨φ', hφ'⟩ := Spec.map_surjective (R := CommRingCat.of R) (S := CommRingCat.of S) (a ≫ G.hom)
-  let φ : R →+* S := φ'.hom
-  have hφ : a ≫ G.hom = spMap φ := hφ'.symm
-  let x : Over.mk (spMap φ) ⟶ G := Over.homMk a hφ
-  let φε : R →+* DualNumber S := (algebraMap S (DualNumber S)).comp φ
-  let π : Over.mk (spMap φε) ⟶ Over.mk (spMap φ) :=
-    Over.homMk (spMap (algebraMap S (DualNumber S))) (by
-      show spMap (algebraMap S (DualNumber S)) ≫ spMap φ = spMap φε
-      simp only [spMap, φε, ← Spec.map_comp]; rfl)
-  let ie : Over.mk (spMap φ) ⟶ Over.mk (spMap φε) :=
-    Over.homMk (spMap (TrivSqZeroExt.fstHom S S S).toRingHom) (by
-      show spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ spMap φε = spMap φ
-      simp only [spMap, φε, ← Spec.map_comp]
-      congr 1)
-  obtain ⟨v'', hv₁, hv₂⟩ := InvWt.exists_tan_over G v φ
-  have hιπ : ie ≫ π = 𝟙 _ := by
-    ext1
-    show spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ spMap (algebraMap S (DualNumber S)) = 𝟙 _
-    simp only [spMap, ← Spec.map_comp]
-    rw [← Spec.map_id]; congr 1
-  have hiev : ie ≫ v'' = 1 := by
-    ext1
-    exact hv₂
-  have hW : ie ≫ (π ≫ x * v'') = x := by
-    rw [MonObj.comp_mul, ← Category.assoc, hιπ, Category.id_comp, hiev, _root_.mul_one]
-  have hWa : spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ (π ≫ x * v'').left = a :=
-    congrArg (·.left) hW
-  have htr : IsTr G φ a v (π ≫ x * v'').left := by
-    let e : tEpsG (a ≫ G.hom) ⟶ Over.mk (spMap φε) := Over.homMk (𝟙 _) (by
-      show 𝟙 _ ≫ spMap φε = spMap (algebraMap S (DualNumber S)) ≫ a ≫ G.hom
-      rw [hφ]
-      simp only [Category.id_comp, spMap, φε]
-      rw [← Spec.map_comp]; rfl)
-    refine ⟨e ≫ π ≫ x, e ≫ v'', ?_, ?_, ?_⟩
-    · show 𝟙 _ ≫ spMap (algebraMap S (DualNumber S)) ≫ a = _
-      rw [Category.id_comp]
-    · show 𝟙 _ ≫ v''.left = _
-      rw [Category.id_comp, hv₁]
-    · rw [← MonObj.comp_mul]
-      show 𝟙 _ ≫ _ = _
-      rw [Category.id_comp]
-  rw [← hinv.2 S φ a (π ≫ x * v'').left V _ hφ hV htr,
-    valR_const G.hom φε _ (Over.w (π ≫ x * v'')) V (InvWt.top_le_preimage_of_fst _ a V hWa hV)]
-  simp [φε, TrivSqZeroExt.algebraMap_eq_inl]
+  apply _root_.GlobalTheory.Heat.isInv_constFn <;> assumption
 
 theorem isField_add_comb {Z : Scheme.{0}} {n : ℕ} {U : Z.Opens} (d₀ : Fld Z) (dd : Fin n → Fld Z)
     (y : Fin n → Γ(Z, U)) (h₀ : IsField U d₀) (h : ∀ a, IsField ⊤ (dd a)) :

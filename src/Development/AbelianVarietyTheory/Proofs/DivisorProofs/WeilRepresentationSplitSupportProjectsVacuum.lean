@@ -150,7 +150,8 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 omit [NumberField E] in
 theorem tmul_smul_mem (L : Set (Fin n → E)) {α : FiniteAdeleRing (𝓞 F) F}
     (hα : ∀ v, α v ∈ v.adicCompletionIntegers F) {z : Fin n → RA F E} (hz : z ∈ hat F L) :
-    (α ⊗ₜ[F] (1 : E) : RA F E) • z ∈ hat F L := GlobalTheory.AdLat.Translate.hat_smul_int hα hz
+    (α ⊗ₜ[F] (1 : E) : RA F E) • z ∈ hat F L := by
+  apply _root_.GlobalTheory.AdLat.Translate.hat_smul_int <;> assumption
 
 omit [NumberField E] in
 theorem hat_mono {L L' : Set (Fin n → E)} (h : L ⊆ L') : hat F L ≤ hat F L' :=

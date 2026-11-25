@@ -142,17 +142,6 @@ theorem exists_product_form : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsS
   let gen : Set (WO S T → ℂ) := {f | ∃ fA fB, IsThetaFunO ψ A T fA ∧ IsThetaFunO ψ B T fB ∧ f = o.boxS T fA fB}
   let P : Submodule ℂ (WO S T → ℂ) := Submodule.span ℂ gen
 
-  have hPst : ∀ u ∈ half S T (cA D e), ∀ p ∈ P, heisL S T ψ u p ∈ P := by
-    intro u hu p hp
-    induction hp using Submodule.span_induction with
-    | mem f hf =>
-      obtain ⟨fA, fB, hfA, hfB, rfl⟩ := hf
-      refine Submodule.subset_span ⟨_, _, GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hψ hfA (o.resS T u).1,
-        GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hψ hfB (o.resS T u).2, ?_⟩
-      exact o.heisO_boxS ψ T fA fB u
-    | zero => rw [map_zero]; exact P.zero_mem
-    | add a b _ _ ha hb => rw [map_add (f := _)]; exact P.add_mem ha hb
-    | smul c a _ ha => rw [map_smul]; exact P.smul_mem c ha
   have hl0P : ∀ u ∈ half S T (cA D e), ∀ p ∈ P, l0 (heisL S T ψ u p) = l0 p := by
     intro u hu p hp
     induction hp using Submodule.span_induction with

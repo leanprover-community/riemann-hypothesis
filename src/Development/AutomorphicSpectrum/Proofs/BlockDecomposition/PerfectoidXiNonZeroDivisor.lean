@@ -58,15 +58,6 @@ theorem mem_span_of_mul_mem_of_hom {l xi : W} (φ : W →+* R)
   rw [map_mul] at h
   exact (mul_left_mem_nonZeroDivisors_eq_zero_iff hxi).mp h
 
-private theorem eq_zero_of_pow_mul_eq_zero_of_nonzerodivisor' {l : W} (hl : ∀ x, l * x = 0 → x = 0) (m : ℕ) :
-    ∀ t : W, l ^ m * t = 0 → t = 0 := by
-  induction m with
-  | zero => intro t ht; simpa using ht
-  | succ m ihm =>
-    intro t ht
-    rw [pow_succ, mul_assoc] at ht
-    exact hl t (ihm _ ht)
-
 theorem mem_span_pow_of_mul_mem {l xi : W} (hl : ∀ x, l * x = 0 → x = 0)
     (key : ∀ y, xi * y ∈ Ideal.span {l} → y ∈ Ideal.span {l}) (n : ℕ) :
     ∀ x, xi * x ∈ Ideal.span {l ^ n} → x ∈ Ideal.span {l ^ n} := by
@@ -83,7 +74,8 @@ theorem mem_span_pow_of_mul_mem {l xi : W} (hl : ∀ x, l * x = 0 → x = 0)
     obtain ⟨d, hd⟩ := hx
     have h2 : xi * c = l * d := by
       have h0 : l ^ n * (xi * c - l * d) = 0 := by linear_combination hd
-      exact sub_eq_zero.mp (eq_zero_of_pow_mul_eq_zero_of_nonzerodivisor' hl n _ h0)
+      have hln := pow_mem (mem_nonZeroDivisors_iff_left.2 hl) n
+      exact sub_eq_zero.mp ((mul_left_mem_nonZeroDivisors_eq_zero_iff hln).mp h0)
     obtain ⟨e, rfl⟩ := Ideal.mem_span_singleton.mp (key c (Ideal.mem_span_singleton.mpr ⟨d, h2⟩))
     exact ⟨e, by ring⟩
 

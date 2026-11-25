@@ -59,15 +59,15 @@ namespace GlobalTheory.HolRead.AdExt
 section Mat
 variable {n : ℕ} {G S x : Matrix (Fin n) (Fin n) ℂ}
 
-theorem conj_form (h : xᴴ * G * x = S) (A B : Matrix (Fin n) (Fin n) ℂ) :
+theorem conj_form (hx : IsUnit x.det) (h : xᴴ * G * x = S) (A B : Matrix (Fin n) (Fin n) ℂ) :
     (x * A * x⁻¹)ᴴ * G * (x * B * x⁻¹) = x⁻¹ᴴ * (Aᴴ * S * B) * x⁻¹ := by
   rw [← h]
   simp only [conjTranspose_mul, Matrix.mul_assoc]
 
 theorem conj_mem_lie (hx : IsUnit x.det) (h : xᴴ * G * x = S) {Z : Matrix (Fin n) (Fin n) ℂ}
     (hZ : Zᴴ * S + S * Z = 0) : (x * Z * x⁻¹)ᴴ * G + G * (x * Z * x⁻¹) = 0 := by
-  have h1 := conj_form h Z 1
-  have h2 := conj_form h 1 Z
+  have h1 := conj_form hx h Z 1
+  have h2 := conj_form hx h 1 Z
   rw [Matrix.mul_one, mul_nonsing_inv _ hx] at h1 h2
   rw [Matrix.mul_one] at h1
   rw [conjTranspose_one, Matrix.one_mul] at h2
@@ -76,10 +76,10 @@ theorem conj_mem_lie (hx : IsUnit x.det) (h : xᴴ * G * x = S) {Z : Matrix (Fin
 
 theorem conj_mem_unitary (hx : IsUnit x.det) (h : xᴴ * G * x = S) {A : Matrix (Fin n) (Fin n) ℂ}
     (hA : Aᴴ * S * A = S) : (x * A * x⁻¹)ᴴ * G * (x * A * x⁻¹) = G := by
-  have h2 := conj_form h 1 1
+  have h2 := conj_form hx h 1 1
   rw [Matrix.mul_one, mul_nonsing_inv _ hx, conjTranspose_one, Matrix.one_mul, Matrix.mul_one, Matrix.one_mul,
     Matrix.mul_one] at h2
-  rw [conj_form h, hA, ← h2]
+  rw [conj_form hx h, hA, ← h2]
 
 theorem diag_unitary (s : Fin n → ℂ) (t : Fin n → ℝ) :
     (diagonal fun c => Complex.exp ((t c : ℂ) * Complex.I))ᴴ * diagonal s *

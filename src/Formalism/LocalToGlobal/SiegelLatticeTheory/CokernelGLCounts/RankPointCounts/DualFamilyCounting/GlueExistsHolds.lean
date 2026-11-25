@@ -356,7 +356,7 @@ theorem family_meet_holds : FamMeet := by
       ((p)⁻¹ ^ vF 𝔭 (a i)) • (b i + w (τ i)) := fun i => rfl
   have hGr : ∀ j, G (Sum.inr j) = w j := fun j => rfl
   have hUloc : locF 𝔭 (U.restrictScalars (𝓞 K)) = U.restrictScalars (𝓞 K) :=
-    Formalism.L2.SG.Pf.G7.locF_subspace U
+    Formalism.L2.SG.Pf.G7.locF_subspace U h𝔭.isPrime
   apply le_antisymm
   ·
     rintro x ⟨hx, hxU⟩
@@ -598,7 +598,7 @@ private theorem span_locF_eq (L : Submodule (𝓞 K) V) {𝔭 : Ideal (𝓞 F)} 
     Submodule.span K (locF 𝔭 L : Set V) = Submodule.span K (L : Set V) := by
   refine le_antisymm (Submodule.span_le.mpr ?_) (Submodule.span_mono (LocF.le_locF 𝔭 L))
   show locF 𝔭 L ≤ (Submodule.span K (L : Set V)).restrictScalars (𝓞 K)
-  rw [← locF_subspace (Submodule.span K (L : Set V))]
+  rw [← locF_subspace (Submodule.span K (L : Set V)) hp]
   exact LocF.locF_mono 𝔭 (fun _ hx => Submodule.subset_span hx)
 
 theorem glueExists_of_local (hloc : GlueLocal) : GlueExists := by
@@ -634,7 +634,7 @@ theorem glueExists_of_local (hloc : GlueLocal) : GlueExists := by
       exact ⟨hTm 𝔭, hTd 𝔭⟩
     · rw [hBs 𝔭 hp]
       refine ⟨?_, ?_⟩
-      · rw [← hsM 𝔭 hp, LIOrb.locF_inf_locF 𝔭.2, locF_subspace U]
+      · rw [← hsM 𝔭 hp, LIOrb.locF_inf_locF 𝔭.2, locF_subspace U 𝔭.2.isPrime]
       · rw [← locF_dual hF h hΛ₀.fg 𝔭.2.isPrime]
         exact congrArg (locF 𝔭.1) hΛ₀u
   refine ⟨Λ, hΛ, ?_, ?_⟩
@@ -645,7 +645,7 @@ theorem glueExists_of_local (hloc : GlueLocal) : GlueExists := by
     exact (key ⟨𝔭, h𝔭⟩).2
   · apply eq_of_locF (F := F)
     intro 𝔭 h𝔭
-    rw [LIOrb.locF_inf_locF h𝔭, locF_subspace U]
+    rw [LIOrb.locF_inf_locF h𝔭, locF_subspace U h𝔭.isPrime]
     exact (key ⟨𝔭, h𝔭⟩).1
 
 end Formalism.L2.SG.Pf.G7

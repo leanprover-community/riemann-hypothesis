@@ -127,7 +127,13 @@ theorem le_of_field {k B : Type} [Field k] [CommRing B] [Nontrivial B] (φ : k �
 
 theorem spec_fst_surj (R : Type) [CommRing R] :
     Function.Surjective (Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom)) := by
-  exact GlobalTheory.CompanionTheory.Ar.LieCarrier.surjective_fst
+  intro p
+  show p ∈ Set.range (PrimeSpectrum.comap (TrivSqZeroExt.fstHom R R R).toRingHom)
+  rw [_root_.range_comap_of_surjective _ _ TrivSqZeroExt.fst_surjective]
+  intro a ha
+  have ha' : a.fst = 0 := ha
+  have h2 : a ^ 2 = 0 := by ext <;> simp [pow_two, ha']
+  exact p.2.mem_of_pow_mem 2 (h2 ▸ Ideal.zero_mem _)
 
 section
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
@@ -165,7 +171,9 @@ theorem val_eq {L : LB G.left} {n : ℕ} {e : (Over.mk ξ ⟶ G) → (Over.mk ξ
   have hW := (GW.weil y g hy hg (AlgebraicClosure Ω) j (dl ≫ y) (dl ≫ g) (Units.map j.toMonoidHom (e y g)) rfl rfl).2 rfl
   have h' : ⊤ ≤ (dl ≫ g).left ⁻¹ᵁ W := fun z _ => @h (spMap j z) trivial
   have e1 := hw _ j (dl ≫ y) (dl ≫ g) _ h' rfl hgk hW
-  exact j.injective ((secVal_base j g.left W h h' f).symm.trans e1)
+  have e2 := secVal_base j g.left W h h' f
+  apply j.injective
+  exact e2.symm.trans e1
 end
 
 section
@@ -256,7 +264,9 @@ theorem exists_gamma (hξ : IsCptGen ξ) {G : Over X} [GrpObj G] (hG : IsSemiAbe
     obtain ⟨x₀, hx₀⟩ := hT Ω' i (c ≫ g) hg'
     have hxl : g.left = spMap i ≫ x₀.left := by simpa [c] using hx₀
     let dl : Over.mk (spMap i ≫ ξ) ⟶ Over.mk ξ := Over.homMk (spMap i) rfl
-    have hdl : dl ≫ x₀ = c ≫ g := Over.OverMorphism.ext hx₀.symm
+    have hdl : dl ≫ x₀ = c ≫ g := by
+      apply Over.OverMorphism.ext
+      exact hx₀.symm
     have hx1 : x₀ ^ n = 1 := by
       apply Over.OverMorphism.ext
       apply spec_cancel i
@@ -357,7 +367,8 @@ theorem isHTAt_iff : ∀ (X : Scheme.{0}) [IsLocallyNoetherian X] (Ω : Type) [F
       have : ((n : Ω)⁻¹ • (w' - w)) e₀ = c := by
         simp only [LinearMap.smul_apply, LinearMap.sub_apply, ec, smul_eq_mul]
         field_simp
-      rwa [this]
+      rw [this]
+      exact hc
     · ext x
       simp only [LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sub_apply, nsmul_eq_mul, smul_eq_mul]
       field_simp

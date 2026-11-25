@@ -190,26 +190,8 @@ theorem exists_frame_map_mkQ {I : Type} [Finite I] {L : Lat ξ Li} {p : Cpt ξ} 
       exact Submodule.subset_span ⟨_, ⟨_, rfl⟩, rfl⟩
 
 theorem ofPrime_le {A : Subring Ω} [IsLocalRing A] (P : Ideal A) [hP : P.IsMaximal] :
-    (LocalSubring.ofPrime A P).toSubring ≤ A := by
-  intro z hz
-  have key : ∀ φ : Localization.AtPrime P →+* Ω, (∀ a : A, φ (algebraMap A _ a) = a) → ∀ w, φ w ∈ A := by
-    intro φ hφ w
-    obtain ⟨⟨x, s⟩, hxs⟩ := IsLocalization.surj P.primeCompl w
-    have hs : (s : A) ∉ P := s.2
-    have hu : IsUnit (s : A) := IsLocalRing.notMem_maximalIdeal.1 (IsLocalRing.eq_maximalIdeal hP ▸ hs)
-    obtain ⟨u, hu⟩ := hu.exists_right_inv
-    have h1 : φ w * ((s : A) : Ω) = (x : Ω) := by
-      have := congrArg φ hxs
-      rwa [map_mul, hφ, hφ] at this
-    have h2 : ((s : A) : Ω) * (u : Ω) = 1 := by exact_mod_cast congrArg Subtype.val hu
-    have h3 : φ w = x * u := by
-      calc φ w = φ w * (((s : A) : Ω) * (u : Ω)) := by rw [h2, _root_.mul_one]
-        _ = x * u := by rw [← _root_.mul_assoc, h1]
-    rw [h3]
-    exact mul_mem x.2 u.2
-  simp only [LocalSubring.ofPrime, LocalSubring.range_toSubring] at hz
-  obtain ⟨w, rfl⟩ := hz
-  exact key _ (fun a => IsLocalization.lift_eq _ a) w
+    (LocalSubring.ofPrime A P).toSubring ≤ A :=
+  (NormAt.ofPrime_of_isLocalRing A P hP).le
 
 theorem isLocalRing_of_eq {A B : Subring Ω} (h : A = B) [IsLocalRing B] : IsLocalRing A := by
   subst h

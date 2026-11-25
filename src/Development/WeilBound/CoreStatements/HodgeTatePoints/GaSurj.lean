@@ -147,26 +147,9 @@ theorem q_surj : ∀ (A K : Type) [CommRing A] [Field K] [Algebra A K] [CharZero
     apply Submodule.FG.map
     unfold HTChart.om'
     refine Submodule.FG.sup ?_ (Submodule.FG.map _ D.om_lat.fg)
-    obtain ⟨T, hT⟩ := (Module.Finite.fg_top : (⊤ : Submodule ℤ (Fin N → 𝓞 E)).FG)
-    refine ⟨T.image D.h, le_antisymm ?_ ?_⟩
-    · apply Submodule.span_mono
-      intro v hv
-      simp only [Finset.coe_image, Set.mem_image] at hv
-      obtain ⟨z, _, rfl⟩ := hv
-      exact ⟨z, rfl⟩
-    · rw [Submodule.span_le]
-      rintro _ ⟨z, rfl⟩
-      have hz : z ∈ Submodule.span ℤ (T : Set (Fin N → 𝓞 E)) := hT ▸ Submodule.mem_top
-      induction hz using Submodule.span_induction with
-      | mem w hw =>
-        exact Submodule.subset_span (by simp only [Finset.coe_image]; exact ⟨w, hw, rfl⟩)
-      | zero => simp
-      | add u v _ _ hu hv =>
-        rw [map_add (f := _)]
-        exact Submodule.add_mem _ hu hv
-      | smul n u _ hu =>
-        rw [map_zsmul]
-        exact zsmul_mem hu n
+    obtain ⟨T, hT⟩ := Submodule.fg_range D.h.toIntLinearMap
+    exact ⟨T, by rw [← Submodule.span_span_of_tower (S := A) (R := ℤ), hT,
+      LinearMap.coe_range, AddMonoidHom.coe_toIntLinearMap]⟩
   · intro y hy
     simp only [HTChart.omHT, eigQuot] at hy
     obtain ⟨w, hw, rfl⟩ := Submodule.mem_map.mp hy
