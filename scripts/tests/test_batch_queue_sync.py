@@ -2044,7 +2044,8 @@ class Pushed(unittest.TestCase):
         gh.fail("GET", ancestry, 502)
         self.assertIn("GitHub did not say whether the batch #1018 has the new head of #12, with "
                       f"`{short('head12')}` in it: the next run asks again", sync(gh))
-        self.assertEqual((self.pushes(gh, 12), gh.pulls[12]["labels"]), ([], IN))
+        # Its head is not the commit taken, so it is `changed after frozen` all the same.
+        self.assertEqual((self.pushes(gh, 12), gh.pulls[12]["labels"]), ([], IN | {CHANGED}))
         # When the branch is listed again, the question is the other way round.
         old = gh.pulls[1018]["sha"]
         new = sha("kim-moved")
