@@ -8,7 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
 noncomputable section

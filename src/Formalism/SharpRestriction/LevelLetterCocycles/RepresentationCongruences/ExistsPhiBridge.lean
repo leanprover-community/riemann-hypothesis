@@ -48,7 +48,7 @@ theorem ringHom_ext_nil {h₁ h₂ : R⟦X⟧ →+* S⟦X⟧} (hC : ∀ r, h₁ 
   obtain ⟨G, hG⟩ : (X : R⟦X⟧) ^ N ∣ F - (PowerSeries.trunc N F : R⟦X⟧) := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro i hi
-    rw [_root_.map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hi, sub_self]
+    rw [_root_.map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, ite_eq_left hi, sub_self]
   have hd : h₁ F - h₂ F = h₁ X ^ N * (h₁ G - h₂ G) := by
     have hF : F = (PowerSeries.trunc N F : R⟦X⟧) + X ^ N * G := by rw [← hG]; ring
     rw [hF]
@@ -66,20 +66,14 @@ section Inj
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
-private theorem powerSeries_algHom_C {R : Type*} [CommRing R] (ψ : R⟦X⟧ →ₐ[R] R⟦X⟧) (c : R) :
-    ψ (C c) = C c := by
-  have h := ψ.commutes c
-  rwa [PowerSeries.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply] at h
-
 private theorem constantCoeff_algHom_apply_of_constantCoeff_X {R : Type*} [CommRing R] (ψ : R⟦X⟧ →ₐ[R] R⟦X⟧)
     (h0 : constantCoeff (ψ X) = 0) (F : R⟦X⟧) : constantCoeff (ψ F) = constantCoeff F := by
   obtain ⟨G, hG⟩ : (X : R⟦X⟧) ∣ F - C (constantCoeff F) := by
     rw [PowerSeries.X_dvd_iff, _root_.map_sub, PowerSeries.constantCoeff_C, sub_self]
   have hF : F = C (constantCoeff F) + X * G := by rw [← hG]; ring
-  rw [hF]
-  first
-  | simp only [_root_.map_add (f := _), _root_.map_mul, powerSeries_algHom_C, h0, PowerSeries.constantCoeff_C,
-      PowerSeries.constantCoeff_X, zero_mul, add_zero]
+  conv_lhs => rw [hF]
+  rw [map_add (f := ψ), map_mul (f := ψ), C_eq_algebraMap, ψ.commutes, ← C_eq_algebraMap,
+    map_add, PowerSeries.constantCoeff_C, map_mul, h0, zero_mul, add_zero]
 
 private theorem powerSeries_algHom_injective_of_X_ne_zero {R : Type*} [CommRing R] [IsDomain R]
     (ψ : R⟦X⟧ →ₐ[R] R⟦X⟧) (h0 : constantCoeff (ψ X) = 0) (hne : ψ X ≠ 0) :
@@ -101,7 +95,7 @@ private theorem powerSeries_algHom_injective_of_X_ne_zero {R : Type*} [CommRing 
     apply hn
     rw [hU]
     first
-    | rw [PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+    | rw [PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, h]
   have hψU : ψ U ≠ 0 := by
     intro h
@@ -110,17 +104,12 @@ private theorem powerSeries_algHom_injective_of_X_ne_zero {R : Type*} [CommRing 
   rw [hU, _root_.map_mul, _root_.map_pow] at hF
   exact mul_ne_zero (pow_ne_zero _ hne) hψU hF
 
-private theorem substAlgHom_X_eq {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
-    {a : S⟦X⟧} (ha : HasSubst a) : (substAlgHom ha : R⟦X⟧ →ₐ[R] S⟦X⟧) X = a := by
-  first
-  | exact substAlgHom_X ha
-
 theorem subst_injective {a : R⟦X⟧} (ha0 : constantCoeff a = 0) (hane : a ≠ 0) :
     Function.Injective (substAlgHom (HasSubst.of_constantCoeff_zero' ha0) : R⟦X⟧ →ₐ[R] R⟦X⟧) := by
   refine powerSeries_algHom_injective_of_X_ne_zero _ ?_ ?_
-  · rw [substAlgHom_X_eq]
+  · rw [substAlgHom_X]
     exact ha0
-  · rw [substAlgHom_X_eq]
+  · rw [substAlgHom_X]
     exact hane
 
 end Inj
@@ -129,12 +118,11 @@ theorem constantCoeff_substAlgHom {R : Type*} [CommRing R] {a : R⟦X⟧} (ha0 :
     (F : R⟦X⟧) :
     constantCoeff ((substAlgHom (HasSubst.of_constantCoeff_zero' ha0) : R⟦X⟧ →ₐ[R] R⟦X⟧) F) =
       constantCoeff F := by
-  refine constantCoeff_algHom_apply_of_constantCoeff_X _ ?_ F
-  rw [substAlgHom_X_eq]
-  exact ha0
+  rw [coe_substAlgHom, constantCoeff_eq, constantCoeff_subst_of_constantCoeff_zero ha0 F,
+    Algebra.algebraMap_self, RingHom.id_apply]
 
-theorem algC {R : Type*} [CommRing R] (ψ : R⟦X⟧ →ₐ[R] R⟦X⟧) (c : R) : ψ (C c) = C c :=
-  powerSeries_algHom_C ψ c
+theorem algC {R : Type*} [CommRing R] (ψ : R⟦X⟧ →ₐ[R] R⟦X⟧) (c : R) : ψ (C c) = C c := by
+  rw [C_eq_algebraMap, ψ.commutes, ← C_eq_algebraMap]
 
 section Shift
 
@@ -179,7 +167,7 @@ def τk (k : ℕ) : O⟦X⟧ →ₐ[O] (Qk O k)⟦X⟧ := substAlgHom (hasSubst_
 omit [IsAdicComplete (IsLocalRing.maximalIdeal O) O] in
 theorem τk_X (k : ℕ) : τk t ht k X = X + C (mkk k t) := by
   show (substAlgHom (hasSubst_k t ht k) : O⟦X⟧ →ₐ[O] (Qk O k)⟦X⟧) X = _
-  exact substAlgHom_X_eq _
+  exact substAlgHom_X _
 
 omit [IsAdicComplete (IsLocalRing.maximalIdeal O) O] in
 theorem τk_C (k : ℕ) (r : O) : τk t ht k (C r) = C (mkk k r) := by

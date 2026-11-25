@@ -146,7 +146,3 @@ theorem mem_latW {L : GlobalTheory.FinPl.Lat S} (w : Fin S.rank → k) :
     w ∈ latW q L ↔ (fun i => q.sec (w i)) ∈ GlobalTheory.FinPl.latV S L (· = q.v) := Iff.rfl
 
 end GlobalTheory.LocMod.FullLatFrame
-
-namespace GlobalTheory.LocMod.FullLatFrame
-
-end GlobalTheory.LocMod.FullLatFrame

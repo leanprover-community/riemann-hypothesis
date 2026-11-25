@@ -26,7 +26,7 @@ def wtOf (n : ℕ) (E : Finset ℚ) : DomWeight n :=
 theorem wtOf_cast {n : ℕ} {E : Finset ℚ} (h : E.card = n) (hE : InCoset (((n : ℚ) - 1) / 2) E) (a : Fin n) :
     ((wtOf n E).w a : ℚ) = highestWeight E h a := by
   obtain ⟨z, hz⟩ := highestWeight_int h hE a
-  simp [wtOf, dif_pos (And.intro h hE), hz]
+  simp [wtOf, dite_eq_left (And.intro h hE), hz]
 
 theorem wtOf_top_zero (C : ℝ) (τ : D.what₂.Tau) :
     wtOf (rankP D D.R.m) (entries (Node.par D C (.top 0) τ)) = La D C τ := by
@@ -35,7 +35,7 @@ theorem wtOf_top_zero (C : ℝ) (τ : D.what₂.Tau) :
     obtain ⟨y, rfl⟩ := inCoset_weightX_zero (G := num D C τ) (odd_sLen D) x hx
     obtain ⟨u, hu⟩ := even_rankP D D.R.m
     exact ⟨y + 1 - u, by rw [hu]; push_cast; ring⟩
-  rw [e, wtOf, dif_pos ⟨card_weight D C τ, h⟩]
+  rw [e, wtOf, dite_eq_left ⟨card_weight D C τ, h⟩]
   rfl
 
 def dualSubst (K ι : Type) [Field K] (n : ℕ) : Pol K ι n →ₐ[K] Pol K ι n :=
@@ -127,8 +127,8 @@ theorem halfInd_congr {m n : ℕ} {e : AE D} {Λ Λ' : AddSubgroup (Mx D m n)} {
     (h : (x ∈ Λ ∧ IsHalf e x) ↔ (y ∈ Λ' ∧ IsHalf e y)) : halfInd e Λ x = halfInd e Λ' y := by
   unfold halfInd
   by_cases h1 : x ∈ Λ ∧ IsHalf e x
-  · rw [if_pos h1, if_pos (h.1 h1)]
-  · rw [if_neg h1, if_neg (h.not.1 h1)]
+  · rw [ite_eq_left h1, ite_eq_left (h.1 h1)]
+  · rw [ite_eq_right h1, ite_eq_right (h.not.1 h1)]
 
 def FinDatum.ind (t : T) (p : Pair T) (P : Finset (Pl D.host.E))
     (h : ∀ w ∈ P, w.under (𝓞 D.host.F) ∈ G.pl.S0 ∨ ∃ w' ∈ L.Q t, w.under (𝓞 D.host.F) = w'.under (𝓞 D.host.F))
@@ -140,12 +140,12 @@ def FinDatum.ind (t : T) (p : Pair T) (P : Finset (Pl D.host.E))
   fn := halfInd e (latO (G.pS p) (G.pT p) (G.latS p : Set _) (G.latT p : Set _) fun _ => True)
   sb := by
     refine ⟨fun x hx => ?_, 1, one_pos, fun u hu hu' x => ?_, fun x hx => ?_⟩
-    · by_contra h; exact hx (if_neg fun h' => h h'.2)
+    · by_contra h; exact hx (ite_eq_right fun h' => h h'.2)
     · rw [one_smul]
       have h1 : IsHalf e (x + u) ↔ IsHalf e x := forall₂_congr fun i j => by
         rw [Matrix.add_apply, mul_add, hu' i j, add_left_inj]
       exact halfInd_congr (and_congr (AddSubgroup.add_mem_cancel_right _ hu) h1)
-    · rw [one_smul]; by_contra h; exact hx (if_neg fun h' => h h'.1)
+    · rw [one_smul]; by_contra h; exact hx (ite_eq_right fun h' => h h'.1)
   z := 1
   z_cen := ⟨1, by simp [Formalism.L2.Theta.mt]⟩
   z_supp := ⟨∅, 0, ⟨⟨0, by simp, by simp⟩, by simp⟩, fun i j => by simp [Formalism.L2.Theta.mt], by simp⟩

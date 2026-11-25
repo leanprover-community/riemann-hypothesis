@@ -6,47 +6,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairCommonU
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormGeometrySummary
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalFormFlagLatticesNearUnderStabiliser
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -69,28 +29,28 @@ theorem entry_anti {E : Type} [CommRing E] (bs : List (Eˣ × ℕ+)) : ∀ a b a
     intro a b a' b' ha hb h1 h2
     simp only [Loc.ptEntryL] at h1 h2 ⊢
     by_cases hab : a < (s : ℕ) ∧ b < (s : ℕ)
-    · rw [if_pos hab] at h1 ⊢
+    · rw [ite_eq_left hab] at h1 ⊢
       by_cases hab' : a' < (s : ℕ) ∧ b' < (s : ℕ)
-      · rw [if_pos hab'] at h2 ⊢
+      · rw [ite_eq_left hab'] at h2 ⊢
         by_cases e1 : a + b + 1 = (s : ℕ)
         · by_cases e2 : a' + b' + 1 = (s : ℕ)
-          · rw [if_pos e1, if_pos e2]; exact ⟨by omega, rfl⟩
-          · rw [if_neg e2] at h2; exact absurd rfl h2
-        · rw [if_neg e1] at h1; exact absurd rfl h1
-      · rw [if_neg hab'] at h2
+          · rw [ite_eq_left e1, ite_eq_left e2]; exact ⟨by omega, rfl⟩
+          · rw [ite_eq_right e2] at h2; exact absurd rfl h2
+        · rw [ite_eq_right e1] at h1; exact absurd rfl h1
+      · rw [ite_eq_right hab'] at h2
         have hn : ¬ ((s : ℕ) ≤ a' ∧ (s : ℕ) ≤ b') := by omega
-        rw [if_neg hn] at h2; exact absurd rfl h2
-    · rw [if_neg hab] at h1 ⊢
+        rw [ite_eq_right hn] at h2; exact absurd rfl h2
+    · rw [ite_eq_right hab] at h1 ⊢
       by_cases hab2 : (s : ℕ) ≤ a ∧ (s : ℕ) ≤ b
-      · rw [if_pos hab2] at h1 ⊢
+      · rw [ite_eq_left hab2] at h1 ⊢
         have hn : ¬ (a' < (s : ℕ) ∧ b' < (s : ℕ)) := by omega
-        rw [if_neg hn] at h2 ⊢
+        rw [ite_eq_right hn] at h2 ⊢
         by_cases hab2' : (s : ℕ) ≤ a' ∧ (s : ℕ) ≤ b'
-        · rw [if_pos hab2'] at h2 ⊢
+        · rw [ite_eq_left hab2'] at h2 ⊢
           obtain ⟨e, e'⟩ := ih (a - s) (b - s) (a' - s) (b' - s) (by omega) (by omega) h1 h2
           exact ⟨by omega, e'⟩
-        · rw [if_neg hab2'] at h2; exact absurd rfl h2
-      · rw [if_neg hab2] at h1; exact absurd rfl h1
+        · rw [ite_eq_right hab2'] at h2; exact absurd rfl h2
+      · rw [ite_eq_right hab2] at h1; exact absurd rfl h1
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : HermSpace K V} {r : ℕ} (N : NF H r)
@@ -383,11 +343,11 @@ theorem entries {β : Fin r → ℕ} (hβ : IsBlock N β) {s : V ≃ₗ[K] V} (h
 
     rw [hu, map_sum, LinearMap.sum_apply]
     simp only [map_smul, LinearMap.smul_apply, IsDual.e hβ hd, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hlow : ∀ c : Fin r, c < b → ∀ d, IsDual N c d →
       H.B ((s : V →ₗ[K] V) (N.F.e b.castSucc) - N.F.e b.castSucc) d = H.B (s (N.F.e b.castSucc)) d := by
     intro c hcb d hd
-    rw [map_sub, LinearMap.sub_apply, IsDual.e hβ hd b, if_neg (ne_of_gt hcb), sub_zero]
+    rw [map_sub, LinearMap.sub_apply, IsDual.e hβ hd b, ite_eq_right (ne_of_gt hcb), sub_zero]
     rfl
   refine ⟨u, eq_add_of_sub_eq' hu, ?_, ?_⟩
   · intro c
@@ -483,7 +443,7 @@ theorem attained {β : Fin r → ℕ} (hβ : IsBlock N β) {a b : Fin r} (hab : 
   have hv : H.B (star t • d) (star t • d) = 0 := by
     rw [LinearMap.map_smulₛₗ, map_smul H.B, LinearMap.smul_apply, IsDual.iso hd, smul_zero, smul_zero]
   have hxv : H.B (N.F.e a.castSucc) (star t • d) = 0 := by
-    rw [LinearMap.map_smulₛₗ, IsDual.e hβ hd a, if_neg (ne_of_lt hab), smul_zero]
+    rw [LinearMap.map_smulₛₗ, IsDual.e hβ hd a, ite_eq_right (ne_of_lt hab), smul_zero]
   have hBv : ∀ y, H.B y (star t • d) = t * H.B y d := by
     intro y
     rw [LinearMap.map_smulₛₗ, starRingEnd_apply, star_star, smul_eq_mul]
@@ -539,7 +499,7 @@ theorem attained {β : Fin r → ℕ} (hβ : IsBlock N β) {a b : Fin r} (hab : 
         · have h0 : H.B (N.F'.e c.castSucc) (N.ist b) = 0 := by
             by_cases hcj : N.j ≤ c.val
             · rw [N.same c.castSucc (by simpa using hcj), map_smul H.B, LinearMap.smul_apply,
-                N.ist_e c b hbj, if_neg hcb, smul_zero]
+                N.ist_e c b hbj, ite_eq_right hcb, smul_zero]
             · exact N.ist_e' c b (not_le.mp hcj) hbj
           rw [h0, mul_zero, zero_smul]
           exact zero_mem _
@@ -596,7 +556,7 @@ theorem attained {β : Fin r → ℕ} (hβ : IsBlock N β) {a b : Fin r} (hab : 
               exact zero_mem _
           · intro c hc t' _
             have hac : a ≠ c := fun h => absurd (h ▸ hc) (not_le.mpr haj)
-            rw [hA, hea, N.ist_e a c hc, if_neg hac, star_zero, mul_zero, zero_mul]
+            rw [hA, hea, N.ist_e a c hc, ite_eq_right hac, star_zero, mul_zero, zero_mul]
             exact zero_mem _
         rw [smul_smul, smul_smul]
         apply e'_mem_ref N L p hpj

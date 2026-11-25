@@ -102,7 +102,3 @@ theorem ckOn_top_of_all {F : Mat k r → E} (hF : ∀ m : ℕ, CkOn ((m : ℕ) :
     rw [chart_rho hg0 hx.1 hxG]
 
 end Formalism.FourierDecayAlt.P.SmoothnessOrderArithmetic
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

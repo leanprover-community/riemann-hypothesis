@@ -384,7 +384,7 @@ theorem loop_sound (B : ℕ) : ∀ k n c Q : ℕ, loop B k n c Q = true → 1 �
     intro n c Q hrun hn hcount hcop m hnm hmk
     simp only [loop, force_eq] at hrun
     by_cases hg : Nat.gcd n Q = 1
-    · rw [if_pos hg, Bool.and_eq_true] at hrun
+    · rw [ite_eq_left hg, Bool.and_eq_true] at hrun
       obtain ⟨hb, hrest⟩ := hrun
       have hc1 : Nat.count Nat.Prime (n + 1) ≤ c + 1 := by
         rw [Nat.count_succ]; split_ifs <;> omega
@@ -396,11 +396,11 @@ theorem loop_sound (B : ℕ) : ∀ k n c Q : ℕ, loop B k n c Q = true → 1 �
         · exact Nat.Coprime.mul_right (hcop p hp (by omega))
             ((Nat.Prime.coprime_iff_not_dvd hp).2 (Nat.not_dvd_of_pos_of_lt (by omega) (by omega)))
         · exact hcop p hp (by omega)
-    · rw [if_neg hg, Bool.and_eq_true] at hrun
+    · rw [ite_eq_right hg, Bool.and_eq_true] at hrun
       obtain ⟨hb, hrest⟩ := hrun
       have hnp : ¬ n.Prime := fun hp => hg (hcop n hp le_rfl)
       have hc0 : Nat.count Nat.Prime (n + 1) ≤ c := by
-        rw [Nat.count_succ, if_neg hnp]; omega
+        rw [Nat.count_succ, ite_eq_right hnp]; omega
       rcases Nat.eq_or_lt_of_le hnm with rfl | hlt
       · exact ⟨c, hc0, hb⟩
       · exact ih (n + 1) c Q hrest (by omega) hc0 (fun p hp hnp' => hcop p hp (by omega)) m hlt
@@ -642,7 +642,7 @@ theorem h_le {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) (hb : 2 ≤ b) :
     a * log a - a - log a / 2 ≤ b * log b - b - log b / 2 := by
   by_cases ha' : 3 / 2 ≤ a
   · exact h_mono ha' hab
-  push_neg at ha'
+  push Not at ha'
   have hb2 := h_mono (a := 2) (b := b) (by norm_num) hb
   have hla : log a ≤ a - 1 := Real.log_le_sub_one_of_pos (by linarith)
   have hq : (a - 1 / 2) * log a ≤ (a - 1 / 2) * (a - 1) :=
@@ -788,10 +788,6 @@ namespace PI.PC
 
 open Real
 
-theorem log_thirty : log 30 = log 2 + log 3 + log 5 := by
-  rw [← log_mul (by norm_num) (by norm_num), ← log_mul (by norm_num) (by norm_num)]
-  norm_num
-
 theorem log_six : log 6 = log 2 + log 3 := by
   rw [← log_mul (by norm_num) (by norm_num)]
   norm_num
@@ -804,7 +800,7 @@ theorem chebyshevConstantNumeric : ANum := by
   have h5 := log_five_gt_d9
   have h5' := log_five_lt_d9
   unfold ANum chA
-  rw [log_thirty]
+  rw [PI.PC.stir_log_thirty]
   constructor <;> norm_num at * <;> linarith
 
 theorem lcmUpto_le_three_pow : ∀ n < 30, Nat.lcmUpto n ≤ 3 ^ n := by

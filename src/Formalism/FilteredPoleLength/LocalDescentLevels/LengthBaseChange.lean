@@ -122,20 +122,5 @@ theorem lengthBaseChangeLocal : LengthBaseChangeLocal := by
     IsDiscreteValuationRing.addVal_uniformizer hϖ₁]
   simp
 
-namespace LengthBaseChangeAlt
-
-open BQuot
-
-section Ext
-
-variable {O K K₁ V : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K]
-  [Algebra O K] [IsFractionRing O K] [Field K₁] [Algebra K K₁] [FiniteDimensional K K₁]
-  [Algebra.IsSeparable K K₁] [Algebra O K₁] [IsScalarTower O K K₁]
-  [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V]
-
-end Ext
-
-end LengthBaseChangeAlt
-
 
 end Formalism.LatticeBaseChangeAlt

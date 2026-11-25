@@ -561,7 +561,6 @@ open scoped TensorProduct
 
 private theorem sum_map {ι α : Type} [Fintype ι] (f : α → α) (C : ι → Multiset α) :
     ∑ i, (C i).map f = (∑ i, C i).map f := by
-  set_option synthInstance.maxHeartbeats 100000 in
     rw [← Multiset.coe_mapAddMonoidHom, map_sum]
 
 private theorem sat_twist {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} (π : CG E a) {w : Pl E}
@@ -723,7 +722,7 @@ theorem cuspSupport_of (hS : Step) (hT : SuppTwist) (hA : SuppAdd) (hC : SuppCus
     let B : Pl E → Multiset ℂˣ := fun w =>
       if h : ∃ B, HasSatGL w (locOf τ.ρ w) B ∧ IsSatVecGL w (locOf τ.ρ w) v B then h.choose else 0
     have h2 : ∀ᶠ w in Filter.cofinite, HasSatGL w (locOf τ.ρ w) (B w) ∧ IsSatVecGL w (locOf τ.ρ w) v (B w) :=
-      h1.mono fun w h => by simp only [B, dif_pos h]; exact h.choose_spec
+      h1.mono fun w h => by simp only [B, dite_eq_left h]; exact h.choose_spec
     have he : Eig (j v) m B :=
       ⟨h0, haut v, hcap v, h2.mono fun w h => h.2.map j (fun g y => hfin _ y) h0⟩
     obtain ⟨ι, _, n, π, μ, c1, c2, c3, c4, c5, c6⟩ :=

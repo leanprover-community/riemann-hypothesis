@@ -175,14 +175,6 @@ def DegreeKernelLowerBound (A : HLat K) (e : Module.End K A.V) (n : ℕ) : Prop 
 
 end Lemma2
 
-section Lemma4
-
-open NumberField IsDedekindDomain
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
-
-end Lemma4
-
 section Lemma8
 
 structure GMap (K : Type) [Field K] (σ : K →+* ℂ) (G : Type) [Group G] [Fintype G] (T : GoodSet K G)
@@ -207,13 +199,6 @@ structure GMap (K : Type) [Field K] (σ : K →+* ℂ) (G : Type) [Group G] [Fin
   io_eq : ∀ g x, io (rho g x) = ρE g (io x)
 
 attribute [instance] GMap.acgK GMap.modK GMap.fdK GMap.acgV GMap.modV
-
-namespace GMap
-
-variable {K : Type} [Field K] {σ : K →+* ℂ} {G : Type} [Group G] [Fintype G] {T : GoodSet K G}
-  {EE : Type} [AddCommGroup EE] [Module ℂ EE] {ρE : Representation ℂ G EE} (M : GMap K σ G T EE ρE)
-
-end GMap
 
 end Lemma8
 
@@ -298,10 +283,10 @@ theorem mapDomain_mulSingle (i : ι) (a : MonoidAlgebra ℂ (G i)) :
       by_cases hj : j = i
       · subst hj; simp
       · rw [Pi.mulSingle_eq_of_ne hj]; exact hg j (Finset.mem_erase.2 ⟨hj, Finset.mem_univ _⟩)
-    rw [if_pos hg, mul_one]
+    rw [ite_eq_left hg, mul_one]
     conv_lhs => rw [this]
     exact Finsupp.mapDomain_apply_of_injective hinj _ _
-  · rw [if_neg hg, mul_zero]
+  · rw [ite_eq_right hg, mul_zero]
     refine Finsupp.mapDomain_of_notMem_range _ _ ?_
     rintro ⟨h, rfl⟩
     exact hg fun j hj => Pi.mulSingle_eq_of_ne (Finset.ne_of_mem_erase hj) _
@@ -430,8 +415,8 @@ theorem e0_eq (D : D7) [DecidableEq (Σ k : Fin 2, D.nd.PlG k)] : D.ntypes.e0 = 
   rw [finsum_eq_sum_of_fintype]
   refine Finset.sum_congr rfl fun p _ => ?_
   by_cases hp : goodVec D p
-  · rw [if_pos hp]; exact (if_pos hp).trans rfl
-  · rw [if_neg hp]; exact (if_neg hp).trans rfl
+  · rw [ite_eq_left hp]; exact (ite_eq_left hp).trans rfl
+  · rw [ite_eq_right hp]; exact (ite_eq_right hp).trans rfl
 
 theorem atPlace_eq (D : D7) [DecidableEq (Σ k : Fin 2, D.nd.PlG k)] (k : Fin 2) (v : D.nd.PlG k)
     (a : MonoidAlgebra ℂ (GL (Fin D.R.r) (ZMod (D.host.g k)))) :
@@ -462,27 +447,5 @@ def frg (D : D7) : ℝ := (D.R.f : ℝ) * D.R.r / (min (D.host.g 0) (D.host.g 1)
 def LevelRatioBound (D : D7) : Prop := 4 * D.R.f * D.R.r ≤ min (D.host.g 0) (D.host.g 1)
 
 end Record
-
-section Herm
-
-open NumberField IsDedekindDomain
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
-
-end Herm
-
-section Whole
-
-variable {D : D7} {X : BaseLevelRowSide D}
-
-end Whole
-
-section Family
-
-open Formalism.MainNotions
-
-variable {ε : ℝ}
-
-end Family
 
 end Formalism.MainNotions.PrimeDegreeVariant

@@ -416,23 +416,7 @@ def Red.ε : h.G U ⋙ h.H U ⟶ 𝟭 _ where
     refine Tag.Hom.ext (Thick.Hom.ext' (AlgHom.ext fun b ↦ ?_))
     exact (rfl : (Tag.Hom.f f).φ b = (Tag.Hom.f f).φ b)
 
-theorem Red.cG_pull1 : Function.Bijective (h.cG U).pull1 := by
-  refine Function.bijective_iff_has_inverse.2 ⟨(h.cH U).pull1, fun c ↦ ?_, fun c ↦ ?_⟩
-  · rw [← CoefMap.pullCohomologyOne_comp]
-    exact ((CoefMap.id _).pullCohomologyOne_eq_of_natTrans ((h.cG U).comp (h.cH U)) (h.η U) (fun _ b ↦ (rfl : b = b)) c).symm.trans
-      (CoefMap.pullCohomologyOne_id c)
-  · rw [← CoefMap.pullCohomologyOne_comp]
-    exact (((h.cH U).comp (h.cG U)).pullCohomologyOne_eq_of_natTrans (CoefMap.id _) (h.ε U) (fun _ b ↦ (rfl : b = b)) c).trans
-      (CoefMap.pullCohomologyOne_id c)
 
-theorem Red.cG_pull2 : Function.Bijective (h.cG U).pull2 := by
-  refine Function.bijective_iff_has_inverse.2 ⟨(h.cH U).pull2, fun c ↦ ?_, fun c ↦ ?_⟩
-  · rw [← CoefMap.pullCohomologyTwo_comp]
-    exact ((CoefMap.id _).pullCohomologyTwo_eq_of_natTrans ((h.cG U).comp (h.cH U)) (h.η U) (fun _ b ↦ (rfl : b = b)) c).symm.trans
-      (CoefMap.pullCohomologyTwo_id c)
-  · rw [← CoefMap.pullCohomologyTwo_comp]
-    exact (((h.cH U).comp (h.cG U)).pullCohomologyTwo_eq_of_natTrans (CoefMap.id _) (h.ε U) (fun _ b ↦ (rfl : b = b)) c).trans
-      (CoefMap.pullCohomologyTwo_id c)
 
 end FubiniStudyChowHeightFormula₂.Adr
 end -- clump:auto
@@ -647,9 +631,6 @@ theorem fe_uniq (t : P →+* A) (ht : t.FormallyEtale) (π : B →+* C) (hn : Is
   ext x
   exact AlgHom.congr_fun key x
 
-theorem isNilpotent_of_isNilDP {J : Ideal B} {δ : DividedPowers J} (h : IsNilDP δ) : IsNilpotent J := by
-  apply GlobalTheory.AnPer.TaylorCore.isNilpotent_of_isNilDP <;> assumption
-
 end Rings
 
 variable {R : Type} [CommRing R] {I : Ideal R} {X : Scheme.{0}} {κ : DividedPowers I} {s : X ⟶ Sp R}
@@ -659,16 +640,8 @@ instance (U : X.affineOpens) : IsOpenImmersion (affPt s U) := U.2.isOpenImmersio
 theorem nil_ker {γ : DividedPowers I} (T : Thick γ s) : IsNilpotent (RingHom.ker T.π) := by
   have : RingHom.ker T.π = T.J := Ideal.ext T.ker
   rw [this]
-  exact isNilpotent_of_isNilDP T.nil
+  exact GlobalTheory.AnPer.TaylorCore.isNilpotent_of_isNilDP T.nil
 
-theorem res_etale {U V : X.affineOpens} (h : V.1 ≤ U.1) : (Sec.res s h : Sec s U.1 →+* Sec s V.1).Etale := by
-  have e : V.1 ≤ (𝟙 X : X ⟶ X) ⁻¹ᵁ U.1 := h
-  have H := (𝟙 X : X ⟶ X).etale_appLE U.2 V.2 e
-  have key : ((𝟙 X : X ⟶ X).appLE U.1 V.1 e).hom = (Sec.res s h : Sec s U.1 →+* Sec s V.1) := by
-    simp only [Scheme.Hom.appLE, Scheme.Hom.id_app]
-    rfl
-  rw [key] at H
-  exact H
 
 theorem sec_smooth (hs : Smooth s) (U : X.affineOpens) : Algebra.Smooth R (Sec s U.1) := by
   have e : U.1 ≤ s ⁻¹ᵁ (⊤ : (Sp R).Opens) := le_top
@@ -984,55 +957,7 @@ theorem acyc_toSmall (hinf : ∀ k l, ∃ m, U m = U k ⊓ U l) (T : (IsSmall γ
 
 end Comma
 
-theorem tag_pull1 (hcov : ⨆ k, U k = ⊤) (hinf : ∀ k l, ∃ m, U m = U k ⊓ U l) :
-    Function.Bijective (CoefMap.restrict (O γ s) (Tag.forget γ s U)).pull1 := by
-  have key : ⇑(CoefMap.restrict (O γ s) (Tag.forget γ s U)).pull1 =
-      ⇑(CoefMap.restrict ((IsSmall γ s U).ι ⋙ O γ s) (toSmall γ s U)).pull1 ∘
-        ⇑(CoefMap.restrict (O γ s) (IsSmall γ s U).ι).pull1 :=
-    funext fun c => (restrict_pull1 (O γ s) (IsSmall γ s U).ι (toSmall γ s U) c).symm
-  rw [key]
-  exact (qa1 _ _ (fun T => acyc_toSmall hinf T)).comp
-    (SmallDescent.pull1_bijective R I γ X s K U hcov)
 
-private theorem pull2_restrict_isSmall_bijective_of_cover (hcov : ⨆ k, U k = ⊤) :
-    Function.Bijective (CoefMap.restrict (O γ s) (IsSmall γ s U).ι).pull2 := by
-  apply Desc.pull2_bijective
-  · intro T b
-    obtain ⟨L, l, hl⟩ := SmallDescent.exists_isLoc T b
-    obtain ⟨hu, hsurj, hker, hfac⟩ := hl
-    refine ⟨L, l, hu, ?_, hker, ?_⟩
-    · intro y
-      obtain ⟨n, N, h⟩ := hsurj y
-      exact ⟨N, n, h⟩
-    · intro S u hu'
-      obtain ⟨ψ, hψ⟩ := hfac S u hu'
-      exact ⟨ψ, hψ, fun ψ' h' =>
-        SmallDescent.IsLoc.hom_ext ⟨hu, hsurj, hker, hfac⟩ (h'.trans hψ.symm)⟩
-  · intro S S' a hS
-    exact SmallDescent.isSmall_of_hom a hS
-  · intro T
-    obtain ⟨σ, hσ, hσs⟩ := SmallDescent.exists_cover hcov T
-    refine ⟨σ.card, fun i => (σ.equivFin.symm i : T.B), ?_, ?_⟩
-    · have hr : Set.range (fun i => (σ.equivFin.symm i : T.B)) = (σ : Set T.B) := by
-        ext x
-        constructor
-        · rintro ⟨i, rfl⟩
-          exact (σ.equivFin.symm i).2
-        · intro hx
-          exact ⟨σ.equivFin ⟨x, hx⟩, by simp⟩
-      rw [hr]
-      exact hσ
-    · intro i S u hu
-      exact hσs _ (σ.equivFin.symm i).2 S u hu
-
-theorem tag_pull2 (hcov : ⨆ k, U k = ⊤) (hinf : ∀ k l, ∃ m, U m = U k ⊓ U l) :
-    Function.Bijective (CoefMap.restrict (O γ s) (Tag.forget γ s U)).pull2 := by
-  have key : ⇑(CoefMap.restrict (O γ s) (Tag.forget γ s U)).pull2 =
-      ⇑(CoefMap.restrict ((IsSmall γ s U).ι ⋙ O γ s) (toSmall γ s U)).pull2 ∘
-        ⇑(CoefMap.restrict (O γ s) (IsSmall γ s U).ι).pull2 :=
-    funext fun c => (restrict_pull2 (O γ s) (IsSmall γ s U).ι (toSmall γ s U) c).symm
-  rw [key]
-  exact (qa2 _ _ (fun T => acyc_toSmall hinf T)).comp (pull2_restrict_isSmall_bijective_of_cover hcov)
 
 end FubiniStudyChowHeightFormula₂.Adr
 end -- clump:auto

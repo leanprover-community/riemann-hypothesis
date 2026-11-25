@@ -15,19 +15,6 @@ open Complex Filter Topology
 
 namespace PositivityTheory.RgJS.LandauNonnegativeDirichletSeries
 
-theorem summable_pow {ι : Type} (b μ : ι → ℝ) (hb : ∀ j, 0 ≤ b j) (hμ : ∀ j, 0 ≤ μ j) (a : ℝ)
-    (h : ∀ σ : ℝ, a < σ → Summable (fun j => b j * Real.exp (-(μ j) * σ))) (n : ℕ) (σ : ℝ) (hσ : a < σ) :
-    Summable (fun j => b j * μ j ^ n * Real.exp (-(μ j) * σ)) := by
-  apply GlobalTheory.genDirichlet_summable_pow <;> assumption
-
-theorem hasSum_iteratedDeriv {ι : Type} (b μ : ι → ℝ) (F : ℂ → ℂ)
-    (hb : ∀ j, 0 ≤ b j) (hμ : ∀ j, 0 ≤ μ j) (a : ℝ)
-    (h : ∀ s : ℂ, a < s.re → HasSum (fun j => (b j : ℂ) * Complex.exp (-(μ j : ℂ) * s)) (F s))
-    (n : ℕ) (s : ℂ) (hs : a < s.re) :
-    HasSum (fun j => (b j : ℂ) * (-(μ j : ℂ)) ^ n * Complex.exp (-(μ j : ℂ) * s))
-      (iteratedDeriv n F s) := by
-  apply GlobalTheory.genDirichlet_hasSum_iteratedDeriv <;> assumption
-
 theorem propagate (f g : ℂ → ℂ) (a b : ℝ) (hf : ∀ σ : ℝ, a < σ → AnalyticAt ℂ f σ)
     (hg : ∀ σ : ℝ, a < σ → AnalyticAt ℂ g σ) (he : ∀ σ : ℝ, b < σ → f σ = g σ) :
     ∀ σ : ℝ, a < σ → f =ᶠ[𝓝 (σ : ℂ)] g := by
@@ -150,7 +137,7 @@ theorem linL (I : Type) (c l : I → ℝ) (σ₀ σ₁ : ℝ) (F : ℂ → ℂ) 
       (iteratedDeriv n F ((s0 : ℝ) : ℂ)) := by
     intro n
     rw [hev.iteratedDeriv_eq n]
-    exact hasSum_iteratedDeriv c l G hc hl β' hGsum n _ (by simpa using hβ's)
+    exact GlobalTheory.genDirichlet_hasSum_iteratedDeriv c l G hc hl β' hGsum n _ (by simpa using hβ's)
   have hj : ∀ i, HasSum (fun n : ℕ => c i * Real.exp (-(l i * s0)) * ((2 * ε * l i) ^ n / n.factorial))
       (c i * Real.exp (-(l i * z))) := by
     intro i

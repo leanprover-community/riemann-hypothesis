@@ -39,7 +39,7 @@ theorem UpperTheory.Reformulated.B.IntertwinerStructure.intw_sum :
   intro Wp Wq _ _ _ _ _ _ P Bs e hs ι s A A' h
   have hv : ∀ Φ ρ q, (Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR P Bs e Φ ρ).1 q =
       Formalism.FourierDecayAlt.P.CutMP.Gauge.rawR P Bs.μsec e Φ.1 ρ q := fun Φ ρ q => by
-    simp only [Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR, Formalism.FourierDecayAlt.MA.toSm, dif_pos (hs Φ ρ)]
+    simp only [Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR, Formalism.FourierDecayAlt.MA.toSm, dite_eq_left (hs Φ ρ)]
   have hh : ∀ X Y : Wq →L[ℂ] Wp, Formalism.FourierDecayAlt.B.hsVec (X + Y) = Formalism.FourierDecayAlt.B.hsVec X + Formalism.FourierDecayAlt.B.hsVec Y := fun _ _ => rfl
   let T : _ →+ _ := AddMonoidHom.mk' (Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR P Bs e) fun Φ Ψ => funext fun ρ => Subtype.ext <|
     funext fun q => (hv _ ρ q).trans <| Eq.trans (by simp [Formalism.FourierDecayAlt.P.CutMP.Gauge.rawR, hh, inner_add_right, mul_add])

@@ -173,7 +173,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentralizerOrbitSumConjugate =====
@@ -458,7 +457,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumRegroupFibreBijStatement =====
@@ -546,8 +544,8 @@ theorem cxF_smul_conj_gen : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : In
   by_cases hca : (0 < (star (Projectivization.rep (a.2 : Projectivization ℂ (Fin G.n → ℂ))) ⬝ᵥ
         (herm G v β *ᵥ Projectivization.rep (a.2 : Projectivization ℂ (Fin G.n → ℂ)))).re ∧
       FixL G v β y (Projectivization.rep (a.2 : Projectivization ℂ (Fin G.n → ℂ))))
-  · rw [if_pos hca, if_pos (hcond.2 hca), hF, hF', hM]
-  · rw [if_neg hca, if_neg (mt hcond.1 hca)]
+  · rw [ite_eq_left hca, ite_eq_left (hcond.2 hca), hF, hF', hM]
+  · rw [ite_eq_right hca, ite_eq_right (mt hcond.1 hca)]
 
 end GlobalTheory.CxUnfold
 end -- clump:auto
@@ -580,7 +578,7 @@ theorem support_cxF_finite : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : I
     ext y
     simp only [Function.mem_support, Set.mem_empty_iff_false, iff_false, not_not]
     unfold cxF
-    rw [if_neg (fun hc => hpos hc.1)]
+    rw [ite_eq_right (fun hc => hpos hc.1)]
 
 end GlobalTheory.CxUnfold
 end -- clump:auto
@@ -658,11 +656,8 @@ end Generic
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
-theorem sh_mul (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
-  simp only [sh, map_mul, MulOpposite.unop_mul]
-
 theorem sh_units (y : G.Cˣ) : sh G (y : G.C) * sh G ((y⁻¹ : G.Cˣ) : G.C) = 1 := by
-  rw [← sh_mul, Units.inv_mul]; simp [sh]
+  rw [← GlobalTheory.LKMid.PairConj.sh_mul, Units.inv_mul]; simp [sh]
 
 theorem key (y v : G.Cˣ) (β : G.C) (s : ℚ) :
     ((y * v * y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C s * (y * β * sh G y)) * sh G ((y * v * y⁻¹ : G.Cˣ) : G.C) =
@@ -670,7 +665,7 @@ theorem key (y v : G.Cˣ) (β : G.C) (s : ℚ) :
   calc ((y * v * y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C s * (y * β * sh G y)) * sh G ((y * v * y⁻¹ : G.Cˣ) : G.C)
       = s • ((y : G.C) * v * (((y⁻¹ : G.Cˣ) : G.C) * y) * β * (sh G y * sh G ((y⁻¹ : G.Cˣ) : G.C)) *
           sh G v * sh G y) := by
-        simp only [Units.val_mul, sh_mul, ← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, mul_assoc]
+        simp only [Units.val_mul, GlobalTheory.LKMid.PairConj.sh_mul, ← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, mul_assoc]
     _ = _ := by
         rw [Units.inv_mul, sh_units, mul_one, mul_one, Algebra.smul_def]; simp only [mul_assoc]
 
@@ -776,7 +771,6 @@ end GlobalTheory.LKMid.RelMove
 
 namespace GlobalTheory.LKMid.Pair
 
-
 open GlobalTheory.LKMid.RelMove in
 theorem term_eq_of_rel : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P Q : Pair G) (Kf : Subgroup G.GAf)
     (f : G.GAf → ℂ) (r : ℕ) (K : Subgroup (Gr G r)) (φ : Gr G r → ℂ), 0 < r →
@@ -875,7 +869,7 @@ theorem eigL_smul (y : grp G β) {z : Fin G.n → ℂ} (hz : z ≠ 0) {u : ℂ} 
       refine ⟨c, ?_⟩
       rw [Matrix.mulVec_smul, smul_comm c u z] at hc
       exact smul_right_injective _ hu hc
-    simp only [eigL, dif_neg hF, dif_neg hF']
+    simp only [eigL, dite_eq_right hF, dite_eq_right hF']
 
 theorem toV_ne_zero (η : grp G β) {z : Fin G.n → ℂ} (hz : z ≠ 0) :
     (toV G v β η : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ z ≠ 0 := by
@@ -910,7 +904,7 @@ theorem eigL_conj (η y : grp G β) {z : Fin G.n → ℂ} (hz : z ≠ 0) :
         rw [Matrix.mulVec_mulVec, ← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one,
           Matrix.one_mulVec]
       rwa [e1, e2] at h2
-    simp only [eigL, dif_neg hF, dif_neg hF']
+    simp only [eigL, dite_eq_right hF, dite_eq_right hF']
 
 def cxM (w : Polynomial G.F → ℂ → ℂ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t)
     (Kf : Subgroup G.GAf) (f : G.GAf → ℂ) (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ)
@@ -1088,7 +1082,6 @@ theorem cls_part
   rw [_root_.GlobalTheory.CxUnfoldGen.cls_eq_of_uniq p G v _ Kf f hf K' f' hf' β x t hx hu y₀]
   rfl
 
-
 include hf hf' in
 theorem cxSumAtM_unfold
     (hA : ∀ (h : G.GAf × Gr G 1) (z : Fin G.n → ℂ), 0 < (star z ⬝ᵥ (herm G v β *ᵥ z)).re →
@@ -1200,7 +1193,7 @@ theorem markTerm_rel (ha : G.a = 1) (hv : sigPosH (G.gram_herm v) = 1) {P P' : P
       _root_.GlobalTheory.LKMid.Pair.term_eq_of_rel p G P P' Kf f 1 K' f' one_pos hf hf' h]
     congr 2
     exact mark_unique ha hv P' hM'.choose_spec ((Pair.mark_iff_of_rel p G P P' _ h).mp hM.choose_spec)
-  · rw [dif_neg hM, dif_neg (fun h' => hM (hiff.mpr h'))]
+  · rw [dite_eq_right hM, dite_eq_right (fun h' => hM (hiff.mpr h'))]
 
 include hf hf' in
 theorem clsW_eq_markTerm (ha : G.a = 1) (hv : sigPosH (G.gram_herm v) = 1) (P : Pair G)

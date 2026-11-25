@@ -128,7 +128,7 @@ private theorem triv {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalS
       rw [Subsingleton.elim c 0]
       exact zero_mem _
     · refine key.1 (((isCrys_isDR_sub_quot φ hφ σ ρ' hcont hρ' j hjρ).1 ?_).1 h)
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       rintro ⟨v, t⟩ hx
       have h1 := congrArg p hx
       rw [hj, map_add (f := _), hex.apply_apply_eq_zero, LinearMap.map_smul_of_tower, hs, zero_add, map_zero,

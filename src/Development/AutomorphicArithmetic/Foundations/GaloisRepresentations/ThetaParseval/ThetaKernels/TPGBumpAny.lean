@@ -135,7 +135,7 @@ private theorem vmv_mem_pk {X : Spc F E n} {W : Spc F E d} {z : Fin n → AE F E
     (fun p h => by convert neg_mem h; ext i j; simp [vecMulVec_apply]) hz
   refine lat_ind_pk (p := fun y => vecMulVec (fun i => a • inclR (AF F) (x i)) y ∈ latAtV X W v)
     (fun a' h1' h2' y hy => AddSubgroup.subset_closure ⟨a * a', at_mulA_pk h1 a', by rw [map_mul]; exact mul_mem h2 h2',
-      x, hx, y, hy, by ext i j; simp [vecMulVec_apply, incM, smul_mul_smul_comm]; rw [mul_comm a a', mul_smul]⟩)
+      x, hx, y, hy, by ext i j; simp [vecMulVec_apply, incM]; rw [mul_comm a a', mul_smul]⟩)
     (by convert zero_mem (latAtV X W v); ext i j; simp [vecMulVec_apply])
     (fun p q h h' => by convert add_mem h h'; ext i j; simp [vecMulVec_apply, mul_add])
     (fun p h => by convert neg_mem h; ext i j; simp [vecMulVec_apply]) hy
@@ -150,7 +150,7 @@ private theorem gam_ind_pk {X : Spc F E n} {W : Spc F E d} {p : Matrix (Fin n) (
       (fun j => sg v 1 • inclR (AF F) (y j)) := by
     ext i j
     have e1 : a * sg v 1 = a := by rw [mul_comm]; exact at_self_pk h1
-    simp [vecMulVec_apply, incM, smul_mul_smul_comm, e1]; rw [← mul_smul, mul_comm (sg v 1) a, e1]
+    simp [vecMulVec_apply, incM]; rw [← mul_smul, mul_comm (sg v 1) a, e1]
   rw [e]
   exact gen _ (AddSubgroup.subset_closure ⟨a, h1, h2, x, hx, rfl⟩) _
     (AddSubgroup.subset_closure ⟨sg v 1, at_sg 1, by rw [ev_sg]; exact one_mem _, y, hy, rfl⟩)
@@ -317,7 +317,7 @@ private theorem exists_isoW_inert_pk {σ : E →ₐ[F] E} {B : Base F E} {W : Sp
     rw [Matrix.transpose_transpose, show Yᵀ.map (piE h) = a.1.submatrix id f by rw [Matrix.transpose_map, eY]; rfl] at e
     refine e.trans (Matrix.ext fun i j => (congrFun (congrFun hg (f i)) (f j)).trans ?_)
     have := i.2; have := j.2
-    rw [Matrix.smul_apply]; simp only [antiJ, Matrix.of_apply, f, Fin.val_castLE]; rw [ite_eq_right (by omega)]; simp
+    rw [Matrix.smul_apply]; simp only [antiJ, f, Fin.val_castLE]; rw [ite_eq_right (by omega)]; simp
   · obtain ⟨_, h4⟩ := (mem_latW_iff hw h W z).1 hz
     rw [← Matrix.mulVec_transpose]
     refine mem_Oh_pk (fun u hu => congrFun (at_mulVec_left (at_transpose hR) z u hu) j) ((mem_intLoc_iff hw h _).2 ?_)
@@ -565,8 +565,8 @@ private theorem mem_UAt_of_locGrp_pk {F E : Type} [Field F] [NumberField F] [Fie
 
 theorem _root_.UpperTheory.TP.bumpAny_k : Tools_k → BumpAny_k := by
   intro T F E _ _ _ _ _ σ B n d X W M χX χW om hP hn hd v N hN
-  obtain ⟨ω, ρ, L⟩ := PositivityTheory.ThKH.Locrep.locRepEx_k F E σ n d B X W M om
-    ⟨hP.base, ⟨n, 0, hP.herm⟩, ⟨d, 0, hP.skew⟩, hP.good, χX, χW, hP.weil⟩ v
+  obtain ⟨ω, ρ, L, _⟩ := PositivityTheory.ThKH.Locrep.exists_smooth_local_rep hP.base.std
+    (IsUWeilPair.isUSplitting hP.weil) v
   obtain ⟨Λ, x₁, r, ϖ, D⟩ := UpperTheory.exists_weilLatticeDatum F E σ B n d X W n 0 d 0 hP.base hP.herm hP.skew hd v
   obtain ⟨hvS, hv0, θ, hθ, hvac⟩ := hP.good.vac v
   have hat : ∀ γ ∈ latAtV X W v, At (evFin F v) γ := (latAtV_at_stable X W v).1

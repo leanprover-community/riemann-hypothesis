@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.PointShiftSt
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.FlatCM.Model
 
 open AlgebraicGeometry CategoryTheory NumberField
@@ -67,5 +65,3 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {K : Ty
   {ρ : 𝓞 K} {σ₁ : K →+* ℂ}
 
 end GlobalTheory.FlatCM.Model
-
-end

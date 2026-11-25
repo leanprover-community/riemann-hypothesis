@@ -7,49 +7,9 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Exists
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 
@@ -122,13 +82,13 @@ theorem exists_half (c : E ≃ₐ[ℚ] E) (hcc : c * c = 1) {q : ℕ} (hq : q �
     rw [hinvI, ← hmem, smul_sub] at h2
     rcases @lt_trichotomy _ o P (c • P) with hl | hl | hl
     · left
-      rw [if_pos hl] at h1
-      rw [if_neg (@not_lt_of_gt _ o.toPreorder _ _ hl), smul_zero, sub_zero] at h2
+      rw [ite_eq_left hl] at h1
+      rw [ite_eq_right (@not_lt_of_gt _ o.toPreorder _ _ hl), smul_zero, sub_zero] at h2
       exact ⟨h1, h2⟩
     · exact absurd hl.symm (h P hP hqP)
     · right
-      rw [if_neg (@not_lt_of_gt _ o.toPreorder _ _ hl), sub_zero] at h1
-      rw [if_pos hl, smul_one] at h2
+      rw [ite_eq_right (@not_lt_of_gt _ o.toPreorder _ _ hl), sub_zero] at h1
+      rw [ite_eq_left hl, smul_one] at h2
       exact ⟨h1, h2⟩
   have hrad : a * c • a ∈ (Ideal.span {(q : 𝓞 E)}).radical := by
     rw [Ideal.radical_eq_sInf, Submodule.mem_sInf]
@@ -327,7 +287,7 @@ theorem exists_half_adele (c : E ≃ₐ[ℚ] E) (hcc : c * c = 1) (P : ℕ → P
     intro v
     by_cases hv : P (pr v)
     · obtain ⟨a, r, s, h1, h2⟩ := exists_half c hcc (pr_prime v).ne_zero (h _ (pr_prime v) hv)
-      exact ⟨a, r, s, fun h => absurd hv h, h1, by rw [if_pos hv, h2]⟩
+      exact ⟨a, r, s, fun h => absurd hv h, h1, by rw [ite_eq_left hv, h2]⟩
     · exact ⟨0, 0, 0, fun _ => rfl, by simp, by simp [hv]⟩
   choose a r s h0 h1 h2 using loc
   obtain ⟨a', ha', ha⟩ := exists_asm a

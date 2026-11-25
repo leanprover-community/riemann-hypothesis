@@ -5,49 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Compl
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitaryOfOrderDvd
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -68,7 +25,7 @@ theorem exists_decomp {K X Y : Type} [Field K] [AddCommGroup X] [Module K X] [Ad
     ∃ (x : X) (t : Fin c → K), y = ι x + ∑ n, t n • a n := by
   let Ψ : (X × (Fin c → K)) →ₗ[K] Y := ι.coprod (Fintype.linearCombination K a)
   have hinj : Function.Injective Ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨x, t⟩ h
     have h' : ι x + ∑ n, t n • a n = 0 := h
     have ht : t = 0 := funext fun n => by
@@ -124,7 +81,7 @@ theorem exists_decomp_chainSpace_definite_add_normalFrame {j : ℕ} (hj : j < D.
       omega
   refine exists_decomp (D.sp.iXY j) ?_ ?_ (fun n : Fin (nAux D j) => normalFr D j E Ev z n)
     (fun n => (D.sp.Y j).hT (b n)) (fun n x => ?_) (fun n n' hn => ?_) (fun n => ?_) y
-  · set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  · rw [injective_iff_map_eq_zero]
     intro x hx
     refine (D.sp.X j).nondeg.1 x fun x' => ?_
     rw [← D.sp.iXY_isom j hj, hx, map_zero, LinearMap.zero_apply]
@@ -140,44 +97,44 @@ theorem exists_decomp_chainSpace_definite_add_normalFrame {j : ℕ} (hj : j < D.
     have l2 := n'.2
     simp only [b, normalFr]
     by_cases a1 : (n : ℕ) < nAux D j / 2
-    · rw [if_pos a1]
+    · rw [ite_eq_left a1]
       by_cases c1 : (n' : ℕ) < nAux D j / 2
-      · rw [if_pos c1, (h1 _ c1 _ a1).2.2, if_neg hne.symm]
-      rw [if_neg c1]
+      · rw [ite_eq_left c1, (h1 _ c1 _ a1).2.2, ite_eq_right hne.symm]
+      rw [ite_eq_right c1]
       by_cases c2 : Even j ∧ (n' : ℕ) = nAux D j / 2
-      · rw [if_pos c2]
+      · rw [ite_eq_left c2]
         exact sym _ _ ((h3 c2.1).2.2 _ a1).2
-      · rw [if_neg c2, map_smul, (h1 _ (hlt _ l2 c1 c2) _ a1).2.1, smul_zero]
-    rw [if_neg a1]
+      · rw [ite_eq_right c2, map_smul, (h1 _ (hlt _ l2 c1 c2) _ a1).2.1, smul_zero]
+    rw [ite_eq_right a1]
     by_cases a2 : Even j ∧ (n : ℕ) = nAux D j / 2
-    · rw [if_pos a2]
+    · rw [ite_eq_left a2]
       by_cases c1 : (n' : ℕ) < nAux D j / 2
-      · rw [if_pos c1]
+      · rw [ite_eq_left c1]
         exact ((h3 a2.1).2.2 _ c1).1
-      rw [if_neg c1]
+      rw [ite_eq_right c1]
       by_cases c2 : Even j ∧ (n' : ℕ) = nAux D j / 2
       · exact absurd (a2.2.trans c2.2.symm) hne
-      · rw [if_neg c2, map_smul, ((h3 a2.1).2.2 _ (hlt _ l2 c1 c2)).2, smul_zero]
-    · rw [if_neg a2]
+      · rw [ite_eq_right c2, map_smul, ((h3 a2.1).2.2 _ (hlt _ l2 c1 c2)).2, smul_zero]
+    · rw [ite_eq_right a2]
       by_cases c1 : (n' : ℕ) < nAux D j / 2
-      · rw [if_pos c1]
+      · rw [ite_eq_left c1]
         exact (h1 _ c1 _ (hlt _ l1 a1 a2)).1
-      rw [if_neg c1]
+      rw [ite_eq_right c1]
       by_cases c2 : Even j ∧ (n' : ℕ) = nAux D j / 2
-      · rw [if_pos c2]
+      · rw [ite_eq_left c2]
         exact sym _ _ ((h3 c2.1).2.2 _ (hlt _ l1 a1 a2)).1
-      · rw [if_neg c2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l2 c1 c2),
-          if_neg (show ¬ nAux D j - 1 - (n : ℕ) = nAux D j - 1 - (n' : ℕ) by omega), smul_zero]
+      · rw [ite_eq_right c2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l2 c1 c2),
+          ite_eq_right (show ¬ nAux D j - 1 - (n : ℕ) = nAux D j - 1 - (n' : ℕ) by omega), smul_zero]
   · have l1 := n.2
     simp only [b, normalFr]
     by_cases a1 : (n : ℕ) < nAux D j / 2
-    · rw [if_pos a1, if_pos a1, (h1 _ a1 _ a1).2.2, if_pos rfl]
+    · rw [ite_eq_left a1, ite_eq_left a1, (h1 _ a1 _ a1).2.2, ite_eq_left rfl]
       exact one_ne_zero
-    rw [if_neg a1, if_neg a1]
+    rw [ite_eq_right a1, ite_eq_right a1]
     by_cases a2 : Even j ∧ (n : ℕ) = nAux D j / 2
-    · rw [if_pos a2, if_pos a2, (h3 a2.1).1]
+    · rw [ite_eq_left a2, ite_eq_left a2, (h3 a2.1).1]
       exact neg_ne_zero.2 hT
-    · rw [if_neg a2, if_neg a2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l1 a1 a2), if_pos rfl, smul_eq_mul, mul_one]
+    · rw [ite_eq_right a2, ite_eq_right a2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l1 a1 a2), ite_eq_left rfl, smul_eq_mul, mul_one]
       split_ifs
       · exact neg_ne_zero.2 hT
       · exact hT
@@ -231,19 +188,19 @@ theorem isUnit_chainMat {j : ℕ} (hj : j < D.R.m) (γ : GL (Fin (D.sp.X j).rank
     by_cases h : (b : ℕ) < D.R.k
     · refine ⟨⟨b, by omega⟩, fun i => ?_⟩
       unfold chainMat colX
-      rw [if_pos h, dif_pos hb]
+      rw [ite_eq_left h, dite_eq_left hb]
       rfl
     · refine ⟨⟨b + nAux D j, by omega⟩, fun i => ?_⟩
       unfold chainMat colX
       dsimp only
-      rw [if_neg (by omega), if_neg (by omega)]
-      simp only [Nat.add_sub_cancel, dif_pos hb]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+      simp only [Nat.add_sub_cancel, dite_eq_left hb]
       rfl
   · have hb := b.2
     refine ⟨⟨D.R.k + b, by omega⟩, (s : D.host.E) ^ ((b : ℕ) + 1), pow_ne_zero _ (Nat.cast_ne_zero.2 hs), fun i => ?_⟩
     unfold chainMat
     dsimp only
-    rw [if_neg (by omega), if_pos (by omega), Nat.add_sub_cancel_left]
+    rw [ite_eq_right (by omega), ite_eq_left (by omega), Nat.add_sub_cancel_left]
   · obtain ⟨x, t, h⟩ := exists_decomp_chainSpace_definite_add_normalFrame hj hA ((D.sp.Y j).frame.equivFun.symm y)
     refine ⟨(D.sp.X j).frame.repr x, t, ?_⟩
     unfold frameMat
@@ -404,7 +361,7 @@ theorem exists_frame_ortho (V : HSp D) (b : Bool)
       have h4 := hon a a'
       cases b
       · simpa [Matrix.one_apply] using h4
-      · rw [if_pos rfl, Matrix.neg_apply, Matrix.one_apply, ← h4]
+      · rw [ite_eq_left rfl, Matrix.neg_apply, Matrix.one_apply, ← h4]
         simp
 
 theorem exists_inertPlace_seesawW_scalar_frame (Pg : Finset (Pl D.host.E)) (hP : ∀ P ∈ Pg, ∃ e : AE D, IsIdemAt e P) {i : ℕ} (h1 : 1 ≤ i)

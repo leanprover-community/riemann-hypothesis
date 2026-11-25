@@ -33,13 +33,6 @@ noncomputable section
 
 namespace Formalism.NG
 
-section HomQuotAux
-
-variable {R O M NN : Type*} [Ring R] [CommRing O] [AddCommGroup M] [Module R M] [Module O M]
-  [SMulCommClass R O M] [AddCommGroup NN] [Module R NN] {g : Type} [Fintype g]
-
-end HomQuotAux
-
 section KerHomAux
 
 variable {R : Type*} [Ring R] {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
@@ -57,13 +50,6 @@ def uncurryEquiv : (g → LatQ O d ρ) ≃ₗ[O] (g × d → KO O) where
 variable [SMulCommClass R O (LatQ O d ρ)]
 
 end KerHomAux
-
-section LenCokerAux
-
-variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-  {ι : Type} [Fintype ι] [DecidableEq ι]
-
-end LenCokerAux
 
 end Formalism.NG
 end -- clump:auto
@@ -125,7 +111,7 @@ lemma gen_key {M G : Type} [Fintype M] [DecidableEq M] [Fintype G] [DecidableEq 
         ((Matrix.of fun i l => ∑ p, if e p = i then W (snf.f p) l else 0) * U) (e p) (snf.f q)) = 1 := by
       ext p q
       simp only [Matrix.of_apply, Matrix.mul_apply, e.injective.eq_iff, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       rw [← Matrix.mul_apply, hWU]
       simp [Matrix.one_apply, snf.f.injective.eq_iff]
     rw [hZ, Matrix.det_one]
@@ -259,7 +245,7 @@ theorem genericFin : StatGenericFin := by
       simp only [c, r, Matrix.single_apply]
       split_ifs with h1
       · obtain ⟨rfl, rfl⟩ := h1
-        rw [Function.surjInv_eq (hρ w), Matrix.single_apply, if_neg, smul_zero]
+        rw [Function.surjInv_eq (hρ w), Matrix.single_apply, ite_eq_right, smul_zero]
         rintro ⟨rfl, rfl⟩
         exact hy rfl
       · simp

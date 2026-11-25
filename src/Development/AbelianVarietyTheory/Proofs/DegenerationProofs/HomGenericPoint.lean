@@ -52,7 +52,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
 
-noncomputable section
 namespace GlobalTheory.ZH.InFibChart
 
 theorem eval_scale {K J : Type} [CommRing K] (c : K) (x : J → K) {F : MvPolynomial J K} {d : ℕ}
@@ -283,4 +282,3 @@ theorem inFib_of_chart : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω
   rw [eval_scale u _ hPf, ← hev, h0, mul_zero]
 
 end GlobalTheory.ZH.InFibChart
-end

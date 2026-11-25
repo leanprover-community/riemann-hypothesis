@@ -59,11 +59,11 @@ theorem isCompact_support_dcos (w : Pl E) (a : ℕ) (t : GLw a w) :
   constructor
   · intro h
     by_contra hn
-    refine h (if_neg ?_)
+    refine h (ite_eq_right ?_)
     rintro ⟨x, hx, y, hy, rfl⟩
     exact hn ⟨x, y, ⟨hx, hy⟩, rfl⟩
   · rintro ⟨x, y, ⟨hx, hy⟩, rfl⟩
-    rw [if_pos ⟨x, hx, y, hy, rfl⟩]
+    rw [ite_eq_left ⟨x, hx, y, hy, rfl⟩]
     exact one_ne_zero
 
 end GlobalTheory.CompanionTheory.IwFacts

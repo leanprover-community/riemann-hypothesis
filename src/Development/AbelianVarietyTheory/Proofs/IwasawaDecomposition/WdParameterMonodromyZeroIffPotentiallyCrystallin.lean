@@ -69,14 +69,6 @@ namespace GlobalTheory.PstSst
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem apply_mem_kur (g : GQ l) (c : ↥(MaximalUnramifiedExtension l)) : g (c : Om l) ∈ MaximalUnramifiedExtension l := by
-  have h : (MaximalUnramifiedExtension l).map (g : Om l →ₐ[ℚ_[l]] Om l) ≤ MaximalUnramifiedExtension l := by
-    conv_lhs => rw [MaximalUnramifiedExtension, IntermediateField.adjoin_map]
-    refine IntermediateField.adjoin.mono _ _ _ ?_
-    rintro _ ⟨x, ⟨m, h0, hm, hx⟩, rfl⟩
-    exact ⟨m, h0, hm, by rw [← map_pow, hx, map_one]⟩
-  exact h ⟨c, c.2, rfl⟩
-
 theorem mem_of_fixed (K : FinExt l) (x : Om l) (hx : ∀ g ∈ GK K, g x = x) : x ∈ K.1 := by
   have : IsGalois ℚ_[l] (Om l) := {}
   rw [← InfiniteGalois.fixedField_fixingSubgroup K.1, IntermediateField.mem_fixedField_iff]
@@ -132,12 +124,12 @@ theorem finrank_dst {n : ℕ} (b : Basis (Fin n) ↥(MaximalUnramifiedExtension 
     exact b.equivFun.symm.injective h1
   have hact : ∀ (g : ↥(GK K)), (g : GQ l) ∈ GK K' → ∀ c : Fin n → ↥(MaximalUnramifiedExtension l),
       stRep P ρ g (∑ i, mulV P LL V (c i) (β i)) =
-        ∑ i, mulV P LL V ⟨_, apply_mem_kur (g : GQ l) (c i)⟩ (β i) := by
+        ∑ i, mulV P LL V ⟨_, GlobalTheory.Pst.galois_mem_Kur (g : GQ l) (c i)⟩ (β i) := by
     intro g hg c
 
     rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [← End.mul_apply, stRep_mulV P ρ g (c i) ⟨_, apply_mem_kur (g : GQ l) (c i)⟩ rfl, End.mul_apply,
+    rw [← End.mul_apply, stRep_mulV P ρ g (c i) ⟨_, GlobalTheory.Pst.galois_mem_Kur (g : GQ l) (c i)⟩ rfl, End.mul_apply,
       hb i g hg]
   have hinj : Function.Injective (comb P LL V K' β) := fun c d hcd =>
     funext fun i => (incl K').injective (congrFun (huniq _ _ hcd) i)

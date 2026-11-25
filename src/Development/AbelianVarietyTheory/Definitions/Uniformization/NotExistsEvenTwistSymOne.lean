@@ -49,7 +49,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-noncomputable section
 namespace GlobalTheory.UU
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {X : Type} [AddCommGroup X]
 
@@ -159,4 +158,3 @@ theorem TQ.Desc.exists_even {Q : TQ G X} {P : CP G} (D : Q.Desc P) : ∃ σ : Cu
 
 
 end GlobalTheory.UU
-end

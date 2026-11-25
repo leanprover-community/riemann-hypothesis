@@ -111,14 +111,12 @@ theorem mem_spanR_of_split (hbij : Function.Bijective (splT (F := F) (E := E))) 
   have hw : w = ∑ a, c a • ratV (F := F) (AF F) (Y a) := by
     rw [eq_iff_split hbij.1]
     constructor
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hc1, map_sum]
+    · rw [← hc1, map_sum]
       refine Finset.sum_congr rfl fun a _ => ?_
       rw [mapV_smul, mapV_ratV]
       congr 1
       exact (congrArg Prod.fst (hc a)).symm
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hc2, map_sum]
+    · rw [← hc2, map_sum]
       refine Finset.sum_congr rfl fun a _ => ?_
       rw [mapV_smul, mapV_ratV]
       congr 1

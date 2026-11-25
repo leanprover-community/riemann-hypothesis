@@ -176,7 +176,7 @@ theorem rk_corank₂ (hE : Formalism.MainNotions.RamifiedCoefficientChains.Dcris
         apply rk_multV_of_not_jump
         intro hj
         have hw := hwin a hj
-        simp only [Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS, hodd, if_false, Set.mem_union, Set.mem_Icc] at hw
+        simp only [Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS, hodd, ite_false, Set.mem_union, Set.mem_Icc] at hw
         simp only [Finset.mem_filter, Finset.mem_Ico, Finset.mem_Icc, not_and] at ha hna
         omega
     _ ≤ ∑ a ∈ Finset.Icc (-(η : ℤ)) η, multV PD T₂.ρ τ a :=

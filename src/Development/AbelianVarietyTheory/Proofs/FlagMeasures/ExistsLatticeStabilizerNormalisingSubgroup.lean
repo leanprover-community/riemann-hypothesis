@@ -6,50 +6,7 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Compl
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermLat
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -115,12 +72,8 @@ theorem map_span {ι : Type} (g : ι → V) (h : V ≃ₗ[E] V) (Λ : Submodule 
     rw [this]; exact Λ.smul_mem c hx
 
 theorem map_spanE {ι : Type} (g : ι → V) (h : V ≃ₗ[E] V) (Λ : Submodule E V) (H : ∀ i, h (g i) ∈ Λ)
-    {x : V} (hx : x ∈ Submodule.span E (Set.range g)) : h x ∈ Λ := by
-  induction hx using Submodule.span_induction with
-  | mem x hx => obtain ⟨i, rfl⟩ := hx; exact H i
-  | zero => simp
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact Λ.add_mem hx hy
-  | smul c x _ hx => rw [map_smul]; exact Λ.smul_mem c hx
+    {x : V} (hx : x ∈ Submodule.span E (Set.range g)) : h x ∈ Λ :=
+  (Submodule.span_le (p := Λ.comap (h : V →ₗ[E] V))).2 (Set.range_subset_iff.2 H) hx
 
 theorem map_mem_of_mem_sup_three_submodules (A A' B Λ : Submodule O V) (h : V ≃ₗ[E] V) (H1 : ∀ x ∈ A, h x ∈ Λ)
     (H2 : ∀ x ∈ A', h x ∈ Λ) (H3 : ∀ x ∈ B, h x ∈ Λ) : ∀ x ∈ A ⊔ A' ⊔ B, h x ∈ Λ := by

@@ -55,45 +55,11 @@ section Real
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 private noncomputable def diagR (E : Type) [Field E] [NumberField E] [IsTotallyReal E] : E →+* TR.Rinf E :=
   (TR.pInf E).comp (algebraMap E (Ad E))
-private theorem infDiag_eqR (k : Eˣ) : infDiag k = TR.infId E (Units.map (diagR E).toMonoidHom k) := by
-  classical
-  have h : ((infDiag k : Ideles E) : AdeleRing (𝓞 E) E) = (algebraMap E (InfiniteAdeleRing E) k, 1) := by
-    unfold infDiag
-    rw [MonoidHom.finsetProd_apply, Units.coe_prod]
-    let ι : (∀ w : InfinitePlace E, w.Completion) →* AdeleRing (𝓞 E) E :=
-      MonoidHom.inl (InfiniteAdeleRing E) (FiniteAdeleRing (𝓞 E) E)
-    change ∏ w : InfinitePlace E, ι (Pi.mulSingle w (algebraMap E w.Completion k)) =
-      ι (fun w => algebraMap E w.Completion k)
-    rw [← map_prod, Finset.univ_prod_mulSingle]
-  apply Units.ext
-  rw [h]
-  refine Prod.ext ?_ ?_
-  · change _ = 1 - TR.infEq E 1 + TR.infEq E ((TR.infEq E).symm (algebraMap E (InfiniteAdeleRing E) k))
-    simp
-  · change (1 : Af E) = 1 - 0 + 0
-    simp
 private theorem denseRange_diagR : DenseRange (diagR E) := by
   have hc : Continuous (TR.infEq E).symm := continuous_pi fun w =>
     (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal w)).continuous.comp
       (continuous_apply w)
   exact (TR.infEq E).symm.surjective.denseRange.comp (InfiniteAdeleRing.denseRange_algebraMap E) hc
-private theorem denseRange_unitsR : DenseRange (Units.map (diagR E).toMonoidHom) := by
-  refine dense_iff_inter_open.2 fun U hU ⟨u, hu⟩ => ?_
-  obtain ⟨k, v, hv, hk⟩ := denseRange_diagR.exists_mem_open (Units.isOpenEmbedding_val.isOpenMap U hU) ⟨_, u, hu, rfl⟩
-  have h0 : k ≠ 0 := by
-    rintro rfl
-    exact v.ne_zero (hk.trans (map_zero _))
-  exact ⟨v, hv, Units.mk0 k h0, Units.ext hk.symm⟩
-private theorem diagR_mk (φ : E →+* ℂ) (k : E) : ((diagR E k (InfinitePlace.mk φ) : ℝ) : ℂ) = φ k := by
-  have hr := IsTotallyReal.isReal (InfinitePlace.mk φ)
-  have e : diagR E k (InfinitePlace.mk φ) = InfinitePlace.embedding_of_isReal hr k := by
-    change InfinitePlace.Completion.ringEquivRealOfIsReal hr
-      (algebraMap E (InfinitePlace.mk φ).Completion k) = _
-    rw [InfinitePlace.Completion.ringEquivRealOfIsReal_apply,
-      AbsoluteValue.Completion.algebraMap_def, WithAbs.algebraMap_right_apply]
-    simp
-  rw [e, InfinitePlace.embedding_of_isReal_apply,
-    InfinitePlace.embedding_mk_eq_of_isReal (InfinitePlace.isReal_mk_iff.1 hr)]
 private theorem chiInf_pos {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgPos χ n) (u : (TR.Rinf E)ˣ)
     (hu : ∀ v, 0 < u.val v) :
     ((TR.chiInf χ u : ℂˣ) : ℂ) = ∏ φ : E →+* ℂ, ((u.val (InfinitePlace.mk φ) : ℝ) : ℂ) ^ n φ := by

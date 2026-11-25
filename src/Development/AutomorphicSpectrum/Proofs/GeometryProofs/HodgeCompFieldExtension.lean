@@ -42,24 +42,10 @@ theorem exists_forms_eq {n : ℕ} {b : Fin n → Module.Dual Ω V} (hb : LinearI
     ∃ u : V, ∀ k, b k u = if k = l then 1 else 0 := by
   classical
   have hs : Function.Surjective (LinearMap.pi b : V →ₗ[Ω] (Fin n → Ω)) := by
-    rw [← LinearMap.dualMap_injective_iff, injective_iff_map_eq_zero]
-    intro φ hφ
-    have hc : ∑ k, φ (Pi.single k 1) • b k = 0 := by
-      ext u
-      have h1 := LinearMap.congr_fun hφ u
-      have h2 : (LinearMap.pi b : V →ₗ[Ω] (Fin n → Ω)) u = ∑ k, b k u • (Pi.single k 1 : Fin n → Ω) := by
-        ext m
-        simp [Finset.sum_apply, Pi.single_apply]
-
-      rw [LinearMap.dualMap_apply, h2, map_sum] at h1
-      simpa [mul_comm] using h1
-    have h0 := Fintype.linearIndependent_iff.1 hb _ hc
-    refine LinearMap.pi_ext fun k x => ?_
-    have : (Pi.single k x : Fin n → Ω) = x • (Pi.single k 1 : Fin n → Ω) := by
-      ext m
-      simp [Pi.single_apply]
-    rw [this, map_smul, h0 k]
-    simp
+    rw [← LinearMap.range_eq_top, ← Submodule.span_eq (LinearMap.range (LinearMap.pi b)),
+      LinearMap.coe_range]
+    exact span_flip_eq_top_iff_linearIndependent.2
+      (hb.map' (LinearMap.ltoFun Ω V Ω Ω) (LinearMap.ker_eq_bot.2 DFunLike.coe_injective))
   obtain ⟨u, hu⟩ := hs (Pi.single l 1)
   refine ⟨u, fun k => ?_⟩
   have := congrFun hu k

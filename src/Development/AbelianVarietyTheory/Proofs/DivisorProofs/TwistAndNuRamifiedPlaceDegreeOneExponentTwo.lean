@@ -5,40 +5,8 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsValCharTwi
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotDvdDiscrIffRamificationIdx
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -78,15 +46,15 @@ theorem main : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGr
     · exact Or.inr (Or.inl this)
   have hS0 : w.under (𝓞 D.host.F) ∈ G.pl.S0 := by
     by_contra h
-    rw [Model.expIn_condF, if_neg h] at hE
+    rw [Model.expIn_condF, ite_eq_right h] at hE
     exact hn ((Formalism.L2.Host.HChar.unrAt_iff _ _).2 ((hE 0).2 le_rfl))
   have hv0 : w.under (𝓞 D.host.F) ≠ G.pl.v0 := by
     rcases (hL.Q_ram t w).1 hx with h | ⟨PP', hP', hc⟩
     · exact G.pl.levelPlace_ne_basePlace t w h
     · rw [← under_eq_of_isConjPl hc]; exact G.pl.levelPlace_ne_basePlace t PP' hP'
-  have hc2 : condExp G.pl (w.under (𝓞 D.host.F)) = 2 := by rw [condExp, if_neg hv0]
+  have hc2 : condExp G.pl (w.under (𝓞 D.host.F)) = 2 := by rw [condExp, ite_eq_right hv0]
   have h2 : expIn (condF G.pl) (w.under (𝓞 D.host.F)) = 2 := by
-    rw [Model.expIn_condF, if_pos hS0, hc2]
+    rw [Model.expIn_condF, ite_eq_left hS0, hc2]
   rw [h2] at hE
   have hdvd : (w.under (𝓞 D.host.F)).asIdeal ∣ condF G.pl :=
     (dvd_pow_self _ (by rw [hc2]; norm_num)).trans (Finset.dvd_prod_of_mem _ hS0)

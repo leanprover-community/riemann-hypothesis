@@ -13,8 +13,6 @@ open MeasureTheory NumberField Formalism.BasicNotions
 
 namespace Formalism.L2.SG.Pf.Carrier
 
-attribute [local instance] instCM
-
 open Formalism.L2.SG.RealObj
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)

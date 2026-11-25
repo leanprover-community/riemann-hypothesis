@@ -105,16 +105,16 @@ lemma herm_bvec (k r : ℕ) (x y : Fin (2 * r + k + 1)) :
 
 lemma sig_lo (k r : ℕ) (i : Fin (2 * r + k + 1)) (h : i.val < r) :
     (sig k r i).val = 2 * r + k - i.val := by
-  rw [sig_val, if_pos (Or.inl h)]
+  rw [sig_val, ite_eq_left (Or.inl h)]
 
 lemma sig_hi (k r : ℕ) (i : Fin (2 * r + k + 1)) (h : r + k < i.val) :
     (sig k r i).val = 2 * r + k - i.val := by
-  rw [sig_val, if_pos (Or.inr h)]
+  rw [sig_val, ite_eq_left (Or.inr h)]
 
 lemma sig_mid (k r : ℕ) (i : Fin (2 * r + k + 1)) (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     sig k r i = i := by
   unfold sig
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 lemma eq_sig_iff (k r : ℕ) (i l : Fin (2 * r + k + 1)) : i = sig k r l ↔ l = sig k r i := by
   constructor <;> intro h <;> subst h <;> rw [sig_sig]
@@ -150,7 +150,7 @@ lemma PJP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   rw [Hpk_eq, Matrix.mul_apply]
   simp only [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Pk_star]
   simp only [Pk, add_mul, mul_add, ite_mul, mul_ite, zero_mul, mul_zero, Finset.sum_add_distrib,
-    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases hs : j = sig k r i
   · subst hs
     rcases lt_or_ge i.val r with h | h
@@ -219,10 +219,10 @@ lemma Hpk_herm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
   ext i j
   rw [Matrix.conjTranspose_apply, Hpk_eq, Hpk_eq]
   by_cases h : j = sig k r i
-  · rw [if_pos ((eq_sig_iff k r i j).2 h), if_pos h, h, sgn_sig]
+  · rw [ite_eq_left ((eq_sig_iff k r i j).2 h), ite_eq_left h, h, sgn_sig]
     unfold sgn
     split_ifs <;> simp
-  · rw [if_neg (fun e => h ((eq_sig_iff k r i j).1 e)), if_neg h, star_zero]
+  · rw [ite_eq_right (fun e => h ((eq_sig_iff k r i j).1 e)), ite_eq_right h, star_zero]
 
 lemma Hpk_sq (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
   first
@@ -245,14 +245,14 @@ theorem hermitian_pos_facts_hold : HpkFacts := by
       omega
     have h2 : sgn k r (esI k r b) = 1 := by
       unfold sgn
-      rw [if_neg]
+      rw [ite_eq_right]
       show ¬ (2 * r + k - b.val = r + k)
       omega
     rw [herm_bvec, Hpk_eq, h1, h2]
     by_cases h : a = b
     · subst h
       simp
-    · rw [if_neg, if_neg h]
+    · rw [ite_eq_right, ite_eq_right h]
       intro e
       apply h
       have e2 := congrArg Fin.val e

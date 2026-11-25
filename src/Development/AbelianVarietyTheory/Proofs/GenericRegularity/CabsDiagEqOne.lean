@@ -11,44 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitFrameEqOrthonormalMulTriangular
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 
 @[expose] public section
@@ -220,8 +182,8 @@ theorem cabs_diag_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     ComplexEmbedding.involutive_conjugate E τ
   obtain ⟨f, hf⟩ := FrameUnif.exists_letter_equiv (U.X k').Ψ (U.X k').cmType Dw.p Dw.q r hr
     (Formalism.L2.PjFree.relab c σ) hbij Dw.mult
-    (fun τ h => by unfold Datum.mult; rw [if_pos ((hrt τ).1 ((hty _).1 h))])
-    (fun τ h => by unfold Datum.mult; rw [if_neg (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_left ((hrt τ).1 ((hty _).1 h))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_right (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
   obtain ⟨idx, hi⟩ : ∃ idx : Fin g ≃ (U.X k').Ψ × Fin r, ∀ j,
       (Formalism.L2.PjFree.relab c σ (e j).1 ∈ (U.X k').Ψ ∧ (idx j).1.1 = Formalism.L2.PjFree.relab c σ (e j).1 ∧
         ((idx j).2 : ℕ) = Dw.q + (e j).2) ∨
@@ -238,10 +200,10 @@ theorem cabs_diag_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     obtain ⟨⟨τ, hτ⟩, ⟨n, hn⟩⟩ := t
     dsimp only at h ⊢
     rcases h with ⟨a, rfl, rfl⟩ | ⟨a, rfl, rfl, d⟩
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       unfold Formalism.L2.PjFree.perFr
       rw [dite_eq_left a, dite_eq_left hn]
-    · rw [if_pos (by omega)]
+    · rw [ite_eq_left (by omega)]
       unfold Formalism.L2.PjFree.perFr
       rw [dite_eq_right a, dite_eq_left (show conjEmb (Formalism.L2.PjFree.relab c σ (e j).1) ∈ (U.X k').Ψ from hτ), dite_eq_left hn]
       rfl
@@ -254,13 +216,13 @@ theorem cabs_diag_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     intro b hb j j' hne
     obtain ⟨h1, h2⟩ := PerBor.moveMat_support _ idx hb j j' hne
     rcases hi j with ⟨a1, b1, c1⟩ | ⟨a1, b1, c1, d1⟩ <;> rcases hi j' with ⟨a2, b2, c2⟩ | ⟨a2, b2, c2, d2⟩
-    · rw [if_neg (by omega)] at h2
+    · rw [ite_eq_right (by omega)] at h2
       exact ⟨hbij.1 (by rw [← b1, ← b2, h1]), by simp only; omega⟩
-    · rw [if_neg (by omega)] at h2
+    · rw [ite_eq_right (by omega)] at h2
       omega
-    · rw [if_pos (by omega)] at h2
+    · rw [ite_eq_left (by omega)] at h2
       omega
-    · rw [if_pos (by omega)] at h2
+    · rw [ite_eq_left (by omega)] at h2
       exact ⟨hbij.1 (by rw [← hcc (Formalism.L2.PjFree.relab c σ (e j).1), ← b1, ← h1, b2, hcc]), by simp only; omega⟩
   obtain ⟨T, hT, hT1, hTf⟩ := exists_tri_unit (U.X k') idx hinj hs x.1 x.2 hx
   obtain ⟨T', hT', hT1', hTf'⟩ := exists_tri_unit (U.X k') idx hinj hs x'.1 x'.2 hx'

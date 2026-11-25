@@ -9,7 +9,6 @@ public import Mathlib.RingTheory.MvPolynomial.Ideal
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
 namespace GlobalTheory.CompanionTheory.ConeZarCap

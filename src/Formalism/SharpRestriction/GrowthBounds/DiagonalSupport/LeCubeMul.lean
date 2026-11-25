@@ -305,7 +305,7 @@ theorem sizeAt_of [hpF : Fact p.Prime] (hk : m + 1 = r + K) (hF : FramesOK TT L�
       rwa [hF.1] at this
     have e := hBk.2 x
     have e2 : dT TT lam0 (posOf n' (posTL F x)) = flatDeg lam0 (posOf n' (posTL F x)) := by
-      unfold dT; rw [if_pos htop]
+      unfold dT; rw [ite_eq_left htop]
     rw [e2] at e
     have hl : 1 ≤ lowP F p x := Nat.one_le_pow _ _ (by omega)
     have e3 : dPl x + dNo x ≤ flatDeg lam0 (posOf n' (posTL F x)) := by

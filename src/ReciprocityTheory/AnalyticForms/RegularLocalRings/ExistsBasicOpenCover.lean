@@ -18,9 +18,6 @@ section Top
 
 variable {α : Type*} [TopologicalSpace α]
 
-def comps (T : Set α) : Set (Set α) :=
-  {C | Maximal (fun C => IsIrreducible C ∧ C ⊆ T) C}
-
 private theorem isIrreducible_preimage_coe_of_subset (T D : Set α) (hDT : D ⊆ T) (hD : IsIrreducible D) :
     IsIrreducible ((↑) ⁻¹' D : Set T) := by
   refine ⟨?_, ?_⟩
@@ -34,7 +31,7 @@ private theorem isIrreducible_preimage_coe_of_subset (T D : Set α) (hDT : D ⊆
     obtain ⟨c, hc, hcu, hcv⟩ := hD.2 u' v' hu' hv' ⟨a.1, ha, hau⟩ ⟨b.1, hb, hbv⟩
     exact ⟨⟨c, hDT hc⟩, hc, hcu, hcv⟩
 
-theorem comps_finite [NoetherianSpace α] (T : Set α) : (comps T).Finite := by
+theorem comps_finite [NoetherianSpace α] (T : Set α) : (ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH T).Finite := by
   have hfin : (irreducibleComponents T).Finite := NoetherianSpace.finite_irreducibleComponents
   refine (hfin.image (fun S : Set T => ((↑) '' S : Set α))).subset ?_
   intro C hC
@@ -48,13 +45,13 @@ theorem comps_finite [NoetherianSpace α] (T : Set α) : (comps T).Finite := by
   intro z hz
   exact hle ⟨z, hz, rfl⟩
 
-theorem isClosed_of_mem_comps {T : Set α} (hT : IsClosed T) {C : Set α} (hC : C ∈ comps T) :
+theorem isClosed_of_mem_comps {T : Set α} (hT : IsClosed T) {C : Set α} (hC : C ∈ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH T) :
     IsClosed C := by
   have hC' : Maximal (fun C => IsIrreducible C ∧ C ⊆ T) C := hC
   have hcl : closure C ≤ C := hC'.2 ⟨hC'.1.1.closure, closure_minimal hC'.1.2 hT⟩ subset_closure
   exact closure_subset_iff_isClosed.1 hcl
 
-theorem sUnion_comps (T : Set α) : ⋃₀ comps T = T := by
+theorem sUnion_comps (T : Set α) : ⋃₀ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH T = T := by
   refine Set.Subset.antisymm (Set.sUnion_subset fun C hC => hC.1.2) fun x hx => ?_
   let y : T := ⟨x, hx⟩
   have hI : IsIrreducible (irreducibleComponent y) := isIrreducible_irreducibleComponent
@@ -72,15 +69,12 @@ end Top
 
 variable {W : Scheme.{0}}
 
-def IsBranch (T : Set W) {U : W.Opens} (f : Γ(W, U)) (y : W) (C : Set W) : Prop :=
-  C ∈ comps T ∧ y ∈ C ∧ ∃ h : IsIrreducible C, h.genericPoint ∈ U ∧ h.genericPoint ∈ W.zeroLocus {f}
-
 theorem existsUnique_branch [IsNoetherian W] {Z : W.IdealSheafData} (y : W) (U : W.affineOpens)
     (hy : y ∈ U.1) {n : ℕ} (f : Fin n → Γ(W, U.1)) (J : Finset (Fin n))
     [IsRegularLocalRing (W.presheaf.stalk y)]
     (hrsp : FinalTheorems.Rsp (W.presheaf.stalk y) n (fun i => W.presheaf.germ U.1 y hy (f i)))
     (hZU : Z.ideal U = Ideal.span {∏ i ∈ J, f i}) (i : Fin n) (hi : i ∈ J) :
-    ∃! C, IsBranch (Z.support : Set W) (f i) y C := by
+    ∃! C, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set W) (f i) y C := by
   exact existsUnique_branchH y U hy f J hrsp hZU i hi
 
 theorem branch_ne [IsNoetherian W] {Z : W.IdealSheafData} (y : W) (U : W.affineOpens)
@@ -88,8 +82,8 @@ theorem branch_ne [IsNoetherian W] {Z : W.IdealSheafData} (y : W) (U : W.affineO
     [IsRegularLocalRing (W.presheaf.stalk y)]
     (hrsp : FinalTheorems.Rsp (W.presheaf.stalk y) n (fun i => W.presheaf.germ U.1 y hy (f i)))
     (hZU : Z.ideal U = Ideal.span {∏ i ∈ J, f i}) {i j : Fin n} (hi : i ∈ J) (hj : j ∈ J)
-    (hij : i ≠ j) {C C' : Set W} (hC : IsBranch (Z.support : Set W) (f i) y C)
-    (hC' : IsBranch (Z.support : Set W) (f j) y C') : C ≠ C' := by
+    (hij : i ≠ j) {C C' : Set W} (hC : ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set W) (f i) y C)
+    (hC' : ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set W) (f j) y C') : C ≠ C' := by
   exact branch_neH y U hy f J hrsp hZU hi hj hij hC hC'
 
 theorem exists_open_comps [IsNoetherian W] {Z : W.IdealSheafData} (y : W) (U : W.affineOpens)
@@ -97,8 +91,8 @@ theorem exists_open_comps [IsNoetherian W] {Z : W.IdealSheafData} (y : W) (U : W
     [IsRegularLocalRing (W.presheaf.stalk y)]
     (hrsp : FinalTheorems.Rsp (W.presheaf.stalk y) n (fun i => W.presheaf.germ U.1 y hy (f i)))
     (hZU : Z.ideal U = Ideal.span {∏ i ∈ J, f i}) :
-    ∃ O : W.Opens, y ∈ O ∧ O ≤ U.1 ∧ ∀ C ∈ comps (Z.support : Set W),
-      C ∩ O = {z ∈ (O : Set W) | ∃ i ∈ J, IsBranch (Z.support : Set W) (f i) y C ∧
+    ∃ O : W.Opens, y ∈ O ∧ O ≤ U.1 ∧ ∀ C ∈ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (Z.support : Set W),
+      C ∩ O = {z ∈ (O : Set W) | ∃ i ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set W) (f i) y C ∧
         z ∈ W.zeroLocus {f i}} := by
   exact exists_open_compsH y U hy f J hrsp hZU
 

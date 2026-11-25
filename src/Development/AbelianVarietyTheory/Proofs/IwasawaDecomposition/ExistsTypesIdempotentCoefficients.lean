@@ -3,48 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodChi
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodTupleConditionOfIdempotentZero
 import Formalism.CyclotomicNorms.NonsquarefreeBounds.NonsquarefreeMonicBoundHolds
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -201,7 +161,7 @@ theorem goodTupleIdempotent_central_and_action (T : NTypes A) (hs : ∀ k f, f.M
     exact ha ⟨k, v⟩
   have := hm a
   rw [ha'] at this
-  refine ⟨_, ten_ne_zero fun kv => ?_, fun h => this.trans (if_pos h), fun h => this.trans (if_neg h)⟩
+  refine ⟨_, ten_ne_zero fun kv => ?_, fun h => this.trans (ite_eq_left h), fun h => this.trans (ite_eq_right h)⟩
   rw [ha]
   exact hs _ _ (hf _ _)
 
@@ -239,20 +199,10 @@ def types0 [IsEmpty N.Loc] (hl : ∀ k w (p : A.LP w), A.items₂ k w p = (X - 1
     {n : ℕ} (e : ∀ k, (ZMod (H.g k))[X] → MonoidAlgebra ℂ (GL (Fin R.r) (ZMod (H.g k))))
     (he : ∀ k, IsSer R.r (H.g k) n (e k)) : NTypes A where
   Mray := H.K
-  Mray_gal := inferInstance
-  Mray_ab := fun σ τ => Subsingleton.elim _ _
-  Mray_unr := fun p _ h => by
-    rw [GaloisStage.discr_K, dvd_neg] at h
-    exact Dvd.dvd.mul_left (by exact_mod_cast h) _
   g_Mray := fun k => GaloisStage.split_K H (H.g_prime k) (hc k)
   g_cond := hc
   BB_disj := hB
   bc := fun _ => {(R.r, 1)}
-  bc_pos := fun _ p hp => by
-    have := GaloisStage.two_le_r R
-    rw [Multiset.mem_singleton.1 hp]
-    exact ⟨by show 0 < R.r; omega, one_pos⟩
-  bc_sum := fun _ => by simp
   rbar := fun _ _ => 1
   rbar_open := fun _ _ => by
     rw [MonoidHom.ker_one]
@@ -284,7 +234,6 @@ def types0 [IsEmpty N.Loc] (hl : ∀ k w (p : A.LP w), A.items₂ k w p = (X - 1
   locPar_dim := fun σ => σ.elim
   labPar_def := fun _ σ => σ.elim
   MtPar := fun _ _ σ => σ.elim
-  AmbPar := fun _ σ => σ.elim
   heckeLoc_gamma_places := fun i => isEmptyElim i
   chiT_tg := fun i => isEmptyElim i
 

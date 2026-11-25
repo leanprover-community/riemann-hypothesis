@@ -22,9 +22,9 @@ theorem psiNat_mul_uni (ψ₀ : AddChar F ℂ) (z : GL (Fin k) F) {u : GL (Fin k
     psiNat ψ₀ (z * u) = psiNat ψ₀ z * psiU ψ₀ u := by
   unfold psiNat
   by_cases hz : IsUni k z
-  · rw [if_pos (isUni_mul hz hu), if_pos hz, psiU_mul ψ₀ hz hu]
+  · rw [ite_eq_left (isUni_mul hz hu), ite_eq_left hz, psiU_mul ψ₀ hz hu]
   · have : ¬ IsUni k (z * u) := fun h => hz (by simpa using isUni_mul h (isUni_inv hu))
-    rw [if_neg this, if_neg hz, zero_mul]
+    rw [ite_eq_right this, ite_eq_right hz, zero_mul]
 
 theorem sumPsi_mul_pi (ψ₀ : AddChar F ℂ) (π : Representation ℂ (GL (Fin k) F) V) {u : GL (Fin k) F}
     (hu : IsUni k u) :
@@ -53,10 +53,10 @@ theorem averaging_operator_idempotent : QIdem := by
       (if IsUni k x then (1 : ℂ) else 0) • projQ ψ₀ π := by
     intro x
     by_cases hx : IsUni k x
-    · rw [mul_smul_comm, Module.End.mul_eq_comp, projQ_comp_pi ψ₀ π hx, smul_smul, if_pos hx]
+    · rw [mul_smul_comm, Module.End.mul_eq_comp, projQ_comp_pi ψ₀ π hx, smul_smul, ite_eq_left hx]
       congr 1
-      unfold psiNat; rw [if_pos hx]; field_simp [psiU_ne_zero ψ₀ x]
-    · unfold psiNat; rw [if_neg hx, if_neg hx, zero_smul, zero_smul, mul_zero]
+      unfold psiNat; rw [ite_eq_left hx]; field_simp [psiU_ne_zero ψ₀ x]
+    · unfold psiNat; rw [ite_eq_right hx, ite_eq_right hx, zero_smul, zero_smul, mul_zero]
   rw [← Module.End.mul_eq_comp]
   conv_lhs => rw [show projQ ψ₀ π * projQ ψ₀ π =
     projQ ψ₀ π * (((cardU F k : ℂ))⁻¹ • ∑ x : GL (Fin k) F, psiNat ψ₀ x • π x) from rfl]

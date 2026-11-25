@@ -785,7 +785,7 @@ theorem arc_length_bound_theorem [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL 
   obtain ⟨x₁, hx₁f, hx₁⟩ := LV_galois hA hc hRelay hArc hcase hl hW₁ hW₂ hb he₁ hLV u'' hu''I hu''P hu''R
     x'' hx''
 
-  obtain ⟨o, g, hgNL, hog⟩ := hJspan _ hfrFr (fun k hk => if_neg hk) hInvr
+  obtain ⟨o, g, hgNL, hog⟩ := hJspan _ hfrFr (fun k hk => ite_eq_right hk) hInvr
   obtain ⟨x₀, hx₀N, hx₀R⟩ := hNLx g hgNL
   have hsumI : InI W T₂ c (∑ i, o i • uJ i) := InI_sum W _ _ fun i _ => InI_smulO W _ (huJI i)
   have hsumR := RepVV_sum W h00 Finset.univ (fun i => o i • uJ i)
@@ -1357,7 +1357,7 @@ theorem kappa_bound_of_length {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b 
     intro i hi
     simp only [Formalism.MainNotions.ArcLiftingSetup.ArcP.JS, Finset.mem_union] at hi
     rcases hi with hi | hi
-    · rw [if_neg] at hi
+    · rw [ite_eq_right] at hi
       · simp at hi
       rintro ⟨s, -, hs⟩
       rw [hty] at hs

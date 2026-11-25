@@ -55,7 +55,6 @@ private theorem supp_lie (X : Lie E a) (ψ : Sm E a) (h : HasCompactSupport ψ.1
   have hd := GlobalTheory.CuspRep.hasDerivAt_curve ψ g c X c0 cder
   have hc : Continuous fun t : ℝ => g * infGL E a (c t) := continuous_const.mul ccont
   have ht : Tendsto (fun t : ℝ => g * infGL E a (c t)) (𝓝 0) (𝓝 g) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       simpa [c0] using hc.tendsto 0
   have hz : (fun t : ℝ => ψ.1 (g * infGL E a (c t))) =ᶠ[𝓝 0] fun _ => (0 : ℂ) :=
     ht.eventually (notMem_tsupport_iff_eventuallyEq.1 hg)

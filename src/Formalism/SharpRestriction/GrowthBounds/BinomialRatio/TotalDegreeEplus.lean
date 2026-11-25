@@ -69,9 +69,9 @@ theorem finrank_pi_supp {K β V : Type*} [Field K] [AddCommGroup V] [Module K V]
     { toFun := fun x b => ⟨(x : β → V) b, x.2 b (Set.mem_univ _)⟩
       invFun := fun y => ⟨fun b => if hb : b ∈ F then (y ⟨b, hb⟩ : V) else 0, fun b _ => by
         by_cases hb : b ∈ F
-        · simp only [dif_pos hb]
+        · simp only [dite_eq_left hb]
           exact (y ⟨b, hb⟩).2
-        · simp only [dif_neg hb]
+        · simp only [dite_eq_right hb]
           exact Submodule.zero_mem _⟩
       map_add' := fun x y => by
         funext b
@@ -84,7 +84,7 @@ theorem finrank_pi_supp {K β V : Type*} [Field K] [AddCommGroup V] [Module K V]
         funext b
         by_cases hb : b ∈ F
         · simp [hb]
-        · simp only [dif_neg hb]
+        · simp only [dite_eq_right hb]
           exact (hz _ b hb (x.2 b (Set.mem_univ _))).symm
       right_inv := fun y => by
         funext b
@@ -232,8 +232,8 @@ theorem finrank_segLat (p r : ℕ) [NeZero r] (S : SegData s) (aTop : Fin s → 
   have hmemF : ∀ b, b ∈ F ↔ Kept p r S aTop b := fun b => by rw [hF, Set.Finite.mem_toFinset]; rfl
   let M : SegBlock s r → Submodule (KK O) (MvPolynomial (BVar (2 * s + 1) r S.t) (KK O)) :=
     fun b => if Kept p r S aTop b then Vb O p r S aTop aPlus m b else ⊥
-  have hM1 : ∀ b, Kept p r S aTop b → M b = Vb O p r S aTop aPlus m b := fun b hb => if_pos hb
-  have hM0 : ∀ b, ¬ Kept p r S aTop b → M b = ⊥ := fun b hb => if_neg hb
+  have hM1 : ∀ b, Kept p r S aTop b → M b = Vb O p r S aTop aPlus m b := fun b hb => ite_eq_left hb
+  have hM0 : ∀ b, ¬ Kept p r S aTop b → M b = ⊥ := fun b hb => ite_eq_right hb
   have h1 : Module.finrank O (segLat O p r S aTop aPlus m) =
       Module.finrank (KK O) (Submodule.pi Set.univ M) := by
     apply finrank_lattice
@@ -242,10 +242,10 @@ theorem finrank_segLat (p r : ℕ) [NeZero r] (S : SegData s) (aTop : Fin s → 
       show x b ∈ M b
       by_cases hb : Kept p r S aTop b
       · rw [hM1 b hb]
-        simp only [if_pos hb] at hxb
+        simp only [ite_eq_left hb] at hxb
         exact hxb.1
       · rw [hM0 b hb]
-        simp only [if_neg hb] at hxb
+        simp only [ite_eq_right hb] at hxb
         exact hxb
     · intro v hv
       obtain ⟨sd, hsd⟩ := IsLocalization.exist_integer_multiples_of_finset (nonZeroDivisors O)
@@ -256,14 +256,14 @@ theorem finrank_segLat (p r : ℕ) [NeZero r] (S : SegData s) (aTop : Fin s → 
       show ((sd : O) • v) b ∈ (if Kept p r S aTop b then blockLat O p r S aTop aPlus m b else ⊥ : Submodule O _)
       by_cases hb : Kept p r S aTop b
       · rw [hM1 b hb] at hvb
-        rw [if_pos hb]
+        rw [ite_eq_left hb]
         refine ⟨?_, ?_⟩
         · exact ((Vb O p r S aTop aPlus m b).restrictScalars O).smul_mem (sd : O) hvb
         · refine smul_mem_bbSpec p _ (v b) (sd : O) fun μ hμ => hsd _ ?_
           rw [Finset.mem_biUnion]
           exact ⟨b, (hmemF b).2 hb, Finset.mem_image_of_mem _ hμ⟩
       · rw [hM0 b hb, Submodule.mem_bot] at hvb
-        rw [if_neg hb, Submodule.mem_bot]
+        rw [ite_eq_right hb, Submodule.mem_bot]
         show (sd : O) • v b = 0
         rw [hvb, smul_zero]
   rw [h1, finrank_pi_supp M F (fun b hb => hM0 b (fun h => hb ((hmemF b).2 h)))
@@ -273,13 +273,13 @@ theorem finrank_segLat (p r : ℕ) [NeZero r] (S : SegData s) (aTop : Fin s → 
   unfold segRank
   rw [finsum_eq_sum_of_support_subset (s := F)]
   · refine Finset.sum_congr rfl fun b hb => ?_
-    rw [hM1 b ((hmemF b).1 hb), if_pos ((hmemF b).1 hb)]
+    rw [hM1 b ((hmemF b).1 hb), ite_eq_left ((hmemF b).1 hb)]
     rfl
   · intro b hb
     rw [Function.mem_support] at hb
     rw [Finset.mem_coe, hmemF]
     by_contra h
-    exact hb (if_neg h)
+    exact hb (ite_eq_right h)
 
 end Seg
 

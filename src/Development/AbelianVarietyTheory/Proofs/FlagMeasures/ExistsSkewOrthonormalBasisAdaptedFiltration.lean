@@ -1,47 +1,9 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsNilpotentAlgebraIsotropicFlagUnipotentRadi
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowersMulZero
@@ -68,12 +30,12 @@ theorem exists_orthonormal_on {d : ℕ} (p : Fin d → Prop) [DecidablePred p] (
   let b := stdOrthonormalBasis ℝ G
   refine ⟨fun i => if h : p i then ((b (e ⟨i, h⟩) : G) : V) else 0, ?_, ?_⟩
   · intro i k hi hk
-    simp only [dif_pos hi, dif_pos hk]
+    simp only [dite_eq_left hi, dite_eq_left hk]
     rw [← Submodule.coe_inner, orthonormal_iff_ite.mp b.orthonormal]
     by_cases hik : i = k
     · subst hik
       simp
-    · rw [if_neg hik, if_neg]
+    · rw [ite_eq_right hik, ite_eq_right]
       intro h
       exact hik (congrArg Subtype.val (e.injective h))
   · have hset : (fun i => if h : p i then ((b (e ⟨i, h⟩) : G) : V) else 0) '' {i | p i} =
@@ -130,13 +92,13 @@ theorem exists_orthonormal_adapted {d m : ℕ} (P : ℕ → Submodule ℝ V) (de
   · intro i k
     rcases lt_trichotomy (deg i) (deg k) with h | h | h
     · have hik : i ≠ k := fun e => by subst e; exact lt_irrefl _ h
-      rw [if_neg hik]
+      rw [ite_eq_right hik]
       exact horth _ _ h _ (hbQ i) _ (hbQ k)
     · show inner ℝ (f (deg i) i) (f (deg k) k) = _
       rw [← h]
       exact hfo (deg i) i k rfl h.symm
     · have hik : i ≠ k := fun e => by subst e; exact lt_irrefl _ h
-      rw [if_neg hik, real_inner_comm]
+      rw [ite_eq_right hik, real_inner_comm]
       exact horth _ _ h _ (hbQ k) _ (hbQ i)
   ·
     have key : ∀ j c, m ≤ c + j → P c = Submodule.span ℝ ((fun i => f (deg i) i) '' {i | c ≤ deg i}) := by

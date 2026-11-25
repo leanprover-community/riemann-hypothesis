@@ -17,14 +17,6 @@ structure G1 (p : ℕ) [Fact p.Prime] where
   wq : PowerSeries ℂ_[p]
   ex : PowerSeries ℂ_[p]
 
-namespace G1
-
-variable {p : ℕ} [Fact p.Prime] (g : G1 p)
-
-variable {σ : Type*}
-
-end G1
-
 def IsTwoTorsionPointUnkilled (D : D7) (Λ : AddSubgroup ℂ) (t : ℂ) : Prop :=
   2 * t ∈ Λ ∧ ((1 + Complex.I * (Real.sqrt D.host.d : ℂ)) / 2) * t ∉ Λ ∧
     ((1 - Complex.I * (Real.sqrt D.host.d : ℂ)) / 2) * t ∉ Λ

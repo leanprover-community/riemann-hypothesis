@@ -199,7 +199,7 @@ theorem contra_prodIrr : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalS
   have hci := fun a => contra_rep_isIrreducible hA (x a)
   have hy : (fun a => dualCl (x a)) =
       fun a => IrrGL.of (contra (x a).rep) (isSmooth_smoothRep _) (hci a) :=
-    funext fun a => dif_pos (hci a)
+    funext fun a => dite_eq_left (hci a)
   have key : ∀ y : Fin h → IrrGL (k := k),
       y = (fun a => IrrGL.of (contra (x a).rep) (isSmooth_smoothRep _) (hci a)) →
       ∃ hd' : ∑ a, (y a).1 = N, Nonempty ((contra (prodIrr x hd)).Equiv (prodIrr y hd')) := by

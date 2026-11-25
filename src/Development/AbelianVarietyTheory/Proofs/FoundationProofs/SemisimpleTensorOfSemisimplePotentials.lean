@@ -161,7 +161,6 @@ end GlobalTheory.KZ.FreeAct
 
 namespace GlobalTheory.KZ
 
-
 open FreeAct in
 theorem gam_free : ∀ (N l : ℕ), 4 ≤ N → ∀ γ ∈ Gam N l, ∀ z ∈ Hs, mob (ofSL γ) z = z → γ = 1 := by
   intro N l hN γ hγ z hz hfix
@@ -261,14 +260,13 @@ def rep (Γ : Subgroup SL(2, ℤ)) (a : Hs) : Hs := (Quotient.mk (orbSetoid Γ) 
 theorem rep_rel (Γ : Subgroup SL(2, ℤ)) (a : Hs) : ∃ γ ∈ Γ, mob (ofSL γ) (rep Γ a).1 = a.1 :=
   Quotient.mk_out (s := orbSetoid Γ) a
 
-
 open Classical in
 def gel (Γ : Subgroup SL(2, ℤ)) (τ : ℂ) : SL(2, ℤ) :=
   if h : τ ∈ Hs then (rep_rel Γ ⟨τ, h⟩).choose else 1
 
 theorem gel_spec (Γ : Subgroup SL(2, ℤ)) {τ : ℂ} (h : τ ∈ Hs) :
     gel Γ τ ∈ Γ ∧ mob (ofSL (gel Γ τ)) (rep Γ ⟨τ, h⟩).1 = τ := by
-  simp only [gel, dif_pos h]
+  simp only [gel, dite_eq_left h]
   exact (rep_rel Γ ⟨τ, h⟩).choose_spec
 
 theorem rep_eq (Γ : Subgroup SL(2, ℤ)) {δ : SL(2, ℤ)} (hδ : δ ∈ Γ) {τ : ℂ} (h : τ ∈ Hs)
@@ -290,7 +288,6 @@ def potOf {R : Type} [CommRing R] (Γ : Subgroup SL(2, ℤ)) (z : SL(2, ℤ) →
   slP (((gel Γ τ)⁻¹ : SL(2, ℤ)) : Matrix (Fin 2) (Fin 2) ℤ) (z (gel Γ τ))
 
 end GlobalTheory.KZ.H3.PotCoc
-
 
 open GlobalTheory.KZ.H3.PotCoc GlobalTheory.KZ.Betti in
 theorem GlobalTheory.KZ.H3.exists_pot_of_isCoc : ∀ (R : Type) [CommRing R] (w N l : ℕ), 4 ≤ N →
@@ -323,7 +320,7 @@ theorem GlobalTheory.KZ.H3.exists_pot_of_isCoc : ∀ (R : Type) [CommRing R] (w 
   refine ⟨potOf Γ z, ⟨fun τ => ?_, fun γ hγ => ⟨z γ, key γ hγ⟩⟩, key⟩
   by_cases hτ : τ ∈ Hs
   · exact polySlash_isHomogeneous _ (hz.1 _ (gel_spec Γ hτ).1)
-  · have : gel Γ τ = 1 := by simp [gel, dif_neg hτ]
+  · have : gel Γ τ = 1 := by simp [gel, dite_eq_right hτ]
     unfold potOf
     rw [this]
     exact polySlash_isHomogeneous _ (hz.1 _ Γ.one_mem)
@@ -579,7 +576,6 @@ theorem opL_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) (N l : �
 
 end GlobalTheory.KZ.H3.LamStab
 
-
 open GlobalTheory.KZ.H3 GlobalTheory.KZ.H3.LamStab in
 theorem GlobalTheory.KZ.H3.lam_stable : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N l : ℕ) [Fact l.Prime]
     {E : Type} [Field E] [Algebra ℤ_[l] E] (T : Letter) (p : (E ⊗[ℤ_[l]] X.Fn l) × (ℂ → MvPolynomial (Fin 2) E)),
@@ -661,7 +657,6 @@ end GlobalTheory.KZ.H3.KZero
 
 namespace GlobalTheory.KZ.H3
 
-
 open KZero in
 theorem kum_near_zero_eval : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime], ∀ n : ℕ, ∀ (x : X.Khat l) (χ : SL(2, ℤ) → ZMod (l ^ n)), Kum X l n x χ → Near χ 0 → AdicCompletion.eval (idl l) (X.Kl l) n x = 0 := by
   intro Ω _ _ ε X l _ n x χ hK hN
@@ -729,17 +724,6 @@ open scoped MatrixGroups TensorProduct
 
 namespace GlobalTheory.KZ.H3
 
-theorem relTriv_gamma_of_dvd {N M : ℕ} (h : N ∣ M) {δ : SL(2, ℤ)} (hδ : δ ∈ CongruenceSubgroup.Gamma M) :
-    δ ∈ CongruenceSubgroup.Gamma N := by
-  rw [CongruenceSubgroup.Gamma_mem] at hδ ⊢
-  obtain ⟨a, b, c, d⟩ := hδ
-  have e : ∀ x : ℤ, ((x : ZMod M).cast : ZMod N) = (x : ZMod N) := fun x => ZMod.cast_intCast h x
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [← e, a]; simp [ZMod.cast_one h]
-  · rw [← e, b]; simp
-  · rw [← e, c]; simp
-  · rw [← e, d]; simp [ZMod.cast_one h]
-
 theorem toZModPow_eval_mulVec {l : ℕ} [Fact l.Prime] (n : ℕ) {δ : SL(2, ℤ)}
     (hδ : δ ∈ CongruenceSubgroup.Gamma (l ^ n)) (u : Fin 2 → ℤ_[l]) (q : MvPolynomial (Fin 2) ℤ_[l]) :
     PadicInt.toZModPow n (MvPolynomial.eval
@@ -769,9 +753,9 @@ theorem rel_triv_eq_zero : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω 
   refine _root_.GlobalTheory.KZ.H3.kum_near_zero_eval Ω ε X l n (b u) χ hK ⟨M₁ * M₀ * l ^ n, ?_, fun δ hδ => ?_⟩
   · have : 0 < l ^ n := pow_pos (Fact.out : l.Prime).pos n
     positivity
-  have h1 : δ ∈ CongruenceSubgroup.Gamma M₁ := relTriv_gamma_of_dvd ⟨M₀ * l ^ n, by ring⟩ hδ
-  have h0 : δ ∈ Γ := hΓ (relTriv_gamma_of_dvd ⟨M₁ * l ^ n, by ring⟩ hδ)
-  have hl : δ ∈ CongruenceSubgroup.Gamma (l ^ n) := relTriv_gamma_of_dvd ⟨M₁ * M₀, by ring⟩ hδ
+  have h1 : δ ∈ CongruenceSubgroup.Gamma M₁ := GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₀ * l ^ n, by ring⟩ hδ
+  have h0 : δ ∈ Γ := hΓ (GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₁ * l ^ n, by ring⟩ hδ)
+  have hl : δ ∈ CongruenceSubgroup.Gamma (l ^ n) := GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₁ * M₀, by ring⟩ hδ
   have hI : Complex.I ∈ Hs := by simp [Hs]
   have hδI : mob (ofSL δ) Complex.I ∈ Hs := (_root_.GlobalTheory.KZ.mob_laws).1 _ _ hI
   have key := hχ δ h1 Complex.I hI
@@ -842,7 +826,7 @@ theorem exists_basis (hinj : Function.Injective (algebraMap ℤ_[l] E)) (S : Fin
     have h2 : ((∑ i, (b.repr ⟨x, hxL⟩) i • b i : L) : E) = x := congrArg Subtype.val (b.sum_repr _)
     rw [Submodule.coe_sum] at h2
     simp only [Submodule.coe_smul] at h2
-    simp only [dif_pos hxL]
+    simp only [dite_eq_left hxL]
     exact h2.symm
 
 theorem poly_decomp {k : ℕ} (v : Fin k → E) (r : E → Fin k → ℤ_[l]) (P : MvPolynomial (Fin 2) E)
@@ -855,11 +839,11 @@ theorem poly_decomp {k : ℕ} (v : Fin k → E) (r : E → Fin k → ℤ_[l]) (P
   simp only [MvPolynomial.coeff_sum, MvPolynomial.coeff_smul, MvPolynomial.coeff_map, MvPolynomial.coeff_monomial,
   smul_eq_mul, map_sum]
   by_cases hn : n ∈ P.support
-  · simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', if_pos hn]
+  · simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', ite_eq_left hn]
     refine (hr n hn).trans ?_
     simp [Algebra.smul_def, mul_comm]
   · rw [MvPolynomial.notMem_support_iff.1 hn]
-    simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', if_neg hn, mul_zero,
+    simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', ite_eq_right hn, mul_zero,
       Finset.sum_const_zero]
 
 end GlobalTheory.KZ.H3.LamZero
@@ -927,7 +911,6 @@ end GlobalTheory.KZ.H3.LamZero
 
 namespace GlobalTheory.KZ.H3
 
-
 open LamZero in
 theorem lam_fst_eq_zero_of_triv : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime], ∀ (E : Type) [Field E] [Algebra ℤ_[l] E], Function.Injective (algebraMap ℤ_[l] E) → ∀ (w : ℕ) (Γ : Subgroup SL(2, ℤ)) (M₀ : ℕ), 0 < M₀ → CongruenceSubgroup.Gamma M₀ ≤ Γ → ∀ p ∈ abelian₂ X l E, p.2 ∈ Triv E w Γ → p.1 = 0 := by
   intro Ω _ _ ε X l _ E _ _ hinj w Γ M₀ hM₀ hΓ p hp hT
@@ -992,7 +975,7 @@ namespace GlobalTheory.KZ.H3.LamInj
 
 theorem algebraMap_injective (l : ℕ) [Fact l.Prime] (E : Type) [Field E] [Algebra ℤ_[l] E] [CharZero E] :
     Function.Injective (algebraMap ℤ_[l] E) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   by_contra h0
   have e := PadicInt.unitCoeff_spec h0
@@ -1001,17 +984,6 @@ theorem algebraMap_injective (l : ℕ) [Fact l.Prime] (E : Type) [Field E] [Alge
   rcases mul_eq_zero.1 hx with h | h
   · exact ((PadicInt.unitCoeff h0).isUnit.map (algebraMap ℤ_[l] E)).ne_zero h
   · exact pow_ne_zero _ hl h
-
-theorem gamma_le_of_dvd {N M : ℕ} (h : N ∣ M) : CongruenceSubgroup.Gamma M ≤ CongruenceSubgroup.Gamma N := by
-  intro δ hδ
-  rw [CongruenceSubgroup.Gamma_mem] at hδ ⊢
-  obtain ⟨a, b, c, d⟩ := hδ
-  have e : ∀ x : ℤ, ((x : ZMod M).cast : ZMod N) = (x : ZMod N) := fun x => ZMod.cast_intCast h x
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [← e, a]; simp [ZMod.cast_one h]
-  · rw [← e, b]; simp
-  · rw [← e, c]; simp
-  · rw [← e, d]; simp [ZMod.cast_one h]
 
 theorem gamma_le_gam (N l : ℕ) : CongruenceSubgroup.Gamma (N * l) ≤ Gam N l := by
   intro δ hδ
@@ -1130,7 +1102,6 @@ theorem mapF_symm_mapF (ι : R ≃+* S) (F : ℂ → MvPolynomial (Fin 2) R) :
   rw [RingEquiv.symm_comp, MvPolynomial.map_id]
 
 end GlobalTheory.KZ.Transport
-
 
 open GlobalTheory.KZ.Transport in
 theorem GlobalTheory.KZ.ssPot_transport : ∀ (N l w : ℕ) {E : Type} [Field E] (ι : E ≃+* ℂ) (lam : Letter → E),

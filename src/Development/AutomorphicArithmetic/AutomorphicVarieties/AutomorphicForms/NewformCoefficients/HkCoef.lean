@@ -65,7 +65,7 @@ private theorem chiI_eq_of_conductor_eq_zero (ω : Formalism.L2.Host.HChar ℚ) 
     fun v => Associates.irreducible_mk.mpr v.irreducible
   unfold chiI
   rw [finprod_eq_single _ w]
-  · simp only [hc, if_true]
+  · simp only [hc, ite_true]
     unfold ordI
     rw [Associates.count_self (hirr w), pow_one]
   · intro v hv

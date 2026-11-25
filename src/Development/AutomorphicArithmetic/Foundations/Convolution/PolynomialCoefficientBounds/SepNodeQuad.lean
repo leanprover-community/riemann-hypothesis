@@ -102,7 +102,7 @@ private noncomputable def UpperTheory.ConvolutionTheory.FX.sepNode (y : ℝ) (b 
 private theorem UpperTheory.ConvolutionTheory.FX.sepNode_quad (y : ℝ) (hy : 1 < y) (b : Bool) :
     UpperTheory.ConvolutionTheory.FX.sepNode y b ^ 2 + 1 = 2 * y * UpperTheory.ConvolutionTheory.FX.sepNode y b := by
   have hs : Real.sqrt (y ^ 2 - 1) ^ 2 = y ^ 2 - 1 := Real.sq_sqrt (by nlinarith)
-  cases b <;> simp only [UpperTheory.ConvolutionTheory.FX.sepNode, if_true, Bool.false_eq_true, if_false] <;>
+  cases b <;> simp only [UpperTheory.ConvolutionTheory.FX.sepNode, ite_true, Bool.false_eq_true, ite_false] <;>
     linear_combination hs
 
 private theorem UpperTheory.ConvolutionTheory.FX.sepNode_inj (y y' : ℝ) (hy : 1 < y) (hy' : 1 < y') (b b' : Bool)
@@ -121,7 +121,7 @@ private theorem UpperTheory.ConvolutionTheory.FX.sepNode_inj (y y' : ℝ) (hy : 
   refine ⟨rfl, ?_⟩
   have hs : 0 < Real.sqrt (y ^ 2 - 1) := Real.sqrt_pos.mpr (by nlinarith)
   cases b <;> cases b' <;>
-    simp only [UpperTheory.ConvolutionTheory.FX.sepNode, if_true, Bool.false_eq_true, if_false] at h <;>
+    simp only [UpperTheory.ConvolutionTheory.FX.sepNode, ite_true, Bool.false_eq_true, ite_false] at h <;>
     first | rfl | (exfalso; linarith)
 
 theorem UpperTheory.ConvolutionTheory.FX.separate0 :
@@ -154,12 +154,12 @@ theorem UpperTheory.ConvolutionTheory.FX.separate0 :
     rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [((UpperTheory.ConvolutionTheory.FX.cheb_facts (m + s) _).2 (hy i).le).1, Fintype.sum_bool]
-    simp only [UpperTheory.ConvolutionTheory.FX.sepNode, if_true, Bool.false_eq_true, if_false]
+    simp only [UpperTheory.ConvolutionTheory.FX.sepNode, ite_true, Bool.false_eq_true, ite_false]
     generalize Real.sqrt ((2 * a i / η - 1) ^ 2 - 1) = r
     generalize 2 * a i / η - 1 = y
     push_cast
     ring) (i, true)
-  simp only [UpperTheory.ConvolutionTheory.FX.sepNode, if_true] at key
+  simp only [UpperTheory.ConvolutionTheory.FX.sepNode, ite_true] at key
   have hyi := hy i
   have hr := Real.sqrt_nonneg ((2 * a i / η - 1) ^ 2 - 1)
   generalize Real.sqrt ((2 * a i / η - 1) ^ 2 - 1) = r at key hr

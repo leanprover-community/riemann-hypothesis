@@ -32,7 +32,7 @@ theorem mul_revMat {A : Type} [CommRing A] {N : ℕ} (M : Matrix (Fin N) (Fin N)
   rw [Finset.sum_eq_single (Fin.rev j)]
   · simp
   · intro b _ hb
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro h
     exact hb (by rw [← h, Fin.rev_rev])
   · simp

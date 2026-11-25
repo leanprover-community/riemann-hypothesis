@@ -126,7 +126,7 @@ theorem finite_nsmul_out (H : AddSubgroup W) {k : ℕ} [Finite (Qt k H)]
   intro q hq q' hq' heq
   have hq1 : k • q.out ∈ H := hq
   have hq2 : k • q'.out ∈ H := hq'
-  simp only [dif_pos hq1, dif_pos hq2] at heq
+  simp only [dite_eq_left hq1, dite_eq_left hq2] at heq
   rw [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf] at heq
   simp only [smulSub, AddSubgroup.mem_map] at heq
   obtain ⟨h, hh, hh'⟩ := heq
@@ -229,7 +229,7 @@ theorem coef_ne_zero {Φ : W → ℂ} (h : IsSB L X Φ) {k : ℕ} (hk : 0 < k) (
   by_cases hex : ∃ K, 0 < K ∧ IsInv K (L ⊓ X) G
   swap
   · rw [dite_eq_right hex] at hc; exact absurd rfl hc
-  rw [dif_pos hex] at hc
+  rw [dite_eq_left hex] at hc
   have hK := hex.choose_spec.1
   have hI := hex.choose_spec.2
   haveI := hfinX _ hK

@@ -515,9 +515,6 @@ theorem pow_char {ω : HChar F} (h : IsOfFinOrder ω) : ∃ n, 0 < n ∧ ∀ x, 
   have e2 : ω.1 ^ n = 1 := congrArg Subtype.val e
   exact ⟨n, hn, fun x => by rw [← MonoidHom.pow_apply, e2, MonoidHom.one_apply]⟩
 
-theorem exp_triv {ω : HChar F} (h : IsOfFinOrder ω) (z : TR.Rinf F) : ω.1 (TR.infId F (TR.expU z)) = 1 :=
-  UpperTheory.Esk.HolomorphicVectorLemmas.fin_expU h z
-
 def pU : (TR.Rinf F)ˣ ≃* (InfinitePlace F → ℝˣ) := MulEquiv.piUnits
 
 omit [NumberField F] [IsTotallyReal F] in
@@ -576,7 +573,7 @@ theorem inf_sign {k : InfinitePlace F → ℕ} {ω : HChar F} (hω : IsOfFinOrde
     rcases hsv v with h | h <;> rw [h] <;> simp
   have hL : ((ω.1 (TR.infId F u) : ℂˣ) : ℂ) = ∏ v, ((ω.1 (TR.infId F (atV v (pU s v))) : ℂˣ) : ℂ) := by
     have h1 : ω.1 (TR.infId F u) = ω.1 (TR.infId F s) := by
-      rw [e, map_mul, map_mul, exp_triv hω, mul_one]
+      rw [e, map_mul, map_mul, UpperTheory.Esk.HolomorphicVectorLemmas.fin_expU hω, mul_one]
     rw [h1]
     conv_lhs => rw [prod_atV s]
     rw [map_prod, map_prod, Units.coe_prod]
@@ -701,23 +698,10 @@ theorem Jg_ne (hB : B1b) (k : InfinitePlace F → ℕ) (g : GL (Fin 2) (TR.Rinf 
 
 variable [IsTotallyReal F]
 
-theorem pInf_alg (x : F) (v : InfinitePlace F) :
-    TR.pInf F (algebraMap F (Ad F) x) v = InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal v) x := by
-  have h : algebraMap F (InfiniteAdeleRing F) x = TR.infEq F (fun w => InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal w) x) := by
-    funext w
-    apply (InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w)).injective
-    show _ = (InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w))
-      ((InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w)).symm
-        (InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal w) x))
-    rw [RingEquiv.apply_symm_apply]
-    simp
-  change (TR.infEq F).symm (algebraMap F (InfiniteAdeleRing F) x) v = _
-  rw [h, RingEquiv.symm_apply_apply]
-
 theorem gv_rat (γ : GL (Fin 2) F) (v : InfinitePlace F) :
     gv v (Matrix.GeneralLinearGroup.map (TR.pInf F) (ratGL F 2 γ)) =
       Matrix.GeneralLinearGroup.map (InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal v)) γ :=
-  Units.ext (Matrix.ext fun i j => pInf_alg (γ i j) v)
+  Units.ext (Matrix.ext fun i j => UpperTheory.Esk.HyperbolicSetupLemmas.pInf_alg (γ i j) v)
 
 omit [IsTotallyReal F] in
 theorem pFin_rat (γ : GL (Fin 2) F) : Matrix.GeneralLinearGroup.map (pFin F) (ratGL F 2 γ) = jF F γ :=

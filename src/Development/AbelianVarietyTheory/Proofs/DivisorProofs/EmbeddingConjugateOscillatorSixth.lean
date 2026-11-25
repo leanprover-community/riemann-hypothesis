@@ -17,45 +17,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceIdempotentComp
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBaseChangeFiniteAdeleRingEquiv
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFinitePlaceIdempotentBaseChangeAdeles
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeCharEqProdLocalComponentsApproximating
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
@@ -236,8 +198,6 @@ theorem coefficientField_reading_at_embedding_prod {LL : Type} [Field LL] (f : L
   rw [map_mul, map_zpow₀, map_pow, map_natCast, hy Q hQ, hn, Complex.ofReal_inv,
     pow_factor hs (Circle.coe_ne_zero _) _ _ hm, Complex.ofReal_pow]
 
-
-
 theorem exists_ideal_conj (V : HSp D) (hg : V.gram = 1) (hL : Bridge.hLat V 1 = Formalism.L2.Pj.stdLat D.host.E V.rank) (h : GA D V)
     (e : AE D) (P : Finset (HeightOneSpectrum (𝓞 D.host.E))) (y : (AE D)ˣ) (he : Formalism.IndefR.Datum.IsIdemSum e P)
     (hs : SuppAt e V h) (hy : IsDetAt e V h y) (b : ℕ) (hb : ∀ Q ∈ P, (b : 𝓞 D.host.E) ∉ Q.asIdeal)
@@ -255,7 +215,7 @@ theorem exists_ideal_conj (V : HSp D) (hg : V.gram = 1) (hL : Bridge.hLat V 1 = 
   classical
   obtain ⟨ι, h1, h2, h3⟩ := GlobalTheory.HostAdeleIso.exists_finiteAdele_equiv D
   have h4 := GlobalTheory.PlaceIdem.exists_isPlIdem D ι h1 h2 h3
-  obtain ⟨hid, hcj⟩ := GlobalTheory.T.placeIdempotent_components_conj_valuation D ι h1 h2 h4
+  obtain ⟨hid, hcj⟩ := GlobalTheory.ConjVal.components_and_conj_valuation D ι h1 h2 h4
   obtain ⟨ev, hev⟩ : ∃ ev : ∀ Q : HeightOneSpectrum (𝓞 D.host.E), AE D →+* Q.adicCompletion D.host.E,
       ∀ Q z, ev Q z = ι (finPart D z) Q :=
     ⟨fun Q => ((GlobalTheory.CharLocProd.evalAt Q).comp ι.toRingHom).comp (finPart D), fun _ _ => rfl⟩
@@ -335,7 +295,7 @@ theorem exists_ideal_conj (V : HSp D) (hg : V.gram = 1) (hL : Bridge.hLat V 1 = 
       rw [← a, ← a Q, ← hcj _ Q, GlobalTheory.IdemSupport.cA_incA]
     rw [GlobalTheory.ClassScalarValue.onId_eq χ _ δ c2 P hP δ0 δ1 fun Q hQ => GlobalTheory.ClassScalarValue.val_mul_val hv χ (fun a => hP Q hQ (a.symm ▸ hQ))
       (hr Q fun a => hP Q hQ (a.symm ▸ hQ)) (hu Q (hb Q hQ)) (hu _ fun a => hb Q hQ ((hbc Q).1 a))]
-    exact GlobalTheory.T.idelicCharacter_eq_prod_unramifiedValue_zpow D ι h1 h2 h4 c χ hc y y0 P δ (fun Q hQ => ⟨hu Q (hb Q hQ), y1 Q hQ⟩) y2
+    exact GlobalTheory.CharUnramVal.char_eq_prod_val_zpow D ι h1 h2 h4 c χ hc y y0 P δ (fun Q hQ => ⟨hu Q (hb Q hQ), y1 Q hQ⟩) y2
   · obtain ⟨es', hes'⟩ : ∃ es' : HeightOneSpectrum (𝓞 D.host.E) → AE D, ∀ Q, IsPlIdem D (es' Q) Q :=
       ⟨fun Q => (h4 Q).choose, fun Q => (h4 Q).choose_spec.1⟩
     let xs : HeightOneSpectrum (𝓞 D.host.E) → (AE D)ˣ := fun Q => locU (hes' Q).1 (unif Q)

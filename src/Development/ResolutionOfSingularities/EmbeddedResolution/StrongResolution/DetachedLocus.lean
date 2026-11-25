@@ -158,9 +158,6 @@ theorem isReduced_strictTransform_of_isNoetherian [AlgebraicGeometry.IsReduced Y
   induction i with
   | zero =>
     intro _
-    have hq : AlgebraicGeometry.QuasiCompact S.emb := inferInstance
-    have hq2 : AlgebraicGeometry.QuasiCompact (S.emb ≫ S.ambientSeq.isoZero.inv) :=
-      inferInstance
     exact isReduced_subscheme_ker (S.emb ≫ S.ambientSeq.isoZero.inv)
   | succ n ih =>
     intro hi
@@ -350,8 +347,6 @@ theorem isBlowupAlongIdealSheaf_coprod_desc_centerOffDetached [AlgebraicGeometry
   obtain ⟨e, he⟩ := exists_iso_subscheme_of_eq_vanishingIdeal (S.detachedOpens i h) hUc
     (S.detachedIdeal i) hdetached
   have hblowA : Blowup.IsBlowupAlongIdealSheaf (S.strictTransformMap i) (S.comapAmbientCenter i) := by
-    have hln : AlgebraicGeometry.IsLocallyNoetherian (S.schemeAt (i + 1)) := inferInstance
-    have hmono : Mono (S.strictTransformι i) := inferInstance
     exact isBlowupAlongIdealSheaf_lift_of_comp_eq (S.strictTransformι i) (S.blowdown i) (S.ambientCenter i)
       (S.ambientSeq.isBlowupAlongIdealSheaf_blowupMorphism i hi) (S.strictTransformIdeal i) (by simp) (S.strictTransformMap i)
       (S.strictTransformMap_comp_strictTransformι i)
@@ -635,8 +630,6 @@ theorem locallyOfFiniteType_schemeAtToSpec (i : ℕ) (hi : i ≤ S.length) :
       have hprop : AlgebraicGeometry.IsProper (S.ambientSeq.transitionMapSucc n) :=
         Blowup.blowupIsProper (S.schemeAt n) (S.schemeAt (n + 1)) (S.ambientSeq.transitionMapSucc n)
           (S.ambientCenter n) (S.ambientSeq.isBlowupAlongIdealSheaf_blowupMorphism n hn)
-      have hftb : AlgebraicGeometry.LocallyOfFiniteType (S.ambientSeq.transitionMapSucc n) :=
-        inferInstance
       rw [SequenceOfBlowups.projectionToBase_succ]
       infer_instance
   have := key i hi
@@ -647,7 +640,6 @@ theorem locallyOfFiniteType_strictTransformToSpec (i : ℕ) (hi : i ≤ S.length
     AlgebraicGeometry.LocallyOfFiniteType (S.strictTransformToSpec i) := by
   have hlev : AlgebraicGeometry.LocallyOfFiniteType (S.schemeAtToSpec i) :=
     S.locallyOfFiniteType_schemeAtToSpec i hi
-  have hι : AlgebraicGeometry.LocallyOfFiniteType (S.strictTransformι i) := inferInstance
   rw [S.strictTransformToSpec_eq i]
   infer_instance
 

@@ -267,7 +267,7 @@ theorem lead_mem : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R]
     obtain ⟨s, hs, hsκ⟩ := hmax m hm
     have : r m = s := hinjK (by rw [← hr, hsκ])
     exact ⟨r m * c, by rw [this]; exact Ideal.mul_mem_right c _ hs, hc⟩
-  · refine (GlobalTheory.T.finite_even_cubical_values_not_mem_maximalIdeal_pow R X κ hneg hcub hmax n).subset ?_
+  · refine (GlobalTheory.QuadTend.finite_not_mem_pow R X κ hneg hcub hmax n).subset ?_
     intro m hm hm'
     apply hm
     obtain ⟨s, hs, hsκ⟩ := hm'
@@ -693,11 +693,11 @@ theorem exists_even_cubic_unit_multiple (R : Type) [CommRing R] [IsDomain R] (X 
       rw [h1, h2, h3, h4]
       exact indicator_sum_mul i j k l hne
     rw [hκ, hsplit, prodPow_single, prodPow_single, prodPow_single, prodPow_single]
-    have hzk : z k k = κ₀ (b k) := by simp only [z]; exact if_pos trivial
-    have hzl : z l l = κ₀ (b l) := by simp only [z]; exact if_pos trivial
+    have hzk : z k k = κ₀ (b k) := by simp only [z]; exact ite_eq_left trivial
+    have hzl : z l l = κ₀ (b l) := by simp only [z]; exact ite_eq_left trivial
     have hzkl : z k l = κ₀ (b k + b l) * (κ₀ (b k))⁻¹ * (κ₀ (b l))⁻¹ := by
-      simp only [z]; rw [if_neg hne, if_pos hkl]
-    have hzlk : z l k = 1 := by simp only [z]; rw [if_neg hne.symm, if_neg (not_lt_of_gt hkl)]
+      simp only [z]; rw [ite_eq_right hne, ite_eq_left hkl]
+    have hzlk : z l k = 1 := by simp only [z]; rw [ite_eq_right hne.symm, ite_eq_right (not_lt_of_gt hkl)]
     rw [hzk, hzl, hzkl, hzlk, mul_one, mul_comm (κ₀ (b k) * κ₀ (b l)), mul_assoc, mul_assoc,
       ← mul_assoc (κ₀ (b k))⁻¹, ← mul_inv, inv_mul_cancel, mul_one]
   have κbb' : ∀ k l, k ≠ l → κ (b k + b l) = κ₀ (b k + b l) := by
@@ -1076,7 +1076,7 @@ theorem core (hR : Base R) (D : DegData R (maximalIdeal R)) (κ : D.toPre.X → 
       obtain ⟨f, hf1, hf2⟩ := _root_.GlobalTheory.ThFam.member_integral R hR D κ hκ k hk α b F hb mu (r mu) (hr mu hmu).1
       refine ⟨f, hf1, fun _ => ⟨hf2 0 (by simpa using (hr mu hmu).2), fun e he => ⟨mu, rfl, ?_⟩⟩⟩
       exact key mu hmu e (fun h => he (hf2 e h))
-    · push_neg at hc
+    · push Not at hc
       refine ⟨ReciprocityTheory.ChartRestriction.G.DVR.SecOps.secZero, ?_, fun _ => ⟨fun j => map_zero _, fun e he => absurd (fun j => map_zero _) he⟩⟩
       refine (GlobalTheory.FieldBaseChange.secScal_iff_val D.toPre.P.isLB _ _ _ _).2 fun y J hJ => ?_
       rw [ReciprocityTheory.ChartRestriction.G.DVR.UUA.sval_zero_of (fun j => rfl) _ y J (hJ.mem _ _),

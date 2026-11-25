@@ -11,54 +11,12 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoSpan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoSurj
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.MvPowerSeries.Inverse
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Data.Nat.Choose.Multinomial
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.EigenMem, Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.HomogOfStable, Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoordGrading
@@ -171,10 +129,10 @@ theorem UpperTheory.V.Alg.eigen_mem :
       (fun i _ => hf' i (W.π (wcomp O W.wt i g)) ⟨_, wcomp_mem O W.wt i g, rfl⟩), map_sub, map_sum] at h2
       simp only [map_mul, hq, hf, map_C] at h2
       simp only [map_sub, mul_sub, Finset.sum_sub_distrib, apply_ite C, map_zero, mul_ite, mul_zero,
-        Finset.sum_ite_eq', if_pos hjs]
+        Finset.sum_ite_eq', ite_eq_left hjs]
       rw [← neg_eq_zero, neg_sub]
       exact h2) j hjs
-  simp only [if_true] at h3
+  simp only [ite_true] at h3
   rwa [← map_sub, Ideal.Quotient.eq_zero_iff_mem] at h3
 end -- clump:auto
 end -- clump:auto
@@ -305,14 +263,14 @@ private theorem hos_art {O : Type} [CommRing O] [IsLocalRing O] {X : Type} [AddC
       _ = f' x := by
           rw [hE]
           refine Finset.sum_congr rfl fun d hd => ?_
-          rw [Finset.sum_ite_eq, if_pos (Finset.mem_image_of_mem _ hd)]
+          rw [Finset.sum_ite_eq, ite_eq_left (Finset.mem_image_of_mem _ hd)]
       _ = 0 := h0
   by_cases hj : j ∈ s
   · exact hz j hj
   · rw [hT]
     apply Finset.sum_eq_zero
     intro d hd
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hj (h ▸ Finset.mem_image_of_mem _ hd)
 

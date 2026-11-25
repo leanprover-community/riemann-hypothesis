@@ -301,7 +301,7 @@ theorem valuation_stair {μ₀ : T} (hL : L.Is μ₀) (hq : OffQ D) (G : GridDat
       count_modulBar G hloc, neg_zero, add_zero]
   have d2 : FractionalIdeal.count D.host.E (G.pl.w v) (G.pl.stAbar sc) = -(G.pl.depth sc v : ℤ) := by
     rw [Places.stAbar, FractionalIdeal.count_mul _ _ m2 (right_ne_zero_of_mul n2), FractionalIdeal.count_inv, c2,
-      count_modul, cosExp, if_pos hw, G.pl.under_w hv, zero_add]
+      count_modul, cosExp, ite_eq_left hw, G.pl.under_w hv, zero_add]
   have h1 := GroundTheory.Global.valuation_le_of_mem_fractionalIdeal (G.pl.w v) hx
   rw [count_stairId n1 n2, d1, d2] at h1
   have h2 := GroundTheory.Global.valuation_le_of_mem_fractionalIdeal (G.pl.w v)
@@ -604,7 +604,7 @@ theorem exists_mem_modul (P : Places L) {v : GlobalTheory.FinPl.Pl D} (hv : v �
   push_cast
   rw [map_prod]
   calc valuation k ϖ ^ P.depth sc v = ∏ u ∈ P.S0, (if u = v then valuation k ϖ else 1) ^ P.depth sc u := by
-        rw [Finset.prod_eq_single_of_mem v hv fun u _ h => by rw [if_neg h, one_pow], if_pos rfl]
+        rw [Finset.prod_eq_single_of_mem v hv fun u _ h => by rw [ite_eq_right h, one_pow], ite_eq_left rfl]
     _ ≤ _ := Finset.prod_le_prod' fun u hu => by
         rw [map_pow, SubmonoidClass.coe_pow, map_pow, coe_prInt]
         exact pow_le_pow_left' (htv u hu) _
@@ -754,16 +754,6 @@ open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 open ValuativeRel
 
-theorem _root_.GlobalTheory.T.split_frame_lattice_functional : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ v ∈ G.pl.S0,
-  ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : GlobalTheory.FinPl.SplitPt D k)
-    (β : GlobalTheory.FinPl.Frame p (G.V (.grid (2 * σ + 2) 0)) (Fin (G.V (.grid (2 * σ + 2) 0)).rank)) (ϖ : 𝒪[k]),
-  p.v = v → Formalism.L2.NTheta.IsIdemAt p.e (G.pl.w v) →
-  β.IsLat (G.Λ (.grid (2 * σ + 2) 0)) (Submodule.pi Set.univ fun _ => (1 : Submodule 𝒪[k] k)) →
-  IsLocalRing.maximalIdeal 𝒪[k] = Ideal.span {ϖ} →
-  ∀ a ∈ (pcFB W F σ h h').A₁, ∀ (q : Fin (σ + 1)) i, ∃ z ∈ IsLocalRing.maximalIdeal 𝒪[k] ^ G.pl.depth sc v,
-    (z : k) = (ϖ : k) ^ (G.pl.depth sc v * (q.1 + 1)) * (p.pr (incA D (-D.host.xi0)))⁻¹ ^ (q.1 + 1) *
-      (β.b' *ᵥ fun j => p.pr (a j q)) i := by
-  first | exact @GlobalTheory.DepthColumn.col_mem_depth
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitFrameLatticeFunctionalStatement =====
@@ -860,13 +850,13 @@ theorem GlobalTheory.FrameScale.clauses : OnStd fun {D} _ _ {sc} {G} W F => ∀ 
         by_cases hr : r = ⟨2 * σ - q.1, by omega⟩
         · subst hr
           have e1 : 2 * σ - q.1 + 1 = 2 * σ + 1 - q.1 := by omega
-          rw [Pi.single_eq_same, if_pos (by simp only; omega), e1]
+          rw [Pi.single_eq_same, ite_eq_left (by simp only; omega), e1]
           by_cases hq : q.1 = σ
-          · rw [if_pos (Fin.ext (by simp only; omega)), if_pos hq]
+          · rw [ite_eq_left (Fin.ext (by simp only; omega)), ite_eq_left hq]
             simp
-          · rw [if_neg (fun h => hq (by have := congrArg Fin.val h; simp only at this; omega)), if_neg hq]
+          · rw [ite_eq_right (fun h => hq (by have := congrArg Fin.val h; simp only at this; omega)), ite_eq_right hq]
             simp
-        · rw [Pi.single_eq_of_ne (hj.ne hr), if_neg (fun h => hr (Fin.ext (by simp only; omega)))]
+        · rw [Pi.single_eq_of_ne (hj.ne hr), ite_eq_right (fun h => hr (Fin.ext (by simp only; omega)))]
           simp
       · rw [hout m hm ⟨q.1, by omega⟩, Pi.smul_apply, Pi.single_eq_of_ne (fun h => hm ⟨_, h.symm⟩), smul_zero]
     have hs : (if q.1 = σ then (-1 : k) else 1) ≠ 0 := by split_ifs <;> norm_num
@@ -929,7 +919,7 @@ theorem GlobalTheory.FrameFB.frame_fb : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ
   · intro a ha
     have hu2 : (p.pr (incA D (star (-D.host.xi0)))) ≠ 0 := right_ne_zero_of_mul_eq_one hu₂
     refine ⟨fun q i => ?_, fun q i => ?_⟩
-    · obtain ⟨z, hz, hz'⟩ := GlobalTheory.T.split_frame_lattice_functional D hq T L μ0 hL sc G W M hM F hF σ h h' v hv k p β ϖ hpv hid hlat hmax a ha q i
+    · obtain ⟨z, hz, hz'⟩ := GlobalTheory.DepthColumn.col_mem_depth D hq T L μ0 hL sc G W M hM F hF σ h h' v hv k p β ϖ hpv hid hlat hmax a ha q i
       exact ⟨z, hz, hz'⟩
     · obtain ⟨z, hz, hz'⟩ := GlobalTheory.ConjClause.functional_equation_local_lattice D hq T L μ0 hL sc G W M hM F hF σ h h' v hv k p β ϖ hpv hid hlat hmax a ha q i
       refine ⟨z * (if q.1 = σ then -1 else 1), Ideal.mul_mem_right _ _ hz, ?_⟩
@@ -940,10 +930,10 @@ theorem GlobalTheory.FrameFB.frame_fb : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ
       generalize (p.pr (incA D (star (-D.host.xi0)))) ^ (q.1 + 1) = X at hx ⊢
       generalize (ϖ : k) ^ (G.pl.depth sc v * (2 * σ + 1 - q.1)) = Y at hϖn ⊢
       by_cases hqσ : q.1 = σ
-      · simp only [hqσ, if_true]
+      · simp only [hqσ, ite_true]
         push_cast
         field_simp
-      · simp only [hqσ, if_false]
+      · simp only [hqσ, ite_false]
         push_cast
         field_simp
 end -- clump:auto
@@ -964,21 +954,6 @@ open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 open ValuativeRel
 
-theorem _root_.GlobalTheory.T.split_local_frame_diagonal : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ v ∈ G.pl.S0,
-  ∃ (k : Type) (_ : Field k) (_ : ValuativeRel k) (_ : TopologicalSpace k) (_ : IsNonarchimedeanLocalField k)
-    (p : GlobalTheory.FinPl.SplitPt D k) (β : GlobalTheory.FinPl.Frame p (G.V (.grid (2 * σ + 2) 0)) (Fin (G.V (.grid (2 * σ + 2) 0)).rank))
-    (ι ι' : Fin (σ + 1) → Fin (G.V (.grid (2 * σ + 2) 0)).rank) (s t : Fin (σ + 1) → k),
-  p.v = v ∧ Formalism.L2.NTheta.IsIdemAt p.e (G.pl.w v) ∧
-  β.IsLat (G.Λ (.grid (2 * σ + 2) 0)) (Submodule.pi Set.univ fun _ => (1 : Submodule 𝒪[k] k)) ∧
-  Function.Injective ι ∧ Function.Injective ι' ∧ (∀ a b, ι' b = ι a → a = Fin.last σ ∧ b = Fin.last σ) ∧
-  (∀ q, s q • (β.b' *ᵥ fun i => p.pr (xFB F σ h' i q)) = Pi.single (ι q) 1) ∧
-  (∀ q, t q • ((fun i => p.pr (cA D (xFB F σ h' i q))) ᵥ*
-    ((G.V (.grid (2 * σ + 2) 0)).gram.map (fun c => p.pr (incA D c)) * β.b)) = Pi.single (ι' q) 1) ∧
-  ∀ a ∈ (pcFB W F σ h h').A₁,
-    (∀ q i, ∃ z ∈ IsLocalRing.maximalIdeal 𝒪[k] ^ G.pl.depth sc v, (z : k) = s q * (β.b' *ᵥ fun j => p.pr (a j q)) i) ∧
-    (∀ q i, ∃ z ∈ IsLocalRing.maximalIdeal 𝒪[k] ^ G.pl.depth sc v, (z : k) = t q * ((fun j => p.pr (cA D (a j q))) ᵥ*
-      ((G.V (.grid (2 * σ + 2) 0)).gram.map (fun c => p.pr (incA D c)) * β.b)) i) := by
-  first | exact @GlobalTheory.FrameFB.frame_fb
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitLocalFrameDiagonalStatement =====
@@ -1001,7 +976,7 @@ namespace GlobalTheory.CosetFJ
 theorem besselOrbit_at_badPlace_eq_congruenceTranslate : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ v ∈ G.pl.S0, ∀ g ∈ grpAt (G.V (.grid (2 * σ + 2) 0)) (· = v), ∀ (u : UX D (σ + 1)), ∀ a ∈ (pcFB W F σ h h').A₁, MxOff (· = v) (mt (G.V (.grid (2 * σ + 2) 0)) g⁻¹ ⬝ (xFB F σ h' ⬝ u.1.1) - xFB F σ h' - a) → ∃ k ∈ lev G (.grid (2 * σ + 2) 0), k ∈ grpAt (G.V (.grid (2 * σ + 2) 0)) (· = v) ∧ MxOff (· = v) (mt (G.V (.grid (2 * σ + 2) 0)) k ⬝ xFB F σ h' - mt (G.V (.grid (2 * σ + 2) 0)) g⁻¹ ⬝ (xFB F σ h' ⬝ u.1.1)) := by
   intro D hQ T L μ0 hL sc G W M hM F hF σ h h' v hv g hg u a ha hoff
   obtain ⟨k, _, _, _, _, p, β, ι, ι', s, t, hpv, hidem, hlat, hι, hι', hιι, hX, hΦ, hA⟩ :=
-    GlobalTheory.T.split_local_frame_diagonal D hQ T L μ0 hL sc G W M hM F hF σ h h' v hv
+    GlobalTheory.FrameFB.frame_fb D hQ T L μ0 hL sc G W M hM F hF σ h h' v hv
   obtain ⟨ha1, ha2⟩ := hA a ha
   subst hpv
   obtain ⟨k₀, hk₀, hoff'⟩ := _root_.GlobalTheory.AscFin.OneOrbitAt.one_orbit D k p _ σ β (xFB F σ h') ι ι' s t (G.pl.depth sc p.v) (G.pl.depth_pos sc _) hι hι' hιι
@@ -1029,8 +1004,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.exists_level_element_off_place : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ v ∈ G.pl.S0, ∀ g ∈ grpAt (G.V (.grid (2 * σ + 2) 0)) (· = v), ∀ (u : UX D (σ + 1)), ∀ a ∈ (pcFB W F σ h h').A₁, MxOff (· = v) (mt (G.V (.grid (2 * σ + 2) 0)) g⁻¹ ⬝ (xFB F σ h' ⬝ u.1.1) - xFB F σ h' - a) → ∃ k ∈ lev G (.grid (2 * σ + 2) 0), k ∈ grpAt (G.V (.grid (2 * σ + 2) 0)) (· = v) ∧ MxOff (· = v) (mt (G.V (.grid (2 * σ + 2) 0)) k ⬝ xFB F σ h' - mt (G.V (.grid (2 * σ + 2) 0)) g⁻¹ ⬝ (xFB F σ h' ⬝ u.1.1)) := by
-  first | exact @GlobalTheory.CosetFJ.besselOrbit_at_badPlace_eq_congruenceTranslate
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLevelElementOffPlaceStatement =====
@@ -1189,7 +1162,7 @@ theorem one_coset_decomposition_base : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ 
   refine coset_of_places (F.dB σ h') (pcFB W F σ h h') (xFB F σ h') 0 W.ψ (lev G (.grid (2 * σ + 2) 0)) G.pl.S0 ?_ g hg hc
   intro v hv g hg hc
   obtain ⟨u, a, ha, hoff⟩ := hc.pt
-  obtain ⟨k, hk, hka, hk'⟩ := GlobalTheory.T.exists_level_element_off_place D hD T L μ0 hL sc G W M hM F _hF σ h h' v hv g hg u a ha hoff
+  obtain ⟨k, hk, hka, hk'⟩ := GlobalTheory.CosetFJ.besselOrbit_at_badPlace_eq_congruenceTranslate D hD T L μ0 hL sc G W M hM F _hF σ h h' v hv g hg u a ha hoff
   obtain ⟨r, hr, hra, e⟩ := _root_.GlobalTheory.PrincipalMove.exists_move _ (xFB F σ h') (· = v) g k u hg hka hk'
   exact ⟨r, hr, hra, k⁻¹, inv_mem hk, inv_mem hka, e⟩
 

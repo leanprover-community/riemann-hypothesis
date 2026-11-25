@@ -63,11 +63,7 @@ lemma rr_nilp_pow {R : Type} [Ring R] {K : Type} [Field K] [Algebra K R] (a : R)
 private lemma coe_restrict_pow_apply' {K V : Type} [Field K] [AddCommGroup V] [Module K V]
     (A : Module.End K V) (S : Submodule K V) (hS : ∀ x ∈ S, A x ∈ S) (k : ℕ) (x : S) :
     (((A.restrict hS) ^ k) x : V) = (A ^ k) x := by
-  induction k with
-  | zero => simp
-  | succ k ihk =>
-    rw [pow_succ', pow_succ', Module.End.mul_apply, Module.End.mul_apply,
-      LinearMap.restrict_coe_apply, ihk]
+  rw [Module.End.pow_restrict k hS, LinearMap.coe_restrict_apply]
 
 lemma rr_roots_pow {K : Type} [Field K] [IsAlgClosed K] (q : ℕ) : ∀ (n : ℕ) (V : Type)
     [AddCommGroup V] [Module K V] [FiniteDimensional K V],
@@ -78,10 +74,8 @@ lemma rr_roots_pow {K : Type} [Field K] [IsAlgClosed K] (q : ℕ) : ∀ (n : ℕ
   | _ n ih =>
   intro V _ _ _ hn A
   have hinv : ∀ (S : Submodule K V) (hS : ∀ x ∈ S, A x ∈ S) (hSq : ∀ x ∈ S, (A ^ q) x ∈ S),
-      (A ^ q).restrict hSq = (A.restrict hS) ^ q := by
-    intro S hS hSq
-    ext x
-    rw [LinearMap.restrict_coe_apply, coe_restrict_pow_apply']
+      (A ^ q).restrict hSq = (A.restrict hS) ^ q := fun _ hS _ =>
+    (Module.End.pow_restrict q hS).symm
   rcases Nat.eq_zero_or_pos n with hn0 | hnpos
   ·
     have hsub : Subsingleton V := Module.finrank_zero_iff.mp (hn.trans hn0)

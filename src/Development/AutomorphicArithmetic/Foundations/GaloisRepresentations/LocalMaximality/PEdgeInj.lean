@@ -55,7 +55,7 @@ theorem UpperTheory.Gal.productCup_of_system.edgeInj_of :
   have hx0 : ∀ I : Finset ι, (I.card : ℤ) ≠ (d : ℤ) + 1 → x I = 0 := by
     intro I hI
     have := hxC' I
-    rw [if_neg (fun h => hI h.2)] at this
+    rw [ite_eq_right (fun h => hI h.2)] at this
     simpa using this
   have hy0 : ∀ s, ¬ ((lft s).Nonempty ∧ (rgt s).Nonempty) → y s = 0 := by
     intro s h
@@ -86,7 +86,7 @@ theorem UpperTheory.Gal.productCup_of_system.edgeInj_of :
       rw [e1, hd]
       simp [wd_apply']
     · have hLn : L.Nonempty := Finset.nonempty_iff_ne_empty.2 hL
-      simp only [hL, if_false]
+      simp only [hL, ite_false]
       have h0 : wd (fun _ => (1 : Module.End ℂ E)) (fun _ : Finset ι => (0 : E)) b = 0 := by
         simp [wd_apply']
       have h2 := wd_tail (x b) L hLn
@@ -120,7 +120,7 @@ theorem UpperTheory.Gal.productCup_of_system.edgeInj_of :
         have hne : (lft s).Nonempty := by
           apply Finset.card_pos.1
           omega
-        rw [if_pos ⟨hne, hlc⟩, hs'] at this
+        rw [ite_eq_left ⟨hne, hlc⟩, hs'] at this
         exact this
       · have : x (lft s) = 0 := by
           apply hx0
@@ -136,14 +136,14 @@ theorem UpperTheory.Gal.productCup_of_system.edgeInj_of :
       by_cases hcs : (s.card : ℤ) = (d : ℤ) + 2 - 1
       · by_cases hlr : (lft s).Nonempty ∧ (rgt s).Nonempty
         · have := hyC' s
-          rw [if_pos hcs] at this
-          simp only [mixF, if_pos hlr, hs s] at this
+          rw [ite_eq_left hcs] at this
+          simp only [mixF, ite_eq_left hlr, hs s] at this
           have hsc : (s.card : ℤ) = (d : ℤ) + 1 := by omega
-          rw [if_pos ⟨Finset.card_pos.1 (by omega), hsc⟩]
+          rw [ite_eq_left ⟨Finset.card_pos.1 (by omega), hsc⟩]
           exact zsmul_mem this _
         · simp [hy0 s hlr]
       · have := hyC' s
-        rw [if_neg hcs] at this
+        rw [ite_eq_right hcs] at this
         have h0 : y s = 0 := by simpa using this
         simp [h0]
   · change deltaL ℂ (ι ⊕ₗ ι) E (e + ((-1 : ℤ) ^ d) • y) = 0

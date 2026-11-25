@@ -27,7 +27,7 @@ private theorem UpperTheory.Reformulated.B.Qi22.homW_one {K : Type*} [NormedFiel
   intro n hn
   have h0 : n = 0 := by
     by_contra h
-    exact hn (by rw [MvPowerSeries.coeff_one, if_neg h])
+    exact hn (by rw [MvPowerSeries.coeff_one, ite_eq_right h])
   subst h0
   simp [UpperTheory.Reformulated.B.Qi22.wsum]
 

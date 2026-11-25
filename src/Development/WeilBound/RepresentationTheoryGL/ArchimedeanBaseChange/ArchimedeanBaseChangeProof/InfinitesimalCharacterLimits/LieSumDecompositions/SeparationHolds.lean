@@ -1263,7 +1263,7 @@ theorem space_twT (z : ℂ) {N : ℕ} (t : Tr E N) : (twT z t).space = tw t.spac
     by_cases hM : M = 0
     · subst hM
       simp only [twT, Tr.space, tw_zero_dim]
-    · simp only [twT, if_neg hM, Tr.space]
+    · simp only [twT, ite_eq_right hM, Tr.space]
       rw [tw_tw]
   | @node r s t₁ t₂ ih₁ ih₂ =>
     simp only [twT, Tr.space]
@@ -1276,7 +1276,7 @@ theorem good_twT {z : ℂ} (hz : z.re = 0) {N : ℕ} (t : Tr E N) (ht : t.Good) 
     · subst hM
       simp only [twT]
       exact Or.inl ⟨rfl, hV, hw⟩
-    · simp only [twT, if_neg hM.ne']
+    · simp only [twT, ite_eq_right hM.ne']
       exact Or.inr ⟨hM, hV, by rw [Complex.add_re, hw, hz, add_zero]⟩
   | @node r s t₁ t₂ ih₁ ih₂ =>
     exact ⟨ih₁ ht.1, ih₂ ht.2⟩
@@ -1420,7 +1420,7 @@ theorem core (h1 : SliceU) (h2 : Blocks) (h3 : Leaf) (h4 : Node) (h6 : TwConc) (
   intro U hN hU φ hφ hne
   by_cases hneg : ∀ r, 0 < r → r < N → ∀ c ∈ Exp r φ.1, pE E N r c < 0
   · exact h3 E N τ hN U hU φ hφ hneg hne
-  push_neg at hneg
+  push Not at hneg
   obtain ⟨r, hr, hrN, c, hc, hc0⟩ := hneg
   have hc0' : pE E N r c = 0 := le_antisymm (hU.2.2.1 φ hφ r hr hrN c hc) hc0
   obtain ⟨s, rfl⟩ : ∃ s, N = r + s := ⟨N - r, by omega⟩
@@ -1779,7 +1779,7 @@ theorem sliceU_of_noLog2 (hNL : NoLog) : SliceU := by
   choose! Cs Gs hsum hGeig using hdec
   obtain ⟨τs, a, ha⟩ := SliceUB2.lagrange (insert c (S.biUnion Cs)) c
   have ha1 : ∑ t ∈ τs, a t * Complex.exp (c * t) = 1 := by
-    rw [ha c (Finset.mem_insert_self _ _), if_pos rfl]
+    rw [ha c (Finset.mem_insert_self _ _), ite_eq_left rfl]
 
   obtain ⟨T, hT⟩ := exists_strictHenselian_absolutely_closed_local_ring U hU.2 r τs a
   have hTval : ∀ ψ ∈ U, ∀ g, (T ψ).1 g = ∑ t ∈ τs, a t * An.ctn r ψ.1 (aT E (r + s) r t * g) := by

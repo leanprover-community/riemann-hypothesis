@@ -65,11 +65,8 @@ variable {W k : Type} [CommRing W] [IsLocalRing W] [Field k] (v : W →+* k)
   (hker : RingHom.ker v = maximalIdeal W)
 include hker
 
-theorem isUnit_of_ne {x : W} (hx : v x ≠ 0) : IsUnit x := by
-  by_contra h
-  have : x ∈ maximalIdeal W := h
-  rw [← hker] at this
-  exact hx this
+theorem isUnit_of_ne {x : W} (hx : v x ≠ 0) : IsUnit x :=
+  IsLocalRing.notMem_maximalIdeal.1 fun h => hx (RingHom.mem_ker.1 (hker ▸ h))
 
 theorem exists_root [IsAdicComplete (maximalIdeal W) W] (hv : Function.Surjective v) (f : W[X]) (hf : f.Monic)
     (hsep : (f.map v).Separable) (a : k) (ha : (f.map v).eval a = 0) : ∃ w, f.eval w = 0 ∧ v w = a := by

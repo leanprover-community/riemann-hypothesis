@@ -336,8 +336,6 @@ structure Positivity : Prop where
 
   big : IsBig F G.LA
 
-def logRho (C h : ℝ) : ℝ := Real.log G.abelian₂ + C * Real.log (G.theta h)
-
 def g : ℝ := ((G.D : ℝ) + 1) * (Real.log G.n + 1) / 2 + 1
 
 def globalData (T : ℕ) (hT : G.D + 1 ≤ T) : Data F where

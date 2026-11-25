@@ -88,8 +88,8 @@ lemma monomialMatrix_inv_left (w : Equiv.Perm (Fin m)) (d : Fin m → ℂ) (hd :
   rw [Finset.sum_eq_single (w j)]
   · by_cases hij : i = j
     · subst hij; simp [hd i]
-    · rw [if_neg (by simpa using hij), zero_mul, Matrix.one_apply_ne hij]
-  · intro k _ hk; rw [if_neg hk, mul_zero]
+    · rw [ite_eq_right (by simpa using hij), zero_mul, Matrix.one_apply_ne hij]
+  · intro k _ hk; rw [ite_eq_right hk, mul_zero]
   · simp
 
 lemma isUnit_det_monomialMatrix (w : Equiv.Perm (Fin m)) (d : Fin m → ℂ) (hd : ∀ a, d a ≠ 0) : IsUnit (C2.monoP w d).det :=
@@ -105,12 +105,12 @@ lemma monomialMatrix_conj_apply (w : Equiv.Perm (Fin m)) (d : Fin m → ℂ) (hd
   rw [monomialMatrix_inv w d hd]
   simp only [Matrix.mul_apply, C2.monoP, Matrix.of_apply]
   rw [Finset.sum_eq_single (w b)]
-  · rw [if_pos rfl, Finset.sum_eq_single (w a)]
+  · rw [ite_eq_left rfl, Finset.sum_eq_single (w a)]
     · simp
     · intro k _ hk
-      rw [if_neg (fun e => hk (by rw [e]; simp)), zero_mul]
+      rw [ite_eq_right (fun e => hk (by rw [e]; simp)), zero_mul]
     · simp
-  · intro k _ hk; rw [if_neg hk, mul_zero]
+  · intro k _ hk; rw [ite_eq_right hk, mul_zero]
   · simp
 
 lemma isMonomial_unit {P : Matrix (Fin m) (Fin m) ℂ} (hP : C2.IsMonomial P) : IsUnit P.det := by
@@ -151,12 +151,12 @@ lemma c2x2_lowOf_sub {m : ℕ} (p : Fin m × Fin m → Prop) [DecidablePred p] (
   · rw [Finset.sum_eq_single ⟨(i, j), h⟩]
     · simp
     · intro q _ hq
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e; apply hq; exact Subtype.ext e
     · simp
   · apply Finset.sum_eq_zero
     intro q _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e; apply h; rw [← e]; exact q.2
 
 theorem lower_parabolic_coordinates : C2.LPCoords := by
@@ -186,21 +186,13 @@ theorem lower_parabolic_coordinates : C2.LPCoords := by
       · rw [Matrix.one_apply_ne (ne_of_gt hij), zero_add]
         split_ifs with h
         · rfl
-        · have hlt : w.symm i < w.symm j := by
-            have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
-            rcases lt_or_gt_of_ne hne with h' | h'
-            · exact h'
-            · exact absurd ⟨hij, h'⟩ h
+        · have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
+          have hlt : w.symm i < w.symm j := (lt_or_gt_of_ne hne).resolve_right fun h' => h ⟨hij, h'⟩
           have := hc.1 _ _ hlt
           rw [monomialMatrix_conj_apply w d hd] at this
           simp only [Equiv.apply_symm_apply] at this
-          have hdi := hd (w.symm i)
-          have hdj := hd (w.symm j)
-          rcases mul_eq_zero.mp this with h1 | h1
-          · rcases mul_eq_zero.mp h1 with h2 | h2
-            · exact absurd h2 (inv_ne_zero hdi)
-            · exact h2.symm
-          · exact absurd h1 hdj
+          exact ((mul_eq_zero_iff_left (inv_ne_zero (hd _))).1
+            ((mul_eq_zero_iff_right (hd _)).1 this)).symm
   · ext l
     simp only [Set.mem_range, C2.Lstg, Set.mem_setOf_eq]
     constructor
@@ -225,20 +217,12 @@ theorem lower_parabolic_coordinates : C2.LPCoords := by
       · rw [Matrix.one_apply_ne (ne_of_gt hij), zero_add]
         split_ifs with h
         · rfl
-        · have hlt : w.symm j < w.symm i := by
-            have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
-            rcases lt_or_gt_of_ne hne with h' | h'
-            · exact absurd ⟨hij, h'⟩ h
-            · exact h'
+        · have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
+          have hlt : w.symm j < w.symm i := (lt_or_gt_of_ne hne).resolve_left fun h' => h ⟨hij, h'⟩
           have := hc.1 _ _ hlt
           rw [monomialMatrix_conj_apply w d hd] at this
           simp only [Equiv.apply_symm_apply] at this
-          have hdi := hd (w.symm i)
-          have hdj := hd (w.symm j)
-          rcases mul_eq_zero.mp this with h1 | h1
-          · rcases mul_eq_zero.mp h1 with h2 | h2
-            · exact absurd h2 (inv_ne_zero hdi)
-            · exact h2.symm
-          · exact absurd h1 hdj
+          exact ((mul_eq_zero_iff_left (inv_ne_zero (hd _))).1
+            ((mul_eq_zero_iff_right (hd _)).1 this)).symm
 
 end Formalism.FourierDecayAlt.P

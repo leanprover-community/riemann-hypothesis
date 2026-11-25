@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.MultipliableAndS
 
 @[expose] public section
 
-noncomputable section
-
 open scoped UpperHalfPlane MatrixGroups
 
 namespace GlobalTheory.KZ.SiegelModel

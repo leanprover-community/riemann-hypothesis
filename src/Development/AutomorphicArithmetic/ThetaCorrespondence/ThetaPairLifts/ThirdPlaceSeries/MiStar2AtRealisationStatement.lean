@@ -27,51 +27,13 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PostOnMemGoodPart
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicityInnerProductUnitTwistedRightTranslat
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BotRelTwoStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RtrMemOfNorm
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowsJoinPinned
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseRangeOfImNeZero
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
 import Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -507,7 +469,7 @@ theorem exists_eval {D : D7} {S : D.what₂.Tau → Formalism.BasicNotions.TH.SP
     exact (congrFun (PiTensorProduct.lift.tprod (φ := (T : MMap M)) hE.choose) _).symm
   · exact ((mem_EEC St Gd _).1 (hE.choose_spec.2.choose T).2).1
   · unfold sEEofTT
-    simp only [dif_pos hE]
+    simp only [dite_eq_left hE]
     rfl
 
 theorem inner_smul_star {D : D7} {St : Formalism.L2.SG.HidaSetting.HidaSetting D} (h : St.B.I = Formalism.L2.SG.InstExistsPf.instOf D)
@@ -908,15 +870,6 @@ theorem lift_postOn (T : MMap M) (z : GA D V) (v : SmT M) :
 
 end General
 
-section Main
-
-open GlobalTheory.MiTop.CentralShift
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX}
-
-end Main
-
 end GlobalTheory.MiTop.CentralShift
 
 namespace GlobalTheory.MiTop
@@ -948,9 +901,6 @@ noncomputable section
 
 open Formalism.BasicNotions.TH Formalism.IndefR.Lev
 namespace GlobalTheory.MiTop.CentralShift
-section General
-variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S}
-end General
 section Main
 open GlobalTheory.MiTop.CentralShift
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
@@ -1040,9 +990,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.MiS
 open GlobalTheory.MiTop
 noncomputable section
 namespace GlobalTheory.MiTop.AtReal
-section Gen
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K}
-end Gen
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX}
 theorem dc_heq_alt (W : _root_.GlobalTheory.MiS.RealPackAlt ex) : HEq (W.Q.F.fc (_root_.GlobalTheory.MiS.packageCoefficientSpace W).zs).Dc W.P.Dc :=
@@ -1070,7 +1017,7 @@ theorem anchor_word_alt (W : _root_.GlobalTheory.MiS.RealPackAlt ex) (z : GA D (
   obtain ⟨R, hR⟩ := hR
   obtain ⟨-, -, φ₁, C₀, b₀, T₀, hT₀, hC₀, hP₀, hb₀⟩ := hA
   have hinj : Function.Injective U := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro φ h
     have h1 := hU φ
     rw [h, norm_zero] at h1

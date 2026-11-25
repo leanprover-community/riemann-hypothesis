@@ -25,50 +25,9 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasFinite
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PureTensorOperatorEqOffPlaceMulAtPlaceStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdmissibleRepHasTraceFiniteAdelicPureTensorFunctStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsTestFamiliesProjectedTranslationOperatorsStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalRingCardinality.DataHost
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
@@ -78,9 +37,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactLevelOffFinEmpty
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.CoeffEqZeroOfSumTraceProjectionsInequivalentIrre, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIrreducibleAdmissibleLocalComponentFiniteA, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFinsetLocalComponentCopiesFixedAway, Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchurAdmissibleStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.InjectiveSumOfLinIndepIntertwiners, Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntertwinerMemISupRangeEqSumSmul, Development.AbelianVarietyTheory.Proofs.TwistedOperators.TraceMatrixPiOperator, Development.AbelianVarietyTheory.Proofs.TwistedOperators.TraceMulEndomorphismIsotypicRep, Development.AbelianVarietyTheory.Proofs.TwistedOperators.PureTensorTraceEqConstMulLocalTrace, Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceSeparationOfIwahoriTrace, Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceSeparationOfIwahoriTraceStatement
@@ -169,12 +125,12 @@ theorem coeff_eq_zero_of_sum_trace_eq_zero : ∀ (G : Type) [Group G] (n : ℕ) 
       have h1' : (σ i).asAlgebraHom x (b i k : W i) = b i k := by simpa using h1
       simp [Q, h1', hfix]
     · have h1' : (σ i).asAlgebraHom x (b i k : W i) = 0 :=
-        h1.trans (if_neg hi)
+        h1.trans (ite_eq_right hi)
       simp [Q, h1', hi]
   have h := hlin x
-  rw [Finset.sum_eq_single i₀ (fun i _ hi => by rw [hQx i, if_neg hi, map_zero, mul_zero])
+  rw [Finset.sum_eq_single i₀ (fun i _ hi => by rw [hQx i, ite_eq_right hi, map_zero, mul_zero])
     (by simp)] at h
-  rw [hQx i₀, if_pos rfl, LinearMap.trace_id] at h
+  rw [hQx i₀, ite_eq_left rfl, LinearMap.trace_id] at h
   have hpos : 0 < Module.finrank ℂ (LinearMap.range (P i₀)) := by
     rw [Module.finrank_pos_iff, Submodule.nontrivial_iff_ne_bot, Ne, LinearMap.range_eq_bot]
     exact hi₀
@@ -765,11 +721,11 @@ theorem trace_matrix_pi_operator : ∀ (W : Type) [AddCommGroup W] [Module ℂ W
     rw [LinearMap.trace_comp_comm', LinearMap.comp_assoc]
     by_cases hkj : k = j
     · subst hkj
-      rw [LinearMap.proj_comp_single_same, LinearMap.comp_id, if_pos rfl]
-    · rw [LinearMap.proj_comp_single_ne (R := ℂ) (φ := fun _ : Fin m => W) j k (Ne.symm hkj), LinearMap.comp_zero, map_zero, if_neg hkj]
+      rw [LinearMap.proj_comp_single_same, LinearMap.comp_id, ite_eq_left rfl]
+    · rw [LinearMap.proj_comp_single_ne (R := ℂ) (φ := fun _ : Fin m => W) j k (Ne.symm hkj), LinearMap.comp_zero, map_zero, ite_eq_right hkj]
 
   simp only [map_sum, map_smul, key, smul_eq_mul, mul_ite, mul_zero, Finset.sum_ite_eq,
-  Finset.mem_univ, if_true, Matrix.trace, Matrix.diag, Finset.sum_mul]
+  Finset.mem_univ, ite_true, Matrix.trace, Matrix.diag, Finset.sum_mul]
 
 end GlobalTheory
 end -- clump:auto

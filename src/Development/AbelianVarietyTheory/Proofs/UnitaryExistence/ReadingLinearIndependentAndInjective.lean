@@ -6,43 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFra
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnitIndepOfCharts
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
 public import Formalism.LocalToGlobal.ProjectiveLattices.ReadAlg
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.NormConst
 import Formalism.LocalToGlobal.ProjectiveLattices.RulInst
 import Mathlib.Algebra.Module.StablyFree.Basic
@@ -79,11 +42,11 @@ theorem test_value_eq_const_mul_reading : Out.SecBaseChangeSt → ∀ (E : Type)
   have h1 : evR Xo c f z = ψ (f p y) := by
     have hT : FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) z := ⟨p, ψ, y, hz⟩
     unfold evR evalAt
-    rw [dif_pos hT]
+    rw [dite_eq_left hT]
     exact hWD f hN _ _ _ _ _ _ _ _ hT.choose_spec.choose_spec.choose_spec hz
   have h2 : rdU U f k x.1 = toC (evR Xo c f (U.un k x)) := by
     unfold rdU
-    exact dif_pos x.2
+    exact dite_eq_left x.2
   have h3 := hBor (CAt σ) hred a n f hf t (U.un k x) z ht
   rw [← h1, h2, h3]
   rfl

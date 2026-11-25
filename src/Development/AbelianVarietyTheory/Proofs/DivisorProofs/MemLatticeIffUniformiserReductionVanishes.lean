@@ -7,40 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemCompleted
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinPartMulIncAMem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjPrincipalFractionalIntegralIdempotentSum
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHatIffOfSelfDual
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -49,7 +15,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalis
 open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie GlobalTheory.OnTies GlobalTheory.OnCmp GlobalTheory.BaseCmp
 open scoped TensorProduct
 open Classical
-
 
 namespace GlobalTheory.DilKer
 
@@ -113,7 +78,7 @@ theorem mem_int_of_mul {D : D7} {Q : Finset (Pl D.host.E)} {e : AE D} (he : IsId
 
 theorem mem_localLattice_iff_redM : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m), VStd D i → ∀ (Q : Finset (Pl D.host.E)), (∃ t, Q ⊆ R.Q t) → ∀ eQ : AE D, IsIdemSum eQ Q → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ Q, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∀ z : WO (Vc D i) (Wc D i), IsHalf eQ z → dil i (ϖ : D.host.E) z ∈ lattice₂ R i → (z ∈ lattice₂ R i ↔ ∀ PP ∈ Q, redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (dil i (ϖ : D.host.E) z)) = 0) := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R F hC hG i hV Q hQ eQ he ϖ hϖ0 hϖ z hz hϖz
-  have hI := GlobalTheory.T.mem_completedPairLattice_iff_frameMatrix_integral_on_half D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ he
+  have hI := GlobalTheory.HalfLatInt.isIntM_iff_mem_latP D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ he
   rw [frMapO_dil]
   constructor
   · intro hzL PP hPP
@@ -124,7 +89,7 @@ theorem mem_localLattice_iff_redM : ∀ (D : D7) (G : Type) [Group G] [Fintype G
       exact GlobalTheory.IdemIntegral.toEAf_mem_of_finPart (GlobalTheory.SplitIndex.finPart_incA_mem ϖ)
     have hint : eToEAf D (ϖ : D.host.E) * frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) z k l ∈
         Formalism.L2.Herm.intAf D.host.F D.host.E := mul_mem hϖi (hM k l)
-    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dif_pos hint]
+    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dite_eq_left hint]
     refine (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, hint⟩).2 ?_
     change Valued.v (cpt PP (eToEAf D (ϖ : D.host.E) * _)) < 1
     rw [RingHom.map_mul, Valuation.map_mul, val_cpt_eToEAf, GlobalTheory.HeckeDetChar.val_unif (hϖ PP hPP).1 (hϖ PP hPP).2]
@@ -138,7 +103,7 @@ theorem mem_localLattice_iff_redM : ∀ (D : D7) (G : Type) [Group G] [Fintype G
         Formalism.L2.Herm.intAf D.host.F D.host.E := fun k l => hN k l
     refine (hI z hz).1 fun k l => mem_int_of_mul he hϖ (frMapO_half i _ _ hz k l) (hN' k l) fun PP hPP => ?_
     have h1 := congrFun (congrFun (hred PP hPP) k) l
-    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dif_pos (hN' k l)] at h1
+    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dite_eq_left (hN' k l)] at h1
     exact (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, hN' k l⟩).1 h1
 
 end GlobalTheory.DilKer

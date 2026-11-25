@@ -21,7 +21,7 @@ theorem keyS_inj (k r : ℕ) : Function.Injective (keyS k r) := by
 theorem keyS_esI (k r : ℕ) (x : Fin r) : keyS k r (esI k r x) = x.val := by
   have hx := x.isLt
   have c : r + k < 2 * r + k - x.val := by omega
-  simp only [keyS, Formalism.QuantumDeterminants.esI, c, if_true]
+  simp only [keyS, Formalism.QuantumDeterminants.esI, c, ite_true]
   omega
 
 theorem star_sgnW (m : ℕ) : star (sgnW m) = sgnW m := by
@@ -54,7 +54,7 @@ theorem first_expansion_identity : ExpansionOmittedColumn := by
       have ha := a.isLt
       have hb := b.isLt
       rw [hxi _ _ (by simp only [Fin.coe_castLE]; omega)]
-      rw [if_pos (by simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE]; omega)]
+      rw [ite_eq_left (by simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE]; omega)]
       simp [Zb, xR, Formalism.QuantumDeterminants.eI, ha, hb]
   have he : StrictMono (fun l : Fin (i0 + s') =>
       xR k r (i0 + s' + 1) (by omega) ((⟨i0, by omega⟩ : Fin (i0 + s' + 1)).succAbove l)) := by
@@ -95,7 +95,7 @@ theorem first_expansion_identity : ExpansionOmittedColumn := by
         (xR k r (i0 + s' + 1) (by omega) ((⟨i0, by omega⟩ : Fin (i0 + s' + 1)).succAbove l))).det =
         h.det * t ^ s' * sgnW s' := by
       have hp := minors_first_case i0 s' h t ⟨i0, by omega⟩
-      rw [if_pos rfl] at hp
+      rw [ite_eq_left rfl] at hp
       rw [← hp]
       congr 1
       ext a l
@@ -103,7 +103,7 @@ theorem first_expansion_identity : ExpansionOmittedColumn := by
       have hl := ((⟨i0, by omega⟩ : Fin (i0 + s' + 1)).succAbove l).isLt
       simp only [Matrix.of_apply]
       rw [hxi _ _ (by simp only [Fin.coe_castLE]; omega)]
-      rw [if_pos (by simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE]; omega)]
+      rw [ite_eq_left (by simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE]; omega)]
       simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE]
     unfold AAx
     rw [← hdet']

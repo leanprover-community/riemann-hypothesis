@@ -12,63 +12,19 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsStarSta
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LeOfLatMod
 public import ReciprocityTheory.SemistableReduction.SemiDegCA
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Topology.Sheaves.Presheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -236,16 +192,6 @@ section Scale
 variable (c : (K →+* ℂ) → ℝ) (hc : ∀ σ, 0 < c σ) (σ : K →+* ℂ)
 
 end Scale
-
-noncomputable def scaleNormExp (t : (K →+* ℂ) → ℝ) : ArchMetric K V :=
-  { form := fun σ => (Real.exp (2 * t σ) : ℂ) • h.form σ
-    form_symm := fun σ x y => by
-      change (Real.exp (2 * t σ) : ℂ) * h.form σ y x =
-        conj ((Real.exp (2 * t σ) : ℂ) * h.form σ x y)
-      rw [h.form_symm]
-      simp only [map_mul, Complex.conj_ofReal]
-    posDef := fun σ _ e he =>
-      (h.posDef σ e he).smul (a := (Real.exp (2 * t σ) : ℂ)) (by exact_mod_cast Real.exp_pos _) }
 
 end Field
 
@@ -675,11 +621,11 @@ theorem exists_unitri (F : FlagD H r) (y : Fin r → V) (he : ∀ a, F.e a.castS
         intro h
         omega
       · rw [Finset.sum_eq_single ⟨c, hca⟩]
-        · simp only [if_true, one_smul]
+        · simp only [ite_true, one_smul]
           congr 1
         · intro b _ hb
           dsimp only
-          rw [if_neg (fun h => hb (Fin.ext h)), zero_smul]
+          rw [ite_eq_right (fun h => hb (Fin.ext h)), zero_smul]
         · intro h
           exact absurd (Finset.mem_univ _) h
     | zero => exact ⟨0, fun _ _ => rfl, by simp⟩
@@ -698,7 +644,7 @@ theorem exists_unitri (F : FlagD H r) (y : Fin r → V) (he : ∀ a, F.e a.castS
     · have hab : a < b := hab
       simp [h1 a b hab.le, Matrix.one_apply_ne hab.ne]
   · simp only [Matrix.sub_apply, Matrix.of_apply, sub_smul, Finset.sum_sub_distrib, ← h2 a, Matrix.one_apply,
-      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact (sub_sub_cancel _ _).symm
 
 

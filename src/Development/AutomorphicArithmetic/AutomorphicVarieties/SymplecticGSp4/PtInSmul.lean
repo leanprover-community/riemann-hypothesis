@@ -70,15 +70,9 @@ private theorem ptIn_gsp {ν : R} {X : M4 R} (h : IsGSp ν X) : IsGSp (f ν) (f.
 private theorem ptIn_prj (c : Fin 4 → R) (X : M4 R) (i : Fin 4) :
     prj (fun a => f (c a)) (f.mapMatrix X) i = f.mapMatrix (prj c X i) := by
   unfold prj
-  have h : ∀ p : Polynomial R,
-      Polynomial.aeval (f.mapMatrix X) (p.map f) = f.mapMatrix (Polynomial.aeval X p) := by
-    intro p
-    induction p using Polynomial.induction_on' with
-    | add p q hp hq => rw [Polynomial.map_add (f := _), map_add (f := _), map_add (f := _), map_add (f := _), hp, hq]
-    | monomial n a =>
-      rw [Polynomial.map_monomial, Polynomial.aeval_monomial, Polynomial.aeval_monomial, map_mul, map_pow,
-        Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one, ptIn_smul, map_one]
-  rw [← h, Polynomial.map_prod]
+  rw [Polynomial.map_aeval_eq_aeval_map (φ := f) (RingHom.ext fun a => by
+    simp only [RingHom.comp_apply, Algebra.algebraMap_eq_smul_one, ptIn_smul, map_one]),
+    Polynomial.map_prod]
   simp only [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C]
 
 private theorem ptIn_ord {I : Subgroup H} {ps : Fin 4 → H → R} {s₀ : H} {r : H →* M4 R} (h : Ord I ps s₀ r) :

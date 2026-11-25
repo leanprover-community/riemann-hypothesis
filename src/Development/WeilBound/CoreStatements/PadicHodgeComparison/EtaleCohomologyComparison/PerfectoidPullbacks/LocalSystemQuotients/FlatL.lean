@@ -11,8 +11,8 @@ namespace CrystallineSemistableComparison.Ls
 variable {W : Type} [CommRing W]
 
 def prj (l : ℕ) (K : Cx.{1} W) (n : ℕ) : Cx.Hom K (quo l K n) (RingHom.id W) where
-  f i := Submodule.mkQ _
-  comm i x := rfl
+  f _ := Submodule.mkQ _
+  comm _ _ := rfl
 
 def qred (l : ℕ) {K L : Cx.{1} W} {c : ℕ} (f : Cx.Hom K (quo l L c) (RingHom.id W)) {b : ℕ} (h : b ≤ c) :
     Cx.Hom (quo l K b) (quo l L b) (RingHom.id W) where

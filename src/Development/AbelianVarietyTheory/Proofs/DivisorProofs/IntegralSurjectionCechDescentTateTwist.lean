@@ -359,7 +359,7 @@ theorem cechAug_eqv_of_section : ∀ (R : Type) [CommRing R] (F : Shv R) (Y X : 
   have hls : Presheaf.IsLocallySurjective Scheme.etaleTopology.{0} (yoneda.map f) :=
     (GlobalTheory.T.isLocallySurjective_etale_baseChange).2.1 _ _ (yoneda.map f) (yoneda.map s) hsec
   have hq := _root_.GlobalTheory.EtC.quasiIso_chains_cech_of_isLocallySurjective R (yoneda.obj Y) (yoneda.obj X) (yoneda.map f) hls
-  exact ((GlobalTheory.T.etaleCohomologyEquivalence_basic_properties R F).2.2.1 _ _ (cechAug f)) hq
+  exact ((GlobalTheory.EtC.eqv_basic R F).2.2.1 _ _ (cechAug f)) hq
 
 end GlobalTheory
 end -- clump:auto
@@ -513,7 +513,7 @@ theorem L1 : ∀ (q : ℕ) (i : ℤ) (A : Type) [CommRing A] [HenselianLocalRing
   haveI := isIntegral_tensor A (AlgebraicClosure (IsLocalRing.ResidueField A)) B
   have hfin := _root_.GlobalTheory.EtC.tw_finitary q i
   have hU := _root_.GlobalTheory.EtC.IntAcyc.acycF_of_isIntegral (ZMod q) (tw q i) hfin A B hSH
-  have hU' := GlobalTheory.T.integral_strictHenselian_acyclic_finitary (ZMod q) (tw q i) hfin A (AlgebraicClosure (IsLocalRing.ResidueField A) ⊗[A] B) hSH
+  have hU' := GlobalTheory.EtC.IntAcyc.acycF_of_isIntegral (ZMod q) (tw q i) hfin A (AlgebraicClosure (IsLocalRing.ResidueField A) ⊗[A] B) hSH
   have hbij := _root_.GlobalTheory.bijective_locallyConstant_comap_algebraicClosure_tensor (ZMod q) A B
   exact _root_.GlobalTheory.EtC.eqv_of_gen_lc (ZMod q) (tw q i) _ _ hgen (Spec (CommRingCat.of B)) _
     (Spec.map (CommRingCat.ofHom (algebraMap A B))) _ hU hU' hbij
@@ -521,7 +521,6 @@ theorem L1 : ∀ (q : ℕ) (i : ℤ) (A : Type) [CommRing A] [HenselianLocalRing
 end GlobalTheory.EtC.IntDescent
 
 namespace GlobalTheory.EtC
-
 
 open IntDescent in
 theorem cechAug_eqv_of_isIntegralHom_of_strictlyHenselian : ∀ (q : ℕ) (i : ℤ) (A : Type) [CommRing A], SH A → IsUnit (q : A) →
@@ -565,7 +564,7 @@ namespace GlobalTheory.EtC
 
 theorem eqv_cechAug_of_comp_iso (R : Type) [CommRing R] (F : Shv R) {V W T : Scheme.{0}} (g : V ⟶ W) (t : W ⟶ T) [IsIso t]
     (h : Eqv R (cechAug (g ≫ t)) F) : Eqv R (cechAug g) F := by
-  have E := GlobalTheory.T.etaleCohomologyEquivalence_basic_properties R F
+  have E := GlobalTheory.EtC.eqv_basic R F
   let e : Arrow.mk (yoneda.map g) ≅ Arrow.mk (yoneda.map (g ≫ t)) :=
     Arrow.isoMk (Iso.refl _) (yoneda.mapIso (asIso t)) (by simp)
   let φ := SimplicialObject.augmentedCechNerve.mapIso e
@@ -580,11 +579,11 @@ theorem eqv_cechAug_of_comp_iso (R : Type) [CommRing R] (F : Shv R) {V W T : Sch
 
 theorem b4 : B4 := by
   intro q Y X f _ _ hq i
-  have E := GlobalTheory.T.etaleCohomologyEquivalence_basic_properties (ZMod q) (tw q i)
+  have E := GlobalTheory.EtC.eqv_basic (ZMod q) (tw q i)
   refine _root_.GlobalTheory.EtC.LocGlobSp.main (ZMod q) (tw q i) X (cech f) (sch.obj X) (cechAug f) (sch.map (𝟙 X))
     (GlobalTheory.T.tateTwist_finitary q i) ?_ ?_ ?_
   · intro k
-    obtain ⟨Z, π, e, hπ, he⟩ := GlobalTheory.T.exists_representable_cech_level_of_stable @IsIntegralHom Y X f ‹_› k
+    obtain ⟨Z, π, e, hπ, he⟩ := GlobalTheory.EtC.cech_level_representable @IsIntegralHom Y X f ‹_› k
     haveI := hπ
     refine ⟨Z, π ≫ f, e, inferInstance, inferInstance, ?_⟩
     rw [CategoryTheory.Functor.map_id, Category.comp_id, he]
@@ -592,7 +591,7 @@ theorem b4 : B4 := by
     refine ⟨X, 𝟙 X, Iso.refl _, inferInstance, inferInstance, ?_⟩
     simp [sch]
   · intro O _ s hs
-    obtain ⟨e₁, e₂, h⟩ := GlobalTheory.T.baseChange_cechNerveAugmentation_iso X X Y (𝟙 X) f (Over.mk s)
+    obtain ⟨e₁, e₂, h⟩ := GlobalTheory.EtC.bc_cechAug_iso X X Y (𝟙 X) f (Over.mk s)
     have hqO : IsUnit ((q : ℕ) : O) := by
       have := hq.map (s.appTop ≫ (Scheme.ΓSpecIso (CommRingCat.of O)).hom).hom
       simpa using this

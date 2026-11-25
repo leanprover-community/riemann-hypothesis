@@ -5,51 +5,9 @@ public import Mathlib.NumberTheory.LSeries.Convolution
 public import Mathlib.NumberTheory.LSeries.Deriv
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionFamilyContinuationGrowth
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TsumOneDivRpowLe
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
 public import Mathlib.NumberTheory.LSeries.Injectivity
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -306,18 +264,18 @@ theorem logDeriv_F : ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (s : ℂ), 1 < 
   · by_cases h : χ = 1
     · have hev : 𝓕.F χ =ᶠ[𝓝 s] fun z => (z - 1) * LSeries (𝓕.aChi χ) z :=
         Filter.eventually_of_mem (hU.mem_nhds hs) fun z hz => by
-          rw [(hLS z hz).2, if_pos h]
+          rw [(hLS z hz).2, ite_eq_left h]
       have hd : HasDerivAt (fun z => (z - 1) * LSeries (𝓕.aChi χ) z)
           (1 * LSeries (𝓕.aChi χ) s +
             (s - 1) * (-(LSeries (𝓕.lamChi χ) s * LSeries (𝓕.aChi χ) s))) s :=
         ((hasDerivAt_id s).sub_const (1 : ℂ)).mul hder
-      rw [hev.deriv_eq, hd.deriv, (hLS s hs).2, if_pos h, if_pos h]
+      rw [hev.deriv_eq, hd.deriv, (hLS s hs).2, ite_eq_left h, ite_eq_left h]
       field_simp
       ring
     · have hev : 𝓕.F χ =ᶠ[𝓝 s] LSeries (𝓕.aChi χ) :=
         Filter.eventually_of_mem (hU.mem_nhds hs) fun z hz => by
-          rw [(hLS z hz).2, if_neg h, one_mul]
-      rw [hev.deriv_eq, hder.deriv, (hLS s hs).2, if_neg h, if_neg h, one_mul]
+          rw [(hLS z hz).2, ite_eq_right h, one_mul]
+      rw [hev.deriv_eq, hder.deriv, (hLS s hs).2, ite_eq_right h, ite_eq_right h, one_mul]
       field_simp
       ring
 

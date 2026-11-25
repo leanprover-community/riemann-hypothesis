@@ -185,15 +185,6 @@ theorem log_T_lt (D : D7) (u : D.what₂.Word) :
   linarith
 
 
-section Rank
-
-variable {R : Ranks} {Tau : Type} [Fintype Tau] (hc : Tau → HCParam R) (N : ℕ)
-
-variable (T : ℕ) [Fact T.Prime] (Dst : ℝ) (hD : 0 < Dst) (hT : T ≠ 2) (s : ℂ)
-
-
-end Rank
-
 end GlobalTheory.Core.RkFamModel
 
 namespace GlobalTheory.Core.RkOverModel
@@ -367,7 +358,7 @@ theorem pairs_append {p q : ℕ} (g : Fin (p + q) → Fin (p + q) → ℝ) :
   have h1 : ∀ (i : Fin p) (j : Fin q), (i : ℕ) < p + (j : ℕ) := fun i j => by omega
   have h2 : ∀ (i : Fin q) (j : Fin p), ¬ p + (i : ℕ) < (j : ℕ) := fun i j => by omega
   have h3 : ∀ (i j : Fin q), (p + (i : ℕ) < p + (j : ℕ)) ↔ ((i : ℕ) < (j : ℕ)) := fun i j => by omega
-  simp only [h1, h2, h3, if_true, if_false, Finset.prod_const_one, one_mul, Finset.prod_mul_distrib]
+  simp only [h1, h2, h3, ite_true, ite_false, Finset.prod_const_one, one_mul, Finset.prod_mul_distrib]
 
 theorem pairs_cast {n n' : ℕ} (h : n = n') (f : Fin n' → Fin n' → ℝ) :
     ∏ a : Fin n, ∏ b ∈ univ.filter (fun b => a < b), f (Fin.cast h a) (Fin.cast h b) =
@@ -418,7 +409,7 @@ theorem interlace_bound {K n : ℕ} (hn : K + 1 = n) (u : Fin n → ℝ) (v : Fi
   intro j _
   by_cases hij : i < j
   · have hle : i ≤ j := hij.le
-    simp only [hij, hle, if_true]
+    simp only [hij, hle, ite_true]
     have hsj : Fin.succ i ≤ Fin.castSucc j := by
       rw [Fin.le_def]; simp only [Fin.val_succ, Fin.coe_castSucc]; exact hij
     have a1 := h1 i
@@ -432,11 +423,11 @@ theorem interlace_bound {K n : ℕ} (hn : K + 1 = n) (u : Fin n → ℝ) (v : Fi
     have e4 : u ⟨i.1 + 1, by omega⟩ = u (Fin.succ i) := rfl
     rw [abs_of_pos (by linarith)]
     linarith
-  · simp only [hij, if_false]
+  · simp only [hij, ite_false]
     by_cases hle : i ≤ j
     · have : i = j := le_antisymm hle (not_lt.1 hij)
       subst this
-      simp only [hle, if_true]
+      simp only [hle, ite_true]
       exact h3 i
     · simp [hle]
 

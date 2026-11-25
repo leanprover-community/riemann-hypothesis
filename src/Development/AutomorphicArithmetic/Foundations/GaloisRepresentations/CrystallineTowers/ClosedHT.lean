@@ -99,7 +99,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -218,7 +217,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits GroundTheory.Arith.SchemeCoh GlobalTheory.SheafPull CrystallineSemistableComparison CrystallineSemistableComparison.Om CrystallineSemistableComparison.Om.Cech
 
 noncomputable section
@@ -231,7 +229,7 @@ variable {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K
 theorem algebraMap_sec (W : X.Opens) (r : K) :
     letI := algΓ q
     algebraMap K (Sec q W) r = restrictTop W (algebraMap K Γ(X, ⊤) r) := by
-  letI := algΓ q
+  let := algΓ q
   change ((Scheme.ΓSpecIso (CommRingCat.of K)).inv ≫ q.appLE ⊤ W le_top).hom r =
     (((Scheme.ΓSpecIso (CommRingCat.of K)).inv ≫ q.appTop) ≫ X.presheaf.map (homOfLE le_top).op).hom r
   congr 2
@@ -241,7 +239,7 @@ theorem toOm_smul (a : ℕ) (W : X.Opens) (r : K) (x : OmU q W a) :
     CrystallineSemistableComparison.Om.Cech.toOm q a W (r • x) =
       (smulAbRingHom (Omega q a) (algebraMap K Γ(X, ⊤) r)).asHom.hom.app (op W)
         (CrystallineSemistableComparison.Om.Cech.toOm q a W x) := by
-  letI := algΓ q
+  let := algΓ q
   rw [← algebraMap_smul (Sec q W) r x]
   have h := ((toOmega q a).app (op W)).hom.map_smul (algebraMap K (Sec q W) r) x
   refine h.trans ?_
@@ -255,7 +253,7 @@ theorem formCoch_smul (n : ℕ) (r : K) (c : (Glob.formCos q U a).X n) :
     formCoch q U a n (r • c) =
       GroundTheory.Arith.SchemeCoh.push U
         (smulAbRingHom (Omega q a) (algebraMap K Γ(X, ⊤) r)).asHom.hom n (formCoch q U a n c) := by
-  letI := algΓ q
+  let := algΓ q
   funext i
   change res _ (inter_le_capO U i) (CrystallineSemistableComparison.Om.Cech.toOm q a (Pb.capO U i) (r • c i)) =
     (smulAbRingHom (Omega q a) (algebraMap K Γ(X, ⊤) r)).asHom.hom.app (op (inter U i))
@@ -267,7 +265,7 @@ theorem formCoch_smul (n : ℕ) (r : K) (c : (Glob.formCos q U a).X n) :
 
 theorem formToCO_smul (j : ℕ) (r : K) (x : (Glob.formCos q U a).cx.H j) :
     formToCO q U a j (r • x) = r • formToCO q U a j x := by
-  letI := algΓ q
+  let := algΓ q
   obtain ⟨⟨c, hc⟩, rfl⟩ := Submodule.Quotient.mk_surjective _ x
   have hc' : (Glob.formCos q U a).cx.d j c = 0 := hc
   have hrc : (Glob.formCos q U a).cx.d j (r • c) = 0 := by rw [map_smul, hc', smul_zero]
@@ -293,7 +291,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -325,7 +322,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -351,7 +347,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits GroundTheory.Arith.SchemeCoh GlobalTheory.SheafPull CrystallineSemistableComparison CrystallineSemistableComparison.Om CrystallineSemistableComparison.Om.Cech
 
@@ -361,7 +356,7 @@ theorem cechOmAdd_smul {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (Co
     (U : ι → X.Opens) (hU : iSup U = ⊤) (hUaff : ∀ (n : ℕ) (i : Fin (n + 1) → ι), IsAffineOpen (⨅ a, U (i a)))
     (a j : ℕ) (r : K) (x : CO q U a j) :
     cechOmAdd q U hU hUaff a j (r • x) = r • cechOmAdd q U hU hUaff a j x := by
-  letI := GlobalTheory.HodgeCoh.algΓ q
+  let := GlobalTheory.HodgeCoh.algΓ q
   apply (GlobalTheory.coh.toH (GlobalTheory.HodgeCoh.Omega q a) j).injective
   have h1 : ∀ z : CO q U a j, GlobalTheory.coh.toH (GlobalTheory.HodgeCoh.Omega q a) j (cechOmAdd q U hU hUaff a j z) =
       cechHAddEquivH.{0} U hU hUaff (GlobalTheory.HodgeCoh.Omega q a) j z :=
@@ -383,7 +378,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -431,7 +425,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -591,7 +584,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -940,7 +932,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -961,7 +952,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -983,7 +973,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

@@ -157,9 +157,9 @@ private theorem sq_exp {C Q : Type} [CommRing C] [CommRing Q] (n : ℕ) (π : C 
   · simp only [SemidirectProduct.mul_left, SemidirectProduct.left_inl, SemidirectProduct.right_inl,
       sgnAct_one, GG.adFun, GG.map_right]
     rcases Int.units_eq_one_or s with rfl | rfl
-    · simp only [sgnAct_one, if_true]
+    · simp only [sgnAct_one, ite_true]
       exact hconj a X
-    · simp only [sgnAct_neg_one, hm, if_false, hth]
+    · simp only [sgnAct_neg_one, hm, ite_false, hth]
       exact hconj a _
   · simp
 
@@ -209,7 +209,7 @@ private theorem box_def {l : ℕ} [Fact l.Prime] {κ : Type} [Field κ] {F : Fra
         ((((B.map π).g v)⁻¹ : GL (Fin n) Q) : Matrix (Fin n) (Fin n) Q)) * B.g v := fun X => by
       have := congrArg SemidirectProduct.left (e4 (GG.ofGL (B.g v)) X)
       simp only [SemidirectProduct.mul_left, SemidirectProduct.left_inl, SemidirectProduct.right_inl,
-        sgnAct_one, GG.adFun, GG.map_right, if_true] at this
+        sgnAct_one, GG.adFun, GG.map_right, ite_true] at this
       exact this
     have a3 : Y v + (z (F.loc v s) + -(B.map π).ad (F.loc v s) (Y v)) =
         ((((B.map π).g v)⁻¹ : GL (Fin n) Q) : Matrix (Fin n) (Fin n) Q) * z' v s *
@@ -747,14 +747,14 @@ theorem UpperTheory.V.Z.J.tan :
     let f : (F.Γ → Matrix (Fin 3) (Fin 3) (Ok l O k)) → (S.R →ₗ[O] Ok l O k) := fun z =>
       if hz : z ∈ ZN B k then (hex z hz).choose else 0
     refine Set.ncard_le_ncard_of_injOn f (fun z hz => ?_) (fun z hz z' hz' he => ?_) hXf
-    · simp only [f, dif_pos hz]
+    · simp only [f, dite_eq_left hz]
       exact (hex z hz).choose_spec.1
     · apply zn_ext hF B k hz hz'
       intro s
       ext a b
       have h1 := (hex z hz).choose_spec.2 s a b
       have h2 := (hex z' hz').choose_spec.2 s a b
-      simp only [f, dif_pos hz, dif_pos hz'] at he
+      simp only [f, dite_eq_left hz, dite_eq_left hz'] at he
       rw [← h1, ← h2, he])
   exact ⟨δ, ⟨hd, fun w j s hs => hdT _ ⟨w, j, s, hs, rfl⟩⟩, δ', ⟨hd', fun w j s hs => hdT' _ ⟨w, j, s, hs, rfl⟩⟩, hli⟩
 end -- clump:auto
@@ -1335,17 +1335,6 @@ private theorem cardInv {n : ℕ} {D M : Type} [Group D] [AddCommGroup M] [Modul
       left_inv := fun φ => Subtype.ext (LinearMap.ext fun m => rfl)
       right_inv := fun f => Subtype.ext (AddMonoidHom.ext fun m => rfl) }
 
-private theorem lc_orbit {D M : Type} [Group D] [TopologicalSpace D] [IsTopologicalGroup D] [AddCommGroup M]
-    (ρ : Representation ℤ D M) (h : IsOpen (ρ.ker : Set D)) (m : M) : IsLocallyConstant fun g => ρ g m := by
-  rw [IsLocallyConstant.iff_exists_open]
-  intro g
-  refine ⟨(fun y => g⁻¹ * y) ⁻¹' (ρ.ker : Set D), h.preimage (continuous_const.mul continuous_id), ?_, ?_⟩
-  · simp
-  · intro x hx
-    have hk : ρ (g⁻¹ * x) = 1 := MonoidHom.mem_ker.mp hx
-    have hx' : x = g * (g⁻¹ * x) := by group
-    rw [hx', map_mul, Module.End.mul_apply, hk, Module.End.one_apply]
-
 theorem UpperTheory.V.Z.J.leOf :
     ReciprocityTheory.Gal.LocalFiniteness → ReciprocityTheory.Gal.LocalTateDuality → ReciprocityTheory.Gal.LocalEulerChar → ∀ (l : ℕ) [Fact l.Prime] (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (A : ValuationSubring Ω) (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)), IsPlaceOver A v → ((l : ℕ) : NumberField.RingOfIntegers F) ∈ v.asIdeal → LE l (Dec (F := F) A) ((cycZ F Ω l).comp (Dec (F := F) A).subtype) (locDeg v) := by
   intro hFin hTD hEC l _ F Ω _ _ _ _ _ A v hAv hlv
@@ -1360,7 +1349,7 @@ theorem UpperTheory.V.Z.J.leOf :
     unfold ReciprocityTheory.Gal.ContAction
     rw [← IsLocallyConstant.iff_continuous, IsLocallyConstant.iff_exists_open]
     rintro ⟨g, x⟩
-    obtain ⟨U, hU, hgU, hUc⟩ := (IsLocallyConstant.iff_exists_open _).mp (lc_orbit ρ hker x) g
+    obtain ⟨U, hU, hgU, hUc⟩ := (IsLocallyConstant.iff_exists_open _).mp (lc_orb ρ hker x) g
     refine ⟨U ×ˢ {x}, hU.prod (isOpen_discrete _), ⟨hgU, rfl⟩, ?_⟩
     rintro ⟨g', x'⟩ ⟨hg', hx'⟩
     simp only [Set.mem_singleton_iff] at hx'

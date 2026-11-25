@@ -54,7 +54,7 @@ theorem nested_minor_expansion_one_one {A : Type*} [Ring A] [Algebra ℂ A] {t :
         ((Yb i * algebraMap ℂ A (xb i') - Yb i' * algebraMap ℂ A (xb i)) * G (skip2 i i')) else 0 := by
     intro i i'
     by_cases hi : i < i'
-    · simp only [hi, true_and, if_true, hG, Finset.mul_sum, Finset.smul_sum]
+    · simp only [hi, true_and, ite_true, hG, Finset.mul_sum, Finset.smul_sum]
       refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun j' _ => ?_))
       split_ifs
       · rw [mul_smul_comm, smul_smul, ← pow_add, mul_assoc]

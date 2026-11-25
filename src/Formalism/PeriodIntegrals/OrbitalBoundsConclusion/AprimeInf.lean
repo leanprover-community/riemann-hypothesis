@@ -45,38 +45,9 @@ section Tr
 
 variable {D : D7} (X : HidaSetting D)
 
-theorem phi_star (v : InfinitePlace X.B.I.F) (e : X.B.I.E) : X.B.I.φ v (star e) = conj (X.B.I.φ v e) :=
-  X.B.I.cm.cmUnram.2.1 _ e
-
-theorem evInf_conj (v : InfinitePlace X.B.I.F) (a : Ainf X.B.I.F) :
-    conj (PI.AprimeInfU.evInf X v a) = PI.AprimeInfU.evInf X v a := by
-  have hv : v.IsReal := totReal_of X v
-  show conj (InfinitePlace.Completion.extensionEmbedding v (a v)) =
-    InfinitePlace.Completion.extensionEmbedding v (a v)
-  rw [← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply hv]
-  exact Complex.conj_ofReal _
-
-theorem evInf_alg (v : InfinitePlace X.B.I.F) (a : X.B.I.F) :
-    PI.AprimeInfU.evInf X v (algebraMap X.B.I.F (Ainf X.B.I.F) a) = v.embedding a :=
-  evV_algebraMap X.B.I v a
-
-theorem evInf_trace (v : InfinitePlace X.B.I.F) (z : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) :
-    PI.AprimeInfU.evInf X v (Algebra.trace (Ainf X.B.I.F) (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) z) =
-      PI.AprimeInfU.thetaInf X v z + conj (PI.AprimeInfU.thetaInf X v z) := by
-  apply PI.AprimeInfW.MuB.evInf_trace
-
-theorem theta_sigR (v : InfinitePlace X.B.I.F) (t : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) :
-    PI.AprimeInfU.thetaInf X v (sigR (Ainf X.B.I.F) X.B.I.cm.sig t) = conj (PI.AprimeInfU.thetaInf X v t) := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a e =>
-    have h : sigR (Ainf X.B.I.F) X.B.I.cm.sig (a ⊗ₜ[X.B.I.F] e) = a ⊗ₜ[X.B.I.F] (star e) := rfl
-    rw [h, thetaInf_tmul, thetaInf_tmul, map_mul, evInf_conj, phi_star]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 theorem theta_alg (v : InfinitePlace X.B.I.F) (q : X.B.I.F) :
     PI.AprimeInfU.thetaInf X v (algebraMap X.B.I.F (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) q) = v.embedding q := by
-  rw [Algebra.TensorProduct.algebraMap_apply, thetaInf_tmul, evInf_alg, map_one, mul_one]
+  rw [Algebra.TensorProduct.algebraMap_apply, thetaInf_tmul, PI.AprimeInfW.MuB.evInf_alg, map_one, mul_one]
 
 theorem theta_surj (z : InfinitePlace X.B.I.F → ℂ) :
     ∃ y : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E, ∀ v, PI.AprimeInfU.thetaInf X v y = z v := by
@@ -183,7 +154,6 @@ theorem norm_reimV_sq (M : V → Matrix (Fin n) (Fin m) ℂ) :
   refine Finset.sum_congr rfl fun v _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [Complex.sq_norm, Complex.normSq_apply]
 
-
 variable (V m) in
 def hermFam : Submodule ℝ (V → Matrix (Fin m) (Fin m) ℂ) where
   carrier := {M | ∀ v, (M v)ᴴ = M v}
@@ -209,7 +179,6 @@ theorem half_re (w : ℂ) : ((1 / 2 : ℂ) * (w + conj w)).re = w.re := by
 theorem half_emb {D : D7} (X : HidaSetting D) (v : InfinitePlace X.B.I.F) : v.embedding (1 / 2) = (1 / 2 : ℂ) := by
   rw [map_div₀, map_one, map_ofNat]
 
-
 theorem nuBridge : NuBridge := by
   classical
   intro D X u' ψ hT μinf νinf fibInf hP
@@ -231,7 +200,7 @@ theorem nuBridge : NuBridge := by
     ext i j
     simp only [thH, Matrix.conjTranspose_apply, Matrix.map_apply]
     rw [show star (PI.AprimeInfU.thetaInf X v (S.1 j i)) =
-      conj (PI.AprimeInfU.thetaInf X v (S.1 j i)) from rfl, ← NuB.theta_sigR X v, hS i j]
+      conj (PI.AprimeInfU.thetaInf X v (S.1 j i)) from rfl, ← PI.AprimeInfW.MuB.theta_sigR X v, hS i j]
   have memK : ∀ S, (reimVE : _ ≃ₗ[ℝ] _) (thH S) ∈ Kr := fun S => Submodule.mem_map_of_mem (thH_herm S)
   let TcF : HmI X → EuclideanSpace ℝ (Fin (Module.finrank ℝ Kr)) := fun S => bK.repr ⟨_, memK S⟩
   have hHT : ∀ S, Hh (TcF S) = thH S := by
@@ -288,7 +257,7 @@ theorem nuBridge : NuBridge := by
       have hMh : conj (M v b a) = M v a b := by
         have := congrFun (congrFun (hM v) a) b
         simpa [Matrix.conjTranspose_apply] using this
-      simp only [thH, Matrix.map_apply, Sm, h2, map_mul, map_add (f := _), NuB.theta_alg, NuB.theta_sigR, hy, hMh,
+      simp only [thH, Matrix.map_apply, Sm, h2, map_mul, map_add (f := _), NuB.theta_alg, PI.AprimeInfW.MuB.theta_sigR, hy, hMh,
         half_emb]
       ring
     show bK.repr _ = s
@@ -324,13 +293,13 @@ theorem nuBridge : NuBridge := by
         conj (PI.AprimeInfU.thetaInf X v (T.1 a b)) := by
       intro v a b
       have hT' : ∀ a b, sigR (Ainf X.B.I.F) X.B.I.cm.sig (T.1 b a) = T.1 a b := T.2
-      rw [← NuB.theta_sigR X v, hT' b a]
+      rw [← PI.AprimeInfW.MuB.theta_sigR X v, hT' b a]
     rw [e1, inner_reimV]
     simp only [sumReI]
     refine Finset.sum_congr rfl fun v _ => ?_
     show (PI.AprimeInfU.evInf X v (pairHerm (Ainf X.B.I.F) X.B.I.cm.sig (D.R.rS + 1 + D.R.rS) S T)).re = _
 
-    rw [pairHerm, map_mul, NuB.evInf_alg, NuB.evInf_trace, half_emb, half_re, map_sum, Complex.re_sum]
+    rw [pairHerm, map_mul, PI.AprimeInfW.MuB.evInf_alg, PI.AprimeInfW.MuB.evInf_trace, half_emb, half_re, map_sum, Complex.re_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
 
     rw [map_sum, Complex.re_sum]
@@ -504,8 +473,6 @@ theorem norm_reimE_sq {a b : ℕ} (M : Matrix (Fin a) (Fin b) ℂ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Fintype.sum_bool, Complex.sq_norm, Complex.normSq_apply]
   simp [reimE, reim, Real.norm_eq_abs, sq]
-
-
 
 theorem place_split {V : Type} [Fintype V] {a b : ℕ} {ι : Type} [Fintype ι]
     (L : EuclideanSpace ℝ ι →ₗ[ℝ] (V → Matrix (Fin a) (Fin b) ℂ)) (Q : V → Matrix (Fin a) (Fin b) ℂ → Prop)
@@ -1007,8 +974,6 @@ private theorem of_reimE_reim {p q : ℕ} (Z : Matrix (Fin p) (Fin q) ℂ) :
 private theorem continuous_reim {p q : ℕ} : Continuous (fun Y : Matrix (Fin p) (Fin q) ℂ => reim Y) :=
   (reimL (n := p) (m := q)).continuous_of_finiteDimensional.congr fun Y => reimL_apply Y
 
-
-
 private theorem key_lemma_12 {n m : ℕ} {ι η : Type} [Fintype ι] [Fintype η] (ε : Fin n → Bool)
     (S : Finset (Fin n)) (eS : Fin S.card ≃ ↥S) (eU : Fin m ≃ {i // i ∉ S})
     (w : Matrix (Fin n) (Fin m) ℂ) (hw : ∀ i ∈ S, ∀ b, w i b = 0)
@@ -1032,8 +997,6 @@ private theorem key_lemma_12 {n m : ℕ} {ι η : Type} [Fintype ι] [Fintype η
   congr 2
   · rw [Matrix.zero_mul, smul_zero, add_zero]
   · exact dg_smul_mul_add_half_eq_half_mul_add W0 Dg (H z2) (H t) hW0 hDD
-
-
 
 private theorem map_volume_reim_block_eq_of_det_ne_zero {m : ℕ} {η : Type} [Fintype η]
     (H : EuclideanSpace ℝ η →ₗ[ℝ] Matrix (Fin m) (Fin m) ℂ) (hH : ∀ t, (H t)ᴴ = H t)
@@ -1078,7 +1041,6 @@ private theorem inv_pow_mul_inv_pow_eq_two_pow_div_pow (N : ℝ) (m k : ℕ) (hN
   rw [h4, const_alg N (2 ^ m) k m hN (by positivity), ← pow_mul, ← pow_mul, ← pow_add]
   congr 1
   ring
-
 
 set_option maxHeartbeats 800000 in
 theorem placeJac_holds : PlaceJac := by

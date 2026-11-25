@@ -4,8 +4,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat

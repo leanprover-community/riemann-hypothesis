@@ -5,45 +5,8 @@ public import Formalism.LocalToGlobal.IndefiniteReal.EvalTieTOne
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowLevelMatch
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowsOfLevelOnObjects
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -119,12 +82,6 @@ open Matrix
 section Frame
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
-
-theorem mulVec_mem_intAf (U : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))
-    (hU : ∀ i j, U i j ∈ Formalism.L2.Herm.intAf F E) (w : Fin n → E ⊗[F] Formalism.L2.Herm.Af F)
-    (hw : ∀ i, w i ∈ Formalism.L2.Herm.intAf F E) (i : Fin n) : (U *ᵥ w) i ∈ Formalism.L2.Herm.intAf F E := by
-  rw [Matrix.mulVec, dotProduct]
-  exact Subring.sum_mem _ fun j _ => Subring.mul_mem _ (hU i j) (hw j)
 
 theorem mem_hatL_iff_of_St {β M : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)} {Λ : Submodule (𝓞 E) (Fin n → E)}
     (hF : Formalism.L2.DIV.IsFrame β Λ) (hM : M ∈ Formalism.L2.DIV.St β) (x : Fin n → E ⊗[F] Formalism.L2.Herm.Af F) :

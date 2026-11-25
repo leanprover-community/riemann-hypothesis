@@ -10,28 +10,13 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.MatrixExtendByZeroApply
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Instances.TrivSqZeroExt
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitOfClosure
 
 @[expose] public section
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
 
 namespace UpperTheory.V.Loc.DeformationPairing
-
-private def extRep {G A V : Type} [Group G] [CommRing A] [AddCommGroup V] [Module A V]
-    (ρ : Representation A G V) (c : G → V) (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) :
-    Representation A G (V × A) where
-  toFun g := ((ρ g).comp (LinearMap.fst A V A) + (LinearMap.snd A V A).smulRight (c g)).prod (LinearMap.snd A V A)
-  map_one' := by
-    have h1 : c 1 = 0 := by simpa using hc 1 1
-    refine LinearMap.ext fun x => ?_
-    simp [h1]
-  map_mul' g h := by
-    refine LinearMap.ext fun x => ?_
-    simp [hc, add_comm, add_left_comm]
-
-private theorem extRep_apply {G A V : Type} [Group G] [CommRing A] [AddCommGroup V] [Module A V]
-    (ρ : Representation A G V) (c : G → V) (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) (g : G) (x : V × A) :
-    extRep ρ c hc g x = (ρ g x.1 + x.2 • c g, x.2) := rfl
 
 private theorem contAction_sub {G A V : Type} [Group G] [TopologicalSpace G] [CommRing A] [AddCommGroup V]
     [Module A V] [TopologicalSpace V] (ρ : Representation A G V) (h : ContAction ρ) (H : Subgroup G) :
@@ -83,6 +68,7 @@ private theorem ad_mulVec {G E : Type} [Group G] [Field E] {n : ℕ} (r : G →*
 end UpperTheory.V.Loc.DeformationPairing
 
 open UpperTheory.V.Loc.DeformationPairing in
+open GlobalTheory.Pass.FinDesc (extRep extRep_apply) in
 theorem UpperTheory.V.Loc.deformCr :
     ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (hφ : IsOpenEmbedding φ) {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E] [TopologicalSpace E] [IsModuleTopology ℚ_[l] E] [IsTopologicalRing E] {n : ℕ} (r : G →* GL (Fin n) E), Continuous (fun g => (r g : Matrix (Fin n) (Fin n) E)) → ∀ y ∈ Z1 (adGL r), ∀ r' : G →* GL (Fin n) (DualNumber E), (∀ g i j, (r' g : Matrix (Fin n) (Fin n) (DualNumber E)) i j = ⟨(r g : Matrix (Fin n) (Fin n) E) i j, (y g * (r g : Matrix (Fin n) (Fin n) E)) i j⟩) → ∀ (H : Subgroup G) [H.Normal], IsOpen (H : Set G) → (CrOn φ (colRep r') H ↔ CrOn φ (colRep r) H ∧ y ∈ UpperTheory.V.Loc.finiteCocycles φ (adGL r)) := by
   intro l _ G _ _ _ φ hφ E _ _ _ _ _ _ n r hr y hy r' hr' H _ hH

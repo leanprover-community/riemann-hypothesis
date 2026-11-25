@@ -1564,7 +1564,7 @@ theorem conj_mult {τ : E →+* ℂ} (hτ : τ (H.rt : E) = H.rt0) : D.mult (Com
       simpa [pow_two, h2] using this
     have h6 : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
     nlinarith [sq_nonneg H.rt0.re]
-  rw [Datum.mult, if_neg hne]
+  rw [Datum.mult, ite_eq_right hne]
 
 def detE (D : Datum H) (τ : E →+* ℂ) : Formalism.L2.Pj.Ix D → ℕ :=
   open Classical in Formalism.L2.Pj.ex D (fun x => if x.1 = τ then 1 else 0) 0
@@ -1596,7 +1596,7 @@ open GlobalTheory.CompanionTheory.Ar.Flat.RuleGlue
 
 theorem exists_flat_rule : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (U : Set (Xo.XF c)) (τ : E →+* ℂ) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (Z : CptOver Y U) (φ : FrameFn Xo c), τ (H.rt : E) = H.rt0 → IsClopen U → IsLineFn U τ φ → FlatOnModel Z τ φ → ∃ s s' e : Formalism.L2.Pj.Rul Xo c, e ∈ Formalism.L2.Pj.sec Xo c 0 0 ∧ s * s' = e ∧ s * e = s ∧ s' * e = s' ∧ (∀ (a a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Formalism.L2.Pj.Rul Xo c), (∀ x : (E →+* ℂ) × ℕ, x.2 < D.mult x.1 → (a' x : ℤ) = a x + Set.indicator {x : (E →+* ℂ) × ℕ | x.1 = ComplexEmbedding.conjugate τ} 1 x - Set.indicator {x : (E →+* ℂ) × ℕ | x.1 = τ} 1 x) → (f ∈ Formalism.L2.Pj.sec Xo c a n → f * s ∈ Formalism.L2.Pj.sec Xo c a' n) ∧ (f ∈ Formalism.L2.Pj.sec Xo c a' n → f * s' ∈ Formalism.L2.Pj.sec Xo c a n)) ∧ ∀ (p : Formalism.L2.Pj.TRing c.F) (z : Formalism.L2.Pj.FrPt Xo c p.R) (F : Type) [Field F] (ψ : p.R →+* F) (y : Sp F ⟶ Xo.XF c), under y = spMap ψ ≫ z.x → y ≫ pullback.snd _ _ = spMap (ψ.comp (algebraMap c.F p.R)) → (¬ Set.range y ⊆ U → ψ (e p z) = 0) ∧ (Set.range y ⊆ U → ψ (e p z) = 1 ∧ ∀ (v : Vecs y D.p) (w : Vecs y D.q) (hp : D.mult τ = D.p) (hq : D.mult (ComplexEmbedding.conjugate τ) = D.q), (∀ i, (v i).left = spMap (Formalism.L2.Pj.dualMap ψ) ≫ z.u τ (i.cast hp.symm)) → (∀ j, (w j).left = spMap (Formalism.L2.Pj.dualMap ψ) ≫ z.u (ComplexEmbedding.conjugate τ) (j.cast hq.symm)) → ψ (s p z) = φ F y v w) := by
   intro E _ _ _ H D l Xo c U τ O _ β Y Z φ hτ hU hl hf
-  have hp : D.mult τ = D.p := by rw [Datum.mult, if_pos hτ]
+  have hp : D.mult τ = D.p := by rw [Datum.mult, ite_eq_left hτ]
   have hq : D.mult (ComplexEmbedding.conjugate τ) = D.q := conj_mult hτ
   have red : ∀ p : Formalism.L2.Pj.TRing c.F, IsReduced p.R := fun p => (Ideal.isRadical_iff_quotient_reduced _).1 p.rad
   have hex := fun (p : Formalism.L2.Pj.TRing c.F) (z : Formalism.L2.Pj.FrPt Xo c p.R) =>

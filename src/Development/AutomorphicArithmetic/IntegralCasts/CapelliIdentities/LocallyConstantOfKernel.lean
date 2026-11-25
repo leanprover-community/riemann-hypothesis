@@ -7,8 +7,8 @@ public import Mathlib.Topology.LocallyConstant.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.LocallyConstantOfKernel.lc_of_ker :
-    ∀ {Γ C : Type} [inst : Group Γ]
-    [inst_1 : TopologicalSpace Γ] [IsTopologicalGroup Γ] [inst_3 : Group C] (η : Γ →* C),
+    ∀ {Γ C : Type} [Group Γ]
+    [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group C] (η : Γ →* C),
     IsOpen (↑η.ker : Set Γ) → IsLocallyConstant (⇑η : Γ → C) := by
   intro Γ C _ _ _ _ η h
   refine (IsLocallyConstant.iff_exists_open _).2 fun x => ?_

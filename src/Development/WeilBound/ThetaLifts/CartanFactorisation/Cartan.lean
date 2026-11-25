@@ -29,48 +29,26 @@ section Frame
 
 variable {R S : ℕ} {β : Type} [Fintype β] [DecidableEq β]
 
-theorem Jm_eq : Jm R S = Matrix.diagonal (Sum.elim (fun _ => (1 : ℂ)) fun _ => -1) := by
-  have h : Jm R S = Matrix.fromBlocks 1 0 0 (-1) := rfl
-  rw [h, ← Matrix.fromBlocks_diagonal, Matrix.diagonal_one, ← Matrix.diagonal_neg, Matrix.diagonal_one]
-
 theorem Jm_mul_self : Jm R S * Jm R S = 1 := by
-  rw [Jm_eq, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+  rw [PositivityTheory.RL.Jm_eq, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
   congr 1
   funext a
   rcases a with a | a <;> simp
-
-theorem map_star_mul {l m n : Type} [Fintype m] (A : Matrix l m ℂ) (B : Matrix m n ℂ) :
-    (A * B).map star = A.map star * B.map star := Matrix.map_mul (f := starRingEnd ℂ)
-
-theorem map_star_one {n : Type} [DecidableEq n] : (1 : Matrix n n ℂ).map star = 1 :=
-  Matrix.map_one _ (star_zero _) (star_one _)
-
-theorem frame_inv {M : Matrix β β ℂ} {C : Matrix β (Ix R S) ℂ} (h : IsFrame M C) :
-    ∃ C' : Matrix (Ix R S) β ℂ, C * C' = 1 ∧ C' * C = 1 := by
-  obtain ⟨h1, C', h2⟩ := h
-  refine ⟨C', h2, ?_⟩
-  have h3 : (M * C.map star * Jm R S)ᵀ * C = 1 := by
-    have : Cᵀ * (M * C.map star * Jm R S) = 1 := by
-      rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, h1, Jm_mul_self]
-    rw [← Matrix.transpose_one, ← this, Matrix.transpose_mul Cᵀ, Matrix.transpose_transpose]
-  have h4 : C' = (M * C.map star * Jm R S)ᵀ := by
-    rw [← Matrix.one_mul C', ← h3, Matrix.mul_assoc, h2, Matrix.mul_one]
-  rw [h4, h3]
 
 theorem conj_mat {n r s : ℕ} {M θ θ₂ : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) (h1 : IsCartan M θ) (h2 : IsCartan M θ₂) :
     ∃ g g' : Matrix (Fin n) (Fin n) ℂ, g * g' = 1 ∧ gᵀ * M * g.map star = M ∧ g * θ₂ = θ * g := by
   obtain ⟨A, hA, eA⟩ := PositivityTheory.RL.frameEx n r s M θ h h1
   obtain ⟨C, hC, eC⟩ := PositivityTheory.RL.frameEx n r s M θ₂ h h2
-  obtain ⟨A', a1, -⟩ := frame_inv hA
-  obtain ⟨C', c1, c2⟩ := frame_inv hC
+  obtain ⟨A', a1, -⟩ := PositivityTheory.RL.frame_inv hA
+  obtain ⟨C', c1, c2⟩ := PositivityTheory.RL.frame_inv hC
   refine ⟨A * C', C * A', ?_, ?_, ?_⟩
   · rw [Matrix.mul_assoc, ← Matrix.mul_assoc C', c2, Matrix.one_mul, a1]
   · calc (A * C')ᵀ * M * (A * C').map star = C'ᵀ * (Aᵀ * M * A.map star) * C'.map star := by
-          simp only [Matrix.transpose_mul, map_star_mul, Matrix.mul_assoc]
+          simp only [Matrix.transpose_mul, PositivityTheory.RL.map_star_mul, Matrix.mul_assoc]
       _ = (C * C')ᵀ * M * (C * C').map star := by
           rw [hA.1, ← hC.1]
-          simp only [Matrix.transpose_mul, map_star_mul, Matrix.mul_assoc]
-      _ = M := by rw [c1, map_star_one, Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one]
+          simp only [Matrix.transpose_mul, PositivityTheory.RL.map_star_mul, Matrix.mul_assoc]
+      _ = M := by rw [c1, PositivityTheory.RL.map_star_one, Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one]
   · have e : θ₂ = C * Jm r s * C' := by rw [← eC, Matrix.mul_assoc, c1, Matrix.mul_one]
     rw [← Matrix.mul_assoc θ, eA, e]
     calc A * C' * (C * Jm r s * C') = A * (C' * C) * Jm r s * C' := by simp only [Matrix.mul_assoc]
@@ -82,16 +60,6 @@ section Adele
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-omit [NumberField E] in
-theorem piInf_tmul {w : InfinitePlace F} (τ : EmbOver E w) (a : AF F) (y : E) :
-    piInf τ (a ⊗ₜ[F] y) = InfinitePlace.Completion.extensionEmbedding w (a.1 w) * τ.1 y := rfl
-
-omit [NumberField F] in
-theorem im_extension (hF : IsTotallyReal F) (w : InfinitePlace F) (z : w.Completion) :
-    (InfinitePlace.Completion.extensionEmbedding w z).im = 0 := by
-  rw [← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply (IsTotallyReal.isReal w) z]
-  exact Complex.ofReal_im _
-
 theorem piInf_cA {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w) (z : AE F E) :
     piInf τ (cA σ z) = star (piInf τ z) := by
   induction z using TensorProduct.induction_on with
@@ -99,43 +67,16 @@ theorem piInf_cA {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {w : InfinitePlace F}
   | add a b ha hb => simp only [map_add (f := _), ha, hb, star_add]
   | tmul a e =>
     show piInf τ (a ⊗ₜ[F] σ e) = _
-    rw [piInf_tmul, piInf_tmul, h.2.2.2, star_mul']
+    rw [PositivityTheory.RL.piInf_tmul, PositivityTheory.RL.piInf_tmul, h.2.2.2, star_mul']
     congr 1
-    exact (Complex.conj_eq_iff_im.2 (im_extension h.1 w _)).symm
-
-
-theorem eq_zero_of_piInf {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) (x : AE F E)
-    (hx : At (evI F) x) (hinf : ∀ w, piInf (τ w) x = 0) : x = 0 := by
-  apply PositivityTheory.RL.eq_zero_of_piInf <;> assumption
-
-theorem exists_section {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) :
-    ∃ s : (InfinitePlace F → ℂ) → AE F E, Continuous s ∧ ∀ z, At (evI F) (s z) ∧ ∀ w, piInf (τ w) (s z) = z w := by
-  apply PositivityTheory.RL.exists_section <;> assumption
+    exact (Complex.conj_eq_iff_im.2 (PositivityTheory.RL.im_extension h.1 w _)).symm
 
 variable {β : Type} [Fintype β] [DecidableEq β]
-
-
-omit [Fintype β] [DecidableEq β] in
-theorem mat_ext {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) {X X' : Matrix β β (AE F E)}
-    (hx : At (evI F) (X - X')) (hinf : ∀ w, X.map (piInf (τ w)) = X'.map (piInf (τ w))) : X = X' := by
-  ext i j
-  refine sub_eq_zero.1 (eq_zero_of_piInf h τ _ (fun u hu => congrFun (congrFun (hx u hu) i) j) fun w => ?_)
-  rw [map_sub, sub_eq_zero]
-  exact congrFun (congrFun (hinf w) i) j
-
-
-omit [DecidableEq β] in
-theorem map_form {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w) (g J : Matrix β β (AE F E)) :
-    (gᵀ * J * g.map (cA σ)).map (piInf τ) = (g.map (piInf τ))ᵀ * J.map (piInf τ) * (g.map (piInf τ)).map star := by
-  rw [Matrix.map_mul, Matrix.map_mul, Matrix.transpose_map]
-  congr 1
-  ext i j
-  exact piInf_cA h τ _
 
 theorem exists_mat {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     (g : InfinitePlace F → Matrix β β ℂ) :
     ∃ N : Matrix β β (AE F E), At (evI F) N ∧ ∀ w, (1 + N).map (piInf (τ w)) = g w := by
-  obtain ⟨s, -, hs'⟩ := exists_section hcm τ
+  obtain ⟨s, -, hs'⟩ := PositivityTheory.RL.exists_section hcm τ
   refine ⟨Matrix.of fun i j => s fun w => (g w - 1) i j, fun u hu => ?_, fun w => ?_⟩
   · ext i j
     exact (hs' _).1 u hu
@@ -151,13 +92,13 @@ theorem exists_point {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : I
   obtain ⟨N, hN, hG⟩ := exists_mat hcm τ g
   obtain ⟨N', hN', hG'⟩ := exists_mat hcm τ g'
   have hm : (1 + N) * (1 + N') = 1 := by
-    refine mat_ext hcm τ (fun u hu => ?_) fun w => ?_
+    refine PositivityTheory.RL.mat_ext hcm τ (fun u hu => ?_) fun w => ?_
     · have e : (1 + N) * (1 + N') - 1 = N' + N * (1 + N') := by noncomm_ring
       rw [e, smul_add, ← Matrix.smul_mul, hN _ hu, hN' _ hu]
       simp
     · rw [Matrix.map_mul, hG, hG', hi, Matrix.map_one _ (map_zero _) (map_one _)]
   have hU : (1 + N)ᵀ * J * (1 + N).map (cA σ) = J := by
-    refine mat_ext hcm τ (fun u hu => ?_) fun w => ?_
+    refine PositivityTheory.RL.mat_ext hcm τ (fun u hu => ?_) fun w => ?_
     · have e0 : (1 + N).map (cA σ) = 1 + N.map (cA σ) := by
         rw [Matrix.map_add _ (map_add _), Matrix.map_one _ (map_zero _) (map_one _)]
       have e : (1 + N)ᵀ * J * (1 + N).map (cA σ) - J = Nᵀ * (J * (1 + N).map (cA σ)) + J * N.map (cA σ) := by
@@ -170,7 +111,7 @@ theorem exists_point {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : I
         simpa using this
       rw [e, smul_add, ← Matrix.smul_mul, ← Matrix.mul_smul, e1, ← Matrix.transpose_smul, hN u hu]
       simp
-    · rw [map_form hcm, hG, hu]
+    · rw [PositivityTheory.RL.map_form hcm, hG, hu]
   refine ⟨⟨⟨1 + N, 1 + N', hm, mul_eq_one_comm.1 hm⟩, hU⟩, fun u hu => ?_, hG⟩
   show u • (1 + N - 1) = 0
   rw [add_sub_cancel_left, hN _ hu]
@@ -179,7 +120,7 @@ theorem incM_piInf {m : ℕ} {w : InfinitePlace F} (τ : EmbOver E w) (J : Matri
     (incM F J).map (piInf τ) = J.map τ.1 := by
   ext i j
   show piInf τ ((1 : AF F) ⊗ₜ[F] J i j) = _
-  rw [piInf_tmul]
+  rw [PositivityTheory.RL.piInf_tmul]
   show InfinitePlace.Completion.extensionEmbedding w 1 * _ = _
   rw [map_one, one_mul]
   rfl

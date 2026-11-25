@@ -10,41 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFra
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSupA
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 
 @[expose] public section
@@ -107,7 +72,7 @@ theorem ptNorm_eq_pnorm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     · exact hgood σ hσ y i
     · have hσ' : Formalism.L2.PjFree.GoodEmb c ((starRingEnd ℂ).comp σ) := by
         have h := Formalism.L2.PjFree.goodEmb_goodOf c σ
-        rwa [Formalism.L2.PjFree.goodOf, if_neg hσ] at h
+        rwa [Formalism.L2.PjFree.goodOf, ite_eq_right hσ] at h
       obtain ⟨y', hy'⟩ := GlobalTheory.Frames.FramedBaseChange.exists_frMap hB E H Dw l Xo c _ _ (conjAlg σ) y
       rw [← abs_pos, ← hP.2 σ y y' hy' i, abs_pos]
       exact hgood _ hσ' y' i
@@ -118,7 +83,7 @@ theorem ptNorm_eq_pnorm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     rw [hpn _ _ ((hU σ hσ).2.2.2.2.1 a n hd f hf k)]
     have hrd : ‖Formalism.L2.PjFree.rdU (U σ) f k x'.1‖ = cabs (evR Xo c f ((U σ).un k x')) := by
       have e : Formalism.L2.PjFree.rdU (U σ) f k x'.1 = Formalism.L2.PjFree.toC (evR Xo c f ((U σ).un k x')) :=
-        dif_pos x'.2
+        dite_eq_left x'.2
       rw [e]; rfl
     rw [hrd, ← prod_baseNorm Dw hx a n]
     change cabs (evR Xo c f y) * _ = _

@@ -293,17 +293,7 @@ lemma right_derivative_zero_outside_support {n : ℕ} {ε : Fin n → Bool} {φ 
   simp
 
 lemma continuous_smooth_on_group {n : ℕ} {ε : Fin n → Bool} {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : SmoothOnG ε f) :
-    Continuous (fun g : UJ ε => f (toM g)) := by
-  have hc : Continuous (toM : UJ ε → Matrix (Fin n) (Fin n) ℂ) := by
-    unfold toM
-    exact Units.continuous_val.comp continuous_subtype_val
-  rw [continuous_iff_continuousAt]
-  intro g
-  obtain ⟨U, F, hU, hgU, hF, hfF⟩ := hf (toM g) g.2
-  have hev : (fun g' : UJ ε => F (toM g')) =ᶠ[𝓝 g] (fun g' => f (toM g')) := by
-    filter_upwards [hc.continuousAt.preimage_mem_nhds (hU.mem_nhds hgU)] with g' hg'
-    exact (hfF _ hg' g'.2).symm
-  exact ContinuousAt.congr ((hF.continuousOn.continuousAt (hU.mem_nhds hgU)).comp hc.continuousAt) hev
+    Continuous (fun g : UJ ε => f (toM g)) := Formalism.REAL.continuous_smooth_on_group_eval hf
 
 lemma isCompact_frobenius_sublevel {n : ℕ} (ε : Fin n → Bool) (r : ℝ) : IsCompact {g : UJ ε | hsG g ≤ r} := by
   apply Formalism.REAL.isCompact_frobenius_ball_group

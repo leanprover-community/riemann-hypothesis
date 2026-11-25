@@ -15,8 +15,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi36.aux :
-    ∀ {R Q M : Type} [inst : CommRing R] [inst_1 : Group Q]
-    [inst_2 : AddCommGroup M] [inst_3 : _root_.Module R M] (π : Representation R Q M) (H : Subgroup Q) (f : Q → M),
+    ∀ {R Q M : Type} [CommRing R] [Group Q]
+    [AddCommGroup M] [_root_.Module R M] (π : Representation R Q M) (H : Subgroup Q) (f : Q → M),
     (∀ (g h : Q), f (g * h) = f g + ((π : Q → M →ₗ[R] M) g : M → M) (f h)) →
       (∀ u ∈ H, f u = (0 : M)) → ∃ (m : M), ∀ (g : Q), H.index • f g = ((π : Q → M →ₗ[R] M) g : M → M) m - m := by
   intro R Q M _ _ _ _ π H f hf hH

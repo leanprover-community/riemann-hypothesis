@@ -87,11 +87,6 @@ open NumberField IsDedekindDomain Polynomial
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-private theorem mem_iff_algebraMap_mem_of_liesOver (P : Ideal (𝓞 E)) (q : Ideal (𝓞 F)) [P.LiesOver q]
-    (c : 𝓞 F) : c ∈ q ↔ algebraMap (𝓞 F) (𝓞 E) c ∈ P := by
-  rw [Ideal.over_def P q]
-  exact Iff.rfl
-
 private theorem exists_mem_not_mem_of_ne_of_isMaximal {R : Type*} [CommRing R] (Q Q' : Ideal R)
     [hQ : Q.IsMaximal] [hQ' : Q'.IsMaximal] (hne : Q ≠ Q') : ∃ a ∈ Q, a ∉ Q' := by
   by_contra h
@@ -108,9 +103,9 @@ theorem gen_of_two (h2 : Module.finrank F E = 2) (p : HeightOneSpectrum (𝓞 F)
   have hnot : ∀ c : 𝓞 F, algebraMap (𝓞 F) (𝓞 E) c ≠ a := by
     intro c hc
     apply ha'
-    have hcQ : c ∈ p.asIdeal := (mem_iff_algebraMap_mem_of_liesOver Q p.asIdeal c).2 (by rw [hc]; exact ha)
+    have hcQ : c ∈ p.asIdeal := (Ideal.mem_of_liesOver Q p.asIdeal c).2 (by rw [hc]; exact ha)
     rw [← hc]
-    exact (mem_iff_algebraMap_mem_of_liesOver Q' p.asIdeal c).1 hcQ
+    exact (Ideal.mem_of_liesOver Q' p.asIdeal c).1 hcQ
   have hint_r : IsIntegral (𝓞 F) a := Algebra.IsIntegral.isIntegral a
   have hFE : FiniteDimensional F E := Module.finite_of_finrank_pos (by rw [h2]; norm_num)
   have hfield : minpoly F (algebraMap (𝓞 E) E a) = (minpoly (𝓞 F) a).map (algebraMap (𝓞 F) F) :=
@@ -145,7 +140,7 @@ theorem gen_of_two (h2 : Module.finrank F E = 2) (p : HeightOneSpectrum (𝓞 F)
       algebraMap (𝓞 F) (𝓞 E) ((minpoly (𝓞 F) a).coeff 0) = 0 := by
     linear_combination hev
   have hc0 : (minpoly (𝓞 F) a).coeff 0 ∈ p.asIdeal := by
-    refine (mem_iff_algebraMap_mem_of_liesOver Q p.asIdeal _).2 ?_
+    refine (Ideal.mem_of_liesOver Q p.asIdeal _).2 ?_
     have h : algebraMap (𝓞 F) (𝓞 E) ((minpoly (𝓞 F) a).coeff 0) =
         -(a * (a + algebraMap (𝓞 F) (𝓞 E) ((minpoly (𝓞 F) a).coeff 1))) := by
       linear_combination heq
@@ -153,8 +148,8 @@ theorem gen_of_two (h2 : Module.finrank F E = 2) (p : HeightOneSpectrum (𝓞 F)
     exact neg_mem (Q.mul_mem_right _ ha)
   have hc1 : (minpoly (𝓞 F) a).coeff 1 ∉ p.asIdeal := by
     intro h
-    have h1 := (mem_iff_algebraMap_mem_of_liesOver Q' p.asIdeal _).1 h
-    have h0 := (mem_iff_algebraMap_mem_of_liesOver Q' p.asIdeal _).1 hc0
+    have h1 := (Ideal.mem_of_liesOver Q' p.asIdeal _).1 h
+    have h0 := (Ideal.mem_of_liesOver Q' p.asIdeal _).1 hc0
     have haa : a * a ∈ Q' := by
       have h' : a * a = -(algebraMap (𝓞 F) (𝓞 E) ((minpoly (𝓞 F) a).coeff 1) * a +
           algebraMap (𝓞 F) (𝓞 E) ((minpoly (𝓞 F) a).coeff 0)) := by
@@ -164,17 +159,14 @@ theorem gen_of_two (h2 : Module.finrank F E = 2) (p : HeightOneSpectrum (𝓞 F)
     rcases hQ'.isPrime.mem_or_mem haa with h | h <;> exact ha' h
   exact ⟨a, _, _, hnot, heq, hP, hdeg, hc0, hc1⟩
 
-private theorem finitePlace_embedding_eq_algebraMap (p : HeightOneSpectrum (𝓞 F)) (k : F) :
-    FinitePlace.embedding p k = algebraMap F (p.adicCompletion F) k := rfl
-
 private theorem norm_algebraMap_adicCompletion_lt_one_of_mem (p : HeightOneSpectrum (𝓞 F)) (c : 𝓞 F)
     (hc : c ∈ p.asIdeal) : ‖algebraMap (𝓞 F) (p.adicCompletion F) c‖ < 1 := by
-  rw [IsScalarTower.algebraMap_apply (𝓞 F) F (p.adicCompletion F), ← finitePlace_embedding_eq_algebraMap]
+  rw [IsScalarTower.algebraMap_apply (𝓞 F) F (p.adicCompletion F)]
   exact (FinitePlace.norm_lt_one_iff_mem F p c).2 hc
 
 private theorem norm_algebraMap_adicCompletion_eq_one_of_not_mem (p : HeightOneSpectrum (𝓞 F)) (c : 𝓞 F)
     (hc : c ∉ p.asIdeal) : ‖algebraMap (𝓞 F) (p.adicCompletion F) c‖ = 1 := by
-  rw [IsScalarTower.algebraMap_apply (𝓞 F) F (p.adicCompletion F), ← finitePlace_embedding_eq_algebraMap]
+  rw [IsScalarTower.algebraMap_apply (𝓞 F) F (p.adicCompletion F)]
   exact (FinitePlace.norm_eq_one_iff_notMem F p c).2 hc
 
 theorem emb_of_two (h2 : Module.finrank F E = 2) (p : HeightOneSpectrum (𝓞 F)) (Q Q' : Ideal (𝓞 E))

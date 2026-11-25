@@ -7,7 +7,6 @@ public import Mathlib.Data.Fin.Tuple.Sort
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
 open GlobalTheory.CatH (face toLast)
 
@@ -34,7 +33,7 @@ theorem form_zsmul (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) {m : ℕ} (I : F
 
 theorem sgn_eq_zero_of_not_injective {m : ℕ} (I : Idx m d) {J : Fin m → Fin d} (h : ¬ Function.Injective J) :
     sgn I J = 0 := by
-  refine Finset.sum_eq_zero fun π _ => if_neg ?_
+  refine Finset.sum_eq_zero fun π _ => ite_eq_right ?_
   intro e
   exact h (e ▸ I.2.injective.comp π.injective)
 
@@ -51,13 +50,13 @@ theorem sgn_comp_self {m : ℕ} (I : Idx m d) (π : Equiv.Perm (Fin m)) :
   rw [Finset.sum_eq_single π]
   · simp
   · intro b _ hb
-    refine if_neg fun e => hb ?_
+    refine ite_eq_right fun e => hb ?_
     exact (Equiv.ext fun k => I.2.injective (congrFun e k)).symm
   · simp
 
 theorem sgn_comp_of_ne {m : ℕ} {I I' : Idx m d} (π : Equiv.Perm (Fin m)) (h : I' ≠ I) :
     sgn I' (I.1 ∘ π) = 0 := by
-  refine Finset.sum_eq_zero fun π' _ => if_neg fun e => h (Subtype.ext ?_)
+  refine Finset.sum_eq_zero fun π' _ => ite_eq_right fun e => h (Subtype.ext ?_)
   refine (StrictMono.range_inj I'.2 I.2).1 ?_
   have e' := congrArg Set.range e
   rw [π.surjective.range_comp, π'.surjective.range_comp] at e'

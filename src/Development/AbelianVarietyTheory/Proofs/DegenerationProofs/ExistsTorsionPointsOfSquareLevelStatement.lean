@@ -4,48 +4,8 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsVVGenO
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.ArithBase
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.WeilIsAlternatingSkewNatural
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnivBasis
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -79,24 +39,24 @@ theorem labelSymp_eq (g M : ℕ) (a b : Fin g ⊕ Fin g → ZMod M) :
     labelSymp (a ∘ (halves g).symm) (b ∘ (halves g).symm) = eStd g M a b := by
   have h₁ : ∀ i j : Fin g, stdSymp g (halves g (.inl i)) (halves g (.inl j)) = 0 := fun i j => by
     have := i.2; have := j.2
-    rw [stdSymp, halves_inl, halves_inl, if_neg (by omega), if_neg (by omega)]
+    rw [stdSymp, halves_inl, halves_inl, ite_eq_right (by omega), ite_eq_right (by omega)]
   have h₂ : ∀ i j : Fin g, stdSymp g (halves g (.inl i)) (halves g (.inr j)) = if i = j then 1 else 0 := fun i j => by
     have := i.2; have := j.2
     rw [stdSymp, halves_inl, halves_inr]
     by_cases h : i = j
-    · rw [if_pos h, if_pos (by subst h; omega)]
+    · rw [ite_eq_left h, ite_eq_left (by subst h; omega)]
     · have : (i : ℕ) ≠ j := fun q => h (Fin.ext q)
-      rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
   have h₃ : ∀ i j : Fin g, stdSymp g (halves g (.inr i)) (halves g (.inl j)) = if i = j then -1 else 0 := fun i j => by
     have := i.2; have := j.2
     rw [stdSymp, halves_inl, halves_inr]
     by_cases h : i = j
-    · rw [if_pos h, if_neg (by omega), if_pos (by subst h; omega)]
+    · rw [ite_eq_left h, ite_eq_right (by omega), ite_eq_left (by subst h; omega)]
     · have : (i : ℕ) ≠ j := fun q => h (Fin.ext q)
-      rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
   have h₄ : ∀ i j : Fin g, stdSymp g (halves g (.inr i)) (halves g (.inr j)) = 0 := fun i j => by
     have := i.2; have := j.2
-    rw [stdSymp, halves_inr, halves_inr, if_neg (by omega), if_neg (by omega)]
+    rw [stdSymp, halves_inr, halves_inr, ite_eq_right (by omega), ite_eq_right (by omega)]
   rw [labelSymp, ← (halves g).sum_comp]
   simp_rw [← (halves g).sum_comp]
   simp [Fintype.sum_sum_type, h₁, h₂, h₃, h₄, eStd, sub_eq_add_neg, Finset.sum_add_distrib, add_comm]

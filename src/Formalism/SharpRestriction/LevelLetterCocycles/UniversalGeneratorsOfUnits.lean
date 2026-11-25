@@ -1,6 +1,5 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.FinLev
 public import Formalism.SharpRestriction.LevelLetterCocycles.EvaluationAtUniformizerPower
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
@@ -24,6 +23,36 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.RingTheory.PiTensorProduct
+
+section
+@[expose] public section
+
+noncomputable section
+
+namespace Formalism.MainNotions.UnusedSlot80.UGen
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR}
+    {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
+    {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+
+def FinLev (W : LocWach PD LL O v n) : Prop :=
+  ∀ (a : ZMod n) (e : ℕ) (H : ℕ → ℕ), ∃ D : ℕ, ∀ u ∈ W.AΔ, ∃ (c : Fin D → O) (w : LetA O n),
+    w ∈ W.AΔ ∧ (letE a : LetA O n) * u =
+      letE a * ∑ j : Fin D, algebraMap O (LetA O n) (c j) * W.π₀ ^ (j : ℕ) +
+        W.π₀ * (∏ t ∈ Finset.range e, Formalism.MainNotions.ArcLiftingSetup.ps W t ^ H t) ^ 2 * (letE a * w)
+
+end Formalism.MainNotions.UnusedSlot80.UGen
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.EvalZeroXEqUniformizer, Formalism.SharpRestriction.LevelLetterCocycles.InFr1OfPi0Lam, Formalism.SharpRestriction.LevelLetterCocycles.CrtFamDet, Formalism.SharpRestriction.LevelLetterCocycles.GenOfKiller, Formalism.SharpRestriction.LevelLetterCocycles.SingleMemSpan, Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneratorsOfUnits
@@ -357,19 +386,19 @@ theorem crt_fam {ι : Type} [DecidableEq ι] (x₀ : LetA O n) (x : ι → LetA 
       fun i => if i = a then Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ * t else R i * r, ?_, ?_⟩
     · intro i hi
       by_cases hia : i = a
-      · simp only [hia, if_true]; exact W.AΔ.mul_mem (lA_mem W κ) ht
-      · simp only [hia, if_false]
+      · simp only [hia, ite_true]; exact W.AΔ.mul_mem (lA_mem W κ) ht
+      · simp only [hia, ite_false]
         exact W.AΔ.mul_mem (hR i ((Finset.mem_insert.1 hi).resolve_left hia)) hr
     · rw [Finset.sum_insert ha]
       dsimp only
-      rw [if_pos rfl, Finset.erase_insert ha, Finset.prod_insert ha]
+      rw [ite_eq_left rfl, Finset.erase_insert ha, Finset.prod_insert ha]
       have hs : ∑ i ∈ s, x₀ * (∏ j ∈ (insert a s).erase i, x j) *
           (if i = a then Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ * t else R i * r) =
           (∑ i ∈ s, x₀ * (∏ j ∈ s.erase i, x j) * R i) * r * x a := by
         rw [Finset.sum_mul, Finset.sum_mul]
         refine Finset.sum_congr rfl fun i hi => ?_
         have hia : i ≠ a := fun h => ha (h ▸ hi)
-        rw [if_neg hia, Finset.erase_insert_of_ne (Ne.symm hia),
+        rw [ite_eq_right hia, Finset.erase_insert_of_ne (Ne.symm hia),
           Finset.prod_insert (fun h => ha (Finset.mem_of_mem_erase h))]
         ring
       rw [hs, pow_add]

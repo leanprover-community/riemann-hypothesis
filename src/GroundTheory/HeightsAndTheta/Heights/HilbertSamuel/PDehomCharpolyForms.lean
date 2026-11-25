@@ -68,7 +68,7 @@ theorem dehom_homog {D : ℕ} (k : Fin (D + 1)) {N : ℕ} (G : MvPolynomial (Fin
   simp only [PullFormsGeneric.dehom, homog, map_sum]
   refine Finset.sum_congr rfl fun e _ => ?_
   first
-    | rw [map_mul, map_pow, bind₁_X_right, dif_pos rfl, one_pow, one_mul]
+    | rw [map_mul, map_pow, bind₁_X_right, dite_eq_left rfl, one_pow, one_mul]
 
 theorem ne_zero_of_generic {Ω : Type} [Field Ω] [CharZero Ω] {D : ℕ} {l : Fin (D + 1) → Ω}
     (hgen : ∀ (d : ℕ) (F : MvPolynomial (Fin (D + 1)) ℚ), F.IsHomogeneous d → aeval l F = 0 → F = 0)
@@ -91,7 +91,7 @@ theorem injective_chart {Ω : Type} [Field Ω] [CharZero Ω] {D : ℕ} {l : Fin 
         else X ⟨i, h⟩)).comp (rename (R := ℚ) (Subtype.val : {i // i ≠ k} → Fin (D + 1))) = AlgHom.id ℚ _ := by
       apply MvPolynomial.algHom_ext
       intro i
-      simp only [AlgHom.comp_apply, rename_X, bind₁_X_right, dif_neg i.2, AlgHom.id_apply, Subtype.coe_eta]
+      simp only [AlgHom.comp_apply, rename_X, bind₁_X_right, dite_eq_right i.2, AlgHom.id_apply, Subtype.coe_eta]
     exact congrArg (fun φ => φ G) this
   rw [← h3, ← dehom_homog k G' le_rfl, h2]
   simp [PullFormsGeneric.dehom]
@@ -344,7 +344,7 @@ theorem DehomCharpolyForms.proof : DehomCharpolyForms.Statement := by
     have h0 : ((f.coeff 0 : P) : Ω) = 0 := by
       have hcn' : c n = 0 := by simpa [hn0] using hcn
       have := heval n le_rfl
-      rw [if_neg hn0, hcn', map_zero, Nat.sub_self] at this
+      rw [ite_eq_right hn0, hcn', map_zero, Nat.sub_self] at this
       exact this.symm
     have hdet := LinearMap.det_eq_sign_charpoly_coeff (Algebra.lmul P Ω u)
     rw [← Algebra.norm_apply, ← hf] at hdet

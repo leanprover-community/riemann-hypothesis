@@ -14,8 +14,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris
@@ -122,7 +120,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section

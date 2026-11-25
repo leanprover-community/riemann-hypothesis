@@ -170,8 +170,7 @@ theorem rank_le_of_ne_zero {Z : Comp Xo c} {G : WTZ E} (hG : Even G.2) {τ₀ : 
     rw [map_pow]
     exact pow_ne_zero _ hv
   have hinj : Function.Injective (m ∘ₗ (cuspOn U Z (τ • G)).subtype) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in
-      rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf
     have hzero : genVal Z (g ^ n * f) = 0 := hf
     rw [map_mul] at hzero
@@ -197,7 +196,7 @@ theorem classes_bound (Z : Comp Xo c) {G : WTZ E} (hG : Even G.2) {a : ℕ} (ha 
       ring
     rw [e]
     exact OrderHomClass.mono Cardinal.toENat (rank_le_of_ne_zero hG hg hg0 _ _)
-  · push_neg at hex
+  · push Not at hex
     refine ⟨0, fun k => ?_⟩
     have h0 : cuspOn U Z ((a * k + j) • G) = ⊥ := (Submodule.eq_bot_iff _).2 (hex k)
     rw [h0, rank_bot, map_zero]
@@ -523,12 +522,12 @@ theorem growthOn_le_compDeg : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     have h1 := _root_.GlobalTheory.ConeDeg.degree_growth.2.2 c.F _ _ ev (dimFlag Dw) a ha S (by
       intro k t ht
       by_cases hk : k = 0
-      · simp only [S, hk, if_true, Submodule.mem_bot] at ht
+      · simp only [S, hk, ite_true, Submodule.mem_bot] at ht
         subst ht
         refine ⟨?_, ⟨0, 1, by simp [Submodule.one_eq_span], one_ne_zero, by simp⟩⟩
         rw [IsIntDeg, map_zero, mul_zero]
         exact isIntegral_zero
-      · simp only [S, hk, if_false] at ht
+      · simp only [S, hk, ite_false] at ht
         obtain ⟨f, hf, rfl⟩ := ht
         have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.2 hk
         obtain ⟨hc, hv⟩ := hmul k hk1 f hf
@@ -539,7 +538,7 @@ theorem growthOn_le_compDeg : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
       GlobalTheory.DegTop.growth_mono _ fun k hk => by
         have hk0 : k ≠ 0 := by omega
         show _ ≤ Cardinal.toENat (Module.rank c.F (S k))
-        have hS : S k = (cuspOn U Z ((a * k) • G')).map ((genVal Z).toLinearMap ∘ₗ LinearMap.mulLeft c.F (θ ^ k)) := if_neg hk0
+        have hS : S k = (cuspOn U Z ((a * k) • G')).map ((genVal Z).toLinearMap ∘ₗ LinearMap.mulLeft c.F (θ ^ k)) := ite_eq_right hk0
         rw [hS, GlobalTheory.DegTop.rank_map_mul (U := U) (G := (a * k) • G') (hθk k)]
     have hmulG : ∀ G₀ : WTZ E, growth (dimFlag Dw) (fun k => Cardinal.toENat (Module.rank c.F (cuspOn U Z ((a * k) • G₀)))) =
         growthOn U Z (a • G₀) := fun G₀ => by

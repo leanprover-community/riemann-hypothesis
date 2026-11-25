@@ -122,7 +122,7 @@ theorem ker_conj_diagonal_eq_span (P : GL (Fin n) K) (d : Fin n → K) (S : Fins
     by_cases hj : j = i.1
     · subst hj
       rw [(hd _).2 i.2, zero_mul]
-    · rw [if_neg hj, mul_zero]
+    · rw [ite_eq_right hj, mul_zero]
 
 theorem exists_eigvec (γ : Matrix (Fin n) (Fin n) K) (t : K) (ht : γ.charpoly.eval t = 0) :
     ∃ x : Fin n → K, x ≠ 0 ∧ γ *ᵥ x = t • x := by
@@ -171,10 +171,10 @@ theorem det_submatrix_rev (A : Matrix (Fin n) (Fin n) K) (hA : ∀ i j, j ≠ Fi
     simp only [Matrix.mul_diagonal, Matrix.submatrix_apply, Equiv.Perm.permMatrix, PEquiv.toMatrix_apply,
       Equiv.toPEquiv_apply, Option.mem_def, Option.some.injEq]
     by_cases h : (revOn S hS) i = j
-    · rw [if_pos h, one_mul]
+    · rw [ite_eq_left h, one_mul]
       subst h
       simp [revOn, Fin.rev_rev]
-    · rw [if_neg h, zero_mul]
+    · rw [ite_eq_right h, zero_mul]
       apply hA
       intro hj
       apply h
@@ -188,10 +188,10 @@ theorem det_rev (A : Matrix (Fin n) (Fin n) K) (hA : ∀ i j, j ≠ Fin.rev i �
     simp only [Matrix.mul_diagonal, Equiv.Perm.permMatrix, PEquiv.toMatrix_apply,
       Equiv.toPEquiv_apply, Option.mem_def, Option.some.injEq, Fin.revPerm_apply]
     by_cases h : Fin.rev i = j
-    · rw [if_pos h, one_mul]
+    · rw [ite_eq_left h, one_mul]
       subst h
       rw [Fin.rev_rev]
-    · rw [if_neg h, zero_mul]
+    · rw [ite_eq_right h, zero_mul]
       exact hA i j (fun hj => h hj.symm)
   conv_lhs => rw [e]
   rw [Matrix.det_mul, Matrix.det_permutation, Matrix.det_diagonal]
@@ -266,7 +266,7 @@ theorem kapSign_eq_one_of_vals (hU : Unr E) (w : Pl E) (n : ℕ) (γ : GLw n w) 
   have hUn : ((γ.val.map (cj w))ᵀ) * γ.val = 1 := by
     have h := hγ
     unfold UL at h
-    rw [if_neg hs] at h
+    rw [ite_eq_right hs] at h
     have h2 : cT (cj w) (γ : Matrix (Fin n) (Fin n) (w.adicCompletion E)) * 1 *
         (γ : Matrix (Fin n) (Fin n) (w.adicCompletion E)) = 1 := h
     rw [Matrix.mul_one] at h2
@@ -420,7 +420,7 @@ theorem kapSign_eq_one_of_vals (hU : Unr E) (w : Pl E) (n : ℕ) (γ : GLw n w) 
       ordL_mul' ((map_ne_zero (cj w)).2 hd0) hd0, _root_.Formalism.UG.P.fSatake_ord_of_v (hcj d), hordS S hS]
     obtain ⟨r, hr⟩ := hevenS S hS
     exact Even.neg_one_zpow ⟨ordL d + r, by rw [hr]; ring⟩
-  · push_neg at hS
+  · push Not at hS
     obtain ⟨i, hi, hri⟩ := hS
     have hz : (H.submatrix (fun i : S => i.1) (fun i : S => i.1)).det = 0 := by
       refine Matrix.det_eq_zero_of_row_eq_zero ⟨i, hi⟩ fun j => ?_

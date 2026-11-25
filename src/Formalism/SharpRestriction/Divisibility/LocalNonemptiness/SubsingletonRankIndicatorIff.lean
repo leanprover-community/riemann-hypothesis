@@ -168,15 +168,6 @@ theorem finrank_copies (k : ℕ) : Module.finrank ℤ (Fin k → 𝓞 D.host.E) 
   simp only [Formalism.BasicNotions.Ranks.f, Formalism.BasicNotions.Ranks.n]
   ring
 
-theorem subsingleton_rank_indicator_iff (P : Prop) : Subsingleton (Fin (rk01 P) → 𝓞 D.host.E) ↔ P := by
-  unfold rk01
-  by_cases h : P
-  · rw [if_pos h]
-    exact ⟨fun _ => h, fun _ => inferInstance⟩
-  · rw [if_neg h]
-    refine ⟨fun hs => ?_, fun hp => absurd hp h⟩
-    have h1 := congrFun (hs.elim (fun _ => (0 : 𝓞 D.host.E)) (fun _ => 1)) 0
-    exact absurd h1 zero_ne_one
 
 def pmM (dg : PsiT D → ℕ → ℤ) (n : ℕ) : ℤ := ∑ t : D.what₂.Tau, ∑ k ∈ Finset.Icc 1 n, |dg (D.eTau t) k|
 
@@ -208,12 +199,12 @@ theorem atM_tors (k n : ℕ) (x : AtM k n) : n • x = 0 := by
   simp only [Pi.smul_apply, Pi.zero_apply, nsmul_eq_mul]
   by_cases h : n = 0
   · simp [h]
-  · have hn : nn n = n := if_neg h
+  · have hn : nn n = n := ite_eq_right h
     have : (n : ZMod (nn n)) = 0 := (CharP.cast_eq_zero_iff (ZMod (nn n)) (nn n) n).mpr (by rw [hn])
     rw [this, zero_mul]
 
 theorem atM_card (k n : ℕ) (h : 0 < n) : Fintype.card (AtM k n) = n ^ k := by
-  rw [Fintype.card_fun, ZMod.card, Fintype.card_fin, (show nn n = n from if_neg (by omega))]
+  rw [Fintype.card_fun, ZMod.card, Fintype.card_fin, (show nn n = n from ite_eq_right (by omega))]
 
 structure MP (D : D7) (p : ℕ) where
   K : CF p
@@ -224,210 +215,7 @@ structure MP (D : D7) (p : ℕ) where
   Cv : Type
   dg : Cv → PsiT D → ℕ → ℤ
 
-variable (D : D7) (r j p : ℕ) (M : MP D p)
-
-@[reducible] def locM : Loc D r j p where
-  Mdl := Unit
-  Xm := ()
-  YY := ()
-  Xn := fun _ => ()
-  Pt := fun _ => M.Gn
-  fld := fun _ => M.K
-  Ylat := fun y => Fin (rk01 (M.ab y)) → 𝓞 D.host.E
-  ylAdd := fun _ => inferInstance
-  ylMod := fun _ => inferInstance
-  ylFree := fun _ => inferInstance
-  ylFin := fun _ => inferInstance
-  be := fun y => beK D (rk01 (M.ab y))
-  be_symm := fun y a b => by rw [beK_apply, beK_apply]; exact Finset.sum_congr rfl fun i _ => beO_symm D _ _
-  be_bal := fun y c c' h a b => by
-    rw [beK_apply, beK_apply]; exact Finset.sum_congr rfl fun i _ => beO_bal D c c' h _ _
-  be_posDef := fun y => ⟨_, inferInstance, bK D _, beK_posDef D _⟩
-  yl_rank := fun y => ⟨rk01 (M.ab y), finrank_copies D _, fun h1 h2 => by
-    have := rank_indicator_le_one (M.ab y); omega⟩
-  Gen := fun _ => M.Gn
-  abAt := fun η => M.ab η
-  Sh := fun _ => Unit
-  IsInv := fun _ => True
-  IsLocFree := fun _ => True
-  Sec := fun _ => PUnit
-  secAdd := fun _ => inferInstance
-  H0 := fun _ => ⊤
-  nrm := fun _ _ _ => 0
-  nrm_nonneg := by intros; exact le_rfl
-  norm_le_one_of_mem_sections := by intros <;> simp_all
-  GIso := fun _ _ => Empty
-  vrat := fun _ _ => 0
-  Lb := fun _ => ()
-  Lb_inv := by intros <;> simp_all
-  nrmRef := fun _ _ _ => 0
-  DVP := M.Gn
-  dvRho := fun y => rk01 (M.ab y)
-  Ext := fun _ => Unit
-  Chart := fun _ _ _ => Empty
-  chAt := fun _ => True
-  chOpen := fun _ => True
-  chAbExact := fun _ => True
-  chModU := fun _ => True
-  chConst := fun _ => True
-  PL := Unit
-  phiAt := fun _ _ _ => 0
-  phiAt_zero := fun _ {_} _ _ => rfl
-  divGe := fun _ _ _ _ => True
-  FJd := Unit
-  Chr := fun _ => Unit
-  fjN := fun _ _ _ _ => 0
-  Unim := ℕ
-  LBG := fun _ => Unit
-  LBGq := fun _ => Unit
-  resQ := fun _ => ()
-  PPq := fun _ => ()
-  symmG := fun _ => True
-  rigG := fun _ => True
-  LBGt := fun _ _ => Unit
-  LBB := fun _ _ => Unit
-  resGt := fun _ _ => ()
-  prPull := fun _ => ()
-  principal := fun _ => True
-  psiV := fun _ _ => 0
-  piPP := ()
-  keySh := fun _ => ()
-  latStd := fun n => n
-  At := fun _ La n => AtM (2 * (D.R.f * r * La)) n
-  atAdd := fun _ _ _ => inferInstance
-  atFin := fun _ _ _ => inferInstance
-  at_tors := fun _ _ _ x => atM_tors _ _ x
-  at_card := fun _ _ _ h => atM_card _ _ h
-  Th := fun _ La n => (M.K.C)ˣ × Multiplicative (AtM (2 * (D.R.f * r * La)) n)
-  thGrp := fun _ _ _ => inferInstance
-  ovr := fun _ _ _ => MonoidHom.snd _ _
-  ovr_surj := fun _ _ _ x => ⟨(1, x), rfl⟩
-  scal := fun _ _ _ => MonoidHom.inl _ _
-  scal_inj := fun _ _ _ a b h => congrArg Prod.fst h
-  scal_central := fun _ _ _ a g => by
-    ext <;> simp [mul_comm]
-  ker_ovr := fun _ _ _ g => ⟨fun h => ⟨g.1, Prod.ext rfl h.symm⟩, fun ⟨a, h⟩ => by rw [← h]; rfl⟩
-  dl := fun _ _ _ => MulEquiv.prodCongr (MulEquiv.refl _) (MulEquiv.inv _)
-  dl_ovr := fun _ _ _ _ => rfl
-  dl_scal := fun _ La n a => Prod.ext rfl (inv_one : (1 : Multiplicative (AtM (2 * (D.R.f * r * La)) n))⁻¹ = 1)
-  dl_dl := fun _ _ _ g => by
-    show (g.1, (g.2⁻¹)⁻¹) = g
-    rw [inv_inv]
-  Sn := fun _ _ _ => PUnit
-  snAdd := fun _ _ _ => inferInstance
-  snMod := fun _ _ _ => inferInstance
-  act := fun _ _ _ => 1
-  act_scal := by intros <;> simp_all
-  vth := fun _ _ _ => 0
-  Jet := fun _ _ _ _ => PUnit
-  jAdd := fun _ _ _ _ => inferInstance
-  jMod := fun _ _ _ _ => inferInstance
-  intJet := fun _ _ _ _ => ⊤
-  jet := fun _ _ _ _ => 0
-  LieGt := fun _ _ => PUnit
-  LieB := fun _ _ => PUnit
-  LieT := fun _ _ => PUnit
-  lgAdd := fun _ _ => inferInstance
-  lbAdd := fun _ _ => inferInstance
-  ltAdd := fun _ _ => inferInstance
-  resB := fun _ _ => 0
-  incT := fun _ _ => 0
-  kapGt := fun _ _ _ _ => 0
-  kapB := fun _ _ _ _ => 0
-  Harm := fun _ => Unit
-  SecP := fun _ => Unit
-  evA := fun _ _ _ => 0
-  evGt := fun _ _ _ => 0
-  Tp := fun _ => PUnit
-  tpAdd := fun _ => inferInstance
-  OmV := fun _ => PUnit
-  omAdd := fun _ => inferInstance
-  omMod := fun _ => inferInstance
-  om := fun _ => ⊤
-  ht := fun _ => 0
-  IsHTBlowup := fun _ _ => False
-  eOmP := fun _ _ _ => ()
-  SES := fun _ => Unit
-  ExactMod := fun _ _ => True
-  htSES := fun _ _ => ()
-  nefHT := fun _ _ => True
-  nefQ := fun _ => True
-  descK := fun _ _ => True
-  bdryLoci := fun _ => True
-  BT := fun _ => Unit
-  extA := fun _ => True
-  compat := fun _ _ => True
-  Crv := M.Cv
-  eDeg := fun c => -∑ᶠ τ, ((∑ i ∈ Finset.Icc 1 j, M.dg c τ i) + -∑ i ∈ Finset.Icc (j + 1) r, M.dg c τ i)
-  Pm := fun c => pmM D (M.dg c) (r + j)
-  Pm_nonneg := fun c => pmM_nonneg D _ _
-  degLie := fun c τ b => if b then -∑ i ∈ Finset.Icc (j + 1) r, M.dg c τ i else ∑ i ∈ Finset.Icc 1 j, M.dg c τ i
-  degLdR := fun c μ => -∑ᶠ τ, ∑ i ∈ Finset.Icc 1 r, μ τ i * (M.dg c τ i : ℝ)
-
-@[reducible] def extM : ExtA D (locM D r j p M) where
-  FlagData := fun _ => Unit
-  flagCl := fun _ _ => ()
-  allFlags := ()
-  Idl := fun _ => Unit
-  blowUp := fun _ _ => ()
-  Corr := fun _ _ => Unit
-  IvD := fun _ => Unit
-  ZP := fun _ => M.Gn
-  spz := fun _ _ => True
-  abP := fun x => M.ab x
-  inQ := fun _ => False
-  isGenP := fun _ => False
-  gpt := fun η => η
-  genNe := fun _ => M.ne
-  redK := fun _ y => y
-  genK := fun η => η
-  imgM := fun χ => Empty.elim χ
-  imgU := fun χ => Empty.elim χ
-  RFam := fun _ _ => Unit
-  ptK := fun _ y => y
-  vpi := fun _ => 1
-  yEta := fun η => η
-  homSh := fun _ _ => ()
-  isoSec := fun _ => 0
-  isoSymm := fun φ => Empty.elim φ
-  LieV := fun _ => PUnit
-  lvAdd := fun _ => inferInstance
-  lvMod := fun _ => inferInstance
-  lieL := fun _ => ⊤
-  eig := fun _ _ => ⊤
-  Wst := fun _ _ _ => ⊤
-  taut := fun _ _ _ => ⊤
-  nrmIn := fun _ _ _ _ => 0
-  TC := fun _ => PUnit
-  tcAdd := fun _ => inferInstance
-  tcMod := fun _ => inferInstance
-  iT := fun _ => 0
-  htC := fun _ => 0
-  HTn := fun _ => Empty
-  htEval := fun h => Empty.elim h
-  htIdl := fun _ => ()
-  omPat := fun _ => ⊤
-  BPt := fun _ => Empty
-  bfld := fun _ => M.K
-  OmB := fun _ => PUnit
-  obAdd := fun _ => inferInstance
-  obMod := fun _ => inferInstance
-  YsP := fun _ => Empty
-  ysBd := fun _ => True
-  FlP := Unit
-  hFl := fun _ => ()
-  FlCl := Unit
-  flMem := fun _ _ => True
-  flDim := fun _ => 0
-  Sum1 := Unit
-  locus := fun _ => ()
-  CrvS := fun _ => Empty
-  degGr := fun _ _ _ => 0
-  CrvQ := Empty
-  degGrQ := fun _ _ _ => 0
-  degGrD := fun c => M.dg c
-
-def mpTrivialAb (K : CF p) : MP D p where
+def mpTrivialAb (D : D7) (p : ℕ) (K : CF p) : MP D p where
   K := K
   Gn := Unit
   fin := inferInstance

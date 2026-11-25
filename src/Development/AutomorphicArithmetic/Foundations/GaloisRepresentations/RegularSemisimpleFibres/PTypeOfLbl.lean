@@ -40,7 +40,7 @@ private theorem trace_zero {W : Type} [AddCommGroup W] [Module ℂ W] (h : ¬ Fi
   have hn : ¬ ∃ s : Finset W, Nonempty (Module.Basis s ℂ W) := by
     rintro ⟨s, ⟨b⟩⟩
     exact h (Module.Finite.of_basis b)
-  simp only [LinearMap.trace, dif_neg hn]
+  simp only [LinearMap.trace, dite_eq_right hn]
 
 private theorem ofFn_comp_get {β : Type} (M : List (ℕ × ℕ)) (f : ℕ × ℕ → β) :
     List.ofFn (fun a : Fin M.length => f (M.get a)) = M.map f := by

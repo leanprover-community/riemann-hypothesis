@@ -3,49 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.ArithBase
 public import Mathlib.Data.FunLike.Fintype
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsBasisAdaptedToIdempotents
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 
 @[expose] public section
@@ -90,8 +49,8 @@ theorem avg_mul_avg [DecidableEq (G →+ B)] (ψ : AddChar B o) (hψ : ∀ a, ψ
   rw [smul_mul_smul_comm, h1, sum_char_comp ψ hψ, smul_smul]
   by_cases h : c = c'
   · subst h
-    rw [if_pos (sub_self c), if_pos rfl, _root_.mul_assoc, hu, _root_.mul_one]
-  · rw [if_neg (fun h0 => h (sub_eq_zero.1 h0).symm), if_neg h, mul_zero, zero_smul]
+    rw [ite_eq_left (sub_self c), ite_eq_left rfl, _root_.mul_assoc, hu, _root_.mul_one]
+  · rw [ite_eq_right (fun h0 => h (sub_eq_zero.1 h0).symm), ite_eq_right h, mul_zero, zero_smul]
 
 theorem sum_avg [Fintype (G →+ B)] (ψ : AddChar B o) (hψ : ∀ a, ψ a = 1 → a = 0) (ρ : G → A)
     (hρ : ∀ t, (∀ c : G →+ B, c t = 0) → ρ t = 1) (u : o) (hu : u * (Fintype.card G : o) = 1) :
@@ -101,7 +60,7 @@ theorem sum_avg [Fintype (G →+ B)] (ψ : AddChar B o) (hψ : ∀ a, ψ a = 1 �
     by_cases h : ∀ c : G →+ B, c t = 0
     · rw [hρ t h]
     · have h2 := sum_char_comp ψ hψ (-(AddMonoidHom.eval (M := G) (N := B) t))
-      rw [if_neg (fun h0 => h fun c => by simpa using DFunLike.congr_fun h0 c)] at h2
+      rw [ite_eq_right (fun h0 => h fun c => by simpa using DFunLike.congr_fun h0 c)] at h2
       simp only [AddMonoidHom.neg_apply, AddMonoidHom.eval_apply_apply] at h2
       rw [h2, zero_smul, zero_smul]
   have h3 : ∀ c : G →+ B, ∑ t, ψ (-(c t)) = if c = 0 then (Fintype.card G : o) else 0 := by
@@ -110,7 +69,7 @@ theorem sum_avg [Fintype (G →+ B)] (ψ : AddChar B o) (hψ : ∀ a, ψ a = 1 �
   rw [← Finset.smul_sum, Finset.sum_comm]
   simp only [← Finset.sum_smul, h1]
   rw [Finset.sum_comm]
-  simp only [h3, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [h3, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [smul_smul, hu, one_smul]
 
 end Abstract

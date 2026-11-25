@@ -148,8 +148,6 @@ open UpperTheory.GalN.V
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp
 open UpperTheory.V.Af
 open scoped Matrix
-namespace UpperTheory.V.Af.NewformAutomorphy
-end UpperTheory.V.Af.NewformAutomorphy
 theorem UpperTheory.GalN.V.newformAut0_alt :
     _root_.UpperTheory.V.Af.Hypotheses' → NewformAut0 := by
   intro P k hk f l hl Ω _ _ _ ι W j hf hW K _ _ _ _ _ _ hK hirr

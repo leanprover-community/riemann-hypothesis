@@ -42,7 +42,7 @@ theorem pick_spec (h : V →ₗ⋆[K] V →ₗ[K] K)
         Quotient.mk (isoSetoid h) M := by
   have hq : ∃ N ∈ s₀, Quotient.mk (isoSetoid h) N = Quotient.mk (isoSetoid h) M := ⟨M, hM, rfl⟩
   have e : pick h s₀ (Quotient.mk (isoSetoid h) M) = Classical.choose hq := by
-    simpa [pick] using dif_pos hq
+    simpa [pick] using dite_eq_left hq
   rw [e]
   exact Classical.choose_spec hq
 

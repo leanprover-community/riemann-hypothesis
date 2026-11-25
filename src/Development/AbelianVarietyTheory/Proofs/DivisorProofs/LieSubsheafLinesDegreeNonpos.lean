@@ -19,60 +19,11 @@ public import Mathlib.RingTheory.LaurentSeries
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalSquaringPathsRigidOfFibre
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvalSectionAtRingPointGenericInjectiveFraction
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InterNumDetNonposSplitTorus
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.Henselian
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldOneVariableTranscendentalFiniteAndE
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFunctionFieldOfOneVariableOfGenericPointOfCurv
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicGeometry.ValuativeCriterion
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
@@ -560,7 +511,6 @@ theorem hankel_integral : ∀ (O F : Type) [CommRing O] [Field F] (ι : O →+* 
     · intro i j hij
       have hij' : i < j := hij
       have h1 : ¬ j ≤ i := not_le.mpr hij'
-      have h2 : ¬ ((j : ℕ) ≤ i) := h1
       simp [T, h1]
   refine ⟨N.det, ?_⟩
   rw [RingHom.map_det, RingHom.mapMatrix_apply, hent, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hT]
@@ -720,11 +670,11 @@ theorem isRat_of_ann (φ : PowerSeries F) (q : F[X]) (hq : q ≠ 0)
     have := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p 0) h0
     simp only [R, Polynomial.finsetSum_coeff, coeff_C_mul_X_pow, coeff_zero] at this
     rw [Finset.sum_eq_single q.natDegree] at this
-    · simp only [Nat.sub_self, if_true] at this
+    · simp only [Nat.sub_self, ite_true] at this
       exact hq (leadingCoeff_eq_zero.1 this)
     · intro k hk hkd
       have := Finset.mem_range.1 hk
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     · intro hk; exact absurd (Finset.self_mem_range_succ _) hk
   · ext n
     rw [Polynomial.coeff_coe, PowerSeries.coeff_trunc]
@@ -741,7 +691,7 @@ theorem isRat_of_ann (φ : PowerSeries F) (q : F[X]) (hq : q ≠ 0)
       rw [hR, Finset.sum_mul, map_sum, ← h m, ev_X_pow_mul]
       refine Finset.sum_congr rfl fun k hk => ?_
       have hk' := Finset.mem_range.1 hk
-      rw [mul_assoc, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', if_pos (by omega)]
+      rw [mul_assoc, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', ite_eq_left (by omega)]
       rw [show m + q.natDegree - (q.natDegree - k) = m + k by omega]
 
 end GlobalTheory.Nef.Kron
@@ -892,9 +842,7 @@ theorem isRat_of_adelic : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k
   have hn' : 2 * δ + 1 ≤ (n : ℤ) := by
     have := Int.self_le_toNat (2 * δ)
     omega
-  have hD1 : 1 ≤ D := hdeg
   push_cast at hsum
-  have h6 : (n + 1 : ℤ) * (n * D - 2 * δ) ≤ 0 := by linarith [hsum]
   have h7 : (n : ℤ) * D - 2 * δ ≤ 0 := by
     by_contra! h8
     have : (0 : ℤ) < (n + 1 : ℤ) * (n * D - 2 * δ) := mul_pos (by positivity) h8
@@ -1597,10 +1545,6 @@ open scoped CategoryTheory.Obj RatFunc
 noncomputable section
 
 namespace GlobalTheory.Nef.TorExt
-
-theorem unitSec_comp {S : Scheme.{0}} {G H : Over S} [GrpObj G] [GrpObj H] (f : G ⟶ H) [IsMonHom f] :
-    unitSec G ≫ f.left = unitSec H := by
-  rw [unitSec, unitSec, sec, sec, ← Over.comp_left, IsMonHom.one_hom]
 
 theorem isLocalHom_field {K L : Type} [Field K] [Field L] (φ : K →+* L) : IsLocalHom φ :=
   ⟨fun x hx => by

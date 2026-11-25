@@ -454,7 +454,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.tensIso 
   have hf' : (⟨f, hfe⟩ : tensIso_B ρ y) ≠ 0 := fun h => hf (congrArg Subtype.val h)
   have hnt : Nontrivial (tensIso_B ρ y) := nontrivial_of_ne _ _ hf'
   have hinj : Function.Injective ev := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     let β := Module.Basis.ofVectorSpace ℂ (tensIso_B ρ y)
     obtain ⟨c, rfl⟩ := TensorProduct.eq_repr_basis_right β x

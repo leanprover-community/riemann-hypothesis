@@ -322,7 +322,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Un
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (compFin ExtUnramAt CharUnramAt)
 open GlobalTheory.FinPl.LastDiag (add_smul_mx exists_idemAt jX_pX_mem_latA mxAt_smul smul_eq_self smul_isHalf' symplO_add_right')
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.lastDiagonalEntry_torus_integral_of_flatMap_ne_zero : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (ρ : ℕ) (B : BesLev D ρ) (J : JacLev D ρ) (s : StepBF ψ B J) (LV : Lat B.V) (LV₀ : Lat B.V₀) (LW : Lat J.W) (LW₀ : Lat J.W₀) (v : Pl D), GoodBF ψ B J LV LV₀ LW LW₀ v → UnrAt s v → ∀ 𝔉, IsFlatBF s (· = v) 𝔉 → ∀ f, Vac ψ B.V J.W LV LW (· = v) f → ∀ t : GL (Fin ρ) (AE D), (∀ i j, i ≠ j → t.1 i j = 0) → J.d.levi t ∈ grpAt J.W (· = v) → 𝔉 (s.om (1, J.d.levi t) f) ≠ 0 → ∀ i : Fin ρ, i.1 + 1 = ρ → t.1 i i - 1 ∈ intAt D (· = v) :=
   _root_.GlobalTheory.FinPl.LastDiag.last_diag_int
@@ -580,11 +579,11 @@ theorem transv_mem_UX {ρ : ℕ} {i j : Fin ρ} (hij : i ≠ j) (hlt : i < j) (c
   show (b < a → (Matrix.transvection i j c) a b = 0) ∧ (Matrix.transvection i j c) a a = 1
   refine ⟨fun hba => ?_, ?_⟩
   · simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply]
-    rw [one_apply_ne (ne_of_gt hba), zero_add, if_neg]
+    rw [one_apply_ne (ne_of_gt hba), zero_add, ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact absurd (hba.trans hlt) (lt_irrefl _)
   · simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_eq]
-    rw [if_neg, add_zero]
+    rw [ite_eq_right, add_zero]
     rintro ⟨rfl, e⟩
     exact hij e.symm
 
@@ -594,10 +593,10 @@ theorem upSum_transv {ρ : ℕ} {i j : Fin ρ} (hij : i ≠ j) (hj : j.1 = i.1 +
   rw [e]
   unfold upSum
   rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-  · rw [if_pos hj]
-    simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_ne hij, and_self, if_true, zero_add]
+  · rw [ite_eq_left hj]
+    simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_ne hij, and_self, ite_true, zero_add]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hb (Fin.ext (by omega))
   · intro h; exact absurd (Finset.mem_univ _) h
@@ -606,7 +605,7 @@ theorem upSum_transv {ρ : ℕ} {i j : Fin ρ} (hij : i ≠ j) (hj : j.1 = i.1 +
     split_ifs with h
     · have hbk : b ≠ k := fun e => by rw [e] at h; omega
       simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_ne hbk, zero_add]
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨rfl, -⟩
       exact hb rfl
     · rfl

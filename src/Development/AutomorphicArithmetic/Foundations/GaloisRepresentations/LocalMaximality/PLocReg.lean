@@ -260,7 +260,7 @@ theorem UpperTheory.Gal.productCup_of_system.locReg_of :
     · by_cases hj : j = j0
       · subst hj
         simpa using ha
-      · simp only [Pi.single_apply, hj, if_false]
+      · simp only [Pi.single_apply, hj, ite_false]
         exact Subalgebra.zero_mem _
     · rw [Finset.sum_eq_single j0]
       · simp only [Pi.single_eq_same]

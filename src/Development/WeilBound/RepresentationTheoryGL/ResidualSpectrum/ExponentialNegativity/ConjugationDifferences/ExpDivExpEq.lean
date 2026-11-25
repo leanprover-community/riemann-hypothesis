@@ -27,11 +27,11 @@ theorem sum_update_sub {n r : ℕ} (hrn : r < n) (m s : ℕ → ℝ) :
     intro i
     by_cases hi : i = r
     · subst hi
-      simp only [Function.update_self, if_true]
+      simp only [Function.update_self, ite_true]
       ring
     · simp [Function.update_of_ne hi, Ne.symm hi]
   rw [Finset.sum_congr rfl fun i _ => h i, Finset.sum_sub_distrib, Finset.sum_ite_eq,
-    if_pos (Finset.mem_range.2 hrn)]
+    ite_eq_left (Finset.mem_range.2 hrn)]
 
 theorem siegel_of_sr {n : ℕ} {x : Fin n → ℝ} {t₀ : ℝ} (hx : ∀ r, -t₀ ≤ An.sr x r) :
     ∀ i j : Fin n, (j : ℕ) = i + 1 → Real.exp (-t₀) * Real.exp (x j) ≤ Real.exp (x i) := by

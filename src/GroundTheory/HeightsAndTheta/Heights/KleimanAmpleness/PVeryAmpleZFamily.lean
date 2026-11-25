@@ -3,6 +3,7 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZFamilySt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZTwist
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
@@ -49,23 +50,6 @@ theorem aeval_mem_pow {I : Chart x} {Q : Submodule (chartRing S x I) Ω} (hQ : �
   rw [chartRing_smul_def] at this
   exact this
 
-
-omit [Module S E] [IsScalarTower S Ω E] in
-theorem smul_mem_twist_pow (F : SubSystem S x E) (H : SubSystem S x Ω) (I : Chart x) {c d : ℕ} {z : E}
-    {q : Ω} (hz : z ∈ (F.twist (H.pow c)).sub I) (hq : q ∈ (H.pow d).sub I) :
-    q • z ∈ (F.twist (H.pow (c + d))).sub I := by
-  change z ∈ Submodule.span _ _ at hz
-  refine Submodule.span_induction
-    (p := fun z _ => q • z ∈ (F.twist (H.pow (c + d))).sub I) ?_ ?_ ?_ ?_ hz
-  · rintro _ ⟨p, hp, y, hy, rfl⟩
-    exact Submodule.subset_span ⟨p * q, AmpleTwistLocal.mul_mem_pow H I hp d hq, y, hy, by
-      rw [smul_smul, mul_comm]⟩
-  · rw [smul_zero]; exact Submodule.zero_mem _
-  · intro a b _ _ ha hb; rw [smul_add]; exact Submodule.add_mem _ ha hb
-  · intro a z _ hz
-    rw [Subalgebra.smul_def, smul_smul, mul_comm, ← smul_smul, ← Subalgebra.smul_def]
-    exact Submodule.smul_mem _ a hz
-
 theorem mem_sub_of_mem_secs {H : SubSystem S x Ω} {z : Ω} (hz : z ∈ H.secs) (I : Chart x) : z ∈ H.sub I :=
   (Submodule.restrictScalars_mem S _ _).mp ((Submodule.mem_iInf _).mp hz I)
 
@@ -90,9 +74,9 @@ theorem mem_secsOnZChart (F : SubSystem S x E) (H : SubSystem S x Ω) (I : Chart
       rw [smul_add, smul_smul, smul_smul, ← pow_add, ← pow_add, Nat.add_comm m n]
     rw [e1]
     refine Submodule.add_mem _ ?_ ?_
-    · have := smul_mem_twist_pow F H I hn (prod_pow_mem H I hh J.1 m)
+    · have := VeryAmpleZTwist.smul_mem_twist_pow F H I (prod_pow_mem H I hh J.1 m) hn
       rwa [← Nat.mul_add] at this
-    · have := smul_mem_twist_pow F H I hm (prod_pow_mem H I hh J.1 n)
+    · have := VeryAmpleZTwist.smul_mem_twist_pow F H I (prod_pow_mem H I hh J.1 n) hm
       rwa [← Nat.mul_add, Nat.add_comm m n] at this
   · rintro c a _ ⟨n, hn⟩
     refine ⟨n, ?_⟩
@@ -155,7 +139,7 @@ theorem secsOnZChart_mono (F : SubSystem S x E) (H : SubSystem S x Ω) (I : Char
     unfold xProd
     rw [Finset.prod_sdiff hJ]
   rw [e1]
-  have := smul_mem_twist_pow F H I hn (prod_pow_mem H I hh (J'.1 \ J.1) n)
+  have := VeryAmpleZTwist.smul_mem_twist_pow F H I (prod_pow_mem H I hh (J'.1 \ J.1) n) hn
   rwa [← Nat.add_mul, Nat.add_comm, Finset.card_sdiff_add_card_eq_card hJ] at this
 
 theorem proof : VeryAmpleZFamily.Statement := by
@@ -178,7 +162,7 @@ theorem proof : VeryAmpleZFamily.Statement := by
     have e1 : xProd J ^ (n + k) • (a : Ω) • e = ((a : Ω) * xProd J ^ k) • (xProd J ^ n • e) := by
       rw [smul_smul, smul_smul]; ring_nf
     rw [e1, Nat.mul_add]
-    exact smul_mem_twist_pow F.toSubSystem H.toSubSystem I hn hk
+    exact VeryAmpleZTwist.smul_mem_twist_pow F.toSubSystem H.toSubSystem I hk hn
   have mono : ∀ J J' : Chart h, J.1 ⊆ J'.1 → ∀ e, e ∈ secsOnZ F.toSubSystem H.toSubSystem h J →
       e ∈ secsOnZ F.toSubSystem H.toSubSystem h J' := by
     intro J J' hJ e he
@@ -216,8 +200,8 @@ theorem proof : VeryAmpleZFamily.Statement := by
             ← pow_mul, ← pow_mul, ← mul_div_assoc,
             mul_div_cancel_left₀ _ (pow_ne_zero _ (AmpleAffineGen.xProd_ne_zero J))]
         rw [e1]
-        have := smul_mem_twist_pow F.toSubSystem H.toSubSystem I (hn I)
-          (prod_pow_mem H.toSubSystem I (hh I) J'.1 (J.1.card * M - n I))
+        have := VeryAmpleZTwist.smul_mem_twist_pow F.toSubSystem H.toSubSystem I
+          (prod_pow_mem H.toSubSystem I (hh I) J'.1 (J.1.card * M - n I)) (hn I)
         have e2 : J'.1.card * n I + J'.1.card * (J.1.card * M - n I) = J.1.card * (J'.1.card * M) := by
           rw [← Nat.mul_add, Nat.add_sub_cancel' hnK]; ring
         rw [e2] at this

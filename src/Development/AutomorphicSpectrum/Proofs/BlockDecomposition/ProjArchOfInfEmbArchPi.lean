@@ -362,7 +362,7 @@ theorem exists_lift (hcm : IsCMExt F E σ) (hdet : J.det ≠ 0) (τ : EmbOver E 
   rfl
 
 theorem archMat_injective (hcm : IsCMExt F E σ) (τ : EmbOver E w) : Function.Injective (archMat σ J τ) :=
-  fun a b e => (GlobalTheory.Orb.isEmbedding_archMat J hcm τ).injective (congrArg (fun m i j => m i j) e)
+  fun _ _ e => (GlobalTheory.Orb.isEmbedding_archMat J hcm τ).injective (congrArg (fun m i j => m i j) e)
 
 
 variable (σ) in

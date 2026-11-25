@@ -166,7 +166,7 @@ def ellD (μ : Ix p q → ℚ) : ℚ := ∑ a, cwD a * μ a
 
 theorem ellD_shD (μ : Ix p q → ℚ) (a b : Ix p q) : ellD (shD μ a b) = ellD μ + cwD a - cwD b := by
   simp only [ellD, shD, Pi.add_apply, Pi.sub_apply, mul_add, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib,
-    Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem exists_hwD (hn : Nontrivial M.V) : ∃ μ, ∃ y ∈ hwSub M.act μ, y ≠ 0 := by
   classical

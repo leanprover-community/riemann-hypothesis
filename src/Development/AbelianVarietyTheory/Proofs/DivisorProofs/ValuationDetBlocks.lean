@@ -86,33 +86,6 @@ def stdDatum (μ : kˣ →* ℂˣ) (ϖ : kˣ) (c : ℕ) (x : Matrix (Fin n ⊕ F
 
 end GlobalTheory.StdLocZeta
 
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
-
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
-
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
-
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -136,12 +109,6 @@ attribute [local instance 2000] GlobalTheory.SplitWeil.matrixMeasurableSpace
 namespace GlobalTheory.LocStd
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-section Renumber
-
-variable {X a b a' b' : Type} [Fintype a] [Fintype b] [Fintype a'] [Fintype b'] [MeasurableSpace X]
-
-end Renumber
 
 section Level
 
@@ -188,22 +155,6 @@ variable {ν ϖ}
 
 
 end Pair
-
-section Main
-
-variable {a a' : ℕ} {D : Type} [Fintype D] [DecidableEq D]
-
-end Main
-
-section Place
-
-open IsDedekindDomain NumberField GlobalTheory.CMVal
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-end Place
 
 end GlobalTheory.LocStd
 

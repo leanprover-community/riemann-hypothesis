@@ -7,7 +7,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYlb5.main :
-    ∀ {k : Type} [inst : Field k] [inst_1 : ValuativeRel k] [inst_2 : TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
       {n : ℕ} (f : Module.Dual k (Matrix (Fin n) (Fin n) k)), Continuous (⇑f : Matrix (Fin n) (Fin n) k → k) := by
   intro k _ _ _ _ n f
   haveI : IsTopologicalRing k := inferInstance

@@ -79,7 +79,7 @@ theorem Hpk_apply_blk_out {k r : ℕ} {m i : Fin (2 * r + k + 1)} (hm : r ≤ m.
     rintro ⟨-, -, rfl⟩
     exact hi hm
   simp only [Formalism.QuantumDeterminants.Hpk]
-  rw [if_neg c1, if_neg c2, if_neg c3]
+  rw [ite_eq_right c1, ite_eq_right c2, ite_eq_right c3]
 
 theorem Hpk_apply_blk_row {k r : ℕ} {m l : Fin (2 * r + k + 1)} (hm : r ≤ m.val ∧ m.val < r + k) :
     Formalism.QuantumDeterminants.Hpk k r m l = if m = l then 1 else 0 := by
@@ -115,8 +115,8 @@ theorem std_out {k r : ℕ} {y : Mat k r} (hy : y ∈ Formalism.QuantumDetermina
   rw [star_star] at h4
   rw [h4]
   by_cases hij : i = j
-  · rw [if_pos hij.symm, if_pos hij, star_one]
-  · rw [if_neg (Ne.symm hij), if_neg hij, star_zero]
+  · rw [ite_eq_left hij.symm, ite_eq_left hij, star_one]
+  · rw [ite_eq_right (Ne.symm hij), ite_eq_right hij, star_zero]
 
 theorem eq_blockW {k r : ℕ} {y : Mat k r}
     (hcol : ∀ j : Fin (2 * r + k + 1), ¬(r ≤ j.val ∧ j.val < r + k) → ∀ i, y i j = if i = j then 1 else 0)
@@ -125,13 +125,13 @@ theorem eq_blockW {k r : ℕ} {y : Mat k r}
   ext i j
   by_cases hi : r ≤ i.val ∧ i.val < r + k
   · by_cases hj : r ≤ j.val ∧ j.val < r + k
-    · simp only [Formalism.MainNotions.S.blockW, dif_pos hi, dif_pos hj, blkW]
+    · simp only [Formalism.MainNotions.S.blockW, dite_eq_left hi, dite_eq_left hj, blkW]
       congr 1 <;> apply Fin.ext <;> simp <;> omega
-    · simp only [Formalism.MainNotions.S.blockW, dif_pos hi, dif_neg hj]
-      rw [hcol j hj i, if_neg]
+    · simp only [Formalism.MainNotions.S.blockW, dite_eq_left hi, dite_eq_right hj]
+      rw [hcol j hj i, ite_eq_right]
       rintro rfl
       exact hj hi
-  · simp only [Formalism.MainNotions.S.blockW, dif_neg hi]
+  · simp only [Formalism.MainNotions.S.blockW, dite_eq_right hi]
     exact hrow i hi j
 
 theorem blkW_mul {k r : ℕ} (y₁ y₂ : Mat k r)
@@ -141,7 +141,7 @@ theorem blkW_mul {k r : ℕ} (y₁ y₂ : Mat k r)
   simp only [blkW, Matrix.mul_apply]
   rw [sum_blk]
   intro l hl
-  rw [hrow l hl, if_neg, mul_zero]
+  rw [hrow l hl, ite_eq_right, mul_zero]
   intro h
   apply hl
   rw [h]
@@ -158,7 +158,7 @@ theorem blkW_unitary {k r : ℕ} {y : Mat k r} (hy : y ∈ Formalism.QuantumDete
   have hrow0 : ∀ (l i : Fin (2 * r + k + 1)), ¬(r ≤ l.val ∧ l.val < r + k) → (r ≤ i.val ∧ i.val < r + k) →
       y l i = 0 := by
     intro l i hl hi
-    rw [hrow l hl i, if_neg]
+    rw [hrow l hl i, ite_eq_right]
     rintro rfl
     exact hl hi
   have hrowH : ∀ i m : Fin (2 * r + k + 1), (r ≤ i.val ∧ i.val < r + k) →
@@ -167,12 +167,12 @@ theorem blkW_unitary {k r : ℕ} {y : Mat k r} (hy : y ∈ Formalism.QuantumDete
     rw [Matrix.mul_apply, Finset.sum_eq_single m]
     · rw [Matrix.conjTranspose_apply]
       by_cases hm : r ≤ m.val ∧ m.val < r + k
-      · rw [Hpk_apply_blk_row hm, if_pos rfl, mul_one]
+      · rw [Hpk_apply_blk_row hm, ite_eq_left rfl, mul_one]
       · rw [hrow0 m i hm hi, star_zero, zero_mul]
     · intro l _ hlm
       rw [Matrix.conjTranspose_apply]
       by_cases hl : r ≤ l.val ∧ l.val < r + k
-      · rw [Hpk_apply_blk_row hl, if_neg hlm, mul_zero]
+      · rw [Hpk_apply_blk_row hl, ite_eq_right hlm, mul_zero]
       · rw [hrow0 l i hl hi, star_zero, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ m) h

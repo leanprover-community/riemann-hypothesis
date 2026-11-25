@@ -225,7 +225,7 @@ theorem Dual.fin (h : Dual r e) (hD : IsAddFundamentalDomain r.range D μ) : μ 
   obtain ⟨ξ, hξ⟩ := hKc u
   refine le_trans ?_ (ENNReal.le_tsum (-ξ))
   have : r (-ξ) + u ∈ closure K := subset_closure (by rwa [map_neg, neg_add_eq_sub])
-  simp [Set.indicator_of_mem this, ← map_neg, -map_neg]
+  simp [Set.indicator_of_mem this, -map_neg]
 
 theorem Dual.intOn (h : Dual r e) (hD : IsAddFundamentalDomain r.range D μ) {g : G → ℂ} (hg : Continuous g)
     (hp : ∀ ξ u, g (r ξ + u) = g u) : IntegrableOn g D μ := by

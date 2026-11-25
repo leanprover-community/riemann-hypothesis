@@ -241,23 +241,23 @@ lemma Fy_const (v : Fin r → LL) :
   · subst hi
     have := cf_Fy_nat (LL := LL) (Ks := Ks) lam (fun k => PowerSeries.C (algebraMap LL Ks (v k))) 0
     rw [Nat.cast_zero] at this
-    rw [this, if_pos rfl, TensorProduct.tmul_sum]
+    rw [this, ite_eq_left rfl, TensorProduct.tmul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [PowerSeries.coeff_zero_C, TensorProduct.tmul_smul, algebraMap_smul]
-  · rw [if_neg hi]
+  · rw [ite_eq_right hi]
     rcases lt_or_gt_of_ne hi with h | h
     · exact cf_Fy_neg lam _ h
     · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le h.le
       rw [cf_Fy_nat]
       refine Finset.sum_eq_zero fun k _ => ?_
-      rw [PowerSeries.coeff_C, if_neg (by omega), zero_smul]
+      rw [PowerSeries.coeff_C, ite_eq_right (by omega), zero_smul]
 
 lemma cst_mem_wp {W : Submodule LL D} {d : D} (hd : d ∈ W) : cstD Ks d ∈ Xi Ks (Wp W) := by
   intro i
   rw [cf_cst]
   split_ifs with h
   · subst h
-    simp only [Wp, lt_irrefl, if_false]
+    simp only [Wp, lt_irrefl, ite_false]
     exact Submodule.tmul_mem_baseChange_of_mem 1 hd
   · exact Submodule.zero_mem _
 
@@ -475,7 +475,7 @@ theorem core_mp (hϖ : Irreducible ϖ) (hI : LinearIndependent LL lam)
     have h4 := h (i : ℤ)
     rw [FA, cf_Fy_nat] at h4
     simp only [St] at h4
-    rw [if_pos (by exact_mod_cast hi), Submodule.baseChange_bot, Submodule.mem_bot] at h4
+    rw [ite_eq_left (by exact_mod_cast hi), Submodule.baseChange_bot, Submodule.mem_bot] at h4
     exact coeffs_zero lam hI _ h4 k
   have h2 : ∀ l, PowerSeries.X ^ m' ∣ ρ (ex (LinearMap.id - π) y l) := by
     intro l
@@ -486,7 +486,7 @@ theorem core_mp (hϖ : Irreducible ϖ) (hI : LinearIndependent LL lam)
     have h4 : cf (FA LL lam ρ y) (i : ℤ) ∈ W.baseChange Ks := by
       have h5 := h (i : ℤ)
       simp only [St] at h5
-      rw [if_pos (show (i : ℤ) < (m' : ℤ) by exact_mod_cast hi)] at h5
+      rw [ite_eq_left (show (i : ℤ) < (m' : ℤ) by exact_mod_cast hi)] at h5
       split_ifs at h5
       · rw [Submodule.baseChange_bot, Submodule.mem_bot] at h5
         rw [h5]
@@ -771,13 +771,6 @@ theorem ppval_of_le {O : Type} [CommRing O] (u : Oˣ) (ℓ E kap : ℕ) (JS JS' 
   obtain ⟨ε, h1⟩ := ppevalVal u ℓ E JS hp hV
   obtain ⟨ε', h2⟩ := ppevalVal u ℓ E JS' hp hV
   exact ⟨kapExp ℓ E JS + kapExp ℓ E JS', ε * ε', hk, by rw [h1, h2, Units.val_mul, pow_add]; ring⟩
-
-section free
-variable {O : Type} [CommRing O]
-
-variable {B : Base O} {n : ℕ} {V₀ : Type} [AddCommGroup V₀] [Module (PowerSeries O) V₀]
-
-end free
 
 end PolynomialValuationLemmas
 

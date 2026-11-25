@@ -44,7 +44,7 @@ theorem evY_thv (hC : CjEx) {w : Pl E} (hw : ¬ IsSplitAt w) (a b : ℕ)
   have h : ∀ n (g : GL (Fin n) (Av (w.under (𝓞 (maximalRealSubfield E))))),
       GeneralLinearGroup.map (evR hw).toRingHom (thetaGL n (cjv _) g) =
         thL n w (GeneralLinearGroup.map (evR hw).toRingHom g) := fun n g => by
-    rw [thL, if_neg hw]
+    rw [thL, ite_eq_right hw]
     exact GlobalTheory.ThetaPull.map_thetaGL _ _ _ (cjv_apply hC hw) g
   exact Prod.ext (h a y.1) (h b y.2)
 

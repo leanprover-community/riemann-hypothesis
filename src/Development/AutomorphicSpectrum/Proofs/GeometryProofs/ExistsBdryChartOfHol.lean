@@ -93,7 +93,7 @@ theorem exists_bdryChart_of_hol : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   let ψ : (Fin n → ℂ) → (Γ(Z, U) →+* ℂ) := fun z =>
     if h : ⊤ ≤ y ((ρ : ℂ) • z) ⁻¹ᵁ U then evalHom _ U h else evalHom _ U h0
   have hψ : ∀ z ∈ Metric.ball (0 : Fin n → ℂ) 1, spMap (ψ z) ≫ hU.fromSpec = y ((ρ : ℂ) • z) := fun z hz => by
-    simp only [ψ, dif_pos (hB (hin z hz)).2]
+    simp only [ψ, dite_eq_left (hB (hin z hz)).2]
     exact spMap_evalHom _ _ _ _
   obtain ⟨tV, ⟨q⟩⟩ := exists_sab (pullback.snd hU.fromSpec j₀) To
   obtain ⟨m₂, -⟩ := GlobalTheory.ObjMaps.exists_sab_comp n₂ q
@@ -116,7 +116,7 @@ theorem exists_bdryChart_of_hol : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     hU.fromSpec, pullback.snd _ _, hρ, hρ1, inferInstance, ⟨m⟩, pullback.condition.symm, rfl, hψ⟩
   refine (((hy U r).2.comp (f := fun z => (ρ : ℂ) • z) (by fun_prop) (fun z hz => hB (hin z hz)))).congr
     fun z hz => ?_
-  simp only [ψ, Function.comp, valAt', dif_pos (hB (hin z hz)).2]
+  simp only [ψ, Function.comp, valAt', dite_eq_left (hB (hin z hz)).2]
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Flat

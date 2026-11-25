@@ -33,11 +33,11 @@ theorem coeff_glAct_diag (LL : Letters N) (j : ℕ) (c : Fin r) (x : MvPolynomia
   rw [map_sum, coeff_sum]
   simp only [glAct_diag_monomial, MvPolynomial.coeff_smul, coeff_monomial, smul_eq_mul]
   rw [Finset.sum_eq_single m]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro b _ hb
-    rw [if_neg hb, mul_zero]
+    rw [ite_eq_right hb, mul_zero]
   · intro hm
-    rw [if_pos rfl, notMem_support_iff.mp hm, mul_zero]
+    rw [ite_eq_left rfl, notMem_support_iff.mp hm, mul_zero]
 
 theorem wtSpC_iff_eig (LL : Letters N) (j : ℕ) (Cs : Finset (Fin r)) (la : Fin r → ℤ)
     (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :

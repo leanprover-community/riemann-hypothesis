@@ -6,47 +6,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalId
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameDualUnipotentGroupActsUnitriangularOnto
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
@@ -330,7 +291,7 @@ lemma e_mem_LamStd (L : Submodule M.L.O (H.Wb Fr.f)) (a : Fin r) : Fr.f a.castSu
   · rw [FrameD.e, Fr.h_iso _ _ (Or.inl (Fin.castSucc_ne_last a))]; exact M.L.O.zero_mem
   · have h2 : ∀ b, H.h (Fr.f a.castSucc) (Fr.e b) = 0 := fun b => Fr.h_iso _ _ (Or.inl (Fin.castSucc_ne_last a))
     simp only [FrameD.prF, Fr.h_es, h2, zero_smul, Finset.sum_const_zero, sub_zero, ite_smul, one_smul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     simp [FrameD.e]
 
 end GlobalTheory.LocOver.ZStep
@@ -492,7 +453,7 @@ lemma e_gen (a : Fin r) : Fr.e a ∈ Gen Fr L := by
     · exact M.L.O.zero_mem
   · rw [h2]; exact M.L.O.zero_mem
   · simp only [FrameD.prF, h1, h2, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true, Finset.sum_const_zero, sub_self, ZeroMemClass.coe_zero]
+      ite_true, Finset.sum_const_zero, sub_self, ZeroMemClass.coe_zero]
   · rw [map_zero]; exact L.zero_mem
 
 lemma es_gen (k : Fin r) : Fr.es k ∈ Gen Fr L := by
@@ -506,7 +467,7 @@ lemma es_gen (k : Fin r) : Fr.es k ∈ Gen Fr L := by
     · exact M.L.O.one_mem
     · exact M.L.O.zero_mem
   · simp only [FrameD.prF, h1, h2, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true, Finset.sum_const_zero, sub_self, sub_zero, ZeroMemClass.coe_zero]
+      ite_true, Finset.sum_const_zero, sub_self, sub_zero, ZeroMemClass.coe_zero]
   · rw [map_zero]; exact L.zero_mem
 
 lemma comb_mem (β : Fin r → E) (hβ : ∀ a, β a ∈ M.L.O) :
@@ -590,19 +551,19 @@ lemma levi_lam (u : Fin r → V) (hu : ∀ c, u c ∈ Fr.Fj c.val) (hul : ∀ c,
         have hadd : eichF H (u kk) (Fr.es kk) 0 (Fr.f c.castSucc + u c) =
             eichF H (u kk) (Fr.es kk) 0 (Fr.f c.castSucc) + eichF H (u kk) (Fr.es kk) 0 (u c) :=
           (eichL H (u kk) (Fr.es kk) 0).map_add _ _
-        have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, if_neg hne']
-        rw [if_pos hck, if_pos (by omega), hadd, hfix]
+        have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, ite_eq_right hne']
+        rw [ite_eq_left hck, ite_eq_left (by omega), hadd, hfix]
         simp [eichF, hcx, hes]
-      · rw [if_neg hck]
+      · rw [ite_eq_right hck]
         by_cases hce : c = kk
         · subst hce
-          have h1 : H.h (Fr.f kk.castSucc) (Fr.es kk) = 1 := by rw [Fr.h_es, if_pos rfl]
+          have h1 : H.h (Fr.f kk.castSucc) (Fr.es kk) = 1 := by rw [Fr.h_es, ite_eq_left rfl]
           have : kk.val < k + 1 := by simp [hkk]
-          rw [if_pos this]
+          rw [ite_eq_left this]
           simp [eichF, hcx, h1]
         · have : ¬ c.val < k + 1 := fun h => hce (Fin.ext (by simp [hkk]; omega))
-          have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, if_neg hce]
-          rw [if_neg this]
+          have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, ite_eq_right hce]
+          rw [ite_eq_right this]
           simp [eichF, hcx, hes]
     · rw [LinearEquiv.mul_apply, hnz, hg, eichE_apply]
       exact eich_fix H _ _ _ _ (z_es Fr kk) (z_X Fr _ hx)
@@ -642,7 +603,7 @@ theorem levi_integral : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSp
     exact M.L.O.sub_mem ((comb_mem Fr L _ (fun a => hAO _ _)).2 v hv) (hv.2.1 c)
   obtain ⟨n, hn, hne, hnz, hnl⟩ := levi_lam Fr L u hu hul huh r le_rfl
   refine ⟨n, by rw [N_eq]; exact hn, fun c => ?_, hnz, ?_⟩
-  · rw [hne c, if_pos c.isLt]
+  · rw [hne c, ite_eq_left c.isLt]
     exact add_sub_cancel _ _
   · apply le_antisymm
     · rintro _ ⟨v, hv, rfl⟩

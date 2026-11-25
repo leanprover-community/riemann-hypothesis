@@ -1,52 +1,8 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsWeightedHomogeneousOfMemOrbitSpan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -170,14 +126,14 @@ theorem isHarmonic_of_mem_adjoin_formSet {ε : T → ι → κ → R} {φ : T �
   refine isHarmonic_of_mem_adjoin ?_ ?_ hP
   · rintro _ (⟨t, a, c, rfl⟩ | ⟨t, a, c, rfl⟩) <;> exact isHarmonic_rowForm _ _ _
   · rintro t a b _ (⟨t₁, a₁, c₁, rfl⟩ | ⟨t₁, a₁, c₁, rfl⟩) _ (⟨t₂, a₂, c₂, rfl⟩ | ⟨t₂, a₂, c₂, rfl⟩)
-    · rw [xForm, xForm, cross_rowForm, if_neg (by simp)]
+    · rw [xForm, xForm, cross_rowForm, ite_eq_right (by simp)]
     · rw [xForm, yForm, cross_rowForm]
       split_ifs with e
       · obtain ⟨⟨rfl, -⟩, rfl, -⟩ := e
         rw [h, map_zero]
       · rfl
-    · rw [yForm, xForm, cross_rowForm, if_neg (by simp)]
-    · rw [yForm, yForm, cross_rowForm, if_neg (by simp)]
+    · rw [yForm, xForm, cross_rowForm, ite_eq_right (by simp)]
+    · rw [yForm, yForm, cross_rowForm, ite_eq_right (by simp)]
 
 theorem det_mem_of_forall_mem {A σ m : Type*} [CommRing A] [SetLike σ A] [SubringClass σ A]
     [Fintype m] [DecidableEq m] (s : σ) (M : Matrix m m A) (h : ∀ i j, M i j ∈ s) : M.det ∈ s := by
@@ -200,12 +156,6 @@ theorem isHarmonic_minorProd [Fintype T] (c : T → Fin p → ℕ) (c' : T → F
       (minorProd_mem_closure c c' ε φ))
 
 end Perp
-
-section Columns
-
-variable [Fintype κ]
-
-end Columns
 
 noncomputable def blockPoly (R : Type*) [CommRing R] [Fintype T] (c : T → Fin p → ℕ)
     (c' : T → Fin q → ℕ) (col : T → (i : Fin p) → Fin (i.val + 1) → κ)
@@ -243,7 +193,7 @@ theorem pderiv_xVar_colSubst (A : T → Matrix κ κ' R) (B : T → Matrix κ' �
         · refine (Finset.sum_eq_zero fun k _ => ?_).symm
           rw [pderiv_X_of_ne, map_zero, smul_zero]
           intro e'; simp only [Prod.mk.injEq] at e'; exact e ⟨e'.1, e'.2.1⟩
-      · rw [colSubst_X_yVar, yForm, pderiv_rowForm, if_neg (by simp)]
+      · rw [colSubst_X_yVar, yForm, pderiv_rowForm, ite_eq_right (by simp)]
         refine (Finset.sum_eq_zero fun k _ => ?_).symm
         rw [pderiv_X_of_ne (by simp), map_zero, smul_zero]
     simp only [map_mul, pderiv_mul, map_add (f := _), hP, this, smul_add, Finset.sum_add_distrib,
@@ -261,7 +211,7 @@ theorem pderiv_yVar_colSubst (A : T → Matrix κ κ' R) (B : T → Matrix κ' �
     have : pderiv (yVar t b l) (colSubst A B (X v : Poly R T p q κ)) =
         ∑ k : κ, B t l k • colSubst A B (pderiv (yVar t b k) (X v : Poly R T p q κ)) := by
       obtain ⟨t', a' | b', k'⟩ := v
-      · rw [colSubst_X_xVar, xForm, pderiv_rowForm, if_neg (by simp)]
+      · rw [colSubst_X_xVar, xForm, pderiv_rowForm, ite_eq_right (by simp)]
         refine (Finset.sum_eq_zero fun k _ => ?_).symm
         rw [pderiv_X_of_ne (by simp), map_zero, smul_zero]
       · rw [colSubst_X_yVar, yForm, pderiv_rowForm]

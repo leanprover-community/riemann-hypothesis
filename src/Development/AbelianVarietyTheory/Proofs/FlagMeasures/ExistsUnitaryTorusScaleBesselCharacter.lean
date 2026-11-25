@@ -3,50 +3,7 @@ module
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.TorusConjugacy
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.FramesTor
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.OnePlaceKF
 
 @[expose] public section
@@ -76,12 +33,12 @@ theorem dS_eI (l : ℂ) (a : Fin r) : dS k r l (eI k r a) = l ^ (r - a.val) := b
 
 theorem dS_mid (l : ℂ) (i : Fin (2 * r + k + 1)) (h : ¬ (i.val < r ∨ r + k < i.val)) : dS k r l i = 1 := by
   unfold dS
-  rw [if_neg (by omega), if_neg (by omega)]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem dS_pair {l : ℂ} (hl : l ≠ 0) (i j : Fin (2 * r + k + 1)) (hi : i.val < r) (hij : i.val + j.val = 2 * r + k) :
     star (dS k r l i) * dS k r l j = 1 := by
   unfold dS
-  rw [if_pos hi, if_neg (by omega), if_pos (by omega)]
+  rw [ite_eq_left hi, ite_eq_right (by omega), ite_eq_left (by omega)]
   have : 2 * r + k - j.val = i.val := by omega
   rw [this]
   exact mul_inv_cancel₀ (star_ne_zero.2 (pow_ne_zero _ hl))
@@ -121,7 +78,7 @@ theorem dS_Hpk {l : ℂ} (hl : l ≠ 0) (i j : Fin (2 * r + k + 1)) (h : Hpk k r
   · rw [← h3.2.2, dS_mid l i (by omega)]; simp
   exfalso
   unfold Hpk at h
-  rw [if_neg h1, if_neg h2, if_neg h3] at h
+  rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3] at h
   exact h rfl
 
 theorem conj_mem_N (d : Fin (2 * r + k + 1) → ℂ) (hd : ∀ i, d i ≠ 0)
@@ -177,12 +134,12 @@ theorem Hpk_outer (i j p : Fin (2 * r + k + 1)) (hj : j.val < r ∨ r + k < j.va
   unfold Hpk
   by_cases e : p = i
   · subst e
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     by_cases h1 : j.val < r
-    · rw [if_pos ⟨h1, by omega⟩]
-    · rw [if_neg (by omega), if_pos (by omega)]
+    · rw [ite_eq_left ⟨h1, by omega⟩]
+    · rw [ite_eq_right (by omega), ite_eq_left (by omega)]
   · have e' : p.val ≠ i.val := fun x => e (Fin.ext x)
-    rw [if_neg e, if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right e, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem UW_row {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) (i j : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :

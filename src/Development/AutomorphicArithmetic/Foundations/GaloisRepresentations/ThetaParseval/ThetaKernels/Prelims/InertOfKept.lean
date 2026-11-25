@@ -64,11 +64,8 @@ section FF
 
 variable {k : Type} [Field k] [Finite k] {q : ℕ} [Fact q.Prime] [CharP k q]
 
-private theorem two_ne (hq : q ≠ 2) : (2 : k) ≠ 0 := by
-  intro h
-  have h1 : ((2 : ℕ) : k) = 0 := by exact_mod_cast h
-  have h2 := (CharP.cast_eq_zero_iff k q 2).1 h1
-  exact hq ((Nat.prime_dvd_prime_iff_eq Fact.out Nat.prime_two).1 h2)
+private theorem two_ne (hq : q ≠ 2) : (2 : k) ≠ 0 :=
+  Ring.two_ne_zero (by rwa [ringChar.eq k q])
 
 private theorem pow_q_eq (hq : q ≠ 2) {s a : ℤ} (hs : (a : ZMod q) ^ (q / 2) = (s : ZMod q)) {y : k}
     (hy : y ^ 2 = (a : k)) : y ^ q = (s : k) * y := by
@@ -320,14 +317,7 @@ private theorem not_dvd_of {a : ℕ} (hsq : Squarefree a) {y : 𝓞 E} (hy : y ^
 private theorem charP_res (P : Ideal (𝓞 E)) [hP : P.IsMaximal] [Finite (𝓞 E ⧸ P)] {q : ℕ} (hq : q.Prime)
     (hqP : (q : 𝓞 E) ∈ P) : letI := Ideal.Quotient.field P; CharP (𝓞 E ⧸ P) q := by
   letI := Ideal.Quotient.field P
-  obtain ⟨p, hp⟩ := CharP.exists (𝓞 E ⧸ P)
-  have hpp := CharP.char_is_prime (𝓞 E ⧸ P) p
-  have h0 : ((q : ℕ) : 𝓞 E ⧸ P) = 0 := by
-    have := Ideal.Quotient.eq_zero_iff_mem.2 hqP
-    simpa using this
-  have h1 := (CharP.cast_eq_zero_iff _ p q).1 h0
-  have h2 := (Nat.prime_dvd_prime_iff_eq hpp hq).1 h1
-  exact h2 ▸ hp
+  exact (CharP.charP_iff_prime_eq_zero hq).2 (by simpa using Ideal.Quotient.eq_zero_iff_mem.2 hqP)
 
 private theorem res_card (P : Ideal (𝓞 E)) [hP : P.IsMaximal] [Finite (𝓞 E ⧸ P)] {q : ℕ} (hq : q.Prime)
     (hqP : (q : 𝓞 E) ∈ P) : ∃ m, Nat.card (𝓞 E ⧸ P) = q ^ m := by
@@ -460,7 +450,7 @@ theorem normK : NormK := by
   have hl : ofPrimeValues u (q ^ m) = u q ^ m := by rw [map_pow, ofPrimeValues_prime u hq]
   by_cases hS : S q
   · have hu2 : u q ^ 2 = -(q : ℂ) := by
-      simp only [u, if_pos hS, mul_pow, hsqr, Complex.I_sq]
+      simp only [u, ite_eq_left hS, mul_pow, hsqr, Complex.I_sq]
       ring
     obtain ⟨P₀, hP₀, hf₀, hq₀, hk₀⟩ := hS
     obtain ⟨m₀, hc₀⟩ := res_card P₀ hq hq₀
@@ -472,7 +462,7 @@ theorem normK : NormK := by
       rfl
     · obtain ⟨-, -, -, j, hj, hm⟩ := kept_deg hG hsq hs' hy P hq hqP hc hk
       rw [hc, hl, ← sqrt_pow_nat, hm, pow_mul, pow_mul, hu2, hsqr, hj.neg_pow]
-  · have hu1 : u q = (Real.sqrt q : ℂ) := by simp only [u, if_neg hS, mul_one]
+  · have hu1 : u q = (Real.sqrt q : ℂ) := by simp only [u, ite_eq_right hS, mul_one]
     rw [hc, hl, hu1, sqrt_pow_nat]
     exact ⟨hsqr _, fun hk => absurd ⟨P, hP, hfin, hqP, hk⟩ hS⟩
 

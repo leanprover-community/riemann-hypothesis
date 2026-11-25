@@ -5,45 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasureTo
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ClassSumIntegral
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryGroupAdelicClassesViaFiniteAdelicPart
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -267,7 +228,7 @@ theorem sum_pi_embed {ι : Type} [Fintype ι] [DecidableEq ι] {A C : ι → Typ
   by_cases h : ∀ u, ∃ a, j u a = γ u
   · choose a ha using h
     exact absurd (Finset.mem_image.2 ⟨a, Finset.mem_univ _, funext ha⟩) hγ
-  · push_neg at h
+  · push Not at h
     obtain ⟨u, hu⟩ := h
     rw [Finset.prod_eq_zero (Finset.mem_univ u) (hw u _ hu), zero_mul]
 
@@ -297,7 +258,7 @@ theorem sum_pi_regroup {ι : Type} [Fintype ι] [DecidableEq ι] {X A B : ι →
           fun c => funext fun u => Function.apply_update pt γ v c u
         simp only [hupd, Fintype.sum_sum_type]
         have := hP v _ (hf v fun u => pt u (γ u))
-        simp only [W, pt, Sum.elim_inl, Sum.elim_inr, hv, if_false, Finset.mem_insert, true_or, if_true, zero_mul,
+        simp only [W, pt, Sum.elim_inl, Sum.elim_inr, hv, ite_false, Finset.mem_insert, true_or, ite_true, zero_mul,
           Finset.sum_const_zero, add_zero, zero_add]
         exact this
   have h0 : T ∅ = ∑ α : (∀ v, A v), (∏ v, wa v (α v)) * f (fun v => pa v (α v)) := by
@@ -396,11 +357,5 @@ theorem finCl_regroup_prod {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype
         simp only [e2, Finset.mul_sum]
         rw [Finset.sum_comm]
         exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
-
-end GlobalTheory.ClassRegroup
-
-namespace GlobalTheory.ClassRegroup
-
-variable {D : D7}
 
 end GlobalTheory.ClassRegroup

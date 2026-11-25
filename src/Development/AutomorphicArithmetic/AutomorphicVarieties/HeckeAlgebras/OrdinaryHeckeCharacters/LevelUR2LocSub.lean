@@ -47,7 +47,7 @@ theorem UpperTheory.Reformulated.B.Qi4.extendPt :
     exact ha
   let ybar : (Λ ⧸ Q.comap (algebraMap Λ T)) →+* K := Ideal.Quotient.lift _ (y : Λ →+* K) hker
   have hinj : Function.Injective ybar := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective a
     rw [Ideal.Quotient.eq_zero_iff_mem, hQc]
@@ -199,7 +199,7 @@ private theorem ls_core {A T K ι ι' : Type} [CommRing A] [IsLocalRing A] [IsNo
         simpa using this
       · rwa [hfi.pow_succ_eq] at hk
     rw [nilradical_eq_sInf, Ideal.mem_sInf] at hnil
-    push_neg at hnil
+    push Not at hnil
     obtain ⟨P, hP, hfP⟩ := hnil
     haveI : P.IsPrime := hP
     obtain ⟨Q, hQ, hQP⟩ := Ideal.exists_minimalPrimes_le (I := ⊥) (J := P) bot_le
@@ -213,9 +213,9 @@ private theorem ls_core {A T K ι ι' : Type} [CommRing A] [IsLocalRing A] [IsNo
       rw [mem_nonZeroDivisors_iff, not_and_or] at hnz
       have hex : ∃ y : T, algebraMap A T b * y = 0 ∧ y ≠ 0 := by
         rcases hnz with h | h
-        · push_neg at h
+        · push Not at h
           exact h
-        · push_neg at h
+        · push Not at h
           obtain ⟨y, hy, hy0⟩ := h
           exact ⟨y, by rw [mul_comm]; exact hy, hy0⟩
       obtain ⟨y, hy, hy0⟩ := hex
@@ -273,12 +273,6 @@ private theorem ls_core {A T K ι ι' : Type} [CommRing A] [IsLocalRing A] [IsNo
   have : 1 - e = (1 - e0') * (1 - e) + f := by rw [hf]; ring
   rw [this, hf0, add_zero]
   exact Ideal.mul_mem_right _ _ h1e0
-
-private theorem ls_restr_pow {A M : Type} [CommRing A] [AddCommGroup M] [Module A M] {Y : Submodule A M}
-    {t : Module.End A Y} {φ : Module.End A M} (h : Restr t φ) (n : ℕ) : Restr (t ^ n) (φ ^ n) := by
-  induction n with
-  | zero => intro y; simp
-  | succ n ih => intro y; rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ih, h]
 
 private theorem ls_mem {A M ι : Type} [CommRing A] [IsLocalRing A] [AddCommGroup M] [Module A M]
     {Y : Submodule A M} {op : ι → Module.End A M} {a : ι → A} (u : ι → Module.End A Y)

@@ -25,7 +25,6 @@ private noncomputable def actOp (V : Type) [AddCommGroup V] [Module ℂ V] (d : 
 private theorem actOp_apply (V : Type) [AddCommGroup V] [Module ℂ V] (d : ℕ) (N : Matrix (Fin d) (Fin d) ℂ) :
     actOp V d N = MulOpposite.op (actAlg V d Nᵀ) := rfl
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem UpperTheory.V.AlgRepEndIrreducible.tensB :
     ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (π : CuspSub E a) (Ξ : AlgRep E a), IsLieHom (A := Module.End ℂ (π.V ⊗[ℂ] (Fin Ξ.d → ℂ))) (lieB π Ξ) ∧
       (∀ (k : Kinf E a) (X : Matrix (Fin a) (Fin a) (Cinf E)), tensorK π Ξ k * lieB π Ξ (toL X) = lieB π Ξ (toL (k.1 * X * star k.1)) * tensorK π Ξ k) ∧

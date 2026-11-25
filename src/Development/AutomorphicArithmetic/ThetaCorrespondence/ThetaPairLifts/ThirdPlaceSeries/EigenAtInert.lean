@@ -113,7 +113,7 @@ theorem GlobalTheory.EigInert.eigen_at_inert_alt : GlobalTheory.Published.Automo
       by_cases hP' : D.naut.ptV i P' = some x
       · rw [iSup_pos (show P' ∈ {P | D.naut.ptV i P = some x} from hP')] at hg'
         have hex : ∃ P0 : D.naut.AV i, D.naut.ptV i P0 = some x := ⟨P', hP'⟩
-        have hc : c = Formalism.UG.SatU Dv.ϖ (Formalism.UG.qV _ v) h0 (_root_.GlobalTheory.EigInert.exists_satAt_of_nonsplit_over hL D P i hex.choose v Pp hov hns Dv).choose := dif_pos hex
+        have hc : c = Formalism.UG.SatU Dv.ϖ (Formalism.UG.qV _ v) h0 (_root_.GlobalTheory.EigInert.exists_satAt_of_nonsplit_over hL D P i hex.choose v Pp hov hns Dv).choose := dite_eq_left hex
         obtain ⟨α', hα', hsv'⟩ := _root_.GlobalTheory.EigInert.exists_satAt_of_nonsplit_over hL D P i P' v Pp hov hns Dv
         have hsv0 := (_root_.GlobalTheory.EigInert.exists_satAt_of_nonsplit_over hL D P i hex.choose v Pp hov hns Dv).choose_spec.2
         have hub : ubc D.R.nV (D.naut.satV i P' Pp) = ubc D.R.nV (D.naut.satV i hex.choose Pp) := by

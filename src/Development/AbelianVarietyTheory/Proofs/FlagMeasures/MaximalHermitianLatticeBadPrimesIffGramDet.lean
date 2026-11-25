@@ -4,55 +4,11 @@ public import Formalism.HermitianLattices.StatementMass
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MaximalHermitianLatticeLocalStructureDiscriminan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 import Mathlib.Tactic.Linter.HaveILetI
@@ -589,7 +545,7 @@ theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommG
         rwa [map_sub, map_smul, map_smul, Finsupp.sub_apply, Finsupp.smul_apply, Finsupp.smul_apply,
           e.repr_self, Finsupp.single_apply, smul_eq_mul, smul_eq_mul] at this
       have h1 := hco i
-      rw [if_pos rfl, mul_one] at h1
+      rw [ite_eq_left rfl, mul_one] at h1
       have h2 : 1 < v (h (e i) (e i))⁻¹ := by
         rw [map_inv₀, one_lt_inv₀ (zero_lt_iff.2 (hv0 i))]
         exact lt_of_le_of_ne (hd1 i) hi
@@ -613,7 +569,7 @@ theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommG
       refine ⟨by rw [hn3, WithZero.exp_inj]; omega, by rw [hn2, ← WithZero.exp_zero, WithZero.exp_inj]; omega,
         fun l hl hl1 => ?_⟩
       have h5 := hco l
-      rw [if_neg hl.symm, mul_zero, zero_sub, Valuation.map_neg, map_mul, map_mul, map_inv₀, hxx, hl1, mul_one,
+      rw [ite_eq_right hl.symm, mul_zero, zero_sub, Valuation.map_neg, map_mul, map_mul, map_inv₀, hxx, hl1, mul_one,
         hn1, ← WithZero.exp_neg, ← WithZero.exp_add, ← WithZero.exp_zero, WithZero.exp_le_exp] at h5
       omega
     obtain ⟨i, hi⟩ := not_forall.1 (mt hU.2 hb.2)

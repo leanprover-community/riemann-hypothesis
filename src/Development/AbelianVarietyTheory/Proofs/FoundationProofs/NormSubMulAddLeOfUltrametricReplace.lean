@@ -180,8 +180,6 @@ namespace GlobalTheory.KZGlobAsm
 theorem norm_le_one_of_mem {l : ℕ} [Fact l.Prime] (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 :=
   _root_.UpperTheory.Reformulated.B.Rc8.norm_le_one_of_mem c hx
 
-alias inv_pow_val_mem := _root_.GlobalTheory.PadicInversePower.inv_pow_mem
-
 theorem eta_compat (l : ℕ) [Fact l.Prime] (c : Coef l) (e : ℕ) (χ : ∀ r : ℕ, (ZMod (l ^ r))ˣ → Qbar l)
     (hχ : ∀ r x, χ r x ∈ c.O)
     (hχc : ∀ r (x : (ZMod (l ^ (r + 1)))ˣ), ‖χ (r + 1) x - χ r ((Units.map (ZMod.castHom (pow_dvd_pow l (Nat.le_succ r)) (ZMod (l ^ r))).toMonoidHom) x)‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖)
@@ -209,14 +207,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open scoped Matrix
 
 namespace GlobalTheory.LimCoc
-
-theorem norm_l_lt_one (l : ℕ) [Fact l.Prime] : ‖((l : ℕ) : Qbar l)‖ < 1 := by
-  have h : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) (l : ℚ_[l]) := by
-    rw [map_natCast]
-  rw [h]
-  have := PadicAlgCl.norm_extends l (l : ℚ_[l])
-  rw [this, Padic.norm_p]
-  exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
 
 theorem ultra3 {K : Type*} [NormedField K] [IsUltrametricDist K] (a b c e : K) (ε : ℝ)
     (ha : ‖a‖ ≤ ε) (hb : ‖b‖ ≤ ε) (hc : ‖c‖ ≤ ε) (he : ‖e‖ ≤ ε) :
@@ -252,7 +242,7 @@ theorem limit_cocycle : ∀ (l : ℕ) [Fact l.Prime] {Γ : Type} [Group Γ] (M :
     rw [hdecomp]
     exact ultra3 _ _ _ _ _ (hy r (s * t) i) (hz r s t i) (hy r s i)
       (mulVec_small (M s) (y t - z r t) _ (hM s) (fun j => by simpa using hy r t j) i)
-  have hlim := tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) (norm_l_lt_one l)
+  have hlim := tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) (GlobalTheory.norm_natCast_prime_qbar l)
   exact le_antisymm (ge_of_tendsto' hlim hbound) (norm_nonneg _)
 
 end GlobalTheory.LimCoc
@@ -303,7 +293,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open scoped Matrix
 
 namespace GlobalTheory
-
 
 open Polynomial in
 theorem coefO_dvd_pow_l {l : ℕ} [Fact l.Prime] (c : Coef l) {x : Qbar l} (hx : x ∈ c.O)
@@ -386,7 +375,7 @@ theorem rat_unram_to_int_unram : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field
         exact mul_mem hu (sub_mem (mul_mem (hAO _ _ _) hQ) (mul_mem (hAO _ _ _) hP))
     · intro s₀ hs₀
       rw [hYv s₀ hs₀, smul_sub, Matrix.mulVec_smul]
-  · push_neg at h2
+  · push Not at h2
     by_cases h1 : ∃ s ∈ Ine (F := ℚ) B, ∃ i j, A s i j ≠ 0
     · obtain ⟨s, hs, i, j, hα⟩ := h1
       obtain ⟨k, u, hu, hαu⟩ := coefO_dvd_pow_l c (hAO s i j) hα
@@ -407,7 +396,7 @@ theorem rat_unram_to_int_unram : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field
         · simp only [Fin.mk_one, Fin.isValue] at hαu ⊢
           simp
           linear_combination (-(A s' i' 0 * v 0 + A s' i' 1 * v 1)) * hαu - u * v 0 * hdet
-    · push_neg at h1
+    · push Not at h1
       refine ⟨0, fun Y v _ hYv => ⟨0, fun _ => zero_mem _, fun s hs => ?_⟩⟩
       ext i
       rw [Pi.smul_apply, hYv s hs, hmv, hmv]
@@ -555,19 +544,6 @@ namespace GlobalTheory.KA.TameLim
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem norm_le_one_of_mem (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 := by
-  haveI : Module.Finite ℤ_[l] c.O := c.fin
-  have hi : IsIntegral ℤ_[l] x := by
-    have h := (isIntegral_algHom_iff (c.O.val.restrictScalars ℤ_[l]) Subtype.val_injective).2
-      (Algebra.IsIntegral.isIntegral (⟨x, hx⟩ : c.O))
-    simpa using h
-  have hq : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-  change spectralValue (minpoly ℚ_[l] x) ≤ 1
-  rw [spectralValue_le_one_iff (minpoly.monic hq)]
-  intro k
-  rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hi, Polynomial.coeff_map]
-  exact PadicInt.norm_le_one _
-
 theorem inv_pow_mem (c : Coef l) (e k : ℕ) (h : k = 0 ∨ ¬ l ∣ k) : (((k : ℕ) : Qbar l) ^ e)⁻¹ ∈ c.O := by
   rcases h with rfl | h
   · rcases Nat.eq_zero_or_pos e with rfl | he
@@ -637,7 +613,7 @@ theorem core (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W
     simp only [norm_pow]; exact tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) hq
   have hzero : ∀ z : Qbar l, (∀ r, ‖z‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖) → z = 0 := fun z hz =>
     norm_le_zero_iff.mp (ge_of_tendsto' ht0 hz)
-  have n1 : ∀ {x : Qbar l}, x ∈ c.O → ‖x‖ ≤ 1 := fun hx => norm_le_one_of_mem c hx
+  have n1 : ∀ {x : Qbar l}, x ∈ c.O → ‖x‖ ≤ 1 := fun hx => GlobalTheory.InertCoh.norm_le_one_of_mem_O c hx
   have hMle : ∀ s i j, ‖mat W s i j‖ ≤ 1 := fun s i j => n1 (hWO s i j)
   have hρle : ∀ s i j, ‖ρ s i j‖ ≤ 1 := fun s i j => n1 (hρO s i j)
 
@@ -766,8 +742,8 @@ theorem tame_limit : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebr
     hWO hWρ hρO (fun r x => Subalgebra.mul_mem _ (TameLim.inv_pow_mem c e _ (TameLim.val_unit r x)) (hχO r x))
     (fun r x => ?_) hηa hSh hcont hYO hnc hb hrel
   exact TameLim.mul_sub_mul_le _ _ _ _ _
-    (TameLim.norm_le_one_of_mem c (TameLim.inv_pow_mem c e _ (TameLim.val_unit (r + 1) x)))
-    (TameLim.norm_le_one_of_mem c (hχO r _)) (GlobalTheory.PowCong.powCong l e r x).1 (hχc r x)
+    (GlobalTheory.InertCoh.norm_le_one_of_mem_O c (TameLim.inv_pow_mem c e _ (TameLim.val_unit (r + 1) x)))
+    (GlobalTheory.InertCoh.norm_le_one_of_mem_O c (hχO r _)) (GlobalTheory.PowCong.powCong l e r x).1 (hχc r x)
 
 end GlobalTheory.KA
 end -- clump:auto
@@ -1453,7 +1429,6 @@ noncomputable section
 
 namespace GlobalTheory.KZ
 
-
 open GlobalTheory.KZGlobAsm in
 theorem glob_of_shapiro_system_noLayer (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]
     (W : R2 Ω l) (c : Coef l) (A : ValuationSubring Ω) (e : ℕ) (χ : ∀ r : ℕ, (ZMod (l ^ r))ˣ → Qbar l)
@@ -1470,7 +1445,7 @@ theorem glob_of_shapiro_system_noLayer (l : ℕ) [Fact l.Prime] (Ω : Type) [Fie
       (∀ r s i, ‖y s i - spec (fun x : (ZMod (l ^ r))ˣ => ((((x : ZMod (l ^ r)).val : ℕ) : Qbar l) ^ e)⁻¹ * χ r x) (Y r) s i‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖) ∧
       SpLink A e χ (fun r s x => Y r s x 1) y := by
   set η : ∀ r : ℕ, (ZMod (l ^ r))ˣ → Qbar l := fun r x => ((((x : ZMod (l ^ r)).val : ℕ) : Qbar l) ^ e)⁻¹ * χ r x with hη
-  have hηO : ∀ r x, η r x ∈ c.O := fun r x => c.O.mul_mem (inv_pow_val_mem l c e r x) (hχO r x)
+  have hηO : ∀ r x, η r x ∈ c.O := fun r x => c.O.mul_mem (GlobalTheory.PadicInversePower.inv_pow_mem l c e r x) (hχO r x)
   have hηn : ∀ r x, ‖η r x‖ ≤ 1 := fun r x => norm_le_one_of_mem c (hηO r x)
   have hYn : ∀ r s x i, ‖Y r s x i‖ ≤ 1 := fun r s x i => norm_le_one_of_mem c (hYO r s x i)
   have hηc := eta_compat l c e χ hχO hχc

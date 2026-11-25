@@ -144,8 +144,8 @@ theorem period_lattice_fibre_and_conj : ∀ (E : Type) [Field E] [NumberField E]
       finrank_eigSp_conj R.B (s.comp (algebraMap (𝓞 E) E))
     rw [h1, hrk, (FU.sig i).1, (FU.sig i).2]
     by_cases h : s (H.rt : E) = H.rt0
-    · rw [if_pos h, if_neg (fun h' => (conj_rt_iff H s).1 h' h)]
-    · rw [if_neg h, if_pos ((conj_rt_iff H s).2 h)]
+    · rw [ite_eq_left h, ite_eq_right (fun h' => (conj_rt_iff H s).1 h' h)]
+    · rw [ite_eq_right h, ite_eq_left ((conj_rt_iff H s).2 h)]
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.FamEx
 end -- clump:auto

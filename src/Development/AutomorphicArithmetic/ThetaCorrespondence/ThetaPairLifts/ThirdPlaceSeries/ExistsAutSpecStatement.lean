@@ -271,9 +271,9 @@ theorem chiMu_frob_all_alt : ∀ (hArt : GlobalTheory.Published.GlobalArtinRecip
     have hdel : (cf.delAt (X.nd.l i)).UnrAt w := by
       unfold CharFrame.delAt
       split_ifs with h
-      · rw [if_pos h] at hd
+      · rw [ite_eq_left h] at hd
         exact cf.isDel'.unr w hd
-      · rw [if_neg h] at hd
+      · rw [ite_eq_right h] at hd
         exact cf.isDel.unr w hd
     have hmem : i ∈ X.nd.locs (X.nd.j i) (X.nd.w i) := (X.nd.locs_mem _ _ i).2 ⟨rfl, rfl⟩
     have hQ : X.nd.Q i = C.Q (X.nd.w i) := (Sp.Q_eq _ _ i hmem).trans (Sp.Qc_eq _ _)
@@ -445,8 +445,8 @@ theorem tupEtaInv_unrAt_splitOut_alt : ∀ (D : D7) (cf : CharFrame D) (jE : D.h
     rw [X.nd.w_l i]
     unfold CharFrame.delAt
     split_ifs with h
-    · exact cf.isDel'.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [if_pos h]; exact hp))))
-    · exact cf.isDel.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [if_neg h]; exact hp))))
+    · exact cf.isDel'.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [ite_eq_left h]; exact hp))))
+    · exact cf.isDel.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [ite_eq_right h]; exact hp))))
   have hxi : (tp.xi (X.nd.mu i)).UnrAt w := by
     rw [X.nd.mu_w i, tp.xi_tw]
     exact HChar.UnrAt.mul hdel hpsi
@@ -704,10 +704,6 @@ section -- clump:auto
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
-namespace GlobalTheory.ResidueLocPlace
-end GlobalTheory.ResidueLocPlace
-namespace GlobalTheory.ResidueLocPlace
-end GlobalTheory.ResidueLocPlace
 theorem GlobalTheory.ResidueLocPlace.exists_residueField_map_alt : ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE) (low : Finset ℕ) (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : RatDat D.ntw) (hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j)) (eig : ℕ → D.what₂.FT → ℕ → PlE D.host → ↥D.LL0) (θ : ∀ kk : Fin 2, Multiplicative (ZMod (D.host.g kk)) →* (↥D.LL0)ˣ) (Bs : SideB D cf A.row low Pq S hL eig θ) (M : MtFam D) (C : NChoice D) (tp : TupTied D cf C) (hCS : ChoiceSide D cf M Bs.exp C tp) (hMI : MtInput D M tp.tup C.Q) (hstar : ∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0) (hE : ∀ j g, ∃ z : ℤ, eExp D j g = z) (hsp : ∀ v, v ∈ placesOver D.host.E D.host.pde ∨ v ∈ placesOver D.host.E D.host.pde' → IsSplitPl D.host v) (hCh : GlobalTheory.RowTie.ChebSplit D.nd) (big : D.what₂.places.Pl → Finset ℂ) (X : LocNd (lay0 D)) (T : LocTw X) (Sp : NdSpec A.pl M C big X T) (i : X.nd.Loc), ∃ κ : IsLocalRing.ResidueField (X.nd.O i) →+* Formalism.CyclotomicNorms.Fbar (X.nd.l i), ∀ y : X.nd.O i, ∃ h : (((qCast (X.nd.w_l i) (A.pl.ι (X.nd.w i))).toRingHom.comp (Sp.iq i)).comp (algebraMap (X.nd.O i) (FractionRing (X.nd.O i)))) y ∈ A.pl.plB (X.nd.w i), fbCast (X.nd.w_l i) (D.what₂.places.resChar_prime (X.nd.w i)) (X.nd.lPrime i).out (A.pl.plκ (X.nd.w i) (IsLocalRing.residue (A.pl.plB (X.nd.w i)) ⟨_, h⟩)) = κ (IsLocalRing.residue (X.nd.O i) y) := by
   intro D cf jE A low Pq S hL eig θ Bs M C tp hCS hMI hstar hE hsp hCh big X T Sp i
   exact GlobalTheory.ResidueLocPlace.exists_residue_lift (X.nd.w_l i) _ _ (A.pl.ι (X.nd.w i)) (A.pl.plB (X.nd.w i))
@@ -1225,7 +1221,6 @@ theorem GlobalTheory.AutPart.exists_autSpec_alt : GlobalTheory.Published.GlobalA
     chi_mu := fun i w hw => _root_.GlobalTheory.AutPart.chiMu_unr_frob_alt hArt D cf jE A low Pq S hL eig θ Bs M C tp hCS hMI hstar hE hsp hCh hψ big X T Sp i (μ i) (hμc i) (hμ i) w hw
     kFbar := κ }, {
     embAV := fun i P => (A.au.cls (X.nd.j i) (X.nd.j_range i).1 (X.nd.j_range i).2 { (mlX M X i).wt with S := F i P, irrS := irr i P })
-    embAV_inj := fun i P P' h => hinj i P P' ((A.au.iso _ _ _ _ _).1 h).2
     embAV_loc := fun _ _ _ => rfl
     embAV_sat := fun _ _ _ => rfl
     embAV_sph := fun i P w hw => haveI := hfin i; _root_.GlobalTheory.SphNonSplit.sphAU_of_not_split_m_alt D cf jE A low Pq S hL eig θ Bs M C tp hCS hMI hstar hE hsp hCh big X T Sp i (ι i) (F i) (irr i) (hinj i) (hsurj i) (hne i) (hind i) (htop i) P w hw

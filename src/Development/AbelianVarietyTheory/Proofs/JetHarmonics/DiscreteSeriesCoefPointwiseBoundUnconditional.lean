@@ -97,13 +97,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOf
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ActualClassesCompactSupport", "h": "module\n\npublic import Formalism.HermitianCurvature.HerGenC\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSETopFinal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-namespace GlobalTheory
-
-theorem actualClasses_compactSupport : Formalism.FourierDecayAlt.P5.ThmPActualCpt :=
-  Formalism.FourierDecayAlt.P.CutSE.actual_compact_theorem
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ActualClassesCompactSupport =====
@@ -822,11 +815,11 @@ theorem shiftExists_of (hA : GlobalTheory.WigSh.AmapsShExists) : GlobalTheory.Wi
     (fun i _ => by
       by_cases h : i = l + 1
       · subst h; simp
-      · rw [Function.update_of_ne h, if_neg h])
+      · rw [Function.update_of_ne h, ite_eq_right h])
     (fun i _ => by
       by_cases h : i = l
       · subst h; simp
-      · rw [Function.update_of_ne h, if_neg h])
+      · rw [Function.update_of_ne h, ite_eq_right h])
   exact ⟨Wqp, i1, i2, i3, Wqm, j1, j2, j3, pp, pm, Ap, Am, ApPt, AmPt, a1, b1, a2, a3, a4, b2, b3, b4, a8, b8,
     c1, c2, c3, c4⟩
 
@@ -1070,7 +1063,7 @@ open BpJoin
 namespace GlobalTheory
 
 theorem discreteSeriesCoef_pointwiseBound : ThmBpDS :=
-  _root_.GlobalTheory.BpDiscreteSeriesTwoInputs.pointwise_bound_discreteSeries GlobalTheory.besselXiIntegrable_holds GlobalTheory.actualClasses_compactSupport
+  _root_.GlobalTheory.BpDiscreteSeriesTwoInputs.pointwise_bound_discreteSeries GlobalTheory.besselXiIntegrable_holds Formalism.FourierDecayAlt.P.CutSE.actual_compact_theorem
 
 end GlobalTheory
 end -- clump:auto

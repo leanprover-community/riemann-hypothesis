@@ -39,51 +39,6 @@ theorem evX_temperate {m n : ℕ} (P : PX m n) : Function.HasTemperateGrowth (fu
     simp only [map_mul, MvPolynomial.eval_X]
     exact Function.HasTemperateGrowth.mul (hp rfl) (coordX_temperate k)
 
-theorem schwartz_gs {m n : ℕ} (c : ℝ) (hc : 0 < c) : ∃ φ : 𝓢(Fin m → Fin n → ℂ, ℂ), ⇑φ = gs c := by
-  have hs : 0 < Real.sqrt (c / Real.pi) := Real.sqrt_pos.mpr (div_pos hc Real.pi_pos)
-  have hs2 : Real.sqrt (c / Real.pi) ^ 2 = c / Real.pi := Real.sq_sqrt (div_pos hc Real.pi_pos).le
-  let L : (Fin m → Fin n → ℂ) ≃ₗ[ℝ] EuclideanSpace ℝ (Fin m × Fin n × Bool) :=
-    { toFun := fun x => WithLp.toLp 2 (fun p => Real.sqrt (c / Real.pi) *
-        (if p.2.2 then (x p.1 p.2.1).im else (x p.1 p.2.1).re))
-      invFun := fun y => fun a i => ⟨(Real.sqrt (c / Real.pi))⁻¹ * y (a, i, false),
-        (Real.sqrt (c / Real.pi))⁻¹ * y (a, i, true)⟩
-      map_add' := fun x y => by
-        ext p
-        rcases p with ⟨a, i, β⟩
-        cases β <;> simp <;> ring
-      map_smul' := fun r x => by
-        ext p
-        rcases p with ⟨a, i, β⟩
-        cases β <;> simp <;> ring
-      left_inv := fun x => by
-        funext a i
-        apply Complex.ext <;> simp [hs.ne']
-      right_inv := fun y => by
-        ext p
-        rcases p with ⟨a, i, β⟩
-        cases β <;> simp [hs.ne'] }
-  refine ⟨SchwartzMap.compCLMOfContinuousLinearEquiv ℂ L.toContinuousLinearEquiv
-    (GroundTheory.Global.gaussianSchwartz _), ?_⟩
-  rw [SchwartzMap.compCLMOfContinuousLinearEquiv_apply]
-  funext x
-  simp only [Function.comp_apply, GroundTheory.Global.gaussianSchwartz_apply, gs]
-  rw [Complex.ofReal_exp]
-  congr 1
-  rw [EuclideanSpace.norm_sq_eq]
-  simp [L, Fintype.sum_prod_type, mul_pow, hs2, Complex.sq_norm, Complex.normSq_apply]
-  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  simp only [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun i _ => ?_
-  field_simp
-  ring
-
-theorem schwartz_polyGauss {m n : ℕ} (c : ℝ) (hc : 0 < c) (P : PX m n) :
-    ∃ φ : 𝓢(Fin m → Fin n → ℂ, ℂ), ⇑φ = fun x => evX P x * gs c x := by
-  obtain ⟨g, hg⟩ := schwartz_gs (m := m) (n := n) c hc
-  refine ⟨SchwartzMap.smulLeftCLM ℂ (fun x => evX P x) g, ?_⟩
-  rw [SchwartzMap.smulLeftCLM_apply (evX_temperate P), hg]
-  rfl
-
 end PositivityTheory.SiegelWeilFormula.KMain
 
 end

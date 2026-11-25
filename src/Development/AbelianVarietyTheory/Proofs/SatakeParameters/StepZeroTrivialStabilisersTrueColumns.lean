@@ -46,8 +46,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 
-noncomputable section
-
 namespace GlobalTheory.Pdv.StabZero
 
 open GlobalTheory.Mem.Col2.ClsZero
@@ -129,5 +127,3 @@ theorem stepZero_trivial_stabilisers_trueColumns : ∀ {B : Base} {X : PreX B.to
     fun u μ _ c => card_stab_zero h l u μ (fun c' => Formalism.L2.G.StabilizerCardinality.card_stab0_mem _ lev u c') c⟩
 
 end GlobalTheory.Pdv
-
-end

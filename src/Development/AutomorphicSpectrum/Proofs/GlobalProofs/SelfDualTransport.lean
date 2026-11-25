@@ -134,22 +134,6 @@ theorem selfDual_transport {V V' : Type} [AddCommGroup V] [TopologicalSpace V] [
 
 end Gen
 
-section Link
-open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
-open GroundTheory.Global GroundTheory.Automorphic.GJMatrix GroundTheory.Heights₂.Theta
-open GlobalTheory.CompanionTheory.SW.BB GlobalTheory.CompanionTheory.SW.CoordMat
-open scoped TensorProduct ENNReal Matrix NumberField.AdeleRing
-attribute [local instance 100000] GroundTheory.Global.measurableSpace_adeleRing
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-end Link
-
-section Main
-open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
-open scoped TensorProduct ENNReal
-
-end Main
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Fth
 end -- clump:auto
 end -- clump:auto

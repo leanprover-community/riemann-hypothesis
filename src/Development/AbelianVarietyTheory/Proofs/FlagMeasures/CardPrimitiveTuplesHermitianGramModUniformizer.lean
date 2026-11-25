@@ -202,7 +202,6 @@ theorem norm_gauss_sum_ip_le {B : Type} [CommRing B] [Fintype B] (c : B →+* B)
   have hsq : S * (starRingEnd ℂ) S = (((q : ℝ) ^ n) ^ 2 : ℝ) := by
     calc S * (starRingEnd ℂ) S
         = ∑ y : Fin n → B, S * (starRingEnd ℂ) (χ (Q y)) := by
-          set_option synthInstance.maxHeartbeats 100000 in
             conv_lhs => rw [hS, map_sum, ← hS, Finset.mul_sum]
       _ = ∑ y : Fin n → B, ∑ z : Fin n → B, χ (Q z) * χ ((a + c a) * ip c y z) := by
           refine Finset.sum_congr rfl fun y _ => ?_
@@ -337,7 +336,7 @@ theorem quad_count {B : Type} [CommRing B] [Fintype B] (c : B →+* B) (hc : ∀
           simp only [sub_eq_add_neg, AddChar.map_add_eq_mul]
           rw [← Finset.sum_mul]
           have h2 := quad_sum_char_pi χ hχ (fun j => c ((∑ i, c (s i) • x i) j))
-          rw [if_neg] at h2
+          rw [ite_eq_right] at h2
           · simp only [ip]
             rw [h2, zero_mul]
           · intro h3
@@ -1090,7 +1089,7 @@ theorem hensel_step [Finite A] (c : A →+* A) (hc : ∀ u, c (c u) = u) {ω : A
           rw [← hH.1 a b, hu b a, map_mul, hq]
         simp only [henselDiff, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Matrix.of_apply,
           ip_sum_left, ip_sum_right, ip_smul_left, ip_smul_right, hy, hy', mul_ite, mul_one,
-          mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, map_mul]
+          mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_mul]
         linear_combination (c θ) * h1 - θ * hu a b + H a b * hθ
       rw [this, sub_self]
       exact zero_mem _

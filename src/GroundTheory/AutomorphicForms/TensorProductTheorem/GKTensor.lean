@@ -8,6 +8,7 @@ public import GroundTheory.AutomorphicForms.TensorProductTheorem.Existence
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import Mathlib.Topology.Algebra.Group.Units
 import GroundTheory.AutomorphicForms.LocallyProfinite
+import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
 import GroundTheory.AutomorphicForms.TensorProductTheorem.Window
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -418,7 +419,7 @@ theorem exists_equiv_outerTensor (hirr : (prodRep ρ₁ ρ₂ hcomm).IsIrreducib
   set Tp : Bool → Set (End ℂ W) := fun i => if i then range T₁ else range T₂
   have hcommTp : ∀ i j, i ≠ j → ∀ s ∈ Tp i, ∀ t ∈ Tp j, Commute s t := by
     intro i j hij s hs t ht
-    cases i <;> cases j <;> simp only [Tp, if_true] at hs ht
+    cases i <;> cases j <;> simp only [Tp, ite_true] at hs ht
     · exact absurd rfl hij
     · obtain ⟨b, rfl⟩ := hs
       obtain ⟨a, rfl⟩ := ht
@@ -593,13 +594,13 @@ theorem exists_equiv_outerTensor (hirr : (prodRep ρ₁ ρ₂ hcomm).IsIrreducib
     exact this
   have hN₁min : ∀ N' : Submodule ℂ V, N' ≤ N₁ → N' ≠ ⊥ → (∀ a, ∀ x ∈ N', e₁ (ρ₁ a x) ∈ N') →
       N' = N₁ := fun N' hle hne' hst => hmin true N' (fun t ht w hw => by
-        simp only [Tp, if_true] at ht
+        simp only [Tp, ite_true] at ht
         obtain ⟨a, rfl⟩ := ht
         rw [hT₁]
         exact hst a w hw) hle hne'
   have hN₂min : ∀ N' : Submodule ℂ V, N' ≤ N₂ → N' ≠ ⊥ → (∀ b, ∀ x ∈ N', e₂ (ρ₂ b x) ∈ N') →
       N' = N₂ := fun N' hle hne' hst => hmin false N' (fun t ht w hw => by
-        simp only [Tp, if_false, Bool.false_eq_true] at ht
+        simp only [Tp, ite_false, Bool.false_eq_true] at ht
         obtain ⟨b, rfl⟩ := ht
         rw [hT₂]
         exact hst b w hw) hle hne'
@@ -646,7 +647,7 @@ theorem exists_equiv_outerTensor (hirr : (prodRep ρ₁ ρ₂ hcomm).IsIrreducib
       exact hE' (T₂ b (n false))
     simp only [l₂, LinearMap.comp_apply]
     rw [this, hc₂, map_smul, hψ₂, smul_eq_mul, mul_one]
-  refine nonempty_equiv_of_matrixCoeff_eq' (v := (xs : V)) (l := φ ∘ₗ E')
+  refine nonempty_equiv_of_matrixCoeff_eq (v := (xs : V)) (l := φ ∘ₗ E')
     (w := mGenQuotMk ρ₁ e₁ N₁ n₁ ⊗ₜ mGenQuotMk ρ₂ e₂ N₂ n₂)
     (m := tensorForm (mGenQuotForm ρ₁ e₁ N₁ l₁) (mGenQuotForm ρ₂ e₂ N₂ l₂))
     (fun ⟨a, b⟩ => ?_) ⟨1, ?_⟩

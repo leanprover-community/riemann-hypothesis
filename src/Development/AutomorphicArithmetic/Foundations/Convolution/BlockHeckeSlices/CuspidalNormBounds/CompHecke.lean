@@ -461,7 +461,6 @@ theorem UpperTheory.integrable_constantTerm_leviEmbedding_mul_conj_cuspForm :
     rw [show RightCosetSpace.mk (rationalGLOne (K := E) (n := r)) (Quotient.out y) = y from Quotient.out_eq y] at h
     exact h.symm
   rw [he]
-  set_option synthInstance.maxHeartbeats 200000 in
   refine Integrable.of_bound (CuspidalSpectrum.continuous_cuspQuot hHl hHc).aestronglyMeasurable
     (|C| * (2 * AutomorphicForm.heightConst E (r + s) * L) ^ N * D) (Filter.Eventually.of_forall fun q => ?_)
   obtain ⟨y, rfl⟩ := mk_surjective (rationalGLOne (K := E) (n := r)) q
@@ -497,7 +496,6 @@ theorem UpperTheory.integral_quotient_rightTranslate_eq_and_integrable_iff :
   have hm := measurePreserving_rightMul (Γ := rationalGLOne (K := E) (n := r)) (mu1 E r) ⟨g, hg⟩
   have he : MeasurableEmbedding (rightMul (rationalGLOne (K := E) (n := r)) ⟨g, hg⟩) :=
     by
-      set_option synthInstance.maxHeartbeats 200000 in
         exact (rightMulHomeomorph (rationalGLOne (K := E) (n := r)) ⟨g, hg⟩).measurableEmbedding
   rw [e1, e2]
   exact ⟨hm.integral_comp he _, hm.integrable_comp_emb he⟩

@@ -145,7 +145,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem isClosed_UL (hU : Unr E) (n : ℕ) (w : Pl E) : IsClosed (UL n w : Set (GLw n w)) := by
   by_cases hw : IsSplitAt w
-  · have h : UL n w = ⊤ := if_pos hw
+  · have h : UL n w = ⊤ := ite_eq_left hw
     rw [h]
     exact isClosed_univ
   · rw [GlobalTheory.CompanionTheory.UnitaryWitt.UL_eq_of_not_split hw]
@@ -167,7 +167,7 @@ theorem isCompact_KL (hU : Unr E) (n : ℕ) (w : Pl E) : IsCompact (KL n w : Set
 
 theorem conv_comm_split {n : ℕ} {w : Pl E} (hw : IsSplitAt w) (f₁ f₂ : UL n w → ℂ)
     (hf₁ : IsBiInv (KL n w) f₁) (hf₂ : IsBiInv (KL n w) f₂) : conv (KL n w) f₁ f₂ = conv (KL n w) f₂ f₁ := by
-  have hT : UL n w = ⊤ := if_pos hw
+  have hT : UL n w = ⊤ := ite_eq_left hw
   have hmem : ∀ x : GLw n w, x ∈ UL n w := fun x => by
     rw [hT]
     trivial

@@ -52,7 +52,7 @@ private theorem UpperTheory.Gal.W2.Seed.pDomSt_sum {I : Type} [Fintype I] [Decid
   have h : ∀ k, (if k = k0 then (1 : ℝ) else -1) * y k = 2 * (if k = k0 then y k else 0) - y k := by
     intro k
     split_ifs <;> ring
-  simp only [h, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [h, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem UpperTheory.Gal.W2.Seed.pDomSt :
     TraceType → RealIso → FormCoord → HdSign → DiagTrace → DomSt := by
@@ -101,10 +101,10 @@ theorem UpperTheory.Gal.W2.Seed.pDomSt :
     have h2 : 0 < (k.1.1 (A.hd n k.2 : E)).re * ε k := by
       by_cases hk : k = k0
       · have := hp ((hk0 k).mpr hk)
-        rw [show ε k = 1 from if_pos hk, mul_one]
+        rw [show ε k = 1 from ite_eq_left hk, mul_one]
         exact this
       · have := hm (fun h => hk ((hk0 k).mp h))
-        rw [show ε k = -1 from if_neg hk, mul_neg_one]
+        rw [show ε k = -1 from ite_eq_right hk, mul_neg_one]
         linarith
     exact mul_pos (by linarith) h2
   refine ⟨J, ?_, ?_, ?_, ?_, ?_⟩

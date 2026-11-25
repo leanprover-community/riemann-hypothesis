@@ -22,16 +22,7 @@ variable {O K : Type} [CommRing O] [Field K] [Algebra O K]
 
 private theorem rowAct_mul_lemma_0 {k n : ℕ} (g h : Matrix (Fin k) (Fin k) K) (F : MvPolynomial (Fin k × Fin n) K) :
     rowAct K g (rowAct K h F) = rowAct K (h * g) F := by
-  have e : (rowAct K (n := n) g).comp (rowAct K (n := n) h) = rowAct K (n := n) (h * g) := by
-    apply MvPolynomial.algHom_ext
-    intro v
-
-    simp only [AlgHom.comp_apply, rowAct, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq,
-    Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun _ _ => Finset.sum_congr rfl (fun _ _ => ?_))
-    ring
-  exact AlgHom.congr_fun e F
+  rw [_root_.Formalism.UG.P.wlocal_rowAct_mul]; rfl
 
 private theorem mem_nablaLTw_lemma (m : ℕ) (lam : Fin (m + 1) → ℤ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K)
     (hg : IsUnit g.det) (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) K) :
@@ -91,7 +82,7 @@ private theorem step_lemma_3 (hinj : Function.Injective (algebraMap O K)) (m : �
 theorem mem_invariant_sections_iff_integral (hinj : Function.Injective (algebraMap O K)) (m : ℕ) (lam : Fin (m + 1) → ℤ) (hlam : Antitone lam)
     (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K) (hg : IsUnit g.det) (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) K) :
     F ∈ H0 O m lam (colSpan O g) ↔ g.det ^ (lam (Fin.last m)) • rowAct K g F ∈ intO O (m + 1) (nuOf lam) := by
-  simp only [H0, if_pos hlam, Submodule.mem_iInf]
+  simp only [H0, ite_eq_left hlam, Submodule.mem_iInf]
   constructor
   · intro h
     exact (mem_nablaLTw_lemma (O := O) m lam g hg F).mp (h g ⟨hg, rfl⟩)
@@ -257,7 +248,7 @@ theorem caLo_anti (mm ccl P Q : ℕ) (lam : Fin (mm + 1 + 1) → ℤ) (hlam : An
   have hal' := a.isLt
   by_cases ha0 : a = 0
   · subst ha0
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     split_ifs with hb0 hbl
     · exact le_refl _
     · linarith
@@ -278,7 +269,7 @@ theorem caLo_anti (mm ccl P Q : ℕ) (lam : Fin (mm + 1 + 1) → ℤ) (hlam : An
       have ha2 : a.val < mm + 1 := by
         have : a.val ≠ mm + 1 := fun h => hal (Fin.ext (h.trans hlv.symm))
         omega
-      rw [if_neg ha0, if_neg hal]
+      rw [ite_eq_right ha0, ite_eq_right hal]
       split_ifs with hb0 hbl
       · exfalso
         have : b.val = 0 := by rw [hb0]; rfl

@@ -71,7 +71,7 @@ theorem exists_common_eigenvector_in_submodule {W : Type} [AddCommGroup W] [Modu
     · obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
       choose χ hχ using hs
       exact ⟨v, hv, hv0, χ, fun i => hχ i v hv⟩
-    · push_neg at hs
+    · push Not at hs
       obtain ⟨i, hi⟩ := hs
       haveI : Nontrivial U := Submodule.nontrivial_iff_ne_bot.mpr hne
       let R : End ℂ U := (H i).restrict (hinv i)
@@ -681,7 +681,7 @@ theorem iw_chain {w : Pl E} {ϖ : (w.adicCompletion E)ˣ} (hϖ : ordL (ϖ : w.ad
 
 theorem dcos_mem (n : ℕ) (w : Pl E) (t y : GLw n w) :
     (y ∈ dc (iwGL n w) t → dcos n w t y = 1) ∧ (y ∉ dc (iwGL n w) t → dcos n w t y = 0) :=
-  ⟨fun h => if_pos h, fun h => if_neg h⟩
+  ⟨fun h => ite_eq_left h, fun h => ite_eq_right h⟩
 
 theorem isHk_dcos (n : ℕ) (w : Pl E) (t : GLw n w) : IsHk (iwGL n w) (dcos n w t) := by
   refine ⟨GlobalTheory.SmGL.IwahoriOnto.isOpen_iwahori (w.adicCompletion E) (Fin n),
@@ -891,24 +891,11 @@ section -- clump:auto
 
 namespace GlobalTheory.CompanionTheory.GroupIndex.RelProd
 
-theorem relIndex_prod_eq_mul {G₁ G₂ : Type} [Group G₁] [Group G₂]
-    (I₁ K₁ : Subgroup G₁) (I₂ K₂ : Subgroup G₂) :
-    (I₁.prod I₂).relIndex (K₁.prod K₂) = I₁.relIndex K₁ * I₂.relIndex K₂ := by
-  have hmap : ((I₁.prod I₂).subgroupOf (K₁.prod K₂)) =
-      ((I₁.subgroupOf K₁).prod (I₂.subgroupOf K₂)).comap
-        (Subgroup.prodEquiv K₁ K₂).toMonoidHom := by
-    ext x
-    simp only [Subgroup.mem_subgroupOf, Subgroup.mem_prod, Subgroup.mem_comap]
-    exact Iff.rfl
-  unfold Subgroup.relIndex
-  rw [hmap, Subgroup.index_comap_of_surjective _ (Subgroup.prodEquiv K₁ K₂).surjective,
-    Subgroup.index_prod]
-
 theorem relIndex_prod_ne_zero_of_ne_zero :
     ∀ (G₁ G₂ : Type) [Group G₁] [Group G₂] (I₁ K₁ : Subgroup G₁) (I₂ K₂ : Subgroup G₂),
       I₁.relIndex K₁ ≠ 0 → I₂.relIndex K₂ ≠ 0 → (I₁.prod I₂).relIndex (K₁.prod K₂) ≠ 0 := by
   intro G₁ G₂ _ _ I₁ K₁ I₂ K₂ h₁ h₂
-  rw [relIndex_prod_eq_mul]
+  rw [GlobalTheory.BCT.OrbProd.relIndex_prod_prod]
   exact mul_ne_zero h₁ h₂
 
 end GlobalTheory.CompanionTheory.GroupIndex.RelProd
@@ -929,7 +916,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation Posi
 open scoped Classical TensorProduct
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 namespace PositivityTheory.Rg.BcB.F.Tail
 
@@ -1035,11 +1021,11 @@ theorem dcos_inv {E : Type} [Field E] [NumberField E] [IsCMField E] (N : ℕ) (w
   unfold dcos
   constructor
   · by_cases h : ∃ x ∈ iwGL N w, ∃ z ∈ iwGL N w, g = x * t * z
-    · rw [if_pos (e1.2 h), if_pos h]
-    · rw [if_neg (fun h' => h (e1.1 h')), if_neg h]
+    · rw [ite_eq_left (e1.2 h), ite_eq_left h]
+    · rw [ite_eq_right (fun h' => h (e1.1 h')), ite_eq_right h]
   · by_cases h : ∃ x ∈ iwGL N w, ∃ z ∈ iwGL N w, g = x * t * z
-    · rw [if_pos (e2.2 h), if_pos h]
-    · rw [if_neg (fun h' => h (e2.1 h')), if_neg h]
+    · rw [ite_eq_left (e2.2 h), ite_eq_left h]
+    · rw [ite_eq_right (fun h' => h (e2.1 h')), ite_eq_right h]
 
 theorem gap_anti {N : ℕ} {x : Fin N → ℤ} (h : Gap x) : Antitone x := by
   intro i j hij
@@ -1183,7 +1169,6 @@ theorem core (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (hϖ : ordL (ϖ : w.adicCo
     exact hsum
 
 end Place
-
 
 theorem rReadT : RReadT := by
   intro hRM E _ _ _ n a b μ s₁ s₂ Pa Pb D hC w ϖ J _ c x y m G hϖ hgap hm hGS hGI hne

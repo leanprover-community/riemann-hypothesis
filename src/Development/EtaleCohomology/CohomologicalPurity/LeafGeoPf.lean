@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafThomCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.CohomologicalPurity.Thom.GeoPf
@@ -115,7 +114,3 @@ theorem LeafGeo_of : LeafGeo :=
   ⟨GeoPf.part1, GeoPf.part2, GeoPf.part3, GeoPf.part4⟩
 
 end LateralTheory.CohomologicalPurity.Thom
-
-namespace LateralTheory.CohomologicalPurity.Thom.GeoPf
-
-end LateralTheory.CohomologicalPurity.Thom.GeoPf

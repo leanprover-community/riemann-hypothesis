@@ -13,10 +13,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.
 open scoped BigOperators ComplexOrder
 open Classical
 
-section Abstract
-
-end Abstract
-
 variable {D : Formalism.BasicNotions.D7}
 
 def normG (T T' : ℕ) (w : Point D.host.E (D.R.rS + 1)) : ℚ := |Algebra.norm ℚ (Gpt T T' w)|

@@ -67,10 +67,6 @@ namespace ReciprocityTheory.ChartRestriction.G.DVR.TG
 
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor IsLocalRing QForm SectionScalarValuation
 
-section Scale
-
-end Scale
-
 section Integral
 
 

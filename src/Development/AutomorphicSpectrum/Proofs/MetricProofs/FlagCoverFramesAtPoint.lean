@@ -198,11 +198,11 @@ theorem locAn_img {M : FlagModel y Ψ N j} {M' : FlagModel y' Ψ N j} (Cv : Flag
     unfold stepCoord
     refine LocAn.sum _ fun I _ => (locAn_valAt hbv hp2 hz (hg.2.1 _ I).1).mul (LocAn.sum _ fun I' _ => ?_)
     by_cases hI : IsStepRows N j p.2 I'
-    · simp only [if_pos hI]
+    · simp only [ite_eq_left hI]
       refine (LocAn.minor (fun a c => ?_) I I').mul
         (LocAn.sum _ fun m' _ => (locAn_valAt hb hp1 hz (hg'.2.1 _ I').2).mul (.of_analyticAt (analyticAt_coord z _)))
       exact locAn_valAt hb hp1 hz (Cv.agree _ (hp1 z hz) F' F hF' hF hg' hg p.1 a c).1
-    · simp only [if_neg hI]
+    · simp only [ite_eq_right hI]
       exact LocAn.const 0
 
 end Img

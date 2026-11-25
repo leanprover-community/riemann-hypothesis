@@ -137,10 +137,6 @@ private theorem prepend_toSequenceOfBlowups_projectionToBase_succ {Y : Scheme.{u
   (BlowupSequenceData.toSequenceOfBlowups_projectionToBase (BlowupSequenceData.prepend Z hZ d) (n + 1)).trans
     ((prepend_projectionToBase_succ Z hZ d n).trans (BlowupSequenceData.toSequenceOfBlowups_projectionToBase d n).symm)
 
-private theorem eqToHom_comp_comp_eqToHom_refl {A B : Scheme.{u}} (f : A ⟶ B) (h1 : A = A)
-    (h2 : B = B) : eqToHom h1 ≫ f ≫ eqToHom h2 = f := by
-  rw [eqToHom_refl, eqToHom_refl, Category.id_comp, Category.comp_id]
-
 private theorem prependComparisonMap_zero {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
     (hZ : Blowup.IsBlowupAlongIdealSheaf (𝟙 X) Z) (hZ' : Blowup.IsBlowupAlongIdealSheaf (𝟙 X') (Z.comap φ))
@@ -155,11 +151,9 @@ private theorem prependComparisonMap_succ {φ : X' ⟶ X} {d' : BlowupSequenceDa
     (h : n + 1 ≤ (BlowupSequenceData.prepend (Z.comap φ) hZ' d').toSequenceOfBlowups.length)
     (hn : n ≤ d'.toSequenceOfBlowups.length) :
     prependMapOfLELength c Z hZ hZ' (n + 1) h = c.map n hn := by
-  show eqToHom (prepend_schemeAt_succ (Z.comap φ) hZ' d' n) ≫
-      c.map n (le_length_of_succ_le_prepend_length (Z.comap φ) hZ' d' n h) ≫
-      eqToHom (prepend_schemeAt_succ Z hZ d (c.idx n)).symm = c.map n hn
-  exact eqToHom_comp_comp_eqToHom_refl (c.map n hn) (prepend_schemeAt_succ (Z.comap φ) hZ' d' n)
-    (prepend_schemeAt_succ Z hZ d (c.idx n)).symm
+  show 𝟙 (d'.toSequenceOfBlowups.schemeAt n) ≫ c.map n hn ≫
+      𝟙 (d.toSequenceOfBlowups.schemeAt (c.idx n)) = c.map n hn
+  simp
 
 private theorem isPullback_prependComparisonMap_zero {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
@@ -204,23 +198,6 @@ private theorem isPullback_prependComparisonMap {φ : X' ⟶ X} {d' : BlowupSequ
   cases j with
   | zero => exact isPullback_prependComparisonMap_zero c Z hZ hZ' _
   | succ n => exact isPullback_prependComparisonMap_succ c Z hZ hZ' n _
-
-private theorem comp_eq_comp_of_heq {A' B' A B Y' Y V' V : Scheme.{u}}
-    (e0' : A' = Y') (e1' : B' = V') (e0 : A = Y) (e1 : B = V)
-    {s' : V' ⟶ Y'} {ψ : Y' ⟶ Y} {m : V' ⟶ V} {s : V ⟶ Y}
-    (hw : m ≫ s = s' ≫ ψ)
-    {L1 : B' ⟶ A'} {L2 : A' ⟶ A} {R1 : B' ⟶ B} {R2 : B ⟶ A}
-    (hL1 : HEq L1 s') (hL2 : HEq L2 ψ) (hR1 : HEq R1 m) (hR2 : HEq R2 s) :
-    L1 ≫ L2 = R1 ≫ R2 := by
-  subst e0'
-  subst e1'
-  subst e0
-  subst e1
-  have h1 : L1 = s' := eq_of_heq hL1
-  have h2 : L2 = ψ := eq_of_heq hL2
-  have h3 : R1 = m := eq_of_heq hR1
-  have h4 : R2 = s := eq_of_heq hR2
-  rw [h1, h2, h3, h4, hw]
 
 private theorem prepend_blowupMorphism_succ {Y : Scheme.{u}} (Z : Y.IdealSheafData)
     (hZ : Blowup.IsBlowupAlongIdealSheaf (𝟙 Y) Z) (d : BlowupSequenceData Y) (n : ℕ) :
@@ -286,30 +263,26 @@ private theorem blowupMorphism_comp_prependComparisonMap {φ : X' ⟶ X} {d' : B
   cases j with
   | zero =>
       have hlen : 0 ≤ d'.toSequenceOfBlowups.length := Nat.zero_le _
-      refine comp_eq_comp_of_heq (prepend_schemeAt_zero (Z.comap φ) hZ' d')
-        (prepend_schemeAt_succ (Z.comap φ) hZ' d' 0)
-        (prepend_schemeAt_zero Z hZ d)
-        (prepend_schemeAt_succ Z hZ d (c.idx 0))
-        ((c.isPullback 0 hlen).w) ?_ ?_ ?_ ?_
-      · exact heq_of_eq (prepend_blowupMorphism_zero_eq_projectionToBase (Z.comap φ) hZ' d')
-      · exact heq_of_eq (prependComparisonMap_zero c Z hZ hZ' (le_of_lt hj))
-      · exact heq_of_eq (prependComparisonMap_succ c Z hZ hZ' 0 hj hlen)
-      · exact heq_of_eq ((prepend_transitionMap_zero Z hZ d (c.idx 0 + 1) (Nat.zero_le _)).trans
-          (prepend_toSequenceOfBlowups_projectionToBase_succ Z hZ d (c.idx 0)))
+      have hdown : (BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.transitionMap
+            (le_of_lt (prependIndex_lt_prependIndex_succ c Z hZ hZ' 0 hj)) =
+          d.toSequenceOfBlowups.projectionToBase (c.idx 0) :=
+        (prepend_transitionMap_zero Z hZ d (c.idx 0 + 1) _).trans
+          (prepend_toSequenceOfBlowups_projectionToBase_succ Z hZ d (c.idx 0))
+      rw [prepend_blowupMorphism_zero_eq_projectionToBase, prependComparisonMap_zero,
+        prependComparisonMap_succ c Z hZ hZ' 0 hj hlen, hdown]
+      exact (c.isPullback 0 hlen).w.symm
   | succ n =>
       have hn : n < d'.toSequenceOfBlowups.length := by
         have hlen := prepend_length (Z.comap φ) hZ' d'
         omega
-      refine comp_eq_comp_of_heq (prepend_schemeAt_succ (Z.comap φ) hZ' d' n)
-        (prepend_schemeAt_succ (Z.comap φ) hZ' d' (n + 1))
-        (prepend_schemeAt_succ Z hZ d (c.idx n))
-        (prepend_schemeAt_succ Z hZ d (c.idx (n + 1)))
-        ((c.step n hn).symm) ?_ ?_ ?_ ?_
-      · exact heq_of_eq (prepend_blowupMorphism_succ (Z.comap φ) hZ' d' n)
-      · exact heq_of_eq (prependComparisonMap_succ c Z hZ hZ' n (le_of_lt hj) (le_of_lt hn))
-      · exact heq_of_eq (prependComparisonMap_succ c Z hZ hZ' (n + 1) hj hn)
-      · exact heq_of_eq (prepend_transitionMap_succ_succ Z hZ d (le_of_lt (c.idx_strictMono n hn))
-          (Nat.add_le_add_right (le_of_lt (c.idx_strictMono n hn)) 1))
+      have hdown : (BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.transitionMap
+            (le_of_lt (prependIndex_lt_prependIndex_succ c Z hZ hZ' (n + 1) hj)) =
+          d.toSequenceOfBlowups.transitionMap (le_of_lt (c.idx_strictMono n hn)) :=
+        prepend_transitionMap_succ_succ Z hZ d (le_of_lt (c.idx_strictMono n hn)) _
+      rw [prepend_blowupMorphism_succ,
+        prependComparisonMap_succ c Z hZ hZ' n (le_of_lt hj) (le_of_lt hn),
+        prependComparisonMap_succ c Z hZ hZ' (n + 1) hj hn, hdown]
+      exact c.step n hn
 
 private theorem comap_eq_comap_eqToHom_comp_comp_eqToHom_of_heq {A A' B B' : Scheme.{u}} (hA : A' = A) (hB : B = B')
     (g : A ⟶ B) (J : B.IdealSheafData) (K : A.IdealSheafData) (hK : K = J.comap g)
@@ -361,7 +334,7 @@ private theorem prepend_center_eq_comap_prependIndex {φ : X' ⟶ X} {d' : Blowu
 
 private theorem prepend_center_ne_top {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
-    (_hZ : Blowup.IsBlowupAlongIdealSheaf (𝟙 X) Z) (hZ' : Blowup.IsBlowupAlongIdealSheaf (𝟙 X') (Z.comap φ)) (hne : Z.comap φ ≠ ⊤) (j : ℕ)
+    (hZ' : Blowup.IsBlowupAlongIdealSheaf (𝟙 X') (Z.comap φ)) (hne : Z.comap φ ≠ ⊤) (j : ℕ)
     (hj : j < (BlowupSequenceData.prepend (Z.comap φ) hZ' d').toSequenceOfBlowups.length) :
     (BlowupSequenceData.prepend (Z.comap φ) hZ' d').toSequenceOfBlowups.center j ≠ ⊤ := by
   have hlen : (BlowupSequenceData.prepend (Z.comap φ) hZ' d').toSequenceOfBlowups.length = d'.toSequenceOfBlowups.length + 1 :=
@@ -432,7 +405,7 @@ def prepend {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData
   isPullback := isPullback_prependComparisonMap c Z hZ hZ'
   step := blowupMorphism_comp_prependComparisonMap c Z hZ hZ'
   center_comap := prepend_center_eq_comap_prependIndex c Z hZ hZ'
-  center_ne_top := prepend_center_ne_top c Z hZ hZ' hne
+  center_ne_top := prepend_center_ne_top c Z hZ' hne
   omitted := ne_projectionToBase_of_forall_prependIndex_ne c Z hZ hZ'
 
 private def mapToPrependSuccIndex {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
@@ -457,9 +430,10 @@ private theorem succIndex_lt_prepend_length {φ : X' ⟶ X} {d' : BlowupSequence
   rw [hlen, succIndex_apply]
   omega
 
-private theorem succIndex_lt_succIndex_succ {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
-    (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
-    (_hZ : Blowup.IsBlowupAlongIdealSheaf (𝟙 X) Z) (j : ℕ) (hj : j < d'.toSequenceOfBlowups.length) :
+private theorem succIndex_lt_succIndex_succ {φ : X' ⟶ X} {d' : BlowupSequenceData X'}
+    {d : BlowupSequenceData X}
+    (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups)
+    (j : ℕ) (hj : j < d'.toSequenceOfBlowups.length) :
     succIndex c.idx j < succIndex c.idx (j + 1) := by
   have h : c.idx j < c.idx (j + 1) := c.idx_strictMono j hj
   simp only [succIndex_apply]
@@ -478,15 +452,12 @@ private theorem isPullback_comparisonMapOfComapEqTop {φ : X' ⟶ X} {d' : Blowu
   rw [h1, h2]
   exact c.isPullback j hj
 
-private theorem comp_eqToHom_refl {A B : Scheme.{u}} (f : A ⟶ B) (h : B = B) :
-    f ≫ eqToHom h = f := by
-  rw [eqToHom_refl, Category.comp_id]
-
 private theorem comparisonMapOfComapEqTop_eq_map {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
     (hZ : Blowup.IsBlowupAlongIdealSheaf (𝟙 X) Z) (j : ℕ) (hj : j ≤ d'.toSequenceOfBlowups.length) :
-    mapToPrependSuccIndex c Z hZ j hj = c.map j hj :=
-  comp_eqToHom_refl (c.map j hj) (prepend_schemeAt_succ Z hZ d (c.idx j)).symm
+    mapToPrependSuccIndex c Z hZ j hj = c.map j hj := by
+  show c.map j hj ≫ 𝟙 (d.toSequenceOfBlowups.schemeAt (c.idx j)) = c.map j hj
+  simp
 
 private theorem blowupMorphism_comp_comparisonMapOfComapEqTop {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
@@ -494,28 +465,18 @@ private theorem blowupMorphism_comp_comparisonMapOfComapEqTop {φ : X' ⟶ X} {d
     d'.toSequenceOfBlowups.transitionMapSucc j ≫ mapToPrependSuccIndex c Z hZ j (le_of_lt hj) =
       mapToPrependSuccIndex c Z hZ (j + 1) hj ≫
         (BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.transitionMap
-          (le_of_lt (succIndex_lt_succIndex_succ c Z hZ j hj)) := by
+          (le_of_lt (succIndex_lt_succIndex_succ c j hj)) := by
   have h1 : mapToPrependSuccIndex c Z hZ j (le_of_lt hj) = c.map j (le_of_lt hj) :=
     comparisonMapOfComapEqTop_eq_map c Z hZ j (le_of_lt hj)
   have h2 : mapToPrependSuccIndex c Z hZ (j + 1) hj = c.map (j + 1) hj :=
     comparisonMapOfComapEqTop_eq_map c Z hZ (j + 1) hj
   have hdown : (BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.transitionMap
-        (le_of_lt (succIndex_lt_succIndex_succ c Z hZ j hj)) =
+        (le_of_lt (succIndex_lt_succIndex_succ c j hj)) =
       d.toSequenceOfBlowups.transitionMap (le_of_lt (c.idx_strictMono j hj)) :=
     prepend_transitionMap_succ_succ Z hZ d (le_of_lt (c.idx_strictMono j hj))
-      (le_of_lt (succIndex_lt_succIndex_succ c Z hZ j hj))
+      (le_of_lt (succIndex_lt_succIndex_succ c j hj))
   rw [h1, h2, hdown]
   exact c.step j hj
-
-private theorem comap_eq_comap_comp_eqToHom_of_heq {A B B' : Scheme.{u}} (hB : B = B') (g : A ⟶ B)
-    (J : B.IdealSheafData) (J' : B'.IdealSheafData) (K : A.IdealSheafData)
-    (hK : K = J.comap g) (hJ : HEq J' J) :
-    K = J'.comap (g ≫ eqToHom hB) := by
-  subst hB
-  have h1 : J' = J := eq_of_heq hJ
-  subst h1
-  rw [hK]
-  simp
 
 private theorem center_eq_comap_prepend_center_succIndex {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
@@ -523,25 +484,11 @@ private theorem center_eq_comap_prepend_center_succIndex {φ : X' ⟶ X} {d' : B
     d'.toSequenceOfBlowups.center j =
       ((BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.center (succIndex c.idx j)).comap
         (mapToPrependSuccIndex c Z hZ j (le_of_lt hj)) := by
-  have hc : d'.toSequenceOfBlowups.center j =
-      (d.toSequenceOfBlowups.center (c.idx j)).comap (c.map j (le_of_lt hj)) := c.center_comap j hj
-  have hJ : (BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.center (c.idx j + 1) =
-      d.toSequenceOfBlowups.center (c.idx j) :=
-    (BlowupSequenceData.toSequenceOfBlowups_center (BlowupSequenceData.prepend Z hZ d) (c.idx j + 1)).trans
-      ((BlowupSequenceData.prepend_center_succ Z hZ d (c.idx j)).trans
-        (BlowupSequenceData.toSequenceOfBlowups_center d (c.idx j)).symm)
-  show d'.toSequenceOfBlowups.center j =
-      ((BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.center (c.idx j + 1)).comap
-        (c.map j (le_of_lt hj) ≫ eqToHom (prepend_schemeAt_succ Z hZ d (c.idx j)).symm)
-  exact comap_eq_comap_comp_eqToHom_of_heq (prepend_schemeAt_succ Z hZ d (c.idx j)).symm
-    (c.map j (le_of_lt hj)) (d.toSequenceOfBlowups.center (c.idx j))
-    ((BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.center (c.idx j + 1))
-    (d'.toSequenceOfBlowups.center j) hc (heq_of_eq hJ)
-
-private theorem center_ne_top_of_prepend_comap_eq_top {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
-    (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (_Z : X.IdealSheafData)
-    (_hZ : Blowup.IsBlowupAlongIdealSheaf (𝟙 X) _Z) (j : ℕ) (hj : j < d'.toSequenceOfBlowups.length) :
-    d'.toSequenceOfBlowups.center j ≠ ⊤ := c.center_ne_top j hj
+  rw [comparisonMapOfComapEqTop_eq_map]
+  change d'.toSequenceOfBlowups.center j =
+    ((BlowupSequenceData.prepend Z hZ d).toSequenceOfBlowups.center (c.idx j + 1)).comap _
+  rw [prepend_center_succ]
+  exact c.center_comap j hj
 
 private theorem ne_projectionToBase_of_forall_succIndex_ne {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ d'.toSequenceOfBlowups d.toSequenceOfBlowups) (Z : X.IdealSheafData)
@@ -594,11 +541,11 @@ def prependOfComapEqTop {φ : X' ⟶ X} {d' : BlowupSequenceData X'} {d : Blowup
   map := mapToPrependSuccIndex c Z hZ
   idx_length := succIndex_length_eq_prepend_length c Z hZ
   idx_lt := succIndex_lt_prepend_length c Z hZ
-  idx_strictMono := succIndex_lt_succIndex_succ c Z hZ
+  idx_strictMono := succIndex_lt_succIndex_succ c
   isPullback := isPullback_comparisonMapOfComapEqTop c Z hZ
   step := blowupMorphism_comp_comparisonMapOfComapEqTop c Z hZ
   center_comap := center_eq_comap_prepend_center_succIndex c Z hZ
-  center_ne_top := center_ne_top_of_prepend_comap_eq_top c Z hZ
+  center_ne_top := c.center_ne_top
   omitted := ne_projectionToBase_of_forall_succIndex_ne c Z hZ htop
 
 end SequenceOfBlowupsPullback

@@ -8,45 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartFormalBiext
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UniversalStatement
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBMapPf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Jets.TwoPlaces
 import Mathlib.Tactic.Linter.Style
 
@@ -214,7 +175,7 @@ theorem psJet_eq {n d : ℕ} (m : ℕ) (q : Fin n × Fin d) (f : PS V n d) (P : 
   refine Ideal.Quotient.eq.2 (Ideal.Quotient.eq_zero_iff_mem.1 ((GlobalTheory.JetTest.mk_eq_zero_iff (m := m) _).2 ?_))
   intro e he
   have hle : ∀ i, e i ≤ m := fun i => (Finsupp.le_degree i e).trans he
-  rw [MvPolynomial.coeff_sub, MvPowerSeries.coeff_trunc, if_pos, h e he, sub_self]
+  rw [MvPolynomial.coeff_sub, MvPowerSeries.coeff_trunc, ite_eq_left, h e he, sub_self]
   refine lt_of_le_of_ne (fun i => ?_) (fun hh => ?_)
   · simpa using (hle i).trans (Nat.le_succ m)
   · have := hle q
@@ -242,9 +203,9 @@ theorem subst_sq (φ : V →+* V') {n d : ℕ} (i0 : Fin n) (m : ℕ) (f : Fin d
   rw [GlobalTheory.JetTest.jetMap_mk, MvPolynomial.aeval_X]
   refine psJet_eq m (i0, q.2) _ (MvPolynomial.map φ _) fun a ha => ?_
   have hc : MvPolynomial.constantCoeff (psTrunc m (f q.2)) = 0 := by
-    rw [MvPolynomial.constantCoeff_eq, GlobalTheory.JetTest.coeff_psTrunc, if_pos (by simp),
+    rw [MvPolynomial.constantCoeff_eq, GlobalTheory.JetTest.coeff_psTrunc, ite_eq_left (by simp),
       MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf]
-  rw [hc, map_zero, sub_zero, MvPolynomial.coeff_map, GlobalTheory.JetTest.coeff_psTrunc, if_pos ha, e,
+  rw [hc, map_zero, sub_zero, MvPolynomial.coeff_map, GlobalTheory.JetTest.coeff_psTrunc, ite_eq_left ha, e,
     MvPowerSeries.coeff_map]
 
 theorem copy_sq (φ : V →+* V') {n d : ℕ} (i : Fin n) (m : ℕ) :

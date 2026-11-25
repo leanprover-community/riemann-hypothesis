@@ -358,7 +358,7 @@ theorem exists_hE_ne_zero (hdet : J.det ≠ 0) {x : Fin M → E} (hx : x ≠ 0) 
     funext j
     have h := hcon (Pi.single j 1)
     simp only [hE_eq_sum, Pi.single_apply, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     simpa [Matrix.vecMul, dotProduct] using h
   have h0 := Matrix.eq_zero_of_vecMul_eq_zero hdet hu
   apply hx

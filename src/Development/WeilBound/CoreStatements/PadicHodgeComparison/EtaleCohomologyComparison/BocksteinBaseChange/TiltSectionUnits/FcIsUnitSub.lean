@@ -45,8 +45,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open Formalism.Per6 GroundTheory.PAdicHodge DeRhamPotentiallySemistable.DRPst

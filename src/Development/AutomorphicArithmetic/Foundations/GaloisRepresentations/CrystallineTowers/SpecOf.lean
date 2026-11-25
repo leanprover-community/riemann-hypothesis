@@ -353,7 +353,7 @@ theorem coord_pull (e : IsoFam K) (he : IsoNat e) {M M' : CrystallineSemistableC
   rw [LinearEquiv.apply_symm_apply] at hnat
   simp only [LinearMap.comp_apply, LinearMap.sum_apply, LinearMap.smul_apply,
     Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, LinearMap.toMatrix_apply]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, LinearMap.toMatrix_apply]
   rw [hB j0, hB', hnat]
   rfl
 
@@ -394,7 +394,6 @@ theorem frame_ex (P : CrystallineSemistableComparison.HT.HTPre l K.1) (e : IsoFa
     have := (P.fin M hM a n).1
     exact LinearEquiv.finiteDimensional (eqv e M.q a (n - a) n (add_sub_fin a))
   have : FiniteDimensional ℚ_[l] (EtV (K := K) M.q n) := hfd
-  set_option synthInstance.maxHeartbeats 200000 in
   exact ⟨⟨_, Module.finBasis ℚ_[l] (EtV (K := K) M.q n), fun a => _,
     fun a => Module.finBasis K.1 (HodgeV (K := K) M.q n a)⟩, sum_e e hM hr _⟩
 

@@ -3,49 +3,7 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.FiniteResidue
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.NormO
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -121,14 +79,6 @@ private theorem ev_dvd {l : ℕ} [Fact l.Prime] (c : HV.Coef l) (a : c.O) (ha : 
   push_cast
   exact hy
 
-private theorem norm_coef_O_coe_padicAlgCl_le_one {l : ℕ} [Fact l.Prime] (c : HV.Coef l) (y : c.O) :
-    ‖(y : PadicAlgCl l)‖ ≤ 1 := by
-  by_cases hu : IsUnit y
-  · have h := Base.normO l c.O y hu.ne_zero
-    rw [IsDiscreteValuationRing.addVal_eq_zero_iff.mpr hu, ENat.toNat_zero, pow_zero] at h
-    exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) (base_eO_toNat_ne_zero c)).mp h).le
-  · exact (norm_lt_one_of_not_isUnit c y hu).le
-
 theorem UpperTheory.V.X.So.adicCont :
     ∀ (l : ℕ) [Fact l.Prime] (c : HV.Coef l), (∀ a : c.O, a ≠ 0 → Continuous (Lev.mk a)) ∧ ∀ (X : Type) [TopologicalSpace X] (z : X → c.O), Alg.AdicCont (maximalIdeal c.O) z ↔ Continuous z := by
   intro l _ c
@@ -160,8 +110,11 @@ theorem UpperTheory.V.X.So.adicCont :
       have he : ((z g : c.O) : PadicAlgCl l) - z g0 = (w : PadicAlgCl l) ^ N * t := by
         exact_mod_cast congrArg (fun u : c.O => (u : PadicAlgCl l)) ht
       rw [he, norm_mul, norm_pow]
+      have ht1 : ‖(t : PadicAlgCl l)‖ ≤ 1 :=
+        _root_.UpperTheory.Reformulated.B.NormLeOneOfIsIntegral.norm_le_one_of_isIntegral
+          l _ ((Algebra.IsIntegral.isIntegral (R := ℤ_[l]) t).map c.O.val)
       calc ‖(w : PadicAlgCl l)‖ ^ N * ‖(t : PadicAlgCl l)‖ ≤ ‖(w : PadicAlgCl l)‖ ^ N * 1 :=
-            mul_le_mul_of_nonneg_left (norm_coef_O_coe_padicAlgCl_le_one c t) (by positivity)
+            mul_le_mul_of_nonneg_left ht1 (by positivity)
         _ < ε := by
           rw [mul_one]
           exact hN

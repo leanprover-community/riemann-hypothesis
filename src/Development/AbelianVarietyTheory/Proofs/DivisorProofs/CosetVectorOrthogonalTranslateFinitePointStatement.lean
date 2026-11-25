@@ -26,68 +26,24 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePartRa
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergFinitePointReadsClassicalTranslationStatement
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SelfDualCLatP
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGeneratorNeZero
 import Development.AbelianVarietyTheory.Definitions.Divisors.FlatTensorVacuum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VacTheta
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrimeDvdAbsNormHalfDifferent
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ModelLatIn
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVecMemThetaSpace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeIntertwinerStandardToSkewMemThetaSpace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormPeriodSq
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddCharTraceUnitBlockTrivialOfMoves, Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddCharTraceUnitBlockTrivialOfMovesStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjugatePlaceValuationCountUnder, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenseRationalHomPointsIdealCompletion, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenseRationalHomPointsIdealCompletionStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowIntegralCompletedHomLattice, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowIntegralCompletedHomLatticeStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralOfCompletedLatticeSelfDualRankOne, Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemIdealIntegralFiniteAdelesOfMemCompletion, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryFinitePointCongrOneOfInvConjCongr, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuedFiniteUnitaryLeOneOffOpenSubset, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuedOneSubLeOfMovesIdealCompletion, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVectorOrthogonalTranslateFinitePoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVectorOrthogonalTranslateFinitePointStatement
@@ -157,18 +113,18 @@ theorem hO_rowMat (S T : HSp D) (hS : S.gram = 1) (hT : T.gram = 1) (r : D.host.
       incA D (star (-(r⁻¹ * if p.1 = o + a.1 then 1 else 0))) * f a := by
     intro a
     rw [Finset.sum_eq_single p]
-    · have : rowMat S T p f p a = f a := if_pos rfl
+    · have : rowMat S T p f p a = f a := ite_eq_left rfl
       rw [this]
       exact cA_fin_mul _ _ (hf a)
     · intro c _ hc
-      have : rowMat S T p f c a = 0 := if_neg hc
+      have : rowMat S T p f c a = 0 := ite_eq_right hc
       rw [this, mul_zero]
     · intro h; exact absurd (Finset.mem_univ _) h
   rw [Finset.sum_congr rfl fun a _ => h1 a, Finset.sum_eq_single j]
-  · rw [if_pos hp, mul_one, star_neg, RingHom.map_neg, neg_mul]
+  · rw [ite_eq_left hp, mul_one, star_neg, RingHom.map_neg, neg_mul]
   · intro a _ ha
     have : ¬ p.1 = o + a.1 := fun h => ha (Fin.ext (by omega))
-    rw [if_neg this, mul_zero, neg_zero, star_zero, RingHom.map_zero, zero_mul]
+    rw [ite_eq_right this, mul_zero, neg_zero, star_zero, RingHom.map_zero, zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem actO_rowMat (S T : HSp D) (g : GA D S) (p : Fin T.rank) (i : Fin S.rank) (σ : AE D) :
@@ -181,15 +137,15 @@ theorem actO_rowMat (S T : HSp D) (g : GA D S) (p : Fin T.rank) (i : Fin S.rank)
   funext c a
   rw [Matrix.mul_apply]
   by_cases hc : c = p
-  · have e : ∀ k, rowMat S T p (Pi.single i σ) c k = (Pi.single i σ : Fin S.rank → AE D) k := fun k => if_pos hc
-    have e' : rowMat S T p (fun a => σ * mt S g⁻¹ i a) c a = σ * mt S g⁻¹ i a := if_pos hc
+  · have e : ∀ k, rowMat S T p (Pi.single i σ) c k = (Pi.single i σ : Fin S.rank → AE D) k := fun k => ite_eq_left hc
+    have e' : rowMat S T p (fun a => σ * mt S g⁻¹ i a) c a = σ * mt S g⁻¹ i a := ite_eq_left hc
     rw [e', Finset.sum_eq_single i]
     · rw [e, Pi.single_eq_same]
     · intro k _ hk
       rw [e, Pi.single_eq_of_ne hk, zero_mul]
     · intro h; exact absurd (Finset.mem_univ _) h
-  · have e : ∀ k, rowMat S T p (Pi.single i σ) c k = 0 := fun k => if_neg hc
-    have e' : rowMat S T p (fun a => σ * mt S g⁻¹ i a) c a = 0 := if_neg hc
+  · have e : ∀ k, rowMat S T p (Pi.single i σ) c k = 0 := fun k => ite_eq_right hc
+    have e' : rowMat S T p (fun a => σ * mt S g⁻¹ i a) c a = 0 := ite_eq_right hc
     rw [e']
     exact Finset.sum_eq_zero fun k _ => by rw [e, zero_mul]
 
@@ -199,11 +155,11 @@ theorem two_smul_rowMat (S T : HSp D) (p : Fin T.rank) (i : Fin S.rank) (σ : AE
   show 2 • (if c = p then (Pi.single i σ : Fin S.rank → AE D) a else 0) =
     if c = p then (Pi.single i (2 * σ) : Fin S.rank → AE D) a else 0
   by_cases hc : c = p
-  · rw [if_pos hc, if_pos hc]
+  · rw [ite_eq_left hc, ite_eq_left hc]
     by_cases ha : a = i
     · rw [ha, Pi.single_eq_same, Pi.single_eq_same, two_nsmul, two_mul]
     · rw [Pi.single_eq_of_ne ha, Pi.single_eq_of_ne ha, nsmul_zero]
-  · rw [if_neg hc, if_neg hc, nsmul_zero]
+  · rw [ite_eq_right hc, ite_eq_right hc, nsmul_zero]
 
 theorem hatPt_rowMat (S T : HSp D) (r : D.host.E) (I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) (p : Fin T.rank)
     (f : Fin S.rank → AE D) (h0 : ∀ a, infPart D (f a) = 0) (h1 : ∀ a, InHat I (algebraMap D.host.E (FA D) r * fe D (f a))) :
@@ -312,7 +268,6 @@ open GlobalTheory.StdLoc (glVol blockIdx)
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
-
 
 end -- clump:auto
 end -- clump:auto
@@ -594,7 +549,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenseRationalHomPointsIdealCompletionStatement =====
@@ -750,7 +704,6 @@ open GlobalTheory.StdLoc (glVol blockIdx)
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1062,7 +1015,7 @@ theorem inHat_of_inv_cong : ∀ {D : D7}, (∀ w : HeightOneSpectrum (𝓞 D.hos
           Matrix.one_apply]
         by_cases hij : i = j
         · subst hij; simp
-        · rw [if_neg hij, if_neg (Ne.symm hij)]; simp
+        · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij)]; simp
       rw [e1, e2, ← hv]
       exact (Valuation.map_neg _ _).symm
     · have hint : Valued.v (finMat y i j w) ≤ 1 ∧ Valued.v (finMat y⁻¹ i j w) ≤ 1 := by
@@ -1352,7 +1305,7 @@ theorem exists_read_of_wd (h : Setup ψ θ S T ⊤ δ r) {G : VC D a d → ℂ} 
     field_simp
   have h1 := hφ.smul (c * wdPh D (tor0 D ⊤ δ) x)⁻¹
   rw [e] at h1
-  have h2 := GlobalTheory.T.heisenbergFinitePoint_reads_classicalTranslation ψ θ S T hS hT ⊤ δ r h _ _ h1 (-z)
+  have h2 := GlobalTheory.NormExact.heisO_finPt_reads ψ θ S T hS hT ⊤ δ r h _ _ h1 (-z)
   have e2 : pt D (tor0 D ⊤ δ) δ (-z) = -x := by
     funext τ i j
     simp [hx, pt, Formalism.MainNotions.TaylorLogMetric.embV, tor0]
@@ -1371,7 +1324,7 @@ theorem heis_two_finPt (h : Setup ψ θ S T ⊤ δ r) {L L'} {G : VC D a d → �
   set x := pt D (tor0 D ⊤ δ) δ z with hx
   have hxm : x ∈ La D (tor0 D ⊤ δ) L L' :=
     AddSubgroup.subset_closure ⟨δ, AddSubgroup.subset_closure ⟨1, trivial, by simp⟩, z, hz, rfl⟩
-  have h1 := (GlobalTheory.T.heisenbergFinitePoint_reads_classicalTranslation ψ θ S T hS hT ⊤ δ r h _ _ hf z).smul (al D (tor0 D ⊤ δ) x)
+  have h1 := (GlobalTheory.NormExact.heisO_finPt_reads ψ θ S T hS hT ⊤ δ r h _ _ hf z).smul (al D (tor0 D ⊤ δ) x)
   have e : al D (tor0 D ⊤ δ) x • U D (tor0 D ⊤ δ) x G = G := funext fun y => hG.2 x hxm y
   rw [e] at h1
   have h2 := h1.unique hf
@@ -1605,7 +1558,6 @@ open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
 open GlobalTheory.NormRatio
-
 
 end -- clump:auto
 end -- clump:auto

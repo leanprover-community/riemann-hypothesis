@@ -228,11 +228,6 @@ theorem chartEquiv_change (hL : L.IsLB) (i j : L.ι) {V : X.Opens} (hi : V ≤ L
       resG X (le_inf hi hj) (L.g i j : Γ(X, L.U i ⊓ L.U j)) • chartEquiv hL j hj s :=
   coord_rel s i j _ _ _
 
-theorem chartEquiv_map_app (hL : L.IsLB) (φ : F ⟶ G) (i : L.ι) {V : X.Opens} (h : V ≤ L.U i)
-    (s : Γ(twist F L, V)) :
-    chartEquiv hL i h ((map L φ).app V s) = φ.app V (chartEquiv hL i h s) :=
-  (app_resM φ _ _).symm
-
 
 variable (F) in
 def restrictIso (hL : L.IsLB) (i : L.ι) (g : Y ⟶ X) [IsOpenImmersion g]

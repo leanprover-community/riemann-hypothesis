@@ -8,12 +8,6 @@ public import Formalism.SharedLemmas.CocycleFiniteIndex
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
 
-private theorem z1fDesc_avg {k G W : Type} [Field k] [CharZero k] [Group G] [AddCommGroup W] [Module k W]
-    (a : G → W →ₗ[k] W) (hmul : ∀ g h w, a (g * h) w = a g (a h w)) (f : G → W)
-    (hf : ∀ g h, f (g * h) = f g + a g (f h)) (H : Subgroup G) [H.FiniteIndex] (x : W)
-    (hx : ∀ h ∈ H, f h = a h x - x) : ∃ y, ∀ g, f g = a g y - y := by
-  exact Formalism.SharedLemmas.cocycle_coboundary_of_finiteIndex_sub a hmul f hf H x hx
-
 theorem UpperTheory.V.Loc.z1fDesc :
     ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) {A : Type} [CommRing A] [Algebra ℚ_[l] A] {V : Type} [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul A V] (ρ : Representation A G V) (H : Subgroup G) [H.Normal] [H.FiniteIndex], ∀ c ∈ Z1 ρ, (c ∈ UpperTheory.V.Loc.finiteCocycles φ ρ ↔ (fun h : H => c h) ∈ UpperTheory.V.Loc.finiteCocycles (φ.comp H.subtype) (ρ.comp H.subtype : Representation A H V)) := by
   intro l _ G _ _ _ φ A _ _ V _ _ _ _ _ _ _ _ _ ρ H _ _ c hc
@@ -22,7 +16,7 @@ theorem UpperTheory.V.Loc.z1fDesc :
     exact ⟨⟨hc.1.comp continuous_subtype_val, fun g h => hc.2 g h⟩, x, fun h => hx h⟩
   · rintro ⟨-, x, hx⟩
     refine ⟨hc, ?_⟩
-    refine z1fDesc_avg (k := ℚ_[l]) (fun g => (actC φ ρ g).restrictScalars ℚ_[l]) ?_
+    refine Formalism.SharedLemmas.cocycle_coboundary_of_finiteIndex_sub (k := ℚ_[l]) (fun g => (actC φ ρ g).restrictScalars ℚ_[l]) ?_
       (fun g => c g ⊗ₜ[ℚ_[l]] (1 : Bcr l)) ?_ H x (fun h hh => hx ⟨h, hh⟩)
     · intro g h w
       induction w using TensorProduct.induction_on with

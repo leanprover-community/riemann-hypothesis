@@ -30,8 +30,8 @@ lemma emb_out_col (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   rw [dite_eq_right (fun h => hj' h.2)]
   by_cases hqj : q = j
   · subst hqj
-    rw [if_pos ⟨rfl, hj'⟩, if_pos rfl]
-  · rw [if_neg (fun h => hqj h.1), if_neg hqj]
+    rw [ite_eq_left ⟨rfl, hj'⟩, ite_eq_left rfl]
+  · rw [ite_eq_right (fun h => hqj h.1), ite_eq_right hqj]
 
 lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : ¬ mid k r q) :
     embWb k r μ q j = if q = j then 1 else 0 := by
@@ -40,8 +40,8 @@ lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   rw [dite_eq_right (fun h => hq' h.1)]
   by_cases hqj : q = j
   · subst hqj
-    rw [if_pos ⟨rfl, hq'⟩, if_pos rfl]
-  · rw [if_neg (fun h => hqj h.1), if_neg hqj]
+    rw [ite_eq_left ⟨rfl, hq'⟩, ite_eq_left rfl]
+  · rw [ite_eq_right (fun h => hqj h.1), ite_eq_right hqj]
 
 lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : mid k r q) (hj : mid k r j) :
     embWb k r μ q j = μ ⟨q.val - r, by have := hq; omega⟩ ⟨j.val - r, by have := hj; omega⟩ := by
@@ -73,11 +73,6 @@ lemma emb_cont : Continuous (fun μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ => 
   all_goals first
     | exact continuous_const
     | exact (continuous_apply _).comp (continuous_apply _)
-
-lemma lmulM_cont (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) := by
-  refine continuous_pi fun i => continuous_pi fun j => ?_
-  simp only [lmulM, Matrix.mul_apply, Matrix.of_apply]
-  fun_prop
 
 end Formalism.FourierDecayAlt.P.RankOneEmbeddings.Wb
 
@@ -190,12 +185,12 @@ def secF (k r : ℕ) (z z' : Vc k r) (μsec : ℂ → Matrix (Fin (k + 1)) (Fin 
 theorem secF_on {z z' : Vc k r} {μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} {ζ : ℂ} (h : ζ ∈ Om k r z z') :
     secF k r z z' μsec ζ = μsec ζ := by
   unfold secF
-  exact if_pos h
+  exact ite_eq_left h
 
 theorem secF_off {z z' : Vc k r} {μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} {ζ : ℂ} (h : ζ ∉ Om k r z z') :
     secF k r z z' μsec ζ = 1 := by
   unfold secF
-  exact if_neg h
+  exact ite_eq_right h
 
 theorem secF_section {z z' : Vc k r} {μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ}
     (hsec : IsSection k r z z' μsec) : IsSection k r z z' (secF k r z z' μsec) := by
@@ -256,7 +251,7 @@ theorem ae_Om (z z' : Vc k r) :
     have h0 : ¬ (Tz k r z * Tz k r z' < Complex.normSq ζ) := h
     have h' : Complex.normSq ζ ≤ Tz k r z * Tz k r z' := not_lt.1 h0
     unfold zWeight
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hle
     apply hζ
     rw [mem_sphere_zero_iff_norm, ← le_antisymm h' hle, Complex.normSq_eq_norm_sq,
@@ -598,7 +593,7 @@ theorem wd_ne_zero (z z' : Vc k r) : wd k r z z' ≠ 0 := by
   have hp : 0 < (Complex.normSq ζ - Tz k r z * Tz k r z') ^ (k - 1) := pow_pos (by linarith) _
   show ¬ (ENNReal.ofReal (zWeight k (Tz k r z) (Tz k r z') ζ) = 0)
   unfold zWeight
-  rw [if_pos hlt.le]
+  rw [ite_eq_left hlt.le]
   exact (ENNReal.ofReal_pos.2 hp).ne'
 
 theorem nu_ne_zero (z z' : Vc k r) {s : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hs : MeasSec s)

@@ -141,7 +141,7 @@ theorem UpperTheory.orbitalFiber_pushforward :
         (fun y hy => ⟨y.2, hy⟩))]
     rw [finsum_set_coe_eq_finsum_mem (f := k) (F i)]
     rfl
-  · push_neg at hz
+  · push Not at hz
     have h0 : (∑ᶠ (y : X') (_ : q y = Quotient.out i), k y) = 0 := by
       apply finsum_eq_zero_of_forall_eq_zero
       intro y

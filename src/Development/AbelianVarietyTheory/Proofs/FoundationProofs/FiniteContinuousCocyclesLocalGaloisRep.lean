@@ -4,51 +4,11 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.Pi
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
@@ -166,7 +126,7 @@ theorem _root_.GlobalTheory.LocalH1Finiteness.finite_cocycles_of_compact_cover {
       obtain ⟨x, hxt, hxy⟩ := Set.mem_iUnion₂.1 (hcov y.2)
       refine ⟨x, hxt, ?_⟩
       have hxT : x ∈ T := htT hxt
-      simp only [f, dif_pos hxT]
+      simp only [f, dite_eq_left hxT]
       rw [QuotientAddGroup.eq]
       show ‖(-(x : V) + y)‖ < 1
       rw [neg_add_eq_sub]
@@ -220,7 +180,7 @@ theorem _root_.GlobalTheory.LocalH1Finiteness.finite_cocycles_of_compact_cover {
     have hΨc : Ψ c = fun h =>
         QuotientAddGroup.mk (⟨c (φ h), mem_closedBall_zero_iff.2 (hcl (φ h))⟩ : T) := by
       funext h
-      simp only [Ψ, dif_pos (hcl (φ h))]
+      simp only [Ψ, dite_eq_left (hcl (φ h))]
     rw [hΨc]
     refine ⟨hπ.comp (Continuous.subtype_mk (hc'.1.comp hφ) _), fun h h' => ?_⟩
     have hval : (⟨c (φ (h * h')), mem_closedBall_zero_iff.2 (hcl _)⟩ : T) =
@@ -236,7 +196,7 @@ theorem _root_.GlobalTheory.LocalH1Finiteness.finite_cocycles_of_compact_cover {
     rintro c ⟨-, hcl⟩ c' ⟨-, hcl'⟩ hcc g
     obtain ⟨h, rfl⟩ := hφs g
     have := congrFun hcc h
-    simp only [Ψ, dif_pos (hcl (φ h)), dif_pos (hcl' (φ h)), QuotientAddGroup.eq_iff_sub_mem] at this
+    simp only [Ψ, dite_eq_left (hcl (φ h)), dite_eq_left (hcl' (φ h)), QuotientAddGroup.eq_iff_sub_mem] at this
     exact this
   have himg : (Ψ '' A).Finite :=
     (Set.toFinite (_root_.ReciprocityTheory.Gal.Z1 rho : Set (H → T ⧸ U))).subset (by

@@ -633,10 +633,6 @@ set_option linter.overlappingInstances false
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr UpperTheory.V.Alg UpperTheory.V.J
 
-namespace UpperTheory.V.J.ChevalleyRestriction
-
-end UpperTheory.V.J.ChevalleyRestriction
-
 theorem UpperTheory.V.J.chev :
     ∀ (B A : Type) [CommRing B] [IsDomain B] [CommRing A] [IsDomain A] [Algebra B A] [Algebra.FiniteType B A], Function.Injective (algebraMap B A) →
         ∀ a : A, a ≠ 0 → ∃ b : B, b ≠ 0 ∧ ∀ (K : Type) [Field K] [IsAlgClosed K] (y : B →+* K), y b ≠ 0 →
@@ -686,7 +682,6 @@ private theorem gen_out {R : Type} [CommRing R] {s : Set R} {P : Ideal R} (h : �
   by_contra! hc
   exact h (Ideal.span_le.2 hc)
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem UpperTheory.V.J.genPt :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) [Fr.IsCoef l c.O] (F : Fr.Frame l (ResidueField c.O)) (C₀ n : ℕ), F.Ok C₀ → (n = 2 ∨ n = 3) →
         ∀ (S : Fr.Space c.O F n), ∀ (P : Ideal S.A) (Gd : (S.B →ₐ[c.O] Qbar l) → Prop), P ∈ minimalPrimes S.A → S.u.TI P →
@@ -1254,7 +1249,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option linter.overlappingInstances false
-set_option synthInstance.maxHeartbeats 200000
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr UpperTheory.V.Alg UpperTheory.V.J
 
@@ -1683,7 +1677,7 @@ private theorem rank_ge [Algebra O T] [IsScalarTower O A T] [IsNoetherianRing T]
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
   have hinj : Function.Injective Ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro φ h0
     have h1 : ∀ x, φ (r (algebraMap A T x)) = 0 := fun x =>
       congrArg (fun D : PtDer ξ K => (D : A →ₗ[O] K) x) h0
@@ -1850,7 +1844,6 @@ private theorem rank_le_card_add_rank_of_kernel {K M : Type} [Field K] [AddCommG
   rw [← h1]
   exact add_le_add h2 h3
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem UpperTheory.V.J.tanBound :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) [Fr.IsCoef l c.O] (F : Fr.Frame l (ResidueField c.O)) (C₀ n : ℕ), F.Ok C₀ → (n = 2 ∨ n = 3) →
         ∀ (S : Fr.Space c.O F n), ∀ ξ : S.A →ₐ[c.O] Qbar l, IntPt S ξ →
@@ -1909,7 +1902,6 @@ section -- clump:auto
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr UpperTheory.V.Alg UpperTheory.V.J
 
 theorem UpperTheory.V.J.redAbs : UpperTheory.V.J.RedAbs := by
-  set_option synthInstance.maxHeartbeats 200000 in
   intro l _ c _ F C₀ n hF hn S M Gd hAG hDB hTan ξ hξ hTI b hb
   haveI hA : IsNoetherianRing S.A := (Fr.gr_A hF hn S).2.2.2.2.2.1
   haveI hq : (RingHom.ker ξ).IsPrime := RingHom.ker_isPrime _

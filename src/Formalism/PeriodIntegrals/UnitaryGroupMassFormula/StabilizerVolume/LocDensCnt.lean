@@ -42,14 +42,7 @@ abbrev iO (a : 𝓞 F) : Fv F v := algebraMap F (Fv F v) (algebraMap (𝓞 F) F 
 
 export PI.VolStabSW (vcoe)
 
-theorem lt_one_iff_le_expm1 (g : WithZero (Multiplicative ℤ)) : g < 1 ↔ g ≤ WithZero.exp (-1 : ℤ) := by
-  rcases eq_or_ne g 0 with rfl | hg
-  · simp
-  · rw [← WithZero.exp_log hg, ← WithZero.exp_zero, WithZero.exp_lt_exp, WithZero.exp_le_exp]
-    omega
-
 export PI.VolStabSW (v_iO_le v_iO_lt_iff exists_appr)
-
 
 export PI.VolStabSW (appr appr_spec)
 
@@ -71,7 +64,7 @@ export PI.VolStabSW (red_surj)
 theorem lt_one_iff_unif (x : Fv F v) :
     Valued.v x < 1 ↔ Valued.v ((unifV v)⁻¹ * x) ≤ 1 := by
   have hne : (WithZero.exp (-1 : ℤ) : WithZero (Multiplicative ℤ)) ≠ 0 := WithZero.exp_ne_zero
-  rw [map_mul, map_inv₀, unifV_val, lt_one_iff_le_expm1]
+  rw [map_mul, map_inv₀, unifV_val, GlobalTheory.HaarLatticeScale.lt_one_iff_le_exp]
   constructor
   · intro h
     calc (WithZero.exp (-1 : ℤ))⁻¹ * Valued.v x ≤ (WithZero.exp (-1 : ℤ))⁻¹ * WithZero.exp (-1 : ℤ) :=
@@ -354,7 +347,6 @@ theorem coe_sigC (z : lamC v A hD) : (sigC v A hD z : Fv F v ⊗[F] E) = sigR (F
 
 variable {K : Type} [CommRing K] [Algebra (𝓞 F ⧸ v.asIdeal) K] (r : K)
   (hr : r * r = algebraMap _ K (red v (algebraMap F (Fv F v) A.D0)))
-
 
 include hr in
 def rho : lamC v A hD →+* K where
@@ -785,7 +777,7 @@ theorem cnt_meas [Finite K] (hσ : ∀ x, σ (σ x) = x) {M a d : ℕ} [Measurab
   have rsu := rho_surj v A hD r hr hbij
   generalize rho v A hD r hr = ρ at rs rz rsu ⊢
   obtain ⟨rT, rT_eq⟩ : ∃ f : Fv F v ⊗[F] E → K, ∀ z (h : z ∈ lamC v A hD), f z = ρ ⟨z, h⟩ :=
-    ⟨fun z => if h : z ∈ lamC v A hD then ρ ⟨z, h⟩ else 0, fun z h => dif_pos h⟩
+    ⟨fun z => if h : z ∈ lamC v A hD then ρ ⟨z, h⟩ else 0, fun z h => dite_eq_left h⟩
   have memL : ∀ Y, Y ∈ latSub b v a M ↔ ∀ i p, Y i p ∈ lamC v A hD := by
     intro Y
     show (∀ i p k, _ ∈ _) ↔ _

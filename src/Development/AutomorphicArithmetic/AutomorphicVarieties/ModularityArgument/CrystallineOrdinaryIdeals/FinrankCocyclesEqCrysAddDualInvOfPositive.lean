@@ -75,7 +75,7 @@ theorem GlobalTheory.cocycleDim_positive : LocalPublishedTheorems → ∀ {l : �
   haveI : FiniteDimensional E V := Module.Finite.of_restrictScalars_finite ℚ_[l] E V
   obtain ⟨hH0, -, hfinf, hdimf⟩ := posBasic hP φ hφ ρ hρ hpos
   obtain ⟨hf1, -, e1, e2⟩ := tateRat hP (v := l) (l := l) φ hφ ρ hρ
-  rw [if_pos rfl, hH0, finrank_bot, e2] at e1
+  rw [ite_eq_left rfl, hH0, finrank_bot, e2] at e1
   have hBf : Module.Finite E ↥(B1 ρ) := by
     unfold B1; infer_instance
   have hBS := (z1fMap (l := l) φ ρ ρ).1 hρ

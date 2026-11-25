@@ -1296,7 +1296,7 @@ theorem exists_finset_cosets {C : Set (AdelicGLn.FiniteAdelicGL L N)} (hC : IsCo
   refine ⟨t.image g, fun γ hγ => ?_⟩
   obtain ⟨c, hct, hc⟩ := Set.mem_iUnion₂.1 (ht hγ)
   have hex : ∃ γ : GL (Fin N) L, p γ ∈ C ∧ p γ ∈ V c := ⟨γ, hγ, hc⟩
-  have hg : g c = hex.choose := dif_pos hex
+  have hg : g c = hex.choose := dite_eq_left hex
   have hgV : p (g c) ∈ V c := by
     rw [hg]
     exact hex.choose_spec.2
@@ -1372,21 +1372,11 @@ private theorem moduleSection_component_eq_one_of_ne {w v : InfinitePlace L} (h 
   · exact absurd ‹w = v›.symm h
   · rfl
 
-private theorem finset_prod_units_component_eq_prod (w : InfinitePlace L) (s : Finset (InfinitePlace L))
-    (f : InfinitePlace L → 𝔸[𝓞 L, L]ˣ) :
-    ((∏ v ∈ s, f v : 𝔸[𝓞 L, L]ˣ) : 𝔸[𝓞 L, L]).1 w = ∏ v ∈ s, ((f v : 𝔸[𝓞 L, L]).1 w) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => rfl
-  | insert a s ha ih =>
-    rw [Finset.prod_insert ha, Finset.prod_insert ha, ← ih]
-    rfl
-
 private theorem posIdele_infinite_component (w : InfinitePlace L) (ρ : ℝ) (hρ : 0 < ρ) :
     ((Reduction.posIdele (K := L) ρ hρ : 𝔸[𝓞 L, L]ˣ) : 𝔸[𝓞 L, L]).1 w =
       GroundTheory.Global.posRealElem w (ρ ^ w.mult) := by
   unfold Reduction.posIdele
-  rw [finset_prod_units_component_eq_prod, Finset.prod_eq_single w]
+  rw [Units.coe_prod, Prod.fst_prod, Finset.prod_apply, Finset.prod_eq_single w]
   · exact moduleSection_component_self_eq_posRealElem _ _
   · intro v _ hv
     exact moduleSection_component_eq_one_of_ne hv _ _

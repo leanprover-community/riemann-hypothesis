@@ -25,19 +25,9 @@ theorem restrictIdeal_eq_comap_ι {X : Scheme.{u}} (I : X.IdealSheafData) (U : X
 theorem restrictIdeal_eq_top_iff_forall_notMem_support {X : Scheme.{u}} (I : X.IdealSheafData)
     (U : X.Opens) :
     restrictIdeal I U = ⊤ ↔ ∀ x : X, x ∈ U → x ∉ I.support := by
-  have hbot : ((⊥ : TopologicalSpace.Closeds U.toScheme) : Set U.toScheme) = ∅ := rfl
   have hbot' : ∀ A : TopologicalSpace.Closeds U.toScheme,
-      (A = ⊥ ↔ ∀ y : U.toScheme, y ∉ A) := by
-    intro A
-    constructor
-    · rintro rfl y hy
-      have hy' : y ∈ ((⊥ : TopologicalSpace.Closeds U.toScheme) : Set U.toScheme) := hy
-      rw [hbot] at hy'
-      exact hy'
-    · intro hall
-      have hA : (A : Set U.toScheme) = ∅ :=
-        Set.Subset.antisymm (fun y hy => absurd hy (hall y)) (Set.empty_subset _)
-      exact SetLike.coe_injective (hA.trans hbot.symm)
+      (A = ⊥ ↔ ∀ y : U.toScheme, y ∉ A) := fun _ =>
+    TopologicalSpace.Closeds.coe_eq_empty.symm.trans Set.eq_empty_iff_forall_notMem
   have key : ∀ (x : X) (hx : x ∈ U),
       ((⟨x, hx⟩ : U.toScheme) ∈ (I.comap U.ι).support ↔ x ∈ I.support) := by
     intro x hx

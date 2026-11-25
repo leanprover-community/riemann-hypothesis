@@ -392,9 +392,9 @@ theorem UpperTheory.V.U3.bloch_kato_nonpositive_weight :
         · simp [hg, mul_add]
         · simp [hg, hη1 g hg, mul_add]
       · rcases hs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-        · simp only [hg, if_false, MonoidHom.one_apply, Units.val_one]
+        · simp only [hg, ite_false, MonoidHom.one_apply, Units.val_one]
           ring
-        · simp only [hg, if_false, hη2 g hg, Units.val_neg, Units.val_one]
+        · simp only [hg, ite_false, hη2 g hg, Units.val_neg, Units.val_one]
           ring
     rw [hab]
     refine hch θ (hs.imp And.right And.right) (fun g => f (γ g)) ⟨hfc.comp hγ.1, fun g h => ?_⟩
@@ -417,8 +417,8 @@ theorem UpperTheory.V.U3.bloch_kato_nonpositive_weight :
   simp only [wt_rev, Fin.rev_rev, Units.val_mul, MonoidHom.one_apply, Units.val_one, Matrix.of_apply] at h1 h2 h3 h4 ⊢
   by_cases hg : D.η g = 1
   · rw [hη1 g hg, Units.val_one] at h1 h2
-    rw [if_pos hg]
+    rw [ite_eq_left hg]
     linear_combination (h1 + h2 + h3 - h4) / 4
   · rw [hη2 g hg, Units.val_neg, Units.val_one] at h1 h2
-    rw [if_neg hg]
+    rw [ite_eq_right hg]
     linear_combination (h1 + h2 + h3 - h4) / 4

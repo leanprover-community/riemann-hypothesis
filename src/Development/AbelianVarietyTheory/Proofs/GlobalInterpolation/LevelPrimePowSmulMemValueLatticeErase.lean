@@ -8,47 +8,8 @@ public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLTwist
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
 
@@ -427,7 +388,7 @@ theorem exists_frame_adapted (hn : 0 < n) (p : LocF.PP Lc n) : ∃ (h : GL (Fin 
         rw [Matrix.mulVec, dotProduct, map_sum, Finset.sum_mul, ← Finset.sum_erase (a := ⟨0, hn⟩) _ (by simp [N₀])]
       refine Finset.sum_congr rfl fun d hd => ?_
       have hd' := Finset.ne_of_mem_erase hd
-      simp only [N₀, Matrix.of_apply, true_and, ne_eq, hd', not_false_eq_true, if_true, map_mul, hb]
+      simp only [N₀, Matrix.of_apply, true_and, ne_eq, hd', not_false_eq_true, ite_true, map_mul, hb]
       field_simp
     · intro a _ ha
       simp [N₀, Matrix.mulVec, dotProduct, ha]
@@ -461,11 +422,11 @@ theorem frame_ker_decomp (hn : 0 < n) (p : LocF.PP Lc n) (h : GL (Fin n) Lc.K)
       intro a
       by_cases ha : a = ⟨0, hn⟩
       · subst ha
-        simp only [hdx, if_true] at hy
+        simp only [hdx, ite_true] at hy
         rw [mul_left_cancel₀ Lc.q_ne hy]
         exact y.2
       · have := hs a
-        rwa [hdx, if_neg ha] at this
+        rwa [hdx, ite_eq_right ha] at this
     · intro h3
       rw [mem_std] at h3
       have hs : ∀ a, (d : Matrix (Fin n) (Fin n) Lc.K).mulVec x a ∈ Lc.O := by
@@ -574,7 +535,7 @@ theorem pow_smul_mem_valB_erase : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u)
   intro D u X i M Co _ w hw hs V v hv p y hy
   obtain ⟨h, hh, z, hz, hy⟩ := hy
   have hhv := hh v
-  rw [if_neg (fun h' => h'.2 hv)] at hhv
+  rw [ite_eq_right (fun h' => h'.2 hv)] at hhv
   obtain ⟨h₁, k, hf, hdec⟩ := frame_ker_decomp (D.R.N_pos i) (p.2 v) (h v) hhv
   let ψ : (M.Lc v).K →+* ℂ := D.what₂.embLL.comp (Co.j w v)
   let φ : (M.Lc v).O →+* ℂ := ψ.comp (M.Lc v).O.subtype
@@ -591,7 +552,7 @@ theorem pow_smul_mem_valB_erase : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u)
     have : ∀ v', v' = v → Matrix.GeneralLinearGroup.map (D.what₂.embLL.comp (Co.j w v')) (g v') =
         Matrix.GeneralLinearGroup.map ψ (g v) := by
       rintro _ rfl; rfl
-    simp only [PtModel.Coord.mv, hs, if_true]
+    simp only [PtModel.Coord.mv, hs, ite_true]
     exact this _ (Equiv.symm_apply_apply _ _)
   have hmv1 : ∀ τ, τ ≠ X.fm.tauOf w v → Co.mv w (Function.update h v h₁) τ = Co.mv w h τ := by
     intro τ hτ
@@ -660,7 +621,7 @@ theorem pow_smul_mem_valB_erase : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u)
   refine ⟨Function.update h v h₁, fun v' => ?_, z', hz', by rw [map_smul, hy, ez]⟩
   by_cases hv' : v' = v
   · subst hv'
-    rw [Function.update_self, if_pos ⟨hs, Finset.notMem_erase _ _⟩]
+    rw [Function.update_self, ite_eq_left ⟨hs, Finset.notMem_erase _ _⟩]
     exact hf
   · rw [Function.update_of_ne hv']
     have := hh v'

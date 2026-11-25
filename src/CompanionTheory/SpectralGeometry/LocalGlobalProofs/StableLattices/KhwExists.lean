@@ -389,7 +389,7 @@ theorem khwExists : CompanionTheory.D.DSIC.KHWExists := by
   · intro a
     have h := hw.1 (σ.symm a)
     simp only [Equiv.apply_symm_apply] at h
-    simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, h, if_true, s, ← sub_smul]
+    simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, h, ite_true, s, ← sub_smul]
     congr 1
     push_cast
     ring

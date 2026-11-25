@@ -399,7 +399,7 @@ theorem len_le (hsep : ∀ x y : X, x ≠ y → ∃ f ∈ T, f x ≠ f y)
     refine iSup₂_le fun x hx => ?_
     intro v hv
     rw [LinearMap.mem_ker, LinearMap.sub_apply, hvx x _ v hv, hfun S x,
-      if_pos (Finset.mem_coe.mp hx)]
+      ite_eq_left (Finset.mem_coe.mp hx)]
     simp
   have hBle : VS T (actK T act).toRingHom ((S : Set X)ᶜ) ≤
       LinearMap.ker (actK T act (∑ x ∈ S, e x)) := by
@@ -407,7 +407,7 @@ theorem len_le (hsep : ∀ x y : X, x ≠ y → ∃ f ∈ T, f x ≠ f y)
     refine iSup₂_le fun x hx => ?_
     intro v hv
     have hx' : x ∉ S := fun h => hx (Finset.mem_coe.mpr h)
-    rw [LinearMap.mem_ker, hvx x _ v hv, hfun S x, if_neg hx']
+    rw [LinearMap.mem_ker, hvx x _ v hv, hfun S x, ite_eq_right hx']
     simp
   have hPA' : ∀ v, actK T act (∑ x ∈ S, e x) v ∈ VS T (actK T act).toRingHom (S : Set X) := by
     intro v
@@ -493,12 +493,12 @@ theorem vcc_ne_top (hsep : ∀ x y : X, x ≠ y → ∃ f ∈ T, f x ≠ f y) (Z
     funext y
     have hy : y.1 ≠ π := fun h => y.2 (by rw [Finset.mem_coe, h]; exact hπ)
     show (e : X → O) y.1 = 0
-    rw [he, if_neg (by simpa using hy)]
+    rw [he, ite_eq_right (by simpa using hy)]
   have hle : vcc T (Z : Set X) π ≤ IsDiscreteValuationRing.addVal O ((e : X → O) π) := by
     unfold Formalism.NG.vcc
     exact iInf₂_le e heI
   intro htop
-  rw [htop, top_le_iff, he, if_pos (Finset.mem_singleton_self π)] at hle
+  rw [htop, top_le_iff, he, ite_eq_left (Finset.mem_singleton_self π)] at hle
   exact hC ((IsDiscreteValuationRing.addVal_eq_top_iff).mp hle)
 
 theorem addVal_int (l : ℕ) [Fact l.Prime] (hl : ¬ IsUnit (l : O)) (A : ℤ) (hA : A ≠ 0) :

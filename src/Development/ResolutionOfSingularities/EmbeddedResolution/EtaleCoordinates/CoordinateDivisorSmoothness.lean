@@ -51,7 +51,6 @@ theorem smooth_ι_comp_subschemeι_comp_of_eq_coordIdeal (Z : X.IdealSheafData) 
   have hsm : Smooth (affineSpaceFinToSpec k (m - S.card)) := affineSpaceIsSmooth ..
   have het : Etale (c.restrictToSubscheme hU Z S h).map :=
     (c.restrictToSubscheme hU Z S h).isEtale
-  have hsm2 : Smooth (c.restrictToSubscheme hU Z S h).map := inferInstance
   have hc : (c.restrictToSubscheme hU Z S h).map ≫ affineSpaceFinToSpec k (m - S.card)
       = (Z.subschemeι ⁻¹ᵁ U).ι ≫ (Z.subschemeι ≫ p) :=
     (c.restrictToSubscheme hU Z S h).comp_struct
@@ -152,7 +151,6 @@ private theorem mem_map_of_mul_mem_of_etale {P A : Type u} [CommRing P] [CommRin
   let _ : Algebra (P ⧸ I) (A ⧸ Ideal.map f I) :=
     (Ideal.quotientMap (Ideal.map f I) f Ideal.le_comap_map).toAlgebra
   have : Algebra.Etale (P ⧸ I) (A ⧸ Ideal.map f I) := hg
-  have : Module.Flat (P ⧸ I) (A ⧸ Ideal.map f I) := inferInstance
   have hreg : IsSMulRegular (P ⧸ I) ((Ideal.Quotient.mk I) w) := by
     intro a b h
     exact hw a b (by simpa only [smul_eq_mul] using h)

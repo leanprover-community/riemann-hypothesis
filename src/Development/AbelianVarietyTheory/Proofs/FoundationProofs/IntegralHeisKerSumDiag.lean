@@ -2,47 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SummableExpNegHerm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.SetIntegralCharImEqZero, Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralHeisKerSumDiag
@@ -243,7 +205,7 @@ theorem integral_heis_kerSum_diag : ∀ (V : Type) [NormedAddCommGroup V] [Norme
         ring
     simp only [hint]
     by_cases hrΛ : r ∈ Λ
-    · rw [if_pos hrΛ, tsum_eq_single ⟨-r, neg_mem hrΛ⟩]
+    · rw [ite_eq_left hrΛ, tsum_eq_single ⟨-r, neg_mem hrΛ⟩]
       · have hcoe : ((⟨-r, neg_mem hrΛ⟩ : Λ) : V) = -r := rfl
         have him : (H r r).im = 0 := Complex.conj_eq_iff_im.mp (hH.1 r r).symm
         have hA : cexp (-(π : ℂ) * H (-r) r - (π : ℂ) * H (-r) (-r) / 2 - (π : ℂ) * H r r / 2
@@ -253,13 +215,13 @@ theorem integral_heis_kerSum_diag : ∀ (V : Type) [NormedAddCommGroup V] [Norme
           simp only [map_neg, LinearMap.neg_apply, neg_neg, Complex.neg_im, him, neg_zero,
             Complex.ofReal_zero, mul_zero, add_zero]
           ring
-        rw [hc, hcoe, if_pos rfl, hA, mul_one]
+        rw [hc, hcoe, ite_eq_left rfl, hA, mul_one]
       · intro x hx
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         apply hx
         exact Subtype.ext h
-    · rw [if_neg hrΛ]
+    · rw [ite_eq_right hrΛ]
       have hno : ∀ x : Λ, ¬ ((x : V) = -r) := by
         intro x h
         apply hrΛ

@@ -689,7 +689,7 @@ theorem clifford_prime_index : ∀ (G Γ : Type) [Group G] [Finite G] [Group Γ]
     haveI := hρ
     haveI : Invertible (Nat.card (G ⋊[φ] Γ) : ℂ) := invertibleOfNonzero hHne
     have ho := Representation.char_orthonormal ρ ρ
-    rw [if_pos ⟨Representation.Equiv.refl ρ⟩] at ho
+    rw [ite_eq_left ⟨Representation.Equiv.refl ρ⟩] at ho
     have hc : χ = ρ.character := funext fun g => by simpa using h g
     rw [finsum_eq_sum_of_fintype]
     have hst : ∀ x, star (χ x) = χ x⁻¹ := star_virt_eq_inv _ χ (isChar_mem_virt_complex hχchar)
@@ -728,7 +728,7 @@ theorem clifford_prime_index : ∀ (G Γ : Type) [Group G] [Finite G] [Group Γ]
     have h2 : χ (inl δ * inr s) * (ζ ^ a - 1) = 0 := by rw [mul_sub, h1, mul_one, sub_self]
     exact (mul_eq_zero.1 h2).resolve_right (sub_ne_zero.2 hζa)
   · right
-    push_neg at hcase
+    push Not at hcase
     have hNa : ∀ a ∈ Finset.range (Nat.card Γ), a ≠ 0 →
         ∑ᶠ x, χ x * star (χ x * (η x : ℂ) ^ a) = 0 := by
       intro a ha ha0
@@ -819,7 +819,7 @@ theorem cycloSq_coeff_eq {l : ℕ} (hl : l.Prime) {ζ : ℂ} (hζ : IsPrimitiveR
   have h1 : Q.coeff d = 0 := by rw [hQ0]; simp
   rw [hQdef, finsetSum_coeff] at h1
   simp only [coeff_C_mul_X_pow, Finset.sum_ite_eq, Finset.mem_range] at h1
-  rw [if_pos (by omega)] at h1
+  rw [ite_eq_left (by omega)] at h1
   have : ((a d - a (l - 1) : ℤ) : ℚ) = 0 := h1
   exact_mod_cast sub_eq_zero.mp (by exact_mod_cast this)
 
@@ -854,7 +854,7 @@ theorem cycloSq_mul_star {l : ℕ} (hl : 0 < l) {ζ : ℂ} (hζ : IsPrimitiveRoo
     _ = ∑ a ∈ Finset.range l, ∑ b ∈ Finset.range l, ∑ d ∈ Finset.range l,
           (if (a + (l - 1) * b) % l = d then ((f a * f b : ℤ) : ℂ) * ζ ^ d else 0) := by
         refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
-        rw [Finset.sum_ite_eq, if_pos (Finset.mem_range.mpr (Nat.mod_lt _ hl))]
+        rw [Finset.sum_ite_eq, ite_eq_left (Finset.mem_range.mpr (Nat.mod_lt _ hl))]
     _ = ∑ d ∈ Finset.range l, ∑ a ∈ Finset.range l, ∑ b ∈ Finset.range l,
           (if (a + (l - 1) * b) % l = d then ((f a * f b : ℤ) : ℂ) * ζ ^ d else 0) := by
         exact (Finset.sum_congr rfl (fun a _ => Finset.sum_comm)).trans Finset.sum_comm
@@ -872,7 +872,7 @@ theorem cycloSq_sum_coeff {l : ℕ} (hl : 0 < l) (f : ℕ → ℤ) :
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun b _ => ?_)
-  rw [Finset.sum_ite_eq, if_pos (Finset.mem_range.mpr (Nat.mod_lt _ hl))]
+  rw [Finset.sum_ite_eq, ite_eq_left (Finset.mem_range.mpr (Nat.mod_lt _ hl))]
 
 theorem cycloSq_coeff_zero {l : ℕ} (hl : 0 < l) (f : ℕ → ℤ) :
     cycloSqCoeff l f 0 = ∑ a ∈ Finset.range l, f a ^ 2 := by
@@ -881,7 +881,7 @@ theorem cycloSq_coeff_zero {l : ℕ} (hl : 0 < l) (f : ℕ → ℤ) :
   rw [Finset.mem_range] at ha
   rw [Finset.sum_congr rfl (g := fun b => if b = a then f a * f b else 0) (fun b hb => by
     simp only [cycloSq_mod_eq_zero_iff hl ha (Finset.mem_range.mp hb)])]
-  rw [Finset.sum_ite_eq', if_pos (Finset.mem_range.mpr ha), sq]
+  rw [Finset.sum_ite_eq', ite_eq_left (Finset.mem_range.mpr ha), sq]
 
 theorem cycloSq_two_mul {l : ℕ} (f : ℕ → ℤ) :
     ∑ a ∈ Finset.range l, ∑ b ∈ Finset.range l, (f a - f b) ^ 2
@@ -911,8 +911,6 @@ theorem cycloSq_le_of_ne_zero {l : ℕ} (hl : 1 < l) {ζ : ℂ} (hζ : IsPrimiti
     rw [← Finset.sum_add_distrib]
     calc (l : ℤ) = ∑ b ∈ Finset.range l, (1 : ℤ) := by simp
       _ ≤ _ := Finset.sum_le_sum (fun b _ => by
-        have h1 := sq_nonneg (f x - f b)
-        have h2 := sq_nonneg (f 0 - f b)
         by_cases h : f x = f b
         · have : f 0 - f b ≠ 0 := by omega
           rcases lt_or_gt_of_ne this with h3 | h3 <;> nlinarith
@@ -946,7 +944,7 @@ theorem cyclo_sum_mul_star_eq_one_single : ∀ (l : ℕ) (ζ : ℂ), l.Prime →
     intro d hd
     rw [Finset.mem_erase, Finset.mem_range] at hd
     have h3 : A d = A 0 := (hAeq d hd.2).trans (hAeq 0 hl0).symm
-    simp only [hAdef, if_neg hd.1, if_true, sub_zero] at h3
+    simp only [hAdef, ite_eq_right hd.1, ite_true, sub_zero] at h3
     linarith
   have h0mem : 0 ∈ Finset.range l := Finset.mem_range.mpr hl0
   have hsumN : ∑ d ∈ Finset.range l, N d = N 0 + ((l : ℤ) - 1) * (N 0 - 1) := by
@@ -1107,9 +1105,9 @@ theorem int_comb_unit_norm_single {ι G : Type} [Fintype ι] [Fintype G] (l : �
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun t _ => ?_
       by_cases h : (⟦t⟧ : Quotient S) = i
-      · simp only [h, true_and, if_true]
+      · simp only [h, true_and, ite_true]
         rw [Finset.sum_ite_eq]
-        simp only [Finset.mem_range, ha t, if_true]
+        simp only [Finset.mem_range, ha t, ite_true]
         ring
       · simp [h]
     simp_rw [h1]

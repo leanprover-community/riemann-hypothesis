@@ -12,8 +12,6 @@ universe u
 
 open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem exists_mem_mul_mem_of_map_le {R S : Type u} [CommRing R] [CommRing S]

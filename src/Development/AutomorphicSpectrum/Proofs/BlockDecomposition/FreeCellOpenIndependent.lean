@@ -222,10 +222,7 @@ variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
 theorem measurable_ringInverse [MeasurableSpace K] [BorelSpace K] (h : IsOpenEmbedding (Units.val : Kˣ → K)) :
     Measurable (Ring.inverse : K → K) := by
-  have hU : IsOpen {r : K | IsUnit r} := by
-    convert h.isOpen_range using 1
-    ext r
-    simp [IsUnit]
+  have hU : IsOpen {r : K | IsUnit r} := h.isOpen_range
   refine measurable_of_restrict_of_restrict_compl hU.measurableSet ?_ ?_
   · exact (continuousOn_iff_continuous_restrict.1
       (GlobalTheory.CompanionTheory.SW.KUnits.continuousOn_ringInverse h)).measurable
@@ -238,10 +235,7 @@ theorem measurable_ringInverse [MeasurableSpace K] [BorelSpace K] (h : IsOpenEmb
 theorem isOpen_freeCell {M n : ℕ} (h : IsOpenEmbedding (Units.val : Kˣ → K))
     (hfree : IsOpen {X : Fin n → Fin M → K | LinearIndependent K X}) :
     IsOpen (freeCell K M n) := by
-  have hU : IsOpen {r : K | IsUnit r} := by
-    convert h.isOpen_range using 1
-    ext r
-    simp [IsUnit]
+  have hU : IsOpen {r : K | IsUnit r} := h.isOpen_range
   have hev : ∀ (a : Fin (n + 1)) (i : Fin (M + 2)),
       Continuous fun X : Fin (n + 1) → Fin (M + 2) → K => X a i := fun a i =>
     (continuous_apply i).comp (continuous_apply a)

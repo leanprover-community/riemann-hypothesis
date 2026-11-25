@@ -38,22 +38,10 @@ structure Res (P : Ideal (MRing ι ℂ)) (e : ℕ) where
 
   R : ReciprocityTheory.AnForm.R.AlgRes ι P D e
 
-namespace Res
-
-variable {P : Ideal (MRing ι ℂ)} {e : ℕ} (R : Res ι P e)
-
-end Res
-
 
 def IsProjVarQ (P0 : Ideal (MRing ι ℚ)) (e : ℕ) : Prop :=
   IsMultiProjPrime P0 ∧ ringKrullDim (MRing ι ℚ ⧸ P0) = ((e + Fintype.card K : ℕ) : WithBot ℕ∞)
 
 end Objects
-
-section Ring
-
-variable {K : Type} {ι : K → Type}
-
-end Ring
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

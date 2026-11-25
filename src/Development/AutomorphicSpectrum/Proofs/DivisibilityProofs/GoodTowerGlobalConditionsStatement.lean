@@ -663,11 +663,11 @@ theorem patch_eq_of_subset {S₀ S : Finset ℕ} (h : S₀ ⊆ S) (L₀ : Lat ξ
   have hex : (∃ p ∈ S₀, InFibre ξ p q) ↔ ∃ p ∈ S, InFibre ξ p q := exists_congr hmem
   simp only [Lat.patch]
   by_cases hc : ∃ p ∈ S, InFibre ξ p q
-  · rw [if_pos hc, if_pos (hex.2 hc)]
+  · rw [ite_eq_left hc, ite_eq_left (hex.2 hc)]
     refine le_antisymm (le_iInf₂ fun p hp => le_iInf fun hf => ?_) (le_iInf₂ fun p hp => le_iInf fun hf => ?_)
     · exact iInf₂_le_of_le p ((hmem p).2 ⟨hp, hf⟩).1 (iInf_le _ hf)
     · exact iInf₂_le_of_le p (h hp) (iInf_le _ hf)
-  · rw [if_neg hc, if_neg (fun c => hc (hex.1 c))]
+  · rw [ite_eq_right hc, ite_eq_right (fun c => hc (hex.1 c))]
 
 theorem gr_congr_at {L L' : Lat ξ V} {r : ℕ} (b : Fin r → V) (i : Fin r) {q : Cpt ξ} (hq : L q = L' q) :
     L.gr b i q = L'.gr b i q := by
@@ -1124,14 +1124,14 @@ theorem exists_frob_labels : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   let φ : ℕ → Equiv.Perm (CMType H ⊕ CMType H) := fun p =>
     if hp : p.Prime then labelPerm H (h p hp).choose else 1
   refine ⟨φ, fun p hp => ?_, _root_.GlobalTheory.CompanionTheory.Ar.Num.frobShape_of_side _ φ fun p => ?_⟩
-  · simp only [φ, dif_pos hp]
+  · simp only [φ, dite_eq_left hp]
     exact labelPerm_isFrobLabels c p _ (h p hp).choose_spec
   · by_cases hp : p.Prime
-    · simp only [φ, dif_pos hp]
+    · simp only [φ, dite_eq_left hp]
       exact labelPerm_side H _
     · left
       intro σ
-      simp [φ, dif_neg hp]
+      simp [φ, dite_eq_right hp]
 
 end GlobalTheory.CompanionTheory.Ar.Num
 
@@ -1175,7 +1175,7 @@ theorem BaseChangeColon.genNum_mul_expansion : ∀ (F : Type) [Field F] (K : Typ
   have hmon : ∀ (κ : σ →₀ ℕ) (c : ℝ), genNum F V cls (monomial κ c) Q = c * (intNumL F V (classList cls κ ++ Q) : ℝ) := by
     intro κ c
     rw [key _ Q {κ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl]
+      MvPolynomial.coeff_monomial, ite_eq_left rfl]
   have hperm : ∀ ν μ : σ →₀ ℕ, intNumL F V (classList cls (ν + μ) ++ Q) = intNumL F V (classList cls ν ++ (classList cls μ ++ Q)) := by
     intro ν μ
     have hp : (classList cls (ν + μ)).Perm (classList cls ν ++ classList cls μ) := by
@@ -1378,7 +1378,7 @@ theorem flag_frame_of_point_ideal : NumericalSegre.Statement → ∀ (F : Type) 
   have h2 := hS F Ω K ι y e hP hd N hN _ _ _ _ (isFlagFrame_scaledTriv F y N (one_ne_zero (α := Ω))) N 0 _
     (isTwistedDualGens_triv F y N) _ _ ht (N - 1 + a) Y (by omega)
   rw [projIdeal_independent_of_basis F Ω K ι y N N _ w (scaledBasis N (one_ne_zero (α := Ω))) _ _ _ ht, h2,
-    if_pos (Nat.le_add_right _ _), if_pos (Nat.le_add_right _ _), Nat.add_sub_cancel_left] at h1
+    ite_eq_left (Nat.le_add_right _ _), ite_eq_left (Nat.le_add_right _ _), Nat.add_sub_cancel_left] at h1
   simp only [zero_sub] at h1
   rw [← h1]
   refine Finset.sum_eq_zero fun α hα => intNumL_of_zero_mem _ _ ?_
@@ -1722,7 +1722,7 @@ theorem goodOrigin_linked {P : Prop} : GlobalTheory.CompanionTheory.Ar.Cmp.CmpSt
     constructor
     · rintro ⟨⟨-, h3⟩, h4⟩
       have h5 : ¬ ((p : ℕ) ≤ B₀ ∨ (p : ℕ) ∈ T.bad) := fun h => h4 ⟨hp, h⟩
-      push_neg at h5
+      push Not at h5
       exact ⟨h5.1, h3.resolve_right h5.2, h5.2⟩
     · rintro ⟨h3, h4, h5⟩
       exact ⟨⟨hp, Or.inl h4⟩, fun h => h.2.elim (fun h' => absurd h' (not_le.2 h3)) h5⟩

@@ -29,52 +29,13 @@ public import GroundTheory.AutomorphicForms.MultiplicityOne.GL2ProductCompletene
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IntegralCompression.ContinuousEntryCharacters.Ext4
 import GroundTheory.AutomorphicForms.L2LocalComponents.ArchBump
 import GroundTheory.AutomorphicForms.L2LocalComponents.ArchPolar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExtensionEmbeddingMixedSymmOfIsComplex
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.ClosedProperAlt
 import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.ExpEqOfHasDerivAt
 import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
@@ -695,8 +656,8 @@ private theorem lev_max (S : Finset (Pl K)) (U : ∀ w : Pl K, Subgroup (Gw n w)
   have h : finAt v (finEmb K n u) ∈ if v ∈ S then U v else GLnLocal.integralGL (v.adicCompletion K) n := hu v
   have h2 : finAt v (finEmb K n u) ∈ GLnLocal.integralGL (v.adicCompletion K) n := by
     by_cases hv : v ∈ S
-    · rw [if_pos hv] at h; exact (hU v).2 h
-    · rwa [if_neg hv] at h
+    · rw [ite_eq_left hv] at h; exact (hU v).2 h
+    · rwa [ite_eq_right hv] at h
   have e : finAt v (finEmb K n u) = AdelicGLn.finiteRestrictedEquiv K n u v := by
     show (AdelicGLn.finiteRestrictedEquiv K n (AdelicGLn.prodEquiv K n (finEmb K n u)).2) v = _
     rw [prodEquiv_finEmb]
@@ -705,14 +666,12 @@ private theorem lev_max (S : Finset (Pl K)) (U : ∀ w : Pl K, Subgroup (Gw n w)
 
 end Forms
 
-set_option maxHeartbeats 1600000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.vecEx :
     ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (ι : Type) [Fintype ι] (C : Co K ι) (μ : Measure (G1 K 2)) [μ.IsHaarMeasure] (τ : Submodule ℂ (LL μ)), CuspIrr μ τ → ∀ (n : ι → ℕ) (q : ι → ℤ), (∀ i, ∃ v ∈ τ, C.Pi μ i (n i) (q i) v ≠ 0) → ∀ S : Finset (Pl K), SphOff μ τ S →
       ∃ (U : ∀ w : Pl K, Subgroup (Gw 2 w)) (φ : G1 K 2 → ℂ), Lev U ∧ φ ≠ 0 ∧ Rd τ φ ∧ (∃ B : ℝ, ∀ x, ‖φ x‖ ≤ B) ∧
         FixA C.κ₂ (C.p n q) φ ∧ FixF (levOn S U) φ := by
   intro K _ _ _ ι _ C μ _ τ hτ n q hn S hS
   haveI : T2Space (G1 K 2) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       infer_instance
   have hSum : IsSummand μ τ := ⟨hτ.le, hτ.closed, hτ.inv, hτ.ne, hτ.irr⟩
   obtain ⟨U, hU, hUne⟩ := UpperTheory.ConvolutionTheory.T.levelEx K 2 μ τ hSum S hS

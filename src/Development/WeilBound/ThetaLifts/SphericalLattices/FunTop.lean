@@ -806,7 +806,7 @@ theorem avgSt : AvgSt := by
     have hM := Subgroup.index_inf_ne_zero h0 (hN0 φ hφ)
     rw [← avgQ_le inf_le_left hM hH', avgQ_le inf_le_right hM (hNinv φ hφ)]
   let lamF : S → ℂ := fun φ => if hφ : φ ∈ V then avgQ (N φ hφ) (f φ) else 0
-  have hlamF : ∀ φ (hφ : φ ∈ V), lamF φ = avgQ (N φ hφ) (f φ) := fun φ hφ => dif_pos hφ
+  have hlamF : ∀ φ (hφ : φ ∈ V), lamF φ = avgQ (N φ hφ) (f φ) := fun φ hφ => dite_eq_left hφ
   let lamV : V →ₗ[ℂ] ℂ :=
     { toFun := fun φ => lamF φ
       map_add' := fun φ ψ => by
@@ -1025,14 +1025,14 @@ theorem count_core {U P K : Subgroup G} (hPU : P ≤ U) {f f' : G → ℂ} (f1 :
       fun d _ => by
       by_cases h1 : e ∈ orb (P ⊓ K) (Quotient.out d)⁻¹
       · have h2 := orb_symm (P ⊓ K) h1
-        rw [if_pos h1, if_pos h2]
+        rw [ite_eq_left h1, ite_eq_left h2]
         obtain ⟨a, ha, hd'⟩ := h2
         obtain ⟨m, hm⟩ := QuotientGroup.mk_out_eq_mul (P ⊓ K) (a * (Quotient.out e)⁻¹)
         have hod : Quotient.out d = a * (Quotient.out e)⁻¹ * m := by rw [hd', hm]
         simp only [w]
         rw [hod, bi' a ha _ (hPU hr) m m.2, mul_inv_rev, mul_inv_rev, inv_inv, ← mul_assoc,
           orb_mul ((P ⊓ K).inv_mem m.2) ((P ⊓ K).inv_mem ha)]
-      · rw [if_neg h1, if_neg (fun h2 => h1 (orb_symm (P ⊓ K) h2))]
+      · rw [ite_eq_right h1, ite_eq_right (fun h2 => h1 (orb_symm (P ⊓ K) h2))]
     rw [Finset.sum_congr rfl hcond, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
     have e1 : ((hA.toFinset.filter (· ∈ orb (P ⊓ K) (Quotient.out e)⁻¹) : Finset (G ⧸ (P ⊓ K))) : Set (G ⧸ (P ⊓ K))) =
         orb (P ⊓ K) (Quotient.out e)⁻¹ := by
@@ -1218,22 +1218,13 @@ theorem finSt_relIndex_le {G : Type} [Group G] {H K L : Subgroup G} (hKL : K ≤
     Finite.of_injective _ (Subgroup.quotientSubgroupOfEmbeddingOfLE H hKL).injective
   exact Subgroup.index_ne_zero_of_finite
 
-theorem finSt_relIndex_nhds {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K H : Subgroup G}
-    (hK : IsCompact (K : Set G)) {U : Set G} (hU : U ∈ 𝓝 (1 : G)) (hH : ∀ k ∈ K, k ∈ U → k ∈ H) : H.relIndex K ≠ 0 := by
-  have : CompactSpace K := isCompact_iff_compactSpace.1 hK
-  have ho : IsOpen ((H.subgroupOf K : Subgroup K) : Set K) :=
-    (H.subgroupOf K).isOpen_of_mem_nhds (Filter.mem_of_superset (continuous_subtype_val.continuousAt (x := (1 : K)) hU)
-      fun k hk => Subgroup.mem_subgroupOf.2 (hH k.1 k.2 hk))
-  have : Finite (K ⧸ H.subgroupOf K) := Subgroup.quotient_finite_of_isOpen _ ho
-  exact Subgroup.index_ne_zero_of_finite
-
 theorem finSt_KGL {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)
     (b : GL (Fin n) (w.adicCompletion E)) :
     (KGL w (n := n) ⊓ (KGL w (n := n)).map (MulAut.conj b).toMonoidHom).relIndex (KGL w (n := n)) ≠ 0 := by
   obtain ⟨ho, hc⟩ := SatCompare.isOpen_isCompact_KGL w n
   have hcont : Continuous fun x : GL (Fin n) (w.adicCompletion E) => b⁻¹ * x * b :=
     (continuous_const.mul continuous_id).mul continuous_const
-  refine finSt_relIndex_nhds hc (U := (KGL w (n := n) : Set _) ∩ (fun x => b⁻¹ * x * b) ⁻¹' (KGL w (n := n) : Set _))
+  refine PositivityTheory.Sph.relIndex_ne_zero_of_nhds hc (U := (KGL w (n := n) : Set _) ∩ (fun x => b⁻¹ * x * b) ⁻¹' (KGL w (n := n) : Set _))
     ((ho.inter (ho.preimage hcont)).mem_nhds ⟨one_mem _, by simp [one_mem]⟩) fun k _ hk => ⟨hk.1, ?_⟩
   refine ⟨b⁻¹ * k * b, hk.2, ?_⟩
   simp [MulAut.conj_apply, mul_assoc]

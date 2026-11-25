@@ -43,7 +43,7 @@ theorem hJ_comb_self {ι : Type*} [Fintype ι] [DecidableEq ι] (ε : Fin n → 
     (d : ι → ℝ) (hu : ∀ i j, hJ ε (u i) (u j) = if i = j then (d i : ℂ) else 0) :
     hJ ε (∑ i, x i • u i) (∑ i, x i • u i) = ((∑ i, d i * Complex.normSq (x i) : ℝ) : ℂ) := by
   rw [hJ_sum_l]
-  simp only [hJ_sum_r, hu, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hJ_sum_r, hu, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   push_cast
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Complex.normSq_eq_conj_mul_self]
@@ -108,9 +108,9 @@ theorem hJ_bvec_sub (ε : Fin n → Bool) (s : Bool) (i j : {i // ε i = s}) :
   rw [hJ_bvec]
   by_cases h : i = j
   · subst h
-    rw [if_pos rfl, if_pos rfl, i.2]
+    rw [ite_eq_left rfl, ite_eq_left rfl, i.2]
     cases s <;> simp
-  · rw [if_neg (fun h' => h (Subtype.ext h')), if_neg h]
+  · rw [ite_eq_right (fun h' => h (Subtype.ext h')), ite_eq_right h]
 
 end Forms
 
@@ -250,7 +250,7 @@ theorem e_li (hF : IsFrameJ ε e f wf z0) : LinearIndependent ℂ e := by
   rw [Fintype.linearIndependent_iff]
   intro c hc b
   have h := congrArg (fun v => hJ ε v (f b)) hc
-  simp only [hJ_sum_l, hF.ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+  simp only [hJ_sum_l, hF.ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
   simpa [hJ] using h
 
 end Sig

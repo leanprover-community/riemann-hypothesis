@@ -175,13 +175,7 @@ def OneBTInt : Prop :=
 section asm
 
 theorem cont_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) : Continuous (U.lowW σ) := by
-  unfold U.lowW
-  refine continuous_const.add ?_
-  refine continuous_pi fun a => continuous_pi fun b => ?_
-  simp only [Matrix.of_apply]
-  split_ifs
-  · exact continuous_apply _
-  · exact continuous_const
+  exact Formalism.FourierDecayAlt.P.Dx2.SL.cont_lowW σ
 
 theorem cont_lhOf {p : ℕ} (σ : Equiv.Perm (Fin p)) : Continuous (LeftFubiniLemmas.lhOf σ) := by
   unfold LeftFubiniLemmas.lhOf

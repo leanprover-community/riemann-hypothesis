@@ -14,12 +14,6 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.LogVandermondeBounds
 
-section G1
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K)
-
-end G1
-
 section G3
 
 variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] {ι : Type} [Fintype ι] {n : ℕ}
@@ -122,22 +116,5 @@ theorem sepElt_of_ok (hPr : Pr.Ok) (u : Pr.Word) : SepElt (Pr.vT u) (cO X.E (Pr.
   exact decoFin_mem_of_mem_divs P.2
 
 end Cols
-
-section ColsNab
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-
-end ColsNab
-
-section FamG
-variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] {ι : Type} [Fintype ι] {n : ℕ}
-  (emb : ι → E →+* K)
-
-end FamG
-
-section ColsF
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
-
-end ColsF
 
 end Formalism.L2.Col

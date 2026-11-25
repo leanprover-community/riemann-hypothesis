@@ -67,7 +67,7 @@ theorem modEq_of_normOneMod (D : D7) {M g : ℕ} (h : NormOneMod D M g) : g ≡ 
 
 theorem split_clause (D : D7) (hC : CycSplit) :
     ∀ g : ℕ, g.Prime → NormOneMod D (NE D) g → g ≡ 1 [MOD NE D] ∧ SplitsCompletely D g :=
-  fun g hg h => ⟨modEq_of_normOneMod D h, splits_of_modEq D hC hg (modEq_of_normOneMod D h)⟩
+  fun _ hg h => ⟨modEq_of_normOneMod D h, splits_of_modEq D hC hg (modEq_of_normOneMod D h)⟩
 
 end Formalism.L2.GlobalTheoryTheory.FiltrationCocycleLiftCriterion
 

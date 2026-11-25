@@ -25,52 +25,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsProjOverLo
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AngehrnSiuNotKltAtSeveralPoints
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalEquationEffectiveQCartierDivisor
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsQuasicoherentOfForallExistsAffine
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChartA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.CanonGenIsGen
@@ -82,11 +41,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallySubsingletonCohTwistZOfIsProjOver
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RestrictPullbackIsoHomAppPullbackSections
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SumNegOnePowFinrankEqZero
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import Mathlib.Tactic.Basify
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DvrPlaceTopFormOrdersApi
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -277,11 +232,6 @@ noncomputable section
 
 namespace GlobalTheory.ResMap
 
-def stalkEquiv {X : Scheme.{0}} [IsIntegral X] (x : X) : X.presheaf.stalk x ≃+* locRing x :=
-  RingEquiv.ofBijective (algebraMap (X.presheaf.stalk x) X.functionField).rangeRestrict
-    ⟨fun _ _ e => IsFractionRing.injective _ X.functionField (congrArg Subtype.val e),
-      RingHom.rangeRestrict_surjective _⟩
-
 theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp ℂ), IsProjOver p → ∀ (z : X) (k : ℕ),
   topologicalKrullDim (closure ({z} : Set X)) = k →
   ∃ (κ : Type) (_ : Field κ) (_ : Algebra ℂ κ) (π₀ : locRing z →+* κ),
@@ -309,15 +259,15 @@ theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
   obtain ⟨-, w, hw⟩ := isLocModel_locRing_and_exists_trBasis Z q k (genericPoint Z) hdim
   letI alg : Algebra ℂ Z.functionField := (Cartier.constFn q).toAlgebra
   let π₀ : locRing (i (genericPoint Z)) →+* Z.functionField :=
-    (i.stalkMap (genericPoint Z)).hom.comp (stalkEquiv (i (genericPoint Z))).symm.toRingHom
+    (i.stalkMap (genericPoint Z)).hom.comp (GlobalTheory.FieldPair.AdjUp.stalkEquiv (i (genericPoint Z))).symm.toRingHom
   refine ⟨Z.functionField, inferInstance, alg, π₀, ?_, ?_, ?_, ⟨w, hw⟩, ?_⟩
-  · exact (i.stalkMap_surjective _).comp (stalkEquiv _).symm.surjective
+  · exact (i.stalkMap_surjective _).comp (GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm.surjective
   · intro r
-    obtain ⟨a, rfl⟩ := (stalkEquiv _).surjective r
-    have e1 : π₀ (stalkEquiv _ a) = (i.stalkMap (genericPoint Z)).hom a := by
-      show (i.stalkMap (genericPoint Z)).hom ((stalkEquiv _).symm (stalkEquiv _ a)) = _
+    obtain ⟨a, rfl⟩ := (GlobalTheory.FieldPair.AdjUp.stalkEquiv _).surjective r
+    have e1 : π₀ (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ a) = (i.stalkMap (genericPoint Z)).hom a := by
+      show (i.stalkMap (genericPoint Z)).hom ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ a)) = _
       rw [RingEquiv.symm_apply_apply]
-    have e2 : ((stalkEquiv _ a : locRing _) : X.functionField) = algebraMap _ _ a := rfl
+    have e2 : ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _ a : locRing _) : X.functionField) = algebraMap _ _ a := rfl
     rw [e1, e2]
     constructor
     · intro h0
@@ -336,9 +286,9 @@ theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
     have hg := (algebraMap_germ (X := X) (x := i (genericPoint Z)) (U := ⊤) trivial (algX p ⊤ a)).trans
       (RingHom.congr_fun (fnOf_comp_algX p ⊤ (gen_mem (x := i (genericPoint Z)) trivial)) a)
     have hr : (⟨Cartier.constFn p a, ha⟩ : locRing _) =
-        stalkEquiv _ (X.presheaf.germ ⊤ _ trivial (algX p ⊤ a)) := Subtype.ext hg.symm
+        GlobalTheory.FieldPair.AdjUp.stalkEquiv _ (X.presheaf.germ ⊤ _ trivial (algX p ⊤ a)) := Subtype.ext hg.symm
     rw [hr]
-    show (i.stalkMap (genericPoint Z)).hom ((stalkEquiv _).symm (stalkEquiv _ _)) = _
+    show (i.stalkMap (genericPoint Z)).hom ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ _)) = _
     rw [RingEquiv.symm_apply_apply]
     erw [Scheme.Hom.germ_stalkMap_apply i ⊤ (genericPoint Z) trivial (algX p ⊤ a)]
     have hc : (i.app ⊤).hom (algX p ⊤ a) = algX q (i ⁻¹ᵁ ⊤) a := by
@@ -359,14 +309,14 @@ theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
           algebraMap (Z.presheaf.stalk y) Z.functionField ((i.stalkMap y).hom a) := by
       intro a
       have e : (Subring.inclusion h ⟨algebraMap _ X.functionField a, a, rfl⟩ : locRing _) =
-          stalkEquiv _ ((X.presheaf.stalkSpecializes hs).hom a) := by
+          GlobalTheory.FieldPair.AdjUp.stalkEquiv _ ((X.presheaf.stalkSpecializes hs).hom a) := by
         apply Subtype.ext
         show algebraMap _ X.functionField a =
           algebraMap _ X.functionField ((X.presheaf.stalkSpecializes hs).hom a)
         simp only [RingHom.algebraMap_toAlgebra]
         rw [← CommRingCat.comp_apply, TopCat.Presheaf.stalkSpecializes_comp]
       rw [e]
-      show (i.stalkMap (genericPoint Z)).hom ((stalkEquiv _).symm (stalkEquiv _ _)) = _
+      show (i.stalkMap (genericPoint Z)).hom ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ _)) = _
       rw [RingEquiv.symm_apply_apply]
       exact Scheme.Hom.stalkSpecializes_stalkMap_apply i (genericPoint Z) y
         ((genericPoint_spec Z).specializes trivial) a
@@ -676,7 +626,7 @@ theorem isAlgebraic_of_mul_eq {S K : Type} [CommRing S] [Field K] [Algebra S K] 
   refine ⟨Polynomial.C b * Polynomial.X - Polynomial.C a, fun h0 => hb ?_, ?_⟩
   · have h1 := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p 1) h0
     simpa only [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X, Polynomial.coeff_C_succ, sub_zero,
-      Polynomial.coeff_zero, if_true] using h1
+      Polynomial.coeff_zero, ite_true] using h1
   · rw [map_sub, map_mul, Polynomial.aeval_C, Polynomial.aeval_X, Polynomial.aeval_C, mul_comm, e,
       sub_self]
 

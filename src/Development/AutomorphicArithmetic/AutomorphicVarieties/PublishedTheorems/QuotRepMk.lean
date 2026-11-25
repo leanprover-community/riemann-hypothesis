@@ -73,6 +73,6 @@ def Kato : Prop :=
         1 ≤ r → r ≤ k - 1 → 2 * r ≠ k →
         ∀ (T : Submodule ℤ_[l] (Fin 2 → ↥(coefField g ι))) (hT : IsLat (tw V (cycE ℚ Ω (coefField g ι) ^ r)) T),
           (Sel ((Loc.colRep (tw V (cycE ℚ Ω (coefField g ι) ^ r))).comp
-              (AlgEquiv.restrictScalarsHom ℚ : G K Ω →* G ℚ Ω)) T (fun s => hT.stable _)).Finite
+              (AlgEquiv.restrictScalarsHom ℚ : G K Ω →* G ℚ Ω)) T (fun _ => hT.stable _)).Finite
 
 end UpperTheory.V.Published

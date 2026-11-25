@@ -129,8 +129,8 @@ lemma greedyStep_add (hn : 0 < n) (hF0 : F 0) (hFper : ∀ y, F (y + n) ↔ F y)
     have e2 : x + n + i = (x + i) + n := by ring
     rw [e2, hFper]
   by_cases h : A (x + j) ∧ ∀ i, j < i → i < 2 * j → ¬ F (x + i)
-  · rw [if_pos (hC.mpr h), if_pos h]; ring
-  · rw [if_neg (mt hC.mp h), if_neg h]
+  · rw [ite_eq_left (hC.mpr h), ite_eq_left h]; ring
+  · rw [ite_eq_right (mt hC.mp h), ite_eq_right h]
     apply le_antisymm
     · obtain ⟨h1, h2⟩ := Nat.sInf_mem (exists_gt_of_periodic hn hF0 hFper x)
       exact Nat.sInf_le ⟨by omega, (hFper _).mpr h2⟩

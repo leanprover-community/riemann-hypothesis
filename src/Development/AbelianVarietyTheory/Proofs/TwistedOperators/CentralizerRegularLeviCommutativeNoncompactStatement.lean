@@ -7,41 +7,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFor
 public import Mathlib.Logic.Equiv.Bool
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ContinuousOfMemCcSmooth
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCyclicOfFiniteQuotient
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasTypeVec
 import Development.AbelianVarietyTheory.Definitions.Foundations.InnerEqZeroOfNotUEquiv
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
@@ -49,10 +14,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PicardGroup
 import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
 import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Bool
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -212,7 +173,7 @@ theorem exists_scale (D : D7) (V : HSp D) (Φ : WittFrame V) (u : SV (wittIndex 
     simp only [P, Matrix.mul_diagonal, Matrix.diagonal_mul, S, submatrix_apply, Matrix.one_apply, id, Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map, Prod.mk.injEq, Equiv.boolNot_apply]
     by_cases hij : i = j
     · subst hij
-      cases s <;> cases t <;> simp only [Bool.not_true, Bool.not_false, Bool.false_eq_true, Bool.true_eq_false, if_true, if_false, and_self, mul_one, mul_zero, zero_mul, and_false]
+      cases s <;> cases t <;> simp only [Bool.not_true, Bool.not_false, Bool.false_eq_true, Bool.true_eq_false, ite_true, ite_false, and_self, mul_one, mul_zero, zero_mul, and_false]
       all_goals first | exact hσd i _
     · simp [hij]
   obtain ⟨Q, hQ⟩ : ∃ Q, Q = S * (cT σ (cols V b) * V.gram) := ⟨_, rfl⟩
@@ -248,7 +209,7 @@ theorem exists_scale (D : D7) (V : HSp D) (Φ : WittFrame V) (u : SV (wittIndex 
       have hm1 : ∀ x, x ∈ Φ.sub u ∨ x ∈ Φ.sub (-u) → V.hT x z = 0 := fun x hx => hx.elim (hz1 x) (hz2 x)
       apply hm1
       rcases (show u i = 1 ∨ u i = -1 by generalize u i = t at h; revert t; decide) with h' | h' <;> cases s <;>
-        simp only [b, if_true, if_false, Bool.false_eq_true]
+        simp only [b, ite_true, ite_false, Bool.false_eq_true]
       · exact .inr (by rw [WittFrame.sub]; exact Submodule.subset_span (.inr ⟨i, by simp [h'], rfl⟩))
       · exact .inl (by rw [WittFrame.sub]; exact Submodule.subset_span (.inl ⟨i, h', rfl⟩))
       · exact .inl (by rw [WittFrame.sub]; exact Submodule.subset_span (.inr ⟨i, h', rfl⟩))
@@ -351,7 +312,7 @@ theorem exists_ne_zero_mem_sub {D : D7} {V : HSp D} (Φ : WittFrame V) {u : SV (
     by_contra! h
     exact hu (funext h)
   have h1 := Φ.ef i i
-  rw [if_pos rfl] at h1
+  rw [ite_eq_left rfl] at h1
   rcases h : u i with _ | _ | _
   · exact absurd h hi
   · refine ⟨Φ.f i, Submodule.subset_span (Or.inr ⟨i, h, rfl⟩), fun e => ?_⟩

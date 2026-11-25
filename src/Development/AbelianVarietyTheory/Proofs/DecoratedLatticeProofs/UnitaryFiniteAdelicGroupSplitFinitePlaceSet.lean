@@ -242,16 +242,14 @@ theorem mul_eq_add_sub_one (c : R) (a b : Matrix n n R) (ha : c • (a - 1) = a 
   have e2 : b * a = (b - 1) * (a - 1) + (a + b - 1) := by noncomm_ring
   exact ⟨by rw [e1, h1, zero_add], by rw [e2, h2, zero_add]⟩
 
-alias cut_sub_one := _root_.GlobalTheory.FinPl.KSplit.cut_sub_one
-
 theorem cut_left (c : R) (a b : Matrix n n R) (ha : c • (a - 1) = a - 1) (hb : c • (b - 1) = 0) :
     c • (a * b) + (1 - c) • (1 : Matrix n n R) = a := by
-  rw [← sub_left_inj (a := 1), cut_sub_one, (mul_eq_add_sub_one c a b ha hb).1,
+  rw [← sub_left_inj (a := 1), GlobalTheory.FinPl.KSplit.cut_sub_one, (mul_eq_add_sub_one c a b ha hb).1,
     show a + b - 1 - 1 = (a - 1) + (b - 1) by abel, smul_add, ha, hb, add_zero]
 
 theorem cut_right (c : R) (a b : Matrix n n R) (ha : c • (a - 1) = a - 1) (hb : c • (b - 1) = 0) :
     (1 - c) • (a * b) + (1 - (1 - c)) • (1 : Matrix n n R) = b := by
-  rw [← sub_left_inj (a := 1), cut_sub_one, (mul_eq_add_sub_one c a b ha hb).1,
+  rw [← sub_left_inj (a := 1), GlobalTheory.FinPl.KSplit.cut_sub_one, (mul_eq_add_sub_one c a b ha hb).1,
     show a + b - 1 - 1 = (a - 1) + (b - 1) by abel, sub_smul, one_smul, smul_add, ha, hb]
   abel
 
@@ -335,7 +333,7 @@ theorem cutG_mem_Q (V : HSp D) (Q : Finset (Pl D)) (g : GA D V) :
     cutG V _ (idemQ_mul_self Q) g ∈ grpAt V (· ∈ Q) := by
   rw [grpAt, mem_congGrp_iff]
   intro i j
-  rw [mt_cutG, cut_sub_one, mem_idAt_Q_iff, Matrix.smul_apply, smul_eq_mul, ← mul_assoc]
+  rw [mt_cutG, GlobalTheory.FinPl.KSplit.cut_sub_one, mem_idAt_Q_iff, Matrix.smul_apply, smul_eq_mul, ← mul_assoc]
   exact congrArg (· * _) (eQ_mul_self Q)
 
 open Classical in
@@ -343,10 +341,10 @@ theorem cutG_mem_Qc (V : HSp D) (Q : Finset (Pl D)) {g : GA D V} (hg : g ∈ GfC
     cutG V _ (one_sub_idemQ_mul_self Q) g ∈ grpAt V (· ∉ Q) := by
   rw [mem_grpAt_iff_parts]
   intro i j
-  rw [mt_cutG, cut_sub_one, Matrix.smul_apply, smul_eq_mul, algebraMap_one_sub]
+  rw [mt_cutG, GlobalTheory.FinPl.KSplit.cut_sub_one, Matrix.smul_apply, smul_eq_mul, algebraMap_one_sub]
   refine ⟨?_, fun w hw => ?_⟩
   · rw [RingHom.map_mul, (_root_.GlobalTheory.FinPl.KOpen.mem_GfC_iff V g).1 hg i j, mul_zero]
-  · rw [RingHom.map_mul, RingHom.map_sub, RingHom.map_one, (parts_idemQ Q).2 w, if_pos (not_not.1 hw), sub_self, zero_mul]
+  · rw [RingHom.map_mul, RingHom.map_sub, RingHom.map_one, (parts_idemQ Q).2 w, ite_eq_left (not_not.1 hw), sub_self, zero_mul]
 
 theorem isClosed_of_idem (V : HSp D) (P : Pl D → Prop) (c : AF D.host.F)
     (hc : ∀ a, a ∈ idAt D P ↔ algebraMap (AF D.host.F) (AE D) c * a = a) : IsClosed (grpAt V P : Set (GA D V)) := by

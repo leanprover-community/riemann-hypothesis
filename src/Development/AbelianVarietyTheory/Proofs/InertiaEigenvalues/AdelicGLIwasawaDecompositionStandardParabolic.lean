@@ -125,7 +125,7 @@ theorem stdBlocks_lt_of_lt {s r : ℕ} (d : Fin s → ℕ) (hd : ∑ i, d i = r)
     rw [← Fin.sum_univ_eq_sum_range]
     refine Finset.sum_congr rfl fun x _ => ?_
     have hx : (x : ℕ) < s := x.2.trans c.2
-    simp only [f, hx, dif_pos]
+    simp only [f, hx, dite_eq_left]
     rfl
   rw [Fin.lt_def, stdBlocks_val, stdBlocks_val, key, key]
   have h1 : ∑ x ∈ Finset.range (b + 1), f x ≤ ∑ x ∈ Finset.range a, f x :=

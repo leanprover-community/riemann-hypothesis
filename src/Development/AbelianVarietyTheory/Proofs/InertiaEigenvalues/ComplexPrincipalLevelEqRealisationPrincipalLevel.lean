@@ -19,13 +19,13 @@ theorem blkOf_zero_of_le {n r t : ℕ} (h : n ≤ r) : (blkOf r t : Fin n → �
   funext a
   have := a.2
   simp only [blkOf]
-  rw [if_pos (by omega)]
+  rw [ite_eq_left (by omega)]
 
 theorem secondBlockIndex_eq_zero_of_dim_le {n r : ℕ} (h : n ≤ r) : (blk2 r : Fin n → ℕ) = fun _ => 0 := by
   funext a
   have := a.2
   simp only [blk2]
-  rw [if_pos (by omega)]
+  rw [ite_eq_left (by omega)]
 
 theorem mem_blockTriangular_singleBlock_of_le {n r : ℕ} {κ : Type} [CommRing κ] (h : n ≤ r) (g : GL (Fin n) κ) :
     g ∈ blockTri (blk2 r) := by

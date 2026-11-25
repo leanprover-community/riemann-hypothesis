@@ -2,49 +2,10 @@ module
 
 public import Mathlib.RingTheory.IsTensorProduct
 public import Mathlib.RingTheory.Localization.FractionRing
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Algebra.Module.BigOperators
 public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.RingTheory.Localization.Integer
@@ -71,17 +32,10 @@ structure IsExtension (a : V →ₛₗ[algebraMap K F] W) : Prop where
 private theorem semilinear_range_span_induction {a : V →ₛₗ[algebraMap K F] W}
     (h : Submodule.span F (Set.range a) = ⊤) (p : W → Prop) (h0 : p 0)
     (hadd : ∀ x y, p x → p y → p (x + y)) (hb : ∀ (c : F) v, p (c • a v)) (x : W) : p x := by
-  have key : ∀ y ∈ Submodule.span F (Set.range a), ∀ c : F, p (c • y) := by
-    intro y hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨v, rfl⟩ := hy
-      exact fun c => hb c v
-    | zero => intro c; rw [smul_zero]; exact h0
-    | add y z _ _ hy hz => intro c; rw [smul_add]; exact hadd _ _ (hy c) (hz c)
-    | smul d y _ hy => intro c; rw [smul_smul]; exact hy (c * d)
-  have hx : x ∈ Submodule.span F (Set.range a) := by rw [h]; exact Submodule.mem_top
-  simpa using key x hx 1
+  refine Submodule.closure_induction (p := fun x _ => p x) h0 (fun x y _ _ => hadd x y) ?_
+    (by rw [h]; exact Submodule.mem_top)
+  rintro c _ ⟨v, rfl⟩
+  exact hb c v
 
 theorem addHom_ext {a : V →ₛₗ[algebraMap K F] W} (h : Submodule.span F (Set.range a) = ⊤)
     {M : Type} [AddCommGroup M] {f g : W →+ M} (e : ∀ (c : F) v, f (c • a v) = g (c • a v)) (x : W) :

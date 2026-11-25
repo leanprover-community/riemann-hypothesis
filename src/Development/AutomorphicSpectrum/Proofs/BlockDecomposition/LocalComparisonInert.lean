@@ -96,7 +96,7 @@ theorem evY_thv (hC : CjEx) (hU : Unr E) {w : Pl E} (hw : ¬ IsSplitAt w) (a b :
   have h : ∀ n (g : GL (Fin n) (Av (w.under (𝓞 (maximalRealSubfield E))))),
       GeneralLinearGroup.map (evR hw).toRingHom (thetaGL n (cjv _) g) =
         thL n w (GeneralLinearGroup.map (evR hw).toRingHom g) := fun n g => by
-    rw [thL, if_neg hw]
+    rw [thL, ite_eq_right hw]
     exact GlobalTheory.ThetaPull.map_thetaGL _ _ _ (cjv_apply hC hU hw) g
   exact Prod.ext (h a y.1) (h b y.2)
 
@@ -114,7 +114,7 @@ theorem evY_pv {w : Pl E} (hw : ¬ IsSplitAt w) (a b : ℕ) (δ₁ : GL (Fin a) 
     evY hw a b (pv a b _ (ratF E a δ₁, ratF E b δ₂)) = (locEl a w δ₁, locEl b w δ₂) := by
   have h : ∀ n (δ : GL (Fin n) E), GeneralLinearGroup.map (evR hw).toRingHom
       (GeneralLinearGroup.map (projv (w.under (𝓞 (maximalRealSubfield E)))) (ratF E n δ)) = locEl n w δ := fun n δ => by
-    rw [locEl, if_neg hw]
+    rw [locEl, ite_eq_right hw]
     ext i j
     rfl
   exact Prod.ext (h a δ₁) (h b δ₂)
@@ -125,7 +125,7 @@ theorem fv_eq {w : Pl E} (hw : ¬ IsSplitAt w) {a b : ℕ} {S : Set (Pl E)} (hS 
   letI := uniq hw
   rw [fv, finprod_unique]
   change _ = ∏ᶠ (_ : w ∈ S), φ₁ w (evw (aw w) y) * if IsSplitAt w then _ else 1
-  rw [finprod_eq_if, if_pos hS, if_neg hw, mul_one, seen, if_neg hw, evY_apply]
+  rw [finprod_eq_if, ite_eq_left hS, ite_eq_right hw, mul_one, seen, ite_eq_right hw, evY_apply]
 
 theorem locCompareInert : LocCompareInert := by
   intro hC E _ _ _ hU a b S _ φ₁ φ₂ _ _ δ₁ δ₂ _ _ w hS hw

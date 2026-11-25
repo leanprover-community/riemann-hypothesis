@@ -7,50 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Squarefre
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassHasDivisorOfDegreeLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassNoLargePrimeFactorLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassRootsNotDistinctLe
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -78,11 +35,11 @@ theorem tupleMass_le_add {P Q R : (ι → (ZMod g)[X]) → Prop}
   have hw := tupleWeight_nonneg F
   have hmem : ∀ v, F v ∈ sqSet g N := fun v => Fintype.mem_piFinset.mp hF v
   by_cases hP : P F
-  · rw [if_pos hP]
+  · rw [ite_eq_left hP]
     rcases h F hmem hP with hQ | hR
-    · rw [if_pos hQ]; split_ifs <;> linarith
-    · rw [if_pos hR]; split_ifs <;> linarith
-  · rw [if_neg hP]; split_ifs <;> linarith
+    · rw [ite_eq_left hQ]; split_ifs <;> linarith
+    · rw [ite_eq_left hR]; split_ifs <;> linarith
+  · rw [ite_eq_right hP]; split_ifs <;> linarith
 
 theorem tupleMass_exists_le {κ : Type} (s : Finset κ) (Q : κ → (ι → (ZMod g)[X]) → Prop) :
     tupleMass g N (fun F => ∃ i ∈ s, Q i F) ≤ ∑ i ∈ s, tupleMass g N (Q i) := by
@@ -95,7 +52,7 @@ theorem tupleMass_exists_le {κ : Type} (s : Finset κ) (Q : κ → (ι → (ZMo
     · exact le_rfl
   split_ifs with h
   · obtain ⟨i, hi, hQ⟩ := h
-    calc ∏ v, ((torusCard g (F v) : ℝ))⁻¹ = (if Q i F then ∏ v, ((torusCard g (F v) : ℝ))⁻¹ else 0) := by rw [if_pos hQ]
+    calc ∏ v, ((torusCard g (F v) : ℝ))⁻¹ = (if Q i F then ∏ v, ((torusCard g (F v) : ℝ))⁻¹ else 0) := by rw [ite_eq_left hQ]
       _ ≤ ∑ j ∈ s, if Q j F then ∏ v, ((torusCard g (F v) : ℝ))⁻¹ else 0 :=
         Finset.single_le_sum (f := fun j => if Q j F then ∏ v, ((torusCard g (F v) : ℝ))⁻¹ else 0) hz hi
   · exact Finset.sum_nonneg hz
@@ -107,10 +64,10 @@ theorem tupleMass_forall (A : ι → (ZMod g)[X] → Prop) :
   rw [Finset.prod_univ_sum]
   refine Finset.sum_congr rfl fun F _ => ?_
   split_ifs with h
-  · exact Finset.prod_congr rfl fun v _ => (if_pos (h v)).symm
+  · exact Finset.prod_congr rfl fun v _ => (ite_eq_left (h v)).symm
   · push Not at h
     obtain ⟨v, hv⟩ := h
-    exact (Finset.prod_eq_zero (Finset.mem_univ v) (if_neg hv)).symm
+    exact (Finset.prod_eq_zero (Finset.mem_univ v) (ite_eq_right hv)).symm
 
 theorem tupleMass_single_le (h1 : (mass g N fun _ => True) ≤ 1) (v : ι) (A : (ZMod g)[X] → Prop) :
     tupleMass g N (fun F : ι → (ZMod g)[X] => A (F v)) ≤ mass g N A := by
@@ -124,14 +81,14 @@ theorem tupleMass_single_le (h1 : (mass g N fun _ => True) ≤ 1) (v : ι) (A : 
     have hiff : A (F v) ↔ ∀ w, (if w = v then A else fun _ => True) (F w) :=
       ⟨fun h w => by by_cases hw : w = v <;> simp_all, fun h => by simpa using h v⟩
     by_cases h : A (F v)
-    · rw [if_pos h, if_pos (hiff.mp h)]
-    · rw [if_neg h, if_neg (mt hiff.mpr h)]
-  rw [key, tupleMass_forall, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ v), if_pos rfl]
+    · rw [ite_eq_left h, ite_eq_left (hiff.mp h)]
+    · rw [ite_eq_right h, ite_eq_right (mt hiff.mpr h)]
+  rw [key, tupleMass_forall, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ v), ite_eq_left rfl]
   have hrest : ∏ w ∈ Finset.univ.erase v, mass g N (if w = v then A else fun _ => True) ≤ 1 := by
     apply Finset.prod_le_one₀
     · exact fun w _ => hm _
     · intro w hw
-      rw [if_neg (Finset.ne_of_mem_erase hw)]
+      rw [ite_eq_right (Finset.ne_of_mem_erase hw)]
       exact h1
   calc mass g N A * _ ≤ mass g N A * 1 := mul_le_mul_of_nonneg_left hrest (hm A)
     _ = _ := mul_one _

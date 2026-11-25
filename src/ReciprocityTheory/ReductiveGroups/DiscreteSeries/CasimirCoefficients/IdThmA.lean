@@ -112,11 +112,11 @@ lemma contDiffAt_dPhi2 (μ : Fin n → ℤ) {p : Matrix (Fin n) (Fin n) ℂ × M
   exact (hf.fderiv contDiffAt_fst (by norm_num)).clm_apply contDiffAt_snd
 
 lemma continuousOn_dPhi2 (μ : Fin n → ℤ) : ContinuousOn (dPhi2 μ) (OmegaSet n ×ˢ Set.univ) :=
-  fun p hp => (contDiffAt_dPhi2 μ hp.1).continuousAt.continuousWithinAt
+  fun _ hp => (contDiffAt_dPhi2 μ hp.1).continuousAt.continuousWithinAt
 
 lemma continuousOn_fderiv_dPhi2 (μ : Fin n → ℤ) :
     ContinuousOn (fderiv ℂ (dPhi2 μ)) (OmegaSet n ×ˢ Set.univ) :=
-  ContDiffOn.continuousOn_fderiv_of_isOpen (fun p hp => (contDiffAt_dPhi2 μ hp.1).contDiffWithinAt)
+  ContDiffOn.continuousOn_fderiv_of_isOpen (fun _ hp => (contDiffAt_dPhi2 μ hp.1).contDiffWithinAt)
     (isOpen_omega.prod isOpen_univ) le_rfl
 
 end IdA

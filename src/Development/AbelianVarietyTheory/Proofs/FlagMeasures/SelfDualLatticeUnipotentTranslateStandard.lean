@@ -5,52 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DualInterSelf
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EichlerIsometry
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -172,14 +128,14 @@ theorem exists_move [IsNonarchimedeanLocalField F] [CharZero F] (y : Fin r → S
         by_cases hjm : j = j₀
         · subst hjm
           have : hf L S.Hm a (g j₀.castSucc) = 1 := by
-            rw [← hf_cj L S.herm.1, hga, if_pos rfl, map_one]
+            rw [← hf_cj L S.herm.1, hga, ite_eq_left rfl, map_one]
           rw [← ha, h1, eich, this]
           simp
         · have hlt : (j : ℕ) < m := by
             have : (j : ℕ) ≠ m := fun hh => hjm (Fin.ext hh)
             omega
           have k1 : hf L S.Hm (y j) (g j₀.castSucc) = 0 := by
-            rw [← hf_cj L S.herm.1, dy, if_neg, map_zero]
+            rw [← hf_cj L S.herm.1, dy, ite_eq_right, map_zero]
             intro hh; exact hjm (Fin.castSucc_injective _ hh).symm
           have k2 : hf L S.Hm (y j) (a - y j₀) = 0 := by
             rw [hf_sub_r, iy, ← h j hlt, ha, hni, iso, sub_self]
@@ -206,7 +162,7 @@ theorem core [IsNoetherianRing L.O] (Λ : Submodule L.O S.V) (hfg : Λ.FG)
     rw [← hf_cj L S.herm.1, dual]
     by_cases h : j = i <;> simp [h]
   have gram0 : ∀ i j : Fin r, hf L S.Hm (g i.castSucc) (g j.castSucc) = 0 := fun i j => by
-    rw [gram, if_neg]; simp
+    rw [gram, ite_eq_right]; simp
   have hle : A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O ≤ Λ := by
     rintro x ⟨hx, hx'⟩
     obtain ⟨⟨a, ha, z, hz, rfl⟩, -⟩ := (memA x).1 hx
@@ -241,9 +197,9 @@ theorem core [IsNoetherianRing L.O] (Λ : Submodule L.O S.V) (hfg : Λ.FG)
     unfold Frames.h
     rw [hf_add_r, hx' w hw, add_zero, hf_add_l, k, add_zero]
     exact hint _ ha _ hb
-  · rw [← hf_cj L S.herm.1, hc', if_neg (Fin.castSucc_ne_last j), map_zero]
+  · rw [← hf_cj L S.herm.1, hc', ite_eq_right (Fin.castSucc_ne_last j), map_zero]
   · unfold Frames.h
-    rw [hc', if_pos rfl]
+    rw [hc', ite_eq_left rfl]
   · obtain ⟨h1, h2⟩ := hproj v hv
     set x := v - ∑ i : Fin r, hf L S.Hm v (g i.castSucc) • gs i with hx
     have hxO : ∀ i, hf L S.Hm x (gs i) ∈ L.O := fun i => hint _ h1 _ (hgs i)
@@ -310,7 +266,7 @@ theorem lift_of_frame [IsNonarchimedeanLocalField F] [CharZero F] (Λ : Submodul
     rw [← hni, LinearEquiv.apply_symm_apply, ← hf_cj L S.herm.1, ← h0, hf_cj L S.herm.1, hu]
   choose c hcΛ hc using hc
   have gram0 : ∀ (i : Fin (r + 1)) (j : Fin r), hf L S.Hm (g i) (g j.castSucc) = 0 := fun i j => by
-    rw [gram, if_neg]; simp
+    rw [gram, ite_eq_right]; simp
   have hc' : ∀ j b, hf L S.Hm (c j) (g b) = if b = j then 1 else 0 := fun j b => by
     rw [← hf_cj L S.herm.1, hc]
     by_cases h : b = j <;> simp [h]
@@ -338,14 +294,7 @@ theorem lift_of_frame [IsNonarchimedeanLocalField F] [CharZero F] (Λ : Submodul
   have hN : n * m ∈ S.Nof g := mul_mem hn hm
   have hNi : ∀ a b, hf L S.Hm ((n * m) a) ((n * m) b) = hf L S.Hm a b := hN.1.1
   have hmi : ∀ a b, hf L S.Hm (m a) (m b) = hf L S.Hm a b := hm.1.1
-  have hmem : ∀ x, x ∈ (n * m)⁻¹ • Λ ↔ (n * m) x ∈ Λ := fun x => by
-    rw [Submodule.mem_smul_pointwise_iff_exists]
-    constructor
-    · rintro ⟨b, hb, rfl⟩
-      have : (n * m) ((n * m)⁻¹ • b) = b := (n * m).apply_symm_apply b
-      rwa [this]
-    · intro h
-      exact ⟨_, h, (n * m).symm_apply_apply x⟩
+  have hmem : ∀ x, x ∈ (n * m)⁻¹ • Λ ↔ (n * m) x ∈ Λ := fun _ => Set.mem_inv_smul_set_iff
   obtain ⟨A, hA, hA'⟩ := core S g gs T gram dual iso ((n * m)⁻¹ • Λ) (hΛ.1.1.map _)
     (fun z => by
       rw [hmem, ← hΛ.2]

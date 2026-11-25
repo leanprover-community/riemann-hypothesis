@@ -93,11 +93,11 @@ theorem exists_mem_ind_apply_one {G W : Type} [Group G] [TopologicalSpace G] [Is
   have hF : ∀ (p : P) (c : G), c ∈ K → F ((p : G) * c) = σ p u := by
     intro p c hc
     have h : ∃ p' : P, ∃ c' ∈ K, (p : G) * c = (p' : G) * c' := ⟨p, c, hc, rfl⟩
-    simp only [F, dif_pos h]
+    simp only [F, dite_eq_left h]
     obtain ⟨c', hc', e⟩ := h.choose_spec
     exact wd _ _ _ _ hc' hc e.symm
   have hF0 : ∀ g, (¬ ∃ p : P, ∃ c ∈ K, g = (p : G) * c) → F g = 0 := fun g h => by
-    simp only [F, dif_neg h]
+    simp only [F, dite_eq_right h]
   have hmem : F ∈ indSpace P σ := by
     intro h g
     by_cases hg : ∃ p : P, ∃ c ∈ K, g = (p : G) * c

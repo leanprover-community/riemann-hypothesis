@@ -253,7 +253,7 @@ private theorem zpart_unique {Z : SubMat k n} (hZ : CR Z) {x c : Mat k n}
   have hcomm : Commute (x - c) (x - zpart Z x) :=
     ((Commute.refl x).sub_right hzx.symm).sub_left (hcx.sub_right hcz)
   have hd : IsNilpotent (zpart Z x - c) := by simpa [sub_sub_sub_cancel_left] using hcomm.isNilpotent_sub hn hn0
-  exact sub_eq_zero.1 (PositivityTheory.RgUd.T.Nil.Orb.Ozn.eq_zero_of_mem_of_isNilpotent hZ (Z.sub_mem h0 hc) hd)
+  exact sub_eq_zero.1 (PositivityTheory.RgUd.T.eq_zero_of_nilp_shared hZ (Z.sub_mem h0 hc) hd)
 
 private theorem cc_smul {Z : SubMat k n} (hZ : CR Z) (t : k) {x : Mat k n} (hx : x ∈ CC Z) :
     t • x ∈ CC Z ∧ zpart Z (t • x) = t • zpart Z x := by

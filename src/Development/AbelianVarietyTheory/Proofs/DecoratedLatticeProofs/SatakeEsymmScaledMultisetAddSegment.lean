@@ -3,45 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 public import Formalism.LocalToGlobal.Columns.HeckeSp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
@@ -190,7 +152,7 @@ theorem satEig_map_add_seg : ∀ (E : Type) [Field E] [NumberField E] (w : Heigh
     simp only [hF, satEig, esymm_eq_zero_of_lt _ (hBc ▸ hj), mul_zero]
   have hFk : ∀ j, k < j → F j = 0 := by
     intro j hj
-    simp only [hF, if_neg (show ¬ j ≤ k by omega), zero_mul]
+    simp only [hF, ite_eq_right (show ¬ j ≤ k by omega), zero_mul]
   have hR : ∑ j ∈ Finset.range (a + 1), F j = ∑ j ∈ Finset.range (k + 1), F j := by
     rw [Finset.sum_subset (Finset.range_mono (show a + 1 ≤ a + k + 1 by omega))
         (fun j _ hn => hFa j (by simp at hn; omega)),
@@ -201,7 +163,7 @@ theorem satEig_map_add_seg : ∀ (E : Type) [Field E] [NumberField E] (w : Heigh
   have hjk : j ≤ k := Nat.lt_succ_iff.1 (Finset.mem_range.1 hj)
   rw [esymm_map_mul_C, esymm_string Q s z hs hsQ t]
   by_cases hja : j ≤ a
-  · simp only [hF, if_pos hjk, satEig]
+  · simp only [hF, ite_eq_left hjk, satEig]
     have c1 : (Q : ℂ) ^ (((k : ℂ) * (((a + t : ℕ) : ℂ) - k)) / 2) = s ^ ((k : ℤ) * ((a : ℤ) + t - k)) := by
       rw [← natCast_cpow_half]; congr 1; push_cast; ring
     have c2 : (Q : ℂ) ^ (((j : ℂ) * ((a : ℂ) - j)) / 2) = s ^ ((j : ℤ) * ((a : ℤ) - j)) := by

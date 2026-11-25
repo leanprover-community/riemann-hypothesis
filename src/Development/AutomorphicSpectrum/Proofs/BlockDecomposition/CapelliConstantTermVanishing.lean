@@ -185,7 +185,7 @@ theorem lie_mem_nInvAlg (a r : ℕ) (X : Lie E a) : lie E a X ∈ nInvAlg E a r 
   simp only [GlobalTheory.CuspRep.lie_apply, lieD, e]
 
 theorem cap_mem_nInvAlg (a r : ℕ) (τ : E →+* ℂ) (u : ℂ) : cap (a := a) τ u ∈ nInvAlg E a r :=
-  qdet_mem _ _ (fun i j => Eop_mem_of _ τ _ _ fun x => lie_mem_nInvAlg a r _) _
+  qdet_mem _ _ (fun _ _ => Eop_mem_of _ τ _ _ fun _ => lie_mem_nInvAlg a r _) _
 
 theorem capStable (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (r s : ℕ) (τ : E →+* ℂ) (u : ℂ)
     (F : Sm E (r + s)) :

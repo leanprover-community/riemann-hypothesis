@@ -182,15 +182,8 @@ theorem isCompact_KAt (W : Spc F E d) (hW : W.L.IsFullLattice E) (v : Pl F) : Is
     change u • (mat k⁻¹ - 1) = 0
     rw [e, smul_neg, ← Matrix.mul_smul, hk.1 u hu, Matrix.mul_zero, neg_zero]
 
-private theorem kc_full_of_herm_or_skew {B : Base F E} (hB : B.IsGood σ) {Y : Spc F E n} {r s : ℕ}
-    (hY : Y.IsHerm σ B r s ∨ Y.IsSkew σ B r s) : Y.L.IsFullLattice E := by
-  rcases hY with h | h
-  · exact h.lat
-  · exact h.lat
-
-
 theorem stabiliser_compact : KCompact := fun _ _ _ _ _ _ _ _ _ _ _ _ W _ _ h v =>
   let ⟨_, _, hW⟩ := h.skew
-  isCompact_KAt W (kc_full_of_herm_or_skew h.base (Or.inr hW)) v
+  isCompact_KAt W hW.lat v
 
 end PositivityTheory.ThK

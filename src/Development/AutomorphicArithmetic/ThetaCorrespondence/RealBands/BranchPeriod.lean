@@ -480,9 +480,6 @@ private theorem multilinear_translates_zero_local : ∀ (ι : Type) [Fintype ι]
 
 end GlobalTheory.DensityMultiPlace
 
-
-theorem _root_.GlobalTheory.T.multilinear_zero_of_kills_translates_tensor : ∀ (ι : Type) [Fintype ι] (H : ι → Type) [∀ i, NormedAddCommGroup (H i)] [∀ i, InnerProductSpace ℂ (H i)] [∀ i, CompleteSpace (H i)] (G : ι → Type) [∀ i, Group (G i)] (π : ∀ i, G i →* (H i →L[ℂ] H i)), (∀ i g x, ‖π i g x‖ = ‖x‖) → (∀ i, ∀ B : H i →L[ℂ] H i, (∀ g, B.comp (π i g) = (π i g).comp B) → ∃ c : ℂ, B = c • ContinuousLinearMap.id ℂ (H i)) → ∀ (Sm : ∀ i, Submodule ℂ (H i)), (∀ i, Dense (Sm i : Set (H i))) → ∀ (hinv : ∀ i g, ∀ x ∈ Sm i, π i g x ∈ Sm i) (L : MultilinearMap ℂ (fun i => Sm i) ℂ) (C : ℝ), (∀ v, ‖L v‖ ≤ C * ∏ i, ‖(v i : H i)‖) → ∀ (n : ℕ) (c : Fin n → ℂ) (v : Fin n → ∀ i, Sm i), (∀ g : ∀ i, G i, ∑ j, c j * L (fun i => ⟨π i (g i) (v j i), hinv i (g i) _ (v j i).2⟩) = 0) → ∀ (φ : ∀ i, H i) (u : ∀ i, Sm i), (∑ j, c j * ∏ i, ⟪φ i, (v j i : H i)⟫_ℂ) * L u = 0 := by
-  exact @GlobalTheory.DensityMultiPlace.multilinear_translates_zero_local
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultilinearZeroOfKillsTranslatesTensorStatement =====
@@ -499,7 +496,6 @@ open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.SmoothTranslate
-
 
 open Classical in
 theorem mult_equiv {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S)
@@ -732,7 +728,7 @@ theorem integral_eq_zero_of_translates : GlobalTheory.Published.CuspRapidDecay �
     rw [integral_finsetSum _ (fun j _ => (hint _).const_mul (c j))] at h0
     simp_rw [integral_const_mul] at h0
     exact h0
-  have hB := GlobalTheory.T.multilinear_zero_of_kills_translates_tensor D.what₂.Tau (fun τ => M.H τ) (fun τ => Formalism.IndefR.SchurOrthogonalityAlt.Gt V τ) (fun τ => Formalism.IndefR.SchurOrthogonalityAlt.piR M τ) (Formalism.IndefR.SchurOrthogonalityAlt.piR_norm M)
+  have hB := GlobalTheory.DensityMultiPlace.multilinear_translates_zero_local D.what₂.Tau (fun τ => M.H τ) (fun τ => Formalism.IndefR.SchurOrthogonalityAlt.Gt V τ) (fun τ => Formalism.IndefR.SchurOrthogonalityAlt.piR M τ) (Formalism.IndefR.SchurOrthogonalityAlt.piR_norm M)
     (Formalism.IndefR.SchurOrthogonalityAlt.commutant_scalar M) (fun τ => M.sm τ) (Formalism.IndefR.SchurOrthogonalityAlt.sm_dense M) hinv L K
     (fun u => by rw [hL, hℓ]; exact hK u) n c vv hT (fun τ => (φ τ : M.H τ))
   have hL0 : ∀ u, L u = 0 := fun u => (mul_eq_zero.1 (hB u)).resolve_left hφ'
@@ -917,7 +913,6 @@ section General
 
 variable {D : D7} {θ : InfFam D} {V : HSp D} {S : D.what₂.Tau → SPar}
 
-
 open Classical in
 theorem real_translate (hθ : IsInfFam θ) {M : DSModel V S} {J : Set (GA D V)} {χ : GA D V → ℂ} :
     ∀ a ∈ GinfC V, ∀ v : SmT M, ∃ v' : SmT M, ∀ T ∈ MultT θ M J χ, ∀ h, T v' h = T v (h * a) := by
@@ -990,10 +985,6 @@ theorem exists_kf {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (
     (stabilizerEmbedding G.sp.dec0) (t w) (GlobalTheory.UnitaryEmbeddingProperties.continuous_unitaryEmbedding _).measurable
     (htw.integrableOn_fundamentalDomain hμ hfd) (fun a ha => hn a ha) v'
   exact hp key
-
-end GlobalTheory.PeriodNePf
-
-namespace GlobalTheory.PeriodNePf
 
 end GlobalTheory.PeriodNePf
 

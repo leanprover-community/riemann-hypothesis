@@ -14,8 +14,6 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusK
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base
 open scoped Matrix SchwartzMap ContDiff

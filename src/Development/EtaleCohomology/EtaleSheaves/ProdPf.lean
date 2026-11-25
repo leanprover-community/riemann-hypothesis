@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.ChowGraphCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.t_E2Cut LateralTheory.E.ChowLCut LateralTheory.E.ChowGraphCut
 
 namespace LateralTheory.E.ProdPf
@@ -85,4 +84,3 @@ theorem Prod_of (hI : IterComp) : LateralTheory.E.ChowGraphCut.Prod := by
   exact exists_widePullback_of_iteratedLine hI n Pj qj hq
 
 end LateralTheory.E.ProdPf
-end

@@ -22,17 +22,9 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Alg UpperTheory.V.U3
 
 private theorem cls_eq_one {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (N : ℕ) [NeZero N] (g : G ℚ Ω)
-    (hg : ∀ ζ : Ω, ζ ^ N = 1 → g ζ = ζ) : Chr.cls ℚ Ω N g = 1 := by
-  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
-  haveI : NeZero ((N : ℕ) : Ω) := ⟨Nat.cast_ne_zero.mpr (NeZero.ne N)⟩
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω N
-  have h1 := Chr.cls_spec N g ζ hζ.pow_eq_one
-  rw [hg ζ hζ.pow_eq_one] at h1
-  have h2 : ζ ^ (1 : ZMod N).val = ζ := by
-    rw [ZMod.val_one_eq_one_mod, hζ.eq_orderOf, pow_mod_orderOf, pow_one]
-  apply Units.ext
-  apply ZMod.val_injective
-  exact hζ.pow_inj (ZMod.val_lt _) (ZMod.val_lt _) (h1.symm.trans h2.symm)
+    (hg : ∀ ζ : Ω, ζ ^ N = 1 → g ζ = ζ) : Chr.cls ℚ Ω N g = 1 :=
+  (Chr.clsFacts ℚ Ω N).2.2.1 g 1 fun ζ hζ => by
+    rw [hg ζ hζ, Units.val_one, ZMod.val_one_eq_one_mod, ← pow_eq_pow_mod _ hζ, pow_one]
 
 private theorem block_form {k : Type} [Field k] (X : Matrix (Fin 3) (Fin 3) k) (Y : Matrix (Fin 2) (Fin 2) k)
     (hb : ∀ a b, Odd (wt a b) → X a b = 0) (h1 : X 1 1 = 1) (hY : Y = corner X) :

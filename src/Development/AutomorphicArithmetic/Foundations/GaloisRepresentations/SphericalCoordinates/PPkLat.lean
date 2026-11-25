@@ -33,11 +33,6 @@ private theorem norm_nat_cop {p : ℕ} [hp : Fact p.Prime] {m : ℕ} (hm : m.Cop
   have := le_antisymm h2 (not_lt.1 h1)
   exact_mod_cast this
 
-private theorem norm_p_lt {p : ℕ} [hp : Fact p.Prime] : ‖(p : PadicAlgCl p)‖ < 1 := by
-  have h : (p : PadicAlgCl p) = algebraMap ℚ_[p] (PadicAlgCl p) (p : ℚ_[p]) := by simp
-  rw [h, PadicAlgCl.norm_extends, Padic.norm_p]
-  exact inv_lt_one_of_one_lt₀ (by exact_mod_cast hp.out.one_lt)
-
 private theorem norm_int_emb {p : ℕ} [Fact p.Prime] {F : Type} [Field F] (τ : F →+* PadicAlgCl p) {y : F} (h : IsIntegral ℤ y) : ‖τ y‖ ≤ 1 := by
   have h1 : IsIntegral ℤ (τ y) := h.map τ.toIntAlgHom
   exact GlobalTheory.CoefCoord.norm_le_one_of_isIntegral _ (h1.tower_top)
@@ -49,7 +44,7 @@ private theorem pow_bd {p : ℕ} [Fact p.Prime] {ι' : Type} [Fintype ι'] (f : 
     by_cases h0 : f i = 0
     · exact ⟨0, by simp [h0]⟩
     have hpos : 0 < ‖f i‖⁻¹ := inv_pos.2 (norm_pos_iff.2 h0)
-    obtain ⟨j, hj⟩ := exists_pow_lt_of_lt_one hpos (norm_p_lt (p := p))
+    obtain ⟨j, hj⟩ := exists_pow_lt_of_lt_one hpos (ReciprocityTheory.DiscreteGroups.LocalClassField.UnramifiedExtensions.norm_p_lt_one (p := p))
     refine ⟨j, ?_⟩
     rw [norm_mul, norm_pow]
     calc _ ≤ ‖f i‖⁻¹ * ‖f i‖ := by gcongr
@@ -59,7 +54,7 @@ private theorem pow_bd {p : ℕ} [Fact p.Prime] {ι' : Type} [Fintype ι'] (f : 
   have hle : J i ≤ Finset.univ.sup J := Finset.le_sup (Finset.mem_univ i)
   obtain ⟨r, hr⟩ := Nat.exists_eq_add_of_le hle
   rw [hr, pow_add, _root_.mul_comm ((p : PadicAlgCl p) ^ J i), _root_.mul_assoc, norm_mul, norm_pow]
-  exact mul_le_one₀ (pow_le_one₀ (norm_nonneg _) norm_p_lt.le) (norm_nonneg _) (hJ i)
+  exact mul_le_one₀ (pow_le_one₀ (norm_nonneg _) ReciprocityTheory.DiscreteGroups.LocalClassField.UnramifiedExtensions.norm_p_lt_one.le) (norm_nonneg _) (hJ i)
 
 private noncomputable def mv {p : ℕ} [Fact p.Prime] {G : HTGroup p} (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w))
     (a : Loc G) : Loc G :=

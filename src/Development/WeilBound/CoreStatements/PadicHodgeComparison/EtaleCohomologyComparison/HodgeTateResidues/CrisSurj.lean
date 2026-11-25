@@ -17,8 +17,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers
@@ -28,17 +26,6 @@ namespace CrystallineSemistableComparison.HT
 open Pb Pb.Kap
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
-
-theorem dividedPowerFiltration_one {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) : pdP δ 1 = J := by
-  refine le_antisymm (Ideal.span_le.2 ?_) fun z hz => by simpa using pow_mem_pdP δ hz 1
-  rintro _ ⟨L, hL, hr, rfl⟩
-  induction L with
-  | nil => simp at hr
-  | cons q L ih =>
-    simp only [List.map_cons, List.prod_cons, List.sum_cons] at hr ⊢
-    rcases Nat.eq_zero_or_pos q.1 with h | h
-    · exact J.mul_mem_left _ (ih (fun q' hq' => hL q' (List.mem_cons_of_mem _ hq')) (by omega))
-    · exact J.mul_mem_right _ (δ.dpow_mem h.ne' (hL q List.mem_cons_self))
 
 structure Br (R : Per l K) (Y : CB l K) (e : Y.Λ →+* R.A) (θP : R.P →+* ℂ_[l]) (sΛ : K.fixingSubgroup → Y.Λ →+* Y.Λ)
     (sn : K.fixingSubgroup → ∀ n, Y.R n →+* Y.R n) (sC : K.fixingSubgroup → ℂ_[l] →+* ℂ_[l]) (c : K.fixingSubgroup → ℂ_[l]) : Prop where
@@ -71,7 +58,7 @@ theorem Br.θ_ex : ∃ θ : L.B →+* ℂ_[l], ∀ x, θ (L.toB x) = θP x := by
 theorem Br.t_ex : ∃ t : R.P, (t : R.B) = R.tB ∧ L.ι (L.lam (e Y.t)) = L.toB t ∧ L.IB = Ideal.span {L.toB t} := by
   obtain ⟨t, ht, -⟩ := hb.θ_i Y.t
   refine ⟨t, by rw [ht, hb.et]; rfl, hL.ι_lam _ t ht, ?_⟩
-  rw [← dividedPowerFiltration_one L.γB, hL.pdP_B 1 t (by rw [ht, hb.et]; rfl), pow_one]
+  rw [← GlobalTheory.CompanionTheory.RedInEx.one_eq L.γB, hL.pdP_B 1 t (by rw [ht, hb.et]; rfl), pow_one]
 
 def Br.θ : L.B →+* ℂ_[l] := (hb.θ_ex hL).choose
 
@@ -211,7 +198,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section

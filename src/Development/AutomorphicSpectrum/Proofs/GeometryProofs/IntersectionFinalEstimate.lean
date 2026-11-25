@@ -261,14 +261,11 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X]
 def ReHolAt (A : FinHolAtlas e X) (f : X → ℝ) (y₀ : X) : Prop :=
   ∃ W : Set X, IsOpen W ∧ y₀ ∈ W ∧ ∃ G : X → ℂ, A.HoloOn W G ∧ ∀ z ∈ W, f z = (G z).re
 
-theorem holoOn_mono {A : FinHolAtlas e X} {U V : Set X} {G : X → ℂ} (h : A.HoloOn U G) (hVU : V ⊆ U) :
-    A.HoloOn V G := fun j u hu => h j u ⟨hu.1, hVU hu.2⟩
-
 theorem ReHolAt.congr {A : FinHolAtlas e X} {f g : X → ℝ} {y₀ : X} (hg : ReHolAt A g y₀)
     (h : f =ᶠ[𝓝 y₀] g) : ReHolAt A f y₀ := by
   obtain ⟨W, hW, hy, G, hG, hWG⟩ := hg
   obtain ⟨T, hT, hTo, hyT⟩ := mem_nhds_iff.1 h
-  exact ⟨W ∩ T, hW.inter hTo, ⟨hy, hyT⟩, G, holoOn_mono hG Set.inter_subset_left,
+  exact ⟨W ∩ T, hW.inter hTo, ⟨hy, hyT⟩, G, GlobalTheory.CompanionTheory.Ar.Giv.MuLimit.holo_mono hG Set.inter_subset_left,
     fun z hz => (hT hz.2).trans (hWG z hz.1)⟩
 
 theorem ReHolAt.add {A : FinHolAtlas e X} {f g : X → ℝ} {y₀ : X} (hf : ReHolAt A f y₀)
@@ -521,8 +518,8 @@ theorem potential_nbarQ (X : ComponentSetting D O Lt) (Θ : LocPot X.M.Xc) (hs :
   have hall := (h1.add ((h2.add h3).const_mul ((p : ℝ) / q))).sub h4
   obtain ⟨W, hW, hyW, G, hG, hWG⟩ := hall
   refine ⟨W ∩ (U₁ ∩ (U₂ ∩ X.S.R.Yo)), hW.inter (hU₁.inter (hU₂.inter hYo)), ⟨hyW, hy₁, hy₂, hy.2⟩, ?_, s,
-    fun y' hy' => hsm y' hy'.2.1, fun p => holoOn_mono (hsH p) fun y' hy' => hy'.2.1, G,
-    holoOn_mono hG Set.inter_subset_left, fun y' hy' => ?_⟩
+    fun y' hy' => hsm y' hy'.2.1, fun p => GlobalTheory.CompanionTheory.Ar.Giv.MuLimit.holo_mono (hsH p) fun y' hy' => hy'.2.1, G,
+    GlobalTheory.CompanionTheory.Ar.Giv.MuLimit.holo_mono hG Set.inter_subset_left, fun y' hy' => ?_⟩
   · intro y' hy'
     exact ⟨⟨⟨(hU₁s hy'.2.1 : _), (hU₂s hy'.2.2.1).1⟩, Set.mem_univ _⟩, hy'.2.2.2⟩
   · have hm := hsm y' hy'.2.1
@@ -747,12 +744,12 @@ theorem logRatio_smul {a a₀ : HermLine ι} (hd : a.a = a₀.a) (c : K → ℂ)
   have hcone := cone_smul c z hc
   unfold logRatio
   by_cases h : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0
-  · rw [if_pos (hcone.mpr h), if_pos h, a.smul c z hc, a₀.smul c z hc, hd]
+  · rw [ite_eq_left (hcone.mpr h), ite_eq_left h, a.smul c z hc, a₀.smul c z hc, hd]
     have hprod : (∏ k, ‖c k‖ ^ a₀.a k) ≠ 0 :=
       Finset.prod_ne_zero_iff.mpr fun k _ => zpow_ne_zero _ (norm_ne_zero_iff.mpr (hc k))
     rw [Real.log_mul hprod (a₀.pos z h).ne', Real.log_mul hprod (a.pos z h).ne']
     ring
-  · rw [if_neg (fun h' => h (hcone.mp h')), if_neg h]
+  · rw [ite_eq_right (fun h' => h (hcone.mp h')), ite_eq_right h]
 
 theorem logRatio_smooth {a a₀ : HermLine ι} (ha : IsSmoothHerm a) (ha₀ : IsSmoothHerm a₀) :
     ReciprocityTheory.ChartRestriction.G.AI.I2.SmoothFn (logRatio a a₀) := by
@@ -762,7 +759,7 @@ theorem logRatio_smooth {a a₀ : HermLine ι} (ha : IsSmoothHerm a) (ha₀ : Is
   refine ((h0.log fun z hz => (a₀.pos z hz).ne').sub (h1.log fun z hz => (a.pos z hz).ne')).congr ?_
   intro z hz
   have hz' : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0 := hz
-  simp only [logRatio, if_pos hz']
+  simp only [logRatio, ite_eq_left hz']
 
 theorem tensor_logRatio_h {a a₀ : HermLine ι}
     (hu : ∀ (c : K → ℂ) z, (∀ k, c k ≠ 0) → logRatio a a₀ (fun p => c p.1 * z p) = logRatio a a₀ z)
@@ -771,7 +768,7 @@ theorem tensor_logRatio_h {a a₀ : HermLine ι}
   have h0 := a₀.pos z hz
   have h1 := a.pos z hz
   show a₀.h z * Real.exp (-logRatio a a₀ z) = a.h z
-  rw [logRatio, if_pos hz, neg_sub, Real.exp_sub, Real.exp_log h1, Real.exp_log h0,
+  rw [logRatio, ite_eq_left hz, neg_sub, Real.exp_sub, Real.exp_log h1, Real.exp_log h0,
     ← mul_div_assoc, mul_div_right_comm, div_self h0.ne', one_mul]
 
 theorem word_step (I : Ideal (MRing ι) → (n : ℕ) → (Fin n → HermLine ι) → ℝ)
@@ -1273,13 +1270,12 @@ theorem term_tendsto (X : ComponentSetting D O Lt) (B : ℕ) (Θ : LocPot X.M.Xc
       rw [_root_.GlobalTheory.CompanionTheory.Ar.Giv.Mix.muReg_h_eq_of_mem_mcPts II Ψ K ι Ω E D O Lt X B u z hz, Real.log_mul (mul_pos (X.S.ref.pos z hz.1) (Real.exp_pos _)).ne'
         (hvp 0).ne', Real.log_mul (X.S.ref.pos z hz.1).ne' (Real.exp_pos _).ne', Real.log_exp]
     unfold logRatio
-    rw [if_pos hz.1, hlog, hlog]
+    rw [ite_eq_left hz.1, hlog, hlog]
     ring
 
 end
 
 end Mix
-
 
 open Mix in
 theorem mixed_limit : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → TopNMixedLimit.Statement := by

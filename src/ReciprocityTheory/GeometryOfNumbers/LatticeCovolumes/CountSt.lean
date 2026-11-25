@@ -26,11 +26,6 @@ noncomputable def gramR (h : HermFam K V) {r : ℕ} (v : Fin r → V)
     (w : {w : InfinitePlace K // w.IsReal}) : Matrix (Fin r) (Fin r) ℝ :=
   (h.gram w.1.embedding v).map Complex.re
 
-def ellS (h : HermFam K V) {r : ℕ} (v : Fin r → V) (R : ℝ) :
-    Set (Fin r → mixedEmbedding.mixedSpace K) :=
-  {y | (∀ w, qR (gramR h v w) (fun i => (y i).1 w) ≤ R ^ 2) ∧
-    ∀ w : {w : InfinitePlace K // w.IsComplex}, qC (h.gram w.1.embedding v) (fun i => (y i).2 w) ≤ R ^ 2}
-
 def psi (K : Type*) [Field K] [NumberField K] (r : ℕ) (y : Fin r → mixedEmbedding.mixedSpace K) :
     ({w : InfinitePlace K // w.IsReal} → Fin r → ℝ) × ({w : InfinitePlace K // w.IsComplex} → Fin r → ℂ) :=
   (fun w i => (y i).1 w, fun w i => (y i).2 w)
@@ -81,9 +76,6 @@ variable {K : Type*} [Field K] [NumberField K] {V : Type*} [AddCommGroup V] [Mod
 def HermFam.IsConjInv (h : HermFam K V) : Prop :=
   ∀ (σ : K →+* ℂ) (x y : V),
     h.form (ComplexEmbedding.conjugate σ) x y = starRingEnd ℂ (h.form σ x y)
-
-def smallVec (h : HermFam K V) (E : Submodule (𝓞 K) V) (R : ℝ) : Set V :=
-  {x | x ∈ E ∧ ∀ σ, h.nrm σ x ≤ R}
 
 theorem det_gram_conj_re (h : HermFam K V) (hinv : h.IsConjInv) (σ : K →+* ℂ) {r : ℕ}
     (v : Fin r → V) :

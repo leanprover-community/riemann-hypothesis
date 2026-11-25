@@ -16,41 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EmbHIn
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import Formalism.SharpRestriction.Divisibility.BoundaryLocalData
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 
 @[expose] public section
@@ -88,7 +53,7 @@ theorem compP_mem : ∀ (D : D7), D.host.ccK = ⊤ → ∀ (S T : HSp D) (e : AE
     GlobalTheory.MovedIdem.isIdemAt_conj (hes PP hPP) fun x => Formalism.L2.Col.mem_conjP _ _
   have h0 : infPart D (cA D (es PP)) = 0 := GlobalTheory.PlaceVec.infPart_cA (infPart_es (hes PP hPP))
   have hm := (Submodule.mem_iInf _).1 hx PP
-  simp only [Submodule.mem_comap, expS, if_pos hPP] at hm
+  simp only [Submodule.mem_comap, expS, ite_eq_left hPP] at hm
   have hm' : (c : D.host.E) • x' ∈ Formalism.HermitianLatticesTheory.localization₂ (Formalism.L2.Col.conjPrime₂ (Formalism.L2.Col.conjPrime₂ PP)).asIdeal
       (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') := by
     rw [conjP_conjP_self]
@@ -113,7 +78,7 @@ theorem compC_mem : ∀ (D : D7), D.host.ccK = ⊤ → ∀ (S T : HSp D) (e : AE
     rw [Formalism.L2.Col.mem_conjP, Formalism.L2.Col.cO_cO]
     exact ha
   have hm := (Submodule.mem_iInf _).1 hx (Formalism.L2.Col.conjPrime₂ PP)
-  simp only [Submodule.mem_comap, expS, if_neg hnot, conjP_conjP_self, if_pos hPP] at hm
+  simp only [Submodule.mem_comap, expS, ite_eq_right hnot, conjP_conjP_self, ite_eq_left hPP] at hm
   have hm' : (c : D.host.E)⁻¹ • x' ∈ Formalism.HermitianLatticesTheory.localization₂ (Formalism.L2.Col.conjPrime₂ PP).asIdeal
       (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') := by
     convert hm using 1
@@ -191,7 +156,7 @@ theorem exists_den {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ}
     rw [not_or] at hn
     have h : ((c : E) ^ (-expS SS Q))⁻¹ • x ∈ Formalism.HermitianLatticesTheory.localization₂ Q.asIdeal M := (Submodule.mem_iInf _).1 hx Q
     unfold expS at h
-    rw [if_neg hn.1, if_neg hn.2, neg_zero, zpow_zero, inv_one, one_smul] at h
+    rw [ite_eq_right hn.1, ite_eq_right hn.2, neg_zero, zpow_zero, inv_one, one_smul] at h
     obtain ⟨s, hs, hsx⟩ := h
     exact hs (hle ((hI s).2 hsx))
 

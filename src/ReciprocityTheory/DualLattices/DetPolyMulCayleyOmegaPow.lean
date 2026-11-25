@@ -27,12 +27,12 @@ theorem deriv_finsetProd {ι : Type*} [DecidableEq ι] (D : Derivation R A A) (t
   | empty => simp
   | @insert a t ha ih =>
     have h1 : ∏ k ∈ t, (if k = a then D (P k) else P k) = ∏ k ∈ t, P k :=
-      Finset.prod_congr rfl fun k hk => if_neg fun h => ha (by rw [← h]; exact hk)
+      Finset.prod_congr rfl fun k hk => ite_eq_right fun h => ha (by rw [← h]; exact hk)
     have h2 : ∀ k₀ ∈ t, ∏ k ∈ insert a t, (if k = k₀ then D (P k) else P k) =
         P a * ∏ k ∈ t, (if k = k₀ then D (P k) else P k) := fun k₀ hk₀ => by
-      rw [Finset.prod_insert ha, if_neg fun h => ha (by rw [h]; exact hk₀)]
+      rw [Finset.prod_insert ha, ite_eq_right fun h => ha (by rw [h]; exact hk₀)]
     rw [Finset.prod_insert ha, Derivation.leibniz, ih, Finset.sum_insert ha,
-      Finset.prod_insert ha, if_pos (rfl : a = a), h1, Finset.sum_congr rfl h2,
+      Finset.prod_insert ha, ite_eq_left (rfl : a = a), h1, Finset.sum_congr rfl h2,
       smul_eq_mul, smul_eq_mul, Finset.mul_sum]
     ring
 
@@ -102,12 +102,12 @@ theorem pderiv_linSub (g : Matrix (Fin n) (Fin n) R) (a b : Fin n)
     congr 1
     · simp only [hs, mul_ite, mul_one, mul_zero]
       by_cases hb : v.2 = b
-      · rw [if_pos hb, Finset.sum_eq_single v.1]
-        · rw [if_pos (by ext <;> simp [hb])]; ring
-        · intro i _ hi; rw [if_neg (fun h => hi (congrArg Prod.fst h).symm)]
+      · rw [ite_eq_left hb, Finset.sum_eq_single v.1]
+        · rw [ite_eq_left (by ext <;> simp [hb])]; ring
+        · intro i _ hi; rw [ite_eq_right (fun h => hi (congrArg Prod.fst h).symm)]
         · simp
-      · rw [if_neg hb]; symm
-        exact Finset.sum_eq_zero fun i _ => if_neg (fun h => hb (congrArg Prod.snd h))
+      · rw [ite_eq_right hb]; symm
+        exact Finset.sum_eq_zero fun i _ => ite_eq_right (fun h => hb (congrArg Prod.snd h))
     · exact Finset.sum_congr rfl fun i _ => by ring
 
 def dOp {m : ℕ} (r c : Fin m → Fin n) : Module.End R (MvPolynomial (Fin n × Fin n) R) :=
@@ -397,7 +397,7 @@ theorem sum_prod_factorial_add_ite {s : ℕ} (c : Fin s → ℕ) :
       split_ifs
       · rw [Nat.factorial_succ, mul_comm]
       · simp
-    simp only [e, Finset.prod_mul_distrib, Finset.prod_ite_eq, Finset.mem_univ, if_true]
+    simp only [e, Finset.prod_mul_distrib, Finset.prod_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_congr rfl fun k₀ _ => h k₀, ← Finset.mul_sum, Finset.sum_add_distrib]
   simp
 

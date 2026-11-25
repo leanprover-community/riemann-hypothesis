@@ -16,18 +16,11 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qf17.heckePol :
-    {A : Type} → [inst : CommRing A] → ℕ → ℕ → (ℕ → A) → Polynomial A :=
-    fun {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) ↦
-      ∑ j ∈ Finset.range (n + (1 : ℕ)),
-        (Polynomial.C : A → Polynomial A) ((-1 : A) ^ j * (↑q : A) ^ (j * (j - (1 : ℕ)) / (2 : ℕ)) * a j) *
-          Polynomial.X ^ (n - j)
-
 theorem UpperTheory.Reformulated.B.Qf17.hecke_map :
     ∀ {A B : Type} [inst : CommRing A] [inst_1 : CommRing B] (f : A →+* B) (n q : ℕ) (a : ℕ → A),
-      Polynomial.map f (UpperTheory.Reformulated.B.Qf17.heckePol n q a) = UpperTheory.Reformulated.B.Qf17.heckePol n q fun (j : ℕ) ↦ (f : A → B) (a j) := by
+      Polynomial.map f (UpperTheory.V.Hi.heckePol n q a) = UpperTheory.V.Hi.heckePol n q fun (j : ℕ) ↦ (f : A → B) (a j) := by
   intro A B _ _ f n q a
-  unfold UpperTheory.Reformulated.B.Qf17.heckePol
+  unfold UpperTheory.V.Hi.heckePol
 
   rw [Polynomial.map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -47,7 +40,6 @@ open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterm
 open UpperTheory.V.HV (Coef)
 open scoped TensorProduct
 
-
 namespace UpperTheory.V.Hi.Up
 
 theorem hecke_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (n q : ℕ) (a : ℕ → A) :
@@ -57,9 +49,9 @@ theorem hecke_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (n q : 
 private theorem hecke_coeff {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) (j : ℕ) (hj : j ≤ n) :
     (heckePol n q a).coeff (n - j) = (-1) ^ j * (q : A) ^ (j * (j - 1) / 2) * a j := by
   rw [heckePol, finsetSum_coeff, Finset.sum_eq_single j]
-  · rw [coeff_C_mul_X_pow, if_pos rfl]
+  · rw [coeff_C_mul_X_pow, ite_eq_left rfl]
   · intro i hi hij
-    rw [coeff_C_mul_X_pow, if_neg]
+    rw [coeff_C_mul_X_pow, ite_eq_right]
     have := Finset.mem_range.1 hi
     omega
   · intro h

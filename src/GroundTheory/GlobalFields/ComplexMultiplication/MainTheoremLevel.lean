@@ -767,12 +767,6 @@ theorem two_ne_zero_and_three_ne_zero_of_five_le_ringChar {k : Type*} [Field k]
   · have := Nat.le_of_dvd (by norm_num) ((ringChar.spec k 3).mp (by exact_mod_cast h3))
     omega
 
-section NumberField
-
-variable {L : Type*} [Field L] [NumberField L] (v : HeightOneSpectrum (𝓞 L))
-
-end NumberField
-
 end GroundTheory.Global
 end -- clump:auto
 end -- clump:auto
@@ -1131,25 +1125,6 @@ theorem eq_of_reductionHom_eq_of_nsmul {n : ℕ} (hn : (n : ResidueField 𝒪) �
 
 end Good
 
-section Localization
-
-open IsDedekindDomain
-
-variable {R : Type*} [CommRing R] [IsDedekindDomain R] {F : Type*} [Field F] [Algebra R F]
-  [IsFractionRing R F] (v : HeightOneSpectrum R)
-
-end Localization
-
-section NumberField
-
-open NumberField IsDedekindDomain
-
-variable {F : Type*} [Field F] [NumberField F] (𝔮 : HeightOneSpectrum (𝓞 F))
-  (W : WeierstrassCurve (𝔮.valuationSubringAtPrime F)) [W.IsElliptic] [DecidableEq F]
-  [DecidableEq (ResidueField (𝔮.valuationSubringAtPrime F))]
-
-end NumberField
-
 end
 
 end GroundTheory.Global
@@ -1463,17 +1438,17 @@ theorem ofJ_map [DecidableEq F] [DecidableEq F'] (f : F →+* F') (j : F) :
     exact f.injective.eq_iff.symm
   unfold ofJ
   by_cases a : j = 0
-  · rw [if_pos a, if_pos (hj0.1 a)]
+  · rw [ite_eq_left a, ite_eq_left (hj0.1 a)]
     by_cases b : (3 : F) = 0
-    · rw [if_pos b, if_pos (h3.1 b)]
+    · rw [ite_eq_left b, ite_eq_left (h3.1 b)]
       ext <;> simp [ofJ1728]
-    · rw [if_neg b, if_neg (mt h3.2 b)]
+    · rw [ite_eq_right b, ite_eq_right (mt h3.2 b)]
       ext <;> simp [ofJ0]
-  · rw [if_neg a, if_neg (mt hj0.2 a)]
+  · rw [ite_eq_right a, ite_eq_right (mt hj0.2 a)]
     by_cases b : j = 1728
-    · rw [if_pos b, if_pos (hj1728.1 b)]
+    · rw [ite_eq_left b, ite_eq_left (hj1728.1 b)]
       ext <;> simp [ofJ1728]
-    · rw [if_neg b, if_neg (mt hj1728.2 b)]
+    · rw [ite_eq_right b, ite_eq_right (mt hj1728.2 b)]
       ext <;> simp [ofJNe0Or1728, map_ofNat]
 
 theorem toShortNF_map (W : WeierstrassCurve F) [Invertible (2 : F)] [Invertible (3 : F)]
@@ -1534,64 +1509,25 @@ theorem exists_shortModels_isogenous (M : IntermediateField K ℂ) [FiniteDimens
           (⟨(shortModel (⟨ELL.j x, hL x⟩ : L)).baseChange ℂ, h⟩ : CMCurve K).toEll = x) ∧
         ∀ x y, Nonempty (Isogeny (shortModel (⟨ELL.j x, hL x⟩ : L))
           (shortModel (⟨ELL.j y, hL y⟩ : L))) := by
-  classical
-  have := finite_ell hK
   set x₀ := ellEquiv (algebraMap K ℂ) hK 1
   set J : IntermediateField K ℂ := K⟮ELL.j x₀⟯
   have hJ : ∀ y, ELL.j y ∈ J := fun y ↦ ELL.j_mem_adjoin hK x₀ y
-  have : FiniteDimensional K J :=
+  haveI : FiniteDimensional K J :=
     adjoin.finiteDimensional (ELL.isAlgebraic_j_over hK x₀).isIntegral
-  have : NumberField J := NumberField.of_module_finite K J
-  set E₀ : ELL K → WeierstrassCurve J := fun y ↦ shortModel (⟨ELL.j y, hJ y⟩ : J)
-  have hE₀j : ∀ y, algebraMap J ℂ (E₀ y).j = ELL.j y := fun y ↦ by
-    simp only [E₀, shortModel_j]
-    rfl
-  have hE₀ : ∀ y, ∃ h : Nonempty (isogEnd ((E₀ y).baseChange ℂ) ≃+* 𝓞 K),
-      (⟨(E₀ y).baseChange ℂ, h⟩ : CMCurve K).toEll = y := fun y ↦
-    exists_cmCurve_toEll_of_j_eq y _ (by
-      show ((E₀ y).map (algebraMap J ℂ)).j = _
-      rw [map_j, hE₀j])
-  have hF : ∀ p : ELL K × ELL K, ∃ F₁ : IntermediateField J ℂ, NumberField F₁ ∧
-      Nonempty (Isogeny ((E₀ p.1).baseChange F₁) ((E₀ p.2).baseChange F₁)) := by
-    rintro ⟨y, z⟩
-    obtain ⟨hy, -⟩ := hE₀ y
-    obtain ⟨hz, -⟩ := hE₀ z
-    obtain ⟨ψ⟩ := nonempty_isogeny_of_cmCurve hK ⟨_, hy⟩ ⟨_, hz⟩
-    obtain ⟨F₁, hF₁, φ, -⟩ := Isogeny.exists_numberField_mapOf_eq ψ
-    exact ⟨F₁, hF₁, ⟨φ⟩⟩
-  choose F hFnum hFiso using hF
-  have hFfin : ∀ p, FiniteDimensional K ((F p).restrictScalars K) := fun p ↦ by
-    have := hFnum p
-    have : FiniteDimensional ℚ ((F p).restrictScalars K) := (inferInstance : FiniteDimensional ℚ (F p))
-    exact Module.Finite.of_restrictScalars_finite ℚ K ((F p).restrictScalars K)
-  set M' : IntermediateField K ℂ := M ⊔ J ⊔ ⨆ p, (F p).restrictScalars K
-  have : FiniteDimensional K M' := by
-    have := hFfin
-    infer_instance
-  obtain ⟨L, hM'L, hLfin, hLgal⟩ := exists_isGalois_le M'
-  have hJL : J ≤ L := le_trans (le_trans le_sup_right le_sup_left) hM'L
-  have hFL : ∀ p, (F p).restrictScalars K ≤ L := fun p ↦
-    le_trans (le_trans (le_iSup (fun p ↦ (F p).restrictScalars K) p) le_sup_right) hM'L
-  set ι : J →+* L := (inclusion hJL).toRingHom
-  have hmodel : ∀ y, (E₀ y).map ι = shortModel (⟨ELL.j y, hJL (hJ y)⟩ : L) := fun y ↦ by
+  obtain ⟨L, hML, hLfin, hLgal, hJL, -, hiso⟩ :=
+    exists_models_isogenous_of hK M J (fun y ↦ shortModel (⟨ELL.j y, hJ y⟩ : J))
+      (fun y ↦ by simp only [shortModel_j]; rfl)
+  have hmodel : ∀ y, (shortModel (⟨ELL.j y, hJ y⟩ : J)).map (inclusion hJL).toRingHom =
+      shortModel (⟨ELL.j y, hJL (hJ y)⟩ : L) := fun y ↦ by
     rw [shortModel_map]
     rfl
-  refine ⟨L, le_trans (le_trans le_sup_left le_sup_left) hM'L, hLfin, hLgal, fun y ↦ hJL (hJ y),
-    fun y ↦ ?_, fun y z ↦ ?_⟩
+  refine ⟨L, hML, hLfin, hLgal, fun y ↦ hJL (hJ y), fun y ↦ ?_, fun y z ↦ ?_⟩
   · refine exists_cmCurve_toEll_of_j_eq y _ ?_
     show ((shortModel (⟨ELL.j y, hJL (hJ y)⟩ : L)).map (algebraMap L ℂ)).j = _
     rw [map_j, shortModel_j]
     rfl
-  · obtain ⟨φ⟩ := hFiso (y, z)
-    let κ : F (y, z) →+* L := (inclusion (hFL (y, z))).toRingHom
-    have hκ : κ.comp (algebraMap J (F (y, z))) = ι := by
-      ext a
-      rfl
-    have e : ∀ w, ((E₀ w).baseChange (F (y, z))).map κ = shortModel (⟨ELL.j w, hJL (hJ w)⟩ : L) :=
-      fun w ↦ by
-        show ((E₀ w).map (algebraMap J (F (y, z)))).map κ = _
-        rw [WeierstrassCurve.map_map, hκ, hmodel]
-    exact ⟨(φ.map κ).congr (e y) (e z)⟩
+  · obtain ⟨φ⟩ := hiso y z
+    exact ⟨φ.congr (hmodel y) (hmodel z)⟩
 
 end Models
 

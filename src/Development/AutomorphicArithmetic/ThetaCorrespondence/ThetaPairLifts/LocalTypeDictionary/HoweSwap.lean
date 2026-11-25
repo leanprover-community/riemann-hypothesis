@@ -127,32 +127,6 @@ namespace GlobalTheory.HoweRealSmall
 
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-private theorem det_ne_sig_map {E : Type} [Field E] {n r s : ℕ} {J : Matrix (Fin n) (Fin n) E} (τ : E →+* ℂ) (c : ℂ)
-    (h : HasSig (c • J.map τ) r s) : J.det ≠ 0 := by
-  intro h0
-  apply GlobalTheory.WeilSchrodingerHerm.det_ne_zero_of_hasSig h
-  have e := RingHom.map_det τ J
-  rw [RingHom.mapMatrix_apply] at e
-  rw [Matrix.det_smul, ← e, h0, map_zero, mul_zero]
-
-private theorem hecke_div {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    {χ χ' : Chr F E} (h : GlobalTheory.LFun.IsHecke F E χ) (h' : GlobalTheory.LFun.IsHecke F E χ') :
-    GlobalTheory.LFun.IsHecke F E (χ / χ') :=
-  ⟨h.1.div' h'.1, fun x => by simp only [MonoidHom.div_apply, h.2 x, h'.2 x, div_self']⟩
-
-private theorem resEta_div {R A : Type} [CommRing R] [CommRing A] [Algebra R A] {K : Subgroup Rˣ}
-    {χ χ' : Aˣ →* Circle} {n m k : ℕ} (h : ResEtaPow K χ n) (h' : ResEtaPow K χ' m) (hk : k = n + m) :
-    ResEtaPow K (χ / χ') k := by
-  subst hk
-  intro a
-  have e := h a
-  have e' := h' a
-  rw [MonoidHom.div_apply, Circle.coe_div, e, e']
-  split_ifs
-  · simp
-  · rw [pow_add]
-    rcases neg_one_pow_eq_or ℂ m with hm | hm <;> rw [hm] <;> ring
-
 private theorem acts_zero {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
     (T : Module.End ℂ ((κ → AF F) → ℂ)) :
     Acts (evI F) ⇑T ⇑(0 : SInf F κ) ⇑(0 : SInf F κ) := by
@@ -176,10 +150,10 @@ theorem howe_real_ker' : GlobalTheory.Published.HoweDualityReal →
   have hc := hT.chars
   have hR := hM.real
   obtain ⟨w₀⟩ := (inferInstance : Nonempty (InfinitePlace F))
-  have dV' : G.V'.J.det ≠ 0 := det_ne_sig_map (Bs.emb w₀).1 1 (by rw [one_smul]; exact hg.hV'.sig w₀)
-  have dW : G.W.J.det ≠ 0 := det_ne_sig_map (Bs.emb w₀).1 Complex.I (hg.hW.sig w₀)
-  have hres := resEta_div hc.resα hc.resβ (Nat.add_comm a a')
-  have hhk := hecke_div hc.heckeα hc.heckeβ
+  have dV' : G.V'.J.det ≠ 0 := GlobalTheory.HoweGlobalPair.det_ne_sig_map (Bs.emb w₀).1 1 (by rw [one_smul]; exact hg.hV'.sig w₀)
+  have dW : G.W.J.det ≠ 0 := GlobalTheory.HoweGlobalPair.det_ne_sig_map (Bs.emb w₀).1 Complex.I (hg.hW.sig w₀)
+  have hres := GlobalTheory.ThK.RealUniq.resEtaPow_div' hc.resα hc.resβ (Nat.add_comm a a')
+  have hhk := GlobalTheory.HoweGlobalPair.hecke_div hc.heckeα hc.heckeβ
   obtain ⟨hbdd, hsum⟩ := hHD F E σ hT.base.cm a' (a + a') G.V' G.W G.M' Bs.ψ Xc.α (Xc.α / Xc.β) om' hT.base.std
     hg.hV'.herm dV' hg.hW.skew dW hc.resα hres hc.heckeα hhk hT.weil' Bs.emb hg.hV'.cartan hg.hW.cartan
   have hLie := _root_.GlobalTheory.RealLieFock.lie_deriv_pol F E σ hT.base.cm a' (a + a') G.V' G.W G.M' Bs.ψ Xc.α (Xc.α / Xc.β) om' hT.base.std
@@ -719,13 +693,13 @@ theorem stageV_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F E : T
     obtain ⟨m, f, φ, rfl⟩ := GlobalTheory.HoweGlobal.decomp t
     refine ⟨T, hT, m, 0, fun j => ((f j : ↥(G.M.Pol Bs.ψ Bs.emb)) : SInf F (Fin a × Fin (a + a'))),
       fun j v => if h : v ∈ T then ((φ j ⟨v, h⟩ : ↥(SB _)) : (Fin a × Fin (a + a') → Fv F v) → ℂ) else G.M.vac v,
-      Fin.elim0, Fin.elim0, fun j => ⟨(f j).2, fun v => ?_, fun v hv => by simp only [dif_neg hv]⟩, fun j => Fin.elim0 j, ?_, ?_, ?_⟩
+      Fin.elim0, Fin.elim0, fun j => ⟨(f j).2, fun v => ?_, fun v hv => by simp only [dite_eq_right hv]⟩, fun j => Fin.elim0 j, ?_, ?_, ?_⟩
     · by_cases h : v ∈ T
-      · simp only [dif_pos h]; exact (φ j ⟨v, h⟩).2
-      · simp only [dif_neg h]; exact (hM.triple.geo.hM.vac v).1
+      · simp only [dite_eq_left h]; exact (φ j ⟨v, h⟩).2
+      · simp only [dite_eq_right h]; exact (hM.triple.geo.hM.vac v).1
 
     · rw [map_sum]
-      exact Finset.sum_congr rfl fun j _ => hL _ _ _ (fun v h => by simp only [dif_pos h]) (fun v h => by simp only [dif_neg h])
+      exact Finset.sum_congr rfl fun j _ => hL _ _ _ (fun v h => by simp only [dite_eq_left h]) (fun v h => by simp only [dite_eq_right h])
     · simp
 
     · rw [LinearMap.mem_ker, map_sum] at ht0

@@ -324,9 +324,6 @@ namespace GlobalTheory.CompanionTheory.EpsteinThetaC
 
 variable {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] [DecidableEq ι]
 
-theorem continuous_scalC : Continuous (scalC : IdeleGroup k → GL ι 𝔸[k]) := by
-  apply GlobalTheory.CompanionTheory.EpsteinUnfold.Hd.continuous_scalC
-
 theorem thetaC_ltr (A h : GL ι 𝔸[k]) (F : (ι → 𝔸[k]) → ℂ) :
     thetaC (ltr A F) h = thetaC F (A * h) := by
   simp only [thetaC, ltr, Units.val_mul, Matrix.mulVec_mulVec]
@@ -357,7 +354,7 @@ theorem continuous_translatedIntegrand (w : InfinitePlace k) {Ψ : (ι → 𝔸[
     (continuous_moduleSection w).comp (continuous_fst.comp continuous_fst)
   have hg : Continuous fun x : ({r : ℝ // 0 < r} × GL ι 𝔸[k]) × normOneSubgroup k ↦
       x.1.2 := continuous_snd.comp continuous_fst
-  exact ((continuous_thetaC hΨ).comp (hg.mul (continuous_scalC.comp (hs.mul hu)))).mul
+  exact ((continuous_thetaC hΨ).comp (hg.mul (GlobalTheory.CompanionTheory.EpsteinUnfold.Hd.continuous_scalC.comp (hs.mul hu)))).mul
     (continuous_subtype_val.comp (ω.continuous_toIdele.comp hu))
 
 theorem continuous_thetaCInt_ltr {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι]
@@ -512,23 +509,11 @@ variable {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] [Decidabl
 
 namespace ThcInt
 
-theorem scalC_mul (a b : IdeleGroup k) :
-    (scalC (a * b) : GL ι 𝔸[k]) = scalC a * scalC b := by
-  simp only [scalC, map_mul]
-
 theorem scalC_commute (a : IdeleGroup k) (A : GL ι 𝔸[k]) :
     (scalC a : GL ι 𝔸[k]) * A = A * scalC a := by
   apply Units.ext
   simp only [Units.val_mul, scalC, Units.coe_map, MonoidHom.coe_coe, RingHom.toMonoidHom_eq_coe]
   exact (Matrix.scalar_commute _ (fun r ↦ Commute.all _ r) _)
-
-theorem continuous_scalC : Continuous (scalC : IdeleGroup k → GL ι 𝔸[k]) := by
-  refine Continuous.units_map _ ?_
-  refine continuous_matrix fun i j ↦ ?_
-  by_cases h : i = j
-  · subst h
-    simpa [Matrix.scalar_apply] using continuous_id'
-  · simpa [Matrix.scalar_apply, Matrix.diagonal_apply_ne _ h] using continuous_const
 
 theorem thetaC_ltr (A h : GL ι 𝔸[k]) (F : (ι → 𝔸[k]) → ℂ) :
     thetaC (ltr A F) h = thetaC F (A * h) := by
@@ -556,19 +541,13 @@ theorem integrableOn_thetaCIntegrand {F : (ι → 𝔸[k]) → ℂ} (hF : F ∈ 
   have hE := isCompact_closure_normOneFundamentalDomain k
   have hφ : Continuous fun u : normOneSubgroup k ↦
       A * (scalC (s * (u : IdeleGroup k)) : GL ι 𝔸[k]) :=
-    continuous_const.mul (continuous_scalC.comp (continuous_const.mul continuous_subtype_val))
+    continuous_const.mul (GlobalTheory.CompanionTheory.EpsteinUnfold.Hd.continuous_scalC.comp (continuous_const.mul continuous_subtype_val))
   have h1 : ContinuousOn (fun u : normOneSubgroup k ↦
       thetaC (ltr A F) (scalC (s * (u : IdeleGroup k))))
       (closure (normOneFundamentalDomain k)) := by
     simp only [thetaC_ltr]
     exact (continuousOn_thetaC hF (hE.image hφ)).comp hφ.continuousOn (Set.mapsTo_image _ _)
   exact ((h1.mul (continuous_char ω).continuousOn).integrableOn_compact hE).mono_set subset_closure
-
-theorem integrableOn_char' (ω : HeckeCharacter k) :
-    IntegrableOn (fun u : normOneSubgroup k ↦ (ω.toIdele (u : IdeleGroup k) : ℂ))
-      (normOneFundamentalDomain k) (normOneMeasure k) :=
-  ((continuous_char ω).continuousOn.integrableOn_compact
-    (isCompact_closure_normOneFundamentalDomain k)).mono_set subset_closure
 
 theorem thetaCInt_ltr_sub_thetaCConst (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ}
     (hF : F ∈ schwartzBruhatPi (K := k) (ι := ι)) (A : GL ι 𝔸[k]) (ω : HeckeCharacter k)
@@ -578,13 +557,12 @@ theorem thetaCInt_ltr_sub_thetaCConst (w : InfinitePlace k) {F : (ι → 𝔸[k]
         (thetaC (ltr A F) (scalC (moduleSection w t * (u : IdeleGroup k))) - ltr A F 0) *
           (ω.toIdele (u : IdeleGroup k) : ℂ) ∂normOneMeasure k := by
   rw [thetaCInt, thetaCConst, volChar, ← integral_const_mul,
-    ← integral_sub (integrableOn_thetaCIntegrand hF A ω _) ((integrableOn_char' ω).const_mul _)]
+    ← integral_sub (integrableOn_thetaCIntegrand hF A ω _) ((GlobalTheory.CompanionTheory.EpsteinUnfold.Hd.integrableOn_char ω).const_mul _)]
   refine integral_congr_ae (Eventually.of_forall fun u ↦ ?_)
   simp only []
   ring
 
 end ThcInt
-
 
 open ThcInt in
 theorem exists_norm_thetaCInt_sub_le (w : InfinitePlace k) {Ψ : (ι → 𝔸[k]) → ℂ}
@@ -595,7 +573,7 @@ theorem exists_norm_thetaCInt_sub_le (w : InfinitePlace k) {Ψ : (ι → 𝔸[k]
   have hE := isCompact_closure_normOneFundamentalDomain k
   have hS : Continuous fun p : normOneSubgroup k × GL ι 𝔸[k] ↦
       p.2 * (scalC (p.1 : IdeleGroup k) : GL ι 𝔸[k]) :=
-    continuous_snd.mul (continuous_scalC.comp (continuous_subtype_val.comp continuous_fst))
+    continuous_snd.mul (GlobalTheory.CompanionTheory.EpsteinUnfold.Hd.continuous_scalC.comp (continuous_subtype_val.comp continuous_fst))
   obtain ⟨M, hM⟩ := _root_.GlobalTheory.CompanionTheory.EisThCDecay.exists_norm_thetaC_sub_le w hΨ ((hE.prod hC).image hS) r
   refine ⟨M * (normOneMeasure k).real (normOneFundamentalDomain k), fun A hA t ht ↦ ?_⟩
   rw [thetaCInt_ltr_sub_thetaCConst w hΨ A ω t, ← mul_assoc]
@@ -603,7 +581,7 @@ theorem exists_norm_thetaCInt_sub_le (w : InfinitePlace k) {Ψ : (ι → 𝔸[k]
     fun u hu ↦ ?_
   have hc : A * (scalC (moduleSection w t * (u : IdeleGroup k)) : GL ι 𝔸[k]) =
       scalC (moduleSection w t) * (A * scalC (u : IdeleGroup k)) := by
-    rw [scalC_mul, ← mul_assoc, ← mul_assoc, scalC_commute]
+    rw [GlobalTheory.CompanionTheory.EpsteinUnfold.Hd.scalC_mul, ← mul_assoc, ← mul_assoc, scalC_commute]
   rw [norm_mul, Circle.norm_coe, mul_one, thetaC_ltr, ltr_apply_zero, hc]
   exact hM _ ⟨(u, A), ⟨subset_closure hu, hA⟩, rfl⟩ t ht
 
@@ -883,7 +861,7 @@ theorem continuous_tInv : Continuous (tInv : GL ι 𝔸[k] → GL ι 𝔸[k]) :=
     exact h
 
 theorem thetaCFun_of_pos (w : InfinitePlace k) (F : (ι → 𝔸[k]) → ℂ) (ω : HeckeCharacter k)
-    {x : ℝ} (hx : 0 < x) : thetaCFun w F ω x = thetaCInt w F ω ⟨x, hx⟩ := dif_pos hx
+    {x : ℝ} (hx : 0 < x) : thetaCFun w F ω x = thetaCInt w F ω ⟨x, hx⟩ := dite_eq_left hx
 
 theorem thetaCFun_smul (w : InfinitePlace k) (c : ℂ) (F : (ι → 𝔸[k]) → ℂ)
     (ω : HeckeCharacter k) : thetaCFun w (c • F) ω = c • thetaCFun w F ω := by

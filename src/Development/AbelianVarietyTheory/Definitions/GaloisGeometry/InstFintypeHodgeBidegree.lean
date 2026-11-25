@@ -235,12 +235,6 @@ variable {T₀ : C} (hb : Function.Bijective (e T₀))
 
 end Cone
 
-section Low
-
-variable {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ CommAlgCat.{0} R)
-
-end Low
-
 end GlobalTheory.HodgeCoh
 end -- clump:auto
 end -- clump:auto
@@ -306,18 +300,6 @@ def OPt (s : X ⟶ Sp k) : AffPt s ⥤ CommAlgCat.{0} k where
   map_comp _ _ := rfl
 
 abbrev HdR (s : X ⟶ Sp k) (n : ℕ) : Type 1 := Hyp (OPt s) n
-
-section Pull
-
-variable {s : X ⟶ Sp k} {s' : X' ⟶ Sp k'} {s'' : X'' ⟶ Sp k''} {σ : k →+* k'} {τ : k' →+* k''}
-
-end Pull
-
-section Aff
-
-variable (s : X ⟶ Sp k)
-
-end Aff
 
 section Fil
 

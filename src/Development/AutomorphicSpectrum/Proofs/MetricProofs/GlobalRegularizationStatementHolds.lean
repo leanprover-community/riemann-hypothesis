@@ -688,7 +688,7 @@ theorem rLoc_rescale_bound {e : ℕ} (S : Finset (Fin e)) (m : Fin e → ℕ) (z
         rw [← Real.log_mul (by positivity) (by positivity)]
         congr 1
         field_simp
-      rw [if_pos h0, hn, hsplit, mul_add, add_sub_cancel_left, abs_of_nonneg (by positivity)]
+      rw [ite_eq_left h0, hn, hsplit, mul_add, add_sub_cancel_left, abs_of_nonneg (by positivity)]
       exact mul_le_mul_of_nonneg_left hlog1 hm0
     · have hfi := hfar i h0
       have hz1 : ‖z₀ i‖ < 1 := (norm_le_pi_norm z₀ i).trans_lt hz₀
@@ -714,7 +714,7 @@ theorem rLoc_rescale_bound {e : ℕ} (S : Finset (Fin e)) (m : Fin e → ℕ) (z
         apply Real.log_le_log (by positivity)
         apply div_le_div_of_nonneg_left (by norm_num) hρ2
         nlinarith
-      rw [if_neg h0, sub_zero, abs_of_nonneg (by positivity)]
+      rw [ite_eq_right h0, sub_zero, abs_of_nonneg (by positivity)]
       exact mul_le_mul_of_nonneg_left hB hm0
   have hdiff : rLoc S m ((ρ : ℂ) • w + z₀) - rLoc (S.filter (fun i => z₀ i = 0)) m w =
       ∑ i ∈ S, ((m i : ℝ) * Real.log (4 / ‖((ρ : ℂ) • w + z₀) i‖ ^ 2) -
@@ -1098,7 +1098,7 @@ theorem isRegFamily_of_glue : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A B
       have h3 : C * g ≤ C * g * rW L s y := le_mul_of_one_le_right hCg0 (by linarith)
       have := mul_le_mul_of_nonneg_right hKCl hg0
       nlinarith
-    · push_neg at hyr
+    · push Not at hyr
       have hlog : Real.log (rW L s y) / rW L s y ≤ g := by
         rw [hgdef]
         exact Real.log_div_self_antitoneOn (Set.mem_Ici.2 hl1) (Set.mem_Ici.2 hry) hyr.le

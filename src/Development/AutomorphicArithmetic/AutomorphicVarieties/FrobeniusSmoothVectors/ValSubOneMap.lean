@@ -34,7 +34,7 @@ theorem UpperTheory.V.Fr.pr_mu :
   · refine ⟨0, ⟨fun a c => by simp, fun c => by simp⟩, fun y => ?_, fun c => ⟨0, by simp⟩⟩
     show (0 : C'') = q y
     exact (hker y (hu y)).symm
-  · push_neg at hu
+  · push Not at hu
     obtain ⟨y0, hy0⟩ := hu
     have hsurj : Function.Surjective u := by
       intro c

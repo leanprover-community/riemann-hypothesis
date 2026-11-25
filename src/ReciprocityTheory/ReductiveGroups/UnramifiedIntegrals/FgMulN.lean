@@ -31,7 +31,7 @@ theorem mulN_integral {lam : PowerSeries K} {Φ : MvPowerSeries (Fin 2) K} (h : 
     rw [finsum_eq_single _ m]
     · rw [PowerSeries.coeff_X_pow_self, smul_eq_mul, mul_one]
     · intro d hd
-      rw [PowerSeries.coeff_X_pow, if_neg (Ne.symm hd), smul_zero]
+      rw [PowerSeries.coeff_X_pow, ite_eq_right (Ne.symm hd), smul_zero]
   induction n with
   | zero =>
     refine ⟨0, map_zero _, by unfold IntegralPS; intro k; simp, ?_⟩

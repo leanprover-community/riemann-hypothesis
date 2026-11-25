@@ -18,8 +18,6 @@ open CategoryTheory MonoidalCategory Limits GroundTheory.GroupCoh
 
 universe u
 
-attribute [local instance 2000] Rep.hV2
-
 section LeibnizNatural
 
 variable {k : Type u} [CommRing k] {M M' N N' P : CochainComplex (ModuleCat.{u} k) ℕ}
@@ -134,12 +132,9 @@ theorem compactCohomologyResMap_comp (g : A ⟶ B) (g' : B ⟶ C) (n : ℕ) :
   rfl
 
 theorem compactCohomologyResMap_finsetSum {J : Type*} (s : Finset J) (f : J → (A ⟶ B)) (m : ℕ) :
-    compactCohomologyResMap φ (∑ j ∈ s, f j) m = ∑ j ∈ s, compactCohomologyResMap φ (f j) m := by
-  classical
-  induction s using Finset.induction with
-  | empty => simp [compactCohomologyResMap_zero]
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, compactCohomologyResMap_add, ih]
+    compactCohomologyResMap φ (∑ j ∈ s, f j) m = ∑ j ∈ s, compactCohomologyResMap φ (f j) m :=
+  map_sum (AddMonoidHom.mk' (fun g : A ⟶ B => compactCohomologyResMap φ g m)
+    fun g₁ g₂ => compactCohomologyResMap_add φ g₁ g₂ m) f s
 
 theorem nsmul_compactCohomologyRes_eq_zero {m : ℕ} (hm : ∀ a : A, m • a = 0) (n : ℕ)
     (x : compactCohomologyRes φ A n) : m • x = 0 := by

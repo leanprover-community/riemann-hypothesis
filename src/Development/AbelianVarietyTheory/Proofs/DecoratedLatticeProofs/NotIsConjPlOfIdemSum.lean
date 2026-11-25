@@ -59,7 +59,6 @@ theorem not_isConjPl_of_idemSum {e : AE D} {P : Finset (Pl D.host.E)} (h : IsIde
   intro PP hP PP' hP' hc
   obtain ⟨⟨es, hes, he⟩, h0⟩ := h
   have hsum : ∑ x ∈ P ×ˢ P, es x.1 * cA D (es x.2) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [Finset.sum_product, ← h0, he, map_sum, Finset.sum_mul_sum]
   have hidem : ∀ x ∈ P ×ˢ P,
       (es x.1 * cA D (es x.2)) * (es x.1 * cA D (es x.2)) = es x.1 * cA D (es x.2) := by

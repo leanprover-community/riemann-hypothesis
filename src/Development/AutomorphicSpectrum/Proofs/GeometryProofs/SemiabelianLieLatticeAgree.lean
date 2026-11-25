@@ -500,7 +500,7 @@ theorem lat_fin (h : IsCptGen ξ) (G : Over X) [GrpObj G] [IsCommMonObj G] [Smoo
   have hl : IsLocalizedModule (nonZeroDivisors (regAt ξ p)) j :=
     (isLocalizedModule_iff_isBaseChange (nonZeroDivisors (regAt ξ p)) Ω j).mpr hb
   have hinj : Function.Injective j := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro m hm
     obtain ⟨c, hc⟩ := (IsLocalizedModule.eq_zero_iff (nonZeroDivisors (regAt ξ p)) j).1 hm
     have hreg := Module.Flat.isSMulRegular_of_nonZeroDivisors (M := Ep) c.2

@@ -14,13 +14,9 @@ open Formalism.MainNotions.G MvPolynomial
 abbrev BV (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) :=
   BVar (2 * segS X.TT j + 1) X.m (X.seg C0 CE1 CE2 j).t
 
-abbrev bD (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (mm : ℝ) (b : SegBlock (segS X.TT j) X.m) :
-    BlockData (2 * segS X.TT j + 1) :=
-  blockData X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) mm b
-
 abbrev sszB (O : Type) [CommRing O] [IsDomain O] (C0 CE1 CE2 : ℝ) (X : Loc) [NeZero X.m] (j : Fin (numSeg X.TT)) (mm : ℝ)
     (b : SegBlock (segS X.TT j) X.m) : Submodule O (MvPolynomial (BV C0 CE1 CE2 X j) (KK O)) :=
-  (bD C0 CE1 CE2 X j mm b).SSZ O (r := X.m)
+  (Formalism.MainNotions.ColumnSystems.Pf.BD C0 CE1 CE2 X j mm b).SSZ O (r := X.m)
 
 def baseExp (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : SegBlock (segS X.TT j) X.m) :
     ((X.TT × Bool) × Fin (X.m + 1)) →₀ ℕ :=
@@ -59,7 +55,6 @@ def HomExp (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : SegBlock (s
 def letterOf (X : Loc) (j : Fin (numSeg X.TT)) (a : Fin (2 * segS X.TT j + 1 + 1)) : X.TT × Bool :=
   if h : (a : ℕ) < 2 * segS X.TT j then (topOdd X j ⟨(a : ℕ) / 2, by omega⟩, decide ((a : ℕ) % 2 = 0))
   else (topEnd X j, decide ((a : ℕ) = 2 * segS X.TT j))
-
 
 open Classical in
 def lamW (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (x : X.TT × Bool) : BV C0 CE1 CE2 X j → ℕ :=

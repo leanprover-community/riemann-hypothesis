@@ -433,12 +433,12 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpCore_of :
     rcases InfinitePlace.embedding_mk_eq τ with hv | hv
     · have hc : ComplexEmbedding.conjugate τ ≠ (InfinitePlace.mk (ComplexEmbedding.conjugate τ)).embedding := by
         rw [InfinitePlace.mk_conjugate_eq, hv]; exact conjugate_ne τ
-      have l1 : ∀ i, lamOf W m τ i = m (InfinitePlace.mk τ) := fun i => if_pos hv.symm
+      have l1 : ∀ i, lamOf W m τ i = m (InfinitePlace.mk τ) := fun i => ite_eq_left hv.symm
       have l2 : ∀ i, ((lamOf W m (ComplexEmbedding.conjugate τ) i : ℕ) : ℤ) =
           (W (InfinitePlace.mk τ)).w i + m (InfinitePlace.mk τ) := fun i => by
         have h : lamOf W m (ComplexEmbedding.conjugate τ) i =
           ((W (InfinitePlace.mk (ComplexEmbedding.conjugate τ))).w i +
-            m (InfinitePlace.mk (ComplexEmbedding.conjugate τ))).toNat := if_neg hc
+            m (InfinitePlace.mk (ComplexEmbedding.conjugate τ))).toNat := ite_eq_right hc
         rw [h, InfinitePlace.mk_conjugate_eq]
         exact Int.toNat_of_nonneg (hm _ _)
       have hw : W.at τ = W (InfinitePlace.mk τ) := by
@@ -458,7 +458,7 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpCore_of :
             ∑ j, (W (InfinitePlace.mk τ)).w j + (n : ℤ) * m (InfinitePlace.mk τ) := by
           rw [Finset.sum_add_distrib]
           simp
-        rw [if_pos hv.symm] at hs
+        rw [ite_eq_left hv.symm] at hs
         rw [hw, ← hs]
         push_cast at hsum ⊢
         rw [hsum]
@@ -466,14 +466,14 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpCore_of :
     · have hn : τ ≠ (InfinitePlace.mk τ).embedding := by
         rw [hv]; exact (conjugate_ne τ).symm
       have l1 : ∀ i, ((lamOf W m τ i : ℕ) : ℤ) = (W (InfinitePlace.mk τ)).w i + m (InfinitePlace.mk τ) := fun i => by
-        have h : lamOf W m τ i = ((W (InfinitePlace.mk τ)).w i + m (InfinitePlace.mk τ)).toNat := if_neg hn
+        have h : lamOf W m τ i = ((W (InfinitePlace.mk τ)).w i + m (InfinitePlace.mk τ)).toNat := ite_eq_right hn
         rw [h]
         exact Int.toNat_of_nonneg (hm _ _)
       have l2 : ∀ i, lamOf W m (ComplexEmbedding.conjugate τ) i = m (InfinitePlace.mk τ) := fun i => by
         have h : lamOf W m (ComplexEmbedding.conjugate τ) i = m (InfinitePlace.mk (ComplexEmbedding.conjugate τ)) :=
-          if_pos (by rw [InfinitePlace.mk_conjugate_eq, hv])
+          ite_eq_left (by rw [InfinitePlace.mk_conjugate_eq, hv])
         rw [h, InfinitePlace.mk_conjugate_eq]
-      have hw : W.at τ = (W (InfinitePlace.mk τ)).dual := if_neg fun h => hn h.symm
+      have hw : W.at τ = (W (InfinitePlace.mk τ)).dual := ite_eq_right fun h => hn h.symm
       refine ⟨fun i => ((n - 1) * m (InfinitePlace.mk τ) + R) + (lamOf W m τ i + (n - 1 - (i : ℕ))), Fin.rev k,
         Or.inl ⟨m (InfinitePlace.mk τ), fun i => by rw [c2, l2], fun i => ?_⟩, ?_⟩
       · simp only [c1, hR]
@@ -483,7 +483,7 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpCore_of :
           omega
         have e4 : (((n - 1 : ℕ) : ℤ)) = (n : ℤ) - 1 := by
           rw [Nat.cast_sub hk]; simp
-        rw [if_neg hn] at hs
+        rw [ite_eq_right hn] at hs
         rw [hw, ← hs]
         simp only [e3, DomWeight.dual]
         push_cast
@@ -577,7 +577,7 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpSum_of :
       rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
     have h1 : ∀ j, lamOf W m (ComplexEmbedding.conjugate v.embedding) j = ((W v).w j + m v).toNat := fun j => by
       unfold lamOf
-      rw [hv, if_neg (hne _)]
+      rw [hv, ite_eq_right (hne _)]
     simp only [h1]
     push_cast
     rw [Finset.sum_congr rfl fun i _ => Int.toNat_of_nonneg (hm v i), Finset.sum_add_distrib]
@@ -589,10 +589,10 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpSum_of :
     rcases hpm v.embedding with h | h
     · have h1 : v.embedding x ≠ -τ x := by rw [h]; exact hnn
       have h2 : -v.embedding x = -τ x := by rw [h]
-      rw [if_neg h1, if_pos h2, if_neg h1, zero_mul, one_mul, hl1]
+      rw [ite_eq_right h1, ite_eq_left h2, ite_eq_right h1, zero_mul, one_mul, hl1]
       push_cast; ring
     · have h2 : -v.embedding x ≠ -τ x := by rw [h, neg_neg]; exact hnn
-      rw [if_pos h, if_neg h2, if_pos h, zero_mul, one_mul, hl0]
+      rw [ite_eq_left h, ite_eq_right h2, ite_eq_left h, zero_mul, one_mul, hl0]
       push_cast; ring
   have hF1 : ∑ φ, F φ = mOf x W (∑ v, ((∑ i, (W v).w i) + n * m v)) τ := by
     rw [sum_emb hne, Finset.sum_congr rfl fun v _ => hFv v]
@@ -605,11 +605,11 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pExpSum_of :
   have hF2 : ∑ φ, F φ = F τ + (F (ComplexEmbedding.conjugate τ) +
       ∑ φ ∈ (Finset.univ.erase τ).erase (ComplexEmbedding.conjugate τ), F φ) := by
     rw [Finset.add_sum_erase _ F hmem, Finset.add_sum_erase _ F (Finset.mem_univ τ)]
-  have hFτ : F τ = 0 := by simp only [hF]; rw [if_neg hnn]; simp
+  have hFτ : F τ = 0 := by simp only [hF]; rw [ite_eq_right hnn]; simp
   have hFc : F (ComplexEmbedding.conjugate τ) = n * m (InfinitePlace.mk τ) +
       if τ = (InfinitePlace.mk τ).embedding then ∑ i, (W (InfinitePlace.mk τ)).w i else 0 := by
     simp only [hF]
-    rw [if_pos (hcj τ), one_mul]
+    rw [ite_eq_left (hcj τ), one_mul]
     split_ifs with h
     · conv_lhs => rw [h]
       rw [hl1]
@@ -842,10 +842,10 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pWtCore_of :
     if τ = (InfinitePlace.mk τ).embedding then (t (InfinitePlace.mk τ) i)⁻¹ else t (InfinitePlace.mk τ) i / ((s : ℚ) : ℂ)
   have gE : ∀ v : InfinitePlace E, g v.embedding = fun i => (t v i)⁻¹ := fun v => by
     funext i
-    simp only [g, InfinitePlace.mk_embedding, if_true]
+    simp only [g, InfinitePlace.mk_embedding, ite_true]
   have gC : ∀ v : InfinitePlace E, g (ComplexEmbedding.conjugate v.embedding) = fun i => t v i / ((s : ℚ) : ℂ) := fun v => by
     funext i
-    simp only [g, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg (conjugate_ne v.embedding)]
+    simp only [g, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, ite_eq_right (conjugate_ne v.embedding)]
   have hL : LocalSmoothExtension.Lists (LocalSmoothExtension.invPol y.val.charpoly) g := by
     intro τ
     rw [_root_.UpperTheory.Gal.LocalSmoothExtension.invRoots_of E _ h0 τ]
@@ -862,11 +862,11 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pWtCore_of :
       simp only [Function.comp, inv_div]
   have lE : ∀ v : InfinitePlace E, lamOf W m v.embedding = fun _ => m v := fun v => by
     funext i
-    simp only [lamOf, InfinitePlace.mk_embedding, if_true]
+    simp only [lamOf, InfinitePlace.mk_embedding, ite_true]
   have lC : ∀ v : InfinitePlace E, lamOf W m (ComplexEmbedding.conjugate v.embedding) =
       fun i => ((W v).w i + m v).toNat := fun v => by
     funext i
-    simp only [lamOf, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg (conjugate_ne v.embedding)]
+    simp only [lamOf, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, ite_eq_right (conjugate_ne v.embedding)]
   have hs0 : ((s : ℚ) : ℂ) ≠ 0 := by exact_mod_cast s.ne_zero
   have hpair : ∀ v : InfinitePlace E,
       UpperTheory.Gal.Schur.sch (lamOf W m v.embedding) (g v.embedding) *
@@ -1266,9 +1266,9 @@ private theorem continuous_th : Continuous (CertificateRingHomMap.th : GUf E n �
 
 private theorem relIndex_ne_zero_of_open {X : Type*} [Group X] [TopologicalSpace X] [IsTopologicalGroup X]
     {K O : Subgroup X} (hK : IsCompact (K : Set X)) (hO : IsOpen (O : Set X)) : O.relIndex K ≠ 0 := by
-  haveI : CompactSpace K := isCompact_iff_compactSpace.1 hK
+  have : CompactSpace K := isCompact_iff_compactSpace.1 hK
   have ho : IsOpen ((O.subgroupOf K : Subgroup K) : Set K) := hO.preimage continuous_subtype_val
-  haveI := Subgroup.quotient_finite_of_isOpen _ ho
+  have := Subgroup.quotient_finite_of_isOpen _ ho
   exact Nat.card_pos.ne'
 
 private theorem isCompact_comap_th (F : Frame S) {K : Subgroup (GUf E n)} (hK : IsCompact (K : Set (GUf E n))) :
@@ -1364,7 +1364,7 @@ theorem UpperTheory.Gal.Spc.tyEx :
   have hS0 : w₀ ∈ V.S := V.shape.mem
   have hw : IsSplitAt w₀ ∧ (p : 𝓞 E) ∉ w₀.asIdeal := ⟨V.split, hOff.1 w₀ hS0⟩
   have hN : 0 < N.1 := lt_of_lt_of_le (by norm_num) N.2.1
-  haveI : Fact r.Prime := ⟨hAux.prime⟩
+  have : Fact r.Prime := ⟨hAux.prime⟩
   choose L hL using fun w : Spl E p => facEx E A n p S F w
   have hcomp : ∀ (u : Plc E) (g : GUf E n), comp u (F.th g) = invT n _ (comp u g) := fun u g => by
     rw [th_eq, UpperTheory.Gal.CertificateRingHomMap.comp_th]
@@ -1737,7 +1737,7 @@ private theorem core {E R : Type} [Field E] [NumberField E] [CommRing R] [Algebr
 
 theorem regTr : RegTr := by
   intro E _ _ _ A n p _ S T q hq hqp g hg
-  haveI : Fact q.Prime := ⟨hq⟩
+  have : Fact q.Prime := ⟨hq⟩
   obtain ⟨e, he, heE⟩ := UpperTheory.Gal.W2.Seed.pIdemP q E
   obtain ⟨h1, h0⟩ := rho_idem hq hqp T.toAdQ e he
   refine ⟨placeAway hq Fact.out hqp, fun x y hx hy => ?_⟩

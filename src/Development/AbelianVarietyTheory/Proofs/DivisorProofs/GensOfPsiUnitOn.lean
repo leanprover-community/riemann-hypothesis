@@ -9,48 +9,12 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.FromBaseAlt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodsInCoordinatesFromBasePullDeg
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToUnitTKLeft
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PsiCoordExistsUniqueUpToUnitLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.BetaAtClosedPoint
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPullbackDegPreStrictLineBundleIso
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllSixAbelianSchemeLawsHold
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TauBimultOfIsPullDeg
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsLastFurther, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GensOfPsiUnitOn
@@ -381,7 +345,6 @@ theorem main (W R : Type) [CommRing W] [IsDomain W] [CommRing R] [IsDomain R] [I
       linarith [hpos' χ hχ]
     have hni : 0 < n i := by
       have h1 : (M : ℤ) * δ' i χ χ = 2 * (n i : ℤ) := (hsm i χ).symm.trans (hn i)
-      have h3 : (1 : ℤ) ≤ M := by exact_mod_cast hM
       have : (0 : ℤ) < n i := by nlinarith
       exact_mod_cast this
     refine Ideal.mul_mem_left _ _ ?_
@@ -404,7 +367,6 @@ theorem main (W R : Type) [CommRing W] [IsDomain W] [CommRing R] [IsDomain R] [I
       rw [Finset.mul_sum, Nat.cast_sum, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => h1 i
     rw [hB] at hlt
-    have h3 : (1 : ℤ) ≤ M := by exact_mod_cast hM
     have hsum : n ≤ ∑ i, k i := by
       have : (n : ℤ) ≤ ((∑ i, k i : ℕ) : ℤ) := by nlinarith
       exact_mod_cast this

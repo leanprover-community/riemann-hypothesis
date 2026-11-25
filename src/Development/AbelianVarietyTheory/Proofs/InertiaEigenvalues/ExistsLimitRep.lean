@@ -146,9 +146,9 @@ namespace GlobalTheory.Cong
 theorem extend_of_locallyCauchy : ∀ (l : ℕ) [Fact l.Prime] (Γ J : Type) [TopologicalSpace Γ] (x : J → Γ), DenseRange x → ∀ (θ : J → PadicAlgCl l) (L : IntermediateField ℚ_[l] (PadicAlgCl l)), FiniteDimensional ℚ_[l] L → (∀ j, θ j ∈ L) → (∀ ε : ℝ, 0 < ε → ∀ g : Γ, ∃ V ∈ nhds g, ∀ i j, x i ∈ V → x j ∈ V → ‖θ i - θ j‖ ≤ ε) → ∃ T : Γ → PadicAlgCl l, Continuous T ∧ ∀ j, T (x j) = θ j := by
   intro l _ Γ J _ x hx θ L hL hθL hC
   have hLc : IsComplete (L : Set (PadicAlgCl l)) := by
-    haveI : FiniteDimensional ℚ_[l] (Subalgebra.toSubmodule L.toSubalgebra) := hL
+    have : FiniteDimensional ℚ_[l] (Subalgebra.toSubmodule L.toSubalgebra) := hL
     exact Submodule.complete_of_finiteDimensional (Subalgebra.toSubmodule L.toSubalgebra)
-  letI : TopologicalSpace J := TopologicalSpace.induced x inferInstance
+  let : TopologicalSpace J := TopologicalSpace.induced x inferInstance
   have hx' : IsDenseInducing x := ⟨⟨rfl⟩, hx⟩
   have hex : ∀ g : Γ, ∃ t : PadicAlgCl l, Tendsto θ (comap x (𝓝 g)) (𝓝 t) := by
     intro g
@@ -230,7 +230,7 @@ private theorem alt_cons_cons_lemma_5 {M A : Type*} [Monoid M] [CommRing A] (T :
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : l = i
     · subst hl; simp [mul_assoc]
-    · rw [if_neg hl, if_neg hl, zero_add, Function.update_of_ne hl]
+    · rw [ite_eq_right hl, ite_eq_right hl, zero_add, Function.update_of_ne hl]
   simp only [← Fin.cons_update, pseudo_character_sum_cons_expand, Finset.sum_sub_distrib]
   simp only [hin, Finset.sum_add_distrib, ← Finset.mul_sum]
   ring
@@ -248,7 +248,7 @@ private theorem pseudo_character_sum_swap_head_pair {M A : Type*} [Monoid M] [Co
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : l = i
     · simp [hl]
-    · rw [if_neg (Ne.symm hl), if_neg hl, Function.update_comm (Ne.symm hl)]
+    · rw [ite_eq_right (Ne.symm hl), ite_eq_right hl, Function.update_comm (Ne.symm hl)]
   rw [hoff]
   ring
 
@@ -379,13 +379,13 @@ theorem _root_.GlobalTheory.PsChar.cayleyHamilton (k R : Type) [Field k] [CharZe
       refine ⟨fun j => if j = 0 then _root_.GlobalTheory.PsChar.alt (fun r : R => T r) (m + 1)
         (fun _ => x) else -((m : k) + 1) * c (j - 1), fun y => ?_, ?_⟩
       · rw [hrec, hc1, Finset.sum_range_succ' _ (m + 1)]
-        simp only [Nat.add_one_ne_zero, if_false, if_true, Nat.add_sub_cancel, pow_zero, mul_one,
+        simp only [Nat.add_one_ne_zero, ite_false, ite_true, Nat.add_sub_cancel, pow_zero, mul_one,
           pow_succ', ← mul_assoc, Finset.mul_sum]
         rw [sub_eq_add_neg, add_comm, ← Finset.sum_neg_distrib]
         congr 1
         · exact Finset.sum_congr rfl fun j _ => by ring
         · ring
-      · simp only [Nat.add_one_ne_zero, if_false, Nat.add_sub_cancel, hc2, Nat.factorial_succ]
+      · simp only [Nat.add_one_ne_zero, ite_false, Nat.add_sub_cancel, hc2, Nat.factorial_succ]
         push_cast
         ring
   obtain ⟨c, hc1, hc2⟩ := hcoef d
@@ -461,7 +461,7 @@ theorem linearForm_matrix_eq_smul_trace_of_comm (k : Type) [Field k] (m : ℕ)
     conv_lhs => rw [hx]
 
     simp only [map_sum, map_smul, key, smul_eq_mul, mul_ite, mul_zero, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
     rw [trace, Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     simp [mul_comm]
@@ -1157,7 +1157,6 @@ theorem finite_semisimple (k R : Type) [Field k] [CharZero k] [IsAlgClosed k] [R
     choose a ha1 ha using hv
     obtain ⟨⟨s, hs, hsT⟩, -⟩ := _root_.GlobalTheory.PsChar.isPsChar_idempotent k R d T h (∑ i, e i) he.isIdempotentElem_sum
     have h1 : ((∑ i, a i : ℕ) : k) = s := by
-      set_option synthInstance.maxHeartbeats 100000 in
         rw [← hsT, map_sum]; push_cast; exact Finset.sum_congr rfl fun i _ => (ha i).symm
     have h2 : ∑ i, a i = s := by exact_mod_cast h1
     calc m = ∑ _i : Fin m, 1 := by simp
@@ -1233,7 +1232,7 @@ theorem exists_ssRep (Γ k : Type) [Group Γ] [Field k] [CharZero k] [IsAlgClose
     rw [hτ, hτ, map_mul e.symm, map_mul e.symm]; exact hS'.comm _ _
   have hcn : ∀ i, ∃ m : ℕ, c i = m := by
     intro i
-    haveI := hn i
+    have := hn i
     let E : Π j, Matrix (Fin (n j)) (Fin (n j)) k := Pi.single i (Matrix.single 0 0 1)
     have hE : IsIdempotentElem E := by
       unfold IsIdempotentElem

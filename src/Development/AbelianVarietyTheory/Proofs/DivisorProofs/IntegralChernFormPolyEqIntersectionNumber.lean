@@ -611,17 +611,6 @@ theorem delAt_sum_smul {ι : Type} [Fintype ι] {v : V n} {u : ι → V n → �
   intros
   apply _root_.GlobalTheory.CxForm.PullDelClosed.delAt_sum_smul <;> assumption
 
-theorem delAt_add {v : V n} {F G : V n → Alt n} (hF : ∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (F x) S) v)
-    (hG : ∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (G x) S) v) :
-    delAt (fun x => F x + G x) v = delAt F v + delAt G v := by
-  rw [delAt, delAt, delAt, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [← mul_add]
-  congr 1
-  refine (bas n).ext_elem fun S => ?_
-  simp only [map_add (f := _), Finsupp.add_apply, FormMul.repr_coefwise]
-  rw [del_add (hF S) (hG S), ContinuousLinearMap.add_apply]
-
 theorem delAt_const (α : Alt n) (v : V n) : delAt (fun _ => α) v = 0 := by
   simp [delAt, coefwise]
 
@@ -642,7 +631,7 @@ def closedAt (v : V n) : Subalgebra ℂ (V n → Ev n) where
     · simp only [Pi.add_apply, Subalgebra.coe_add, map_add (f := _), Finsupp.add_apply]
       exact (hF S).add (hG S)
     · simp only [Pi.add_apply, Subalgebra.coe_add]
-      rw [delAt_add hF hG, hF0, hG0, add_zero]
+      rw [GlobalTheory.CxForm.PullDelClosed.delAt_add hF hG, hF0, hG0, add_zero]
   algebraMap_mem' c := ⟨fun S => differentiableAt_const ((bas n).repr (algebraMap ℂ (Ev n) c : Alt n) S),
     delAt_const (algebraMap ℂ (Ev n) c : Alt n) v⟩
 
@@ -1029,7 +1018,6 @@ theorem dens_ofValues_ddc_pow (n : ℕ) (u : V n → ℝ) (v : V n) (hu : ContDi
   have hk : kappa = Complex.I / 2 * ((Real.pi : ℂ)⁻¹) := by
     rw [GlobalTheory.HermFrame.kappa]; field_simp
   have h2 : (Complex.I / 2) ^ n ≠ 0 := pow_ne_zero _ (by simp)
-  have hπ : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   rw [hk, show ∀ d : ℂ, (n.factorial : ℂ) * ((Complex.I / 2 * ((Real.pi : ℂ))⁻¹) ^ n * d) / (Complex.I / 2) ^ n =
       (((n.factorial / Real.pi ^ n : ℝ)) : ℂ) * d from fun d => by
     rw [mul_pow]; field_simp; push_cast; ring, Complex.re_ofReal_mul]

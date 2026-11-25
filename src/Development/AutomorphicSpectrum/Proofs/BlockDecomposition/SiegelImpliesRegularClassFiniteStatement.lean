@@ -126,20 +126,6 @@ namespace GlobalTheory.HeisCoords
 
 open Matrix
 
-section Cplx
-
-variable {n : ℕ} (J : Matrix (Fin n) (Fin n) ℂ)
-
-variable {J}
-
-end Cplx
-
-section Coords
-
-variable {n : ℕ} {J : Matrix (Fin n) (Fin n) ℂ}
-
-end Coords
-
 section Transfer
 
 open Formalism.UG (cT bc UJ)
@@ -435,9 +421,9 @@ namespace GlobalTheory.CompanionTheory.CFin.Ratio
 
 def ext {r : ℕ} (t : Fin r → ℝ) (n : ℕ) : ℝ := if h : n < r then t ⟨n, h⟩ else 1
 
-theorem ext_of_lt {r : ℕ} (t : Fin r → ℝ) {n : ℕ} (h : n < r) : ext t n = t ⟨n, h⟩ := dif_pos h
+theorem ext_of_lt {r : ℕ} (t : Fin r → ℝ) {n : ℕ} (h : n < r) : ext t n = t ⟨n, h⟩ := dite_eq_left h
 
-theorem ext_of_ge {r : ℕ} (t : Fin r → ℝ) {n : ℕ} (h : r ≤ n) : ext t n = 1 := dif_neg (not_lt.mpr h)
+theorem ext_of_ge {r : ℕ} (t : Fin r → ℝ) {n : ℕ} (h : r ≤ n) : ext t n = 1 := dite_eq_right (not_lt.mpr h)
 
 def bnd (r : ℕ) (c t₁ : ℝ) : ℝ := max ((t₁ / (min c 1) ^ r) ^ r) (((min c 1)⁻¹) ^ r)
 
@@ -500,7 +486,7 @@ theorem ext_nondeep (hc : 0 < c) (ht1 : 1 ≤ t₁) (ht : t ∈ cone r c) {j : �
     rw [e]
     calc t ⟨j, hj⟩ ≤ t₁ * t j' := hle
       _ ≤ _ := mul_le_mul_of_nonneg_right hR (ht.1 j').le
-  · push_neg at h
+  · push Not at h
     calc t ⟨j, hj⟩ ≤ t₁ := h
       _ = t₁ / (min c 1) ^ r * (min c 1) ^ r := by field_simp
       _ ≤ _ := mul_le_mul_of_nonneg_left hlow (div_nonneg (by linarith) hp.le)
@@ -884,14 +870,14 @@ theorem levi_unitary {ι L : Type} [Fintype ι] [DecidableEq ι] [Field L] (s : 
   have hbdtri : (bd b (Qi * g * Q)).BlockTriangular b := by
     intro i j hij
     simp only [bd, Matrix.of_apply]
-    rw [if_neg (ne_of_gt hij)]
+    rw [ite_eq_right (ne_of_gt hij)]
   have hdet : (bd b (Qi * g * Q)).det = (Qi * g * Q).det := by
     rw [hbdtri.det, hB.det]
     refine Finset.prod_congr rfl (fun a _ => ?_)
     congr 1
     ext i j
     simp only [Matrix.toSquareBlock_def, Matrix.of_apply, bd]
-    rw [if_pos (i.2.trans j.2.symm)]
+    rw [ite_eq_left (i.2.trans j.2.symm)]
   have hbdunit : IsUnit (bd b (Qi * g * Q)) := by
     rw [Matrix.isUnit_iff_isUnit_det, hdet, ← Matrix.isUnit_iff_isUnit_det]
     exact hGunit
@@ -1152,7 +1138,7 @@ theorem block_tri (L : Type) [Field L] (s : L →+* L) (n r m : ℕ)
   intro u v huv
   by_cases hv : lev m S v < 0
   · exact A1 u v huv hv
-  push_neg at hv
+  push Not at hv
   rcases u with i | k | l
   · have := cnt_le S i
     rw [lx] at huv
@@ -1170,7 +1156,7 @@ theorem block_tri (L : Type) [Field L] (s : L →+* L) (n r m : ℕ)
   by_cases hw : lev m S (Sum.inl l) < lev m S w
   · have : M' w (Sum.inl l) = 0 := A2 w _ hw hl0
     simp [cT, this]
-  push_neg at hw
+  push Not at hw
   rcases w with l' | k | l'
   · rcases v with a | b | c
     · simp [hrow]

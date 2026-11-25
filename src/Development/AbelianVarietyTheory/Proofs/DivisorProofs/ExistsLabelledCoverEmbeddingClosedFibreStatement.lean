@@ -108,7 +108,6 @@ noncomputable section
 
 namespace GlobalTheory.Mum.SecEmb.ThetaPt
 
-
 theorem isLocalHom_of_finite {W W' : Type} [CommRing W] [IsLocalRing W] [CommRing W'] [IsLocalRing W']
     (io : W →+* W') (hf : io.Finite) : IsLocalHom io := by
   letI := io.toAlgebra
@@ -424,8 +423,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.exists_completeTrait_over_closedPoint_modification : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (M : Modif R) (x₀ : M.S), M.π x₀ = closedPoint R → ∃ (W : Type) (_ : CommRing W) (_ : IsDomain W) (_ : IsLocalRing W) (φ : R →+* W) (ξ : Sp W ⟶ M.S), GlobalTheory.LN.CDvr W ∧ Function.Injective φ ∧ IsLocalHom φ ∧ ξ ≫ M.π = spMap φ ∧ ξ (closedPoint W) = x₀ := by
-  first | exact @GlobalTheory.Mum.exists_trait_over_closedPoint
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompleteTraitOverClosedPointModificationStatement =====
@@ -543,7 +540,7 @@ theorem trait (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (hR : Base R)
     (hx : M.π x₀ = closedPoint R) :
     ∃ (W : Type) (_ : CommRing W) (_ : IsDomain W) (_ : IsLocalRing W) (φ : R →+* W) (ξ : Sp W ⟶ M.S),
       GlobalTheory.LN.CDvr W ∧ Function.Injective φ ∧ IsLocalHom φ ∧ ξ ≫ M.π = spMap φ ∧ ξ (closedPoint W) = x₀ :=
-  GlobalTheory.T.exists_completeTrait_over_closedPoint_modification R hR M x₀ hx
+  GlobalTheory.Mum.exists_trait_over_closedPoint R hR M x₀ hx
 
 theorem compositum (X : Scheme.{0}) (K₁ K₂ : Type) [Field K₁] [Field K₂] (a : Sp K₁ ⟶ X) (b : Sp K₂ ⟶ X)
     (h : a (closedPoint K₁) = b (closedPoint K₂)) :
@@ -976,7 +973,7 @@ theorem sval_zero_of_van {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [
         (fun κ => J' ((r ≫ D'.famφB a κ) ≫ hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)))
     · exact (gs_pull h' _ z _ hm _).symm.trans ((congrArg (gs h' z _) (hv _)).trans (_root_.GlobalTheory.UU.SchurComp.gs_zero _ _ _))
     · unfold gs
-      exact dif_neg hm
+      exact dite_eq_right hm
   rw [h0] at E
   exact (Units.mul_right_eq_zero _).1 E.symm
 

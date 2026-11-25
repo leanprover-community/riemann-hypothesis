@@ -88,7 +88,7 @@ theorem lZero_of (u u' : D.what₂.Word) (sc : ℝ) (i0 i0' : ∀ _ : InfinitePl
   simp only
   by_cases hrep : ∃ γ, IsPtRep X u u' w γ
   · have h1 : ¬ ∀ v, 0 < GX X u u' D.host.rdE (gamW X u u' w) v := fun h => hng ⟨hrep, h⟩
-    push_neg at h1
+    push Not at h1
     obtain ⟨v, hv⟩ := h1
     have hrepw : IsPtRep X u u' w (gamW X u u' w) := by
       unfold gamW; rw [dite_eq_left hrep]; exact hrep.choose_spec
@@ -100,7 +100,7 @@ theorem lZero_of (u u' : D.what₂.Word) (sc : ℝ) (i0 i0' : ∀ _ : InfinitePl
       rw [h0, zero_pow (by omega), zero_mul]
     rw [hn, Real.sqrt_zero, Complex.ofReal_zero, zero_smul]
   · have hV : unscaledOperatorAtPointRepresentative X u u' sc i0 i0' νq w = 0 := by
-      unfold unscaledOperatorAtPointRepresentative; rw [if_neg hrep]
+      unfold unscaledOperatorAtPointRepresentative; rw [ite_eq_right hrep]
     rw [hV, map_zero, smul_zero]
 
 theorem gX_nonneg {θ : ℝ} (C : Formalism.L2.SG.LocWSOf.Choice X θ) (u u' : D.what₂.Word) (γ : X.B.I.Ginf)
@@ -292,7 +292,7 @@ theorem rZero_carrierInT (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃
       Tw (D := D) u * Tw (D := D) u' * ‖RealObj.Dl (RealObj.ZhatO (ptC X v w)) D.R.rS‖ ^ 2 ≤ 0 := by
     by_cases hrep : ∃ γ, IsPtRep X u u' w γ
     · have h1 : ¬ ∀ v, 0 < GX X u u' D.host.rdE (gamW X u u' w) v := fun h => hng ⟨hrep, h⟩
-      push_neg at h1
+      push Not at h1
       obtain ⟨v, hv1⟩ := h1
       refine ⟨v, ?_⟩
       have hrepw : IsPtRep X u u' w (gamW X u u' w) := by
@@ -398,8 +398,6 @@ namespace Formalism.L2.SG.Pf.CarrierT
 
 open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.RealObj
 open Formalism.L2.SG.Pf.Choice
-
-attribute [local instance] instCM
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {θ : ℝ} (C : Choice X θ)
 

@@ -116,7 +116,7 @@ theorem UpperTheory.V.Odd.clKill :
       rw [← ZMod.inv_coe_unit]
       rfl
     simp only [β, sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true, one_mul, Units.val_one]
+      ite_true, one_mul, Units.val_one]
     rw [hy]
   have hj := (Stick.coef M K (Additive.toMul c)).2 β (fun t => jv M a (t : ZMod M)) hβ
   calc ∏ b : (ZMod M)ˣ, clMap ((Stick.sg M K) b)⁻¹.toRingEquiv (Additive.toMul c) ^ Eone M a b

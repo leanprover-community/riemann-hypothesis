@@ -131,11 +131,8 @@ theorem exists_unitary_diag (X : Matrix (Fin n) (Fin n) ℂ) (hX : IsUnit X.det)
       _ = _ := by simp only [Matrix.mul_assoc]
 
 theorem eval_aeval_poly {σ ρ : Type} (f : σ → MvPolynomial ρ ℂ) (d : ρ → ℂ) (P : MvPolynomial σ ℂ) :
-    eval d (aeval f P) = eval (fun x => eval d (f x)) P := by
-  induction P using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p i hp => simp only [map_mul, hp, MvPolynomial.aeval_X, MvPolynomial.eval_X]
+    eval d (aeval f P) = eval (fun x => eval d (f x)) P :=
+  MvPolynomial.comp_aeval_apply f (aeval d) P
 
 theorem circle_infinite : {z : ℂ | star z * z = 1}.Infinite := by
   have hinj : Set.InjOn (fun t : ℝ => (⟨t, Real.sqrt (1 - t ^ 2)⟩ : ℂ)) (Set.Icc (-1) 1) := by
@@ -222,7 +219,7 @@ theorem eq_zero_of_forall_isUnit (P : MvPolynomial (ι × Fin n × Fin n) ℂ)
     rw [map_mul, map_zero, eval_detAll]
     by_cases hy : ∀ τ, IsUnit (y τ).det
     · rw [h y hy, zero_mul]
-    · push_neg at hy
+    · push Not at hy
       obtain ⟨τ, hτ⟩ := hy
       rw [Finset.prod_eq_zero (Finset.mem_univ τ) (by simpa [isUnit_iff_ne_zero] using hτ), mul_zero]
   exact (mul_eq_zero.mp h2).resolve_right detAll_ne_zero

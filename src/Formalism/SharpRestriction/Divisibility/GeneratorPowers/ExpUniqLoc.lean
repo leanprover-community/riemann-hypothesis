@@ -139,13 +139,13 @@ theorem law (M : ℕ) : ∃ Φ : JetR R (Fin n) M →ₐ[R] Jet R (Fin 2 × Fin 
     rw [MonObj.comp_mul, hone, hone, _root_.mul_one]
   obtain ⟨Φ, hΦa, hΦ⟩ := coord hx _ M hkk _ hP
   have e0 : (kill M 1).comp (cpyU M 0) = cpyU (R := R) (n := n) M 0 := ReciprocityTheory.ChartRestriction.G.Chart.jet_ext fun j => by
-    rw [AlgHom.comp_apply, cpyU_zR, kill_alt_alt, if_neg (by simp)]
+    rw [AlgHom.comp_apply, cpyU_zR, kill_alt_alt, ite_eq_right (by simp)]
   have e1 : (kill M 0).comp (cpyU M 1) = cpyU (R := R) (n := n) M 1 := ReciprocityTheory.ChartRestriction.G.Chart.jet_ext fun j => by
-    rw [AlgHom.comp_apply, cpyU_zR, kill_alt_alt, if_neg (by simp)]
+    rw [AlgHom.comp_apply, cpyU_zR, kill_alt_alt, ite_eq_right (by simp)]
   have z0 : ∀ i : Fin 2, (kill (R := R) (n := n) M i).comp (cpyU (R := R) (n := n) M i) =
       (Algebra.ofId R _).comp (ReciprocityTheory.ChartRestriction.G.Chart.jetAug R (Fin n) M) := fun i =>
     ReciprocityTheory.ChartRestriction.G.Chart.jet_ext fun j => by
-      rw [AlgHom.comp_apply, cpyU_zR, kill_alt_alt, if_pos rfl, AlgHom.comp_apply, ReciprocityTheory.ChartRestriction.G.Chart.jetAug_zR, map_zero]
+      rw [AlgHom.comp_apply, cpyU_zR, kill_alt_alt, ite_eq_left rfl, AlgHom.comp_apply, ReciprocityTheory.ChartRestriction.G.Chart.jetAug_zR, map_zero]
   have hk : ∀ i i' : Fin 2, (kill (R := R) (n := n) M i).comp (cpyU (R := R) (n := n) M i') = cpyU M i' →
       spMap (kill (R := R) (n := n) M i) ≫ ((spMap (cpyU (R := R) (n := n) M 0) ≫ x M) *
         (spMap (cpyU (R := R) (n := n) M 1) ≫ x M)) = spMap (cpyU (R := R) (n := n) M i') ≫ x M →
@@ -161,10 +161,10 @@ theorem law (M : ℕ) : ∃ Φ : JetR R (Fin n) M →ₐ[R] Jet R (Fin 2 × Fin 
   refine ⟨Φ, hΦa, hΦ, fun j => mem_mul_of_kill M _ ?_ ?_⟩
   · have h := DFunLike.congr_fun k0 (zR M j)
     rw [AlgHom.comp_apply, cpyU_zR] at h
-    rw [map_sub, map_sub, h, kill_alt_alt, kill_alt_alt, if_pos rfl, if_neg (by simp), sub_zero, sub_self]
+    rw [map_sub, map_sub, h, kill_alt_alt, kill_alt_alt, ite_eq_left rfl, ite_eq_right (by simp), sub_zero, sub_self]
   · have h := DFunLike.congr_fun k1 (zR M j)
     rw [AlgHom.comp_apply, cpyU_zR] at h
-    rw [map_sub, map_sub, h, kill_alt_alt, kill_alt_alt, if_neg (by simp), if_pos rfl, sub_zero, sub_self]
+    rw [map_sub, map_sub, h, kill_alt_alt, kill_alt_alt, ite_eq_right (by simp), ite_eq_left rfl, sub_zero, sub_self]
 
 theorem top_step [Algebra ℚ R] {d M : ℕ} (hM : 2 ≤ M) (ψ : JetR R (Fin n) M →ₐ[R] Jet R (Fin 1 × Fin d) M)
     (hψa : (jetAug : Jet R (Fin 1 × Fin d) M →ₐ[R] R).comp ψ = ReciprocityTheory.ChartRestriction.G.Chart.jetAug R (Fin n) M)

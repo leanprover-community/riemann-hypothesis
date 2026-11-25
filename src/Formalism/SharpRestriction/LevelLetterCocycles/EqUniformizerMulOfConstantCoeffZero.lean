@@ -69,7 +69,6 @@ variable (W : LocWach PD LL O v n)
 
 theorem letE_mul_mem {i : ZMod n} {g : LetA O n} (hg : g ∈ W.AΔ) : (letE i : LetA O n) * g ∈ W.AΔ := W.AΔ.mul_mem (_root_.Formalism.MainNotions.LiftingTheory.idempotent_mem_invariants W i) hg
 
-
 include hAq in
 def resq (i : ZMod n) (g : LetA O n) : O :=
   if h : g ∈ W.AΔ then
@@ -538,22 +537,16 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-
-open PowerSeries in
-def ιS (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) : PowerSeries O →ₐ[O] PowerSeries O :=
-  PowerSeries.substAlgHom (R := O) (PowerSeries.HasSubst.of_constantCoeff_zero'
-    (Formalism.MainNotions.UnusedSlot80.ToolsR.π₀₁_cc hR))
-
 theorem ιS_apply (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) (F : PowerSeries O) :
-    ιS W hR F = PowerSeries.subst W.π₀₁ F := by
-  rw [ιS, PowerSeries.coe_substAlgHom]
+    Formalism.MainNotions.LiftingTheory.hstraS W hR F = PowerSeries.subst W.π₀₁ F := by
+  rw [Formalism.MainNotions.LiftingTheory.hstraS, PowerSeries.coe_substAlgHom]
 
-theorem ιS_X (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) : ιS W hR PowerSeries.X = W.π₀₁ := by
+theorem ιS_X (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) : Formalism.MainNotions.LiftingTheory.hstraS W hR PowerSeries.X = W.π₀₁ := by
   rw [ιS_apply]; exact PowerSeries.subst_X (PowerSeries.HasSubst.of_constantCoeff_zero'
     (Formalism.MainNotions.UnusedSlot80.ToolsR.π₀₁_cc hR))
 
 theorem rep (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) {g : LetA O n} (hg : g ∈ W.AΔ) :
-    ∃ F : ZMod n → PowerSeries O, ∀ i, g i = ιS W hR (F i) := by
+    ∃ F : ZMod n → PowerSeries O, ∀ i, g i = Formalism.MainNotions.LiftingTheory.hstraS W hR (F i) := by
   obtain ⟨F, hF, -⟩ := hR.2.1 g hg
   exact ⟨F, fun i => by rw [hF i, ιS_apply]; rfl⟩
 
@@ -572,7 +565,7 @@ theorem eq_uniformizer_mul_of_constantCoeff_zero [IsDomain O] (hR : Formalism.Ma
     rw [← Formalism.MainNotions.UnusedSlot80.ToolsR.cc_subst (Formalism.MainNotions.UnusedSlot80.ToolsR.π₀₁_cc hR), ← ιS_apply W hR, ← hF i]
     exact h0 i
   choose F' hF' using fun i => PowerSeries.X_dvd_iff.mpr (hF0 i)
-  have he : a = W.π₀ * fun i => ιS W hR (F' i) := by
+  have he : a = W.π₀ * fun i => Formalism.MainNotions.LiftingTheory.hstraS W hR (F' i) := by
     funext i
     rw [hF i, hF' i, map_mul, ιS_X]
     rfl
@@ -582,7 +575,7 @@ theorem Gd01 : (Gd (O := O) PD.p 0 1) = PowerSeries.X + ((PD.p : ℕ) : PowerSer
   simp [Gd]
 
 theorem ιS_qp (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) (i : ZMod n) :
-    Formalism.MainNotions.LiftingTheory.qp W i = ιS W hR (PowerSeries.X + ((PD.p : ℕ) : PowerSeries O)) := by
+    Formalism.MainNotions.LiftingTheory.qp W i = Formalism.MainNotions.LiftingTheory.hstraS W hR (PowerSeries.X + ((PD.p : ℕ) : PowerSeries O)) := by
   rw [map_add (f := _), ιS_X, map_natCast]
   rfl
 
@@ -599,14 +592,14 @@ theorem res_decomp [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) 
     have h1 : (R i).degree ≤ 0 := Nat.WithBot.lt_one_iff_le_zero.mp (by simpa using hRd i)
     conv_lhs => rw [Polynomial.eq_C_of_degree_le_zero h1]
     simp
-  have he : g = (fun i => PowerSeries.C ((R i).coeff 0)) + Formalism.MainNotions.LiftingTheory.qp W * fun i => ιS W hR (Q i) := by
+  have he : g = (fun i => PowerSeries.C ((R i).coeff 0)) + Formalism.MainNotions.LiftingTheory.qp W * fun i => Formalism.MainNotions.LiftingTheory.hstraS W hR (Q i) := by
     funext i
     rw [Pi.add_apply, Pi.mul_apply, hF i, hQR i, Gd01, map_add (f := _), map_mul, ← ιS_qp, hRc i]
-    rw [show ιS W hR (PowerSeries.C ((R i).coeff 0)) = PowerSeries.C ((R i).coeff 0) from
-      (ιS W hR).commutes _]
+    rw [show Formalism.MainNotions.LiftingTheory.hstraS W hR (PowerSeries.C ((R i).coeff 0)) = PowerSeries.C ((R i).coeff 0) from
+      (Formalism.MainNotions.LiftingTheory.hstraS W hR).commutes _]
     ring
   refine ⟨_, _, Formalism.MainNotions.LiftingTheory.lifta_divΔ W _ _ (Formalism.MainNotions.LiftingTheory.lifta_qΔ W hLR.πΔ) hLR.qU ?_, he⟩
-  have : Formalism.MainNotions.LiftingTheory.qp W * (fun i => ιS W hR (Q i)) = g - fun i => PowerSeries.C ((R i).coeff 0) := by
+  have : Formalism.MainNotions.LiftingTheory.qp W * (fun i => Formalism.MainNotions.LiftingTheory.hstraS W hR (Q i)) = g - fun i => PowerSeries.C ((R i).coeff 0) := by
     rw [he]; ring
   rw [this]
   exact W.AΔ.sub_mem hg (const_mem W _)
@@ -624,7 +617,7 @@ theorem res_unique [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) 
     intro i
     show PowerSeries.C (o i) = PowerSeries.subst W.π₀₁ (PowerSeries.C (o i))
     rw [← ιS_apply W hR]
-    exact ((ιS W hR).commutes _).symm
+    exact ((Formalism.MainNotions.LiftingTheory.hstraS W hR).commutes _).symm
   have h2 : ∀ i, (fun i => PowerSeries.C (o i) : LetA O n) i =
       PowerSeries.subst (W.π₀ i) ((PowerSeries.X + ((PD.p : ℕ) : PowerSeries O)) * G i) := by
     intro i
@@ -838,8 +831,6 @@ end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
-
-
 
 theorem gamma_lemma_of_crystalline (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F) :
     ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hg : Good K 1 LL)

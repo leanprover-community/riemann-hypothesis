@@ -165,11 +165,11 @@ private lemma factorial_choose_signed_sum_eq_zero [CharZero k] (N j : ℕ) (hj :
     rcases Nat.eq_or_lt_of_le hl' with hlj | hlj
     · have hne : (((l : ℕ) : k) * ((N - 2 * l : ℕ) : k)) ≠ 0 :=
         mul_ne_zero (Nat.cast_ne_zero.mpr (by omega)) (Nat.cast_ne_zero.mpr (by omega))
-      rw [hW, hW, ← hlj, if_pos le_rfl, if_neg (by omega), sub_zero, show N - l - l = N - 2 * l by omega,
+      rw [hW, hW, ← hlj, ite_eq_left le_rfl, ite_eq_right (by omega), sub_zero, show N - l - l = N - 2 * l by omega,
         mul_div_assoc, div_self hne, mul_one]
     · obtain ⟨u, hu⟩ : ∃ u, j = l + 1 + u := ⟨j - l - 1, by omega⟩
       obtain ⟨v, hv⟩ : ∃ v, N = 2 * j + 1 + v := ⟨N - 2 * j - 1, by omega⟩
-      rw [hW, hW, if_pos hl', if_pos (by omega), hc, hc]
+      rw [hW, hW, ite_eq_left hl', ite_eq_left (by omega), hc, hc]
       rw [show N - l - j = u + 2 + v by omega, show N - 2 * l - 1 = u + 1 + v + (u + 1) by omega,
         show N - 2 * l = 2 * u + 3 + v by omega, show N - l = 2 * u + 3 + v + l by omega,
         show j - l = u + 1 by omega,
@@ -247,7 +247,7 @@ private lemma factorial_choose_signed_sum_eq_zero [CharZero k] (N j : ℕ) (hj :
       push_cast
       ring
   simp only [← hc]
-  rw [Finset.sum_congr rfl key, Finset.sum_range_sub', hW, hW, if_pos (Nat.zero_le _), if_neg (by omega)]
+  rw [Finset.sum_congr rfl key, Finset.sum_range_sub', hW, hW, ite_eq_left (Nat.zero_le _), ite_eq_right (by omega)]
   simp
 
 theorem decomp [CharZero k] (hr : 1 ≤ r) (hz : ∀ c, w c ≠ zv ∧ e c ≠ zv) (o n z : ℕ) (x : MvPolynomial σ k)
@@ -304,7 +304,7 @@ theorem decomp [CharZero k] (hr : 1 ≤ r) (hz : ∀ c, w c ≠ zv ∧ e c ≠ z
     rcases Nat.eq_zero_or_pos j with h0 | hpos
     · subst h0
       simp
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       have hc2 : ∑ l ∈ range (j + 1), ((-1 : k) ^ (j - l) / (((j - l).factorial : k) ^ 2 * ((o - l + (n - l) + r + z - 1).choose (j - l) : k)) *
           (((l).factorial : k) ^ 2 * ((o + n + r + z - l).choose l : k))⁻¹) = 0 := by
         refine Eq.trans ?_ (factorial_choose_signed_sum_eq_zero (o + n + r + z) j hpos (by omega))

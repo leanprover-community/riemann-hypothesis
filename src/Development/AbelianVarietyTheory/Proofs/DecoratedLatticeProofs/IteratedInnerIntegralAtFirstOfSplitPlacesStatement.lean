@@ -546,7 +546,6 @@ theorem sum_rTrans_trc {D : D7} {V : HSp D} {G : Type} [Monoid G] (gl : G →* G
 
 theorem comb_lin {G A : Type} [AddCommGroup A] [Module ℂ A] [Monoid G] (τ : Representation ℂ G A) (l : A →ₗ[ℂ] ℂ)
     (e : G →₀ ℂ) (F : A) : GlobalTheory.PosOne.comb e (fun b => l (τ b F)) = l (e.sum fun b a => a • τ b F) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [GlobalTheory.PosOne.comb, Finsupp.sum, map_sum, map_smul, smul_eq_mul]
 
 theorem coe_sum_sub {G X : Type} [AddCommGroup X] [Module ℂ X] {A : Submodule ℂ X} (e : G →₀ ℂ) (v : G → A) :
@@ -616,7 +615,7 @@ theorem valOne_all : ∀ D : D7, ValOne D := by
   let e₂' : GL (Q.n₂ ⊕ Fin (Q.c + 1)) Q.k → (GL (Q.n₂ ⊕ Fin (Q.c + 1)) Q.k →₀ ℂ) :=
     fun β => if h : β ∈ Q.A₂ then Q.e₂ ⟨β, h⟩ else 0
   have he₂ : ∀ β ∈ Q.A₂, IsOneComb Q.ψk Q.ν (σ + 1) Q.L₂ β (e₂' β) := by
-    intro β hβ; simp only [e₂', dif_pos hβ]; exact Q.one₂ ⟨β, hβ⟩
+    intro β hβ; simp only [e₂', dite_eq_left hβ]; exact Q.one₂ ⟨β, hβ⟩
   have hFty : ∀ j : Q.L₂.J, τ (j : GL (Q.n₂ ⊕ Fin (Q.c + 1)) Q.k) F = (Q.L₂.lam j : ℂ) • F := by
     intro j; apply Subtype.ext; rw [hτ, Submodule.coe_smul]; exact hTy' j
   have R := GlobalTheory.T.symmetricDoubleIntegrals_positionOne_eq_cellSum Q.k Q.n₀ Q.n₁ Q.n₂ (Q.c + 1) (σ + 1) hcQ Q.ψk hψc Q.cond Q.ν Q.unitVol Q.μ₁ Q.μ₂ Q.open₁ Q.open₂
@@ -646,7 +645,7 @@ theorem valOne_all : ∀ D : D7, ValOne D := by
   refine Finset.sum_congr rfl fun γ _ => ?_
   rw [← Finset.sum_coe_sort Q.A₂]
   refine Finset.sum_congr rfl fun β _ => ?_
-  simp only [e₂', dif_pos β.2, Subtype.coe_eta]
+  simp only [e₂', dite_eq_left β.2, Subtype.coe_eta]
   rw [← FIN γ β]
   simp only [QStep.w₁, QStep.w₂]
   push_cast

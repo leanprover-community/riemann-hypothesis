@@ -658,7 +658,7 @@ theorem exists_smul_nonneg_of_dvd (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j)
       hlev hnab hunit h3 (fun _ => ⟨ph, 1, x₀, hpin⟩) nab b 0 a hb hdom hn hP hχ htot
     refine GlobalTheory.mem_span_of_map_mem_span_image (Formalism.L2.PjFree.rdU (Formalism.L2.PjFree.Unf.ofPj (Y.U σ)))
       (sec Y.d.Xo₂ Y.d.c₂ a n) hind (shortGen Y.d.Xo₂ Y.d.c₂ nab b 0 a n d) (fun g hg => hg.1) hf'.1 (hsp ?_)
-    exact ⟨hf'.2 _ hσ, fun k x hx => dif_neg hx⟩
+    exact ⟨hf'.2 _ hσ, fun k x hx => dite_eq_right hx⟩
   · obtain ⟨hsec, Λ, N, x0, P, hUn, hTb, hTM, hN, -, hPl, hR⟩ := hg
     obtain ⟨inst, hnab⟩ := hnab
     obtain ⟨t, ht, hb'⟩ := exists_smul_nonneg_of_shortRule_any_level D _ _ _ Y.d.Xo₂ Y.d.c₂ n d hlev hnab
@@ -898,7 +898,7 @@ theorem exists_dom_exponents_bar : ∀ (E : Type) [Field E] [NumberField E] [IsC
     · simp [ex, exOf, exZ, wtOf]
     · have hi : (i : ℕ) < Dw.mult τ := i.2
       show (((if (i : ℕ) < Dw.mult τ then (val (τ, (i : ℕ))).toNat else 0 : ℕ)) : ℤ) = _
-      rw [if_pos hi, Int.toNat_of_nonneg (nonneg τ i hi)]
+      rw [ite_eq_left hi, Int.toNat_of_nonneg (nonneg τ i hi)]
       rw [Pi.add_apply, Pi.smul_apply]
       show _ = (k + 1) • (wtOf Dw la 0).1 (τ, (i : ℕ)) +
         (wtOf Dw (GlobalTheory.FlatLine.parWt Dw fun τ => (N : ℤ) * w τ) (M : ℤ)).1 (τ, (i : ℕ))
@@ -1675,8 +1675,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 
 noncomputable section
-namespace GlobalTheory.CuspMulUnit
-end GlobalTheory.CuspMulUnit
 namespace GlobalTheory.CuspMulUnit
 
 theorem pow_mul_mem_cusp_of_unit : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ), Y.Good e o → 2 < Module.finrank ℚ D.host.E / 2 → ∀ (la : GlobalTheory.AllWt.Weight (T.Q.Dw j)), ∀ f ∈ Y.V (wtOf _ la 0), ∀ (u u' : Rul Y.d.Xo₂ Y.d.c₂) (t : Y.d.c₂.F) (eu : Ix (T.Q.Dw j) → ℤ), u ∈ GlobalTheory.AllWt.secZ Y.d.Xo₂ Y.d.c₂ eu → t ≠ 0 → u * u' = t • 1 → ∃ K : ℕ, ∀ k, K ≤ k → ∀ (φ φ' : Rul Y.d.Xo₂ Y.d.c₂) (t' : Y.d.c₂.F) (w : GlobalTheory.AllWt.Weight (T.Q.Dw j)), φ ∈ GlobalTheory.AllWt.secZ Y.d.Xo₂ Y.d.c₂ (GlobalTheory.AllWt.exOf (T.Q.Dw j) w 0) → t' ≠ 0 → φ * φ' = t' • 1 → (∀ σ, GoodEmb Y.d.c₂ σ → ∀ kk, ∃ C : ℝ, ∀ y ∈ ((Y.U σ).X kk).dom, ((Y.U σ).X kk).pnorm (GlobalTheory.AllWt.modelWt (Y.U σ) (wtOf (T.Q.Dw j) w 0) kk) (rdU (Y.U σ) φ kk) y ≤ C) → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → f ^ (k + 1) * (u * φ) ∈ sec Y.d.Xo₂ Y.d.c₂ a n → f ^ (k + 1) * (u * φ) ∈ cusp Y.d.Xo₂ Y.d.c₂ Y.U a n := by

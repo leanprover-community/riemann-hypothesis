@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.Statements.PrincipalLattices.FiniteDimen
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
@@ -80,20 +78,5 @@ variable {k : Type} [Field k] {κ : k →+* ℂ} {A : Over (Sp k)} [GrpObj A] {P
 include hψ
 
 end Unif
-
-section Quadratic
-
-end Quadratic
-
-section Transport
-
-variable {D : Datum H} {R : Type} [CommRing R] {t : SAB H (Sp R)} {B B' : Over (Sp R)} [GrpObj B] [GrpObj B']
-  {M : LB B.left} {M' : LB B'.left} {L : Submodule (𝓞 E) D.La} {ρ : R} {S S' : Set L} {φ : L → (B ⟶ t.G)}
-
-end Transport
-
-section Multiplication
-
-end Multiplication
 
 end GlobalTheory.CMSpreadCompare

@@ -102,7 +102,7 @@ theorem exists_coord {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrtho
         rw [Fin.val_rev]
         have := p.isLt
         omega
-      rw [if_pos hc, if_neg hp, if_pos rfl]
+      rw [ite_eq_left hc, ite_eq_right hp, ite_eq_left rfl]
     · have hne : ¬ (p.rev.1 + q.1 + 1 = c) := by
         intro hs
         apply hq
@@ -111,7 +111,7 @@ theorem exists_coord {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrtho
         have := p.isLt
         have := q.isLt
         omega
-      rw [if_neg hne, if_neg hq]
+      rw [ite_eq_right hne, ite_eq_right hq]
 
 theorem coord_apply {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B c ε) (p : Fin c) (l : Fin B.rank → D.host.E)
     (h0 : ∀ i, ∑ k, l k * frameMat B A d.ι k i = 0) (h1 : ∀ q, ∑ k, l k * d.a k q = if q = p then 1 else 0)
@@ -119,18 +119,14 @@ theorem coord_apply {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthog
     ∑ k, l k * (frameMat B A d.ι *ᵥ z + d.a *ᵥ u) k = u p := by
 
   have swap : ∀ {n : ℕ} (M : Matrix (Fin B.rank) (Fin n) D.host.E) (w : Fin n → D.host.E),
-      ∑ k, l k * (M *ᵥ w) k = ∑ j, (∑ k, l k * M k j) * w j := by
-    intro n M w
-    simp only [Matrix.mulVec, dotProduct, Finset.mul_sum, Finset.sum_mul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-    ring
+      ∑ k, l k * (M *ᵥ w) k = ∑ j, (∑ k, l k * M k j) * w j :=
+    fun M w => Matrix.dotProduct_mulVec l M w
   simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib, swap, h0, h1, zero_mul,
-    Finset.sum_const_zero, zero_add, ite_mul, one_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_const_zero, zero_add, ite_mul, one_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem mulVec_single_apply {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) (p : Fin n) (w : D.host.E) (k : Fin m) :
     (M *ᵥ Pi.single p w) k = M k p * w := by
-  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem incA_mul_tmul (e : D.host.E) (x : AF D.host.F) (b : D.host.E) :
     incA D e * (x ⊗ₜ[D.host.F] b) = x ⊗ₜ[D.host.F] (e * b) := by
@@ -166,7 +162,7 @@ theorem col_mem_imp {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthog
 
   have hread : ∑ k, incA D (l k) * (t * incA D (d.a k p)) = t := by
     have hl := h1 p
-    rw [if_pos rfl] at hl
+    rw [ite_eq_left rfl] at hl
     calc ∑ k, incA D (l k) * (t * incA D (d.a k p)) = t * incA D (∑ k, l k * d.a k p) := by
 
           rw [map_sum, Finset.mul_sum]
@@ -262,11 +258,8 @@ theorem idV_inv_mul (I : Ideal (𝓞 D.host.E)) (v : GlobalTheory.FinPl.Pl D) (c
   ·
     apply idV_mono
     intro a ha
-    have h1 : (1 : D.host.E) ∈ ((I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E))⁻¹ := by
-      rw [FractionalIdeal.mem_inv_iff hI0]
-      intro y hy
-      rw [one_mul]
-      exact FractionalIdeal.coeIdeal_le_one hy
+    have h1 : (1 : D.host.E) ∈ ((I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E))⁻¹ :=
+      FractionalIdeal.one_mem_inv_coeIdeal (FractionalIdeal.coeIdeal_ne_zero.mp hI0)
     simpa using FractionalIdeal.mul_mem_mul h1 ha
 
 theorem exists_mem_modulBar {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) {v : GlobalTheory.FinPl.Pl D} (hv : v ∉ P.S0) :

@@ -135,7 +135,6 @@ theorem le_supZ {D : D7} (i : D.nd.Loc) (f : D.nd.X i → ℝ) {π : D.nd.X i} (
 
 end GlobalTheory.NLink.Adm4Tab
 
-
 open GlobalTheory.NLink.Adm4Tab in
 theorem GlobalTheory.NLink.admissible_table_of_conclusion : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (X : KillingConditions.HubData D) (C : ℝ) (tf : TwistedPlaces.Tab L),
     Concl L P X C → (∀ i, TwistedPlaces.TwLoc D i → (D.nd.l i ∈ D.host.small ∨ D.nd.l i = 3) → ∀ π ∈ D.nd.Zgood i,
@@ -158,9 +157,9 @@ theorem GlobalTheory.NLink.admissible_table_of_conclusion : ∀ (D : D7) (L : Si
   · apply key _ (h23 i hi (Or.inl h2) π hπ)
     have hlen : (tab L X tf C).len i = fun _ => 0 := by
       funext lam
-      simp only [tab, if_pos h2]
+      simp only [tab, ite_eq_left h2]
     have hBB : (tab L X tf C).BB i = TwistedPlaces.sumOver D (D.nd.l i) (tf.len i) + tf.BB i := by
-      simp only [tab, if_pos h2]
+      simp only [tab, ite_eq_left h2]
     rw [hlen, hzero, hBB, zero_add]
   by_cases h3 : D.nd.l i = 3
   · apply key _ (h23 i hi (Or.inr h3) π hπ)
@@ -168,11 +167,11 @@ theorem GlobalTheory.NLink.admissible_table_of_conclusion : ∀ (D : D7) (L : Si
       have hq : ¬ (D.nd.l i = D.host.q ∨ D.nd.l i = D.host.d) := by
         rw [h3]; rintro (h | h) <;> [exact hq3 h.symm; exact hd3 h.symm]
       have hR : ¬ KillingConditions.RangeAD L X.exc (D.nd.l i) := fun h => h.1 (Or.inr h3)
-      simp only [tab, if_neg h2, if_neg hq, if_neg hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right hq, ite_eq_right hR]
     have hlen : (tab L X tf C).len i =
         fun _ => (TwistedPlaces.sumOver D 3 (tf.len i) + tf.BB i) / ((placesOver D.host.E 3).ncard : ℝ) := by
       funext lam
-      simp only [tab, if_neg h2, if_pos h3]
+      simp only [tab, ite_eq_right h2, ite_eq_left h3]
     rw [hBB, hlen, h3, sumOver_const D 3 (by norm_num)]
     have hf3 := FamilyRepresentationConstants.placesOver_finite D.host.E 3 (by norm_num)
     have hpos : 0 < (placesOver D.host.E 3).ncard :=
@@ -184,9 +183,9 @@ theorem GlobalTheory.NLink.admissible_table_of_conclusion : ∀ (D : D7) (L : Si
     have hR : ¬ KillingConditions.RangeAD L X.exc (D.nd.l i) := fun h => h.2.1 hqd
     have hlen : (tab L X tf C).len i = fun _ => 0 := by
       funext lam
-      simp only [tab, if_neg h2, if_neg h3, if_neg hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right h3, ite_eq_right hR]
     have hBB : (tab L X tf C).BB i = TwistedPlaces.midG L C (D.nd.l i) := by
-      simp only [tab, if_neg h2, if_pos hqd]
+      simp only [tab, ite_eq_right h2, ite_eq_left hqd]
     rw [hlen, hzero, hBB, zero_add]
   by_cases hR : KillingConditions.RangeAD L X.exc (D.nd.l i)
   · have hm := hC.mid i hi hg hR π hπ
@@ -196,9 +195,9 @@ theorem GlobalTheory.NLink.admissible_table_of_conclusion : ∀ (D : D7) (L : Si
     apply key _ hb
     have hlen : (tab L X tf C).len i = KillingConditions.lenR X.len0 i := by
       funext lam
-      simp only [tab, if_neg h2, if_neg h3, if_pos hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right h3, ite_eq_left hR]
     have hBB : (tab L X tf C).BB i = KillingConditions.supZ i (X.errorBoundHub i) := by
-      simp only [tab, if_neg h2, if_neg hqd, if_pos hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right hqd, ite_eq_left hR]
     rw [hlen, hBB]
     have h1 : TwistedPlaces.sumOver D (D.nd.l i) (X.len0 i π) ≤ TwistedPlaces.sumOver D (D.nd.l i) (KillingConditions.lenR X.len0 i) :=
       sumOver_mono D _ hl0 fun lam => le_supZ i (fun π => X.len0 i π lam) hπ
@@ -210,9 +209,9 @@ theorem GlobalTheory.NLink.admissible_table_of_conclusion : ∀ (D : D7) (L : Si
     apply key _ (hC.large i hi hlt.1 hg hlt.2 π hπ)
     have hlen : (tab L X tf C).len i = fun _ => 0 := by
       funext lam
-      simp only [tab, if_neg h2, if_neg h3, if_neg hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right h3, ite_eq_right hR]
     have hBB : (tab L X tf C).BB i = 0 := by
-      simp only [tab, if_neg h2, if_neg hqd, if_neg hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right hqd, ite_eq_right hR]
     rw [hlen, hzero, hBB, add_zero]
 
 end
@@ -261,9 +260,9 @@ theorem localBoundTableAllPrimes_conditionTwoThree : ∀ (D : D7) (L : SizeData�
   by_cases h2 : D.nd.l i ∈ D.host.small
   · have hlen : (tab L X tf C).len i = fun _ => 0 := by
       funext lam
-      simp only [tab, if_pos h2]
+      simp only [tab, ite_eq_left h2]
     have hBB : (tab L X tf C).BB i = TwistedPlaces.sumOver D (D.nd.l i) (tf.len i) + tf.BB i := by
-      simp only [tab, if_pos h2]
+      simp only [tab, ite_eq_left h2]
     show TwistedPlaces.sumOver D _ ((tab L X tf C).len i) + (tab L X tf C).BB i ≤ _
     rw [hlen, hBB]
     have h0 : TwistedPlaces.sumOver D (D.nd.l i) (fun _ => (0 : ℝ)) = 0 := by simp [TwistedPlaces.sumOver]
@@ -277,11 +276,11 @@ theorem localBoundTableAllPrimes_conditionTwoThree : ∀ (D : D7) (L : SizeData�
     have hlen : (tab L X tf C).len i =
         fun _ => (TwistedPlaces.sumOver D 3 (tf.len i) + tf.BB i) / ((placesOver D.host.E 3).ncard : ℝ) := by
       funext lam
-      simp only [tab, if_neg h2, if_pos h3]
+      simp only [tab, ite_eq_right h2, ite_eq_left h3]
     have hBB : (tab L X tf C).BB i = 0 := by
       have h1 : ¬ (D.nd.l i = D.host.q ∨ D.nd.l i = D.host.d) := by omega
       have hR : ¬ KillingConditions.RangeAD L X.exc (D.nd.l i) := fun hr => hr.1 (Or.inr h3)
-      simp only [tab, if_neg h2, if_neg h1, if_neg hR]
+      simp only [tab, ite_eq_right h2, ite_eq_right h1, ite_eq_right hR]
     show TwistedPlaces.sumOver D (D.nd.l i) ((tab L X tf C).len i) + (tab L X tf C).BB i ≤ _
     have hFi' : TwistedPlaces.sumOver D (D.nd.l i) (tf.len i) + tf.BB i ≤ _ := hFi
     rw [h3] at hFi'
@@ -316,9 +315,9 @@ theorem localBoundTableAllPrimes_ramified_typePrimes : ∀ (D : D7) (L : SizeDat
     have hR : ¬ KillingConditions.RangeAD L X.exc (D.nd.l i) := fun h => h.2.1 hl
     have hlen : (tab L X tf C).len i = fun _ => 0 := by
       funext lam
-      simp only [tab, h2, h3, hR, if_false]
+      simp only [tab, h2, h3, hR, ite_false]
     have hBB : (tab L X tf C).BB i = TwistedPlaces.midG L C (D.nd.l i) := by
-      simp only [tab, h2, hl, if_false, if_true]
+      simp only [tab, h2, hl, ite_false, ite_true]
     rw [hlen, hBB]
     simp [TwistedPlaces.sumOver]
   · intro j hj l hl
@@ -351,13 +350,13 @@ theorem localBoundTableAllPrimes_rowsAndBand : ∀ (D : D7) (L : SizeData₂ D) 
     have hs : D.nd.l i ∉ D.host.small := fun e => hr.1 (Or.inl e)
     show (if D.nd.l i ∈ D.host.small then (0 : ℝ) else if D.nd.l i = 3 then _
       else if KillingConditions.RangeAD L X.exc (D.nd.l i) then _ else 0) = _
-    rw [if_neg hs, if_neg h3, if_pos hr]; rfl
+    rw [ite_eq_right hs, ite_eq_right h3, ite_eq_left hr]; rfl
   have hN : ∀ i, D.nd.l i ≠ 3 → ¬ KillingConditions.RangeAD L X.exc (D.nd.l i) →
       (tab L X tf C).len i = fun _ => 0 := by
     intro i h3 hr; funext lam
     show (if D.nd.l i ∈ D.host.small then (0 : ℝ) else if D.nd.l i = 3 then _
       else if KillingConditions.RangeAD L X.exc (D.nd.l i) then _ else 0) = _
-    rw [if_neg h3, if_neg hr, ite_self]
+    rw [ite_eq_right h3, ite_eq_right hr, ite_self]
   have hx : 0 < L.sc.x := lt_trans one_pos L.sc.one_lt_alt
   have hb : 1 ≤ L.sc.b := Real.one_le_exp (Real.rpow_nonneg hx.le _)
   have hSc := L.Sc_pos
@@ -472,7 +471,7 @@ theorem adm5_tab : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (
   show (if D.nd.l i ∈ D.host.small then TwistedPlaces.sumOver D (D.nd.l i) (tf.len i) + tf.BB i
     else if D.nd.l i = D.host.q ∨ D.nd.l i = D.host.d then TwistedPlaces.midG L C (D.nd.l i)
     else if KillingConditions.RangeAD L X.exc (D.nd.l i) then KillingConditions.supZ i (X.errorBoundHub i) else 0) ≤ _
-  rw [if_neg h2, if_neg hqd]
+  rw [ite_eq_right h2, ite_eq_right hqd]
   split_ifs with hR
   · unfold KillingConditions.supZ
     split_ifs with hne
@@ -542,9 +541,9 @@ theorem largePrimeLengthVanishing_and_exceptionalBounded_tab : ∀ (D : D7) (L :
       rintro he; rw [he] at hlt; linarith
     have hR : ¬ KillingConditions.RangeAD L X.exc (D.nd.l i) := fun hr => hr.2.2 ⟨hlt, hexc'⟩
     refine ⟨fun lam _ => ?_, ?_⟩
-    · simp only [tab, h2, h3', hR, if_false]
-    · simp only [tab, h2, hR, if_false]
-      rw [if_neg (by rintro (he | he) <;> contradiction)]
+    · simp only [tab, h2, h3', hR, ite_false]
+    · simp only [tab, h2, hR, ite_false]
+      rw [ite_eq_right (by rintro (he | he) <;> contradiction)]
   · exact h.exc.1
   · exact h.exc.2
 
@@ -624,8 +623,6 @@ structure Raw (D : D7) where
 @[reducible] def Raw.rec' {D : D7} (Λ : Raw D) : D7 := setRaw D Λ.η Λ.hη Λ.P Λ.hZ Λ.hE
 
 variable {D : D7} (Λ : Raw D)
-
-
 
 @[reducible] def ledTr (L : SizeData₂ D) : SizeData₂ Λ.rec' := { L with }
 
@@ -765,8 +762,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField
 
 variable {D : D7} (Λ : CutD D)
 
-
-
 @[reducible] def sideTr {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] (S : RowSide D EE) :
     RowSide (cut D Λ) EE := { S with }
 
@@ -834,8 +829,6 @@ def raw : Gen.Raw D :=
 @[reducible] def ledTr (L : SizeData₂ D) : SizeData₂ (cut D c) := Gen.ledTr (raw c) L
 
 theorem tiesTr (h : Ties D) : Ties (raw c).rec' := Gen.tiesTr (raw c) h h.tw_cover
-
-
 
 def extraTr {L : SizeData₂ D} {gatT : GatTies D} {Gx : G.Inst D L} {Gy : G.LatInst D} {K : G.Consts} {X : DivX D} {cX : ExtraC}
     (ex : Extra D L gatT Gx Gy K X cX) :
@@ -999,7 +992,6 @@ theorem decomp : ∃ (f : X → T) (d : O), d ≠ 0 ∧ (∀ x y, y ≠ x → (f
     rw [hlin, hsum, map_smul, map_one, LinearMap.baseChange_smul, LinearMap.smul_apply]
     simp
 
-
 include hs in
 theorem qK_eq_zero_iff {v : FractionRing O ⊗[O] M} : qK T act S v = 0 ↔ v ∈ ⨆ x ∈ Sᶜ, heckeEig T act x := by
   constructor
@@ -1113,7 +1105,6 @@ private theorem smul_eq_of_mem_iSup_heckeEig_of_forall_eigen (Y : Set X)
     rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, h x hx w hw, sub_self]
   have := hle hu
   rwa [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero] at this
-
 
 include hs in
 theorem length_le [IsPrincipalIdealRing O] [Module.Finite O M] (Z : Finset X) (Y' : Set S) (hY : ∀ x : S, x ∈ Y' ↔ x.1 ∈ Z)
@@ -1340,12 +1331,12 @@ theorem etaJ_le (h : c.Good) (j : ℕ) (w : D.what₂.places.Pl) (h1 : 1 ≤ j) 
     show ∑ i ∈ Finset.subtype c.keep (D.nd.locs j w), (cut D c).nd.etaLoc i = _
     have hF : ∀ i ∈ Finset.subtype c.keep (D.nd.locs j w), (cut D c).nd.etaLoc i = F i.1 := by
       intro i _
-      simp only [F, dif_pos i.2]
+      simp only [F, dite_eq_left i.2]
     rw [Finset.sum_congr rfl hF, Finset.sum_subtype_eq_sum_filter]
     refine Finset.sum_filter_of_ne ?_
     intro i _ hne
     by_contra hk
-    exact hne (dif_neg hk)
+    exact hne (dite_eq_right hk)
   have hD := D.etaJ_tie j w h1 h2
   have hpt : ∀ i ∈ D.nd.locs j w, D.nd.etaLoc i ≤ F i +
       (∑ π ∈ D.nd.Zgood i, (D.nd.mult i π : ℚ)) * (padicValNat (D.what₂.places.resChar w) D.what₂.restRowsFiniteGroupCard : ℚ) := by
@@ -1357,14 +1348,14 @@ theorem etaJ_le (h : c.Good) (j : ℕ) (w : D.what₂.places.Pl) (h1 : 1 ≤ j) 
     rw [hl]
     by_cases hk : c.keep i
     · have hb := eta_le h (⟨i, hk⟩ : (cut D c).nd.Loc)
-      simp only [F, dif_pos hk]
+      simp only [F, dite_eq_left hk]
       push_cast at hb
       exact hb
     · have hz : D.nd.Zgood i = ∅ := by
         rw [← Finset.not_nonempty_iff_eq_empty]
         exact fun hne => hk ((h.keep i).mpr hne)
       rw [eta_zero D.nd i hz]
-      simp only [F, dif_neg hk, zero_add]
+      simp only [F, dite_eq_right hk, zero_add]
       positivity
   have hQ : D.what₂.etaJ j w ≤ (cut D c).what₂.etaJ j w +
       (∑ i ∈ D.nd.locs j w, ∑ π ∈ D.nd.Zgood i, (D.nd.mult i π : ℚ)) *
@@ -1392,8 +1383,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Number
 
 variable {eps : ℝ}
 
-
-
 def gd (Fm : FamP eps) (c : ∀ x (i : Fm.Ix x), CutD (Fm.D x i)) : FamP eps :=
   { Fm with
     D := fun x i => (raw (c x i)).rec'
@@ -1412,7 +1401,6 @@ def gd (Fm : FamP eps) (c : ∀ x (i : Fm.Ix x), CutD (Fm.D x i)) : FamP eps :=
 theorem twGood_gd (Fm : FamP eps) (c : ∀ x (i : Fm.Ix x), CutD (Fm.D x i)) (h : TwGood Fm) : TwGood (gd Fm c) := by
   obtain ⟨x0, h⟩ := h
   exact ⟨x0, fun x hx0 hx i => twAt_tr (c x i) (h x hx0 hx i)⟩
-
 
 open Classical in
 theorem linkN_of_gd (Fm : FamP eps) (c : ∀ x (i : Fm.Ix x), CutD (Fm.D x i))
@@ -1483,8 +1471,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 namespace GlobalTheory.NRows.AtPt
@@ -1551,8 +1537,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
@@ -1588,8 +1572,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SlotMvPin", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PositionMv\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SettingsFormsExistList\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DivisionGeometryScalarsTransferSetDivisionStatement\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GridStaircaseLatticeFirstColumnTransportStages\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowsPassToMovedDivisionLatticesHeightsStatement\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpectralStageDataTransferLatticesHeightsStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LayerUpStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 noncomputable section
@@ -1627,8 +1609,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LinkNFam", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PublishedInputsThirdLayer\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaDataExists\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.GaloisPreconditions\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowGood\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.Prm1\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BoundAtTwoThreeFamilyFon\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.GeometricGaloisRepCompatibility\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroSupport\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.HeckeGaloisCriteria.NchTieTr\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoThreeFamily\npublic import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodPointMultiplicityLeRankProof\npublic import Formalism.SharpRestriction.GlobalTheoremInputs\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinkNAlongFamilyOfLocalBounds\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WitnessesPassAlongSetDivisionStatement\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.HeckeGaloisCriteria.LinkNOfGd\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.At23OfAll\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.AtMemberImp\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExtraBoundOfTwistingEigenFacts\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ImportsFurtherTailStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LocalTypeDeterminedAtAllPrimes\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.OverNEOfNEb\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SlotMvPin\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PositionMv\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 noncomputable section

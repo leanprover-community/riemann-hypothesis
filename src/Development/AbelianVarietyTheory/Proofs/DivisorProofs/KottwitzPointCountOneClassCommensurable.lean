@@ -5,50 +5,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MassMulVolum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VolEqIdxRatio
 public import Mathlib.GroupTheory.Commensurable
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOpenCompact
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralProductGroup
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsCyclotomicExtensionQI
 import Development.AbelianVarietyTheory.Definitions.Divisors.TwOrbMEqTwOrbUOfNormal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralTwistedConjInvariant
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedCentralizerMassMapConj, Development.AbelianVarietyTheory.Proofs.DivisorProofs.VolConjEqOneOfMassCNeZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.KottwitzPointCountOneClassCommensurable
@@ -254,7 +215,7 @@ theorem vol_conj_of_commensurable (T K : Subgroup G)
     vol (T ⊓ K) ((T ⊓ K.map (MulAut.conj x).toMonoidHom).map (MulAut.conj t).toMonoidHom) =
       vol (T ⊓ K) (T ⊓ K.map (MulAut.conj x).toMonoidHom) := by
   have hc := idxRatio_cocycle_of_commensurable T ((hK (t * x)).trans (hK t).symm) (hK t) (hK (t * x))
-  rw [GlobalTheory.LKCount.OrbKProd.map_conj_mul, GlobalTheory.LKCount.OrbKProd.inf_map_conj T _ ht,
+  rw [GlobalTheory.TwOrbConj.map_conj_mul, GlobalTheory.LKCount.OrbKProd.inf_map_conj T _ ht,
     GlobalTheory.LKCount.OrbKProd.inf_map_conj T _ ht, GlobalTheory.FunObj.idxRatio_map (MulAut.conj t).injective,
     show GlobalTheory.FunObj.idxRatio ((T ⊓ K).map (MulAut.conj t).toMonoidHom) (T ⊓ K) = 1 from hvol, mul_one] at hc
   rw [GlobalTheory.LKCount.OrbKProd.vol_eq_idxRatio, GlobalTheory.LKCount.OrbKProd.vol_eq_idxRatio]
@@ -460,7 +421,7 @@ theorem pointSum_eq_pointSide_of_commensurable : ∀ {Γ G₁ G₂ : Type} [Grou
     unfold pointSide
     rw [← hprod]
     rfl
-  · push_neg at hne
+  · push Not at hne
     have hF0 : ∀ x : G₁ × G₂, f₁ (x.1⁻¹ * γ * x.1) * φ (x.2⁻¹ * δ * θ x.2) = 0 := by
       intro x
       obtain ⟨h, hh, k, hk, he⟩ := DoubleCoset.mk_out_eq_mul (ι₁.prod ι₂).range (K₁.prod K₂) x

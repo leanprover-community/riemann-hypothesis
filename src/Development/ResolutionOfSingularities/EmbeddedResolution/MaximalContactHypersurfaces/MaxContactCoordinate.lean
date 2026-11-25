@@ -27,25 +27,11 @@ private theorem presheaf_map_op_eq_map_op {X : Scheme.{u}} {A B : X.Opens} (f g 
     X.presheaf.map f.op = X.presheaf.map g.op := by
   rw [Subsingleton.elim f g]
 
-private theorem topIso_hom_comp_inv {X : Scheme.{u}} (U : X.Opens) :
-    (U.topIso.hom.hom).comp (U.topIso.inv.hom) = RingHom.id _ := by
-  rw [← CommRingCat.hom_comp, Iso.inv_hom_id, CommRingCat.hom_id]
-
-private theorem topIso_inv_comp_hom {X : Scheme.{u}} (U : X.Opens) :
-    (U.topIso.inv.hom).comp (U.topIso.hom.hom) = RingHom.id _ := by
-  rw [← CommRingCat.hom_comp, Iso.hom_inv_id, CommRingCat.hom_id]
-
 private theorem appLE_opensι_top_eq_topIso_inv {X : Scheme.{u}} (U : X.Opens)
     (h : (⊤ : (↑U : Scheme.{u}).Opens) ≤ U.ι ⁻¹ᵁ U) :
     Scheme.Hom.appLE U.ι U ⊤ h = U.topIso.inv := by
   rw [Scheme.Opens.ι_appLE, Scheme.Opens.topIso_inv]
   exact presheaf_map_op_eq_map_op _ _
-
-private theorem topIso_hom_comp_appLE_ι {X : Scheme.{u}} (U : X.Opens)
-    (h : (⊤ : (↑U : Scheme.{u}).Opens) ≤ U.ι ⁻¹ᵁ U) :
-    (U.topIso.hom.hom).comp ((Scheme.Hom.appLE U.ι U ⊤ h).hom) = RingHom.id _ := by
-  rw [appLE_opensι_top_eq_topIso_inv]
-  exact topIso_hom_comp_inv U
 
 private theorem basis_det_D_update_eq_coeff {k : Type*} {S : Type*} [CommRing k] [CommRing S] [Algebra k S]
     {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι S (KaehlerDifferential k S))
@@ -59,9 +45,9 @@ private theorem basis_det_D_update_eq_coeff {k : Type*} {S : Type*} [CommRing k]
     rw [Module.Basis.toMatrix_apply, Matrix.updateCol_apply]
     by_cases hj : j = i0
     · subst hj
-      rw [if_pos rfl, Function.update_self, hz]
+      rw [ite_eq_left rfl, Function.update_self, hz]
       simp [Finsupp.single_apply]
-    · rw [if_neg hj, Function.update_of_ne hj, ← hb, Matrix.one_apply]
+    · rw [ite_eq_right hj, Function.update_of_ne hj, ← hb, Matrix.one_apply]
       simp [Module.Basis.repr_self, Finsupp.single_apply, eq_comm]
   rw [Module.Basis.det_apply, hmat, ← Matrix.cramer_apply]
   simp [Matrix.cramer_one]
@@ -156,7 +142,8 @@ theorem coordIdeal_singleton_le_restrictIdeal_iff {U : X.Opens} (hU : IsAffineOp
       Scheme.IdealSheafData.ofIdealTop_ideal_top] at h2
     have ht := h2 (Ideal.mem_span_singleton_self t)
     have hmem2 := Ideal.mem_map_of_mem (U.topIso.hom.hom) ht
-    rw [Ideal.map_map, topIso_hom_comp_appLE_ι U (by simp), Ideal.map_id] at hmem2
+    rw [Ideal.map_map, appLE_opensι_top_eq_topIso_inv U (by simp), ← CommRingCat.hom_comp,
+      Iso.inv_hom_id, CommRingCat.hom_id, Ideal.map_id] at hmem2
     rw [hcoord]
     exact hmem2
   · intro h V
@@ -171,7 +158,7 @@ theorem coordIdeal_singleton_le_restrictIdeal_iff {U : X.Opens} (hU : IsAffineOp
     refine Ideal.mem_map_of_mem _ ?_
     have e2 : U.topIso.inv.hom (c.coord j) = t := by
       rw [hcoord]
-      exact DFunLike.congr_fun (topIso_inv_comp_hom U) t
+      exact CommRingCat.inv_hom_apply U.topIso t
     rw [← e2]
     exact Ideal.mem_map_of_mem _ h
 

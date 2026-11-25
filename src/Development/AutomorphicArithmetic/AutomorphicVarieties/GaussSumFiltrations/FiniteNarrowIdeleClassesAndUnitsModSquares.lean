@@ -41,7 +41,7 @@ def finIdele : (Af F)ˣ →* Ideles F :=
   Units.map
     { toFun := fun x => (((1 : InfiniteAdeleRing F), x) : AdeleRing (𝓞 F) F)
       map_one' := rfl
-      map_mul' := fun x y => Prod.ext (mul_one 1).symm rfl }
+      map_mul' := fun _ _ => Prod.ext (mul_one 1).symm rfl }
 
 def finClass : (Af F)ˣ →* ClassGroup (𝓞 F) := (ReciprocityTheory.Neutral.Bridge.HCFR.classOf F).comp finIdele
 

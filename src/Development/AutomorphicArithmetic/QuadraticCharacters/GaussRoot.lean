@@ -65,9 +65,4 @@ theorem ne_zero {K : Type} [Field K] [CharZero K] {d : ℕ} (hd : d.Prime) {b : 
 
 end SlopeTestRemainingChoices.GaussRoot
 
-namespace AbField
-variable (E : AbField)
-
-end AbField
-
 end HostParam

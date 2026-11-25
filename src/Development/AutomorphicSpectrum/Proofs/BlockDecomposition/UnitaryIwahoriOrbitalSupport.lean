@@ -98,7 +98,7 @@ theorem fU_diag : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E 
     rw [this]
     exact diagT_mem_iwGL w n τ hτ
   unfold fU
-  refine if_pos ⟨x, hx, κ * z, mul_mem hκ hz, ?_⟩
+  refine ite_eq_left ⟨x, hx, κ * z, mul_mem hκ hz, ?_⟩
   change x.1 * γ.1 * z.1 = x.1 * (b * tdiag ϖ (wexp n l) * b⁻¹) * ((b * GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) τ * b⁻¹) * z.1)
   rw [hγ, hfac]
   group

@@ -299,11 +299,6 @@ private theorem isBlowupAlongIdealSheaf_coprodDesc_of_restrict (i : ℕ)
       ↥(((S.comapAmbientCenter i).comap (S.discardedLocusClosureCompl i).ι).subscheme) :=
     noetherianSpace_of_isClosedImmersion
       ((S.comapAmbientCenter i).comap (S.discardedLocusClosureCompl i).ι).subschemeι hNU
-  have hq1 : AlgebraicGeometry.QuasiCompact
-      ((S.comapAmbientCenter i).comap (S.discardedLocusClosureCompl i).ι).subschemeι := inferInstance
-  have hq2 : AlgebraicGeometry.QuasiCompact
-      (((S.comapAmbientCenter i).comap (S.discardedLocusClosureCompl i).ι).subschemeι ≫
-        (S.discardedLocusClosureCompl i).ι) := inferInstance
   have hJU : (S.centerOffDetached i).comap (S.discardedLocusClosureCompl i).ι
       = (S.comapAmbientCenter i).comap (S.discardedLocusClosureCompl i).ι := by
     rw [S.centerOffDetached_eq i]
@@ -386,7 +381,6 @@ theorem isReduced_strictTransform [AlgebraicGeometry.IsReduced Y]
   | zero =>
     intro _
     have := S.emb_closedImmersion
-    have hq : AlgebraicGeometry.QuasiCompact (S.emb ≫ S.ambientBlowups.isoZero.inv) := inferInstance
     exact isReduced_subscheme_ker (S.emb ≫ S.ambientBlowups.isoZero.inv)
   | succ n ih =>
     intro hj
@@ -404,7 +398,6 @@ theorem isReduced_strictTransform [AlgebraicGeometry.IsReduced Y]
 theorem isBlowupAlongIdealSheaf_transitionMap_of_coprodDesc (i : ℕ)
     (h : Blowup.IsBlowupAlongIdealSheaf (coprod.desc (S.strictTransformMap i) (S.discardedι i)) (S.centerOffDetached i)) :
     Blowup.IsBlowupAlongIdealSheaf (S.transitionMap i) (S.centerOnTotalSpace i) := by
-  have hq1 : AlgebraicGeometry.QuasiCompact (S.centerOffDetached i).subschemeι := inferInstance
   have hq2 : AlgebraicGeometry.QuasiCompact ((S.centerOffDetached i).subschemeι ≫
       (coprod.inl : S.strictTransform i ⟶ S.totalSpace i)) := by
     have : AlgebraicGeometry.QuasiCompact
@@ -481,8 +474,6 @@ private theorem isBlowupAlongIdealSheaf_lift_discardedLocusClosureCompl (hres : 
       exact Set.mem_range_self t
     rw [hUcoe] at h2
     exact h2 h1
-  have hqι : AlgebraicGeometry.QuasiCompact (S.strictTransformι i) := inferInstance
-  have hqj : AlgebraicGeometry.QuasiCompact ((S.discardedLocusClosureCompl i).ι ≫ S.strictTransformι i) := inferInstance
   have hOU : ((S.strictTransformι i ⁻¹ᵁ (S.ambientCenter i).support.compl :
         (S.strictTransform i).Opens) : Set ↥(S.strictTransform i))
       ⊆ ((S.discardedLocusClosureCompl i : (S.strictTransform i).Opens) : Set ↥(S.strictTransform i)) := by
@@ -506,7 +497,6 @@ private theorem isBlowupAlongIdealSheaf_lift_discardedLocusClosureCompl (hres : 
       (S.ambientBlowups.isBlowupAlongIdealSheaf_blowupMorphism i hi) hIcomp
   rw [hST] at hstat
   obtain ⟨ψ, hψfac, hψbl⟩ := hstat
-  have : Mono ((S.discardedLocusClosureCompl i).ι ≫ S.strictTransformι i) := inferInstance
   have hψ : ψ = IsOpenImmersion.lift (S.discardedLocusClosureCompl i).ι (S.strictTransformMap i) hf := by
     refine (cancel_mono ((S.discardedLocusClosureCompl i).ι ≫ S.strictTransformι i)).mp ?_
     rw [hψfac, ← Category.assoc, IsOpenImmersion.lift_fac]

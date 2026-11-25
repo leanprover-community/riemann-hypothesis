@@ -954,7 +954,7 @@ theorem UpperTheory.ConvolutionTheory.R2.dih :
   obtain ⟨h1, h2⟩ := hq v hw
   refine ⟨h1, B, hB, ?_⟩
   rcases hp v hw with hs | hi
-  · rw [h2, if_pos hs.1]; simp
+  · rw [h2, ite_eq_left hs.1]; simp
   · have hn : normV w ≠ normV v := fun e => by
       have h3 := hi.norm
       have h4 : 1 < normV v := by
@@ -967,7 +967,7 @@ theorem UpperTheory.ConvolutionTheory.R2.dih :
     have h6 : β = -α := Units.ext (by
       have := (mul_eq_zero.1 h5).resolve_right hT
       simpa using eq_neg_of_add_eq_zero_right this)
-    rw [h2, if_neg hn, h6]
+    rw [h2, ite_eq_right hn, h6]
     simp
     exact Multiset.pair_comm _ _
 end -- clump:auto

@@ -52,11 +52,6 @@ def Iop {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [MeasurableSpace (
 
 end Defs
 
-section ClB
-variable {L : Type} [NormedAddCommGroup L] [NormedSpace ℂ L]
-
-end ClB
-
 section Lem
 variable {L : Type} [NormedAddCommGroup L] [NormedSpace ℂ L]
 
@@ -84,23 +79,6 @@ theorem cl_kK (hL : LgFacts) {k : Mat n → L} (hk : ContDiffOn ℝ ∞ k (GLs n
   linarith
 
 end Lem
-
-section Lem2
-variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
-  [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) [μ.IsHaarMeasure]
-
-end Lem2
-
-section Lem3
-variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
-  [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) [μ.IsHaarMeasure]
-
-end Lem3
-
-section Basic
-variable {L : Type} [NormedAddCommGroup L] [NormedSpace ℂ L]
-
-end Basic
 
 section Pairs
 

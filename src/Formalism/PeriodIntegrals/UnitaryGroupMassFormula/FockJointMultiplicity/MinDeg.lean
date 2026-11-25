@@ -40,14 +40,14 @@ theorem hc_shift (L : Module.End ℂ (MvPolynomial σ ℂ)) (k : ℕ)
   simp only [hterm]
   split_ifs with hkj
   · rw [Finset.sum_eq_single (j - k)]
-    · rw [if_pos (by omega)]
+    · rw [ite_eq_left (by omega)]
     · intro d _ hd
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     · intro hm
-      rw [if_pos (by omega)]
+      rw [ite_eq_left (by omega)]
       rw [Finset.mem_range] at hm
       rw [homogeneousComponent_eq_zero _ _ (by omega), map_zero]
-  · exact Finset.sum_eq_zero fun d _ => if_neg (by omega)
+  · exact Finset.sum_eq_zero fun d _ => ite_eq_right (by omega)
 
 theorem hc_X (l : σ) (j : ℕ) (Q : MvPolynomial σ ℂ) :
     homogeneousComponent j (X l * Q) = if 1 ≤ j then X l * homogeneousComponent (j - 1) Q else 0 := by
@@ -79,7 +79,7 @@ theorem low_hc (L : Module.End ℂ (MvPolynomial σ ℂ))
     · simp
   ext m
   have h3 := congrArg (AddMonoidAlgebra.coeff · m) (hz (m.degree))
-  rw [coeff_homogeneousComponent, if_pos rfl] at h3
+  rw [coeff_homogeneousComponent, ite_eq_left rfl] at h3
   simpa using h3
 
 theorem low_sum {ι : Type*} (t : Finset ι) (L : ι → Module.End ℂ (MvPolynomial σ ℂ))
@@ -129,16 +129,16 @@ theorem hc_raiLow (l l' : Ln p q r s) (h : linePos l = linePos l') (e : ℕ) (Q 
   cases hl : linePos l with
   | true =>
     have hl' : linePos l' = true := by rw [← h, hl]
-    simp only [raiB, lowB, hl, hl', if_true, LinearMap.mulLeft_apply, Derivation.coeFn_coe]
+    simp only [raiB, lowB, hl, hl', ite_true, LinearMap.mulLeft_apply, Derivation.coeFn_coe]
     rw [hc_X]
     cases e with
     | zero => simp
     | succ k => simp [PI.WFJM.hc_pderiv]
   | false =>
     have hl' : linePos l' = false := by rw [← h, hl]
-    simp only [raiB, lowB, hl, hl', Bool.false_eq_true, if_false, LinearMap.mulLeft_apply,
+    simp only [raiB, lowB, hl, hl', Bool.false_eq_true, ite_false, LinearMap.mulLeft_apply,
       Derivation.coeFn_coe, LinearMap.neg_apply]
-    rw [map_neg, PI.WFJM.hc_pderiv, hc_X, if_pos (by omega)]
+    rw [map_neg, PI.WFJM.hc_pderiv, hc_X, ite_eq_left (by omega)]
     simp
 
 theorem sameBlock_linePos_first {a b : Ix p q} (hab : sameBlock a b) (c : Ix r s) :

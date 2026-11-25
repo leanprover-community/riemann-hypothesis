@@ -8,8 +8,8 @@ import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DcAeval
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk13.dc_aeval_intertwine.{u_1, u_2} :
-    ∀ {Y : Type u_1} {Z : Type u_2} [inst : AddCommGroup Y] [inst_1 : _root_.Module ℂ Y] [inst_2 : AddCommGroup Z]
-    [inst_3 : _root_.Module ℂ Z] (ψ : Y →ₗ[ℂ] Z) (A : Module.End ℂ Y) (B : Module.End ℂ Z),
+    ∀ {Y : Type u_1} {Z : Type u_2} [AddCommGroup Y] [_root_.Module ℂ Y] [AddCommGroup Z]
+    [_root_.Module ℂ Z] (ψ : Y →ₗ[ℂ] Z) (A : Module.End ℂ Y) (B : Module.End ℂ Z),
     (∀ (y : Y), (ψ : Y → Z) ((A : Y → Y) y) = (B : Z → Z) ((ψ : Y → Z) y)) →
       ∀ (p : Polynomial ℂ) (y : Y),
         (ψ : Y → Z) (((Polynomial.aeval A : Polynomial ℂ → Module.End ℂ Y) p : Y → Y) y) =

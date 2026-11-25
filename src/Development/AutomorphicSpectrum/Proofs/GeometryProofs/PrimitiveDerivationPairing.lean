@@ -39,7 +39,7 @@ theorem exists_algHom_ne_zero_of_not_isNilpotent
     ∃ x : A →ₐ[k] k, x f ≠ 0 := by
   haveI : IsArtinianRing A := isArtinian_of_tower k inferInstance
   rw [← mem_nilradical, nilradical_eq_sInf, Ideal.mem_sInf] at hf
-  push_neg at hf
+  push Not at hf
   obtain ⟨P, hP, hfP⟩ := hf
   haveI : P.IsPrime := hP
   haveI : P.IsMaximal := IsArtinianRing.isMaximal_of_isPrime P
@@ -254,7 +254,7 @@ theorem mem_eigenspace_of_mem_ker (D : Derivation k R R) {z : R} (hz : D z = z)
 
 theorem powerSum_injective (p : ℕ) [CharP k p] (D : Derivation k R R) {z w : R}
     (hz : D z = z) (hw : z * w = 1) : Function.Injective (powerSum D z p) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have hinj : Function.Injective (fun i : Fin p => ((i : ℕ) : k)) := fun i j hij =>
     Fin.ext (CharP.natCast_injOn_Iio k p i.2 j.2 hij)
@@ -467,7 +467,7 @@ theorem exists_coeff (p : ℕ) [Fact p.Prime] [CharP k p] (D : Derivation k R R)
       have : ∑ i ∈ Finset.range j, (if i = j then e else c i) * z ^ i
           = ∑ i ∈ Finset.range j, c i * z ^ i := by
         refine Finset.sum_congr rfl fun i hi => ?_
-        rw [if_neg (Finset.mem_range.1 hi).ne]
+        rw [ite_eq_right (Finset.mem_range.1 hi).ne]
       rw [this, ← hac]
       simp
 
@@ -896,7 +896,7 @@ theorem key (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [hp : Fact p.Prime] [
         intro hz
         have := _root_.GlobalTheory.CompanionTheory.HopfPrim.powers_indep_of_primitive k p A f hf h0 (fun i => if i = 0 then 0 else 1) (by
           rw [Finset.range_eq_Ico, Finset.sum_eq_sum_Ico_succ_bot (by omega)]
-          simp only [if_true, zero_smul, zero_add]
+          simp only [ite_true, zero_smul, zero_add]
           rw [← hz]
           refine Finset.sum_congr rfl fun i hi => ?_
           have : i ≠ 0 := by have := (Finset.mem_Ico.1 hi).1; omega

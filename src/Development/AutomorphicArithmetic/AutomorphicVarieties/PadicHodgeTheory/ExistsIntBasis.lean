@@ -231,15 +231,6 @@ private theorem map_mem_FilT {V V' : Type} [AddCommGroup V] [Module ℚ_[l] V] [
   | tmul v b => exact ⟨f v ⊗ₜ ⟨s b.1, hs _ b.2⟩, rfl⟩
   | add x y hx hy => simp only [map_add]; exact Submodule.add_mem _ hx hy
 
-private theorem act_mem_fil (g : GQ l) (a : ℤ) (b : Bdr l) (hb : b ∈ ((PP l).PD (botExt l)).Fil a) :
-    (PP l).actQdR g b ∈ ((PP l).PD (botExt l)).Fil a := by
-  have hg : g ∈ GK (botExt l) := by
-    change g ∈ (⊥ : IntermediateField ℚ_[l] (Om l)).fixingSubgroup
-    rw [IntermediateField.fixingSubgroup_bot]
-    trivial
-  have := ((PP l).PD (botExt l)).Fil_G ⟨g, hg⟩ a b hb
-  rwa [(PP l).PD_actdR] at this
-
 variable {V : Type} [AddCommGroup V] [Module ℚ_[l] V] (ρ : Representation ℚ_[l] G V)
 
 private noncomputable def extRep (c : G → V) (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) :
@@ -309,7 +300,11 @@ private theorem ext_fil [TopologicalSpace G] [IsTopologicalGroup G] (hφ : IsOpe
       have h3 := fst_act φ ρ c hc g z
       rw [hinv z hz] at h3
       rw [sub_eq_neg_add, ← neg_mem_iff, neg_add, neg_neg, ← sub_eq_add_neg, sub_eq_of_eq_add' h3]
-      exact map_mem_FilT _ _ 0 (act_mem_fil _ 0) _ hb
+      exact map_mem_FilT _ _ 0 (fun b hb => by
+        have := ((PP l).PD (botExt l)).Fil_G ⟨φ g, by
+          change φ g ∈ (⊥ : IntermediateField ℚ_[l] (Om l)).fixingSubgroup
+          rw [IntermediateField.fixingSubgroup_bot]; trivial⟩ 0 b hb
+        rwa [(PP l).PD_actdR] at this) _ hb
     rw [decomp z]
     exact Submodule.add_mem _ (map_mem_FilT _ _ 0 (fun _ h => h) _ hy) (map_mem_FilT _ _ 0 (fun _ h => h) _ hb)
   · refine (Submodule.eq_bot_iff _).2 fun z hz => ?_

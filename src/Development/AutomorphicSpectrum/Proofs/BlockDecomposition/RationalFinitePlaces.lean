@@ -1072,7 +1072,7 @@ theorem selberg {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   let rep : G → G := fun f => if h : ∃ γ ∈ Γ, γ⁻¹ * n₀ * γ = f then h.choose else 1
   have hrep : ∀ f, (∃ γ ∈ Γ, γ⁻¹ * n₀ * γ = f) → rep f ∈ Γ ∧ (rep f)⁻¹ * n₀ * rep f = f := by
     intro f h
-    simp only [rep, dif_pos h]
+    simp only [rep, dite_eq_left h]
     exact h.choose_spec
   refine ⟨⋃ f ∈ (Γ : Set G) ∩ _, (fun c => rep f * c) '' C, hF.isCompact_biUnion fun f _ =>
     hC.image (by fun_prop), ?_⟩
@@ -1217,7 +1217,6 @@ theorem ratFin : PositivityTheory.Rg.BcB.G8.Fin.RatFin := by
     have e' : p.1 ^ k = 1 ∧ p.2 ^ k = 1 := Prod.ext_iff.1 e
     exact ⟨⟨hp'.1, isOfFinOrder_iff_pow_eq_one.2 ⟨k, hk, e'.1⟩⟩, hp'.2, isOfFinOrder_iff_pow_eq_one.2 ⟨k, hk, e'.2⟩⟩
   haveI : T2Space (Gf E a b) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   have hmain := _root_.GlobalTheory.CompanionTheory.CountClosedComm.main (Gf E a b) ((Kf E a).prod (Kf E b)) T (gam δ₁ δ₂)
     (C₁ ×ˢ C₂) hKo hKcp hcl hcomm hle (hC₁.prod hC₂) hcov hfin htor

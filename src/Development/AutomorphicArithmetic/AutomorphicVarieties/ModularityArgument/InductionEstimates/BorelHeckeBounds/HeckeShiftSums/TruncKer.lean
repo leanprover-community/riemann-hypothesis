@@ -1565,7 +1565,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.kT :
         {q : Cos K | T ≤ HH ((q.out : G1 K (2 + 2)) * x)} := fun w hw x q hq => by
     by_contra hlt
     exact hq (by beta_reduce; rw [hw _ (not_le.1 hlt), zero_smul])
-  have hind : ∀ h, h < T → ind h = 0 := fun h hh => if_neg (not_lt.2 hh.le)
+  have hind : ∀ h, h < T → ind h = 0 := fun h hh => ite_eq_right (not_lt.2 hh.le)
   have hrz : ∀ n : ℕ, ∀ h, h < T → ((ramp T n h : ℝ) : ℂ) = 0 := fun n h hh => by
     rw [ramp_zero n hh.le]
     simp
@@ -1583,7 +1583,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.kT :
     · simp [ind, h]
     · simp [ind, h]
   · have : ∀ q : Cos K, ind (HH ((q.out : G1 K (2 + 2)) * x)) • kc ((q.out : G1 K (2 + 2)) * x) = 0 := fun q => by
-      have : ind (HH ((q.out : G1 K (2 + 2)) * x)) = 0 := if_neg (not_lt.2 (hx q))
+      have : ind (HH ((q.out : G1 K (2 + 2)) * x)) = 0 := ite_eq_right (not_lt.2 (hx q))
       rw [this, zero_smul]
     simp only [A, this, finsum_zero, sub_zero]
   ·
@@ -1645,10 +1645,8 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.truncKer :
     (isOpenQuotientMap_mk (Gam K (2 + 2))).isQuotientMap.secondCountableTopology
       (isOpenQuotientMap_mk (Gam K (2 + 2))).isOpenMap
   haveI : MeasurableSpace.CountablyGenerated (RightCosetSpace (Gam K (2 + 2))) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact BorelSpace.countablyGenerated
   haveI : IsSeparable (quotientMeasure (Gam K (2 + 2)) μ) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact isSeparable_of_sigmaFinite _
   haveI : SecondCountableTopology (Lp ℂ 2 (quotientMeasure (Gam K (2 + 2)) μ)) := Lp.SecondCountableTopology
   haveI : TopologicalSpace.SeparableSpace (Lp ℂ 2 (quotientMeasure (Gam K (2 + 2)) μ)) :=

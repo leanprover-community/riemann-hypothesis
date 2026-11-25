@@ -143,11 +143,11 @@ theorem coeff_X_mul_part (F : MvPowerSeries (Fin d) R) (j : Fin d) (β : Fin d �
   classical
   rw [X_def, coeff_monomial_mul, one_mul, coeff_part]
   by_cases h : β j = 0
-  · rw [if_neg, if_neg]
+  · rw [ite_eq_right, ite_eq_right]
     · simp [h]
     · rw [Finsupp.single_le_iff]; omega
   · have hle : Finsupp.single j 1 ≤ β := by rw [Finsupp.single_le_iff]; omega
-    rw [if_pos hle, tsub_add_cancel_of_le hle]
+    rw [ite_eq_left hle, tsub_add_cancel_of_le hle]
     have : (∀ k < j, (β - Finsupp.single j 1 : Fin d →₀ ℕ) k = 0) ↔ (β j ≠ 0 ∧ ∀ k < j, β k = 0) := by
       constructor
       · intro H
@@ -168,15 +168,15 @@ theorem eq_const_add_sum (F : MvPowerSeries (Fin d) R) :
   by_cases hβ : β = 0
   · subst hβ
     simp
-  · rw [if_neg hβ, zero_add]
+  · rw [ite_eq_right hβ, zero_add]
     have hne : β.support.Nonempty := Finsupp.support_nonempty_iff.2 hβ
     have h0 : β (β.support.min' hne) ≠ 0 := Finsupp.mem_support_iff.1 (β.support.min'_mem hne)
     have h1 : ∀ k < β.support.min' hne, β k = 0 := fun k hk => by
       by_contra hk0
       exact absurd (β.support.min'_le k (Finsupp.mem_support_iff.2 hk0)) (not_le.2 hk)
-    rw [Finset.sum_eq_single (β.support.min' hne), if_pos ⟨h0, h1⟩]
+    rw [Finset.sum_eq_single (β.support.min' hne), ite_eq_left ⟨h0, h1⟩]
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h2, h3⟩
       rcases lt_or_gt_of_ne hj with h | h
       · exact h2 (h1 j h)

@@ -27,7 +27,7 @@ private noncomputable def cb_scale (F : Type) [Field F] [NumberField F] (u : (Ad
   invFun x p := ((u⁻¹ : (Ad F)ˣ) : Ad F) * x p
   left_inv x := funext fun p => Units.inv_mul_cancel_left u (x p)
   right_inv x := funext fun p => Units.mul_inv_cancel_left u (x p)
-  map_add' x y := funext fun p => mul_add _ _ _
+  map_add' _ _ := funext fun _ => mul_add _ _ _
   continuous_toFun := continuous_pi fun p => continuous_const.mul (continuous_apply p)
   continuous_invFun := continuous_pi fun p => continuous_const.mul (continuous_apply p)
 

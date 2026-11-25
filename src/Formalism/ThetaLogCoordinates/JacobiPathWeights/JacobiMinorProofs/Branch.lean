@@ -38,8 +38,8 @@ theorem nthElt_lt_iff {n : ℕ} (A : Finset (Fin n)) (a x : ℕ) (hx : x ≤ n) 
       unfold cnt
       rw [Finset.filter_insert]
       by_cases h : m.val < x
-      · rw [if_pos h, if_pos h, Finset.card_insert_of_notMem (fun h' => hms (Finset.mem_filter.1 h').1)]
-      · rw [if_neg h, if_neg h, Nat.add_zero]
+      · rw [ite_eq_left h, ite_eq_left h, Finset.card_insert_of_notMem (fun h' => hms (Finset.mem_filter.1 h').1)]
+      · rw [ite_eq_right h, ite_eq_right h, Nat.add_zero]
     have hzero : ¬ m.val < x → cnt s x = 0 := by
       intro h
       unfold cnt
@@ -54,15 +54,15 @@ theorem nthElt_lt_iff {n : ℕ} (A : Finset (Fin n)) (a x : ℕ) (hx : x ≤ n) 
     rcases a with _ | k
     · rw [List.map_cons, List.getD_cons_zero]
       by_cases h : m.val < x
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         constructor <;> intro <;> omega
-      · rw [if_neg h, hzero h]
+      · rw [ite_eq_right h, hzero h]
         constructor <;> intro <;> omega
     · rw [List.map_cons, List.getD_cons_succ, ih k]
       by_cases h : m.val < x
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         constructor <;> intro <;> omega
-      · rw [if_neg h, hzero h]
+      · rw [ite_eq_right h, hzero h]
         constructor <;> intro <;> omega
 
 def Dom {n : ℕ} (A B : Finset (Fin n)) : Prop := ∀ x, cnt B x ≤ cnt A x
@@ -284,7 +284,7 @@ theorem exists_shape {n : ℕ} {μ : Fin (n + 1) → ℤ} (hμ : Antitone μ) (h
     · intro hic
       by_cases hc : μ i.succ ≤ c
       · exact Finset.le_max' _ c (Finset.mem_filter.2 ⟨Finset.mem_Icc.2 ⟨hc, hhi i c hic⟩, hic⟩)
-      · push_neg at hc
+      · push Not at hc
         exact le_trans hc.le (Finset.mem_Icc.1 (Finset.mem_filter.1 (hκmem i)).1).1
   refine ⟨κ, ?_, ?_⟩
   · rw [mem_gtBox]

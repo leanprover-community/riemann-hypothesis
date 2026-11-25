@@ -285,15 +285,6 @@ theorem isEnum_cast' {S : SPar} {n k : ℕ} (h : k = n) {lam : Fin n → ℝ} {�
   subst h
   simpa using hE
 
-theorem UH_mul' {n : ℕ} {H a b : Matrix (Fin n) (Fin n) ℂ} (ha : a ∈ Formalism.QuantumDeterminants.UH H) (hb : b ∈ Formalism.QuantumDeterminants.UH H) :
-    a * b ∈ Formalism.QuantumDeterminants.UH H := by
-  have ha' : aᴴ * H * a = H := ha
-  have hb' : bᴴ * H * b = H := hb
-  show (a * b)ᴴ * H * (a * b) = H
-  rw [Matrix.conjTranspose_mul]
-  calc bᴴ * aᴴ * H * (a * b) = bᴴ * (aᴴ * H * a) * b := by simp only [Matrix.mul_assoc]
-    _ = H := by rw [ha', hb']
-
 theorem conj_mul' {n : ℕ} {B : Matrix (Fin n) (Fin n) ℂ} (hB : IsUnit B) (x y : Matrix (Fin n) (Fin n) ℂ) :
     B * (x * y) * B⁻¹ = B * x * B⁻¹ * (B * y * B⁻¹) := by
   have hBi : B⁻¹ * B = 1 := Matrix.nonsing_inv_mul B ((Matrix.isUnit_iff_isUnit_det B).1 hB)
@@ -869,10 +860,10 @@ theorem norm_prod_sub {ι : Type} [Fintype ι] [DecidableEq ι] (a b : ι → �
     simpa using hσ
   have hb : ∏ σ, b σ = b τ * ∏ σ ∈ ({τ}ᶜ : Finset ι), b σ := Fintype.prod_eq_mul_prod_compl τ _
   have hr : (∏ σ, if σ = τ then ‖a σ - b σ‖ else ‖b σ‖) = ‖a τ - b τ‖ * ∏ σ ∈ ({τ}ᶜ : Finset ι), ‖b σ‖ := by
-    rw [Fintype.prod_eq_mul_prod_compl τ, if_pos rfl]
+    rw [Fintype.prod_eq_mul_prod_compl τ, ite_eq_left rfl]
     congr 1
     refine Finset.prod_congr rfl fun σ hσ => ?_
-    rw [if_neg (by simpa using hσ)]
+    rw [ite_eq_right (by simpa using hσ)]
   rw [ha, hb, hr, ← sub_mul, norm_mul, norm_prod]
 
 theorem pack_of_loc : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ {Y V : HSp D} (d : HermitianOrthogonalExtensionData Y V 1 1) {S S' : D.what₂.Tau → SPar}
@@ -987,7 +978,7 @@ theorem pack_of_loc : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ {Y V : H
           simp only [↓reduceIte, hcomp]
         · simp only [hσ, ↓reduceIte]
       · intro σ hσ
-        rw [hcomp, if_neg hσ, one_mul]
+        rw [hcomp, ite_eq_right hσ, one_mul]
     have hb : ∀ σ, (∫ u, (fun σ Z => if σ = τ then
             ‖mco M σ (g₀ σ) (v₀ σ) (embAt θ d σ (GlobalTheory.SepPer.cmp θ τ (oneP θ Y τ X s) * Z)) -
               mco M σ (g₀ σ) (v₀ σ) (embAt θ d σ Z)‖
@@ -1027,7 +1018,7 @@ theorem pack_of_loc : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ {Y V : H
     calc _ ≤ κ * ∏ σ, (Real.exp q * ‖c σ‖ * (if σ = τ then |s| * hsn (A τ * X * (A τ)⁻¹) else 1)) :=
           mul_le_mul_of_nonneg_left hle hκ.le
       _ = _ := by
-        rw [Finset.prod_mul_distrib, Finset.prod_ite_eq', if_pos (Finset.mem_univ τ), Finset.prod_mul_distrib,
+        rw [Finset.prod_mul_distrib, Finset.prod_ite_eq', ite_eq_left (Finset.mem_univ τ), Finset.prod_mul_distrib,
           Finset.prod_const, Finset.card_univ, ← Real.exp_nat_mul, norm_mul, Complex.norm_real, norm_prod,
           Real.norm_eq_abs, abs_of_pos hκ]
         show _ = Real.exp (Fintype.card D.what₂.Tau * q) * (κ * ∏ σ, ‖c σ‖) * |s| * hsn (A τ * X * (A τ)⁻¹)
@@ -1453,7 +1444,7 @@ theorem locOK_of_eigen : RealInputE → ∃ C : ℝ, 0 ≤ C ∧ Ev fun {D} _ _ 
       GlobalTheory.PackLoc.mco MP τ (B⁻¹ * g₀' * MP.fr τ) v₀ (g * GlobalTheory.PackLoc.embAt W.θ G.sp.dec0 τ (GlobalTheory.PackLoc.ptY M₀ τ u)) =
       ⟪v, MP.σ τ (B * g * B⁻¹ * GlobalTheory.PackLoc.embOpt e' (GlobalTheory.ConjDS.rv (Formalism.MainNotions.S.umat u))) v⟫_ℂ := by
     intro g hg u
-    rw [hmco _ (UH_mul' hg (hBmem _ (hpt u).1)), conj_mul' hBu, hBemb _ (hpt u).1, (hpt u).2.1, ← hv]
+    rw [hmco _ (GlobalTheory.PointAtPlaceHom.mul_mem_UH hg (hBmem _ (hpt u).1)), conj_mul' hBu, hBemb _ (hpt u).1, (hpt u).2.1, ← hv]
   have hm1 : ∀ X ∈ lieAt (Yc D 0) τ, ∀ (s : ℝ) u,
       GlobalTheory.PackLoc.mco MP τ (B⁻¹ * g₀' * MP.fr τ) v₀
         (GlobalTheory.PackLoc.embAt W.θ G.sp.dec0 τ (cmp W.θ τ (oneP W.θ (Yc D 0) τ X s) * GlobalTheory.PackLoc.ptY M₀ τ u)) =
@@ -1461,7 +1452,7 @@ theorem locOK_of_eigen : RealInputE → ∃ C : ℝ, 0 ≤ C ∧ Ev fun {D} _ _ 
         (NormedSpace.exp (s • ((GlobalTheory.ConjDS.conjModel M₀).fr τ * X * ((GlobalTheory.ConjDS.conjModel M₀).fr τ)⁻¹)) *
           GlobalTheory.ConjDS.rv (Formalism.MainNotions.S.umat u))) v⟫_ℂ := by
     intro X hX s u
-    have hmem := UH_mul' ((hlieX X hX).2 s).1 (hpt u).1
+    have hmem := GlobalTheory.PointAtPlaceHom.mul_mem_UH ((hlieX X hX).2 s).1 (hpt u).1
     rw [hmco _ (hBmem _ hmem), hBemb _ hmem, conj_mul' hAu, ((hlieX X hX).2 s).2, (hpt u).2.1, ← hv]
   have hK : lam * (c₁ * GlobalTheory.SepReal.big C D.R.r (large₂.sc.b ^ 2)) ≤
       Real.exp (6 * C * ((D.R.r : ℝ) + 1) ^ 4 * Real.log large₂.sc.b) * ‖((lam * c₁ : ℝ) : ℂ)‖ := by

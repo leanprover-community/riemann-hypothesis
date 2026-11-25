@@ -268,13 +268,13 @@ theorem polynomial_rep_residue_eval (Tf : Forms0 D u) (hS : Formalism.MainNotion
   · rw [Finset.sum_eq_single c]
     · simp only; rfl
     · intro c' _ hc
-      simp only [hc, if_false, map_zero, norm_form_zero, Complex.zero_re, mul_zero]
+      simp only [hc, ite_false, map_zero, norm_form_zero, Complex.zero_re, mul_zero]
     · intro h; exact absurd (Finset.mem_univ c) h
   · intro c' z
     rw [t2iRes_spec]
     by_cases h : c' = c
     · subst h; simp only; exact hP z
-    · simp only [h, if_false, map_zero, Pi.zero_apply]
+    · simp only [h, ite_false, map_zero, Pi.zero_apply]
 
 def t2iDil (v : (D.mem u).A.vT) (a : ((D.mem u).A.Fv v)ˣ) : (D.mem u).C.cls 0 ≃ (D.mem u).C.cls 0 where
   toFun := (D.fm u).dil 0 v a

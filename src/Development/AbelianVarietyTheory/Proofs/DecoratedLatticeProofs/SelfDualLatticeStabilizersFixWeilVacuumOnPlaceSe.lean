@@ -118,8 +118,6 @@ namespace GlobalTheory.PlaceProducts
 
 open Classical
 
-set_option synthInstance.maxHeartbeats 400000
-
 variable {D : D7}
 
 alias mt_mul := _root_.GlobalTheory.BesselCompare.mt_mul
@@ -163,11 +161,9 @@ theorem pe_idem (v : Pl D) : pe D v * pe D v = pe D v :=
 def peT (D : D7) (T : Finset (Pl D)) : AE D := ∑ v ∈ T, pe D v
 
 theorem inf_peT (T : Finset (Pl D)) : infPart D (peT D T) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
     rw [peT, map_sum]; exact Finset.sum_eq_zero fun v _ => inf_pe v
 
 theorem comp_peT (T : Finset (Pl D)) (w : Pl D) : compAt D w (peT D T) = if w ∈ T then 1 else 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [peT, map_sum, comp_pe]
 
 theorem pe_mul_peT {v : Pl D} {T : Finset (Pl D)} (hv : v ∉ T) : pe D v * peT D T = 0 :=
@@ -206,8 +202,6 @@ namespace GlobalTheory.PlaceProducts
 
 open Classical Matrix
 
-set_option synthInstance.maxHeartbeats 400000
-
 variable {D : D7}
 
 theorem pe_mul_of_mem {v : Pl D} {x : AE D} (hx : x ∈ idAt D (· = v)) : pe D v * x = x := by
@@ -219,7 +213,7 @@ theorem pe_mul_of_mem {v : Pl D} {x : AE D} (hx : x ∈ idAt D (· = v)) : pe D 
   · rw [zero_mul, h2 w h]
 
 theorem pe_mul_mem (v : Pl D) (x : AE D) : pe D v * x ∈ idAt D (· = v) :=
-  mem_idAt.2 ⟨by rw [map_mul, inf_pe, zero_mul], fun w hw => by rw [map_mul, comp_pe, if_neg hw, zero_mul]⟩
+  mem_idAt.2 ⟨by rw [map_mul, inf_pe, zero_mul], fun w hw => by rw [map_mul, comp_pe, ite_eq_right hw, zero_mul]⟩
 
 theorem idAt_mono {P : Pl D → Prop} {v : Pl D} (hv : P v) {x : AE D} (hx : x ∈ idAt D (· = v)) : x ∈ idAt D P := by
   obtain ⟨h1, h2⟩ := mem_idAt.1 hx
@@ -297,8 +291,6 @@ namespace GlobalTheory.PlaceProducts
 
 open Classical
 
-set_option synthInstance.maxHeartbeats 400000
-
 theorem hom_loc {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (e a b : A) :
     φ (e * a + (1 - e) * b) = φ e * φ a + (1 - φ e) * φ b := by
   simp only [map_add (f := _), map_mul, map_sub, map_one]
@@ -312,7 +304,6 @@ theorem hom_loc_zero {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {e 
   rw [hom_loc, he, zero_mul, zero_add, sub_zero, one_mul]
 
 
-set_option maxHeartbeats 1000000 in
 theorem finite_place_products : ∀ (D : D7) (S : HSp D) (L : Lat S) (P : Pl D → Prop) (κ : GA D S), IsSelfDualC S L →
     InK S L P κ → ∀ Fs : Finset (Pl D), ∃ l : List (GA D S), (∀ y ∈ l, ∃ v, P v ∧ InK S L (· = v) y) ∧
       (∀ i j, infPart D (Formalism.L2.Theta.mt S l.prod i j) = infPart D (Formalism.L2.Theta.mt S κ i j)) ∧
@@ -331,10 +322,10 @@ theorem finite_place_products : ∀ (D : D7) (S : HSp D) (L : Lat S) (P : Pl D �
   · rw [hp, locM_apply]
     by_cases hPw : P w
     · have hc : compAt D w (peT D (Fs.filter P)) = 1 := by
-        rw [comp_peT, if_pos (Finset.mem_filter.2 ⟨hw, hPw⟩)]
+        rw [comp_peT, ite_eq_left (Finset.mem_filter.2 ⟨hw, hPw⟩)]
       exact hom_loc_one (compAt D w) hc _ _
     · have hc : compAt D w (peT D (Fs.filter P)) = 0 := by
-        rw [comp_peT, if_neg fun h => hPw (Finset.mem_filter.1 h).2]
+        rw [comp_peT, ite_eq_right fun h => hPw (Finset.mem_filter.1 h).2]
       have := (mem_idAt.1 (hK i j)).2 w hPw
       rw [map_sub, sub_eq_zero] at this
       rw [hom_loc_zero (compAt D w) hc]
@@ -342,7 +333,7 @@ theorem finite_place_products : ∀ (D : D7) (S : HSp D) (L : Lat S) (P : Pl D �
   · have e1 : mt S l.prod i j = peT D (Fs.filter P) * mt S κ i j +
         (1 - peT D (Fs.filter P)) * (1 : Matrix (Fin S.rank) (Fin S.rank) (AE D)) i j := by rw [hp, locM_apply]
     refine (congrArg (compAt D w) e1).trans (hom_loc_zero (compAt D w) ?_ _ _)
-    rw [comp_peT, if_neg fun h => hw (Finset.mem_filter.1 h).1]
+    rw [comp_peT, ite_eq_right fun h => hw (Finset.mem_filter.1 h).1]
 
 end GlobalTheory.PlaceProducts
 

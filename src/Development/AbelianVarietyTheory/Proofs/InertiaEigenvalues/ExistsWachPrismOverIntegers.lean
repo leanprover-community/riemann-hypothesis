@@ -98,7 +98,6 @@ theorem constantCoeff_act (c : ℤ_[l]) (x : A⟦X⟧) : constantCoeff (act l A 
   conv_lhs => rw [h, map_add (f := _), map_mul, act_C, act_X, map_add (f := _), map_mul, cyc_const]
   simp
 
-
 omit hl [Algebra ℤ_[l] A] [Algebra ℤ_[l] B] in
 theorem map_QQ (e : A →+* B) (s : ℕ) : PowerSeries.map e (QQ l A s) = QQ l B s := by
   simp [QQ, XX]
@@ -484,20 +483,6 @@ end General
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem εroot_pow {P : LocPrime l} (AI : LocAinf l P) (s : ℕ) : AI.εroot s ^ l ^ s = AI.ε := by
-  induction s with
-  | zero => simp [LocAinf.εroot]
-  | succ s ih =>
-    rw [pow_succ', pow_mul, LocAinf.εroot, Function.iterate_succ_apply', frobeniusEquiv_symm_pow_p]
-    exact ih
-
-theorem εroot_sub_not_unit {P : LocPrime l} (AI : LocAinf l P) (s : ℕ) : ¬ IsUnit (AI.εroot s - 1) := by
-  intro h
-  have h1 := (h.pow (l ^ s)).map (PreTilt.coeff (O := OC l) (p := l) 0)
-  rw [sub_pow_char_pow, εroot_pow, one_pow, map_sub, AI.ε_coeff, AI.ζ_zero, map_one, map_one,
-    sub_self] at h1
-  exact not_isUnit_zero h1
-
 theorem letEmb_C {K LL : FinExt l} {n : ℕ} (emb : ZMod n → (↥(K0 K) →ₐ[ℚ_[l]] ↥LL.1)) (w : WK K) :
     letEmb emb (PowerSeries.C w) = fun k => PowerSeries.C (embW (emb k) w) := by
   funext k
@@ -597,7 +582,7 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) 
     let emb := Γ.1
     let φ := I.1
     exists_io (K := K) (LL := LL) emb φ (AI.εroot s)
-      (εroot_sub_not_unit (P := P) AI s) I.2 (exists_const (K := K) (LL := LL) emb φ hI)
+      (GlobalTheory.Cyc.εroot_sub_one_not_unit (P := P) AI s) I.2 (exists_const (K := K) (LL := LL) emb φ hI)
 
 end GlobalTheory.PrismS.IoDescent
 end -- clump:auto
@@ -637,7 +622,6 @@ theorem dvd_of_not_isUnit (K : FinExt l) (w : WK K) (hw : ¬ IsUnit w) : (l : WK
   refine ⟨⟨_, hm⟩, Subtype.ext ?_⟩
   change (w : ↥(K0 K)) = (l : ↥(K0 K)) * ((w : ↥(K0 K)) / (l : ↥(K0 K)))
   field_simp
-
 
 def sigW (P : LocPrime l) (K : FinExt l) : WK K →ₐ[ℤ_[l]] WK K := embW (LL := unr K) (P.PD K).σ
 
@@ -742,7 +726,6 @@ theorem exists_str {R S C : Type} [CommRing R] [CommRing S] [CommRing C] (f : S 
   rw [RingEquiv.eq_symm_apply, Subtype.ext_iff]
   rfl
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem ker_theta_io (AI : LocAinf l P) (hs : 1 ≤ s) (hK : K.1 ≤ Ks K s) (io : (WK K)⟦X⟧ →+* Ainf l)
     (hX : io X = WittVector.teichmuller l (AI.εroot s) - 1)
     (hC : ∀ w : WK K, Formalism.Per.θ l (io (C w)) = intToOC (unr K) w) :
@@ -796,7 +779,6 @@ theorem coeff_not_isUnit (K : FinExt l) : ¬ IsUnit (l : WK K) := by
   obtain ⟨_, -, -, lu, -⟩ := GlobalTheory.Per.integers_completeDVR l (unr K)
   exact lu
 
-set_option synthInstance.maxHeartbeats 200000 in
 def prismS (P : LocPrime l) (hs : 1 ≤ s) (f : (WK K)⟦X⟧ →+* OC l) (hf : RingHom.ker f = Ideal.span {QQ l (WK K) s})
     (str : ↥(OL K) →+* (WK K)⟦X⟧ ⧸ Ideal.span {QQ l (WK K) s}) : Obj l ↥(OL K) where
   A := (WK K)⟦X⟧
@@ -919,8 +901,6 @@ theorem series_isLocalRing (K : FinExt l) : IsLocalRing (WK K)⟦X⟧ := by
 theorem series_isDomain (K : FinExt l) : IsDomain (WK K)⟦X⟧ := inferInstance
 
 end GlobalTheory.PrismS
-
-
 
 open GlobalTheory.PrismS in
 theorem GlobalTheory.PrismS.exists_prism : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → ∃ (PS PW : Obj l ↥(OL K)) (ev : Hom PS PW) (ioH : Hom PS (ainfObj K)) (gH : ↥(GK K) → Hom PS PS) (a : PS.A →+* LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) (z : PowerSeries ℤ_[l] →+* PS.A) (π Q : PS.A), Function.Injective a ∧ (∀ x, I.io (a x) = (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (ainfId K (ioH.f x))) ∧ (∀ x, a (PS.D.φ x) = letφ R.φ₀ (a x)) ∧ (∀ g x, a ((gH g).f x) = letγ (R.γ₀ (Γ.resΓ g)) (a x)) ∧ (∀ g, ioH.comp (gH g) = (ainfHom K g).comp ioH) ∧ (∀ g, ev.comp (gH g) = ev) ∧ a π = letπ ∧ Function.Surjective ev.f ∧ RingHom.ker ev.f = Ideal.span {π} ∧ PS.I = Ideal.span {Q} ∧ a Q = R.Q ∧ a.comp z = zlA LL (Module.finrank ℚ_[l] ↥(K0 K)) ∧ IsLocalRing PS.A ∧ IsDomain PS.A ∧ (∃ (d : ℕ) (w : Fin d → PS.A), ∀ x, ∃! c : Fin d → PowerSeries ℤ_[l], x = ∑ i, z (c i) * w i) ∧ ∀ (d : ℕ) (o : Module.Basis (Fin d) ℤ_[l] ↥(OL LL)) (x : LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))), ∃! c : Fin d → PS.A, ∀ k, x k = ∑ i, PowerSeries.C (o i) * a (c i) k := by

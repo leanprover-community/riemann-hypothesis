@@ -71,7 +71,6 @@ theorem psi_unip_rat {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F �
     rw [rat_mul, rat_mul, rat_mul, rat_conjTranspose, gA]
   have ht : ∀ M : Matrix (Fin n) (Fin n) D.host.E,
       Matrix.trace (M.map (incA D)) = incA D (Matrix.trace M) := fun M => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [Matrix.trace, Matrix.diag, Matrix.map_apply, map_sum]
   rw [h, ht, halfTr_incA]
   exact hψ.2.2.1 _

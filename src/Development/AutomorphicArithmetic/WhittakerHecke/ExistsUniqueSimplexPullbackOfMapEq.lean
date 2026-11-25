@@ -8,7 +8,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivi
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto Simplicial UpperTheory.Gal.KunnethLefschetz UpperTheory.Gal.KunnethLefschetz.G
 
 theorem UpperTheory.existsUnique_simplex_pullback_of_map_eq :

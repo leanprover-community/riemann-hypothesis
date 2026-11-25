@@ -74,9 +74,9 @@ theorem Fdig_mono (rho : (ZMod J × Fin r) × Fin r → ℕ) (mo : TL J Dt.nL r 
   by_cases hc : c = 0
   · subst hc
     simp
-  · rw [support_monomial, if_neg hc, Finset.filter_singleton]
+  · rw [support_monomial, ite_eq_right hc, Finset.filter_singleton]
     split_ifs with h
-    · rw [Finset.sum_singleton, coeff_monomial, if_pos rfl, prod_lift, C_mul_monomial, mul_one]
+    · rw [Finset.sum_singleton, coeff_monomial, ite_eq_left rfl, prod_lift, C_mul_monomial, mul_one]
     · simp
 
 theorem liftMon_w (mo : TL J Dt.nL r × Fin r →₀ ℕ) (v : TL J Dt.nL r × Fin r) :

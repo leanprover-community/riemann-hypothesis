@@ -176,7 +176,7 @@ theorem FlagBundleDim.proof (hspan : TwistedDualGensSpan.Statement)
       rw [hsum]
       · refine Finset.sum_congr rfl fun j _ => ?_
         have hj : ((ι' j : Fin N) : ℕ) < i := by rw [hval]; exact j.isLt
-        simp only [truncCoord, hj, if_true, hG, Function.comp_apply, Pi.basisFun_apply]
+        simp only [truncCoord, hj, ite_true, hG, Function.comp_apply, Pi.basisFun_apply]
         rw [LinearMap.comp_apply, Matrix.mulVecLin_apply, Matrix.mulVec_single_one]
         rfl
       · intro j hj
@@ -245,23 +245,8 @@ theorem FlagBundleSectionForms.proof : FlagBundleSectionForms.Statement := by
     refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => ?_
     simp only [chartPow, Pi.neg_apply]
     ring
-  obtain ⟨n, U, hUh, hUe⟩ : ∃ (n : ℕ) (U : Fin M → MRing (bundleIdx ι M) F),
-      (∀ l, IsMultiHomog (U l) (liftNat fun _ => n)) ∧
-      ∀ l, eval₂ ((algebraMap Ω Φ).comp (algebraMap F Ω)) (projCoord y w φ (truncCoord t ((i : ℕ) + 1)))
-        (U l) = algebraMap Ω Φ (u l * segreVec y c ^ n) := by
-    have h := fun l => chartRing_forms y w φ (truncCoord t ((i : ℕ) + 1)) c hsc (hu l)
-    choose n U hU hUe using h
-    refine ⟨∑ l, n l, fun l => U l * chartMono M c (fun _ => ∑ l, n l - n l), fun l => ?_, fun l => ?_⟩
-    · have hle : n l ≤ ∑ l, n l := Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ l)
-      have hd : liftNat (K := K) (fun _ => ∑ l, n l) =
-          liftNat (fun _ => n l) + liftNat (fun _ => ∑ l, n l - n l) := by
-        funext o; cases o <;> simp [liftNat]; omega
-      rw [hd]
-      exact (hU l).mul (chartMono_homog M c _)
-    · have hle : n l ≤ ∑ l, n l := Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ l)
-      rw [eval₂_mul, hUe, eval_chartMono, ← map_mul]
-      congr 1
-      rw [Finset.prod_pow, mul_assoc, ← segreVec, ← pow_add, Nat.add_sub_cancel' hle]
+  obtain ⟨n, U, hUh, hUe⟩ :=
+    FlagBundleChartSection.chartRing_forms_fin y w φ (truncCoord t ((i : ℕ) + 1)) c hsc hu
   let α : K → ℕ := fun k => (|a k| + |b i k| - a k).toNat
   let β : K → ℕ := fun k => (|a k| + |b i k| + n - b i k).toNat
   have hid : segreVec y c ^ n * ∏ k, y ⟨k, c k⟩ ^ α k =
@@ -363,7 +348,6 @@ theorem contractFracMap_mk (f : MRing (fun k => ι' (j k)) F) :
       algebraMap _ _ (Ideal.Quotient.mk P' (rename (blockIncl j ι') f)) := by
   simp [contractFracMap, contractQuot]
   rfl
-
 
 end SplitRelDeg
 
@@ -507,7 +491,6 @@ theorem subst_homog {K : Type*} [DecidableEq K] {ι : K → Type} {M : ℕ} {F :
   exact this
 
 end FlagLineDegreeProof
-
 
 open FlagLineDegreeProof in
 theorem FlagLineDegree.proof : FlagLineDegree.Statement := by
@@ -895,7 +878,6 @@ theorem chartMon_not_mem {W : Ideal (MRing (bundleIdx ι M) F)} [hW : W.IsPrime]
   exact hc k (hW.mem_of_pow_mem _ hk)
 
 end FlagLineSectionProof
-
 
 open FlagLineSectionProof in
 theorem FlagLineSection.proof : FlagLineSection.Statement := by
@@ -1351,7 +1333,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo IntermediateField.alg
 
 noncomputable section
 
-
 set_option maxHeartbeats 400000 in
 theorem SpanBundleTrdegLe.proof : SpanBundleTrdegLe.Statement := by
   intro F _ Ω _ _ K _ ι y M i G c a H _hc hH hGH Φ _ _ s
@@ -1553,7 +1534,6 @@ section -- clump:auto
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
-
 
 open GroundTheory.Heights₂.Heights.FieldNumbers in
 theorem DivPushForwardLocalZero : FieldNumbers.DivPushForwardLocal.Statement.{0} := by

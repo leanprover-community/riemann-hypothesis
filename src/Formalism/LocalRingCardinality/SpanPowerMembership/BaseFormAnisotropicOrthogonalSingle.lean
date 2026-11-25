@@ -157,7 +157,7 @@ theorem dSpace_congr (hy : ∃ y : E ⊗[F] FiniteAdeleRing (𝓞 F) F,
     refine diag_congr _ _ _ _ (fun i => ?_)
     by_cases h : negTail N q i = negTail N q' i
     · simp [h]
-    · simp only [if_neg h]
+    · simp only [ite_eq_right h]
       have h' : (sgn (negTail N q' i) : E ⊗[F] FiniteAdeleRing (𝓞 F) F) = - sgn (negTail N q i) := by
         cases h1 : negTail N q i <;> cases h2 : negTail N q' i <;> simp_all [sgn]
       rw [h', mul_right_comm, hy]
@@ -264,11 +264,11 @@ theorem ixN_ne_ixZ (i : Fin R.rS) : ixN R i ≠ ixZ R := by
 
 theorem baseForm_positive_negative_zero (i i' : Fin R.rS) :
     f0 (E := E) R (Pi.single (ixP R i) 1) (Pi.single (ixN R i') 1) = 0 := by
-  rw [diagForm_single, if_neg (posIndex_ne_negIndex R i i')]
+  rw [diagForm_single, ite_eq_right (posIndex_ne_negIndex R i i')]
 
 theorem baseForm_negative_positive_zero (i i' : Fin R.rS) :
     f0 (E := E) R (Pi.single (ixN R i) 1) (Pi.single (ixP R i') 1) = 0 := by
-  rw [diagForm_single, if_neg (posIndex_ne_negIndex R i' i).symm]
+  rw [diagForm_single, ite_eq_right (posIndex_ne_negIndex R i' i).symm]
 
 def hypEv (i : Fin R.rS) : Fin (R.rankY 0) → E := Pi.single (ixP R i) 1 + Pi.single (ixN R i) 1
 
@@ -322,7 +322,7 @@ theorem hyperbolic_orthogonal_anisotropic (i : Fin R.rS) :
 include hpz in
 theorem anisotropic_vector_norm_eq_neg : f0 R (Pi.single (ixZ R) pz) (Pi.single (ixZ R) pz) = -(T : E) := by
   rw [diagForm_single_left, neg_ixZ]
-  simp only [Pi.single_eq_same, sgn, if_true]
+  simp only [Pi.single_eq_same, sgn, ite_true]
   rw [← hpz]
   ring
 

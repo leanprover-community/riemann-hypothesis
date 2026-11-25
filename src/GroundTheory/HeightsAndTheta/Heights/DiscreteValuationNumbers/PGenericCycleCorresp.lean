@@ -234,7 +234,7 @@ theorem GenericCycleCorresp.proof : GenericCycleCorresp.Statement.{u} := by
       ∑ᶠ W ∈ A, divCycle P s W * (if (C ϖ : MRing ι O) ∈ W then 0 else n (genFib W)) := by
     refine hmem A _ fun W hW => ?_
     by_cases hϖW : (C ϖ : MRing ι O) ∈ W
-    · rw [if_pos hϖW, mul_zero]
+    · rw [ite_eq_left hϖW, mul_zero]
     · have : divCycle P s W = 0 := by by_contra h; exact hW ⟨hsupp P s W h, hϖW⟩
       rw [this, zero_mul]
   have hB : (∑ᶠ W, divCycle (genFib P) s' W * n W) = ∑ᶠ W ∈ B, divCycle (genFib P) s' W * n W := by
@@ -260,7 +260,7 @@ theorem GenericCycleCorresp.proof : GenericCycleCorresp.Statement.{u} := by
         (IsLocalization.map_units (MRing ι (FractionRing O)) (⟨_, hϖM⟩ : M)))
     · exact IsLocalization.map_under M (MRing ι (FractionRing O)) W'
   · intro W hW
-    rw [if_neg hW.2, hkey W hW.1 hW.2]
+    rw [ite_eq_right hW.2, hkey W hW.1 hW.2]
 
 end
 

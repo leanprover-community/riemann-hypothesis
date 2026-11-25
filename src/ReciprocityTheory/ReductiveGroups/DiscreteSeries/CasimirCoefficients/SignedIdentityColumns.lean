@@ -64,11 +64,7 @@ lemma gJgH_VG {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ 
 lemma normSq_detVG {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     Complex.normSq g.det = 1 := by
   have hJ := _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self ε
-  have hJ0 : (Jm ε).det ≠ 0 := by
-    intro h0
-    have h1 := congrArg Matrix.det hJ
-    rw [Matrix.det_mul, Matrix.det_one, h0, zero_mul] at h1
-    exact zero_ne_one h1
+  have hJ0 : (Jm ε).det ≠ 0 := Matrix.det_ne_zero_of_left_inverse hJ
   have hg' : gᴴ * Jm ε * g = Jm ε := hg
   have hdet := congrArg Matrix.det hg'
   rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose] at hdet
@@ -106,7 +102,7 @@ lemma ballFiniteVG (ε : Fin n → Bool) (ν : Measure (UJ ε)) [ν.IsHaarMeasur
       have h0 := norm_nonneg (M i j)
       by_cases hc : ‖M i j‖ ≤ 1
       · exact le_trans hc (le_max_left _ _)
-      · push_neg at hc
+      · push Not at hc
         have : ‖M i j‖ ≤ ‖M i j‖ ^ 2 := by nlinarith
         exact le_trans (le_trans this h1) (le_max_right _ _)
   let e : UJ ε → Matrix (Fin n) (Fin n) ℂ × (Matrix (Fin n) (Fin n) ℂ)ᵐᵒᵖ :=

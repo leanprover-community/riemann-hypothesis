@@ -125,16 +125,6 @@ noncomputable section
 
 namespace GlobalTheory.InertSatakeGiven
 
-theorem continuous_of_valuation_eq {K : Type} [Field K] {Γ₀ : Type} [LinearOrderedCommGroupWithZero Γ₀] [Valued K Γ₀]
-    (s : K →+* K) (hs : ∀ x, Valued.v (s x) = Valued.v x) : Continuous s := by
-  have h : Filter.Tendsto s (nhds 0) (nhds 0) := by
-    rw [(Valued.hasBasis_nhds_zero K Γ₀).tendsto_iff (Valued.hasBasis_nhds_zero K Γ₀)]
-    intro γ _
-    refine ⟨γ, trivial, fun x hx => ?_⟩
-    simp only [Set.mem_setOf_eq, Valuation.restrict_lt_iff_lt_embedding] at hx ⊢
-    rwa [hs]
-  exact continuous_of_continuousAt_zero s (by simpa [ContinuousAt] using h)
-
 theorem exists_hasSatAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (U : Submodule ℂ (UA L n → ℂ)), IsAutRepU U → ∀ (w : HeightOneSpectrum (𝓞 L)), Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield L)) w.asIdeal → ¬ IsSplitAt w → ∀ (s : w.adicCompletion L →+* w.adicCompletion L) (ϖ : w.adicCompletion L) (q : ℕ), (∀ x : L, s (algebraMap L _ x) = algebraMap L _ (IsCMField.complexConj L x)) → Formalism.UG.IsUnramInv ϖ s q → IsUnramU U w → ∃ α0 : Fin (n / 2) → ℂˣ, HasSatAt U w s ϖ q α0 := by
   intro L _ _ _ n U hU w hun hns s ϖ q hs hI hph
   have hsph : (GlobalTheory.DefU.AU.mk ⟨U, hU⟩).Sph w := (GlobalTheory.DefU.AU.sph_mk _ w).2 hph
@@ -143,8 +133,8 @@ theorem exists_hasSatAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L]
   obtain ⟨s', ϖ', q', hs', hI', hsat⟩ := hα
   have hss : s' = s := by
     apply DFunLike.coe_injective
-    refine (HeightOneSpectrum.denseRange_algebraMap L w).equalizer (continuous_of_valuation_eq s' hI'.2.1)
-      (continuous_of_valuation_eq s hI.2.1) (funext fun k => ?_)
+    refine (HeightOneSpectrum.denseRange_algebraMap L w).equalizer (GlobalTheory.InertDatumGiven.continuous_of_valued_eq s' hI'.2.1)
+      (GlobalTheory.InertDatumGiven.continuous_of_valued_eq s hI.2.1) (funext fun k => ?_)
     simp only [Function.comp_apply, hs', hs]
   subst hss
   have hqq : q' = q := Nat.pow_left_injective (n := 2) (by norm_num) (hI'.2.2.2.2.2.2.symm.trans hI.2.2.2.2.2.2)
@@ -457,7 +447,7 @@ theorem cosetSum_transfer_surj {G H V : Type} [Group G] [Group H] [AddCommGroup 
   have hval : ∀ d, F (f d) = a d.out • β (t d) := by
     intro d
     have hc : ∃ x : G, (x : G ⧸ U0) = f d ∧ x ∈ T := ⟨t d, rfl, (t d).2⟩
-    simp only [hF, dif_pos hc]
+    simp only [hF, dite_eq_left hc]
     obtain ⟨hU, k, hk, hkk⟩ := key (t d) ⟨hc.choose, hc.choose_spec.2⟩ hc.choose_spec.1.symm
     rw [hkk, ha _ k hk, ht]
     congr 1
@@ -470,7 +460,7 @@ theorem cosetSum_transfer_surj {G H V : Type} [Group G] [Group H] [AddCommGroup 
     rw [Function.mem_support] at hc
     have hc' : ∃ x : G, (x : G ⧸ U0) = c ∧ x ∈ T := by
       by_contra hn
-      exact hc (by simp only [hF, dif_neg hn])
+      exact hc (by simp only [hF, dite_eq_right hn])
     obtain ⟨x, rfl, hx⟩ := hc'
     obtain ⟨h1, h2⟩ := hcover ⟨x, hx⟩
     refine Finset.mem_coe.2 (Finset.mem_image.2 ⟨_, ?_, h1⟩)
@@ -938,7 +928,6 @@ theorem cell_guMap (g : K ≃+* K) {σ : K →+* K} (hg : ∀ x, g (σ x) = σ (
 
 end Cell
 
-
 open Classical in
 theorem satU_guMap_self : ∀ {K : Type} [Field K] [Valued K (WithZero (Multiplicative ℤ))] (g : K ≃+* K) {σ : K →+* K} (hg : ∀ x, g (σ x) = σ (g x)), (∀ x, x ∈ Formalism.UG.intL K ↔ g x ∈ Formalism.UG.intL K) → ∀ (ϖ : K) (q n m : ℕ), Formalism.UG.IsUnramInv ϖ σ q → 2 * m ≤ n → n ≤ 2 * m + 1 → ∀ h : Formalism.UG.GU σ n → ℂ, Formalism.UG.IsBiInv (Formalism.UG.KU σ n) h → ∀ α : Fin m → ℂ, Formalism.UG.SatU ϖ q (fun y => h (GlobalTheory.SatInd.guMap g hg n y)) α = Formalism.UG.SatU ϖ q h α := by
   intro K _ _ g σ hg hint ϖ q n m hU hm1 _ h hbi α
@@ -1107,7 +1096,6 @@ theorem eq_of_norms {K : Type} [Field K] (σ : K →+* K) (Y Y' : K) (hne : Y �
   exact mul_right_cancel₀ (sub_ne_zero.2 hne) h4
 
 end GlobalTheory.InertFrameConj
-
 
 open GlobalTheory.InertFrameConj GlobalTheory.SplitPts in
 theorem GlobalTheory.InertFrameConj.conj_and_surjective : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ), 0 < n → ∀ (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)), NG.OverPl w v → ∀ (Dv : InertDatum L n v w) (b : GL (Fin n) (w.adicCompletion L)), b ∈ GlobalTheory.LFun.KGL w (n := n) → Formalism.UG.cT Dv.σw b.val * b.val = Formalism.UG.antiJ (w.adicCompletion L) n → ∀ p : locU n w →* Formalism.UG.GU Dv.σw n, (∀ x, (p x).val = b⁻¹ * cLoc w x.val * b) → (∀ x : L, Dv.σw (algebraMap L _ x) = algebraMap L _ (IsCMField.complexConj L x)) ∧ Function.Surjective p := by
@@ -1297,14 +1285,14 @@ theorem quad (α : Fin m → ℂ) (j k : Fin m) :
       (α j + (α j)⁻¹) * (α k + (α k)⁻¹) + if j = k then 2 * (1 - α j * (α j)⁻¹) else 0 := by
   by_cases hjk : j = k
   · subst hjk
-    rw [if_pos rfl, add_neg_cancel, mon_zero,
+    rw [ite_eq_left rfl, add_neg_cancel, mon_zero,
       mon_add _ _ _ (fun i => mul_self_nonneg _), mon_add _ _ _ (fun i => mul_self_nonneg _), mon_e, mon_ne]
     ring
   · have h0 : ∀ i, (Pi.single j (1 : ℤ) : Fin m → ℤ) i * (Pi.single k (1 : ℤ) : Fin m → ℤ) i = 0 := fun i => by
       by_cases hi : i = j
       · subst hi; rw [Pi.single_eq_of_ne hjk, mul_zero]
       · rw [Pi.single_eq_of_ne hi, zero_mul]
-    rw [if_neg hjk, add_zero,
+    rw [ite_eq_right hjk, add_zero,
       mon_add _ _ _ (fun i => by rw [h0 i]),
       mon_add _ _ _ (fun i => by rw [Pi.neg_apply, mul_neg, h0 i, neg_zero]),
       mon_add _ _ _ (fun i => by rw [Pi.neg_apply, mul_neg, mul_comm, h0 i, neg_zero]),
@@ -1347,7 +1335,7 @@ theorem laurentCoeffEval_squareSymmetricCoeffs (α : Fin m → ℂ) (c₀ A : �
       A ^ 2 * (∑ k, (α k + (α k)⁻¹)) ^ 2 + 2 * A ^ 2 * ∑ k, (1 - α k * (α k)⁻¹) := by
     rw [pow_two (∑ k, (α k + (α k)⁻¹)), Finset.sum_mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
-    simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+    simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
       Finset.mul_sum]
     ring
   have h2 : ∑ k, (2 * c₀ * A * α k + 2 * c₀ * A * (α k)⁻¹) = 2 * c₀ * A * ∑ k, (α k + (α k)⁻¹) := by
@@ -1422,22 +1410,22 @@ theorem eq_lin (s : (Fin m → ℤ) →₀ ℂ) (h : ∀ κ, s κ ≠ 0 → κ =
     simp
   by_cases h1 : ∃ k, κ = Pi.single k 1
   · obtain ⟨j, rfl⟩ := h1
-    simp only [if_neg (Ne.symm h0), zero_add, hinj, fun k => (single_ne_neg_single j k).symm, if_false, add_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [ite_eq_right (Ne.symm h0), zero_add, hinj, fun k => (single_ne_neg_single j k).symm, ite_false, add_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases h2 : ∃ k, κ = -Pi.single k 1
   · obtain ⟨j, rfl⟩ := h2
-    simp only [if_neg (Ne.symm h0), zero_add, hinj', single_ne_neg_single, if_false, zero_add,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  push_neg at h1 h2
+    simp only [ite_eq_right (Ne.symm h0), zero_add, hinj', single_ne_neg_single, ite_false, zero_add,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  push Not at h1 h2
   have hs : s κ = 0 := by
     by_contra hc
     rcases h κ hc with e | ⟨k, e | e⟩
     · exact h0 e
     · exact h1 k e
     · exact h2 k e
-  rw [hs, if_neg (Ne.symm h0), zero_add]
+  rw [hs, ite_eq_right (Ne.symm h0), zero_add]
   refine (Finset.sum_eq_zero fun k _ => ?_).symm
-  rw [if_neg (fun e => h1 k e.symm), if_neg (fun e => h2 k e.symm), add_zero]
+  rw [ite_eq_right (fun e => h1 k e.symm), ite_eq_right (fun e => h2 k e.symm), add_zero]
 
 theorem satU_ne_zero : ∀ (K : Type) [Field K] [Valued K (WithZero (Multiplicative ℤ))] [CompleteSpace K] (ϖ : K)
     (σ : K →+* K) (q n : ℕ), Formalism.UG.IsUnramInv ϖ σ q → ∀ (α : Fin (n / 2) → ℂ) (β : Fin (n / 2) → ℂˣ),

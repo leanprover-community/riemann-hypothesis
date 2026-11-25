@@ -79,10 +79,4 @@ theorem resS_eq_resI (w : Pl E) : resS F w = resI F w.asIdeal w.ne_bot := rfl
 
 end Res
 
-section CRT
-
-variable {E : Type} [Field E] [NumberField E] {I : Ideal (𝓞 E)} {Pg : Finset (Pl E)}
-
-end CRT
-
 end GlobalTheory.GeoActCompare

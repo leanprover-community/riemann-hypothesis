@@ -41,7 +41,7 @@ theorem casimir_eigenvalue_and_sub_smul_onto_proper_submodule (act : Mat r s →
     if h : sameBlock a b then (ρ a b).restrict (kSt_cycK ρ f a b h) else 0
   have hρV : ∀ a b, sameBlock a b → ∀ v : V, ((ρV a b v : V) : A) = ρ a b v := by
     intro a b h v
-    simp only [ρV, dif_pos h]
+    simp only [ρV, dite_eq_left h]
     rfl
   let ιV : V →ₗ[ℂ] M := ι ∘ₗ V.subtype
   have hιV : ∀ a b, sameBlock a b → ∀ v, ιV (ρV a b v) = act (Eab a b) (ιV v) := by
@@ -144,7 +144,7 @@ theorem exists_greatest_proper_invariant_submodule_of_side {La : Ix r s → ℚ}
     simp only [casK, LinearMap.sum_apply, map_sum]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
     split_ifs with hab
-    · simp only [Module.End.mul_apply, units, hβ, epsB, if_pos hab, if_pos (sameBlock_symm' hab), one_mul]
+    · simp only [Module.End.mul_apply, units, hβ, epsB, ite_eq_left hab, ite_eq_left (sameBlock_symm' hab), one_mul]
     · simp
   let O : Submodule ℂ M := ⨅ x : K, LinearMap.ker (β x)
   have mO : ∀ z, z ∈ O ↔ ∀ x ∈ K, β x z = 0 := fun z => by simp [O, Submodule.mem_iInf]

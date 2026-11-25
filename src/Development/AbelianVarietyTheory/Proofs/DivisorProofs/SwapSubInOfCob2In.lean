@@ -485,7 +485,7 @@ theorem eq_zero_of_atoms (n : Fin d →₀ ℕ) (c : (Fin d →₀ ℕ) → M)
     ∀ a, a ≤ n → a ≠ 0 → a ≠ n → c a = 0 := by
   intro a han ha0 han'
   obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by
-    by_contra h; push_neg at h; exact ha0 (Finsupp.ext fun i => by simp [h i])
+    by_contra h; push Not at h; exact ha0 (Finsupp.ext fun i => by simp [h i])
   obtain ⟨j, m, hm, he⟩ := Nat.exists_eq_pow_mul_and_not_dvd hi p hp.out.one_lt.ne'
   have hm0 : 0 < m := Nat.pos_of_ne_zero (by rintro rfl; rw [mul_zero] at he; exact hi he)
   have hja : p ^ j ≤ a i := by rw [he]; exact Nat.le_mul_of_pos_right _ hm0
@@ -514,9 +514,9 @@ theorem atom_cross (n : Fin d →₀ ℕ) (c : (Fin d →₀ ℕ) → M)
   rw [hsym _ htn]
   refine eq_zero_of_le n c hu hrel _ _ (Finsupp.single_ne_zero.2 (pow_ne_zero _ hp.out.ne_zero)) ?_
     tsub_le_self (tsub_single_ne n i _ (pow_pos hp.out.pos j) hj) ?_ h0
-  · rw [Finsupp.single_le_iff, Finsupp.tsub_apply, Finsupp.single_apply, if_neg hii, Nat.sub_zero]
+  · rw [Finsupp.single_le_iff, Finsupp.tsub_apply, Finsupp.single_apply, ite_eq_right hii, Nat.sub_zero]
     exact hjn'
-  · rw [prod_choose_single, not_dvd_choose_pow_iff, Finsupp.tsub_apply, Finsupp.single_apply, if_neg hii,
+  · rw [prod_choose_single, not_dvd_choose_pow_iff, Finsupp.tsub_apply, Finsupp.single_apply, ite_eq_right hii,
       Nat.sub_zero]
     exact hj'
 
@@ -555,12 +555,12 @@ theorem atom_line (n : Fin d →₀ ℕ) (c : (Fin d →₀ ℕ) → M)
         have e2 : n k - p ^ s = p ^ s * K' := by omega
         rw [e1, e2, Nat.choose_symm_add]
         exact not_dvd_choose_pow_mul_add p s K' _ (by omega)
-      · simp only [Finsupp.tsub_apply, Finsupp.single_apply, if_neg (Ne.symm hk), Nat.sub_zero,
+      · simp only [Finsupp.tsub_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hk), Nat.sub_zero,
           Nat.choose_self]
         exact hp.out.not_dvd_one
   · have hq := hK' j hjs hj
     have hle : p ^ s ≤ n i0 - p ^ j := by
-      by_contra hlt; push_neg at hlt
+      by_contra hlt; push Not at hlt
       exact hq (by rw [Nat.div_eq_of_lt hlt]; exact dvd_zero p)
     refine eq_zero_of_le n c hu hrel _ _ (Finsupp.single_ne_zero.2 hps.ne') ?_ tsub_le_self hyn ?_ h0
     · rw [Finsupp.single_le_iff, Finsupp.tsub_apply, Finsupp.single_eq_same]; exact hle
@@ -648,7 +648,7 @@ theorem exists_eq_smul_prod_choose : ∀ (p : ℕ) [Fact p.Prime] (M : Type) [Ad
       exact atom_cross n _ hu (hrel' g) (hsym' g) i1 s1
         (by rw [he1, Nat.mul_div_cancel_left _ (hps s1)]; exact hm1) hs1 (hc1 i1 s1 (Ne.symm hne) hs1) i j hne hj
     · exact hc1 i j hi hj
-  · push_neg at hA
+  · push Not at hA
     by_cases h2 : ∃ i0, 2 ≤ n i0
     · obtain ⟨i0, hN2⟩ := h2
       have hz : ∀ k, k ≠ i0 → n k = 0 := fun k hk => hA i0 k (Ne.symm hk) (by omega)
@@ -693,13 +693,13 @@ theorem exists_eq_smul_prod_choose : ∀ (p : ℕ) [Fact p.Prime] (M : Type) [Ad
         ext k
         by_cases hk : k = i
         · subst hk; simp only [Finsupp.single_eq_same]; omega
-        · rw [Finsupp.single_apply, if_neg (Ne.symm hk), hz k hk]
-    · push_neg at h2
+        · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hk), hz k hk]
+    · push Not at h2
       refine fin 0 ?_
       intro a han ha0 han'
       exfalso
       obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by
-        by_contra h; push_neg at h; exact ha0 (Finsupp.ext fun i => by simp [h i])
+        by_contra h; push Not at h; exact ha0 (Finsupp.ext fun i => by simp [h i])
       apply han'
       ext k
       have hak := Finsupp.le_def.1 han k
@@ -788,23 +788,13 @@ namespace LawUp
 
 variable {R S : Type} [CommRing R] [CommRing S] {d : ℕ} {τ : Type}
 
-theorem mvPowerSeriesMap_evalTwoGroups (φ : R →+* S) (c : MvPowerSeries (Fin d ⊕ Fin d) R)
-    {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
-    (hv : ∀ i, constantCoeff (v i) = 0) :
-    map φ (at2 c u v) = at2 (map φ c) (fun i => map φ (u i)) (fun i => map φ (v i)) := by
-  unfold at2
-  rw [map_subst (CobCob.elim_has hu hv)]
-  congr 1
-  funext j
-  cases j <;> rfl
-
 theorem map_op (φ : R →+* S) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R)
     {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
     (hv : ∀ i, constantCoeff (v i) = 0) :
     (fun i => map φ (op μ u v i)) =
       op (fun i => map φ (μ i)) (fun i => map φ (u i)) (fun i => map φ (v i)) := by
   funext i
-  exact mvPowerSeriesMap_evalTwoGroups φ (μ i) hu hv
+  exact GlobalTheory.CobSymCoc.mvPowerSeriesMap_evalTwoGroups φ (μ i) hu hv
 
 theorem isLaw_map (φ : R →+* S) {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (h : IsLaw μ) :
     IsLaw (fun i => map φ (μ i)) := by
@@ -817,7 +807,7 @@ theorem isLaw_map (φ : R →+* S) {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin 
     rw [h.unit] at e
     simp only [map_X, map_zero] at e
     exact e.symm
-  · have e := mvPowerSeriesMap_evalTwoGroups φ (μ i) (τ := Fin d ⊕ Fin d)
+  · have e := GlobalTheory.CobSymCoc.mvPowerSeriesMap_evalTwoGroups φ (μ i) (τ := Fin d ⊕ Fin d)
       (u := fun i => (X (Sum.inr i) : MvPowerSeries (Fin d ⊕ Fin d) R))
       (v := fun i => X (Sum.inl i)) (fun _ => constantCoeff_X _) (fun _ => constantCoeff_X _)
     simp only [map_X] at e
@@ -1064,7 +1054,7 @@ theorem maint {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} 
     · exact Or.inr (din_sub hc (dIn_cob1_of_isFrame_of_dIn hF hμ.const hh))
   · have := hco 0 0 (by simp)
     have hz : Finsupp.sumElim (0 : Fin d →₀ ℕ) (0 : Fin d →₀ ℕ) = 0 := by ext x; cases x <;> simp
-    simp only [hz, add_zero, ne_eq, not_true_eq_false, false_and, if_false] at this
+    simp only [hz, add_zero, ne_eq, not_true_eq_false, false_and, ite_false] at this
     rw [← coeff_zero_eq_constantCoeff_apply, map_sub, this, coeff_zero_eq_constantCoeff_apply, h0, sub_zero]
   · intro α; rw [map_sub]
     exact Submodule.sub_mem _ (hV α) (coeff_cob1_mem_submodule hμ.const _ h hhV α)
@@ -1091,8 +1081,8 @@ theorem maint {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} 
       exact hlow _ (by rw [degree_sumElim]; exact hlt)
     · have heq : (a + e).degree = m := by omega
       by_cases hae : a ≠ 0 ∧ e ≠ 0
-      · rw [if_pos hae]; exact hcong a e hae.1 hae.2 heq
-      · rw [if_neg hae, sub_zero]
+      · rw [ite_eq_left hae]; exact hcong a e hae.1 hae.2 heq
+      · rw [ite_eq_right hae, sub_zero]
         rcases not_and_or.1 hae with ha | he
         · rw [not_not.1 ha]
           obtain ⟨b, hb, eb⟩ := (hedge e).2
@@ -1115,7 +1105,7 @@ theorem prod_choose_pred {d : ℕ} (α : Fin d →₀ ℕ) (i : Fin d) (hi : α 
   rw [Finset.prod_eq_single i]
   · rw [Finsupp.tsub_apply, Finsupp.single_eq_same, Nat.choose_symm (by omega), Nat.choose_one_right]
   · intro j _ hj
-    rw [Finsupp.tsub_apply, Finsupp.single_apply, if_neg (Ne.symm hj), Nat.sub_zero, Nat.choose_self]
+    rw [Finsupp.tsub_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hj), Nat.sub_zero, Nat.choose_self]
   · intro h; exact absurd (Finset.mem_univ i) h
 
 theorem build {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} (hF : IsFrame p Q θ)
@@ -1201,14 +1191,14 @@ theorem build {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} 
   let h : MvPowerSeries (Fin d) Q := fun α => if α.degree = m then (qf α : Q) else 0
   have hh : ∀ α, coeff α h = if α.degree = m then (qf α : Q) else 0 := fun α => by
     rw [coeff_apply]
-  refine ⟨h, fun α hα => by rw [hh, if_neg hα], fun α => ?_, fun hc => ?_, fun a e ha he hae => ?_⟩
+  refine ⟨h, fun α hα => by rw [hh, ite_eq_right hα], fun α => ?_, fun hc => ?_, fun a e ha he hae => ?_⟩
   · rw [hh]; split_ifs
     · exact (qf α).2
     · exact VJ.zero_mem
   · intro α i
     by_cases hα : α.degree = m
     swap
-    · exact ⟨0, N.zero_mem, by rw [hh, if_neg hα, mul_zero, map_zero]⟩
+    · exact ⟨0, N.zero_mem, by rw [hh, ite_eq_right hα, mul_zero, map_zero]⟩
     by_cases hi : α i = 0
     · exact ⟨0, N.zero_mem, by rw [hi, Nat.cast_zero, zero_mul, map_zero]⟩
     have hle1 : Finsupp.single i 1 ≤ α := Finsupp.single_le_iff.2 (by omega)
@@ -1235,7 +1225,7 @@ theorem build {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} 
     have hmem : (α i : Q) * coeff α h ∈ (NS N : Submodule B Q) := by
       have e2 : (α i : Q) * coeff α h = coeff (Finsupp.sumElim a (Finsupp.single i 1)) c -
           (coeff (Finsupp.sumElim a (Finsupp.single i 1)) c - (α i : Q) * (qf α : Q)) := by
-        rw [hh, if_pos hα]; ring
+        rw [hh, ite_eq_left hα]; ring
       rw [e2]
       exact Submodule.sub_mem _ (mem_NS.2 ⟨b, hb, eb⟩) hq
     obtain ⟨b', hb', e'⟩ := mem_NS.1 hmem
@@ -1244,7 +1234,7 @@ theorem build {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} 
       intro h0; exact he (by simpa using h0.symm)
     have hq := hqf (a + e) hae a le_self_add ha hne
     rw [add_tsub_cancel_left] at hq
-    rw [hh, if_pos hae]
+    rw [hh, ite_eq_left hae]
     exact hq
 
 end GlobalTheory.SymCob

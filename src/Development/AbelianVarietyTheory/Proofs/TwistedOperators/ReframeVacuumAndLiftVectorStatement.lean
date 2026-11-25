@@ -159,7 +159,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.F
 open GlobalTheory.SW hiding Level
 open GlobalTheory.AdSpan.ReVec
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -591,12 +590,7 @@ theorem gram_reS_eq : (reS S b).gram = (frP S b)ᴴ * S.gram * frP S b := by
 
 theorem sum_frameMatrix_mulVec_smul (s' : Fin S.rank → D.host.E) :
     ∑ k, (frP S b *ᵥ s') k • S.frame k = ∑ a, s' a • b a := by
-  have hb : ∀ a, b a = ∑ l, frP S b l a • S.frame l := fun a =>
-    (Module.Basis.sum_toMatrix_smul_self S.frame b a).symm
-  simp only [hb, Matrix.mulVec, dotProduct, Finset.sum_smul, Finset.smul_sum, smul_smul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun k _ => ?_
-  rw [mul_comm]
+  exact (GlobalTheory.AdSpan.ReVec.sum_smul_frame_frP S b s').symm
 
 theorem mem_L0c_iff_mem_intVec_of_span_frame (s' : Fin S.rank → D.host.E) : s' ∈ L0c D (reS S b) ↔ frP S b *ᵥ s' ∈ L0c D S := by
   show ∑ a, s' a • b a ∈ S.L0 ↔ ∑ k, (frP S b *ᵥ s') k • S.frame k ∈ S.L0
@@ -683,9 +677,7 @@ def reWEquiv (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : WO S T
   map_add' := reW_add S T b
 
 theorem continuous_reW (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) :
-    Continuous (reW S T b) := by
-  haveI : IsTopologicalRing (AE D) := (Formalism.IndefR.Eqv.ae_facts D).1
-  exact continuous_id.matrix_mul continuous_const
+    Continuous (reW S T b) := GlobalTheory.AdSpan.ReVec.FockVac.continuous_reW S T b
 
 theorem continuous_reWi (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) :
     Continuous (reWi S T b) := by
@@ -911,7 +903,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

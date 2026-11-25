@@ -1,8 +1,15 @@
 module
 
-public import Development.EtaleCohomology.EtaleSheaves.EtaleChapterDTwo
 public import Mathlib.RingTheory.PowerSeries.Derivative
 public import Mathlib.RingTheory.PowerSeries.Inverse
+public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
+
+@[expose] public section
+
+def LateralTheory.E.EtaleChapterDTwo : Prop :=
+  GlobalTheory.EtC.A1 → GlobalTheory.EtC.A2 → GlobalTheory.EtC.A3 → GlobalTheory.EtC.A4 → GlobalTheory.EtC.A5 → GlobalTheory.EtC.A7 → GlobalTheory.EtC.A8 → GlobalTheory.EtC.A9 → GlobalTheory.EtC.A10 → GlobalTheory.EtC.A11 → GlobalTheory.EtC.B1 → GlobalTheory.EtC.B2 → GlobalTheory.EtC.B3 → GlobalTheory.EtC.B4 → GlobalTheory.EtC.B5 → GlobalTheory.EtC.B7 → GlobalTheory.EtC.C1 → GlobalTheory.EtC.C2 → GlobalTheory.EtC.C3 → GlobalTheory.EtC.C4 → GlobalTheory.EtC.C5 → GlobalTheory.EtC.D1 → GlobalTheory.EtC.D2
+end
+
 
 @[expose] public section
 
@@ -98,15 +105,15 @@ theorem goal_of (hR : LeafRing) (hC : LeafChern) (hN : LeafNat) (hW : LeafWhitne
   refine ⟨fun {E N} V => if h : Inv q E then P.π h k (newton (fun j => P.ι h j (c h V j)) k) else 0, ?_, ?_, ?_⟩
   · intro E E' N f V h'
     have h := inv_of f h'
-    simp only [dif_pos h, dif_pos h']
+    simp only [dite_eq_left h, dite_eq_left h']
     rw [← hu h (f ≫ V) _ (hN q P f h h' V _ (hc h' V)), ← P.π_map f h h', hS.1 _ _ _ _ (hc h' V).1]
     simp only [P.map_ι]
   · intro E a b V W h
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     obtain ⟨e, he, hk⟩ := hW q P h V W _ _ (hc h V) (hc h W)
     rw [← hu h _ e he, hS.2.1 _ (fun j => P.ι h j (c h V j)) (fun j => P.ι h j (c h W j)) _ (hc h V).1 (hc h W).1 hk, map_add (f := _)]
   · intro E L h
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     rw [hS.2.2 _ _ _ (hc h L).1 (hL q P h L _ (hc h L)) (fun j hj => by rw [(hc h L).2.1 j hj, map_zero]) k hk,
       ← P.ι_cpow, P.π_ι]
 

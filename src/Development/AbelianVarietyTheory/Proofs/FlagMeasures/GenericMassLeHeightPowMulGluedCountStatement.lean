@@ -114,11 +114,6 @@ section Mat
 
 variable {K : Type} [CommRing K] {n : ℕ}
 
-theorem uni_det {X : Matrix (Fin n) (Fin n) K} (h : Uni X) : X.det = 1 := by
-  have hM : X.BlockTriangular id := fun ⦃i j⦄ hij => h.1 i j hij
-  rw [Matrix.det_of_isUpperTriangular hM]
-  simp [h.2]
-
 theorem uni_mul {X Y : Matrix (Fin n) (Fin n) K} (hX : Uni X) (hY : Uni Y) : Uni (X * Y) := by
   unfold Uni at *
   refine ⟨fun a b hab => ?_, fun a => ?_⟩
@@ -136,7 +131,7 @@ theorem uni_mul {X Y : Matrix (Fin n) (Fin n) K} (hX : Uni X) (hY : Uni Y) : Uni
     · intro h; exact absurd (Finset.mem_univ a) h
 
 theorem uni_inv {X : Matrix (Fin n) (Fin n) K} (h : Uni X) : Uni X⁻¹ := by
-  have hdet : IsUnit X.det := by rw [uni_det h]; exact isUnit_one
+  have hdet : IsUnit X.det := by rw [GlobalTheory.GenMass.det_uni_eq_one h]; exact isUnit_one
   have : Invertible X := Matrix.invertibleOfIsUnitDet X hdet
   have hlow : ∀ a b, b < a → X⁻¹ a b = 0 := fun a b hab =>
     (Matrix.blockTriangular_inv_of_blockTriangular (b := id) (fun ⦃i j⦄ hij => h.1 i j hij)) hab
@@ -286,7 +281,7 @@ theorem one_flag (Z : LocDat D) {T : D.host.E} (hT : T ≠ 0) (F : LFlag (D.sp.Y
       exact ⟨B, hBu, fun _ => hBc, fun h => absurd hp h⟩
     · exact ⟨1, uni_one, fun h => absurd h hp, fun _ => rfl⟩
   choose B hBu hBc hB1 using hB
-  have hdet : ∀ p, IsUnit (B p).det := fun p => by rw [uni_det (hBu p)]; exact isUnit_one
+  have hdet : ∀ p, IsUnit (B p).det := fun p => by rw [GlobalTheory.GenMass.det_uni_eq_one (hBu p)]; exact isUnit_one
   have hsU : ∀ p : PlF D, Uni (Matrix.diagonal (frFac Z.δ p) * B p * Matrix.diagonal (fun a => Ring.inverse (frFac Z.δ p a))) :=
     fun p => uni_conj (hBu p) (frFac Z.δ p) (fun a => Ring.inverse (frFac Z.δ p a)) (hφψ p)
   obtain ⟨c, hcP, hcN⟩ : ∃ c : ∀ p : PlF D, ((D.s.atP p).Fp)ˣ,
@@ -300,8 +295,8 @@ theorem one_flag (Z : LocDat D) {T : D.host.E} (hT : T ≠ 0) (F : LFlag (D.sp.Y
   have hpat : ∀ (p : PlF D) (i j : Fin (D.R.rS + 1)), ¬ i < j → (Matrix.diagonal (frFac Z.δ p) * B p * Matrix.diagonal (fun a => Ring.inverse (frFac Z.δ p a))) i j = if i = j then 1 else 0 := by
     intro p i j hij
     rcases (not_lt.mp hij).lt_or_eq with h | h
-    · rw [if_neg (ne_of_gt h)]; exact (hsU p).1 i j h
-    · rw [h, if_pos rfl]; exact (hsU p).2 i
+    · rw [ite_eq_right (ne_of_gt h)]; exact (hsU p).1 i j h
+    · rw [h, ite_eq_left rfl]; exact (hsU p).2 i
   obtain ⟨t, ht, hts⟩ : ∃ t : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E,
       (∀ i j, ¬ i < j → t i j = if i = j then 1 else 0) ∧
       ∀ (p : PlF D) (i j : Fin (D.R.rS + 1)), ∃ o ∈ (Z.M p).L.O,
@@ -318,8 +313,8 @@ theorem one_flag (Z : LocDat D) {T : D.host.E} (hT : T ≠ 0) (F : LFlag (D.sp.Y
     split_ifs
     · exact one_mem _
     · exact zero_mem _
-  have htu : Uni t := ⟨fun a b hab => by rw [ht a b (not_lt.mpr hab.le), if_neg (ne_of_gt hab)],
-    fun a => by rw [ht a a (lt_irrefl a), if_pos rfl]⟩
+  have htu : Uni t := ⟨fun a b hab => by rw [ht a b (not_lt.mpr hab.le), ite_eq_right (ne_of_gt hab)],
+    fun a => by rw [ht a a (lt_irrefl a), ite_eq_left rfl]⟩
   obtain ⟨F₁, hF₁⟩ := (GlobalTheory.FlagChange.flag_change D F hT).1 t htu
   have hsc : ∀ p : PlF D, Chg (scaled Z p (frame F)) (Matrix.diagonal (fun a => Ring.inverse (frFac Z.δ p a)) * t.map (D.s.atP p).ιE * Matrix.diagonal (frFac Z.δ p)) (scaled Z p (frame F₁)) :=
     fun p => chg_scaled Z p hF₁
@@ -564,11 +559,6 @@ theorem locP_gmap (n : V ≃ₗ[K] V) (p : Ideal (𝓞 K)) [p.IsPrime] (L : Subm
   rw [_root_.Formalism.HermitianLattices.Ext.L3.RankOne.mem_gmap]
   show (∃ s ∈ p.primeCompl, s • x ∈ Formalism.HermitianLatticesTheory.gmap n L) ↔ ∃ s ∈ p.primeCompl, s • n.symm x ∈ L
   simp only [_root_.Formalism.HermitianLattices.Ext.L3.RankOne.mem_gmap, linearEquiv_map_smul_ringOfIntegers]
-
-theorem mem_dual (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V) (x : V) :
-    x ∈ Formalism.HermitianLatticesTheory.dual h L ↔ ∀ y ∈ L, h y x ∈ (1 : Submodule (𝓞 K) K) := by
-  simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-    LinearMap.coe_restrictScalars]
 
 theorem dual_gmap (h : V →ₗ⋆[K] V →ₗ[K] K) (n : V ≃ₗ[K] V) (hn : n ∈ Formalism.HermitianLatticesTheory.isom h)
     (L : Submodule (𝓞 K) V) :
@@ -1146,7 +1136,7 @@ theorem mass_class_eq_weight_count : ∀ {F : Type} [Field F] [ValuativeRel F] [
       have hint : S.IsIntCls (h • C₂) := by
         rw [hC₂, ← (aS _ _ hΛ₁t h hh).2.2.2.2.1]
         exact (trm _ _ (aS _ _ hΛ₁t h hh).1).2.2.2.2.2.2.1
-      rw [e', if_pos hint, hwinv h hh, mul_one]
+      rw [e', ite_eq_left hint, hwinv h hh, mul_one]
     rw [(GlobalTheory.HL.CoordHeight.height_eq M hM H r k P S c).1]
     have := hle.trans hsum
     exact (ENNReal.ofReal_le_ofReal_iff (by unfold Frames.Hp; positivity)).1 this
@@ -1295,7 +1285,7 @@ theorem tri_trans : ∀ (K W : Type) [CommRing K] [AddCommGroup W] [Module K W] 
 
 theorem mapLF_frame : ∀ (D : D7) {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (m : GV D), m ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → (∀ a, frame (Formalism.L2.SG.TermOp.mapLF m F) a = m (frame F a)) ∧ (Formalism.L2.SG.TermOp.mapLF m F).zt = m F.zt ∧ (Formalism.L2.SG.TermOp.mapLF m F).fl.z = m F.fl.z := by
   intro D T F m hm
-  rw [Formalism.L2.SG.TermOp.mapLF, dif_pos hm]
+  rw [Formalism.L2.SG.TermOp.mapLF, dite_eq_left hm]
   refine ⟨fun a => ?_, rfl, rfl⟩
   simp only [frame, Formalism.MainNotions.S.FlagG.fvec, Formalism.L2.SG.TermOp.mapFlag]
   refine Fin.lastCases ?_ (fun i => ?_) a
@@ -1395,8 +1385,8 @@ theorem genericMass_le_heightPow_mul_glueSum : ∀ (D : D7) (X : HidaSetting D) 
     obtain ⟨-, -, ⟨n, hn, hfn, -⟩, ⟨n', hn', hfn', -⟩, -⟩ := htt p hp
     have u1 := _root_.GlobalTheory.LocOver.UnipOnto.unipotent_onto ((zOf Y).M p) (hOK p) (locH (zOf Y) p) D.R.rS (Fm.FP p).A (hAT p)
     have u2 := _root_.GlobalTheory.LocOver.UnipOnto.unipotent_onto ((zOf Y).M p) (hOK p) (locH (zOf Y) p) D.R.rS (Fm.FP p).B (hBT p)
-    have e1 : f p = (tt p hp).f := dif_pos hp
-    have e2 : f' p = (tt p hp).f' := dif_pos hp
+    have e1 : f p = (tt p hp).f := dite_eq_left hp
+    have e2 : f' p = (tt p hp).f' := dite_eq_left hp
     rw [e1, e2, ← hAf p, ← hBf p, hfn, hfn']
     exact ⟨u1.2.1 n hn, u2.2.1 n' hn'⟩
   obtain ⟨G, G'', hStd, hch⟩ := GlobalTheory.T.exists_rational_frames_prescribed_local_classes D (zOf Y) u u' F F' Fm.P f f' htri
@@ -1406,8 +1396,8 @@ theorem genericMass_le_heightPow_mul_glueSum : ∀ (D : D7) (X : HidaSetting D) 
         ENNReal.ofReal wp * locSum G G'' p (Fm.R p) (Fm.d0 p) := by
     intro p hp
     obtain ⟨A, A', hA, hA', hint, hc1, hc2⟩ := hch p hp
-    have e1 : f p = (tt p hp).f := dif_pos hp
-    have e2 : f' p = (tt p hp).f' := dif_pos hp
+    have e1 : f p = (tt p hp).f := dite_eq_left hp
+    have e2 : f' p = (tt p hp).f' := dite_eq_left hp
     rw [e1] at hc1
     rw [e2] at hc2
     obtain ⟨-, -, ⟨n, hn, hfn, -⟩, ⟨n', hn', hfn', -⟩, -⟩ := htt p hp
@@ -1420,7 +1410,7 @@ theorem genericMass_le_heightPow_mul_glueSum : ∀ (D : D7) (X : HidaSetting D) 
     exact ⟨wp, h0, h1, h2⟩
 
   have hTu : ((Tu D u : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (D.mem u).A.T_prime.ne_zero
-  have fc := GlobalTheory.T.unitriangularChange_rationalFlag_iff_rationalUnipotent D (lf D (X.Fu u)) hTu
+  have fc := GlobalTheory.FlagChange.flag_change D (lf D (X.Fu u)) hTu
   have hTri1 : Tri D.host.E (frame (lf D (X.Fu u))) (frame F) := (fc.2 F).2 hFn
   obtain ⟨m, hm, hGm⟩ := (fc.2 G).1 (tri_trans _ _ _ _ _ _ hTri1 hStd.1)
   have hmI : m ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := hm.1

@@ -10,16 +10,16 @@ public import Mathlib.Topology.Algebra.OpenSubgroup
 
 noncomputable def UpperTheory.Reformulated.B.DYka2.IsSmooth :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       ∀ (v : V), IsOpen {g : G | ((ρ : G → V →ₗ[k] V) g : V → V) v = v}
 
 theorem UpperTheory.Reformulated.B.DYka2.main :
-    ∀ {Γ V W : Type} [inst : Group Γ] [inst_1 : TopologicalSpace Γ] [IsTopologicalGroup Γ] [inst_3 : AddCommGroup V]
-      [inst_4 : _root_.Module ℂ V] [inst_5 : AddCommGroup W] [inst_6 : _root_.Module ℂ W] {ρ : Representation ℂ Γ V}
+    ∀ {Γ V W : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [AddCommGroup V]
+      [_root_.Module ℂ V] [AddCommGroup W] [_root_.Module ℂ W] {ρ : Representation ℂ Γ V}
       {σ : Representation ℂ Γ W},
       UpperTheory.Reformulated.B.DYka2.IsSmooth ρ →
         ∀ (f : ρ.IntertwiningMap σ) {L : Subgroup Γ},

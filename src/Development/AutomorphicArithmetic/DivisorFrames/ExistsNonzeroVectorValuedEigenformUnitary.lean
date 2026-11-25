@@ -75,13 +75,6 @@ private theorem ev_idem {D : D7} {l : ℕ} [Fact l.Prime]
   have h7 : 0 < ‖((l : ℕ) : PadicAlgCl l)‖ := norm_pos_iff.2 (Nat.cast_ne_zero.2 hl.ne_zero)
   exact absurd h2 (not_le.2 ((one_lt_inv₀ h7).2 h6))
 
-private theorem finPart_cA {D : D7} (w : AE D) :
-    finPart D (cA D w) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.sp.cm.sig (finPart D w) := by
-  induction w using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
-  | tmul a e => rfl
-
 private theorem placeIdem {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF D.host.F}
     (h : IsPlaceIdem D v ε) : ε * ε = ε := by
   obtain ⟨α, rfl, h1, h0⟩ := h
@@ -108,7 +101,7 @@ theorem UpperTheory.eval_localElement_matrix_eq_one_of_prime_not_dvd :
         (fun a ha => by
           change ‖ev (a ⊗ₜ[D.host.F] D.sp.cm.sig 1)‖ ≤ 1
           rw [map_one]; exact h a ha) P hP e h1 h2
-      rw [RingHom.map_add (f := _), RingHom.map_add (f := _), a1, finPart_cA, zero_add]
+      rw [RingHom.map_add (f := _), RingHom.map_add (f := _), a1, GlobalTheory.PlaceIdem.finPart_cA, zero_add]
       exact a2
     · refine ev_idem ev h P hP f ?_ h2
       rw [h1, ← RingHom.map_mul, placeIdem hε]
@@ -348,7 +341,6 @@ private theorem core {l : ℕ} [Fact l.Prime] {ι : Type} [Fintype ι] {n : ℕ}
     rw [← hΦs, ← LinearMap.map_smul, ← h2, map_sum, map_sum]
     refine Finset.sum_congr rfl fun a ha => ?_
     rw [map_mul, map_mul, hA a ha, mul_one]
-
 
 theorem UpperTheory.exists_nonzero_vectorValued_eigenform_unitary :
     ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}

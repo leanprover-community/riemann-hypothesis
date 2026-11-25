@@ -368,14 +368,14 @@ theorem main : LateralTheory.E.LeafVanBStalkPf.LeafSHCont := by
     (fun g g' => by
       rw [← Functor.map_comp]
       congr 1
-      apply pullback.hom_ext <;> simp only [resBW, pullback.map, Category.assoc, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, Category.comp_id, tr_comp_left S g g'])
+      apply pullback.hom_ext <;> simp only [resBW, pullback.map, Category.assoc, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, Category.comp_id, tr_comp_left S g g'])
     (fun j => sch.map (tl j)) (fun j => sch.map (zl j))
     (fun j => by rw [← Functor.map_comp, ← Functor.map_comp, c4 j])
     (fun g => by rw [← Functor.map_comp, ct g])
     (fun {j j'} g => by
       rw [← Functor.map_comp]
       congr 1
-      apply pullback.hom_ext <;> simp only [zl, resBW, pullback.map, Category.assoc, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, Category.comp_id, ct g])
+      apply pullback.hom_ext <;> simp only [zl, resBW, pullback.map, Category.assoc, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, Category.comp_id, ct g])
     (fun n j y h => injT hB q i S.D S.c S.hc (fun j => (S.V j).left) S.e (fun g => (S.tr g).left) (fun g => S.tr_spec g)
       tl (fun j => by simp [tl]) huD n j y h)
     (fun n x => surjT hB q i S.D S.c S.hc (fun j => (S.V j).left) S.e tl (fun j => by simp [tl]) huc n x)

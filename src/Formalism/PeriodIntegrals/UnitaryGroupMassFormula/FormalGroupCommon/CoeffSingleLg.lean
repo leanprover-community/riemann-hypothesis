@@ -66,9 +66,9 @@ theorem coeff_single_lg {σ : Type} [DecidableEq σ] (l : PowerSeries ℂ_[p]) (
   · subst hji
     simp
   · have hne : Finsupp.single i k ≠ Finsupp.single j ((Finsupp.single i k) j) := by
-      rw [Finsupp.single_apply, if_neg (Ne.symm hji), Finsupp.single_zero]
+      rw [Finsupp.single_apply, ite_eq_right (Ne.symm hji), Finsupp.single_zero]
       exact Finsupp.single_ne_zero.mpr hk
-    rw [if_neg hne, if_neg hji]
+    rw [ite_eq_right hne, ite_eq_right hji]
 
 end PI.FglShared
 

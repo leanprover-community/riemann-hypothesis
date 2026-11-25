@@ -163,7 +163,6 @@ theorem exists_affineOpen_comap_derivIdealSheafIterate_eq (k : Type u) [Field k]
       = X₁.homOfLE hVW ≫ (AlgebraicGeometry.morphismRestrict π W ≫ W.ι) := by
     rw [morphismRestrict_ι, ← Category.assoc, Scheme.homOfLE_ι]
   have : IsOpenImmersion ((V : X₁.Opens).ι ≫ π) := by rw [hfac]; infer_instance
-  have : AlgebraicGeometry.Smooth ((V : X₁.Opens).ι ≫ π) := inferInstance
   have hcomp : ∀ A : X.IdealSheafData,
       A.comap ((V : X₁.Opens).ι ≫ π) = (A.comap π).comap (V : X₁.Opens).ι := by
     intro A

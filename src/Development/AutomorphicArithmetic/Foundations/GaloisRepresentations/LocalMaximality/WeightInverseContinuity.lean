@@ -49,7 +49,7 @@ private lemma core (hDet : Det) (hK2 : KoszulBoundaryOfComponentMemIdeal) (hKS :
   rw [← hm]
   have hmM : m ∈ M := by
     have := hcC ((img e0).map ι.toEmbedding)
-    rw [if_pos (by simp [card_img])] at this
+    rw [ite_eq_left (by simp [card_img])] at this
     rwa [hm]
   have hZ0 : (fun t : Finset κ0 => c (t.map ι.toEmbedding)) ∈ (kos act M fun l => r (ι l)).Z d := by
     refine Submodule.mem_inf.2 ⟨fun s _ => ?_, ?_⟩

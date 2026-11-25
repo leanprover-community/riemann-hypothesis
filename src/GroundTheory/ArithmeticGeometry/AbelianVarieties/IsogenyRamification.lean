@@ -563,15 +563,15 @@ theorem ramIdx_mulIsogeny_mul_card_ker (n : ℤ) (hn : n ≠ 0) :
     simp only [D, Finsupp.add_apply, Finsupp.finsetSum_apply, Finsupp.single_apply]
     by_cases hP : P = 0
     · subst hP
-      rw [Finset.sum_eq_zero (fun T hT => if_neg (Finset.ne_of_mem_erase hT)), if_pos rfl, zero_add,
+      rw [Finset.sum_eq_zero (fun T hT => ite_eq_right (Finset.ne_of_mem_erase hT)), ite_eq_left rfl, zero_add,
         ordPoint_zero_poly E hΨ0]
-    · rw [if_neg (Ne.symm hP), add_zero, Finset.sum_ite_eq']
+    · rw [ite_eq_right (Ne.symm hP), add_zero, Finset.sum_ite_eq']
       obtain ⟨h, hP'⟩ := eq_some_xOf_yOf E hP
       have hmem : P ∈ S.erase 0 ↔ n • P = 0 := by simp [S, hP]
       rw [hP', hA h, ← hP']
       by_cases hT : n • P = 0
-      · rw [if_pos hT, if_pos (hmem.mpr hT)]
-      · rw [if_neg hT, if_neg (fun h' => hT (hmem.mp h'))]
+      · rw [ite_eq_left hT, ite_eq_left (hmem.mpr hT)]
+      · rw [ite_eq_right hT, ite_eq_right (fun h' => hT (hmem.mp h'))]
   have hdeg := divisorDegree_divisorOf E ha
 
   rw [hD, map_add (f := _), map_sum, divisorDegree_single] at hdeg
@@ -620,11 +620,11 @@ theorem exists_ordPoint_eq_ite (S : Finset E.toAffine.Point) :
   have h1 : B + C ≠ T := fun h => hC2 (h ▸ hT)
   have h2 : B ≠ T := fun h => hB (h ▸ hT)
   have h3 : C ≠ T := fun h => hC1 (h ▸ hT)
-  simp only [D, Finsupp.sub_apply, Finsupp.add_apply, Finsupp.single_apply, if_neg h1, if_neg h2,
-    if_neg h3]
+  simp only [D, Finsupp.sub_apply, Finsupp.add_apply, Finsupp.single_apply, ite_eq_right h1, ite_eq_right h2,
+    ite_eq_right h3]
   by_cases h0 : T = 0
   · subst h0; simp
-  · rw [if_neg (Ne.symm h0), if_neg h0]; simp
+  · rw [ite_eq_right (Ne.symm h0), ite_eq_right h0]; simp
 
 theorem ramIdx_dvd_insepDeg (φ : Isogeny E E') : φ.ramIdx ∣ φ.insepDeg := by
   classical

@@ -264,11 +264,6 @@ private theorem half_le_norm_sub_of_re_eq_neg_half_of_LFunction_eq_zero {N : ℕ
   · rw [abs_of_neg (by linarith)]; linarith
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-private theorem LFunction_ne_zero_of_re_eq_neg_half {N : ℕ} [NeZero N]
-    (χ : DirichletCharacter ℂ N) {s : ℂ} (hs : s.re = -(1 / 2)) : LFunction χ s ≠ 0 :=
-  GlobalTheory.LFunction_ne_zero_of_re_eq_neg_half χ hs
-
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem norm_finsum_div_sub_le_two_mul_finsum_of_half_le_dist {S : Set ℂ} (hS : S.Finite) (k : ℂ → ℕ) (s : ℂ)
     (hd : ∀ w ∈ S, 1 / 2 ≤ ‖s - w‖) :
     ‖∑ᶠ (w : ℂ) (_ : w ∈ S), (k w : ℂ) / (s - w)‖ ≤ 2 * ∑ᶠ (w : ℂ) (_ : w ∈ S), (k w : ℝ) := by
@@ -461,7 +456,6 @@ private theorem norm_neg_add_inv_two_pi_mul_add_I_mul_sub_le (H₁ H₂ W E : �
   have := mul_le_mul h1 h2 (norm_nonneg _) zero_le_one
   linarith
 
-
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 
 theorem _root_.GlobalTheory.PerronShift.perron_shift : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), χ.IsPrimitive → ∀ u T : ℝ, 2 ≤ T → T ≤ u → ∃ T' : ℝ, T ≤ T' ∧ T' ≤ T + 1 ∧ ‖(1 / (2 * Real.pi) : ℂ) * (∫ t : ℝ in (-T')..T', (-(deriv (LFunction χ) (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I) / LFunction χ (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I)) * (u : ℂ) ^ (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I) / (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I))) - (if N = 1 then (u : ℂ) else 0) + ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < T' ∧ LFunction χ ρ = 0}, ((analyticOrderNatAt (LFunction χ) ρ : ℕ) : ℂ) * ((u : ℂ) ^ ρ / ρ)‖ ≤ C * (u * Real.log (N * u * T) ^ 2 / T + Real.log (N * u) + ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < 1 ∧ LFunction χ ρ = 0}, ((analyticOrderNatAt (LFunction χ) ρ : ℕ) : ℝ) / ‖ρ‖) := by
@@ -627,8 +621,8 @@ theorem truncated_explicit_formula : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZer
       (if N = 1 then (u : ℂ) else 0) := by
     unfold psi0
     by_cases h : N = 1
-    · rw [if_pos h, if_pos (hiff.mpr h)]
-    · rw [if_neg h, if_neg (fun h' => h (hiff.mp h'))]
+    · rw [ite_eq_left h, ite_eq_left (hiff.mpr h)]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h (hiff.mp h'))]
   rw [hpsi]
   have hZ : 0 ≤ ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < 1 ∧ LFunction χ ρ = 0},
       ((analyticOrderNatAt (LFunction χ) ρ : ℕ) : ℝ) / ‖ρ‖ :=

@@ -155,7 +155,6 @@ section -- clump:auto
 
 open CategoryTheory NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.DualWeyl GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.DefPt ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 open scoped Matrix Classical
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 theorem _root_.GlobalTheory.T.eigenlattice_slope_lower_bound_definite_case : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (ξ : ℝ) (V : (c.F →+* ℂ) → HSp D) (dict : ∀ σ, GA D (V σ) → Σ k, Frame ((U σ).X k).Ψ r) (G : Type) [Group G] [Finite G] (lev : G → (Dw.La →ₗ[𝓞 D.host.E] Dw.La) × (Dw.La →ₗ[𝓞 D.host.E] Dw.La)) (χ : G →* (c.F)ˣ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (c₁ : ℝ), DefCase U ξ → Finite (Comp Xo c) → Nonempty (Comp Xo c) → (∀ σ, GoodEmb c σ → ∀ g, (dict σ g).2 ∈ ((U σ).X (dict σ g).1).dom) → ActLev (Xo := Xo) c lev → FreePt Xo c lev → Dom a n → GoodW U ξ V dict (wtZ a n) → FlatExistsAt U ξ c₁ → eigLat U lev χ (wtZ a n) ≠ ⊥ ∧ defBound Dw a n c₁ ≤ slope_sq (normW U ξ V dict (wtZ a n)) (eigLat U lev χ (wtZ a n)) / 2 := by
   intro D H Dw l Xo c r U ξ V dict G _ _ lev χ a n c₁ hD hF hN hdom hA hfree hDom hW hflat
@@ -484,8 +483,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 200000
-
 section
 set_option synthInstance.maxHeartbeats 400000
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.DefPt GlobalTheory.FlatLine
@@ -808,7 +805,7 @@ theorem exists_cmLat_unfAt_rankOne : ∀ (E : Type) [Field E] [NumberField E] [I
   obtain ⟨h1, h2, -⟩ := hU
   refine exists_cmLat_rankOne H (U.X k) x₀ hr h1 (h2 k).1 (h2 k).2 _ W.per (W.φ k) (W.isom k)
     (fun j => (W.e j).2) (fun j hj => ?_) W.pm_eq D₁ hp1 hq1 lam hL hli ho hsp
-  exact (W.e j).2.2.trans_eq (if_neg hj)
+  exact (W.e j).2.2.trans_eq (ite_eq_right hj)
 
 end GlobalTheory.LamT.CMRankOne
 end -- clump:auto
@@ -896,7 +893,7 @@ theorem gsStep_self (G : Matrix (Fin r) (Fin r) E) (v : Fin r → Fin r → E) (
   funext k
   simp only [gsStep, gsMat, true_and, mul_sub, Finset.sum_sub_distrib, Pi.sub_apply,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   congr 1
   refine Finset.sum_congr rfl fun j _ => ?_
   split_ifs <;> ring
@@ -931,7 +928,7 @@ theorem herm_gsStep_self (X : Data E r) (v : Fin r → Fin r → E) (hv : frm X.
   have hne := herm_self_ne X v hv m ho k hkm
   rw [gsStep_self, HermitianTraceFormVanishing.herm_sub_left, herm_sum_left,
     Finset.sum_eq_single k (fun i _ hik => ?_) (fun h => absurd (Finset.mem_univ k) h),
-    if_pos hk, div_mul_cancel₀ _ hne, sub_self]
+    ite_eq_left hk, div_mul_cancel₀ _ hne, sub_self]
   split_ifs with him
   · rw [ho i k him hkm hik, mul_zero]
   · rw [zero_mul]
@@ -1122,7 +1119,7 @@ theorem exists_orthoFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     simpa [ReciprocityTheory.ChartRestriction.G.FD.sgn, hj] using this
   · intro j hj τ
     have := hsl τ j
-    simp only [ReciprocityTheory.ChartRestriction.G.FD.sgn, if_neg (not_lt.2 hj)] at this
+    simp only [ReciprocityTheory.ChartRestriction.G.FD.sgn, ite_eq_right (not_lt.2 hj)] at this
     linarith
   · intro τ
     rfl
@@ -1282,9 +1279,6 @@ theorem frameDeg_def (hCM : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
 
 end GlobalTheory.DefCoreLie
 
-namespace GlobalTheory.DefCoreLie
-
-end GlobalTheory.DefCoreLie
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComponentPointLastIndex =====
@@ -1335,8 +1329,6 @@ section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.DefPt GlobalTheory.FlatLine
 open GlobalTheory.FlatCore
-namespace GlobalTheory.DefCoreLie
-end GlobalTheory.DefCoreLie
 namespace GlobalTheory.DefCoreLie
 theorem degLie_core_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m) (PP A M : ℝ), _root_.GlobalTheory.CovTop.RowsTAlt p → (i : ℕ) + 1 = D.R.m → GramAt p i → WtNum p i PP → HostNum D L PP A M → FnAlgClosed (Xo := (p.T.Q.Xo ((i : ℕ) + 1))) (c := p.T.Q.c) → ∀ (Z : Comp (p.T.Q.Xo ((i : ℕ) + 1)) p.T.Q.c) (P : PtData Z) (τ : Psi p.T.Q.H), P.degLie τ.1 = -flatDegVal (dat p i) (ofRecord D L p.Del p.h0).logOm := by
   intro D L hT Gi Gl Kc Y0 cX ex Csz p i PP A M hR hm hG hW hN hF Z P τ

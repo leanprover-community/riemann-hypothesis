@@ -19,7 +19,7 @@ theorem ialg_one {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)
   intro m hm k
   have : m = 0 := by
     by_contra h
-    rw [mem_support_iff, coeff_one, if_neg (Ne.symm h)] at hm
+    rw [mem_support_iff, coeff_one, ite_eq_right (Ne.symm h)] at hm
     exact hm rfl
   simp [this]
 

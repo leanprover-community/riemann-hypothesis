@@ -31,7 +31,7 @@ theorem toCols₁_wit {n : ℕ} (T : GL (Fin n) E) (a : E) :
   rw [Matrix.mul_apply, Fintype.sum_sum_type] at this
   simp only [Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.zero_apply, mul_zero,
     Finset.sum_const_zero, add_zero, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true] at this
+    ite_true] at this
   simpa [Matrix.toCols₁] using this
 
 omit [NumberField F] [NumberField E] in

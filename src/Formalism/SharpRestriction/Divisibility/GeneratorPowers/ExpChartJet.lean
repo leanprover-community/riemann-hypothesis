@@ -15,8 +15,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
 open Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdJet Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Jets
 
 variable {R : Type} [CommRing R]
@@ -26,10 +24,10 @@ private lemma cc_psTrunc_lemma {κ : Type} [Fintype κ] [DecidableEq κ] (m : �
   unfold psTrunc
 
   rw [map_sum, Finset.sum_eq_single 0]
-  · rw [MvPolynomial.constantCoeff_monomial, if_pos rfl]
+  · rw [MvPolynomial.constantCoeff_monomial, ite_eq_left rfl]
     first | rfl
   · intro e _ he
-    rw [MvPolynomial.constantCoeff_monomial, if_neg he]
+    rw [MvPolynomial.constantCoeff_monomial, ite_eq_right he]
   · intro h0
     exfalso
     apply h0
@@ -380,7 +378,7 @@ theorem tan_jφ (hφ : IsExpOf C.B.G.F C.uvec φ) (j : Fin (dL Dw)) :
   intro q
   rw [AlgHom.comp_apply, jφ, jetSubstPS_mk (0 + 1) (fun p : Fin 1 × Fin C.d => φ p.2) (fun p => hφ.const p.2),
     jetTan_eq_tp, tp_psJet, tp_mk, hφ.const, TrivSqZeroExt.inl_zero, zero_add]
-  simp only [ite_mul, _root_.one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [ite_mul, _root_.one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem xExp_tan (hφ : IsExpOf C.B.G.F C.uvec φ) (ℓ : Lt1 Dw) : IsCombAt y.x
     (fun j : Fin (dL Dw) => (homAt y.x (jetTan ((0 : Fin 1), j) :
@@ -407,7 +405,7 @@ theorem xExp_tan (hφ : IsExpOf C.B.G.F C.uvec φ) (ℓ : Lt1 Dw) : IsCombAt y.x
     funext q
     rw [Finset.sum_apply]
     simp only [Pi.smul_apply, smul_eq_mul, hq, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true]
+      ite_true]
   have hy : (pOf C fun q => C.uvec ℓ q.2).left = y.u ℓ.1 ℓ.2 := by
     rw [← hs1, pOf_sum, ← hprod, hu']
   have hs2 : (∑ j : Fin (dL Dw), (if j = ltIdx Dw ℓ then (1 : S) else 0) •
@@ -415,7 +413,7 @@ theorem xExp_tan (hφ : IsExpOf C.B.G.F C.uvec φ) (ℓ : Lt1 Dw) : IsCombAt y.x
       fun q => C.uvec ℓ q.2 := by
     funext q
     rw [Finset.sum_apply]
-    simp only [Pi.smul_apply, smul_eq_mul, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Pi.smul_apply, smul_eq_mul, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [_root_.one_mul]
     exact hφ.lin ℓ q.2
   refine ⟨fun j => pOf C ((if j = ltIdx Dw ℓ then (1 : S) else 0) •

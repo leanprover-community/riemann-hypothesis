@@ -14,56 +14,16 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsPro
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CompletedTensorDiscreteSeriesIrreducibleFormalDe
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousRepresentativeProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSmoothAverageLowestKType
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDerivAtCompletedTensorOrbitSmoothAverage
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousConv, Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDerivAtConvolutionArchimedeanUnitaryLieAlgebr, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContinuousRowRepresentativesLowestKType
@@ -251,22 +211,9 @@ theorem hasDerivAt_integral [T2Space G] [MeasurableSpace G] [OpensMeasurableSpac
 
 end General
 
-theorem expU_zero {n : ℕ} {ε : Fin n → Bool} : expU (0 : gLie ε) = 1 := by
-  have h := uMat_expU (0 : gLie ε)
-  rw [ZeroMemClass.coe_zero, NormedSpace.exp_zero] at h
-  exact Subtype.ext (Units.ext h)
-
-theorem expU_add {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (a b : ℝ) :
-    expU ((a + b) • X) = expU (a • X) * expU (b • X) := by
-  apply Subtype.ext
-  apply Units.ext
-  show uMat (expU ((a + b) • X)) = uMat (expU (a • X)) * uMat (expU (b • X))
-  rw [uMat_expU, uMat_expU, uMat_expU, Submodule.coe_smul, Submodule.coe_smul, Submodule.coe_smul, _root_.add_smul]
-  exact Matrix.exp_add_of_commute _ _ (((Commute.refl _).smul_left a).smul_right b)
-
 theorem expU_inv {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (t : ℝ) : (expU (t • X))⁻¹ = expU (t • (-X)) := by
-  have h := expU_add X t (-t)
-  rw [_root_.add_neg_cancel, _root_.zero_smul, expU_zero] at h
+  have h := GlobalTheory.SobolevBound.expU_add X t (-t)
+  rw [_root_.add_neg_cancel, _root_.zero_smul, GlobalTheory.SobolevBound.expU_zero] at h
   rw [_root_.smul_neg, ← _root_.neg_smul]
   exact inv_eq_of_mul_eq_one_right h.symm
 
@@ -280,9 +227,6 @@ theorem hasDerivAt_exp_mul {n : ℕ} (Y M : Matrix (Fin n) (Fin n) ℂ) (i j : F
     let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] ℂ := LinearMap.toContinuousLinearMap
       { toFun := fun A => A i j, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
     exact L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) h1
-
-theorem continuous_expU {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) : Continuous fun t : ℝ => expU (t • X) := by
-  apply GlobalTheory.SobolevBound.continuous_expU
 
 private lemma uMat_expU_inv_mul {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (t : ℝ) (g : UJ ε) :
     uMat ((expU (t • X))⁻¹ * g) =
@@ -344,14 +288,14 @@ theorem convolution_hasDerivAt : ∀ (B : RowsAut) (A : (InfinitePlace B.I.F →
         Function.notMem_support.1 fun h' => h (support_fderiv_subset ℝ h')
       rw [h0, ContinuousLinearMap.zero_apply, zero_mul]
     · rw [h, mul_zero]
-  have hcc : Continuous c := (continuous_pi fun v => continuous_expU (E v)).prodMk continuous_const
+  have hcc : Continuous c := (continuous_pi fun v => GlobalTheory.SobolevBound.continuous_expU (E v)).prodMk continuous_const
   have hc0 : c 0 = 1 := by
     refine Prod.ext (funext fun v => ?_) rfl
     show expU ((0 : ℝ) • E v) = 1
     rw [_root_.zero_smul]
-    exact expU_zero
+    exact GlobalTheory.SobolevBound.expU_zero
   have hcadd : ∀ a b : ℝ, c (a + b) = c a * c b := fun a b =>
-    Prod.ext (funext fun v => expU_add (E v) a b) (mul_one 1).symm
+    Prod.ext (funext fun v => GlobalTheory.SobolevBound.expU_add (E v) a b) (mul_one 1).symm
   have hd : ∀ y : B.I.GA, HasDerivAt (fun t => ψ ((c t)⁻¹ * y)) (ψ' y) 0 := by
     intro y
     let P : ℝ → (InfinitePlace B.I.F → Fin B.I.n → Fin B.I.n → ℂ) := fun t v i j =>
@@ -508,7 +452,7 @@ theorem repsExist : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ), IsDSDat
   have hFr : ∀ u f, IsContRep B (T u) f → Fr u = f := by
     intro u f hf
     have h : ∃ f, IsContRep B (T u) f := ⟨f, hf⟩
-    have : Fr u = h.choose := dif_pos h
+    have : Fr u = h.choose := dite_eq_left h
     rw [this]
     exact huniq _ _ _ h.choose_spec hf
   refine ⟨Fr, fun P u hu => ?_⟩

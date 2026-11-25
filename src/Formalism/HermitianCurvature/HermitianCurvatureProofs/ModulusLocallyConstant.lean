@@ -401,7 +401,7 @@ theorem dual_exists (hD : LocalDatum K R ψ) {a b : K} (hab : a * b = 1) (ha : a
   by_contra hcon
   push Not at hcon
   let X : K → ℂ := fun x => if h : x ∈ R then χ ⟨x, h⟩ else 0
-  have hX : ∀ (x : K) (h : x ∈ R), X x = χ ⟨x, h⟩ := fun x h => dif_pos h
+  have hX : ∀ (x : K) (h : x ∈ R), X x = χ ⟨x, h⟩ := fun x h => dite_eq_left h
   have hSR : ∀ s ∈ S, s ∈ R := fun s hs => hS.1 s hs
 
   have h1 : ∀ s ∈ S, ∑ r ∈ S, X r * ψ (b * s * r) = 0 := by

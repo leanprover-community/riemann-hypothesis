@@ -2,49 +2,8 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesMultiplicativeShiftCompAndSubst
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffShiftS
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -59,16 +18,6 @@ variable {q : ℕ} [Fact q.Prime]
 theorem norm_zc (a : ℤ_[q]) : ‖zc a‖ = ‖a‖ := by
   have h := PadicComplex.norm_extends' q (a : ℚ_[q])
   simpa [zc] using h
-
-theorem zc_natCast (m : ℕ) : zc (m : ℤ_[q]) = (m : ℂ_[q]) := by simp [zc]
-
-theorem continuous_zc : Continuous (zc : ℤ_[q] → ℂ_[q]) := by
-  refine (Isometry.of_dist_eq fun a b => ?_).continuous
-  rw [dist_eq_norm, dist_eq_norm, ← norm_zc]
-  simp [zc]
-
-theorem norm_sub_one_lt_of_root {ζ : ℂ_[q]} {n : ℕ} (h : ζ ^ (q ^ n) = 1) : ‖ζ - 1‖ < 1 := by
-  apply GlobalTheory.MomOne.ShiftComp.norm_sub_one_lt_of_root <;> assumption
 
 theorem continuous_redFun (r : ℕ) (g : ZMod (q ^ r) → ℂ_[q]) :
     Continuous fun a : ℤ_[q] => g (PadicInt.toZModPow r a) := by
@@ -138,9 +87,9 @@ theorem sS_pow_eq (ζ : ℂ_[q]) (m : ℕ) :
 
 theorem twisted_moments : ∀ (q : ℕ) [Fact q.Prime] (S : ℂ_[q]⟦X⟧) (ζ : ℂ_[q]) (n k : ℕ), Bdd S → ζ ^ (q ^ n) = 1 → ∃ f : C(ℤ_[q], ℂ_[q]), (∀ a, f a = ζ ^ (PadicInt.toZModPow n a).val * zc a ^ k) ∧ HasSum (fun m : ℕ => coeff m S * (fwdDiff (1 : ℤ_[q]))^[m] f 0) (constantCoeff (DT^[k] (shiftS ζ S))) := by
   intro q _ S ζ n k hS h
-  have hζ := norm_sub_one_lt_of_root h
+  have hζ := GlobalTheory.MomOne.ShiftComp.norm_sub_one_lt_of_root h
   refine ⟨⟨fun a => ζ ^ (PadicInt.toZModPow n a).val * zc a ^ k,
-    (continuous_redFun n fun x => ζ ^ x.val).mul (continuous_zc.pow k)⟩, fun _ => rfl, ?_⟩
+    (continuous_redFun n fun x => ζ ^ x.val).mul (GlobalTheory.MomOne.ShiftComp.continuous_zc.pow k)⟩, fun _ => rfl, ?_⟩
   have := hasSum_coeff_iter hζ hS k 0
   rw [coeff_zero_eq_constantCoeff] at this
   convert this using 3 with m
@@ -149,7 +98,7 @@ theorem twisted_moments : ∀ (q : ℕ) [Fact q.Prime] (S : ℂ_[q]⟦X⟧) (ζ 
   refine Finset.sum_congr rfl fun j _ => ?_
   have e : (0 : ℤ_[q]) + j • (1 : ℤ_[q]) = (j : ℤ_[q]) := by simp
   rw [e]
-  simp only [ContinuousMap.coe_mk, map_natCast, ZMod.val_natCast, zc_natCast]
+  simp only [ContinuousMap.coe_mk, map_natCast, ZMod.val_natCast, GlobalTheory.MomOne.ShiftComp.zc_natCast]
   rw [← pow_eq_pow_mod j h]
   simp
   ring

@@ -180,7 +180,7 @@ theorem gs_exists {n : ℕ} (p : ℕ) (Y : Fin n → Fin r → ℂ) (hind : Line
           split_ifs with hba
           · rw [hba, mul_comm (ε a), mul_assoc, hεsq, mul_one]
           · rw [mul_zero]
-        rw [Finset.sum_congr rfl this, Finset.sum_ite_eq' T a, if_pos ha, sub_self]
+        rw [Finset.sum_congr rfl this, Finset.sum_ite_eq' T a, ite_eq_left ha, sub_self]
 
       set S₀ : Set (Fin n) := {j | (j : ℕ) ≤ c₀ ∧ ((j : ℕ) < p ↔ (c₀ : ℕ) < p)} with hS₀
       have hgS : ∀ a ∈ T, ((a : ℕ) < p ↔ (c₀ : ℕ) < p) → g a ∈ Submodule.span ℂ (Y '' S₀) := by
@@ -231,11 +231,11 @@ theorem gs_exists {n : ℕ} (p : ℕ) (Y : Fin n → Fin r → ℂ) (hind : Line
         rw [hε]
         dsimp only
         by_cases hcp : (c₀ : ℕ) < p
-        · rw [if_pos hcp, one_mul, hvw]
+        · rw [ite_eq_left hcp, one_mul, hvw]
           refine hpos w (fun j hj => hw j ?_) hw0
           rintro ⟨_, hj2⟩
           exact absurd (hj2.mpr hcp) (not_lt.mpr hj)
-        · rw [if_neg hcp, hvw]
+        · rw [ite_eq_right hcp, hvw]
           have := hneg w (fun j hj => hw j ?_) hw0
           · simp only [neg_mul, one_mul, Complex.neg_re]
             linarith
@@ -276,13 +276,13 @@ theorem gs_exists {n : ℕ} (p : ℕ) (Y : Fin n → Fin r → ℂ) (hind : Line
         by_cases hc0 : c = c₀ <;> by_cases ha0 : a = c₀
         · subst hc0
           subst ha0
-          rw [Function.update_self, hermC_smul_left, hermC_smul_right, hvv, hss, if_pos rfl]
+          rw [Function.update_self, hermC_smul_left, hermC_smul_right, hvv, hss, ite_eq_left rfl]
         · subst hc0
           rw [Function.update_self, Function.update_of_ne ha0, hermC_smul_left,
-            hvg a (hTm a (hlt a ha ha0)), mul_zero, if_neg (Ne.symm ha0)]
+            hvg a (hTm a (hlt a ha ha0)), mul_zero, ite_eq_right (Ne.symm ha0)]
         · subst ha0
           rw [Function.update_self, Function.update_of_ne hc0, hermC_smul_right,
-            ← hermC_conj τ hG, hvg c (hTm c (hlt c hc hc0)), map_zero, mul_zero, if_neg hc0]
+            ← hermC_conj τ hG, hvg c (hTm c (hlt c hc hc0)), map_zero, mul_zero, ite_eq_right hc0]
         · rw [Function.update_of_ne hc0, Function.update_of_ne ha0]
           exact horg c a (hlt c hc hc0) (hlt a ha ha0)
       · intro c hc

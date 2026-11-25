@@ -270,7 +270,6 @@ namespace US
 
 variable {n : ℕ} {X : Spc F E n}
 
-
 variable (σ X) in
 def uSub (v : Pl F) : Subgroup (UA σ X.J) where
   carrier := UAt σ X (evFin F v)
@@ -286,9 +285,6 @@ def uSub (v : Pl F) : Subgroup (UA σ X.J) where
 
 theorem kAt_eq (K : Subgroup (UA σ X.J)) (v : Pl F) : kAt K (evFin F v) = K ⊓ uSub σ X v :=
   congrArg (K ⊓ ·) (Subgroup.closure_eq (uSub σ X v))
-
-theorem kAt_mem {K : Subgroup (UA σ X.J)} {v : Pl F} (k : kAt K (evFin F v)) : k.1 ∈ UAt σ X (evFin F v) :=
-  ((kAt_eq K v).le k.2).2
 
 end US
 
@@ -444,7 +440,6 @@ theorem part_comm {v : Pl F} {g : UA σ Y.J} (hg : g ∈ UAt σ Y (evFin F v)) (
     noncomm_ring)
   rw [← hc, mul_assoc, c4, hc]; group
 
-
 theorem kInv (hB : B.IsGood σ) (hY : Y.IsHerm σ B r s) (hH : H.IsAdapted σ B Y Y₁ i₀ i₁) {K : Subgroup (UA σ Y.J)}
     (hK : IsStab B K) (hI : Iwa H K) (v : Pl F) (μ : Measure (kAt K (evFin F v))) [μ.IsHaarMeasure] {f : UA σ Y.J → ℂ}
     (hf : ContinuousOn f (UAt σ Y (evFin F v)))
@@ -490,7 +485,7 @@ theorem kInv (hB : B.IsGood σ) (hY : Y.IsHerm σ B r s) (hH : H.IsAdapted σ B 
   let π : K →* kAt K (evFin F v) := MonoidHom.mk' (fun k => ⟨partU ha k.1, partU_mem_kAt hK k.2 v⟩)
     fun a b => Subtype.ext (part_mul ha _ _)
   have πc : Continuous π := ((cont_part ha).comp continuous_subtype_val).subtype_mk _
-  have πs : Function.Surjective π := fun k => ⟨⟨k.1, k.2.1⟩, Subtype.ext (part_at (US.kAt_mem k))⟩
+  have πs : Function.Surjective π := fun k => ⟨⟨k.1, k.2.1⟩, Subtype.ext (part_at (PositivityTheory.ThKG.Loc.Cone.Fin.kAt_mem k))⟩
   obtain ⟨μK, _, c, hc⟩ := push hI.1 π πc πs μ
   have main := KInv.int ν μH Measure.haar hpar hR hI.1 μK hG hf' (fun p u t x => by
     have hl := part_levi ha (hL t u)
@@ -519,7 +514,7 @@ theorem kInv (hB : B.IsGood σ) (hY : Y.IsHerm σ B r s) (hH : H.IsAdapted σ B 
     exact mul_div_cancel_right₀ _ (htne _)
   have tr : ∀ g ∈ UAt σ Y (evFin F v), ∫ k, f (k.1 * g) ∂μ = c • ∫ k : K, f' (k.1 * g) ∂μK := fun g hg => by
     rw [hc (fun k => f (k.1 * g)) (hf.comp_continuous (continuous_subtype_val.mul continuous_const)
-      fun k => (US.uSub σ Y v).mul_mem (US.kAt_mem k) hg)]
+      fun k => (US.uSub σ Y v).mul_mem (PositivityTheory.ThKG.Loc.Cone.Fin.kAt_mem k) hg)]
     simp only [val g hg]
   have t1 := tr 1 (US.uSub σ Y v).one_mem
   simp only [mul_one] at t1
@@ -623,7 +618,7 @@ theorem tate' (hI : IdeleFub) (hJ : IdealId0) (hS : StabEx) {B : Base F E} {M : 
       ((cont_wt hν z).comp continuous_subtype_val).aestronglyMeasurable
       (ae_restrict_of_forall_mem (hG.isClosed_fiber 0).measurableSet.compl fun l hl => ?_)
     have := (hin v (l₀ * l).1).1 (e3 l ▸ hk _ hl)
-    rw [if_pos this, one_mul, norm_wt, norm_wt, Subgroup.coe_mul, map_mul, NNReal.coe_mul, mul_pow,
+    rw [ite_eq_left this, one_mul, norm_wt, norm_wt, Subgroup.coe_mul, map_mul, NNReal.coe_mul, mul_pow,
       inv_mul_cancel_left₀ (pow_pos h0 z).ne']
 
 theorem int_lin {α Y : Type} [MeasurableSpace α] (μ : Measure α) (G : α → Y → ℂ) (w : α → ℂ) (hf : (Set.range G).Finite)

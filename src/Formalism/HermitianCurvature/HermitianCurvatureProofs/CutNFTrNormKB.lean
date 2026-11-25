@@ -25,7 +25,7 @@ theorem nf_evQ_toSm_le (u : MA.Qp P.r P.TT → ℂ) (q : MA.Qp P.r P.TT) : ‖MA
 theorem nf_wq_eq (k r : ℕ) (T T' : ℝ) (x : (Fin r → ℂ) × ℂ) (hx : T * T' ≤ Complex.normSq x.2) :
     MA.wq k x (T * T') = (∏ l : Fin r, Complex.normSq (x.1 l)) * bcWeight k r T T' x := by
   unfold MA.wq bcWeight
-  rw [if_pos hx, ← mul_assoc, ← Finset.prod_mul_distrib]
+  rw [ite_eq_left hx, ← mul_assoc, ← Finset.prod_mul_distrib]
   congr 1
   refine Finset.prod_congr rfl fun l _ => ?_
   have hl : MA.Mdim k r l - 1 = (Formalism.QuantumDeterminants.Mdim k r l - 2) + 1 := by

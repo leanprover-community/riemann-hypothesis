@@ -55,7 +55,7 @@ theorem kapBound_proof : KapBound := by
             obtain ⟨t, -, ht⟩ := Finset.mem_biUnion.mp (hJJ (Finset.mem_of_mem_erase hi))
             calc padicValInt ℓ i
                 = (if i ∈ Finset.Ico (a t) (a t + 4 * (g : ℤ)) then padicValInt ℓ i else 0) :=
-                  (if_pos ht).symm
+                  (ite_eq_left ht).symm
               _ ≤ ∑ t' : Fin 5,
                     (if i ∈ Finset.Ico (a t') (a t' + 4 * (g : ℤ)) then padicValInt ℓ i else 0) :=
                   Finset.single_le_sum
@@ -414,11 +414,6 @@ namespace Formalism.TruncatedSeriesCounting.WachCoordinates
 
 open Finset
 
-private theorem geom_sum_range_mul_one_sub (x : ℝ) :
-    ∀ n : ℕ, Finset.sum (range n) (fun i => x ^ i) * (1 - x) = 1 - x ^ n := fun
-  | 0 => by simp
-  | n + 1 => by rw [sum_range_succ, add_mul, geom_sum_range_mul_one_sub x n, pow_succ]; ring
-
 theorem tsum_le_two_level (x A B D : ℝ) (j : ℕ) (f : ℕ → ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1)
     (hA0 : 0 ≤ A) (hf0 : ∀ a, 0 ≤ f a) (hfB : ∀ a, f a ≤ (B + D) * x ^ a)
     (hfA : ∀ a, a < j → f a ≤ (A + D) * x ^ a) :
@@ -441,7 +436,7 @@ theorem tsum_le_two_level (x A B D : ℝ) (j : ℕ) (f : ℕ → ℝ) (hx0 : 0 �
     rw [mul_sum]
     exact sum_le_sum fun a ha => hfA a (mem_range.mp ha)
   have hS' : Finset.sum (range j) (fun a => x ^ a) = (1 - x ^ j) * (1 - x)⁻¹ := by
-    rw [← geom_sum_range_mul_one_sub x j, mul_assoc, mul_inv_cancel₀ hx1'.ne', mul_one]
+    rw [← geom_sum_mul_neg x j, mul_assoc, mul_inv_cancel₀ hx1'.ne', mul_one]
   have hpos : 0 ≤ A * x ^ j * (1 - x)⁻¹ :=
     mul_nonneg (mul_nonneg hA0 (pow_nonneg hx0 _)) (inv_nonneg.mpr hx1'.le)
   rw [← hsplit]
@@ -968,24 +963,24 @@ theorem gPar_A (w S η : ℕ) : gPar (w + S + η) S η = max (w + S + η) 1 := b
 
 theorem hCor_pos {n : ℕ} {b w S η : ℕ} {sz : ZMod n → ℕ} (hex : ∃ i, b ≤ sz i ∧ sz i ≤ b + η) :
     hCor b w S η sz = b + η + S := by
-  unfold hCor; exact if_pos hex
+  unfold hCor; exact ite_eq_left hex
 
 theorem hCor_neg {n : ℕ} {b w S η : ℕ} {sz : ZMod n → ℕ} (hex : ¬ ∃ i, b ≤ sz i ∧ sz i ≤ b + η) :
     hCor b w S η sz = w + S + η := by
-  unfold hCor; exact if_neg hex
+  unfold hCor; exact ite_eq_right hex
 
 theorem tyA_thick {n : ℕ} (b η : ℕ) (typ : ZMod n → Bool) (sz : ZMod n → ℕ) (i : ZMod n) :
     (tyA b η typ sz i).thick = true ↔ (b ≤ sz i ∧ sz i ≤ b + η) := by
   unfold tyA
   by_cases ht : b ≤ sz i ∧ sz i ≤ b + η
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     cases typ i <;> simp [LT.thick, ht]
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     simp [LT.thick, ht]
 
 theorem tyA_thin {n : ℕ} {b η : ℕ} {typ : ZMod n → Bool} {sz : ZMod n → ℕ} {i : ZMod n}
     (ht : ¬ (b ≤ sz i ∧ sz i ≤ b + η)) : tyA b η typ sz i = LT.thin := by
-  unfold tyA; exact if_neg ht
+  unfold tyA; exact ite_eq_right ht
 
 theorem tyA_size {n : ℕ} {b η : ℕ} {typ : ZMod n → Bool} {sz : ZMod n → ℕ} {i : ZMod n} {x : ℕ}
     (h : tyA b η typ sz i = LT.up x ∨ tyA b η typ sz i = LT.down x) :
@@ -993,10 +988,10 @@ theorem tyA_size {n : ℕ} {b η : ℕ} {typ : ZMod n → Bool} {sz : ZMod n →
   unfold tyA at h
   by_cases ht : b ≤ sz i ∧ sz i ≤ b + η
   · refine ⟨ht, ?_⟩
-    rw [if_pos ht] at h
+    rw [ite_eq_left ht] at h
     generalize typ i = t at h
     cases t <;> simpa using h
-  · rw [if_neg ht] at h
+  · rw [ite_eq_right ht] at h
     simp at h
 
 theorem winA_subset {n : ℕ} (b w S η : ℕ) (typ : ZMod n → Bool) (sz : ZMod n → ℕ) (i : ZMod n)
@@ -1005,16 +1000,16 @@ theorem winA_subset {n : ℕ} (b w S η : ℕ) (typ : ZMod n → Bool) (sz : ZMo
       (tyA b η typ sz i).win (w + S + η) S η := by
   unfold tyA
   by_cases ht : b ≤ sz i ∧ sz i ≤ b + η
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     generalize typ i = t
     intro x hx
     cases t <;> simpa [LT.win] using hx
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     have hw : sz i ≤ w := h.resolve_left ht
     generalize typ i = t
     intro x hx
     cases t <;>
-      · simp only [Bool.false_eq_true, if_false, if_true, LT.win, Set.mem_union, Set.mem_Icc] at hx ⊢
+      · simp only [Bool.false_eq_true, ite_false, ite_true, LT.win, Set.mem_union, Set.mem_Icc] at hx ⊢
         push_cast
         omega
 
@@ -1023,15 +1018,15 @@ theorem tyA_win_subset {n : ℕ} (b w S η : ℕ) (typ : ZMod n → Bool) (sz : 
       Set.Icc (-(bdA b w S η sz i : ℤ)) (bdA b w S η sz i) := by
   unfold tyA bdA
   by_cases ht : b ≤ sz i ∧ sz i ≤ b + η
-  · rw [if_pos ht, if_pos ht]
+  · rw [ite_eq_left ht, ite_eq_left ht]
     have h1 : b + η + S ≤ hA b w S η sz := by
       unfold hA; rw [hCor_pos ⟨i, ht⟩]; exact le_max_left _ _
     generalize typ i = t
     intro x hx
     cases t <;>
-      · simp only [Bool.false_eq_true, if_false, if_true, LT.win, Set.mem_union, Set.mem_Icc] at hx ⊢
+      · simp only [Bool.false_eq_true, ite_false, ite_true, LT.win, Set.mem_union, Set.mem_Icc] at hx ⊢
         omega
-  · rw [if_neg ht, if_neg ht]
+  · rw [ite_eq_right ht, ite_eq_right ht]
     intro x hx
     simpa [LT.win] using hx
 
@@ -1101,9 +1096,9 @@ theorem aprimeConfig_holds : ∃ C : ℝ, 1 ≤ C ∧ AprimeConfig C := by
     · left
       rw [hg, hhA i ht]
       unfold tyA
-      rw [if_pos ht]
+      rw [ite_eq_left ht]
       generalize typ i = t
-      cases t <;> simp only [Bool.false_eq_true, if_false, if_true, LT.ok, LT.size] <;> omega
+      cases t <;> simp only [Bool.false_eq_true, ite_false, ite_true, LT.ok, LT.size] <;> omega
     · right
       exact tyA_thin ht
   · refine ⟨hne, hj, ?_, fun c hc' => (hc c hc').2.1, ?_⟩
@@ -1188,7 +1183,7 @@ theorem bdA_le {n : ℕ} {b w S η : ℕ} {sz : ZMod n → ℕ} (hG : w + S + η
 
 theorem bdA_thin {n : ℕ} {b w S η : ℕ} {sz : ZMod n → ℕ} {i : ZMod n}
     (ht : ¬ Thick b η sz i) : bdA b w S η sz i = w + S + η := by
-  unfold bdA; exact if_neg ht
+  unfold bdA; exact ite_eq_right ht
 
 theorem eA_le (C₁ : ℝ) (hC₁ : 0 ≤ C₁) (hE : ThmEBound C₁) (l : ℕ) (hlp : l.Prime) (hl : 11 ≤ l)
     (n : ℕ) [NeZero n] (j b w S η : ℕ) (typ : ZMod n → Bool) (sz : ZMod n → ℕ)

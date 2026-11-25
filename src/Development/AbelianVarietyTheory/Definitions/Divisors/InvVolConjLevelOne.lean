@@ -331,8 +331,8 @@ theorem vCore_smul (a b : ℂ) (Ψ F) : S.vCore t Φ (a • Ψ) (b • F) = a * 
   rw [mul_finsum]
   refine finsum_congr fun β => ?_
   by_cases hβ : β ∈ S.supp t Φ
-  · rw [finsum_eq_if, finsum_eq_if, if_pos hβ, if_pos hβ, h]; ring
-  · rw [finsum_eq_if, finsum_eq_if, if_neg hβ, if_neg hβ, mul_zero]
+  · rw [finsum_eq_if, finsum_eq_if, ite_eq_left hβ, ite_eq_left hβ, h]; ring
+  · rw [finsum_eq_if, finsum_eq_if, ite_eq_right hβ, ite_eq_right hβ, mul_zero]
 
 variable {S t Φ}
 

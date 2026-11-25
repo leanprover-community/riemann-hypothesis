@@ -66,39 +66,31 @@ theorem isCMField_of_cmExt {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : IsCMField
   haveI : Algebra.IsQuadraticExtension F E := { finrank_eq_two' := h.2.2.1 }
   exact IsCMField.ofCMExtension F E
 
-def phase : ℂˣ →* ℂˣ where
-  toFun z := Units.mk0 ((z : ℂ) / ((‖(z : ℂ)‖ : ℝ) : ℂ)) (div_ne_zero z.ne_zero (by simp))
-  map_one' := by ext; simp
-  map_mul' x y := by
-    ext
-    simp only [Units.val_mul, Units.val_mk0, norm_mul, Complex.ofReal_mul]
-    ring
+theorem phase_val (z : ℂˣ) : ((GlobalTheory.ModelChar.argU z : ℂˣ) : ℂ) = (z : ℂ) / ((‖(z : ℂ)‖ : ℝ) : ℂ) := rfl
 
-theorem phase_val (z : ℂˣ) : ((phase z : ℂˣ) : ℂ) = (z : ℂ) / ((‖(z : ℂ)‖ : ℝ) : ℂ) := rfl
-
-theorem continuous_phase : Continuous phase := by
+theorem continuous_phase : Continuous GlobalTheory.ModelChar.argU := by
   refine Units.continuous_iff.2 ⟨?_, ?_⟩
   · show Continuous fun z : ℂˣ => (z : ℂ) / ((‖(z : ℂ)‖ : ℝ) : ℂ)
     exact Units.continuous_val.div (Complex.continuous_ofReal.comp Units.continuous_val.norm) fun z => by simp
-  · have : (fun z : ℂˣ => (((phase z)⁻¹ : ℂˣ) : ℂ)) = fun z => ((phase z⁻¹ : ℂˣ) : ℂ) :=
+  · have : (fun z : ℂˣ => (((GlobalTheory.ModelChar.argU z)⁻¹ : ℂˣ) : ℂ)) = fun z => ((GlobalTheory.ModelChar.argU z⁻¹ : ℂˣ) : ℂ) :=
       funext fun z => by rw [map_inv]
-    show Continuous fun z : ℂˣ => (((phase z)⁻¹ : ℂˣ) : ℂ)
+    show Continuous fun z : ℂˣ => (((GlobalTheory.ModelChar.argU z)⁻¹ : ℂˣ) : ℂ)
     rw [this]
     show Continuous fun z : ℂˣ => ((z⁻¹ : ℂˣ) : ℂ) / ((‖((z⁻¹ : ℂˣ) : ℂ)‖ : ℝ) : ℂ)
     exact Units.continuous_coe_inv.div (Complex.continuous_ofReal.comp Units.continuous_coe_inv.norm) fun z => by simp
 
-theorem norm_phase (z : ℂˣ) : ‖((phase z : ℂˣ) : ℂ)‖ = 1 := by
+theorem norm_phase (z : ℂˣ) : ‖((GlobalTheory.ModelChar.argU z : ℂˣ) : ℂ)‖ = 1 := by
   rw [phase_val, norm_div, Complex.norm_real, norm_norm, div_self (by simp)]
 
 def chiInf (emb : ∀ w : InfinitePlace F, GlobalTheory.AdelicU.EmbOver E w) : (AF F ⊗[F] E)ˣ →* ℂˣ :=
-  ∏ w, phase.comp (Units.map (piInf (emb w)).toMonoidHom)
+  ∏ w, GlobalTheory.ModelChar.argU.comp (Units.map (piInf (emb w)).toMonoidHom)
 
 theorem chiInf_apply (emb : ∀ w : InfinitePlace F, GlobalTheory.AdelicU.EmbOver E w) (z : (AF F ⊗[F] E)ˣ) :
     ((chiInf emb z : ℂˣ) : ℂ) = ∏ w, (piInf (emb w) z / ((‖piInf (emb w) z‖ : ℝ) : ℂ)) := by
   simp [chiInf, phase_val]
 
 theorem continuous_chiInf (emb : ∀ w : InfinitePlace F, GlobalTheory.AdelicU.EmbOver E w) : Continuous (chiInf emb) := by
-  have e : ⇑(chiInf emb) = fun z => ∏ w, phase (Units.map (piInf (emb w)).toMonoidHom z) :=
+  have e : ⇑(chiInf emb) = fun z => ∏ w, GlobalTheory.ModelChar.argU (Units.map (piInf (emb w)).toMonoidHom z) :=
     funext fun z => by simp [chiInf]
   rw [e]
   exact continuous_finsetProd _ fun w _ =>

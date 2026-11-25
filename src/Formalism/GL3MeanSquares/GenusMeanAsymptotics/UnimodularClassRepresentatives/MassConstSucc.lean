@@ -93,10 +93,10 @@ theorem sum_regroup (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : I
     obtain ⟨M, hM, h1, h2⟩ := exists_patch hK hF S hLfull hAfull Z
       (fun 𝔭 => if H : 𝔭 ∈ Z then τ ⟨𝔭, H⟩ else ⊥)
       (fun 𝔭 h𝔭 => by
-        simp only [dif_pos h𝔭]
+        simp only [dite_eq_left h𝔭]
         exact ⟨((hsr 𝔭).1 _ (hτ ⟨𝔭, h𝔭⟩)).1, ((hsr 𝔭).1 _ (hτ ⟨𝔭, h𝔭⟩)).2.2⟩)
       (fun 𝔭 h𝔭 => by rw [hZ1 𝔭 h𝔭]; exact one_ne_zero)
-    exact ⟨M, hM, fun 𝔭 => by rw [h1 𝔭.1 𝔭.2, dif_pos 𝔭.2], h2⟩
+    exact ⟨M, hM, fun 𝔭 => by rw [h1 𝔭.1 𝔭.2, dite_eq_left 𝔭.2], h2⟩
   choose! M hMg hMZ hMA using hex
   rw [← Finset.prod_coe_sort Z (fun 𝔭 => ∑ T ∈ s 𝔭, (fibLoc S L 𝔭.1 T : ℝ) * lamP h' T 𝔭.1),
     Finset.prod_univ_sum, Finset.mul_sum]
@@ -123,7 +123,7 @@ theorem sum_regroup (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : I
     choose τ₀ hτ₀ hu using hloc
     have hmem : τ₀ ∈ Fintype.piFinset (fun 𝔭 : ↥Z => s 𝔭.1) :=
       Fintype.mem_piFinset.mpr fun 𝔭 => (hτ₀ 𝔭).1
-    rw [Finset.sum_eq_single τ₀, if_pos]
+    rw [Finset.sum_eq_single τ₀, ite_eq_left]
     · rw [sameGenus_iff hK hF]
       intro 𝔭
       by_cases h𝔭 : 𝔭 ∈ Z
@@ -133,7 +133,7 @@ theorem sum_regroup (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : I
       · exact good_orbit hK hF hs hd S hLfull hLi 𝔭.2 hn (hZL 𝔭 h𝔭) (hZn 𝔭 h𝔭)
           ((hMg τ₀ hmem).2 𝔭) (hg.2 𝔭)
     · intro τ hτ hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hsg
       apply hne
       funext 𝔭
@@ -817,7 +817,6 @@ theorem tendsto_card_div_pow {s : Set E} (hs₁ : IsBounded s) (hs₂ : Measurab
   rw [hlim, hcard] at key
   exact key
 
-set_option backward.isDefEq.respectTransparency.types false in
 theorem covolume_div_covolume (L₁ L₂ : Submodule ℤ E) [DiscreteTopology L₁] [IsZLattice ℝ L₁]
     [DiscreteTopology L₂] [IsZLattice ℝ L₂] (h : L₁ ≤ L₂) :
     ZLattice.covolume L₁ μ / ZLattice.covolume L₂ μ =

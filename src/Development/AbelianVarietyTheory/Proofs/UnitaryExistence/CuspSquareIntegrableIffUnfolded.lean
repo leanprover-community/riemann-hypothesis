@@ -26,54 +26,10 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUni
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFinPartMat
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
@@ -822,18 +778,9 @@ theorem det_conjT {r : ℕ} {M x : Matrix (Fin r) (Fin r) ℂ} (hM : M.det ≠ 0
     show x.map (starRingEnd ℂ) = (starRingEnd ℂ).mapMatrix x from rfl, ← RingHom.map_det]
   exact mul_ne_zero (mul_ne_zero hx hM) ((map_ne_zero _).2 hx)
 
-theorem conjT_mul {r : ℕ} (M x y : Matrix (Fin r) (Fin r) ℂ) :
-    (x * y)ᵀ * M * (x * y).map (starRingEnd ℂ) = yᵀ * (xᵀ * M * x.map (starRingEnd ℂ)) * y.map (starRingEnd ℂ) := by
-  rw [Matrix.transpose_mul, Matrix.map_mul]
-  simp only [Matrix.mul_assoc]
-
-theorem conjT_one {r : ℕ} (M : Matrix (Fin r) (Fin r) ℂ) :
-    (1 : Matrix (Fin r) (Fin r) ℂ)ᵀ * M * (1 : Matrix (Fin r) (Fin r) ℂ).map (starRingEnd ℂ) = M := by
-  simp
-
 theorem conjT_cancel {r : ℕ} {x : Matrix (Fin r) (Fin r) ℂ} (hx : x.det ≠ 0) (M : Matrix (Fin r) (Fin r) ℂ) :
     (x⁻¹)ᵀ * (xᵀ * M * x.map (starRingEnd ℂ)) * (x⁻¹).map (starRingEnd ℂ) = M := by
-  rw [← conjT_mul, Matrix.mul_nonsing_inv _ hx.isUnit, conjT_one]
+  rw [← GlobalTheory.PeterssonFrameChange.form_mul', Matrix.mul_nonsing_inv _ hx.isUnit, GlobalTheory.PeterssonFrameChange.form_one']
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -895,8 +842,8 @@ theorem rigid : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
       intro σ
       by_cases hσ : σ = τ
       · subst hσ
-        rw [Function.update_self, conjT_mul, conjT_mul, hu, conjT_cancel hd]
-      · rw [Function.update_of_ne hσ, conjT_one])
+        rw [Function.update_self, GlobalTheory.PeterssonFrameChange.form_mul', GlobalTheory.PeterssonFrameChange.form_mul', hu, conjT_cancel hd]
+      · rw [Function.update_of_ne hσ, GlobalTheory.PeterssonFrameChange.form_one'])
     have hm := hmul g a ha
     rw [h] at hm
     obtain ⟨γ, hγ, hm⟩ := hm
@@ -1197,7 +1144,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open scoped ENNReal TensorProduct
 
 variable {D : D7}
-
 
 open Classical in
 def archHom (V : HSp D) (τ : D.host.E →+* ℂ) : GA D V →* Matrix (Fin V.rank) (Fin V.rank) ℂ :=

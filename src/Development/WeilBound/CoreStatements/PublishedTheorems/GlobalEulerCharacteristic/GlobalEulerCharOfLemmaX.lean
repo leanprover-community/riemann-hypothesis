@@ -100,7 +100,6 @@ end Equiv
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-
 theorem coind_eq_infl_funRep (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
     (L : FiniteSubfield) [Fact (K ≤ L)]
@@ -178,7 +177,6 @@ theorem nonempty_iso_of_addEquiv {k G : Type} [CommRing k] [Group G] (hk : Funct
         show e ((n : k) • x) = (n : k) • e x
         rw [Int.cast_smul_eq_zsmul, Int.cast_smul_eq_zsmul, map_zsmul] }
   exact ⟨Rep.mkIso (Representation.Equiv.mk f fun g => LinearMap.ext fun x => h g x)⟩
-
 
 theorem quotient_representation_open (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
@@ -358,7 +356,6 @@ local instance scalarTowerForFiniteSubfields {F E : FiniteSubfield} [Fact (F ≤
     IsScalarTower F.1 E.1 ℚ̄ :=
   IsScalarTower.of_algebraMap_eq fun _ => rfl
 
-
 theorem exists_prime_to_part (ℓ : ℕ) [Fact ℓ.Prime]
     (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (L : FiniteSubfield) [Fact (K ≤ L)] (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)
@@ -528,7 +525,6 @@ namespace PositivityTheory.Lit1.GEN.W_killed_b
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-
 theorem ratio_shortExact_prime_card (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (hS : S.Finite) (hSℓ : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
@@ -585,8 +581,6 @@ theorem coind_stages {k G : Type} [CommRing k] [Group G] (U W : Subgroup G) (hUW
         (Rep.res (U.subgroupOf W).subtype (Rep.res W.subtype A))) ≅
       Rep.coind U.subtype (Rep.res U.subtype A)) :=
   ⟨Rep.mkIso (coindStagesEquiv U W hUW A)⟩
-
-
 
 theorem isMultiplicativeOn_ratio_coind (ℓ : ℕ) [Fact ℓ.Prime]
     (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (hS : S.Finite)
@@ -1010,7 +1004,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.W_dictfwd_b
 
-
 section DictA
 
 open ReciprocityTheory.Gal Formalism.ConjugateSelfDual
@@ -1243,8 +1236,6 @@ theorem real_H0_card_eq_fixed_of_gen (K : FiniteSubfield) (S' : Set (HeightOneSp
   · rw [hg]
     exact h
 
-
-
 theorem exists_cc_gen (K : FiniteSubfield) (v : {v : InfinitePlace K.1 // v.IsReal}) :
     ∃ (κ : AlgebraicClosure v.1.Completion →+* ℂ) (s : Gal(AlgebraicClosure v.1.Completion / v.1.Completion)),
       (∀ y, κ (s y) = starRingEnd ℂ (κ y)) ∧ (∀ g, g = 1 ∨ g = s) ∧
@@ -1371,10 +1362,6 @@ namespace PositivityTheory.Lit1.GEN.W_dictfwd_a
 noncomputable section
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
-
-def resS (S : Set (HeightOneSpectrum (𝓞 F))) : G F Ω →* galUnramifiedOutside F Ω S :=
-  haveI : IsGalois F Ω := IsAlgClosure.isGalois F Ω
-  AlgEquiv.restrictNormalHom (maxUnramifiedOutside F Ω S)
 
 theorem card_fix_conj {k Γ : Type} [CommRing k] [Group Γ] (A : Rep.{0} k Γ) (g c : Γ) :
     Nat.card {a : A // A.ρ (g * c * g⁻¹) a = a} = Nat.card {a : A // A.ρ c a = a} := by
@@ -1504,7 +1491,7 @@ theorem galEquiv_transport (K : FiniteSubfield) (τ : Ω ≃+* AlgebraicClosure 
         τ x ∈ maxUnramifiedOutside K.1 (AlgebraicClosure ℚ) S') :
     ∃ θ : galUnramifiedOutside F Ω S ≃ₜ* galUnramifiedOutside K.1 (AlgebraicClosure ℚ) S',
       ∀ (g : G F Ω) (g' : G K.1 (AlgebraicClosure ℚ)), (∀ x : Ω, g' (τ x) = τ (g x)) →
-        θ (resS (Ω := Ω) S g) = resS (Ω := AlgebraicClosure ℚ) S' g' := by
+        θ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) S g) = PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := AlgebraicClosure ℚ) S' g' := by
   haveI : IsGalois F Ω := IsAlgClosure.isGalois F Ω
   obtain ⟨h1, h2⟩ := continuous_galTransport K τ σ hτ S S' hmem
   refine ⟨{ galTransport K τ σ hτ S S' hmem with continuous_toFun := h1, continuous_invFun := h2 },
@@ -1531,8 +1518,8 @@ theorem gsTransport_compat (K : FiniteSubfield) (τ : Ω ≃+* AlgebraicClosure 
       (∀ n : ℕ, (∀ v : HeightOneSpectrum (𝓞 F), (n : 𝓞 F) ∈ v.asIdeal → v ∈ S) →
         ∀ v' : HeightOneSpectrum (𝓞 K.1), (n : 𝓞 K.1) ∈ v'.asIdeal → v' ∈ S') ∧
       ∀ (g : G F Ω) (g' : G K.1 (AlgebraicClosure ℚ)), (∀ x : Ω, g' (τ x) = τ (g x)) →
-        θ (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) g) =
-          resS (Ω := AlgebraicClosure ℚ) S' g' := by
+        θ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) g) =
+          PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := AlgebraicClosure ℚ) S' g' := by
   obtain ⟨S', hS', hn, hmem⟩ := _root_.PositivityTheory.Lit1.GEN.W_dictfwd_b.places_transport K τ σ hτ S
   obtain ⟨θ, hθ⟩ := galEquiv_transport K τ σ hτ _ S' hmem
   exact ⟨S', hS', θ, hn, hθ⟩
@@ -1554,9 +1541,8 @@ theorem real_H0_card_eq_fixed (K : FiniteSubfield) (S' : Set (HeightOneSpectrum 
     ∃ cc : G K.1 (AlgebraicClosure ℚ), IsCCAt v.1 cc ∧
       ∀ (B : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 (AlgebraicClosure ℚ) S'))
         [IsDiscreteRep B], gsRealH0Card S' B ιr v =
-          Nat.card {b : B // B.ρ (resS (Ω := AlgebraicClosure ℚ) S' cc) b = b} := by
+          Nat.card {b : B // B.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := AlgebraicClosure ℚ) S' cc) b = b} := by
   exact PositivityTheory.Lit1.GEN.W_dictfwd_b.real_H0_card_eq_fixed K S' ιr v
-
 
 open scoped Classical in
 theorem transport_data {l : ℕ} [Fact l.Prime] (S : Finset (HeightOneSpectrum (𝓞 F)))
@@ -1575,7 +1561,7 @@ theorem transport_data {l : ℕ} [Fact l.Prime] (S : Finset (HeightOneSpectrum (
         [IsDiscreteRep A] (w : {w : InfinitePlace F // w.IsReal}),
         haveI := IsDiscreteRep.res (φ := θ.symm.toMulEquiv.toMonoidHom) θ.symm.continuous A
         gsRealH0Card S' (Rep.res θ.symm.toMulEquiv.toMonoidHom A) ιr (e w) =
-          Nat.card {a : A // A.ρ (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1)) a = a} := by
+          Nat.card {a : A // A.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1)) a = a} := by
   obtain ⟨K, τ, σ, hτ⟩ := exists_fieldTransport (F := F) (Ω := Ω)
   obtain ⟨S', hS', θ, hn, hθ⟩ := gsTransport_compat K τ σ hτ S
   obtain ⟨e, hcard, hcc⟩ := _root_.PositivityTheory.Lit1.GEN.W_dictfwd_b.realPlaces_transport K τ σ hτ
@@ -1595,7 +1581,6 @@ theorem transport_data {l : ℕ} [Fact l.Prime] (S : Finset (HeightOneSpectrum (
     show A.ρ (θ.symm (θ _)) a = a ↔ _
     rw [ContinuousMulEquiv.symm_apply_apply]
 
-
 open scoped Classical in
 theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
     (S : Finset (HeightOneSpectrum (𝓞 F))) (hS : ContainsAbove S l) :
@@ -1604,7 +1589,7 @@ theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
         [IsDiscreteRep A] [Finite A] (r : ℕ), (∀ a : A, (l ^ r) • a = 0) →
         eulerChar A * (Nat.card A : ℚ) ^ Fintype.card (InfinitePlace F) =
           ∏ w : {w : InfinitePlace F // w.IsReal},
-            (Nat.card {a : A // A.ρ (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1)) a = a} : ℚ) := by
+            (Nat.card {a : A // A.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1)) a = a} : ℚ) := by
   obtain ⟨K, S', hS', θ, ιr, c', e, hl, hc', hcard, hfix⟩ := transport_data (Ω := Ω) S hS
   refine ⟨c', hc', fun A _ _ r hA => ?_⟩
   haveI := IsDiscreteRep.res (φ := θ.symm.toMulEquiv.toMonoidHom) θ.symm.continuous A
@@ -1622,7 +1607,6 @@ theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
   rw [hcard, h1]
   exact (Fintype.prod_equiv e _ _ (fun w => by rw [hfix A w])).symm
 
-
 open scoped Classical in
 theorem ratio_F {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
     (S : Finset (HeightOneSpectrum (𝓞 F))) (hS : ContainsAbove S l)
@@ -1631,13 +1615,13 @@ theorem ratio_F {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
     (c : InfinitePlace F → G F Ω) (hc : ∀ w, w.IsReal → IsCCAt w (c w)) :
     eulerChar A * (Nat.card A : ℚ) ^ Fintype.card (InfinitePlace F) =
       ∏ w : {w : InfinitePlace F // w.IsReal},
-        (Nat.card {a : A // A.ρ (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c w.1)) a = a} : ℚ) := by
+        (Nat.card {a : A // A.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c w.1)) a = a} : ℚ) := by
   obtain ⟨c', hc', hrat⟩ := ratio_F_exists (Ω := Ω) h S hS
   rw [hrat A r hA]
   refine Finset.prod_congr rfl fun w _ => ?_
   obtain ⟨g, hg⟩ := _root_.PositivityTheory.Lit1.GEN.W_dictfwd_b.isCCAt_conj w.2 (hc' w.1 w.2) (hc w.1 w.2)
-  have e := card_fix_conj A (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) g)
-    (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1))
+  have e := card_fix_conj A (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) g)
+    (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1))
   rw [← map_inv, ← map_mul, ← map_mul, ← hg] at e
   rw [e]
 
@@ -1650,7 +1634,7 @@ theorem dict_A {l : ℕ} [Fact l.Prime] {r : ℕ} {M : Type} [AddCommGroup M]
       (_ : IsDiscreteRep A), Finite A ∧ (∀ a : A, (l ^ r) • a = 0) ∧ Nat.card A = Nat.card M ∧
       Nat.card (cohomology A 0) = Nat.card (H0 rhoS) ∧ Nat.card (cohomology A 1) = Nat.card (H1 rhoS) ∧
       Nat.card (cohomology A 2) = Nat.card (H2 rhoS) ∧
-      ∀ g : G F Ω, Nat.card {a : A // A.ρ (resS (S : Set (HeightOneSpectrum (𝓞 F))) g) a = a} =
+      ∀ g : G F Ω, Nat.card {a : A // A.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (S : Set (HeightOneSpectrum (𝓞 F))) g) a = a} =
         Nat.card {m : M // rhoS (toGS Ω _ g) m = m} := by
   exact PositivityTheory.Lit1.GEN.W_dictfwd_b.dict_A S rhoS hc
 
@@ -1666,7 +1650,7 @@ theorem globalEulerCharAt_of_ratioOne {l : ℕ} [Fact l.Prime] {r : ℕ} {M : Ty
   simp only [eulerChar, Finset.prod_range_succ, Finset.prod_range_zero, one_mul, pow_zero, pow_one,
     zpow_one, zpow_neg, neg_one_sq, Int.reduceNeg, hcard, h0, h1, h2] at key
   have hP : ∏ w : {w : InfinitePlace F // w.IsReal},
-      (Nat.card {a : A // A.ρ (resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c w.1)) a = a} : ℚ) =
+      (Nat.card {a : A // A.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c w.1)) a = a} : ℚ) =
       ((∏ w ∈ Finset.univ.filter (fun w : InfinitePlace F => w.IsReal),
         Nat.card {m : M // rhoS (toGS Ω _ (c w)) m = m} : ℕ) : ℚ) := by
     rw [Nat.cast_prod, Finset.prod_subtype (p := fun w : InfinitePlace F => w.IsReal)

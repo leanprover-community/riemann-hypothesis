@@ -366,10 +366,10 @@ def hat (f : K⟦X⟧) : AhatE O K l e :=
 variable {O K}
 
 theorem hat_of_mem {f : K⟦X⟧} (h : f ∈ RpiE O K l e) : hat O l e f = toHatE O K l e ⟨f, h⟩ :=
-  dif_pos h
+  dite_eq_left h
 
 @[simp] theorem hat_coe (f : RpiE O K l e) : hat O l e (f : K⟦X⟧) = toHatE O K l e f :=
-  dif_pos f.2
+  dite_eq_left f.2
 
 theorem hat_coe_Rpi (f : Rpi O K l e) :
     hat O l e (f : K⟦X⟧) = algebraMap _ _ (toHat O K l e f) := by

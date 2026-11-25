@@ -46,6 +46,6 @@ theorem generatorTraceCentral_holds : EtrCentral := by
     rw [← hc a a c d]
     abel
   simp only [h1, Finset.sum_neg_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, sub_self, neg_zero]
+    Finset.mem_univ, ite_true, sub_self, neg_zero]
 
 end Formalism.REAL

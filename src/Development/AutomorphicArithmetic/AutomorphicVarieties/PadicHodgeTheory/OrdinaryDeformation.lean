@@ -110,7 +110,7 @@ theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux12.{u_1} :
     ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
@@ -269,7 +269,7 @@ theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux12.{u_1} :
     ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
@@ -335,7 +335,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux2.{u_1} :
   intro R _ m
   ext i j
   simp only [UpperTheory.Reformulated.B.SignActionTheta.Jmat, Matrix.mul_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, Fin.rev_rev, Matrix.one_apply]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_rev, Matrix.one_apply]
   simp only [eq_comm]
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.Jgl.{u_1} :
@@ -421,7 +421,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux12.{u_1} :
     ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
@@ -434,7 +434,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux12.{u_1} :
   · simp
   · simp
   · simp
-  · rw [if_pos (by simp), if_neg hne]
+  · rw [ite_eq_left (by simp), ite_eq_right hne]
     ext1 g
     exact (UpperTheory.Reformulated.B.SignActionTheta.aux8 g).symm
 
@@ -477,9 +477,9 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.sign_action_map_comm.{u_1, u_
   · ext1 g
     simp
   · have h1 : UpperTheory.Reformulated.B.SignActionTheta.sgnAct m R (-1) = UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R :=
-      if_neg (t := (1 : MulAut (GL (Fin m) R))) hne
+      ite_eq_right (t := (1 : MulAut (GL (Fin m) R))) hne
     have h2 : UpperTheory.Reformulated.B.SignActionTheta.sgnAct m S (-1) = UpperTheory.Reformulated.B.SignActionTheta.thetaAut m S :=
-      if_neg (t := (1 : MulAut (GL (Fin m) S))) hne
+      ite_eq_right (t := (1 : MulAut (GL (Fin m) S))) hne
     rw [MonoidHom.id_apply, h1, h2]
     refine MonoidHom.ext fun g => ?_
     exact UpperTheory.Reformulated.B.SignActionTheta.map_theta f g
@@ -610,23 +610,18 @@ theorem glue_hom (f₁ : R →+* S) (f₂ : R →+* T) (q₁ : S →+* U) (q₂ 
   · rw [map_mul, e1, e1, e1, map_mul]
   · rw [map_mul, e2, e2, e2, map_mul]
 
-theorem congOne_iff (f : R →+* S) (n : GL (Fin m) R) :
-    CongOne (RingHom.ker f) n ↔ Matrix.GeneralLinearGroup.map f n = 1 := by
-  have e : ∀ a b, f (((n : Matrix (Fin m) (Fin m) R) - 1) a b) =
-      (Matrix.GeneralLinearGroup.map f n : Matrix (Fin m) (Fin m) S) a b - (1 : Matrix (Fin m) (Fin m) S) a b := by
-    intro a b
-    rw [Matrix.sub_apply, map_sub, Matrix.one_apply, Matrix.one_apply]
-    congr 1
-    split_ifs <;> simp
-  refine ⟨fun h => Units.ext (Matrix.ext fun a b => sub_eq_zero.1 ((e a b).symm.trans (h a b))), fun h a b => ?_⟩
-  rw [RingHom.mem_ker, e, h, Units.val_one, sub_self]
-
 theorem map_sub_one (f : R →+* S) (n : GL (Fin m) R) (a b : Fin m) :
     ((Matrix.GeneralLinearGroup.map f n : Matrix (Fin m) (Fin m) S) - 1) a b =
       f (((n : Matrix (Fin m) (Fin m) R) - 1) a b) := by
   rw [Matrix.sub_apply, Matrix.sub_apply, map_sub, Matrix.one_apply, Matrix.one_apply]
   congr 1
   split_ifs <;> simp
+
+theorem congOne_iff (f : R →+* S) (n : GL (Fin m) R) :
+    CongOne (RingHom.ker f) n ↔ Matrix.GeneralLinearGroup.map f n = 1 := by
+  refine ⟨fun h => Units.ext (Matrix.ext fun a b => ?_), fun h a b => ?_⟩
+  · exact sub_eq_zero.1 ((map_sub_one f n a b).trans (h a b))
+  · rw [RingHom.mem_ker, ← map_sub_one f n a b, h, Units.val_one, sub_self, Matrix.zero_apply]
 
 theorem lift_lower (f : R →+* S) (hf : Function.Surjective f)
     (n' : GL (Fin 3) S) (hn : ∀ a b, 0 ≤ wt a b → ((n' : Matrix (Fin 3) (Fin 3) S) - 1) a b = 0) :

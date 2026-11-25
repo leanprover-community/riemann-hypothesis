@@ -34,15 +34,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 
-namespace GlobalTheory.ThetaSpanObj
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
-
-alias spanAtObj := _root_.GlobalTheory.AdSpan.spanAt
-
-end GlobalTheory.ThetaSpanObj
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -264,7 +255,7 @@ theorem exists_shift (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : 8 * D.R
       (lieFac (T.Q.Dw ((i : ℕ) + 1)) (xiR D) (wtA (κ i)) : ℂ) * (O i).phi (T.cE ((i : ℕ) + 1) (O i).s0) f h :=
     fun f h => phiC_apply hV _ f h
   obtain ⟨z, ze, hz, hzL, ⟨m, hm, hze⟩, ⟨k, hk⟩, hs⟩ := shift_central (O i) (pins i).2 hn hC.models.HV hC.models.jV hC.thP.thF_mem
-    (GlobalTheory.ThetaSpanObj.spanAtObj R hP hsz hC.lev hC.fam hC.models hC.thP i A.μ0) hrow hE0 hS fun f hf => by
+    (GlobalTheory.AdSpan.spanAt R hP hsz hC.lev hC.fam hC.models hC.thP i A.μ0) hrow hE0 hS fun f hf => by
       obtain ⟨y, hy⟩ := hev f hf
       exact ⟨_, (hC.models.HW i _).2.1.le (LinearMap.mem_range_self _ y), fun h => (congrFun hy h).trans (hphi f h)⟩
   have hzn : ‖ze‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hze hm.ne'
@@ -348,7 +339,7 @@ theorem ev_move (hJ : JEvExists T R B.κ B.v₀) (hK : ∀ i, ActKeeps (κ := B.
     (σ : D.what₂.LL →+* ℂ) (hσ : GoodEmb T.Q.c (res T σ)) (hV : T.V ((i : ℕ) + 1) (res T σ) = Wc D i) (f : Cu T B.κ i) :
     (R.HW i σ).e ((R.FW i).j σ ((R.FW i).ρ (overEmb T w i σ) ((B.fw.e i f : (R.FW i).WK) : Fin (R.nW i) → D.what₂.LL)))
       (B.v₀ i σ) = phiC (setCE T c') hV (wtA (B.κ i)) (f : T.R ((i : ℕ) + 1)) := by
-  rw [overEmb, if_pos hσ, rho_e hK, hM i _ hσ hV f f.2]
+  rw [overEmb, ite_eq_left hσ, rho_e hK, hM i _ hσ hV f f.2]
   exact B.fw.evaluates hJ i σ hσ hV ⟨_, hK i _ f f.2⟩
 
 
@@ -359,7 +350,7 @@ theorem bar_move (hJ : JEvBar T R B.κ) (hK : ∀ i, ActKeeps (κ := B.κ) B.O i
         fun g => starRingEnd ℂ (phiC (setCE T c') hV (wtA (B.κ i)) (f : T.R ((i : ℕ) + 1)) g) := by
   obtain ⟨v, hv, h⟩ := (B.bar i σ hσ hV).1 (hJ i σ hσ hV)
   refine ⟨v, hv, fun f => ?_⟩
-  rw [overEmb, if_neg hσ, rho_e hK, hM i _ (good_resC T hσ) hV f f.2]
+  rw [overEmb, ite_eq_right hσ, rho_e hK, hM i _ (good_resC T hσ) hV f f.2]
   exact h ⟨_, hK i _ f f.2⟩
 
 
@@ -445,13 +436,13 @@ theorem exists_framed_half (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : 8
   have hM : Moves B c' w := fun i σ hσ hV f hf => by
     by_cases e : σ = T.σ₀
     · subst e
-      rw [show w i T.σ₀ = z i from if_pos rfl]
+      rw [show w i T.σ₀ = z i from ite_eq_left rfl]
       funext h
       rw [phiC_apply, phiC_apply]
       have h2 := hs i f hf h
       rw [← h0 i] at h2
       exact congrArg (_ * ·) h2
-    · rw [show w i σ = 1 from if_neg e, phiC_setCE_of_eq hV (h1 i σ e)]
+    · rw [show w i σ = 1 from ite_eq_right e, phiC_setCE_of_eq hV (h1 i σ e)]
       have h2 := rho_e hK i 1 ⟨f, hf⟩
       rw [map_one] at h2
       have h3 := congrArg Subtype.val ((B.fw.e i).injective (Subtype.ext h2))
@@ -472,9 +463,9 @@ theorem exists_framed_half (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : 8
   refine ⟨c', overEmb T w, fun i σ => ?_, fun i hV => hfr i c' (h0 i) hV, exists_geoHalf_move hL hI hK hM hF⟩
   have key : ∀ s, w i s ∈ Subgroup.center G := fun s => by
     by_cases e : s = T.σ₀
-    · rw [show w i s = z i from if_pos e]
+    · rw [show w i s = z i from ite_eq_left e]
       exact hz i
-    · rw [show w i s = 1 from if_neg e]
+    · rw [show w i s = 1 from ite_eq_right e]
       exact one_mem _
   unfold overEmb
   split_ifs

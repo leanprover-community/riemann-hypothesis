@@ -220,8 +220,8 @@ lemma signature_sign_mul_self (ε : Fin n → Bool) (a b : Fin n) :
 lemma signature_sign_symm (ε : Fin n → Bool) (a b : Fin n) : sgn ε b a = sgn ε a b := by
   unfold sgn
   by_cases h : ε a = ε b
-  · rw [if_pos h, if_pos h.symm]
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_left h, ite_eq_left h.symm]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 
 lemma real_part_single_swap (ε : Fin n → Bool) (a b : Fin n) :
     cpart1 ε (Matrix.single b a 1) = ((-(sgn ε a b) : ℝ) : ℂ) • cpart1 ε (Matrix.single a b 1) := by
@@ -1157,7 +1157,7 @@ lemma lie_operators_gl_relations : GlRel (lieOperatorQuotient ε) := by
     (if b = c then lieOperatorQuotient ε a d else 0) (quotientMkAlt u) - (if d = a then lieOperatorQuotient ε c b else 0) (quotientMkAlt u)
   simp only [lie_operator_quotient_mk]
   by_cases h1 : b = c <;> by_cases h2 : d = a <;>
-    simp only [h1, h2, if_true, if_false, LinearMap.zero_apply, lie_operator_quotient_mk] at hGl ⊢
+    simp only [h1, h2, ite_true, ite_false, LinearMap.zero_apply, lie_operator_quotient_mk] at hGl ⊢
   · rw [← quotient_mk_sub, ← quotient_mk_sub, quotient_mk_eq_iff]
     intro g hg; have := hGl g hg
     simp only [Submodule.coe_sub, Submodule.coe_zero, Submodule.coe_mk, Pi.sub_apply,
@@ -1229,8 +1229,8 @@ lemma signed_casimir_identity {A : Type*} [Ring A] [Algebra ℂ A] (E : Fin n �
   rw [signature_sign_symm]
   unfold sgn
   by_cases h : ε a = ε b
-  · rw [if_pos h, if_pos h]; simp only [Complex.ofReal_one, one_smul, two_smul]; abel
-  · rw [if_neg h, if_neg h]; simp
+  · rw [ite_eq_left h, ite_eq_left h]; simp only [Complex.ofReal_one, one_smul, two_smul]; abel
+  · rw [ite_eq_right h, ite_eq_right h]; simp
 
 def wordActionQuotient (ε : Fin n → Bool) : List (Fin n × Fin n) → SmoothFunctionsModGroup ε → SmoothFunctionsModGroup ε
   | [] => fun m => m

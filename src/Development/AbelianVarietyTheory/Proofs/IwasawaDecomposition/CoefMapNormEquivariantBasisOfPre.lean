@@ -124,7 +124,7 @@ theorem coefMap_norm_equivariant_basis_ofPre : ∀ (D : D7) (G : Type) [Group G]
     have hγE : Matrix.nonsingInvUnit γE.val hu = γE := Units.ext rfl
     have hemb : (fun τ => embF O.c' (tauE D τ)) = fun τ => O.jL.comp (labLL D τ) :=
       funext fun τ => (embV_eq_embF O.c' O.jL hσ τ).symm
-    rw [rhoM, dif_pos hu, hγE, hemb]
+    rw [rhoM, dite_eq_left hu, hγE, hemb]
     exact CoefExt.equivariant (W := (R.cV i).W) hE ((R.cV i).ρ γ) (Formalism.L2.DIV.rhoVr (labLL D) (lamV D i) γE) _
       (CoefExt.up_rhoVr O.jL (lamV D i) (labLL D) γE) (h1 γ γE hγ) v
 end GlobalTheory.AdTh
@@ -208,7 +208,7 @@ theorem class_scalar_value_ofPre : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
     (fun Q hQ x => by
       rw [Formalism.L2.Host.HChar.resFin_mul, Formalism.L2.Host.HChar.resFin_mul, Formalism.L2.Host.HChar.resFin_inv,
         (R.C.isMu0 i).triv.1, (hL.xi_triv (tup t)).1, R.C.isEta.res.1, Formalism.L2.Host.etaFin, above_eq,
-        Finset.card_pair hQ.symm, if_neg (by norm_num), inv_one, one_mul, one_mul])
+        Finset.card_pair hQ.symm, ite_eq_right (by norm_num), inv_one, one_mul, one_mul])
   rw [← hbar] at c1 c3
   rw [← hLh] at c3
   obtain ⟨q, q0, q1, q2⟩ := (hO.ep t).2 (O.Lh t k) cc g.1 g.2.1 g.2.2 c1 c3

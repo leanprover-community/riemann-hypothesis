@@ -66,12 +66,7 @@ def push (h : IsGrpPullback A G z φ) {T : Over (Sp ℂ)} (x : T ⟶ A) : Over.m
     rw [Category.assoc, h.1.w, ← Category.assoc, Over.w x]
     rfl)
 
-theorem one_left_comp (h : IsGrpPullback A G z φ) (T : Over (Sp ℂ)) :
-    (1 : T ⟶ A).left ≫ φ = (1 : Over.mk (T.hom ≫ z) ⟶ G).left := by
-  have e := h.2 T 1 1 (push h 1) (push h 1) rfl rfl
-  rw [_root_.mul_one] at e
-  have e' : push h 1 * push h 1 = push h (1 : T ⟶ A) := Over.OverMorphism.ext e
-  exact congrArg (·.left) (mul_eq_left.1 e')
+alias one_left_comp := HodgeUnique.one_left_comp
 
 def lft (h : IsGrpPullback A G z φ) (v : epsAt z ⟶ G) : epsR ℂ ⟶ A :=
   Over.homMk (h.1.lift v.left (spMap (algebraMap ℂ (DualNumber ℂ))) (Over.w v)) (h.1.lift_snd _ _ _)
@@ -83,24 +78,8 @@ theorem lft_unique (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} {v' : epsR �
     v' = lft h v :=
   Over.OverMorphism.ext (h.1.hom_ext (e.trans (lft_left h v).symm) (by rw [Over.w, Over.w]))
 
-theorem isTangent_lft (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} (hv : IsTanAt G z v) : IsTangent (lft h v) := by
-  unfold IsTangent
-  refine h.1.hom_ext ?_ ?_
-  · rw [Category.assoc, lft_left]
-    refine Eq.trans hv ?_
-    have e := one_left_comp h (𝟙_ (Over (Sp ℂ)))
-    rw [Hom.one_def, toUnit_unit, Category.id_comp] at e
-    rw [e, HodgeUnique.one_left, HodgeUnique.one_left]
-    simp
-  · rw [Category.assoc]
-    have e1 : (lft h v).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
-    have e2 : η[A].left ≫ A.hom = 𝟙 _ := by simpa using Over.w η[A]
-    rw [e1, e2, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
-    have : (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom.comp (algebraMap ℂ (DualNumber ℂ)) = RingHom.id ℂ := by
-      ext x
-      simp
-    rw [this]
-    simp
+theorem isTangent_lft (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} (hv : IsTanAt G z v) : IsTangent (lft h v) :=
+  HodgeUnique.isTangent_lft h hv
 
 end Pull
 

@@ -98,12 +98,6 @@ structure LatticeVal (R : Type) [CommRing R] [IsDomain R] (Γ : Type) [AddCommGr
   map_mul : ∀ x y, toFun (x * y) = toFun x + toFun y
   map_unit : ∀ u : Rˣ, toFun (Units.map (algebraMap R (FractionRing R)).toMonoidHom u) = 0
 
-section General
-
-variable [IsLocalRing R] {Γ : Type} [AddCommGroup Γ] (v : LatticeVal R Γ)
-
-end General
-
 section DVR
 
 variable (R) [IsDiscreteValuationRing R]
@@ -153,15 +147,6 @@ theorem ord_vw_uniformiser {ϖ : R} (h0 : ϖ ≠ 0) (h : maximalIdeal R = Ideal.
 def ramIdx {p : ℕ} (hp : IsOverPrime R p) : ℤ := (ord_vw R).toFun (toUnitK (p : R) hp.ne_zero)
 
 end DVR
-
-section Normed
-
-variable [IsLocalRing R] {F : Type} [NormedField F]
-
-variable {φ : FractionRing R →+* F}
-
-
-end Normed
 
 theorem isOverPrime_padicInt (p : ℕ) [hp : Fact p.Prime] : IsOverPrime ℤ_[p] p := by
   refine ⟨hp.out, Nat.cast_ne_zero.2 hp.out.ne_zero, ?_⟩

@@ -19,50 +19,8 @@ public import Mathlib.Algebra.Field.Subfield.Basic
 public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EfRankSum
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -109,7 +67,7 @@ theorem exists_integral_congr (Ω : Type) [Field Ω] (ι : Type) [Finite ι]
   obtain ⟨t, ht⟩ := ReciprocityTheory.ChartRestriction.G.Lift.exists_val_eq v hgen hind
     (fun i => if i = i₀ then -1 else n i)
   have ht0 : v i₀ t < 1 := by
-    rw [ht i₀, if_pos rfl, ← WithZero.coe_one, WithZero.coe_lt_coe, ← ofAdd_zero,
+    rw [ht i₀, ite_eq_left rfl, ← WithZero.coe_one, WithZero.coe_lt_coe, ← ofAdd_zero,
       Multiplicative.ofAdd_lt]
     norm_num
   have h1t : v i₀ (1 + t) = 1 := by
@@ -126,7 +84,7 @@ theorem exists_integral_congr (Ω : Type) [Field Ω] (ι : Type) [Finite ι]
       exact ha
     · have hti : v i t = ((Multiplicative.ofAdd (n i) : Multiplicative ℤ) :
           WithZero (Multiplicative ℤ)) := by
-        rw [ht i, if_neg hi]
+        rw [ht i, ite_eq_right hi]
       have hlt : v i 1 < v i t := by
         rw [hti, (v i).map_one, ← WithZero.coe_one, WithZero.coe_lt_coe, ← ofAdd_zero,
           Multiplicative.ofAdd_lt]

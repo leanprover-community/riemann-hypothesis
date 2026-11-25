@@ -84,10 +84,6 @@ private theorem openOrbit {G : Type} [Group G] [TopologicalSpace G] [IsTopologic
     rw [hm, ← e', ← hm, inv_mul_cancel, h1]
   · exact ⟨a, Set.mem_biUnion hg (interior_subset ha), rfl⟩
 
-private theorem contCoeff {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (n i : ℕ) :
-    Continuous fun M : Matrix (Fin n) (Fin n) K => M.charpoly.coeff i := by
-  apply _root_.GlobalTheory.TypeLeaf.continuous_charpoly_coeff_of_matrix
-
 theorem UpperTheory.ConvolutionTheory.Loc.orbProper :
     ∀ (k E : Type) [Field k] [CharZero k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
         [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E]
@@ -116,4 +112,6 @@ theorem UpperTheory.ConvolutionTheory.Loc.orbProper :
     rw [normGL, twNorm_twConj_of_pow_eq_one _ hl, Units.val_mul, Units.val_mul, Matrix.coe_units_inv, Matrix.charpoly_units_conj']
     rfl
   rw [e]
-  exact isClosed_iInter fun i => isClosed_eq ((contCoeff n i).comp (Units.continuous_val.comp (hN _))) continuous_const
+  exact isClosed_iInter fun i => isClosed_eq
+    ((_root_.GlobalTheory.TypeLeaf.continuous_charpoly_coeff_of_matrix n i).comp
+      (Units.continuous_val.comp (hN _))) continuous_const

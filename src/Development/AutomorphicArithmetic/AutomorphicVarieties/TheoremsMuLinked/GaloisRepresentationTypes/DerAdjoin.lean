@@ -152,10 +152,10 @@ private theorem det_trick [IsDomain O] [IsNoetherianRing B] (x : B →ₐ[O] O) 
       ext k
       rw [coeff_map, coeff_X_pow]
       rcases lt_trichotomy k p.natDegree with hk | hk | hk
-      · rw [if_neg hk.ne]
+      · rw [ite_eq_right hk.ne]
         exact Ideal.pow_le_self (Nat.sub_ne_zero_of_lt hk) (hco k)
-      · rw [if_pos hk, hk, hp.coeff_natDegree, map_one]
-      · rw [if_neg hk.ne', coeff_eq_zero_of_natDegree_lt hk, map_zero]
+      · rw [ite_eq_left hk, hk, hp.coeff_natDegree, map_one]
+      · rw [ite_eq_right hk.ne', coeff_eq_zero_of_natDegree_lt hk, map_zero]
     have e2 : x (p.eval (algebraMap O B c)) = c ^ p.natDegree := by
       have := (eval₂_at_apply (x : B →+* O) (algebraMap O B c) (p := p)).symm
       rw [eval₂_eq_eval_map, e] at this

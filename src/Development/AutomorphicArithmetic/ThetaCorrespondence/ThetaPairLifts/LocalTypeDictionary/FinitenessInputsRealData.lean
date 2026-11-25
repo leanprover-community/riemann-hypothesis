@@ -350,7 +350,6 @@ theorem exists_covol_lowC : ∃ (μ : Measure (WO (Vc D i) (Wc D i))) (𝓧 : Se
   obtain ⟨p, hp⟩ := hd.2.2.2.2.2.2.2.1.1.2.norm.1
   exact ⟨p.1, p.2, hp⟩
 
-
 include hd hν in
 theorem scalar_bound_lowC (h7 : LevelIndexNormC R F) (h8 : MassLower D) (h9 : FormalDegreeUpperC R F) {b : ℝ} (hb : Sizes D i b)
     {μ : @Measure (Datum.WO (Vc D i) (Wc D i)) (Datum.measMx _ _)} {𝓧 : Set (Datum.WO (Vc D i) (Wc D i))}
@@ -387,7 +386,6 @@ theorem scalar_bound_lowC (h7 : LevelIndexNormC R F) (h8 : MassLower D) (h9 : Fo
     (fun ρ => mul_pos (Nat.cast_pos.2 (hookOf_pos _ _)) (Nat.cast_pos.2 (hookOf_pos _ _)))
     (fun ρ => by exact_mod_cast one_le_dimK i σ ρ) (fun ρ => (a6 ρ).2.1) (fun ρ => ⟨Nat.cast_nonneg _, s5 σ ρ⟩)
     fun ρ => (a6 ρ).2.2
-
 
 include hd hν in
 theorem term_eval_lowC (h3 : InnerProductFormulaC R F) (h4 : FockCoefficientC R F)
@@ -440,7 +438,6 @@ theorem integrableOn_isLift_lowC (x : HV.H) (v : ∀ ρ, lowT (R.MW i σ) ρ) (g
   simp only [ptL_apply] at this
   convert this using 10
 
-
 include hd hν hV in
 theorem exists_isLift_lowC (h1 : LiftIsCuspC R F) : ∃ th, IsLift R i σ ω (ptAt R i σ BW f) c io ν 𝓕 HV th := by
   refine exists_linear_lift ν 𝓕 (R.HW i σ).e (fun (v : ∀ ρ, lowT (R.MW i σ) ρ) (g : GA D (Wc D i)) U => U (fun ρ => v ρ) g)
@@ -456,7 +453,6 @@ theorem exists_isLift_lowC (h1 : LiftIsCuspC R F) : ∃ th, IsLift R i σ ω (pt
     refine (congrFun (congrFun (congrArg DFunLike.coe hu) _) g).trans ((hU.2 v g).trans ?_)
     unfold Lift.thetaPInt
     rfl
-
 
 include hd hν hV in
 
@@ -511,7 +507,6 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL
     {c : CoefA (Vc D i)} {io : LowT (R.MW i σ) →ₗ[ℂ] c.W →ₗ[ℂ] PolF D (Wc D i).rank (Vc D i).rank}
     (hd : IsLiftDataC R F i t σ s P cμ cη m ω BW f₀ f c io)
     {ν : Measure (GA D (Vc D i))} {𝓕 : Set (GA D (Vc D i))} (hν : IsMeasDef (Vc D i) (levV R i t P m) ν 𝓕)
-
 
 include hd hν in
 theorem scalar_of_form_key_lowC (h3 : InnerProductFormulaC R F) (h4 : FockCoefficientC R F) (h5 : DeltaNorm D)
@@ -611,7 +606,6 @@ theorem prod_fin_getD (m : Multiset ℂˣ) {n : ℕ} (hn : m.card = n) (f : ℂ�
 
 variable {D : D7}
 
-
 open Classical in
 def zetaParams (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) (B : GlobalTheory.LFun.Fam D.host.E) (cμ : (AE D)ˣ →* Circle) :
     HeightOneSpectrum (𝓞 D.host.E) → Fin D.R.r → ℂ := fun w a =>
@@ -684,7 +678,7 @@ theorem eulerOff_zetaParams {S : Finset (HeightOneSpectrum (𝓞 D.host.F))} {B 
   show _ = GlobalTheory.LFun.locL _ w.1 _
   rw [GlobalTheory.LFun.locL_twist, ← prod_fin_getD (B w.1) (hcard w.1 w.2)]
   refine Finset.prod_congr rfl fun a _ => ?_
-  simp only [hxdef, zetaParams, if_pos w.2]
+  simp only [hxdef, zetaParams, ite_eq_left w.2]
 
 end GlobalTheory.LowRow.ZetaProd
 
@@ -1087,7 +1081,7 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
       Formalism.L2.NTheta.lamAt h 0 + h.e i - ((D.R.k + i : ℕ) - (0 + 1) : ℚ) - ((D.R.t : ℚ) + 1) / 2 := by
     have := le_toNat_floor (Formalism.L2.NTheta.lamAt h 0 + h.e i - ((D.R.k + i : ℕ) - ((0 : ℕ) + 1) : ℚ) - ((D.R.t : ℚ) + 1) / 2)
     unfold aPlAt aPl
-    rw [hp, if_pos (by omega)]
+    rw [hp, ite_eq_left (by omega)]
     simpa using this
   have hdeg : (aPlAt D i σ ρ 0 : ℚ) + (if 0 < qW D i ρ then (aMiAt D i σ ρ 0 : ℚ) else 0) ≤ degAt D i σ ρ := by
     have e1 : aPlAt D i σ ρ 0 ≤ ∑ n ∈ Finset.range (pW D i ρ), aPlAt D i σ ρ n :=
@@ -1105,12 +1099,12 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
     split_ifs at this ⊢ <;> simpa using this
   by_cases hq0 : (i : ℕ) + 1 < D.R.m
   · have hqpos : 0 < qW D i ρ := by rw [hq]; omega
-    rw [if_pos hqpos] at hdeg
+    rw [ite_eq_left hqpos] at hdeg
     have hM0 : (aMiAt D i σ ρ 0 : ℚ) + 1 ≥
         -(h.e i + Formalism.L2.NTheta.lamAt h (D.R.r - 1) + ((D.R.m - (i + 1) : ℕ) : ℚ) + ((D.R.t : ℚ) - 1) / 2) := by
       have := le_toNat_floor (-(h.e i + Formalism.L2.NTheta.lamAt h (D.R.r - 1) + ((D.R.m - (i + 1) : ℕ) : ℚ) + ((D.R.t : ℚ) - 1) / 2))
       unfold aMiAt aMi
-      rw [hp, hq, if_pos (by omega), show D.R.k + ↑i + (D.R.m - (↑i + 1) - 0) - 1 = D.R.r - 1 by omega]
+      rw [hp, hq, ite_eq_left (by omega), show D.R.k + ↑i + (D.R.m - (↑i + 1) - 0) - 1 = D.R.r - 1 by omega]
       simpa using this
     have c1 : (((D.R.k + i : ℕ) : ℚ)) = D.R.k + (i : ℚ) := by push_cast; ring
     have c2 : (((D.R.m - (i + 1) : ℕ) : ℚ)) = D.R.m - (i : ℚ) - 1 := by
@@ -1120,7 +1114,7 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
     rw [hnV]
     linarith
   · have him : (i : ℕ) = D.R.m - 1 := by omega
-    rw [if_neg (by rw [hq]; omega), add_zero] at hdeg
+    rw [ite_eq_right (by rw [hq]; omega), add_zero] at hdeg
     have hb : Formalism.L2.NTheta.lamAt h (D.R.r - 1) = -h.b i := by
       rw [show D.R.r - 1 = D.R.k - 1 + (i : ℕ) by omega, lamAt_b h i i.2]
     have hg := h.gap_be i
@@ -1134,14 +1128,13 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
 
 end GlobalTheory.LowRow.ParWidth
 
-
 open GlobalTheory.LowRow.ParWidth in
 theorem GlobalTheory.LowRow.lam_par_width : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Core5 R F → ∀ i σ s, IsEmbOverK D σ s → ∀ ρ, StrictAnti ((R.MW i σ).lam ρ) ∧ (∀ a, ∃ z : ℤ, (R.MW i σ).lam ρ a - (((Wc D i).rank : ℝ) - 1) / 2 = (z : ℝ)) ∧ ∀ a b, |(R.MW i σ).lam ρ a - (R.MW i σ).lam ρ b| ≤ (degAt D i σ ρ : ℝ) + D.R.nV + 3 := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F _hC i σ s hσ ρ
   have hK : GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature.OverK σ := hσ.2
   have hat : labE σ (lab σ ρ) = tauE D ρ := ((GlobalTheory.GalLift.labels_overK σ).1 hK).2 ρ
   obtain ⟨hanti, qv, hqv, hS⟩ := (R.MW i σ).enum ρ
-  have hpar : parAt (Wc D i) σ ρ = Formalism.L2.NTheta.holPar _ _ (kapAt (Wc D i) σ ρ) := if_pos hat
+  have hpar : parAt (Wc D i) σ ρ = Formalism.L2.NTheta.holPar _ _ (kapAt (Wc D i) σ ρ) := ite_eq_left hat
   have hsig : (Wc D i).sig (tauE D ρ) = D.R.sigW ((i : ℕ) + 1) := D.sp.W_sigval _ (Nat.le_add_left _ _) i.2 _
   have hk := D.R.m_add_three_le_k
   have hi := i.2
@@ -1212,8 +1205,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar GlobalTheory.LiftRows GlobalTheory.LowRow
 
-theorem _root_.GlobalTheory.T.standardMeasure_unitaryPQ_eq_volume_smul_compactDual : ∀ (cd : CDHaar) (p q : ℕ) (m : Measure (UpqT p q)), Lev.IsMinf m → m = ENNReal.ofReal (ReciprocityTheory.ChartRestriction.DS.volU (p + q)) • cd.cd p q := by
-  first | exact @GlobalTheory.LowRow.CompactDualScale.isMinf_eq_volU_smul_cd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardMeasureUnitaryPQEqVolumeSmulCompactDualStatement =====
@@ -1248,7 +1239,7 @@ theorem formalDegreeUpperC_of_hypotheses : GlobalTheory.Published.FormalDegreeCo
     have := D.R.m_add_three_le_k; have := D.R.two_le_m; have := D.R.three_m_lt_t
     simp only [Formalism.BasicNotions.Ranks.nV, Formalism.BasicNotions.Ranks.r]; omega
   obtain ⟨hint, hinv⟩ := _root_.GlobalTheory.LowRow.CompactDualCoef.inv_integral_coef_sq hp D.cd (Wc D i) _ (R.MW i σ) Fr hFr hsig ρ hanti hhalf _ he
-  have hm := GlobalTheory.T.standardMeasure_unitaryPQ_eq_volume_smul_compactDual D.cd _ _ mR hmR
+  have hm := GlobalTheory.LowRow.CompactDualScale.isMinf_eq_volU_smul_cd D.cd _ _ mR hmR
   rw [hsig ρ] at hm
   obtain ⟨hvol, hQpos, hlog⟩ := _root_.GlobalTheory.LowRow.formalDeg_div_volU_log_bound (Wc D i).rank D.R.nV (degAt D i σ ρ) ((R.MW i σ).lam ρ) h1 h3
     (by positivity) hanti hwid
@@ -1281,12 +1272,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar GlobalTheory.LiftRows GlobalTheory.LowRow
 
 namespace GlobalTheory.LowRow.SignedPerm
-
-section General
-
-variable {K : Type} [Field K] [NumberField K]
-
-end General
 
 section Host
 

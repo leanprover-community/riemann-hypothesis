@@ -145,7 +145,7 @@ theorem coarse_threshold_prefix_sum {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs : Std
   intro ⟨i, hi⟩
   induction i with
   | zero =>
-    simp only [Nat.not_lt_zero, if_false, Finset.sum_const_zero]
+    simp only [Nat.not_lt_zero, ite_false, Finset.sum_const_zero]
     positivity
   | succ i ih =>
     have ih' := ih (by omega)
@@ -158,10 +158,10 @@ theorem coarse_threshold_prefix_sum {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs : Std
       rw [← h2, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases h1 : l.val < i
-      · rw [if_pos (by omega), if_pos h1, if_neg (fun h => by rw [h] at h1; simp at h1)]; ring
+      · rw [ite_eq_left (by omega), ite_eq_left h1, ite_eq_right (fun h => by rw [h] at h1; simp at h1)]; ring
       · by_cases h3 : l.val = i
-        · rw [if_pos (by omega), if_neg h1, if_pos (Fin.ext h3)]; ring
-        · rw [if_neg (by omega), if_neg h1, if_neg (fun h => h3 (by rw [h]))]; ring
+        · rw [ite_eq_left (by omega), ite_eq_right h1, ite_eq_left (Fin.ext h3)]; ring
+        · rw [ite_eq_right (by omega), ite_eq_right h1, ite_eq_right (fun h => h3 (by rw [h]))]; ring
     rw [e]
     have hC : (0 : ℝ) ≤ (clC C0 CE1 CE2 X j rz ry ⟨i, by omega⟩ : ℝ) := Nat.cast_nonneg _
     have hp0 : (0 : ℝ) < (X.p : ℝ) ^ 2 := by linarith
@@ -194,10 +194,10 @@ theorem nUp_of_std {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
     rw [← h2, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun x _ => ?_
     by_cases h1 : x.val < i.val
-    · rw [if_pos (by omega), if_pos h1, if_neg (fun h => by rw [h] at h1; simp at h1)]; ring
+    · rw [ite_eq_left (by omega), ite_eq_left h1, ite_eq_right (fun h => by rw [h] at h1; simp at h1)]; ring
     · by_cases h3 : x.val = i.val
-      · rw [if_pos (by omega), if_neg h1, if_pos (Fin.ext h3)]; ring
-      · rw [if_neg (by omega), if_neg h1, if_neg (fun h => h3 (by rw [h]))]; ring
+      · rw [ite_eq_left (by omega), ite_eq_right h1, ite_eq_left (Fin.ext h3)]; ring
+      · rw [ite_eq_right (by omega), ite_eq_right h1, ite_eq_right (fun h => h3 (by rw [h]))]; ring
   rw [e] at h2
   have hcast : ((∑ x : Fin (segS X.TT j), if x.val < i.val then (clC C0 CE1 CE2 X j rz ry x : ℤ) else 0 : ℤ) : ℝ) =
       ∑ x : Fin (segS X.TT j), if x.val < i.val then (clC C0 CE1 CE2 X j rz ry x : ℝ) else 0 := by

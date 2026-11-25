@@ -31,8 +31,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.VolHeckeCheck
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem isWittLower_self (D : D7) (V : HSp D) : IsWittLower V V 0 := by
   refine ⟨rfl, LinearMap.id, fun _ _ => rfl, 0, ⟨linearIndependent_empty_type, ?_⟩, ?_⟩
   · exact Subsingleton.elim _ _
@@ -56,8 +54,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 
 namespace GlobalTheory.Mem.Th
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -145,7 +141,7 @@ theorem nonempty_orthDec (h : OrthEx D) : Nonempty (OrthDec D) := by
   classical
   choose A Q h1 h2 h3 h4 using h
   refine ⟨⟨fun V => if hV : V.SigOK then A V hV else 0, fun V hV => ?_, fun V => if hV : V.SigOK then Q V hV else 0,
-    fun V hV => ?_, fun V hV => ?_, fun V hV => ?_⟩⟩ <;> simp only [dif_pos hV]
+    fun V hV => ?_, fun V hV => ?_, fun V hV => ?_⟩⟩ <;> simp only [dite_eq_left hV]
   exacts [h1 V hV, h2 V hV, h3 V hV, h4 V hV]
 
 def KfinS (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF D) (Dc : OrthDec D) (V W : HSp D) : Submodule ℂ (ThS ψ V W) :=
@@ -389,7 +385,7 @@ theorem nonempty_realMeas (D : D7) : Nonempty (RealMeas D) := by
   · split_ifs
     · exact one_pos
     · exact hr p q
-  · rw [if_neg (by omega)]; exact hd p q
+  · rw [ite_eq_right (by omega)]; exact hd p q
 
 def memberBes (D : D7) (u : D.what₂.Word) : BesDat (D.sp.X 0) (D.sp.Y 0) (D.sp.iXY 0) :=
   GlobalTheory.BesselCompare.toBes (GlobalTheory.IndefiniteRowSideFullHecke.BesselData.memberDatum D u)
@@ -571,24 +567,6 @@ def LiftAut (D : D7) : Prop := ∀ θ : InfF D, IsInfFam θ → ∀ ψ, IsStdCha
     (∀ h, IntegrableOn (fun g => Wf.ker V W χ χ' Φ g h * F g) 𝓕 μ) ∧
     IsAutFunSm θ W fun h => ∫ g in 𝓕, Wf.ker V W χ χ' Φ g h * F g ∂μ
 
-def TypAdd (D : D7) : Prop := ∀ θ : InfF D, IsInfFam θ → ∀ V : HSp D, V.SigOK → ∀ τ S,
-  GoodPar V.rank (V.sig (tauE D τ)).1 (V.sig (tauE D τ)).2 S →
-    IsTypeAt θ V τ S 0 ∧ ∀ φ φ', IsAutFunSm θ V φ → IsAutFunSm θ V φ' →
-      IsTypeAt θ V τ S φ → IsTypeAt θ V τ S φ' → IsTypeAt θ V τ S (φ + φ')
-
-theorem mem_TypS (h : FormSub D) (ht : TypAdd D) {θ : InfF D} (hθ : IsInfFam θ) {V : HSp D} (hV : V.SigOK)
-    {P : D.what₂.Tau → SPar} (hP : ∀ τ, GoodPar V.rank (V.sig (tauE D τ)).1 (V.sig (tauE D τ)).2 (P τ)) {φ : GA D V → ℂ} :
-    φ ∈ TypS θ V P ↔ IsAutFunSm θ V φ ∧ ∀ τ, IsTypeAt θ V τ (P τ) φ := by
-  refine ⟨fun hφ => ?_, fun hφ => Submodule.subset_span hφ⟩
-  induction hφ using Submodule.span_induction with
-  | mem x hx => exact hx
-  | zero => exact ⟨(h θ hθ V 0).1 (zero_mem _), fun τ => (ht θ hθ V hV τ _ (hP τ)).1⟩
-  | add x y _ _ hx hy =>
-    exact ⟨(h θ hθ V _).1 (add_mem ((h θ hθ V x).2 hx.1) ((h θ hθ V y).2 hy.1)),
-      fun τ => (ht θ hθ V hV τ _ (hP τ)).2 x y hx.1 hy.1 (hx.2 τ) (hy.2 τ)⟩
-  | smul c x _ hx =>
-    exact ⟨(h θ hθ V _).1 (Submodule.smul_mem _ c ((h θ hθ V x).2 hx.1)), fun τ => isTypeAt_smul c (hx.2 τ)⟩
-
 def WeilCoreEx (D : D7) : Prop := ∀ ψ, IsStdChar D ψ (-1) → Nonempty (WeilCore D ψ)
 
 def WeilRules (D : D7) : Prop := ∀ ψ, IsStdChar D ψ (-1) → ∀ Wc : WeilCore D ψ, Wc.Rules
@@ -597,15 +575,6 @@ def WeilEx (D : D7) : Prop := ∀ ψ, IsStdChar D ψ (-1) → Nonempty (WeilFun 
 
 theorem weilEx_of (h : WeilCoreEx D) (hr : WeilRules D) : WeilEx D :=
   fun ψ hψ => (h ψ hψ).elim fun Wc => ⟨Wc.toFun (hr ψ hψ Wc)⟩
-
-namespace Realises
-
-variable {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : WeilTied D X T} {B : BesselTied D X T W}
-  {Wf : WeilFun D W.ψ} {Tw : Tow D} {Rc : RecFun D θ W.ψ} (h : Realises B Wf Tw Rc)
-
-include h
-
-end Realises
 
 end GlobalTheory.Mem.Th
 

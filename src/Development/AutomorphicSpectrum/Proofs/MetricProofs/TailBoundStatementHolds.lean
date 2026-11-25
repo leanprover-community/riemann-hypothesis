@@ -151,7 +151,7 @@ theorem tailTelescopeSucc {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpac
       induction i using Fin.cases with
       | zero =>
         simp only [Function.comp, Equiv.swap_apply_left, Fin.cons_zero, G]
-        rw [if_pos (by omega)]
+        rw [ite_eq_left (by omega)]
       | succ i =>
         simp only [Function.comp, Fin.cons_succ, Φ, G]
         have := hne i
@@ -161,7 +161,7 @@ theorem tailTelescopeSucc {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpac
       induction i using Fin.cases with
       | zero =>
         simp only [Function.comp, Equiv.swap_apply_left, Fin.cons_zero, G]
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
       | succ i => simp only [Function.comp, Fin.cons_succ, Φ]
     have e0 : ∀ g, mInt A (G t) g = mInt A (Fin.cons (Θ j) Φ) g := fun g => by
       rw [← hG0, mIntSymm]
@@ -187,7 +187,7 @@ theorem tailTelescopeSucc {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpac
     have e4 : mInt A (Fin.cons (Θ j) Φ) (fun _ => 1) = mInt A Θ (fun _ => 1) := by
       rw [← e0, hmass]
     have hKn : Kn t = K j := by
-      simp only [Kn, dif_pos ht]
+      simp only [Kn, dite_eq_left ht]
       congr 1
       exact Fin.ext hj.symm
     have hP := tailEnergyStep A L s m W B hB hL hs hsnc (Θ j) (hΘ j) (isPsh_of_isPosPot A _ (hΘp j))

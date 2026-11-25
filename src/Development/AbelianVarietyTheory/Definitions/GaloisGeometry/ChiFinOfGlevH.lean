@@ -256,27 +256,4 @@ end GlobalTheory.Port
 
 end
 
-section
-namespace GlobalTheory.Port
-
-open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.G.ChartsLv
-
-open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.ChartsLv Formalism.L2.G.Cmp
-open scoped TensorProduct
-
-section Gen
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-variable {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
-  {gp : Fin 2 → ℕ} {LL : Type} [Field LL]
-
-end Gen
-
-variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
-
-
-end GlobalTheory.Port
-
-end
-
 end

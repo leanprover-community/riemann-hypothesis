@@ -1038,7 +1038,6 @@ theorem jcpt : StdGood → GrpTop → JTop → JCpt := by
     hemb.isCompact_preimage (hBc.prod hC₂)
   have hprj : Continuous (prj A ν ι) := continuous_snd.comp continuous_subtype_val
   have hclK : IsClosed (cK α j : Set (cover A ν ι)) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact (hUK.isClosed.preimage hj).inter (hC₂.isClosed.preimage hprj)
   refine hP.of_isClosed_subset hclK ?_
   intro x hx

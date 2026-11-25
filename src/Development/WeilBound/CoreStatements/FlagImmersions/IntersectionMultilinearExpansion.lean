@@ -38,15 +38,8 @@ theorem intersection_multilinear_expansion : ∀ II : IntersectionSystem, IsFull
         obtain rfl := Subsingleton.elim inst (instDecidableEqFin d)
         simp only [key, Pi.smul_apply, smul_eq_mul, Int.cast_mul, Finset.mul_sum, mul_assoc]
         rfl }
-  have hn : (fun k => n k) = fun k => ∑ j, n k j • (Pi.single j (1 : ℤ) : J → ℤ) := by
-    funext k
-    conv_lhs => rw [← Finset.univ_sum_single (n k)]
-    refine Finset.sum_congr rfl (fun j _ => ?_)
-    ext j'
-    by_cases h : j' = j
-    · subst h
-      simp
-    · simp [h]
+  have hn : (fun k => n k) = fun k => ∑ j, n k j • (Pi.single j (1 : ℤ) : J → ℤ) :=
+    funext fun k => pi_eq_sum_univ' (n k)
   calc II K ι P d (fun k => combLine ℓ (n k))
       = f (fun k => ∑ j, n k j • (Pi.single j (1 : ℤ) : J → ℤ)) := by
         rw [← hn]

@@ -20,13 +20,9 @@ section Orbit
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem mCoordIdeal_le_of_sameOrbit {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
-    mCoordIdeal z' ≤ mCoordIdeal z := by
-  apply GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.mCoordIdeal_le <;> assumption
-
 theorem mCoordIdeal_eq_of_sameOrbit {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
     mCoordIdeal z = mCoordIdeal z' :=
-  le_antisymm (mCoordIdeal_le_of_sameOrbit (Cj.sameOrbit_symm h)) (mCoordIdeal_le_of_sameOrbit h)
+  le_antisymm (GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.mCoordIdeal_le (Cj.sameOrbit_symm h)) (GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.mCoordIdeal_le h)
 
 end Orbit
 
@@ -63,7 +59,7 @@ theorem sameOrbit_of_isFlagOf (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.
     by_cases hk : ∀ p, M.blk p ≠ some k
     · exact ⟨1, one_ne_zero, fun m => by
         simpa [basePart] using congrFun hbase ⟨⟨k, hk⟩, m⟩⟩
-    · push_neg at hk
+    · push Not at hk
       obtain ⟨p, hp⟩ := hk
       obtain ⟨a, ha, ea⟩ := H.2.2 p k hp
       obtain ⟨a', ha', ea'⟩ := H'.2.2 p k hp
@@ -82,12 +78,12 @@ theorem isImg_unique : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.coord_ne (hG'.1 k)
   let c : K' → ℂ := fun k =>
     if h : ∀ p, M'.blk p ≠ some k then (basePart M'.blk z ⟨⟨k, h⟩, F'.c ⟨k, h⟩⟩)⁻¹ else 1
-  have hcb : ∀ k : NonPluckerBlocks M'.blk, c k.1 = (basePart M'.blk z ⟨k, F'.c k⟩)⁻¹ := fun k => dif_pos k.2
+  have hcb : ∀ k : NonPluckerBlocks M'.blk, c k.1 = (basePart M'.blk z ⟨k, F'.c k⟩)⁻¹ := fun k => dite_eq_left k.2
   have hc : ∀ k, c k ≠ 0 := fun k => by
     by_cases h : ∀ p, M'.blk p ≠ some k
     · rw [hcb ⟨k, h⟩]
       exact inv_ne_zero (hne ⟨k, h⟩)
-    · simp only [c, dif_neg h]
+    · simp only [c, dite_eq_right h]
       exact one_ne_zero
   let z₁ : (Σ k, ι' k) → ℂ := fun p => c p.1 * z p
   have h1 : SameOrbit z₁ z := ⟨c, hc, rfl⟩

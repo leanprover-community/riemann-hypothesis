@@ -326,7 +326,7 @@ private theorem jetMap_congr_deg (lam : ι → DomWeight a) (lam' : ι → DomWe
       rw [weight_der, ← hall τ]
       exact hder τ (mem_support_iff.mp hμ)
     rw [hJJ]
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨τ, hτ⟩ := hall
     have hz : ∀ J₀ : (DVar ι a b →₀ ℕ) → K, jetMap J₀ n P = 0 := by
       intro J₀
@@ -419,7 +419,7 @@ theorem UpperTheory.WildA.kkTab :
     rw [map_prod, ← Finset.prod_mul_distrib]
     refine Finset.prod_eq_one fun τ _ => ?_
     rw [map_pow, ← mul_pow, ← map_mul, Pi.one_apply, div_mul_cancel₀ _ (period_ne hδ τ), map_one, one_pow]
-  rw [if_pos h1, h, h2, Normal.scal, map_mul, mul_mul_mul_comm, Units.inv_mul, one_mul, ← mul_assoc, h3, one_mul]
+  rw [ite_eq_left h1, h, h2, Normal.scal, map_mul, mul_mul_mul_comm, Units.inv_mul, one_mul, ← mul_assoc, h3, one_mul]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.CyclotomicBounds.WildJets.JetOpMulTab =====

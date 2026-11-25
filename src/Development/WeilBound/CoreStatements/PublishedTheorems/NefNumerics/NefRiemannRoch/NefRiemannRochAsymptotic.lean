@@ -296,7 +296,7 @@ theorem hdim_twist_structureModule_le : ∀ (k : Type) [Field k] [Infinite k] (X
     have hmono : Mono (cutHom (GlobalTheory.structureModule X) (isLB_lbPow hL.isLB p) s) :=
       (mono_cutHom_structureModule_iff _ s).mpr ((sec_ne_zero_iff s).mp hs)
     exact _root_.GlobalTheory.hdim_twist_pow_le_of_regular_section k X hproj d L hL.isLB hind (GlobalTheory.structureModule X) hsupp p hp s hmono i hi
-  · push_neg at hsec
+  · push Not at hsec
     have h0 : ∀ m, 1 ≤ m → hdim k (twist (GlobalTheory.structureModule X) (lbPow L m)) 0 = 0 := by
       intro m hm
       by_contra hne
@@ -414,10 +414,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
 
 noncomputable section
-
-namespace GlobalTheory.NefBound
-
-end GlobalTheory.NefBound
 
 
 open GlobalTheory.VB in

@@ -348,8 +348,8 @@ theorem lvl_isPullback {A B D0 : Subalgebra k Ω} (hA : D0 ≤ A) (hB : D0 ≤ B
 def stageD {R R1 : Subalgebra k Ω} (h1 : R ≤ R1) {D : Scheme.{0}} (q : D ⟶ Sp R) : (Idx R1)ᵒᵖ ⥤ Scheme.{0} where
   obj S := pullback q (incl (h1.trans S.unop.2.1))
   map {S T} f := lvl (h1.trans T.unop.2.1) (h1.trans S.unop.2.1) (leOfHom f.unop) q
-  map_id S := lvl_self _ q
-  map_comp {S T V} f g := (lvl_comp _ _ _ (leOfHom g.unop) (leOfHom f.unop) q).symm
+  map_id _ := lvl_self _ q
+  map_comp {_ _ _} f g := (lvl_comp _ _ _ (leOfHom g.unop) (leOfHom f.unop) q).symm
 
 def stageP {R R1 : Subalgebra k Ω} (h1 : R ≤ R1) {D : Scheme.{0}} (q : D ⟶ Sp R) : stageD h1 q ⟶ baseD R1 where
   app S := pullback.snd q (incl (h1.trans S.unop.2.1))

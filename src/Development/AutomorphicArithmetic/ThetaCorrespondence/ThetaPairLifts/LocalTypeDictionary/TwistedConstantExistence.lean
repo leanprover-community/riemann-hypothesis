@@ -16,41 +16,7 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryAdelicHeightBlockDiagonalEmbeddingLeMul
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteVolumeAdelicUnitaryQuotient
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsRegulariserAtPlace, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TwistSmallKernelInvariant, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsStripCombinationTrivialOutsideSet, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.RegularizedIntegralSmallConstant, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TwistedConstantExistence
@@ -139,10 +105,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.RowEx
 open MeasureTheory GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames
 noncomputable section
-namespace GlobalTheory.SmallKerInv
-end GlobalTheory.SmallKerInv
-namespace GlobalTheory.SmallKerInv
-end GlobalTheory.SmallKerInv
 namespace GlobalTheory.SmallKerInv
 open GlobalTheory.FinPl
 theorem small_kernel_invariant : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.SquareSt.WeilConvergence → GlobalTheory.SquareSt.LocalMatching → GlobalTheory.SquareSt.ThetaIntegralsAgree → BigR fun {D} _ _ _ _ T _ _ _ _ _ R sc => ∀ (G : GridData R.toLevCh sc) (W : G.Weil), W.Over R → ∀ (B : Frames G)
@@ -420,21 +382,21 @@ theorem twisted_constant_existence : GlobalTheory.Published.HoweDualityReal → 
   let rel' : ∀ i j : ℕ, Submodule ℂ (PolRoute G (.grid i (j + 1)) (.grid (i + 1) (j + 1)) (.grid (i + 1) j) ×
       PolRoute G (.grid i (j + 1)) (.grid i j) (.grid (i + 1) j)) := fun i j =>
     if h : i < D.R.m ∧ j < D.R.m then r ⟨i, h.1⟩ ⟨j, h.2⟩ else rm.rel i j
-  have e : ∀ i j : Fin D.R.m, rel' i j = r i j := fun i j => dif_pos ⟨i.2, j.2⟩
+  have e : ∀ i j : Fin D.R.m, rel' i j = r i j := fun i j => dite_eq_left ⟨i.2, j.2⟩
   let ρ : RealMatch W := { rm with
     rel := rel'
     onto_big := fun i j a => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr1 ⟨i, h.1⟩ ⟨j, h.2⟩ a
-      · simp only [rel', dif_neg h]; exact rm.onto_big i j a
+      · simp only [rel', dite_eq_left h]; exact hr1 ⟨i, h.1⟩ ⟨j, h.2⟩ a
+      · simp only [rel', dite_eq_right h]; exact rm.onto_big i j a
     onto_small := fun i j b => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr2 ⟨i, h.1⟩ ⟨j, h.2⟩ b
-      · simp only [rel', dif_neg h]; exact rm.onto_small i j b
+      · simp only [rel', dite_eq_left h]; exact hr2 ⟨i, h.1⟩ ⟨j, h.2⟩ b
+      · simp only [rel', dite_eq_right h]; exact rm.onto_small i j b
     proper := fun i j => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr3 ⟨i, h.1⟩ ⟨j, h.2⟩
-      · simp only [rel', dif_neg h]; exact rm.proper i j }
+      · simp only [rel', dite_eq_left h]; exact hr3 ⟨i, h.1⟩ ⟨j, h.2⟩
+      · simp only [rel', dite_eq_right h]; exact rm.proper i j }
   have hρ : ρ.Over R := hrm
   have hc : ∀ i j t, ∃ c, IsSquareConst W B ρ t i j c := by
     intro i j t

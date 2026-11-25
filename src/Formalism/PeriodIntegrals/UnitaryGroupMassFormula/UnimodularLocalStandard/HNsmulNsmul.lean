@@ -39,7 +39,7 @@ lemma H_self_ne (L : PeriodPair) {v : m → ℂ} (hv : v ≠ 0) : stdH L m v v �
   rw [stdH_apply]
   have hA : area L ≠ 0 := by rw [area_eq]; exact abs_ne_zero.mpr (detD_ne L)
   refine mul_ne_zero ?_ (inv_ne_zero (by exact_mod_cast hA))
-  obtain ⟨i, hi⟩ : ∃ i, v i ≠ 0 := by by_contra h; push_neg at h; exact hv (funext h)
+  obtain ⟨i, hi⟩ : ∃ i, v i ≠ 0 := by by_contra h; push Not at h; exact hv (funext h)
   have hsum : (∑ j, v j * conj (v j)) = ((∑ j, Complex.normSq (v j) : ℝ) : ℂ) := by
     push_cast; exact Finset.sum_congr rfl fun j _ => Complex.mul_conj (v j)
   rw [hsum]

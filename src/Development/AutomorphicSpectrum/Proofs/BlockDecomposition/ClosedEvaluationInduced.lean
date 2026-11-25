@@ -231,7 +231,7 @@ theorem hgp_cocompact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSp
             (Fin.castSucc (GlobalTheory.SmGL.stdSum (rfl : (i + 1) + t = (i + 1) + t) (Sum.inl a))) = 0 := by
           rw [hlast]
           simp only [GlobalTheory.BZMir.eLast, Pi.single_apply]
-          rw [if_neg (Fin.castSucc_lt_last _).ne]
+          rw [ite_eq_right (Fin.castSucc_lt_last _).ne]
         convert h0 using 2 <;> apply Fin.ext <;>
           simp [GlobalTheory.SmGL.stdSum_inl, GlobalTheory.SmGL.stdSum_inr]
       | cast b =>

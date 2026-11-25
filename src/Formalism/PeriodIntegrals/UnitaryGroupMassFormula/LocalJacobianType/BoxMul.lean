@@ -97,14 +97,7 @@ theorem box_measure_mul : BoxMul (E := E) v := by
   have hmap : μ.map Em = c • μ := by
     ext X hX
     rw [MeasurableEquiv.map_apply, Measure.smul_apply, smul_eq_mul]
-    have hpre : Em ⁻¹' X = mulL v z '' X := by
-      ext x
-      constructor
-      · intro hx
-        exact ⟨h x, hx, h.left_inv x⟩
-      · rintro ⟨w, hw, rfl⟩
-        show h (h.symm w) ∈ X
-        rw [h.apply_symm_apply]; exact hw
+    have hpre : Em ⁻¹' X = mulL v z '' X := (Em.image_symm X).symm
     rw [hpre, hLM (Fv F v) (ι → Fv F v ⊗[F] E) (ι × Fin _) ⟨eV⟩ (mulL v z)
       (by rw [det_mulL]; exact hdet0) μ inferInstance X hX, det_mulL]
   have hS : (Set.univ.pi fun i => {c | y i * c ∈ OEv (E := E) v}) = Em ⁻¹' Obox (E := E) v ι := by

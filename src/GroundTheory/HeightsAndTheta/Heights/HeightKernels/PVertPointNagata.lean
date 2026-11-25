@@ -17,55 +17,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
 noncomputable section
 
-private def mvPolyUnitEquiv (R : Type*) [CommRing R] : MvPolynomial Unit R ≃+* Polynomial R :=
-  let f : MvPolynomial Unit R →+* Polynomial R :=
-    MvPolynomial.eval₂Hom Polynomial.C (fun _ : Unit => Polynomial.X)
-  let g : Polynomial R →+* MvPolynomial Unit R :=
-    Polynomial.eval₂RingHom MvPolynomial.C (MvPolynomial.X ())
-  { toFun := f
-    invFun := g
-    left_inv := fun p => by
-      have h : g.comp f = RingHom.id _ := by
-        apply MvPolynomial.ringHom_ext
-        · intro r; simp [f, g]
-        · rintro ⟨⟩; simp [f, g]
-      exact RingHom.congr_fun h p
-    right_inv := fun q => by
-      have h : f.comp g = RingHom.id _ := by
-        apply Polynomial.ringHom_ext
-        · intro r; simp [f, g]
-        · simp [f, g]
-      exact RingHom.congr_fun h q
-    map_mul' := f.map_mul
-    map_add' := f.map_add }
-
-private def mNagataUnitEquiv (R : Type*) [CommRing R] [IsLocalRing R] :
-    Targets.mNagataRing Unit R ≃+* nagataRing R := by
-  let e : MvPolynomial Unit R ≃+* Polynomial R := mvPolyUnitEquiv R
-  have hM : Ideal.map e.toRingHom
-      ((IsLocalRing.maximalIdeal R).map (MvPolynomial.C : R →+* MvPolynomial Unit R)) =
-      (IsLocalRing.maximalIdeal R).map (Polynomial.C : R →+* Polynomial R) := by
-    rw [Ideal.map_map]
-    congr 1
-    ext r
-    simp [e, mvPolyUnitEquiv]
-  have hS : Submonoid.map e.toMonoidHom
-      ((IsLocalRing.maximalIdeal R).map (MvPolynomial.C : R →+* MvPolynomial Unit R)).primeCompl =
-      ((IsLocalRing.maximalIdeal R).map (Polynomial.C : R →+* Polynomial R)).primeCompl := by
-    ext q
-    simp only [Submonoid.mem_map, Ideal.mem_primeCompl_iff]
-    constructor
-    · rintro ⟨p, hp, rfl⟩ h
-      rw [← hM] at h
-      obtain ⟨p', hp', he⟩ := (Ideal.mem_map_iff_of_surjective e.toRingHom e.surjective).mp h
-      exact hp (e.injective he ▸ hp')
-    · intro hq
-      refine ⟨e.symm q, fun h => hq ?_, e.apply_symm_apply q⟩
-      rw [← hM]
-      have h' := Ideal.mem_map_of_mem e.toRingHom h
-      simpa using h'
-  exact IsLocalization.ringEquivOfRingEquiv (Targets.mNagataRing Unit R) (nagataRing R) e hS
-
 theorem VertPointNagata.proof (hCh : VertPointChart.Statement) : VertPointNagata.Statement := by
   intro T _ K' _ _ y s hP hs hsP W hW t ht _ _ a b hb hab
   obtain ⟨Φ₀, hsurj₀, hker₀, hΦ₀⟩ := Targets.CurveVertPointNagata.of_single hP hs hsP hW
@@ -81,8 +32,7 @@ theorem VertPointNagata.proof (hCh : VertPointChart.Statement) : VertPointNagata
       ← RingHom.mem_ker, hker₀]
   · rw [RingHom.comp_apply, hΦ₀ f]
     change mNagataUnitEquiv _ (algebraMap _ _ _) = _
-    unfold mNagataUnitEquiv
-    rw [IsLocalization.ringEquivOfRingEquiv_eq]
+    rw [mNagataUnitEquiv_algebraMap]
     congr 1
     have hm : ∀ q, mvPolyUnitEquiv (Localization.AtPrime (curvePtIdeal y W)) q =
         MvPolynomial.eval₂Hom Polynomial.C (fun _ : Unit => Polynomial.X) q := fun _ => rfl

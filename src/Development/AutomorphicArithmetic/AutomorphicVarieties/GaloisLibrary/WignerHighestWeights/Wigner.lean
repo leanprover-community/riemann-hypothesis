@@ -34,7 +34,6 @@ variable {E : Type} [Field E] [NumberField E] {a : ℕ}
 omit [NumberField E] [IsScalarTower ℝ ℂ N] [IsScalarTower ℝ ℂ N'] in
 private theorem hol_nat (τ : E →+* ℂ) (φ : N →ₗ[ℂ] N') (L : Lie E a →ₗ[ℝ] N) (L' : Lie E a →ₗ[ℝ] N')
     (h : ∀ X, φ (L (toL X)) = L' (toL X)) (x : Matrix (Fin a) (Fin a) ℂ) : φ (hol τ L x) = hol τ L' x := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [hol_apply, eL, map_sum, map_smul, map_sub, h]
 
 omit [NumberField E] [IsScalarTower ℝ ℂ N] in

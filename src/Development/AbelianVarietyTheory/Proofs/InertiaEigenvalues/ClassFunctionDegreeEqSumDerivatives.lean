@@ -18,18 +18,18 @@ theorem tl_one {a n : ℕ} (h : a ≤ n) : tl a (1 : Mt g n) = (1 : Mt g a) := b
   ext i j
   have hi : (i : ℕ) < n := by omega
   have hj : (j : ℕ) < n := by omega
-  simp only [tl, entN, hi, hj, and_self, dif_pos, Matrix.one_apply, Fin.ext_iff]
+  simp only [tl, entN, hi, hj, and_self, dite_eq_left, Matrix.one_apply, Fin.ext_iff]
 
 theorem br_one {a b n : ℕ} (h : a + b ≤ n) : br a b (1 : Mt g n) = (1 : Mt g b) := by
   ext i j
   have hi : a + (i : ℕ) < n := by omega
   have hj : a + (j : ℕ) < n := by omega
-  simp only [br, entN, hi, hj, and_self, dif_pos, Matrix.one_apply, Fin.ext_iff]
+  simp only [br, entN, hi, hj, and_self, dite_eq_left, Matrix.one_apply, Fin.ext_iff]
   simp
 
 theorem toG_one {n : ℕ} : toG (1 : Mt g n) = 1 := by
   unfold toG
-  rw [dif_pos isUnit_one]
+  rw [dite_eq_left isUnit_one]
   ext : 1
   simp
 
@@ -39,7 +39,7 @@ theorem hc_one (a b : ℕ) (α : Gn g a → ℂ) (β : Gn g b → ℂ) :
   unfold hc hcT
   rw [← GlobalTheory.GLm.ParBasic.card_par]
   congr 1
-  simp only [mul_one, inv_mul_cancel, Units.val_one, GlobalTheory.GLm.ParBasic.inPar_one, if_true,
+  simp only [mul_one, inv_mul_cancel, Units.val_one, GlobalTheory.GLm.ParBasic.inPar_one, ite_true,
     tl_one (Nat.le_add_right a b), br_one (le_refl (a + b)), toG_one, Finset.sum_const, Finset.card_univ,
     nsmul_eq_mul]
 
@@ -49,7 +49,7 @@ theorem blockDiagonalWithIdentityGL_one (k : ℕ) : diag1 (1 : Gn g k) (k + 1) =
       else (1 : Mt g (k + 1)) i j) = (1 : Mt g (k + 1)) := by
     ext i j
     split_ifs with h
-    · simp only [Units.val_one, entN, h, and_self, dif_pos, Matrix.one_apply, Fin.ext_iff]
+    · simp only [Units.val_one, entN, h, and_self, dite_eq_left, Matrix.one_apply, Fin.ext_iff]
     · rfl
   rw [this, toG_one]
 

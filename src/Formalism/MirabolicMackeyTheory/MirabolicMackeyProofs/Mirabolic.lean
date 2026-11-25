@@ -60,14 +60,14 @@ theorem pairU_isUniU (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (s l : Fin n) (h
     · subst hi
       rw [hsl]
       ring
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       ring
   · rw [pairU_apply, Matrix.one_apply_ne hji.ne']
     by_cases hj : j = s.succ
     · subst hj
       rw [hg i (lt_trans ((Fin.castSucc_lt_succ : s.castSucc < s.succ)) hji) l.castSucc (lt_trans hls hji)]
       ring
-    · rw [if_neg hj]
+    · rw [ite_eq_right hj]
       ring
 
 theorem pairV_isUniU (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (s l : Fin n) (hl : l ≤ s)
@@ -81,14 +81,14 @@ theorem pairV_isUniU (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (s l : Fin n) (h
     · subst hi
       rw [hsl]
       ring
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       ring
   · rw [pairV_apply, Matrix.one_apply_ne hji.ne']
     by_cases hi : i = l.castSucc
     · subst hi
       rw [hg s.succ ((Fin.castSucc_lt_succ : s.castSucc < s.succ)) j (lt_trans hji hls)]
       ring
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       ring
 
 theorem one_castSucc_succ (a : Fin n) :
@@ -108,7 +108,7 @@ theorem exists_bad (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (hm : IsMirab h) (
       h s.castSucc l.castSucc ≠ if l = s then 1 else 0 := by
   classical
   have hlast : h (Fin.last n) (Fin.last n) = 1 ∧ ∀ b, b < Fin.last n → h (Fin.last n) b = 0 :=
-    ⟨by rw [hm]; simp, fun b hb => by rw [hm, if_neg hb.ne]⟩
+    ⟨by rw [hm]; simp, fun b hb => by rw [hm, ite_eq_right hb.ne]⟩
   have hex : ∃ j, ¬ (h j j = 1 ∧ ∀ b, b < j → h j b = 0) := by
     by_contra! hno
     exact hu ⟨fun i => (hno i).1, fun i j hji => (hno i).2 j hji⟩
@@ -141,10 +141,10 @@ theorem exists_bad (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (hm : IsMirab h) (
         have := congrArg Fin.castSucc he
         rw [Fin.castSucc_castPred, hs] at this
         exact hb0.ne this
-      rw [if_neg hlt]
+      rw [ite_eq_right hlt]
       simpa [Fin.castSucc_castPred, hs] using hbne
   · refine ⟨s, s, le_rfl, hgood', ?_⟩
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     simpa [hs] using hd
 
 theorem mirabolic_mackey_pair : MirabolicMackey := by
@@ -155,9 +155,9 @@ theorem mirabolic_mackey_pair : MirabolicMackey := by
   have hrow : (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) s.succ l.succ = if l = s then 1 else 0 := by
     by_cases hls : l = s
     · subst hls
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact (hgood _ (Fin.castSucc_lt_succ : l.castSucc < l.succ)).1
-    · rw [if_neg hls]
+    · rw [ite_eq_right hls]
       exact (hgood _ (Fin.castSucc_lt_succ : s.castSucc < s.succ)).2 _
         (Fin.succ_lt_succ_iff.2 (lt_of_le_of_ne hl hls))
   obtain ⟨c, hc⟩ : ∃ c : k,
@@ -217,9 +217,9 @@ theorem isMirab_of_isUniU (u : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (hu : IsUni
   intro j
   by_cases hj : j = Fin.last n
   · subst hj
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     exact hu.1 _
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     exact hu.2 _ _ (Fin.lt_last_iff_ne_last.2 hj)
 
 theorem mirabolic_is_mackey : MirabolicIsMackey := by

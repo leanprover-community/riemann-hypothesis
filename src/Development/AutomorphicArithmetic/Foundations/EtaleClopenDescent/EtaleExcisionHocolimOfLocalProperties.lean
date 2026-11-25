@@ -11,7 +11,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTh
 namespace UpperTheory.Cb
 
 private theorem dbl_map_id (P : Arrow Spc) : dbl.map (𝟙 P) = 𝟙 _ := by
-  set_option synthInstance.maxHeartbeats 200000 in
     apply pushout.hom_ext <;> simp [dbl.map] <;> rfl
 
 private theorem hs_pull_id (q : ℕ) (P : Arrow Spc) (n i : ℤ) (x : Hs q P n i) : Hs.pull q (𝟙 P) n i x = x := by

@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory TensorProduct GroundTheory.PAdicHodge CrystallineSemistableComparison.CH

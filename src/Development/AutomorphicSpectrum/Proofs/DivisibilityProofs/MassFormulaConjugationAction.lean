@@ -18,19 +18,6 @@ import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGap
 section -- clump:auto
 @[expose] public section
 
-namespace ListOfFnPermExistsEquivPerm
-
-open Finset in
-private theorem card_count {α : Type} [DecidableEq α] :
-    ∀ {n : ℕ} (v : Fin n → α) (a : α), #{i | v i = a} = (List.ofFn v).count a
-  | 0, v, a => by simp
-  | n + 1, v, a => by
-    have ih := card_count (fun i : Fin n => v i.succ) a
-    rw [Fin.card_filter_univ_succ', List.ofFn_succ, List.count_cons, ih]
-    by_cases h : v 0 = a <;> simp [h, add_comm]
-
-end ListOfFnPermExistsEquivPerm
-
 theorem UpperTheory.Reformulated.B.Yde7.main :
     ∀ {α : Type} {n : ℕ} (v w : Fin n → α),
       (List.ofFn v).Perm (List.ofFn w) → ∃ (s : Equiv.Perm (Fin n)), v = w ∘ (⇑s : Fin n → Fin n) := @_root_.GlobalTheory.FiberCardPermutation.exists_perm_of_ofFn_perm
@@ -95,7 +82,7 @@ theorem arNum_monomial' (μ : σ →₀ ℕ) (c : ℝ) :
     arNum I P A (monomial μ c) = c * arList I P (μ.toMultiset.map A).toList := by
   classical
   rw [arNum_eq_sum_of_subset I P A (monomial μ c) {μ} MvPolynomial.support_monomial_subset,
-    Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl]
+    Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 theorem arNum_rename' {σ' : Type} (e : σ' → σ) (H : MvPolynomial σ' ℝ) :
     arNum I P A (rename e H) = arNum I P (A ∘ e) H := by

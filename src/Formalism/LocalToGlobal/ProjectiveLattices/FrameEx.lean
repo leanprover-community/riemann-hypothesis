@@ -135,19 +135,6 @@ variable {g : ℕ} {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
 
 end Fam
 
-section Main
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
-
-end Main
-
-section Rows
-
-variable {D : D7}
-
-end Rows
-
 end Formalism.L2.Pj
 end -- clump:auto
 end -- clump:auto
@@ -198,24 +185,6 @@ abbrev IsGenSec (s : GenSec e F M) : Prop :=
 
 
 end Fam
-
-section Red
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ} {g : ℕ}
-  {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
-  {F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1)}
-  {M : ModelsOf F r}
-  (hTE : ExpTan e F) (hEL : ExpLin e F) (hLE : LieEig e F) (hP : PerAt e F M) (s : GenSec e F M)
-  (hs : IsGenSec e F M s)
-
-end Red
-
-section Row
-
-variable {D : D7}
-
-end Row
 
 section Gam
 

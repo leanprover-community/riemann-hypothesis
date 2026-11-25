@@ -30,12 +30,8 @@ private theorem withTop_rat_not_one_add_one_le_one : ¬ ((1 : WithTop ℚ) + 1 �
   | (rw [← WithTop.coe_one, ← WithTop.coe_add, WithTop.coe_le_coe]; norm_num)
 
 private theorem le_v_sum_range_of_forall (f : ℕ → LL) (g : WithTop ℚ) (hf : ∀ i, g ≤ v (f i)) (m : ℕ) :
-    g ≤ v (∑ i ∈ Finset.range m, f i) := by
-  induction m with
-  | zero => simp [AddValuation.map_zero]
-  | succ n ih =>
-    rw [Finset.sum_range_succ]
-    exact v.map_le_add ih (hf n)
+    g ≤ v (∑ i ∈ Finset.range m, f i) :=
+  v.map_le_sum fun i _ => hf i
 
 theorem v_intCast_nonneg (z : ℤ) : 0 ≤ v (z : LL) := by
   apply _root_.Formalism.MainNotions.N.Ln03.Pf.ValuationPow.v_int_nonneg <;> assumption

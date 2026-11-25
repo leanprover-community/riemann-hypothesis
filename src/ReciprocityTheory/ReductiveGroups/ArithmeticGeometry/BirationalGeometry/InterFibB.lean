@@ -139,7 +139,7 @@ theorem comp_mul_homog {σ : Type*} {M : Type*} [AddCancelCommMonoid M] [Decidab
       have ha : Finsupp.weight w ab.1 = n := by
         rw [hwb, hx] at hsum
         exact add_right_cancel hsum
-      rw [if_pos ha]
+      rw [ite_eq_left ha]
   · symm
     refine Finset.sum_eq_zero fun ab hab => ?_
     rw [coeff_weightedHomogeneousComponent]

@@ -531,13 +531,9 @@ private theorem aff_mul {R : Type} [CommRing R] (y z : Rˣ) (x t : R) : aff y x 
   ext i j
   fin_cases i <;> fin_cases j <;> simp [aff, Matrix.mul_apply, Fin.sum_univ_succ, add_comm]
 
-private theorem aff_one {R : Type} [CommRing R] : aff (1 : Rˣ) (0 : R) = 1 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [aff]
-
 private theorem aff_inv {R : Type} [CommRing R] (y : Rˣ) : (aff y (0 : R))⁻¹ = aff y⁻¹ 0 := by
   rw [inv_eq_iff_mul_eq_one, aff_mul]
-  simp [aff_one]
+  simp [aff_zero']
 
 private theorem exists_idele (w : Pl F) (x : (w.adicCompletion F)ˣ) : ∃ u : (Af F)ˣ, pLoc F w u = x ∧
     (∀ v, v ≠ w → pLoc F v u = 1) ∧ ∀ t, locGL F 2 w (aff x t) = aff u (sLoc F w t) := by
@@ -556,7 +552,7 @@ private theorem exists_idele (w : Pl F) (x : (w.adicCompletion F)ˣ) : ∃ u : (
     rw [pLoc_locGL, pLoc_sLoc]
     congr 1
     exact Units.ext h1.symm
-  · rw [pLoc_locGL_of_ne hv, ← aff_one, pLoc_sLoc_of_ne hv]
+  · rw [pLoc_locGL_of_ne hv, ← aff_zero', pLoc_sLoc_of_ne hv]
     congr 1
     exact Units.ext (h2 v hv).symm
 

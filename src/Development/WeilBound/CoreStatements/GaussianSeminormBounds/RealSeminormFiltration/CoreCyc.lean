@@ -27,13 +27,8 @@ theorem words {M : Type} [AddCommGroup M] [Module ℂ M] (S : Submodule ℂ (Mod
     intro N h1 h2
     rw [hW]
     exact sInf_le ⟨h1, h2⟩
-  have hspan : ∀ F ∈ Submodule.span ℂ L, F z ∈ W := by
-    intro F hF
-    induction hF using Submodule.span_induction with
-    | mem F hF => exact hLW F hF z hz0
-    | zero => simp
-    | add F G _ _ h1 h2 => exact W.add_mem h1 h2
-    | smul c F _ h1 => exact W.smul_mem c h1
+  have hspan : ∀ F ∈ Submodule.span ℂ L, F z ∈ W := fun F hF =>
+    (Submodule.span_le (p := W.comap (LinearMap.applyₗ z))).2 (fun F hF => hLW F hF z hz0) hF
   refine ⟨hz0, ?_, ?_⟩
   · have hle : W ≤ W ⊓ ⨅ E ∈ S, W.comap E := by
       refine hmin _ ?_ ?_
@@ -104,7 +99,7 @@ theorem hw_comm {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : Ix r s → Ix r
     (hρ : GlK ρ) {μ : Ix r s → ℚ} {f : M} (hf : HwK ρ μ f) {a b : Ix r s} (hab : posC a b) :
     ρ a b (ρ b a f) = ((μ a - μ b : ℚ) : ℂ) • f := by
   have h := LinearMap.congr_fun (hρ a b b a (sb_of_pos hab) (sb_symm (sb_of_pos hab))) f
-  simp only [if_true, LinearMap.sub_apply, Module.End.mul_apply, hf.2 a b hab, map_zero, sub_zero,
+  simp only [ite_true, LinearMap.sub_apply, Module.End.mul_apply, hf.2 a b hab, map_zero, sub_zero,
     hf.1] at h
   rw [h, ← sub_smul]
   push_cast
@@ -134,7 +129,7 @@ theorem cas_comm {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : Ix r s → Ix 
     · have e : ρ a b * (ρ c d * ρ d c) - (ρ c d * ρ d c) * ρ a b =
           (ρ a b * ρ c d - ρ c d * ρ a b) * ρ d c + ρ c d * (ρ a b * ρ d c - ρ d c * ρ a b) := by
         noncomm_ring
-      rw [if_pos hcd, e, hρ a b c d hab hcd, hρ a b d c hab (sb_symm hcd), sub_mul, mul_sub]
+      rw [ite_eq_left hcd, e, hρ a b c d hab hcd, hρ a b d c hab (sb_symm hcd), sub_mul, mul_sub]
       congr 2
       · by_cases h : b = c
         · subst h; simp [sb_trans hab hcd]
@@ -153,7 +148,7 @@ theorem cas_comm {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : Ix r s → Ix 
         split_ifs with h1 h2
         · exact absurd h2 (h h1)
         all_goals rfl
-      rw [if_neg hcd,
+      rw [ite_eq_right hcd,
         h0 (b = c) (sameBlock a d) _ fun h1 h2 => hcd (h1 ▸ sb_trans (sb_symm hab) h2),
         h0 (a = d) (sameBlock c a) _ fun h1 h2 => hcd (h1 ▸ h2),
         h0 (b = d) (sameBlock c a) _ fun h1 h2 => hcd (h1 ▸ sb_trans h2 hab),
@@ -162,10 +157,10 @@ theorem cas_comm {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : Ix r s → Ix 
   have h0 : ρ a b * casK ρ - casK ρ * ρ a b = 0 := by
     unfold casK
     simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib, key]
-    simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Finset.sum_comm (f := fun c d => if b = c then (if sameBlock a d then ρ a d * ρ d b else 0) else 0),
       Finset.sum_comm (f := fun c d => if a = c then (if sameBlock a d then ρ a d * ρ d b else 0) else 0)]
-    simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     abel
   exact (sub_eq_zero.1 h0).symm
 
@@ -175,22 +170,22 @@ theorem cas_hw {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : Ix r s → Ix r 
       (((if a = b then μ a ^ 2 else 0) + (if posC a b then μ a - μ b else 0) : ℚ) : ℂ) • f := by
     intro a b
     by_cases hab : sameBlock a b
-    · rw [if_pos hab]
+    · rw [ite_eq_left hab]
       rcases sb_tri hab with h | h | h
       · subst h
-        rw [if_pos rfl, if_neg (pos_irrefl a), Module.End.mul_apply, hf.1 a, map_smul, hf.1 a, smul_smul]
+        rw [ite_eq_left rfl, ite_eq_right (pos_irrefl a), Module.End.mul_apply, hf.1 a, map_smul, hf.1 a, smul_smul]
         congr 1
         push_cast
         ring
-      · rw [if_neg (fun e : a = b => pos_irrefl b (by subst e; exact h)), if_pos h, Module.End.mul_apply, hw_comm hρ hf h, zero_add]
-      · rw [if_neg (fun e : a = b => pos_irrefl b (by subst e; exact h)), if_neg (pos_asymm h), Module.End.mul_apply, hf.2 b a h]
+      · rw [ite_eq_right (fun e : a = b => pos_irrefl b (by subst e; exact h)), ite_eq_left h, Module.End.mul_apply, hw_comm hρ hf h, zero_add]
+      · rw [ite_eq_right (fun e : a = b => pos_irrefl b (by subst e; exact h)), ite_eq_right (pos_asymm h), Module.End.mul_apply, hf.2 b a h]
         simp
-    · rw [if_neg hab, if_neg (fun e : a = b => hab (by subst e; exact sb_refl a)), if_neg (fun h => hab (sb_of_pos h))]
+    · rw [ite_eq_right hab, ite_eq_right (fun e : a = b => hab (by subst e; exact sb_refl a)), ite_eq_right (fun h => hab (sb_of_pos h))]
       simp
   unfold casK casW
   simp only [LinearMap.sum_apply, key, ← Finset.sum_smul]
   congr 1
-  simp only [← Rat.cast_sum, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [← Rat.cast_sum, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem self_mem_cycK {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Ix r s → Ix r s → Module.End ℂ M) (f : M) :
     f ∈ cycK ρ f := by
@@ -377,7 +372,7 @@ theorem act_eq_sum {M : Type} [AddCommGroup M] [Module ℂ M] (act : Mat r s →
 theorem adjK_of_adjG {A : Type} [NormedAddCommGroup A] [InnerProductSpace ℂ A] {act : Mat r s →ₗ[ℂ] Module.End ℂ A} (h : AdjG act) : AdjK (units act) := by
   intro a b hab u v
   have := h a b u v
-  rw [epsB, if_pos hab, one_mul] at this
+  rw [epsB, ite_eq_left hab, one_mul] at this
   exact this
 
 end PositivityTheory.KReal

@@ -14,21 +14,6 @@ section
 
 variable {K : Type} [Field K] [NumberField K]
 
-private theorem prod_add (f g : HeightOneSpectrum (𝓞 K) → ℤ) (hf : {v | f v ≠ 0}.Finite)
-    (hg : {v | g v ≠ 0}.Finite) :
-    ∏ᶠ v, primeCl v ^ (f v + g v) = (∏ᶠ v, primeCl v ^ f v) * ∏ᶠ v, primeCl v ^ g v := by
-  rw [← finprod_mul_distrib]
-  · exact finprod_congr fun v => zpow_add _ _ _
-  · exact hf.subset fun v hv h => hv (by simp [h])
-  · exact hg.subset fun v hv h => hv (by simp [h])
-
-private theorem fin_add {f g : HeightOneSpectrum (𝓞 K) → ℤ} (hf : {v | f v ≠ 0}.Finite)
-    (hg : {v | g v ≠ 0}.Finite) : {v | f v + g v ≠ 0}.Finite :=
-  (hf.union hg).subset fun v hv => by
-    by_contra h
-    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at h
-    exact hv (by rw [h.1, h.2, add_zero])
-
 private theorem mem_clSub {S : Set (HeightOneSpectrum (𝓞 K))} {c : ClassGroup (𝓞 K)} (hc : c ∈ clSub S) :
     ∃ g : HeightOneSpectrum (𝓞 K) → ℤ, {v | g v ≠ 0}.Finite ∧ (∀ v ∉ S, g v = 0) ∧
       c = ∏ᶠ v, primeCl v ^ g v := by
@@ -37,17 +22,21 @@ private theorem mem_clSub {S : Set (HeightOneSpectrum (𝓞 K))} {c : ClassGroup
   | mem x hx =>
     obtain ⟨w, hw, rfl⟩ := hx
     refine ⟨fun v => if v = w then 1 else 0, (Set.finite_singleton w).subset fun v hv => ?_,
-      fun v hv => if_neg fun (h : v = w) => hv (h ▸ hw), ?_⟩
+      fun v hv => ite_eq_right fun (h : v = w) => hv (h ▸ hw), ?_⟩
     · by_contra h
-      exact hv (if_neg h)
+      exact hv (ite_eq_right h)
     · rw [finprod_eq_single _ w fun v hv => by simp [hv]]
       simp
   | one => exact ⟨fun _ => 0, by simp, by simp, by simp⟩
   | mul x y _ _ hx hy =>
     obtain ⟨f, hf, hf', rfl⟩ := hx
     obtain ⟨g, hg, hg', rfl⟩ := hy
-    exact ⟨fun v => f v + g v, fin_add hf hg, fun v hv => by simp [hf' v hv, hg' v hv],
-      (prod_add f g hf hg).symm⟩
+    exact ⟨fun v => f v + g v, (hf.union hg).subset (Function.support_add f g),
+      fun v hv => by simp [hf' v hv, hg' v hv], by
+        simp_rw [zpow_add]
+        exact (finprod_mul_distrib
+          (hf.subset (Function.mulSupport_zpow_subset_support _ _))
+          (hg.subset (Function.mulSupport_zpow_subset_support _ _))).symm⟩
   | inv x _ hx =>
     obtain ⟨f, hf, hf', rfl⟩ := hx
     refine ⟨fun v => -f v, by simpa using hf, fun v hv => by simp [hf' v hv], ?_⟩
@@ -95,8 +84,11 @@ theorem UpperTheory.V.Kum.radClKer :
     obtain ⟨g, hg, hg', hc⟩ := mem_clSub (inv_mem h)
     have hf : {v | ordv v a / n ≠ 0}.Finite :=
       ((clProd K).2.2.1 a).subset fun v hv h => hv (by simp [h])
-    obtain ⟨b, hb⟩ := exists_ordv (fun v => ordv v a / n + g v) (fin_add hf hg) (by
-      rw [prod_add _ _ hf hg, ← hc]
+    obtain ⟨b, hb⟩ := exists_ordv (fun v => ordv v a / n + g v)
+      ((hf.union hg).subset (Function.support_add _ g)) (by
+      simp_rw [zpow_add]
+      rw [finprod_mul_distrib (hf.subset (Function.mulSupport_zpow_subset_support _ _))
+        (hg.subset (Function.mulSupport_zpow_subset_support _ _)), ← hc]
       exact mul_inv_cancel _)
     refine Subgroup.mem_sup.2 ⟨a * (b ^ n)⁻¹, mem_unit.2 fun v hv => ?_, b ^ n, ⟨b, rfl⟩, by simp⟩
     rw [ordv_mul, ordv_inv, ordv_pow, hb, hg' v hv, add_zero, Int.mul_ediv_cancel' (ha v hv), add_neg_cancel]

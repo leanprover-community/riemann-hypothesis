@@ -34,7 +34,6 @@ theorem eq_zero_of_locW {w : (κ → AF F) × (κ → AF F)} (ha : At (evFin F v
     rw [mul_comm, mul_sgl, this, zero_mul, map_zero]
 
 theorem ev_dot (a b : κ → AF F) : evFin F v (a ⬝ᵥ b) = (fun i => evFin F v (a i)) ⬝ᵥ fun i => evFin F v (b i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [dotProduct, map_sum, map_mul]
 
 theorem coord_add (u u' : Matrix α β (AE F E)) : coord σ t JA JB (u + u') = coord σ t JA JB u + coord σ t JA JB u' := by

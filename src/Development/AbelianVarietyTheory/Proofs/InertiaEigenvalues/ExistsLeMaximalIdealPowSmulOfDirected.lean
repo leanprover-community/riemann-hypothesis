@@ -16,14 +16,6 @@ open TensorProduct Polynomial IsLocalRing GlobalTheory.Pat
 
 namespace GlobalTheory.Chevalley
 
-end GlobalTheory.Chevalley
-
-namespace GlobalTheory.Chevalley
-
-end GlobalTheory.Chevalley
-
-namespace GlobalTheory.Chevalley
-
 open TensorProduct Polynomial IsLocalRing in
 private theorem isArtinian_quotient_maximalIdeal_pow_succ_smul (B M : Type) [CommRing B]
     [IsLocalRing B] [IsNoetherianRing B] [AddCommGroup M] [Module B M] [Module.Finite B M]

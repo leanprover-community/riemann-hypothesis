@@ -168,9 +168,9 @@ theorem exists_kummer_flat : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : B
   classical
   refine ⟨fun g => if bk.FixFlat g then 0 else (good g).choose, fun g m => ?_, fun g hg => by simp [hg]⟩
   by_cases hg : bk.FixFlat g
-  · simp only [hg, if_true, map_zero, ZMod.val_zero, pow_zero, one_mul]
+  · simp only [hg, ite_true, map_zero, ZMod.val_zero, pow_zero, one_mul]
     rw [show Per.σF (g : GQ l) bk.flat = bk.flat from hg]
-  · simp only [hg, if_false]
+  · simp only [hg, ite_false]
     exact (good g).choose_spec m
 
 end GlobalTheory.FlatKummer
@@ -470,8 +470,7 @@ theorem isLogJ_add : ∀ (l : ℕ) [Fact l.Prime] (a b : Per.Ainf l) (y y' : Per
     simp only [map_add (f := _), map_mul]
     push_cast at hE ⊢
     linear_combination hsa + hsb - hE
-  · set_option synthInstance.maxHeartbeats 200000 in
-    simp only [map_add (f := algebraMap (Per.Acris0 l) (Per.Acris l)), map_mul, map_natCast]
+  · simp only [map_add (f := algebraMap (Per.Acris0 l) (Per.Acris l)), map_mul, map_natCast]
     push_cast
     linear_combination hza + hzb
 

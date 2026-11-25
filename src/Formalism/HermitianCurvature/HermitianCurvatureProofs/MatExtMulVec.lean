@@ -48,29 +48,25 @@ theorem prW_tau {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hzz : herm 
   rw [← Matrix.mulVec_mulVec, HermitianXiVector.nEich_apply]
   simp only [prW_add, prW_smul, prW_xiV, prW_self hz hzz, smul_zero, add_zero, hW]
 
-theorem mat_ext_mulVec {n : ℕ} {M N : Matrix (Fin n) (Fin n) ℂ} (h : ∀ x, M *ᵥ x = N *ᵥ x) : M = N := by
-  ext i j
-  simpa [Matrix.mulVec, dotProduct, Pi.single_apply] using congrFun (h (Pi.single j 1)) i
-
 theorem xiV_eq_sum (ξ : Fin r → ℂ) : C2.xiV k r ξ = ∑ a : Fin r, ξ a • ee k r a := by
   funext i
   rw [Finset.sum_apply]
   simp only [ee, bvec, Pi.smul_apply, smul_eq_mul, Pi.single_apply, mul_ite, mul_one, mul_zero]
   by_cases h : i.val < r
   · rw [Finset.sum_eq_single ⟨i.val, h⟩]
-    · rw [if_pos (show i = eI k r ⟨i.val, h⟩ from Fin.ext rfl)]
-      simp only [C2.xiV, dif_pos h]
+    · rw [ite_eq_left (show i = eI k r ⟨i.val, h⟩ from Fin.ext rfl)]
+      simp only [C2.xiV, dite_eq_left h]
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hi
       exact hb (Fin.ext (congrArg Fin.val hi).symm)
     · intro hb
       exact absurd (Finset.mem_univ _) hb
-  · simp only [C2.xiV, dif_neg h]
+  · simp only [C2.xiV, dite_eq_right h]
     symm
     apply Finset.sum_eq_zero
     intro a _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hi
     apply h
     rw [hi]
@@ -92,7 +88,7 @@ theorem nEich_comm {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈
     intro x
     conv_lhs => rw [← hX]
     exact herm_m0_mulVec_invariant h hU x _
-  apply mat_ext_mulVec
+  apply Formalism.FourierDecayAlt.P.Qx8.mat_ext
   intro x
   rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, HermitianXiVector.nEich_apply, HermitianXiVector.nEich_apply, e1, e2]
   simp only [Matrix.mulVec_add, Matrix.mulVec_smul, hX, hZ]
@@ -102,9 +98,9 @@ theorem fix_supX {h : B.Mat k r} (hme : ∀ a : Fin r, h *ᵥ ee k r a = ee k r 
   have hx' : x = C2.xiV k r (fun a => x (eI k r a)) := by
     funext i
     by_cases hi : i.val < r
-    · simp only [C2.xiV, dif_pos hi]
+    · simp only [C2.xiV, dite_eq_left hi]
       exact congrArg x (Fin.ext rfl)
-    · simp only [C2.xiV, dif_neg hi]
+    · simp only [C2.xiV, dite_eq_right hi]
       exact hx i (by omega)
   rw [hx']
   exact fix_X hme _
@@ -143,21 +139,21 @@ theorem mX_Wb (vX : Matrix (Fin r) (Fin r) ℂ) {w : Fin (2 * r + k + 1) → ℂ
       split_ifs <;> simp
     · rw [hw j (by omega)]
       simp
-  simp only [key, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [key, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem mX_supX (vX : Matrix (Fin r) (Fin r) ℂ) (a : Fin r) :
     ∀ i : Fin (2 * r + k + 1), r ≤ i.val → (C2.mX k r vX *ᵥ ee k r a) i = 0 := by
   intro i hi
   have hc : (C2.mX k r vX *ᵥ ee k r a) i = C2.mX k r vX i (eI k r a) := by
     simp [ee, bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
-  rw [hc, UnipotentSums.mX_col_X, dif_neg (by omega)]
+  rw [hc, UnipotentSums.mX_col_X, dite_eq_right (by omega)]
 
 theorem mX_supXs (vX : Matrix (Fin r) (Fin r) ℂ) (a : Fin r) :
     ∀ i : Fin (2 * r + k + 1), i.val ≤ r + k → (C2.mX k r vX *ᵥ es k r a) i = 0 := by
   intro i hi
   have hc : (C2.mX k r vX *ᵥ es k r a) i = C2.mX k r vX i (esI k r a) := by
     simp [es, bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
-  rw [hc, UnipotentSums.mX_col_Xs, dif_neg (by omega)]
+  rw [hc, UnipotentSums.mX_col_Xs, dite_eq_right (by omega)]
 
 theorem mX_comm {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈ UWset k r z)
     (vX : Matrix (Fin r) (Fin r) ℂ) : h * C2.mX k r vX = C2.mX k r vX * h := by
@@ -166,12 +162,12 @@ theorem mX_comm {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈ UW
   have hms : ∀ a : Fin r, h *ᵥ es k r a = es k r a := fun a => (hfix a).2
   have hWx : ∀ x, inWb k r (Wb x) := fun x i hi => by
     simp only [Wb]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hA : ∀ a, h *ᵥ (C2.mX k r vX *ᵥ ee k r a) = C2.mX k r vX *ᵥ ee k r a :=
     fun a => fix_supX hme (mX_supX vX a)
   have hB : ∀ a, h *ᵥ (C2.mX k r vX *ᵥ es k r a) = C2.mX k r vX *ᵥ es k r a :=
     fun a => fix_supXs hms (mX_supXs vX a)
-  apply mat_ext_mulVec
+  apply Formalism.FourierDecayAlt.P.Qx8.mat_ext
   intro x
   rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, decomp x]
   simp only [Matrix.mulVec_add, Matrix.mulVec_sum, Matrix.mulVec_smul, hme, hms, hA, hB,
@@ -193,7 +189,7 @@ theorem LT_col_last {l : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hl : l ∈ C2.
   obtain ⟨h1, h2⟩ := C2x2.lt_inv hl
   funext i
   simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   split_ifs with hi
   · subst hi
     exact h2 _
@@ -205,7 +201,7 @@ theorem UT_row_last {u : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hu : u ∈ C2.
   obtain ⟨h1, h2⟩ := C2x2.ut_inv hu
   funext j
   simp only [Matrix.vecMul, dotProduct, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   split_ifs with hj
   · subst hj
     exact h2 _

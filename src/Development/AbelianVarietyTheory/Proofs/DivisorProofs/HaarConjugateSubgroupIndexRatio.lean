@@ -21,7 +21,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMonicR
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralSmulOfCharpolyCoeffMulIntStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicCoeffDenominatorBoundOfBoundedRootsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedHeckeTestFunctionSupportCompactStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitNormBoundsStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitNormBounds
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -131,9 +131,6 @@ theorem sh_add' (G : HTGroup p) (x y : G.C) : sh G (x + y) = sh G x + sh G y := 
 
 end GlobalTheory.CentConj
 
-namespace GlobalTheory.CentConj
-
-end GlobalTheory.CentConj
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -251,15 +248,15 @@ theorem units_ringOfIntegers_mod_sq (L : Type) [Field L] [NumberField L] :
     ∃ R : Finset (𝓞 L)ˣ, ∀ x : (𝓞 L)ˣ, ∃ ρ ∈ R, ∃ w : (𝓞 L)ˣ, x = ρ * w ^ 2 := by
   classical
   let N : Submodule ℤ (Additive (𝓞 L)ˣ) := LinearMap.range ((2 : ℤ) • LinearMap.id)
-  haveI : Module.Finite ℤ (Additive (𝓞 L)ˣ) := inferInstance
-  haveI : Finite (Additive (𝓞 L)ˣ ⧸ N) := by
+  have : Module.Finite ℤ (Additive (𝓞 L)ˣ) := inferInstance
+  have : Finite (Additive (𝓞 L)ˣ ⧸ N) := by
     refine Module.finite_of_fg_torsion _ fun q => ⟨⟨2, mem_nonZeroDivisors_of_ne_zero two_ne_zero⟩, ?_⟩
     induction q using Submodule.Quotient.induction_on with
     | H x =>
       show (2 : ℤ) • (Submodule.Quotient.mk (p := N) x) = 0
       rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
       exact ⟨x, rfl⟩
-  haveI : Fintype (Additive (𝓞 L)ˣ ⧸ N) := Fintype.ofFinite _
+  have : Fintype (Additive (𝓞 L)ˣ ⧸ N) := Fintype.ofFinite _
   let rep := Function.surjInv (Submodule.Quotient.mk_surjective N)
   refine ⟨Finset.univ.image (fun q => Additive.toMul (rep q)), fun x => ?_⟩
   let q : Additive (𝓞 L)ˣ ⧸ N := Submodule.Quotient.mk (Additive.ofMul x)
@@ -301,7 +298,7 @@ theorem units_fixed_eq_mul_mul_conj : ∀ (L : Type) [Field L] [NumberField L] (
   have hP : P ρ := ⟨ε, h1, h2, hfix, w, hw⟩
   obtain ⟨_g1, _g2, gfix, w', hw'⟩ := Classical.choose_spec hP
   have hpick : pick ρ = {((Classical.choose hP : Lˣ) : L), -((Classical.choose hP : Lˣ) : L)} := by
-    simp only [pick, dif_pos hP]
+    simp only [pick, dite_eq_left hP]
   set e : Lˣ := Classical.choose hP with he
   let W : Lˣ := Units.map φ (w * w'⁻¹)
   have hint : ∀ v : (𝓞 L)ˣ, IsIntegral ℤ (φ (v : 𝓞 L)) := fun v => RingOfIntegers.isIntegral_coe _
@@ -372,9 +369,9 @@ theorem exists_rat_approx (L : Type) [Field L] [NumberField L] (c : L →ₐ[ℚ
   classical
   let K := v.adicCompletion ℚ
   let A := K ⊗[ℚ] L
-  letI : TopologicalSpace A := moduleTopology K A
-  haveI : IsModuleTopology K A := ⟨rfl⟩
-  haveI : IsTopologicalRing A := IsModuleTopology.isTopologicalRing K A
+  let : TopologicalSpace A := moduleTopology K A
+  have : IsModuleTopology K A := ⟨rfl⟩
+  have : IsTopologicalRing A := IsModuleTopology.isTopologicalRing K A
   let b := integralBasis L
   let bA := Algebra.TensorProduct.basis K b
   let mc : A →ₗ[K] A := (Algebra.TensorProduct.map (AlgHom.id K K) c).toLinearMap
@@ -637,7 +634,7 @@ theorem ord_conj (L : Type) [Field L] [NumberField L] (c : L →ₐ[ℚ] L) (hc 
 theorem valuation_rat_eq (L : Type) [Field L] [NumberField L] (w : HeightOneSpectrum (𝓞 L)) {Q q : ℚ}
     (h : (w.under ℤ).valuation ℚ Q = (w.under ℤ).valuation ℚ q) :
     w.valuation L (algebraMap ℚ L Q) = w.valuation L (algebraMap ℚ L q) := by
-  haveI : w.asIdeal.LiesOver (w.under ℤ).asIdeal := ⟨HeightOneSpectrum.under_asIdeal ℤ w⟩
+  have : w.asIdeal.LiesOver (w.under ℤ).asIdeal := ⟨HeightOneSpectrum.under_asIdeal ℤ w⟩
   rw [← HeightOneSpectrum.valuation_liesOver L (w.under ℤ) w Q, ← HeightOneSpectrum.valuation_liesOver L (w.under ℤ) w q, h]
 
 theorem log_injective {x y : WithZero (Multiplicative ℤ)} (hx : x ≠ 0) (hy : y ≠ 0)
@@ -662,7 +659,7 @@ theorem exists_finset_classes (L : Type) [Field L] [NumberField L] (c : L →ₐ
   let B : (HeightOneSpectrum (𝓞 L) → ℤ) → L := fun φ => if h : ∃ b, P φ b then h.choose else 1
   have hB : ∀ φ b, P φ b → P φ (B φ) := fun φ b hb => by
     have h : ∃ b, P φ b := ⟨b, hb⟩
-    simp only [B, dif_pos h]
+    simp only [B, dite_eq_left h]
     exact h.choose_spec
   refine ⟨(Φ ×ˢ S₆).image (fun p => B p.1 * p.2), fun a ha => ?_⟩
   obtain ⟨ha0, hca, hloc⟩ := hX a ha
@@ -685,7 +682,7 @@ theorem exists_finset_classes (L : Type) [Field L] [NumberField L] (c : L →ₐ
   have hk : ∀ᶠ v in Filter.cofinite, k v = 0 := by
     refine Filter.eventually_cofinite.2 ((T.finite_toSet).subset fun v hv => ?_)
     by_contra h
-    exact hv (if_neg (fun h' => h h'.1))
+    exact hv (ite_eq_right (fun h' => h h'.1))
   obtain ⟨Q, hQ0, hQ⟩ := exists_rat_of_divisor k hk
   let n : HeightOneSpectrum (𝓞 L) → ℤ := fun w =>
     if w.under ℤ ∈ S then ord w a / 2 else if w.under ℤ ∈ T then ord w (zv (w.under ℤ)) else 0
@@ -693,7 +690,7 @@ theorem exists_finset_classes (L : Type) [Field L] [NumberField L] (c : L →ₐ
     refine Filter.eventually_cofinite.2 ((finite_under L (S ∪ T)).subset fun w hw => ?_)
     simp only [Set.mem_setOf_eq, Finset.mem_union] at hw ⊢
     by_contra! h
-    exact hw (by simp only [n, if_neg h.1, if_neg h.2])
+    exact hw (by simp only [n, ite_eq_right h.1, ite_eq_right h.2])
   obtain ⟨f, hfF, z₁, hz₁, hnf⟩ := hF n hn
   let Δ : Finset (HeightOneSpectrum (𝓞 L)) := WS.filter (fun w => ord w a % 2 = 1)
   let φ : HeightOneSpectrum (𝓞 L) → ℤ := fun w => (if w ∈ Δ then 1 else 0) + f w + f (conjEquiv c hc • w)
@@ -705,12 +702,12 @@ theorem exists_finset_classes (L : Type) [Field L] [NumberField L] (c : L →ₐ
     have h := hQ (w.under ℤ)
     simp only [k] at h
     split_ifs with hc'
-    · rw [if_pos hc'] at h
+    · rw [ite_eq_left hc'] at h
       have hq0 := hqv _ hc'.2
       have e : (w.under ℤ).valuation ℚ Q = (w.under ℤ).valuation ℚ (qv (w.under ℤ)) :=
         log_injective ((Valuation.ne_zero_iff _).2 hQ0) ((Valuation.ne_zero_iff _).2 hq0) (by omega)
       simp only [ord, valuation_rat_eq L w e]
-    · rw [if_neg hc'] at h
+    · rw [ite_eq_right hc'] at h
       have e : (w.under ℤ).valuation ℚ Q = (w.under ℤ).valuation ℚ 1 := by
         rw [map_one]
         exact log_injective ((Valuation.ne_zero_iff _).2 hQ0) one_ne_zero (by rw [WithZero.log_one]; omega)
@@ -724,12 +721,12 @@ theorem exists_finset_classes (L : Type) [Field L] [NumberField L] (c : L →ₐ
     rw [hQw w]
     by_cases hS : w.under ℤ ∈ S
     · have hWS : w ∈ WS := (finite_under L S).mem_toFinset.2 hS
-      rw [if_neg (fun h => h.2 hS)]
-      simp only [n, hu, if_pos hS, hσa, Δ, Finset.mem_filter, hWS, true_and]
+      rw [ite_eq_right (fun h => h.2 hS)]
+      simp only [n, hu, ite_eq_left hS, hσa, Δ, Finset.mem_filter, hWS, true_and]
       split_ifs with h2 <;> omega
     · have hnWS : w ∉ Δ := fun h => hS ((finite_under L S).mem_toFinset.1 (Finset.mem_filter.1 h).1)
       by_cases hT' : w.under ℤ ∈ T
-      · haveI : w.asIdeal.LiesOver (w.under ℤ).asIdeal := ⟨HeightOneSpectrum.under_asIdeal ℤ w⟩
+      · have : w.asIdeal.LiesOver (w.under ℤ).asIdeal := ⟨HeightOneSpectrum.under_asIdeal ℤ w⟩
         have hv := hval (w.under ℤ) hS w inferInstance
         have hq0 : algebraMap ℚ L (qv (w.under ℤ)) ≠ 0 := by simpa using hqv _ hS
         have hz0 := hzv _ hS
@@ -741,13 +738,13 @@ theorem exists_finset_classes (L : Type) [Field L] [NumberField L] (c : L →ₐ
             (mul_ne_zero ((Valuation.ne_zero_iff _).2 hz0) ((Valuation.ne_zero_iff _).2 hcz0)),
             WithZero.log_mul ((Valuation.ne_zero_iff _).2 hz0) ((Valuation.ne_zero_iff _).2 hcz0)]
           ring
-        rw [e, ord_conj L c hc, if_pos ⟨hT', hS⟩]
-        simp only [n, hu, if_neg hS, hnWS, if_false, hT', if_true]
+        rw [e, ord_conj L c hc, ite_eq_left ⟨hT', hS⟩]
+        simp only [n, hu, ite_eq_right hS, hnWS, ite_false, hT', ite_true]
         ring
       · have h1 := hT w hT'
         have e : ord w a = 0 := (ord_eq_zero_iff w ha0).2 h1
-        rw [if_neg (fun h => hT' h.1)]
-        simp only [n, hu, if_neg hS, if_neg hT', hnWS, if_false, e]
+        rw [ite_eq_right (fun h => hT' h.1)]
+        simp only [n, hu, ite_eq_right hS, ite_eq_right hT', hnWS, ite_false, e]
         ring
 
   have hcz₁ : c z₁ ≠ 0 := fun h => hz₁ (by rw [← hc z₁, h, map_zero])
@@ -835,11 +832,6 @@ namespace Pair
 
 variable {G : HTGroup p}
 
-theorem sh_mul (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
-  simp only [sh, map_mul, MulOpposite.unop_mul]
-
-theorem sh_sh (a : G.C) : sh G (sh G a) = a := G.star_star a
-
 end Pair
 
 end GlobalTheory.LKMid
@@ -863,8 +855,8 @@ theorem units_conj_of_minpoly_eq_of_irreducible : ∀ (p : ℕ) [Fact p.Prime] (
       ∃ g : G.Cˣ, (a : G.C) = g * b * ↑g⁻¹ := by
   intro p _ G a b h hirr
   have hb : IsIntegral G.F (b : G.C) := IsIntegral.of_finite G.F _
-  haveI : Fact (Irreducible (minpoly G.F (b : G.C))) := ⟨hirr⟩
-  haveI : FiniteDimensional G.F (AdjoinRoot (minpoly G.F (b : G.C))) :=
+  have : Fact (Irreducible (minpoly G.F (b : G.C))) := ⟨hirr⟩
+  have : FiniteDimensional G.F (AdjoinRoot (minpoly G.F (b : G.C))) :=
     (AdjoinRoot.powerBasis (minpoly.ne_zero hb)).finite
   have ha : Polynomial.aeval (a : G.C) (minpoly G.F (b : G.C)) = 0 := by rw [← h]; exact minpoly.aeval _ _
   obtain ⟨y, hy⟩ := GroundTheory.Brauer.exists_unit_conj (evalQuot _ (b : G.C) (minpoly.aeval _ _))
@@ -1126,7 +1118,7 @@ theorem finite_of_compact (Ω : Set G.GAf) (hΩ : IsCompact Ω) (γ₀ : G.Cˣ)
   obtain ⟨b, hb, q, z, hq, hz, hab⟩ := hR a ⟨P, hP, hPa⟩
   have hex : ∃ P', good b (decide (0 < q) = true) P' := ⟨P, hP, a, q, z, hPa, decide_eq_true_iff.symm, hq, hz, hab⟩
   refine ⟨(b, decide (0 < q)), Finset.mem_coe.2 (Finset.mem_product.2 ⟨hb, Finset.mem_univ _⟩), ?_⟩
-  have hrep : rep (b, decide (0 < q)) = hex.choose := dif_pos hex
+  have hrep : rep (b, decide (0 < q)) = hex.choose := dite_eq_left hex
   obtain ⟨hP', a', q', z', hPa', hsgn, hq', hz', hab'⟩ := hex.choose_spec
   simp only [hrep]
   apply Quot.sound
@@ -1268,9 +1260,9 @@ theorem irreducible_minpoly_inv (G : HTGroup p) (γ : G.Cˣ) (hirr : Irreducible
     Irreducible (minpoly G.F ((γ⁻¹ : G.Cˣ) : G.C)) := by
   have hi : IsIntegral G.F (γ : G.C) := Algebra.IsIntegral.isIntegral _
   set m := minpoly G.F (γ : G.C) with hmdef
-  haveI : Fact (Irreducible m) := ⟨hirr⟩
+  have : Fact (Irreducible m) := ⟨hirr⟩
   have hm0 : m ≠ 0 := minpoly.ne_zero hi
-  haveI : FiniteDimensional G.F (AdjoinRoot m) := (AdjoinRoot.powerBasis hm0).finite
+  have : FiniteDimensional G.F (AdjoinRoot m) := (AdjoinRoot.powerBasis hm0).finite
   have hz : ∀ a : Polynomial G.F, a ∈ Ideal.span {m} → Polynomial.aeval (γ : G.C) a = 0 := by
     intro a ha
     obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton.1 ha
@@ -1298,12 +1290,6 @@ end GlobalTheory.LKIrr
 namespace GlobalTheory.LKIrr
 open Polynomial GlobalTheory.GlobEig
 
-theorem exists_emb_isRoot_irr {F C E : Type} [Field F] [NumberField F] [Ring C] [Algebra F C]
-    [Algebra ℚ C] [IsScalarTower ℚ F C] [FiniteDimensional F C] [Field E] [Algebra ℚ E] [IsAlgClosed E]
-    (y : C) (hirr : Irreducible (minpoly F y)) (μ : E) (h : ((minpoly ℚ y).map (algebraMap ℚ E)).IsRoot μ) :
-    ∃ τ : F →+* E, ((minpoly F y).map τ).IsRoot μ := by
-  apply _root_.GlobalTheory.LKCx.FiniteClassIntegralRoots.exists_emb_isRoot' <;> assumption
-
 theorem root_norm_le_irr {p : ℕ} [Fact p.Prime] (G : HTGroup p) (β y : G.Cˣ) (c : ℚˣ)
     (hirr : Irreducible (minpoly G.F (y : G.C)))
     (hyc : (y : G.C) * β * sh G y = algebraMap ℚ G.C c * β) (B : ℝ) (hc : ‖((c : ℚ) : ℚ_[p])‖ ≤ B)
@@ -1318,38 +1304,12 @@ theorem root_norm_le_irr {p : ℕ} [Fact p.Prime] (G : HTGroup p) (β y : G.Cˣ)
 
 end GlobalTheory.LKIrr
 
-namespace GlobalTheory.LKIrr
-
-end GlobalTheory.LKIrr
-
-namespace GlobalTheory.LKIrr
-open GlobalTheory.LKMid.Northcott
-
-end GlobalTheory.LKIrr
-
-namespace GlobalTheory.LKIrr
-
-variable {p : ℕ} [Fact p.Prime]
-
-end GlobalTheory.LKIrr
-
-namespace GlobalTheory.LKIrr
-
-end GlobalTheory.LKIrr
-
-namespace GlobalTheory.LKIrr
-
-end GlobalTheory.LKIrr
-
-namespace GlobalTheory.LKIrr
-
-end GlobalTheory.LKIrr
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteClassesFixedGammaIrr =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMinpolyDefinitePairsTermNeZero =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMinpolyDefinitePairsTermNeZero", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DiagHermitianTrivialOfSumFourSquares\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompactConjCharpolyBoundedDenominatorsAwayPStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenBoundCombinePadicPrimeToPStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DpairEigenRootNormSq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteClassesFixedGammaIrr\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMonicRootsBddMulIsIntegralStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePolynomialsBoundedDenom\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralSmulOfCharpolyCoeffMulIntStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicCoeffDenominatorBoundOfBoundedRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedHeckeTestFunctionSupportCompactStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitNormBoundsStatement\nimport GroundTheory.Brauer.BaseChangeCSA\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Definitions.Divisors.PointsNonemptyUnitaryRankOne\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMinpolyDefinitePairsTermNeZero", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DiagHermitianTrivialOfSumFourSquares\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompactConjCharpolyBoundedDenominatorsAwayPStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenBoundCombinePadicPrimeToPStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DpairEigenRootNormSq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteClassesFixedGammaIrr\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMonicRootsBddMulIsIntegralStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePolynomialsBoundedDenom\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralSmulOfCharpolyCoeffMulIntStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicCoeffDenominatorBoundOfBoundedRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedHeckeTestFunctionSupportCompactStatement\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitNormBounds\nimport GroundTheory.Brauer.BaseChangeCSA\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Definitions.Divisors.PointsNonemptyUnitaryRankOne\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1367,7 +1327,7 @@ theorem integral_of_term_ne_zero : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) 
       IsIntegral ℤ ((N : ℤ) • (P.γ : G.C)) ∧ IsIntegral ℤ ((N : ℤ) • ((P.γ⁻¹ : G.Cˣ) : G.C)) := open scoped Pointwise in by
   classical
   intro p _ G L f r K φ hr hf hφ
-  letI : Inv (Set G.GAf) := Set.inv
+  let : Inv (Set G.GAf) := Set.inv
   obtain ⟨Ω, hΩc, hΩ⟩ := _root_.GlobalTheory.isTest_support_compact p G L f hf
   obtain ⟨D, hD, hDp⟩ := _root_.GlobalTheory.AwayPDen.charpoly_den_bounded p G (Ω ∪ Ω⁻¹) (hΩc.union hΩc.inv)
   obtain ⟨k, hk⟩ := _root_.GlobalTheory.AtPBd.main p G r K φ hr hφ
@@ -1453,7 +1413,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 theorem roots_eig (G : HTGroup p) (P : DPair G) (v : InfinitePlace G.F) (w : ℂ)
     (hw : P.pol.eval₂ v.embedding w = 0) : ∃ x : Fin G.n → ℂ, x ≠ 0 ∧ G.psi v P.γ *ᵥ x = w • x := by
-  letI : Algebra G.F ℂ := v.embedding.toAlgebra
+  let : Algebra G.F ℂ := v.embedding.toAlgebra
   let ψF : G.C →ₐ[G.F] Matrix (Fin G.n) (Fin G.n) ℂ :=
     { G.psi v with
       commutes' := fun x => by
@@ -1462,8 +1422,8 @@ theorem roots_eig (G : HTGroup p) (P : DPair G) (v : InfinitePlace G.F) (w : ℂ
         rfl }
   let Ψ : ℂ ⊗[G.F] G.C →ₐ[ℂ] Matrix (Fin G.n) (Fin G.n) ℂ :=
     Algebra.TensorProduct.lift (Algebra.ofId ℂ _) ψF (fun a _ => Algebra.commute_algebraMap_left a _)
-  haveI : Nontrivial (Matrix (Fin G.n) (Fin G.n) ℂ) := by
-    haveI : Nonempty (Fin G.n) := ⟨⟨0, G.n_pos⟩⟩
+  have : Nontrivial (Matrix (Fin G.n) (Fin G.n) ℂ) := by
+    have : Nonempty (Fin G.n) := ⟨⟨0, G.n_pos⟩⟩
     infer_instance
   have hinj : Function.Injective Ψ := RingHom.injective (Ψ : ℂ ⊗[G.F] G.C →+* Matrix (Fin G.n) (Fin G.n) ℂ)
   set Γ := G.psi v P.γ with hΓ

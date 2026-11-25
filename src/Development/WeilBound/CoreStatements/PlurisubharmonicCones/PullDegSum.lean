@@ -59,63 +59,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
 
-namespace LevelTowerAlt
-
-variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {p : Cpt ξ}
-
-theorem gen_unit {Λ : Lat ξ Ω} {s t : Ω} (hs : Λ.IsGenAt p s) (ht : Λ.IsGenAt p t) : unitAt ξ p (s / t) := by
-  apply GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_unit <;> assumption
-
-theorem gen_of_unit {Λ : Lat ξ Ω} {s t : Ω} (ht : Λ.IsGenAt p t) (hu : unitAt ξ p (s / t)) : Λ.IsGenAt p s := by
-  obtain ⟨ht0, ht⟩ := ht
-  obtain ⟨hu0, hu1, hu2⟩ := hu
-  have hs0 : s ≠ 0 := by
-    intro h
-    apply hu0
-    rw [h, zero_div]
-  refine ⟨hs0, ?_⟩
-  have hunit : IsUnit (⟨s / t, hu1⟩ : regAt ξ p) :=
-    ⟨⟨⟨s / t, hu1⟩, ⟨(s / t)⁻¹, hu2⟩, Subtype.ext (mul_inv_cancel₀ hu0),
-      Subtype.ext (inv_mul_cancel₀ hu0)⟩, rfl⟩
-  have hst : (⟨s / t, hu1⟩ : regAt ξ p) • t = s := by
-    rw [Subring.smul_def, smul_eq_mul]
-    exact div_mul_cancel₀ s ht0
-  rw [ht, ← hst, Submodule.span_singleton_smul_eq hunit]
-
-theorem gen_untens {Λ : Lat ξ Ω} {σ : ℤ} (hσ : σ * σ = 1) {t : Ω}
-    (h : (Lat.tens (fun _ : Unit => Λ) fun _ => σ).IsGenAt p t) : Λ.IsGenAt p (t ^ σ) := by
-  apply GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_untens <;> assumption
-
-variable {K : Type} [Fintype K] {J : K → Type} {y : (Σ k, J k) → Ω}
-
-theorem chart_ne {c : (k : K) → J k} (h : InChart ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) c p) (k : K) :
-    y ⟨k, c k⟩ ≠ 0 := by
-  have h0 : ∏ k, y ⟨k, c k⟩ ≠ 0 := h.1
-  rw [Finset.prod_ne_zero_iff] at h0
-  exact h0 k (Finset.mem_univ k)
-
-theorem deg_gen {Λ : Lat ξ Ω} {a : K → ℤ} {e : Ω} (h : Λ.IsDegOn Set.univ y a e) {c : (k : K) → J k}
-    (hc : InChart ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) c p) :
-    Λ.IsGenAt p ((∏ k, y ⟨k, c k⟩ ^ a k) * e) :=
-  ⟨mul_ne_zero (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (chart_ne hc k)) h.1, h.2 p trivial c hc⟩
-
-variable {V : Type} [AddCommGroup V] [Module Ω V] {X' : Scheme.{0}} {Ω' : Type} [Field Ω']
-  {ξ' : Spec (CommRingCat.of Ω') ⟶ X'} {f : X' ⟶ X} {i : Ω →+* Ω'} {V' : Type} [AddCommGroup V'] [Module Ω' V']
-  {j : V →+ V'}
-
-theorem uMap {q : Cpt ξ'} (hreg : ∀ a ∈ regAt ξ p, i a ∈ regAt ξ' q) {a : Ω} (h : unitAt ξ p a) :
-    unitAt ξ' q (i a) := by
-  obtain ⟨h0, h1, h2⟩ := h
-  refine ⟨(map_ne_zero i).mpr h0, hreg a h1, ?_⟩
-  rw [← map_inv₀]
-  exact hreg _ h2
-
-theorem exists_mat {r m : ℕ} {b : Fin r → V} {s : Fin m → V} (h : ∀ k, b k ∈ Submodule.span Ω (Set.range s)) :
-    ∃ T : Matrix (Fin m) (Fin r) Ω, ∀ k, b k = ∑ k', T k' k • s k' := by
-  choose c hc using fun k => (Submodule.mem_span_range_iff_exists_fun Ω).1 (h k)
-  exact ⟨fun k' k => c k k', fun k => (hc k).symm⟩
-
-end LevelTowerAlt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PlurisubharmonicCones.GenOfUnit =====
@@ -172,7 +115,7 @@ theorem gram_up (m : SABMap t' t f) (hξ : IsCptGen ξ) (hξ' : IsCptGen ξ') (h
     ⟨hq, eA.symm a, congrArg Subtype.val (eA.apply_symm_apply a), rfl⟩
   refine ⟨φ, hφ, fun r b Γ b' P ⟨v, hv, hI⟩ hP => ?_⟩
   let val : Li' → Vz := fun e => if he : e ∈ M'.lat p' then ev ⟨e, he⟩ else 0
-  have hval : ∀ e (he : e ∈ M'.lat p'), val e = ev ⟨e, he⟩ := fun e he => dif_pos he
+  have hval : ∀ e (he : e ∈ M'.lat p'), val e = ev ⟨e, he⟩ := fun e he => dite_eq_left he
   have h0 : val 0 = 0 := by
     rw [hval 0 (zero_mem _)]
     exact map_zero ev
@@ -389,20 +332,20 @@ theorem det_pull' {L : Lat ξ V} {r : ℕ} {s : Fin r → V} {U : Submodule Ω V
     exact Submodule.span_le_restrictScalars (regAt ξ' g) Ω' _ h1
   have hjs : ∀ k, j (s k) ∈ Submodule.span Ω' (Set.range b₀) := by
     intro k
-    obtain ⟨T, hT⟩ := exists_mat (Ω := Ω) (b := s) (s := b) fun k => by rw [hb]; exact hsU k
+    obtain ⟨T, hT⟩ := GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.exists_mat (Ω := Ω) (b := s) (s := b) fun k => by rw [hb]; exact hsU k
 
     rw [hT k, map_sum]
     exact Submodule.sum_mem _ fun k' _ => by rw [hj.1]; exact Submodule.smul_mem _ _ (hjb k')
-  obtain ⟨T₁, hT₁⟩ := exists_mat hjs
+  obtain ⟨T₁, hT₁⟩ := GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.exists_mat hjs
   have main : ∀ (q : Cpt ξ') (h : genPt ξ ⤳ f q.1), ∃ t, (detLat L s).IsGenAt ⟨f q.1, h⟩ t ∧
       (detLat (L.pull ξ' f j) b₀).IsGenAt q (T₁.det * i t) := by
     intro q h
     obtain ⟨U₂, hU₂, c, hc, hcf⟩ := hL ⟨f q.1, h⟩ trivial
     have hcf' := hcf _ trivial hU₂
-    obtain ⟨T, hT⟩ := exists_mat (Ω := Ω) (b := c) (s := s) fun k => by
+    obtain ⟨T, hT⟩ := GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.exists_mat (Ω := Ω) (b := c) (s := s) fun k => by
       rw [hsU', ← hc]; exact Submodule.subset_span ⟨k, rfl⟩
-    refine ⟨T.det, _root_.GlobalTheory.CompanionTheory.Relay.det_lattice_frame_gen X Ω ξ V L r s c T _ hs hcf' hT, ?_⟩
-    have h2 := _root_.GlobalTheory.CompanionTheory.Relay.det_lattice_frame_gen X' Ω' ξ' V' (L.pull ξ' f j) r b₀ (fun k => j (c k)) (T₁ * i.mapMatrix T) q hb₀
+    refine ⟨T.det, _root_.LevelTowerAlt.determinant_lattice_generator X Ω ξ V L r s c T _ hs hcf' hT, ?_⟩
+    have h2 := _root_.LevelTowerAlt.determinant_lattice_generator X' Ω' ξ' V' (L.pull ξ' f j) r b₀ (fun k => j (c k)) (T₁ * i.mapMatrix T) q hb₀
       (FlagPull.pull_isFrameAt hd hj q h hcf') (map_comb hj hT hT₁)
     rwa [Matrix.det_mul, ← RingHom.map_det] at h2
   obtain ⟨t, -, ht⟩ := main g hg
@@ -425,9 +368,9 @@ theorem deg_pull' {I : Type} [Fintype I] {Λ : I → Lat ξ Ω} {Λ' : I → Lat
   obtain ⟨r1, r2⟩ := FlagPull.ratio_reg hv hy hc' hdv
   have hc := FlagPull.inChart_of_pull hd hg' hcov q hq r1 r2
   choose t ht ht' using fun τ => hΛ τ q hq
-  have g1 := uMap hreg (gen_unit (deg_gen h hc) (Flag.tens_gen Λ (fun _ => -1) _ t ht))
+  have g1 := GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.uMap hreg (GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_unit (GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.deg_gen h hc) (Flag.tens_gen Λ (fun _ => -1) _ t ht))
   have g2 := Flag.tens_gen Λ' (fun _ => -1) q _ ht'
-  refine (gen_of_unit (s := (∏ k', y' ⟨k', c' k'⟩ ^ pullDeg κ a k') * ((∏ τ, u τ)⁻¹ * i e₀)) g2 ?_).2
+  refine (GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_of_unit (s := (∏ k', y' ⟨k', c' k'⟩ ^ pullDeg κ a k') * ((∏ τ, u τ)⁻¹ * i e₀)) g2 ?_).2
   convert g1 using 1
   rw [FlagPull.monomial_pull hv hy a hdv]
   simp only [_root_.zpow_neg_one, mul_inv, Finset.prod_mul_distrib, Finset.prod_inv_distrib, map_div₀, map_mul, map_inv₀, map_prod i (s := Finset.univ (α := I))]
@@ -494,21 +437,21 @@ theorem core (𝔐 : HodgeCpt Y S y) (Fl : 𝔐.Flag) (hB : Birational y) {e : C
     refine ⟨he₁, fun q _ ch hch => ?_⟩
     have g1 : ∀ τ k, ((𝔐.V (.inr τ)).gr (Fl.b (.inr τ)) k).IsGenAt q
         (((∏ b, y ⟨b, ch b⟩ ^ (L (lastRoot D (τ, k))).a b) * e (lastRoot D (τ, k))) ^ (-1 : ℤ)) := fun τ k => by
-      have h := deg_gen (hR (lastRoot D (τ, k))) hch
+      have h := GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.deg_gen (hR (lastRoot D (τ, k))) hch
       unfold HodgeCpt.Flag.rootLat at h
       rw [rootIdx_last, rootSgn_last] at h
-      exact gen_untens (by norm_num) h
+      exact GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_untens (by norm_num) h
     have g2 := Flag.tens_gen (fun τ => detLat (𝔐.V (.inr τ)) (Fl.b (.inr τ))) (fun _ => -1) q _ fun τ => by
       rw [_root_.GlobalTheory.CompanionTheory.Relay.det_lattice_flag_tensor _ _ _ _ _ _ _ (hb₀ _) (Fl.sub _)]
       exact Flag.tens_gen _ _ q _ (g1 τ)
-    rw [g2.2, ha, mono_sum _ (chart_ne hch), smul_eq_mul, ← Finset.prod_mul_distrib, Fintype.prod_prod_type]
+    rw [g2.2, ha, mono_sum _ (GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.chart_ne hch), smul_eq_mul, ← Finset.prod_mul_distrib, Fintype.prod_prod_type]
     simp only [_root_.zpow_neg_one, zpow_one, Finset.prod_inv_distrib, inv_inv]
     rfl
   set ρ : Ω := (∏ τ, (T₁ τ).det)⁻¹ * i e₀ / ∏ a, e (lastRoot D a) with hρ
   have hρe : ρ * ∏ a, e (lastRoot D a) = (∏ τ, (T₁ τ).det)⁻¹ * i e₀ := div_mul_cancel₀ _ he₁
   have hne : ∀ k, ∃ a, y ⟨k, a⟩ ≠ 0 := by
     obtain ⟨ch, hc⟩ := 𝔐.tie.cover ⟨genPt 𝔐.ξ, specializes_rfl⟩
-    exact fun k => ⟨ch k, chart_ne hc k⟩
+    exact fun k => ⟨ch k, GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.chart_ne hc k⟩
   obtain ⟨f₁, f₂, hfg, hval⟩ := _root_.PositivityTheory.UnitarySelfGeneration.l_lineiso _ Ω 𝔐.ξ K J y Ω _ A.a A'.a _ ρ 𝔐.tie hB hne D1
     (by rw [smul_eq_mul, hρe]; exact D2)
   refine ⟨f₁, f₂, hfg, ?_⟩
@@ -684,7 +627,7 @@ theorem pull_on {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {�
     rw [p2, ← hf]
     simp
   have hc : A'.cst = A.cst := by
-    refine OrLinked.ringHom_ext_int c (OrLinked.spMap_inj' ?_)
+    refine OrLinked.ringHom_ext_int c (GlobalTheory.SS.WeakNeronEx.sp_inj ?_)
     rw [← A'.cst_over, ← A.cst_over, ← hf', ← he]
     simp only [Category.assoc]
   obtain ⟨φ, φt, -, φr, φp⟩ := OrLinked.same_base_cmp A' A e.symm he hf' hc
@@ -837,8 +780,8 @@ theorem prod_last {M : Type} [CommMonoid M] (F : CMType H × Fin (D.p + D.q) →
   refine Finset.prod_congr rfl fun τ _ => ?_
   rw [Fin.prod_univ_add]
   simp only [Fin.val_castAdd, Fin.val_natAdd]
-  rw [Finset.prod_eq_one (fun i _ => if_neg (by omega)), one_mul]
-  simp only [le_add_iff_nonneg_right, zero_le, if_true]
+  rw [Finset.prod_eq_one (fun i _ => ite_eq_right (by omega)), one_mul]
+  simp only [le_add_iff_nonneg_right, zero_le, ite_true]
   exact (Fintype.prod_equiv Fin.revPerm (fun a => F (lastRoot D (τ, a))) (fun j => F (τ, Fin.natAdd D.p j))
     (fun a => rfl)).symm
 
@@ -848,8 +791,8 @@ theorem sum_last {M : Type} [AddCommMonoid M] (F : CMType H × Fin (D.p + D.q) �
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [Fin.sum_univ_add]
   simp only [Fin.val_castAdd, Fin.val_natAdd]
-  rw [Finset.sum_eq_zero (fun i _ => if_neg (by omega)), zero_add]
-  simp only [le_add_iff_nonneg_right, zero_le, if_true]
+  rw [Finset.sum_eq_zero (fun i _ => ite_eq_right (by omega)), zero_add]
+  simp only [le_add_iff_nonneg_right, zero_le, ite_true]
   exact (Fintype.sum_equiv Fin.revPerm (fun a => F (lastRoot D (τ, a))) (fun j => F (τ, Fin.natAdd D.p j))
     (fun a => rfl)).symm
 
@@ -863,7 +806,6 @@ theorem pullDeg_sum {K K' I : Type} [Fintype I] {κ : K → K'} (hκ : Function.
   · obtain ⟨y, rfl⟩ := hx
     simp only [hκ.extend_apply, Finset.sum_apply]
   · simp only [Function.extend_apply' _ _ _ hx, Pi.zero_apply, Finset.sum_const_zero]
-
 
 theorem common (h₁ : LevelFree) (h₂ : MuHodge) : Common := by
   intro hG E _ _ _ _ H D Xo l c Y S RM Sys Fx oR II K _ J _ Ω _ _ W _ _ Dc Hd S₀ Or B hS hdisc hvR hR4 hp hbg hsm hgood hgen
@@ -929,7 +871,7 @@ theorem common (h₁ : LevelFree) (h₂ : MuHodge) : Common := by
     have e3 : oR.𝔐.ξ ≫ oR.𝔐.f = spMap oR.𝔐.fn ≫ oR.𝔐.ξ₀ := oR.𝔐.fn_over
     have e4 : Or.𝔐.ξ ≫ Or.𝔐.f = spMap Or.𝔐.fn ≫ Or.𝔐.ξ₀ := Or.𝔐.fn_over
     rw [← Category.assoc, ← Category.assoc, e1, e2, Category.assoc, Category.assoc, e3, e4, ← hψ, ← Category.assoc,
-      ← Category.assoc, ← Category.assoc, OrLinked.spMap_spMap', OrLinked.spMap_spMap', OrLinked.spMap_spMap', hi, RingHom.comp_assoc]
+      ← Category.assoc, ← Category.assoc, GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring, hi, RingHom.comp_assoc]
   have hvb₄ : ∀ p ∈ S₀ ∪ Dc.SB B, ∀ s, ((Or.𝔐.M.htOm Or.𝔐.t.PP.L (p ^ 4)).map (Or.𝔐.Vgen s).dualRestrict).IsVBOn
       {q | InFibre Or.𝔐.ξ p q} (labelRk D s) ⊤ := fun p hp' s =>
     vbOn_congr (L := (Or.𝔐.M.htOm Or.𝔐.t.PP.L (p ^ Or.𝔐.R p)).map (Or.𝔐.Vgen s).dualRestrict) (fun q hq => by
@@ -973,7 +915,7 @@ theorem common (h₁ : LevelFree) (h₂ : MuHodge) : Common := by
       obtain ⟨τ⟩ : Nonempty (CMType H) := (_root_.GlobalTheory.CompanionTheory.Ar.Top.HostNumbers.host_numbers E H).2.1
       exact absurd (congrFun h τ) (by simp)
   simp only [hsm] at hs hdeg hmet
-  choose Lp hLp using fun r => ((_root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap RM.K RM.ι K₃ ρ κ₁ v₁ bm₁).1 (oR.sing r)).exists
+  choose Lp hLp using fun r => ((_root_.PositivityTheory.UnitarySelfGeneration.j_pull RM.K RM.ι K₃ ρ κ₁ v₁ bm₁).1 (oR.sing r)).exists
   have hroot : Fl.RootLines (fun r => (Lp r).a) fun r => i₁ (oR.e r) := by
     have h := hlF _ _ oR.lines
     have e : (fun r => (Lp r).a) = fun r => pullDeg κ₁ (RM.xdeg r) := funext fun r => by rw [(hLp r).1, oR.sing_deg]

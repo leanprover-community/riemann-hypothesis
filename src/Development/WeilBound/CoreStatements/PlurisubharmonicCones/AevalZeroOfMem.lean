@@ -15,7 +15,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yla8.main :
-    ∀ {Ω : Type} [inst : Field Ω] (A : ValuationSubring Ω) {T : Type} [Finite T] (y : T → Ω),
+    ∀ {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {T : Type} [Finite T] (y : T → Ω),
       (∃ (x : T), y x ≠ (0 : Ω)) → ∃ (x₀ : T), y x₀ ≠ (0 : Ω) ∧ ∀ (x : T), y x / y x₀ ∈ A := by
   intro Ω _ A T _ y ⟨x1, hx1⟩
   have : Nonempty {x : T // y x ≠ 0} := ⟨⟨x1, hx1⟩⟩

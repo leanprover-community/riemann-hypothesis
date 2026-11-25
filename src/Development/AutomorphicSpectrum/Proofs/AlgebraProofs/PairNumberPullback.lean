@@ -231,7 +231,7 @@ theorem cycEval_expand [Fintype K] [∀ k, Fintype (ι k)] (ϖ : O) (P : Ideal (
   change ratDiv P f g W * _ = _ * (ratDiv P f g W * _)
   by_cases h0 : ratDiv P f g W = 0
   · simp [h0]
-  · rw [if_pos (hv W h0)]
+  · rw [ite_eq_left (hv W h0)]
     ring
 
 theorem vertEval_perm (ϖ : O) (P : Ideal (MRing ι O)) (f : MRing ι O) {l₁ l₂ : List (K → ℤ)}
@@ -277,7 +277,7 @@ theorem expansion_zero {N : ℕ} {G : MvPolynomial (Fin N) ℤ} (hG : G.IsHomoge
   rw [map_zero, map_sum, Finset.sum_eq_single i] at e2
   · rw [hC i] at e2 ⊢
     simp only [map_mul, map_sub, eval_X, eval_C] at e2
-    simp only [if_true, reduceCtorEq, if_false, sub_zero, one_mul] at e2
+    simp only [ite_true, reduceCtorEq, ite_false, sub_zero, one_mul] at e2
     rw [← e2, map_zero]
   · intro j _ hj
     simp [hj]
@@ -409,8 +409,8 @@ theorem vertEval_contract {ϖ : O} (hϖ : Irreducible ϖ) {y : (Σ k, ι k) → 
   beta_reduce
   by_cases hW : (C ϖ : MRing (Sum.elim ι ι') O) ∈ W
   swap
-  · exact if_neg hW
-  refine (if_pos hW).trans ?_
+  · exact ite_eq_right hW
+  refine (ite_eq_left hW).trans ?_
   have hf' := isMultiHomog_joinForm (ι' := ι') hf
   have hdim := ComponentDim.proof O ϖ hϖ _ _ _ _ hj _ _ hf'
     (fun h => hfP ((joinForm_mem_pointIdeal_iff O y y' f).mp h)) W h0 hW

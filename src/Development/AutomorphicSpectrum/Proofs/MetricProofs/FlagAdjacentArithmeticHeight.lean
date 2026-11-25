@@ -82,18 +82,18 @@ theorem minorIJ_shear {C : Finset (Fin N)} {ca cb : Fin N} (t : ℂ) (h : cb ∉
     simp [Matrix.add_apply, hx]
   have h1 := CPts.minorIJ_one (R := ℂ) C
   unfold minorIJ at h1 ⊢
-  rw [dif_pos rfl] at h1 ⊢
+  rw [dite_eq_left rfl] at h1 ⊢
   rw [e, h1]
 
 theorem cb_notMem {a ca cb : Fin N} (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) :
     cb ∉ stepCols N j a := by
   simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
   by_cases h : (a : ℕ) + 1 ≤ j
-  · simp only [lastCol, if_pos h] at hca
-    rw [if_pos h]
+  · simp only [lastCol, ite_eq_left h] at hca
+    rw [ite_eq_left h]
     omega
-  · simp only [lastCol, if_neg h] at hca
-    rw [if_neg h]
+  · simp only [lastCol, ite_eq_right h] at hca
+    rw [ite_eq_right h]
     omega
 
 end Minors
@@ -130,7 +130,7 @@ theorem twMinor_of_flag (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.b
 
 theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N), (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → M.blk (τ, a) = some k₀ → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → IsArithVar (mCoordIdeal y) (d + 2) → ∀ z ∈ mcPts (wP M τ a k₀ ca cb), ∃ (F : FrameData ι Ψ N M.Ω M.blk) (kb : Fin Rb.A.n) (V : Set (Fin n → ℂ)) (bl : (Fin n → ℂ) → (Σ k, baseIdx ι M.blk k) → ℂ) (r : ((Σ k, baseIdx ι M.blk k) → ℂ) → Rb.X) (h : Ψ → Matrix (Fin N) (Fin N) ℂ), IsWCtx M Rb τ a b k₀ ca cb d F kb V bl r h ∧ z ∈ wO M Rb τ a k₀ ca cb F kb V r h := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d Rb τ a b k₀ ca cb hb hba hblk hca hcb hA z hz
-  obtain ⟨hW, -, -, hImg, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.flag_adjacent_swap_varieties_arithmetic K ι Φ y Ψ N j M d τ a b k₀ ca cb hb hba hblk hca hcb hA
+  obtain ⟨hW, -, -, hImg, -⟩ := _root_.PositivityTheory.Xgp.t_c_w_arith K ι Φ y Ψ N j M d τ a b k₀ ca cb hb hba hblk hca hcb hA
   obtain ⟨bs, fr, -⟩ := CPts.main K ι Φ y Ψ N j M
   have hz1 : fstPt k₀ z ∈ mcPts (mCoordIdeal y) := fstPt_mem hImg hz
   have hzb : baseOf M k₀ z ∈ mcPts (mCoordIdeal M.x) := bs _ hz1
@@ -156,9 +156,9 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     rcases o with _ | k
     · exact one_ne_zero
     · by_cases h : ∀ p, M.blk p ≠ some k
-      · simp only [c, Option.elim_some, dif_pos h]
+      · simp only [c, Option.elim_some, dite_eq_left h]
         exact hc₀ _
-      · simp only [c, Option.elim_some, dif_neg h]
+      · simp only [c, Option.elim_some, dite_eq_right h]
         exact one_ne_zero
   let z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ := fun p => c p.1 * z p
   have hz' : z' ∈ mcPts (wP M τ a k₀ ca cb) := mcPts_smul hW.2.1.2.1 c hc hz
@@ -167,7 +167,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     funext q
     obtain ⟨⟨k, hk⟩, m⟩ := q
     show c (some k) * z ⟨some k, m⟩ = c₀ ⟨k, hk⟩ * z ⟨some k, m⟩
-    simp only [c, Option.elim_some, dif_pos hk]
+    simp only [c, Option.elim_some, dite_eq_left hk]
   have hbp2 : basePart M.blk (sndPt k₀ z') = zc := by
     rw [← hbp]
     funext q
@@ -186,7 +186,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     obtain ⟨A, hA0, hA'⟩ := H1.2.2 p k hp
     have hk : c (some k) = 1 := by
       simp only [c, Option.elim_some]
-      exact dif_neg fun e => e p hp
+      exact dite_eq_right fun e => e p hp
     have hw : ∀ m : ι k, fstPt k₀ z ⟨k, m⟩ =
         A * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) (baseOf M k₀ z) * minorIJ (h p.1) I (stepCols N j p.2) := fun m => by
       have e : fstPt k₀ z' ⟨k, m⟩ = fstPt k₀ z ⟨k, m⟩ := by

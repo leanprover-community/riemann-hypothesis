@@ -7,28 +7,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open UpperTheory.V.FW
 
-private theorem div_sub_add_div_add_one_eq (c M a : ℕ) (hM : 0 < M) (hr : a % M ≠ 0) (ha : a < c * M) :
-    (c * M - a) / M + a / M + 1 = c := by
-  have hdm := Nat.div_add_mod a M
-  have hrl := Nat.mod_lt a hM
-  generalize a / M = k at hdm ⊢
-  generalize a % M = r at hdm hrl hr
-  subst hdm
-  have hkc : k < c := by
-    by_contra! hck
-    have : M * c ≤ M * k := Nat.mul_le_mul_left M hck
-    nlinarith
-  obtain ⟨j, rfl⟩ : ∃ j, c = k + 1 + j := ⟨c - k - 1, by omega⟩
-  have e1 : (k + 1 + j) * M = M * k + M + j * M := by ring
-  have hq : ((k + 1 + j) * M - (M * k + r)) / M = j := by
-    apply Nat.div_eq_of_lt_le
-    · rw [e1]
-      omega
-    · rw [e1, Nat.add_mul, Nat.one_mul]
-      omega
-  rw [hq]
-  omega
-
 theorem UpperTheory.V.FW.gcNeg :
     ∀ (M c : ℕ) [NeZero M] (s : ZMod M), c.Coprime M → Odd c → s ≠ 0 → gc M c (-s) = -gc M c s := by
   intro M c _ s hc hodd hs
@@ -55,7 +33,16 @@ theorem UpperTheory.V.FW.gcNeg :
     have := Nat.le_of_dvd hv0 h2
     omega
   have hlt : c * v < c * M := Nat.mul_lt_mul_of_pos_left hvM hcpos
-  have key := div_sub_add_div_add_one_eq c M (c * v) hMpos hndvd hlt
+  have hpos : 0 < c * v := Nat.mul_pos hcpos hv0
+  have hltM : c * v < M * c := Nat.mul_comm c M ▸ hlt
+  have h1 := Nat.mul_sub_div (c * v - 1) M c (Nat.lt_of_le_of_lt (Nat.sub_le _ 1) hltM)
+  have h2 := Nat.succ_div_of_mod_ne_zero (a := c * v - 1) (b := M)
+    ((Nat.sub_add_cancel hpos).symm ▸ hndvd)
+  rw [Nat.sub_add_cancel hpos] at h2
+  rw [Nat.sub_add_cancel hpos, Nat.mul_comm M c, ← h2] at h1
+  have hlt' : c * v / M < c := Nat.div_lt_of_lt_mul hltM
+  have key : (c * M - c * v) / M + c * v / M + 1 = c := by
+    rw [h1, Nat.add_assoc, Nat.sub_add_cancel hlt']
   rw [mul_tsub]
   obtain ⟨m, rfl⟩ := hodd
   have hm : (2 * m + 1 - 1) / 2 = m := by omega

@@ -64,9 +64,9 @@ theorem norm_det_wMat (n : ℕ) : ‖(wMat n).det‖ = 1 := by
 theorem continuous_strictUpper (d : ℕ) : Continuous (strictUpper : (UT d → ℂ) → Matrix (Fin d) (Fin d) ℂ) := by
   refine continuous_matrix fun i j => ?_
   by_cases h : i < j
-  · simp only [strictUpper, Matrix.of_apply, h, dif_pos]
+  · simp only [strictUpper, Matrix.of_apply, h, dite_eq_left]
     exact continuous_apply _
-  · simp only [strictUpper, Matrix.of_apply, h, dif_neg, not_false_iff]
+  · simp only [strictUpper, Matrix.of_apply, h, dite_eq_right, not_false_iff]
     exact continuous_const
 
 theorem continuous_upper (d : ℕ) : Continuous (upper : (UT d → ℂ) → Matrix (Fin d) (Fin d) ℂ) :=
@@ -627,7 +627,3 @@ theorem omConverges : OmConverges := by
     exact (hb (M v) (hdet v)).2.trans (hmono _ _ (norm_nonneg _) (norm_long_le z v (M v) rfl))
 
 end Formalism.FourierDecayAlt.P.G7
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

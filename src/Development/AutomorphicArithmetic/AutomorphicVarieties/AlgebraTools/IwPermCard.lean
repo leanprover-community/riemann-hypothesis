@@ -90,11 +90,11 @@ private theorem step (C : Subgroup 𝓀[k]ˣ) (w : Equiv.Perm (Fin n)) (i j : Fi
     have hK : pm k n w ∈ KO k (Fin n) := ⟨pm 𝒪[k] n w, map_pm _ w⟩
     have hK' : (pm k n w)⁻¹ * x c * pm k n w ∈ KO k (Fin n) := mul_mem (mul_mem (inv_mem hK) (hxu c).2) hK
     refine hU ⟨(mem_unipB k).2 ⟨fun a b hab => ?_, fun a => ?_⟩, hK'⟩
-    · rw [conj_apply, hx, Matrix.add_apply, one_apply_ne (w.injective.ne hab.ne'), single_apply, if_neg, add_zero]
+    · rw [conj_apply, hx, Matrix.add_apply, one_apply_ne (w.injective.ne hab.ne'), single_apply, ite_eq_right, add_zero]
       rintro ⟨rfl, rfl⟩
       simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply] at hw
       exact lt_asymm hw hab
-    · rw [conj_apply, hx, Matrix.add_apply, one_apply_eq, single_apply, if_neg, add_zero]
+    · rw [conj_apply, hx, Matrix.add_apply, one_apply_eq, single_apply, ite_eq_right, add_zero]
       rintro ⟨h, h'⟩
       exact hlt.ne (h.trans h'.symm)
   · intro c c' g hg g' hg' h

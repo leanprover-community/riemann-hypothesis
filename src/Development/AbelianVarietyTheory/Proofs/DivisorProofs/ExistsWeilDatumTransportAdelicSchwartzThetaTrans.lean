@@ -178,14 +178,6 @@ theorem isThetaFunO_thV (hψ : IsStdChar D ψ (-1)) (he : ∀ w w', symplO S T w
       simp only [heisO_comp he]
       exact hd (e w)
 
-theorem thV_injOn {F : Type} [Field F] [NumberField F] [Invertible (2 : AF F)] {ψ : AddChar (AF F) ℂ}
-    (hR : IsTotallyReal F) (hψ : IsCharAF F ψ) {Φ Φ' : (Fin N → AF F) → ℂ} (hΦ : Φ ∈ GlobalTheory.WeilM.schA F (Fin N))
-    (hΦ' : Φ' ∈ GlobalTheory.WeilM.schA F (Fin N)) (h : thV ψ Φ = thV ψ Φ') : Φ = Φ' := by
-  obtain ⟨lam, ν, hC⟩ := GlobalTheory.SWQ.ctx_exists F hR ψ hψ N (half F N) half_ne_zero
-  refine eq_of_theta_rho F N ψ lam ν _ hC Φ Φ' (_root_.GlobalTheory.SchwartzDecay.decay_of_mem_schA F N Φ hΦ) (_root_.GlobalTheory.SchwartzDecay.decay_of_mem_schA F N Φ' hΦ') fun x y => ?_
-  have := congrFun h (x, y)
-  rwa [thV_eq_th, thV_eq_th] at this
-
 theorem exists_thV_eq (hψ : IsStdChar D ψ (-1)) (he : ∀ w w', symplO S T w w' = symV (e w) (e w'))
     (hrat : ∀ x : Matrix (Fin T.rank) (Fin S.rank) D.host.E, ∃ y z : Fin N → D.host.F,
       e (incM D.host.F x) = (rat y, rat z))
@@ -238,80 +230,6 @@ theorem exists_thV_eq (hψ : IsStdChar D ψ (-1)) (he : ∀ w w', symplO S T w w
 
 end Coord
 
-theorem exists_transport {V W G : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] [Monoid G]
-    (p : Submodule ℂ V) (Θ : p →ₗ[ℂ] W) (hΘ : Function.Injective Θ) (ω : G →* Module.End ℂ W)
-    (hω : ∀ g, ∀ x ∈ LinearMap.range Θ, ω g x ∈ LinearMap.range Θ) :
-    ∃ om : G →* Module.End ℂ V, ∀ g (x : p), ∃ h : om g x ∈ p, Θ ⟨om g x, h⟩ = ω g (Θ x) := by
-  obtain ⟨q, hq⟩ := p.exists_isCompl
-  let E := LinearEquiv.ofInjective Θ hΘ
-  let A := Submodule.prodEquivOfIsCompl p q hq
-  let r : G → Module.End ℂ p := fun g => E.symm.conj ((ω g).restrict (hω g))
-  have hr : ∀ g x, Θ (r g x) = ω g (Θ x) := fun g x => by
-    have : ∀ y : LinearMap.range Θ, Θ (E.symm y) = y := fun y => by
-      conv_rhs => rw [← E.apply_symm_apply y]
-      rfl
-    simp only [r, LinearEquiv.conj_apply_apply, this]
-    rfl
-  have r1 : r 1 = 1 := LinearMap.ext fun x => hΘ (by rw [hr, map_one]; rfl)
-  have rm : ∀ g h, r (g * h) = r g * r h := fun g h => LinearMap.ext fun x => hΘ (by
-    rw [hr, map_mul, Module.End.mul_apply, Module.End.mul_apply, hr, hr])
-  refine ⟨⟨⟨fun g => A.conj ((r g).prodMap LinearMap.id), ?_⟩, fun g h => ?_⟩, fun g x => ?_⟩
-  · ext v
-    simp [r1, Module.End.one_eq_id]
-  · ext v
-    simp [rm, LinearEquiv.conj_apply_apply]
-  · have h : A.conj ((r g).prodMap LinearMap.id) (x : V) = r g x := by
-      simp [A, LinearEquiv.conj_apply_apply]
-    refine ⟨by rw [MonoidHom.coe_mk, OneHom.coe_mk, h]; exact (r g x).2, ?_⟩
-    rw [← hr]
-    congr 1
-    exact Subtype.ext h
-
-theorem exists_transport' {V W G : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] [Monoid G]
-    (p : Submodule ℂ V) (Θ : V → W) (P : W → Prop) (hadd : ∀ x ∈ p, ∀ y ∈ p, Θ (x + y) = Θ x + Θ y)
-    (hsm : ∀ (c : ℂ) x, Θ (c • x) = c • Θ x) (hinj : ∀ x ∈ p, ∀ y ∈ p, Θ x = Θ y → x = y)
-    (hon : ∀ f, P f ↔ ∃ x ∈ p, Θ x = f) (ω : G →* Module.End ℂ W) (hω : ∀ g f, P f → P (ω g f)) :
-    ∃ om : G →* Module.End ℂ V, ∀ g, ∀ x ∈ p, om g x ∈ p ∧ Θ (om g x) = ω g (Θ x) := by
-  let L : p →ₗ[ℂ] W :=
-    { toFun := fun x => Θ x.1
-      map_add' := fun x y => hadd _ x.2 _ y.2
-      map_smul' := fun c x => hsm c x.1 }
-  have hmem : ∀ f, f ∈ LinearMap.range L ↔ P f := fun f =>
-    ⟨fun ⟨x, h⟩ => (hon f).2 ⟨x.1, x.2, h⟩, fun hf => let ⟨x, hx, h⟩ := (hon f).1 hf; ⟨⟨x, hx⟩, h⟩⟩
-  obtain ⟨om, hom⟩ := exists_transport p L (fun x y h => Subtype.ext (hinj _ x.2 _ y.2 h)) ω
-    fun g f hf => (hmem _).2 (hω g f ((hmem f).1 hf))
-  exact ⟨om, fun g x hx => let ⟨h1, h2⟩ := hom g ⟨x, hx⟩; ⟨h1, h2⟩⟩
-
-
-open scoped Classical in
-theorem comp_mem_schA {F : Type} [Field F] [NumberField F] {κ κ' : Type} [Fintype κ] [Fintype κ'] (σ : κ ≃ κ')
-    {Φ : (κ → AF F) → ℂ} (hΦ : Φ ∈ GlobalTheory.WeilM.schA F κ) : (fun x : κ' → AF F => Φ (x ∘ σ)) ∈ GlobalTheory.WeilM.schA F κ' := by
-  induction hΦ using Submodule.span_induction with
-  | mem Φ h =>
-    obtain ⟨f, g, hg, rfl⟩ := h
-    let A : (κ' → mixedEmbedding.mixedSpace F) ≃L[ℝ] (κ → mixedEmbedding.mixedSpace F) :=
-      (LinearEquiv.funCongrLeft ℝ (mixedEmbedding.mixedSpace F) σ).toContinuousLinearEquiv
-    let B : (κ' → Af F) ≃ₜ (κ → Af F) := (Homeomorph.piCongrLeft (Y := fun _ => Af F) σ).symm
-    refine Submodule.subset_span ⟨SchwartzMap.compCLMOfContinuousLinearEquiv ℂ A f, g ∘ B,
-      ⟨hg.1.comp_continuous B.continuous, hg.2.comp_homeomorph B⟩, ?_⟩
-    rfl
-  | zero => exact Submodule.zero_mem _
-  | add Φ Ψ _ _ h1 h2 => exact Submodule.add_mem _ h1 h2
-  | smul c Φ _ h => exact Submodule.smul_mem _ c h
-
-theorem thV_add {F : Type} [Field F] [NumberField F] [Invertible (2 : AF F)] {ψ : AddChar (AF F) ℂ} {N : ℕ}
-    (hR : IsTotallyReal F) (hψ : IsCharAF F ψ) {Φ Φ' : (Fin N → AF F) → ℂ} (hΦ : Decay Φ) (hΦ' : Decay Φ') :
-    thV ψ (Φ + Φ') = thV ψ Φ + thV ψ Φ' := by
-  funext w
-  have hs : ∀ Φ : (Fin N → AF F) → ℂ, Decay Φ →
-      Summable fun ξ : Fin N → F => GlobalTheory.WeilM.schr ψ w Φ fun i => algebraMap F (AF F) (ξ i) := fun Φ hΦ => by
-    refine Summable.of_norm ?_
-    simp only [GlobalTheory.WeilM.schr, norm_mul, hψ.2.1, one_mul]
-    exact (GlobalTheory.decay_integrable_periodise F N hR Φ hΦ).2.1 w.1
-  rw [Pi.add_apply, thV, thV, thV, GlobalTheory.WeilM.thetaSum, GlobalTheory.WeilM.thetaSum, GlobalTheory.WeilM.thetaSum,
-    ← (hs Φ hΦ).tsum_add (hs Φ' hΦ')]
-  exact tsum_congr fun ξ => mul_add _ _ _
-
 section Pair
 
 variable {D : D7} {S T : HSp D} {JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E}
@@ -319,93 +237,15 @@ variable {D : D7} {S T : HSp D} {JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E}
 
 theorem symplO_eq_symp (hA : JA = T.gramᵀ) (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹))
     (x y : WO S T) : symplO S T x y =
-      GlobalTheory.WeilM.symp (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) ξ (incM D.host.F JA) (incM D.host.F JB) x y := by
-  unfold symplO GlobalTheory.WeilM.symp hO GlobalTheory.WeilM.hTens
-  congr 1
-  have h : ∀ j l, ξ * incM D.host.F JB j l = incA D D.host.xi0 * incA D (S.gram⁻¹ j l) := fun j l => by
-    have := congrFun (congrFun hB j) l
-    rw [← map_mul]
-    exact this
-  have hc : ∀ z, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig z = cA D z := fun z => rfl
-  simp only [Finset.mul_sum, hc]
-  conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  rw [Finset.sum_comm]
-  conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun b _ => ?_
-  have h' : incM D.host.F JA d c = incA D (T.gram c d) := by rw [hA]; rfl
-  rw [h']
-  linear_combination (-(x d a * incA D (T.gram c d) * cA D (y c b))) * h a b
+      GlobalTheory.WeilM.symp (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) ξ (incM D.host.F JA) (incM D.host.F JB) x y :=
+  GlobalTheory.TransportF.symplOF_eq_symp hA hB x y
 
 theorem mem_GA_target (hA : JA = T.gramᵀ) (a : GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JA)) :
-    a.1 ∈ HR (AF D.host.F) D.sp.cm.sig T.gram := by
-  have h := congrArg Matrix.transpose a.2
-  rw [Matrix.transpose_mul, Matrix.transpose_mul, Matrix.transpose_transpose, ← Matrix.mul_assoc] at h
-  subst hA
-  exact h
-
-def contra {A n : Type} [CommRing A] [Fintype n] [DecidableEq n] : GL n A →* GL n A where
-  toFun g := ⟨(g⁻¹).1ᵀ, g.1ᵀ, by rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one],
-    by rw [← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]⟩
-  map_one' := Units.ext (by simp)
-  map_mul' g h := Units.ext (by simp only [mul_inv_rev, Units.val_mul, Matrix.transpose_mul])
-
-theorem contra_rel {A n : Type} [CommRing A] [Fintype n] [DecidableEq n] (c : A →+* A) {G H J : Matrix n n A} {ξ x : A}
-    (hGH : G * H = 1) (hx : IsUnit x) (hJ : ξ • J = x • H) (b : GL n A) (h0 : b.1ᵀ * J * b.1.map c = J) :
-    (b⁻¹).1.map c * G * (b⁻¹).1ᵀ = G := by
-  apply _root_.GlobalTheory.TransportF.contra_rel <;> assumption
-
-theorem mem_GA_source (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹))
-    (b : GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JB)) :
-    contra b.1 ∈ HR (AF D.host.F) D.sp.cm.sig S.gram := by
-  have hdet : IsUnit S.gram.det := (Formalism.L2.Theta.gram_det_ne S).isUnit
-  have hGH : S.gram.map (incA D) * (S.gram⁻¹).map (incA D) = 1 := by
-    rw [← Matrix.map_mul, Matrix.mul_nonsing_inv _ hdet, Matrix.map_one _ (map_zero _) (map_one _)]
-  have hx : IsUnit (incA D D.host.xi0) := (IsUnit.mk0 _ (GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D)).map _
-  have hB' : ξ • incM D.host.F JB = incA D D.host.xi0 • (S.gram⁻¹).map (incA D) := by
-    rw [hB]
-    ext i j
-    exact map_mul (incA D) _ _
-  exact contra_rel (cA D) hGH hx hB' b.1 b.2
-
-def pairHom (hA : JA = T.gramᵀ) (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹)) :
-    GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JA) ×
-      GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JB) →* GA D S × GA D T where
-  toFun p := ((⟨contra p.2.1, mem_GA_source hB p.2⟩ : HR (AF D.host.F) D.sp.cm.sig S.gram),
-    (⟨p.1.1, mem_GA_target hA p.1⟩ : HR (AF D.host.F) D.sp.cm.sig T.gram))
-  map_one' := Prod.ext (Subtype.ext (map_one contra)) rfl
-  map_mul' p q := Prod.ext (Subtype.ext (map_mul contra p.2.1 q.2.1)) rfl
-
-theorem pairHom_eq (hA : JA = T.gramᵀ) (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹))
-    (a : GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JA))
-    (b : GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JB)) (g : GA D S) (h : GA D T)
-    (hh : mt T h = a.1.1) (hg : mt S g = (b⁻¹).1.1ᵀ) : pairHom hA hB (a, b) = (g, h) :=
-  Prod.ext (Subtype.ext (Units.ext hg.symm)) (Subtype.ext (Units.ext hh.symm))
+    a.1 ∈ HR (AF D.host.F) D.sp.cm.sig T.gram :=
+  GlobalTheory.TransportF.mem_HR_target hA a
 
 variable {ψ : AddChar (AF D.host.F) ℂ} {κ : Type} [Fintype κ]
   (co : GlobalTheory.WeilM.Darboux (GlobalTheory.WeilM.symp (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) ξ (incM D.host.F JA) (incM D.host.F JB)) κ)
-
-def numCoord {N : ℕ} (σ : κ ≃ Fin N) : WO S T ≃ₗ[AF D.host.F] VA D.host.F N :=
-  co.e.trans ((LinearEquiv.funCongrLeft _ _ σ.symm).prodCongr (LinearEquiv.funCongrLeft _ _ σ.symm))
-
-theorem numCoord_apply {N : ℕ} (σ : κ ≃ Fin N) (w : WO S T) :
-    numCoord co σ w = ((co.e w).1 ∘ σ.symm, (co.e w).2 ∘ σ.symm) := rfl
-
-theorem thetaTr_eq {N : ℕ} (σ : κ ≃ Fin N) (Φ : (κ → AF D.host.F) → ℂ) :
-    GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ Φ = thV ψ (fun x => Φ (x ∘ σ)) ∘ numCoord co σ := by
-  funext w
-  simp only [GlobalTheory.WeilSchrodinger.thetaTr, thV, Function.comp_apply, GlobalTheory.WeilM.thetaSum, numCoord_apply]
-  rw [← (Equiv.arrowCongr σ (Equiv.refl D.host.F)).tsum_eq]
-  refine tsum_congr fun η => ?_
-  have e : (fun i => algebraMap D.host.F (AF D.host.F) (Equiv.arrowCongr σ (Equiv.refl D.host.F) η i)) =
-      (fun i => algebraMap D.host.F (AF D.host.F) (η i)) ∘ σ.symm := rfl
-  rw [e]
-  simp only [GlobalTheory.WeilM.Darboux.rho, GlobalTheory.WeilM.schr, comp_equiv_dotProduct_comp_equiv]
-  congr 2
-  funext i
-  simp
 
 theorem thetaTr_bij (hψ : IsStdChar D ψ (-1)) (hA : JA = T.gramᵀ)
     (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹))
@@ -421,39 +261,35 @@ theorem thetaTr_bij (hψ : IsStdChar D ψ (-1)) (hA : JA = T.gramᵀ)
       ∃ Φ ∈ GlobalTheory.WeilM.schA D.host.F κ, GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ Φ = f := by
   have hR : IsTotallyReal D.host.F := inferInstance
   let σ := Fintype.equivFin κ
-  have he : ∀ w w', symplO S T w w' = symV (numCoord co σ w) (numCoord co σ w') := fun w w' => by
+  have he : ∀ w w', symplO S T w w' = symV (GlobalTheory.TransportF.numCoordF co σ w) (GlobalTheory.TransportF.numCoordF co σ w') := fun w w' => by
     rw [symplO_eq_symp hA hB, co.form]
-    simp only [symV, numCoord_apply, comp_equiv_dotProduct_comp_equiv]
+    simp only [symV, GlobalTheory.TransportF.numCoordF_apply, comp_equiv_dotProduct_comp_equiv]
   have hr : ∀ x : Matrix (Fin T.rank) (Fin S.rank) D.host.E, ∃ y z : Fin (Fintype.card κ) → D.host.F,
-      numCoord co σ (incM D.host.F x) = (rat y, rat z) := fun x => by
+      GlobalTheory.TransportF.numCoordF co σ (incM D.host.F x) = (rat y, rat z) := fun x => by
     obtain ⟨y, z, h⟩ := hrat x
-    exact ⟨y ∘ σ.symm, z ∘ σ.symm, by rw [numCoord_apply, h]; rfl⟩
+    exact ⟨y ∘ σ.symm, z ∘ σ.symm, by rw [GlobalTheory.TransportF.numCoordF_apply, h]; rfl⟩
   refine ⟨fun Φ hΦ Φ' hΦ' => ?_, fun Φ hΦ Φ' hΦ' h => ?_, fun f => ⟨fun hf => ?_, ?_⟩⟩
-  · simp only [thetaTr_eq co σ]
-    exact congrArg (· ∘ numCoord co σ) (thV_add hR hψ.1 (_root_.GlobalTheory.SchwartzDecay.decay_of_mem_schA _ _ _ (comp_mem_schA σ hΦ))
-      (_root_.GlobalTheory.SchwartzDecay.decay_of_mem_schA _ _ _ (comp_mem_schA σ hΦ')))
-  · simp only [thetaTr_eq co σ] at h
-    have h2 := thV_injOn hR hψ.1 (comp_mem_schA σ hΦ) (comp_mem_schA σ hΦ')
-      ((numCoord co σ).surjective.injective_comp_right h)
+  · simp only [GlobalTheory.TransportF.thetaTr_eqF co σ]
+    exact congrArg (· ∘ GlobalTheory.TransportF.numCoordF co σ) (GlobalTheory.TransportF.thV_add hR hψ.1 (_root_.GlobalTheory.SchwartzDecay.decay_of_mem_schA _ _ _ (GlobalTheory.TransportF.comp_mem_schA σ hΦ))
+      (_root_.GlobalTheory.SchwartzDecay.decay_of_mem_schA _ _ _ (GlobalTheory.TransportF.comp_mem_schA σ hΦ')))
+  · simp only [GlobalTheory.TransportF.thetaTr_eqF co σ] at h
+    have h2 := GlobalTheory.TransportF.thV_injOn hR hψ.1 (GlobalTheory.TransportF.comp_mem_schA σ hΦ) (GlobalTheory.TransportF.comp_mem_schA σ hΦ')
+      ((GlobalTheory.TransportF.numCoordF co σ).surjective.injective_comp_right h)
     funext x
     simpa [Function.comp_def] using congrFun h2 (x ∘ σ.symm)
   · obtain ⟨Φ, hΦ, h⟩ := exists_thV_eq hψ he hr hf
-    refine ⟨_, comp_mem_schA σ.symm hΦ, ?_⟩
-    rw [thetaTr_eq co σ, ← h]
+    refine ⟨_, GlobalTheory.TransportF.comp_mem_schA σ.symm hΦ, ?_⟩
+    rw [GlobalTheory.TransportF.thetaTr_eqF co σ, ← h]
     congr 2
     funext x
     simp [Function.comp_def]
   · rintro ⟨Φ, hΦ, rfl⟩
-    rw [thetaTr_eq co σ]
-    exact isThetaFunO_thV hψ he hr (comp_mem_schA σ hΦ)
+    rw [GlobalTheory.TransportF.thetaTr_eqF co σ]
+    exact isThetaFunO_thV hψ he hr (GlobalTheory.TransportF.comp_mem_schA σ hΦ)
 
 theorem thetaTr_smul (c : ℂ) (Φ : (κ → AF D.host.F) → ℂ) :
-    GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ (c • Φ) = c • GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ Φ := by
-  funext w
-  simp only [GlobalTheory.WeilSchrodinger.thetaTr, GlobalTheory.WeilM.thetaSum, GlobalTheory.WeilM.Darboux.rho, GlobalTheory.WeilM.schr,
-    Pi.smul_apply, smul_eq_mul]
-  rw [← tsum_mul_left]
-  exact tsum_congr fun η => mul_left_comm _ _ _
+    GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ (c • Φ) = c • GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ Φ :=
+  GlobalTheory.TransportF.thetaTr_smulF co c Φ
 
 end Pair
 
@@ -473,13 +309,17 @@ theorem exists_isTransport : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsSt
       GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JB) →* Module.End ℂ ((κ → AF D.host.F) → ℂ),
                        GlobalTheory.WeilSchrodinger.IsTransport ψ co ω om := by
   intro D ψ hψ S T χS χT _ _ _ _ JA JB ξ hA hB κ _ co hrat ω hω
+  have hS : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsHermND D.sp.cm.sig S.gram :=
+    ⟨fun i j => S.herm.eq (S.frame j) (S.frame i), Formalism.L2.Theta.gram_det_ne S⟩
+  have hξ0 : D.host.xi0 ≠ 0 := GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D
   obtain ⟨hadd, hinj, hon⟩ := thetaTr_bij co hψ hA hB hrat
-  obtain ⟨om, hom⟩ := exists_transport' _ _ _ hadd (thetaTr_smul co) hinj hon (ω.comp (pairHom hA hB))
-    fun p f hf => hω.om_pres _ f hf
+  obtain ⟨om, hom⟩ := GlobalTheory.TransportF.exists_transport' _ _ _ hadd (thetaTr_smul co) hinj hon
+    (ω.comp (GlobalTheory.TransportF.pairHomF hS hξ0 hA hB)) fun p f hf => hω.om_pres _ f hf
   refine ⟨om, ?_⟩
   unfold GlobalTheory.WeilSchrodinger.IsTransport
   intro a b g h hh hg Φ hΦ
-  have e : (ω.comp (pairHom hA hB)) (a, b) = ω (g, h) := congrArg ω (pairHom_eq hA hB a b g h hh hg)
+  have e : (ω.comp (GlobalTheory.TransportF.pairHomF hS hξ0 hA hB)) (a, b) = ω (g, h) :=
+    congrArg ω (GlobalTheory.TransportF.pairHomF_eq hS hξ0 hA hB a b g h hh hg)
   have h2 := hom (a, b) Φ hΦ
   exact ⟨h2.1, h2.2.trans (LinearMap.congr_fun e _)⟩
 

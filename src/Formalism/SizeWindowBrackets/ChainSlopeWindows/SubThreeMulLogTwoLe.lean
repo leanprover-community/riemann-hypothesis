@@ -266,13 +266,4 @@ theorem large_x_eventually : LargeXEv := by
   obtain ⟨x0, hx0⟩ := Filter.eventually_atTop.1 (h1.and h2)
   exact ⟨x0, fun x hx => hx0 x hx⟩
 
-section
-open Formalism Formalism.D5 Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
-
-end
-
 end Formalism.LFunctionChainParameters.LErr
-
-section Check
-open Formalism.LFunctionChainParameters.LErr
-end Check

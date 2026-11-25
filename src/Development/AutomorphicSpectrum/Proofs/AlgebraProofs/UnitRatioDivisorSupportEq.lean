@@ -83,31 +83,4 @@ theorem mem_minimalPrimes_of_rel {R : Type*} [CommRing R] [IsNoetherianRing R] {
   exact (eq_of_le_of_mem_minimalPrimes hP hW hQ.1 (le_sup_left.trans hQ.2)
     (hQ.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self a))) ha hQW).ge
 
-theorem divCycle_eq_of_unit_ratio : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (D : ℕ) (d : K → ℕ) (f g : MRing ι) (θ : Ω), IsArithVar (mCoordIdeal y) (D + 1) → IsMultiHomog f d → IsMultiHomog g d → aeval y g ≠ 0 → θ ≠ 0 → IsIntegral ℤ θ → IsIntegral ℤ θ⁻¹ → aeval y f = θ * aeval y g → divSupp (mCoordIdeal y) f = divSupp (mCoordIdeal y) g ∧ ∀ W ∈ divSupp (mCoordIdeal y) g, multAt ((mCoordIdeal y) ⊔ Ideal.span {f}) W = multAt ((mCoordIdeal y) ⊔ Ideal.span {g}) W := by
-  intro K _ ι _ Ω _ y D d f g θ hV hf hg hgy hθ0 hθ hθi he
-  have hP : (mCoordIdeal y).IsPrime := hV.2.1.1
-  have hfy : aeval y f ≠ 0 := by
-    rw [he]
-    exact mul_ne_zero hθ0 hgy
-  have hfP : f ∉ mCoordIdeal y := fun h => hfy (aeval_eq_zero_of_mem_mCoordIdeal y h)
-  have hgP : g ∉ mCoordIdeal y := fun h => hgy (aeval_eq_zero_of_mem_mCoordIdeal y h)
-  obtain ⟨n, c, hrel⟩ := exists_monic_rel y hf hg hθ he
-  obtain ⟨m, c', hrel'⟩ := exists_monic_rel y hg hf hθi
-    (by rw [he, ← mul_assoc, inv_mul_cancel₀ hθ0, one_mul])
-  refine ⟨?_, ?_⟩
-  · ext W
-    exact ⟨fun h => ⟨mem_minimalPrimes_of_rel hP hgP c' hrel' h.1, h.2⟩,
-      fun h => ⟨mem_minimalPrimes_of_rel hP hfP c hrel h.1, h.2⟩⟩
-  · intro W hW
-    have hWg := hW.1
-    have hWf := mem_minimalPrimes_of_rel hP hfP c hrel hWg
-    have hWp : W.IsPrime := hWg.1.1
-    have hPW : mCoordIdeal y ≤ W := le_sup_left.trans hWg.1.2
-    have h1 : (1 : MRing ι) ∉ W := (Ideal.ne_top_iff_one W).mp hWp.ne_top
-    let pW : PrimeSpectrum (MRing ι) := ⟨W, hWp⟩
-    have hle1 := SectionOrderAtPoint.locLen_le_of_rel hP hfP hgP pW hPW h1 c hrel (locLen_ne_top hWg)
-    have hle2 := SectionOrderAtPoint.locLen_le_of_rel hP hgP hfP pW hPW h1 c' hrel' (locLen_ne_top hWf)
-    have := congrArg ENat.toNat (le_antisymm hle2 hle1)
-    simpa [multAt, hWp, locLen] using this
-
 end GlobalTheory.CompanionTheory.Ar.Giv

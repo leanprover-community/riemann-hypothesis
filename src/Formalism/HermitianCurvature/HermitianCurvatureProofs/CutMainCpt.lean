@@ -346,13 +346,13 @@ theorem _root_.Formalism.FourierDecayAlt.P.TBBx3.head_continuity_at_zero_of_stan
           KB.levW P (P.r + 1) c := by
         rw [hlast, hTT]
         rw [hT, hT'] at hc2
-        simp only [C.nAux, KB.levW, B2.zWeight, if_pos hc2.le]
-        rw [if_pos ⟨by omega, trivial⟩]
+        simp only [C.nAux, KB.levW, B2.zWeight, ite_eq_left hc2.le]
+        rw [ite_eq_left ⟨by omega, trivial⟩]
         simp
       have hlev : 0 ≤ KB.levW P (P.r + 1) c := by
         rw [← hfac, hlast]
         simp only [C.nAux]
-        rw [if_pos ⟨by omega, trivial⟩]
+        rw [ite_eq_left ⟨by omega, trivial⟩]
         have : 0 ≤ Complex.normSq c - TBB.TTp p := by
           unfold TBB.TTp; linarith
         simpa using pow_nonneg this _
@@ -362,7 +362,7 @@ theorem _root_.Formalism.FourierDecayAlt.P.TBBx3.head_continuity_at_zero_of_stan
   · have hfac : C.nAux P.k P.r (D.ptGG (TBB.TTp p) (h ++ [(1, c)])) (fun _ _ => 1) (1 + j) [(1, c)] =
         KB.levW P (j + 1) c := by
       simp only [C.nAux, KB.levW]
-      rw [if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
       have e : 1 + j + 1 - 1 = j + 1 := by omega
       rw [e]
       simp only [one_mul, mul_one, Nat.cast_one]
@@ -370,7 +370,7 @@ theorem _root_.Formalism.FourierDecayAlt.P.TBBx3.head_continuity_at_zero_of_stan
       ring
     have hlev : 0 ≤ KB.levW P (j + 1) c := by
       simp only [KB.levW]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
       exact zpow_nonneg (norm_nonneg _) _
     rw [hfac, Real.mul_self_sqrt (mul_nonneg hA hlev)]
     push_cast

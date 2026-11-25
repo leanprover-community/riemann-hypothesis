@@ -415,7 +415,7 @@ theorem round_le (D : D7) (L : SizeData₂ D) (hdef : DV.NprimeDef D L) (u : D.w
       constructor <;> linarith
     have h4 := mul_le_mul_of_nonneg_left h3 (by linarith : (0 : ℝ) ≤ 2 * SizeData₂.lwP w)
     linarith
-  · push_neg at hs
+  · push Not at hs
     rw [hs]
     simp
 

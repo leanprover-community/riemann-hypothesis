@@ -167,7 +167,11 @@ structure Space : Type 1 where
   univ : ∀ (C : Type) [CommRing C] [Algebra O C] [IsCO O C] (ρ' : NRep F n C), IsLift O ρ' →
     ∃! f : R →ₐ[O] C, ρ.map (f : R →+* C) = ρ'
 
-attribute [instance] Space.cr Space.al Space.co
+attribute [instance] Space.cr Space.co
+
+-- Tried before Mathlib's `Subalgebra.toAlgebra`. When `O` is a subalgebra (such as `c.O`), that instance turns
+-- `Algebra O S.R` into an algebra search over the ambient ring of `O`, which cannot succeed on `S.R`.
+attribute [instance 1100] Space.al
 
 namespace Space
 

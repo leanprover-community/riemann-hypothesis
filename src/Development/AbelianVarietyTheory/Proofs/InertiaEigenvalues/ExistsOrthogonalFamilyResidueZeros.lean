@@ -111,7 +111,7 @@ theorem pw_eq_zpow (k : ℤ) (x : F) : pw p k x = (frobPerm (F := F) p ^ k) x :=
   · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hk
     rw [zpow_natCast, frobPerm_pow_apply]
     simp
-  · push_neg at hk
+  · push Not at hk
     obtain ⟨n, hn⟩ : ∃ n : ℕ, k = -(n : ℤ) := ⟨(-k).toNat, by omega⟩
     subst hn
     rw [zpow_neg, zpow_natCast, ← inv_pow, Equiv.Perm.coe_pow]
@@ -905,9 +905,9 @@ theorem coefDet_pw_natCast (n : ℕ) (x : F) : pw p (n : ℤ) x = x ^ p ^ n := b
 theorem coefDet_pw_pow_p (k : ℤ) (x : F) : pw p k x ^ p = pw p (k + 1) x := by
   unfold pw
   by_cases hk : 0 ≤ k
-  · rw [if_pos hk, if_pos (by omega), ← pow_mul, ← pow_succ]
+  · rw [ite_eq_left hk, ite_eq_left (by omega), ← pow_mul, ← pow_succ]
     congr 2; omega
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     obtain ⟨n, hn⟩ : ∃ n : ℕ, (-k).toNat = n + 1 := ⟨(-k).toNat - 1, by omega⟩
     rw [hn, Function.iterate_succ_apply']
     have e : ((frobeniusEquiv F p).symm (((frobeniusEquiv F p).symm)^[n] x)) ^ p =
@@ -916,11 +916,11 @@ theorem coefDet_pw_pow_p (k : ℤ) (x : F) : pw p k x ^ p = pw p (k + 1) x := by
       rwa [frobenius_def] at this
     rw [e]
     by_cases hk1 : 0 ≤ k + 1
-    · rw [if_pos hk1]
+    · rw [ite_eq_left hk1]
       have hn0 : n = 0 := by omega
       have h0 : (k + 1).toNat = 0 := by omega
       rw [hn0, h0]; simp
-    · rw [if_neg hk1]; congr 1; omega
+    · rw [ite_eq_right hk1]; congr 1; omega
 
 theorem coefDet_pw_pow (k : ℤ) (x : F) (a : ℕ) : pw p k x ^ p ^ a = pw p (k + a) x := by
   induction a with
@@ -1004,7 +1004,7 @@ theorem coefB_det (F : Type) [NormedField F] [IsUltrametricDist F] (p : ℕ) [Fa
   · have e : coefB p ϖ lam π L U L = Matrix.of fun r j : Fin h =>
         ((c r)⁻¹ * (lam j * π j ^ p ^ (r : ℕ))) ^ p ^ (h - (r : ℕ)) := by
       ext r j
-      simp only [coefB, Matrix.of_apply, term, le_add_iff_nonneg_right, zero_le, if_true, sub_self, neg_zero,
+      simp only [coefB, Matrix.of_apply, term, le_add_iff_nonneg_right, zero_le, ite_true, sub_self, neg_zero,
         zpow_zero, mul_one, zero_mul, add_zero, coefDet_pw_natCast, hc]
       rw [div_eq_inv_mul]
     rw [e, coefDet_det_scaled, norm_mul, norm_mul, norm_prod, norm_prod, hDn]
@@ -1032,7 +1032,7 @@ theorem coefB_det (F : Type) [NormedField F] [IsUltrametricDist F] (p : ℕ) [Fa
     have e : coefB p ϖ lam π L U 0 = Matrix.of fun r j : Fin h =>
         ((ϖ ^ L / c r) * (lam j * y j ^ p ^ (r : ℕ))) ^ p ^ (h - (r : ℕ)) := by
       ext r j
-      simp only [coefB, Matrix.of_apply, term, zero_le, if_true, hc, hy, coefDet_pw_pow]
+      simp only [coefB, Matrix.of_apply, term, zero_le, ite_true, hc, hy, coefDet_pw_pow]
       have e1 : ((r : ℕ) : ℤ) + (((0 : ℕ) : ℤ) - L) * h = -((L : ℤ) * h) + ((r : ℕ) : ℤ) := by
         push_cast; ring
       have e2 : ϖ ^ (-(((0 : ℕ) : ℤ) - L)) = ϖ ^ L := by
@@ -1137,7 +1137,7 @@ theorem GlobalTheory.PMonE.rowS_winPt_pow_eq_gsum_coefB (F : Type) [NormedField 
     have ht : ((n + L).toNat : ℤ) = n + L := Int.toNat_of_nonneg (by omega)
     have hle : (n + L).toNat ≤ L + U := by omega
     have hsub : (((n + L).toNat : ℕ) : ℤ) - L = n := by omega
-    rw [if_pos hle, hsub, term, term, winPt, pw_mul, ← pw_win p h r L hr hL n hn.1 (z j)]
+    rw [ite_eq_left hle, hsub, term, term, winPt, pw_mul, ← pw_win p h r L hr hL n hn.1 (z j)]
     rw [show lam j * ϖ ^ (-n) * (pw p (↑↑r + n * ↑h) (π j) * pw p (↑↑r + n * ↑h) (z j ^ (p ^ h) ^ (L - 1))) /
         (lam r * π r ^ p ^ (r : ℕ)) = (lam j * ϖ ^ (-n) * pw p (↑↑r + n * ↑h) (π j) / (lam r * π r ^ p ^ (r : ℕ))) *
         pw p (↑↑r + n * ↑h) (z j ^ (p ^ h) ^ (L - 1)) by ring, mul_pow]
@@ -1490,7 +1490,7 @@ theorem tsh_surjective : ∀ (l : ℕ) [Fact l.Prime] (F : Type) [NormedField F]
   by_cases ht : ‖t‖ ≤ 1
   · obtain ⟨x, hx⟩ := honto t ht
     exact ⟨ι x, by rw [hsh, hx]⟩
-  · push_neg at ht
+  · push Not at ht
     have hinv : ‖t⁻¹‖ ≤ 1 := by
       rw [norm_inv]; exact inv_le_one_of_one_le₀ ht.le
     obtain ⟨x, hx⟩ := honto t⁻¹ hinv
@@ -1548,11 +1548,10 @@ theorem untilt_ext_sum_sub_le : ∀ (l : ℕ) [Fact l.Prime] (F : Type) [NormedF
         _ ≤ 1 := hN
     · exact ⟨0, map_zero ι⟩
   choose x hxe using hx
-  have hxa : ∀ a ∈ s, ι (x a) = c * z a := fun a ha => by rw [hxe, if_pos ha]
+  have hxa : ∀ a ∈ s, ι (x a) = c * z a := fun a ha => by rw [hxe, ite_eq_left ha]
   have hsa : ∀ a ∈ s, sh (x a) = tsh c * tsh (z a) := fun a ha => by
     rw [← hι, hxa a ha, map_mul]
   have hss : sh (∑ a ∈ s, x a) = tsh c * tsh (∑ a ∈ s, z a) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [← hι, map_sum, Finset.sum_congr rfl hxa, ← Finset.mul_sum, map_mul]
   have hbd : ∀ a ∈ s, ‖sh (x a)‖ ≤ ‖c‖ * R := fun a ha => by
     rw [hsa a ha, norm_mul, hn, hn]
@@ -1615,7 +1614,7 @@ theorem map_pw_eq_pw (l : ℕ) [Fact l.Prime] (F : Type) [NormedField F] [CharP 
   | negSucc n =>
     have hk : Int.negSucc n = -((n + 1 : ℕ) : ℤ) := rfl
     simp only [GlobalTheory.PSer.pw, GlobalTheory.PMonE.pw]
-    rw [if_neg (by omega), hk, hneg, hit]
+    rw [ite_eq_right (by omega), hk, hneg, hit]
     congr
 
 end GlobalTheory.PSer

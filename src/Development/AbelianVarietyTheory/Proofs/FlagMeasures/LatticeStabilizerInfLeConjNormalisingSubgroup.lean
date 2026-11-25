@@ -7,51 +7,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsLattice
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliser
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesPairingStabilizerBlockDiagonal
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -181,7 +138,7 @@ theorem _root_.GlobalTheory.HL.StabConj.main : ∀ {F : Type} [Field F] [Valuati
       · exact hsU'.1 i j hji
       · rfl
     · rw [hsb]
-      simp only [_root_.GlobalTheory.HL.StabConj.bd, (hsame i i).2 rfl, if_true]
+      simp only [_root_.GlobalTheory.HL.StabConj.bd, (hsame i i).2 rfl, ite_true]
       exact hsU'.2 i
   have hsb0 : ∀ i j : Fin (r + 1),
       _root_.Formalism.MainNotions.S.Loc.sameBlock S.w.blocks i j = false → sb i j = 0 := by
@@ -204,7 +161,7 @@ theorem _root_.GlobalTheory.HL.StabConj.main : ∀ {F : Type} [Field F] [Valuati
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases hil : β i = β l
     · rw [hsb]
-      simp only [_root_.GlobalTheory.HL.StabConj.bd, (hsame l j).2 (hil.symm.trans hij), if_true]
+      simp only [_root_.GlobalTheory.HL.StabConj.bd, (hsame l j).2 (hil.symm.trans hij), ite_true]
     · rw [hBoff i l hil, zero_mul, zero_mul]
   have hnu : _root_.GlobalTheory.HL.StabConj.Rep S.f (h⁻¹ * n) (B * s) := by
     intro j

@@ -14,27 +14,12 @@ open IsLocalRing UpperTheory.V.Alg UpperTheory.V.CA ReciprocityTheory.CA
 private theorem exists_subalgebra_of_residue_constants (O : Type) [CommRing O] (R : Type) [CommRing R] [Algebra O R]
     [IsLocalRing R] :
     ∃ S : Subalgebra O R, ∀ c, c ∈ S ↔ ∃ a : O, c - algebraMap O R a ∈ maximalIdeal R := by
-  refine ⟨{ carrier := {c | ∃ a : O, c - algebraMap O R a ∈ maximalIdeal R}
-            mul_mem' := ?_, one_mem' := ?_, add_mem' := ?_, zero_mem' := ?_,
-            algebraMap_mem' := ?_ }, fun c => Iff.rfl⟩
-  · rintro x y ⟨a, ha⟩ ⟨b, hb⟩
-    refine ⟨a * b, ?_⟩
-    have e : x * y - algebraMap O R (a * b)
-        = (x - algebraMap O R a) * y + algebraMap O R a * (y - algebraMap O R b) := by
-      rw [map_mul]; ring
-    rw [e]
-    exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ ha) (Ideal.mul_mem_left _ _ hb)
-  · exact ⟨1, by simp⟩
-  · rintro x y ⟨a, ha⟩ ⟨b, hb⟩
-    refine ⟨a + b, ?_⟩
-    have e : x + y - algebraMap O R (a + b)
-        = (x - algebraMap O R a) + (y - algebraMap O R b) := by
-      rw [map_add (f := _)]; ring
-    rw [e]
-    exact Ideal.add_mem _ ha hb
-  · exact ⟨0, by simp⟩
-  · intro a
-    exact ⟨a, by simp⟩
+  refine ⟨(⊥ : Subalgebra O (ResidueField R)).comap (IsScalarTower.toAlgHom O R (ResidueField R)),
+    fun c => ?_⟩
+  simp only [Subalgebra.mem_comap, Algebra.mem_bot, Set.mem_range, IsScalarTower.coe_toAlgHom',
+    ← IsLocalRing.residue_eq_zero_iff, map_sub, sub_eq_zero, eq_comm (a := IsLocalRing.residue R c),
+    IsScalarTower.algebraMap_apply O R (ResidueField R)]
+  rfl
 
 private theorem maximalIdeal_mem_residue_constant_subalgebra (O : Type) [CommRing O] (R : Type) [CommRing R] [Algebra O R]
     [IsLocalRing R] (S : Subalgebra O R)
@@ -52,16 +37,9 @@ private theorem residue_constant_subalgebra_isUnit_iff (O : Type) [CommRing O] (
     exact (IsLocalRing.mem_maximalIdeal _).1 hm this
   · intro hc
     obtain ⟨a, ha⟩ := (hS c).1 c.2
-    have hu : IsUnit (c : R) := by
-      by_contra h
-      exact hc ((IsLocalRing.mem_maximalIdeal _).2 h)
-    have ha' : IsUnit (algebraMap O R a) := by
-      by_contra h
-      have h1 : algebraMap O R a ∈ maximalIdeal R := (IsLocalRing.mem_maximalIdeal _).2 h
-      apply hc
-      have e : (c : R) = (c - algebraMap O R a) + algebraMap O R a := by ring
-      rw [e]
-      exact Ideal.add_mem _ ha h1
+    have hu : IsUnit (c : R) := IsLocalRing.notMem_maximalIdeal.1 hc
+    have ha' : IsUnit (algebraMap O R a) := IsLocalRing.notMem_maximalIdeal.1 fun h1 =>
+      hc (sub_add_cancel (c : R) (algebraMap O R a) ▸ Ideal.add_mem _ ha h1)
     have hau : IsUnit a := IsUnit.of_map (algebraMap O R) a ha'
     obtain ⟨u, hu'⟩ := hu
     obtain ⟨v, hv⟩ := hau

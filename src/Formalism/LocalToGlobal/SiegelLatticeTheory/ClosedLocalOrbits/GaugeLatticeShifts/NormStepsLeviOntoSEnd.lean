@@ -909,11 +909,11 @@ theorem near_inv {s : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (hs : s ∈ IntAf X.B.I.F
     intro i
     rw [Polynomial.coeff_sub, Polynomial.coeff_scaleRoots, Polynomial.coeff_X_pow]
     rcases lt_trichotomy i p.natDegree with hi | hi | hi
-    · rw [if_neg hi.ne, sub_zero]
+    · rw [ite_eq_right hi.ne, sub_zero]
       exact Dvd.dvd.mul_left (dvd_pow_self _ (Nat.sub_ne_zero_of_lt hi)) _
-    · rw [hi, if_pos rfl, Nat.sub_self, pow_zero, mul_one, hp.coeff_natDegree, sub_self]
+    · rw [hi, ite_eq_left rfl, Nat.sub_self, pow_zero, mul_one, hp.coeff_natDegree, sub_self]
       exact dvd_zero _
-    · rw [if_neg hi.ne', Polynomial.coeff_eq_zero_of_natDegree_lt hi, zero_mul, sub_zero]
+    · rw [ite_eq_right hi.ne', Polynomial.coeff_eq_zero_of_natDegree_lt hi, zero_mul, sub_zero]
       exact dvd_zero _
   obtain ⟨q, hq⟩ := hdvd
   have hsr : p.scaleRoots ((X.B.g : ℕ) : ↥(Formalism.UG.intAd X.B.I.F)) =

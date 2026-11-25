@@ -134,10 +134,10 @@ theorem exists_weil_of_oriented : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) 
     rw [hSg]
     exact key
 
-  obtain ⟨φ', hφ'c, hφ'Q, hφ'm, hφ'S, hφ'd⟩ := GlobalTheory.T.exists_unitary_equiv_conj_of_gram_transpose_eq_neg D (sgn ε S) Th (Equiv.refl _) hT'
-  obtain ⟨φ, hφc, hφQ, hφm, hφS, hφd⟩ := GlobalTheory.T.exists_unitary_equiv_inv_transpose_of_gram_inv D X Sh e.symm hS'
+  obtain ⟨φ', hφ'c, hφ'Q, hφ'm, hφ'S, hφ'd⟩ := GlobalTheory.GrpConj.exists_conj_equiv D (sgn ε S) Th (Equiv.refl _) hT'
+  obtain ⟨φ, hφc, hφQ, hφm, hφS, hφd⟩ := GlobalTheory.InvTransposeIso.grp_contra D X Sh e.symm hS'
   obtain ⟨L, hL1, -, hLc, hLc', hLQ, hLi, hLf⟩ := GlobalTheory.T.exists_transposeGram_coordinate_homeomorph_symplectic D (sgn ε S) X Sh Th (Equiv.refl _) e.symm
-  have hsy := GlobalTheory.T.symplectic_hom_transpose_gram_darboux D (sgn ε S) X Sh Th (Equiv.refl _) e.symm hT' hS'
+  have hsy := GlobalTheory.DarbouxSymp.symplO_darboux D (sgn ε S) X Sh Th (Equiv.refl _) e.symm hT' hS'
   have hLx : ∀ u : Matrix (Fin S.rank) (Fin d) (AE D), L u = (HMul.hMul (uᵀ.submatrix e id) ((sgn ε S).gram.map (incA D)) :
       Matrix (Fin X.rank) (Fin S.rank) (AE D)) := fun u => (hL1 u).trans rfl
   have hcL : ∀ u, cS u = L u := fun u => by
@@ -160,14 +160,14 @@ theorem exists_weil_of_oriented : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) 
     have hu := GlobalTheory.PairDarboux.unit_aux (cA D) _ _ _ _ hPP hTinc (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.mt_gram Th h)
     exact (hLx _).trans (actE_eq_of_conj_related e _ x _ _ _ _ _ _ (hLx x) hg hh hu)
 
-  obtain ⟨ω', hω'', hrel⟩ := GlobalTheory.T.isWeilDatum_comp_group_swapping_symplectic_equiv D Bs.ψ (sgn ε S) X Sh Th hdX.symm rfl L φ.toMonoidHom φ'.toMonoidHom hLc hLc' hLQ
+  obtain ⟨ω', hω'', hrel⟩ := GlobalTheory.SwapWeil.isWeilDatumO_swap D Bs.ψ (sgn ε S) X Sh Th hdX.symm rfl L φ.toMonoidHom φ'.toMonoidHom hLc hLc' hLQ
     (fun x y => by rw [hL1, hL1]; exact hsy x y) hLi hLf hφc hφ'c hφQ hφ'Q hact hφS hφ'S hφd hφ'd χ χ' (ω.toSgn ε) hω'
   have hA : Vs.J = Th.gramᵀ := hTt.symm
   have hB : (-1 : AF D.host.F ⊗[D.host.F] D.host.E) • GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM D.host.F Ws.J =
       GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM D.host.F (D.host.xi0 • Sh.gram⁻¹) := by
     rw [hSg]
     exact neg_incM_eq Ws.J hJd hξ
-  obtain ⟨om, hom⟩ := GlobalTheory.T.exists_weilDatum_transport_adelicSchwartz_thetaTransform D Bs.ψ hω'.std Sh Th χ' χ hω''.hecS hω''.hecT hω''.resS hω''.resT Vs.J Ws.J (-1) hA hB
+  obtain ⟨om, hom⟩ := GlobalTheory.ThetaTransform.exists_isTransport D Bs.ψ hω'.std Sh Th χ' χ hω''.hecS hω''.hecT hω''.resS hω''.resT Vs.J Ws.J (-1) hA hB
     (Fin S.rank × Fin d) M.co hM.rat ω' hω''
   have h2 := GlobalTheory.T.transportedWeil_preserves_schwartz_heisenberg_equivariant D Bs.ψ hω'.std Sh Th χ' χ hω''.hecS hω''.hecT hω''.resS hω''.resT Vs.J Ws.J (-1) hA hB
     (Fin S.rank × Fin d) M.co hM.rat ω' hω'' om hom

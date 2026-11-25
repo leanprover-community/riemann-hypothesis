@@ -16,23 +16,13 @@ open ValuativeRel
 
 theorem fl_inj {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E]
     [Algebra F E] [TopologicalSpace E] (L : Loc.LocE F E) : Function.Injective (algebraMap F E) := by
-  haveI : Nontrivial E := by
-    by_contra hn
-    rw [not_nontrivial_iff_subsingleton] at hn
-    have h1 := L.rank
-    have h2 := Module.finrank_zero_of_subsingleton (R := F) (M := E)
-    omega
+  haveI : Nontrivial E := Module.nontrivial_of_finrank_eq_succ (R := F) L.rank
   exact (algebraMap F E).injective
 
 theorem fl_norm_ne {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E]
     [Algebra F E] [TopologicalSpace E] (L : Loc.LocE F E) (hE : ∀ x : E, x ≠ 0 → IsUnit x)
     {x : E} (hx0 : x ≠ 0) (n : 𝒪[F]) (hn : algebraMap F E n = x * L.cj x) : n ≠ 0 := by
-  haveI : Nontrivial E := by
-    by_contra hn
-    rw [not_nontrivial_iff_subsingleton] at hn
-    have h1 := L.rank
-    have h2 := Module.finrank_zero_of_subsingleton (R := F) (M := E)
-    omega
+  haveI : Nontrivial E := Module.nontrivial_of_finrank_eq_succ (R := F) L.rank
   intro hn0
   rw [hn0] at hn
   have hcj : L.cj x ≠ 0 := fun h => hx0 ((map_eq_zero_iff L.cj L.cj.injective).mp h)

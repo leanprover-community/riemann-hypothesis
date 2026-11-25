@@ -15,51 +15,12 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Dou
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatThetaMapsConvergeThetaFunctionsStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastSeeSawThetaIdentityStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SeeSawFiniteIntegralsDoubleStepValueStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SeeSawWeilBiActionCommutesStatement
@@ -568,11 +529,11 @@ open Classical in
 def idemF (P : HeightOneSpectrum (𝓞 F) → Prop) : Af F :=
   ⟨fun v => if P v then 1 else 0, Filter.Eventually.of_forall fun v => by
     by_cases h : P v
-    · simp only [if_pos h]; exact (v.adicCompletionIntegers F).one_mem
-    · simp only [if_neg h]; exact (v.adicCompletionIntegers F).zero_mem⟩
+    · simp only [ite_eq_left h]; exact (v.adicCompletionIntegers F).one_mem
+    · simp only [ite_eq_right h]; exact (v.adicCompletionIntegers F).zero_mem⟩
 
-theorem idemF_pos {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : P v) : evalV F v (idemF P) = 1 := if_pos h
-theorem idemF_neg {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : ¬ P v) : evalV F v (idemF P) = 0 := if_neg h
+theorem idemF_pos {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : P v) : evalV F v (idemF P) = 1 := ite_eq_left h
+theorem idemF_neg {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : ¬ P v) : evalV F v (idemF P) = 0 := ite_eq_right h
 
 def idem (P : HeightOneSpectrum (𝓞 F) → Prop) : AF F := pairA F 0 (idemF P)
 

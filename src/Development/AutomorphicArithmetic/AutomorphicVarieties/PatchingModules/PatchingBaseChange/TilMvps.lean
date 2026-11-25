@@ -164,13 +164,13 @@ theorem UpperTheory.V.Pa.BC.til_mvps :
   · refine MvPowerSeries.ext fun n => til_ext O O' R fun k => ?_
     rw [AlgEquiv.ofBijective_apply, coeff_power_series_restriction, MvPowerSeries.coeff_C, coeff_alt]
     by_cases hn : n = 0
-    · rw [if_pos hn, coeff_alt]
+    · rw [ite_eq_left hn, coeff_alt]
       split_ifs
       · rw [Algebra.TensorProduct.one_def, cf_tmul, hn, MvPowerSeries.coeff_zero_one]; rfl
       · exact map_zero _
-    · rw [if_neg hn, coeff_zero']
+    · rw [ite_eq_right hn, coeff_zero']
       split_ifs
-      · rw [Algebra.TensorProduct.one_def, cf_tmul, MvPowerSeries.coeff_one, if_neg hn, TensorProduct.tmul_zero]
+      · rw [Algebra.TensorProduct.one_def, cf_tmul, MvPowerSeries.coeff_one, ite_eq_right hn, TensorProduct.tmul_zero]
       · exact map_zero _
   · intro a
     refine MvPowerSeries.ext fun n => til_ext O O' R fun k => ?_

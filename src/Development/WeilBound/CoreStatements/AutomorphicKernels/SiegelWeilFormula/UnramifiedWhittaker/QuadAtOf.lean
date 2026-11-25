@@ -69,11 +69,11 @@ theorem quadAt_of (h1 : Q1) (h2 : Q2) (h3 : Q3) (h4 : Q4) (h5 : Q5) : QuadAt := 
   by_cases hf : IsField (Fv F v ⊗[F] E)
   · left
     refine ⟨?_, e5.1 hf⟩
-    have : (ε : ℂ) = -1 := by rw [hε, eSp, if_pos hf]
+    have : (ε : ℂ) = -1 := by rw [hε, eSp, ite_eq_left hf]
     exact_mod_cast this
   · right
     refine ⟨?_, fun h => hf (e5.2 h)⟩
-    have : (ε : ℂ) = 1 := by rw [hε, eSp, if_neg hf]
+    have : (ε : ℂ) = 1 := by rw [hε, eSp, ite_eq_right hf]
     exact_mod_cast this
 
 end PositivityTheory.SiegelWeilFormula.Gunr

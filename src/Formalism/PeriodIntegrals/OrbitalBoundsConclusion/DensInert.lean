@@ -87,13 +87,13 @@ theorem an_fiber [Fintype L] {n m q : ℕ} {M : Matrix (Fin n) (Fin n) L}
         | zero => simpa [Matrix.diagonal_apply] using hxx
         | succ j =>
           simp only [Fin.cons_zero, Fin.cons_succ, Matrix.diagonal_apply,
-            (Fin.succ_ne_zero j).symm, if_false]
+            (Fin.succ_ne_zero j).symm, ite_false]
           exact hxU j
       | succ i =>
         induction j using Fin.cases with
         | zero =>
           simp only [Fin.cons_zero, Fin.cons_succ, Matrix.diagonal_apply, Fin.succ_ne_zero,
-            if_false]
+            ite_false]
           exact hUx i
         | succ j =>
           simp only [Fin.cons_succ, Matrix.diagonal_apply, Fin.succ_inj]
@@ -104,7 +104,7 @@ theorem an_fiber [Fintype L] {n m q : ℕ} {M : Matrix (Fin n) (Fin n) L}
     rw [Finset.mem_coe, Finset.mem_filter]
     refine ⟨Finset.mem_univ _, fun i => ⟨hXW _, ?_⟩, hXi.comp _ (Fin.succ_injective _), ?_⟩
     · change hf q M (X i.succ) x = 0
-      rw [← hX0, hXg, Matrix.diagonal_apply, if_neg (Fin.succ_ne_zero i)]
+      rw [← hX0, hXg, Matrix.diagonal_apply, ite_eq_right (Fin.succ_ne_zero i)]
     · intro i j
       rw [hXg, Matrix.diagonal_apply, Matrix.diagonal_apply]
       simp only [Fin.succ_inj, Fin.cons_succ]
@@ -144,7 +144,7 @@ theorem anisoPeel_of_valCount (hv : ValCount) : AnisoPeel := by
         x ∈ W ∧ hf (Fintype.card K) M x x = b)).card : ℤ) =
         valN (Fintype.card K) (Module.finrank L W) := by
       have h0 := hv K L h2 n M W hM hW b hbf
-      rw [if_neg hb0] at h0
+      rw [ite_eq_right hb0] at h0
       rw [← h0, ← Set.ncard_coe_finset]
       congr 2
       ext v
@@ -252,7 +252,7 @@ theorem top_nondeg_top {L : Type} [Field L] {n : ℕ} (q : ℕ) (hq : 0 < q)
     funext l0
     have h := hw (Pi.single l0 1) Submodule.mem_top
     simp only [hf, Pi.single_apply, ite_pow, one_pow, zero_pow hq.ne', mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     simpa [Matrix.vecMul, dotProduct] using h
   calc w = Matrix.vecMul w (M * M⁻¹) := by rw [Matrix.mul_nonsing_inv _ hdet, Matrix.vecMul_one]
     _ = Matrix.vecMul (Matrix.vecMul w M) M⁻¹ := by rw [Matrix.vecMul_vecMul]
@@ -853,7 +853,7 @@ theorem isoPeel_of_valCount (hv : ValCount) : IsoPeel := by
     ring
 
   have hval := hv K L hKL n M W hM hW 0 (by rw [zero_pow hq0])
-  simp only [if_true] at hval
+  simp only [ite_true] at hval
   have hT : ({v : Fin n → L | v ∈ W ∧ hf q M v v = 0}.ncard) =
       (Finset.univ.filter fun v => v ∈ W ∧ hf q M v v = 0).card := by
     rw [← Set.ncard_coe_finset]

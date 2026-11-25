@@ -3,45 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TendstoUnitaryAdelicPointsAgreeOnGrowingFinset
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenPtSubset
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLagrModelOfIsLin
@@ -120,8 +82,8 @@ theorem hyb_empty (y g : Af F) : hyb ∅ y g = g := by simp [hyb]
 
 theorem tendsto_hyb (y g : Af F) : Tendsto (fun S => hyb S y g) atTop (𝓝 y) :=
   GlobalTheory.AdelicLimit.tendsto_finAdele _ y g
-    (fun T v hv => by have h := evalV_hyb T y g v; rw [if_pos hv] at h; exact h)
-    (fun T v hv => by have h := evalV_hyb T y g v; rw [if_neg hv] at h; exact h)
+    (fun T v hv => by have h := evalV_hyb T y g v; rw [ite_eq_left hv] at h; exact h)
+    (fun T v hv => by have h := evalV_hyb T y g v; rw [ite_eq_right hv] at h; exact h)
 
 end GlobalTheory.PureGlue
 
@@ -159,14 +121,14 @@ theorem eq_pure_of_slices : ∀ {F : Type} [Field F] [NumberField F] {κ : Type}
   have hζ1 : ∀ v, v ∉ T0 → vac v (ζ v) = 1 := by
     intro v hv
     have h : vac v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1 := not_not.1 hv
-    simp only [ζ, if_neg hv]
+    simp only [ζ, ite_eq_right hv]
     rw [h, Set.indicator_of_mem (show (0 : κ → Fv F v) ∈ {x | ∀ i, x i ∈ v.adicCompletionIntegers F} from
       fun i => zero_mem _)]
     rfl
   have hζ : ∀ v, vac v (ζ v) ≠ 0 := by
     intro v
     by_cases hv : v ∈ T0
-    · simp only [ζ, if_pos hv]
+    · simp only [ζ, ite_eq_left hv]
       exact (hex v).choose_spec
     · rw [hζ1 v hv]
       exact one_ne_zero
@@ -200,7 +162,7 @@ theorem eq_pure_of_slices : ∀ {F : Type} [Field F] [NumberField F] {κ : Type}
         simp only [y, map_sub, GlobalTheory.LatVac.evFin_liftV]
         rw [hev]
         change evalV F v (hyb S (x k).2 (ξ0 k)) - ζ v k = 0
-        rw [evalV_hyb, if_neg hv, hξ0, sub_self]
+        rw [evalV_hyb, ite_eq_right hv, hξ0, sub_self]
       obtain ⟨a, ha⟩ := hsl v y hy
       have e1 : P S = y + fun k => GlobalTheory.LatVac.liftV v (ζ v k) := by
         funext k

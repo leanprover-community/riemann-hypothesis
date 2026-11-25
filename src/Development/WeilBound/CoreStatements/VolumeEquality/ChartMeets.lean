@@ -191,7 +191,7 @@ theorem trdeg_of_arithVar {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintyp
   obtain ⟨_, ⟨hP, _, _⟩, hhor, hdim⟩ := h
   haveI := hP
   have hinj : Function.Injective (algebraMap ℤ (MRing J ⧸ P)) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have hmem : (MvPolynomial.C a : MRing J) ∈ P := by
       rw [← Ideal.Quotient.eq_zero_iff_mem]
@@ -285,7 +285,7 @@ theorem chartMeets : ChartMeets := by
     refine (h1.mul h2).congr_fderiv (ContinuousLinearMap.ext fun v => ?_)
     simp [L]
   have hinjL : Function.Injective L := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨v, d⟩ h0
     have hcomp : ∀ p : (k : K) × J k, D v p + χ.γ 0 p * d p.1 = 0 := by
       intro p

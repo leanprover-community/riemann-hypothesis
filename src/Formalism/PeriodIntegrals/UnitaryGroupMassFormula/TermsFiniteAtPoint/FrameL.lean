@@ -105,7 +105,7 @@ theorem gram (U U' : Matrix (Fin r) (Fin r) E) (hUU : ∀ a b, ∑ c, star (U c 
   simp only [map_add (f := _), LinearMap.add_apply]
   simp only [pairL]
   simp only [pairR]
-  simp only [hwe, hwf, e_w e f hee hef, f_w e f hff hef, hee, hff, hef, hfe', mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hwe, hwf, e_w e f hee hef, f_w e f hff hef, hee, hff, hef, hfe', mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   linear_combination k1 + k2
 
 include hee hff hef in

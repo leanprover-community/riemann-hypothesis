@@ -8,8 +8,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrablePh
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaContOn
 import Mathlib.Tactic.TypeStar
 
-set_option backward.isDefEq.respectTransparency false
-
 @[expose] public section
 
 noncomputable section

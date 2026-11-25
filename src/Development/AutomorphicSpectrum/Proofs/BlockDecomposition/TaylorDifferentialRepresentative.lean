@@ -6,7 +6,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
 open GlobalTheory.CatH (face toLast)
 
@@ -80,21 +79,21 @@ theorem alt_sum_form {j : ℕ} (I : Fin j → Fin d) (x : Φ.A.obj E.D) (s : Com
   set Y := (Φ.A.map (σ (s.obj (Fin.last (j + 1))))).hom x with hY
   have hT0 : T 0 = P 0 := by
     refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [Nat.not_lt_zero, if_false]
+    simp only [Nat.not_lt_zero, ite_false]
     refine ga_congr E σ _ s _ _ ?_ ?_ <;> simp
   have hTl : T (Fin.last (j + 1)) = P j := by
     refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [k.2, if_true]
+    simp only [k.2, ite_true]
     refine ga_congr E σ _ s _ _ ?_ ?_ <;> simp
   have hTi : ∀ i : Fin j, T i.succ.castSucc = P (i + 1) + P i := by
     intro i
     have hPa : P (i + 1) = u i * ∏ k ∈ Finset.univ.erase i, (if (k : ℕ) < i + 1 then u k else v k) := by
       have := Finset.mul_prod_erase Finset.univ (fun k : Fin j => if (k : ℕ) < i + 1 then u k else v k) (Finset.mem_univ i)
-      simp only [Nat.lt_add_one, if_true] at this
+      simp only [Nat.lt_add_one, ite_true] at this
       exact this.symm
     have hPb : P i = v i * ∏ k ∈ Finset.univ.erase i, (if (k : ℕ) < i then u k else v k) := by
       have := Finset.mul_prod_erase Finset.univ (fun k : Fin j => if (k : ℕ) < i then u k else v k) (Finset.mem_univ i)
-      simp only [lt_irrefl, if_false] at this
+      simp only [lt_irrefl, ite_false] at this
       exact this.symm
     have hTa : T i.succ.castSucc = (u i + v i) * ∏ k ∈ Finset.univ.erase i, (if (k : ℕ) < i then u k else v k) := by
       have := Finset.mul_prod_erase Finset.univ (fun k : Fin j => ga E σ (I k) s (i.succ.castSucc.succAbove k.castSucc)
@@ -131,7 +130,7 @@ theorem alt_sum_form {j : ℕ} (I : Fin j → Fin d) (x : Φ.A.obj E.D) (s : Com
       _ = Y := by rw [show σ _ ≫ toLast i s = σ (s.obj (Fin.last (j + 1))) from sec_last E σ s _ hi']
   have hPj : headP E σ I s = P j := by
     refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [k.2, if_true]
+    simp only [k.2, ite_true]
     rfl
   have hWl : (Φ.A.map (σ _ ≫ toLast (Fin.last (j + 1)) s)).hom x = W (Fin.last (j + 1)) := (map_map _ _ _).symm
   rw [hWl, hPj]

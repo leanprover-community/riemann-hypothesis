@@ -4,49 +4,7 @@ public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsBasicOpenC
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsNonzeroLocusEqAffineOpenLocallyFactorial
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.QuasiAffine
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.DivSheaf
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.Monomial
 import ReciprocityTheory.CommutativeAlgebra.MaximalIdealSquares.RingKrullDimQuotientSpanSingletonAddOne
@@ -76,14 +34,14 @@ theorem fromSpecStalk_mem_zeroLocus_iff {Y : Scheme.{0}} (U : Y.affineOpens) (x 
   exact (not_congr h2).trans not_not
 
 theorem effCartier_of_mem_comps {Y : Scheme.{0}} [IsNoetherian Y] {Z : Y.IdealSheafData}
-    (hZ : FinalTheorems.Snc Z) (C : Closeds Y) (hC : (C : Set Y) ∈ comps (Z.support : Set Y)) :
+    (hZ : FinalTheorems.Snc Z) (C : Closeds Y) (hC : (C : Set Y) ∈ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (Z.support : Set Y)) :
     FinalTheorems.EffCartier (Scheme.IdealSheafData.vanishingIdeal C) := by
   refine effCartier_of_stalkId _ fun x => ?_
   obtain ⟨hreg, U, hx, n, f, J, hrsp, hZU⟩ := hZ x
   obtain ⟨O, hxO, -, hO⟩ := exists_open_comps x U hx f J hrsp hZU
   have hO' := hO _ hC
   have hq : ∀ q : PrimeSpectrum (Y.presheaf.stalk x), Y.fromSpecStalk x q ∈ (C : Set Y) ↔
-      ∃ i ∈ J, IsBranch (Z.support : Set Y) (f i) x C ∧
+      ∃ i ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set Y) (f i) x C ∧
         Y.presheaf.germ U.1 x hx (f i) ∈ q.asIdeal := by
     intro q
     have hqO : Y.fromSpecStalk x q ∈ (O : Set Y) := by
@@ -95,7 +53,7 @@ theorem effCartier_of_mem_comps {Y : Scheme.{0}} [IsNoetherian Y] {Z : Y.IdealSh
       fromSpecStalk_mem_zeroLocus_iff U x hx] at h
     exact h
   have hCC : C.compl.compl = C := SetLike.coe_injective (compl_compl _)
-  by_cases hb : ∃ i ∈ J, IsBranch (Z.support : Set Y) (f i) x C
+  by_cases hb : ∃ i ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set Y) (f i) x C
   · obtain ⟨i, hi, hbi⟩ := hb
     have hp : Prime (Y.presheaf.germ U.1 x hx (f i)) :=
       prime_of_regular_params (fun i => Y.presheaf.germ U.1 x hx (f i)) hrsp.1 hrsp.2 i
@@ -129,8 +87,8 @@ theorem exists_compList_effCartier (k : Type) [Field k] (Y : Scheme.{0}) (p : Y 
   haveI : IsLocallyNoetherian Y := LocallyOfFiniteType.isLocallyNoetherian p
   haveI : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace p
   haveI : IsNoetherian Y := {}
-  haveI : Finite (comps (B : Set Y)) := (comps_finite _).to_subtype
-  obtain ⟨m, ⟨e⟩⟩ := Finite.exists_equiv_fin (comps (B : Set Y))
+  haveI : Finite (ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (B : Set Y)) := (comps_finite _).to_subtype
+  obtain ⟨m, ⟨e⟩⟩ := Finite.exists_equiv_fin (ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (B : Set Y))
   refine ⟨m, fun i => ⟨(e.symm i).1, isClosed_of_mem_comps B.isClosed (e.symm i).2⟩,
     ⟨fun i => (e.symm i).2.1.1, ?_, fun i j hij => ?_⟩, fun i => ?_⟩
   · conv_rhs => rw [← sUnion_comps (B : Set Y), Set.sUnion_eq_iUnion]

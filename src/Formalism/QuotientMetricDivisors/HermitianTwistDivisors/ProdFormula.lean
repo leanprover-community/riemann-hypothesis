@@ -21,7 +21,7 @@ theorem log_abs_norm_eq_two_sum (K : Type) [Field K] [NumberField K] [_root_.Num
       2 * ∑ v : InfinitePlace K, Real.log ‖v.embedding a‖ := by
   have h := NumberField.InfinitePlace.prod_eq_abs_norm a
   have hm : ∀ w : InfinitePlace K, w.mult = 2 := fun w => by
-    rw [InfinitePlace.mult, if_neg (InfinitePlace.not_isReal_iff_isComplex.mpr
+    rw [InfinitePlace.mult, ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.mpr
       (IsTotallyComplex.isComplex w))]
   have hpos : ∀ w : InfinitePlace K, w a ≠ 0 := fun w => by
     rw [← InfinitePlace.norm_embedding_eq]

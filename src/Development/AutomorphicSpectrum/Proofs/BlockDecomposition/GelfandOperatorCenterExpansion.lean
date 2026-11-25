@@ -20,8 +20,6 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.WaveMult
 
-theorem _root_.GlobalTheory.T.gelfand_value_negation : ∀ (n : ℕ) (cc : Fin n → ℂ) (m : ℕ), (-1 : ℂ) ^ m * GlobalTheory.Dec.gelfVal (fun a => - cc a) m = phiSeq (n : ℂ) (GlobalTheory.Dec.gelfVal cc) m := by
-  first | exact @GlobalTheory.CompanionTheory.WaveMult.ValPhi.gelfVal_neg_eq_phiSeq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GelfandValueNegationStatement =====
@@ -388,7 +386,7 @@ theorem transposed_invariants : ∀ (n m : ℕ), ∃ (N : ℕ) (c : Fin N → �
   intro n m
   obtain ⟨N, c, w, h⟩ := phiSeq_words n m
   refine ⟨N, c, w, fun cc => ?_, fun hR s V _ _ f hf x hx => ?_⟩
-  · rw [GlobalTheory.T.gelfand_value_negation, h (A := ℂ)]
+  · rw [GlobalTheory.CompanionTheory.WaveMult.ValPhi.gelfVal_neg_eq_phiSeq, h (A := ℂ)]
     simp
   · let F : Sm n V := ⟨(GLs n).indicator f, indicator_mem hf⟩
     have hF : ∀ g ∈ GLs n, f g = F.1 g := fun g hg => by simp [F, hg]

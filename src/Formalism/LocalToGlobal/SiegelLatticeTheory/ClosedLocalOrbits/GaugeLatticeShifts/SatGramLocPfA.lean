@@ -72,8 +72,7 @@ theorem card_quot_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | ((p : ℕ) : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
     (v : HeightOneSpectrum (𝓞 K)) (hv : ((p : ℕ) : 𝓞 K) ∈ v.asIdeal) :
     Nat.card (𝓞 K ⧸ v.asIdeal) = p := by
-  intros
-  apply _root_.Formalism.IndefR.NX.card_residue_of_split <;> assumption
+  apply Formalism.IndefR.NX.card_residue_of_split <;> assumption
 
 theorem intValuation_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | ((p : ℕ) : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)

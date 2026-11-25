@@ -207,7 +207,7 @@ theorem Tset_spec {r s : ℕ} {L : Subgroup (GL (Fin (r + s)) (Af E))} (hL : IsO
       (k : Kinf E (r + s)) (l : GL (Fin (r + s)) (Af E)), t ∈ Tset r s L ∧ l ∈ L ∧
       g = unip x * lev (Ad E) r s m * finGL E (r + s) t * infGL E (r + s) (Unitary.toUnits k) * finGL E (r + s) l := by
   by_cases hr : r = 0 ∨ s = 0
-  · have hT : Tset r s L = {1} := by rw [Tset, if_pos hr]
+  · have hT : Tset r s L = {1} := by rw [Tset, ite_eq_left hr]
     rcases hr with rfl | rfl
     · refine ⟨0, (1, k_castGL (Nat.zero_add s) g), 1, 1, 1, by rw [hT]; exact Finset.mem_singleton_self _, L.one_mem, ?_⟩
       rw [InducedTensorMap.unip_zero, k_lev_0s, k_castGL_castGL, map_one, map_one, map_one]
@@ -216,7 +216,7 @@ theorem Tset_spec {r s : ℕ} {L : Subgroup (GL (Fin (r + s)) (Af E))} (hL : IsO
       rw [InducedTensorMap.unip_zero, levi_embed_left_zero, map_one, map_one, map_one]
       simp
   · have hT : Tset r s L = Classical.choose (IwaAd.iwasawa_finite_cosets E r s L hL) := by
-      rw [Tset, if_neg hr, dite_eq_left hL]
+      rw [Tset, ite_eq_right hr, dite_eq_left hL]
     rw [hT]
     exact Classical.choose_spec (IwaAd.iwasawa_finite_cosets E r s L hL) g
 
@@ -263,7 +263,7 @@ theorem Kf_top : Kf N K N ≤ K := by
 theorem Kf_left {r s : ℕ} (hN : r + s ≤ N) {t : GL (Fin (r + s)) (Af E)} (ht : t ∈ Tset r s (Kf N K (r + s)))
     {u : GL (Fin r) (Af E)} (hu : u ∈ Kf N K r) : t⁻¹ * lev (Af E) r s (u, 1) * t ∈ Kf N K (r + s) := by
   rcases Nat.eq_zero_or_pos s with rfl | hs
-  · have hT : Tset r 0 (Kf N K (r + 0)) = {1} := by rw [Tset, if_pos (Or.inr rfl)]
+  · have hT : Tset r 0 (Kf N K (r + 0)) = {1} := by rw [Tset, ite_eq_left (Or.inr rfl)]
     rw [hT, Finset.mem_singleton] at ht
     subst ht
     rw [inv_one, one_mul, mul_one, levi_embed_left_zero]
@@ -280,7 +280,7 @@ theorem Kf_left {r s : ℕ} (hN : r + s ≤ N) {t : GL (Fin (r + s)) (Af E)} (ht
 theorem Kf_right {r s : ℕ} (hN : r + s ≤ N) {t : GL (Fin (r + s)) (Af E)} (ht : t ∈ Tset r s (Kf N K (r + s)))
     {u : GL (Fin s) (Af E)} (hu : u ∈ Kf N K s) : t⁻¹ * lev (Af E) r s (1, u) * t ∈ Kf N K (r + s) := by
   rcases Nat.eq_zero_or_pos r with rfl | hr
-  · have hT : Tset 0 s (Kf N K (0 + s)) = {1} := by rw [Tset, if_pos (Or.inl rfl)]
+  · have hT : Tset 0 s (Kf N K (0 + s)) = {1} := by rw [Tset, ite_eq_left (Or.inl rfl)]
     rw [hT, Finset.mem_singleton] at ht
     subst ht
     rw [inv_one, one_mul, mul_one, k_lev_0s]

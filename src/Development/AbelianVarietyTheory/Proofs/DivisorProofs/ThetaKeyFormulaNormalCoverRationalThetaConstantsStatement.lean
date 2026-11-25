@@ -416,10 +416,6 @@ theorem norm_toF_unit {V : Type} [CommRing V] [IsDomain V] {I : Ideal V} {C : Ty
   have h4 : ‖toF V C u‖ * ‖toF V C ↑u⁻¹‖ = 1 := by rw [← norm_mul, h3, norm_one]
   nlinarith [norm_nonneg (toF V C u), norm_nonneg (toF V C ↑u⁻¹)]
 
-theorem jc_smul : ∀ {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
-    {N : NumD F} (ν : NumOf D F N) {k : ℕ} (s : Fam D F k) (a : F) (gm : GtPt D (TE R F)) (α : N.X),
-    jc ν (a • s) gm α = TrivSqZeroExt.inl a * jc ν s gm α := GlobalTheory.T.torusExtDualNumberTermValue_smul
-
 end GlobalTheory.UMin.KeySmall
 
 namespace GlobalTheory.UMin.KeySmall
@@ -942,7 +938,7 @@ theorem keyVals : ∀ κ : Rule, Homog (fun _ => 1) κ → Funct κ →
   have hf : ∀ c i, genericPoint S ∈ (VB.det (LieVB.omega G) g).U c ⊓ δ.U i → KeyVals.IsKeyVal κ g L σ c i (f c i) := by
     intro c i h
     have ex := exists_keyVal κ S G g L δ σ hg hsa hsm hne hop hsym hδ hpol hnz c i h
-    simp only [f, dif_pos ex]
+    simp only [f, dite_eq_left ex]
     exact ex.choose_spec
   have hgen : ∀ U : S.Opens, (U : Set S).Nonempty → genericPoint S ∈ U := fun U ⟨p, hp⟩ =>
     ((genericPoint_spec S).mem_open_set_iff U.isOpen).2 ⟨p, trivial, hp⟩

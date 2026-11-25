@@ -284,10 +284,6 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.CovTop.CovSz
-section Point
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end Point
 theorem kapT_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ =>
     Real.log (CovTop.kap p i) ≤ 2 * (Fm.L x ι).sc.L ∧ (lenT p i PP : ℝ) * PP ≤ Real.sqrt (Fm.L x ι).sc.b := by
   intro _
@@ -655,9 +651,6 @@ theorem sum_abs_wt_le_point {PP C A M : ℝ} (hS : SizeAt p i PP C) (hH : HostNu
 
 end GlobalTheory.CovTop.WtRun
 
-namespace GlobalTheory.CovTop.WtRun
-
-end GlobalTheory.CovTop.WtRun
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightParamCoeffSumLeAtIndex =====
@@ -680,27 +673,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 open scoped GlobalTheory.CompHt
-namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-variable (P : WtPar Dw)
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-variable (P : WtPar Dw)
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-variable (P : WtPar Dw)
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.WtRun
 namespace GlobalTheory.CovTop.WtRun
 theorem wt_size_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ j ≤ lenT p i PP, ∑ τ, ∑ k, |((⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).wt j τ k : ℝ)| ≤ zBase (Fm.L x ι) ^ 2 * kap p i := by
   intro hS
@@ -771,10 +743,10 @@ theorem sum_abs_gap_le {N : ℕ} (w : Fin N → ℤ) :
     intro k
     unfold gap
     by_cases h : k + 1 < N
-    · simp only [dif_pos h, e, dif_pos (show k < N by omega)]
+    · simp only [dite_eq_left h, e, dite_eq_left (show k < N by omega)]
       push_cast
       exact abs_sub _ _
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       have : 0 ≤ e k := by simp only [e]; split_ifs <;> simp
       have : 0 ≤ e (k+1) := by simp only [e]; split_ifs <;> simp
       simp; linarith
@@ -817,7 +789,7 @@ theorem gap_sub_const {N : ℕ} (w : Fin N → ℤ) (c : ℤ) (k : ℕ) : gap (f
   unfold gap; split_ifs <;> ring
 
 theorem gap_eq_zero {N : ℕ} (w : Fin N → ℤ) {k : ℕ} (hk : N ≤ k) : gap w k = 0 := by
-  unfold gap; rw [dif_neg (by omega)]
+  unfold gap; rw [dite_eq_right (by omega)]
 
 theorem sum_abs_floorGaps_le {N : ℕ} (v w : Fin N → ℤ) (n : ℤ) (hn : 0 < n) (B : ℝ) (a : ℕ)
     (hgv : ∀ k, |(gap v k : ℝ)| ≤ |(gap w k : ℝ)| + B) :
@@ -893,7 +865,7 @@ theorem sum_abs_u₁_le (P : WtPar Dw) (τ : Psi H) (w : Fin (Dw.p + Dw.q) → �
               rw [abs_le]; constructor <;> linarith
             linarith
     · norm_num; linarith [abs_nonneg (P.c₀ : ℝ)]
-  · have : gap ((P.uMinus - FlagTan.kap Dw) τ) k = 0 := by unfold gap; rw [dif_neg h]
+  · have : gap ((P.uMinus - FlagTan.kap Dw) τ) k = 0 := by unfold gap; rw [dite_eq_right h]
     rw [this]; simp only [Int.cast_zero, abs_zero]
     have : (0:ℝ) ≤ ((Dw.p + Dw.q : ℕ) : ℝ) := Nat.cast_nonneg _
     positivity
@@ -1134,10 +1106,6 @@ theorem at_pt (PP A A' : ℝ) (hi : (i : ℕ) + 1 < D.R.m) (hS : SizeAt p i PP A
 
 end GlobalTheory.CovTop.WtSz
 
-namespace GlobalTheory.CovTop.WtSz
-
-
-end GlobalTheory.CovTop.WtSz
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1162,17 +1130,6 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 open scoped GlobalTheory.CompHt
 noncomputable section
-namespace GlobalTheory.CovTop.WtSz
-end GlobalTheory.CovTop.WtSz
-namespace GlobalTheory.CovTop.WtSz
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-end GlobalTheory.CovTop.WtSz
-namespace GlobalTheory.CovTop.WtSz
-end GlobalTheory.CovTop.WtSz
-namespace GlobalTheory.CovTop.WtSz
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.WtSz
 namespace GlobalTheory.CovTop.WtSz
 
 theorem wts_le_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ la ∈ ({(⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).u₁, (⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).u₂} : Set (AllWt.Weight (dat p i))), ∑ τ, ∑ k, |(la τ k : ℝ)| ≤ zBase (Fm.L x ι) ^ 2 * (kap p i / lenT p i PP + 1) := by

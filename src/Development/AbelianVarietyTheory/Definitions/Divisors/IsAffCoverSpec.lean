@@ -53,9 +53,9 @@ theorem scale_bas (s t : ℂ) (S : Finset (Fin (n + n))) :
     congr 1
     rw [Finset.filter_insert, Finset.filter_insert]
     by_cases hn : a.val < n
-    · rw [if_pos hn, if_pos hn, if_neg (not_le.2 hn), Finset.card_insert_of_notMem (by simp [ha])]
+    · rw [ite_eq_left hn, ite_eq_left hn, ite_eq_right (not_le.2 hn), Finset.card_insert_of_notMem (by simp [ha])]
       ring
-    · rw [if_neg hn, if_neg hn, if_pos (not_lt.1 hn), Finset.card_insert_of_notMem (by simp [ha])]
+    · rw [ite_eq_right hn, ite_eq_right hn, ite_eq_left (not_lt.1 hn), Finset.card_insert_of_notMem (by simp [ha])]
       ring
 
 theorem repr_scale (s t : ℂ) (α : Alt n) (S : Finset (Fin (n + n))) :
@@ -64,7 +64,7 @@ theorem repr_scale (s t : ℂ) (α : Alt n) (S : Finset (Fin (n + n))) :
   conv_lhs => rw [← (bas n).sum_repr α]
 
   simp only [map_sum, map_smul, scale_bas, Module.Basis.repr_self, Finsupp.finsetSum_apply, Finsupp.smul_apply,
-  Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem scale_pull (L : V n →L[ℂ] V m) (s t : ℂ) (α : Alt m) :

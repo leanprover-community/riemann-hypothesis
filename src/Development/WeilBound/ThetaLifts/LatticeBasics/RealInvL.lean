@@ -72,7 +72,6 @@ theorem hasDerivAt_hl (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (x : V) :
   ring
 end Line
 
-
 open Complex in
 alias temperate_exp := _root_.GlobalTheory.CompanionTheory.OM.SchDiff.temperate_exp
 
@@ -280,7 +279,6 @@ theorem act_add (k : UA σ Y.J × UA σ W.J) (u v : Matrix (Fin n) (Fin d) (AE F
     actAB (cA σ) k (u + v) = actAB (cA σ) k u + actAB (cA σ) k v := by
   rw [actAB, Matrix.mul_add, Matrix.add_mul]; rfl
 
-
 open scoped Classical in
 def Impl (om : Rep σ Y W) (k : UA σ Y.J × UA σ W.J) (A : SInf F (Fin n × Fin d) →L[ℂ] SInf F (Fin n × Fin d)) : Prop :=
   ∀ f : SInf F (Fin n × Fin d), ∀ g ∈ SB (Fin n × Fin d → Af F), om k (pureA F f g) = pureA F (A f) g
@@ -372,18 +370,11 @@ theorem cont_mixS : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm :
 
 variable (F) (κ : Type)
 
-def splitE : ((κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) ≃+ (κ → AdeleRing (𝓞 F) F) where
-  toFun p := fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i)
-  invFun x := (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1, fun i => (x i).2)
-  left_inv p := Prod.ext (funext fun i => RingEquiv.apply_symm_apply _ _) (funext fun i => rfl)
-  right_inv x := funext fun i => Prod.ext (RingEquiv.symm_apply_apply _ _) rfl
-  map_add' p q := funext fun i => Prod.ext (map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i) (q.1 i)) rfl
-
 theorem splitE_apply (p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) :
-    splitE F κ p = fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i) := rfl
+    PositivityTheory.ThKF0.Split.splitE F κ p = fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i) := rfl
 
-theorem continuous_splitE : Continuous (splitE F κ) := by
-  rw [show ⇑(splitE F κ) = fun p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F) =>
+theorem continuous_splitE : Continuous (PositivityTheory.ThKF0.Split.splitE F κ) := by
+  rw [show ⇑(PositivityTheory.ThKF0.Split.splitE F κ) = fun p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F) =>
     fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i) from rfl]
   exact continuous_pi fun i => (cont_mixS.comp
     ((continuous_apply i).comp continuous_fst)).prodMk ((continuous_apply i).comp continuous_snd)
@@ -395,15 +386,15 @@ theorem cont_evI : Continuous (evI F) :=
   (continuous_pi fun w => (InfinitePlace.Completion.isometry_extensionEmbedding w.1).continuous.comp
     ((continuous_apply w.1).comp continuous_fst))
 
-theorem continuous_splitE_symm : Continuous (splitE F κ).symm := by
-  rw [show ⇑(splitE F κ).symm = fun x : κ → AdeleRing (𝓞 F) F =>
+theorem continuous_splitE_symm : Continuous (PositivityTheory.ThKF0.Split.splitE F κ).symm := by
+  rw [show ⇑(PositivityTheory.ThKF0.Split.splitE F κ).symm = fun x : κ → AdeleRing (𝓞 F) F =>
     ((fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1, fun i => (x i).2) :
       (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) from rfl]
   exact (continuous_pi fun i => cont_evI.comp (continuous_apply i)).prodMk (continuous_pi fun i => continuous_snd.comp (continuous_apply i))
 
 theorem pureA_splitE (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ)
     (p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) :
-    GlobalTheory.WeilM.pureA F f g (splitE F κ p) = f p.1 * g p.2 := by
+    GlobalTheory.WeilM.pureA F f g (PositivityTheory.ThKF0.Split.splitE F κ p) = f p.1 * g p.2 := by
   simp only [GlobalTheory.WeilM.pureA, splitE_apply, RingEquiv.apply_symm_apply]
 
 open scoped Classical in
@@ -436,13 +427,13 @@ theorem lintegral_eq {S : ((κ → AF F) → ℂ) → (κ → AF F) → ℂ}
   haveI : ν.IsAddHaarMeasure := by rw [hν]; infer_instance
   haveI : ((volume : Measure (κ → mixedEmbedding.mixedSpace F)).prod ν).IsAddHaarMeasure :=
     Measure.prod.instIsAddHaarMeasure (volume : Measure (κ → mixedEmbedding.mixedSpace F)) ν
-  have hμH : Measure.IsAddHaarMeasure ((volume.prod ν).map (splitE F κ)) :=
-    (splitE F κ).isAddHaarMeasure_map _ (continuous_splitE F κ) (continuous_splitE_symm F κ)
+  have hμH : Measure.IsAddHaarMeasure ((volume.prod ν).map (PositivityTheory.ThKF0.Split.splitE F κ)) :=
+    (PositivityTheory.ThKF0.Split.splitE F κ).isAddHaarMeasure_map _ (continuous_splitE F κ) (continuous_splitE_symm F κ)
   let em : ((κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) ≃ᵐ (κ → AdeleRing (𝓞 F) F) :=
-    (Homeomorph.mk (splitE F κ).toEquiv (continuous_splitE F κ)
+    (Homeomorph.mk (PositivityTheory.ThKF0.Split.splitE F κ).toEquiv (continuous_splitE F κ)
       (continuous_splitE_symm F κ)).toMeasurableEquiv
   have hint : ∀ h : (κ → AdeleRing (𝓞 F) F) → ℝ≥0∞,
-      ∫⁻ x, h x ∂((volume.prod ν).map (splitE F κ)) = ∫⁻ p, h (splitE F κ p) ∂(volume.prod ν) :=
+      ∫⁻ x, h x ∂((volume.prod ν).map (PositivityTheory.ThKF0.Split.splitE F κ)) = ∫⁻ p, h (PositivityTheory.ThKF0.Split.splitE F κ p) ∂(volume.prod ν) :=
     fun h => lintegral_map_equiv h em
   have hgc : Continuous g := hg.1.continuous
   have hC : ∫⁻ y, ‖g y‖ₑ ^ 2 ∂ν ≠ ⊤ := by
@@ -455,10 +446,10 @@ theorem lintegral_eq {S : ((κ → AF F) → ℂ) → (κ → AF F) → ℂ}
     have h2 : g =ᵐ[ν] 0 := h0.mono fun y hy => by simpa using hy
     have := congrFun ((hgc.ae_eq_iff_eq ν continuous_zero).1 h2) 0
     simp [h₁] at this
-  have hp : ∀ a : SInf F κ, ∫⁻ x, ‖pureA F a g x‖ₑ ^ 2 ∂((volume.prod ν).map (splitE F κ)) =
+  have hp : ∀ a : SInf F κ, ∫⁻ x, ‖pureA F a g x‖ₑ ^ 2 ∂((volume.prod ν).map (PositivityTheory.ThKF0.Split.splitE F κ)) =
       (∫⁻ x, ‖a x‖ₑ ^ 2) * ∫⁻ y, ‖g y‖ₑ ^ 2 ∂ν := fun a => by
     rw [hint]
-    have e1 : ∀ p, ‖pureA F a g (splitE F κ p)‖ₑ ^ 2 = ‖a p.1‖ₑ ^ 2 * ‖g p.2‖ₑ ^ 2 := by
+    have e1 : ∀ p, ‖pureA F a g (PositivityTheory.ThKF0.Split.splitE F κ p)‖ₑ ^ 2 = ‖a p.1‖ₑ ^ 2 * ‖g p.2‖ₑ ^ 2 := by
       intro p
       rw [pureA_splitE, enorm_mul, mul_pow]
     simp_rw [e1]

@@ -94,9 +94,9 @@ theorem exp_chrStep {T0 : Type} (L : LevCh D T0) {μ0 : T0} (hL : L.Is μ0) (t :
   have h4 : HasInfExp D (L.mu t ((k : ℕ) + 1)) τ (-(D.hc τ).e k) := hasInfExp_mul_zero h1 h3
   unfold Lift.chrStep
   by_cases hk : Even (k : ℕ)
-  · rw [if_pos hk.add_one, (exp_of_even hk τ).1, (exp_of_even hk τ).2]
+  · rw [ite_eq_left hk.add_one, (exp_of_even hk τ).1, (exp_of_even hk τ).2]
     exact ⟨hasInfExp_div h4 h2, h4⟩
-  · rw [if_neg (fun h => hk (by simpa [Nat.odd_add_one, Nat.not_odd_iff_even] using h)), (exp_of_odd hk τ).1,
+  · rw [ite_eq_right (fun h => hk (by simpa [Nat.odd_add_one, Nat.not_odd_iff_even] using h)), (exp_of_odd hk τ).1,
       (exp_of_odd hk τ).2]
     exact ⟨h4, hasInfExp_div h4 h2⟩
 
@@ -121,12 +121,12 @@ theorem resS_idemSum {e : AE D} {P : Finset (Pl D.host.E)} (h : IsIdemSum e P) :
 def rect (κ : Type) [Zero κ] [One κ] (b a : ℕ) : Matrix (Fin b) (Fin a) κ := fun i j => if i.val = j.val then 1 else 0
 
 theorem lowZero_rect {κ : Type} [Zero κ] [One κ] (b a k : ℕ) : LowZero k (rect κ b a) :=
-  fun i j hi hj => if_neg (by omega)
+  fun i j hi hj => ite_eq_right (by omega)
 
 theorem topL_rect {κ : Type} [Zero κ] [One κ] {b a k : ℕ} (hb : k ≤ b) (ha : k ≤ a) : topL k (rect κ b a) = 1 := by
   ext i j
   unfold topL rect
-  rw [dif_pos ⟨lt_of_lt_of_le i.2 hb, lt_of_lt_of_le j.2 ha⟩, Matrix.one_apply]
+  rw [dite_eq_left ⟨lt_of_lt_of_le i.2 hb, lt_of_lt_of_le j.2 ha⟩, Matrix.one_apply]
   simp only [Fin.ext_iff]
 
 theorem frame_smul {R : Type} [CommRing R] {a b : ℕ} (p : GL (Fin a) R) (q : GL (Fin b) R) (c : R)
@@ -157,13 +157,13 @@ theorem exists_rect (S T : HSp D) (βS : GL (Fin S.rank) (Datum.EAf D)) (βT : G
     · exact zero_mem _
   refine ⟨x, fun i j => by simp only [x]; rw [← mul_assoc, he], hI, fun PP hP => ?_⟩
   ext i j
-  refine (dif_pos (hI i j)).trans ?_
+  refine (dite_eq_left (hI i j)).trans ?_
   unfold rect
   split_ifs with hij
   · rw [← hr PP hP]
-    exact congrArg _ (Subtype.ext ((hf i j).trans (if_pos hij)))
+    exact congrArg _ (Subtype.ext ((hf i j).trans (ite_eq_left hij)))
   · rw [← map_zero (resS D.host.F PP)]
-    exact congrArg _ (Subtype.ext ((hf i j).trans (if_neg hij)))
+    exact congrArg _ (Subtype.ext ((hf i j).trans (ite_eq_right hij)))
 
 theorem omegaG_ne_zero {a b : ℕ} (hab : a ≤ b) (L : LevDat D.host.E ℂ a) (χ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ)
     (y : ∀ PP : Pl D.host.E, Matrix (Fin b) (Fin a) (kP PP)) (hy : ∀ PP ∈ L.Pg, y PP = rect _ _ _) :
@@ -226,7 +226,7 @@ theorem stepVec_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp 
     exact GlobalTheory.FinTranslate.isTheta_sum_heisO_fin D ψ S T hv.1.1 f₀ hv.2.theta _ c.support (fun a => a.1) c fun a _ => a.2
   · obtain ⟨x, h1, h2, h3⟩ := exists_rect S T βS βT he
     have := congrFun hz x
-    rw [if_pos ⟨h1, h2⟩] at this
+    rw [ite_eq_left ⟨h1, h2⟩] at this
     exact mul_ne_zero (omegaG_ne_zero hr L χ _ fun PP h => h3 PP ((hP PP).2 (Or.inl h)))
       (omegaQ_ne_zero L.hr (L.hr.trans hr) Q ξ 1 _ fun PP h => h3 PP ((hP PP).2 (Or.inr h))) this
   · rw [← hc]

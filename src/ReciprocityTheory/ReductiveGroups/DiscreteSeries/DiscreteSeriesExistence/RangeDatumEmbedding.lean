@@ -15,13 +15,6 @@ open Finset Matrix
 
 namespace ReciprocityTheory.ChartRestriction.DS
 
-section Gen
-
-variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-  {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V]
-
-end Gen
-
 section Main
 
 variable {n : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -29,12 +22,12 @@ variable {n : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] 
   {T : S7.KType ε (lowK ε lam)} {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)}
 
 def datumEmbedding (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) : T.V →ₗ[ℂ] Hlam ε Ψ v₀ :=
-  (ffaJ hP v₀).codRestrict (Hlam ε Ψ v₀) (fun v => datumEmbedding_mem_Hlam hP v)
+  (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀).codRestrict (Hlam ε Ψ v₀) (fun v => datumEmbedding_mem_Hlam hP v)
 
 theorem range_datumEmbedding (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) :
     LinearMap.range (datumEmbedding hP v₀) = lowKSubLam ε Ψ v₀ := by
-  have hspan : Submodule.span ℂ (Set.range (uniformisationL2 ε Ψ v₀)) = LinearMap.range (ffaJ hP v₀) := by
-    exact Submodule.span_eq (LinearMap.range (ffaJ hP v₀))
+  have hspan : Submodule.span ℂ (Set.range (uniformisationL2 ε Ψ v₀)) = LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀) := by
+    exact Submodule.span_eq (LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀))
   ext x
   constructor
   · rintro ⟨v, rfl⟩
@@ -46,7 +39,7 @@ theorem range_datumEmbedding (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) :
   · intro hx
     simp only [lowKSubLam, Submodule.mem_comap, Submodule.mem_map] at hx
     obtain ⟨y, hy, hyx⟩ := hx
-    have hy' : (y : L2 ε) ∈ LinearMap.range (ffaJ hP v₀) := hspan ▸ hy
+    have hy' : (y : L2 ε) ∈ LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀) := hspan ▸ hy
     obtain ⟨v, hv⟩ := hy'
     exact ⟨v, Subtype.ext (hv.trans hyx)⟩
 

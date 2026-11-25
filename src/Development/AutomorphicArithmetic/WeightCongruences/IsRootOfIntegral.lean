@@ -51,7 +51,7 @@ theorem UpperTheory.exists_shift_weightCongruence_lt_torsionOrder :
       rw [zpow_add₀ ((map_ne_zero _).mpr hζ0)]
       split_ifs <;> simp
     simp_rw [hsplit]
-    rw [Finset.prod_mul_distrib, Finset.prod_ite_eq', if_pos (Finset.mem_univ _), hsc,
+    rw [Finset.prod_mul_distrib, Finset.prod_ite_eq', ite_eq_left (Finset.mem_univ _), hsc,
       mul_inv_cancel₀ hc0]
   intro z hz
   obtain ⟨m, hm, hzm⟩ := hz

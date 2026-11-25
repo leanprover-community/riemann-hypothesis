@@ -24,14 +24,6 @@ def Splits (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.
         fun c : Fin D.R.t =>
           toK D.nd i ((chiU D.nd i ((c : ℕ) + 1) g : (D.nd.O i)ˣ) : D.nd.O i) * (e u).2 c)
 
-section Place
-
-variable (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
-
-variable {D} (L : SizeData₂ D) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
-
-end Place
-
 variable {D}
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CrystallineAtPlaces

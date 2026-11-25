@@ -1,47 +1,8 @@
 module
 
 public import Formalism.RealPlaceAnalysis.SmoothOnG
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Geometry.Manifold.ContMDiff.Basic
 public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 public import Mathlib.Geometry.Manifold.ContMDiffMap
@@ -65,8 +26,8 @@ theorem _root_.GlobalTheory.exists_contDiff_extension_of_isClosed {E : Type*} [N
   have ht : ∀ y, Convex ℝ (t y) := by
     intro y
     by_cases hy : y ∈ S
-    · simp only [t, if_pos hy]; exact convex_singleton _
-    · simp only [t, if_neg hy]; exact convex_univ
+    · simp only [t, ite_eq_left hy]; exact convex_singleton _
+    · simp only [t, ite_eq_right hy]; exact convex_univ
   have hloc : ∀ x : E, ∃ U ∈ 𝓝 x, ∃ g : E → ℂ,
       ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ, ℂ) ((⊤ : ℕ∞) : WithTop ℕ∞) g U ∧ ∀ y ∈ U, g y ∈ t y := by
     intro x
@@ -74,14 +35,14 @@ theorem _root_.GlobalTheory.exists_contDiff_extension_of_isClosed {E : Type*} [N
     · obtain ⟨U, F, hU, hxU, hF, hfF⟩ := hf x hx
       refine ⟨U, hU.mem_nhds hxU, F, hF.contMDiffOn, fun y hy => ?_⟩
       by_cases hyS : y ∈ S
-      · simp only [t, if_pos hyS, Set.mem_singleton_iff]; exact (hfF y hy hyS).symm
-      · simp only [t, if_neg hyS, Set.mem_univ]
+      · simp only [t, ite_eq_left hyS, Set.mem_singleton_iff]; exact (hfF y hy hyS).symm
+      · simp only [t, ite_eq_right hyS, Set.mem_univ]
     · refine ⟨Sᶜ, hS.isOpen_compl.mem_nhds hx, fun _ => 0, contMDiffOn_const, fun y hy => ?_⟩
-      simp only [t, if_neg (show y ∉ S from hy), Set.mem_univ]
+      simp only [t, ite_eq_right (show y ∉ S from hy), Set.mem_univ]
   obtain ⟨g, hg⟩ := exists_contMDiffMap_forall_mem_convex_of_local 𝓘(ℝ, E) (n := ⊤) ht hloc
   refine ⟨g, g.contMDiff.contDiff, fun y hy => ?_⟩
   have hgy := hg y
-  simpa only [t, if_pos hy, Set.mem_singleton_iff] using hgy
+  simpa only [t, ite_eq_left hy, Set.mem_singleton_iff] using hgy
 
 
 open scoped ContDiff Manifold Topology in

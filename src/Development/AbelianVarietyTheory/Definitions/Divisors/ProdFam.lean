@@ -34,10 +34,6 @@ def fstL : ι ×ₗ κ → ι := fun x => (ofLex x).1
 
 def sndL : ι ×ₗ κ → κ := fun x => (ofLex x).2
 
-def crossC {E'' : Type} [AddCommGroup E''] [Module k E''] (μ : E →ₗ[k] E' →ₗ[k] E'') (a : Finset ι → E) (b : Finset κ → E') :
-    Finset (ι ×ₗ κ) → E'' := fun u =>
-  ∑ j ∈ u, μ (pullIdx fstL a (u.filter (· ≤ j))) (pullIdx sndL b (u.filter (j ≤ ·)))
-
 def Disjoint₂ {E'' : Type} [AddCommGroup E''] [Module k E''] (μ : E →ₗ[k] E' →ₗ[k] E'') (A : Finset ι → Submodule k E)
     (B : Finset κ → Submodule k E') : Prop :=
   ∀ I J, Function.Injective (TensorProduct.lift (μ.compl₁₂ (A I).subtype (B J).subtype))

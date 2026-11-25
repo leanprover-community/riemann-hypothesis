@@ -400,9 +400,5 @@ def tate (q : Oˣ) : NumD O where
     congr 1
     ring
 
-namespace Level3
-
-end Level3
-
 end GlobalTheory.Ex
 end

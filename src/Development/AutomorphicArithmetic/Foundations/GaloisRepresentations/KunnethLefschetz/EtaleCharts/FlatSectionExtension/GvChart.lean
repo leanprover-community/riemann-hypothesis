@@ -123,16 +123,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace UpperTheory.Gal.KunnethLefschetz.G.PX
-
-section Chart
-
-open CategoryTheory Limits MvPolynomial
-
-end Chart
-
-end UpperTheory.Gal.KunnethLefschetz.G.PX
-
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto UpperTheory.Gal.KunnethLefschetz.G.PX
 
 private theorem chart_quotient_X_nonZeroDivisor {A : Type} [CommRing A] {D : ℕ} (j : Fin D) :

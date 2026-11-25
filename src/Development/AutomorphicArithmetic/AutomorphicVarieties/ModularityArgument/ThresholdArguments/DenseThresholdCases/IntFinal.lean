@@ -117,20 +117,6 @@ private theorem hecke_eq_sum {G : Type} [Group G] (K : Subgroup G) (h : G → �
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-private theorem comm_of_cLoc {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (z : UA E n) (hz : cLoc w z = 1)
-    (y : UA E n) (hy : y ∈ locU n w) : y * z = z * y := by
-  have hyf := (Subgroup.mem_inf.1 hy).1
-  have hyo := (Subgroup.mem_inf.1 hy).2
-  have hc : z * y * z⁻¹ * y⁻¹ ∈ locU n w := by
-    refine Subgroup.mem_inf.2 ⟨?_, Subgroup.mem_iInf.2 fun u => Subgroup.mem_iInf.2 fun hu => ?_⟩
-    · have h1 : cInf y = 1 := MonoidHom.mem_ker.1 hyf
-      exact MonoidHom.mem_ker.2 (by simp [h1])
-    · have h1 : cLoc u y = 1 := MonoidHom.mem_ker.1 (Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 hyo u) hu)
-      exact MonoidHom.mem_ker.2 (by simp [h1])
-  have h1 := GlobalTheory.SplitPts.eq_one_of_cLoc hw ⟨_, hc⟩ (by simp [hz])
-  have h2 : z * y * z⁻¹ * y⁻¹ = 1 := congrArg Subtype.val h1
-  exact (mul_inv_eq_iff_eq_mul.1 (mul_inv_eq_one.1 h2)).symm
-
 private noncomputable def repG {w : HeightOneSpectrum (𝓞 E)} (e : locU n w ≃ₜ* GL (Fin n) (w.adicCompletion E)) :
     Representation ℂ (GL (Fin n) (w.adicCompletion E)) (UA E n → ℂ) :=
   (RU E n).comp ((locU n w).subtype.comp e.symm.toMulEquiv.toMonoidHom)
@@ -784,7 +770,7 @@ end UpperTheory.V.Z.Int
 theorem UpperTheory.V.Z.Int.slopeGood :
     UpperTheory.V.Z.Int.SlopeOn .csd → UpperTheory.V.Z.Int.SlopeOn .good := by
   intro hC l _ ι E _ _ _ l' n hl' hn π χ hS w hw B hB lo hi hW b hb
-  obtain ⟨κ, m, hκ, hu, hS'⟩ := GlobalTheory.T.exists_good_conjSelfDual_twist_split_unramified GlobalTheory.automorphicFormsFiniteGL E l' n hn π χ hS w hw
+  obtain ⟨κ, m, hκ, hu, hS'⟩ := GlobalTheory.GoodCsdTwist.exists_goodCsd_twist GlobalTheory.automorphicFormsFiniteGL E l' n hn π χ hS w hw
   have hB' : (CG.mk (π.twist κ)).HasSat w (B.map (· * κ.val w)) := by
     rw [CG.hasSat_mk] at hB ⊢
     exact GlobalTheory.SphGal.hasSatGL_twist E n π κ w B hu hB
@@ -873,9 +859,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.IntFinal", "h": "module\n\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicFormHyp\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.CrystallineBaseChange.CqStmt\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.IntegralDeterminants.IntPHolds\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
-
 
 section
 namespace UpperTheory.V.Z.Int

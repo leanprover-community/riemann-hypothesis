@@ -721,7 +721,7 @@ theorem chart_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (�
     have hWv : ∀ b, (W *ᵥ Pi.single i 1) b = W b i := by
       intro b; simp
     simp only [hWv, Pi.single_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true] at h
+      ite_true] at h
     exact (eq_neg_of_add_eq_zero_right h).symm ▸ by simp [aV]
 
   have huniq : ∀ t ∈ ballDom F.q, ∀ τ (W W' : Matrix (Fin j') (Fin j) ℂ),

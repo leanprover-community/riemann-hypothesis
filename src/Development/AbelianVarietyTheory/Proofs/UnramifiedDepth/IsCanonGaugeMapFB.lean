@@ -93,7 +93,7 @@ theorem exists_log_exp :
         intro h
         have := Finsupp.single_left_injective (one_ne_zero (α := ℕ)) h
         exact hij (Prod.mk.inj this).2.symm
-      rw [if_neg hij, if_neg this]
+      rw [ite_eq_right hij, ite_eq_right this]
 
 end GlobalTheory.FormalLog
 end -- clump:auto

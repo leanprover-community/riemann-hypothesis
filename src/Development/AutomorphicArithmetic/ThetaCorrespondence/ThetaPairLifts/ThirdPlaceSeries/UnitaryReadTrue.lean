@@ -274,9 +274,9 @@ theorem hwScal_transpose {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone ν) (B :
   have hf : ∀ s, f (s + 1) ≤ f s := by
     intro s
     by_cases h : s + 1 < n
-    · simp only [hfd, dif_pos h, dif_pos (show s < n by omega)]
+    · simp only [hfd, dite_eq_left h, dite_eq_left (show s < n by omega)]
       exact hν (show (⟨s, by omega⟩ : Fin n) ≤ ⟨s + 1, h⟩ from Fin.mk_le_mk.mpr (by omega))
-    · simp only [hfd, dif_neg h]
+    · simp only [hfd, dite_eq_right h]
       exact Nat.zero_le _
   have hinner : ∀ s : Fin n, (∏ a : Fin (s.val + 1),
       B.transpose (Fin.castLE (by omega) a) (Fin.castLE (by omega) a)) = ∏ k ∈ Finset.range (s.val + 1), d k := by
@@ -284,11 +284,11 @@ theorem hwScal_transpose {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone ν) (B :
     rw [← Fin.prod_univ_eq_prod_range]
     refine Finset.prod_congr rfl fun a _ => ?_
     have ha : a.val < n := by omega
-    simp only [hd, dif_pos ha, Matrix.transpose_apply]
+    simp only [hd, dite_eq_left ha, Matrix.transpose_apply]
     rfl
   have hexp : ∀ s : Fin n, ν s - Formalism.GradedWeylDivisibility.nuNext ν s = f s.val - f (s.val + 1) := by
     intro s
-    simp only [hfd, dif_pos s.2, Formalism.GradedWeylDivisibility.nuNext]
+    simp only [hfd, dite_eq_left s.2, Formalism.GradedWeylDivisibility.nuNext]
   unfold Formalism.BasicNotions.Examples₂.NZ.hwScal
   simp_rw [hinner, hexp]
   rw [Fin.prod_univ_eq_prod_range (fun s => (∏ k ∈ Finset.range (s + 1), d k) ^ (f s - f (s + 1))) n]
@@ -297,7 +297,7 @@ theorem hwScal_transpose {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone ν) (B :
   rw [hfn, pow_zero, mul_one] at ht
   rw [ht, ← Fin.prod_univ_eq_prod_range (fun k => d k ^ f k) n]
   refine Finset.prod_congr rfl fun i _ => ?_
-  simp only [hd, hfd, dif_pos i.2]
+  simp only [hd, hfd, dite_eq_left i.2]
 
 theorem exists_hw_upper : ∀ (n : ℕ) (lam : DomWeight n), ∃ v : nablaSq ℂ n lam, v ≠ 0 ∧
     ∀ B : GL (Fin n) ℂ, (B : Matrix (Fin n) (Fin n) ℂ).BlockTriangular id →
@@ -325,7 +325,7 @@ theorem exists_hw_upper : ∀ (n : ℕ) (lam : DomWeight n), ∃ v : nablaSq ℂ
     have hle : lam.detShift ≤ lam.w i := by
       unfold DomWeight.detShift
       have hn : 0 < n := Fin.pos i
-      rw [dif_pos hn]
+      rw [dite_eq_left hn]
       exact lam.anti (Fin.mk_le_mk.mpr (by omega) : i ≤ ⟨n - 1, by omega⟩)
     simp only [DomWeight.natW]
     omega
@@ -579,8 +579,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.exists_dictionary_cm_field_automorphic : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (F : FinIso L n) (π : NG.AutRep L n), ∃ U, Dict F π U := by
-  first | exact @GlobalTheory.FormDictEx.exists_dict
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsDictionaryCmFieldAutomorphicStatement =====
@@ -593,8 +591,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.definiteUnitaryAutForm_eq_zero_of_finitePoints : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (φ : UA L n → ℂ), IsAutFormU φ → (∀ y ∈ finU (E := L) (n := n), φ y = 0) → φ = 0 := by
-  first | exact @GlobalTheory.DefiniteDense.eq_zero_of_finU
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DefiniteUnitaryAutFormEqZeroOfFinitePointsStatement =====
@@ -827,7 +823,7 @@ theorem locComp_agree : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
     have h0 : ∀ y ∈ finU (E := L) (n := n), (φ : UA L n → ℂ) y = 0 := fun y hy => by
       obtain ⟨x, rfl⟩ := F.onto y hy
       exact congrFun hφ x
-    exact Subtype.ext (GlobalTheory.T.definiteUnitaryAutForm_eq_zero_of_finitePoints L n φ (hD.1.aut φ φ.2) h0)
+    exact Subtype.ext (GlobalTheory.DefiniteDense.eq_zero_of_finU L n φ (hD.1.aut φ φ.2) h0)
   have hRrange : LinearMap.range R = U.map (LinearMap.funLeft ℂ ℂ F.j) := by
     rw [LinearMap.range_comp, Submodule.range_subtype]
   obtain ⟨hnt, -⟩ := (GlobalTheory.CuspRep.isIrreducible_iff _).1 τ.irr
@@ -989,8 +985,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC GlobalTheory.UnitaryReadTrue
 noncomputable section
@@ -1000,7 +994,7 @@ theorem unitaryRead_true_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists)
   intro hL D T A hA j h1 h2 π
   obtain ⟨π₀, rfl⟩ := A.surj j h1 h2 π
   obtain ⟨F⟩ := GlobalTheory.T.unitaryFiniteAdeleIdentification_nonempty_presentations D.host.E D.R.nV
-  obtain ⟨U, hU⟩ := GlobalTheory.T.exists_dictionary_cm_field_automorphic D.host.E D.R.nV F π₀
+  obtain ⟨U, hU⟩ := GlobalTheory.FormDictEx.exists_dict D.host.E D.R.nV F π₀
   refine ⟨U, hU.1, ?_, ?_, ?_⟩
   · intro w hw σ hσ
     obtain ⟨s, rfl⟩ := exists_splitPlace_w D w hw

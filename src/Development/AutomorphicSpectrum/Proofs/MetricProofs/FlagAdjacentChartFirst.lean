@@ -75,14 +75,14 @@ theorem analytic_wH_snd (s : Set (Fin e → ℂ)) (h : Ψ → Matrix (Fin N) (Fi
   · have hfun : (fun w => (1 + Matrix.single cb ca (wT ε w)) a' b') =
         fun w => (1 : Matrix (Fin N) (Fin N) ℂ) a' b' + w (ε (Sum.inr (Sum.inr ()))) := by
       funext w
-      rw [Matrix.add_apply, Matrix.single_apply, if_pos hc]
+      rw [Matrix.add_apply, Matrix.single_apply, ite_eq_left hc]
       rfl
     rw [hfun]
     exact analyticOnNhd_const.add (analytic_coord _)
   · have hfun : (fun w => (1 + Matrix.single cb ca (wT ε w)) a' b') =
         fun _ => (1 : Matrix (Fin N) (Fin N) ℂ) a' b' + 0 := by
       funext w
-      rw [Matrix.add_apply, Matrix.single_apply, if_neg hc]
+      rw [Matrix.add_apply, Matrix.single_apply, ite_eq_right hc]
     rw [hfun]
     exact analyticOnNhd_const
 
@@ -141,13 +141,13 @@ theorem wPhi_holo : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype
           (wH h ε τ w * (1 + Matrix.single cb ca (wT ε w))) τ' a' b') =
           fun w => (wH h ε τ w * (1 + Matrix.single cb ca (wT ε w))) a' b' := by
         funext w
-        rw [Function.update_apply, if_pos hτ]
+        rw [Function.update_apply, ite_eq_left hτ]
       rw [hfun]
       exact analytic_wH_snd _ h ε τ ca cb a' b'
     · have hfun : (fun w => Function.update (fun τ'' => wH h ε τ'' w) τ
           (wH h ε τ w * (1 + Matrix.single cb ca (wT ε w))) τ' a' b') = fun w => wH h ε τ' w a' b' := by
         funext w
-        rw [Function.update_apply, if_neg hτ]
+        rw [Function.update_apply, ite_eq_right hτ]
       rw [hfun]
       exact analytic_wH _ h ε τ' a' b'
 

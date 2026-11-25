@@ -72,22 +72,12 @@ lemma trace_Jm {n : ℕ} (ε : Fin n → Bool) :
 lemma exists_perm {n : ℕ} (ε δ : Fin n → Bool)
     (h : (univ.filter fun i => ε i = true).card = (univ.filter fun i => δ i = true).card) :
     ∃ e : Fin n ≃ Fin n, ∀ a, δ (e a) = ε a := by
-  have h1 : Fintype.card {a // ε a = true} = Fintype.card {a // δ a = true} := by
-    simp only [Fintype.card_subtype]; exact h
-  have h2 : Fintype.card {a // ¬ ε a = true} = Fintype.card {a // ¬ δ a = true} := by
-    simp only [Fintype.card_subtype_compl, h1]
-  let e1 := Fintype.equivOfCardEq h1
-  let e2 := Fintype.equivOfCardEq h2
-  refine ⟨(Equiv.sumCompl fun a => ε a = true).symm.trans
-    ((Equiv.sumCongr e1 e2).trans (Equiv.sumCompl fun a => δ a = true)), fun a => ?_⟩
-  by_cases ha : ε a = true
-  · have := (e1 ⟨a, ha⟩).2
-    simp [Equiv.sumCompl_symm_apply_of_pos (p := fun a => ε a = true) ha, ha, this]
-  · have := (e2 ⟨a, ha⟩).2
-    simp only [Equiv.trans_apply, Equiv.sumCompl_symm_apply_of_neg (p := fun a => ε a = true) ha,
-      Equiv.sumCongr_apply, Sum.map_inr, Equiv.sumCompl_apply_inr]
-    simp only [Bool.not_eq_true] at ha this
-    rw [ha, this]
+  have hc : ∀ b, Fintype.card {a // ε a = b} = Fintype.card {a // δ a = b} := by
+    have h1 := Finset.card_filter_add_card_filter_not (s := univ) fun i => ε i = true
+    have h2 := Finset.card_filter_add_card_filter_not (s := univ) fun i => δ i = true
+    simp only [Bool.not_eq_true] at h1 h2
+    rintro (_ | _) <;> simp only [Fintype.card_subtype] <;> omega
+  exact ⟨Equiv.ofFiberEquiv fun b => Fintype.equivOfCardEq (hc b), Equiv.ofFiberEquiv_map _⟩
 
 theorem exists_unitary {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsHermitian) (h2 : A * A = 1)
     (ε : Fin n → Bool) (ht : (Jm ε).trace = A.trace) :
@@ -155,7 +145,7 @@ lemma trace_Hpk (k r : ℕ) : (Hpk k r).trace = (k : ℂ) - 1 := by
     (if m = r + k then 1 else 0)), Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.sum_boole]
   have : (range (2 * r + k + 1)).filter (fun m => r ≤ m ∧ m < r + k) = Finset.Ico r (r + k) := by
     ext m; simp only [mem_filter, mem_range, Finset.mem_Ico]; omega
-  rw [this, if_pos (by simp only [mem_range]; omega)]
+  rw [this, ite_eq_left (by simp only [mem_range]; omega)]
   simp
 
 theorem exists_isCayleyU_iff (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) :

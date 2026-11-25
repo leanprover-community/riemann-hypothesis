@@ -183,13 +183,6 @@ section Zero
 
 variable {B : Type} [CommRing B] [Algebra k B]
 
-theorem coe_eq_algebraMap_zeroEquiv (x : Om k B 0) :
-    (x : DR k B) = algebraMap B (DR k B) (exteriorPower.zeroEquiv B Ω[B⁄k] x) := by
-  conv_lhs => rw [← (exteriorPower.zeroEquiv B Ω[B⁄k]).symm_apply_apply x]
-  generalize exteriorPower.zeroEquiv B Ω[B⁄k] x = b
-  rw [exteriorPower.zeroEquiv_symm_apply, Submodule.coe_smul, exteriorPower.ιMulti_apply_coe,
-    ExteriorAlgebra.ιMulti_zero_apply, Algebra.algebraMap_eq_smul_one]
-
 end Zero
 
 section Zero2

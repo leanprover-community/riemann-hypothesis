@@ -4,8 +4,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 
 namespace UpperTheory.CBC

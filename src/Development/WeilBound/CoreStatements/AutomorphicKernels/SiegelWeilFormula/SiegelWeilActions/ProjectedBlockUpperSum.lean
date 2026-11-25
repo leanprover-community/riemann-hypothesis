@@ -59,11 +59,8 @@ theorem eigLine (hcm : IsCMExt F E σ) (ε : ℤˣ) {δ : E} (hδ0 : δ ≠ 0) (
 
 theorem ellSpec {δ : E} (hδ0 : δ ≠ 0) :
     (Classical.epsilon fun ℓ : E →ₗ[F] F => δ ≠ 0 → ℓ δ = 1) δ = 1 := by
-  have hex : ∃ ℓ : E →ₗ[F] F, δ ≠ 0 → ℓ δ = 1 := by
-    have : ¬ ∀ φ : Module.Dual F E, φ δ = 0 := fun h => hδ0 ((Module.forall_dual_apply_eq_zero_iff F δ).1 h)
-    push Not at this
-    obtain ⟨φ, hφ⟩ := this
-    exact ⟨(φ δ)⁻¹ • φ, fun _ => by rw [LinearMap.smul_apply, smul_eq_mul, inv_mul_cancel₀ hφ]⟩
+  have hex : ∃ ℓ : E →ₗ[F] F, δ ≠ 0 → ℓ δ = 1 :=
+    (Module.Projective.exists_dual_eq_one F hδ0).imp fun _ h _ => h
   exact Classical.epsilon_spec hex hδ0
 
 end PositivityTheory.SiegelWeilFormula.Act.C5

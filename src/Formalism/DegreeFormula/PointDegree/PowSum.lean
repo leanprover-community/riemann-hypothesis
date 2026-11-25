@@ -133,13 +133,13 @@ theorem slice {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (τ : ι) (k :
         Equiv.apply_symm_apply, Equiv.swap_apply_right]
     have hc : permExp (Pi.mulSingle τ (Equiv.swap j ⟨(j : ℕ) + k, hjk⟩) * σ)
         (τ, (σ τ).symm ⟨(j : ℕ) + k, hjk⟩) = permExp σ (τ, (σ τ).symm j) := by
-      simp only [permExp_apply, mulSingle_mul_apply, if_true, Equiv.apply_symm_apply,
+      simp only [permExp_apply, mulSingle_mul_apply, ite_true, Equiv.apply_symm_apply,
         Equiv.swap_apply_right]
     rw [hsymm, permSign_mulSingle_swap_mul τ _ _ hne, coeff_Xpow_mul, coeff_Xpow_mul, hc,
       rem_eq σ τ k j _ rfl hne]
     ring
   · refine Finset.sum_eq_zero fun σ _ => ?_
-    rw [coeff_Xpow_mul, if_neg, mul_zero]
+    rw [coeff_Xpow_mul, ite_eq_right, mul_zero]
     simp only [permExp_apply, Equiv.apply_symm_apply]
     omega
 

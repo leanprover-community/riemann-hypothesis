@@ -117,14 +117,6 @@ theorem coneBall_logGap_integral (n e : ℕ) (h : HermNorm n) (W : Ideal (MvPoly
 
 end ModelDimension.ConeBallLogGap
 
-theorem ModelDimension.integral_coneBall_log_gap_eq : ∀ (n e : ℕ) (h : HermNorm n) (W : Ideal (MvPolynomial (Fin n) ℂ))
-  (f : MvPolynomial (Fin (e + 1) × Fin n) ℂ) (u : Fin n → ℂ),
-  IsProjPrime W → IsChowForm W (e + 1) f → linForm u ∉ W →
-    ∫⁻ y in coneBall h W, logGap h u y ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) < ⊤ ∧
-      (∫⁻ y in coneBall h W, logGap h u y ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ))).toReal =
-        Real.log (h.norm u) * ((Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) (coneBall h W)).toReal -
-          ∫ y in coneBall h W, fsLog h u (h.pointOf y) ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) :=
-  fun n e h W f u hW hf hu => ModelDimension.ConeBallLogGap.coneBall_logGap_integral n e h W f u hW hf hu
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.CommonZeroEvaluation.ConeBallLogGapIntegral =====
@@ -138,15 +130,6 @@ set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
-
-theorem _root_.GlobalTheory.CompanionTheory.Relay.cone_ball_log_gap_integral : ∀ (n e : ℕ) (h : HermNorm n) (W : Ideal (MvPolynomial (Fin n) ℂ))
-  (f : MvPolynomial (Fin (e + 1) × Fin n) ℂ) (u : Fin n → ℂ),
-  IsProjPrime W → IsChowForm W (e + 1) f → linForm u ∉ W →
-    ∫⁻ y in coneBall h W, logGap h u y ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) < ⊤ ∧
-      (∫⁻ y in coneBall h W, logGap h u y ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ))).toReal =
-        Real.log (h.norm u) * ((Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) (coneBall h W)).toReal -
-          ∫ y in coneBall h W, fsLog h u (h.pointOf y) ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) := by
-  first | exact @ModelDimension.integral_coneBall_log_gap_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ConeBallLogGapIntegral =====
@@ -535,10 +518,10 @@ theorem lay_le (x : ℝ≥0∞) : lay x ≤ x := by
     | succ n ih =>
       rw [Finset.sum_range_succ]
       by_cases h : ((n : ℝ≥0∞) + 1) < x
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         have h1 := add_le_add_left ih.2 (1 : ℝ≥0∞)
         exact ⟨h1.trans h.le, by push_cast; exact h1⟩
-      · simp only [h, if_false, add_zero]
+      · simp only [h, ite_false, add_zero]
         exact ⟨ih.1, ih.2.trans (by exact_mod_cast Nat.le_succ n)⟩
   rw [lay, ENNReal.tsum_eq_iSup_nat]
   exact iSup_le fun N => (key N).1
@@ -594,7 +577,7 @@ theorem two_mul_lay_le (x : ℝ≥0∞) : 2 * lay x ≤ lay (2 * x) := by
         rw [mul_add]
         gcongr
         norm_num
-      rw [if_pos h, if_pos h3]
+      rw [ite_eq_left h, ite_eq_left h3]
     · simp [h]
   · by_cases h : ((l : ℝ≥0∞) + 1) < x
     · have h2 := two_lt_two h
@@ -602,7 +585,7 @@ theorem two_mul_lay_le (x : ℝ≥0∞) : 2 * lay x ≤ lay (2 * x) := by
         refine lt_of_le_of_lt (le_of_eq ?_) h2
         push_cast
         ring
-      rw [if_pos h, if_pos h3]
+      rw [ite_eq_left h, ite_eq_left h3]
     · simp [h]
 
 noncomputable def dy (k : ℕ) (x : ℝ≥0∞) : ℝ≥0∞ := (2 ^ k : ℝ≥0∞)⁻¹ * lay (2 ^ k * x)
@@ -779,7 +762,6 @@ set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.crofton_formula_fibre_sum : ∀ (n e δ : ℕ) (h : HermNorm n) (W : Ideal (MvPolynomial (Fin n) ℂ))
   (f : MvPolynomial (Fin (e + 1) × Fin n) ℂ), IsProjPrime W → IsChowForm W (e + 1) f → GroundTheory.Heights₂.Heights.IsMultiHomog δ f →
   ∀ φ : EuclideanSpace ℂ (Fin n) → ℝ≥0∞, Measurable φ →
@@ -899,7 +881,7 @@ theorem lt_logGap_iff (h : HermNorm n) {u : Fin n → ℂ} (hu : u ≠ 0) {s : �
   by_cases hp : ∑ j, u j * h.pointOf y j = 0
   · simp [hy, hp, hs.lt_top, hc]
   · have hpn : 0 < ‖∑ j, u j * h.pointOf y j‖ := norm_pos_iff.mpr hp
-    rw [if_neg hy, if_neg hp, ENNReal.lt_ofReal_iff_toReal_lt hs, fsLog, _root_.GroundTheory.Heights₂.Heights.ConeFsLog.dualNorm_pointOf,
+    rw [ite_eq_right hy, ite_eq_right hp, ENNReal.lt_ofReal_iff_toReal_lt hs, fsLog, _root_.GroundTheory.Heights₂.Heights.ConeFsLog.dualNorm_pointOf,
       Real.log_div hpn.ne' hy'.ne', ← Real.log_lt_log_iff hpn hc,
       Real.log_mul (by positivity) hy'.ne', Real.log_mul (Real.exp_pos _).ne' hN.ne', Real.log_exp]
     constructor <;> intro hh <;> linarith
@@ -1026,7 +1008,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Short.Crofton.fsSum_crofton : ∀ (n e �
   intro n e δ h W f u hW hf hδ hu
   obtain ⟨hLGm, hLGo⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Short.Crofton.logGap_basic n h u
   obtain ⟨hGm, hGeq⟩ := _root_.GlobalTheory.CompanionTheory.Relay.crofton_formula_fibre_sum n e δ h W f hW hf hδ (logGap h u) hLGm hLGo
-  obtain ⟨hL, hLr⟩ := _root_.GlobalTheory.CompanionTheory.Relay.cone_ball_log_gap_integral n e h W f u hW hf hu
+  obtain ⟨hL, hLr⟩ := _root_.ModelDimension.ConeBallLogGap.coneBall_logGap_integral n e h W f u hW hf hu
   obtain ⟨hμ0, hμt⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Short.Crofton.gaussM_univ_pos_lt_top (e + 1) n
   obtain ⟨hpm0, hpmt⟩ : 0 < planeMass n e ∧ planeMass n e < ⊤ :=
     GroundTheory.Heights₂.Heights.coordBall_mass (chowGroups_le hW hf hδ)

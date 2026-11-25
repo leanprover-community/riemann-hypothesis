@@ -216,7 +216,6 @@ theorem abs_expo_le : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
     rcases Nat.eq_zero_or_pos G.m with h | h
     · simp [h]
     · have h1 : ((G.m - 1 : ℕ) : ℤ) = (G.m : ℤ) - 1 := by push_cast [Nat.cast_sub h]; ring
-      have h2 : (1 : ℤ) ≤ G.m := by exact_mod_cast h
       rw [h1]; nlinarith
   have hT : 0 ≤ (N : ℤ) ^ 2 * (|a| + |a'|) := by positivity
   unfold expo
@@ -318,7 +317,7 @@ theorem indicator_moveArgs_origin {k : Type} [Field k] [ValuativeRel k] [Topolog
     rw [hM, show G.m - 1 - j = G.m - 2 - j + 1 by omega, vtxExp_frame,
       show G.m - 1 - (j + 1) = G.m - 2 - j by omega, vtxExp_frame]
     congr 2
-    simp only [downMap, dif_pos hj, reindex_apply, submatrix_apply, Equiv.symm_apply_apply]
+    simp only [downMap, dite_eq_left hj, reindex_apply, submatrix_apply, Equiv.symm_apply_apply]
 
   have hbox : ∀ (j : ℕ) (hj : j < G.m - 1) (r' : Fin (topRank G j) ⊕ Fin (G.m - 2 - j + 1))
       (s' : Fin (topRank G (j + 1)) ⊕ Fin (G.m - 2 - j)) (hv : Free ((G.m - 2 - j) / 2 + 1) (s', r') ∨ Kept (s', r')),
@@ -327,7 +326,7 @@ theorem indicator_moveArgs_origin {k : Type} [Field k] [ValuativeRel k] [Topolog
       valuation k (e ⟨j, hj⟩ ⟨(s', r'), hv⟩) ≤ valuation k ((ϖ ^ boxExp G a a' ⟨j, hj⟩ ⟨(s', r'), hv⟩ : kˣ) : k) := by
     intro j hj r' s' hv
     rw [hE, scaled_mem_iff]
-    simp only [stepPt, Matrix.add_apply, of_apply, dif_pos hv, Pi.zero_apply, basePt_zero_of_var s' r' hv, zero_add]
+    simp only [stepPt, Matrix.add_apply, of_apply, dite_eq_left hv, Pi.zero_apply, basePt_zero_of_var s' r' hv, zero_add]
     rfl
   have key : (∀ b ∈ oppositePath G.m, ∀ i j, (((ϖ ^ a)⁻¹ : kˣ) : k) * M b i j ∈ 𝒪[k]) ↔ e ∈ box G ϖ a a' := by
     constructor
@@ -346,7 +345,7 @@ theorem indicator_moveArgs_origin {k : Type} [Field k] [ValuativeRel k] [Topolog
           by_cases hv : Free ((G.m - 2 - j) / 2 + 1) (s', r') ∨ Kept (s', r')
           · exact (hbox j hj' r' s' hv).2 (he ⟨j, hj'⟩ trivial ⟨(s', r'), hv⟩ trivial)
           · rw [hE j hj', scale_eq]
-            simp only [stepPt, Matrix.add_apply, of_apply, dif_neg hv, add_zero, Pi.zero_apply]
+            simp only [stepPt, Matrix.add_apply, of_apply, dite_eq_right hv, add_zero, Pi.zero_apply]
             rcases s' with s' | l <;> rcases r' with r' | i
             · simp [basePt]
             · simp [basePt]
@@ -389,7 +388,7 @@ variable {k : Type} [Field k] {n n' : Type} {c : ℕ}
 
 theorem stepPt_var (x₀ : Matrix n n' k) (e : StepVar n c n' → k) {r : n ⊕ Fin c} {s : n' ⊕ Fin (c + 1)}
     (h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s)) (hb : basePt c x₀ r s = 0) : stepPt x₀ e r s = e ⟨(r, s), h⟩ := by
-  simp only [stepPt, Matrix.add_apply, Matrix.of_apply, hb, zero_add, dif_pos h]
+  simp only [stepPt, Matrix.add_apply, Matrix.of_apply, hb, zero_add, dite_eq_left h]
 
 theorem basePt_inr_succ (x₀ : Matrix n n' k) (i : Fin c) : basePt c x₀ (.inr i) (.inr i.succ) = 0 := by
   simp [basePt]
@@ -554,7 +553,7 @@ theorem colDiag_eq_one (G : Grid k) (hs : 1 ≤ G.s) (ϖ : kˣ) (a a' : ℤ) {j 
   funext x
   have h := topRank_add hs j
   have hx := x.2
-  rw [vtxExp, if_neg (by omega), zpow_zero, Units.val_one]
+  rw [vtxExp, ite_eq_right (by omega), zpow_zero, Units.val_one]
 
 end Generic
 
@@ -606,8 +605,6 @@ theorem aaElt_elt_off (w : Pl D.host.E) (i j : ℕ) (hi : i ≠ (bareGrid w).m) 
 
 theorem rank_le_bigN (w : Pl D.host.E) (i j : ℕ) (hi : i ≤ (bareGrid w).m) (hj : j ≤ (bareGrid w).m) :
     (bareGrid w).rank (i, j) ≤ bigN D := by
-  have h1 := Nat.mul_le_mul_right D.R.t hj
-  have h2 := Nat.mul_le_mul_right (sLen D) hi
   have hr : D.R.r ≤ D.R.k + D.R.m := by
     have : D.R.r = D.R.k + D.R.m - 1 := rfl
     omega
@@ -750,7 +747,6 @@ theorem path_apow_pow (w : Pl D.host.E) : ∃ n : ℤ, ((oppositePath D.R.m).map
       have : S ≤ D.R.m * bigN D ^ 2 := by nlinarith
       exact_mod_cast this
     have hm1 : (1 : ℤ) ≤ D.R.m := by have := D.R.two_le_m; omega
-    have hN : (0 : ℤ) ≤ bigN D := by positivity
     rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℤ) ≤ S)]
     have h3 : |a - a'| ≤ |a| + |a'| := abs_sub _ _
     have h4 : (D.R.m : ℤ) * bigN D ^ 2 ≤ D.R.m ^ 3 * bigN D ^ 2 := by

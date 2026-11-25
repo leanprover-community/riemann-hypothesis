@@ -63,7 +63,7 @@ theorem sig_index {n r s k : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M
     ext j
     have h1 := congrArg (fun z => z ⬝ᵥ M *ᵥ star (y j)) h0
     simp only [zero_dotProduct, sum_dotProduct, smul_dotProduct, hxy, smul_eq_mul, mul_ite, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
     exact (mul_eq_zero.1 h1.symm).resolve_right hc
   have hiso : ∀ v, ∑ i, Complex.normSq (L v (Sum.inl i)) = ∑ j, Complex.normSq (L v (Sum.inr j)) := by
     intro v
@@ -84,7 +84,7 @@ theorem sig_index {n r s k : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M
       ((Finset.sum_eq_zero_iff_of_nonneg fun i _ => Complex.normSq_nonneg (f i)).1 hf i (Finset.mem_univ i))
   refine le_min ?_ ?_
   · have := LinearMap.finrank_le_finrank_of_injective (f := (LinearMap.funLeft ℂ ℂ Sum.inl) ∘ₗ L) (by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro v hv
       have h1 : ∀ i, L v (Sum.inl i) = 0 := fun i => congrFun hv i
       have h2 := hz (fun j => L v (Sum.inr j)) (by rw [← hiso]; simp [h1])
@@ -94,7 +94,7 @@ theorem sig_index {n r s k : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M
       · exact h2 j)
     simpa using this
   · have := LinearMap.finrank_le_finrank_of_injective (f := (LinearMap.funLeft ℂ ℂ Sum.inr) ∘ₗ L) (by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro v hv
       have h1 : ∀ i, L v (Sum.inr i) = 0 := fun i => congrFun hv i
       have h2 := hz (fun j => L v (Sum.inl j)) (by rw [hiso]; simp [h1])

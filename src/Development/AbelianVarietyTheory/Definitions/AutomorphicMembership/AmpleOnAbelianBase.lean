@@ -124,7 +124,7 @@ theorem numL_homog (num : Multiset A → ℝ) (d e : ℕ) (he : e ≠ d) (P : Mv
     rw [Finsupp.degree_eq_weight_one]; exact this
   have h2 : MvPolynomial.monomial m (P.coeff m) = P.coeff m • MvPolynomial.basisMonomials A ℝ m := by
     simp [MvPolynomial.smul_monomial]
-  rw [h2, map_smul, numL, Module.Basis.constr_basis, if_neg (h1 ▸ he), smul_zero]
+  rw [h2, map_smul, numL, Module.Basis.constr_basis, ite_eq_right (h1 ▸ he), smul_zero]
 
 end Degrees
 
@@ -203,10 +203,6 @@ open Classical in
 def normDet (p : ℕ) (b : Bool) (τ : D.what₂.Tau) (y : Pt s) (a : Qb) : ℝ :=
   if h : p.Prime then (haveI := Fact.mk h; ‖iotaP p a‖ * Real.exp (∑ i, lnAt s p b y (τ, i))) else 1
 
-def JcPin (D : D7) (p : ℕ) [Fact p.Prime] (la : PlL D p) (jc : DV.KW p →+* ℂ) : Prop :=
-  ∃ W : ValuationSubring ℂ, (∀ x : D.what₂.LL, D.what₂.embLL x ∈ W ↔ la.1.valuation D.what₂.LL x ≤ 1) ∧
-    ∀ a : DV.KW p, jc a ∈ W ↔ a ∈ (algebraMap (WittVector p (AlgebraicClosure (ZMod p))) (DV.KW p)).range
-
 structure LocSt (D : D7) (N j : ℕ) (ng : NgPkg) : Type 1 where
   loc : ∀ p : ℕ, ModuliIntegralCharts.Loc D N j p
   ex : ∀ p, ModuliIntegralCharts.ExtA D (loc p)
@@ -237,14 +233,6 @@ structure FlatSt : Type where
   sv : D.what₂.Tau → Pt s → Qb
   ht : ℝ → s.Comp → D.what₂.Tau → ℝ
 
-section OfPkg
-
-variable {Comp : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg}
-  (P : PadPkg D N j Comp jC ng)
-
-
-end OfPkg
-
 def padOf {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (L : LocSt D N j ng)
     (G : GlobSt fun p => (L.loc p).Mdl) (M : AdmSt D N j jC) (F : FlatSt s)
     (I : ArIn D.what₂.Tau N (D.R.f * N) s.Comp) : PadPkg D N j s.Comp jC ng :=
@@ -265,12 +253,5 @@ def padOf {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {
     htDetT := F.ht
     arDeg := I.arDeg, arDeg_homog := I.arDeg_homog
     arMix := I.arMix, arMix_HT := I.arMix_HT, arMix_DR := I.arMix_DR }
-
-section Unfold
-
-variable {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (L : LocSt D N j ng)
-  (G : GlobSt fun p => (L.loc p).Mdl) (M : AdmSt D N j jC) (F : FlatSt s) (I : ArIn D.what₂.Tau N (D.R.f * N) s.Comp)
-
-end Unfold
 
 end GlobalTheory.ShFam.Pad

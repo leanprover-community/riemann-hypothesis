@@ -52,7 +52,7 @@ theorem et_equiv (L : LocBessel k r) {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 
   refine ⟨ρh, fun n hn => ?_⟩
   have hnS : Matrix.of n ∈ Sset k r L.z := _root_.Formalism.FourierDecayAlt.P.Ux3.nset_sset L.z hn
   have hspec := (hSD (Matrix.of n) hnS).exists.choose_spec
-  have hρdef : ρh n = (hSD (Matrix.of n) hnS).exists.choose.1 := dif_pos hnS
+  have hρdef : ρh n = (hSD (Matrix.of n) hnS).exists.choose.1 := dite_eq_left hnS
   set ρ0 := (hSD (Matrix.of n) hnS).exists.choose.1 with hρ0
   set σ0 := (hSD (Matrix.of n) hnS).exists.choose.2 with hσ0
   have hρ0R : ρ0 ∈ RStab k r γ := (rst_iff hstd hpos ρ0).1 hspec.1

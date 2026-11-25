@@ -41,50 +41,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLBLeBySm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLineBundlePairNormIndependentOfFrames
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointHeightDualAndLinearComb
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLineBundleGeometricDegreeNonnegOfSemiPos
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLineBundlePairSectionsMulMemNormMul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermPairWithSectionsRepresentsTensor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentedBundleSectionsRationalFunctionsDict
@@ -239,8 +195,8 @@ theorem encard_finset_le_pow_mul {G : Type} [AddCommGroup G] [IsAddTorsionFree G
       apply (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).1
       push_cast
       exact sub_eq_zero.2 e
-    have hvx : v x = b.equivFun ⟨x, hx⟩ := dif_pos hx
-    have hvy : v y = b.equivFun ⟨y, hy⟩ := dif_pos hy
+    have hvx : v x = b.equivFun ⟨x, hx⟩ := dite_eq_left hx
+    have hvy : v y = b.equivFun ⟨y, hy⟩ := dite_eq_left hy
     have e : q • (b.equivFun.symm (fun i => (v x i - v y i) / (q : ℤ)) : L) = ⟨x, hx⟩ - ⟨y, hy⟩ := by
       apply b.equivFun.injective
       rw [map_nsmul, LinearEquiv.apply_symm_apply, map_sub, ← hvx, ← hvy]
@@ -493,7 +449,6 @@ theorem log_ncard_unit_ball_le_of_indep_bound :
   have hncard : (B 1).ncard ≤ q ^ M := by
     rw [← hfin.cast_ncard_eq] at hcard
     exact_mod_cast hcard
-  have hlogq : 0 ≤ Real.log q := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ q))
   rcases Nat.eq_zero_or_pos (B 1).ncard with h0 | hpos
   · rw [h0]; simp; positivity
   · have hpos' : (0 : ℝ) < (B 1).ncard := by exact_mod_cast hpos
@@ -671,7 +626,6 @@ theorem rank_le_gdeg_of_isNef : GlobalTheory.Published.ArCalc → AmpleHS → �
     fun c => _root_.GlobalTheory.HSNef.bounded_norm k X p D hX Q 1 0 _ (hQbox c)
   choose u hu0 hu using hbd
   set t₀ : ℝ := ∑ c, u c with ht₀
-  have ht₀0 : 0 ≤ t₀ := Finset.sum_nonneg fun c _ => hu0 c
   have hBl : ∀ c, boxFam e x c ∈ Q.Bl 1 0 (Real.exp t₀) := fun c =>
     ⟨(hu c).1, fun σ y => ((hu c).2 σ y).trans
       (Real.exp_le_exp.2 (Finset.single_le_sum (fun c _ => hu0 c) (Finset.mem_univ c)))⟩
@@ -726,8 +680,6 @@ theorem rank_le_gdeg_of_isNef : GlobalTheory.Published.ArCalc → AmpleHS → �
           have hnn : 0 ≤ Q.nu 0 1 σ y g := by
             unfold Pair.nu; exact mul_nonneg (norm_nonneg _) (Real.exp_pos _).le
           exact pow_le_one₀ hnn (hg.2 σ y)
-        have hnn' : 0 ≤ Q.nu ((n * m : ℕ) * 1) ((n * m : ℕ) * 0) σ y (v0 (Fin.cast hcard.symm i)) := by
-          unfold Pair.nu; exact mul_nonneg (norm_nonneg _) (Real.exp_pos _).le
         have hexp : Real.exp t₀ ^ (n * m) = Real.exp ((t₀ * n) * m) := by
           rw [← Real.exp_nat_mul]; push_cast; ring_nf
         calc _ ≤ Real.exp t₀ ^ (n * m) * 1 := mul_le_mul hA1 hB1 (pow_nonneg (by unfold Pair.nu; exact mul_nonneg (norm_nonneg _) (Real.exp_pos _).le) _) (pow_nonneg (Real.exp_pos _).le _)
@@ -821,7 +773,7 @@ theorem levels_le_selfInter (hC : GlobalTheory.Published.ArCalc) (hA : AmpleHS) 
     by_cases hJ : ∀ j, n j = 0
     · simp only [hJ, Nat.cast_zero, Finset.sum_const_zero, mul_zero]
       exact selfInter_nonneg_of_isFS hC hA hS hX hM hw0 hμ
-    push_neg at hJ
+    push Not at hJ
     obtain ⟨j₀, hj₀⟩ := hJ
     let J' := {j // 1 ≤ n j}
     let e' : J' → X.functionField := fun j => e j.1
@@ -1028,7 +980,7 @@ theorem exists_idealSheaf_principalises_of_ne_zero : ∀ (X : Scheme.{0}) [IsInt
       ∃ f ∈ I.ideal ⟨V₀, hV₀⟩, genericPoint X ∈ X.basicOpen f := by
     intro I
     rw [Scheme.IdealSheafData.mem_support_iff_of_mem (U := ⟨V₀, hV₀⟩) hηV₀, Scheme.mem_zeroLocus_iff]
-    push_neg
+    push Not
     rfl
   have hmul : ∀ I I' : X.IdealSheafData, genericPoint X ∉ I.support → genericPoint X ∉ I'.support →
       genericPoint X ∉ (I * I').support := by
@@ -1657,7 +1609,6 @@ theorem GlobalTheory.HSNef.lc_le_bound : GlobalTheory.Published.ArCalc → Ample
   have hq' : (3:ℝ) ≤ q := by exact_mod_cast hq
   have hΔ : 0 < Real.log ((q:ℝ)/2) := Real.log_pos (by linarith)
   have hF : (0:ℝ) < ((D+1).factorial : ℝ) := by positivity
-  have hl2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   have hFD : 0 < ((D+1).factorial : ℝ) * Real.log ((q:ℝ)/2) := mul_pos hF hΔ
   set g := gdeg (P.L.tens P.A) D with hgdef
   set Δ := Real.log ((q:ℝ)/2) with hΔdef

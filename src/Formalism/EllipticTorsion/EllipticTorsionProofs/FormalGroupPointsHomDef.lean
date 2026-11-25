@@ -87,7 +87,7 @@ theorem norm_term_le {F : MvPowerSeries (Fin 2) K} (hF : IntegralMv F) {a b : K}
 theorem summable_term {F : MvPowerSeries (Fin 2) K} (hF : IntegralMv F) {a b : K}
     (ha : ‖a‖ < 1) (hb : ‖b‖ < 1) : Summable (term F a b) :=
   summable_of_bound Finsupp.degree (le_trans (norm_nonneg a) (le_max_left _ _))
-    (max_lt ha hb) (fun N => (finite_degree_lt N).subset fun d hd => hd.2)
+    (max_lt ha hb) (fun N => (finite_degree_lt N).subset fun _ hd => hd.2)
     (norm_term_le hF (le_max_left _ _) (le_max_right _ _))
 
 def IL (K : Type u) [NormedField K] [IsUltrametricDist K] : Subring (MvPowerSeries (Fin 2) K) where

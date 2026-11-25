@@ -60,7 +60,7 @@ theorem mem_cmRing {z : ℂ} : z ∈ cmRing σ ↔ ∃ a : 𝓞 K, σ (algebraMa
 
 def cmRingEquiv : 𝓞 K ≃+* cmRing σ :=
   RingEquiv.ofBijective (σ.comp (algebraMap (𝓞 K) K)).rangeRestrict
-    ⟨fun a b h ↦ (FaithfulSMul.algebraMap_injective (𝓞 K) K) (σ.injective (congrArg Subtype.val h)),
+    ⟨fun _ _ h ↦ (FaithfulSMul.algebraMap_injective (𝓞 K) K) (σ.injective (congrArg Subtype.val h)),
       (σ.comp (algebraMap (𝓞 K) K)).rangeRestrict_surjective⟩
 
 section Quadratic

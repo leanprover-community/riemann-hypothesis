@@ -258,18 +258,6 @@ theorem ldu_exists : ∀ (r : ℕ) (M : Matrix (Fin r) (Fin r) A),
 
 end Border
 
-section Blocks
-
-variable {A : Type} [CommRing A] {r k : ℕ}
-
-end Blocks
-
-section Corner
-
-variable {o : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o]
-
-end Corner
-
 end Formalism.FourierDecayAlt.P.S3x7
 
 namespace Formalism.FourierDecayAlt.P

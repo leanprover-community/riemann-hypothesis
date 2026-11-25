@@ -342,13 +342,13 @@ theorem numCore_std {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
             ((3 * (X.m + 1) + 2 * (X.p ^ X.G' * e) : ℕ) : ℤ) := by
         intro i
         by_cases hi : (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma
-        · have e1 : oEff (X.seg C0 CE1 CE2 j) b i = b.w i + b.sg i := if_pos hi
-          have e2 : oEff (X.seg C0 CE1 CE2 j) b' i = b'.w i + b'.sg i := if_pos hi
+        · have e1 : oEff (X.seg C0 CE1 CE2 j) b i = b.w i + b.sg i := ite_eq_left hi
+          have e2 : oEff (X.seg C0 CE1 CE2 j) b' i = b'.w i + b'.sg i := ite_eq_left hi
           rw [e1, e2]
           obtain ⟨-, -, -, hg, hw⟩ := hS' i hi
           exact core_termS (hA i) hw hg
-        · have e1 : oEff (X.seg C0 CE1 CE2 j) b i = b.o i := if_neg hi
-          have e2 : oEff (X.seg C0 CE1 CE2 j) b' i = b'.o i := if_neg hi
+        · have e1 : oEff (X.seg C0 CE1 CE2 j) b i = b.o i := ite_eq_right hi
+          have e2 : oEff (X.seg C0 CE1 CE2 j) b' i = b'.o i := ite_eq_right hi
           rw [e1, e2]
           obtain ⟨-, ho, -, -⟩ := hU' i (not_lt.1 hi)
           exact core_termU (hA i) ho

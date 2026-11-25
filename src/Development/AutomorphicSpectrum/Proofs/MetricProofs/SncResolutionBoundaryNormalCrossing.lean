@@ -717,7 +717,7 @@ theorem isMultiHomog_part (b : K → ℕ) (s : MvPolynomial (Σ k, ι k) ℂ) :
   intro m hm k
   rw [mem_support_iff, coeff_part] at hm
   by_contra hk
-  refine hm (if_neg fun h => hk ?_)
+  refine hm (ite_eq_right fun h => hk ?_)
   exact congrFun h k
 
 alias isMultiHomog_mul := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Dict.isMultiHomog_mul
@@ -749,16 +749,16 @@ theorem part_mul_mem [DecidableEq K] {I : Ideal (MvPolynomial (Σ k, ι k) ℂ)}
     by_cases hm : mdeg m = b + a
     · have e : ∀ k ∈ (Finset.univ : Finset K), ∑ i, m ⟨k, i⟩ = (b + a) k :=
         fun k _ => congrFun hm k
-      rw [if_pos e]
+      rw [ite_eq_left e]
       have hr : ∀ m' ∈ (s - part b s).support, mdeg m' ≠ b := by
         intro m' hm' hb
-        rw [mem_support_iff, MvPolynomial.coeff_sub, coeff_part, if_pos hb, sub_self] at hm'
+        rw [mem_support_iff, MvPolynomial.coeff_sub, coeff_part, ite_eq_left hb, sub_self] at hm'
         exact hm' rfl
       have e2 : s * f = part b s * f + (s - part b s) * f := by ring
       rw [e2, MvPolynomial.coeff_add, coeff_mul_eq_zero hr hf hm, add_zero]
     · have e : ¬ ∀ k ∈ (Finset.univ : Finset K), ∑ i, m ⟨k, i⟩ = (b + a) k :=
         fun h' => hm (funext fun k => h' k (Finset.mem_univ k))
-      rw [if_neg e]
+      rw [ite_eq_right e]
       by_contra hne
       exact hm (funext fun k => isMultiHomog_mul (isMultiHomog_part b s) hf m
         (mem_support_iff.2 (Ne.symm hne)) k)

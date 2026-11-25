@@ -62,7 +62,6 @@ structure AUSide (D : D7) where
   cls : ∀ j, 1 ≤ j → j ≤ D.R.m → NG.AutRep D.host.E D.R.nV → D.nbc.AU j
   surj : ∀ j h1 h2, Function.Surjective (cls j h1 h2)
   iso : ∀ j h1 h2 π π', cls j h1 h2 π = cls j h1 h2 π' ↔ π.Iso π'
-  mult : ∀ j h1 h2 π, D.nbc.multAU j (cls j h1 h2 π) = π.mult
   sph : ∀ j h1 h2 π (w : PlE D.host) v, ¬ IsSplitPl D.host w → NG.OverPl w v →
     (D.nbc.sphAU j (cls j h1 h2 π) w ↔ π.SphAt v)
   sat : ∀ j h1 h2 π v (w : PlE D.host), NG.OverPl w v → ∀ (Dv : InertDatum D.host.E D.R.nV v w), (∃ α, NG.SatAt π Dv α) →
@@ -312,7 +311,7 @@ structure NdSpec (Pl : PlSide D) (M : MtFam D) (C : NChoice D) (big : D.what₂.
     y ∈ NCov.part (heckeAlg B j w) (mx j w i) ↔ ∃ z, Psi j w i h z = y
   Psi_pr : ∀ j w i (h : i ∈ X.nd.locs j w) (x : D.what₂.MtL (X.nd.mu i) (X.nd.j i)),
     Psi j w i h (X.nd.prMt i x) - B.iV j w (castX X h x) ∈ NCov.off (heckeAlg B j w) (mx j w i)
-  ptX : ∀ j w i (h : i ∈ X.nd.locs j w), X.nd.X i ≃
+  ptX : ∀ j w i (_ : i ∈ X.nd.locs j w), X.nd.X i ≃
     {ψ : heckeAlg B j w →ₐ[B.Oc j w] B.Oc j w //
       NCov.cls ψ = mx j w i ∧ NCov.W (heckeAlg B j w) (NCov.pt ψ) ≠ ⊥}
   ptX_hT : ∀ j w i (h : i ∈ X.nd.locs j w) (x : X.nd.X i) (v : PlE D.host) (k : ℕ)
@@ -351,11 +350,6 @@ structure NdSpec (Pl : PlSide D) (M : MtFam D) (C : NChoice D) (big : D.what₂.
   nbr_iq : ∀ i w (hw : w ∈ placesOver D.host.E (X.nd.l i)) (x : X.nd.O i),
     iq i (algebraMap (X.nd.O i) (FractionRing (X.nd.O i)) x) = (((nbr i w hw).toLL x : ↥(nbr i w hw).LL.1) : Loc.Om (X.nd.l i))
   bj : ∀ i, (D.what₂.MjLat (X.nd.j i)).gen → X.nd.Bj i
-  bj_span : ∀ i, Submodule.span (X.nd.O i) (Set.range (bj i)) = ⊤
-  bj_rel : ∀ i (s : D.what₂.O →+* X.nd.O i),
-    (∀ y, algebraMap (X.nd.O i) (FractionRing (X.nd.O i)) (s y) = X.nd.embK i (D.what₂.OtoLL y)) →
-    ∀ c : (D.what₂.MjLat (X.nd.j i)).gen → X.nd.O i, ∑ g, c g • bj i g = 0 ↔
-      c ∈ Submodule.span (X.nd.O i) ((fun r => s ∘ r) '' latRel (D.what₂.MjLat (X.nd.j i)))
 
 
 

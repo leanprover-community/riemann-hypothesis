@@ -71,11 +71,4 @@ theorem IsNTr.apply_eq_of_mem_adjoin {z F : Ω} (hF : F ∈ IntermediateField.ad
 
 theorem KT.mem_def (X : GlobalTheory.KZ.Tower Ω ε) (L : ℕ) (f : X.K) : f ∈ KT X L ↔ X.sl (ofSL (ModularGroup.T ^ L)) f = f := Iff.rfl
 
-section
-
-variable {X : GlobalTheory.KZ.Tower Ω ε} {A : ValuationSubring Ω} {T : GlobalTheory.K5.Tower p Ωl} {j : Ω →+* Ωl} {n : ℕ} {ψ : O0 p →+* Ωl}
-  {io : KT X (p ^ n) →+* Ωl}
-
-end
-
 end GlobalTheory.Glue

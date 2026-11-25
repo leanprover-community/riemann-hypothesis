@@ -89,7 +89,7 @@ theorem kap_nrmW_contDiff (z : Fin (2 * r + k + 1) → ℂ) :
   rw [e]
   exact Complex.reCLM.contDiff.comp ((kap_herm_contDiff (Hpk k r)).comp (kap_mulVec_contDiff _))
 
-theorem weighted_norm_facts_hold : NrmWFacts := fun k r z hz _ =>
+theorem weighted_norm_facts_hold : NrmWFacts := fun _ _ z hz _ =>
   ⟨kap_nrmW_contDiff z, fun _ hh a => kap_nrmW_mulVec hz hh a⟩
 
 end

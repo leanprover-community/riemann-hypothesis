@@ -133,9 +133,9 @@ theorem dirD_mem (v : Fin r → ℂ) {Φ : Fn k r (Wq →L[ℂ] Wp)} (hΦ : Φ �
       ⟨hxU, hx₀.1⟩, ?_, fun x hx hg => ?_⟩
     · exact (contDiffOn_partial_fderiv_fst hU hF v).mono Set.inter_subset_left
     · unfold dirD
-      rw [if_pos (show x.1 ∈ OmX r from hx.2), (slice_hasFDerivAt hU hF hΦF hx.1 hg).fderiv]
+      rw [ite_eq_left (show x.1 ∈ OmX r from hx.2), (slice_hasFDerivAt hU hF hΦF hx.1 hg).fderiv]
   · unfold dirD
-    rw [if_pos hx.1, if_pos hx.1]
+    rw [ite_eq_left hx.1, ite_eq_left hx.1]
     have he : (fun c' => Φ c' (h * x.2 * h')) =ᶠ[nhds x.1] fun c' => sandCLM (π h) (π' h') (Φ c' x.2) := by
       filter_upwards [(isOpen_OmX r).mem_nhds hx.1] with c' hc'
       exact hΦ.2.2 (c', x.2) ⟨hc', hx.2⟩ h hh h' hh'
@@ -352,15 +352,12 @@ theorem herm_bvec_right {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (v : Fin m �
     herm H v (bvec p) = (H *ᵥ v) p := by
   simp [herm, bvec, dotProduct, Pi.single_apply]
 
-theorem Nlev_last {k r : ℕ} {n : Mx k r} (hn : n ∈ Nlev k r (Fin.last r)) : n = 1 := by
-  apply Formalism.FourierDecayAlt.P.Qx8.Nlev_last <;> assumption
-
 theorem psi_one {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (c : ℂ) : psi k r z c 1 = 1 := by
   have : ell k r z 1 = 0 := by
     unfold ell
     refine Finset.sum_eq_zero fun a _ => ?_
     split_ifs with h
-    · rw [Matrix.one_apply, if_neg]
+    · rw [Matrix.one_apply, ite_eq_right]
       intro e
       have := congrArg Fin.val e
       simp [eI] at this
@@ -373,16 +370,11 @@ def Dp (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : Set (Mx k r) := {g | 0
 theorem Dp_open (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : IsOpen (Dp k r z z') :=
   isOpen_lt continuous_const (GGl_continuous k r z z')
 
-theorem Slev_last {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {s : Mx k r} (hs : s ∈ Slev k r z (Fin.last r)) :
-    s ∈ UWset k r z := by
-  obtain ⟨h, hh, m, hm, rfl⟩ := hs
-  simpa only [Nlev_last hm, mul_one] using hh
-
 theorem Dp_dom (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : IsDom k r z z' (Fin.last r) (Dp k r z z') := by
   refine ⟨Dp_open k r z z', ?_⟩
   rintro g ⟨-, hg⟩ s hs s' hs'
   show 0 < GGl k r z z' (s * g * s')
-  rw [GG_inv (Slev_last hs) (Slev_last hs')]
+  rw [GG_inv (_root_.Formalism.FourierDecayAlt.P.Qx8.Slev_last hs) (_root_.Formalism.FourierDecayAlt.P.Qx8.Slev_last hs')]
   exact hg
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
@@ -400,9 +392,9 @@ theorem slice_FF (hz : inWb k r z) (hz' : inWb k r z') {Φ : Fn k r (Wq →L[ℂ
     {c : Fin r → ℂ} (hc : c ∈ OmX r) : Φ c ∈ FFl k r z z' π π' (Fin.last r) (Dp k r z z') := by
   refine ⟨slice_smooth hΦ hc, ?_, ?_, ?_⟩
   · intro g _ n hn
-    rw [Nlev_last hn, one_mul, psi_one hz, one_smul]
+    rw [_root_.Formalism.FourierDecayAlt.P.Qx8.Nlev_last hn, one_mul, psi_one hz, one_smul]
   · intro g _ n hn
-    rw [Nlev_last hn, mul_one, psi_one hz', one_smul]
+    rw [_root_.Formalism.FourierDecayAlt.P.Qx8.Nlev_last hn, mul_one, psi_one hz', one_smul]
   · rintro g ⟨hg, hD⟩ h hh h' hh'
     exact hΦ.2.2 (c, g) ⟨hc, hg, hD⟩ h hh h' hh'
 
@@ -804,7 +796,7 @@ theorem CovRel.Tη (h : CovRel E η x ζ) (w : ℂ) (a b c : Fin n) :
   unfold Tm
   rw [add_mul, mul_add, h2]
   by_cases hab : a = b
-  · simp only [hab, if_true]
+  · simp only [hab, ite_true]
     rw [Algebra.commutes, map_sub, map_one, mul_sub, mul_one]
     abel
   · simp [hab]
@@ -1406,11 +1398,6 @@ theorem eh_inv (Λ : (Fin (2 * r + k + 1) → ℂ) →ₗ[ℂ] ℂ) (v : Fin (2 
   rw [rd_inv, rd_inv, smul_neg, ← neg_add, ← map_smul, ← map_add (f := _), ← Matrix.smul_mulVec, ← Matrix.add_mulVec,
     hpart_sum]
 
-theorem uh_inv_eq {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ = Hpk k r * gᴴ * Hpk k r := by
-  apply Matrix.inv_eq_left_inv
-  calc Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [Matrix.mul_assoc]
-    _ = 1 := by rw [show gᴴ * Hpk k r * g = Hpk k r from hg, hpk_sq']
-
 theorem smooth_inv (Λ : (Fin (2 * r + k + 1) → ℂ) →ₗ[ℂ] ℂ) (v : Fin (2 * r + k + 1) → ℂ) :
     SmoothLev k r i D (fun y => Λ (y⁻¹ *ᵥ v)) := by
   let L : Mx k r →ₗ[ℝ] ℂ :=
@@ -1423,7 +1410,7 @@ theorem smooth_inv (Λ : (Fin (2 * r + k + 1) → ℂ) →ₗ[ℂ] ℂ) (v : Fin
   refine ⟨Set.univ, fun y => L y, isOpen_univ, trivial, (LinearMap.toContinuousLinearMap L).contDiff.contDiffOn,
     fun y _ hy => ?_⟩
   show Λ (y⁻¹ *ᵥ v) = Λ ((Hpk k r * yᴴ * Hpk k r) *ᵥ v)
-  rw [uh_inv_eq hy.1]
+  rw [_root_.Formalism.FourierDecayAlt.P.Qx8.uh_inv_eq hy.1]
 
 end Leib
 
@@ -1639,8 +1626,8 @@ theorem eh_y (a b c : Fin (mdim k r i)) (g : Mx k r) :
   refine Eq.trans h ?_
   rw [single_mulVec', LinearMap.proj_apply, Pi.smul_apply, bvec_posL, smul_eq_mul]
   by_cases hac : a = c
-  · rw [if_pos hac, if_pos hac.symm, mul_one]; rfl
-  · rw [if_neg hac, if_neg (Ne.symm hac), mul_zero, neg_zero]
+  · rw [ite_eq_left hac, ite_eq_left hac.symm, mul_one]; rfl
+  · rw [ite_eq_right hac, ite_eq_right (Ne.symm hac), mul_zero, neg_zero]
 
 theorem eh_zb (a b : Fin (mdim k r i)) (g : Mx k r) :
     EH k r (posL k r i a) (posL k r i b) (zbF k r z z' i) g = -(xbv k r z' i a * yv k r z i g b) := by
@@ -1651,7 +1638,7 @@ theorem eh_zb (a b : Fin (mdim k r i)) (g : Mx k r) :
 
 theorem zb_eq {g : Mx k r} (hg : g ∈ Glev k r i) : star (zetaL k r z z' i g) = zbF k r z z' i g := by
   have h1 : g⁻¹ * g = 1 := by
-    rw [uh_inv_eq hg.1]
+    rw [_root_.Formalism.FourierDecayAlt.P.Qx8.uh_inv_eq hg.1]
     calc Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [Matrix.mul_assoc]
       _ = 1 := by rw [show gᴴ * Hpk k r * g = Hpk k r from hg.1, hpk_sq']
   have h2 : g * g⁻¹ = 1 := mul_eq_one_comm.1 h1
@@ -1773,8 +1760,8 @@ theorem oneSide_succ (M : ℕ) (α β : Fin (M + 2) → ℂ) (H : (Fin M → Fin
   refine Finset.sum_congr rfl fun i' _ => ?_
   by_cases h : i < i'
   · have h' : (i : ℕ) < (i' : ℕ) := h
-    simp only [h, if_true, hT, sg2, min_eq_right h.le, max_eq_left h.le, min_eq_left h.le, max_eq_right h.le,
-      if_neg (not_lt.2 h'.le), if_pos h', ← add_smul]
+    simp only [h, ite_true, hT, sg2, min_eq_right h.le, max_eq_left h.le, min_eq_left h.le, max_eq_right h.le,
+      ite_eq_right (not_lt.2 h'.le), ite_eq_left h', ← add_smul]
     congr 1
     push_cast
     ring
@@ -1826,7 +1813,7 @@ theorem pairSum (n : ℕ) (A ρ B κ : Fin n → ℂ) (G : (Fin (n - 2) → Fin 
   rw [L, h2]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun i' _ => ?_
   by_cases hi : i < i'
-  · simp only [hi, if_true, true_and, h1, Finset.smul_sum]
+  · simp only [hi, ite_true, true_and, h1, Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun j' _ => ?_
     split_ifs
     · rw [smul_smul]

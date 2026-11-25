@@ -197,7 +197,7 @@ end GlobalTheory.KodairaNefBig
 open GlobalTheory.KodairaNefBig in
 theorem GlobalTheory.exists_ample_add_eff_of_isNef_isBig : GlobalTheory.Published.NefNumerics → ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp ℂ), IsProjOver p → letI := algebraΓOfHom p; ∀ (N : LB X) (hN : N.IsLB), IsNef ℂ N → IsBig ℂ N → ∃ (a : ℕ) (A : LB X) (hA : A.IsLB) (E₀ : CartierDiv X), 0 < a ∧ IsAmpleLB A ∧ E₀.Eff ∧ a • cls N hN = cls A hA + cls (toLB E₀) (isLB_toLB E₀) := by
   intro hNN X _ _ p hp N hN hnef hbig
-  letI := algebraΓOfHom p
+  let := algebraΓOfHom p
   have hp' : IsProjOver (strHom ℂ (X := X)) := by rwa [strHom_eq (f := p) fun _ => rfl]
   obtain ⟨A, hA⟩ := exists_isAmpleLB_of_isProjOver hp
   obtain ⟨D, hD, -⟩ := hbig.growth
@@ -316,9 +316,9 @@ namespace GlobalTheory.PairStep
 
 theorem exists_sec_sep_of_lcCut : GlobalTheory.Published.NadelVanishingPair → ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X] (p : X ⟶ Sp ℂ) (n : ℕ), IsProjOver p → topologicalKrullDim X = n → letI := algebraΓOfHom p; ∀ (M : LB X) (Δ : X → ℚ) (m : ℕ) (G : CartierDiv X) (N : LB X) (D : X → ℚ) (ρ d : ℚ) (x x' : X), M.IsLB → IsEffQDiv Δ → 0 < m → IsLogCanonicalMultiple p n Δ m G → IsAmpleLB N → (∀ C : Closeds X, IsCompleteCurve ℂ C → (interNumRed ℂ C ![M] : ℚ) = interNumRed ℂ C ![toLB G] / m + ρ * interNumRed ℂ C ![N]) → QNum p N d D → d < ρ → IsClosed ({x} : Set X) → x ≠ x' → LcCut p n (Δ + D) x 0 → ¬ KltAt p n (Δ + D) x' → ∃ s : M.Sec, x ∈ nonzeroLocus s ∧ x' ∉ nonzeroLocus s := by
   intro hNadel X _ _ _ p n hp hn
-  letI := algebraΓOfHom p
+  let := algebraΓOfHom p
   intro M Δ m G N D ρ d x x' hM hΔ hm hG hN hdeg hD hdρ hx hxx' hlc hx'
-  haveI hNoeth : AlgebraicGeometry.IsNoetherian X := isNoetherian_of_isProjOver hp
+  have hNoeth : AlgebraicGeometry.IsNoetherian X := isNoetherian_of_isProjOver hp
   obtain ⟨-, H, hH⟩ := (isProjOver_iff_isProper_and_exists_isAmpleLB p).1 hp
   obtain ⟨m', D₀, hm', hD₀, rfl, hDn⟩ := hD
 
@@ -405,7 +405,7 @@ theorem qWeil_zero_cartier {X : Scheme.{0}} [IsIntegral X] [IsLocallyNoetherian 
 theorem qNum_zero_zero : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp ℂ),
     IsProjOver p → ∀ N : LB X, QNum p N 0 0 := by
   intro X _ _ p _ N
-  letI := algebraΓOfHom p
+  let := algebraΓOfHom p
   refine ⟨1, 0, one_pos, CartierDiv.eff_zero, (qWeil_zero_cartier 1).symm, fun C _ => ?_⟩
   rw [interNumRed_one_eq_zero (isLB_toLB 0) (by rw [← toPic_apply, map_zero])]
   simp
@@ -433,13 +433,13 @@ theorem not_kltAt_sub_of_not_lcAt : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocal
     ∀ (Δ D : X → ℚ) (x : X), IsQCart D → KltAt p n Δ x → ¬ LcAt p n (Δ + D) x →
     ∃ δ₀ : ℚ, 0 < δ₀ ∧ ∀ δ : ℚ, 0 ≤ δ → δ ≤ δ₀ → ¬ KltAt p n (Δ + (1 - δ) • D) x := by
   intro X _ _ _ p n hp hn Δ D x hD hk hlc
-  haveI : IsProper p := ((isProjOver_iff_isProper_and_exists_isAmpleLB p).1 hp).1
+  have : IsProper p := ((isProjOver_iff_isProper_and_exists_isAmpleLB p).1 hp).1
   obtain ⟨η, m, g, hη, hm, hg, hd⟩ := hk
   obtain ⟨m', f, hm', hf, hDf⟩ := _root_.GlobalTheory.PairStep.exists_localEqn_of_isQCart X p D hD x
   obtain ⟨m₁, g₁, hm₁, hg₁, hd₁⟩ := _root_.GlobalTheory.PairStep.isLogEqn_add_smul X p n Δ D η x m m' g f 1 hm hm' hg hDf
   rw [one_smul] at hg₁
   have hnl := (_root_.GlobalTheory.PairStep.lcAt_iff_of_isLogEqn X p n hp hn (Δ + D) η x m₁ g₁ hη hm₁ hg₁).not.1 hlc
-  push_neg at hnl
+  push Not at hnl
   obtain ⟨E, hE, hlt⟩ := hnl
   rw [hd₁, one_mul] at hlt
   set a := discrep E η m g with ha
@@ -584,7 +584,7 @@ namespace GlobalTheory.PairStep
 
 theorem not_lcAt_add_of_isNkltCentre : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X] (p : X ⟶ Sp ℂ) (n : ℕ), IsProjOver p → topologicalKrullDim X = n → ∀ (Γ A : X → ℚ) (z x : X), IsNkltCentre p n Γ z → IsQCart A → ¬ Off A z → z ⤳ x → ¬ LcAt p n (Γ + A) x := by
   intro X _ _ _ p n hp hn Γ A z x hN hA hoff hzx hlc
-  haveI : IsProper p := ((isProjOver_iff_isProper_and_exists_isAmpleLB p).1 hp).1
+  have : IsProper p := ((isProjOver_iff_isProper_and_exists_isAmpleLB p).1 hp).1
   have hlcz := ((_root_.GlobalTheory.Discrepancy.kltAt_lcAt_generisation X p n (Γ + A) x z hzx).2 hlc)
   obtain ⟨E, η, m, g, hη, hm, hlog, hC, hd⟩ := hN
   obtain ⟨m₀, D₀, hm₀, hEff, rfl⟩ := hA
@@ -832,7 +832,7 @@ theorem two_point_induction : GlobalTheory.Published.Principalisation → Global
       ((LcCut p n (Δ + D) x₁ 0 ∧ ¬ KltAt p n (Δ + D) x₂) ∨
         (LcCut p n (Δ + D) x₂ 0 ∧ ¬ KltAt p n (Δ + D) x₁)) := by
   intro hP hNV hNef X _ _ _ p n hproj hdim
-  letI := algebraΓOfHom p
+  let := algebraΓOfHom p
   intro Δ m G N ε h x₁ x₂ hΔ hklt hm hG hNa hc₁ hc₂ hne hh hint hε
   have hpos : ∀ e, 0 < h e + ε := fun e => add_pos (hh e) hε
 
@@ -984,7 +984,7 @@ namespace GlobalTheory.NefBigSep
 theorem separate_nef_big : GlobalTheory.Published.Principalisation → GlobalTheory.Published.NadelVanishingPair → GlobalTheory.Published.NefNumerics → ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X] (p : X ⟶ Sp ℂ) (n : ℕ), IsProjOver p → topologicalKrullDim X = n → letI := algebraΓOfHom p; ∀ (M : LB X) (Δ : X → ℚ) (m : ℕ) (G : CartierDiv X) (N : LB X) (ρ : ℚ) (h : ℕ → ℚ) (x₁ x₂ : X), M.IsLB → IsEffQDiv Δ → (∀ y, KltAt p n Δ y) → 0 < m → IsLogCanonicalMultiple p n Δ m G → IsNef ℂ N → IsBig ℂ N → (∀ C : Closeds X, IsCompleteCurve ℂ C → (interNumRed ℂ C ![M] : ℚ) = interNumRed ℂ C ![toLB G] / m + ρ * interNumRed ℂ C ![N]) → IsClosed ({x₁} : Set X) → IsClosed ({x₂} : Set X) → x₁ ≠ x₂ → (∀ e, 0 < h e) → (∀ (z : X) (e : ℕ), z ⤳ x₁ ∨ z ⤳ x₂ → 1 ≤ e → topologicalKrullDim (closure ({z} : Set X)) = e → 2 * (e : ℚ) ^ e < h e ^ e * (interNumRed ℂ (Closeds.closure ({z} : Set X)) fun _ : Fin e => N : ℤ)) → ∑ e ∈ Finset.Icc 1 n, h e < ρ → 0 < ρ → ∃ s : M.Sec, (x₁ ∈ nonzeroLocus s ∧ x₂ ∉ nonzeroLocus s) ∨ (x₂ ∈ nonzeroLocus s ∧ x₁ ∉ nonzeroLocus s) := by
   intro hPr hNad hNef X _ _ _ p n hp hdim M Δ m G N ρ h x₁ x₂ hM hΔ hklt hm hG hNn hNb
     hcurve hx₁ hx₂ hne hh hz hsum hρ
-  letI := algebraΓOfHom p
+  let := algebraΓOfHom p
   obtain ⟨a, A, hA, E₀, ha, hAmp, hE₀, hcls⟩ :=
     _root_.GlobalTheory.exists_ample_add_eff_of_isNef_isBig hNef X p hp N hNn.isLB hNn hNb
   obtain ⟨c, hc, hkltc⟩ := _root_.GlobalTheory.PairStep.exists_pos_kltAt_add_smul hPr X p n hp hdim Δ m G (qWeil E₀ 1) hm hG hklt
@@ -1069,7 +1069,7 @@ theorem pointSeparationPair_of_vanishing :
       GlobalTheory.Published.PointSeparationPair := by
   intro hP hV hN X _ _ _ p n hproj hdim M Δ m G r N₀ x₁ x₂ c hM hΔ hklt hm hG hr hnef hbig hC
     h₁ h₂ hx hc hZ hs
-  letI := algebraΓOfHom p
+  let := algebraΓOfHom p
   obtain ⟨h, hpos, hsum, hh⟩ := _root_.GlobalTheory.PairStep.exists_rat_budgets n r c hr hc hs
   have hr' : (0 : ℚ) < (r : ℚ) := by exact_mod_cast hr
   refine _root_.GlobalTheory.NefBigSep.separate_nef_big hP hV hN X p n hproj hdim M Δ m G N₀ (1 / (r : ℚ)) h x₁ x₂ hM hΔ hklt hm hG

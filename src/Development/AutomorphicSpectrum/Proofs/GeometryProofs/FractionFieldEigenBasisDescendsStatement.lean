@@ -106,7 +106,7 @@ theorem exists_integral_leftInverse {V K : Type} [CommRing V] [IsDomain V]
     rw [hr', hrep, Finsupp.single_apply]
     by_cases h : i = i'
     · subst h; simp
-    · rw [if_neg (Ne.symm h), if_neg h]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
   have hsum : F i (β i') = ∑ k, β i' k * F i (fun j => if k = j then 1 else 0) := by
     rw [LinearMap.pi_apply_eq_sum_univ (F i) (β i')]
     simp only [smul_eq_mul]
@@ -309,7 +309,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
 end -- clump:auto

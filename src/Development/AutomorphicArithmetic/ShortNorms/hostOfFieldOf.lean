@@ -613,15 +613,6 @@ section -- clump:auto
 
 open Formalism.HC UpperTheory.Top
 
-private theorem UpperTheory.Top.realSplit_step (f q i : ℕ) [NeZero f] (ξ : DirichletCharacter ℂ f) (hξ : ξ.IsPrimitive)
-    (hq : q.Prime) (h2 : q ≠ 2) (hf : ¬ q ∣ f) (hi : i ≤ 1) :
-    ∃ (M : ℕ) (ψ : DirichletCharacter ℂ M), M = f * q ^ i ∧ ψ.IsPrimitive ∧
-      ∀ n : ℕ, ψ (n : ZMod M) = ξ (n : ZMod f) * QH.J q n ^ i := by
-  interval_cases i
-  · exact ⟨f, ξ, by simp, hξ, fun n => by simp⟩
-  · obtain ⟨ψ, h1, -, h3⟩ := QH.twist_prim f q ξ hξ hq h2 hf
-    exact ⟨f * q, ψ, by simp, h1, fun n => by simpa using h3 n⟩
-
 private theorem UpperTheory.Top.realSplit_J (q n i : ℕ) (h : n.Coprime q) : (QH.J q n ^ i) ^ 2 = 1 := by
   have h1 : jacobiSym (n : ℤ) q = 1 ∨ jacobiSym (n : ℤ) q = -1 :=
     jacobiSym.eq_one_or_neg_one (by rw [Int.gcd_natCast_natCast]; exact h)
@@ -704,7 +695,7 @@ private theorem exists_real_pchar_twist_decomposition (N : ℕ) [NeZero N] (χ :
     exact h
   have hcN₀ : ξ.conductor ∣ 8 * ordCompl[2] S := ξ.conductor_dvd_level
   have hqc : ¬ q ∣ ξ.conductor := fun h => hq8 (h.trans hcN₀)
-  obtain ⟨M1, ψ1, hM1, hψ1, hψ1eq⟩ := UpperTheory.Top.realSplit_step ξ.conductor q a
+  obtain ⟨M1, ψ1, hM1, hψ1, hψ1eq⟩ := boxes_step ξ.conductor q a
     ξ.primitiveCharacter ξ.primitiveCharacter_isPrimitive hq hq2 hqc ha
   subst hM1
   haveI : NeZero (ξ.conductor * q ^ a) := ⟨mul_ne_zero (NeZero.ne _) (pow_ne_zero _ hq.ne_zero)⟩
@@ -714,7 +705,7 @@ private theorem exists_real_pchar_twist_decomposition (N : ℕ) [NeZero N] (χ :
     · exact hd8 (h.trans hcN₀)
     · exact hqd ((Nat.prime_dvd_prime_iff_eq hd hq).1 (hd.dvd_of_dvd_pow h)).symm
   obtain ⟨M2, ψ2, hM2, hψ2, hψ2eq⟩ :=
-    UpperTheory.Top.realSplit_step (ξ.conductor * q ^ a) d b ψ1 hψ1 hd hd2 hdc hb
+    boxes_step (ξ.conductor * q ^ a) d b ψ1 hψ1 hd hd2 hdc hb
   subst hM2
   haveI : NeZero (ξ.conductor * q ^ a * d ^ b) :=
     ⟨mul_ne_zero (NeZero.ne _) (pow_ne_zero _ hd.ne_zero)⟩
@@ -841,12 +832,12 @@ private theorem UpperTheory.Top.realBox_main (M : ℕ) (φ : Frame) (H : HostRaw
   have hdqi : ∀ k : ℕ, ¬ H.d ∣ H.q ^ k := fun k h => hdq (hd.dvd_of_dvd_pow h)
   have hjd : (if H.d ∣ χ.N then (1 : Fin 2) else 0) = j := by
     rcases hj01 with rfl | rfl
-    · rw [if_neg]
+    · rw [ite_eq_right]
       rw [hN, show H.d ^ ((0 : Fin 2) : ℕ) = 1 by simp, mul_one]
       intro h
       rcases (Nat.Prime.dvd_mul hd).1 h with h | h
       exacts [hdρ h, hdqi _ h]
-    · rw [if_pos]
+    · rw [ite_eq_left]
       rw [hN]
       exact dvd_mul_of_dvd_right (dvd_pow_self _ (by simp)) _
   have hqe : (H.q : ℝ) ≤ Real.exp (Y ^ (eps / 5)) :=
@@ -1329,7 +1320,7 @@ private theorem lt_of_classC0' {R : Ranks} (H : Host R) {p : ℕ} {y : ℝ} (hp 
       rw [Formalism.HC.HostRaw.small, Nat.mem_primeFactors]
       refine ⟨Nat.prime_two, ?_, H.QS_pos.ne'⟩
       exact dvd_trans (dvd_pow_self 2 (by omega)) H.tower_dvd
-    rw [if_pos hmem] at hc'
+    rw [ite_eq_left hmem] at hc'
     exact absurd hc' (by decide)
   · have hodd : p.factorization 2 = 0 :=
       Nat.factorization_eq_zero_of_not_dvd
@@ -1415,17 +1406,6 @@ private theorem hof_abs_dlogH_le {R : Ranks} (H : Host R) {x eps C : ℝ} (h : Q
   have h1 := (h.2.1 H.d _ (hof_quadraticChar_induces H.d (8 * H.q * H.d) (by omega) (by
     rw [mul_assoc]; omega))).2
   exact (Complex.abs_re_le_norm _).trans h1
-
-private theorem hof_log_le_rpow (eps C : ℝ) (he : 0 < eps) (hC : 0 < C) :
-    ∃ x0 : ℝ, ∀ x, x0 ≤ x → C * Real.log x ≤ x ^ eps := by
-  have h := (isLittleO_log_rpow_atTop he).bound (inv_pos.2 hC)
-  obtain ⟨x0, h0⟩ := Filter.eventually_atTop.1 h
-  refine ⟨max x0 1, fun x hx => ?_⟩
-  have h1 := h0 x (le_of_max_le_left hx)
-  have hx1 : 1 ≤ x := le_of_max_le_right hx
-  rw [Real.norm_of_nonneg (Real.log_nonneg hx1), Real.norm_of_nonneg (by positivity)] at h1
-  calc C * Real.log x ≤ C * (C⁻¹ * x ^ eps) := by gcongr
-    _ = x ^ eps := by field_simp
 
 private theorem hof_Lwv_le (s : Scale) (hy : 1 ≤ Real.log s.x) :
     (Lwv s : ℝ) ≤ (4084 + 60 / s.eps) * Real.log s.x := by
@@ -1516,13 +1496,13 @@ private theorem hof_box {R : Ranks} (H : Host R) {M : ℕ} {eps Y X : ℝ} (hM :
   have key := a ⟨N, χ, hχ.1⟩ ((isCharH_iff H χ).1 hχ) hr
   refine ⟨fun hd => ?_, fun hq hd => ?_⟩
   · obtain ⟨k1, k2⟩ := key (Or.inr hd)
-    rw [if_pos hd] at k1 k2
+    rw [ite_eq_left hd] at k1 k2
     have e : 8 * ((ordCompl[2] H.QS : ℕ) : ℝ) * GlobalTheoryTheory.X1 Y eps * GlobalTheoryTheory.X2 Y eps = height (ordCompl[2] H.QS) eps Y 1 := by
       simp [height, GlobalTheoryTheory.X1, GlobalTheoryTheory.X2]
     rw [e]
     exact ⟨hχ.1, hr, k2, fun z z1 z2 => k1 z z1 (z2.trans (hmono _))⟩
   · obtain ⟨k1, k2⟩ := key (Or.inl hq)
-    rw [if_neg hd] at k1 k2
+    rw [ite_eq_right hd] at k1 k2
     have e : 8 * ((ordCompl[2] H.QS : ℕ) : ℝ) * GlobalTheoryTheory.X1 Y eps = height (ordCompl[2] H.QS) eps Y 0 := by
       simp [height, GlobalTheoryTheory.X1]
     rw [e]
@@ -1542,7 +1522,7 @@ theorem UpperTheory.T3.hostOfFieldOf :
   obtain ⟨xd, hP⟩ := UpperTheory.Top.pairRows eps C0 he he'
   obtain ⟨CT2, hT⟩ := hof_thick
   obtain ⟨xe, hT⟩ := hT eps C0 he he'
-  obtain ⟨xf, hlog⟩ := hof_log_le_rpow eps 4 he (by norm_num)
+  obtain ⟨xf, hlog⟩ := mul_log_le_rpow_eventually eps 4 he (by norm_num)
   obtain ⟨xg, hbig⟩ := UpperTheory.T3.qdBig eps C0 he he'
   refine ⟨CT2, max C0 C1, 1, Cb, max (max xa (max xc xd)) (max (max xe xf) xg), le_max_left _ _, one_pos, hCb,
     fun s R H0 M Y hs hx hR hJ ho hQS hM _ hQ hW hG hF hA => ?_⟩

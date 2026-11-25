@@ -9,50 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCoset
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MoveLatticeIsTermSameDatumWithWitnesses
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormAdditiveCharacterTypePrimeEqOne
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermInvariantsIndependentOfWitnesses
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -85,7 +41,7 @@ theorem top_coord (g : Fin (r + 1) → S.V) (gs : Fin r → S.V)
     refine Submodule.span_le.2 ?_
     rintro _ ⟨i, hi, rfl⟩
     change hf L S.Hm (g i) (gs j) = 0
-    rw [hd, if_neg]
+    rw [hd, ite_eq_right]
     rintro rfl
     simp at hi
   have h2 := LinearMap.mem_ker.1 (hK hB)
@@ -97,7 +53,7 @@ theorem top_coord (g : Fin (r + 1) → S.V) (gs : Fin r → S.V)
     change al i * hf L S.Hm (g i) (gs j) = _
     rw [hd]
     split_ifs <;> simp
-  simp only [h3, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+  simp only [h3, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
   exact h2
 
 theorem psi'_eq_one (n : S.GLV) (hn : ∀ v ∈ perp L S.Hm S.X', n v = v) : S.psi' n = 1 := by
@@ -106,10 +62,10 @@ theorem psi'_eq_one (n : S.GLV) (hn : ∀ v ∈ perp L S.Hm S.X', n v = v) : S.p
     have hp : S.f' j.succ ∈ perp L S.Hm S.X' := by
       refine FramePsi.hf_span_right L S.Hm _ _ ?_
       rintro _ ⟨i, hi, rfl⟩
-      rw [S.gram', if_neg]
+      rw [S.gram', ite_eq_right]
       rintro ⟨-, rfl⟩
       simp at hi
-    rw [Frames.coef, hn _ hp, Frames.h, S.dual', if_neg]
+    rw [Frames.coef, hn _ hp, Frames.h, S.dual', ite_eq_right]
     intro h
     have := congrArg Fin.val h
     simp at this

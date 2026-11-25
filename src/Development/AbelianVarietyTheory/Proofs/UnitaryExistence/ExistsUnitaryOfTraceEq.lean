@@ -10,45 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUni
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGramStatement
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PrincipalLevelEqHalfMarkingStabilizerStatement
 import ReciprocityTheory.SemistableReduction.SemiContractC
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CongruenceLatticeFractionalMultipleAgreeStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CramerMemAdelicCompletionOfElementSet
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfMemSpanFraction
@@ -57,8 +18,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RationalPointsAd
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -68,18 +27,6 @@ import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Permutes
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfSpanEqTop", "h": "module\n\nimport ReciprocityTheory.SemistableReduction.SemiContractC\npublic import Mathlib.NumberTheory.NumberField.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-namespace GlobalTheory.SmulMemSpanTop
-
-open NumberField
-
-theorem exists_smul_mem_of_span_eq_top {E : Type} [Field E] [NumberField E] {n : ℕ}
-    (Λ : Submodule (𝓞 E) (Fin n → E))
-    (h : Submodule.span E (↑Λ : Set (Fin n → E)) = ⊤) (v : Fin n → E) :
-    ∃ d : 𝓞 E, d ≠ 0 ∧ d • v ∈ Λ := by
-  apply ReciprocityTheory.MultiplicativeHeights.sc_scale <;> assumption
-
-end GlobalTheory.SmulMemSpanTop
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfSpanEqTop =====
@@ -222,8 +169,6 @@ section Ext
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
-alias exists_smul_mem := _root_.GlobalTheory.SmulMemSpanTop.exists_smul_mem_of_span_eq_top
-
 theorem exists_matrix_of_lattice (Λ : Submodule (𝓞 E) (Fin n → E))
     (hΛ : Submodule.span E (Λ : Set (Fin n → E)) = ⊤) (ψ : Λ →ₗ[𝓞 E] (Fin n → E)) :
     ∃ M : Matrix (Fin n) (Fin n) E, ∀ x : Λ, M *ᵥ (x : Fin n → E) = ψ x := by
@@ -232,7 +177,7 @@ theorem exists_matrix_of_lattice (Λ : Submodule (𝓞 E) (Fin n → E))
   haveI : IsLocalizedModule (nonZeroDivisors (𝓞 E)) Λ.subtype :=
     { map_units := hun
       surj := fun v => by
-        obtain ⟨d, hd, h⟩ := exists_smul_mem Λ hΛ v
+        obtain ⟨d, hd, h⟩ := Bl.general_b_fact_second.goal1 Λ hΛ v
         exact ⟨(⟨_, h⟩, ⟨d, mem_nonZeroDivisors_of_ne_zero hd⟩), rfl⟩
       exists_of_eq := fun h => ⟨1, by rw [Subtype.ext h]⟩ }
   let T := IsLocalizedModule.lift (nonZeroDivisors (𝓞 E)) Λ.subtype ψ hun
@@ -298,8 +243,8 @@ theorem exists_unitary_of_trace_eq {La : Type} [AddCommGroup La] [Module (𝓞 E
     rw [LinearEquiv.apply_symm_apply] at this
     rw [← hinj this]
     exact (φ _).2
-  · obtain ⟨d, hd, hu'⟩ := exists_smul_mem Λ hΛ u
-    obtain ⟨d', hd', hv'⟩ := exists_smul_mem Λ hΛ v
+  · obtain ⟨d, hd, hu'⟩ := Bl.general_b_fact_second.goal1 Λ hΛ u
+    obtain ⟨d', hd', hv'⟩ := Bl.general_b_fact_second.goal1 Λ hΛ v
     have e := h1 (φ.symm ⟨_, hu'⟩) (φ.symm ⟨_, hv'⟩)
     rw [← hM', ← hM', LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply] at e
     change herm G (M *ᵥ ((d : E) • u)) (M *ᵥ ((d' : E) • v)) = herm G ((d : E) • u) ((d' : E) • v) at e

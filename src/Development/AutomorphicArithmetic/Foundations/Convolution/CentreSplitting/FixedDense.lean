@@ -38,8 +38,7 @@ theorem UpperTheory.ConvolutionTheory.Dp.fixedDense :
     obtain ⟨g, hg, rfl⟩ := (hm y).1 hy
     exact (hm _).2 ⟨u * g, U.mul_mem hu hg, by rw [map_mul]; rfl⟩
   refine ⟨_, ⟨(S.card : ℂ)⁻¹ • ∑ y ∈ S, y, fun u hu => ?_, rfl⟩, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum]
+  · rw [map_smul, map_sum]
     congr 1
     refine Finset.sum_nbij' (τ u) (τ u⁻¹) (hst u hu) (hst _ (U.inv_mem hu)) (fun y _ => ?_) (fun y _ => ?_) fun _ _ => rfl
     · rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one]; rfl

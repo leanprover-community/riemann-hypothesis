@@ -47,7 +47,7 @@ theorem exists_basis_co (h : HasGram N) : ∃ b : Basis (Fin (cDim N)) K V,
       ∃ b : Basis (Fin s.1) K V, IsGram b s.2.2.2 N ∧ s.2.1 = b.equivFun ∧ s.2.2.1 = b.equivFun.symm := by
     rintro _ rfl
     exact ⟨_, h.some.2.2, rfl, rfl⟩
-  exact key _ (dif_pos h)
+  exact key _ (dite_eq_left h)
 
 
 omit [NumberField K] in
@@ -94,17 +94,10 @@ open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestric
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}
 
-def compMean (g : Comp Xo c → ℝ) : ℝ := (∑ᶠ Z, g Z) / (Nat.card (Comp Xo c) : ℝ)
-
 section Short
 
 variable (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (x : ℝ) {D : D7} (V : (c.F →+* ℂ) → HSp D)
   (dict : ∀ σ, GA D (V σ) → Σ k, Frame ((U σ).X k).Ψ r)
-
-def cStarSet (G : WTZ E) : Set ℝ :=
-  {t | ∃ (n : ℕ) (w : Fin n → cuspW Xo c U G) (abelian₂ : ℝ), CompShortGen U x V dict G w abelian₂ ∧ t = cStar n abelian₂}
-
-def cStarInf (G : WTZ E) : ℝ := sInf (cStarSet U x V dict G)
 
 variable {U x V dict} {G : WTZ E}
 

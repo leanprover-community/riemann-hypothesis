@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsP
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsHomRangeSubset
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TriIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesComp
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesUniqueInvertibleStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameStableOfIsLocalRing
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FlagComponentFramedPointFrame
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EigenFrameBasePointLiftsUniqueFlagSpace
@@ -262,7 +261,7 @@ theorem exists_completion (hk : k τ < m τ) (c : Rest m k τ → K) (i : Rest m
       ∀ O : Subring K, (∀ j, c j ∈ O) → Par k O N := by
   classical
   let v : Fin (m τ) → K := fun j => if h : k τ ≤ (j : ℕ) then c ⟨j, h⟩ else 0
-  have hv : ∀ j : Rest m k τ, v j.1 = c j := fun j => dif_pos j.2
+  have hv : ∀ j : Rest m k τ, v j.1 = c j := fun j => dite_eq_left j.2
   let T : Matrix (Fin (m τ)) (Fin (m τ)) K :=
     ((1 : Matrix _ _ K).updateRow i.1 v).submatrix (Equiv.swap ⟨k τ, hk⟩ i.1) id
   have hd : T.det * T.det = 1 := by
@@ -373,11 +372,8 @@ namespace GlobalTheory.FlagBundle.QuotDual
 
 variable {ι : Type} {m k : ι → ℕ} {K : Type} [Field K]
 
-abbrev restBlock (k : ι → ℕ) (τ : ι) (g : Mat m K) : Matrix (Rest m k τ) (Rest m k τ) K :=
-  (g τ).submatrix Subtype.val Subtype.val
-
 theorem restBlock_mul {O : Subring K} (τ : ι) (g : Mat m K) {h : Mat m K} (hh : Par k O h) :
-    restBlock k τ (g * h) = restBlock k τ g * restBlock k τ h := by
+    GlobalTheory.FlagBundle.StepLoc.blk k τ (g * h) = GlobalTheory.FlagBundle.StepLoc.blk k τ g * GlobalTheory.FlagBundle.StepLoc.blk k τ h := by
   ext i j
   simp only [Matrix.submatrix_apply, Pi.mul_apply, Matrix.mul_apply]
   rw [← Finset.sum_subtype (Finset.univ.filter fun l : Fin (m τ) => k τ ≤ (l : ℕ)) (by simp)
@@ -387,15 +383,15 @@ theorem restBlock_mul {O : Subring K} (τ : ι) (g : Mat m K) {h : Mat m K} (hh 
   have hj := j.2
   rw [(hh τ).2.2.2 l j.1 hl' (by show (l : ℕ) < j.1; omega), mul_zero]
 
-theorem restBlock_one (τ : ι) : restBlock k τ (1 : Mat m K) = 1 :=
+theorem restBlock_one (τ : ι) : GlobalTheory.FlagBundle.StepLoc.blk k τ (1 : Mat m K) = 1 :=
   Matrix.submatrix_one _ Subtype.val_injective
 
 theorem restBlock_inv_mul {O : Subring K} (τ : ι) {g : Mat m K} (hg : Par k O g) :
-    restBlock k τ g⁻¹ * restBlock k τ g = 1 := by
+    GlobalTheory.FlagBundle.StepLoc.blk k τ g⁻¹ * GlobalTheory.FlagBundle.StepLoc.blk k τ g = 1 := by
   rw [← restBlock_mul τ _ hg, Mat.inv_mul hg.det_ne, restBlock_one]
 
 theorem restBlock_inv {O : Subring K} (τ : ι) {g : Mat m K} (hg : Par k O g) :
-    (restBlock k τ g)⁻¹ = restBlock k τ g⁻¹ :=
+    (GlobalTheory.FlagBundle.StepLoc.blk k τ g)⁻¹ = GlobalTheory.FlagBundle.StepLoc.blk k τ g⁻¹ :=
   Matrix.inv_eq_left_inv (restBlock_inv_mul τ hg)
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω]
@@ -419,7 +415,7 @@ theorem det_dualBlock_ne (τ : ι) (h₀ : A₀ ∈ S.S (genericPoint M.Z)) {z :
   have h := par_generic h₀ hA
   have e := congrArg Matrix.det (restBlock_inv_mul τ h)
   rw [Matrix.det_mul, Matrix.det_one] at e
-  show ((restBlock k τ (A * A₀⁻¹))⁻¹).transpose.det ≠ 0
+  show ((GlobalTheory.FlagBundle.StepLoc.blk k τ (A * A₀⁻¹))⁻¹).transpose.det ≠ 0
   rw [Matrix.det_transpose, restBlock_inv τ h]
   exact left_ne_zero_of_mul_eq_one e
 
@@ -429,8 +425,8 @@ theorem span_dualBlock_le (τ : ι) (h₀ : A₀ ∈ S.S (genericPoint M.Z)) {z 
   have hg := (Fr.mem_iff hA).1 hA'
   have e : A' * A₀⁻¹ = (A' * A⁻¹) * (A * A₀⁻¹) := by
     rw [← mul_assoc, mul_assoc A', Mat.inv_mul (Fr.det_ne hA), mul_one]
-  have e2 : dualBlock k τ A₀ A' = (restBlock k τ (A' * A⁻¹)⁻¹).transpose * dualBlock k τ A₀ A := by
-    show ((restBlock k τ (A' * A₀⁻¹))⁻¹).transpose = _ * ((restBlock k τ (A * A₀⁻¹))⁻¹).transpose
+  have e2 : dualBlock k τ A₀ A' = (GlobalTheory.FlagBundle.StepLoc.blk k τ (A' * A⁻¹)⁻¹).transpose * dualBlock k τ A₀ A := by
+    show ((GlobalTheory.FlagBundle.StepLoc.blk k τ (A' * A₀⁻¹))⁻¹).transpose = _ * ((GlobalTheory.FlagBundle.StepLoc.blk k τ (A * A₀⁻¹))⁻¹).transpose
     rw [e, restBlock_mul τ _ (par_generic h₀ hA), Matrix.mul_inv_rev, Matrix.transpose_mul, restBlock_inv τ hg]
   rw [e2]
   exact span_mul_le _ _ _ fun i j => (hg.inv τ).1 _ _
@@ -724,7 +720,7 @@ theorem par_succ_iff {h G : Mat m K} (hh : Par k ⊤ h) (hG : Par k ⊤ G) (hk :
       have e := hrow j
       rw [ht j] at e
       simp only [Matrix.vecMul, dotProduct, Matrix.submatrix_apply, Pi.zero_apply, sub_mul,
-        Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       rw [← e, sub_self]
     have hv0 := Matrix.eq_zero_of_vecMul_eq_zero (det_submatrix_rest_ne_zero hG τ) hv
     intro σ
@@ -743,7 +739,7 @@ theorem par_succ_iff {h G : Mat m K} (hh : Par k ⊤ h) (hG : Par k ⊤ G) (hk :
           rw [Fin.lt_def] at hij
           omega
         have e := congrFun hv0 ⟨j, hj⟩
-        simp only [hne, if_false, sub_zero, Pi.zero_apply] at e
+        simp only [hne, ite_false, sub_zero, Pi.zero_apply] at e
         have hieq : i = ⟨k σ, hk⟩ := Fin.ext hi'
         subst hieq
         exact e
@@ -954,7 +950,7 @@ theorem nonempty_algEquiv_adjoin (φ : Ω →ₐ[F] Ω') (A : Subalgebra F Ω) {
     Nonempty (MvPolynomial σ A ≃ₐ[F] Algebra.adjoin F (φ '' (A : Set Ω) ∪ Set.range t)) := by
   let ψ : MvPolynomial σ A →ₐ[F] Ω' := MvPolynomial.aevalTower (φ.comp A.val) t
   have hinj : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro P hP
     refine MvPolynomial.map_injective (A.val : A →+* Ω) Subtype.val_injective ?_
     rw [map_zero]
@@ -1140,7 +1136,7 @@ theorem keepsRad_of_affCover (F Ω Ω' : Type) [Field F] [Field Ω] [Algebra F �
   let A := (M.O (f z')).toSubring
   let ψ : MvPolynomial (Fin r) A →+* Ω' := MvPolynomial.eval₂Hom ((φ : Ω →+* Ω').comp A.subtype) t
   have hψ : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro P hP
     have := hinj (MvPolynomial.map A.subtype P) (by rw [MvPolynomial.eval₂_map]; exact hP)
     exact (map_eq_zero_iff _ (MvPolynomial.map_injective _ A.subtype_injective)).1 this
@@ -1283,7 +1279,7 @@ theorem exists_ringHom (R : Subalgebra F Ω) {σ : Type} (t : σ → Ω')
     ∃ ψ : S →+* K, (∀ (r : R) (h : φ r ∈ S), ψ ⟨φ r, h⟩ = v r) ∧ ∀ j (h : t j ∈ S), ψ ⟨t j, h⟩ = c j := by
   let g : MvPolynomial σ R →+* Ω' := MvPolynomial.eval₂Hom ((φ : Ω →+* Ω').comp R.val.toRingHom) t
   have hg : Function.Injective g := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro P hP
     have := ht (MvPolynomial.map R.val.toRingHom P) (by rw [MvPolynomial.eval₂_map]; exact hP)
     exact MvPolynomial.map_injective R.val.toRingHom Subtype.val_injective (this.trans (map_zero _).symm)
@@ -1390,7 +1386,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProjectiveBundlePointsOfRationalModel =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TautologicalFamilyRefinementCompatibleLieAlgebra =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TautologicalFamilyRefinementCompatibleLieAlgebra", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TriIff\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesComp\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesUniqueInvertibleStatement\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameStableOfIsLocalRing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TautologicalFamilyRefinementCompatibleLieAlgebra", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TriIff\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesComp\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesUniqueInvertible\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentVectorsUniversalBasis\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsStalkFactor\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameStableOfIsLocalRing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
 

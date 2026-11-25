@@ -22,12 +22,6 @@ structure PtSys (K : Type) [Field K] [NumberField K] (R : Type) [CommRing R] [Al
 
   val : ∀ {la}, Pt la → R → EReal
 
-namespace PtSys
-
-variable {R : Type} [CommRing R] [Algebra K R] (S : PtSys K R)
-
-end PtSys
-
 end
 
 end GlobalTheory.CompanionTheory.Ar.Ref

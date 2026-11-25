@@ -7,7 +7,6 @@ public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralCharacterIntegralProperties
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupCosetDecomposition
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainDescription
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainIntegralCentralInvariance
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainInvarianceOfDescription
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalRankinSelbergBasicFacts
@@ -97,10 +96,10 @@ theorem conjEig : ConjEig := by
     rw [h2 _ (Nat.mul_pos hp.pos hn), h2 _ hp.pos, h2 _ hn, hc]
     by_cases hd : p ∣ n
     · have hm : 1 ≤ n / p := Nat.div_pos (Nat.le_of_dvd hn hd) hp.pos
-      simp only [hd, if_true] at e ⊢
+      simp only [hd, ite_true] at e ⊢
       rw [h2 _ hm]
       simpa [map_add (f := _), map_mul, map_pow, map_natCast] using e
-    · simp only [hd, if_false] at e ⊢
+    · simp only [hd, ite_false] at e ⊢
       simpa [map_add (f := _), map_mul, map_pow, map_natCast] using e
 
 end UpperTheory.V.Z.Sym.Unl
@@ -304,16 +303,8 @@ theorem cdet_dia (c : HeckeCharacter ℚ) (γ : GL (Fin 2) ℚ) : cdet c (dia2 �
     exact (RingHom.map_det (algebraMap ℚ 𝔸[ℚ]) (γ : Matrix (Fin 2) (Fin 2) ℚ)).symm
   simp [cdet, this]
 
-theorem det_diagonal_two (z : Jd) : GeneralLinearGroup.det (dg2 z z : G2) = z * z := by
-  ext1
-  simp [dg2, Matrix.det_fin_two]
-
 theorem cdet_scal (c : HeckeCharacter ℚ) (z : Jd) : cdet c (dg2 z z) = (c.toIdele z : ℂ) * c.toIdele z := by
-  simp [cdet, det_diagonal_two, map_mul]
-
-theorem central_diagonal_commute (z : Jd) (g : G2) : dg2 z z * g = g * dg2 z z := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [dg2, Matrix.mul_apply, Fin.sum_univ_two, mul_comm]
+  simp [cdet, GlobalTheory.CompanionTheory.RS.det_diagonal_two, map_mul]
 
 def Fn (φ : G2 → ℂ) (c : HeckeCharacter ℚ) (u u' g : G2) : ℂ := φ (g * u) * conj (φ (g * u')) * cdet c g
 
@@ -380,7 +371,7 @@ theorem Pr_scal (hcen : ∀ (z : Jd) g, φ (dg2 z z * g) = (ω.toIdele z : ℂ) 
   rw [← integral_const_mul]
   refine integral_congr_ae (Eventually.of_forall fun g => ?_)
   simp only [Fn]
-  have e : g * (dg2 z z * u') = dg2 z z * (g * u') := by rw [← mul_assoc, ← central_diagonal_commute, mul_assoc]
+  have e : g * (dg2 z z * u') = dg2 z z * (g * u') := by rw [← mul_assoc, ← GlobalTheory.CompanionTheory.RS.central_diagonal_commute, mul_assoc]
   rw [e, hcen, map_mul]
   ring
 
@@ -444,7 +435,6 @@ theorem isLoc2_comm {v : Pl} {x : GL (Fin 2) (Qv v)} {k h : G2}
   · subst e; rw [hv, mul_one, one_mul]
   · rw [hx.2.1 v' e, one_mul, mul_one]
 
-
 open GroundTheory.Automorphic.Reduction in
 theorem det_eq_of_comps {h h' : G2}
     (hf : ∀ v : Pl, GeneralLinearGroup.det (finAt v h) = GeneralLinearGroup.det (finAt v h'))
@@ -506,7 +496,6 @@ theorem ord_det_of_mem {x : GL (Fin 2) F} (hx : x ∈ integralGL F 2) :
   GroundTheory.Automorphic.GodementJacquet.ordDet_of_mem_integralGL hx
 
 end Key
-
 
 open GroundTheory.Automorphic.Reduction in
 theorem eig_relation {φ : G2 → ℂ} {ω c : HeckeCharacter ℚ} {μ : Measure G2} {𝓕 : Set G2} {C : ℝ}
@@ -599,7 +588,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeProjectionEigenform =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnlinkedHeckeRoots.SelfAdj =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnlinkedHeckeRoots.SelfAdj", "h": "module\n\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnitFormC\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralCharacterIntegralProperties\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupCosetDecomposition\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainDescription\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainIntegralCentralInvariance\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainInvarianceOfDescription\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalRankinSelbergBasicFacts\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCosetRepresentatives\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeProjectionEigenform\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftConductor\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftExistence\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftFourierCoefficients\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftHeckeEigenvalues\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftLevelCharacter\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftLevel\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftLocalType\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftRapidDecay\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftWhittakerExpansion\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.CyclicCharacterEigen.CoefZero\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnlinkedHeckeRoots.SelfAdj", "h": "module\n\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnitFormC\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralCharacterIntegralProperties\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupCosetDecomposition\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainIntegralCentralInvariance\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainInvarianceOfDescription\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalRankinSelbergBasicFacts\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCosetRepresentatives\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeProjectionEigenform\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftConductor\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftExistence\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftFourierCoefficients\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftHeckeEigenvalues\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftLevelCharacter\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftLevel\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftLocalType\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftRapidDecay\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewformLiftWhittakerExpansion\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.CyclicCharacterEigen.CoefZero\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -626,7 +615,7 @@ theorem selfAdj : SelfAdj := by
     (_root_.GlobalTheory.CompanionTheory.RankinSelberg.LiftLevel.lift_local_invariance hB) (_root_.GlobalTheory.CompanionTheory.RSq.f3a hB) k N hk χ hχ g.f g.a hF hEig ω φ hω hL
   have hW := _root_.GlobalTheory.CompanionTheory.RsWhittaker.whittaker_of_lift k N hk χ hχ g.f g.a hF hEig ω φ hω hL
   have hb := _root_.GlobalTheory.CompanionTheory.NewformLiftDecay.main hB k N hk χ hχ g.f g.a hF hEig ω φ hω hL
-  obtain ⟨μ, 𝓕, mK, 𝓓, hS⟩ := _root_.GlobalTheory.CompanionTheory.RSGlobal.setup_of_ideleDomain _root_.GlobalTheory.CompanionTheory.RankinSelberg.IdeleDomain.exists_idele_fundamentalDomain
+  obtain ⟨μ, 𝓕, hS⟩ := _root_.GlobalTheory.CompanionTheory.RSGlobal.setup_of_ideleDomain
   have hG1 := _root_.GlobalTheory.CompanionTheory.FundamentalDomainCentralCharacter.fundamental_domain_integral_central_vanishing _root_.GlobalTheory.CompanionTheory.RS.rankinSelberg_measure_facts
   obtain ⟨v, hv⟩ := hB.2.2.1 p hp
   have hnd : ¬pOf v ∣ N := by rwa [hv]
@@ -653,7 +642,7 @@ theorem selfAdj : SelfAdj := by
   obtain ⟨ϖ, B, hR⟩ := (_root_.GlobalTheory.CompanionTheory.RankinStepC.c1 (Qv v) (localAdelicChar ℚ v) hstd).1
   have key := GlobalTheory.CompanionTheory.RankinSelbergHeckeProjection.eig_relation (φ := φ) (ω := ω) (c := 1) (μ := μ) (𝓕 := 𝓕) (C := C)
     hL.cont hC hL.left hL.cen (by simp)
-    (fun F hF hFb hFL hFC h => (hG1 μ 𝓕 mK 𝓓 hS F hF hFb hFL).1 hFC h) hS.vol
+    (fun F hF hFb hFL hFC h => (hG1 μ 𝓕 hS F hF hFb hFL).1 hFC h) hS.vol
     (v := v) (hB.1 v).2.2.2.2.2.1 hB.2.2.2.1 (hB.2.2.2.2.2.2.2 v) hunr1
     (lam := lamOf k g.a v) (fun g W hW' => hHk.good v hnd g W hW') hR (h := 1)
     (GroundTheory.Automorphic.Reduction.finAt_one v) hPr

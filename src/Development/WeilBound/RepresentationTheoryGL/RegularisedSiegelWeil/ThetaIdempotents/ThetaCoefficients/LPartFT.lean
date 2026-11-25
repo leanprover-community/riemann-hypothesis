@@ -255,7 +255,7 @@ theorem clause1 {V : HSp D} {ψ χ θ μ ω} (hS : SetW D n V ψ χ θ μ ω) (h
 
 theorem clause2 {θ : InfFam D} (hθ : IsInfFam θ) {V : HSp D} (hn : r + t = n) (Φ : schwartzA θ V.rank n) :
     (fun x => Φ.1 (jn hn x 0)) ∈ schwartzA θ V.rank r := by
-  have := GlobalTheory.T.pullback_schwartz_linear_independent D θ hθ V.rank r n (c₁ D hn) (linInd_c₁ hn) Φ.1 Φ.2
+  have := GlobalTheory.CompanionTheory.PullSch.pullSchLI D θ hθ V.rank r n (c₁ D hn) (linInd_c₁ hn) Φ.1 Φ.2
   convert this using 1
   funext x
   exact congrArg Φ.1 (mul_c₁ hn x).symm

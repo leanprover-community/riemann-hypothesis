@@ -150,20 +150,20 @@ theorem sub_om {n s : ℕ} (hs0 : 0 < s) (hs : s ≤ n) (ν : Fin n → ℕ) (h�
     have h4 := hν hab
     simp only [om]
     by_cases ha : a.val < s <;> by_cases hb : b.val < s
-    · simp only [ha, hb, if_true]; omega
-    · simp only [ha, hb, if_true, if_false]
+    · simp only [ha, hb, ite_true]; omega
+    · simp only [ha, hb, ite_true, ite_false]
       have := h2 b (by omega)
       have := h3 a ha
       omega
     · omega
-    · simp only [ha, hb, if_false]; omega
+    · simp only [ha, hb, ite_false]; omega
   · funext t
     simp only [Pi.add_apply, om]
     by_cases ht : t.val < s
-    · simp only [ht, if_true]
+    · simp only [ht, ite_true]
       have := h3 t ht
       omega
-    · simp only [ht, if_false]; omega
+    · simp only [ht, ite_false]; omega
 
 theorem split_om {n s : ℕ} (hs : s ≤ n) (ν ν' σ : Fin n → ℕ) (hν : Antitone ν) (hν' : Antitone ν')
     (hσ : Antitone σ) (h : ν + ν' = σ + om n s) :
@@ -176,11 +176,11 @@ theorem split_om {n s : ℕ} (hs : s ≤ n) (ν ν' σ : Fin n → ℕ) (hν : A
   have hs1 : 0 < s := Nat.pos_of_ne_zero hs0
   have e0 := congrFun h ⟨s - 1, by omega⟩
   simp only [Pi.add_apply, om] at e0
-  rw [if_pos (by omega)] at e0
+  rw [ite_eq_left (by omega)] at e0
   by_cases hsn : s < n
   · have e1 := congrFun h ⟨s, hsn⟩
     simp only [Pi.add_apply, om] at e1
-    rw [if_neg (by omega)] at e1
+    rw [ite_eq_right (by omega)] at e1
     have e2 : σ ⟨s, hsn⟩ ≤ σ ⟨s - 1, by omega⟩ := hσ (by rw [Fin.le_def]; simp only; omega)
     have e3 : ν ⟨s, hsn⟩ + 1 ≤ ν ⟨s - 1, by omega⟩ ∨ ν' ⟨s, hsn⟩ + 1 ≤ ν' ⟨s - 1, by omega⟩ := by omega
     rcases e3 with e3 | e3

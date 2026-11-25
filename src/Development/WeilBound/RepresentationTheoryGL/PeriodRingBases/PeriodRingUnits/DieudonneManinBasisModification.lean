@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.DeRhamPotentiallySemistable.DeRhamTwists.ContinuousCyclotomicCharacter
-public import GroundTheory.PAdicHodge.WAKummerEps
 
 @[expose] public section
 

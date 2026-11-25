@@ -292,51 +292,13 @@ open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.Compan
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.CkAppend
 
-theorem classList_mapDomain_eq {K σ τ : Type} (cls : τ → K → ℤ) (e : σ → τ) (μ : σ →₀ ℕ) :
-    classList cls (Finsupp.mapDomain e μ) = classList (cls ∘ e) μ := by
-  unfold classList
-  rw [← Finsupp.toMultiset_map, Multiset.map_map]
-
-theorem classNum_rename_eq {K : Type} [DecidableEq K] {ι : K → Type} {O : Type} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] {σ τ : Type} (cls : τ → K → ℤ) (e : σ → τ) (he : Function.Injective e)
-    (H : MvPolynomial σ ℤ) (Q : List (K → ℤ)) (W : Ideal (MRing ι O)) :
-    classNum cls (rename e H) Q W = classNum (cls ∘ e) H Q W := by
-  classical
-  unfold classNum
-  rw [support_rename_of_injective he,
-    Finset.sum_image fun a _ b _ h => Finsupp.mapDomain_injective he h]
-  refine Finset.sum_congr rfl fun μ _ => ?_
-  rw [coeff_rename_mapDomain e he, classList_mapDomain_eq]
-
-theorem psumExpansion_rename (N k : ℕ) (i : Fin N) :
-    psumExpansion N k i =
-      rename (Sum.map (fun _ : Fin 1 => i) (fun _ : Fin 1 => i)) (psumExpansion 1 k 0) := by
-  simp [psumExpansion]
-
-theorem pairNum_psumExpansion {K : Type} [DecidableEq K] {ι : K → Type} {O : Type} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] {N : ℕ} (P : Ideal (MRing ι O)) (x x' : Fin N → K → ℤ)
-    (f g : Fin N → MRing ι O) (k : ℕ) (Q : List (K → ℤ)) :
-    pairNum P x x' f g (psumExpansion N k) Q =
-      ∑ i, pairNum P (fun _ : Fin 1 => x i) (fun _ => x' i) (fun _ => f i) (fun _ => g i)
-        (psumExpansion 1 k) Q := by
-  unfold pairNum
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Fin.sum_univ_one]
-  have he : Function.Injective (Sum.map (fun _ : Fin 1 => i) (fun _ : Fin 1 => i)) :=
-    Sum.map_injective.mpr ⟨fun _ _ _ => Subsingleton.elim _ _, fun _ _ _ => Subsingleton.elim _ _⟩
-  have hc : Sum.elim x x' ∘ Sum.map (fun _ : Fin 1 => i) (fun _ : Fin 1 => i) =
-      Sum.elim (fun _ : Fin 1 => x i) (fun _ : Fin 1 => x' i) := by
-    funext s
-    rcases s with s | s <;> rfl
-  simp only [psumExpansion_rename N k i, classNum_rename_eq _ _ he, hc]
-
 theorem ck_append : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (K : Type) [Fintype K]
     [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (j j' : ℕ) (T : LocPair ι O (Fin (j + j')))
     (P : Ideal (MRing ι O)) (k : ℕ) (Q : List (K → ℤ)),
     T.ck P k Q = (T.comp (Fin.castAdd j')).ck P k Q + (T.comp (Fin.natAdd j)).ck P k Q := by
   intro O _ _ _ K _ _ ι _ j j' T P k Q
   unfold LocPair.ck
-  rw [pairNum_psumExpansion, pairNum_psumExpansion, pairNum_psumExpansion, Fin.sum_univ_add]
+  rw [PositivityTheory.Xgn.A_ck_flag_sum.pairNum_psum, PositivityTheory.Xgn.A_ck_flag_sum.pairNum_psum, PositivityTheory.Xgn.A_ck_flag_sum.pairNum_psum, Fin.sum_univ_add]
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Num.CkAppend
@@ -436,7 +398,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FlagLocalM3
 
 namespace GlobalTheory.CompanionTheory.Ar.Num
 
-
 open GlobalTheory.CompanionTheory.Ar.Num.FlagLocalM3 in
 theorem flag_m3_of_local_m3 : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι O)) (d : ℕ), IsModelOver P d → ∀ (p : ℕ), (p : O) ≠ 0 → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (j j' : ℕ) (φ : Equiv.Perm (Ψ ⊕ Ψ)) (T : LocPair ι O (Ψ × Fin (j + j'))) (lie : ∀ σ, LocPair ι O (Fin ((Sum.elim (fun _ : Ψ => j) (fun _ : Ψ => j')) σ))) (om : ∀ σ, LocPair ι O (Fin ((Sum.elim (fun _ : Ψ => j') (fun _ : Ψ => j)) σ))), (∀ τ, lie (Sum.inl τ) = T.comp fun i : Fin j => (τ, Fin.castAdd j' i)) → (∀ τ, om (Sum.inl τ) = T.comp fun i : Fin j' => (τ, Fin.natAdd j i)) → (∀ τ k Q, Q.length + k = d + 1 → laNum P (p : O) (lie (Sum.inr τ)).x k Q = laNum P (p : O) (fun i : Fin j' => -T.x (τ, Fin.natAdd j i)) k Q) → LabelChernComparison P d p φ lie om → FlagChernComparison P d p j φ T := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P d hP p hp Ψ _ _ j j' φ T lie om hl ho hr hM τ k hk Q hQ
@@ -492,22 +453,6 @@ open NumberField
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.RootPerm
 
-theorem classList_mapDomain {K σ τ : Type} (cls : τ → K → ℤ) (e : σ → τ) (μ : σ →₀ ℕ) :
-    classList cls (Finsupp.mapDomain e μ) = classList (cls ∘ e) μ := by
-  unfold classList
-  rw [← Finsupp.toMultiset_map, Multiset.map_map]
-
-theorem classNum_rename {K : Type} [DecidableEq K] {ι : K → Type} {O : Type} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] {σ τ : Type} (cls : τ → K → ℤ) (e : σ → τ) (he : Function.Injective e)
-    (H : MvPolynomial σ ℤ) (Q : List (K → ℤ)) (W : Ideal (MRing ι O)) :
-    classNum cls (rename e H) Q W = classNum (cls ∘ e) H Q W := by
-  classical
-  unfold classNum
-  rw [support_rename_of_injective he,
-    Finset.sum_image fun a _ b _ h => Finsupp.mapDomain_injective he h]
-  refine Finset.sum_congr rfl fun μ _ => ?_
-  rw [coeff_rename_mapDomain e he, classList_mapDomain]
-
 theorem rename_psumExpansion {r : ℕ} (e : Equiv.Perm (Fin r)) (k : ℕ) (i : Fin r) :
     rename (Sum.map e e) (psumExpansion r k i) = psumExpansion r k (e i) := by
 
@@ -518,7 +463,7 @@ theorem root_perm : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuatio
   refine ⟨fun a x => ?_, fun T => ?_⟩
   · have h : ∀ W : Ideal (MRing ι O), classNum (x ∘ e) (psum (Fin r) ℤ (k - 1)) Q W =
         classNum x (psum (Fin r) ℤ (k - 1)) Q W := fun W => by
-      rw [← classNum_rename x e e.injective, rename_psum]
+      rw [← PositivityTheory.Xgn.A_ck_flag_sum.classNum_rename x e e.injective, rename_psum]
     simp only [laNum, h]
   · have h : ∀ (i : Fin r) (W : Ideal (MRing ι O)),
         classNum (Sum.elim (T.x ∘ e) (T.x' ∘ e)) (psumExpansion r k i) Q W =
@@ -526,7 +471,7 @@ theorem root_perm : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuatio
       have hc : Sum.elim T.x T.x' ∘ Sum.map e e = Sum.elim (T.x ∘ e) (T.x' ∘ e) := by
         funext s
         rcases s with s | s <;> rfl
-      rw [← rename_psumExpansion, classNum_rename _ _ (Sum.map_injective.mpr ⟨e.injective, e.injective⟩), hc]
+      rw [← rename_psumExpansion, PositivityTheory.Xgn.A_ck_flag_sum.classNum_rename _ _ (Sum.map_injective.mpr ⟨e.injective, e.injective⟩), hc]
     simp only [LocPair.ck, pairNum, LocPair.comp, Function.comp_apply, h]
     exact Equiv.sum_comp e fun j => cycEval (fun W => classNum (Sum.elim T.x T.x') (psumExpansion r k j) Q W)
       (ratDiv P (T.f j) (T.g j))
@@ -544,7 +489,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField MvPolynomial ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame IsFlagPair SameGenericFibre IsModelOver divCycle)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
-
 
 noncomputable section
 
@@ -1010,7 +954,7 @@ theorem latFlagPair_of_twoLevels : ∀ (E : Type) [Field E] [NumberField E] [IsC
       exact Sigma.ext rfl (heq_of_eq (Fin.ext rfl))
     have hsgn : HodgeCpt.rootSgn D (τ, Fin.castAdd D.q i) = 1 := by
       unfold HodgeCpt.rootSgn
-      rw [if_pos hlt]
+      rw [ite_eq_left hlt]
     have h0 := hR₀' (τ, Fin.castAdd D.q i)
     have h1 := hR' (τ, Fin.castAdd D.q i)
     rw [hidx, hsgn] at h0 h1
@@ -1370,7 +1314,6 @@ theorem mseg_map (y : (Σ k, J k) → Ω) (c : ∀ k, J k) :
     mseg (fun v => algebraMap Ω Ω' (y v)) c = algebraMap Ω Ω' (mseg y c) := by
   simp [mseg, map_prod]
 
-
 omit [∀ k, Fintype (J k)] in
 theorem map_mem_chartRing (y : (Σ k, J k) → Ω) (c : ∀ k, J k) {a : Ω} (ha : a ∈ chartRing O (mseg y) c) :
     algebraMap Ω Ω' a ∈ chartRing O' (mseg (fun v => algebraMap Ω Ω' (y v))) c := by
@@ -1509,7 +1452,7 @@ theorem base_bc (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra O Ω) (R' : S
       split_ifs
       · exact zero_mem _
       · exact one_mem _
-  have hb' := (_root_.GlobalTheory.CompanionTheory.Ar.Num.lattice_base_change_larger_ring D R p (algebraMap O Ω w) _ hchar hb Ω' (R'.restrictScalars O) hR).2
+  have hb' := (_root_.PositivityTheory.Xgn.character_data_base_change D R p (algebraMap O Ω w) _ hchar hb Ω' (R'.restrictScalars O) hR).2
   have hw : algebraMap Ω Ω' (algebraMap O Ω w) = algebraMap O' Ω' (algebraMap O O' w) := by
     rw [← IsScalarTower.algebraMap_apply O Ω Ω', ← IsScalarTower.algebraMap_apply O O' Ω']
   rw [hw] at hb'

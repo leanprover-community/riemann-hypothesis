@@ -95,14 +95,14 @@ theorem lone_toSub {w : Pl E} (hU : UL n w = ⊤) (y : GLw n w) :
       show toSub (UL n w) y ∈ KL n w
       rw [KL, Subgroup.mem_subgroupOf, val_toSub hU]
       exact hy
-    rw [if_pos hy, Set.indicator_of_mem this]
+    rw [ite_eq_left hy, Set.indicator_of_mem this]
     rfl
   · have : toSub (UL n w) y ∉ (KL n w : Set (UL n w)) := by
       intro h'
       have h'' : toSub (UL n w) y ∈ KL n w := h'
       rw [KL, Subgroup.mem_subgroupOf, val_toSub hU] at h''
       exact hy h''
-    rw [if_neg hy, Set.indicator_of_notMem this]
+    rw [ite_eq_right hy, Set.indicator_of_notMem this]
 
 theorem ct_lone {a b : ℕ} (h : a + b = n) {w : Pl E} (hU : UL n w = ⊤) (m : GLw a w × GLw b w) :
     ct h w (fun y => lone (KL n w) (toSub (UL n w) y)) m = if m ∈ K2 a b w then 1 else 0 := by
@@ -141,12 +141,12 @@ theorem ct_lone {a b : ℕ} (h : a + b = n) {w : Pl E} (hU : UL n w = ⊤) (m : 
       by_cases hX : X ∈ intMat a b w
       · simp [hm, hX]
       · simp [hX]
-    rw [e, GlobalTheory.CompanionTheory.FamClP.hint_ind, habs, if_pos hm, mul_one]
+    rw [e, GlobalTheory.CompanionTheory.FamClP.hint_ind, habs, ite_eq_left hm, mul_one]
   · have e : (fun X : Multiplicative (Matrix (Fin a) (Fin b) (w.adicCompletion E)) =>
         if m ∈ K2 a b w ∧ X ∈ intMat a b w then (1 : ℂ) else 0) = fun _ => 0 := by
       funext X
       simp [hm]
-    rw [e, GlobalTheory.CompanionTheory.FamClP.hint_zero, if_neg hm, mul_zero]
+    rw [e, GlobalTheory.CompanionTheory.FamClP.hint_zero, ite_eq_right hm, mul_zero]
 
 theorem ctMu_lone {a b : ℕ} (h : a + b = n) {w : Pl E} (hU : UL n w = ⊤) (μ : (w.adicCompletion E)ˣ →* ℂˣ)
     (hμ : ∀ u : (w.adicCompletion E)ˣ, ordL (u : w.adicCompletion E) = 0 → μ u = 1) :
@@ -162,11 +162,11 @@ theorem ctMu_lone {a b : ℕ} (h : a + b = n) {w : Pl E} (hU : UL n w = ⊤) (μ
     have e : μ ((-1) ^ (a * b) * GeneralLinearGroup.det m.1 ^ b * GeneralLinearGroup.det m.2 ^ a) = 1 := by
       rw [mul_assoc, map_mul, hu, map_pow, h1]
       simp
-    rw [e, if_pos hm]
+    rw [e, ite_eq_left hm]
     unfold idem
     rw [Set.indicator_of_mem (show m ∈ (K2 a b w : Set _) from hm), Subgroup.relIndex_self]
     simp
-  · rw [if_neg hm, mul_zero]
+  · rw [ite_eq_right hm, mul_zero]
     unfold idem
     rw [Set.indicator_of_notMem (show m ∉ (K2 a b w : Set _) from hm)]
 
@@ -207,17 +207,17 @@ theorem matchLMUnitOf : PositivityTheory.Rg.BcB.F.MLM.MatchLMUnitOf := by
   have hP : w ∉ d.P := by simp [LocData.P, hT, hS₀]
   have hlev : d.lev a w = K2 a (n - a) w := by
     unfold LocData.lev
-    rw [if_neg hT, if_neg (by simp [hS₀, hBad])]
+    rw [ite_eq_right hT, ite_eq_right (by simp [hS₀, hBad])]
   have htr : (d.eL a).tr d.P d.one w = idem (K2 a (n - a) w) := by
     unfold LM.tr
-    rw [if_neg hP]
+    rw [ite_eq_right hP]
     show idem (d.lev a w) = _
     rw [hlev]
   rw [htr]
   by_cases hw : IsSplitAt w
-  · rw [if_pos hw]
+  · rw [ite_eq_left hw]
     obtain ⟨-, -, -, -, hμ⟩ := hgood hw
-    have hU : UL n w = ⊤ := if_pos hw
+    have hU : UL n w = ⊤ := ite_eq_left hw
     have hc := ctMu_lone (Nat.add_sub_cancel' ha) hU (d.μ w) hμ
     have h : Match n a (n - a) w (d.μ w) (lpow (KL n w) (lone (KL n w)) 1)
         (mconv (ctMu (Nat.add_sub_cancel' ha) w (d.μ w) (lone (KL n w)))
@@ -226,7 +226,7 @@ theorem matchLMUnitOf : PositivityTheory.Rg.BcB.F.MLM.MatchLMUnitOf := by
     obtain ⟨hH, -, hU'⟩ := hId E a (n - a) w (K2 a (n - a) w) (isOpen_levelSubgroup' a (n - a) w) le_rfl
     rw [hc, (hU' _ hH).1, lpow_lone_one] at h
     exact h
-  · rw [if_neg hw]
+  · rw [ite_eq_right hw]
     exact hI E hE w hw n a ha
 
 end GlobalTheory.CompanionTheory.MatchUnit

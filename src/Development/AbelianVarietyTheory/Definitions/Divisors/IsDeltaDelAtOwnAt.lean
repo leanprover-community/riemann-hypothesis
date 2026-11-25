@@ -78,9 +78,9 @@ theorem ownPin_of {J : CoreJ D} {r : TwoRuns J G} (h₁ : ∀ j n : ℕ, InR D j
     (h₂ : ∀ j n : ℕ, InR D j → (r.second.full.dδ j n).pd = D.host.pde') : OwnPin r := by
   intro v j n hj
   by_cases h : Formalism.EigenvalueLevelCeiling.plc v = D.host.pde
-  · rw [show r.used v = r.second from if_pos h, show ownAt D v = D.host.pde' from if_pos h]
+  · rw [show r.used v = r.second from ite_eq_left h, show ownAt D v = D.host.pde' from ite_eq_left h]
     exact h₂ j n hj
-  · rw [show r.used v = r.first from if_neg h, show ownAt D v = D.host.pde from if_neg h]
+  · rw [show r.used v = r.first from ite_eq_right h, show ownAt D v = D.host.pde from ite_eq_right h]
     exact h₁ j n hj
 
 end GlobalTheory.BigOn

@@ -7,7 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite
 
 namespace LateralTheory.KummerTheory.IndPf

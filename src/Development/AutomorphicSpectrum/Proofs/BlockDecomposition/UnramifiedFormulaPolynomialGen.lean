@@ -37,10 +37,6 @@ theorem cT_smul (σ : R →+* R) {a b : ℕ} (r : R) (x : Matrix (Fin a) (Fin b)
     cT σ (r • x) = σ r • cT σ x := by
   ext i j; simp [cT]
 
-theorem red_mul (ϖ : R) (k : ℕ) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
-    red ϖ k (x * y) = red ϖ k x * red ϖ k y := by
-  simp [red, Matrix.map_mul]
-
 theorem red_add (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     red ϖ k (x + y) = red ϖ k x + red ϖ k y := by
   ext i j; simp [red]
@@ -106,7 +102,7 @@ def gr (σ : R →+* R) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R) (x : Matrix (
 theorem gr_congr {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) (k : ℕ) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R)
     {x y : Matrix (Fin m) (Fin n) R} (h : red ϖ k x = red ϖ k y) :
     red ϖ k (gr σ S x) = red ϖ k (gr σ S y) := by
-  rw [gr, gr, red_mul, red_mul, red_mul, red_mul, red_cT_congr hσ k h, h]
+  rw [gr, gr, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, red_cT_congr hσ k h, h]
 
 theorem gr_mul (σ : R →+* R) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R)
     (g : Matrix (Fin n) (Fin n) R) : gr σ S (x * g) = cT σ g * gr σ S x * g := by
@@ -137,26 +133,26 @@ theorem solCount_congr {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) {m n : ℕ} 
       refine ⟨red ϖ k (x * h), ⟨x * h, ?_, rfl⟩, ?_⟩
       · have hx' : red ϖ k (gr σ S x) = red ϖ k (cT σ g * T * g) := hx
         show red ϖ k (gr σ S (x * h)) = red ϖ k T
-        rw [gr_mul, red_mul, red_mul, hx', red_mul, red_mul]
-        rw [cT_mul, red_mul] at hc
-        rw [red_mul] at hgh
+        rw [gr_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, hx', GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul]
+        rw [cT_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul] at hc
+        rw [GlobalTheory.CompanionTheory.SiegCov.red_mul] at hgh
         calc red ϖ k (cT σ h) * (red ϖ k (cT σ g) * red ϖ k T * red ϖ k g) * red ϖ k h
             = (red ϖ k (cT σ h) * red ϖ k (cT σ g)) * red ϖ k T * (red ϖ k g * red ϖ k h) := by
               simp only [Matrix.mul_assoc]
           _ = red ϖ k T := by rw [hc, hgh, Matrix.one_mul, Matrix.mul_one]
       · show red ϖ k (x * h) * red ϖ k g = red ϖ k x
-        rw [red_mul, Matrix.mul_assoc, ← red_mul ϖ k h g, hhg, Matrix.mul_one]
+        rw [GlobalTheory.CompanionTheory.SiegCov.red_mul, Matrix.mul_assoc, ← GlobalTheory.CompanionTheory.SiegCov.red_mul ϖ k h g, hhg, Matrix.mul_one]
     · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
       have hx' : red ϖ k (gr σ S x) = red ϖ k T := hx
-      refine ⟨x * g, ?_, red_mul _ _ _ _⟩
+      refine ⟨x * g, ?_, GlobalTheory.CompanionTheory.SiegCov.red_mul _ _ _ _⟩
       show red ϖ k (gr σ S (x * g)) = red ϖ k (cT σ g * T * g)
-      rw [gr_mul, red_mul, red_mul, hx', red_mul, red_mul]
+      rw [gr_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, hx', GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul]
   have hinj : Function.Injective (fun y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k) => y * red ϖ k g) := by
     intro y y' hyy
     have h2 : y * red ϖ k g * red ϖ k h = y' * red ϖ k g * red ϖ k h := by
       simp only at hyy
       rw [hyy]
-    rw [red_mul] at hgh
+    rw [GlobalTheory.CompanionTheory.SiegCov.red_mul] at hgh
     simpa [Matrix.mul_assoc, hgh] using h2
   rw [solCount_eq, solCount_eq, himg]
   exact Nat.card_image_of_injective hinj _
@@ -521,11 +517,6 @@ theorem cT_sub (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
   ext i j
   exact map_sub σ (x j i) (y j i)
 
-theorem red_mul (ϖ : R) (k : ℕ) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
-    red ϖ k (x * y) = red ϖ k x * red ϖ k y := by
-  unfold red
-  exact Matrix.map_mul
-
 theorem red_sub (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     red ϖ k (x - y) = red ϖ k x - red ϖ k y := by
   ext i j
@@ -546,7 +537,7 @@ theorem red_surj (ϖ : R) (k : ℕ) {a b : ℕ} :
 theorem red_gram (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
     (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R) :
     red ϖ k (cT σ x * S * x) = cT (barσ σ ϖ h k) (red ϖ k x) * red ϖ k S * red ϖ k x := by
-  rw [red_mul, red_mul, GlobalTheory.CompanionTheory.SiegCov.red_cT σ ϖ h]
+  rw [GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_cT σ ϖ h]
 
 theorem image_sol (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
     (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) :
@@ -608,7 +599,6 @@ theorem nuAt_neg (ϖ : R) {n k : ℕ} (B : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ 
 
 end GlobalTheory.CompanionTheory.SiegLoc.LevelId
 
-
 open GlobalTheory.CompanionTheory.SiegLoc.LevelId in
 theorem GlobalTheory.CompanionTheory.SiegLoc.level_identity : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (m n k : ℕ) (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R), cT σ S = S → cT σ T = T → (∀ Y : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k), Y ∈ hermMod σ ϖ n k → (Y = 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = (Nat.card (hermMod σ ϖ n k) : ℂ)) ∧ (Y ≠ 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = 0)) → (∀ B ∈ hermMod σ ϖ n k, (∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), ψ k (Matrix.trace (B * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x)))) = (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) * (((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B))) → siegAt ϖ σ ψ q ε m T k = ((densAt σ ϖ S T k : ℝ) : ℂ) := by
   intro R _ σ ϖ q ε hR _ ψ hψ m n k S T hS hT horth hgauss
@@ -622,9 +612,9 @@ theorem GlobalTheory.CompanionTheory.SiegLoc.level_identity : ∀ (R : Type) [Co
     intro x
     have hmem := gram_sub_mem σ ϖ hR.inv hR.fix_ϖ k S T hS hT x
     by_cases hxe : cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T
-    · rw [if_pos hxe]
+    · rw [ite_eq_left hxe]
       exact (horth _ hmem).1 (sub_eq_zero.mpr hxe)
-    · rw [if_neg hxe]
+    · rw [ite_eq_right hxe]
       exact (horth _ hmem).2 (sub_ne_zero.mpr hxe)
   have hsplit : ∀ (B : hermMod σ ϖ n k) (x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)),
       ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x - red ϖ k T))) =

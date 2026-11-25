@@ -46,7 +46,7 @@ theorem dpoly_monomial (mm : ι →₀ ℕ) (a : R) (g : PS R n d) :
     DpolyN F cp u (MvPolynomial.monomial mm a) g = C a * DmonN F cp u mm g := by
   classical
   rw [dpoly_sup F cp u _ {mm} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 def dpolyHom (g : PS R n d) : MvPolynomial ι R →+ PS R n d where
   toFun P := DpolyN F cp u P g
@@ -56,10 +56,3 @@ def dpolyHom (g : PS R n d) : MvPolynomial ι R →+ PS R n d where
 end Fold
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies
-
-namespace Formalism.MainNotions.ModuliIntegralCharts.H1
-
-open MvPowerSeries Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
-open Formalism.MainNotions.ModuliIntegralCharts.H1.PartialDerivativeExponent Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies
-
-end Formalism.MainNotions.ModuliIntegralCharts.H1

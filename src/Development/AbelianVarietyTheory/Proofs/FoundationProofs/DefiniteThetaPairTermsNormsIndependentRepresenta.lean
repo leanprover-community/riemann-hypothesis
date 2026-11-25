@@ -9,47 +9,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpac
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryDoubleCosetClassesFiniteCardLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryRationalConjIntersectionCardDvdInvariant
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.WeilOperatorRationalTranslateMemThetaFunctions
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -57,16 +17,6 @@ open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalis
 open scoped BigOperators
 
 namespace GlobalTheory.NormSum.RepInv
-
-section Translates
-
-variable {D : D7} {T : Tor D} {N N' : ℕ}
-
-theorem wd_wd_of_int {x z : VC D N N'} {G : VC D N N' → ℂ} (hx : Wd D T x G = G) (m : ℤ)
-    (hm : (Hf D T x z).im = m) (w : VC D N N') : Wd D T x (Wd D T z G) w = Wd D T z G w := by
-  apply _root_.GlobalTheory.FinWeil.RatTransl.wd_wd_of_int <;> assumption
-
-end Translates
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ}
 
@@ -92,7 +42,7 @@ theorem test_mem (hg : admG1 D) (hc : Crv D cc δ) (P : Pair D cc δ t0 Q) (hQ :
     have h1 : ∀ i, Wd D (tor0 D cc δ) (Q • x) (Wd D (tor0 D cc δ) (pt D (tor0 D cc δ) δ (z i)) P.e0) w =
         Wd D (tor0 D cc δ) (pt D (tor0 D cc δ) δ (z i)) P.e0 w := fun i => by
       obtain ⟨m, hm⟩ := hI x hx _ (hz i)
-      exact wd_wd_of_int h0 m (by rw [GlobalTheory.FinWeil.RatTransl.hf_nsmul, hm]) w
+      exact GlobalTheory.FinWeil.RatTransl.wd_wd_of_int h0 m (by rw [GlobalTheory.FinWeil.RatTransl.hf_nsmul, hm]) w
     rw [hF]
     refine Eq.trans ?_ (Finset.sum_congr rfl fun i _ => congrArg ((r i : ℂ) * ·) (h1 i))
     generalize (fun i => Wd D (tor0 D cc δ) (pt D (tor0 D cc δ) δ (z i)) P.e0) = G

@@ -255,13 +255,13 @@ private theorem telescope_core {P : Type} (q n : ℕ) (F : P → P) (T A : ℕ �
     simp only [Finset.sum_range_succ _ (m + 1), key, hc, pow_add, smul_add, mul_smul]
     rcases Nat.even_or_odd m with he | ho
     · have hne : ¬ Even (m + 1) := Nat.not_even_iff_odd.mpr he.add_one
-      simp only [hne, if_false, zero_smul, add_zero]
+      simp only [hne, ite_false, zero_smul, add_zero]
       refine ⟨fun h => h.elim, fun _ => ?_⟩
       rw [ihE he]
       abel
     · have hne : ¬ Even m := Nat.not_even_iff_odd.mpr ho
       have hev : Even (m + 1) := ho.add_one
-      simp only [hev, zero_smul, add_zero, if_true]
+      simp only [hev, zero_smul, add_zero, ite_true]
       refine ⟨fun _ => ?_, fun h => absurd trivial h⟩
       rw [ihO hne]
       abel
@@ -271,7 +271,7 @@ theorem UpperTheory.Gal.crystallineComparison.telescope_of :
   intro q n P F T A hAn h0 hs
   let T' : ℕ → Multiset P := fun j => if h : j < n + 1 then T ⟨j, h⟩ else 0
   have hT : ∀ j : Fin (n + 1), T j = T' j := fun j => by
-    simp only [T', dif_pos j.isLt, Fin.eta]
+    simp only [T', dite_eq_left j.isLt, Fin.eta]
   have h0' : T' 0 = A 0 := by simpa [T'] using h0
   have hs' : ∀ j, j < n → T' (j + 1) = (A j).map F + q ^ (j + 1) • A (j + 1) := by
     intro j hj

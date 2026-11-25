@@ -15,43 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemComp
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSumInfPartIntegralOneSubMem
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCongLevelIntG
@@ -331,14 +294,9 @@ theorem isCoprime_conj {e : Formalism.L2.Theta.AE D} {P : Finset (Formalism.L2.D
   exact Ideal.isCoprime_iff_sup_eq.2
     (eq_top_of_one_mem (fun h => modul_ne_bot P c (le_bot_iff.1 (le_sup_right.trans h.le))) h6)
 
-theorem toEAf_surj : Function.Surjective (toEAf D) := fun z => by
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨0, RingHom.map_zero _⟩
-  | tmul a α => exact ⟨pairA D.host.F 0 α ⊗ₜ[D.host.F] a, rfl⟩
-  | add x y hx hy =>
-    obtain ⟨u, rfl⟩ := hx
-    obtain ⟨v, rfl⟩ := hy
-    exact ⟨u + v, RingHom.map_add _ _ _⟩
+theorem toEAf_surj : Function.Surjective (toEAf D) :=
+  (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).surjective.comp
+    (LinearMap.rTensor_surjective D.host.E (g := (sndA D.host.F).toLinearMap) fun y => ⟨(0, y), rfl⟩)
 
 theorem half_ext {S T : HSp D} {a : Formalism.L2.Theta.AE D} (ha : infPart D a = 0) {x y : WO S T} (hx : IsHalf a x) (hy : IsHalf a y)
     (h : ∀ i j, toEAf D (x i j) = toEAf D (y i j)) : x = y := by

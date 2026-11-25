@@ -79,8 +79,8 @@ theorem UpperTheory.V.AlgebraTools.Det.expand :
         ring
       rw [h, Polynomial.C_mul_X_pow_eq_monomial, Polynomial.coeff_monomial_apply, MvPolynomial.coeff_monomial]
       split_ifs with h1 h2 h2
-      · rw [MvPolynomial.coeff_monomial, if_pos h2]
-      · rw [MvPolynomial.coeff_monomial, if_neg h2]
+      · rw [MvPolynomial.coeff_monomial, ite_eq_left h2]
+      · rw [MvPolynomial.coeff_monomial, ite_eq_right h2]
       · exact absurd (congrArg Finsupp.degree h2) h1
       · simp
     | add p q hp hq =>
@@ -135,9 +135,9 @@ theorem UpperTheory.V.AlgebraTools.Det.expand :
     rw [hchi, Polynomial.finsetSum_coeff]
     simp only [Polynomial.coeff_C_mul_X_pow]
     rw [Finset.sum_eq_single i]
-    · rw [if_pos rfl, mul_left_comm, ← mul_pow, neg_one_mul, neg_neg, one_pow, mul_one]
+    · rw [ite_eq_left rfl, mul_left_comm, ← mul_pow, neg_one_mul, neg_neg, one_pow, mul_one]
     · intro j hj hji
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       apply hji
       have := Finset.mem_range.mp hi

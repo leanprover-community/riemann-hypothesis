@@ -186,11 +186,8 @@ theorem UpperTheory.Gal.Ord.lie :
     set ρ' := (D.tr : k) - ρ
     set e := (ρ - ρ')⁻¹
     have he : e * (ρ - ρ') = 1 := inv_mul_cancel₀ hd
-    have q : D.ω • D.ω • v - (D.tr : k) • D.ω • v + (D.nm : k) • v = 0 := by
-      have h := congrArg (· • v) (GlobalTheory.HTLieRho.omega_quad D)
-      simp only [zero_smul, add_smul, sub_smul, mul_smul] at h
-      simp only [Int.cast_smul_eq_zsmul] at h ⊢
-      exact h
+    have q : D.ω • D.ω • v - (D.tr : k) • D.ω • v + (D.nm : k) • v = 0 :=
+      GlobalTheory.HTLieRho.quad_lie o v
     rw [GlobalTheory.HTLieRho.nm_eq_mul b β] at q
     have hsplit : v = -(e • (D.ω • v - ρ • v)) + e • (D.ω • v - ρ' • v) := by
       rw [← sub_eq_neg_add, ← smul_sub, sub_sub_sub_cancel_left, ← sub_smul, smul_smul, he, one_smul]

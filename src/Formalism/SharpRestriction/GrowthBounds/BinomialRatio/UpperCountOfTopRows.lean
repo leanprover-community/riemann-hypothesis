@@ -100,7 +100,7 @@ theorem firstRows_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hS : STopRowsAt C0 
       have h2 := (hK.2.1 i (by omega)).1
       have h3 : oEff (X.seg C0 CE1 CE2 j) b i = b.o i := by
         unfold oEff
-        rw [if_neg hi]
+        rw [ite_eq_right hi]
       omega
   · have c0 : c = 0 := Fin.ext (by simp [hc0])
     subst c0
@@ -168,7 +168,7 @@ theorem sum_lt_succ (f : Fin s → ℤ) (i : Fin s) :
           omega
         simp [h1, h3, h4]
   rw [Finset.sum_congr rfl (fun x _ => hpt x), Finset.sum_add_distrib]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 private theorem eventually_abs_le_half_add_of_doubling_bounds [NeZero r] {LLv : ChainLetters (2 * s + 1)} {ka : Fin (2 * s + 1 + 1) → Fin r → ℤ}
     (hv : ∀ a, LLv.vec a = decide (a.val % 2 = 0)) (hch : IsChain LLv ka) (m : ℕ) (hm : m < 2 * s + 1) :
@@ -198,9 +198,9 @@ theorem row_even [NeZero r] {LLv : ChainLetters (2 * s + 1)} {ka : Fin (2 * s + 
     intro hn
     have h1 := ih (by omega)
     have hs1 := hch.2 ⟨2 * n, by omega⟩
-    rw [if_pos (by rw [hv]; simp)] at hs1
+    rw [ite_eq_left (by rw [hv]; simp)] at hs1
     have hs2 := hch.2 ⟨2 * n + 1, by omega⟩
-    rw [if_neg (by rw [hv]; simp)] at hs2
+    rw [ite_eq_right (by rw [hv]; simp)] at hs2
     have a1 : ka ⟨2 * n + 1, by omega⟩ 0 ≤ ka ⟨2 * n, by omega⟩ 0 + (LLv.deg ⟨2 * n, by omega⟩ : ℤ) := strip_first hs1
     have a2 : ka ⟨2 * (n + 1), by omega⟩ 0 ≤ ka ⟨2 * n + 1, by omega⟩ 0 := hs2.1 0
     have hsum : (∑ l : Fin s, if l.val < n + 1 then (LLv.deg ⟨2 * l.val, by omega⟩ : ℤ) else 0) =
@@ -215,7 +215,7 @@ theorem row_odd [NeZero r] {LLv : ChainLetters (2 * s + 1)} {ka : Fin (2 * s + 1
     ka ⟨2 * i.val + 1, by omega⟩ 0 ≤
       ∑ l : Fin s, if l.val < i.val + 1 then (LLv.deg ⟨2 * l.val, by omega⟩ : ℤ) else 0 := by
   have h1 := eventually_abs_le_half_add_of_doubling_bounds hv hch (2 * i.val) (by omega)
-  rw [if_pos (by omega)] at h1
+  rw [ite_eq_left (by omega)] at h1
   have h3 := row_even hv hch i.val (by omega)
   have hsum : (∑ l : Fin s, if l.val < i.val + 1 then (LLv.deg ⟨2 * l.val, by omega⟩ : ℤ) else 0) =
       (∑ l : Fin s, if l.val < i.val then (LLv.deg ⟨2 * l.val, by omega⟩ : ℤ) else 0) +
@@ -243,8 +243,8 @@ theorem sTopRows_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hK : SecondKernelAtL
       ∑ l : Fin (segS X.TT j), if l.val < i.val + 1 then (z.1.w l : ℤ) else 0 := by
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : l.val < i.val + 1
-    · rw [if_pos hl, if_pos hl, levW, if_pos (by omega), jE_S _ _ (by omega), Nat.sub_zero]
-    · rw [if_neg hl, if_neg hl]
+    · rw [ite_eq_left hl, ite_eq_left hl, levW, ite_eq_left (by omega), jE_S _ _ (by omega), Nat.sub_zero]
+    · rw [ite_eq_right hl, ite_eq_right hl]
   rw [e] at h1
   have h2 := hK X hD hH hc j z.1 hz.1.1 i hi
   exact ⟨le_trans h1 h2.1, le_trans h1 h2.2⟩

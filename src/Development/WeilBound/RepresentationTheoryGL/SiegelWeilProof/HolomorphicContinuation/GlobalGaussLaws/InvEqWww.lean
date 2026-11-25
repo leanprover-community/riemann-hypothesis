@@ -111,7 +111,6 @@ theorem integrable_rho : Integrable (fun u : Fin m → Fin n → ℂ => (1 + ‖
   unfold rr; push_cast; linarith
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem hloc_away {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {fr : Matrix (Fin m) (Fin m) ℂ}
     (μ : Measure (Mx D m n)) [μ.IsAddHaarMeasure] {Ψ : Mx D m n → ℂ} (hΨ : AwayCls θ τ fr Ψ)
     (K : Set (Fin m → Fin n → ℂ)) (hK : IsCompact K) :
@@ -400,7 +399,7 @@ theorem compAt_sub_sIns {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau}
   have hp : Matrix.of (piF θ τ fr y) = fr⁻¹ * compAt θ τ y := rfl
   rw [Matrix.map_sub (psiT D τ) (fun a b => map_sub (psiT D τ) a b), ← PlaceFactsH.compAt_eq_psiT hθ,
     ← PlaceFactsH.compAt_eq_psiT hθ, show sIns (D := D) τ fr (piF θ τ fr y) = insT τ (fr * Matrix.of (piF θ τ fr y)) from rfl,
-    compAt_insT hθ, if_pos rfl, hp, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hdet, Matrix.one_mul, sub_self]
+    compAt_insT hθ, ite_eq_left rfl, hp, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hdet, Matrix.one_mul, sub_self]
 
 
 

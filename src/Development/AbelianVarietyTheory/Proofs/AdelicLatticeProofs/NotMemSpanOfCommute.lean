@@ -2,46 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -57,18 +20,10 @@ open scoped ComplexOrder
 theorem notMem_span_of_commute {V : Type} [AddCommGroup V] [Module ℂ V] (G : Set (Module.End ℂ V))
     (hc : ∀ a ∈ G, ∀ b ∈ G, Commute a b) (s : Set V) (hs : ∀ x ∈ s, ∃ g ∈ G, g x = 0) (f : V)
     (hf : ∀ B ∈ Submonoid.closure G, B f ≠ 0) : f ∉ Submodule.span ℂ s := by
-  have h1 : ∀ a ∈ G, ∀ B ∈ Submonoid.closure G, Commute a B := by
-    intro a ha B hB
-    induction hB using Submonoid.closure_induction with
-    | mem b hb => exact hc a ha b hb
-    | one => exact Commute.one_right _
-    | mul x y _ _ hx hy => exact hx.mul_right hy
-  have h2 : ∀ A ∈ Submonoid.closure G, ∀ B ∈ Submonoid.closure G, Commute A B := by
-    intro A hA B hB
-    induction hA using Submonoid.closure_induction with
-    | mem a ha => exact h1 a ha B hB
-    | one => exact Commute.one_left _
-    | mul x y _ _ hx hy => exact hx.mul_left hy
+  have h2 : ∀ A ∈ Submonoid.closure G, ∀ B ∈ Submonoid.closure G, Commute A B := fun A hA B hB =>
+    Set.centralizer_centralizer_comm_of_comm (fun a ha b hb _ => hc a ha b hb) A
+      (Submonoid.closure_le_centralizer_centralizer G hA) B
+      (Submonoid.closure_le_centralizer_centralizer G hB)
   have key : ∀ x ∈ Submodule.span ℂ s, ∃ B ∈ Submonoid.closure G, B x = 0 := by
     intro x hx
     induction hx using Submodule.span_induction with

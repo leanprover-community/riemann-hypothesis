@@ -36,7 +36,6 @@ structure AUTied (D : D7) (M : MtFam D) (A : AVTied D M) where
   surj : ∀ j h1 h2, Function.Surjective (cls j h1 h2)
   iso : ∀ j h1 h2 π π', cls j h1 h2 π = cls j h1 h2 π' ↔ π.Iso π'
 
-  mult : ∀ j h1 h2 π, D.nbc.multAU j (cls j h1 h2 π) = π.mult
 
   sph : ∀ j h1 h2 π (w : PlE D.host) v, ¬ IsSplitPl D.host w → NG.OverPl w v →
     (D.nbc.sphAU j (cls j h1 h2 π) w ↔ π.SphAt v)
@@ -129,7 +128,7 @@ structure NormalizedTwistCompatibility (D : D7) (C : NChoice D) (_I : TwIn D) wh
 
 
   eMt_level : ∀ (w : D.what₂.places.Pl) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
-    (hw : TwistedAt D w) (hA : NX.AdmTw D (C.twI w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w)))),
+    (_ : TwistedAt D w) (hA : NX.AdmTw D (C.twI w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w)))),
     ∃ ι : FractionRing (C.Oe w) →+* ℂ, (∀ x : D.what₂.LL, ι (C.embW w x) = D.what₂.embLL x) ∧
       (gal.mt (D.what₂.muTw w) j h1 h2).J =
         (exp.mtV (C.twI w) j (C.sd w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w))) h1 h2 hA).J ∧

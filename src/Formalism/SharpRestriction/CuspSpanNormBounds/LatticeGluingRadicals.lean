@@ -386,7 +386,7 @@ theorem a_full (Λ : Submodule (𝓞 E) S.V) (hL : Submodule.IsLattice E Λ)
       congr 1
       rw [← S.herm.eq (S.frame i) (bs j), hbs]
       split_ifs <;> simp
-    simp only [hs, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hs, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hμ₀ : μ ≠ 0 := by
     intro h
     apply hφ₀
@@ -960,7 +960,7 @@ theorem base_vector_mem_orth {T T' : E} (hT : T ≠ 0) (F : LFlag S r T) (F' : L
     normalLiftBaseVector F F' ∈ orth S (Xplus F) := by
   have hz : S.hT F.fl.z (normalLiftBaseVector F F') = 0 := by
     have := b_om_pair F F' (Fin.last r)
-    rw [_root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_last, if_pos rfl] at this
+    rw [_root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_last, ite_eq_left rfl] at this
     unfold normalLiftBaseVector
     rw [map_add (f := _), map_smul, this, F.fl.z_norm, smul_eq_mul]
     field_simp
@@ -968,7 +968,7 @@ theorem base_vector_mem_orth {T T' : E} (hT : T ≠ 0) (F : LFlag S r T) (F' : L
   have he : ∀ a, S.hT (F.fl.e a) (normalLiftBaseVector F F') = 0 := by
     intro a
     have := b_om_pair F F' a.castSucc
-    rw [_root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_castSucc, if_neg (Fin.castSucc_lt_last a).ne] at this
+    rw [_root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_castSucc, ite_eq_right (Fin.castSucc_lt_last a).ne] at this
     unfold normalLiftBaseVector
     rw [map_add (f := _), map_smul, this, F.fl.z_orth a]
     simp
@@ -1025,12 +1025,12 @@ theorem b_cramer {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') (hz : F.zt = F
   have hpair : ∀ a, S.hT (frame F a) w = if a = Fin.last r then T * al else 0 := by
     intro a
     refine Fin.lastCases ?_ (fun a => ?_) a
-    · rw [if_pos rfl, _root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_last]
+    · rw [ite_eq_left rfl, _root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_last]
       have h0 : S.hT F.fl.z y = 0 :=
         b_mem_orth.1 hy _ (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _))
       rw [hyw, map_add (f := _), map_add (f := _), map_smul, F.fl.z_norm, (flag_span_orth_normal F hx).2, smul_eq_mul] at h0
       linear_combination h0
-    · rw [if_neg (Fin.castSucc_lt_last a).ne, _root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_castSucc]
+    · rw [ite_eq_right (Fin.castSucc_lt_last a).ne, _root_.Formalism.MainNotions.LatticeGluingRadicals.a_frame_castSucc]
       have h0 : S.hT (F.fl.e a) y = 0 :=
         b_mem_orth.1 hy _ (Submodule.mem_sup_left (Submodule.subset_span ⟨a, rfl⟩))
       rw [hyw, map_add (f := _), map_add (f := _), map_smul, F.fl.z_orth a,
@@ -1044,7 +1044,7 @@ theorem b_cramer {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') (hz : F.zt = F
     rw [map_smul, smul_eq_mul, b_Zhat_apply, mul_comm]
   have hcof := _root_.Formalism.HermitianLatticeCounting.P.cofactor_vector_formula E r (ZhatL F F')
   have h1 : ∑ a, (ZhatL F F').adjugate (Fin.last r) a * S.hT (frame F a) w = Dr F F' * (T * al) := by
-    simp only [hpair, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hpair, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [hcof.2, ← _root_.Formalism.MainNotions.LatticeGluingRadicals.a_Dr]
   have h2 : ∑ a, (ZhatL F F').adjugate (Fin.last r) a * S.hT (frame F a) w = Dr1 F F' * al' := by
     simp only [hpair2, Finset.mul_sum]
@@ -1054,7 +1054,7 @@ theorem b_cramer {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') (hz : F.zt = F
       intro b
       rw [← hcof.1 b, Finset.sum_mul]
       exact Finset.sum_congr rfl fun a _ => by ring
-    simp only [this, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [this, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [_root_.Formalism.MainNotions.LatticeGluingRadicals.discriminant_eq_det_lift_alt, hc']
     simp
   rw [← h2, h1]
@@ -1083,7 +1083,7 @@ theorem lemma_two_norm_scaling (hc : StarConj E) {T T' : ℕ} (hT : 0 < T) (hT' 
     have hal : al' = 0 := by
       rw [hD, zero_mul] at hcr
       exact (mul_eq_zero.1 hcr).resolve_left hD1
-    simp only [chSh, invSh, if_pos hD]
+    simp only [chSh, invSh, ite_eq_left hD]
     rw [hn, hal]
     simp
   · have hd : 0 < ‖τ (Dr F F')‖ := norm_pos_iff.2 ((map_ne_zero τ).2 hD)
@@ -1109,7 +1109,7 @@ theorem lemma_two_norm_scaling (hc : StarConj E) {T T' : ℕ} (hT : 0 < T) (hT' 
       rw [hch, ha]
       field_simp
     have hne : ch T T' F F' τ ^ 2 - 1 ≠ 0 := by linarith
-    simp only [chSh, invSh, if_neg hD]
+    simp only [chSh, invSh, ite_eq_right hD]
     rw [div_pow, div_pow, one_pow, hsh, hn, key]
     constructor
     · field_simp
@@ -1162,16 +1162,16 @@ theorem b_chSh_symm (hc : StarConj E) {T T' : ℕ} (F : LFlag S r (T : E)) (F' :
   unfold chSh
   rw [b_ch_symm hc F F', b_sh_symm hc F F']
   by_cases h : Dr F F' = 0
-  · rw [if_pos h, if_pos ((b_Dr_zero_symm F F').2 h)]
-  · rw [if_neg h, if_neg (fun h' => h ((b_Dr_zero_symm F F').1 h'))]
+  · rw [ite_eq_left h, ite_eq_left ((b_Dr_zero_symm F F').2 h)]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h ((b_Dr_zero_symm F F').1 h'))]
 
 theorem b_invSh_symm (hc : StarConj E) {T T' : ℕ} (F : LFlag S r (T : E)) (F' : LFlag S r (T' : E))
     (τ : E →+* ℂ) : invSh T' T F' F τ = invSh T T' F F' τ := by
   unfold invSh
   rw [b_sh_symm hc F F']
   by_cases h : Dr F F' = 0
-  · rw [if_pos h, if_pos ((b_Dr_zero_symm F F').2 h)]
-  · rw [if_neg h, if_neg (fun h' => h ((b_Dr_zero_symm F F').1 h'))]
+  · rw [ite_eq_left h, ite_eq_left ((b_Dr_zero_symm F F').2 h)]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h ((b_Dr_zero_symm F F').1 h'))]
 
 theorem lemma_two_norm_scaling_right (hc : StarConj E) {T T' : ℕ} (hT : 0 < T) (hT' : 0 < T') (F : LFlag S r (T : E))
     (F' : LFlag S r (T' : E)) (hz : F.zt = F.fl.z) (hz' : F'.zt = F'.fl.z) (hG : Gval F F' ≠ 0)
@@ -2908,7 +2908,7 @@ theorem d_prod_emb {K : Type} [Field K] [NumberField K] (hc : ∀ w : InfinitePl
     rw [Finset.prod_congr rfl (g := fun _ => X w.embedding)
       (fun τ hτ => by rw [h1 τ, (Finset.mem_filter.1 hτ).2]), Finset.prod_const,
       InfinitePlace.card_filter_mk_eq, InfinitePlace.mult,
-      if_neg (InfinitePlace.not_isReal_iff_isComplex.2 (hc w))]
+      ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.2 (hc w))]
   rw [h2, Finset.prod_pow, Real.sqrt_sq (Finset.prod_nonneg fun w _ => h0 _)]
 
 section Vec
@@ -3505,9 +3505,9 @@ theorem d_comp_frameAct (ξ : Matrix (Fin (r + 1)) (Fin (r + 1)) (𝓞 E)) (b : 
 theorem d_comp_frame' (b : Fin (r + 1)) :
     d_Comp F F' (frame F' b) 0 (if b = Fin.last r then 1 else 0) := by
   refine Fin.lastCases ?_ (fun i => ?_) b
-  · rw [a_frame_last, if_pos rfl]
+  · rw [a_frame_last, ite_eq_left rfl]
     exact d_comp_alt_alt
-  · rw [a_frame_castSucc, if_neg (Fin.castSucc_lt_last i).ne]
+  · rw [a_frame_castSucc, ite_eq_right (Fin.castSucc_lt_last i).ne]
     exact d_comp_X' (Submodule.subset_span ⟨i, rfl⟩)
 
 theorem d_compMplus (hz : F.zt = F.fl.z) {g : ℕ} (hg : g ≠ 0)
@@ -3530,10 +3530,10 @@ theorem d_compMplus (hz : F.zt = F.fl.z) {g : ℕ} (hg : g ≠ 0)
         (d_comp_frameAct (F := F) (F' := F') ξ b)
       refine Fin.lastCases ?_ (fun i => ?_) b
       · have h1 := h1 (Fin.last r)
-        rw [hξ.2.1, if_pos rfl] at h1
+        rw [hξ.2.1, ite_eq_left rfl] at h1
         exact ⟨0, 1, by simpa using h1⟩
       · have h1 := h1 i.castSucc
-        rw [hξ.1 _ _ (Fin.castSucc_lt_last i), if_neg (Fin.castSucc_lt_last i).ne] at h1
+        rw [hξ.1 _ _ (Fin.castSucc_lt_last i), ite_eq_right (Fin.castSucc_lt_last i).ne] at h1
         exact ⟨0, 0, by simpa using h1⟩
   | zero => exact ⟨0, 0, by simpa using d_comp_X (F := F) (F' := F') (zero_mem _)⟩
   | add x y _ _ hx hy =>
@@ -4106,7 +4106,7 @@ theorem local_lift_at_prime (H : d_TermHyp Λ g F F') (P : HeightOneSpectrum (�
     · have h1 := d_comp_add (d_comp_smul (al + al') (d_comp_alt (F := F) (F' := F')))
         (d_comp_smul al' (d_comp_sub (d_comp_frame' (F := F) (F' := F') (Fin.last r))
           (d_comp_frameAct (F := F) (F' := F') ξ (Fin.last r))))
-      rw [hξ.2.1, if_pos rfl] at h1
+      rw [hξ.2.1, ite_eq_left rfl] at h1
       convert h1 using 1
       · push_cast; ring
       · ring
@@ -7876,7 +7876,7 @@ theorem k_zc_exists {F : LFlag S r T} {F'' : LFlag S r T'} (hI : HInd F F'') :
       obtain ⟨a, rfl⟩ := hx
       have := key (Sum.inl a.castSucc)
       rw [Sum.elim_inl, a_frame_castSucc] at this
-      rw [this, if_neg]
+      rw [this, ite_eq_right]
       intro h
       exact (Fin.castSucc_lt_last a).ne (Sum.inl.inj h)
     | zero => simp
@@ -7889,7 +7889,7 @@ theorem k_zc_exists {F : LFlag S r T} {F'' : LFlag S r T'} (hI : HInd F F'') :
       obtain ⟨a, rfl⟩ := hx
       have := key (Sum.inr a)
       rw [Sum.elim_inr] at this
-      rw [this, if_neg (by simp)]
+      rw [this, ite_eq_right (by simp)]
     | zero => simp
     | add x y _ _ hx hy => rw [map_add (f := _), hx, hy, add_zero]
     | smul c x _ hx => rw [map_smul, hx, smul_zero]

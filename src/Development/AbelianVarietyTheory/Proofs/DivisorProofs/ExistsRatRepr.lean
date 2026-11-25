@@ -60,13 +60,7 @@ theorem exists_rat_repr (D : D7) {w : D.host.E} (hw : w ^ 2 = -(D.host.d : D.hos
   set bb : D.host.E := D.host.sqd with hbb
   have hb : bb ^ 2 = -(D.host.d : D.host.E) := D.host.sqd_sq
   have hbK : bb ∈ D.host.K := IntermediateField.mem_adjoin_simple_self ℚ _
-  have hwb : w = bb ∨ w = -bb := by
-    have h0 : (w - bb) * (w + bb) = 0 := by
-      have : (w - bb) * (w + bb) = w ^ 2 - bb ^ 2 := by ring
-      rw [this, hw, hb, sub_self]
-    rcases mul_eq_zero.1 h0 with h | h
-    · exact Or.inl (sub_eq_zero.1 h)
-    · exact Or.inr (eq_neg_of_add_eq_zero_left h)
+  have hwb : w = bb ∨ w = -bb := sq_eq_sq_iff_eq_or_eq_neg.1 (hw.trans hb.symm)
   have hwK : w ∈ D.host.K := by
     rcases hwb with h | h
     · rw [h]; exact hbK

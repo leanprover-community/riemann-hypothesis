@@ -65,8 +65,6 @@ namespace GlobalTheory.AnnihBox
 
 variable {D : D7}
 
-alias continuous_cA' := _root_.GlobalTheory.FockCompare.ThetaCont.continuous_conj
-
 theorem infPart_cA_eq (a : AE D) : infPart D (cA D a) = sigR (Ainf D.host.F) D.sp.cm.sig (infPart D a) := by
     induction a using TensorProduct.induction_on with
     | zero => simp
@@ -117,7 +115,7 @@ theorem GlobalTheory.AnnihBox.annihilator_inBox : ∀ (D : D7) (ψ : AddChar (AF
     refine continuous_pi fun a => continuous_pi fun b => ?_
     simp only [Matrix.single_apply]
     split_ifs
-    · exact continuous_cA'
+    · exact GlobalTheory.FockCompare.ThetaCont.continuous_conj
     · exact continuous_const
   let f : Fin T.rank → Fin ρ → (AE D →+ WO S T) := fun i j => (d.extY T).comp (g i j)
   have hf : ∀ i j, Continuous (f i j) := fun i j => by

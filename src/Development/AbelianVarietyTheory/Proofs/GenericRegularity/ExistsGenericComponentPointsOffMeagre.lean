@@ -19,43 +19,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PeriodCoordinatesFramesLiftTendsto
 public import Mathlib.Algebra.MvPolynomial.Cardinal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsFlagCellChartOverFramedAffineOpen
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsIntegralSmoothChartFrameModuli
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FlagChartsCoverFramedFieldPoints
@@ -76,9 +39,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseC
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UniformizationPeriodLatticeChange
 import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
@@ -310,8 +270,8 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
   have hcc : ∀ τ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ := fun τ =>
     ComplexEmbedding.involutive_conjugate E τ
   obtain ⟨f, hf⟩ := GlobalTheory.FrameUnif.exists_letter_equiv X.Ψ X.cmType Dw.p Dw.q r hr (Formalism.L2.PjFree.relab c σ) hbij Dw.mult
-    (fun τ h => by unfold Datum.mult; rw [if_pos ((hrt τ).1 ((hty _).1 h))])
-    (fun τ h => by unfold Datum.mult; rw [if_neg (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_left ((hrt τ).1 ((hty _).1 h))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_right (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
   obtain ⟨idx, hi⟩ : ∃ idx : Fin g ≃ X.Ψ × Fin r, ∀ j,
       (Formalism.L2.PjFree.relab c σ (e j).1 ∈ X.Ψ ∧ (idx j).1.1 = Formalism.L2.PjFree.relab c σ (e j).1 ∧
         ((idx j).2 : ℕ) = Dw.q + (e j).2) ∨
@@ -323,8 +283,8 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     intro j
     rw [hq]
     rcases hi j with ⟨a, b, c'⟩ | ⟨a, b, c', d⟩
-    · rw [if_neg (by omega), b]
-    · rw [if_pos (by omega), b, hcc]
+    · rw [ite_eq_right (by omega), b]
+    · rw [ite_eq_left (by omega), b, hcc]
   have hqq : D.q = X.p0 := hq.trans hp0.symm
   refine ⟨idx, fun x v j => ?_, fun b hb j j' hne => ?_, fun P hP => ?_⟩
   · have h := hi j
@@ -334,12 +294,12 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     dsimp only at h ⊢
     rw [← hp0] at h
     rcases h with ⟨a, rfl, rfl⟩ | ⟨a, rfl, rfl, d⟩
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       unfold Formalism.L2.PjFree.perFr
-      rw [dif_pos a, dif_pos hn]
-    · rw [if_pos (by omega)]
+      rw [dite_eq_left a, dite_eq_left hn]
+    · rw [ite_eq_left (by omega)]
       unfold Formalism.L2.PjFree.perFr
-      rw [dite_eq_right a, dif_pos (show conjEmb (Formalism.L2.PjFree.relab c σ (e j).1) ∈ X.Ψ from hτ), dif_pos hn]
+      rw [dite_eq_right a, dite_eq_left (show conjEmb (Formalism.L2.PjFree.relab c σ (e j).1) ∈ X.Ψ from hτ), dite_eq_left hn]
       rfl
   · obtain ⟨h1, h2⟩ := PerBor.moveMat_support _ idx hb j j' hne
     rw [← hqq] at h2
@@ -348,14 +308,14 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     have c1 := hi j
     have c2 := hi j'
     by_cases hj : ((idx j).2 : ℕ) < D.q
-    · rw [if_pos hj] at h2 t1
+    · rw [ite_eq_left hj] at h2 t1
       have hj' : ((idx j').2 : ℕ) < D.q := by omega
-      rw [if_pos hj'] at t2
+      rw [ite_eq_left hj'] at t2
       refine ⟨hbij.1 (by rw [t1, t2, h1]), ?_⟩
       rcases c1 with ⟨-, -, c1⟩ | ⟨-, -, c1, d1⟩ <;> rcases c2 with ⟨-, -, c2⟩ | ⟨-, -, c2, d2⟩ <;> omega
-    · rw [if_neg hj] at h2 t1
+    · rw [ite_eq_right hj] at h2 t1
       have hj' : ¬ ((idx j').2 : ℕ) < D.q := by omega
-      rw [if_neg hj'] at t2
+      rw [ite_eq_right hj'] at t2
       refine ⟨hbij.1 (by rw [t1, t2, h1]), ?_⟩
       rcases c1 with ⟨-, -, c1⟩ | ⟨-, -, c1, d1⟩ <;> rcases c2 with ⟨-, -, c2⟩ | ⟨-, -, c2, d2⟩ <;> omega
   · rcases eq_or_ne r 0 with hr0 | hr0
@@ -494,7 +454,7 @@ theorem isMeagre_chart (U : Formalism.L2.PjFree.Unf Xo c σ r) (hσ : Formalism.
     else ψ₀
   have hφ' : ∀ i, ∀ b ∈ B i, ∀ a, Formalism.L2.PjFree.toC (φ' i b a) = φ i b a := by
     intro i b hb a
-    simp only [φ', dif_pos hb]
+    simp only [φ', dite_eq_left hb]
     rfl
   choose z hz using fun i b => hL.bc _ _ (φ' i b) C.y
   have key := fun (i : ι) (a : {a : C.R // a ≠ 0}) => isMeagre_family U hσ hU k C.y (φ' i) (z i) (hB i)

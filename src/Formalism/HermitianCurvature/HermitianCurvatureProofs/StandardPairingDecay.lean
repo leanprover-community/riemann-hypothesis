@@ -36,9 +36,9 @@ theorem vecV_zero_small (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k +
     (q : C.LPt) (hq : D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q < ε) : D.vecV Bs ν' m₀ G q = 0 := by
   unfold D.vecV
   by_cases hq' : D.IsLocPt q (r + 1) ∧ 0 < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q
-  · simp only [dif_pos hq']
+  · simp only [dite_eq_left hq']
     by_cases h' : ∃ γ ∈ B.GV k r, Zhat k r Bs.z Bs.z' γ = D.ptMatN q (r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-    · simp only [dif_pos h']
+    · simp only [dite_eq_left h']
       have hγ := h'.choose_spec.1
       have hGq := Formalism.FourierDecayAlt.P.ptG_spec k r Bs.z Bs.z' q h'.choose hq'.1 h'.choose_spec.2.1
       have e := Formalism.FourierDecayAlt.P.JCx1.needs.orbJ_smul_of_ae Bs h'.choose
@@ -51,8 +51,8 @@ theorem vecV_zero_small (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k +
           linarith
         simp [D.orbIntegrand, B.rho, hz])
       rw [e, zero_smul]
-    · simp only [dif_neg h']
-  · simp only [dif_neg hq']
+    · simp only [dite_eq_right h']
+  · simp only [dite_eq_right hq']
 
 end vec
 

@@ -17,46 +17,7 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Theta
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TwistedPrincipalPolarisationSectionsBaseChange
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionIdentificationWithPairing
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionMapsCompatibleInLevelStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TWMain
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
@@ -108,8 +69,8 @@ theorem exists_addVal (p : ℕ) [Fact p.Prime] {π : PadicAlgCl p} (h0 : 0 < ‖
     have := Real.log_le_log (norm_pos_iff.2 hx) h
     rw [hf x hx, hf y hy] at this
     exact_mod_cast (mul_le_mul_left_of_neg hl).1 this
-  refine ⟨AddValuation.of (fun x => if x = 0 then ⊤ else (f x : WithTop ℚ)) (if_pos rfl) ?_ ?_ ?_, fun x r => ?_⟩
-  · rw [if_neg one_ne_zero, inj (f 1) 0 (by rw [← hf 1 one_ne_zero]; simp)]; rfl
+  refine ⟨AddValuation.of (fun x => if x = 0 then ⊤ else (f x : WithTop ℚ)) (ite_eq_left rfl) ?_ ?_ ?_, fun x r => ?_⟩
+  · rw [ite_eq_right one_ne_zero, inj (f 1) 0 (by rw [← hf 1 one_ne_zero]; simp)]; rfl
   · intro x y
     by_cases hx : x = 0
     · simp [hx]
@@ -117,7 +78,7 @@ theorem exists_addVal (p : ℕ) [Fact p.Prime] {π : PadicAlgCl p} (h0 : 0 < ‖
     · simp [hy]
     by_cases hs : x + y = 0
     · simp [hs]
-    simp only [if_neg hx, if_neg hy, if_neg hs, min_le_iff, WithTop.coe_le_coe]
+    simp only [ite_eq_right hx, ite_eq_right hy, ite_eq_right hs, min_le_iff, WithTop.coe_le_coe]
     exact (le_max_iff.1 (IsUltrametricDist.norm_add_le_max x y)).imp (mono _ _ hs hx) (mono _ _ hs hy)
   · intro x y
     by_cases hx : x = 0
@@ -125,14 +86,14 @@ theorem exists_addVal (p : ℕ) [Fact p.Prime] {π : PadicAlgCl p} (h0 : 0 < ‖
     by_cases hy : y = 0
     · simp [hy]
     have hs := mul_ne_zero hx hy
-    simp only [if_neg hx, if_neg hy, if_neg hs, ← WithTop.coe_add]
+    simp only [ite_eq_right hx, ite_eq_right hy, ite_eq_right hs, ← WithTop.coe_add]
     refine congrArg _ (inj _ _ ?_)
     rw [← hf _ hs, norm_mul, Real.log_mul (norm_ne_zero_iff.2 hx) (norm_ne_zero_iff.2 hy), hf x hx, hf y hy]
     push_cast; ring
   · rw [AddValuation.of_apply, neg_mul, neg_neg]
     by_cases hx : x = 0
     · simp [hx, (Real.exp_pos _).ne]
-    rw [if_neg hx, WithTop.coe_eq_coe]
+    rw [ite_eq_right hx, WithTop.coe_eq_coe]
     refine ⟨fun h => by rw [← h, ← hf x hx, Real.exp_log (norm_pos_iff.2 hx)], fun h => inj _ _ ?_⟩
     rw [← hf x hx, h, Real.log_exp]
 

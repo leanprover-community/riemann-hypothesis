@@ -53,11 +53,6 @@ lemma zeroSieve_pullback {U : Cᵒᵖ} (x : M.obj U) {V : C} (g : V ⟶ U.unop) 
   rw [op_comp, PresheafOfModules.map_comp_apply]
   exact Iff.rfl
 
-lemma zeroSieve_zero {U : Cᵒᵖ} : zeroSieve (0 : M.obj U) = ⊤ := by
-  ext W h
-  simp only [Sieve.top_apply, iff_true]
-  exact map_zero _
-
 lemma zeroSieve_add {U : Cᵒᵖ} (x y : M.obj U) :
     zeroSieve x ⊓ zeroSieve y ≤ zeroSieve (x + y) := by
   rintro W h ⟨hx, hy⟩

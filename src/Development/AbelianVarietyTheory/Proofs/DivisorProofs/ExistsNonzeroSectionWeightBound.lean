@@ -108,8 +108,6 @@ open GlobalTheory.ThetaConst
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
-
 theorem phiC_le_valuation (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Geo.Tor.Host E) (Dw : Datum H) (l : Level H)
     (Xo : Moduli Dw l) (c : Coeff l) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
     [hcpl : IsAdicComplete (maximalIdeal V) V] [Algebra c.F (FractionRing V)] (y : FrPt Xo c (FractionRing V))
@@ -124,7 +122,7 @@ theorem phiC_le_valuation (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   have hL : Laws := hLL.1
   have hA : AdmBase V (maximalIdeal V) := ⟨inferInstance, inferInstance, inferInstance, hcpl⟩
   have htors := GlobalTheory.UT.torsionIso_of_pelUnif hLL h2 h3 h4 h5 E H V _ hA G P
-  obtain ⟨v, hv, hvv⟩ := GlobalTheory.T.exists_valuation_algebraicClosure_extending_vV V ϖ hϖ
+  obtain ⟨v, hv, hvv⟩ := GlobalTheory.ValClosure.exists_valuation_closure V ϖ hϖ
   let F := AlgebraicClosure (FractionRing V)
   letI : Algebra c.F F := ((algebraMap (FractionRing V) F).comp (algebraMap c.F (FractionRing V))).toAlgebra
   let ψ : FractionRing V →ₐ[c.F] F := { algebraMap (FractionRing V) F with commutes' := fun _ => rfl }
@@ -311,7 +309,6 @@ theorem exists_tied_integral {κ : KeyRule} (hκ : IsKeyRule κ) (hpq : 1 ≤ Dw
   rw [map_mul, map_pow, RingHom.map_det]
   exact h
 
-
 variable (Xo c) in
 theorem exists_key (hpq : 1 ≤ Dw.p + Dw.q) (hg : ∀ p : ℕ, p.Prime → l.GoodAt p) :
     ∃ K : (Rul Xo c)ˣ, (K : Rul Xo c) ∈ AllWt.secZ Xo c ((4 : ℤ) • keyEx Dw) ∧
@@ -470,10 +467,7 @@ theorem exists_centred {Y : Scheme.{0}} (y : Y) [IsDomain (Y.presheaf.stalk y)]
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
-
 variable {Y : Model Xo c (RingHom.id c.F)} (X : FlagCover Y) (Z : Comp Xo c)
-
-
 
 theorem through_point (y : Y₀ X Z) (T : CDVR) (io : c.F →+* T.Fr) (y' : IntFr Xo c T io)
     (g : (Y₀ X Z).presheaf.stalk y →+* T.V)
@@ -544,7 +538,6 @@ theorem mul_mem_vanBd {a b s : AllWt.Weight Dw} (h : a + b = s) (θ : H0 (str₀
   rw [H0.germ_change i _ y _ hi hc, ProdChart.germ_mul _ _ _ t y _ ha hb hc]
   exact Ideal.mul_mem_left _ _ (Ideal.mul_mem_left _ _ (hf y hy _ hb))
 
-
 end Geometry
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -560,6 +553,5 @@ theorem four_le_expL {L : ℝ} (hL : 10 ≤ L) : 4 ≤ expL L := by
   have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 3 by norm_num)
   push_cast
   linarith
-
 
 end GlobalTheory.ThetaSteep

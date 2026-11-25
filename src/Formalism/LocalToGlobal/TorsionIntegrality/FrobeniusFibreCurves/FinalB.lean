@@ -83,9 +83,9 @@ theorem key {l : PowerSeries K} (h1 : PowerSeries.coeff 1 l = 1) (j k : Fin 3) :
   rw [Formalism.G.LogCR.pderiv_psubst hX]
   by_cases hkj : k = j
   · subst hkj
-    rw [MvPowerSeries.pderiv_X_self, mul_one, if_pos rfl]
+    rw [MvPowerSeries.pderiv_X_self, mul_one, ite_eq_left rfl]
     exact inv_mul_dz_subst h1 hX
-  · rw [MvPowerSeries.pderiv_X_of_ne hkj, mul_zero, mul_zero, if_neg hkj]
+  · rw [MvPowerSeries.pderiv_X_of_ne hkj, mul_zero, mul_zero, ite_eq_right hkj]
 
 theorem cob_subst {ι : Type} {F : MvPowerSeries (Fin 2) K}
     (hF : MvPowerSeries.constantCoeff F = 0) (f : PowerSeries K) {A B : MvPowerSeries ι K}

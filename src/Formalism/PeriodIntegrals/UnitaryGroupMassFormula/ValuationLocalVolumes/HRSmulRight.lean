@@ -100,6 +100,6 @@ def OmVSDBwd : Prop :=
       y ∈ latLoc (E := X.B.I.E) v (abelian₂ X)
 
 theorem omVSD_of (h : OmVSDBwd X) : OmVSD X := fun v y =>
-  ⟨fun hy x hx => omVSD_fwd X v hx hy, h v y⟩
+  ⟨fun hy _ hx => omVSD_fwd X v hx hy, h v y⟩
 
 end Formalism.L2.SG.Pf.NcVal.OmVSt.OmW

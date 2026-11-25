@@ -90,7 +90,7 @@ theorem incAdj_yZero_apply {ρ : ℕ} (hρ : 0 < ρ) {S T T₀ : HSp D} (d : Hyp
   Matrix.mul_apply, Matrix.smul_apply, Matrix.neg_apply, adj, Matrix.transpose_apply, Matrix.map_apply,
   Matrix.vecMulVec_apply, smul_eq_mul, map_mul, map_neg, hell, map_sum]
   rw [Finset.sum_eq_single (⟨ρ - 1, by omega⟩ : Fin ρ) (fun i _ hi => by simp [hi]) (fun h => absurd (Finset.mem_univ _) h)]
-  simp only [if_true, mul_one, Finset.mul_sum]
+  simp only [ite_true, mul_one, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   change incA D (d.e' i _) * (-incA D _ * (cA D a * -incA D (star (z m)) * incA D (S.gram m l))) =
     cA D a * (incA D _ * incA D (d.e' i _) * (incA D (star (z m)) * incA D (S.gram m l)))

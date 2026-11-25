@@ -6,52 +6,12 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueP
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramUnipotentStabilizerBruhatCellConjRoot
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameTermCountSublatticeBoundStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLatticeStatement
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
 
@@ -117,7 +77,7 @@ theorem lead_inv {L U : Matrix (Fin N) (Fin N) K} (hL : IsLoUni L) (hU : IsUpUni
     (W : Matrix (Fin N) (Fin N) K) (l : ℕ) : leadMinorE (L * W * U) l = leadMinorE W l := by
   unfold leadMinorE
   by_cases hl : l ≤ N
-  · rw [dif_pos hl, dif_pos hl, Matrix.mul_assoc, det_lo_mul hL (W * U) hl]
+  · rw [dite_eq_left hl, dite_eq_left hl, Matrix.mul_assoc, det_lo_mul hL (W * U) hl]
     have hUt : IsLoUni Uᵀ := fun i j => ⟨(hU j i).1, fun e => (hU j i).2 e.symm⟩
     have key := det_lo_mul hUt Wᵀ hl (Fin.castLE hl)
     rw [← Matrix.transpose_mul, ← Matrix.transpose_submatrix, ← Matrix.transpose_submatrix,
@@ -141,8 +101,8 @@ theorem det_mono_sq {w : Matrix (Fin N) (Fin N) K} {σ : Equiv.Perm (Fin N)} {d 
       rw [← hπ i]
       exact ⟨fun hh => (hJ hh).symm, fun hh => by rw [← hh]; rfl⟩
     by_cases hc : e i = j
-    · rw [if_pos (hiff.mpr hc), if_pos hc, mul_one]
-    · rw [if_neg (fun h2 => hc (hiff.mp h2)), if_neg hc, mul_zero]
+    · rw [ite_eq_left (hiff.mpr hc), ite_eq_left hc, mul_one]
+    · rw [ite_eq_right (fun h2 => hc (hiff.mp h2)), ite_eq_right hc, mul_zero]
   rw [hsub, Matrix.det_mul, Matrix.det_diagonal, Matrix.det_permutation, mul_pow]
   rcases Int.units_eq_one_or (Equiv.Perm.sign e) with hs | hs <;> simp [hs]
 
@@ -173,18 +133,18 @@ theorem last_block (bs : List (K × ℕ)) (h : ∀ b ∈ bs, b.1 ≠ 0 ∧ 1 ≤
         omega
       · simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil] at hij
         simp only [ptEntry]
-        rw [if_pos ⟨by omega, by omega⟩, if_pos (by omega)]
+        rw [ite_eq_left ⟨by omega, by omega⟩, ite_eq_left (by omega)]
     · obtain ⟨l, t, hl, ht, h1, h2⟩ := ih (fun b hb' => h b (List.mem_cons_of_mem _ hb')) hr
       simp only [List.map_cons, List.sum_cons]
       refine ⟨s0 + l, t, by omega, ht, fun i j hi hj => ?_, fun i j hi hj hij => ?_⟩
       · simp only [ptEntry]
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
         by_cases h3 : s0 ≤ i ∧ s0 ≤ j
-        · rw [if_pos h3]
+        · rw [ite_eq_left h3]
           exact h1 _ _ (by omega) (by omega)
-        · rw [if_neg h3]
+        · rw [ite_eq_right h3]
       · simp only [ptEntry]
-        rw [if_neg (by omega), if_pos ⟨by omega, by omega⟩]
+        rw [ite_eq_right (by omega), ite_eq_left ⟨by omega, by omega⟩]
         exact h2 _ _ (by omega) (by omega) (by omega)
 
 theorem prod_tail (e : ℕ → K) (t : K) (l k : ℕ) (hlk : l ≤ k) (h : ∀ i, l ≤ i → i < k → e i = t) :
@@ -216,18 +176,18 @@ theorem cell_minor {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (p : Poi
       exact ht' _ _ hi (show l ≤ r + l - i.val by omega) (show i.val + (r + l - i.val) + 1 = r + 1 + l by omega)
     rw [hw] at hval
     by_cases hc : (⟨r + l - i.val, by omega⟩ : Fin (r + 1)) = σ i
-    · rw [if_pos hc] at hval
+    · rw [ite_eq_left hc] at hval
       exact ⟨hc.symm, hval⟩
-    · rw [if_neg hc] at hval
+    · rw [ite_eq_right hc] at hval
       exact absurd hval.symm ht
   have hσfirst : ∀ i : Fin (r + 1), i.val < l → (σ i).val < l := by
     intro i hi
     by_contra! hc
     have hz := h0 i.val (σ i).val hi hc
-    rw [← hent, hw, if_pos rfl] at hz
+    rw [← hent, hw, ite_eq_left rfl] at hz
     exact hd i hz
   obtain ⟨e, he⟩ : ∃ e : ℕ → K, ∀ k (hk : k < r + 1), e k = d ⟨k, hk⟩ :=
-    ⟨fun k => if hk : k < r + 1 then d ⟨k, hk⟩ else 0, fun k hk => dif_pos hk⟩
+    ⟨fun k => if hk : k < r + 1 then d ⟨k, hk⟩ else 0, fun k hk => dite_eq_left hk⟩
   have hde : ∀ (n : ℕ) (hn : n ≤ r + 1) (i : Fin n), d (Fin.castLE hn i) = e i.val := by
     intro n hn i
     rw [he _ (lt_of_lt_of_le i.isLt hn)]
@@ -240,12 +200,12 @@ theorem cell_minor {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (p : Poi
     intro n hn
     rw [← lead_inv hL hU (ptMat p) n, ← hZ]
     unfold leadMinorE
-    rw [dif_pos hn, dif_pos hn, det_OM_sq]
+    rw [dite_eq_left hn, dite_eq_left hn, det_OM_sq]
   have hmono : ∀ (n : ℕ) (hn : n ≤ r + 1), (∀ i : Fin n, (σ (Fin.castLE hn i)).val < n) →
       leadMinorE (ptMat p) n ^ 2 = (∏ k ∈ Finset.range n, e k) ^ 2 := by
     intro n hn hσn
     unfold leadMinorE
-    rw [dif_pos hn, det_mono_sq hw _ _ (Fin.castLE_injective hn) (Fin.castLE_injective hn)
+    rw [dite_eq_left hn, det_mono_sq hw _ _ (Fin.castLE_injective hn) (Fin.castLE_injective hn)
       (fun i => ⟨⟨(σ (Fin.castLE hn i)).val, hσn i⟩, Fin.ext rfl⟩),
       Finset.prod_congr rfl (fun i _ => hde n hn i), Fin.prod_univ_eq_prod_range]
   have hlr : l ≤ r := by omega
@@ -269,7 +229,7 @@ theorem cell_minor {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (p : Poi
       by_contra hne
       obtain ⟨z, hz⟩ := Fin.exists_succAbove_eq hne
       exact hk ⟨z, hz⟩
-    rw [hkb, hw, if_neg (fun hh => hσI i hh.symm), zero_mul]
+    rw [hkb, hw, ite_eq_right (fun hh => hσI i hh.symm), zero_mul]
   have hcs : (Fin.castSucc : Fin r → Fin (r + 1)) = Fin.castLE (Nat.le_succ r) :=
     funext fun i => Fin.ext rfl
   have hrow : ((Z.submatrix Fin.castSucc id).submatrix id (Fin.succAbove ⟨l, hl⟩)).det ^ 2 =
@@ -371,7 +331,7 @@ theorem lead_le (D : D7) (b C : ℝ) (hb : 1 ≤ b) (hC : 0 ≤ C) (hrd : D.host
   rcases Nat.eq_zero_or_pos l with rfl | hl0
   · have h1 : leadMinorE Z 0 = 1 := by
       unfold leadMinorE
-      rw [dif_pos (Nat.zero_le _)]
+      rw [dite_eq_left (Nat.zero_le _)]
       exact Matrix.det_isEmpty
     rw [h1, map_one, norm_one]
     exact one_le_mul_of_one_le_of_one_le hB1 hloc

@@ -38,20 +38,6 @@ structure OpenImmersionStability (k : Type u) [Field k] : Prop where
       (p : W ⟶ Spec (CommRingCat.of k)) (D : W.IdealSheafData),
       IsSmoothDivisor p D → IsSmoothDivisor (f ≫ p) (D.comap f)
 
-private theorem coe_support_comap {V W : Scheme.{u}} (f : V ⟶ W) (Z : W.IdealSheafData) :
-    ((Z.comap f).support : Set ↥V) = ⇑f.base ⁻¹' ((Z.support : Set ↥W)) := by
-  rw [Scheme.IdealSheafData.support_comap]; rfl
-
-private theorem preimage_base_comp {A B C : Scheme.{u}} (a : A ⟶ B) (b : B ⟶ C) (S : Set ↥C) :
-    ⇑(a ≫ b).base ⁻¹' S = ⇑a.base ⁻¹' (⇑b.base ⁻¹' S) := by
-  ext w
-  exact Iff.rfl
-
-private theorem preimage_base_preimage_base_of_comp_eq {A B C D : Scheme.{u}} {a : A ⟶ B} {b : B ⟶ D} {c : A ⟶ C}
-    {d : C ⟶ D} (e : a ≫ b = c ≫ d) (S : Set ↥D) :
-    ⇑a.base ⁻¹' (⇑b.base ⁻¹' S) = ⇑c.base ⁻¹' (⇑d.base ⁻¹' S) := by
-  rw [← preimage_base_comp, ← preimage_base_comp, e]
-
 private theorem resolutionCertificate_congr {k : Type u} [Field k] {isOrder : Bool} {A : Scheme.{u}}
     {p₁ p₂ : A ⟶ Spec (CommRingCat.of k)} {I₁ I₂ : A.IdealSheafData} {m : ℕ}
     {Mem₁ Mem₂ : Set ↥A} {Z₁ Z₂ : A.IdealSheafData}
@@ -77,7 +63,7 @@ private theorem comapCertificate_of_support_subset {k : Type u} [Field k] {isOrd
     IsCertificateOnOpens isOrder W p I m Mem Z := by
   intro V f _hf
   refine ResolutionCertificate.memory ?_
-  rw [coe_support_comap]
+  rw [Scheme.IdealSheafData.support_comap]
   exact Set.preimage_mono h
 
 private theorem comapCertificate_of_two_le {k : Type u} [Field k] {isOrder : Bool}
@@ -95,9 +81,9 @@ private theorem comapPrincipalizationCertificate_of_mul_of_order {k : Type u} [F
   intro V f hf
   refine PrincipalizationCertificate.toOrder (M.comap f) (N.comap f) μ ?_ ?_ hmu ?_ (ih V f hf)
   · rw [hI, Scheme.IdealSheafData.comap_mul]
-  · rw [coe_support_comap]
+  · rw [Scheme.IdealSheafData.support_comap]
     exact Set.preimage_mono hM
-  · rw [coe_support_comap]
+  · rw [Scheme.IdealSheafData.support_comap]
     intro y hy
     rw [mem_orderAtLeastLocus_iff]
     exact le_trans ((mem_orderAtLeastLocus_iff N μ (f.base y)).mp (hZ hy))
@@ -113,11 +99,8 @@ private theorem comapCertificate_of_open_cover {k : Type u} [Field k] {isOrder :
     IsCertificateOnOpens isOrder W p I m Mem Z := by
   intro V f hf
   have : IsOpenImmersion f := hf
-  have hsup : ∀ (y : ↥V), y ∈ (Z.comap f).support → f.base y ∈ Z.support := by
-    intro y hy
-    have h1 : y ∈ ((Z.comap f).support : Set ↥V) := hy
-    rw [coe_support_comap] at h1
-    exact h1
+  have hsup : ∀ (y : ↥V), y ∈ (Z.comap f).support → f.base y ∈ Z.support :=
+    fun y hy => by rwa [Scheme.IdealSheafData.support_comap] at hy
   refine ResolutionCertificate.localize (fun y hy => f ⁻¹ᵁ U (f.base y) (hsup y hy))
     (fun y hy => hU _ _) ?_
   intro y hy
@@ -127,7 +110,8 @@ private theorem comapCertificate_of_open_cover {k : Type u} [Field k] {isOrder :
     inferInstance) ?_ ?_ ?_ ?_
   · rw [← Category.assoc, e1, Category.assoc]
   · rw [← Scheme.IdealSheafData.comap_comp, ← Scheme.IdealSheafData.comap_comp, e1]
-  · exact preimage_base_preimage_base_of_comp_eq e1 Mem
+  · change ⇑((f ∣_ U (f.base y) (hsup y hy)) ≫ (U (f.base y) (hsup y hy)).ι).base ⁻¹' Mem = _
+    rw [e1]; rfl
   · rw [← Scheme.IdealSheafData.comap_comp, ← Scheme.IdealSheafData.comap_comp, e1]
 
 private theorem isSmoothDivisor_comap_morphismRestrict {k : Type u} [Field k] (hin : OpenImmersionStability k)
@@ -149,7 +133,8 @@ private theorem support_comap_morphismRestrict_subset {V W : Scheme.{u}} (f : V 
   have e1 : (f ∣_ U') ≫ U'.ι = (f ⁻¹ᵁ U').ι ≫ f := morphismRestrict_ι ..
   have e5 : (K.comap f).comap (f ⁻¹ᵁ U').ι = (K.comap U'.ι).comap (f ∣_ U') := by
     rw [← Scheme.IdealSheafData.comap_comp, ← Scheme.IdealSheafData.comap_comp, e1]
-  rw [e5, coe_support_comap (f ∣_ U') (K.comap U'.ι), coe_support_comap (f ∣_ U') Hd]
+  rw [e5, Scheme.IdealSheafData.support_comap (K.comap U'.ι),
+    Scheme.IdealSheafData.support_comap Hd]
   exact Set.preimage_mono h
 
 private theorem isOpen_preimage_support_comap_morphismRestrict {V W : Scheme.{u}} (f : V ⟶ W) (U' : W.Opens)
@@ -161,9 +146,10 @@ private theorem isOpen_preimage_support_comap_morphismRestrict {V W : Scheme.{u}
   have e1 : (f ∣_ U') ≫ U'.ι = (f ⁻¹ᵁ U').ι ≫ f := morphismRestrict_ι ..
   have e5 : (K.comap f).comap (f ⁻¹ᵁ U').ι = (K.comap U'.ι).comap (f ∣_ U') := by
     rw [← Scheme.IdealSheafData.comap_comp, ← Scheme.IdealSheafData.comap_comp, e1]
-  rw [e5, coe_support_comap (f ∣_ U') (K.comap U'.ι),
-    preimage_base_preimage_base_of_comp_eq (comapSubscheme_comp (f ∣_ U') Hd).symm
-      (((K.comap U'.ι).support : Set ↥U'.toScheme))]
+  rw [e5, Scheme.IdealSheafData.support_comap]
+  change IsOpen (⇑((Hd.comap (f ∣_ U')).subschemeι ≫ (f ∣_ U')).base ⁻¹'
+    ((K.comap U'.ι).support : Set ↥U'.toScheme))
+  rw [← comapSubscheme_comp]
   exact h.preimage (comapSubscheme (f ∣_ U') Hd).base.hom.continuous
 
 private theorem nonzeroOnComponents_comap_comapSubscheme {k : Type u} [Field k] (hin : OpenImmersionStability k)
@@ -241,7 +227,8 @@ private theorem principalizationCertificate_comapSubscheme_of_isOpenImmersion {k
   refine resolutionCertificate_congr (h _ (comapSubscheme (f ∣_ U') Hd) hq) ?_ rfl ?_ ?_
   · have h5 := congrArg (fun t : (Hd.comap (f ∣_ U')).subscheme ⟶ W => t ≫ p) e3
     simpa only [Category.assoc] using h5
-  · exact preimage_base_preimage_base_of_comp_eq e3' Mem
+  · change ⇑(comapSubscheme (f ∣_ U') Hd ≫ (Hd.subschemeι ≫ U'.ι)).base ⁻¹' Mem = _
+    rw [e3']; rfl
   · simp only [← Scheme.IdealSheafData.comap_comp]
     rw [e3]
 
@@ -277,11 +264,8 @@ private theorem comapOrderCertificate_of_smoothDivisor_cover {k : Type u} [Field
     IsOrderCertificateOnOpens W p N μ Mem Z := by
   intro V f hf
   have : IsOpenImmersion f := hf
-  have hsup : ∀ (y : ↥V), y ∈ (Z.comap f).support → f.base y ∈ Z.support := by
-    intro y hy
-    have h1 : y ∈ ((Z.comap f).support : Set ↥V) := hy
-    rw [coe_support_comap] at h1
-    exact h1
+  have hsup : ∀ (y : ↥V), y ∈ (Z.comap f).support → f.base y ∈ Z.support :=
+    fun y hy => by rwa [Scheme.IdealSheafData.support_comap] at hy
   refine OrderCertificate.descend (fun y hy => f ⁻¹ᵁ U (f.base y) (hsup y hy))
     (fun y hy => hU _ _)
     (fun y hy => (H (f.base y) (hsup y hy)).comap (f ∣_ U (f.base y) (hsup y hy)))
@@ -295,50 +279,20 @@ private theorem comapOrderCertificate_of_smoothDivisor_cover {k : Type u} [Field
       Jz.comap (comapSubscheme (f ∣_ U (f.base y) (hsup y hy)) (H (f.base y) (hsup y hy)))))
     ?_ ?_ ?_ ?_
   · intro y hy hnone
-    have hJn : J (f.base y) (hsup y hy) = none := by
-      cases hJ : J (f.base y) (hsup y hy) with
-      | none => rfl
-      | some Jz =>
-          rw [hJ] at hnone
-          simp at hnone
-    exact isOpen_preimage_support_comap_morphismRestrict f (U (f.base y) (hsup y hy)) (H (f.base y) (hsup y hy)) Z
-      (hJnone _ _ hJn)
+    exact isOpen_preimage_support_comap_morphismRestrict f (U (f.base y) (hsup y hy))
+      (H (f.base y) (hsup y hy)) Z (hJnone _ _ (Option.map_eq_none_iff.mp hnone))
   · intro y hy Jz' hsome
-    cases hJ : J (f.base y) (hsup y hy) with
-    | none =>
-        rw [hJ] at hsome
-        simp at hsome
-    | some Jz =>
-        rw [hJ] at hsome
-        have hJz : Jz.comap (comapSubscheme (f ∣_ U (f.base y) (hsup y hy))
-            (H (f.base y) (hsup y hy))) = Jz' := Option.some.inj hsome
-        subst hJz
-        exact nonzeroOnComponents_comap_comapSubscheme hin f (U (f.base y) (hsup y hy))
-          (H (f.base y) (hsup y hy)) Jz (hJcomp _ _ Jz hJ)
+    obtain ⟨Jz, hJ, rfl⟩ := Option.map_eq_some_iff.mp hsome
+    exact nonzeroOnComponents_comap_comapSubscheme hin f (U (f.base y) (hsup y hy))
+      (H (f.base y) (hsup y hy)) Jz (hJcomp _ _ Jz hJ)
   · intro y hy Jz' hsome x hx
-    cases hJ : J (f.base y) (hsup y hy) with
-    | none =>
-        rw [hJ] at hsome
-        simp at hsome
-    | some Jz =>
-        rw [hJ] at hsome
-        have hJz : Jz.comap (comapSubscheme (f ∣_ U (f.base y) (hsup y hy))
-            (H (f.base y) (hsup y hy))) = Jz' := Option.some.inj hsome
-        subst hJz
-        exact exists_isOpen_comap_eq_comap_morphismRestrict f (U (f.base y) (hsup y hy)) (H (f.base y) (hsup y hy)) N Mem Jz
-          (hJloc _ _ Jz hJ) x hx
+    obtain ⟨Jz, hJ, rfl⟩ := Option.map_eq_some_iff.mp hsome
+    exact exists_isOpen_comap_eq_comap_morphismRestrict f (U (f.base y) (hsup y hy))
+      (H (f.base y) (hsup y hy)) N Mem Jz (hJloc _ _ Jz hJ) x hx
   · intro y hy Jz' hsome
-    cases hJ : J (f.base y) (hsup y hy) with
-    | none =>
-        rw [hJ] at hsome
-        simp at hsome
-    | some Jz =>
-        rw [hJ] at hsome
-        have hJz : Jz.comap (comapSubscheme (f ∣_ U (f.base y) (hsup y hy))
-            (H (f.base y) (hsup y hy))) = Jz' := Option.some.inj hsome
-        subst hJz
-        exact principalizationCertificate_comapSubscheme_of_isOpenImmersion hin f (U (f.base y) (hsup y hy)) (H (f.base y) (hsup y hy)) Z μ Mem
-          Jz (ih _ _ Jz hJ)
+    obtain ⟨Jz, hJ, rfl⟩ := Option.map_eq_some_iff.mp hsome
+    exact principalizationCertificate_comapSubscheme_of_isOpenImmersion hin f
+      (U (f.base y) (hsup y hy)) (H (f.base y) (hsup y hy)) Z μ Mem Jz (ih _ _ Jz hJ)
 
 private theorem comapResolutionCertificate {k : Type u} [Field k] (hin : OpenImmersionStability k)
     {isOrder : Bool} {W : Scheme.{u}} {p : W ⟶ Spec (CommRingCat.of k)} {I : W.IdealSheafData}

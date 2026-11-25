@@ -109,7 +109,7 @@ theorem yjtZ_X (D : Formalism.BasicNotions.D7) (LL LL' : ChainLetters N) (hv : L
       simp [Finsupp.single_apply]
     · have : ∀ x : Fin r, (Finsupp.single (a, c) 1 : Fin N × Fin r →₀ ℕ) (i, x) = 0 := by
         intro x
-        rw [Finsupp.single_apply, if_neg]
+        rw [Finsupp.single_apply, ite_eq_right]
         intro h
         exact hi (congrArg Prod.fst h).symm
       simp [this, hi]

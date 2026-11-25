@@ -326,8 +326,7 @@ variable {K : Type} [Field K] [NumberField K]
 
 theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
     IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ := by
-  intro V Λ hΛ
-  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
+  exact Formalism.IndefR.Fin.PDA.selfDual_isFullLattice
 
 theorem exists_basis_in_lattice {n : ℕ} (Λ : Submodule (𝓞 K) (Fin n → K)) [hΛ : Λ.IsFullLattice K] (N : ℕ) (hN : 2 ≤ N) :
     ∃ b : Module.Basis (Fin n) K (Fin n → K), (∀ i, b i ∈ Λ) ∧ ∃ c : 𝓞 K, IsCoprime c (N : 𝓞 K) ∧

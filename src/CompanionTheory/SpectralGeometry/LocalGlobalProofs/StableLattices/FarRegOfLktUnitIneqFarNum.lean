@@ -17,10 +17,6 @@ open PI.UpqRep (rhoC rhoN lowK nsq vNormSq)
 
 variable {n : ℕ}
 
-theorem rho_sum (ε : Fin n → Bool) (a : Fin n) :
-    rhoN ε a + rhoC ε a = ((n : ℝ) - 1) / 2 - ((a : ℕ) : ℝ) := by
-  apply GlobalTheory.DiscreteSeriesTest.rhoN_add_rhoC
-
 theorem abs_rhoC_le (ε : Fin n → Bool) (a : Fin n) : |rhoC ε a| ≤ n := by
   unfold rhoC
   have h1 : ((univ.filter fun b => a < b ∧ ε b = ε a).card : ℝ) ≤ n := by
@@ -61,7 +57,6 @@ theorem rhoC_lt (ε : Fin n → Bool) {a b : Fin n} (hab : a < b) (he : ε a = �
       ((univ.filter fun c => c < b ∧ ε c = ε b).card : ℝ) := by exact_mod_cast h2
   linarith
 
-
 open Classical in
 def levS (y : ℕ → ℝ) (L : ℝ) (m : ℕ) : ℕ := ((range m).filter fun i => L ≤ y i - y (i + 1)).card
 
@@ -101,7 +96,7 @@ theorem levS_flat (y : ℕ → ℝ) (L : ℝ) (a m : ℕ) (h : levS y L a = levS
         · exact ⟨a + m, by simp [hP], by simp⟩
         · exact filter_subset_filter _ (range_mono (by omega))
       omega
-    push_neg at h5
+    push Not at h5
     have e : a + (m + 1) = a + m + 1 := rfl
     rw [e]
     push_cast
@@ -194,7 +189,7 @@ theorem farReg_of_lkt_unitIneq_farNum : LKTExists → Renumber → UnitIneq → 
   have hKU : CompanionTheory.D.DSIC.KUnit (ε ∘ s) (fun a b => E (s a) (s b)) := by
     intro a b he x y
     have h1 := hUn2 a b x y
-    have h2 : Formalism.REAL.sgn (ε ∘ s) a b = 1 := if_pos he
+    have h2 : Formalism.REAL.sgn (ε ∘ s) a b = 1 := ite_eq_left he
     rw [h2] at h1
     simpa using h1
   obtain ⟨σ, hσ⟩ := hK1 (ε ∘ s) (γ ∘ s) lev V (fun a b => E (s a) (s b)) hE' χ hG hKU hLF2 hMin2 hSC2 ⟨u, hu, hKH2⟩
@@ -219,7 +214,7 @@ theorem farReg_of_lkt_unitIneq_farNum : LKTExists → Renumber → UnitIneq → 
     nlinarith [mul_nonneg h0 h0, mul_nonneg (mul_nonneg h0 h0) h0]
   have hlow : lowK (ε ∘ s) (xv (ε ∘ s) (γ ∘ s) - Formalism.QuantumDeterminants.rhoStd n) = γ ∘ s := by
     funext a
-    have h1 := rho_sum (ε ∘ s) a
+    have h1 := GlobalTheory.DiscreteSeriesTest.rhoN_add_rhoC (ε ∘ s) a
     simp only [lowK, xv, Formalism.QuantumDeterminants.rhoStd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
     linarith
   refine ⟨s, xv (ε ∘ s) (γ ∘ s) - Formalism.QuantumDeterminants.rhoStd n, ⟨?_, ?_⟩, hord, ?_, u, hu, ?_⟩

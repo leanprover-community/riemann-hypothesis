@@ -19,47 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenModelEqGe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorIntegralModelNonemptyStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckePowOne
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmoothOfRelativeDimensionFibrePower
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
@@ -274,7 +233,7 @@ theorem GDatum.exists_smul_eq_tmul (G : GDatum) (z : ℚ ⊗[ℤ] G.O) :
 theorem GDatum.algebraMap_injective (G : GDatum) : Function.Injective (algebraMap (𝓞 G.F) G.O) := by
   haveI := G.freeO
   haveI := GDatum.O_nontrivial G
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   by_contra h0
   have hI : (RingHom.ker (algebraMap (𝓞 G.F) G.O)).comap (algebraMap ℤ (𝓞 G.F)) ≠ ⊥ :=
@@ -925,7 +884,7 @@ theorem card_torsion_of_gTateIso (G : GDatum) {k : Type} [Field k] {Q : Type} [G
         rw [hrep, map_add (f := _), map_nsmul, Finsupp.add_apply, Finsupp.smul_apply, map_sum]
         simp only [map_zsmul, Module.Basis.repr_self, Finset.sum_apply', Finsupp.smul_apply,
           Finsupp.single_apply, smul_eq_mul, nsmul_eq_mul]
-        simp only [mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        simp only [mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
         linear_combination hy i
       rw [e1, I.add, (I.ker ℓ hℓ _).2 ⟨_, rfl⟩, _root_.mul_one]
   rw [← Nat.card_congr (Equiv.ofBijective F hF), Nat.card_fun, Nat.card_zmod, Nat.card_fin]

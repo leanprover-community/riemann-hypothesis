@@ -474,12 +474,6 @@ structure ExtA (D : D7) {r j p : ℕ} (L : Loc D r j p) where
   degGrD : L.Crv → PsiT D → ℕ → ℤ
 attribute [instance] ExtA.lvAdd ExtA.lvMod ExtA.tcAdd ExtA.tcMod ExtA.obAdd ExtA.obMod
 
-namespace ExtA
-
-variable {D : D7} {r j p : ℕ} {L : Loc D r j p}
-
-end ExtA
-
 end Ext
 
 structure Prov (D : Formalism.BasicNotions.D7) where

@@ -50,7 +50,7 @@ private theorem limKer_key {G ι : Type} [Group G] [TopologicalSpace G] [IsTopol
     obtain ⟨k, hk⟩ : ∃ k : ι → G, ∀ᶠ i in (U : Filter ι), k i ∈ K i ∧ (k i)⁻¹ * x ∈ O.toSubgroup := by
       refine ⟨fun i => if hi : ∃ k ∈ K i, k⁻¹ * x ∈ O.toSubgroup then hi.choose else 1, ?_⟩
       refine hex.mono fun i hi => ?_
-      simp only [dif_pos hi]
+      simp only [dite_eq_left hi]
       exact hi.choose_spec
     obtain ⟨l, hl⟩ : ∃ l : G, Tendsto k (U : Filter ι) (nhds l) := by
       refine ⟨(U.map k).lim, ?_⟩

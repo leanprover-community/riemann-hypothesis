@@ -3,54 +3,11 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 public import Mathlib.Analysis.Calculus.LineDeriv.Basic
 public import Mathlib.Analysis.Complex.Schwarz
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Analysis.Calculus.FDeriv.Add
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 
@@ -81,15 +38,15 @@ theorem aestronglyMeasurable_fderiv_apply_of_param {F : T → E → V} {x₀ : E
     exact (hc.eventually hmeas).filter_mono nhdsWithin_le_nhds
   refine aestronglyMeasurable_of_tendsto_ae (𝓝[≠] (0 : ℂ)) (f := f) (fun c => ?_) ?_
   · by_cases h : AEStronglyMeasurable (fun t => F t (x₀ + c • v)) μ
-    · simp only [f, if_pos h]
+    · simp only [f, ite_eq_left h]
       exact (h.sub h0).const_smul c⁻¹
-    · simp only [f, if_neg h]
+    · simp only [f, ite_eq_right h]
       exact aestronglyMeasurable_const
   · filter_upwards [hdiff] with t ht
     have h1 := hasLineDerivAt_iff_tendsto_slope_zero.1 (ht.hasFDerivAt.hasLineDerivAt v)
     refine h1.congr' ?_
     filter_upwards [hev] with c hc
-    simp only [f, if_pos hc]
+    simp only [f, ite_eq_left hc]
 
 variable [FiniteDimensional ℂ E]
 

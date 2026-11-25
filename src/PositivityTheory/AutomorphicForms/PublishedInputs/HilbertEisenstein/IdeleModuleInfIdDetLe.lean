@@ -80,7 +80,7 @@ theorem ideleModule_infId (d : (UpperTheory.V.TR.Rinf F)ˣ) :
   refine Finset.prod_congr rfl fun w _ => ?_
   have hm : w.mult = 1 := by
     unfold InfinitePlace.mult
-    rw [if_pos (IsTotallyReal.isReal w)]
+    rw [ite_eq_left (IsTotallyReal.isReal w)]
   have e : ((UpperTheory.V.TR.infId F d : Ideles F) : Ad F).1 w = (UpperTheory.V.TR.infEq F d.val) w := by
     rw [infId_fst]
   rw [hm, pow_one, e, norm_infEq_apply]

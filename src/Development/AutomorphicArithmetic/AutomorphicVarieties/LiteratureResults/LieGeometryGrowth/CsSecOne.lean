@@ -2,6 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.CsStmt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.DifferentialTranslates.LocSec
+import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 
 @[expose] public section
 
@@ -63,14 +64,6 @@ private theorem sand_smooth {σ : X → GL (Fin a) (Cinf E)} {x : X}
   refine ContDiffAt.sum fun l _ => (ContDiffAt.sum fun k _ => (h i k).mul contDiffAt_const).mul ?_
   exact (starL' ℝ : Cinf E ≃L[ℝ] Cinf E).contDiff.contDiffAt.comp x (h j l)
 
-private theorem clm_smooth {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    {f : X → V →L[ℝ] V} {x : X} (h : ∀ v, ContDiffAt ℝ ∞ (fun y => f y v) x) : ContDiffAt ℝ ∞ f x := by
-  let e₁ : V ≃L[ℝ] (Fin (Module.finrank ℝ V) → ℝ) := .ofFinrankEq (Module.finrank_fin_fun ℝ).symm
-  let e₂ := (e₁.arrowCongr (1 : V ≃L[ℝ] V)).trans (ContinuousLinearEquiv.piRing (Fin (Module.finrank ℝ V)))
-  have e : f = fun y => e₂.symm (e₂ (f y)) := funext fun y => (e₂.symm_apply_apply _).symm
-  rw [e]
-  exact e₂.symm.contDiff.contDiffAt.comp x (contDiffAt_pi.2 fun i => h _)
-
 end UpperTheory.V.Lit.Geo.Cs
 
 open UpperTheory.V.Lit.Geo.Cs
@@ -92,7 +85,7 @@ theorem UpperTheory.V.Lit.Geo.Cs.secOne :
   have h3 := inv_smooth (τ := fun p => σ p * k⁻¹) h2
   refine ⟨fun p => σ p * k⁻¹, mul_inv_cancel k, h2,
     contDiffAt_pi.2 fun i => contDiffAt_pi.2 fun j => h3 i j, ?_, ?_, ?_⟩
-  · exact clm_smooth fun v => sand_smooth h1 v
-  · exact clm_smooth fun v => sand_smooth (σ := fun p => (σ p * k⁻¹)⁻¹) h3 v
+  · exact contDiffWithinAt_clm_apply.2 fun v => sand_smooth h1 v
+  · exact contDiffWithinAt_clm_apply.2 fun v => sand_smooth (σ := fun p => (σ p * k⁻¹)⁻¹) h3 v
   · filter_upwards [hs] with p hp
     rw [map_mul, ContinuousLinearMap.mul_apply, hk1, hp]

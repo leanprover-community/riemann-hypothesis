@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWi
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 NumberField IsDedekindDomain Polynomial
 
-noncomputable section
 namespace GlobalTheory.CoefDuty.Model
 open GlobalTheory.CoefDuty
 
@@ -75,4 +74,3 @@ theorem exists_isClassReps (J : Subgroup (GAf L n)) (T : Finset (GAf L n))
 
 end Plain
 end GlobalTheory.CoefDuty.Model
-end

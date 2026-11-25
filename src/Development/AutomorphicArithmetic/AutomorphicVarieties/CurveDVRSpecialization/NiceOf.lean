@@ -186,13 +186,13 @@ private lemma minor_neE {κ : Type} [Field κ] {n : ℕ} (Y : Matrix (Fin n) (Fi
     have h1 := congrFun hv' ⟨i, hi⟩
     simp only [mulVec, dotProduct, submatrix_apply, Pi.zero_apply] at h1 ⊢
     refine Eq.trans ?_ h1
-    rw [← Finset.sum_subset (Finset.subset_univ S) (by intro x _ hx; rw [dif_neg hx, mul_zero]),
+    rw [← Finset.sum_subset (Finset.subset_univ S) (by intro x _ hx; rw [dite_eq_right hx, mul_zero]),
       ← Finset.sum_coe_sort S]
-    exact Finset.sum_congr rfl fun x _ => by rw [dif_pos x.2]) (by intro i hi; exact dif_neg hi)
+    exact Finset.sum_congr rfl fun x _ => by rw [dite_eq_left x.2]) (by intro i hi; exact dite_eq_right hi)
   apply hv
   ext ⟨j, hj⟩
   have h3 := congrFun this j
-  simp only [dif_pos hj] at h3
+  simp only [dite_eq_left hj] at h3
   exact h3
 
 private lemma minor_blkE {κ : Type} [Field κ] (M : Matrix (Fin 2) (Fin 2) κ) (w : κ) (h0 : M 0 0 ≠ 0) (h1 : M 1 1 ≠ 0)

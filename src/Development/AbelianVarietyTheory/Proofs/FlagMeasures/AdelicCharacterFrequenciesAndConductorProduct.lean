@@ -10,50 +10,12 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCha
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumPlacesEqTrace
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 public import Mathlib.Analysis.Complex.CoveringMap
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.NumberField.Discriminant.Different
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 public import Mathlib.Topology.Homotopy.Lifting
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GaugeUnfold
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
@@ -317,7 +279,7 @@ theorem real_part_and_conductors : ∀ (I : AutInst) (θ : InfinitePlace I.F →
     congr 1
     · simp
     · refine Finset.prod_congr rfl fun w _ => ?_
-      rw [InfinitePlace.mult, if_pos (IsTotallyReal.isReal w), pow_one, ← InfinitePlace.norm_embedding_eq,
+      rw [InfinitePlace.mult, ite_eq_left (IsTotallyReal.isReal w), pow_one, ← InfinitePlace.norm_embedding_eq,
         ← embedding_re, Complex.norm_real, Real.norm_eq_abs]
 
 end GlobalTheory.AdeleCharConductor

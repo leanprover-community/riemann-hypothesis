@@ -8,8 +8,6 @@ noncomputable section
 
 namespace GlobalTheory.OT
 
-def lse (x : ℝ) : ℝ := Real.log (Real.exp x + 1)
-
 def xl (x : ℝ) : ℝ := x * Real.log (max 1 x)
 
 def lf (n : ℕ) : ℝ := Real.log (n.factorial : ℝ)
@@ -161,8 +159,6 @@ def tableDegreeThreeBase : ℝ := 3 * N.lrd + 12.57 * (xl (4 * N.tableDegreeOneS
 
 def T7 : ℝ := N.tableDegreeThreeBase + 2 * N.tableDegreeTwoSeven + 10 * (N.D : ℝ) * N.L + (max (N.rS) (N.rP)) / 2
 
-def lbad : ℝ := N.l2q + N.lg + Real.log (15) + 2 * N.lp
-
 def c0 : ℝ := (N.DX : ℝ) * ((N.DX : ℝ) + 1) / 2
 
 def s1 : ℝ := N.r + N.c0 + 2
@@ -191,47 +187,13 @@ def TH : ℝ := N.tableDegreeFiveTheta + N.Iq + N.Ifr + N.MK + N.rts
 
 def U0 : ℝ := N.TH + 2 * N.ldg
 
-def tableLogDegreeOneTwelve : ℝ := Real.log (10000) + N.leE + N.f * N.lrd + 2 * Real.log (2 * N.f * N.m)
-
-def cubicPeriodConstant : ℝ := 2 * (N.f * N.m * N.r + 8 * N.f ^ 3 * N.m * N.m * N.tableLogDegreeOneTwelve + xl (8 * N.f ^ 3 * N.m * N.m) + 3) + N.ln0
-
-def PPA : ℝ := 3 * (N.D : ℝ) + 3 * N.cubicPeriodConstant
-
-def Xde : ℝ := N.lmu + N.f * N.r * N.r * (1 + Real.log (N.r) / 2) + 3 * (N.D : ℝ) * N.L
-
-def lr0 : ℝ := 2 * N.f * N.r * N.r * Real.log (5)
-
-def Psup : ℝ := N.lr0 / 2 + N.P0 + 2 * N.f * N.r * N.r
-
-def Pt0 : ℝ := N.lr0 / 2 + lse (N.Xde) + N.Psup
-
-def LL0 : ℝ := (N.L + N.lrd) * N.llx + N.LL + N.lx
-
-def Ac : ℝ := 1.5 * N.f * N.r ^ 4 * N.L
-
-def Afr : ℝ := (N.f * N.r * N.r + 3) * N.f * N.r * N.lrd + 3 * N.l2q
-
-def Aun : ℝ := 3 * N.lg + Real.log (15)
-
-def PPe : ℝ := N.Ac + N.Afr + N.Aun
-
-def XW : ℝ := 66 * N.L + N.Np * N.f * N.r * N.lrd
-
-def gG : ℝ := 20 * N.f * N.r * N.r * N.L
-
 def lbe : ℝ := N.P7 + 2 * (N.D : ℝ) * Real.log ((N.D : ℝ) * N.ka) + N.V
-
-def Bfl : ℝ := 35 * N.L + N.rP / 2
 
 def B7 : ℝ := N.P7 + 6 * (N.D : ℝ) * N.L
 
 def Bt : ℝ := N.B7 + N.V
 
-def Gka : ℝ := 3 * N.G
-
 def rtN : ℝ := 0.46 * N.f * N.r * N.Np
-
-def r58 : ℝ := 12 * ((N.D : ℝ) + 3) * N.r * N.sc1 / (N.D : ℝ) + 6 * N.f * N.r * N.r * N.L
 
 def E0 : ℝ := N.f * N.r * (N.c0p + 4 * N.r)
 
@@ -239,13 +201,9 @@ def tableDegreeThreeSecondValue : ℝ := 2 * (1 + N.r) * N.G + N.c1 + N.m * N.lr
 
 def A0 : ℝ := (2 * N.r * N.G + N.c1 + N.m * N.lrd) * N.f * (N.Np + 1 + 3 * N.r) + 2 * N.G * N.Np + 35 * N.L + 3 * N.o + N.B7 + N.rtN
 
-def PPp : ℝ := 10 * ((N.tableDegreeThreeSecondValue + N.CL * N.LL0) * (1 + N.E0) + N.A0 + N.Gka + 3 * N.tableDegreeThreeBase + N.f * N.r * N.L + N.B7 + N.hb + N.gG)
-
 def al : ℝ := 26 * (N.o + 2 * N.B7 + 4 * N.L + N.tableDegreeThreeSecondValue + N.A0)
 
 def Pa : ℝ := 4.5 * N.f * N.r * N.m + 1.5 * N.f * N.r * N.r + 12 * N.f * N.m * (N.Np + 1)
-
-def Pinf : ℝ := 2 * N.Pt0 + N.PPA + 2 * N.f * N.r * N.c1 + 7 * N.f * N.r * N.r + 2 * N.lNc
 
 def Pfl : ℝ := 3 * N.f * N.r * (N.c1 + 3 * N.m * N.lrd) + 35 * N.L
 
@@ -253,15 +211,7 @@ def xn : ℝ := ((N.D : ℝ) + 1) * (N.o + N.B7 + 1) + 6
 
 def xA : ℝ := 1352 * (N.L + Real.log (1352)) + 4
 
-def QJ : ℝ := 4 * N.tableDegreeThreeSecondValue * N.f * N.r * N.r + 3 * N.A0 + 4 * N.B7 + N.V + N.o + 40 * N.L + N.PPe + N.PPA + 3 * N.Pt0 + 12 * N.f * N.r * (N.c1 + N.m * N.lrd) + 1.5 * N.f * N.r * N.r * N.lrd
-
-def Qc : ℝ := N.PPe + N.XW + 104 * N.L * N.Pa + 3 * N.Pinf
-
 def QH : ℝ := N.xA + 26 * (N.al + N.L) + 2 * N.Bt + N.xn + 1 + N.al + N.Bt / 2 + N.Pfl
-
-def Q6 : ℝ := 1.5 * N.hb + N.U0 + N.o + N.gG + N.V
-
-def PPpp : ℝ := 32 * N.PPp + N.QJ + N.Qc + N.QH + N.Q6
 
 end Num
 

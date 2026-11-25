@@ -176,7 +176,8 @@ theorem finite_adelic_estimates_holds : FinSt := by
       rw [locT_locW, LinearEquiv.coe_coe, S.symm_apply_apply]
     rw [LinearMap.smul_apply, LinearMap.smul_apply, e, hi v _ φ hφ]
     funext x
-    simp [schr, mul_left_comm]
+    simp only [Pi.smul_apply, schr, smul_eq_mul]
+    exact mul_left_comm _ _ _
   · have hd : ∀ᶠ v : Pl F in cofinite, ¬ differentIdeal ℤ (𝓞 F) ≤ v.asIdeal :=
       (Ideal.finite_factors differentIdeal_ne_bot).subset fun v hv => Ideal.dvd_iff_le.2 (not_not.1 hv)
     have h2 : ∀ᶠ v : Pl F in cofinite, evFin F v (algebraMap F (AF F) 2⁻¹) ∈ v.adicCompletionIntegers F :=
@@ -195,7 +196,7 @@ theorem finite_adelic_estimates_holds : FinSt := by
         fun i => zero_mem _)] at this
       exact one_ne_zero this
     change c v • ι v (s v) = _
-    rw [show c v = (ι v (s v) 0)⁻¹ from if_neg h0, inv_smul_eq_iff₀ h0]
+    rw [show c v = (ι v (s v) 0)⁻¹ from ite_eq_right h0, inv_smul_eq_iff₀ h0]
     exact h
 
 end PositivityTheory.Mix
@@ -307,7 +308,7 @@ theorem rel_fin (ev : ∀ v : Pl F, ((κ → Fv F v) → ℂ) →ₗ[ℂ] ((κ �
           unfold tens r GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
           rw [funext hprod, finprod_mul_distrib ht hsupport,
             finprod_eq_single t v (fun w e => ite_eq_right e)]
-          simp only [t, if_true]
+          simp only [t, ite_true]
           ac_rfl
         funext x
         have hs : (fun y => pure g θ (repl v x y)) = r x • θ v := by

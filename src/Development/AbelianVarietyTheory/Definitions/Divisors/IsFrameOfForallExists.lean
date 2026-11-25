@@ -321,7 +321,7 @@ theorem isVB_structureModule : IsVB (structureModule X) 1 :=
 theorem isFrame_chartSec {L : LB X} (hL : L.IsLB) (i : L.ι) :
     IsFrame fun _ : Fin 1 => LB.chartSec hL i :=
   (isFrame_one (L.U i)).map_of_linearEquiv (fun _ h => (LB.chartEquiv hL i h).symm)
-    fun V h _ => (congrArg (· • resM (toMod L) h (LB.chartSec hL i))
+    fun _ h _ => (congrArg (· • resM (toMod L) h (LB.chartSec hL i))
       (map_one (resG X h))).trans (one_smul _ _)
 
 theorem isVB_toMod {L : LB X} (hL : L.IsLB) : IsVB (toMod L) 1 := fun x =>

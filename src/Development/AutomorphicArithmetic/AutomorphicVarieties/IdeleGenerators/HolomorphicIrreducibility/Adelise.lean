@@ -174,20 +174,20 @@ private theorem hk_coef {k N : ℕ} (hN : 1 ≤ N) {χ : DirichletCharacter ℂ 
   have hχ : chiI ω (lev N) w.asIdeal = χ (normV w : ZMod N) := by
     rw [chi_prime, lev_eq N hN]
     by_cases hd : normV w ∣ N
-    · rw [if_neg (hp.factorization_pos_of_dvd (by omega) hd).ne', MulChar.map_nonunit]
+    · rw [ite_eq_right (hp.factorization_pos_of_dvd (by omega) hd).ne', MulChar.map_nonunit]
       rw [ZMod.isUnit_prime_iff_not_dvd hp]
       exact not_not.2 hd
-    · rw [if_pos (Nat.factorization_eq_zero_of_not_dvd hd), hval w hd]
+    · rw [ite_eq_left (Nat.factorization_eq_zero_of_not_dvd hd), hval w hd]
   have hd : coefDiv (icoef g.f) w.asIdeal 𝔪 =
       if normV w ∣ Ideal.absNorm 𝔪 then coef g.f (Ideal.absNorm 𝔪 / normV w) else 0 := by
     unfold coefDiv
     by_cases h : ∃ 𝔫, 𝔪 = w.asIdeal * 𝔫
     · have e := congrArg Ideal.absNorm h.choose_spec
       rw [map_mul, hn] at e
-      rw [dite_eq_left h, if_pos ⟨_, e⟩, icoef]
+      rw [dite_eq_left h, ite_eq_left ⟨_, e⟩, icoef]
       congr 1
       exact (Nat.div_eq_of_eq_mul_right hp.pos e).symm
-    · rw [dite_eq_right h, if_neg fun h' => h (dvd_of_norm w 𝔪 h')]
+    · rw [dite_eq_right h, ite_eq_right fun h' => h (dvd_of_norm w 𝔪 h')]
   rw [hkCoef, hχ, hd, icoef, icoef, map_mul, hn]
   exact g.eig _ hp _ h1
 

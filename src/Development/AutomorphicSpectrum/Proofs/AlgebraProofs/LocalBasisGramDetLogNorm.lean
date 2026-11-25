@@ -101,7 +101,7 @@ theorem local_basis_gram_det_log (D : Datum H) (p q : ℕ) (x : Fin p ⊕ Fin q 
   set emb : 𝓞 E →+* ℂ_[ℓ] := j.comp (algebraMap (𝓞 E) E) with hemb_def
   have hemb : Function.Injective emb := j.injective.comp (FaithfulSMul.algebraMap_injective (𝓞 E) E)
   have hne : differentIdeal ℤ (𝓞 E) ≠ ⊥ := differentIdeal_ne_bot
-  obtain ⟨a, ha, ha0, -, hL⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_logIdeal_attained E ℓ emb _ hemb hne
+  obtain ⟨a, ha, ha0, -, hL⟩ := _root_.PositivityTheory.Xgf.padic_logIdeal_max_element E ℓ emb _ hemb hne
   have hemba : emb a = j (a : E) := rfl
   have hja : 0 < ‖j (a : E)‖ := by
     rw [← hemba]

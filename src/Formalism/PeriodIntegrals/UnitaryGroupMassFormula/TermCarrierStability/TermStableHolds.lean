@@ -114,7 +114,7 @@ theorem coef {T : E} (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (F : LFlag S r T) (
   · rw [Matrix.add_apply, Matrix.one_apply_ne (ne_of_lt hba).symm, hν0 a b hba.le, add_zero]
   · rw [Matrix.add_apply, Matrix.one_apply_eq, hν0 a a le_rfl, add_zero]
   · simp only [frE, Matrix.add_apply, add_smul, Finset.sum_add_distrib, hνsum b, Matrix.one_apply,
-      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     abel
   · haveI := P.isPrime
     refine Subring.add_mem _ ?_ ?_

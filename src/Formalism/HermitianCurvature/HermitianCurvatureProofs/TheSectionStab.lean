@@ -110,56 +110,6 @@ theorem nu_last_vec (hk : 1 ≤ k) (w s : ℂ) :
       simp [h0L.symm]
     · simp [hl0, hlL, h0L.symm]
 
-private theorem nu_unit_lemma_5 (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s)
-    (hws : star w * w - s * s = 1) : (nu k w s)ᴴ * Hb k * nu k w s = Hb k := by
-  have h0L := zero_ne_last hk
-  ext i j
-  rw [Matrix.mul_apply]
-  simp only [Hb, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
-    nu_apply_lemma hk]
-  by_cases hi0 : i = 0
-  · subst hi0
-    rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
-    · by_cases hj0 : j = 0
-      · subst hj0
-        simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
-        linear_combination hws
-      · by_cases hjL : j = Fin.last k
-        · subst hjL
-          simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
-          ring
-        · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
-    · intro x hx
-      simp [hx.1, hx.2]
-  · by_cases hiL : i = Fin.last k
-    · subst hiL
-      rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
-      · by_cases hj0 : j = 0
-        · subst hj0
-          simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
-          ring
-        · by_cases hjL : j = Fin.last k
-          · subst hjL
-            simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
-            linear_combination (-1 : ℂ) * hws
-          · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
-      · intro x hx
-        simp [hx.1, hx.2]
-    · rw [Fintype.sum_eq_single i]
-      · simp only [hi0, hiL, ↓reduceIte, star_one, one_mul]
-        by_cases hj0 : j = 0
-        · subst hj0
-          simp [hi0]
-        · by_cases hjL : j = Fin.last k
-          · subst hjL
-            simp [hiL]
-          · by_cases hij : i = j
-            · subst hij
-              simp [hi0, hiL]
-            · simp [hj0, hjL, hij]
-      · intro x hx
-        simp [hi0, hiL, hx]
-
 theorem nu_mem (hk : 1 ≤ k) {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ} (hζ : T * T' < Complex.normSq ζ) :
     nu k (wZ T T' ζ) (sZ T T' ζ) ∈ UH (Hb k) := by
   have hTT : 0 < T * T' := mul_pos hT hT'
@@ -186,7 +136,7 @@ theorem nu_mem (hk : 1 ≤ k) {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ
     rw [h2, h3, h1]
     push_cast
     ring
-  exact nu_unit_lemma_5 hk _ _ hsr hkey
+  exact nu_unitary k hk _ _ hsr (by linear_combination -hkey)
 
 theorem sZ_ne {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ} (hζ : T * T' < Complex.normSq ζ) : sZ T T' ζ ≠ 0 := by
   have hTT : 0 < T * T' := mul_pos hT hT'

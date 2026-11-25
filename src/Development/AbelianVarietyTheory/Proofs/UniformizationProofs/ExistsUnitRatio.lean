@@ -48,10 +48,8 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRin
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UU
 
-noncomputable section
 namespace GlobalTheory.UU.BiTrivUniq
 
 variable {X Y : Scheme.{0}} {M : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
@@ -122,4 +120,3 @@ theorem biTriv_unique : ∀ (S : Scheme.{0}) (X : Type) [AddCommGroup X] (G : Ov
   rfl
 
 end GlobalTheory.UU
-end

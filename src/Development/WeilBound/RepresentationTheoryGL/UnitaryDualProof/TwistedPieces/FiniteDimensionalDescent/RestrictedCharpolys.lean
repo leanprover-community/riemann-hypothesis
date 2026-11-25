@@ -388,23 +388,16 @@ private theorem phi_mu {p c d n : ℕ} [Fact p.Prime] [CharP k p] (B : FB k (p ^
       · exact Or.inr (by rw [h])
   unfold mu; rw [hpi, finsum_mem_image fun _ _ _ _ h => hφ_inj h]
   refine finsum_mem_congr rfl fun e _ => ?_
-  have hcm : (cenSub Z').map (LinearMap.mulLeft k (φ e)) = img ((cenSub Z).map (LinearMap.mulLeft k e)) :=
+  have himg : ∀ (S : Submodule k (Mat k n)) (S' : Submodule k (Mat k (n * d))), (S' : Set _) = φ '' S →
+      S'.map (LinearMap.mulLeft k (φ e)) = img (S.map (LinearMap.mulLeft k e)) := fun S S' hS =>
     Submodule.ext fun y => ⟨by
         rintro ⟨x', hx', rfl⟩
-        obtain ⟨x, hx, rfl⟩ : x' ∈ φ '' Bz Z := hcen ▸ hx'
+        obtain ⟨x, hx, rfl⟩ : x' ∈ φ '' S := hS ▸ hx'
         exact ⟨e * x, ⟨x, hx, rfl⟩, map_mul φ e x⟩,
       by
         rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
-        exact ⟨φ x, show φ x ∈ Bz Z' from hcen.symm ▸ ⟨x, hx, rfl⟩, (map_mul φ e x).symm⟩⟩
-  have hzm : Z'.toSubmodule.map (LinearMap.mulLeft k (φ e)) = img (Z.toSubmodule.map (LinearMap.mulLeft k e)) :=
-    Submodule.ext fun y => ⟨by
-        rintro ⟨x', hx', rfl⟩
-        obtain ⟨x, hx, rfl⟩ : x' ∈ φ '' (Z : Set (Mat k n)) := hZ'c ▸ hx'
-        exact ⟨e * x, ⟨x, hx, rfl⟩, map_mul φ e x⟩,
-      by
-        rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
-        exact ⟨φ x, show φ x ∈ (Z' : Set (Mat k (n * d))) from hZ'c.symm ▸ ⟨x, hx, rfl⟩, (map_mul φ e x).symm⟩⟩
-  rw [hcm, hzm, hfr, hfr, Nat.mul_div_mul_left _ _ hdpos]
+        exact ⟨φ x, show φ x ∈ (S' : Set _) from hS.symm ▸ ⟨x, hx, rfl⟩, (map_mul φ e x).symm⟩⟩
+  rw [himg (cenSub Z) _ hcen, himg Z.toSubmodule _ hZ'c, hfr, hfr, Nat.mul_div_mul_left _ _ hdpos]
 
 private abbrev ix {n d : ℕ} (r : Fin (n * d)) : Fin n × Fin d := finProdFinEquiv.symm r
 

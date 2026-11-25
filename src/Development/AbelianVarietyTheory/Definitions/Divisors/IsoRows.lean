@@ -11,15 +11,6 @@ open NumberField MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMas
 
 namespace GlobalTheory.TowU
 
-section Coord
-
-variable {R : Type} [CommRing R] {κ κ₁ : Type}
-
-variable [Fintype κ] [Fintype κ₁] {W W₁ : Type} [AddCommGroup W] [Module R W] [AddCommGroup W₁] [Module R W₁]
-  {B : W → W → R} {B₁ : W₁ → W₁ → R}
-
-end Coord
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 def IsRat {α β κ : Type} [Fintype κ] {B : Matrix α β (AE F E) → Matrix α β (AE F E) → AF F} (d : Darboux B κ) : Prop :=

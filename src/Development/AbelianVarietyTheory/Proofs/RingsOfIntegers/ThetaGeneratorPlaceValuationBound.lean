@@ -14,45 +14,9 @@ public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsThet
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.HarmonicValueTranslatedProductValuationBoundStatement
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SumSupportCMul
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.SumSingleEmbeddingExtendLe
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SymmetricTranslatesMultiplicationPullbackDescrip
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FFVMap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -70,8 +34,6 @@ open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
 open GlobalTheory.PlaceInt
 open Formalism.BasicNotions Formalism.MainNotions IsDedekindDomain
 
-theorem _root_.GlobalTheory.T.harmonicValuationLowerBound_hostField_all_places : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 D.host.E)], (∀ a : 𝓞 D.host.E, star a = H.bar a) → ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (C : IntegralChartA3 Xo c T io y) (e : ℕ), 0 < e → ∀ (w : (D.host.E →+* ℂ) × ℕ → ℕ) (n DFw : ℕ), Formalism.L2.Pj.DF Dw w ≤ DFw → ChBound C e (∑ p ∈ D.host.condN.primeFactors, (vV T.V (p : T.Fr) : ℝ) / e * D.host.vdH p * (DFw : ℝ) / 2) w n := by
-  first | exact @GlobalTheory.PlaceInt.HostChart.chBound_host
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.HarmonicValuationLowerBoundHostFieldAllPlacesStatement =====
@@ -206,7 +168,6 @@ theorem bound_of_chBound (Xo : Moduli Dw l) (c : Coeff l) (π : 𝓞 E) (hπ : �
     rw [EReal.coe_le_coe_iff]
     linarith
 
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons GlobalTheory.PlaceTop in
 theorem thBound : ThBoundSt := by
   intro D T h j hj hinj EX hO w g hg la y
@@ -244,7 +205,7 @@ theorem thBound : ThBoundSt := by
       rw [pow_two] at h2
       exact ((Nat.prime_dvd_prime_iff_eq p1 p0).1 (Nat.dvd_of_mul_dvd_mul_right p1.pos h2)).symm
   · intro T' io' y' C' e' ho'
-    have hc := GlobalTheory.T.harmonicValuationLowerBound_hostField_all_places D T.Q.H (T.Q.Dw j) T.Q.l (T.Q.Xo j) T.Q.c hnab.1 T' io' y' C' e' ho'.1 (wtA w) w.n
+    have hc := GlobalTheory.PlaceInt.HostChart.chBound_host D T.Q.H (T.Q.Dw j) T.Q.l (T.Q.Xo j) T.Q.c hnab.1 T' io' y' C' e' ho'.1 (wtA w) w.n
       (WeightAlgebra.DF w) (ReciprocityTheory.ChartRestriction.G.PullbackSections.PfTies1.DF_wtA_le (T.Q.Dw j) w)
     convert hc using 1
     refine Finset.sum_congr rfl fun p _ => ?_

@@ -9,55 +9,11 @@ public import GroundTheory.GlobalFields.Adele.WeakApprox
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.NormEx
 public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
@@ -448,7 +404,7 @@ theorem UpperTheory.V.Z.Sym.Glob.weakD :
   let gv : ∀ v : Pl F, DX (cv v Δ) := fun v => (g : ∀ v : Pl F, DX (cv v Δ)) v
   have hJ : ∀ v ∈ D.Sg, (D.J2v v).relIndex (KD (cv v Δ) (Ov v)) ≠ 0 := by
     intro v hv
-    rw [Dat.J2v, if_pos hv]
+    rw [Dat.J2v, ite_eq_left hv]
     exact (hD.sig v hv).levelTwoFiniteIndex
   obtain ⟨x, hx⟩ := approx D.Sg (fun v => qD (cv v Δ) (mt (gv v)⁻¹))
     (fun v y => ∃ j ∈ D.J2v v, mt j = pD (cv v Δ) y * mt (gv v))
@@ -486,7 +442,7 @@ theorem UpperTheory.V.Z.Sym.Glob.weakD :
     have hv2 : ¬ uf v ∈ KD (cv v Δ) (Ov v) := hv
     by_contra hv'
     apply hv2
-    have e : uf v = 1 := if_neg hv'
+    have e : uf v = 1 := ite_eq_right hv'
     rw [e]
     exact (KD (cv v Δ) (Ov v)).one_mem
   refine ⟨γ, ⟨uf, huf⟩, ?_, ?_⟩
@@ -495,15 +451,15 @@ theorem UpperTheory.V.Z.Sym.Glob.weakD :
     rw [Subgroup.mem_comap]
     change uf v ∈ D.J2v v
     by_cases hv : v ∈ D.Sg
-    · have e : uf v = ((ι γ : ∀ v : Pl F, DX (cv v Δ)) v * gv v)⁻¹ := if_pos hv
+    · have e : uf v = ((ι γ : ∀ v : Pl F, DX (cv v Δ)) v * gv v)⁻¹ := ite_eq_left hv
       rw [e]
       exact inv_mem (hmem v hv)
-    · have e : uf v = 1 := if_neg hv
+    · have e : uf v = 1 := ite_eq_right hv
       rw [e]
       exact (D.J2v v).one_mem
   · intro v hv
     change (ι γ : ∀ v : Pl F, DX (cv v Δ)) v * gv v * uf v = 1
-    have e : uf v = ((ι γ : ∀ v : Pl F, DX (cv v Δ)) v * gv v)⁻¹ := if_pos hv
+    have e : uf v = ((ι γ : ∀ v : Pl F, DX (cv v Δ)) v * gv v)⁻¹ := ite_eq_left hv
     rw [e]
     exact mul_inv_cancel _
 end -- clump:auto
@@ -741,8 +697,8 @@ theorem UpperTheory.V.Z.Sym.Glob.classRep :
     · exact split_ex (Ov v) ((map_ne_zero _).2 hΔ) (hD.split v hv) u
     · exact normEx _ _ _ (hD.off v hv) u
   have hidx : D.U2.relIndex (P.box fun v => KD (cv v Δ) (Ov v)) ≠ 0 :=
-    box_idx P D.J2v D.Sg (fun v hv => by rw [Dat.J2v, if_pos hv]; exact (hD.sig v hv).levelTwoFiniteIndex)
-      fun v hv => by rw [Dat.J2v, if_neg hv]
+    box_idx P D.J2v D.Sg (fun v hv => by rw [Dat.J2v, ite_eq_left hv]; exact (hD.sig v hv).levelTwoFiniteIndex)
+      fun v hv => by rw [Dat.J2v, ite_eq_right hv]
   obtain ⟨Y, hY, h⟩ := reps ι N D.U2 _ D.Off hidx (fun g => c fun v => WithZero.log (Valued.v (N g v : Kv v)))
     (fun g g' e => by
       obtain ⟨z, hz, hp, e⟩ := hc _ _ (hae g) (hae g') e

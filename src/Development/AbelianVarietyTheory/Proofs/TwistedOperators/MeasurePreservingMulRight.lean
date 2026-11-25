@@ -11,44 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefNodeIsV
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitVacuumStandardLatticesDefinitePair
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AtPlaceIffEqAtTau
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPermOfCardFalse
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Compactness.Paracompact
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
 import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 
@@ -99,9 +61,9 @@ theorem exists_isRealAll (hθ : IsInfFam θ) (M : D.what₂.Tau → Matrix (Fin 
       have hs := GlobalTheory.PointAtPlaceHom.atTau_spec hθ V ρ (hM ρ)
       by_cases hρ : ρ = σ
       · subst hρ
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         exact hs.2.1
-      · rw [if_neg hρ]
+      · rw [ite_eq_right hρ]
         exact hs.2.2 σ (Ne.symm hρ)
     rw [key] at e
     exact e.trans (list_prod_map_ite _ _ l (Finset.nodup_toList _) (Finset.mem_toList.2 (Finset.mem_univ _)))
@@ -277,11 +239,11 @@ def vtxPt (W : G.Weil) (X : Node) : UG D.what₂.Tau (G.V X).rank →* GA D (G.V
 theorem vtxPt_eq {W : G.Weil} {X : Node} (hX : PosOnb W X) (u : UG D.what₂.Tau (G.V X).rank) :
     vtxPt W X u = realAll W.θ (G.V X) (onbConj W X u) := by
   simp only [vtxPt, MonoidHom.coe_mk, OneHom.coe_mk]
-  exact if_pos hX
+  exact ite_eq_left hX
 
 theorem vtxPt_of_not {W : G.Weil} {X : Node} (hX : ¬ PosOnb W X) (u : UG D.what₂.Tau (G.V X).rank) : vtxPt W X u = 1 := by
   simp only [vtxPt, MonoidHom.coe_mk, OneHom.coe_mk]
-  exact if_neg hX
+  exact ite_eq_right hX
 
 theorem vtxPt_mem (W : G.Weil) (X : Node) (u : UG D.what₂.Tau (G.V X).rank) : vtxPt W X u ∈ GinfC (G.V X) := by
   by_cases h : PosOnb W X
@@ -413,7 +375,7 @@ theorem measurePreserving_mul_right {M : Vol G} {X : Node} {K : Subgroup (GL (Fi
   obtain ⟨i1, i2, i3, i4, i5, -, -, -⟩ := GlobalTheory.RealMeasOne.ginfC_facts (G.V X)
   have hd : IsMeasDef (G.V X) K (M.ν X) (M.fd X) := by
     unfold Vol.IsAt at hM
-    rwa [if_pos hX] at hM
+    rwa [ite_eq_left hX] at hM
   have hfin : Lev.finE (G.V X) k = 1 := by
     have h1 : finHom (G.V X) k = 1 := hk
     simp only [Lev.finE, MonoidHom.comp_apply, h1, map_one]

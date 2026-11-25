@@ -71,10 +71,4 @@ def LatticeNormalFormCoord : Prop :=
         moveBy r Λ = normalForm F q (L.map ((Loc.inX F n c).restrictScalars O))
           (fun i : Fin c => Loc.eN F (n + c) (n + i.1)) e (Loc.inX F n c z)
 
-section Basic₂
-
-variable {F Y : Type} [Field F] [AddCommGroup Y] [Module F Y] {c : ℕ}
-
-end Basic₂
-
 end GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentSemidirect

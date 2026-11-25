@@ -408,7 +408,7 @@ theorem near_of_isPtOf {g : GL (Fin n) (AfE F E)} {p : DecoF E n ST SG Q} (h : I
       refine HasRes.unique ?_ (h.f P _ h1 (lastIdx n) (by have := NeZero.pos n; simp [lastIdx]; omega))
       rw [← hN] at h1
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ h1)]
+      rw [ite_eq_left (le_locP _ _ h1)]
       exact PtExist.hasRes_redA _ ((mem_globLat g _).1 h1 _)
     · rw [p.deco.2.f_off P w hw, ok.f_off P w (by rw [Deco.at, hN']; exact hw)]
   · by_cases hw : w ∈ p.deco.1.at P.1
@@ -420,7 +420,7 @@ theorem near_of_isPtOf {g : GL (Fin n) (AfE F E)} {p : DecoF E n ST SG Q} (h : I
       refine HasRes.unique ?_ (h.be P _ h1 i)
       rw [← hN] at h1
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ h1)]
+      rw [ite_eq_left (le_locP _ _ h1)]
       exact PtExist.hasRes_redA _ ((mem_globLat g _).1 h1 _)
     · rw [p.deco.2.be_off P w hw, ok.be_off P w (by rw [Deco.at, hN']; exact hw)]
   · have e : ratM P.1 (p.fr P) = locM P.1 g := Matrix.ext fun i j => (h.fr P i j).symm

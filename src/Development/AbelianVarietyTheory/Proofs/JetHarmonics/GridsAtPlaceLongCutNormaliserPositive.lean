@@ -14,53 +14,9 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OnePointBasisFundamentalDomainVolume
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RoomOffGridSymmetric
 public import Development.AbelianVarietyTheory.Definitions.Jets.SupWOfSup
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBP
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.Cut_BPEq
@@ -619,7 +575,7 @@ private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ �
           exact_mod_cast (show (t : ℝ) - y - 1 ≠ 0 by intro h1; apply this; linarith)
         have hz' : (t : ℂ) - 1 - y ≠ 0 := by
           intro h1; apply hz; linear_combination h1
-        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, Bool.false_eq_true, if_false, hρeq, ht]
+        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, Bool.false_eq_true, ite_false, hρeq, ht]
         push_cast
         rw [show (t : ℂ) - 1 - y = (t : ℂ) - y - 1 by ring]
         field_simp
@@ -631,7 +587,7 @@ private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ �
       · have hz : (y : ℂ) - t ≠ 0 := by
           have : y - t ≠ 0 := by intro h0; have := hplus hl; rw [h0, abs_zero] at this; norm_num at this
           exact_mod_cast this
-        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, if_true, hρeq, ht]
+        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, ite_true, hρeq, ht]
         push_cast
         field_simp
 
@@ -764,11 +720,11 @@ private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAl
           exact List.mem_map_of_mem hla
         refine ⟨(w.get a).2, rfl, fun hp => ?_, fun hm => ?_⟩
         · have hp' : (w.get a).1 = true := hp
-          have : base (w.get a) = (w.get a).2 := if_pos hp'
+          have : base (w.get a) = (w.get a).2 := ite_eq_left hp'
           rw [this] at hfar'
           exact hfar'
         · have hm' : (w.get a).1 = false := hm
-          have : base (w.get a) = (w.get a).2 - 1 := if_neg (by rw [hm']; decide)
+          have : base (w.get a) = (w.get a).2 - 1 := ite_eq_right (by rw [hm']; decide)
           rw [this, abs_sub_comm] at hfar'
           exact hfar'
       obtain ⟨ρ, hρ, hρ1, hρeq⟩ := exists_qw_eq_mul_pos_real_of_five_le_dist (_root_.Formalism.FourierDecayAlt.M.qC P) y (_root_.Formalism.FourierDecayAlt.D.positionted w) hcond

@@ -11,52 +11,9 @@ public import Mathlib.FieldTheory.Finite.Basic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 public import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ChapterMu
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.FrobeniusHodgeTateLaws.RhoFrob
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
@@ -98,28 +55,28 @@ theorem UpperTheory.exists_integral_powerSeries_of_bounded_distribution :
   obtain ⟨L, hLO, hL⟩ := GlobalTheory.AmiceDist.amice l c μ
     (fun r x => by
       by_cases hr : r = 0
-      · simp only [μ, if_pos hr]
+      · simp only [μ, ite_eq_left hr]
         exact sum_mem (fun x' _ => hO 1 le_rfl x')
-      · simp only [μ, if_neg hr]
+      · simp only [μ, ite_eq_right hr]
         exact hO r (Nat.one_le_iff_ne_zero.2 hr) x)
     (fun r x => by
       have hr1 : r + 1 ≠ 0 := by omega
-      simp only [μ, if_neg hr1]
+      simp only [μ, ite_eq_right hr1]
       by_cases hr : r = 0
       · subst hr
-        simp only [if_true]
+        simp only [ite_true]
         have hf : Finset.univ.filter (fun x' : ZMod (l ^ (0 + 1)) =>
             ZMod.castHom (pow_dvd_pow l (Nat.le_succ 0)) (ZMod (l ^ 0)) x' = x) = Finset.univ :=
           Finset.filter_true_of_mem
             (fun x' _ => (show ∀ a b : ZMod 1, a = b from fun a b => Subsingleton.elim a b) _ _)
         rw [hf]
-      · simp only [if_neg hr]
+      · simp only [ite_eq_right hr]
         exact hsum r (Nat.one_le_iff_ne_zero.2 hr) x)
   refine ⟨L, hLO, fun r hr z hz => ?_⟩
   have h1 := hL r hr z hz
   have h2 : ∑ x, μ r x * z ^ x.val = ν r (fun x => z ^ x.val) := by
     have hr0 : r ≠ 0 := by omega
-    simp only [μ, if_neg hr0]
+    simp only [μ, ite_eq_right hr0]
     have h3 : (fun x : ZMod (l ^ r) => z ^ x.val) = ∑ x, z ^ x.val • Pi.single x (1 : Qbar l) := by
       funext y
       simp [Finset.sum_apply, Pi.single_apply]
@@ -437,7 +394,7 @@ theorem neg_inv_unit {N : ℕ} {y : ZMod N} (h : IsUnit y) : (-y)⁻¹ = -y⁻¹
 theorem sym_par (ι : Qbar l ≃+* ℂ) {s : ℂ} (hs : s * s = 1) {N : ℕ} (g : ZMod N → Qbar l) (y : ZMod N) :
     sym ι s g (-y) = s * sym ι s g y := by
   by_cases hy : IsUnit y
-  · simp only [sym, if_pos hy, if_pos hy.neg, neg_neg]
+  · simp only [sym, ite_eq_left hy, ite_eq_left hy.neg, neg_neg]
     linear_combination (-ι (g (-y)⁻¹) / 2) * hs
   · simp [sym, hy]
 
@@ -473,10 +430,10 @@ theorem eisensteinUnitFunctional_compat_succ {ι : Qbar l ≃+* ℂ} {e : ℕ} {
     intro y
     unfold sym
     by_cases hy : l ∣ y
-    · rw [if_neg (by rw [unit_iff (M := M + 1) (by omega)]; exact not_not.2 hy),
-        if_neg (by rw [unit_iff hM]; exact not_not.2 hy)]
+    · rw [ite_eq_right (by rw [unit_iff (M := M + 1) (by omega)]; exact not_not.2 hy),
+        ite_eq_right (by rw [unit_iff hM]; exact not_not.2 hy)]
     · have h1 : IsUnit (y : ZMod (l ^ (M + 1))) := (unit_iff (M := M + 1) (by omega) y).2 hy
-      rw [if_pos h1, if_pos ((unit_iff hM y).2 hy), hg, hg, hinv _ h1, hinv _ h1.neg, map_neg, map_natCast]
+      rw [ite_eq_left h1, ite_eq_left ((unit_iff hM y).2 hy), hg, hg, hinv _ h1, hinv _ h1.neg, map_neg, map_natCast]
   rw [eisensteinUnitFunctional_apply, eisensteinUnitFunctional_apply, H.compat M hM (sym ι s g) (sym ι s g') (sym_par ι hs g) hsym]
 
 theorem norm_nat {a : ℕ} (ha : ¬ l ∣ a) : ‖(a : Qbar l)‖ = 1 := by
@@ -497,7 +454,7 @@ theorem sgn_cases {s : ℂ} (hs : s * s = 1) : s = 1 ∨ s = -1 := mul_self_eq_o
 theorem symm_sym (ι : Qbar l ≃+* ℂ) (s : ℂ) {N : ℕ} (g : ZMod N → Qbar l) {y : ZMod N} (hy : IsUnit y) :
     ι.symm (sym ι s g y) = (g y⁻¹ + ι.symm s * g (-y⁻¹)) / 2 := by
   unfold sym
-  rw [if_pos hy, neg_inv_unit hy, map_div₀, map_add (f := _), map_mul, RingEquiv.symm_apply_apply,
+  rw [ite_eq_left hy, neg_inv_unit hy, map_div₀, map_add (f := _), map_mul, RingEquiv.symm_apply_apply,
     RingEquiv.symm_apply_apply, map_ofNat]
 
 theorem eisensteinUnitFunctional_bounded {ι : Qbar l ≃+* ℂ} {e : ℕ} {s : ℂ} {u w : ℤ → ℂ} {ψ : DirichletCharacter ℂ l} {α : ℂ} {B : ℕ} {c : ℕ → ℂ} {v : ℂ}
@@ -539,7 +496,7 @@ theorem exists_finiteExt_eisensteinUnitFunctional_mem {ι : Qbar l ≃+* ℂ} {e
       rw [← one_add_one_eq_two]
       exact E.add_mem E.one_mem E.one_mem
     exact E.div_mem (E.add_mem (hg _) (E.mul_mem hs' (hg _))) h2
-  · simp only [sym, if_neg hy, map_zero]
+  · simp only [sym, ite_eq_right hy, map_zero]
     exact E.zero_mem
 
 theorem sym_char (ι : Qbar l ≃+* ℂ) (s : ℂ) {N : ℕ} (χ : DirichletCharacter (Qbar l) N) (y : ZMod N) :
@@ -715,7 +672,7 @@ private theorem riem0 {ι : Qbar l ≃+* ℂ} {e : ℕ} {s : ℂ} {u w : ℤ →
     simp only [hTd, map_mul, map_pow, map_div₀, map_natCast, ← hφ, ← hφ', Int.cast_natCast, Nat.cast_mul, Int.cast_mul, div_pow,
       mul_pow]
     ring
-  simp only [Pi.smul_apply, smul_eq_mul, if_neg h1, if_neg h3]
+  simp only [Pi.smul_apply, smul_eq_mul, ite_eq_right h1, ite_eq_right h3]
   refine ⟨by rw [key, hX]; exact h2, ?_⟩
   rw [mul_left_comm, key, hX]
   refine le_trans (le_of_eq ?_) h4

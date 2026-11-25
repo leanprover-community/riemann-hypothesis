@@ -16,7 +16,6 @@ def AffFinProj : Prop :=
 
 theorem heckePol_map {K K' : Type} [CommRing K] [CommRing K'] (f : K →+* K') (q n : ℕ) (θ : ℕ → K) :
     (heckePol q n θ).map f = heckePol q n fun j => f (θ j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [heckePol, Polynomial.map_sum]
 
 def AdmOfCrys : Prop :=

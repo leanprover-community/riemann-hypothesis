@@ -91,12 +91,6 @@ def shimXOfPkg {D : D7} {G : DV.Geo D.what₂.LL} {jC : ∀ (p : ℕ) [Fact p.Pr
   arNef := alg.arNef
   Mbar := alg.Mbar
 
-section
-variable {D : D7} {A : Amb D} {F : SrcFam A} {L : CmList A} {C : CxSt D.what₂.LL} (K : CutSt C) (R : ResSt C)
-  {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (k : Kits F L C jC ng)
-
-end
-
 end GlobalTheory.ShFam
 end -- clump:auto
 end -- clump:auto
@@ -271,12 +265,6 @@ structure LatModel (P : Finset ℕ) (c : O.s.Comp) : Type 1 where
 
   amp : HermLB V.p
   amp_spec : V.Induces (O.met.ab c) amp k
-
-namespace LatModel
-
-variable {O} {P : Finset ℕ} {c : O.s.Comp} (W : O.LatModel P c)
-
-end LatModel
 
 end Setup
 

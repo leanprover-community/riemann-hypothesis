@@ -112,7 +112,7 @@ namespace GlobalTheory.HeightCounting.FracCharZero
 theorem injective_of_finite_dvr {A B : Type} [CommRing A] [IsDomain A] [IsPrincipalIdealRing A]
     [CommRing B] [IsDomain B] [IsDiscreteValuationRing B] [Algebra A B] [Module.Finite A B] :
     Function.Injective (algebraMap A B) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   by_contra! hne
   obtain ⟨a, ha, ha0⟩ := hne
   have hker : (⊥ : Ideal B).comap (algebraMap A B) ≠ ⊥ := by
@@ -205,9 +205,9 @@ theorem specAt_blockEmb (τ₀ : ι) (y : ι × Fin n × Fin n → K) (τ : ι) 
   rw [MvPolynomial.aeval_rename]
   split_ifs with h
   · subst h
-    simp only [Function.comp_def, if_true]
+    simp only [Function.comp_def, ite_true]
     exact MvPolynomial.aeval_X_left_apply F
-  · simp only [Function.comp_def, h, if_false]
+  · simp only [Function.comp_def, h, ite_false]
     have hh : (MvPolynomial.aeval (R := K) fun x : Fin n × Fin n => (MvPolynomial.C (y (τ, x)) : MvPolynomial (Fin n × Fin n) K)).toRingHom =
         MvPolynomial.C.comp (MvPolynomial.eval fun v => y (τ, v)) := by
       apply MvPolynomial.ringHom_ext
@@ -231,13 +231,13 @@ theorem specAt_mem (lam : ι → DomWeight n) (τ₀ : ι) (y : ι × Fin n × F
     obtain ⟨F, hF, rfl⟩ := hx
     rw [map_prod]
     simp only [specAt_blockEmb]
-    rw [Fintype.prod_eq_mul_prod_compl τ₀, if_pos rfl, mul_comm]
+    rw [Fintype.prod_eq_mul_prod_compl τ₀, ite_eq_left rfl, mul_comm]
     have : ∏ i ∈ ({τ₀}ᶜ : Finset ι), (if i = τ₀ then F i else
         MvPolynomial.C (MvPolynomial.eval (fun v => y (i, v)) (F i))) =
         MvPolynomial.C (∏ i ∈ ({τ₀}ᶜ : Finset ι), MvPolynomial.eval (fun v => y (i, v)) (F i)) := by
       rw [map_prod]
       refine Finset.prod_congr rfl fun i hi => ?_
-      rw [if_neg (by simpa using hi)]
+      rw [ite_eq_right (by simpa using hi)]
     rw [this, ← MvPolynomial.smul_eq_C_mul]
     exact Submodule.smul_mem _ _ (hF τ₀)
   | zero => simp
@@ -256,7 +256,7 @@ theorem specAt_blockAct (τ₀ : ι) (y : ι × Fin n × Fin n → K) (M : Matri
     · subst hτ
       simp [specAt, Formalism.GradedWeylDivisibility.blockAct, Formalism.GradedWeylDivisibility.rowAct]
     · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, Formalism.GradedWeylDivisibility.blockAct, specAt, MvPolynomial.aeval_X, hτ, if_false, map_sum, map_mul,
+      simp only [AlgHom.comp_apply, Formalism.GradedWeylDivisibility.blockAct, specAt, MvPolynomial.aeval_X, hτ, ite_false, map_sum, map_mul,
         MvPolynomial.aeval_C, Matrix.one_apply]
       rw [Finset.sum_eq_single a]
       · simp
@@ -297,7 +297,6 @@ section Fam
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K]
 
-
 open Classical in
 def fam (τ : L →+* K) (B : GL (Fin n) K) : (L →+* K) → GL (Fin n) K := fun σ =>
   if σ = τ then B else if σ = τ.comp (IsCMField.complexConj L : L →+* L) then inside₂ K n B else 1
@@ -314,11 +313,11 @@ theorem fam_conj (τ : L →+* K) (B : GL (Fin n) K) (h : τ.comp (IsCMField.com
     rw [← hcc σ₁, e, hcc]
   by_cases h1 : σ = τ
   · subst h1
-    simp only [fam, h, if_false, if_true]
+    simp only [fam, h, ite_false, ite_true]
     rfl
   · by_cases h2 : σ = τ.comp (IsCMField.complexConj L : L →+* L)
     · subst h2
-      simp only [fam, hcc, if_true, h]
+      simp only [fam, hcc, ite_true, h]
       simp [inside₂]
     · have h3 : σ.comp (IsCMField.complexConj L : L →+* L) ≠ τ := by
         intro e; apply h2; rw [← e, hcc]
@@ -544,7 +543,7 @@ theorem rowAct_transvection_eq_eval (K : Type) [Field K] (n : ℕ) (a b : Fin n)
         Matrix.single_apply, add_mul, Finset.sum_add_distrib]
       split_ifs with hv
       · rw [Finset.sum_eq_single a]
-        · simp only [hv, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, and_self, if_true]
+        · simp only [hv, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, and_self, ite_true]
           exact mul_comm _ _
         · intro c _ hc
           simp [Ne.symm hc]
@@ -574,7 +573,7 @@ theorem rowDiv_eq_zero_of_fixed (K : Type) [Field K] [Infinite K] (n : ℕ) (a b
     rw [← rowAct_transvection_eq_eval K n a b hab s, hfix s, sub_self]
   have h := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p k) hP
   simp only [Polynomial.coeff_sub, Polynomial.coeff_C, Polynomial.coeff_zero] at h
-  rw [if_neg (by omega), sub_zero] at h
+  rw [ite_eq_right (by omega), sub_zero] at h
   exact h
 
 theorem mu_eq_of_upper_eigen : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam0 : DomWeight n) (mu : Fin n → ℤ)
@@ -840,15 +839,6 @@ theorem awf_det_conj (σ : L →+* K) (γ₀ : GL (Fin n) L) (hγ : γ₀ ∈ GQ
   apply eq_inv_of_mul_eq_one_right
   rw [RingHom.comp_apply, ← map_mul, h1, map_one]
 
-theorem awf_inv_entry (γ₀ : GL (Fin n) L) (hγ : γ₀ ∈ GQ0 L n) (k l : Fin n) :
-    ((γ₀⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) k l =
-      (IsCMField.complexConj L : L →+* L) ((γ₀ : Matrix (Fin n) (Fin n) L) l k) := by
-  have h1 : ((γ₀⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) =
-      conjT (IsCMField.complexConj L : L →+* L) (γ₀ : Matrix (Fin n) (Fin n) L) :=
-    Units.inv_eq_of_mul_eq_one_right hγ
-  rw [h1]
-  rfl
-
 def awfTwP (emb : ι → L →+* K) (lam : ι → DomWeight n) : MvPolynomial ((L →+* K) × Fin n × Fin n) K :=
   ∏ τ, if 0 ≤ (lam τ).detShift then awfDetP (emb τ) ^ (lam τ).detShift.toNat
     else awfDetP ((emb τ).comp (IsCMField.complexConj L : L →+* L)) ^ (-(lam τ).detShift).toNat
@@ -894,7 +884,6 @@ section Dual
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {ι : Type} [Fintype ι] {K : Type} [Field K]
 
-
 open Classical in
 theorem wtRepF_toMatrix (emb : ι → L →+* K) (lam : ι → DomWeight n) (γ : GQ L n) :
     LinearMap.toMatrix (bVV K lam).dualBasis (bVV K lam).dualBasis (wtRepF emb lam γ) =
@@ -911,7 +900,7 @@ theorem wtRepF_toMatrix (emb : ι → L →+* K) (lam : ι → DomWeight n) (γ 
   rw [MvPolynomial.eval_rename]
   refine congrArg (fun f => MvPolynomial.eval f (awfTenP emb lam j i)) (funext fun p => ?_)
   simp only [Function.comp_apply, awfPt, RingHom.comp_apply, map_inv]
-  rw [awf_inv_entry _ (ratHom_mem γ)]
+  rw [GlobalTheory.WtDual.inv_entry _ (ratHom_mem γ)]
 
 end Dual
 
@@ -1155,8 +1144,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
@@ -1183,15 +1170,12 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
 namespace GlobalTheory.HeightCounting.FormsStep
 attribute [local instance] algKkT
-
 
 theorem wt_weights_alt : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE),
     (∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0) → (∀ j g, ∃ z : ℤ, eExp D j g = z) →
@@ -1228,7 +1212,7 @@ theorem wt_weights_alt : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (
   haveI := _root_.GlobalTheory.HeightCounting.TwR.charZero_fractionRing_O D T i
   have hE := _root_.GlobalTheory.HeightCounting.FormsStep.kEmbT_cmDist D T i b
   have hl : lamD j = lamF ⟨j - 1, by omega⟩ := by
-    simp only [lamD, dif_pos (And.intro hj hjm)]
+    simp only [lamD, dite_eq_left (And.intro hj hjm)]
   refine ⟨GlobalTheory.T.contragredient_isIrreducible_finiteDimensional _ _ _ _ (_root_.GlobalTheory.AlgWtF.tenRepF_isIrreducible _ _ _ _ _ _ hE), _root_.GlobalTheory.AlgWtF.wtRepF_alg _ _ _ _ _ _,
     fun k => @_root_.GlobalTheory.AlgWtBC.isIrreducible_bcRep_wtRepF _ _ _ _ _ _ _ _ _ _ _ _ hE (FractionRing (T.Ok i k)) _ (algKkT D T i k),
     fun t => ⟨_, hc ▸ _root_.GlobalTheory.AlgWtF.DDHw.dd_hwAt _ _ _ _ _ _ hE t⟩, fun t sh lam hs hw => ?_⟩
@@ -1249,8 +1233,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WtWeightsStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExponentAndTwistData\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WtWeights\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial

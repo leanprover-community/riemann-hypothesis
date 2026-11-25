@@ -270,20 +270,8 @@ theorem N_even (R : Formalism.BasicNotions.Ranks) (j : ℕ) : Even (R.N j) := by
   unfold Formalism.BasicNotions.Ranks.N
   exact R.k_even.add (R.t_odd.add_one.mul_left j)
 
-section OneRecord
-
-variable (D : Formalism.BasicNotions.D7) (X : Prov D)
-
-end OneRecord
-
 abbrev ProvF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Type :=
   ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), Prov (Fm.D x i)
-
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm)
-
-end Family
 
 end Formalism.MainNotions.product_zeroth_first_parts
 

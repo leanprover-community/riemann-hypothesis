@@ -255,9 +255,9 @@ private lemma hpk_mulVec_apply_of_outer_index (v : Fin (2 * r + k + 1) → ℂ) 
     (hi : i.val < r ∨ r + k < i.val) : (Hpk k r *ᵥ v) i = v ⟨2 * r + k - i.val, by omega⟩ := by
   simp only [Matrix.mulVec, dotProduct, fun j => hpk_apply_of_outer_index (k := k) (r := r) i j hi]
   rw [Finset.sum_eq_single (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1))]
-  · rw [if_pos (Nat.add_sub_cancel' (by omega)), one_mul]
+  · rw [ite_eq_left (Nat.add_sub_cancel' (by omega)), one_mul]
   · intro l _ hl
-    rw [if_neg, zero_mul]
+    rw [ite_eq_right, zero_mul]
     intro h
     exact hl (Fin.ext (by show l.val = 2 * r + k - i.val; omega))
   · simp
@@ -581,7 +581,3 @@ theorem locSec : NFRadRedS.LocSec := by
   exact pt hz hz' hT hsec ha₀ hgl hG hg.2
 
 end Formalism.FourierDecayAlt.P.NFRadRedLocSec
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

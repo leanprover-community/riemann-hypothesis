@@ -300,9 +300,6 @@ theorem algebraMap_eq_coe (x : ℚ_[l]) :
 
 variable {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} {χ : GQ l →* ℚ_[l]ˣ}
 
-theorem continuous_act (h : IsActC act) (σ : GQ l) : Continuous (act σ) :=
-  AddMonoidHomClass.continuous_of_bound (act σ) 1 fun y => by rw [one_mul, h.2]
-
 theorem conj_mem_Hinf (hχ : IsCyc χ) (K : FinExt l) {m : ℕ} {σ : GQ l} (hσ : σ ∈ Gj K m)
     {h : GQ l} (hh : h ∈ Hinf K) : σ * h * σ⁻¹ ∈ Hinf K := by
   obtain ⟨-, -, hG⟩ := cyc_basic l χ hχ
@@ -313,7 +310,7 @@ theorem conj_mem_Hinf (hχ : IsCyc χ) (K : FinExt l) {m : ℕ} {σ : GQ l} (hσ
 
 theorem act_mem_Ohat (hact : IsActC act) (hχ : IsCyc χ) (K : FinExt l) {m : ℕ} {σ : GQ l}
     (hσ : σ ∈ Gj K m) {y : PadicComplex l} (hy : y ∈ Ohat K) : act σ y ∈ Ohat K := by
-  refine map_mem_closure (continuous_act hact σ) hy ?_
+  refine map_mem_closure (GlobalTheory.Cyc.TateS.act_continuous hact σ) hy ?_
   rintro _ ⟨⟨x, hx, rfl⟩, hx1⟩
   refine ⟨⟨σ x, ?_, (hact.1 σ x).symm⟩, by rwa [hact.2]⟩
   change σ x ∈ Kinf K
@@ -333,7 +330,7 @@ theorem act_eq_of_mem_intC (hact : IsActC act) {F : IntermediateField ℚ_[l] (O
 
 theorem act_eq_of_mem_Ohat (hact : IsActC act) (K : FinExt l) {h : GQ l} (hh : h ∈ Hinf K)
     {y : PadicComplex l} (hy : y ∈ Ohat K) : act h y = y :=
-  (isClosed_eq (continuous_act hact h) continuous_id).closure_subset_iff.2
+  (isClosed_eq (GlobalTheory.Cyc.TateS.act_continuous hact h) continuous_id).closure_subset_iff.2
     (fun _ hz => act_eq_of_mem_intC hact hh hz) hy
 
 theorem chiC_mem_intC (hχ : IsCyc χ) (F : IntermediateField ℚ_[l] (Om l)) (i : ℤ) (σ : GQ l) :
@@ -571,27 +568,6 @@ end Abstract
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-theorem root_mem_inC (K : FinExt l) {j : ℕ} (hj : 1 ≤ j) {ζ : PadicComplex l}
-    (h : IsPrimitiveRoot ζ l) : ζ ∈ inC (Ks K j) :=
-  GlobalTheory.CycPerturb.root_mem_inC K hj h
-
-theorem exists_quot {χ : GQ l →* ℚ_[l]ˣ} {K : FinExt l} {j : ℕ} (hj : Lev l j) {g : GQ l}
-    (hg : IsGen χ K j g) {r : ℕ} (U : Matrix (Fin r) (Fin r) (PadicComplex l))
-    (hU : ∀ a b, U a b ∈ intC (Ks K j)) (hU1 : ∀ a b, ‖(U - 1) a b‖ < rho1 l) (i : ℤ)
-    {ζ : PadicComplex l} (h : IsPrimitiveRoot ζ l) :
-    ∃ (B : Matrix (Fin r) (Fin r) (PadicComplex l)) (c : ℝ), 0 ≤ c ∧ c < 1 ∧
-      (∀ a b, ‖B a b‖ ≤ c) ∧ (∀ a b, B a b ∈ intC (Ks K j)) ∧
-      chiC χ i g • U = 1 + (ζ - 1) • B :=
-  GlobalTheory.CycPerturb.exists_quot hj hg U hU hU1 i h
-
-theorem twAct_sub {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} {χ : GQ l →* ℚ_[l]ˣ} {i : ℤ}
-    {r : ℕ} {U : GQ l → Matrix (Fin r) (Fin r) (PadicComplex l)} {g : GQ l} {p : PadicComplex l}
-    {B : Matrix (Fin r) (Fin r) (PadicComplex l)} (h : chiC χ i g • U g = 1 + p • B)
-    (y : Fin r → PadicComplex l) (a : Fin r) :
-    (twAct act χ i U g y - y) a
-      = act g (y a) - y a + p * B.mulVec (fun b => act g (y b)) a :=
-  GlobalTheory.CycPerturb.twAct_sub h y a
-
 theorem act_inC {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} (ha : IsActC act)
     {F : IntermediateField ℚ_[l] (Om l)} {g : GQ l} (hg : g ∈ F.fixingSubgroup)
     {y : PadicComplex l} (hy : y ∈ inC F) : act g y = y := by
@@ -617,12 +593,12 @@ theorem twAct_fixed_eq_zero {act : GQ l →* (PadicComplex l ≃+* PadicComplex 
   haveI : NeZero l := ⟨hl.1.ne_zero⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot (PadicComplex l) l
   obtain ⟨S, hS, hadd, hlin⟩ := GlobalTheory.Cyc.exists_tate_operator l act χ hact hχ K j hj g hg ζ hζ
-  obtain ⟨B, c, hc0, hc1, hB, hBO, hBe⟩ := exists_quot hj hg (U g) hU hU1 i hζ
+  obtain ⟨B, c, hc0, hc1, hB, hBO, hBe⟩ := GlobalTheory.CycPerturb.exists_quot hj hg (U g) hU hU1 i hζ
   have hBO' : ∀ a b, (-B) a b ∈ intC (Ks K j) := fun a b =>
     ⟨(CycPerturb.mem_inC_iff _ _).2 (neg_mem ((CycPerturb.mem_inC_iff _ _).1 (hBO a b).1)), by
       rw [Matrix.neg_apply, norm_neg]; exact (hBO a b).2⟩
   have hp : ζ - 1 ∈ intC (Ks K j) :=
-    ⟨(CycPerturb.mem_inC_iff _ _).2 (sub_mem ((CycPerturb.mem_inC_iff _ _).1 (root_mem_inC K hj.1 hζ)) (one_mem _)), by
+    ⟨(CycPerturb.mem_inC_iff _ _).2 (sub_mem ((CycPerturb.mem_inC_iff _ _).1 (GlobalTheory.CycPerturb.root_mem_inC K hj.1 hζ)) (one_mem _)), by
       rw [CycPerturb.norm_root_sub_one hζ]; exact CycPerturb.rho_lt_one.le⟩
   have hp0 : ζ - 1 ≠ 0 := sub_ne_zero.2 (hζ.ne_one hl.1.one_lt)
   refine eq_zero_of_small (Xj K j) (fun x hx => ohat_norm K (hO x hx)) _ hmul
@@ -633,7 +609,7 @@ theorem twAct_fixed_eq_zero {act : GQ l →* (PadicComplex l ≃+* PadicComplex 
   rw [← map_mulVec (Xj K j) _ hmul S hadd hlin (-B) hBO' _ fun a => hgX _ (hy a)]
   funext a
   have h1 : act g (y a) - y a = (ζ - 1) * (-B).mulVec (fun b => act g (y b)) a := by
-    have := twAct_sub (act := act) hBe y a
+    have := GlobalTheory.CycPerturb.twAct_sub (act := act) hBe y a
     rw [hfix, sub_self, Pi.zero_apply] at this
     rw [Matrix.neg_mulVec, Pi.neg_apply]
     linear_combination -this
@@ -677,8 +653,6 @@ variable {l : ℕ} [Fact l.Prime]
 
 alias hinf_le_gj := _root_.GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj
 
-alias gj_le := _root_.GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base
-
 alias norm_l_lt := _root_.GlobalTheory.TateDecomp.norm_l_lt
 
 theorem norm_chiC {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (j : ℤ) (g : GQ l) : ‖chiC χ j g‖ = 1 := by
@@ -688,7 +662,7 @@ theorem norm_chiC {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (j : ℤ) (g : GQ 
 theorem chiC_hinf {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (K : FinExt l) (j : ℤ) {h : GQ l}
     (hh : h ∈ Hinf K) : chiC χ j h = 1 := by
   have : χ h = 1 :=
-    ((GlobalTheory.Cyc.cyc_basic l χ hχ).2.2 K h (gj_le K 0 (hinf_le_gj K 0 hh))).2.1 hh
+    ((GlobalTheory.Cyc.cyc_basic l χ hχ).2.2 K h (GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base K 0 (hinf_le_gj K 0 hh))).2.1 hh
   simp [chiC, this]
 
 theorem chiC_neg_mul (χ : GQ l →* ℚ_[l]ˣ) (j : ℤ) (g : GQ l) :
@@ -721,7 +695,7 @@ theorem eigen_of_norm_le {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)}
     intro a
     simp only [twAct, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct]
     exact hmul _ hc _ ((Xj K m).sum_mem fun b _ =>
-      hmul _ (hU g hg.1 a b) _ (hstab g (gj_le K m hg.1) _ (hx b)))
+      hmul _ (hU g hg.1 a b) _ (hstab g (GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base K m hg.1) _ (hx b)))
   have hK : ∀ a, twAct act χ u U g y0 a - y0 a ∈ inC (Ks K m) := by
     intro a
     rw [CycPerturb.mem_inC_iff]
@@ -792,14 +766,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.Cyc
 
-namespace GlobalTheory.CycSeries
-
-variable {l : ℕ} [hl : Fact l.Prime]
-
-theorem perturbation : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicComplex l ≃+* PadicComplex l)) (χ : GQ l →* ℚ_[l]ˣ), IsActC act → IsCyc χ → ∀ (K : FinExt l), ∀ j : ℕ, Lev l j → ∀ g, IsGen χ K j g → ∀ (r : ℕ) (U : GQ l → Matrix (Fin r) (Fin r) (PadicComplex l)), (∀ a b, U g a b ∈ intC (Ks K j)) → (∀ a b, ‖(U g - 1) a b‖ < rho1 l) → ∀ i : ℤ, (∀ y : Fin r → PadicComplex l, (∀ a, y a ∈ Xj K j) → twAct act χ i U g y = y → y = 0) ∧ ∀ ζ : PadicComplex l, IsPrimitiveRoot ζ l → ∀ w : Fin r → PadicComplex l, (∀ a, w a ∈ Xj K j) → ∃ y : Fin r → PadicComplex l, (∀ a, y a ∈ Xj K j) ∧ twAct act χ i U g y - y = (ζ - 1) • w :=
-  @GlobalTheory.CycPerturb.perturbation
-
-end GlobalTheory.CycSeries
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormZpowSubOneLeTer =====
@@ -901,7 +867,7 @@ theorem quot_mem (K : FinExt l) {j : ℕ} (hj : 1 ≤ j) {ζ : PadicComplex l}
   have hz := GlobalTheory.Cyc.norm_primitiveRoot_sub_one l 1 le_rfl ζ (by rwa [pow_one])
   have hz0 : ζ - 1 ≠ 0 := sub_ne_zero.2 (h.ne_one hl.1.one_lt)
   refine ⟨(mem_fld _ _).1 (div_mem (pow_mem (natCast_mem _ _) _)
-    (sub_mem ((mem_fld _ _).2 (_root_.GlobalTheory.CycEigen.root_mem_inC K hj h)) (one_mem _))), ?_⟩
+    (sub_mem ((mem_fld _ _).2 (_root_.GlobalTheory.CycPerturb.root_mem_inC K hj h)) (one_mem _))), ?_⟩
   rw [norm_div, div_le_one (norm_pos_iff.2 hz0), norm_pow, _root_.GlobalTheory.Cyc.TateS.norm_l, hz]
   calc ((l : ℝ)⁻¹) ^ N ≤ ((l : ℝ)⁻¹) ^ 1 :=
         pow_le_pow_of_le_one (by positivity) (inv_le_one_of_one_le₀ h1.le) hN
@@ -996,7 +962,7 @@ theorem torsion_coinvariants : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (Pa
   haveI : NeZero l := ⟨hl.1.ne_zero⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot (PadicComplex l) l
   have hz0 : ζ - 1 ≠ 0 := sub_ne_zero.2 (hζ.ne_one hl.1.one_lt)
-  obtain ⟨yx, hyx, hyxe⟩ := (GlobalTheory.CycSeries.perturbation l act χ hact hχ K m hm g hg r U hU hU1 i).2 ζ hζ
+  obtain ⟨yx, hyx, hyxe⟩ := (GlobalTheory.CycPerturb.perturbation l act χ hact hχ K m hm g hg r U hU hU1 i).2 ζ hζ
     (((l : PadicComplex l) ^ N / (ζ - 1)) • wx)
     (fun a => hmul _ (quot_mem K hm.1 hζ (le_max_left _ _)) _ (hwx a))
   rw [smul_smul, mul_div_cancel₀ _ hz0] at hyxe

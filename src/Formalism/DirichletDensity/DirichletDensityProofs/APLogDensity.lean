@@ -94,13 +94,13 @@ lemma apld_prime_part_eq (a : ZMod q) (x : ℝ) (n : ℕ) :
   by_cases hp : n.Prime
   · by_cases hn : (n : ZMod q) = a
     · have hmem : n ∈ {p : ℕ | p.Prime ∧ p ∈ {p : ℕ | (p : ZMod q) = a}} := ⟨hp, hn⟩
-      rw [if_pos hp, Set.indicator_of_mem hmem]
+      rw [ite_eq_left hp, Set.indicator_of_mem hmem]
       simp [residueClass, Set.indicator, hn, vonMangoldt_apply_prime hp]
     · have hmem : n ∉ {p : ℕ | p.Prime ∧ p ∈ {p : ℕ | (p : ZMod q) = a}} := fun h => hn h.2
-      rw [if_pos hp, Set.indicator_of_notMem hmem]
+      rw [ite_eq_left hp, Set.indicator_of_notMem hmem]
       simp [residueClass, Set.indicator, hn]
   · have hmem : n ∉ {p : ℕ | p.Prime ∧ p ∈ {p : ℕ | (p : ZMod q) = a}} := fun h => hp h.1
-    rw [if_neg hp, Set.indicator_of_notMem hmem, zero_div]
+    rw [ite_eq_right hp, Set.indicator_of_notMem hmem, zero_div]
 
 end Formalism.HF.P
 

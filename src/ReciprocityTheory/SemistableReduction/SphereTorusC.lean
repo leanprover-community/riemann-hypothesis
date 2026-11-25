@@ -170,16 +170,8 @@ theorem blockSphereProb_coord_zero {B n : ℕ} :
   exact Measure.pi_eval_preimage_null _ (sphereProb_coord_zero p.2)
 
 theorem norm_blockPoint_le {B n : ℕ} (z : BlockSphere B n) (p : Fin B × Fin n) :
-    ‖blockPoint z p‖ ≤ 1 := by
-  have h1 : ‖((z p.1 : UnitSphereC n) : EuclideanSpace ℂ (Fin n))‖ = 1 := norm_eq_of_mem_sphere _
-  have h2 := EuclideanSpace.norm_eq ((z p.1 : UnitSphereC n) : EuclideanSpace ℂ (Fin n))
-  rw [h1] at h2
-  have h3 : ‖WithLp.ofLp ((z p.1 : UnitSphereC n) : EuclideanSpace ℂ (Fin n)) p.2‖ ^ 2 ≤
-      ∑ i, ‖WithLp.ofLp ((z p.1 : UnitSphereC n) : EuclideanSpace ℂ (Fin n)) i‖ ^ 2 :=
-    Finset.single_le_sum (f := fun i => ‖WithLp.ofLp ((z p.1 : UnitSphereC n) :
-      EuclideanSpace ℂ (Fin n)) i‖ ^ 2) (fun i _ => by positivity) (Finset.mem_univ _)
-  have h4 := Real.sqrt_le_sqrt h3
-  rw [← h2, Real.sqrt_sq (norm_nonneg _)] at h4
-  exact h4
+    ‖blockPoint z p‖ ≤ 1 :=
+  (PiLp.norm_apply_le ((z p.1 : UnitSphereC n) : EuclideanSpace ℂ (Fin n)) p.2).trans_eq
+    (norm_eq_of_mem_sphere _)
 
 end ReciprocityTheory.MultiplicativeHeights

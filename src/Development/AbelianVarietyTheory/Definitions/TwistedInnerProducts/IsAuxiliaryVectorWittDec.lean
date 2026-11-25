@@ -70,9 +70,6 @@ structure Cond (ψ : AddChar (AF D.host.F) ℂ) (P : GlobalTheory.FinPl.Pl D →
   iso : ∀ ξ ∈ p.B₁, ∀ ξ' : Mx D σ V₀.rank, MxAt P ξ → mt W h * dW.incX V₀ ξ = dW.incX V₀ ξ' →
     ψ (symplO V₀ W (dW.incAdj V₀ y) (dW.incX V₀ ξ')) = ψ (symplO V₀ W (dW.incAdj V₀ y) (dW.incX V₀ ξ))
 
-def CondK (ψ : AddChar (AF D.host.F) ℂ) (LW : Lat W) (P : GlobalTheory.FinPl.Pl D → Prop) (h : GA D W) : Prop :=
-  ∀ κ, InK W LW P κ → Cond dW p x y ψ P (h * κ)
-
 def piecesOf (ψ : AddChar (AF D.host.F) ℂ) (Γ Γ' : AddSubgroup (WO V W)) : Pieces V₀ W W₀ ρ σ where
   A₁ := Γ.comap (dV.extX W)
   A₂ := AddSubgroup.closure {a' | MxAt (fun _ => True) a' ∧

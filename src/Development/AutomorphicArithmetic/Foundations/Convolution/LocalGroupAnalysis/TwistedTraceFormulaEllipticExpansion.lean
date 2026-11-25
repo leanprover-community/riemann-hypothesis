@@ -386,7 +386,6 @@ private theorem termF (hU : U2) {F : Type} [Field F] [NumberField F] {n : ℕ} (
     change x⁻¹ * g * x = g ↔ _
     rw [mul_assoc, inv_mul_eq_iff_eq_mul, eq_comm]
     rfl
-  set_option synthInstance.maxHeartbeats 400000 in
   refine (hU (G1 F n) (Subgroup.centralizer {g}) μ ν (Subgroup.centralizer {g}).subtype
     (closedCent g).isClosedEmbedding_subtypeVal _ (Gam F n ⊓ twCent (tw (Twist.id μ)) g) ?_ hv
     (fun x => f (x⁻¹ * g * tw (Twist.id μ) x)) (contTw _ f g) ?_ hi).1
@@ -443,7 +442,6 @@ private theorem termE (hU : U2) (q1 : Q1) (q2 : Q2) (n3 : N3) (n5 : N5)
     congrArg f (twConj_mul_left (tw θ) (d1 δ) ((hcent _).2 ⟨t, rfl⟩) x)
   obtain ⟨h1, h2⟩ := hU (G1 E n) (Subgroup.centralizer {d1 γ}) μ ν i hic _ _ hmap hv
     (fun x => f (x⁻¹ * d1 δ * tw θ x)) (contTw _ f _) hinv hi
-  set_option synthInstance.maxHeartbeats 400000 in
   have h3 := UpperTheory.quotientIntegral_lt_top_of_invariant_closedEmbedding q1 q2 (AdelicGLn.AdelicGL E n) _ (normOneGL (K := E) (n := n)) isClosed_normOneGL μ ν i hic
     (fun x => f (x⁻¹ * d1 δ * tw θ x)) (contTw _ f _) hinv h2
   rw [h1, ← h3]
@@ -451,7 +449,7 @@ private theorem termE (hU : U2) (q1 : Q1) (q2 : Q2) (n3 : N3) (n5 : N5)
   · exact funext fun t => hj1 t
   · funext x
     rw [← hθ x, ext0]
-    exact (dif_pos (x⁻¹ * d1 δ * tw θ x).2 (t := fun h => f ⟨_, h⟩) (e := fun _ => 0)).symm
+    exact (dite_eq_left (x⁻¹ * d1 δ * tw θ x).2 (t := fun h => f ⟨_, h⟩) (e := fun _ => 0)).symm
 end
 
 private theorem norm_self {F : Type} [Field F] {n : ℕ} (γ : GL (Fin n) F) : normGL (1 : F ≃ₐ[F] F) γ = incl γ := by

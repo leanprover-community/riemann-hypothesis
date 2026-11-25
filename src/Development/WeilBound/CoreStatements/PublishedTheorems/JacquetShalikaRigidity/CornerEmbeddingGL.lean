@@ -26,7 +26,7 @@ theorem embM_apply (A : Matrix (Fin k) (Fin k) R) (i c : Fin m) :
 
 theorem embM_castLE (h : k ≤ m) (A : Matrix (Fin k) (Fin k) R) (i c : Fin k) :
     embM m A (Fin.castLE h i) (Fin.castLE h c) = A i c := by
-  rw [embM_apply, dif_pos ⟨i.2, c.2⟩]; rfl
+  rw [embM_apply, dite_eq_left ⟨i.2, c.2⟩]; rfl
 
 theorem embM_out (A : Matrix (Fin k) (Fin k) R) (i c : Fin m) (h : ¬ ((i : ℕ) < k ∧ (c : ℕ) < k)) :
     embM m A i c = (1 : Matrix (Fin m) (Fin m) R) i c := by
@@ -56,7 +56,7 @@ theorem embM_eq (h : k ≤ m) (A : Matrix (Fin k) (Fin k) R) :
   obtain ⟨y, rfl⟩ := (eqv h).surjective c
   rw [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply]
   rcases x with x | x <;> rcases y with y | y
-  · rw [embM_apply, dif_pos (by rw [eqv_inl, eqv_inl]; exact ⟨x.2, y.2⟩), Matrix.fromBlocks_apply₁₁]
+  · rw [embM_apply, dite_eq_left (by rw [eqv_inl, eqv_inl]; exact ⟨x.2, y.2⟩), Matrix.fromBlocks_apply₁₁]
     congr 1
   · rw [embM_out _ _ _ (by rw [eqv_inl, eqv_inr]; omega), Matrix.fromBlocks_apply₁₂, Matrix.one_apply_ne]
     · rfl
@@ -282,7 +282,7 @@ theorem torus_emb (hι : IsEmb ι) (l : Fin k → ℤ) :
   ext i c
   rw [embM_apply]
   split_ifs with h
-  · simp only [Matrix.diagonal_apply, Fin.ext_iff, pad, dif_pos h.1]
+  · simp only [Matrix.diagonal_apply, Fin.ext_iff, pad, dite_eq_left h.1]
   · rw [Matrix.diagonal_apply, Matrix.one_apply]
     split_ifs with hic
     · subst hic

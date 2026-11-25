@@ -1,5 +1,7 @@
 module
 
+import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
@@ -20,7 +22,7 @@ namespace Formalism.InvariantFactorPaths.G7
 open Formalism.DworkPowerSeriesWeights (Integral low_subst_of_low)
 open Formalism.FG.SolveVAux (Low low_zero low_mono low_add low_sub low_mul low_pow low_one_iff low_mul_sub
   low_of_zero)
-open Formalism.FG.IntegralSubstitution (integral_mul integral_pow integral_one)
+open Formalism.ELL.SubstitutionCoefficientCongruence (integral_mul integral_pow integral_one)
 open TwoS (Cg cg_refl cg_trans cg_sum cg_mul cg_pow cg_frob_add cg_frob_sum
   integral_add integral_neg integral_sum integral_C integral_X integral_zero coeff_sPos)
 
@@ -183,12 +185,12 @@ theorem low_sPos_sub {p : ℕ} (hp : 2 ≤ p) (E : ℕ) (s : ZMod (2 * ν)) (ab 
         (if n = Finsupp.single (s - 2 * (l : ZMod (2 * ν)), ab) ((p ^ 2) ^ l) then (-1 : K) ^ l
           else 0) :=
         Finset.sum_subset (Finset.range_mono (by omega))
-          fun l _ hl => if_neg fun e => hl (mem_range.2 (key l e).1)
+          fun l _ hl => ite_eq_right fun e => hl (mem_range.2 (key l e).1)
     _ = ∑ l ∈ range E,
         (if n = Finsupp.single (s - 2 * (l : ZMod (2 * ν)), ab) ((p ^ 2) ^ l) then (-1 : K) ^ l
           else 0) :=
         (Finset.sum_subset (Finset.range_mono (by omega))
-          fun l _ hl => if_neg fun e => hl (mem_range.2 (key l e).2)).symm
+          fun l _ hl => ite_eq_right fun e => hl (mem_range.2 (key l e).2)).symm
     _ = _ := Finset.sum_congr rfl fun l _ => by split_ifs <;> simp
 
 theorem low_pow_sub {ι : Type} {M : ℕ} {a b : MvPowerSeries ι K} (h : Low M (a - b)) (k : ℕ) :
@@ -316,20 +318,20 @@ theorem topMonoS_add {Tp Lw : Type} (d d' : Tp →₀ ℕ) :
 
 theorem tpS_pos {TT : Finset (ZMod (2 * ν))} (ξ : ZMod (2 * ν) → Fin r0 → K) {x : ZV ν r0 r1}
     (h : x.1 ∈ TT) : tpS TT ξ x =
-      MvPowerSeries.C (ξ x.1 x.2.1) * MvPowerSeries.X (Sum.inl (x.1, x.2.2)) := if_pos h
+      MvPowerSeries.C (ξ x.1 x.2.1) * MvPowerSeries.X (Sum.inl (x.1, x.2.2)) := ite_eq_left h
 
 theorem tpS_neg {TT : Finset (ZMod (2 * ν))} (ξ : ZMod (2 * ν) → Fin r0 → K) {x : ZV ν r0 r1}
-    (h : x.1 ∉ TT) : tpS TT ξ x = 0 := if_neg h
+    (h : x.1 ∉ TT) : tpS TT ξ x = 0 := ite_eq_right h
 
 theorem aAof_pos {E : ℕ} (p : ℕ) (u : ZMod (2 * ν) → K) {TT : Finset (ZMod (2 * ν))}
     (ξ : ZMod (2 * ν) → Fin r0 → K) {φ : PhiI ν r0 r1 E} (h : pairFirst φ ∈ TT ∧ pairSecond φ ∈ TT) :
     aAof p u TT ξ φ =
       u φ.1 * (-1) ^ (φ.2.1.val + φ.2.2.1.val) * ξ (pairFirst φ) φ.2.2.2.1 ^ (p ^ (1 + 2 * φ.2.1.val)) *
-        ξ (pairSecond φ) φ.2.2.2.1 ^ (p ^ (2 * φ.2.2.1.val)) := if_pos h
+        ξ (pairSecond φ) φ.2.2.2.1 ^ (p ^ (2 * φ.2.2.1.val)) := ite_eq_left h
 
 theorem aAof_neg {E : ℕ} (p : ℕ) (u : ZMod (2 * ν) → K) {TT : Finset (ZMod (2 * ν))}
     (ξ : ZMod (2 * ν) → Fin r0 → K) {φ : PhiI ν r0 r1 E} (h : ¬ (pairFirst φ ∈ TT ∧ pairSecond φ ∈ TT)) :
-    aAof p u TT ξ φ = 0 := if_neg h
+    aAof p u TT ξ φ = 0 := ite_eq_right h
 
 theorem A_term {E : ℕ} {p : ℕ} (hp : p ≠ 0) (u : ZMod (2 * ν) → K) (TT : Finset (ZMod (2 * ν)))
     (ξ : ZMod (2 * ν) → Fin r0 → K) (s : ZMod (2 * ν)) (l l' : Fin E) (ab : Fin r0 × Fin r1) :
@@ -411,10 +413,10 @@ theorem B_term {E : ℕ} {p : ℕ} (hp : p ≠ 0) (u : ZMod (2 * ν) → K) (TT 
   have n1 : p ^ (2 * l.val + 1) ≠ 0 := pow_ne_zero _ hp
   rw [add_comm 1 (2 * l.val), dBof, topMonoS_single]
   by_cases h1 : s ∈ TT
-  · rw [tpS_pos (x := (s, (a, b))) ξ h1, aBof, if_pos h1]
+  · rw [tpS_pos (x := (s, (a, b))) ξ h1, aBof, ite_eq_left h1]
     simp only [map_mul, map_pow, map_neg, map_one, mul_pow]
     ring
-  · rw [tpS_neg (x := (s, (a, b))) ξ h1, aBof, if_neg h1, zero_pow n1]
+  · rw [tpS_neg (x := (s, (a, b))) ξ h1, aBof, ite_eq_right h1, zero_pow n1]
     simp
 
 theorem B_eq [NeZero ν] {p : ℕ} (hp : p ≠ 0) (E : ℕ) (u : ZMod (2 * ν) → K)

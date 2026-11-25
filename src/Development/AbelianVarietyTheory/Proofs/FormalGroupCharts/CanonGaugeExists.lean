@@ -19,53 +19,9 @@ public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FormalCo
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FormallyUnramifiedOfIsReduced
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.GermEvRegaugedSecondLawFamily
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.PderivSecondEvFirstPointEqZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.MvPowerSeries.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -733,16 +689,6 @@ namespace GlobalTheory.SymGauge
 
 variable {k : Type} [CommRing k] {d : ℕ}
 
-theorem ev_C_mul {m n : ℕ} (V : Fin m → Pt k n d) (hV : ∀ j, GP (V j)) (c : k) (f : PS k m d) :
-    ev V (C c * f) = C c * ev V f := by
-  rw [gt_ev_mul V hV]
-  congr 1
-  unfold ev
-  rw [MvPowerSeries.subst_C]
-
-theorem expS_inj [Algebra ℚ k] {n : ℕ} {f g : PS k n d} (hf : constantCoeff f = 0)
-    (hg : constantCoeff g = 0) (h : FB.expS k f = FB.expS k g) : f = g := exp_inj hf hg h
-
 theorem expS_zero [Algebra ℚ k] {n : ℕ} : FB.expS k (0 : PS k n d) = 1 := exp_zero
 
 theorem exists_gauge_of_symmetry :
@@ -765,7 +711,7 @@ theorem exists_gauge_of_symmetry :
   have anti0 : s + ev (n := 2) ![pt k d 1, pt k d 0] s = 0 := by
     have e := B.sy_inv
     rw [E _ _ (hp 1) (hp 0)] at e
-    refine expS_inj (by rw [map_add (f := _), hs0, c0 _ _ (hp 1) (hp 0), add_zero]) (map_zero _) ?_
+    refine GlobalTheory.GaugeFirstLaw.expS_inj (by rw [map_add (f := _), hs0, c0 _ _ (hp 1) (hp 0), add_zero]) (map_zero _) ?_
     rw [gt_expS_add _ _ hs0 (c0 _ _ (hp 1) (hp 0)), hs, e, expS_zero]
   have anti : ∀ {n : ℕ} (a b : Pt k n d), GP a → GP b → ev ![b, a] s = - ev ![a, b] s := by
     intro n a b ha hb
@@ -780,7 +726,7 @@ theorem exists_gauge_of_symmetry :
     have hA := gp_addOf _ hF _ _ (hp (n := 3) 1) (hp (n := 3) 2)
     have e := B.sy_law
     rw [h1, h2, ev_one, one_mul, mul_one, E _ _ (hp 0) (hp 1), E _ _ (hp 0) (hp 2), E _ _ (hp 0) hA] at e
-    refine expS_inj (by rw [map_add (f := _), c0 _ _ (hp 0) (hp 1), c0 _ _ (hp 0) (hp 2), add_zero])
+    refine GlobalTheory.GaugeFirstLaw.expS_inj (by rw [map_add (f := _), c0 _ _ (hp 0) (hp 1), c0 _ _ (hp 0) (hp 2), add_zero])
       (c0 _ _ (hp 0) hA) ?_
     rw [gt_expS_add _ _ (c0 _ _ (hp 0) (hp 1)) (c0 _ _ (hp 0) (hp 2)), e]
   have add2 : ∀ {n : ℕ} (x y z : Pt k n d), GP x → GP y → GP z →
@@ -803,17 +749,17 @@ theorem exists_gauge_of_symmetry :
   refine ⟨C c * s, ⟨?_, ?_⟩, ?_, ?_, ?_, ?_⟩
   · have e := B.symmetry_zero_fst
     rw [E _ _ hz (hp 0), ← expS_zero] at e
-    rw [ev_C_mul _ (pair_points_zero_constant hz (hp 0)), expS_inj (c0 _ _ hz (hp 0)) (map_zero _) e, mul_zero]
+    rw [GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant hz (hp 0)), GlobalTheory.GaugeFirstLaw.expS_inj (c0 _ _ hz (hp 0)) (map_zero _) e, mul_zero]
   · have e := B.symmetry_zero_snd
     rw [E _ _ (hp 0) hz, ← expS_zero] at e
-    rw [ev_C_mul _ (pair_points_zero_constant (hp 0) hz), expS_inj (c0 _ _ (hp 0) hz) (map_zero _) e, mul_zero]
+    rw [GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 0) hz), GlobalTheory.GaugeFirstLaw.expS_inj (c0 _ _ (hp 0) hz) (map_zero _) e, mul_zero]
   · have hA := gp_addOf _ hF _ _ (hp (n := 3) 0) (hp (n := 3) 1)
-    rw [ev_C_mul _ (pair_points_zero_constant (hp 0) (hp 2)), ev_C_mul _ (pair_points_zero_constant (hp 1) (hp 2)), ev_C_mul _ (pair_points_zero_constant hA (hp 2)),
+    rw [GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 0) (hp 2)), GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 1) (hp 2)), GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant hA (hp 2)),
       anti _ _ (hp 2) (hp 0), anti _ _ (hp 2) (hp 1), anti _ _ (hp 2) hA,
       ← add2 _ _ _ (hp 2) (hp 0) (hp 1)]
     ring
   · have hA := gp_addOf _ hF _ _ (hp (n := 3) 1) (hp (n := 3) 2)
-    rw [ev_C_mul _ (pair_points_zero_constant (hp 0) (hp 1)), ev_C_mul _ (pair_points_zero_constant (hp 0) (hp 2)), ev_C_mul _ (pair_points_zero_constant (hp 0) hA),
+    rw [GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 0) (hp 1)), GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 0) (hp 2)), GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 0) hA),
       ← add0]
     ring
   · intro a
@@ -821,9 +767,9 @@ theorem exists_gauge_of_symmetry :
     have hy := gp_comp1 _ _ (B.A.const (star a)) (hp (n := 2) 1)
     have e := B.ad_sy a
     rw [had, had, ev_one, one_mul, one_mul, E _ _ hx (hp 1), E _ _ (hp 0) hy] at e
-    rw [ev_C_mul _ (pair_points_zero_constant hx (hp 1)), ev_C_mul _ (pair_points_zero_constant (hp 0) hy),
-      expS_inj (c0 _ _ hx (hp 1)) (c0 _ _ (hp 0) hy) e, sub_self]
-  · rw [ev_C_mul _ (pair_points_zero_constant (hp 1) (hp 0)), ← hs]
+    rw [GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant hx (hp 1)), GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 0) hy),
+      GlobalTheory.GaugeFirstLaw.expS_inj (c0 _ _ hx (hp 1)) (c0 _ _ (hp 0) hy) e, sub_self]
+  · rw [GlobalTheory.ChartTrans.ev_C_mul _ (pair_points_zero_constant (hp 1) (hp 0)), ← hs]
     congr 1
     linear_combination (-C c) * anti0 + s * hc
 

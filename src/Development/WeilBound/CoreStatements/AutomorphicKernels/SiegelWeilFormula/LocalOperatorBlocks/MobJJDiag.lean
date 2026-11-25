@@ -65,9 +65,6 @@ theorem mob_JJ_diag (z : Fin n → ℂ) (hz : ∀ j, z j ≠ 0) :
 
 abbrev Z0 (sg : ℤˣ) : Matrix (Fin n) (Fin n) ℂ := (Complex.I * ((sg : ℤ) : ℂ)) • 1
 
-theorem sg_sq (sg : ℤˣ) : ((sg : ℤ) : ℂ) * ((sg : ℤ) : ℂ) = 1 := by
-  rcases Int.units_eq_one_or sg with h | h <;> simp [h]
-
 theorem mob_K (sg : ℤˣ) (M : M2 n) (hM : InK M) (hV : IsUnit (M.toBlocks₂₁ * Z0 sg + M.toBlocks₂₂).det) :
     mob M (Z0 sg) = Z0 sg := by
   obtain ⟨hG, hU⟩ := hM
@@ -83,7 +80,7 @@ theorem mob_K (sg : ℤˣ) (M : M2 n) (hM : InK M) (hV : IsUnit (M.toBlocks₂�
     Matrix.neg_mul] at hc
   obtain ⟨e1, e2, -, -⟩ := Matrix.fromBlocks_inj.mp hc
   set σ : ℂ := ((sg : ℤ) : ℂ)
-  have hσ := sg_sq sg
+  have hσ := Formalism.FrobeniusOrbits.Misc2.int_units_sq_C sg
   set X := M.toBlocks₂₁ * Z0 sg + M.toBlocks₂₂ with hX
   have hnum : M.toBlocks₁₁ * Z0 sg + M.toBlocks₁₂ = (Complex.I * σ) • X := by
     rw [hX, e1, e2]

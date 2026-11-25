@@ -120,8 +120,8 @@ theorem unitary_elt (c : R →+* R) {J K : Matrix n n R} (hJ : cT c J = J) (hKJ 
     ext x y
     simp only [cT, transpose_apply, map_apply, single_apply]
     by_cases h : p = y ∧ q = x
-    · rw [if_pos h, if_pos h.symm, map_one]
-    · rw [if_neg h, if_neg (fun h' => h h'.symm), map_zero]
+    · rw [ite_eq_left h, ite_eq_left h.symm, map_one]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h h'.symm), map_zero]
   have h1 : cT c (elt J K i j a b) = 1 + b • single j i (1 : R) - a • (J * single i j (1 : R) * K) := by
     have : J * single i j (1 : R) * K = cT c (K * single j i (1 : R) * J) := by
       rw [cT_mul, cT_mul, hJ, hK, hs, Matrix.mul_assoc]
@@ -175,9 +175,9 @@ theorem exists_isPlacesIdem (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (He
   classical
   refine ⟨pairA F (fun w => if w ∈ S₁ then 1 else 0) (∑ v ∈ S₂, singleV F v 1), ?_, ?_, ?_, ?_⟩
   · intro w hw
-    exact if_pos hw
+    exact ite_eq_left hw
   · intro w hw
-    exact if_neg hw
+    exact ite_eq_right hw
   · intro v hv
     change evalV F v (∑ v ∈ S₂, singleV F v 1) = 1
 

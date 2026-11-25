@@ -27,7 +27,7 @@ theorem derivation_aeval_eq {K R ι : Type*} [CommRing K] [CommRing R] [Algebra 
       Finset.mul_sum]
     simp only [map_add (f := _), map_mul, aeval_X, apply_ite (aeval z), map_zero, add_mul, mul_ite,
       mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_add_distrib, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     ring_nf
 
 theorem totalDegree_pderiv_lt {K ι : Type*} [CommRing K] (P : MvPolynomial ι K) (i : ι)

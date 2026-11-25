@@ -117,21 +117,11 @@ theorem toGL_mat (γ : SL(2, ℤ)) : toGL (mat γ) = Matrix.SpecialLinearGroup.m
   ext i j
   simp [mat, Matrix.SpecialLinearGroup.mapGL]
 
-theorem det_toGL (A : Matrix (Fin 2) (Fin 2) ℤ) (hA : A.det ≠ 0) :
-    ((toGL A).det : ℝ) = (A.det : ℝ) := by
-  unfold toGL
-  rw [dite_eq_right hA]
-  simp [Matrix.det_fin_two]
-
 theorem sigma_toGL (A : Matrix (Fin 2) (Fin 2) ℤ) (hA : 0 < A.det) (c : ℂ) : σ (toGL A) c = c := by
   have h : (0 : ℝ) < ((toGL A).det : ℝ) := by
-    rw [det_toGL A hA.ne']; exact_mod_cast hA
+    rw [GlobalTheory.HeckeFamilyMatrices.toGL_det A hA.ne']; exact_mod_cast hA
   have h' : 0 < (↑(toGL A) : Matrix (Fin 2) (Fin 2) ℝ).det := by simpa using h
   simp [UpperHalfPlane.σ, h']
-
-theorem slash_smul_toGL (k : ℤ) (A : Matrix (Fin 2) (Fin 2) ℤ) (hA : 0 < A.det) (c : ℂ) (f : ℍ → ℂ) :
-    (c • f) ∣[k] toGL A = c • (f ∣[k] toGL A) := by
-  rw [ModularForm.smul_slash, sigma_toGL A hA]
 
 end GlobalTheory.OldSpace
 
@@ -145,13 +135,13 @@ theorem toGL_apply (A : Matrix (Fin 2) (Fin 2) ℤ) (hA : A.det ≠ 0) (i j : Fi
 
 theorem toGL_smul_coe (A : Matrix (Fin 2) (Fin 2) ℤ) (hA : 0 < A.det) (τ : ℍ) :
     ((toGL A • τ : ℍ) : ℂ) = ((A 0 0 : ℂ) * τ + A 0 1) / ((A 1 0 : ℂ) * τ + A 1 1) := by
-  have h : 0 < ((toGL A).det : ℝ) := by rw [det_toGL A hA.ne']; exact_mod_cast hA
+  have h : 0 < ((toGL A).det : ℝ) := by rw [GlobalTheory.HeckeFamilyMatrices.toGL_det A hA.ne']; exact_mod_cast hA
   rw [UpperHalfPlane.coe_smul_of_det_pos h]
   simp [UpperHalfPlane.num, UpperHalfPlane.denom, toGL_apply A hA.ne']
 
 theorem slash_toGL_apply (k : ℤ) (A : Matrix (Fin 2) (Fin 2) ℤ) (hA : 0 < A.det) (f : ℍ → ℂ) (τ : ℍ) :
     (f ∣[k] toGL A) τ = f (toGL A • τ) * ((A.det : ℝ) : ℂ) ^ (k - 1) * ((A 1 0 : ℂ) * τ + A 1 1) ^ (-k) := by
-  rw [ModularForm.slash_apply, sigma_toGL A hA, det_toGL A hA.ne']
+  rw [ModularForm.slash_apply, sigma_toGL A hA, GlobalTheory.HeckeFamilyMatrices.toGL_det A hA.ne']
   have h0 : (0 : ℝ) ≤ (A.det : ℝ) := by exact_mod_cast hA.le
   rw [abs_of_nonneg h0]
   simp [UpperHalfPlane.denom, toGL_apply A hA.ne']
@@ -213,7 +203,7 @@ theorem ul_slash_dg (N : ℕ) (k : ℤ) (l : ℕ) (hl : 0 < l) (f : CuspForm (Co
     have e : dg (l : ℤ) 1 * ulFam l j = !![(l : ℤ), 0; 0, (l : ℤ)] * !![1, (j : ℤ); 0, 1] := by
       ext a b; fin_cases a <;> fin_cases b <;> simp [dg, ulFam, Matrix.mul_apply, Fin.sum_univ_two]
     rw [e, _root_.GlobalTheory.SlashUpperTriangularMatrices.toGL_mul _ _ hS hT, SlashAction.slash_mul, slash_scalar k l hl,
-      slash_smul_toGL k _ (by rw [Matrix.det_fin_two_of]; norm_num), slash_T_cusp]
+      GlobalTheory.HeckeFamilyMatrices.smul_slash_toGL k _ (by rw [Matrix.det_fin_two_of]; norm_num), slash_T_cusp]
   rw [Finset.sum_congr rfl (fun j _ => key j), Finset.sum_const, Finset.card_univ, Fintype.card_fin,
     ← Nat.cast_smul_eq_nsmul ℂ, smul_smul]
   congr 1
@@ -243,7 +233,7 @@ theorem tq_eq (N : ℕ) (k : ℤ) (l : ℕ) (hl : 0 < l) (s : SL(2, ℤ)) (χ : 
       have := hf s hs1
       rw [hs.2] at this
       exact this
-    rw [h2, slash_smul_toGL k _ (by rw [det_dg]; exact hl0)]
+    rw [h2, GlobalTheory.HeckeFamilyMatrices.smul_slash_toGL k _ (by rw [det_dg]; exact hl0)]
 
 theorem exists_diam (N l : ℕ) (h : Nat.Coprime l N) : ∃ s : SL(2, ℤ), IsDiam N 1 (l : ZMod N) s := by
   have hb := Nat.gcd_eq_gcd_ab l N
@@ -266,12 +256,12 @@ noncomputable def uL (k : ℤ) (l : ℕ) : Module.End ℂ (ℍ → ℂ) where
     refine Finset.sum_congr rfl fun j _ => ?_
     by_cases hl : l = 0
     · subst hl; exact j.elim0
-    exact slash_smul_toGL k _ (by rw [det_ulFam]; exact_mod_cast Nat.pos_of_ne_zero hl) c f
+    exact GlobalTheory.HeckeFamilyMatrices.smul_slash_toGL k _ (by rw [det_ulFam]; exact_mod_cast Nat.pos_of_ne_zero hl) c f
 
 noncomputable def vL (k : ℤ) (l : ℕ) (hl : 0 < l) : Module.End ℂ (ℍ → ℂ) where
   toFun f := f ∣[k] toGL (dg l 1)
   map_add' f g := SlashAction.add_slash _ _ _ _
-  map_smul' c f := slash_smul_toGL k _ (by rw [det_dg]; exact_mod_cast hl) c f
+  map_smul' c f := GlobalTheory.HeckeFamilyMatrices.smul_slash_toGL k _ (by rw [det_dg]; exact_mod_cast hl) c f
 
 end GlobalTheory.OldSpace
 
@@ -759,7 +749,6 @@ end
 
 end GlobalTheory.HeckeFamilyMatrices.TrOld
 
-
 open GlobalTheory.HeckeFamilyMatrices.TrOld in
 theorem GlobalTheory.HeckeFamilyMatrices.chiInv_trOld : ∀ (N l : ℕ) (k : ℤ) (a b : ℤ) (h : (l : ℤ) * b - N * a = 1)
     (χ : DirichletCharacter ℂ N) (G : ℍ → ℂ), 0 < N → l.Prime → ChiInv k N (N * l) χ G →
@@ -990,15 +979,12 @@ lemma wOld_mul_ulFam (N l : ℕ) (a b : ℤ) (h : (l : ℤ) * b - N * a = 1) (j 
   fin_cases i <;> fin_cases m <;>
     simp [wOld, gaOld, mat, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
 
-lemma wOld_det (N l : ℕ) (a b : ℤ) (h : (l : ℤ) * b - N * a = 1) : (wOld N l a b).det = l := by
-  rw [wOld, Matrix.det_fin_two_of]; linear_combination (l : ℤ) * h
-
 lemma mat_det_pos (γ : SL(2, ℤ)) : 0 < (mat γ).det := by simp [mat]
 
 theorem trOld_eq : ∀ (N l : ℕ) (k : ℤ) (a b : ℤ) (h : (l : ℤ) * b - N * a = 1) (G : ℍ → ℂ), 0 < l →
     trOld k N l a b h G = G + ((l : ℂ) ^ (2 - k)) • UlF k l (G ∣[k] toGL (wOld N l a b)) := by
   intro N l k a b h G hl
-  have hW : 0 < (wOld N l a b).det := by rw [wOld_det N l a b h]; exact_mod_cast hl
+  have hW : 0 < (wOld N l a b).det := by rw [GlobalTheory.HeckeFamilyMatrices.oldformLevelRaisingMatrix_det_eq_level N l a b h]; exact_mod_cast hl
   have hl' : (l : ℂ) ≠ 0 := by exact_mod_cast hl.ne'
   unfold trOld
   congr 1
@@ -1175,7 +1161,6 @@ theorem aeval_mem {M : Type*} [AddCommGroup M] [Module ℂ M] (U : Module.End �
   exact O.sum_mem fun i _ => by rw [LinearMap.smul_apply]; exact O.smul_mem _ (hpow i x hx)
 
 end GlobalTheory.HeckeFamilyMatrices.UlSemisimple
-
 
 open GlobalTheory.HeckeFamilyMatrices.UlSemisimple in
 theorem GlobalTheory.HeckeFamilyMatrices.ul_semisimple : ∀ (N l k : ℕ), 5 ≤ N → l.Prime → ¬ l ∣ N → 3 ≤ k → ∀ (χ : DirichletCharacter ℂ N) (α : ℂ), α ^ 2 ≠ χ l * (l : ℂ) ^ (k - 1) → α ^ 2 ≠ χ l * (l : ℂ) ^ (k - 2) →

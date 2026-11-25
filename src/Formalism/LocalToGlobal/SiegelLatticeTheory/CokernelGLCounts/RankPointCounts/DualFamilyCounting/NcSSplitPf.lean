@@ -286,14 +286,14 @@ theorem box_volume_holds : BoxVol := by
       intro v
       obtain ⟨μv, hμv⟩ := hA2.1
       have hex : ∃ μ, SdW F E σ n J (Fv F v) (psiV F ψ v) a μ := ⟨μv v, hμv v⟩
-      simp only [dX, dif_pos hex]
+      simp only [dX, dite_eq_left hex]
       exact hex.choose_spec
     have hA3 := hA2.2 (fun v => dX σ J ψ v a) hdX
     have hdT : ∀ v, SdHerm F E σ (Fv F v) (psiV F ψ v) a (dT σ ψ v a) := by
       intro v
       obtain ⟨νv, hνv⟩ := hA3.1
       have hex : ∃ ν, SdHerm F E σ (Fv F v) (psiV F ψ v) a ν := ⟨νv v, hνv v⟩
-      simp only [dT, dif_pos hex]
+      simp only [dT, dite_eq_left hex]
       exact hex.choose_spec
     have hA4 := hA3.2 (fun v => dT σ ψ v a) hdT
     have hA5 := hA4.2 fibInf hfib
@@ -301,7 +301,7 @@ theorem box_volume_holds : BoxVol := by
       intro v
       obtain ⟨fibV, hfibV⟩ := hA5.1
       have hex : ∃ fib, IsOm σ J ψ v a fib := ⟨fibV v, hfibV v⟩
-      simp only [omFam, dif_pos hex]
+      simp only [omFam, dite_eq_left hex]
       exact hex.choose_spec
     have hQ := hA5.2 (fun v => omFam σ J ψ v a) hOmF
 
@@ -348,7 +348,7 @@ theorem box_volume_holds : BoxVol := by
       intro v
       have hom : omAt σ J ψ v ((gramE σ J X0).map (inclR (Fv F v))) =
           omFam σ J ψ v a (hermOf (Fv F v) σ (gramE σ J X0) hT) := by
-        simp only [omAt, dif_pos (map_mem_HermR (Fv F v) σ (gramE σ J X0) hT)]
+        simp only [omAt, dite_eq_left (map_mem_HermR (Fv F v) σ (gramE σ J X0) hT)]
         rfl
       have hnull : omFam σ J ψ v a (hermOf (Fv F v) σ (gramE σ J X0) hT)
           {X | gramR (Fv F v) σ J X = (gramE σ J X0).map (inclR (Fv F v))}ᶜ = 0 :=
@@ -431,12 +431,6 @@ namespace LtSplSPf
 section CM
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-theorem sigma_sq_of_cm (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨-, -, -, hτ⟩ := h
-  let τ : E →+* ℂ := Classical.arbitrary _
-  apply τ.injective
-  rw [hτ, hτ, star_star]
 
 theorem exists_moved_of_cm (σ : E →ₐ[F] E) (h : IsCMExt F E σ) : ∃ y, σ y ≠ y := by
   apply _root_.PI.VolStabS.IdxHW.sigma_ne_id <;> assumption
@@ -660,7 +654,7 @@ end LtSplSPf
 
 theorem splitStr : SplitStr := by
   intro F E _ _ _ _ _ σ v hCM hnf
-  exact LtSplSPf.main_gen (Fv F v) σ (LtSplSPf.sigma_sq_of_cm σ hCM)
+  exact LtSplSPf.main_gen (Fv F v) σ (PI.VolStabS.sigma_invol_cm σ hCM)
     (LtSplSPf.exists_moved_of_cm σ hCM) hCM.2.2.1 hnf
 
 end Formalism.L2.SG.Pf.NcS.LT

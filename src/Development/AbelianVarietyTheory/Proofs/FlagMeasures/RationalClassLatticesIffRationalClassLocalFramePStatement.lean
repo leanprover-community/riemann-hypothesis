@@ -126,10 +126,6 @@ namespace GlobalTheory.Unfold.IotaGlob
 
 variable {D : D7}
 
-theorem mem_iff_loc (Z : LocDat D) (N : LV D) (hN : Submodule.IsLattice D.host.E N) (x : (VS D).V) :
-    x ∈ N ↔ ∀ p, baseChange₂ D p x ∈ lattice₂ D Z.M p N := by
-  exact GlobalTheory.Unfold.StdDual.mem_iff_local Z N hN x
-
 theorem smul_mem_latP (Z : LocDat D) (p : PlF D) (Λ : LV D) {u : (D.s.atP p).Ep} (hu : u ∈ (Z.M p).L.O)
     {w : Vp D p} (hw : w ∈ lattice₂ D Z.M p Λ) : u • w ∈ lattice₂ D Z.M p Λ := by
   have := (lattice₂ D Z.M p Λ).smul_mem (⟨u, hu⟩ : (Z.M p).L.O) hw
@@ -344,7 +340,7 @@ theorem graph_sub (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R
     rw [e]; exact add_mem hp₁ ht'
   · have e : p₂ - l₂ = (p₂ - (l₂ + t)) + t := by abel
     rw [e]; exact add_mem hp₂ ht
-  · rw [mem_iff_loc Z _ (ngx_lattice F F' Λ₂ h₂)]
+  · rw [GlobalTheory.Unfold.StdDual.mem_iff_local Z _ (ngx_lattice F F' Λ₂ h₂)]
     intro p
     have hΛl₂ : l₂ ∈ Λ₂ := (Submodule.mem_inf.1 hl₂).1
     have hΛl'₂ : l'₂ ∈ Λ₂ := (Submodule.mem_inf.1 hl'₂).1
@@ -541,13 +537,13 @@ private lemma exists_intValuation_sub_one_le_and_le_elsewhere (D : D7) (p : PlF 
     (fun q => if (q : PlF D) = p then 1 else 0)
   refine ⟨y, ?_, ?_⟩
   · have h := hy p (Finset.mem_insert_self _ _)
-    simp only [if_true] at h
+    simp only [ite_true] at h
     rw [p.intValuation_eq_exp_neg_multiplicity hr]
     exact (p.intValuation_le_pow_iff_mem _ _).2 h
   · intro q hq
     by_cases hqs : r ∈ q.asIdeal
     · have h := hy q (Finset.mem_insert_of_mem (hfin.mem_toFinset.2 hqs))
-      simp only [hq, if_false, sub_zero] at h
+      simp only [hq, ite_false, sub_zero] at h
       rw [q.intValuation_eq_exp_neg_multiplicity hr]
       exact (q.intValuation_le_pow_iff_mem _ _).2 h
     · rw [IsDedekindDomain.HeightOneSpectrum.intValuation_eq_one_iff.2 hqs]
@@ -1046,7 +1042,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.localInnerLattice_eq_of_innerPreimage_eq : ∀ (D : D7) (Z : LocDat D) (p : PlF D) {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) (Fr : LocNG.FrameD (locH Z p) D.R.rS), Fr.f = (fun a => frFac Z.δ p a • baseChange₂ D p (frame G a)) → ∀ Λ₁ Λ₂ : LV D, Submodule.IsLattice D.host.E Λ₁ → Submodule.IsLattice D.host.E Λ₂ → Lsub Λ₁ G = Lsub Λ₂ G → (locH Z p).Lset (lattice₂ D Z.M p Λ₁) Fr.f = (locH Z p).Lset (lattice₂ D Z.M p Λ₂) Fr.f := by
@@ -1163,14 +1158,14 @@ lemma prF_e (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.e b) = 0 := by
   unfold FrameD.prF
   rw [GlobalTheory.Unfold.StdDual.h_sub_left, GlobalTheory.Unfold.StdDual.h_sub_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left]
   simp only [H.h_smul_left, h_ee, h_es_e, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   ring
 
 lemma prF_es (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.es b) = 0 := by
   unfold FrameD.prF
   rw [GlobalTheory.Unfold.StdDual.h_sub_left, GlobalTheory.Unfold.StdDual.h_sub_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left]
   simp only [H.h_smul_left, h_e_es, Fr.h_ss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 lemma prF_add (x y : V) : Fr.prF (x + y) = Fr.prF x + Fr.prF y := by

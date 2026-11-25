@@ -64,7 +64,7 @@ def ctSm (r : ℕ) (φ : Sm E N) : Sm E N := if h : An.ctn r φ.1 ∈ Sm E N the
 theorem ctSm_val (r : ℕ) {φ : Sm E N} (hφ : IsAutForm φ) : (ctSm r φ).1 = An.ctn r φ.1 := by
   obtain ⟨F, hF, -⟩ := D_ct_smooth r φ hφ.left hφ.level
   have h : An.ctn r φ.1 ∈ Sm E N := hF ▸ F.2
-  simp only [ctSm, dif_pos h]
+  simp only [ctSm, dite_eq_left h]
 
 theorem ctn_add (r : ℕ) {f g : GA E N → ℂ} (hf : Continuous f) (hg : Continuous g) :
     An.ctn r (f + g) = An.ctn r f + An.ctn r g := by
@@ -104,7 +104,6 @@ theorem Aop_apply (r : ℕ) (τs : Finset ℝ) (a : ℝ → ℂ) (F : Sm E N) (g
 
 theorem Aop_act (r : ℕ) (τs : Finset ℝ) (a : ℝ → ℂ) (o : Op E N) (F : Sm E N) :
     Aop N r τs a (act o F) = act o (Aop N r τs a F) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [Aop, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, ltS_act]
 
 theorem exists_strictHenselian_absolutely_closed_local_ring (V : Submodule ℂ (Sm E N)) (hV : ∀ φ ∈ V, IsAutForm φ) (r : ℕ) (τs : Finset ℝ) (a : ℝ → ℂ) :

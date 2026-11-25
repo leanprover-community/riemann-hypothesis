@@ -88,11 +88,11 @@ theorem BlowUpHorizontalCorresp.proof (hsat : BlowUpHorizontalSat.Statement.{u})
   case hs =>
     intro W hW
     rw [Function.mem_support] at hW
-    exact ⟨fun h0 => hW (by rw [h0, zero_mul]), fun hc => hW (by simp only [if_pos hc, mul_zero])⟩
+    exact ⟨fun h0 => hW (by rw [h0, zero_mul]), fun hc => hW (by simp only [ite_eq_left hc, mul_zero])⟩
   case ht =>
     intro W hW
     rw [Function.mem_support] at hW
-    exact ⟨fun h0 => hW (by rw [h0, zero_mul]), fun hc => hW (by simp only [if_pos hc, mul_zero])⟩
+    exact ⟨fun h0 => hW (by rw [h0, zero_mul]), fun hc => hW (by simp only [ite_eq_left hc, mul_zero])⟩
   refine finsum_mem_eq_of_bijOn (fun W => W.comap (liftForm (ι := ι) (J := J) (R := O)))
     ⟨?_, ?_, ?_⟩ ?_
   · intro W hW
@@ -107,7 +107,7 @@ theorem BlowUpHorizontalCorresp.proof (hsat : BlowUpHorizontalSat.Statement.{u})
     exact ⟨W', ⟨h1, h2⟩, h3⟩
   · intro W hW
     simp only
-    rw [if_neg hW.2, if_neg (fun h => hW.2 ((hC W).1 h)), mult W hW.1 hW.2]
+    rw [ite_eq_right hW.2, ite_eq_right (fun h => hW.2 ((hC W).1 h)), mult W hW.1 hW.2]
 
 end GroundTheory.Heights₂.Heights.NumbersDVR
 end -- clump:auto
@@ -431,7 +431,7 @@ theorem trdeg_blocks_add_one_le {O Φ : Type} [CommRing O] [Field Φ] [Algebra O
     · intro o
       simp [ψ, hjb o]
   have hψz : ψ z = Polynomial.X := by
-    simp only [ψ, z, map_mul, eval₂Hom_C, eval₂Hom_X', if_true, RingHom.comp_apply]
+    simp only [ψ, z, map_mul, eval₂Hom_C, eval₂Hom_X', ite_true, RingHom.comp_apply]
     rw [← mul_assoc, ← map_mul, ← map_mul, mul_inv_cancel₀ hc, map_one, map_one, one_mul]
   have hadj : Algebra.adjoin O (F.range : Set (MvPolynomial Λ Φ)) = F.range := Algebra.adjoin_eq _
   have htr : Transcendental (Algebra.adjoin O (F.range : Set (MvPolynomial Λ Φ))) z := by
@@ -958,16 +958,6 @@ theorem ringKrullDim_le_of_isAlgebraic_adjoin_singleton {A B : Type u} [CommRing
       _ ≤ Cardinal.ofENat (N : ℕ∞) := Cardinal.ofENat_le_ofENat.mpr hp
   exact_mod_cast Cardinal.ofENat_le_ofENat.mp hc
 
-private theorem lt_natCast_of_add_one_le_withBotENat {x : WithBot ℕ∞} {n : ℕ} (h : x + 1 ≤ (n : WithBot ℕ∞)) :
-    x < (n : WithBot ℕ∞) := by
-  induction x using WithBot.recBotCoe with
-  | bot => exact WithBot.bot_lt_coe _
-  | coe a =>
-    induction a using ENat.recTopCoe with
-    | top => exact absurd h (by norm_cast)
-    | coe a =>
-      norm_cast at h ⊢
-
 end Helpers
 
 section Proof
@@ -1094,7 +1084,7 @@ theorem ExceptionalContraction.proof (h₁ : BlowUpDecomposition.Statement.{u}) 
       (by rw [Ideal.Quotient.factor_mk, Ideal.Quotient.eq_zero_iff_mem]
           exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self s))
     rw [hP.dim] at h
-    exact lt_natCast_of_add_one_le_withBotENat (by convert h using 2; omega)
+    exact GroundTheory.Heights₂.Heights.NumbersDVR.withBotENat_lt_of_add_one_le (by convert h using 2; omega)
   exact TopDimMinimal.proof DimStrictDrop.proof (MRing ι O) (P ⊔ Ideal.span {s}) G
     (d + 1 + Fintype.card K) (sup_le hPG ((Ideal.span_singleton_le_iff_mem _).mpr hsG)) hsum hdimA
 

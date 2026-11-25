@@ -546,21 +546,6 @@ theorem isSplit_iff_conj (P : HeightOneSpectrum (𝓞 D.host.E)) :
     exact ⟨P, Formalism.DivisionValues.conjPl P, fun e => h (congrArg HeightOneSpectrum.asIdeal e).symm, rfl,
       (GlobalTheory.LevelPlaces.under_eq_of_isConjPl (GlobalTheory.GoodPrimes.isConjPl_iff.2 rfl)).symm⟩
 
-section Sizes
-
-variable {c q r t : ℕ} {m d : Fin c → ℕ} {B : Fin c → Multiset ℂˣ}
-
-end Sizes
-
-section Real
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {F : Face D A}
-
-open GlobalTheory.DownLift GlobalTheory.DownLift.Params GlobalTheory.IndefiniteRowSideFullHecke.LabelSettingScalars
-
-end Real
-
 end GlobalTheory.PtString
 
 end

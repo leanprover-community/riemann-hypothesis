@@ -1,7 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.OrthSubrepresentation
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlockParabolicSubgroupLeviProjectionStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlockParabolicSubgroupLeviProjection
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBilinCyclic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLOneLeftRightUnitStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedHarishChandraInductionGLIsTwistedClassFunStatement
@@ -58,7 +58,7 @@ import Mathlib.Tactic.Lemma
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLAssoc, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLAssocStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLComm, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLCommStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraProductCuspidalGLListProperties, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraProductCuspidalGLListPropertiesStatement
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLAssoc =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLAssoc", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.OrthSubrepresentation\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlockParabolicSubgroupLeviProjectionStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionGLAssoc", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.OrthSubrepresentation\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlockParabolicSubgroupLeviProjection\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -148,8 +148,8 @@ theorem hcT_conj [Fintype F] {a b n : ℕ} (hn : n = a + b) (Φ : GL (Fin a) F �
   have e : (y * s)⁻¹ * x * (y * s) = s⁻¹ * (y⁻¹ * x * y) * s := by group
   simp only [Equiv.coe_mulRight, e]
   by_cases hz : InPar a (y⁻¹ * x * y)
-  · rw [if_pos hz, if_pos ((hs _).1.2 hz), ((hs _).2 hz).1, ((hs _).2 hz).2]
-  · rw [if_neg hz, if_neg (fun h => hz ((hs _).1.1 h))]
+  · rw [ite_eq_left hz, ite_eq_left ((hs _).1.2 hz), ((hs _).2 hz).1, ((hs _).2 hz).2]
+  · rw [ite_eq_right hz, ite_eq_right (fun h => hz ((hs _).1.1 h))]
 
 theorem hcT_sum [Fintype F] {a b n : ℕ} {ι : Type} [Fintype ι] (Φ : ι → GL (Fin a) F → GL (Fin b) F → ℂ)
     (x : GL (Fin n) F) : hcT a b (fun u v => ∑ i, Φ i u v) n x = ∑ i, hcT a b (Φ i) n x := by
@@ -281,7 +281,7 @@ theorem parabolicDiagonalBlocksProduct_assoc {a b c n : ℕ} (hn : n = a + b + c
     rfl
   unfold blk0
   by_cases h1 : InPar (a + b) z
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     by_cases h2 : InPar a (tlG (a + b) z)
     · obtain ⟨h3, h4⟩ := pp.1 ⟨h1, h2⟩
       have e1 : tlG a (tlG (a + b) z) = tlG a z := by
@@ -296,15 +296,15 @@ theorem parabolicDiagonalBlocksProduct_assoc {a b c n : ℕ} (hn : n = a + b + c
         show toG (br b c ((brG a (b + c) z : GL (Fin (b + c)) F) : Matrix (Fin (b + c)) (Fin (b + c)) F)) =
           toG (br (a + b) c ((z : GL (Fin n) F) : Matrix (Fin n) (Fin n) F))
         rw [coe_brG hn' z h3, t3]
-      rw [if_pos h2, if_pos h3, if_pos h4, e1, e2, e3, mul_assoc]
-    · rw [if_neg h2, zero_mul]
+      rw [ite_eq_left h2, ite_eq_left h3, ite_eq_left h4, e1, e2, e3, mul_assoc]
+    · rw [ite_eq_right h2, zero_mul]
       by_cases h3 : InPar a z
-      · rw [if_pos h3, if_neg (fun h4 => h2 (pp.2 ⟨h3, h4⟩).2), mul_zero]
-      · rw [if_neg h3]
-  · rw [if_neg h1]
+      · rw [ite_eq_left h3, ite_eq_right (fun h4 => h2 (pp.2 ⟨h3, h4⟩).2), mul_zero]
+      · rw [ite_eq_right h3]
+  · rw [ite_eq_right h1]
     by_cases h3 : InPar a z
-    · rw [if_pos h3, if_neg (fun h4 => h1 (pp.2 ⟨h3, h4⟩).1), mul_zero]
-    · rw [if_neg h3]
+    · rw [ite_eq_left h3, ite_eq_right (fun h4 => h1 (pp.2 ⟨h3, h4⟩).1), mul_zero]
+    · rw [ite_eq_right h3]
 
 theorem card_comap {H L : Type} [Group H] [Group L] (π : H →* L) (hπ : Function.Surjective π)
     (M : Subgroup L) : Nat.card (M.comap π) * Nat.card L = Nat.card M * Nat.card H := by

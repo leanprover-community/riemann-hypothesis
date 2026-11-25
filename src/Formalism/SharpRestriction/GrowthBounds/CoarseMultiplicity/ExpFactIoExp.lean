@@ -81,7 +81,7 @@ theorem expFact_ioExp (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : 
     intro x hx
     rw [ioExp, Finsupp.add_apply, hsumv, Finset.sum_eq_zero, add_zero]
     intro v _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hx (Finset.mem_image.2 ⟨v, Finset.mem_univ _, h⟩)
   have hin : ∀ v, ioExp C0 CE1 CE2 X j b μ (symVar C0 CE1 CE2 X j v) =
@@ -90,13 +90,13 @@ theorem expFact_ioExp (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : 
     rw [ioExp, Finsupp.add_apply, hsumv]
     congr 1
     rw [Finset.sum_eq_single v]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro v' _ hne
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun h => hne (hinj h)
     · intro hv
       have h0 : μ v = 0 := by simpa using hv
-      rw [if_pos rfl, h0, mul_zero]
+      rw [ite_eq_left rfl, h0, mul_zero]
   rw [expFact, Finsupp.prod_fintype _ _ (fun _ => Nat.factorial_zero)]
   rw [← Finset.prod_sdiff (Finset.subset_univ (Finset.univ.image (symVar C0 CE1 CE2 X j)))]
   rw [Finset.prod_image (fun a _ c _ h => hinj h)]
@@ -127,7 +127,7 @@ theorem baseExp_odd (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : Se
       · rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply]
         cases β0 <;> simp
       · intro c _ hc
-        rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply, if_neg, if_neg]
+        rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply, ite_eq_right, ite_eq_right]
         · rfl
         · intro h
           exact hc (congrArg (fun y => y.2) h)
@@ -138,8 +138,8 @@ theorem baseExp_odd (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : Se
     · intro i _ hi
       rw [Finsupp.finsetSum_apply]
       refine Finset.sum_eq_zero fun c _ => ?_
-      rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply, if_neg (hne i true c hi),
-        if_neg (hne i false c hi)]
+      rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply, ite_eq_right (hne i true c hi),
+        ite_eq_right (hne i false c hi)]
       rfl
     · intro h
       exact absurd (Finset.mem_univ i0) h
@@ -148,21 +148,21 @@ theorem baseExp_odd (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (b : Se
       by_cases h1 : (i0 : ℕ) < (X.seg C0 CE1 CE2 j).sigma
       · by_cases hc : c0 = 0
         · subst hc
-          rw [if_pos h1, if_pos ⟨h1, rfl⟩, Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply]
+          rw [ite_eq_left h1, ite_eq_left ⟨h1, rfl⟩, Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply]
           cases β0 <;> simp
-        · rw [if_pos h1, if_neg (fun h => hc h.2), Finsupp.add_apply, Finsupp.single_apply,
-            Finsupp.single_apply, if_neg, if_neg]
+        · rw [ite_eq_left h1, ite_eq_right (fun h => hc h.2), Finsupp.add_apply, Finsupp.single_apply,
+            Finsupp.single_apply, ite_eq_right, ite_eq_right]
           · rfl
           · intro h
             exact hc (congrArg (fun y => y.2) h).symm
           · intro h
             exact hc (congrArg (fun y => y.2) h).symm
-      · rw [if_neg h1, if_neg (fun h => h1 h.1)]
+      · rw [ite_eq_right h1, ite_eq_right (fun h => h1 h.1)]
     · intro i _ hi
       rw [hite]
       split_ifs
-      · rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply, if_neg (hne i true 0 hi),
-          if_neg (hne i false 0 hi)]
+      · rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply, ite_eq_right (hne i true 0 hi),
+          ite_eq_right (hne i false 0 hi)]
         rfl
       · rfl
     · intro h

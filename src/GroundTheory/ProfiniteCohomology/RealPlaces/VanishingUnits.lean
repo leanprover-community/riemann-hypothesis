@@ -748,7 +748,6 @@ private theorem nsmul_order_of_ker_le {A B C D : Type*}
     have hr := hker _ hz
     rwa [map_nsmul e, e.apply_symm_apply, r.map_nsmul, ht] at hr
 
-set_option maxHeartbeats 8000000 in
 include hℓ hS in
 theorem exists_char_order_gsDecomp (b : ℕ) :
     ∃ χ : Additive Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1) →ₜ+ QZ,
@@ -1202,9 +1201,9 @@ theorem mem_divFun_ite (T : Finset I) (f : divFun φ QZ) :
     apply hi
     simp only [hc, ite_self]
   · by_cases hi : i ∈ T
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       exact ⟨IsLocallyConstant.const 0, fun _ _ => rfl⟩
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       exact f.2.2 i
 
 def divFunOutside (T : Finset I) : divFunRep φ QZ ⟶ divFunRep φ QZ :=
@@ -1448,12 +1447,6 @@ noncomputable def sUnitsInflPrimaryEquiv {r : ℕ} (hr : 4 ≤ r) :
       AddCommGroup.primaryComponent (cohomology (unitsLimitRep K) r) ℓ :=
   AddEquiv.ofBijective _
     ((isIsoModCoprime_sUnitsInfl K S hℓ hS hr).bijective_primaryComponentMap hℓ (isTorsion_cohomology _ (by omega)))
-
-section Odd
-
-
-
-end Odd
 
 section Real
 

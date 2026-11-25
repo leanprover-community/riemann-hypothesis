@@ -87,11 +87,11 @@ theorem exists_free_prime (D : D7) (u : D.what₂.Word) :
   by_cases hT : (D.mem u).A.T = 2
   · refine ⟨D.host.q, D.host.hyp.1, by rw [hT]; exact hq2, ?_⟩
     unfold DV.InertK Host.cls primeClass
-    rw [if_neg D.host.q_notMem_small, if_pos rfl]
+    rw [ite_eq_right D.host.q_notMem_small, ite_eq_left rfl]
     simp
   · refine ⟨2, Nat.prime_two, fun h => hT h.symm, ?_⟩
     unfold DV.InertK Host.cls primeClass
-    rw [if_pos D.host.two_mem_small]
+    rw [ite_eq_left D.host.two_mem_small]
     simp
 
 theorem nuCommens_of {D : D7} {L : SizeData₂ D} (hNu : DV.NuDef D L) (hT : NuAtT D L) : NuCommens D L := by
@@ -126,8 +126,4 @@ end Formalism.MainNotions.Lnk
 end
 
 end Commens
-
-namespace Formalism.MainNotions
-
-end Formalism.MainNotions
 

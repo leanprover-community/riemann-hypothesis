@@ -177,7 +177,7 @@ theorem clause_iff (hker : RingHom.ker π = Ideal.span {γ}) (Y : Matrix ι ι O
     ext i
     rw [Finset.sum_apply]
     simp only [Pi.smul_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, hcO]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, hcO]
     simp [Matrix.mulVec, dotProduct, Pi.single_apply, hY', Matrix.one_apply]
   have hint : ∀ i, ((Y' - 1) *ᵥ z) i ∈ O := by
     intro i
@@ -261,10 +261,10 @@ theorem clause_iff (hker : RingHom.ker π = Ideal.span {γ}) (Y : Matrix ι ι O
       congr 1
       refine Finset.sum_congr rfl fun i _ => ?_
       by_cases h : i ∈ pos '' s
-      · simp only [h, dif_pos, hsm, hub, hpos i h, zero_sub, smul_add, smul_neg, smul_smul]
+      · simp only [h, dite_eq_left, hsm, hub, hpos i h, zero_sub, smul_add, smul_neg, smul_smul]
         rw [mul_comm]
         abel
-      · simp only [h, dif_neg, not_false_eq_true, sub_zero, zero_add, smul_smul]
+      · simp only [h, dite_eq_right, not_false_eq_true, sub_zero, zero_add, smul_smul]
         rw [hdsel i h]
         push_cast
         rfl

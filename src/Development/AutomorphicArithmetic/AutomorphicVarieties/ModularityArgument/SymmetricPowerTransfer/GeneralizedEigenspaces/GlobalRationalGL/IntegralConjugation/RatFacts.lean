@@ -52,14 +52,6 @@ private theorem ratGL_map {L : Type} [Field L] [NumberField L] (n : ℕ) (g : GL
     ratGL L n g = GeneralLinearGroup.map (algebraMap L (Ad L)) g :=
   Units.ext (ratGL_val n g)
 
-private theorem alg_inj {L : Type} [Field L] [NumberField L] [IsCMField L] :
-    Function.Injective (algebraMap L (Ad L)) := by
-  obtain ⟨τ⟩ : Nonempty (L →+* ℂ) := inferInstance
-  intro x y h
-  have e := congrArg (fun z => coord τ (pInf L z)) h
-  simp only [coord_algebraMap] at e
-  exact τ.injective e
-
 private theorem loc_alg {L : Type} [Field L] [NumberField L] (w : Plc L) (x : L) :
     pLoc L w (pFin L (algebraMap L (Ad L) x)) = algebraMap L (Kw w) x := rfl
 
@@ -68,7 +60,7 @@ end UpperTheory.V.Z.Sym.Dict.Br
 theorem UpperTheory.V.Z.Sym.Dict.Br.ratFacts :
     ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (g : GL (Fin n) L), (ratGL L n g ∈ UA L n ↔ ((g : Matrix (Fin n) (Fin n) L).map (IsCMField.complexConj L))ᵀ * (g : Matrix (Fin n) (Fin n) L) = 1) ∧ Function.Injective (ratGL L n) ∧ ∀ h : ratGL L n g ∈ UA L n, (∀ w, mL w ⟨_, h⟩ = (g : Matrix (Fin n) (Fin n) L).map (algebraMap L (Kw w))) ∧ (∀ τ : L →+* ℂ, (cEmb τ ⟨_, h⟩ : Matrix (Fin n) (Fin n) ℂ) = (g : Matrix (Fin n) (Fin n) L).map τ) ∧ ((GeneralLinearGroup.det (ratGL L n g) = 1) ↔ GeneralLinearGroup.det g = 1) := by
   intro L _ _ _ n g
-  have hinj := alg_inj (L := L)
+  have hinj := AdeleRing.algebraMap_injective (𝓞 L) L
   refine ⟨?_, ?_, fun h => ⟨fun w => ?_, fun τ => ?_, ?_⟩⟩
   · have key : Formalism.UG.cT (conjAd L) ((ratGL L n g : GL (Fin n) (Ad L)) : Matrix (Fin n) (Fin n) (Ad L)) * 1 *
         ((ratGL L n g : GL (Fin n) (Ad L)) : Matrix (Fin n) (Fin n) (Ad L)) =

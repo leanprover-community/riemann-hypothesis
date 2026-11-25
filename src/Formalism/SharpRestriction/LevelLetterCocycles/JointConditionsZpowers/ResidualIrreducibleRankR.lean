@@ -179,25 +179,4 @@ theorem conj_mem_Ine_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Al
     τ * σ * τ⁻¹ ∈ Ine (F := F) (τ • A) := by
   apply GlobalTheory.TameMove.conj_mem_Ine_smul <;> assumption
 
-theorem placesOver_disj (E : Type) [Field E] [NumberField E] {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
-    (hpq : p ≠ q) (v : HeightOneSpectrum (𝓞 E)) (h1 : v ∈ placesOver E p) : v ∉ placesOver E q := by
-  intro h2
-  have hco : Nat.Coprime p q := (Nat.coprime_primes hp hq).mpr hpq
-  have h1' : ((p : ℤ) : 𝓞 E) ∈ v.asIdeal := by
-    have : ((p : ℕ) : 𝓞 E) ∈ v.asIdeal := h1
-    simpa using this
-  have h2' : ((q : ℤ) : 𝓞 E) ∈ v.asIdeal := by
-    have : ((q : ℕ) : 𝓞 E) ∈ v.asIdeal := h2
-    simpa using this
-  have hb : (1 : 𝓞 E) ∈ v.asIdeal := by
-    have hg := Nat.gcd_eq_gcd_ab p q
-    rw [hco.gcd_eq_one] at hg
-    have : (1 : 𝓞 E) = ((p : ℤ) : 𝓞 E) * ((Nat.gcdA p q : ℤ) : 𝓞 E) + ((q : ℤ) : 𝓞 E) * ((Nat.gcdB p q : ℤ) : 𝓞 E) := by
-      have := congrArg (fun z : ℤ => (z : 𝓞 E)) hg
-      push_cast at this
-      simpa using this
-    rw [this]
-    exact v.asIdeal.add_mem (v.asIdeal.mul_mem_right _ h1') (v.asIdeal.mul_mem_right _ h2')
-  exact v.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr hb)
-
 end Formalism.MainNotions.N

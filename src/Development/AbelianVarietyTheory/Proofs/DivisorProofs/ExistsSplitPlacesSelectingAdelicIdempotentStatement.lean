@@ -86,18 +86,18 @@ theorem exists_sqrt_adele (d : ℕ) : ∃ s ι : Af F, ∀ v,
     ⟨fun v => if ∃ y : Fv F v, y * y = -(d : Fv F v) then 1 else 0,
       Filter.Eventually.of_forall fun v => ?_⟩, fun v => ?_⟩
   · by_cases h : ∃ y : Fv F v, y * y = -(d : Fv F v)
-    · simp only [h, dif_pos]; exact sqrt_mem F d v _ h.choose_spec
-    · simp only [h, dif_neg, not_false_iff]; exact zero_mem _
+    · simp only [h, dite_eq_left]; exact sqrt_mem F d v _ h.choose_spec
+    · simp only [h, dite_eq_right, not_false_iff]; exact zero_mem _
   · by_cases h : ∃ y : Fv F v, y * y = -(d : Fv F v)
-    · simp only [h, if_true]; exact one_mem _
-    · simp only [h, if_false]; exact zero_mem _
+    · simp only [h, ite_true]; exact one_mem _
+    · simp only [h, ite_false]; exact zero_mem _
   · by_cases h : ∃ y : Fv F v, y * y = -(d : Fv F v)
     · left
-      refine ⟨if_pos h, ?_⟩
+      refine ⟨ite_eq_left h, ?_⟩
       have e : ∀ x : Fv F v, x = h.choose → x * x = -(d : Fv F v) := fun x hx => hx ▸ h.choose_spec
-      exact e _ (dif_pos h)
+      exact e _ (dite_eq_left h)
     · right
-      exact ⟨if_neg h, dif_neg h, fun y hy => h ⟨y, hy⟩⟩
+      exact ⟨ite_eq_right h, dite_eq_right h, fun y hy => h ⟨y, hy⟩⟩
 
 theorem pair_mul (α β : Af F) : pairA F 0 α * pairA F 0 β = pairA F 0 (α * β) :=
   Prod.ext (mul_zero _) rfl

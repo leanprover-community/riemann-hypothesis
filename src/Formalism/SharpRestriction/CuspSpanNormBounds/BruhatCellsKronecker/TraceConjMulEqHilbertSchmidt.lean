@@ -30,42 +30,6 @@ theorem exists_highest_weight_unit (ε : Fin n → Bool) (lam : Fin n → ℝ) (
 
 end SlopeTestRemainingChoices
 
-section Dec
-
-variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end Dec
-
-section Core
-
-variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-
-end Core
-
-section Core2
-
-variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-
-end Core2
-
-section Poly
-
-variable {n : ℕ}
-
-end Poly
-
-section Conj
-
-variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end Conj
-
-section Bessel
-
-variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end Bessel
-
 end Formalism.MainNotions.BridgeLemma
 
 end

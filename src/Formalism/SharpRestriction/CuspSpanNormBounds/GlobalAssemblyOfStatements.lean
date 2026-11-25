@@ -16,11 +16,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S.Lat Module
 def adm1 (D : D7) : Prop :=
   S.UnitaryVolumeMass.stGlue D
 
-section Fam
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Fam
-
 end Formalism.MainNotions.VanishingOnXAndXPlusGlobal
 
 end

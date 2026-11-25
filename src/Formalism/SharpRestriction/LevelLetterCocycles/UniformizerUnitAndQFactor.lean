@@ -205,7 +205,7 @@ def DetAlg : Prop :=
   ∀ (d : ℕ) (T₁ T₂ : LocLat G Qp LL O) (F : LatHom T₁.L T₂.L) (b : ZMod n → ℕ) (S η m : ℕ),
     SetCS W d T₁ T₂ F b S η m → ∀ i ∈ evens n d,
       ∀ (e' : Fin (finrank LL T₂.V) → W.DD T₂) (m' : ℕ) (u : Fin m' → ℤ)
-        (had : AdaptData W T₂ i (b i + S) η m e' m' u) (σ : ℕ) (Z : Matrix _ _ (PowerSeries O)),
+        (_ : AdaptData W T₂ i (b i + S) η m e' m' u) (σ : ℕ) (Z : Matrix _ _ (PowerSeries O)),
         σ ≤ 2 * ⌊cD PD.p (hpar n b S + η)⌋₊ →
         (∀ m₁ k, PowerSeries.constantCoeff (Z m₁ k) = if m₁ = k then ((PD.p : ℕ) : O) ^ σ else 0) →
         (∀ (j : Fin m') (hmr : m' ≤ finrank LL T₂.V),

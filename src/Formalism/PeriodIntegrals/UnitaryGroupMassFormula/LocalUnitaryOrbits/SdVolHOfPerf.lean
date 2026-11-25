@@ -261,12 +261,12 @@ theorem hm_apply_ne {a : ℕ} (hinv : ∀ y, σ (σ y) = y) {k l i j : Fin a} (c
     (h1 : ¬(k = i ∧ l = j)) (h2 : ¬(l = i ∧ k = j)) :
     (hm σ v hinv k l c : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i j = 0 := by
   show (Matrix.single k l c + Matrix.single l k (sigR (Fv F v) σ c)) i j = 0
-  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, if_neg h1, if_neg h2, add_zero]
+  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, ite_eq_right h1, ite_eq_right h2, add_zero]
 
 theorem hd_apply_ne {a : ℕ} {k i j : Fin a} (h : ¬(k = i ∧ k = j)) :
     (hd σ v k : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i j = 0 := by
   show Matrix.single k k (1 : Fv F v ⊗[F] E) i j = 0
-  rw [Matrix.single_apply, if_neg h]
+  rw [Matrix.single_apply, ite_eq_right h]
 
 def hb {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) (p : Fin a × Fin a) : HermR (Fv F v) σ a :=
   if p.1 < p.2 then hm σ v hinv p.1 p.2 (β 0) else if p.2 < p.1 then hm σ v hinv p.2 p.1 (β 1) else hd σ v p.1
@@ -286,41 +286,41 @@ theorem hb_zero {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v �
 theorem hermitian_basis_above_first {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) {i j : Fin a} (h : i < j) :
     (hb σ v hinv β (i, j) : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i j = β 0 := by
   unfold hb
-  rw [if_pos h]
+  rw [ite_eq_left h]
   show (Matrix.single i j (β 0) + Matrix.single j i (sigR (Fv F v) σ (β 0))) i j = β 0
-  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, if_pos ⟨rfl, rfl⟩,
-    if_neg (fun e => h.ne e.2), add_zero]
+  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, ite_eq_left ⟨rfl, rfl⟩,
+    ite_eq_right (fun e => h.ne e.2), add_zero]
 
 theorem hermitian_basis_above_second {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) {i j : Fin a} (h : i < j) :
     (hb σ v hinv β (j, i) : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i j = β 1 := by
   unfold hb
-  rw [if_neg (not_lt.2 h.le), if_pos h]
+  rw [ite_eq_right (not_lt.2 h.le), ite_eq_left h]
   show (Matrix.single i j (β 1) + Matrix.single j i (sigR (Fv F v) σ (β 1))) i j = β 1
-  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, if_pos ⟨rfl, rfl⟩,
-    if_neg (fun e => h.ne e.2), add_zero]
+  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, ite_eq_left ⟨rfl, rfl⟩,
+    ite_eq_right (fun e => h.ne e.2), add_zero]
 
 theorem hermitian_basis_below_first {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) {i j : Fin a} (h : j < i) :
     (hb σ v hinv β (i, j) : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i j = sigR (Fv F v) σ (β 1) := by
   unfold hb
-  rw [if_neg (not_lt.2 h.le), if_pos h]
+  rw [ite_eq_right (not_lt.2 h.le), ite_eq_left h]
   show (Matrix.single j i (β 1) + Matrix.single i j (sigR (Fv F v) σ (β 1))) i j = sigR (Fv F v) σ (β 1)
-  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, if_neg (fun e => h.ne e.1),
-    if_pos ⟨rfl, rfl⟩, zero_add]
+  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, ite_eq_right (fun e => h.ne e.1),
+    ite_eq_left ⟨rfl, rfl⟩, zero_add]
 
 theorem hermitian_basis_below_second {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) {i j : Fin a} (h : j < i) :
     (hb σ v hinv β (j, i) : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i j = sigR (Fv F v) σ (β 0) := by
   unfold hb
-  rw [if_pos h]
+  rw [ite_eq_left h]
   show (Matrix.single j i (β 0) + Matrix.single i j (sigR (Fv F v) σ (β 0))) i j = sigR (Fv F v) σ (β 0)
-  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, if_neg (fun e => h.ne e.1),
-    if_pos ⟨rfl, rfl⟩, zero_add]
+  rw [Matrix.add_apply, Matrix.single_apply, Matrix.single_apply, ite_eq_right (fun e => h.ne e.1),
+    ite_eq_left ⟨rfl, rfl⟩, zero_add]
 
 theorem hb_eq {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) (i : Fin a) :
     (hb σ v hinv β (i, i) : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i i = 1 := by
   unfold hb
-  rw [if_neg (lt_irrefl i), if_neg (lt_irrefl i)]
+  rw [ite_eq_right (lt_irrefl i), ite_eq_right (lt_irrefl i)]
   show Matrix.single i i (1 : Fv F v ⊗[F] E) i i = 1
-  rw [Matrix.single_apply, if_pos ⟨rfl, rfl⟩]
+  rw [Matrix.single_apply, ite_eq_left ⟨rfl, rfl⟩]
 
 theorem coe_sum_hb {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) (c : Fin a × Fin a → Fv F v)
     (i j : Fin a) :
@@ -518,12 +518,6 @@ theorem oEv_basis2 (hfin : Module.finrank F E = 2) : ∃ β : Fin 2 → Fv F v �
   rw [hfin] at h
   exact h
 
-theorem sigR_smulF (c : Fv F v) (x : Fv F v ⊗[F] E) : sigR (Fv F v) σ (c • x) = c • sigR (Fv F v) σ x := by
-  induction x using TensorProduct.induction_on with
-  | zero => rw [smul_zero, map_zero, smul_zero]
-  | tmul a b => simp [sigR, TensorProduct.smul_tmul']
-  | add x y hx hy => rw [smul_add, map_add (f := _), map_add (f := _), hx, hy, smul_add]
-
 theorem hb_li {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) (hβ : LinearIndependent (Fv F v) β) :
     LinearIndependent (Fv F v) (hb σ v hinv β (a := a)) := by
   rw [Fintype.linearIndependent_iff]
@@ -584,7 +578,7 @@ theorem hb_mem {a : ℕ} (hcm : IsCMExt F E σ) (β : Fin 2 → Fv F v ⊗[F] E)
       simp [h, not_lt.2 h.le]
     · rw [sum_diag σ v hinv β _ i, hrT i]
       simp
-    · rw [sum_gt σ v hinv β _ h, ← hH i j, hd j i, Fin.sum_univ_two, map_add (f := _), sigR_smulF, sigR_smulF, add_comm]
+    · rw [sum_gt σ v hinv β _ h, ← hH i j, hd j i, Fin.sum_univ_two, map_add (f := _), LocMassOrdLat.sigR_smul, LocMassOrdLat.sigR_smul, add_comm]
       simp [h, not_lt.2 h.le]
   · rintro ⟨c, rfl⟩
     intro i j
@@ -596,7 +590,7 @@ theorem hb_mem {a : ℕ} (hcm : IsCMExt F E σ) (β : Fin 2 → Fv F v ⊗[F] E)
     · rw [sum_gt σ v hinv β _ h]
       have hm := b_sigR_mem v σ ((hβ ((c (j, i) : Fv F v) • β 0 + (c (i, j) : Fv F v) • β 1)).2
         ⟨![c (j, i), c (i, j)], by simp [Fin.sum_univ_two]⟩)
-      rwa [map_add, sigR_smulF, sigR_smulF, add_comm] at hm
+      rwa [map_add, LocMassOrdLat.sigR_smul, LocMassOrdLat.sigR_smul, add_comm] at hm
 
 theorem idxPiH_std (a : ℕ) (hS : StdHyp σ J ψ) : IdxPiH σ v a := by
   intro _ ϖ hϖ

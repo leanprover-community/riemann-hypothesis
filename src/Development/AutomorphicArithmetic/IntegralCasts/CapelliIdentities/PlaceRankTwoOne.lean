@@ -1,130 +1,21 @@
 module
 
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.Topology.Instances.Matrix
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-public import Mathlib.RingTheory.Complex
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-public import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Sheaves.Init
+public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.InvolutionInvariants
 public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+public import Mathlib.RingTheory.Complex
 public import Mathlib.RingTheory.Norm.Transitivity
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
 namespace UpperTheory.Reformulated.B.placeRankTwoOne
 
-noncomputable def Jm : {n : ℕ} → (Fin n → Bool) → Matrix (Fin n) (Fin n) ℂ :=
-  fun {n} ε => Matrix.diagonal fun a => if ε a = Bool.true then 1 else -1
-
-noncomputable def inUJ : {n : ℕ} → (Fin n → Bool) → Matrix (Fin n) (Fin n) ℂ → Prop :=
-  fun {n} ε g =>
-    g.conjTranspose * Jm ε * g =
-      Jm ε
-
-theorem aux3 : ∀ {n : ℕ} (ε : Fin n → Bool)
-  {g h : (Matrix (Fin n) (Fin n) ℂ)ˣ},
-  g ∈ {g : (Matrix (Fin n) (Fin n) ℂ)ˣ | inUJ ε g.val} →
-    h ∈ {g : (Matrix (Fin n) (Fin n) ℂ)ˣ | inUJ ε g.val} →
-      g * h ∈ {g : (Matrix (Fin n) (Fin n) ℂ)ˣ | inUJ ε g.val} := by
-  intro n ε g h hg hh
-  have hg' : g.val.conjTranspose * Jm ε * g.val = Jm ε := hg
-  have hh' : h.val.conjTranspose * Jm ε * h.val = Jm ε := hh
-  change (g.val * h.val).conjTranspose * Jm ε * (g.val * h.val) = Jm ε
-  calc (g.val * h.val).conjTranspose * Jm ε * (g.val * h.val)
-      = h.val.conjTranspose * (g.val.conjTranspose * Jm ε * g.val) * h.val := by
-        simp only [Matrix.conjTranspose_mul, mul_assoc]
-    _ = Jm ε := by rw [hg', hh']
-
-theorem aux4 : ∀ {n : ℕ} (ε : Fin n → Bool),
-  (1 : Matrix (Fin n) (Fin n) ℂ).conjTranspose * Jm ε * 1 =
-    Jm ε := by
-  intro n ε
-  simp
-
-theorem aux5 : ∀ {n : ℕ} (ε : Fin n → Bool)
-  {g : (Matrix (Fin n) (Fin n) ℂ)ˣ},
-  g ∈ {g : (Matrix (Fin n) (Fin n) ℂ)ˣ | inUJ ε g.val} →
-    g⁻¹ ∈ {g : (Matrix (Fin n) (Fin n) ℂ)ˣ | inUJ ε g.val} := by
-  intro n ε g hg
-  have hg' : g.val.conjTranspose * Jm ε * g.val = Jm ε := hg
-  change (g⁻¹).val.conjTranspose * Jm ε * (g⁻¹).val = Jm ε
-  calc (g⁻¹).val.conjTranspose * Jm ε * (g⁻¹).val
-      = (g⁻¹).val.conjTranspose * (g.val.conjTranspose * Jm ε * g.val) * (g⁻¹).val := by rw [hg']
-    _ = (g.val * (g⁻¹).val).conjTranspose * Jm ε * (g.val * (g⁻¹).val) := by
-        simp only [Matrix.conjTranspose_mul, mul_assoc]
-    _ = Jm ε := by rw [Units.mul_inv]; simp
-
-noncomputable def UJ : {n : ℕ} → (Fin n → Bool) → Subgroup (Matrix (Fin n) (Fin n) ℂ)ˣ :=
-  fun {n} ε =>
-    { carrier := {g : (Matrix (Fin n) (Fin n) ℂ)ˣ | inUJ ε g.val},
-      mul_mem' := @aux3 n ε,
-      one_mem' := aux4 ε,
-      inv_mem' := @aux5 n ε }
-
-@[reducible] noncomputable def instMeasurableSpaceUJ : (n : ℕ) →
-  (ε : Fin n → Bool) → MeasurableSpace ↥(UJ ε) :=
-  fun n ε => borel ↥(UJ ε)
+open UpperTheory.Reformulated.B.InvolutionInvariants
 
 attribute [local instance] instMeasurableSpaceUJ
-
-theorem aux8 : ∀ {n : ℕ} (ε : Fin n → Bool),
-  IsTopologicalGroup ↥(UJ ε) := by
-  intro n ε
-  infer_instance
-
-theorem aux9 : ∀ (n : ℕ) (ε : Fin n → Bool),
-  BorelSpace ↥(UJ ε) := by
-  intro n ε
-  exact ⟨rfl⟩
 
 section JLemmas
 open Matrix
@@ -173,33 +64,18 @@ private theorem isCompact_bdd {n : ℕ} (ε : Fin n → Bool) (r : ℝ) :
   have he := Units.isClosedEmbedding_embedProduct.comp (isClosed_UJ ε).isClosedEmbedding_subtypeVal
   refine (he.isCompact_preimage (hC.prod (hC.image MulOpposite.continuous_op))).of_isClosed_subset
     ?_ fun g hg => ⟨fun i j => ?_, (g.val⁻¹).val, fun i j => ?_, rfl⟩
-  · simp only [Set.setOf_forall]
+  · simp only [Set.ofPred_forall]
     exact isClosed_iInter fun i => isClosed_iInter fun j => isClosed_le
-      ((Units.continuous_val.comp continuous_subtype_val).matrix_elem i j).norm continuous_const
+      ((Units.continuous_val.comp continuous_subtypeVal).matrix_elem i j).norm continuous_const
   · exact mem_closedBall_zero_iff.2 (hg i j)
   · exact mem_closedBall_zero_iff.2 ((norm_inv_entry g.2 i j).trans_le (hg j i))
 
-theorem laurent_T_neg_one_mul_T_one : ∀ (n : ℕ) (ε : Fin n → Bool),
-  LocallyCompactSpace ↥(UJ ε) := by
-  intro n ε
-  haveI : LocallyCompactSpace (Matrix (Fin n) (Fin n) ℂ) :=
-    inferInstanceAs (LocallyCompactSpace (Fin n → Fin n → ℂ))
-  exact (isClosed_UJ ε).locallyCompactSpace
-
-noncomputable def muG : {n : ℕ} →
-  (ε : Fin n → Bool) → MeasureTheory.Measure ↥(UJ ε) :=
-  fun {n} ε => by
-    letI := aux8 ε
-    letI := aux9 n ε
-    letI := laurent_T_neg_one_mul_T_one n ε
-    exact MeasureTheory.Measure.haar
-
 noncomputable def hs : {n : ℕ} → Matrix (Fin n) (Fin n) ℂ → ℝ :=
-  fun {n} g => ∑ i, ∑ j, ‖g i j‖ ^ 2
+  fun {_} g => ∑ i, ∑ j, ‖g i j‖ ^ 2
 
 noncomputable def hsG : {n : ℕ} →
   {ε : Fin n → Bool} → ↥(UJ ε) → ℝ :=
-  fun {n} {ε} g => hs g.val.val
+  fun {_} {_} g => hs g.val.val
 
 noncomputable def VolGrowth : Prop :=
 ∀ (n : ℕ) (ε : Fin n → Bool),
@@ -317,21 +193,21 @@ end Helpers
 
 theorem volume_growth : VolGrowth := by
   intro n ε
-  haveI := aux8 ε
-  haveI := aux9 n ε
-  haveI := laurent_T_neg_one_mul_T_one n ε
-  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ) :=
+  have := aux8 ε
+  have := aux9 n ε
+  have := laurent_T_neg_one_mul_T_one n ε
+  have : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ) :=
     inferInstanceAs (SecondCountableTopology (Fin n → Fin n → ℂ))
-  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ)ᵐᵒᵖ :=
+  have : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ)ᵐᵒᵖ :=
     MulOpposite.opHomeomorph.symm.secondCountableTopology
-  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ)ˣ :=
+  have : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ)ˣ :=
     Units.isEmbedding_embedProduct.secondCountableTopology
-  haveI hμ : (muG ε).IsHaarMeasure := by
+  have hμ : (muG ε).IsHaarMeasure := by
     unfold muG
     infer_instance
-  haveI : SecondCountableTopology (UJ ε) := TopologicalSpace.Subtype.secondCountableTopology _
-  haveI : SigmaCompactSpace (UJ ε) := inferInstance
-  haveI : MeasureTheory.SigmaFinite (muG ε) := inferInstance
+  have : SecondCountableTopology (UJ ε) := TopologicalSpace.Subtype.secondCountableTopology _
+  have : SigmaCompactSpace (UJ ε) := inferInstance
+  have : MeasureTheory.SigmaFinite (muG ε) := inferInstance
   let ν : MeasureTheory.Measure (Fin n → Fin n → ℂ) := MeasureTheory.Measure.addHaar
   let V : Set (Fin n → Fin n → ℂ) :=
     Metric.ball (fun j : Fin n => (Pi.single j 1 : Fin n → ℂ)) (1 / (2 * n + 2))
@@ -345,7 +221,7 @@ theorem volume_growth : VolGrowth := by
   refine ⟨(muG ε K * ν (Metric.ball 0 1) / ν V).toReal * (2 * n) ^ (2 * n ^ 2), fun R hR => ?_⟩
   have hR0 : 0 ≤ R := zero_le_one.trans hR
   have hval : Continuous fun g : UJ ε => g.val.val :=
-    Units.continuous_val.comp continuous_subtype_val
+    Units.continuous_val.comp continuous_subtypeVal
   have hB : IsClosed {g : UJ ε | hsG g ≤ R ^ 2} := by
     simpa only [hsG, hs] using isClosed_le (f := fun g : UJ ε => ∑ i, ∑ j, ‖g.val.val i j‖ ^ 2)
       (continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>

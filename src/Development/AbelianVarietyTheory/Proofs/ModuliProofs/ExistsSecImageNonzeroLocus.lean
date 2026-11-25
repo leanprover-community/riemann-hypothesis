@@ -3,48 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAmpleLBOfRelAmpleOfIsAffine
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsSecNonzeroLocusEqBasicOpen
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 
@@ -222,13 +182,14 @@ theorem mem_image_basicOpen_app [IsAffineHom f] {V : X.Opens} (hV : IsAffineOpen
   · rintro ⟨q, hq, rfl⟩
     exact ⟨_, (e₂ q).2 hq, (pt q).symm⟩
 
-theorem exists_sec_image_nonzeroLocus [IsFinite f] [Flat f] [IsLocallyNoetherian X] {M : LB X} (hM : M.IsLB)
-    (t : (M.pull f).Sec) : ∃ u : ∀ k, (lbPow M k).Sec, ∀ x : X,
+theorem exists_sec_image_nonzeroLocus_of [IsFinite f] [Flat f]
+    (hfin : ∀ {x : X} {U : X.Opens}, x ∈ U → ∃ V : X.Opens, IsAffineOpen V ∧ x ∈ V ∧ V ≤ U ∧ FinFree (f.app V).hom)
+    {M : LB X} (hM : M.IsLB) (t : (M.pull f).Sec) : ∃ u : ∀ k, (lbPow M k).Sec, ∀ x : X,
       (∃ y ∈ nonzeroLocus t, f y = x) ↔ ∃ k, 1 ≤ k ∧ x ∈ nonzeroLocus (u k) := by
   let α : Type := {p : X.Opens × M.ι // IsAffineOpen p.1 ∧ p.1 ≤ M.U p.2 ∧ FinFree (f.app p.1).hom}
   have cov : ∀ x : X, ∃ a : α, x ∈ a.1.1 := fun x => by
     obtain ⟨i, hi⟩ := exists_chart hM x
-    obtain ⟨V, hV, hx, hle, hF⟩ := exists_finFree_app f hi
+    obtain ⟨V, hV, hx, hle, hF⟩ := hfin hi
     exact ⟨⟨(V, i), hV, hle, hF⟩, hx⟩
   have le : ∀ a : α, f ⁻¹ᵁ a.1.1 ≤ (M.pull f).U fun _ => a.1.2 := fun a y hy => mem_pull.2 (a.2.2.1 hy)
   let τ : ∀ a : α, Γ(Y, f ⁻¹ᵁ a.1.1) := fun a => resG Y (le a) (t.f fun _ => a.1.2)
@@ -280,8 +241,14 @@ theorem exists_sec_image_nonzeroLocus [IsFinite f] [Flat f] [IsLocallyNoetherian
   rw [mem_nonzeroLocus_iff_isUnit t (le a hy), ← gs_res (𝟙 Y) y (le a) hy]
   exact isUnit_gs_iff (𝟙 Y) y _ hy _
 
-theorem isAmpleLB_of_pull [IsFinite f] [Flat f] [Surjective f] [IsLocallyNoetherian X] {L : LB X} (hL : L.IsLB)
-    (h : IsAmpleLB (L.pull f)) : IsAmpleLB L := by
+theorem exists_sec_image_nonzeroLocus [IsFinite f] [Flat f] [IsLocallyNoetherian X] {M : LB X} (hM : M.IsLB)
+    (t : (M.pull f).Sec) : ∃ u : ∀ k, (lbPow M k).Sec, ∀ x : X,
+      (∃ y ∈ nonzeroLocus t, f y = x) ↔ ∃ k, 1 ≤ k ∧ x ∈ nonzeroLocus (u k) :=
+  exists_sec_image_nonzeroLocus_of f (fun hx => exists_finFree_app f hx) hM t
+
+theorem isAmpleLB_of_pull_of [IsFinite f] [Flat f] [Surjective f]
+    (hfin : ∀ {x : X} {U : X.Opens}, x ∈ U → ∃ V : X.Opens, IsAffineOpen V ∧ x ∈ V ∧ V ≤ U ∧ FinFree (f.app V).hom)
+    {L : LB X} (hL : L.IsLB) (h : IsAmpleLB (L.pull f)) : IsAmpleLB L := by
   have := h.compactSpace
   have : CompactSpace X := f.surjective.compactSpace f.continuous
   refine isAmpleLB_of_forall_le hL fun x U hx => ?_
@@ -289,12 +256,16 @@ theorem isAmpleLB_of_pull [IsFinite f] [Flat f] [Surjective f] [IsLocallyNoether
   obtain ⟨n, hn, s, hs, hle, -⟩ := h.exists_affine_le (x := y) (U := f ⁻¹ᵁ U) hx
   obtain ⟨t, ht⟩ := exists_sec_nonzeroLocus_eq_of_lbIso (LB.isLB_pull (isLB_lbPow hL n) f) (isLB_lbPow h.isLB n)
     (lbIso_lbPow_pull hL f n).symm s
-  obtain ⟨u, hu⟩ := exists_sec_image_nonzeroLocus f (isLB_lbPow hL n) t
+  obtain ⟨u, hu⟩ := exists_sec_image_nonzeroLocus_of f hfin (isLB_lbPow hL n) t
   obtain ⟨k, hk, hy⟩ := (hu (f y)).1 ⟨y, ht.ge hs, rfl⟩
   have e := nonzeroLocus_secOfPowPow (u k)
   refine ⟨n * k, Nat.mul_pos hn hk, secOfPowPow (u k), e.ge hy, fun z hz => ?_⟩
   obtain ⟨w, hw, rfl⟩ := (hu z).2 ⟨k, hk, e.le hz⟩
   exact hle (ht.le hw)
+
+theorem isAmpleLB_of_pull [IsFinite f] [Flat f] [Surjective f] [IsLocallyNoetherian X] {L : LB X} (hL : L.IsLB)
+    (h : IsAmpleLB (L.pull f)) : IsAmpleLB L :=
+  isAmpleLB_of_pull_of f (fun hx => exists_finFree_app f hx) hL h
 
 theorem lbIso_pull_pull {Z Y' : Scheme.{0}} {L : LB X} (hL : L.IsLB) {g : Z ⟶ Y} {g' : Z ⟶ Y'} {f' : Y' ⟶ X}
     (e : g ≫ f = g' ≫ f') : LBIso ((L.pull f).pull g) ((L.pull f').pull g') :=

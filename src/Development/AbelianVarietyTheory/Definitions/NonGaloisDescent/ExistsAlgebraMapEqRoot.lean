@@ -200,30 +200,6 @@ theorem plusMod_upper (hy : y ∈ D.Y) : ∀ v ∈ (plusMod hy).L, E K l e ^ η 
   D.plus_upper _ D.upper hy.1
 
 
-def plusDat (hy : y ∈ D.Y) (hMon : D.Mon y = 0) (hz : ∃ w ∈ D.MM, D.zeta y = (X : K⟦X⟧) • w)
-    (hH : E K l e ^ H • y ∈ D.L) : BKDat O K l e a (ι ⊕ Unit) η H where
-  toPhiMod := plusMod hy
-  desc := plusDesc hy
-  nabla_mem _ := PhiMod.nabla_mem_MM_of_basis _ (by
-    rintro (i | ⟨⟨⟩⟩)
-    · rw [D.bas_inl (mem_invE_of_mem_Y hy), ← Hom.app_phi, ← Hom.app_nabla]
-      exact Hom.app_mem_ext _ (A_le_S l e) (D.nabla_mem _
-        (D.ext_mono (A_le_S l e) (D.phi_mem_L (D.bas_mem_M i))))
-    · obtain ⟨w, hw, h⟩ := hz
-      have h1 := D.conn_phi_extension_generator_eq_zeta (mem_invE_of_mem_Y hy)
-      rw [h, map_smul, PhiMod.conn_apply] at h1
-      rw [PhiMod.bas_inr, smul_right_injective _ X_ne_zero h1]
-      exact Hom.app_mem_ext _ (A_le_S l e) hw)
-    fun i => PhiMod.ext_mono _ (A_le_S l e) (PhiMod.phi_mem_L _ (PhiMod.bas_mem_M _ i))
-  EN_mem _ hm := PhiMod.EN_mem_Man_of_basis _ (by
-    rintro (i | ⟨⟨⟩⟩)
-    · rw [D.bas_inl (mem_invE_of_mem_Y hy), ← Hom.app_EN]
-      exact Hom.app_mem_Mext _ (A_le_Rpi l e) (D.EN_mem _ (D.bas_mem_M i))
-    · rw [PhiMod.bas_inr]
-      exact (D.Mon_eq_zero_iff _).1 hMon) (PhiMod.M_le_Man _ hm)
-  lower := D.plus_lower _ D.lower hH
-  upper := plusMod_upper hy
-
 end BKDat
 
 namespace Descent
@@ -281,7 +257,7 @@ theorem Ezpow_mem_invL_A_iff {i : ℤ} : Ezpow K l e i ∈ invL l (A O K) ↔ 0 
   rw [← Ezpow_add, sub_add_cancel] at h1
   have h2 : E K l e * Ezpow K l e (-1) = 1 := by simpa using E_pow_mul_Ezpow_neg (K := K) l e 1
   have h3 : Ezpow K l e (-1) = 0 := eq_zero_of_E_mul l e (invL_A_le_Rpi l e h1) fun n => by
-    rw [h2, coeff_one, if_neg (by have := NeZero.pos e; omega)]
+    rw [h2, coeff_one, ite_eq_right (by have := NeZero.pos e; omega)]
   exact Units.ne_zero _ h3
 
 theorem mem_shiftE_of_le {P : PhiMod O K l e a ι} {i k : ℤ} (h : i ≤ k) {v : Vec K a ι}
@@ -317,7 +293,7 @@ theorem jumps_rankOne (j : ℤ) : (rankOne O K l e fun _ : ZMod a => j).jumps = 
     by_contra hi
     exact h (by simp only [show i + 1 ≤ j ↔ i ≤ j by omega])
   · rintro rfl h
-    rw [if_neg (by omega), if_pos le_rfl] at h
+    rw [ite_eq_right (by omega), ite_eq_left le_rfl] at h
     have h1 : Ezpow K l e i • (bas () : Vec K a Unit) ∈ shiftE l e i
         ((rankOne O K l e fun _ : ZMod a => i).Mext (invL l (A O K))) := by
       rw [mem_shiftE, smul_smul, Ezpow_neg_mul, one_smul]
@@ -373,24 +349,9 @@ theorem cls_mem_Z_rankOneDat (hη : 1 ≤ η) :
   · have h1 := mem_tot.1 ((PhiMod.cls_eq_zero_iff _).1 h) 0 ()
     have h2 : E K l e * Ezpow K l e (-1) = 1 := by simpa using E_pow_mul_Ezpow_neg (K := K) l e 1
     have h3 := eq_zero_of_E_mul (O := O) (g := Ezpow K l e (-1)) l e (by simpa [bas] using h1)
-      fun n => by rw [h2, coeff_one, if_neg (by have := NeZero.pos e; omega)]
+      fun n => by rw [h2, coeff_one, ite_eq_right (by have := NeZero.pos e; omega)]
     exact Units.ne_zero _ h3
 
-def splitDat (χ : TameGal K l e a →* O) : BKDat O K l e a (Unit ⊕ Unit) η H :=
-  BKDat.plusDat (D := rankOneDat O K l e a η H j h₁ h₂ χ) (y := 0) (zero_mem _) (map_zero _)
-    ⟨0, zero_mem _, by simp⟩ (by simp)
-
 end Examples
-
-section Omega
-
-omit [NeZero a] [TameDescentExponentData K l e a]
-
-variable [TameDescentExponentData K l e 1]
-
-
-
-
-end Omega
 
 end GlobalTheory.BK

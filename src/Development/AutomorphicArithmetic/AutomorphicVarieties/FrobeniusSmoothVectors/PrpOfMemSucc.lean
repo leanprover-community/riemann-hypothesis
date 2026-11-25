@@ -30,8 +30,8 @@ private theorem prp_add {K : Type} [CommRing K] (j : ZMod 2) (X : Matrix (Fin 3)
   show X a b = (if pw a b = j then X a b else 0) + (if pw a b = j + 1 then X a b else 0)
   have hc : ∀ p q : ZMod 2, (p = q ∧ p ≠ q + 1) ∨ (p ≠ q ∧ p = q + 1) := by decide
   rcases hc (pw a b) j with ⟨h1, h2⟩ | ⟨h1, h2⟩
-  · rw [if_pos h1, if_neg h2, add_zero]
-  · rw [if_neg h1, if_pos h2, zero_add]
+  · rw [ite_eq_left h1, ite_eq_right h2, add_zero]
+  · rw [ite_eq_right h1, ite_eq_left h2, zero_add]
 
 theorem UpperTheory.V.Fr.ep_prp :
     ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k} {K : Type} [Field K], (2 : K) ≠ 0 → ∀ (B : Box F 3 K) (π : F.V → Fin 3 → ZMod 2) (h : B.Ev π), (∀ j s X, prp K j (B.ad s X) = h.ad j s (prp K j X)) ∧ ∀ (j : ZMod 2) (χ : F.Γ → K), (∀ f : Matrix (Fin 3) (Fin 3) K →ₗ[K] K, (∀ g X, f (B.ad g X) = χ g * f X) → f = 0) → ∀ f : adp K j →ₗ[K] K, (∀ g X, f (h.ad j g X) = χ g * f X) → f = 0 := by

@@ -78,14 +78,14 @@ theorem inV_trivAt (τ : L →+* ℂ) (y : Vars L n → ℂ) (hy : InV y) : InV 
   · have h' : ComplexEmbedding.conjugate σ = τ ∨ ComplexEmbedding.conjugate σ = ComplexEmbedding.conjugate τ := by
       rcases h with h | h <;> subst h <;> simp
     refine ⟨1, fun i j => ⟨?_, ?_⟩⟩
-    · simp only [trivAt, if_pos h]; simp [Matrix.one_apply]
-    · simp only [trivAt, if_pos h']; simp [Matrix.one_apply, eq_comm]
+    · simp only [trivAt, ite_eq_left h]; simp [Matrix.one_apply]
+    · simp only [trivAt, ite_eq_left h']; simp [Matrix.one_apply, eq_comm]
   · have h' : ¬ (ComplexEmbedding.conjugate σ = τ ∨ ComplexEmbedding.conjugate σ = ComplexEmbedding.conjugate τ) := by
       rintro (h1 | h1)
       · exact h (Or.inr (by rw [← h1, conj_conj]))
       · exact h (Or.inl (by rw [← conj_conj σ, h1, conj_conj]))
     obtain ⟨B, hB⟩ := hy σ
-    exact ⟨B, fun i j => by simp only [trivAt, h, h', if_false]; exact hB i j⟩
+    exact ⟨B, fun i j => by simp only [trivAt, h, h', ite_false]; exact hB i j⟩
 
 theorem trivAt_tau (τ : L →+* ℂ) (y : Vars L n → ℂ) (i j : Fin n) :
     trivAt τ y (τ, i, j) = if i = j then 1 else 0 := by simp [trivAt]
@@ -107,8 +107,8 @@ theorem ratPt_split (τ : L →+* ℂ) (γ₀ : GL (Fin n) L) (hg : γ₀ ∈ GQ
           if i = k then 1 else 0 := fun k => trivAt_conj τ _ i k
       have e2 : ∀ k, evPt τ (Matrix.GeneralLinearGroup.map τ γ₀) (ComplexEmbedding.conjugate τ, k, j) =
           ((Matrix.GeneralLinearGroup.map τ γ₀)⁻¹).val j k := fun k => by
-        simp only [evPt, conj_ne τ, if_false, if_true]
-      simp only [vmul, e1, e2, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [evPt, conj_ne τ, ite_false, ite_true]
+      simp only [vmul, e1, e2, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       show (ComplexEmbedding.conjugate τ) (γ₀.val i j) = _
       rw [conj_ratPt γ₀ hg, ← map_inv]
       rfl

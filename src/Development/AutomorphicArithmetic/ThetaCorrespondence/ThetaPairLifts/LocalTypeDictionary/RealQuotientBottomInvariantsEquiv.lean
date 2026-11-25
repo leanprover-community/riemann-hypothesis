@@ -144,7 +144,6 @@ open GlobalTheory.MinorFrame
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-
 omit [DecidableEq ι] in
 theorem totalDegree_colSub_le {d a : ℕ} (g : ι → Matrix (Fin a) (Fin a) ℂ) (P : Pol ι d a) :
     (colSub g P).totalDegree ≤ P.totalDegree := by
@@ -282,12 +281,12 @@ theorem raiO_mul_lowO_apply {D : D7} {a b : ℕ} (τ : D.what₂.Tau) (ε : Fin 
     unfold sgn
     cases hi : ε' i <;> cases hj : ε j <;> cases hk : ε k <;> simp_all
   unfold raiO lowO
-  rw [if_neg (h i j), if_neg (h i k), smul_mul_smul_comm, hs, one_smul]
+  rw [ite_eq_right (h i j), ite_eq_right (h i k), smul_mul_smul_comm, hs, one_smul]
   simp only [Module.End.mul_apply, LinearMap.neg_apply, LinearMap.mulLeft_apply, Derivation.coeFn_coe,
     Derivation.leibniz, smul_eq_mul, pderiv_X, Pi.single_apply, Prod.mk.injEq, true_and]
   by_cases hjk : j = k
   · subst hjk
-    simp only [if_true, mul_one]
+    simp only [ite_true, mul_one]
     ring
   · simp [hjk, Ne.symm hjk]
 
@@ -303,13 +302,13 @@ theorem fockS_of_opposite {D : D7} {a b : ℕ} (τ : D.what₂.Tau) (ε : Fin a 
     intro i j k
     rw [LinearMap.add_apply, raiO_mul_lowO_apply τ ε ε' h]
     by_cases hjk : j = k
-    · simp only [hjk, if_true, LinearMap.smul_apply, Module.End.one_apply]
+    · simp only [hjk, ite_true, LinearMap.smul_apply, Module.End.one_apply]
       module
     · simp [hjk]
   have htr : ∑ j, ∑ k, Y j k • ∑ _i : Fin b, (if j = k then (1 / 2 : ℂ) else 0) • P =
       (((b : ℂ) / 2) * Y.trace) • P := by
     simp only [← Finset.sum_smul, smul_smul, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
-      mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, Matrix.trace, Matrix.diag, Finset.mul_sum]
+      mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Matrix.trace, Matrix.diag, Finset.mul_sum]
     congr 1
     exact Finset.sum_congr rfl fun j _ => by ring
   have hcol : (GlobalTheory.ColLie.colDer τ Y.transpose : Module.End ℂ (PolF D b a)) P =
@@ -351,7 +350,7 @@ theorem fockS_eq_colDer_of_same_signs : ∀ {D : D7} {a b : ℕ} (τ : D.what₂
     have h1 : GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε j) * GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε k) = 1 := by
       rw [hjk]; unfold GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn; split_ifs <;> simp
     unfold GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.raiO GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.lowO
-    rw [if_pos (h i j), if_pos (h i k), smul_mul_smul_comm, h1, one_smul]
+    rw [ite_eq_left (h i j), ite_eq_left (h i k), smul_mul_smul_comm, h1, one_smul]
     rfl
   unfold GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.fockS GlobalTheory.ColLie.colDer
   simp only [hs, Finset.sum_add_distrib, smul_add, Finset.smul_sum]
@@ -361,7 +360,7 @@ theorem fockS_eq_colDer_of_same_signs : ∀ {D : D7} {a b : ℕ} (τ : D.what₂
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Finset.sum_comm]
   · simp only [smul_ite, smul_zero, Finset.sum_const, Finset.card_univ, Fintype.card_fin, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Matrix.trace, Matrix.diag, Finset.mul_sum, Finset.sum_smul]
+      Finset.mem_univ, ite_true, Matrix.trace, Matrix.diag, Finset.mul_sum, Finset.sum_smul]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, smul_smul]
     congr 1
@@ -379,10 +378,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
 
-theorem _root_.GlobalTheory.T.fockSourceGlActionSymmetrised_same_signs : ∀ {D : D7} {a b : ℕ} (τ : D.what₂.Tau) (ε : Fin a → Bool) (ε' : Fin b → Bool) (Y : Matrix (Fin a) (Fin a) ℂ),
-    (∀ i j, ε' i = ε j) →
-    GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.fockS τ ε ε' Y = (GlobalTheory.ColLie.colDer τ Y : Module.End ℂ (PolF D b a)) + (((b : ℂ) / 2) * Y.trace) • 1 := by
-  first | exact @GlobalTheory.ColLie.fockS_eq_colDer_of_same_signs
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockSourceGlActionSymmetrisedSameSignsStatement =====
@@ -478,7 +473,7 @@ theorem hasDerivAt_coeff_colSub_of_curve [Fintype ι] {d a : ℕ} (τ : ι) (S :
     · rw [colDer_X, hone]
       by_cases hv : v.1 = τ
       · subst hv
-        simp only [if_true, Finset.mul_sum, coeff_sum, mul_smul_comm, MvPolynomial.coeff_smul, smul_eq_mul]
+        simp only [ite_true, Finset.mul_sum, coeff_sum, mul_smul_comm, MvPolynomial.coeff_smul, smul_eq_mul]
       · simp [hv]
 
 theorem hasDerivAt_coeff_colSub_exp {ι : Type} [Fintype ι] [DecidableEq ι] (d a : ℕ) (τ : ι)
@@ -491,9 +486,9 @@ theorem hasDerivAt_coeff_colSub_exp {ι : Type} [Fintype ι] [DecidableEq ι] (d
   · intro σ i j
     by_cases h : σ = τ
     · subst h
-      simp only [atPl, Function.update_self, if_true]
+      simp only [atPl, Function.update_self, ite_true]
       exact hasDerivAt_exp_ofReal_smul_entry S i j
-    · simp only [atPl, Function.update_of_ne h, if_neg h]
+    · simp only [atPl, Function.update_of_ne h, ite_eq_right h]
       exact hasDerivAt_const _ _
 
 end GlobalTheory.ColLie
@@ -561,7 +556,7 @@ theorem act_eq (D : D7) (ε : Bool) (M X : HSp D) (A : GlobalTheory.ChainFr.Fr M
   set Zf : Matrix (Fin M.rank) (Fin M.rank) ℂ := if ε then S else S.map (starRingEnd ℂ) with hZf
   have hZfs : Zf.conjTranspose = -Zf := by
     rcases ε with _ | _
-    · simp only [hZf, if_false, Bool.false_eq_true]
+    · simp only [hZf, ite_false, Bool.false_eq_true]
       ext i j
       have := congrFun (congrFun hS j) i
       simp [Matrix.conjTranspose_apply] at this ⊢
@@ -589,17 +584,17 @@ theorem act_eq (D : D7) (ε : Bool) (M X : HSp D) (A : GlobalTheory.ChainFr.Fr M
     unfold GlobalTheory.RealQuot.actS
     rw [hsg, hconj, htr]
     rcases ε with _ | _
-    · have h2 := GlobalTheory.T.fockSourceGlActionSymmetrised_same_signs (D := D) τ (fun _ : Fin M.rank => !false) (B.ε τ) (Zf.map (starRingEnd ℂ))
+    · have h2 := GlobalTheory.ColLie.fockS_eq_colDer_of_same_signs (D := D) τ (fun _ : Fin M.rank => !false) (B.ε τ) (Zf.map (starRingEnd ℂ))
         (fun i j => by simp [hB τ i])
       rw [h2]
       have hY : Zf.map (starRingEnd ℂ) = S := by
         ext i j
         simp [hZf]
       have hZt : Zf.trace = -S.trace := by
-        simp only [hZf, Bool.false_eq_true, if_false]
+        simp only [hZf, Bool.false_eq_true, ite_false]
         exact trace_map_conj S hS
       rw [hY, hZt, hn']
-      simp only [Bool.false_eq_true, if_false]
+      simp only [Bool.false_eq_true, ite_false]
       push_cast
       module
     · have h1 := _root_.GlobalTheory.FockOpp.fockS_of_opposite (D := D) τ (fun _ : Fin M.rank => !true) (B.ε τ) (Zf.map (starRingEnd ℂ))
@@ -610,11 +605,11 @@ theorem act_eq (D : D7) (ε : Bool) (M X : HSp D) (A : GlobalTheory.ChainFr.Fr M
         ext i j
         simp [hZf, Matrix.conjTranspose_apply]
       have hYt : (Zf.map (starRingEnd ℂ)).trace = -S.trace := by
-        simp only [hZf, if_true]
+        simp only [hZf, ite_true]
         exact trace_map_conj S hS
       have hZt : Zf.trace = S.trace := by simp [hZf]
       rw [hY, hYt, hZt, hn', colDer_neg]
-      simp only [if_true]
+      simp only [ite_true]
       module
 
 theorem colSub_unitary_of_coinv : ∀ (D : D7) (ε : Bool) (M X : HSp D) (A : GlobalTheory.ChainFr.Fr M) (B : GlobalTheory.ChainFr.Fr X) (eT : D.what₂.Tau → ℚ)
@@ -651,7 +646,7 @@ theorem colSub_unitary_of_coinv : ∀ (D : D7) (ε : Bool) (M X : HSp D) (A : Gl
     induction s using Finset.induction_on with
     | empty =>
       intro P
-      simp only [Finset.notMem_empty, if_false, Finset.prod_empty, one_smul]
+      simp only [Finset.notMem_empty, ite_false, Finset.prod_empty, one_smul]
       rw [GlobalTheory.MinorFrame.colSub_one, AlgHom.id_apply]
     | insert τ s hτ ih =>
       intro P
@@ -665,7 +660,7 @@ theorem colSub_unitary_of_coinv : ∀ (D : D7) (ε : Bool) (M X : HSp D) (A : Gl
         · simp [GlobalTheory.ColLie.atPl, h]
       rw [hsplit, GlobalTheory.MinorFrame.colSub_mul, h1, ih, smul_smul, Finset.prod_insert hτ]
   have := key Finset.univ P
-  simp only [Finset.mem_univ, if_true] at this
+  simp only [Finset.mem_univ, ite_true] at this
   rw [this]
   rfl
 
@@ -1044,7 +1039,7 @@ theorem sum_diag (Y : Matrix (Fin b) (Fin b) ℂ) (c : ℂ) (P : PolF D b a) :
   rw [Matrix.trace, Finset.mul_sum, Finset.sum_smul]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_eq_single i]
-  · simp only [if_true, Finset.sum_const, Finset.card_univ, Fintype.card_fin, diag_apply, ← Nat.cast_smul_eq_nsmul ℂ]
+  · simp only [ite_true, Finset.sum_const, Finset.card_univ, Fintype.card_fin, diag_apply, ← Nat.cast_smul_eq_nsmul ℂ]
     module
   · intro l _ hl; simp [Ne.symm hl]
   · simp
@@ -1129,7 +1124,6 @@ theorem unitary_inv_transpose {n : ℕ} (κ : Matrix.unitaryGroup (Fin n) ℂ) :
   rfl
 
 end Fock
-
 
 open Matrix in
 theorem row_transport : ∀ (D : D7) (M M' X : HSp D) (A : GlobalTheory.ChainFr.Fr M) (A' : GlobalTheory.ChainFr.Fr M') (B : GlobalTheory.ChainFr.Fr X)
@@ -1264,7 +1258,6 @@ theorem posSemidef_of_hasSignature {n : ℕ} {G : Matrix (Fin n) (Fin n) ℂ}
   rwa [this] at h2
 
 end GlobalTheory.DefiniteFrame
-
 
 open Matrix in
 theorem GlobalTheory.DefiniteFrame.frame_signs_pos : ∀ (D : D7) (V : HSp D) (F : GlobalTheory.ChainFr.Fr V) (τ : D.what₂.Tau),
@@ -1425,11 +1418,11 @@ theorem GlobalTheory.RealQuotBot.real_quotient_invariants_equiv : GlobalTheory.P
       exact (smul_eq_zero.1 h.symm).resolve_left (hdet κ)
     have e1 : (q.quotKerEquivOfSurjective hq).symm (q P) = Submodule.Quotient.mk P := by
       rw [LinearEquiv.symm_apply_eq, LinearMap.quotKerEquivOfSurjective_apply_mk]
-    simp only [σ, dif_pos hk, LinearMap.comp_apply, LinearEquiv.coe_coe, e1, Submodule.liftQ_apply, AlgHom.toLinearMap_apply]
+    simp only [σ, dite_eq_left hk, LinearMap.comp_apply, LinearEquiv.coe_coe, e1, Submodule.liftQ_apply, AlgHom.toLinearMap_apply]
   refine ⟨hPr, n₀, σ, ?_, ?_, ?_, ?_⟩
-  · exact _root_.GlobalTheory.LieInt.colSub_unitary_of_coinv D true A WW FA FW (fun τ => b τ - a τ) n₀ Pr q sA sW (fun τ => by simp only [if_true]; exact hn₀ τ) kA
+  · exact _root_.GlobalTheory.LieInt.colSub_unitary_of_coinv D true A WW FA FW (fun τ => b τ - a τ) n₀ Pr q sA sW (fun τ => by simp only [ite_true]; exact hn₀ τ) kA
   · exact _root_.GlobalTheory.LieInt.colSub_unitary_of_coinv D false A' WW FA' FW (fun τ => a τ - b τ) n₀ Pr q' sA' sW
-      (fun τ => by simp only [Bool.false_eq_true, if_false]; rw [hn₀ τ]; ring) kB
+      (fun τ => by simp only [Bool.false_eq_true, ite_false]; rw [hn₀ τ]; ring) kB
   · intro κ P _
     rw [hσ]
   · intro κ P' _

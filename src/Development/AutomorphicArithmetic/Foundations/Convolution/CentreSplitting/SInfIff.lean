@@ -64,7 +64,7 @@ private theorem UpperTheory.ConvolutionTheory.Dp.infZc_coeff {M : Type*} [AddCom
   · simpa using this
   · intro j _ hj
     simp only [Finsupp.single_apply]
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     apply hj
     have := j.2

@@ -55,7 +55,7 @@ theorem moveMat_apply (I C : Finset (Fin N)) (e : I.card = C.card) (s t : Fin C.
   rw [Finset.sum_eq_single t]
   · simp
   · intro t' _ h
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨-, h2⟩
     exact h ((C.orderEmbOfFin rfl).injective h2).symm
   · simp
@@ -63,7 +63,7 @@ theorem moveMat_apply (I C : Finset (Fin N)) (e : I.card = C.card) (s t : Fin C.
 theorem moveMat_eq_zero (I C : Finset (Fin N)) (e : I.card = C.card) {a b : Fin N}
     (h : ¬ (a ∈ I ∧ b ∈ C)) : moveMat R I C e a b = 0 := by
   unfold moveMat
-  refine Finset.sum_eq_zero fun t _ => if_neg ?_
+  refine Finset.sum_eq_zero fun t _ => ite_eq_right ?_
   rintro ⟨rfl, rfl⟩
   exact h ⟨Finset.orderEmbOfFin_mem _ _ _, Finset.orderEmbOfFin_mem _ _ _⟩
 
@@ -75,14 +75,14 @@ theorem minorIJ_moveMat (I C I' : Finset (Fin N)) (e : I.card = C.card) :
     minorIJ (moveMat R I C e) I' C = if I' = I then 1 else 0 := by
   by_cases hI : I' = I
   · subst hI
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     unfold minorIJ
     rw [dite_eq_left e]
     have : (moveMat R I' C e).submatrix (I'.orderEmbOfFin e) (C.orderEmbOfFin rfl) = 1 := by
       ext s t
       rw [Matrix.submatrix_apply, moveMat_apply, Matrix.one_apply]
     rw [this, det_one]
-  · rw [if_neg hI]
+  · rw [ite_eq_right hI]
     unfold minorIJ
     split_ifs with e'
     · have hex : ∃ a ∈ I', a ∉ I := by
@@ -113,7 +113,7 @@ theorem coeff_eq (j : ℕ) (hj : j ≤ N) (i : Fin N) (T : Matrix (Fin N) (Fin N
     D * ∑ I, c I * minorIJ T I I₀ = P * u I₀ := by
   have h1 := H (moveMat R I₀ (stepCols N j i) hI.1) (moveMat_blockDiag j _ _ _ (stepRows_same j hj i hI))
   have cb := (_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main R N j i hj).1
-  simp only [cb, minorIJ_moveMat, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+  simp only [cb, minorIJ_moveMat, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
   exact h1
 
 theorem map_identity (j : ℕ) (hj : j ≤ N) (i : Fin N) (hC : stepCols N j i ≠ ∅) (T : Matrix (Fin N) (Fin N) R)
@@ -174,13 +174,6 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.CovGraph.StepExpr
 section Minors
 
 variable {R S : Type} [CommRing R] [CommRing S] {N : ℕ}
-
-theorem minor_map (f : R →+* S) (A : Matrix (Fin N) (Fin N) R) (I J : Finset (Fin N)) :
-    minorIJ (A.map f) I J = f (minorIJ A I J) := by
-  unfold minorIJ
-  split_ifs with e
-  · rw [RingHom.map_det]; rfl
-  · rw [map_zero]
 
 theorem stepCols_ne_empty (j : ℕ) (i : Fin N) : stepCols N j i ≠ ∅ := by
   have hi := i.2
@@ -246,9 +239,9 @@ theorem read_minor (M : FlagModel y Ψ N j) (F : FrameData ι Ψ N M.Ω M.blk) (
 
           simp only [← map_mul, ← map_sum, this]
           split_ifs <;> simp
-        rw [Finset.sum_eq_single I' (fun I _ hne => ?_) (by simp), hs I' hI', if_pos rfl, one_mul]
+        rw [Finset.sum_eq_single I' (fun I _ hne => ?_) (by simp), hs I' hI', ite_eq_left rfl, one_mul]
         by_cases hI : IsStepRows N j p.2 I
-        · rw [hs I hI, if_neg (Ne.symm hne), zero_mul]
+        · rw [hs I hI, ite_eq_right (Ne.symm hne), zero_mul]
         · rw [hv I hI, mul_zero]
 
 theorem transPt_eq_smul_sum : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (K' : Type) [Fintype K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (Φ' : Type) [Field Φ'] (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' Ψ N j) (Cv : FlagCover M' M) (F' : FrameData ι' Ψ N M'.Ω M'.blk) (F : FrameData ι Ψ N M.Ω M.blk), M'.IsFrame F' → M.IsFrame F → (∀ k, M'.x ⟨k, F'.c k⟩ ≠ 0) → (∀ k, M.x ⟨k, F.c k⟩ ≠ 0) → ∀ (p : Ψ × Fin N) (k : K) (k' : K'), M.blk p = some k → M'.blk p = some k' → ∃ c : Φ', c ≠ 0 ∧ ∀ m : ι k, transPt Cv ⟨k, m⟩ = c * ∑ m' : ι' k', algebraMap M'.Ω Φ' (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) * y' ⟨k', m'⟩ := by
@@ -293,7 +286,7 @@ theorem transPt_eq_smul_sum : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ 
       ∑ I' ∈ Finset.univ.filter (IsStepRows N j p.2),
         α (minorIJ (trMat Cv F' F p.1) I I') * minorIJ h' I' (stepCols N j p.2) := fun I => by
     rw [hmat, (_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main Φ' N j p.2 M'.j_le).1]
-    simp only [minor_map]
+    simp only [GlobalTheory.CompanionTheory.Ar.PB.MinorAny.minorIJ_map]
     refine (Finset.sum_subset (Finset.filter_subset _ _) fun I' _ hI' => ?_).symm
     rw [hv I' (by simpa using hI'), mul_zero]
   have e1 : ∀ m : ι k, d * transPt Cv ⟨k, m⟩ =

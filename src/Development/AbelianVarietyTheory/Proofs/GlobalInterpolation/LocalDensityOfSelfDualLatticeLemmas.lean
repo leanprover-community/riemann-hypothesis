@@ -16,56 +16,12 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Exists
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldIffNoResidualRoot
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MeasureRealValuedLeExp
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main
@@ -709,8 +665,8 @@ theorem card_fibre {t n : k} (hD : t ^ 2 - 4 * n ≠ 0) {η : ℝ}
       = Fintype.card k - η + if c = 0 then η * Fintype.card k else 0 := by
   have hz := card_zero hD h1 h2
   by_cases hc : c = 0
-  · rw [if_pos hc, hc, hz]
-  rw [if_neg hc, card_fibre_eq hD hc, add_zero]
+  · rw [ite_eq_left hc, hc, hz]
+  rw [ite_eq_right hc, card_fibre_eq hD hc, add_zero]
   have tot := Finset.card_eq_sum_card_fiberwise (s := (univ : Finset (k × k))) (t := univ)
     (f := fun p : k × k => p.1 ^ 2 + t * p.1 * p.2 + n * p.2 ^ 2) (fun _ _ => mem_univ _)
   rw [← Finset.add_sum_erase _ _ (mem_univ (0 : k)),
@@ -1109,7 +1065,7 @@ theorem localDensity_of_selfDualLatticeLemmas (H : SelfDualLatticeActions.SelfDu
     (by simpa only [map_sub, map_mul, map_pow, map_ofNat] using
       (hD.map (IsLocalRing.residue (v.adicCompletionIntegers F))).ne_zero)
     (SelfDualUnramifiedPlaces.eta F E v)
-    (fun h => if_neg fun hf => hfield.1 hf h) (fun h => if_pos (hfield.2 h)) M
+    (fun h => ite_eq_right fun hf => hfield.1 hf h) (fun h => ite_eq_left (hfield.2 h)) M
   have a4 := GlobalTheory.ResidueBoxVolume.measureReal_residueBox F v _ μ _ e {x | ∑ i : Fin M, (x (i, 0) ^ 2 +
     IsLocalRing.residue _ t * x (i, 0) * x (i, 1) + IsLocalRing.residue _ n * x (i, 1) ^ 2) ≠ 0}
   rw [card_residue] at hcount a4

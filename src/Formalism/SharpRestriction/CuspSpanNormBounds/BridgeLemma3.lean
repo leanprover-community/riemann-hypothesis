@@ -135,8 +135,6 @@ namespace Formalism.MainNotions.BridgeLemma₃
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section aux
 
 variable {k r : ℕ}

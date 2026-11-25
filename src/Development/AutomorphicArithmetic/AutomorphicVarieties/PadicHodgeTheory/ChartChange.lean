@@ -44,8 +44,8 @@ theorem UpperTheory.Reformulated.B.MemSpanMonomial.mem_span_X :
     intro i m
     rw [MvPowerSeries.X_def, MvPowerSeries.coeff_monomial_mul]
     by_cases h : Finsupp.single i 1 ≤ m
-    · rw [if_pos h, one_mul, hg, tsub_add_cancel_of_le h]
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_left h, one_mul, hg, tsub_add_cancel_of_le h]
+    · rw [ite_eq_right h, ite_eq_right]
       rintro ⟨hm, hi⟩
       apply h
       rw [Finsupp.single_le_iff, ← hi]
@@ -60,9 +60,9 @@ theorem UpperTheory.Reformulated.B.MemSpanMonomial.mem_span_X :
     rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf]
     simp
   · rw [Finset.sum_eq_single (c m hm)]
-    · rw [if_pos ⟨hm, rfl⟩]
+    · rw [ite_eq_left ⟨hm, rfl⟩]
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨_, h⟩
       exact hj h.symm
     · intro h
@@ -90,10 +90,10 @@ private theorem lin_part {E : Type} [Field E] {n : ℕ} (f : MvPowerSeries (Fin 
     intro j
 
     rw [hg, map_sum, Finset.sum_eq_single j]
-    · rw [MvPowerSeries.X, coeff_monomial_mul, if_pos le_rfl, one_mul, tsub_self,
+    · rw [MvPowerSeries.X, coeff_monomial_mul, ite_eq_left le_rfl, one_mul, tsub_self,
         coeff_zero_eq_constantCoeff_apply]
     · intro i _ hij
-      rw [MvPowerSeries.X, coeff_monomial_mul, if_neg]
+      rw [MvPowerSeries.X, coeff_monomial_mul, ite_eq_right]
       intro h
       have := h i
       simp [hij.symm] at this
@@ -110,7 +110,7 @@ private theorem inj_of_surj {A : Type} [CommRing A] [IsNoetherianRing A] (s : A 
     rw [RingHom.mem_ker] at ha ⊢
     rw [pow_succ', RingHom.mul_def, RingHom.comp_apply, ha, map_zero]⟩
   obtain ⟨N, hN⟩ := monotone_stabilizes_iff_noetherian.2 (inferInstance : IsNoetherian A A) K
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have hsN : Function.Surjective (s ^ N) := by
     rw [RingHom.coe_pow]; exact hs.iterate N

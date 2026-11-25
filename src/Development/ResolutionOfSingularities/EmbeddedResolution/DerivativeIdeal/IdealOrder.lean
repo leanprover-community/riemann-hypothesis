@@ -186,24 +186,11 @@ theorem mul_idealOrder_le_idealOrder_pow (I : Ideal R) (c : ℕ) :
             Ideal.pow_right_mono hIk c
         _ = IsLocalRing.maximalIdeal R ^ (c * k) := by rw [← pow_mul, mul_comm k c]
 
-private theorem map_maximalIdeal_pow_le_pow (f : R →+* S)
-    (hf : (IsLocalRing.maximalIdeal R).map f ≤ IsLocalRing.maximalIdeal S) (n : ℕ) :
-    ((IsLocalRing.maximalIdeal R) ^ n).map f ≤ (IsLocalRing.maximalIdeal S) ^ n := by
-  induction n with
-  | zero =>
-      have hS : (IsLocalRing.maximalIdeal S) ^ 0 = (⊤ : Ideal S) := by
-        rw [pow_zero, Ideal.one_eq_top]
-      rw [hS]
-      exact le_top
-  | succ n ih =>
-      rw [pow_succ, pow_succ, Ideal.map_mul]
-      exact Ideal.mul_mono ih hf
-
 theorem idealOrder_le_idealOrder_map (f : R →+* S)
     (hf : (IsLocalRing.maximalIdeal R).map f ≤ IsLocalRing.maximalIdeal S) (I : Ideal R) :
     idealOrder I ≤ idealOrder (I.map f) := by
   refine ENat.forall_natCast_le_iff_le.mp (fun n hn => ?_)
   rw [le_idealOrder_iff] at hn ⊢
-  exact le_trans (Ideal.map_mono hn) (map_maximalIdeal_pow_le_pow f hf n)
+  exact (Ideal.map_mono hn).trans ((Ideal.map_pow f _ n).trans_le (Ideal.pow_right_mono hf n))
 
 end FunctorialResolution.EmbeddedResolution

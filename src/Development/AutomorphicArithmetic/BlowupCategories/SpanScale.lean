@@ -25,11 +25,11 @@ def mulS (E Z : Spc) : Spc where
   map_comp f g := by ext T x <;> simp
 
 def mulS.fst (E Z : Spc) : mulS E Z ⟶ E where
-  app k := { app := fun T => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
+  app _ := { app := fun _ => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
   naturality _ _ _ := rfl
 
 def mulS.snd (E Z : Spc) : mulS E Z ⟶ Z where
-  app k := { app := fun T => TypeCat.ofHom fun x => x.2, naturality := fun _ _ _ => rfl }
+  app _ := { app := fun _ => TypeCat.ofHom fun x => x.2, naturality := fun _ _ _ => rfl }
   naturality _ _ _ := rfl
 
 def mulS.lift {S E Z : Spc} (f : S ⟶ E) (g : S ⟶ Z) : S ⟶ mulS E Z where
@@ -73,9 +73,9 @@ theorem Ob.hom_heq {a : Act} {A : CommRingCat.{0}} {x x' y y' : Ob a A} (hx : x 
 
 def Ob.map (a : Act) {A B : CommRingCat.{0}} (f : A ⟶ B) : Ob a A ⥤ Ob a B where
   obj x := ⟨a.D.map f x.pt⟩
-  map {x y} g := ⟨a.G.map f g.1, (congrArg (a.D.map f) g.2).trans (a.nat f g.1 y.pt)⟩
-  map_id x := Subtype.ext (map_one (a.G.map f).hom)
-  map_comp g h := Subtype.ext (map_mul (a.G.map f).hom _ _)
+  map {_ y} g := ⟨a.G.map f g.1, (congrArg (a.D.map f) g.2).trans (a.nat f g.1 y.pt)⟩
+  map_id _ := Subtype.ext (map_one (a.G.map f).hom)
+  map_comp _ _ := Subtype.ext (map_mul (a.G.map f).hom _ _)
 
 def Act.cat (a : Act) : CommRingCat.{0} ⥤ Cat.{0,0} where
   obj A := Cat.of (Ob a A)
@@ -109,9 +109,9 @@ def Act.Hom.comp {a b c : Act} (φ : Act.Hom a b) (ψ : Act.Hom b c) : Act.Hom a
 
 def Act.Hom.fn {a b : Act} (φ : Act.Hom a b) (A : CommRingCat.{0}) : Ob a A ⥤ Ob b A where
   obj x := ⟨φ.d.app A x.pt⟩
-  map {x y} f := ⟨φ.g.app A f.1, (congrArg (φ.d.app A) f.2).trans (φ.eq A f.1 y.pt)⟩
-  map_id x := Subtype.ext (map_one (φ.g.app A).hom)
-  map_comp f g := Subtype.ext (map_mul (φ.g.app A).hom _ _)
+  map {_ y} f := ⟨φ.g.app A f.1, (congrArg (φ.d.app A) f.2).trans (φ.eq A f.1 y.pt)⟩
+  map_id _ := Subtype.ext (map_one (φ.g.app A).hom)
+  map_comp _ _ := Subtype.ext (map_mul (φ.g.app A).hom _ _)
 
 def Act.Hom.cat {a b : Act} (φ : Act.Hom a b) : a.cat ⟶ b.cat where
   app A := (φ.fn A).toCatHom
@@ -223,7 +223,7 @@ def Act.sub (a : Act) (Q : Pred a) : Act where
   nat f g x := Subtype.ext (a.nat f g x.1)
 
 def incl {a : Act} (Q : Pred a) : Act.Hom (a.sub Q) a where
-  d := { app := fun A => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
+  d := { app := fun _ => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
   g := 𝟙 _
   eq _ _ _ := rfl
 
@@ -275,7 +275,7 @@ def umD (M : ℕ) : CommRingCat.{0} ⥤ Type where
 def XC (M : ℕ) : Act where
   D := umD M
   G := gmF
-  smul A u v := Um.scale (fun _ => u) v
+  smul _ u v := Um.scale (fun _ => u) v
   one_smul A v := Um.scale_one (A := A) v
   mul_smul A g h v := Um.scale_mul (A := A) (fun _ => g) (fun _ => h) v
   nat f g x := Um.map_scale f.hom (fun _ => g) x
@@ -363,8 +363,8 @@ theorem Um.join_bAct {N : ℕ} {A : Type} [CommRing A] (u : Aˣ × Aˣ) (x : Um 
       _ = (u.2 : A) * (x.2.1 0 * x.1.1 i) := by rw [hu, mul_one]
 
 def pC (N : ℕ) : Act.Hom (BC N) (XC N) where
-  d := { app := fun A => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
-  g := { app := fun A => GrpCat.ofHom (MonoidHom.fst _ _), naturality := fun _ _ _ => rfl }
+  d := { app := fun _ => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
+  g := { app := fun _ => GrpCat.ofHom (MonoidHom.fst _ _), naturality := fun _ _ _ => rfl }
   eq _ _ _ := rfl
 
 def βC (N : ℕ) : Act.Hom (BC N) (XC (N + 1)) where

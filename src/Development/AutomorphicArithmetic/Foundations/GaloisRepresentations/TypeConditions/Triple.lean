@@ -280,7 +280,7 @@ theorem exists_conj_br_alt (hF : FrobDense D) (hG : UpperTheory.GalS.GalHodgeN D
   have hj : Function.Injective (rd i j) := j.injective.comp (IsFractionRing.injective _ _)
   have h1 : Function.Injective φ := fun x y h => hj (by rw [← hι, ← hι, h])
   have h2 : Function.Injective (brEmb i v hv) :=
-    (algebraMap ↥(D.ntwbr i v hv).LL.1 (Om (D.ntw.l i))).injective.comp (GlobalTheory.EmbInj.toLL_inj _)
+    (algebraMap ↥(D.ntwbr i v hv).LL.1 (Om (D.ntw.l i))).injective.comp (Formalism.MainNotions.N.Br.toLL_inj _)
   obtain ⟨γ, hγ⟩ := exists_aut φ (brEmb i v hv) h1 h2 hφ fun z =>
     congrArg (fun y : ↥(OL (D.ntwbr i v hv).LL) => ((y : ↥(D.ntwbr i v hv).LL.1) : Om (D.ntw.l i)))
       ((D.ntwbr i v hv).eO_alg z)
@@ -346,23 +346,6 @@ theorem attN_of_isSSRep_mapRep_of_nc_locG (hF : FrobDense D) (hG : UpperTheory.G
     refine Multiset.map_congr rfl fun z _ => ?_
     push_cast
     ring
-end
-
-section
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
-open Formalism.L2.Host Formalism.FrobeniusOrbits Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR
-open GlobalTheory.RowTie (WDTie)
-open GlobalTheory.HeightCounting (CharSide)
-open GlobalTheory.GalOfCusp GlobalTheory.TripleGal GlobalTheory.Triple
-open GlobalTheory.TypeLeaf (FrobDense)
-open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
-open GlobalTheory.JumpDictionaryFoundation (exists_embOver embOver_true_apply)
-variable {D : D7} {T : WDTie D.nd D.naut} {C₀ C : CharFrame D} (S : CharSide D C₀)
-  {art : Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E D.nd.Om} {i : D.ntw.Tw} {s : D.ntw.Sig i}
-  {ρ : Reading D.ntw i (D.ntw.side i s)} {σ : D.what₂.FT} {π : D.naut.CG D.R.r}
-  {r : GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting.GalE D →* GL (Fin D.R.r) (Qbar (D.ntw.l i))} {ν : GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting.GalE D →* (D.ntw.O0 i)ˣ}
-  {w : D.what₂.places.Pl} {red : GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting.Zbar (D.ntw.l i) →+* FbAt D w}
-
 end
 
 end GlobalTheory.TripleLocal

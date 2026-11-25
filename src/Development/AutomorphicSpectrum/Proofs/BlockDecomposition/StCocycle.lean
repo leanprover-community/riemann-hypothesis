@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 noncomputable section
 namespace GlobalTheory.CompanionTheory.GrForm

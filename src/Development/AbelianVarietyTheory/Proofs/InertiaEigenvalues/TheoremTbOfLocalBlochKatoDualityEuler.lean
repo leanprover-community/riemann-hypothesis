@@ -32,60 +32,15 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeightG
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoLocalAllOfTateDualityEulerChar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiesAndInputsOfDualityEuler
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormPrimitiveRootPrimePowSubOnePadicComplex
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormUnitPowSubOne
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaBdRPlusSurjectiveKerUnitsEquivariant
-import Mathlib.Topology.Algebra.Nonarchimedean.Completion
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamSubrepQuotientAndStrictness
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Cocycle, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContractEquivariant, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormDualExponentialLeOfAinfValued, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsExpStarZeroNear, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCocTmulOne, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemLayerIff, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowSmulMemHfDOfRestriction, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SesLatticeTrivialQuotient, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineExtensionClassBound, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistedTorsionClassTheoremGoodCase, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TheoremTbOfLocalBlochKatoDualityEuler
@@ -316,7 +271,7 @@ section -- clump:auto
 
 noncomputable section
 
-open Formalism Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.Cyc.TwistKill GlobalTheory.BdRQuot
+open Formalism Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.Cyc.LogClass GlobalTheory.BdRQuot
 open scoped Formalism.Per
 
 namespace GlobalTheory.Cyc.ExpBound
@@ -386,18 +341,9 @@ theorem sum_val (e : ℕ) : ∑ i ∈ Finset.range e, (padicValInt l ((i : ℤ) 
 
 variable {P : LocPrime l} {AI : LocAinf l P}
 
-theorem om_mem (x : Om l) : algebraMap (Om l) P.R.BdR x ∈ (P.PD (botExt l)).Fil 0 := by
-  obtain ⟨K, hK⟩ : ∃ K : FinExt l, x ∈ K.1 := ⟨⟨IntermediateField.adjoin ℚ_[l] {x},
-    IntermediateField.adjoin.finiteDimensional (Algebra.IsIntegral.isIntegral _)⟩,
-    IntermediateField.mem_adjoin_simple_self _ _⟩
-  have h2 := ((P.PD K).Fil 0).smul_mem (⟨x, hK⟩ : ↥K.1) (P.PD K).one_mem
-  rw [Algebra.smul_def, mul_one] at h2
-  rw [← SetLike.mem_coe, P.PD_Fil (botExt l) K 0]
-  exact h2
-
 theorem q_mem (x : ℚ_[l]) : algebraMap ℚ_[l] P.R.BdR x ∈ (P.PD (botExt l)).Fil 0 := by
   rw [IsScalarTower.algebraMap_apply ℚ_[l] (Om l) P.R.BdR]
-  exact om_mem _
+  exact GlobalTheory.DeRhamSymbol.om_mem _
 
 theorem theta_q (J : ThetaL P AI) (x : ℚ_[l]) :
     J.θ (algebraMap ℚ_[l] P.R.BdR x) = algebraMap ℚ_[l] (PadicComplex l) x := by
@@ -420,17 +366,6 @@ theorem act_mem (σ : GQ l) {a : ℤ} {x : P.R.BdR} (hx : x ∈ (P.PD (botExt l)
     P.actQdR σ x ∈ (P.PD (botExt l)).Fil a := by
   rw [← P.PD_actdR (botExt l) ⟨σ, mem_GK_bot σ⟩]
   exact (P.PD (botExt l)).Fil_G _ _ _ hx
-
-theorem act_ι (σ : GQ l) (b : P.R.B) : P.actQdR σ (P.ιB b) = P.ιB (P.actQ σ b) := by
-  have h3 := (P.PD (botExt l)).ι_comm ⟨σ, mem_GK_bot σ⟩ b
-  rw [P.PD_ι, P.PD_ι, P.PD_actB, P.PD_actdR] at h3
-  exact h3.symm
-
-theorem actQdR_periodT_eq_cyclotomic_bottom (σ : GQ l) :
-    P.actQdR σ (P.ιB P.tB) = algebraMap ℚ_[l] P.R.BdR (P.χQ σ : ℚ_[l]) * P.ιB P.tB := by
-  have h := (P.PD (botExt l)).t_act ⟨σ, mem_GK_bot σ⟩
-  rw [P.PD_actB, P.PD_χ, P.period_datum_t_eq] at h
-  rw [act_ι, h, map_smul, Algebra.smul_def]
 
 theorem fil_mono {a : ℤ} (n : ℕ) : (P.PD (botExt l)).Fil (a + n) ≤ (P.PD (botExt l)).Fil a := by
   induction n with
@@ -497,7 +432,7 @@ def cob (P : LocPrime l) (e : ℕ) (b : P.R.BdR) (σ : GQ l) : P.R.BdR :=
 theorem twistedCoboundary_t_pow_mul (e i : ℕ) (y : P.R.BdR) (σ : GQ l) : cob P e (P.ιB P.tB ^ i * y) σ =
     P.ιB P.tB ^ i * (algebraMap ℚ_[l] P.R.BdR ((P.χQ σ ^ ((i : ℤ) - e) : ℚ_[l]ˣ) : ℚ_[l]) *
       P.actQdR σ y - y) := by
-  rw [cob, map_mul, map_pow, actQdR_periodT_eq_cyclotomic_bottom, sub_eq_add_neg (i : ℤ), zpow_add, zpow_natCast, Units.val_mul,
+  rw [cob, map_mul, map_pow, GlobalTheory.DeRhamSymbol.actQdR_periodT_eq_cyclotomic_bottom, sub_eq_add_neg (i : ℤ), zpow_add, zpow_natCast, Units.val_mul,
     Units.val_pow_eq_pow_val, map_mul, map_pow]
   ring
 
@@ -508,7 +443,7 @@ theorem cob_ι (T : LocTied l P AI) (e : ℕ) (a : Ainf l) (σ : GQ l) :
   obtain ⟨z, hz⟩ : ∃ z : ℤ_[l], (z : ℚ_[l]) = ((P.χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) :=
     ⟨⟨_, hn⟩, rfl⟩
   refine ⟨Per.zA l z * AI.actW σ a - a, ?_⟩
-  rw [map_sub, map_sub, map_mul, map_mul, inclusion_ainf_padicInteger_eq_algebraMap T, hz, cob, act_ι, ← AI.ιA_act]
+  rw [map_sub, map_sub, map_mul, map_mul, inclusion_ainf_padicInteger_eq_algebraMap T, hz, cob, GlobalTheory.ExpDef.act_ι, ← AI.ιA_act]
   rfl
 
 theorem zeta_mem (K : FinExt l) {s : ℕ} (hs : 1 ≤ s) : P.ζQ 1 ∈ Ks K s := by
@@ -590,7 +525,7 @@ theorem iterate (T : LocTied l P AI) (K : FinExt l) {s : ℕ} (hs : Lev l s) {e 
 theorem logChi_coe (LT : LocTheory) (g : GQ l) :
     ((logChi LT g : ℤ_[l]) : ℚ_[l]) = logZl l ((LT l).χQ g : ℚ_[l]) := by
   have h := (GlobalTheory.PadicLogUnits.logZl_hom l).2.2.1 _ ((cyc_basic l _ (LT l).χQ_cyc).1 g)
-  exact congrArg Subtype.val (dif_pos h : logChi LT g = ⟨_, h⟩)
+  exact congrArg Subtype.val (dite_eq_left h : logChi LT g = ⟨_, h⟩)
 
 theorem norm_zeta : ‖P.ζQ 1 - 1‖ = (l : ℝ) ^ (-(1 : ℝ) / ((l : ℝ) - 1)) := by
   have h2 : P.ζQ 1 ^ l = 1 := by rw [← P.ζQ_zero]; exact P.ζQ_succ 0
@@ -612,7 +547,7 @@ theorem norm_le_of_intMod (T : LocTied l P AI) (K : FinExt l) {s : ℕ} (hs : Le
   set J := GlobalTheory.ThetaTie.thetaL T
   have hG := iterate T K hs (e := e) (fun σ => algebraMap ℚ_[l] P.R.BdR (logZl l (P.χQ σ : ℚ_[l])) *
     (algebraMap (Om l) P.R.BdR α * P.ιB P.tB ^ e))
-    (fun σ => mul_mem_zero (q_mem _) (mul_mem_zero (om_mem _)
+    (fun σ => mul_mem_zero (q_mem _) (mul_mem_zero (GlobalTheory.DeRhamSymbol.om_mem _)
       (by simpa using pow_mem_Fil (t_mem (P := P)) e)))
     H e le_rfl
   have hsum : ∑ k ∈ Finset.range e, (1 + s + padicValInt l ((k : ℤ) - e)) =
@@ -631,14 +566,14 @@ theorem norm_le_of_intMod (T : LocTied l P AI) (K : FinExt l) {s : ℕ} (hs : Le
     (fun σ hσ => by
       obtain ⟨a, ha⟩ := H2 σ hσ
       have hm := mul_mem_zero (q_mem (P := P) (logZl l (P.χQ σ : ℚ_[l])))
-        (om_mem ((l : Om l) ^ n * α))
+        (GlobalTheory.DeRhamSymbol.om_mem ((l : Om l) ^ n * α))
       have hm2 := sub_mem (act_mem σ hy) hy
       have h2 := graded T J e (add_mem hm hm2) a (by
         rw [twistedCoboundary_t_pow_mul] at ha
         convert ha using 1
         simp only [sub_self, zpow_zero, Units.val_one, map_one, map_mul, map_pow, map_natCast]
         ring)
-      rw [J.θ_add _ hm _ hm2, theta_sub J (act_mem σ hy) hy, J.θ_mul _ (q_mem _) _ (om_mem _),
+      rw [J.θ_add _ hm _ hm2, theta_sub J (act_mem σ hy) hy, J.θ_mul _ (q_mem _) _ (GlobalTheory.DeRhamSymbol.om_mem _),
         theta_q, J.θ_Om, J.θ_act _ _ hy] at h2
       rw [map_mul, map_pow, map_sub, map_one, act_zeta K hs.1 hσ]
       convert h2 using 2
@@ -728,7 +663,7 @@ theorem exponent_le (s e : ℕ) :
   · have h3 : padicValNat l (e + 1).factorial = padicValNat l (e + 1) + padicValNat l e.factorial := by
       rw [Nat.factorial_succ, (show ∀ {p a b : ℕ} [_root_.Fact (_root_.Nat.Prime p)], a ≠ 0 → b ≠ 0 → _root_.padicValNat p (a * b) = _root_.padicValNat p a + _root_.padicValNat p b from by simpa only [← _root_.Nat.padicValNat_def] using @_root_.Nat.multiplicity_mul) (by omega) (Nat.factorial_ne_zero _)]
     rw [h3]
-    simp only [betaE, Nat.add_sub_cancel, Nat.succ_ne_zero, if_false]
+    simp only [betaE, Nat.add_sub_cancel, Nat.succ_ne_zero, ite_false]
     generalize padicValNat l (e + 1) = u
     generalize padicValNat l e.factorial = v
     push_cast at h1 ⊢
@@ -902,18 +837,14 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     [Module O V] [IsScalarTower O LL V]
     (ρ : Representation LL G V)
 
-theorem corHf_actVB_tmul (g : G) (v : V) (b : B) :
-    actVB PD ρ g (v ⊗ₜ[Qp] b) = ρ g v ⊗ₜ[Qp] PD.actB g b := by
-  simp [actVB]
-
 noncomputable def corHfRepVB : Representation LL G (V ⊗[Qp] B) where
   toFun g := actVB PD ρ g
   map_one' := by
     ext v b
-    simp [corHf_actVB_tmul]
+    simp [GlobalTheory.FundDel.actVB_tmul']
   map_mul' g h := by
     ext v b
-    simp [corHf_actVB_tmul]
+    simp [GlobalTheory.FundDel.actVB_tmul']
 
 def corHfRepO (O : Type) [CommRing O] [Algebra O LL] [Module O V] [IsScalarTower O LL V] :
     Representation O G V where
@@ -942,7 +873,7 @@ theorem index_smul_mem_HfD [CharZero LL] (L : Lattice (O := O) ρ) (hρ : ∀ g,
     exact (LinearMap.congr_fun ((corHfRepVB PD ρ).map_mul a b) y).symm
   have h1 : ∀ g (v : V), actVB PD ρ g (v ⊗ₜ[Qp] (1 : B)) = ρ g v ⊗ₜ[Qp] (1 : B) := by
     intro g v
-    rw [corHf_actVB_tmul, map_one]
+    rw [GlobalTheory.FundDel.actVB_tmul', map_one]
   obtain ⟨y, hy⟩ := index_smul_cocycle_eq_coboundary LL G (V ⊗[Qp] B) (corHfRepVB PD ρ) H
     (fun g => F g ⊗ₜ[Qp] (1 : B))
     (by
@@ -1015,7 +946,6 @@ theorem corHf_nsmul_mem {O G M : Type} [CommRing O] [AddCommGroup M] [Module O M
   convert S.smul_mem u hf using 1
   funext g
   rw [Pi.smul_apply, ← Nat.cast_smul_eq_nsmul O, ← Nat.cast_smul_eq_nsmul O, smul_smul, hu]
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem pow_smul_mem_HfD_of_restriction : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K LL : FinExt l) (V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (H : Subgroup ↥(GK K)) [H.Normal] [H.FiniteIndex], IsOpen (H : Set ↥(GK K)) → ∀ (Z f₀ : ↥(GK K) → V.V), ContinuousOn Z H → (∀ g ∈ H, ∀ h ∈ H, Z (g * h) = Z g + V.ρ g (Z h)) → (∃ X : TensorProduct ℚ_[l] V.V P.R.B, ∀ h ∈ H, Z h ⊗ₜ[ℚ_[l]] (1 : P.R.B) = actVB (P.PD K) V.ρ h X - X) → (∀ g h, f₀ (g * h) - (f₀ g + V.ρ g (f₀ h)) ∈ V.L.T) → (∀ h ∈ H, Z h - f₀ h ∈ V.L.T) → ∀ k : ℕ, padicValNat l H.index ≤ k → (fun g => (l ^ k : ℕ) • (Submodule.Quotient.mk (f₀ g) : V.V ⧸ V.L.T)) ∈ HfD (P.PD K) V.L := by
@@ -1257,8 +1187,6 @@ theorem map_eq_actVdR (ρ : Representation LL G V) (g : G) (x : V ⊗[Qp] BdR) :
 
 end Fil
 
-
-
 theorem exists_rational (AI : LocAinf l P) (LT : LocTied l P AI) (K LL : FinExt l)
     (h1F : (1 : P.R.BdR) ∈ (P.PD K).Fil 0)
     (Yt T Z : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L)
@@ -1315,8 +1243,6 @@ theorem exists_rational (AI : LocAinf l P) (LT : LocTied l P AI) (K LL : FinExt 
       hx1G, AlgebraTensorModule.map_tmul, LinearMap.id_apply, hf, sub_tmul]
     abel
 
-
-
 theorem cob_of_rational (AI : LocAinf l P) (K LL : FinExt l)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (f : ↥(GK K) → ↥T.L.T)
     (e j : ℕ) (hle : Gj K j ≤ GK K)
@@ -1362,8 +1288,6 @@ theorem cob_of_rational (AI : LocAinf l P) (K LL : FinExt l)
       rw [map_eq_actVdR (P.PD K) T.ρ, hcob, hβ1]
       rfl)
   exact ⟨k, x, fun g => hx g⟩
-
-
 
 theorem cob_of_strict (AI : LocAinf l P) (LT : LocTied l P AI) (J : ThetaL P AI) (K LL : FinExt l)
     (Yt T Z : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L)
@@ -1503,8 +1427,6 @@ theorem actVB_sum_tmul {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field
   change _ = ρ g (w i) ⊗ₜ[Qp] PD.actB g (x i) - _
   rw [hc, smul_tmul, smul_tmul, ← tmul_sub, ← hz i, Algebra.algebraMap_eq_smul_one]
 
-
-
 theorem mem_HfD_of_coords (P : LocPrime l) (K LL : FinExt l) (s : ℕ) (hK : K.1 ≤ Ks K s)
     (V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (c : GQ l → ℚ_[l])
     (hV : ∀ (g : ↥(GK K)) (x : V.V), V.ρ g x = c g • x) {n : ℕ}
@@ -1618,7 +1540,7 @@ theorem scalar_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : Arch
           (s + padicValNat l (e + 1))) * ψ (f g)‖ ≤ 1 := by
   classical
   obtain ⟨c, hc⟩ : ∃ c : GQ l → ℚ_[l], ∀ (σ : GQ l) (h : σ ∈ GK K), c σ = ψ (f ⟨σ, h⟩) :=
-    ⟨fun σ => if h : σ ∈ GK K then ψ (f ⟨σ, h⟩) else 0, fun σ h => dif_pos h⟩
+    ⟨fun σ => if h : σ ∈ GK K then ψ (f ⟨σ, h⟩) else 0, fun σ h => dite_eq_left h⟩
   have H1 : ∀ σ ∈ Gj K s, ‖c σ‖ ≤ (l : ℝ) ^ r := fun σ hσ => by
     rw [hc σ (hle hσ)]; exact hψr _
   have H2 : ∀ σ ∈ Gj K s, ∀ τ ∈ Gj K s, ‖c (σ * τ) - c σ -
@@ -1651,8 +1573,6 @@ theorem scalar_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : Arch
   refine ⟨z, x, hz, hx, fun g hg => ?_⟩
   have := hzc g hg
   rwa [hc g g.2] at this
-
-
 
 theorem mem_HfD_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K LL : FinExt l) (s : ℕ)
     (hs : Lev l s) (hK : K.1 ≤ Ks K s) (hle : Gj K s ≤ GK K) (e N r : ℕ)
@@ -1722,8 +1642,6 @@ theorem lift_equivariant {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Ty
   rw [← hΦ, ← hΦ] at h1
   exact h1
 
-
-
 theorem mem_HfD_of_lattice (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K LL : FinExt l) (s : ℕ)
     (hs : Lev l s) (hK : K.1 ≤ Ks K s) (hle : Gj K s ≤ GK K) (e N : ℕ)
     (Y V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
@@ -1753,8 +1671,6 @@ theorem mem_HfD_of_lattice (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : A
   have h3 := fun a b g => pow_smul_eq_mk V.L.T l a b _ _ (hΦ (f g))
   rw [cTB, funext (h3 _ _)]
   exact key
-
-
 
 theorem class_bound : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), admitted D HW F → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; TBat S E := by
   intro D HW F hA l _ K s LL h S E e M0 h0 Yt Y Z Ve ι π hses _ hZ _ hVe hcr hW yt hyt _ φ hφ f hf

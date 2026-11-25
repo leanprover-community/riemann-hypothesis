@@ -27,11 +27,6 @@ private theorem aux_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {m : �
   have h1 : A.valuation ζ ^ m = 1 := by rw [← map_pow, h, map_one]
   exact (pow_eq_one_iff_left hm).1 h1
 
-private theorem vg_ne {Γ : Type} [LinearOrderedCommGroupWithZero Γ] : (0 : Γ) < 1 := by
-  refine lt_of_le_of_ne zero_le' fun h => ?_
-  obtain ⟨x, y, hxy⟩ := (GroupWithZero.toNontrivial (G₀ := Γ)).exists_pair_ne
-  exact hxy (by rw [← mul_one x, ← mul_one y, ← h, mul_zero, mul_zero])
-
 private theorem power_bounds_of_between {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {η : Ω} (h1 : A.valuation η = 1)
     (h : A.valuation (η - 1) < 1) (i : ℕ) : A.valuation (1 - η ^ i) < 1 := by
   apply _root_.UpperTheory.V.ML.PlaceBasics.one_sub_pow <;> assumption

@@ -46,8 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 open BranchingSupport GlobalTheory.CellAmp Formalism.BasicNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Matrix MeasureTheory Finset
 open scoped InnerProductSpace ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.BesselMoveGap
 
 open GlobalTheory.BesselMove
@@ -98,5 +96,3 @@ theorem bessel_move_gap : GlobalTheory.GapIn.Hyp → ∀ (k r : ℕ) (Wp : Type)
     rw [e]
 
 end GlobalTheory.BesselMoveGap
-
-end

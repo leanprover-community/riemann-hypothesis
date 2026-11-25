@@ -32,17 +32,11 @@ theorem deOf_ne (D : D7) (u u' : D.what₂.Word) (τ : D.what₂.Tau)
   rw [← cfg_u D u τ (h5 u) (l + 1) (by omega) (by omega), ← cfg_u D u' τ (h5 u') (l + 1) (by omega) (by omega)]
   have a1 : l + 1 ≠ 1 := by omega
   have a2 : l + 1 ≠ (cfgOf D τ).k := by rw [hk]; omega
-  simp only [Formalism.FourierDecayAlt.Sz.Cfg.u, a1, a2, if_false, Nat.add_sub_cancel, heq]
+  simp only [Formalism.FourierDecayAlt.Sz.Cfg.u, a1, a2, ite_false, Nat.add_sub_cancel, heq]
 
 theorem Tr_pos (D : D7) (u : D.what₂.Word) : 0 < Tr D u := by
   unfold Tr
   exact_mod_cast (D.mem u).A.T_prime.pos
-
-section Family
-
-variable {eps : ℝ} {Fm : FamP eps}
-
-end Family
 
 end Formalism.MainNotions.BridgeLemma
 

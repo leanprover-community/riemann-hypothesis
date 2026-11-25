@@ -94,7 +94,6 @@ theorem false_of_dominant (hp0 : ‖(p : K)‖ ≤ ρ) (hρ1 : ρ < 1) {a b : AC
     have eS : algebraMap (ACrisZero K p) (ACris K p) S = ∑ i ∈ Finset.range (d + 1),
         algebraMap (AInf K p) (ACris K p) (x i) * algebraMap (ACrisZero K p) (ACris K p) ca ^ i *
           algebraMap (ACrisZero K p) (ACris K p) cb ^ (d - i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [S, T, map_sum, map_mul, map_pow, algebraMap_acrisZero_algebraMap]
     have key := sum_sub_sum_mem (Ideal.span {(p : ACris K p) ^ N}) d
       (fun i => algebraMap (AInf K p) (ACris K p) (x i)) hca hcb

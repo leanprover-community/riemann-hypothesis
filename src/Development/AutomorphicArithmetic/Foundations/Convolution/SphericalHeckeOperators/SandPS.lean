@@ -140,7 +140,7 @@ theorem UpperTheory.ConvolutionTheory.H.eigBasis :
   have hB : ∀ σ, B σ = v σ := fun σ => by
     simp [B, coe_basisOfLinearIndependentOfCardEqFinrank]
   have hΦinj : Function.Injective Φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     rw [← B.sum_repr x] at hx ⊢
 
@@ -224,7 +224,7 @@ theorem UpperTheory.ConvolutionTheory.H.psDim :
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
   have hL : Function.Injective L := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf
     refine Subtype.ext (funext fun g => ?_)
     obtain ⟨p, σ, y, hy, rfl⟩ := psDim_decomp g
@@ -401,7 +401,7 @@ private theorem exists_eig (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) (
   have hθ : ∀ a (ha : Antitone a) (x : Vz F z),
       ((θ a x : Vz F z) : Wz F z) = heckeAct μ (rz F z) (th μ a) x := by
     intro a ha x
-    simp only [θ, dif_pos ha]
+    simp only [θ, dite_eq_left ha]
     rfl
   have h0 : θ 0 = 1 := by
     refine LinearMap.ext fun x => Subtype.ext ?_
@@ -525,13 +525,13 @@ private theorem key (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) {ν₁ �
     ring
   simp only [← Finset.sum_smul, hcol]
   rw [Finset.sum_eq_single τ]
-  · rw [if_pos rfl, monomialChar_add]
+  · rw [ite_eq_left rfl, monomialChar_add]
     congr 1
     have := e4 τ
     rw [← this]
     ring
   · intro σ _ hσ
-    rw [if_neg hσ, mul_zero, zero_smul]
+    rw [ite_eq_right hσ, mul_zero, zero_smul]
   · simp
 
 end SlopeTestRemainingChoices

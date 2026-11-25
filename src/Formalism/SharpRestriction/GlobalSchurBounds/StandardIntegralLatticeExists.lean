@@ -14,12 +14,6 @@ namespace Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
 open Formalism.BasicNotions NumberField
 
-section PosSec
-
-open Formalism.FrobeniusOrbits
-
-end PosSec
-
 section Std
 
 variable (D : D7)
@@ -87,32 +81,6 @@ theorem Adm_std (N N' : ℕ) (h : Even N) (h' : Even N') :
   ⟨h, h', stdL_isSD D N, stdL_isSD D N'⟩
 
 end Std
-
-section KernelEntryData
-
-variable (p : ℕ) [Fact p.Prime]
-
-end KernelEntryData
-
-section ReadsSec
-
-open Formalism.MainNotions.Lnk Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
-  Formalism.LFunctionChainParameters.LErr Formalism.LFunctionChainParameters.LChain
-
-end ReadsSec
-
-section FrobSec
-
-open Formalism.FrobeniusOrbits
-open scoped Pointwise
-
-end FrobSec
-
-section Junk
-
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-
-end Junk
 
 end Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
@@ -297,12 +265,6 @@ theorem ColBase_exists (D : D7) (u : D.what₂.Word) (h : PosFrame D)
 theorem host_emb_star (D : D7) (σ : D.host.E →+* ℂ) (a : D.host.E) : σ (star a) = (starRingEnd ℂ) (σ a) := by
   have := D.host.isCMField_hostE
   exact NumberField.IsCMField.complexEmbedding_complexConj D.host.E σ a
-
-section LocB
-
-variable {LL : Type} [Field LL] (Pl : Rows.Places LL) (w : Pl.Pl) {V : Type} [AddCommGroup V] [Module LL V]
-
-end LocB
 
 end Formalism.MainNotions.GlobalTheoryTheory.Inhab
 

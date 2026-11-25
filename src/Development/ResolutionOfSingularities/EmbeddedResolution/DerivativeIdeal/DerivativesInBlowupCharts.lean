@@ -55,15 +55,15 @@ theorem partialDeriv_map_of_mem
     · by_cases hjs : j = s
       · subst hjs
         rw [hs]
-        simp only [partialDeriv_coord, if_neg his, map_zero, mul_zero]
+        simp only [partialDeriv_coord, ite_eq_right his, map_zero, mul_zero]
       · rw [hin j hjT hjs, (partialDeriv k ι S₁ i).leibniz]
-        simp only [smul_eq_mul, partialDeriv_coord, if_neg his, mul_zero, zero_add]
+        simp only [smul_eq_mul, partialDeriv_coord, ite_eq_right his, mul_zero, zero_add]
         by_cases hij : i = j
         · simp [hij]
         · simp [hij]
     · rw [hout j hjT]
       have hij : i ≠ j := by rintro rfl; exact hjT hiT
-      simp only [partialDeriv_coord, if_neg hij, map_zero, mul_zero]
+      simp only [partialDeriv_coord, ite_eq_right hij, map_zero, mul_zero]
   exact DFunLike.congr_fun hD f
 
 theorem partialDeriv_map_of_notMem
@@ -214,31 +214,31 @@ theorem coord_mul_partialDeriv_map_eq_map_sum
       · rw [Finset.sum_eq_single j]
         · simp [hj]
         · intro i _ hij
-          rw [if_neg hij]
+          rw [ite_eq_right hij]
         · intro h
           exact absurd hj h
-      · rw [if_neg hj]
+      · rw [ite_eq_right hj]
         refine Finset.sum_eq_zero fun i hi => ?_
         have hij : i ≠ j := by
           rintro rfl
           exact hj hi
-        rw [if_neg hij]
+        rw [ite_eq_right hij]
     rw [hsum]
     by_cases hjs : j = s
     · subst hjs
-      rw [hs, if_pos hsT, hs, partialDeriv_coord_self, mul_one]
+      rw [hs, ite_eq_left hsT, hs, partialDeriv_coord_self, mul_one]
     · by_cases hjT : j ∈ T
       · have h1 : partialDeriv k ι S₁ s (coord k ι S₁ s) = 1 :=
           partialDeriv_coord_self k ι S₁ s
         have h2 : partialDeriv k ι S₁ s (coord k ι S₁ j) = 0 :=
           partialDeriv_coord_of_ne k ι S₁ s j (Ne.symm hjs)
-        rw [if_pos hjT, hin j hjT hjs, Derivation.leibniz, h1, h2]
+        rw [ite_eq_left hjT, hin j hjT hjs, Derivation.leibniz, h1, h2]
         simp only [smul_eq_mul]
         ring
       · have hne : s ≠ j := by
           rintro rfl
           exact hjT hsT
-        rw [if_neg hjT, map_zero, hout j hjT,
+        rw [ite_eq_right hjT, map_zero, hout j hjT,
           partialDeriv_coord_of_ne k ι S₁ s j hne, mul_zero]
   exact DFunLike.congr_fun hD f
 
@@ -339,19 +339,6 @@ theorem map_partialDeriv_self_eq_pow_mul
   have h3 := (mem_nonZeroDivisors_iff.mp hnzd).2 _ h0
   linear_combination h3
 
-private theorem mul_mem_span_singleton_mul {R : Type*} [CommRing R] (a : R) (I : Ideal R)
-    {g : R} (hg : g ∈ I) : a * g ∈ Ideal.span ({a} : Set R) * I :=
-  Ideal.mul_mem_mul (Ideal.subset_span (Set.mem_singleton_iff.mpr rfl)) hg
-
-private theorem finset_sum_smul_derivation_apply {k : Type*} [CommRing k] {S : Type*} [CommRing S]
-    [Algebra k S] {ι : Type*} (t : Finset ι) (c : ι → S) (D : ι → Derivation k S S) (x : S) :
-    (∑ i ∈ t, c i • D i) x = ∑ i ∈ t, c i * D i x := by
-  refine Finset.cons_induction_on t ?_ ?_
-  · simp
-  · intro a u ha ih
-    rw [Finset.sum_cons, Finset.sum_cons]
-    simp [ih]
-
 theorem map_derivIdeal_le_span_pow_mul [Fintype ι]
     (hin : ∀ i ∈ T, i ≠ s → φ (coord k ι S i) = coord k ι S₁ i * coord k ι S₁ s)
     (hs : φ (coord k ι S s) = coord k ι S₁ s)
@@ -384,31 +371,30 @@ theorem map_derivIdeal_le_span_pow_mul [Fintype ι]
             exact Ideal.mul_mem_left _ _
               (derivation_apply_mem_derivIdeal k J₁ (partialDeriv k ι S₁ j) hg)
         rw [his, map_partialDeriv_self_eq_pow_mul k ι S S₁ φ T s hin hs hout hsT hnzd x g e hgx]
-        exact mul_mem_span_singleton_mul _ _ hbr
+        exact Ideal.mem_span_singleton_mul.2 ⟨_, hbr, rfl⟩
       · rw [map_partialDeriv_eq_pow_mul_of_mem k ι S S₁ φ T s hin hs hout hnzd i hiT his x g e hgx]
-        exact mul_mem_span_singleton_mul _ _
-          (derivation_apply_mem_derivIdeal k J₁ (partialDeriv k ι S₁ i) hg)
+        exact Ideal.mem_span_singleton_mul.2
+          ⟨_, derivation_apply_mem_derivIdeal k J₁ (partialDeriv k ι S₁ i) hg, rfl⟩
     · rw [map_partialDeriv_eq_pow_mul_of_notMem k ι S S₁ φ T s hin hs hout hsT i hiT x g e hgx,
         pow_succ, mul_assoc]
-      exact mul_mem_span_singleton_mul _ _
-        (Ideal.mul_mem_left _ _
-          (derivation_apply_mem_derivIdeal k J₁ (partialDeriv k ι S₁ i) hg))
+      exact Ideal.mem_span_singleton_mul.2
+        ⟨_, Ideal.mul_mem_left _ _
+          (derivation_apply_mem_derivIdeal k J₁ (partialDeriv k ι S₁ i) hg), rfl⟩
   rw [Ideal.map_le_iff_le_comap, derivIdeal_le_iff]
   refine ⟨?_, ?_⟩
   · intro x hx
     obtain ⟨g, hg, hgx⟩ := hmem x hx
     refine Ideal.mem_comap.mpr ?_
     rw [hgx, pow_succ, mul_assoc]
-    exact mul_mem_span_singleton_mul _ _
-      (Ideal.mul_mem_left _ _ (le_derivIdeal k J₁ hg))
+    exact Ideal.mem_span_singleton_mul.2
+      ⟨_, Ideal.mul_mem_left _ _ (le_derivIdeal k J₁ hg), rfl⟩
   · intro D x hx
     refine Ideal.mem_comap.mpr ?_
     have h1 : D x = (∑ i : ι, D (coord k ι S i) • partialDeriv k ι S i) x :=
       congrArg (fun E : Derivation k S S => E x) (eq_sum_smul_partialDeriv k ι S D)
     have hDx : D x = ∑ i : ι, D (coord k ι S i) * partialDeriv k ι S i x := by
-      rw [h1]
-      exact finset_sum_smul_derivation_apply Finset.univ (fun i => D (coord k ι S i))
-        (fun i => partialDeriv k ι S i) x
+      rw [h1, ← Derivation.coeFn_coe, Derivation.coe_sum_linearMap, LinearMap.sum_apply]
+      simp [smul_eq_mul]
 
     rw [hDx, map_sum]
     refine sum_mem fun i _ => ?_

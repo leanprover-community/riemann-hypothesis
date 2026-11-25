@@ -16,52 +16,10 @@ public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.WeilBound.CoreStatements.PeriodRingComparison.RationalRingEquivalences.IsLogCore
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
 import Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.IsCrisDRAToBdRPlusIff
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.EqZeroOfPMulEqZero
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.CoreStatements.PeriodRingComparison.CrystallinePeriodRings.AcrisNAlgebraMapAinf
 import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Period
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.InclAsm, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.EqToBdRPlusOfBounded, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.JOCBounded, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.ZeroEquiv, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.Zt2, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.Zt3, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.JOCZero, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LeafMain, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.InclDone, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.CFIncl, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.CFPlain, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LocTied6OfCmp, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LocalComparisonOfComparison, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.MemKerPowIff, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LogarithmCompat, Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LocalComparisonFromAlternative

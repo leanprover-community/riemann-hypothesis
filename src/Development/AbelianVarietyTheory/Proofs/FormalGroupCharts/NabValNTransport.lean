@@ -16,42 +16,6 @@ import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.IsCanonicalGaug
 import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.JetEqFormalExpIffAndExistsLogStatement
 import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.MvPowerSeriesJetEqCalculusStatement
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffDmonNCongr
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -63,7 +27,6 @@ open GlobalTheory.ChartCmp GlobalTheory.ChartVal GlobalTheory.FrameBiextId
 open ReciprocityTheory.ChartRestriction.G.TB.WickVanishing
 
 namespace GlobalTheory.ChartField
-
 
 open GlobalTheory.FBMap in
 theorem nabValN_transport (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O] [StarRing O] [Module.Free ℤ O]
@@ -81,8 +44,8 @@ theorem nabValN_transport (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing
       (fun ℓ : Letter T r n => ℓ.2.2) (fun ℓ : Letter T r n => u ⟨ℓ.1, ℓ.2.1⟩) P =
     nabValN B' k h' w0 q (MvPowerSeries.map (algebraMap R k) f') (fun ℓ : Letter T r n => ℓ.2.2)
       (fun ℓ : Letter T r n => u' ⟨ℓ.1, ℓ.2.1⟩) P := by
-  have hε1 := (GlobalTheory.T.formalChartJetRel_unit_one_on_axes R d O m B B' φ φi ε hε).1
-  obtain ⟨lam, hl0, hle⟩ := (GlobalTheory.T.jetEq_formalExp_iff_and_exists_log k 2 d m).2 (FB.toK k ε) (by simp [FB.toK, hε1])
+  have hε1 := (GlobalTheory.ChartCmp.jRel_axes R d O m B B' φ φi ε hε).1
+  obtain ⟨lam, hl0, hle⟩ := (GlobalTheory.ChartCmp.jeq_expS_iff_and_exists_log k 2 d m).2 (FB.toK k ε) (by simp [FB.toK, hε1])
   have hbi := GlobalTheory.T.canonicalGauge_difference_biadditive_jet R d O m B B' φ φi ε hε k h h' lam hh hh' hl0 hle
   obtain ⟨g', hg', hgg⟩ := GlobalTheory.T.exists_biadditive_series_jetEq_of_biadditiveJet R d O B' k m (by omega) _ hbi
   have hcan := GlobalTheory.T.isCanonicalGauge_sub_biadditive R d O B' k h' g' hh' hg'
@@ -123,7 +86,7 @@ theorem nabValN_transport (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing
   have haK : GP (B.actK k w0) := fun i => by simp [FB.actK, B.A.const w0 i]
   have key := jeq_main (n := n) m q _ _ (B.actK k w0) hinv haK h (h' - g') lam (c0 hh) (c0 hcan) hl0 hj
     (MvPowerSeries.map (algebraMap R k) f')
-  rw [GlobalTheory.T.harmonicValueCopies_gauge_independent R d O k B' h' (h' - g') hh' hcan T r cc isX σ h1 h2 h3 h4 u' hu' n P hP w0 q]
+  rw [GlobalTheory.nabValN_harmonic_gauge_independent R d O k B' h' (h' - g') hh' hcan T r cc isX σ h1 h2 h3 h4 u' hu' n P hP w0 q]
   have hmap : MvPowerSeries.map (algebraMap R k) (ev (n := n) (fun b => comp1 φi (pt R (n := n) d b))
       (f' * ∏ b : Fin n, (ev ![pt R (n := n) d b, comp1 (B'.A.act w0) (pt R (n := n) d b)] ε) ^ q)) =
       ev (n := n) (fun b => comp1 (mapPt (algebraMap R k) φi) (pt k (n := n) d b))
@@ -163,7 +126,7 @@ theorem jeq_prod {σ J : Type} {m : ℕ} (s : Finset J) {f g : J → MvPowerSeri
   | empty => simpa using JEq.refl m _
   | insert a s ha ih =>
     rw [Finset.prod_insert ha, Finset.prod_insert ha]
-    exact ((GlobalTheory.T.mvPowerSeriesJetEq_calculus k m).1 _ _ _ _ _ (h a) ih).2.2
+    exact ((GlobalTheory.ChartCmp.JCalc.jeq_calculus k m).1 _ _ _ _ _ (h a) ih).2.2
 
 theorem sb_one (u : Q k d n) (f : PS k 1 d) : sb ![u] f = ev ![u.1] f :=
   (sb_apply _ _).trans (congrArg (ev · f) (funext fun j => by fin_cases j; rfl))
@@ -191,7 +154,7 @@ theorem jeq_box {m q : ℕ} (Φ Ψ A : Q k d 1) (hΦΨ : ac Φ Ψ = gen 0) (ε :
     rw [← FrameRatioAdj.ac_ac, hΦΨ]
     exact congrArg (fun u => sb ![u] (f b)) (sq_gen ![gen b] 0).symm
   rw [e3, sb_apply, sb_apply]
-  exact (GlobalTheory.T.mvPowerSeriesJetEq_calculus k m).2.2.2.1 d 1 n _ _ _ _ (fun i j => (_ : Q k d n).2 j) (fun i j => (_ : Q k d n).2 j)
+  exact (GlobalTheory.ChartCmp.JCalc.jeq_calculus k m).2.2.2.1 d 1 n _ _ _ _ (fun i j => (_ : Q k d n).2 j) (fun i j => (_ : Q k d n).2 j)
     (fun _ _ => JEq.refl _ _) (h b)
 
 theorem ac_gen (Φ : Q k d 1) : ac Φ (gen 0 : Q k d 1) = Φ := Subtype.ext ((ac_val _ _).trans (gt_comp1_pt_right _))

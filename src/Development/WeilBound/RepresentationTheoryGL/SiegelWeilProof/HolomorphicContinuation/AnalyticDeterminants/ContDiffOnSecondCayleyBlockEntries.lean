@@ -136,8 +136,8 @@ theorem Cm_mul_Cinv : Cm n * Cinv n = 1 := by
     simp only [Matrix.smul_apply, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
       Matrix.fromBlocks_apply₂₂, Matrix.add_apply, Matrix.mul_apply, Matrix.one_apply, Matrix.neg_apply,
       smul_eq_mul, Matrix.smul_apply] <;>
-    simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, mul_ite, ite_mul, mul_one, mul_zero,
-      zero_mul, one_mul, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, if_false] <;>
+    simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true, mul_ite, ite_mul, mul_one, mul_zero,
+      zero_mul, one_mul, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, ite_false] <;>
     split_ifs <;> (try simp_all) <;> (try split_ifs) <;> (try simp_all) <;> (try field_simp) <;> (try ring_nf) <;> (try simp [Complex.I_sq])
 
 theorem Cm_inv : (Cm n)⁻¹ = Cinv n := Matrix.inv_eq_right_inv Cm_mul_Cinv

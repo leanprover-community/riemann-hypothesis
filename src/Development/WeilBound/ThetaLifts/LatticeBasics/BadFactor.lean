@@ -109,8 +109,8 @@ theorem _root_.GlobalTheory.ThK.Dbl.badFactor_of (hD : DblX) (hS : StabEx) (hV :
   classical
   choose! β β1 β2 β3 using hB F E σ B n d X W M χX χW om r s r' s' P hn
   let φ : ∀ v : Pl F, (Fin n × Fin d → Fv F v) → ℂ := fun v => if v ∈ T then β v else M.vac v
-  have φ1 : ∀ v ∈ T, φ v = β v := fun v h => if_pos h
-  have φ2 : ∀ v ∉ T, φ v = M.vac v := fun v h => if_neg h
+  have φ1 : ∀ v ∈ T, φ v = β v := fun v h => ite_eq_left h
+  have φ2 : ∀ v ∉ T, φ v = M.vac v := fun v h => ite_eq_right h
   have hSB : ∀ v, φ v ∈ SB _ := fun v => by
     by_cases h : v ∈ T
     exacts [φ1 v h ▸ β1 v (hT h), φ2 v h ▸ (P.good.vac v).1]

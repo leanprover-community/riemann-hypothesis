@@ -18,7 +18,7 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.SubgroupFixed.HasFixed :
     {Γ V : Type} →
-      [inst : Group Γ] → [inst_1 : AddCommGroup V] → [inst_2 : _root_.Module ℂ V] → Representation ℂ Γ V → Subgroup Γ → Prop :=
+      [Group Γ] → [AddCommGroup V] → [_root_.Module ℂ V] → Representation ℂ Γ V → Subgroup Γ → Prop :=
     fun {Γ V : Type} [Group Γ] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ Γ V) (U : Subgroup Γ) ↦
       ∃ (v : V), v ≠ (0 : V) ∧ ∀ u ∈ U, ((ρ : Γ → V →ₗ[ℂ] V) u : V → V) v = v
 
@@ -55,8 +55,8 @@ private lemma UpperTheory.Reformulated.B.SubgroupFixed.core {R M N : Type*} [Rin
   exact (p (f x)).2
 
 theorem UpperTheory.Reformulated.B.SubgroupFixed.sub_fixed :
-    ∀ {Γ X V : Type} [inst : Group Γ] [inst_1 : AddCommGroup X] [inst_2 : _root_.Module ℂ X] [inst_3 : AddCommGroup V]
-      [inst_4 : _root_.Module ℂ V] (σ : Representation ℂ Γ X),
+    ∀ {Γ X V : Type} [Group Γ] [AddCommGroup X] [_root_.Module ℂ X] [AddCommGroup V]
+      [_root_.Module ℂ V] (σ : Representation ℂ Γ X),
       σ.IsIrreducible →
         ∀ (τ : Representation ℂ Γ V),
           ⨆ (f :

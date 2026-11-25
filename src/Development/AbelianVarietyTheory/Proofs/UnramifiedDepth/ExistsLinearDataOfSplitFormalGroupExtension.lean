@@ -360,7 +360,6 @@ private theorem SeriesTensor.ev_pt_X {R : Type} [CommRing R] {d : ℕ} (k : Fin 
     fin_cases a
     exact MvPowerSeries.constantCoeff_X _
 
-
 open SeriesTensor in
 theorem series_two_points_eq_sum_mul : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C], v.Integers O → ∀ [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] (d : ℕ) (J : Ideal (PS O 1 d)), Module.Free O (PS O 1 d ⧸ J) → Module.Finite O (PS O 1 d ⧸ J) → ∀ f : PS O 2 d, ∃ (m : ℕ) (g h : Fin m → PS O 1 d), ∀ (Φ : PS O 2 d →ₐ[O] O) (φ φ' : PS O 1 d →ₐ[O] O), (∀ u, Φ (ev (n := 2) ![pt O d 0] u) = φ u) → (∀ u, Φ (ev (n := 2) ![pt O d 1] u) = φ' u) → (∀ u ∈ J, φ u = 0) → (∀ u ∈ J, φ' u = 0) → Φ f = ∑ i, φ (g i) * φ' (h i) := by
   intro p _ C _ _ _ v O _ _ hv _ _ d J hfree hfin f
@@ -588,13 +587,13 @@ private theorem exists_curry :
     · rw [map_C]
       exact ((S.comp E₀).commutes t).trans (hc t)
     · change S (E₀ (X q)) = _
-      rw [hX₀, hS, if_pos rfl, hq]
+      rw [hX₀, hS, ite_eq_left rfl, hq]
   have h1 : S.toRingHom.comp E₁.toRingHom = C := by
     refine (mvPowerSeries_eval_of_pow_mem _ K (Fin 1 × Fin d) (fun q => C (X q)) hCK).2
       inferInstance O _ _ (fun t => ?_) (fun q => ?_) (fun q => rfl)
     · exact ((S.comp E₁).commutes t).trans (hc t)
     · change S (E₁ (X q)) = _
-      rw [hX₁, hS, if_neg (by simp), hq]
+      rw [hX₁, hS, ite_eq_right (by simp), hq]
   refine ⟨S, ?_, fun u => ?_, fun u => ?_⟩
   · obtain ⟨T, hTC, hTX⟩ : ∃ T : MvPowerSeries (Fin 1 × Fin d) (PS O 1 d) →+* PS O 2 d,
         (∀ u, T (C u) = E₁ u) ∧ ∀ q, T (X q) = X (0, q.2) :=
@@ -1205,17 +1204,6 @@ private theorem const_sub (a : Fin m → Fin d → PS R n e)
   MvPowerSeries.constantCoeff_subst_eq_zero (hasSub a ha) (fun q => ha q.1 q.2) hf
 
 private theorem ev_eq_sub (a : Fin m → Pt R n d) (f : PS R m d) : ev a f = sub a f := rfl
-
-private theorem addOf_pt (F : Fin d → PS R 2 d) :
-    addOf F (pt R (n := 2) d 0) (pt R (n := 2) d 1) = F := by
-  funext i
-  unfold addOf ev
-  have h : (fun q : Fin 2 × Fin d => (![pt R (n := 2) d 0, pt R (n := 2) d 1] : Fin 2 → Pt R 2 d) q.1 q.2) =
-      MvPowerSeries.X := by
-    funext ⟨a, b⟩
-    fin_cases a <;> rfl
-  rw [h, MvPowerSeries.subst_self]
-  rfl
 
 private theorem const_one (φ : Fin d → PS R n e) (hφ : ∀ j, MvPowerSeries.constantCoeff (φ j) = 0) :
     ∀ (i : Fin 1) j, MvPowerSeries.constantCoeff ((![φ] : Fin 1 → Fin d → PS R n e) i j) = 0 := by

@@ -98,10 +98,10 @@ theorem v2con_bracket {R : Type*} [CommRing R] {ι : Type*} [Fintype ι] {n : �
   have k6 : (a = d) = (d = a) := propext eq_comm
   by_cases hS : l ∈ S
   · by_cases hv : LL.vec l = true
-    · simp only [hS, hv, if_true]
+    · simp only [hS, hv, ite_true]
       by_cases h3 : e = d <;> by_cases h4 : e = b <;> by_cases h5 : b = c <;> by_cases h6 : d = a <;>
         simp_all [v2con_der_X]
-    · simp only [hS, hv, if_true]
+    · simp only [hS, hv, ite_true]
       by_cases h3 : e = c <;> by_cases h4 : e = a <;> by_cases h5 : b = c <;> by_cases h6 : d = a <;>
         simp_all [v2con_der_X]
   · simp [hS]

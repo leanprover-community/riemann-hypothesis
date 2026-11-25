@@ -43,21 +43,10 @@ theorem aic_localization {B S : Type} [CommRing B] [CommRing S] [Algebra B S] (M
     [IsLocalization M S] (h : AIC B) : AIC S := by
   classical
   intro p hp hd
-  obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples_of_finset M (Finset.image p.coeff (Finset.range (p.natDegree + 1)))
+  let b := IsLocalization.commonDenom M p.support p.coeff
   set r : S := algebraMap B S b
-  have hl : p.scaleRoots r ∈ lifts (algebraMap B S) := by
-    rw [lifts_iff_coeff_lifts]
-    intro i
-    rw [coeff_scaleRoots]
-    rcases lt_trichotomy i p.natDegree with hi | hi | hi
-    · obtain ⟨t, ht⟩ := hb (p.coeff i) (Finset.mem_image.2 ⟨i, Finset.mem_range.2 (by omega), rfl⟩)
-      refine ⟨t * b ^ (p.natDegree - (i + 1)), ?_⟩
-      rw [map_mul, ht, map_pow, Algebra.smul_def]
-      simp only [r]
-      have : p.natDegree - i = (p.natDegree - (i + 1)) + 1 := by omega
-      rw [this, pow_succ]; ring
-    · subst hi; rw [hp.coeff_natDegree]; exact ⟨1, by simp⟩
-    · rw [coeff_eq_zero_of_natDegree_lt hi]; exact ⟨0, by simp⟩
+  have hl : p.scaleRoots r ∈ lifts (algebraMap B S) :=
+    IsLocalization.scaleRoots_commonDenom_mem_lifts M p (hp.leadingCoeff ▸ one_mem _)
   obtain ⟨q, hq, hqd, hqm⟩ := lifts_and_natDegree_eq_and_monic hl ((monic_scaleRoots_iff r).2 hp)
   obtain ⟨β, hβ⟩ := h q hqm (by rw [hqd, natDegree_scaleRoots]; exact hd)
   have hru : IsUnit r := IsLocalization.map_units S b

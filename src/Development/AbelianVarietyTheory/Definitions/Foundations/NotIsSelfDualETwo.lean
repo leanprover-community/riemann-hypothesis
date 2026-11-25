@@ -9,8 +9,6 @@ open NumberField
 open Formalism.BasicNotions Formalism.L2.DIV
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.TestLat.Model
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] {n N : ℕ} {C : Type}
@@ -66,7 +64,7 @@ theorem _root_.GlobalTheory.TestLat.Model.sumGram_form [StarRing K] [Fintype C] 
   simp only [Equiv.apply_symm_apply]
   rw [Finset.sum_eq_single c (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [if_pos rfl]
+  rw [ite_eq_left rfl]
   simp only [RingHom.id_apply, starRingEnd_apply]
   ring
 

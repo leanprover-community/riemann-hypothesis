@@ -486,7 +486,7 @@ theorem form_flat (A : ℝ) (x y : DVar X.Tau a b → ℂ) :
     matH (hSc X.Tau a b A⁻¹) x y = formV A D.what₂.Tau a b (s.flatV a b x) (s.flatV a b y) := by
   rw [formV_apply]
   show (∑ i, ∑ j, x i * hSc X.Tau a b A⁻¹ i j * conj (y j)) = _
-  simp only [hSc, Matrix.diagonal_apply, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hSc, Matrix.diagonal_apply, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Fintype.sum_prod_type, ← Equiv.sum_comp s.iT.symm, Finset.sum_div]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [Fintype.sum_prod_type, Finset.sum_div]
@@ -676,11 +676,6 @@ section Lat
 variable {D : Car} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
 
-include B in
-theorem sc_pos : 0 < (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹ := by
-  rw [show TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ) = Formalism.L2.Th1.F.area B.L from B.areaOK]
-  exact inv_pos.2 (Formalism.L2.Th1.F.areaPos_thm B.L)
-
 theorem delta_ne (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : δ ≠ 0 :=
   Formalism.L2.Ker.Cd.IntegralLatticeDensity.delta_nonzero_link D cc hcc δ hδ
 
@@ -711,21 +706,6 @@ theorem La_theta {x : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b} (hx : x ∈ 
   | zero => rw [smul_zero]; exact zero_mem _
   | add x y _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2
   | neg x _ h => rw [smul_neg]; exact neg_mem h
-
-theorem theta_laF {b₀ : ℤ} (hb : Odd b₀) {x : DVar X.Tau a b → ℂ} (hx : x ∈ s.laF B.tor L L') :
-    cmTheta b₀ D.host.d • x ∈ s.laF B.tor L L' := by
-  obtain ⟨k, rfl⟩ := hb
-  have h1 : cmTheta (2 * k + 1) D.host.d = (k : ℂ) + cmTheta 1 D.host.d := by
-    unfold cmTheta
-    push_cast
-    ring
-  show s.flatV a b (cmTheta (2 * k + 1) D.host.d • x) ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L'
-  rw [map_smul, h1, add_smul]
-  refine add_mem ?_ (La_theta B hx)
-  have h2 : ((k : ℂ) • s.flatV a b x) = k • s.flatV a b x := by
-    rw [← Int.cast_smul_eq_zsmul ℂ]
-  rw [h2]
-  exact AddSubgroup.zsmul_mem _ hx k
 
 alias odd_of_cmOK := _root_.Formalism.L2.Ker.KS.Lat.odd_of_cmOK
 
@@ -990,12 +970,6 @@ theorem aa_unit_at (P : HeightOneSpectrum (𝓞 X.E)) (hb : s.PrimeTo D.host.�
 
 end IdealS
 
-section NatS
-
-variable {D : Car} {X : Fields} (s : Seam D X)
-
-end NatS
-
 section Main
 
 variable {D : Car} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
@@ -1027,25 +1001,6 @@ theorem laHyp_ambOf_top {δ : ℂ} (B : Base D (⊤ : Ideal (𝓞 D.host.K)) δ)
     (fun P _ => by rw [Ideal.map_top]; exact primeTo_top s P)
 
 end Main
-
-section Bad
-
-open Formalism.EigenvalueLevelCeiling (plc)
-
-variable {X : Fields} {Pr : Primes X} (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-
-variable {sel}
-
-variable (sel)
-
-end Bad
-
-section Chain
-
-variable {D : Car} {X : Fields} {Pr : Primes X} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-
-end Chain
 
 end Formalism.L2.Ker.Cd
 end -- clump:auto

@@ -82,8 +82,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 section -- clump:auto
 @[expose] public section
 
-
-
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj
@@ -169,9 +167,6 @@ theorem ranks_le {P : ParameterChoice' D L} (T : ParamsT D L P) :
 variable {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
 
-theorem dim_eq : GlobalTheory.CompHt.dimFlag (dat p i) = D.R.f * D.R.r.choose 2 := by
-  exact GlobalTheory.SlopeRec.dimFlag_eq p.fw.laws.pins ⟨Nat.le_add_left 1 i, i.2⟩
-
 theorem lenT_mul_le {P : ParameterChoice' D L} (T : ParamsT D L P) :
     (lenT p i T.PP : ℝ) * (D.R.r : ℝ) ^ 3 ≤ 2 * L.sc.b := by
   have hn : 0 < D.R.n := D.R.ord_pos
@@ -195,7 +190,7 @@ theorem lenT_mul_le {P : ParameterChoice' D L} (T : ParamsT D L P) :
     one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hPP) (one_le_pow₀ hD)) hk
   have hlen : (lenT p i T.PP : ℝ) ≤ 2 * (T.PP ^ 2 * (T.Dp : ℝ) ^ 2 * D.R.k) := by
     unfold lenT
-    rw [dim_eq, ← T.Dp_eq]
+    rw [GlobalTheory.CovTop.WtShape.dim_eq, ← T.Dp_eq]
     have a := (Nat.ceil_lt_add_one (a := T.PP ^ 2 * (T.Dp : ℝ) ^ 2 * D.R.k / D.R.m) (by positivity)).le
     have b : T.PP ^ 2 * (T.Dp : ℝ) ^ 2 * D.R.k / D.R.m ≤ T.PP ^ 2 * (T.Dp : ℝ) ^ 2 * D.R.k := div_le_self (by linarith) hm
     linarith
@@ -293,8 +288,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 
 noncomputable section
@@ -325,8 +318,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NumPtOfSizeStatement =====
@@ -353,13 +344,13 @@ open Classical
 
 theorem thA_big (u : Weight Dw) (n : ℕ) (τ : Psi H) (i : ℕ) (hi : i < Dw.p) :
     thA Dw u n (τ.1, i) = (u τ ⟨i, by omega⟩ - u τ ⟨Dw.p - 1, by omega⟩ + 1).toNat := by
-  simp only [thA, wtOf_big _ _ τ i hi, shift, dif_pos (show 0 < Dw.p by omega), Pi.add_apply, GlobalTheory.FlatLine.parWt]
+  simp only [thA, wtOf_big _ _ τ i hi, shift, dite_eq_left (show 0 < Dw.p by omega), Pi.add_apply, GlobalTheory.FlatLine.parWt]
   congr 1; ring
 
 theorem thA_small (u : Weight Dw) (n : ℕ) (τ : Psi H) (i : ℕ) (hi : i < Dw.q) (hp : 0 < Dw.p) :
     thA Dw u n (conjEmb τ.1, i) =
       (u τ ⟨Dw.p - 1, by omega⟩ - u τ ⟨Dw.p + (Dw.q - 1 - i), by omega⟩ - 1 - 2 * ((n / 2 : ℕ) : ℤ)).toNat := by
-  simp only [thA, wtOf_small _ _ τ i hi, shift, dif_pos hp, Pi.add_apply, GlobalTheory.FlatLine.parWt]
+  simp only [thA, wtOf_small _ _ τ i hi, shift, dite_eq_left hp, Pi.add_apply, GlobalTheory.FlatLine.parWt]
   congr 1; ring
 
 theorem thA_out (u : Weight Dw) (n : ℕ) (τ : E →+* ℂ) (i : ℕ) (h : Dw.mult τ ≤ i) : thA Dw u n (τ, i) = 0 := by
@@ -372,9 +363,9 @@ theorem psi_or_conj (τ : E →+* ℂ) : (∃ τ' : Psi H, τ = τ'.1) ∨ ∃ �
   · exact Or.inl ⟨⟨τ, h⟩, rfl⟩
   · exact Or.inr ⟨⟨conjEmb τ, conj_mem h⟩, (conjEmb_conjEmb τ).symm⟩
 
-theorem mult_psi (τ : Psi H) : Dw.mult τ.1 = Dw.p := by unfold Datum.mult; rw [if_pos τ.2]
+theorem mult_psi (τ : Psi H) : Dw.mult τ.1 = Dw.p := by unfold Datum.mult; rw [ite_eq_left τ.2]
 
-theorem mult_conj (τ : Psi H) : Dw.mult (conjEmb τ.1) = Dw.q := by unfold Datum.mult; rw [if_neg (conj_not_mem τ)]
+theorem mult_conj (τ : Psi H) : Dw.mult (conjEmb τ.1) = Dw.q := by unfold Datum.mult; rw [ite_eq_right (conj_not_mem τ)]
 
 theorem tele_real (f : ℕ → ℝ) (K : ℕ) :
     ∑ j ∈ Finset.range K, ((j : ℝ) + 1) * (f j - f (j + 1)) = ∑ j ∈ Finset.range K, (f j - f K) := by
@@ -477,7 +468,6 @@ theorem card_psi (F : ℕ) (hF : Module.finrank ℚ E = 2 * F) :
   rw [Finset.card_univ, NumberField.Embeddings.card E ℂ, hF] at ht
   omega
 
-
 open Classical in
 theorem big_le (u : Weight Dw) (k n B : ℕ) (hk : 2 ≤ k) (hkp : k ≤ Dw.p + 1) (hanti : ∀ τ, Antitone (u τ))
     (hz : ∀ τ (i : Fin (Dw.p + Dw.q)), (i : ℕ) + 2 = k → u τ i = 0) (hB : ∀ τ i, |u τ i| ≤ B) (τ : E →+* ℂ) :
@@ -534,7 +524,6 @@ theorem cloud_eq (u : Weight Dw) (k n : ℕ) (hk : 2 ≤ k) (hkp : k ≤ Dw.p + 
     rw [val i (by omega), val (k - 2) (by omega), hz τ ⟨k - 2, by omega⟩ (by show k - 2 + 2 = k; omega)]
     simp
 
-
 open Classical in
 theorem row_le (u : Weight Dw) (k n B : ℕ) (Sg : ℝ) (hk : 2 ≤ k) (hkp : k ≤ Dw.p + 1) (hu : WtBd Dw k n u B Sg)
     (τ : E →+* ℂ) :
@@ -545,18 +534,18 @@ theorem row_le (u : Weight Dw) (k n B : ℕ) (Sg : ℝ) (hk : 2 ≤ k) (hkp : k 
   have hp : 0 < Dw.p := by omega
   have key := sum_lieFactorRank_mul_exponentGap_eq (Dw := Dw) (thA Dw u n) τ (thA_anti u n hanti hp τ) (thA_out u n τ _ le_rfl)
   rcases psi_or_conj (H := H) τ with ⟨τ', rfl⟩ | ⟨τ', rfl⟩
-  · rw [if_pos τ'.2]
+  · rw [ite_eq_left τ'.2]
     refine le_of_eq_of_le ?_ (hS τ')
     rw [← cloud_eq u k n hk hkp hanti hz τ', ← key (k - 2) (by rw [mult_psi]; omega)]
     refine Finset.sum_congr rfl fun j _ => if_congr ?_ rfl rfl
     have h : InPsi H τ'.1 := τ'.2
     simp only [IsSmall, IsSpread, h, not_true, false_or, true_and, rk]
     omega
-  · rw [if_neg (conj_not_mem τ')]
+  · rw [ite_eq_right (conj_not_mem τ')]
     have h : ¬ InPsi H (conjEmb τ'.1) := conj_not_mem τ'
     have key2 := key _ le_rfl
-    simp only [Fin.is_lt, if_true, thA_out u n _ _ le_rfl] at key2
-    simp only [IsSmall, h, not_false_iff, true_or, if_true]
+    simp only [Fin.is_lt, ite_true, thA_out u n _ _ le_rfl] at key2
+    simp only [IsSmall, h, not_false_iff, true_or, ite_true]
     rw [key2, mult_conj]
     calc _ ≤ ∑ j ∈ Finset.range Dw.q, (2 * (B : ℝ)) := Finset.sum_le_sum fun j _ => by
           have : ((thA Dw u n (conjEmb τ'.1, j) : ℕ) : ℝ) ≤ ((2 * B : ℕ) : ℝ) :=
@@ -788,15 +777,15 @@ theorem point_le (F N k m M : ℕ) (Mb Sm : ℝ) (vd : ℕ → ℝ) (large₂ : 
   have hXt : 0 ≤ (F:ℝ) * m * Mb * (Real.log p / ((p : ℝ) - 1)) := mul_nonneg hX ht0
   have hnM : ¬ M < p := by omega
   unfold eOf
-  rw [if_neg hnM]
+  rw [ite_eq_right hnM]
   by_cases h2 : p ∈ S₀
-  · rw [if_pos h2, if_pos h2]
+  · rw [ite_eq_left h2, ite_eq_left h2]
     have e : ((F:ℝ) * m * Mb + Sm) * ((1 + vd p / 2) * Real.log p) = ((F:ℝ) * m * (1 + vd p / 2) * Mb + Sm) * Real.log p + Sm * (vd p / 2 * Real.log p) := by ring
     have e0 : 0 ≤ Sm * (vd p / 2 * Real.log p) := by positivity
     linarith
-  · rw [if_neg h2]
+  · rw [ite_eq_right h2]
     by_cases hR : p ∈ R
-    · rw [if_pos hR]
+    · rw [ite_eq_left hR]
       simp only [h2, hR, ↓reduceIte] at hI2 hIR ⊢
       have e : ((F:ℝ) * N * Mb + Sm) / ((p:ℝ) - 1) * Real.log p
           = F * Mb * (N * Real.log p / ((p:ℝ) - 1)) + Sm * (Real.log p / ((p:ℝ) - 1)) := by ring
@@ -806,10 +795,10 @@ theorem point_le (F N k m M : ℕ) (Mb Sm : ℝ) (vd : ℕ → ℝ) (large₂ : 
       have f2 : Sm * (Real.log p / ((p:ℝ) - 1)) ≤ Sm * large₂ := mul_le_mul_of_nonneg_left (ht1.trans hLg) hSm
       have hIR_eq : ((F:ℝ) * m * Mb + Sm) * large₂ = F * Mb * (m * large₂) + Sm * large₂ := by ring
       linarith
-    · rw [if_neg hR]
+    · rw [ite_eq_right hR]
       simp only [h2, hR, ↓reduceIte, add_zero, zero_add] at hI2 hIR ⊢
       by_cases hk : m * p < k
-      · rw [if_pos hk, if_pos hk]
+      · rw [ite_eq_left hk, ite_eq_left hk]
         unfold eSmall
         have hlb : Real.logb p M * Real.log p = Real.log M := by
           rw [Real.logb, div_mul_cancel₀ _ hlp.ne']
@@ -832,7 +821,7 @@ theorem point_le (F N k m M : ℕ) (Mb Sm : ℝ) (vd : ℕ → ℝ) (large₂ : 
             ≤ (6 * F * m * Mb + Sm) * (Real.log p / ((p:ℝ) - 1)) :=
           mul_le_mul_of_nonneg_right (by linarith) ht0
         linarith
-      · rw [if_neg hk, if_neg hk]
+      · rw [ite_eq_right hk, ite_eq_right hk]
         have e : ((6 * (F:ℝ) * m * Mb + Sm) / ((p:ℝ) - 1) + 1) * Real.log p
             = (6 * F * m * Mb + Sm) * (Real.log p / ((p:ℝ) - 1)) + Real.log p := by ring
         rw [e]
@@ -866,7 +855,7 @@ theorem primeSum_eOf : ∀ (F N k m M : ℕ) (Mb Sm : ℝ) (vd : ℕ → ℝ) (l
     · have hqM : M < q := by
         by_contra hc
         exact hq (mem_filter.2 ⟨mem_range.2 (by omega), h⟩)
-      unfold eOf; rw [if_pos hqM]
+      unfold eOf; rw [ite_eq_left hqM]
     · rfl
 
   have hF : (0:ℝ) ≤ F := Nat.cast_nonneg _
@@ -886,7 +875,7 @@ theorem primeSum_eOf : ∀ (F N k m M : ℕ) (Mb Sm : ℝ) (vd : ℕ → ℝ) (l
     intro q hq
     have hqp := (mem_filter.1 hq).2
     have hqM : q ≤ M := by have := mem_range.1 (mem_filter.1 hq).1; omega
-    rw [if_pos hqp]
+    rw [ite_eq_left hqp]
     exact point_le F N k m M Mb Sm vd large₂ S₀ R hMb hSm hvd hLg hLM hRq q hqp hqM
   simp only [Finset.sum_add_distrib] at step1
   have t4 : ∑ q ∈ S, (if q ∈ S₀ then ((F:ℝ) * m * Mb + Sm) * ((1 + vd q / 2) * Real.log q) else 0) ≤ 3 / 2 * A := by
@@ -1129,7 +1118,7 @@ theorem sumAt_of_sizes {PP C₁ C₂ : ℝ} (h1 : 0 ≤ C₁) (h2 : 0 ≤ C₂) 
       (fun r hr hr2 hrR => hunr r hr hr2
         (fun h => hrR (by simp [h])) (fun h => hrR (by simp [h]))) q
     rw [hN] at this
-    simpa only [if_pos hqp.out] using this
+    simpa only [ite_eq_left hqp.out] using this
 
 end Point
 
@@ -1144,8 +1133,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SumPtOfSizes", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NumPt\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RefTheta\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumPointOfWeightNumerical\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 
@@ -1174,8 +1161,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SumPtOfSizesStatement =====
@@ -1197,7 +1182,6 @@ section Free
 variable {ι : Type} [Fintype ι] {N : ℕ} (W : Wts ι N) (h : W.Hyp) (hd : W.IsDiv)
 include h hd
 
-
 omit [Fintype ι] in
 theorem antitone (τ : ι) : Antitone (W.u1 τ) := fun a b hab => by
   have hab' : (a : ℕ) ≤ b := hab
@@ -1210,7 +1194,6 @@ theorem mul_abs_le (τ : ι) (a : Fin N) : (W.T : ℝ) * |(W.u1 τ a : ℝ)| ≤
   have h3 := h.h5 τ a
   have h4 : 0 ≤ ((W.Dd : ℝ) + 1) * |(W.u1 τ a : ℝ)| := by positivity
   linarith
-
 
 omit [Fintype ι] in
 theorem mul_cloud_le (τ : ι) (a : Fin N) (ha : (a : ℕ) < W.kc) : (W.T : ℝ) * (W.u1 τ a : ℝ) ≤ W.S + 2 * N := by
@@ -1369,8 +1352,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 
 noncomputable section
@@ -1398,8 +1379,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WtPtOfSizeStatement =====
@@ -1408,8 +1387,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SumPtOfSize", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RefTheta\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NumPtOfSizeStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SumPtOfSizesStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WtPtOfSizeStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open GlobalTheory.RefSum GlobalTheory.CovTop GlobalTheory.BigTop
@@ -1425,8 +1402,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SumPtOfSizeStatement", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RefTheta\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SumPtOfSize\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 end -- clump:auto
 end -- clump:auto

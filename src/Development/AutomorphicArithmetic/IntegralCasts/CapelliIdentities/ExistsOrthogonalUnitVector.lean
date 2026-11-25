@@ -9,9 +9,9 @@ public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 noncomputable def UpperTheory.Reformulated.B.ExistsOrthogonalBasisWithUnitNorms.PairUnit :
     {K V : Type} →
-      [inst : Field K] →
-        [inst_1 : StarRing K] →
-          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module K V] → Subring K → (V →ₗ⋆[K] V →ₗ[K] K) → Prop :=
+      [Field K] →
+        [StarRing K] →
+          [AddCommGroup V] → [_root_.Module K V] → Subring K → (V →ₗ⋆[K] V →ₗ[K] K) → Prop :=
     fun {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [_root_.Module K V] (S : Subring K) (h : V →ₗ⋆[K] V →ₗ[K] K) ↦
       ∀ (w y : V),
         ((h : V → V →ₗ[K] K) y : V → K) w = (1 : K) →
@@ -101,7 +101,7 @@ private theorem UpperTheory.Reformulated.B.ExistsOrthogonalBasisWithUnitNorms.ex
   rw [map_add (f := _), map_smul, map_smul, hxw, hxy, smul_zero, smul_zero, add_zero]
 
 theorem UpperTheory.Reformulated.B.ExistsOrthogonalBasisWithUnitNorms.exists_ortho_unit :
-    ∀ {K V : Type} [inst : Field K] [inst_1 : StarRing K] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module K V]
+    ∀ {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [_root_.Module K V]
       {S : Subring K} {h : V →ₗ⋆[K] V →ₗ[K] K} [FiniteDimensional K V],
       Formalism.HermitianLattices.Ext.L3.WA.IsHermSemilocal S →
         h.IsSymm →

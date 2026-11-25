@@ -388,7 +388,7 @@ theorem gram_matrix_unitary_invariance : GramU := by
     by_cases hc : c = Fin.last r
     · subst hc; simp [uMat]
     · have hlt : c < Fin.last r := lt_of_le_of_ne (Fin.le_last c) hc
-      simp only [uMat, if_neg hc, if_neg (Ne.symm hc), dif_neg (not_lt_of_gt hlt)]
+      simp only [uMat, ite_eq_right hc, ite_eq_right (Ne.symm hc), dite_eq_right (not_lt_of_gt hlt)]
   show Formalism.UG.hform _ _ (∑ c, uMat v x c a • Y c) (∑ c, uMat v x c b • Y c) =
     Formalism.UG.hform _ _ (Y a) (Y b)
   rw [hform_sum_left]
@@ -409,8 +409,8 @@ theorem gram_matrix_unitary_invariance : GramU := by
     by_cases ha : a = Fin.last r
     · by_cases hb : b = Fin.last r
       · subst ha; subst hb; simp
-      · rw [if_neg hb, hG0 a b (fun h => hb h.2)]; simp
-    · rw [if_neg ha, hG0 a b (fun h => ha h.1)]; simp
+      · rw [ite_eq_right hb, hG0 a b (fun h => hb h.2)]; simp
+    · rw [ite_eq_right ha, hG0 a b (fun h => ha h.1)]; simp
   · intro c _ hc
     rw [hG0 c (Fin.last r) (fun h => hc h.1), mul_zero, mul_zero]
   · intro h; exact absurd (Finset.mem_univ _) h

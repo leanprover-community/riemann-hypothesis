@@ -177,10 +177,7 @@ theorem exists_idele_at {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what₂.Tau)
     split_ifs
     · exact mul_inv_cancel₀ hw
     · exact one_mul 1
-  have hyx : y * x = 1 := (mul_comm y x).trans hxy
-  refine ⟨⟨x, y, hxy, hyx⟩, ?_, ?_⟩
-  · rw [Units.val_mk]; exact hx1
-  · rw [Units.val_mk]; exact hx2
+  exact ⟨.mkOfMulEqOne x y hxy, hx1, hx2⟩
 
 theorem det_compAt (θ : InfFam D) (τ : D.what₂.Tau) {k : ℕ} (M : Matrix (Fin k) (Fin k) (AE D)) :
     (compAt θ τ M).det = θ τ (infPart D M.det) :=
@@ -242,7 +239,7 @@ theorem exists_root {θ : InfFam D} (hθ : IsInfFam θ) (V : HSp D) (hV : ∀ τ
     refine Finset.prod_congr rfl fun τ _ => ?_
     obtain ⟨n, hn, -, h⟩ := hc τ
     have e : n = 2 * c τ := by exact_mod_cast hn
-    rw [h θ hθ (x τ) (hx1 τ) (fun τ' h' => by rw [hx2, if_neg h']), hx2, if_pos rfl, hw2, e, ← hw1, _root_.zpow_mul]
+    rw [h θ hθ (x τ) (hx1 τ) (fun τ' h' => by rw [hx2, ite_eq_right h']), hx2, ite_eq_left rfl, hw2, e, ← hw1, _root_.zpow_mul]
     simp
 
 end GlobalTheory.OneMapRef.RealMove

@@ -53,42 +53,6 @@ public import Formalism.LocalToGlobal.GroupLattices.AdmissibleAtGeneratorPlaces
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.AndLeft
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LevelPrimeColumnValuationsAtBundlePoints
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PropertyAtConstructedPointsOfTrueColumnsViewStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StepBoxIffStepSuppDeg
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
@@ -96,12 +60,8 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemExtLatOfMe
 import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Formalism.LocalToGlobal.Columns.CoefficientsModP
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PlacesOverConjPrimes
 import Formalism.HermitianLattices.HermitianLatticesProofs.NeighbourConstruct
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
@@ -577,8 +537,8 @@ theorem exists_basis_ker {d : Deco E n ST SG} (hd : d.Ok) (P : ST) (hs : d.at P.
     obtain ⟨s', hs', b, hb⟩ := exists_mul_eq_of_unif hT hT2 h1
     refine (Formalism.L2.Col.mem_locP P.1 _ x).2 ⟨s' * s, fun hm => (P.1.isPrime.mem_or_mem hm).elim hs' hs1, ?_⟩
     have h2 : s' • r = ∑ j, (Function.update (s' • r) i b) j • fun a => B₀ a j := by
-      rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i), hcol, if_pos rfl, Function.update_self,
-        Finset.sum_congr rfl fun j hj => by rw [hcol, if_neg (Finset.ne_of_mem_erase hj),
+      rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i), hcol, ite_eq_left rfl, Function.update_self,
+        Finset.sum_congr rfl fun j hj => by rw [hcol, ite_eq_right (Finset.ne_of_mem_erase hj),
           Function.update_of_ne (Finset.ne_of_mem_erase hj)]]
       funext a
       by_cases ha : a = i
@@ -609,19 +569,6 @@ theorem exists_basis_ker {d : Deco E n ST SG} (hd : d.Ok) (P : ST) (hs : d.at P.
 end Ker
 
 section Data
-
-theorem unramOver_of_mem {X : Fields} {S : Set ℕ} (mu : Tup X.F X.E X.K S) {p : ℕ} (hp : p.Prime) (hS : p ∈ S) :
-    UnramOver (mu : Chr X.F X.E X.K) p := by
-  intro v hv hq
-  have h1 : GoodPl X.E S v := by
-    by_contra hg
-    exact hq (Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 (Subgroup.mem_inf.1 mu.2).2 v) hg)
-  have h2 : ringChar (𝓞 X.F ⧸ v.asIdeal) ∣ p := by
-    rw [← ringChar.spec, ← map_natCast (Ideal.Quotient.mk v.asIdeal), Ideal.Quotient.eq_zero_iff_mem]
-    exact hv
-  haveI := v.isPrime
-  have h3 : ringChar (𝓞 X.F ⧸ v.asIdeal) = p := ((Nat.dvd_prime hp).1 h2).resolve_left CharP.ringChar_ne_one
-  exact h1.2.2 (show ringChar (𝓞 X.F ⧸ v.asIdeal) ∈ S from h3 ▸ hS)
 
 theorem stdOver_of_stdAtT {X : Fields} {Pr : Primes X} (hPr : Pr.Ok) (u : Pr.Word) {n : ℕ}
     {SG : Finset (HeightOneSpectrum (𝓞 X.E))} (d : DecoSet (E := X.E) (n := n) (ST := Pr.vT u) (SG := SG)) (h : StdAtT d.1) : StdOver (Pr.T u) d.1.N := by
@@ -660,7 +607,7 @@ theorem pTerm_std : GlobalTheory.IndefiniteRowSideFullHecke.JetSumTable.JetMomen
 
   obtain ⟨m0, eta, htied, hmu⟩ := hyp.tied
   have hscal := ((((GlobalTheory.CharVal.charValAtT Z H s χ u hZ hyp.ana.1 hyp.ana.2.1 hyp.ana.2.2.2.2.1 hyp.chiK).2.2 m0 eta htied sel
-    hyp.isSel S mu (unramOver_of_mem mu hTp hTS) (fun k => unramOver_of_mem mu (hPr.g_prime k) (hgS k)) cst hmu ⟨i, hi⟩).1
+    hyp.isSel S mu (GlobalTheory.BarStd.unramOver mu hTp hTS) (fun k => GlobalTheory.BarStd.unramOver mu (hPr.g_prime k) (hgS k)) cst hmu ⟨i, hi⟩).1
     w hTw).1).2 _ _ d.1.N fr d'.1.N fr' hsd hsd' (stdOver_of_stdAtT hPr u d hstd.1) (stdOver_of_stdAtT hPr u d' hstd.2) hfr hfr'
 
   have hcopT : Nat.Coprime (Ideal.absNorm cc) (Z.Pr.T u) := by
@@ -807,16 +754,6 @@ end Hom
 
 variable {X : Fields} {n : ℕ}
 
-theorem framed_gmap {SB : Finset (HeightOneSpectrum (𝓞 X.E))} {N : Submodule (𝓞 X.E) (Sp X.E n)} {fr : Frs X.E n SB}
-    (h : Framed N fr) (g : Sp X.E n ≃ₗ[X.E] Sp X.E n) : Framed (gmap g N) fun P => g * fr P := by
-  intro P x
-  rw [mem_localization_gmap, ← h P x]
-  simp
-
-theorem rho_inv_apply (lam : X.Tau → DomWeight n) (γ : UF X.E n) (y : VV X.K lam) :
-    rhoVr X.emb lam (ufGL X.E n γ⁻¹) (rhoVr X.emb lam (ufGL X.E n γ) y) = y := by
-  rw [← Module.End.mul_apply, ← map_mul, ← map_mul, inv_mul_cancel, map_one, map_one, Module.End.one_apply]
-
 theorem mem_localization_map {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module (𝓞 K) V] (w : HeightOneSpectrum (𝓞 K))
     (f : V →ₗ[𝓞 K] V) (hf : Function.Injective f) (M : Submodule (𝓞 K) V) (y : V) :
     f y ∈ localization₂ w.asIdeal (M.map f) ↔ y ∈ localization₂ w.asIdeal M := by
@@ -831,7 +768,7 @@ theorem rho_mem_valAt (w : HeightOneSpectrum (𝓞 X.K)) (lam : X.Tau → DomWei
   unfold valAt
   rw [delAtr_gmap]
   exact mem_localization_map w ((rhoVr X.emb lam (ufGL X.E n γ)).restrictScalars (𝓞 X.K))
-    (Function.LeftInverse.injective (rho_inv_apply lam γ)) _ y
+    (Function.LeftInverse.injective (GlobalTheory.KerT.Bar.rho_inv_apply lam γ)) _ y
 
 theorem pTerm_of_std : ∀ (Z : Dat) (H : D7) (s : Seam H Z.X) (cc : Ideal (𝓞 H.host.K)) (δ : ℂ) (B : Base H cc δ) (χ : TaylorLogMetric.IdE H → ℂ) (cD : H.what₂.Tau → ℂ) (sel : HeightOneSpectrum (𝓞 Z.X.F) → HeightOneSpectrum (𝓞 Z.X.E)) (S : Set ℕ) (mu : Tup Z.X.F Z.X.E Z.X.K S) (cst : LocCst Z.X (rowSG Z.Pr sel mu)) (u : Z.Pr.Word) (i : ℕ), i < Z.R.m → Hyp Z s cc δ χ cD sel S mu cst u → RatTerm Z.W Z.Ch sel mu cst (ambOf s B χ cD) u i (i + 1) → ∀ w : HeightOneSpectrum (𝓞 Z.X.K), (∀ {SG SG' : Finset (HeightOneSpectrum (𝓞 Z.X.E))} (d : DecoSet (E := Z.X.E) (n := Z.R.N i) (ST := Z.Pr.vT u) (SG := SG)) (fr : Frs Z.X.E (Z.R.N i) (rowSG Z.Pr sel mu)) (d' : DecoSet (E := Z.X.E) (n := Z.R.N (i + 1)) (ST := Z.Pr.vT u) (SG := SG')) (fr' : Frs Z.X.E (Z.R.N (i + 1)) (rowSG Z.Pr sel mu)) (Ξ₀ : HomE Z.X.E (Z.R.N i) (Z.R.N (i + 1)) → Z.X.K), StdOnly u i (i + 1) d d' → Framed d.1.N fr → Framed d'.1.N fr' → InBoxOfRowSelection sel mu cst u d.1.N d'.1.N Ξ₀ → (∀ x, w.valuation Z.X.K (Ξ₀ x) ≤ 1) → ∀ y ∈ valAt w (Z.W.lamTrue u i) d.1.Lsh, ((Z.Pr.T u : Z.X.K) ^ (((Z.X.f * Z.R.N i : ℕ) : ℤ) - ∑ τ, (Z.W.lamTrue u (i + 1) τ).detShift)) • term Z.W Z.Ch sel mu cst (ambOf s B χ cD) u i (i + 1) d fr d' fr' Ξ₀ y ∈ valAt w (Z.W.lamTrue u (i + 1)) d'.1.L) → PTerm Z.W Z.Ch sel mu cst (ambOf s B χ cD) u i (i + 1) w := by
   intro Z H s cc δ B χ cD sel S mu cst u i _ hyp hrat w hstd SG SG' d fr d' fr' Ξ₀ hfr hfr' hbox hint y hy
@@ -843,9 +780,9 @@ theorem pTerm_of_std : ∀ (Z : Dat) (H : D7) (s : Seam H Z.X) (cc : Ideal (𝓞
     Deco.L_act d'.1 γ'.1 1
   have h := hstd _ (fun P => γ.1 * fr P) _ (fun P => γ'.1 * fr' P)
     (fun x => Ξ₀ (γ'.1.symm.toLinearMap ∘ₗ x ∘ₗ γ.1.toLinearMap)) ⟨fun P => hγ P.1 P.2, fun P => hγ' P.1 P.2⟩
-    (framed_gmap hfr γ.1) (framed_gmap hfr' γ'.1) (inBox_gmap hbox γ.1 γ'.1) (fun _ => hint _)
+    (GlobalTheory.KerT.Bar.framed_gmap hfr γ.1) (GlobalTheory.KerT.Bar.framed_gmap hfr' γ'.1) (inBox_gmap hbox γ.1 γ'.1) (fun _ => hint _)
     (rhoVr Z.X.emb _ (ufGL Z.X.E _ γ) y) (by rw [e1, rho_mem_valAt]; exact hy)
-  rw [hrat d fr d' fr' Ξ₀ γ γ' hbox, e2, LinearMap.comp_apply, LinearMap.comp_apply, rho_inv_apply, ← map_smul,
+  rw [hrat d fr d' fr' Ξ₀ γ γ' hbox, e2, LinearMap.comp_apply, LinearMap.comp_apply, GlobalTheory.KerT.Bar.rho_inv_apply, ← map_smul,
     rho_mem_valAt] at h
   exact h
 
@@ -1136,7 +1073,7 @@ omit hP hq hq2 hd₀ in
 theorem up_f {v : Sp E n} (hv : v ∈ d.at P.1) : d.f P v = d₀.f P (q • v) := by
   obtain ⟨x, -, -, rfl⟩ := h
   rw [Deco.up_f]
-  exact if_pos hv
+  exact ite_eq_left hv
 
 omit hP hq hq2 hd₀ in
 theorem up_be : d₀.be = d.be := by
@@ -1219,13 +1156,13 @@ theorem exists_dn_of_up {d₁ : Deco E b ST SG'} (h₁ : d'.IsUp P q d₁) (r₁
   have hone : ∀ e ∈ d.N, d.f P e = 1 → q • e ∈ d.dnN P ∧ f₀ (q • e) = 1 := fun e he hfe => by
     have m1 : q • e ∈ d.dnN P := (le_sup_left : d.kerAt P ≤ d.dnN P) (hd.smul_mem_kerAt P hq he)
     refine ⟨m1, ?_⟩
-    simp only [f₀, if_pos (le_locP _ _ m1)]
+    simp only [f₀, ite_eq_left (le_locP _ _ m1)]
     rw [hom_smul, ← up_f h₁ (r₁ P e (le_locP _ _ he)).1, (r₁ P e (le_locP _ _ he)).2, hfe]
   have hok : (d.dn P f₀).Ok := by
-    refine hd.dn P hP (fun y hy z hz => ?_) (fun c y hy => ?_) (fun y hy => if_neg hy) ?_
-    · simp only [f₀, if_pos hy, if_pos hz, if_pos (add_mem hy hz)]
+    refine hd.dn P hP (fun y hy z hz => ?_) (fun c y hy => ?_) (fun y hy => ite_eq_right hy) ?_
+    · simp only [f₀, ite_eq_left hy, ite_eq_left hz, ite_eq_left (add_mem hy hz)]
       rw [map_add (f := _), hd'.f_add P _ (hx y hy) _ (hx z hz)]
-    · simp only [f₀, if_pos hy, if_pos (Submodule.smul_mem _ c hy)]
+    · simp only [f₀, ite_eq_left hy, ite_eq_left (Submodule.smul_mem _ c hy)]
       rw [hom_smul, hd'.f_smul P c _ (hx y hy)]
     · obtain ⟨e, he, hfe⟩ := exists_f_one hd P
       exact ⟨_, (hone e he hfe).1, by rw [(hone e he hfe).2]; exact one_ne_zero⟩
@@ -1237,7 +1174,7 @@ theorem exists_dn_of_up {d₁ : Deco E b ST SG'} (h₁ : d'.IsUp P q d₁) (r₁
   · subst hQ
     have hy' : y ∈ localization₂ Q.1.asIdeal (d.dnN Q) := hy
     rw [hf]
-    exact ⟨hx y hy', (if_pos hy').symm⟩
+    exact ⟨hx y hy', (ite_eq_left hy').symm⟩
   · rw [up_at_ne hP hq hq2 hok hup hQ] at hy
     rw [up_at_ne hP' hq hq2 hd' h₁ hQ, up_f_ne h₁ hQ, up_f_ne hup hQ]
     exact r₁ Q y hy
@@ -1290,8 +1227,8 @@ theorem sum_ite_unique {α K : Type} [Field K] (s : Finset α) (p : α → Prop)
     (∑ u ∈ s, if p u then (1 : K) else 0) = if ∃ u ∈ s, p u then 1 else 0 := by
   split_ifs with he
   · obtain ⟨u, hu, hp⟩ := he
-    rw [Finset.sum_eq_single_of_mem u hu fun v hv hne => if_neg fun hv' => hne (h v hv u hu hv' hp), if_pos hp]
-  · exact Finset.sum_eq_zero fun v hv => if_neg fun hv' => he ⟨v, hv, hv'⟩
+    rw [Finset.sum_eq_single_of_mem u hu fun v hv hne => ite_eq_right fun hv' => hne (h v hv u hu hv' hp), ite_eq_left hp]
+  · exact Finset.sum_eq_zero fun v hv => ite_eq_right fun hv' => he ⟨v, hv, hv'⟩
 
 theorem sum_phiT (K : Type) [Field K] {P : ST} (hP : MoveHyp ST SG P) (hP' : MoveHyp ST SG' P) {q : 𝓞 E} (hq : q ∈ P.1.asIdeal)
     (hq2 : q ∉ P.1.asIdeal ^ 2) (d : DecoSet (E := E) (n := a) (ST := ST) (SG := SG)) (d' : DecoSet (E := E) (n := b) (ST := ST) (SG := SG')) (U : Finset (DecoSet (E := E) (n := b) (ST := ST) (SG := SG')))
@@ -1329,7 +1266,7 @@ theorem inBox_of {K : Type} [Field K] {SA SB : Finset (HeightOneSpectrum (𝓞 E
   · rcases (hS Q).1 hQ with hQ | hQ
     · have hr : Rel d d' x := by
         by_contra hr
-        exact left_ne_zero_of_mul hx (by rw [phiT_eq, if_neg hr])
+        exact left_ne_zero_of_mul hx (by rw [phiT_eq, ite_eq_right hr])
       exact Submodule.smul_mem _ (cA : 𝓞 E) (h1 x hr ⟨Q, hQ⟩ v hv)
     · exact h₀.1 x (right_ne_zero_of_mul hx) Q hQ v hv
   · rintro x _ ⟨z, hz, rfl⟩
@@ -1464,9 +1401,6 @@ theorem moveScal_dnN (Ch : Chars X Pr R.m) {S : Set ℕ} (mu : Tup X.F X.E X.K S
   have hne' : (⟨Q, hQ⟩ : Pr.vT u) ≠ P := fun e => hne (congrArg Subtype.val e)
   rw [idxExp_of_eq (dnN_at_ne hd hP hne'), idxExp_of_eq (dnN_at_ne hd' hP' hne'), GlobalTheory.IndefiniteRowSideFullHecke.IndexExponentDegree.locScal_zero_zero]
 
-theorem qOf_pos {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) : 0 < qOf P :=
-  Nat.pos_of_ne_zero fun h => P.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
-
 theorem ukTerm_of_moveStep : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
     (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ) (mu : Tup X.F X.E X.K S)
     (cst : LocCst X (rowSG Pr sel mu)) (A : Amb X) (u : Pr.Word) (i : ℕ), X.Ok → Pr.Ok → IsSel X sel → Pr.T u ∈ S →
@@ -1484,8 +1418,8 @@ theorem ukTerm_of_moveStep : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (W : W
     unfold cBof
     rw [Nat.cast_mul]
     exact Ideal.mul_mem_right _ _ (T_mem hPr u Q)
-  have hA : 0 < cAof sel mu cst := pow_pos (Finset.prod_pos fun Q _ => qOf_pos _) _
-  have hB : 0 < cBof sel mu cst u := mul_pos (hPr.T_prime u).pos (pow_pos (Finset.prod_pos fun Q _ => qOf_pos _) _)
+  have hA : 0 < cAof sel mu cst := pow_pos (Finset.prod_pos fun Q _ => GlobalTheory.GO.ChRoot.qOf_pos _) _
+  have hB : 0 < cBof sel mu cst u := mul_pos (hPr.T_prime u).pos (pow_pos (Finset.prod_pos fun Q _ => GlobalTheory.GO.ChRoot.qOf_pos _) _)
   obtain ⟨l0, l1, -, -⟩ := d.2.dnN_spec P hP.ne
   have ag := agreeOff_dnN d.2 hP.ne hq
   have hl : ∀ d₁ ∈ hU.toFinset, term W Ch sel mu cst A u i (i + 1) d fr d₁ fr' Ξ₀ =

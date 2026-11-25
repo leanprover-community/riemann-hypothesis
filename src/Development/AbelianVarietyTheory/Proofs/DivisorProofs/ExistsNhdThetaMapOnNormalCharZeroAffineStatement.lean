@@ -309,7 +309,7 @@ theorem th_ne_zero : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj 
       (by rwa [Category.id_comp])
   obtain ⟨θ, pt, hgθ, hl⟩ := H'
   let i : K →+* AlgebraicClosure K := algebraMap K (AlgebraicClosure K)
-  obtain ⟨pt', -, hl'⟩ := GlobalTheory.T.isThetaConstantListOfFibre_pullback_field_extension (Sp K) P.A P.L ρ' P.isLB hρ' m N K (AlgebraicClosure K) i (𝟙 _) θ pt c hl
+  obtain ⟨pt', -, hl'⟩ := GlobalTheory.UMin.ThPull.thList_pull (Sp K) P.A P.L ρ' P.isLB hρ' m N K (AlgebraicClosure K) i (𝟙 _) θ pt c hl
   have hg' : IsGenSec P.A P.L _ (SecAt.pull P.A P.L θ i) :=
     (gen_of_polFib (Sp K) P.A P.L P.isLB P.g K (𝟙 _) (Model.polFib_self P)).2 θ hgθ (AlgebraicClosure K) i
   have hne := ThetaCoset.ne_zero_of_isGenSec hLaws2.secBaseChangeAny P (spMap i ≫ 𝟙 (Sp K)) hg'
@@ -368,7 +368,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory
 
-
 open Polynomial in
 theorem mem_range_of_forall_algHom_eq :
     ∀ (F K₀ : Type) [Field F] [CharZero F] [Field K₀] [Algebra F K₀], Algebra.IsAlgebraic F K₀ →
@@ -419,7 +418,7 @@ variable {R R₁ : Type} [CommRing R] [IsDomain R] [CommRing R₁] [Algebra R R�
 
 theorem injective_quotient (Q : Ideal R₁) (hQ : Q.comap (algebraMap R R₁) = ⊥) :
     Function.Injective (algebraMap R (R₁ ⧸ Q)) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro r hr
   have : r ∈ Q.comap (algebraMap R R₁) := by
     rw [Ideal.mem_comap, ← Ideal.Quotient.eq_zero_iff_mem, Ideal.Quotient.mk_algebraMap]
@@ -577,14 +576,6 @@ noncomputable section
 
 namespace GlobalTheory.UMin.SymCmp
 
-theorem grpPullback_id {S : Scheme.{0}} (G : Over S) [GrpObj G] : IsGrpPullback G G (𝟙 S) (𝟙 G.left) := by
-  refine ⟨IsPullback.of_horiz_isIso ⟨by simp⟩, fun T x y x₀ y₀ hx hy => ?_⟩
-  let ρ : Over.mk (T.hom ≫ 𝟙 S) ⟶ T := Over.homMk (𝟙 T.left) (by simp)
-  have ex : x₀ = ρ ≫ x := Over.OverMorphism.ext (hx.trans ((Category.comp_id _).trans (Category.id_comp _).symm))
-  have ey : y₀ = ρ ≫ y := Over.OverMorphism.ext (hy.trans ((Category.comp_id _).trans (Category.id_comp _).symm))
-  rw [ex, ey, ← MonObj.comp_mul]
-  exact (Category.id_comp _).trans (Category.comp_id _).symm
-
 theorem pullS_pullS {S : Scheme.{0}} (G : Over S) [GrpObj G] {L : LB G.left} (hL : L.IsLB) (a : ℤ) {T T' T'' : Over S}
     (h : T' ⟶ T) (h' : T'' ⟶ T') (s : LB.Sec (LPow G L a T)) :
     VVRank.pullS G a h' (VVRank.pullS G a h s) = VVRank.pullS G a (h' ≫ h) s := by
@@ -596,7 +587,7 @@ theorem pullS_pullS {S : Scheme.{0}} (G : Over S) [GrpObj G] {L : LB G.left} (hL
 theorem thList_ext_perm : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (L : LB G.left) (ρ : LB.Gen (L.pull (eSec G))), L.IsLB → ρ.IsGen → ∀ (g m : ℕ) (R : Type) [CommRing R] (x : Sp R ⟶ S) (θ : SecAt G L x), Odd m → IsUnit (m : R) → PolFib G L g x → ∀ (K F : Type) [Field K] [Field F] (i : R →+* K) (i' : R →+* F) (φ : K →+* F), φ.comp i = i' → ∀ (N : ℕ) (pt : Fin N → (Over.mk (spMap i ≫ x) ⟶ G)) (c : Fin N → K) (pt' : Fin N → (Over.mk (spMap i' ≫ x) ⟶ G)) (c' : Fin N → F), ThList G L ρ m (spMap i ≫ x) (SecAt.pull G L θ i) pt c → ThList G L ρ m (spMap i' ≫ x) (SecAt.pull G L θ i') pt' c' → ∃ σ : Equiv.Perm (Fin N), ∀ b, c' b = φ (c (σ b)) := by
   intro S G _ _ L ρ hL hρ g m R _ x θ hm hu hP K F _ _ i i' φ hi N pt c pt' c' H H'
   subst hi
-  obtain ⟨p₁, -, h₁⟩ := GlobalTheory.T.isThetaConstantListOfFibre_pullback_field_extension S G L ρ hL hρ m N K F φ (spMap i ≫ x) (SecAt.pull G L θ i) pt c H
+  obtain ⟨p₁, -, h₁⟩ := GlobalTheory.UMin.ThPull.thList_pull S G L ρ hL hρ m N K F φ (spMap i ≫ x) (SecAt.pull G L θ i) pt c H
   simp only [SecAt.pull] at h₁
   rw [pullS_pullS G hL] at h₁
   have ey : spMap φ ≫ spMap i ≫ x = spMap (φ.comp i) ≫ x := by
@@ -612,7 +603,7 @@ theorem thList_ext_perm : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMo
   obtain ⟨q₁, H₁⟩ := key ey _ (Over.homMk (spMap (φ.comp i)) rfl : Over.mk (spMap (φ.comp i) ≫ x) ⟶ Over.mk x)
     (by simp only [Over.comp_left, Over.homMk_left]; rw [_root_.GlobalTheory.spMap_comp_ring]) h₁
   have hPy : PolFib G L g (spMap (φ.comp i) ≫ x) :=
-    (GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback S S G L G L (𝟙 S) (𝟙 G.left) hL hL (grpPullback_id G)
+    (GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback S S G L G L (𝟙 S) (𝟙 G.left) hL hL (GlobalTheory.FullSiegel.isGrpPullback_id G)
       (GlobalTheory.ThetaAffineGlue.lbIso_pull_id hL) g R x).2 F (φ.comp i) hP
   have hmF : (m : F) ≠ 0 := by
     rw [← map_natCast (φ.comp i) m]
@@ -1140,17 +1131,6 @@ theorem exists_common_field : ∀ (R R₁ : Type) [CommRing R] [CommRing R₁] [
   simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe]
   rw [AlgHom.commutes, show i r = algebraMap R K r from rfl, AlgHom.commutes]
 
-theorem symTup_map' {R R' : Type} [CommRing R] [CommRing R'] (i : R →+* R') {N : ℕ} (c : Fin N → R) (j : Fin N) :
-    i (symTup c j) = symTup (fun a => i (c a)) j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [symTup, Finset.esymm_map_val, map_pow, map_sum, map_prod]
-
-theorem symTup_perm' {R : Type} [CommRing R] {N : ℕ} (c : Fin N → R) (σ : Equiv.Perm (Fin N)) :
-    symTup (fun b => c (σ b)) = symTup c := by
-  funext j
-  show _ = (Finset.univ.val.map c).esymm _ ^ _
-  rw [symTup, ← Function.comp_def c σ, ← Multiset.map_map, Multiset.map_univ_val_equiv]
-
 theorem sym_ring : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (L : LB G.left) (ρ : LB.Gen (L.pull (eSec G))), L.IsLB → ρ.IsGen → ∀ (g m N : ℕ) (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] [CharZero R] (x : Sp R ⟶ S) (θ : SecAt G L x), Odd m → IsUnit (m : R) → N = m ^ (4 * g) → PolFib G L g x → ∃ e : Fin N → R, SymAt G L ρ m x θ e := by
   intro S G _ _ L ρ hL hρ g m N R _ _ _ _ _ x θ hm hmu hN hP
   obtain ⟨R₁, _, _, c, hfin, hff, hc⟩ := _root_.GlobalTheory.UMin.thList_cover S G L ρ hL hρ g m N R x θ hm hmu hN hP
@@ -1160,8 +1140,8 @@ theorem sym_ring : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G]
     obtain ⟨pt₁, h₁⟩ := hc K (i₁.comp (algebraMap R R₁)) i₁ rfl
     obtain ⟨pt₂, h₂⟩ := hc K (i₁.comp (algebraMap R R₁)) i₂ h.symm
     obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.UMin.SymCmp.thList_ext_perm S G L ρ hL hρ g m R x θ hm hmu hP K K _ _ (RingHom.id K) (RingHom.id_comp _) N pt₁ _ pt₂ _ h₁ h₂
-    rw [symTup_map', symTup_map', funext hσ]
-    exact (symTup_perm' (fun b => i₁ (c b)) σ).symm ▸ rfl
+    rw [GlobalTheory.UMin.map_symTup, GlobalTheory.UMin.map_symTup, funext hσ]
+    exact (GlobalTheory.UMin.symTup_perm (fun b => i₁ (c b)) σ).symm ▸ rfl
   choose e he using fun j => _root_.GlobalTheory.exists_eq_algebraMap_of_forall_ringHom_eq R R₁ hfin hff (symTup c j) (hP' j)
   refine ⟨e, fun K _ i pt c' hl j => ?_⟩
   obtain ⟨K', _, φ, i₁, hφ⟩ := exists_common_field R R₁ hff K i
@@ -1169,8 +1149,8 @@ theorem sym_ring : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G]
   obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.UMin.SymCmp.thList_ext_perm S G L ρ hL hρ g m R x θ hm hmu hP K K' i (φ.comp i) φ rfl N pt c' pt₁ _ hl h₁
   apply φ.injective
   have h1 : φ (i (e j)) = i₁ (algebraMap R R₁ (e j)) := by rw [← RingHom.comp_apply, ← RingHom.comp_apply, hφ]
-  rw [h1, ← he j K' i₁, symTup_map', symTup_map', funext hσ]
-  exact congrFun (symTup_perm' (fun a => φ (c' a)) σ) j
+  rw [h1, ← he j K' i₁, GlobalTheory.UMin.map_symTup, GlobalTheory.UMin.map_symTup, funext hσ]
+  exact congrFun (GlobalTheory.UMin.symTup_perm (fun a => φ (c' a)) σ) j
 
 end GlobalTheory.UMin.SymRing
 
@@ -1225,7 +1205,7 @@ theorem theta_map_aff : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonO
       rw [map_natCast] at this
       exact this.ne_zero
     have hpK := hpolK _ i
-    obtain ⟨pt, c, hl⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed S G L ρ hL hρ g m (n + 1) _ (spMap i ≫ x) (SecAt.pull G L θ i) hm hmK hn hpK
+    obtain ⟨pt, c, hl⟩ := GlobalTheory.UMin.exists_thList S G L ρ hL hρ g m (n + 1) _ (spMap i ≫ x) (SecAt.pull G L θ i) hm hmK hn hpK
     obtain ⟨a, ha⟩ := GlobalTheory.T.exists_thetaConstant_levelSquare_ne_zero S G L ρ hL hρ g m (n + 1) _ (spMap i ≫ x) c hm hm3 hmK hpK ⟨_, pt, hgen _ i, hl⟩
     obtain ⟨j, hj⟩ := GlobalTheory.UMin.symTup_basic.2.2.2 _ (n + 1) c ⟨a, ha⟩
     apply hj
@@ -1362,7 +1342,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory.UPoinc GlobalTheory.Ex.OneGen
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
-
 
 end -- clump:auto
 end -- clump:auto

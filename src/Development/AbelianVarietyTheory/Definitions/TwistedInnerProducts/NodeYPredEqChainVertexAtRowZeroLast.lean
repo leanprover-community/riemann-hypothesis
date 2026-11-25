@@ -195,9 +195,9 @@ def row0 : ℕ → Node D
 theorem nodeY_eq_chainVertexAtRowZero_of_lt {j : ℕ} (h : j < D.R.m) : nodeY R j = row0 R j := by
   cases j with
   | zero => rfl
-  | succ j => simp only [row0, if_pos h]
+  | succ j => simp only [row0, ite_eq_left h]
 
-theorem nodeX_eq_chainVertexAtRowZero_of_ge {j : ℕ} (h : ¬ j + 1 < D.R.m) : nodeX R = row0 R (j + 1) := by simp only [row0, if_neg h]
+theorem nodeX_eq_chainVertexAtRowZero_of_ge {j : ℕ} (h : ¬ j + 1 < D.R.m) : nodeX R = row0 R (j + 1) := by simp only [row0, ite_eq_right h]
 
 theorem nodeX_eq_chainVertexAtRowZero_top : nodeX R = row0 R D.R.m := by
   have h := D.R.two_le_m
@@ -332,14 +332,6 @@ structure IsSpaces : Prop where
   P : ∀ i, i ≤ D.R.m → (G.P i).Is (rkP D i) ((D.R.m - i + 1) / 2) (parP D i)
 
   X : ∀ j, j + 1 ≤ D.R.m → (G.nX j).Is (rkX D (j + 1)) 0 (parXp D (j + 1))
-
-  decP : G.decP.Is (fun _ _ => 1) fun _ => 1
-
-  decV : ∀ i, 1 ≤ i → i ≤ D.R.m → (G.decV i).Is (antiDiagonalSignGramMatrix _ _) (staircaseExtensionIdeal (G.lvl R) _)
-
-  decX : ∀ j, j + 1 < D.R.m → (G.decX j).Is (antiDiagonalSignGramMatrix _ _) (staircaseExtensionIdeal ⊤ _)
-
-  decZ : G.decZ.Is (fun _ _ => 1) fun _ => 1
 
 structure IsChars : Prop where
 

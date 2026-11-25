@@ -32,47 +32,8 @@ import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CapParamOfIsHCTypeW
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnitaryTorusScaleBesselCharacter
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalizedBesselMapsAnyScalePieriConstants
@@ -112,7 +73,7 @@ theorem scal_block : ∀ (bs : List (ℂ × ℕ)) (a b : ℕ), blockIdx bs a = b
     rw [e]
     simp only [blockIdx] at h
     simp only [D.ptScal]
-    by_cases h1 : a < s <;> by_cases h2 : b < s <;> simp only [h1, h2, if_true, if_false] at h ⊢
+    by_cases h1 : a < s <;> by_cases h2 : b < s <;> simp only [h1, h2, ite_true, ite_false] at h ⊢
     · omega
     · omega
     · exact scal_block bs _ _ (by omega)
@@ -152,18 +113,8 @@ theorem rootCoords_eq (z : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1)) 
     have h1 := ((mem_rootPat p q.1.1 q.1.2).1 q.2).1
     have h2 := q.1.2.isLt
     rw [Fin.lt_def] at h1; omega
-  simp only [rootCoords, flagMat, Bm, Matrix.of_apply, dif_pos hq]
+  simp only [rootCoords, flagMat, Bm, Matrix.of_apply, dite_eq_left hq]
   rfl
-
-theorem measurable_rootCoords (z : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1)) :
-    Measurable (rootCoords k r z p) := by
-  refine Continuous.measurable (continuous_pi fun q => ?_)
-  unfold rootCoords flagMat
-  split_ifs
-  · exact (continuous_apply (eI k r _)).comp
-      ((continuous_id (X := MatKR k r)).matrix_mulVec (continuous_const (y := fvec k r z q.1.2)))
-  · exact continuous_const
-  · exact continuous_const
 
 theorem root_conj {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : inWb k r z') {g : MatKR k r}
     (hg : g ∈ UH (Hpk k r)) {p : Point ℂ (r + 1)} (hZ : ZhatO k r z z' g = ptMat p) {μ : Measure (Mt k r)}
@@ -206,20 +157,19 @@ theorem root_conj {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : 
   funext q
   have e := congrFun (congrFun key q.1.2) (permOf p q.1.1)
   rw [Matrix.mul_apply, Matrix.mul_apply, Finset.sum_eq_single q.1.1, Finset.sum_eq_single (permOf p q.1.2)] at e
-  · simp only [hm, permOf_invol, if_true, conjTranspose_apply] at e
+  · simp only [hm, permOf_invol, ite_true, conjTranspose_apply] at e
     simp only [Function.comp, rotation_apply, cjE_apply, rootCoords_eq]
     show Bm k r z m q.1.1 q.1.2 = star (d (permOf p q.1.2) / d (permOf p q.1.1)) *
       star (Bm k r z' ρ (permOf p q.1.2) (permOf p q.1.1))
     rw [← star_mul', div_mul_eq_mul_div, ← e, mul_div_cancel_right₀ _ (hd _), star_star]
   · intro j _ hj
-    rw [hm, if_neg (fun e' => hj (by rw [e', permOf_invol])), zero_mul]
+    rw [hm, ite_eq_right (fun e' => hj (by rw [e', permOf_invol])), zero_mul]
   · simp
   · intro j _ hj
-    rw [hm, permOf_invol, if_neg hj, mul_zero]
+    rw [hm, permOf_invol, ite_eq_right hj, mul_zero]
   · simp
 
 end jacobian
-
 
 open BranchingSupport GlobalTheory.CellAmp GlobalTheory.Amp Formalism.BasicNotions GlobalTheory.CellRed in
 theorem amp_at_root (D : D7) τ w w' θ (W : LocW D.R.k D.R.rS) (hW : GoodW D τ w w' θ W)
@@ -252,7 +202,7 @@ theorem amp_at_root (D : D7) τ w w' θ (W : LocW D.R.k D.R.rS) (hW : GoodW D τ
     rw [e, gInv _ _ _ _ hz hz' _ (P.Dx2.Rad.N_sub_S W.z hn) _ (P.Dx2.Rad.N_sub_S W.z' hn')] at hG0
     obtain ⟨μ, h1, -, h3⟩ := GlobalTheory.Amp.RootQuot.exists_root_haar hk hz hz' hTz hTz' p hg hZ hG0
     refine (_root_.GlobalTheory.SnMass.RootUniq.rootMeas_unique D W.z W.z' γ p q _ μ' hz hz' hTz hTz' hγ hGf hka
-      ⟨n, hn, n', hn', g, e, hZ, ENNReal.ofReal _ • μ, ?_, by rw [Measure.map_smul _ (measurable_rootCoords _ _).aemeasurable, h3], rfl⟩ hroot).1
+      ⟨n, hn, n', hn', g, e, hZ, ENNReal.ofReal _ • μ, ?_, by rw [Measure.map_smul _ (GlobalTheory.Amp.RootMove.measurable_rootCoords _ _).aemeasurable, h3], rfl⟩ hroot).1
     rw [Measure.smul_apply, h1.2.2.1, smul_zero]
   obtain ⟨n, hn, n', hn', g, rfl, hZ, μ₀, h0, h1, rfl⟩ := hroot
   have hg : g ∈ UH (Hpk D.R.k D.R.rS) := by
@@ -409,8 +359,8 @@ theorem ae_cellData (hk : 1 ≤ k) (L : LocBessel k r) (μG : Measure (Mt k r))
     rw [Matrix.diagonal_apply]
     show _ = if i = j then _ else _
     by_cases h : i = j
-    · rw [if_pos h, if_pos h, h]
-    · rw [if_neg h, if_neg h]
+    · rw [ite_eq_left h, ite_eq_left h, h]
+    · rw [ite_eq_right h, ite_eq_right h]
 
 theorem isOrbQuot_smul {L : LocBessel k r} {g : MatKR k r} {μR : Measure (Mt k r)} {ν : Measure (PairSp k r)} {t : ℝ}
     (h : IsOrbQuot L g (ENNReal.ofReal t • μR) ν) : IsOrbQuot L g μR (ENNReal.ofReal t • ν) := by
@@ -419,8 +369,6 @@ theorem isOrbQuot_smul {L : LocBessel k r} {g : MatKR k r} {μR : Measure (Mt k 
   exact lintegral_congr fun x => lintegral_smul_measure _ _
 
 end coefficient
-
-
 
 end GlobalTheory.AmpBessel
 
@@ -470,7 +418,6 @@ theorem exists_bessel_scale (hH : GlobalTheory.GapIn.Hyp) {k r : ℕ} {Wp : Type
   exact hl.1
 
 end scale
-
 
 open BranchingSupport GlobalTheory.CellAmp GlobalTheory.Amp Formalism.BasicNotions in
 theorem exists_coef (hH : GlobalTheory.GapIn.Hyp) {Cg cb Cu cT CT C0 Cn : ℝ} (D : D7) (large₂ : SizeData₂ D) {C' Cl : ℝ}
@@ -547,7 +494,6 @@ theorem exists_coef (hH : GlobalTheory.GapIn.Hyp) {Cg cb Cu cT CT C0 Cn : ℝ} (
   show η = d * (⟪l v, (η / (d * (⟪l v, l v⟫_ℂ * ⟪l' v', l' v'⟫_ℂ))) • l v⟫_ℂ * ⟪l' v', l' v'⟫_ℂ)
   rw [inner_smul_right]
   field_simp
-
 
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.Amp in
 theorem ampIsBessel : GlobalTheory.GapIn.Hyp → ∀ Cg cb Cu cT CT C0 C1 : ℝ, ∃ Ca : ℝ, 0 ≤ Ca ∧ ∀ Cn : ℝ, ∃ m₀ : ℝ, ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl : ℝ), 1000 ≤ Cl → D.host.rdE ≤ large₂.sc.b → m₀ ≤ D.R.m → cdScaleTie D → Bridge.AmpIsBessel D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 Ca := by

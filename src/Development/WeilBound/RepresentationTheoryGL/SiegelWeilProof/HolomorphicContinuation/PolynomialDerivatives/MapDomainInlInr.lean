@@ -34,14 +34,14 @@ theorem kpow {a : Ix m n} (ha : inF1 ε a) (b : ℕ) : ∀ (d : ℕ) (u : Sym m 
     have hX : ∀ k, ((Finsupp.single (Sum.inl a) 1 : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inl k) ≠ 0 ∨
         (Finsupp.single (Sum.inl a) 1 : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inr k) ≠ 0) → inF1 ε k := by
       intro k hk
-      simp only [Finsupp.single_apply, Sum.inl.injEq, reduceCtorEq, if_false, ne_eq, not_true, or_false] at hk
+      simp only [Finsupp.single_apply, Sum.inl.injEq, reduceCtorEq, ite_false, ne_eq, not_true, or_false] at hk
       split_ifs at hk with h
       · subst h; exact ha
       · exact absurd rfl hk
     have hXb : ∀ k, ((Finsupp.single (Sum.inl a) b : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inl k) ≠ 0 ∨
         (Finsupp.single (Sum.inl a) b : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inr k) ≠ 0) → inF1 ε k := by
       intro k hk
-      simp only [Finsupp.single_apply, Sum.inl.injEq, reduceCtorEq, if_false, ne_eq, not_true, or_false] at hk
+      simp only [Finsupp.single_apply, Sum.inl.injEq, reduceCtorEq, ite_false, ne_eq, not_true, or_false] at hk
       split_ifs at hk with h
       · subst h; exact ha
       · exact absurd rfl hk

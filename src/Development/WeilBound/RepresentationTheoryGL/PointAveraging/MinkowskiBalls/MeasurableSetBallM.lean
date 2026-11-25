@@ -10,6 +10,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsParahoricVec
+import Mathlib.Topology.Algebra.Group.Matrix
 
 @[expose] public section
 
@@ -361,13 +362,9 @@ open PositivityTheory.Rg.Ming.GermX
 theorem germ (hb : BallSt) : GermSt := by
   intro k _ _ _ _ _ _ ν hν r t μ V _ _ W _ _ σ π B hμ hπ hE w
   set e := GlobalTheory.GodementJacquet.eMat k r t with he
-  have hdet : Continuous (Matrix.GeneralLinearGroup.det : GL (Fin (r + t)) k → kˣ) := by
-    rw [Units.continuous_iff]
-    constructor
-    · exact Units.continuous_val.matrix_det
-    · exact Units.continuous_coe_inv.matrix_det
   have hopen : IsOpen {h : GL (Fin (r + t)) k | μ (Matrix.GeneralLinearGroup.det h) = 1} := by
-    have h0 := hμ.preimage hdet
+    have h0 := hμ.preimage (Matrix.GeneralLinearGroup.continuous_det :
+      Continuous (Matrix.GeneralLinearGroup.det : GL (Fin (r + t)) k → kˣ))
     convert h0 using 1
     ext h
     simp [MonoidHom.mem_ker]

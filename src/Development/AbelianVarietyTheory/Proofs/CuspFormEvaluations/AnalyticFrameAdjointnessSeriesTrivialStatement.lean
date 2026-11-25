@@ -13,49 +13,8 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CmFram
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CorrOfJetsOfAnalyticFrameProducts
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.JetRdMulInvPow
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.JetReadingLinearSubstitutionPoints
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -266,9 +225,9 @@ private theorem sameSum_adφ_adε_empty (f f' : A ⟶ A) [IsMonHom f] [IsMonHom 
   have e1 : ∀ k, ((lift (1 : A ⊗ A ⟶ A) (1 : A ⊗ A ⟶ A)).left ≫ adφ f f' k = ψ) ↔
       ((1 : A ⊗ A ⟶ A).left = ψ) := fun k => by rw [hk k]
   by_cases hψ : (1 : A ⊗ A ⟶ A).left = ψ
-  · rw [Finset.sum_congr rfl (fun k _ => if_pos ((e1 k).mpr hψ)), hs]
+  · rw [Finset.sum_congr rfl (fun k _ => ite_eq_left ((e1 k).mpr hψ)), hs]
     simp
-  · rw [Finset.sum_congr rfl (fun k _ => if_neg (fun h => hψ ((e1 k).mp h)))]
+  · rw [Finset.sum_congr rfl (fun k _ => ite_eq_right (fun h => hψ ((e1 k).mp h)))]
     simp
 
 theorem reading_one (f f' : A ⟶ A) [IsMonHom f] [IsMonHom f']
@@ -499,9 +458,9 @@ theorem sameSum_cancel {X Y : Scheme.{0}} {K : Type} [Fintype K] (φ : K ⊕ K �
   have key : ∀ (P : Prop) (i1 i2 : Decidable P) (b : ℤ), @ite ℤ P i1 (-b) 0 + @ite ℤ P i2 b 0 = 0 := by
     intro P i1 i2 b
     by_cases hP : P
-    · rw [@if_pos P i1 hP, @if_pos P i2 hP]
+    · rw [@ite_eq_left P i1 hP, @ite_eq_left P i2 hP]
       omega
-    · rw [@if_neg P i1 hP, @if_neg P i2 hP]
+    · rw [@ite_eq_right P i1 hP, @ite_eq_right P i2 hP]
       omega
   exact key _ _ _ _
 
@@ -535,7 +494,7 @@ theorem adjoint_series_trivial : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     rw [Finset.sum_eq_single 0]
     · rw [MvPowerSeries.coeff_zero_one, ← MvPolynomial.C_apply, map_one, map_one]
     · intro b _ hb
-      rw [MvPowerSeries.coeff_one, if_neg hb, map_zero]
+      rw [MvPowerSeries.coeff_one, ite_eq_right hb, map_zero]
     · intro h0
       exfalso
       apply h0

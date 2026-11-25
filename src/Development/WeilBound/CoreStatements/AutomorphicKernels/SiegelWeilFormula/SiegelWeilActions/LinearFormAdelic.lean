@@ -29,11 +29,8 @@ def linearFormAdelic (δ : E) : AE F E →ₗ[AF F] AF F :=
 theorem inclR_eq' (x : E) : inclR (F := F) (AF F) x = (1 : AF F) ⊗ₜ[F] x := rfl
 
 theorem ell_spec {δ : E} (hδ0 : δ ≠ 0) : (Classical.epsilon fun ℓ : E →ₗ[F] F => δ ≠ 0 → ℓ δ = 1) δ = 1 := by
-  have hex : ∃ ℓ : E →ₗ[F] F, δ ≠ 0 → ℓ δ = 1 := by
-    have : ¬ ∀ φ : Module.Dual F E, φ δ = 0 := fun h => hδ0 ((Module.forall_dual_apply_eq_zero_iff F δ).1 h)
-    push Not at this
-    obtain ⟨φ, hφ⟩ := this
-    exact ⟨(φ δ)⁻¹ • φ, fun _ => by simp [hφ]⟩
+  have hex : ∃ ℓ : E →ₗ[F] F, δ ≠ 0 → ℓ δ = 1 :=
+    (Module.Projective.exists_dual_eq_one F hδ0).imp fun _ h _ => h
   exact Classical.epsilon_spec hex hδ0
 
 theorem ellA_smul_inclR {δ : E} (hδ0 : δ ≠ 0) (a : AF F) : linearFormAdelic (F := F) δ (a • inclR (F := F) (AF F) δ) = a := by

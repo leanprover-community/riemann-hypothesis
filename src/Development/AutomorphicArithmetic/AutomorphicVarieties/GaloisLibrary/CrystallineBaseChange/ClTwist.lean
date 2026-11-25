@@ -36,7 +36,7 @@ private theorem tG_det (N : ℕ) (u : ℤ) : (tG N u).det.val = 1 := by
 
 private theorem tG_σ (N : ℕ) (u : ℤ) (c : ℂ) : σ (tG N u) c = c := by
   have : 0 < (tG N u).det.val := by rw [tG_det]; exact one_pos
-  rw [σ, if_pos this]; rfl
+  rw [σ, ite_eq_left this]; rfl
 
 private theorem tG_apply (N : ℕ) (u : ℤ) (k : ℤ) (f : ℍ → ℂ) (z : ℍ) :
     (f ∣[k] tG N u) z = f (((u : ℝ) / N) +ᵥ z) := by

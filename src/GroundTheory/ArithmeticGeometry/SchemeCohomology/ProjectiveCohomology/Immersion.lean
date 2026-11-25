@@ -132,13 +132,16 @@ lemma projectionMap_tensorBasisMap (j : Fin (n + 1)) {V : (projectiveSpace A n).
         (pullbackUnitApp i _ (ProjSpace.stdOpen A n j)
           (ProjTwist.upow (ProjSpace.grading A n) (ProjSpace.X_mem j) k))
         ((Opens.map i.base).monotone hV) (secΓ F _ m) := by
-  have h := congrArg (fun φ => (PresheafOfModules.Hom.app φ (op V)).hom
+  generalize hφ : projectionMap i F k = φ
+  have hφ' : tensorLift (projPre i F k) = φ := hφ
+  have h := congrArg (fun ψ => (PresheafOfModules.Hom.app ψ (op V)).hom
       ((show ((preMod _).obj ((Scheme.Modules.pushforward i).obj F)).obj (op V) from m) ⊗ₜ
         resM ((preMod _).obj (SchemeCoh.twistingSheaf (ProjSpace.grading A n) k)) hV
           (ProjTwist.upow (ProjSpace.grading A n) (ProjSpace.X_mem j) k) :
         ((preMod _).obj ((Scheme.Modules.pushforward i).obj F) ⊗
           (preMod _).obj (SchemeCoh.twistingSheaf (ProjSpace.grading A n) k)).obj (op V)))
     (tensorToSheaf_tensorLift (projPre i F k))
+  rw [hφ'] at h
   refine h.trans ?_
   change projFun i F k V m (resM _ hV (ProjTwist.upow (ProjSpace.grading A n)
     (ProjSpace.X_mem j) k)) = _

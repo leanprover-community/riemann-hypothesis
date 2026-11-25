@@ -184,14 +184,8 @@ private theorem amGood_prod (n : ℕ) (L : List (ℤ × FreeMonoid (Fin k))) (hL
     rw [List.map_cons, List.prod_cons]
     exact amGood_mul (amGood_F n p (hL p (by simp))) (ih fun q hq => hL q (by simp [hq]))
 
-private theorem amWt_degree (w : FreeMonoid (Fin k)) : (amWt w).degree = w.length := by
-  induction w using FreeMonoid.inductionOn' with
-  | one => simp [amWt, FreeMonoid.length_one]
-  | of_mul a w ih =>
-    have : amWt (FreeMonoid.of a * w) = Finsupp.single a 1 + amWt w := by
-      simp only [amWt, FreeMonoid.toList_of_mul, ← Multiset.cons_coe, ← Multiset.singleton_add, map_add (f := _),
-        Multiset.toFinsupp_singleton]
-    rw [this, map_add (f := _), ih]; simp [FreeMonoid.length_mul, FreeMonoid.length_of]
+private theorem amWt_degree (w : FreeMonoid (Fin k)) : (amWt w).degree = w.length :=
+  Multiset.toFinsupp_sum_eq (w.toList : Multiset (Fin k))
 
 private theorem am_lift {A E B : Type} [CommRing A] [Ring E] [Algebra A E] [CommRing B] [Algebra A B]
     (π : MvPolynomial (Fin k) A →ₐ[A] B) (x : Fin k → E) (w : FreeMonoid (Fin k)) :

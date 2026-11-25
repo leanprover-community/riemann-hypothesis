@@ -401,7 +401,7 @@ theorem sign_eq (h : Om N χ ω) (k : ℕ) (hk : χ (-1) = (-1) ^ k) (S : Finset
     split_ifs
     · simpa using ord_neg_one
     · exact ord_one' w
-  · rw [lf_eq, hd, if_pos (hS w hw)]
+  · rw [lf_eq, hd, ite_eq_left (hS w hw)]
     simp
 
 theorem f0b : Ad3.R.B0 → Ad3.R.F0b := by

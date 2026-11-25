@@ -16,49 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContDif
 public import Formalism.RealPlaceAnalysis.FinalF
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightConvolutionOperatorAeEqIntegralAdelic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeLipschitzProperties
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.RingTheory.PiTensorProduct
@@ -166,7 +123,7 @@ theorem local_mass_le : ∀ (B : RowsAut) (U : Set B.I.GA), 1 ≤ B.I.n → IsCo
     intro y
     have h := hfund.2.1 y
     have e : B.I.rep B.fund y = h.choose * y := by
-      unfold AutInst.rep; exact dif_pos h
+      unfold AutInst.rep; exact dite_eq_left h
     have hm : h.choose ∈ (Γ : Set B.I.GA) := by
       have k := h.choose_spec.1
       generalize h.choose = z at k ⊢
@@ -456,7 +413,7 @@ theorem exists_retraction {n : ℕ} {ε : Fin n → Bool} (x : UJ ε) :
     if h : (1 + skew ε (cay (t Y))).det ≠ 0 then (hex Y h).choose else 1
   have hr : ∀ Y, (1 + skew ε (cay (t Y))).det ≠ 0 → uMat (r Y) = cay (skew ε (cay (t Y))) := by
     intro Y hY
-    simp only [r, dif_pos hY]
+    simp only [r, dite_eq_left hY]
     exact (hex Y hY).choose_spec
   refine ⟨fun Y => x * r Y, ?_⟩
   filter_upwards [hev.eventually_nhds] with Y hY

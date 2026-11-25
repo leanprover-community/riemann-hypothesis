@@ -133,7 +133,7 @@ private theorem fwd_lemma (hG : PullGenStatement) (hQ : QAlStatement) :
     push_cast
     field_simp
     try ring
-  · push_neg at hβ
+  · push Not at hβ
     refine ⟨0, Fin.elim0, Fin.elim0, Fin.elim0, fun i => i.elim0, fun i => i.elim0, fun j => ?_⟩
     rw [hzero β hβ j]
     simp

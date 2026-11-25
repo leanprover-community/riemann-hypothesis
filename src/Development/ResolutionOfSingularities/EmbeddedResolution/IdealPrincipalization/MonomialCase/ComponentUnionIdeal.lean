@@ -14,8 +14,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace MonomialCenterGeometry
@@ -158,5 +156,3 @@ theorem hasStrictNormalCrossingsWith_componentUnionIdeal : ∀ (T : MarkedIdealW
 end MonomialCenterGeometry
 
 end FunctorialResolution.EmbeddedResolution
-
-end

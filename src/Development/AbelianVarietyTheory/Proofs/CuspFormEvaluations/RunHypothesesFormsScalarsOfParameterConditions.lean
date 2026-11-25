@@ -37,51 +37,11 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Scaled
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SizePageRowsOfSizePageAt
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.HarmonicGermValueChartIndependent
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ShortThetaSeriesSpanCuspFormsWeight
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
 import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinSt
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevelsQDesc
@@ -114,7 +74,6 @@ variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} 
 
 abbrev NormDatum (B : WeightFamilies.Prov D) := GlobalTheory.RunIn.SecNorm B
 
-def NormDatum.sup (B : WeightFamilies.Prov D) : NormDatum B := GlobalTheory.RunIn.SecNorm.sup B
 namespace NormDatum
 variable (n : NormDatum B)
 
@@ -141,15 +100,6 @@ namespace GlobalTheory.PlaceSum
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem liesOver_resChar (la : HeightOneSpectrum (𝓞 K)) :
-    la.asIdeal.LiesOver (Ideal.span {((resCharOf la : ℕ) : ℤ)}) := by
-  refine ⟨?_⟩
-  ext n
-  rw [Ideal.mem_span_singleton, Ideal.under_def, Ideal.mem_comap, ← Ideal.Quotient.eq_zero_iff_mem]
-  have h : (Ideal.Quotient.mk la.asIdeal) (algebraMap ℤ (𝓞 K) n) = (n : 𝓞 K ⧸ la.asIdeal) := by simp
-  rw [h]
-  exact (CharP.intCast_eq_zero_iff (𝓞 K ⧸ la.asIdeal) (ringChar (𝓞 K ⧸ la.asIdeal)) n).symm
-
 theorem span_ne_bot {p : ℕ} (hp : p.Prime) : Ideal.span {(p : ℤ)} ≠ ⊥ := by
   simpa using hp.ne_zero
 
@@ -162,7 +112,7 @@ theorem mem_primesOverFinset {p : ℕ} (hp : p.Prime) (la : HeightOneSpectrum (�
   haveI := span_isMaximal hp
   refine (IsDedekindDomain.mem_primesOverFinset_iff (span_ne_bot hp) _).mpr ⟨la.isPrime, ?_⟩
   rw [← h]
-  exact liesOver_resChar la
+  exact Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.liesOver_resChar la
 
 theorem finite_resChar_eq {p : ℕ} (hp : p.Prime) :
     {la : HeightOneSpectrum (𝓞 K) | resCharOf la = p}.Finite := by
@@ -186,7 +136,7 @@ theorem sum_ram_log_le {p : ℕ} (hp : p.Prime) (T : Finset (HeightOneSpectrum (
         Ideal.inertiaDeg' (Ideal.span {(p : ℤ)}) la.asIdeal : ℕ) : ℝ) * Real.log p := by
     intro la hla
     have h := hT la hla
-    haveI : la.asIdeal.LiesOver (Ideal.span {(p : ℤ)}) := by rw [← h]; exact liesOver_resChar la
+    haveI : la.asIdeal.LiesOver (Ideal.span {(p : ℤ)}) := by rw [← h]; exact Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.liesOver_resChar la
     rw [Ideal.absNorm_eq_pow_inertiaDeg' la.asIdeal hp, ramOverZ, h]
     push_cast
     rw [Real.log_pow]
@@ -330,7 +280,7 @@ theorem sum_primeBound (N Q q d : ℕ) (g : Fin 2 → ℕ) (a b : ℝ) (S : Fins
   unfold primeBound
   simp only [add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Finset.sum_mul]
   rw [hQ, Finset.sum_ite_mem, Finset.inter_eq_right.2 hA, Finset.sum_comm]
-  simp only [Finset.sum_ite_eq', hq, hd, hg, if_true, Finset.mul_sum]
+  simp only [Finset.sum_ite_eq', hq, hd, hg, ite_true, Finset.mul_sum]
   congr 2
   refine Finset.sum_congr rfl fun p _ => ?_
   ring
@@ -426,33 +376,33 @@ theorem depth_sum {D : D7} (B : WeightFamilies.Prov D) {j : ℕ} (large₂ : Siz
       have hc := (H1algLink.prime_mem_iff la (hg _)).1 (Classical.choose_spec ha)
       have := Finset.single_le_sum (fun i (_ : i ∈ Finset.univ) => e3 (resCharOf la) i)
         (Finset.mem_univ (Classical.choose ha))
-      rw [if_pos hc] at this
+      rw [ite_eq_left hc] at this
       linarith
     · rw [dite_eq_right ha]
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       by_cases hb : ((D.host.QS : ℕ) : 𝓞 B.KO) ∈ la.asIdeal
-      · rw [if_pos hb, show ringChar (𝓞 B.KO ⧸ la.asIdeal) = resCharOf la from rfl]
+      · rw [ite_eq_left hb, show ringChar (𝓞 B.KO ⧸ la.asIdeal) = resCharOf la from rfl]
         linarith
-      · rw [if_neg hb]
+      · rw [ite_eq_right hb]
         by_cases hc : ((D.host.q : ℕ) : 𝓞 B.KO) ∈ la.asIdeal ∨ ((D.host.d : ℕ) : 𝓞 B.KO) ∈ la.asIdeal
-        · rw [if_pos hc]
+        · rw [ite_eq_left hc]
           rw [H1algLink.prime_mem_iff la hq, H1algLink.prime_mem_iff la hd] at hc
           rcases hc with hc | hc
-          · rw [if_pos hc]
+          · rw [ite_eq_left hc]
             linarith
-          · rw [if_pos hc]
+          · rw [ite_eq_left hc]
             linarith
-        · rw [if_neg hc]
+        · rw [ite_eq_right hc]
           linarith
   · intro la hla
     have hne : ∀ p ∈ S, p.Prime → ((p : ℕ) : 𝓞 B.KO) ∉ la.asIdeal := fun p hp hpp hm =>
       hla ((H1algLink.prime_mem_iff la hpp).1 hm ▸ hp)
     have hnA : resCharOf la ∉ A := fun h => hla (Finset.mem_union_left _ h)
     have a5 := e4 la
-    rw [if_neg hnA] at a5
+    rw [ite_eq_right hnA] at a5
     unfold nusOf
-    rw [dite_eq_right (fun ⟨i, hi⟩ => hne _ (hgS i) (hg i) hi), if_neg (fun h => hla (hsm ((hQ la).1 h))),
-      if_neg (not_or.2 ⟨hne _ (by simp [hS]) hq, hne _ (by simp [hS]) hd⟩), le_antisymm a5 (h0 la)]
+    rw [dite_eq_right (fun ⟨i, hi⟩ => hne _ (hgS i) (hg i) hi), ite_eq_right (fun h => hla (hsm ((hQ la).1 h))),
+      ite_eq_right (not_or.2 ⟨hne _ (by simp [hS]) hq, hne _ (by simp [hS]) hd⟩), le_antisymm a5 (h0 la)]
     simp
 
 theorem depth_sum_record : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (w : WeightFamilies.Wt D j), 2 * D.R.f * D.R.r ≤ w.n → Real.log (WeightAlgebra.DF w) ≤ 2 * large₂.sc.L → WeightedPrimeSumBoundAlt large₂ (recPJ h j hj) w (nusOf (recB h.toLawsCore) w (nuWt T w)) ∧ ∀ (Nd : NormDatum (recB h.toLawsCore)), WeightedPrimeSumBoundAlt large₂ (Nd.X' (recPJ h j hj) (extAll h j hj) (intAtExt_extAll h j hj)) w (nusOf (recB h.toLawsCore) w (nuWt T w)) := by

@@ -47,7 +47,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
 open Classical
 
-noncomputable section
 namespace GlobalTheory.ZH.RatModel
 
 open GlobalTheory.Points
@@ -148,4 +147,3 @@ theorem IsNm.exists_isHom {J : Type} [Finite J] {t : J → Ω} (h : M.IsNm t) (h
     fun x hx => mem_ringOn.2 fun w hw => Div.map_mem_O_of_isIntegral hw ((hR x).1 hx)⟩
 
 end GlobalTheory.ZH.RatModel
-end

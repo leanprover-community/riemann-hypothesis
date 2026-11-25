@@ -26,20 +26,20 @@ theorem blockL_apply (E : Type) [Field E] (r s : ℕ) (i j : Fin (r + s)) (w : I
   rw [e]
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     by_cases hi : (i : ℕ) < r
-    · rw [if_pos hi, Finset.sum_eq_single (⟨i, hi⟩ : Fin r)]
+    · rw [ite_eq_left hi, Finset.sum_eq_single (⟨i, hi⟩ : Fin r)]
       · have : Fin.castAdd s (⟨i, hi⟩ : Fin r) = i := Fin.ext rfl
         simp [this]
       · intro b _ hb
         have : Fin.castAdd s b ≠ i := fun h => hb (Fin.ext (show (b : ℕ) = i from congrArg Fin.val h))
         simp [this]
       · simp
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       refine Finset.sum_eq_zero fun k _ => ?_
       have : Fin.castAdd s k ≠ i := fun h => hi (by rw [← h]; exact k.2)
       simp [this]
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     refine Finset.sum_eq_zero fun k _ => ?_
     have : ¬ (Fin.castAdd s k = i ∧ Fin.castAdd s k = j) := fun h => hij (h.1.symm.trans h.2)
     simp [this]
@@ -61,13 +61,13 @@ theorem hasDerivAt_aInf (E : Type) [Field E] [NumberField E] (r s : ℕ) :
     · simp [aInf, hij]
   rw [e]
   by_cases hij : i = j
-  · simp only [if_pos hij]
+  · simp only [ite_eq_left hij]
     by_cases hi : (i : ℕ) < r
-    · simp only [if_pos hi]
+    · simp only [ite_eq_left hi]
       simpa using (Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))).cexp
-    · simp only [if_neg hi]
+    · simp only [ite_eq_right hi]
       simpa using hasDerivAt_const (0 : ℝ) (1 : ℂ)
-  · simp only [if_neg hij]
+  · simp only [ite_eq_right hij]
     exact hasDerivAt_const _ _
 
 theorem lie_blockL (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (r s : ℕ) :

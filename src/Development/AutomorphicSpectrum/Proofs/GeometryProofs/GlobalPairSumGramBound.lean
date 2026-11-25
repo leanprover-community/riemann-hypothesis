@@ -432,7 +432,7 @@ theorem core {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D 
     simpa using this
   · have hz : (ρ₃ : ℂ) • u ∈ Metric.ball (0 : Fin n → ℂ) 1 := smul_mem_ball' hρ₃ hρ₃' hu.1
     obtain ⟨w, hw1, hw2⟩ := hw ((ρ₃ : ℂ) • u)
-    have hg := GlobalTheory.T.chart_lattice_tangent_coordinates E H D l Xo _ n a₀ C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M N _ x _ (L.H u) w (hR u hu) hw1 hw2
+    have hg := GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem E H D l Xo _ n a₀ C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M N _ x _ (L.H u) w (hR u hu) hw1 hw2
     have e := hpt _ hz
     rw [smul_smul] at e
     rw [show ((ρ₁ * ρ₂ * ρ₃ : ℝ) : ℂ) = ((ρ₁ * ρ₂ : ℝ) : ℂ) * (ρ₃ : ℂ) by push_cast; ring, ← e]
@@ -485,8 +485,21 @@ theorem zeroPeriods (n a : ℕ) (ha : a ≤ n) : ∃ (Λ : Type) (_ : AddCommGro
     s_eq := fun _ _ _ => rfl
     span := Subsingleton.elim _ _ }⟩⟩
 
-theorem exists_isFramePeriods : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y), Top.IsGlobal Xo l c Y → ∀ (a b : CMType H ⊕ CMType H) (N : ℕ) (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) (n : ℕ) (Bd : Set ((Σ k, J k) → ℂ)) (χ : SncChart (mCoordIdeal y) n Bd) (t₀ : Fin n → ℂ) (cc : (k : K) → J k) (f : Ω), (∀ (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) w, CoordsAt 𝔐.ξ y z w → (w ∈ Bd ↔ ¬ 𝔐.Interior z)) → t₀ ∈ Metric.ball (0 : Fin n → ℂ) 1 → (∀ p : Cpt 𝔐.ξ, InChart 𝔐.ξ (segreCoord y) cc p → unitAt 𝔐.ξ p f → (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb p) → InFrameDomain y cc f (χ.γ t₀) → ∃ (a₀ g : ℕ) (Λ : Type) (_ : AddCommGroup Λ) (L : Flat.LogPeriods n a₀ g Λ) (π : Equiv.Perm (Fin n)) (ρ : ℝ) (U : Fin N → (Fin n → ℂ) → Fin g → ℂ), HodgeMetric.IsFramePeriods 𝔐 (fun k => ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li)) χ t₀ cc f L π ρ U := by
-  intro _ E _ _ _ H D Xo l c Y S Ω _ _ K _ J _ y 𝔐 _ a b N bb n Bd χ t₀ cc f hBd ht₀ hfr hdom
+theorem exists_isFramePeriods :
+    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H)
+    (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F))
+    (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y),
+    ∀ (a b : CMType H ⊕ CMType H) (N : ℕ) (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b))
+    (n : ℕ) (Bd : Set ((Σ k, J k) → ℂ)) (χ : SncChart (mCoordIdeal y) n Bd) (t₀ : Fin n → ℂ)
+    (cc : (k : K) → J k) (f : Ω), (∀ (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) w, CoordsAt 𝔐.ξ y z w → (w ∈ Bd ↔ ¬ 𝔐.Interior z)) →
+    t₀ ∈ Metric.ball (0 : Fin n → ℂ) 1 →
+    (∀ p : Cpt 𝔐.ξ, InChart 𝔐.ξ (segreCoord y) cc p → unitAt 𝔐.ξ p f →
+      (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb p) →
+    InFrameDomain y cc f (χ.γ t₀) →
+    ∃ (a₀ g : ℕ) (Λ : Type) (_ : AddCommGroup Λ) (L : Flat.LogPeriods n a₀ g Λ) (π : Equiv.Perm (Fin n))
+      (ρ : ℝ) (U : Fin N → (Fin n → ℂ) → Fin g → ℂ),
+      HodgeMetric.IsFramePeriods 𝔐 (fun k => ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li)) χ t₀ cc f L π ρ U := by
+  intro E _ _ _ H D Xo l c Y S Ω _ _ K _ J _ y 𝔐 a b N bb n Bd χ t₀ cc f hBd ht₀ hfr hdom
   classical
   obtain ⟨a₀, π, ρ₀, ha, hρ₀, hρ₀', hπ, hgeo⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ChartGeo.exists_recentre_chart K J Ω y _ n Bd χ t₀ cc f ht₀ hdom
   have hw : DifferentiableOn ℂ (fun u => χ.γ (HodgeMetric.recentre t₀ ρ₀ π u)) (Metric.ball 0 1) := by

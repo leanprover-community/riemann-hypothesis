@@ -83,7 +83,7 @@ theorem PH.ka_le (h : PH vecc B ka nu) : ∀ (i : Fin (N + 1)) (b : Fin K), ka i
     · have h1 : ka j.succ b ≤ nu (j.val + 1) := h.C j hv b
       have h2 : nu (j.val + 1) ≤ nu (j.val + 1 + 1) := h.numono _
       exact h1.trans h2
-    · rw [if_neg hv] at hs
+    · rw [ite_eq_right hv] at hs
       have h1 : ka j.succ b ≤ ka j.castSucc b := hs.1 b
       have h2 : ka j.castSucc b ≤ nu (j.val + 1) := ih b
       have h3 : nu (j.val + 1) ≤ nu (j.val + 1 + 1) := h.numono _
@@ -106,7 +106,7 @@ theorem PH.stepV (h : PH vecc B ka nu) (i : Fin N) (hv : vecc i = true) (c : ℤ
     colH (ka i.castSucc) c ≤ colH (ka i.succ) c ∧ colH (ka i.succ) c ≤ colH (ka i.castSucc) c + 1 ∧
       (colH (ka i.castSucc) c < colH (ka i.succ) c → c ≤ nu (i.val + 1)) := by
   have hs := h.kastep i
-  rw [if_pos hv] at hs
+  rw [ite_eq_left hv] at hs
   obtain ⟨s1, s2⟩ := colH_le_le_add_one_of_HStrip hs c
   refine ⟨s1, s2, fun hlt => ?_⟩
   obtain ⟨b, hb⟩ := pos_of_colH (c := c) (mu := ka i.succ) (by omega)
@@ -115,13 +115,13 @@ theorem PH.stepV (h : PH vecc B ka nu) (i : Fin N) (hv : vecc i = true) (c : ℤ
 theorem PH.stepC (h : PH vecc B ka nu) (i : Fin N) (hv : vecc i = false) (c : ℤ) :
     colH (ka i.succ) c ≤ colH (ka i.castSucc) c ∧ colH (ka i.castSucc) c ≤ colH (ka i.succ) c + 1 := by
   have hs := h.kastep i
-  rw [if_neg (by simp [hv])] at hs
+  rw [ite_eq_right (by simp [hv])] at hs
   exact colH_le_le_add_one_of_HStrip hs c
 
 theorem PH.dualLow (h : PH vecc B ka nu) {c : ℤ} (hc : c ≤ 0) : ∀ i : Fin (N + 1), K ≤ colH (ka i) c + i.val := by
   intro i
   induction i using Fin.induction with
-  | zero => rw [h.ka0, colH_zero, if_pos hc]; simp
+  | zero => rw [h.ka0, colH_zero, ite_eq_left hc]; simp
   | succ i ih =>
     simp only [Fin.val_succ, Fin.val_castSucc] at ih ⊢
     by_cases hv : vecc i = true

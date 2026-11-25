@@ -412,7 +412,7 @@ theorem winClusters_exists_step {n : ℕ} (th : ZMod n → Prop) (j : ℕ) (x : 
     refine ⟨Nat.find h, h2, fun h0 => absurd h0 (by omega), fun _ => h3, ?_⟩
     intro q hq hqs hth
     exact Nat.find_min h hqs ⟨hq, by omega, hth⟩
-  · push_neg at h
+  · push Not at h
     refine ⟨0, Nat.zero_le _, fun _ q hq hqj hth => absurd hth (h q hq hqj), fun h0 => absurd h0 (lt_irrefl 0),
       fun q hq hq0 => absurd hq0 (by omega)⟩
 
@@ -450,7 +450,7 @@ theorem winClusters : ∀ {n : ℕ} (th : ZMod n → Prop) (L j : ℕ), 1 ≤ j 
     have ex : ∃ x, x ∈ F ∧ (y = x ∨ y = x + (sp x : ZMod n)) := by
       by_cases hyF : ∀ q : ℕ, 1 ≤ q → q ≤ j → ¬ th (y - q)
       · exact ⟨y, ⟨hy, hyF⟩, Or.inl rfl⟩
-      · push_neg at hyF
+      · push Not at hyF
         obtain ⟨q, hq1, hqj, hq⟩ := hyF
         have hxF : y - (q : ZMod n) ∈ F := by
           refine ⟨hq, ?_⟩
@@ -649,9 +649,9 @@ theorem abs_szT_sub_floor_le {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool
   unfold szT
   generalize ((R.t : ℤ) + 1) / 2 = q at h0' h1'
   cases s
-  · simp only [Bool.false_eq_true, if_false, Int.cast_sub]
+  · simp only [Bool.false_eq_true, ite_false, Int.cast_sub]
     rw [abs_le]; constructor <;> linarith
-  · simp only [if_true, Int.cast_add]
+  · simp only [ite_true, Int.cast_add]
     rw [abs_le]; constructor <;> linarith
 
 theorem pageWord_not_thick_size : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → ∀ i, ¬ (pageWord L j ε τ φ).thick i → ∃ s : ℝ, L.sc.w'' D.R.n ≤ s ∧ s ≤ (wMax D : ℝ) ∧ s ≤ 8 / 5 * L.sc.b' ∧ |(((pageWord L j ε τ φ).sz i : ℤ) : ℝ) - s| ≤ ((D.R.t : ℝ) + 1) / 2 := by
@@ -824,15 +824,6 @@ section -- clump:auto
 
 open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
 
-namespace GlobalTheory
-
-theorem orderOf_moving (fr : Formalism.HC.Frame) (φ : fr.GG) (h : φ.1.2 = -1) : orderOf φ = Nat.lcm 2 (orderOf φ.2) :=
-  UpperTheory.KStar.Words.orderOf_moving φ h
-
-theorem orderOf_moving_stmt : ∀ {fr : Formalism.HC.Frame} (φ : fr.GG), φ.1.2 = -1 → orderOf φ = Nat.lcm 2 (orderOf φ.2) :=
-  fun {fr} φ h => orderOf_moving fr φ h
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.OrderOfEqMaxTwoOfSignNegImplicit =====
@@ -852,7 +843,7 @@ theorem inert_nothree_nonthick : ∀ {R : Ranks} (H : Host R) (τ φ : R.GG), 3 
       ∃ i : ZMod (orderOf φ), ¬ Thick H (letter τ φ i) := by
   intro R H τ φ hL hφ hnot
   have h2 : 2 ≤ orderOf φ := by
-    rw [_root_.GlobalTheory.orderOf_moving_stmt φ hφ]
+    rw [_root_.UpperTheory.KStar.Words.orderOf_moving φ hφ]
     exact Nat.le_of_dvd (Nat.lcm_pos two_pos (orderOf_pos _)) (Nat.dvd_lcm_left _ _)
   by_cases hc : φ = R.cc
   · have hτ : ¬ Thick H τ := fun h => hnot ⟨hc, h⟩
@@ -1266,8 +1257,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.FamJointBCDClosed", "h": "module\n\npublic import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.CommutingEndomorphismCondition\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRhoPtOfSplitting\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.DeRhamFamilyAway\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FamJointBCD\npublic import Development.AutomorphicArithmetic.ResidueCharacters.TwistedPlaces\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertPrimeNeTypePrime\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PointInputAwayFromTypePrimesStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal

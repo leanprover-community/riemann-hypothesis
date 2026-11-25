@@ -255,16 +255,16 @@ theorem reidx4 {M : Type*} [AddCommMonoid M] {n : ℕ} (F : Fin (n + 1) → Fin 
       if W' ≠ W then ∑ t, ∑ x, F W W' (t.succAbove x) t else 0 := by
     intro W'
     by_cases hW : W' ≠ W
-    · rw [if_pos hW, Finset.sum_comm]
+    · rw [ite_eq_left hW, Finset.sum_comm]
       refine Finset.sum_congr rfl fun t _ => ?_
       rw [← sum_ne_succAbove t (fun X => F W W' X t)]
       refine Finset.sum_congr rfl fun X _ => ?_
       by_cases hX : X ≠ t
-      · rw [if_pos ⟨Ne.symm hW, hX⟩, if_pos hX]
-      · rw [if_neg (fun h => hX h.2), if_neg hX]
-    · rw [if_neg hW]
+      · rw [ite_eq_left ⟨Ne.symm hW, hX⟩, ite_eq_left hX]
+      · rw [ite_eq_right (fun h => hX h.2), ite_eq_right hX]
+    · rw [ite_eq_right hW]
       refine Finset.sum_eq_zero fun X _ => Finset.sum_eq_zero fun X' _ => ?_
-      rw [if_neg (fun h => hW (Ne.symm h.1))]
+      rw [ite_eq_right (fun h => hW (Ne.symm h.1))]
   simp only [h1]
   exact sum_ne_succAbove W (fun W' => ∑ t, ∑ x, F W W' (t.succAbove x) t)
 
@@ -273,7 +273,7 @@ theorem alternating_sign_row {n : ℕ} (s : Fin (n + 1)) (w : Fin n) :
   unfold sg2
   rcases Fin.lt_or_le (Fin.castSucc w) s with h | h
   · rw [Fin.succAbove_of_castSucc_lt _ _ h]
-    rw [if_pos (by simpa [Fin.lt_def] using h)]
+    rw [ite_eq_left (by simpa [Fin.lt_def] using h)]
     simp
   · rw [Fin.succAbove_of_le_castSucc _ _ h]
     have h' : ¬ (w.succ : Fin (n + 1)).val < s.val := by
@@ -281,7 +281,7 @@ theorem alternating_sign_row {n : ℕ} (s : Fin (n + 1)) (w : Fin n) :
       have := Fin.le_def.1 h
       simp at this
       omega
-    rw [if_neg h']
+    rw [ite_eq_right h']
     simp only [Fin.val_succ]
     push_cast
     ring
@@ -294,7 +294,7 @@ theorem alternating_sign_column {n : ℕ} (t : Fin (n + 1)) (x : Fin n) :
     have h' : ¬ t.val < (Fin.castSucc x).val := by
       have := Fin.lt_def.1 h
       omega
-    rw [if_neg h']
+    rw [ite_eq_right h']
     simp only [Fin.val_castSucc]
     push_cast
     ring
@@ -304,7 +304,7 @@ theorem alternating_sign_column {n : ℕ} (t : Fin (n + 1)) (x : Fin n) :
       simp at this
       simp only [Fin.val_succ]
       omega
-    rw [if_pos h']
+    rw [ite_eq_left h']
     simp only [Fin.val_succ]
     push_cast
     ring
@@ -456,7 +456,7 @@ theorem val_bS_skip (l : Fin r) (s' : Fin (mdim k r l.succ)) (y : Fin (mdim k r 
   refine Fin.lastCases ?_ (fun j => ?_) y
   · simp [es0]
   · rw [bS_castSucc]
-    simp only [Fin.val_castSucc, Function.comp_apply, v0, skip1, j.isLt, if_true]
+    simp only [Fin.val_castSucc, Function.comp_apply, v0, skip1, j.isLt, ite_true]
     split_ifs <;> simp
 
 theorem hlenL (l : Fin r) (hl : l.val + 1 = r) : r - l.castSucc.val + k = mdim k r l.succ - 1 + 1 := by

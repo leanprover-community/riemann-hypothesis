@@ -42,15 +42,6 @@ def IwProG : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (k : ℕ) (v : HeightOneSpectrum (𝓞 F)) (g : ℕ), g.Prime → (g : 𝓞 F) ∈ v.asIdeal →
     IsProGrp g (iwU F k v)
 
-section Level
-
-variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
-    [StarRing E] [Algebra F E] {sp : Spaces R F E} {gp : Fin 2 → ℕ}
-    {ι' : Type} [Fintype ι'] {hc : ι' → HCParam R} {C : ColumnChain R ι' hc} {A : ColumnsAtT R C}
-    {clsLat : ∀ i, C.cls i → Submodule (𝓞 E) (sp.X i).V}
-
-end Level
-
 end Formalism.L2.G.Triv
 
 end
@@ -307,7 +298,6 @@ theorem iwProG : Formalism.L2.G.Triv.IwProG := by
 
 end Iw
 
-
 theorem isProGrp_transfer {G₁ G₂ : Type} [Group G₁] [TopologicalSpace G₁] [Group G₂] [TopologicalSpace G₂]
     (g : ℕ) (θ : G₁ →* G₂) (hθ : Continuous θ) (ψ : G₂ → G₁) (hψ : Continuous ψ)
     (Uw : Subgroup G₁) (P : Subgroup G₂) (h1 : ∀ x ∈ Uw, θ x ∈ P) (h2 : ∀ p ∈ P, ψ p ∈ Uw ∧ θ (ψ p) = p)
@@ -489,12 +479,7 @@ theorem proGTransfer_of_cont (F E : Type) [Field F] [NumberField F] [Field E] [N
 
 section Link
 
-def LocalEndHomeo : Prop :=
-  ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
-    (τ : v.adicCompletion F →+* v.adicCompletion F),
-    Continuous τ ∧ ∃ τ' : v.adicCompletion F →+* v.adicCompletion F, Continuous τ' ∧ ∀ a, τ (τ' a) = a
-
-theorem split_cont_of_homeo (hE : LocalEndHomeo) (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
+theorem split_cont_of_homeo (hE : PI.LocalEndHomeo) (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F))
     (s : E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F)
     (hs : ∀ x, s (sigR σ (v.adicCompletion F) x) = swapR _ (s x)) :
@@ -534,7 +519,7 @@ theorem split_cont_of_homeo (hE : LocalEndHomeo) (F E : Type) [Field F] [NumberF
           rw [Algebra.smul_def, Algebra.smul_def, map_mul, hsym] }
     exact IsModuleTopology.continuous_of_linearMapₛₗ hτ'c L
 
-theorem colProG (hE : LocalEndHomeo) {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+theorem colProG (hE : PI.LocalEndHomeo) {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [StarRing E] [Algebra F E] {sp : Spaces R F E} {gp : Fin 2 → ℕ}
     {ι' : Type} [Fintype ι'] {hc : ι' → HCParam R} {C : ColumnChain R ι' hc} {A : ColumnsAtT R C}
     {clsLat : ∀ i, C.cls i → Submodule (𝓞 E) (sp.X i).V}
@@ -544,16 +529,12 @@ theorem colProG (hE : LocalEndHomeo) {R : Ranks} {F E : Type} [Field F] [NumberF
     (L.splitG i v h) (L.splitG_sig i v h) hsc hsic (L.frG i v h) (iwU F R.k v) (L.Uloc v) (L.Uloc_le v)
     (L.Uloc_g i v h) (gp i) (iwProG F R.k v (gp i) (hp i) h)
 
-theorem levels_pro_g_of_continuity (hE : LocalEndHomeo) : Link4p :=
+theorem levels_pro_g_of_continuity (hE : PI.LocalEndHomeo) : Link4p :=
   fun D Lv u => colProG hE (Lv u) D.host.g_prime
 
 end Link
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.ProGW
-
-namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
-
-end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 
 end
 end -- clump:auto
@@ -805,7 +786,7 @@ section -- clump:auto
 
 namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 
-theorem local_endomorphism_continuous : ProGW.LocalEndHomeo := local_endomorphism_homeomorph
+theorem local_endomorphism_continuous : PI.LocalEndHomeo := local_endomorphism_homeomorph
 
 theorem levels_pro_g : Link4p := ProGW.levels_pro_g_of_continuity local_endomorphism_continuous
 

@@ -188,9 +188,9 @@ private theorem specMap_coordBlowupSubstUliftFin_comp_affineSpaceSpecIso_inv (k 
     rw [appTop_comp_apply_eq_appTop_appTop, appTop_comp_apply_eq_appTop_appTop, affineSpaceSpecIso_inv_appTop_coord,
       appTop_specMap_ΓSpecIso_inv_apply, coordBlowupSubstMap_appTop_coord]
     by_cases hc : i.down ∈ S ∧ i.down ≠ s
-    · rw [if_pos hc, map_mul, affineSpaceSpecIso_inv_appTop_coord, affineSpaceSpecIso_inv_appTop_coord]
+    · rw [ite_eq_left hc, map_mul, affineSpaceSpecIso_inv_appTop_coord, affineSpaceSpecIso_inv_appTop_coord]
       simp [coordBlowupSubstUliftFin, ULift.ext_iff, hc.1, hc.2]
-    · rw [if_neg hc, affineSpaceSpecIso_inv_appTop_coord]
+    · rw [ite_eq_right hc, affineSpaceSpecIso_inv_appTop_coord]
       simp [coordBlowupSubstUliftFin, ULift.ext_iff, hc]
 
 theorem affineSpaceCoordBlowupChart_comp_affineSpaceCoordBlowupMap (k : Type u) [Field k] (m : ℕ)

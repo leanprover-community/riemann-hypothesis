@@ -341,7 +341,7 @@ theorem sum_step (ω : Fˣ →* ℂˣ) {n : ℕ} (f : GL (Fin 2) F → ℂ) (hn 
   have hφ : ∀ b ∈ B, φ b ∈ B' ∧ valuation F (t b - φ b) ≤ Pv F := by
     intro b hb
     have hex : ∃ c, c ∈ B' ∧ valuation F (t b - c) ≤ Pv F := reps_rep hB' (ht b hb)
-    simp only [φ, dif_pos hex]
+    simp only [φ, dite_eq_left hex]
     exact hex.choose_spec
   have hkey : ∀ b ∈ B, ∀ c : F,
       x 0 0 * b + x 0 1 - c * (x 1 0 * b + x 1 1) = (t b - c) * (x 1 0 * b + x 1 1) := by

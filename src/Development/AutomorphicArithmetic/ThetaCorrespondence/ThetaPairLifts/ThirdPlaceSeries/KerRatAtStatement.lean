@@ -115,7 +115,6 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.E
 open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
-
 namespace GlobalTheory.KerPhase
 
 variable {D : D7}
@@ -217,7 +216,7 @@ theorem isLevDatum_kerDat (hL : R.toLevCh.Is A.μ0) {ξ χ ξR Q ω φ} (hK : Ke
   · intro t ht
     by_cases hc : IsHalf (cA D e) t ∧ IsIntM (frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) t)
     · exact ⟨GlobalTheory.T.idempotent_sum_self_dual_frames_bound D _ _ _ _ _ _ hsV hsW hfV hfW _ e he hP2 t hc.1 hc.2, hc.1⟩
-    · exact absurd (if_neg hc) ht
+    · exact absurd (ite_eq_right hc) ht
   · intro u hu hue t
     have hN' := GlobalTheory.T.adjointFrameMatrix_integral_of_conjugate_half D _ _ _ _ _ _ hsV hsW hfV hfW _ e he hP2 u hu hue
     have hfr : frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) (t + N • u) =
@@ -236,7 +235,7 @@ theorem isLevDatum_kerDat (hL : R.toLevCh.Is A.μ0) {ξ χ ξR Q ω φ} (hK : Ke
     show (if _ then _ else _) = (if _ then _ else _)
     rw [hfr]
     by_cases hc : IsHalf (cA D e) t ∧ IsIntM (frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) t)
-    · rw [if_pos ⟨hhalf'.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff hN' _).2 hc.2⟩, if_pos hc]
+    · rw [ite_eq_left ⟨hhalf'.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff hN' _).2 hc.2⟩, ite_eq_left hc]
       refine congrArg₂ (· * ·) (_root_.GlobalTheory.PlaceVec.omegaK_congr _ fun PP hPP =>
         GlobalTheory.RefDatumLev.redM_add_nsmul PP hc.2 hN' _ (hN PP (Or.inl hPP))) ?_
       have h : ∀ PP ∈ Q, redM PP (frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) t +
@@ -252,7 +251,7 @@ theorem isLevDatum_kerDat (hL : R.toLevCh.Is A.μ0) {ξ χ ξR Q ω φ} (hK : Ke
       · exact absurd (fun PP hP => by beta_reduce; rw [← h PP hP]; exact h1 PP hP) h2
       · exact absurd (fun PP hP => by beta_reduce; rw [h PP hP]; exact h2 PP hP) h1
       · rfl
-    · rw [if_neg, if_neg hc]
+    · rw [ite_eq_right, ite_eq_right hc]
       intro h'
       exact hc ⟨hhalf'.1 h'.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff hN' _).1 h'.2⟩
   · intro t
@@ -281,7 +280,6 @@ variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T0 : Type} {A3 : FamIn3 D.w
   {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {Rl : RealDat3 D A3 T.Q.c.F} {cG : G0 Rl.Pg D.R.r ≃* G0g D.nd}
   {S : NX.RatDat D.ntw} (YS : NX.NExpRealS Rl cG S)
 
-
 include YS in
 theorem exists_goodCover_bigF (hRF : GlobalTheory.NT.RayField) (hT : LawsJ T) (ha : AlgTie T) (hs : SmallHas D Rl.C) {pd : ℕ}
     (haux : IsAuxiliarySplitSquarefreeLevel D (D.host.g 0 * D.host.g 1) pd) (hd : pd ∣ D.host.pde * D.host.pde') (j : Fin D.R.m) (n : ℕ) :
@@ -307,7 +305,6 @@ theorem exists_goodCover_bigF (hRF : GlobalTheory.NT.RayField) (hT : LawsJ T) (h
   exact ⟨C, hpd, hfr, hG⟩
 
 end Cover
-
 
 set_option linter.unusedVariables false in
 theorem exists_adForm_eq_phase_smul : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt →
@@ -411,7 +408,6 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.E
 open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
-
 theorem _root_.GlobalTheory.T.exists_adelicForm_eq_rationalPhase_kernelSeries : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt →
   ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T0 : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T0 D.R.m)
     (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (Rl : RealDat3 D A3 T.Q.c.F) (cG : G0 Rl.Pg D.R.r ≃* G0g D.nd)
@@ -450,18 +446,13 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
   {K' : Type} [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ)
 
-theorem exists_ratMat (V : HSp D) (γ : GQ V) : ∃ γE, Bridge.IsRatMat V γ γE := by
-  obtain ⟨γE, -, hE⟩ := Subgroup.mem_map.1 (Subgroup.mem_subgroupOf.1 γ.2)
-  exact ⟨γE, hE.symm⟩
-
-
 theorem ext_val (V : HSp D) (C : Bridge.CoefDat D V) {S : CSD D.what₂.LL} {J : Subgroup (Bridge.Gf V)} {χ : J →* ℂˣ}
     (P : Bridge.ClassPres (Bridge.ratF V) S D.what₂.embLL C.ρ J χ) {lam : D.what₂.Tau → DomWeight V.rank}
     {c0 : VV D.what₂.LL lam →ₛₗ[D.what₂.embLL] C.W} {rho : GL (Fin V.rank) D.host.E →* Module.End D.what₂.LL (VV D.what₂.LL lam)}
     (hm : Bridge.CoefMapTie V C c0 rho) {pair nab del} (hc : Bridge.CoefTie V C P lam c0 pair nab del)
     (f : S.Cl → S.V) (g : Bridge.Gf V) : ∃ k v, P.ext f g = ((χ k : ℂˣ) : ℂ) • c0 v := by
   obtain ⟨e, -, hcoef, -⟩ := hc
-  obtain ⟨γE, hγE⟩ := exists_ratMat V (P.decG g)
+  obtain ⟨γE, hγE⟩ := GlobalTheory.ConjForms.exists_ratMat V (P.decG g)
   refine ⟨P.decK g, rho γE (e (f (P.decC g))), ?_⟩
   rw [hm.1 _ _ hγE, ← hcoef]
   rfl
@@ -480,8 +471,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.IndefR.Links IsDedekindDomain NumberField GlobalTheory.ExportSeries Formalism.L2.Pj GlobalTheory.CoverRead GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels GlobalTheory.ConjTwist
 open Formalism.L2.Host (embLL0)
 open scoped TensorProduct
-
-
 
 noncomputable section
 
@@ -504,7 +493,7 @@ theorem fixBase_of_fix (hRF : GlobalTheory.NT.RayField) {T : CoreJ D} [Algebra T
 theorem exists_extC {G : Type} [Group G] [Fintype G] {T1 : Type} {A : FamIn D.what₂.LL G Pl0 T1 D.R.m} {T : CoreJ D}
     [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {j : Fin D.R.m} {Tp : Type} {tup : Tp → T1}
     (O : OMDat T.toCore R j Tp tup) : ∃ c : VsV D j ℂ →ₗ[ℂ] (R.cV j).W, ExtC R j (inC O.c') O.c0' c :=
-  GlobalTheory.T.exists_complexLinear_extension_coefficientMap D G Pl0 T1 A T R j Tp tup O
+  GlobalTheory.ExtCoeff.exists_extC D G Pl0 T1 A T R j Tp tup O
 
 theorem exists_ser_ne_zero {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {Rl : RealDat3 D A3 T.Q.c.F} {F : Face D A3.A}
     {κ : ∀ j : Fin D.R.m, WeightFamilies.Wt D ((j : ℕ) + 1)} {v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec}
@@ -546,7 +535,7 @@ theorem expands_of_isRatPhase (hRF : GlobalTheory.NT.RayField) {T : CoreJ D} [Al
     ∃ (n : ℕ) (e : Fin n → ℂ) (f : Fin n → T.toCore.cuspA ((j : ℕ) + 1) (wtA (κ j)) (κ j).n),
       Expands (O j) (κ j) (fun g => ph₀ * ser Rl.toRealDat j A3.A.μ0 (Rl.vP j A3.A.μ0) u h (c x) g) e f ∧
         ∀ k, e k ∈ (embLL0 D).fieldRange :=
-  GlobalTheory.T.rationalPhaseThetaSeries_expands_cuspForms_smallField D Γ Pl0 I0 T0 A3 hRF T Rl cG S YS F κ v₀ O hnV hT hcore hfw hti hio hQ hgal hval hray hroots j hV hpins hfp gramR c0R c0L hft hbc u hu ph₀ hph c hc v hv x hx h hh
+  GlobalTheory.SeriesTie.RatExpand.expands_of_isRatPhase D Γ Pl0 I0 T0 A3 hRF T Rl cG S YS F κ v₀ O hnV hT hcore hfw hti hio hQ hgal hval hray hroots j hV hpins hfp gramR c0R c0L hft hbc u hu ph₀ hph c hc v hv x hx h hh
 
 theorem fixed_of_expands {G : Type} [Group G] [Fintype G] {T1 : Type} {A : FamIn D.what₂.LL G Pl0 T1 D.R.m} {T : CoreJ D}
     [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {j : Fin D.R.m} {Tp : Type} {tup : Tp → T1}
@@ -594,7 +583,6 @@ open Formalism.IndefR.FWT Formalism.IndefR.Datum GlobalTheory.BigTop GlobalTheor
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries GlobalTheory.ConjTwist GlobalTheory.FlatVecSum GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels
 open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
-
 
 namespace GlobalTheory.PhaseOneOnto
 
@@ -647,8 +635,6 @@ open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMas
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F}
 
-
-
 theorem exists_comb_base {i : Fin D.R.m} {κ : WeightFamilies.Wt D ((i : ℕ) + 1)} {v : (R.MW i (sg0 D A)).Vec} {ι x₀} {ph : ℂ}
     (hn : κ.n = (Vc D i).rank) (O : OMDat T.toCore R i Unit (fun _ => A.μ0)) (hP : O.Pins κ v ι x₀)
     (hrow : O.OneMapOf κ v (T.cE ((i : ℕ) + 1) O.s0) ph) (y : A.fam.amb.FL i A.μ0) :
@@ -690,8 +676,6 @@ theorem exists_comb_base {i : Fin D.R.m} {κ : WeightFamilies.Wt D ((i : ℕ) + 
 
 variable {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec}
 
-
-
 theorem expands_thF_jV {F : Face D A} (hR : GlobalTheory.Hk3.Core R F) (fw : FWTie T R κ v₀) (hU : R.LUnif) {i : Fin D.R.m}
     (O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0)) (hpins : OMPins T R κ v₀ O i) {ph : ℂ}
     (hrow : (O i).OneMapOf (κ i) (v₀ i (sg0 D A)) (T.cE ((i : ℕ) + 1) (O i).s0) ph) (y : A.fam.amb.FL i A.μ0) :
@@ -729,8 +713,6 @@ theorem conjTup_base {F : Face D A} (hR : GlobalTheory.Hk3.Core R F) (τ : ℂ �
   rw [hR.lev.xi_base] at h1
   rw [GlobalTheory.ChrEqUnique.eq_one_of_chrEq h1 z]
   simp
-
-
 
 theorem conjForm_jV {F : Face D A} (hR : GlobalTheory.Hk3.Core R F) {i : Fin D.R.m}
     (O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0)) (hpins : OMPins T R κ v₀ O i)
@@ -789,7 +771,7 @@ theorem GlobalTheory.PhaseOneOnto.phase_mem_coefField : GlobalTheory.Published.C
   have hs : sg0 D A3.A = D.what₂.embLL := sgAt_mk _ Rl.hv0
 
   obtain ⟨gramR', c0R', c0L', hft', hbc⟩ := hR.pins.2.lift.c0
-  obtain ⟨a, ⟨k, hk, hak⟩, hca⟩ := GlobalTheory.T.definiteSideRealisations_coefMap_differ_rootOfUnity Rl.B Rl.pl _ Rl.Q (labLL D) _ _ gramR gramR' c0R c0R' c0L c0L' hFT hft' j
+  obtain ⟨a, ⟨k, hk, hak⟩, hca⟩ := GlobalTheory.CoefRoot.coef_root Rl.B Rl.pl _ Rl.Q (labLL D) _ _ gramR gramR' c0R c0R' c0L c0L' hFT hft' j
   have ha0 : a ≠ 0 := fun e => by rw [e, zero_pow hk] at hak; exact zero_ne_one hak
   have hb0 : D.what₂.embLL a ≠ 0 := (map_ne_zero _).2 ha0
   obtain ⟨ph', hph'⟩ : ∃ ph', ph' = (D.what₂.embLL a)⁻¹ * ph := ⟨_, rfl⟩
@@ -933,7 +915,6 @@ theorem kerRat_framed (hP : GlobalTheory.Published.CuspRapidDecay) (hA : GlobalT
     show sg0 D A3.A c⁻¹ * adForm Rl.toRealDat j x (fun τ => u τ) g = _
     rw [e2, map_inv₀, hcph, ← mul_assoc, inv_mul_cancel₀ hph0, one_mul]
 
-
 end GlobalTheory.BigOn.Exp.SerBase
 end -- clump:auto
 end -- clump:auto
@@ -945,8 +926,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RatHyp0AtPointStatement =====
@@ -955,8 +934,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.KerRatAt", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ReadComparisonAt\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IteratedDerivativeSubmoduleStable\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SeriesRationalityBackFromMovedReadingsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisationLawsCentralMovedReadingsStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.InGeoGeoHalfStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LowAtHolds\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RatHyp0AtPointStatement\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TwAdm\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExists\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.OfCore\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullHeckeRealDatMovedReadings\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToRatHyp0\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 noncomputable section
@@ -967,7 +944,6 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.E
 open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
-
 namespace GlobalTheory.BigOn.Exp.SerBase
 open GlobalTheory.RealGeo GlobalTheory.Unframe GlobalTheory.UnframePt in
 theorem kerRatAt_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt →
@@ -977,8 +953,8 @@ theorem kerRatAt_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Pu
   obtain ⟨l1, l2⟩ := hLT
   have h0 := _root_.GlobalTheory.BigOn.Exp.ratHyp0_at_point_alt Fm x hx i p hp hM _ l2.2.2 l1 j
   obtain ⟨c', w', hw', hfr, B', hv⟩ := exists_framed_half hP h0.size (GlobalTheory.Core5.of_core h0.core) (geoHalf p) h0.unif
-    (_root_.GlobalTheory.T.inGeo_half_of_ratHyp0 hP Fm x hx i p hp hM _ j h0)
-  obtain ⟨S', YS', -⟩ := GlobalTheory.T.seriesRationality_back_from_movedReadings p.R p.cG p.Sx p.nexp w' hw'
+    (_root_.GlobalTheory.UnframePt.inGeo_geoHalf_of_ratHyp0 hP Fm x hx i p hp hM _ j h0)
+  obtain ⟨S', YS', -⟩ := GlobalTheory.UnframeForms.ratRow_back p.R p.cG p.Sx p.nexp w' hw'
   letI iA : Algebra (setCE p.T c').Q.c.F (Fm.D x i).what₂.LL := p.alg
   have hV' : (setCE p.T c').V ((j : ℕ) + 1) (setCE p.T c').σ₀ = Wc (Fm.D x i) j :=
     B'.fw.laws.spaceW _ ⟨Nat.le_add_left _ _, j.2⟩ _ (setCE p.T c').toCore.good_σ₀
@@ -1020,8 +996,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.KerRatAtStatement", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ReadComparisonAt\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.KerRatAt\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp GlobalTheory.BigOn.Exp.SerBase

@@ -84,7 +84,7 @@ theorem idemAlg : IdemAlg := by
     obtain ⟨l, hl⟩ := QuotientGroup.mk_out_eq_mul L (1 : GLw a w × GLw b w)
     rw [hl, one_mul]
     exact l.2
-  refine ⟨⟨HasCompactSupport.intro' hLcpt hLc fun x hx => by rw [idem_apply, if_neg (fun h => hx (SetLike.mem_coe.2 h))], fun k hk x =>
+  refine ⟨⟨HasCompactSupport.intro' hLcpt hLc fun x hx => by rw [idem_apply, ite_eq_right (fun h => hx (SetLike.mem_coe.2 h))], fun k hk x =>
     ⟨by rw [idem_apply, idem_apply, L.mul_mem_cancel_left hk], by rw [idem_apply, idem_apply, L.mul_mem_cancel_right hk]⟩⟩,
     ?_, fun f hf => ⟨?_, ?_, ?_⟩⟩
   · funext y
@@ -98,12 +98,12 @@ theorem idemAlg : IdemAlg := by
       rw [idem_apply, idem_apply, L.mul_mem_cancel_right hk, _root_.mul_inv_rev, mul_assoc,
         (hf.2 k⁻¹ (L.inv_mem hk) _).1]
     rw [GlobalTheory.CompanionTheory.HintLevel.hint_eq_level _ (K2 a b w) L _ hLK hst hne, finsum_eq_single _ (((1 : GLw a w × GLw b w)) : _ ⧸ L)]
-    · rw [idem_apply, if_pos h1, (hf.2 _ (L.inv_mem h1) m).1, ← mul_assoc, inv_mul_cancel₀ hc, one_mul]
+    · rw [idem_apply, ite_eq_left h1, (hf.2 _ (L.inv_mem h1) m).1, ← mul_assoc, inv_mul_cancel₀ hc, one_mul]
     · intro q hq
       have : Quotient.out q ∉ L := fun h => hq (by
         rw [← QuotientGroup.out_eq' q]
         exact QuotientGroup.eq.2 (by rw [mul_one]; exact L.inv_mem h))
-      rw [idem_apply, if_neg this, zero_mul]
+      rw [idem_apply, ite_eq_right this, zero_mul]
   · funext m
     unfold mconv
     have hst : L ≤ rStab (fun m' => f m' * idem L (m'⁻¹ * m)) := by
@@ -117,12 +117,12 @@ theorem idemAlg : IdemAlg := by
       have hl' : (m * (l : GLw a w × GLw b w))⁻¹ * m ∈ L := by
         rw [_root_.mul_inv_rev, mul_assoc, inv_mul_cancel, mul_one]
         exact L.inv_mem l.2
-      rw [hl, (hf.2 l l.2 m).2, idem_apply, if_pos hl']
+      rw [hl, (hf.2 l l.2 m).2, idem_apply, ite_eq_left hl']
       field_simp
     · intro q hq
       have : (Quotient.out q)⁻¹ * m ∉ L := fun h =>
         hq (by rw [← QuotientGroup.out_eq' q]; exact QuotientGroup.eq.2 h)
-      rw [idem_apply, if_neg this, mul_zero]
+      rw [idem_apply, ite_eq_right this, mul_zero]
   · refine ⟨(hf.1.comp_homeomorph (Homeomorph.inv _)).comp_left (map_zero (starRingEnd ℂ)), fun k hk x => ⟨?_, ?_⟩⟩
     · simp only [lfStar, _root_.mul_inv_rev, (hf.2 _ (L.inv_mem hk) _).2]
     · simp only [lfStar, _root_.mul_inv_rev, (hf.2 _ (L.inv_mem hk) _).1]

@@ -51,24 +51,6 @@ theorem holo_cont {A : FinHolAtlas e X} {V : Set X} (hV : IsOpen V) {g : X → �
 theorem holo_mono {A : FinHolAtlas e X} {V W : Set X} {g : X → ℂ} (h : A.HoloOn V g) (hW : W ⊆ V) :
     A.HoloOn W g := fun j y hy => h j y ⟨hy.1, hW hy.2⟩
 
-theorem holo_eval {σ : Type} {A : FinHolAtlas e X} {V : Set X} {s : X → σ → ℂ}
-    (hs : ∀ q, A.HoloOn V fun y => s y q) (f : MvPolynomial σ ℂ) :
-    A.HoloOn V fun y => eval (s y) f := by
-  induction f using MvPolynomial.induction_on with
-  | C a =>
-    intro j y _
-    simpa [Function.comp_def] using (analyticAt_const : AnalyticAt ℂ (fun _ : Fin e → ℂ => a) y)
-  | add p q hp hq =>
-    intro j y hy
-    show AnalyticAt ℂ (fun x => eval (s ((A.chart j).symm x)) (p + q)) y
-    simp only [map_add (f := _)]
-    exact (hp j y hy).add (hq j y hy)
-  | mul_X p i hp =>
-    intro j y hy
-    show AnalyticAt ℂ (fun x => eval (s ((A.chart j).symm x)) (p * MvPolynomial.X i)) y
-    simp only [map_mul, eval_X]
-    exact (hp j y hy).mul (hs i j y hy)
-
 theorem rsmul_one (Θ : LocPot X) : Θ.rsmul 1 = Θ := by
   cases Θ
   simp [LocPot.rsmul]

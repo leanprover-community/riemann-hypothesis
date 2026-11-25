@@ -225,12 +225,6 @@ def TupleChainSharpColumnValuation (Tw : TwForms D) (u : D.what₂.Word) (μ : D
     ∀ x ∈ LT.Nlam D u w, ∃ y ∈ (Tw.fm u μ).S D.R.m w,
       (Tw.fm u μ).emb D.R.m y = D.what₂.embLL c • (D.chTw u μ).col (D.e0Tw u μ ((D.fm u).emb 0 x))
 
-section Indep
-
-variable (Y : Ch D u)
-
-end Indep
-
 theorem emb_mem_Fi (i : ℕ) (x : Vl X i) : X.fm.emb i x ∈ X.fm.Fi i := by
 
   rw [← (X.fm.emb_basis i).2, ← (X.fm.lat i).b.sum_repr x, map_sum]
@@ -256,14 +250,6 @@ structure SharedBy (X Y : Ch D u) (e : Fn X 0 ≃ₗ[ℂ] Fn Y 0) (eL : Vl X 0 �
   D_eq : ∀ v, ∀ φ ∈ X.fm.Fi 0, e (Dop X 0 v φ) = Dop Y 0 (ev v) (e φ)
   dia_eq : ∀ v (a : (X.A.Fv v)ˣ), ∀ φ ∈ X.fm.Fi 0,
     e (dia X 0 v a φ) = dia Y 0 (ev v) (Units.map (eF v : X.A.Fv v →* Y.A.Fv (ev v)) a) (e φ)
-
-namespace SharedBy
-
-variable {Y : Ch D u} {e : Fn X 0 ≃ₗ[ℂ] Fn Y 0} {eL : Vl X 0 ≃ₗ[D.what₂.LL] Vl Y 0}
-  {ev : X.A.vT ≃ Y.A.vT} {eF : ∀ v, X.A.Fv v ≃+* Y.A.Fv (ev v)} (h : SharedBy X Y e eL ev eF)
-include h
-
-end SharedBy
 
 section Reformulated
 

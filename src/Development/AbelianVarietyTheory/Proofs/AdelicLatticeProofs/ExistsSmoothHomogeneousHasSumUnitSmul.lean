@@ -120,12 +120,6 @@ theorem contDiffAt_logMap (x : mixedSpace K) (hx : mixedEmbedding.norm x ≠ 0) 
   exact contDiffAt_const.mul (((contDiffAt_normAtPlace w.1 x (hN w.1)).log (hN w.1)).sub
     ((hnorm.log hx).mul contDiffAt_const))
 
-private lemma le_of_mul_le_of_one_le' {m t B : ℝ} (hm : 1 ≤ m) (hB : 0 ≤ B) (h : m * t ≤ B) :
-    t ≤ B := by
-  rcases le_or_gt t 0 with ht | ht
-  · exact ht.trans hB
-  · nlinarith
-
 theorem log_le (x : mixedSpace K) (hx : mixedEmbedding.norm x ≠ 0) (w : InfinitePlace K) :
     Real.log (normAtPlace w x) ≤ Fintype.card (InfinitePlace K) * ‖logMap x‖ +
       Real.log (mixedEmbedding.norm x) * (Module.finrank ℚ K : ℝ)⁻¹ := by
@@ -173,10 +167,10 @@ theorem log_le (x : mixedSpace K) (hx : mixedEmbedding.norm x ≠ 0) (w : Infini
         (Real.norm_eq_abs (logMap x v)).symm.trans_le (norm_le_pi_norm (logMap x) v))).trans ?_
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
       exact mul_le_mul_of_nonneg_right (by exact_mod_cast Fintype.card_subtype_le _) hpos
-    exact le_of_mul_le_of_one_le' one_le_mult hB (hkey.trans_le hSle)
+    exact le_of_mul_le_of_one_le ((mul_comm _ _).trans_le (hkey.trans_le hSle)) hB one_le_mult
   · have hv : logMap x ⟨w, hw⟩ = (mult w : ℝ) * (Real.log (normAtPlace w x) -
         Real.log (mixedEmbedding.norm x) * (Module.finrank ℚ K : ℝ)⁻¹) := logMap_apply x ⟨w, hw⟩
-    refine le_of_mul_le_of_one_le' (one_le_mult (w := w)) hB ?_
+    refine le_of_mul_le_of_one_le ((mul_comm _ _).trans_le ?_) hB (one_le_mult (w := w))
     rw [← hv]
     exact (le_abs_self _).trans (((Real.norm_eq_abs _).symm.trans_le
       (norm_le_pi_norm (logMap x) ⟨w, hw⟩)).trans hle)
@@ -200,7 +194,7 @@ theorem exists_smooth_homogeneous_hasSum_unit_smul : ∀ (K : Type) [Field K] [N
         η (logMap y) / (Nat.card (torsion K) : ℝ)) =ᶠ[nhds x]
         fun y => η (logMap y) / (Nat.card (torsion K) : ℝ) := by
       filter_upwards [hopen.mem_nhds hx] with y hy
-      rw [if_neg hy]
+      rw [ite_eq_right hy]
     exact ((hη.contDiffAt.comp x (contDiffAt_logMap x hx')).div_const _).congr_of_eventuallyEq hev
   · intro t x ht
     have ht0 : t ≠ 0 := ht.ne'
@@ -209,7 +203,7 @@ theorem exists_smooth_homogeneous_hasSum_unit_smul : ∀ (K : Type) [Field K] [N
     · simp [hx]
     · have hne : |t| ^ Module.finrank ℚ K * mixedEmbedding.norm x ≠ 0 :=
         mul_ne_zero (pow_ne_zero _ (abs_ne_zero.2 ht0)) hx
-      rw [if_neg hne, if_neg hx, logMap_real_smul hx ht0]
+      rw [ite_eq_right hne, ite_eq_right hx, logMap_real_smul hx ht0]
   · intro x hx
     let e : ((𝓞 K)ˣ ⧸ torsion K) ≃ unitLattice K :=
       Additive.ofMul.trans (logEmbeddingEquiv K).toEquiv
@@ -219,7 +213,7 @@ theorem exists_smooth_homogeneous_hasSum_unit_smul : ∀ (K : Type) [Field K] [N
     convert hu using 2 with u
     have hux : mixedEmbedding.norm (u • x) ≠ 0 := by rwa [norm_unit_smul]
     dsimp only
-    rw [if_neg hux, logMap_unit_smul u hx, add_comm]
+    rw [ite_eq_right hux, logMap_unit_smul u hx, add_comm]
     simp only [Function.comp_apply, e, Equiv.trans_apply, LinearEquiv.coe_toEquiv,
       logEmbeddingEquiv_apply]
   · intro a b ha
@@ -231,7 +225,7 @@ theorem exists_smooth_homogeneous_hasSum_unit_smul : ∀ (K : Type) [Field K] [N
       fun x hx => (ha.trans_le hx.2).ne', fun x hx hax hxb => ⟨?_, hax⟩⟩
     have hx0 : mixedEmbedding.norm x ≠ 0 := (ha.trans_le hax).ne'
     dsimp only at hx
-    rw [if_neg hx0] at hx
+    rw [ite_eq_right hx0] at hx
     have hηx : η (logMap x) ≠ 0 := fun h0 => hx (by rw [h0, zero_div])
     have hlog : ‖logMap x‖ ≤ R := hR _ (subset_tsupport _ hηx)
     rw [mem_closedBall_zero_iff, norm_eq_sup'_normAtPlace]

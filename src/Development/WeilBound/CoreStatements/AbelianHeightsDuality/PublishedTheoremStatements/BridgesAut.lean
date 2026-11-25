@@ -46,15 +46,15 @@ theorem inner_sum (M : Matrix (Fin N) (Fin N) (ZMod g)) (a : Fin N) :
   split_ifs with h
   · rw [Finset.sum_eq_single ⟨a + 1, h.2⟩]
     · simp
-    · intro b _ hb; rw [if_neg]; intro e; exact hb (Fin.ext e)
+    · intro b _ hb; rw [ite_eq_right]; intro e; exact hb (Fin.ext e)
     · simp
   · refine Finset.sum_eq_zero fun b _ => ?_
-    rw [if_neg]; intro e; exact h ⟨a.2, e ▸ b.2⟩
+    rw [ite_eq_right]; intro e; exact h ⟨a.2, e ▸ b.2⟩
 
 theorem levGen_chi (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) (hN : 0 < N) (x : GG g N) :
     (levGen ψ hψ hN).chi x =
       ψ (∑ i ∈ Finset.range (N - 1), Formalism.MainNotions.ArithmeticCylinders.entN (x : Matrix (Fin N) (Fin N) (ZMod g)) i (i + 1)) := by
-  simp only [Lev.chi, Lev.Edge, levGen, Bool.false_eq_true, if_false, Units.val_one, one_mul]
+  simp only [Lev.chi, Lev.Edge, levGen, Bool.false_eq_true, ite_false, Units.val_one, one_mul]
   congr 1
   rw [Finset.sum_congr rfl fun a _ => inner_sum (x : Matrix (Fin N) (Fin N) (ZMod g)) a,
     Fin.sum_univ_eq_sum_range (fun i => Formalism.MainNotions.ArithmeticCylinders.entN (x : Matrix (Fin N) (Fin N) (ZMod g)) i (i + 1)) N]
@@ -96,13 +96,13 @@ theorem genericOfWh : ∀ (g : ℕ) [Fact g.Prime] (N : ℕ), 0 < N → ∀ (V :
     simp only [GlobalTheory.BadShare.Lev.e, GlobalTheory.BadShare.eps]
     by_cases hγ : Lv.Mem γ
     · have h2 : Lv.Mem (u⁻¹ * γ) := GlobalTheory.BadShare.Basic.mem_mul Lv (GlobalTheory.BadShare.Basic.mem_inv Lv hm) hγ
-      rw [if_pos h2, if_pos hγ, GlobalTheory.BadShare.Basic.chi_mul Lv (GlobalTheory.BadShare.Basic.mem_inv Lv hm) hγ,
+      rw [ite_eq_left h2, ite_eq_left hγ, GlobalTheory.BadShare.Basic.chi_mul Lv (GlobalTheory.BadShare.Basic.mem_inv Lv hm) hγ,
         GlobalTheory.BadShare.Basic.chi_inv Lv hm]
       have := GlobalTheory.BadShare.Basic.chi_ne Lv u
       have := GlobalTheory.BadShare.Basic.chi_ne Lv γ
       field_simp
     · have h2 : ¬ Lv.Mem (u⁻¹ * γ) := fun h => hγ (by simpa using GlobalTheory.BadShare.Basic.mem_mul Lv hm h)
-      rw [if_neg h2, if_neg hγ, mul_zero]
+      rw [ite_eq_right h2, ite_eq_right hγ, mul_zero]
   calc V.ρ u (GlobalTheory.BadShare.op V.ρ Lv.e y) = ∑ γ, Lv.e γ • V.ρ (u * γ) y := by
         simp [GlobalTheory.BadShare.op, map_mul]
     _ = ∑ γ, Lv.e (u⁻¹ * γ) • V.ρ γ y :=
@@ -220,7 +220,7 @@ theorem labelsOfEq : ∀ (g : ℕ) [Fact g.Prime] (Q Q' : List ((ZMod g)[X] × P
   have hh : ∀ p ∈ Q ++ Q', h p.2 = p.1 := by
     intro p hp
     have hs : ∃ q ∈ Q ++ Q', q.2 = p.2 := ⟨p, hp, rfl⟩
-    simp only [h, dif_pos hs]
+    simp only [h, dite_eq_left hs]
     exact hinj _ hs.choose_spec.1 p hp hs.choose_spec.2
   have k1 : Q.map Prod.fst = (Q.map Prod.snd).map h := by
     rw [List.map_map]

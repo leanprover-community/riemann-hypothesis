@@ -29,22 +29,6 @@ namespace Formalism.HermitianLatticeCounting.P
 
 namespace DualLatticeIndexBis
 
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
 lemma relIndex_ideal_smul {R U : Type*} [CommRing R] [IsDedekindDomain R] [AddCommGroup U] [Module R U]
     (htf : ∀ a : R, a ≠ 0 → ∀ x : U, a • x = 0 → x = 0) (M N : Submodule R U) (hNM : N ≤ M)
     (A J : Ideal R) (hA : A ≠ ⊥) (hJ : J ≠ ⊥) (hAM : A • M ≤ N) :
@@ -540,7 +524,7 @@ theorem wmp_hStd_nondeg (x : Sp E n) (h : ∀ y, (hStd E n).flip x y = 0) : x = 
   have := h (Pi.single i 1)
   rw [LinearMap.flip_apply, hStd_apply] at this
   simp only [Pi.single_apply, apply_ite (star : E → E), star_one, star_zero, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
   exact this
 
 theorem wmp_relIndex_dual {L M : Submodule (𝓞 E) (Sp E n)} (hLM : L ≤ M) (hM : M.FG)

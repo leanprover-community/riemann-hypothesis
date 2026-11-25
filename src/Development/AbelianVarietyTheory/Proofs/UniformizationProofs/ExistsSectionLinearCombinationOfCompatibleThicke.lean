@@ -49,9 +49,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRin
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
-noncomputable section
 namespace GlobalTheory.SecAlgLinComb
 open GlobalTheory.CompleteBaseExpansion GlobalTheory.BaseExpansionExists
 
@@ -84,4 +82,3 @@ theorem exists_sec_linComb : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal
   exact congrArg (fun p => sval (f e) p z J) (Category.comp_id _)
 
 end GlobalTheory.SecAlgLinComb
-end

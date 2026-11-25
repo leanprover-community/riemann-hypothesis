@@ -28,13 +28,13 @@ theorem pm_col (m : ℕ) (y : UnipotentBlockColumnIndex a m m → R) (i k : Fin 
   · rw [Finset.sum_eq_single ⟨(i, k), hik.1, hik.2.ge, hik.2.le⟩]
     · simp
     · intro b _ hb
-      rw [Matrix.single_apply, if_neg]
+      rw [Matrix.single_apply, ite_eq_right]
       rintro ⟨h1, h2⟩
       exact hb (Subtype.ext (Prod.ext h1 h2))
     · intro h
       exact absurd (Finset.mem_univ _) h
   · refine Finset.sum_eq_zero fun t _ => ?_
-    rw [Matrix.single_apply, if_neg]
+    rw [Matrix.single_apply, ite_eq_right]
     rintro ⟨h1, h2⟩
     apply hik
     have := t.2
@@ -49,9 +49,9 @@ theorem pm_mul_apply {ι : Type} [Fintype ι] (p : ι → Fin a × Fin a) (y : �
   by_cases h : (p s).1 = i
   · subst h
     simp [Matrix.single_mul_apply_same]
-  · rw [if_neg h, Matrix.mul_apply]
+  · rw [ite_eq_right h, Matrix.mul_apply]
     refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Matrix.single_apply, if_neg (fun e => h e.1), zero_mul]
+    rw [Matrix.single_apply, ite_eq_right (fun e => h e.1), zero_mul]
 
 theorem mul_pm_apply {ι : Type} [Fintype ι] (p : ι → Fin a × Fin a) (y : ι → R)
     (M : Matrix (Fin a) (Fin a) R) (i k : Fin a) :
@@ -61,9 +61,9 @@ theorem mul_pm_apply {ι : Type} [Fintype ι] (p : ι → Fin a × Fin a) (y : �
   by_cases h : (p s).2 = k
   · subst h
     simp [Matrix.mul_single_apply_same]
-  · rw [if_neg h, Matrix.mul_apply]
+  · rw [ite_eq_right h, Matrix.mul_apply]
     refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Matrix.single_apply, if_neg (fun e => h e.2), mul_zero]
+    rw [Matrix.single_apply, ite_eq_right (fun e => h e.2), mul_zero]
 
 theorem pm_mul_row (m : ℕ) (y : UnipotentBlockColumnIndex a m m → R) (M : Matrix (Fin a) (Fin a) R)
     (hM : ∀ j k : Fin a, (j : ℕ) = m → M j k = (1 : Matrix (Fin a) (Fin a) R) j k) :
@@ -82,7 +82,7 @@ theorem mul_posM_blockColumn (m : ℕ) (y : UnipotentBlockColumnIndex a m m → 
   rw [mul_pm_apply, pm_col]
   split_ifs with hc
   · refine Finset.sum_congr rfl fun s _ => ?_
-    rw [if_pos (Fin.ext (by have := s.2; omega))]
+    rw [ite_eq_left (Fin.ext (by have := s.2; omega))]
   · refine Finset.sum_eq_zero fun s _ => ?_
     split_ifs with hs
     · have h2 := s.2
@@ -141,7 +141,7 @@ theorem algebraic_modulus_one_of_finiteOrder_char : AdelicLinearChange → Corne
   have hent : ∀ t s : UnipotentBlockColumnIndex k j j, (ι g').val t.1.1 s.1.1 = g'.val (e t) (e s) := by
     intro t s
     rw [hι g']
-    exact dif_pos ⟨t.2.1, s.2.1⟩
+    exact dite_eq_left ⟨t.2.1, s.2.1⟩
   have hpt : ∀ v : Fin j → Ad E, ι g' * blkU (Φ.symm v) * (ι g')⁻¹ =
       blkU (fun t : UnipotentBlockColumnIndex k j j => (g'.val *ᵥ v) (e t)) := by
     intro v

@@ -162,8 +162,8 @@ theorem cmpPair : PB.Inputs → CmpSt → HodgeComparisonCompatibility → Theta
   classical
   obtain ⟨K, hK, ι, hι, κ, v, κ', v', Ω, hΩ, hΩ0, y, b, d, hbv, hbv', hP, hP', harith, hmh, hb, hne, hdeg, hiso⟩ :=
     _root_.GlobalTheory.CompanionTheory.Relay.twisted_hodge_tie_compare hT hU E H D l Xo c O β Y g Φ hΦ π S n M M' T T' hβ hs hπ hA hR
-  have hJ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap M.K M.ι K ι κ v hbv
-  have hJ' := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap M'.K M'.ι K ι κ' v' hbv'
+  have hJ := _root_.PositivityTheory.UnitarySelfGeneration.j_pull M.K M.ι K ι κ v hbv
+  have hJ' := _root_.PositivityTheory.UnitarySelfGeneration.j_pull M'.K M'.ι K ι κ' v' hbv'
   have hmpp : IsMultiProjPrime (mCoordIdeal y) := harith.2.1
   obtain ⟨hc1, -, -, hc4⟩ := _root_.PositivityTheory.UnitarySelfGeneration.i_comb K ι (mCoordIdeal y)
     {z | z ∈ mcPts (mCoordIdeal y) ∧ evC z b ≠ 0} hmpp (fun z hz => hz.1)

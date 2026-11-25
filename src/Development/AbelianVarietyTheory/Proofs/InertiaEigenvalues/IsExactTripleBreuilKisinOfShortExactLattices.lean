@@ -187,8 +187,7 @@ theorem exists_norm_coeff_eq_one : ∀ {l : ℕ} [Fact l.Prime] {a : ℕ} [NeZer
     refine IsIdempotentElem.eq_zero_of_isNilpotent ?_ ?_
     · show _ * _ = _
       rw [← map_mul, hidem.eq]
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [hsum, map_sum]
+    · rw [hsum, map_sum]
       refine isNilpotent_sum fun s _ => ?_
       rw [map_mul]
       exact (Commute.all _ _).isNilpotent_mul_left (hnil s)
@@ -532,7 +531,7 @@ theorem isExactTriple_of_isSESLat_gen {l : ℕ} [Fact l.Prime] {a : ℕ} [NeZero
         have := congrFun (hW (Pi.single j 1)) i
         rw [homW_apply, homW_apply, Matrix.mulVec_mulVec] at this
         simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero,
-          Finset.sum_ite_eq', Finset.mem_univ, if_true, Pi.zero_apply] at this
+          Finset.sum_ite_eq', Finset.mem_univ, ite_true, Pi.zero_apply] at this
         rw [Matrix.map_mul]
         exact this
       have hz : Ht * Ft = 0 := Matrix.map_injective hφ (hM.trans (Matrix.map_zero _ (map_zero φ)).symm)

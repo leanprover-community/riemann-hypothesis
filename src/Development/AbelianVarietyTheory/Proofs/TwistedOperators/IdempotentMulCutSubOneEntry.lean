@@ -8,42 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExi
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPlaceWeilRepLatticeVacuumCharacter
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepSchrodingerModelHalfSubstitution
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -69,11 +33,6 @@ theorem mix_mul {l m n : Type} [Fintype m] {b : R} (hb : b * b = b) (A A' : Matr
 theorem mix_self {l m : Type} (b : R) (A : Matrix l m R) : b • A + (1 - b) • A = A := by
   rw [← add_smul, add_sub_cancel, one_smul]
 
-def mixGL {n : Type} [Fintype n] [DecidableEq n] {b : R} (hb : b * b = b) (g : GL n R) : GL n R :=
-  ⟨b • g.val + (1 - b) • 1, b • (g⁻¹).val + (1 - b) • 1,
-    by rw [mix_mul hb, Units.mul_inv, Matrix.mul_one, mix_self],
-    by rw [mix_mul hb, Units.inv_mul, Matrix.mul_one, mix_self]⟩
-
 theorem mix_unitary {n : Type} [Fintype n] [DecidableEq n] (σ : R →+* R) {b : R} (hb : b * b = b) (hc : σ b = b)
     (J M : Matrix n n R) (h : (M.map σ)ᵀ * J * M = J) :
     ((b • M + (1 - b) • (1 : Matrix n n R)).map σ)ᵀ * J * (b • M + (1 - b) • 1) = J := by
@@ -82,8 +41,8 @@ theorem mix_unitary {n : Type} [Fintype n] [DecidableEq n] (σ : R →+* R) {b :
     simp only [Matrix.transpose_apply, Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
       map_add, map_mul, map_sub, map_one, hc, Matrix.one_apply]
     by_cases hij : i = j
-    · rw [if_pos hij, if_pos hij.symm, map_one]
-    · rw [if_neg hij, if_neg (Ne.symm hij), map_zero]
+    · rw [ite_eq_left hij, ite_eq_left hij.symm, map_one]
+    · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), map_zero]
   rw [e]
   conv_lhs => rw [← mix_self b J]
   rw [mix_mul hb, mix_mul hb, h, Matrix.one_mul, Matrix.mul_one, mix_self]
@@ -146,7 +105,7 @@ open GlobalTheory.AdelicLatMove (mt_mul mt_one)
 theorem ext_mt {V : HSp D} {g g' : GA D V} (h : mt V g = mt V g') : g = g' := Subtype.ext (Units.ext h)
 
 def cut (b : AE D) (hb : b * b = b) (hc : cA D b = b) (V : HSp D) (g : GA D V) : GA D V :=
-  ⟨mixGL hb (matHom V g), mix_unitary (cA D) hb hc (V.gram.map (incA D)) (mt V g) g.2⟩
+  ⟨GlobalTheory.IdemSupport.piece hb (matHom V g), mix_unitary (cA D) hb hc (V.gram.map (incA D)) (mt V g) g.2⟩
 
 variable {b : AE D} (hb : b * b = b) (hc : cA D b = b)
 

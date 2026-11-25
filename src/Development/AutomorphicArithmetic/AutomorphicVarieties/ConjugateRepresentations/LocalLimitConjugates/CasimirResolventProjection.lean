@@ -44,7 +44,7 @@ def gard (μ : Measure (GA E a)) : Submodule ℂ (Sm E a) :=
 open Classical in
 def cl (μ : Measure (GA E a)) (φ : Sm E a) : HL μ := if h : InL μ φ then h.toL2 else 0
 
-theorem cl_eq {μ : Measure (GA E a)} {φ : Sm E a} (h : InL μ φ) : cl μ φ = h.toL2 := dif_pos h
+theorem cl_eq {μ : Measure (GA E a)} {φ : Sm E a} (h : InL μ φ) : cl μ φ = h.toL2 := dite_eq_left h
 
 def Grow (φ : GA E a → ℂ) : Prop := ∀ g, ∃ (C : ℝ) (N : ℕ), ∀ y, ‖φ (g * infGL E a y)‖ ≤ C * GlobalTheory.CuspRep.height y ^ N
 

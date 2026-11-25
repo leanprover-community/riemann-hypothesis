@@ -57,16 +57,16 @@ theorem exists_isFrame [IsScalarTower (𝓞 K) K V] (hK : ∀ σ : K →+* ℂ, 
     exacts [hd _, hdc _]
   · simp only [hmk]
     by_cases h : (InfinitePlace.mk σ).embedding = σ
-    · rw [if_pos h, if_neg fun h' => hK σ (h'.symm.trans h), frameNorm_conj (hd _)]
-    · rw [if_neg h, if_pos (hor σ h), ← frameNorm_conj (hd _)]
+    · rw [ite_eq_left h, ite_eq_right fun h' => hK σ (h'.symm.trans h), frameNorm_conj (hd _)]
+    · rw [ite_eq_right h, ite_eq_left (hor σ h), ← frameNorm_conj (hd _)]
       simp only [Complex.conj_conj]
   · by_cases h : (InfinitePlace.mk σ).embedding = σ
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       have := hn (InfinitePlace.mk σ) x
       rwa [h] at this
     · have := hn (InfinitePlace.mk σ) x
       rw [hor σ h, hc, ← frameNorm_conj (hd _)] at this
-      rw [if_neg h, ← this]
+      rw [ite_eq_right h, ← this]
       simp only [RingHom.comp_apply, Complex.conj_conj]
 
 structure IsShortGen {κ : Type} (Nm : κ → V → ℝ) (L : Submodule (𝓞 K) V) {n : ℕ} (w : Fin n → V) (abelian₂ : ℝ) : Prop where
@@ -146,10 +146,10 @@ theorem not_goodEmb_conj {σ : c.F →+* ℂ} (h : GoodEmb c σ) : ¬ GoodEmb c 
 theorem goodOf_conj (σ : c.F →+* ℂ) : goodOf c ((starRingEnd ℂ).comp σ) = goodOf c σ := by
   have e : (starRingEnd ℂ).comp ((starRingEnd ℂ).comp σ) = σ := RingHom.ext fun a => Complex.conj_conj _
   by_cases h : GoodEmb c σ
-  · rw [goodOf, goodOf, if_pos h, if_neg (not_goodEmb_conj h), e]
+  · rw [goodOf, goodOf, ite_eq_left h, ite_eq_right (not_goodEmb_conj h), e]
   · have h' := goodEmb_goodOf c σ
-    rw [goodOf, if_neg h] at h'
-    rw [goodOf, goodOf, if_neg h, if_pos h']
+    rw [goodOf, ite_eq_right h] at h'
+    rw [goodOf, goodOf, ite_eq_right h, ite_eq_left h']
 
 theorem conj_comp_ne (σ : c.F →+* ℂ) : (starRingEnd ℂ).comp σ ≠ σ := fun e => by
   have h := goodEmb_goodOf c σ
@@ -162,9 +162,6 @@ theorem petOn_conj (Z : Comp Xo c) (G : WTZ E) (σ : c.F →+* ℂ) (f : Rul Xo 
   congrArg (fun s => petAt (U s) x (V s) (dict s) (muOn (U s) (V s) (dict s) Z) G f) (goodOf_conj σ)
 
 
-
-def CompShortGen (G : WTZ E) {n : ℕ} (w : Fin n → cuspW Xo c U G) (abelian₂ : ℝ) : Prop :=
-  IsShortGen (fun (k : (c.F →+* ℂ) × Comp Xo c) (f : cuspW Xo c U G) => petOn U x V dict k.2 G k.1 f) (latW U G) w abelian₂
 
 def depth_vw (G : WTZ E) (v : Rul Xo c → EReal) : EReal := ⨅ w ∈ latW U G, v w
 

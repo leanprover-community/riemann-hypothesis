@@ -5,48 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FibreIff
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LieCombBaseChange
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.SpanXLeKerAevalZero
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.CMLattices.IsCyclotomicExtensionCyclotomicField28
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VecMulMapEqZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAbelianGaloisHost
@@ -174,17 +133,17 @@ theorem comb_one {x : Sp R ⟶ S} {n : ℕ} {v : Fin n → (FramedFlatCoordinate
       have : epsScaleR (1 : R) = RingHom.id _ := by
         refine RingHom.ext fun x => ?_
         ext <;> simp [epsScaleR]
-      simp only [if_true, Matrix.one_apply_eq, this, spMap_id]
+      simp only [ite_true, Matrix.one_apply_eq, this, spMap_id]
       exact (Category.id_comp _).symm
     · have : epsScaleR (0 : R) = (algebraMap R (DualNumber R)).comp (TrivSqZeroExt.fstHom R R R).toRingHom := by
         refine RingHom.ext fun x => ?_
         ext <;> simp [epsScaleR, TrivSqZeroExt.algebraMap_eq_inl]
-      simp only [if_neg hk, Matrix.one_apply_ne (Ne.symm hk), this, spMap_comp]
+      simp only [ite_eq_right hk, Matrix.one_apply_ne (Ne.symm hk), this, spMap_comp]
       refine Eq.trans ?_ (Category.assoc _ _ _).symm
       refine Eq.trans ?_ (congrArg (spMap (algebraMap R (DualNumber R)) ≫ ·) (hv k)).symm
       let D : FramedFlatCoordinates.epsAt x ⟶ Over.mk x := Over.homMk (spMap (algebraMap R (DualNumber R))) rfl
       exact (congrArg CommaMorphism.left (MonObj.comp_one D)).symm
-  · rw [List.ofFn_eq_map, List.prod_map_eq_pow_single i _ (fun a h _ => if_neg h)]
+  · rw [List.ofFn_eq_map, List.prod_map_eq_pow_single i _ (fun a h _ => ite_eq_right h)]
     simp
 
 end Tangent

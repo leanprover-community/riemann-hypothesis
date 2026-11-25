@@ -63,8 +63,7 @@ lemma inClass_map {ι : Type} (hφ : ∀ z, ‖φ z‖ = ‖z‖) (pp : F) (hh G
   refine ⟨fun i => MvPowerSeries.map φ (U i), fun i n => ?_, fun n => ?_⟩
   · rw [MvPowerSeries.coeff_map, hφ]
     exact hU i n
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [MvPowerSeries.coeff_map, hc n, map_sum]
+  · rw [MvPowerSeries.coeff_map, hc n, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, map_inv₀, map_pow, ← MvPowerSeries.coeff_map, map_mul, map_pow]
 
@@ -182,7 +181,7 @@ theorem struct (TT : Finset (ZMod (2 * ν))) (colN : ZMod (2 * ν) → ℕ)
     intro s
     unfold alG
     by_cases hs : s ∈ TT
-    · rw [if_pos hs, Finset.card_filter]
+    · rw [ite_eq_left hs, Finset.card_filter]
       refine Finset.sum_congr rfl fun c _ => ?_
       simp only [top, hs, true_and]
     · simp [top, hs]
@@ -268,10 +267,6 @@ theorem struct (TT : Finset (ZMod (2 * ν))) (colN : ZMod (2 * ν) → ℕ)
       rcases Nat.mod_two_eq_zero_or_one x.1.1.val with h | h <;> simp [h]
 
 end Struct
-
-section Reduce
-
-end Reduce
 
 end EGauss
 
@@ -468,7 +463,7 @@ theorem reduce (K₁ : Type) [NormedField K₁] [IsUltrametricDist K₁] [CharZe
     have h : alN e x.1 = 0 := by
       rw [hal]
       unfold alG
-      rw [if_neg hx]
+      rw [ite_eq_right hx]
     unfold alN at h
     exact (Finset.sum_eq_zero_iff.1 h) x.2 (Finset.mem_univ _)
   · intro n

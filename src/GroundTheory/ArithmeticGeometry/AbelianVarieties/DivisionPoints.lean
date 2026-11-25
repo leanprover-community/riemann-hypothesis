@@ -146,23 +146,19 @@ theorem psiAt_three (x y : R) : psiAt W x y 3 = W.Ψ₃.eval x := by simp [psiAt
 theorem psiAt_neg (x y : R) (n : ℤ) : psiAt W x y (-n) = -psiAt W x y n := by
   simp [psiAt_eq, normEDS_neg]
 
-private theorem evalEval_mkW {x y : R} (h : W.toAffine.Equation x y) (g : R[X][Y]) :
-    AdjoinRoot.evalEval (p := W.toAffine.polynomial) h (Affine.CoordinateRing.mk W g) =
-      g.evalEval x y :=
-  AdjoinRoot.evalEval_mk h g
-
 theorem psiAt_sq {x y : R} (h : W.toAffine.Equation x y) (n : ℤ) :
     psiAt W x y n ^ 2 = (W.ΨSq n).eval x := by
   have := congrArg (AdjoinRoot.evalEval (p := W.toAffine.polynomial) h)
     (Affine.CoordinateRing.mk_Ψ_sq W n)
-  rw [← Affine.CoordinateRing.mk_ψ, map_pow, evalEval_mkW W h, evalEval_mkW W h, evalEval_C] at this
+  rw [← Affine.CoordinateRing.mk_ψ, map_pow, AdjoinRoot.evalEval_mk h, AdjoinRoot.evalEval_mk h,
+    evalEval_C] at this
   exact this
 
 theorem Phi_eval {x y : R} (h : W.toAffine.Equation x y) (n : ℤ) :
     (W.Φ n).eval x = x * psiAt W x y n ^ 2 - psiAt W x y (n + 1) * psiAt W x y (n - 1) := by
   have := congrArg (AdjoinRoot.evalEval (p := W.toAffine.polynomial) h)
     (Affine.CoordinateRing.mk_φ W n)
-  rw [evalEval_mkW W h, evalEval_mkW W h, evalEval_C, WeierstrassCurve.φ] at this
+  rw [AdjoinRoot.evalEval_mk h, AdjoinRoot.evalEval_mk h, evalEval_C, WeierstrassCurve.φ] at this
   rw [← this, psiAt, psiAt, psiAt]
   simp only [evalEval_sub, evalEval_mul, evalEval_pow, evalEval_C, eval_X]
 

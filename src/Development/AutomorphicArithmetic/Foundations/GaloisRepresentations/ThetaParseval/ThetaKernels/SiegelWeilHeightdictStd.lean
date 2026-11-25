@@ -191,7 +191,7 @@ theorem cpt_k (hS : GlobalTheory.Published.SiegelSetUnitary) (d : SD_k σ) : Cpt
   · exact h F E σ d.B d.m d.A d.r d.s d.ok.good (Or.inl hA) d.ok.aniso
   · exact h F E σ d.B d.m d.A d.r d.s d.ok.good (Or.inr hA) d.ok.aniso
 theorem exists_lth_k (d : SD_k σ) : ∃ l ∈ (adeleClass F).adm d.κ, ∀ Φ ∈ d.sch, l Φ = thetaSum F Φ :=
-  GlobalTheory.T.exists_admitted_form_eq_adelicThetaDistribution F d.κ
+  GlobalTheory.ThetaAdmitted.exists_admitted_form_eq_adelicThetaDistribution_alt F d.κ
 theorem cont_S_k (d : SD_k σ) {Ψ : d.Fn} (hΨ : Ψ ∈ d.sch) : Continuous fun g : UA σ d.A.J => thetaSum F (d.S g Ψ) := by
   obtain ⟨l, hl, hlθ⟩ := exists_lth_k d
   exact (d.ok.dbl.lin.cont l hl Ψ hΨ).congr fun g => hlθ _ (d.ok.dbl.lin.pres g Ψ hΨ)
@@ -237,7 +237,7 @@ theorem exists_meanAdm_k (hS : GlobalTheory.Published.SiegelSetUnitary) (hP : TP
   have hTv : ∀ h f, Th h f = thetaSum F (d.S h (pureA F f gf)) := fun h f => by
     rw [← hTh h f, LinearMap.comp_apply, hlθ _ (hpres h _ (hmem f))]
   have : BarrelledSpace ℂ (SchwartzMap (d.κ → mixedEmbedding.mixedSpace F) ℂ) :=
-      GlobalTheory.T.schwartzMap_barrelledSpace' _
+      GlobalTheory.schwartzMap_barrelledSpace _
   have hUE : UniformEquicontinuous ((↑) ∘ Th) := (norm_withSeminorms ℂ ℂ).banach_steinhaus fun _ f => by
     obtain ⟨C, hC⟩ := bdd_S_k hS hP hT d (hmem f)
     refine ⟨C, ?_⟩

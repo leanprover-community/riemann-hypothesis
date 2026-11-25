@@ -31,15 +31,6 @@ variable {k r : ℕ}
 
 def InW (k r : ℕ) (z x : Fin (2 * r + k + 1) → ℂ) : Prop := inWb k r x ∧ herm (Hpk k r) x z = 0
 
-theorem herm_alt {z : Fin (2 * r + k + 1) → ℂ} : herm (Hpk k r) z z = ((-(Tz k r z) : ℝ) : ℂ) := by
-  have h := P.Qx2.herm_star (k := k) (r := r) z z
-  apply Complex.ext
-  · simp [Tz]
-  · have := congrArg Complex.im h
-    simp only [Complex.star_def, Complex.conj_im] at this
-    simp only [Complex.ofReal_im]
-    linarith
-
 theorem herm_wbP {y w : Fin (2 * r + k + 1) → ℂ} (hw : inWb k r w) :
     herm (Hpk k r) y w = herm (Hpk k r) (SSn.wbP k r y) w := by
   unfold herm
@@ -51,8 +42,8 @@ theorem herm_wbP {y w : Fin (2 * r + k + 1) → ℂ} (hw : inWb k r w) :
     refine Finset.sum_congr rfl fun j _ => ?_
     unfold SSn.wbP Hpk
     by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
-    · rw [if_pos hj]
-    · rw [if_neg hj]
+    · rw [ite_eq_left hj]
+    · rw [ite_eq_right hj]
       have h1 : ¬ (i.val < r ∧ i.val + j.val = 2 * r + k) := by omega
       have h2 : ¬ (j.val < r ∧ i.val + j.val = 2 * r + k) := by omega
       have h3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = j) := by
@@ -66,7 +57,7 @@ theorem blockProjection_smul (c : ℂ) (x : Fin (2 * r + k + 1) → ℂ) : SSn.w
   funext i; simp only [SSn.wbP, Pi.smul_apply]; split_ifs <;> simp
 
 theorem blockProjection_mem_block (x : Fin (2 * r + k + 1) → ℂ) : inWb k r (SSn.wbP k r x) := by
-  intro i hi; unfold SSn.wbP; rw [if_neg (by omega)]
+  intro i hi; unfold SSn.wbP; rw [ite_eq_right (by omega)]
 
 theorem prWv_add (z x y : Fin (2 * r + k + 1) → ℂ) :
     SSn.prWv k r z (x + y) = SSn.prWv k r z x + SSn.prWv k r z y := by
@@ -86,7 +77,7 @@ theorem prWv_inW {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < T
     InW k r z (SSn.prWv k r z y) := by
   refine ⟨_root_.Formalism.FourierDecayAlt.P.Qx8.inWb_add (blockProjection_mem_block y) (inWb_smul _ hz), ?_⟩
   unfold SSn.prWv
-  rw [P.Qx8.herm_add_left', P.Qx8.herm_smul_left', herm_alt]
+  rw [P.Qx8.herm_add_left', P.Qx8.herm_smul_left', Formalism.FourierDecayAlt.P.C2x5.hzz_real]
   have : ((Tz k r z : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hT.ne'
   field_simp
   push_cast

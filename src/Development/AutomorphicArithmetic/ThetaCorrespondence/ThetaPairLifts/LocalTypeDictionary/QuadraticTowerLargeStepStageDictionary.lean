@@ -40,46 +40,8 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.RealEmbeddingsOfCharactersOfSameExponent
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartFrSgnFalseRigFr
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.LocalEmbeddings.StageGeoUnit, Development.AutomorphicArithmetic.DivisorFrames.ThetaLiftPureTensorOfIsFinF, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DvStageGeoPass, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DvStageGeoConst, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BaseSplitPrimeInLocalPlaces, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsGoodGeometryOverCarriedFrames, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.QuadraticTowerLargeStepStageDictionary
@@ -177,7 +139,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (At evI realAd SIn
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.RealDict GlobalTheory.RealDict.FockMap
 
-private theorem finPart_ne {F : Type} [Field F] [NumberField F] {n d : ℕ}
+theorem GlobalTheory.RealDict.finPart_ne {F : Type} [Field F] [NumberField F] {n d : ℕ}
     (φ : ∀ v : HeightOneSpectrum (𝓞 F), (Fin n × Fin d → Fv F v) → ℂ) (h0 : ∀ v, φ v ≠ 0)
     (hs : ∀ᶠ v in Filter.cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1) :
     ∃ y, GlobalTheory.BigNZ.finPartFn φ y ≠ 0 := by
@@ -202,7 +164,7 @@ private theorem finPart_ne {F : Type} [Field F] [NumberField F] {n d : ℕ}
 
 
 
-private theorem fock_of {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {ε : Bool} {M X : HSp D} {Xs : Spc D.host.F D.host.E M.rank}
+theorem GlobalTheory.RealDict.fock_of {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {ε : Bool} {M X : HSp D} {Xs : Spc D.host.F D.host.E M.rank}
     {Ws : Spc D.host.F D.host.E X.rank} (Mo : Model D.sp.cm.sig Xs Ws)
     (hψ : IsStdChar D ψ (-1)) {θ : InfFam D} (hθ : IsInfFam θ) (A : Fr M) (B : Fr X)
     {τ : ∀ w : InfinitePlace D.host.F, EmbOver D.host.E w} (hCM : IsCMExt D.host.F D.host.E D.sp.cm.sig)
@@ -316,8 +278,8 @@ theorem UpperTheory.thetaLift_pure_tensor_of_isFinF :
   subst hψe
   have hψ : IsStdChar D Bs.ψ (-1) := GlobalTheory.StdCharFromIsStd.isStdChar_of_isStd D Bs.ψ hBs.std
   have hF : GlobalTheory.BigNZ.Fam M φ₀ := ⟨hφ, hφ'⟩
-  obtain ⟨Φ, h1, h2⟩ := fock_of M hψ hθ A B hBs.cm hBs.std hX hW hM (fun w => (hV.cartan w).1)
-    (fun w => (hWs.cartan w).1) hc g g0 (hF.sb hM) (finPart_ne φ₀ hφ0 (hF.std hM)) hv
+  obtain ⟨Φ, h1, h2⟩ := GlobalTheory.RealDict.fock_of M hψ hθ A B hBs.cm hBs.std hX hW hM (fun w => (hV.cartan w).1)
+    (fun w => (hWs.cartan w).1) hc g g0 (hF.sb hM) (GlobalTheory.RealDict.finPart_ne φ₀ hφ0 (hF.std hM)) hv
   refine ⟨Φ, h1, fun φ hs hs' P => ?_⟩
   have hF' : GlobalTheory.BigNZ.Fam M φ := ⟨hs, hs'⟩
   exact h2 _ (hF'.sb hM) P

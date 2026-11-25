@@ -270,11 +270,11 @@ theorem IsHolMarkingOn.exists_glue {U V : Set (Fin n → ℂ)} (hU : IsOpen U) (
     ∃ R, IsHolMarkingOn Γ Q e (U ∪ V) R := by
   classical
   obtain ⟨R, hR, hRP⟩ := h.exists_twist hU hV hc hne h'
-  have eU : ∀ b ∈ U, (if b ∈ U then P b else R b) = P b := fun b hb => if_pos hb
+  have eU : ∀ b ∈ U, (if b ∈ U then P b else R b) = P b := fun b hb => ite_eq_left hb
   have eV : ∀ b ∈ V, (if b ∈ U then P b else R b) = R b := fun b hb => by
     by_cases hbU : b ∈ U
-    · rw [if_pos hbU, hRP b ⟨hbU, hb⟩]
-    · rw [if_neg hbU]
+    · rw [ite_eq_left hbU, hRP b ⟨hbU, hb⟩]
+    · rw [ite_eq_right hbU]
   refine ⟨fun b => if b ∈ U then P b else R b, fun x => ?_, ?_⟩
   · have d1 : DifferentiableOn ℂ (fun b => (if b ∈ U then P b else R b) x) U :=
       (h.1 x).congr fun b hb => by rw [eU b hb]
@@ -433,7 +433,7 @@ variable {n a : ℕ}
 lemma expCover_mem_punctured (h : a ≤ n) {w : Fin n → ℂ} (hw : w ∈ logCover h) :
     expCover a w ∈ {z | z ∈ ball (0 : Fin n → ℂ) 1 ∧ ∀ i : Fin n, i.val < a → z i ≠ 0} := by
   refine ⟨expCover_mem_ball h hw, fun i hi => ?_⟩
-  simp only [expCover, hi, if_true]
+  simp only [expCover, hi, ite_true]
   exact Complex.exp_ne_zero _
 
 lemma exists_mem_logCover (h : a ≤ n) {z : Fin n → ℂ}
@@ -444,22 +444,22 @@ lemma exists_mem_logCover (h : a ≤ n) {z : Fin n → ℂ}
   refine ⟨logLift a z, ⟨fun i => ?_, fun k hk => ?_⟩, ?_⟩
   · have hi : (Fin.castLE h i).val < a := i.2
     have h0 := hz.2 _ hi
-    simp only [logLift, if_pos hi, Complex.log_re]
+    simp only [logLift, ite_eq_left hi, Complex.log_re]
     exact Real.log_neg (norm_pos_iff.2 h0) (hlt _)
-  · simp only [logLift, if_neg (not_lt.2 hk)]
+  · simp only [logLift, ite_eq_right (not_lt.2 hk)]
     exact hlt k
   · funext k
     by_cases hk : k.val < a
-    · simp only [expCover, logLift, if_pos hk]
+    · simp only [expCover, logLift, ite_eq_left hk]
       exact Complex.exp_log (hz.2 k hk)
-    · simp only [expCover, logLift, if_neg hk]
+    · simp only [expCover, logLift, ite_eq_right hk]
 
 lemma differentiable_expCover : Differentiable ℂ (expCover (n := n) a) := by
   refine differentiable_pi.2 fun k => ?_
   by_cases hk : k.val < a
-  · simp only [expCover, if_pos hk]
+  · simp only [expCover, ite_eq_left hk]
     exact Complex.differentiable_exp.comp (differentiable_apply k)
-  · simp only [expCover, if_neg hk]
+  · simp only [expCover, ite_eq_right hk]
     exact differentiable_apply k
 
 lemma expCover_add_single (h : a ≤ n) (i : Fin a) (w : Fin n → ℂ) :

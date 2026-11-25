@@ -3,9 +3,7 @@ module
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsB
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.EffCartierIffForallCartAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocPrincipalSpan
 public import Mathlib.AlgebraicGeometry.FunctionField
 public import Mathlib.RingTheory.RingHom.Smooth
 public import Mathlib.RingTheory.Ideal.Cotangent
@@ -24,6 +22,40 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.PublishedTheorems.PublishedGlobalResults.PrincipalizationOfPrincipalisation
+public import Mathlib.RingTheory.Ideal.Span
+
+@[expose] public section
+
+namespace GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+
+def LocPrincipal {A : Type} [CommRing A] (I p : Ideal A) : Prop :=
+  ∃ t f : A, t ∉ p ∧ f ∈ I ∧ f ≠ 0 ∧ ∀ g ∈ I, ∃ n : ℕ, t ^ n * g ∈ Ideal.span {f}
+
+end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
+open ReciprocityTheory.AnForm.R
+
+namespace GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+
+def CartAt {X : Scheme.{0}} (J : X.IdealSheafData) (x : X) : Prop :=
+  ∃ (U : X.affineOpens) (f : Γ(X, U.1)), x ∈ U.1 ∧ f ∈ nonZeroDivisors Γ(X, U.1) ∧ J.ideal U = Ideal.span {f}
+
+theorem effCartier_iff_forall_cartAt {X : Scheme.{0}} (J : X.IdealSheafData) :
+    FinalTheorems.EffCartier J ↔ ∀ x, CartAt J x := Iff.rfl
+
+end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GlobalProofs.BlowupOfAgreeingIdealCartier, Development.AutomorphicSpectrum.Proofs.GlobalProofs.CartierAtOfNotMemSupport, Development.AutomorphicSpectrum.Proofs.GlobalProofs.EffCartierRestrictIffCartierAt, Development.AutomorphicSpectrum.Proofs.GlobalProofs.CartierAtOfLocallyPrincipal, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConormalFiniteProjectiveOfSmooth, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConormalRankOneOfLocallyPrincipal, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConormalRankOneOfLocallyPrincipalStatement, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsSmoothAffinePresentationPair, Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocallyPrincipalOfCartierAt, Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocallyPrincipalOfConormalRankOne, Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsClosedCartierLocusSupport, Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsIntegralBlowupOfSmooth, Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsIsoRestrictOfBlowupComp, Development.AutomorphicSpectrum.Proofs.GlobalProofs.VanishingIdealSmoothAgreesOff, Development.AutomorphicSpectrum.Proofs.GlobalProofs.PrincipalisationOfCharZero, Development.WeilBound.CoreStatements.ResolutionCharZero.PrincipalisationClosed
@@ -183,10 +215,10 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
 theorem cartAt_of_notMem_support {X : Scheme.{0}} (J : X.IdealSheafData) (x : X) (hx : x ∉ J.support) :
     CartAt J x := by
   rw [Scheme.IdealSheafData.mem_support_iff] at hx
-  push_neg at hx
+  push Not at hx
   obtain ⟨U, hU⟩ := hx
   rw [Scheme.mem_zeroLocus_iff] at hU
-  push_neg at hU
+  push Not at hU
   obtain ⟨f, hf, hxf⟩ := hU
   refine ⟨X.affineBasicOpen f, 1, hxf, Submonoid.one_mem _, ?_⟩
   rw [Ideal.span_singleton_one, ← J.map_ideal_basicOpen U f]
@@ -1246,10 +1278,6 @@ theorem seq_of_iso {k : Type} [Field k] {X X' : Scheme.{0}} {g : X ⟶ Sp k} {E 
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
 
-namespace GlobalTheory.CompanionTheory.Hypotheses₂
-
-
-end GlobalTheory.CompanionTheory.Hypotheses₂
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -165,9 +165,9 @@ theorem uc_rp {ι : Type} (K : ι → Type) [∀ v, Field (K v)] {S : ι → Typ
     rw [RestrictedProduct.mul_apply, hev]
     have hs : ∑ i, (e i * f i) v = f (c v) v := by
       rw [Finset.sum_eq_single (c v)]
-      · rw [RestrictedProduct.mul_apply, he, if_pos rfl, one_mul]
+      · rw [RestrictedProduct.mul_apply, he, ite_eq_left rfl, one_mul]
       · intro b _ hb
-        rw [RestrictedProduct.mul_apply, he, if_neg (Ne.symm hb), zero_mul]
+        rw [RestrictedProduct.mul_apply, he, ite_eq_right (Ne.symm hb), zero_mul]
       · intro h
         exact absurd (Finset.mem_univ _) h
     rw [hs]

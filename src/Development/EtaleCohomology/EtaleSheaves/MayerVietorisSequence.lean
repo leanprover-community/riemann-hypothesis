@@ -43,7 +43,7 @@ theorem comp_sq (hP : SchPB) {U V X U' V' X' : Scheme.{0}} (f : U ⟶ X) (g : V 
     (hu' : sch.map f ≫ sch.map p = sch.map u ≫ sch.map f') (hv' : sch.map g ≫ sch.map p = sch.map v ≫ sch.map g') :
     have := hP f g; have := hP f' g'
     inv (pullbackComparison sch f g) ≫ sch.map (pullback.map f g f' g' u v p hu hv) =
-      pullback.map _ _ _ _ (sch.map u) (sch.map v) (sch.map p) hu' hv' ≫ inv (pullbackComparison sch f' g') := set_option synthInstance.maxHeartbeats 200000 in by
+      pullback.map _ _ _ _ (sch.map u) (sch.map v) (sch.map p) hu' hv' ≫ inv (pullbackComparison sch f' g') := by
   have := hP f g; have := hP f' g'
   rw [IsIso.inv_comp_eq, ← Category.assoc, IsIso.eq_comp_inv]
   apply pullback.hom_ext
@@ -69,7 +69,7 @@ theorem LateralTheory.E.t_E2Cut.MV_of_three (hS : MVSpc) (hC : OpenCov) (hP : Sc
       (pullbackComparison_comp_fst _ _ _).symm
     have hg : sch.map (pullback.snd f g) = pullbackComparison sch f g ≫ pullback.snd _ _ :=
       (pullbackComparison_comp_snd _ _ _).symm
-    simp only [dif_pos h, AddMonoidHom.comp_apply]
+    simp only [dite_eq_left h, AddMonoidHom.comp_apply]
     refine ⟨?_, ?_, ?_⟩
     · intro a b hab
       rw [hf, hg, pull_comp, pull_comp] at hab
@@ -94,7 +94,7 @@ theorem LateralTheory.E.t_E2Cut.MV_of_three (hS : MVSpc) (hC : OpenCov) (hP : Sc
     have := hP f g; have := hP f' g'
     have h := hC R f g hcov
     have h' := hC R f' g' hcov'
-    simp only [dif_pos h, dif_pos h', AddMonoidHom.comp_apply]
+    simp only [dite_eq_left h, dite_eq_left h', AddMonoidHom.comp_apply]
     have hu' : sch.map f ≫ sch.map p = sch.map u ≫ sch.map f' := by rw [← Functor.map_comp, hu, Functor.map_comp]
     have hv' : sch.map g ≫ sch.map p = sch.map v ≫ sch.map g' := by rw [← Functor.map_comp, hv, Functor.map_comp]
     rw [hnat (sch.map f) (sch.map g) (sch.map f') (sch.map g') (sch.map p) (sch.map u) (sch.map v) hu' hv' h h' n,

@@ -16,7 +16,7 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X}
 
 def regIso (h : IsCptGen ξ) (p : Cpt ξ) : X.presheaf.stalk p.1 ≃+* regAt ξ p :=
   RingEquiv.ofBijective (genMap ξ p).rangeRestrict
-    ⟨fun a b hab => h.inj p (congrArg Subtype.val hab), RingHom.rangeRestrict_surjective _⟩
+    ⟨fun _ _ hab => h.inj p (congrArg Subtype.val hab), RingHom.rangeRestrict_surjective _⟩
 
 def regPt (h : IsCptGen ξ) (p : Cpt ξ) : Sp (regAt ξ p) ⟶ X :=
   spMap (regIso h p).toRingHom ≫ X.fromSpecStalk p.1

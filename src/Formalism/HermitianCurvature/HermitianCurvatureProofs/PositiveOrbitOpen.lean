@@ -113,11 +113,3 @@ theorem sgs_Om (D : RealPlaceData k r Wp Wq) {p : SS k r} (hp : D.inSS p) {y : M
 
 
 end Formalism.FourierDecayAlt.P.PositiveOrbitOpen
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-open scoped Matrix.Norms.Elementwise
-
-end Formalism.FourierDecayAlt.P

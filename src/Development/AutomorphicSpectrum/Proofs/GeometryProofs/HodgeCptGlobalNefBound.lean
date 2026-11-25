@@ -403,7 +403,7 @@ theorem dot_bijective (K : Type) [Field K] (d : ℕ) :
       (dotProductBilin K K : (Fin d → K) →ₗ[K] (Fin d → K) →ₗ[K] K) := by
   have hi : Function.Injective
       (dotProductBilin K K : (Fin d → K) →ₗ[K] (Fin d → K) →ₗ[K] K) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     funext r
     have := LinearMap.congr_fun hx (Pi.single r 1)
@@ -476,8 +476,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.curve_family_formal_germ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (C : ACurve K) (z : Sp K ⟶ X0) (Y : CurveIn C z), (∀ i, FibPF t (GlobalTheory.CompanionTheory.Ar.centre (Y.x i))) → ∃ (d : ℕ) (F : Family C p d (𝓞 E)) (g : GermAt t z d), g.B = F.B ∧ ∀ i, ∃ gi : GermAt t (Y.x i) d, ∀ l, IsCombAtG t z g.tg (fun j => lin (F.φ i) 1 j l) (spMap (GlobalTheory.CompanionTheory.Ar.dualMap (C.v i).valuationSubring.subtype) ≫ gi.tg l) := by
-  first | exact @PositivityTheory.HtPt.Cf.family_ex
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveFamilyFormalGerm =====
@@ -492,8 +490,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.curve_family_formal_germ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (C : ACurve K) (z : Sp K ⟶ X0) (Y : CurveIn C z), (∀ i, FibPF t (GlobalTheory.CompanionTheory.Ar.centre (Y.x i))) → ∃ (d : ℕ) (F : Family C p d (𝓞 E)) (g : GermAt t z d), g.B = F.B ∧ ∀ i, ∃ gi : GermAt t (Y.x i) d, ∀ l, IsCombAtG t z g.tg (fun j => lin (F.φ i) 1 j l) (spMap (GlobalTheory.CompanionTheory.Ar.dualMap (C.v i).valuationSubring.subtype) ≫ gi.tg l) := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.curve_family_formal_germ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveFamilyFormalGermStatement =====
@@ -595,9 +591,9 @@ theorem isCombAtG_iff_lie {S : Type} [CommRing S] {x : Sp S ⟶ X0} {V : Type} [
 
 theorem lieLat_conjData : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (C : ACurve K) (z : Sp K ⟶ X0) (Y : CurveIn C z), Nonempty C.I → (∀ i, FibPF t (GlobalTheory.CompanionTheory.Ar.centre (Y.x i))) → ∀ (V : Type) [AddCommGroup V] [Module K V] (M : GlobalTheory.CompanionTheory.Ar.LieModel t.G z V) (r : 𝓞 E →+* Module.End K V), M.IsActOf t.act.act r → ∃ (d : ℕ) (D : ConjData C p (𝓞 E) d) (e : V ≃ₗ[K] (Fin d → K)), (∀ i v, v ∈ Y.lieLat M i ↔ e v ∈ D.lie i) ∧ ∀ a v, e (r a v) = (D.ρ a).mulVec (e v) := by
   intro E _ _ _ H _ hbar X0 t hPow K _ p _ _ C z Y hne hFib V _ _ M r hr
-  obtain ⟨d, F, g, hgB, hfam⟩ := GlobalTheory.T.curve_family_formal_germ E H hbar X0 t hPow K p C z Y hFib
+  obtain ⟨d, F, g, hgB, hfam⟩ := PositivityTheory.HtPt.Cf.family_ex E H hbar X0 t hPow K p C z Y hFib
   obtain ⟨D, hDρ, hDlie⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.Fam.family_conj K C p d (𝓞 E) F hne
-  obtain ⟨e, hecomb, heact⟩ := GlobalTheory.T.formal_germ_lie_basis E H hbar X0 t K z d g V M
+  obtain ⟨e, hecomb, heact⟩ := PositivityTheory.HtPt.Cd.germ_lie E H hbar X0 t K z d g V M
   refine ⟨d, D, e, fun i v => ?_, fun a v => by rw [heact r hr a v, hDρ a, hgB]⟩
   obtain ⟨gi, hgi⟩ := hfam i
   obtain ⟨hΦΨ, hΨΦ, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.Iso.rho_pairing K d (𝓞 E) F.B (F.BK i) (F.φ i) (F.ψ i) (F.lam i) (F.iso i)
@@ -943,7 +939,7 @@ theorem drTie_of_hodgeCpt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     tie := 𝔐.tie
     t := 𝔐.t
     pow := hpow
-    fib := fun q hq => (GlobalTheory.T.fibre_power_free_pullback E H Y.X Y.t 𝔐.X 𝔐.t 𝔐.f 𝔐.m q.1).2 (hfib _ ?_)
+    fib := fun q hq => (PositivityTheory.HtPt.Cf.fibpf_pull E H Y.X Y.t 𝔐.X 𝔐.t 𝔐.f 𝔐.m q.1).2 (hfib _ ?_)
     V := 𝔐.Li
     L := 𝔐.M
     r := 𝔐.ρ
@@ -970,14 +966,14 @@ theorem drTie_of_hodgeCpt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     exact h1
   · rw [Fintype.card_sum] at hcard
     omega
-  · have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inl τ, ⟨i, h⟩⟩ := dif_pos h
-    have hsgn : HodgeCpt.rootSgn D (τ, i) = 1 := if_pos h
+  · have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inl τ, ⟨i, h⟩⟩ := dite_eq_left h
+    have hsgn : HodgeCpt.rootSgn D (τ, i) = 1 := ite_eq_left h
     have h1 := hroot (τ, i)
     rw [hidx, hsgn] at h1
     exact deg_one (hG _) h1 fun q hq => gr_congr (hV _ q hq) _ _
   · have hn : ¬ (i : ℕ) < D.p := not_lt.2 hj
-    have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inr τ, ⟨D.p + D.q - 1 - i, by have := i.2; show _ < D.q; omega⟩⟩ := dif_neg hn
-    have hsgn : HodgeCpt.rootSgn D (τ, i) = -1 := if_neg hn
+    have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inr τ, ⟨D.p + D.q - 1 - i, by have := i.2; show _ < D.q; omega⟩⟩ := dite_eq_right hn
+    have hsgn : HodgeCpt.rootSgn D (τ, i) = -1 := ite_eq_right hn
     have h1 := hroot (τ, i)
     rw [hidx, hsgn] at h1
     rw [gr_cast]

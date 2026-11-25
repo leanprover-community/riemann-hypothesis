@@ -103,11 +103,11 @@ theorem exists_block_frame : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : S
   let v : Fin N → P := fun k => if h : (k : ℕ) < j then b1 ⟨k, h⟩ else b2 ⟨k - j, by have := k.2; omega⟩
   have hvh : ∀ a, v (headIdx hj a) = b1 a := fun a => by
     have h : ((headIdx hj a : Fin N) : ℕ) < j := a.2
-    simp only [v, dif_pos h]
+    simp only [v, dite_eq_left h]
     rfl
   have hvt : ∀ a, v (tailIdx hj a) = b2 a := fun a => by
     have h : ¬ ((tailIdx hj a : Fin N) : ℕ) < j := by simp [tailIdx]
-    simp only [v, dif_neg h]
+    simp only [v, dite_eq_right h]
     congr 1
     ext
     simp [tailIdx]

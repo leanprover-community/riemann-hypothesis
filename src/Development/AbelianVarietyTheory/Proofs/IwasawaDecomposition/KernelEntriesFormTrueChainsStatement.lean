@@ -105,7 +105,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix Formalism.MainNotions.G Formalism.MainNotions.TaylorLogMetric
 open Classical
 
-
 noncomputable section
 
 namespace GlobalTheory.JetChain
@@ -140,7 +139,7 @@ theorem fpair_monomial (α : σ →₀ ℕ) (c : K) (F : MvPowerSeries σ K) :
     fpair (MvPolynomial.monomial α c) F = c * (α.prod fun _ n => (n.factorial : K)) * MvPowerSeries.coeff α F := by
   classical
   rw [fpair_eq_of_subset _ F {α} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 theorem fpair_smul_left (r : K) (Q : MvPolynomial σ K) (F : MvPowerSeries σ K) :
     fpair (r • Q) F = r * fpair Q F := by
@@ -311,7 +310,7 @@ theorem sum_sel {T K : Type} [Fintype T] [AddCommMonoid K] {N1 N0 : ℕ} (τ : T
   rw [Fintype.sum_prod_type, Finset.sum_eq_single τ]
   · simp [Fintype.sum_prod_type]
   · intro t _ ht
-    exact Finset.sum_eq_zero fun k _ => if_neg (Ne.symm ht)
+    exact Finset.sum_eq_zero fun k _ => ite_eq_right (Ne.symm ht)
   · simp
 
 theorem sum4 {A B C E M : Type} [Fintype A] [Fintype B] [Fintype C] [Fintype E] [AddCommMonoid M]
@@ -354,7 +353,7 @@ theorem jetMap_frame_eq_applyQ : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (N0 N1 : 
   have he : tauPl D ((Equiv.ofBijective (tauPl D) (tauPl_bij D)).symm τ) = τ :=
     (Equiv.ofBijective (tauPl D) (tauPl_bij D)).apply_symm_apply τ
 
-  simp only [dif_pos ht, map_sum, map_mul, MvPolynomial.aeval_X, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq,
+  simp only [dite_eq_left ht, map_sum, map_mul, MvPolynomial.aeval_X, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq,
   Sum.elim_inl, Sum.elim_inr, he, GL3Columns.colsOf]
   have hC : ∀ (c : Prop) [Decidable c] (x : ℂ_[p]) (k : D.what₂.Tau × Fin N1 × Fin N0),
       MvPolynomial.C (if c then x else 0) * MvPolynomial.X k = if c then MvPolynomial.C x * MvPolynomial.X k else 0 := by
@@ -385,7 +384,7 @@ theorem jetMap_frame_eq_applyQ : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (N0 N1 : 
     first
       | (rw [Finset.sum_comm]; exact Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => by ring)
   simp only [key]
-  simp only [mul_ite, mul_one, mul_zero, hC, Finset.sum_ite_eq, Finset.mem_univ, if_true, map_mul]
+  simp only [mul_ite, mul_one, mul_zero, hC, Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_mul]
   ring
 
 end GlobalTheory.JetChain
@@ -407,11 +406,9 @@ open MvPolynomial Finsupp
 
 variable {ι : Type} [Fintype ι] {a b : ℕ}
 
-
 open Classical in
 noncomputable def wD (ι : Type) (a b : ℕ) : ((ι × Fin b × Fin b) ⊕ DVar ι a b) → (ι → ℕ) :=
   Sum.elim 0 fun x => Pi.single x.1 1
-
 
 open Classical in
 noncomputable def wF (ι : Type) (a : ℕ) : (ι × Fin a × Fin a) → (ι → ℕ) := fun v => Pi.single v.1 1
@@ -518,12 +515,12 @@ theorem GlobalTheory.jetMapTransport : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (la
   have hx1 : ∀ m : DVar D.what₂.Tau a b →₀ ℕ, (∀ τ, ∑ β, ∑ α, m (τ, β, α) = n τ) →
       J m = (algebraMap Qbar ℂ ∘ x) m := by
     intro m hm
-    simp only [x, Function.comp_apply, dif_pos hm]
+    simp only [x, Function.comp_apply, dite_eq_left hm]
     exact (hJ m hm).choose_spec.1.symm
   have hx2 : ∀ m : DVar D.what₂.Tau a b →₀ ℕ, (∀ τ, ∑ β, ∑ α, m (τ, β, α) = n τ) →
       J' m = (lam ∘ x) m := by
     intro m hm
-    simp only [x, Function.comp_apply, dif_pos hm]
+    simp only [x, Function.comp_apply, dite_eq_left hm]
     exact (hJ m hm).choose_spec.2.symm
   have hPw : ∀ {K : Type} [Field K] (f : Qbar →+* K),
       MvPolynomial.IsWeightedHomogeneous (GlobalTheory.JetTransport.wF D.what₂.Tau a) (MvPolynomial.map f P) n := by
@@ -832,7 +829,7 @@ theorem deg_eq_of_mem_wtPol : ∀ {K : Type} [Field K] [CharZero K] {ι : Type} 
     rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_prod_type,
       Finset.prod_eq_single τ]
     · rw [Fintype.prod_prod_type]
-      simp only [hc, if_true, Finset.prod_pow_eq_pow_sum]
+      simp only [hc, ite_true, Finset.prod_pow_eq_pow_sum]
     · intro σ _ hσ
       simp [hc, hσ]
     · simp
@@ -866,8 +863,6 @@ namespace GlobalTheory.Mem.Col2.TC
 
 open GlobalTheory.LvT.Built.KMap
 
-
-
 theorem jetC_th_mem_Qbar : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (Qp : I.ι → Finset ℕ)
     (O : ∀ u a, GL3Theta.LiftObj (I.rec7 l Z) ((I.rec7 l Z).chTw u a)), I.StdO l Z Qp O → ColIn.JetsIn I →
     ∀ u μ i, i < B.R.m → ∀ (c : ((I.rec7 l Z).chTw u μ).cls i) (c' : ((I.rec7 l Z).chTw u μ).cls (i + 1))
@@ -892,7 +887,7 @@ theorem jetC_th_mem_Qbar : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok 
       rfl
     exact_mod_cast key
   obtain ⟨hX, hPr, -⟩ := base_fields_primes_ok B X
-  obtain ⟨hLa, hE⟩ := GlobalTheory.T.trueColumn_periodLattice_vacuumSmooth I hOk hPins l Z μ u i hi
+  obtain ⟨hLa, hE⟩ := GlobalTheory.Mem.Col2.TC.laHyp_eSmooth_true I hOk hPins l Z μ u i hi
   set p := (I.stp u μ i).rep c
   set p' := (I.stp u μ (i + 1)).rep c'
   have hN : IsSdLat p.1.1.deco.1.N := ⟨p.1.1.deco.2.lat, p.1.1.deco.2.uni⟩
@@ -1115,7 +1110,7 @@ theorem mtType_std (hok : ColIn.Ok I) (hp : TC.Pins B X) (l : TC.Laws I) (Z : TC
   have hm : 1 ≤ j.1 + 1 ∧ j.1 + 1 ≤ B.R.m := ⟨by omega, j.2⟩
   have e1 : (O u a).mt (j.1 + 1) = (I.rec7 l Z).muTil (j.1 + 1) * (show (I.rec7 l Z).Dt →* ℂˣ from tildeQ B.host I.SQ (I.xi a)) := by
     rw [hO.mt u a]
-    exact if_pos hm
+    exact ite_eq_left hm
   rw [e1, MonoidHom.mul_apply, T.muTil_eq j x hx, hT x]
   have e2 : (tildeQ B.host I.SQ (I.xi a)) (QuotientGroup.mk x) = (I.xi a).1 x :=
     (tildeQ_mk B.host I.SQ hk x).trans (congrArg _ (finPartI_eq_self hx))
@@ -1228,7 +1223,6 @@ theorem qbar_of_numberField (M : IntermediateField ℚ ℂ) [NumberField M] (s :
 
 end GlobalTheory.KForm
 
-
 open GlobalTheory.KForm.EntTrue Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.G in
 theorem GlobalTheory.Mem.Col2.TC.kerEnt_kform_true : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), ColIn.Ok I → TC.Pins B X → ∀ (l : TC.Laws I) (Z : TC.Later B (TC.cols I l)), ∀ (l0 : TC.Law0 I l) (Y : DivX (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G)) (O : ∀ u a, GL3Theta.LiftObj (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G) ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).chTw u a)) (Pl : Examples₂.EntPl (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G)) (Bs : PlaceMatrixFamily (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G)), TC.QpIs I Y.Qp → TC.StdO I l Z Y.Qp O → BasOk Pl O Bs → (∀ u a w, LevFree Y u a w → ∀ i, i ≤ B.R.m → ∀ c τ j k, ∃ x : (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).what₂.LL, Bs u a w i c τ j k = Pl.iL w x) → (∀ u a i, i < B.R.m → UnfIsAll (O u a) i) → ColIn.JetsIn I → ∀ u μ w, LevFree Y u μ w → ∀ i, i < (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).R.m → ∀ (c : ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).chTw u μ).cls i) (c' : ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).chTw u μ).cls (i + 1)) (v : ValQ O u μ i) (v' : ValQ O u μ (i + 1)), evC O u μ (i + 1) v' = ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).chTw u μ).Kmap i c c' (evC O u μ i v) → ∀ J, prTC Pl O Bs u μ w i c' v' J = unC Pl O Bs u μ w i c c' * prSC Pl O Bs u μ w i c v (KM.applyAt0 ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).R.N i) ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).R.N (i + 1)) ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).what₂.places.resChar w) (thAtW Pl O Bs u μ w i c c') (KM.Gxz ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).R.N i) ((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).R.N (i + 1)) (nuD (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G) u i) J)) := by
   intro B X I hok hp l Z l0 Y O Pl Bs hq hs hB hent hU hJ u μ w hw i hi c c' v v' hK J
@@ -1303,7 +1297,7 @@ theorem GlobalTheory.Mem.Col2.TC.kerEnt_kform_true : ∀ {B : Base} {X : PreX B.
       exact Finset.prod_eq_one fun τ _ => by rw [← zpow_add₀ (hdet τ), add_neg_cancel, zpow_zero]
     have hun : unC Pl O Bs u μ w i c c' = unF Pl O Bs u μ w i c c' := by
       unfold unC
-      rw [if_neg (unF_ne Pl O Bs hB u μ hR w i hi c c')]
+      rw [ite_eq_right (unF_ne Pl O Bs hB u μ hR w i hi c c')]
     have key : ∀ A : ℂ_[(I.rec7 l Z).what₂.places.resChar w],
         (∏ τ, (Bs u μ w (i + 1) c' τ).det ^ (-((I.rec7 l Z).chTw u μ).sDiv i τ)) * ((Pl.lam w) ⟨_, hρ⟩ * A) =
           unC Pl O Bs u μ w i c c' * ((∏ τ, (Bs u μ w i c τ).det ^ (-((I.rec7 l Z).chTw u μ).sSharp i τ)) * A) := by

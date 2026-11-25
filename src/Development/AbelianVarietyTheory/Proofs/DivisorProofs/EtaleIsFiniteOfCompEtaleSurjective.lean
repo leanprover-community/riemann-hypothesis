@@ -108,24 +108,15 @@ theorem finitePresentation_of_retract (A B C : Type*) [CommRing A] [CommRing B] 
     (Module.FinitePresentation.iff_finitePresentation_of_finite (R := A) (S := C)).2 inferInstance
   let l' : C →ₗ[A] B := l.restrictScalars A
   let i : B →ₗ[A] C := (Algebra.linearMap B C).restrictScalars A
-  have hli : ∀ b, l' (i b) = b := by
-    intro b
+  have hli : Function.LeftInverse l' i := fun b => by
     change l (algebraMap B C b) = b
     rw [Algebra.algebraMap_eq_smul_one, map_smul, hl, smul_eq_mul, mul_one]
-  have hsurj : Function.Surjective l' := fun b => ⟨i b, hli b⟩
-  have hker : LinearMap.ker l' = LinearMap.range (LinearMap.id - i ∘ₗ l') := by
-    ext x
-    simp only [LinearMap.mem_ker, LinearMap.mem_range, LinearMap.sub_apply, LinearMap.id_apply,
-      LinearMap.comp_apply]
-    constructor
-    · intro hx
-      exact ⟨x, by rw [hx, map_zero, sub_zero]⟩
-    · rintro ⟨y, rfl⟩
-      rw [map_sub, hli, sub_self]
-  have hfg : (LinearMap.ker l').FG := by
-    rw [hker, LinearMap.range_eq_map]
-    exact Module.Finite.fg_top.map _
-  have : Module.FinitePresentation A B := Module.finitePresentation_of_surjective l' hsurj hfg
+  have hproj : LinearMap.IsProj (LinearMap.ker l') (LinearMap.id - i ∘ₗ l') := by
+    refine ⟨fun x => ?_, fun x hx => ?_⟩
+    · simp [LinearMap.mem_ker, hli (l' x)]
+    · simp [LinearMap.mem_ker.mp hx]
+  have hfg : (LinearMap.ker l').FG := hproj.range ▸ Submodule.fg_range _
+  have : Module.FinitePresentation A B := Module.finitePresentation_of_surjective l' hli.surjective hfg
   exact (Module.FinitePresentation.iff_finitePresentation_of_finite (R := A) (S := B)).1 this
 
 theorem ringHom_finitePresentation {A B C : Type*} [CommRing A] [CommRing B] [CommRing C]

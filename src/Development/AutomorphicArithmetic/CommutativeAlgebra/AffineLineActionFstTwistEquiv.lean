@@ -23,21 +23,14 @@ private theorem coord_comp {T' T : Scheme.{0}} (g : T' ⟶ T) (f : T ⟶ Pbf.A1)
   simp [coord]
   rfl
 
-private theorem eq_of_appTop {T : Scheme.{0}} (f : T ⟶ Pbf.A1) :
-    f = T.toSpecΓ ≫ Spec.map ((Scheme.ΓSpecIso (CommRingCat.of ℤ[X])).inv ≫ f.appTop) := by
-  have h := Scheme.toSpecΓ_naturality f
-  have h2 : (Spec (CommRingCat.of ℤ[X])).toSpecΓ ≫ Spec.map (Scheme.ΓSpecIso (CommRingCat.of ℤ[X])).inv = 𝟙 _ := by
-    rw [← SpecMap_ΓSpecIso_hom, ← Spec.map_comp]
-    simp
-  calc f = f ≫ (Spec (CommRingCat.of ℤ[X])).toSpecΓ ≫ Spec.map (Scheme.ΓSpecIso (CommRingCat.of ℤ[X])).inv := by
-        rw [h2, Category.comp_id]
-    _ = _ := by
-        rw [← Category.assoc, h, Category.assoc, ← Spec.map_comp]
-
 private theorem coord_bij (T : Scheme.{0}) : Function.Bijective (coord (T := T)) := by
   constructor
   · intro f g h
-    rw [eq_of_appTop f, eq_of_appTop g]
+    have hf (u : T ⟶ Pbf.A1) : u =
+        T.toSpecΓ ≫ Spec.map ((Scheme.ΓSpecIso (CommRingCat.of ℤ[X])).inv ≫ u.appTop) := by
+      rw [Spec.map_comp, ← Scheme.toSpecΓ_naturality_assoc, toSpecΓ_SpecMap_ΓSpecIso_inv,
+        Category.comp_id]
+    rw [hf f, hf g]
     congr 2
     apply CommRingCat.hom_ext
     refine Polynomial.ringHom_ext' (RingHom.ext_int _ _) ?_

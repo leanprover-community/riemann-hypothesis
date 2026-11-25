@@ -343,8 +343,6 @@ theorem pinOm_cancel {R W : Type*} [CommRing R] [AddCommGroup W] [Module R W] {a
   simp only [← hv, smul_smul, Units.inv_mul, one_smul] at this
   exact this
 
-
-
 theorem pinOm_holds : PinOm Zd u u' F0 what₂ := by
   intro γ Z F'₂ φ φ' Λ₂ hB β₀ hβ hfr hW hO p hm hm₂
   obtain ⟨hC, hCtx, hS, -, -, hTH, hPD, hGv⟩ := hB
@@ -564,8 +562,6 @@ open BwdCut BwdBetaCut BwdNP BetaI
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
-
-
 theorem localOrthogonal_holds : PartialIsometryExtension Zd u u' F0 what₂ := by
   intro γ Z F'₂ φ φ' Λ₂ hB β₀ hβ₀ hfr hW0 hOm p w hw hm hm₂
   have hStar := hB.2.2.1
@@ -673,10 +669,10 @@ theorem om_X' {y : (VS D).V} (hy : y ∈ F'.X) : (VS D).hT (Gom F.fvec F'.fvec) 
 
   rw [map_sum]
   refine Finset.sum_eq_zero fun i _ => ?_
-  rw [map_smul, ← fvec_cs F' i, om_pair, if_neg (Fin.castSucc_ne_last i), smul_zero]
+  rw [map_smul, ← fvec_cs F' i, om_pair, ite_eq_right (Fin.castSucc_ne_last i), smul_zero]
 
 theorem omega_hermitian_z : (VS D).hT (Gom F.fvec F'.fvec) F'.z = GDl F.fvec F'.fvec (D.R.rS + 1) := by
-  rw [← fvec_last F', om_pair, if_pos rfl]
+  rw [← fvec_last F', om_pair, ite_eq_left rfl]
 
 theorem f_om (a : Fin (D.R.rS + 1)) :
     (VS D).hT (F.fvec a) (Gom F.fvec F'.fvec) =
@@ -687,10 +683,10 @@ theorem f_om (a : Fin (D.R.rS + 1)) :
   simp only [map_smul, smul_eq_mul, hff]
   rw [Finset.sum_eq_single (Fin.last D.R.rS)]
   · by_cases ha : a = Fin.last D.R.rS
-    · rw [if_pos ⟨ha, rfl⟩, if_pos ha]
-    · rw [if_neg (fun h => ha h.1), if_neg ha, mul_zero]
+    · rw [ite_eq_left ⟨ha, rfl⟩, ite_eq_left ha]
+    · rw [ite_eq_right (fun h => ha h.1), ite_eq_right ha, mul_zero]
   · intro b _ hb
-    rw [if_neg (fun h => hb h.2), mul_zero]
+    rw [ite_eq_right (fun h => hb h.2), mul_zero]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem om_om : (VS D).hT (Gom F.fvec F'.fvec) (Gom F.fvec F'.fvec) =
@@ -702,10 +698,10 @@ theorem om_om : (VS D).hT (Gom F.fvec F'.fvec) (Gom F.fvec F'.fvec) =
     rw [map_sum, LinearMap.sum_apply]
     simp only [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, star_star]
   rw [e, Finset.sum_eq_single (Fin.last D.R.rS)]
-  · rw [f_om, if_pos rfl, PI.UnitaryGroupMassFormula.BetaLUniq.GN.adj_last, ← GDl_r']
+  · rw [f_om, ite_eq_left rfl, PI.UnitaryGroupMassFormula.BetaLUniq.GN.adj_last, ← GDl_r']
     ring
   · intro b _ hb
-    rw [f_om, if_neg hb, mul_zero]
+    rw [f_om, ite_eq_right hb, mul_zero]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem om_uniq (hdet : GDl F.fvec F'.fvec (D.R.rS + 1) ≠ 0) {x : (VS D).V}
@@ -717,9 +713,9 @@ theorem om_uniq (hdet : GDl F.fvec F'.fvec (D.R.rS + 1) ≠ 0) {x : (VS D).V}
   rw [map_sub, LinearMap.sub_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, om_pair]
   induction b using Fin.lastCases with
   | last =>
-    rw [if_pos rfl, fvec_last, hc, star_star, div_mul_cancel₀ _ hdet, sub_self]
+    rw [ite_eq_left rfl, fvec_last, hc, star_star, div_mul_cancel₀ _ hdet, sub_self]
   | cast i =>
-    rw [if_neg (Fin.castSucc_ne_last i), mul_zero, sub_zero, fvec_cs, hsw',
+    rw [ite_eq_right (Fin.castSucc_ne_last i), mul_zero, sub_zero, fvec_cs, hsw',
       hxX _ (Submodule.subset_span ⟨i, rfl⟩), star_zero]
 
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.SpanOmPf
@@ -739,7 +735,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.Pf.ScalarFramePf
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
 
 open SpanOmPf in
 theorem spanOm_holds (D : Formalism.BasicNotions.D7) : SpanOm D := by
@@ -1540,7 +1535,6 @@ theorem p2_mem_Z2_of_mem_Z2 (p : PlF D) (e : (D.s.atP p).Ep ≃ₐ[(D.s.atP p).F
 theorem map_stab {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S) {n : ℕ} {a Y b : Matrix (Fin n) (Fin n) R}
     (h : a * Y * b = Y) : a.map f * Y.map f * b.map f = Y.map f := by rw [← map3, h]
 
-
 theorem target_G (u u' : D.what₂.Word) (p : PlF D) {g : Loc.SplitG (Zd.M p).L} (hM : (Zd.M p).split = some g)
     (w : Point D.host.E (D.R.rS + 1)) {Z₁ L₁ U₁ A₀ B₀ : PairVal.MatR D} (hL₁ : IsLo L₁) (hU₁ : IsUp U₁)
     (hZ : Z₁ * Sg D.host.E D.R.rS = L₁ * ptMat w * U₁) (hA₀ : IsLo A₀) (hB₀ : IsUp B₀) {l ρ : MatP D p}
@@ -1789,9 +1783,9 @@ theorem stabApprox (Zd : LocDat D) (u u' : D.what₂.Word) : Formalism.L2.SG.Pf.
     sa_lat D.s.atP hfin.toFinset (fun p => T p ij.1 ij.2) c (fun p _ => hc0 p)
   let X' : PairVal.MatR D := Matrix.of fun i j => if Free (fσ w) i j then t (i, j) else (1 : PairVal.MatR D) i j
   have hX'1 : ∀ i j, ¬ Free (fσ w) i j → X' i j = (1 : PairVal.MatR D) i j := fun i j h => by
-    simp only [X', Matrix.of_apply, if_neg h]
+    simp only [X', Matrix.of_apply, ite_eq_right h]
   have hX'2 : ∀ i j, Free (fσ w) i j → X' i j = t (i, j) := fun i j h => by
-    simp only [X', Matrix.of_apply, if_pos h]
+    simp only [X', Matrix.of_apply, ite_eq_left h]
   have hX' : IsLo X' :=
     ⟨fun a => by rw [hX'1 a a (fun h => lt_irrefl a h.1), Matrix.one_apply_eq],
       fun a b hab => by rw [hX'1 a b (fun h => absurd h.1 (not_lt.2 hab.le)), Matrix.one_apply_ne hab.ne]⟩

@@ -38,9 +38,9 @@ theorem mem_iff_trace {K G : Type} [Field K] [CharZero K] [Group G] [Fintype G] 
     split_ifs with e
     · rw [e]; field_simp
     · simp
-  refine ⟨fun h => ⟨hX χ h, by rw [(key (hX χ h)).2, if_pos h]⟩, fun ⟨h, e⟩ => ?_⟩
+  refine ⟨fun h => ⟨hX χ h, by rw [(key (hX χ h)).2, ite_eq_left h]⟩, fun ⟨h, e⟩ => ?_⟩
   by_contra hn
-  rw [(key h).2, if_neg hn] at e
+  rw [(key h).2, ite_eq_right hn] at e
   exact (key h).1 e.symm
 
 section Base

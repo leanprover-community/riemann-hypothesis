@@ -227,7 +227,7 @@ theorem hPow_hOne (L : PeriodPair) :
   by_cases h1 : w = w'
   · subst h1
     simp
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     by_cases h2 : w.2 = w'.2
     · have h3 : w.1 ≠ w'.1 := fun h => h1 (Prod.ext h h2)
       simp [h2, h3]

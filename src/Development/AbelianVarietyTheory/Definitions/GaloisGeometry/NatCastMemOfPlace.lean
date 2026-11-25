@@ -165,7 +165,7 @@ theorem DatLoc.add_halfBO {Ξ : Formalism.L2.Col.HomE D.host.E a b → ℂ} (h :
   have h1 := (Submodule.mem_iInf _).1 hm P
   have h2 : Formalism.L2.Ker.expS SS P = 1 := by
     unfold Formalism.L2.Ker.expS
-    rw [if_pos hP]
+    rw [ite_eq_left hP]
   rw [h2, zpow_one] at h1
   exact h1
 
@@ -242,11 +242,11 @@ theorem twG_eq_tw (v : X.Pl) (s : Fin (X.G.P.n' v)) :
 
 theorem LamPos.even (h : LamPos X E pos lam ρ) (v : X.Pl) (s : Fin (X.G.P.n' v)) (hs : ¬ IsOddPos s) (x : D.host.E) :
     TaylorLogMetric.lamC lam (TaylorLogMetric.embT D (pos ⟨v, s⟩) x) = twG X E v s (ρ v x) := by
-  rw [h v s x, if_neg hs]
+  rw [h v s x, ite_eq_right hs]
 
 theorem LamPos.odd (h : LamPos X E pos lam ρ) (v : X.Pl) (s : Fin (X.G.P.n' v)) (hs : IsOddPos s) (x : D.host.E) :
     TaylorLogMetric.lamC lam (TaylorLogMetric.embT D (pos ⟨v, s⟩) x) = twG X E v s (ρ v (D.host.conj x)) := by
-  rw [h v s x, if_pos hs]
+  rw [h v s x, ite_eq_left hs]
 
 end DataApi
 

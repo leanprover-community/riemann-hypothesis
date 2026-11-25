@@ -38,7 +38,7 @@ abbrev twF (A : Over (Sp ℂ)) [GrpObj A] : (Over (Sp ℂ))ᵒᵖ ⥤ GrpCat.{0}
 
 def twRep (A : Over (Sp ℂ)) [GrpObj A] : (twF A ⋙ forget _).RepresentableBy (tw A) where
   homEquiv {T} := twEquiv A T
-  homEquiv_comp f g := Over.OverMorphism.ext rfl
+  homEquiv_comp _ _ := Over.OverMorphism.ext rfl
 
 scoped instance twGrp (A : Over (Sp ℂ)) [GrpObj A] : GrpObj (tw A) := GrpObj.ofRepresentableBy _ _ (twRep A)
 

@@ -195,7 +195,7 @@ theorem bessel_nonvanishing_from_L2 : CompanionTheory.D.Upq.BesselFunctionalCons
       filter_upwards [hGae] with g hg
       have hxg : x0 * Matrix.of g ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r) := DDSmoothness.uh_mul hx0 hg
       have hmem : Formalism.QuantumDeterminants.lmulM x0 g ∈ U := hxg
-      simp only [Function.comp, Φ', Set.piecewise, hmem, if_true, Φ]
+      simp only [Function.comp, Φ', Set.piecewise, hmem, ite_true, Φ]
       show _ = ⟪η, PI.BesselPeriodGGP.eFun μG σ w0 (x0⁻¹ * (x0 * Matrix.of g)) • W (x0 * Matrix.of g)⟫_ℂ
       rw [← Matrix.mul_assoc, hxx', Matrix.one_mul]
     have hmapEq : μG.map (Formalism.QuantumDeterminants.lmulM x0) = μG := hGh.2.2.2 x0 hx0
@@ -235,7 +235,7 @@ theorem bessel_nonvanishing_from_L2 : CompanionTheory.D.Upq.BesselFunctionalCons
       have hsx : Matrix.of p.1 * Matrix.of p.2 * Matrix.of x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r) :=
         DDSmoothness.uh_mul hs hx
       have hmem : mulMt (fun i j => (Matrix.of p.1 * Matrix.of p.2) i j) x ∈ U := hsx
-      simp only [Φ', Set.piecewise, hmem, if_true, Φ]
+      simp only [Φ', Set.piecewise, hmem, ite_true, Φ]
       show ⟪η, PI.BesselPeriodGGP.eFun μG σ w0 (x0⁻¹ * (Matrix.of p.1 * Matrix.of p.2 * Matrix.of x)) •
           W (Matrix.of p.1 * Matrix.of p.2 * Matrix.of x)⟫_ℂ = _
       rw [hWeq _ hp.1 _ hp.2 _ hx]
@@ -583,7 +583,6 @@ end -- clump:auto
 -- ===== clump member: CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.OOConv =====
 -- clump-header: {"m": "CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.OOConv", "h": "module\n\npublic import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.BesselNonvanishingReduction\npublic import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.PhiReg\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.GNMulRpow\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.InnerBound\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.L1QuotientIntegralBound\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.MapInvMEq\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.OoConvOf\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbConvDDOfDecDD\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.TripleIntegrandMeasurable\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMemMeasurableSet\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
-set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 

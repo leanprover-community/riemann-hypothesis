@@ -551,17 +551,17 @@ theorem exists_diag {C : Type} [Field C] {v : Valuation C NNReal} {O : Type} [Co
   · rw [hφg, hPA]
     change (if (j : ℕ) < m then a j else 0) ∣ _
     by_cases h : (j : ℕ) < m
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       refine Finset.dvd_sum fun l _ => ?_
       split_ifs
       · exact dvd_mul_right _ _
       · simp
     · have h0 : ∑ l : Fin m, (if (l : ℕ) = (j : ℕ) then a j else 0) * Q⁻¹ l k = 0 :=
-        Finset.sum_eq_zero fun l _ => by rw [if_neg (fun hl : (l : ℕ) = j => h (hl ▸ l.2)), zero_mul]
+        Finset.sum_eq_zero fun l _ => by rw [ite_eq_right (fun hl : (l : ℕ) = j => h (hl ▸ l.2)), zero_mul]
       rw [h0]
       exact dvd_zero _
   · by_cases h : (j : ℕ) < m
-    · simp only [if_pos h]
+    · simp only [ite_eq_left h]
       let x : F := ∑ k, Q k ⟨j, h⟩ • g k
       have hx : x ∈ Submodule.span O (Set.range g) :=
         Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
@@ -574,12 +574,12 @@ theorem exists_diag {C : Type} [Field C] {v : Valuation C NNReal} {O : Type} [Co
         rw [h1, hD]
       have hxe : a j • e j = x := by
         rw [hsum x, Finset.sum_eq_single j]
-        · rw [hφx, if_pos rfl]
+        · rw [hφx, ite_eq_left rfl]
         · intro i _ hij
-          rw [hφx, if_neg fun hh => hij (Fin.ext hh.symm), zero_smul]
+          rw [hφx, ite_eq_right fun hh => hij (Fin.ext hh.symm), zero_smul]
         · simp
       rwa [hxe]
-    · simp only [if_neg h, zero_smul]
+    · simp only [ite_eq_right h, zero_smul]
       exact zero_mem _
 
 end Diag
@@ -918,7 +918,7 @@ theorem pairing_dual_bidual (G : PDivGroup p O) (t : G.Tate) (χ : G.dual.Tate) 
 
 theorem algebraMap_injective [IsDomain O] [Algebra ℤ_[p] O] (hp : (p : O) ≠ 0) :
     Function.Injective (algebraMap ℤ_[p] O) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   by_contra h
   have h2 := congrArg (algebraMap ℤ_[p] O) (PadicInt.unitCoeff_spec h)

@@ -2,43 +2,8 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.EveryPointSatisfiesFrameCondition
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.GalEmbTop
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -46,31 +11,19 @@ open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing U
 open scoped Pointwise
 
 private theorem orbit_count {G X V : Type} [Group G] [MulAction G X] [Fintype V] (U : Subgroup G) [U.Normal]
-    (hU : U.index ≠ 0) (b : X) (p : V → X) (h1 : ∀ v, ∃ γ : G, p v = γ • b)
+    (b : X) (p : V → X) (h1 : ∀ v, ∃ γ : G, p v = γ • b)
     (h2 : ∀ g : G, ∃! v, ∃ u ∈ U, g • b = u • p v) :
     ∑ v, U.relIndex (MulAction.stabilizer G (p v)) = U.index := by
   classical
   have hN : U.Normal := inferInstance
-  have conj_eq : ∀ γ : G, U.map (MulAut.conj γ).toMonoidHom = U := by
-    intro γ
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      exact hN.conj_mem y hy γ
-    · intro hx
-      refine ⟨γ⁻¹ * x * γ, ?_, ?_⟩
-      · simpa using hN.conj_mem x hx γ⁻¹
-      · simp [mul_assoc]
   have hrel : ∀ v, U.relIndex (MulAction.stabilizer G (p v)) =
       U.relIndex (U ⊔ MulAction.stabilizer G b) := by
     intro v
     obtain ⟨γ, hγ⟩ := h1 v
-    rw [hγ, MulAction.stabilizer_smul_eq_stabilizer_map_conj]
-    have e := Subgroup.relIndex_map_map (MulAut.conj γ).toMonoidHom U (MulAction.stabilizer G b)
-    rw [conj_eq γ] at e
-    have hker : (MulAut.conj γ).toMonoidHom.ker = ⊥ :=
-      (MonoidHom.ker_eq_bot_iff _).mpr (MulEquiv.injective _)
-    rw [e, hker, sup_bot_eq, sup_bot_eq, Subgroup.relIndex_sup_left]
+    have hmap : U.map (MulAut.conj γ).toMonoidHom = U := Subgroup.Normal.map_conj_eq U γ
+    rw [hγ, MulAction.stabilizer_smul_eq_stabilizer_map_conj, Subgroup.relIndex_sup_left]
+    conv_lhs => rw [← hmap]
+    exact Subgroup.relIndex_map_map_of_injective _ _ (MulAut.conj γ).injective
   choose γ hγ using h1
   let F : V → G ⧸ (U ⊔ MulAction.stabilizer G b) := fun v => QuotientGroup.mk (γ v)
   have inj : Function.Injective F := by
@@ -176,7 +129,7 @@ theorem UpperTheory.V.Pr.degEq :
     rw [← hidx]
     unfold Fr.Frame.d
     rw [Finset.sum_congr rfl (fun v _ => k.dv v)]
-    refine orbit_count (upl Ω L) (by rw [hidx]; exact Module.finrank_pos.ne') B k.pl ?_ ?_
+    refine orbit_count (upl Ω L) B k.pl ?_ ?_
     · intro v
       obtain ⟨γ, -, h⟩ := k.pl_conj v
       exact ⟨γ, h⟩

@@ -50,7 +50,7 @@ theorem eN_out {N s : ℕ} (hs : ¬ s < N) : eN E N s = 0 := by
   funext l
   have hl := l.isLt
   simp only [eN, Pi.zero_apply]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem entB_add' {N' N : ℕ} (q k₀ c' n' c n : ℕ) (x y : HomE E N' N) (p p' : ℕ) :
     entB q k₀ c' n' c n 0 0 (x + y) p p' = entB q k₀ c' n' c n 0 0 x p p' + entB q k₀ c' n' c n 0 0 y p p' := by
@@ -78,7 +78,7 @@ theorem aym_det_zero (q k₀ r c' n' c n : ℕ) (x : HomE E (n' + c') (n + c)) (
       intro t
       simp only [AYm, Matrix.of_apply, hq, atN]
       rw [dite_eq_right (by omega)]
-    · push_neg at hz
+    · push Not at hz
       obtain ⟨s, s', hne, heq⟩ := Fintype.exists_ne_map_eq_of_card_lt
         (fun s : Fin r => (⟨fIdx k₀ c n s.1, hz s⟩ : Fin (n + c))) (by simp; omega)
       apply Matrix.det_zero_of_row_eq hne
@@ -92,7 +92,7 @@ theorem aym_det_zero (q k₀ r c' n' c n : ℕ) (x : HomE E (n' + c') (n + c)) (
       simp only [AYm, Matrix.of_apply, hq, eN_out (E := E) (show ¬ fIdx k₀ c' n' t.1 < n' + c' by omega),
         map_zero]
       simp [atN]
-    · push_neg at hz
+    · push Not at hz
       obtain ⟨t, t', hne, heq⟩ := Fintype.exists_ne_map_eq_of_card_lt
         (fun t : Fin r => (⟨fIdx k₀ c' n' t.1, hz t⟩ : Fin (n' + c'))) (by simp; omega)
       apply Matrix.det_zero_of_column_eq hne
@@ -108,7 +108,7 @@ theorem test_function_support : PhiSuppP := by
     by_contra hc
     apply hy
     unfold PhiQ
-    rw [if_neg (fun h => hc h.1)]
+    rw [ite_eq_right (fun h => hc h.1)]
   by_cases hs : s < n' + c'
   · have h1 := hc _ _ (fPos_lt' hk l.2) (fPos_lt' hk' hs)
     simpa [entB, scE, fIdx_fPos' hk l.2, fIdx_fPos' hk' hs, atN, l.2] using h1
@@ -153,7 +153,7 @@ theorem test_function_periodicity : PhiPerP := by
       have d2 := aym_det_zero (qOf P) k₀ r c' n' c n y hr
       simp only [AYm, e] at d1 d2
       rw [d1, d2]
-    · push_neg at hr
+    · push Not at hr
       have hi : ∀ i : Fin r, i.1 < n + c := fun i => by have := i.2; omega
       have hj : ∀ j : Fin r, j.1 < n' + c' := fun j => by have := j.2; omega
       rw [reduction_det' (Matrix.of fun s t : Fin r =>
@@ -558,7 +558,7 @@ theorem xxw_eN_eq {N : ℕ} (s : Fin N) : eN E N s.1 = Pi.single s 1 := by
   by_cases h : l = s
   · subst h
     simp
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_right h, ite_eq_right]
     intro h'
     exact h (Fin.ext h')
 
@@ -580,26 +580,26 @@ theorem xxw_res {n c : ℕ} {ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n + c) →
     intro u
     rw [xxw_mem_Ufl]
     intro l hl
-    simp only [inX, LinearMap.pi_apply, dif_neg (show ¬ l.1 < n by omega), LinearMap.zero_apply]
+    simp only [inX, LinearMap.pi_apply, dite_eq_right (show ¬ l.1 < n by omega), LinearMap.zero_apply]
   have hsum : inX E n c v = ∑ p : Fin n, v p • eN E (n + c) p.1 := by
     funext l
     rw [Finset.sum_apply]
     simp only [Pi.smul_apply, smul_eq_mul, eN, mul_ite, mul_one, mul_zero]
     by_cases hl : l.1 < n
-    · simp only [inX, LinearMap.pi_apply, dif_pos hl, LinearMap.proj_apply]
+    · simp only [inX, LinearMap.pi_apply, dite_eq_left hl, LinearMap.proj_apply]
       rw [Finset.sum_eq_single ⟨l.1, hl⟩]
       · simp
       · intro p _ hp
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact hp (Fin.ext h.symm)
       · intro h
         exact absurd (Finset.mem_univ _) h
-    · simp only [inX, LinearMap.pi_apply, dif_neg hl, LinearMap.zero_apply]
+    · simp only [inX, LinearMap.pi_apply, dite_eq_right hl, LinearMap.zero_apply]
       symm
       apply Finset.sum_eq_zero
       intro p _
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       have := p.isLt
       omega
@@ -608,7 +608,7 @@ theorem xxw_res {n c : ℕ} {ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n + c) →
   by_cases hl : l.1 < n
   · rw [hsum, map_sum]
     simp only [map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-    simp only [inX, LinearMap.pi_apply, dif_pos hl, LinearMap.proj_apply, resX, Matrix.toLin'_apply,
+    simp only [inX, LinearMap.pi_apply, dite_eq_left hl, LinearMap.proj_apply, resX, Matrix.toLin'_apply,
       Matrix.mulVec, dotProduct, Matrix.of_apply]
     refine Finset.sum_congr rfl (fun p _ => ?_)
     rw [mul_comm]
@@ -616,7 +616,7 @@ theorem xxw_res {n c : ℕ} {ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n + c) →
   · have h1 := hρ.1 0 _ (hinX v)
     rw [xxw_mem_Ufl] at h1
     rw [h1 l (by omega)]
-    simp only [inX, LinearMap.pi_apply, dif_neg hl, LinearMap.zero_apply]
+    simp only [inX, LinearMap.pi_apply, dite_eq_right hl, LinearMap.zero_apply]
 
 theorem xxw_step {n c : ℕ} {ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n + c) → E)} (hρ : R1cond E n c ρ) (i : ℕ)
     (v : Fin (n + c) → E) (hv : v ∈ Ufl E n c (i + 1)) : ρ v - v ∈ Ufl E n c i := by
@@ -627,9 +627,9 @@ theorem xxw_step {n c : ℕ} {ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n + c) �
       simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, eN]
       by_cases hli : l.1 = n + i
       · have hl' : l = ⟨n + i, hi⟩ := Fin.ext hli
-        rw [if_pos hli, hl']
+        rw [ite_eq_left hli, hl']
         simp
-      · rw [if_neg hli, mul_zero, sub_zero]
+      · rw [ite_eq_right hli, mul_zero, sub_zero]
         exact hv l (by omega)
     have h1 := hρ.1 i _ hw
     have h2 := hρ.2.2 i
@@ -649,7 +649,7 @@ private theorem xx1_single_eq_of_not_lt {n' c' n c : ℕ} (xj : (Fin n' → E) �
     (t : FC n' c' n c → E) (s : Fin (n' + c')) (hs : ¬ s.1 < n') :
     xx1 xj t (Pi.single s 1) = xx1 (0 : (Fin n' → E) →ₗ[E] (Fin n → E)) t (Pi.single s 1) := by
   funext l
-  simp only [xxw_entry, dif_neg hs]
+  simp only [xxw_entry, dite_eq_right hs]
 
 private theorem xx1_single_eq_inX_of_lt {n' c' n c : ℕ} (xj : (Fin n' → E) →ₗ[E] (Fin n → E))
     (t : FC n' c' n c → E) (s : Fin (n' + c')) (hs : s.1 < n') :
@@ -657,11 +657,11 @@ private theorem xx1_single_eq_inX_of_lt {n' c' n c : ℕ} (xj : (Fin n' → E) �
   funext l
   rw [xxw_entry]
   have hnf : ¬ IsFree n' n c l.1 s.1 := fun h => by have := h.1; omega
-  rw [dif_neg hnf, dif_pos hs]
+  rw [dite_eq_right hnf, dite_eq_left hs]
   simp only [inX, LinearMap.pi_apply]
   by_cases hl : l.1 < n
-  · rw [dif_pos hl, dif_pos hl, LinearMap.proj_apply, LinearMap.toMatrix'_apply]
-  · rw [dif_neg hl, dif_neg hl, LinearMap.zero_apply]
+  · rw [dite_eq_left hl, dite_eq_left hl, LinearMap.proj_apply, LinearMap.toMatrix'_apply]
+  · rw [dite_eq_right hl, dite_eq_right hl, LinearMap.zero_apply]
 
 private theorem xx1_single_apply_eq_eN_of_le {n' c' n c : ℕ} (xj : (Fin n' → E) →ₗ[E] (Fin n → E))
     (t : FC n' c' n c → E) (s : Fin (n' + c')) (hs : ¬ s.1 < n') (hj : s.1 - n' < c) :
@@ -673,7 +673,7 @@ private theorem xx1_single_apply_eq_eN_of_le {n' c' n c : ℕ} (xj : (Fin n' →
     rintro ⟨-, h | ⟨-, h⟩⟩
     · omega
     · omega
-  rw [dif_neg hnf, dif_neg hs]
+  rw [dite_eq_right hnf, dite_eq_right hs]
   rfl
 
 theorem unfolding_affine_space_invariant : XXP := by
@@ -686,21 +686,21 @@ theorem unfolding_affine_space_invariant : XXP := by
   simp only [LinearMap.comp_apply, LinearEquiv.coe_coe]
   rw [xxw_entry]
   by_cases hf : IsFree n' n c l.1 s.1
-  · rw [dif_pos hf]
+  · rw [dite_eq_left hf]
     have hs : ¬ s.1 < n' := by have := hf.1; omega
     rw [xx1_single_eq_of_not_lt xj t s hs]
     show _ = (ρ.toLinearMap ∘ₗ xx1 (0 : (Fin n' → E) →ₗ[E] (Fin n → E)) t) (eN E (n' + c') s.1) l
     rw [xxw_eN_eq]
     rfl
-  · rw [dif_neg hf]
+  · rw [dite_eq_right hf]
     by_cases hs : s.1 < n'
-    · rw [dif_pos hs, xx1_single_eq_inX_of_lt xj t s hs, xxw_res h1]
+    · rw [dite_eq_left hs, xx1_single_eq_inX_of_lt xj t s hs, xxw_res h1]
       simp only [inX, LinearMap.pi_apply]
       by_cases hl : l.1 < n
-      · rw [dif_pos hl, dif_pos hl, LinearMap.proj_apply, LinearMap.toMatrix'_apply,
+      · rw [dite_eq_left hl, dite_eq_left hl, LinearMap.proj_apply, LinearMap.toMatrix'_apply,
           LinearMap.comp_apply]
-      · rw [dif_neg hl, dif_neg hl, LinearMap.zero_apply]
-    · rw [dif_neg hs]
+      · rw [dite_eq_right hl, dite_eq_right hl, LinearMap.zero_apply]
+    · rw [dite_eq_right hs]
       have hj : s.1 - n' < c := by
         by_contra hj
         apply hf
@@ -714,7 +714,7 @@ theorem unfolding_affine_space_invariant : XXP := by
           rw [xxw_entry]
           have hnf : ¬ IsFree n' n c l'.1 s.1 := by
             rintro ⟨-, h | ⟨h, -⟩⟩ <;> omega
-          rw [dif_neg hnf, dif_neg hs, hj0, add_zero]
+          rw [dite_eq_right hnf, dite_eq_right hs, hj0, add_zero]
           rfl
         rw [hcol, h1.2.1, hj0, add_zero]
         rfl
@@ -813,7 +813,7 @@ theorem xxw_tr_inv {n' c' n c : ℕ} {ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n
     rfl
   funext f
   have h := congrFun (LinearMap.congr_fun e3 (Pi.single f.1.2 1)) f.1.1
-  rw [xxw_entry, xxw_entry, dif_pos f.2, dif_pos f.2] at h
+  rw [xxw_entry, xxw_entry, dite_eq_left f.2, dite_eq_left f.2] at h
   exact h
 
 theorem free_coordinate_affine_invertible : TrAffP := by
@@ -853,25 +853,25 @@ theorem character_argument_constant_shift : ChArgP := by
       rw [xx1_single_eq_of_not_lt xj t s hsn, xxw_diff, xxw_mem_Ufl]
       intro l hl
       have hlt := l.isLt
-      rw [dif_neg]
+      rw [dite_eq_right]
       rintro ⟨-, h | ⟨-, h⟩⟩ <;> omega
     have hstep := xxw_step h1 i _ hu
     rw [xxw_mem_Ufl] at hstep
     have hn : n + i < n + c := by omega
     have h2 := hstep ⟨n + i, hn⟩ le_rfl
     have h0 : xx1 (0 : (Fin n' → E) →ₗ[E] (Fin n → E)) 0 (Pi.single s 1) ⟨n + i, hn⟩ = 0 := by
-      rw [xxw_entry, dif_pos]
+      rw [xxw_entry, dite_eq_left]
       · rfl
       · refine ⟨by omega, Or.inr ⟨by omega, Or.inr ?_⟩⟩
         simp only
         omega
-    simp only [atN, dif_pos hn]
+    simp only [atN, dite_eq_left hn]
     rw [map_sub, Pi.sub_apply, Pi.sub_apply, Pi.sub_apply, h0] at h2
     linear_combination h2
   · have h0 : eN E (n' + c') (n' + i + 1) = 0 := by
       funext l
       simp only [eN, Pi.zero_apply]
-      rw [if_neg]
+      rw [ite_eq_right]
       have := l.isLt
       omega
     rw [h0]
@@ -1084,7 +1084,7 @@ theorem gh_eN_ge {N s : ℕ} (h : N ≤ s) : eN E N s = 0 := by
   funext l
   have := l.2
   simp only [eN, Pi.zero_apply]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem gh_decomp {N : ℕ} (v : Fin N → E) : v = ∑ m : Fin N, v m • eN E N m.1 := by
   funext l
@@ -1111,7 +1111,7 @@ theorem unfolding_matrix_free_coordinate {n' c' n c : ℕ} (y : (Fin n' → E) �
   rw [he]
   unfold xx1
   rw [Matrix.toLin'_apply, Matrix.mulVec_single_one]
-  exact dif_pos p.2
+  exact dite_eq_left p.2
 
 private theorem xx1_eN_apply {n' c' n c : ℕ} (y : (Fin n' → E) →ₗ[E] (Fin n → E))
     (t : FC n' c' n c → E) {s : ℕ} (hs : s < n' + c') (l : Fin (n + c)) :
@@ -1128,18 +1128,12 @@ theorem unfolding_matrix_sub {n' c' n c : ℕ} (y : (Fin n' → E) →ₗ[E] (Fi
     (xx1 y t - xx1 y t') (eN E (n' + c') s) l =
       if hs : s < n' + c' then (if hf : IsFree n' n c l.1 s then t ⟨(l, ⟨s, hs⟩), hf⟩ - t' ⟨(l, ⟨s, hs⟩), hf⟩ else 0) else 0 := by
   by_cases hs : s < n' + c'
-  · rw [dif_pos hs, LinearMap.sub_apply, Pi.sub_apply, xx1_eN_apply y t hs, xx1_eN_apply y t' hs]
+  · rw [dite_eq_left hs, LinearMap.sub_apply, Pi.sub_apply, xx1_eN_apply y t hs, xx1_eN_apply y t' hs]
     split_ifs <;> first | rfl | exact sub_self _
   · rw [dite_eq_right hs, gh_eN_ge (not_lt.mp hs)]
     simp
 
 end Vec
-
-section Bd
-
-variable {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E))
-
-end Bd
 
 theorem character_argument_bounded : ChArgBddP := by
   intro E _ _ P n' c' n c j x hx
@@ -1312,7 +1306,7 @@ theorem doubleCosetDatum_psi_ok (G : ChGlob X R.m) (P : rowSG Pr sel mu)
 
 theorem twistedMultiplier_ne_zero (G : ChGlob X R.m) (i : ℕ) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) : twMuq Ch sel mu G (i + 1) P ≠ 0 := by
   unfold twMuq
-  rw [if_neg hP]
+  rw [ite_eq_right hP]
   split_ifs
   · exact Units.ne_zero _
   · exact one_ne_zero
@@ -1329,7 +1323,7 @@ theorem firstUnfolding_eq_doubleCosetDatum (G : ChGlob X R.m) (i : ℕ) (P : row
       PI.TwistedEisensteinNonvanishing.TwistedEisensteinCoefficient (toTwistedEisensteinRanks R) P.1 (twPsiQ G.σ₀ G.xi0 P.1 (2 * R.m)) (twSqrt P.1) (twMuq Ch sel mu G (i + 1) P)
         (resChar (mu : Chr X.F X.E X.K) P.1) A' B' i hal h := by
   unfold E1at omPhi muAt PhiAt
-  simp only [twCst, if_neg hP]
+  simp only [twCst, ite_eq_right hP]
   rfl
 
 theorem doubleCosetDatum_hypotheses (H : PI.TwistedEisensteinNonvanishing.TwistedEisensteinNonvanishing) (G : ChGlob X R.m) {i : ℕ} (hi : i + 3 ≤ R.m) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs)
@@ -1341,9 +1335,9 @@ theorem doubleCosetDatum_hypotheses (H : PI.TwistedEisensteinNonvanishing.Twiste
     (hb' : TwBdd (Pr := Pr) (i + 1) P.1 h') (hdc : SameDC (Pr := Pr) true (i + 1) P.1 h h')
     (hne : FiniteSumNonzeroLargeDepth Ch sel mu (twCst Ch sel mu G) i P hal h) : FiniteSumNonzeroLargeDepth Ch sel mu (twCst Ch sel mu G) i P hal h' := by
   have hL : ∀ j, lamYat (Pr := Pr) (R := R) j P.1 = LocE.lamY P.1 (qOf P.1) (R.N j) (cOf R j) 0 := fun j => by
-    unfold lamYat; rw [if_neg hP]
+    unfold lamYat; rw [ite_eq_right hP]
   have hJ : ∀ j, Jat (Pr := Pr) (R := R) true j P.1 = LocE.JQ P.1 (qOf P.1) (R.k + j) (R.N j) (cOf R j) := fun j => by
-    unfold Jat; rw [if_neg hP]
+    unfold Jat; rw [ite_eq_right hP]
   have bdd : ∀ j (g : AutY X R j), TwBdd (Pr := Pr) j P.1 g → PI.TwistedEisensteinNonvanishing.BddL (toTwistedEisensteinRanks R) P.1 j g := fun j g hg x hx => by
     have := hg x (by rw [hL]; exact hx)
     rw [hL] at this

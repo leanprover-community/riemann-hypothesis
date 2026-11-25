@@ -196,11 +196,11 @@ theorem dual_ord (hP : LocalPublishedTheorems) {l : ℕ} [Fact l.Prime] {O : Typ
         γ g a b = (adRep (D.rz E) g Y - Y) a b := fun j hj => by
       obtain ⟨-, -, h1, h2⟩ := dim_Z1f_crystalline_deformation hP D E j
       have h3 := h1 γ hf
-      obtain ⟨Y, hY⟩ := (mem_coboundaries1 _ _).1 (((h2 _ h3.1 fun g a b h => if_neg h).1 hj).1 h3)
+      obtain ⟨Y, hY⟩ := (mem_coboundaries1 _ _).1 (((h2 _ h3.1 fun g a b h => ite_eq_right h).1 hj).1 h3)
       refine ⟨Y, fun g a b h => ?_⟩
-      rw [← hY g, Matrix.of_apply, if_pos h]
+      rw [← hY g, Matrix.of_apply, ite_eq_left h]
     choose Y hY using key
-    refine ⟨Matrix.of fun a b => if h : wt a b < 0 then Y _ h a b else 0, fun a b h => dif_neg (not_lt.2 h),
+    refine ⟨Matrix.of fun a b => if h : wt a b < 0 then Y _ h a b else 0, fun a b h => dite_eq_right (not_lt.2 h),
       fun g a b h => ?_⟩
     have hw : wt b.rev a.rev = wt a b := by fin_cases a <;> fin_cases b <;> rfl
     have e : ∀ j (hj : j < 0), j = wt a b → Y j hj = Y _ h := by

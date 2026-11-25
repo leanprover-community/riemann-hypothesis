@@ -4,54 +4,11 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommuta
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffShiftS
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpTransportedTaylorSeriesInChartRingHomLaws
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UwEllipticFlow
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.PowerSeries.Inverse
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.DvdAevalSubAevalTwo, Development.AbelianVarietyTheory.Proofs.JetHarmonics.MultiplicativeShiftEqTranslateBySmallPoint
@@ -223,7 +180,7 @@ lemma one_add_X_mul_derivative_logS : (1 + X) * derivative (logS : ℂ_[q]⟦X�
   have hc : ∀ n, coeff n (derivative (logS : ℂ_[q]⟦X⟧)) = (-1) ^ n := by
     intro n
     have hk : ((n : ℂ_[q]) + 1) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
-    rw [coeff_derivative, logS, coeff_mk, if_neg (Nat.succ_ne_zero n)]
+    rw [coeff_derivative, logS, coeff_mk, ite_eq_right (Nat.succ_ne_zero n)]
     push_cast
     field_simp
     ring
@@ -231,7 +188,7 @@ lemma one_add_X_mul_derivative_logS : (1 + X) * derivative (logS : ℂ_[q]⟦X�
   rw [add_mul, one_mul, map_add (f := _)]
   cases n with
   | zero => rw [coeff_zero_X_mul, hc]; simp
-  | succ n => rw [coeff_succ_X_mul, hc, hc, coeff_one, if_neg (Nat.succ_ne_zero n)]; ring
+  | succ n => rw [coeff_succ_X_mul, hc, hc, coeff_one, ite_eq_right (Nat.succ_ne_zero n)]; ring
 
 lemma constantCoeff_chart (ω : ℂ_[q]) : constantCoeff (C ω * logS : ℂ_[q]⟦X⟧) = 0 := by
   rw [map_mul, ← coeff_zero_eq_constantCoeff_apply logS, logS, coeff_mk]; simp

@@ -37,22 +37,15 @@ theorem length_eq_finsum_localization [IsNoetherianRing O] [Module.Finite O B] :
   rw [finsum_eq_sum_of_fintype, ← Module.length_pi_of_fintype]
   let φ : B →ₗ[O] (∀ P : MaximalSpectrum B, Localization.AtPrime P.asIdeal) :=
     LinearMap.pi fun P => (IsScalarTower.toAlgHom O B (Localization.AtPrime P.asIdeal)).toLinearMap
-  have hφ : Function.Injective φ := by
-    intro x y h
-    apply MaximalSpectrum.toPiLocalization_injective B
-    funext P
-    exact congrFun h P
+  have hφ : Function.Injective φ := MaximalSpectrum.toPiLocalization_injective B
   by_cases h : Module.length O B = ⊤
   · rw [h]
     exact (top_le_iff.mp (h ▸ Module.length_le_of_injective φ hφ)).symm
   · have hfl : IsFiniteLength O B := Module.length_ne_top_iff.mp h
     rw [isFiniteLength_iff_isNoetherian_isArtinian] at hfl
     have : IsArtinianRing B := isArtinian_of_tower O hfl.2
-    have hsurj : Function.Surjective φ := by
-      intro z
-      obtain ⟨x, hx⟩ := PrimeSpectrum.maximalSpectrumToPiLocalization_surjective_of_discreteTopology B z
-      exact ⟨x, hx⟩
-    exact (LinearEquiv.ofBijective φ ⟨hφ, hsurj⟩).length_eq
+    exact (LinearEquiv.ofBijective φ ⟨hφ,
+      PrimeSpectrum.maximalSpectrumToPiLocalization_surjective_of_discreteTopology B⟩).length_eq
 
 theorem isLocalHom_localization [Module.Finite O B] (P : Ideal B) [P.IsMaximal] :
     IsLocalHom (algebraMap O (Localization.AtPrime P)) := by

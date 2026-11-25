@@ -111,11 +111,11 @@ theorem shape_paired_of (hT : TensStd) (hG : GramTransfer) (hI : IotaOK) (hF : F
     by_cases hxy : x.1 = y.1
     · have e := hid x.2 y.2
       simp only [RingEquiv.coe_toRingHom] at e
-      simp only [hxy, if_true, true_and]
+      simp only [hxy, ite_true, true_and]
       rw [e]
       field_simp
       ring
-    · simp only [hxy, if_false, false_and, add_zero]
+    · simp only [hxy, ite_false, false_and, add_zero]
   have key : ∀ k, ∃ sg : MvPowerSeries ((Bool × H) × Fin N0 × Fin N1) ℂ_[p], JetsIntegral sg ∧
       linSub (frameM (ι : ℂ →+* ℂ_[p]) v A)
         (MvPowerSeries.map (ι : ℂ →+* ℂ_[p]) (taylorMv (opU (matH h) (t k) θ))) =

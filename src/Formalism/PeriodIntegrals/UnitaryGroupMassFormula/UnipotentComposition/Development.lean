@@ -96,7 +96,7 @@ def mkTerm (k j ρ : ℕ) (e : SC (2 * (j + ρ) + k + 1) × List (Mat k (j + ρ)
 theorem mkTerm_word {k j ρ : ℕ} {e : SC (2 * (j + ρ) + k + 1) × List (Mat k (j + ρ))}
     (h : ∀ X ∈ e.2, inLie k (j + ρ) X) : (mkTerm (Wp := Wp) (Wq := Wq) k j ρ e).word = e.2 := by
   first
-  | exact if_pos h
+  | exact ite_eq_left h
 
 theorem toFS {k j ρ o κ : ℕ} {Θ : DiffOp k (j + ρ) Wp Wq} (h : InDD k j ρ o κ Θ) :
     ∃ L : FS k (j + ρ), Bd k j ρ κ o L ∧ ∀ H g, opApply Θ H g = shape k j ρ H L g := by

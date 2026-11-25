@@ -3,49 +3,7 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 public import Development.AbelianVarietyTheory.Definitions.Jets.WigMap
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -64,14 +22,8 @@ variable {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ)
 theorem form_add_right (u v w : Fin m → ℂ) : herm H w (u + v) = herm H w u + herm H w v := by
   simp only [herm, star_add, add_dotProduct]
 
-theorem form_sub_left (u v w : Fin m → ℂ) : herm H (u - v) w = herm H u w - herm H v w := by
-  simp only [herm, mulVec_sub, dotProduct_sub]
-
 theorem form_sub_right (u v w : Fin m → ℂ) : herm H w (u - v) = herm H w u - herm H w v := by
   simp only [herm, star_sub, sub_dotProduct]
-
-theorem form_smul_left (c : ℂ) (u w : Fin m → ℂ) : herm H (c • u) w = c * herm H u w := by
-  simp only [herm, mulVec_smul, dotProduct_smul, smul_eq_mul]
 
 theorem form_smul_right (c : ℂ) (u w : Fin m → ℂ) : herm H w (c • u) = star c * herm H w u := by
   simp only [herm, star_smul, smul_dotProduct, smul_eq_mul]
@@ -83,7 +35,7 @@ variable {k r : ℕ}
 theorem inWb_Wb (v : Fin (2 * r + k + 1) → ℂ) : inWb k r (Wb v) := by
   intro i hi
   show (if r ≤ i.val ∧ i.val ≤ r + k then v i else 0) = 0
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (esI k r a) = 0) :
     v = (∑ a : Fin r, v (eI k r a) • ee k r a) + Wb v := by
@@ -95,9 +47,9 @@ theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (
     split_ifs with h
     · have hi : i = eI k r ⟨i.val, h⟩ := Fin.ext (hval ⟨i.val, h⟩).symm
       rw [Finset.sum_eq_single ⟨i.val, h⟩]
-      · rw [if_pos hi, ← hi]
+      · rw [ite_eq_left hi, ← hi]
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hib
         apply hb
         apply Fin.ext
@@ -107,7 +59,7 @@ theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (
         exact absurd (Finset.mem_univ _) h'
     · apply Finset.sum_eq_zero
       intro b _
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hib
       apply h
       rw [hib, hval]
@@ -116,11 +68,11 @@ theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (
   show v i = (if i.val < r then v i else 0) + (if r ≤ i.val ∧ i.val ≤ r + k then v i else 0)
   have hlt := i.isLt
   by_cases h1 : i.val < r
-  · rw [if_pos h1, if_neg (by omega), add_zero]
-  · rw [if_neg h1, zero_add]
+  · rw [ite_eq_left h1, ite_eq_right (by omega), add_zero]
+  · rw [ite_eq_right h1, zero_add]
     by_cases h2 : i.val ≤ r + k
-    · rw [if_pos ⟨by omega, h2⟩]
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_left ⟨by omega, h2⟩]
+    · rw [ite_eq_right (by omega)]
       have hi : i = esI k r ⟨2 * r + k - i.val, by omega⟩ :=
         Fin.ext (by show i.val = 2 * r + k - (2 * r + k - i.val); omega)
       rw [hi]
@@ -130,7 +82,7 @@ theorem form_Wb_right {v w : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v
     herm (Hpk k r) (Wb v) w = herm (Hpk k r) v w := by
   conv_rhs => rw [split_of_free hv]
   rw [_root_.PI.StabSplit.UnipW.herm_add_left, herm_sum_left]
-  simp only [form_smul_left, h_ee_w hw, mul_zero, Finset.sum_const_zero, zero_add]
+  simp only [Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, h_ee_w hw, mul_zero, Finset.sum_const_zero, zero_add]
 
 theorem form_Wb_self {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (esI k r a) = 0) :
     herm (Hpk k r) (Wb v) (Wb v) = herm (Hpk k r) v v := by
@@ -190,7 +142,7 @@ theorem omg_norm : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g : M
       rw [herm_symm']
       rfl
     rw [hv, herm_adjoint_mulVec_eq, hu, herm_sum_left]
-    simp only [form_smul_left, hsym, ← star_mul', ← star_sum]
+    simp only [Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, hsym, ← star_mul', ← star_sum]
     rw [← Matrix.mul_apply, Matrix.adjugate_mul, Matrix.smul_apply, smul_eq_mul]
   have hfree : ∀ a : Fin r, v (esI k r a) = 0 := by
     intro a
@@ -211,15 +163,15 @@ theorem omg_norm : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g : M
     rw [form_Wb_self hfree, hv, herm_adjoint_mulVec_eq, mulVec_mulVec, mul_adj hg, one_mulVec, hu,
       Fin.sum_univ_castSucc]
     simp only [fvec_cs, hlast]
-    simp [herm_sum_left, herm_sum_right, _root_.PI.StabSplit.UnipW.herm_add_left, form_add_right, form_smul_left, form_smul_right,
+    simp [herm_sum_left, herm_sum_right, _root_.PI.StabSplit.UnipW.herm_add_left, form_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, form_smul_right,
       h_ee_w hz, h_w_ee hz]
     ring
   rw [homg, prW_eq]
   refine ⟨?_, ?_, ?_⟩
   · intro i hi
     simp only [Pi.sub_apply, Pi.smul_apply, inWb_Wb v i hi, hz' i hi, smul_zero, sub_zero]
-  · rw [form_sub_left, form_smul_left, div_mul_cancel₀ _ hs0, sub_self]
-  · rw [form_sub_left, form_sub_right, form_sub_right, form_smul_left, form_smul_left, form_smul_right,
+  · rw [Formalism.FourierDecayAlt.P.B2x4.herm_sub_left, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, div_mul_cancel₀ _ hs0, sub_self]
+  · rw [Formalism.FourierDecayAlt.P.B2x4.herm_sub_left, form_sub_right, form_sub_right, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, form_smul_right,
       form_smul_right, herm_symm' (Wb v) z', hWv, hWW, hss, hsz]
     unfold Gf
     rw [← det_last, ← adj_last]

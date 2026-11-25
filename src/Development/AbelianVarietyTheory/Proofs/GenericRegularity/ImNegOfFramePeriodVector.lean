@@ -6,47 +6,8 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.EqOfImHer
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameMulTriangularOrthonormal
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TriangularFrameMovesPeriodBlockTriangular
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
 
@@ -147,8 +108,8 @@ theorem im_neg_of_isPeriod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hρ : Function.Bijective (relab c σ) := Finite.injective_iff_bijective.mp hρinj
   have hmult : ∀ τ' : E →+* ℂ, Dw.mult τ' = if τ' (H.rt : E) = H.rt0 then Dw.p else Dw.q := fun _ => rfl
   obtain ⟨f, hf⟩ := GlobalTheory.FrameUnif.exists_letter_equiv X.Ψ X.cmType Dw.p Dw.q r hr (relab c σ) hρ Dw.mult
-    (fun τ' h => by rw [hmult, if_pos ((hrt τ').1 ((hΨ _).1 h))])
-    (fun τ' h => by rw [hmult, if_neg (fun h' => h ((hΨ _).2 ((hrt τ').2 h')))])
+    (fun τ' h => by rw [hmult, ite_eq_left ((hrt τ').1 ((hΨ _).1 h))])
+    (fun τ' h => by rw [hmult, ite_eq_right (fun h' => h ((hΨ _).2 ((hrt τ').2 h')))])
   obtain ⟨idx, hidx⟩ : ∃ idx : Fin g ≃ X.Ψ × Fin r, ∀ k,
       (relab c σ (e k).1 ∈ X.Ψ ∧ (idx k).1.1 = relab c σ (e k).1 ∧ ((idx k).2 : ℕ) = Dw.q + (e k).2) ∨
       (relab c σ (e k).1 ∉ X.Ψ ∧ (idx k).1.1 = ComplexEmbedding.conjugate (relab c σ (e k).1) ∧
@@ -167,7 +128,7 @@ theorem im_neg_of_isPeriod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
       have hk2 : (idx k).2 = ⟨X.p0 + (e k).2, hi⟩ :=
         Fin.ext (show ((idx k).2 : ℕ) = X.p0 + (e k).2 by rw [hp0]; exact h3)
       have hnot : ¬ (((idx k).2 : ℕ) < Dw.q) := by rw [h3]; omega
-      rw [dite_eq_left h1, dite_eq_left hi, if_neg hnot, hk1, hk2]
+      rw [dite_eq_left h1, dite_eq_left hi, ite_eq_right hnot, hk1, hk2]
     · have hc : conjEmb (relab c σ (e k).1) ∈ X.Ψ := by
         have h5 := (idx k).1.2
         rw [h2] at h5
@@ -177,7 +138,7 @@ theorem im_neg_of_isPeriod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
       have hk2 : (idx k).2 = ⟨X.p0 - 1 - (e k).2, hj⟩ :=
         Fin.ext (show ((idx k).2 : ℕ) = X.p0 - 1 - (e k).2 by rw [hp0]; exact h3)
       have hlt : ((idx k).2 : ℕ) < Dw.q := by rw [h3]; omega
-      rw [dite_eq_right h1, dite_eq_left hc, dite_eq_left hj, if_pos hlt, hk1, hk2]
+      rw [dite_eq_right h1, dite_eq_left hc, dite_eq_left hj, ite_eq_left hlt, hk1, hk2]
 
   obtain ⟨x₀, b, hb, hon, rfl⟩ :=
     (GlobalTheory.UnitFrames.frame_mul_triangular_orthonormal E r X.p0 X.Ψ X.Gm X.Gm_herm).1 x hx

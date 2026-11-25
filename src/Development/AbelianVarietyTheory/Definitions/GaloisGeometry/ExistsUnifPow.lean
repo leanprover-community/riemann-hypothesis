@@ -68,26 +68,4 @@ end GlobalTheory.Port
 
 end
 
-section
-namespace GlobalTheory.Port
-
-open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.G.ChartsLv
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host
-
-section Gen
-
-variable {L : Type} [Field L] [NumberField L]
-
-end Gen
-
-variable {D : D7}
-
-variable {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Dx : DivX D} {cX : ExtraC}
-  {ex : Extra D L hT Gi Gl Kc Dx cX}
-
-end GlobalTheory.Port
-
-end
-
 end

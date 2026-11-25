@@ -33,7 +33,7 @@ theorem sum_tops_on_orbit (X : Inst D L) {p : ℕ} (hsg : IsSg D p) {t0 : HH D} 
     (TT : Finset (ZMod (nP D p))) (hTT : ∀ s, s ∈ TT ↔ IsTopPl D (orbMap D p (false, t0) s))
     (F : HH D → ℝ) :
     ∑ t ∈ topsOn X p t0, F t = ∑ s ∈ TT, F (orbMap D p (false, t0) s).2 := by
-  have hst : stepP D p = 2 • hP D p := if_pos hsg
+  have hst : stepP D p = 2 • hP D p := ite_eq_left hsg
   have hb0 : X.bs (2 • hP D p) t0 = t0 := by
     unfold reps at ht0
     rw [hst] at ht0
@@ -144,7 +144,7 @@ theorem orbit_place_term_le_sum {X : Inst D L} {E : Ent D} (hS : Shape D L X E) 
     · rw [hr1] at h1; exact absurd h1 (by decide)
   obtain ⟨t0, ht0, rfl⟩ : ∃ t0 ∈ reps X p, r = (false, t0) := by
     unfold repsPl at hr
-    rw [if_pos hsg] at hr
+    rw [ite_eq_left hsg] at hr
     obtain ⟨t0, ht0, e⟩ := Finset.mem_image.1 hr
     exact ⟨t0, ht0, e.symm⟩
   have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (lt_of_lt_of_le (by norm_num) h.five)
@@ -194,7 +194,7 @@ theorem orbit_place_term_le_sum {X : Inst D L} {E : Ent D} (hS : Shape D L X E) 
   · intro e
     by_cases he : Odd e
     · have hne : (e : ℕ∞) ≠ ⊤ := ENat.natCast_ne_top e
-      rw [if_pos ⟨he, hExcl e he⟩, if_pos ⟨he, hne⟩, max_comm]
+      rw [ite_eq_left ⟨he, hExcl e he⟩, ite_eq_left ⟨he, hne⟩, max_comm]
       refine max_le_max ?_ le_rfl
       have hal := hS.alG u i hi t htT
       have hcap := hS.capG u i hi (orbMap D p (false, t0) (s + (e : ZMod (nP D p))))
@@ -207,7 +207,7 @@ theorem orbit_place_term_le_sum {X : Inst D L} {E : Ent D} (hS : Shape D L X E) 
       rw [hl, hrow]
       unfold capU
       exact sub_le_sub (div_le_div_of_nonneg_right hal hpe.le) hcap
-    · rw [if_neg (fun h' => he h'.1), if_neg (fun h' => he h'.1)]
+    · rw [ite_eq_right (fun h' => he h'.1), ite_eq_right (fun h' => he h'.1)]
   · exact summable_truncated_geometric _ _ (by rw [hl]; exact hp1) _ (fun e => Nat.cast_nonneg _) _
 
 end PI.OrbBoundFW

@@ -94,7 +94,7 @@ theorem flowMat_isom_real (hiso : hermC τ.1 X.Gm (Data.emb τ.1 ξ) (Data.emb �
     funext i
     show ∑ b, X.flowMat ξ τ t i b * w b = _
     simp only [Data.flowMat, Matrix.of_apply, sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul,
-      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, Pi.sub_apply, Pi.smul_apply,
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Pi.sub_apply, Pi.smul_apply,
       smul_eq_mul, hermC, Data.emb]
     congr 1
     simp only [Finset.mul_sum, Finset.sum_mul]
@@ -186,7 +186,7 @@ private lemma flowMat_mulVec_lemma_10 (t : ℝ) (w : Fin r → ℂ) :
   funext i
   show ∑ b, X.flowMat ξ τ t i b * w b = _
   simp only [Data.flowMat, Matrix.of_apply, sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul,
-    zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, Pi.sub_apply, Pi.smul_apply,
+    zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Pi.sub_apply, Pi.smul_apply,
     smul_eq_mul, hermC, Data.emb]
   congr 1
   simp only [Finset.mul_sum, Finset.sum_mul]

@@ -188,7 +188,6 @@ private theorem exists_form' {ψ : AdelicGLn.AdelicGL E n → ℂ} (hψ : IsLeft
         ∂quotientMeasure (rationalGLOne (K := E) (n := n)) μ ≠ 0 ∧ ∀ x : KA E n →₀ ℂ,
       (∀ g, (x.sum fun k c => c * ψ (g * k)) = 0) → ∀ g, (x.sum fun k c => c * f.1 (g * k)) = 0 := by
   have : OpensMeasurableSpace (RightCosetSpace (rationalGLOne (K := E) (n := n))) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   have := Reduction.isFiniteMeasure_quotientMeasure (K := E) (n := n) μ
   obtain ⟨C, hC⟩ := hb

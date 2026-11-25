@@ -83,28 +83,20 @@ theorem act_act (A B : Matrix ι ι E) (v : ι → V) : act A (act B v) = act (B
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun a _ => by rw [mul_comm]
 
-theorem h_sum_left {κ : Type} (s : Finset κ) (f : κ → V) (y : V) : H.h (∑ c ∈ s, f c) y = ∑ c ∈ s, H.h (f c) y := by
-  induction s using Finset.induction_on with
-  | empty => simp only [Finset.sum_empty]; exact H.h_zero_left y
-  | insert c s hc ih => rw [Finset.sum_insert hc, Finset.sum_insert hc, H.h_add_left, ih]
-
 theorem h_right (x y : V) : H.h x y = M.L.cj (H.h y x) := by
   rw [H.h_herm x y, M.L.cj_cj]
 
 theorem h_sum_right {κ : Type} (s : Finset κ) (f : κ → V) (x : V) : H.h x (∑ c ∈ s, f c) = ∑ c ∈ s, H.h x (f c) := by
 
-  rw [h_right, h_sum_left, map_sum]
+  rw [h_right, Formalism.L2.SG.CntLocal.h_sum_left, map_sum]
   exact Finset.sum_congr rfl fun c _ => (h_right H x (f c)).symm
-
-theorem h_smul_right (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
-  rw [h_right, H.h_smul_left, map_mul, ← h_right]
 
 theorem gram_act (A : Matrix ι ι E) (v : ι → V) (a b : ι) :
     H.h (act A v b) (act A v a) =
       ((A.map M.L.cj).transpose * Matrix.of (fun c d => H.h (v d) (v c)) * A) a b := by
   simp only [act, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Matrix.of_apply]
-  rw [h_sum_left]
-  simp only [H.h_smul_left, h_sum_right, h_smul_right, Finset.mul_sum, Finset.sum_mul]
+  rw [Formalism.L2.SG.CntLocal.h_sum_left]
+  simp only [H.h_smul_left, h_sum_right, Formalism.L2.SG.CntLocal.h_smul_right', Finset.mul_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => by ring
 
 end Act
@@ -124,7 +116,7 @@ variable {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing 
 
 theorem act_one (v : ι → V) : act (1 : Matrix ι ι E) v = v := by
   funext b
-  simp only [act, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [act, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem o_mul_mem (S : Submodule M.L.O E) {o x : E} (ho : o ∈ M.L.O) (hx : x ∈ S) : o * x ∈ S :=
   S.smul_mem ⟨o, ho⟩ hx
@@ -212,12 +204,6 @@ theorem adj_mem (A : Matrix ι ι E) (hA : ∀ i j, A i j ∈ M.L.O) : ∀ i j, 
   split_ifs
   · rw [Pi.single_apply]; split_ifs; exacts [M.L.O.one_mem, M.L.O.zero_mem]
   · exact hA a b
-
-def cls (ϖ : 𝒪[F]) (abelian₂ : Submodule M.L.O V) (G₀ : Matrix ι ι E) :
-    Set (ι → V ⧸ H.smulLat (algebraMap F E (ϖ : F)) abelian₂) :=
-  Set.range fun v : {v : ι → V // H.Prim abelian₂ v ∧ ∀ a b,
-      H.h (v b) (v a) - G₀ a b ∈ Submodule.span M.L.O {algebraMap F E (ϖ : F)}} =>
-    fun a => Submodule.Quotient.mk (p := H.smulLat (algebraMap F E (ϖ : F)) abelian₂) (v.1 a)
 
 def psi (abelian₂ : Submodule M.L.O V) (c : E) (A : Matrix ι ι E) (hAO : ∀ i j, A i j ∈ M.L.O)
     (x : ι → V ⧸ H.smulLat c abelian₂) : ι → V ⧸ H.smulLat c abelian₂ :=
@@ -581,7 +567,7 @@ theorem exists_isLattice_eq_localLattice (Zd : LocDat D) (p : PlF D) (M : Submod
     intro w
     funext j
     simp only [Pi.smul_apply, Finset.sum_apply, smul_eq_mul, Pi.single_apply, mul_ite, mul_one, mul_zero]
-    rw [Finset.sum_ite_eq, if_pos (Finset.mem_univ j), mul_comm]
+    rw [Finset.sum_ite_eq, ite_eq_left (Finset.mem_univ j), mul_comm]
   have hcv : ∀ v : Vp D p, (∀ i, v i ∈ (D.s.atP p).O) → u c • v ∈ M := by
     intro v hv
     rw [hdec v]
@@ -814,17 +800,17 @@ theorem sumFr_of (hD : TupFun M δ u u' F0 what₂) (hC : RepAtTup M δ u u' F0 
         · rw [hγ']
           exact hD hpre _ w' Z (eligAt_termOf Λ' m' hZ hF') hZ (repIn_termOf Λ' m' hF')
       refine ⟨⟨Λ', m', c'⟩, hS', ?_⟩
-      simp only [dif_pos hS', Set.Finite.mem_toFinset]
+      simp only [dite_eq_left hS', Set.Finite.mem_toFinset]
       exact ⟨F', hF', ⟨hpd, hc⟩, rfl⟩
     · rintro ⟨γ', hγ'S, hO⟩
-      have hO' : O ∈ (horbFin γ' hγ'S).toFinset := by simpa only [dif_pos hγ'S] using hO
+      have hO' : O ∈ (horbFin γ' hγ'S).toFinset := by simpa only [dite_eq_left hγ'S] using hO
       exact hsub γ' hγ'S ((Set.Finite.mem_toFinset _).1 hO')
   have hdisj : ∀ γ₁ ∈ hSfin.toFinset, ∀ γ₂ ∈ hSfin.toFinset, γ₁ ≠ γ₂ →
       Disjoint (if h : γ₁ ∈ S then (horbFin γ₁ h).toFinset else ∅)
         (if h : γ₂ ∈ S then (horbFin γ₂ h).toFinset else ∅) := by
     intro γ₁ h₁ γ₂ h₂ hne12
     rw [Set.Finite.mem_toFinset] at h₁ h₂
-    rw [dif_pos h₁, dif_pos h₂, Finset.disjoint_left]
+    rw [dite_eq_left h₁, dite_eq_left h₂, Finset.disjoint_left]
     intro O hO₁ hO₂
     rw [Set.Finite.mem_toFinset] at hO₁ hO₂
     exact hne12 (orbT_disj ((hlam γ₁ h₁).trans (hlam γ₂ h₂).symm) hO₁ hO₂)
@@ -834,7 +820,7 @@ theorem sumFr_of (hD : TupFun M δ u u' F0 what₂) (hC : RepAtTup M δ u u' F0 
     push_cast
     refine Finset.sum_congr rfl (fun γ' hγ' => ?_)
     have h := (Set.Finite.mem_toFinset hSfin).1 hγ'
-    rw [dif_pos h, hnc γ' h, Set.ncard_eq_toFinset_card _ (horbFin γ' h)]
+    rw [dite_eq_left h, hnc γ' h, Set.ncard_eq_toFinset_card _ (horbFin γ' h)]
   refine ⟨hclsFin.subset hfrSub, ?_⟩
   haveI : Fintype {γ' : TermDef.Term D u u' F0 what₂ //
       (Corank.TermScal D γ γ' ∧ EligAt γ' w') ∧ locT M δ γ' = tupZ M δ u u' Z} := hSfin.fintype
@@ -908,7 +894,7 @@ theorem partnerSumC_of {θ0 : ∀ p, Option ((M p).Cls D.R.rS)}
       exact absurd (hK γ γ'.1 w w' hγ γ'.2.2 γ'.2.1).symm hk
     rw [h0]
     unfold BBG
-    rw [if_neg hk]
+    rw [ite_eq_right hk]
     exact hasSum_zero
   obtain ⟨S, hS⟩ := hU w' hG'
   have hRf := hR γ w hγ
@@ -945,7 +931,7 @@ theorem partnerSumC_of {θ0 : ∀ p, Option ((M p).Cls D.R.rS)}
     (fun g => rfl) hoff (fun p _ => (hL w' hG' p _).1) (fun p _ => (hL w' hG' p _).2.1)
   convert hmain using 1
   unfold BBG
-  rw [if_pos hk]
+  rw [ite_eq_left hk]
   apply finprod_eq_prod_of_mulSupport_subset
   intro p hp
   by_contra hS'
@@ -966,7 +952,7 @@ theorem fiberCntC_of {L : CntLocal.LocSp D M} {nc : ℝ} (hnc : CntLocal.Formula
       exact absurd γ.2.2.1 hk
     rw [h0]
     unfold BBG
-    rw [if_neg hk, mul_zero]
+    rw [ite_eq_right hk, mul_zero]
     exact hasSum_zero
   obtain ⟨S, hS⟩ := hU w hG
   have hRf := hR γ₀ w₀ hγ₀
@@ -1013,7 +999,7 @@ theorem fiberCntC_of {L : CntLocal.LocSp D M} {nc : ℝ} (hnc : CntLocal.Formula
   have hB : BBG M δ (D.mem u).A.T (D.mem u').A.T w (kind w₀) (thT M δ γ₀) =
       ∏ p ∈ S ∪ hRf.toFinset, BBtop M δ (D.mem u).A.T (D.mem u').A.T p w (thT M δ γ₀ p) := by
     unfold BBG
-    rw [if_pos hk]
+    rw [ite_eq_left hk]
     apply finprod_eq_prod_of_mulSupport_subset
     intro p hp
     by_contra hp'
@@ -1063,7 +1049,7 @@ theorem restricted_of {θ0 : ∀ p, Option ((M p).Cls D.R.rS)}
     have hb' := (h1 p hp1).2 (θ0 p)
     rw [hb] at hb'
     by_contra hne
-    rw [if_neg (Ne.symm hne)] at hb'
+    rw [ite_eq_right (Ne.symm hne)] at hb'
     exact one_ne_zero hb'
   refine ((hR γ w hγ).union (S1 ∪ S2).finite_toSet).subset ?_
   intro p hp
@@ -1485,8 +1471,8 @@ theorem glob_entry (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.hos
   have ha : a.val < D.R.rS := by omega
   have hf : fmat D G n a ⟨a.val + 1, h⟩ =
       G.fl.coefX (n (frame G ⟨a.val + 1, h⟩) - frame G ⟨a.val + 1, h⟩) ⟨a.val, ha⟩ := by
-    simp only [fmat, dif_pos ha]
-    rw [if_neg (by intro e; have := congrArg Fin.val e; simp at this), zero_add]
+    simp only [fmat, dite_eq_left ha]
+    rw [ite_eq_right (by intro e; have := congrArg Fin.val e; simp at this), zero_add]
   rw [hf]
   have hXSΛ : ∀ v, v ∈ XS D G.fl → v ∈ Λ := by
     intro v hv
@@ -1510,7 +1496,7 @@ theorem glob_entry (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.hos
         x • (G.fl.e ⟨a.val + 1, hr⟩ + (n (G.fl.e ⟨a.val + 1, hr⟩) - G.fl.e ⟨a.val + 1, hr⟩)) := by
       rw [map_smul]; congr 1; abel
     rw [hsplit, coefX_smul _ (add_mem (e_mem_X _ _) hd), coefX_add _ (e_mem_X _ _) hd, coefX_e,
-      if_neg (by intro e; have := congrArg Fin.val e; simp at this), zero_add] at hc
+      ite_eq_right (by intro e; have := congrArg Fin.val e; simp at this), zero_add] at hc
     have hexp : -((D.R.rS : ℤ) - ((a.val + 1 : ℕ) : ℤ)) - 1 =
         -((D.R.rS : ℤ) - (((⟨a.val, ha⟩ : Fin D.R.rS) : ℕ) : ℤ)) := by
       push_cast; ring

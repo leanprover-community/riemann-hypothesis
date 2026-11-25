@@ -99,10 +99,10 @@ instance FinalTheorems.smooth (s : FinalTheorems S κ) : SmoothOfRelativeDimensi
 abbrev ToroidalCompactificationData (s : FinalTheorems S κ) : Type := OddPrimesWithRootsOfUnity s.T.Z
 
 theorem Sig.mult_psi (S : Sig A N j) (L : CmList A) (t : D.what₂.Tau) : S.Dw.mult (L.ψ t).1 = j :=
-  (if_pos (L.ψ t).2).trans S.p_eq
+  (ite_eq_left (L.ψ t).2).trans S.p_eq
 
 theorem Sig.mult_conj (S : Sig A N j) (L : CmList A) (t : D.what₂.Tau) : S.Dw.mult (conjEmb (L.ψ t).1) = N - j :=
-  (if_neg (GlobalTheory.AllWt.conj_not_mem (L.ψ t))).trans (by have := S.p_eq; have := S.rank_eq; omega)
+  (ite_eq_right (GlobalTheory.AllWt.conj_not_mem (L.ψ t))).trans (by have := S.p_eq; have := S.rank_eq; omega)
 
 namespace FinalTheorems
 
@@ -153,13 +153,6 @@ structure IsBdOf (B : s.Bd L) : Prop where
     coW (s.fd k) s.j_le f.1 (s.lab L k t) = x.gramW L k f t
   metOm : ∀ k f t, (coOm (s.fd k) s.j_le f.1 (s.lab L k t))ᴴ * (B k).metOm (s.zOf L k f) t *
     coOm (s.fd k) s.j_le f.1 (s.lab L k t) = x.gramOm L k f t
-
-namespace IsBdOf
-
-variable {x L} {B B' : s.Bd L} (h : IsBdOf x L B) (k : s.Comp) {z : Pt D.what₂.Tau j (N - j)}
-include h
-
-end IsBdOf
 
 end Domain
 

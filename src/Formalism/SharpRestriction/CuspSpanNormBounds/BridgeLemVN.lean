@@ -4,7 +4,6 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepre
 public import Mathlib.RingTheory.ClassGroup.Basic
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsNeZeroOfIsLattice
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemVR
-public import Formalism.FlagUnipotentLattices.LatticeDeterminantIndexSq
 public import Mathlib.NumberTheory.NumberField.Units.Basic
 public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
@@ -19,6 +18,26 @@ import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+
+section
+@[expose] public section
+
+open Module NumberField nonZeroDivisors Finset
+
+noncomputable section
+
+namespace Formalism.HermitianLatticeCounting.LocalIntegralStructure
+
+def UnitsSquareIndex : Prop :=
+  ∀ (F : Type) [Field F] [NumberField F], (∀ w : InfinitePlace F, w.IsReal) →
+    Nat.card ((𝓞 F)ˣ ⧸ (powMonoidHom 2 : (𝓞 F)ˣ →* (𝓞 F)ˣ).range) = 2 ^ finrank ℚ F
+
+end Formalism.HermitianLatticeCounting.LocalIntegralStructure
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemVC, Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IntegerGroupLocalParametrization, Formalism.FlagUnipotentLattices.ArithmeticIdentityEntries, Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemVN

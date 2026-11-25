@@ -309,14 +309,9 @@ theorem isVB_pull (hL : L.IsVB 1 ⊤) : (pullL hr L).IsVB 1 ⊤ := by
   obtain ⟨h1, h2⟩ := h (push ξ' g q) trivial hq
   exact ⟨h1, (pull_span_iff hr q _).2 h2⟩
 
-omit hr in
-theorem isIntegral_congr {A B : Subring Ω} (h : A = B) {a : Ω} (ha : IsIntegral A a) : IsIntegral B a := by
-  subst h
-  exact ha
-
 theorem normal_pull (hN : NormalCpt (ξ' ≫ g)) : NormalCpt ξ' := fun p a ha => by
   rw [hr p]
-  exact hN _ a (isIntegral_congr (hr p) ha)
+  exact hN _ a (GlobalTheory.CompanionTheory.Ar.Flat.PushLoc.isIntegral_congr (hr p) ha)
 
 theorem isGenAt_pull {p : Cpt ξ'} {t : Ω} (h : L.IsGenAt (push ξ' g p) t) : (pullL hr L).IsGenAt p t :=
   ⟨h.1, (pull_span_iff hr p _).2 h.2⟩
@@ -536,13 +531,13 @@ theorem exists_orders (hZ : PropZ) {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ :
   let r₀ : HeightOneSpectrum (𝓞 F') → ℚ := fun v => if v ∈ T then (a v : ℚ) / M v else 0
   have hr₀ : (Function.support r₀).Finite := hfin.subset fun v hv => by
     by_contra h
-    exact hv (if_neg h)
+    exact hv (ite_eq_right h)
   refine ⟨Finsupp.ofSupportFinite r₀ hr₀, fun v π' hπ' => ?_⟩
   have hrv : (Finsupp.ofSupportFinite r₀ hr₀) v = r₀ v := rfl
   rw [hrv]
   by_cases hv : v ∈ T
   · have hMv : (M v : ℚ) ≠ 0 := by exact_mod_cast (hM v).ne'
-    refine ⟨M v, a v, hM v, by simp only [r₀, if_pos hv]; field_simp, fun p hp => ?_⟩
+    refine ⟨M v, a v, hM v, by simp only [r₀, ite_eq_left hv]; field_simp, fun p hp => ?_⟩
     refine orderAt_of_unit (hord v p hp) ?_
     have h0 : π' ≠ 0 := by
       rintro rfl
@@ -559,7 +554,7 @@ theorem exists_orders (hZ : PropZ) {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ :
     have e2 : v.valuation F' (π v / π')⁻¹ = 1 := by rw [map_inv₀, e1, inv_one]
     rw [← map_div₀]
     exact ⟨(map_ne_zero ψ).2 (div_ne_zero h1 h0), hp _ e1.le, by rw [← map_inv₀]; exact hp _ e2.le⟩
-  · refine ⟨1, 0, one_pos, by simp only [r₀, if_neg hv]; simp, fun p hp => ?_⟩
+  · refine ⟨1, 0, one_pos, by simp only [r₀, ite_eq_right hv]; simp, fun p hp => ?_⟩
     have h1 : v.valuation F' (n : F') ≤ 1 := by
       have := v.valuation_le_one (K := F') (n : 𝓞 F')
       simpa using this
@@ -721,15 +716,6 @@ theorem cone_eq (y : (Σ k, ι k) → Ω) (g : MRing ι) : mConeMap y g =
   | add p q hp hq => simp only [map_add (f := _), hp, hq]
   | mul_X p i hp => rw [map_mul, map_mul, hp, aeval_X, mConeMap, aeval_X, mul_comm (C _)]
 
-theorem aeval_ne_zero {y : (Σ k, ι k) → Ω} {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d)
-    (hn : g ∉ mCoordIdeal y) : aeval y g ≠ 0 := by
-  intro h0
-  apply hn
-  have h := scale (S := MvPolynomial K Ω) (fun k => X k) (fun p => C (y p)) hg
-  rw [← map_aeval' (C : Ω →+* MvPolynomial K Ω) y g, h0, map_zero, mul_zero] at h
-  show mConeMap y g = 0
-  rw [cone_eq, h]
-
 theorem aeval_eq_zero {y : (Σ k, ι k) → Ω} (t : K → Ω) {f : MRing ι} (hf : f ∈ mCoordIdeal y) :
     aeval (fun p : Σ k, ι k => t p.1 * y p) f = 0 := by
   have h0 : mConeMap y f = 0 := hf
@@ -752,7 +738,7 @@ theorem PositivityTheory.Xgn.exists_point_over_nonvanishing : ∀ (K : Type) [Fi
   have hγ : aeval w g ≠ 0 := by
     rw [scale t y hg]
     exact mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (inv_ne_zero (hc k)))
-      (aeval_ne_zero hg hn)
+      (GlobalTheory.CompanionTheory.Ar.Flat.UnitChart.aeval_ne_zero hg hn)
   let A : Subalgebra F Ω := Algebra.adjoin F (insert (aeval w g)⁻¹ (Set.range w))
   haveI : Algebra.FiniteType F A :=
     Algebra.FiniteType.adjoin_of_finite ((Set.finite_range w).insert _)
@@ -1045,7 +1031,6 @@ theorem unit_chartRing {y : (Σ k, ι k) → Ω} (hT : CoordTie ℤ ξ (fun c' :
 end Model
 
 end OfAdelic
-
 
 open OfAdelic UnitChart in
 theorem exists_flatHerm_of_adelic : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (F : Type) [Field F] [NumberField F] (y : (Σ k, ι k) → Ω) (φ : F →+* Ω) (X : Scheme.{0}) (ξ : Spec (CommRingCat.of Ω) ⟶ X) (E : Type) [AddCommGroup E] [Module Ω E] (L : Lat ξ E) (e₀ : E) (c₀ : Ω) (A : HermLine ι) (r : HeightOneSpectrum (𝓞 F) →₀ ℚ) (cinf : (F →+* ℂ) → ℝ), OverInt y φ → Birational y → IsConjInvariantH A → CoordTie ℤ ξ (fun c' : (k : K) → ι k => ∏ k, y ⟨k, c' k⟩) → NormalCpt ξ → L.IsDegOn Set.univ y A.a e₀ → c₀ ≠ 0 → (∀ p : Cpt ξ, ((∀ a : F, φ a ∈ regAt ξ p) ∧ OrderAt L (c₀ • e₀) 1 1 0 p) ∨ ∃ (v : HeightOneSpectrum (𝓞 F)) (π : F) (m : ℕ) (n : ℤ), (∀ a : F, v.valuation F a ≤ 1 → φ a ∈ regAt ξ p) ∧ v.valuation F π = WithZero.exp (-1 : ℤ) ∧ 0 < m ∧ (n : ℚ) = m * r v ∧ OrderAt L (c₀ • e₀) (φ π) m n p) → (∀ σ, 0 < cinf σ) → (∀ (σ : F →+* ℂ) z (g h : MRing ι) (dg dh : K → ℕ), PtOver y φ σ z → IsMultiHomog g dg → IsMultiHomog h dh → (∀ k, (dg k : ℤ) - dh k = A.a k) → aeval y g = c₀ * aeval y h → ‖evC z g‖ = cinf σ * A.h z * ‖evC z h‖) → ∃ S : FlatHerm y φ A, S.ht = ((r.sum fun v q => (q : ℝ) * Real.log (Ideal.absNorm v.asIdeal)) - ∑ σ : F →+* ℂ, Real.log (cinf σ)) / (Module.finrank ℚ F : ℝ) := by
@@ -1587,7 +1572,6 @@ theorem div_sub_mem {L : Lat ξ Ω} {q : Cpt ξ} {w σ tp tq y : Ω} (a : ℤ) (
 
 end GlobalTheory.CompanionTheory.Ar.Flat.PropZPf
 
-
 open GlobalTheory.CompanionTheory.Ar.Flat.PropZPf in
 theorem GlobalTheory.CompanionTheory.Ar.Flat.PropZ_holds : GlobalTheory.CompanionTheory.Ar.Flat.PropZ := by
   intro X Ω _ ξ O _ _ _ _ s _ ϖ hϖ hinj hs hg hn hconn L σ hvb htriv hgen
@@ -1717,7 +1701,6 @@ theorem tauIn_injective {l : Level H} (c : Coeff l) (τ : E →+* ℂ) : Functio
     have := congrArg (fun x : c.F => (x : ℂ)) hab
     simpa [tauIn] using this
   exact RingOfIntegers.ext (τ.injective h)
-
 
 theorem core (hSm : SmoothLine) (hLc : LocalCmp) (hNu : Numerics) (hF : HT.FarguesHodgeTate) {l : Level H}
     {Xo : Moduli D l} {c : Coeff l} [NumberField c.F] {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {U : Set (Xo.XF c)}

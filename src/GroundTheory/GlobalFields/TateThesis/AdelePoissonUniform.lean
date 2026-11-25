@@ -68,7 +68,7 @@ theorem summable_ite_mem_of_summable_idealLattice (J : (FractionalIdeal (𝓞 K)
   have hsupp : ∀ ξ ∉ Set.range g,
       (if ξ ∈ (J : FractionalIdeal (𝓞 K)⁰ K) then h (mixedEmbedding K ξ) else 0) = 0 := by
     intro ξ hξ
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hm
     exact hξ ⟨e ⟨ξ, hm⟩, by simp [g]⟩
   rw [← hinj.summable_iff hsupp]
@@ -76,7 +76,7 @@ theorem summable_ite_mem_of_summable_idealLattice (J : (FractionalIdeal (𝓞 K)
   funext α
   change (if ((e.symm α : _) : K) ∈ (J : FractionalIdeal (𝓞 K)⁰ K) then
     h (mixedEmbedding K ((e.symm α : _) : K)) else 0) = h α
-  rw [if_pos (show ((e.symm α : _) : K) ∈ (J : FractionalIdeal (𝓞 K)⁰ K) from (e.symm α).2)]
+  rw [ite_eq_left (show ((e.symm α : _) : K) ∈ (J : FractionalIdeal (𝓞 K)⁰ K) from (e.symm α).2)]
   have he := coe_idealLatticeEquiv J (e.symm α)
   rw [Equiv.apply_symm_apply] at he
   rw [he]

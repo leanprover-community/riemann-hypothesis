@@ -4,8 +4,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Non
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
@@ -54,7 +52,7 @@ theorem levi_eigenvector_of_conditions (hcb : CompactConductorBasicProp (k := k)
   · rw [hright g u (hKJ hu), hlK _ hu, one_mul]
   · intro h0
     have := congrFun h0 1
-    simp only [Grp.v0, OneMemClass.coe_one, if_pos hJone.1, hl1, Pi.zero_apply] at this
+    simp only [Grp.v0, OneMemClass.coe_one, ite_eq_left hJone.1, hl1, Pi.zero_apply] at this
     exact one_ne_zero this
   · funext g
     rw [Pi.smul_apply, smul_eq_mul, ← hright g j hj]

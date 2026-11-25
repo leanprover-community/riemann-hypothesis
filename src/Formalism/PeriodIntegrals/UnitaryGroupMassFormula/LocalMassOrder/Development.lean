@@ -45,14 +45,6 @@ def SdESF : Prop :=
     (v : HeightOneSpectrum (𝓞 F)), StdHyp σ J ψ →
     ∀ r : ℕ, SFinite (sdE (E := E) ψ v (UIdx r))
 
-section Glue
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (ψ : AddChar (AF F) ℂ)
-  (v : HeightOneSpectrum (𝓞 F))
-
-end Glue
-
 def IsLatLoc {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (v : HeightOneSpectrum (𝓞 F)) {n : ℕ} (Λ : Set (Fin n → E)) : Prop :=
   (latLoc (E := E) v Λ).FG ∧

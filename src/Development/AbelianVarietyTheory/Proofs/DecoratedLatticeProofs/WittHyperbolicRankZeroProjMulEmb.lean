@@ -61,17 +61,11 @@ variable {D : D7}
 
 theorem entries_fix {A : Type} [CommRing A] {m n : ℕ} (c : A) {M : Matrix (Fin n) (Fin n) A} (hM : ∀ i j, c * M i j = M i j)
     (P : Matrix (Fin m) (Fin n) A) (Q : Matrix (Fin n) (Fin m) A) (i j : Fin m) : c * (P * M * Q) i j = (P * M * Q) i j := by
-  simp only [Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
-  conv_rhs => rw [← hM l k]
-  ring
+  exact GlobalTheory.Mem.Isom.entries_fix c hM P Q i j
 
 theorem entries_fix' {A : Type} [CommRing A] {m n k : ℕ} (c : A) {M : Matrix (Fin n) (Fin k) A} (hM : ∀ i j, c * M i j = M i j)
     (P : Matrix (Fin m) (Fin n) A) (i : Fin m) (j : Fin k) : c * (P * M) i j = (P * M) i j := by
-  simp only [Matrix.mul_apply, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  conv_rhs => rw [← hM l j]
-  ring
+  exact GlobalTheory.Mem.Isom.entries_fix' c hM P i j
 
 theorem sub_one_conj {A : Type} [CommRing A] {m n : ℕ} {P : Matrix (Fin m) (Fin n) A} {Q : Matrix (Fin n) (Fin m) A} (PQ : P * Q = 1)
     (M : Matrix (Fin n) (Fin n) A) : P * M * Q - 1 = P * (M - 1) * Q := by
@@ -79,8 +73,7 @@ theorem sub_one_conj {A : Type} [CommRing A] {m n : ℕ} {P : Matrix (Fin m) (Fi
 
 theorem det_conj_rect {A : Type} [CommRing A] {m n : ℕ} (h : n = m) {P : Matrix (Fin m) (Fin n) A} {Q : Matrix (Fin n) (Fin m) A}
     (QP : Q * P = 1) (M : Matrix (Fin n) (Fin n) A) : (P * M * Q).det = M.det := by
-  subst h
-  rw [Matrix.det_mul, Matrix.det_mul, mul_comm (P.det), mul_assoc, ← Matrix.det_mul, mul_eq_one_comm.1 QP, Matrix.det_one, mul_one]
+  exact GlobalTheory.Mem.Isom.det_conj_rect h QP M
 
 theorem isThetaFunO_tr {V V' : HSp D} (I : IsoMat V V') (S : HSp D) {ψ : AddChar (AF D.host.F) ℂ} {f : WO S V → ℂ}
     (hf : IsThetaFunO ψ S V f) : IsThetaFunO ψ S V' (I.trW S f) := by

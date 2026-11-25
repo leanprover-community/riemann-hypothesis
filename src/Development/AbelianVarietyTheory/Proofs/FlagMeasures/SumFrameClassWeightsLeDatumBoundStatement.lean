@@ -198,11 +198,6 @@ theorem sameGr_push (F : FlagD H r) (hN : F.InN (s : V →ₗ[K] V)) : SameGr F 
   | last => exact hN.2.2.2 _ F.zperp
   | cast a => exact hN.2.2.1 a
 
-theorem flag_vector_mem_base_lattice (F G : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F G := by
-  induction a using Fin.lastCases with
-  | last => exact Submodule.mem_sup_right (Submodule.subset_span (Or.inl rfl))
-  | cast a => exact Submodule.mem_sup_left (Submodule.mem_sup_left (e_mem_xa F a a.2))
-
 theorem jointSpan_comm (F G : FlagD H r) : V0 F G = V0 G F := by
   unfold V0
   rw [sup_comm F.X, Set.pair_comm]
@@ -262,7 +257,7 @@ theorem datOf_move : ∀ (K V W : Type) [Field K] [NumberField K] [StarRing K] [
     have hI' : ∀ x ∈ II G F, ∀ w ∈ V0 G F, H.B w x = 0 := fun x hx w hw =>
       hI x ⟨hx.2, hx.1⟩ w (jointSpan_comm G F ▸ hw)
     have hdec : ∀ y ∈ wSp F G, ∃ w, y - e w ∈ F.X := fun y hy => by
-      have := (hE.2 y).1 fun a => herm_zero ((mem_perp_iff _ _ _).1 hy _ (flag_vector_mem_base_lattice F G a))
+      have := (hE.2 y).1 fun a => herm_zero ((mem_perp_iff _ _ _).1 hy _ (GlobalTheory.DegCnt.SplitLift.flag_vector_mem_base_lattice F G a))
       obtain ⟨_, ⟨w, rfl⟩, x, hx, rfl⟩ := Submodule.mem_sup.1 this
       exact ⟨w, by simpa using hx⟩
     have hker : ∀ y ∈ wSp F G, ∀ y' ∈ wSp F G, y - y' ∈ F.X → y - y' ∈ II F G := fun y hy y' hy' hx =>
@@ -395,9 +390,6 @@ theorem gram_eq {F G : FlagD H r} (hT : F.T = G.T) (a b : Fin (r + 1)) :
   · rw [F.zperp, G.zperp]
   · rw [F.iso, G.iso]
 
-theorem flag_vector_mem_base_lattice (F F' : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F F' :=
-  Fin.lastCases (lastVector_mem_jointSpan_left F F') (fun a => isotropicSpan_le_jointSpan_left _ _ (e_mem_X _ a)) a
-
 theorem hermFlag_secondFrame_mem_frameSpan (F F' : FlagD H r) (a : Fin (r + 1)) : F'.e a ∈ V0 F F' :=
   Fin.lastCases (lastVector_mem_jointSpan_right F F') (fun a => isotropicSpan_le_jointSpan_right _ _ (e_mem_X _ a)) a
 
@@ -409,7 +401,7 @@ theorem perp_transfer {F G : FlagD H r} (h : SameGr F G) {w : V} (hw : ∀ a, H.
 variable [NumberField K]
 
 theorem wt_e (N : NF H r) {w : V} (hw : w ∈ N.Wt) (a : Fin (r + 1)) : H.B (N.F.e a) w = 0 :=
-  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (flag_vector_mem_base_lattice _ _ a))
+  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (GlobalTheory.DegCnt.SplitLift.flag_vector_mem_base_lattice _ _ a))
 
 theorem wt_e' (N : NF H r) {w : V} (hw : w ∈ N.Wt) (a : Fin (r + 1)) : H.B (N.F'.e a) w = 0 :=
   (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (hermFlag_secondFrame_mem_frameSpan _ _ a))
@@ -766,7 +758,7 @@ theorem main : ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.
     have hex : ∃ d : K, d * star d = 1 ∧ ∀ t : K, t * d ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1 := ⟨c, hc, h5⟩
     obtain ⟨ζ, hζ⟩ := exists_torsion hK.2.1 h2 hc hex.choose_spec.1 h5 hex.choose_spec.2
     refine ⟨((𝔞, 𝔞'), ζ), ⟨⟨⟨h1, h3⟩, ⟨h2, h4⟩⟩, trivial⟩, ?_⟩
-    simp only [g, c0, dif_pos hex]
+    simp only [g, c0, dite_eq_left hex]
     exact hζ.symm
   have henc := (Set.encard_le_encard hsub).trans (Set.encard_image_le _ _)
   rw [← hB.cast_ncard_eq, Set.ncard_prod, Set.ncard_prod, Set.ncard_univ] at henc
@@ -909,7 +901,6 @@ end GlobalTheory.SignedBlockCount
 
 namespace GlobalTheory
 
-
 open Formalism.MainNotions.S.Loc SignedBlockCount in
 theorem signed_block_count : ∀ (K : Type) [Field K] (j : ℕ) (δ : ℕ → K), (({P : Matrix (Fin j) (Fin j) K | (∃ (w : Formalism.MainNotions.S.Loc.Pt K j) (sgn : Fin j → ℤˣ), ∀ a b, P a b = w.mat a b * ((sgn b : ℤ) : K)) ∧ ∀ (l : ℕ) (hl : l ≤ j), (P.submatrix (Fin.castLE hl) (Fin.castLE hl)).det = δ l}).encard : ℕ∞) ≤ 8 ^ j := by
   intro K _ j δ
@@ -929,7 +920,7 @@ theorem signed_block_count : ∀ (K : Type) [Field K] (j : ℕ) (δ : ℕ → K)
   · rintro P ⟨⟨w, sgn, hP⟩, hδ⟩
     refine Finset.mem_coe.2 (Finset.mem_biUnion.2 ⟨sgn, Finset.mem_univ _,
       Finset.mem_image.2 ⟨w.blocks, hT' _ _ w.size fun l hl => ?_, ?_⟩⟩)
-    · simp only [η, dif_pos hl]
+    · simp only [η, dite_eq_left hl]
       rw [eq_div_iff (Finset.prod_ne_zero_iff.2 fun b _ => sign_ne _), ← hδ l hl, mul_comm, minor,
         ← Matrix.det_mul_row]
       congr 1
@@ -1283,7 +1274,7 @@ theorem sum_le_orbit {G α ι : Type} [Group G] [MulAction G α] (Q : α → Pro
     rw [MulAction.orbitRel_apply] at h2
     obtain ⟨ρ, hρ⟩ := h2
     have hρ' : ρ • x i = (q i).out := hρ
-    rw [← hρ', if_pos (hQ i hi ρ).1, (hQ i hi ρ).2]
+    rw [← hρ', ite_eq_left (hQ i hi ρ).1, (hQ i hi ρ).2]
   rw [h1]
   exact ENNReal.sum_le_tsum _
 
@@ -1438,7 +1429,7 @@ theorem finrank_wt (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {F G : F
   have h3 : N.Wt ⊔ F.X = LinearMap.range e ⊔ F.X := by
     apply le_antisymm
     · refine sup_le (fun x hx => (he.2 x).1 fun a => hlift.1 x hx _ ?_) le_sup_right
-      rw [hV]; exact _root_.GlobalTheory.DegAsm.DatMove.flag_vector_mem_base_lattice F G a
+      rw [hV]; exact _root_.GlobalTheory.DegCnt.SplitLift.flag_vector_mem_base_lattice F G a
     · refine sup_le ?_ le_sup_right
       rintro _ ⟨w, rfl⟩
       obtain ⟨x, hx, hx'⟩ := hfull.2.2.2.2.2.2.2.1 (e w) fun a => by
@@ -1642,7 +1633,7 @@ theorem sum_clsOm_le_datBd : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSe
     intro b hb
     have hb' : ∃ t ∈ A, frCls Λ t = b := Finset.mem_image.1 hb
     obtain ⟨h1, h2⟩ := hb'.choose_spec
-    exact ⟨hb'.choose, h1, h2, by simp only [G, dif_pos hb']⟩
+    exact ⟨hb'.choose, h1, h2, by simp only [G, dite_eq_left hb']⟩
   have key := GlobalTheory.DegAsm.sum_weights_per_datum D.host.E (VS D).V W (HV D) HW W.subtype hK D.R.rS (F0 X u) (dI D)
     (gS D) j (Tu D u) x (fun l => star (δ l)) Λ d (k2Del D j δ) (DbL D j δ) (Set (Formalism.HermitianLatticeCounting.S6.FlagD (HV D) D.R.rS))
     (A.image (frCls Λ)) G hgS hx1 hDel1 hDb1 he ?_ ?_ ?_
@@ -1694,8 +1685,6 @@ open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc GlobalTheory.TypeAsm GlobalTheory.TypeAsm.PerRow
 
-theorem _root_.GlobalTheory.T.sum_frameClassWeights_le_datumBound : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word), Std D large₂ → ∀ (W : Submodule D.host.E (VS D).V) (HW : Formalism.HermitianLatticeCounting.S6.HermSpace D.host.E W), GlobalTheory.DegAsm.IsEmb (F0 X u) HW W.subtype → ∀ (Λ : Submodule (𝓞 D.host.E) (VS D).V) (j x : ℕ) (δ : ℕ → D.host.E) (d : Submodule (𝓞 D.host.E) W × Submodule (𝓞 D.host.E) (W × W)) (N : GTu Y u → GlobalTheory.DegCnt.NF (HV D) D.R.rS) (A : Finset (GTu Y u)), A.Nonempty → (∀ t ∈ A, t ∈ relSet Y u ∧ t.lam = Λ ∧ jT t = j ∧ labT t = δ ∧ AdT t (N t) ∧ (N t).IsTerm (gS D) Λ ∧ (N t).gI (gS D) Λ = x ∧ GlobalTheory.DegAsm.datOf (F0 X u) (Ft t) W.subtype (gS D) Λ = d) → ∑ b ∈ A.image (frCls Λ), clsOm Y u Λ b ≤ GlobalTheory.DegAsm.datBd D.host.E D.R.k D.R.rS (k2Del D j δ) (DbL D j δ) (NT D u) x := by
-  first | exact @GlobalTheory.TypeAsm.PerRow.sum_clsOm_le_datBd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumFrameClassWeightsLeDatumBoundStatement =====

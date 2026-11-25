@@ -169,7 +169,7 @@ theorem exp_twoPiD (a : Formalism.BasicNotions.TH.Ix p q) :
       by_cases h2 : b = a
       · subst h2; simp
       · simp [h2, Ne.symm h2]
-    · rw [if_neg h1, if_neg (fun h => h1 (h.1.symm.trans h.2))]; simp
+    · rw [ite_eq_right h1, ite_eq_right (fun h => h1 (h.1.symm.trans h.2))]; simp
   rw [e, Matrix.exp_diagonal, ← diagonal_one]
   congr 1
   funext i
@@ -308,7 +308,7 @@ theorem clause2_of (h1 : Clause1) (hS : KFSm) (hC : CasScal) (hDe : Descend) : C
       rw [e2, hκ₁] at this
       exact this
     · show single a b (1 : ℂ) (finSumFinEquiv c) (finSumFinEquiv d) = 0
-      rw [Matrix.single_apply, if_neg]
+      rw [Matrix.single_apply, ite_eq_right]
       rintro ⟨rfl, rfl⟩
       simp only [epq, Equiv.symm_apply_apply] at hab
       rcases c with c | c <;> rcases d with d | d <;> simp_all [sameBlock]

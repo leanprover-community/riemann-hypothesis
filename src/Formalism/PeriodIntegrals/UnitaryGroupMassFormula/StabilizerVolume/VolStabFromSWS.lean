@@ -53,7 +53,7 @@ theorem IsAdmS.adm {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E
   obtain ⟨d, b, Φinf, Φf, Φv, h1, h2, h3, h4, -⟩ := h
   exact ⟨d, b, Φinf, Φf, Φv, h1, h2, h3, h4⟩
 
-def ExChar : Prop := InCtx fun F E _ _ _ _ _ _σ _M _J _a _X0 _hT => ∃ ψ, IsCharAF F ψ
+def ExChar : Prop := InCtx fun F _ _ _ _ _ _ _σ _M _J _a _X0 _hT => ∃ ψ, IsCharAF F ψ
 
 def ExOmT : Prop := InCtx fun F E _ _ _ _ _ σ M J _a X0 hT =>
   ∀ ψ, IsCharAF F ψ → ∃ νX, IsOmT F E σ M J ψ (gramE σ J X0) hT νX
@@ -91,7 +91,7 @@ def PosTest : Prop := InCtx fun F E _ _ _ _ _ σ M J a X0 hT =>
     ∃ φ : (Fin a → Fin M → AF F ⊗[F] E) → ℝ, (∀ X, 0 ≤ φ X) ∧ IsAdmS F E (fun X => (φ X : ℂ)) ∧
       ∫ X, (φ X : ℂ) ∂νX ≠ 0
 
-def Witt : Prop := InCtx fun F E _ _ _ _ _ σ M J a X0 _hT =>
+def Witt : Prop := InCtx fun _ E _ _ _ _ _ σ M J a X0 _hT =>
   ∀ X : Fin a → Fin M → E, gramE σ J X = gramE σ J X0 →
     ∃ g ∈ Formalism.UG.UJ (σ : E →+* E) J, ∀ i, (g : Matrix (Fin M) (Fin M) E).mulVec (X0 i) = X i
 

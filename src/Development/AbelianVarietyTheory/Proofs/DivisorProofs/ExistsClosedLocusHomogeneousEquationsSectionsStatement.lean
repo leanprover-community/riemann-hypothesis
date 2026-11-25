@@ -372,7 +372,7 @@ theorem germ_eval_comb : ∀ (Rg : Type) [CommRing Rg] (A₀ T X : Scheme.{0}) (
   have hp : gs φ z (N.U q) (∏ i, (a i).f q ^ ν i) = ∏ i, gs φ z (N.U q) ((a i).f q) ^ ν i := by
     rw [← MapIff.gsH_apply φ z _ hq, map_prod]
     simp only [map_pow, MapIff.gsH_apply]
-  simp only [ψ, RingHom.comp_apply, monSec, if_pos hd]
+  simp only [ψ, RingHom.comp_apply, monSec, ite_eq_left hd]
   rw [MapIff.gsH_apply]
   exact congrArg (fun x => gs p z ⊤ (ringOf g (AddMonoidAlgebra.coeff (expand mA mB F) ν)) * x) hp.symm
 

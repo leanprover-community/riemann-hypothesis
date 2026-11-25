@@ -7,7 +7,7 @@ public import Mathlib.Analysis.Normed.Group.Ultra
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe17.norm_sum_lt :
-    ∀ {F ι : Type} [inst : NormedField F] [IsUltrametricDist F]
+    ∀ {F ι : Type} [NormedField F] [IsUltrametricDist F]
     (s : Finset ι) (f : ι → F) {C : ℝ}, (0 : ℝ) < C → (∀ i ∈ s, ‖f i‖ < C) → ‖∑ i ∈ s, f i‖ < C := by
   intro F ι _ _ s f C hC h
   refine Finset.sum_induction f (fun x => ‖x‖ < C) ?_ ?_ h

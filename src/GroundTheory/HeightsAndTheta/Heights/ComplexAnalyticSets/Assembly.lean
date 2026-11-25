@@ -561,7 +561,7 @@ theorem linearForm_coeff_single {F : Type} [Field F] {n : ℕ} (a : Fin n → F)
   · rw [mul_comm, coeff_C_mul, coeff_X]
     simp
   · intro j _ hji
-    rw [mul_comm, coeff_C_mul, coeff_X, if_neg, mul_zero]
+    rw [mul_comm, coeff_C_mul, coeff_X, ite_eq_right, mul_zero]
     intro h
     exact hji ((Finsupp.single_left_inj one_ne_zero).mp h)
   · simp
@@ -883,45 +883,9 @@ theorem SectionOrder.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFirstMem
     (h₉ : ChartNorm.Statement) (h₁₀ : ChartLength.Statement) (h₁₁ : LengthQuotientDet.Statement) :
     SectionOrder.Statement := by
   intro F _ _ n e I f u hI hf hu
-  have hne : specFirst f u ≠ 0 := h₄ F n e I f u hI hf hu
-  refine ⟨hne, fun q hq => ?_⟩
-  have hqp : Prime q := hq.prime
-  obtain ⟨t, ht⟩ := h₃ F n e I f q hI hf hqp
-
-  have htI : linForm t ∉ I := by
-    intro h
-    have hmem := h₂ F n e I I f t hf le_rfl h
-    rw [h₁ F n e I f hI hf, Ideal.mem_bot] at hmem
-    exact ht (hmem ▸ dvd_zero q)
-  let p : Ideal (MvPolynomial (Fin e × Fin n) F) := Ideal.span {q}
-  have hpp : p.IsPrime := (Ideal.span_singleton_prime hqp.ne_zero).mpr hqp
-  have htp : specFirst f t ∉ p := by
-    rw [Ideal.mem_span_singleton]
-    exact ht
-  have : IsDiscreteValuationRing (Localization.AtPrime p) := h₅ _ q p hqp rfl
-  have hem := h₆ _ q (specFirst f u) p hqp rfl hne
-  have : Module.Finite (Localization.AtPrime p) (ChartLoc I t e p) := h₇ F n e I f t p hI hf htp
-  obtain ⟨_, hinj, -⟩ := h₈ F n e I f t p hI hf htI
-  have : Module.IsTorsionFree (Localization.AtPrime p) (ChartLoc I t e p) := by
-    rw [Module.isTorsionFree_iff_algebraMap_injective]
-    exact hinj
-  have : Module.Free (Localization.AtPrime p) (ChartLoc I t e p) :=
-    Module.free_of_finite_type_torsion_free'
-  have hnorm := h₉ F n e I f t p hI hf (Or.inr ⟨q, hqp, rfl⟩) htp u
-  have hunit : IsUnit (algebraMap _ (Localization.AtPrime p) (specFirst f t)) :=
-    IsLocalization.map_units (Localization.AtPrime p) (⟨specFirst f t, htp⟩ : p.primeCompl)
-  have hinjO : Function.Injective
-      (algebraMap (MvPolynomial (Fin e × Fin n) F) (Localization.AtPrime p)) :=
-    IsLocalization.injective _ p.primeCompl_le_nonZeroDivisors
-  have hdet : LinearMap.det (LinearMap.mulLeft (Localization.AtPrime p)
-      (algebraMap (ChartInc I t e) (ChartLoc I t e p) (chartLin I t e u))) ≠ 0 := by
-    intro h0
-    apply hne
-    apply hinjO
-    rw [hnorm, h0, mul_zero, map_zero]
-  have hlen := h₁₁ (Localization.AtPrime p) (ChartLoc I t e p) _ hdet
-  rw [hem, hnorm, Ring.ord_mul_of_isUnit_left hunit, ← hlen]
-  exact h₁₀ F n e I f t u q p hI hf hu hqp rfl ht
+  exact SectionOrder.proof_of_chart hI hf hu h₁ h₂ (fun q => h₃ F n e I f q hI hf)
+    (h₄ F n e I f u hI hf hu) h₅ h₆ h₇ h₈ (fun t p _ h htp => h₉ F n e I f t p hI hf h htp u)
+    (fun t q p _ => h₁₀ F n e I f t u q p hI hf hu) h₁₁
 
 end
 
@@ -1215,46 +1179,51 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ContDiff
 
+theorem StokesOnVariety.chartInt_eq (hD : ComplexSets.DiscriminantCover.Statement)
+    (hS : StokesOffDiscriminant.Statement) (hL : CutOffLimit.Statement)
+    (n d : ℕ) (J : Ideal (MvPolynomial (Fin n) ℂ)) (A : Matrix (Fin (d + 1)) (Fin n) ℂ)
+    (f g : (Fin n → ℂ) → ℝ) (φ : Fin d → (Fin n → ℂ) → ℝ) (hJ : J.IsPrime)
+    (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = (d + 1 : ℕ)) (hAf : IsFiniteProjection J A)
+    (hf : SmoothNear (zeroSet J) f) (hg : SmoothNear (zeroSet J) g)
+    (hφ : ∀ i, SmoothNear (zeroSet J) (φ i)) (hc : HasCompactSupport f ∨ HasCompactSupport g) :
+    chartInt J A f (vecCons g φ) = chartInt J A g (vecCons f φ) := by
+  have key : ∀ (f g : (Fin n → ℂ) → ℝ),
+      SmoothNear (zeroSet J) f → SmoothNear (zeroSet J) g → HasCompactSupport f →
+      chartInt J A f (vecCons g φ) = chartInt J A g (vecCons f φ) := by
+    intro f g hf hg hc
+    obtain ⟨P, hP0, hPcov⟩ := hD n (d + 1) J A hJ hdim hAf
+    have hsheet : ∀ x ∈ zeroSet J, eval (A *ᵥ x) P ≠ 0 → ∃ s, IsSheetAt J A x s := by
+      intro x hx hPx
+      obtain ⟨-, -, hloc⟩ := hPcov (A *ᵥ x) hPx
+      obtain ⟨U, V, s, hU, hyU, hV, hxV, hs, hsy, hAs, hZV⟩ := hloc x ⟨hx, rfl⟩
+      refine ⟨s, U, hU, hyU, hs, hsy, fun w hw => ⟨hAs w hw, ?_⟩, V, hV.mem_nhds hxV, ?_⟩
+      · have hw' : s w ∈ zeroSet J ∩ V := hZV ▸ Set.mem_image_of_mem s hw
+        exact hw'.1
+      · rintro x' hx' -
+        rw [hZV] at hx'
+        obtain ⟨w, hw, rfl⟩ := hx'
+        rw [hAs w hw]
+    obtain ⟨χ, hχs, hχU, hlim⟩ := hL n d J A P hJ hdim hAf hP0
+    obtain ⟨h1, h2⟩ := hlim f g φ hf hg hφ hc
+    refine tendsto_nhds_unique h1 (Tendsto.congr (fun k => ?_) h2)
+    obtain ⟨U, hU, hDU, hχ0⟩ := hχU k
+    obtain ⟨V, hV, hZV, hfV⟩ := hf
+    have hcχ : HasCompactSupport (fun x => χ k x * f x) := hc.mul_left (f := χ k)
+    refine (hS n d J A P hJ hdim hAf hP0 hsheet (fun x => χ k x * f x) g φ
+      ⟨V, hV, hZV, (hχs k).contDiffOn.mul hfV⟩ hg hφ hcχ ⟨U, hU, hDU, fun x hx => ?_⟩).symm
+    rw [hχ0 x hx, zero_mul]
+  rcases hc with hc | hc
+  · exact key f g hf hg hc
+  · exact (key g f hg hf hc).symm
+
 theorem StokesOnVariety.proof (hD : ComplexSets.DiscriminantCover.Statement)
     (hS : StokesOffDiscriminant.Statement) (hL : CutOffLimit.Statement) :
     StokesOnVariety.Statement := by
-  have key : ∀ (n d : ℕ) (J : Ideal (MvPolynomial (Fin n) ℂ)) (f g : (Fin n → ℂ) → ℝ)
-      (φ : Fin d → (Fin n → ℂ) → ℝ), J.IsPrime →
-      ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = (d + 1 : ℕ) →
-      SmoothNear (zeroSet J) f → SmoothNear (zeroSet J) g → (∀ i, SmoothNear (zeroSet J) (φ i)) →
-      HasCompactSupport f → varInt J (d + 1) f (vecCons g φ) = varInt J (d + 1) g (vecCons f φ) := by
-    intro n d J f g φ hJ hdim hf hg hφ hc
-    unfold varInt
-    split_ifs with hA
-    · have hAf := hA.choose_spec
-      generalize hA.choose = A at hAf ⊢
-      obtain ⟨P, hP0, hPcov⟩ := hD n (d + 1) J A hJ hdim hAf
-
-      have hsheet : ∀ x ∈ zeroSet J, eval (A *ᵥ x) P ≠ 0 → ∃ s, IsSheetAt J A x s := by
-        intro x hx hPx
-        obtain ⟨-, -, hloc⟩ := hPcov (A *ᵥ x) hPx
-        obtain ⟨U, V, s, hU, hyU, hV, hxV, hs, hsy, hAs, hZV⟩ := hloc x ⟨hx, rfl⟩
-        refine ⟨s, U, hU, hyU, hs, hsy, fun w hw => ⟨hAs w hw, ?_⟩, V, hV.mem_nhds hxV, ?_⟩
-        · have hw' : s w ∈ zeroSet J ∩ V := hZV ▸ Set.mem_image_of_mem s hw
-          exact hw'.1
-        · rintro x' hx' -
-          rw [hZV] at hx'
-          obtain ⟨w, hw, rfl⟩ := hx'
-          rw [hAs w hw]
-      obtain ⟨χ, hχs, hχU, hlim⟩ := hL n d J A P hJ hdim hAf hP0
-      obtain ⟨h1, h2⟩ := hlim f g φ hf hg hφ hc
-      refine tendsto_nhds_unique h1 (Tendsto.congr (fun k => ?_) h2)
-      obtain ⟨U, hU, hDU, hχ0⟩ := hχU k
-      obtain ⟨V, hV, hZV, hfV⟩ := hf
-      have hcχ : HasCompactSupport (fun x => χ k x * f x) := hc.mul_left (f := χ k)
-      refine (hS n d J A P hJ hdim hAf hP0 hsheet (fun x => χ k x * f x) g φ
-        ⟨V, hV, hZV, (hχs k).contDiffOn.mul hfV⟩ hg hφ hcχ ⟨U, hU, hDU, fun x hx => ?_⟩).symm
-      rw [hχ0 x hx, zero_mul]
-    · rfl
   intro n d J f g φ hJ hdim hf hg hφ hc
-  rcases hc with hc | hc
-  · exact key n d J f g φ hJ hdim hf hg hφ hc
-  · exact (key n d J g f φ hJ hdim hg hf hφ hc).symm
+  unfold varInt
+  split_ifs with hA
+  · exact StokesOnVariety.chartInt_eq hD hS hL n d J hA.choose f g φ hJ hdim hA.choose_spec hf hg hφ hc
+  · rfl
 
 end GroundTheory.Heights₂.Heights
 end -- clump:auto
@@ -1397,10 +1366,6 @@ theorem eval_linPoly {n d : ℕ} (A : Matrix (Fin d) (Fin n) ℂ) (z : Fin n →
   ext i
   simp [GroundTheory.Heights₂.Heights.ComplexSets.linPoly, Matrix.mulVec, dotProduct]
 
-theorem finrank_real_fin_complex (d : ℕ) : Module.finrank ℝ (Fin d → ℂ) = 2 * d := by
-  rw [Module.finrank_pi_fintype, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
-    Complex.finrank_real_complex, smul_eq_mul, mul_comm]
-
 theorem ZeroSetOpenMass.proof
     (hG : GroundTheory.Heights₂.Heights.ComplexSets.GenericProjectionFinite.Statement)
     (hD : GroundTheory.Heights₂.Heights.ComplexSets.DiscriminantCover.Statement)
@@ -1433,7 +1398,7 @@ theorem ZeroSetOpenMass.proof
   obtain ⟨K, hK⟩ : ∃ K, LipschitzWith K (fun z : Fin n → ℂ => A.mulVec z) :=
     ⟨_, (LinearMap.toContinuousLinearMap (Matrix.mulVecLin A)).lipschitz⟩
   have hpos : 0 < μH[((2 * d : ℕ) : ℝ)] U' := by
-    rw [← finrank_real_fin_complex d]
+    rw [← GroundTheory.Heights₂.Heights.SheetOnlyNull.finrank_real_fin_complex d]
     exact hU'.measure_pos _ ⟨_, hzU'⟩
   have hle := hK.hausdorffMeasure_image_le (by positivity : (0 : ℝ) ≤ ((2 * d : ℕ) : ℝ)) (g '' U')
   rw [himg] at hle

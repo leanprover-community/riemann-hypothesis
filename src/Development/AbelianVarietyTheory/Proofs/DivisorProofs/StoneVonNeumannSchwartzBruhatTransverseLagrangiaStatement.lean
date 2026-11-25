@@ -471,7 +471,7 @@ theorem sb_irreducible_vec : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologi
       have := (one_lt_inv₀ (zero_lt_iff.2 hv0)).2 hw1
       exact absurd h' (not_le.2 this)
     have := mt (hcond w⁻¹).1 hno
-    push_neg at this
+    push Not at this
     obtain ⟨y, -, hy⟩ := this
     intro he
     apply hy

@@ -67,10 +67,6 @@ variable {E : Type} [Field E] [NumberField E] {n r : ℕ}
 def SplitsCompletely (E : Type) [Field E] [NumberField E] (p : ℕ) : Prop :=
   Nat.card {w : HeightOneSpectrum (𝓞 E) // (p : 𝓞 E) ∈ w.asIdeal} = Module.finrank ℚ E
 
-def gammaOne (SG : Finset (HeightOneSpectrum (𝓞 E))) (k : ℕ) : ℝ≥0∞ :=
-  ∏ w ∈ SG, (Nat.card (GL (Fin k) (𝓞 E ⧸ w.asIdeal)) : ℝ≥0∞) /
-    (Nat.card (Formalism.L2.Col.HU (𝓞 E ⧸ w.asIdeal) k) : ℝ≥0∞)
-
 end Lattices
 
 section Levels

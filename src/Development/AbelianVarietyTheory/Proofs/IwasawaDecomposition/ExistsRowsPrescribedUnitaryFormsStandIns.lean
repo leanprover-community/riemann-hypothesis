@@ -183,8 +183,8 @@ def rowsStd (B : Base) (C : Cols B) (hC : SpectralModel.ColsPos C) (n : C.Tup �
     ft0 := fun i => i.elim0
     Amb := fun a => EuclideanSpace ℂ (Fin (n a))
     Mult := fun a j => EuclideanSpace ℂ (Fin (if j = B.R.m then n a else 0))
-    multZero := fun _ => stdCongr (if_neg (by have := B.R.two_le_m; omega))
-    multTop := fun _ => stdCongr (if_pos rfl)
+    multZero := fun _ => stdCongr (ite_eq_right (by have := B.R.two_le_m; omega))
+    multTop := fun _ => stdCongr (ite_eq_left rfl)
     io := fun _ _ => 0
     Mtilde := L
     eOp := fun _ => LinearMap.id
@@ -228,11 +228,11 @@ def rowsStd (B : Base) (C : Cols B) (hC : SpectralModel.ColsPos C) (n : C.Tup �
     shaLen_nonneg := GaloisStage.shaTrue_nonneg B.host
     eMu := ramEq C
     eMt0 := e0
-    perCol_base_eq_PtilCol := fun u φ F => dif_pos rfl
+    perCol_base_eq_PtilCol := fun u φ F => dite_eq_left rfl
     Bu_linL := fun _ _ => ⟨fun _ _ => by simp, fun _ _ => by simp⟩
     Bu_linR := fun _ _ => ⟨fun _ _ => by simp, fun _ _ => by simp⟩
     eMtTw := eT
-    perCol_tie := fun u a h φ F => dif_neg h
+    perCol_tie := fun u a h φ F => dite_eq_right h
     eMu_isom := fun _ _ _ => rfl }
 
 theorem standIn_rowsStd (B : Base) (C : Cols B) (hC : SpectralModel.ColsPos C) (n : C.Tup → ℕ)

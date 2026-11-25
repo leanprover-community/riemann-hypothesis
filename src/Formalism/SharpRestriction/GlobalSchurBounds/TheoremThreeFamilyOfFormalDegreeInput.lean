@@ -78,23 +78,6 @@ theorem tuSize_min {eps : ℝ} (Fm : FamP eps) (hle : cTmin Fm.CYL ≤ Fm.CTu)
     (fun Δ w hB => hx1 x (le_trans (le_max_right _ _) hx) hxx i Δ w hB) (le_max_left _ _) (le_max_right _ _)
 
 
-section Fam3
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-
-
-end Fam3
-
-section Inputs
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-
-
-
-end Inputs
-
 end Formalism.MainNotions.StandardLattice.HarishChandraReduction
 
 end

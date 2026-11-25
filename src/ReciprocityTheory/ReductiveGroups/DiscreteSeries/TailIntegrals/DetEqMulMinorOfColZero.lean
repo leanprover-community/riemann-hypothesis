@@ -311,7 +311,7 @@ private lemma w0_mul_lev_mulVec_e0_eq_smul_es0 (c : ℂ) (g : Mat k r') :
     · have hq : ¬ (1 ≤ (eI k (1 + r') (a0 r')).val ∧
           (eI k (1 + r') (a0 r')).val < 2 * r' + k + 1 + 1) := by
         simp [eI, a0]
-      rw [dite_eq_left hp, dite_eq_right hq, if_neg]
+      rw [dite_eq_left hp, dite_eq_right hq, ite_eq_right]
       intro hh
       rw [hh] at hp
       simp [eI, a0] at hp

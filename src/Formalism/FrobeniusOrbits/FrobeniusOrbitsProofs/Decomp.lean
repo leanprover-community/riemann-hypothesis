@@ -383,7 +383,7 @@ theorem stab_two_sgn (hqd : HypOdd q d) (hd16 : d % 16 = 7) (h : IsLayer (e + 2)
     exact (inferInstance : P.IsPrime).ne_top ((Ideal.eq_top_iff_one P).mpr h1P)
   show sgn σ (bE ζ a b) = 1
   unfold sgn
-  exact if_pos hfix
+  exact ite_eq_left hfix
 
 end Two
 

@@ -340,16 +340,16 @@ theorem exists_extend [Algebra.IsAlgebraic F Ω] {N : ℕ} {ζ α β : Ω} {x y 
         (∀ z, B.valuation z ≤ 1 → B.valuation (g z - z) < 1) → g ∈ geo F K Ω → η' g = 0 := by
   classical
   refine ⟨fun g => if h : g ∈ geo F K Ω then η (toK ⟨g, h⟩) else 0, fun g hg h hh => ?_, ?_, fun B g hB hi hg => ?_⟩
-  · simp only [dif_pos hg, dif_pos hh, dif_pos (mul_mem hg hh)]
+  · simp only [dite_eq_left hg, dite_eq_left hh, dite_eq_left (mul_mem hg hh)]
     rw [hx, hy]
     have e : toK (⟨g * h, mul_mem hg hh⟩ : geo F K Ω) = toK ⟨g, hg⟩ * toK ⟨h, hh⟩ := map_mul toK ⟨g, hg⟩ ⟨h, hh⟩
     rw [e]
     exact h2 (toK ⟨g, hg⟩) (toK ⟨h, hh⟩)
   · have e : (fun g : geo F K Ω => if h : (g : Ω ≃ₐ[F] Ω) ∈ geo F K Ω then η (toK ⟨(g : Ω ≃ₐ[F] Ω), h⟩) else 0) = η ∘ toK :=
-      funext fun g => by rw [dif_pos g.2]; rfl
+      funext fun g => by rw [dite_eq_left g.2]; rfl
     rw [e]
     exact h1.comp_continuous continuous_toK
-  · simp only [dif_pos hg]
+  · simp only [dite_eq_left hg]
     exact h3 B hB _ hi
 
 end General
@@ -456,13 +456,6 @@ theorem spec_of_units [IsAlgClosure ℚ Ω] (X : Tower Ω ε) {M l n : ℕ} (hM 
 
 end GlobalTheory.K4.TopEta
 
-namespace GlobalTheory.K4
-
-open GlobalTheory.KZ
-
-attribute [local instance] algMdl
-
-end GlobalTheory.K4
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

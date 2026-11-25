@@ -184,7 +184,7 @@ theorem holPair (X Y₁ Y₂ : Scheme.{0}) (p₁ : Y₁ ⟶ X) (p₂ : Y₂ ⟶ 
       (Spec.map (CommRingCat.ofHom (algebraMap Γ(X, W) Γ(Y₂, W₂)))) :=
     fun b hb => pullback.lift (l₁ b hb) (l₂ b hb) (hc b hb)
   let w := fun b => if hb : b ∈ N then wN b hb else wN b₀ hb₀N
-  have hw : ∀ b (hb : b ∈ N), w b = wN b hb := fun b hb => dif_pos hb
+  have hw : ∀ b (hb : b ∈ N), w b = wN b hb := fun b hb => dite_eq_left hb
   have hwφ : ∀ b ∈ N, w b ≫ φ = pullback.lift (e₁ b) (e₂ b) (he b) := by
     intro b hb
     rw [hw b hb]

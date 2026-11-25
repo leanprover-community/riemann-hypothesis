@@ -7,42 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoreClausesO
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RangeComplexPointsLevelFormsEqGoodFormsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WatIffType
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GoodProjectorUnitaryFormsModelLawsStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -64,7 +29,7 @@ theorem range_w0C_type : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T
   have hs : ∀ a, cj (twAt D.what₂.embLL A3.A.v0) (A3.A.fam.v0.embedding a) = sg0 D A3.A a := fun a => by
     show cj _ (A3.A.v0.embedding a) = _
     rw [emb_eq D.what₂.embLL A3.A.v0 a, cj_cj]
-  rw [GlobalTheory.T.range_complex_points_level_forms_eq_good_forms R F hOk hW hU false i]
+  rw [GlobalTheory.LevelRange.range_w0C_eq R F hOk hW hU false i]
   ext x
   have hw := GlobalTheory.WatType.wat_iff_type R.toRealDat F.lv2 hOk.ok2 hC false i (Tw.out x)
   have hL : x ∈ Tw.sub (twAt D.what₂.embLL A3.A.v0) ((R.toRealDat.Wat i (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A))).comap (R.HW i (sg0 D A3.A)).e) ↔ (R.HW i (sg0 D A3.A)).e (Tw.out x) ∈ R.toRealDat.Wat i (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A)) := Iff.rfl

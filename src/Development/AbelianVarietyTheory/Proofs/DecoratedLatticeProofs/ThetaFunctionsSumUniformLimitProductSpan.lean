@@ -174,9 +174,6 @@ namespace GlobalTheory.PoincareLaw
 
 variable {D : D7}
 
-theorem ratW_inj (A T : HSp D) : Function.Injective (ratW T A) :=
-  fun _ _ h => Matrix.map_injective GlobalTheory.MixModel.incA_injective h
-
 theorem ratW_sub (A T : HSp D) (γ γ₀ : Matrix (Fin T.rank) (Fin A.rank) D.host.E) :
     ratW T A (γ - γ₀) = ratW T A γ - ratW T A γ₀ := by
   ext i j

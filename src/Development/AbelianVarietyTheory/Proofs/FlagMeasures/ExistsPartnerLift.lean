@@ -174,7 +174,7 @@ theorem comp_eq_zero (F : FlagG S r T) (F' : FlagG S r T') (hG : Gflag F F' ≠ 
   obtain ⟨b, rfl⟩ := (mem_Xplus_iff F' y).1 hy
   have := pair_eq_zero (Zhat F F') a b T T' (by
     have e : (Fin.castLE (Nat.le_refl (r + 1)) : Fin (r + 1) → Fin (r + 1)) = id := rfl
-    simp only [Gflag, Dl, leadMinorE, e, le_refl, Nat.le_succ, dif_pos, Matrix.submatrix_id_id] at hG
+    simp only [Gflag, Dl, leadMinorE, e, le_refl, Nat.le_succ, dite_eq_left, Matrix.submatrix_id_id] at hG
     exact hG) (by
     funext i
     have := h _ (Submodule.mem_sup_left (fvec_mem_Xplus F i))

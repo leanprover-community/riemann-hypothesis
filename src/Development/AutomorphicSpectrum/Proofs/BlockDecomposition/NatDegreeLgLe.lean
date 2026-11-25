@@ -5,7 +5,6 @@ import GroundTheory.PAdicHodge.LogMul
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Limits AlgebraicGeometry Opposite GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.E GlobalTheory.EtC
 
 noncomputable section
@@ -117,10 +116,10 @@ theorem Lg_eq_truncEval {n : ℕ} (s : S) (hs : s ^ (n + 1) = 0) :
     truncEval s hs (PowerSeries.log ℚ) = large₂ n s := by
   rw [truncEval_eq_sum, Finset.sum_range_succ']
   simp only [PowerSeries.coeff_log]
-  rw [if_pos trivial, map_zero, zero_mul, add_zero]
+  rw [ite_eq_left trivial, map_zero, zero_mul, add_zero]
   unfold large₂
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [if_neg (Nat.succ_ne_zero k)]
+  rw [ite_eq_right (Nat.succ_ne_zero k)]
   unfold dv
   rw [Algebra.smul_def, ← mul_assoc]
   congr 1

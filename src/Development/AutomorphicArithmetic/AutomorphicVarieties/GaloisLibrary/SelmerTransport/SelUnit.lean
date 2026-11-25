@@ -50,7 +50,7 @@ theorem UpperTheory.V.Base.corInv :
       (continuous_subtype_val.comp continuous_subtype_val)
       (fun g : (U'.subgroupOf U : Set U) => Subgroup.mem_subgroupOf.mp g.2))).congr ?_
     intro g
-    simp [f, dif_pos (Subgroup.mem_subgroupOf.mp g.2)]
+    simp [f, dite_eq_left (Subgroup.mem_subgroupOf.mp g.2)]
   have hfcoc : ∀ g ∈ U'.subgroupOf U, ∀ k ∈ U'.subgroupOf U,
       f (g * k) = f g + (ρ.comp U.subtype) g (f k) := by
     intro g hg k hk
@@ -58,7 +58,7 @@ theorem UpperTheory.V.Base.corInv :
     have hgk : ((g * k : U) : G) ∈ U' := by
       rw [Subgroup.coe_mul]
       exact U'.mul_mem hg hk
-    simp only [f, dif_pos hg, dif_pos hk, dif_pos hgk]
+    simp only [f, dite_eq_left hg, dite_eq_left hk, dite_eq_left hgk]
     exact z.2.2 ⟨g, hg⟩ ⟨k, hk⟩
   obtain ⟨F, hFc, hFcoc, ⟨x0, hx0⟩, -⟩ := GlobalTheory.exists_corestriction_cocycle R U M
     (ρ.comp U.subtype) (U'.subgroupOf U) hopen (fun _ => continuous_of_discreteTopology)
@@ -77,7 +77,7 @@ theorem UpperTheory.V.Base.corInv :
     have hmem : (((q.out)⁻¹ * ⟨(u : G), h u.2⟩ * q.out : U) : G) ∈ U' := by
       have e := ‹U'.Normal›.conj_mem u u.2 ((q.out : G)⁻¹)
       simpa [mul_assoc] using e
-    simp only [f, dif_pos hmem]
+    simp only [f, dite_eq_left hmem]
     rfl
   have hcard : Fintype.card (U ⧸ U'.subgroupOf U) = U'.relIndex U := by
     rw [Subgroup.relIndex, Subgroup.index, Nat.card_eq_fintype_card]

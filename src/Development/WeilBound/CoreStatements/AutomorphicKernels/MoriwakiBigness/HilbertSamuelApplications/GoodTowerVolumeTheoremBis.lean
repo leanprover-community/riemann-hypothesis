@@ -440,7 +440,6 @@ variable {Ω : Type} [Field Ω] {A : Type} [CommRing A] [Algebra A Ω] [IsIntegr
   {m : Ideal A} [m.IsPrime] {O : Type} [CommRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω]
   [IsScalarTower A O Ω]
 
-
 include m in
 theorem algebraMap_injective : Function.Injective (algebraMap O Ω) := by
   have hA : Function.Injective (algebraMap A Ω) := IsIntegralClosure.algebraMap_injective A ℤ Ω
@@ -453,12 +452,10 @@ theorem algebraMap_injective : Function.Injective (algebraMap O Ω) := by
   have h2 : a = 0 := hA (by rw [← h1, map_zero])
   rw [h2, IsLocalization.mk'_zero]
 
-
 include m in
 theorem exists_of_integral (x : Ω) (hx : IsIntegral ℤ x) : ∃ o : O, algebraMap O Ω o = x :=
   ⟨algebraMap A O (IsIntegralClosure.mk' A x hx), by
     rw [← IsScalarTower.algebraMap_apply, IsIntegralClosure.algebraMap_mk']⟩
-
 
 include m in
 theorem exists_hom {R : Type} [CommRing R] (f : R →+* Ω) (hf : ∀ a, IsIntegral ℤ (f a)) :
@@ -499,7 +496,6 @@ theorem sub_one_pow_eq {O : Type} [CommRing O] [IsDomain O] {p : ℕ} (hp : p.Pr
 section Abstract
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
 
 open NumberField in
 theorem orbit_abstract {p : ℕ} (hp : p.Prime) (hd : ¬ (p : ℤ) ∣ NumberField.discr E) {T : Type} [Finite T] (t₀ : T)
@@ -678,7 +674,7 @@ theorem orbit_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
   · intro t ht
     exact a6 t fun a => ht a (g t a) (hg t a)
   · unfold HT.IsCp
-    rw [if_neg hp2]
+    rw [ite_eq_right hp2]
     exact ⟨ζ, hζ, by rw [map_sub, map_one, hz]⟩
 
 end GlobalTheory.CompanionTheory.Ar.Num.FamEx.Orbit
@@ -774,13 +770,6 @@ noncomputable def preHom {X : Scheme.{0}} (G : Over X) [GrpObj G] {A B : Over X}
   map_one' := MonObj.comp_one u
   map_mul' g h := MonObj.comp_mul u g h
 
-theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp]; rfl
-
-theorem sp_id {A : Type} [CommRing A] : spMap (RingHom.id A) = 𝟙 _ := by
-  rw [← Spec.map_id]; rfl
-
 theorem exists_inv {Ω : Type} [Field Ω] {O : Type} [CommRing O] [Algebra O Ω] (R : Subalgebra O Ω)
     [IsFractionRing R Ω] : ∃ e' : Ω →+* FractionRing R, (fracToField R).comp e' = RingHom.id Ω ∧
       e'.comp (algebraMap R Ω) = algebraMap R (FractionRing R) := by
@@ -803,11 +792,11 @@ theorem PositivityTheory.Xgn.full_torsion_packing : ∀ (X : Scheme.{0}) (G : Ov
   obtain ⟨e', he, he'⟩ := exists_inv R
   have hu : spMap e' ≫ ξ = (genPt R).hom ≫ x := by
     have h0 : spMap e' ≫ spMap (algebraMap R Ω) = spMap (algebraMap R (FractionRing R)) := by
-      rw [sp_comp, he']
+      rw [GlobalTheory.spMap_comp_ring, he']
     subst hx
     exact (Category.assoc _ _ _).symm.trans (congrArg (· ≫ x) h0)
   have hee : spMap (fracToField R) ≫ spMap e' = 𝟙 _ := by
-    rw [sp_comp, he, sp_id]
+    rw [GlobalTheory.spMap_comp_ring, he, GlobalTheory.CompanionTheory.Ar.Flat.EigVb.spMap_ringHomId]
   let u : Over.mk ((genPt R).hom ≫ x) ⟶ Over.mk ξ := Over.homMk (spMap e') hu
   let τ : T →* (Over.mk ((genPt R).hom ≫ x) ⟶ G) := (preHom G u).comp pt
   have hτ : ∀ t, (τ t).left = spMap e' ≫ (pt t).left := fun t => rfl
@@ -825,7 +814,7 @@ theorem PositivityTheory.Xgn.full_torsion_packing : ∀ (X : Scheme.{0}) (G : Ov
     intro Ω' _ _ a g hg
     have hw : spMap (a.comp e') ≫ ξ = Spec.map (CommRingCat.ofHom a) ≫ (genPt R).hom ≫ x := by
       have h0 : spMap (a.comp e') ≫ ξ = spMap a ≫ spMap e' ≫ ξ := by
-        rw [← sp_comp, Category.assoc]
+        rw [← GlobalTheory.spMap_comp_ring, Category.assoc]
       exact h0.trans (congrArg (spMap a ≫ ·) hu)
     let w : Over.mk (spMap (a.comp e') ≫ ξ) ⟶
         Over.mk (Spec.map (CommRingCat.ofHom a) ≫ (genPt R).hom ≫ x) :=
@@ -853,7 +842,7 @@ theorem PositivityTheory.Xgn.full_torsion_packing : ∀ (X : Scheme.{0}) (G : Ov
     refine ⟨t, ?_⟩
     have h3 : (preHom G w g).left = g.left := Category.id_comp _
     have h4 : ∀ q : Spec (CommRingCat.of Ω) ⟶ G.left, spMap (a.comp e') ≫ q = spMap a ≫ spMap e' ≫ q := fun q => by
-      rw [← sp_comp, Category.assoc]
+      rw [← GlobalTheory.spMap_comp_ring, Category.assoc]
     exact h3.symm.trans (hx₀.trans (h4 _)))
   exact ⟨Γ, i, hΓ, fun t => (hpt t).trans (congrArg (spMap (fracToField R) ≫ ·) (hi t).symm)⟩
 end -- clump:auto
@@ -933,18 +922,6 @@ theorem lie_pack (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] [Smoo
   obtain ⟨j, hj, hj'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Num.FamEx.dual_baseChange_fractionField Ω O R L Li toLi hb
   exact ⟨L, i1, i2, M, ρ, toLi, j, hf, hp, ha, hb, hpt, hj, hj', hρ⟩
 
-theorem isIso_spMap_fracToField {Ω : Type} [Field Ω] {O : Type} [CommRing O] [Algebra O Ω] (R : Subalgebra O Ω)
-    [IsFractionRing R Ω] : IsIso (spMap (fracToField R)) := by
-  have hs : Function.Surjective (fracToField R) := fun z => by
-    obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := R) z
-    refine ⟨algebraMap R (FractionRing R) a / algebraMap R (FractionRing R) b, ?_⟩
-    have h : ∀ r : R, fracToField R (algebraMap R (FractionRing R) r) = algebraMap R Ω r := fun r =>
-      IsFractionRing.lift_algebraMap _ r
-    rw [map_div₀, h, h]
-  have : IsIso (CommRingCat.ofHom (fracToField R)) :=
-    (ConcreteCategory.isIso_iff_bijective _).2 ⟨(fracToField R).injective, hs⟩
-  infer_instance
-
 theorem finite_torsT (E : Type) [Field E] [NumberField E] (N n : ℕ) (hn : n ≠ 0) : Finite (TorsT E N n) := by
   have hI : Ideal.span {(n : 𝓞 E)} ≠ ⊥ := by
     rw [Ne, Ideal.span_singleton_eq_bot]
@@ -1008,7 +985,7 @@ theorem chartPack_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   have hsurj : Function.Surjective (qhom (E := E) (D.p + D.q) (p ^ 𝔐.R p)) := qhom_surjective E _ _
   have hker : ∀ y₁, qhom (E := E) (D.p + D.q) (p ^ 𝔐.R p) (Multiplicative.ofAdd y₁) = 1 ↔ ∃ y', y₁ = (p ^ 𝔐.R p) • y' :=
     qhom_eq_one_iff E _ _
-  haveI hiso := isIso_spMap_fracToField (CR O y c')
+  haveI hiso := GlobalTheory.CompanionTheory.Ar.Num.FamEx.Idemp.frac_epi (CR O y c')
   have hlin : ∀ (a : 𝓞 E) y₁, (Γ₂.pt (qhom _ _ (Multiplicative.ofAdd (a • y₁)))).left ≫ i₂' =
         (Γ₂.pt (qhom _ _ (Multiplicative.ofAdd y₁))).left ≫ i₂' ≫ (𝔐.t.act.act a).left := by
     intro a y₁
@@ -1104,7 +1081,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx
 open GlobalTheory.CompanionTheory.Ar.BT
 
-
 theorem familyExistsPos_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → GlobalTheory.CompanionTheory.Ar.GR.QuotientByFiniteFlatStatement → GlobalTheory.CompanionTheory.Ar.GR.ZarhinStatement → GlobalTheory.CompanionTheory.Ar.GR.HodgeTateDatumStatement → GlobalTheory.CompanionTheory.Ar.GR.OrdinaryCurveStatement → GlobalTheory.CompanionTheory.Ar.Num.FamilyExistsPos := by
   intro hF hQ hZ hH hOrd E _ _ _ H D l Xo c O₀ _ β Y S Ω _ K _ _ J _ y 𝔐 d ha hpq b hb p hpS hfree h2 hdisc φ hφ A _ _ _ m _ hm O _ _ _ _ _ _ _ t₀
   haveI : Fact p.Prime := ⟨𝔐.S_prime p hpS⟩
@@ -1121,13 +1097,13 @@ theorem familyExistsPos_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeT
   let i : ∀ (c' : ∀ k, J k) (τ : Sg), (Fin (labelRk D (e τ)) → Ω) →ₗ[Ω] (Fin (D.p + D.q) → Ω) :=
     fun c' τ => if h : mseg y c' ≠ 0 then (hQs c' h τ).choose else 0
   have hi : ∀ (c' : ∀ k, J k) (h : mseg y c' ≠ 0) (τ : Sg), SeqHyp (CR O y c') (algebraMap O Ω w) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (dotDual (CR O y c') (coordLat O y (𝔐.HT p (e τ).swap) (b (e τ).swap) c')) (i c' τ) (qMap (P c' h) (b (e τ).swap)) ∧ ∀ σE : E →+* Ω, (∀ a : 𝓞 E, σE (a : E) = 𝔐.emb (e τ) a) → DualSeq (P c' h) σE (𝔐.R p - 2) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (b (e τ)) (i c' τ) := fun c' h τ => by
-    have heq : i c' τ = (hQs c' h τ).choose := dif_pos h
+    have heq : i c' τ = (hQs c' h τ).choose := dite_eq_left h
     rw [heq]
     exact (hQs c' h τ).choose_spec
   have hw0 : algebraMap O Ω w ≠ 0 := by
     have h3 := hcp
     unfold HT.IsCp at h3
-    rw [if_neg h2] at h3
+    rw [ite_eq_right h2] at h3
     obtain ⟨ζ, hζ, e1⟩ := h3
     rw [e1]
     exact hζ.sub_one_ne_zero (Fact.out : p.Prime).one_lt

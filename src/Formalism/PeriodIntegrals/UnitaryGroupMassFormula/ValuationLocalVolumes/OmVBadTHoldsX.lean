@@ -83,12 +83,6 @@ theorem n_sub_a : X.B.I.n - (D.R.rS + 1 + D.R.rS) = D.R.k := by
   unfold Ranks.r at h1
   omega
 
-theorem a_le_n : D.R.rS + 1 + D.R.rS ≤ X.B.I.n := by
-  have h1 := X.n_eq
-  have h2 := D.R.rS_two
-  unfold Ranks.r at h1
-  omega
-
 theorem fac_nonneg (v : PlX X) (j : ℕ) :
     0 ≤ 1 - (etaV (E := X.B.I.E) v : ℝ) ^ j * ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) ^ (-(j : ℤ)) := by
   have hq : (1 : ℝ) ≤ ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) := by
@@ -131,13 +125,13 @@ theorem omV_of (hStd : OmVStd X ψ) (hLat : OmVLat X) (hSD : OmVSD X) (hUn : OmV
   by_cases hT : ((Tw u' : ℕ) : 𝓞 X.B.I.F) ∈ v.asIdeal
   · rw [hBad hψ hψ' v hT (hSD v) (hUn v) (hPrim v), ENNReal.toReal_ofReal (val_nonneg X v _ _), exp_eq X, prod_eq X v]
     unfold aP
-    rw [if_pos hT, n_sub_a X]
-  · have h := hLocU v _ (yTup X u' v) (hStd hψ hψ') hLat (hSD v) (hUn v) (a_le_n X) (hPrim v)
+    rw [ite_eq_left hT, n_sub_a X]
+  · have h := hLocU v _ (yTup X u' v) (hStd hψ hψ') hLat (hSD v) (hUn v) (PI.OmVd.a_le_n' X) (hPrim v)
       (by rw [hGram v]; exact hDet v hT)
     rw [hGram v] at h
     rw [h, ENNReal.toReal_ofReal (val_nonneg X v _ _), exp_eq X, prod_eq X v]
     unfold aP
-    rw [if_neg hT, n_sub_a X]
+    rw [ite_eq_right hT, n_sub_a X]
 
 end Formalism.L2.SG.Pf.NcX.OmVSt
 end -- clump:auto
@@ -591,7 +585,7 @@ theorem notFree_iff (x : Fin M → k × k) :
     (¬ ∀ c : k × k, c • x = 0 → c = 0) ↔ (∀ l, (x l).1 = 0) ∨ (∀ l, (x l).2 = 0) := by
   constructor
   · intro h
-    push_neg at h
+    push Not at h
     obtain ⟨c, hc, hne⟩ := h
     by_cases h1 : c.1 = 0
     · right
@@ -1001,7 +995,7 @@ theorem omVDdLoc_of (hT : OmVDdTr X) : OmVDdLoc X := by
   intro v a
   have hlt : ((a.castSucc : Fin (D.R.rS + 1)) : ℕ) < D.R.rS := by simp
   have halp : alp v D.R.rS a.castSucc = (dV v)⁻¹ ^ (D.R.rS - (a : ℕ)) := by
-    unfold alp; rw [if_pos hlt]; simp
+    unfold alp; rw [ite_eq_left hlt]; simp
   have hk : ((D.R.rS : ℤ) - ((a : ℕ) : ℤ)) = ((D.R.rS - (a : ℕ) : ℕ) : ℤ) := by
     rw [Nat.cast_sub a.isLt.le]
   have haa : aaD D a = (ddS D ^ (D.R.rS - (a : ℕ)))⁻¹ := by
@@ -1193,7 +1187,6 @@ def cTup (D : (Matrix (Fin n) (Fin n) (R ⊗[F] E))ˣ) : ℝ≥0 :=
 def cHerm (D : (Matrix (Fin n) (Fin n) (R ⊗[F] E))ˣ) : ℝ≥0 :=
   addEquivAddHaarChar (hermEquiv R σ hσ (n := n) D)
 
-
 include hJ in
 theorem fib_map_mulTup (hG : GramMulTup) (hU : IsOpen {r : R | IsUnit r}) (hL : LIP R)
     (μ : Measure (Fin n → Fin M → R ⊗[F] E)) (ν : Measure (HermR R σ n))
@@ -1220,7 +1213,6 @@ theorem fib_map_mulTup (hG : GramMulTup) (hU : IsOpen {r : R | IsUnit r}) (hL : 
     (fun X => gramH_mulTup_of hG R σ hσ J hJ _ X) (preimage_linIndep D) ENNReal.coe_ne_top
     ENNReal.coe_ne_top hμ hν hfib S₀ hS₀
   exact this
-
 
 include hJ in
 theorem fib_image_mulTup (hG : GramMulTup) (hU : IsOpen {r : R | IsUnit r}) (hL : LIP R)
@@ -1670,9 +1662,6 @@ theorem omVZ_holdsX : Formalism.L2.SG.Pf.NcVal.OmV X u' ψ :=
 
 end Formalism.L2.SG.Pf.NcX.OmVSt
 
-namespace Formalism.L2.SG.Pf.NcVal.OmVSt.OmVZ
-
-end Formalism.L2.SG.Pf.NcVal.OmVSt.OmVZ
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

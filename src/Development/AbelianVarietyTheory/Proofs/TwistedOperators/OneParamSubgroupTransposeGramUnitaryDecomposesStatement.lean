@@ -195,9 +195,9 @@ theorem GlobalTheory.KapXLineDec.line_dec : ∀ (D : D7) (θ : InfFam D) (X : HS
           have hs := GlobalTheory.Mem.Lift.isAtTau_oneP hθ (hYl ρ) t
           by_cases hρ : ρ = σ
           · subst hρ
-            rw [if_pos rfl]
+            rw [ite_eq_left rfl]
             exact hs.2.1.trans (hY ρ t).symm
-          · rw [if_neg hρ]
+          · rw [ite_eq_right hρ]
             exact hs.2.2 σ (Ne.symm hρ)
         exact e1.trans (GlobalTheory.RowReal.list_prod_map_ite _ _ L (Finset.nodup_toList _)
           (Finset.mem_toList.2 (Finset.mem_univ _)))

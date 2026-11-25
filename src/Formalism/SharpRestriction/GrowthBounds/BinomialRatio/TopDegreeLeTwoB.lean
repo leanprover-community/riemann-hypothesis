@@ -77,7 +77,7 @@ private theorem mul_sum_pow_lt_le_pow_of_segHyp (H : SegHyp p S b' de be aS Q) :
   induction n with
   | zero =>
     intro hn
-    simp only [Nat.not_lt_zero, if_false, Finset.sum_const_zero, mul_zero]
+    simp only [Nat.not_lt_zero, ite_false, Finset.sum_const_zero, mul_zero]
     positivity
   | succ n ih =>
     intro hn
@@ -260,7 +260,7 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
     rw [min_eq_left hbi]
     have hoe : (oEff S b i : ℝ) = ((b.w i + b.sg i : ℕ) : ℝ) := by
       unfold oEff
-      rw [if_pos hs]
+      rw [ite_eq_left hs]
     rw [hoe]
     have hm := mul_le_mul_of_nonneg_left hsum hP0.le
     have e1 : (p : ℝ) ^ (S.G - S.d i) * ((coarseA p S b i : ℝ) * (1 + 4 / (p : ℝ) ^ 2) +
@@ -315,7 +315,7 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
       · exact div_le_div_of_nonneg_right H.aS hx0.le
     have hoe : (oEff S b i : ℝ) = (b.o i : ℝ) := by
       unfold oEff
-      rw [if_neg hs]
+      rw [ite_eq_right hs]
     rw [hoe]
     have hm := mul_le_mul_of_nonneg_left hoc hP0.le
     have e1 : (p : ℝ) ^ (S.G - S.d i) * ((cap p S b i : ℝ) + S.La * (coarseA p S b i : ℝ) / ((r : ℝ) + 1)) =
@@ -406,7 +406,7 @@ theorem SegHyp.oplus (H : SegHyp p S b' de be aS Q) (b : SegBlock s r) :
           ≤ ∑ _i : Fin s, 2 * (b' / p) := by
             apply Finset.sum_le_sum
             intro i _
-            rw [if_pos i.2]
+            rw [ite_eq_left i.2]
             exact hcoarse i
         _ = (s : ℝ) * (2 * (b' / p)) := by simp
     linarith

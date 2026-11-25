@@ -17,15 +17,6 @@ namespace GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd
 
 open GlobalTheory.FiniteAmple
 
-theorem exists_finFree_away_of_finitePresentation {A B : Type} [CommRing A] [CommRing B] {φ : A →+* B}
-    (hf : φ.Finite) (hfl : φ.Flat) (hfp : φ.FinitePresentation) (p : PrimeSpectrum A) :
-    ∃ r ∉ p.asIdeal, ∀ {A' B' : Type} [CommRing A'] [CommRing B'] {α : A →+* A'} {β : B →+* B'}
-      {φ' : A' →+* B'},
-      IsPushout (CommRingCat.ofHom φ) (CommRingCat.ofHom α) (CommRingCat.ofHom β)
-        (CommRingCat.ofHom φ') →
-      IsUnit (α r) → FinFree φ' := by
-  apply GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp <;> assumption
-
 theorem finiteFreeHom_comp_isIso {A B C : CommRingCat.{0}} (f : A ⟶ B) (e : B ⟶ C) [IsIso e]
     (h : FinFree f.hom) : FiniteFreeHom (f ≫ e).hom := by
   obtain ⟨hfin, hfree⟩ := h
@@ -49,7 +40,7 @@ theorem exists_affine_finiteFreeHom {Y S : Scheme.{0}} (g : Y ⟶ S) [IsFinite g
     rw [Scheme.Hom.app_eq_appLE]
     exact HasRingHomProperty.appLE @LocallyOfFinitePresentation g ‹_› ⟨V, hV⟩
       ⟨_, hV.preimage g⟩ _
-  obtain ⟨r, hr, F⟩ := exists_finFree_away_of_finitePresentation hfin hfl hfp
+  obtain ⟨r, hr, F⟩ := GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp hfin hfl hfp
     (PrimeSpectrum.comap (S.presheaf.germ V s hsV).hom (IsLocalRing.closedPoint _))
   have hsW : s ∈ S.basicOpen r := by
     rw [Scheme.mem_basicOpen _ _ _ hsV]

@@ -152,38 +152,15 @@ theorem cond_conj (g s : S.V ≃ₗ[E] S.V) {A₁ B₁ A₂ B₂ : Submodule E S
 
 variable {T' : E} {F₁ F₂ : LFlag S r T'} {g : S.V ≃ₗ[E] S.V}
 
-theorem e_of_frame (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) (i : Fin r) :
-    F₂.fl.e i = g (F₁.fl.e i) := by
-  have := hfr (Fin.castSucc i)
-  simpa [frame, FlagG.fvec] using this
-
-theorem xflag_eq_map (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) (j : ℕ) :
-    Xflag F₂ j = (Xflag F₁ j).map (g : S.V →ₗ[E] S.V) := by
-  have he : F₂.fl.e = fun i => g (F₁.fl.e i) := funext (e_of_frame hfr)
-  show Submodule.span E (F₂.fl.e '' _) = (Submodule.span E (F₁.fl.e '' _)).map _
-  rw [Submodule.map_span, Set.image_image, he]
-  rfl
-
-theorem xsp_eq_map (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) :
-    Xsp F₂ = (Xsp F₁).map (g : S.V →ₗ[E] S.V) := by
-  have he : F₂.fl.e = fun i => g (F₁.fl.e i) := funext (e_of_frame hfr)
-  show Submodule.span E (Set.range F₂.fl.e) = (Submodule.span E (Set.range F₁.fl.e)).map _
-  rw [Submodule.map_span, ← Set.range_comp, he]
-  rfl
-
-theorem orth_mem (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) (hiso : g ∈ Formalism.HermitianLatticesTheory.isom S.hT)
-    (y : S.V) : y ∈ orth S (Xsp F₂) ↔ g.symm y ∈ orth S (Xsp F₁) := by
-  apply _root_.PI.DCRelEquiv.UnitaryGroupMassFormula.orth_mem_transport <;> assumption
-
 theorem nlam_conj (hg : IsAutLam S Λ g) (hfr : ∀ a, frame F₂ a = g (frame F₁ a))
     (s : S.V ≃ₗ[E] S.V) : s ∈ NLam Λ F₂ ↔ g⁻¹ * s * g ∈ NLam Λ F₁ := by
   have hA : ∀ j x, x ∈ Xflag F₂ j ↔ g.symm x ∈ Xflag F₁ j := fun j x => by
-    rw [xflag_eq_map hfr]
+    rw [PI.DCRelEquiv.UnitaryGroupMassFormula.Xflag_transport hfr]
     exact Submodule.mem_map_equiv _
   have hX : ∀ x, x ∈ Xsp F₂ ↔ g.symm x ∈ Xsp F₁ := fun x => by
-    rw [xsp_eq_map hfr]
+    rw [PI.DCRelEquiv.UnitaryGroupMassFormula.Xsp_transport hfr]
     exact Submodule.mem_map_equiv _
-  have hO : ∀ x, x ∈ orth S (Xsp F₂) ↔ g.symm x ∈ orth S (Xsp F₁) := orth_mem hfr hg.1
+  have hO : ∀ x, x ∈ orth S (Xsp F₂) ↔ g.symm x ∈ orth S (Xsp F₁) := PI.DCRelEquiv.UnitaryGroupMassFormula.orth_mem_transport hfr hg.1
   have hAut : IsAutLam S Λ s ↔ IsAutLam S Λ (g⁻¹ * s * g) := by
     constructor
     · intro h
@@ -559,7 +536,6 @@ theorem tw_inv_eq {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : �
     tw F0 F'' L hLu hZu hGr a⁻¹ = (tw F0 F'' L hLu hZu hGr a)⁻¹ := by
   rw [eq_inv_iff_mul_eq_one, ← tw_mul, mul_inv_cancel, tw_one]
 
-
 open Formalism.L2.SG.PackageTie2 in
 theorem volume_dictionary_lu_decomposition (Y : Formalism.L2.SG.Full.Full X) {u u' : D.what₂.Word} (t : TT Y u u')
     {w : Point D.host.E (D.R.rS + 1)} {F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)} {L U : MatR D}
@@ -895,7 +871,7 @@ theorem FM_inv {e : Fin m → V} {g : V ≃ₗ[K] V} {G : Matrix (Fin m) (Fin m)
   have hc : ∀ d, ∑ c, G⁻¹ c b * G d c = (G * G⁻¹) d b := fun d => by
     rw [Matrix.mul_apply]; exact Finset.sum_congr rfl fun c _ => mul_comm _ _
   simp only [← Finset.sum_smul, hc, hGG, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end FrameC
 
@@ -936,20 +912,20 @@ theorem inS_frame {n r : ℕ} {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} 
   · intro i j
     refine ⟨fun hji => ?_, fun hij => ?_⟩
     · dsimp only
-      rw [if_neg (ne_of_gt hji)]
+      rw [ite_eq_right (ne_of_gt hji)]
       split_ifs with h
       · rw [hy0 j ⟨i.val, h⟩ (le_of_lt hji)]; simp
       · simp
     · subst hij
       dsimp only
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       split_ifs with h
       · rw [hy0 i ⟨i.val, h⟩ le_rfl]; simp
       · simp
   · intro b
     show g *ᵥ _ = _
     simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [hyeq b, Fin.sum_univ_castSucc]
     simp [Formalism.L2.SG.RealObj.fam, Fin.snoc_castSucc]
 
@@ -990,7 +966,7 @@ theorem FMm_inv {e : Fin m → Fin n → ℂ} {g : Matrix (Fin n) (Fin n) ℂ} {
   have hc : ∀ d, ∑ c, G⁻¹ c b * G d c = (G * G⁻¹) d b := fun d => by
     rw [Matrix.mul_apply]; exact Finset.sum_congr rfl fun c _ => mul_comm _ _
   simp only [← Finset.sum_smul, hc, hGG, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem conj_shear {r : ℕ} {N : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hN : IsUpUni N)
     {Y Y' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (a b : Fin (r + 1))
@@ -1056,7 +1032,7 @@ theorem hJ_efr (u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS
     fun x y => by rw [← Formalism.L2.SG.PoincareInHH.Cut.hform_crd X x y, RingEquiv.symm_apply_apply]
   rw [efr_eq, Formalism.L2.SG.Pf.Level.hJ_rv, show X.fR a = X.crd (X.fY a) from rfl, hE']
   refine Fin.lastCases ?_ (fun i => ?_) d
-  · rw [if_neg (Fin.castSucc_lt_last a).ne']
+  · rw [ite_eq_right (Fin.castSucc_lt_last a).ne']
     simp only [FlagG.fvec, Fin.snoc_last, X.flagZVector u', (X.zu_orth u' a).2, map_zero]
   · simp only [FlagG.fvec, Fin.snoc_castSucc, X.Fu_e u']
     have h := (VS D).herm.eq (X.eX i) (X.fY a)
@@ -1065,7 +1041,7 @@ theorem hJ_efr (u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS
     rw [h2]
     by_cases hia : i = a
     · subst hia; simp
-    · rw [if_neg hia, if_neg (fun h => hia (Fin.castSucc_inj.1 h))]; simp
+    · rw [ite_eq_right hia, ite_eq_right (fun h => hia (Fin.castSucc_inj.1 h))]; simp
 
 theorem hJ_sum_right (ε : Fin X.B.I.n → Bool) (y : Fin X.B.I.n → ℂ) {m : ℕ} (c : Fin m → ℂ)
     (e : Fin m → Fin X.B.I.n → ℂ) : Formalism.L2.SG.HidaSetting.hJ ε y (∑ i, c i • e i) = ∑ i, c i * Formalism.L2.SG.HidaSetting.hJ ε y (e i) := by
@@ -1081,7 +1057,7 @@ theorem coef_efr (u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) {g : Matrix (
   have hg' : ∀ d, g *ᵥ efr X u' v d = ∑ c, G c d • efr X u' v c := hg
   rw [Matrix.mulVec_smul, hg' b, Finset.smul_sum]
   simp only [smul_smul, hJ_sum_right X]
-  simp only [hJ_efr, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hJ_efr, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end RealFrame
 
@@ -1155,14 +1131,14 @@ theorem Alin_shear {N : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ} (hN : 
       z p = rdc ^ (p.1.2.1 - p.1.1.1) * Yhat w rdc z p.1.1 p.1.2 := by
     intro z
     have e1 : Yhat w rdc z p.1.1 p.1.2 = z p / rdc ^ (p.1.2.1 - p.1.1.1) := by
-      simp only [Yhat, dif_pos hcond]
+      simp only [Yhat, dite_eq_left hcond]
       rfl
     rw [e1, mul_div_cancel₀ _ (pow_ne_zero _ hrd)]
   have hcs := conj_shear hN (Y := Yhat w rdc x) (Y' := Yhat w rdc x') p.1.1 p.1.2 ?_
   · rw [Alin_apply, Alin_apply, hx x, hx x', ← mul_sub, ← mul_sub, hcs]
   · intro c d hac hdb hne
     by_cases hcd : c < d ∧ Formalism.L2.SG.RealObj.blkOf w.1 c.1 = Formalism.L2.SG.RealObj.blkOf w.1 d.1
-    · simp only [Yhat, dif_pos hcd]
+    · simp only [Yhat, dite_eq_left hcd]
       congr 1
       apply h
       have h1 : p.1.1.val ≤ c.val := hac
@@ -1173,7 +1149,7 @@ theorem Alin_shear {N : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ} (hN : 
         exact hne (Prod.ext (Fin.ext hh.1) (Fin.ext hh.2))
       show d.val - c.val < p.1.2.val - p.1.1.val
       omega
-    · simp only [Yhat, dif_neg hcd]
+    · simp only [Yhat, dite_eq_right hcd]
 
 end Alin
 
@@ -1234,7 +1210,6 @@ theorem conj_off {n : ℕ} {K : Type*} [Field K] {N Y : Matrix (Fin n) (Fin n) K
 end Helpers
 
 section Final
-
 
 open Formalism.L2.SG.PackageTie2 in
 theorem dictC_holds : DictC := by

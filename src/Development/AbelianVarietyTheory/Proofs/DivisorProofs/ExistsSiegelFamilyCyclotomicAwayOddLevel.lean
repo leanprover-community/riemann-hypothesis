@@ -152,12 +152,6 @@ variable {h n n' n'' : ℕ} {B B' B'' : Type} [CommRing B] [CommRing B'] [CommRi
   {S S' S'' : Scheme.{0}} {s : S ⟶ Sp B} {s' : S' ⟶ Sp B'} {s'' : S'' ⟶ Sp B''} {c : SiegPre h n ζ s}
   {c' : SiegPre h n' ζ' s'} {c'' : SiegPre h n'' ζ'' s''} {f : S' ⟶ S} {f' : S'' ⟶ S'} {d d' d'' : ℕ}
 
-theorem sRel_cancel (h₁ : SRel c' c d' d f) (h₂ : SRel c'' c d'' d (f' ≫ f)) : SRel c'' c' d'' d' f' :=
-  ((_root_.GlobalTheory.SiegLevCalc.sRel_calculus h n n' n'' B B' B'' ζ ζ' ζ'' S S' S'' s s' s'' c c' c'' f f' d d' d'' h₁).1).2 h₂
-
-theorem sRel_principal (h₁ : SRel c' c d' d f) (hc : c.Principal) : c'.Principal :=
-  (_root_.GlobalTheory.SiegLevCalc.sRel_calculus h n n' n' B B' B' ζ ζ' ζ' S S' S' s s' s' c c' c' f (𝟙 _) d d' d' h₁).2.1 hc
-
 theorem sRel_scale (h₁ : SRel c' c d' d f) (e : ℕ) : SRel c' c (d' * e) (d * e) f :=
   (_root_.GlobalTheory.SiegLevCalc.sRel_calculus h n n' n' B B' B' ζ ζ' ζ' S S' S' s s' s' c c' c' f (𝟙 _) d d' d' h₁).2.2 e
 
@@ -174,11 +168,11 @@ theorem sFam_of_dvd : ∀ (h n N : ℕ) (o : Type) [CommRing o] [IsNoetherianRin
     (by simp)).2.2 F.univ
   have r₀₁ : SRel F.univ c₀ 1 1 (𝟙 _) := (sRel_one_one_iff _ _ _).2 h₀₁
   have r₀₂ : SRel c₀ F.univ 1 1 (𝟙 _) := (sRel_one_one_iff _ _ _).2 h₀₂
-  have p₀ : c₀.Principal := sRel_principal r₀₂ F.princ
+  have p₀ : c₀.Principal := GlobalTheory.QuotFamRep.sRel_principal r₀₂ F.princ
   obtain ⟨S₁, π, C, hfin, het, hsurj, hlow, huniv⟩ :=
     _root_.GlobalTheory.SiegCover.exists_levelCover h n N o o ζ b (RingHom.id o) F.X F.s c₀ hn hN hnN rfl p₀
   have hN0 : N ≠ 0 := hN.pos.ne'
-  have pC : C.Principal := sRel_principal hlow p₀
+  have pC : C.Principal := GlobalTheory.QuotFamRep.sRel_principal hlow p₀
   refine ⟨{
     X := S₁
     s := π ≫ F.s
@@ -193,7 +187,7 @@ theorem sFam_of_dvd : ∀ (h n N : ℕ) (o : Type) [CommRing o] [IsNoetherianRin
     inj := ?_ }⟩
   · intro T s' c hred hdense hp
     obtain ⟨cl, hcl1, hcl2⟩ := _root_.GlobalTheory.SiegLower.exists_lower h n N o o ζ (b.ζ : o) (RingHom.id o) T s' c hN0 b.unit hnN rfl
-    have pl : cl.Principal := sRel_principal hcl2 hp
+    have pl : cl.Principal := GlobalTheory.QuotFamRep.sRel_principal hcl2 hp
     obtain ⟨f, hf, hfp⟩ := F.rep T (s' ≫ spMap (RingHom.id o)) cl hred
       (by rw [_root_.GlobalTheory.LevelFibre.spMap_id', Category.comp_id]; exact hdense) pl
     rw [_root_.GlobalTheory.LevelFibre.spMap_id', Category.comp_id] at hf
@@ -211,7 +205,7 @@ theorem sFam_of_dvd : ∀ (h n N : ℕ) (o : Type) [CommRing o] [IsNoetherianRin
     obtain ⟨cx, hcx⟩ := (_root_.GlobalTheory.SiegelRingChange.siegPre_pull_ringChange h n o o ζ ζ (RingHom.id o) F.X (Sp R) (F.s ≫ spMap (RingHom.id o))
       ((x ≫ π) ≫ F.s) (x ≫ π) rfl (by simp)).1 c₀
     have e1 : SRel cx c₀ 1 1 (x ≫ π) := (sRel_one_one_iff _ _ _).2 hcx
-    have e2 : SRel cx c 1 (N / n) (𝟙 _) := sRel_cancel (f' := 𝟙 _) kx (by simpa using e1)
+    have e2 : SRel cx c 1 (N / n) (𝟙 _) := GlobalTheory.SiegAct.sRel_cancel (f' := 𝟙 _) kx (by simpa using e1)
     have e3 : SRel cx c₀ 1 1 (𝟙 _ ≫ y ≫ π) := GlobalTheory.SiegAct.sRel_comp ky e2
     have fx : SiegPB cx F.univ (x ≫ π) := (sRel_one_one_iff _ _ _).1 (by simpa using GlobalTheory.SiegAct.sRel_comp r₀₂ e1)
     have fy : SiegPB cx F.univ (y ≫ π) := (sRel_one_one_iff _ _ _).1 (by simpa using GlobalTheory.SiegAct.sRel_comp r₀₂ e3)
@@ -221,7 +215,7 @@ theorem sFam_of_dvd : ∀ (h n N : ℕ) (o : Type) [CommRing o] [IsNoetherianRin
       ((x ≫ π) ≫ F.s) x rfl (by rw [spMap_id_eq]; simp)).1 C
     have g1 : SRel Cx C 1 1 x := (sRel_one_one_iff _ _ _).2 hCx
     have g2 : SRel Cx c₀ (N / n) 1 (x ≫ π) := GlobalTheory.SiegAct.sRel_comp hlow (by simpa using sRel_scale g1 (N / n))
-    have g3 : SRel Cx c 1 1 (𝟙 _) := sRel_cancel (f' := 𝟙 _) rx (by simpa using g1)
+    have g3 : SRel Cx c 1 1 (𝟙 _) := GlobalTheory.SiegAct.sRel_cancel (f' := 𝟙 _) rx (by simpa using g1)
     have g4 : SiegPB Cx C y := (sRel_one_one_iff _ _ _).1 (by simpa using GlobalTheory.SiegAct.sRel_comp ry g3)
     exact (huniv (Sp R) (x ≫ π) Cx g2).unique ⟨rfl, hCx⟩ ⟨hπ.symm, g4⟩
 

@@ -15,12 +15,6 @@ noncomputable section
 
 open scoped Matrix.Norms.Elementwise
 
-section ellreg
-
-variable {d : ℕ} {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-end ellreg
-
 def lieOf {k r : ℕ} (Sx : Set (B.Mat k r)) : Set (B.Mat k r) :=
   {X | ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ Sx}
 

@@ -143,7 +143,7 @@ private def resD (K L : Type) {Ω : Type} [Field K] [NumberField K] [Field L] [N
     ↥(Dec (F := L) A) →* ↥(Dec (F := K) A) where
   toFun u := ⟨rs K L Ω u, u.2⟩
   map_one' := Subtype.ext (map_one _)
-  map_mul' a b := Subtype.ext (map_mul _ _ _)
+  map_mul' _ _ := Subtype.ext (map_mul _ _ _)
 
 private def cMap (A B : ValuationSubring Ω) (γ : G K Ω) (h : γ • A = B) :
     ↥(Dec (F := K) B) →* ↥(Dec (F := K) A) where

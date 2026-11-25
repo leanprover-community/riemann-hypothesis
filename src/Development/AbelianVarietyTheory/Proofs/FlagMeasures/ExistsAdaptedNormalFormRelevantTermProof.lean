@@ -11,55 +11,11 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellInv
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellMono
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellPt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellFin
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellGeo
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SplittingAdmissibleOfTermData
@@ -206,7 +162,7 @@ theorem exists_dual [FiniteDimensional K V] (G : FlagD H r) (b : Fin r) :
   have hn : G.e b.castSucc ∉ Submodule.span K ((fun a : Fin r => G.e a.castSucc) '' {b}ᶜ) :=
     G.indep.notMem_span_image (by simp)
   have h := mt (memOfOrthogonalOrthogonal K V H _ (G.e b.castSucc)) hn
-  push_neg at h
+  push Not at h
   obtain ⟨v, hv, hb⟩ := h
   refine ⟨star (H.B (G.e b.castSucc) v)⁻¹ • v, fun a => ?_⟩
   rw [map_smulₛₗ]
@@ -356,7 +312,7 @@ theorem entry_cb (bs : List (K × ℕ)) (hb : ∀ b ∈ bs, b.1 ≠ 0 ∧ 1 ≤ 
     obtain ⟨t, s⟩ := b
     have h := hb (t, s) (by simp)
     have ih' := ih (fun b hb' => hb b (by simp [hb']))
-    simp only [List.map_cons, cb, dif_pos h, Formalism.MainNotions.S.Loc.ptEntryL, Formalism.MainNotions.S.ptEntry, PNat.mk_coe, Units.val_mk0]
+    simp only [List.map_cons, cb, dite_eq_left h, Formalism.MainNotions.S.Loc.ptEntryL, Formalism.MainNotions.S.ptEntry, PNat.mk_coe, Units.val_mk0]
     simp only [ih', apply_ite star, star_zero]
     exact if_congr Iff.rfl (if_congr Iff.rfl rfl rfl) (if_congr Iff.rfl rfl rfl)
 
@@ -367,7 +323,7 @@ theorem size_cb (bs : List (K × ℕ)) (hb : ∀ b ∈ bs, b.1 ≠ 0 ∧ 1 ≤ b
   | cons b bs ih =>
     have h := hb b (by simp)
     have ih' := ih (fun b hb' => hb b (by simp [hb']))
-    simp only [List.map_cons, List.sum_cons, cb, dif_pos h, PNat.mk_coe, ih']
+    simp only [List.map_cons, List.sum_cons, cb, dite_eq_left h, PNat.mk_coe, ih']
 
 end Mat
 end GlobalTheory.TypeAsm.NFEx

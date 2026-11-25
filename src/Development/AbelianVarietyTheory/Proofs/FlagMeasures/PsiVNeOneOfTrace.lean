@@ -61,29 +61,16 @@ section Local
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem fin_conductor (χ : Af F → ℂ) (hc : Continuous χ) (hadd : ∀ x y, χ (x + y) = χ x * χ y)
-    (hrat : ∀ a : F, χ (algebraMap F (Af F) a) =
-      Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ F (-a) : ℚ) : ℂ))) (z : Af F) :
-    (∀ t : Af F, (∀ v : HeightOneSpectrum (𝓞 F), t v ∈ v.adicCompletionIntegers F) → χ (z * t) = 1) ↔
-      ∀ d ∈ differentIdeal ℤ (𝓞 F), ∀ v : HeightOneSpectrum (𝓞 F), (z * algebraMap F (Af F) (d : F)) v ∈ v.adicCompletionIntegers F := by
-  apply _root_.GlobalTheory.SnMass.Inhab.fin_conductor <;> assumption
-
-theorem single_same (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) : singleV F v y v = y := by
-  classical
-  exact RestrictedProduct.single_eq_same (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) v y
+theorem single_same (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) : singleV F v y v = y :=
+  _root_.GlobalTheory.SnMass.Inhab.single_same v y
 
 theorem single_ne (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) {w : HeightOneSpectrum (𝓞 F)} (hw : w ≠ v) :
-    singleV F v y w = 0 := by
-  classical
-  exact RestrictedProduct.single_eq_of_ne (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) y hw
+    singleV F v y w = 0 :=
+  _root_.GlobalTheory.SnMass.Inhab.single_ne v y hw
 
 theorem single_mul (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) (t : Af F) :
-    singleV F v y * t = singleV F v (y * t v) := by
-  refine RestrictedProduct.ext _ _ fun w => ?_
-  change singleV F v y w * t w = singleV F v (y * t v) w
-  by_cases hw : w = v
-  · subst hw; rw [single_same, single_same]
-  · rw [single_ne v _ hw, single_ne v _ hw, zero_mul]
+    singleV F v y * t = singleV F v (y * t v) :=
+  _root_.GlobalTheory.SnMass.Inhab.single_mul v y t
 
 theorem psiV_ne_one_of_trace {ψ : AddChar (AF F) ℂ} (h : IsCharAF F ψ)
     (hinf : ∀ a : F, psiInf F ψ (algebraMap F (Ainf F) a) =
@@ -96,7 +83,7 @@ theorem psiV_ne_one_of_trace {ψ : AddChar (AF F) ℂ} (h : IsCharAF F ψ)
     rw [Ne, map_eq_zero]
     exact_mod_cast hd0
   obtain ⟨z, hz⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective F v (WithZero.exp 1)
-  have key := (fin_conductor (fun y => ψ (pairA F 0 y))
+  have key := (GlobalTheory.SnMass.Inhab.fin_conductor (fun y => ψ (pairA F 0 y))
     (h.1.comp (Continuous.prodMk continuous_const continuous_id))
     (fun a b => by
       rw [← AddChar.map_add_eq_mul]
@@ -110,16 +97,12 @@ theorem psiV_ne_one_of_trace {ψ : AddChar (AF F) ℂ} (h : IsCharAF F ψ)
   rw [h1, HeightOneSpectrum.mem_adicCompletionIntegers, hz, ← WithZero.exp_zero, WithZero.exp_le_exp] at key
   omega
 
-theorem sum_places_eq_trace [IsTotallyReal F] (x : F) :
-    (((∑ w : InfinitePlace F, (w.embedding x).re : ℝ)) : ℂ) = ((Algebra.trace ℚ F x : ℚ) : ℂ) := by
-  apply _root_.GlobalTheory.SnMass.Inhab.sum_places_eq_trace
-
 end Local
 
 theorem exists_psiV_ne_one : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → ∀ (ψ : AddChar (AF F) ℂ), IsCharAF F ψ → (∀ x : Ainf F, psiInf F ψ x = Complex.exp (2 * Real.pi * Complex.I * ((∑ w : InfinitePlace F, (InfinitePlace.Completion.extensionEmbedding w (x w)).re : ℝ) : ℂ))) → ∀ v : HeightOneSpectrum (𝓞 F), ∃ r, psiV F ψ v r ≠ 1 := by
   intro F _ _ hF ψ hψ hinf v
   refine psiV_ne_one_of_trace hψ (fun a => ?_) v
-  rw [hinf, ← sum_places_eq_trace]
+  rw [hinf, ← GlobalTheory.SnMass.Inhab.sum_places_eq_trace]
   refine congrArg (fun t : ℝ => Complex.exp (2 * Real.pi * Complex.I * (t : ℂ)))
     (Finset.sum_congr rfl fun w _ => congrArg Complex.re ?_)
   rw [InfiniteAdeleRing.algebraMap_apply, InfinitePlace.Completion.extensionEmbedding_coe]

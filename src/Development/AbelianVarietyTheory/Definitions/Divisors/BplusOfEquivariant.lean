@@ -25,7 +25,7 @@ def levCol (L : LevCh D T) (t : T) (j : ℕ) : Subgroup (GL (Fin (columnBlock L 
   if h : j + 1 < D.R.m then
     cast (by rw [colY_lt L h])
       (Formalism.L2.DIV.lev D.sp.cm (Yc D (j + 1)).gram (L.βY (j + 1)) (L.datYt t (j + 1) L.triv))
-  else cast (by rw [columnBlock, if_neg h]) (Formalism.L2.DIV.lev D.sp.cm D.sp.X'.gram L.βX (L.datXt t))
+  else cast (by rw [columnBlock, ite_eq_right h]) (Formalism.L2.DIV.lev D.sp.cm D.sp.X'.gram L.βX (L.datXt t))
 
 theorem levCol_lt (L : LevCh D T) (t : T) {j : ℕ} (h : j + 1 < D.R.m) : HEq (levCol L t j)
     (Formalism.L2.DIV.lev D.sp.cm (Yc D (j + 1)).gram (L.βY (j + 1)) (L.datYt t (j + 1) L.triv)) := by
@@ -106,7 +106,7 @@ theorem levJ_open_compact (G : GridData L sc) {μ0 : T} (hL : L.Is μ0) (t : T) 
   any_goals first | exact hc | exact hm
   by_cases hj : j + 1 < D.R.m
   · exact key _ _ _ _ _ _ (colY_lt L hj) (levCol_lt L t hj)
-  · exact key _ _ _ _ _ _ (if_neg hj) (levCol_top L t hj)
+  · exact key _ _ _ _ _ _ (ite_eq_right hj) (levCol_top L t hj)
 
 theorem exists_vol (G : GridData L sc) {μ0 : T} (hL : L.Is μ0) (t : T) : ∃ M : Vol G, M.Is t := by
   have H : ∀ X : Node, ∃ μ 𝓕, X.InRange D.R.m → if X.neg D.R.m = 0 then IsMeasDef (G.V X) (levJ G t X) μ 𝓕

@@ -24,7 +24,7 @@ private theorem val_aic {S : Type} [CommRing S] (ϖ : S) [IsAdicComplete (Ideal.
     RL.dich_of_mod _ (hjb _) (RL.valuation_square_of_valuation_mod ϖ h0 P hP)
   have hv : Val ϖ := RL.val_of_dich ϖ fun m hm => hd m hm.isPrime
   refine ⟨hv, _root_.GlobalTheory.CompanionTheory.AicLimit.aic_of_step ϖ (RL.step_glob ϖ fun m hm => ?_) (_root_.GlobalTheory.CompanionTheory.ValPowDvd.dvd_of_pow_mul_dvd_pow ϖ hnz hv)⟩
-  refine RL.step_comp _ (hjb _) ((RL.dich_comp ϖ m hm.isPrime).2 hnz) (hd m hm.isPrime) ?_
+  refine GlobalTheory.CompanionTheory.NewtonStep.step_comp _ (hjb _) ((RL.dich_comp ϖ m hm.isPrime).2 hnz) (hd m hm.isPrime) ?_
   refine (_root_.GlobalTheory.CompanionTheory.SurjPass.absolutely_closed_comparable_surjective (Ideal.Quotient.lift (Ideal.span {ϖ ^ 2})
     ((Ideal.Quotient.mk (Ideal.span {Ideal.Quotient.mk (compI m) ϖ ^ 2})).comp (Ideal.Quotient.mk (compI m))) ?_)
     (Ideal.Quotient.lift_surjective_of_surjective _ _

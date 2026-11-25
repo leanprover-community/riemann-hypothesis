@@ -7,6 +7,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ClsOnto
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.GalEmbTop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.Places
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LaArith
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.TorsionOrderFrobenius.ContinuousKap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.TorsionOrderFrobenius.IsFrobSq
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.TorsionOrderFrobenius.QuadMu
@@ -91,10 +92,6 @@ private theorem cyc_frob {l : ℕ} [Fact l.Prime] {A : ValuationSubring Ω} {q :
     PadicInt.ext_of_toZModPow.mp fun n => cycZ_toZModPow_eq hl hv ht.2 n
   change ((algebraMap ℚ_[l] (Qbar l)).comp PadicInt.Coe.ringHom) ((cycZ ℚ Ω l t : ℤ_[l]ˣ) : ℤ_[l]) = _
   rw [e, map_natCast]
-private theorem continuous_cyc (l : ℕ) [Fact l.Prime] :
-    Continuous fun t : G ℚ Ω => ((cycBar ℚ Ω l t : (Qbar l)ˣ) : Qbar l) :=
-  ((continuous_algebraMap ℚ_[l] (Qbar l)).comp continuous_subtype_val).comp
-    ((Units.continuous_val (M := ℤ_[l])).comp (continuous_cycZ ℚ Ω l))
 variable (K : Type) [Field K] [NumberField K] [Algebra K Ω]
 omit [IsAlgClosure ℚ Ω] in
 private theorem cc_notMem [_root_.NumberField.IsTotallyComplex K] {c : G ℚ Ω} (hc : Sd.IsCC c) : c ∉ galOf ℚ K Ω := by
@@ -123,11 +120,11 @@ private theorem exists_chi [IsAlgClosure K Ω] (hK : Module.finrank ℚ K = 2) (
   let δ : G ℚ Ω →* ℂˣ := MonoidHom.mk' (fun s => if s ∈ galOf ℚ K Ω then 1 else -1) fun a b => by
     by_cases ha : a ∈ galOf ℚ K Ω <;> by_cases hb : b ∈ galOf ℚ K Ω <;>
       simp [Subgroup.mul_mem_iff_of_index_two hi, ha, hb]
-  have hδ : (Chr.cls ℚ Ω N).ker ≤ δ.ker := fun s hs => if_pos (hker hs)
+  have hδ : (Chr.cls ℚ Ω N).ker ≤ δ.ker := fun s hs => ite_eq_left (hker hs)
   have hs := (Chr.clsOnto Ω N).1
   have e : ∀ t, (Chr.cls ℚ Ω N).liftOfSurjective hs ⟨δ, hδ⟩ (Chr.cls ℚ Ω N t) = δ t := fun t =>
     MonoidHom.liftOfRightInverse_comp_apply _ _ _ _ t
-  refine ⟨hker, (Chr.cls ℚ Ω N).liftOfSurjective hs ⟨δ, hδ⟩, MonoidHom.ext fun u => ?_, fun t ht => (e t).trans (if_neg ht)⟩
+  refine ⟨hker, (Chr.cls ℚ Ω N).liftOfSurjective hs ⟨δ, hδ⟩, MonoidHom.ext fun u => ?_, fun t ht => (e t).trans (ite_eq_right ht)⟩
   obtain ⟨t, rfl⟩ := hs u
   rw [MonoidHom.pow_apply, e]
   change (if t ∈ galOf ℚ K Ω then (1 : ℂˣ) else -1) ^ 2 = 1
@@ -145,8 +142,10 @@ private theorem ver_of_frob [IsAlgClosure K Ω] (hK : Module.finrank ℚ K = 2) 
     exact this
   choose g hg using hsq
   have hgc : Continuous g := hemb.continuous_iff.2 ((continuous_id.mul continuous_id).congr fun t => (hg t).symm)
+  have hc := _root_.UpperTheory.Reformulated.B.ContinuousCyclotomicCharacter₂.cyc_continuous ℚ Ω l
   have hcl : IsClosed {t : G ℚ Ω | (κ (g t) : Qbar l) * (cycBar ℚ Ω l t : (Qbar l)ˣ) = -1} :=
-    isClosed_eq ((Units.continuous_val.comp (hκ.comp hgc)).mul (continuous_cyc l)) continuous_const
+    isClosed_eq ((Units.continuous_val.comp (hκ.comp hgc)).mul (Units.continuous_val.comp hc))
+      continuous_const
   have key : (κ (g t) : Qbar l) * (cycBar ℚ Ω l t : (Qbar l)ˣ) = -1 := by
     by_contra hne
     obtain ⟨q, A, φ, hq, hqT, hA, hφ, h1, h2⟩ := ML.chebQ Ω _

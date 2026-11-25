@@ -18,7 +18,7 @@ private theorem smooth_sections_of_affine_open (d : ℕ) (Z : Scheme.{0}) [IsInt
   exact RingHom.Smooth.comp h2 h1
 
 theorem UpperTheory.affineCechOpen_functionField_generic :
-    ∀ (d : ℕ) (Z : Scheme.{0}) [IsIntegral Z] (p : Z ⟶ Sp ℂ) [SmoothOfRelativeDimension d p] [inst : Algebra ℂ Z.functionField] (ι : Type) (U : ι → Z.Opens) (B : Finset ι → Subalgebra ℂ Z.functionField) (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) (s : Finset ι) (hs : s.Nonempty) (hV : IsAffineOpen (cechOpen ⊤ U s)) (hη : genericPoint Z ∈ cechOpen ⊤ U s), letI := algΓ p; Function.Injective (formGermI p a hV hη hinst) ∧ LinearMap.range (formGermI p a hV hη hinst) = omB ℂ Z.functionField (B s) a := by
+    ∀ (d : ℕ) (Z : Scheme.{0}) [IsIntegral Z] (p : Z ⟶ Sp ℂ) [SmoothOfRelativeDimension d p] [inst : Algebra ℂ Z.functionField] (ι : Type) (U : ι → Z.Opens) (B : Finset ι → Subalgebra ℂ Z.functionField) (hinst : inst = ffAlg p) (_ : IsAffCover p U B) (a : ℕ) (s : Finset ι) (_ : s.Nonempty) (hV : IsAffineOpen (cechOpen ⊤ U s)) (hη : genericPoint Z ∈ cechOpen ⊤ U s), letI := algΓ p; Function.Injective (formGermI p a hV hη hinst) ∧ LinearMap.range (formGermI p a hV hη hinst) = omB ℂ Z.functionField (B s) a := by
   intro d Z _ p _ inst ι U B hinst hU a s hs hV hη
   letI := algΓ p
   subst hinst

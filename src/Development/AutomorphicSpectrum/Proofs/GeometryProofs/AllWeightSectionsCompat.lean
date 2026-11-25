@@ -158,10 +158,8 @@ theorem indicator_mem_suppOn {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ 
     rw [dite_eq_right hT]
   obtain ⟨q, χ, y₀, hy₀⟩ := hT
   have hid := (sections_generic_indicators E H Dw l Xo c r U h e hC).2.2.2.1 Z
-  have hu : IsIdempotentElem (χ (e Z q y₀)) := by
-    have : e Z q y₀ * e Z q y₀ = e Z q y₀ := congrFun (congrFun hid q) y₀
-    show χ _ * χ _ = χ _
-    rw [← map_mul, this]
+  have hu : IsIdempotentElem (χ (e Z q y₀)) :=
+    IsIdempotentElem.map (show IsIdempotentElem (e Z q y₀) from congrFun (congrFun hid q) y₀) χ
   rw [GlobalTheory.FlagTan.evR_eq hnat hy₀]
   have hnil : IsNilpotent (χ (e Z q y₀)) := by
     rw [nilpotent_iff_mem_prime]
@@ -178,10 +176,7 @@ theorem indicator_mem_suppOn {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ 
     have h4 := h3 Z hne
     rw [GlobalTheory.FlagTan.evR_eq hnat (frMap_trans _ _ _ _ _ _ _ _ hy₀ hw), AlgHom.comp_apply] at h4
     exact Ideal.algebraMap_residueField_eq_zero.1 h4
-  obtain ⟨n, hn⟩ := hnil
-  have := hu.pow_succ_eq n
-  rw [pow_succ, hn, zero_mul] at this
-  exact this.symm
+  exact hu.eq_zero_of_isNilpotent hnil
 
 theorem cuspOn_eq_allWt {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {h : GenFrEx Xo c}
     {e : Comp Xo c → Rul Xo c} (hC : CompLaws U h e) (a : WZ E) (Z : Comp Xo c) :
@@ -228,7 +223,7 @@ theorem rdU_indicator {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {h :
     (GlobalTheory.AllWt.LiesOn Z ((U σ).un k ⟨x, hx⟩) → rdU (U σ) (e Z) k x = 1) ∧
       (¬ GlobalTheory.AllWt.LiesOn Z ((U σ).un k ⟨x, hx⟩) → rdU (U σ) (e Z) k x = 0) := by
   have hval : rdU (U σ) (e Z) k x = toC (evR Xo c (e Z) ((U σ).un k ⟨x, hx⟩)) := by
-    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hx, dif_pos]
+    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hx, dite_eq_left]
   letI : Field (CAt σ) := inferInstanceAs (Field ℂ)
   obtain ⟨Z₀, h1, h2, h3⟩ := indicator_at_field hC ((U σ).un k ⟨x, hx⟩)
   let s₀ : Sp (CAt σ) := (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum (CAt σ))

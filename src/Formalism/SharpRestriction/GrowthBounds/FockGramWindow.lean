@@ -54,14 +54,6 @@ namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
 open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
 
-variable (C0 CE1 CE2 : ℝ) (X : flipOneThree.Inst)
-
-end Formalism.MainNotions.G.SymmetricFormBlocks
-
-namespace Formalism.MainNotions.G.SymmetricFormBlocks
-
-open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
-
 theorem winA_sum (X : flipOneThree.Inst) (f : ℕ → ℝ) :
     ∑ aPlus ∈ X.winA, f aPlus = ∑ j ∈ Finset.range X.winA.card, f (X.L.a + j) := by
   unfold flipOneThree.Inst.winA
@@ -511,11 +503,11 @@ theorem bad_le_smith (n : ℕ) (k : ℤ) (Ψ : MvPolynomial σ ℚ_[p] → MvPol
     rw [hΨ]
     by_cases htt : t = t'
     · subst htt
-      rw [if_pos rfl, if_pos rfl]
+      rw [ite_eq_left rfl, ite_eq_left rfl]
       show (p : ℚ_[p]) ^ k * s / (d (ι t) : ℚ_[p]) * ((d (ι t) : ℚ_[p]) / s) = _
       have := hd0 t
       field_simp
-    · rw [if_neg htt, if_neg (fun h => htt (hιinj h)), zero_div, mul_zero]
+    · rw [ite_eq_right htt, ite_eq_right (fun h => htt (hιinj h)), zero_div, mul_zero]
   have hrank : Module.finrank ℤ_[p] L = n := by
     rw [hL, finrank_span_eq_card hli, Fintype.card_fin]
   have hcard : (Finset.univ.filter (fun i => ‖(d i : ℚ_[p])‖ ≤ (p : ℝ) ^ (-((k : ℝ) + 1)))).card + m = n := by
@@ -696,7 +688,7 @@ theorem dJ_le (A : ℕ) (hdeg : ∀ x, G.LL.deg x ≤ 2 * A) (hBa : G.B ≤ 2 * 
   · subst ha
     simp [Fin.castSucc_ne_last]
     omega
-  · rw [if_neg ha]
+  · rw [ite_eq_right ha]
     obtain ⟨a0, rfl⟩ : ∃ a0, Fin.castSucc a0 = a := Fin.exists_castSucc_eq.2 (Ne.symm ha)
     have h1 := lettersAt_le G j jp a0
     have h2 := hdeg a0
@@ -725,7 +717,7 @@ theorem lettersAt_uPos (hB : G.BlockOK) (j : Fin G.T.t → ℕ) (jp : ℕ) :
     (G.lettersAt j jp).deg G.uPos = G.LL.deg G.uPos - jp := by
   obtain ⟨-, hpos, -, -⟩ := hB
   have hz : (∑ i : Fin G.T.t, if (G.uPos : ℕ) = G.T.pos i ∨ (G.uPos : ℕ) = G.T.pos i + 1 then j i else 0) = 0 :=
-    Finset.sum_eq_zero fun i _ => if_neg (by have := hpos i; omega)
+    Finset.sum_eq_zero fun i _ => ite_eq_right (by have := hpos i; omega)
   change (List.map (fun i : Fin G.T.t => if (G.uPos : ℕ) = G.T.pos i ∨ (G.uPos : ℕ) = G.T.pos i + 1 then j i else 0) (List.finRange G.T.t)).sum = 0 at hz
   unfold M.BlockData.lettersAt
   simp only [hz, ite_true, Nat.sub_zero]
@@ -783,7 +775,7 @@ theorem det_leading_diagonal : DetLeadDiag := by
     · intro σ _ hσ
       rw [← Polynomial.C_eq_intCast, Polynomial.coeff_C_mul, hprod]
       obtain ⟨i, hi⟩ := not_forall.mp (mt Equiv.ext hσ)
-      rw [Finset.prod_eq_zero (Finset.mem_univ i) (by rw [hcoeff, if_neg (by simpa using hi)]), mul_zero]
+      rw [Finset.prod_eq_zero (Finset.mem_univ i) (by rw [hcoeff, ite_eq_right (by simpa using hi)]), mul_zero]
     · intro h
       exact absurd (Finset.mem_univ _) h
 
@@ -1482,9 +1474,6 @@ theorem main (hp2 : p ≠ 2) (B : V → V → ℚ_[p]) (L : Submodule ℤ_[p] V)
 
 end PI.LatMinWork
 
-namespace PI
-
-end PI
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinimalLatticeNorm.NormTwoEqOne =====
@@ -1519,14 +1508,6 @@ namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
 open MvPolynomial
 
-def OrthMin : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime] (σ : Type) (B : MvPolynomial σ ℚ_[p] → MvPolynomial σ ℚ_[p] → ℚ_[p])
-    (L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p])) (W : Submodule ℚ_[p] (MvPolynomial σ ℚ_[p])),
-    p ≠ 2 → FiniteDimensional ℚ_[p] W → (∀ x ∈ L, x ∈ W) → L.FG →
-    (∀ (c : ℚ_[p]) u v, B (c • u) v = c * B u v) → (∀ u u' v, B (u + u') v = B u v + B u' v) →
-    (∀ u ∈ L, ∀ v ∈ L, B u v = B v u) → (∃ u ∈ L, ∃ v ∈ L, B u v ≠ 0) →
-    ∃ x ∈ L, B x x ≠ 0 ∧ ∀ u ∈ L, ∃ c : ℤ_[p], B u x = (c : ℚ_[p]) * B x x
-
 def SplitRank : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (σ : Type) (L L' : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p]))
     (W : Submodule ℚ_[p] (MvPolynomial σ ℚ_[p])) (x : MvPolynomial σ ℚ_[p]),
@@ -1537,7 +1518,7 @@ def SplitRank : Prop :=
 theorem zsmul_eq' {p : ℕ} [Fact p.Prime] {σ : Type} (c : ℤ_[p]) (u : MvPolynomial σ ℚ_[p]) :
     c • u = (c : ℚ_[p]) • u := rfl
 
-theorem orthSplit_of (hM : OrthMin) (hR : SplitRank) : OrthSplit := by
+theorem orthSplit_of (hM : PI.LatMin) (hR : SplitRank) : OrthSplit := by
   intro p _ σ B L W hp hW hLW hfg hsm hadd hsym hne
   obtain ⟨x, hxL, hxx, hdiv⟩ := hM p σ B L W hp hW hLW hfg hsm hadd hsym hne
   have hB0 : ∀ v, B 0 v = 0 := by
@@ -1627,7 +1608,7 @@ theorem splitRank_proved : SplitRank := by
   rw [Module.finrank_prod, Module.finrank_self] at he
   omega
 
-theorem orthSplit_of_min (hM : OrthMin) : OrthSplit := by
+theorem orthSplit_of_min (hM : PI.LatMin) : OrthSplit := by
   exact orthSplit_of hM splitRank_proved
 
 end Formalism.MainNotions.G.SymmetricFormBlocks
@@ -1686,7 +1667,7 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
-theorem closed_of_minimal_vector (D : Formalism.BasicNotions.D7) (hO : OrthMin) (hM : GoodLeSmallMat) (h : RestWinE D) :
+theorem closed_of_minimal_vector (D : Formalism.BasicNotions.D7) (hO : PI.LatMin) (hM : GoodLeSmallMat) (h : RestWinE D) :
     Formalism.MainNotions.flipOneThree.IntegralityFromMetricForLargeConstants D :=
   closed_of_splitting_matrix D (orthSplit_of_min hO) hM h
 

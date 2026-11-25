@@ -193,7 +193,7 @@ theorem exists_mv {I : TC B X} (hI : I.Ok) (hP : TC.Pins B X) {l : I.Laws} {Z : 
     have e : ((diaT (Pr := B.primes X) u P : (𝓞 B.fields.E ⧸ P.1.asIdeal)ˣ) : 𝓞 B.fields.E ⧸ P.1.asIdeal) =
         Ideal.Quotient.mk P.1.asIdeal (B.fields.conjO (X.piT u)) := by
       unfold diaT
-      rw [dif_pos hu]
+      rw [dite_eq_left hu]
       rfl
     rw [e]
     exact R.k_T β P r j hr
@@ -426,13 +426,13 @@ theorem mvEl_spec (hI : I.Ok) (hP : TC.Pins B X) (A : TwDat I l Z u a Ch) (hA : 
   by_cases h : i = B.R.m
   · have hs := (exists_mv hI hP A hA i hi β (offPl I u a) (offPl_finite I u a) fun _ hv => hv.2.1).choose_spec
     have e : mvEl hI hP A hA i hi β =
-        (exists_mv hI hP A hA i hi β (offPl I u a) (offPl_finite I u a) fun _ hv => hv.2.1).choose := if_pos h
+        (exists_mv hI hP A hA i hi β (offPl I u a) (offPl_finite I u a) fun _ hv => hv.2.1).choose := ite_eq_left h
     rw [e]
     refine ⟨fun v => ?_, hs.2, fun _ => hs.1, fun h' => absurd h h'⟩
     by_cases hv : v ∈ offPl I u a
     · exact Or.inl (hs.1 v hv)
     · exact Or.inr (hs.2 v hv)
-  · have e : mvEl hI hP A hA i hi β = 1 := if_neg h
+  · have e : mvEl hI hP A hA i hi β = 1 := ite_eq_right h
     rw [e]
     exact ⟨fun v => Or.inr (map_one _), fun v _ => map_one _, fun h' => absurd h' h, fun _ => rfl⟩
 
@@ -474,12 +474,12 @@ def mvW (hI : I.Ok) (hP : TC.Pins B X) (A : TwDat I l Z u a Ch) (hA : A.Is) (i :
   if hi : i ≤ B.R.m then mvLift hI hP A hA i hi β else 1
 
 theorem mvG_eq (hI : I.Ok) (hP : TC.Pins B X) (A : TwDat I l Z u a Ch) (hA : A.Is) (i : ℕ) (hi : i ≤ B.R.m) (β : Ch i) :
-    mvG hI hP A hA i β = mvB hI hP A hA i hi β := dif_pos hi
+    mvG hI hP A hA i β = mvB hI hP A hA i hi β := dite_eq_left hi
 
 theorem mvW_spec (hI : I.Ok) (hP : TC.Pins B X) (A : TwDat I l Z u a Ch) (hA : A.Is) (i : ℕ) (hi : i ≤ B.R.m) (β : Ch i) :
     mvW hI hP A hA i β ∈ GfC _ ∧
       finM _ (rankN (I.rec7 l Z) i hi) (mvW hI hP A hA i β) = (mvEl hI hP A hA i hi β).1.1 := by
-  have e : mvW hI hP A hA i β = mvLift hI hP A hA i hi β := dif_pos hi
+  have e : mvW hI hP A hA i β = mvLift hI hP A hA i hi β := dite_eq_left hi
   rw [e]
   exact mvLift_spec hI hP A hA i hi β
 
@@ -818,9 +818,6 @@ open scoped TensorProduct Classical
 namespace GlobalTheory.LowJoin
 open GlobalTheory.TwBridge GlobalTheory.StepData GlobalTheory.SplitWeil
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a : I.ι}
-section Place
-variable {c : Comm (I.rec7 l Z)} {v : VCom c} {Bs : GlobalTheory.Fam.Base c} {PP : Pl (I.rec7 l Z).host.E}
-end Place
 
 theorem exists_quadratic_extension_readsLow : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (I.rec7 l Z)} {cX : ExtraC} {ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), _root_.GlobalTheory.Fam.AllFamilyConditions W → ∀ (u : B.Word) (a : _root_.GlobalTheory.Fam.GeometricFamily W u), a.Is → a.True → (commOf (_root_.GlobalTheory.Fam.pk_z W) u a.g).Is → ∀ t, ∃ J : _root_.GlobalTheory.Fam.QuadraticExtensionData a t, J.ReadsLow := by
   intro B X I l Z L hT Gi Gl Kc Yd cX ex W hW u a _ ha hc t

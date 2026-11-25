@@ -3,44 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.BelowFiniteNonempty
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumPeriodicMulLatticeFinal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HomConjEquivMemHomAt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -169,7 +133,7 @@ theorem ratTerm_of_ratStep : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (W : W
     · have hx2 := mt (mem_divLat_equiv_iff _ _ _ (homConjEquiv_mem_homAt (Sall sel mu u) γ.1 γ'.1 d.1.N d'.1.N)
         (cAof sel mu cst * cBof sel mu cst u) x).1 hx
       unfold stepT thDistC
-      rw [if_neg fun h => hx2 h.2, if_neg fun h => hx h.2, LinearMap.zero_comp, LinearMap.comp_zero]
+      rw [ite_eq_right fun h => hx2 h.2, ite_eq_right fun h => hx h.2, LinearMap.zero_comp, LinearMap.comp_zero]
   · rintro x _ ⟨y₀, hy₀, rfl⟩
     refine congrArg₂ (· * ·) ?_ ?_
     · refine GlobalTheory.TopInv.phiT_add _ _ d'.2 x y₀ _ (fun P => ?_) fun P v hv => hy₀ P.1 (Finset.mem_union_left _ P.2) v hv

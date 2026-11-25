@@ -25,18 +25,11 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qk6.heckePol :
-    {A : Type} → [inst : CommRing A] → ℕ → ℕ → (ℕ → A) → Polynomial A :=
-    fun {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) ↦
-      ∑ j ∈ Finset.range (n + (1 : ℕ)),
-        (Polynomial.C : A → Polynomial A) ((-1 : A) ^ j * (↑q : A) ^ (j * (j - (1 : ℕ)) / (2 : ℕ)) * a j) *
-          Polynomial.X ^ (n - j)
-
 theorem UpperTheory.Reformulated.B.Qk6.heckePol_map :
     ∀ {A B : Type} [inst : CommRing A] [inst_1 : CommRing B] (f : A →+* B) (n q : ℕ) (a : ℕ → A),
-      Polynomial.map f (UpperTheory.Reformulated.B.Qk6.heckePol n q a) = UpperTheory.Reformulated.B.Qk6.heckePol n q fun (j : ℕ) ↦ (f : A → B) (a j) := by
+      Polynomial.map f (UpperTheory.V.Hi.heckePol n q a) = UpperTheory.V.Hi.heckePol n q fun (j : ℕ) ↦ (f : A → B) (a j) := by
   intro A B _ _ f n q a
-  unfold UpperTheory.Reformulated.B.Qk6.heckePol
+  unfold UpperTheory.V.Hi.heckePol
 
   rw [Polynomial.map_sum]
   refine Finset.sum_congr rfl fun j _ ↦ ?_
@@ -136,7 +129,7 @@ theorem heckePol_coeff {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) (j : 
   · rw [coeff_C_mul, coeff_X_pow_self, mul_one, mul_assoc, ← mul_assoc, ← mul_pow]
     simp
   · intro i hi hij
-    rw [coeff_C_mul, coeff_X_pow, if_neg, mul_zero]
+    rw [coeff_C_mul, coeff_X_pow, ite_eq_right, mul_zero]
     have := Finset.mem_range.1 hi
     omega
   · intro h

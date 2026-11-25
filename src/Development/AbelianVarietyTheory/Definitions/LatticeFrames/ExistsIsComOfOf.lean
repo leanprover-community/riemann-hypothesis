@@ -151,10 +151,6 @@ structure StdSp (a : XPart D u) (ζ₀ : Fin a.Lz.rank → D.host.E) (π : D.hos
   topLat : ∀ z, z ∈ a.top.Λ ↔ z ∈ GlobalTheory.AdForm.intVec D _
   top : a.top.st.Is a.c D.R.m
 
-namespace StdSp
-
-end StdSp
-
 end Gen
 
 section World
@@ -260,10 +256,6 @@ structure XStdBy (A : ColDat I l Z v (w.C.herm.base.Ch v)) : Prop where
   cG : ∀ j, j < B.R.m → o.cG j = convList a.c.ψ _ _ (a.c.Pg.attach.toList.map fun PP => (G PP).cg j)
   cG_zero : ∀ j, B.R.m ≤ j → o.cG j = 0
   ker : ∀ j, j < B.R.m → (a.k j).c = conv a.c.ψ _ _ (o.cG j) (o.cT j)
-
-namespace XStdBy
-
-end XStdBy
 
 end World
 

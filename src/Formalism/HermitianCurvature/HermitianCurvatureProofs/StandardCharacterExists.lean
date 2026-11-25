@@ -13,10 +13,7 @@ open Formalism.FourierDecayAlt.G Matrix MeasureTheory Finset
 namespace Formalism.FourierDecayAlt.P.StandardCharacterExists
 
 theorem blk_cc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i j : Fin n) :
-    blk A b a e i.castSucc j.castSucc = A i j := by
-  have h : ∀ i : Fin n, finSumFinEquiv.symm (i.castSucc : Fin (n+1)) = Sum.inl i := fun i =>
-    finSumFinEquiv_symm_apply_castAdd (n := 1) i
-  simp [blk, h]
+    blk A b a e i.castSucc j.castSucc = A i j := Formalism.FourierDecayAlt.P.G5.blk_cc A b a e i j
 
 theorem blk_cl {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i : Fin n) :
     blk A b a e i.castSucc (Fin.last n) = b i := by
@@ -27,10 +24,7 @@ theorem blk_lc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) 
   apply _root_.Formalism.FourierDecayAlt.P.G5.blk_lc <;> assumption
 
 theorem blk_ll {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) :
-    blk A b a e (Fin.last n) (Fin.last n) = e := by
-  have h2 : finSumFinEquiv.symm (Fin.last n : Fin (n+1)) = Sum.inr (0 : Fin 1) :=
-    finSumFinEquiv_symm_apply_natAdd (m := n) (0 : Fin 1)
-  simp [blk, h2]
+    blk A b a e (Fin.last n) (Fin.last n) = e := Formalism.FourierDecayAlt.P.G5.blk_ll A b a e
 
 theorem wMat_mul_apply {d : ℕ} (M : Matrix (Fin d) (Fin d) ℂ) (i j : Fin d) :
     (wMat d * M) i j = M i.rev j := by

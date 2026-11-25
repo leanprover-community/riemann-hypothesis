@@ -42,7 +42,7 @@ theorem BaseChangeColon.cycNum_mul_expansion : ∀ (O : Type) [CommRing O] [IsDo
   have hmon : ∀ (κ : σ →₀ ℕ) (c : ℝ), cycNum Z cls (monomial κ c) Q = c * (cycList Z (classList cls κ ++ Q) : ℝ) := by
     intro κ c
     rw [key _ Q {κ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl]
+      MvPolynomial.coeff_monomial, ite_eq_left rfl]
   have hperm : ∀ ν μ : σ →₀ ℕ, cycList Z (classList cls (ν + μ) ++ Q) = cycList Z (classList cls ν ++ (classList cls μ ++ Q)) := by
     intro ν μ
     have hp : (classList cls (ν + μ)).Perm (classList cls ν ++ classList cls μ) := by

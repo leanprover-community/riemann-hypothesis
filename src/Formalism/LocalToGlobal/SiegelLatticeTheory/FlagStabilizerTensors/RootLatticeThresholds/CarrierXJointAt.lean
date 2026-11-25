@@ -49,7 +49,7 @@ namespace Formalism.L2.SG.Pf.Carrier
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.DataInst
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 variable {D : D7}
 
@@ -132,7 +132,7 @@ theorem vJoint_of_tensorAt (S : Formalism.FourierDecayAlt.C.HidaSetting D.host.E
     exact ⟨(h, h'), hh⟩
   refine Eq.trans ?_ (h2 p w hpw hrep hpos hex.choose.1 hex.choose.2 hex.choose_spec x)
   unfold unscaledOperatorAtPointRepresentative unscaledFrameConjugatedOperator
-  rw [if_pos hrep, dite_eq_left hex]
+  rw [ite_eq_left hrep, dite_eq_left hex]
   rfl
 
 private theorem sign_flip_involutive {K : Type} [Ring K] (r b : ℕ) (x : Formalism.FourierDecayAlt.TB.Pt K) :
@@ -197,8 +197,6 @@ namespace Formalism.L2.SG.Pf.Carrier.JointPinJB
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.EnergyCut Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.Carrier.JointPf
   Formalism.L2.SG.Pf.Carrier.JointQuot Formalism.L2.SG.Pf.Carrier.JointPin
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -303,16 +301,12 @@ theorem zhat_famSc {n r : ℕ} (ε : Fin n → Bool) (sc : ℝ) (e e' : Fin r �
   push_cast
   ring
 
-theorem dl_dzd {r : ℕ} (d : Fin (r + 1) → ℂ) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (l : ℕ) (hl : l ≤ r + 1) :
-    Dl (Matrix.diagonal d * Z * Matrix.diagonal d) l = (∏ i : Fin l, d (Fin.castLE hl i)) ^ 2 * Dl Z l := by
-  apply _root_.Formalism.L2.SG.Pf.Carrier.DFrameAtPf.dl_scale <;> assumption
-
 theorem gv_dzd {r : ℕ} (T T' : ℝ) (d : Fin (r + 1) → ℂ) (hd : d (Fin.last r) = 1)
     (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) :
     Gv T T' (Matrix.diagonal d * Z * Matrix.diagonal d) =
       ‖∏ i : Fin r, d (Fin.castSucc i)‖ ^ 4 * Gv T T' Z := by
   unfold Gv
-  rw [dl_dzd d Z (r + 1) le_rfl, dl_dzd d Z r (Nat.le_succ r)]
+  rw [Formalism.L2.SG.Pf.Carrier.DFrameAtPf.dl_scale d Z (r + 1) le_rfl, Formalism.L2.SG.Pf.Carrier.DFrameAtPf.dl_scale d Z r (Nat.le_succ r)]
   have e1 : (∏ i : Fin (r + 1), d (Fin.castLE (le_refl (r + 1)) i)) = ∏ i : Fin r, d (Fin.castSucc i) := by
     rw [Fin.prod_univ_castSucc]
     have : Fin.castLE (le_refl (r + 1)) (Fin.last r) = Fin.last r := Fin.ext rfl
@@ -357,11 +351,11 @@ theorem monoPt_holds : MonoPt X := by
     simp only [Formalism.L2.SG.PtCell.mono, Formalism.FourierDecayAlt.C2.monoP, Matrix.of_apply, Function.Involutive.coe_toPerm]
     by_cases h : a = Formalism.L2.SG.PtCell.pinv w i
     · have h2 : i = Formalism.L2.SG.PtCell.pinv w a := by rw [h, hinv]
-      rw [if_pos h]
-      simp only [h2, if_true]
+      rw [ite_eq_left h]
+      simp only [h2, ite_true]
     · have h2 : ¬ i = Formalism.L2.SG.PtCell.pinv w a := fun e => h (by rw [e, hinv])
-      rw [if_neg h]
-      simp only [h2, if_false, map_zero, mul_zero]
+      rw [ite_eq_right h]
+      simp only [h2, ite_false, map_zero, mul_zero]
 
 theorem hlocU_inv {v : InfinitePlace X.B.I.F} {h : Formalism.REAL.UJ (X.B.I.ε v)} (hh : h ∈ HlocU X u v) :
     h⁻¹ ∈ HlocU X u v := by
@@ -461,7 +455,6 @@ theorem measConj_holds : MeasConj X := by
     rw [← hQ']
     exact (lintegral_mul_left_eq_self f h⁻¹).symm
 
-
 open Classical in
 theorem tens_cancel (w0 : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a b : ∀ w, X.Vloc w0 w)
     (hab : ∀ w, w ≠ v → a w = b w) (hK : (∏ w ∈ Finset.univ.erase v, inner ℂ (a w) (a w)) ≠ 0)
@@ -488,7 +481,6 @@ theorem tens_cancel (w0 : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a b : ∀
     rw [inner_sub_left, inner_sub_right, inner_sub_right, f1, f2, f3]
     ring
   exact sub_eq_zero.1 (inner_self_eq_zero.1 hz)
-
 
 open Classical in
 theorem wlocEqv_holds : WlocEqv X := by
@@ -725,7 +717,7 @@ namespace Formalism.L2.SG.Pf.Carrier
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut Formalism.L2.SG.Pf.Carrier.JointQuot
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 section Gen
 
@@ -966,8 +958,6 @@ namespace Formalism.L2.SG.Pf.CarrierXAll
 
 open Formalism.L2.SG.Pf.Carrier
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
 
 theorem jointTensorAt_of_carrier (I : CarrierIn X u u') (sc : ℝ)
@@ -1021,7 +1011,6 @@ theorem jointTensorAt_carrierInOf (X : Formalism.L2.SG.HidaSetting.HidaSetting D
     exact orbVecAt_carrierOf X u u' e he hv C CA de de' l grid grid1 T hT fc χ sg ν' m₀ top A₀ sc i0 i0'
       (fun v => (h5.2 _).2.2.1) hMP h1 h2 h3 h4
 
-
 open scoped Matrix in
 open Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf in
 
@@ -1068,7 +1057,6 @@ theorem jointTensorAt_ITcMo (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {θ 
     (nuE X C u' e i0') (m0E X C u u' e)
     (fun j => Formalism.FourierDecayAlt.Top.topOf (parE e u u' de de' j) (l + 1) (towersOf X C u u' e j) (nuE X C u' e i0' j)
       (m0E X C u u' e j) (Θ j) (TP j)) A₀ sc i0 i0' νq hN hG hpin hsc hFX hBase hEmb hBuilt
-
 
 open scoped Matrix in
 open Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf in

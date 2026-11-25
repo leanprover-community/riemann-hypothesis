@@ -18,8 +18,6 @@ open NumberField Formalism.BasicNotions
 
 namespace PI.UnitaryGroupMassFormula.IdCellInSW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem traceOne_holds (D : D7) : TraceOne D := by
   haveI : NumberField.IsCMField D.host.E := D.host.isCMField_hostE
 
@@ -39,7 +37,7 @@ theorem traceOne_holds (D : D7) : TraceOne D := by
       have hne : P ≠ ⊥ :=
         Ring.ne_bot_of_isMaximal_of_not_isField hP (NumberField.RingOfIntegers.not_isField D.host.E)
       have h := D.host.der.unramEF P hP.isPrime hne
-      push_neg at h
+      push Not at h
       obtain ⟨x, hx⟩ := h
       refine ⟨x, D.host.conj • x, ?_, ?_⟩
       · rw [← hc]

@@ -174,16 +174,6 @@ namespace GlobalTheory.HTLat
 abbrev embC (C : Type) [Field C] {O : Type} [CommRing O] [Algebra O C] {Λ : Type} [CommRing Λ]
     {J : Type} (σ : J → Λ →+* O) : J → Λ →+* C := fun i => (algebraMap O C).comp (σ i)
 
-section Independence
-
-variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
-  {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] {N : ℕ}
-  (v : Valuation C ℝ≥0)
-
-variable {U' : Type} [AddCommGroup U'] [Module C U'] [Module O U'] [IsScalarTower O C U']
-
-end Independence
-
 namespace Point
 
 variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O]

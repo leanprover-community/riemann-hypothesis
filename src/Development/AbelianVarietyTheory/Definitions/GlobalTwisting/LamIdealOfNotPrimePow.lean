@@ -113,10 +113,6 @@ def aRay (g : D.G) (n : ℕ) : ℝ := ((idealsIn D g n).ncard : ℝ)
 
 def lamRay (g : D.G) (n : ℕ) : ℝ := ∑ᶠ I ∈ idealsIn D g n, lamIdeal I
 
-namespace RayCount
-
-end RayCount
-
 end Ray
 
 def qForm (α γ l θ₁ θ₂ : ℝ) (v : ℤ × ℤ) : ℝ := α * (v.1 + θ₁ + l * v.2) ^ 2 + γ * (v.2 + θ₂) ^ 2
@@ -160,7 +156,7 @@ theorem tsum_odd (t : ℝ) (ht : 0 < t) :
     have e : (fun k : ℕ => ao (2 * k) * Real.exp (-(t * ((2 * k : ℕ) : ℝ)))) = fun _ : ℕ => (0 : ℝ) := by
       funext k
       have : ¬ Odd (2 * k) := by simp
-      simp only [ao, if_neg this, zero_mul]
+      simp only [ao, ite_eq_right this, zero_mul]
     rw [e]; exact hasSum_zero
   have := HasSum.even_add_odd (f := fun n : ℕ => ao n * Real.exp (-(t * n))) he ho
   rw [this.tsum_eq]; simp [div_eq_mul_inv]

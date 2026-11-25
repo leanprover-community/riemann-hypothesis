@@ -91,7 +91,7 @@ theorem rowWeight_le_colSum (N : ℕ) (d : Fin N × Fin N →₀ ℕ) (a : Fin N
   apply Finset.sum_le_sum
   intro i _
   rw [← Finset.mul_sum]
-  simp only [rowW, colW, Finset.sum_pi_single', Finset.mem_univ, if_true]
+  simp only [rowW, colW, Finset.sum_pi_single', Finset.mem_univ, ite_true]
   apply Nat.mul_le_mul_left
   rw [Pi.single_apply]
   split_ifs <;> omega
@@ -277,7 +277,7 @@ theorem PSh.one (a b : Fin N) : PSh (O := O) a b 0 1 := by
   intro j
   rcases j with _ | j
   · simpa using isWeightedHomogeneous_one O (wZ N)
-  · rw [Polynomial.coeff_one, if_neg (Nat.succ_ne_zero j)]
+  · rw [Polynomial.coeff_one, ite_eq_right (Nat.succ_ne_zero j)]
     exact isWeightedHomogeneous_zero _ _ _
 
 theorem PSh.pow {a b : Fin N} {u : Fin N → ℤ} {P : Polynomial (MvPolynomial (Fin N × Fin N) O)}
@@ -539,7 +539,7 @@ namespace GlobalTheory.GenCoef.LduLead
 theorem key_lt_diag {N : ℕ} {j : Fin N × Fin N} {d : Fin N} (h : key N j < key N (d, d)) :
     j = (j.1, j.1) ∧ d < j.1 := by
   obtain ⟨x, y⟩ := j
-  simp only [key, if_true] at h
+  simp only [key, ite_true] at h
   split_ifs at h with hxy
   · subst hxy; refine ⟨rfl, ?_⟩
     rw [Fin.lt_def]; have := d.2; have := x.2; simp at h ⊢; omega
@@ -839,7 +839,7 @@ namespace GlobalTheory.DiagRowSubst
 
 theorem diag_var (N : ℕ) (R : Type) [CommRing R] (d : Fin N → R) (v : Fin N × Fin N) :
     (∑ b : Fin N, C (Matrix.diagonal d v.1 b) * X (b, v.2) : MvPolynomial (Fin N × Fin N) R) = C (d v.1) * X v := by
-  simp only [Matrix.diagonal_apply, apply_ite C, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Matrix.diagonal_apply, apply_ite C, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem weight_prod (N : ℕ) (R : Type) [CommRing R] (d : Fin N → R) (m : Fin N × Fin N →₀ ℕ) :
     ∏ a, d a ^ Finsupp.weight (rowW N N) m a = m.prod (fun v e => d v.1 ^ e) := by
@@ -884,7 +884,7 @@ theorem rowSubst_diagonal_eq_sum_components : ∀ (O : Type) [CommRing O] (N : �
   Finset.sum_filter]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun m hm => ?_
-  rw [Finset.sum_ite_eq, if_pos, mul_comm]
+  rw [Finset.sum_ite_eq, ite_eq_left, mul_comm]
   rw [Fintype.mem_piFinset]
   intro a
   rw [Finset.mem_range, Nat.lt_succ_iff]
@@ -999,7 +999,7 @@ theorem rowSubst_transvection (O : Type) [CommRing O] (N : ℕ) (R : Type) [Comm
         Finset.sum_add_distrib, add_mul, ite_mul, Finset.sum_ite_eq]
       by_cases h : v.1 = a
       · have h' : a = v.1 := h.symm
-        simp only [h', true_and, if_true]
+        simp only [h', true_and, ite_true]
         simp [apply_ite C, ite_mul]
         ring
       · have h' : ¬ a = v.1 := fun e => h e.symm

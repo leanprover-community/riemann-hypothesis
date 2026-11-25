@@ -179,12 +179,6 @@ theorem hostGroup : Nat.card φ.GG = 4 * φ.ord ∧ φ.Psi.index = 2 ∧ φ.cc �
 
 theorem iota_injective : Function.Injective φ.iota := fun _ _ h => Multiplicative.ofAdd.injective h
 
-theorem iotaInv_mul (a b : φ.MA) : φ.iotaInv (a * b) = φ.iotaInv a + φ.iotaInv b := rfl
-
-theorem iotaInv_pow (a : φ.MA) (i : ℕ) : φ.iotaInv (a ^ i) = i • φ.iotaInv a := rfl
-
-theorem iotaInv_eq_zero_iff (a : φ.MA) : φ.iotaInv a = 0 ↔ a = 1 := toAdd_eq_zero
-
 theorem orderOf_iota (t : φ.A) : orderOf (φ.iota t) = addOrderOf t := orderOf_ofAdd_eq_addOrderOf t
 
 theorem addOrderOf_iotaInv (a : φ.MA) : addOrderOf (φ.iotaInv a) = orderOf a := (orderOf_ofAdd_eq_addOrderOf (Multiplicative.toAdd a)).symm
@@ -217,11 +211,11 @@ theorem mem_Psi_iff_tau (g : φ.GG) : g ∈ φ.Psi ↔ (∃ t, g = φ.tau1 t) �
 
 theorem placeOf_of_mem {g : φ.GG} (hg : g ∈ φ.Psi) : placeOf g = g := by
   unfold Formalism.HC.Frame.placeOf
-  exact if_pos ((mem_Psi_iff g).1 hg)
+  exact ite_eq_left ((mem_Psi_iff g).1 hg)
 
 theorem placeOf_of_notMem {g : φ.GG} (hg : g ∉ φ.Psi) : placeOf g = φ.cc * g := by
   unfold Formalism.HC.Frame.placeOf
-  exact if_neg (fun h => hg ((mem_Psi_iff g).2 h))
+  exact ite_eq_right (fun h => hg ((mem_Psi_iff g).2 h))
 
 theorem placeOf_snd (g : φ.GG) : (placeOf g).2 = g.2 := by
   unfold Formalism.HC.Frame.placeOf
@@ -328,14 +322,14 @@ private theorem sign_group_sq_eq_one_var (x : G0) : x ^ 2 = 1 :=
 
 private theorem G0_pow_eq_ite_even (x : G0) (i : ℕ) : x ^ i = if Even i then 1 else x := by
   rcases Nat.even_or_odd i with ⟨k, rfl⟩ | ⟨k, rfl⟩
-  · rw [if_pos ⟨k, rfl⟩, ← two_mul, pow_mul, sign_group_sq_eq_one_var, one_pow]
-  · rw [if_neg (Nat.not_even_iff_odd.2 ⟨k, rfl⟩), pow_succ, pow_mul, sign_group_sq_eq_one_var, one_pow, one_mul]
+  · rw [ite_eq_left ⟨k, rfl⟩, ← two_mul, pow_mul, sign_group_sq_eq_one_var, one_pow]
+  · rw [ite_eq_right (Nat.not_even_iff_odd.2 ⟨k, rfl⟩), pow_succ, pow_mul, sign_group_sq_eq_one_var, one_pow, one_mul]
 
 private theorem G0_zpow_eq_ite_even (x : G0) (k : ℤ) : x ^ k = if Even k then 1 else x := by
   have h2 : x ^ (2 : ℤ) = 1 := by rw [zpow_two, ← pow_two, sign_group_sq_eq_one_var]
   rcases Int.even_or_odd k with ⟨m, rfl⟩ | ⟨m, rfl⟩
-  · rw [if_pos ⟨m, rfl⟩, ← two_mul, zpow_mul, h2, one_zpow]
-  · rw [if_neg (Int.not_even_iff_odd.2 ⟨m, rfl⟩), zpow_add_one, zpow_mul, h2, one_zpow, one_mul]
+  · rw [ite_eq_left ⟨m, rfl⟩, ← two_mul, zpow_mul, h2, one_zpow]
+  · rw [ite_eq_right (Int.not_even_iff_odd.2 ⟨m, rfl⟩), zpow_add_one, zpow_mul, h2, one_zpow, one_mul]
 
 theorem cc_mem_zpowers_iff (g : φ.GG) : φ.cc ∈ Subgroup.zpowers g ↔ g.1 = c0 ∧ Odd (orderOf g.2) := by
   constructor
@@ -357,7 +351,7 @@ theorem cc_mem_zpowers_iff (g : φ.GG) : φ.cc ∈ Subgroup.zpowers g ↔ g.1 = 
     rw [zpow_natCast]
     refine Prod.ext ?_ ?_
     · show g.1 ^ orderOf g.2 = c0
-      rw [hc, G0_pow_eq_ite_even, if_neg (Nat.not_even_iff_odd.2 ho)]
+      rw [hc, G0_pow_eq_ite_even, ite_eq_right (Nat.not_even_iff_odd.2 ho)]
     · show g.2 ^ orderOf g.2 = 1
       exact pow_orderOf_eq_one g.2
 
@@ -479,28 +473,28 @@ theorem hostCharSum :
     have hS1 : (∑ g, f g) = if χ = 1 then (4 * φ.ord : ℂ) else 0 := by
       rw [sum_hom_units]
       by_cases h : χ = 1
-      · rw [if_pos (hf1.2 h), if_pos h, φ.card_GG]
+      · rw [ite_eq_left (hf1.2 h), ite_eq_left h, φ.card_GG]
         norm_num
-      · rw [if_neg (fun h' => h (hf1.1 h')), if_neg h, Nat.cast_zero]
+      · rw [ite_eq_right (fun h' => h (hf1.1 h')), ite_eq_right h, Nat.cast_zero]
     have hS2 : (∑ g, φ.twHom χ g) = if χ = φ.chC then (4 * φ.ord : ℂ) else 0 := by
       rw [sum_hom_units]
       by_cases h : χ = φ.chC
-      · rw [if_pos ((φ.twHom_eq_one_iff χ).2 h), if_pos h, φ.card_GG]
+      · rw [ite_eq_left ((φ.twHom_eq_one_iff χ).2 h), ite_eq_left h, φ.card_GG]
         norm_num
-      · rw [if_neg (fun h' => h ((φ.twHom_eq_one_iff χ).1 h')), if_neg h, Nat.cast_zero]
+      · rw [ite_eq_right (fun h' => h ((φ.twHom_eq_one_iff χ).1 h')), ite_eq_right h, Nat.cast_zero]
     show (∑ g ∈ Finset.univ.filter (fun g : φ.GG => g ∉ φ.Psi), f g) = _
     rw [hS1] at hT1
     rw [hS2] at hT2
     by_cases h1 : χ = 1
     · have h2 : χ ≠ φ.chC := fun h => φ.chC_ne_one (h.symm.trans h1)
-      rw [if_pos h1] at hT1 ⊢
-      rw [if_neg h2] at hT2
+      rw [ite_eq_left h1] at hT1 ⊢
+      rw [ite_eq_right h2] at hT2
       linear_combination (hT1 - hT2) / 2
-    · rw [if_neg h1] at hT1 ⊢
+    · rw [ite_eq_right h1] at hT1 ⊢
       by_cases h2 : χ = φ.chC
-      · rw [if_pos h2] at hT2 ⊢
+      · rw [ite_eq_left h2] at hT2 ⊢
         linear_combination (hT1 - hT2) / 2
-      · rw [if_neg h2] at hT2 ⊢
+      · rw [ite_eq_right h2] at hT2 ⊢
         linear_combination (hT1 - hT2) / 2
   · obtain ⟨⟨q, d⟩, a⟩ := g
     show 4 * (if ((q, d) : G0) = ((1 : ℤˣ), (-1 : ℤˣ)) then (1 : ℤ) else 0) =
@@ -533,17 +527,17 @@ theorem hostOrbitsPlaces (g : φ.GG) (hg : g.1 = c0 ∨ g.1 = ((1 : ℤˣ), (-1 
   · by_cases hi : Even i
     · rw [φ.placeOf_of_mem ((φ.pow_mul_mem_Psi_iff hg' hτ i).2 hi)]
       show g.1 ^ i * τ.1 = τ.1
-      rw [hc, G0_pow_eq_ite_even, if_pos hi, one_mul]
+      rw [hc, G0_pow_eq_ite_even, ite_eq_left hi, one_mul]
     · rw [φ.placeOf_of_notMem (fun h => hi ((φ.pow_mul_mem_Psi_iff hg' hτ i).1 h))]
       show c0 * (g.1 ^ i * τ.1) = τ.1
-      rw [hc, G0_pow_eq_ite_even, if_neg hi, ← mul_assoc, ← pow_two, sign_group_sq_eq_one_var, one_mul]
+      rw [hc, G0_pow_eq_ite_even, ite_eq_right hi, ← mul_assoc, ← pow_two, sign_group_sq_eq_one_var, one_mul]
   · by_cases hi : Even i
-    · rw [φ.placeOf_of_mem ((φ.pow_mul_mem_Psi_iff hg' hτ i).2 hi), if_pos hi]
+    · rw [φ.placeOf_of_mem ((φ.pow_mul_mem_Psi_iff hg' hτ i).2 hi), ite_eq_left hi]
       show g.1 ^ i * τ.1 = 1 * τ.1
-      rw [hs, G0_pow_eq_ite_even, if_pos hi]
-    · rw [φ.placeOf_of_notMem (fun h => hi ((φ.pow_mul_mem_Psi_iff hg' hτ i).1 h)), if_neg hi]
+      rw [hs, G0_pow_eq_ite_even, ite_eq_left hi]
+    · rw [φ.placeOf_of_notMem (fun h => hi ((φ.pow_mul_mem_Psi_iff hg' hτ i).1 h)), ite_eq_right hi]
       show c0 * (g.1 ^ i * τ.1) = φ.sg.1 * τ.1
-      rw [hs, G0_pow_eq_ite_even, if_neg hi, ← mul_assoc]
+      rw [hs, G0_pow_eq_ite_even, ite_eq_right hi, ← mul_assoc]
       congr 1
 
 private theorem ncard_range_pow_eq_orderOf {M : Type*} [Group M] (x : M) :
@@ -551,16 +545,6 @@ private theorem ncard_range_pow_eq_orderOf {M : Type*} [Group M] (x : M) :
   have h : Nat.card (Submonoid.powers x) = orderOf x := Nat.card_submonoidPowers
   rw [← h, ← Submonoid.coe_powers]
   exact (Nat.card_coe_set_eq _).symm
-
-theorem hostOrbitCount (g : φ.GG) (h0 : g.1 = c0) (τ : φ.GG) (hτ : τ ∈ φ.Psi) :
-    (Set.range fun i : ℕ => placeOf (g ^ i * τ)).ncard = orderOf g.2 := by
-  have hfun : (fun i : ℕ => placeOf (g ^ i * τ)) =
-      (fun y : φ.MA => ((τ.1, y * τ.2) : φ.GG)) ∘ (fun i : ℕ => g.2 ^ i) := by
-    funext i
-    obtain ⟨h1, h2, -⟩ := φ.hostOrbitsPlaces g (Or.inl h0) τ hτ i
-    exact Prod.ext (h2 h0) h1
-  rw [hfun, Set.range_comp, Set.ncard_image_of_injective _
-    (fun y y' h => mul_right_cancel (congrArg Prod.snd h)), ncard_range_pow_eq_orderOf]
 
 def InTranslate (T : Finset ℕ) (u₀ x : φ.A) : Prop := ∃ s ∈ T, x = φ.dig s + u₀
 

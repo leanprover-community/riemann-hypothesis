@@ -265,7 +265,7 @@ private theorem shift_agree_lemma_5 (F : Type) [Field F] (Ω : Type) [Field Ω] 
   rw [heq, h2] at h1
   have hle : N - 1 ≤ r + (N - 1) := by omega
   have hsub : r + (N - 1) - (N - 1) = r := by omega
-  rw [if_pos hle, if_pos hle, hsub] at h1
+  rw [ite_eq_left hle, ite_eq_left hle, hsub] at h1
   exact h1.symm
 
 private theorem negs_agree_lemma_6 (F : Type) [Field F] (K : Type) [Fintype K] [DecidableEq K]
@@ -478,13 +478,8 @@ namespace PositivityTheory.Xgn.A_s_joinright
 
 open GroundTheory.Heights₂.Heights.NumbersDVR
 
-theorem fibreVarieties : FibreVarieties.Statement.{0} :=
-  FibreVarieties.proof GenericFibProps.full GenericDimBound.full GenericDimGe.proof SpecialIdealCorresp.full
-    SpecialIdealMultiHomog.full SupSpanMultiHomog.full MinimalPrimeMultiHomog.full SpecialQuotDim.full
-    ComponentDim.proof
-
 theorem pairNumRelabel : PairNumberRelabelAlt.Statement :=
-  PairNumberRelabelAlt.proof (VerticalComponentFibre.proof fibreVarieties)
+  PairNumberRelabelAlt.proof (VerticalComponentFibre.proof GroundTheory.Heights₂.Heights.NumbersDVR.VerticalDivisorSupportFibre.fibreVarieties)
 
 theorem of_pullback (h : PairNumberPullback.Statement) : FlagModelJoinRightAlt.Statement :=
   FlagModelJoinRightAlt.proof JoinVerticalDivisor.proof (FlagPairJoinRight.proof JoinVerticalDivisorRight.proof)
@@ -518,7 +513,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.CompanionTheory.CommAlg.FlagPlainValue
-
 
 open GroundTheory.Heights₂.Heights.NumbersDVR in
 theorem main : GroundTheory.Heights₂.Heights.NumbersDVR.FlagPlainValueIndependence.Statement :=
@@ -582,7 +576,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.CompanionTheory.CommAlg.FlagModelValue
-
 
 open GroundTheory.Heights₂.Heights.NumbersDVR in
 theorem main : FlagModelValueIndependence.Statement :=

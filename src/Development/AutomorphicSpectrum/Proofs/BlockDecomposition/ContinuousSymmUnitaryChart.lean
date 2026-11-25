@@ -58,25 +58,12 @@ theorem continuous_symm : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ �
       _ = (mt (dblSp A) (κ.symm h) * rat (Tm A μ)) * rat L := by rw [Matrix.mul_assoc]
       _ = rat (Tm A μ) * mat h * rat L := by rw [← e]
   have hind : Topology.IsInducing (fun g : GA D (dblSp A) => matHom (dblSp A) g) := ⟨rfl⟩
-  have hmi : Continuous (fun h : G D A.rank => mat h⁻¹) := by
-    unfold GlobalTheory.StdUnn.mat
-    simp only [map_inv]
-    exact Units.continuous_coe_inv.comp continuous_induced_dom
-  rw [hind.continuous_iff, Units.continuous_iff]
-  constructor
-  · have hf : (Units.val ∘ (fun g : GA D (dblSp A) => matHom (dblSp A) g) ∘ κ.symm) =
-        fun h => rat (Tm A μ) * mat h * rat L := by
-      funext h
-      exact key h
-    rw [hf]
-    exact (continuous_const.matrix_mul _root_.GlobalTheory.StdUnn.HeightExists.continuous_mat).matrix_mul continuous_const
-  · have hf : (fun h : G D A.rank => (((fun g : GA D (dblSp A) => matHom (dblSp A) g) ∘ κ.symm) h)⁻¹.val) =
-        fun h => rat (Tm A μ) * mat h⁻¹ * rat L := by
-      funext h
-      simp only [Function.comp_apply]
-      rw [← map_inv (matHom (dblSp A)), ← map_inv κ.symm]
-      exact key h⁻¹
-    rw [hf]
-    exact (continuous_const.matrix_mul hmi).matrix_mul continuous_const
+  refine hind.continuous_iff.2 (Continuous.of_coeHom_comp
+    (f := (matHom (dblSp A)).comp κ.symm.toMonoidHom) ?_)
+  have hf : ((Units.coeHom _).comp ((matHom (dblSp A)).comp κ.symm.toMonoidHom) :
+      G D A.rank → _) = fun h => rat (Tm A μ) * mat h * rat L := funext key
+  rw [hf]
+  exact (continuous_const.matrix_mul
+    _root_.GlobalTheory.StdUnn.HeightExists.continuous_mat).matrix_mul continuous_const
 
 end GlobalTheory.CompanionTheory.ChartSymm

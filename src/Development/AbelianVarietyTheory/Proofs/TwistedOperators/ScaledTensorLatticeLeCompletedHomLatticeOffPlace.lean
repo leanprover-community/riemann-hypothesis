@@ -15,48 +15,10 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLat
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.CompletedTensorLatticeStrongApproxOpenCompact
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LatOEqHatA
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSumAddConjIdempotentConjFixed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
 import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -118,7 +80,7 @@ theorem exists_mul_std : ∀ (D : D7) (S : HSp D) (k₀ : GA D S) (Λ' : Lt D.ho
           exacts [map_one _, map_zero _]
         rw [e1, e'] at this
         exact this
-      · exact Or.inl (if_neg hv')) u
+      · exact Or.inl (ite_eq_right hv')) u
   obtain ⟨t, htw, H⟩ := MovLev.exists_mul (E := D.host.E) w.asIdeal.primeCompl w.asIdeal (fun v' hv' => by
       have h1 : ¬ v'.asIdeal ≤ w.asIdeal := fun h => hv' ((v'.isMaximal.eq_of_le w.isPrime.ne_top h) ▸ le_rfl)
       obtain ⟨a, ha, ha'⟩ := SetLike.not_le_iff_exists.1 h1
@@ -236,7 +198,7 @@ theorem rowTriv : ∀ (D : D7) (S T : HSp D) (k₀ : GA D S) (f : AE D), 0 < T.r
   have h1 := congrFun (congrFun (h x hx) i₀) j
   unfold actO at h1
   rw [GlobalTheory.AdelicLatMove.mt_one, Matrix.one_mul, Matrix.mul_apply, Finset.sum_eq_single i] at h1
-  · simp only [x, Matrix.of_apply, true_and, if_true] at h1
+  · simp only [x, Matrix.of_apply, true_and, ite_true] at h1
     rw [Matrix.sub_apply, mul_sub, h1, Matrix.one_apply]
     by_cases hij : i = j
     · subst hij; simp
@@ -280,7 +242,7 @@ theorem partAt_off_mem_latO : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.r
       by_cases hw : ∃ PP ∈ Pg ∪ Q, HeightOneSpectrum.under (𝓞 D.host.F) PP = w
       · obtain ⟨PP, hPP, rfl⟩ := hw
         rw [hσ1 PP hPP, sub_self, zero_mul]; exact zero_mem _
-      · push_neg at hw
+      · push Not at hw
         rw [hσ0 w hw, sub_zero, one_mul]; exact hα w
     induction hy using AddSubgroup.closure_induction with
     | mem y hy =>
@@ -291,7 +253,7 @@ theorem partAt_off_mem_latO : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.r
         obtain ⟨PP, hPP, rfl⟩ := hw
         rw [map_mul, map_sub, map_one, hσ1 PP hPP, sub_self, zero_mul]
       · right
-        push_neg at hw
+        push Not at hw
         obtain ⟨t₁, ht₁, h1⟩ := GlobalTheory.T.exists_multiplier_standard_lattice_of_mover_trivial D S k₀ Λ' σ w (hσ0 w hw) hrow hIsMov v hv
         have hu'' : u' ∈ idq (GlobalTheory.LiftLevel.liftI Pg Q) (conjI (GlobalTheory.LiftLevel.liftI Pg Q)) C.X.Λ := by
           have : Lv.sh C.X.Λ = idq Lv.𝔪 (conjI Lv.𝔪) C.X.Λ := rfl

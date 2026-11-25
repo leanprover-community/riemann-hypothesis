@@ -202,7 +202,7 @@ theorem aestronglyMeasurable_pi_of_forall {α : Type*} {m0 : MeasurableSpace α}
       AEStronglyMeasurable (fun x (i : ι) => if i ∈ s then f i x else 0) ν := by
     intro s
     induction s using Finset.induction_on with
-    | empty => simp only [Finset.notMem_empty, if_false]; exact aestronglyMeasurable_const
+    | empty => simp only [Finset.notMem_empty, ite_false]; exact aestronglyMeasurable_const
     | insert a s ha ih =>
       have hc : Continuous (fun p : E a × (∀ i, E i) => Function.update p.2 a p.1) :=
         continuous_snd.update a continuous_fst
@@ -227,10 +227,10 @@ theorem integrable_vecOn (μ : ∀ i, Measure (X i)) [∀ i, SigmaFinite (μ i)]
   have hmeas : AEStronglyMeasurable (fun x => vecOn g s m x) (Measure.pi fun i : s => μ i) := by
     refine aestronglyMeasurable_pi_of_forall (f := fun i x => vecOn g s m x i) fun i => ?_
     by_cases hi : i ∈ s
-    · simp only [vecOn, dif_pos hi]
+    · simp only [vecOn, dite_eq_left hi]
       exact (hg i).1.comp_quasiMeasurePreserving
         (Measure.quasiMeasurePreserving_eval (fun j : s => μ j) ⟨i, hi⟩)
-    · simp only [vecOn, dif_neg hi]; exact aestronglyMeasurable_const
+    · simp only [vecOn, dite_eq_right hi]; exact aestronglyMeasurable_const
   have hdom : Integrable (fun x : ∀ j : s, X j => ‖Φ‖ * ((∏ j : s, ‖g j (x j)‖) * ∏ i ∈ sᶜ, ‖m i‖))
       (Measure.pi fun i : s => μ i) :=
     ((Integrable.fintype_prod_dep (f := fun (j : s) (y : X j) => ‖g j y‖)
@@ -276,15 +276,15 @@ theorem integral_vecOn (μ : ∀ i, Measure (X i)) [∀ i, SigmaFinite (μ i)]
       by_cases hia : i = a
       · subst hia
         have h1 : i ∈ ({i} : Finset ι) ∪ s := by simp
-        simp only [vecOn, dif_pos h1, dif_neg ha, Function.update_self, he]
+        simp only [vecOn, dite_eq_left h1, dite_eq_right ha, Function.update_self, he]
         rw [Equiv.piFinsetUnion_left X hd (Finset.mem_singleton_self i)]
         rfl
       · by_cases his : i ∈ s
         · have h1 : i ∈ ({a} : Finset ι) ∪ s := by simp [his]
-          simp only [vecOn, dif_pos h1, dif_pos his, he]
+          simp only [vecOn, dite_eq_left h1, dite_eq_left his, he]
           rw [Equiv.piFinsetUnion_right X hd his]
         · have h1 : i ∉ ({a} : Finset ι) ∪ s := by simp [his, hia]
-          simp only [vecOn, dif_neg h1, dif_neg his, Function.update_of_ne hia]
+          simp only [vecOn, dite_eq_right h1, dite_eq_right his, Function.update_of_ne hia]
     have hint : Integrable (fun p => Φ (vecOn g ({a} ∪ s) m (MeasurableEquiv.piFinsetUnion X hd p)))
         ((Measure.pi fun i : ({a} : Finset ι) => μ i).prod (Measure.pi fun i : s => μ i)) :=
       (hmp.integrable_comp_emb (MeasurableEquiv.measurableEmbedding _)).2
@@ -332,7 +332,7 @@ theorem integral_multilinear_pi : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] 
         (fun i => g i (MeasurableEquiv.piCongrLeft X e z i)) = vecOn g Finset.univ 0 z := by
       intro z; funext i
       have h := Equiv.piCongrLeft_apply_apply X e z ⟨i, Finset.mem_univ i⟩
-      simp only [vecOn, dif_pos (Finset.mem_univ i)]
+      simp only [vecOn, dite_eq_left (Finset.mem_univ i)]
       rw [MeasurableEquiv.coe_piCongrLeft]
       exact congrArg (g i) h
     refine ((integral_congr_ae (ae_of_all _ fun z => congrArg Φ (hpt z))).trans
@@ -498,7 +498,6 @@ theorem integral_indicator_projFin_smul {D : D7} (V : HSp D) {μa : ∀ w, Measu
         a (fun w => projArch D.sp.cm.sig V.gram w g) ∂μ = (νF B).toReal • ∫ x, a x ∂Measure.pi μa :=
   _root_.GlobalTheory.TrProdInt.integral_indicatorFin_smul_arch D V μa μf μ hμ νF hF E B hB hB' a ha
 
-
 open scoped Classical in
 theorem integral_pi_dsRep {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
     (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w)) [∀ w, SigmaFinite (μa w)]
@@ -539,7 +538,6 @@ theorem integral_pi_dsRep {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M :
       (∏ w, fa w (x w)) • Φ (fun τ => dsRep M τ (x (placeOf D τ)) (y τ))), ← hgen.2]
     exact integral_congr_ae (.of_forall hcomp)
 
-
 open scoped Classical in
 theorem apply_homFinDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {W : Type} [AddCommGroup W]
     [Module ℂ W] {σ : Representation ℂ (GfC V) W} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -547,7 +545,7 @@ theorem apply_homFinDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DS
     (hT : T ∈ homFinDS σ M π ⊤) (g : GA D V) (w : W) (y : ∀ τ, M.H τ) :
     π g (T w y) = T (σ (toFin V g) w) fun τ => dsRep M τ (projArch D.sp.cm.sig V.gram (placeOf D τ) g) (y τ) := by
   have h := mem_homTensorPi.1 hT
-  have e := GlobalTheory.T.infinitePart_act_discreteSeriesHom_factorwise D V S M H π ⊤ (T (σ (toFin V g) w)) (hT.1 _) g y
+  have e := GlobalTheory.TrAct.toInf_apply_homDS D V S M H π ⊤ (T (σ (toFin V g) w)) (hT.1 _) g y
   calc π g (T w y) = π (toInf V g : GA D V) (π (toFin V g : GA D V) (T w y)) := by
         conv_lhs => rw [← toInf_mul_toFin g]
         rw [map_mul]; rfl

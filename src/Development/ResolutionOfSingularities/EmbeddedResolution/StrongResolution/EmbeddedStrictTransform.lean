@@ -206,8 +206,6 @@ theorem exists_totalSpaceZeroIso :
       (coprod.inl : S.strictTransform 0 ⟶ S.totalSpace 0) ≫ e.hom ≫
           (S.emb ≫ S.ambientBlowups.isoZero.inv) = S.strictTransformι 0 := by
   have := S.emb_closedImmersion
-  have hci : AlgebraicGeometry.IsClosedImmersion (S.emb ≫ S.ambientBlowups.isoZero.inv) :=
-    inferInstance
   exact exists_coprodInitialIso_inl_comp_eq_subschemeι
     (Scheme.Hom.ker (S.emb ≫ S.ambientBlowups.isoZero.inv))
     (S.emb ≫ S.ambientBlowups.isoZero.inv)

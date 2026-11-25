@@ -76,16 +76,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.CompanionTheory.Ar.Lattice
-
-theorem exists_basis_span_eq_of_saturated (Λ : Type) [AddCommGroup Λ] [Module.Free ℤ Λ]
-    [Module.Finite ℤ Λ] (N : Submodule ℤ Λ)
-    (hN : ∀ (v : Λ) (n : ℤ), n ≠ 0 → n • v ∈ N → v ∈ N) :
-    ∃ (k n : ℕ) (b : Module.Basis (Fin n) ℤ Λ) (f : Fin k → Fin n),
-      Function.Injective f ∧ Submodule.span ℤ (Set.range fun i => b (f i)) = N :=
-  _root_.UpperTheory.Reformulated.B.Yha6.main Λ N hN
-
-end GlobalTheory.CompanionTheory.Ar.Lattice
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBasisSubsetOfSaturatedSubmodule =====
@@ -429,7 +419,7 @@ theorem mem_span_part_of_period_real_comb :
     simp only [d, Finset.sum_smul, ite_smul, zero_smul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.sum_ite_eq, if_pos (Finset.mem_univ _), Complex.coe_smul]
+    rw [Finset.sum_ite_eq, ite_eq_left (Finset.mem_univ _), Complex.coe_smul]
   have hcoef : ∀ j, ((b.repr x j : ℤ) : ℝ) = d j := by
     have h0 : ∑ j, (((b.repr x j : ℤ) : ℝ) - d j) • P (b j) = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib]
@@ -440,7 +430,7 @@ theorem mem_span_part_of_period_real_comb :
     intro j hj
     have hd : d j = 0 := by
       refine Finset.sum_eq_zero fun i _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun h => hj ⟨i, h⟩
     have := hcoef j
     rw [hd] at this
@@ -1229,7 +1219,7 @@ theorem exists_univ_quot : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   haveI := R₀.free
   haveI := R₀.fin
   obtain ⟨g', Λ', i1, i2, R₀', q₀, hq₀s, hq₀k, hq₀B, hq₀r, hq₀m⟩ := _root_.LevelTowerAlt.isotropic_quotient_lattice E g Λ Unit R₀ I hsat hiso
-  obtain ⟨k, n, b, f, hf, hN⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Lattice.exists_basis_span_eq_of_saturated Λ (AddSubgroup.toIntSubmodule I.toAddSubgroup) (fun v m hm h => hsat v m hm h)
+  obtain ⟨k, n, b, f, hf, hN⟩ := _root_.UpperTheory.Reformulated.B.Yha6.main Λ (AddSubgroup.toIntSubmodule I.toAddSubgroup) (fun v m hm h => hsat v m hm h)
   have hI : ∀ v, v ∈ I ↔ v ∈ Submodule.span ℤ (Set.range fun i => b (f i)) := fun v => by
     rw [hN]; rfl
   have hLI₀ := period_facts R₀ b f hf hI hiso
@@ -1252,7 +1242,7 @@ theorem exists_univ_quot : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   let π : Λ → Λ' := fun x => if h : x ∈ D then (hex x h).choose else 0
   have hπ : ∀ x ∈ D, R₀'.P (π x) = q₀ (R₀.P x) := by
     intro x h
-    simp only [π, dif_pos h]
+    simp only [π, dite_eq_left h]
     exact (hex x h).choose_spec
   have hinj : Function.Injective R₀'.P := (_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g' Λ' Unit R₀').1
   have hπs : ∀ x', ∃ x ∈ D, π x = x' := by

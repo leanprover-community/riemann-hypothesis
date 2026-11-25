@@ -106,7 +106,7 @@ theorem exists_darboux_of_basis {R W κ : Type} [CommRing R] [Invertible (2 : R)
   show _ = (∑ k, b.repr w (.inl k) * b.repr w' (.inr k)) - ∑ k, b.repr w' (.inl k) * b.repr w (.inr k)
   rw [key]
   simp only [Fintype.sum_sum_type, h11, h22, e12, e21, mul_zero, Finset.sum_const_zero, zero_add, add_zero,
-    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -278,10 +278,10 @@ theorem exists_darboux [CharZero F] [Invertible (2 : R)] (h2 : finrank F E = 2) 
   obtain ⟨co, hco⟩ := exists_darboux_of_basis BR bR
     (fun i j => by rw [hbv, hb.left_left, map_zero])
     (fun i j => by rw [hbv, hb.right_right, map_zero])
-    (fun i => by rw [hbv, hb.left_right, if_pos rfl, map_one])
-    (fun i j hij => by rw [hbv, hb.left_right, if_neg hij, map_zero])
-    (fun i => by rw [hbv, hb.right_left halt, if_pos rfl, map_neg, map_one])
-    (fun i j hij => by rw [hbv, hb.right_left halt, if_neg hij, map_zero])
+    (fun i => by rw [hbv, hb.left_right, ite_eq_left rfl, map_one])
+    (fun i j hij => by rw [hbv, hb.left_right, ite_eq_right hij, map_zero])
+    (fun i => by rw [hbv, hb.right_left halt, ite_eq_left rfl, map_neg, map_one])
+    (fun i j hij => by rw [hbv, hb.right_left halt, ite_eq_right hij, map_zero])
   refine ⟨co, fun x => ⟨fun k => b.repr x (.inl k), fun k => b.repr x (.inr k), ?_⟩⟩
   rw [hco]
   ext k <;> simp [hrep]

@@ -142,7 +142,7 @@ theorem mul_idem_eq_zero {k M : ℕ} (hk : k.Coprime M) {v : HeightOneSpectrum (
   change α w * idem F k w = 0
   by_cases h : w = v
   · subst h
-    rw [idem_apply, if_neg, mul_zero]
+    rw [idem_apply, ite_eq_right, mul_zero]
     intro hk'
     obtain ⟨a, b, hab⟩ : IsCoprime (k : 𝓞 F) (M : 𝓞 F) := Nat.Coprime.cast hk
     exact w.isPrime.ne_top ((Ideal.eq_top_iff_one _).2
@@ -636,7 +636,7 @@ theorem pnorm_le_of_bdd : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (om : GA D S 
   intro D S T C om hW Lv hn M hw hM hMm B hB f' _hbase c c' z φ hz _hγ _hk v₀ μ _hvac _hμ ep cf hepcf gL hgL F
     _hFd hFb hFφ hφb
   obtain ⟨K, hKφ⟩ := hφb
-  obtain ⟨o, b, -, -, hob, -⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
+  obtain ⟨o, b, hob⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
   have hJ := (GlobalTheory.Ker.onBasis_frame_period D S T C).2
   have hmv : ∀ a, C.IsB (C.mvB a B) := fun a => ((hJ B hB).2.2.2.2.2 a).1
   have hdom : ∀ a, C.xB (C.mvB a B) ∈ C.X.dom := fun a => (hJ _ (hmv a)).2.1
@@ -835,7 +835,7 @@ theorem exists_real_point {D : D7} {S T : HSp D} (C : Ctx S T)
 
 theorem frame_decomp : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C.Bas), C.IsB B → ∀ x ∈ C.X.dom, ∃ a ∈ GinfC T, ∃ b ∈ Bor C.X.Ψ T.rank, x = rmul (C.xB (C.mvB a B)) b := by
   intro D S T C B hB x hx
-  obtain ⟨o, b, -, -, hob, -⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
+  obtain ⟨o, b, hob⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
   obtain ⟨hon, hbB, hxeq, -, -⟩ := hob x hx
   have hz : IsONFr C.X (C.xB B) := GlobalTheory.Ker.ONBasis.isONFr_xB C hB
   have hzdom : C.xB B ∈ C.X.dom := GlobalTheory.Ker.ONBasis.mem_dom C.X hz
@@ -919,7 +919,7 @@ theorem mem_of_loc (L : Submodule (𝓞 E) (Fin n → E)) (𝔪 : Ideal (𝓞 E)
     · rw [map_sub, map_one, hev]; split_ifs
       · rw [sub_self]; exact zero_mem _
       · rw [sub_zero]; exact one_mem _
-    · rw [map_sub, map_one, hev, if_pos ((hmemP w).2 hw), sub_self]
+    · rw [map_sub, map_one, hev, ite_eq_left ((hmemP w).2 hw), sub_self]
   · by_cases hI : 𝔪.comap (algebraMap (𝓞 F) (𝓞 E)) ≤ v.asIdeal
     · exact hloc v hI (ind v) (hind1 v) (hind0 v)
     · obtain ⟨c, hc, hcv⟩ := SetLike.not_le_iff_exists.1 hI

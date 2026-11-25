@@ -29,8 +29,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S]
 
@@ -58,9 +56,9 @@ theorem eig_basis_of_full {x : Sp S ⟶ Xo.X} (u : ∀ τ : E →+* ℂ, Fin (Dw
     rw [hmm'_def]
     show IsEigV _ _ (if τ' = τ then tvOf hw else 0)
     by_cases h : τ' = τ
-    · rw [if_pos h, h]
+    · rw [ite_eq_left h, h]
       exact (eigAt_iff (c := c) hw τ).1 hwe
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       show ∀ b, _ = _
       intro b
       rw [map_zero, smul_zero]

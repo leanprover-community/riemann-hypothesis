@@ -552,7 +552,7 @@ theorem taylor [PerfectField k] (p : ℕ) [Fact p.Prime] [CharP k p] [IsIntegral
   have htop : ⊤ ≤ Z.fromSpecStalk b ⁻¹ᵁ U :=
     (Scheme.preimage_eq_top_of_closedPoint_mem _ (by rw [Scheme.fromSpecStalk_closedPoint]; exact hb)).ge
   have hv : valR (A := Z.presheaf.stalk b) (Z.fromSpecStalk b) U f = (Z.presheaf.germ U b hb).hom f := by
-    refine (dif_pos htop).trans ?_
+    refine (dite_eq_left htop).trans ?_
     have : (Z.fromSpecStalk b).appLE U ⊤ htop ≫ (Scheme.ΓSpecIso (Z.presheaf.stalk b)).hom =
         Z.presheaf.germ U b hb := by
       rw [Scheme.Hom.appLE, Scheme.fromSpecStalk_app hb]
@@ -566,7 +566,7 @@ theorem taylor [PerfectField k] (p : ℕ) [Fact p.Prime] [CharP k p] [IsIntegral
   · have e1 : valR (x m) U f = psJet m (j ((Z.presheaf.germ U b hb).hom f)) := by
       rw [← tj_eq, hj, ← hv, ← h1]
       exact (GlobalTheory.ZH.CrdCalc.valR_spMap (τ m : Z.presheaf.stalk b →+* Jet k κ m) _ U htop).2 f
-    rw [← e1, valR, dif_pos (hU m)]
+    rw [← e1, valR, dite_eq_left (hU m)]
     exact (Iso.hom_inv_id_apply (Scheme.ΓSpecIso (CommRingCat.of (Jet k κ m))) _).symm
   · apply germ_injective_of_isIntegral Z b hb
     rw [map_zero, ← Ideal.mem_bot, ← Ideal.iInf_pow_eq_bot_of_isLocalRing _ (maximalIdeal.isMaximal _).ne_top,
@@ -649,7 +649,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto

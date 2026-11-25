@@ -21,42 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryAutFo
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.EventuallyMemHeckeLevelAndIwahoriCongruence
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.PlaceBetween
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.WtOfForm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.IwMemMul
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
 import GroundTheory.LocalFields.PadicLogSeries
@@ -314,13 +278,13 @@ variable {s n c}
 
 theorem Pc_notS {w : Plc L} (hw : w.under (𝓞 (Lp L)) ∉ s.S) : Pc s n c w = GlobalTheory.LFun.KGL w (n := n) := by
   unfold Pc
-  refine if_neg ?_
+  refine ite_eq_right ?_
   rintro ⟨v, hv, rfl⟩
   exact hw ((under_w s v).symm ▸ hv)
 
 theorem Pc_S {v : Plc (Lp L)} (hv : v ∈ s.S) : Pc s n c (s.w v) = Kc _ n c := by
   unfold Pc
-  exact if_pos ⟨v, hv, rfl⟩
+  exact ite_eq_left ⟨v, hv, rfl⟩
 
 theorem Kf_notS {w : Plc L} (hw : w.under (𝓞 (Lp L)) ∉ s.S) : Kf s n c w = GlobalTheory.BCT.KL n w := by
   unfold Kf GlobalTheory.BCT.KL
@@ -331,7 +295,7 @@ theorem levFam (hfin : s.S.Finite) :
   refine ⟨fun w => ⟨(Pc_open s n c w).preimage continuous_subtype_val, fun k hk => Pc_le s n c w hk, fun k hk => hk⟩, ?_⟩
   filter_upwards [(hfin.image s.w).compl_mem_cofinite] with w hw
   unfold Kf GlobalTheory.BCT.KL Pc
-  rw [if_neg hw]
+  rw [ite_eq_right hw]
 
 theorem loc_of_glob (hU : GlobalTheory.BCT.Unr L) {k : finU (E := L) (n := n)} (hk : k ∈ GlobalTheory.BCT.globLev (Set.range s.w) (Kf s n c))
     (v : Plc (Lp L)) : cLoc (s.w v) (k : UA L n) ∈ Pc s n c (s.w v) :=
@@ -473,7 +437,7 @@ private theorem fixOf {L : Type} [Field L] [NumberField L] [IsCMField L] (hU : G
     (h3 : π ⊓ GlobalTheory.PRep.fixed (GlobalTheory.BCT.RF L n) (GlobalTheory.BCT.globLev S K') ≠ ⊥) (w : GlobalTheory.BCT.Pl L) (hw : w ∈ S)
     (hs : IsSplitAt w) (τ : SmIrr (GLw n w)) (hc : Cp π w τ) :
     GlobalTheory.PRep.fixed (τ.ρ.comp (GlobalTheory.BCT.UL n w).subtype) (K' w) ≠ ⊥ := by
-  have hUL : GlobalTheory.BCT.UL n w = ⊤ := if_pos hs
+  have hUL : GlobalTheory.BCT.UL n w = ⊤ := ite_eq_left hs
   have hsurj : Function.Surjective (GlobalTheory.BCT.UL n w).subtype := fun g =>
     ⟨⟨g, hUL ▸ Subgroup.mem_top g⟩, rfl⟩
   let σ₁ : SmIrr (GlobalTheory.BCT.UL n w) :=

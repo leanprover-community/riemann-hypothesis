@@ -57,52 +57,11 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.RealisedChai
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ColengthBoundSplitPlaceChart
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.HodgeTateInclusionChartCharacters
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.UnramifiedCompanionChartCharacters
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Std.Tactic.BVDecide.Normalize.BitVec
 import Development.AbelianVarietyTheory.Definitions.Jets.TwoPlaces
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.KaSmallNonpos
@@ -178,23 +137,23 @@ theorem pkgInert : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.ChartRestric
     · have hg' : g = RF.bg s := hg
       show Dw.mult (tauIn N pl V.l o.1 g s) = N.R.k - 1 + j
       unfold tauIn Datum.mult
-      rw [if_pos hg']
-      refine (if_pos (hpsi _)).trans ?_
+      rw [ite_eq_left hg']
+      refine (ite_eq_left (hpsi _)).trans ?_
       rw [hp]
       show N.R.k + j - 1 = _
       omega
     · have hg' : ¬ g = RF.bg s := hg
       show Dw.mult (tauIn N pl V.l o.1 g s) = N.R.m - j
       unfold tauIn Datum.mult
-      rw [if_neg hg']
-      exact (if_neg (not_inPsi_conjugate H _ (hpsi _))).trans hq
+      rw [ite_eq_right hg']
+      exact (ite_eq_right (not_inPsi_conjugate H _ (hpsi _))).trans hq
   have hsup := _root_.GlobalTheory.RowAt.supply_pairs hUp E H Dw lv Xo c hstar T io y C3 C V ι hι lv.M Y hY hy hunr Z (N.ordP V.l) lab harith
     hbij.2 hrank (show N.R.m - j < N.R.k - 1 by omega) (fun _ => Or.inl ⟨heven, fun s => zero_eq_bg_iff s⟩) a hdom nW ν hν'
   obtain ⟨I, J, fI, fJ, X, F, hn, hbig, hvb⟩ := GlobalTheory.RowAt.supply_extend C V (N.ordP V.l) (RPl N.R) Z (N.R.k - 1) (j + (N.R.m - j))
     (fun _ g s => g = RF.bg s) (fun z g s => Dw.mult (tauIn N pl V.l z g s))
     (fun z g s => gap (Dw.mult (tauIn N pl V.l z g s)) fun i => a (tauIn N pl V.l z g s, i)) nW ν hZne hsup
   have hwt := GlobalTheory.RowAt.wtHyp_gap E H Dw N j pl a hj1 hjm hpsi hp hq hdom (N.ordP V.l) (N.pos V.l) Z RF.bg (tauIn N pl V.l) hZ hbij
-    (fun z s => if_pos rfl)
+    (fun z s => ite_eq_left rfl)
   refine ⟨{ R := { C := C, V := V, hVl := rfl, I := I, J := J, fI := fI, fJ := fJ, X := X, F := F
                    hn := fun z => ⟨(hn z).1, (hn z).2.trans (by show j + (N.R.m - j) = N.R.m; omega)⟩ }
             Z := Z
@@ -310,11 +269,11 @@ theorem pkg_of_labels (hU : ∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.Char
       revert g g'
       decide
     · change Dw.mult (tau o.1 g s) = N.R.k - 1 + j
-      rw [htau, if_pos (show g = sel s from h), Datum.mult]
-      exact (if_pos (hpsi _)).trans (by omega)
+      rw [htau, ite_eq_left (show g = sel s from h), Datum.mult]
+      exact (ite_eq_left (hpsi _)).trans (by omega)
     · change Dw.mult (tau o.1 g s) = N.R.m - j
-      rw [htau, if_neg (show ¬ g = sel s from h), Datum.mult]
-      exact (if_neg (not_inPsi_conj H (hpsi _))).trans hq'
+      rw [htau, ite_eq_right (show ¬ g = sel s from h), Datum.mult]
+      exact (ite_eq_right (not_inPsi_conj H (hpsi _))).trans hq'
   have h1 := _root_.GlobalTheory.RowAt.supply_pairs hU E H Dw lv Xo c hstar T io y C3 C V ι hι k Y hY hy hunr Z d lab hA hbij.2 hR
     (show N.R.m - j < N.R.k - 1 by omega) (fun _ => hsel) a ha nW ν hν
   have hm : lab.j + lab.j' = N.R.m := show j + (N.R.m - j) = N.R.m by omega
@@ -354,7 +313,7 @@ theorem pkgZero : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.ChartRestrict
     split_ifs with h <;> simp [h]
   · have hsp : N.cls V.l = PrimeClass.splitK := by
       unfold Inert NumDatum.cls primeClass at *
-      rw [if_neg h2, if_neg hlq, if_neg hld] at hin ⊢
+      rw [ite_eq_right h2, ite_eq_right hlq, ite_eq_right hld] at hin ⊢
       split_ifs at hin ⊢ <;> simp_all
     obtain ⟨d, _, pos, Z, hZ, hne, hbij, hfr⟩ := _root_.GlobalTheory.LabSplit.labelling_split E H lv c N pl hT la T io C V ι hι hV hla hsp j
     exact ⟨d, inferInstance, pos, pkg_of_labels hU hstar N j pl a hj1 hjm hpsi hp hq ha hy C3 V ι hι Y hY
@@ -425,14 +384,14 @@ theorem pkgSplit : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.ChartRestric
       revert g; decide
     · change g = 0 at hg
       change Dw.mult (tauSp N pl pos o.1 g s) = N.R.k - 1 + j
-      rw [tauSp, if_pos hg]
-      have : Dw.mult (pl (pos o.1 s.val)) = Dw.p := if_pos (hpsi _)
+      rw [tauSp, ite_eq_left hg]
+      have : Dw.mult (pl (pos o.1 s.val)) = Dw.p := ite_eq_left (hpsi _)
       omega
     · change ¬ g = 0 at hg
       change Dw.mult (tauSp N pl pos o.1 g s) = N.R.m - j
-      rw [tauSp, if_neg hg]
+      rw [tauSp, ite_eq_right hg]
       have : Dw.mult (ComplexEmbedding.conjugate (pl (pos o.1 s.val))) = Dw.q :=
-        if_neg (not_inPsi_conjugate H (hpsi _))
+        ite_eq_right (not_inPsi_conjugate H (hpsi _))
       omega
   have hsup := _root_.GlobalTheory.RowAt.supply_pairs hU E H Dw lv Xo c hstar T io y C3 C V ι hι lv.M Y hY hy hunr Z d lab harith hbij.2 hrank
     (by change N.R.m - j < N.R.k - 1; omega) (fun o => Or.inr fun _ => rfl) a hdom nW ν (hnu y C3 lv.M a nW ν hν)
@@ -598,7 +557,7 @@ theorem gapW_eq (Tp : ParamsT D L Pm) (hK : DV.KapDef D) {j : ℕ} (z : RPl D.R)
     ofGaps (lGapP D (kaR Tp hK j) Tp.TO Tp.nWn (plOf D z)) ⟨D.R.k - 2 + 1, h2⟩ = _
   rw [ofGaps_succ _ ⟨D.R.k - 2, h1⟩ h2, Nat.add_sub_cancel]
   unfold lGapP
-  rw [if_pos h2]
+  rw [ite_eq_left h2]
 
 theorem TO_le_t (Tp : ParamsT D L Pm) : Tp.TO ≤ D.R.t := by
   have a1 := Tp.split
@@ -704,7 +663,7 @@ theorem sum_extendByZero_fin_eq_sum_of_eq {p : ℕ} (l : Fin p → ℕ) : (∑ i
   rw [Finset.sum_range]
   refine Finset.sum_congr rfl fun i _ => ?_
   unfold ext0
-  rw [dif_pos i.2]
+  rw [dite_eq_left i.2]
 
 theorem floor_le (T T' : ℕ) (hT : T ≤ T') (hT' : 0 < T') (c c' : ℤ) (h0 : 0 ≤ c') (hc : c ≤ c') :
     (T : ℤ) * ((Int.fdiv c T').toNat : ℤ) ≤ c' := by
@@ -725,27 +684,20 @@ theorem step {p : ℕ} (T : ℕ) (g κ : Fin p → ℕ) (h : ∀ i, (T : ℤ) * 
     rw [← gapZ_ofGaps g] at h1
     unfold WeightAlgebra.gapZ at h1
     by_cases hi' : i + 1 < p
-    · simp only [dif_pos hi, dif_pos hi'] at h1 ⊢
+    · simp only [dite_eq_left hi, dite_eq_left hi'] at h1 ⊢
       exact_mod_cast h1
-    · simp only [dif_pos hi, dif_neg hi'] at h1 ⊢
+    · simp only [dite_eq_left hi, dite_eq_right hi'] at h1 ⊢
       push_cast
       simp only [sub_zero]
       exact_mod_cast h1
   · have hi' : ¬ i + 1 < p := by omega
-    simp [dif_neg hi, dif_neg hi']
-
-theorem gap_nonneg {p : ℕ} {κ : Fin p → ℕ} (h : Antitone κ) (i : Fin p) : 0 ≤ WeightAlgebra.gapZ κ i := by
-  unfold WeightAlgebra.gapZ
-  split_ifs with hi
-  · have : κ ⟨i.1 + 1, hi⟩ ≤ κ i := h (by simp [Fin.le_def])
-    omega
-  · positivity
+    simp [dite_eq_right hi, dite_eq_right hi']
 
 theorem entry_le {p : ℕ} (T : ℕ) (g κ : Fin p → ℕ) (h : ∀ i, (T : ℤ) * g i ≤ WeightAlgebra.gapZ κ i + 2) (i : ℕ) (hi : i ≤ p) :
     (T : ℝ) * (ext0 (ofGaps g) i : ℝ) ≤ (ext0 κ i : ℝ) + 2 * p := by
   have := telescope T (fun i => (ext0 (ofGaps g) i : ℝ)) (fun i => (ext0 κ i : ℝ)) (step T g κ h) i p
-  have e1 : ext0 (ofGaps g) (i + p) = 0 := by unfold ext0; rw [dif_neg (by omega)]
-  have e2 : ext0 κ (i + p) = 0 := by unfold ext0; rw [dif_neg (by omega)]
+  have e1 : ext0 (ofGaps g) (i + p) = 0 := by unfold ext0; rw [dite_eq_right (by omega)]
+  have e2 : ext0 κ (i + p) = 0 := by unfold ext0; rw [dite_eq_right (by omega)]
   simpa [e1, e2] using this
 
 theorem rest_bounds (A : ℕ → ℝ) (hA : Antitone A) (h0 : ∀ i, 0 ≤ A i) (n q : ℕ) :
@@ -776,25 +728,25 @@ variable {D : D7} {L : SizeData₂ D} {Pm : ParameterChoice' D L} (Tp : ParamsT 
 
 theorem mul_lGapP_le_gapZ_add_two (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).1) :
     (Tp.TO : ℤ) * lGapP D (kaR Tp hK j) Tp.TO Tp.nWn τ i ≤ WeightAlgebra.gapZ ((kaR Tp hK j).aP τ) i + 2 := by
-  have g0 := gap_nonneg ((kaR Tp hK j).aPlus_antitone τ) i
+  have g0 := GlobalTheory.RunDepth.gapZ_nonneg_of_antitone ((kaR Tp hK j).aPlus_antitone τ) i
   unfold lGapP
   split_ifs with h
   · exact floor_le _ _ (by unfold WeightAlgebra.Tp; omega) (by unfold WeightAlgebra.Tp; omega) _ _ (by omega) le_rfl
   · refine floor_le _ _ (by unfold WeightAlgebra.Tp; omega) (by unfold WeightAlgebra.Tp; omega) _ _ (by omega) ?_
     unfold WeightAlgebra.gapZ
-    rw [dif_neg h]
+    rw [dite_eq_right h]
     have : (0 : ℤ) ≤ ((WeightFamilies.dimY D j : ℤ) + 2) * Tp.nWn := by positivity
     omega
 
 theorem gapM_le (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).2) :
     (Tp.TO : ℤ) * lGapM D (kaR Tp hK j) Tp.TO τ i ≤ WeightAlgebra.gapZ ((kaR Tp hK j).aM τ) i + 2 := by
-  have g0 := gap_nonneg ((kaR Tp hK j).aM_anti τ) i
+  have g0 := GlobalTheory.RunDepth.gapZ_nonneg_of_antitone ((kaR Tp hK j).aM_anti τ) i
   unfold lGapM
   split_ifs with h
   · exact floor_le _ _ (by unfold WeightAlgebra.Tp; omega) (by unfold WeightAlgebra.Tp; omega) _ _ (by omega) le_rfl
   · refine floor_le _ _ (by unfold WeightAlgebra.Tp; omega) (by unfold WeightAlgebra.Tp; omega) _ _ (by omega) ?_
     unfold WeightAlgebra.gapZ
-    rw [dif_neg h]
+    rw [dite_eq_right h]
     omega
 
 theorem kappa_spread (hj : InR D j) (τ : D.what₂.Tau) :
@@ -811,16 +763,15 @@ theorem kappa_spread (hj : InR D j) (τ : D.what₂.Tau) :
     have e2 := (hK j h1 h2 τ).1 ⟨i, hi'⟩
     rw [← e1, DV.aPlusQ_eq] at e2
     unfold DV.sigPar at e2
-    rw [dif_pos hi] at e2
+    rw [dite_eq_left hi] at e2
     have e3 := congrArg (fun q : ℚ => (q : ℝ)) e2
     push_cast at e3
     unfold ext0 kaR
-    rw [dif_pos hi']
+    rw [dite_eq_left hi']
     exact e3
   rw [big 0 (by omega), big (D.R.k - 2) (by omega)]
   have a1 := (L.cloud_v τ ⟨0, by omega⟩).2
   have a2 := (L.cloud_v τ ⟨D.R.k - 2, by omega⟩).1
-  have a3 : (0 : ℝ) ≤ ((D.R.k - 2 : ℕ) : ℝ) := Nat.cast_nonneg _
   push_cast at a1 a2 ⊢
   linarith
 
@@ -873,11 +824,9 @@ theorem restAt_bounds (hj : InR D j) (τ : D.what₂.Tau) :
   change (Tp.TO : ℝ) * (ext0 ((lR Tp hK j).aP τ) (D.R.k - 1) : ℝ) ≤ _ at t2
   change (Tp.TO : ℝ) * (ext0 ((lR Tp hK j).aM τ) 0 : ℝ) ≤ _ at t3
   have c0 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast hk
-  have c1 : ((D.R.k - 2 : ℕ) : ℝ) ≤ D.R.k := by exact_mod_cast Nat.sub_le _ _
   have c2 : ((D.R.sigW j).1 : ℝ) ≤ 2 * D.R.k := by exact_mod_cast (by omega : (D.R.sigW j).1 ≤ 2 * D.R.k)
   have c3 : ((D.R.sigW j).2 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : (D.R.sigW j).2 ≤ D.R.k)
   have c4 : (j : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : j ≤ D.R.k)
-  have c5 : (0 : ℝ) ≤ j := Nat.cast_nonneg _
   have c6 : (0 : ℝ) ≤ ((D.R.sigW j).2 : ℝ) := Nat.cast_nonneg _
   have hT : (0 : ℝ) ≤ Tp.TO := Nat.cast_nonneg _
   unfold restAt
@@ -907,7 +856,6 @@ theorem le_two_floor {x : ℝ} (h : 1 ≤ x) : 1 ≤ (⌊x⌋₊ : ℝ) ∧ x �
 include Tp in
 theorem sizes_le : L.Sc ≤ 2 * (numOf D L).Sc ∧ L.etaSz ≤ 2 * (numOf D L).eta ∧ (D.R.k : ℝ) ≤ (numOf D L).Sc := by
   have hT : (1 : ℝ) ≤ Tp.TO := by exact_mod_cast TO_pos Tp
-  have ht : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
   have hk : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 0 < D.R.m)
   obtain ⟨d1, d2⟩ := le_two_floor (x := ((D.s.Del : ℚ) : ℝ)) ((one_le_pow₀ hT).trans Tp.Del_TO)
@@ -946,7 +894,6 @@ theorem rest_degree_bounds : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterCho
   have h1 := Finset.sum_le_card_nsmul Finset.univ _ _ (fun τ _ => (restAt_bounds Tp hK j hj τ).2)
   rw [Finset.card_univ, hc, nsmul_eq_mul] at h1
   obtain ⟨s1, s2, s3⟩ := sizes_le Tp
-  have hk : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have he := L.etaSz_pos
   have h2 : L.Sc + 3 * L.etaSz + 12 * D.R.k ≤ 100 * ((numOf D L).Sc + (numOf D L).eta) := by linarith
   have h3 := mul_le_mul_of_nonneg_left h2 (by positivity : (0 : ℝ) ≤ (D.R.f : ℝ) * D.R.k)
@@ -985,7 +932,6 @@ theorem goodPage_run : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D
     exact Nat.mul_pos hf (Nat.choose_pos hr)
   have h40 := Tp.TO_40
   have hTpos : (0 : ℝ) < Tp.TO := by exact_mod_cast TO_pos Tp
-  have hx0 : 0 < L.sc.x := by linarith
   have hw'' : 0 < L.sc.w'' D.R.n := by
     unfold Scale.w'' Scale.b' Scale.a Scale.b Scale.X'
     have : (0 : ℝ) < D.R.n := by exact_mod_cast hn
@@ -1069,7 +1015,6 @@ theorem comap_liesOver {E K : Type} [Field E] [Field K] [NumberField K] (f : �
     (la : HeightOneSpectrum (𝓞 K)) :
     (la.asIdeal.comap f).LiesOver (Ideal.span {((resCharOf la : ℕ) : ℤ)}) := by
   have hl := Crude.resCharOf_prime la
-  have hP := la.isPrime
   have hmax : (Ideal.span {((resCharOf la : ℕ) : ℤ)}).IsMaximal :=
     PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hl).irreducible
   have hle : Ideal.span {((resCharOf la : ℕ) : ℤ)} ≤ (la.asIdeal.comap f).under ℤ := by
@@ -1100,11 +1045,11 @@ theorem eTau_plOf (D : D7) (z : RPl D.R) :
 theorem inert_ne {N : NumDatum} {l : ℕ} (h : Inert N l) : l ∉ N.H.small ∧ l ≠ N.q ∧ l ≠ N.d := by
   unfold Inert NumDatum.cls primeClass at h
   refine ⟨fun h2 => ?_, fun hq => ?_, fun hd => ?_⟩
-  · rw [if_pos h2] at h
+  · rw [ite_eq_left h2] at h
     rcases h with h | h <;> cases h
-  · rw [if_pos hq] at h
+  · rw [ite_eq_left hq] at h
     split_ifs at h <;> rcases h with h | h <;> cases h
-  · rw [if_pos hd] at h
+  · rw [ite_eq_left hd] at h
     split_ifs at h <;> rcases h with h | h <;> cases h
 
 theorem gal_step (D : D7) (L : SizeData₂ D) (p : ℕ) [Fact p.Prime] (hI : Inert (numOf D L) p)
@@ -1121,7 +1066,7 @@ theorem gal_step (D : D7) (L : SizeData₂ D) (p : ℕ) [Fact p.Prime] (hI : Ine
   have hC := factClassFrob D.R D.host p hN P σ hσ
   have hH : (D.host.galE σ).2 = D.R.iota ((numOf D L).hP p) := by
     have e1 := (D.host.toHostAx.frob_iff p hc P σ).1 hσ
-    have e2 : (numOf D L).hP p = D.R.iotaInv (D.host.art (ZMod.unitOfCoprime p hc)).2 := dif_pos hc
+    have e2 : (numOf D L).hP p = D.R.iotaInv (D.host.art (ZMod.unitOfCoprime p hc)).2 := dite_eq_left hc
     rw [e2, Formalism.HC.Frame.iota_iotaInv]
     exact congrArg Prod.snd e1
   have hcls : (numOf D L).cls p = D.host.cls p := rfl
@@ -1282,8 +1227,6 @@ theorem numOf_sizes_le (D : D7) (L : SizeData₂ D) (hk : (1 : ℝ) ≤ D.R.k) (
 theorem card_RPl (R : Ranks) : Fintype.card (RPl R) = R.f := by
   simp [RPl, Ranks.f, Ranks.n, R.card_A]
 
-
-
 theorem leafGood_run : ∃ C0 : ℝ, ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D L) (Tp : ParamsT D L Pm) (hK : DV.KapDef D) (T : Core D), LawsM T → ∀ (EX : ErrX D) [StarRing (𝓞 D.host.E)] (K : Type) [Field K] [NumberField K] [StarRing K] [Algebra (𝓞 T.Q.c.F) (𝓞 K)] [Algebra.IsIntegral (𝓞 T.Q.c.F) (𝓞 K)] [Algebra (𝓞 D.host.E) K] (Bs : DefBase K) (Df : DefSide Bs) (S : IndefData Df) (P : Type) [Group P] [Finite P] (oc : OnConst) (O : OnObj S P oc) (ι : Bs.J → ℕ) (Nm : IndefNum Bs),
   RunTie T EX Tp hK O ι → (∀ j, PkgSt (T.Q.Xo (ι j)) T.Q.c) → C0 ≤ oc.C → LeafPage O → LeafSizes O → 10 ≤ Pm.CnW → 3 ≤ L.sc.x ^ (L.sc.ez / 5) → 3 ≤ L.sc.x → (D.R.k : ℝ) * L.sc.b' ≤ L.sc.b →
   DepthCond.ContentEqualsDatumContent Nm (numOf D L) ι → LeafDepthGood Nm O := by
@@ -1437,7 +1380,7 @@ theorem sprime_nonneg_two : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     rw [← h2]; exact fun h => hg2t (h ▸ hv)
   have hs : DepthTie.sWT Xo c Dd ι v j = (Dd.Q.cP (DF (Dw (ι j)) (Dd.aL (ι j))) (plc v) : ℝ) := by
     unfold DepthTie.sWT DepthTie.nuT DepthTie.nuWT nuStarAt DepPage.nuN DepthTie.e2
-    rw [DepthTie.resChar_below (F := c.F) v, if_neg hn1, if_neg hn2]
+    rw [DepthTie.resChar_below (F := c.F) v, ite_eq_right hn1, ite_eq_right hn2]
     ring
   set N := DepthTie.Nsig Dd.Q (DF (Dw (ι j)) (Dd.aL (ι j))) (DF (Dw (ι j)) (Dd.aF (ι j))) with hNdef
   have hN : N ≠ 0 := DepthTie.Nsig_ne_zero Dd.Q hprime _ _
@@ -1488,7 +1431,7 @@ theorem leafDepthTwo_of_unscaled_bound : ∀ (E : Type) [Field E] [NumberField E
     intro v j hv ⟨he1, he2, hram, hEv⟩
     have hbad : plc v ∈ O.Bad := by simp [OnObj.Bad, hv]
     have hEj := hEv j
-    rw [if_pos hbad] at hEj
+    rw [ite_eq_left hbad] at hEj
     have hR := rounding_condition_holds (DepthTie.e1 c v) (DepthTie.e2 c v) (O.T * (DepthTie.nuT Xo c Dd ι v j + 1))
       (O.E v j) he1 he2 (by rw [← mul_assoc]; exact hEj)
     have hramR : (ramw v : ℝ) = (DepthTie.e1 c v : ℝ) * (DepthTie.e2 c v : ℝ) := by simp [hram]

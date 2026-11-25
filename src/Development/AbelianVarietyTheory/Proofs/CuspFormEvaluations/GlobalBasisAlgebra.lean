@@ -3,51 +3,11 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsChartIff
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFrameChangeIntegralInvertibleMatrix
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroup
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -135,7 +95,7 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
             rw [Finset.sum_comm]
             simp only [Finset.mul_sum]
         _ = (b.repr y j : K) := by
-            simp only [hBA, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+            simp only [hBA, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     calc ρ y V = ρ (∑ j, b.repr y j • b j) V := by rw [b.sum_repr y]
       _ = ∑ j, κ (b.repr y j : K) • ρ (b j) V := by
 
@@ -161,10 +121,10 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
           exact Finset.sum_congr rfl fun k _ => by congr 2; ring
       _ = algebraMap K S (χ σ (a : E)) • P σ V := by
           rw [Finset.sum_eq_single σ]
-          · rw [hAB, if_pos rfl, _root_.mul_one]
+          · rw [hAB, ite_eq_left rfl, _root_.mul_one]
             rfl
           · intro ν _ hν
-            rw [hAB, if_neg hν, mul_zero, map_zero, zero_smul]
+            rw [hAB, ite_eq_right hν, mul_zero, map_zero, zero_smul]
           · intro h
             exact absurd (Finset.mem_univ σ) h
   have hPZ : ∀ σ τ (Z : M), (∀ a : 𝓞 E, ρ a Z = algebraMap K S (χ σ (a : E)) • Z) →
@@ -190,9 +150,9 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
       ∀ τ, ∑ i, a ⟨τ, i⟩ • U ⟨τ, i⟩ = P τ W := by
     intro a ha τ
     rw [← ha, Fintype.sum_sigma, hPadd, Finset.sum_eq_single τ]
-    · rw [hPZ τ τ _ (hYeig a τ), if_pos rfl]
+    · rw [hPZ τ τ _ (hYeig a τ), ite_eq_left rfl]
     · intro σ _ hστ
-      rw [hPZ σ τ _ (hYeig a σ), if_neg hστ]
+      rw [hPZ σ τ _ (hYeig a σ), ite_eq_right hστ]
     · intro h
       exact absurd (Finset.mem_univ τ) h
   have hex : ∀ σ, ∃! c : Fin (mult σ) → S, ∑ i, c i • U ⟨σ, i⟩ = P σ W := fun σ => hb σ (P σ W) (hPeig σ W)

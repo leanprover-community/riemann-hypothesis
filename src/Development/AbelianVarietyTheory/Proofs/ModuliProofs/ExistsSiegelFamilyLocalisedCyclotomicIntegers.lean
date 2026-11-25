@@ -53,7 +53,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj TensorProduct
 open GlobalTheory.ZM GlobalTheory.SiegelRingChange
 
-noncomputable section
 namespace GlobalTheory.SiegelFamilyBaseChange
 
 theorem pb_iff {h k : ℕ} {B B' B'' : Type} [CommRing B] [CommRing B'] [CommRing B''] {ζ : B} {ζ' : B'} {ζ'' : B''}
@@ -70,7 +69,7 @@ theorem quasiCompact_of_isQProjOver {o : Type} [CommRing o] {X : Scheme.{0}} {f 
 
 theorem injective_of_isAlgebraic {o O : Type} [CommRing o] [IsDomain o] [CommRing O] [CharZero O]
     (ha : Algebra.IsAlgebraic ℤ o) (ψ : o →+* O) : Function.Injective ψ := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   by_contra hx0
   refine Ideal.comap_ne_bot_of_algebraic_mem (I := RingHom.ker ψ) hx0 hx (ha.1 x) ?_
@@ -143,4 +142,3 @@ theorem exists_siegelFamily : Out.Laws → Out.Laws2 → ∀ (h k p : ℕ) (o : 
     exact Ideal.comap_bot_of_injective j hinj
 
 end GlobalTheory.SiegelFamilyBaseChange
-end

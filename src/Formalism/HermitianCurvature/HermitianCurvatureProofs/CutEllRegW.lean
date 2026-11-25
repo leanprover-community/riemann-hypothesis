@@ -85,7 +85,7 @@ lemma brSys_tr {ι : Type} (P : ι → SOp d) (i : ι) (φ : (Fin d → ℝ) →
       (fun y' => (P i).a k w y' * φ y') ∘ brT d := by
     funext y
     simp only [brSys, Function.comp_apply]
-    rw [dif_pos (show (k : ℕ) < (P i).ord + 1 from k.isLt)]
+    rw [dite_eq_left (show (k : ℕ) < (P i).ord + 1 from k.isLt)]
     rfl
   rw [e, dw_comp_brT]
   rfl
@@ -94,7 +94,7 @@ lemma brSys_symb {ι : Type} (P : ι → SOp d) (i : ι) (x ξ : ZetaZeros.D.Ell
     (brSys P).symb i x ξ = (P i).symb (brT d x) (brT d ξ) := by
   unfold ZetaZeros.D.EllReg.Sys.symb SOp.symb
   refine Finset.sum_congr rfl fun w _ => ?_
-  simp only [brSys, dif_pos (Nat.lt_succ_self _)]
+  simp only [brSys, dite_eq_left (Nat.lt_succ_self _)]
   rw [mul_comm]
   rfl
 
@@ -229,11 +229,6 @@ lemma continuous_trOp (m : ℕ) (b : (n : ℕ) → (Fin n → Fin d) → E d →
   refine continuous_finsetSum _ fun n _ => continuous_finsetSum _ fun w _ => continuous_const.mul ?_
   exact (contDiff_dw ((hb n w).mul hφ) _).continuous
 
-lemma contDiff_eF (ξ : E d) : ContDiff ℝ ∞ (eF ξ) := by
-  have h1 : ContDiff ℝ ∞ (fun y : E d => ((inner ℝ y ξ : ℝ) : ℂ)) :=
-    Complex.ofRealCLM.contDiff.comp (contDiff_id.inner ℝ contDiff_const)
-  exact Complex.contDiff_exp.comp ((contDiff_const.mul h1).neg)
-
 lemma contDiff_mul_of_tsupport {U : Set (E d)} (hU : IsOpen U) {g f : E d → ℂ} (hg : ContDiff ℝ ∞ g)
     (hgU : tsupport g ⊆ U) (hf : ContDiffOn ℝ ∞ f U) : ContDiff ℝ ∞ (fun x => g x * f x) := by
   refine contDiff_iff_contDiffAt.mpr fun x => ?_
@@ -335,7 +330,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
     ⟨Dec.contDiff_mul_of_tsupport hUo hψC hψU ((hA i n w).sub contDiffOn_const), hψH.mul_right⟩
   have hb2 : ∀ n w, ContDiff ℝ ∞ (b2 n w) := fun n w => contDiff_const
   refine ⟨lo, c, hlo, hc, fun ξ => ?_⟩
-  have hφ := Dec.contDiff_eF ξ
+  have hφ := ZetaZeros.D.EllReg.WF.contDiff_eF ξ
   have hterm : ∀ n (w : Fin n → Fin d), ∫ y, cut χ' u y * c n w y * dw (List.ofFn w) (eF ξ) y =
       (-1 : ℂ) ^ n * mono w ξ * conv (𝓕 (c n w)) (𝓕 (cut χ' u)) ξ := by
     intro n w
@@ -373,7 +368,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
     simp only [trOp]
     rw [Finset.sum_range_succ, Finset.sum_eq_zero, zero_add, Finset.sum_mul]
     · refine Finset.sum_congr rfl fun w _ => ?_
-      simp only [b2, if_true]
+      simp only [b2, ite_true]
       rw [Dec.dw_const_mul hφ, hDw d ξ (List.ofFn w), Dec.prod_neg_eq]
       beta_reduce
       have hsq : ((-1 : ℂ) ^ m) * (-1) ^ m = 1 := by
@@ -383,7 +378,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
     · intro n hn
       have hne : n ≠ m := (Finset.mem_range.mp hn).ne
       refine Finset.sum_eq_zero fun w _ => ?_
-      simp only [b2, if_neg hne, zero_mul]
+      simp only [b2, ite_eq_right hne, zero_mul]
       rw [Dec.dw_zero]
       simp
   have hint1 : Integrable (fun y => cut χ u y * trOp m lo (eF ξ) y) :=
@@ -416,7 +411,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
       lo m w = fun x => ((ψ0 (r⁻¹ • (x - x0)) : ℝ) : ℂ) * (P.a i m w x - P.a i m w x0) := by
     intro w
     funext x
-    simp only [lo, if_true]
+    simp only [lo, ite_true]
   rw [← hR, key, Finset.sum_range_succ]
   simp only [hlom]
   ring
@@ -489,8 +484,6 @@ open MeasureTheory Metric Filter Topology
 open scoped ContDiff FourierTransform ENNReal
 
 noncomputable section
-
-
 
 lemma derivL1Norm_rescaled_difference_le {d : ℕ} (ψ : E d → ℂ) (hψ : ContDiff ℝ ∞ ψ) (hψc : HasCompactSupport ψ)
     (b : E d → ℂ) (hb : ContDiff ℝ ∞ b) (hbc : HasCompactSupport b) (x0 : E d) (r0 : ℝ) (n : ℕ) :
@@ -1034,8 +1027,6 @@ private theorem eF_eq_exp_comp_of_clm (ζ : E d) (L : E d →L[ℝ] ℂ)
     eF ζ = fun x => Complex.exp (L x) := by
   funext x; rw [hL]; rfl
 
-
-
 theorem pf_fourier_fderiv (k : E d → ℂ) (hk : ContDiff ℝ ∞ k) (hkc : HasCompactSupport k) (v ζ : E d) :
     𝓕 (fun x => fderiv ℝ k x v) ζ = (2 * Real.pi * Complex.I * ((inner ℝ ζ v : ℝ) : ℂ)) * 𝓕 k ζ := by
   obtain ⟨L, hL⟩ := exists_clm_eq_neg_two_pi_I_inner ζ
@@ -1111,11 +1102,6 @@ theorem pf_fourier_integrable (k : E d → ℂ) (hk : ContDiff ℝ ∞ k) (hkc :
   let S : SchwartzMap (E d) ℂ := ⟨k, hk, hdecay⟩
   exact (SchwartzMap.fourierTransformCLM ℂ S).integrable
 
-theorem pf_eF_smooth (ξ : E d) : ContDiff ℝ ∞ (eF ξ) := by
-  obtain ⟨L, hL⟩ := exists_clm_eq_neg_two_pi_I_inner ξ
-  rw [eF_eq_exp_comp_of_clm ξ L hL]
-  exact Complex.contDiff_exp.comp L.contDiff
-
 theorem pf_sign (n : ℕ) (w : Fin n → Fin d) (η : E d) :
     (-1 : ℂ) ^ n * ∏ l, (2 * Real.pi * Complex.I * (((-η) (w l) : ℝ) : ℂ)) = mono w η := by
   unfold mono
@@ -1134,7 +1120,7 @@ theorem adjointPairingFourier : PairingFourier := by
       ∫ y, g y * ((-1 : ℂ) ^ n * dw (List.ofFn w) (fun y => b n w y * eF ξ y) y) =
         conv (𝓕 (b n w)) (fun η => mono w η * 𝓕 g η) ξ := by
     intro n w
-    have hs : ContDiff ℝ ∞ (fun y => b n w y * eF ξ y) := (hb n w).1.mul (pf_eF_smooth ξ)
+    have hs : ContDiff ℝ ∞ (fun y => b n w y * eF ξ y) := (hb n w).1.mul (ZetaZeros.D.EllReg.WF.contDiff_eF ξ)
     have hc : HasCompactSupport (fun y => b n w y * eF ξ y) := (hb n w).2.mul_right
     obtain ⟨D1, D2⟩ := pf_dw_smooth (List.ofFn w) _ hs hc
     have hD := pf_parseval g _ hgi D1.continuous (D1.continuous.integrable_of_hasCompactSupport D2)
@@ -1158,7 +1144,7 @@ theorem adjointPairingFourier : PairingFourier := by
   have hint : ∀ n (w : Fin n → Fin d),
       Integrable (fun y => g y * ((-1 : ℂ) ^ n * dw (List.ofFn w) (fun y => b n w y * eF ξ y) y)) := by
     intro n w
-    obtain ⟨D1, D2⟩ := pf_dw_smooth (List.ofFn w) _ ((hb n w).1.mul (pf_eF_smooth ξ)) (hb n w).2.mul_right
+    obtain ⟨D1, D2⟩ := pf_dw_smooth (List.ofFn w) _ ((hb n w).1.mul (ZetaZeros.D.EllReg.WF.contDiff_eF ξ)) (hb n w).2.mul_right
     exact (hg.mul (continuous_const.mul D1.continuous)).integrable_of_hasCompactSupport hgc.mul_right
   calc ∫ y, g y * trOp m b (eF ξ) y
       = ∫ y, ∑ n ∈ Finset.range (m + 1), ∑ w : Fin n → Fin d,

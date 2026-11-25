@@ -34,42 +34,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RealAdelesCmFiel
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
 import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
 import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfE
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.EqZeroOfMulEqZero
@@ -309,9 +273,9 @@ theorem exists_const_of_carries (hσ : GoodEmb c σ) (hU : IsUnf U) (hr : 1 ≤ 
         rw [this, norm_prod]
         exact Finset.prod_eq_one fun j _ => by
           rw [norm_pow, show ‖toC (t j : CAt σ)‖ = 1 from ht j, one_pow]
-      have v1 : rdU U (act f) k x₀.1 = toC (evR Xo c (act f) (U.un k x₀)) := dif_pos x₀.2
+      have v1 : rdU U (act f) k x₀.1 = toC (evR Xo c (act f) (U.un k x₀)) := dite_eq_left x₀.2
       have v2 : rdU U f k' (lact δ (castFr h.mt.psi x₀.1)) = toC (evR Xo c f (U.un k' ⟨_, h.mt.mem_dom x₀.2⟩)) :=
-        dif_pos (h.mt.mem_dom x₀.2)
+        dite_eq_left (h.mt.mem_dom x₀.2)
       have v3 := (GlobalTheory.Frames.algebraic_laws GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c).2.2.2.2.2.2 (CAt σ)
         (inferInstanceAs (IsReduced ℂ)) w n f f.2 t _ y' hb
       have v5 : rdU U (act f) k x₀.1 =

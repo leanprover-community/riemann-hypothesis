@@ -510,7 +510,6 @@ theorem finite_etale_act (E : Type) [Field E] [NumberField E] (k : Type) [Field 
   have hu : IsUnit (n : Γ(Sp k, ⊤)) := by
     simpa using (Ne.isUnit hnk).map (Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom
   have h1 : act.act b ≫ act.act b' = 𝟙 A ^ n := by rw [← act.mul, ← hb', act_natCast]
-  have h2 : act.act b' ≫ act.act b = 𝟙 A ^ n := by rw [← act.mul, mul_comm, ← hb', act_natCast]
   haveI := act.hom b
   haveI := act.hom b'
   haveI hF : IsFinite (𝟙 A ^ n).left := GrpTangent.isFinite_id_pow A hu
@@ -915,13 +914,6 @@ theorem finite_of_isClosed_torusZariski_of_smul {k : Type} [Field k] [IsAlgClose
       rw [← Int.cast_smul_eq_zsmul O, ← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero,
         hc, mul_smul]
       exact hπN _
-    have hmQ' : ∀ q : Multiplicative (X ⧸ N), q ^ m.natAbs = 1 := fun q => by
-      have h1 : (m.natAbs : ℤ) • q.toAdd = 0 := by
-        rcases Int.natAbs_eq m with h | h
-        · rw [← h]; exact hmQ _
-        · rw [show (m.natAbs : ℤ) = -m by omega, neg_smul, hmQ, neg_zero]
-      rw [natCast_zsmul] at h1
-      exact congrArg Multiplicative.ofAdd h1
     haveI : Module.Finite ℤ (X ⧸ N) :=
       Module.Finite.of_surjective N.mkQ.toAddMonoidHom.toIntLinearMap N.mkQ_surjective
     haveI : Finite (X ⧸ N) := Module.finite_of_fg_torsion _ fun q =>
@@ -1012,7 +1004,6 @@ theorem finite_of_isClosed_of_no_pi_torsion :
         exact h'
       map_add' := hadd }
   letI : Module (𝓞 E) X := Module.compHom X ρ
-  have hsmul : ∀ (a : 𝓞 E) (x : X), a • x = φ a x := fun a x => rfl
   let e := splitTorusPointEquiv (k := k) (X := X)
   have hpt : ∀ (s : Multiplicative X →* kˣ) (a : 𝓞 E), e s ≫ act.act a =
       e (s.comp (AddMonoidHom.toMultiplicative (DistribSMul.toAddMonoidHom X a))) := by

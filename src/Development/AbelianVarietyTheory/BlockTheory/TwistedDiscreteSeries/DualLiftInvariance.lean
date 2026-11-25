@@ -251,11 +251,4 @@ def LastTwoSteps : Prop :=
     [MeasurableSpace k] [BorelSpace k] (n n' n'' : Type) [Fintype n] [Fintype n'] [Fintype n''] [DecidableEq n'],
     TransformFormula k n n' ∧ Decomposition k n n' ∧ ClassSumFormula k n n' ∧ LastStep k n n' n''
 
-section Examples
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' n'' : Type} [Fintype n] [Fintype n'] [Fintype n'']
-
-end Examples
-
 end GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData

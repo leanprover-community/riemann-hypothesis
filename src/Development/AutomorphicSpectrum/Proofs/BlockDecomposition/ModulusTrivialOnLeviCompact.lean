@@ -14,10 +14,6 @@ namespace GlobalTheory.CompanionTheory.HalfModCompact
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem exists_nabs_le_of_isCompact {C : Set k} (hC : IsCompact C) :
-    ∃ B : ℝ, ∀ u : kˣ, (u : k) ∈ C → nabs k u ≤ B := by
-  apply GlobalTheory.ZetaConvergence.exists_nabs_le <;> assumption
-
 theorem nabs_pow_eq (y : kˣ) (n : ℕ) : nabs k (y ^ n) = nabs k y ^ n := by
   unfold nabs
   rw [map_pow, NNReal.coe_pow]
@@ -73,7 +69,7 @@ theorem nabs_det_eq_one_of_mem_KM {N h : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d
   have hmem : ∀ z ∈ KM k N J d hd, blockDet d hd a (leviEmb k (stdBlocks d hd) z) ∈
       blockDet (k := k) d hd a '' (J : Set (GL (Fin N) k)) :=
     fun z hz => ⟨_, hz, rfl⟩
-  obtain ⟨B, hB⟩ := exists_nabs_le_of_isCompact (hJ.image (continuous_blockDet d hd a))
+  obtain ⟨B, hB⟩ := GlobalTheory.ZetaConvergence.exists_nabs_le (hJ.image (continuous_blockDet d hd a))
   apply nabs_eq_one_of_pow_le _ B
   · intro n
     apply hB

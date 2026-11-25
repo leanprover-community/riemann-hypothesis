@@ -144,13 +144,13 @@ lemma one_le_neg_dRowQ {c : ℕ} (hc : c < qS D i τ) : 1 ≤ -dRowQ D i τ c :=
 
 lemma cast_aPlus {a : ℕ} (ha : a < pS D i τ) : (aP D i τ a : ℚ) = aPlusQ D i τ a := by
   unfold aP aPl
-  rw [if_pos ha]
+  rw [ite_eq_left ha]
   exact toNat_floor_cast (aPlusQ_int D i τ a) (le_trans zero_le_one (one_le_aPlusQ D i τ ha))
 
 lemma aM_cast {c : ℕ} (hc : c < qS D i τ) : (aM D i τ (qS D i τ - 1 - c) : ℚ) = -dRowQ D i τ c := by
   unfold aM aMi
   have e1 : qS D i τ - (qS D i τ - 1 - c) = c + 1 := by omega
-  rw [if_pos (by omega), e1, show pS D i τ + (c + 1) - 1 = pS D i τ + c by omega]
+  rw [ite_eq_left (by omega), e1, show pS D i τ + (c + 1) - 1 = pS D i τ + c by omega]
   have e2 : -((D.hc τ).e i + lamAt (D.hc τ) (pS D i τ + c) + ((c + 1 : ℕ) : ℚ) + ((D.R.t : ℚ) - 1) / 2)
       = -dRowQ D i τ c := by
     simp only [dRowQ, centred, eS]; push_cast; ring
@@ -170,11 +170,11 @@ lemma lam_eq {w : IndefiniteWeightData.WeightData} (hw : IsDataOf D i τ w) {a :
   unfold IndefiniteWeightData.WeightData.lam
   rw [hk]
   by_cases h : a < D.R.k - 1
-  · rw [if_pos (by omega)]
+  · rw [ite_eq_left (by omega)]
     unfold lamAt
     rw [dite_eq_left h]
     exact hv ⟨a, h⟩
-  · rw [if_neg (by omega), lamAt_tail (D.hc τ) a ⟨a + 1 - D.R.k, by omega⟩ (by simp only; omega),
+  · rw [ite_eq_right (by omega), lamAt_tail (D.hc τ) a ⟨a + 1 - D.R.k, by omega⟩ (by simp only; omega),
       ← hb, Int.cast_neg]
     congr 3
     simp only; omega
@@ -195,15 +195,15 @@ lemma lamPrime_eq (w : IndefiniteWeightData.WeightData) (hw : IsDataOf D i τ w)
   · unfold IndefiniteWeightData.WeightData.thetaWt thetaWt
     rw [wp, wq, ht]
     by_cases h1 : a < pS D i τ
-    · rw [if_pos (by omega), if_pos h1, Int.cast_natCast, cast_aPlus D i τ h1]
+    · rw [ite_eq_left (by omega), ite_eq_left h1, Int.cast_natCast, cast_aPlus D i τ h1]
       unfold IndefiniteWeightData.WeightData.aPlus
       rw [hl a (by omega), wn, wp, wq, he]
       simp only [aPlusQ, centred]
       push_cast; ring
-    · rw [if_neg (by omega), if_neg h1]
+    · rw [ite_eq_right (by omega), ite_eq_right h1]
       by_cases h2 : a < pS D i τ + D.R.t
-      · rw [if_pos (by omega), if_pos h2]; simp
-      · rw [if_neg (by omega), if_neg h2]
+      · rw [ite_eq_left (by omega), ite_eq_left h2]; simp
+      · rw [ite_eq_right (by omega), ite_eq_right h2]
         obtain ⟨c, rfl⟩ : ∃ c, a = pS D i τ + D.R.t + c := ⟨a - (pS D i τ + D.R.t), by omega⟩
         have hc : c < qS D i τ := by omega
         rw [Nat.add_sub_cancel_left, Int.cast_neg, Int.cast_natCast, aM_cast D i τ hc]

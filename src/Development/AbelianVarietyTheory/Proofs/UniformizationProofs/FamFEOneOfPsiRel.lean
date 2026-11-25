@@ -44,10 +44,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UU
 open ReciprocityTheory.ChartRestriction.G.DVR
-noncomputable section
 namespace GlobalTheory.UU
 
 section
@@ -114,4 +112,3 @@ theorem famFE_one_of_psiRel : GlobalFnsSt → ∀ (R : Type) [CommRing R] [IsDom
   ring
 
 end GlobalTheory.UU
-end

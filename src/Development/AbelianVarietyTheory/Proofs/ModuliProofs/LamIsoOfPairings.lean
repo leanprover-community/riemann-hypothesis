@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsGenOfInvariant
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
@@ -162,9 +160,3 @@ theorem exists_gen_axis {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) (F : A.left ‚ü
 end Field
 
 end GlobalTheory.PairingDetermines
-
-namespace GlobalTheory
-
-open PairingDetermines IsoDescent PrimCocycle
-
-end GlobalTheory

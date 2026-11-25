@@ -27,19 +27,14 @@ variable {K : Type} [Field K] {σ : Type}
 
 theorem deg_eq (α : σ →₀ ℕ) : (α.sum fun _ k => k) = Finsupp.degree α := by rfl
 
-private theorem coeff_pow_eq_zero_of_degree_lt_formal_group_splitting {f : MvPowerSeries σ K} (hf : constantCoeff f = 0) :
-    ∀ (n : ℕ) {α : σ →₀ ℕ}, Finsupp.degree α < n → coeff α (f ^ n) = 0 := by
-  intros
-  apply _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_eq_zero <;> assumption
-
 theorem coeff_pow_mul_pow_eq_zero {f g : MvPowerSeries σ K} (hf : constantCoeff f = 0)
     (hg : constantCoeff g = 0) {i j : ℕ} {α : σ →₀ ℕ} (h : Finsupp.degree α < i + j) :
     coeff α (f ^ i * g ^ j) = 0 := by
   apply _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_mul_pow_eq_zero <;> assumption
 
 theorem coeff_pow_eq_zero' {f : MvPowerSeries σ K} (hf : constantCoeff f = 0) {n : ℕ}
-    {α : σ →₀ ℕ} (h : Finsupp.degree α < n) : coeff α (f ^ n) = 0 := by
-  exact coeff_pow_eq_zero_of_degree_lt_formal_group_splitting hf n h
+    {α : σ →₀ ℕ} (h : Finsupp.degree α < n) : coeff α (f ^ n) = 0 :=
+  _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_eq_zero hf h
 
 def expT (f : MvPowerSeries σ K) (N : ℕ) : MvPowerSeries σ K :=
   ∑ n ∈ range N, ((n.factorial : K)⁻¹) • f ^ n
@@ -180,10 +175,10 @@ theorem derivative_log_eq : PowerSeries.derivative (R := K) (PowerSeries.log K) 
   ext n
   rcases n with _ | n
   · rw [mul_add, mul_one, map_add (f := _), PowerSeries.coeff_zero_mul_X, add_zero, PowerSeries.coeff_mk,
-      PowerSeries.coeff_one, if_pos rfl]
+      PowerSeries.coeff_one, ite_eq_left rfl]
     simp
   · rw [mul_add, mul_one, map_add (f := _), PowerSeries.coeff_succ_mul_X, PowerSeries.coeff_mk,
-      PowerSeries.coeff_mk, PowerSeries.coeff_one, if_neg (Nat.succ_ne_zero n)]
+      PowerSeries.coeff_mk, PowerSeries.coeff_one, ite_eq_right (Nat.succ_ne_zero n)]
     simp [pow_succ]
 
 theorem exp_subst_log :
@@ -229,7 +224,7 @@ theorem logS_eq_subst {σ : Type} {F : MvPowerSeries σ ℂ_[p]} (hF : constantC
   · refine Finset.sum_congr rfl fun n _ => ?_
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp
-    · rw [if_neg hn.ne', PowerSeries.coeff_log, if_neg hn.ne', smul_eq_mul]
+    · rw [ite_eq_right hn.ne', PowerSeries.coeff_log, ite_eq_right hn.ne', smul_eq_mul]
       simp only [map_div₀, map_pow, map_neg, map_one, map_natCast]
       ring
   · intro n hn

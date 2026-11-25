@@ -457,7 +457,7 @@ theorem PositivityTheory.ThKW.fundamental_domain_plancherel_global : ∀ (F E :
       t.1)
     (fun a b s u ha hb => by
       show mtF σ _ (a * b) * _ = _ * (s * u).1
-      rw [mtF_mul, Matrix.mul_assoc, hb, ← Matrix.mul_assoc, ha, Matrix.mul_assoc, Units.val_mul])
+      rw [GlobalTheory.WeilPartsF.mtF_mul, Matrix.mul_assoc, hb, ← Matrix.mul_assoc, ha, Matrix.mul_assoc, Units.val_mul])
     (fun a s ha => by
       show mtF σ _ a⁻¹ * _ = _ * (s⁻¹).1
       have e : dC (AF F ⊗[F] E) nT = mtF σ _ a⁻¹ * (dC (AF F ⊗[F] E) nT * s.1) := by

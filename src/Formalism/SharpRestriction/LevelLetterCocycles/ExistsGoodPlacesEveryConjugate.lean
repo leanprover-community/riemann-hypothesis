@@ -104,22 +104,6 @@ end All
 
 end Formalism.MainNotions.IntegralHeckeForms
 
-namespace Formalism.MainNotions
-
-end Formalism.MainNotions
-
-namespace Formalism.MainNotions.N.TwAll
-
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-
-section Tame
-
-variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
-
-end Tame
-
-end Formalism.MainNotions.N.TwAll
-
 namespace Formalism.MainNotions.N.KillingConditions
 
 open Formalism.MainNotions.N.TwAll

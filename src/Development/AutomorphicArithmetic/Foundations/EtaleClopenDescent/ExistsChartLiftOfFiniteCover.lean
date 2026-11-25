@@ -118,7 +118,7 @@ private theorem cech_zero {ι E : Type} [LinearOrder ι] [AddCommGroup E] [Modul
     {G : Finset ι → Submodule ℂ E} {n : ℤ} {y : Finset ι → E} (hy : y ∈ (cech G).Z n)
     (s : Finset ι) (h : (s.card : ℤ) ≠ n + 1) : y s = 0 := by
   have h1 : y s ∈ (if s.Nonempty ∧ (s.card : ℤ) = n + 1 then G s else ⊥) := hy.1 s (Set.mem_univ s)
-  rw [if_neg (fun h' => h h'.2)] at h1
+  rw [ite_eq_right (fun h' => h h'.2)] at h1
   simpa using h1
 
 private theorem res_mu {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K]
@@ -164,8 +164,7 @@ theorem UpperTheory.Gal.productCup_of_system.zId_of :
       ∑ k ∈ Finset.univ.filter (fun k => p k = q), pr K τ ρ (e k) α • f k J := by
     intro J
     rw [Finset.sum_filter_of_ne (fun k _ hne => ?_)]
-    · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Finset.sum_apply, join, lft_uni', rgt_uni', TensorProduct.mk_apply, map_sum,
+    · simp only [Finset.sum_apply, join, lft_uni', rgt_uni', TensorProduct.mk_apply, map_sum,
         LinearMap.sum_apply, res_mu]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun k _ => ?_
@@ -216,10 +215,10 @@ theorem UpperTheory.Gal.productCup_of_system.coordinateSystem_degree_one_of_univ
     simp only [colA, Sys.colCx, kosT]
     congr 1
     funext L
-    simp only [hA, (hu b L).2.1, (hu b L).2.2.1, mixF, h1, h2, and_self, if_true]
+    simp only [hA, (hu b L).2.1, (hu b L).2.2.1, mixF, h1, h2, and_self, ite_true]
   have hbot : ∀ b : Finset (Two d), ¬ ((lft b).Nonempty ∧ (rgt b).Nonempty) → ∀ L, A (uni b L) = ⊥ := by
     intro b h L
-    simp only [hA, (hu b L).2.1, mixF, if_neg h]
+    simp only [hA, (hu b L).2.1, mixF, ite_eq_right h]
   have hcC : c ∈ (acx A (T.wt z)).C N := hc.1
   refine hL (Two d) κ E A (T.wt z) (d : ℤ) N hW ?_ c hc ?_ ?_
   · intro b
@@ -414,7 +413,7 @@ theorem UpperTheory.Gal.productCup_of_system.kSub_of :
         have : ((s ∩ img e).card : ℤ) ≤ s.card := by exact_mod_cast h1
         omega
       have h2 : c s ∈ (if (s.card : ℤ) = m then M else ⊥ : Submodule ℂ E) := hc.1 s (Set.mem_univ s)
-      rw [if_neg hne, Submodule.mem_bot] at h2
+      rw [ite_eq_right hne, Submodule.mem_bot] at h2
       rw [h2, map_zero]
       rfl
   · intro n c hc L
@@ -1237,13 +1236,13 @@ private theorem tower_rA (y : Fin (d + 1) → F) : IsScalarTower (rA ℂ y {0}) 
 private theorem map_mem_rB (y : Fin (d + 1) → F) {b : K} (hb : b ∈ rB ℂ K y {0}) :
     algebraMap K K' b ∈ rB ℂ K' y {0} := by
   rw [rB, Subalgebra.mem_restrictScalars, mem_integralClosure_iff] at hb ⊢
-  haveI := tower_rA (K := K) (K' := K') y
+  have := tower_rA (K := K) (K' := K') y
   exact hb.algebraMap
 
 private theorem trace_mem_rB (y : Fin (d + 1) → F) [FiniteDimensional K K'] {v : K'}
     (hv : v ∈ rB ℂ K' y {0}) : Algebra.trace K K' v ∈ rB ℂ K y {0} := by
   rw [rB, Subalgebra.mem_restrictScalars, mem_integralClosure_iff] at hv ⊢
-  haveI := tower_rA (K := K) (K' := K') y
+  have := tower_rA (K := K) (K' := K') y
   exact Algebra.isIntegral_trace hv
 
 end
@@ -1251,8 +1250,8 @@ end
 theorem UpperTheory.Gal.productCup_of_system.redK_of :
     RedK := by
   intro F K K' _ _ _ _ _ _ _ _ _ _ _ _ _ d x j2 hY
-  haveI : FiniteDimensional F K' := hY.covY.fin
-  haveI : FiniteDimensional K K' := Module.Finite.of_restrictScalars_finite F K K'
+  have : FiniteDimensional F K' := hY.covY.fin
+  have : FiniteDimensional K K' := Module.Finite.of_restrictScalars_finite F K K'
   have hred := hY.red
   unfold RedFib at hred ⊢
   constructor
@@ -1355,7 +1354,7 @@ private lemma mem_C_iff (M : Submodule ℂ E) (u : κ → Sˣ) (z r : κ → S) 
   simp only [kosT, kos, acx, Submodule.mem_pi, Set.mem_univ, true_imp_iff]
   refine forall_congr' fun s => ?_
   by_cases h : (s.card : ℤ) = n
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
     constructor
     · rintro ⟨m, hm, hc⟩
       change act _ (c s) ∈ M
@@ -1363,7 +1362,7 @@ private lemma mem_C_iff (M : Submodule ℂ E) (u : κ → Sˣ) (z r : κ → S) 
       exact hm
     · intro hm
       exact ⟨_, hm, act_act_inv act _ _⟩
-  · simp only [h, if_false, Submodule.mem_bot]
+  · simp only [h, ite_false, Submodule.mem_bot]
     constructor
     · intro h0
       simp [unsc, h0]
@@ -1576,7 +1575,7 @@ theorem UpperTheory.Gal.productCup_of_system.pInt_of :
     obtain ⟨_, hL, hcard, hm⟩ := hcu _ _ h0
     rw [Finset.card_univ, Fintype.card_fin] at hcard
     dsimp only
-    rw [if_pos (show L.Nonempty ∧ (L.card : ℤ) = ↑p - 1 + 1 from ⟨hL, by omega⟩)]
+    rw [ite_eq_left (show L.Nonempty ∧ (L.card : ℤ) = ↑p - 1 + 1 from ⟨hL, by omega⟩)]
     exact Submodule.smul_of_tower_mem _ _ (residueCharacteristic_mem ρ _ _ hm)
   · funext J
     simp only [Lef.omCx, GlobalTheory.PD.cech, GlobalTheory.PD.deltaL, LinearMap.coe_mk, AddHom.coe_mk, GlobalTheory.DI.delta]
@@ -1601,30 +1600,6 @@ open scoped TensorProduct
 private theorem resP_one {F V : Type} [Field F] [Algebra ℂ F] [AddCommGroup V] [Module ℂ V] (ρ : F →ₗ[ℂ] ℂ)
     (h : ρ 1 = 1) (w : V) : resP V ρ ((1 : F) ⊗ₜ[ℂ] w) = w := by
   simp [resP, h]
-
-private theorem lft_uni' {ι κ : Type} [LinearOrder ι] [LinearOrder κ] (I : Finset ι) (J : Finset κ) :
-    lft (uni I J) = I := by
-  ext i
-  simp [lft, uni, Finset.mem_toLeft]
-
-private theorem rgt_uni' {ι κ : Type} [LinearOrder ι] [LinearOrder κ] (I : Finset ι) (J : Finset κ) :
-    rgt (uni I J) = J := by
-  ext i
-  simp [rgt, uni, Finset.mem_toRight]
-
-private theorem card_filter_le {d : ℕ} (i : Fin (d + 1)) :
-    (Finset.univ.filter (· ≤ i)).card = (i : ℕ) + 1 := by
-  have h : Finset.univ.filter (· ≤ i) = Finset.Iic i := by
-    ext j
-    simp
-  rw [h, Fin.card_Iic]
-
-private theorem card_filter_ge {d : ℕ} (i : Fin (d + 1)) :
-    (Finset.univ.filter (i ≤ ·)).card = d + 1 - (i : ℕ) := by
-  have h : Finset.univ.filter (i ≤ ·) = Finset.Ici i := by
-    ext j
-    simp
-  rw [h, Fin.card_Ici]
 
 theorem UpperTheory.Gal.productCup_of_system.zAct_of :
     PCup → PTheta → PCmp → PInt → EdgeRel → SysBasic → GoodZ → ZAct := by
@@ -1660,7 +1635,7 @@ theorem UpperTheory.Gal.productCup_of_system.zAct_of :
     intro s hs
     have h1 : α s ∈ (if s.Nonempty ∧ (s.card : ℤ) = (p : ℤ) + 1 then omB ℂ K (rB ℂ K (xv x) s) a else ⊥ :
         Submodule ℂ (DR ℂ K)) := hα.1 s (Set.mem_univ s)
-    rw [if_neg (by
+    rw [ite_eq_right (by
       rintro ⟨-, h⟩
       exact hs (by exact_mod_cast h))] at h1
     simpa using h1
@@ -1679,9 +1654,9 @@ theorem UpperTheory.Gal.productCup_of_system.zAct_of :
           by_cases hi : (Finset.univ.filter (i ≤ ·)).card = p + 1
           · have h0 : top c (uni (Finset.univ.filter (· ≤ i)) J) = 0 := by
               refine hCc _ _ ∅ (Or.inr (Or.inr ?_))
-              rw [card_filter_ge] at hi
+              rw [GlobalTheory.PD.CupAdj.card_ge] at hi
               have hid := i.is_lt
-              simp only [card_filter_le, Finset.card_empty, add_zero]
+              simp only [GlobalTheory.PD.CupAdj.card_le, Finset.card_empty, add_zero]
               omega
             rw [h0]
             simp
@@ -1689,7 +1664,7 @@ theorem UpperTheory.Gal.productCup_of_system.zAct_of :
             simp
         rw [this, smul_zero]
     have htop : top c1 (uni Finset.univ J) = ((-1 : ℤ) ^ (p * J.card)) • (∑ i, muP F K τ (top c (uni (Finset.univ.filter (· ≤ i)) J)) (α (Finset.univ.filter (i ≤ ·)))) - (1 : F) ⊗ₜ[ℂ] α J := by
-      simp only [top, c1, Pi.sub_apply, htθ, rcup, lft_uni', rgt_uni', Finset.card_empty, add_zero]
+      simp only [top, c1, Pi.sub_apply, htθ, rcup, UpperTheory.Gal.productCup_of_system.PartialZeroIdentity.lft_uni', UpperTheory.Gal.productCup_of_system.PartialZeroIdentity.rgt_uni', Finset.card_empty, add_zero]
     simp only [Pi.sub_apply, Pi.neg_apply]
     rw [htop, hsum, map_sub, resP_one ρ hρ.1]
     abel

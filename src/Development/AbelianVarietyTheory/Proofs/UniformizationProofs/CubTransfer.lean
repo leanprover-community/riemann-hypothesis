@@ -46,10 +46,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UU
-
-noncomputable section
 
 namespace GlobalTheory.GoodReductionUnif
 
@@ -77,5 +74,3 @@ theorem exists_baseChange (hB : PolBaseChangeSt) {S S' : Scheme.{0}} (f : S' ⟶
 
 
 end GlobalTheory.GoodReductionUnif
-
-end

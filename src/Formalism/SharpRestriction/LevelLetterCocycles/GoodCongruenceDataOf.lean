@@ -69,18 +69,6 @@ theorem eG_mulVec (M : Matrix (Fin (r + t)) (Fin (r + t)) K)
 
 end GlobalTheory
 
-section Pts
-
-variable {O Y : Type} [CommRing O] [IsDomain O] (t : ℕ) (P : Y → O[X])
-
-end Pts
-
-section EE
-
-variable {A : Type} [CommRing A] {d : Type} [Fintype d] [DecidableEq d]
-
-end EE
-
 section Gen2
 
 variable {r t : ℕ} {A : Type} [CommRing A]
@@ -107,7 +95,7 @@ theorem diag_conj (M : Matrix (Fin (r + t)) (Fin (r + t)) A)
   by_cases hab : a = b
   · subst hab
     split_ifs <;> simp_all
-  · rw [if_neg hab]
+  · rw [ite_eq_right hab]
     by_cases ha : blkG r t a = 0
     · simp [ha]
     · by_cases hb : blkG r t b = 0
@@ -202,7 +190,7 @@ theorem e_of_diag (β : Fin R.nV → N.O i) (u : Fin R.nV → KK N i) :
   refine (eG_mulVec _ (fun a b h => ?_) u).trans ?_
   · have hab : a ≠ b := fun hab => h (by rw [hab])
     show toK N i (if a = b then (if blk R a = 0 then (0 : N.O i) else β a) else 0) = 0
-    rw [if_neg hab, map_zero]
+    rw [ite_eq_right hab, map_zero]
   · congr 1
     · have h0 : ∀ a b : Fin R.r, ((Matrix.diagonal (fun a => if blk R a = 0 then (0 : N.O i) else β a)).map (toK N i)) (Fin.castAdd R.t a) (Fin.castAdd R.t b) = 0 := by
         intro a b
@@ -211,8 +199,8 @@ theorem e_of_diag (β : Fin R.nV → N.O i) (u : Fin R.nV → KK N i) :
         have hblk : blk R (Fin.castAdd R.t a) = 0 := by simp [blkG]
         by_cases hab : a = b
         · subst hab
-          rw [if_pos rfl, if_pos hblk, map_zero]
-        · rw [if_neg (fun h => hab (Fin.castAdd_injective _ _ h)), map_zero]
+          rw [ite_eq_left rfl, ite_eq_left hblk, map_zero]
+        · rw [ite_eq_right (fun h => hab (Fin.castAdd_injective _ _ h)), map_zero]
       funext a
       simp only [Matrix.mulVec, dotProduct, Pi.zero_apply]
       exact Finset.sum_eq_zero fun b _ => by
@@ -223,7 +211,7 @@ theorem e_of_diag (β : Fin R.nV → N.O i) (u : Fin R.nV → KK N i) :
       have hblk : blk R (Fin.natAdd R.r c) ≠ 0 := by simp [blkG, Fin.ext_iff]
       show toK N i (if Fin.natAdd R.r c = Fin.natAdd R.r c then
         (if blk R (Fin.natAdd R.r c) = 0 then (0 : N.O i) else β (Fin.natAdd R.r c)) else 0) * _ = _
-      rw [if_pos rfl, if_neg hblk]
+      rw [ite_eq_left rfl, ite_eq_right hblk]
 
 end Formalism.MainNotions.N.RepresentationBoundsCohomology
 

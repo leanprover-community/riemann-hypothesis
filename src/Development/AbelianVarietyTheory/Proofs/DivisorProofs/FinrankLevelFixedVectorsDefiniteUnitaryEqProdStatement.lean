@@ -16,61 +16,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrreducibleA
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIrreducibleSmallRepUnitary
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ArchimedeanUnitaryPointsEquivUnitaryGroup
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdmissibleLocalComponentDefiniteUnitary
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompOfSurjective, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankLevelFixedVectorsDefiniteUnitaryEqProd, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankLevelFixedVectorsDefiniteUnitaryEqProdStatement
@@ -522,7 +470,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 theorem ua_ext {g h : UA E n} (h1 : cInf g = cInf h) (h2 : ∀ u : Pl E, cLoc u g = cLoc u h) : g = h :=
   Subtype.ext (ga_ext' h1 h2)
 
-
 variable (n) in
 def proj (S : Set (Pl E)) : InfinitePlace E ⊕ S → UA E n →* UA E n :=
   Sum.elim (fun v => (embU n v.embedding).subtype.comp (embRet v.embedding)) fun w => ret0 w.1 n
@@ -736,7 +683,7 @@ theorem finrank_inf_fixed_globLev : ∀ (E : Type) [Field E] [NumberField E] [Is
   obtain ⟨φ, hφ, hφ0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hπ.ne_bot
   obtain ⟨T₀, hT₀⟩ := exists_finset_subset hU hn hS hK _ (hπ.aut φ hφ).level (by simp)
   have hbad : {w : S | Module.finrank ℂ (fixed (σ w.1).ρ (K' w.1)) ≠ 1}.Finite := by
-    have h := (Filter.eventually_cofinite.1 (hK.2.and (GlobalTheory.T.finrank_integral_fixed_vectors_eq_one_almost_all E hU n hn π hπ σ hσ))).preimage
+    have h := (Filter.eventually_cofinite.1 (hK.2.and (GlobalTheory.BCT.SphLine.finrank_fixed_KL_eq_one E hU n hn π hπ σ hσ))).preimage
       (Subtype.val_injective (p := (· ∈ S))).injOn
     refine h.subset fun w hw h' => hw ?_
     rw [h'.1]

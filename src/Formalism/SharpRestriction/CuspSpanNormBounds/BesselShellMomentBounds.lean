@@ -113,9 +113,9 @@ theorem ptMat_eq (γ : Point K d) : ptMat γ = blockAntidiagonalMatrix (toComp �
       apply index_unique
       · rw [sizeUpTo_toComp] at a1 a2 ⊢; omega
       · rw [sizeUpTo_toComp] at a1 a2 ⊢; omega
-    rw [if_pos hc, if_pos ⟨hj.symm, hc⟩]
+    rw [ite_eq_left hc, ite_eq_left ⟨hj.symm, hc⟩]
     rfl
-  · rw [if_neg hc, if_neg (fun h' => hc h'.2)]
+  · rw [ite_eq_right hc, ite_eq_right (fun h' => hc h'.2)]
 
 theorem leadMinorK_eq {R : Type} [CommRing R] (A : Matrix (Fin d) (Fin d) R) (l : ℕ) (hl : l ≤ d) :
     leadMinorK A l hl = leadingPrincipalMinor A l := by
@@ -245,7 +245,7 @@ theorem wPt_eq (γ : Point D.host.E (D.R.rS + 1)) : wPt D γ = blockMinorWeight 
   intro a
   have hle : 0 + pS γ.1 ((a : ℕ) + 1) ≤ D.R.rS + 1 := by
     rw [zero_add]; exact (toComp γ).sizeUpTo_le _
-  rw [dif_pos hle]
+  rw [dite_eq_left hle]
   refine (Fintype.prod_bijective (plOf D) (plOf_bij D) _ _ ?_)
   intro v
   rw [plOf_apply]
@@ -294,18 +294,6 @@ theorem theorem_B_second_bound_64 (D : D7) : Formalism.MainNotions.OnePlaceEstim
 end Formalism.MainNotions.BesselShellMomentBounds
 
 end PieceB2b
-
-section PieceB2c
-
-open Finset NumberField
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.S.Pv.Frames
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceB2c
 
 noncomputable section PieceB1
 
@@ -436,23 +424,23 @@ theorem ptEntry_loc (v : D.what₂.Tau) (bs : List (D.host.E × ℕ)) : ∀ (a i
     intro a i j
     simp only [locBlocksFrom, ptEntry]
     by_cases h1 : i < s ∧ j < s
-    · rw [if_pos h1, if_pos h1]
+    · rw [ite_eq_left h1, ite_eq_left h1]
       by_cases h2 : i + j + 1 = s
-      · rw [if_pos h2, if_pos h2]
+      · rw [ite_eq_left h2, ite_eq_left h2]
         congr 2
         unfold rhoReal alf
         rw [← zpow_add₀ (rdE_pos D).ne', ← h2]
         congr 1
         push_cast
         ring
-      · rw [if_neg h2, if_neg h2]; simp
-    · rw [if_neg h1, if_neg h1]
+      · rw [ite_eq_right h2, ite_eq_right h2]; simp
+    · rw [ite_eq_right h1, ite_eq_right h1]
       by_cases h3 : s ≤ i ∧ s ≤ j
-      · rw [if_pos h3, if_pos h3, ih (a + s) (i - s) (j - s)]
+      · rw [ite_eq_left h3, ite_eq_left h3, ih (a + s) (i - s) (j - s)]
         have e1 : a + s + (i - s) = a + i := by omega
         have e2 : a + s + (j - s) = a + j := by omega
         rw [e1, e2]
-      · rw [if_neg h3, if_neg h3]; simp
+      · rw [ite_eq_right h3, ite_eq_right h3]; simp
 
 theorem leadMinor_loc (v : D.what₂.Tau) (γ : Point D.host.E (D.R.rS + 1)) (l : ℕ) (hl : l ≤ D.R.rS + 1) :
     leadMinor (ptMat (ptLoc D v γ)) l hl =
@@ -807,28 +795,6 @@ end Formalism.MainNotions.BesselShellMomentBounds
 
 end PieceB1
 
-section PieceA
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceA
-
-section PieceE92
-
-open Finset
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.HermitianLatticeCounting.P Formalism.MainNotions.S.Pv.Frames
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceE92
-
 noncomputable section PieceN92
 
 open MeasureTheory Finset
@@ -975,13 +941,3 @@ end Arith
 end Formalism.MainNotions.BesselShellMomentBounds
 
 end PieceM93
-
-section PieceZ
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates Formalism.MainNotions.S.Pv.Frames
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceZ

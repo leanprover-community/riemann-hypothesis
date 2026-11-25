@@ -28,12 +28,4 @@ theorem dZ_conj {φ : ℂ → ℂ} {c : ℂ} (h : DifferentiableAt ℝ φ c) :
 
 end Wirt
 
-section IBP
-
-end IBP
-
-section Cpt
-
-end Cpt
-
 end Formalism.FourierDecayAlt.P5.HerB

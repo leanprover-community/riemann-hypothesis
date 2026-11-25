@@ -59,12 +59,7 @@ lemma ta_inG_cpart2 (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n) ℂ) : inG
 
 lemma ta_cpart_sum (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n) ℂ) :
     cpart1 ε Z + Complex.I • cpart2 ε Z = Z := by
-  unfold cpart1 cpart2
-  rw [smul_smul]
-  have h : Complex.I * (1 / (2 * Complex.I)) = 1 / 2 := by
-    field_simp
-  rw [h]
-  module
+  exact ReciprocityTheory.ChartRestriction.DS.S7.ccb_cpart_sum ε Z
 
 lemma ta_exp_conjT (ε : Fin n → Bool) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (t : ℝ) :
     (NormedSpace.exp ((t : ℂ) • X))ᴴ = Jm ε * NormedSpace.exp (-((t : ℂ) • X)) * Jm ε := by

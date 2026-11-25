@@ -308,7 +308,7 @@ theorem valS_one (R : Type) [Field R] {ι : Type} {n : ℕ} [NeZero n] (LL : Let
 
 theorem divDer_zero {R : Type} [CommSemiring R] {σ : Type} (F : MvPolynomial σ R) : divDer 0 F = F := by
   unfold divDer
-  simp only [zero_le, if_true, tsub_zero, Finsupp.prod_zero_index, Nat.cast_one, mul_one]
+  simp only [zero_le, ite_true, tsub_zero, Finsupp.prod_zero_index, Nat.cast_one, mul_one]
   exact (MvPolynomial.as_sum F).symm
 
 theorem valuation_of_letters_clauses (D : Formalism.BasicNotions.D7) (hL : Formalism.MainNotions.CovariantDegrees.DerivativeValuationBound D) (K : Type) [Field K] (ι : Type) [Fintype ι]
@@ -332,7 +332,7 @@ theorem valuation_of_letters_clauses (D : Formalism.BasicNotions.D7) (hL : Forma
     refine ⟨fun hvec k hk => ?_, fun _ k hk => ?_⟩
     · rw [hk] at h
       have : ¬ (i ∈ S ∧ LL.vec i = false) := fun h' => by simp [hvec] at h'
-      rw [if_neg this] at h
+      rw [ite_eq_right this] at h
       simp at h
       exact_mod_cast h
     · rw [hk] at h
@@ -793,7 +793,7 @@ theorem badShare_spec {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuation
     have hb : badShare p be L D = ((Module.finrank O L : ℝ) -
         ((sSup {n : ℕ | ∃ L₁ : Submodule O V, GoodSub p be L L₁ D ∧ Module.finrank O L₁ = n} : ℕ) : ℝ)) /
           (Module.finrank O L : ℝ) := by
-      simp only [badShare, hr0, if_false]
+      simp only [badShare, hr0, ite_false]
     have hrpos : (0 : ℝ) < Module.finrank O L := by exact_mod_cast Nat.pos_of_ne_zero hr0
     have hle' : ((sSup {n : ℕ | ∃ L₁ : Submodule O V, GoodSub p be L L₁ D ∧ Module.finrank O L₁ = n} : ℕ) : ℝ)
         ≤ Module.finrank O L := by exact_mod_cast hle
@@ -900,7 +900,7 @@ theorem nearestEven {n' : ℕ} (TT : Finset (Fin n')) (y : Fin n') (hy : ¬ IsTy
       rw [this, Nat.add_mod_right, Nat.mod_eq_of_lt hyl]
     have := (posAdd_iff x0 y d0 hd0pos hd0lt.le).1 hpx
     rw [this]; exact ⟨hx0, hx0e⟩
-  have hdM : dMinus TT y = Nat.find hS := by unfold dMinus; rw [dif_pos hS]
+  have hdM : dMinus TT y = Nat.find hS := by unfold dMinus; rw [dite_eq_left hS]
   obtain ⟨hm1, hmn, hmT, hmV⟩ := Nat.find_spec hS
   have hmlt : Nat.find hS < n' := by
     rcases lt_or_eq_of_le hmn with h | h
@@ -951,7 +951,7 @@ theorem sum_boxLoc {n' : ℕ} (TT : Finset (Fin n')) (W : Finset ℤ) (f : (TT �
     by_cases h : i ∈ TT
     · simp [h]
     · have hi := ha i
-      simp only [h, if_false, Finset.mem_singleton] at hi
+      simp only [h, ite_false, Finset.mem_singleton] at hi
       simp [h, hi]
   · intro aa _
     funext t
@@ -1165,7 +1165,7 @@ theorem tI_le_tIf (D : D7) (L : SizeData₂ D) (K : Consts) (C : ℝ) (hK : K.No
           min (b y : ℝ) ((a (posAdd y (n' - dMinus TT y)) : ℝ) / (p : ℝ) ^ dMinus TT y)) := by
     refine Finset.sum_congr rfl fun y hy => ?_
     obtain ⟨hne, hd, hyp⟩ := nearestEven TT y (Finset.mem_filter.1 hy).2 hE
-    rw [if_neg hne, hd, hyp]
+    rw [ite_eq_right hne, hd, hyp]
   unfold Formalism.MainNotions.flipOneThree.tI tIf
   dsimp only
   rw [hsum, hkR]
@@ -1282,11 +1282,11 @@ theorem type_one_hypothesis_of_segments (D : D7) (L : SizeData₂ D) (X : Inst D
     refine hLP W Qq O Kf ι σ j w hS a b lam0 ⟨hbase, hdom, fun s hs => ⟨?_, ?_⟩⟩ _ ?_
     · classical
       have := (Fintype.mem_piFinset.1 ha) s
-      simp only [if_pos hs] at this
+      simp only [ite_eq_left hs] at this
       rw [← hWA]; exact this
     · classical
       have := (Fintype.mem_piFinset.1 hb) s
-      simp only [if_pos hs] at this
+      simp only [ite_eq_left hs] at this
       rw [← hWB]; exact this
     · exact (tI_le_tIf D L K C hK hC0 hCt1 hCt2 hc p n' TT a b hseg.1 hp1 hpb hk
         hH.2.2.2.2.2.2.2.2.2.2.2.2.1).trans (Nat.le_ceil _)
@@ -1527,7 +1527,7 @@ theorem weylSandwich_of_model (D : D7) (h : ModelSandwichG D) : WeylSandwichG D 
   by_cases hlam : Antitone lam
   · obtain ⟨h1, h2⟩ := h u w hg m lam hlam
     unfold H0 Dl0
-    rw [if_pos hlam, if_pos hlam]
+    rw [ite_eq_left hlam, ite_eq_left hlam]
     constructor
     · intro x hx
       rw [Submodule.mem_iInf] at hx ⊢
@@ -1556,7 +1556,7 @@ theorem weylSandwich_of_model (D : D7) (h : ModelSandwichG D) : WeylSandwichG D 
       rw [SetLike.mem_coe, Submodule.mem_comap]
       exact h2 (Submodule.mem_comap.1 hy)
   · unfold H0 Dl0
-    rw [if_neg hlam, if_neg hlam]
+    rw [ite_eq_right hlam, ite_eq_right hlam]
     refine ⟨fun x hx => ?_, le_rfl⟩
     rw [(Submodule.mem_bot _).1 hx, smul_zero]
     exact Submodule.zero_mem _
@@ -1803,28 +1803,28 @@ theorem linear_programming_input_of_hypotheses (D : D7) (L : SizeData₂ D) (X :
   have hnP : nP D (D.what₂.places.resChar w) = addOrderOf (hP D (D.what₂.places.resChar w)) := _root_.Formalism.MainNotions.G.TopChoiceBounds.period_eq_addOrderOf hc0
   by_cases hp0 : ((D.what₂.places.resChar w : ℕ) : ℝ) < L.sc.p0 D.R.k
   · obtain ⟨h1, h2, h3, h4, hwin, hbnd, h13, hr2, hN1, hrY, hpL, h256, hk3, hkLa, hsz⟩ := hII _ hcand hp0 t0 hgood
-    have hrr : (D.gat u w hg).P.r = rG L.sc := by rw [hr, if_pos hp0]
+    have hrr : (D.gat u w hg).P.r = rG L.sc := by rw [hr, ite_eq_left hp0]
     rw [hrr]
     have htv : tv X K (aL L) (bL L) (D.what₂.places.resChar w) t0 = tIIf K L (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) (topsPos D (D.what₂.places.resChar w) t0).card := by
-      unfold tv; rw [if_pos hp0, hnP, hNv]
-    have hDp : Dp K L (D.what₂.places.resChar w) = DIIf K L (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) := by unfold Dp; rw [if_pos hp0, hnP]
+      unfold tv; rw [ite_eq_left hp0, hnP, hNv]
+    have hDp : Dp K L (D.what₂.places.resChar w) = DIIf K L (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) := by unfold Dp; rw [ite_eq_left hp0, hnP]
     have hkap : kapv X K (aL L) (bL L) (D.what₂.places.resChar w) t0 = kapIIf K L (topsPos D (D.what₂.places.resChar w) t0).card := by
-      unfold kapv kapLoc; rw [if_pos hp0]
+      unfold kapv kapLoc; rw [ite_eq_left hp0]
     rw [htv, hDp, hkap]
     exact h6 (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) ((D.gat u w hg).P.W v) ((D.gat u w hg).P.Qq v) Os Ks ιs ((D.gat u w hg).P.σ v) js ws hSet
       (topsPos D (D.what₂.places.resChar w) t0) hGood h1 h2 h3 h4 hp0 (wPos D (D.what₂.places.resChar w) t0 (aL L)) (wPos D (D.what₂.places.resChar w) t0 (bL L)) hwin hbnd _ hbase hdom
       h13 hr2 hN1 hrY hpL h256 hk3 hkLa hsz
   · have hp0' : L.sc.p0 D.R.k ≤ ((D.what₂.places.resChar w : ℕ) : ℝ) := le_of_not_gt hp0
     obtain ⟨h2, h3, hHI, hwin⟩ := hI _ hcand hp0' t0 hgood
-    have hrr : (D.gat u w hg).P.r = 1 := by rw [hr, if_neg hp0]
+    have hrr : (D.gat u w hg).P.r = 1 := by rw [hr, ite_eq_right hp0]
     rw [hrr]
     have htv : tv X K (aL L) (bL L) (D.what₂.places.resChar w) t0 =
         tIf K L (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) (topsPos D (D.what₂.places.resChar w) t0) (wPos D (D.what₂.places.resChar w) t0 (aL L)) (wPos D (D.what₂.places.resChar w) t0 (bL L)) := by
-      unfold tv; rw [if_neg hp0]
-    have hDp : Dp K L (D.what₂.places.resChar w) = DIf K L (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) := by unfold Dp; rw [if_neg hp0, hnP]
+      unfold tv; rw [ite_eq_right hp0]
+    have hDp : Dp K L (D.what₂.places.resChar w) = DIf K L (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) := by unfold Dp; rw [ite_eq_right hp0, hnP]
     have hkap : kapv X K (aL L) (bL L) (D.what₂.places.resChar w) t0 =
         X.kapI (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) (topsPos D (D.what₂.places.resChar w) t0) (wPos D (D.what₂.places.resChar w) t0 (aL L)) (wPos D (D.what₂.places.resChar w) t0 (bL L)) := by
-      unfold kapv kapLoc; rw [if_neg hp0]
+      unfold kapv kapLoc; rw [ite_eq_right hp0]
     rw [htv, hDp, hkap]
     exact h7 (D.what₂.places.resChar w) (addOrderOf (hP D (D.what₂.places.resChar w))) ((D.gat u w hg).P.W v) ((D.gat u w hg).P.Qq v) Os Ks ιs ((D.gat u w hg).P.σ v) js ws hSet
       (topsPos D (D.what₂.places.resChar w) t0) hGood h2 h3 hp0' hcand.2.1 (fun h0 => hcand.2.2.2.2 hp0' (inBand_of_inBand0 hrho h0)) hHI (wPos D (D.what₂.places.resChar w) t0 (aL L))

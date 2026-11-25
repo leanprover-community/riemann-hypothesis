@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.HT CrystallineSemistableComparison.Onto
 
 noncomputable section

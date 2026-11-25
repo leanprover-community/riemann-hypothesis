@@ -111,45 +111,6 @@ abbrev resH2 : H2 rho →ₗ[R] H2 (rho.comp phi) :=
 
 end Restriction
 
-section Map
-
-variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
-  [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
-  (rho' : Representation R G M') (u : M →ₗ[R] M') (hu : Continuous u)
-  (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
-include hu hequiv
-
-end Map
-
-section Pair
-
-variable {G' : Type*} [Group G'] [TopologicalSpace G']
-  {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
-  [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
-  (rho' : Representation R G' M') (phi : G' →* G) (hphi : Continuous phi)
-  (u : M →ₗ[R] M') (hu : Continuous u) (hcompat : ∀ g m, u (rho (phi g) m) = rho' g (u m))
-include hphi hu hcompat
-
-end Pair
-
-section MapPair
-
-variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
-  [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
-  (rho' : Representation R G M') (u : M →ₗ[R] M') (hu : Continuous u)
-  (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
-
-end MapPair
-
-section RestrictionN
-
-variable {H : Type*} [Group H] [TopologicalSpace H] (phi : H →* G)
-
-variable (hphi : Continuous phi)
-include hphi
-
-end RestrictionN
-
 section Tate
 
 def normEnd [Finite G] : Module.End R M := ∑ᶠ g : G, rho g
@@ -175,26 +136,6 @@ variable {M : Type*} [AddCommGroup M] [Module R M] [TopologicalSpace M]
   [IsTopologicalAddGroup M] [ContinuousConstSMul R M]
 
 variable (rho : Representation R G M)
-
-section Cup
-
-variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
-  [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
-  {P : Type*} [AddCommGroup P] [Module R P] [TopologicalSpace P]
-  [IsTopologicalAddGroup P] [ContinuousConstSMul R P]
-  (rho' : Representation R G M') (rhoP : Representation R G P)
-  (b : M →ₗ[R] M' →ₗ[R] P) (hb : Continuous fun p : M × M' => b p.1 p.2)
-  (hbe : ∀ g x y, b (rho g x) (rho' g y) = rhoP g (b x y))
-
-section CupZ11
-
-include hb hbe
-
-end CupZ11
-
-include hb hbe
-
-end Cup
 
 section Local
 
@@ -222,21 +163,6 @@ end
 
 end Coh
 
-section NatCoh
-
-variable {R : Type*} [CommRing R] {G : Type*} [Group G] [TopologicalSpace G]
-  {M : Type*} [AddCommGroup M] [Module R M] [TopologicalSpace M]
-  [IsTopologicalAddGroup M] [ContinuousConstSMul R M]
-  {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
-  [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
-  (rho : Representation R G M) (rho' : Representation R G M') (u : M →ₗ[R] M') (hu : Continuous u)
-  (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
-
-variable {I : Type*} {Dl : I → Type*} [∀ i, Group (Dl i)] [∀ i, TopologicalSpace (Dl i)]
-  (phis : ∀ i, Dl i →* G) (hphis : ∀ i, Continuous (phis i))
-
-end NatCoh
-
 instance (priority := 100) continuousConstSMul_of_discrete {R M : Type*} [SMul R M]
     [TopologicalSpace M] [DiscreteTopology M] : ContinuousConstSMul R M :=
   ⟨fun _ => continuous_of_discreteTopology⟩
@@ -257,31 +183,6 @@ def charRep (χ : Γ →* Rˣ) : Representation R Γ R where
 
 end Coeff
 
-section Cup
-
-variable {R : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R]
-  {Γ : Type*} [Group Γ] {M : Type*} [AddCommGroup M] [Module R M]
-  [TopologicalSpace M] [DiscreteTopology M]
-
-variable {D : Type*} [Group D] [TopologicalSpace D]
-  (χ : Γ →* Rˣ) (rho : Representation R Γ M) (φ : D →* Γ)
-
-end Cup
-
-section NatMaps
-
-variable {R : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R]
-  {Γ : Type*} [Group Γ] [TopologicalSpace Γ] (χ : Γ →* Rˣ)
-  {M : Type*} [AddCommGroup M] [Module R M] [TopologicalSpace M] [DiscreteTopology M]
-  {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M'] [DiscreteTopology M']
-  (rho : Representation R Γ M) (rho' : Representation R Γ M') (u : M →ₗ[R] M')
-  (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
-
-variable {I : Type*} {Dl : I → Type*} [∀ i, Group (Dl i)] [∀ i, TopologicalSpace (Dl i)]
-  (phis : ∀ i, Dl i →* Γ) (hphis : ∀ i, Continuous (phis i))
-
-end NatMaps
-
 section Cyc
 
 variable (K L : Type*) [Field K] [Field L] [Algebra K L] [IsAlgClosed L] [CharZero L]
@@ -291,18 +192,6 @@ def cycN : (L ≃ₐ[K] L) →* (ZMod n)ˣ :=
   (modularCyclotomicCharacter L (HasEnoughRootsOfUnity.natCard_rootsOfUnity L n)).comp
     (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L)
 
-
-variable {K L n} in
-theorem cycN_spec (σ : L ≃ₐ[K] L) (ζ : L) (h : ζ ^ n = 1) :
-    σ ζ = ζ ^ ((cycN K L n σ : ZMod n)).val := by
-  have hz : ζ ≠ 0 := by
-    rintro rfl
-    simp [NeZero.ne n] at h
-  have ht : Units.mk0 ζ hz ∈ rootsOfUnity n L := by
-    rw [mem_rootsOfUnity]; ext; simp [h]
-  have := modularCyclotomicCharacter.spec L (HasEnoughRootsOfUnity.natCard_rootsOfUnity L n)
-    (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L σ) ht
-  simpa [cycN] using this
 
 end Cyc
 
@@ -501,17 +390,6 @@ variable (inv : ∀ i : S ⊕ InfinitePlace F, H2 ((charRep D.chi).comp (locHom 
 
 end PTMapsAll
 
-section PTFam
-
-variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
-  {S : Finset (HeightOneSpectrum (𝓞 F))} {n : ℕ} [NeZero n] (D : GData F Ω S n)
-
-variable {M : Type} [AddCommGroup M] [Module (ZMod n) M] [TopologicalSpace M] [DiscreteTopology M]
-  (rho : Representation (ZMod n) (GS Ω (S : Set (HeightOneSpectrum (𝓞 F)))) M)
-  (hrho : ContAction rho)
-
-end PTFam
-
 section LubinTate
 
 variable (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
@@ -543,12 +421,6 @@ def resCard (π : OK p K) : ℕ := Nat.card (OK p K ⧸ Ideal.span {π})
 
 end LubinTate
 
-section FGL
-
-variable {R : Type} [CommRing R]
-
-end FGL
-
 section Division
 
 variable {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
@@ -557,14 +429,6 @@ def ltPoly (π : OK p K) : Polynomial (PadicAlgCl p) :=
   Polynomial.X ^ resCard π + Polynomial.C (π : PadicAlgCl p) * Polynomial.X
 
 end Division
-
-section LTRecip
-
-open ValuativeRel
-
-variable (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
-
-end LTRecip
 
 
 section Hecke
@@ -584,10 +448,5 @@ def embC (σ : K →+* ℂ) : (InfinitePlace.mk σ).Completion →+* ℂ := by
     else (starRingEnd ℂ).comp (InfinitePlace.Completion.extensionEmbedding _)
 
 end Hecke
-
-theorem contAction_trivial {R G M : Type*} [CommRing R] [Group G] [TopologicalSpace G]
-    [AddCommGroup M] [Module R M] [TopologicalSpace M] :
-    ContAction (Representation.trivial R G M) :=
-  continuous_snd
 
 end Neutral.B1

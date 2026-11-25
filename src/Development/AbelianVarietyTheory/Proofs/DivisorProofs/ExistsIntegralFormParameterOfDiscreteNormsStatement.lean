@@ -179,9 +179,6 @@ theorem exists_form_of_discrete_norms : ∀ (C : Type) [NormedField C] [IsAlgClo
       exact_mod_cast this
     rw [hβ, ← Real.exp_log hπpos, ← Real.exp_nat_mul, hc, hq]
     congr 1
-    have hm2 : (0 : ℝ) < (m : ℝ) ^ 2 := by
-      have : (0 : ℝ) < m := by exact_mod_cast hm
-      positivity
     have e : Real.log ‖π‖ = -L / (2 * (m : ℝ) ^ 2) := by
       rw [eq_div_iff (by positivity)]; exact hlp
     rw [e]

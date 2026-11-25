@@ -762,7 +762,7 @@ theorem GlobalTheory.MinorFrame.exists_unitary_detChar_ne : ∀ {ι : Type} [Fin
     intro m
     unfold GlobalTheory.MinorFrame.detChar
     rw [Finset.prod_eq_single τ₀]
-    · simp only [g, if_pos rfl, Matrix.det_diagonal, d]
+    · simp only [g, ite_eq_left rfl, Matrix.det_diagonal, d]
       rw [Finset.prod_update_of_mem (Finset.mem_univ _)]
       simp
     · intro b _ hb
@@ -1020,7 +1020,7 @@ theorem lowScal_mem_unitary {d a : ℕ} {t : ℂ} (ht : ‖t‖ = 1) : lowScal d
   funext i
   by_cases hi : (i : ℕ) < a
   · simp [hi]
-  · simp only [Pi.star_apply, hi, if_false, RCLike.star_def]
+  · simp only [Pi.star_apply, hi, ite_false, RCLike.star_def]
     rw [Complex.conj_mul', ht]; simp
 
 theorem rowSub_lowScal_zero_mem {a d : ℕ} (S : Submodule ℂ (Pol ι d a))
@@ -1565,7 +1565,7 @@ theorem theta_bottom_minor_match : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
   have hH : GlobalTheory.Published.HoweDualityReal := hP.howeDualityReal
   have hLM := _root_.GlobalTheory.SquareLM.twisted_square_local_matching hH hP hK hM
   have hTA := _root_.GlobalTheory.T.twisted_square_theta_integrals_eq hP hK hM
-  obtain ⟨CF1, H1⟩ := GlobalTheory.T.definiteBottom_dictionary_frames_exponents_kernel
+  obtain ⟨CF1, H1⟩ := GlobalTheory.BotDict.bottom_dictionary
   obtain ⟨CF2, H2⟩ := _root_.GlobalTheory.T.theta_bottom_finite_place_matching hH hP hK hM
   refine ⟨max CF1 CF2, fun ε CF hCF => ?_⟩
   obtain ⟨C1, x1, G1⟩ := H1 ε CF (le_trans (le_max_left _ _) hCF)

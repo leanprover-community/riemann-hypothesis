@@ -18,8 +18,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 def urChar (K Ω : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
     [Field Ω] [Algebra K Ω] [HasUnramifiedRoots K Ω] (N : ℕ+) (σ : Gal(Ω/K)) : ZMod (N : ℕ) :=
   GroundTheory.LocalField.Abstract.ProfiniteInteger.proj N (Multiplicative.toAdd (unramifiedDegree K Ω σ))

@@ -47,8 +47,8 @@ theorem exists_K (hk : 1 ≤ k) (c u : Fin (r + 1) → EE k r) (hc : Orthonormal
     change inner ℂ (w p) (w q) = _
     rw [hw p q]
     by_cases hpq : p = q
-    · subst hpq; rw [if_pos rfl, if_pos rfl]
-    · rw [if_neg hpq, if_neg]; intro h; exact hpq (Sum.inl_injective (congrArg Subtype.val h))
+    · subst hpq; rw [ite_eq_left rfl, ite_eq_left rfl]
+    · rw [ite_eq_right hpq, ite_eq_right]; intro h; exact hpq (Sum.inl_injective (congrArg Subtype.val h))
   obtain ⟨bP, hbP⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq hcard (hres _ (hF c hc hci))
   obtain ⟨bQ, hbQ⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq hcard (hres _ (hF u hu hui))
   have hP : ∀ p, bP (Sum.inl p) = Sum.elim c (fun a => HE k r (c a)) p := fun p => hbP _ ⟨p, rfl⟩
@@ -127,13 +127,13 @@ theorem phiV_apply (b : Fin (r + 1)) (i : Fin (2 * r + k + 1)) :
       ((Real.sqrt 2)⁻¹ : ℂ) * ((if i.val = r then 1 else 0) + (if i.val = r + k then 1 else 0)) := by
   unfold phiV
   by_cases hb : (b : ℕ) < r
-  · rw [dite_eq_left hb, if_pos hb]
+  · rw [dite_eq_left hb, ite_eq_left hb]
     show (Pi.single (esI k r ⟨b.val, hb⟩) (1 : ℂ) : Fin (2 * r + k + 1) → ℂ) i = _
     rw [Pi.single_apply]
     by_cases hi : (i : ℕ) = 2 * r + k - b.val
-    · rw [if_pos hi, if_pos (show i = esI k r ⟨b.val, hb⟩ from Fin.ext hi)]
-    · rw [if_neg hi, if_neg (show ¬ i = esI k r ⟨b.val, hb⟩ from fun h => hi (congrArg Fin.val h))]
-  · rw [dite_eq_right hb, if_neg hb]
+    · rw [ite_eq_left hi, ite_eq_left (show i = esI k r ⟨b.val, hb⟩ from Fin.ext hi)]
+    · rw [ite_eq_right hi, ite_eq_right (show ¬ i = esI k r ⟨b.val, hb⟩ from fun h => hi (congrArg Fin.val h))]
+  · rw [dite_eq_right hb, ite_eq_right hb]
     simp [epsV, bvec, Pi.single_apply, Fin.ext_iff]
     have e1 : ((wI k r 0 : Fin (2 * r + k + 1)) : ℕ) = r := by first | rfl
     have e2 : ((wI k r (Fin.last k) : Fin (2 * r + k + 1)) : ℕ) = r + k := by first | rfl
@@ -163,12 +163,12 @@ theorem qe_orth (hk : 1 ≤ k) : Orthonormal ℂ (fun a => (WithLp.toLp 2 (phiV 
   have hB := b.isLt
   rw [toLp_phiV]
   by_cases ha : a.val < r
-  · rw [if_pos ha, inner_bvec, phiV_apply]
+  · rw [ite_eq_left ha, inner_bvec, phiV_apply]
     split_ifs <;> first
       | rfl
       | (exfalso; (try simp only [Fin.ext_iff] at *) <;> omega)
       | simp
-  · rw [if_neg ha, inner_smul_left, inner_add_left, inner_bvec, inner_bvec, phiV_apply, phiV_apply]
+  · rw [ite_eq_right ha, inner_smul_left, inner_add_left, inner_bvec, inner_bvec, phiV_apply, phiV_apply]
     split_ifs <;> first
       | (exfalso; (try simp only [Fin.ext_iff] at *) <;> omega)
       | (exfalso; exact ‹¬a = b› (Fin.ext (by omega)))
@@ -211,10 +211,10 @@ theorem pe_iso (hk : 1 ≤ k) (a b : Fin (r + 1)) :
     inner ℂ (WithLp.toLp 2 (phiV' k r a) : EE k r) (HE k r (WithLp.toLp 2 (phiV' k r b))) = 0 := by
   rw [pe_eq, pe_eq, HE_HE, HE_adj, HE_apply, WithLp.ofLp_toLp, toLp_phiV a]
   by_cases ha : a.val < r
-  · rw [if_pos ha, inner_bvec, hpk_mulVec, phiV_apply]
+  · rw [ite_eq_left ha, inner_bvec, hpk_mulVec, phiV_apply]
     simp only [sigI_val, sgnI]
     split_ifs <;> first | rfl | (exfalso; omega) | simp
-  · rw [if_neg ha, inner_smul_left, inner_add_left, inner_bvec, inner_bvec, hpk_mulVec, hpk_mulVec,
+  · rw [ite_eq_right ha, inner_smul_left, inner_add_left, inner_bvec, inner_bvec, hpk_mulVec, hpk_mulVec,
       phiV_apply, phiV_apply]
     simp only [sigI_val, sgnI, starRingEnd_apply]
     split_ifs <;> first | rfl | (exfalso; omega) | ring

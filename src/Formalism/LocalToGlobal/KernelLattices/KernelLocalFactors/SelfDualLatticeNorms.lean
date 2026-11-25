@@ -491,7 +491,7 @@ theorem desc_cases {K : Type} [Field K] (σ : K →+* ℂ) (z : ℂ) : σ (desc 
 theorem matH_hSc (sc : ℝ) (z w : DVar T a b → ℂ) :
     matH (hSc T a b sc) z w = (sc : ℂ) * ∑ i, z i * conj (w i) := by
   simp only [matH, hSc, LinearMap.mk₂'ₛₗ_apply, Matrix.diagonal_apply, mul_ite, ite_mul, mul_zero, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.mul_sum]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   ring
 
@@ -736,7 +736,7 @@ theorem jetAtSplit_of (hC : SelfDualLatticeThetaPadicIntegrality) (f1 : KerIndFo
         field_simp
       rw [e]; exact _root_.Formalism.L2.Th1.H.CharacterSumTripleLemmas.int_of_selfDual hSD (hΛq π hπ l hl) hμ
     obtain ⟨q, hq⟩ := hint
-    simp only [hΨdef, if_pos hb0, hq]
+    simp only [hΨdef, ite_eq_left hb0, hq]
     have hex : Complex.exp (-(2 * (Real.pi : ℂ)) * Complex.I * ((q : ℝ) : ℂ)) = 1 := by
       rw [Complex.exp_eq_one_iff]; exact ⟨-q, by push_cast; ring⟩
     rw [hex, mul_one, hSAcard]
@@ -1163,7 +1163,7 @@ theorem half_to (hp : 0 < p) (c' : ℕ) (hc' : 0 < c') {w : W} (hw : w ∈ twist
   intro Q
   by_cases hQ : Q ∈ S
   · have h1 := (mem_twO M (p * c') (expS S) w).mp hw Q
-    rw [show expS S Q = 1 from if_pos hQ, zpow_one] at h1
+    rw [show expS S Q = 1 from ite_eq_left hQ, zpow_one] at h1
     have e : (algebraMap (𝓞 E) E ϖ / algebraMap (𝓞 E) E (cO E ϖ)) • w
         = algebraMap (𝓞 E) E (ϖ * ϖ * (c' : 𝓞 E)) • (((p * c' : ℕ) : E))⁻¹ • w := by
       rw [smul_smul]
@@ -1197,7 +1197,7 @@ theorem half_of (hp : 0 < p) (c' : ℕ) (hc' : 0 < c') (u : ℤ) {m : W} (hm : m
   · rw [mem_twO]
     intro Q
     by_cases hQ : Q ∈ S
-    · rw [show expS S Q = 1 from if_pos hQ, zpow_one]
+    · rw [show expS S Q = 1 from ite_eq_left hQ, zpow_one]
       have hpi := pi_notin_S S p ϖ hS hprod Q hQ
       apply loc_of M Q (ϖ * ϖ) (fun h => hpi ((Q.isPrime.mem_or_mem h).elim id id))
       have e : algebraMap (𝓞 E) E (ϖ * ϖ) • (((p * c' : ℕ) : E))⁻¹ • ((u * c' : ℤ) : E) •

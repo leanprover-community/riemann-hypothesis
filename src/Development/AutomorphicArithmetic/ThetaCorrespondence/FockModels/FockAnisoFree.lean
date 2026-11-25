@@ -184,7 +184,7 @@ theorem fockAniso_gt : GlobalTheory.Published.WeilSiegelFormulaUnitary → ∀ D
       ⨍ q, descend (GQ B) (fun h => thetaKO omh g h φ) q ∂autMeasure B mH := fun g =>
     ((hser hab ν 𝓕 hcov).2 g).2
   have hmem := GlobalTheory.T.doublingSiegelWeilSection_mem_degeneratePrincipalSeries GlobalTheory.weilRepresentationUnitaryPair D ψ A B χB omh homh ν 𝓕 hcov φ hφ a hK
-  have hv := GlobalTheory.Eis.SphConv.eisValueAt_flat hI hmem (GlobalTheory.Eis.sphConv D A a hI) (isHeckeCharacter_inv_of_isHeckeCharacter homh.hecT)
+  have hv := GlobalTheory.Eis.SphConv.eisValueAt_flat hI hmem (GlobalTheory.Eis.sphConv D A a hI) (GlobalTheory.WeilChange.hecke_inv homh.hecT)
     (re_sZero_gt A B hab)
   have he : GlobalTheory.Eis.eis A (swSec A B omh ν 𝓕 φ) = GlobalTheory.ThetaMean.thetaMean omh mH φ := by
     funext g
@@ -214,8 +214,6 @@ open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis GlobalTheory GlobalTheory.SiegelFormula
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.absoluteThetaIntegral_le_continuousSeminorm : GlobalTheory.Published.WeilThetaConvergence → ∀ (D : D7) (A B : HSp D) (m : Measure (GA D B)), m.IsHaarMeasure → 1 ≤ A.rank → (Formalism.MainNotions.SchurIrreducible.wittIdx B = 0 ∨ A.rank + Formalism.MainNotions.SchurIrreducible.wittIdx B < B.rank) → ∀ (d : ℕ) (ε : Module.Basis (Fin d) D.host.F D.host.E), ∃ ν : Seminorm ℂ (WeilM.schA D.host.F (Fin B.rank × Fin A.rank × Fin d)), IsContSeminorm ν ∧ ∀ φ : WeilM.schA D.host.F (Fin B.rank × Fin A.rank × Fin d), absThetaInt B m (φ.1 ∘ coord ε) ≤ ENNReal.ofReal (ν φ) := by
-  first | exact @GlobalTheory.AbsThetaSemi.absThetaInt_le_contSeminorm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsoluteThetaIntegralLeContinuousSeminormStatement =====
@@ -230,8 +228,6 @@ open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis GlobalTheory GlobalTheory.SiegelFormula
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.integrable_thetaKernel_weilRange : GlobalTheory.Published.WeilThetaConvergence → ∀ (D : D7) (A B : HSp D) (m : Measure (GA D B)), m.IsHaarMeasure → 1 ≤ A.rank → (Formalism.MainNotions.SchurIrreducible.wittIdx B = 0 ∨ A.rank + Formalism.MainNotions.SchurIrreducible.wittIdx B < B.rank) → ∀ (ψ : AddChar (AF D.host.F) ℂ) (χ : (AE D)ˣ →* Circle) (ω : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ ω → ∀ f, IsThetaFunO ψ (dblSp A) B f → ∀ g, Integrable (descend (GQ B) fun h => thetaKO ω g h f) (autMeasure B m) := by
-  first | exact @GlobalTheory.WeilThetaInt.integrable_thetaKO
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableThetaKernelWeilRangeStatement =====
@@ -247,10 +243,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis Gl
 open GlobalTheory.AdelicU GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.Core.Rk.SWLaw GlobalTheory.Core.Rk.SW GlobalTheory.StdUnn
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-
-theorem _root_.GlobalTheory.T.continuous_symm_unitary_chart : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ (κ : GA D (dblSp A) ≃* G D A.rank), IsChart A μ κ →
-    Continuous κ.symm := by
-  first | exact @GlobalTheory.CompanionTheory.ChartSymm.continuous_symm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSymmUnitaryChartStatement =====
@@ -266,13 +258,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis Gl
 open GlobalTheory.AdelicU GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.Core.Rk.SWLaw GlobalTheory.Core.Rk.SW GlobalTheory.StdUnn
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-
-theorem _root_.GlobalTheory.T.siegel_eisenstein_convergent : ∀ (D : D7) (n : ℕ) (χ : (AE D)ˣ →* Circle) (s₁ : ℂ) (φ : G D n → ℂ), Continuous φ →
-    (∀ p ∈ P D n, ∀ a : GL (Fin n) (AE D), blkA (mat p) = a.1 → ∀ g,
-      φ (p * g) = (χ (Matrix.GeneralLinearGroup.det a) : ℂ) *
-        npow (absA D (Matrix.GeneralLinearGroup.det a)) (s₁ + (n : ℂ) / 2) * φ g) →
-    (n : ℝ) / 2 < s₁.re → ∀ g : G D n, CosetConv (P D n) (GF D n) φ g := by
-  first | exact @GlobalTheory.CompanionTheory.Godement.cosetConv_of_continuous_law
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelEisensteinConvergentStatement =====
@@ -288,13 +273,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis Gl
 open GlobalTheory.AdelicU GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.Core.Rk.SWLaw GlobalTheory.Core.Rk.SW GlobalTheory.StdUnn
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-
-theorem _root_.GlobalTheory.T.theta_section_continuous : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χ : (AE D)ˣ →* Circle)
-    (ω : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ ω →
-    ∀ (f : WO (dblSp A) B → ℂ), IsThetaFunO ψ (dblSp A) B f →
-    ∀ (ν : Measure (Mx D B.rank A.rank)) (𝓖 : Set (Mx D B.rank A.rank)), IsCovolOne (ratL B A) ν 𝓖 →
-    Continuous (swSection A B ν 𝓖 ω f) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelWeil.swSection_continuous
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSectionContinuousStatement =====
@@ -310,14 +288,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis Gl
 open GlobalTheory.AdelicU GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.Core.Rk.SWLaw GlobalTheory.Core.Rk.SW GlobalTheory.StdUnn
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-
-theorem _root_.GlobalTheory.T.weil_schwartz_parabolic_equivariant : ∀ (D : D7) (n : ℕ) (ψ : AddChar (AF D.host.F) ℂ) (χ : (AE D)ˣ →* Circle) (θ : InfFam D) (V : HSp D)
-    (μ : Measure (Mx D V.rank n)) (ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)),
-    IsWeilSch ψ χ θ V μ ω → ∀ (Φ : schwartzA θ V.rank n),
-    ∀ p ∈ P D n, ∀ a : GL (Fin n) (AE D), blkA (mat p) = a.1 → ∀ g,
-      (ω (p * g) Φ).1 0 = (χ (Matrix.GeneralLinearGroup.det a) : ℂ) *
-        npow (absA D (Matrix.GeneralLinearGroup.det a)) (s0 V n + (n : ℂ) / 2) * (ω g Φ).1 0 := by
-  first | exact @GlobalTheory.CompanionTheory.WeilLaw.weil_parabolic_law
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilSchwartzParabolicEquivariantStatement =====
@@ -384,14 +354,14 @@ theorem PositivityTheory.SiegelWeilFormulaUnitary.siegelFormula_theta_of_schwart
         simp only [mul_one, one_mul, MulEquiv.apply_symm_apply] at this
         simp only [Function.comp_apply, this]
       rw [e]
-      exact (GlobalTheory.T.theta_section_continuous D ψ A B χ ω hW f hf ν 𝓖 hcov).comp
-        (GlobalTheory.T.continuous_symm_unitary_chart D A μ hμ κ hκ)
+      exact (GlobalTheory.CompanionTheory.SiegelWeil.swSection_continuous D ψ A B χ ω hW f hf ν 𝓖 hcov).comp
+        (GlobalTheory.CompanionTheory.ChartSymm.continuous_symm D A μ hμ κ hκ)
     have hs : (A.rank : ℝ) / 2 < (s0 B A.rank).re := by
       have : (2 * A.rank : ℝ) < B.rank := by exact_mod_cast hB
       simp only [s0, Complex.sub_re, Complex.div_ofNat_re, Complex.natCast_re]
       linarith
-    exact GlobalTheory.T.siegel_eisenstein_convergent D A.rank χ⁻¹ (s0 B A.rank) _ hcφ
-      (GlobalTheory.T.weil_schwartz_parabolic_equivariant D A.rank (shift ψ lam) χ⁻¹ θ B ν omS hWS Φ) hs (κ (g * 1))
+    exact GlobalTheory.CompanionTheory.Godement.cosetConv_of_continuous_law D A.rank χ⁻¹ (s0 B A.rank) _ hcφ
+      (GlobalTheory.CompanionTheory.WeilLaw.weil_parabolic_law D A.rank (shift ψ lam) χ⁻¹ θ B ν omS hWS Φ) hs (κ (g * 1))
   · rw [(hg g).2, one_mul]
     have h := hSieg D A.rank B hA hB (shift ψ lam) hψ' χ⁻¹ hχ.1 hχ.2 θ hθ ν 𝓖 hcov omS hWS m hm (omS (κ g) Φ)
     unfold cosetSum at h ⊢
@@ -407,7 +377,7 @@ theorem PositivityTheory.SiegelWeilFormulaUnitary.siegelFormula_theta_of_schwart
 theorem PositivityTheory.SiegelWeilFormulaUnitary.weilSiegelFormulaUnitary_of_two :
     GlobalTheory.Published.WeilThetaConvergence → GlobalTheory.Published.WeilSiegelFormula → GlobalTheory.Published.WeilSiegelFormulaUnitary := by
   intro hT hS D A B m hm hA hW
-  refine ⟨GlobalTheory.T.absoluteThetaIntegral_le_continuousSeminorm hT D A B m hm hA hW, fun ψ χ ω hω f hf => ⟨GlobalTheory.T.integrable_thetaKernel_weilRange hT D A B m hm hA hW ψ χ ω hω f hf, ?_⟩⟩
+  refine ⟨GlobalTheory.AbsThetaSemi.absThetaInt_le_contSeminorm hT D A B m hm hA hW, fun ψ χ ω hω f hf => ⟨GlobalTheory.WeilThetaInt.integrable_thetaKO hT D A B m hm hA hW ψ χ ω hω f hf, ?_⟩⟩
   intro hab ν 𝓖 hν
   exact PositivityTheory.SiegelWeilFormulaUnitary.siegelFormula_theta_of_schwartz' hS D A B m hm hA ψ χ ω hω f hf hab ν 𝓖 hν
 end -- clump:auto
@@ -563,7 +533,7 @@ theorem hyp_pull : ∀ (D : D7) (r : ℕ) (V : HSp D) (ψ : AddChar (AF D.host.F
   intro D r V ψ θ μ lam ν φ a ha ⟨h1, h2, h3, h4, h5, h6, h7, h8⟩
   have hli : LinearIndependent D.host.E a :=
     Matrix.linearIndependent_rows_of_isUnit ((Matrix.isUnit_iff_isUnit_det a).mpr (isUnit_iff_ne_zero.mpr ha))
-  refine ⟨h1, h2, h3, h4, h5, h6, GlobalTheory.T.pullback_schwartz_linear_independent D θ h3 _ _ _ a hli φ h7, ?_⟩
+  refine ⟨h1, h2, h3, h4, h5, h6, GlobalTheory.CompanionTheory.PullSch.pullSchLI D θ h3 _ _ _ a hli φ h7, ?_⟩
   rw [absThetaInt_pull V ν φ a ha]
   exact h8
 

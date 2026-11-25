@@ -119,7 +119,7 @@ theorem fock_monomial_right (F : MvPolynomial σ ℚ_[p]) (m : σ →₀ ℕ) (a
     fock p F (monomial m a) = F.coeff m * a * (m.prod fun _ k => (k.factorial : ℚ_[p])) := by
   classical
   rw [fock_symm', fock_eq_sum' _ _ {m} support_monomial_subset, Finset.sum_singleton,
-    coeff_monomial, if_pos rfl]
+    coeff_monomial, ite_eq_left rfl]
   ring
 
 theorem fock_nondeg (F : MvPolynomial σ ℚ_[p]) (h : ∀ G, fock p F G = 0) : F = 0 := by

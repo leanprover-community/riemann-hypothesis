@@ -12,7 +12,6 @@ open AlgebraicGeometry CategoryTheory Limits MvPolynomial TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.ProjSpace GlobalTheory.QCoh.Qcqs GlobalTheory.Cartier GlobalTheory.ProjFrac
 
-noncomputable section
 namespace GlobalTheory.ZM.ProjCoord
 variable {R : Type} [CommRing R] {N : ℕ} {A : Type} [CommRing A] {Y : Scheme.{0}}
 
@@ -102,10 +101,5 @@ theorem secCoord_iff {σ : Type} (e : σ ≃ Fin (N + 1)) (φ : Y ⟶ PSpace R N
 omit [CommRing A] in
 theorem range_comp_symm {σ τ : Type} (e : σ ≃ τ) (v : σ → A) : Set.range (v ∘ e.symm) = Set.range v :=
   e.symm.surjective.range_comp v
-
-section
-variable (K : Type) [Field K] (g n N' : ℕ) {M : ℕ} (e : Ix g (N' ^ 2) ≃ Fin (M + 1))
-
-end
 
 end GlobalTheory.ZM.ProjCoord

@@ -717,7 +717,7 @@ theorem at_point (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E)
       exact not_isUnit_zero hu'
     have : Fact p.Prime := ⟨hpp⟩
     have : CharP k p := (CharP.charP_iff_prime_eq_zero hpp).2 hpk
-    obtain ⟨g₂, hm₂, -⟩ := GlobalTheory.T.formal_germ_base_change E H hs X t _ k f _ d g
+    obtain ⟨g₂, hm₂, -⟩ := PositivityTheory.HtPt.Ce.germ_bc E H hs X t _ k f _ d g
     have e : spMap f ≫ X.fromSpecStalk (x (IsLocalRing.closedPoint k)) = x :=
       Scheme.Spec_stalkClosedPointTo_fromSpecStalk x
     have hx' : GeomPF t (spMap f ≫ X.fromSpecStalk (x (IsLocalRing.closedPoint k))) := by

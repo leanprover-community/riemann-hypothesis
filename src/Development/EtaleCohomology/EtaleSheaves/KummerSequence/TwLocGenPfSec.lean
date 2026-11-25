@@ -21,7 +21,7 @@ theorem ofRings_sec_res {R : Type} [CommRing R] (M : CommRingCat.{0} ⥤ ModuleC
   exact h.symm
 
 def TwSecLoc : Prop := ∀ (q : ℕ) [NeZero q] (i : ℤ) (U : Scheme.{0}) (ζ : Prim q Γ(U, ⊤)) (y : Sec (tw q i) U),
-  Loc U fun V g => ∃ c : ℕ, Sec.res g y = c • twGen i (ζ.map g.appTop.hom)
+  Loc U fun _ g => ∃ c : ℕ, Sec.res g y = c • twGen i (ζ.map g.appTop.hom)
 
 theorem loc_mono {U : Scheme.{0}} {P Q : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : Loc U P)
     (hPQ : ∀ V g, P V g → Q V g) : Loc U Q := by
@@ -58,7 +58,7 @@ end LateralTheory.E.H2CurveOrder.TwLocGenPfSec
 namespace LateralTheory.E.H2CurveOrder.TwLocGenPfSec
 
 def ZarPow : Prop := ∀ (q : ℕ) [NeZero q] (V : Scheme.{0}) (ζ ξ : Prim q Γ(V, ⊤)),
-  Loc V fun W h => ∃ a : (ZMod q)ˣ, (ξ.map h.appTop.hom).1 = (ζ.map h.appTop.hom).1 ^ (a : ZMod q).val
+  Loc V fun _ h => ∃ a : (ZMod q)ˣ, (ξ.map h.appTop.hom).1 = (ζ.map h.appTop.hom).1 ^ (a : ZMod q).val
 
 theorem ulift_smul_eq_nsmul {q : ℕ} [NeZero q] {M : Type*} [AddCommGroup M] [Module (ULift.{1} (ZMod q)) M]
     (r : ULift.{1} (ZMod q)) (m : M) : r • m = r.down.val • m := by

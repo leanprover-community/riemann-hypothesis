@@ -10,44 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.LatticeTri
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.NormalisedPullbackCommutesSymmetricTranslations
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SymmetricTranslateMulOfCoprimeOrders
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SymmetricTranslatesMultiplicationPullbackDescrip
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
@@ -191,7 +154,7 @@ theorem le_nval_sum {J : Type} (s : Finset J) (e : ℕ) (r : EReal) (f : J → T
       rw [hz, map_zero] at hsum
       exact hs0 (le_antisymm hsum zero_le)
     have h1 := hf j₀ hj₀
-    rw [if_neg hf0] at h1
+    rw [ite_eq_right hf0] at h1
     refine h1.trans (EReal.coe_le_coe_iff.2 (div_le_div_of_nonneg_right ?_ (Nat.cast_nonneg e)))
     have hv : vV T.V (f j₀) ≤ vV T.V (∑ j ∈ s, f j) := by
       unfold vV
@@ -212,7 +175,7 @@ theorem short_bound_of_trivAt : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     by_cases hz : z = 0
     · rw [hz, mul_zero]
     · unfold nval
-      rw [if_neg (mul_ne_zero hu0 hz), if_neg hz, vV_mul hu0 hz hu]
+      rw [ite_eq_right (mul_ne_zero hu0 hz), ite_eq_right hz, vV_mul hu0 hz hu]
   have hNodd : Odd N := hL.1
   obtain ⟨J, J', iJ, iJ', a, a', σ, hinj, ha, ⟨m, hm, ha'⟩, hz', hcard⟩ :=
     GlobalTheory.T.isotropic_group_primary_decomposition E H Dw l Xo T.Fr (xOf y) n Λ N M ℓ hU hL hℓ z hz hgi

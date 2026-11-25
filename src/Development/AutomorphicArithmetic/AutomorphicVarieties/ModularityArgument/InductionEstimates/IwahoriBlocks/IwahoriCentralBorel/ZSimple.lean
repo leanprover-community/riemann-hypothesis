@@ -1009,14 +1009,12 @@ private lemma splitAt (v : Pl K) (y : G1 K 2) :
 
 end Conc
 
-set_option maxHeartbeats 1000000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.xOcc :
     ∀ {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (μ : Measure (G1 K 2)) [μ.IsHaarMeasure] (τ : Submodule ℂ (L2 μ)) (κ : Measure (archCompact K 2)) (p : archCompact K 2 → ℂ), CuspIrr μ τ → IdemA κ p → ∀ {r : ℕ} (w : Fin r → Pl K) (ι : GS 2 w →* FA K 2), Function.Injective w → IsEmb w ι → Xs μ τ κ p (im w) ≠ ⊥ → ∀ i,
       ∃ (σ : SmIrr (Gw 2 (w i))) (f : σ.V →ₗ[ℂ] (G1 K 2 → ℂ)), Occurs μ τ (w i) σ ∧ f ≠ 0 ∧ (∀ v, f v ∈ Xs μ τ κ p (im w)) ∧
         ∀ g v, f (σ.ρ g v) = rS ι (Pi.mulSingle i g) (f v) := by
   intro K _ _ _ μ _ τ κ p hτ hp r w ι hw hι hX i
   haveI : T2Space (G1 K 2) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       infer_instance
   obtain ⟨hmem, hmem2⟩ := _root_.UpperTheory.Reformulated.B.Gul4.xMem μ τ κ p hp
   have hstab := hmem2 hτ w ι hw hι
@@ -1787,12 +1785,12 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.finIwa :
   · by_cases hv : v ∈ im w
     · obtain ⟨l, -, rfl⟩ := Finset.mem_image.1 hv
       beta_reduce
-      rw [if_pos hv]
+      rw [ite_eq_left hv]
       change GM.cf (w l) u ∈ U (w l)
       rw [hu l]
       exact one_mem _
     · beta_reduce
-      rw [if_neg hv]
+      rw [ite_eq_right hv]
       change GM.cf v u ∈ _
       rw [hu1 v hv]
       exact hc.2 v
@@ -1819,13 +1817,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical
 
-private theorem ray_lv {K : Type} [Field K] [NumberField K] {μ₂ : Measure (G1 K 2)} {τ₁ τ₂ : Submodule ℂ (L2 μ₂)}
-    {f : G1 K (2 + 2) → ℂ} (hf : IsSec τ₁ τ₂ f) (t : ℝ) (g : G1 K (2 + 2)) : f (lv 1 1 t * g) = f g := by
-  refine hf.ray ⟨Real.exp t, Real.exp_pos t⟩ ?_ g ?_
-  have h : (⟨Real.exp (-t), Real.exp_pos _⟩ : {r : ℝ // 0 < r}) = (⟨Real.exp t, Real.exp_pos t⟩ : {r : ℝ // 0 < r})⁻¹ :=
-    Subtype.ext (Real.exp_neg t)
-  rw [Subgroup.coe_mul, blkLaws.1, Subgroup.coe_one, one_mul, one_mul, zt, zt, h]
-
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.evInj :
     ∀ {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (τ₁ τ₂ : Submodule ℂ (L2 μ₂)) (κ : Measure (archCompact K (2 + 2))) (e : archCompact K (2 + 2) → ℂ) κ₂ p₁ p₂ k₀, ArchLine τ₁ τ₂ κ e κ₂ p₁ p₂ k₀ →
       ∀ {r : ℕ} (w : Fin r → Pl K) (ι₄ : GS (2 + 2) w →* FA K (2 + 2)), Function.Injective w → IsEmb w ι₄ →
@@ -1846,7 +1837,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.evInj :
       rw [mul_assoc, hd]
       simp only [← mul_assoc]
       rw [hX, mul_assoc (nn X'), hl, ← mul_assoc (nn X')]
-    rw [he, hU u (hu U), hf.unip, ray_lv hf, h1]
+    rw [he, hU u (hu U), hf.unip, sec_ray hf, h1]
   funext x
   rw [hz]
   exact mul_zero _

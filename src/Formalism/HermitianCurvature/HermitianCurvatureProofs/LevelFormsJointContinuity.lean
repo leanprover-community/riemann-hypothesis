@@ -167,13 +167,13 @@ theorem rrTop_cont (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq �
       have l1 := isLocPt_app hh1 hm hcc.1 hsz
       have l2 := isLocPt_app hh2 hm hcc.2 hsz'
       unfold KB.Pl.RR D.RRplace
-      rw [dite_eq_left ⟨l1, l2⟩, dite_eq_right (by omega), if_pos rfl]
+      rw [dite_eq_left ⟨l1, l2⟩, dite_eq_right (by omega), ite_eq_left rfl]
       rfl
     by_cases hw0 : w = []
     · refine (hsV_continuousOn P p F hF h h' hh1 hh2 m hm hsz hsz').congr fun cc hcc => ?_
-      rw [hform cc hcc, if_pos hw0]
+      rw [hform cc hcc, ite_eq_left hw0]
     · refine (topOf_continuousOn P p F hF Cb hCb w hw h h' hh1 hh2 m hm hsz hsz').congr fun cc hcc => ?_
-      rw [hform cc hcc, if_neg hw0]
+      rw [hform cc hcc, ite_eq_right hw0]
   · refine (continuousOn_const (c := (0 : ℂ))).congr fun cc _ => ?_
     exact PBL.rr_zero_of_not p F _ w _ _ (fun hl => hh ⟨heads_of_loc hl.1, heads_of_loc hl.2⟩)
 

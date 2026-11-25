@@ -77,8 +77,8 @@ private theorem UpperTheory.Reformulated.B.LayerApproximation.all_layers {O R : 
       exact Ideal.add_mem _ hua hvb
 
 theorem UpperTheory.Reformulated.B.LayerApproximation.co_ext_approx :
-    ∀ {O R : Type} [inst : CommRing O] [inst_1 : CommRing R]
-    [inst_2 : Algebra O R] (m : Ideal R) (A : Subalgebra O R) (T : Set R),
+    ∀ {O R : Type} [CommRing O] [CommRing R]
+    [Algebra O R] (m : Ideal R) (A : Subalgebra O R) (T : Set R),
     (∀ (x : R), ∃ (a : O), x - (Algebra.algebraMap O R : O → R) a ∈ m) →
       (∀ t ∈ T, t ∈ A ∧ t ∈ m) → m ≤ Ideal.span T ⊔ m ^ (2 : ℕ) → ∀ (N : ℕ) (x : R), ∃ a ∈ A, x - a ∈ m ^ N := by
   intro O R _ _ _ m A T h0 hT hm N x

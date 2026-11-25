@@ -1101,14 +1101,8 @@ theorem norm_natCast_lt_one (l : ℕ) [Fact l.Prime] : ‖((l : ℕ) : Om l)‖ 
   rw [h, norm_algebraMap']
   exact Padic.norm_p_lt_one
 
-def fixedAdd {l : ℕ} [Fact l.Prime] (H : Subgroup (GQ l)) : AddSubgroup (Om l) where
-  carrier := {x | ∀ g ∈ H, g x = x}
-  add_mem' := fun {a b} ha hb g hg => by rw [map_add (f := _), ha g hg, hb g hg]
-  zero_mem' := fun g _ => map_zero g
-  neg_mem' := fun {a} ha g hg => by rw [map_neg, ha g hg]
-
 theorem apply_mem_fixedAdd {l : ℕ} [Fact l.Prime] {H : Subgroup (GQ l)} (hH : H.Normal)
-    (σ : GQ l) {x : Om l} (hx : x ∈ fixedAdd H) : σ x ∈ fixedAdd H := by
+    (σ : GQ l) {x : Om l} (hx : x ∈ GlobalTheory.InertiaMove.fixedAdd H) : σ x ∈ GlobalTheory.InertiaMove.fixedAdd H := by
   intro g hg
   have h1 := hx _ (hH.conj_mem' g hg σ)
   have h2 : g * σ = σ * (σ⁻¹ * g * σ) := by group
@@ -1165,9 +1159,9 @@ theorem norm_sum_pow_le : ∀ (l : ℕ) [Fact l.Prime] (γ : GQ l), γ ∈ (Maxi
     intro x hx
     set σ : GQ l := γ ^ l ^ n with hσ
     have hσl : σ ^ l = γ ^ l ^ (n + 1) := by rw [hσ, ← pow_mul, ← pow_succ]
-    have hxS : x ∈ fixedAdd (H (n + 1)) := hx
+    have hxS : x ∈ GlobalTheory.InertiaMove.fixedAdd (H (n + 1)) := hx
     set y : Om l := ∑ j ∈ Finset.range l, (σ ^ j) x with hy
-    have hyS : y ∈ fixedAdd (H (n + 1)) :=
+    have hyS : y ∈ GlobalTheory.InertiaMove.fixedAdd (H (n + 1)) :=
       sum_mem fun j _ => apply_mem_fixedAdd (hN _) _ hxS
     have hσy : σ y = y := apply_sum_pow σ l (by rw [hσl]; exact hx _ (hpow _))
     have hyH : ∀ g ∈ H n, g y = y := by
@@ -1179,13 +1173,13 @@ theorem norm_sum_pow_le : ∀ (l : ℕ) [Fact l.Prime] (γ : GQ l), γ ∈ (Maxi
             conv_lhs => rw [h2]
             rfl
         _ = y := by rw [h1, pow_apply_of_fixed σ hσy]
-    have hmove : ∀ z ∈ fixedAdd (H (n + 1)), ‖σ z - z‖ ≤ ρ * ‖z‖ := by
+    have hmove : ∀ z ∈ GlobalTheory.InertiaMove.fixedAdd (H (n + 1)), ‖σ z - z‖ ≤ ρ * ‖z‖ := by
       intro z hz
       have := _root_.GlobalTheory.InertiaMove.norm_pow_sub_le l γ hγ (H (n + 1)) (hN _) (hI _) (k + (n + 1)) (n + 1) (hIle _)
         (hpow _) n (by omega) z hz
       rwa [show k + (n + 1) - n = k + 1 by omega] at this
     have hyn : ‖y‖ ≤ ρ * ‖x‖ :=
-      (_root_.GlobalTheory.MemLoc.norm_geom_sum_galois_le l σ (fixedAdd (H (n + 1))) ρ hρ0 hρ1.le
+      (_root_.GlobalTheory.MemLoc.norm_geom_sum_galois_le l σ (GlobalTheory.InertiaMove.fixedAdd (H (n + 1))) ρ hρ0 hρ1.le
         (fun z hz => apply_mem_fixedAdd (hN _) σ hz) hmove x hxS).1.trans
         (mul_le_mul_of_nonneg_right hmax (norm_nonneg _))
     have hsum : ∑ i ∈ Finset.range (l ^ (n + 1)), (γ ^ i) x

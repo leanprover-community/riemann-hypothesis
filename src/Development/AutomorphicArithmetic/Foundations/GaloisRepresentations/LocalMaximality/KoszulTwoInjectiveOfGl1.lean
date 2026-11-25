@@ -67,11 +67,11 @@ theorem UpperTheory.Gal.productCup_of_system.koszulTwoInjective_of_gl1 :
     rw [Finset.sum_eq_single j]
     · simp
     · intro b _ hb
-      rw [if_neg fun h => hb (hinj _ _ h).symm]
+      rw [ite_eq_right fun h => hb (hinj _ _ h).symm]
     · simp
   have hy0 : ∀ s, (∀ j, s ≠ (img e).erase (e j)) → y s = 0 := by
     intro s hs
-    exact Finset.sum_eq_zero fun j _ => if_neg (hs j)
+    exact Finset.sum_eq_zero fun j _ => ite_eq_right (hs j)
   have hycard : ∀ s : Finset κ, (s.card : ℤ) ≠ (d : ℤ) - 1 → y s = 0 := by
     intro s hs
     refine hy0 s fun j h => hs ?_
@@ -117,7 +117,7 @@ theorem UpperTheory.Gal.productCup_of_system.koszulTwoInjective_of_gl1 :
           Finset.sum_map _ _ _
         rw [hsum]
         refine Finset.sum_congr rfl fun j _ => ?_
-        have hw : wOn (img e) (fun l => act (r l)) (e j) = act (r (e j)) := if_pos (hmem j)
+        have hw : wOn (img e) (fun l => act (r l)) (e j) = act (r (e j)) := ite_eq_left (hmem j)
         have hsq : GlobalTheory.cubeSign (img e) (e j) * GlobalTheory.cubeSign (img e) (e j) = 1 := by
           rw [GlobalTheory.cubeSign, ← mul_pow]
           simp

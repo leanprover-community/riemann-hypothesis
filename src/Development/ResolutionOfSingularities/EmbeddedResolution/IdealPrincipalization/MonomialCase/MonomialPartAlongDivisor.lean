@@ -100,7 +100,7 @@ def componentPowerIdeal (I D : X.IdealSheafData) (C : Set X) : X.IdealSheafData 
 
 theorem componentPowerIdeal_of_not_isIrreducibleComponentOfSupport (I D : X.IdealSheafData) {C : Set X}
     (h : ¬ IsIrreducibleComponentOfSupport D C) : componentPowerIdeal I D C = ⊤ :=
-  @dif_neg (IsIrreducibleComponentOfSupport D C) (Classical.propDecidable (IsIrreducibleComponentOfSupport D C)) h
+  @dite_eq_right (IsIrreducibleComponentOfSupport D C) (Classical.propDecidable (IsIrreducibleComponentOfSupport D C)) h
     X.IdealSheafData _ _
 
 theorem componentPowerIdeal_of_isIrreducibleComponentOfSupport (I D : X.IdealSheafData) {C : Set X}
@@ -109,7 +109,7 @@ theorem componentPowerIdeal_of_isIrreducibleComponentOfSupport (I D : X.IdealShe
       Scheme.IdealSheafData.vanishingIdeal (⟨C, h.isClosed⟩ : TopologicalSpace.Closeds ↥X) ^
         orderAlongComponent I h.isIrreducible := by
   unfold componentPowerIdeal
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem stalkIdeal_componentPowerIdeal_of_not_mem (I D : X.IdealSheafData) (C : Set X) {x : X}
     (hx : x ∉ C) : stalkIdeal (componentPowerIdeal I D C) x = ⊤ := by

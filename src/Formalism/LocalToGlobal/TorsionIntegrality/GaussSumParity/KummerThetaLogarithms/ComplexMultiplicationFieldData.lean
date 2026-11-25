@@ -70,7 +70,7 @@ theorem wpDen_map (g2 g3 : K) : PowerSeries.map φ (wpDen g2 g3) = wpDen (φ g2)
 theorem cc_wpDen (g2 g3 : K) : PowerSeries.constantCoeff (wpDen g2 g3) = 1 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
   unfold wpDen
-  rw [PowerSeries.coeff_mk, if_pos rfl]
+  rw [PowerSeries.coeff_mk, ite_eq_left rfl]
 
 variable [CharZero K] [CharZero K']
 

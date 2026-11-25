@@ -209,7 +209,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.LastVertexInv
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 end -- clump:auto
 end -- clump:auto
@@ -251,7 +250,7 @@ private theorem sum_prod_ite_map_eq_zero_of_sum_prod_eq_zero {ι κ : Type} [Fin
       rw [Finset.sum_apply, Pi.zero_apply, ← ih (Function.update x j y)]
       refine Finset.sum_congr rfl fun d _ => ?_
       rw [prod_apply_update_eq_mul_prod_erase (fun i => if i ∈ s then Tm i (Φ d i) else Φ d i) x j y]
-      simp only [Pi.smul_apply, smul_eq_mul, if_neg hj]
+      simp only [Pi.smul_apply, smul_eq_mul, ite_eq_right hj]
       ring
 
     have hT := congrArg (fun g => Tm j g (x j)) hg
@@ -265,7 +264,7 @@ private theorem sum_prod_ite_map_eq_zero_of_sum_prod_eq_zero {ι κ : Type} [Fin
       refine Finset.prod_congr rfl fun i hi => ?_
       have hij : i ≠ j := Finset.ne_of_mem_erase hi
       simp only [Finset.mem_insert, hij, false_or]
-    rw [h2, if_pos (Finset.mem_insert_self j s)]
+    rw [h2, ite_eq_left (Finset.mem_insert_self j s)]
     ring
 
 theorem sum_prod_map_eq_zero {ι κ : Type} [Fintype ι] [DecidableEq ι] {X : ι → Type}
@@ -444,7 +443,7 @@ theorem rowAt_first_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
   by_cases h1 : i = 0
   · subst h1
     rw [Function.update_self]
-    simp only [GridChoice.rowAt, dif_pos h0, Frames.coord]
+    simp only [GridChoice.rowAt, dite_eq_left h0, Frames.coord]
     erw [Function.update_self, actO_chi_small 0, Matrix.map_mul, hM']
     erw [Matrix.transpose_transpose, Matrix.transpose_transpose]
     rw [GlobalTheory.FirstRowTermLaw.kapAt]
@@ -455,7 +454,7 @@ theorem rowAt_first_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
   · rw [Function.update_of_ne h1]
     simp only [GridChoice.rowAt]
     by_cases hi : i < D.R.m
-    · rw [dif_pos hi, dif_pos hi, Function.update_of_ne (fun h => h1 (congrArg Fin.val h))]
+    · rw [dite_eq_left hi, dite_eq_left hi, Function.update_of_ne (fun h => h1 (congrArg Fin.val h))]
     · rw [dite_eq_right hi, dite_eq_right hi]
 
 end GlobalTheory.FirstRowCoord
@@ -511,7 +510,7 @@ theorem law_gen {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData 
       have hY : ∀ i y, (d.2 i).fn y ≠ 0 → IsHalf e y := fun i y h => ((hsupp d hd).2 i).2.1 ▸ (d.2 i).sb.1 _ h
       by_cases hx : ∀ j, IsHalf e (xs j)
       · obtain ⟨i, hi⟩ : ∃ i, ¬ IsHalf e (ys i) := by
-          by_contra hc; push_neg at hc; exact hh ⟨hx, hc⟩
+          by_contra hc; push Not at hc; exact hh ⟨hx, hc⟩
         have h1 : (d.2 i).fn (ys i) = 0 := by by_contra h; exact hi (hY i _ h)
         have h2 : (d.2 i).fn (Function.update ys (GlobalTheory.FirstRowVertex.firstIx D) ((actO (G.pS (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T)) (G.pT (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T)) (G.toPair (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T) ((S.N.u (.grid 0 D.R.m))⁻¹ * k * S.N.u (.grid 0 D.R.m)).1 1).1⁻¹ (G.toPair (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T) ((S.N.u (.grid 0 D.R.m))⁻¹ * k * S.N.u (.grid 0 D.R.m)).1 1).2⁻¹) (ys (GlobalTheory.FirstRowVertex.firstIx D))) i) = 0 := by
           by_contra h
@@ -522,7 +521,7 @@ theorem law_gen {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData 
         exact ⟨by rw [show (∏ i, (d.2 i).fn (ys i)) = 0 from Finset.prod_eq_zero (Finset.mem_univ i) h1, mul_zero],
           by rw [show (∏ i, (d.2 i).fn (Function.update ys (GlobalTheory.FirstRowVertex.firstIx D) ((actO (G.pS (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T)) (G.pT (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T)) (G.toPair (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T) ((S.N.u (.grid 0 D.R.m))⁻¹ * k * S.N.u (.grid 0 D.R.m)).1 1).1⁻¹ (G.toPair (.chi (GlobalTheory.FirstRowVertex.firstIx D) D.R.m : Pair T) ((S.N.u (.grid 0 D.R.m))⁻¹ * k * S.N.u (.grid 0 D.R.m)).1 1).2⁻¹) (ys (GlobalTheory.FirstRowVertex.firstIx D))) i)) = 0 from
             Finset.prod_eq_zero (Finset.mem_univ i) h2, mul_zero]⟩
-      · push_neg at hx
+      · push Not at hx
         obtain ⟨j, hj⟩ := hx
         have h1 : (d.1 j).fn (xs j) = 0 := by by_contra h; exact hj (hX j h)
         rw [show (∏ j, (d.1 j).fn (xs j)) = 0 from Finset.prod_eq_zero (Finset.mem_univ j) h1]
@@ -530,10 +529,6 @@ theorem law_gen {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData 
     simp only [Finsupp.sum]
     rw [Finset.sum_eq_zero fun d hd => by rw [mul_assoc, (hz d hd).2, mul_zero],
       Finset.sum_eq_zero fun d hd => by rw [mul_assoc, (hz d hd).1, mul_zero], mul_zero]
-
-end GlobalTheory.FirstRowTermLaw
-
-namespace GlobalTheory.FirstRowTermLaw
 
 end GlobalTheory.FirstRowTermLaw
 
@@ -603,7 +598,7 @@ theorem detIdl_conj {e : AE D} {w : Pl D.host.E} (he : Formalism.L2.NTheta.IsIde
   have hee : e * e = e := he.1.1
   refine eq_locIdele_of_idemAt he _ (Formalism.L2.Theta.mt V ((u⁻¹ * k * u : GfC V) : GA D V)).det ?_ _ ?_
   · unfold detIdl
-    rw [dif_pos hee]
+    rw [dite_eq_left hee]
     rfl
   · rw [GlobalTheory.TopLevelInv.det_mt_conj V k u, RingHom.map_det (toEAf D), RingHom.mapMatrix_apply,
       ← GlobalTheory.TopLevelInv.val_finG, Matrix.GeneralLinearGroup.val_det_apply]
@@ -659,17 +654,10 @@ theorem splitScal_eq (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) {t : T} 
   unfold FirstRowTermLaw.kapAt
   rcases Nat.mod_two_eq_zero_or_one ((locGrid G t w.1).rank (0, D.R.m) + 1) with h0 | h0
   · have ho : ¬ Odd (G.pS (.chi 0 D.R.m)).rank := fun h => by simp [hpar.mp h] at h0
-    rw [if_neg ho, h0]
+    rw [ite_eq_right ho, h0]
     simp [GlobalTheory.LFun.locChar]
-  · rw [if_pos (hpar.mpr h0), h0]
+  · rw [ite_eq_left (hpar.mpr h0), h0]
     simp [GlobalTheory.LFun.locChar, div_eq_mul_inv]
-
-theorem one_lat (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (y : Fin V.rank → TensorProduct D.host.F (Af D.host.F) D.host.E) :
-    y ∈ latHat D.host.F D.host.E (Λ : Set (Fin V.rank → D.host.E)) ↔
-      ((Formalism.L2.Theta.mt V 1).map (finPart D)).mulVec y ∈ latHat D.host.F D.host.E (Λ : Set (Fin V.rank → D.host.E)) := by
-  have h1 : Formalism.L2.Theta.mt V 1 = 1 := by simp [Formalism.L2.Theta.mt]
-  rw [h1, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mulVec]
 
 theorem toPair_zero (G : GridData L sc) (x : GA D (G.V (.grid 0 D.R.m))) :
     G.toPair (.chi 0 D.R.m : Pair T) x 1 = (1, x) := by
@@ -705,7 +693,7 @@ theorem vac_scalar (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) {t : T} {k
   have hq := toPair_zero G x.1
   have key := GlobalTheory.RowVacScalar.vacScalar_eq_prod S hL t 0 hm (G.toPair (.chi 0 D.R.m) x.1 1)
     (by rw [hq]; exact one_mem _) (by rw [hq]; exact x.2)
-    (by rw [hq]; exact fun y => one_lat _ _ y) (by rw [hq]; exact fun y => moved_latT S hL hk y) c hc
+    (by rw [hq]; exact fun y => GlobalTheory.LastVertexLoc.one_lat _ _ y) (by rw [hq]; exact fun y => moved_latT S hL hk y) c hc
   rw [key]
   refine Finset.prod_congr rfl fun w _ => ?_
   rw [hq]
@@ -847,14 +835,14 @@ theorem stepType_lam {μ₀ : T} (hL : L.Is μ₀) (t : T) {j n : ℕ} (hj : j �
       exact hq.one_lt.ne' hc1
     have hT : stepType L t w j = (TypeDatum.principal (Kw w) (Fin D.R.r)).iter (Fin D.R.t)
         (fun c => ((muBase L c).loc w)⁻¹) (isTame_muBase w) j := by
-      simp only [stepType, if_pos hP']
+      simp only [stepType, ite_eq_left hP']
     have hG : stepGroup L t w j = ((TypeDatum.principal (Kw w) (Fin D.R.r)).iter (Fin D.R.t)
         (fun c => ((muBase L c).loc w)⁻¹) (isTame_muBase w) j).J := by
-      simp only [stepGroup, if_pos hP']
+      simp only [stepGroup, ite_eq_left hP']
     rw [hG] at hk
     rw [hT]
     refine ⟨hk, ?_⟩
-    rw [if_pos hP', if_neg hQ', mul_one]
+    rw [ite_eq_left hP', ite_eq_right hQ', mul_one]
     exact iter_lam_eq (isTame_muBase w) hred ha (χ := fun c => L.chi c w)
       (fun c hc => compat_chi w hL hP' (by omega)) N (hP hP') hr ⟨κ, hk⟩ hv
   · by_cases hQ' : w ∈ L.Q t
@@ -864,10 +852,10 @@ theorem stepType_lam {μ₀ : T} (hL : L.Is μ₀) (t : T) {j n : ℕ} (hj : j �
         simp [h0 x hx]
       have hp : w ∈ L.Q t ∧ IsTame ((L.xiH t).loc w)⁻¹ := ⟨hQ', htame⟩
       have hT : stepType L t w j = parahoric (Fin D.R.r) (Fin j × Fin D.R.t) _ htame := by
-        simp only [stepType, if_neg hP', dif_pos hp]
+        simp only [stepType, ite_eq_right hP', dite_eq_left hp]
       have hG : stepGroup L t w j =
           (parahoric (k := Kw w) (Fin D.R.r) (Fin j × Fin D.R.t) 1 fun _ _ => rfl).J := by
-        simp only [stepGroup, if_neg hP', if_pos hQ']
+        simp only [stepGroup, ite_eq_right hP', ite_eq_left hQ']
       rw [hG] at hk
       have hk2 : κ ∈ (parahoric (Fin D.R.r) (Fin j × Fin D.R.t) _ htame).J :=
         mem_parahoric.2 (mem_parahoric.1 hk)
@@ -877,17 +865,17 @@ theorem stepType_lam {μ₀ : T} (hL : L.Is μ₀) (t : T) {j n : ℕ} (hj : j �
         simp [hc0 s u k hu hk]
       rw [hT]
       refine ⟨hk2, ?_⟩
-      rw [if_neg hP', if_pos hQ', one_mul]
+      rw [ite_eq_right hP', ite_eq_left hQ', one_mul]
       exact parahoric_lam_eq htame hred ha hχ N (hQ hQ') hr ⟨κ, hk2⟩ hv
     · have hn : ¬ (w ∈ L.Q t ∧ IsTame ((L.xiH t).loc w)⁻¹) := fun h => hQ' h.1
       have hT : stepType L t w j = TypeDatum.full _ _ := by
-        simp only [stepType, if_neg hP', dif_neg hn]
+        simp only [stepType, ite_eq_right hP', dite_eq_right hn]
       have hG : stepGroup L t w j = KO (Kw w) _ := by
-        simp only [stepGroup, if_neg hP', if_neg hQ']
+        simp only [stepGroup, ite_eq_right hP', ite_eq_right hQ']
       rw [hG] at hk
       rw [hT]
       refine ⟨hk, ?_⟩
-      rw [if_neg hP', if_neg hQ', mul_one]
+      rw [ite_eq_right hP', ite_eq_right hQ', mul_one]
       rfl
 
 open GlobalTheory.FunObj.Comparison₂ Classical in
@@ -922,7 +910,7 @@ theorem endLamAt_eq {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) (t : T) {j
     simp [intGL, cptO_apply, ea, GlobalTheory.StepData.reGL, Formalism.UG.bc]
   obtain ⟨hk', hlam⟩ := stepType_lam hL t hj w ha y.val (redFn β w (frGL β y)) hr _ hv hP hQ hk
   unfold endLamAt
-  rw [dif_pos hk', hlam, Units.val_inv_eq_inv_val]
+  rw [dite_eq_left hk', hlam, Units.val_inv_eq_inv_val]
 
 theorem levFn_mul_endLamAt {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) (t : T)
     (h : ∀ w, (locGrid G t w).rank (0, D.R.m) = D.sp.X'.rank) (x : GL (Fin D.sp.X'.rank) (Lev.EAf D))
@@ -1062,14 +1050,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix ValuativeRel GlobalTheory
 open GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 noncomputable section
 namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
 
 theorem square_identity_reduction : _root_.GlobalTheory.FunPr.ThetaLocalInputs → SumOKK → Big fun {D} {_Γ} _ _ {_Pl0} {T} {_A} {_Ks} _ _ _ {R} ch =>
     ∀ (t : T) (a : Fin ch.n) (k : FinPt ch.G (.grid 0 D.R.m)), finG (ch.G.V (.grid 0 D.R.m)) k ∈ ch.S.levRow t 0 (Nat.zero_le _) →
@@ -1111,8 +1091,6 @@ section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 noncomputable section
-namespace GlobalTheory.FirstRowTermLaw
-end GlobalTheory.FirstRowTermLaw
 namespace GlobalTheory.FirstRowTermLaw
 
 theorem lift_splits_locally : _root_.GlobalTheory.FunPr.ThetaLocalInputs → SumOKK → Big fun {D} {_Γ} _ _ {_Pl0} {T} {_A} {_Ks} _ _ _ {R} ch =>
@@ -1422,9 +1400,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 namespace GlobalTheory.FirstRowLaw
-section Gen
-variable {Gg Γg : Type} [Group Gg] [Group Γg] {Wg : Type} [NormedAddCommGroup Wg] [InnerProductSpace ℂ Wg]
-end Gen
 variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {sc : Consts}
   {G : GridData R.toLevCh sc} {W : G.Weil} {U : Set T}

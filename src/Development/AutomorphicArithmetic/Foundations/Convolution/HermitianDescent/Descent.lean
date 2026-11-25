@@ -37,11 +37,8 @@ theorem descent : Descent := by
     | succ j ih =>
       intro r m
       rw [pow_succ', pow_succ', Module.End.mul_apply, Module.End.mul_apply, AlgEquiv.mul_apply, ih, hs]
-  have hfix : ∀ (n : M), s n = n → ∀ j : ℕ, (s ^ j) n = n := by
-    intro n hn j
-    induction j with
-    | zero => simp
-    | succ j ih => rw [pow_succ', Module.End.mul_apply, ih, hn]
+  have hfix : ∀ (n : M), s n = n → ∀ j : ℕ, (s ^ j) n = n := fun n hn j =>
+    (Module.End.pow_apply s j n).trans (Function.iterate_fixed hn j)
   have hT : ∀ m : M, (∑ j ∈ Finset.range q, s ^ j) m ∈ LinearMap.eqLocus s LinearMap.id := by
     intro m
 
@@ -79,8 +76,7 @@ theorem descent : Descent := by
           (LinearMap.eqLocus s LinearMap.id).subtype) (r ⊗ₜ[k] n) = r • (n : M) := rfl
       rw [h3, hg]
       simp_rw [h1, ← TensorProduct.smul_tmul, ← TensorProduct.sum_tmul, h2]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [hg, map_sum]
+  · rw [hg, map_sum]
     have := sep_sum σ q hG.pos x y hxy fun j => (s ^ j) m
     simp only [pow_zero, Module.End.one_apply] at this
     refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) this

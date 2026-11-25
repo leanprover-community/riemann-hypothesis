@@ -28,7 +28,6 @@ theorem support_openSubschemeKer {X : Scheme.{u}} (Z : X.IdealSheafData) (W : Z.
     (hW : IsClosed (W : Set Z.subscheme)) :
     ((openSubschemeKer Z W).support : Set X) = ⇑Z.subschemeι.base '' (W : Set Z.subscheme) := by
   have : IsClosedImmersion (Scheme.Opens.ι W) := W.isClosedImmersion_ι_of_isClosed hW
-  have hqc : QuasiCompact (Scheme.Opens.ι W ≫ Z.subschemeι) := inferInstance
   have hclosed : IsClosed (⇑Z.subschemeι.base '' (W : Set Z.subscheme)) :=
     Z.subschemeι.isClosedEmbedding.isClosedMap _ hW
   have hcomp : ⇑(Scheme.Opens.ι W ≫ Z.subschemeι).base
@@ -47,7 +46,6 @@ private theorem exists_isIso_openSubschemeKer_subscheme {X : Scheme.{u}} (Z : X.
     ∃ e : W.toScheme ⟶ (openSubschemeKer Z W).subscheme, IsIso e ∧
       e ≫ (openSubschemeKer Z W).subschemeι = Scheme.Opens.ι W ≫ Z.subschemeι := by
   have : IsClosedImmersion (Scheme.Opens.ι W) := W.isClosedImmersion_ι_of_isClosed hW
-  have : IsClosedImmersion (Scheme.Opens.ι W ≫ Z.subschemeι) := inferInstance
   have hker : (Scheme.Opens.ι W ≫ Z.subschemeι).ker = (openSubschemeKer Z W).subschemeι.ker :=
     (Scheme.IdealSheafData.ker_subschemeι (openSubschemeKer Z W)).symm
   refine ⟨IsClosedImmersion.lift (openSubschemeKer Z W).subschemeι
@@ -62,7 +60,6 @@ theorem smooth_subschemeι_openSubschemeKer_comp {X S : Scheme.{u}} (Z : X.Ideal
     Smooth ((openSubschemeKer Z W).subschemeι ≫ g) := by
   obtain ⟨e, he, hfac⟩ := exists_isIso_openSubschemeKer_subscheme Z W hW
   have := he
-  have hsm : Smooth (Scheme.Opens.ι W ≫ Z.subschemeι ≫ g) := inferInstance
   have hfac2 : inv e ≫ Scheme.Opens.ι W ≫ Z.subschemeι ≫ g
       = (openSubschemeKer Z W).subschemeι ≫ g := by
     rw [← Category.assoc (Scheme.Opens.ι W) Z.subschemeι g, ← hfac, Category.assoc,
@@ -158,9 +155,6 @@ theorem restrictIdeal_openSubschemeKer_of_preimage_le {X : Scheme.{u}} (Z : X.Id
     (hU : (Z.subschemeι ⁻¹ᵁ U) ≤ W) :
     restrictIdeal (openSubschemeKer Z W) U = restrictIdeal Z U := by
   have : IsClosedImmersion (Scheme.Opens.ι W) := W.isClosedImmersion_ι_of_isClosed hW
-  have hqc : QuasiCompact (Scheme.Opens.ι W ≫ Z.subschemeι) := inferInstance
-  have hqc1 : QuasiCompact ((openSubschemeKer Z W).subschemeι ∣_ U) := inferInstance
-  have hqc2 : QuasiCompact (Z.subschemeι ∣_ U) := inferInstance
   rw [restrictIdeal_eq_comap_ι (openSubschemeKer Z W) U, restrictIdeal_eq_comap_ι Z U,
     comap_opensι_eq_ker_morphismRestrict (openSubschemeKer Z W) U,
     comap_opensι_eq_ker_morphismRestrict Z U]
@@ -244,7 +238,6 @@ theorem restrictIdeal_openSubschemeKer_eq_top {X : Scheme.{u}} (Z : X.IdealSheaf
     refine le_antisymm ?_ bot_le
     intro y _
     exact (hempty y).elim
-  have hqcm : QuasiCompact ((openSubschemeKer Z W).subschemeι ∣_ U) := inferInstance
   rw [restrictIdeal_eq_comap_ι, comap_opensι_eq_ker_morphismRestrict (openSubschemeKer Z W) U]
   refine Scheme.IdealSheafData.ext ?_
   funext V
@@ -324,7 +317,6 @@ theorem isLocallyGeneratedByNonZeroDivisor_openSubschemeKer {X : Scheme.{u}} (Z 
     (W : Z.subscheme.Opens) (hW : IsClosed (W : Set Z.subscheme))
     (hZ : Blowup.IsLocallyGeneratedByNonZeroDivisor Z) : Blowup.IsLocallyGeneratedByNonZeroDivisor (openSubschemeKer Z W) := by
   have : IsClosedImmersion (Scheme.Opens.ι W) := W.isClosedImmersion_ι_of_isClosed hW
-  have hqc : QuasiCompact (Scheme.Opens.ι W ≫ Z.subschemeι) := inferInstance
   have hpiece : ∀ V : X.affineOpens, (Z.subschemeι ⁻¹ᵁ V.1) ≤ W →
       (openSubschemeKer Z W).ideal V = Z.ideal V := by
     intro V hVW

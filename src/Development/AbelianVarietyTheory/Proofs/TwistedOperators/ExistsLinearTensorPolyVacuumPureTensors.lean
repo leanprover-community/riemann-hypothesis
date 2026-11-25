@@ -53,14 +53,8 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Weil
 variable {F : Type} [Field F] [NumberField F]
 
 theorem finite_nonint {κ : Type} [Finite κ] (x : κ → AF F) :
-    {w : Pl F | ¬ ∀ i, evFin F w (x i) ∈ w.adicCompletionIntegers F}.Finite := by
-  have h : ∀ i, {w : Pl F | evFin F w (x i) ∉ w.adicCompletionIntegers F}.Finite := fun i =>
-    Filter.eventually_cofinite.1 (x i).2.2
-  refine (Set.finite_iUnion h).subset ?_
-  intro w hw
-  push_neg at hw
-  obtain ⟨i, hi⟩ := hw
-  exact Set.mem_iUnion.2 ⟨i, hi⟩
+    {w : Pl F | ¬ ∀ i, evFin F w (x i) ∈ w.adicCompletionIntegers F}.Finite :=
+  Filter.eventually_cofinite.1 (Filter.eventually_all.2 fun i => (x i).2.2)
 
 variable {E : Type} [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
   {Y : Spc F E n} {W : Spc F E d}
@@ -125,7 +119,7 @@ theorem finprod_split (M : Model σ Y W)
     apply hw
     by_cases hwT : w ∈ T
     · simp [ρ, hwT]
-    · simp only [ρ, hwT, if_false, hc.1]
+    · simp only [ρ, hwT, ite_false, hc.1]
       exact Set.indicator_of_mem (s := {x : Fin n × Fin d → Fv F w | ∀ i, x i ∈ w.adicCompletionIntegers F}) hc.2 1
   have hθ : Function.mulSupport θ ⊆ (T : Set (Pl F)) := by
     intro w hw

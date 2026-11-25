@@ -102,10 +102,10 @@ theorem rowJ_add (x x' : Mx D r p) (z z' : Mx D s p) : rowJ (x + x') (z + z') = 
   | right b => simp [rowJ]
 
 theorem continuous_rowT : Continuous (rowT : Mx D (r + s) p → Mx D r p) :=
-  continuous_matrix fun i j => continuous_id.matrix_elem _ _
+  continuous_matrix fun _ _ => continuous_id.matrix_elem _ _
 
 theorem continuous_rowB : Continuous (rowB : Mx D (r + s) p → Mx D s p) :=
-  continuous_matrix fun i j => continuous_id.matrix_elem _ _
+  continuous_matrix fun _ _ => continuous_id.matrix_elem _ _
 
 theorem continuous_rowJ : Continuous (fun z : Mx D r p × Mx D s p => rowJ z.1 z.2) := by
   refine continuous_matrix fun i j => ?_
@@ -118,7 +118,7 @@ theorem continuous_rowJ : Continuous (fun z : Mx D r p × Mx D s p => rowJ z.1 z
 def rowH : Mx D r p × Mx D s p ≃ₜ Mx D (r + s) p where
   toFun z := rowJ z.1 z.2
   invFun y := (rowT y, rowB y)
-  left_inv z := Prod.ext (rowT_rowJ _ _) (rowB_rowJ _ _)
+  left_inv _ := Prod.ext (rowT_rowJ _ _) (rowB_rowJ _ _)
   right_inv := rowJ_rowT_rowB
   continuous_toFun := continuous_rowJ
   continuous_invFun := continuous_rowT.prodMk continuous_rowB

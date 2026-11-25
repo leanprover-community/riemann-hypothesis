@@ -3,51 +3,11 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianLatticeMaps
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IntegralBasisReduction
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajPos
@@ -142,14 +102,14 @@ theorem entry_bound {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} (hY : Y.
       ring
     simp only [hermC, col]
     simp_rw [e, hGG, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
   have h2 := IntegralBasisReduction.hermC_normal X hY _ hg (col Y b) q
   have h3 : Y⁻¹ *ᵥ col Y b = Pi.single b 1 := by
     have : col Y b = Y *ᵥ Pi.single b 1 := by funext i; simp [col]
     rw [this, mulVec_mulVec, nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr hY), one_mulVec]
   rw [h3] at h2
   simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at h2
+    Finset.mem_univ, ite_true] at h2
   rw [← h1, h2, norm_mul, Complex.norm_conj]
   have hs : ‖(((sgn X.p0 (b : ℕ) : ℝ) : ℂ))‖ = 1 := by
     unfold sgn; split_ifs <;> simp
@@ -501,7 +461,7 @@ theorem _root_.GlobalTheory.FlagMahler.mahler_compactness : _root_.ReciprocityTh
   let g : _ → Basis (Fin n) ℤ X.Λ := fun t => if h : t ∈ T then Classical.choose h else _root_.ReciprocityTheory.ChartRestriction.G.FD.RealPlaceEmbeddings.zb X
   have hg : ∀ t ∈ T, _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianLatticeMaps.ty X (g t) = t := by
     intro t ht
-    simp only [g, dif_pos ht]
+    simp only [g, dite_eq_left ht]
     exact (Classical.choose_spec ht).1
   set R : ℝ := ∑ t ∈ hT.toFinset, ∑ s ∈ S, |_root_.GlobalTheory.FlagMahler.bound X C (g t) s| with hR
   refine ⟨_root_.GlobalTheory.FlagMahler.Kset X R, _root_.GlobalTheory.FlagMahler.Kset_compact X R,

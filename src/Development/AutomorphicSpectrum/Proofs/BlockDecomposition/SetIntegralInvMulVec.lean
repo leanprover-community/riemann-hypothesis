@@ -20,13 +20,6 @@ open scoped Pointwise
 
 namespace GlobalTheory.UnipChange
 
-section Shear
-
-variable {k : Type} [AddCommGroup k] [TopologicalSpace k] [IsTopologicalAddGroup k]
-  {ι : Type} [Fintype ι]
-
-end Shear
-
 section Linear
 
 variable {F : Type} [Field F] [TopologicalSpace F] [IsTopologicalDivisionRing F] [T2Space F]
@@ -163,22 +156,6 @@ theorem _root_.GlobalTheory.UnipChange.smul_map_mulVec_pi (M : Matrix κ κ F) (
     ← ENNReal.coe_mul, ← map_mul, mul_inv_cancel, map_one, ENNReal.coe_one, one_mul]
 
 end Linear
-
-section Algebra
-
-variable {k : Type} [Field k] {r : ℕ} {b : Fin r → ℕ}
-
-
-
-end Algebra
-
-section Top
-
-variable {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalDivisionRing k]
-  {r : ℕ} {b : Fin r → ℕ}
-
-
-end Top
 
 end GlobalTheory.UnipChange
 end -- clump:auto

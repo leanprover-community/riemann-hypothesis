@@ -33,13 +33,13 @@ section -- clump:auto
 
 namespace UpperTheory.Reformulated.B.Qh15
 
-theorem aux2 : ∀ {G A : Type} [inst : Group G] [inst_1 : CommRing A] (κ : G →* Aˣ),
+theorem aux2 : ∀ {G A : Type} [Group G] [CommRing A] (κ : G →* Aˣ),
   (↑(κ 1) : A) • (LinearMap.id : A →ₗ[A] A) = 1 := by
   intro G A _ _ κ
   ext
   simp
 
-theorem aux3 : ∀ {G A : Type} [inst : Group G] [inst_1 : CommRing A] (κ : G →* Aˣ)
+theorem aux3 : ∀ {G A : Type} [Group G] [CommRing A] (κ : G →* Aˣ)
   (g h : G), (↑(κ (g * h)) : A) • (LinearMap.id : A →ₗ[A] A) =
     ((↑(κ g) : A) • LinearMap.id) * ((↑(κ h) : A) • LinearMap.id) := by
   intro G A _ _ κ g h
@@ -47,18 +47,18 @@ theorem aux3 : ∀ {G A : Type} [inst : Group G] [inst_1 : CommRing A] (κ : G �
   simp [mul_comm]
 
 noncomputable def chRep : {G A : Type} →
-  [inst : Group G] → [inst_1 : CommRing A] → (G →* Aˣ) → Representation A G A :=
+  [Group G] → [CommRing A] → (G →* Aˣ) → Representation A G A :=
   fun {G A} [Group G] [CommRing A] κ =>
     { toFun := fun g => ↑(κ g) • LinearMap.id, map_one' := aux2 κ,
       map_mul' := aux3 κ }
 
-theorem act_mul : ∀ {G : Type} [inst : Group G] {Qp K₀ K : Type} [inst_1 : Field Qp]
-  [inst_2 : Field K₀] [inst_3 : Field K] [inst_4 : Algebra Qp K₀] [inst_5 : Algebra Qp K] [inst_6 : Algebra K₀ K]
-  [inst_7 : IsScalarTower Qp K₀ K] {B BdR : Type} [inst_8 : CommRing B] [inst_9 : CommRing BdR] [inst_10 : Algebra Qp B]
-  [inst_11 : Algebra K₀ B] [inst_12 : IsScalarTower Qp K₀ B] [inst_13 : Algebra Qp BdR] [inst_14 : Algebra K₀ BdR]
-  [inst_15 : Algebra K BdR] [inst_16 : IsScalarTower Qp K BdR] [inst_17 : IsScalarTower K₀ K BdR]
-  [inst_18 : IsScalarTower Qp K₀ BdR] (PD : Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) {E : Type}
-  [inst_19 : Field E] [inst_20 : Algebra Qp E] (κ : G →* Eˣ) (g : G) (x y : TensorProduct Qp E B),
+theorem act_mul : ∀ {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp]
+  [Field K₀] [Field K] [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K]
+  [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B]
+  [Algebra K₀ B] [IsScalarTower Qp K₀ B] [Algebra Qp BdR] [Algebra K₀ BdR]
+  [Algebra K BdR] [IsScalarTower Qp K BdR] [IsScalarTower K₀ K BdR]
+  [IsScalarTower Qp K₀ BdR] (PD : Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) {E : Type}
+  [Field E] [Algebra Qp E] (κ : G →* Eˣ) (g : G) (x y : TensorProduct Qp E B),
   (Formalism.WeaklyAdmissibleFiltrations.actVB PD (chRep κ) g) x *
       (Formalism.WeaklyAdmissibleFiltrations.actVB PD (chRep κ⁻¹) g) y =
     (Formalism.WeaklyAdmissibleFiltrations.actVB PD (chRep 1) g) (x * y) := by
@@ -744,7 +744,7 @@ end UpperTheory.V.Loc.PosPhi
 
 open UpperTheory.V.Loc.PosPhi in
 theorem UpperTheory.V.Loc.posExact :
-    LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (hφ : IsOpenEmbedding φ) {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] ℚ_[l] E] {V : Type} [AddCommGroup V] [Module E V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] E V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul E V] {V' : Type} [AddCommGroup V'] [Module E V'] [Module ℚ_[l] V'] [IsScalarTower ℚ_[l] E V'] [FiniteDimensional ℚ_[l] V'] [TopologicalSpace V'] [IsModuleTopology ℚ_[l] V'] [IsTopologicalAddGroup V'] [ContinuousConstSMul E V'] (ρ : Representation E G V) (ρ' : Representation E G V'), ContAction ρ → ContAction ρ' → Positive φ ρ → ∀ f : V →ₗ[E] V', (∀ g x, f (ρ g x) = ρ' g (f x)) → (Function.Surjective f → ∀ c' ∈ UpperTheory.V.Loc.finiteCocycles φ ρ', ∃ c ∈ UpperTheory.V.Loc.finiteCocycles φ ρ, (fun g => f (c g)) = c') ∧ (Function.Injective f → Positive φ ρ' → ∀ c ∈ Z1 ρ, (fun g => f (c g)) ∈ UpperTheory.V.Loc.finiteCocycles φ ρ' → c ∈ UpperTheory.V.Loc.finiteCocycles φ ρ) := by
+    LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (_ : IsOpenEmbedding φ) {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] ℚ_[l] E] {V : Type} [AddCommGroup V] [Module E V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] E V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul E V] {V' : Type} [AddCommGroup V'] [Module E V'] [Module ℚ_[l] V'] [IsScalarTower ℚ_[l] E V'] [FiniteDimensional ℚ_[l] V'] [TopologicalSpace V'] [IsModuleTopology ℚ_[l] V'] [IsTopologicalAddGroup V'] [ContinuousConstSMul E V'] (ρ : Representation E G V) (ρ' : Representation E G V'), ContAction ρ → ContAction ρ' → Positive φ ρ → ∀ f : V →ₗ[E] V', (∀ g x, f (ρ g x) = ρ' g (f x)) → (Function.Surjective f → ∀ c' ∈ UpperTheory.V.Loc.finiteCocycles φ ρ', ∃ c ∈ UpperTheory.V.Loc.finiteCocycles φ ρ, (fun g => f (c g)) = c') ∧ (Function.Injective f → Positive φ ρ' → ∀ c ∈ Z1 ρ, (fun g => f (c g)) ∈ UpperTheory.V.Loc.finiteCocycles φ ρ' → c ∈ UpperTheory.V.Loc.finiteCocycles φ ρ) := by
   intro _ l _ G _ _ _ φ hφ E _ _ _ _ _ V _ _ _ _ _ _ _ _ _ V' _ _ _ _ _ _ _ _ _ ρ ρ' hc hc' hpos f hf
   obtain ⟨K, e, he, he', rfl, -⟩ := openField φ hφ
   haveI : ContinuousSMul ℚ_[l] V := IsModuleTopology.toContinuousSMul ℚ_[l] V

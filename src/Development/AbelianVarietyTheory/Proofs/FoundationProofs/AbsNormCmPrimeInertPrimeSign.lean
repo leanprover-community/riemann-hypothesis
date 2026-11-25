@@ -3,45 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdxEqRelIndex
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Hilbert90IntegralIdelesOfMovedPrimes
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -83,13 +46,8 @@ theorem card_of_involution {k : Type} [Field k] [Finite k] {q : ℕ} [Fact q.Pri
     refine ⟨j, hodd, ?_⟩
     have hd := orderOf_dvd_of_pow_eq_one h2
     rw [ho] at hd
-    have hn : Module.finrank (ZMod q) k = 2 * j := by
-      obtain ⟨c, hc⟩ := hd
-      have hj0 := hodd.pos
-      rcases c with _ | _ | c
-      · omega
-      · omega
-      · nlinarith [Nat.zero_le (Module.finrank (ZMod q) k * c)]
+    have hn : Module.finrank (ZMod q) k = 2 * j :=
+      (Nat.eq_of_dvd_of_lt_two_mul (by have := hodd.pos; lia) hd (by lia)).symm
     rw [Module.natCard_eq_pow_finrank (K := ZMod q), hn, Nat.card_zmod]
   · rintro ⟨c, hc⟩
     have h1 : r ^ 2 = (algebraMap (ZMod q) k c) ^ 2 := by rw [hr, sq, ← map_mul, ← hc, map_intCast]
@@ -227,7 +185,7 @@ theorem norm_prime : ∀ (D : D7) (P : Ideal (𝓞 D.host.E)), P.IsMaximal → E
       rw [hN, Nat.factorization_pow]
       simp
     · have hf0 : 2 * f ≠ 0 := by have := hf.pos; omega
-      rw [hN, sgn, hlf, Nat.primeFactors_prime_pow hf0 hq, Finset.filter_singleton, if_pos hin,
+      rw [hN, sgn, hlf, Nat.primeFactors_prime_pow hf0 hq, Finset.filter_singleton, ite_eq_left hin,
         Finset.sum_singleton, Nat.factorization_pow_self hq, Nat.mul_div_cancel_left _ two_pos, hf.neg_one_pow]
     · rintro rfl
       exact two_not_mem D hP.isPrime

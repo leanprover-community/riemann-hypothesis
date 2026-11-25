@@ -175,7 +175,7 @@ lemma sum_projL [CharZero C] [IsDomain R] (σ : MulChar F R)
 
   simp only [← Finset.sum_mul, ← map_sum, h]
   rw [Finset.sum_eq_single 1 (fun a _ ha => by simp [ha]) (by simp)]
-  rw [if_pos rfl, map_natCast, Units.val_one, one_smul, ← mul_assoc,
+  rw [ite_eq_left rfl, map_natCast, Units.val_one, one_smul, ← mul_assoc,
     inv_mul_cancel₀ (Nat.cast_ne_zero.2 Fintype.card_ne_zero), one_mul]
 
 lemma projL_funLeft (χ : MulChar F R) (φ : X →ₗ[F] N) (g : N → C) :

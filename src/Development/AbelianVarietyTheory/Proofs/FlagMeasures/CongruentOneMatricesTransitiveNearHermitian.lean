@@ -321,8 +321,7 @@ theorem exists_solution {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) {m i : ℕ} (hi : 
 omit [CharZero F] in
 theorem exists_pow_mul_mem {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) (x : E) :
     ∃ c : ℕ, algebraMap F E ϖ ^ c * x ∈ L.O := by
-  intros
-  apply _root_.GlobalTheory.HL.CongFin.exists_pow_mul_mem <;> assumption
+  apply GlobalTheory.HL.CongFin.exists_pow_mul_mem <;> assumption
 
 end GlobalTheory.CongTrans
 

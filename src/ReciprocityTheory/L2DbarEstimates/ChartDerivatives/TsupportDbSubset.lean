@@ -110,12 +110,12 @@ private theorem isChart_choose_and_symm_apply {M : Type*} [TopologicalSpace M] (
 private theorem d_eq_wd_comp_chosen_chart_symm {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n)
     (f : M → ℂ) (x : M) (h : ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ x ∈ e.source) :
     d n z j f x = wd n j (f ∘ (Classical.choose h).symm) (z x) := by
-  simp only [d, dif_pos h]
+  simp only [d, dite_eq_left h]
 
 private theorem db_eq_wdb_comp_chosen_chart_symm {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n)
     (f : M → ℂ) (x : M) (h : ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ x ∈ e.source) :
     db n z j f x = wdb n j (f ∘ (Classical.choose h).symm) (z x) := by
-  simp only [db, dif_pos h]
+  simp only [db, dite_eq_left h]
 
 private theorem differentiableAt_comp_chart_symm_of_mem_target {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f : M → ℂ)
     (hf : Ck n z 1 f) (e : OpenPartialHomeomorph M (V n)) (he : IsChart n z e) (w : V n)

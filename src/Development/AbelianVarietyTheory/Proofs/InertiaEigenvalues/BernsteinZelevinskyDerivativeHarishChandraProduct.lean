@@ -46,7 +46,7 @@ theorem wh_gl_zero (ψ : AddChar (ZMod g) ℂ) : wh ψ (fun _ : Gn g 0 => (1 : �
   have hP : IsUniUp ((1 : Gn g 0) : Mt g 0) := fun a _ => a.elim0
   unfold wh tr eU eDat
   rw [huniv, Finset.sum_singleton]
-  rw [Finset.filter_singleton, if_pos hP, Finset.sum_singleton, Finset.card_singleton]
+  rw [Finset.filter_singleton, ite_eq_left hP, Finset.sum_singleton, Finset.card_singleton]
   simp
 
 theorem mem_of_sort_map (L : List (Pc g)) (I : Finset (Fin L.length)) {p : Pc g}

@@ -18,11 +18,6 @@ theorem size_windows_split : SizeWindowsSplit := by
   unfold SizeWindows RestSize errorBracketSizeWindows
   tauto
 
-section
-variable {U0 : Type} [Fintype U0] {W : U0 → Type} {Top : Type} [Fintype Top] {m f : ℕ}
-
-end
-
 namespace Model
 
 section
@@ -33,10 +28,6 @@ end
 end Model
 
 end Formalism.LFunctionChainParameters.LChain
-
-section Check
-open Formalism.LFunctionChainParameters.LChain
-end Check
 
 namespace Formalism.LFunctionChainParameters.LChain
 
@@ -125,7 +116,3 @@ end
 end ModelText
 
 end Formalism.LFunctionChainParameters.LChain
-
-section Check2
-open Formalism.LFunctionChainParameters.LChain
-end Check2

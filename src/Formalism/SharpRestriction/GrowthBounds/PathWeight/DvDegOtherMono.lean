@@ -516,7 +516,7 @@ theorem dv_segment (hE : FieldMultidegreeDivisibility) (hV : F.Valid L₁ N₁) 
         unfold otherVectorDegree
         apply Finset.sum_eq_zero
         intro a _
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, _, h3⟩
         apply h3
         have h4 : eL F j a < (nonW F j).min' hne := by rw [← hi0]; exact (dv_eL_lt F j a i0).2 h1

@@ -190,7 +190,7 @@ theorem repr_bc (bc : V →ₗ[Ω] V₁) (w : Module.Basis (Fin N) Ω V) (w₁ :
   · rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_eq_same, smul_eq_mul,
       mul_one]
   · intro i _ hij
-    rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, if_neg hij,
+    rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right hij,
       smul_zero]
   · intro hj
     exact absurd (Finset.mem_univ j) hj
@@ -437,10 +437,6 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {Ω : 
   {x : (Σ k, ι k) → Ω} {N N₁ N₂ : ℕ} {V V₁ V₂ : Type} [AddCommGroup V] [Module Ω V]
   [AddCommGroup V₁] [Module Ω V₁] [AddCommGroup V₂] [Module Ω V₂]
 
-theorem sameGeneric_self (E : ChartBundle O (mseg x) N V) : SameGeneric O x E E :=
-  fun _ _ => ⟨fun v hv => ⟨1, one_ne_zero, by simpa using hv⟩,
-    fun v hv => ⟨1, one_ne_zero, by simpa using hv⟩⟩
-
 theorem sameGeneric_sub {E E' : ChartBundle O (mseg x) N V} {i : V₁ →ₗ[Ω] V} {p : V →ₗ[Ω] V₂}
     {E₁ E₁' : ChartBundle O (mseg x) N₁ V₁} {E₂ E₂' : ChartBundle O (mseg x) N₂ V₂}
     (hs : SameGeneric O x E E') (h : IsSubQuot O x E i p E₁ E₂)
@@ -498,13 +494,6 @@ theorem rank_add {i : V₁ →ₗ[Ω] V} {p : V →ₗ[Ω] V₂} (hi : Function.
 
 end Generic
 
-theorem length_classList {K : Type} {q m : ℕ} (cls : Fin q → K → ℤ) {Q : MvPolynomial (Fin q) ℤ}
-    (hQ : Q.IsHomogeneous m) {μ : Fin q →₀ ℕ} (hμ : μ ∈ Q.support) :
-    (classList cls μ).length = m := by
-  have h := hQ (mem_support_iff.1 hμ)
-  rw [classList, Multiset.length_toList, Multiset.card_map, Finsupp.card_toMultiset, ← h]
-  simp [Finsupp.weight_apply, Finsupp.sum]
-
 section Stages
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {Ω : Type} [Field Ω]
@@ -553,7 +542,7 @@ theorem exists_flag {M : ℕ} {W : Type} [AddCommGroup W] [Module Ω W] {ϖ : O}
     _root_.GlobalTheory.CompanionTheory.Ar.CommonFlag.main O Ω K ι x d hM M 1 W ![B, B'] (by
       intro j
       fin_cases j
-      · exact sameGeneric_self B
+      · exact GlobalTheory.CompanionTheory.Ar.Num.Cocycle.sameGeneric_self B
       · exact hs)
   have hM' : IsModelOver (pointIdeal O (joinCoord x z)) d :=
     ((GroundTheory.Heights₂.Heights.NumbersDVR.BundleExamples.isModelOver_iff O _ d).1 hMB).2
@@ -638,7 +627,7 @@ theorem ckAdd_of_flags {ϖ : O} (hϖ : Irreducible ϖ) {x : (Σ k, ι k) → Ω}
     w w' b b' f g hf w₁ w₁' b₁ b₁' f₁ g₁ hf₁ w₂ w₂' b₂ b₂' f₂ g₂ hf₂ k (psumExpansion N k)
     (psumExpansion N₁ k) (psumExpansion (N - N₁) k) (isPairExpansion_psum N k)
     (isPairExpansion_psum N₁ k) (isPairExpansion_psum (N - N₁) k) (classList L μ)
-    (by rw [length_classList _ hQ hμ]; omega)
+    (by rw [GlobalTheory.CompanionTheory.Ar.Num.Cocycle.length_classList _ hQ hμ]; omega)
 
 theorem ckAdd_of_two {ϖ : O} (hϖ : Irreducible ϖ) {x : (Σ k, ι k) → Ω} {d : ℕ}
     {E E' : ChartBundle O (mseg x) N V} {i : V₁ →ₗ[Ω] V} {p : V →ₗ[Ω] V₂}

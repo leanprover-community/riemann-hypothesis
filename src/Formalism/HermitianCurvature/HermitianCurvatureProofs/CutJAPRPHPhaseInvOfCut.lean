@@ -71,7 +71,7 @@ theorem phase_invariance_of_truncation : PhaseInvOfCut := by
   have hLine := Gauge.GC.gauge_kappa_line_holds Wp Wq P Bs X d hGT Qr hKP ζ₁ hζ₁
   obtain ⟨Eπ, hEπF, hEπQ, hEπn, hEπsp⟩ := hLine π
   obtain ⟨Eρ, hEρF, hEρQ, hEρn, hEρsp⟩ := hLine ρ
-  have hQQr : ∀ σ, (Qr σ).comp (Qr σ) = Qr σ := fun σ => by rw [hKP.1 σ σ, if_pos rfl]
+  have hQQr : ∀ σ, (Qr σ).comp (Qr σ) = Qr σ := fun σ => by rw [hKP.1 σ σ, ite_eq_left rfl]
   have hdomZ : ∀ c ∈ OmX P.r, ∀ ζ ∈ Gauge.GC.Ann P,
       ((c, NF.muZ P.k P.r Bs.μsec ζ) : (Fin P.r → ℂ) × Q.Mx P.k P.r) ∈ Q.DomR P.k P.r Bs.z Bs.z' := by
     intro c hc ζ hζ

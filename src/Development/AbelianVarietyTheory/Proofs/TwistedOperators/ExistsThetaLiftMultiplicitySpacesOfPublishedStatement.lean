@@ -105,8 +105,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.thetaLift_lowerTower_vanishing : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.LoweredSignatureVanishing.LowVanish D := by
-  first | exact @GlobalTheory.LowVanishObj.lowVanish_obj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaLiftLowerTowerVanishingStatement =====
@@ -266,7 +264,7 @@ theorem liftCusp : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.P
     hW.hecS hW.hecT (resEta_parity hW.resS (by have := hs.rank; omega)) hW.resT
   have hst : GlobalTheory.Chain.IsStepWeil k ψ V' W ω' := Exists.intro χS (Exists.intro χT (And.intro hW' hexp))
   exact constTerm_multT (GlobalTheory.T.constantTermLift_isotropicSubspace D) hP hs hθ hW hW' hν h𝓕 M' J χ F hF v hf
-    (fun f' hf' => congrFun (GlobalTheory.T.thetaLift_lowerTower_vanishing hDS hHC hP D k r V' W M' θ ψ hθ hch hr hsig ω' hst ν 𝓕 hν h𝓕 J χ F hF v f'
+    (fun f' hf' => congrFun (GlobalTheory.LowVanishObj.lowVanish_obj hDS hHC hP D k r V' W M' θ ψ hθ hch hr hsig ω' hst ν 𝓕 hν h𝓕 J χ F hF v f'
       hf') 1) κ 𝓝 hκ h𝓝 g
 
 end GlobalTheory.LiftCuspObj
@@ -304,8 +302,6 @@ open scoped TensorProduct InnerProductSpace Classical
 namespace GlobalTheory.Chain.IoLift
 
 open GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix GlobalTheory.PointAtPlaceHom
-
-
 
 theorem ioPair_of_rapid (D : D7) (X : ProvA) (hX : ChosenSeries X) (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (hC : LiftCusp D)
     (hL : GlobalTheory.IndefiniteRowSideFullHecke.RapidDecayLift.LiftProps D) (hG : GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.GKExtension D) (hF : GlobalTheory.IndefiniteRowSideFullHecke.VacuumFockVectors.VacuumFock D)

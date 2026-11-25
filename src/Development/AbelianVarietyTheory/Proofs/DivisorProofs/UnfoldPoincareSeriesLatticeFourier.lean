@@ -239,7 +239,6 @@ theorem _root_.GlobalTheory.PoincareUnfold.unfold_poincare_fourier : ∀ (V : Ty
       rw [← NNReal.summable_coe]
       exact ha.subtype (· ∈ s)
   have hLHS : ∫ v in D, (∑' x, Q x * F (j x + v)) ∂μ = (∑ k, Q (t k)) * ∫ v, F v ∂μ := by
-    have hDm : MeasurableSet D := ZSpan.fundamentalDomain_measurableSet _
     set e : Fin n × C → Γ := fun p => t p.1 + p.2 with he
     have heinj : Function.Injective e := by
       rintro ⟨k, c⟩ ⟨k', c'⟩ h

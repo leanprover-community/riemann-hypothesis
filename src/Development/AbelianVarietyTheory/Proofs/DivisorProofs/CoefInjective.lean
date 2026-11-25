@@ -83,15 +83,6 @@ def PrimeToHost : Prop :=
 
 end Adelic
 
-section Geometric
-
-variable {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {i : Fin D.R.m}
-  (O : OMDat C R i Unit (fun _ => A.μ0)) (κ : WeightFamilies.Wt D ((i : ℕ) + 1))
-
-variable (cc : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ)
-
-end Geometric
-
 end GlobalTheory.IndefiniteRowSideFullHecke.AdelicScalarSectionLift
 
 end
@@ -134,14 +125,6 @@ theorem primeToHost (h : R.toLevCh.Is A.μ0) : AdelicScalarSectionLift.PrimeToHo
   simp [D.host.g_level k]
 
 end Places
-
-section Coord
-
-variable {V : HSp D} (c : CoefA V) {β : GL (Fin V.rank) (Lev.EAf D)} {L : LevDat D.host.E ℂ V.rank}
-
-variable {c}
-
-end Coord
 
 theorem adjoint_idem {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [FiniteDimensional ℂ H]
     (ρ : Representation ℂ G H) (hu : ∀ g x, ‖ρ g x‖ = ‖x‖) {a : G → ℂ} (ha : GoodBasisCentralIdempotents.IsCentralIdem a) {x : H}

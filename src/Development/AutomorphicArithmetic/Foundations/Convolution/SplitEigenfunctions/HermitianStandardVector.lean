@@ -142,13 +142,8 @@ private theorem act_fix_iff (h : G1 E) :
     rwa [Matrix.det_fin_two] at this
   have key : D.act (gl h) (rp X0) = rp X0 ↔
       h.1 * D.herm (rp X0) * D.star2 h.1 = D.herm (rp X0) := by
-    have := D.herm_act (gl h) (rp X0)
-    constructor
-    · intro e
-      rw [e] at this
-      exact this.symm
-    · intro e
-      exact D.herm_injective (this.trans e)
+    rw [← D.herm_injective.eq_iff, D.herm_act]
+    exact Iff.rfl
   rw [key, hermitian_standardVector]
   have ht : rt D.θ * rt D.θ⁻¹ = 1 := by
     rw [← map_mul, mul_inv_cancel₀ D.θ_ne_zero, map_one]

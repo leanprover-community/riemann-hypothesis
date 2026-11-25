@@ -51,7 +51,7 @@ theorem ind_le_cover {f : τ × τ → ℝ} (hf : ∀ p, 0 ≤ f p) (S : Finset 
       linarith
     · have h1 : P'.indicator f p = f p := Set.indicator_of_mem h f
       linarith
-  · rw [Set.indicator_apply, if_neg hp]
+  · rw [Set.indicator_apply, ite_eq_right hp]
     exact add_nonneg hsum (hnn P')
 
 theorem amp_summable (hv : Summable (fun t => ‖X.vec t‖)) (Q : Set (τ × τ)) :

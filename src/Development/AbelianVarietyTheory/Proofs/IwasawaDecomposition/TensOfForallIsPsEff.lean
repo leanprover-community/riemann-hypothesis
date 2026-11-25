@@ -272,7 +272,7 @@ theorem twistConeVanishing_of_cut : ∀ {Y : Scheme.{0}} (A N : LB Y), A.IsLB �
       intro j hmj hJj p hp
       by_cases hm : m < 2 * r
       · exact h₁ j m (by omega) hm p hp
-      · push_neg at hm
+      · push Not at hm
         have hT : (tens (lbPow A j) (lbPow N m)).IsLB := isLB_tens (isLB_lbPow hA j) (isLB_lbPow hN m)
         have e₁ := Twist.shortExact_map hT hS₁
         have e₂ := Twist.shortExact_map hT hS₂

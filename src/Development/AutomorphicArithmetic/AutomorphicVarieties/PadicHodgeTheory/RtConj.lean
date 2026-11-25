@@ -133,9 +133,6 @@ end Conj
 
 end GlobalTheory.OrdLoc
 
-namespace GlobalTheory.OrdLoc
-
-end GlobalTheory.OrdLoc
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.OrdinaryIdealSaturatorsConjInvariant =====

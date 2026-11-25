@@ -368,7 +368,7 @@ theorem UpperTheory.surjective_eval_coordBlowupSubst_pushout_of_flat :
       simp only [γ, RingHom.comp_apply, MvPolynomial.eval₂Hom_X']
       rw [hebmk]
       by_cases hk : k = j
-      · subst hk; simp only [if_true, e, MvPolynomial.eval₂Hom_C]; rw [hw, hσX]; simp
+      · subst hk; simp only [ite_true, e, MvPolynomial.eval₂Hom_C]; rw [hw, hσX]; simp
       · simp [hk, e, g]
   have hid : ψ ≫ CommRingCat.ofHom eb = 𝟙 _ := by
     apply h.hom_ext
@@ -459,7 +459,7 @@ theorem UpperTheory.surjective_eval_coordBlowupSubst_pushout_of_flat :
     simp only [CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.hom_ofHom] at h2
     rw [h2]
     change uR.hom (coordBlowupSubst A Finset.univ j (MvPolynomial.X j)) = _
-    rw [hσX, if_neg (not_not.2 rfl)]
+    rw [hσX, ite_eq_right (not_not.2 rfl)]
     change (1 : B) ⊗ₜ[MvPolynomial (Fin D) A] (MvPolynomial.rename ULift.up (MvPolynomial.X j) : P') = _
     rw [MvPolynomial.rename_X]
   have hl : ∀ t : B ⊗[MvPolynomial (Fin D) A] P',

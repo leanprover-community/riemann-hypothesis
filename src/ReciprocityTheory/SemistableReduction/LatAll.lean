@@ -8,7 +8,6 @@ public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Algebra.Polynomial.Degree.Defs
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Basic.Complex.Basic
-public import ReciprocityTheory.SemistableReduction.BWPolyA
 public import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.Topology.Instances.Matrix
@@ -33,6 +32,108 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Topology.Sheaves.Init
+
+section
+@[expose] public section
+
+namespace ReciprocityTheory.MultiplicativeHeights
+
+open Polynomial
+
+theorem bwp_poly_eq_of_eval_eq_off (P Q : ℂ[X]) (E : Set ℂ) (hE : E.Finite)
+    (h : ∀ t ∉ E, P.eval t = Q.eval t) : P = Q := by
+  apply Polynomial.eq_of_infinite_eval_eq
+  refine Set.Infinite.mono (fun t ht => h t ht) hE.infinite_compl
+
+theorem bwp_finite_eval_eq_zero {P : ℂ[X]} (hP : P ≠ 0) : {t : ℂ | P.eval t = 0}.Finite :=
+  Polynomial.finite_setOfPred_isRoot hP
+
+theorem bwp_exists_nodes (E : Set ℂ) (hE : E.Finite) (k : ℕ) :
+    ∃ S : Finset ℂ, S.card = k + 1 ∧ ∀ c ∈ S, c ∉ E := by
+  obtain ⟨S, hS, hcard⟩ := hE.infinite_compl.exists_subset_card_eq (k + 1)
+  exact ⟨S, hcard, fun c hc => hS hc⟩
+
+theorem bwp_eval_eq_lagrange (S : Finset ℂ) (Q : ℂ[X]) (k : ℕ) (hS : S.card = k + 1)
+    (hQ : Q.natDegree ≤ k) (x : ℂ) :
+    Q.eval x = ∑ c ∈ S, (Lagrange.basis S id c).eval x * Q.eval c := by
+  have hinj : Set.InjOn id (S : Set ℂ) := Function.injective_id.injOn
+  have hdeg : Q.degree < S.card := by
+    rw [hS]
+    calc Q.degree ≤ (k : WithBot ℕ) := Polynomial.degree_le_of_natDegree_le hQ
+      _ < ((k + 1 : ℕ) : WithBot ℕ) := by exact_mod_cast Nat.lt_succ_self k
+  conv_lhs => rw [Lagrange.eq_interpolate hinj hdeg]
+  rw [Lagrange.interpolate_apply, Polynomial.eval_finsetSum]
+  refine Finset.sum_congr rfl (fun c _ => ?_)
+  simp [mul_comm]
+
+theorem bwp_eval_aeval_X {σ : Type*} (L : ℂ[X]) (i : σ) (y : σ → ℂ) :
+    MvPolynomial.eval y (Polynomial.aeval (MvPolynomial.X i : MvPolynomial σ ℂ) L) = L.eval (y i) := by
+  induction L using Polynomial.induction_on' with
+  | add p q hp hq => simp [hp, hq]
+  | monomial n a => simp
+
+theorem bwp_sepPoly_fin (k : ℕ) : ∀ (n : ℕ) (G : (Fin n → ℂ) → ℂ),
+    (∀ y m, ∃ Q : ℂ[X], Q.natDegree ≤ k ∧ ∀ t, G (Function.update y m t) = Q.eval t) →
+    ∃ F : MvPolynomial (Fin n) ℂ, ∀ y, G y = MvPolynomial.eval y F := by
+  intro n
+  induction n with
+  | zero =>
+    intro G _
+    exact ⟨MvPolynomial.C (G 0), fun y => by
+      rw [MvPolynomial.eval_C, Subsingleton.elim y 0]⟩
+  | succ n ih =>
+    intro G hG
+    obtain ⟨S, hS, -⟩ := bwp_exists_nodes ∅ Set.finite_empty k
+    have hsub : ∀ c : ℂ, ∃ F : MvPolynomial (Fin n) ℂ,
+        ∀ y', G (Fin.cons c y') = MvPolynomial.eval y' F := by
+      intro c
+      refine ih (fun y' => G (Fin.cons c y')) ?_
+      intro y' m
+      obtain ⟨Q, hQ, hQt⟩ := hG (Fin.cons c y') m.succ
+      exact ⟨Q, hQ, fun t => by simp only [Fin.cons_update]; exact hQt t⟩
+    choose Fc hFc using hsub
+    refine ⟨∑ c ∈ S, Polynomial.aeval (MvPolynomial.X 0) (Lagrange.basis S id c) *
+      MvPolynomial.rename Fin.succ (Fc c), fun y => ?_⟩
+    obtain ⟨Q, hQ, hQt⟩ := hG y 0
+    have hy : ∀ t, Function.update y 0 t = Fin.cons t (Fin.tail y) := by
+      intro t
+      conv_lhs => rw [← Fin.cons_self_tail y]
+      exact Fin.update_cons_zero _ _ _
+    have h1 : G y = Q.eval (y 0) := by
+      rw [← hQt]; simp
+    rw [h1, bwp_eval_eq_lagrange S Q k hS hQ, MvPolynomial.eval_sum]
+    refine Finset.sum_congr rfl fun c _ => ?_
+    rw [MvPolynomial.eval_mul, bwp_eval_aeval_X, MvPolynomial.eval_rename, ← hQt c, hy c, hFc c]
+    rfl
+
+theorem bwp_sepPoly {σ : Type*} [Fintype σ] [DecidableEq σ] (k : ℕ) (G : (σ → ℂ) → ℂ)
+    (hG : ∀ y m, ∃ Q : ℂ[X], Q.natDegree ≤ k ∧ ∀ t, G (Function.update y m t) = Q.eval t) :
+    ∃ F : MvPolynomial σ ℂ, ∀ y, G y = MvPolynomial.eval y F := by
+  let e : σ ≃ Fin (Fintype.card σ) := Fintype.equivFin σ
+  obtain ⟨F, hF⟩ := bwp_sepPoly_fin k (Fintype.card σ) (fun z => G (z ∘ e)) (fun z m => by
+    obtain ⟨Q, hQd, hQ⟩ := hG (z ∘ e) (e.symm m)
+    refine ⟨Q, hQd, fun t => ?_⟩
+    show G ((Function.update z m t) ∘ e) = _
+    rw [Function.update_comp_equiv, hQ])
+  refine ⟨MvPolynomial.rename e.symm F, fun y => ?_⟩
+  rw [MvPolynomial.eval_rename, ← hF]
+  congr 1
+  ext s
+  simp
+
+end ReciprocityTheory.MultiplicativeHeights
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.SemistableReduction.ApproxBasisB, ReciprocityTheory.SemistableReduction.ApproxBasis, ReciprocityTheory.SemistableReduction.ApproxGraphC, ReciprocityTheory.SemistableReduction.ApproxGraph, ReciprocityTheory.SemistableReduction.BWPolyB, ReciprocityTheory.SemistableReduction.BWPolyC, ReciprocityTheory.SemistableReduction.BWPoly, ReciprocityTheory.SemistableReduction.OnePolyGrowth, ReciprocityTheory.SemistableReduction.LatAll
@@ -231,8 +332,8 @@ theorem approxB_split {K : Type} [Field K] [NumberField K] {r p : ℕ} (hp : p �
       ∑ k : {j : Fin r // ¬ (j : ℕ) < p}, g k.1 • T (v (a0 (e k))) = 0 := by
     rw [← hg, ← Fintype.sum_subtype_add_sum_subtype (fun j : Fin r => (j : ℕ) < p)]
     congr 1
-    · exact Finset.sum_congr rfl fun k _ => by simp only [dif_pos k.2]
-    · exact Finset.sum_congr rfl fun k _ => by simp only [dif_neg k.2]; rfl
+    · exact Finset.sum_congr rfl fun k _ => by simp only [dite_eq_left k.2]
+    · exact Finset.sum_congr rfl fun k _ => by simp only [dite_eq_right k.2]; rfl
   have hBorth : ∀ k' : ApproxPosIdx r p,
       S.h (l k'.1) (∑ k : {j : Fin r // ¬ (j : ℕ) < p}, g k.1 • T (v (a0 (e k)))) = 0 := by
     intro k'
@@ -341,10 +442,10 @@ theorem approxBasis_holds (hG : ApproxGraphStatement) : ApproxStatement := by
   obtain ⟨la, hla⟩ : ∃ la : Fin r → Fin r → K, la = fun j : Fin r => if h : (j : ℕ) < p then l0 j
       else Δ • v (a ⟨j, h⟩) - ∑ k', coef (v (a ⟨j, h⟩)) k' • l0 k'.1 := ⟨_, rfl⟩
   have hla_pos : ∀ (j : Fin r) (h : (j : ℕ) < p), la j = l0 j := fun j h => by
-    rw [hla]; simp only [dif_pos h]
+    rw [hla]; simp only [dite_eq_left h]
   have hla_neg : ∀ (j : Fin r) (h : ¬ (j : ℕ) < p), la j =
       Δ • v (a ⟨j, h⟩) - ∑ k', coef (v (a ⟨j, h⟩)) k' • l0 k'.1 := fun j h => by
-    rw [hla]; simp only [dif_neg h]
+    rw [hla]; simp only [dite_eq_right h]
   have hli' : LinearIndependent K la := by rw [hla]; exact hli
   have horth' : ∀ (k : Fin r), (k : ℕ) < p → ∀ j : Fin r, ¬ (j : ℕ) < p →
       S.h (l0 k) (la j) = 0 := fun k hk j hj => by
@@ -677,7 +778,7 @@ theorem bwp_ext_poly {σ : Type*} [Fintype σ] [DecidableEq σ] (k : ℕ) (g D :
       refine Finset.sum_congr rfl (fun c hc => ?_)
       rw [Polynomial.eval_mul, Polynomial.eval_C, ← hQ _ c (ht c hc)]
       congr 1
-      simp only [Pc, dif_neg (hSz c hc)]
+      simp only [Pc, dite_eq_right (hSz c hc)]
       rw [← hP _ _ (hSz c hc) t (by rw [add_right_comm]; exact ht c hc), add_right_comm]
     have hbad : ∀ S : Finset ℂ, (∀ c ∈ S, D (z + c • w) ≠ 0) →
         {t : ℂ | ∃ c ∈ S, D ((z + t • e) + c • w) = 0}.Finite := by
@@ -985,7 +1086,7 @@ theorem exists_entire_of_finite_growth (f : ℂ → ℂ) (B : Set ℂ) (A : ℝ)
     ∃ g : ℂ → ℂ, Differentiable ℂ g ∧ ∀ t ∉ B, g t = f t := by
   classical
   let g : ℂ → ℂ := fun t => if t ∈ B then limUnder (𝓝[≠] t) f else f t
-  refine ⟨g, fun c => ?_, fun t ht => if_neg ht⟩
+  refine ⟨g, fun c => ?_, fun t ht => ite_eq_right ht⟩
   by_cases hc : c ∈ B
   · have hU : IsOpen (B \ {c})ᶜ := (hB.sdiff).isClosed.isOpen_compl
     set s : Set ℂ := (B \ {c})ᶜ ∩ ball c 1 with hs
@@ -1018,7 +1119,7 @@ theorem exists_entire_of_finite_growth (f : ℂ → ℂ) (B : Set ℂ) (A : ℝ)
   · have hO : IsOpen Bᶜ := hB.isClosed.isOpen_compl
     refine (hf.differentiableAt (hO.mem_nhds hc)).congr_of_eventuallyEq ?_
     filter_upwards [hO.mem_nhds hc] with t ht
-    exact if_neg ht
+    exact ite_eq_right ht
 
 theorem onePolyGrowth_holds : OnePolyGrowthStatement := by
   intro f B A k hB hf hb

@@ -275,7 +275,6 @@ lemma majorant_bound_orthogonal_part (ξ : Fin r → E) (x : Frame X.Ψ r) (hx :
   have hmain := hδ u hu τ
   simpa [u] using hmain
 
-set_option maxHeartbeats 1000000 in
 theorem unipotent_majorant_bound_data : ReducedFrameDomainCovering (E := E) := by
   intro r X ξ hξ x hx δ κ hκ0 hκ1 hδ
   have hCsub : ∀ (τ : X.Ψ) (u v w : Fin r → ℂ) (c : ℂ),
@@ -290,7 +289,6 @@ theorem unipotent_majorant_bound_data : ReducedFrameDomainCovering (E := E) := b
   have hee : ∀ τ : X.Ψ, hermC τ.1 X.Gm (emb τ.1 ξ) (emb τ.1 ξ) = 0 := by
     intro τ
     have h : hermC τ.1 X.Gm (emb τ.1 ξ) (emb τ.1 ξ) = τ.1 (herm X.Gm ξ ξ) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp [hermC, herm, Data.emb, map_sum, map_mul, emb_cc]
     rw [h, hξ.2.1, map_zero]
   have he0 : ∀ τ : X.Ψ, emb τ.1 ξ ≠ 0 := by

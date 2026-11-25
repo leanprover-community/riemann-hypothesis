@@ -59,7 +59,7 @@ theorem atEmb_embedding_apply (w v : InfinitePlace E) (z : ℂ) :
     atEmb w.embedding z v = if v = w then z else 0 := by
   classical
   unfold atEmb
-  rw [InfinitePlace.mk_embedding, if_pos rfl, Pi.single_apply]
+  rw [InfinitePlace.mk_embedding, ite_eq_left rfl, Pi.single_apply]
 
 theorem atEmb_neg (τ : E →+* ℂ) (z : ℂ) : atEmb τ (-z) = -atEmb τ z := by
   rw [atEmb_eq τ (-z), atEmb_eq τ z]
@@ -132,15 +132,8 @@ theorem trace_Mt (i j : Fin a) (x : Cinf E) (Y : (isExpLieAlgebra E a).lieSubalg
     · simp
   rw [archTraceForm_apply, h, mixedTraceL_apply]
   simp only [Prod.fst_mul, Pi.mul_apply, cInv, Pi.zero_apply, zero_mul, Finset.sum_const_zero, zero_add, Prod.snd_mul]
-  refine Finset.sum_bij (fun v _ => v.1) ?_ ?_ ?_ ?_
-  · intro _ _
-    exact Finset.mem_univ _
-  · intro _ _ _ _ h
-    exact Subtype.ext h
-  · intro w _
-    exact ⟨⟨w, IsTotallyComplex.isComplex w⟩, by simp, rfl⟩
-  · intro v _
-    rfl
+  exact Finset.sum_equiv (Equiv.subtypeUnivEquiv fun w => IsTotallyComplex.isComplex w) (by simp)
+    fun _ _ => rfl
 
 open Classical in
 theorem toL_single_atEmb (i j p q : Fin a) (w v : InfinitePlace E) (z : ℂ) :

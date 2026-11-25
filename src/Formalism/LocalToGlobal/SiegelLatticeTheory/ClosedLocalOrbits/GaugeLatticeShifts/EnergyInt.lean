@@ -27,12 +27,6 @@ open Matrix
 
 namespace Formalism.L2.SG.RealObj.StepIntOf
 
-section Defs
-
-variable {D : D7} (X : HidaSetting D)
-
-end Defs
-
 def StIntOfLint : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ : X.B.I.Ginf),
     ∫⁻ x, ‖X.Wu u x‖ₑ * ‖X.Wu u' (γ⁻¹ * x)‖ₑ ∂(Formalism.L2.SG.ProjRows.muInf X.B.I) < ⊤ →
@@ -83,9 +77,6 @@ end
 
 end Formalism.L2.SG.RealObj.StepIntOf.Theta
 
-namespace Formalism.L2.SG.RealObj.StepIntOf
-
-end Formalism.L2.SG.RealObj.StepIntOf
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

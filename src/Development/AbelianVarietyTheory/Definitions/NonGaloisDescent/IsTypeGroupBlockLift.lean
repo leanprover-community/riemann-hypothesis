@@ -134,13 +134,6 @@ def SplitLoc (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Prop :=
       Nonempty (π.π.Equiv (prod₂ π₁.π (twist π₂.π (detChar (Fin D.R.t) χ)))) ∧
       ∃ y, IsLevelOne π₁.π y ∧ NotKilled π₁.π (idemOf D k ρ) y
 
-def LocDZ (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Prop :=
-  ∀ (k : Fin 2) (v : D.nd.PlG k) (χ : ((D.naut.plGw k v).adicCompletion D.host.E)ˣ →* ℂˣ) (hχ : IsSmoothChar χ)
-    (u : ZMod (D.host.g k)) (π : Irr ((D.naut.plGw k v).adicCompletion D.host.E) (D.R.r + D.R.t)) ρ f,
-    IsTame χ → labAt hL D k v (Irr.ofDet 1 χ hχ) = X - C u → InSeries D k ρ f → Squarefree f → ¬ f.IsRoot u →
-    (∃ x, IsBlockVec χ π.π x ∧ NotKilled π.π (idemOf D k ρ) x) →
-    (rcAt hL D (D.naut.plGw k v) _ π).mono0 ∧ labAt hL D k v π = f * (X - C u) ^ D.R.t
-
 def ConjDual (D : D7) : Prop :=
   ∀ (i : D.nd.Loc) (PI : D.naut.AV i) (k : Fin 2) (v : D.nd.PlG k) (w' : PlE D.host),
     IsConjPl D.host (D.naut.plGw k v) w' → haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩

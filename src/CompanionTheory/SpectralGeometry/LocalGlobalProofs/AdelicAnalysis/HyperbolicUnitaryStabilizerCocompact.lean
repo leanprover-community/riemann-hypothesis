@@ -108,7 +108,7 @@ theorem reduce_of_equiv {K : Type} [CommRing K] [TopologicalSpace K] {W : Type} 
 
     simp only [dotProduct, map_sum, Finset.sum_apply, map_mul, Pi.mul_apply, map_one, Pi.one_apply]
     rw [Finset.sum_congr rfl fun i _ => h1 i]
-    simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact inv_mul_cancel₀ (hu w)
 
 section
@@ -510,7 +510,7 @@ theorem compact_Nf {D : L} (hD : ∀ s, s * s ≠ D) : IsCompact {p : L × L | �
   have h6 : 0 < 1 / ‖Nf D q0‖ := by positivity
   by_cases h7 : ‖p‖ ≤ 1
   · linarith
-  · push_neg at h7
+  · push Not at h7
     nlinarith
 
 variable [CommRing K] [Algebra L K] [TopologicalSpace K] (bs : Module.Basis (Fin 2) L K)
@@ -700,7 +700,7 @@ theorem exists_compact_unimodular_vectors_mod_units : ∀ (F E : Type) [Field F]
         rintro rfl
         exact hD0 (by rw [← hs, mul_zero])
       exact primitiveCompact_split bs h0 hd hs0 hs two_ne_zero hg M
-    · push_neg at hsq
+    · push Not at hsq
       exact primitiveCompact_nonsplit bs h0 hd hsq hg M
   obtain ⟨Ω, hc, hp⟩ := hU
   have hcw : Continuous (fun (w : Fin M → Fv F v ⊗[F] E) (_ : Fin 1) => w) :=
@@ -1062,7 +1062,7 @@ theorem split_case (h0 : B 0 = 1) (h1 : B 1 * B 1 = algebraMap L K Δ)
     simp only [Pi.add_apply, map_add (f := _), Finsupp.add_apply]
     exact (w.map_add _ _).trans (max_le (h1' e i he_int) (h1' f j hf_int))
   · simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib, Pi.single_apply,
-      ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, huy]
+      ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, huy]
     have a1 : e * (((p i)⁻¹ * p i) • e + ((q j)⁻¹ * q i) • f) = e := by
       rw [inv_mul_cancel₀ hpi', one_smul, mul_add, hee, mul_smul_comm, hef, smul_zero, add_zero]
     have a2 : f * (((p i)⁻¹ * p j) • e + ((q j)⁻¹ * q j) • f) = f := by
@@ -1251,7 +1251,7 @@ theorem unimodular_compact_mod_units : ∀ (F E : Type) [Field F] [NumberField F
   classical
   obtain ⟨Cv, hCg, hCb⟩ : ∃ Cv : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fin 1 → Fin M → Fv F v ⊗[F] E),
       (∀ v, good v → Cv v = latV b v) ∧ (∀ v, ¬ good v → Cv v = Ωv v) :=
-    ⟨fun v => if good v then latV b v else Ωv v, fun v h => if_pos h, fun v h => if_neg h⟩
+    ⟨fun v => if good v then latV b v else Ωv v, fun v h => ite_eq_left h, fun v h => ite_eq_right h⟩
   have hCcpt : ∀ v, IsCompact (Cv v) := by
     intro v
     by_cases h : good v

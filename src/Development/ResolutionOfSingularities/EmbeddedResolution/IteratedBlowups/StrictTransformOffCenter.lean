@@ -28,12 +28,6 @@ theorem strictTransform_comap_complComapSupport_ι {X X₁ : Scheme.{u}} [IsNoet
     (π : X₁ ⟶ X) (Z D : X.IdealSheafData) :
     (Blowup.strictTransform π Z D).comap (Scheme.Opens.ι (complComapSupport π Z)) =
       (D.comap π).comap (Scheme.Opens.ι (complComapSupport π Z)) := by
-  have hqι : QuasiCompact (Scheme.Opens.ι (complComapSupport π Z)) := inferInstance
-  have hq1 : QuasiCompact
-      (((D.comap π).comap (Scheme.Opens.ι (complComapSupport π Z))).subschemeι) := inferInstance
-  have hq2 : QuasiCompact
-      ((((D.comap π).comap (Scheme.Opens.ι (complComapSupport π Z))).subschemeι) ≫
-        Scheme.Opens.ι (complComapSupport π Z)) := inferInstance
   have h1 : Blowup.strictTransform π Z D =
       ((((D.comap π).comap (Scheme.Opens.ι (complComapSupport π Z))).subschemeι) ≫
         Scheme.Opens.ι (complComapSupport π Z)).ker :=

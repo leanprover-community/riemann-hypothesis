@@ -9,45 +9,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGLMulI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTranslatesEqPrimFrameLat
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MirabolicSchwartzFunctionLeftGLEquivarianceStatement
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLagrModelOfIsLin
 
@@ -99,11 +62,11 @@ theorem fFun_mul_left {a : ℕ} {A' C : Type} [Fintype A'] [DecidableEq A'] [Fin
     (ν : kˣ →* ℂˣ) (Ψ : Matrix A' C k → ℂ) (g : GL (Fin a) k) (h : GL C k) :
     fFun μ σ ν Ψ (g.val * (X0 k σ * (invT h).val)) * (ν (gdet g) : ℂ) * apow (gdet g) ((Fintype.card C : ℂ) / 2) =
       fFun μ σ ν Ψ (X0 k σ * (invT h).val) := by
-  exact GlobalTheory.T.mirabolic_schwartzFunction_left_GL_equivariance k a A' C μ σ ν Ψ g h
+  exact GlobalTheory.fFun_mul_left k a A' C μ σ ν Ψ g h
 
 theorem exists_primFrame {a : ℕ} {C : Type} [Fintype C] [DecidableEq C] (d : C → kˣ)
     (X : Matrix (Fin a) C k) (hX : X.rank = a) : ∃ g₀ : GL (Fin a) k, IsPrimFrame (diagLat d) (g₀.val * X) := by
-  exact GlobalTheory.T.exists_GL_mul_isPrimitiveFrame_diagonalLattice k a C d X hX
+  exact GlobalTheory.PrimFrameExist.exists_gl_mul_isPrimFrame k a C d X hX
 
 theorem exists_unique_shell {ϖ : kˣ} (hϖ : IsUnif ϖ) {a : ℕ} (g : GL (Fin a) k) :
     ∃! m : {m : Fin a → ℤ // Antitone m}, g ∈ shellSet ϖ m.1 := by
@@ -150,9 +113,9 @@ theorem bigF_phiA {a : ℕ} {A' C : Type} [Fintype A'] [DecidableEq A'] [Fintype
       apow (gdet g) ((Fintype.card C : ℂ) / 2) = S.indicator (fun _ => fFun μ σ ν Ψ X) g := by
     intro g
     by_cases hg : g ∈ S
-    · rw [Set.indicator_of_mem hg, phiA, if_pos ((isPrimFrame_mul_iff hg₀ g).2 hg)]
+    · rw [Set.indicator_of_mem hg, phiA, ite_eq_left ((isPrimFrame_mul_iff hg₀ g).2 hg)]
       exact fFun_mul_left μ σ ν Ψ g h
-    · rw [Set.indicator_of_notMem hg, phiA, if_neg (fun h' => hg ((isPrimFrame_mul_iff hg₀ g).1 h')),
+    · rw [Set.indicator_of_notMem hg, phiA, ite_eq_right (fun h' => hg ((isPrimFrame_mul_iff hg₀ g).1 h')),
         zero_mul, zero_mul]
   have hshell : ∀ m : {m : Fin a → ℤ // Antitone m}, shell (haarVol (KO k (Fin a))) ϖ ν
       ((Fintype.card C : ℂ) / 2) (fun M => phiA μ σ ν ϖ n (diagLat c) Ψ (M * X)) m.1 =
@@ -182,7 +145,6 @@ theorem bigF_phiA {a : ℕ} {A' C : Type} [Fintype A'] [DecidableEq A'] [Fintype
     simp [this]
 
 end GlobalTheory.OneSquareZeta
-
 
 open GlobalTheory.OneSquareZeta in
 theorem GlobalTheory.OneSquareZeta.bigZeta_phiA_eq_smallZeta : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]

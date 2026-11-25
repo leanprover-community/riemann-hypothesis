@@ -129,7 +129,7 @@ theorem _root_.GlobalTheory.Survey.UnimodularStandardLattice.unimod_std :
       · exact Subring.one_mem _
       · exact Subring.zero_mem _
     simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true] at hs
+      Finset.mem_univ, ite_true] at hs
     exact (complexConj_mem_integers_iff (v i)).1 hs
 
 
@@ -170,7 +170,7 @@ theorem exists_injective_comp_eq_of_surjective {k V W : Type*} [Field k] [AddCom
   have key : ∀ v, g (s (f v) + (θ (p v) : V)) = f v := fun v => by
     rw [map_add (f := _), hgs, (θ (p v)).2, add_zero]
   refine ⟨s ∘ₗ f + (LinearMap.ker g).subtype ∘ₗ θ.toLinearMap ∘ₗ p, ?_, LinearMap.ext key⟩
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro v hv
   have hv' : s (f v) + (θ (p v) : V) = 0 := hv
   have hfv : f v = 0 := by rw [← key v, hv', map_zero]
@@ -200,14 +200,6 @@ theorem exists_matrix_of_span_eq_top_field {k W n : Type*} [Field k] [AddCommGro
 end LatticeIndicator
 
 open LatticeIndicator
-
-section Main
-
-variable {O K m n R : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-  [Finite (IsLocalRing.ResidueField O)] [Field K] [Algebra O K] [IsFractionRing O K]
-  [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] [CommRing R]
-
-end Main
 
 end GlobalTheory
 end -- clump:auto

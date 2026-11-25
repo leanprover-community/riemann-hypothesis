@@ -137,8 +137,4 @@ theorem emb_mem_KsphC_iff {D : D7} (V : HSp D) (v : HeightOneSpectrum (𝓞 D.ho
 
 end Supp
 
-section More
-
-end More
-
 end GlobalTheory.AdelicU.Model

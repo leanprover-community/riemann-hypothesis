@@ -287,10 +287,7 @@ theorem fibre_avg_tendsto [LocallyCompactSpace V] [SecondCountableTopology V] [T
   obtain ⟨c1, c2⟩ := fibre_cut hU hB hf hq hqU hc hrc (fun s => k3 _) (fun s hs => (hts s hs).2.2)
     (fun s hs => (hts s hs).1) (hμ k)
   have hD : ∫ s, ρ k (c - s) ∂ν = ∫ y, ρ k y ∂ν := integral_sub_left_eq_self (ρ k) ν c
-  have hρi : Integrable (ρ k) ν := by
-    by_contra h
-    rw [integral_undef h] at k4
-    exact lt_irrefl _ k4
+  have hρi : Integrable (ρ k) ν := .of_integral_ne_zero k4.ne'
   have hri : Integrable (fun s => ρ k (c - s)) ν := hρi.comp_sub_left c
   set D : ℝ := ∫ y, ρ k y ∂ν with hDdef
   set G : R → ℂ := fun s => ∫ X, φ X ∂(m s) with hG

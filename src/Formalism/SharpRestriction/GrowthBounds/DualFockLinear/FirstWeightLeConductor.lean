@@ -138,31 +138,6 @@ def FormCoreSKX : Prop :=
       (∀ Q ∈ nabO O Kf m (nuOf lam), ∀ P ∈ nabO O Kf m (nuOf lam),
         B P (((p : Kf) ^ expN p m lam) • Q) ∈ Set.range (algebraMap O Kf))
 
-private theorem not_isUnit_p_of_hidaSetting {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W]
-    [Field Qq] [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
-    {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O} (hS : HidaSetting p n' W Qq O Kf ι σ j w) :
-    ¬ IsUnit ((p : ℕ) : O) := by
-  intro hu
-  letI : Algebra W O := j.toAlgebra
-  haveI : Module.Finite W O := hS.finite
-  have hfg : (⊤ : Submodule W O).FG := Module.Finite.fg_top
-  have hpm : Ideal.span {((p : ℕ) : W)} ≤ IsLocalRing.maximalIdeal W := by
-    rw [Ideal.span_le, Set.singleton_subset_iff]
-    exact hS.p_unif.not_isUnit
-  have hjac : Ideal.span {((p : ℕ) : W)} ≤ (⊥ : Ideal W).jacobson := by
-    rw [IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top]
-    exact hpm
-  have hle : (⊤ : Submodule W O) ≤ Ideal.span {((p : ℕ) : W)} • ⊤ := by
-    intro x _
-    obtain ⟨u, hu'⟩ := hu
-    have hx : x = ((p : ℕ) : W) • ((↑u⁻¹ : O) * x) := by
-      rw [Algebra.smul_def, RingHom.algebraMap_toAlgebra, map_natCast, ← hu', ← mul_assoc, Units.mul_inv, one_mul]
-    rw [hx]
-    exact Submodule.smul_mem_smul (Ideal.mem_span_singleton_self _) Submodule.mem_top
-  have hbot := Submodule.eq_bot_of_le_smul_of_le_jacobson_bot _ _ hfg hle hjac
-  have h1 : (1 : O) ∈ (⊥ : Submodule W O) := hbot ▸ Submodule.mem_top
-  exact one_ne_zero ((Submodule.mem_bot W).mp h1)
-
 theorem formCoreSKX_of (h : FormCoreGX) : FormCoreSKX := by
   intro p n' W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ j w hS m lam hlam
   haveI : Fact p.Prime := ⟨hS.prime⟩
@@ -172,7 +147,7 @@ theorem formCoreSKX_of (h : FormCoreGX) : FormCoreSKX := by
   haveI : CharZero Qq := charZero_of_injective_algebraMap (IsFractionRing.injective W Qq)
   haveI : CharZero Kf := charZero_of_injective_ringHom ι.injective
   obtain ⟨B, hc, hrow, hnd, hint, hbd, hzero⟩ :=
-    h p O Kf (not_isUnit_p_of_hidaSetting hS) (m + 1) (m + 1) le_rfl (nuOf lam) (nuOf_antitone hlam)
+    h p O Kf (Formalism.MainNotions.Pf14.p_nonunit hS) (m + 1) (m + 1) le_rfl (nuOf lam) (nuOf_antitone hlam)
   refine ⟨B, hc, hrow, hnd, hint, ?_⟩
   intro Q hQ P hP
   by_cases h0 : ellWt lam = 0
@@ -180,7 +155,7 @@ theorem formCoreSKX_of (h : FormCoreGX) : FormCoreSKX := by
     rw [hE, pow_zero, one_smul]
     exact hzero (fun t => by have := nuOf_le_ellWt hlam t; omega) Q hQ P hP
   · have hE : expN p m lam = sExp p (m + 1) (ellWt lam) := by
-      simp only [expN, if_neg h0, sExp, N0, deF]
+      simp only [expN, ite_eq_right h0, sExp, N0, deF]
     rw [hE]
     exact hbd _ (Or.inl (nuOf_le_ellWt hlam)) Q hQ P hP
 
@@ -378,7 +353,7 @@ theorem test_side_explicit_identification : Formalism.MainNotions.TestSideCounti
     unfold Vsp
     congr 1
     funext s
-    rw [if_pos (hanti s)]
+    rw [ite_eq_left (hanti s)]
   obtain ⟨Ψ, hform, hΨ⟩ := ten_sideX O Kf p lam0 hd (fun s => expN p m (lamAt lam0 s)) β hβ cs hcs (Vsp Kf lam0) hV
   have hκ : (p : Kf) ^ ((kap1 p lam0 : ℕ) : ℤ) = (p : Kf) ^ (∑ s, expN p m (lamAt lam0 s)) := by
     rw [zpow_natCast]
@@ -522,7 +497,6 @@ theorem first_weight_le_conductor {n' m : ℕ} (hm : 2 ≤ m) {TT : Finset (Fin 
   · show (-restW TT lam0 t (Fin.rev 0) - -restW TT lam0 t (Fin.rev (Fin.last m))).toNat ≤ c0
     rw [Fin.rev_last, Fin.rev_zero]; omega
 
-
 theorem opFAt_of_ten (hT : TenOp) {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W]
     [Field Qq] [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf] [CharZero Kf]
     {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O} (hS : HidaSetting p n' W Qq O Kf ι σ j w) {m : ℕ} (hm : 1 ≤ m)
@@ -537,7 +511,7 @@ theorem opFAt_of_ten (hT : TenOp) {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [
     unfold Vsp
     congr 1
     funext t
-    rw [if_pos (hanti t)]
+    rw [ite_eq_left (hanti t)]
   obtain ⟨L, a, hL, hmain⟩ := hT Kf n' m hm (vecE n') TT d c0 (fun t => nuOf (lamAt rest t))
     (fun t => Formalism.L2.G.Model.TS.nuOf_antitone (hanti t)) h0 h1 β (hV ▸ β.2) s (hV ▸ s.2)
   set A : Fin n' → Matrix (Fin (m + 1)) (Fin (m + 1)) Kf := fun x => Aa (vecE n' x) (la_tw ι σ x.val hmat)⁻¹ with hA

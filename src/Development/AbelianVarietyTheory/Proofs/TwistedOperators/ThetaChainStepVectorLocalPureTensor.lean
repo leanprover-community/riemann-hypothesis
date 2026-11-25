@@ -13,45 +13,7 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Pla
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitIdempotentBaseFunctionIdentityStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaFunctionSplitProductDatumIsPureTensorStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Basify
 import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitProjAdeleComponentChartProperties
 
@@ -207,7 +169,7 @@ theorem omegaG_eq_prod_gLoc : ∀ (D : D7) (a b : ℕ) (L : Formalism.L2.DIV.Lev
           (fun PP => Formalism.L2.DIV.upperLeftBlock L.hr (g PP)) ∈ L.P.H) := by
       rintro ⟨h1, g, hg1, hg2, hg3⟩
       exact hall fun PP => ⟨h1 PP.1 PP.2, g PP, hg1 PP, hg2 PP, (hmem _).1 hg3 PP⟩
-    push_neg at hall
+    push Not at hall
     obtain ⟨PP, hPP⟩ := hall
     rw [omegaG, dite_eq_right hG]
     refine (Finset.prod_eq_zero (Finset.mem_univ PP) ?_).symm
@@ -247,8 +209,6 @@ theorem redRel_of_isRedMap {v : FinPl D} {φ : SplitProj D v} {PP : Formalism.L2
     {r : v.adicCompletionIntegers D.host.F →+* Formalism.L2.DIV.kP PP} (hr : IsRedMap φ PP r)
     (x : v.adicCompletionIntegers D.host.F) : RedRel φ PP (x : Fv D.host.F v) (r x) :=
   (hr.2.2.1 _ _).2 ⟨x.2, rfl⟩
-
-
 
 theorem locDatum_eq_viaRed : ∀ (D : D7) (v : FinPl D) (φ : SplitProj D v) (PP : Formalism.L2.DIV.Pl D.host.E)
     (r : v.adicCompletionIntegers D.host.F →+* Formalism.L2.DIV.kP PP), IsRedMap φ PP r →
@@ -383,7 +343,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor GlobalTheory.StepVec
 open scoped TensorProduct ComplexOrder
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalLevelDatumEqFunctionOfResidueReductionStatement =====
@@ -395,9 +354,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor GlobalTheory.StepVec
 open scoped TensorProduct ComplexOrder
-
-
-
 
 namespace GlobalTheory.StepVec
 
@@ -435,11 +391,11 @@ theorem prod_locFn_half : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (EAf
       intro i j
       rw [frMapO_smul, Matrix.smul_apply, smul_eq_mul]
       exact (Formalism.L2.Herm.intAf D.host.F D.host.E).mul_mem hi (hN i j)
-    rw [if_pos ⟨hhalfPP PP hPP, hN'⟩]
+    rw [ite_eq_left ⟨hhalfPP PP hPP, hN'⟩]
     congr 1
     funext i j
     have hmem : (frMapO S T βS βT (es PP • t)) i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := hN' i j
-    simp only [redM, dif_pos (hN i j), dif_pos hmem]
+    simp only [redM, dite_eq_left (hN i j), dite_eq_left hmem]
     have heq : (⟨(frMapO S T βS βT (es PP • t)) i j, hmem⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) =
         ⟨toEAf D (es PP), hi⟩ * ⟨(frMapO S T βS βT t) i j, hN i j⟩ := by
       apply Subtype.ext
@@ -462,7 +418,7 @@ theorem prod_locFn_half : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (EAf
       exact Subring.sum_mem _ fun PP hPP => hc PP hPP i j
     obtain ⟨PP, hPP, hni⟩ := hex
     symm
-    exact Finset.prod_eq_zero hPP (if_neg fun h => hni h.2)
+    exact Finset.prod_eq_zero hPP (ite_eq_right fun h => hni h.2)
 
 end GlobalTheory.StepVec
 end -- clump:auto
@@ -497,9 +453,6 @@ theorem gl_map_val {n : ℕ} {R S : Type} [CommRing R] [CommRing S] (f : R →+*
 
 end GlobalTheory.StepVec.HalfCmp
 
-
-
-
 open GlobalTheory.StepVec.HalfCmp in
 theorem GlobalTheory.StepVec.onHalf_viaRed_eq_locFn : ∀ (D : D7) (v : FinPl D) (φ : SplitProj D v) (e : AE D) (PP : Formalism.L2.DIV.Pl D.host.E)
     (r : v.adicCompletionIntegers D.host.F →+* Formalism.L2.DIV.kP PP), IsIdemOf φ e → IsProjAt φ PP → IsRedMap φ PP r →
@@ -520,8 +473,8 @@ theorem GlobalTheory.StepVec.onHalf_viaRed_eq_locFn : ∀ (D : D7) (v : FinPl D)
   unfold onHalf locFn
   by_cases hh : IsHalf e t
   swap
-  · rw [if_neg hh, if_neg (fun h => hh h.1)]
-  rw [if_pos hh, h1]
+  · rw [ite_eq_right hh, ite_eq_right (fun h => hh h.1)]
+  rw [ite_eq_left hh, h1]
   have hfix : ∀ i j, toEAf D e * N i j = N i j := by
     intro i j
     have : toEAf D e • N = N := by
@@ -544,14 +497,14 @@ theorem GlobalTheory.StepVec.onHalf_viaRed_eq_locFn : ∀ (D : D7) (v : FinPl D)
       exact (hr.2.2.2 (N i j) (h i j)).1
   unfold viaRed
   by_cases hI : IsIntM N
-  · rw [dite_eq_left (hiff.2 hI), if_pos ⟨hh, hI⟩]
+  · rw [dite_eq_left (hiff.2 hI), ite_eq_left ⟨hh, hI⟩]
     congr 1
     ext i j
     obtain ⟨hm, hm'⟩ := hr.2.2.2 (N i j) (hI i j)
     simp only [Matrix.of_apply, Matrix.map_apply]
     unfold redM
     rw [dite_eq_left (hI i j), ← hm']
-  · rw [dite_eq_right (fun h => hI (hiff.1 h)), if_neg (fun h => hI h.2)]
+  · rw [dite_eq_right (fun h => hI (hiff.1 h)), ite_eq_right (fun h => hI h.2)]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitHalfResidueReductionFunctionEqFrameLocal =====
@@ -563,7 +516,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor GlobalTheory.StepVec
 open scoped TensorProduct ComplexOrder
-
 
 theorem _root_.GlobalTheory.T.splitHalf_residueReduction_function_eq_frameLocal : ∀ (D : D7) (v : FinPl D) (φ : SplitProj D v) (e : AE D) (PP : Formalism.L2.DIV.Pl D.host.E)
     (r : v.adicCompletionIntegers D.host.F →+* Formalism.L2.DIV.kP PP), IsIdemOf φ e → IsProjAt φ PP → IsRedMap φ PP r →
@@ -583,12 +535,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor GlobalTheory.StepVec
 open scoped TensorProduct ComplexOrder
 
-
-theorem _root_.GlobalTheory.T.thetaTwistDatum_eq_function_of_residueReduction : ∀ (D : D7) (v : FinPl D) (φ : SplitProj D v) (PP : Formalism.L2.DIV.Pl D.host.E)
-    (r : v.adicCompletionIntegers D.host.F →+* Formalism.L2.DIV.kP PP), IsRedMap φ PP r →
-    ∀ (a b k : ℕ) (mu : (Fv D.host.F v)ˣ →* ℂˣ) (ξ : (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ), LiftsChar φ PP mu ξ⁻¹ →
-    ∀ Y : Matrix (Fin b) (Fin a) (Fv D.host.F v), phiQ v k mu Y = viaRed r (qLoc k PP ξ) Y := by
-  first | exact @GlobalTheory.StepVec.phiQ_eq_viaRed_qLoc
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaTwistDatumEqFunctionOfResidueReductionStatement =====
@@ -614,7 +560,7 @@ theorem omegaQ_one_eq_prod_qLoc : ∀ (D : D7) (a b r : ℕ) (Q : Finset (Formal
     refine Finset.prod_congr rfl fun PP _ => ?_
     rw [zpow_one, qLoc, dite_eq_left (h PP.1 PP.2)]
   · rw [dite_eq_right h]
-    push_neg at h
+    push Not at h
     obtain ⟨PP, hPP, hn⟩ := h
     refine (Finset.prod_eq_zero hPP ?_).symm
     rw [qLoc, dite_eq_right]
@@ -644,14 +590,6 @@ theorem infPart_idemAt {a : AE D} {PP : Formalism.L2.DIV.Pl D.host.E} (h : Forma
   classical
   have hs : IsIdemSum a {PP} := ⟨⟨fun _ => a, fun Q hQ => by rw [Finset.mem_singleton.1 hQ]; exact h, by simp⟩, h.1.2.1⟩
   exact GlobalTheory.PlaceDatum.infPart_idemSum hs
-
-theorem prime_eq_of_idem {a : AE D} {P P' : Formalism.L2.DIV.Pl D.host.E} (h : Formalism.L2.NTheta.IsIdemAt a P)
-    (h' : Formalism.L2.NTheta.IsIdemAt a P') : P = P' := by
-  refine HeightOneSpectrum.ext (Ideal.ext fun x => ?_)
-  by_cases hx : x = 0
-  · rw [hx]; exact iff_of_true (zero_mem _) (zero_mem _)
-  · exact (h.2 x hx).trans (h'.2 x hx).symm
-
 
 theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
   classical
@@ -692,7 +630,7 @@ theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
     have h1 : (fun y => localNewformFunction (vP i) J lam mu (rowsTB ht y)) = viaRed (rP i) (ω i.1) := by
       funext y
       rw [_root_.GlobalTheory.StepVec.locDatum_eq_viaRed D (vP i) (φP i) i.1 (rP i) (hrP i) _ _ t ht LS _ _ J lam hJ mu (χ i.1) hmu y]
-      simp only [ω, dif_pos hi]
+      simp only [ω, dite_eq_left hi]
     rw [h1]
     exact GlobalTheory.T.splitHalf_residueReduction_function_eq_frameLocal D (vP i) (φP i) (es i.1) i.1 (rP i) (hφ i) (hpr i) (hrP i) S T βS βT (ω i.1)
   have hcmpQ : ∀ (i : ↥s) (hi : i.1 ∈ Q) (mu : (Fv D.host.F (vP i))ˣ →* ℂˣ), LiftsChar (φP i) i.1 mu (ξ i.1)⁻¹ →
@@ -701,8 +639,8 @@ theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
     have hn : i.1 ∉ LS.Pg := fun h => Finset.disjoint_left.1 hdisj h hi
     have h1 : phiQ (vP i) LS.r mu = viaRed (b := T.rank) (a := S.rank) (rP i) (ω i.1) := by
       funext y
-      rw [GlobalTheory.T.thetaTwistDatum_eq_function_of_residueReduction D (vP i) (φP i) i.1 (rP i) (hrP i) _ _ LS.r mu (ξ i.1) hmu y]
-      simp only [ω, dif_neg hn]
+      rw [GlobalTheory.StepVec.phiQ_eq_viaRed_qLoc D (vP i) (φP i) i.1 (rP i) (hrP i) _ _ LS.r mu (ξ i.1) hmu y]
+      simp only [ω, dite_eq_right hn]
     rw [h1]
     exact GlobalTheory.T.splitHalf_residueReduction_function_eq_frameLocal D (vP i) (φP i) (es i.1) i.1 (rP i) (hφ i) (hpr i) (hrP i) S T βS βT (ω i.1)
 
@@ -716,7 +654,7 @@ theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
     rw [hij] at h1
     have h3 := GlobalTheory.PlaceDatum.idempotent_eq_of_orthogonal_decomp (hes i.1 i.2).1.1 (hes i.1 i.2).1.2.1 (hes j.1 j.2).1.1 (hes j.1 j.2).1.2.1
       (h1.trans h2.symm) (hcross _ i.2 _ j.2) (hcross _ j.2 _ i.2)
-    exact Subtype.ext (prime_eq_of_idem (hes i.1 i.2) (h3 ▸ hes j.1 j.2))
+    exact Subtype.ext (GlobalTheory.PlaceVec.isIdemAt_inj (hes i.1 i.2) (h3 ▸ hes j.1 j.2))
 
   have hid : ∀ (i : ↥s) (v : FinPl D) (φ : SplitProj D v) (e' : AE D), IsIdemOf φ e' → IsProjAt φ i.1 →
       ∃ hv : v = vP i, e' = es i.1 ∧ hv ▸ φ = φP i := by
@@ -739,10 +677,10 @@ theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
       intro i
       have h : ∃ j, vP j = vP i := ⟨i, rfl⟩
       show (if h : ∃ j, vP j = vP i then xθ h.choose else f₀) = xθ i
-      rw [dif_pos h, hinj h.choose_spec]
+      rw [dite_eq_left h, hinj h.choose_spec]
     refine ⟨x, ⟨fun τ => rfl, fun v hv => ?_⟩, ?_⟩
     · show (if h : ∃ i, vP i = v then xθ h.choose else f₀) = f₀
-      refine dif_neg ?_
+      refine dite_eq_right ?_
       rintro ⟨i, rfl⟩
       exact hv i.1 i.2 (hunder i)
     · intro v φ e' he' mu
@@ -783,9 +721,9 @@ theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
         ← Finset.prod_coe_sort LS.Pg fun PP => ω PP (y PP)]
       congr 1
       · refine Finset.prod_congr rfl fun PP _ => ?_
-        simp only [ω, dif_pos PP.2]
+        simp only [ω, dite_eq_left PP.2]
       · refine Finset.prod_congr rfl fun PP hq => ?_
-        simp only [ω, dif_neg fun h => Finset.disjoint_left.1 hdisj h hq]
+        simp only [ω, dite_eq_right fun h => Finset.disjoint_left.1 hdisj h hq]
     rw [← hsumes] at hth
     refine GlobalTheory.T.thetaFunction_splitProductDatum_isPureTensor D ψ θ S T sS sT ΛS ΛT f₀ μ 𝓕 hB hC ↥s Finset.univ vP (fun i => es i.1) (fun i _ => hsplit i)
       hinj.injOn Φ (fun i _ => hsb i) x f _ (fun i _ => hθ i) hoff ?_ ?_ hth
@@ -796,11 +734,11 @@ theorem stepVecLocal : ∀ D : D7, StepVecLocal D := by
       show (if _ then _ else _) = ∏ i : ↥s, Φ i (es i.1 • t')
       rw [h2, ← h]
       by_cases hI : IsIntM (frMapO S T βS βT t')
-      · rw [if_pos ⟨ht', hI⟩, if_pos hI]
+      · rw [ite_eq_left ⟨ht', hI⟩, ite_eq_left hI]
         exact hprod _
-      · rw [if_neg fun h => hI h.2, if_neg hI]
+      · rw [ite_eq_right fun h => hI h.2, ite_eq_right hI]
     · intro t' ht'
-      exact if_neg fun h => ht' h.1
+      exact ite_eq_right fun h => ht' h.1
 
 end GlobalTheory.StepVec
 

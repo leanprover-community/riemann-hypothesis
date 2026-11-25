@@ -35,7 +35,7 @@ theorem natCast_smul_mem_hatL {F E : Type} [Field F] [NumberField F] [Field E] [
     obtain ⟨l, hl, rfl⟩ := hx
     refine Submodule.subset_span ⟨(N : 𝓞 E) • l, Submodule.smul_mem_smul hN hl, ?_⟩
     funext i
-    simp [Nat.cast_smul_eq_nsmul, ← nsmul_eq_mul, TensorProduct.smul_tmul']
+    simp [Nat.cast_smul_eq_nsmul]
   | zero => simp
   | add x y _ _ hx hy => rw [smul_add]; exact Submodule.add_mem _ hx hy
   | smul a x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ a hx

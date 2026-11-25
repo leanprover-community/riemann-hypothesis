@@ -5,57 +5,16 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsReducedIsNormalSchemeIsLocallyNoetherianOfSmoo
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsUniquePointOfRingHom
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Convex.Contractible
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Analysis.Analytic.Uniqueness
 public import Mathlib.Analysis.Calculus.FDeriv.Basic
@@ -186,7 +145,7 @@ theorem exists_prime_of_not_dvd {A : Type*} [CommRing A] [IsDomain A] [IsNoether
 private theorem valAt'_ne_zero_iff_top_le_preimage_basicOpen {X : Scheme.{0}} (x : Sp ℂ ⟶ X) {U : X.Opens}
     (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) : valAt' x U f ≠ 0 ↔ ⊤ ≤ x ⁻¹ᵁ X.basicOpen f := by
   have hv : valAt' x U f = (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom ((x.appLE U ⊤ h).hom f) := by
-    simp only [valAt', dif_pos h, valAt]
+    simp only [valAt', dite_eq_left h, valAt]
   have hb : x ⁻¹ᵁ X.basicOpen f = (Sp ℂ).basicOpen ((x.appLE U ⊤ h).hom f) := by
     rw [Scheme.preimage_basicOpen]
     have := (Sp ℂ).basicOpen_res (x.app U f) (homOfLE h).op
@@ -210,7 +169,7 @@ private theorem valAt'_ne_zero_iff_top_le_preimage_basicOpen {X : Scheme.{0}} (x
 
 private theorem valAt'_mul_of_top_le_preimage_open {X : Scheme.{0}} (x : Sp ℂ ⟶ X) {U : X.Opens}
     (h : ⊤ ≤ x ⁻¹ᵁ U) (f f' : Γ(X, U)) : valAt' x U (f * f') = valAt' x U f * valAt' x U f' := by
-  simp only [valAt', dif_pos h, valAt, map_mul]
+  simp only [valAt', dite_eq_left h, valAt, map_mul]
 
 theorem exists_point_of_prime (X : Over (Sp ℂ)) [LocallyOfFiniteType X.hom] {U : X.left.Opens}
     (hU : IsAffineOpen U) (p : Ideal Γ(X.left, U)) [p.IsPrime] {s : Γ(X.left, U)} (hs : s ∉ p) :

@@ -94,8 +94,8 @@ theorem hT_frame (V : HSp D) (x y : V.V) :
   ring
 
 private theorem exists_unimodular_lattice_eq_lat_of_isSelfDualC (X : LSp D) (h : IsSelfDualC X.sp X.lat) :
-    ∃ (L : Submodule (𝓞 D.host.E) X.sp.V) (h1 : Submodule.IsLattice D.host.E L)
-      (h2 : Formalism.HermitianLatticesTheory.IsUnimodular X.sp.hT L),
+    ∃ (L : Submodule (𝓞 D.host.E) X.sp.V) (_ : Submodule.IsLattice D.host.E L)
+      (_ : Formalism.HermitianLatticesTheory.IsUnimodular X.sp.hT L),
       (X.lat : Set (Fin X.sp.rank → D.host.E)) = {x | ∑ i, x i • X.sp.frame i ∈ L} := by
   classical
   obtain ⟨hlat, hsd⟩ := h

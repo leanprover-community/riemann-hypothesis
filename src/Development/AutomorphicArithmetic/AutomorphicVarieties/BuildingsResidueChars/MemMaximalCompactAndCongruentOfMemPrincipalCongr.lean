@@ -14,15 +14,10 @@ theorem UpperTheory.mem_maximalCompact_and_congruent_of_mem_principalCongruence 
     ∀ i j, valuation (w.adicCompletion F) ((g.val - 1) i j) ≤ valuation (w.adicCompletion F) (M : w.adicCompletion F) := by
   intro F _ _ w n M g hg
   obtain ⟨k, hk, hkg⟩ := hg
-  haveI : (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=
-    Valuation.Compatible.ofValuation _
   have hint : ∀ x : UpperTheory.V.Af.Ohat F,
-      valuation (w.adicCompletion F) (GlobalTheory.CuspRep.pLoc F w x.1) ≤ 1 := fun x => by
-    have h1 : Valued.v (GlobalTheory.CuspRep.pLoc F w x.1) ≤ 1 := Subring.mem_iInf.1 x.2 w
-    rw [← map_one (valuation (w.adicCompletion F)), ← Valuation.Compatible.vle_iff_le,
-      Valuation.Compatible.vle_iff_le
-        (v := (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ)))), map_one]
-    exact h1
+      valuation (w.adicCompletion F) (GlobalTheory.CuspRep.pLoc F w x.1) ≤ 1 := fun x =>
+    (ValuativeRel.isEquiv (ValuativeRel.valuation _) Valued.v).le_one_iff_le_one.2
+      (Subring.mem_iInf.1 x.2 w)
   let φ : UpperTheory.V.Af.Ohat F →+* w.adicCompletion F := (GlobalTheory.CuspRep.pLoc F w).comp (UpperTheory.V.Af.Ohat F).subtype
   let ψ : UpperTheory.V.Af.Ohat F →+* 𝒪[w.adicCompletion F] := φ.codRestrict _ fun x => hint x
   have hent : ∀ i j, g.val i j = φ (k.val i j) := fun i j => by

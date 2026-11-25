@@ -174,7 +174,7 @@ theorem toFrame_aaElt (w : Pl D.host.E) (hs : 1 ≤ (bareGrid w).s) {j : ℕ} (h
     rw [show aaExp w j (Sum.inr p) = FractionalIdeal.count D.host.E w D.host.AA * ((D.R.m - 1 - j - p.val : ℕ) : ℤ) -
       FractionalIdeal.count D.host.E w D.host.AAbar * (p.val + 1) from rfl]
     simp only [Function.comp_apply, frame, Equiv.trans_apply, finSumFinEquiv_apply_right, finCongr_apply, Fin.val_cast,
-      Fin.val_natAdd, le_add_iff_nonneg_right, zero_le, if_true, Nat.add_sub_cancel_left, genAt]
+      Fin.val_natAdd, le_add_iff_nonneg_right, zero_le, ite_true, Nat.add_sub_cancel_left, genAt]
     congr 1
     rw [e, e, ← _root_.zpow_neg, ← _root_.zpow_add]
     congr 1
@@ -195,7 +195,6 @@ theorem sum_abs_aaExp_le (w : Pl D.host.E) (j : ℕ) :
       |FractionalIdeal.count D.host.E w D.host.AAbar|)) := by
   set A := FractionalIdeal.count D.host.E w D.host.AA
   set A' := FractionalIdeal.count D.host.E w D.host.AAbar
-  have hA : 0 ≤ |A| + |A'| := by positivity
   rw [Fintype.sum_sum_type]
   have h0 : ∑ a : Fin (topRank (bareGrid w) j), |aaExp w j (Sum.inl a)| = 0 :=
     Finset.sum_eq_zero fun a _ => by simp [show aaExp w j (Sum.inl a) = 0 from rfl]
@@ -261,9 +260,6 @@ theorem aaTerm_coef_eq_zpow {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
           rcases Nat.eq_zero_or_pos (bigN D) with h | h
           · simp [h]
           · nlinarith [show (1 : ℤ) ≤ bigN D by exact_mod_cast h]
-        have hA : 0 ≤ |FractionalIdeal.count D.host.E w D.host.AA| + |FractionalIdeal.count D.host.E w D.host.AAbar| :=
-          by positivity
-        have hm : (0 : ℤ) ≤ D.R.m := by positivity
         rw [hB]
         have : (D.R.m : ℤ) * ((bigN D : ℤ) * ((D.R.m : ℤ) * ((D.R.m : ℤ) * (|FractionalIdeal.count D.host.E w D.host.AA| +
           |FractionalIdeal.count D.host.E w D.host.AAbar|)))) = (bigN D : ℤ) * ((D.R.m : ℤ) ^ 3 *

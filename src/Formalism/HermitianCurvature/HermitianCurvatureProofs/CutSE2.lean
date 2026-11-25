@@ -163,7 +163,7 @@ theorem expansion_L2_of_decay_pairs (hW : WdExpand) (hE : LetterDensityExpansion
     refine Finset.sum_congr rfl fun i _ => ?_
     by_cases hb : bs i = []
     · have hb' : (bs i).length = 0 := by simp [hb]
-      simp only [hb', if_true]
+      simp only [hb', ite_true]
       rw [← Finset.sum_mul, ← Finset.mul_sum, hsum1 i hb, mul_one]
       simp [hb]
     · have hb' : (bs i).length ≠ 0 := by simpa using hb

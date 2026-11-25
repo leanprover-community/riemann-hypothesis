@@ -52,7 +52,7 @@ def sysOf (X : Data F) (Λ₀ : ℝ) : Sys F (Tot X.toGeo) where
 def totExt (G : Geo F) (E : Type) [Field E] [NumberField E] [Algebra F E] :
     Tot G →ₛₗ[algebraMap F E] Tot (G.baseChange E) where
   toFun x j := G.toExt E j (x j)
-  map_add' x y := funext fun j => map_add _ _ _
+  map_add' _ _ := funext fun _ => map_add _ _ _
   map_smul' c x := funext fun j => map_smulₛₗ (G.toExt E j) c (x j)
 
 section Split

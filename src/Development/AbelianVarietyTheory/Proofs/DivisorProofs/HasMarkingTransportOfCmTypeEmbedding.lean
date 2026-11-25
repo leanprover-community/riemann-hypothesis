@@ -10,38 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDerivAt0Co
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DeterminantSectionRule
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CmModuliConsequenceOfAbelianSchemeLaws
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSectionOfChg
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
@@ -84,15 +52,6 @@ theorem exists_equiv_of_lattices {La : Type} [AddCommGroup La] {g : ℕ} (P P' :
   exact ⟨φ, fun a => LinearMap.congr_fun key a⟩
 
 alias ex_eq_iff := _root_.GlobalTheory.SharpPeriods.ex_eq_iff
-
-def imHerm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) : (Fin g → ℂ) →ₗ[ℝ] (Fin g → ℂ) →ₗ[ℝ] ℝ :=
-  LinearMap.mk₂ ℝ (fun z w => (herm Hm z w).im)
-    (fun _ _ _ => by simp [herm])
-    (fun r z w => by
-      rw [herm, herm, smul_dotProduct, Complex.smul_im])
-    (fun _ _ _ => by simp [herm, Matrix.mulVec_add])
-    (fun r z w => by
-      rw [herm, herm, star_smul, Matrix.mulVec_smul, dotProduct_smul, Complex.smul_im, star_trivial])
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {D : Datum H} {l : Level H}
 
@@ -175,7 +134,7 @@ theorem exists_transport {Xo : Moduli D l} {σ : KA l →+* ℂ} {g₀ : ℕ} {t
   · obtain ⟨z, rfl⟩ := h.surjective z
     obtain ⟨w, rfl⟩ := h.surjective w
     let j := (h.restrictScalars ℝ).toLinearMap
-    have : (imHerm Hm').compl₁₂ (φ.toLinearMap.comp j) (φ.toLinearMap.comp j) = (imHerm Hm).compl₁₂ j j := by
+    have : (GlobalTheory.PeriodCoord.imForm Hm').compl₁₂ (φ.toLinearMap.comp j) (φ.toLinearMap.comp j) = (GlobalTheory.PeriodCoord.imForm Hm).compl₁₂ j j := by
       refine LinearMap.ext_on_range hP.2.2.2.1 fun x => LinearMap.ext_on_range hP.2.2.2.1 fun y => ?_
       change (herm Hm' (φ (h (P x))) (φ (h (P y)))).im = (herm Hm (h (P x)) (h (P y))).im
       rw [hφ, hφ, hφ₀, hφ₀, hE, hE']

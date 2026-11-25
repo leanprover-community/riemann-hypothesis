@@ -286,13 +286,6 @@ lemma gw_decomp {g : Matrix (Fin n) (Fin n) ℂ} (hg : Formalism.REAL.inUJ ε g)
     g *ᵥ L.w b = ∑ c, L.M g c b • L.w c + ∑ a, hJ ε (L.f a) (g *ᵥ L.w b) • L.e a :=
   L.decomp _ (L.g_perp hg hS fun a => L.ew a b) (L.local_frame_preserves_orthogonal hg hS (fun a => L.ew a b) (L.zw b))
 
-private lemma mulVec_sum_lemma {ι : Type*} (s : Finset ι) (g : Matrix (Fin n) (Fin n) ℂ) (c : ι → ℂ)
-    (u : ι → Fin n → ℂ) : g *ᵥ (∑ i ∈ s, c i • u i) = ∑ i ∈ s, c i • (g *ᵥ u i) := by
-  classical
-  refine Finset.induction_on s (by simp) ?_
-  intro a s ha ih
-  rw [Finset.sum_insert ha, Finset.sum_insert ha, Matrix.mulVec_add, Matrix.mulVec_smul, ih]
-
 lemma M_mul {g g' : Matrix (Fin n) (Fin n) ℂ} (hg : Formalism.REAL.inUJ ε g) (hS : InS L.e L.z g)
     (hg' : Formalism.REAL.inUJ ε g') (hS' : InS L.e L.z g') : L.M (g * g') = L.M g * L.M g' := by
   ext c b
@@ -301,8 +294,9 @@ lemma M_mul {g g' : Matrix (Fin n) (Fin n) ℂ} (hg : Formalism.REAL.inUJ ε g) 
   have e1 : L.M (g * g') c b = hJ ε (L.w c) (g *ᵥ (g' *ᵥ L.w b)) := by
     show hJ ε (L.w c) ((g * g') *ᵥ L.w b) = _
     rw [Matrix.mulVec_mulVec]
-  rw [e1, L.gw_decomp hg' hS' b, Matrix.mulVec_add, hJ_add_right, mulVec_sum_lemma, mulVec_sum_lemma,
-    hJ_sum_right, hJ_sum_right]
+  rw [e1, L.gw_decomp hg' hS' b, Matrix.mulVec_add, hJ_add_right]
+  simp_rw [Matrix.mulVec_sum, Matrix.mulVec_smul]
+  rw [hJ_sum_right, hJ_sum_right]
   simp only [hXr, mul_zero, Finset.sum_const_zero, add_zero, Matrix.mul_apply]
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [mul_comm]

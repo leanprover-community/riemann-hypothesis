@@ -193,10 +193,4 @@ end Stmt
 def Stmt : Prop :=
   ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (ℓ : C), 0 < w ℓ → w ℓ < 1 → ValuedFieldThreeCases w ℓ
 
-noncomputable section Example
-
-variable {C : Type} [Field C] {w : Valuation C ℝ≥0}
-
-end Example
-
 end GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference

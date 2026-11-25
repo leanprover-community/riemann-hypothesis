@@ -111,7 +111,7 @@ theorem hasFDerivAt_inv_one :
   simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_smul',
     Pi.smul_apply, ContinuousLinearMap.coe_comp', Function.comp_apply, entL_apply, smul_eq_mul, inv_one,
     ContinuousLinearMap.zero_apply, Finset.sum_add_distrib] at h0X
-  simp only [Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_ite_eq'] at h0X
+  simp only [Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_ite_eq'] at h0X
   simp only [ContinuousLinearMap.neg_apply, ContinuousLinearMap.id_apply, Matrix.neg_apply]
   linear_combination h0X
 
@@ -271,8 +271,8 @@ theorem swap_cT (lam : Fin n → ℤ) : (swapJ lam)ᴴ = swapJ lam := by
   ext ⟨i, j⟩ ⟨k, l⟩
   simp only [Matrix.conjTranspose_apply, swapJ]
   by_cases h : k = j ∧ l = i
-  · rw [if_pos h, if_pos ⟨h.2.symm, h.1.symm⟩]; simp
-  · rw [if_neg h, if_neg fun h' => h ⟨h'.2.symm, h'.1.symm⟩]; simp
+  · rw [ite_eq_left h, ite_eq_left ⟨h.2.symm, h.1.symm⟩]; simp
+  · rw [ite_eq_right h, ite_eq_right fun h' => h ⟨h'.2.symm, h'.1.symm⟩]; simp
 
 theorem trace_kron_swap (lam : Fin n → ℤ) (A B : Matrix (Jd n lam) (Jd n lam) ℂ) :
     ((A ⊗ₖ B) * swapJ lam).trace = (A * B).trace := by

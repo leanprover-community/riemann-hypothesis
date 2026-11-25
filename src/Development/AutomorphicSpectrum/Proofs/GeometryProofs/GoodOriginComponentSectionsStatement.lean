@@ -90,7 +90,7 @@ theorem ModelDimension.geo_core (Or : RootOrigin Y SS RM Fx) (Fr : Small.GenFram
     ∃ (φ : Om Z →ₐ[c.F] RM.Ω) (P : FrPt Xo c RM.Ω) (t : Ix Dw → (RM.Ω)ˣ), FrMap φ (genFr h Z) P ∧ FrBor t P Fr.y₀ ∧
       (letI := φ.toRingHom.toAlgebra; Module.finrank (Om Z) RM.Ω = Or.Fl.deg) := by
   letI algΩ := Small.cstAlg Or
-  obtain ⟨ψ, hψ, hc⟩ := GlobalTheory.T.root_origin_component_generic_point E H Dw l Xo c Y SS RM Sys Fx Or Z hZ
+  obtain ⟨ψ, hψ, hc⟩ := GlobalTheory.CompanionTheory.Ar.KapEquiv.exists_kap_equiv E H Dw l Xo c Y SS RM Sys Fx Or Z hZ
   obtain ⟨hgx, y₀, hy₀, hy₀c⟩ := isGenFr_genFr h Z
   obtain ⟨N, ec, hx, hb, hj, hli₀, hli, hmem⟩ := flags_setup Or Fr Z ψ hψ hc y₀ hy₀
   letI algfn : Algebra Or.𝔐.Ω₀ RM.Ω := Or.𝔐.fn.toAlgebra
@@ -477,7 +477,7 @@ theorem exists_rule_of_frame (E : Type) [Field E] [NumberField E] [IsCMField E] 
   classical
   obtain ⟨x, hx⟩ := hsurj (s / gaugeT Or t u)
   let bb : ∀ Z' : Comp Xo c, Om Z' := fun Z' => if hZ : Z' = Z then hZ ▸ x else 0
-  have hbb : bb Z = x := dif_pos rfl
+  have hbb : bb Z = x := dite_eq_left rfl
   obtain ⟨g, hg, hgv⟩ := GlobalTheory.SecGlueInt.exists_secZ_of_regular E H Dw l Xo c h (GlobalTheory.AllWt.exOf Dw u 0) bb (fun C => by
     by_cases hZ : C.Z = Z
     · subst hZ
@@ -505,7 +505,7 @@ theorem exists_rule_of_frame (E : Type) [Field E] [NumberField E] [IsCMField E] 
       rw [ValuationSubring.mem_comap, ← hx, ← map_mul] at h1
       have : (eq.symm : RM.Ω →+* Om C.Z) (φ (a0 * x)) = a0 * x := eq.symm_apply_apply _
       rwa [this] at h1
-    · have : bb C.Z = 0 := dif_neg hZ
+    · have : bb C.Z = 0 := dite_eq_right hZ
       rw [this, mul_zero]
       exact zero_mem _)
   exact ⟨g, hg, by rw [hgv Z, hbb, hx]⟩
@@ -568,9 +568,9 @@ theorem bir_of_origin (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Re
     rw [h1, h2]
     by_cases hk : k = Or.k₀
     · subst hk
-      rw [Or.A_deg.1, if_pos rfl]
+      rw [Or.A_deg.1, ite_eq_left rfl]
       ring
-    · rw [Or.A_deg.2 k hk, if_neg hk]
+    · rw [Or.A_deg.2 k hk, ite_eq_right hk]
       ring
   obtain ⟨c', hc'⟩ := Or.𝔐.tie.cover ⟨GlobalTheory.CompanionTheory.Ar.genPt Or.𝔐.ξ, specializes_rfl⟩
   have hy0 : RM.y ⟨Or.k₀, c' Or.k₀⟩ ≠ 0 := (Finset.prod_ne_zero_iff.1 hc'.1) _ (Finset.mem_univ _)

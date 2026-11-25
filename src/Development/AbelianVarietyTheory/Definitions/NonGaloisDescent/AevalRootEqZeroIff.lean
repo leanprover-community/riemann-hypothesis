@@ -194,15 +194,6 @@ theorem _root_.GlobalTheory.UTr.normU_mem_plus (hs : ∀ b, s (s b) = b)
     map_mul, _root_.GlobalTheory.UTr.conj_conj P hs, mul_comm]
 
 
-section Map
-
-variable {P} {Q : Csr s'} (φ : B →+* B') (h : Q.1 ∣ P.1.map φ)
-
-variable (hφ : ∀ b, φ (s b) = s' (φ b))
-include hφ
-
-end Map
-
 
 
 variable {n : Type} [Fintype n] [DecidableEq n]

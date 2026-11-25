@@ -102,7 +102,6 @@ theorem le_span_restrict (T : LocTied l P AI) (hc : IsCrys (P.PD K) ρ) :
   obtain ⟨h2, -⟩ := finite_le₀ (P.PD K') (fracInv_of_tied T K') (ρ.comp (Subgroup.inclusion (GK_le h)))
   rw [isCrys_iff_finrank] at hc hc'
   let e : Module.Basis (Fin (Module.finrank ℚ_[l] V)) ↥(K0 K) (DcrisK₀ (P.PD K) ρ) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact Module.finBasisOfFinrankEq ↥(K0 K) _ hc
   have hB := indepB (P.PD K) (fracInv_of_tied T K) ρ e e.linearIndependent
   let d : Fin (Module.finrank ℚ_[l] V) → ↥(DcrisK₀ (P.PD K') (ρ.comp (Subgroup.inclusion (GK_le h)))) :=
@@ -472,7 +471,7 @@ theorem speiser_descent_span :
     rw [e1, Fintype.sum_eq_single ⟨a 1, h1S⟩]
     · have hg1 : ∀ c, a (gs ⟨a 1, h1S⟩) c = algebraMap L Ω c := by
         intro c; rw [hgs]; exact ha1 c
-      simp only [δ, if_pos rfl, one_smul]
+      simp only [δ, ite_eq_left rfl, one_smul]
       exact hker _ hg1 m hm
     · intro h hne
       have : (h : L →+* Ω) ≠ a 1 := fun e => hne (Subtype.ext e)

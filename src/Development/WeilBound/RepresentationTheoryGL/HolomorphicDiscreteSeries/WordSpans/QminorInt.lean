@@ -149,20 +149,14 @@ namespace PositivityTheory.RgHe.SM
 
 open Formalism.REAL Formalism.FourierDecayAlt.P.CapelliAbstractCharacter
 
-theorem qminor_int {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] {n t : ℕ}
-    {E : Fin n → Fin n → Module.End ℂ V} {E' : Fin n → Fin n → Module.End ℂ V'} (f : V →ₗ[ℂ] V')
-    (hf : ∀ a b x, f (E a b x) = E' a b (f x)) (a b : Fin t → Fin n) (u : ℂ) (x : V) :
-    f (qminor E a b u x) = qminor E' a b u (f x) := by
-  apply Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KLExA.qminor_int <;> assumption
-
 theorem thMap : ThMap := by
   intro V V' _ _ _ _ N E E' f hf u X x
-  refine ⟨?_, qminor_int f hf _ _ _ _⟩
+  refine ⟨?_, Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KLExA.qminor_int f hf _ _ _ _⟩
 
   simp only [Th, LinearMap.pi_apply, LinearMap.sum_apply, map_sum,
   LinearMap.smul_apply, LinearMap.comp_apply, LinearMap.proj_apply]
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [map_smul, qminor_int f hf]
+  rw [map_smul, Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KLExA.qminor_int f hf]
 
 theorem keyId : KeyId := by
   intro V V' _ _ _ _ N E E' ι z f hE hι hz hf w cG hdet h0 v

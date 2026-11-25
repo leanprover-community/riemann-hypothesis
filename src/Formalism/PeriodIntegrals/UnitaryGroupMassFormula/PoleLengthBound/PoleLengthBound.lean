@@ -196,7 +196,7 @@ theorem exists_unit_ord (K : Type*) [Field K] [Algebra K A] [FiniteDimensional K
         ordZ ϖ ζ ((∏ ζ', t ζ' ^ d ζ' : Aˣ) : A) := rfl
     rw [← e1, map_prod, toAdd_prod]
     simp only [map_zpow, toAdd_zpow, e2, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [← coe_ordZ (ζ := ζ) h (Units.isUnit _).mem_nonZeroDivisors, hz]
 
 theorem ord_sub_one_nonneg_iff (h : IsUnif (A := A) ϖ) (ζ : Pts O A) [IsDVRAt ζ] (x : ↥(As O A)) :
@@ -355,15 +355,15 @@ theorem length_step (K : Type*) [Field K] [Algebra K A] [FiniteDimensional K A]
     constructor
     · intro H
       have := H ζ₀
-      rw [hov, hd ζ₀, if_pos rfl, show c ζ₀ - (c ζ₀ + 1) = (-1 : ℤ) by ring] at this
+      rw [hov, hd ζ₀, ite_eq_left rfl, show c ζ₀ - (c ζ₀ + 1) = (-1 : ℤ) by ring] at this
       exact (ord_sub_one_nonneg_iff h ζ₀ b).mp this
     · intro hb ζ
       rw [hov, hd ζ]
       by_cases hz : ζ = ζ₀
       · subst hz
-        rw [if_pos rfl, show c ζ - (c ζ + 1) = (-1 : ℤ) by ring]
+        rw [ite_eq_left rfl, show c ζ - (c ζ + 1) = (-1 : ℤ) by ring]
         exact (ord_sub_one_nonneg_iff h ζ b).mpr hb
-      · rw [if_neg hz, show c ζ - (c ζ + 0) = (0 : ℤ) by ring, WithTop.coe_zero, add_zero]
+      · rw [ite_eq_right hz, show c ζ - (c ζ + 0) = (0 : ℤ) by ring, WithTop.coe_zero, add_zero]
         exact ord_nonneg (ζ := ζ) h b.2
   rw [← (G.quotKerEquivOfSurjective hsurj).length_eq,
     (Submodule.quotEquivOfEq _ _ hker).length_eq,
@@ -396,10 +396,10 @@ theorem length_ball_quotient_eq_sum_mul_fdeg (K : Type*) [Field K] [Algebra K A]
       by_cases hz : ζ = ζ₀
       · subst hz
         show m ζ = (if ζ = ζ then m ζ - 1 else m ζ) + if ζ = ζ then 1 else 0
-        rw [if_pos rfl, if_pos rfl]
+        rw [ite_eq_left rfl, ite_eq_left rfl]
         omega
       · show m ζ = (if ζ = ζ₀ then m ζ - 1 else m ζ) + if ζ = ζ₀ then 1 else 0
-        rw [if_neg hz, if_neg hz, add_zero]
+        rw [ite_eq_right hz, ite_eq_right hz, add_zero]
     have hsum : ∑ ζ, m ζ = ∑ ζ, m' ζ + 1 := by
       rw [Finset.sum_congr rfl (fun ζ _ => hmm ζ), Finset.sum_add_distrib]
       simp
@@ -678,7 +678,7 @@ theorem taylorRead (hE5 : ColDeriv G la) (u : Fin G.N → OsK X la G.w) (hu : uS
     intro col
     rw [rD_add, rD_sum, vanishingOnQuadric G la (k + 1) _ r hr (by rw [colIdx_mon col α']; omega), add_zero]
     simp only [hE5 u hu k _ α' col]
-    rw [Finset.sum_ite_eq', if_pos (Finset.mem_univ _)]
+    rw [Finset.sum_ite_eq', ite_eq_left (Finset.mem_univ _)]
   unfold psiRaw
   simp only [h1, smul_smul]
   rw [← Finset.sum_smul, ha, one_smul]
@@ -809,8 +809,8 @@ theorem colDeriv_of (hTH : PoleLengthBounds.TaylorHasse) (G : GlobalFamilyData X
         (Jid X la G.w ^ (k + 1) • (⊤ : Submodule ↥(Frac0 X la G.w) ↥(HK X la G.w wF))) := by
     have : ∑ β ∈ PoleLengthBounds.mon D j k, PoleLengthBounds.ym G la β • cf' β = yPow X la G.w α.1 • cf := by
       rw [Finset.sum_eq_single α.1]
-      · simp only [cf', if_pos rfl]; rfl
-      · intro b _ hb; simp only [cf', if_neg hb, smul_zero]
+      · simp only [cf', ite_eq_left rfl]; rfl
+      · intro b _ hb; simp only [cf', ite_eq_right hb, smul_zero]
       · intro hn; exact absurd α.2 hn
     rw [this, sub_self]
     exact Submodule.zero_mem _
@@ -822,7 +822,7 @@ theorem colDeriv_of (hTH : PoleLengthBounds.TaylorHasse) (G : GlobalFamilyData X
   · subst hαα
     simp only [cf', ↓reduceIte]
   · have hne : α'.1 ≠ α.1 := fun e => hαα (Subtype.ext e.symm)
-    simp only [cf', if_neg hne, if_neg hαα, map_zero, smul_zero]
+    simp only [cf', ite_eq_right hne, ite_eq_right hαα, map_zero, smul_zero]
 
 end PI.PoleLengthCount
 end -- clump:auto
@@ -994,8 +994,7 @@ theorem intD_mul (hC : Q.InCurve) {f1 f2 : Lw X la G.w} (h1 : IntD G la f1) (h2 
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [hg1, hg2]
     rfl
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine ord_sum_nonneg hC ζ _ _ fun q _ => ?_
     rw [map_mul]
     exact ord_mul_nonneg hC ζ (ho1 _ ζ) (ho2 _ ζ)
@@ -1063,14 +1062,12 @@ theorem intD_sfr (hC : Q.InCurve) (u : Fin G.N → OsK X la G.w) (hu : uSpec G l
         rw [Finset.sum_mul]; exact Finset.sum_congr rfl fun k _ => by ring
       rw [e1]
       ring
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine ord_sum_nonneg hC ζ _ _ fun q _ => ?_
     have := isDVRAt_of_curve Q hC ζ
     rw [map_mul, map_mul, map_intCast]
     refine ord_mul_nonneg hC ζ (ord_nonneg ζ hU (intCast_mem _ _)) (ord_mul_nonneg hC ζ ?_ ?_)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+    · rw [map_sum]
       refine ord_sum_nonneg hC ζ _ _ fun k _ => ?_
       rw [map_smul, hfk2, hc, algebraMap_smul, Algebra.smul_def]
       exact ord_mul_nonneg hC ζ (ord_nonneg ζ hU (Subalgebra.algebraMap_mem _ _)) (ho ζ k)

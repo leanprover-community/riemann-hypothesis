@@ -46,14 +46,14 @@ theorem exists_normal_base {σ : Type} (blk : σ → Option K) (c : ∀ k : NonP
   let t : K → ℂ := fun k => if hk : ∀ p, blk p ≠ some k then (z ⟨k, c ⟨k, hk⟩⟩)⁻¹ else 1
   have ht : ∀ k, t k ≠ 0 := fun k => by
     by_cases hk : ∀ p, blk p ≠ some k
-    · simp only [t, dif_pos hk]
+    · simp only [t, dite_eq_left hk]
       exact inv_ne_zero (hc ⟨k, hk⟩)
-    · simp only [t, dif_neg hk]
+    · simp only [t, dite_eq_right hk]
       exact one_ne_zero
   refine ⟨fun p => t p.1 * z p, ⟨t, ht, rfl⟩, fun k => ?_⟩
   obtain ⟨k, hk⟩ := k
   show t k * z ⟨k, c ⟨k, hk⟩⟩ = 1
-  simp only [t, dif_pos hk]
+  simp only [t, dite_eq_left hk]
   exact inv_mul_cancel₀ (hc ⟨k, hk⟩)
 
 theorem eq_of_orbit_normal {c : ∀ k, ι k} {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z')
@@ -125,10 +125,10 @@ theorem stepCols_nonempty {i : Fin N} (h : IsProperStep N j i) : (stepCols N j i
   have h1 := h.1
   by_cases hi : (i : ℕ) + 1 ≤ j
   · refine ⟨⟨N - j, by omega⟩, ?_⟩
-    simp only [stepCols, hi, if_true, Finset.mem_filter, Finset.mem_univ, true_and]
+    simp only [stepCols, hi, ite_true, Finset.mem_filter, Finset.mem_univ, true_and]
     omega
   · refine ⟨⟨0, hN⟩, ?_⟩
-    simp only [stepCols, hi, if_false, Finset.mem_filter, Finset.mem_univ, true_and]
+    simp only [stepCols, hi, ite_false, Finset.mem_filter, Finset.mem_univ, true_and]
     omega
 
 theorem minor_off_step (hj : j ≤ N) {i : Fin N} (hp : IsProperStep N j i) {h : Matrix (Fin N) (Fin N) ℂ}
@@ -163,9 +163,9 @@ theorem plucker_inj (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.blk} 
       (fun m => isValueAt_mul (isValueAt_of_regAt hb (hg.2.1 _ _).2) (isValueAt_of_regAt hb (hg.2.1 _ _).1))
     rw [hF.2.2.1 p k hp I I' hI hI'] at hv
     by_cases e : I = I'
-    · rw [if_pos e] at hv ⊢
+    · rw [ite_eq_left e] at hv ⊢
       exact isValueAt_one hb hv
-    · rw [if_neg e] at hv ⊢
+    · rw [ite_eq_right e] at hv ⊢
       exact isValueAt_zero hb hv
   calc P I = ∑ I', (if I = I' then 1 else 0) * P I' := by simp
     _ = ∑ I', (∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) b * valAt M.x (F.u ⟨k, m⟩ I') b) * P I' :=
@@ -229,11 +229,11 @@ theorem exists_point (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.blk}
   have hb : basePart M.blk z = b := by
     funext q
     obtain ⟨⟨k, hk⟩, m⟩ := q
-    exact dif_pos hk
+    exact dite_eq_left hk
   refine ⟨z, hb, fun k => by rw [hb]; exact hn k, hh, fun p k hp => ⟨1, one_ne_zero, fun m => ?_⟩⟩
   have hk : ¬ ∀ p, M.blk p ≠ some k := fun e => e p hp
   have e : (not_forall.1 hk).choose = p := M.blk_inj _ _ k (not_not.1 (not_forall.1 hk).choose_spec) hp
-  refine (dif_neg hk).trans ?_
+  refine (dite_eq_right hk).trans ?_
   rw [hb, one_mul, e]
 
 end Flags

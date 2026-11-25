@@ -10,40 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAlgebraicOfPowEqO
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ScaleRootOfPrint
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfOfBasePins
 import Formalism.LocalToGlobal.IndefiniteReal.FWCentral
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -125,7 +91,7 @@ theorem core_cases (hA : GlobalTheory.Published.GlobalArtinReciprocity) (hRF : G
     have h0 : f = 0 := Subtype.ext ((Submodule.eq_bot_iff _).1 hc f.1 f.2)
     rw [h0, map_zero] at hf
     exact (congrArg Subtype.val hf).symm
-  · obtain ⟨ν, hN, hν⟩ := GlobalTheory.T.exists_rationalScalar_normalised_standardFrame hA hRF hS D Γ Pl0 I0 T0 A3 T Rl cG S YS F κ v₀ O ρ hρ i j b hV hpin H hc
+  · obtain ⟨ν, hN, hν⟩ := GlobalTheory.SeriesTie.NormRatStd.exists_isNorm_isRatScalar_std hA hRF hS D Γ Pl0 I0 T0 A3 T Rl cG S YS F κ v₀ O ρ hρ i j b hV hpin H hc
     exact Or.inr ⟨ν, hN, algComb_of_ratScalar YS hRF fw (fw.evaluates_of_lUnif H.unif) H.core H.io
       (GlobalTheory.CoverHalf.primes_eq_of_halfIs T.toCore Rl.toRealDat H.laws.toLawsM H.core.lev (H.pins.2.tuple ()).half)
       H.size H.galois H.small.val H.small.ray H.small.roots hsp hρ hpin i j b hV hν⟩
@@ -137,6 +103,5 @@ end GlobalTheory.SerRefPt
 namespace GlobalTheory.SerRefPt
 
 open GlobalTheory.RealGeo GlobalTheory.Unframe GlobalTheory.UnframePt
-
 
 end GlobalTheory.SerRefPt

@@ -26,25 +26,6 @@ section Letters
 
 variable {T : LocLat G Qp LL O}
 
-theorem galois_action_frobenius_comm (g : G) (z : T.V ⊗[Qp] B) :
-    actVB PD T.ρ g (φVB PD (LL := LL) (V := T.V) z) = φVB PD (LL := LL) (V := T.V) (actVB PD T.ρ g z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul x b => simp [actVB, φVB, PD.φ_comm]
-  | add x y hx hy =>
-    simp only [map_add (f := _)]
-    rw [hx, hy]
-
-theorem scalar_mul_frobenius_comm (k : K₀) (z : T.V ⊗[Qp] B) :
-    mulVB (K₀ := K₀) (B := B) (V := T.V) (LL := LL) (PD.σ k) (φVB PD (LL := LL) (V := T.V) z) =
-      φVB PD (LL := LL) (V := T.V) (mulVB (K₀ := K₀) (B := B) (V := T.V) (LL := LL) k z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul x b => simp [mulVB, φVB, map_mul, PD.φ_K₀]
-  | add x y hx hy =>
-    simp only [map_add (f := _)]
-    rw [hx, hy]
-
 theorem frobenius_maps_letter_succ (i : ZMod n) (z : T.V ⊗[Qp] B) (hz : z ∈ DcrisL PD T.ρ (W.emb i)) :
     φVB PD (LL := LL) (V := T.V) z ∈ DcrisL PD T.ρ (W.emb (i + 1)) := by
   apply _root_.Formalism.MainNotions.N.Ln03.Pf.lvFil_φ_letter <;> assumption

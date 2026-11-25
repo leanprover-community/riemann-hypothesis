@@ -585,11 +585,7 @@ theorem J1at_of_ne (hS : B.StdOK) (hL : B.LatAll) (hG : GaussRow B) {N N' : ℕ}
     set g := gaussC (Ker.formV (TaylorLogMetric.area (TaylorLogMetric.tor0 D cc δ).abelian₂) D.what₂.Tau N 1) (TaylorLogMetric.al D (TaylorLogMetric.tor0 D cc δ)) Ae₁ S₁ with hgdef
     have key : ((‖a‖ : ℂ) / a * g) ^ 2 = ∏ τ : D.what₂.Tau, (TaylorLogMetric.embT D τ) (star (γ : Matrix (Fin N) (Fin N) D.host.E).det) := by
       rw [mul_pow, div_pow, hg, mul_one]
-      have hn : ((‖a‖ : ℂ)) ^ 2 = a * (starRingEnd ℂ) a := by
-        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-        push_cast
-        ring
-      rw [hn, hconj]
+      rw [← Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, hconj]
       field_simp
     obtain ⟨m, hm⟩ := hN'
     subst hm
@@ -674,11 +670,7 @@ theorem J2at_of_ne (hS : B.StdOK) (hL : B.LatAll) (hG : GaussRow B) {N N' : ℕ}
     set g := gaussC (Ker.formV (TaylorLogMetric.area (TaylorLogMetric.tor0 D cc δ).abelian₂) D.what₂.Tau N' 1) (TaylorLogMetric.al D (TaylorLogMetric.tor0 D cc δ)) Ae₁ S₁ with hgdef
     have key : ((‖a‖ : ℂ) / a * g) ^ 2 = ∏ τ : D.what₂.Tau, (TaylorLogMetric.embT D τ) (γ' : Matrix (Fin N') (Fin N') D.host.E).det := by
       rw [mul_pow, div_pow, hg, mul_one]
-      have hn : ((‖a‖ : ℂ)) ^ 2 = a * (starRingEnd ℂ) a := by
-        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-        push_cast
-        ring
-      rw [hn, hconj]
+      rw [← Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, hconj]
       field_simp
     obtain ⟨m, hm⟩ := hN
     subst hm

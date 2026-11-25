@@ -294,7 +294,7 @@ theorem GlobalTheory.VacDensity.proj : ∀ (D : D7) (ψ : AddChar (AF D.host.F) 
       fun w hw => ?_).resolve_right hg0
     by_cases hA : ∀ u ∈ U', u.map (infPart D) = 0 → ψ (symplO S T u w) = 1
     · exact hfo _ (hWst ⟨w, hw, hA⟩ g hgW)
-    · push_neg at hA
+    · push Not at hA
       obtain ⟨u, hu, h0, hne1⟩ := hA
       have hwg : IsThetaFunO ψ S T (heisO ψ S T w g) := laws.1 w g hgT
       have e1 : GlobalTheory.RawLift.thetaIP vol.μ vol.𝓕 f (heisO ψ S T w g) =

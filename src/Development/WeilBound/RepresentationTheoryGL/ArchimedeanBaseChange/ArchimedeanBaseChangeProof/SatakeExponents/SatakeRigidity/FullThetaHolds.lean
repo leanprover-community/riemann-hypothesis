@@ -131,14 +131,12 @@ theorem sum_rev_map {d : ℕ} (f : Fin d → Multiset ℂˣ) :
   rw [map_inv_sum]
   exact Fintype.sum_equiv Fin.revPerm _ _ fun k => by rw [Fin.revPerm_apply]
 
-
 variable (E) in
 def nuT (s : ℝ) : Formalism.L2.Host.HChar E := GlobalTheory.ThetaPull.thetaChar (GlobalTheory.HeckeGal.Model.absPow E (-s))
 
 theorem isAbsPow_nuT (s : ℝ) : (nuT E s).IsAbsPow s := by
   have h := GlobalTheory.ThetaPull.isAbsPow_thetaChar (GlobalTheory.HeckeGal.Model.absPow_isAbsPow E (-s))
   rwa [neg_neg] at h
-
 
 variable (E) in
 def muT (d : ℕ) (k : Fin d) : Formalism.L2.Host.HChar E := GlobalTheory.HeckeGal.Model.absPow E (-spehExp d k.rev)
@@ -151,7 +149,6 @@ theorem isAbsPow_muT (d : ℕ) (k : Fin d) : (muT E d k).IsAbsPow (spehExp d k) 
   exact GlobalTheory.HeckeGal.Model.absPow_isAbsPow E _
 
 end CuspidalConjugateSelfDual
-
 
 open CuspidalConjugateSelfDual in
 theorem rCuspCsd : RCuspCsd := by
@@ -371,37 +368,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-
-omit [IsCMField E] in
-theorem sc_hasSatGL_of_isSubquotient {w : HeightOneSpectrum (𝓞 E)} {V W : Type} [AddCommGroup V] [Module ℂ V]
-    [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (hρs : IsSmooth ρ)
-    (σ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) W) (hsub : GlobalTheory.SmGL.IsSubquotient σ ρ)
-    (hsph : GlobalTheory.LGrp.IsSpherical σ (GlobalTheory.LFun.KGL w (n := n))) (B : Multiset ℂˣ)
-    (hsat : ∀ f ∈ fixed ρ (GlobalTheory.LFun.KGL w (n := n)), f ≠ 0 → GlobalTheory.LFun.IsSatVecGL w ρ f B) :
-    GlobalTheory.LFun.HasSatGL w σ B := by
-  obtain ⟨S, q, hq⟩ := hsub
-  obtain ⟨-, hKc⟩ := GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL w n
-  have hSs : IsSmooth S.toRepresentation := fun y => by
-    refine (congrArg IsOpen ?_).mpr (hρs y.1)
-    ext g
-    exact Subtype.ext_iff
-  refine ⟨hsph, fun x hx hx0 => ?_⟩
-  have hx' : x ∈ (fixed S.toRepresentation (GlobalTheory.LFun.KGL w (n := n))).map q.toLinearMap := by
-    rw [GlobalTheory.LocGL.map_fixed_of_surjective hSs hKc (f := q) hq]
-    exact hx
-  obtain ⟨u, hu, hux⟩ := Submodule.mem_map.1 hx'
-  have hu0 : u ≠ 0 := fun e => hx0 (by rw [← hux, e, map_zero])
-  have huK : u.1 ∈ fixed ρ (GlobalTheory.LFun.KGL w (n := n)) :=
-    GlobalTheory.LGrp.mem_fixed.2 fun k hk => congrArg Subtype.val (GlobalTheory.LGrp.mem_fixed.1 hu k hk)
-  have hu1 : GlobalTheory.LFun.IsSatVecGL w ρ u.1 B := hsat _ huK fun e => hu0 (Subtype.ext e)
-  have hu2 : GlobalTheory.LFun.IsSatVecGL w S.toRepresentation u B :=
-    GlobalTheory.LFun.IsSatVecGL.of_map (ρ' := ρ) S.toSubmodule.subtype (fun _ _ => rfl) Subtype.val_injective hu1
-  have hu3 : GlobalTheory.LFun.IsSatVecGL w σ (q.toLinearMap u) B :=
-    hu2.map (ρ' := σ) q.toLinearMap (fun g y => Representation.IntertwiningMap.isIntertwining _ _ q g y)
-      (by rw [hux]; exact hx0)
-  rw [hux] at hu3
-  exact hu3
-
 theorem sc_satVec (X : Pre E n) (w : HeightOneSpectrum (𝓞 E)) (B : Multiset ℂˣ) (h : X.Sat w B) :
     ∀ f ∈ fixed (locProd X.h w (X.σ · w)) (GlobalTheory.LFun.KGL w (n := n)), f ≠ 0 →
       GlobalTheory.LFun.IsSatVecGL w (locProd X.h w (X.σ · w)) f B := by
@@ -430,7 +396,7 @@ theorem splitConj : SplitConj := by
   obtain ⟨P, hPsub, hPc⟩ := hDw
   obtain ⟨P', hP'sub, hP'c⟩ := hDu
   have hPsat : GlobalTheory.LFun.HasSatGL (GlobalTheory.ThetaSatake.cw u) P.ρ B :=
-    sc_hasSatGL_of_isSubquotient (locProd D.h _ (D.σ · _)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P.ρ hPsub
+    PositivityTheory.Rg.BcB.F.Rig.hasSatGL_of_isSubquotient (locProd D.h _ (D.σ · _)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P.ρ hPsub
       (GlobalTheory.PfBCI.split_spherical hπ hw P hPc hu) B (sc_satVec D _ B hB)
   have hq : Formalism.UG.qV E u = Formalism.UG.qV E (GlobalTheory.ThetaSatake.cw u) := (GlobalTheory.ThetaSatake.absNorm_cw u).symm
   have hQsat : GlobalTheory.LFun.HasSatGL u
@@ -457,7 +423,7 @@ theorem splitConj : SplitConj := by
   have hP'inv : GlobalTheory.LFun.HasSatGL u P'.ρ (B.map (·⁻¹)) :=
     GlobalTheory.SplitSatake.hasSatGL_of_isCompAlong_split E n π hπ u hsu _ _ _ P'.ρ hQc hP'c _ hQsat
   have hP'B' : GlobalTheory.LFun.HasSatGL u P'.ρ B' :=
-    sc_hasSatGL_of_isSubquotient (locProd D.h u (D.σ · u)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P'.ρ hP'sub hP'inv.1 B'
+    PositivityTheory.Rg.BcB.F.Rig.hasSatGL_of_isSubquotient (locProd D.h u (D.σ · u)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P'.ρ hP'sub hP'inv.1 B'
       (sc_satVec D u B' hB')
   exact hP'B'.unique hP'inv
 

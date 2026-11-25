@@ -382,10 +382,4 @@ end True
 
 end GlobalTheory.HeightCounting.Blocks
 
-namespace GlobalTheory.HeightCounting
-
-open Formalism.BasicNotions GlobalTheory.CuspRep Blocks
-
-end GlobalTheory.HeightCounting
-
 end

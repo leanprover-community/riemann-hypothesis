@@ -269,12 +269,12 @@ theorem exists_act : ∃ ρ : I.Gf → GL (Fin N) (ZMod p),
   refine ⟨fun x => if h : x ∈ Ksub I then φ ⟨x, h⟩ else 1, fun x hx => ?_, fun x hx y hy => ?_⟩
   · have hx' : x ∈ Ksub I := hx
     beta_reduce
-    rw [dif_pos hx', hφ]
+    rw [dite_eq_left hx', hφ]
     exact hM ⟨x, hx'⟩
   · have hx' : x ∈ Ksub I := hx
     have hy' : y ∈ Ksub I := hy
     beta_reduce
-    rw [dif_pos hx', dif_pos hy', dif_pos (mul_mem hx' hy'), ← φ.map_mul]
+    rw [dite_eq_left hx', dite_eq_left hy', dite_eq_left (mul_mem hx' hy'), ← φ.map_mul]
     rfl
 
 end PlFrame

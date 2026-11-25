@@ -209,7 +209,7 @@ namespace GlobalTheory.CompanionTheory.Ar
 theorem isFlagVBOn_inter_of_steps : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (E : Type) [AddCommGroup E] [Module Ω E] (L : Lat ξ E) (T : Set (Cpt ξ)) (g r : ℕ) (W : Submodule Ω E) (b₀ : Fin r → E), LinearIndependent Ω b₀ → (∀ k, b₀ k ∈ W) → L.IsVBOn T g W → (∀ n : ℕ, ∃ s W', (L.map (flagStep Ω b₀ n).mkQ).IsVBOn T s W') → (L.inter (Submodule.span Ω (Set.range b₀))).IsFlagVBOn T b₀ := by
   intro X Ω _ ξ E _ _ L T g r W b₀ hli hW hL hq p hp
   classical
-  haveI : IsLocalRing (regAt ξ p) := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_local_mono_frac X Ω ξ).1 p
+  haveI : IsLocalRing (regAt ξ p) := (_root_.PositivityTheory.HtPt.Ma.reg_local X Ω ξ).1 p
   have hFW : ∀ n, flagStep Ω b₀ n ≤ W := fun n =>
     Submodule.span_le.2 (by
       rintro _ ⟨k, -, rfl⟩
@@ -255,8 +255,8 @@ theorem isFlagVBOn_inter_of_steps : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] 
   have hcoh : (L.inter (Submodule.span Ω (Set.range b₀))).IsCohOn T := by
     have hvb := (hv r).1
     rw [← hV] at hvb
-    exact (_root_.GlobalTheory.CompanionTheory.Ar.coh_vb_images_sums_multiples X Ω ξ E E (L.inter (Submodule.span Ω (Set.range b₀))) (L.inter (Submodule.span Ω (Set.range b₀))) T).1 _ _ hvb
-  obtain ⟨U, hU, hall⟩ := _root_.GlobalTheory.CompanionTheory.Ar.frame_spread_near X Ω ξ E _ T r b p hcoh hp hframe
+    exact (_root_.PositivityTheory.HtPt.Mc.coh_ops X Ω ξ E E (L.inter (Submodule.span Ω (Set.range b₀))) (L.inter (Submodule.span Ω (Set.range b₀))) T).1 _ _ hvb
+  obtain ⟨U, hU, hall⟩ := _root_.PositivityTheory.HtPt.Mc.frame_spread X Ω ξ E _ T r b p hcoh hp hframe
   exact ⟨U, hU, b, hflag, hall⟩
 
 end GlobalTheory.CompanionTheory.Ar

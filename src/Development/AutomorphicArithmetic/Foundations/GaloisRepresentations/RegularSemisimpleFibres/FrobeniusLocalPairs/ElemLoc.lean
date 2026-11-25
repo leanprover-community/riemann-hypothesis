@@ -322,7 +322,7 @@ private theorem units_cover (r : ValueGroupWithZero E) (h0 : 0 < r) (h1 : r < 1)
     intro h
     rw [h, map_zero] at hvc
     exact zero_ne_one hvc
-  have hfc : f c = Units.mk0 c hc0 := dif_neg hc0
+  have hfc : f c = Units.mk0 c hc0 := dite_eq_right hc0
   refine ⟨f c, Finset.mem_image_of_mem f hct, (f c)⁻¹ * x, ?_, (mul_inv_cancel_left _ _).symm⟩
   rw [hfc]
   have e : (((Units.mk0 c hc0)⁻¹ * x : Eˣ) : E) - 1 = c⁻¹ * ((x : E) - c) := by

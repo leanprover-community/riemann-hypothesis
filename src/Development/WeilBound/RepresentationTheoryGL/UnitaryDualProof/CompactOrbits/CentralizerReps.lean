@@ -30,9 +30,6 @@ variable {E W : Type} [Field E] [AddCommGroup W] [Module E W]
 private def IsChain (N : W →ₗ[E] W) {ι : Type} (l : ι → ℕ) (B : Basis (Σ a, Fin (l a)) E W) : Prop :=
   ∀ a (i : Fin (l a)), N (B ⟨a, i⟩) = if h : (i : ℕ) + 1 < l a then B ⟨a, ⟨i + 1, h⟩⟩ else 0
 
-private def cbFam (N : W →ₗ[E] W) {ι : Type} (l : ι → ℕ) (y : ι → W) : (Σ a, Fin (l a)) → W :=
-  fun p => (N ^ (p.2 : ℕ)) (y p.1)
-
 private theorem cb_pow_pow (N : W →ₗ[E] W) (m j : ℕ) (x : W) : (N ^ m) ((N ^ j) x) = (N ^ (m + j)) x := by
   rw [← LinearMap.comp_apply, ← Module.End.mul_eq_comp, ← pow_add]
 
@@ -41,9 +38,9 @@ private theorem cb_pow_zero_of_le (N : W →ₗ[E] W) {m j : ℕ} {x : W} (h : (
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hj; rw [add_comm, ← cb_pow_pow, h, map_zero]
 
 private theorem cb_isChain_of_fam (N : W →ₗ[E] W) {ι : Type} (l : ι → ℕ) (y : ι → W)
-    (hy : ∀ a, (N ^ l a) (y a) = 0) (B : Basis (Σ a, Fin (l a)) E W) (hB : ∀ p, B p = cbFam N l y p) :
+    (hy : ∀ a, (N ^ l a) (y a) = 0) (B : Basis (Σ a, Fin (l a)) E W) (hB : ∀ p, B p = GlobalTheory.CompanionTheory.JordanChain.chainVec N l y p) :
     IsChain N l B := fun a i => by
-  rw [hB, cbFam, show N ((N ^ (i : ℕ)) (y a)) = (N ^ ((i : ℕ) + 1)) (y a) by rw [pow_succ']; rfl]
+  rw [hB, GlobalTheory.CompanionTheory.JordanChain.chainVec, show N ((N ^ (i : ℕ)) (y a)) = (N ^ ((i : ℕ) + 1)) (y a) by rw [pow_succ']; rfl]
   split_ifs with h
   · rw [hB]; rfl
   · rw [show (i : ℕ) + 1 = l a by omega, hy]
@@ -112,9 +109,9 @@ private theorem chain_repr_Npow {N : W →ₗ[E] W} {ι : Type} {l : ι → ℕ}
 private theorem cb_exists_chain_of_gen (N : W →ₗ[E] W) (hN : IsNilpotent N) {ι : Type} [Fintype ι] {l : ι → ℕ}
     (B0 : Basis (Σ a, Fin (l a)) E W) (hB0 : IsChain N l B0) (hl : ∀ a, 0 < l a) (y : ι → W)
     (hy0 : ∀ a, (N ^ l a) (y a) = 0)
-    (hy : ∀ a, B0 ⟨a, ⟨0, hl a⟩⟩ ∈ span E (Set.range (cbFam N l y)) ⊔ LinearMap.range N) :
-    ∃ B : Basis (Σ a, Fin (l a)) E W, IsChain N l B ∧ ∀ p, B p = cbFam N l y p := by
-  set S := span E (Set.range (cbFam N l y)) with hSdef
+    (hy : ∀ a, B0 ⟨a, ⟨0, hl a⟩⟩ ∈ span E (Set.range (GlobalTheory.CompanionTheory.JordanChain.chainVec N l y)) ⊔ LinearMap.range N) :
+    ∃ B : Basis (Σ a, Fin (l a)) E W, IsChain N l B ∧ ∀ p, B p = GlobalTheory.CompanionTheory.JordanChain.chainVec N l y p := by
+  set S := span E (Set.range (GlobalTheory.CompanionTheory.JordanChain.chainVec N l y)) with hSdef
   have hS : ∀ x ∈ S, N x ∈ S := fun x hx => (show S ≤ S.comap N from span_le.mpr fun _ ⟨⟨a, i⟩, h⟩ => h ▸ by
     show N ((N ^ (i : ℕ)) (y a)) ∈ S
     rw [show N ((N ^ (i : ℕ)) (y a)) = (N ^ ((i : ℕ) + 1)) (y a) by rw [pow_succ']; rfl]
@@ -130,7 +127,7 @@ private theorem cb_exists_chain_of_gen (N : W →ₗ[E] W) (hN : IsNilpotent N) 
       exact Submodule.mem_sup_right ⟨(N ^ (i - 1)) (B0 ⟨a, ⟨0, hl a⟩⟩),
         by rw [show N ((N ^ (i - 1)) _) = (N ^ (i - 1 + 1)) _ by rw [pow_succ']; rfl, Nat.sub_add_cancel h]⟩
   have hST := cb_eq_top N hN S hS htop
-  have hli : LinearIndependent E (cbFam N l y) :=
+  have hli : LinearIndependent E (GlobalTheory.CompanionTheory.JordanChain.chainVec N l y) :=
     linearIndependent_of_top_le_span_of_card_eq_finrank (by rw [← hSdef, hST]) (by rw [finrank_eq_card_basis B0])
   exact ⟨Basis.mk hli (by rw [← hSdef, hST]), cb_isChain_of_fam N l y hy0 _ (fun p => by simp), fun p => by simp⟩
 
@@ -175,10 +172,10 @@ private theorem cb_single (N : W →ₗ[E] W) (L : ℕ) (u : W) (hu : (N ^ L) u 
 
 private theorem cb_step (N : W →ₗ[E] W) (hN : IsNilpotent N) {ι : Type} [Fintype ι] [DecidableEq ι] {l : ι → ℕ}
     (hl : ∀ a, 0 < l a) (v : W) (y : ι → W) (s : ι → ℕ) (hy0 : ∀ a, (N ^ l a) (y a) = 0)
-    (B : Basis (Σ a, Fin (l a)) E W) (hB : IsChain N l B) (hBy : ∀ p, B p = cbFam N l y p)
+    (B : Basis (Σ a, Fin (l a)) E W) (hB : IsChain N l B) (hBy : ∀ p, B p = GlobalTheory.CompanionTheory.JordanChain.chainVec N l y p)
     (hs : ∀ a, s a ≤ l a) (hv : v = ∑ a, (N ^ s a) (y a)) (a b : ι) (hab : s b + (l a - l b) < s a) :
     ∃ (y' : ι → W) (s' : ι → ℕ), (∀ a, (N ^ l a) (y' a) = 0) ∧
-      (∃ B' : Basis (Σ a, Fin (l a)) E W, IsChain N l B' ∧ ∀ p, B' p = cbFam N l y' p) ∧
+      (∃ B' : Basis (Σ a, Fin (l a)) E W, IsChain N l B' ∧ ∀ p, B' p = GlobalTheory.CompanionTheory.JordanChain.chainVec N l y' p) ∧
       (∀ a, s' a ≤ l a) ∧ v = ∑ a, (N ^ s' a) (y' a) ∧ ∑ a, s' a < ∑ a, s a := by
   have hne : a ≠ b := by rintro rfl; simp at hab
   set i0 := l a - l b; set d := s a - (s b + i0)
@@ -193,9 +190,9 @@ private theorem cb_step (N : W →ₗ[E] W) (hN : IsNilpotent N) {ι : Type} [Fi
     by_cases hcb : c = b
     · rw [hcb, y'b, map_sub, hy0, cb_pow_pow, cb_pow_zero_of_le N (hy0 a) (by omega), sub_zero]
     · rw [y'c c hca hcb, hy0]
-  have hgen : ∀ c, B ⟨c, ⟨0, hl c⟩⟩ ∈ span E (Set.range (cbFam N l y')) ⊔ LinearMap.range N := by
-    set T := span E (Set.range (cbFam N l y')) ⊔ LinearMap.range N
-    have hmemS : ∀ c, y' c ∈ T := fun c => mem_sup_left (subset_span ⟨⟨c, ⟨0, hl c⟩⟩, by simp [cbFam]⟩)
+  have hgen : ∀ c, B ⟨c, ⟨0, hl c⟩⟩ ∈ span E (Set.range (GlobalTheory.CompanionTheory.JordanChain.chainVec N l y')) ⊔ LinearMap.range N := by
+    set T := span E (Set.range (GlobalTheory.CompanionTheory.JordanChain.chainVec N l y')) ⊔ LinearMap.range N
+    have hmemS : ∀ c, y' c ∈ T := fun c => mem_sup_left (subset_span ⟨⟨c, ⟨0, hl c⟩⟩, by simp [GlobalTheory.CompanionTheory.JordanChain.chainVec]⟩)
     have hmemR : ∀ j x, 0 < j → (N ^ j) x ∈ T := fun j x hj =>
       mem_sup_right ⟨(N ^ (j - 1)) x,
         by rw [show N ((N ^ (j - 1)) x) = (N ^ (j - 1 + 1)) x by rw [pow_succ']; rfl, Nat.sub_add_cancel hj]⟩
@@ -204,7 +201,7 @@ private theorem cb_step (N : W →ₗ[E] W) (hN : IsNilpotent N) {ι : Type} [Fi
     have hyb : y b ∈ T := by
       rw [show y b = y' b + (N ^ i0) (y a) by rw [y'b]; abel]; refine T.add_mem (hmemS b) ?_
       rcases Nat.eq_zero_or_pos i0 with h | h; simpa [h, Module.End.one_eq_id] using hya; exact hmemR i0 _ h
-    intro c; rw [hBy, show cbFam N l y ⟨c, ⟨0, hl c⟩⟩ = y c by simp [cbFam]]
+    intro c; rw [hBy, show GlobalTheory.CompanionTheory.JordanChain.chainVec N l y ⟨c, ⟨0, hl c⟩⟩ = y c by simp [GlobalTheory.CompanionTheory.JordanChain.chainVec]]
     by_cases hca : c = a; exact hca ▸ hya
     by_cases hcb : c = b; exact hcb ▸ hyb; rw [← y'c c hca hcb]; exact hmemS c
   obtain ⟨B', hB', hB'y⟩ := cb_exists_chain_of_gen N hN B hB hl y' hy0' hgen
@@ -231,7 +228,7 @@ private theorem exists_normal [FiniteDimensional E W] (N : W →ₗ[E] W) (hN : 
   classical
   obtain ⟨ι, _, e, u, he, hu0, hli, hsp⟩ := GlobalTheory.CompanionTheory.JordanChain.exists_chain_basis N hN
   let B0 : Basis (Σ a, Fin (e a)) E W := Basis.mk hli (by rw [hsp])
-  have hB0 : IsChain N e B0 := cb_isChain_of_fam N e u hu0 B0 (fun p => by simp [B0, cbFam])
+  have hB0 : IsChain N e B0 := cb_isChain_of_fam N e u hu0 B0 (fun p => by simp [B0, GlobalTheory.CompanionTheory.JordanChain.chainVec])
   choose s0 hs0 y0 hy0 hys0 hyu0 using fun a =>
     cb_single N (e a) (B0 ⟨a, ⟨0, he a⟩⟩) (by simp [chain_Npow_zero hB0 a (he a)]) (fun i => B0.repr v ⟨a, i⟩)
   have hv0 : v = ∑ a, (N ^ s0 a) (y0 a) := by
@@ -239,10 +236,10 @@ private theorem exists_normal [FiniteDimensional E W] (N : W →ₗ[E] W) (hN : 
     exact Finset.sum_congr rfl fun a _ => (hys0 a).symm ▸ Finset.sum_congr rfl fun i _ => by
       rw [chain_Npow_zero hB0 a (he a), dite_eq_left i.2]
   obtain ⟨B1, hB1, hB1y⟩ := cb_exists_chain_of_gen N hN B0 hB0 he y0 hy0 fun a =>
-    sup_le_sup_right (show span E {y0 a} ≤ span E (Set.range (cbFam N e y0)) from
-      span_le.mpr (Set.singleton_subset_iff.mpr (subset_span ⟨⟨a, ⟨0, he a⟩⟩, by simp [cbFam]⟩))) _ (hyu0 a)
+    sup_le_sup_right (show span E {y0 a} ≤ span E (Set.range (GlobalTheory.CompanionTheory.JordanChain.chainVec N e y0)) from
+      span_le.mpr (Set.singleton_subset_iff.mpr (subset_span ⟨⟨a, ⟨0, he a⟩⟩, by simp [GlobalTheory.CompanionTheory.JordanChain.chainVec]⟩))) _ (hyu0 a)
   have hex : ∃ k, ∃ (y : ι → W) (s : ι → ℕ), ((∀ a, (N ^ e a) (y a) = 0) ∧
-      (∃ B : Basis (Σ a, Fin (e a)) E W, IsChain N e B ∧ ∀ p, B p = cbFam N e y p) ∧
+      (∃ B : Basis (Σ a, Fin (e a)) E W, IsChain N e B ∧ ∀ p, B p = GlobalTheory.CompanionTheory.JordanChain.chainVec N e y p) ∧
       (∀ a, s a ≤ e a) ∧ v = ∑ a, (N ^ s a) (y a)) ∧ ∑ a, s a = k :=
     ⟨_, y0, s0, ⟨hy0, ⟨B1, hB1, hB1y⟩, hs0, hv0⟩, rfl⟩
   obtain ⟨y, s, ⟨hy, ⟨B, hB, hBy⟩, hs, hv⟩, hk⟩ := Nat.find_spec hex

@@ -306,15 +306,6 @@ theorem exists_sum_of_approx {A : Type} [CommRing A] [TopologicalSpace A] [IsTop
       exact (hr m).2
     exact sub_eq_zero.mp h0
 
-private def intAdeles (F : Type) [Field F] [NumberField F] :
-    Subring (FiniteAdeleRing (𝓞 F) F) where
-  carrier := {a | ∀ v, a v ∈ HeightOneSpectrum.adicCompletionIntegers F v}
-  mul_mem' ha hb v := mul_mem (ha v) (hb v)
-  one_mem' v := one_mem (HeightOneSpectrum.adicCompletionIntegers F v)
-  add_mem' ha hb v := add_mem (ha v) (hb v)
-  zero_mem' v := zero_mem (HeightOneSpectrum.adicCompletionIntegers F v)
-  neg_mem' ha v := neg_mem (ha v)
-
 theorem exists_sum_integralBasis : ∀ (F : Type) [Field F] [NumberField F] (β : Type) [Fintype β] (ω : Module.Basis β ℤ (𝓞 F)) (a : FiniteAdeleRing (𝓞 F) F), (∀ v, (a : FiniteAdeleRing (𝓞 F) F) v ∈ HeightOneSpectrum.adicCompletionIntegers F v) → ∃ r : β → FiniteAdeleRing (𝓞 F) F, (∀ i, (∀ M : ℕ, 0 < M → ∃ (z : ℤ) (c : FiniteAdeleRing (𝓞 F) F), (∀ v, (c : FiniteAdeleRing (𝓞 F) F) v ∈ HeightOneSpectrum.adicCompletionIntegers F v) ∧ r i = (z : FiniteAdeleRing (𝓞 F) F) + (M : FiniteAdeleRing (𝓞 F) F) * c)) ∧ a = ∑ i, r i * algebraMap F (FiniteAdeleRing (𝓞 F) F) (ω i : 𝓞 F) := by
   intro F _ _ β _ ω a ha
   obtain ⟨hcomp, hclM, hzero, -, -, -⟩ := _root_.GlobalTheory.IntegralFinAdele.integral_finiteAdele_properties F
@@ -325,7 +316,7 @@ theorem exists_sum_integralBasis : ∀ (F : Type) [Field F] [NumberField F] (β 
     conv_lhs => rw [← ω.sum_repr x]
 
     simp only [RingOfIntegers.coe_eq_algebraMap, map_sum, zsmul_eq_mul, map_mul, map_intCast]
-  refine exists_sum_of_approx (intAdeles F) hcomp hclM hzero _ a ?_
+  refine exists_sum_of_approx (GlobalTheory.CoordDiv.intAdeles F) hcomp hclM hzero _ a ?_
   intro M hM
   obtain ⟨x, c, hc, hac⟩ := (GlobalTheory.AdLat.strong_approximation_mod_nat F M hM).2 a ha
   refine ⟨fun i => ω.repr x i, c, hc, ?_⟩
@@ -1483,11 +1474,11 @@ theorem res_one' {R A β κ : Type} [CommRing R] [CommRing A] [Algebra R A] [Fin
   ext p q
   simp only [res, Matrix.of_apply, Matrix.one_apply]
   by_cases h : p.1 = q.1
-  · rw [if_pos h, map_one, Matrix.one_apply]
+  · rw [ite_eq_left h, map_one, Matrix.one_apply]
     by_cases h' : p.2 = q.2
-    · rw [if_pos h', if_pos (Prod.ext h h')]
-    · rw [if_neg h', if_neg (fun e => h' (congrArg Prod.snd e))]
-  · rw [if_neg h, map_zero, Matrix.zero_apply, if_neg (fun e => h (congrArg Prod.fst e))]
+    · rw [ite_eq_left h', ite_eq_left (Prod.ext h h')]
+    · rw [ite_eq_right h', ite_eq_right (fun e => h' (congrArg Prod.snd e))]
+  · rw [ite_eq_right h, map_zero, Matrix.zero_apply, ite_eq_right (fun e => h (congrArg Prod.fst e))]
 
 theorem repr_mem {R A β : Type} [CommRing R] [CommRing A] [Algebra R A] [Fintype β] [DecidableEq β]
     (b : Module.Basis β R A) (R₀ : Subring R) (h1 : ∀ i, b.repr 1 i ∈ R₀) (x : A)
@@ -1611,7 +1602,7 @@ theorem classFinite_integralLevel : ∀ (F : Type) [Field F] [NumberField F] (n 
       s = GlobalTheory.ClassFin.emb b (lift s) := by
     intro s hs
     have h := hA.1 s hs
-    simp only [lift, dif_pos h]
+    simp only [lift, dite_eq_left h]
     exact h.choose_spec
   obtain ⟨hemb1, hembmul, -, hembinj⟩ := _root_.GlobalTheory.ClassFin.EmbHom.emb_hom R (FiniteAdeleRing (𝓞 F) F) _ (Fin n) b
   refine ⟨T₀.image lift, ?_, ?_⟩

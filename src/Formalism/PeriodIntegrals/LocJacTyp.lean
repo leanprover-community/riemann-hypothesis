@@ -67,11 +67,4 @@ def absV (x : Fv F v) : ℝ :=
 
 end Sets
 
-section Stmt
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F))
-
-end Stmt
-
 end PI.LocJacTyp

@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Mem
 
 open Formalism.BasicNotions Formalism.BasicNotions.Examples₂ NumberField IsDedekindDomain
@@ -99,5 +97,3 @@ theorem exists_finset_capitulation (E : Type) [Field E] [NumberField E] (τ : E 
     Set.singleton_mul_singleton]
 
 end GlobalTheory.Mem
-
-end

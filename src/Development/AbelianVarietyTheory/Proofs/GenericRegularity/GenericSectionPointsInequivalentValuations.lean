@@ -14,52 +14,9 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.CountQAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInj
 public import Formalism.LocalToGlobal.ProjectiveLattices.PtOfSPf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IsUnitOfValEqZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.WeakApprox
@@ -535,11 +492,6 @@ section Rec
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO))
   (N : ℕ) {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
 
-theorem exists_ratio {Ω : Type} [Field Ω] [Algebra B.KO Ω] (gF : X.Forms →ₐ[B.KO] Ω)
-    (hB : CurveLoc.BirAt X N w gF) (hk : ∃ k, gF (X.inc wL (w k)) ≠ 0) (a : Ω) :
-    ∃ (m : ℕ) (p q : B.Cusp j (addL (wt0 D j) wL m)), gF (X.inc _ p) ≠ 0 ∧ a * gF (X.inc _ p) = gF (X.inc _ q) := by
-  apply _root_.GlobalTheory.SecPoint.exists_ratio <;> assumption
-
 def evK {F : Type} [Field F] (ev : Rp X la N →+* F) : Kp X la N →+* F :=
   ev.comp (algebraMap (Kp X la N) (Rp X la N))
 
@@ -600,7 +552,7 @@ theorem cross {F : Type} [Field F] (ev : Rp X la N →+* F) (hu : IsUnit (ev (se
     τ (gF (X.inc u G)) * ev (emb X la N (X.inc u G')) = τ (gF (X.inc u G')) * ev (emb X la N (X.inc u G)) := by
   by_cases h0 : gF (X.inc u G') = 0
   · rw [ha u G' h0, h0, map_zero, zero_mul, mul_zero]
-  obtain ⟨m, p, q, hp, hpq⟩ := exists_ratio X N w gF hB (exists_ne X la N w gF ev hu τ σ hc)
+  obtain ⟨m, p, q, hp, hpq⟩ := GlobalTheory.SecPoint.exists_ratio X N w gF hB (exists_ne X la N w gF ev hu τ σ hc)
     (gF (X.inc u G) / gF (X.inc u G'))
   obtain ⟨H1, hH1⟩ := X.inc_mul u _ G p
   obtain ⟨H2, hH2⟩ := X.inc_mul u _ G' q
@@ -850,7 +802,7 @@ theorem sep {Ω : Type} [Field Ω] [Algebra B.KO Ω] (gF : (xplus X E hM).Forms 
     obtain ⟨b, hb1, hb2⟩ := att_lift h gF htr τ σ hσ hb hc h' τ' σ' hσ' hb' hc' heq x
     rw [← pos_iff_mem h x a hx, ← pos_iff_mem h' x a hx, hb1, hb2, heq]
   obtain ⟨a, ha, ha'⟩ := exists_sep _ _ (val_one h gF htr τ σ hσ hb hc) (val_one h' gF htr τ' σ' hσ' hb' hc') hv
-  obtain ⟨m, p, q, hp, hpq⟩ := exists_ratio (xplus X E hM) G.N G.w gF hB
+  obtain ⟨m, p, q, hp, hpq⟩ := GlobalTheory.SecPoint.exists_ratio (xplus X E hM) G.N G.w gF hB
     (exists_ne (xplus X E hM) la G.N G.w gF h.ev h.s0 τ σ hc) a
   have hpq' : a * gF (X.inc _ p) = gF (X.inc _ q) := hpq
   have e1 : h.ev (emb (xplus X E hM) la G.N (X.inc _ p)) = _ := hc m _ (emb_mem_Vw (xplus X E hM) la G.N _ p)

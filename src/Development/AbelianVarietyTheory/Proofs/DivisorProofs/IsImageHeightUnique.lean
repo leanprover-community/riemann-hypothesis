@@ -369,7 +369,7 @@ private theorem frameNorm_toMatrix_map_mul_eq_of_isFrame {Nm : (K →+* ℂ) →
       have h2 := hre j k a
       rw [Complex.mul_re, h1, mul_zero, zero_sub, neg_eq_zero] at h2
       exact Complex.ext h1 ((mul_eq_zero.1 h2).resolve_left ha)
-    · push_neg at hreal
+    · push Not at hreal
       have hσ : (starRingEnd ℂ).comp σ = σ := by
         ext a; simp [Complex.ext_iff, hreal a]
       have hPr : ∀ u : Fin N → ℂ, star (P.map σ *ᵥ u) = P.map σ *ᵥ star u := by

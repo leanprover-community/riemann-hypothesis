@@ -159,7 +159,7 @@ theorem wComp_mul_of_weight_zero {σ R M : Type} [CommSemiring R] [AddCommMonoid
     · have h2 := hQ hq
       have hm : x.1 + x.2 = m := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
       have e : Finsupp.weight w x.1 = n := by rw [← h, ← hm, map_add (f := _), h2, add_zero]
-      rw [if_pos e]
+      rw [ite_eq_left e]
   · symm
     refine Finset.sum_eq_zero fun x hx => ?_
     rw [coeff_weightedHomogeneousComponent]
@@ -168,7 +168,7 @@ theorem wComp_mul_of_weight_zero {σ R M : Type} [CommSemiring R] [AddCommMonoid
     · have h2 := hQ hq
       have hm : x.1 + x.2 = m := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
       have e : Finsupp.weight w x.1 ≠ n := by rw [← hm, map_add (f := _), h2, add_zero] at h; exact h
-      rw [if_neg e, zero_mul]
+      rw [ite_eq_right e, zero_mul]
 
 theorem blockRed_eq_rename_map (O : Type) [CommRing O] (N : ℕ) {ι : Type} (ϖ : O) (τ : ι) (f : MvPolynomial (Fin N × Fin N) O) :
     blockRed O N ϖ τ f = rename (fun v => ((τ, v) : BVar N ι)) (map (Ideal.Quotient.mk (Ideal.span {ϖ})) f) := by
@@ -256,12 +256,6 @@ open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.HighWtEmb
 
 namespace GlobalTheory.HighWtEmb
 
-theorem blockRed_eq_rename (O : Type) [CommRing O] (N : ℕ) {ι : Type} (ϖ : O) (τ : ι)
-    (g : MvPolynomial (Fin N × Fin N) O) :
-    blockRed O N ϖ τ g = rename (fun v : Fin N × Fin N => ((τ, v) : BVar N ι))
-      (MvPolynomial.map (Ideal.Quotient.mk (Ideal.span {ϖ})) g) := by
-  apply _root_.GlobalTheory.HighWtEmb.blockRed_eq_rename_map <;> assumption
-
 theorem redT_tprod (O : Type) [CommRing O] (N : ℕ) {ι : Type} [Fintype ι] [DecidableEq ι] (mu : ι → ℕ → ℕ) (ϖ : O)
     (x : ∀ τ, dualWeyl O N N (res N (mu τ))) :
     redT O N mu ϖ (PiTensorProduct.tprod O x) =
@@ -271,7 +265,7 @@ theorem redT_tprod (O : Type) [CommRing O] (N : ℕ) {ι : Type} [Fintype ι] [D
   rw [PiTensorProduct.lift.tprod, MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply]
   refine Finset.prod_congr rfl fun τ _ => ?_
   simp only [LinearMap.comp_apply, Submodule.subtype_apply, AlgHom.toLinearMap_apply]
-  exact blockRed_eq_rename O N ϖ τ _
+  exact GlobalTheory.HighWtEmb.blockRed_eq_rename_map O N ϖ τ _
 
 end GlobalTheory.HighWtEmb
 
@@ -649,14 +643,14 @@ theorem rowProj_mul_coefEnd (ν v : Fin N → ℕ) (m : Fin N × Fin N →₀ �
   apply Subtype.ext
   rw [Module.End.mul_apply, coe_rowProj, coe_coefEnd, weightedHomogeneousComponent_of_mem (coeff_genHom_row O N f m)]
   by_cases h : Finsupp.weight (colW N N) m = v
-  · rw [if_pos h, if_pos h.symm]; rfl
-  · rw [if_neg h, if_neg (Ne.symm h)]; rfl
+  · rw [ite_eq_left h, ite_eq_left h.symm]; rfl
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]; rfl
 
 theorem rowProj_mul_self (ν v : Fin N → ℕ) : rowProj O N ν v * rowProj O N ν v = rowProj O N ν v := by
   ext1 f
   apply Subtype.ext
   rw [Module.End.mul_apply, coe_rowProj, coe_rowProj,
-    weightedHomogeneousComponent_of_mem (weightedHomogeneousComponent_isWeightedHomogeneous v _), if_pos rfl]
+    weightedHomogeneousComponent_of_mem (weightedHomogeneousComponent_isWeightedHomogeneous v _), ite_eq_left rfl]
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] (lam : ι → ℕ → ℕ)
 
@@ -828,7 +822,7 @@ omit hψ in
 theorem apply_coef_eq_zero_of_col (τ : ι) (w : Fin N → ℕ) (h0 : ∀ v, v ≠ w → ∀ z, ψ (projA O N lam τ v • z) = 0)
     (m : Fin N × Fin N →₀ ℕ) (hm : Finsupp.weight (colW N N) m ≠ w) (z : Gm) : ψ (c τ m • z) = 0 := by
   have := proj_mul_coef c hc τ m (Finsupp.weight (colW N N) m)
-  rw [if_pos rfl] at this
+  rw [ite_eq_left rfl] at this
   rw [← this, mul_smul, h0 _ hm]
 
 theorem apply_proj (τ : ι) (w : Fin N → ℕ) (h0 : ∀ v, v ≠ w → ∀ z, ψ (projA O N lam τ v • z) = 0) (z : Gm) :
@@ -861,7 +855,7 @@ theorem apply_coef_eq_zero_of_lt (w : ι → Fin N → ℕ) (hmax : ∀ w' : ι 
       refine ⟨projA O N lam σ (w' σ) • z', h1.trans ?_, fun ρ hρ => ?_⟩
       · by_cases h : σ = τ
         · subst h
-          rw [smul_smul, coef_mul_proj c hc, if_pos (by simp [hw'])]
+          rw [smul_smul, coef_mul_proj c hc, ite_eq_left (by simp [hw'])]
         · rw [smul_smul, coef_proj_comm c hc (Ne.symm h), mul_smul, hw', Function.update_of_ne h, apply_proj c hc ψ hψ σ _ (h0 σ)]
       · rcases Finset.mem_insert.1 hρ with rfl | hρ'
         · rw [smul_smul, proj_mul_self]
@@ -893,14 +887,14 @@ theorem elemHom_eq_or_lt (l j : Fin N) (hlj : l < j) (m : Fin N × Fin N →₀ 
     simp only [elemHom, unitHom, aeval_monomial, Finsupp.prod]
     congr 1
     refine Finset.prod_congr rfl fun v hv => ?_
-    rw [if_neg (show ¬ v = (l, j) by rintro rfl; exact Finsupp.mem_support_iff.1 hv h1), add_zero]
+    rw [ite_eq_right (show ¬ v = (l, j) by rintro rfl; exact Finsupp.mem_support_iff.1 hv h1), add_zero]
   by_cases h2 : ∃ v ∈ m.support, v.1 ≠ v.2 ∧ v ≠ (l, j)
   · left
     obtain ⟨v, hv, hv1, hv2⟩ := h2
     simp only [elemHom, unitHom, aeval_monomial, Finsupp.prod]
     rw [Finset.prod_eq_zero hv, Finset.prod_eq_zero hv] <;> simp [hv1, hv2, Finsupp.mem_support_iff.1 hv]
   right
-  push_neg at h2
+  push Not at h2
   have hl : N - (j : ℕ) < N - (l : ℕ) := by have := j.isLt; have : (l : ℕ) < j := hlj; omega
   apply Finset.sum_lt_sum
   · intro v _
@@ -948,7 +942,6 @@ namespace GlobalTheory.HighWtEmb
 variable {O : Type} [CommRing O] {N : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] {lam : ι → ℕ → ℕ}
   {k : Type} [CommRing k] [Algebra O k] {Gm : Type} [AddCommGroup Gm] [Module (alg O N lam) Gm]
 
-
 variable (O N k) in
 def blockEmb (τ : ι) : MvPolynomial (Fin N × Fin N) O →ₐ[O] MvPolynomial (BVar N ι) k := aeval fun v => X (τ, v)
 
@@ -975,7 +968,6 @@ def stepT (τ : ι) (ψ : Gm →+ MvPolynomial (BVar N ι) k) : Gm →+ MvPolyno
 omit [Fintype ι] in
 theorem stepT_apply (τ : ι) (ψ : Gm →+ MvPolynomial (BVar N ι) k) (z : Gm) :
     stepT c τ ψ z = ∑ m ∈ expSet N (res N (lam τ)), blockEmb O N k τ (monomial m 1) * ψ (c τ m • z) := rfl
-
 
 variable (O lam) in
 def Semi (ψ : Gm →+ MvPolynomial (BVar N ι) k) : Prop :=
@@ -1067,8 +1059,8 @@ theorem stepT_proj {τ : ι} {w : Fin N → ℕ} {ψ : Gm →+ MvPolynomial (BVa
     · simp [Finsupp.weight_apply]
   rw [weightedHomogeneousComponent_of_mem h1, smul_smul, coef_mul_proj c hc]
   by_cases hv : Finsupp.weight (rowW N N) m = v
-  · rw [if_pos hv, if_pos hv.symm]
-  · rw [if_neg hv, if_neg (Ne.symm hv), zero_smul, map_zero, mul_zero]
+  · rw [ite_eq_left hv, ite_eq_left hv.symm]
+  · rw [ite_eq_right hv, ite_eq_right (Ne.symm hv), zero_smul, map_zero, mul_zero]
 
 theorem stepT_mem {τ : ι} {w : Fin N → ℕ} {ψ : Gm →+ MvPolynomial (BVar N ι) k} (h : Good c τ w ψ) (z : Gm) :
     toBlock k N τ (stepT c τ ψ z) ∈ dualWeyl (MvPolynomial (OVar N τ) k) N N w := by
@@ -1086,7 +1078,7 @@ theorem stepT_mem {τ : ι} {w : Fin N → ℕ} {ψ : Gm →+ MvPolynomial (BVar
   have h2 : ∀ m, toBlock k N τ (blockEmb O N k τ (monomial m 1)) = monomial m 1 := by
     intro m
     rw [monomial_eq, monomial_eq, C_1, C_1, one_mul, one_mul]
-    simp only [Finsupp.prod, map_prod, map_pow, blockEmb, toBlock, aeval_X, dif_pos]
+    simp only [Finsupp.prod, map_prod, map_pow, blockEmb, toBlock, aeval_X, dite_eq_left]
   have h3 : toBlock k N τ (stepT c τ ψ z) = ∑ m ∈ expSet N (res N (lam τ)), monomial m 1 * C (ψ' (c τ m • z)) := by
 
     rw [stepT_apply, map_sum]
@@ -1179,7 +1171,7 @@ theorem grp_of_single (P : Gm →+ MvPolynomial (BVar N ι) k)
     intro s
     induction s using Finset.induction_on with
     | empty =>
-      simp only [Finset.notMem_empty, if_false]
+      simp only [Finset.notMem_empty, ite_false]
       exact S.one_mem
     | insert τ s hτ ih =>
       have : (fun σ => if σ ∈ insert τ s then g σ else 1) = Pi.mulSingle τ (g τ) * fun σ => if σ ∈ s then g σ else 1 := by
@@ -1190,7 +1182,7 @@ theorem grp_of_single (P : Gm →+ MvPolynomial (BVar N ι) k)
       rw [this]
       exact S.mul_mem (h τ (g τ)) ih
   have := key Finset.univ
-  simp only [Finset.mem_univ, if_true] at this
+  simp only [Finset.mem_univ, ite_true] at this
   exact this z
 
 end GlobalTheory.HighWtEmb
@@ -1277,8 +1269,7 @@ theorem prodProj_mul_eq_zero (O : Type) [CommRing O] (N : ℕ) (ι : Type) [Fint
   simp only [Function.update_self]
   apply Subtype.ext
   simp only [rowProj, LinearMap.restrict_apply, ZeroMemClass.coe_zero]
-  rw [weightedHomogeneousComponent_of_mem (weightedHomogeneousComponent_isWeightedHomogeneous _ _), if_neg hv.symm]
-
+  rw [weightedHomogeneousComponent_of_mem (weightedHomogeneousComponent_isWeightedHomogeneous _ _), ite_eq_right hv.symm]
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_weightForm : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (N : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] (lam : ι → ℕ → ℕ) (ϖ : O), Irreducible ϖ → ∀ (Gm : Type) [AddCommGroup Gm] [Module (alg O N lam) Gm], SubQ O N lam ϖ Gm → ∀ (w : ι → Fin N → ℕ) (z₀ : Gm), z₀ ≠ 0 → (∀ τ (a : alg O N lam), IsProj O N lam τ (w τ) a → a • z₀ = z₀) → ∃ φ : Gm →+ O ⧸ Ideal.span {ϖ}, φ z₀ ≠ 0 ∧ (∀ (c : O) (z : Gm), φ (algebraMap O (alg O N lam) c • z) = Ideal.Quotient.mk (Ideal.span {ϖ}) c * φ z) ∧ ∀ τ (v : Fin N → ℕ) (a : alg O N lam), IsProj O N lam τ v a → v ≠ w τ → ∀ z, φ (a • z) = 0 := by
@@ -1624,7 +1615,6 @@ end GlobalTheory.HighWtEmb.NabInter
 
 namespace GlobalTheory.HighWtEmb
 
-
 open NabInter in
 theorem mem_nabK_of_toBlock : ∀ (k : Type) [Field k] (N : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
     (ν : ι → Fin N → ℕ) (P : MvPolynomial (BVar N ι) k),
@@ -1764,12 +1754,8 @@ theorem linearIndependent_prod_rename : ∀ (k : Type) [Field k] (ι : Type) [Fi
     obtain ⟨τ, hτ⟩ : ∃ τ, p τ ≠ l τ := by
       by_contra! hc
       exact hp (funext hc)
-    rw [Finset.prod_eq_zero (Finset.mem_univ τ) (if_neg hτ), mul_zero]
+    rw [Finset.prod_eq_zero (Finset.mem_univ τ) (ite_eq_right hτ), mul_zero]
   · simp
-
-theorem blockRed_eq (O : Type) [CommRing O] (N : ℕ) {ι : Type} (ϖ : O) (τ : ι) (g : MvPolynomial (Fin N × Fin N) O) :
-    blockRed O N ϖ τ g = rename (fun s : Fin N × Fin N => ((τ, s) : BVar N ι)) (MvPolynomial.map (Ideal.Quotient.mk (Ideal.span {ϖ})) g) := by
-  apply _root_.GlobalTheory.HighWtEmb.blockRed_eq_rename_map <;> assumption
 
 theorem mem_smul_top_of_redT_eq_zero : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (N : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
     (mu : ι → ℕ → ℕ) (ϖ : O), Irreducible ϖ → (∀ τ, Antitone (res N (mu τ))) → GlobalTheory.HighWt.BaseChange →
@@ -1785,7 +1771,7 @@ theorem mem_smul_top_of_redT_eq_zero : ∀ (O : Type) [CommRing O] [IsDomain O] 
     intro p
     simp only [B, Basis.piTensorProduct_apply, redT, PiTensorProduct.lift.tprod, MultilinearMap.compLinearMap_apply,
       MultilinearMap.mkPiAlgebra_apply, LinearMap.coe_comp, Function.comp_apply, Submodule.coe_subtype, AlgHom.toLinearMap_apply]
-    exact Finset.prod_congr rfl fun τ _ => blockRed_eq O N ϖ τ _
+    exact Finset.prod_congr rfl fun τ _ => GlobalTheory.HighWtEmb.blockRed_eq_rename_map O N ϖ τ _
   have hL := linearIndependent_prod_rename (O ⧸ Ideal.span {ϖ}) ι (Fin N × Fin N) (fun τ => Fin (n τ))
     (fun τ i => MvPolynomial.map (Ideal.Quotient.mk (Ideal.span {ϖ})) (b τ i : MvPolynomial (Fin N × Fin N) O)) hli
   rw [Fintype.linearIndependent_iff] at hL
@@ -1824,8 +1810,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.HighWtEmb
 
 namespace GlobalTheory.HighWtEmb
-
-
 
 theorem embeds_of_maxWeight : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] (N : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] (lam : ι → ℕ → ℕ) (ϖ : O), Irreducible ϖ → (∀ τ, Antitone (res N (lam τ))) → GlobalTheory.HighWt.BaseChange → GlobalTheory.HighWt.CoefIn O N lam → ∀ (Gm : Type) [AddCommGroup Gm] [Module (alg O N lam) Gm], IsSimpleModule (alg O N lam) Gm → SubQ O N lam ϖ Gm → ∀ w : ι → Fin N → ℕ, (∀ τ, Antitone (w τ)) → GlobalTheory.HighWt.JointWt O N lam Gm w → (∀ w' : ι → Fin N → ℕ, GlobalTheory.HighWt.JointWt O N lam Gm w' → GlobalTheory.HighWt.pot N w' ≤ GlobalTheory.HighWt.pot N w) → Embeds O N lam (GlobalTheory.HighWt.extW N w) ϖ Gm := by
   intro O _ _ _ _ N ι _ _ lam ϖ hϖ hlam hBC hC Gm _ _ hS hSQ w hw hJ hmax

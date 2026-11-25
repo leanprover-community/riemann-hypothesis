@@ -121,7 +121,7 @@ theorem UpperTheory.unitChar_idempotentSum_eq_prod_unitInd :
     apply hi
     have h4 := (mem_OA_iff _).1 h3 (splitPrime (τ i))
     have h5 : cpt (D := D) (splitPrime (τ i)) (toEAf D (x : AE D)) = cpt (D := D) (splitPrime (τ i)) N.det := by
-      rw [h2, hc, if_pos ((hPw _).2 ⟨i, rfl⟩)]
+      rw [h2, hc, ite_eq_left ((hPw _).2 ⟨i, rfl⟩)]
     have h6 : cpt (D := D) (splitPrime (τ i)) N.det * cpt (D := D) (splitPrime (τ i)) (toEAf D ((x⁻¹ : (AE D)ˣ) : AE D)) = 1 := by
       rw [← h5, ← RingHom.map_mul, ← RingHom.map_mul, Units.mul_inv, RingHom.map_one, RingHom.map_one]
     have h7 : Valued.v (cpt (D := D) (splitPrime (τ i)) N.det) ≤ 1 := by

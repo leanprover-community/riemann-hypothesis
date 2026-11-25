@@ -52,17 +52,6 @@ theorem continuous_restrictScalarsHom (F E Ω : Type) [Field F] [Field E] [Field
   exact IntermediateField.fixingSubgroup_antitone hMt
     ((IntermediateField.le_iff_le _ _).1 hH ⟨σ, hσ, rfl⟩)
 
-section Iso
-
-variable {F₀ F₁ Ω : Type} [Field F₀] [Field F₁] [Field Ω] [Algebra F₀ F₁] [Algebra F₀ Ω] [Algebra F₁ Ω]
-  [IsScalarTower F₀ F₁ Ω]
-
-variable [NumberField F₀] [NumberField F₁] {l : ℕ} [Fact l.Prime]
-  {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V]
-  [IsScalarTower ℚ_[l] C V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousConstSMul C V]
-
-end Iso
-
 theorem surjective_algebraMap_real (K : Type) [Field K] [NumberField K] [IsCMField K] (h : Module.finrank ℚ K = 2) :
     Function.Surjective (algebraMap ℚ (maximalRealSubfield K)) := by
   have h1 := (letI : Module.Free (maximalRealSubfield K) K := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank ℚ (maximalRealSubfield K) K)

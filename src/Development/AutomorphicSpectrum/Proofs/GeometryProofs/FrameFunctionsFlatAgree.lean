@@ -163,7 +163,7 @@ theorem sum_repr_smul_dual (E : Type) [Field E] [NumberField E] {ι : Type} [Fin
 
     rw [hrepr, Algebra.traceForm_apply, mul_comm (algebraMap (𝓞 E) E a) (D l), mul_assoc, hB' k,
     Finset.mul_sum, map_sum]
-    simp only [hterm, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hterm, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   calc ∑ k, ((b.repr (a * b k) l : ℤ) : E) * D k
       = ∑ k, D.repr (algebraMap (𝓞 E) E a * D l) k • D k := by
         refine Finset.sum_congr rfl fun k _ => ?_

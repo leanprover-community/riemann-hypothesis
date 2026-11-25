@@ -62,7 +62,7 @@ theorem ell_vecMul_last {σ n : ℕ} (b : Mx D (σ + 1) n) : ell D (σ + 1) ᵥ*
   rw [Finset.sum_eq_single (Fin.last σ)]
   · simp
   · intro i _ hi
-    rw [if_neg (fun h => hi (Fin.ext (by simp only [Fin.val_last]; omega))), zero_mul]
+    rw [ite_eq_right (fun h => hi (Fin.ext (by simp only [Fin.val_last]; omega))), zero_mul]
   · simp
 
 theorem zEll_mul_eq {σ n : ℕ} (L : HSp D) (ζ : Fin L.rank → D.host.E) (b : Mx D (σ + 1) n) :
@@ -104,39 +104,60 @@ theorem continuous_splitLine {σ n : ℕ} (L : HSp D) (ζ : Fin L.rank → D.hos
       simp only [Fin.lastCases_castSucc]
       fun_prop
 
-theorem fourierBesselBasePoint_mul_eq {σ : ℕ} (B : BesLev D σ) (S : HSp D) (b : Mx D (σ + 1) S.rank) :
-    x0 B ⬝ b = B.d.incX S (Matrix.of fun i j => b (Fin.castSucc i) j) +
-      B.d.inc0 S ((B.o.resT S).symm (0, zl B ⬝ b)) := by
-  rw [HypDec.incX_apply, HypDec.wittDecomp_inclAnisotropicHom_apply, OrthDec.resT_symm_apply, Matrix.mul_zero, zero_add, zl, zEll_mul_eq,
+theorem fourierBesselBasePoint_mul_eq_gen {σ : ℕ} {V V₀ A L : HSp D} (d : HypDec V V₀ σ) (o : OrthDec V₀ A L)
+    (ζ : Fin L.rank → D.host.E) (S : HSp D) (b : Mx D (σ + 1) S.rank) :
+    xLast d (vecB o ζ) ⬝ b = d.incX S (Matrix.of fun i j => b (Fin.castSucc i) j) +
+      d.inc0 S ((o.resT S).symm (0, zEll L (σ + 1) ζ ⬝ b)) := by
+  rw [HypDec.incX_apply, HypDec.wittDecomp_inclAnisotropicHom_apply, OrthDec.resT_symm_apply, Matrix.mul_zero, zero_add, zEll_mul_eq,
     Matrix.mul_vecMulVec, Matrix.mul_vecMulVec, OrthDec.jB, ← ratV_mulVec]
   ext k j
-  simp [Matrix.mul_apply, Fin.sum_univ_castSucc, x0, xLast, vecMulVec_apply, vecB]
+  simp [Matrix.mul_apply, Fin.sum_univ_castSucc, xLast, vecMulVec_apply, vecB]
 
-theorem heisSymplecticHalf_fourierBesselBasePoint_mul {σ : ℕ} (B : BesLev D σ) (S : HSp D) (b b' : Mx D (σ + 1) S.rank) :
-    symplOH S B.V (x0 B ⬝ b) (x0 B ⬝ b') = symplOH S B.L (zl B ⬝ b) (zl B ⬝ b') := by
-  rw [fourierBesselBasePoint_mul_eq, fourierBesselBasePoint_mul_eq]
+theorem fourierBesselBasePoint_mul_eq {σ : ℕ} (B : BesLev D σ) (S : HSp D) (b : Mx D (σ + 1) S.rank) :
+    x0 B ⬝ b = B.d.incX S (Matrix.of fun i j => b (Fin.castSucc i) j) +
+      B.d.inc0 S ((B.o.resT S).symm (0, zl B ⬝ b)) :=
+  fourierBesselBasePoint_mul_eq_gen B.d B.o B.ζ S b
+
+theorem heisSymplecticHalf_fourierBesselBasePoint_mul_gen {σ : ℕ} {V V₀ A L : HSp D} (d : HypDec V V₀ σ)
+    (o : OrthDec V₀ A L) (ζ : Fin L.rank → D.host.E) (S : HSp D) (b b' : Mx D (σ + 1) S.rank) :
+    symplOH S V (xLast d (vecB o ζ) ⬝ b) (xLast d (vecB o ζ) ⬝ b') =
+      symplOH S L (zEll L (σ + 1) ζ ⬝ b) (zEll L (σ + 1) ζ ⬝ b') := by
+  rw [fourierBesselBasePoint_mul_eq_gen, fourierBesselBasePoint_mul_eq_gen]
   simp only [GlobalTheory.OrientedHeis.symplOH_add_left, GlobalTheory.OrientedHeis.symplOH_add_right, HypDec.symplOH_incX_incX,
     HypDec.wittDecomp_sympl_inclIsotropic_inclAnisotropic, HypDec.wittDecomp_sympl_inclAnisotropic_inclAnisotropic, zero_add]
-  rw [symplOH_skew S B.V (B.d.incX S _) (B.d.inc0 S _), HypDec.wittDecomp_sympl_inclIsotropic_inclAnisotropic, neg_zero, zero_add,
+  rw [symplOH_skew S V (d.incX S _) (d.inc0 S _), HypDec.wittDecomp_sympl_inclIsotropic_inclAnisotropic, neg_zero, zero_add,
     OrthDec.symplOH_resT, AddEquiv.apply_symm_apply, AddEquiv.apply_symm_apply, symplOH_zero_left, zero_add]
 
-theorem zl_mem_ratMx {σ : ℕ} (B : BesLev D σ) : zl B ∈ ratMx D B.L.rank (σ + 1) := by
-  refine ⟨vecMulVec B.ζ (fun i : Fin (σ + 1) => if i.1 + 1 = σ + 1 then (1 : D.host.E) else 0), ?_⟩
+theorem heisSymplecticHalf_fourierBesselBasePoint_mul {σ : ℕ} (B : BesLev D σ) (S : HSp D) (b b' : Mx D (σ + 1) S.rank) :
+    symplOH S B.V (x0 B ⬝ b) (x0 B ⬝ b') = symplOH S B.L (zl B ⬝ b) (zl B ⬝ b') :=
+  heisSymplecticHalf_fourierBesselBasePoint_mul_gen B.d B.o B.ζ S b b'
+
+theorem zEll_mem_ratMx {σ : ℕ} (L : HSp D) (ζ : Fin L.rank → D.host.E) : zEll L (σ + 1) ζ ∈ ratMx D L.rank (σ + 1) := by
+  refine ⟨vecMulVec ζ (fun i : Fin (σ + 1) => if i.1 + 1 = σ + 1 then (1 : D.host.E) else 0), ?_⟩
   refine Matrix.ext fun k i => ?_
-  change incA D (B.ζ k * (if i.1 + 1 = σ + 1 then (1 : D.host.E) else 0)) =
-    incA D (B.ζ k) * (if i.1 + 1 = σ + 1 then (1 : AE D) else 0)
+  change incA D (ζ k * (if i.1 + 1 = σ + 1 then (1 : D.host.E) else 0)) =
+    incA D (ζ k) * (if i.1 + 1 = σ + 1 then (1 : AE D) else 0)
   split_ifs
   · rw [mul_one, mul_one]
   · rw [mul_zero, mul_zero, map_zero]
 
-theorem fourierBesselBasePoint_mul_mem_rationalAdelicMatrix {σ : ℕ} (B : BesLev D σ) (S : HSp D) {γ : Mx D (σ + 1) S.rank} (hγ : γ ∈ ratMx D (σ + 1) S.rank) :
-    x0 B ⬝ γ ∈ ratMx D B.V.rank S.rank := by
-  rw [fourierBesselBasePoint_mul_eq]
+theorem zl_mem_ratMx {σ : ℕ} (B : BesLev D σ) : zl B ∈ ratMx D B.L.rank (σ + 1) :=
+  zEll_mem_ratMx B.L B.ζ
+
+theorem fourierBesselBasePoint_mul_mem_rationalAdelicMatrix_gen {σ : ℕ} {V V₀ A L : HSp D} (d : HypDec V V₀ σ)
+    (o : OrthDec V₀ A L) (ζ : Fin L.rank → D.host.E) (S : HSp D) {γ : Mx D (σ + 1) S.rank}
+    (hγ : γ ∈ ratMx D (σ + 1) S.rank) :
+    xLast d (vecB o ζ) ⬝ γ ∈ ratMx D V.rank S.rank := by
+  rw [fourierBesselBasePoint_mul_eq_gen]
   obtain ⟨g, rfl⟩ := hγ
   refine add_mem (ratMx_mul (rat_mem _) ⟨Matrix.of fun i j => g (Fin.castSucc i) j, rfl⟩)
     (ratMx_mul (rat_mem _) ?_)
   rw [OrthDec.resT_symm_apply, Matrix.mul_zero, zero_add]
-  exact ratMx_mul (rat_mem _) (ratMx_mul (zl_mem_ratMx B) (rat_mem _))
+  exact ratMx_mul (rat_mem _) (ratMx_mul (zEll_mem_ratMx L ζ) (rat_mem _))
+
+theorem fourierBesselBasePoint_mul_mem_rationalAdelicMatrix {σ : ℕ} (B : BesLev D σ) (S : HSp D) {γ : Mx D (σ + 1) S.rank} (hγ : γ ∈ ratMx D (σ + 1) S.rank) :
+    x0 B ⬝ γ ∈ ratMx D B.V.rank S.rank :=
+  fourierBesselBasePoint_mul_mem_rationalAdelicMatrix_gen B.d B.o B.ζ S hγ
 
 theorem splitLine_symm_mem {σ n : ℕ} (L : HSp D) (ζ : Fin L.rank → D.host.E) (i₀ : Fin L.rank)
     (h1 : ∀ i : Fin L.rank, i = i₀) (h0 : ζ i₀ ≠ 0) {p : Mx D σ n × Mx D L.rank n}
@@ -157,63 +178,61 @@ theorem splitLine_mem {σ n : ℕ} (L : HSp D) (ζ : Fin L.rank → D.host.E) (i
     (h1 : ∀ i : Fin L.rank, i = i₀) (h0 : ζ i₀ ≠ 0) {b : Mx D (σ + 1) n} (hb : b ∈ ratMx D (σ + 1) n) :
     splitLine L ζ i₀ h1 h0 b ∈ (ratMx D σ n).prod (ratMx D L.rank n) := by
   obtain ⟨g, rfl⟩ := hb
-  refine ⟨⟨Matrix.of fun i j => g (Fin.castSucc i) j, rfl⟩, ?_⟩
-  change zEll L (σ + 1) ζ ⬝ rat g ∈ ratMx D L.rank n
-  refine ratMx_mul ⟨vecMulVec ζ (fun i : Fin (σ + 1) => if i.1 + 1 = σ + 1 then (1 : D.host.E) else 0), ?_⟩ (rat_mem _)
-  refine Matrix.ext fun k i => ?_
-  change incA D (ζ k * (if i.1 + 1 = σ + 1 then (1 : D.host.E) else 0)) =
-    incA D (ζ k) * (if i.1 + 1 = σ + 1 then (1 : AE D) else 0)
-  split_ifs
-  · rw [mul_one, mul_one]
-  · rw [mul_zero, mul_zero, map_zero]
+  exact ⟨⟨Matrix.of fun i j => g (Fin.castSucc i) j, rfl⟩, ratMx_mul (zEll_mem_ratMx L ζ) (rat_mem _)⟩
 
-
-
-theorem heis_base : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (σ : ℕ) (S : HSp D) (B : BesLev D σ) (vB : VolM D (σ + 1) S.rank) (vT : VolM D σ S.rank) (vL : VolM D B.L.rank S.rank) (f : WO S B.V → ℂ) (y : WO S B.L → ℂ), Quasi ψ S B.V f → Quasi ψ S B.L y → (∫ b in vB.𝓕, f (x0 B ⬝ b) * star (y (zl B ⬝ b)) ∂vB.μ = contractT B.o S vL.μ vL.𝓕 (B.d.mixT S ψ vT.μ vT.𝓕 f 0) y 0) ∧ ∫⁻ v in vL.𝓕, ‖B.d.mixT S ψ vT.μ vT.𝓕 f 0 ((B.o.resT S).symm (0, v))‖ₑ ∂vL.μ ≤ ∫⁻ b in vB.𝓕, ‖f (x0 B ⬝ b)‖ₑ ∂vB.μ := by
-  intro D ψ hψ σ S B vB vT vL f y hf hy
+theorem heis_base_gen (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (σ : ℕ) (S : HSp D)
+    (V V₀ A L : HSp D) (d : HypDec V V₀ σ) (o : OrthDec V₀ A L) (ζ : Fin L.rank → D.host.E)
+    (hline : IsLineVec L ζ)
+    (vB : VolM D (σ + 1) S.rank) (vT : VolM D σ S.rank) (vL : VolM D L.rank S.rank)
+    (f : WO S V → ℂ) (y : WO S L → ℂ) (hf : Quasi ψ S V f) (hy : Quasi ψ S L y) :
+    (∫ b in vB.𝓕, f (xLast d (vecB o ζ) ⬝ b) * star (y (zEll L (σ + 1) ζ ⬝ b)) ∂vB.μ =
+      contractT o S vL.μ vL.𝓕 (d.mixT S ψ vT.μ vT.𝓕 f 0) y 0) ∧
+    ∫⁻ v in vL.𝓕, ‖d.mixT S ψ vT.μ vT.𝓕 f 0 ((o.resT S).symm (0, v))‖ₑ ∂vL.μ ≤
+      ∫⁻ b in vB.𝓕, ‖f (xLast d (vecB o ζ) ⬝ b)‖ₑ ∂vB.μ := by
   have hψn : ∀ a, ‖ψ a‖ = 1 := hψ.1.2.1
-  have hL1 : B.L.rank = 1 := B.line.1
-  let i₀ : Fin B.L.rank := ⟨0, by omega⟩
-  have h1 : ∀ i : Fin B.L.rank, i = i₀ := fun i => Fin.ext (by have := i.2; simp only [i₀]; omega)
-  have h0 : B.ζ i₀ ≠ 0 := by
+  have hL1 : L.rank = 1 := hline.1
+  let i₀ : Fin L.rank := ⟨0, by omega⟩
+  have h1 : ∀ i : Fin L.rank, i = i₀ := fun i => Fin.ext (by have := i.2; simp only [i₀]; omega)
+  have h0 : ζ i₀ ≠ 0 := by
     intro h
-    apply B.line.2
-    have : B.ζ = 0 := funext fun i => by rw [h1 i, h]; rfl
+    apply hline.2
+    have : ζ = 0 := funext fun i => by rw [h1 i, h]; rfl
     rw [this]; simp
-  set e := splitLine (σ := σ) (n := S.rank) B.L B.ζ i₀ h1 h0 with he_def
-  obtain ⟨he, hes⟩ := continuous_splitLine (σ := σ) (n := S.rank) B.L B.ζ i₀ h1 h0
+  set e := splitLine (σ := σ) (n := S.rank) L ζ i₀ h1 h0 with he_def
+  obtain ⟨he, hes⟩ := continuous_splitLine (σ := σ) (n := S.rank) L ζ i₀ h1 h0
   obtain ⟨i1, i2, i3, i4, i5, -⟩ := lattice_Mx D (σ + 1) S.rank
   obtain ⟨j1, j2, j3, j4, j5, -⟩ := lattice_Mx D σ S.rank
-  obtain ⟨k1, k2, k3, k4, k5, -⟩ := lattice_Mx D B.L.rank S.rank
+  obtain ⟨k1, k2, k3, k4, k5, -⟩ := lattice_Mx D L.rank S.rank
   haveI : BorelSpace (Mx D (σ + 1) S.rank) := ⟨rfl⟩
   haveI : BorelSpace (Mx D σ S.rank) := ⟨rfl⟩
-  haveI : BorelSpace (Mx D B.L.rank S.rank) := ⟨rfl⟩
+  haveI : BorelSpace (Mx D L.rank S.rank) := ⟨rfl⟩
   haveI : Countable (ratMx D (σ + 1) S.rank) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
   haveI := vT.covol.1
   haveI := vL.covol.1
   haveI := vB.covol.1
 
-  have hx : ∀ b : Mx D (σ + 1) S.rank, x0 B ⬝ b = B.d.incX S (e b).1 + B.d.inc0 S ((B.o.resT S).symm (0, (e b).2)) := fun b => fourierBesselBasePoint_mul_eq B S b
+  have hx : ∀ b : Mx D (σ + 1) S.rank, xLast d (vecB o ζ) ⬝ b = d.incX S (e b).1 + d.inc0 S ((o.resT S).symm (0, (e b).2)) :=
+    fun b => fourierBesselBasePoint_mul_eq_gen d o ζ S b
 
   set P := vT.μ.prod vL.μ with hP
-  let me : Mx D (σ + 1) S.rank ≃ᵐ Mx D σ S.rank × Mx D B.L.rank S.rank :=
+  let me : Mx D (σ + 1) S.rank ≃ᵐ Mx D σ S.rank × Mx D L.rank S.rank :=
     { toEquiv := e.toEquiv
       measurable_toFun := he.measurable
       measurable_invFun := hes.measurable }
   have hmp : MeasurePreserving me (P.map e.symm) P := MeasurePreserving.symm me.symm ⟨me.symm.measurable, rfl⟩
   have hmp' : MeasurePreserving e (P.map e.symm) P := hmp
   have hν : (P.map e.symm).IsAddHaarMeasure := AddEquiv.isAddHaarMeasure_map P e.symm hes (by simpa using he)
-  have hPF : IsAddFundamentalDomain ((ratMx D σ S.rank).prod (ratMx D B.L.rank S.rank)) (vT.𝓕 ×ˢ vL.𝓕) P :=
+  have hPF : IsAddFundamentalDomain ((ratMx D σ S.rank).prod (ratMx D L.rank S.rank)) (vT.𝓕 ×ˢ vL.𝓕) P :=
     GlobalTheory.CoordUnfold.isAddFundamentalDomain_prod vT.covol.2.1 vL.covol.2.1
   have hF' : IsAddFundamentalDomain (ratMx D (σ + 1) S.rank) (e ⁻¹' (vT.𝓕 ×ˢ vL.𝓕)) (P.map e.symm) := by
-    let g : (ratMx D σ S.rank).prod (ratMx D B.L.rank S.rank) → ratMx D (σ + 1) S.rank :=
-      fun p => ⟨e.symm p, splitLine_symm_mem B.L B.ζ i₀ h1 h0 p.2⟩
+    let g : (ratMx D σ S.rank).prod (ratMx D L.rank S.rank) → ratMx D (σ + 1) S.rank :=
+      fun p => ⟨e.symm p, splitLine_symm_mem L ζ i₀ h1 h0 p.2⟩
     have hg : Function.Bijective g := by
       constructor
       · intro a b hab
         exact Subtype.ext (e.symm.injective (congrArg Subtype.val hab))
       · intro x
-        exact ⟨⟨e x, splitLine_mem B.L B.ζ i₀ h1 h0 x.2⟩, Subtype.ext (by simp [g])⟩
+        exact ⟨⟨e x, splitLine_mem L ζ i₀ h1 h0 x.2⟩, Subtype.ext (by simp [g])⟩
     refine hPF.preimage_of_equiv hmp'.quasiMeasurePreserving hg ?_
     intro p x
     simp [g, AddSubgroup.vadd_def]
@@ -224,47 +243,47 @@ theorem heis_base : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D �
   have hμeq : P.map e.symm = vB.μ := covolOne_measure_eq vB.covol hcov
 
   have hfx : ∀ γ ∈ ratMx D (σ + 1) S.rank, ∀ b,
-      f (x0 B ⬝ (γ + b)) = ψ (-(symplOH S B.V (x0 B ⬝ γ) (x0 B ⬝ b))) * f (x0 B ⬝ b) := by
+      f (xLast d (vecB o ζ) ⬝ (γ + b)) = ψ (-(symplOH S V (xLast d (vecB o ζ) ⬝ γ) (xLast d (vecB o ζ) ⬝ b))) * f (xLast d (vecB o ζ) ⬝ b) := by
     intro γ hγ b
-    obtain ⟨δ, hδ⟩ := fourierBesselBasePoint_mul_mem_rationalAdelicMatrix B S hγ
-    have e1 := hf.1 δ (x0 B ⬝ b)
-    rw [show ratW B.V S δ = x0 B ⬝ γ from hδ] at e1
+    obtain ⟨δ, hδ⟩ := fourierBesselBasePoint_mul_mem_rationalAdelicMatrix_gen d o ζ S hγ
+    have e1 := hf.1 δ (xLast d (vecB o ζ) ⬝ b)
+    rw [show ratW V S δ = xLast d (vecB o ζ) ⬝ γ from hδ] at e1
     rw [Matrix.mul_add, e1]
   have hyz : ∀ γ ∈ ratMx D (σ + 1) S.rank, ∀ b,
-      y (zl B ⬝ (γ + b)) = ψ (-(symplOH S B.L (zl B ⬝ γ) (zl B ⬝ b))) * y (zl B ⬝ b) := by
+      y (zEll L (σ + 1) ζ ⬝ (γ + b)) = ψ (-(symplOH S L (zEll L (σ + 1) ζ ⬝ γ) (zEll L (σ + 1) ζ ⬝ b))) * y (zEll L (σ + 1) ζ ⬝ b) := by
     intro γ hγ b
-    obtain ⟨δ, hδ⟩ := ratMx_mul (zl_mem_ratMx B) hγ
-    have e1 := hy.1 δ (zl B ⬝ b)
-    rw [show ratW B.L S δ = zl B ⬝ γ from hδ] at e1
+    obtain ⟨δ, hδ⟩ := ratMx_mul (zEll_mem_ratMx L ζ) hγ
+    have e1 := hy.1 δ (zEll L (σ + 1) ζ ⬝ b)
+    rw [show ratW L S δ = zEll L (σ + 1) ζ ⬝ γ from hδ] at e1
     rw [Matrix.mul_add, e1]
   have hunit : ∀ a, ψ a * star (ψ a) = 1 := fun a => by
     rw [← starRingEnd_apply, RCLike.mul_conj, hψn]; simp
   set s := vT.𝓕 ×ˢ vL.𝓕 with hs
-  set G : Mx D (σ + 1) S.rank → ℂ := fun b => f (x0 B ⬝ b) * star (y (zl B ⬝ b)) with hG
+  set G : Mx D (σ + 1) S.rank → ℂ := fun b => f (xLast d (vecB o ζ) ⬝ b) * star (y (zEll L (σ + 1) ζ ⬝ b)) with hG
   have hGper : ∀ γ ∈ ratMx D (σ + 1) S.rank, ∀ b, G (γ + b) = G b := by
     intro γ hγ b
     simp only [hG]
-    rw [hfx γ hγ b, hyz γ hγ b, heisSymplecticHalf_fourierBesselBasePoint_mul, star_mul]
-    calc ψ (-symplOH S B.L (zl B ⬝ γ) (zl B ⬝ b)) * f (x0 B ⬝ b) *
-          (star (y (zl B ⬝ b)) * star (ψ (-symplOH S B.L (zl B ⬝ γ) (zl B ⬝ b))))
-        = (ψ (-symplOH S B.L (zl B ⬝ γ) (zl B ⬝ b)) * star (ψ (-symplOH S B.L (zl B ⬝ γ) (zl B ⬝ b)))) *
-          (f (x0 B ⬝ b) * star (y (zl B ⬝ b))) := by ring
+    rw [hfx γ hγ b, hyz γ hγ b, heisSymplecticHalf_fourierBesselBasePoint_mul_gen, star_mul]
+    calc ψ (-symplOH S L (zEll L (σ + 1) ζ ⬝ γ) (zEll L (σ + 1) ζ ⬝ b)) * f (xLast d (vecB o ζ) ⬝ b) *
+          (star (y (zEll L (σ + 1) ζ ⬝ b)) * star (ψ (-symplOH S L (zEll L (σ + 1) ζ ⬝ γ) (zEll L (σ + 1) ζ ⬝ b))))
+        = (ψ (-symplOH S L (zEll L (σ + 1) ζ ⬝ γ) (zEll L (σ + 1) ζ ⬝ b)) * star (ψ (-symplOH S L (zEll L (σ + 1) ζ ⬝ γ) (zEll L (σ + 1) ζ ⬝ b)))) *
+          (f (xLast d (vecB o ζ) ⬝ b) * star (y (zEll L (σ + 1) ζ ⬝ b))) := by ring
       _ = _ := by rw [hunit, one_mul]
-  have hx0c : Continuous fun b : Mx D (σ + 1) S.rank => x0 B ⬝ b := continuous_const.matrix_mul continuous_id
-  have hzlc : Continuous fun b : Mx D (σ + 1) S.rank => zl B ⬝ b := continuous_const.matrix_mul continuous_id
+  have hx0c : Continuous fun b : Mx D (σ + 1) S.rank => xLast d (vecB o ζ) ⬝ b := continuous_const.matrix_mul continuous_id
+  have hzlc : Continuous fun b : Mx D (σ + 1) S.rank => zEll L (σ + 1) ζ ⬝ b := continuous_const.matrix_mul continuous_id
   have hGc : Continuous G := (hf.2.comp hx0c).mul (continuous_star.comp (hy.2.comp hzlc))
-  set H : Mx D σ S.rank × Mx D B.L.rank S.rank → ℂ :=
-    fun p => f (B.d.incX S p.1 + B.d.inc0 S ((B.o.resT S).symm (0, p.2))) * star (y p.2) with hH
+  set H : Mx D σ S.rank × Mx D L.rank S.rank → ℂ :=
+    fun p => f (d.incX S p.1 + d.inc0 S ((o.resT S).symm (0, p.2))) * star (y p.2) with hH
   have hGH : ∀ p, G (e.symm p) = H p := by
     intro p
     simp only [hG, hH]
     rw [hx (e.symm p), AddEquiv.apply_symm_apply]
     congr 3
     exact congrArg Prod.snd (e.apply_symm_apply p)
-  have hmix : ∀ w₀, B.d.mixT S ψ vT.μ vT.𝓕 f 0 w₀ = ∫ ξ in vT.𝓕, f (B.d.incX S ξ + B.d.inc0 S w₀) ∂vT.μ := by
+  have hmix : ∀ w₀, d.mixT S ψ vT.μ vT.𝓕 f 0 w₀ = ∫ ξ in vT.𝓕, f (d.incX S ξ + d.inc0 S w₀) ∂vT.μ := by
     intro w₀
-    change ∫ ξ in vT.𝓕, heisO ψ S B.V (B.d.incX S ξ) (heisO ψ S B.V (B.d.incAdj S 0)
-      (heisO ψ S B.V (B.d.inc0 S w₀) f)) 0 ∂vT.μ = _
+    change ∫ ξ in vT.𝓕, heisO ψ S V (d.incX S ξ) (heisO ψ S V (d.incAdj S 0)
+      (heisO ψ S V (d.inc0 S w₀) f)) 0 ∂vT.μ = _
     congr 1
     funext ξ
     rw [HypDec.integrandT_eq, map_zero, symplOH_zero_right, AddChar.map_zero_eq_one, one_mul, add_zero]
@@ -278,7 +297,7 @@ theorem heis_base : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D �
       rw [this]; exact hGi)
     exact h2
   refine ⟨?_, ?_⟩
-  · calc ∫ b in vB.𝓕, f (x0 B ⬝ b) * star (y (zl B ⬝ b)) ∂vB.μ = ∫ b in vB.𝓕, G b ∂vB.μ := rfl
+  · calc ∫ b in vB.𝓕, f (xLast d (vecB o ζ) ⬝ b) * star (y (zEll L (σ + 1) ζ ⬝ b)) ∂vB.μ = ∫ b in vB.𝓕, G b ∂vB.μ := rfl
       _ = ∫ b in e ⁻¹' s, G b ∂(P.map e.symm) := (covolOne_integral_eq vB.covol hcov G hGper).symm
       _ = ∫ p in s, H p ∂P := by
         have h3 := hmp.setIntegral_preimage_emb me.measurableEmbedding H s
@@ -290,25 +309,25 @@ theorem heis_base : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D �
         rw [hP, ← Measure.prod_restrict]
         exact integral_prod_symm H hHi
       _ = _ := by
-        change _ = ∫ v in vL.𝓕, B.d.mixT S ψ vT.μ vT.𝓕 f 0 ((B.o.resT S).symm (0, v)) * star (y v) ∂vL.μ
+        change _ = ∫ v in vL.𝓕, d.mixT S ψ vT.μ vT.𝓕 f 0 ((o.resT S).symm (0, v)) * star (y v) ∂vL.μ
         congr 1
         funext v
         rw [hmix, ← integral_mul_const]
   · have hψe : ∀ a, ‖ψ a‖ₑ = 1 := fun a => by rw [← ofReal_norm_eq_enorm, hψn, ENNReal.ofReal_one]
-    set K : Mx D σ S.rank × Mx D B.L.rank S.rank → ENNReal :=
-      fun p => ‖f (B.d.incX S p.1 + B.d.inc0 S ((B.o.resT S).symm (0, p.2)))‖ₑ with hK
+    set K : Mx D σ S.rank × Mx D L.rank S.rank → ENNReal :=
+      fun p => ‖f (d.incX S p.1 + d.inc0 S ((o.resT S).symm (0, p.2)))‖ₑ with hK
     have hKc : Continuous K := by
       refine (hf.2.comp ?_).enorm
       simp only [HypDec.incX_apply, HypDec.wittDecomp_inclAnisotropicHom_apply, OrthDec.resT_symm_apply]
       exact (continuous_const.matrix_mul continuous_fst).add (continuous_const.matrix_mul
         (continuous_const.add (continuous_const.matrix_mul continuous_snd)))
-    have hKe : ∀ b, K (e b) = ‖f (x0 B ⬝ b)‖ₑ := fun b => by rw [hK, hx b]
+    have hKe : ∀ b, K (e b) = ‖f (xLast d (vecB o ζ) ⬝ b)‖ₑ := fun b => by rw [hK, hx b]
     have hper' : ∀ (γ : ratMx D (σ + 1) S.rank) (b : Mx D (σ + 1) S.rank),
-        ‖f (x0 B ⬝ (γ +ᵥ b))‖ₑ = ‖f (x0 B ⬝ b)‖ₑ := by
+        ‖f (xLast d (vecB o ζ) ⬝ (γ +ᵥ b))‖ₑ = ‖f (xLast d (vecB o ζ) ⬝ b)‖ₑ := by
       intro γ b
       rw [AddSubgroup.vadd_def, vadd_eq_add, hfx γ γ.2 b, enorm_mul, hψe, one_mul]
     have hF'' : IsAddFundamentalDomain (ratMx D (σ + 1) S.rank) (e ⁻¹' s) vB.μ := hμeq ▸ hF'
-    calc ∫⁻ v in vL.𝓕, ‖B.d.mixT S ψ vT.μ vT.𝓕 f 0 ((B.o.resT S).symm (0, v))‖ₑ ∂vL.μ
+    calc ∫⁻ v in vL.𝓕, ‖d.mixT S ψ vT.μ vT.𝓕 f 0 ((o.resT S).symm (0, v))‖ₑ ∂vL.μ
         ≤ ∫⁻ v in vL.𝓕, ∫⁻ ξ in vT.𝓕, K (ξ, v) ∂vT.μ ∂vL.μ := by
           refine lintegral_mono fun v => ?_
           rw [hmix]
@@ -317,8 +336,12 @@ theorem heis_base : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D �
         rw [hP, ← Measure.prod_restrict, lintegral_prod_symm _ hKc.measurable.aemeasurable]
       _ = ∫⁻ b in e ⁻¹' s, K (e b) ∂(P.map e.symm) :=
         (hmp'.setLIntegral_comp_preimage_emb me.measurableEmbedding K s).symm
-      _ = ∫⁻ b in e ⁻¹' s, ‖f (x0 B ⬝ b)‖ₑ ∂vB.μ := by
+      _ = ∫⁻ b in e ⁻¹' s, ‖f (xLast d (vecB o ζ) ⬝ b)‖ₑ ∂vB.μ := by
         rw [hμeq]; congr 1; funext b; exact hKe b
-      _ = ∫⁻ b in vB.𝓕, ‖f (x0 B ⬝ b)‖ₑ ∂vB.μ := hF''.setLIntegral_eq vB.covol.2.1 _ hper'
+      _ = ∫⁻ b in vB.𝓕, ‖f (xLast d (vecB o ζ) ⬝ b)‖ₑ ∂vB.μ := hF''.setLIntegral_eq vB.covol.2.1 _ hper'
+
+theorem heis_base : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (σ : ℕ) (S : HSp D) (B : BesLev D σ) (vB : VolM D (σ + 1) S.rank) (vT : VolM D σ S.rank) (vL : VolM D B.L.rank S.rank) (f : WO S B.V → ℂ) (y : WO S B.L → ℂ), Quasi ψ S B.V f → Quasi ψ S B.L y → (∫ b in vB.𝓕, f (x0 B ⬝ b) * star (y (zl B ⬝ b)) ∂vB.μ = contractT B.o S vL.μ vL.𝓕 (B.d.mixT S ψ vT.μ vT.𝓕 f 0) y 0) ∧ ∫⁻ v in vL.𝓕, ‖B.d.mixT S ψ vT.μ vT.𝓕 f 0 ((B.o.resT S).symm (0, v))‖ₑ ∂vL.μ ≤ ∫⁻ b in vB.𝓕, ‖f (x0 B ⬝ b)‖ₑ ∂vB.μ :=
+  fun D ψ hψ σ S B vB vT vL f y hf hy =>
+    heis_base_gen D ψ hψ σ S B.V B.V₀ B.A B.L B.d B.o B.ζ B.line vB vT vL f y hf hy
 
 end GlobalTheory.Unf.FB

@@ -40,13 +40,6 @@ lemma hm_sub_r (x w w' : Fin m → ℂ) : herm H x (w - w') = herm H x w - herm 
 lemma hm_smul_r (c : ℂ) (x w : Fin m → ℂ) : herm H x (c • w) = star c * herm H x w := by
   simp [herm]
 
-lemma hm_symm (hH : Hᴴ = H) (x y : Fin m → ℂ) : herm H y x = star (herm H x y) := by
-  apply _root_.Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm <;> assumption
-
-lemma hm_self_re (hH : Hᴴ = H) (x : Fin m → ℂ) : herm H x x = ((herm H x x).re : ℂ) := by
-  have h := hm_symm H hH x x
-  exact (Complex.conj_eq_iff_re.mp h.symm).symm
-
 end herm
 
 lemma Hb_ct (k : ℕ) : (Hb k)ᴴ = Hb k := by
@@ -81,7 +74,7 @@ lemma pos_b {k : ℕ} {zb u : Fin (k + 1) → ℂ} (hz : (herm (Hb k) zb zb).re 
   · set a := zb (Fin.last k)
     set b := -(u (Fin.last k))
     set v := a • u + b • zb with hv
-    have hzu : herm (Hb k) zb u = 0 := by rw [hm_symm _ (Hb_ct k), hu, star_zero]
+    have hzu : herm (Hb k) zb u = 0 := by rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm _ (Hb_ct k), hu, star_zero]
     have hvv : herm (Hb k) v v = a * star a * herm (Hb k) u u + b * star b * herm (Hb k) zb zb := by
       simp only [hv, hm_add_l, hm_add_r, hm_smul_l, hm_smul_r, hu, hzu]
       ring
@@ -137,7 +130,7 @@ lemma nz_unit {p : Fin (2 * r + k + 1) → ℂ} (hp : 0 < (herm (Hpk k r) p p).r
     herm (Hpk k r) (nz k r p) (nz k r p) = 1 := by
   have hH : (Hpk k r)ᴴ = Hpk k r := (Formalism.QuantumDeterminants.hpkFacts k r).1
   unfold nz
-  rw [hm_smul_l, hm_smul_r, hm_self_re _ hH p]
+  rw [hm_smul_l, hm_smul_r, Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_self_real _ hH p]
   set t := (herm (Hpk k r) p p).re with ht
   have hst : Real.sqrt t * Real.sqrt t = t := Real.mul_self_sqrt hp.le
   have hs0 : Real.sqrt t ≠ 0 := (Real.sqrt_pos.2 hp).ne'

@@ -18,67 +18,12 @@ public import Mathlib.Algebra.Polynomial.Basis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldFiniteSupportSumOrderEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdmissibleAdelicMatrixFamilyOrdersFinite
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdmissibleAdelicMatrixFamilyPullbackExtension
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.PicardGroup
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldZerosFiniteSumOrderEqFinrank
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Compactification.OnePoint.ProjectiveLine
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldOneVariableTranscendentalFiniteAndE
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceRestrictionExistsPow
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -194,8 +139,8 @@ theorem admissible_degree_twistFamilyAtPlaceByScalar (k F : Type) [Field k] [Fie
     intro v
     by_cases hv : v = v₀
     · subst hv
-      rw [twistAt_self, Matrix.det_smul, Fintype.card_fin, if_pos rfl]
-    · rw [twistAt_of_ne _ _ _ _ hv, if_neg hv, one_mul]
+      rw [twistAt_self, Matrix.det_smul, Fintype.card_fin, ite_eq_left rfl]
+    · rw [twistAt_of_ne _ _ _ _ hv, ite_eq_right hv, one_mul]
   have hord : ∀ v, ord v (twistAt v₀ (π ^ (-e)) h v).det =
       ord v (h v).det - if v = v₀ then (n : ℤ) * e else 0 := by
     intro v
@@ -218,8 +163,8 @@ theorem admissible_degree_twistFamilyAtPlaceByScalar (k F : Type) [Field k] [Fie
     have hfin' : (Function.support fun v : Place k F => if v = v₀ then (n : ℤ) * e else 0).Finite :=
       (Set.finite_singleton v₀).subset fun v hv => by
         by_contra h'
-        exact hv (if_neg h')
-    rw [deg, deg, finsum_congr hord, finsum_sub_distrib hfin hfin', finsum_eq_single _ v₀ fun v hv => if_neg hv, if_pos rfl]
+        exact hv (ite_eq_right h')
+    rw [deg, deg, finsum_congr hord, finsum_sub_distrib hfin hfin', finsum_eq_single _ v₀ fun v hv => ite_eq_right hv, ite_eq_left rfl]
 
 end GlobalTheory.Nef
 end -- clump:auto
@@ -283,7 +228,7 @@ theorem binary_form_splits : ∀ (F : Type) [Field F] (m : ℕ) (p : Fin (m + 1)
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun h => hj (Fin.ext h.symm)
     · simp
   have hq0 : q ≠ 0 := by
@@ -965,7 +910,7 @@ theorem riemann_cofinal : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k
     fun v => (_root_.GlobalTheory.Nef.place_isDVR_residue k F hFF v).2 t
   obtain ⟨r, hr⟩ : ∃ r : Place k F → k, ∀ v : Place k F, v.1 t ≤ 1 → v.1 (t - algebraMap k F (r v)) < 1 :=
     ⟨fun v => if h : v.1 t ≤ 1 then (hres v h).choose else 0, fun v h => by
-      simp only [dif_pos h]; exact (hres v h).choose_spec⟩
+      simp only [dite_eq_left h]; exact (hres v h).choose_spec⟩
   have hlin0 : ∀ a : k, t - algebraMap k F a ≠ 0 := fun a h =>
     ht (sub_eq_zero.1 h ▸ isAlgebraic_algebraMap a)
   obtain ⟨M, hM⟩ : ∃ M : ℕ, M = ∑ v ∈ D.support, (D v).natAbs := ⟨_, rfl⟩
@@ -1016,8 +961,6 @@ theorem riemann_cofinal : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k
       · have h1 := Finset.single_le_sum (f := fun v => (D v).natAbs) (fun _ _ => Nat.zero_le _) hw
         have h2 : D w ≤ ((D w).natAbs : ℤ) := Int.le_natAbs
         rw [hM]
-        have h3 : (((D w).natAbs : ℕ) : ℤ) ≤ ((∑ v ∈ D.support, (D v).natAbs : ℕ) : ℤ) :=
-          Nat.cast_le.2 h1
         omega
       · rw [Finsupp.notMem_support_iff.1 hw]; positivity
     by_cases ht1 : w.1 t ≤ 1
@@ -1049,7 +992,6 @@ theorem riemann_cofinal : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k
         omega
       rw [hPpole w ht1]
       push_cast
-      have hM0 : (0 : ℤ) ≤ M := by positivity
       nlinarith
   ·
     exact hli.map' (LinearMap.mulRight k h⁻¹)
@@ -1161,7 +1103,7 @@ theorem exists_section_of_large_deg : ∀ (k F : Type) [Field k] [IsAlgClosed k]
   set B := hg.2.toFinset with hBdef
   choose d0 hd0 using fun v => exists_exp_bound v (g v)⁻¹
   let D : Place k F →₀ ℤ := Finsupp.onFinset B (fun v => if v ∈ B then (d0 v : ℤ) else 0)
-    (by intro v hv; by_contra h; exact hv (if_neg h))
+    (by intro v hv; by_contra h; exact hv (ite_eq_right h))
   obtain ⟨D', hDD', m, f, hf, hm, hford⟩ := hγ D
   have hD0 : ∀ v, 0 ≤ D' v := fun v => le_trans
     (by simp only [D, Finsupp.onFinset_apply]; split_ifs <;> omega) (hDD' v)
@@ -1595,7 +1537,6 @@ theorem GlobalTheory.Nef.deg_le_two_mul_of_triangular : ∀ (k F : Type) [Field 
     have hint : (N : ℤ) * deg g ≤ (m + 1) * (e + 1 + γ) := by linarith
     have hreal : ((N : ℤ) : ℝ) * (deg g : ℝ) ≤ ((m : ℝ) + 1) * ((e : ℝ) + 1 + γ) := by exact_mod_cast hint
     push_cast at hreal
-    have hm1 : (0 : ℝ) ≤ (m : ℝ) + 1 := by positivity
     nlinarith
   by_contra! hlt
   have hpos : (0 : ℝ) < (deg g : ℝ) - 2 * b := by linarith
@@ -1731,7 +1672,7 @@ theorem quot_line_le : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k] [
       apply hw
       have h00 : w 0 = 0 := by simpa [hw'def] using congr_fun h0 0
       obtain ⟨j, hj⟩ : ∃ j, m j ≠ 0 := by
-        by_contra hc; push_neg at hc; exact hm (funext hc)
+        by_contra hc; push Not at hc; exact hm (funext hc)
       have h1 : w 1 * algebraMap E E' (m j) = 0 := by simpa [hw'def] using congr_fun h0 j.succ
       have h11 : w 1 = 0 := by
         rcases mul_eq_zero.1 h1 with h | h

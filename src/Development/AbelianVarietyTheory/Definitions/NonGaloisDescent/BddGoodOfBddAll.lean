@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.GoodPtsModel
 
 open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain
@@ -32,9 +30,9 @@ theorem inV_iff_nval (T : CDVR) {e : ℕ} (he : 0 < e) (x : T.Fr) : InV T x ↔ 
   unfold nval
   by_cases hx : x = 0
   · subst hx
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     exact iff_of_true (algebraMap T.V T.Fr).range.zero_mem le_top
-  · rw [if_neg hx, inV_iff_vV T hx, EReal.coe_nonneg, le_div_iff₀ (by exact_mod_cast he), zero_mul,
+  · rw [ite_eq_right hx, inV_iff_vV T hx, EReal.coe_nonneg, le_div_iff₀ (by exact_mod_cast he), zero_mul,
       Int.cast_nonneg_iff]
 
 variable {la : HeightOneSpectrum (𝓞 c.F)}
@@ -85,10 +83,10 @@ private theorem inV_mul_iff_vLa_add_nval_nonneg {T : CDVR} {io : c.F →+* T.Fr}
   · subst hz
     rw [mul_zero]
     unfold nval
-    rw [if_pos rfl, EReal.coe_add_top]
+    rw [ite_eq_left rfl, EReal.coe_add_top]
     exact iff_of_true (algebraMap T.V T.Fr).range.zero_mem le_top
   · have he' : (0 : ℝ) < e := by exact_mod_cast he
-    rw [inV_iff_vV T (mul_ne_zero hk hz), vV_mul' T hk hz, hv κ, nval, if_neg hz,
+    rw [inV_iff_vV T (mul_ne_zero hk hz), vV_mul' T hk hz, hv κ, nval, ite_eq_right hz,
       ← EReal.coe_add, EReal.coe_nonneg,
       show ((vLa la κ : ℤ) : ℝ) + (vV T.V z : ℝ) / e = (((e : ℤ) * vLa la κ + vV T.V z : ℤ) : ℝ) / e by
         push_cast; field_simp,

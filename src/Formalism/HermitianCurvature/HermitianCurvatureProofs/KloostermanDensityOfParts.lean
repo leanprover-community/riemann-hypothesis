@@ -298,29 +298,29 @@ theorem ptMatN_append (h rest : C.LPt) :
     induction j using Fin.addCases with
     | left j =>
       rw [_root_.Formalism.FourierDecayAlt.P.Ux2.block2_apply_upper_left]; simp only [D.ptMatN]
-      rw [ptEntry_append, if_pos ⟨by simp, by simp⟩]; rfl
+      rw [ptEntry_append, ite_eq_left ⟨by simp, by simp⟩]; rfl
     | right j =>
       rw [Dx2.SL.b_cn]; simp only [D.ptMatN, Matrix.zero_apply]
-      rw [ptEntry_append, if_neg (by simp), if_neg (by simp)]
+      rw [ptEntry_append, ite_eq_right (by simp), ite_eq_right (by simp)]
   | right i =>
     induction j using Fin.addCases with
     | left j =>
       rw [_root_.Formalism.FourierDecayAlt.P.Ux2.block2_apply_lower_left]; simp only [D.ptMatN, Matrix.zero_apply]
-      rw [ptEntry_append, if_neg (by simp), if_neg (by simp)]
+      rw [ptEntry_append, ite_eq_right (by simp), ite_eq_right (by simp)]
     | right j =>
       rw [_root_.Formalism.FourierDecayAlt.P.Ux2.block2_apply_lower_right]; simp only [D.ptMatN]
-      rw [ptEntry_append, if_neg (by simp), if_pos ⟨by simp, by simp⟩]
+      rw [ptEntry_append, ite_eq_right (by simp), ite_eq_left ⟨by simp, by simp⟩]
       simp
 
 theorem ptMatN_long (s : ℕ) (t : ℂ) : D.ptMatN [(s, t)] s = G.ptLong s t := by
   ext i j
   simp only [D.ptMatN, D.ptEntry, G.ptLong, G.wMat, Matrix.smul_apply, Matrix.of_apply, smul_eq_mul]
-  rw [if_pos ⟨i.isLt, j.isLt⟩]
+  rw [ite_eq_left ⟨i.isLt, j.isLt⟩]
   have : (j = i.rev) ↔ (i.val + j.val + 1 = s) := by
     rw [Fin.ext_iff, Fin.val_rev]; omega
   by_cases h : i.val + j.val + 1 = s
-  · rw [if_pos h, if_pos (this.2 h), mul_one]
-  · rw [if_neg h, if_neg (fun e => h (this.1 e)), mul_zero]
+  · rw [ite_eq_left h, ite_eq_left (this.2 h), mul_one]
+  · rw [ite_eq_right h, ite_eq_right (fun e => h (this.1 e)), mul_zero]
 
 theorem ptMatN_one (c : ℂ) : D.ptMatN [(1, c)] 1 = Matrix.of fun _ _ => c := by
   ext i j
@@ -339,8 +339,8 @@ theorem hMat_rev (n : ℕ) (t : ℂ) : U.hMat (Fin.revPerm : Equiv.Perm (Fin n))
   simp only [U.hMat, U.wP, Matrix.mul_diagonal, Matrix.of_apply, G.ptLong, G.wMat, Matrix.smul_apply,
     smul_eq_mul, Fin.revPerm_apply]
   by_cases h : i.rev = j
-  · rw [if_pos h, if_pos h.symm]; ring
-  · rw [if_neg h, if_neg (fun e => h e.symm)]; ring
+  · rw [ite_eq_left h, ite_eq_left h.symm]; ring
+  · rw [ite_eq_right h, ite_eq_right (fun e => h e.symm)]; ring
 
 theorem ptBlock_eq (n : ℕ) (t c : ℂ) :
     G.ptBlock n t c = U.blk2 (G.ptLong n t) 0 0 (Matrix.of fun _ _ => c) := by

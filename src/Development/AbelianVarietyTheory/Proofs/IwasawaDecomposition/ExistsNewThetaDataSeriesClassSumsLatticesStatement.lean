@@ -132,7 +132,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 namespace GlobalTheory.FrameOfReal
 
 theorem exists_frame_real : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) (F3 : Face3 D A3), Rl.Char3 F3 → ∀ j : Fin D.R.m, ∃ F : Frame (Vc D j) (Wc D j), F.Good ∧ IsStdChar D F.ψ (-1) ∧ F.ψ = Rl.ψ ∧ F.θ = Rl.θ ∧ F.sT = cart (Rl.MW j (sg0 D A3.A)) ∧ (∀ τ, (F.BS τ).val = Rl.BV j τ) ∧ F.BT = onb (Rl.MW j (sg0 D A3.A)) ∧ F.ΛS = Rl.ΛV j ∧ F.ΛT = Rl.ΛW j ∧ F.βS = Rl.βV j ∧ F.βT = Rl.βW j ∧ F.f₀ = Rl.vacP j ∧ Lev.IsBaseFrame (Vc D j) F.βS F.ΛS 1 ∧ Lev.IsBaseFrame (Wc D j) F.βT F.ΛT 1 := by
@@ -186,7 +185,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 theorem _root_.GlobalTheory.T.exists_good_frame_realisation : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) (F3 : Face3 D A3), Rl.Char3 F3 → ∀ j : Fin D.R.m, ∃ F : Frame (Vc D j) (Wc D j), F.Good ∧ IsStdChar D F.ψ (-1) ∧ F.ψ = Rl.ψ ∧ F.θ = Rl.θ ∧ F.sT = cart (Rl.MW j (sg0 D A3.A)) ∧ (∀ τ, (F.BS τ).val = Rl.BV j τ) ∧ F.BT = onb (Rl.MW j (sg0 D A3.A)) ∧ F.ΛS = Rl.ΛV j ∧ F.ΛT = Rl.ΛW j ∧ F.βS = Rl.βV j ∧ F.βT = Rl.βW j ∧ F.f₀ = Rl.vacP j ∧ Lev.IsBaseFrame (Vc D j) F.βS F.ΛS 1 ∧ Lev.IsBaseFrame (Wc D j) F.βT F.ΛT 1 := by
   first | exact @GlobalTheory.FrameOfReal.exists_frame_real
 end -- clump:auto
@@ -203,7 +201,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
 
 namespace GlobalTheory.EmbExt
 
@@ -334,7 +331,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 theorem _root_.GlobalTheory.T.exists_ladicCoefficientField_embeddings_complex : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (f0 : ∀ i, Bool → (FractionRing (X.O0 i) →+* ℂ)), (∀ i b x, f0 i b ((if b then X.emb0 i else X.emb0b i) x) = embLL0 D x) → (∀ i k, Cardinal.mk (FractionRing (X.Ok i k)) ≤ Cardinal.continuum) → ∃ (e : ∀ i, Bool → (FractionRing (X.O i) →+* ℂ)) (ek : ∀ i, Bool → ∀ k, FractionRing (X.Ok i k) →+* ℂ), (∀ i b x, e i b (sideEmb X i b x) = embLL0 D x) ∧ (∀ i b k (x : X.O i), ek i b k (algebraMap (X.Ok i k) (FractionRing (X.Ok i k)) (algebraMap (X.O i) (X.Ok i k) x)) = e i b (algebraMap (X.O i) (FractionRing (X.O i)) x)) ∧ (∀ i b (y : X.O0 i), IsIntegral ℤ y → e i b (algebraMap (X.O i) (FractionRing (X.O i)) (algebraMap (X.O0 i) (X.O i) y)) = f0 i b (algebraMap (X.O0 i) (FractionRing (X.O0 i)) y)) := by
   first | exact @GlobalTheory.EmbExt.exists_side_embeddings
 end -- clump:auto
@@ -354,9 +350,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
-
-
 
 namespace GlobalTheory.SeriesTie.Complex
 
@@ -405,7 +398,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 noncomputable section
 
 namespace GlobalTheory.WeilTwistExists
@@ -446,7 +438,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 theorem _root_.GlobalTheory.T.exists_weilRep_good_twist : ∀ (D : D7) (S T : HSp D) (B : Base S T), GlobalTheory.Published.WeilRepresentationUnitaryPair → B.Good → IsStdChar D B.F.ψ (-1) → ∀ t : Twist D Circle, t.Good → ∃ ω, B.IsWeil t.chi ω := by
   first | exact @GlobalTheory.WeilTwistExists.exists_isWeil
 end -- clump:auto
@@ -463,7 +454,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
 
 namespace GlobalTheory.TypePlaceUnram
 
@@ -558,10 +548,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.levelChoice_mu_unramified_outside_type_places : ∀ (D : D7) (T0 : Type) (L : LevCh D T0) (μ0 : T0), L.Is μ0 → SplitSet L.Pg → ∀ j : Fin D.R.m, UnramOutside (L.mu0 ((j : ℕ) + 1)) L.Pg := by
   first | exact @GlobalTheory.TypePlaceUnram.unramOutside_mu0_of_splitSet
@@ -662,10 +648,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 theorem _root_.GlobalTheory.T.tame_residue_char_trivial_split_place_off_unramified : ∀ (D : D7) (M : Type) [CommGroup M] (χ : (AE D)ˣ →* M) (Q P : Finset (Pl D.host.E)), UnramOutside χ Q → SplitSet P → Q ⊆ P → ∀ PP ∈ P, PP ∉ Q → IsResAt χ PP 1 := by
   first | exact @GlobalTheory.ConjTwist.isResAt_one_of_unram
 end -- clump:auto
@@ -684,7 +666,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
 
 namespace GlobalTheory.SeriesTie.BaseGood
 
@@ -747,7 +728,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 theorem _root_.GlobalTheory.T.liftBaseData_isGood_twist : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) (F3 : Face3 D A3), Rl.Char3 F3 → ∀ (j : Fin D.R.m) (F : Frame (Vc D j) (Wc D j)) (hF : F.Good) (de : Twist D Circle), de.Good → PlacesOK Rl.Pg de.Q → ∃ (w : Weight D (Vc D j).rank) (mu : ResChars D Circle), (∀ τ, w.ap τ = aPl D j ((Wc D j).sig (tauE D τ)).1 τ) ∧ (∀ τ, w.am τ = aMi D j ((Wc D j).sig (tauE D τ)).1 ((Wc D j).sig (tauE D τ)).2 τ) ∧ ∀ P : LevelP Rl.Pg (Wc D j).rank ℂ, (⟨hF.rank_le, F, ⟨Rl.Pg, P, mu⟩, de, w, Rl.mu0 ((j : ℕ) + 1), Rl.eta⟩ : Base (Vc D j) (Wc D j)).Good := by
   first | exact @GlobalTheory.SeriesTie.BaseGood.base_good
 end -- clump:auto
@@ -764,7 +744,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
 
 noncomputable section
 
@@ -852,7 +831,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
 theorem _root_.GlobalTheory.T.twistingCharacter_ladicGaloisCharacter_eq_hecke : ∀ (D : D7) (a : Recip D D.nd.Om) (i : D.ntw.Tw) (κ : FractionRing (D.ntw.O0 i) →+* Qbar (D.ntw.l i)) (ι : Qbar (D.ntw.l i) ≃+* ℂ) (χ : Formalism.L2.Host.HChar D.host.E) (r : G D.host.E D.nd.Om →* (D.ntw.O0 i)ˣ) (b : Bool), a.Good → IsOpen (r.ker : Set (G D.host.E D.nd.Om)) → GlobalTheory.GalChar.IsGal a.art κ ι χ (fun _ => 0) (Formalism.MainNotions.BlochKatoReduction.Gen.psiAt b r) → ∀ (f : D.ntw.O0 i →+* ℂ), (∀ y, IsIntegral ℤ y → f y = ι (κ (algebraMap (D.ntw.O0 i) (FractionRing (D.ntw.O0 i)) y))) → ∀ (ch : Set (Pl D.host.E)) (Q : Finset (Pl D.host.E)), ChrEq (twistOf a f ch Q (Formalism.MainNotions.BlochKatoReduction.Gen.psiAt b r)).chi χ := by
   first | exact @GlobalTheory.SeriesTie.charOf_psiAt_chrEq
 end -- clump:auto
@@ -869,7 +847,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
 
 namespace GlobalTheory.TypePlacesOver
 
@@ -898,9 +875,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem _root_.GlobalTheory.T.typePlaces_mem_placesOver_generators : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) (F3 : Face3 D A3), Rl.Char3 F3 → ∀ P ∈ Rl.Pg, ∃ k, P ∈ placesOver D.host.E (D.host.g k) := by
   first | exact @GlobalTheory.TypePlacesOver.mem_placesOver
 end -- clump:auto
@@ -918,11 +892,6 @@ open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-theorem _root_.GlobalTheory.T.typePlaces_twistPlaces_goodPosition : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) (μ0 : T), Rl.toLevCh.Is μ0 → (Ideal.primesOver (Ideal.span {(D.host.pde : ℤ)}) (𝓞 D.host.E)).ncard = Module.finrank ℚ D.host.E ∧ (Ideal.primesOver (Ideal.span {(D.host.pde' : ℤ)}) (𝓞 D.host.E)).ncard = Module.finrank ℚ D.host.E → D.host.pde ≠ D.host.q ∧ D.host.pde' ≠ D.host.q → ∀ (i : D.ntw.Tw) (ch : Set (Pl D.host.E)), IsChoice ch → PlacesOK Rl.Pg (half ch (D.ntw.pD i)) := by
-  first | exact @GlobalTheory.SeriesTie.PlacesGood.placesOK
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypePlacesTwistPlacesGoodPositionStatement =====
@@ -940,9 +909,6 @@ open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.Host (embLL0)
-
-
-
 
 namespace GlobalTheory.SeriesTie.ComplexCh
 
@@ -986,7 +952,7 @@ theorem exists_setup_ch (Rl : RealDat3 D A3 Ks) (cG : G0 Rl.Pg D.R.r ≃* G0g D.
     twistOf rc (f i b) (ch i) (D.ntw.pD i) (Formalism.MainNotions.BlochKatoReduction.Gen.psiAt b (D.ntw.delta i))
   have hde : ∀ i b, (de i b).Good := fun i b => _root_.GlobalTheory.DeltaGood.twistOf_delta_good D rc hrc i (ch i) (hch1 i) (f i b) (hfi i b) b
   have hpl : ∀ i b, PlacesOK Rl.Pg (de i b).Q := fun i _ =>
-    GlobalTheory.T.typePlaces_twistPlaces_goodPosition D Γ Pl0 I0 T A3 Ks Rl A3.A.μ0 hC.lev hspl hq i (ch i) (hch1 i)
+    GlobalTheory.SeriesTie.PlacesGood.placesOK D Γ Pl0 I0 T A3 Ks Rl A3.A.μ0 hC.lev hspl hq i (ch i) (hch1 i)
   have hB := fun i j b => GlobalTheory.T.liftBaseData_isGood_twist D Γ Pl0 I0 T A3 Ks Rl F3 hC j (F j) (hF j) (de i b) (hde i b) (hpl i b)
   choose w mu hwp hwm hBg using hB
   let P : D.ntw.Tw → ∀ j : Fin D.R.m, Bool → LevelP Rl.Pg (Wc D j).rank ℂ := fun i j b =>
@@ -1079,11 +1045,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ HkIdx V0 Fm0)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
-
 namespace GlobalTheory.TwInputs.SetupPinCh
 
 end GlobalTheory.TwInputs.SetupPinCh
@@ -1104,9 +1065,6 @@ open scoped TensorProduct
 
 noncomputable section
 
-
-
-
 namespace GlobalTheory.SeriesInstall
 
 variable {D : D7} {ρ : Setup D.ntw}
@@ -1124,7 +1082,6 @@ def rdVLin (rdV : RdV D ρ) (i) (j : Fin D.R.m) (b k Q ψ) :
     rw [← algebraMap_smul (FractionRing (D.ntw.Ok i k)) c f, map_smulₛₗ]
     rfl
 
-
 open Classical in
 def latI (rdV : RdV D ρ) (i) : ∀ n b k Q ψ, Submodule (D.ntw.Ok i k) (D.nexp.MtV i n b k Q ψ)
   | 0, b, k, Q, ψ => D.nexp.MtLat i 0 b k Q ψ
@@ -1137,7 +1094,7 @@ def Onto (ρ : Setup D.ntw) (rdV : RdV D ρ) : Prop :=
 
 theorem latI_eq (rdV : RdV D ρ) {i} (j : Fin D.R.m) {b k Q ψ} (h : TwOK i k Q ψ) :
     latI rdV i ((j : ℕ) + 1) b k Q ψ = (Via.lat (ρ.mt i j b k Q ψ)).comap (rdVLin rdV i j b k Q ψ) :=
-  dif_pos ⟨j.2, h⟩
+  dite_eq_left ⟨j.2, h⟩
 
 theorem mem_latI (rdV : RdV D ρ) {i} (j : Fin D.R.m) {b k Q ψ} (h : TwOK i k Q ψ) (f) :
     f ∈ latI rdV i ((j : ℕ) + 1) b k Q ψ ↔ rdV i j b k Q ψ f ∈ ρ.mt i j b k Q ψ := by
@@ -1204,9 +1161,9 @@ theorem exists_tie_withSeries : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) 
         thU_eq := fun Q M d hQ x hx => by
           have h : InRange D.ntw i Q ∧ ∀ a, ρ.xi i j b D.nexp Q M d.2.h d.2.P a ∈ Set.range (rd i j b) :=
             ⟨hQ, fun a => ⟨x a, hx a⟩⟩
-          refine (dif_pos h).trans (congrArg (grpSum D.nexp (ρ.ch i) Q M) (funext fun a => (hF i j b).injective ?_))
+          refine (dite_eq_left h).trans (congrArg (grpSum D.nexp (ρ.ch i) Q M) (funext fun a => (hF i j b).injective ?_))
           exact (h.2 a).choose_spec.trans (hx a).symm
-        thU_off := fun _ _ _ h => dif_neg h
+        thU_off := fun _ _ _ h => dite_eq_right h
         rdV_inj := fun k Q ψ h => (hV i j b k Q ψ h).1
         mtLat_iff := fun k Q ψ h F => by
           refine ⟨fun hF' => ?_, fun ⟨f, hf, e'⟩ => ?_⟩
@@ -1214,7 +1171,7 @@ theorem exists_tie_withSeries : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) 
             exact ⟨f, (mem_latI rdV j h f).2 hF', rfl⟩
           · exact e' ▸ (mem_latI rdV j h f).1 hf
         thP_eq := fun k Q ψ _ f hf => by
-          have e : thPI hρ rd hF rdV i ((j : ℕ) + 1) b k Q ψ = (exists_thPI hρ rd hF rdV i j b k Q ψ).choose := dif_pos j.2
+          have e : thPI hρ rd hF rdV i ((j : ℕ) + 1) b k Q ψ = (exists_thPI hρ rd hF rdV i j b k Q ψ).choose := dite_eq_left j.2
           exact (congrArg (fun φ => rdK (rd i j b) hρ k (φ f)) e).trans
             ((exists_thPI hρ rd hF rdV i j b k Q ψ).choose_spec f hf) }, fun _ _ _ => rfl⟩
 
@@ -1237,11 +1194,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ HkIdx V0 Fm0)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin IsAlgPos)
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 
 namespace GlobalTheory.TwInputs.SetupPin
 
@@ -1383,7 +1335,7 @@ theorem exists_art_gal (hA : GlobalTheory.Published.GlobalArtinReciprocity) (cf 
       have h1 : ρ.ι (ρ.κ (D.ntw.emb0 i x)) = (((cf.delAt (D.ntw.l i)).val v : ℂˣ) : ℂ) := by
         rw [← D.ntw.restX_coefficientEmbedding_conj i x⁻¹ x hstar]
         have := ρ.read x⁻¹
-        simp only [GlobalTheory.Triple.embSide, Bool.false_eq_true, if_false] at this
+        simp only [GlobalTheory.Triple.embSide, Bool.false_eq_true, ite_false] at this
         rw [this]
         show D.what₂.embLL ((x⁻¹ : D.LL0) : D.what₂.LL) = _
         rw [IntermediateField.coe_inv, map_inv₀, hx', inv_inv]
@@ -1394,7 +1346,7 @@ theorem exists_art_gal (hA : GlobalTheory.Published.GlobalArtinReciprocity) (cf 
       rw [hd, ← h1, ρ.ι.symm_apply_apply]
     · have h1 : ρ.ι (ρ.κ (D.ntw.emb0 i x)) = (((cf.delAt (D.ntw.l i)).val v : ℂˣ) : ℂ)⁻¹ := by
         have := ρ.read x
-        simp only [GlobalTheory.Triple.embSide, if_true] at this
+        simp only [GlobalTheory.Triple.embSide, ite_true] at this
         rw [this]
         exact hx'
       show ρ.κ (algebraMap _ _ ((D.ntw.delta i σ : (D.ntw.O0 i)ˣ) : D.ntw.O0 i)) = _
@@ -1424,11 +1376,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.IndefR.Links (PolF)
 
-theorem _root_.GlobalTheory.T.fockHarmonicLattice_fg_and_spans_value_space : ∀ (D : D7) (m n : ℕ) (w : Weight D n) (B : GLR D n) (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (emb : D.what₂.Tau → (D.host.E →+* K)) (O : Subring ℂ) (M : Submodule (𝓞 D.host.E) (Fin n → D.host.E)), w.Good → (∀ τ, w.p τ + w.q τ ≤ m) → IsCoefRing σ emb O → Submodule.IsFullLattice D.host.E M → (harmLat σ emb O m w B M).FG ∧ Submodule.span ℂ (harmLat σ emb O m w B M : Set (PolF D m n)) = harm m w B := by
-  intro D m n w B K _ _ σ emb O M hw hm hc hM
-  letI := hM
-  exact GlobalTheory.ExportSeries.HarmLattice.harmLat_fg_span D m n w B K σ emb O M hw hm hc
-    (by infer_instance)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockHarmonicLatticeFgAndSpansValueSpaceStatement =====
@@ -1442,9 +1389,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.ExportSeries GlobalTheory.SeriesTie
 open Formalism.IndefR.Links
-
-
-
 
 namespace GlobalTheory.SeriesTie
 
@@ -1487,13 +1431,13 @@ end Eval
 
 theorem latFG_of_good : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (ρ : Setup X), ρ.Good → ρ.LatFG := by
   intro D N X ρ hρ i j b k Q ψ hT
-  obtain ⟨hg, ha, -⟩ := GlobalTheory.T.twistingCharacter_admissibleGaloisTwist_good D N X ρ hρ i j b k Q ψ hT
+  obtain ⟨hg, ha, -⟩ := GlobalTheory.TwistGood.tw_good D N X ρ hρ i j b k Q ψ hT
   have hc := hρ.classes i j b _ hg ha
   haveI : IsNoetherianRing (ρ.eOk i b k).range :=
     isNoetherianRing_of_surjective (X.Ok i k) _ (ρ.eOk i b k).rangeRestrict (ρ.eOk i b k).rangeRestrict_surjective
   have hB := hρ.base i j b
   refine mtLat_fg_of_reps _ _ hc.reps fun c => ?_
-  refine (GlobalTheory.T.fockHarmonicLattice_fg_and_spans_value_space D _ _ _ _ _ _ _ _ _ hB.wt (fun τ => ?_) (hρ.isCoefRing_k i b k) ?_).1
+  refine (GlobalTheory.ExportSeries.HarmLattice.harmLat_fg_span D _ _ _ _ _ _ _ _ _ hB.wt (fun τ => ?_) (hρ.isCoefRing_k i b k) ?_).1
   · have h1 := hB.sig τ
     have h2 := Formalism.BasicNotions.sig_sum _ hB.sigOK (tauE D τ)
     rw [← h1] at h2
@@ -1581,8 +1525,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.MainNotions.IntegralHeckeForms (TwOK HkIdx)
 open scoped TensorProduct
 
-
-
 namespace GlobalTheory.FrameFinPart
 
 theorem finHom_eq_of_idFrame : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P P' : principalLevelFrame.RowPsi V n), GlobalTheory.MtRead.IdFrame hF P → GlobalTheory.MtRead.IdFrame hF P' → ∀ g, (finHom V).rangeRestrict (P.ψ g) = (finHom V).rangeRestrict (P'.ψ g) := by
@@ -1609,8 +1551,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.MainNotions.IntegralHeckeForms (TwOK HkIdx)
 open scoped TensorProduct
 
-
-
 theorem _root_.GlobalTheory.T.finiteHom_eq_of_frames_keep_matrices : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P P' : principalLevelFrame.RowPsi V n), GlobalTheory.MtRead.IdFrame hF P → GlobalTheory.MtRead.IdFrame hF P' → ∀ g, (finHom V).rangeRestrict (P.ψ g) = (finHom V).rangeRestrict (P'.ψ g) := by
   first | exact @GlobalTheory.FrameFinPart.finHom_eq_of_idFrame
 end -- clump:auto
@@ -1625,8 +1565,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.StandardLattice Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.TwInputs GlobalTheory.SeriesTie GlobalTheory.ExportSeries NumberField IsDedekindDomain
 open Formalism.MainNotions.IntegralHeckeForms (TwOK HkIdx)
 open scoped TensorProduct
-
-
 
 noncomputable section
 
@@ -1741,8 +1679,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.MainNotions.IntegralHeckeForms (TwOK HkIdx)
 open scoped TensorProduct
 
-
-
 theorem _root_.GlobalTheory.T.secondStep_heckeOperators_normalisedSums : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (cG : G0 R.Pg D.R.r ≃* G0g D.nd) (kKs : Ks →+* ↥D.LL0) (hk : ∀ x : Ks, ((kKs x : ↥D.LL0) : D.what₂.LL) = algebraMap Ks D.what₂.LL x) (cf : CharFrame D) (Rw : RowSide D) (low : Finset ℕ) (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) hL eig θ (Bs : SideB D cf Rw low Pq (ratDatR R cG kKs hk) hL eig θ) (Sb : Finset (PlE D.host)) (v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW j σ).Vec) (ρ : Setup D.ntw) (hρ : ρ.Good), RealPin R cG ρ → R.toRealDat.toLevCh.Is A3.A.μ0 → R.AllPlaces → GlobalTheory.HeightCounting.SerCopy.HkAd R Sb hL → (∀ i, Sb ⊆ D.ntw.S0 i) → ∀ i j b ν, HeckeRead (realRd (GlobalTheory.HeightCounting.SerCopy.ysOf Bs) v₀ hρ i j b ν) := by
   first | exact @GlobalTheory.HeightCounting.SerCopy.heckeRead_ysOf
 end -- clump:auto
@@ -1757,8 +1693,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.StandardLattice Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.TwInputs GlobalTheory.SeriesTie GlobalTheory.ExportSeries NumberField IsDedekindDomain
 open Formalism.MainNotions.IntegralHeckeForms (TwOK HkIdx)
 open scoped TensorProduct
-
-
 
 namespace GlobalTheory.HeightCounting.SerCopy
 
@@ -1825,8 +1759,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.StandardLattice Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.TwInputs GlobalTheory.SeriesTie GlobalTheory.ExportSeries NumberField IsDedekindDomain
 open Formalism.MainNotions.IntegralHeckeForms (TwOK HkIdx)
 open scoped TensorProduct
-
-
 
 end -- clump:auto
 end -- clump:auto

@@ -77,7 +77,7 @@ theorem coeff_linPt (uvec : Lt1 Dw → Fin d → S) (ℓ : Lt1 Dw) (i : Fin d) :
   rw [Finset.sum_eq_single ℓ]
   · simp
   · intro ℓ' _ h
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro e
     apply h
     have := Finsupp.single_left_injective one_ne_zero e
@@ -110,7 +110,7 @@ theorem expPhi_lin (uvec : Lt1 Dw → Fin d → S) (ε : Pt S 1 d) (hdε : dLin 
   have hd : ∀ i, coeff (Finsupp.single ((0 : Fin 1), i) 1) (ε j) = if j = i then 1 else 0 := fun i => by
     have := congrFun (congrFun hdε j) i
     simpa only [dLin, Matrix.one_apply] using this
-  simp only [hd, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hd, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 end ExpOf
 

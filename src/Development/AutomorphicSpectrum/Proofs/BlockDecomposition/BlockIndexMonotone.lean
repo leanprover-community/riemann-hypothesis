@@ -35,16 +35,4 @@ theorem stdBlocks_lt_of_lt {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N)
   have h2 := y.2
   omega
 
-theorem blockIdx_monotone : ∀ (h N : ℕ) (d : Fin h → ℕ) (hd : ∑ a, d a = N), Monotone (Zl.JC.blockIdx d hd) := by
-  intro h N d hd i j hij
-  by_contra H
-  rw [not_le] at H
-  have H' : ((GlobalTheory.SmGL.stdBlocks d hd).symm j).1 <
-      ((GlobalTheory.SmGL.stdBlocks d hd).symm i).1 := H
-  have key := GlobalTheory.CompanionTheory.BlockIndex.stdBlocks_lt_of_lt d hd H'
-    ((GlobalTheory.SmGL.stdBlocks d hd).symm i).2
-    ((GlobalTheory.SmGL.stdBlocks d hd).symm j).2
-  simp only [Sigma.eta, Equiv.apply_symm_apply] at key
-  exact absurd hij (not_le.mpr key)
-
 end GlobalTheory.CompanionTheory.BlockIndex

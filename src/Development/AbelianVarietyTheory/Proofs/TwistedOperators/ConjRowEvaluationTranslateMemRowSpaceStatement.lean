@@ -23,55 +23,12 @@ public import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesTestDataLargeGapsIntegrableStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TranslatedRowEvaluationSquareIntegrableNormStatement
 import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.IsPoly
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjTranslatedRowEvaluationIntertwinesRealGroup, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjTranslatedRowEvaluationLevelProjectorFixed, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjTranslatedRowEvaluationMultilinearNormSq, Development.AbelianVarietyTheory.Proofs.TwistedOperators.DenseSpanTensorOfDenseSubspaces, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsClmOfGramEqSmul, Development.AbelianVarietyTheory.Proofs.TwistedOperators.InnerMapEqConstMulProdInner, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjRowEvaluationTranslateMemRowSpace, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjRowEvaluationTranslateMemRowSpaceStatement
@@ -141,7 +98,6 @@ theorem memLp_mul_right (B : RowsAut) (f : B.I.GA → ℂ) (hf : ∀ γ ∈ B.I.
   have h := rightReg_ae B f hf (hm.toLp f) hm.coeFn_toLp g
   exact (Lp.memLp (B.R g (hm.toLp f))).ae_eq h
 
-
 open Classical in
 theorem mult_props {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
     (θ : D.what₂.Tau → (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
@@ -178,7 +134,6 @@ private lemma star_zero_L2 (B : RowsAut) : (star (0 : B.I.L2 B.μf B.fund)) = 0 
 end GlobalTheory.RowEvalHH
 
 namespace GlobalTheory.RowEvalHH
-
 
 open Classical in
 theorem star_dite_mul_right (B : RowsAut) (f f' : B.I.GA → ℂ) (G : B.I.GA)
@@ -288,7 +243,7 @@ theorem evF_equiv : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type}
       intro z
       have hw : ((w' τ : (MP R).sm τ) : (MP R).H τ) = (MP R).rep τ (g' τ)
           (((fun τ' => if τ' ∈ s then w' τ' else vecOf R X c y τ') τ : (MP R).sm τ) : (MP R).H τ) := by
-        simp only [if_neg hτ]
+        simp only [ite_eq_right hτ]
         exact hw' τ
       have e := hS'.2 τ (g' τ) (hg' τ) (fun τ' => if τ' ∈ s then w' τ' else vecOf R X c y τ') (w' τ) hw z
       refine Eq.trans (congrArg (fun v => S v z) ?_) (e.trans ?_)
@@ -385,7 +340,6 @@ theorem mult_lev {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel 
 
 end GlobalTheory.RowEvalHH.LevelFix
 
-
 open GlobalTheory.RowEvalHH GlobalTheory.RowEvalHH.LevelFix in
 theorem GlobalTheory.RowEvalHH.Re_evF : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D), R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsModels → HostHyp D → (∀ x : X.B.I.E, HEq (X.ιE x) x) → ∀ (t : GA D (Yc D 0)) (c : ∀ τ, (MP R).H τ ≃ₗᵢ⋆[ℂ] X.B.H (X.pl.symm τ)), t ∈ GfC (Yc D 0) → LevelMatchA R F X h t → ∀ S ∈ EP R F, ∀ y : ∀ τ, ↥(GlobalTheory.RowEvalHH.Wsub R X c τ), X.B.Re (GlobalTheory.RowEvalHH.evF R X h t c S y) = GlobalTheory.RowEvalHH.evF R X h t c S y := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F X h hLev hGrp hMod hHost hιE t c ht hLM S hS y
@@ -440,7 +394,7 @@ theorem GlobalTheory.RowEvalHH.Re_evF : ∀ {D : D7} {G : Type} [Group G] [Finty
         rw [X.e_eq g]
         by_cases hg : g ∈ X.K2
         · have hg' : g ∈ Formalism.L2.SG.HidaSetting.K2set X.B.I X.B.g X.e0 X.z0 X.bw := hg
-          rw [if_pos hg', Set.indicator_of_mem hg, hright g hg z]
+          rw [ite_eq_left hg', Set.indicator_of_mem hg, hright g hg z]
           have hn : ‖X.chi2 g‖ = 1 := hK.2.2.2.2 g hg
           have hc : star (X.chi2 g) * X.chi2 g = 1 := by
             rw [RCLike.star_def, RCLike.conj_mul, hn]; simp
@@ -448,7 +402,7 @@ theorem GlobalTheory.RowEvalHH.Re_evF : ∀ {D : D7} {G : Type} [Group G] [Finty
             star (f z) / ((X.B.μf X.K2).toReal : ℂ)
           rw [div_mul_eq_mul_div, ← mul_assoc, hc, one_mul]
         · have hg' : g ∉ Formalism.L2.SG.HidaSetting.K2set X.B.I X.B.g X.e0 X.z0 X.bw := hg
-          rw [if_neg hg', Set.indicator_of_notMem hg, zero_mul]
+          rw [ite_eq_right hg', Set.indicator_of_notMem hg, zero_mul]
       rw [hfun, integral_indicator hKM, setIntegral_const]
       simp only [measureReal_def, Complex.real_smul]
       have hC : ((X.B.μf X.K2).toReal : ℂ) ≠ 0 := by exact_mod_cast hvol
@@ -893,7 +847,7 @@ theorem GlobalTheory.RowEvalHH.conj_eval_mem_HH : ∀ {D : D7} {G : Type} [Group
     funext τ
     apply Subtype.ext
     exact (c τ).symm_apply_apply (v₀ τ)
-  obtain ⟨c', -, hnorm⟩ := GlobalTheory.T.translatedRowEvaluation_squareIntegrable_norm R F X h hLev hGrp hMod t ht
+  obtain ⟨c', -, hnorm⟩ := GlobalTheory.EvalNormTransfer.evalTranslate_norm R F X h hLev hGrp hMod t ht
   have hunit : ∀ τ, ‖((v₀ τ : (MP R).H τ))‖ = 1 := by
     intro τ
     rw [← (c τ).norm_map, hv τ]

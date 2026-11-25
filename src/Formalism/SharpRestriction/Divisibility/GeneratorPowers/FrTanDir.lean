@@ -13,8 +13,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.FrTanDir
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.FrTan
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem exists_char {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)
     (T : CDVR) (io : c.F →+* T.Fr) (σ : E →+* ℂ) :
     ∃ χ : 𝓞 E →+* T.V, ∀ a : 𝓞 E, algebraMap T.V T.Fr (χ a) = io (embK c σ a) := by

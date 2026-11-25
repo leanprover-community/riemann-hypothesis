@@ -132,7 +132,7 @@ theorem nonempty_equiv_range {ρ : Representation ℂ G V} {σ : Representation 
     (f.toLinearMap.comp q.toSubmodule.subtype).codRestrict f.range.toSubmodule
       (fun v => LinearMap.mem_range_self _ _)
   have hinj : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have ha' : f.toLinearMap (a : V) = 0 := congrArg Subtype.val ha
     have hk : (a : V) ∈ f.ker.toSubmodule := ha'
@@ -272,7 +272,7 @@ theorem trace_freeRep {P : Type} [Group P] [Finite P] (N : ℕ) {g : P} (hg : g 
     · subst hk
       simp [MonoidAlgebra.single_mul_single]
     · simp [hk]
-  rw [Matrix.diag_apply, LinearMap.toMatrix_apply, hmove, b.repr_self, Finsupp.single_apply, if_neg]
+  rw [Matrix.diag_apply, LinearMap.toMatrix_apply, hmove, b.repr_self, Finsupp.single_apply, ite_eq_right]
   intro h
   rw [Sigma.mk.inj_iff, heq_iff_eq] at h
   exact hg (mul_right_cancel (h.2.trans (one_mul p).symm))

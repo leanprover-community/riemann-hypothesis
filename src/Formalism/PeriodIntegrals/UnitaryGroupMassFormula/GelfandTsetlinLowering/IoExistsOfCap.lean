@@ -208,7 +208,7 @@ theorem io_last_emb {n N : ℕ} (h : n + 1 = N) (a : ℂˣ) (g : GL (Fin n) ℂ)
       simp only [Equiv.trans_apply, finSumFinEquiv_apply_left, finCongr_apply, Fin.coe_cast,
         Fin.coe_castAdd]
       omega
-    rw [if_neg hk, if_neg hl]
+    rw [ite_eq_right hk, ite_eq_right hl]
     simp
   · simp
   · simp

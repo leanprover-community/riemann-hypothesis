@@ -459,7 +459,6 @@ theorem exists_algHom_quot_pow : ∀ (A R C : Type) [CommRing A] [IsDomain A] [I
     exact hx
   have hinj : Function.Injective (algebraMap B L0) := IsLocalization.injective L0 hM0
   let ι : B →ₐ[R] L0 := IsScalarTower.toAlgHom R B L0
-  have hι : ∀ b, ι b = algebraMap B L0 b := fun b => rfl
   have hRL : ∀ r : R, algebraMap R L0 r = algebraMap B L0 (Ideal.Quotient.mk _ r) := fun r =>
     IsScalarTower.algebraMap_apply R B L0 r
   have hHart := _root_.GlobalTheory.GoodEtaleSection.hart_quot A R ρ hρ t hker ht n
@@ -734,7 +733,7 @@ theorem GlobalTheory.GoodEtale.galMap_injective_of_flat : ∀ (A R C O : Type) [
   let L := LinearMap.lTensor O (LinearMap.mulLeft R b)
   have hL : Function.Injective L := by
     apply Module.Flat.lTensor_preserves_injective_linearMap
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro c hc
     exact htf a ha c (by rw [Algebra.smul_def]; simpa using hc)
   let Φ : (G → O) → O ⊗[R] C := fun f => ∑ i, (∑ g, σ (act g (y i)) * f g) ⊗ₜ x i
@@ -754,7 +753,7 @@ theorem GlobalTheory.GoodEtale.galMap_injective_of_flat : ∀ (A R C O : Type) [
     | add m m' hm hm' =>
       rw [map_add (f := _), map_add (f := _), ← hm, ← hm']
       simp only [Φ, Pi.add_apply, mul_add, Finset.sum_add_distrib, TensorProduct.add_tmul]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro m hm
   apply hL
   rw [← hΦ, hm, map_zero]
@@ -832,7 +831,7 @@ theorem galElt_dvd_of_unramified : ∀ (R C O : Type) [CommRing R] [CommRing C] 
 
   simp_rw [hterm, ← Finset.sum_mul, ← map_sum, ← map_mul, ← map_sum]
   have h1 := hxy 1
-  simp only [map_one, AlgEquiv.one_apply, if_true] at h1
+  simp only [map_one, AlgEquiv.one_apply, ite_true] at h1
   rw [h1, AlgHom.commutes, Algebra.smul_def]
 
 end GlobalTheory.GoodEtale
@@ -1443,10 +1442,10 @@ theorem closureData : ∀ (A R : Type) [CommRing A] [IsDomain A] [IsNoetherianRi
     apply Subtype.ext
     split_ifs with hg
     · simp only [AddSubmonoidClass.coe_finsetSum, Subring.coe_mul, hact']
-      rw [h1, if_pos hg, hbb]
+      rw [h1, ite_eq_left hg, hbb]
       rfl
     · simp only [AddSubmonoidClass.coe_finsetSum, Subring.coe_mul, hact']
-      rw [h1, if_neg hg]
+      rw [h1, ite_eq_right hg]
       rfl
   · intro a' ha' c hc
     apply Subtype.ext

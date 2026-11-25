@@ -306,10 +306,10 @@ theorem vals {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : inWb 
       by_cases ha : a = l
       · subst ha; simp [mix, hli]
       · have hne : a.val ≠ i := fun h => ha (Fin.ext (by rw [h, hli]))
-        simp only [mix, Function.update_apply, ha, if_false]
+        simp only [mix, Function.update_apply, ha, ite_false]
         by_cases h1 : a.val < i
-        · rw [if_pos h1, if_pos (by omega)]
-        · rw [if_neg h1, if_neg (by omega)]
+        · rw [ite_eq_left h1, ite_eq_left (by omega)]
+        · rw [ite_eq_right h1, ite_eq_right (by omega)]
     rw [Qx6.wCell_succ, Matrix.mul_assoc, hcs]
     refine ⟨hmem, ?_⟩
     rw [hval, hKi, descended_function_apply_w1_mul hz hz' l _ _ hcl hX.1, hmix]

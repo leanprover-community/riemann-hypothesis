@@ -132,7 +132,7 @@ theorem IsASD.exists_unit_norm (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs 
   by_cases hex : ∃ w ∈ M, ¬ Dv S π (h w (l • ξ))
   · obtain ⟨w, hw, hn⟩ := hex
     exact Formalism.HermitianLattices.Ext.L3.U0.exists_unit_norm hS hπ hs hM.smul_mem hM.int hlM hw hn
-  · push_neg at hex
+  · push Not at hex
     exfalso
     have hmem : π⁻¹ • (l • ξ) ∈ M := hM.dual _ (W.smul_mem _ (W.smul_mem _ hξ))
       (by rw [map_smul, map_smul, hzξ, smul_zero, smul_zero])
@@ -233,7 +233,7 @@ theorem IsASD.exists_norm (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.I
   by_cases hex : ∃ w ∈ M, ¬ Dv S π (h w y)
   · obtain ⟨w, hw, hn⟩ := hex
     exact exists_norm_of_not_dv hS hπ hs hM.smul_mem hM.int hy hw ha hu huf hyy hn
-  push_neg at hex
+  push Not at hex
   obtain ⟨n₀, hn₀, t, ht, hzn, hye⟩ := hM.decomp hS hπ hs hy hex
   have htu : IsUnitIn S t := isUnitIn_of_coprime hS hπ ht (fun d _ htd hπd => hprim d⁻¹ (by
     rw [hye, smul_add, smul_smul, smul_smul]

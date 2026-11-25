@@ -613,11 +613,11 @@ theorem partner_partner (l : List (ℕ × ℂ)) (a : ℕ) (ha : a < Formalism.Fo
     simp only [Formalism.FourierDecayAlt.D.ptSize, List.map_cons, List.sum_cons] at ha
     simp only [Formalism.FourierDecayAlt.D.ptPartner]
     by_cases h : a < s
-    · simp only [if_pos h]
-      rw [if_pos (show s - 1 - a < s by omega)]
+    · simp only [ite_eq_left h]
+      rw [ite_eq_left (show s - 1 - a < s by omega)]
       omega
-    · simp only [if_neg h]
-      rw [if_neg (show ¬ (s + Formalism.FourierDecayAlt.D.ptPartner l (a - s) < s) by omega), Nat.add_sub_cancel_left,
+    · simp only [ite_eq_right h]
+      rw [ite_eq_right (show ¬ (s + Formalism.FourierDecayAlt.D.ptPartner l (a - s) < s) by omega), Nat.add_sub_cancel_left,
         ih (a - s) (by simp only [Formalism.FourierDecayAlt.D.ptSize]; omega)]
       omega
 
@@ -633,16 +633,16 @@ theorem partner_order (l : List (ℕ × ℂ)) (hl : GoodL l) (a b : ℕ) (hab : 
     simp only [bD, Formalism.FourierDecayAlt.D.ptPartner]
     by_cases hbs : b < s
     · have has : a < s := by omega
-      simp only [if_pos hbs, if_pos has]
+      simp only [ite_eq_left hbs, ite_eq_left has]
       constructor
       · intro _; omega
       · intro _; trivial
     · by_cases has : a < s
-      · simp only [if_pos has, if_neg hbs]
+      · simp only [ite_eq_left has, ite_eq_right hbs]
         constructor
         · intro h; omega
         · intro h; omega
-      · simp only [if_neg has, if_neg hbs]
+      · simp only [ite_eq_right has, ite_eq_right hbs]
         have := ih (goodL_tail hl) (a - s) (b - s) (by omega) (by simp only [Formalism.FourierDecayAlt.D.ptSize]; omega)
         constructor
         · intro h
@@ -663,23 +663,23 @@ theorem ptEntry_partner (l : List (ℕ × ℂ)) (a b : ℕ) (hb : b < Formalism.
     simp only [Formalism.FourierDecayAlt.D.ptSize, List.map_cons, List.sum_cons] at hb
     simp only [Formalism.FourierDecayAlt.D.ptEntry, Formalism.FourierDecayAlt.D.ptPartner, Formalism.FourierDecayAlt.D.ptScal]
     by_cases hbs : b < s
-    · simp only [if_pos hbs]
+    · simp only [ite_eq_left hbs]
       by_cases has : a < s
-      · rw [if_pos ⟨has, hbs⟩]
+      · rw [ite_eq_left ⟨has, hbs⟩]
         by_cases e : a + b + 1 = s
-        · rw [if_pos e, if_pos (show a = s - 1 - b by omega)]
-        · rw [if_neg e, if_neg (show ¬ a = s - 1 - b by omega)]
-      · rw [if_neg (show ¬ (a < s ∧ b < s) by omega), if_neg (show ¬ (s ≤ a ∧ s ≤ b) by omega),
-          if_neg (show ¬ a = s - 1 - b by omega)]
-    · simp only [if_neg hbs]
+        · rw [ite_eq_left e, ite_eq_left (show a = s - 1 - b by omega)]
+        · rw [ite_eq_right e, ite_eq_right (show ¬ a = s - 1 - b by omega)]
+      · rw [ite_eq_right (show ¬ (a < s ∧ b < s) by omega), ite_eq_right (show ¬ (s ≤ a ∧ s ≤ b) by omega),
+          ite_eq_right (show ¬ a = s - 1 - b by omega)]
+    · simp only [ite_eq_right hbs]
       by_cases has : a < s
-      · rw [if_neg (show ¬ (a < s ∧ b < s) by omega), if_neg (show ¬ (s ≤ a ∧ s ≤ b) by omega),
-          if_neg (show ¬ a = s + Formalism.FourierDecayAlt.D.ptPartner l (b - s) by omega)]
-      · rw [if_neg (show ¬ (a < s ∧ b < s) by omega), if_pos (show s ≤ a ∧ s ≤ b by omega),
+      · rw [ite_eq_right (show ¬ (a < s ∧ b < s) by omega), ite_eq_right (show ¬ (s ≤ a ∧ s ≤ b) by omega),
+          ite_eq_right (show ¬ a = s + Formalism.FourierDecayAlt.D.ptPartner l (b - s) by omega)]
+      · rw [ite_eq_right (show ¬ (a < s ∧ b < s) by omega), ite_eq_left (show s ≤ a ∧ s ≤ b by omega),
           ih (a - s) (b - s) (by simp only [Formalism.FourierDecayAlt.D.ptSize]; omega)]
         by_cases e : a - s = Formalism.FourierDecayAlt.D.ptPartner l (b - s)
-        · rw [if_pos e, if_pos (show a = s + Formalism.FourierDecayAlt.D.ptPartner l (b - s) by omega)]
-        · rw [if_neg e, if_neg (show ¬ a = s + Formalism.FourierDecayAlt.D.ptPartner l (b - s) by omega)]
+        · rw [ite_eq_left e, ite_eq_left (show a = s + Formalism.FourierDecayAlt.D.ptPartner l (b - s) by omega)]
+        · rw [ite_eq_right e, ite_eq_right (show ¬ a = s + Formalism.FourierDecayAlt.D.ptPartner l (b - s) by omega)]
 
 theorem ptScal_ne (l : List (ℕ × ℂ)) (hl : GoodL l) (b : ℕ) (hb : b < Formalism.FourierDecayAlt.D.ptSize l) :
     Formalism.FourierDecayAlt.D.ptScal l b ≠ 0 := by
@@ -740,9 +740,9 @@ theorem ptMatN_mono {r : ℕ} (γ : Point ℂ (r + 1)) :
   have : (i = wPt γ a) ↔ (i.val = Formalism.FourierDecayAlt.D.ptPartner (γ.1.map Prod.swap) a.val) := by
     rw [Fin.ext_iff, wPt_val]
   by_cases h : i = wPt γ a
-  · rw [if_pos (this.1 h), if_pos h]
+  · rw [ite_eq_left (this.1 h), ite_eq_left h]
     rfl
-  · rw [if_neg (fun h' => h (this.2 h')), if_neg h]
+  · rw [ite_eq_right (fun h' => h (this.2 h')), ite_eq_right h]
 
 theorem root_iff {r : ℕ} (γ : Point ℂ (r + 1)) (a b : Fin (r + 1)) (hab : a < b) :
     blockIdx γ.1 a.val = blockIdx γ.1 b.val ↔ (wPt γ).symm b < (wPt γ).symm a := by
@@ -771,9 +771,9 @@ theorem herm_esI (k r : ℕ) (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     herm (Hpk k r) v (bvec (esI k r a)) = v (eI k r a) := by
   unfold herm bvec
   simp only [dotProduct, Pi.star_apply, Pi.single_apply, apply_ite star, star_one, star_zero, ite_mul, one_mul,
-    zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [Matrix.mulVec, dotProduct, hpk_esI, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 theorem flag_eq_uMap (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (ρ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (a b : Fin (r + 1)) (ha : a.val < r) : flagMat k r z ρ a b = Formalism.FourierDecayAlt.C2.uMap k r z ρ a b := by

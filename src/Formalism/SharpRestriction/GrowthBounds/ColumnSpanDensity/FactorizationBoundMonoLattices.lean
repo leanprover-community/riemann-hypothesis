@@ -35,19 +35,19 @@ theorem flattened_weight_dominant {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (a
   · simp only [hs, dite_true]
     by_cases hi : i = 0
     · subst hi
-      simp only [if_true]
+      simp only [ite_true]
       split_ifs <;> omega
     · have hj : j ≠ 0 := by
         intro h
         subst h
         exact hi (Fin.le_zero_iff.1 hij)
-      simp only [hi, hj, if_false]
+      simp only [hi, hj, ite_false]
       by_cases hil : i = Fin.last m
       · have hjl : j = Fin.last m := by
           subst hil
           exact le_antisymm (Fin.le_last j) hij
         simp [hil, hjl]
-      · simp only [hil, if_false]
+      · simp only [hil, ite_false]
         split_ifs <;> omega
   · simp [hs]
 
@@ -266,10 +266,10 @@ theorem keyIneq_of (D : Formalism.BasicNotions.D7) (K : Cst) (hA : K.admitted D)
         dL R (flatW X.m (fun s => A s - j s) (fun s => B s - j s)) else 0)) := by
     refine Finset.sum_le_sum fun j hj => ?_
     by_cases hj' : j ∈ S'
-    · simp only [hj', if_true]
+    · simp only [hj', ite_true]
       have := hle2 j (hmemS' j hj')
       linarith
-    · simp only [hj', if_false, sub_zero]
+    · simp only [hj', ite_false, sub_zero]
       exact hle j (hmemS j hj)
   rw [Finset.sum_sub_distrib, Finset.sum_ite_mem, Finset.inter_eq_right.2 hsub,
     sum_dimensions_flattened_weights hD R X.m (le_trans (by norm_num) hF.m2) X.TT A B] at hsum

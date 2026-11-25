@@ -249,7 +249,7 @@ theorem smul_D_psi : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebr
       refine hψ.sub _ _ (fun j => ?_) (fun r hr => ?_)
       · simp [dn]
       · have h2 : ¬ ((p ^ L : ℕ) : ℤ) ∣ r := by simpa using hr
-        exact if_neg h2
+        exact ite_eq_right h2
     rw [h1]
     exact D.map_algebraMap _
   let E : Lau p →+ KaehlerDifferential (O0 p) (integralClosure (O0 p) Ω) :=
@@ -326,24 +326,6 @@ end General
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω]
 
-theorem zS_succ_pow (T : Tower p Ω) (m : ℕ) : zS T (m + 1) ^ p = zS T m :=
-  Subtype.ext (by simp [zS, T.ζpow])
-
-theorem qS_succ_pow (T : Tower p Ω) (m : ℕ) : qS T (m + 1) ^ p = qS T m :=
-  Subtype.ext (by simp [qS, T.qpow])
-
-theorem zS_mem_levelAlg (T : Tower p Ω) (m : ℕ) : zS T m ∈ levelAlg T m :=
-  Algebra.subset_adjoin (Set.mem_insert _ _)
-
-theorem qS_mem_levelAlg (T : Tower p Ω) (m : ℕ) : qS T m ∈ levelAlg T m :=
-  Algebra.subset_adjoin (Set.mem_insert_of_mem _ rfl)
-
-theorem levelAlg_le_succ (T : Tower p Ω) (m : ℕ) : levelAlg T m ≤ levelAlg T (m + 1) := by
-  refine Algebra.adjoin_le ?_
-  rintro x (rfl | rfl)
-  · rw [← zS_succ_pow]; exact pow_mem (zS_mem_levelAlg T _) _
-  · rw [← qS_succ_pow]; exact pow_mem (qS_mem_levelAlg T _) _
-
 theorem towerAlg_le_iSup (T : Tower p Ω) : towerAlg T ≤ ⨆ m, levelAlg T (m + 1) := by
   refine Algebra.adjoin_le ?_
   rintro x ((⟨m, rfl⟩ | ⟨m, rfl⟩))
@@ -391,9 +373,9 @@ theorem exists_qDer (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0
   choose Dl hDl hz hq using fun m : ℕ => exists_level hC T (m + 1) (by omega)
 
   have hz' : ∀ m, Dl m (zS T m) = 0 := fun m => by
-    rw [← zS_succ_pow, isDerOn_pow (hDl m) (zS_mem_levelAlg T _) hp1, hz, smul_zero]
+    rw [← GlobalTheory.AlmostEt.zS_succ_pow_p, isDerOn_pow (hDl m) (zS_mem_levelAlg T _) hp1, hz, smul_zero]
   have hq' : ∀ m, Dl m (qS T m) = Submodule.Quotient.mk (T.qq m / (p : Ω) ^ m) := fun m => by
-    rw [← qS_succ_pow, isDerOn_pow (hDl m) (qS_mem_levelAlg T _) hp1, hq, smul_mk_eq hC T m]
+    rw [← GlobalTheory.AlmostEt.qS_succ_pow_p, isDerOn_pow (hDl m) (qS_mem_levelAlg T _) hp1, hq, smul_mk_eq hC T m]
 
   have hcomp : ∀ m, ∀ x ∈ levelAlg T (m + 1), Dl (m + 1) x = Dl m x := by
     intro m x hx
@@ -611,7 +593,6 @@ theorem D_qS_mem_span (T : Tower p Ω) {k m : ℕ} (h : k ≤ m) :
     (Submodule.smul_mem _ _ (Submodule.subset_span (by simp)))
 
 end Klc
-
 
 theorem p_sq_smul_kaehler_mem_span : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω],
     p ≠ 2 → IsClo p Ω → ∀ (T : Tower p Ω) (η : KaehlerDifferential (O0 p) (integralClosure (O0 p) Ω))
@@ -848,8 +829,6 @@ theorem d_psi {T : Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ : IsReb T L �
     qL • KaehlerDifferential.D (O0 p) (integralClosure (O0 p) Ω) x =
       y • KaehlerDifferential.D (O0 p) (integralClosure (O0 p) Ω) qL :=
   _root_.GlobalTheory.Glue.DPsi.smul_D_psi p Ω T L ψ hψ b x y qL hx hy hq
-
-
 
 theorem geo_cob : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ c : ℕ, ∀ (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω → ∀ (T : GlobalTheory.K5.Tower p Ω) (L n : ℕ), n ≤ L → 1 ≤ n → ∀ (ψ : O0 p →+* Ω), IsReb T L ψ → ∀ (cw : ℤ → Ω) (w w' r : Ω), Ev ψ cw w w' → w ≠ 0 → IsInt (p := p) w⁻¹ → r ^ (p ^ n) = w →
   ∀ a lq : Gal p Ω → ZMod (p ^ n), IsKum T n (Ggeo p Ω ⊓ Gn T L) r a → IsKum T n (Ggeo p Ω ⊓ Gn T L) (T.qq (L + n)) lq →

@@ -8,66 +8,16 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalFramePairsDifferIsometryUnitriangular
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ContinuousOfMemCcSmooth
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRegularSemisimpleUnitaryDataOfRegular
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasTypeVec
 import Development.AbelianVarietyTheory.Definitions.Foundations.InnerEqZeroOfNotUEquiv
 import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
 import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CommuteOfWittFrameWeights
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsHilbertSchmidtOfFiniteDimensional
-import Mathlib.RingTheory.PicardGroup
 import Formalism.LocalRingCardinality.DataHost
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittExtensionTheorem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
 
@@ -134,12 +84,12 @@ theorem GlobalTheory.Cusp.ConjLevi.conj_mem_levi_stdVec : ∀ {D : D7} {V : HSp 
     · rintro (⟨i, hi, rfl⟩ | ⟨i, hi, rfl⟩)
       · by_cases h : i ≤ j
         · obtain ⟨k, rfl⟩ := (hmem i).1 h; exact ⟨k, rfl⟩
-        · rw [if_neg h] at hi; exact absurd hi (by decide)
+        · rw [ite_eq_right h] at hi; exact absurd hi (by decide)
       · by_cases h : i ≤ j
-        · rw [if_pos h] at hi; exact absurd hi (by decide)
-        · rw [if_neg h] at hi; exact absurd hi (by decide)
+        · rw [ite_eq_left h] at hi; exact absurd hi (by decide)
+        · rw [ite_eq_right h] at hi; exact absurd hi (by decide)
     · rintro ⟨k, rfl⟩
-      exact Or.inl ⟨_, by rw [if_pos ((hmem _).2 ⟨k, rfl⟩)], rfl⟩
+      exact Or.inl ⟨_, by rw [ite_eq_left ((hmem _).2 ⟨k, rfl⟩)], rfl⟩
   have hF : Φ.sub (-stdVec j) = Submodule.span D.host.E (Set.range fun i : Fin a => Φ.f (Fin.castLE ha i)) := by
     rw [WittFrame.sub]
     congr 1
@@ -148,14 +98,14 @@ theorem GlobalTheory.Cusp.ConjLevi.conj_mem_levi_stdVec : ∀ {D : D7} {V : HSp 
     constructor
     · rintro (⟨i, hi, rfl⟩ | ⟨i, hi, rfl⟩)
       · by_cases h : i ≤ j
-        · rw [if_pos h] at hi; exact absurd hi (by decide)
-        · rw [if_neg h] at hi; exact absurd hi (by decide)
+        · rw [ite_eq_left h] at hi; exact absurd hi (by decide)
+        · rw [ite_eq_right h] at hi; exact absurd hi (by decide)
       · by_cases h : i ≤ j
         · obtain ⟨k, rfl⟩ := (hmem i).1 h; exact ⟨k, rfl⟩
-        · rw [if_neg h] at hi; exact absurd hi (by decide)
+        · rw [ite_eq_right h] at hi; exact absurd hi (by decide)
     · rintro ⟨k, rfl⟩
       refine Or.inr ⟨_, ?_, rfl⟩
-      rw [if_pos ((hmem _).2 ⟨k, rfl⟩)]
+      rw [ite_eq_left ((hmem _).2 ⟨k, rfl⟩)]
   haveI : Nontrivial (AF D.host.F) := (AdeleRing.algebraMap_injective (𝓞 D.host.F) D.host.F).nontrivial
   unfold WittFrame.levi
   simp only [Finset.mem_singleton, iInf_iInf_eq_left]
@@ -286,7 +236,7 @@ theorem exists_dual_bases : ∀ {D : D7} {V : HSp D} (X X' : Submodule D.host.E 
 
       rw [map_add (f := _), map_sum, map_sum, map_zero] at this
       simp only [map_smul, smul_eq_mul, hTX (hxX k) (hxX _), mul_zero, Finset.sum_const_zero,
-        zero_add, hxx', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at this
+        zero_add, hxx', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at this
       exact this
     have hc' : ∑ i, c (Sum.inl i) • x i = 0 := by
       simpa [hd] using hc
@@ -667,18 +617,18 @@ theorem exists_GF_carry_hyperbolic : ∀ {D : D7} {V : HSp D} (Φ : WittFrame V)
       (Sum.elim (fun i => V.hT (f' i)) (fun i => V.hT (e' i))) ?_ ?_
     · rintro (i | i) (j | j) hij
       · have : Fin.castLE ha j ≠ Fin.castLE ha i := fun h => hij (congrArg Sum.inl ((hcast j i).1 h).symm)
-        exact (Φ.ef _ _).trans (if_neg this)
+        exact (Φ.ef _ _).trans (ite_eq_right this)
       · exact Φ.ff _ _
       · exact Φ.ee _ _
       · have : Fin.castLE ha i ≠ Fin.castLE ha j := fun h => hij (congrArg Sum.inr ((hcast i j).1 h))
         show V.hD (f' j) (e' i) = 0
         rw [sw]; show star (V.hD (Φ.e (Fin.castLE ha i)) (Φ.f (Fin.castLE ha j))) = 0
-        rw [Φ.ef, if_neg this, star_zero]
+        rw [Φ.ef, ite_eq_right this, star_zero]
     · rintro (i | i)
-      · exact (Φ.ef _ _).trans (if_pos rfl)
+      · exact (Φ.ef _ _).trans (ite_eq_left rfl)
       · show V.hD (f' i) (e' i) = 1
         rw [sw]; show star (V.hD (Φ.e (Fin.castLE ha i)) (Φ.f (Fin.castLE ha i))) = 1
-        rw [Φ.ef, if_pos rfl, star_one]
+        rw [Φ.ef, ite_eq_left rfl, star_one]
   have hg : ∀ p q, V.hT (Sum.elim x x' p) (Sum.elim x x' q) = V.hT (Sum.elim e' f' p) (Sum.elim e' f' q) := by
     rintro (i | i) (j | j)
     · show V.hD (x j) (x i) = V.hD (e' j) (e' i)

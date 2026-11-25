@@ -6,55 +6,13 @@ public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyBl
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FinsumMobiusInverseCharpolyInvariantLe
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobiusInverseCharpolyLinearEqui
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvertibleEndomorphismInnerProductPrimitiveMobiu
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
 import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -559,10 +517,10 @@ theorem step {F : Type} [Field F] [Finite F] (s : F[X] → ℂ) (hs : IsAdditive
     rw [← card_H, ← key, Fintype.sum_prod_type, Finset.sum_comm]
     refine Finset.sum_congr rfl fun W _ => ?_
     by_cases hW : W ⊓ A = ⊥
-    · rw [if_pos hW, sum_H]
+    · rw [ite_eq_left hW, sum_H]
       refine Finset.sum_congr rfl fun h _ => ?_
       by_cases hh : h ∈ nilRad A <;> simp [hh, hW, res]
-    · rw [if_neg hW]
+    · rw [ite_eq_right hW]
       symm
       refine Finset.sum_eq_zero fun h _ => ?_
       simp [hW]
@@ -576,11 +534,11 @@ theorem step {F : Type} [Field F] [Finite F] (s : F[X] → ℂ) (hs : IsAdditive
       simp [res_bot]
     by_cases hle : W ≤ A
     · have hmeet : W ⊓ A ≠ ⊥ := by rw [inf_eq_left.2 hle]; exact hb
-      rw [if_neg hmeet, if_pos hle, zero_add,
+      rw [ite_eq_right hmeet, ite_eq_left hle, zero_add,
         Finset.sum_congr rfl fun h hh => res_le h ((memH h).1 hh) W hle, Finset.sum_const, nsmul_eq_mul]
     by_cases hd : W ⊓ A = ⊥
-    · rw [if_pos hd, if_neg hle, add_zero]
-    · rw [if_neg hd, if_neg hle, add_zero]
+    · rw [ite_eq_left hd, ite_eq_right hle, add_zero]
+    · rw [ite_eq_right hd, ite_eq_right hle, add_zero]
       exact res_mixed W hWT hd hle
   have s_split : s (LinearMap.charpoly g) = s (LinearMap.charpoly (g.restrict hg)) +
       s (LinearMap.charpoly (A.mapQ A g (fun x hx => hg x hx))) := by
@@ -600,7 +558,7 @@ theorem step {F : Type} [Field F] [Finite F] (s : F[X] → ℂ) (hs : IsAdditive
     rw [Finset.sum_congr rfl fun W hW => split W (Finset.ne_of_mem_erase hW), Finset.sum_add_distrib]
     have htop1 : ¬ (⊤ : Submodule F V) ⊓ A = ⊥ := by rw [top_inf_eq]; exact hA0
     have htop2 : ¬ (⊤ : Submodule F V) ≤ A := fun h => hAT (top_le_iff.1 h)
-    rw [Finset.sum_erase _ (by rw [if_neg htop1]), Finset.sum_erase _ (by rw [if_neg htop2]),
+    rw [Finset.sum_erase _ (by rw [ite_eq_right htop1]), Finset.sum_erase _ (by rw [ite_eq_right htop2]),
       sum_disj, ← sum_le, Finset.mul_sum]
     congr 1
     refine Finset.sum_congr rfl fun W _ => ?_

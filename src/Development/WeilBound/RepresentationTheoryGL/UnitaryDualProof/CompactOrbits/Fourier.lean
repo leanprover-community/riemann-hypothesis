@@ -44,10 +44,6 @@ def CompP : Prop :=
 
 theorem isClosed_Bz (Z : SubM k n) : IsClosed (Bz Z) := isClosed_Bz_shared Z
 
-omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
-theorem qZ_conj (Z : SubM k n) {g : GLn k n} (hg : g ∈ Gz Z) (x : Mat k n) :
-    qZ Z (g.val * x * g⁻¹.val) = qZ Z x := qZ_conj_s Z hg x
-
 theorem locQ_pf : LocQ (k := k) := by
   intro n Z hCR hfib ξ hsupp hinv f hf
   have : TotallyDisconnectedSpace k := totallyDisconnectedSpace_localField
@@ -82,7 +78,7 @@ theorem locQ_pf : LocQ (k := k) := by
           have e : (fun x => (qf ⁻¹' V).indicator 1 x * ((fun q => h (act g q)) - h) x) =
               (fun q => (fun x => (qf ⁻¹' V).indicator 1 x * h x) (act g q)) -
                 fun x => (qf ⁻¹' V).indicator 1 x * h x := by
-            funext x; have hpx : qf (act g x) = qf x := qZ_conj Z hg x.1
+            funext x; have hpx : qf (act g x) = qf x := PositivityTheory.RgUd.T.Nil.qZ_conj_s Z hg x.1
             by_cases ha : qf x ∈ V <;> simp [indicator, ha, hpx]
           rw [e, map_sub, hinv g hg _ (indicator_mul_mem (hV.preimage hp) hh), sub_self]))) f hf)
   simpa using hfW univ isClopen_univ
@@ -312,7 +308,7 @@ theorem conj_mem_Bz {g : GLn k n} (hg : g ∈ Gz Z) {w : Mat k n} (hw : w ∈ Bz
 
 theorem conj_mem_B0 {g : GLn k n} (hg : g ∈ Gz Z) {w : Mat k n} (hw : w ∈ B0 Z) :
     g.val * w * g⁻¹.val ∈ B0 Z :=
-  ⟨conj_mem_Bz hg hw.1, by show qZ Z (g.val * w * g⁻¹.val) = 0; rw [qZ_conj Z hg w]; exact hw.2⟩
+  ⟨conj_mem_Bz hg hw.1, by show qZ Z (g.val * w * g⁻¹.val) = 0; rw [PositivityTheory.RgUd.T.Nil.qZ_conj_s Z hg w]; exact hw.2⟩
 
 private theorem tr_conj (A P g g' : Mat k n) : trace (A * (g * P * g')) = trace (g' * A * g * P) := by
   rw [← Matrix.mul_assoc, Matrix.trace_mul_comm]; simp only [Matrix.mul_assoc]

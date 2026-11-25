@@ -78,8 +78,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
 
-theorem _root_.GlobalTheory.T.affineHilbert_representing_universal_subscheme : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] (r : ℕ) (H : Scheme.{0}) (R : (GlobalTheory.HilbAff.functor A B r).RepresentableBy H), ∃ (U : Scheme.{0}) (u : U ⟶ pullback (Spec.map (CommRingCat.ofHom (algebraMap A B))) (R.homEquiv (𝟙 H)).1), IsClosedImmersion u ∧ IsFinite (u ≫ pullback.snd _ (R.homEquiv (𝟙 H)).1) ∧ Flat (u ≫ pullback.snd _ (R.homEquiv (𝟙 H)).1) ∧ (∀ y, (u ≫ pullback.snd _ (R.homEquiv (𝟙 H)).1).finrank y = r) ∧ ∀ (T : Scheme.{0}) (g : T ⟶ Spec (CommRingCat.of A)) (V : Scheme.{0}) (v : V ⟶ pullback (Spec.map (CommRingCat.ofHom (algebraMap A B))) g), IsClosedImmersion v → IsFinite (v ≫ pullback.snd _ g) → Flat (v ≫ pullback.snd _ g) → (∀ y, (v ≫ pullback.snd _ g).finrank y = r) → ∃! f : T ⟶ H, ∃ hf : f ≫ (R.homEquiv (𝟙 H)).1 = g, ∃ w : V ⟶ U, IsPullback v w (pullback.map _ g _ (R.homEquiv (𝟙 H)).1 (𝟙 _) f (𝟙 _) (by simp) (by rw [Category.comp_id, hf])) u := by
-  first | (exact @GlobalTheory.HilbAff.universal)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AffineHilbertRepresentingUniversalSubschemeStatement =====
@@ -119,7 +117,6 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
 universe u
 
 namespace GlobalTheory.HilbAff
-
 
 theorem of_isPullback_openImmersions (P : MorphismProperty Scheme.{0}) [IsZariskiLocalAtTarget P]
     {X T : Scheme.{0}} (φ : X ⟶ T) {ι : Type u} {V : ι → Scheme.{0}} (f : ∀ i, V i ⟶ T)
@@ -525,7 +522,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.FlatHilbAff
 
-
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 theorem exists_flat_ideal : ∀ (V K : Type) [CommRing V] [IsDomain V] [ValuationRing V] [Field K] [Algebra V K] [IsFractionRing V K] (X X' : Scheme.{0}) [IsAffine X] [IsAffine X'] (p : X ⟶ Spec (CommRingCat.of V)) (p' : X' ⟶ Spec (CommRingCat.of K)) (b : X' ⟶ X), IsPullback b p' p (Spec.map (CommRingCat.ofHom (algebraMap V K))) → ∀ I : Ideal Γ(X', ⊤), ∃ J : Ideal Γ(X, ⊤), ((Ideal.Quotient.mk J).comp (p.appTop.hom.comp (Scheme.ΓSpecIso (CommRingCat.of V)).inv.hom)).Flat ∧ Ideal.map b.appTop.hom J = I := by
   intro V K _ _ _ _ _ _ X X' _ _ p p' b h I
@@ -897,7 +893,7 @@ theorem hilbertScheme_exists : ∀ (A B : Type) [CommRing A] [CommRing B] [Algeb
       refine ⟨σ, (hW σ Z y U U.ι).2 hb ?_⟩
       simpa using hz
   let R := F.representableBy
-  obtain ⟨U, u, h1, h2, h3, h4, h5⟩ := GlobalTheory.T.affineHilbert_representing_universal_subscheme A B r F.reprX R
+  obtain ⟨U, u, h1, h2, h3, h4, h5⟩ := GlobalTheory.HilbAff.universal A B r F.reprX R
   obtain ⟨q1, q2, q3⟩ := _root_.GlobalTheory.HilbAff.representing_qc_qs_loft A B r F.reprX R
   refine ⟨F.reprX, (R.homEquiv (𝟙 _)).1, U, u, ?_, h1, h2, h3, h4, h5⟩
   rw [IsProper.eq_valuativeCriterion, ValuativeCriterion.eq]

@@ -125,9 +125,9 @@ theorem sig_cancel (B : FB R d O) (h : PS k 2 d) (w0 : O) (hw : w0 + star w0 = 1
   have hu : ∀ c, ∑ b, C (u b) * (C (dAct k B w0 c b) + C (dAct k B (star w0) c b)) = (C (u c) : PS k 1 d) := by
     intro c
     rw [Finset.sum_eq_single c]
-    · rw [← map_add (f := _), dAct_sum B w0 hw c c, if_pos rfl, map_one, mul_one]
+    · rw [← map_add (f := _), dAct_sum B w0 hw c c, ite_eq_left rfl, map_one, mul_one]
     · intro b _ hb
-      rw [← map_add (f := _), dAct_sum B w0 hw c b, if_neg (Ne.symm hb), map_zero, mul_zero]
+      rw [← map_add (f := _), dAct_sum B w0 hw c b, ite_eq_right (Ne.symm hb), map_zero, mul_zero]
     · intro hc; exact absurd (Finset.mem_univ c) hc
   have L1 : ∑ b, C (u b) * ∑ c, sgOf k h c * C (dAct k B (star w0) c b) =
       ∑ c, ∑ b, sgOf k h c * (C (u b) * C (dAct k B (star w0) c b)) := by

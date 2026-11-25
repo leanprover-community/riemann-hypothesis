@@ -63,12 +63,12 @@ theorem hol_comm_hol (L : R.LevelData A r) {l m : Fin r} (hlm : l ≠ m) :
   simp only [hol, Set.mem_insert_iff, Set.mem_singleton_iff] at hx hy
   rcases hx with rfl | rfl | rfl <;> rcases hy with rfl | rfl | rfl
   · exact L.p_p l m
-  · have := L.p_c l m; rw [if_neg hlm, add_zero] at this; exact this
-  · have := L.p_ci l m; rw [if_neg hlm, sub_zero] at this; exact this
-  · have := L.p_c m l; rw [if_neg hlm', add_zero] at this; exact this.symm
+  · have := L.p_c l m; rw [ite_eq_right hlm, add_zero] at this; exact this
+  · have := L.p_ci l m; rw [ite_eq_right hlm, sub_zero] at this; exact this
+  · have := L.p_c m l; rw [ite_eq_right hlm', add_zero] at this; exact this.symm
   · exact hf _ (Or.inl (Or.inl (Or.inl (Or.inl ⟨l, rfl⟩)))) _ (Or.inl (Or.inl (Or.inl (Or.inl ⟨m, rfl⟩))))
   · exact hf _ (Or.inl (Or.inl (Or.inl (Or.inl ⟨l, rfl⟩)))) _ (Or.inl (Or.inl (Or.inl (Or.inr ⟨m, rfl⟩))))
-  · have := L.p_ci m l; rw [if_neg hlm', sub_zero] at this; exact this.symm
+  · have := L.p_ci m l; rw [ite_eq_right hlm', sub_zero] at this; exact this.symm
   · exact hf _ (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩)))) _ (Or.inl (Or.inl (Or.inl (Or.inl ⟨m, rfl⟩))))
   · exact hf _ (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩)))) _ (Or.inl (Or.inl (Or.inl (Or.inr ⟨m, rfl⟩))))
 
@@ -124,7 +124,7 @@ theorem isSite_actual {X : ActualOps k r z z' π π'} {L : R.LevelData (Pr (RadS
   obtain ⟨hp, hc, hci⟩ := star_site_ops hL
   refine ⟨⟨L.c_ci l, L.ci_c l, ?_⟩, hol_comm_star L hp hc hci l l⟩
   have h := L.p_c l l
-  rw [if_pos rfl] at h
+  rw [ite_eq_left rfl] at h
   exact h
 
 theorem QQi_mem_all (L : R.LevelData (Pr (RadSp k r z z' π π')) r) (st : Fr.Start (Pr (RadSp k r z z' π π')))

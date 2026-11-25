@@ -288,12 +288,12 @@ theorem span_powers_of_uniformizer_of_nilpotent :
       refine ⟨fun j => if j = k then y else c j, z, ?_⟩
       rw [Finset.sum_range_succ]
       beta_reduce
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have hsum : ∑ j ∈ Finset.range k, φ (if j = k then y else c j) * π ^ j
           = ∑ j ∈ Finset.range k, φ (c j) * π ^ j := by
         apply Finset.sum_congr rfl
         intro j hj
-        rw [if_neg (Finset.mem_range.mp hj).ne]
+        rw [ite_eq_right (Finset.mem_range.mp hj).ne]
       rw [hsum, hx]
       have hw : w = φ y + z * π := by rw [hz]; ring
       rw [hw]; ring
@@ -984,7 +984,6 @@ open Classical
 
 namespace GlobalTheory.CoverPullComb
 
-
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_pull_comb_integral : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.InR D j → ∀ σ : T.Q.c.F →+* ℂ, GoodEmb T.Q.c σ → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → ∀ C : Cover T j σ, C.IsUnif → C.IsPinned a n → ∀ (la : HeightOneSpectrum (𝓞 C.d.c₂.F)) (m : ℕ) (β : Fin m → Rul (T.Q.Xo j) T.Q.c), (∀ k, β k ∈ sec (T.Q.Xo j) T.Q.c a n) → ∀ y : Fin m → C.d.c₂.F, (∑ k, C.σ₂ (y k) • T.phiJ j σ a (β k)) ∈ C.intForms a n {la} → ∃ g : Fin m → Rul C.d.Xo₂ C.d.c₂, (∀ k, g k ∈ sec C.d.Xo₂ C.d.c₂ a n) ∧ (∀ k, C.IsPull (β k) (g k)) ∧ ∀ v ∈ valSet C.d.Xo₂ C.d.c₂ (algCls C.d.Xo₂ C.d.c₂) la, 0 ≤ v (∑ k, y k • g k) := by
@@ -1415,7 +1414,7 @@ theorem intForm_descent_below (l e : ℕ) (hl : l.Prime) : ∃ c₀ : ℕ, ∀ (
     (C.intForms_subset _ _ _ hφ) hφK
   have hcc' : ∀ i, ∃ cc : Fin m → T.Q.c.F, ψ i = ∑ k, T.σ₀ (cc k) • T.phiJ j T.σ₀ (wtA w) (β k) := fun i => by
     obtain ⟨f, hf, hfe⟩ := hψ i
-    obtain ⟨cc, hcc⟩ := hspanβ f (GlobalTheory.T.mem_cuspForms_allEmbeddings_of_inclusion_reading D T hL j hj w hlast f hf.1 hf.2)
+    obtain ⟨cc, hcc⟩ := hspanβ f (GlobalTheory.CuspAllEmb.mem_cuspA_of_rdU_mem_holSub0 D T hL j hj w hlast f hf.1 hf.2)
     refine ⟨cc, ?_⟩
     rw [← hfe, hcc]
     set_option synthInstance.maxHeartbeats 100000 in

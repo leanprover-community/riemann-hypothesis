@@ -23,10 +23,6 @@ def SecDegreeLe.Statement : Prop :=
       Vertical.specRest (algebraMap k E) g y ≠ 0 →
         Module.finrank E (Vertical.SecAlg (Q.map (MvPolynomial.map (algebraMap k E))) y) ≤ δ
 
-namespace SecDegreeLe
-
-end SecDegreeLe
-
 end
 
 end GroundTheory.Heights₂.Heights

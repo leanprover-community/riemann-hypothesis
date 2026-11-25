@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Principal
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
 
 namespace UpperTheory.TNZ.CuspidalSupport₂
@@ -35,7 +33,3 @@ theorem twist_twist_inv {d : ℕ} {X : Type} [AddCommGroup X] [Module ℂ X]
   rw [GlobalTheory.SmGL.twist_twist, h, GlobalTheory.SmGL.twist_one]
 
 end UpperTheory.TNZ.CuspidalSupport₂
-
-namespace UpperTheory.TNZ
-
-end UpperTheory.TNZ

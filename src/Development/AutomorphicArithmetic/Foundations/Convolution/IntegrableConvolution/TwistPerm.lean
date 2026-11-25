@@ -139,7 +139,7 @@ private theorem gl_ext {n : ℕ} {p : Pl F} {x y : GL (Fin n) (CompletionsOver E
     congrFun (congrFun (congrArg (fun z : GL (Fin n) (u.1.adicCompletion E) => z.val) (h u)) a) b)
 
 private theorem mapGL_inj {K S : Type*} [Field K] [CommRing S] [Nontrivial S] {n : ℕ} (f : K →+* S) :
-    Function.Injective (mapGL n f) := fun x y h =>
+    Function.Injective (mapGL n f) := fun _ _ h =>
   Units.ext (Matrix.ext fun a b => f.injective
     (congrFun (congrFun (congrArg (fun z : GL (Fin n) S => z.val) h) a) b))
 

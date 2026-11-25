@@ -196,7 +196,7 @@ theorem comb {M : Type*} [AddCommGroup M] [Module ℂ M] {t : ℕ} (β α' : Fin
   rw [← Finset.sum_neg_distrib]
   refine Finset.sum_congr rfl fun j _ => ?_
   have hTj : ¬T = T.succAbove j := (Fin.succAbove_ne T j).symm
-  rw [if_pos hTj, ← _root_.PI.QnHermHaar.skip1Eq s i, ← _root_.PI.QnHermHaar.skip1Eq T j]
+  rw [ite_eq_left hTj, ← _root_.PI.QnHermHaar.skip1Eq s i, ← _root_.PI.QnHermHaar.skip1Eq T j]
   have h1 : (skip1 s ∘ skip1 i : Fin (t + 1 - 2) → Fin (t + 1)) = skip2 (min (skip1 s i) s) (max (skip1 s i) s) :=
     funext fun k => Fin.ext (skip1_skip1_val_eq_skip2_min_max s i k)
   have h2 : (skip1 T ∘ skip1 j : Fin (t + 1 - 2) → Fin (t + 1)) = skip2 (min T (skip1 T j)) (max T (skip1 T j)) := by

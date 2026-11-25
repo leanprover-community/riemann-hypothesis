@@ -19,10 +19,6 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.S
   Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge
 open Formalism.MainNotions.S (AutInst)
 
-theorem index_pi₂ {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] (H : ∀ i, Subgroup (G i)) :
-    (Subgroup.pi Set.univ H).index = ∏ i, (H i).index := by
-  apply GlobalTheory.index_pi_univ_dep
-
 def KsetSub (I : AutInst) : Subgroup I.Gf :=
   (Formalism.UG.stabGL I.Lf).comap (Formalism.UG.UPts I.cm.sig I.J (Af I.F)).subtype
 
@@ -130,26 +126,26 @@ theorem phiK_surjective (hS : SngSurj) : Function.Surjective (phiK X hb) := by
       rw [map_mul, Pi.mul_apply, Subgroup.coe_mul, hz p, phiK_apply₂]
       by_cases hpq : p = q
       · subst hpq
-        rw [if_neg hq, if_pos (Finset.mem_insert_self p S), Subgroup.coe_one, mul_one]
+        rw [ite_eq_right hq, ite_eq_left (Finset.mem_insert_self p S), Subgroup.coe_one, mul_one]
         exact hq1
       · have hp1 : p.1 ≠ q.1 := fun h => hpq (Subtype.ext h)
         rw [hq2 p.1 hp1, one_mul]
         by_cases hpS : p ∈ S
-        · rw [if_pos hpS, if_pos (Finset.mem_insert_of_mem hpS)]
-        · rw [if_neg hpS, if_neg]
+        · rw [ite_eq_left hpS, ite_eq_left (Finset.mem_insert_of_mem hpS)]
+        · rw [ite_eq_right hpS, ite_eq_right]
           intro hm
           rcases Finset.mem_insert.1 hm with h' | h'
           · exact hpq h'
           · exact hpS h'
   obtain ⟨z, hz⟩ := key Finset.univ
   refine ⟨z, funext fun p => Subtype.ext ?_⟩
-  rw [hz p, if_pos (Finset.mem_univ p)]
+  rw [hz p, ite_eq_left (Finset.mem_univ p)]
 
 theorem IP_idxProd (hS : SngSurj) (hK : X.LevelSubgroupCharacter) (hL : X.LevelSubgroupNormalized) : IdxProd X hb := by
   show gIdx X hb = ∏ p : TypX X, lIdx X hb p
   rw [IP_gIdx X hb hK]
   show ((levelSubgroupOfCharacter X hK).subgroupOf (KsetSub X.B.I)).index = _
-  rw [levelSubgroupAlt_subgroupOf_eq_comap_pi X hb hK hL, Subgroup.index_comap_of_surjective (hf := phiK_surjective X hb hS), index_pi₂]
+  rw [levelSubgroupAlt_subgroupOf_eq_comap_pi X hb hK hL, Subgroup.index_comap_of_surjective (hf := phiK_surjective X hb hS), GlobalTheory.index_pi_univ_dep]
   rfl
 
 theorem idxProdAll_of (hS : SngSurj) : IdxProdAll := by

@@ -136,7 +136,7 @@ theorem hpk_conjTranspose (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
   · subst hab
     split_ifs <;> simp
   · have hba : b ≠ a := Ne.symm hab
-    simp only [hab, hba, and_false, if_false]
+    simp only [hab, hba, and_false, ite_false]
     split_ifs <;> first | (exfalso; omega) | simp
 
 theorem hpkBlocks : HpkBlocks := by

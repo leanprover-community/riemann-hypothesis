@@ -61,10 +61,7 @@ theorem chart_haar (S : Set H) (κ : H → C) (φ : C → H) (μC : Measure C) (
     MeasurableEmbedding.of_measurable_inverse hφ.measurable (hrange ▸ hSc.measurableSet)
       hκ.measurable hκφ
   have hσ : SigmaFinite (μC.map φ) := hemb.sigmaFinite_map
-  have hμC0 : μC ≠ 0 := by
-    intro h
-    have h2 := (isOpen_univ.measure_pos μC Set.univ_nonempty).ne'
-    rw [h] at h2; exact h2 rfl
+  have hμC0 : μC ≠ 0 := NeZero.ne μC
   have hne : μC.map φ ≠ 0 := fun h => hμC0 ((Measure.map_eq_zero_iff hφ.measurable.aemeasurable).mp h)
   have hcompl : μC.map φ Sᶜ = 0 := by
     rw [Measure.map_apply hφ.measurable hSc.isOpen_compl.measurableSet]

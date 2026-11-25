@@ -128,20 +128,12 @@ theorem conv_unit {K L : Subgroup G} (hle : L ≤ K) (hidx : L.relIndex K ≠ 0)
 end Generic
 
 theorem cone_anti {m : ℕ} {l : Fin m → ℤ} (h : Cone l) : Antitone l := by
-  have key : ∀ d : ℕ, ∀ i j : Fin m, (j : ℕ) = i + d → l j ≤ l i := by
-    intro d
-    induction d with
-    | zero =>
-      intro i j e
-      exact le_of_eq (congrArg l (Fin.ext e))
-    | succ d ih =>
-      intro i j e
-      have hlt : (i : ℕ) + d < m := by have := j.2; omega
-      have h1 := ih i ⟨i + d, hlt⟩ rfl
-      have h2 := h.1 ⟨i + d, hlt⟩ j (by simp only []; omega)
+  cases m with
+  | zero => exact fun i => Fin.elim0 i
+  | succ m =>
+    exact Fin.antitone_iff_succ_le.mpr fun i => by
+      have := h.1 i.castSucc i.succ (by simp)
       linarith
-  intro i j hij
-  exact key (j - i) i j (by have : (i : ℕ) ≤ j := hij; omega)
 
 theorem cone_add {m : ℕ} {l l' : Fin m → ℤ} (h : Cone l) (h' : Cone l') : Cone (l + l') := by
   refine ⟨fun i j e => ?_, fun i => ?_⟩
@@ -288,12 +280,12 @@ theorem tm_hecke (n : ℕ) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (a : ℕ) (x
   · have e : tm n w ϖ a x s = fun y => (-qh w) ^ (-vRes n a (lOf x) s) *
         dd a (n - a) w (tdiag ϖ (restr x _ h.2.2.2.1)) (tdiag ϖ (restr x _ h.2.2.2.2)) y := by
       funext y
-      exact dif_pos h
+      exact dite_eq_left h
     rw [e]
     exact isHecke_const_mul _ (dd_hecke _ _ _ _ _)
   · have e : tm n w ϖ a x s = fun _ => 0 := by
       funext y
-      exact dif_neg h
+      exact dite_eq_right h
     rw [e]
     exact isHecke_zero _
 
@@ -302,9 +294,9 @@ theorem entT_eq (n : ℕ) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (a : ℕ) {J 
     entT n w ϖ a c x s y = ∑ j, c j * tm n w ϖ a (x j) s y := by
   unfold entT tm
   by_cases h : admitted n a s
-  · simp only [dif_pos h, dd]
+  · simp only [dite_eq_left h, dd]
     exact Finset.sum_congr rfl fun j _ => by ring
-  · simp [dif_neg h]
+  · simp [dite_eq_right h]
 
 theorem entT_hecke (n : ℕ) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (a : ℕ) {J : Type} [Fintype J] (c : J → ℂ)
     (x : J → Fin n → ℤ) (s : Finset (Fin (n / 2))) :
@@ -319,12 +311,12 @@ theorem phiX_eq (n : ℕ) (w : Pl E) (b : GLw n w) (ϖ : (w.adicCompletion E)ˣ)
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
   by_cases hA : admitted n a s
-  · rw [dif_pos (⟨hA.1, hA.2.1, hA.2.2.1⟩ : _ ∧ _ ∧ _), dif_pos hA.2.2.2.1, dif_pos hA.2.2.2.2]
+  · rw [dite_eq_left (⟨hA.1, hA.2.1, hA.2.2.1⟩ : _ ∧ _ ∧ _), dite_eq_left hA.2.2.2.1, dite_eq_left hA.2.2.2.2]
     unfold tm
-    rw [dif_pos hA]
+    rw [dite_eq_left hA]
     unfold cR dd
     ring
-  · have : tm n w ϖ a x s y = 0 := dif_neg hA
+  · have : tm n w ϖ a x s y = 0 := dite_eq_right hA
     rw [this, mul_zero]
     split_ifs with h1 h2 h3
     · exact absurd ⟨h1.1, h1.2.1, h1.2.2, h2, h3⟩ hA
@@ -353,7 +345,7 @@ theorem entT_adm (n : ℕ) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (a : ℕ) {J
     entT n w ϖ a c x s y = ∑ j, (c j * (-qh w) ^ (-vRes n a (lOf (x j)) s)) *
       dd a (n - a) w (tdiag ϖ (restr (x j) _ h.2.2.2.1)) (tdiag ϖ (restr (x j) _ h.2.2.2.2)) y := by
   unfold entT
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   refine Finset.sum_congr rfl fun j _ => ?_
   simp only [dd]
   ring
@@ -407,8 +399,8 @@ theorem mconv_entT (hD : DcosMul) {w : Pl E} (n : ℕ) (ϖ : (w.adicCompletion E
     ring
   · have e1 : entT n w ϖ a c x s = fun _ => 0 := by
       funext z
-      exact dif_neg h
-    have e2 : entT n w ϖ a (fun p : J × J' => c p.1 * c' p.2) (fun p => x p.1 + x' p.2) s y = 0 := dif_neg h
+      exact dite_eq_right h
+    have e2 : entT n w ϖ a (fun p : J × J' => c p.1 * c' p.2) (fun p => x p.1 + x' p.2) s y = 0 := dite_eq_right h
     rw [e2, e1, mul_zero]
     simp [mconv, hint]
 

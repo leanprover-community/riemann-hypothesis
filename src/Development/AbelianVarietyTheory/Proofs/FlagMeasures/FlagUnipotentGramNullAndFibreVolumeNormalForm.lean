@@ -100,15 +100,6 @@ variable {k r : ℕ}
 
 def mid (k r : ℕ) (v : Fin (2 * r + k + 1) → ℂ) : Fin (k + 1) → ℂ := fun j => v (wI k r j)
 
-theorem idx_cases (i : Fin (2 * r + k + 1)) :
-    (∃ a, i = eI k r a) ∨ (∃ j, i = wI k r j) ∨ ∃ a, i = esI k r a := by
-  have hi := i.2
-  by_cases h1 : i.val < r
-  · exact Or.inl ⟨⟨i.val, h1⟩, rfl⟩
-  by_cases h2 : i.val ≤ r + k
-  · exact Or.inr (Or.inl ⟨⟨i.val - r, by omega⟩, Fin.ext (by simp only [wI]; omega)⟩)
-  · exact Or.inr (Or.inr ⟨⟨2 * r + k - i.val, by omega⟩, Fin.ext (by simp only [esI]; omega)⟩)
-
 theorem mulVec_of_row {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ) (i i' : Fin n) (c : ℂ)
     (h : ∀ j, A i j = if j = i' then c else 0) : (A *ᵥ v) i = c * v i' := by
   simp [Matrix.mulVec, dotProduct, h]
@@ -182,7 +173,7 @@ theorem top_uEmb (u : Matrix (Fin r) (Fin r) ℂ) (v : Fin (2 * r + k + 1) → �
   simp only [Matrix.mulVec, dotProduct]
   refine Finset.sum_eq_zero fun i _ => ?_
   have := a.2
-  rcases idx_cases i with ⟨b, rfl⟩ | ⟨b, rfl⟩ | ⟨b, rfl⟩
+  rcases GlobalTheory.Amp.NCoord.idx_cases i with ⟨b, rfl⟩ | ⟨b, rfl⟩ | ⟨b, rfl⟩
   · have := b.2
     simp only [uEmb, esI, eI, Fin.ext_iff]
     split_ifs <;> first | omega | simp
@@ -207,7 +198,7 @@ theorem mid_pEl (B : Fin r → Fin (k + 1) → ℂ) (S : Matrix (Fin r) (Fin r) 
   rw [Finset.sum_eq_single (wI k r b)]
   · simp [pEl]
   · intro i _ hi
-    rcases idx_cases i with ⟨c, rfl⟩ | ⟨c, rfl⟩ | ⟨c, rfl⟩
+    rcases GlobalTheory.Amp.NCoord.idx_cases i with ⟨c, rfl⟩ | ⟨c, rfl⟩ | ⟨c, rfl⟩
     · have := c.2
       have e : (wI k r b).val = r + b.val := rfl
       have e' : (eI k r c).val = c.val := rfl
@@ -226,7 +217,7 @@ theorem mid_pEl_esI (B : Fin r → Fin (k + 1) → ℂ) (S : Matrix (Fin r) (Fin
   funext b
   have := a.2; have := b.2
   simp only [mid, bvec, Matrix.mulVec_single_one, Matrix.col_apply, pEl, wI, esI, Fin.ext_iff]
-  rw [if_neg (by omega), dif_neg (by omega), dite_eq_left (by omega)]
+  rw [ite_eq_right (by omega), dite_eq_right (by omega), dite_eq_left (by omega)]
   congr 1 <;> exact Fin.ext (by simp only []; omega)
 
 theorem gramProj_mul {n j : ℕ} (P : Submodule ℂ (EuclideanSpace ℂ (Fin n))) (C : Matrix (Fin j) (Fin j) ℂ)
@@ -256,7 +247,7 @@ theorem inner_mid (v u : EuclideanSpace ℂ (Fin (2 * r + k + 1))) (hu : inWb k 
 theorem exists_mid (p : Fin (k + 1) → ℂ) : ∃ u, inWb k r u ∧ mid k r u = p := by
   refine ⟨fun i => if h : r ≤ i.val ∧ i.val ≤ r + k then p ⟨i.val - r, by omega⟩ else 0, ?_, ?_⟩
   · intro i hi
-    exact dif_neg (by omega)
+    exact dite_eq_right (by omega)
   · funext b
     have := b.2
     have e : (wI k r b).val = r + b.val := rfl
@@ -361,14 +352,14 @@ theorem mem_Ppos_iff (z z' : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z') (g
     rw [hmid h2] at h3
     refine ⟨?_, ?_, h3⟩
     · intro i hi
-      rcases idx_cases i with ⟨a, rfl⟩ | ⟨b, rfl⟩ | ⟨a, rfl⟩
+      rcases GlobalTheory.Amp.NCoord.idx_cases i with ⟨a, rfl⟩ | ⟨b, rfl⟩ | ⟨a, rfl⟩
       · rw [← h1, GlobalTheory.Amp.NCoord.H_e]; exact h2 a
       · have := b.2
         have e : (wI k r b).val = r + b.val := rfl
         omega
       · exact h2 a
     · have := congrFun h1 (wI k r (Fin.last k))
-      rw [H_wI, if_pos rfl] at this
+      rw [H_wI, ite_eq_left rfl] at this
       show v.ofLp (wI k r (Fin.last k)) = 0
       linear_combination (-1 / 2 : ℂ) * this
   · rintro ⟨h1, h2, h3⟩
@@ -376,7 +367,7 @@ theorem mem_Ppos_iff (z z' : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z') (g
     have hs : ∀ a, v.ofLp (esI k r a) = 0 := fun a => h1 _ (Or.inr (by have := a.2; simp only [esI]; omega))
     refine ⟨?_, hs, by rw [hmid hs]; exact h3⟩
     funext i
-    rcases idx_cases i with ⟨a, rfl⟩ | ⟨b, rfl⟩ | ⟨a, rfl⟩
+    rcases GlobalTheory.Amp.NCoord.idx_cases i with ⟨a, rfl⟩ | ⟨b, rfl⟩ | ⟨a, rfl⟩
     · rw [GlobalTheory.Amp.NCoord.H_e, he, hs]
     · rw [H_wI]
       split_ifs with hb
@@ -1134,7 +1125,7 @@ theorem wI_inj : Function.Injective (wI k r) := by
 theorem midVec_wI (w : Fin (k + 1) → ℂ) (j : Fin (k + 1)) : midVec k r w (wI k r j) = w j := by
   have hj := j.isLt
   unfold midVec
-  rw [dif_pos (by simp only [wI]; omega)]
+  rw [dite_eq_left (by simp only [wI]; omega)]
   congr 1
   apply Fin.ext; simp [wI]
 
@@ -1144,12 +1135,12 @@ theorem mem_range_wI {i : Fin (2 * r + k + 1)} (h : r ≤ i.val ∧ i.val ≤ r 
 theorem midVec_out (w : Fin (k + 1) → ℂ) {i : Fin (2 * r + k + 1)} (h : i ∉ Set.range (wI k r)) :
     midVec k r w i = 0 := by
   unfold midVec
-  rw [dif_neg fun h' => h (mem_range_wI h')]
+  rw [dite_eq_right fun h' => h (mem_range_wI h')]
 
 theorem midVec_inWb (w : Fin (k + 1) → ℂ) : inWb k r (midVec k r w) := by
   intro i hi
   unfold midVec
-  rw [dif_neg (by omega)]
+  rw [dite_eq_right (by omega)]
 
 theorem sum_wI (w : Fin (k + 1) → ℂ) : ∑ j, w j • bvec (wI k r j) = midVec k r w := by
   ext i
@@ -1186,19 +1177,19 @@ theorem mEmb_midVec (m : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (w : Fin (k + 1
     have hj := j.isLt
     have hl := l.isLt
     unfold mEmb
-    rw [dif_pos (by simp only [wI]; omega)]
+    rw [dite_eq_left (by simp only [wI]; omega)]
     congr 2 <;> (apply Fin.ext; simp [wI])
   · rw [midVec_out _ h]
     refine Finset.sum_eq_zero fun j _ => ?_
     unfold mEmb
-    rw [dif_neg (fun h' => h (mem_range_wI h'.1)), if_neg (fun e => h ⟨j, e.symm⟩), zero_mul]
+    rw [dite_eq_right (fun h' => h (mem_range_wI h'.1)), ite_eq_right (fun e => h ⟨j, e.symm⟩), zero_mul]
 
 theorem mEmb_bvec (m : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) {i : Fin (2 * r + k + 1)}
     (hi : i.val < r ∨ r + k < i.val) : mEmb k r m *ᵥ bvec i = bvec i := by
   ext l
   simp only [bvec, Matrix.mulVec_single_one, Matrix.col_apply, Pi.single_apply]
   unfold mEmb
-  rw [dif_neg (by omega)]
+  rw [dite_eq_right (by omega)]
 
 theorem eucl_smul_bvec {n : ℕ} (c : ℂ) (i : Fin n) : eucl (c • bvec i) = ‖c‖ := by
   unfold eucl
@@ -1214,57 +1205,13 @@ theorem herm_bvec {n : ℕ} (G : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ)
   unfold herm
   rw [this, single_one_dotProduct]; rfl
 
-theorem herm_eI (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
-    herm (Hpk k r) v (bvec (eI k r a)) = v (esI k r a) := by
-  have ha := a.isLt
-  rw [herm_bvec, Finset.sum_eq_single (esI k r a)]
-  · unfold Hpk
-    rw [if_pos (by simp only [eI, esI]; omega), one_mul]
-  · intro b _ hb
-    have hb' : b.val ≠ 2 * r + k - a.val := fun e => hb (Fin.ext e)
-    unfold Hpk
-    rw [if_neg (by simp only [eI]; omega), if_neg (by simp only [eI]; omega),
-      if_neg (by simp only [eI]; omega), zero_mul]
-  · simp
-
-theorem herm_esI (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
-    herm (Hpk k r) v (bvec (esI k r a)) = v (eI k r a) := by
-  have ha := a.isLt
-  rw [herm_bvec, Finset.sum_eq_single (eI k r a)]
-  · unfold Hpk
-    rw [if_neg (by simp only [eI, esI]; omega), if_pos (by simp only [eI, esI]; omega), one_mul]
-  · intro b _ hb
-    have hb' : b.val ≠ a.val := fun e => hb (Fin.ext e)
-    unfold Hpk
-    rw [if_neg (by simp only [esI]; omega), if_neg (by simp only [esI]; omega),
-      if_neg (by simp only [esI]; omega), zero_mul]
-  · simp
-
-theorem Hpk_mulVec_wI (v : Fin (2 * r + k + 1) → ℂ) (j : Fin (k + 1)) :
-    (Hpk k r *ᵥ v) (wI k r j) = (Hb k *ᵥ fun l => v (wI k r l)) j := by
-  have hj := j.isLt
-  unfold Hb
-  rw [Matrix.mulVec_diagonal]
-  show ∑ l, Hpk k r (wI k r j) l * v l = _
-  rw [Finset.sum_eq_single (wI k r j)]
-  · unfold Hpk
-    rw [if_neg (by simp only [wI]; omega), if_neg (by simp only [wI]; omega),
-      if_pos ⟨by simp only [wI]; omega, by simp only [wI]; omega, rfl⟩]
-    congr 1
-    simp [wI, Fin.ext_iff]
-  · intro b _ hb
-    unfold Hpk
-    rw [if_neg (by simp only [wI]; omega), if_neg (by simp only [wI]; omega),
-      if_neg (fun h => hb h.2.2.symm), zero_mul]
-  · simp
-
 theorem herm_midVec (v : Fin (2 * r + k + 1) → ℂ) (w : Fin (k + 1) → ℂ) :
     herm (Hpk k r) v (midVec k r w) = herm (Hb k) (fun l => v (wI k r l)) w := by
   unfold herm dotProduct
   symm
   refine Fintype.sum_of_injective (wI k r) wI_inj _ _ (fun i hi => ?_) (fun j => ?_)
   · simp [midVec_out w hi]
-  · simp only [Pi.star_apply, midVec_wI, Hpk_mulVec_wI]
+  · simp only [Pi.star_apply, midVec_wI, GlobalTheory.Amp.NCoord.H_w]
 
 theorem UH_mul {n : ℕ} {G g h : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH G) (hh : h ∈ UH G) : g * h ∈ UH G := by
   have h1 : gᴴ * G * g = G := hg
@@ -1420,9 +1367,6 @@ theorem eucl_levi {a : Fin r → ℝ} (ha : ∀ b, 0 < a b) {m : Matrix (Fin (k 
   · rw [← Matrix.mulVec_mulVec, (h1 _ hu').2.2.2.2 _ (midVec_inWb _), mEmb_midVec, eucl_midVec,
       Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (isUnit_det_of_UH hm), Matrix.one_mulVec]
 
-theorem mem_Sset_of_Nset (z : Fin (2 * r + k + 1) → ℂ) {n : Mat k r} (hn : n ∈ Nset k r) : n ∈ Sset k r z :=
-  ⟨1, ⟨by show (1 : Mat k r)ᴴ * _ * 1 = _; simp, fun a => by simp, by simp⟩, n, hn, by simp⟩
-
 theorem torus_le {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {n n' : Mat k r} (hn : n ∈ Nset k r) (hn' : n' ∈ Nset k r)
     {a : Fin r → ℝ} (ha : ∀ b, 0 < a b) {m : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hm : m ∈ UH (Hb k)) {R : ℝ}
     (h : Sg2 k r z (n * n' * (uEmb k r (Matrix.diagonal fun b => (a b : ℂ)) * mEmb k r m)) ≤ R) (b : Fin r) :
@@ -1432,8 +1376,8 @@ theorem torus_le {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {n n' : Mat
     UH_mul ((GlobalTheory.Amp.UEmb.uEmb_hom k r).2.2.1 _ (isUnit_det_diag ha)).1 ((GlobalTheory.Amp.Rad.radical k r).2.2.2.2 m hm).1
   have h1 : (1 : Mat k r) ∈ GG k r ∩ (Matrix.unitaryGroup (Fin (2 * r + k + 1)) ℂ : Set (Mat k r)) :=
     ⟨by show (1 : Mat k r)ᴴ * _ * 1 = _; simp, one_mem _⟩
-  have e1 := (hl.1 _ hx n' (mem_Sset_of_Nset z hn') 1 h1).1 b.castSucc
-  have e2 := (hl.1 _ (UH_mul hn'.1 hx) n (mem_Sset_of_Nset z hn) 1 h1).1 b.castSucc
+  have e1 := (hl.1 _ hx n' (GlobalTheory.Amp.YInv.N_sub_S z hn') 1 h1).1 b.castSucc
+  have e2 := (hl.1 _ (UH_mul hn'.1 hx) n (GlobalTheory.Amp.YInv.N_sub_S z hn) 1 h1).1 b.castSucc
   rw [Matrix.mul_one] at e1 e2
   have e3 := hl.2.1 a ha m hm b
   have h2 := ((Finset.fold_max_le _).1 h).2 b.castSucc (Finset.mem_univ _)
@@ -1473,7 +1417,7 @@ theorem section_coord_le (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k + 
     intro b hb d
     have hd := d.isLt
     have := key b hb _ ((hl.1 d).le.trans (ht d).1)
-    rwa [herm_eI, Pi.add_apply, Pi.add_apply, yVec_esI, midVec_inWb _ _ (Or.inr (by simp only [esI]; omega)),
+    rwa [GlobalTheory.Amp.NfMid.herm_e, Pi.add_apply, Pi.add_apply, yVec_esI, midVec_inWb _ _ (Or.inr (by simp only [esI]; omega)),
       xVec_out _ (by simp only [esI]; omega), add_zero, add_zero, norm_star] at this
   have c1 : ∀ p, ‖q.2 p‖ ≤ M := by
     intro p
@@ -1483,7 +1427,7 @@ theorem section_coord_le (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k + 
       have hlt' : p.1.1.1.val < p.1.1.2.val := hlt
       exact p.2 ((hN.2.2.2.2.1 _ _ (by omega)).2 (by omega))
     have := k1 _ hb p.1.1.2
-    rw [hudef, upperOff, upper, dif_pos hlt, dif_pos p.2] at this
+    rw [hudef, upperOff, upper, dite_eq_left hlt, dite_eq_left p.2] at this
     exact this
   have k1' : ∀ b d, ‖u b d‖ ≤ M := by
     intro b d
@@ -1509,7 +1453,7 @@ theorem section_coord_le (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k + 
       rw [e] at this
       rw [← _root_.GlobalTheory.Amp.NfComp.herm_iso hm, Matrix.mulVec_mulVec, hmm, Matrix.one_mulVec]
       simpa [herm, Matrix.mulVec_neg] using this
-    · have : B b = 0 := by rw [hB]; exact dif_neg hb
+    · have : B b = 0 := by rw [hB]; exact dite_eq_right hb
       rw [this]
       simpa [eucl] using le_trans zero_le_one hM
   have k2' : ∀ b d, ‖herm (Hb k) (B b) (B d)‖ ≤ M ^ 2 := by
@@ -1526,7 +1470,7 @@ theorem section_coord_le (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k + 
       intro e
       have he := e.isLt
       have := key b hb _ ((hl.2.1 e).le.trans (ht e).2)
-      rwa [herm_esI, Pi.add_apply, Pi.add_apply, xVec_eI, midVec_inWb _ _ (Or.inl (by simp only [eI]; omega)),
+      rwa [GlobalTheory.Amp.NfMid.herm_es, Pi.add_apply, Pi.add_apply, xVec_eI, midVec_inWb _ _ (Or.inl (by simp only [eI]; omega)),
         yVec_out _ (by simp only [eI]; omega), zero_add, zero_add, ← hx] at this
     have hxd : ‖x d‖ ≤ r * M ^ 2 := by
       have e : x d = ∑ e, u d e * (u⁻¹ *ᵥ x) e := by
@@ -1548,14 +1492,14 @@ theorem section_coord_le (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k + 
     nlinarith
   refine ⟨c1, fun b => ?_, fun p => ?_, fun b => ?_⟩
   · have := k2 b.1
-    have e : B b.1 = q.1.1 b := by rw [hB]; exact dif_pos b.2
+    have e : B b.1 = q.1.1 b := by rw [hB]; exact dite_eq_left b.2
     rwa [e] at this
   · have hlt : p.1.1.1 < p.1.1.2 := p.1.2
     have := k3 _ p.2 p.1.1.2
-    rw [hSdef, skewM, dif_neg (not_lt.2 hlt.le), dif_pos hlt, dif_pos p.2, norm_neg, norm_star] at this
+    rw [hSdef, skewM, dite_eq_right (not_lt.2 hlt.le), dite_eq_left hlt, dite_eq_left p.2, norm_neg, norm_star] at this
     exact this
   · have := k3 _ b.2 b.1
-    rw [hSdef, skewM, dif_neg (lt_irrefl _), dif_neg (lt_irrefl _), dif_pos b.2] at this
+    rw [hSdef, skewM, dite_eq_right (lt_irrefl _), dite_eq_right (lt_irrefl _), dite_eq_left b.2] at this
     simpa using this
 
 end GlobalTheory.Amp.SecBound

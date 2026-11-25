@@ -85,26 +85,6 @@ namespace GlobalTheory.BaseTerm
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem tri_symm {K W : Type} [CommRing K] [AddCommGroup W] [Module K W] {n : ℕ} {f g : Fin n → W}
-    (h : Tri K f g) : Tri K g f := by
-  obtain ⟨A, hA, hc⟩ := h
-  have hinv := inv_unitri A hA.1 hA.2
-  have hbt : A.BlockTriangular id := fun i j hij => hA.1 i j hij
-  have hdet : A.det = 1 := by
-    rw [Matrix.det_of_upperTriangular hbt]; simp [hA.2]
-  have hu : IsUnit A.det := by rw [hdet]; exact isUnit_one
-  refine ⟨A⁻¹, hinv, fun b => ?_⟩
-  have hm := Matrix.mul_nonsing_inv A hu
-  have key : ∀ c, ∑ a, A c a * A⁻¹ a b = if c = b then (1 : K) else 0 := fun c => by
-    rw [← Matrix.mul_apply, hm, Matrix.one_apply]
-  calc f b = ∑ c, (if c = b then (1 : K) else 0) • f c := by simp
-    _ = ∑ c, (∑ a, A c a * A⁻¹ a b) • f c := by simp only [key]
-    _ = ∑ a, A⁻¹ a b • ∑ c, A c a • f c := by
-      simp only [Finset.sum_smul, Finset.smul_sum, smul_smul]
-      rw [Finset.sum_comm]
-      exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => by rw [mul_comm]
-    _ = ∑ a, A⁻¹ a b • g a := Finset.sum_congr rfl fun a _ => by rw [hc a]
-
 theorem tri_refl (K : Type) {W : Type} [CommRing K] [AddCommGroup W] [Module K W] {n : ℕ} (f : Fin n → W) :
     Tri K f f := by
   refine ⟨1, ⟨fun a b h => Matrix.one_apply_ne (ne_of_lt h).symm, fun a => Matrix.one_apply_eq a⟩, fun b => ?_⟩
@@ -144,8 +124,8 @@ theorem base_data_of_global_term : ∀ (D : D7) (Z : LocDat D), ∀ (u u' : D.wh
       frFac Z.δ p b • baseChange₂ D p (frame F'1 b)
     rw [hfr1]
 
-  obtain ⟨Ba, hBa, hBac⟩ := tri_symm hTa
-  obtain ⟨Bb, hBb, hBbc⟩ := tri_symm hTb
+  obtain ⟨Ba, hBa, hBac⟩ := GlobalTheory.LocSame.tri_symm hTa
+  obtain ⟨Bb, hBb, hBbc⟩ := GlobalTheory.LocSame.tri_symm hTb
   obtain ⟨Pa, hPa, -⟩ := GlobalTheory.LocOver.tri_scaled D Z _ _ Ba hBa hBac
   obtain ⟨Pb, hPb, -⟩ := GlobalTheory.LocOver.tri_scaled D Z _ _ Bb hBb hBbc
   have hd : ∀ p, ∃ d : LocNG.Datum (FP p), LocNG.IsTermOver (FP p) d (locU Z p Λ (lf D F0) F' (Tu D u) (Tu D u')) := by
@@ -301,7 +281,7 @@ theorem over_local : ∀ (D : D7) (Z : LocDat D), ∀ (u u' : D.what₂.Word) (F
   intro D Z u u' F0 Λ hrow F' hPD hG w F00 F'0 hcell hpt p P hAt
   have hT : ((Tu D u : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (Formalism.L2.SG.GramJoint.Tu_pos D u).ne'
   have hT' : ((Tu D u' : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (Formalism.L2.SG.GramJoint.Tu_pos D u').ne'
-  obtain ⟨-, γ, hγ, hA, hA'⟩ := GlobalTheory.T.rationalFramePairs_differ_isometry_unitriangular D (lf D F0) F00 F' F'0 w hT hT' hG hcell hpt
+  obtain ⟨-, γ, hγ, hA, hA'⟩ := GlobalTheory.LocOver.witt_frames_at_point D (lf D F0) F00 F' F'0 w hT hT' hG hcell hpt
   obtain ⟨g, hext, hgU, -, -, -⟩ := GlobalTheory.T.rational_isometry_extends_local_isometry D Z p γ hγ
   obtain ⟨ht0, htri0⟩ := locU_isTerm D Z u u' F0 Λ hrow F' hPD hG p
   have hOK : (Z.M p).OK := (Z.agree p).1
@@ -482,7 +462,7 @@ theorem exists_famTie : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
     obtain ⟨d, hd⟩ := hover t ht p
     obtain ⟨y, hy, hyd⟩ := (R p).hRD.2.1 d (Set.mem_univ _)
     have hex : ∃ d ∈ (R p).RD, Over (FP p) d (LT t.toTerm p) := ⟨y, hy, (hreps p).2.2 d y _ ((hreps p).1.symm hyd) hd⟩
-    have e : rho t.toTerm p = hex.choose := dif_pos hex
+    have e : rho t.toTerm p = hex.choose := dite_eq_left hex
     rw [e]
     exact hex.choose_spec
 
@@ -528,7 +508,7 @@ theorem exists_famTie : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
     exact ⟨g, hg, d', hrel', hto⟩
   · intro c ν
     by_cases h : ∃ t ∈ TS, cls t = c ∧ ptPN t = γ ∧ nmlOf Y u u' t = ν
-    · have e : Fm.dat c ν = some (fun p => ⟨rho h.choose.toTerm p.1, hmemDs _ h.choose_spec.2.2.1 p.1⟩) := dif_pos h
+    · have e : Fm.dat c ν = some (fun p => ⟨rho h.choose.toTerm p.1, hmemDs _ h.choose_spec.2.2.1 p.1⟩) := dite_eq_left h
       rw [e]
       obtain ⟨hc1, hc2, hc3, hc4⟩ := h.choose_spec
       refine ⟨h, fun t ht hct hpt hnt => ⟨fun p _ => ?_, ?_⟩⟩
@@ -536,11 +516,11 @@ theorem exists_famTie : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
         obtain ⟨g, hg, d', hdd', hto⟩ := hsame.2 (hc4.trans hnt.symm) p (FP p) (hp p).2.1 _ (hrho _ hc3 p).2
         exact ⟨g, hg, d', hdd', hto⟩
       · have hc : ∃ t ∈ TS, cls t = c := ⟨t, ht, hct⟩
-        have e2 : Fm.rw c = (Formalism.L2.SG.TermOp.wt hc.choose) ^ 2 := dif_pos hc
+        have e2 : Fm.rw c = (Formalism.L2.SG.TermOp.wt hc.choose) ^ 2 := dite_eq_left hc
         rw [e2]
         obtain ⟨hh1, hh2⟩ := hc.choose_spec
         rw [(GlobalTheory.T.terms_same_row_same_weight_same_localData D X Y u u' hc.choose t (hG _ hh1) (hrow _ hh1 t ht (hh2.trans hct.symm))).1]
-    · have e : Fm.dat c ν = none := dif_neg h
+    · have e : Fm.dat c ν = none := dite_eq_right h
       rw [e]
       exact h
   · show (locH (zOf Y) p).Zhat (locU (zOf Y) p t₀.toTerm.lam (lf D (X.Fu u)) (Quot.out t₀.toTerm.cls).1 (Tu D u) (Tu D u')).f
@@ -584,7 +564,7 @@ theorem existFam : ExistFam := by
     apply ht.1
     show Gt t = 0
     simp [Gt, h0]
-  have hrel : t₀.relevant := (GlobalTheory.T.nonGeneric_family_classes_determine_rows D X Y u u' hTie).2.2 t₀ hv
+  have hrel : t₀.relevant := (GlobalTheory.NGClass.ngClass_rows D X Y u u' hTie).2.2 t₀ hv
   exact _root_.GlobalTheory.FamGen.exists_famTie D X Y u u' TS cls hG hrow t₀ ht₀ hrel
 
 end GlobalTheory.SnFam

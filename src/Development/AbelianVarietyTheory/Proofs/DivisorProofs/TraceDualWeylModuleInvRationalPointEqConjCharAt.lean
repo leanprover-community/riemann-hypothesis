@@ -142,7 +142,7 @@ theorem exists_common_eigenvector {k ι V : Type} [Field k] [IsAlgClosed k] [Add
   by_cases hs : ∀ i, ∃ c : k, ∀ w ∈ W, f i w = c • w
   · obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW
     exact ⟨x, hx, hx0, fun i => let ⟨c, hc⟩ := hs i; ⟨c, hc x hx⟩⟩
-  · push_neg at hs
+  · push Not at hs
     obtain ⟨i, hi⟩ := hs
     let g : Module.End k W := (f i).restrict (fun w hw => hinv i w hw)
     haveI : Nontrivial W := Submodule.nontrivial_iff_ne_bot.mpr hW
@@ -178,8 +178,6 @@ theorem exists_common_eigenvector {k ι V : Type} [Field k] [IsAlgClosed k] [Add
     obtain ⟨x, hx, hx0, hxe⟩ := ih _ hdlt W' rfl hW'ne hinv'
     exact ⟨x, hx.1, hx0, hxe⟩
 
-alias target := _root_.GlobalTheory.CommonEigenvectorExistenceInertiaEigenvalues.exists_common_eigenvector
-
 end GlobalTheory.CommonEigenvectorExistenceInertiaEigenvalues
 end -- clump:auto
 end -- clump:auto
@@ -210,17 +208,13 @@ end GlobalTheory.CommTriang
 
 namespace GlobalTheory.CommTriang
 
-end GlobalTheory.CommTriang
-
-namespace GlobalTheory.CommTriang
-
 theorem lift_eigen : ∀ (k ι V : Type) [Field k] [AddCommGroup V] [Module k V] (f : ι → Module.End k V) (v u : V) (χ μ r : ι → k),
     (∀ i j, f i * f j = f j * f i) → v ≠ 0 → (∀ t : k, u + t • v ≠ 0) → (∀ i, f i v = χ i • v) →
     (∀ i, f i u = μ i • u + r i • v) → ∃ x : V, x ≠ 0 ∧ ∀ i, f i x = μ i • x := by
   intro k ι V _ _ _ f v u χ μ r hc hv0 hu0 hv hu
   by_cases h : ∀ i, χ i = μ i
   · exact ⟨v, hv0, fun i => by rw [hv, h]⟩
-  push_neg at h
+  push Not at h
   obtain ⟨i₀, hi₀⟩ := h
   have hd : μ i₀ - χ i₀ ≠ 0 := sub_ne_zero.mpr (Ne.symm hi₀)
   set t : k := r i₀ / (μ i₀ - χ i₀) with ht
@@ -400,8 +394,6 @@ theorem exists_triangular (k ι : Type) [Field k] [IsAlgClosed k] : ∀ (n : ℕ
 
 end GlobalTheory.CommTriang
 
-namespace GlobalTheory.CommTriang
-end GlobalTheory.CommTriang
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCommonEigenvectorCommuting =====
@@ -521,8 +513,8 @@ theorem trace_sqRep_of_upper {n : ℕ} (lam : DomWeight n) (T D : GL (Fin n) ℂ
     refine congrArg (fun f => MvPolynomial.eval f Q) (funext fun x => ?_)
     rw [hD, diagonal_apply]
     by_cases h : x.2 = x.1
-    · rw [if_pos h, h, Nat.sub_self, pow_zero, mul_one]
-    · rw [if_neg h]
+    · rw [ite_eq_left h, h, Nat.sub_self, pow_zero, mul_one]
+    · rw [ite_eq_right h]
       rcases lt_or_gt_of_ne h with h' | h'
       · rw [zero_pow (by rw [Fin.lt_def] at h'; omega), mul_zero]
       · rw [hT h', zero_mul]

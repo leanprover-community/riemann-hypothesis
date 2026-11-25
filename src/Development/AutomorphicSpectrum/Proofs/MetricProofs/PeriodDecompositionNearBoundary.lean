@@ -905,7 +905,7 @@ theorem limit_of_data : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   rw [hmain]
   exact h4
 
-theorem limit_at_centre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (L : ActPeriods E n a g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (m : ℕ) (b : Ψ → Fin m → (Fin n → ℂ) → Fin g → ℂ), IsCMFam σ → IsEigFrames (Metric.ball 0 1) L.B σ b → ∃ (W : Submodule (𝓞 E) Λ) (I : Submodule (𝓞 E) Λ) (per : W →+ (Fin g → ℂ)) (s : W → (Fin n → ℂ) → Fin g → ℂ) (Hb : Matrix (Fin g) (Fin g) ℂ), (∀ x, x ∈ I ↔ x ∈ W ∧ ∀ y ∈ W, L.toLogPeriods.E x y = 0) ∧ IsSaturated I ∧ Function.Injective per ∧ (∀ x : W, ContinuousAt (s x) 0 ∧ s x 0 = per x ∧ ∀ w ∈ logCover L.a_le, s x (expCover a w) = L.P w x) ∧ (∀ (ws : ℕ → Fin n → ℂ) (x : ℕ → Λ) (p : Fin g → ℂ), (∀ k, ws k ∈ logCover L.a_le) → Tendsto (fun k => expCover a (ws k)) atTop (𝓝 0) → Tendsto (fun k => L.P (ws k) (x k)) atTop (𝓝 p) → ∃ x₀ : W, p = per x₀) ∧ Submodule.span ℂ (Set.range per) = ⊤ ∧ Hb.IsHermitian ∧ (∀ x x' : W, (per x ⬝ᵥ Hb *ᵥ star (per x')).im = L.toLogPeriods.E x x') ∧ (∀ x : W, (x : Λ) ∈ I → Hb *ᵥ star (per x) = 0) ∧ ∀ ν : ℝ, PhiNormSq (L.B 0) (fun x y => y ⬝ᵥ Hb *ᵥ star x) (AddSubgroup.closure {p | ∃ x : W, (x : Λ) ∈ I ∧ p = per x}) 1 σ (fun τ i => b τ i 0) ν → 0 < ν ∧ ∀ ε > (0 : ℝ), ∃ δ > (0 : ℝ), ∀ w (hw : w ∈ logCover L.a_le), ‖expCover a w‖ < δ → |(L.riem w hw).logDet (fun τ i => b τ i (expCover a w)) - Real.log ((L.riem w hw).nz σ I) - Real.log ν| < ε := by
+theorem limit_at_centre_strong : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (L : ActPeriods E n a g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (m : ℕ) (b : Ψ → Fin m → (Fin n → ℂ) → Fin g → ℂ), IsCMFam σ → IsEigFrames (Metric.ball 0 1) L.B σ b → ∃ (W : Submodule (𝓞 E) Λ) (I : Submodule (𝓞 E) Λ) (per : W →+ (Fin g → ℂ)) (s : W → (Fin n → ℂ) → Fin g → ℂ) (Hb M : Matrix (Fin g) (Fin g) ℂ) (u : Λ →ₗ[ℤ] (Fin g → ℤ)), (∀ x, x ∈ I ↔ x ∈ W ∧ ∀ y ∈ W, L.toLogPeriods.E x y = 0) ∧ IsSaturated I ∧ Function.Injective per ∧ (∀ (c : 𝓞 E) (x : W), per (c • x) = L.B 0 c (per x)) ∧ M.det ≠ 0 ∧ (∀ x : W, (x : Λ) ∈ I → per x = M *ᵥ cst (u x)) ∧ (∀ x : W, ContinuousAt (s x) 0 ∧ s x 0 = per x ∧ ∀ w ∈ logCover L.a_le, s x (expCover a w) = L.P w x) ∧ (∀ (ws : ℕ → Fin n → ℂ) (x : ℕ → Λ) (p : Fin g → ℂ), (∀ k, ws k ∈ logCover L.a_le) → Tendsto (fun k => expCover a (ws k)) atTop (𝓝 0) → Tendsto (fun k => L.P (ws k) (x k)) atTop (𝓝 p) → ∃ x₀ : W, p = per x₀) ∧ Submodule.span ℂ (Set.range per) = ⊤ ∧ Hb.IsHermitian ∧ (∀ x x' : W, (per x ⬝ᵥ Hb *ᵥ star (per x')).im = L.toLogPeriods.E x x') ∧ (∀ x : W, (x : Λ) ∈ I → Hb *ᵥ star (per x) = 0) ∧ ∀ ν : ℝ, PhiNormSq (L.B 0) (fun x y => y ⬝ᵥ Hb *ᵥ star x) (AddSubgroup.closure {p | ∃ x : W, (x : Λ) ∈ I ∧ p = per x}) 1 σ (fun τ i => b τ i 0) ν → 0 < ν ∧ ∀ ε > (0 : ℝ), ∃ δ > (0 : ℝ), ∀ w (hw : w ∈ logCover L.a_le), ‖expCover a w‖ < δ → |(L.riem w hw).logDet (fun τ i => b τ i (expCover a w)) - Real.log ((L.riem w hw).nz σ I) - Real.log ν| < ε := by
   intro E _ _ _ n a g Λ _ _ Ψ _ L σ m b hσ hb
   classical
   obtain ⟨bas, A, T0, B, c, ρ, h⟩ := exists_isChart L.toLogPeriods
@@ -988,13 +988,31 @@ theorem limit_at_centre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
       exact ⟨⟨x.1, x.2⟩, (hrad x).1 hx, rfl⟩
     · rintro ⟨x, hx, rfl⟩
       exact ⟨⟨x.1, x.2⟩, (hrad ⟨x.1, x.2⟩).2 hx, rfl⟩
-  refine ⟨W, I, per, s, chartQ Pr A T0 0, hI, ?_, hinj', hs', ?_, ?_, hHerm, ?_, ?_, ?_⟩
+  refine ⟨W, I, per, s, chartQ Pr A T0 0, (A 0)ᵀ, uCo bas, hI, ?_, hinj', hact, by rw [det_transpose]; exact h.A_det, ?_, hs', ?_, ?_, hHerm, ?_, ?_, ?_⟩
   · intro x k hk hx
     have h2 : x ∈ chartW bas B := hsat x k hk hx.1
     refine ⟨h2, fun y hy => ?_⟩
     have h3 := hx.2 y hy
     rw [map_zsmul, LinearMap.smul_apply, smul_eq_mul] at h3
     exact (mul_eq_zero.1 h3).resolve_left hk
+  · intro x hx
+    have hv : vCo bas (x : Λ) = 0 := by
+      funext i
+      have hv0 : vCo bas (bas (.inl i)) = 0 := by
+        funext j
+        simp [vCo]
+      have hu0 : uCo bas (bas (.inl i)) = Pi.single i 1 := by
+        funext j
+        by_cases hj : j = i
+        · subst hj; simp [uCo]
+        · simp [uCo, hj]
+      have h1 := hx.2 (bas (.inl i)) (by simp [chartW, hv0])
+      rw [form_coords bas _ h.form L.alt, hv0, hu0] at h1
+      simpa using h1
+    rw [hper, chartS, hv]
+    congr 1
+    funext k
+    simp [cst, mulVec, dotProduct]
   · intro ws x p h1 h2 h3
     obtain ⟨x₀, hx₀⟩ := hlim ws x p h1 h2 h3
     exact ⟨⟨x₀.1, x₀.2⟩, hx₀⟩
@@ -1016,6 +1034,12 @@ theorem limit_at_centre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
         rintro _ ⟨x, hx, rfl⟩
         exact ⟨x, (hrad x).1 hx, rfl⟩
       · exact h2 ⟨x, hx.1⟩ ((hrad ⟨x, hx.1⟩).2 hx)
+
+theorem limit_at_centre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (L : ActPeriods E n a g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (m : ℕ) (b : Ψ → Fin m → (Fin n → ℂ) → Fin g → ℂ), IsCMFam σ → IsEigFrames (Metric.ball 0 1) L.B σ b → ∃ (W : Submodule (𝓞 E) Λ) (I : Submodule (𝓞 E) Λ) (per : W →+ (Fin g → ℂ)) (s : W → (Fin n → ℂ) → Fin g → ℂ) (Hb : Matrix (Fin g) (Fin g) ℂ), (∀ x, x ∈ I ↔ x ∈ W ∧ ∀ y ∈ W, L.toLogPeriods.E x y = 0) ∧ IsSaturated I ∧ Function.Injective per ∧ (∀ x : W, ContinuousAt (s x) 0 ∧ s x 0 = per x ∧ ∀ w ∈ logCover L.a_le, s x (expCover a w) = L.P w x) ∧ (∀ (ws : ℕ → Fin n → ℂ) (x : ℕ → Λ) (p : Fin g → ℂ), (∀ k, ws k ∈ logCover L.a_le) → Tendsto (fun k => expCover a (ws k)) atTop (𝓝 0) → Tendsto (fun k => L.P (ws k) (x k)) atTop (𝓝 p) → ∃ x₀ : W, p = per x₀) ∧ Submodule.span ℂ (Set.range per) = ⊤ ∧ Hb.IsHermitian ∧ (∀ x x' : W, (per x ⬝ᵥ Hb *ᵥ star (per x')).im = L.toLogPeriods.E x x') ∧ (∀ x : W, (x : Λ) ∈ I → Hb *ᵥ star (per x) = 0) ∧ ∀ ν : ℝ, PhiNormSq (L.B 0) (fun x y => y ⬝ᵥ Hb *ᵥ star x) (AddSubgroup.closure {p | ∃ x : W, (x : Λ) ∈ I ∧ p = per x}) 1 σ (fun τ i => b τ i 0) ν → 0 < ν ∧ ∀ ε > (0 : ℝ), ∃ δ > (0 : ℝ), ∀ w (hw : w ∈ logCover L.a_le), ‖expCover a w‖ < δ → |(L.riem w hw).logDet (fun τ i => b τ i (expCover a w)) - Real.log ((L.riem w hw).nz σ I) - Real.log ν| < ε :=
+  fun E _ _ _ n a g Λ _ _ Ψ _ L σ m b hσ hb =>
+    let ⟨W, I, per, s, Hb, _, _, hI, hsat, hinj, _, _, _, hs, hlim, hspan, hHerm, hIm, hKill, hΦ⟩ :=
+      limit_at_centre_strong E n a g Λ Ψ L σ m b hσ hb
+    ⟨W, I, per, s, Hb, hI, hsat, hinj, hs, hlim, hspan, hHerm, hIm, hKill, hΦ⟩
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit
 end -- clump:auto

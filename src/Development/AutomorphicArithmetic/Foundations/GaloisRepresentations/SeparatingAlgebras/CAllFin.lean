@@ -215,8 +215,8 @@ theorem homog_of_mem {T : Type} [Fintype T] [DecidableEq T] (I : Finset T) (n : 
     (MvPolynomial.mem_weightedHomogeneousSubmodule _ _ _ _).mp (hF τ).1 hm
   rw [Finsupp.weight_apply, Finsupp.sum_mapDomain_index (by simp) (by intros; simp [add_mul])]
   by_cases hτ : τ ∈ I
-  · rw [if_pos hτ, ← hw, Finsupp.weight_apply]
-    simp only [Finsupp.sum, Finset.sum_apply, Pi.smul_apply, Formalism.GradedWeylDivisibility.colW, smul_eq_mul, wI, if_pos hτ]
+  · rw [ite_eq_left hτ, ← hw, Finsupp.weight_apply]
+    simp only [Finsupp.sum, Finset.sum_apply, Pi.smul_apply, Formalism.GradedWeylDivisibility.colW, smul_eq_mul, wI, ite_eq_left hτ]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun v _ => ?_
     simp [Pi.single_apply]
@@ -641,10 +641,6 @@ theorem frame (hD : DenomBdd) (hR : RhoBound) (hL : LatFacts) (hE : LevelEx) {E 
     exact hF _ _
 
 end UpperTheory.Gal.Gen.Loc
-
-namespace UpperTheory.Gal.Gen
-
-end UpperTheory.Gal.Gen
 
 end
 end -- clump:auto

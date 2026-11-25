@@ -161,8 +161,7 @@ theorem smul_cancel (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) {g : LetA O
 
 theorem γD_smulA' (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (g : W.Gam) (a : LetA O n)
     (x : W.DD T) : W.γD T g (a • x) = W.γA g a • W.γD T g x := by
-  rw [← algebraMap_smul W.EE a x, W.γD_smul, W.γE_ext, algebraMap_smul]
-  rfl
+  exact Formalism.MainNotions.WachCoordinates.Br.γD_smulA W T g a x
 
 theorem smul_mem_NΔ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) {a : LetA O n} (ha : a ∈ W.AΔ)
     {b : W.DD T} (hb : b ∈ W.NΔ T) : a • b ∈ W.NΔ T := by

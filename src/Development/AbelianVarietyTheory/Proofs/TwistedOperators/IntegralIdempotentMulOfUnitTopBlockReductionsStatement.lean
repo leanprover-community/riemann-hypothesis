@@ -91,7 +91,7 @@ theorem redM_apply (PP : Formalism.L2.DIV.Pl D.host.E) {b a : ℕ} (N : Matrix (
 theorem redE_of_mem (PP : Formalism.L2.DIV.Pl D.host.E) {x : EAf D} (hx : x ∈ SI) :
     redE PP x = Formalism.L2.DIV.resS D.host.F PP ⟨x, hx⟩ := by
   unfold redE
-  exact dif_pos hx
+  exact dite_eq_left hx
 
 theorem redE_zero (PP : Formalism.L2.DIV.Pl D.host.E) : redE (D := D) PP 0 = 0 := by
   rw [redE_of_mem PP (Subring.zero_mem _)]
@@ -100,12 +100,12 @@ theorem redE_zero (PP : Formalism.L2.DIV.Pl D.host.E) : redE (D := D) PP 0 = 0 :
 theorem topL_pos {κ : Type} [Zero κ] {b a k : ℕ} (y : Matrix (Fin b) (Fin a) κ) {i j : Fin k}
     (h : i.val < b ∧ j.val < a) : topL k y i j = y ⟨i.val, h.1⟩ ⟨j.val, h.2⟩ := by
   unfold topL
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem topL_neg {κ : Type} [Zero κ] {b a k : ℕ} (y : Matrix (Fin b) (Fin a) κ) {i j : Fin k}
     (h : ¬ (i.val < b ∧ j.val < a)) : topL k y i j = 0 := by
   unfold topL
-  exact dif_neg h
+  exact dite_eq_right h
 
 theorem redM_map (PP : Formalism.L2.DIV.Pl D.host.E) {b a : ℕ} (X : Matrix (Fin b) (Fin a) SI) :
     redM PP (X.map (SI).subtype) = X.map (Formalism.L2.DIV.resS D.host.F PP) := by

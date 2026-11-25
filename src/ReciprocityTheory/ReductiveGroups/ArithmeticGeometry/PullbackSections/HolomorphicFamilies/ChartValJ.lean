@@ -257,11 +257,11 @@ theorem kapW_eq_kapH (m : ℕ) {ι π : Type} [DecidableEq π] (c : ι → π) (
   show (if s l = true ∧ s l' = false then (m : k) * betaH k (0, φ l) (u l', 0) else 0) =
     (if c l = c l' ∧ s l = true ∧ s l' = false then (m : k) * betaH k (0, φ l) (u l', 0) else 0)
   by_cases hs : s l = true ∧ s l' = false
-  · rw [if_pos hs]
+  · rw [ite_eq_left hs]
     by_cases hc : c l = c l'
-    · rw [if_pos ⟨hc, hs⟩]
-    · rw [if_neg (fun h => hc h.1), hFU l l' (fun h => hc h.1), mul_zero]
-  · rw [if_neg hs, if_neg (fun h => hs h.2)]
+    · rw [ite_eq_left ⟨hc, hs⟩]
+    · rw [ite_eq_right (fun h => hc h.1), hFU l l' (fun h => hc h.1), mul_zero]
+  · rw [ite_eq_right hs, ite_eq_right (fun h => hs h.2)]
 
 theorem rename_qsmul {ι τ : Type} (e : ι → τ) (q : ℚ) (X : MvPolynomial ι k) :
     MvPolynomial.rename e (q • X) = q • MvPolynomial.rename e X := by
@@ -323,7 +323,7 @@ theorem ordNabla_expand (hN2 : ConnectionCommutator) (hN3 : ConnectionKillsSerie
       (fun i j => by
         rw [nablaL_bracket hN2 B h m]
         unfold kapE kapW
-        rw [if_pos ⟨side_inl s i, side_inr s j⟩])
+        rw [ite_eq_left ⟨side_inl s i, side_inr s j⟩])
       (fun i => by
         rw [Module.End.smul_def, opL, hb0]
         exact hN3 R d O k B h m _ f)
@@ -430,7 +430,7 @@ theorem Mf_monomial (mo : ι × Fin n →₀ ℕ) (a : k) :
     Mf mu (monomial mo a) = a * ∏ b, mu b (monomial (colM mo b) 1) := by
   classical
   rw [Mf_subset mu _ {mo} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 def combine (f : Fin n → (ι →₀ ℕ)) : ι × Fin n →₀ ℕ :=
   ∑ b, Finsupp.mapDomain (fun l => (l, b)) (f b)
@@ -554,7 +554,7 @@ theorem colAlg (κ : ι → ι → k) (lam : Fin n → (ι →₀ ℕ) → k)
     rw [Finset.prod_congr rfl (fun b _ => hE b (colM mo b) (hb b)), ← Mf_prodQ]
     have hx := exp_cols κ 1 N (fun b => (colM mo b).degree) hsum Finset.univ
       (fun b => monomial (colM mo b) 1) hD
-    simp only [Finset.mem_univ, if_true] at hx
+    simp only [Finset.mem_univ, ite_true] at hx
     rw [← hx, prodQ_monomial, Finset.prod_const_one, combine_colM,
       exp_opA_apply _ _ _ _ ((totalDegree_monomial_one_le mo).trans hdeg), Mf_sum]
     refine Finset.sum_congr rfl fun i _ => ?_

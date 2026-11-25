@@ -41,14 +41,7 @@ theorem sliceLoc_mul {T S : Module.End ℂ (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.
 
 theorem sliceLoc_sum {ι : Type} (s : Finset ι) (T : ι → Module.End ℂ (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π'))
     (hT : ∀ i ∈ s, SliceLoc P Bs (T i)) : SliceLoc P Bs (∑ i ∈ s, T i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    rw [Finset.sum_empty]
-    exact sliceLoc_zero
-  | insert i s hi ih =>
-    rw [Finset.sum_insert hi]
-    exact sliceLoc_add (hT i (Finset.mem_insert_self _ _)) (ih fun j hj => hT j (Finset.mem_insert_of_mem hj))
+  exact Finset.sum_induction T (SliceLoc P Bs) (fun _ _ => sliceLoc_add) sliceLoc_zero hT
 
 theorem sliceLoc_of_smul {T U : Module.End ℂ (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {a : ℂ} (ha : a ≠ 0)
     (hU : U = a • T) (h : SliceLoc P Bs U) : SliceLoc P Bs T := by
@@ -117,7 +110,7 @@ theorem second_shift_slice_operator : GTSSLSliceSS := by
         have hi' := Finset.mem_sdiff.1 hi
         have hil : i ≠ l := fun e => hi'.2 (by simp [e])
         have hup := Formalism.FourierDecayAlt.P.Mx3.rhoUp P l a b hUp i hi'.1
-        rw [if_neg hil, add_zero] at hup
+        rw [ite_eq_right hil, add_zero] at hup
         have hne : M.rho P b i ≠ M.rho P b l := rho_ne P hP b hi'.1 hl hil
         intro h0
         apply hne

@@ -676,7 +676,7 @@ private lemma trace_idem {Y : Type} [AddCommGroup Y] [Module ℂ Y] [FiniteDimen
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ Y, φ (f y) = 1 := by
     have h1 : ¬ ∀ φ : Module.Dual ℂ Y, φ (f y) = 0 := fun h =>
       hy ((Module.forall_dual_apply_eq_zero_iff ℂ (f y)).1 h)
-    push_neg at h1
+    push Not at h1
     obtain ⟨ψ, hψ⟩ := h1
     refine ⟨(ψ (f y))⁻¹ • ψ, ?_⟩
     simp [hψ]
@@ -852,7 +852,7 @@ theorem piTermA_of (h1 : GlobalTwistedTraceBound) (hθ : ThetaFixOf) (h2 : WtEx)
       HasInfCharGL π.V (ComplexEmbedding.conjugate w.embedding) (Multiset.map (infOf (l w).w false) Finset.univ.val) := fun w => ⟨by
     rw [map_infOf_true]
     exact hl w, by
-    rw [map_infOf_false, ← GlobalTheory.T.infChar_conjEmbedding_neg_of_invariant_pairing E n π π hd w.embedding _ _ (hl w) (hlam _)]
+    rw [map_infOf_false, ← GlobalTheory.CapPair.infChar_conj_of_paired E n π π hd w.embedding _ _ (hl w) (hlam _)]
     exact hlam _⟩
   have level : ∀ N : ∀ w : Pl E, Subgroup (GLw n w), Good Z N → (∃ ψ ∈ π.V, ψ ≠ 0 ∧ ∀ k ∈ Lev S N, finRep E n k ψ = ψ) →
       (∃ φ : ∀ w : Pl E, LF n 0 w, (∀ w ∈ Z, ∀ N' ≤ N w, ∀ b, IsHecke N' (two φ φ w b)) ∧
@@ -1027,7 +1027,7 @@ theorem UpperTheory.V.Z.Mult.Pi.seenTrA :
     Prod.ext rfl (Subsingleton.elim _ _)
   rw [hcv]
   unfold PositivityTheory.Rg.BcB.G8.seen
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
   rw [UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.hint_fst (KGL w (n := n)) N (KGL w (n := 0)) _ hNK ?_ hi]
   · congr 1
     refine finsum_congr fun q => ?_

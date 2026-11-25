@@ -100,7 +100,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HL
 
@@ -135,9 +134,9 @@ theorem GCoord.c_mul_gS_eq_delta_theta : ∀ (D : D7) (X : HidaSetting D) (Y : F
       have hn : Loc.resChar p ∉ ({D.host.g 0, D.host.g 1} : Finset ℕ) := by
         rw [← hs, hD]; simp
       simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hn
-      have hgp : gpart p = 1 := by unfold gpart; rw [if_neg hn.1, if_neg hn.2]
+      have hgp : gpart p = 1 := by unfold gpart; rw [ite_eq_right hn.1, ite_eq_right hn.2]
       rw [Frames.th, hgg, hgp]
-      exact (if_neg (by decide)).trans Nat.cast_one.symm
+      exact (ite_eq_right (by decide)).trans Nat.cast_one.symm
     · simp [hM, hD] at hA
     · simp [hM, hD] at hA
     · have hgs := wc.gg_some g hM
@@ -149,11 +148,11 @@ theorem GCoord.c_mul_gS_eq_delta_theta : ∀ (D : D7) (X : HidaSetting D) (Y : F
       have hgp : gpart p = Loc.resChar p := by
         unfold gpart
         rcases hn with h | h
-        · rw [if_pos h, h]
+        · rw [ite_eq_left h, h]
         · by_cases h0 : Loc.resChar p = D.host.g 0
-          · rw [if_pos h0, h0]
-          · rw [if_neg h0, if_pos h, h]
-      simp only [Frames.th, hgs.1, if_true, hgs.2, hA.2, hgp]
+          · rw [ite_eq_left h0, h0]
+          · rw [ite_eq_right h0, ite_eq_left h, h]
+      simp only [Frames.th, hgs.1, ite_true, hgs.2, hA.2, hgp]
       exact hq
   exact h1.trans (congrArg (Y.δ p * ·) h2.symm)
 
@@ -169,7 +168,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.localScalar_mul_eq_differentGen_mul_theta : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ (t₀ : TauC Y u u') (ρ : ((VS D).V ≃ₗ[D.host.E] (VS D).V)) (U U' : Formalism.L2.SG.PairVal.MatR D), MovesTo F00 F'0 (lf D (X.Fu u)) t₀.frame ρ U U' → gS D ≠ 0 ∧ ∀ p, (G.c p : ((placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)).loc p).Fp) * (gS D : ((placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)).loc p).Fp) = (show ((placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)).loc p).Fp from Y.δ p) * (G.S p).th := by
   first | exact @GlobalTheory.HL.GCoord.c_mul_gS_eq_delta_theta
@@ -184,7 +182,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -352,7 +349,7 @@ theorem coef_eq {H : Loc.HermSp M V} (Fr : LocNG.FrameD H r) {n : ℕ} (Hm : Mat
     | last =>
       have h0 : H.h (Fr.f (Fin.last r)) (Fr.es j) = 0 := by
         rw [H.h_herm (Fr.es j) (Fr.f (Fin.last r)), Fr.h_sz j, map_zero]
-      rw [h0, if_neg (Fin.castSucc_lt_last j).ne']
+      rw [h0, ite_eq_right (Fin.castSucc_lt_last j).ne']
     | cast i =>
       rw [Fr.h_es i j]
       simp [Fin.castSucc_inj]
@@ -398,7 +395,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.localTermWeight_eq_character_mul_inv : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Loc.Model F E) {V : Type} [AddCommGroup V] [Module E V] (H : Loc.HermSp M V) (r k : ℕ) (P : LocNG.FPair H r) (S : Frames M.L r k) (c : WCoord P S) (d : LocNG.Datum P) (t : Loc.Term V M r), LocNG.IsTermOver P d t → ∀ m m' : S.GLV, (∀ b, c.e (t.f b) = m (S.f b)) → (∀ b, c.e (t.f' b) = m' (S.f' b)) → LocNG.om P t = S.psi m * (S.psi' m')⁻¹ := by
   first | exact @GlobalTheory.HL.TermPhase.om_eq_psi_mul_inv
@@ -413,7 +409,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HL
 
@@ -530,12 +525,6 @@ theorem resChar_eq_iff {F : Type} [Field F] [NumberField F] (p : HeightOneSpectr
   rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast, ringChar.spec,
     ← Nat.prime_dvd_prime_iff_eq hp hl]
   rfl
-
-theorem t2Space_isNonarchimedeanLocalField_singleBlock (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
-    [IsNonarchimedeanLocalField K] : T2Space K := by
-  let := IsTopologicalAddGroup.rightUniformSpace K
-  have := isUniformAddGroup_of_addCommGroup (G := K)
-  infer_instance
 
 def smallIdeal {F Ω : Type} [Field F] [NormedField Ω] [IsUltrametricDist Ω] (σ : F →+* Ω) :
     Ideal (𝓞 F) where
@@ -825,7 +814,7 @@ theorem prod_psi {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
   choose n hn using ha
   simp_rw [ht] at hb
   have hlf : ∀ s : S, IsNonarchimedeanLocalField (A s.1).Fp := fun s => (A s.1).lf
-  have : ∀ s : S, T2Space (A s.1).Fp := fun s => t2Space_isNonarchimedeanLocalField_singleBlock _
+  have : ∀ s : S, T2Space (A s.1).Fp := fun s => PI.CntNotIntW.t2Space_of_nonarchimedeanLocalField' _
   have : ∀ s : S, CharZero (A s.1).Fp := fun s => (A s.1).char0
   have : ∀ s : S, ContinuousSMul ℚ_[l] (A s.1).Fp := fun s =>
     continuousSMul_of_algebraMap _ _ (hc s)
@@ -1080,7 +1069,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SlocCoef
 
@@ -1166,8 +1154,8 @@ theorem coef_sum {E : Type} [Field E] [NumberField E] (sig : E → E) {r n : ℕ
   rw [Finset.sum_congr rfl fun a _ => h1 a]
   unfold Formalism.L2.SG.PairVal.sgUp
   rw [Fin.sum_univ_castSucc]
-  simp only [Fin.coe_castSucc, Fin.val_last, lt_self_iff_false, dif_neg, not_false_eq_true, add_zero,
-    add_lt_add_iff_right, Fin.is_lt, dif_pos]
+  simp only [Fin.coe_castSucc, Fin.val_last, lt_self_iff_false, dite_eq_right, not_false_eq_true, add_zero,
+    add_lt_add_iff_right, Fin.is_lt, dite_eq_left]
   refine Finset.sum_congr rfl fun a _ => ?_
   rfl
 
@@ -1188,7 +1176,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open IsDedekindDomain
 
 namespace GlobalTheory.HL.UniExt
@@ -1270,7 +1257,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 
@@ -1337,7 +1323,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HL.MovedTermPhase
 
@@ -1465,7 +1450,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.movedTermLattice_isGlobalTerm_phase : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ (t₀ : TauC Y u u') (ρ : ((VS D).V ≃ₗ[D.host.E] (VS D).V)) (U U' : Formalism.L2.SG.PairVal.MatR D), MovesTo F00 F'0 (lf D (X.Fu u)) t₀.frame ρ U U' → G.IsTerm (G.datOf (c.lat ρ t₀.lam)) (c.lat ρ t₀.lam) ∧ ∀ ξ : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (𝓞 D.host.E), AdmWit t₀.lam (gS D) (lf D (X.Fu u)) t₀.frame ξ → G.om (G.datOf (c.lat ρ t₀.lam)) (c.lat ρ t₀.lam) = (Formalism.L2.SG.PairVal.psiInf (gS D) (Formalism.L2.SG.PairVal.sgUp U))⁻¹ * Formalism.L2.SG.PairVal.psiInf (gS D) (Formalism.L2.SG.PairVal.sgUp U') * (Formalism.L2.SG.PairVal.psiInf (gS D) (Formalism.L2.SG.PairVal.sgUp (ξ.map (algebraMap (𝓞 D.host.E) D.host.E))))⁻¹ := by
   first | exact @GlobalTheory.HL.MovedTermPhase.main

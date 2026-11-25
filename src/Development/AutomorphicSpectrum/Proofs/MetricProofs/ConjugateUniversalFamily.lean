@@ -55,7 +55,6 @@ theorem finrank_eigSp_conj {g : ℕ} {O : Type} [CommRing O] (ρ : O →+* Modul
       left_inv := fun x => Subtype.ext (star_star _)
       right_inv := fun y => Subtype.ext (star_star _)
       map_add' := fun x y => Subtype.ext (star_add _ _) }
-  set_option synthInstance.maxHeartbeats 400000 in
   have hr := rank_eq_of_equiv_equiv (R := ℂ) (R' := ℂ)
     (M := eigSp ((conjEnd g).comp ρ) σ) (M₁ := eigSp ρ ((starRingEnd ℂ).comp σ)) (starRingEnd ℂ) j
     (Function.Involutive.bijective (f := starRingEnd ℂ) (fun z => by simp)) (fun r m => Subtype.ext (by simp [j, star_smul]))

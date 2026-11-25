@@ -429,7 +429,6 @@ theorem span_eq_top :
   rw [LinearMap.pi_apply_eq_sum_univ φ w]
   simp only [hc, smul_zero, Finset.sum_const_zero, LinearMap.zero_apply]
 
-
 open Classical in
 theorem exists_coeffs (s : 𝓞 E →+* ℂ) : ∃ (N : ℕ) (a : Fin N → 𝓞 E) (c : Fin N → ℂ),
     ∀ t : E →+* ℂ, ∑ i, c i * t (algebraMap (𝓞 E) E (a i)) = if t = extend s then 1 else 0 := by
@@ -1607,7 +1606,7 @@ theorem unit_factor (a : Fin Dc.nCharts) (t₀ : Fin (Fintype.card (CMType H) * 
         Real.log (‖valAt Dc.y d.u ((Dc.chart a).γ t)‖ * ∏ k, ‖(Dc.chart a).γ t ⟨k, d.c k⟩‖ ^ Hd.aMu k) = (G t).re := by
   have hex : ∃ v, IsValueAt Dc.y d.u ((Dc.chart a).γ t₀) v := by
     by_contra hn
-    exact hv0 (dif_neg hn)
+    exact hv0 (dite_eq_right hn)
   obtain ⟨v₀, dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩ := hex
   have hq : ∀ p, AnalyticAt ℂ (fun t => (Dc.chart a).γ t p) t₀ := fun p =>
     ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : (Σ k, J k) => ℂ) p).analyticAt _).comp
@@ -1757,7 +1756,7 @@ theorem near_all (hG : Top.Given) (Or : CptOrigin Y S₀ Dc Hd) {U : ((Σ k, J k
     exact ⟨fun i => i.elim0, fun k _ => (pi_norm_lt_iff one_pos).1 (mem_ball_zero_iff.1 hu') k⟩
   let R : (Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) → RiemLat E g Λ := fun u =>
     if h : u ∈ logCover L.a_le then L.riem u h else L.riem 0 (hlc 0 h0)
-  have hR : ∀ u (h : u ∈ logCover L.a_le), R u = L.riem u h := fun u h => dif_pos h
+  have hR : ∀ u (h : u ∈ logCover L.a_le), R u = L.riem u h := fun u h => dite_eq_left h
   have hHol : IsHolFam (ball 0 1) R := by
     refine ⟨fun t ht t' ht' => ?_, fun x => ?_⟩
     · rw [hR t (hlc t ht), hR t' (hlc t' ht')]
@@ -1789,7 +1788,6 @@ theorem near_all (hG : Top.Given) (Or : CptOrigin Y S₀ Dc Hd) {U : ((Σ k, J k
     loc_of_formula t₀ hρ hr π p2 (c1.add p3) hGd fun u hu' => ?_⟩
   simp only [corrW, (key u hu').1, (key u hu').2]
   ring
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.cusp_intersection_positive : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (U : ((Σ k, J k) → ℂ) → ℝ), Or.𝔐.IsCuspWeight Or.sm U → ChartPsh Dc (phMu Hd) ∧ ChartCont Dc (phMu Hd) ∧ ChartPsh Dc (corrW Hd U) ∧ ChartCont Dc (corrW Hd U) := by
   intro hG E _ _ _ _ H D Xo l c Y II K _ J _ Ω _ _ W _ _ Dc Hd S₀ Or U hU

@@ -33,7 +33,7 @@ theorem mem_levU {x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)} :
 
 theorem unipotentLevel_le_mirabolicLevel : levU hc n ST SG H ≤ J0 hc n ST := Subgroup.map_subtype_le _
 
-theorem levU_le_UAd : levU hc n ST SG H ≤ UAd hc n := fun x hx =>
+theorem levU_le_UAd : levU hc n ST SG H ≤ UAd hc n := fun _ hx =>
   (Subgroup.mem_inf.1 (Subgroup.mem_inf.1 (unipotentLevel_le_mirabolicLevel hc n ST SG H hx)).1).1
 
 theorem kOne_le_unipotentLevel : K1 hc n ST SG ≤ levU hc n ST SG H := by

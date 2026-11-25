@@ -7,10 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open UpperHalfPlane
 
-namespace UpperTheory.V.Af.Nf
-
-end UpperTheory.V.Af.Nf
-
 open UpperTheory.V.Af.Nf in
 theorem UpperTheory.V.Af.Nf.nslMul :
     UpperTheory.V.Af.Nf.NslMul := by

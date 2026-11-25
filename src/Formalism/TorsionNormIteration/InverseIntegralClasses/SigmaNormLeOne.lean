@@ -88,10 +88,10 @@ theorem coeffBound : Formalism.LT.CoeffBound.{u} := by
       · have hnq : n = q * (n / q) := (Nat.mul_div_cancel' hdiv).symm
         rw [hnq, pow_succ']
         exact mul_dvd_mul_left q hk
-      · rw [if_pos hdiv]
+      · rw [ite_eq_left hdiv]
         exact norm_add_inv_mul_mul_norm_pow_succ_le_one _ _ _ k hg (hσb _ _ hkb) hp1.le hpK
     · refine ⟨0, by rw [pow_zero]; exact one_dvd n, ?_⟩
-      rw [if_neg hdiv, mul_zero, add_zero, pow_zero, mul_one]
+      rw [ite_eq_right hdiv, mul_zero, add_zero, pow_zero, mul_one]
       exact hg
 
 section Bd

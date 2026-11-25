@@ -5,7 +5,7 @@ public import Mathlib.RingTheory.AdicCompletion.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qp1.exists_limit_of_approx.{u_1} :
-    ∀ {R : Type u_1} [inst : CommRing R] (I : Ideal R)
+    ∀ {R : Type u_1} [CommRing R] (I : Ideal R)
     [IsPrecomplete I R] (P : ℕ → R → Prop),
     (∀ (n : ℕ) (x : R), P n x → ∃ (y : R), y - x ∈ I ^ n ∧ P (n + (1 : ℕ)) y) →
       ∀ {x₀ : R}, P (0 : ℕ) x₀ → ∃ (x : R), ∀ (n : ℕ), ∃ (y : R), P n y ∧ x - y ∈ I ^ n := by

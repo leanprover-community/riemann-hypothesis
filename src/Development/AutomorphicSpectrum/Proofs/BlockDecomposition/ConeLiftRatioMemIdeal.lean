@@ -5,7 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
 namespace GlobalTheory.CompanionTheory.ConeUnit

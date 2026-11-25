@@ -172,20 +172,8 @@ end Subst
 theorem degree_eq_one {ι : Type v} (d : ι →₀ ℕ) (hd : d.degree = 1) :
     ∃ i, d = Finsupp.single i 1 := by
   classical
-  have hne : d ≠ 0 := by rintro rfl; simp at hd
-  obtain ⟨i, hi⟩ : ∃ i, d i ≠ 0 := by
-    by_contra! hc; exact hne (Finsupp.ext hc)
-  have hi1 : d i ≤ 1 := hd ▸ Finsupp.le_degree i d
-  have hle : Finsupp.single i 1 ≤ d := by
-    rw [Finsupp.single_le_iff]; omega
-  have hsplit : d = (d - Finsupp.single i 1) + Finsupp.single i 1 :=
-    (tsub_add_cancel_of_le hle).symm
-  have hdeg : d.degree = (d - Finsupp.single i 1).degree + 1 := by
-    conv_lhs => rw [hsplit]
-    rw [map_add (f := _), Finsupp.degree_single]
-  have h0 : d - Finsupp.single i 1 = 0 := (Finsupp.degree_eq_zero_iff _).1 (by omega)
-  refine ⟨i, ?_⟩
-  rw [hsplit, h0, zero_add]
+  obtain ⟨i, hi⟩ := Multiset.card_eq_one.1 ((Finsupp.card_toMultiset d).trans hd)
+  exact ⟨i, (Finsupp.toMultiset_eq_iff.1 hi).trans (Multiset.toFinsupp_singleton i)⟩
 
 section Main
 
@@ -292,7 +280,7 @@ theorem solve_exists_vector : Formalism.FG.SolveExistsV.{u, v, w} := by
     · have : d = 0 := (Finsupp.degree_eq_zero_iff d).1 (by omega)
       subst this
       rw [coeff_zero_eq_constantCoeff_apply, hf0 j, coeff_X,
-        if_neg (fun h => (Finsupp.single_ne_zero.2 one_ne_zero) h.symm), sub_zero]
+        ite_eq_right (fun h => (Finsupp.single_ne_zero.2 one_ne_zero) h.symm), sub_zero]
     · obtain ⟨i, rfl⟩ := degree_eq_one d h1
       rw [hf1 j i, coeff_X]
       by_cases hij : i = j

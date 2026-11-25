@@ -229,8 +229,6 @@ end GlobalTheory.PtExt.ChernContr
 namespace GlobalTheory.PtExt.ChernContr
 open ContrMor
 
-
-
 theorem contr_cohom : ∀ (R : Type) [CommRing R] (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (P : LB (A ⊗ B).left), P.IsLB →
     ∀ v : epsR R ⟶ B, IsTangent v → ∀ (j : ∀ (D : Type) [CommRing D] [Algebra R D], Pt A D → P.ι), IsChoice P j →
     ∀ w : Z2 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)),
@@ -367,7 +365,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB RigLB Cubical
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 theorem _root_.GlobalTheory.T.chernCocycle_tangentContraction_cohomologous_torsor : ∀ (R : Type) [CommRing R] (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (P : LB (A ⊗ B).left), P.IsLB →
     ∀ v : epsR R ⟶ B, IsTangent v → ∀ (j : ∀ (D : Type) [CommRing D] [Algebra R D], Pt A D → P.ι), IsChoice P j →
     ∀ w : Z2 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)),
@@ -459,8 +456,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB RigLB Cubical
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.cocycle_cohomologous_of_de_rham_surjective : ∀ (R : Type) [CommRing R] (X : Over (Sp R)), Function.Surjective (toH1O (X.hom ≫ 𝟙 _)) → ∀ u : Fn1 X, IsCoc (whole X) u → ∃ f : Z1 (O (dp0 R) (X.hom ≫ 𝟙 _)), Cohom (whole X) u (fv f) := by
-  first | exact @GlobalTheory.PtExt.cohom_fv_of_toH1O_surjective
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CocycleCohomologousOfDeRhamSurjectiveStatement =====
@@ -476,8 +471,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB RigLB Cubical
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.de_rham_to_h1_structure_surjective_abelian : GlobalTheory.Published.AbelianHodgeDeRham → ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → Function.Surjective (toH1O (A.hom ≫ 𝟙 _)) := by
-  first | exact @GlobalTheory.PtExt.toH1O_surjective_of_abelian
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeRhamToH1StructureSurjectiveAbelianStatement =====
@@ -567,8 +560,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB RigLB Cubical
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.tangentPullback_primitiveCrystallineClass_epsPart_isCob : ∀ (R : Type) [CommRing R] (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (f : Z1 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _))), CatCoh.H1.mk _ f ∈ primDR (A ⊗ B) → ∀ v : epsR R ⟶ B, Cohom (whole A) (sndPull (fv f) v) (Fn1.zero A) := by
-  first | exact @GlobalTheory.PtExt.cohom_sndPull_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentPullbackPrimitiveCrystallineClassEpsPartIStatement =====
@@ -590,17 +581,17 @@ namespace GlobalTheory.PtExt
 
 theorem sndPull_cohom_zero_of_hodgeDeRham : GlobalTheory.Published.AbelianHodgeDeRham → ∀ (R : Type) [CommRing R] (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (g : ℕ), IsAbelianScheme A → IsAbelianScheme B → SmoothOfRelativeDimension g A.hom → SmoothOfRelativeDimension g B.hom → ∀ P : LB (A ⊗ B).left, P.IsLB → ∀ v : epsR R ⟶ B, IsTangent v → ∀ u : Fn1 (A ⊗ B), IsCoc P.U u → Cohom (chartsA P) (sndPull u v) (Fn1.zero A) := by
   intro hHDR R _ A B _ _ g hA hB hgA hgB P hP v hv u hu
-  have hFree : GlobalTheory.Published.AbelianDeRham.Free := (GlobalTheory.T.abelianSchemeDeRham_free_hodgeSequence_baseChange hHDR).1
+  have hFree : GlobalTheory.Published.AbelianDeRham.Free := (GlobalTheory.abelianDeRham_free_hodge_baseChange hHDR).1
   have hAB := ReciprocityTheory.ChartRestriction.G.Geo.Tor.AbelianSchemeGerms.isAbelianScheme_tensor A B hA hB
   have hgAB : SmoothOfRelativeDimension (g + g) (A ⊗ B).hom := AbDual.smooth_prod hgA hgB
   obtain ⟨u', hu', hExt⟩ :=
     GlobalTheory.T.pointwise_cocycle_on_cover_extends_up_to_coboundary R (A ⊗ B) P.ι P.U hP.cover u hu
-  have hSurj := GlobalTheory.T.de_rham_to_h1_structure_surjective_abelian hHDR R (A ⊗ B) (g + g) hAB hgAB
-  obtain ⟨f, hLift⟩ := GlobalTheory.T.cocycle_cohomologous_of_de_rham_surjective R (A ⊗ B) hSurj u' hu'
+  have hSurj := GlobalTheory.PtExt.toH1O_surjective_of_abelian hHDR R (A ⊗ B) (g + g) hAB hgAB
+  obtain ⟨f, hLift⟩ := GlobalTheory.PtExt.cohom_fv_of_toH1O_surjective R (A ⊗ B) hSurj u' hu'
   have hprim : CatCoh.H1.mk _ f ∈ primDR (A ⊗ B) := by
     have h : AllPrim (dp0 R) (𝟙 _) (A ⊗ B) := (hFree R (A ⊗ B) (g + g) hAB hgAB).1
     rw [primDR, h]; trivial
-  have hTan := GlobalTheory.T.tangentPullback_primitiveCrystallineClass_epsPart_isCob R A B f hprim v
+  have hTan := GlobalTheory.PtExt.cohom_sndPull_zero R A B f hprim v
   unfold Cohom at hExt hLift hTan ⊢
   obtain ⟨k1, c1⟩ := hExt
   obtain ⟨k2, c2⟩ := hLift
@@ -746,15 +737,11 @@ theorem epsMap_inr {D : Type} [CommRing D] [Algebra R D] (b : R) :
     EpsWeil.epsMap R D (TrivSqZeroExt.inr b) = TrivSqZeroExt.inr (algebraMap R D b) := by
   ext <;> simp [EpsWeil.epsMap, DualNumber.lift_apply_apply, TrivSqZeroExt.algebraMap_eq_inl', Algebra.smul_def]
 
-theorem snd_epsHom' {D D' : Type} [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'] (φ : D →ₐ[R] D')
-    (z : DualNumber D) : (epsHom φ z).snd = φ z.snd := by
-  simp [epsHom, DualNumber.lift_apply_apply]
-
 theorem epsHom_inl' {D D' : Type} [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'] (φ : D →ₐ[R] D')
     (r : D) : epsHom φ (TrivSqZeroExt.inl r) = TrivSqZeroExt.inl (φ r) := by
   ext
   · simp [epsHom, DualNumber.lift_apply_apply]
-  · simp [snd_epsHom']
+  · simp [GlobalTheory.PtExt.snd_epsHom]
 
 theorem dualVal_eq (v : epsR R ⟶ B) (β : Form (B.hom ≫ 𝟙 _)) :
     (SqExt.dual R).val v.left (pt_w v) β.1 = TrivSqZeroExt.inr (tanVal v β) := by
@@ -868,10 +855,9 @@ theorem alg {D D' : Type} [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'
       Ae' * Bi' - epsHom φ (Ae * Bi) - TrivSqZeroExt.inl Aa * TrivSqZeroExt.inr (algebraMap R D' t) := by
     rw [map_mul]
     linear_combination Bτ * h1 - Bi' * hAb - epsHom φ Ae * hBτ - TrivSqZeroExt.inl Aa * hBs
-  rw [key, TrivSqZeroExt.snd_sub, TrivSqZeroExt.snd_sub, snd_epsHom', TrivSqZeroExt.inl_mul_inr,
+  rw [key, TrivSqZeroExt.snd_sub, TrivSqZeroExt.snd_sub, GlobalTheory.PtExt.snd_epsHom, TrivSqZeroExt.inl_mul_inr,
     TrivSqZeroExt.snd_inr, smul_eq_mul, map_sub, map_mul, AlgHom.commutes, Algebra.smul_def, map_neg]
   linear_combination (algebraMap R D' t) * hAa
-
 
 open Classical in
 def kFn (m₁ : IsMor (dp0 R) (A.hom ≫ 𝟙 _) (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _) (RingHom.id R) (fst A B).left)
@@ -1099,12 +1085,10 @@ section Rep
 variable (m₁ : IsMor (dp0 R) (A.hom ≫ 𝟙 _) (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _) (RingHom.id R) (fst A B).left)
   (m₂ : IsMor (dp0 R) (B.hom ≫ 𝟙 _) (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _) (RingHom.id R) (snd A B).left)
 
-
 omit [GrpObj A] [GrpObj B] in
 def cupPr (a : Z1 (O (dp0 R) (A.hom ≫ 𝟙 _))) (b : Z1 (O (dp0 R) (B.hom ≫ 𝟙 _))) :
     Z2 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)) :=
   cupZ _ (m₁.coef.pullbackOneCocycle a) (m₂.coef.pullbackOneCocycle b)
-
 
 omit [GrpObj A] [GrpObj B] in
 theorem mk_cupPr (a : Z1 (O (dp0 R) (A.hom ≫ 𝟙 _))) (b : Z1 (O (dp0 R) (B.hom ≫ 𝟙 _))) :
@@ -1127,23 +1111,19 @@ theorem mk_cupPr_prim {a : Z1 (O (dp0 R) (A.hom ≫ 𝟙 _))} {b : Z1 (O (dp0 R)
 variable {n : ℕ} (α : Fin n → Form (A.hom ≫ 𝟙 _)) (β : Fin n → Form (B.hom ≫ 𝟙 _))
   (a' : Fin n → Z1 (O (dp0 R) (A.hom ≫ 𝟙 _))) (b' : Fin n → Z1 (O (dp0 R) (B.hom ≫ 𝟙 _)))
 
-
 omit [GrpObj A] [GrpObj B] in
 def rep : Z2 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)) :=
   ∑ k, cupPr m₁ m₂ (α k).1 (b' k) + ∑ k, cupPr m₁ m₂ (a' k) (β k).1
-
 
 omit [GrpObj A] [GrpObj B] in
 theorem rep_val : (rep m₁ m₂ α β a' b').1 =
     ∑ k, (cupPr m₁ m₂ (α k).1 (b' k)).1 + ∑ k, (cupPr m₁ m₂ (a' k) (β k).1).1 := by
   rw [rep, Submodule.coe_add, Submodule.coe_sum, Submodule.coe_sum]
 
-
 omit [GrpObj A] [GrpObj B] in
 theorem mk_rep : CatCoh.H2.mk _ (rep m₁ m₂ α β a' b') =
     ∑ k, CatCoh.H2.mk _ (cupPr m₁ m₂ (α k).1 (b' k)) + ∑ k, CatCoh.H2.mk _ (cupPr m₁ m₂ (a' k) (β k).1) :=
   ((CatCoh.H2.mk _).map_add _ _).trans (congrArg₂ (· + ·) (map_sum _ _ _) (map_sum _ _ _))
-
 
 omit [GrpObj A] [GrpObj B] in
 theorem rep_triv (T T' T'' : Thick (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)) (p : T ⟶ T') (q : T' ⟶ T'') (hT : T.J = ⊥)
@@ -1209,7 +1189,6 @@ theorem mk_sub_sum {n : ℕ} {f : Z1 (O (dp0 R) (A.hom ≫ 𝟙 _))} {c : primDR
   rw [map_smul, ha k, Submodule.coe_smul]
 
 end GlobalTheory.PtExt.ChernRep
-
 
 open GlobalTheory.PtExt.ChernRep in
 theorem GlobalTheory.PtExt.exists_chernRep_contr_of_orth : GlobalTheory.Published.AbelianHodgeDeRham → ∀ (R : Type) [CommRing R] (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (g : ℕ), IsAbelianScheme A → IsAbelianScheme B → SmoothOfRelativeDimension g A.hom → SmoothOfRelativeDimension g B.hom → ∀ P : LB (A ⊗ B).left, P.IsLB → ∀ φ : HdR A →ₗ[R] HdR B →ₗ[R] R, AbDual.IsCorrForm (dp0 R) (𝟙 _) A B P φ → (∀ x ∈ Fil A, ∀ y ∈ Fil B, φ x y = 0) → ∀ (h' : HdR B) (v : epsR R ⟶ B), IsLieImage h' v → ∀ c : primDR A, (∀ h ∈ Fil A, φ h h' = h c) → ∀ f : Z1 (O (dp0 R) (A.hom ≫ 𝟙 _)), CatCoh.H1.mk _ f = c.1 → ∃ w : Z2 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)), IsChern (dp0 R) _ P (CatCoh.H2.mk _ w) ∧ (∀ (T T' T'' : Thick (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _)) (a : T ⟶ T') (b : T' ⟶ T''), T.J = ⊥ → T'.J = ⊥ → T''.J = ⊥ → w.1 T T' T'' a b = 0) ∧ ∀ κ : Fn1 A, IsContr w.1 v κ → Cohom (whole A) κ (fv f).neg := by

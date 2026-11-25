@@ -86,7 +86,7 @@ theorem orth_zero (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTot
     rw [PiLp.inner_apply] at ht
     simp only [Fintype.sum_prod_type, Fintype.sum_bool, Finset.sum_apply, Pi.smul_apply,
       Function.comp, v, smul_eq_mul, Pi.zero_apply]
-    simp only [if_true, Bool.false_eq_true, if_false]
+    simp only [ite_true, Bool.false_eq_true, ite_false]
     have h2 : ∀ w : InfinitePlace E, conj (z w) * w.embedding t + z w * conj (w.embedding t) =
         ((2 * inner ℝ (z w) (cemb E t w) : ℝ) : ℂ) := by
       intro w
@@ -215,16 +215,8 @@ theorem t_PoissonJoint : PoissonJoint := by
     summable_of_sum_le (fun _ => norm_nonneg _) hfin
   have hts : ∑' μ : {μ : dual Λ // μ ≠ 0}, ‖F (μ : dual Λ)‖ ≤ ZLattice.covolume Λ * B :=
     hsum'.tsum_le_of_sum_le hfin
-  have hsum : Summable (fun μ : dual Λ => ‖F μ‖) := by
-    refine (Finset.summable_compl_iff ({0} : Finset (dual Λ))).1 ?_
-    have e : {x : dual Λ // x ∉ ({0} : Finset (dual Λ))} ≃ {μ : dual Λ // μ ≠ 0} :=
-      Equiv.subtypeEquivRight (fun x => by simp)
-    refine (summable_of_sum_le (fun _ => norm_nonneg _) (c := ZLattice.covolume Λ * B) ?_)
-    intro T
-    have := hfin (T.map ⟨fun x => ⟨x.1, by simpa using x.2⟩, fun a b h => by
-      have := congrArg (fun z => z.1) h; exact Subtype.ext this⟩)
-    rw [Finset.sum_map] at this
-    exact this
+  have hsum : Summable (fun μ : dual Λ => ‖F μ‖) :=
+    (Set.finite_singleton (0 : dual Λ)).summable_compl_iff.1 hsum'
   obtain ⟨_, hP⟩ := h0 V ι π hπ Λ φ Cφ (emb t₀) hc hdec hsum (fun l => hpos _)
   have hmem : ∀ t ∈ S, emb (t - t₀) ∈ Λ := fun t ht => hLa _ (hS t ht)
   let S' : Finset Λ := S.attach.image (fun t => ⟨emb (t.1 - t₀), hmem t.1 t.2⟩)

@@ -25,57 +25,13 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.HsCast
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.ModelMap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.QuoMulInv
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.Descent
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.NonsqMul
@@ -171,7 +127,7 @@ private theorem hasse {F : Type} [Field F] [NumberField F] {Δ : F} (D : Dat Δ)
       have hf : ∀ x : F, KStar.Choice.complMap v w (cv v x) = cv w (algebraMap F E x) :=
         KStar.Choice.complMap_algebraMap v w
       unfold hs
-      rw [if_pos]
+      rw [ite_eq_left]
       by_cases hv : v ∈ D.Sg
       · obtain ⟨s, hs⟩ := h.split v hv
         have e := congrArg (KStar.Choice.complMap v w) hs
@@ -192,7 +148,7 @@ private theorem hasse {F : Type} [Field F] [NumberField F] {Δ : F} (D : Dat Δ)
         rw [hf, ← map_pow, ha, map_sub, map_mul, map_one]
   unfold hs at key
   by_contra hn
-  rw [if_neg hn] at key
+  rw [ite_eq_right hn] at key
   norm_num at key
 
 private theorem d_ex {F : Type} [Field F] [NumberField F] {Δ : F} (D : Dat Δ) (h : D.Ok) (τ : F) (hτ : IsCM τ)
@@ -395,7 +351,7 @@ theorem UpperTheory.V.Z.Sym.Loc.kappa : UpperTheory.V.Z.Sym.Loc.Kappa := by
       HL.2.1 Δ _ L.even (ev_unit hXu), show -2 * c = 2 * -c by ring, hsMul O K Δ L _ _ _ hreg L.two_ne (neg_ne_zero.2 hc0)]
     have e2 : hs (τ ^ 2 - 4) 2 * hs (τ ^ 2 - 4) (algebraMap O K (r * (r + 2))) = 1 := by
       rw [← hsMul O K Δ L _ _ _ hreg L.two_ne hX0]
-      exact if_pos ⟨algebraMap O K w, 0, by rw [← map_pow, hw, map_mul, map_ofNat]; ring⟩
+      exact ite_eq_left ⟨algebraMap O K w, 0, by rw [← map_pow, hw, map_mul, map_ofNat]; ring⟩
     linear_combination (hs (τ ^ 2 - 4) (-c) * gOrb O j χ a) * e2
   · by_cases he : EvenVal O (2 + τ)
     · obtain ⟨ε, s, hs0, e⟩ := id he
@@ -434,7 +390,7 @@ theorem UpperTheory.V.Z.Sym.Loc.kappa : UpperTheory.V.Z.Sym.Loc.Kappa := by
         2 + τ + QuadraticAlgebra.trace l₁ = algebraMap O K X →
         kapSum O c (dLam lam z) 1 = eps τ lam * (hs (τ ^ 2 - 4) (-c) * gOrb O j χ z) := fun l₁ X i1 n1 hXu eX => by
       refine red l₁ n1 (eX ▸ (hXu.map _).ne_zero) _ ?_
-      rw [val l₁ n1 1 1 (caseG O K Δ τ L hD c hce l₁ i1 n1 z hz) ⟨1, if_pos ⟨1, 0, by simp⟩⟩, eps, eX, GV.1 ⟨h1.unit, ep⟩, GV.2.1 hD,
+      rw [val l₁ n1 1 1 (caseG O K Δ τ L hD c hce l₁ i1 n1 z hz) ⟨1, ite_eq_left ⟨1, 0, by simp⟩⟩, eps, eX, GV.1 ⟨h1.unit, ep⟩, GV.2.1 hD,
         HL.2.1 _ _ hDe (ev_unit hXu), HL.2.1 _ _ L.even (ev_unit hXu), HL.2.1 _ _ hDe (ev_neg hce)]
       simp
     by_cases hu : IsUnit (2 + τ₀ + 2 * x)
@@ -494,17 +450,17 @@ private theorem hs_sq {K : Type} [Field K] (h2 : (2 : K) ≠ 0) {d : K} (hd : d 
   obtain ⟨r, rfl⟩ := hs'
   have hr : r ≠ 0 := fun h => hd (by simp [h])
   unfold hs
-  rw [if_pos]
+  rw [ite_eq_left]
   exact ⟨(x + 1) / 2, (x - 1) / (2 * r), by field_simp; ring⟩
 
 private theorem hs_pos (d x : ℝ) (hx : 0 < x) : hs d x = 1 := by
   unfold hs
-  rw [if_pos]
+  rw [ite_eq_left]
   exact ⟨Real.sqrt x, 0, by rw [Real.sq_sqrt hx.le]; ring⟩
 
 private theorem hs_neg (d x : ℝ) (hd : d < 0) (hx : x < 0) : hs d x = -1 := by
   unfold hs
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro ⟨a, b, h⟩
   nlinarith [sq_nonneg a, sq_nonneg b]
 
@@ -514,7 +470,7 @@ private theorem normL {K : Type} [Field K] (Δ : K) (x : Lsq K Δ) : QuadraticAl
 private theorem hs_iff {K : Type} [Field K] (Δ x : K) : (∃ lam : Lsq K Δ, QuadraticAlgebra.norm lam = x) → hs Δ x = 1 := by
   rintro ⟨lam, hl⟩
   unfold hs
-  rw [if_pos ⟨lam.re, lam.im, by rw [← normL, hl]⟩]
+  rw [ite_eq_left ⟨lam.re, lam.im, by rw [← normL, hl]⟩]
 
 private theorem hs_iff' {K : Type} [Field K] (Δ x : K) (h : hs Δ x = 1) : ∃ lam : Lsq K Δ, QuadraticAlgebra.norm lam = x := by
   unfold hs at h

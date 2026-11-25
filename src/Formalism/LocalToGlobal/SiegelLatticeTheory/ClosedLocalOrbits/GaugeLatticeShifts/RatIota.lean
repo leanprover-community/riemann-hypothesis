@@ -93,7 +93,7 @@ theorem xlam_le {F : LFlag S r T} {F' : LFlag S r T'} (hAdm : IsAdmissible Λ g 
       by_cases hb : Fin.castSucc a < b
       · rw [hlow b (Fin.castSucc a) hb]
         simp
-      · push_neg at hb
+      · push Not at hb
         have hbr : (b : ℕ) < r := lt_of_le_of_lt (Fin.le_def.1 hb) (by simp)
         obtain ⟨b', rfl⟩ : ∃ b' : Fin r, b = Fin.castSucc b' :=
           ⟨b.castLT hbr, (Fin.castSucc_castLT b hbr).symm⟩

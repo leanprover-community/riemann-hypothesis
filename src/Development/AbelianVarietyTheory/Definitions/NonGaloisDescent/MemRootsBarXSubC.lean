@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Labe
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.GLq.Model
 open Polynomial Formalism.CyclotomicNorms
 
@@ -34,7 +33,7 @@ theorem hc_full {n : ℕ} (α : Gn g n → ℂ) (hα : IsClass α) : hc n 0 α (
   have hα' : ∀ y : Gn g n, α (y⁻¹ * x * y) = α x := fun y => by
     simpa using hα x y⁻¹
   have hcard : (Fintype.card (Gn g n) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Fintype.card_ne_zero
-  simp only [hc, hcT, hpar, if_true, mul_one, tl_self, toG_coe, hα', Finset.sum_const,
+  simp only [hc, hcT, hpar, ite_true, mul_one, tl_self, toG_coe, hα', Finset.sum_const,
     Finset.filter_true, Finset.card_univ, nsmul_eq_mul]
   exact inv_mul_cancel_left₀ hcard _
 

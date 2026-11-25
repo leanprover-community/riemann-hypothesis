@@ -46,12 +46,6 @@ theorem mm_of_pow {a : C} {n : ℕ} (h : V.MM (a ^ n)) : V.MM a := by
   by_contra! hle
   exact absurd h (not_lt.mpr (nsmul_nonpos hle n))
 
-theorem mm_pow {a : C} (ha : V.MM a) {n : ℕ} (hn : n ≠ 0) : V.MM (a ^ n) := by
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  unfold VF.MM at *
-  rw [V.v.map_pow, succ_nsmul]
-  exact lt_of_lt_of_le ha (le_add_of_nonneg_left (nsmul_nonneg ha.le m))
-
 theorem valuation_nonneg_of_pow {a : C} {n : ℕ} (h : V.Ge 0 (a ^ n)) (hn : n ≠ 0) : V.Ge 0 a := by
   rw [valuation_nonneg_iff] at *
   rw [V.v.map_pow] at h
@@ -75,10 +69,6 @@ theorem valuation_nonneg_div {x y : C} (hy : y ≠ 0) (h : V.v y ≤ V.v x) : V.
   have h4 : r ≤ s + r := by exact_mod_cast h
   linarith
 
-theorem frob2 {a b : C} (ha : V.Ge 0 a) (hb : V.Ge 0 b) :
-    V.MM ((a + b) ^ V.l - a ^ V.l - b ^ V.l) := by
-  apply Formalism.L2.FormalSeriesBounds.MaximalIdealCongruence.mm_add_pow <;> assumption
-
 theorem frob_sum {ι : Type*} (s : Finset ι) (f : ι → C) (hf : ∀ i ∈ s, V.Ge 0 (f i)) :
     V.MM ((∑ i ∈ s, f i) ^ V.l - ∑ i ∈ s, f i ^ V.l) := by
   induction s using Finset.induction_on with
@@ -86,7 +76,7 @@ theorem frob_sum {ι : Type*} (s : Finset ι) (f : ι → C) (hf : ∀ i ∈ s, 
   | insert i s hi ih =>
     rw [Finset.sum_insert hi, Finset.sum_insert hi]
     have hs : V.Ge 0 (∑ j ∈ s, f j) := VF.Ge.sum fun j hj => hf j (Finset.mem_insert_of_mem hj)
-    have h1 := frob2 (hf i (Finset.mem_insert_self i s)) hs
+    have h1 := Formalism.L2.FormalSeriesBounds.MaximalIdealCongruence.mm_add_pow (hf i (Finset.mem_insert_self i s)) hs
     have h2 := ih fun j hj => hf j (Finset.mem_insert_of_mem hj)
     have e : (f i + ∑ j ∈ s, f j) ^ V.l - (f i ^ V.l + ∑ j ∈ s, f j ^ V.l) =
         ((f i + ∑ j ∈ s, f j) ^ V.l - f i ^ V.l - (∑ j ∈ s, f j) ^ V.l) +
@@ -163,7 +153,7 @@ theorem independence_bound_of_span_raw [IsAlgClosed C] (X : Cart V d I J) (a : Z
     simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using this)
   apply hν0
   rw [← hc ν0]
-  exact mm_pow (hcm ν0) hl2.ne'
+  exact Formalism.L2.FormalSeriesBounds.MaximalIdealCongruence.mm_pow (hcm ν0) hl2.ne'
 
 theorem even_val_add_two {d : ℕ} [NeZero d] (hd : Even d) (a : ZMod d) :
     Even (a + 2).val ↔ Even a.val := by
@@ -174,11 +164,5 @@ theorem even_val_add_two {d : ℕ} [NeZero d] (hd : Even d) (a : ZMod d) :
   omega
 
 end ValuationNonnegativity
-
-section Closed
-
-variable {C : Type} [Field C]
-
-end Closed
 
 end Formalism.L2.FormalSeriesBounds

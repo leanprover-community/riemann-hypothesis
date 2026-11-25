@@ -185,7 +185,7 @@ private theorem alg_norm (z : ℤ_[l]) : ‖algebraMap ℤ_[l] (Qbar l) z‖ = �
   rfl
 
 private theorem alg_inj : Function.Injective (algebraMap ℤ_[l] (Qbar l)) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   rw [← norm_eq_zero, ← alg_norm, ha, norm_zero]
 
@@ -343,9 +343,9 @@ private theorem logfun {Γ : Type} [Group Γ] [Fintype Γ] (γ : Γ) (τ : Qbar 
   refine ⟨fun y => ∑ i ∈ Finset.range (orderOf γ), if γ ^ i = y then τ ^ i else 0, fun j => ?_, ?_⟩
   · beta_reduce
     rw [Finset.sum_eq_single (j % orderOf γ)]
-    · rw [if_pos (pow_mod_orderOf γ j)]
+    · rw [ite_eq_left (pow_mod_orderOf γ j)]
     · intro i hi hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       rw [pow_inj_mod, Nat.mod_eq_of_lt (Finset.mem_range.1 hi)] at h
       exact hne h
@@ -495,17 +495,9 @@ private theorem root_mem (c : Coef l) {x : Qbar l} (hx : x ^ (l - 1) = 1) : x �
   rw [← hi]
   exact c.O.pow_mem (c.O.algebraMap_mem _) i
 
-private theorem nsub (x y : Qbar l) : ‖x - y‖ ≤ max ‖x‖ ‖y‖ := by
-  rw [sub_eq_add_neg, ← norm_neg y]
-  exact IsUltrametricDist.norm_add_le_max _ _
-
 private theorem nint (m : ℤ) : ‖((m : ℤ) : Qbar l)‖ ≤ 1 := by
   rw [← map_intCast (algebraMap ℚ_[l] (Qbar l)), norm_algebraMap']
   exact Padic.norm_int_le_one m
-
-private theorem nnat {m : ℕ} (h : ¬ l ∣ m) : ‖((m : ℕ) : Qbar l)‖ = 1 := by
-  rw [← map_natCast (algebraMap ℚ_[l] (Qbar l)), norm_algebraMap']
-  exact Padic.norm_natCast_eq_one_iff.2 (((Fact.out : l.Prime).coprime_iff_not_dvd).2 h)
 
 private alias nO := _root_.UpperTheory.Reformulated.B.Rf3.norm_le_one_of_mem_coef
 
@@ -520,15 +512,6 @@ private theorem ndv {r : ℕ} (hr : 1 ≤ r) (x : (ZMod (l ^ r))ˣ) : ¬ l ∣ (
   rw [Nat.Coprime.gcd_eq_one hc] at hd
   exact (Fact.out : l.Prime).one_lt.ne' (Nat.dvd_one.1 hd)
 
-private theorem phi_pow (φ : DirichletCharacter (Qbar l) l) {m : ℕ} (h : ¬ l ∣ m) : φ (m : ZMod l) ^ (l - 1) = 1 := by
-  have hm : (m : ZMod l) ≠ 0 := by rwa [Ne, ZMod.natCast_eq_zero_iff]
-  rw [← map_pow, ZMod.pow_card_sub_one_eq_one hm, map_one]
-
-private theorem nphi (φ : DirichletCharacter (Qbar l) l) {m : ℕ} (h : ¬ l ∣ m) : ‖φ (m : ZMod l)‖ = 1 := by
-  have h3 : ‖φ (m : ZMod l)‖ ^ (l - 1) = 1 := by rw [← norm_pow, phi_pow φ h, norm_one]
-  have hl : l - 1 ≠ 0 := by have := (Fact.out : l.Prime).two_le; omega
-  exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hl).1 h3
-
 private noncomputable def E (φ : DirichletCharacter (Qbar l) l) (k a : ℕ) : Qbar l :=
   (φ (a : ZMod l))⁻¹ * ((a : Qbar l) ^ k)⁻¹
 
@@ -537,8 +520,8 @@ private theorem E_mul (φ : DirichletCharacter (Qbar l) l) (k a b : ℕ) : E φ 
   ring
 
 private theorem E_mem (c : Coef l) (φ : DirichletCharacter (Qbar l) l) (k : ℕ) {a : ℕ} (ha : ¬ l ∣ a) : E φ k a ∈ c.O :=
-  c.O.mul_mem (invO c (root_mem c (phi_pow φ ha)) (nphi φ ha))
-    (invO c (c.O.pow_mem (natCast_mem c.O a) k) (by rw [norm_pow, nnat ha, one_pow]))
+  c.O.mul_mem (invO c (root_mem c (UpperTheory.Kd.C7.DivAlg.phi_pow φ ha)) (UpperTheory.Kd.C7.DivAlg.phi_norm φ ha))
+    (invO c (c.O.pow_mem (natCast_mem c.O a) k) (by rw [norm_pow, UpperTheory.Kd.C7.DivAlg.norm_nat_one ha, one_pow]))
 
 private theorem E_cong (φ : DirichletCharacter (Qbar l) l) (k : ℕ) {r a b : ℕ} (hr : 1 ≤ r) (ha : ¬ l ∣ a) (hb : ¬ l ∣ b)
     (h : a ≡ b [MOD l ^ r]) : ‖E φ k a - E φ k b‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖ := by
@@ -550,14 +533,14 @@ private theorem E_cong (φ : DirichletCharacter (Qbar l) l) (k : ℕ) {r a b : �
     push_cast at this
     exact this
   have nz : ∀ z : Qbar l, ‖z‖ = 1 → z ≠ 0 := fun z hz h => by rw [h, norm_zero] at hz; exact zero_ne_one hz
-  have haQ := nz _ (nnat ha)
-  have hbQ := nz _ (nnat hb)
-  have hpb := nz _ (nphi φ hb)
+  have haQ := nz _ (UpperTheory.Kd.C7.DivAlg.norm_nat_one ha)
+  have hbQ := nz _ (UpperTheory.Kd.C7.DivAlg.norm_nat_one hb)
+  have hpb := nz _ (UpperTheory.Kd.C7.DivAlg.phi_norm φ hb)
   have key : E φ k a - E φ k b = (φ (b : ZMod l))⁻¹ * ((a : Qbar l) ^ k)⁻¹ * ((b : Qbar l) ^ k)⁻¹ *
       ((b : Qbar l) ^ k - (a : Qbar l) ^ k) := by
     simp only [E]; rw [hphi]; field_simp
   rw [key, hmQ]
-  simp only [norm_mul, norm_inv, norm_pow, nphi φ hb, nnat ha, nnat hb, one_pow, inv_one, one_mul]
+  simp only [norm_mul, norm_inv, norm_pow, UpperTheory.Kd.C7.DivAlg.phi_norm φ hb, UpperTheory.Kd.C7.DivAlg.norm_nat_one ha, UpperTheory.Kd.C7.DivAlg.norm_nat_one hb, one_pow, inv_one, one_mul]
   exact mul_le_of_le_one_right (by positivity) (nint m)
 
 private theorem eta_mem (c : Coef l) (φ : DirichletCharacter (Qbar l) l) (k : ℕ) {r : ℕ} (hr : 1 ≤ r)
@@ -646,10 +629,10 @@ private theorem split_pow (c : Coef l) {k : ℕ} (hk : 1 ≤ k) :
   obtain ⟨e, m, hm, hN⟩ := Nat.exists_eq_pow_mul_and_not_dvd (n := (1 + l) ^ k - 1) (by omega) l (by omega)
   have hN' : (1 + l) ^ k = l ^ e * m + 1 := by omega
   have hQ : ((1 + l : ℕ) : Qbar l) ^ k = (l : Qbar l) ^ e * m + 1 := by exact_mod_cast congrArg (Nat.cast (R := Qbar l)) hN'
-  have hm0 : (m : Qbar l) ≠ 0 := fun h => by have := nnat hm; rw [h, norm_zero] at this; exact zero_ne_one this
+  have hm0 : (m : Qbar l) ≠ 0 := fun h => by have := UpperTheory.Kd.C7.DivAlg.norm_nat_one hm; rw [h, norm_zero] at this; exact zero_ne_one this
   have hb0 : ((1 + l : ℕ) : Qbar l) ^ k ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.2 (by omega))
   refine ⟨e, -(((1 + l : ℕ) : Qbar l) ^ k * (m : Qbar l)⁻¹),
-    c.O.neg_mem (c.O.mul_mem (c.O.pow_mem (natCast_mem c.O _) k) (invO c (natCast_mem c.O m) (nnat hm))), ?_⟩
+    c.O.neg_mem (c.O.mul_mem (c.O.pow_mem (natCast_mem c.O _) k) (invO c (natCast_mem c.O m) (UpperTheory.Kd.C7.DivAlg.norm_nat_one hm))), ?_⟩
   generalize ((1 + l : ℕ) : Qbar l) ^ k = B at hQ hb0
   field_simp
   rw [hQ]; ring
@@ -703,9 +686,9 @@ theorem UpperTheory.Kd.C7.pCob :
       v * (((fh - (fts - (T + β * X))) + (fst - (X + ρ * T))) - (ρ - 1) * (z () - T)) := by
     rw [hB]; ring
   rw [e, norm_mul]
-  refine (mul_le_of_le_one_left (norm_nonneg _) (nO c hvO)).trans ((nsub _ _).trans (max_le ?_ ?_))
+  refine (mul_le_of_le_one_left (norm_nonneg _) (nO c hvO)).trans ((UpperTheory.Kd.C7.DivAlg.nsub _ _).trans (max_le ?_ ?_))
   · exact (IsUltrametricDist.norm_add_le_max _ _).trans
-      (max_le ((nsub _ _).trans (max_le hsmall (hAa.trans hrle))) (hCa.trans hrle))
+      (max_le ((UpperTheory.Kd.C7.DivAlg.nsub _ _).trans (max_le hsmall (hAa.trans hrle))) (hCa.trans hrle))
   · rw [norm_mul]
     exact (mul_le_of_le_one_left (norm_nonneg _) hρ).trans hlim
 end -- clump:auto
@@ -801,7 +784,7 @@ theorem UpperTheory.Kd.C7.pDiv :
         (l : Qbar l) ^ c₂ * sp (eta φ k r) (Z r) s - (eta φ k r (cycMod ℚ Ω l r s) - 1) * w := by
       rw [Finset.sum_congr rfl (fun x _ => hx x), Finset.sum_add_distrib, Finset.sum_sub_distrib,
         ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, Finset.sum_ite_eq', Finset.sum_ite_eq',
-        if_pos (Finset.mem_univ _), if_pos (Finset.mem_univ _), eta_one_of_one_le l φ k r (le_of_max_le_right hr)]
+        ite_eq_left (Finset.mem_univ _), ite_eq_left (Finset.mem_univ _), eta_one_of_one_le l φ k r (le_of_max_le_right hr)]
       simp only [sp]
       ring
     rw [cg_iff_norm_sub_le_norm_pow, sub_zero, e]
@@ -814,7 +797,7 @@ theorem UpperTheory.Kd.C7.pDiv :
       ∀ x, μ s r x = Z' r s (x * un g hg r) - φ ↑g * ↑g ^ k * Z' r s x := by
     refine ⟨fun r s => @dite _ (s ∈ Ine A) (Classical.dec _) (fun h => Classical.choose (hex s h r)) (fun _ => fun _ => 0), ?_⟩
     intro r s hs
-    simp only [dif_pos hs]
+    simp only [dite_eq_left hs]
     exact Classical.choose_spec (hex s hs r)
   have inj : ∀ r (q : (ZMod (l ^ r))ˣ → Qbar l),
       (∀ x, q (x * un g hg r) - φ ↑g * ↑g ^ k * q x = 0) → ∀ x, q x = 0 := by

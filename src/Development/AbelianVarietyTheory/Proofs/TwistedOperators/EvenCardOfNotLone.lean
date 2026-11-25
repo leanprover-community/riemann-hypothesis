@@ -21,54 +21,10 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsSupUnit
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsUnionSupLocalSquaresEqTop
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TwoPowLeIndexLocalNormsSqrtExtension
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AlmostNormFinDiag
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSquareOfValuedSubOneLt
 
@@ -181,20 +137,20 @@ theorem neg_mem_nrm (p : Place F) (b : Fˣ) : -b ∈ nrm p b := mem_nrm_of_eq p 
 theorem hs_comm (p : Place F) (a b : Fˣ) : hs p a b = hs p b a := by
   unfold hs
   by_cases h : a ∈ nrm p b
-  · rw [if_pos h, if_pos (nrm_symm h)]
-  · rw [if_neg h, if_neg (fun h' => h (nrm_symm h'))]
+  · rw [ite_eq_left h, ite_eq_left (nrm_symm h)]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (nrm_symm h'))]
 
 theorem hs_mul_left (p : Place F) (a a' b : Fˣ) : hs p (a * a') b = hs p a b * hs p a' b := by
   unfold hs
   by_cases h : a ∈ nrm p b <;> by_cases h' : a' ∈ nrm p b
-  · rw [if_pos h, if_pos h', if_pos (mul_mem h h'), mul_one]
-  · rw [if_pos h, if_neg h', if_neg, one_mul]
+  · rw [ite_eq_left h, ite_eq_left h', ite_eq_left (mul_mem h h'), mul_one]
+  · rw [ite_eq_left h, ite_eq_right h', ite_eq_right, one_mul]
     intro hm
     exact h' (by simpa using mul_mem (inv_mem h) hm)
-  · rw [if_neg h, if_pos h', if_neg, mul_one]
+  · rw [ite_eq_right h, ite_eq_left h', ite_eq_right, mul_one]
     intro hm
     exact h (by simpa using mul_mem hm (inv_mem h'))
-  · rw [if_neg h, if_neg h', if_pos (mul_mem_nrm_of_not h h')]
+  · rw [ite_eq_right h, ite_eq_right h', ite_eq_left (mul_mem_nrm_of_not h h')]
     decide
 
 theorem hs_mul_right (p : Place F) (a b b' : Fˣ) : hs p a (b * b') = hs p a b * hs p a b' := by
@@ -392,7 +348,7 @@ private lemma exists_vec_one_smul_mem_of_first_coord {p : Place F} {a δ b : Fˣ
   by_cases h3 : ∃ c, c ∈ nrm p δ ∧ c ∉ nrm p (b * δ)
   · obtain ⟨c, hc1, hc2⟩ := h3
     exact ⟨c⁻¹, c * a, (inv_mul_cancel_left c a).symm, inv_mem hc1, mul_mem_nrm_of_not hc2 h2⟩
-  push_neg at h3
+  push Not at h3
   exfalso
   obtain ⟨x, hx⟩ := exists_not_mem_nrm hb
   have key : ∀ c : Fˣ, hs p c b = -1 → hs p c δ = -1 := by
@@ -711,10 +667,10 @@ theorem even_card_of_not_lone {a b : Fˣ} (L : Finset (Place F)) (hL : ∀ p, p 
         (fun p hp hpq => sqr_le_nrm q b (hc2 p hp q hq (Ne.symm hpq)))
       rw [← hs_eq_one_iff, hs_mul_left]
       by_cases hqL : q ∈ L
-      · rw [if_pos hqL] at h
+      · rw [ite_eq_left hqL] at h
         rw [h, hs_eq_neg_one_iff.2 ((hL q).1 hqL)]
         simp
-      · rw [if_neg hqL] at h
+      · rw [ite_eq_right hqL] at h
         rw [h, hs_eq_one_iff.2 (not_not.1 (mt (hL q).2 hqL))]
         simp
     have he : ∏ p ∈ L, c p = a⁻¹ * (a * ∏ p ∈ L, c p) := by group
@@ -752,10 +708,10 @@ theorem prod_hs_of_not_lone (a b : Fˣ) (T : Finset (Place F)) (hT : ∀ p ∈ T
     have h := hP q
     rw [← hs_eq_one_iff, hs_mul_left]
     by_cases hqΛ : q ∈ hfin.toFinset
-    · rw [if_pos hqΛ] at h
+    · rw [ite_eq_left hqΛ] at h
       rw [h, hs_eq_neg_one_iff.2 ((hΛ q).1 hqΛ).1]
       simp
-    · rw [if_neg hqΛ] at h
+    · rw [ite_eq_right hqΛ] at h
       have ha : a ∈ nrm q b := by
         by_contra ha
         exact hqΛ ((hΛ q).2 ⟨ha, hq⟩)
@@ -765,7 +721,7 @@ theorem prod_hs_of_not_lone (a b : Fˣ) (T : Finset (Place F)) (hT : ∀ p ∈ T
     intro q hq
     have h := hP q
     have hqΛ : q ∉ hfin.toFinset := fun h' => hq ((hΛ q).1 h').2
-    rw [if_neg hqΛ] at h
+    rw [ite_eq_right hqΛ] at h
     rw [hs_mul_left, h, mul_one]
   have hfin' := finite_not_mem_nrm (a * ∏ p ∈ hfin.toFinset, c p) b
   have hL' : ∀ p, p ∈ hfin'.toFinset ↔ a * ∏ p ∈ hfin.toFinset, c p ∉ nrm p b :=
@@ -1074,13 +1030,13 @@ theorem not_lone (p₀ : Place F) : ¬ Lone p₀ := by
   have hxW : x ∈ W := (hmemW x).2 fun q hq hql => by
     have hqp : q ≠ p₀ := fun h => hql (h ▸ hlone)
     have h := hx q hq
-    rw [if_neg hqp, mul_one] at h
+    rw [ite_eq_right hqp, mul_one] at h
     exact h
   have hxL : x ∉ locSq F S := by
     intro h
     have h1 := (mem_locSq_iff.1 h) p₀ hp₀
     have h2 := hx p₀ hp₀
-    rw [if_pos rfl] at h2
+    rw [ite_eq_left rfl] at h2
     apply hb
     have he : b = x⁻¹ * (x * b) := by group
     rw [he]

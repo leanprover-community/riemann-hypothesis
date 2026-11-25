@@ -95,9 +95,9 @@ theorem vecV_sub (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) →
   have h₁₂ := cpt_sub Bs h₁ h₂
   unfold D.vecV
   by_cases h : D.IsLocPt q (r + 1) ∧ 0 < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     by_cases h' : ∃ γ ∈ B.GV k r, Zhat k r Bs.z Bs.z' γ = D.ptMatN q (r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-    · simp only [dif_pos h']
+    · simp only [dite_eq_left h']
       have hγ := h'.choose_spec.1
       have hZ := h'.choose_spec.2.1
       have hGq := Formalism.FourierDecayAlt.P.ptG_spec k r Bs.z Bs.z' q h'.choose h.1 hZ
@@ -127,7 +127,7 @@ theorem vecV_sub (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) →
         have hex : ∃ θ', D.IsNormCut Bs h'.choose (D.muR Bs h'.choose (h.1.2 ▸ D.ptPerm q)) θ' ∧
             Integrable (fun p => θ' p • D.orbIntegrand Bs h'.choose G p) Bs.μSS := ⟨θ, hθ, hi⟩
         unfold D.orbJ
-        rw [dif_pos hex]
+        rw [dite_eq_left hex]
         exact Formalism.FourierDecayAlt.P.orbital_integral_indep_choice k r Wp Wq Bs h'.choose _ hrel hR G _ θ hex.choose_spec.1 hθ
           hex.choose_spec.2 hi
       obtain ⟨e1, i1⟩ := hEq H₁ c₁ hc₁0 h₁ hb₁
@@ -139,8 +139,8 @@ theorem vecV_sub (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) →
       funext p
       simp only [D.orbIntegrand, B.rho, ContinuousLinearMap.sub_comp,
         ContinuousLinearMap.comp_sub, smul_sub]
-    · simp only [dif_neg h', sub_zero]
-  · simp only [dif_neg h, sub_zero]
+    · simp only [dite_eq_right h', sub_zero]
+  · simp only [dite_eq_right h, sub_zero]
 
 end lin
 

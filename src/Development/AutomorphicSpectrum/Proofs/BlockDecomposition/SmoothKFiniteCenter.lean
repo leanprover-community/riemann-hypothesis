@@ -641,7 +641,6 @@ theorem moderate_growth : ∀ (E : Type) [Field E] [NumberField E] [_root_.Numbe
   have h1O : (1 : AdelicGLn.FiniteAdelicGL E a) ∈ {k | finRep E a k φ = φ} := by
     change finRep E a 1 φ = φ
     rw [map_one]; rfl
-  set_option synthInstance.maxHeartbeats 200000 in
   obtain ⟨U, hU1, hUO, hUc⟩ := local_compact_nhds (hlev.mem_nhds h1O)
   obtain ⟨p, hpdef⟩ : ∃ p : GA E a → AutomorphicForm.archGroup E a,
       p = fun h => AutomorphicForm.archEquiv E a (AdelicGLn.prodEquiv E a h).1 := ⟨_, rfl⟩

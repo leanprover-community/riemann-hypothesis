@@ -1003,7 +1003,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.KSplit
 open scoped Matrix
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.exists_tensorLattice_point_of_integral_splitPlace_coordinate : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ},
     IsCMExt F E σ → ∀ (X : Spc F E n) (W : Spc F E d) (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (b : GL (Fin n) (Fv F v))
@@ -1042,10 +1041,8 @@ theorem symp_eq_zero_of_comp (hcm : IsCMExt F E σ) {v : Pl (F := F)} (s : E →
   have hx' : ∀ i j, piW (s.comp σ) (x i j) = 0 := fun i j => by simpa using congrFun (congrFun hx0 i) j
   have hy' : ∀ i j, piW (s.comp σ) (y i j) = 0 := fun i j => by simpa using congrFun (congrFun hy0 i) j
   have h1 : piW s z = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [hz, hTens, map_sum, map_mul, GlobalTheory.VacIso.piW_cA, hy', mul_zero, Finset.sum_const_zero]
   have h2 : piW (s.comp σ) z = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [hz, hTens, map_sum, map_mul, hx', zero_mul, Finset.sum_const_zero]
   have : z = 0 := GlobalTheory.VacIso.eq_zero_of_at_split hcm s hat h1 h2
   simp only [symp, ← hz, this, mul_zero, map_zero]

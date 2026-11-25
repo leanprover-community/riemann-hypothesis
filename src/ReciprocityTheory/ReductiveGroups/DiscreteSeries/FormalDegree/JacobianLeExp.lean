@@ -47,7 +47,7 @@ theorem shc_bounds (u : ℝ) : 1 ≤ shc u ∧ shc u ≤ Real.exp (u ^ 2 / 6) �
     simp [shc]
   have hs : HasSum (fun k : ℕ => (u ^ 2) ^ k / ((2 * k + 1).factorial : ℝ)) (shc u) := by
     have h := (Real.hasSum_sinh u).div_const u
-    rw [shc, if_neg hu]
+    rw [shc, ite_eq_right hu]
     have hfun : (fun k : ℕ => (u ^ 2) ^ k / ((2 * k + 1).factorial : ℝ))
         = fun k : ℕ => u ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) / u := by
       funext k
@@ -199,13 +199,8 @@ private theorem pmat_eq_zero_of_sign_eq {ε : Fin n → Bool} (z : PCoord ε →
 private theorem matrix_rank_add_le' (P Q : Matrix (Fin n) (Fin n) ℂ) :
     (P + Q).rank ≤ P.rank + Q.rank := by
   simp only [← Matrix.finrank_range_mulVecLin]
-  have hle : LinearMap.range (P + Q).mulVecLin
-      ≤ LinearMap.range P.mulVecLin ⊔ LinearMap.range Q.mulVecLin := by
-    rintro _ ⟨v, rfl⟩
-    have e : (P + Q).mulVecLin v = P.mulVecLin v + Q.mulVecLin v := by
-      simp
-    rw [e]
-    exact Submodule.add_mem_sup (LinearMap.mem_range_self _ v) (LinearMap.mem_range_self _ v)
+  have hle := LinearMap.range_add_le P.mulVecLin Q.mulVecLin
+  rw [← Matrix.mulVecLin_add] at hle
   exact (Submodule.finrank_mono hle).trans (Submodule.finrank_add_le_finrank_add_finrank _ _)
 
 private theorem rank_pmat_le_two_mul_q0_count {ε : Fin n → Bool} (z : PCoord ε → ℂ) :

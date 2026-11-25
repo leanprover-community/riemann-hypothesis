@@ -227,7 +227,3 @@ theorem oneV_eq (h11 : A11) (X : Scheme.{0}) (hl : IsUnit (l : Γ(X, ⊤))) : on
 end V
 
 end LateralTheory.EtaleTrace.LRingPf
-
-namespace LateralTheory.EtaleTrace
-
-end LateralTheory.EtaleTrace

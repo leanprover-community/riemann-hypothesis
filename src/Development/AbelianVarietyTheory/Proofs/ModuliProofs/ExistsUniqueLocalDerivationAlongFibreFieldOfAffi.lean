@@ -2,45 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLocalDerivationExtensionOfAffine
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -53,81 +16,12 @@ namespace GlobalTheory.LocDerExtK
 open GlobalTheory.LocDerExt
 
 theorem rsT_eq {Y : Scheme.{0}} {O₀ O : Y.Opens} (h : O ≤ O₀) (s : Γ(Y, O₀)) :
-    rsT s O = resG Y h s := dif_pos h
+    rsT s O = resG Y h s := dite_eq_left h
 
-theorem exists_locDerK : ∀ (K : Type) [Field K] (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y ⟶ Sp K) (p : X ⟶ Sp R) (m : Y ⟶ X) (D : R → K) (W₀ : X.Opens), IsAffineOpen W₀ → ∀ d₀ : Γ(X, W₀) → Γ(Y, m ⁻¹ᵁ W₀), (∀ a b, d₀ (a + b) = d₀ a + d₀ b) → (∀ a b, d₀ (a * b) = (m.app W₀).hom a * d₀ b + (m.app W₀).hom b * d₀ a) → (∀ r, d₀ (constFn p W₀ r) = constFn q (m ⁻¹ᵁ W₀) (D r)) → ∃ d, LocDerK q p m D W₀ d ∧ d W₀ = d₀ := by
-  intro K _ R _ Y X q p m D W₀ hW d₀ hadd hmul hbase
-  have H : ∀ f : Γ(X, W₀), ∃ δ : Γ(X, X.basicOpen f) → Γ(Y, m ⁻¹ᵁ X.basicOpen f),
-      (∀ a b, δ (a + b) = δ a + δ b) ∧
-      (∀ a b, δ (a * b) = (m.app _).hom a * δ b + (m.app _).hom b * δ a) ∧
-      ∀ a, δ (resG X (X.basicOpen_le f) a) = resG Y (m.preimage_mono (X.basicOpen_le f)) (d₀ a) := by
-    intro f
-    haveI := hW.isLocalization_basicOpen f
-    refine der_exists f (m.app (X.basicOpen f)).hom
-      (fun a => resG Y (m.preimage_mono (X.basicOpen_le f)) (d₀ a)) (fun a b => by simp only [hadd, map_add (f := _)])
-      (fun a b => ?_)
-    have e : ∀ a, (m.app (X.basicOpen f)).hom (algebraMap Γ(X, W₀) Γ(X, X.basicOpen f) a) =
-        resG Y (m.preimage_mono (X.basicOpen_le f)) ((m.app W₀).hom a) :=
-      fun a => app_res m (X.basicOpen_le f) a
-    rw [e, e]
-    simp only [hmul, map_add (f := _), map_mul]
-  choose δ δadd δmul δres using H
-  have compat : ∀ (f g : Γ(X, W₀)) (k : X.basicOpen g ≤ X.basicOpen f) (s : Γ(X, X.basicOpen f)),
-      resG Y (m.preimage_mono k) (δ f s) = δ g (resG X k s) := by
-    intro f g k s
-    haveI := hW.isLocalization_basicOpen f
-    refine der_unique f ((m.app (X.basicOpen g)).hom.comp (resG X k))
-      (fun s => resG Y (m.preimage_mono k) (δ f s)) (fun s => δ g (resG X k s)) (fun a b => ?_)
-      (fun a b => ?_) (fun a => ?_) s
-    · simp only [δmul, map_add (f := _), map_mul, RingHom.comp_apply, app_res m k]
-    · simp only [δmul, map_mul, RingHom.comp_apply]
-    · change resG Y (m.preimage_mono k) (δ f (resG X (X.basicOpen_le f) a)) =
-        δ g (resG X k (resG X (X.basicOpen_le f) a))
-      rw [res_res X, δres, δres, res_res Y]
-  have G : ∀ (W : X.Opens), W ≤ W₀ → ∀ s : Γ(X, W), ∃ t : Γ(Y, m ⁻¹ᵁ W),
-      ∀ (f : Γ(X, W₀)) (k : X.basicOpen f ≤ W), resG Y (m.preimage_mono k) t = δ f (resG X k s) := by
-    intro W h s
-    obtain ⟨t, ht, -⟩ := Y.sheaf.existsUnique_gluing'
-      (fun i : {f : Γ(X, W₀) // X.basicOpen f ≤ W} => m ⁻¹ᵁ X.basicOpen i.1)
-      (m ⁻¹ᵁ W) (fun i => homOfLE (m.preimage_mono i.2)) (cover m hW h)
-      (fun i => δ i.1 (resG X i.2 s)) (fun i j => by
-        have e : X.basicOpen (i.1 * j.1) = X.basicOpen i.1 ⊓ X.basicOpen j.1 := X.basicOpen_mul _ _
-        have ki : X.basicOpen (i.1 * j.1) ≤ X.basicOpen i.1 := e.le.trans inf_le_left
-        have kj : X.basicOpen (i.1 * j.1) ≤ X.basicOpen j.1 := e.le.trans inf_le_right
-        have k : m ⁻¹ᵁ X.basicOpen i.1 ⊓ m ⁻¹ᵁ X.basicOpen j.1 ≤ m ⁻¹ᵁ X.basicOpen (i.1 * j.1) :=
-          fun y hy => e.ge hy
-        have e' : resG Y (m.preimage_mono ki) (δ i.1 (resG X i.2 s)) =
-            resG Y (m.preimage_mono kj) (δ j.1 (resG X j.2 s)) := by
-          rw [compat _ _ ki, compat _ _ kj, res_res X, res_res X]
-        have e'' := congrArg (resG Y k) e'
-        rw [res_res Y, res_res Y] at e''
-        exact e'')
-    exact ⟨t, fun f k => ht ⟨f, k⟩⟩
-  choose t ht using G
-  classical
-  refine ⟨fun W s => if h : W ≤ W₀ then t W h s else 0, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
-  · intro W h a b
-    simp only [dif_pos h]
-    refine sep m hW h _ _ (fun f k => ?_)
-    rw [map_add (f := _), ht W h _ f k, ht W h _ f k, ht W h _ f k, map_add (f := _), δadd]
-  · intro W h a b
-    simp only [dif_pos h]
-    refine sep m hW h _ _ (fun f k => ?_)
-    rw [map_add (f := _), map_mul, map_mul, ht W h _ f k, ht W h _ f k, ht W h _ f k, map_mul, δmul, app_res m k, app_res m k]
-  · intro W W' h' h a
-    simp only [dif_pos h, dif_pos (h'.trans h)]
-    refine sep m hW (h'.trans h) _ _ (fun f k => ?_)
-    rw [rsT_eq (m.preimage_mono h')]
-    refine Eq.trans ?_ (res_res Y (m.preimage_mono h') (m.preimage_mono k) _).symm
-    rw [ht W' _ _ f k, ht W h a f (k.trans h'), res_res X]
-  · intro W h r
-    simp only [dif_pos h]
-    refine sep m hW h _ _ (fun f k => ?_)
-    rw [ht W h _ f k, res_const, res_const, ← res_const p (X.basicOpen_le f), δres, hbase, res_const]
-  · funext a
-    simp only [dif_pos (le_refl W₀)]
-    refine sep m hW le_rfl _ _ (fun f k => ?_)
-    rw [ht W₀ _ _ f k, δres]
+theorem exists_locDerK : ∀ (K : Type) [Field K] (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y ⟶ Sp K) (p : X ⟶ Sp R) (m : Y ⟶ X) (D : R → K) (W₀ : X.Opens), IsAffineOpen W₀ → ∀ d₀ : Γ(X, W₀) → Γ(Y, m ⁻¹ᵁ W₀), (∀ a b, d₀ (a + b) = d₀ a + d₀ b) → (∀ a b, d₀ (a * b) = (m.app W₀).hom a * d₀ b + (m.app W₀).hom b * d₀ a) → (∀ r, d₀ (constFn p W₀ r) = constFn q (m ⁻¹ᵁ W₀) (D r)) → ∃ d, LocDerK q p m D W₀ d ∧ d W₀ = d₀ :=
+  fun K _ R _ Y X q p m D W₀ hW d₀ hadd hmul hbase =>
+    let ⟨d, ha, hm, hr, hb, h0⟩ := exists_locDer_data K R Y X q p m D W₀ hW d₀ hadd hmul hbase
+    ⟨d, ⟨ha, hm, fun W W' h' h a => (hr W W' h' h a).trans (rsT_eq (m.preimage_mono h') _).symm, hb⟩, h0⟩
 
 theorem locDerK_unique {K : Type} [Field K] {R : Type} [CommRing R] {Y X : Scheme.{0}} {q : Y ⟶ Sp K}
     {p : X ⟶ Sp R} {m : Y ⟶ X} {D : R → K} {W₀ : X.Opens} (hW : IsAffineOpen W₀)

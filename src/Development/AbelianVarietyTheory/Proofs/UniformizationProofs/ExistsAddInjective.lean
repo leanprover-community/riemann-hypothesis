@@ -52,10 +52,8 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.Balanced
 open GlobalTheory.TorusExt
 
@@ -204,4 +202,3 @@ theorem exists_add_injective {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Mo
   exact ⟨m, hm⟩
 
 end GlobalTheory.Balanced
-end

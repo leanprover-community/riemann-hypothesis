@@ -502,8 +502,6 @@ noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
 
-
-
 lemma le_of_second_difference_bound {y c₀ C N eY ey h : ℝ} (hy : 2 ≤ y) (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1) (hC : 0 ≤ C)
     (hh : h = Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)))
     (hey0 : 0 ≤ ey) (heY0 : 0 ≤ eY) (hey : ey ≤ h ^ 2) (heY : eY ≤ h ^ 2)
@@ -914,7 +912,7 @@ theorem chebyshev_character_bound_of : PsiChiBoundOf := by
   by_cases hχ : χ = 1
   · have hB0 : B = ∅ := Finset.eq_empty_of_forall_notMem fun β hβ => (hB.2.1 β hβ).1 hχ
     subst hχ hB0
-    rw [if_pos rfl, Finset.sum_empty, add_zero]
+    rw [ite_eq_left rfl, Finset.sum_empty, add_zero]
     have hG' : ∀ z : ℝ, x ≤ z → |Formalism.Gz z| ≤ Kg' * z * Real.exp (-cg * Real.sqrt (Real.log z)) := by
       intro z hz
       refine (hGz z (by linarith)).trans ?_
@@ -925,7 +923,7 @@ theorem chebyshev_character_bound_of : PsiChiBoundOf := by
       simpa [mul_assoc] using mul_le_mul_of_nonneg_right hle this
     have := chebyshev_principal_character_bound (q := q) hc0 hc01 hc0g hKg' hx hq hG'
     linarith [this, mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * Cs') he4]
-  · rw [if_neg hχ, sub_zero]
+  · rw [ite_eq_right hχ, sub_zero]
     have hE : ∀ z : ℝ, x ≤ z →
         ‖Schi χ z - negLD χ 1 * z + ∑ β ∈ B, (z : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ ≤
           Cs' * z * Real.exp (-cs * Real.sqrt (Real.log z)) := by
@@ -964,18 +962,10 @@ noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
 
-lemma log_analytic_conductor_pos (q : ℕ) [NeZero q] (t : ℝ) : 0 < Real.log ((q : ℝ) * (|t| + 2)) := by
-  have hq : (1:ℝ) ≤ q := by
-    have h1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-    exact_mod_cast h1
-  apply Real.log_pos
-  have ht := abs_nonneg t
-  nlinarith
-
 lemma zero_free_region_mono {c c' : ℝ} (h : c ≤ c') {q : ℕ} [NeZero q] {s : ℂ} (hs : InRegion c q s) :
     InRegion c' q s := by
   unfold InRegion at hs ⊢
-  have hL := log_analytic_conductor_pos q s.im
+  have hL := Formalism.ZeroFreeDirichlet.log_conductor_pos_real q s.im
   have h2 : c / Real.log (↑q * (|s.im| + 2)) ≤ c' / Real.log (↑q * (|s.im| + 2)) := by
     first
       | exact div_le_div_of_nonneg_right h hL.le
@@ -984,7 +974,7 @@ lemma zero_free_region_mono {c c' : ℝ} (h : c ≤ c') {q : ℕ} [NeZero q] {s 
 lemma half_le_of_real_in_region {c₁ : ℝ} (h : c₁ ≤ 1 / 20) {q : ℕ} [NeZero q] {β : ℝ} (hs : InRegion c₁ q (β : ℂ)) :
     1 / 2 ≤ β := by
   unfold InRegion at hs
-  have hL := log_analytic_conductor_pos q (β:ℂ).im
+  have hL := Formalism.ZeroFreeDirichlet.log_conductor_pos_real q (β:ℂ).im
   have h2 : (2:ℝ) ≤ (q:ℝ) * (|(β:ℂ).im| + 2) := by
     have hq : (1:ℝ) ≤ q := by
       have h1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
@@ -1021,7 +1011,7 @@ lemma exists_exceptional_zero_set (cZ c₁ : ℝ) (hle : c₁ ≤ cZ)
       refine ⟨s.re, Finset.mem_singleton_self _, ?_⟩
       rw [hss]
       exact Complex.ext (by simp) (by simp [him])
-  · push_neg at h
+  · push Not at h
     refine ⟨∅, by simp, by simp, ?_⟩
     intro s hs hL
     exact absurd hL (h s hs)
@@ -1173,7 +1163,7 @@ theorem siegel_walfisz_character_of : SiegelWalfiszOf := by
     have s3 : x * (U + 1) * (Real.exp (cf * Real.sqrt U) * Real.exp (-cf * Real.sqrt (Real.log x))) =
         (U + 1) * Real.exp (cf * Real.sqrt U) * x * Real.exp (-cf * Real.sqrt (Real.log x)) := by ring
     linarith
-  · push_neg at hsmall
+  · push Not at hsmall
     have hqexp : (q:ℝ) ≤ Real.exp (c * Real.sqrt (Real.log x)) := le_trans hqL hsmall
     obtain ⟨B, hB⟩ := exists_exceptional_zero_set cZ c₁ hc₁Z hZ' q χ
     have hmain := hPC q χ B x hB hx hqexp
@@ -1252,7 +1242,7 @@ theorem exists_contour_avoiding_real_zero (B : Finset ℝ) (hB : B.card ≤ 1) (
   · exact ⟨_, Or.inl rfl, fun β' hβ' => by rw [hBs β' hβ']; exact h⟩
   · refine ⟨_, Or.inr rfl, fun β' hβ' => ?_⟩
     rw [hBs β' hβ']
-    push_neg at h
+    push Not at h
     have tri := abs_sub_le (1 - c₁ / (3 * L)) β (1 - c₁ / (4 * L))
     rw [hab, abs_neg, abs_of_pos (by positivity), abs_sub_comm β] at tri
     linarith
@@ -1285,7 +1275,6 @@ open Complex MeasureTheory
 noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
-
 
 theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftChi) (c₁ C C₀ : ℝ) (hc₁ : 0 < c₁)
     (hc₁' : c₁ ≤ 1 / 20) (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀)
@@ -1516,7 +1505,7 @@ theorem perron_error_terms_sum_bound (C C₀ c₁ y T X L Pw Y ℓ : ℝ) (hc₁
       (2 * Real.pi * Real.exp 1 * (1 + C₀) + 6 * Real.exp 1 * (C + 1) +
         16 * (C / c₁ + 24 / c₁ ^ 2) + 8 / c₁) * Pw * (y * X + T * Y) := by
   have hT0 : 0 < T := by linarith
-  have hX0 : 0 < X := by by_contra h; push_neg at h; have := mul_nonpos_of_nonneg_of_nonpos hT0.le h; linarith
+  have hX0 : 0 < X := by by_contra h; push Not at h; have := mul_nonpos_of_nonneg_of_nonpos hT0.le h; linarith
   have hX1 : X ≤ 1 := by have := le_mul_of_one_le_left hX0.le hT1; linarith
   have e1 : ∀ z : ℝ, z / T = z * X := fun z => by
     rw [div_eq_iff hT0.ne', mul_assoc, mul_comm X T, hTX, mul_one]

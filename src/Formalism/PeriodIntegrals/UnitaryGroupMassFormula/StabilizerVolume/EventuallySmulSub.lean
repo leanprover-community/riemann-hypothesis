@@ -65,14 +65,9 @@ theorem reach_of_approx (π : K) (hπ : Tendsto (fun k : ℕ => π ^ k) atTop (�
     (P : AddSubgroup X) (hPc : IsCompact (P : Set X))
     (hbase : ∀ p ∈ P, ∃ l ∈ L, p - D l ∈ smulSub π P) :
     ∀ p ∈ P, ∃ l ∈ L, D l = p := by
-  have hπkL : ∀ k : ℕ, ∀ w ∈ L, π ^ k • w ∈ L := by
-    intro k
-    induction k with
-    | zero => intro w hw; simpa using hw
-    | succ k ih =>
-      intro w hw
-      rw [pow_succ, mul_smul]
-      exact ih _ (hπL w hw)
+  have hπkL : ∀ k : ℕ, ∀ w ∈ L, π ^ k • w ∈ L := fun k w hw => by
+    rw [← smul_iterate_apply]
+    exact Set.MapsTo.iterate (f := (π • · : V → V)) (s := (L : Set V)) hπL k hw
   have hstep : ∀ k : ℕ, ∀ p ∈ P, ∃ l ∈ L, p - D l ∈ smulSub (π ^ k) P := by
     intro k
     induction k with
@@ -127,16 +122,8 @@ theorem filt_abstract [ContinuousMul K] (π : K) (hπ0 : π ≠ 0) (hπ : Tendst
         (∀ n, IsOpen (H n : Set X)) ∧ (∀ n, IsCompact (H n : Set X)) ∧
         (∀ N' ∈ 𝓝 (0 : X), ∃ n, (H n : Set X) ⊆ N') ∧ (∀ n, (Λ n).map D = H n) ∧
         ∀ n, ∀ Z ∈ Λ 0, ∀ W ∈ Λ n, G (y + Z + W) - G (y + Z) - D W ∈ H (n + 1) := by
-  have hβ0 : ∀ w, β 0 w = 0 := fun w => by
-    have h := hβ1 0 0 w
-    rw [add_zero] at h
-    simpa using h
-  have hβ0' : ∀ u, β u 0 = 0 := fun u => by
-    have h := hβ2 u 0 0
-    rw [add_zero] at h
-    simpa using h
-  let Dm : V → V →+ X := fun u =>
-    { toFun := β u, map_zero' := hβ0' u, map_add' := hβ2 u }
+  have hβ0 : ∀ w, β 0 w = 0 := fun w => (AddMonoidHom.mk' (β · w) fun u u' => hβ1 u u' w).map_zero
+  let Dm : V → V →+ X := fun u => AddMonoidHom.mk' (β u) (hβ2 u)
   have hDm : ∀ u w, Dm u w = β u w := fun _ _ => rfl
   have hDmc : ∀ u, Continuous (Dm u) := fun u =>
     hβc.comp (Continuous.prodMk continuous_const continuous_id)
@@ -150,14 +137,9 @@ theorem filt_abstract [ContinuousMul K] (π : K) (hπ0 : π ≠ 0) (hπ : Tendst
     intro p hp
     obtain ⟨l, hl, rfl⟩ := AddSubgroup.mem_map.1 hp
     exact AddSubgroup.mem_map.2 ⟨π • l, hπL l hl, by rw [hDm, hDm, hβs]⟩
-  have hπkP : ∀ k : ℕ, ∀ p ∈ P, π ^ k • p ∈ P := by
-    intro k
-    induction k with
-    | zero => intro p hp; simpa using hp
-    | succ k ih =>
-      intro p hp
-      rw [pow_succ, mul_smul]
-      exact ih _ (hπP p hp)
+  have hπkP : ∀ k : ℕ, ∀ p ∈ P, π ^ k • p ∈ P := fun k p hp => by
+    rw [← smul_iterate_apply]
+    exact Set.MapsTo.iterate (f := (π • · : X → X)) (s := (P : Set X)) hπP k hp
   set πP := smulSub π P with hπPdef
   have hπPo : IsOpen (πP : Set X) := isOpen_smulSub π hπ0 P hPo
   have hN1 : ∀ᶠ u in 𝓝 (0 : V), ∀ w ∈ (L : Set V), β u w ∈ (πP : Set X) := by

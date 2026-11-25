@@ -294,7 +294,7 @@ theorem exists_isRatio : ∀ (X : Scheme.{0}) (Ω Ω₀ : Type) [Field Ω] [Fiel
   have hψ : ∀ w ∈ mcPts (mCoordIdeal y), ∀ t, IsCmp i y₀ y bk bx a a₀ e e₀ w t → ψ w = t := by
     intro w hm t ht
     have h : ∃ t, IsCmp i y₀ y bk bx a a₀ e e₀ w t := ⟨t, ht⟩
-    simp only [ψ, dif_pos h]
+    simp only [ψ, dite_eq_left h]
     exact isCmp_unique hT hy hm h.choose_spec ht
   refine ⟨fun w => ‖ψ w‖, fun w hm => ?_, fun w hm => ?_, fun w hm s hs => ?_, fun w hm => ?_, ?_⟩
   · obtain ⟨t, ht⟩ := hex w hm
@@ -926,12 +926,6 @@ section -- clump:auto
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem exists_conjInvariant_line_averaged : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (A : HermLine ι), IsSmoothHerm A → ∃ B : HermLine ι, B.a = A.a ∧ IsSmoothHerm B ∧ IsConjInvariantH B ∧ ∀ z : (Σ k, ι k) → ℂ, (∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) → Real.log (B.h z) = (Real.log (A.h z) + Real.log (A.h fun p => starRingEnd ℂ (z p))) / 2 :=
-  @PositivityTheory.Xgp.t_line_conj
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationInvariantHermitianMetric =====
@@ -1100,7 +1094,7 @@ theorem exists_flat_line : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, F
     have h1 := hpt x
     rw [e, (H.tensor B).smul c z hc, hT₀a, hsm z hz c hc] at h1
     exact mul_left_cancel₀ hne h1
-  obtain ⟨T, hTa, hTs, hTc, hT⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.exists_conjInvariant_line_averaged K J (H.tensor B) hT₀s
+  obtain ⟨T, hTa, hTs, hTc, hT⟩ := _root_.PositivityTheory.Xgp.t_line_conj K J (H.tensor B) hT₀s
   have hTφ : ∀ z ∈ mcPts P, T.h z = φ z := by
     intro z hz
     have hc := conj_mem_mcPts hz

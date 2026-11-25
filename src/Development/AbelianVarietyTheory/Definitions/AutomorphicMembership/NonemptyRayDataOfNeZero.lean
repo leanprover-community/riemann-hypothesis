@@ -16,7 +16,7 @@ variable {K : Type} [Field K] [NumberField K]
 
 def primeTo (K : Type) [Field K] [NumberField K] (M : ℕ) : Submonoid (Ideal (𝓞 K)) where
   carrier := {I | IsCoprime I (Ideal.span {(M : 𝓞 K)}) ∧ I ≠ ⊥}
-  mul_mem' := fun {I J} hI hJ => ⟨hI.1.mul_left hJ.1, mul_ne_zero hI.2 hJ.2⟩
+  mul_mem' := fun {_ _} hI hJ => ⟨hI.1.mul_left hJ.1, mul_ne_zero hI.2 hJ.2⟩
   one_mem' := ⟨isCoprime_one_left, one_ne_zero⟩
 
 theorem one_mul_mem {R : Type} [CommRing R] {A : Ideal R} {a b : R} (ha : a - 1 ∈ A) (hb : b - 1 ∈ A) : a * b - 1 ∈ A := by

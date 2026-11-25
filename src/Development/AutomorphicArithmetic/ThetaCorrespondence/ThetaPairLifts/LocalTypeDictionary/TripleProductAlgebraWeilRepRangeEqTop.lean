@@ -83,12 +83,12 @@ theorem tripleProductAlgebra_weilRep_range_eq_top : GlobalTheory.Published.HoweD
     rw [e1]
     exact right_ne_zero_of_mul dV'
   constructor
-  · obtain ⟨T, hT, hinj⟩ := GlobalTheory.T.thetaTransform_darbouxModel_linear_injective D Γ.M ψ (sgn true W).gram e (hψ' ▸ hg.hM) hstd dV dW gA
+  · obtain ⟨T, hT, hinj⟩ := GlobalTheory.ThetaTransformInj.linear_injective D Γ.M ψ (sgn true W).gram e (hψ' ▸ hg.hM) hstd dV dW gA
     rw [← iA T hT]
     refine (map_thetaLift Γ.M ψ _ e _ _ (_root_.GlobalTheory.TripleAssembly.darbAlg_le_schA _ _ _ Γ.M Bs.ψ Bs.emb hg.hM) T hT hinj).trans ?_
     exact map_darbAlg_eq_top Γ.M Bs.ψ Bs.emb hg.hM R.p Rf.p _ (Filter.Eventually.of_forall fun _ => rfl)
       hm.real.quot.onto hm.fin.onto
-  · obtain ⟨T, hT, hinj⟩ := GlobalTheory.T.thetaTransform_darbouxModel_linear_injective D Γ.M' ψ (sgn false W₁).gram e (hψ' ▸ hg.hM') hstd dV' dW gB
+  · obtain ⟨T, hT, hinj⟩ := GlobalTheory.ThetaTransformInj.linear_injective D Γ.M' ψ (sgn false W₁).gram e (hψ' ▸ hg.hM') hstd dV' dW gB
     rw [← iB T hT]
     refine (map_thetaLift Γ.M' ψ _ e _ _ (_root_.GlobalTheory.TripleAssembly.darbAlg_le_schA _ _ _ Γ.M' Bs.ψ Bs.emb hg.hM') T hT hinj).trans ?_
     refine map_darbAlg_eq_top Γ.M' Bs.ψ Bs.emb hg.hM' R.p' Rf.p' _ ?_ hm.real.quot'.onto hm.fin.onto'

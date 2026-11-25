@@ -533,7 +533,7 @@ theorem linkRing
         intro ξ hξ
         have hm := hmem s _ (hunitu s) ⟨ξ, hξ⟩
         simp only [f]
-        rw [dif_pos hm, dif_pos hξ]
+        rw [dite_eq_left hm, dite_eq_left hξ]
         have h := hσ s hs x ⟨ξ, hξ⟩ ⟨_, hm⟩ rfl
         rw [hxσ] at h
         exact h.symm
@@ -543,7 +543,7 @@ theorem linkRing
         obtain ⟨j, hj⟩ := exists_toZModPow_eq_of_pow_pred_eq_one om hom hom' s a ha
         have hm := hmem s a (IsUnit.of_pow_eq_one ha hl1.ne') ⟨ξ, hξ⟩
         simp only [f]
-        rw [dif_pos hm, dif_pos hξ]
+        rw [dite_eq_left hm, dite_eq_left hξ]
         have h := hτ s hs j x ⟨ξ, hξ⟩ ⟨_, hm⟩ (by rw [hj])
         rw [hxτ j] at h
         exact h.symm
@@ -553,7 +553,7 @@ theorem linkRing
         refine ⟨x ξ0, ?_⟩
         funext ζ
         have h := hconst ξ0 ξ0.2 ζ ζ.2
-        simp only [f, dif_pos ξ0.2, dif_pos ζ.2] at h
+        simp only [f, dite_eq_left ξ0.2, dite_eq_left ζ.2] at h
         simp only [Pi.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply]
         exact h
       · refine ⟨0, ?_⟩
@@ -803,9 +803,9 @@ def prL (s : ℕ) : LvT hR uZ ιZ T c hΔ ell →+ Amb LL (KsW W s) (Dc W T c) w
     split_ifs <;> simp
 
 theorem prL_of_lt (s : ℕ) (h : s < ell) (e : LvT hR uZ ιZ T c hΔ ell) :
-    prL s e = toA hR T c s (e ⟨s, h⟩ : AmbM hR T c s) := dif_pos h
+    prL s e = toA hR T c s (e ⟨s, h⟩ : AmbM hR T c s) := dite_eq_left h
 
-theorem prL_of_ge (s : ℕ) (h : ¬ s < ell) (e : LvT hR uZ ιZ T c hΔ ell) : prL s e = 0 := dif_neg h
+theorem prL_of_ge (s : ℕ) (h : ¬ s < ell) (e : LvT hR uZ ιZ T c hΔ ell) : prL s e = 0 := dite_eq_right h
 
 theorem prL_smul (s : ℕ) (a : PowerSeries O) (e : LvT hR uZ ιZ T c hΔ ell) :
     prL s (a • e) = HahnSeries.ofPowerSeries ℤ (KsW W s) (rhoL hR c s a) • prL s e := by

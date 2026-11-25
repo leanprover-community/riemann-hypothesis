@@ -8,58 +8,15 @@ public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.ThetaWeight
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.BasePsiLeviLowerBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.CuspStatementPf
 public import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.CurvatureFamilyNorm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajPos
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.PhlaBlockWtCpt
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.LowSpanCombinations, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.CfwMOfExtraBounds, Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameThetaConstPos
@@ -444,7 +401,7 @@ private lemma diagForm_single' (la : _root_.ReciprocityTheory.ChartRestriction.G
     have hne : ((Fintype.equivFin (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.Ent X) e : Fin _) : ℕ) ≠
         (Fintype.equivFin (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.Ent X) (τ, ⟨(j, i), h⟩) : ℕ) := fun h' =>
       he ((Fintype.equivFin _).injective (Fin.ext h'))
-    simp only [hne, if_false]
+    simp only [hne, ite_false]
     simp
   · simp
 
@@ -481,8 +438,8 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.arch_gaps (A : _root_.Reciprocity
     have hs : _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 j * _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 i = 1 := by
       unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
       by_cases hj : (j : ℕ) < X.p0
-      · rw [if_pos hj, if_pos (by omega)]; norm_num
-      · rw [if_neg hj, if_neg (by omega)]; norm_num
+      · rw [ite_eq_left hj, ite_eq_left (by omega)]; norm_num
+      · rw [ite_eq_right hj, ite_eq_right (by omega)]; norm_num
     have h1 := diagForm_L_pos A (single_ne_zero_jet_harmonics τ i j hlt)
     rw [diagForm_single' A.L τ i j hlt, hs, one_mul] at h1
     have h2 : (0 : ℤ) < A.L τ i - A.L τ j := by
@@ -494,7 +451,7 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.arch_gaps (A : _root_.Reciprocity
     have hlt : i0 < i1 := by rw [Fin.lt_def]; omega
     have hs : _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 i1 * _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 i0 = -1 := by
       unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
-      rw [if_neg (by omega), if_pos (by omega)]; norm_num
+      rw [ite_eq_right (by omega), ite_eq_left (by omega)]; norm_num
     have h1 := diagForm_L_pos A (single_ne_zero_jet_harmonics τ i0 i1 hlt)
     rw [diagForm_single' A.L τ i0 i1 hlt, hs] at h1
     have h2 : (0 : ℤ) < A.L τ i1 - A.L τ i0 := by
@@ -507,8 +464,8 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.arch_gaps (A : _root_.Reciprocity
     have hs : _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 j * _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 i = 1 := by
       unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
       by_cases hj : (j : ℕ) < X.p0
-      · rw [if_pos hj, if_pos (by omega)]; norm_num
-      · rw [if_neg hj, if_neg (by omega)]; norm_num
+      · rw [ite_eq_left hj, ite_eq_left (by omega)]; norm_num
+      · rw [ite_eq_right hj, ite_eq_right (by omega)]; norm_num
     have h1 := diagForm_Fp_sub_pos A (single_ne_zero_jet_harmonics τ i j hlt)
     rw [diagForm_single' _ τ i j hlt, hs, one_mul] at h1
     simp only [Pi.sub_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply,
@@ -528,7 +485,7 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.arch_gaps (A : _root_.Reciprocity
     have hlt : i0 < i1 := by rw [Fin.lt_def]; omega
     have hs : _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 i1 * _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 i0 = -1 := by
       unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
-      rw [if_neg (by omega), if_pos (by omega)]; norm_num
+      rw [ite_eq_right (by omega), ite_eq_left (by omega)]; norm_num
     have h1 := diagForm_Fp_sub_pos A (single_ne_zero_jet_harmonics τ i0 i1 hlt)
     rw [diagForm_single' _ τ i0 i1 hlt, hs] at h1
     simp only [Pi.sub_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply,

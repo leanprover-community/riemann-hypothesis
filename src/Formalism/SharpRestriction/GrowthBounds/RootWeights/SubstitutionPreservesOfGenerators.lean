@@ -48,12 +48,12 @@ theorem scalarExtension_monomial_weights (hGr : BinomialStableContainsComponents
     refine ⟨weightComponent LL S (wtS LL S m) w, hGr R ι LL n S W hW2 w hw _, ?_, ?_⟩
     · intro h0
       have e := congrArg (AddMonoidAlgebra.coeff · m) h0
-      rw [coeff_weightComponent, if_pos rfl, MvPolynomial.coeff_zero] at e
+      rw [coeff_weightComponent, ite_eq_left rfl, MvPolynomial.coeff_zero] at e
       exact (MvPolynomial.mem_support_iff.1 hm') e
     · intro m' hm''
       rw [MvPolynomial.mem_support_iff, coeff_weightComponent] at hm''
       by_contra hne
-      exact hm'' (if_neg hne)
+      exact hm'' (ite_eq_right hne)
   | zero => intro m hm; simp at hm
   | add x y _ _ hx hy =>
     classical

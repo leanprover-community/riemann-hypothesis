@@ -199,8 +199,8 @@ def splitHomeo (F : Type) [Field F] [NumberField F] (ι : Type) :
     (ι → AF F) ≃ₜ (ι → Ainf F) × (ι → Af F) where
   toFun y := (fun i => (y i).1, fun i => (y i).2)
   invFun p i := (p.1 i, p.2 i)
-  left_inv y := rfl
-  right_inv p := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
   continuous_toFun :=
     (continuous_pi fun i => continuous_fst.comp (continuous_apply i)).prodMk
       (continuous_pi fun i => continuous_snd.comp (continuous_apply i))

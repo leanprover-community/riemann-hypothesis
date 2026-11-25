@@ -75,13 +75,13 @@ theorem isIso_iff_deg_eq_one : ∀ (K : Type) [Field K] (A B : AbVar K) (f : A �
   refine ⟨fun hf => ?_, fun hd => ?_⟩
   · have hI : IsIsogeny f := ⟨inferInstance, inferInstance⟩
     refine ⟨hI, ?_⟩
-    rw [deg, if_pos hI, Scheme.Hom.finrank_eq_one_of_isIso]
+    rw [deg, ite_eq_left hI, Scheme.Hom.finrank_eq_one_of_isIso]
     rfl
   · have hI : IsIsogeny f := by
       by_contra h
-      rw [deg, if_neg h] at hd
+      rw [deg, ite_eq_right h] at hd
       exact zero_ne_one hd
-    obtain ⟨-, hfl, -, hr⟩ := GlobalTheory.T.dim_eq_flat_finrank_eq_deg_of_isIsogeny K A B f hI
+    obtain ⟨-, hfl, -, hr⟩ := GlobalTheory.AV.AbVar.isogeny_flat_finrank K A B f hI
     have : IsFinite f.hom.left := hI.1
     have : IsIso f.hom.left := by
       rw [Scheme.Hom.isIso_iff_finrank_eq]

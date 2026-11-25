@@ -18,8 +18,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem restrictIdeal_comap_preimage {X X₁ : Scheme.{u}} (π : X₁ ⟶ X)
@@ -96,50 +94,50 @@ theorem inStrictNormalCrossingPositionAt_strictTransform_of_mem_support {X X₁ 
     · by_cases hjE : j = E.length
       · rw [hiE, hjE]
       · exfalso
-        rw [if_pos hiE] at hti'
-        rw [if_neg hjE] at htj'
+        rw [ite_eq_left hiE] at hti'
+        rw [ite_eq_right hjE] at htj'
         have hts : s = t := Option.some.inj hti'
         by_cases haj : a j = some s
-        · rw [if_pos haj] at htj'
+        · rw [ite_eq_left haj] at htj'
           simp at htj'
-        · rw [if_neg haj] at htj'
+        · rw [ite_eq_right haj] at htj'
           exact haj (by rw [htj', ← hts])
     · by_cases hjE : j = E.length
       · exfalso
-        rw [if_pos hjE] at htj'
-        rw [if_neg hiE] at hti'
+        rw [ite_eq_left hjE] at htj'
+        rw [ite_eq_right hiE] at hti'
         have hts : s = t := Option.some.inj htj'
         by_cases hai : a i = some s
-        · rw [if_pos hai] at hti'
+        · rw [ite_eq_left hai] at hti'
           simp at hti'
-        · rw [if_neg hai] at hti'
+        · rw [ite_eq_right hai] at hti'
           exact hai (by rw [hti', ← hts])
-      · rw [if_neg hiE] at hti'
-        rw [if_neg hjE] at htj'
+      · rw [ite_eq_right hiE] at hti'
+        rw [ite_eq_right hjE] at htj'
         by_cases hai : a i = some s
-        · rw [if_pos hai] at hti'
+        · rw [ite_eq_left hai] at hti'
           simp at hti'
-        · rw [if_neg hai] at hti'
+        · rw [ite_eq_right hai] at hti'
           by_cases haj : a j = some s
-          · rw [if_pos haj] at htj'
+          · rw [ite_eq_left haj] at htj'
             simp at htj'
-          · rw [if_neg haj] at htj'
+          · rw [ite_eq_right haj] at htj'
             exact ha1 i (by omega) j (by omega) t hti' htj'
   · intro i h hnone
     have hnone' : (if i = E.length then some s else if a i = some s then none else a i) = none :=
       hnone
     have hcount : i < E.length + 1 := by rw [hlen] at h; exact h
     by_cases hiE : i = E.length
-    · rw [if_pos hiE] at hnone'
+    · rw [ite_eq_left hiE] at hnone'
       simp at hnone'
     · have hi : i < E.length := by omega
       rw [List.getElem_append_left (by simp [hi]), List.getElem_map]
-      rw [if_neg hiE] at hnone'
+      rw [ite_eq_right hiE] at hnone'
       by_cases hai : a i = some s
       · have hD := ha3 i hi s hai
         have hres := BlowupChart.restrictIdeal_strictTransform_coordIdeal B Z (E[i]'hi) hs hZU s hD
         simpa using hres
-      · rw [if_neg hai] at hnone'
+      · rw [ite_eq_right hai] at hnone'
         exact BlowupChart.restrictIdeal_strictTransform_of_eq_top B Z (E[i]'hi) (ha2 i hi hnone')
   · intro i h t hti
     have hti' : (if i = E.length then some s else if a i = some s then none else a i) = some t :=
@@ -153,17 +151,17 @@ theorem inStrictNormalCrossingPositionAt_strictTransform_of_mem_support {X X₁ 
       exact BlowupChart.restrictIdeal_exceptionalIdeal B Z hs hZU
     · have hi : i < E.length := by omega
       rw [List.getElem_append_left (by simp [hi]), List.getElem_map]
-      rw [if_neg hiE] at hti'
+      rw [ite_eq_right hiE] at hti'
       by_cases hai : a i = some s
-      · rw [if_pos hai] at hti'
+      · rw [ite_eq_left hai] at hti'
         simp at hti'
-      · rw [if_neg hai] at hti'
+      · rw [ite_eq_right hai] at hti'
         have hD := ha3 i hi t hti'
         have hts : t ≠ s := by
           intro hh
           exact hai (by rw [hti', hh])
         rw [BlowupChart.restrictIdeal_strictTransform_coordIdeal B Z (E[i]'hi) hs hZU t hD,
-          if_neg hts]
+          ite_eq_right hts]
 
 theorem inStrictNormalCrossingPositionAt_strictTransform_of_notMem_support {X X₁ : Scheme.{u}} {k : Type u}
     [Field k] [NoetherianSpace X₁] (p : X ⟶ Spec (CommRingCat.of k)) (π : X₁ ⟶ X)
@@ -203,14 +201,14 @@ theorem inStrictNormalCrossingPositionAt_strictTransform_of_notMem_support {X X�
     rw [hlen] at hi hj
     have hiE : i ≠ E.length := by
       intro hh
-      rw [if_pos hh] at hti'
+      rw [ite_eq_left hh] at hti'
       simp at hti'
     have hjE : j ≠ E.length := by
       intro hh
-      rw [if_pos hh] at htj'
+      rw [ite_eq_left hh] at htj'
       simp at htj'
-    rw [if_neg hiE] at hti'
-    rw [if_neg hjE] at htj'
+    rw [ite_eq_right hiE] at hti'
+    rw [ite_eq_right hjE] at htj'
     exact ha1 i (by omega) j (by omega) t hti' htj'
   · intro i h hnone
     have hcount : i < E.length + 1 := by rw [hlen] at h; exact h
@@ -220,7 +218,7 @@ theorem inStrictNormalCrossingPositionAt_strictTransform_of_notMem_support {X X�
       exact restrictIdeal_exceptionalIdeal_eq_top_of_le_compl π Z _ hVle
     · have hi : i < E.length := by omega
       have hnone' : (if i = E.length then none else a i) = none := hnone
-      rw [if_neg hiE] at hnone'
+      rw [ite_eq_right hiE] at hnone'
       rw [List.getElem_append_left (by simp [hi]), List.getElem_map,
         restrictIdeal_strictTransform_eq_comap_of_le_compl π Z (E[i]'hi) _ hVle,
         restrictIdeal_comap_preimage π (E[i]'hi) (U ⊓ Z.support.compl),
@@ -231,10 +229,10 @@ theorem inStrictNormalCrossingPositionAt_strictTransform_of_notMem_support {X X�
     have hcount : i < E.length + 1 := by rw [hlen] at h; exact h
     have hiE : i ≠ E.length := by
       intro hh
-      rw [if_pos hh] at hti'
+      rw [ite_eq_left hh] at hti'
       simp at hti'
     have hi : i < E.length := by omega
-    rw [if_neg hiE] at hti'
+    rw [ite_eq_right hiE] at hti'
     rw [List.getElem_append_left (by simp [hi]), List.getElem_map,
       restrictIdeal_strictTransform_eq_comap_of_le_compl π Z (E[i]'hi) _ hVle,
       restrictIdeal_comap_preimage π (E[i]'hi) (U ⊓ Z.support.compl),
@@ -276,5 +274,3 @@ theorem inStrictNormalCrossingPosition_strictTransform_cons_append {X X₁ : Sch
   inStrictNormalCrossingPosition_strictTransform_append p π Z (H :: E) hπ hE hZE
 
 end FunctorialResolution.EmbeddedResolution
-
-end

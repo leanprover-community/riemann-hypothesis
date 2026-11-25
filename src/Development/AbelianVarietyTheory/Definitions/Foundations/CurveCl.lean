@@ -31,6 +31,4 @@ def fibPt (ι : Type) [Fintype ι] (N j : ℕ) : Pol ι N :=
 
 def dimGr (ι : Type) [Fintype ι] (N j : ℕ) : ℕ := Fintype.card ι * (j * (N - j))
 
-def curveCl (ι : Type) [Fintype ι] (N j : ℕ) : Pol ι N := lamA ι N j ^ (dimGr ι N j - 1) * fibPt ι N j
-
 end GlobalTheory.FlagPoly

@@ -143,7 +143,7 @@ namespace GlobalTheory.St.G
 
 theorem hcExists_all : ∀ (D : D7) (F : ∀ u, Formalism.L2.Forms.Forms0 D u), HcExists D F := by
   intro D F X u wt ιA h0 hW hA c
-  obtain ⟨Φ, hΦ⟩ := GlobalTheory.T.frameAction_mulEquiv_finiteAdelic_unitary D X u wt ιA hW hA (GlobalTheory.St.G.IotaSigmaCompatibility.iotaA_sigA D X ιA hA)
+  obtain ⟨Φ, hΦ⟩ := GlobalTheory.frame_action_mulEquiv D X u wt ιA hW hA (GlobalTheory.St.G.IotaSigmaCompatibility.iotaA_sigA D X ιA hA)
   exact ⟨Φ.symm ((F u).cls0.y c * h0⁻¹), (hΦ _ _).2 (Φ.apply_symm_apply _)⟩
 
 end GlobalTheory.St.G
@@ -383,14 +383,14 @@ theorem exists_add_mul_notMem_of_maximal_ge {R : Type*} [CommRing R] [IsDedekind
   refine ⟨s, fun p hp hJp hmem => ?_⟩
   have h1 := Ideal.Quotient.eq.1 (hs ⟨p, hp, hJp⟩)
   by_cases hx : x ∈ p
-  · simp only [hx, if_true] at h1
+  · simp only [hx, ite_true] at h1
     have h2 : n * s ∈ p := by simpa using p.sub_mem hmem hx
     have h3 : n ∈ p := by
       have := p.sub_mem h2 (p.mul_mem_left n h1)
       have e : n * s - n * (s - 1) = n := by ring
       rwa [e] at this
     exact h p hp hJp h3 hx
-  · simp only [hx, if_false, sub_zero] at h1
+  · simp only [hx, ite_false, sub_zero] at h1
     apply hx
     simpa using p.sub_mem hmem (p.mul_mem_left n h1)
 
@@ -875,11 +875,6 @@ theorem mem_dual_iff (Λ : Submodule (𝓞 E) S.V) (x : S.V) :
   simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
     LinearMap.restrictScalars_apply, Submodule.mem_one]
 
-theorem mem_of_dual {Λ : Submodule (𝓞 E) S.V} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) {x : S.V}
-    (h : ∀ y ∈ Λ, ∃ o : 𝓞 E, algebraMap (𝓞 E) E o = S.hT y x) : x ∈ Λ := by
-  have hx : x ∈ Formalism.HermitianLatticesTheory.dual S.hT Λ := (mem_dual_iff Λ x).2 h
-  rwa [hU] at hx
-
 theorem pair_mem {Λ : Submodule (𝓞 E) S.V} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) {x y : S.V}
     (hx : x ∈ Λ) (hy : y ∈ Λ) : ∃ o : 𝓞 E, algebraMap (𝓞 E) E o = S.hT y x := by
   have hx' : x ∈ Formalism.HermitianLatticesTheory.dual S.hT Λ := by rw [hU]; exact hx
@@ -961,7 +956,7 @@ theorem exists_primitive_norm_neg : ∀ (F E : Type) [Field F] [NumberField F] [
   refine ⟨α • e + b • f, ?_, ?_, ?_, ?_⟩
   · exact Submodule.add_mem _ (Submodule.smul_mem _ _ (Submodule.subset_span (by simp)))
       (Submodule.smul_mem _ _ (Submodule.subset_span (by simp)))
-  · refine Λ.add_mem (hce α hαc) (mem_of_dual hU fun y hy => ?_)
+  · refine Λ.add_mem (hce α hαc) (GlobalTheory.St.Lat.mem_of_dual hU fun y hy => ?_)
     obtain ⟨o, ho⟩ := hPc w hwP (S.hT f y) (hfc y hy)
     refine ⟨-(T : 𝓞 E) * RingOfIntegers.mapRingHom (starRingEnd E) o, ?_⟩
     have key : -(T : E) * w / α * S.hT f y = -(T : E) * o := by
@@ -1175,7 +1170,6 @@ variable {K : Type} [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [Measu
 theorem measure_eq [Countable Γ] [μ.IsMulLeftInvariant] {s t : Set K}
     (hs : IsFundamentalDomain Γ s μ) (ht : IsFundamentalDomain Γ t μ) : μ s = μ t := hs.measure_eq ht
 
-
 theorem measure_ne_zero [Countable Γ] [μ.IsHaarMeasure] {s : Set K}
     (hs : IsFundamentalDomain Γ s μ) : μ s ≠ 0 :=
   hs.measure_ne_zero (NeZero.ne μ)
@@ -1192,7 +1186,6 @@ theorem measure_le_of_cover [Countable Γ] [μ.IsMulLeftInvariant] {s : Set K}
       _ ≤ ∑' g : Γ, μ (g • toMeasurable μ C ∩ s) := measure_iUnion_le _
       _ = μ (toMeasurable μ C) := (hs.measure_eq_tsum _).symm
       _ = μ C := measure_toMeasurable C
-
 
 omit [TopologicalSpace K] [IsTopologicalGroup K] [BorelSpace K] in
 theorem isFundamentalDomain_smul_iff {c : NNReal} (hc : c ≠ 0) (s : Set K) :
@@ -1718,7 +1711,6 @@ theorem exists_transport {D : D7} (F : ∀ u, Formalism.L2.Forms.Forms0 D u)
   choose hcf hcr using GlobalTheory.St.G.hcExists_all D F X u wt ιA h0 hw hι
   obtain ⟨J, hJ1, hJ2, hJ3⟩ := GlobalTheory.jExists_all D F X u wt hw
   exact ⟨⟨wt, hw.1, hw.2.1, hw.2.2.1, hw.2.2.2, ιA, hι.1, hι.2, h0, hcf, hcr, J, hJ1, hJ2, hJ3⟩, hL, hKm⟩
-
 
 open Formalism.L2.SG.SplitPrimeNormLemmas in
 theorem exists_setting (hSW : HeckeCharacterZeroLocus.SiegelWeilU.SiegelWeilUnitaryConvergent)

@@ -431,7 +431,7 @@ lemma gram {ε : Fin (n + 1) → Bool} {d : Fin (n + 1) → ℝ} {ε' : Fin n �
   · subst hik
     have h1 := _root_.GlobalTheory.CompanionTheory.RgHeFrame.pfDer d d' hinj i
     have h2 := cc_sq (hD i)
-    simp only [if_true]
+    simp only [ite_true]
     have h3 : ∑ j, pfR d d' j / ((d i - d' j) * (d i - d' j)) =
         ∑ j, pfR d d' j / (d i - d' j) ^ 2 := by
       refine sum_congr rfl fun j _ => ?_
@@ -439,7 +439,7 @@ lemma gram {ε : Fin (n + 1) → Bool} {d : Fin (n + 1) → ℝ} {ε' : Fin n �
     rw [h3]
     linear_combination (cc d d' i * cc d d' i) * h1 + h2
   · have h1 := _root_.GlobalTheory.CompanionTheory.RgHeFrame.pfOrth d d' hinj i k hik
-    simp only [hik, if_false]
+    simp only [hik, ite_false]
     linear_combination (cc d d' i * cc d d' k) * h1
 
 lemma inter {d : Fin (n + 1) → ℝ} {ε' : Fin n → Bool} {d' : Fin n → ℝ}
@@ -454,7 +454,7 @@ lemma inter {d : Fin (n + 1) → ℝ} {ε' : Fin n → Bool} {d' : Fin n → ℝ
   rw [Fintype.sum_sum_type]
   rcases r with a | u
   · simp only [X0, G0, Sum.elim_inl, Sum.elim_inr, univ_unique, sum_singleton, ite_mul, zero_mul,
-      sum_ite_eq, mem_univ, if_true]
+      sum_ite_eq, mem_univ, ite_true]
     have := hne a
     field_simp
     ring
@@ -891,9 +891,6 @@ open PositivityTheory.RgHe.Frame PositivityTheory.UnitaryDecomposition
 
 variable {n : ℕ} {e : Fin n ⊕ Unit ≃ Fin (n + 1)}
 
-theorem hs_nonneg' {m : ℕ} (A : Matrix (Fin m) (Fin m) ℂ) : 0 ≤ hs A :=
-  Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => by positivity
-
 theorem hs_emb_sub (a : Matrix (Fin n) (Fin n) ℂ) : hs (emb e a - 1) = hs (a - 1) := by
   have h1 : emb e a - 1 = Matrix.reindex e e (Matrix.fromBlocks (a - 1) 0 0 0) := by
     ext i j
@@ -920,19 +917,19 @@ theorem frame : PositivityTheory.RgHe.Frame := by
   have hD : ∀ i, 0 < (if ε i then (1 : ℝ) else -1) * pfD d d' i := fun i => by
     have h := ps1 i
     by_cases hi : ε i = true
-    · rw [if_pos hi, one_mul]
+    · rw [ite_eq_left hi, one_mul]
       rwa [((hs1 i).1 hi).neg_one_pow, one_mul] at h
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       have ho : ¬ Even (above d d' (d i)) := fun h' => hi ((hs1 i).2 h')
       rw [(Nat.not_even_iff_odd.1 ho).neg_one_pow] at h
       linarith
   have hR : ∀ j, 0 < -((if ε' j then (1 : ℝ) else -1) * pfR d d' j) := fun j => by
     have h := ps2 j
     by_cases hj : ε' j = true
-    · rw [if_pos hj]
+    · rw [ite_eq_left hj]
       rw [(Nat.not_even_iff_odd.1 ((hs2 j).1 hj)).neg_one_pow] at h
       linarith
-    · rw [if_neg hj]
+    · rw [ite_eq_right hj]
       have he : Even (above d d' (d' j)) := by
         by_contra h'
         exact hj ((hs2 j).2 h')
@@ -992,8 +989,8 @@ theorem frame : PositivityTheory.RgHe.Frame := by
     have i1 := hAc (B - 1) hAv
     rw [key] at i1
     have i2 : hs (B * (g * δ * g⁻¹)) ≤ hs B * (hs g * hs δ * hs g⁻¹) := by
-      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_left ?_ (hs_nonneg' _))
-      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_right (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _) (hs_nonneg' _))
+      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_left ?_ (Formalism.REAL.frobenius_nonneg_matrix _))
+      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_right (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _) (Formalism.REAL.frobenius_nonneg_matrix _))
     have i3 : hs (um h - 1) = hs (B - 1) := (hs_emb_sub (e := e) (um h)).symm
     rw [i3]
     have := _root_.Formalism.REAL.frobenius_nonneg_matrix B; have := _root_.Formalism.REAL.frobenius_nonneg_matrix δ; have := _root_.Formalism.REAL.frobenius_nonneg_matrix g; have := _root_.Formalism.REAL.frobenius_nonneg_matrix g⁻¹
@@ -1050,7 +1047,7 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
   obtain ⟨T0, hT0, -, -⟩ := injV S zuckerman_library_bounds true hU hg (by linarith)
   let T : Fin (2 * r + k + 1) → URep k r := fun s => if h : IsHCParam (shift true lam s) then T0 ⟨s, h⟩ else U
   have hT : ∀ s : {s // IsHCParam (shift true lam s)}, (T s.1).R.IsDS ε (shift true lam s.1) := fun s => by
-    simp only [T, dif_pos s.2]; exact hT0 s
+    simp only [T, dite_eq_left s.2]; exact hT0 s
   obtain ⟨io, pr, hD⟩ := decReg S zuckerman_library_bounds hk true hU hg hth (fun s => T s.1) hT
   have hsimp := S.schur S.infChar k r ε _ _ (fun s : {s // IsHCParam (shift true lam s)} => T s.1)
     ((shift_inj true lam).comp Subtype.val_injective) hT
@@ -1076,7 +1073,7 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
   let up : (Fin (2 * r + k + 1) → U.R.H) → M (vr k r true, U) := fun x =>
     if h : x ∈ SmT ε π then fun c => ∑ d, P d c • (⟨x d, (sm_iff _).1 (h d)⟩ : U.R.smSub) else 0
   have up_coe : ∀ x ∈ SmT ε π, ∀ c, (up x c : U.R.H) = ∑ d, P d c • x d := fun x hx c => by
-    simp only [up, dif_pos hx]; simp
+    simp only [up, dite_eq_left hx]; simp
   have dn_up : ∀ x ∈ SmT ε π, dn U P (up x) = x := fun x hx => funext fun c => by
     show ∑ d, P⁻¹ d c • (up x d : U.R.H) = x c
     simp only [up_coe x hx]
@@ -1115,7 +1112,7 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
       ∑ s ∈ univ.filter (fun s => IsHCParam (shift true lam s)), (if h : IsHCParam (shift true lam s) then f ⟨s, h⟩ else 0) =
         ∑ s, f s := fun f => by
     rw [Finset.sum_subtype (p := fun s => IsHCParam (shift true lam s)) _ (by simp)]
-    exact Finset.sum_congr rfl fun s _ => dif_pos s.2
+    exact Finset.sum_congr rfl fun s _ => dite_eq_left s.2
   have hsum : ∀ z, ∑ s, io s (pr s z) = z := fun z => by
     have := LinearMap.congr_fun hD.sum z
     simpa [LinearMap.sum_apply] using this
@@ -1127,7 +1124,7 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
             pr := fun s x => if h : IsHCParam (shift true lam s) then (T s).R.σ ((Q s)⁻¹ * P) (pr ⟨s, h⟩ (up x) ()) else 0
             c := fun s => if h : IsHCParam (shift true lam s) then cI ⟨s, h⟩ else 0
             κ := fun s => (lam s : ℂ) + (((2 * r + k + 1 : ℕ) : ℂ) - 1) / 2
-            p_sm := fun s hs x _ => by rw [dif_pos (mem_filter.1 hs).2]; exact dn_sm _
+            p_sm := fun s hs x _ => by rw [dite_eq_left (mem_filter.1 hs).2]; exact dn_sm _
             sum := fun x hx => by rw [sumS fun s => dn U P (io s (pr s (up x))), ← map_sum, hsum, dn_up x hx]
             p_act := fun s hs g x hx => ?_
             pr_act := fun s hs g x hx => ?_
@@ -1135,13 +1132,13 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
             cas := fun s hs x hx => ?_
             κ_inj := fun s _ s' _ h => hl.1.injective (by exact_mod_cast add_right_cancel h) }, rfl, fun _ => rfl⟩
   · have h := (mem_filter.1 hs).2
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     rw [up_act g x hx, ← dn_act]
     congr 1
     exact LinearMap.congr_fun (((S.homCat k r).comp _ _ _ _ _ (hD.pr_hom ⟨s, h⟩) (hD.io_hom ⟨s, h⟩)).equiv _ (mem g)) (up x)
   · have h := (mem_filter.1 hs).2
     have hQu : IsUnit (Q s).det := (Matrix.isUnit_iff_isUnit_det _).1 (hQ1 s).1.1
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     have e := LinearMap.congr_fun ((hD.pr_hom ⟨s, h⟩).equiv _ (mem g)) (up x)
     simp only [LinearMap.comp_apply] at e
     rw [up_act g x hx, e, act_one_coe _ (mem g), ← (T s).repOn.apply_mul (bmem s) (mem g),
@@ -1149,7 +1146,7 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
     congr 2
     simp only [Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ hPu, Matrix.mul_nonsing_inv_cancel_left _ _ hQu]
   · have h := (mem_filter.1 hs).2
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     have e := (LinearMap.norm_map_iff_inner_map_map ((T s).R.σ ((Q s)⁻¹ * P) : (T s).R.H →ₗ[ℂ] (T s).R.H)).1
       ((T s).rep.2.1 _ (bmem s)) (pr ⟨s, h⟩ (up y) ()) (pr ⟨s, h⟩ (up x) ())
     simp only [ContinuousLinearMap.coe_coe] at e
@@ -1163,7 +1160,7 @@ theorem decomposition_unitary_shift (hk : 1 ≤ k) (lam : Fin (2 * r + k + 1) �
       exact Finset.sum_comm
     rw [e2, Finset.sum_eq_single ⟨s, h⟩ (fun s' _ hs' => horth _ _ (Ne.symm hs') _ _) (by simp)]
   · have h := (mem_filter.1 hs).2
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     have e := cas_dn hU hP (io ⟨s, h⟩ (pr ⟨s, h⟩ (up x)))
     rw [show (fun g => U.R.σ (P⁻¹ * g * P)) = π from hπe] at e
     rw [e, kOp_io hk hU s (hT ⟨s, h⟩) _ (hD.io_hom ⟨s, h⟩), map_smul]
@@ -1199,7 +1196,7 @@ theorem decomposition_le_holds : DecLe := by
   obtain ⟨X, hS, hκ⟩ := DL.decomposition_cayley_shift (by omega) lam H π (P := P) hP hl hπ hg
   refine ⟨X, fun s => ?_, fun s => ?_⟩
   · rw [hS, Finset.mem_filter]
-    simp only [Finset.mem_univ, true_and, CompanionTheory.Zuck.shift, if_true]
+    simp only [Finset.mem_univ, true_and, CompanionTheory.Zuck.shift, ite_true]
     exact Iff.rfl
   · rw [hκ]
 
@@ -1717,11 +1714,11 @@ theorem pt_id {lam : Fin (n + 1) → ℝ} (hF : Fits ε ε' e) (hπ : IsDS ε la
       actT π (um (embU hF h)) (X.p s (Pi.single (zi e) η)) (zi e) := by
     unfold actT
     rw [← um_inv, Finset.sum_eq_single (zi e) (fun b _ hb => by
-      rw [show um (embU hF h)⁻¹ b (zi e) = _ from emb_col _ b, if_neg hb, zero_smul]) (by simp),
-      show um (embU hF h)⁻¹ (zi e) (zi e) = _ from emb_col _ (zi e), if_pos rfl, one_smul]
+      rw [show um (embU hF h)⁻¹ b (zi e) = _ from emb_col _ b, ite_eq_right hb, zero_smul]) (by simp),
+      show um (embU hF h)⁻¹ (zi e) (zi e) = _ from emb_col _ (zi e), ite_eq_left rfl, one_smul]
     rfl
   have e2 := X.form s hs _ (smT_act hU (embU hF h) hx) _ hx
-  rw [formT_single, show ε (zi e) = true from hF.1, if_pos rfl, one_mul, X.pr_act s hs _ _ hx,
+  rw [formT_single, show ε (zi e) = true from hF.1, ite_eq_left rfl, one_mul, X.pr_act s hs _ _ hx,
     X.p_act s hs _ _ hx] at e2
   rw [e1, e2]
   rfl

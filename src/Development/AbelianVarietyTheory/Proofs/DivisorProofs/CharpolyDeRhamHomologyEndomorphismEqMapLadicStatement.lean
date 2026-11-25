@@ -264,10 +264,7 @@ theorem charpoly_of_bijective {R K M V : Type*} [CommRing R] [Field K] [Algebra 
 
 theorem charpoly_dualMap {K V : Type*} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
     [Module.Finite K (Module.Dual K V)] (f : Module.End K V) : (f.dualMap).charpoly = f.charpoly := by
-  classical
-  rw [← LinearMap.charpoly_toMatrix f (Module.finBasis K V),
-    ← LinearMap.charpoly_toMatrix f.dualMap (Module.finBasis K V).dualBasis, ← Matrix.charpoly_transpose,
-    LinearMap.dualMap_def, LinearMap.toMatrix_transpose, Matrix.transpose_transpose]
+  exact GlobalTheory.DeRhamCharpolyP.charpoly_dualMap f
 
 theorem finite_prim {K : Type} [Field K] (B : AbVar K) : Module.Finite K (primDR B.X) :=
   (GlobalTheory.abelianDeRham.1.prim B.ab B.smooth).1

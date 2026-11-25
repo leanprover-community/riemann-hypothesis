@@ -47,12 +47,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
 open scoped TensorProduct
 
-def SitsAt (D : D7) (σ : D.what₂.LL →+* ℂ) (τ τ' : D.what₂.Tau) : Prop :=
-  ∃ t : D.host.E →+* D.what₂.LL, D.what₂.embLL.comp t = tauE D τ ∧ σ.comp t = tauE D τ'
-
-def IsConjPar (D : D7) (j : ℕ) (σ : D.what₂.LL →+* ℂ) (S : D.what₂.Tau → SPar) : Prop :=
-  ∀ τ', ∃ τ, SitsAt D σ τ τ' ∧ S τ' = parW (D.sp.W j) (Formalism.L2.NTheta.wtOf D (D.sp.W j)) τ
-
 variable {D : D7}
 
 def levSet (V : HSp D) (N : ℕ) : Set (GA D V) :=

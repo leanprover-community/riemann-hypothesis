@@ -85,17 +85,17 @@ theorem levImg_coeff_bigM (hp : 0 < p) (hinj : Function.Injective fun x : TL J n
   rw [levImg_coeff]
   refine (Finset.sum_eq_single (bigM Fr p hk nL rho bp bn) ?_ ?_).trans ?_
   · intro mo hmo hne
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨e1, e2⟩
     apply hne
     obtain ⟨hmo1, hlow, -⟩ := Finset.mem_filter.mp hmo
     rw [eq_bigM hinj rho mo (hz mo hmo1) hlow, e1, e2]
   · intro hnot
-    rw [if_pos ⟨hpl, hno⟩]
+    rw [ite_eq_left ⟨hpl, hno⟩]
     by_contra hc
     exact hnot (Finset.mem_filter.mpr ⟨mem_support_iff.mpr hc, bigM_inLow (hk := hk) hinj rho hrho bp bn,
       bigM_inBlock (hk := hk) hp hinj rho hrho bp bn dPl dNo h1 h2⟩)
-  · rw [if_pos ⟨hpl, hno⟩]
+  · rw [ite_eq_left ⟨hpl, hno⟩]
 
 end Up
 
@@ -441,7 +441,7 @@ theorem dg_frame (hV : Fr.Valid L₁ N₁) (j t : ℤ) (ht : posOf n' t ∈ Fr.T
     by_cases hle : t ≤ Fr.fr j k
     · obtain ⟨i', hi', he⟩ := ih (by omega) hle
       exact ⟨i', by omega, he⟩
-    · push_neg at hle
+    · push Not at hle
       rcases htk.lt_or_eq with hlt | heq
       · exact absurd ht (hV.2.2.2.2.2.1 j k t (by omega) hle hlt)
       · exact ⟨k + 1, le_rfl, heq⟩
@@ -486,7 +486,7 @@ theorem dg_surj (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (hJ : J = Fr.J) (hnL : 
     · rw [h0, Nat.cast_zero, zero_sub]
       exact ht1
     · have hm := Nat.find_min hex (show Nat.find hex - 1 < Nat.find hex by omega)
-      push_neg at hm
+      push Not at hm
       have e : (((Nat.find hex - 1 : ℕ)) : ℤ) = ((Nat.find hex : ℕ) : ℤ) - 1 := by omega
       rw [e] at hm
       exact hm
@@ -507,7 +507,7 @@ theorem dg_surj (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (hJ : J = Fr.J) (hnL : 
     refine ⟨⟨((Nat.find hex : ℕ) : ZMod J), Sum.inl ⟨i.val, hiL⟩⟩, ?_⟩
     show posOf n' (llPos Fr (segZ ((Nat.find hex : ℕ) : ZMod J)) i.val) = s
     rw [hseg, dg_llPos_eq _ _ i.2, Fin.eta, hi, hpos]
-  · push_neg at htl
+  · push Not at htl
     obtain ⟨i', hi', he⟩ := dg_frame hV ((Nat.find hex : ℕ) : ℤ) t hsT htl (r - 1) (by omega) hkspec
     refine ⟨⟨((Nat.find hex : ℕ) : ZMod J), Sum.inr ⟨r - 1 - i', by omega⟩⟩, ?_⟩
     show posOf n' (Fr.fr (segZ ((Nat.find hex : ℕ) : ZMod J)) (r - 1 - (r - 1 - i'))) = s

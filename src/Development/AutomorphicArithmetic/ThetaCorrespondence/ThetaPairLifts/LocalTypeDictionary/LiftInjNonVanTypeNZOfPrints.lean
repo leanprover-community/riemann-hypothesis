@@ -172,8 +172,6 @@ open scoped TensorProduct InnerProductSpace Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift GlobalTheory.Core.Rk.Exh
 
-theorem _root_.GlobalTheory.T.linearForm_extV_mem_A0_and_prin_invariant : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t cA a, Defin R.θ (Vc D i) cA a → ∀ (y : (R.HV i t).H) (l : (R.cV i).W →ₗ[ℂ] ℂ), (fun g => l (R.extV i t y g)) ∈ GlobalTheory.Cusp.A0 R.θ (Vc D i) cA ∧ ∀ κ ∈ prin (Vc D i) (R.βV i) (R.Pg ∪ R.Q t), ∀ g, l (R.extV i t y (g * κ)) = l (R.extV i t y g) := by
-  first | exact @GlobalTheory.DownLift.DefiniteComp.definiteScalarComponent_isCusp_and_congruence_fixed
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DefiniteScalarComponentIsCuspAndCongruenceFixedAStatement =====
@@ -295,8 +293,6 @@ theorem rcoef_of_fun {D : D7} {V : HSp D} (c : CoefA V) (hc : c.Is) (m : Measure
       exact lt_irrefl _ hpos
     funext g
     exact inner_self_eq_zero.1 (congrFun (h0 (Y g)) g)
-
-
 
 theorem rcoef_scalar : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T) (y : (R.HV i t).H) (m : Measure (GA D (Vc D i))), m.IsHaarMeasure → ∃ z : ℂ, (∀ (w : (R.cV i).W), ∀ b ∈ GinfC (Vc D i), GlobalTheory.Core.Rk.IP.rcoef m (fun g => ⟪w, R.extV i t y g⟫_ℂ) (fun g => ⟪w, R.extV i t y g⟫_ℂ) b = z * ⟪(R.cV i).ρ b w, w⟫_ℂ) ∧ (y ≠ 0 → z ≠ 0) := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hC i t y m hm
@@ -462,8 +458,6 @@ theorem pt_ne : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A 
   rw [h]
   simp
 
-
-
 theorem real_ne : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t (y : (R.HV i t).H), y ≠ 0 → ∀ m : Measure (GA D (Vc D i)), m.IsHaarMeasure → ∃ (l : (R.cV i).W →ₗ[ℂ] ℂ) (P : PolF D (Wc D i).rank (Vc D i).rank), ∀ ν 𝓕, IsCovolOne (ratL (Wc D i) (Vc D i)) ν 𝓕 → ∀ mR : Measure (GinfC (Vc D i)), mR.IsHaarMeasure → ∫ b : GinfC (Vc D i), GlobalTheory.Core.Rk.IP.wcoef (R.ωP i t) ν 𝓕 (R.ptP i t P) (R.ptP i t P) b * GlobalTheory.Core.Rk.IP.rcoef m (fun g => l (R.extV i t y g)) (fun g => l (R.extV i t y g)) b ∂mR ≠ 0 := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hG hF i t y hy m hm
   obtain ⟨v, w, hJ⟩ := pt_ne D G Pl0 T A Ks R F hG.core hF i t
@@ -555,7 +549,6 @@ theorem good_of_not_mem_above {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T :
     exact hmem
 
 end GlobalTheory.Core.Rk.StringPole
-
 
 open GlobalTheory.Core.Rk.StringPole in
 theorem GlobalTheory.Core.Rk.StringPole.string_pole_hyp : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t s, HasString R i t s → ∃ B c : GlobalTheory.LFun.Fam D.host.E, GlobalTheory.LFun.IsSysParamD D (GlobalTheory.IndefiniteRowSideFullHecke.LabelSettingScalars.badPl R t) (Vc D i).rank s B ∧ GlobalTheory.IndefiniteRowSideFullHecke.SimplePoleTwistedLift.Hyp (GlobalTheory.IndefiniteRowSideFullHecke.LabelSettingScalars.badPl R t : Set (HeightOneSpectrum (𝓞 D.host.F))) D.R.r D.R.t c B (GlobalTheory.LFun.val (F := D.host.F) (chiV R i t)) (GlobalTheory.LFun.val (F := D.host.F) (chiV R i t)) := by
@@ -761,7 +754,6 @@ theorem is_lift_one_principal_level (R : RealDat D A Ks) (i : Fin D.R.m) : IsLev
 
 end GlobalTheory.ThPFock
 
-
 open GlobalTheory.ThPFock in
 theorem GlobalTheory.ThPFock.fock_sph_prin : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t P, (∀ τ, IsCartanInv (gramAt D (Wc D i) τ) (cart (R.MW i (sg0 D A)) τ)) ∧ GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift.IsFockVec R.ψ R.θ (Vc D i) (Wc D i) (fun _ => 1) (cart (R.MW i (sg0 D A))) (R.ptP i t P) ∧ GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift.IsSphOff R.ψ (Vc D i) (Wc D i) (GlobalTheory.AdelicU.frameLat (Vc D i)) (GlobalTheory.AdelicU.frameLat (Wc D i)) (under (R.Pg ∪ R.Q t)) (R.ptP i t P) ∧ ∀ κ ∈ prin (Vc D i) (R.βV i) (R.Pg ∪ R.Q t), R.ωP i t (κ, 1) (R.ptP i t P) = R.ptP i t P := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hG _ i t P
@@ -957,8 +949,6 @@ theorem up_eq_setIntegral {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {A W : HSp D
 theorem rcoef_zero {D : D7} {A : HSp D} (m : Measure (GA D A)) (b : GA D A) : GlobalTheory.Core.Rk.IP.rcoef m 0 0 b = 0 := by
   simp [GlobalTheory.Core.Rk.IP.rcoef, GlobalTheory.Cusp.petersson, GlobalTheory.AutomorphicL2Unitary.pet, GlobalTheory.AutomorphicL2Unitary.descend]
 
-
-
 theorem nonVan_of_downNe : ∀ (D : D7) (_ : DownNe D) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, NonVan R i t := by
   intro D hD G _ _ Pl0 T A Ks _ _ _ R F hG hP i t h hh s hs y hy hy0
   obtain ⟨⟨cA, a, hdef⟩, hpl, hun, hunr, hη, hsig, hrW, hr0, hrV, -, -, -⟩ := _root_.GlobalTheory.DownPair.pair_data D G Pl0 T A Ks R F hG hP i t
@@ -966,7 +956,7 @@ theorem nonVan_of_downNe : ∀ (D : D7) (_ : DownNe D) (G : Type) [Group G] [Fin
   have hm : (R.νV i t).IsHaarMeasure := hlev.1
   have hW := hG.core.thP.ωP i t
   obtain ⟨l, P, hreal⟩ := GlobalTheory.T.realIntegral_thetaLift_definiteForm_ne_zero D G Pl0 T A Ks R F hG hP i t y hy0 (R.νV i t) hm
-  obtain ⟨hA0, hfix⟩ := GlobalTheory.T.linearForm_extV_mem_A0_and_prin_invariant D G Pl0 T A Ks R F hG hP i t cA a hdef y l
+  obtain ⟨hA0, hfix⟩ := GlobalTheory.DownLift.DefiniteComp.definiteScalarComponent_isCusp_and_congruence_fixed D G Pl0 T A Ks R F hG hP i t cA a hdef y l
   obtain ⟨B, c, hB, hHyp⟩ := _root_.GlobalTheory.Core.Rk.StringPole.string_pole_hyp D G Pl0 T A Ks R F hG hP i t s hs
   obtain ⟨hcart, hfock, hsph, hfixΦ⟩ := _root_.GlobalTheory.ThPFock.fock_sph_prin D G Pl0 T A Ks R F hG hP i t P
   have hu0 : (fun g => l (R.extV i t y g)) ≠ 0 := by
@@ -1042,8 +1032,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.downwardThetaLift_eigenform_is_eigenform : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, DownEig R i t := by
-  first | exact @GlobalTheory.DownEigen.downEig
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DownwardThetaLiftEigenformIsEigenformStatement =====
@@ -1060,8 +1048,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.downwardThetaLift_preserves_good : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, GoodMem R i t := by
-  first | exact @GlobalTheory.GoodLift.goodMem_of_given
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DownwardThetaLiftPreservesGoodStatement =====
@@ -1078,8 +1064,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.goodTypes_exclude_levelCharacter : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, GoodNoChi R i t := by
-  first | exact @GlobalTheory.GoodTypeNoChi.goodNoChi
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodTypesExcludeLevelCharacterStatement =====
@@ -1096,8 +1080,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.thetaLift_generation_at_realPlaces : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, GenInf R i t := by
-  first | exact @GlobalTheory.GenReal.genInf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaLiftGenerationAtRealPlacesStatement =====
@@ -1114,8 +1096,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.thetaLift_generation_finitePlaces : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, GenFin R i t := by
-  first | exact @GlobalTheory.DownLift.GenFinite.genFin
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaLiftGenerationFinitePlacesStatement =====
@@ -1158,11 +1138,11 @@ theorem liftInj_nonVan_typeNZ_of_hypotheses_alt : GlobalTheory.Published.CuspRap
   have hPole : GlobalTheory.IndefiniteRowSideFullHecke.SimplePoleTwistedLift.SimplePole := GlobalTheory.LiftPoleObj.simplePole_of_hecke hHecke
   have hNe : DownNe D := _root_.GlobalTheory.T.downNe_of_eulerRight_doubling hDbl hPole D hEul
   have hNV : ∀ i t, NonVan R i t := _root_.GlobalTheory.Core.Rk.NonVanAt.nonVan_of_downNe D hNe G Pl0 T A Ks R F hG hFull
-  have hEig : ∀ i t, DownEig R i t := GlobalTheory.T.downwardThetaLift_eigenform_is_eigenform hHowe D G Pl0 T A Ks R F hG hFull
-  have hGF : ∀ i t, GenFin R i t := GlobalTheory.T.thetaLift_generation_finitePlaces hHowe D G Pl0 T A Ks R F hG hFull
-  have hGI : ∀ i t, GenInf R i t := GlobalTheory.T.thetaLift_generation_at_realPlaces D G Pl0 T A Ks R F hG hFull
-  have hGM : ∀ i t, GoodMem R i t := GlobalTheory.T.downwardThetaLift_preserves_good D G Pl0 T A Ks R F hG hFull
-  have hNC : ∀ i t, GoodNoChi R i t := GlobalTheory.T.goodTypes_exclude_levelCharacter D G Pl0 T A Ks R F hG hFull
+  have hEig : ∀ i t, DownEig R i t := GlobalTheory.DownEigen.downEig hHowe D G Pl0 T A Ks R F hG hFull
+  have hGF : ∀ i t, GenFin R i t := GlobalTheory.DownLift.GenFinite.genFin hHowe D G Pl0 T A Ks R F hG hFull
+  have hGI : ∀ i t, GenInf R i t := GlobalTheory.GenReal.genInf D G Pl0 T A Ks R F hG hFull
+  have hGM : ∀ i t, GoodMem R i t := GlobalTheory.GoodLift.goodMem_of_given D G Pl0 T A Ks R F hG hFull
+  have hNC : ∀ i t, GoodNoChi R i t := GlobalTheory.GoodTypeNoChi.goodNoChi D G Pl0 T A Ks R F hG hFull
   have hPar : ∀ i t, ParamsEx R i t := GlobalTheory.DownLift.Params.paramsEx hDec D G Pl0 T A Ks R F hG hFull
   have hU : ∀ i t, UnrCorr R i t (fun _ => True) := _root_.GlobalTheory.UnrAll.unrCorr_all hDec hHowe D G Pl0 T A Ks R F hG hFull
   have hOk : ∀ i t (ok : Pl D.host.E → Prop), UnrCorr R i t ok := by

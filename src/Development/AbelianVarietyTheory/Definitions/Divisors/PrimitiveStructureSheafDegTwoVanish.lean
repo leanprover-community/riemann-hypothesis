@@ -12,8 +12,6 @@ open CategoryTheory AlgebraicGeometry KaehlerDifferential MonoidalCategory Carte
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Obs
 
 section Ext

@@ -3,46 +3,8 @@ module
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemDivsOfMem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.JetSumTable
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
@@ -57,47 +19,6 @@ noncomputable section
 namespace GlobalTheory.Proof.NarrowJetMoments
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke
-
-section Notions
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ}
-
-
-variable {ST SG SG' : Finset (HeightOneSpectrum (𝓞 E))}
-
-end Notions
-
-section Closure
-
-variable {p : ℕ} [Fact p.Prime]
-
-variable {X : Fields} {a b : ℕ}
-
-end Closure
-
-section Data
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ}
-  {N : Submodule (𝓞 E) (Sp E a)} {N' : Submodule (𝓞 E) (Sp E b)}
-
-end Data
-
-section Datum
-
-variable {X : Fields} {a b : ℕ} {SB Sall : Finset (HeightOneSpectrum (𝓞 X.E))} {T cA cB' : ℕ}
-  {N : Submodule (𝓞 X.E) (Sp X.E a)} {N' : Submodule (𝓞 X.E) (Sp X.E b)} {w : HeightOneSpectrum (𝓞 X.K)}
-
-variable (A : Amb X)
-
-end Datum
-
-section Clause
-
-variable {X : Fields} (A : Amb X) (Pr : Primes X) (u : Pr.Word) {p : ℕ} [Fact p.Prime] (w : HeightOneSpectrum (𝓞 X.K))
-  (ι : X.K →+* ℂ_[p]) (uu : X.Tau → ℂ_[p]) {a b : ℕ} (SB Sall : Finset (HeightOneSpectrum (𝓞 X.E)))
-  {SG SG' : Finset (HeightOneSpectrum (𝓞 X.E))} (d : DecoSet (E := X.E) (n := a) (ST := Pr.vT u) (SG := SG)) (d' : DecoSet (E := X.E) (n := b) (ST := Pr.vT u) (SG := SG'))
-
-end Clause
 
 section Bad
 

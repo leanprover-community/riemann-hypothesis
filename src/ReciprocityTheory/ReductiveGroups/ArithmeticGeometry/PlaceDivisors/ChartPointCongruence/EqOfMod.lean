@@ -26,11 +26,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Pdiv.ChPt
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-def SepSt : Prop :=
-  ∀ (T A O : Type) [CommRing T] [CommRing A] [Algebra T A] [CommRing O] [Algebra T O] (p : O),
-    IsHausdorff (Ideal.span {p}) O → ∀ h h' : A →ₐ[T] O,
-      (∀ n : ℕ, (Ideal.Quotient.mkₐ T (Ideal.span {p ^ n})).comp h = (Ideal.Quotient.mkₐ T _).comp h') → h = h'
-
 def AlgLimSt : Prop :=
   ∀ (T A O : Type) [CommRing T] [CommRing A] [Algebra T A] [CommRing O] [Algebra T O] (p : O),
     IsAdicComplete (Ideal.span {p}) O → ∀ a : ∀ n : ℕ, A →ₐ[T] O ⧸ Ideal.span {p ^ n},

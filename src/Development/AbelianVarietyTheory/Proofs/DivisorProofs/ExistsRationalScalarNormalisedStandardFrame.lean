@@ -56,8 +56,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.L2.Host (embLL0)
 open scoped TensorProduct
 
-
-
 noncomputable section
 
 namespace GlobalTheory.SeriesTie.NormRatStd
@@ -81,7 +79,7 @@ theorem fixBase_of_fix (hRF : GlobalTheory.NT.RayField) {T : CoreJ D} [Algebra T
 theorem exists_extC {G : Type} [Group G] [Fintype G] {T1 : Type} {A : FamIn D.what₂.LL G Pl0 T1 D.R.m} {T : CoreJ D}
     [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {j : Fin D.R.m} {Tp : Type} {tup : Tp → T1}
     (O : OMDat T.toCore R j Tp tup) : ∃ c : VsV D j ℂ →ₗ[ℂ] (R.cV j).W, ExtC R j (inC O.c') O.c0' c :=
-  GlobalTheory.T.exists_complexLinear_extension_coefficientMap D G Pl0 T1 A T R j Tp tup O
+  GlobalTheory.ExtCoeff.exists_extC D G Pl0 T1 A T R j Tp tup O
 
 theorem exists_ser_ne_zero {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {Rl : RealDat3 D A3 T.Q.c.F} {F : Face D A3.A}
     {κ : ∀ j : Fin D.R.m, WeightFamilies.Wt D ((j : ℕ) + 1)} {v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec}
@@ -123,7 +121,7 @@ theorem expands_of_isRatPhase (hRF : GlobalTheory.NT.RayField) {T : CoreJ D} [Al
     ∃ (n : ℕ) (e : Fin n → ℂ) (f : Fin n → T.toCore.cuspA ((j : ℕ) + 1) (wtA (κ j)) (κ j).n),
       Expands (O j) (κ j) (fun g => ph₀ * ser Rl.toRealDat j A3.A.μ0 (Rl.vP j A3.A.μ0) u h (c x) g) e f ∧
         ∀ k, e k ∈ (embLL0 D).fieldRange :=
-  GlobalTheory.T.rationalPhaseThetaSeries_expands_cuspForms_smallField D Γ Pl0 I0 T0 A3 hRF T Rl cG S YS F κ v₀ O hnV hT hcore hfw hti hio hQ hgal hval hray hroots j hV hpins hfp gramR c0R c0L hft hbc u hu ph₀ hph c hc v hv x hx h hh
+  GlobalTheory.SeriesTie.RatExpand.expands_of_isRatPhase D Γ Pl0 I0 T0 A3 hRF T Rl cG S YS F κ v₀ O hnV hT hcore hfw hti hio hQ hgal hval hray hroots j hV hpins hfp gramR c0R c0L hft hbc u hu ph₀ hph c hc v hv x hx h hh
 
 theorem fixed_of_expands {G : Type} [Group G] [Fintype G] {T1 : Type} {A : FamIn D.what₂.LL G Pl0 T1 D.R.m} {T : CoreJ D}
     [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {j : Fin D.R.m} {Tp : Type} {tup : Tp → T1}
@@ -221,7 +219,7 @@ theorem exists_isNorm_isRatScalar_std : GlobalTheory.Published.GlobalArtinRecipr
       rw [hcore.lev.xi_base] at h1
       rw [GlobalTheory.ChrEqUnique.eq_one_of_chrEq h1 z]
       simp
-    obtain ⟨y, y', hyy, hy⟩ := GlobalTheory.T.exists_conjugateForms_thetaLift_eq_thetaSeries D Γ Pl0 T0 A3.A T Rl.toRealDat F κ v₀ hcore hfw j Unit (fun _ => A3.A.μ0) (O j)
+    obtain ⟨y, y', hyy, hy⟩ := GlobalTheory.ConjTwist.exists_conjForm_thF_eq_ser D Γ Pl0 T0 A3.A T Rl.toRealDat F κ v₀ hcore hfw j Unit (fun _ => A3.A.μ0) (O j)
       hpins.2 cx hcx τ A3.A.μ0 A3.A.μ0 hfix hct h hh x x (conjVec_self_of_rat j τ v hv x hx)
     have hcf := hζ τ hfix y y' hyy
     have hy1 : ∀ g, (Rl.thF j A3.A.μ0) y (v₀ j (sg0 D A3.A)) g = ser Rl.toRealDat j A3.A.μ0 (Rl.vP j A3.A.μ0) u h (cx x) g :=

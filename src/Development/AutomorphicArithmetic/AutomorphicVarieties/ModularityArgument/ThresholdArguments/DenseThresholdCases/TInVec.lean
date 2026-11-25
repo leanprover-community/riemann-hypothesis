@@ -264,7 +264,7 @@ theorem UpperTheory.V.Z.Sym.Al.infVec :
   classical
   intro L _ _ _ π hπ j hW
   choose lam hlam hj using hW
-  obtain ⟨T, hT0, hTπ, hT⟩ := GlobalTheory.T.exists_ne_zero_weightTensor_intertwining_autRep L 2 lam π hπ hlam
+  obtain ⟨T, hT0, hTπ, hT⟩ := GlobalTheory.BCT.TrKer.exists_ne_zero_wsp_intertwining L 2 lam π hπ hlam
   let c : (InfinitePlace L → Fin (j + 1)) → GlobalTheory.BCT.TrKer.Wsp lam := fun κ =>
     PiTensorProduct.tprod ℂ fun v => mon (lam v) (hj v) (κ v)
   let a : (InfinitePlace L → Fin (j + 1)) → Wt.VD (InfinitePlace L) j := fun κ => ⟨A _ j κ, A_mem _ j κ⟩
@@ -340,9 +340,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL Formalism.BasicNotions
 open UpperTheory.V.W (Plc Lp)
@@ -379,14 +376,14 @@ private theorem antitone_mem : ∀ {n : ℕ} (M : AddSubmonoid (Fin n → ℤ)),
         intro i hi
         rw [Finset.sum_range_succ]
         by_cases h : i ≤ m
-        · rw [ih i h, if_pos (by omega)]
+        · rw [ih i h, ite_eq_left (by omega)]
           ring
         · obtain rfl : i = m + 1 := by omega
-          rw [if_neg (by omega), Finset.sum_eq_zero]
+          rw [ite_eq_right (by omega), Finset.sum_eq_zero]
           · simp
           · intro j hj
             have := Finset.mem_range.1 hj
-            rw [if_neg (by omega)]
+            rw [ite_eq_right (by omega)]
     have key : a = (A N) • (1 : Fin (N + 1) → ℤ) + ∑ j ∈ Finset.range N, (A j - A (j + 1)).toNat • fund (N + 1) (j + 1) := by
       funext i
       have hi : A i = a i := by
@@ -458,9 +455,9 @@ private theorem mu_fund (ψ : Fin n → kˣ →* ℂˣ) (j : ℕ) :
   rw [torusChar_apply, Units.coe_prod, psEig, Finset.prod_filter]
   refine Finset.prod_congr rfl fun i _ => ?_
   by_cases h : (i : ℕ) < j
-  · simp only [fund, if_pos h, zpow_one]
+  · simp only [fund, ite_eq_left h, zpow_one]
     exact mu_unif ψ i
-  · simp [fund, if_neg h]
+  · simp [fund, ite_eq_right h]
 private theorem diagT_inj : Function.Injective (diagT k (Fin n)) := by
   intro s t h
   funext i
@@ -656,9 +653,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL Formalism.BasicNotions
 open UpperTheory.V.W (Plc Lp)
@@ -735,9 +729,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL Formalism.BasicNotions
 open UpperTheory.V.W (Plc Lp)
@@ -755,7 +746,7 @@ private theorem thinOut {α β : Type} [DecidableEq α] (f : α → β) (S T : F
       rcases Finset.mem_insert.1 ht with rfl | ht
       · exact h
       · exact h4 t ht
-    · push_neg at h
+    · push Not at h
       refine ⟨insert a T', h1.trans (Finset.subset_insert _ _), ?_, ?_, ?_⟩
       · intro x hx y hy hxy
         rcases Finset.mem_insert.1 (Finset.mem_coe.1 hx) with h₁ | h₁ <;>

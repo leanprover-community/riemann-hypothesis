@@ -159,7 +159,6 @@ open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam foc
 open scoped TensorProduct Classical
 open GlobalTheory.SingleDatum
 
-
 noncomputable section
 
 namespace GlobalTheory.ConjLatSplit
@@ -197,7 +196,6 @@ theorem exists_conjLat_unimod_bd (H : ReciprocityTheory.ChartRestriction.G.Geo.T
 end General
 
 end GlobalTheory.ConjLatSplit
-
 
 open GlobalTheory.ConjLatSplit in
 theorem GlobalTheory.SingleDatum.exists_conjLat_levOK : ∀ (D : D7) (V : HSp D), V.gram = 1 → L0c D V = (Formalism.L2.Pj.stdLat D.host.E V.rank : Set (Fin V.rank → D.host.E)) → ∀ (bad M p : ℕ), Odd M → 2 ∣ bad → M ∣ bad → p ∣ bad → ∀ h : GA D V, SplitOffBad V bad h → ∃ (Λ : GenLat D.host.E V.rank) (u : ℕ), (∀ v, v ∈ Λ.La ↔ (fun j => star (v j)) ∈ Bridge.hLat V (finPt V h)) ∧ Λ.Unimod ∧ Λ.TrivAt M ∧ Nat.Coprime u p ∧ Λ.LevOK (M * u) M := by
@@ -240,7 +238,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
 open GlobalTheory.SingleDatum
-
 
 namespace GlobalTheory.SingleDatum
 
@@ -299,9 +296,6 @@ open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam foc
 open scoped TensorProduct Classical
 open GlobalTheory.SingleDatum
 
-
-
-
 namespace GlobalTheory.LevPeriod
 
 end GlobalTheory.LevPeriod
@@ -336,7 +330,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
 open GlobalTheory.SingleDatum
-
 
 noncomputable section
 
@@ -430,9 +423,6 @@ open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam foc
 open scoped TensorProduct Classical
 open GlobalTheory.SingleDatum
 
-
-
-
 namespace GlobalTheory.SingleDatum.MovedLevel
 
 theorem cSep_mem {D : D7} {H : Geo.Tor.Host D.host.E} (l : Geo.Tor.Level H) :
@@ -474,7 +464,6 @@ theorem exists_int_add_mul (F : Type) [Field F] [NumberField F] (M : ℕ) (hM : 
   rw [e, map_natCast]
   rfl
 
-
 theorem exists_finTens_add_nsmul {D : D7} (V W : HSp D) (LV : Set (Fin V.rank → D.host.E)) (LW : Set (Fin W.rank → D.host.E))
     (M : ℕ) (hM : 0 < M) (Y : WO V W) (hY : Y ∈ latO V W LV LW fun _ => True) :
     ∃ R ∈ GlobalTheory.LatVac.latRat V W LV LW, ∃ c ∈ latO V W LV LW (fun _ => True), Y = GlobalTheory.LatVac.finTens 1 R + M • c := by
@@ -503,7 +492,6 @@ theorem exists_finTens_add_nsmul {D : D7} (V W : HSp D) (LV : Set (Fin V.rank �
     exact ⟨R + R', add_mem hR hR', c + c', add_mem hc hc', by rw [GlobalTheory.LatVac.finTens_add, smul_add]; exact add_add_add_comm _ _ _ _⟩
   · rintro x ⟨R, hR, c, hc, rfl⟩
     exact ⟨-R, neg_mem hR, -c, neg_mem hc, by rw [GlobalTheory.LatVac.finTens_neg, smul_neg, neg_add]⟩
-
 
 theorem exists_levSum_add_of_half : ∀ (D : D7) (V W : HSp D) (ΛV : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (ΛW : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)), V.gram = 1 → (ΛV : Set (Fin V.rank → D.host.E)) = (Formalism.L2.Pj.stdLat D.host.E V.rank : Set (Fin V.rank → D.host.E)) → (ΛW : Set (Fin W.rank → D.host.E)) = L0c D W → ∀ (H : Geo.Tor.Host D.host.E) (Dw : Datum H) (ι : Dw.La →ₗ[𝓞 D.host.E] (Fin W.rank → D.host.E)), GlobalTheory.Member.IotaOK Dw W ι → ∀ (l₂ : Geo.Tor.Level H) (e : AE D), IsHalfIdem l₂ e → ∀ y : WO V W, IsHalf e y → l₂.M • y ∈ latO V W (ΛV : Set (Fin V.rank → D.host.E)) (ΛW : Set (Fin W.rank → D.host.E)) (fun _ => True) → ∃ (x : Fin V.rank → Dw.La) (c : WO V W), c ∈ latO V W (ΛV : Set (Fin V.rank → D.host.E)) (ΛW : Set (Fin W.rank → D.host.E)) (fun _ => True) ∧ y = (Matrix.of fun a b => e * incA D (ι (x b) a / (l₂.M : D.host.E)) : WO V W) + c := by
   intro D V W ΛV ΛW hV a5 a2 H Dw ι hι l₂ e he y hy hMy
@@ -712,7 +700,7 @@ theorem exists_transSum_of_mem_trSp : ∀ (D : D7) (ψ : AddChar (AF D.host.F) �
       · exact natCast_mem O _
       · exact zero_mem O
     · rw [transSum_eq, hq₀]
-      simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true, smul_smul, inv_mul_cancel₀ hcard,
+      simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, smul_smul, inv_mul_cancel₀ hcard,
         one_smul]
   | zero => exact ⟨0, fun _ => zero_mem _, by rw [transSum_eq]; simp⟩
   | add g g' _ _ hg hg' =>
@@ -750,7 +738,6 @@ open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam foc
 open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
-
 
 namespace GlobalTheory.ConstBound
 
@@ -1028,7 +1015,6 @@ open scoped TensorProduct Classical
 
 open GlobalTheory.LevelSeries
 
-
 theorem _root_.GlobalTheory.T.mem_integralForms_of_rational_and_local_spans : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.InR D j → ∀ σ : T.Q.c.F →+* ℂ, GoodEmb T.Q.c σ → ∀ C : Cover T j σ, C.IsUnif → CUnit C.cc₂ → ∀ (wa : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom wa n → ∀ (S : Set (HeightOneSpectrum (𝓞 C.d.c₂.F))) (φ : GA D (T.V j σ) → ℂ), φ ∈ Submodule.span C.σ₂.range (C.ratForms wa n) → (∀ la ∈ S, φ ∈ Submodule.span (locRing C.σ₂ la) (C.intForms wa n {la})) → φ ∈ C.intForms wa n S := by
   first | exact @GlobalTheory.LevelSeries.SpanInt.mem_intForms_of_spans
 end -- clump:auto
@@ -1116,8 +1102,6 @@ open scoped TensorProduct Classical
 open GlobalTheory.LevelSeries
 
 namespace GlobalTheory.TwistInt
-
-
 
 theorem mul_twist_mem_intForms : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.InR D j → ∀ C : Cover T j T.σ₀, C.IsUnif → (∃ φ : D.host.K →+* C.d.c₂.F, GlobalTheory.IndefiniteRowSideFullHecke.RayFieldTheta.ContainsRayField φ C.d.l₂.M) → ∀ xi : (GlobalTheory.FinalJoin.AfE D)ˣ →* ℂˣ, GlobalTheory.IndefiniteRowSideFullHecke.TwistSeries.IsTwist C.σ₂ C.d.pd xi → ∀ (wa : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (S : Set (HeightOneSpectrum (𝓞 C.d.c₂.F))), ∀ φ ∈ C.intForms wa n S, (fun g => ((xi (Matrix.GeneralLinearGroup.det (finHom (T.V j T.σ₀) g)) : ℂˣ) : ℂ) * φ g) ∈ C.intForms wa n S := by
   intro D T hL j hj C hU hRay xi hxi wa n S φ hφ
@@ -1214,16 +1198,15 @@ theorem charSum (M K : ℕ) (hM : M ≠ 0) (z : Fin K → ℂ) (hz : ∀ i, z i 
   simp only [h1]
   split_ifs with h
   · simp [h]
-  · push_neg at h
+  · push Not at h
     obtain ⟨i, hi⟩ := h
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
 
 theorem char_sum {A ι : Type} [AddCommMonoid A] (ψ : AddChar A ℂ) (s : Finset ι) (f : ι → A) :
     ψ (∑ i ∈ s, f i) = ∏ i ∈ s, ψ (f i) := by
   classical
   refine Finset.induction_on s (by simp) fun a s ha ih => ?_
   rw [Finset.sum_insert ha, Finset.prod_insert ha, AddChar.map_add_eq_mul, ih]
-
 
 open GlobalTheory.LatFinMod GlobalTheory.LatVac in
 theorem gens (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E))
@@ -1245,7 +1228,7 @@ theorem gens (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank
     split_ifs
     · exact one_mem _
     · exact zero_mem _
-  have hε0 : ∀ v, ¬ P v → evalV D.host.F v ε = 0 := fun v hv => by rw [evalV_idemAt, if_neg hv]
+  have hε0 : ∀ v, ¬ P v → evalV D.host.F v ε = 0 := fun v hv => by rw [evalV_idemAt, ite_eq_right hv]
   let φ : Matrix (Fin T.rank) (Fin S.rank) D.host.E →ₗ[ℤ] WO S T :=
     (AddMonoidHom.mk' (finTens ε) (finTens_add ε)).toIntLinearMap
   let G := φ '' ((fun p : _ × _ × _ => genMap S T p.1 p.2.1 p.2.2) '' (A ×ˢ B ×ˢ C))
@@ -1310,8 +1293,6 @@ theorem root_mem {D : D7} {S T : HSp D} {ΛS : Submodule (𝓞 D.host.E) (Fin S.
   obtain ⟨i, -, hi⟩ := (Complex.isPrimitiveRoot_exp M hM).eq_pow_of_pow_eq_one h1
   rw [← hi]
   exact Subring.pow_mem _ hz i
-
-
 
 theorem smul_mem_trSp : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D) (χV χW : (AE D)ˣ →* Circle) (om : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (ΛV : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (ΛW : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)) (sW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (f₀ : WO V W → ℂ), VacPair ψ θ V W χV χW om ΛV ΛW sW f₀ → ∃ K : ℕ, ∀ (M : ℕ) (e : AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (O : Subring ℂ) (Φ φ : WO V W → ℂ), M ≠ 0 → Nat.Coprime M (GlobalTheory.Tow.badN D) → IsIdemSum e P → (∀ PP ∈ P, ((M : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) → zeta M ∈ O → GlobalTheory.IndefiniteRowSideFullHecke.TwistSeries.IsLevelFn (cA D e) (latO V W ΛV ΛW fun _ => True) M Φ → (∀ x, Φ x ∈ O) → IsThetaAt ψ (symplO V W) (heisO ψ V W) (cA D e) (latO V W ΛV ΛW fun _ => True) 1 f₀ Φ φ → ((M : ℂ) ^ K) • φ ∈ trSp ψ V W ΛV ΛW f₀ e M O := by
   intro D ψ θ V W χV χW om ΛV ΛW sW f₀ hP
@@ -1403,10 +1384,10 @@ theorem smul_mem_trSp : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF
     simp only [hprod t]
     rw [charSum M K hM _ (hroot t ht)]
     by_cases hc : ∃ u ∈ Λ, IsHalf (cA D e) u ∧ t = M • u
-    · rw [if_pos hc, if_pos]
+    · rw [ite_eq_left hc, ite_eq_left]
       obtain ⟨u, hu, -, rfl⟩ := hc
       exact hconv u hu
-    · rw [if_neg hc, if_neg]
+    · rw [ite_eq_right hc, ite_eq_right]
       exact fun hall => hc (hdualT t ht hth hall)
 
   obtain ⟨C, hCh, hC⟩ := GlobalTheory.BadOrth.finCosets D V W ΛV ΛW hSV hSW (cA D e) hcc M hMpos
@@ -1427,7 +1408,7 @@ theorem smul_mem_trSp : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF
   have hrepex : ∀ q ∈ Q, ∃ c ∈ C', mkL c = q := fun q hq => Finset.mem_image.1 hq
   let rep : WO V W ⧸ L → WO V W := fun q => if hq : q ∈ Q then (hrepex q hq).choose else 0
   have hrep : ∀ q ∈ Q, rep q ∈ Λ ∧ IsHalf (cA D e) (rep q) ∧ mkL (rep q) = q := fun q hq => by
-    simp only [rep, dif_pos hq]
+    simp only [rep, dite_eq_left hq]
     obtain ⟨h1, h2⟩ := (hrepex q hq).choose_spec
     obtain ⟨h3, h4⟩ := Finset.mem_filter.1 h1
     exact ⟨h4, hCh _ h3, h2⟩
@@ -1463,7 +1444,7 @@ theorem smul_mem_trSp : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF
           refine if_congr ?_ rfl rfl
           rw [← memL, ← hmkL, hq3]
       rw [e1, Finset.sum_congr rfl fun q hq => by rw [e2 q hq, mul_ite, mul_zero], Finset.sum_ite_eq,
-        if_pos (hcover t ht.1 ht.2)]
+        ite_eq_left (hcover t ht.1 ht.2)]
       obtain ⟨-, -, hr3⟩ := hrep (mkL t) (hcover t ht.1 ht.2)
       obtain ⟨w, hw, hwh, hwe⟩ := (memL _).1 ((hmkL _ _).1 hr3)
       have hΦr : Φ (rep (mkL t)) = Φ t := by
@@ -1600,8 +1581,6 @@ theorem exists_denom {X ι : Type} [AddCommGroup X] [Module ℂ X] (J : X →ₗ
     rw [map_zsmul, smul_comm, MvPolynomial.coeff_smul]
     exact zsmul_mem (hx mo) n
 
-
-
 theorem series_bound {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D} {χV χW : (AE D)ˣ →* Circle}
     {om : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {ΛV : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
     {ΛW : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)} {sW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ}
@@ -1729,8 +1708,6 @@ theorem eq_of_castDict {D : D7} {Y : Type} {V W : HSp D} (h : V = W) {F F' : GA 
     (e : ∀ g, castDict h F g = castDict h F' g) : F = F' := by
   subst h; exact funext e
 
-
-
 theorem serIntAt_record : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), LawsJ T → R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsFam → R.IsModels → R.IsThP → TieIn T R κ v₀ → ∀ (i : Fin D.R.m), VStd D i → ∀ hV : T.V ((i : ℕ) + 1) T.σ₀ = Wc D i, GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues.FramePin T R i T.σ₀ hV → ∀ (u : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ), (∀ ρ, (u ρ : (R.MW i (sg0 D A)).sm ρ) = v₀ i (sg0 D A) ρ) → ∀ c0 : VsV D i ℂ →ₗ[ℂ] (R.cV i).W, GlobalTheory.IndefiniteRowSideFullHecke.TwistSeries.IsCoefMap R i c0 → GlobalTheory.IndefiniteRowSideFullHecke.TwistSeries.SerIntAt T R i (κ i) hV u c0 := by
   intro D G _ _ Pl0 T0 A T _ R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV hFP u hu c0 hc0
   have hj : Formalism.L2.Pj.InR D ((i : ℕ) + 1) := inR i
@@ -1824,7 +1801,7 @@ theorem serIntAt_record : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 
     refine sum_mem fun k _ => Submodule.smul_mem _ (⟨β k, (hfs k).1⟩ : O) (Submodule.subset_span ⟨fs k, ⟨?_, ?_⟩, rfl⟩)
     · rw [hn]; exact ⟨(hfs k).2.1, (hfs k).2.2.1⟩
     · rintro _ rfl
-      exact (GlobalTheory.T.integral_values_algebraic_points_iff_value_nonneg _ _ _ _ _ _ _ _).1 (hfs k).2.2.2
+      exact (GlobalTheory.TowVal.bddAll_one_iff_valSet_nonneg _ _ _ _ _ _ _ _).1 (hfs k).2.2.2
   have hint : Fn ∈ C.intForms (wtA (κ i)) (κ i).n S := by
     refine GlobalTheory.T.mem_integralForms_of_rational_and_local_spans D T hL _ hj T.σ₀ T.toCore.good_σ₀ C hU (hpin _ (dom_wtA (κ i))).1 _ _ (dom_wtA (κ i)) S Fn ?_ fun la hla => ?_
     · obtain ⟨la, hla⟩ := exists_place_over C.d.c₂.F hl

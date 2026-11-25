@@ -34,9 +34,9 @@ private theorem fockInner_eq_sum_support_left (P Q : MvPolynomial σ ℂ) :
   unfold FockH1Action.fockInner
   refine Finset.sum_congr rfl (fun α _ => ?_)
   rw [Finset.sum_eq_single α]
-  · rw [if_pos rfl, wt]
+  · rw [ite_eq_left rfl, wt]
   · intro β _ hβ
-    rw [if_neg (Ne.symm hβ), mul_zero]
+    rw [ite_eq_right (Ne.symm hβ), mul_zero]
   · intro hα
     rw [MvPolynomial.mem_support_iff, not_not] at hα
     simp only [hα, mul_zero, zero_mul]
@@ -183,28 +183,11 @@ lemma wt_add_single [Fintype σ] [DecidableEq σ] (β : σ →₀ ℕ) (l : σ) 
   have hrest : ∏ i ∈ Finset.univ.erase l, (((β + Finsupp.single l 1 : σ →₀ ℕ) i).factorial : ℂ)
       = ∏ i ∈ Finset.univ.erase l, ((β i).factorial : ℂ) := by
     refine Finset.prod_congr rfl (fun i hi => ?_)
-    rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm (Finset.ne_of_mem_erase hi)),
+    rw [Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm (Finset.ne_of_mem_erase hi)),
       add_zero]
   rw [hrest, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
   push_cast
   ring
-
-private theorem X_mul_monomial_eq_monomial_add_single (l : σ) (a : σ →₀ ℕ) (c : ℂ) :
-    X l * monomial a c = monomial (a + Finsupp.single l 1) c := by
-  rw [add_comm]
-  rw [MvPolynomial.monomial_single_add, pow_one]
-
-private theorem fockInner_monomial_monomial_self (a : σ →₀ ℕ) (c d : ℂ) :
-    FockH1Action.fockInner (monomial a c) (monomial a d) = (starRingEnd ℂ) c * d * wt a := by
-  classical
-  rw [fockInner_eq_sum_left _ _ {a} support_monomial_subset, Finset.sum_singleton]
-  simp [coeff_monomial]
-
-private theorem fockInner_monomial_monomial_of_ne (a b : σ →₀ ℕ) (c d : ℂ) (h : b ≠ a) :
-    FockH1Action.fockInner (monomial a c) (monomial b d) = 0 := by
-  classical
-  rw [fockInner_eq_sum_left _ _ {a} support_monomial_subset, Finset.sum_singleton]
-  simp [coeff_monomial, h]
 
 lemma fockInner_X_mul [Fintype σ] (l : σ) (P Q : MvPolynomial σ ℂ) :
     FockH1Action.fockInner (X l * P) Q = FockH1Action.fockInner P (pderiv l Q) := by

@@ -11,46 +11,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeO
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOrEqOfPlaceIdem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 
@@ -133,7 +94,7 @@ theorem exists_cosets {G Y : Type} [AddCommGroup G] (Λ H : AddSubgroup G) {k : 
   · obtain ⟨p, hp, rfl⟩ := Finset.mem_image.1 hq
     obtain ⟨⟨p1, p2⟩, -⟩ := hP.mem_toFinset.1 hp
     refine ⟨fun t ht => ?_, fun u hu t => ?_⟩
-    · obtain ⟨u, hu, h⟩ := QuotientAddGroup.eq.1 (of_not_not fun h => ht (if_neg h) : _ = _).symm
+    · obtain ⟨u, hu, h⟩ := QuotientAddGroup.eq.1 (of_not_not fun h => ht (ite_eq_right h) : _ = _).symm
       obtain rfl : t = p + k • u := by rw [show k • u = _ from h]; abel
       exact ⟨add_mem p1 (nsmul_mem hu.2 _), by rw [smul_add]; exact add_mem p2 (nsmul_mem (nsmul_mem hu.1 _) _)⟩
     · beta_reduce
@@ -310,14 +271,14 @@ theorem exists_tensor {S' T' : HSp D} {ΛS' : Submodule (𝓞 D.host.E) (Fin S'.
     (fun i y => if IsHalf e y then F (r i) y else 0) ha fun i _ => by
       have hne : ∀ y, (if IsHalf e y then F (r i) y else 0) ≠ 0 → IsHalf e y ∧ F (r i) y ≠ 0 := fun y hy => by
         by_cases h : IsHalf e y
-        · exact ⟨h, by rwa [if_pos h] at hy⟩
-        · exact absurd (if_neg h) hy
+        · exact ⟨h, by rwa [ite_eq_left h] at hy⟩
+        · exact absurd (ite_eq_right h) hy
       refine ⟨fun y hy => (hne y hy).1, l, hl, fun u hu hu' y => ?_,
         fun y hy => b2 y (hne y hy).1 fun w hw => (h2 _ y (hne y hy).2 w hw).2⟩
       refine if_congr ?_ (by simpa only [add_zero] using h1 (r i) y 0 _ (fun w _ => z _ _ w) (b1 u hu)) rfl
       rw [isHalf_iff, isHalf_iff]
       exact add_mem_cancel_right (nsmul_mem ((isHalf_iff S' T').1 hu') _)
-  refine ⟨τ, φ₁, φ₂, fun d hd => ?_, fun x y hx hy => by simp only [c2, hF x y hx, if_pos hy]⟩
+  refine ⟨τ, φ₁, φ₂, fun d hd => ?_, fun x y hx hy => by simp only [c2, hF x y hx, ite_eq_left hy]⟩
   obtain ⟨⟨d1, d2⟩, d3, d4⟩ := c1 d hd
   exact ⟨⟨d1, d2 ▸ t1 _ d1⟩, d3, d4 ▸ t2 _ d3⟩
 

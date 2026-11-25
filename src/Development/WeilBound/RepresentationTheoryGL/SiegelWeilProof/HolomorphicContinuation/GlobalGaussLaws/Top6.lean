@@ -319,8 +319,6 @@ namespace PositivityTheory.Rg.Sw.Glob
 
 open LieCPfH
 
-
-
 theorem lieComm_of (hAway : AwayIn) (hLNe : LNe) (hSch : SchFP) (hOp : OpCLM) (hAF : AwayFact) (hSD : SchDeriv) :
     LieComm := by
   intro D n V ψ χ θ μ ω H l s ν τ ε fr ι hC Ψ hΨA X hX P g x
@@ -421,12 +419,6 @@ open GlobalTheory.Mem.AutSpace (SmFun)
 open GlobalTheory.Size (sobO thetaLevel)
 open GlobalTheory.ThetaDens
 
-namespace GlobalTheory.ThetaDens
-
-theorem sobBdd_absThetaInt : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ θ : InfFam D, IsInfFam θ → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ m : Measure (GA D T), m.IsHaarMeasure → ∀ Z : (WO S T → ℂ) → WO S T → ℂ, (∀ f f', IsThetaFunO ψ S T f → IsThetaFunO ψ S T f' → Z (f + f') = Z f + Z f') → (∀ (c : ℂ) f, IsThetaFunO ψ S T f → Z (c • f) = c • Z f) → Sobolev₂ ψ θ μ 𝓕 μ 𝓕 Z → (∀ f, IsThetaFunO ψ S T f → ∀ x, om (x, 1) (Z f) = Z (om (x, 1) f)) → (∀ f, IsThetaFunO ψ S T f → Integrable (descend (GQ T) fun h => thetaKO om 1 h (Z f)) (autMeasure T m)) → SobBdd ψ θ μ 𝓕 fun f x => ∫⁻ q, ‖descend (GQ T) (fun h => thetaKO om x h (Z f)) q‖ₑ ∂autMeasure T m :=
-  UpperTheory.Lit.Rallis.ThetaDens.sobBdd_absThetaInt
-
-end GlobalTheory.ThetaDens
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AbsThetaIntegralLeSobolevSeminorm =====
@@ -447,9 +439,6 @@ open GlobalTheory.Mem.AutSpace (SmFun)
 open GlobalTheory.Size (sobO thetaLevel)
 open GlobalTheory.ThetaDens
 
-
-theorem _root_.GlobalTheory.T.absThetaIntegral_le_sobolevSeminorm : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ θ : InfFam D, IsInfFam θ → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ m : Measure (GA D T), m.IsHaarMeasure → ∀ Z : (WO S T → ℂ) → WO S T → ℂ, (∀ f f', IsThetaFunO ψ S T f → IsThetaFunO ψ S T f' → Z (f + f') = Z f + Z f') → (∀ (c : ℂ) f, IsThetaFunO ψ S T f → Z (c • f) = c • Z f) → Sobolev₂ ψ θ μ 𝓕 μ 𝓕 Z → (∀ f, IsThetaFunO ψ S T f → ∀ x, om (x, 1) (Z f) = Z (om (x, 1) f)) → (∀ f, IsThetaFunO ψ S T f → Integrable (descend (GQ T) fun h => thetaKO om 1 h (Z f)) (autMeasure T m)) → SobBdd ψ θ μ 𝓕 fun f x => ∫⁻ q, ‖descend (GQ T) (fun h => thetaKO om x h (Z f)) q‖ₑ ∂autMeasure T m := by
-  first | exact @GlobalTheory.ThetaDens.sobBdd_absThetaInt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AbsThetaIntegralLeSobolevSeminormStatement =====
@@ -670,7 +659,7 @@ theorem continuous_thetaMean (hP : GlobalTheory.Published.WeilThetaConvergence) 
   have hi : ∀ f, IsThetaFunO ψ (dblSp A) B f → ∀ g,
       Integrable (GlobalTheory.AutomorphicL2Unitary.descend (GQ B) fun h => thetaKO om g h f) (autMeasure B m) :=
     fun f hf g => GlobalTheory.WeilThetaInt.integrable_thetaKO hP D A B m hm hA hw ψ χ om hW f hf g
-  have hint := GlobalTheory.T.absThetaIntegral_le_sobolevSeminorm D ψ (dblSp A) B 1 χ om hW θ hθ μ 𝓕 hμ m hm id (fun _ _ _ _ => rfl)
+  have hint := UpperTheory.Lit.Rallis.ThetaDens.sobBdd_absThetaInt D ψ (dblSp A) B 1 χ om hW θ hθ μ 𝓕 hμ m hm id (fun _ _ _ _ => rfl)
     (fun _ _ _ => rfl) (GlobalTheory.ThetaDens.sobCont_id ψ θ μ 𝓕) (fun _ _ _ => rfl) (fun f hf => hi f hf 1)
   rw [continuous_iff_continuousAt]
   intro g₀

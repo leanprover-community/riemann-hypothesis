@@ -244,7 +244,7 @@ theorem UpperTheory.V.AlgebraTools.lemma_B :
     have h2 := Nat.zero_le (Module.finrank A K * j)
     exact_mod_cast (show Module.finrank A M * j + cM ≤
       Module.finrank A K * j + (cK + Module.finrank A M * c + cM) by omega)
-  · push_neg at hj
+  · push Not at hj
     obtain ⟨m, rfl⟩ : ∃ m, j = m + c := ⟨j - c, by omega⟩
     have hP : P ≤ K ⊔ maximalIdeal A ^ m • ⊤ := hc m
     have hU : Module.length A (K.map N.mkQ) ≤ ((Module.finrank A K * (m + c) + cK : ℕ) : ℕ∞) := by

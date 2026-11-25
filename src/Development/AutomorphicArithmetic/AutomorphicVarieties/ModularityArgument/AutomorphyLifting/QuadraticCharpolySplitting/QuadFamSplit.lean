@@ -132,7 +132,7 @@ private theorem fix_field {Ω K : Type} [Field K] [NumberField K] [Field Ω] [Al
     exact Submodule.mem_top
   obtain ⟨f, hf⟩ := (Submodule.mem_span_range_iff_exists_fun ℚ).mp hx
   rw [← hf]
-  simp [Fin.sum_univ_two, Algebra.smul_def, ← IsScalarTower.algebraMap_apply, hg]
+  simp [Fin.sum_univ_two, Algebra.smul_def, hg]
 
 private theorem fam_one (p : ℕ) (hp : p.Prime) (h4 : p % 4 = 3) :
     ∃ (K : Type) (_ : Field K) (_ : NumberField K) (_ : IsCMField K),

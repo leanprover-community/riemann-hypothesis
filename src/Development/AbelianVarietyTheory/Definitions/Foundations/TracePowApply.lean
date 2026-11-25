@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Mem.GelfCheck
 
 open MvPolynomial GlobalTheory.Mem.Gelf
@@ -98,7 +96,7 @@ private theorem gradedWeyl_gen_coeff_one_and_coeff_zero (R : Type) [CommRing R] 
       simp only [Polynomial.coeff_mul_X_zero, zero_mul, add_zero, hp0, hp1]
       refine ⟨?_, trivial⟩
       simp only [Pi.single_apply, Prod.mk.injEq, true_and, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_mul]
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_mul]
       rw [add_comm]
       congr 1
       · ring
@@ -155,7 +153,7 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.pow_cov (h : _root_.GlobalTheory.Mem.G
     simp only [pow_succ, Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
     rw [Finset.sum_congr rfl fun m _ => key m]
     simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     split_ifs <;> simp <;> abel
 
 end
@@ -195,7 +193,7 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.trace_pow_apply (h : _root_.GlobalTheo
             (_root_.GlobalTheory.Mem.GelfCheck.pow_cov h k a m m b)
           simp only [LinearMap.sub_apply, Module.End.mul_apply] at hc
           rw [ih1 a m (lt_of_le_of_lt hab hmb), map_zero, zero_sub] at hc
-          rw [if_neg (not_lt.mpr hmb.le), if_neg hmb.ne', ← neg_neg ((E ^ k) a m (E m b v)), hc]
+          rw [ite_eq_right (not_lt.mpr hmb.le), ite_eq_right hmb.ne', ← neg_neg ((E ^ k) a m (E m b v)), hc]
           split_ifs <;> simp
       refine ⟨fun a b hab => ?_, fun a => ?_⟩
       · rw [expand, Finset.sum_congr rfl fun m _ => term a b m hab.le, ih1 a b hab]
@@ -216,17 +214,17 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.trace_pow_apply (h : _root_.GlobalTheo
               ((if a < m then s a else 0) -
                 (if m = a then ((N - 1 - a.val : ℕ) : R) * s a else 0)) • v := by
           intro m
-          rw [ih2', ih2', if_pos rfl]
+          rw [ih2', ih2', ite_eq_left rfl]
           rcases lt_trichotomy m a with hma | hma | hma
           · simp [_root_.GlobalTheory.Mem.Gelf.gelfA, hma, hma.ne', not_lt.mpr hma.le, hma.ne]
           · subst hma
             have hdiag : _root_.GlobalTheory.Mem.Gelf.gelfA μ m m = μ m + ((N - 1 - m.val : ℕ) : R) := by
               simp [_root_.GlobalTheory.Mem.Gelf.gelfA]
-            rw [hdiag, if_neg (lt_irrefl m), if_pos rfl, if_neg (lt_irrefl m), if_pos rfl]
+            rw [hdiag, ite_eq_right (lt_irrefl m), ite_eq_left rfl, ite_eq_right (lt_irrefl m), ite_eq_left rfl]
             module
           · have hup : _root_.GlobalTheory.Mem.Gelf.gelfA μ a m = -1 := by
               simp [_root_.GlobalTheory.Mem.Gelf.gelfA, hma.ne, hma]
-            rw [hup, if_neg (not_lt.mpr hma.le), if_neg hma.ne', if_pos hma, if_neg hma.ne']
+            rw [hup, ite_eq_right (not_lt.mpr hma.le), ite_eq_right hma.ne', ite_eq_left hma, ite_eq_right hma.ne']
             module
         have hf : (Finset.univ.filter fun m : Fin N => a < m) = Finset.Ioi a := by
           ext m
@@ -235,7 +233,7 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.trace_pow_apply (h : _root_.GlobalTheo
           rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, hf, Fin.card_Ioi]
         rw [Finset.sum_congr rfl fun m _ => hterm m, Finset.sum_add_distrib, ← Finset.sum_smul,
           ← Finset.sum_smul, Finset.sum_sub_distrib, hc, Finset.sum_ite_eq',
-          if_pos (Finset.mem_univ a), sub_self, zero_smul, add_zero, hs]
+          ite_eq_left (Finset.mem_univ a), sub_self, zero_smul, add_zero, hs]
   simp only [Matrix.trace, Matrix.diag, LinearMap.sum_apply, (main k).2,
     _root_.GlobalTheory.Mem.Gelf.gelfC, Finset.sum_smul]
 

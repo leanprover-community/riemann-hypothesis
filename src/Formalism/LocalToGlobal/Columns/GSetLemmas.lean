@@ -443,18 +443,6 @@ theorem fibre_card_stab (x : D₀) (y : fibre pr hpr x) :
 
 end Fib
 
-namespace GSD
-
-variable (S : GSD K)
-
-end GSD
-
-namespace BiPair
-
-variable {S S' : GSD K} (P : BiPair S S')
-
-end BiPair
-
 namespace GFam
 
 variable (F : GFam K)
@@ -509,11 +497,5 @@ theorem toCSDOf_rat [Nonempty F.β] (h : F.Ok) (R : ∀ b, (F.mem b).Rat) (s : �
       pos := (R (Classical.arbitrary F.β)).pos }
 
 end GFam
-
-namespace GSD
-
-variable (K)
-
-end GSD
 
 end Formalism.L2.Col

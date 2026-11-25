@@ -2,54 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -69,7 +21,7 @@ private theorem affPt_apply_of_not_free {p : ℕ} (x₀ : Matrix n n' k)
     (e : { rs // _root_.GlobalTheory.RootEx.Free p rs } → k) {r : n ⊕ Fin c} {s : n' ⊕ Fin (c + 1)}
     (hf : ¬ _root_.GlobalTheory.RootEx.Free p (r, s)) :
     _root_.GlobalTheory.RootEx.affPt (c := c) p x₀ e r s = _root_.GlobalTheory.RootEx.basePt c x₀ r s := by
-  simp only [_root_.GlobalTheory.RootEx.affPt, Matrix.add_apply, Matrix.of_apply, dif_neg hf, add_zero]
+  simp only [_root_.GlobalTheory.RootEx.affPt, Matrix.add_apply, Matrix.of_apply, dite_eq_right hf, add_zero]
 
 open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] {n n' : Type} {c : ℕ} in
@@ -78,7 +30,7 @@ private theorem affPt_apply_of_free {p : ℕ} (x₀ : Matrix n n' k)
     (hf : _root_.GlobalTheory.RootEx.Free p (r, s)) :
     _root_.GlobalTheory.RootEx.affPt (c := c) p x₀ e r s = e ⟨(r, s), hf⟩ := by
   simp only [_root_.GlobalTheory.RootEx.affPt, _root_.GlobalTheory.RootEx.basePt, Matrix.add_apply,
-    Matrix.of_apply, dif_pos hf]
+    Matrix.of_apply, dite_eq_left hf]
   have hf' := hf
   rcases r with i | l <;> rcases s with j | m <;> simp only [_root_.GlobalTheory.RootEx.Free] at hf' <;>
     simp [Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂] <;>
@@ -191,13 +143,13 @@ theorem _root_.GlobalTheory.RootEx.Unram.opE_of_ite {p : ℕ} {ψ : AddChar k Ci
     by_cases hP : P
     · by_cases he : ∀ rs, e rs ∈ 𝒪[k]
       · have heS : e ∈ S := fun rs _ => he rs
-        rw [if_pos ⟨hP, he⟩, if_pos hP, Set.indicator_of_mem heS,
+        rw [ite_eq_left ⟨hP, he⟩, ite_eq_left hP, Set.indicator_of_mem heS,
           _root_.GlobalTheory.RootEx.Unram.psi_eq_one hψ
             (neg_mem (ch_affPt_mem_of_integral x₀ e he))]
         simp
       · have heS : e ∉ S := fun heS => he fun rs => heS rs (Set.mem_univ _)
-        rw [if_neg (fun h' => he h'.2), if_pos hP, Set.indicator_of_notMem heS, zero_mul]
-    · rw [if_neg (fun h' => hP h'.1), if_neg hP, zero_mul]
+        rw [ite_eq_right (fun h' => he h'.2), ite_eq_left hP, Set.indicator_of_notMem heS, zero_mul]
+    · rw [ite_eq_right (fun h' => hP h'.1), ite_eq_right hP, zero_mul]
   unfold _root_.GlobalTheory.RootEx.opE
   simp_rw [hint]
   split_ifs with hP
@@ -226,9 +178,9 @@ theorem _root_.GlobalTheory.RootEx.Unram.psi_ch_eq_one {p : ℕ} (ψ : AddChar k
     ext r s
     simp only [_root_.GlobalTheory.RootEx.affPt, Matrix.add_apply, Matrix.of_apply]
     by_cases hf : _root_.GlobalTheory.RootEx.Free p (r, s)
-    · simp only [dif_pos hf, Pi.add_apply, hd]
+    · simp only [dite_eq_left hf, Pi.add_apply, hd]
       ring
-    · simp only [dif_neg hf, hD r s hf, add_zero]
+    · simp only [dite_eq_right hf, hD r s hf, add_zero]
   have hch : ∀ A B : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k,
       _root_.GlobalTheory.RootEx.ch (A + B) =
         _root_.GlobalTheory.RootEx.ch A + _root_.GlobalTheory.RootEx.ch B := by

@@ -4,52 +4,12 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Hermi
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarBallGrowthUnitaryJ
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrableExpNegMulOfSublevelGrowth
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.EigenfunctionFiniteCoefficients
@@ -83,7 +43,7 @@ private theorem measure_slice_le_measure_mul_inv {G : Type} [Group G] [Topologic
           congr 1
           ext x
           simp
-  · push_neg at h0
+  · push Not at h0
     have hsub : {s | s ∈ S ∧ s⁻¹ * g ∈ K} ⊆ Nᶜ := fun s hs hsN => h0 s hsN hs.2
     calc ν {s | s ∈ S ∧ s⁻¹ * g ∈ K} ≤ ν Nᶜ := measure_mono hsub
       _ = 0 := hnull
@@ -107,11 +67,11 @@ theorem measure_mul_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
     have hsl : ∀ s, μ (Prod.mk s ⁻¹' E) = S.indicator (fun _ => μ K) s := by
       intro s
       by_cases hs : s ∈ S
-      · rw [Set.indicator_apply, if_pos hs, ← measure_preimage_mul μ s⁻¹ K]
+      · rw [Set.indicator_apply, ite_eq_left hs, ← measure_preimage_mul μ s⁻¹ K]
         congr 1
         ext x
         simp [hEd, hs]
-      · rw [Set.indicator_apply, if_neg hs]
+      · rw [Set.indicator_apply, ite_eq_right hs]
         have h0 : Prod.mk s ⁻¹' E = ∅ := by
           ext x
           simp [hEd, hs]
@@ -126,10 +86,10 @@ theorem measure_mul_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
           apply lintegral_mono
           intro g
           by_cases hg : g ∈ T
-          · rw [Set.indicator_apply, if_pos hg]
+          · rw [Set.indicator_apply, ite_eq_left hg]
             exact (le_of_eq (by rw [hEd]; rfl)).trans
               (measure_slice_le_measure_mul_inv (S := S) hnull hleft hK g)
-          · rw [Set.indicator_apply, if_neg hg]
+          · rw [Set.indicator_apply, ite_eq_right hg]
             have h0 : (fun s => (s, g)) ⁻¹' E = ∅ := by
               ext s
               simp only [hEd, Set.mem_preimage, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false,
@@ -150,10 +110,7 @@ private theorem dOp_nonneg_subadditive_continuous {n : ℕ} (ε : Fin n → Bool
   · subst hn
     have h0 : ∀ g : Matrix (Fin 0) (Fin 0) ℂ, dOp g = 0 := by
       intro g
-      have hz : ‖LinearMap.toContinuousLinearMap (Matrix.toEuclideanLin g)‖ = 0 := by
-        refine le_antisymm (ContinuousLinearMap.opNorm_le_bound _ le_rfl fun x => ?_) (norm_nonneg _)
-        rw [zero_mul, EuclideanSpace.norm_eq]
-        simp
+      have hz : ‖LinearMap.toContinuousLinearMap (Matrix.toEuclideanLin g)‖ = 0 := norm_of_subsingleton _
       simp only [dOp, hz, Real.log_zero]
     simp only [h0]
     exact ⟨fun _ => le_rfl, fun _ _ => by norm_num, continuous_const⟩

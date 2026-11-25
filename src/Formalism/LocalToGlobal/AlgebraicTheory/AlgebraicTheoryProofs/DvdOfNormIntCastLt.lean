@@ -94,13 +94,6 @@ theorem norm_exp_piI (ι : ℂ ≃+* ℂ_[p]) (y : ℝ) (m : ℕ) (hm : 0 < m) (
     linear_combination (2 * (Real.pi : ℂ) * Complex.I) * hy'
   rw [e, Complex.exp_int_mul_two_pi_mul_I]
 
-theorem norm_natCast_eq (n : ℕ) : ‖(n : ℂ_[p])‖ = ‖(n : ℚ_[p])‖ := by
-  have h := PadicComplex.norm_extends' p (n : ℚ_[p])
-  rw [map_natCast] at h
-  rw [← h]
-  congr 1
-  exact (map_natCast (UniformSpace.Completion.coeRingHom : PadicAlgCl p →+* ℂ_[p]) n).symm
-
 theorem dvd_of_norm_intCast_lt (T : ℤ) (h : ‖(T : ℂ_[p])‖ < 1) : (p : ℤ) ∣ T := by
   rw [_root_.Formalism.L2.Th1.D.GaussNormEstimates.normZ_eq] at h
   have h' : ‖(T : ℤ_[p])‖ < 1 := by rwa [PadicInt.norm_def, PadicInt.coe_intCast]
@@ -203,7 +196,7 @@ theorem norm_pi_one (dK : ℕ) (hp2 : p ≠ 2) (hpd : ¬ p ∣ dK) (ι : ℂ ≃
     have hprod : ‖ι π‖ * ‖ι (conj π)‖ = ‖(p : ℂ_[p])‖ := by
       rw [← norm_mul, ← map_mul, hpp, map_natCast]
     have hp1 : ‖(p : ℂ_[p])‖ < 1 := by
-      rw [norm_natCast_eq]
+      rw [ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl]
       exact Padic.norm_p_lt_one
     have hp0 : 0 < ‖(p : ℂ_[p])‖ := norm_pos_iff.mpr (Nat.cast_ne_zero.mpr hp.ne_zero)
     have hm := mul_le_mul hA hB (norm_nonneg _) (norm_nonneg _)

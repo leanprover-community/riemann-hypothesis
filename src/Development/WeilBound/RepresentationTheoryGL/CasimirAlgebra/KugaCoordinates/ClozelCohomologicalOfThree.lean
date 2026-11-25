@@ -150,7 +150,7 @@ private theorem sum_filter_col_le_sum_ite_of_bound (hT : IsTab col b) (hS : ∀ 
     rw [Finset.mem_filter] at hp
     rw [isWH_coeff_one_polynomial hT N d p (h p hp.1 hp.2)]
     exact hcross p hp.1 d (by rw [hp.2]; exact Ne.symm hcd)
-  · push_neg at h
+  · push Not at h
     obtain ⟨p0, hp0S, hp0c, hp0⟩ := h
     have h' : ∀ q ∈ S, col q = d → ∃ p ∈ S, col p = c ∧ b p = b q := by
       intro q hqS hqd
@@ -182,11 +182,11 @@ private theorem sum_sum_ite_col_ne_eq_sum_by_col (F : Q → Q → ℝ) :
         split_ifs with h
         · refine Finset.sum_congr rfl fun p hp => Finset.sum_congr rfl fun q hq => ?_
           rw [Finset.mem_filter] at hp hq
-          rw [if_pos (by rw [hp.2, hq.2]; exact h)]
+          rw [ite_eq_left (by rw [hp.2, hq.2]; exact h)]
         · symm
           refine Finset.sum_eq_zero fun p hp => Finset.sum_eq_zero fun q hq => ?_
           rw [Finset.mem_filter] at hp hq
-          rw [if_neg (by rw [hp.2, hq.2]; exact h)]
+          rw [ite_eq_right (by rw [hp.2, hq.2]; exact h)]
     _ = ∑ c ∈ S.image col, ∑ p ∈ S.filter (fun p => col p = c), ∑ d ∈ S.image col,
           ∑ q ∈ S.filter (fun q => col q = d), (if col q ≠ col p then F p q else 0) := by
         refine Finset.sum_congr rfl fun c _ => Finset.sum_comm
@@ -312,9 +312,9 @@ theorem pair_apply (p q : Q) (f : TV n ℂ Q) (I : Q → Fin n) :
     · subst hpq
       simp [Function.update_idem, Finset.card_univ]
     · have hqp : q ≠ p := Ne.symm hpq
-      simp only [if_true, Function.update_of_ne hqp, hpq, if_false]
+      simp only [ite_true, Function.update_of_ne hqp, hpq, ite_false]
       rw [Finset.sum_ite_eq]
-      simp only [Finset.mem_univ, if_true]
+      simp only [Finset.mem_univ, ite_true]
       congr 1
       funext x
       by_cases hx : x = q
@@ -360,7 +360,7 @@ theorem cas_expand' (S : Finset Q) :
     congr 1
     · simp
     · refine Finset.sum_congr rfl fun q hq => ?_
-      rw [if_neg (Finset.ne_of_mem_erase hq).symm]
+      rw [ite_eq_right (Finset.ne_of_mem_erase hq).symm]
   rw [Finset.sum_congr rfl hsplit, Finset.sum_add_distrib]
   simp [Finset.sum_const, nsmul_eq_mul, smul_eq_mul]
   ring

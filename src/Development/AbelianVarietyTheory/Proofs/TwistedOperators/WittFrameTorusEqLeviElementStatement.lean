@@ -52,11 +52,3 @@ open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.I
 open scoped TensorProduct ENNReal
 open GlobalTheory.SquareComm
 open scoped Pointwise
-
-theorem _root_.GlobalTheory.T.wittFrame_torus_eq_levi_element : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ (ε : Bool) (M : HSp D) (r : ℕ)
-    (Xf Yf : Matrix (Fin M.rank) (Fin r) D.host.E), GlobalTheory.SiegelSet.IsWittFrame D.sp.cm.sig M.gram Xf Yf →
-    ∃ (S₀ : HSp D) (d : GlobalTheory.MixModel.HypDec (sgn ε M) S₀ r), ∀ t : Fin r → ℝ, (∀ i, 0 < t i) →
-      ∀ a, GlobalTheory.SiegelSet.IsTorusElt D.sp.cm.sig M.gram Xf Yf t a →
-        ∃ α : GL (Fin r) (Formalism.L2.Theta.AE D), α.1.map (finPart D) = 1 ∧
-          (∀ τ, compAt θ τ α.1 = diagonal (fun i => (t i : ℂ))) ∧ (ofSgn ε M).symm a = d.levi α := by
-  first | exact @GlobalTheory.WittLevi.witt_levi

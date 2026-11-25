@@ -95,9 +95,7 @@ variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
 theorem exists_mul_mem {A : Submodule (𝓞 K) V} (hA : Submodule.span K (A : Set V) = ⊤) (x : V) :
-    ∃ N : ℤ, N ≠ 0 ∧ N • x ∈ A := by
-  first
-  | (apply _root_.GlobalTheory.IntMulIntegral.main <;> assumption)
+    ∃ N : ℤ, N ≠ 0 ∧ N • x ∈ A := GlobalTheory.IntMulIntegral.main hA x
 
 theorem finite_between {Λ : Submodule (𝓞 K) V} (hΛ : Λ.FG) {a b : ℤ} (ha : a ≠ 0) (hb : b ≠ 0) :
     {M : Submodule (𝓞 K) V | (∀ x ∈ Λ, a • x ∈ M) ∧ ∀ x ∈ M, b • x ∈ Λ}.Finite := by

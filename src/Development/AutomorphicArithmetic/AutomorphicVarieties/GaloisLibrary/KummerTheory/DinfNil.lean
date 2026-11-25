@@ -11,13 +11,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base UpperTheory.V.Kum
 
-private theorem mem_princ_iff_pow_dvd_sub_one (l : ℕ) [Fact l.Prime] (m : ℕ) (u : ℤ_[l]ˣ) :
-    u ∈ KStar.TotallyRealRoots.princ l m ↔ (l : ℤ_[l]) ^ m ∣ (u : ℤ_[l]) - 1 := by
-  unfold KStar.TotallyRealRoots.princ KStar.TotallyRealRoots.redPow
-  rw [MonoidHom.mem_ker, ← Ideal.mem_span_singleton, ← PadicInt.ker_toZModPow, RingHom.mem_ker,
-    map_sub, map_one, sub_eq_zero, Units.ext_iff]
-  simp
-
 private theorem pow_succ_dvd_pow_prime_sub_one (l : ℕ) [Fact l.Prime] (j : ℕ) (v : ℤ_[l])
     (h : (l : ℤ_[l]) ^ (j + 1) ∣ v - 1) : (l : ℤ_[l]) ^ (j + 2) ∣ v ^ l - 1 := by
   obtain ⟨c, hc⟩ := h
@@ -59,7 +52,7 @@ private theorem exists_princ_subset_of_mem_nhds_one (l : ℕ) [Fact l.Prime] (V 
   have hl1 : (l : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
   obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one εpos hl1
   refine ⟨n, fun u hu => htV (hball ?_)⟩
-  rw [mem_princ_iff_pow_dvd_sub_one] at hu
+  rw [KStar.TotallyRealRoots.mem_princ] at hu
   obtain ⟨c, hc⟩ := hu
   rw [Metric.mem_ball, dist_eq_norm, hc, norm_mul, norm_pow, PadicInt.norm_p]
   calc ((l : ℝ)⁻¹) ^ n * ‖c‖ ≤ ((l : ℝ)⁻¹) ^ n * 1 :=
@@ -176,11 +169,11 @@ theorem UpperTheory.V.Kum.dinfNil :
   have hγq : γ ^ q ∈ levU l U n := by
     rw [memLev] at hγ ⊢
     refine ⟨pow_mem hγ.1 q, ?_⟩
-    rw [map_pow, mem_princ_iff_pow_dvd_sub_one]
+    rw [map_pow, KStar.TotallyRealRoots.mem_princ]
     have key : ∀ j : ℕ, (l : ℤ_[l]) ^ (j + 1) ∣ ((cycZ F Ω l γ ^ (l ^ j) : ℤ_[l]ˣ) : ℤ_[l]) - 1 := by
       intro j
       induction j with
-      | zero => simpa [mem_princ_iff_pow_dvd_sub_one] using hγ.2
+      | zero => simpa [KStar.TotallyRealRoots.mem_princ] using hγ.2
       | succ j ih =>
         rw [show l ^ (j + 1) = l ^ j * l from pow_succ l j, pow_mul, Units.val_pow_eq_pow_val]
         exact pow_succ_dvd_pow_prime_sub_one l j _ ih

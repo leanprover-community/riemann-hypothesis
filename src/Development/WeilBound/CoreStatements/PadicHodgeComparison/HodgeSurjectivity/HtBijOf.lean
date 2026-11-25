@@ -108,7 +108,6 @@ import Mathlib.Tactic.Linter.Style
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Onto
@@ -408,8 +407,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CrystallineSemistableComparison CrystallineSemistableComparison.Onto
@@ -592,7 +589,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -685,13 +681,10 @@ theorem isB_of (A : Sy.{w} R ι) (p q : ℕ) (y : (dcx A).X p q) (h : ∀ i, y i
     choose u hu using h
     exact ⟨u, funext hu⟩
 
-theorem ent_nonempty {n : ℕ} (i : Fin (n + 1) → ι) : (ent i).Nonempty :=
-  ⟨i 0, Finset.mem_image_of_mem _ (Finset.mem_univ _)⟩
-
 theorem hcol (A : Sy.{w} R ι) (a : ℕ) (hO : A.One a) (p q : ℕ) (hq : q ≠ a) (y : (dcx A).X p q)
     (hy : (dcx A).dv p q y = 0) : IsB (dcx A) p q y := by
   refine isB_of A p q y fun i => ?_
-  have hs := hO (ent i) (ent_nonempty i) q hq
+  have hs := hO (ent i) (GlobalTheory.CompanionTheory.CechOne.ent_nonempty i) q hq
   have hi : (A.K (ent i)).d q (y i) = 0 := congrFun hy i
   have h0 : (Submodule.Quotient.mk ⟨y i, hi⟩ : (A.K (ent i)).H q) = 0 := Subsingleton.elim _ _
   have h2 : (⟨y i, hi⟩ : (A.K (ent i)).Z q) ∈ ((A.K (ent i)).B q).submoduleOf ((A.K (ent i)).Z q) :=
@@ -791,8 +784,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris
@@ -876,11 +867,11 @@ theorem rank_equality : HodgeTateDimensionEquality := by
         rw [Finset.sum_range, ← hg' i, Fintype.sum_sigma]
         refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun s _ => ?_
         simp only [z]
-        rw [dif_pos a.isLt]
+        rw [dite_eq_left a.isLt]
       have hz := hJ bH z ?_
       · rintro ⟨⟨a, ha⟩, s⟩
         have := congrFun (hz a (Nat.lt_succ_iff.1 ha)) s
-        simp only [z, dif_pos ha] at this
+        simp only [z, dite_eq_left ha] at this
         exact this
       intro v
       calc ∑ a ∈ Finset.range (n + 1), ∑ s, z a s * P.h M a n v ((bH a).coord s)
@@ -915,8 +906,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.CupSurjectivity.OntoLow", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.HodgeTateFromSandwich\nimport GroundTheory.PAdicHodge.NormalizedTraceTower\nimport Mathlib.Algebra.Module.StablyFree.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1072,7 +1061,6 @@ theorem quotMap_algebraMap {O : Type} [CommRing O] (ϖ : O) (n : ℕ) :
   rw [quotMap_mk, aeval_C, algebraMap_eq]
 
 end GlobalTheory.SmChart
-
 
 open GlobalTheory.SmChart in
 theorem GlobalTheory.SSG.chartAt_of_smooth : ∀ (O : Type) [CommRing O] (ϖ : O) (X : Scheme.{0})
@@ -1487,7 +1475,6 @@ end CrystallineSemistableComparison.Onto.EquivalenceOnIso
 
 namespace CrystallineSemistableComparison.Onto
 
-
 open EquivalenceOnIso in
 theorem onIso_pf : OnIso := by
   intro K _ W Z q i _ U U' h hU a n
@@ -1702,7 +1689,6 @@ def liftS {Q : ObjectProperty C} (hQ : Cosieve Q) {n : ℕ} (s : ComposableArrow
     ComposableArrows Q.FullSubcategory n :=
   Q.lift s fun k => hQ (s.map (homOfLE (Fin.zero_le _))) hs
 
-
 open Classical in
 def extZ {Q : ObjectProperty C} (hQ : Cosieve Q) {n : ℕ} (b : CH.Cn (Q.ι ⋙ F) n) : CH.Cn F n :=
   fun s => if hs : Q (s.obj 0) then b (liftS hQ s hs) else 0
@@ -1713,12 +1699,11 @@ theorem d_extZ {Q : ObjectProperty C} (hQ : Cosieve Q) {n : ℕ} (b : CH.Cn (Q.�
     ∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • ((Q.ι ⋙ F).map (toLast i (liftS hQ s hs))).hom (b (face i (liftS hQ s hs)))
   refine Finset.sum_congr rfl fun i _ => ?_
   have h : Q ((face i s).obj 0) := hQ (s.map (homOfLE (Fin.zero_le _))) hs
-  have e : extZ F hQ b (face i s) = b (liftS hQ (face i s) h) := dif_pos h
+  have e : extZ F hQ b (face i s) = b (liftS hQ (face i s) h) := dite_eq_left h
   rw [e]
   rfl
 
 end RelativeFormLift
-
 
 open RelativeFormLift in
 theorem relLiftOf_pf : RelLiftOf := by
@@ -1780,8 +1765,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.ZarRelOf", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FirstChernCoboundary\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MemBoundariesZeroIff\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.AffRelOf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

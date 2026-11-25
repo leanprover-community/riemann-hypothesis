@@ -111,7 +111,7 @@ theorem sum_log_sq_div_sq_primes_tail_le (N : ℕ) : ∀ d y : ℕ, 1 ≤ y → 
             gcongr ?_ / _
             rw [hlog2y]
             nlinarith [mul_nonneg hl4 hly, mul_nonneg hl4 hl2]
-    · push_neg at hN
+    · push Not at hN
       have hsplit : (Ioc y N).filter Nat.Prime =
           (Ioc y (2 * y)).filter Nat.Prime ∪ (Ioc (2 * y) N).filter Nat.Prime := by
         rw [← Finset.filter_union, Finset.Ioc_union_Ioc_eq_Ioc (by omega) hN.le]
@@ -171,7 +171,7 @@ theorem sP_cN_le_log_div (x : ℝ) (hx : 0 ≤ x) (N p : ℕ) (hp : p.Prime) :
     intro n hn
     rw [Finset.mem_filter] at hn
     unfold cN
-    rw [ArithmeticFunction.vonMangoldt_apply, if_pos hn.2.1, hn.2.2]
+    rw [ArithmeticFunction.vonMangoldt_apply, ite_eq_left hn.2.1, hn.2.2]
     exact mul_le_mul_of_nonneg_left (min_le_right _ _) hlog
   calc sP (cN x) N p ≤ ∑ n ∈ (Icc 1 N).filter (fun n => IsPrimePow n ∧ n.minFac = p),
         Real.log p * (x / n) := h1

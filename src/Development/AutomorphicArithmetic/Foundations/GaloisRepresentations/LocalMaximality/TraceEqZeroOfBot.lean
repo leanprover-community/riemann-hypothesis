@@ -141,7 +141,7 @@ theorem UpperTheory.Gal.productCup_of_system.field0_of :
           rw [← mul_assoc, mul_comm c, div_mul_cancel₀ _ hc0]
         det := hdet }
     exact hLe F K K' d xu j2 Fx A hY a had u hu
-  · push_neg at had
+  · push Not at had
     have hv := (_root_.GlobalTheory.PD.IsFinCover.dlog_basis_and_vanish ℂ F K d x hK).2 a had
     refine (Finset.sum_eq_zero fun p _ => ?_).trans (Finset.sum_eq_zero fun e _ => ?_).symm
     · rw [trace_eq_zero_of_bot _ (fun I => omB_eq_bot _ a hv) _ (u p), mul_zero]

@@ -393,10 +393,6 @@ theorem sum_pos (h : Matrix (Fin n) (Fin n) ℂ) (hh : h.IsHermitian) (w : {i //
 
 end GlobalTheory.SimSign
 
-namespace GlobalTheory.HTBetti
-
-end GlobalTheory.HTBetti
-
 end
 end -- clump:auto
 end -- clump:auto

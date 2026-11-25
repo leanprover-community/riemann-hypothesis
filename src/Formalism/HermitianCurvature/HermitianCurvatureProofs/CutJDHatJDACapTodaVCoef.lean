@@ -118,20 +118,9 @@ theorem sm_ge {n : ℕ} {τ : Fin n → Fin n} (h : StrictMono τ) : ∀ m (j : 
     rw [Fin.lt_def] at h2
     omega
 
-theorem sm_eq_id {n : ℕ} {τ : Fin n → Fin n} (h : StrictMono τ) : τ = id := by
-  have hρ : StrictMono fun j : Fin n => Fin.rev (τ (Fin.rev j)) := by
-    intro a b hab
-    rw [Fin.rev_lt_rev]
-    exact h (Fin.rev_lt_rev.2 hab)
-  funext j
-  apply Fin.ext
-  have e1 := sm_ge h j.val j rfl
-  have e2 := sm_ge hρ (Fin.rev j).val (Fin.rev j) rfl
-  simp only [Fin.rev_rev, Fin.val_rev] at e2
-  have := j.isLt
-  have := (τ j).isLt
-  simp only [id]
-  omega
+theorem sm_eq_id {n : ℕ} {τ : Fin n → Fin n} (h : StrictMono τ) : τ = id :=
+  funext fun j => DFunLike.congr_fun (Subsingleton.elim
+    (h.orderIsoOfSurjective τ (Finite.injective_iff_surjective.1 h.injective)) (OrderIso.refl _)) j
 
 theorem det_zero {c : Fin r → ℂ} (hc : c ∈ OmX r) {g : Q.Mx k r} (hg : g ∈ Q.Glev k r (Fin.last r))
     (B : Fin r → Fin (2 * r + k + 1)) (hm : StrictMono fun l => C3.keyS k r (B l)) (hB : B ≠ C3.sR k r r le_rfl) :
@@ -192,7 +181,7 @@ theorem coef_gen {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {c : Fin 
       intro a b hab
       simp only [C3.sR, _root_.Fin.castLE_refl, keyS_esI]
       exact hab
-    rw [if_pos hmono]
+    rw [ite_eq_left hmono]
     rfl
   · intro B hB
     split_ifs with hm

@@ -2,45 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.LatticeBlockClasses.CBlockValAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.LatticeBlockClasses.MemPowEqv
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -58,43 +20,17 @@ private theorem blk_apply {g : GG L F J} {s : J → F ≃ₐ[L] F} {β : J → X
   exact h w j
 
 omit [NumberField L] [NumberField F] in
-private theorem blk_glue {β : J → X} (f : ∀ x : X, ({j // β j = x} → F)) (x : X) :
-    (fun i : {j // β j = x} => f (β i.1) ⟨i.1, rfl⟩) = f x := by
-  funext i
-  obtain ⟨j, hj⟩ := i
-  subst hj
-  rfl
-
-omit [NumberField L] [NumberField F] in
 private theorem blk_exists (s : J → F ≃ₐ[L] F) (β : J → X)
     (g' : ∀ x : X, ({j // β j = x} → F) ≃ₗ[F] ({j // β j = x} → F)) : ∃ g : GG L F J, BlockForm g s β g' := by
-  let G : (J → F) ≃ₗ[F] (J → F) :=
-    { toFun := fun v j => g' (β j) (fun i => v i.1) ⟨j, rfl⟩
-      invFun := fun v j => (g' (β j)).symm (fun i => v i.1) ⟨j, rfl⟩
-      map_add' := by
-        intro v w
-        funext j
-        exact congrFun (map_add (g' (β j)) (fun i => v i.1) (fun i => w i.1)) _
-      map_smul' := by
-        intro c v
-        funext j
-        exact congrFun (map_smul (g' (β j)) c (fun i => v i.1)) _
-      left_inv := by
-        intro v
-        funext j
-        have e := blk_glue (β := β) (fun x => g' x (fun i' => v i'.1)) (β j)
-        show (g' (β j)).symm (fun i : {k // β k = β j} => g' (β i.1) (fun i' => v i'.1) ⟨i.1, rfl⟩) ⟨j, rfl⟩ = v j
-        rw [e, LinearEquiv.symm_apply_apply]
-      right_inv := by
-        intro v
-        funext j
-        have e := blk_glue (β := β) (fun x => (g' x).symm (fun i' => v i'.1)) (β j)
-        show (g' (β j)) (fun i : {k // β k = β j} => (g' (β i.1)).symm (fun i' => v i'.1) ⟨i.1, rfl⟩) ⟨j, rfl⟩ = v j
-        rw [e, LinearEquiv.apply_symm_apply] }
+  let fibre : (J → F) ≃ₗ[F] ((x : X) → {j // β j = x} → F) :=
+    (LinearEquiv.piCongrLeft F (fun _ : J => F) (Equiv.sigmaFiberEquiv β)).symm.trans
+      (LinearEquiv.piCurry F fun _ _ => F)
+  let G := fibre.trans ((LinearEquiv.piCongrRight g').trans fibre.symm)
   let S : (J → F) ≃ₗ[L] (J → F) := LinearEquiv.piCongrRight fun j => (s j).toLinearEquiv
   refine ⟨S.trans ((G.restrictScalars L).trans S.symm), ?_⟩
   intro w j
-  simp [S, G]
+  simp [S, G, fibre, LinearEquiv.piCongrLeft, Equiv.sigmaFiberEquiv, Sigma.uncurry]
+  rfl
 
 private theorem act_forall (σ : F ≃ₐ[L] F) (p : HeightOneSpectrum (𝓞 F) → Prop) :
     (∀ P, p (actP σ P)) ↔ ∀ P, p P := by

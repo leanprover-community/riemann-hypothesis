@@ -78,7 +78,7 @@ theorem tangent_decomp (Ω : Type) [Field Ω] [Algebra ℚ Ω] (y : (Σ k, J k) 
     refine Submodule.add_mem _ (hcone _ ?_) fun f hf => (le_tanIdeal_torusSmul hPh hzI c hf).2
     exact GroundTheory.Heights₂.Heights.HilbertSamuel.G1.isConeTangent_of_sheet le_rfl hγ hpts u
   have hinj : Function.Injective L := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨u, c⟩ h
     rw [hL] at h
     have hu : u = 0 := himm u (fun k => -c k) (by
@@ -418,17 +418,17 @@ theorem telescope (g : ℕ → ℝ) (k n : ℕ) (h : k ≤ n) :
   induction n, h using Nat.le_induction with
   | base =>
     rw [sub_self]
-    refine Finset.sum_eq_zero fun i hi => if_neg ?_
+    refine Finset.sum_eq_zero fun i hi => ite_eq_right ?_
     have := Finset.mem_range.1 hi
     omega
-  | succ n hn ih => rw [Finset.sum_range_succ, ih, if_pos hn]; ring
+  | succ n hn ih => rw [Finset.sum_range_succ, ih, ite_eq_left hn]; ring
 
 private theorem sum_gap_of_le_eq {Ψ : Type} {N : ℕ} (lam : Ψ × Fin N → ℝ) (ψ : Ψ) (j : Fin N) :
     ∑ k : Fin N, (if j ≤ k then PB.gap lam (ψ, k) else 0) = lam (ψ, j) := by
   set g : ℕ → ℝ := fun i => if h : i < N then lam (ψ, ⟨i, h⟩) else 0 with hgdef
   have hg : ∀ k : Fin N, PB.gap lam (ψ, k) = g k - g (k + 1) := by
     intro k
-    simp only [PB.gap, PB.gapX, map_sub, eval_X, hgdef, dif_pos k.2]
+    simp only [PB.gap, PB.gapX, map_sub, eval_X, hgdef, dite_eq_left k.2]
     split_ifs with h
     · simp
     · simp

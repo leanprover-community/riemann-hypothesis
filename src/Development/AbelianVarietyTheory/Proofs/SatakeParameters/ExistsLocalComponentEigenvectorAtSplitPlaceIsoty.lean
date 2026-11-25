@@ -57,17 +57,6 @@ section Algebra
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
-def stabSub (π : Representation ℂ G V) (w : V) : Subgroup G where
-  carrier := {g | π g w = w}
-  mul_mem' {a b} ha hb := by
-    simp only [Set.mem_setOf_eq] at *
-    rw [map_mul, Module.End.mul_apply, hb, ha]
-  one_mem' := by simp
-  inv_mem' {a} ha := by
-    simp only [Set.mem_setOf_eq] at *
-    conv_lhs => rw [← ha]
-    rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
-
 theorem exists_eigen_of_sum {M : Type} [AddCommGroup M] [Module ℂ M]
     (π : Representation ℂ G V) (θ : G →* ℂˣ) (H : Subgroup G) [H.FiniteIndex] (hHθ : H ≤ θ.ker)
     {ι : Type} (s : Finset ι) (u : ι → V) (hu : ∀ i ∈ s, ∀ h ∈ H, π h (u i) = u i)
@@ -191,13 +180,13 @@ theorem main : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) 
     rw [Finset.sum_congr rfl this, ← map_sum, ← hrt κ hκ hg]
     rw [← hsum]
     rfl
-  let H : Subgroup K := θ.ker ⊓ ⨅ i ∈ φ.support, stabSub π (u i)
+  let H : Subgroup K := θ.ker ⊓ ⨅ i ∈ φ.support, GlobalTheory.CuspRep.LocEx.stab π (u i)
   have hHo : IsOpen (H : Set K) := by
     rw [Subgroup.coe_inf]
     refine hθ.inter ?_
     simp only [Subgroup.coe_iInf]
     refine isOpen_biInter_finset fun i _ => ?_
-    have : (stabSub π (u i) : Set K) = (fun g : K => m g) ⁻¹' {x | σ.ρ x (u i) = u i} := rfl
+    have : (GlobalTheory.CuspRep.LocEx.stab π (u i) : Set K) = (fun g : K => m g) ⁻¹' {x | σ.ρ x (u i) = u i} := rfl
     rw [this]
     exact (σ.smooth (u i)).preimage (hm.comp continuous_subtype_val)
   have hC : IsCompact (Formalism.UG.GLint (Fin n) (s.v.adicCompletionIntegers (maximalRealSubfield L)).toSubring :

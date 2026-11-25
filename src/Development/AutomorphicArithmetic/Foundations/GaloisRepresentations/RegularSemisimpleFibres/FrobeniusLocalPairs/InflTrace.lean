@@ -821,7 +821,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.L.sumCoset :
     · simp
     · intro b _ hb
       simp only [Set.indicator_apply, Set.mem_setOf_eq]
-      rw [if_neg (fun h => hb h.symm)]
+      rw [ite_eq_right (fun h => hb h.symm)]
     · intro hn
       exact absurd (hfin.mem_toFinset.2 (hkey g hg)) hn
 end -- clump:auto
@@ -1185,8 +1185,7 @@ private theorem op_eq_sum {G V : Type} [Group G] [TopologicalSpace G] [IsTopolog
   intro l
   rw [map_sub, sub_eq_zero, (hB w l).2, finsum_eq_sum_of_support_subset _ hsupp]
   rw [GlobalTheory.HaarSum.integral_eq_sum_cosets μ U hUo hUfin (fun g => f g * l (ρ g w)) ?_ hfs.toFinset ?_]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [hUr, map_smul, map_sum, smul_eq_mul]
+  · rw [hUr, map_smul, map_sum, smul_eq_mul]
     congr 1
     apply Finset.sum_congr rfl
     intro q _

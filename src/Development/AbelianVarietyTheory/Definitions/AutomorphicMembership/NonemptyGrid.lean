@@ -17,15 +17,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 
 
 
-section Guard
-
-open Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR GlobalTheory.BigTop
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D}
-  {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-
-end Guard
-
 variable (hL : GlobalTheory.Published.LocalLanglandsGL) (cDep : ℝ)
 
 

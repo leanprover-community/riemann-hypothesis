@@ -127,7 +127,7 @@ theorem symp_bar {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) {n d : ℕ} (X : Sp
     ψ (GlobalTheory.WeilM.symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F Y.J) x u) =
       psiLoc ψ v (-pairM (coY σ X Y t b c x) (coX t b c u)) := by
   unfold GlobalTheory.WeilM.symp
-  rw [GlobalTheory.T.adelicTrace_supportedAtSplitPlace hcm v t _ (at_neg_hTens _ _ x u hx)]
+  rw [GlobalTheory.SplitAdeleTrace.trace_at_split hcm v t _ (at_neg_hTens _ _ x u hx)]
   rw [map_mul, map_mul, map_neg, map_neg, map_one, map_one, neg_one_mul, neg_one_mul, ← neg_add,
     GlobalTheory.T.hermitianTensor_skewHermitian_split_symplectic_pair hcm t X.J Y.J hX hY x u hx0 hu1]
   show psiLoc ψ v _ = psiLoc ψ v _
@@ -152,7 +152,7 @@ theorem symp_lin {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) {n d : ℕ} (X : Sp
       psiLoc ψ v (pairM (coX t b c x) (coY σ X Y t b c u)) := by
   have hss : (t.comp σ).comp σ = t := comp_conj_conj hcm t
   unfold GlobalTheory.WeilM.symp
-  rw [GlobalTheory.T.adelicTrace_supportedAtSplitPlace hcm v (t.comp σ) _ (at_neg_hTens _ _ x u hx)]
+  rw [GlobalTheory.SplitAdeleTrace.trace_at_split hcm v (t.comp σ) _ (at_neg_hTens _ _ x u hx)]
   rw [map_mul, map_mul, map_neg, map_neg, map_one, map_one, neg_one_mul, neg_one_mul, ← neg_add,
     GlobalTheory.T.hermitianTensor_skewHermitian_split_symplectic_pair hcm (t.comp σ) X.J Y.J hX hY x u hx0 (by rw [hss]; exact hu1), hss]
   show psiLoc ψ v _ = psiLoc ψ v _

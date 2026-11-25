@@ -40,8 +40,6 @@ variable {k r : ℕ}
 
 lemma hpk_inv : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_right_inv (Hpk_sq k r)
 
-lemma hpk_unit : IsUnit (Hpk k r) := ⟨⟨Hpk k r, Hpk k r, Hpk_sq k r, Hpk_sq k r⟩, rfl⟩
-
 lemma hpk_hh (A : Mx k r) : Hpk k r * (Hpk k r * A) = A := by rw [← mul_assoc, Hpk_sq, one_mul]
 
 lemma hpart1_skew (Z : Mx k r) :
@@ -73,10 +71,6 @@ lemma exp_mem_glev (i : Fin (r + 1)) (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * H
   · rw [Matrix.smul_apply, (hc a ha x).1, smul_zero]
   · rw [Matrix.smul_apply, (hc a ha x).2, smul_zero]
 
-lemma hpk_zero (i : Fin (r + 1)) (p : Fin (mdim k r i)) (a : Fin r) (ha : a.val < i.val) :
-    Hpk k r (posL k r i p) (eI k r a) = 0 ∧ Hpk k r (posL k r i p) (esI k r a) = 0 :=
-  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpk_zero i p a ha
-
 lemma unit_col (i : Fin (r + 1)) (p q : Fin (mdim k r i)) (c : Fin (2 * r + k + 1))
     (hcq : c ≠ posL k r i q) (hHc : Hpk k r (posL k r i p) c = 0) (x : Fin (2 * r + k + 1)) :
     (Matrix.single (posL k r i p) (posL k r i q) (1 : ℂ)) x c = 0 ∧
@@ -92,10 +86,6 @@ lemma unit_col (i : Fin (r + 1)) (p q : Fin (mdim k r i)) (c : Fin (2 * r + k + 
         refine Finset.sum_eq_zero fun m _ => ?_
         simp [Matrix.conjTranspose_apply, Ne.symm hl]
       rw [h0, zero_mul]
-
-lemma posL_ne (i : Fin (r + 1)) (q : Fin (mdim k r i)) (a : Fin r) (ha : a.val < i.val) :
-    eI k r a ≠ posL k r i q ∧ esI k r a ≠ posL k r i q :=
-  _root_.Formalism.FourierDecayAlt.Q.EabLie.posL_ne i q a ha
 
 lemma hpart_cols (i : Fin (r + 1)) (p q : Fin (mdim k r i)) :
     (∀ a : Fin r, a.val < i.val → ∀ x,
@@ -306,11 +296,11 @@ theorem transfer_invariance_right : StepRight := by
       · obtain ⟨c0, rfl⟩ := hx
         obtain ⟨d0, rfl⟩ := hy
         simp [hinj, ite_and]
-      · push_neg at hy
+      · push Not at hy
         have h0 : s' (posL k r i b) y = 0 := by
           rw [glev_col hs' _ y (fun d e => hy d e.symm), (bvec_posL_outer b y (fun d e => hy d e.symm)).1]
         simp [h0, hy]
-    · push_neg at hx
+    · push Not at hx
       have h0 : s'⁻¹ x (posL k r i a) = 0 := by
         rw [glev_row' hiG x _ (fun c e => hx c e.symm), (bvec_posL_outer a x (fun c e => hx c e.symm)).2]
       simp [h0, hx]

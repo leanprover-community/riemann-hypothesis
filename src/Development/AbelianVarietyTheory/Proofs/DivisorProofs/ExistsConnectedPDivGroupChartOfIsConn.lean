@@ -14,54 +14,9 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingle
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierDualConvPowPrimePowApplyPow
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqZeroOfCobOneEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankRigidExtensionsEqHeightAndDimAddDual
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Noetherian.Nilpotent
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.MvPowerSeries.Basic
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffEqZeroOfEvAEqZeroOfLeFinrank, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCoordinatesGenerateConnectedLevels, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankLeFrobeniusKernelMulSpanPrimePowers, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierDualPrimePowConvPairing, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankFrobeniusKernelQuotientLePowCotangent, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankSpanPowPDivGroupLevelLe, Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowFinrankOmegaLeFinrankFrobeniusKernel, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsConnectedPDivGroupChartOfIsConn
@@ -93,7 +48,6 @@ theorem exists_boxPt {q : ℕ} (β : Fin d →₀ ℕ) (h : ∀ i, β i < q) :
   ⟨fun i => ⟨β i, h i⟩, by ext i; simp [boxPt_apply]⟩
 
 end GlobalTheory.BoxMonomials
-
 
 open GlobalTheory.BoxMonomials in
 theorem GlobalTheory.coeff_eq_zero_of_evA_eq_zero_of_le_finrank :
@@ -143,7 +97,7 @@ theorem GlobalTheory.coeff_eq_zero_of_evA_eq_zero_of_le_finrank :
           rw [← map_smul, smul_eq_mul, mul_one]
         rw [this, map_smul]
         exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
-      · push_neg at hb
+      · push Not at hb
         obtain ⟨i, hi⟩ := hb
         rw [hmono β i hi c]
         exact Submodule.zero_mem _
@@ -178,7 +132,7 @@ theorem GlobalTheory.coeff_eq_zero_of_evA_eq_zero_of_le_finrank :
     intro i
     rw [X_pow_dvd_iff]
     intro m hm
-    rw [hic, if_neg]
+    rw [hic, ite_eq_right]
     omega
   have hsum : h = ∑ i, hi i := by
     ext β
@@ -192,20 +146,20 @@ theorem GlobalTheory.coeff_eq_zero_of_evA_eq_zero_of_le_finrank :
       symm
       apply Finset.sum_eq_zero
       intro i _
-      rw [if_neg]
+      rw [ite_eq_right]
       have := hb i
       omega
-    · push_neg at hb
+    · push Not at hb
       obtain ⟨i0, hi0mem, hmin⟩ := (Finset.univ.filter (fun i => q ≤ β i)).exists_min_image id
         (by obtain ⟨i, hi⟩ := hb; exact ⟨i, by simp [hi]⟩)
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, id] at hi0mem hmin
       rw [Finset.sum_eq_single i0]
-      · rw [if_pos]
+      · rw [ite_eq_left]
         refine ⟨hi0mem, fun j hj => ?_⟩
         by_contra hc
         exact absurd (hmin j (by omega)) (not_le.2 hj)
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨hjq, hjlt⟩
         rcases lt_or_gt_of_ne hj with hlt | hlt
         · exact absurd (hmin j hjq) (not_le.2 hlt)
@@ -483,14 +437,6 @@ section -- clump:auto
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-namespace GlobalTheory.Katz
-
-theorem cartier_primePow_pairing (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R] (h : (p : R) = 0)
-    (G : PDivGroup p R) (n r : ℕ) (χ : CartierDual R (G.A n)) (a : G.A n) :
-    (χ ^ p ^ r) (a ^ p ^ r) = χ (mulBy R (G.A n) (p ^ r) a) ^ p ^ r :=
-  convPow_primePow_apply_pow p R h G n r χ a
-
-end GlobalTheory.Katz
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierDualPrimePowConvPairing =====
@@ -589,7 +535,7 @@ theorem finrank_quot_frobKerIdeal_le : ∀ (q : ℕ) (K H : Type) [Field K] [Com
         refine Submodule.smul_mem _ _ ?_
         by_cases h : ∀ i, u i < q
         · exact Submodule.subset_span ⟨fun i => ⟨u i, h i⟩, rfl⟩
-        · push_neg at h
+        · push Not at h
           obtain ⟨i, hi⟩ := h
           have h0 : y i ^ u i = 0 := pow_eq_zero_of_le hi (hyq i)
           rw [Finset.prod_eq_zero (i := i) (Finset.mem_univ i) h0]
@@ -653,7 +599,7 @@ theorem frobKerIdeal_le_annPowIdeal (h : (p : K) = 0) (G : PDivGroup p K) (r : �
     frobKerIdeal (p ^ r) K (G.dual.A r) ≤ annPowIdeal h G r := by
   refine Ideal.span_le.2 ?_
   rintro _ ⟨χ, hχ, rfl⟩ a
-  have h1 := _root_.GlobalTheory.Katz.cartier_primePow_pairing p K h G r r χ a
+  have h1 := _root_.GlobalTheory.PDivGroup.convPow_primePow_apply_pow p K h G r r χ a
   have hχ' : χ.ofConv 1 = 0 := hχ
   change (χ ^ p ^ r).ofConv (a ^ p ^ r) = 0
   change (χ ^ p ^ r).ofConv (a ^ p ^ r) = χ.ofConv (mulBy K (G.A r) (p ^ r) a) ^ p ^ r at h1

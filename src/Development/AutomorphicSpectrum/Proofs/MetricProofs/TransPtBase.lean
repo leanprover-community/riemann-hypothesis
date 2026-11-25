@@ -41,7 +41,7 @@ def transPt {M : FlagModel y Ψ N j} {M' : FlagModel y' Ψ N j} (Cv : FlagCover 
 theorem transPt_base {M : FlagModel y Ψ N j} {M' : FlagModel y' Ψ N j} (Cv : FlagCover M' M)
     (q : Σ k, baseIdx ι M.blk k) :
     transPt Cv ⟨q.1.1, q.2⟩ = algebraMap M'.Ω Φ' (Cv.φ (M.x q)) :=
-  dif_pos q.1.2
+  dite_eq_left q.1.2
 
 theorem transPt_step {M : FlagModel y Ψ N j} {M' : FlagModel y' Ψ N j} (Cv : FlagCover M' M)
     (p : Ψ × Fin N) (k : K) (hp : M.blk p = some k) (m : ι k) :

@@ -586,7 +586,7 @@ theorem bt_frFac_unitO {T : D.host.E} (F : FlagG (VS D) D.R.rS T)
     have h2 := Submodule.apply_mem_span_image_of_mem_span ΦO hm
     have e : ΦO (frFac Z.δ p b.castSucc • baseChange₂ D p (F.e b)) = frFac Z.δ p b.castSucc := by
       show Φ _ = _
-      rw [map_smul, hΦ, if_pos rfl, smul_eq_mul, mul_one]
+      rw [map_smul, hΦ, ite_eq_left rfl, smul_eq_mul, mul_one]
     rw [e] at h2
     refine bt_mem_O_of_span Z p ?_ h2
     rintro _ ⟨_, ⟨a, rfl⟩, rfl⟩
@@ -598,7 +598,7 @@ theorem bt_frFac_unitO {T : D.host.E} (F : FlagG (VS D) D.R.rS T)
         (Set.range fun a : Fin D.R.rS => frFac Z.δ p a.castSucc • baseChange₂ D p (F.e a)) := by
       rw [h]; exact Submodule.subset_span ⟨b, rfl⟩
     have h2 := Submodule.apply_mem_span_image_of_mem_span ΦO hm
-    have e : ΦO (baseChange₂ D p (F.e b)) = 1 := by show Φ _ = _; rw [hΦ, if_pos rfl]
+    have e : ΦO (baseChange₂ D p (F.e b)) = 1 := by show Φ _ = _; rw [hΦ, ite_eq_left rfl]
     rw [e] at h2
     have hsub : ΦO '' (Set.range fun a : Fin D.R.rS => frFac Z.δ p a.castSucc • baseChange₂ D p (F.e a)) ⊆
         (Submodule.span (Z.M p).L.O {frFac Z.δ p b.castSucc} : Set (D.s.atP p).Ep) := by

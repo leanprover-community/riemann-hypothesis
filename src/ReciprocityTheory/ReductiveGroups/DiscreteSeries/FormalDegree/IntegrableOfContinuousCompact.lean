@@ -47,10 +47,10 @@ theorem leading_minor_exp_re_pos {ε : Fin n → Bool} (y : PCoord ε → ℂ) {
 
 theorem continuous_leading_minor (i : ℕ) : Continuous (fun A : Matrix (Fin n) (Fin n) ℂ => Del A i) := by
   by_cases h : i ≤ n
-  · simp only [Del, dif_pos h]
+  · simp only [Del, dite_eq_left h]
     first
     | exact (continuous_id.matrix_submatrix _ _).matrix_det
-  · simp only [Del, dif_neg h]
+  · simp only [Del, dite_eq_right h]
     exact continuous_const
 
 section
@@ -273,12 +273,8 @@ theorem lemma6c {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type*} [NormedA
   · rw [ENNReal.ofReal_of_nonpos (by rw [one_div]; exact inv_nonpos.mpr hd0)]
     exact zero_le
   have := (dk_props ε).1
-  have hD : (0:ℝ) < Module.finrank ℂ T.V := by
-    have : Nontrivial T.V := ⟨⟨T.w, 0, fun h => by
-      have h2 := T.w_norm
-      rw [h, norm_zero] at h2
-      exact zero_ne_one h2⟩⟩
-    exact_mod_cast Module.finrank_pos
+  have hD : (0:ℝ) < Module.finrank ℂ T.V := Nat.cast_pos.2 <|
+    Module.finrank_pos_iff_exists_ne_zero.2 ⟨T.w, norm_ne_zero_iff.1 (by rw [T.w_norm]; exact one_ne_zero)⟩
   have hD' : (Module.finrank ℂ T.V : ℝ) ≠ 0 := hD.ne'
   have hd' : d ≠ 0 := hd0.ne'
   have hc : 0 ≤ cPQ ε := by unfold cPQ; positivity

@@ -6,9 +6,9 @@ public import Mathlib.RepresentationTheory.Basic
 
 noncomputable def UpperTheory.Reformulated.B.SubgroupFixedSubmodule.fixd :
     {A H M : Type} →
-      [inst : CommRing A] →
-        [inst_1 : Group H] →
-          [inst_2 : AddCommGroup M] → [inst_3 : _root_.Module A M] → Representation A H M → Subgroup H → Submodule A M :=
+      [CommRing A] →
+        [Group H] →
+          [AddCommGroup M] → [_root_.Module A M] → Representation A H M → Subgroup H → Submodule A M :=
   fun {_A _H _M} _ _ _ _ ρ K =>
     { carrier := {v | ∀ k ∈ K, ρ k v = v}
       add_mem' := fun {a b} ha hb k hk => by

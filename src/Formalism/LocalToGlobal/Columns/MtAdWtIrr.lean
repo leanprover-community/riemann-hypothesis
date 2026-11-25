@@ -110,7 +110,7 @@ theorem mtwPtOf_emb (g : ι → GL (Fin n) ℂ) (τ : ι) (a b : Fin n) :
     mtwPtOf emb g (emb τ, a, b) = ((g τ : GL (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ) a b := by
   have h : ∃ τ', emb τ' = emb τ := ⟨τ, rfl⟩
   have hc : h.choose = τ := hinj h.choose_spec
-  simp only [mtwPtOf, dif_pos h, hc]
+  simp only [mtwPtOf, dite_eq_left h, hc]
 
 theorem mtwPtOf_conj (g : ι → GL (Fin n) ℂ) (τ : ι) (a b : Fin n) :
     mtwPtOf emb g (ComplexEmbedding.conjugate (emb τ), a, b) = (((g τ)⁻¹ : GL (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ) b a := by
@@ -120,14 +120,14 @@ theorem mtwPtOf_conj (g : ι → GL (Fin n) ℂ) (τ : ι) (a b : Fin n) :
     apply hinj
     have := congrArg ComplexEmbedding.conjugate h'.choose_spec
     simpa using this
-  simp only [mtwPtOf, dif_neg h, dif_pos h', hc]
+  simp only [mtwPtOf, dite_eq_right h, dite_eq_left h', hc]
 
 theorem mtwPtOf_other (g : ι → GL (Fin n) ℂ) (σ : L →+* ℂ) (h1 : ∀ τ, emb τ ≠ σ)
     (h2 : ∀ τ, ComplexEmbedding.conjugate (emb τ) ≠ σ) (a b : Fin n) :
     mtwPtOf emb g (σ, a, b) = (1 : Matrix (Fin n) (Fin n) ℂ) a b := by
   have h : ¬ ∃ τ, emb τ = σ := fun ⟨τ, h'⟩ => h1 τ h'
   have h' : ¬ ∃ τ, ComplexEmbedding.conjugate (emb τ) = σ := fun ⟨τ, h''⟩ => h2 τ h''
-  simp only [mtwPtOf, dif_neg h, dif_neg h', Matrix.one_apply]
+  simp only [mtwPtOf, dite_eq_right h, dite_eq_right h', Matrix.one_apply]
 
 theorem mtwPtOf_inV (g : ι → GL (Fin n) ℂ) : PI.UnitaryGroupMassFormula.HwConjInf.InV (mtwPtOf emb g) := by
   intro σ
@@ -142,7 +142,7 @@ theorem mtwPtOf_inV (g : ι → GL (Fin n) ℂ) : PI.UnitaryGroupMassFormula.HwC
     · rw [show ComplexEmbedding.conjugate (ComplexEmbedding.conjugate (emb τ)) = emb τ by simp,
         mtwPtOf_emb emb hinj hcm g τ i j]
       rfl
-  · push_neg at h1 h2
+  · push Not at h1 h2
     refine ⟨1, fun i j => ⟨?_, ?_⟩⟩
     · rw [mtwPtOf_other emb hinj hcm g σ h1 h2]
       rfl

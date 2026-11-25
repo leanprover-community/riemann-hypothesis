@@ -348,12 +348,10 @@ theorem parXp_counts (D : D7) (hH : HostHyp D) (τ : D.what₂.Tau) {j : ℕ} (h
 theorem exists_weil_ordered : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {sc : GlobalTheory.ChiGrid.Consts},
     HostHyp D → sc.cGap = 1 → ∀ {G' : GlobalTheory.ChiGrid.GridData R.toLevCh sc} (W : G'.Weil), W.Over R →
-    ∃ W' : G'.Weil, W'.Over R ∧ W'.ψ = W.ψ ∧ W'.θ = W.θ ∧ W'.cart = W.cart ∧ W'.om = W.om ∧ W'.vac = W.vac ∧
+    ∃ W' : G'.Weil, W'.Over R ∧ W'.cart = W.cart ∧ W'.om = W.om ∧ W'.vac = W.vac ∧
       W'.cosVec = W.cosVec ∧ (∀ j, W'.onb (.grid 0 j) = W.onb (.grid 0 j)) ∧
       (∀ X : GlobalTheory.ChiGrid.Node, X.InRange D.R.m → (∀ j, X ≠ .grid 0 j) → X ≠ .top 0 → ∀ τ,
         ∃ σ : Equiv.Perm (Fin (G'.V X).rank), W'.onb X τ = (W.onb X τ).submatrix id σ) ∧
-      (∀ τ, ∃ σ : Equiv.Perm (Fin (G'.V (.core D.R.m)).rank),
-        W'.onb (.top 0) τ = (W.onb (.core D.R.m) τ).submatrix id σ) ∧
       (∀ i j, 1 ≤ i → i ≤ D.R.m → j ≤ D.R.m → ∀ τ, ∃ (lam : Fin (G'.V (.grid i j)).rank → ℝ)
         (ε : Fin (G'.V (.grid i j)).rank → Bool), IsEnum (GlobalTheory.Grid.parV D i j τ) lam ε ∧
         (W'.onb (.grid i j) τ)ᴴ * gramAt D (G'.V (.grid i j)) τ * W'.onb (.grid i j) τ = Formalism.REAL.Jm ε) ∧
@@ -434,8 +432,8 @@ theorem exists_weil_ordered : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {
     · obtain ⟨-, ε, -, h1, h2⟩ := hσX (j + 1) τ ⟨by omega, hX⟩
       exact ⟨ε, h1, h2⟩
   let W' : G'.Weil := { W with onb := onb', onb_is := honb }
-  refine ⟨W', ⟨hW.ψ, hW.θ, hW.cartY, hW.cartX, hW.onbY, hW.onbX, hW.omY, hW.omX⟩, rfl, rfl, rfl, rfl, rfl, rfl,
-    fun j => rfl, ?_, fun τ => ⟨σP D.R.m τ, rfl⟩, ?_, ?_, ?_, ?_, funext fun τ => rfl⟩
+  refine ⟨W', ⟨hW.ψ, hW.θ, hW.cartY, hW.cartX, hW.onbY, hW.onbX, hW.omY, hW.omX⟩, rfl, rfl, rfl, rfl,
+    fun j => rfl, ?_, ?_, ?_, ?_, ?_, funext fun τ => rfl⟩
   · intro X hX h0 h1 τ
     rcases X with ⟨_ | i, j⟩ | i | _ | j
     · exact absurd rfl (h0 j)

@@ -411,7 +411,7 @@ theorem PositivityTheory.Xgp.t_per_int : ∀ (e : ℕ) (X : Type) [TopologicalSp
   have hne : Nonempty (ChartPartition A) := existsPartition A
   have hprop : ∀ c, mInt A (fun _ => sumPot c pot) (fun _ => 1) =
       mInt A (fun _ => sumPot (fun _ => 1) pot) (fun _ => 1) / (Pc fun _ => 1) * Pc c := fun c => by
-    simp only [mInt, dif_pos hne, integralWith]
+    simp only [mInt, dite_eq_left hne, integralWith]
     rw [Finset.sum_div, Finset.sum_mul]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [← integral_div, ← integral_mul_const]
@@ -421,7 +421,7 @@ theorem PositivityTheory.Xgp.t_per_int : ∀ (e : ℕ) (X : Type) [TopologicalSp
     rw [h, h]
     field_simp
   have hpos : 0 < mInt A (fun _ => sumPot (fun _ => 1) pot) (fun _ => 1) := by
-    simp only [mInt, dif_pos hne, integralWith]
+    simp only [mInt, dite_eq_left hne, integralWith]
     have hnn : ∀ k, 0 ≤ᵐ[volume.restrict (A.chart k).target] fun y => hne.some.χ k ((A.chart k).symm y) * 1 *
         locDens A (fun _ => sumPot (fun _ => 1) pot) k y := fun k => by
       filter_upwards [ae_restrict_of_ae (hpt k), ae_restrict_mem (A.chart k).open_target.measurableSet] with y hy hyt

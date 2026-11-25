@@ -331,7 +331,6 @@ theorem exists_isDual (i : X.Tw) (s : X.Sig i) : ∃ ρ, IsDual i s ρ := by
         simp only [Tdual, ← Tgl_coe, map_mul, Units.val_mul, Matrix.mul_inv_rev, Matrix.transpose_mul, smul_mul_smul_comm] }
   exact ⟨τ.toHomUnits, fun g => rfl⟩
 
-
 end GlobalTheory.NewPrime
 end -- clump:auto
 end -- clump:auto
@@ -468,7 +467,7 @@ theorem exists_newPlace : Cheb → ∀ (D : Formalism.BasicNotions.D7) (N : NDat
     rw [map_mul]
     rcases lt_or_ge b.val n with hb | hb
     · have h1 : d (P (.inl b)) γ₀ = 1 := Subgroup.mem_iInf.1 hγ₀.2 ⟨b, hb⟩
-      rw [h1, hh1 b hb, if_neg (by omega), mul_one]
+      rw [h1, hh1 b hb, ite_eq_right (by omega), mul_one]
       rfl
     · rw [hγd ⟨b, hb⟩, inv_mul_cancel_right]
   let V : Subgroup (GE N) := U ⊓ ⨅ b, (d (P (.inl b))).ker
@@ -730,7 +729,7 @@ theorem exists_ring (O A : Type) [CommRing O] [CommRing A] [Algebra O A] (m : �
       rw [map_mul, map_pow, AdjoinRoot.mk_X]
     rw [← hp, e, AdjoinRoot.mk_eq_zero, Polynomial.X_pow_dvd_iff] at h1
     have h2 := h1 (m - 1) (Nat.sub_lt hm Nat.one_pos)
-    rw [Polynomial.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self] at h2
+    rw [Polynomial.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self] at h2
     rw [← hp, hg]
     exact h2
 
@@ -1011,15 +1010,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace GlobalTheory.NewPrime.LocInv
 
-theorem tors_of_finite (A : Type) [CommRing A] [IsLocalRing A] [Finite A] (Y : Type) [AddCommGroup Y] [Module A Y] :
-    Tors A Y := by
-  intro b
-  obtain ⟨n, hn⟩ := IsArtinianRing.isNilpotent_jacobson_bot (R := A)
-  rw [IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top] at hn
-  refine ⟨n, fun x hx => ?_⟩
-  rw [hn] at hx
-  rw [(Submodule.mem_bot _).1 hx, zero_smul]
-
 theorem dual_eq_one {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N} (bkP : BKPh X)
     (i : X.Tw) (s : X.Sig i) (h : IsotypicValuationAtRing bkP i s) {ρ : GE N →* GL (Fin D.R.r) (X.O0 i)} (hρ : IsDual i s ρ)
     (v : PlE D.host) (hl : v ∉ placesOver D.host.E (X.l i)) (hS : v ∉ Spl i) (σ : GE N)
@@ -1047,7 +1037,7 @@ theorem local_invariants_killed : TameLocal → ∀ (D : Formalism.BasicNotions.
       ext g
       simp [MonoidHom.mem_ker]
     have h0 := (GlobalTheory.PrimeToInertia.local_cohomology_vanishes D N X bkP i s hG v hS A κ⁻¹ (hker ▸ hκo) hκl' Y
-      (tors_of_finite A Y) ρ (Or.inr hρ)).1
+      (GlobalTheory.NewPrime.tors_of_finite_local A Y) ρ (Or.inr hρ)).1
     have : m ∈ H0 ((repOn ρ κ⁻¹ Y).comp (DecV N v).subtype) := (mem_riemannRochSpace_iff_regularAt_everywhere _ _).2 fun g => hm g.1 g.2
     rw [h0, Submodule.mem_bot] at this
     rw [this, smul_zero]
@@ -1100,7 +1090,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys GlobalTheory.SelFun GlobalTheory.Published GlobalTheory.ResSel GlobalTheory.StepTwo GlobalTheory.TwistDet GlobalTheory.NewPrime GlobalTheory.Published.PoitouTate
 
 namespace GlobalTheory.NewPrime
-
 
 open IsLocalRing GlobalTheory.ScalarFrob in
 theorem noInvDual_of_setup : ∀ (D : Formalism.BasicNotions.D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (bkP : BKPh X) (i : X.Tw) (s : X.Sig i), ∀ (A : Type) [CommRing A] [IsLocalRing A] [Finite A] [Algebra (X.O0 i) A] (κ : GE N →* Aˣ) (Q : Finset (PlE D.host)) (ρ : GE N →* GL (Fin D.R.r) (X.O0 i)) (z : GE N), Setup bkP i s κ Q → IsDual i s ρ → IsTameInertiaElementAtTwistPrime X i z → NoInvDual i κ ρ := by
@@ -1173,7 +1162,6 @@ def charModule : Module A (A →+ ZMod n) where
 end GlobalTheory.NewPrime.CharDual
 
 namespace GlobalTheory.NewPrime
-
 
 open GlobalTheory.NewPrime.CharDual in
 theorem charDual_cogenerator : ∀ (A : Type) [CommRing A] [Finite A] (n : ℕ), n ≠ 0 → (n : A) = 0 →
@@ -1851,7 +1839,7 @@ theorem step : Cheb → PoitouTateTotallyComplex → CohDimTwo → TameLocal →
         · exact Or.inr (by rw [hP']; exact ((hmem σ).1 hσL).2 q hq)
     have e2 : d (P' (em q₁)) σ = Multiplicative.ofAdd 1 := by
       have := (hSt'.2.2 (Fin.last n)).2 ⟨n, hn⟩ σ hNew.2.2.2.2.2.1
-      rwa [if_pos (by simp)] at this
+      rwa [ite_eq_left (by simp)] at this
     have : Fact (1 < X.l i ^ M) := ⟨Nat.one_lt_pow (by omega) hp.one_lt⟩
     rwa [hξ1, e2, toAdd_ofAdd, ZMod.val_one, pow_one] at e1
   · have e1 := (φ' : _ →+* B).map_det Φ'

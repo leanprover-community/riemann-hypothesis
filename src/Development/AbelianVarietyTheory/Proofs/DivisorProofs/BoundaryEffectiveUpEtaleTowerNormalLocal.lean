@@ -118,7 +118,6 @@ theorem exists_place_isPrimeOf_of_height_eq_one {K : Type} [Field K] (cK : ℂ �
       heightOneOrd_vw_inv]
     omega
   let V : ValuationSubring K := { S.toSubring with mem_or_inv_mem' := hor }
-  have hV : ∀ x : K, x ∈ V ↔ x ∈ S := fun _ => Iff.rfl
   let ι : R →+* V :=
     { toFun := fun r => ⟨r, hRS r⟩
       map_one' := rfl
@@ -440,7 +439,6 @@ theorem le_of_isPrimeOf (E : Place c) {T : Subring K} (h : E.IsPrimeOf T) (Q : I
     rw [← E.ord_nonneg_iff hf0, div_eq_mul_inv, E.ord_mul (pow_ne_zero _ hy0) (inv_ne_zero hx0'),
       E.ord_pow, E.ord_inv, ← hnx]
     have hy2 : 1 ≤ E.ord y := by omega
-    have hn0 : (0 : ℤ) ≤ n := by positivity
     nlinarith
   obtain ⟨a, ha, b, hb, hb0, hbo, e⟩ := h.2 _ hf
   have e' : y ^ n * ⟨b, hb⟩ = ⟨a, ha⟩ * x := by
@@ -1408,10 +1406,10 @@ theorem exists_basis_kaehler (σ : K →+* S) (hσR : ∀ a : R, σ (algebraMap 
       rw [polyDer_X, Pi.single_apply]
       exact if_congr (Fin.castAdd_injective _ _).eq_iff.symm rfl rfl
     · simp only [DD, Y, Fin.append_left, Fin.append_right]
-      rw [polyDer_C, Derivation.zero_apply, if_neg]
+      rw [polyDer_C, Derivation.zero_apply, ite_eq_right]
       intro h; have := congrArg Fin.val h; simp at this; omega
     · simp only [DD, Y, Fin.append_left, Fin.append_right]
-      rw [polyDer_X, Pi.zero_apply, if_neg]
+      rw [polyDer_X, Pi.zero_apply, ite_eq_right]
       intro h; have := congrArg Fin.val h; simp at this; omega
     · simp only [DD, Y, Fin.append_right]
       rw [polyDer_C, hδx]
@@ -1426,7 +1424,7 @@ theorem exists_basis_kaehler (σ : K →+* S) (hσR : ∀ a : R, σ (algebraMap 
     have := congrArg (dualForm (DD j)) hg
 
     simp only [map_sum, map_smul, hΦ, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, map_zero] at this
+    Finset.mem_univ, ite_true, map_zero] at this
     exact this
 
   letI : Algebra K S := σ.toAlgebra
@@ -1609,8 +1607,6 @@ theorem effAt_etTower : ∀ {K L : Type} [Field K] [Field L] (cK : ℂ →+* K) 
     have := congrArg ψ h
     rwa [hT.retr, hT.retr] at this
   have hi : Function.Injective (fun g : R => (ι g : L)) := Subtype.val_injective.comp hinj
-  have hι0 : ∀ g : R, g ≠ 0 → (ι g : L) ≠ 0 := fun g hg h =>
-    hg (hinj (Subtype.ext (by simpa using h)))
   refine ⟨fun h => ?_, ?_, fun P hP => ?_⟩
   · have hC := _root_.GlobalTheory.FieldPair.isFreeGen_dForm_tower cK cL n r R T ι ψ τ x hT hx
     exact one_ne_zero (hC.1 (a₁ := 1) (a₂ := 0) (by simp [h]))

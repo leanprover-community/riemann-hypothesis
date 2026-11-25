@@ -55,52 +55,8 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.NrmContPf
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsLinearIndependentDIffTrdegAdjoinEq
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IntegralAndRationalOfPolynomialGrowth
 public import Formalism.LocalToGlobal.ProjectiveLattices.FnTrdegOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Lemma
@@ -247,16 +203,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory
 
-namespace AdmissibleFiniteSupport
-
-variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
-  {Ω : ι → Type} [∀ c, Field (Ω c)] [∀ c, Algebra K (Ω c)]
-  {WT : Type} [AddCommGroup WT]
-  {A : ι → Type} [∀ c, CommRing (A c)] [∀ c, Algebra (Ω c) (A c)] [∀ c, Algebra K (A c)]
-  [∀ c, Algebra (𝓞 K) (A c)]
-
-end AdmissibleFiniteSupport
-
 open NumberField in
 open scoped TensorProduct in
 attribute [local instance] _root_.ReciprocityTheory.ChartRestriction.G.T0.resAlg in
@@ -372,7 +318,7 @@ private lemma case_two_finite_lemma
   · right
     refine ⟨hdisc, hF, ?_, hvg⟩
     rw [v.map_inv]
-    push_neg at hvt
+    push Not at hvt
     exact withTop_int_neg_nonneg_of_neg hvt
 
 open NumberField in
@@ -674,7 +620,7 @@ theorem injective_of_dvr {R Ω : Type} [CommRing R] [IsDomain R] [Field Ω] (φ 
     obtain ⟨c, hc⟩ := hm
     apply ha0
     rw [← hψ, hc, map_mul, h, zero_mul]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro r hr
   by_contra hr0
   have hinj := IsLocalization.injective (Localization.AtPrime P) (M := P.primeCompl)
@@ -1106,7 +1052,7 @@ theorem exists_continuousOn_embeddings (K : Type) [Field K] [CharZero K] (σ : T
       (∀ f, τ f = ev f t) ∧ p.map (MvPolynomial.eval (cf t)) = (minpoly F pb.gen).map τ := by
     intro t ht
     have hinj : Function.Injective (MvPolynomial.eval₂Hom sg t : R →+* ℂ) := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro q hq
       by_contra h
       exact hG t ht q h hq

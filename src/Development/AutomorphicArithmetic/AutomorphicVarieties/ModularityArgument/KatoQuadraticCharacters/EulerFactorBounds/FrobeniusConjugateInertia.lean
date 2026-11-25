@@ -585,7 +585,6 @@ private theorem exists_orderOf_eq_pred_sl2_zmod (p : ℕ) [Fact p.Prime] :
     · change ((γ⁻¹ : (ZMod p)ˣ) : ZMod p) ^ n = 1
       rw [← Units.val_pow_eq_pow_val, inv_pow, hγn, inv_one, Units.val_one]
 
-
 open scoped MatrixGroups TensorProduct in
 open Matrix in
 theorem _root_.GlobalTheory.sl2_zmod_central_ext_commutator_sq_eq_one :
@@ -1134,17 +1133,9 @@ def levSub (X : Tower Ω ε) (M : ℕ) : Subfield X.K where
   neg_mem' := fun ha γ hγ => by rw [map_neg, ha γ hγ]
   inv_mem' := fun a ha γ hγ => by rw [map_inv₀, ha γ hγ]
 
-theorem lev_sl (X : Tower Ω ε) {M : ℕ} {f : X.K} (hf : Lev X M f) (γ : SL(2, ℤ)) :
-    Lev X M (X.sl (ofSL γ) f) := by
-  intro δ hδ
-  have h := hf _ ((CongruenceSubgroup.Gamma_normal M).conj_mem δ hδ γ)
-  rw [← X.sl_mul, ← map_mul]
-  conv_rhs => rw [← h]
-  rw [← X.sl_mul, ← map_mul, inv_mul_cancel_right]
-
 noncomputable def levAct (X : Tower Ω ε) (M : ℕ) (γ : SL(2, ℤ)) : levSub X M →+* levSub X M :=
   RingHom.codRestrict ((X.sl (ofSL γ) : X.K →+* X.K).comp (levSub X M).subtype) (levSub X M)
-    fun a => lev_sl X a.2 γ
+    fun a => GlobalTheory.KZ.ES.RootGal.lev_sl X a.2 γ
 
 theorem coe_levAct (X : Tower Ω ε) (M : ℕ) (γ : SL(2, ℤ)) (a : levSub X M) :
     (levAct X M γ a : X.K) = X.sl (ofSL γ) a := rfl
@@ -1253,7 +1244,6 @@ theorem exists_dvd_pow_mul_coprime (M : ℕ) (hM : 0 < M) :
     exact Nat.mul_dvd_mul (Nat.gcd_dvd_left M N) hdiv
 
 end GlobalTheory.KZ.ES.DescInv
-
 
 open GlobalTheory.KZ.ES.DescInv in
 theorem GlobalTheory.KZ.ES.desc_pow_four : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε),

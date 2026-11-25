@@ -101,7 +101,7 @@ theorem arMono_mapDomain_some {Ψ : Type} [Fintype Ψ] {N : ℕ} (M : RootModel 
   have hmain := arNum_linear_arList_symm.2 M.K M.ι M.P (dimFl Ψ N) M.arith (II M.K M.ι) (hII M.K M.ι) _ _ hsm
     (by simpa [Function.comp_def, RootModel.line] using hperm)
   unfold RootModel.arMono
-  rw [if_pos hdeg, hnone, pow_zero, mul_one]
+  rw [ite_eq_left hdeg, hnone, pow_zero, mul_one]
   congr 1
   exact hmain.symm
 
@@ -345,7 +345,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.cycList_zp_eq_sum_places : ∀ (K : 
     rw [finsum_eq_sum_of_support_subset (s := T)]
     · refine Finset.sum_congr rfl fun W hW => ?_
       beta_reduce
-      rw [if_pos (Finset.mem_filter.mp hW).2]
+      rw [ite_eq_left (Finset.mem_filter.mp hW).2]
     · intro W hW
       rw [Function.mem_support] at hW
       have h1 := left_ne_zero_of_mul hW
@@ -353,7 +353,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.cycList_zp_eq_sum_places : ∀ (K : 
       by_cases hc : (C (((p : ℕ) : ℤ)) : MRing ι ℤ) ∈ W
       · exact Finset.mem_coe.mpr (Finset.mem_filter.mpr ⟨hfinZ.mem_toFinset.mpr h1, hc⟩)
       · beta_reduce at h2
-        rw [if_neg hc] at h2
+        rw [ite_eq_right hc] at h2
         exact absurd rfl h2
   have hRight : ∀ l, cycList (divCycle (pointIdeal (O l) y) (MvPolynomial.map (Int.castRingHom (O l)) f)) L =
       ∑ W ∈ Tl l, divCycle (pointIdeal (O l) y) (MvPolynomial.map (Int.castRingHom (O l)) f) W * vNumL W L := fun l => by
@@ -496,7 +496,6 @@ theorem ck_cast {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   push_cast
   rfl
 
-
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 theorem length_classList {σ : Type} (cls : σ → K → ℤ) {H : MvPolynomial σ ℝ} {e : ℕ}
     (hH : H.IsHomogeneous e) {μ : σ →₀ ℕ} (hμ : μ ∈ H.support) : (classList cls μ).length = e := by
@@ -505,7 +504,6 @@ theorem length_classList {σ : Type} (cls : σ → K → ℤ) {H : MvPolynomial 
   simp [Finsupp.card_toMultiset]
   rw [← h, Finsupp.weight_apply]
   simp [Finsupp.sum]
-
 
 omit [∀ k, Fintype (ι k)] in
 theorem cycNum_transfer {O₀ : Type} [CommRing O₀] [IsDomain O₀] [IsDiscreteValuationRing O₀]
@@ -527,10 +525,6 @@ theorem cycNum_transfer {O₀ : Type} [CommRing O₀] [IsDomain O₀] [IsDiscret
   ring
 
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}
-
-theorem bracket_isHomogeneous (j : ℕ) (φ : Equiv.Perm (Ψ ⊕ Ψ)) (p k : ℕ) (τ : Ψ) :
-    (bracket (N := N) j φ p k τ).IsHomogeneous (k - 1) := by
-  apply GlobalTheory.CompanionTheory.Ar.Num.ModelDescentAlt.isHomogeneous_bracket
 
 end Numbers
 
@@ -554,7 +548,7 @@ theorem flag_m3_of_places {O₀ : Type} [CommRing O₀] [IsDomain O₀] [IsDiscr
   intro τ k hk Q hQ
   have hQ' : k - 1 + Q.length = D := by omega
   have hloc' := fun l => hloc l τ k hk Q hQ
-  rw [cycNum_transfer _ _ fd D hp _ (bracket_isHomogeneous j φ p k τ) Q hQ', ck_cast]
+  rw [cycNum_transfer _ _ fd D hp _ (GlobalTheory.CompanionTheory.Ar.Num.ModelDescentAlt.isHomogeneous_bracket j φ p k τ) Q hQ', ck_cast]
   have hG : ∀ i, (MvPolynomial.map (Int.castRingHom ℝ)
       (psumExpansion N k i)).IsHomogeneous (k - 1) := fun i =>
     (isHomogeneous_psumExpansion N k i).map _
@@ -752,7 +746,6 @@ theorem cycList_perm (Z : Ideal (MRing ι O) → ℤ) {l l' : List (K → ℤ)} 
   congr 1
   funext W
   exact intNumL_perm (IsLocalRing.ResidueField O) (specialIdeal W) h
-
 
 omit [DecidableEq K] in
 theorem divCycle_mul_finite {R : Type} [CommRing R] [IsNoetherianRing (MRing ι R)] (P : Ideal (MRing ι R))
@@ -966,12 +959,6 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {K : T
 
 end GlobalTheory.CompanionTheory.Ar.Num.ValLin
 
-namespace GlobalTheory.CompanionTheory.Ar.Num
-
-theorem locPair_val_linear : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (σ : Type) [Fintype σ] (T : LocPair ι O σ) (P : Ideal (MRing ι O)), (∀ Gs Hs, T.val P (Gs + Hs) = T.val P Gs + T.val P Hs) ∧ (∀ (c : ℝ) Gs, T.val P (fun i => C c * Gs i) = c * T.val P Gs) ∧ ∀ (α : Type) (s : Finset α) (Gs : α → σ → MvPolynomial (σ ⊕ σ) ℝ), T.val P (fun i => ∑ a ∈ s, Gs a i) = ∑ a ∈ s, T.val P (Gs a) :=
-  _root_.UpperTheory.Reformulated.B.Qp9.locPair_val_linear
-
-end GlobalTheory.CompanionTheory.Ar.Num
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LocalPairValueLinear =====
@@ -1100,11 +1087,6 @@ theorem length_toNat_ne_zero {S : Type} [CommRing S] [IsNoetherianRing S] {J W :
       rw [LocalizedModule.mk_smul_mk, Algebra.smul_def, mul_one, mul_one, Ideal.Quotient.algebraMap_eq]
     exact ne_top_of_le_ne_top hlenQ (Module.length_le_of_surjective _ hsurj)
 
-theorem facts_of_divCycle_ne_zero {K : Type} {ι : K → Type} {R : Type} [CommRing R]
-    {P W : Ideal (MRing ι R)} {f : MRing ι R} (h : divCycle P f W ≠ 0) :
-    W ∈ (P ⊔ Ideal.span {f}).minimalPrimes ∧ IsRelevant W := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Num.Places.mem_of_divCycle_ne_zero <;> assumption
-
 theorem fibre_comp : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι O)) (d : ℕ), IsModelOver P d → (∀ W, IsFibreComp P W ↔ divCycle P (C ϖ) W ≠ 0) ∧ (∀ (a : K → ℕ) (f : MRing ι O), IsMultiHomog f a → f ∉ P → ∀ W, divCycle P f W ≠ 0 → (C ϖ : MRing ι O) ∈ W → IsFibreComp P W) ∧ ∀ (b : K → ℤ) (f g : MRing ι O), IsVerticalDivisor P ϖ b f g → ∀ W, ratDiv P f g W ≠ 0 → IsFibreComp P W := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P d hP
   classical
@@ -1124,7 +1106,7 @@ theorem fibre_comp : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuati
   have key : ∀ f : MRing ι O, f ∉ P → ∀ W, divCycle P f W ≠ 0 → (C ϖ : MRing ι O) ∈ W →
       IsFibreComp P W := by
     intro f _ W hW hϖW
-    obtain ⟨hWmin, hWrel⟩ := facts_of_divCycle_ne_zero hW
+    obtain ⟨hWmin, hWrel⟩ := GlobalTheory.CompanionTheory.Ar.Num.Places.mem_of_divCycle_ne_zero hW
     unfold IsFibreComp
     rw [hmax]
     exact ⟨mem_minimalPrimes_sup_of_mem hWmin hϖW hϖP, hWrel⟩
@@ -1140,7 +1122,7 @@ theorem fibre_comp : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuati
       rw [dite_eq_left ⟨hWmin, hWrel⟩]
       exact Nat.cast_ne_zero.mpr (length_toNat_ne_zero hWmin)
     · intro hW
-      obtain ⟨hWmin, hWrel⟩ := facts_of_divCycle_ne_zero hW
+      obtain ⟨hWmin, hWrel⟩ := GlobalTheory.CompanionTheory.Ar.Num.Places.mem_of_divCycle_ne_zero hW
       unfold IsFibreComp
       rw [hmax]
       exact ⟨hWmin, hWrel⟩
@@ -1233,7 +1215,7 @@ open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar 
 
 theorem GlobalTheory.CompanionTheory.Ar.Num.power_sum_term_dvr : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι O)) (d : ℕ), IsModelOver P d → ∀ (p : ℕ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (φ : Equiv.Perm (Ψ ⊕ Ψ)) (k : ℕ), 1 ≤ k → k ≤ d + 1 → ∀ (τ : Ψ) (Q : MvPolynomial (Ψ × Fin N) ℝ) (Hs : Ψ × Fin N → MvPolynomial ((Ψ × Fin N) ⊕ (Ψ × Fin N)) ℝ), Q.IsHomogeneous (d + 1 - k) → (∀ i, (Hs i).IsHomogeneous (d - k)) → (k = d + 1 → ∀ i, Hs i = 0) → ∀ T : LocPair ι O (Ψ × Fin N), T.IsVert P ϖ → FlagChernComparison P d p j φ T → PowerSumsVanish P d (fun i : Fin N => T.x' (τ, i)) → T.val P (fun i => (∑ a ∈ Finset.univ.filter (fun a : Fin N => (τ, a) = i), rename (Sum.map (fun a => (τ, a)) (fun a => (τ, a))) (MvPolynomial.map (Int.castRingHom ℝ) (psumExpansion N k a))) * rename Sum.inl Q + (∑ a : Fin N, X (Sum.inr (τ, a)) ^ k) * Hs i) = cycNum (divCycle P (C (p : O))) T.x (bracket j φ p k τ * Q) [] := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P d hP p Ψ _ _ N j φ k hk1 hkd τ Q Hs hQ hHs hH0 T hT hM hPS
-  obtain ⟨hadd, hsmul, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Num.locPair_val_linear O K ι (Ψ × Fin N) T P
+  obtain ⟨hadd, hsmul, -⟩ := _root_.UpperTheory.Reformulated.B.Qp9.locPair_val_linear O K ι (Ψ × Fin N) T P
   have hB : T.val P (fun i => (∑ a : Fin N, X (Sum.inr (τ, a)) ^ k) * Hs i) = 0 := by
     rcases Nat.lt_or_ge k (d + 1) with hlt | hge
     · exact _root_.GlobalTheory.CompanionTheory.Ar.Num.val_psum_mul_eq_zero O ϖ hϖ K ι P d hP (Ψ × Fin N) T hT N (fun a => (τ, a)) hPS k (d - k) hk1
@@ -1341,7 +1323,7 @@ theorem vertAt_two_of_ne (P : Ideal (MRing ι ℤ)) (p : Nat.Primes) (hp : (p : 
         rw [← C_mul, ← C_mul, ← C_add, hab, C_1]
       rw [this]
       exact W.add_mem (W.mul_mem_left _ hpW) (W.mul_mem_left _ h2)
-    exact mul_eq_zero_of_right _ (if_neg hpW)
+    exact mul_eq_zero_of_right _ (ite_eq_right hpW)
 
 theorem ptsIntegral_one_eq_vertAt (P : Ideal (MRing ι ℤ)) (D : ℕ) (hP : IsArithVar P (D + 1))
     (I : Ideal (MRing ι ℤ) → (n : ℕ) → (Fin n → HermLine ι) → ℝ) (hI : IsIntersectionFamily I)
@@ -1498,7 +1480,7 @@ theorem geoMono_mapDomain_some (M : RootModel Ψ N) [DecidableEq M.K] (II : Inte
   have hlen : (Finsupp.toMultiset (μ.mapDomain some)).toList.length = dimFl Ψ N := by
     rw [Multiset.length_toList, hmap, Multiset.card_map, hcard]
   unfold RootModel.geoMono
-  rw [if_pos hdeg, hnone, pow_zero, mul_one]
+  rw [ite_eq_left hdeg, hnone, pow_zero, mul_one]
   set L := monoLines (M.line 1) (μ.mapDomain some) (dimFl Ψ N) with hLdef
   have hL : ∀ k : Fin (dimFl Ψ N), L k = M.line 1 ((Finsupp.toMultiset (μ.mapDomain some)).toList.get
       ⟨k, by rw [hlen]; exact k.2⟩) := by
@@ -1597,7 +1579,7 @@ theorem exists_monomial_mixExpansion {σ : Type} [Fintype σ] (d : ℕ) :
         rw [monomial_add_single, pow_one, map_mul, map_mul, rename_X, rename_X]
         ring
       rw [key, hG', Finset.mul_sum]
-      simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       congr 1
       exact Finset.sum_congr rfl fun j _ => by ring
     · have h2 : (X (Sum.inr i) * G' j : MvPolynomial (σ ⊕ σ) ℝ).IsHomogeneous d := by
@@ -1825,16 +1807,6 @@ theorem le_dimFl_succ (Ψ : Type) [Fintype Ψ] (τ : Ψ) (N : ℕ) : N ≤ dimFl
 
 variable {Ψ : Type} {N : ℕ}
 
-theorem liePs_isHomogeneous (j m : ℕ) (l : Ψ ⊕ Ψ) :
-    (liePs j m l : MvPolynomial (Ψ × Fin N) ℝ).IsHomogeneous m := by
-  cases l with
-  | inl τ =>
-    refine IsHomogeneous.sum _ _ _ fun i _ => ?_
-    simpa using (isHomogeneous_X ℝ (τ, i)).pow m
-  | inr τ =>
-    refine IsHomogeneous.sum _ _ _ fun i _ => ?_
-    simpa using ((isHomogeneous_X ℝ (τ, i)).neg).pow m
-
 theorem bracket_isHomogeneous [Fintype Ψ] [DecidableEq Ψ] (j : ℕ) (φ : Equiv.Perm (Ψ ⊕ Ψ)) (p k : ℕ) (τ : Ψ) :
     (bracket j φ p k τ : MvPolynomial (Ψ × Fin N) ℝ).IsHomogeneous (k - 1) := by
   unfold bracket
@@ -1842,13 +1814,12 @@ theorem bracket_isHomogeneous [Fintype Ψ] [DecidableEq Ψ] (j : ℕ) (φ : Equi
     (IsHomogeneous.sum Finset.univ (fun τ' => C (co φ p k (Sum.inl τ) τ') * liePs j (k - 1) τ') (k - 1)
       fun τ' _ => by
         simpa using (isHomogeneous_C (Ψ × Fin N) (co φ p k (Sum.inl τ) τ')).mul
-          (liePs_isHomogeneous (N := N) j (k - 1) τ'))
+          (GlobalTheory.CompanionTheory.Ar.Num.ModelDescentAlt.isHomogeneous_liePs (N := N) j (k - 1) τ'))
   simpa using h
 
 end GlobalTheory.CompanionTheory.Ar.Num.Prop6Model
 
 namespace GlobalTheory.CompanionTheory.Ar.Num
-
 
 open Prop6Model in
 theorem power_sum_height_model_change : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (M : RootModel Ψ N) (R : SecondRoots M) (II : IntersectionSystem), IsIntersectionSystem II → ∀ (S : Finset Nat.Primes) (j : ℕ) (φ : ℕ → Equiv.Perm (Ψ ⊕ Ψ)), R.IsChange S → R.LocalAtPlaces j S φ → ∀ t : ℝ, 0 < t → ∀ (τ : Ψ) (k : ℕ), 1 ≤ k → k ≤ N → ∀ Q : RP Ψ N, Q.IsHomogeneous (dimFl Ψ N + 1 - k) → M.arFun II t (toA (pk τ k * Q)) = R.model.arFun II t (toA (pk τ k * Q)) + ∑ p ∈ S, Real.log (p : ℕ) * M.geoFun (toA (bracket j (φ p) p k τ * Q)) := by

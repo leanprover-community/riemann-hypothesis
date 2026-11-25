@@ -19,48 +19,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CobOneEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DieudonneRanksFieldCharP
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankRigidExtensionsEqHeightAndDimAddDual
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidifiedExtensionPullbackAddAndPrimeSmulId
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivCocycleMemRangeCobOfPullbackMulP
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigExtMapRelFrobCompRigOfOmega
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -238,7 +199,6 @@ open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.
 namespace GlobalTheory.PDiv.FrobRigKer
 
 variable {O A B : Type} [CommRing O] [CommRing A] [CommRing B] [Bialgebra O A] [Bialgebra O B]
-
 
 variable (O A) in
 def evalZeroTwo : A ⊗[O] A →ₗ[O] O :=
@@ -431,7 +391,6 @@ theorem mulP_mem_kerIdeal_comp_of_app_eq_zero (p : ℕ) [Fact p.Prime] (R : Type
 
 end GlobalTheory.PDivGroup
 
-
 open GlobalTheory.PDivGroup in
 theorem GlobalTheory.PDivGroup.mem_kerIdeal_of_app_eq_zero : ∀ (p : ℕ) [Fact p.Prime] (K : Type) [Field K]
     (G H : PDivGroup p K) (f : G ⟶ H) (g : H ⟶ G), f ≫ g = (p : ℤ_[p]) • 𝟙 G →
@@ -509,11 +468,6 @@ section -- clump:auto
 
 open GlobalTheory
 
-theorem _root_.GlobalTheory.T.range_rigOfOmega_le_range_rigExtMap_verschiebung'
-    (p : ℕ) [Fact p.Prime] (K : Type) [Field K] (h : (p : K) = 0) (G : PDivGroup p K) :
-    LinearMap.range (PDivGroup.frobTwist h G).rigOfOmega ≤
-      LinearMap.range (PDivGroup.rigExtMap (PDivGroup.verschiebung h G)) :=
-  PDivGroup.range_rigOfOmega_le_range_rigExtMap_verschiebung p K h G
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.RangeRigOfOmegaLeRangeRigExtMapVerschiebungStatement =====
@@ -553,7 +507,7 @@ theorem rigExt_field_of_charP (p : ℕ) [Fact p.Prime] (K : Type)
       Submodule.span K (Set.range fun x : G.RigExt => SemiHom.rig (absFrob h G) x) := by
   obtain ⟨-, f1, d1, d2⟩ := _root_.GlobalTheory.PDivGroup.finrank_rigExt_omega p K h G
   obtain ⟨-, f2, d3, -⟩ := _root_.GlobalTheory.PDivGroup.finrank_rigExt_omega p K h (frobTwist h G)
-  have h4 := le_antisymm (range_rigExtMap_verschiebung_le h G) (GlobalTheory.T.range_rigOfOmega_le_range_rigExtMap_verschiebung' p K h G)
+  have h4 := le_antisymm (range_rigExtMap_verschiebung_le h G) (GlobalTheory.PDivGroup.range_rigOfOmega_le_range_rigExtMap_verschiebung p K h G)
   have h5 := le_antisymm (_root_.GlobalTheory.PDivGroup.ker_rigExtMap_relFrob_le_range_rigOfOmega p K h G)
     (LinearMap.range_le_ker_iff.2 (rigExtMap_relFrob_comp_rigOfOmega h G))
   have h6 : rigExtMap (verschiebung h G) ∘ₗ rigExtMap (relFrob h G) = 0 := by

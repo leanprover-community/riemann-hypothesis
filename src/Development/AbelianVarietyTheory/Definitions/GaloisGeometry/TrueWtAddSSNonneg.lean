@@ -208,10 +208,10 @@ def chain (hc : X.Tau → HCParam R) : ColumnChain R X.Tau hc where
     ((mulFun fun y => ∏ τ, deFr y τ ^ sD hc i τ).comp ((A.kerC σ i c c').comp (mulFun fun y => (∏ τ, deFr y τ ^ sS hc i τ)⁻¹)))
   sSharp := sS hc
   sSharp_eq i h τ := by
-    rw [sS, dif_pos h]; exact zOf_spec R _ ((hc τ).e_int _) _
+    rw [sS, dite_eq_left h]; exact zOf_spec R _ ((hc τ).e_int _) _
   sDiv := sD hc
   sDiv_eq i h τ := by
-    rw [sD, dif_pos h]; exact zOf_spec R _ ((hc τ).e_int _) _
+    rw [sD, dite_eq_left h]; exact zOf_spec R _ ((hc τ).e_int _) _
 
 def emb (i : ℕ) (φ : (A.F i).Forms) : (A.F i).Cl → Fr X σ (R.N i) → ℂ :=
   fun c => A.ev σ i ((φ c.1).1 (((A.F i).mem c.1).outSec.rep c.2))
@@ -327,9 +327,9 @@ theorem trueWt_old (hc : X.Tau → HCParam R) {i : ℕ} (hi : i < R.m) (τ : X.T
     (trueWt hc (i + 1) τ).w a = (trueWt hc i τ).w ⟨a.1, h⟩ + sS hc i τ - sD hc i τ := by
   have h0 := Wts.lamTrue_old (⟨fun τ => RowPar.of (hc τ), fun _ => hc, ∅⟩ : Wts X Unit R) () hi τ a h
   have h1 : ((sS hc i τ : ℤ) : ℚ) = sExp' R ((hc τ).e ⟨i, hi⟩) (i + 1) := by
-    rw [sS, dif_pos hi]; exact zOf_spec R _ ((hc τ).e_int _) _
+    rw [sS, dite_eq_left hi]; exact zOf_spec R _ ((hc τ).e_int _) _
   have h2 : ((sD hc i τ : ℤ) : ℚ) = sExp R ((hc τ).e ⟨i, hi⟩) (i + 1) := by
-    rw [sD, dif_pos hi]; exact zOf_spec R _ ((hc τ).e_int _) _
+    rw [sD, dite_eq_left hi]; exact zOf_spec R _ ((hc τ).e_int _) _
   apply Int.cast_injective (α := ℚ)
   push_cast
   rw [h1, h2]
@@ -339,7 +339,7 @@ theorem trueWt_new (hc : X.Tau → HCParam R) {i : ℕ} (hi : i < R.m) (τ : X.T
     (trueWt hc (i + 1) τ).w a = -sD hc i τ := by
   have h0 := Wts.lamTrue_new (⟨fun τ => RowPar.of (hc τ), fun _ => hc, ∅⟩ : Wts X Unit R) () hi τ a h
   have h2 : ((sD hc i τ : ℤ) : ℚ) = sExp R ((hc τ).e ⟨i, hi⟩) (i + 1) := by
-    rw [sD, dif_pos hi]; exact zOf_spec R _ ((hc τ).e_int _) _
+    rw [sD, dite_eq_left hi]; exact zOf_spec R _ ((hc τ).e_int _) _
   apply Int.cast_injective (α := ℚ)
   push_cast
   rw [h2]
@@ -454,12 +454,6 @@ theorem exampleChain_col_apply (hc : X.Tau → HCParam R) :
       exact this
   exact h R.m le_rfl
 
-def exampleCpl (X : Fields) {n : ℕ} (lam : X.Tau → DomWeight n) : Cpl (exampleGSD X lam) where
-  Yb := ℤˣ
-  ys _ := Set.univ
-  fin _ := Set.finite_univ
-  equiv _ _ _ := Iff.rfl
-
 abbrev UnfFam : Type :=
   ∀ i, (A.F i).Cl → (A.F (i + 1)).Cl → ((Fr X σ (R.N i) → ℂ) →ₗ[ℂ] (Fr X σ (R.N (i + 1)) → ℂ))
 
@@ -512,24 +506,24 @@ theorem nuEnd_cast (hc : X.Tau → HCParam R) {i : ℕ} (hi : i < R.m) (τ : X.T
     (nuEnd hc i τ : ℤ) = (trueWt hc i τ).detShift + sS hc i τ := by
   have := trueWt_add_sS_nonneg hc hi τ ⟨R.N i - 1, by have := R.N_pos i; omega⟩
   rw [nuEnd, Int.toNat_of_nonneg]
-  rwa [DomWeight.detShift, dif_pos (R.N_pos i)]
+  rwa [DomWeight.detShift, dite_eq_left (R.N_pos i)]
 
 theorem nuEnd_eq {Pr : Primes X} (W : Wts X Pr.Word R) (u : Pr.Word) {i : ℕ} (hi : i < R.m) :
     nuEnd (W.hc u) i = Formalism.L2.Ker.nuLast W u i := by
   funext τ
   have h1 : ((sS (W.hc u) i τ : ℤ) : ℚ) = sExp' R ((W.hc u τ).e ⟨i, hi⟩) (i + 1) := (by
-    rw [sS, dif_pos hi]; exact zOf_spec R _ ((W.hc u τ).e_int _) _)
+    rw [sS, dite_eq_left hi]; exact zOf_spec R _ ((W.hc u τ).e_int _) _)
   have h0 := W.nuW_eq_true u hi τ ⟨R.N i - 1, by have := R.N_pos i; omega⟩
   rw [← h1] at h0
-  have h2 : (W.nuW u (i + 1) τ).detShift = (W.nuW u (i + 1) τ).w ⟨R.N i - 1, Nat.sub_lt (R.N_pos i) one_pos⟩ := dif_pos (R.N_pos i)
-  rw [nuEnd, Formalism.L2.Ker.nuLast, h2, DomWeight.detShift, dif_pos (R.N_pos i), trueWt_eq]
+  have h2 : (W.nuW u (i + 1) τ).detShift = (W.nuW u (i + 1) τ).w ⟨R.N i - 1, Nat.sub_lt (R.N_pos i) one_pos⟩ := dite_eq_left (R.N_pos i)
+  rw [nuEnd, Formalism.L2.Ker.nuLast, h2, DomWeight.detShift, dite_eq_left (R.N_pos i), trueWt_eq]
   congr 1
   exact_mod_cast h0.symm
 
 theorem trueWt_detShift_succ (hc : X.Tau → HCParam R) {i : ℕ} (hi : i < R.m) (τ : X.Tau) :
     (trueWt hc (i + 1) τ).detShift = -sD hc i τ := by
   have hN : R.N i < R.N (i + 1) := by unfold Ranks.N; rw [add_mul]; omega
-  rw [DomWeight.detShift, dif_pos (R.N_pos _)]
+  rw [DomWeight.detShift, dite_eq_left (R.N_pos _)]
   exact trueWt_new hc hi τ _ (by simp only; omega)
 
 def sharpPol (hc : X.Tau → HCParam R) (i : ℕ) (x : (A.F i).V) : Formalism.L2.DIV.Pol ℂ X.Tau (R.N i) :=
@@ -609,13 +603,6 @@ theorem chainTh_unf (hc : X.Tau → HCParam R) (cD : X.Tau → ℂ) (Th : A.ThFa
     (A.chainTh σ hc cD Th).unf i c c' (fun y : Fr X σ (R.N i) => MvPolynomial.eval (fun v => y.1 v.1 v.2.1 v.2.2) Q) y' =
       ∑ q ∈ (derPol cD Q y'.1).support, AddMonoidAlgebra.coeff (derPol cD Q y'.1) q * Formalism.L2.Ker.derivAt0 (Th i c c') q :=
   (A.chainJet_unf σ hc _ i c c' Q y').trans (eval_jetMap cD _ Q y'.1)
-
-section Laws
-
-variable {A} {hc : X.Tau → HCParam R} (h : A.Tied hc) {cD : X.Tau → ℂ} {Th : A.ThFam} (hJ : A.JetTie σ hc (A.jetTh cD Th))
-include h hJ
-
-end Laws
 
 end ChSrc
 

@@ -162,7 +162,7 @@ theorem degLt_pderiv {n : ℕ} {P : MvPolynomial ι k} (h : DegLt (n + 1) P) (l 
   refine Finset.sum_eq_zero fun s hs => ?_
   rw [MvPolynomial.pderiv_monomial, MvPolynomial.coeff_monomial]
   by_cases hsm : s - Finsupp.single l 1 = m
-  · rw [if_pos hsm]
+  · rw [ite_eq_left hsm]
     have hc : AddMonoidAlgebra.coeff P s ≠ 0 := MvPolynomial.mem_support_iff.mp hs
     rcases Nat.eq_zero_or_pos (s l) with h0 | hpos
     · simp [h0]
@@ -178,7 +178,7 @@ theorem degLt_pderiv {n : ℕ} {P : MvPolynomial ι k} (h : DegLt (n + 1) P) (l 
         | rw [← hs', Finsupp.degree_add, Finsupp.degree_single]
         | rw [← hs', map_add (f := _), Finsupp.degree_single]
       exact hc (h s (by omega))
-  · rw [if_neg hsm]
+  · rw [ite_eq_right hsm]
 
 theorem degLt_secondOrder (c : ι → ι → k) {n : ℕ} {P : MvPolynomial ι k} (h : DegLt (n + 1) P) :
     DegLt n (secondOrder k c P) := by
@@ -204,14 +204,8 @@ theorem eq_zero_of_degLt_zero {P : MvPolynomial ι k} (h : DegLt 0 P) : P = 0 :=
   rw [MvPolynomial.coeff_zero]
   exact h m (Nat.zero_le _)
 
-theorem degLt_totalDegree (P : MvPolynomial ι k) : DegLt (P.totalDegree + 1) P := by
-  intro m hm
-  by_contra hne
-  have hmem : m ∈ P.support := MvPolynomial.mem_support_iff.mpr hne
-  have h1 : m.degree ≤ P.totalDegree := by
-    first
-    | exact MvPolynomial.le_totalDegree hmem
-  omega
+theorem degLt_totalDegree (P : MvPolynomial ι k) : DegLt (P.totalDegree + 1) P :=
+  fun _ hm => MvPolynomial.coeff_eq_zero_of_totalDegree_lt hm
 
 theorem iterate_eq_zero (c : ι → ι → k) (P : MvPolynomial ι k) :
     (secondOrder k c)^[P.totalDegree + 1] P = 0 :=
@@ -252,7 +246,7 @@ theorem exp_cut (t : k) (q : PS k 1 d) (hq0 : constantCoeff q = 0) (N : ℕ) :
     have hm' : m ∈ Finset.range (N + 1) := Finset.mem_range.mpr hm
     first
     | (simp only [map_sub, map_sum, map_smul, PowerSeries.coeff_exp, PowerSeries.coeff_X_pow, smul_eq_mul,
-        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, hm', if_true, sub_self]; done)
+        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, hm', ite_true, sub_self]; done)
   obtain ⟨R, hR⟩ := hdvd
   have hexp : PowerSeries.exp k = (∑ n ∈ Finset.range (N + 1),
       algebraMap ℚ k (1 / (n.factorial : ℚ)) • (PowerSeries.X : PowerSeries k) ^ n) +

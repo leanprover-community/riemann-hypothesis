@@ -121,7 +121,7 @@ theorem locSec : LocSec := by
   have hu := (hs.comp hq).eventually ev_unit
   let u : HV E a → GL (Fin a) (Cinf E) := fun X => if h : IsUnit (Matrix.of X.1) then h.unit else 1
   have hval : ∀ X : HV E a, IsUnit (Matrix.of X.1) → (u X).val = Matrix.of X.1 := fun X h => by
-    simp only [u, dif_pos h, IsUnit.unit_spec]
+    simp only [u, dite_eq_left h, IsUnit.unit_spec]
   refine ⟨fun p => g * u (σ (sand g⁻¹ p)), ?_, ?_⟩
   · have h1 : ContDiffAt ℝ ∞ (fun p => σ (sand g⁻¹ p)) (sand g (hOne E a)) :=
       ContDiffAt.comp (g := σ) _ (h0.symm ▸ hσ) (sand g⁻¹).contDiff.contDiffAt

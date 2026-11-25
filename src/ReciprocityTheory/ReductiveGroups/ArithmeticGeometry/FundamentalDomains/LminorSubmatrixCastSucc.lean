@@ -209,7 +209,7 @@ theorem psgn_eq_one {p0 i : ℕ} (h : i ≤ p0) : psgn p0 i = 1 := by
   refine Finset.prod_eq_one fun a ha => ?_
   have hlt : a < p0 := lt_of_lt_of_le (Finset.mem_range.1 ha) h
   unfold sgn
-  rw [if_pos hlt]
+  rw [ite_eq_left hlt]
 
 namespace Data
 

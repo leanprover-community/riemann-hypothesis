@@ -51,7 +51,7 @@ private theorem UpperTheory.Reformulated.B.Qp7.summable_count_mul (K : Type*) [F
   · simp [div_eq_mul_inv]
 
 theorem UpperTheory.Reformulated.B.Qp7.summable_absNorm_rpow_inv.{u_1} :
-    ∀ {K : Type u_1} [inst : Field K] [inst_1 : NumberField K] {σ : ℝ},
+    ∀ {K : Type u_1} [Field K] [NumberField K] {σ : ℝ},
     (1 : ℝ) < σ →
       Summable fun (I : Ideal (NumberField.RingOfIntegers K)) ↦
         ((↑((Ideal.absNorm : Ideal (NumberField.RingOfIntegers K) → ℕ) I) : ℝ) ^ σ)⁻¹ := by

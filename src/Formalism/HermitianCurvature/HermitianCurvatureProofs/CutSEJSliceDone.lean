@@ -49,12 +49,12 @@ theorem glueMapS_continuous (l : Fin r) (c : Fin r → ℂ) : Continuous (glueMa
   refine Continuous.prodMk ?_ ?_
   · refine continuous_pi fun m => ?_
     by_cases h : (l.succ : Fin (r + 1)).val ≤ m.val
-    · simp only [glue, h, dif_pos]
+    · simp only [glue, h, dite_eq_left]
       exact (continuous_apply _).comp (continuous_snd.comp continuous_fst)
-    · simp only [glue, h, dif_neg, not_false_eq_true, Function.update_apply]
+    · simp only [glue, h, dite_eq_right, not_false_eq_true, Function.update_apply]
       by_cases hm : m = l
-      · simp only [hm, if_true] <;> fun_prop
-      · simp only [hm, if_false] <;> fun_prop
+      · simp only [hm, ite_true] <;> fun_prop
+      · simp only [hm, ite_false] <;> fun_prop
   · exact continuous_matrix fun i j => by simp only [Matrix.of_apply]; fun_prop
 
 theorem measurableSet_glueMapS_DomR (l : Fin r) (c : Fin r → ℂ) :
@@ -205,9 +205,6 @@ theorem wOp_cons (X : ActualOps k r z z' π π') (l : Fin r) (j : Fin 6) (js : L
     (Ψ : RadSp k r z z' π π') : wOp X l (j :: js) Ψ = X.op l j (wOp X l js Ψ) := by
   simp [wOp, List.map_cons, List.prod_cons]
 
-theorem wOp_nil (X : ActualOps k r z z' π π') (l : Fin r) (Ψ : RadSp k r z z' π π') : wOp X l [] Ψ = Ψ := by
-  simp [wOp]
-
 theorem slice_diffAt (Ψ : RadSp k r z z' π π') (g : Mx k r) {p : Fin r → ℂ} (hp : p ∈ OmX r) :
     DifferentiableAt ℝ (fun c' => (Ψ : Fn k r (Wq →L[ℂ] Wp)) c' g) p :=
   (radSp_regular Ψ g p).1 hp
@@ -310,25 +307,25 @@ theorem nfp_der (b : Bool) (js : List (Fin 6)) (h : NFP X l s Wv js) :
     intro i
     rw [wOp_cons, op_pt]
     cases b
-    · simp only [Bool.false_eq_true, if_false]
+    · simp only [Bool.false_eq_true, ite_false]
       show Formalism.QuantumDeterminants.pbOp l _ p = _
-      unfold Formalism.QuantumDeterminants.pbOp; rw [if_pos hp]
-    · simp only [if_true]
+      unfold Formalism.QuantumDeterminants.pbOp; rw [ite_eq_left hp]
+    · simp only [ite_true]
       show Formalism.QuantumDeterminants.pOp l _ p = _
-      unfold Formalism.QuantumDeterminants.pOp; rw [if_pos hp]
+      unfold Formalism.QuantumDeterminants.pOp; rw [ite_eq_left hp]
   simp only [hR]
   cases b
-  · simp only [Bool.false_eq_true, if_false, mL]
+  · simp only [Bool.false_eq_true, ite_false, mL]
     show Formalism.QuantumDeterminants.pbOp l _ p = _
     unfold Formalism.QuantumDeterminants.pbOp
-    rw [if_pos hp, hW2, Finset.smul_sum, ← Finset.sum_add_distrib]
+    rw [ite_eq_left hp, hW2, Finset.smul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp only [v]
     module
-  · simp only [if_true, mL]
+  · simp only [ite_true, mL]
     show Formalism.QuantumDeterminants.pOp l _ p = _
     unfold Formalism.QuantumDeterminants.pOp
-    rw [if_pos hp, hW1, Finset.smul_sum, ← Finset.sum_add_distrib]
+    rw [ite_eq_left hp, hW1, Finset.smul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp only [v]
     module
@@ -480,25 +477,17 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
   [FiniteDimensional ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-theorem dT_lc (X : ActualOps k r z z' π π') (l : Fin r) {Ξ : RadSp k r z z' π π'} (h : Ξ ∈ lcSub k r z z' π π') :
-    dT X l Ξ ∈ lcSub k r z z' π π' := by
-  simp only [dT, Module.End.mul_apply]; exact op_lc X l 2 _ (op_lc X l 0 _ h)
-
-theorem dTb_lc (X : ActualOps k r z z' π π') (l : Fin r) {Ξ : RadSp k r z z' π π'} (h : Ξ ∈ lcSub k r z z' π π') :
-    dTb X l Ξ ∈ lcSub k r z z' π π' := by
-  simp only [dTb, Module.End.mul_apply]; exact op_lc X l 5 _ (op_lc X l 3 _ h)
-
 theorem seven_derivatives_preserve_compact (X : ActualOps k r z z' π π') (l : Fin r) {Ξ : RadSp k r z z' π π'} (h : Ξ ∈ lcSub k r z z' π π')
     (i : Fin 7) : wd7 X l Ξ i ∈ lcSub k r z z' π π' := by
   fin_cases i <;>
     first
     | exact h
-    | exact dT_lc X l h
-    | exact dTb_lc X l h
-    | exact dT_lc X l (dT_lc X l h)
-    | exact dTb_lc X l (dT_lc X l h)
-    | exact dT_lc X l (dTb_lc X l h)
-    | exact dTb_lc X l (dTb_lc X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l h
+    | exact Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l h
+    | exact Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l h)
 
 theorem pairAt_self_real (μ : Measure (Mt k r)) (Ξ : RadSp k r z z' π π') (p : Fin r → ℂ) :
     pairAt μ Ξ Ξ p = ((‖pairAt μ Ξ Ξ p‖ : ℝ) : ℂ) := by
@@ -820,30 +809,6 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
   [FiniteDimensional ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-private theorem opL_eq_zero_of_eventuallyEq_zero {m : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (l : Fin m)
-    (j : Fin 6) (f : (Fin m → ℂ) → E) (x : Fin m → ℂ) (h : f =ᶠ[𝓝 x] 0) : opL l j f x = 0 := by
-  have h0 : f x = 0 := h.eq_of_nhds
-  have hd : fderiv ℝ f x = 0 := by
-    rw [h.fderiv_eq]
-    exact fderiv_const_apply (0 : E)
-  fin_cases j
-  · show pOp l f x = 0
-    unfold pOp QuantumDeterminants.wirt
-    rw [hd]
-    simp
-  · show cOp l f x = 0
-    simp [cOp, h0]
-  · show ciOp l f x = 0
-    simp [ciOp, h0]
-  · show pbOp l f x = 0
-    unfold pbOp QuantumDeterminants.wirtBar
-    rw [hd]
-    simp
-  · show cbOp l f x = 0
-    simp [cbOp, h0]
-  · show cbiOp l f x = 0
-    simp [cbiOp, h0]
-
 theorem jsl_wOp_lc (X : ActualOps k r z z' π π') (l : Fin r) (js : List (Fin 6)) :
     ∀ Φ ∈ lcSub k r z z' π π', wOp X l js Φ ∈ lcSub k r z z' π π' := by
   apply _root_.Formalism.FourierDecayAlt.P.CutSE.wOp_lcJ <;> assumption
@@ -914,12 +879,6 @@ theorem jsl_int_norm_self (μ : Measure (Mt k r)) (i : Fin (r + 1)) (v : RadSp k
   · exact Finset.prod_nonneg fun l _ => by positivity
   · exact integral_nonneg fun g => by positivity
 
-theorem jsl_glue_self (l : Fin r) (c : Fin r → ℂ) (t : ℂ) (c' : Cf r l.succ) :
-    glue l.succ (Function.update c l t) c' l = t := by
-  unfold glue
-  rw [dite_eq_right (by simp [Fin.val_succ])]
-  simp
-
 end JSL
 
 theorem jSL2Loc_of : JSWordNF → JSRadLoc → SpectralL2Locality := by
@@ -974,7 +933,7 @@ theorem jSL2Loc_of : JSWordNF → JSRadLoc → SpectralL2Locality := by
     intro c' g
     by_cases hxo : glue l.succ (Function.update c l t) c' ∈ OmX P.r
     · have e := hE (Wn Ψ) _ hxo g
-      rw [hΨeq, jsl_glue_self] at e
+      rw [hΨeq, Formalism.FourierDecayAlt.P5.glue_succ_update] at e
       exact e
     · have h0 : ∀ w : RadSp P.k P.r z z' π π',
           (w : Fn P.k P.r (Wq →L[ℂ] Wp)) (glue l.succ (Function.update c l t) c') g = 0 :=

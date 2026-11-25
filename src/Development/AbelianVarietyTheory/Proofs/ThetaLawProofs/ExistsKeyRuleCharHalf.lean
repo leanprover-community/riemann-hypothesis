@@ -37,64 +37,14 @@ public import Mathlib.FieldTheory.IsAlgClosed.Classification
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaKeyRuleExistsOfAlgebraicInvariants
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.IsPluriharmonicSiegel
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyDataDescendCountableSubringsStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.TypeStar
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsLevBasisReal
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SignInsert
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubmatrixMulOfVanish
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsSquareDetComparisonScaleSec
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyPBId
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.StalkOfAppLEEq
-import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 
@@ -432,7 +382,7 @@ theorem valT_comp {T : Type} [CommRing T] {X Y : Scheme.{0}} (w : Sp T ⟶ X) (�
     (f : Γ(Y, U)) : valT (w ≫ φ) U f = valT w (φ ⁻¹ᵁ U) ((φ.app U).hom f) := by
   unfold valT
   by_cases h : ⊤ ≤ w ⁻¹ᵁ (φ ⁻¹ᵁ U)
-  · rw [dif_pos h, dif_pos (show ⊤ ≤ (w ≫ φ) ⁻¹ᵁ U from h)]
+  · rw [dite_eq_left h, dite_eq_left (show ⊤ ≤ (w ≫ φ) ⁻¹ᵁ U from h)]
     rfl
   · rw [dite_eq_right h, dite_eq_right (show ¬ ⊤ ≤ (w ≫ φ) ⁻¹ᵁ U from h)]
 
@@ -482,7 +432,7 @@ theorem snd_valT_translate {v : epsR ℂ ⟶ A} (hv : IsTangent v) {w : Fin g �
   have h1 := le_of_isTangent hv _ h0
   rw [translate_left]
   refine (congrArg _ (valT_comp _ _ _ _)).trans ?_
-  refine (congrArg TrivSqZeroExt.snd (dif_pos h1)).trans ((hd _ h1 _).trans ?_)
+  refine (congrArg TrivSqZeroExt.snd (dite_eq_left h1)).trans ((hd _ h1 _).trans ?_)
   have e : (fun y => valAt' (u.ex y).left (((toUnit A ≫ u.ex z) * 𝟙 A).left ⁻¹ᵁ U)
       ((((toUnit A ≫ u.ex z) * 𝟙 A).left.app U).hom f)) = fun y => valAt' (u.ex (z + y)).left U f := by
     funext y
@@ -555,7 +505,7 @@ theorem unif_value_jac_zeros : ThetaUnifAV → ∀ (g : ℕ) (x : KeyIn ℂ) (h 
         ((ComplexPoints.top_le_preimage_basicOpen_iff q _ hj' _).2 ?_)
       have hv := (hF i).2 j w (by rw [hw']; exact hj')
       rw [hw'] at hv
-      exact ((dif_pos hj').symm.trans hv).trans_ne (mul_ne_zero hi (pow_ne_zero _ (u.fr_ne j w (by rw [hw']; exact hj'))))
+      exact ((dite_eq_left hj').symm.trans hv).trans_ne (mul_ne_zero hi (pow_ne_zero _ (u.fr_ne j w (by rw [hw']; exact hj'))))
     refine (hqZ p).2 ⟨a', p, ?_⟩
     rw [← hw', hwe, u.ex_add, (u.ker e).2 he, _root_.mul_one]
 
@@ -1054,7 +1004,7 @@ theorem exists_data (laws : Out.Laws) (hT : ThetaUnifAV) {n l d : ℕ} {a b : Fi
   let m : (Fin g → Fin g → ℂ) → Fin g → ∀ j j', Matrix (Fin ((l - j * n) ^ g)) (Fin ((l - j' * n) ^ g)) ℂ :=
     fun p i j j' => if h : j' = j + 1 then Matrix.of fun k' k => c p i j (h ▸ k) k' else 0
   have hmc : ∀ p i j k' k, m p i j (j + 1) k' k = c p i j k k' := fun p i j k' k => by
-    simp only [m, dif_pos, Matrix.of_apply]
+    simp only [m, dite_eq_left, Matrix.of_apply]
   have hm : ∀ p ∈ Key.phDom g,
       AnMul (N := fun j => (l - j * n) ^ g) (fun i => F i p) (fun j k => Th j k p) (m p) := by
     intro p hp i j hj k y

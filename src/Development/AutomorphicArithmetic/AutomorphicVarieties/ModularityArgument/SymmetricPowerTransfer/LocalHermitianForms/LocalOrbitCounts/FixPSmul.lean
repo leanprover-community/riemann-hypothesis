@@ -336,48 +336,24 @@ private theorem phi_fg (L : IsLoc O Δ) {g s T : K} (hg : g ≠ 0) {ε : Oˣ} (h
   have key : P = Submodule.span O (F : Set (Sp Δ τ)) := by
     apply le_antisymm
     · rintro x ⟨hx1, a, ha, b, hb, hx2⟩
-      have hA : ∀ a ∈ Submodule.span O (F0 : Set (Etau K τ)),
-          ((0 : Lsq K Δ), cmb Δ s a 0) ∈ Submodule.span O (F : Set (Sp Δ τ)) := by
-        intro a ha
-        induction ha using Submodule.span_induction with
-        | mem y hy =>
-          apply Submodule.subset_span
+      have hAB : ∀ f : Etau K τ →ₗ[O] Sp Δ τ, (∀ y ∈ F0, f y ∈ (F : Set (Sp Δ τ))) →
+          ∀ a ∈ Submodule.span O (F0 : Set (Etau K τ)), f a ∈ Submodule.span O (F : Set (Sp Δ τ)) :=
+        fun f hf a ha => (Submodule.span_le (p := (Submodule.span O (F : Set (Sp Δ τ))).comap f)).2
+          (fun y hy => Submodule.subset_span (hf y hy)) ha
+      have hA := hAB
+        { toFun := fun a => ((0 : Lsq K Δ), cmb Δ s a 0)
+          map_add' := fun y z => by rw [Prod.mk_add_mk, cmb_add', add_zero, add_zero]
+          map_smul' := fun r y => by rw [RingHom.id_apply, Prod.smul_mk, smul_cmb, smul_zero, smul_zero] }
+        fun y hy => by
           simp only [F, Finset.coe_union, Finset.coe_image, Set.mem_union, Set.mem_image]
           exact Or.inl (Or.inr ⟨y, hy, rfl⟩)
-        | zero =>
-          rw [cmb_zero']
-          exact zero_mem _
-        | add y z _ _ hy hz =>
-          have e : ((0 : Lsq K Δ), cmb Δ s (y + z) 0) = ((0 : Lsq K Δ), cmb Δ s y 0) + ((0 : Lsq K Δ), cmb Δ s z 0) := by
-            rw [Prod.mk_add_mk, cmb_add', add_zero, add_zero]
-          rw [e]
-          exact add_mem hy hz
-        | smul r y _ hy =>
-          have e : ((0 : Lsq K Δ), cmb Δ s (r • y) 0) = r • ((0 : Lsq K Δ), cmb Δ s y 0) := by
-            rw [Prod.smul_mk, smul_cmb, smul_zero, smul_zero]
-          rw [e]
-          exact Submodule.smul_mem _ r hy
-      have hB : ∀ b ∈ Submodule.span O (F0 : Set (Etau K τ)),
-          ((0 : Lsq K Δ), cmb Δ s 0 b) ∈ Submodule.span O (F : Set (Sp Δ τ)) := by
-        intro b hb
-        induction hb using Submodule.span_induction with
-        | mem y hy =>
-          apply Submodule.subset_span
+      have hB := hAB
+        { toFun := fun b => ((0 : Lsq K Δ), cmb Δ s 0 b)
+          map_add' := fun y z => by rw [Prod.mk_add_mk, cmb_add', add_zero, add_zero]
+          map_smul' := fun r y => by rw [RingHom.id_apply, Prod.smul_mk, smul_cmb, smul_zero, smul_zero] }
+        fun y hy => by
           simp only [F, Finset.coe_union, Finset.coe_image, Set.mem_union, Set.mem_image]
           exact Or.inr ⟨y, hy, rfl⟩
-        | zero =>
-          rw [cmb_zero']
-          exact zero_mem _
-        | add y z _ _ hy hz =>
-          have e : ((0 : Lsq K Δ), cmb Δ s 0 (y + z)) = ((0 : Lsq K Δ), cmb Δ s 0 y) + ((0 : Lsq K Δ), cmb Δ s 0 z) := by
-            rw [Prod.mk_add_mk, cmb_add', add_zero, add_zero]
-          rw [e]
-          exact add_mem hy hz
-        | smul r y _ hy =>
-          have e : ((0 : Lsq K Δ), cmb Δ s 0 (r • y)) = r • ((0 : Lsq K Δ), cmb Δ s 0 y) := by
-            rw [Prod.smul_mk, smul_cmb, smul_zero, smul_zero]
-          rw [e]
-          exact Submodule.smul_mem _ r hy
       obtain ⟨⟨r, hr⟩, b', hb'⟩ := ((descent O K Δ L s ε hs (g • x.1)).1).1 hx1
       have hx : x = (r • ((algebraMap K (Lsq K Δ) g⁻¹, 0) : Sp Δ τ) + b' • ((⟨0, g⁻¹ * s⟩, 0) : Sp Δ τ)) +
           (((0 : Lsq K Δ), cmb Δ s a 0) + ((0 : Lsq K Δ), cmb Δ s 0 b)) := by
@@ -754,17 +730,17 @@ theorem UpperTheory.V.Z.Sym.Loc.caseM :
   · rintro z S S₀ ⟨h0, rfl⟩
     exact ⟨hPinv z S₀ h0, phi_act g s S₀ z⟩
   · rintro S S₀ ⟨h0, e⟩
-    rw [if_pos ((hFix S).2 ⟨S₀, h0, e⟩), if_pos h0]
+    rw [ite_eq_left ((hFix S).2 ⟨S₀, h0, e⟩), ite_eq_left h0]
   · intro S hS
     have hS' : IsFix O c (ν • ofE Δ u) (((t : K) • s • (ω : Lsq K Δ)) • ofE Δ (ω - star ω : Etau K τ)) S := by
       by_contra hn
-      rw [if_neg hn] at hS
+      rw [ite_eq_right hn] at hS
       exact hS rfl
     obtain ⟨S₀, h0, e⟩ := (hFix S).1 hS'
     exact ⟨S₀, ⟨h0, e⟩, fun S₁ ⟨h1, e1⟩ => phi_inj h1 h0 (e1.symm.trans e)⟩
   · intro S₀ hS
     have h0 : IsFixP O τ ((t : K) * (τ ^ 2 - 4)) S₀ := by
       by_contra hn
-      rw [if_neg hn] at hS
+      rw [ite_eq_right hn] at hS
       exact hS rfl
     exact ⟨Phi O Δ g s S₀, ⟨h0, rfl⟩, fun S ⟨_, e⟩ => e⟩

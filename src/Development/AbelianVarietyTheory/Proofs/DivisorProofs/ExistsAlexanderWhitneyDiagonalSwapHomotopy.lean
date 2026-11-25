@@ -74,7 +74,7 @@ open GlobalTheory.EtC.CupSpec (sub_δ_val δ_sub_val sub_val hom_ext_val)
 def cm (N j l : ℕ) : SimplexCategory.mk l ⟶ SimplexCategory.mk N :=
   if h : j + l ≤ N then SimplexCategory.subinterval j l h else SimplexCategory.const _ _ 0
 
-theorem cm_eq (N j l : ℕ) (h : j + l ≤ N) : cm N j l = SimplexCategory.subinterval j l h := dif_pos h
+theorem cm_eq (N j l : ℕ) (h : j + l ≤ N) : cm N j l = SimplexCategory.subinterval j l h := dite_eq_left h
 
 section
 variable {N : ℕ}
@@ -279,10 +279,6 @@ section -- clump:auto
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 noncomputable section
-
-namespace GlobalTheory.EtC.PrCx
-
-end GlobalTheory.EtC.PrCx
 
 namespace GlobalTheory.EtC.PrCx
 
@@ -665,7 +661,7 @@ theorem key {N : ℕ} (z : Pr N) (hpos : 0 < z.1 + z.2.1) :
     cases r with
     | zero => simp at hpos
     | succ s =>
-      simp only [hz, if_true, map_add (f := _), d_single]
+      simp only [hz, ite_true, map_add (f := _), d_single]
       rw [d₁_cone_zero, d₂_succ, d₁_zero, d₂_cone_succ, d₁_zero, d₂_succ, map_zero, map_smul, H_sum]
       simp only [hz, ↓reduceIte, Finset.sum_add_distrib, smul_add]
       module

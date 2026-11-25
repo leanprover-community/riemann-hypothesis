@@ -28,7 +28,7 @@ theorem dot_bvec (i : Fin n) (x : Fin n → ℂ) : star (bvec i) ⬝ᵥ x = x i 
 theorem bvec_self (i : Fin n) : bvec i i = 1 := by simp [bvec]
 
 theorem bvec_ne (i j : Fin n) (h : i.val ≠ j.val) : bvec i j = 0 := by
-  unfold bvec; rw [Pi.single_apply, if_neg (fun e => h (congrArg Fin.val e).symm)]
+  unfold bvec; rw [Pi.single_apply, ite_eq_right (fun e => h (congrArg Fin.val e).symm)]
 
 theorem herm_bb (H : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) : herm H (bvec i) (bvec j) = H j i := by
   unfold herm; rw [dot_bvec, mv_bvec]
@@ -139,7 +139,7 @@ theorem mphi_li (hk : 1 ≤ k) (m : Mat k n) (hm : m ∈ UH (Hpk k n)) :
       herm (Hpk k n) 0 (m *ᵥ phiV' k n b) := by rw [hg]
   rw [herm_zero_l, herm_sum_l] at h
   simp only [herm_smul_l, herm_UH _ _ hm, phi_pair k n hk, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
   exact h
 
 theorem iw_apply (hIW : IW) (hk : 1 ≤ k) (m : Mat k n) (hm : m ∈ UH (Hpk k n)) :

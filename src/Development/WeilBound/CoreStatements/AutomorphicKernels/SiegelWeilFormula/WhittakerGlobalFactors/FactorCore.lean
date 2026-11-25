@@ -65,7 +65,6 @@ theorem hermVec_hermV (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F
     hermVec (Fv F v) σ b n (hermV σ v y) i = evalV F v (hermVec (Af F) σ b n y i) :=
   hermVec_map (evalV F v) σ b n y i
 
-
 omit [NumberField E] in
 theorem mem_latH_iff_vec (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F E) (n : ℕ)
     (v : HeightOneSpectrum (𝓞 F)) (S : HermR (Fv F v) σ n) :
@@ -190,8 +189,8 @@ theorem map_restrict_intH (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d : ℕ} 
     fun v => if h : v ∈ S then s ⟨v, h⟩ else Set.univ
   have hA' : ∀ v, MeasurableSet (A' v) := fun v => by
     by_cases h : v ∈ S
-    · simp only [A', dif_pos h]; exact hs _
-    · simp only [A', dif_neg h]; exact MeasurableSet.univ
+    · simp only [A', dite_eq_left h]; exact hs _
+    · simp only [A', dite_eq_right h]; exact MeasurableSet.univ
   have key := coordHerm_box σ hCM b lam hlam lf hlf h1 n S A' hA'
   have hset : (fun y (v : S) => hV σ v.1 y) ⁻¹' Set.univ.pi s ∩ intHR σ b n S =
       ({y | (∀ v ∈ S, hermV σ v y ∈ A' v) ∧ ∀ v, v ∉ S → hermV σ v y ∈ latH σ b v n} : Set (HermR (Af F) σ n)) := by
@@ -199,12 +198,12 @@ theorem map_restrict_intH (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d : ℕ} 
     change (∀ v : S, v ∈ Set.univ → hV σ v.1 y ∈ s v) ∧ (∀ v, v ∉ S → hV σ v y ∈ (latH σ b v n : Set (HermR (Fv F v) σ n))) ↔
       (∀ v ∈ S, hV σ v y ∈ A' v) ∧ ∀ v, v ∉ S → hV σ v y ∈ (latH σ b v n : Set (HermR (Fv F v) σ n))
     refine and_congr ⟨fun h v hv => ?_, fun h v _ => ?_⟩ Iff.rfl
-    · simpa only [A', dif_pos hv] using h ⟨v, hv⟩ (Set.mem_univ _)
+    · simpa only [A', dite_eq_left hv] using h ⟨v, hv⟩ (Set.mem_univ _)
     · have := h v.1 v.2
-      simpa only [A', dif_pos v.2] using this
+      simpa only [A', dite_eq_left v.2] using this
   rw [hset, key, ← Finset.prod_coe_sort S]
   refine Finset.prod_congr rfl fun v _ => ?_
-  simp only [A', dif_pos v.2]
+  simp only [A', dite_eq_left v.2]
 
 end PositivityTheory.SiegelWeilFormula.GFac.HS
 
@@ -401,39 +400,36 @@ open scoped TensorProduct Matrix
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-def intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) : Set (Fv F v ⊗[F] E) :=
-  {e | ∀ k, (Algebra.TensorProduct.basis (Fv F v) bs).repr e k ∈ v.adicCompletionIntegers F}
-
 structure Good (σ : E →ₐ[F] E) {d M n : ℕ} (bs : Module.Basis (Fin d) F E) (J : Matrix (Fin M) (Fin M) E)
     (T : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F)) : Prop where
-  one : (1 : Fv F v ⊗[F] E) ∈ intE bs v
-  mul : ∀ e e', e ∈ intE bs v → e' ∈ intE bs v → e * e' ∈ intE bs v
-  sig : ∀ e, e ∈ intE bs v → sigR (Fv F v) σ e ∈ intE bs v
-  tr : ∀ e, e ∈ intE bs v → Algebra.trace (Fv F v) (Fv F v ⊗[F] E) e ∈ v.adicCompletionIntegers F
+  one : (1 : Fv F v ⊗[F] E) ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v
+  mul : ∀ e e', e ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v → e' ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v → e * e' ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v
+  sig : ∀ e, e ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v → sigR (Fv F v) σ e ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v
+  tr : ∀ e, e ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v → Algebra.trace (Fv F v) (Fv F v ⊗[F] E) e ∈ v.adicCompletionIntegers F
   half : algebraMap F (Fv F v) (1 / 2) ∈ v.adicCompletionIntegers F
-  hJ : ∀ i j, inclR (Fv F v) (J i j) ∈ intE bs v
-  hT : ∀ i j, inclR (Fv F v) (T i j) ∈ intE bs v
+  hJ : ∀ i j, inclR (Fv F v) (J i j) ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v
+  hT : ∀ i j, inclR (Fv F v) (T i j) ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v
 
 theorem add_mem_intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) {e e' : Fv F v ⊗[F] E}
-    (he : e ∈ intE bs v) (he' : e' ∈ intE bs v) : e + e' ∈ intE bs v := by
+    (he : e ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) (he' : e' ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) : e + e' ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
   intro k
   simp only [map_add (f := _), Finsupp.add_apply]
   exact add_mem (he k) (he' k)
 
 theorem zero_mem_intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) :
-    (0 : Fv F v ⊗[F] E) ∈ intE bs v := by
+    (0 : Fv F v ⊗[F] E) ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
   intro k
   simp only [map_zero, Finsupp.zero_apply]
   exact zero_mem _
 
 theorem sum_mem_intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) {ι : Type} (s : Finset ι)
-    (f : ι → Fv F v ⊗[F] E) (hf : ∀ i ∈ s, f i ∈ intE bs v) : ∑ i ∈ s, f i ∈ intE bs v := by
+    (f : ι → Fv F v ⊗[F] E) (hf : ∀ i ∈ s, f i ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) : ∑ i ∈ s, f i ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
   classical
-  exact Finset.sum_induction f (· ∈ intE bs v) (fun _ _ ha hb => add_mem_intE bs v ha hb) (zero_mem_intE bs v) hf
+  exact Finset.sum_induction f (· ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) (fun _ _ ha hb => add_mem_intE bs v ha hb) (zero_mem_intE bs v) hf
 
 theorem algebraMap_mem_intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F))
-    (h1 : (1 : Fv F v ⊗[F] E) ∈ intE bs v) {r : Fv F v} (hr : r ∈ v.adicCompletionIntegers F) :
-    algebraMap (Fv F v) (Fv F v ⊗[F] E) r ∈ intE bs v := by
+    (h1 : (1 : Fv F v ⊗[F] E) ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) {r : Fv F v} (hr : r ∈ v.adicCompletionIntegers F) :
+    algebraMap (Fv F v) (Fv F v ⊗[F] E) r ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
   intro k
   rw [Algebra.algebraMap_eq_smul_one, map_smul, Finsupp.smul_apply, smul_eq_mul]
   exact mul_mem hr (h1 k)
@@ -454,7 +450,7 @@ theorem ev_okE {d : ℕ} (bs : Module.Basis (Fin d) F E) (x : E) : ∀ᶠ v in c
   Filter.eventually_all.2 fun m => _root_.GlobalTheory.AdelicU.eventually_algebraMap_mem_integers _
 
 theorem tmul_mem_intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) {c : Fv F v} {x : E}
-    (hc : c ∈ v.adicCompletionIntegers F) (hx : OkE bs v x) : c ⊗ₜ[F] x ∈ intE bs v := fun m => by
+    (hc : c ∈ v.adicCompletionIntegers F) (hx : OkE bs v x) : c ⊗ₜ[F] x ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := fun m => by
   rw [repr_tmul_apply]
   exact mul_mem hc (hx m)
 
@@ -473,7 +469,7 @@ theorem eventually_good (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ
     Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => ev_okE bs _
   filter_upwards [ev_okE bs (1 : E), h2, h3, h4, _root_.GlobalTheory.AdelicU.eventually_algebraMap_mem_integers (1 / 2 : F), h6, h7]
     with v h1 h2 h3 h4 h5 h6 h7
-  have hone : (1 : Fv F v ⊗[F] E) ∈ intE bs v := by
+  have hone : (1 : Fv F v ⊗[F] E) ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
     rw [Algebra.TensorProduct.one_def]
     exact tmul_mem_intE bs v (one_mem _) h1
   refine ⟨hone, fun e e' he he' => ?_, fun e he => ?_, fun e he => ?_, h5, fun i j => ?_, fun i j => ?_⟩
@@ -481,16 +477,14 @@ theorem eventually_good (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ
     refine sum_mem_intE bs v _ _ fun k _ => sum_mem_intE bs v _ _ fun l _ => ?_
     rw [Algebra.TensorProduct.tmul_mul_tmul]
     exact tmul_mem_intE bs v (mul_mem (he k) (he' l)) (h2 k l)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [eq_sum_tmul bs (Fv F v) e, map_sum]
+  · rw [eq_sum_tmul bs (Fv F v) e, map_sum]
     refine sum_mem_intE bs v _ _ fun k _ => ?_
     have : sigR (Fv F v) σ ((Algebra.TensorProduct.basis (Fv F v) bs).repr e k ⊗ₜ[F] bs k) =
         (Algebra.TensorProduct.basis (Fv F v) bs).repr e k ⊗ₜ[F] σ (bs k) := by
       simp [sigR]
     rw [this]
     exact tmul_mem_intE bs v (he k) (h3 k)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [eq_sum_tmul bs (Fv F v) e, map_sum]
+  · rw [eq_sum_tmul bs (Fv F v) e, map_sum]
     refine sum_mem fun k _ => ?_
     rw [GlobalTheory.CompanionTheory.SW.HermSd.trace_tmul]
     exact mul_mem (he k) (h4 k)
@@ -529,7 +523,7 @@ theorem diag_eq_halfTrace (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (v : Heigh
 theorem herm_entries (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ} (bs : Module.Basis (Fin d) F E)
     (J : Matrix (Fin M) (Fin M) E) (T : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F)) (hv : Good σ bs J T v)
     {m : ℕ} (b : HermR (Fv F v) σ m) (hb : b ∈ latH σ bs v m) (i j : Fin m) :
-    (b : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) i j ∈ intE bs v := by
+    (b : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) i j ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
   have hsym : ∀ a c, sigR (Fv F v) σ ((b : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) c a) =
       (b : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) a c := b.2
   rcases lt_trichotomy i j with h | h | h
@@ -543,25 +537,25 @@ theorem herm_entries (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ} (
 theorem gram_entries (σ : E →ₐ[F] E) {d M n : ℕ} (bs : Module.Basis (Fin d) F E)
     (J : Matrix (Fin M) (Fin M) E) (T : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F)) (hv : Good σ bs J T v)
     {m : ℕ} (Y : Fin m → Fin M → Fv F v ⊗[F] E) (hY : Y ∈ latV bs v) (a c : Fin m) :
-    gramR (Fv F v) σ J Y a c ∈ intE bs v := by
+    gramR (Fv F v) σ J Y a c ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v := by
   simp only [gramR, hR, hform, JR, Matrix.map_apply]
   refine sum_mem_intE bs v _ _ fun i _ => sum_mem_intE bs v _ _ fun j _ => ?_
   exact hv.mul _ _ (hv.mul _ _ (hv.sig _ (hY a i)) (hv.hJ i j)) (hY c j)
 
 theorem trPair_int (σ : E →ₐ[F] E) {d M n : ℕ} (bs : Module.Basis (Fin d) F E)
     (J : Matrix (Fin M) (Fin M) E) (T : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F)) (hv : Good σ bs J T v)
-    {m : ℕ} (A B : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) (hA : ∀ i j, A i j ∈ intE bs v)
-    (hB : ∀ i j, B i j ∈ intE bs v) : trPair (Fv F v) A B ∈ v.adicCompletionIntegers F := by
+    {m : ℕ} (A B : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) (hA : ∀ i j, A i j ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v)
+    (hB : ∀ i j, B i j ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) : trPair (Fv F v) A B ∈ v.adicCompletionIntegers F := by
   unfold trPair
   refine mul_mem hv.half (hv.tr _ ?_)
   exact sum_mem_intE bs v _ _ fun i _ => sum_mem_intE bs v _ _ fun j _ => hv.mul _ _ (hA i j) (hB j i)
 
 theorem mulVec_latO (σ : E →ₐ[F] E) {d M n : ℕ} (bs : Module.Basis (Fin d) F E)
     (J : Matrix (Fin M) (Fin M) E) (T : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F)) (hv : Good σ bs J T v)
-    {m : ℕ} (B : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) (hB : ∀ i j, B i j ∈ intE bs v)
+    {m : ℕ} (B : Matrix (Fin m) (Fin m) (Fv F v ⊗[F] E)) (hB : ∀ i j, B i j ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v)
     (y : Fin m → Fv F v ⊗[F] E) (hy : y ∈ latO bs v) : B.mulVec y ∈ latO bs v := by
   intro a
-  show (B.mulVec y) a ∈ intE bs v
+  show (B.mulVec y) a ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v
   simp only [Matrix.mulVec, dotProduct]
   exact sum_mem_intE bs v _ _ fun j _ => hv.mul _ _ (hB a j) (hy j)
 
@@ -641,12 +635,12 @@ theorem psi_split (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) :
 
     rw [hr, map_sub, map_sum]
     by_cases hv : v ∈ S
-    · rw [if_pos hv, Finset.sum_eq_single v]
+    · rw [ite_eq_left hv, Finset.sum_eq_single v]
       · rw [evalV_singleV_same, sub_self]
       · intro w _ hw
         exact evalV_singleV_ne (Ne.symm hw) _
       · intro h; exact absurd hv h
-    · rw [if_neg hv, Finset.sum_eq_zero, sub_zero]
+    · rw [ite_eq_right hv, Finset.sum_eq_zero, sub_zero]
       intro w hw
       exact evalV_singleV_ne (by rintro rfl; exact hv hw) _
   have hmem : algebraMap F (Af F) ξ * r ∈ GroundTheory.Global.finiteInvDifferent F := by
@@ -654,9 +648,9 @@ theorem psi_split (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) :
     have e1 : (algebraMap F (Af F) ξ * r) v = algebraMap F (Fv F v) ξ * evalV F v r := rfl
     rw [e1, hrv v]
     by_cases hv : v ∈ S
-    · rw [if_pos hv, mul_zero]
+    · rw [ite_eq_left hv, mul_zero]
       exact zero_mem _
-    · rw [if_neg hv]
+    · rw [ite_eq_right hv]
       have hξv : algebraMap F (Fv F v) ξ ∈ v.adicCompletionIntegers F := by
         by_contra h
         exact hv (hS (hfin.mem_toFinset.2 h))
@@ -878,19 +872,19 @@ theorem tup_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF 
       fun v => if h : v ∈ S then s ⟨v, h⟩ else Set.univ
     have hA' : ∀ v, MeasurableSet (A' v) := fun v => by
       by_cases h : v ∈ S
-      · simp only [A', dif_pos h]; exact hs _
-      · simp only [A', dif_neg h]; exact MeasurableSet.univ
+      · simp only [A', dite_eq_left h]; exact hs _
+      · simp only [A', dite_eq_right h]; exact MeasurableSet.univ
     have key := GlobalTheory.CompanionTheory.SW.WBox.coordW_box F E σ hCM d bs lam hlam lf hlf h1 n M S A' hA'
     have hset : ρ ⁻¹' Set.univ.pi s ∩ A = {X | (∀ v ∈ S, projV v X ∈ A' v) ∧ ∀ v, v ∉ S → projV v X ∈ latV bs v} := by
       ext X
       simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_pi, Set.mem_univ, forall_true_left, hA, Set.mem_setOf_eq]
       refine and_congr_left fun _ => ⟨fun h v hv => ?_, fun h v => ?_⟩
-      · simpa only [A', dif_pos hv] using h ⟨v, hv⟩
+      · simpa only [A', dite_eq_left hv] using h ⟨v, hv⟩
       · have := h v.1 v.2
-        simpa only [A', dif_pos v.2] using this
+        simpa only [A', dite_eq_left v.2] using this
     rw [hset, key, ← Finset.prod_coe_sort S]
     refine Finset.prod_congr rfl fun v _ => ?_
-    simp only [A', dif_pos v.2]
+    simp only [A', dite_eq_left v.2]
 
   have hgc : ∀ v : S, AEStronglyMeasurable (g v.1) (GlobalTheory.CompanionTheory.SW.coordW (Fv F v.1) bs (lam v.1) n M) := by
     intro v
@@ -1025,7 +1019,7 @@ theorem self_dual_measure_lattice_one (σ : E →ₐ[F] E) {d M n : ℕ} (bs : M
     (T : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F)) (hv : Good σ bs J T v)
     (lam : Measure (Fin n → Fv F v ⊗[F] E)) (hlam : lam.IsAddHaarMeasure) (L₁ L₂ : AddSubgroup (Fin n → Fv F v ⊗[F] E))
     (hco : IsCO L₁) (h1 : (L₁ : Set (Fin n → Fv F v ⊗[F] E)) = latO bs v) (h2 : (L₂ : Set (Fin n → Fv F v ⊗[F] E)) = latO bs v)
-    (B : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)) (hB : ∀ i j, B i j ∈ intE bs v) :
+    (B : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)) (hB : ∀ i j, B i j ∈ PositivityTheory.SiegelWeilFormula.Gunr.Rv bs v) :
     nu2 lam L₁ L₂ B = 1 := by
   have hset : {x | ∃ y ∈ L₁, ∃ y' ∈ L₂, x = y + B.mulVec y'} = (L₁ : Set (Fin n → Fv F v ⊗[F] E)) := by
     ext x
@@ -1171,7 +1165,7 @@ theorem jt_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M n d : ℕ) (J : 
       ring
     · rw [Set.indicator_of_notMem hY]
       have hY' : ¬ ∀ v, v ∉ S → projV v (projFin Y) ∈ latV bs v := hY
-      push_neg at hY'
+      push Not at hY'
       obtain ⟨v, hvS, hYv⟩ := hY'
       have hsupp : (Function.mulSupport fun w => Φv w (projV w (projFin Y))).Finite := by
         refine (hfinp.union (Filter.eventually_cofinite.1 (hlat (projFin Y)))).subset ?_

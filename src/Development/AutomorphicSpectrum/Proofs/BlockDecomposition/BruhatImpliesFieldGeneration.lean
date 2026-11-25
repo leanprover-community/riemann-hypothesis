@@ -69,11 +69,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.ComplementSubspace.IsCompl :
-    {K : Type} → [Field K] → {n r : ℕ} → Matrix (Fin r) (Fin n) K → Matrix (Fin n) (Fin n) K → Prop :=
-    fun {K : Type} [Field K] {n r : ℕ} (c : Matrix (Fin r) (Fin n) K) (a : Matrix (Fin n) (Fin n) K) ↦
-      IsUnit a.det ∧ ∀ (i : Fin n) (hi : (↑i : ℕ) < r), a i = c (⟨(↑i : ℕ), hi⟩ : Fin r)
-
 namespace ComplementBasis
 
 private lemma basis_sub {K : Type} [Field K] {n : ℕ} (U : Submodule K (Fin n → K)) :
@@ -92,7 +87,7 @@ open ComplementBasis in
 theorem UpperTheory.Reformulated.B.ComplementSubspace.main :
     ∀ {K : Type} [inst : Field K] {n : ℕ} (U : Submodule K (Fin n → K)),
       ∃ (c : Matrix (Fin (Module.finrank K ↥U)) (Fin n) K) (a : Matrix (Fin n) (Fin n) K),
-        (LinearIndependent K c ∧ Submodule.span K (Set.range c) = U) ∧ UpperTheory.Reformulated.B.ComplementSubspace.IsCompl c a := by
+        (LinearIndependent K c ∧ Submodule.span K (Set.range c) = U) ∧ PositivityTheory.GramSchwartzFunctions.EC.IsCompl c a := by
   intro K _ n U
   obtain ⟨c, hcli, hcsp⟩ := basis_sub U
   obtain ⟨W, hUW⟩ := Submodule.exists_isCompl U

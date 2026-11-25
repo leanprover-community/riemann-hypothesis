@@ -43,48 +43,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTameGeneratorsGreenCuspidalLabelling
 public import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.ExistsCgTrueCharSide
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsNbcAuSideStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
 import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwDefs
@@ -94,21 +53,12 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import ReciprocityTheory.GaloisValuations.GlobalA
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayCountThetaFibreCount
-import Mathlib.NumberTheory.RamificationInertia.Inertia
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.RamificationInertia.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
 import ReciprocityTheory.Automorphisms.PlaceA
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEquivOfMapEq
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.FixedNeBotOfEquiv
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalLanglandsTransport
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyResidueFieldUnitBallEquiv
@@ -571,9 +521,6 @@ theorem exists_types : GlobalTheory.Published.RayClassFieldSt → GlobalTheory.P
       instMray := inferInstance
       nfMray := nfOf hf
       algKM := algK D jE h
-      Mray_gal := hgal
-      Mray_ab := hab
-      Mray_unr := hunr
       g_Mray := fun k => hsplit _ (hg k)
       iota := fun k _ w =>
         haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
@@ -587,8 +534,7 @@ theorem exists_types : GlobalTheory.Published.RayClassFieldSt → GlobalTheory.P
       locPar := fun σ w => isoLoc D.nd D.naut σ.1 w
       locPar_dim := fun σ w => (GlobalTheory.RowPar.lpDim_isoLoc D.naut σ.1 w).trans σ.2.2.2.1
       labPar_def := fun _ _ _ => rfl
-      MtPar := fun _ _ _ => ⊥
-      AmbPar := fun _ _ => ⊥ }
+      MtPar := fun _ _ _ => ⊥ }
   refine ⟨X, D.nStage_trivialCharacter_compat, D.nStage_trivialCharacter_coeff_eq, rfl, rfl, rfl, rfl, rfl, ⟨?_⟩, fun _ => ?_⟩
   · exact
       { eM := RingEquiv.refl _
@@ -707,10 +653,10 @@ theorem nonempty_wdSide_of_tie (hB : GlobalTheory.Published.DeRhamPotSemistable)
       wdL (D.loc l) ι D.nd.plOm.1 (br l hl) r D.nd.plOm.2 (hbr l hl) w hw else GlobalTheory.WeilDeligne.wdOf (D.nd.plOm.2 w) hw ι r)
   have h1 : ∀ (l : ℕ) [hl : Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w
       (hw : w ∈ placesOver D.host.E l), T.e w (wd l ι r w) = wdL (D.loc l) ι D.nd.plOm.1 (br l hl) r D.nd.plOm.2 (hbr l hl) w hw :=
-    fun l hl ι a r w hw => by simp only [wd, Equiv.apply_symm_apply, dif_pos hw]
+    fun l hl ι a r w hw => by simp only [wd, Equiv.apply_symm_apply, dite_eq_left hw]
   have h2 : ∀ (l : ℕ) [hl : Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w
       (hw : w ∉ placesOver D.host.E l), T.e w (wd l ι r w) = GlobalTheory.WeilDeligne.wdOf (D.nd.plOm.2 w) hw ι r :=
-    fun l hl ι a r w hw => by simp only [wd, Equiv.apply_symm_apply, dif_neg hw]
+    fun l hl ι a r w hw => by simp only [wd, Equiv.apply_symm_apply, dite_eq_right hw]
   have hL := fun (l : ℕ) [hl : Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w hw =>
     GlobalTheory.PstLaws.wdL_laws hB l (D.loc l) (D.locA l) (D.locT l) ι D.host.E D.nd.Om _ D.nd.plOm.1 (br l hl) D.nd.plOm.2 (hbr l hl) r w hw
   have hA := fun (l : ℕ) [hl : Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w
@@ -1034,9 +980,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting
   NumberField IsDedekindDomain Polynomial
 namespace GlobalTheory.RowPar
-section Sat
-open Formalism.UG GlobalTheory.SatInd
-end Sat
 section Loc
 open GlobalTheory.SmGL GlobalTheory.LocLanglands
 theorem lpDim_locRec_alt {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
@@ -1102,9 +1045,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting
   NumberField IsDedekindDomain Polynomial
 namespace GlobalTheory.RowPar
-section Sat
-open Formalism.UG GlobalTheory.SatInd
-end Sat
 section Loc
 open GlobalTheory.SmGL GlobalTheory.LocLanglands
 theorem tame_reciprocity_of_fixed_ne_bot {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
@@ -1137,9 +1077,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting
   NumberField IsDedekindDomain Polynomial
 namespace GlobalTheory.RowPar
-section Sat
-open Formalism.UG GlobalTheory.SatInd
-end Sat
 section Loc
 open GlobalTheory.SmGL GlobalTheory.LocLanglands
 variable (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r)
@@ -1159,9 +1096,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting
   NumberField IsDedekindDomain Polynomial
 namespace GlobalTheory.RowPar
-section Sat
-open Formalism.UG GlobalTheory.SatInd
-end Sat
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W]
 theorem exists_rowWD_rowTrue_m_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r), RowDepth D rep →
     ∃ Rw : RowWD D, _root_.GlobalTheory.HeightCounting.RepresentationParametersHold hL D rep Rw.par Rw.sat := by

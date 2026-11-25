@@ -18,8 +18,6 @@ open CategoryTheory MonoidalCategory Limits
 
 universe u
 
-attribute [local instance 2000] Rep.hV2
-
 section ResMap
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
@@ -147,12 +145,9 @@ theorem tateCompactCohomologyResMap_comp (g : A ⟶ B) (g' : B ⟶ C) (n : ℕ) 
 theorem tateCompactCohomologyResMap_finsetSum {J : Type*} (s : Finset J) (f : J → (A ⟶ B))
     (m : ℕ) :
     tateCompactCohomologyResMap φ ψ (∑ j ∈ s, f j) m =
-      ∑ j ∈ s, tateCompactCohomologyResMap φ ψ (f j) m := by
-  classical
-  induction s using Finset.induction with
-  | empty => simp [tateCompactCohomologyResMap_zero]
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, tateCompactCohomologyResMap_add, ih]
+      ∑ j ∈ s, tateCompactCohomologyResMap φ ψ (f j) m :=
+  map_sum (AddMonoidHom.mk' (fun g : A ⟶ B => tateCompactCohomologyResMap φ ψ g m)
+    fun g₁ g₂ => tateCompactCohomologyResMap_add φ ψ g₁ g₂ m) f s
 
 theorem nsmul_tateCompactCohomologyRes_eq_zero {m : ℕ} (hm : ∀ a : A, m • a = 0) (n : ℕ)
     (x : tateCompactCohomologyRes φ ψ A n) : m • x = 0 := by

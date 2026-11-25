@@ -709,7 +709,6 @@ private theorem isStrongResolution_blowupSequenceWithoutIsos {k : Type u} [Field
     (hsncClopen : StrictNormalCrossingsRestrictToClopen.{u}) (hproper : FunctorialResolution.Blowup.BlowupIsProper.{u}) :
     IsStrongResolution k Y pY (S.blowupSequenceWithoutIsos h) := by
   have : IsNoetherianRing ↑(CommRingCat.of k) := inferInstanceAs (IsNoetherianRing k)
-  have : AlgebraicGeometry.IsNoetherian (Spec (CommRingCat.of k)) := inferInstance
   have : AlgebraicGeometry.IsNoetherian Y := isNoetherian_of_locallyOfFiniteType pY
   have hFeq : ∀ j : ℕ, S.transitionMap j ≫ (S.blowupSequence h).projectionToBase j
       = (S.blowupSequence h).projectionToBase (j + 1) := by

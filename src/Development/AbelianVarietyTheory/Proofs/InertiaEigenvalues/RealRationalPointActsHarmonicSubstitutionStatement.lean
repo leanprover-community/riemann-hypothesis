@@ -214,7 +214,7 @@ theorem rename_comp_fockSubst {D : D7} {H : Geo.Tor.Host D.host.E} (Dw : Datum H
   | left i =>
     have hi : ((Fin.castAdd Dw.q i : Fin (Dw.p + Dw.q)) : ℕ) < (fun _ => Dw.p) ρ := by simp
 
-    simp only [AlgHom.comp_apply, GlobalTheory.ExportSeries.fockSubst, MvPolynomial.aeval_X, if_pos hi, map_sum, map_mul,
+    simp only [AlgHom.comp_apply, GlobalTheory.ExportSeries.fockSubst, MvPolynomial.aeval_X, ite_eq_left hi, map_sum, map_mul,
     MvPolynomial.rename_C, MvPolynomial.rename_X]
     simp only [GlobalTheory.FockLetters.fockVarEquiv, Equiv.prodCongr_apply, Prod.map, finCongr_refl, Equiv.refl_trans,
       Equiv.refl_apply, finSumFinEquiv_symm_apply_castAdd]
@@ -223,7 +223,7 @@ theorem rename_comp_fockSubst {D : D7} {H : Geo.Tor.Host D.host.E} (Dw : Datum H
   | right j =>
     have hj : ¬ ((Fin.natAdd Dw.p j : Fin (Dw.p + Dw.q)) : ℕ) < (fun _ => Dw.p) ρ := by simp
 
-    simp only [AlgHom.comp_apply, GlobalTheory.ExportSeries.fockSubst, MvPolynomial.aeval_X, if_neg hj, map_sum, map_mul,
+    simp only [AlgHom.comp_apply, GlobalTheory.ExportSeries.fockSubst, MvPolynomial.aeval_X, ite_eq_right hj, map_sum, map_mul,
     MvPolynomial.rename_C, MvPolynomial.rename_X]
     simp only [GlobalTheory.FockLetters.fockVarEquiv, Equiv.prodCongr_apply, Prod.map, finCongr_refl, Equiv.refl_trans,
       Equiv.refl_apply, finSumFinEquiv_symm_apply_natAdd]

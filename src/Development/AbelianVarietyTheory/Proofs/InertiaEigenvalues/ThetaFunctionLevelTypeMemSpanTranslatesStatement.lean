@@ -228,7 +228,6 @@ theorem rel_indep {G M : Type} [AddCommGroup G] [AddCommGroup M] [Module ℂ M] 
 
 variable {D : D7}
 
-
 open GlobalTheory.ThetaVacuumAE in
 theorem exists_latO_le (S T : HSp D) (U : AddSubgroup (WO S T)) (hU : IsOpen (U : Set (WO S T))) :
     ∃ Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)), latO S T (L0c D S) (L0c D T) (fun v => v ∉ Sb) ≤ U := by
@@ -370,7 +369,6 @@ theorem half_of_offPl (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))) {u : WO 
   rw [e, RingHom.map_sub, RingHom.map_sub, RingHom.map_one, map_sum, sub_mul, sub_mul, one_mul, h1, Finset.sum_mul,
   Finset.sum_eq_zero h2, sub_zero, sub_zero]
 
-
 open GlobalTheory.PlaceModel in
 theorem exists_rel_off {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {s f : WO S T → ℂ}
     (hs : IsThetaFunO ψ S T s) (hs0 : s ≠ 0) (hf : IsThetaFunO ψ S T f) :
@@ -497,7 +495,6 @@ theorem self_mem_locSpan (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (a : AE 
 
 end GlobalTheory.DownLift.SplitCoef.Cons
 
-
 open GlobalTheory.SplitScalar GlobalTheory.DownLift.SplitCoef.Cons in
 theorem GlobalTheory.DownLift.SplitCoef.exists_locSpan_coef_eq : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D), IsStdChar D ψ (-1) → ∀ (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ a : AE D, IsSplitIdem D a → ∀ f : WO S T → ℂ, IsThetaFunO ψ S T f → ∀ Φ : WO S T → ℂ, IsSBHalf a (latH S T ΛS ΛT) Φ → ∀ x₁, IsHalf a x₁ → ∃ f' ∈ locSpan ψ S T a f, ∀ ℓ, InvForm ψ S T a ℓ → ∀ x, IsHalf a x → ℓ (heisO ψ S T x f') = Φ x * ℓ (heisO ψ S T x₁ f) := by
   intro D ψ S T hψ ΛS ΛT hS hT a ha f hf Φ hΦ x₁ hx₁
@@ -594,8 +591,8 @@ theorem GlobalTheory.DownLift.SplitCoef.exists_locSpan_coef_eq : ∀ (D : D7) (�
     by_cases hΦx : Φ x = 0
     · rw [hΦx, zero_mul, mul_zero, zero_mul]
     · obtain ⟨z₀, ⟨hz₀, hP₀⟩, huniq⟩ := hXu x hx (hkΦ' x (hΦsupp x hΦx))
-      rw [Finset.sum_eq_single_of_mem z₀ hz₀ (fun z hz hne => if_neg fun hP => hne (huniq z ⟨hz, hP⟩)),
-        if_pos hP₀]
+      rw [Finset.sum_eq_single_of_mem z₀ hz₀ (fun z hz hne => ite_eq_right fun hP => hne (huniq z ⟨hz, hP⟩)),
+        ite_eq_left hP₀]
       field_simp
 
 end
@@ -931,9 +928,6 @@ open GlobalTheory.DownLift.SplitCoef
 
 noncomputable section
 
-
-
-
 namespace GlobalTheory.DownLift.ProdShape
 
 variable {D : D7}
@@ -1066,13 +1060,13 @@ theorem hasShape_adjDat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : H
       rw [GlobalTheory.PlaceVec.frMapAdj_add]
       by_cases c1 : IsIntM (frMapAdj S T βS βT x)
       · by_cases c2 : IsHalf (cA D e) t ∧ IsIntM (frMapAdj S T βS βT t)
-        · rw [if_pos ⟨(isHalf_add_iff hx' t).2 c2.1, hI.2 ⟨c2.2, c1⟩⟩, if_pos ⟨hx, c1⟩, if_pos c2]
+        · rw [ite_eq_left ⟨(isHalf_add_iff hx' t).2 c2.1, hI.2 ⟨c2.2, c1⟩⟩, ite_eq_left ⟨hx, c1⟩, ite_eq_left c2]
           beta_reduce
           rw [h₁ _ (fun Q => redM Q (frMapAdj S T βS βT x)) (redM_add_of_one PP hp hp1 hM hN c2.2 c1),
             h₂ _ (fun Q => redM Q (frMapAdj S T βS βT t)) fun Q _ hQ =>
               redM_add_of_zero Q hp (GlobalTheory.TameProd.resS_idem_eq_zero he₀ hQ.symm hp) hN c2.2 c1]
-        · rw [if_neg c2, if_neg fun h => c2 ⟨(isHalf_add_iff hx' t).1 h.1, (hI.1 h.2).1⟩, mul_zero]
-      · rw [if_neg fun h => c1 (hI.1 h.2).2, if_neg fun h => c1 h.2, zero_mul]
+        · rw [ite_eq_right c2, ite_eq_right fun h => c2 ⟨(isHalf_add_iff hx' t).1 h.1, (hI.1 h.2).1⟩, mul_zero]
+      · rw [ite_eq_right fun h => c1 (hI.1 h.2).2, ite_eq_right fun h => c1 h.2, zero_mul]
   rw [map_sub, map_smul, hTm.trans _ s12 x hx', ← hfT, map_sub, map_smul, smul_eq_mul, sub_eq_zero] at key
   rw [key, mul_comm]
 
@@ -1240,7 +1234,7 @@ theorem mem_span_of_coef_mem_span : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ
 
       rw [heisO_lin_sub, GlobalTheory.SplitScalar.heisO_sum, map_sub, map_sum, hL ℓ hℓ x hx, sub_eq_zero]
       refine Finset.sum_congr rfl fun x₁ hx₁ => ?_
-      rw [hφe x₁ hx₁ ℓ hℓ x hx, coef, if_pos hx])
+      rw [hφe x₁ hx₁ ℓ hℓ x hx, coef, ite_eq_left hx])
   rw [sub_eq_zero] at hzero
   exact hzero ▸ hsum
 
@@ -1413,7 +1407,7 @@ theorem rel_extend {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) 
     refine Finset.sum_eq_zero fun u _ => ?_
     show c u • heisO ψ S T u 0 = 0
     rw [hz, smul_zero]
-  push_neg at hΦ
+  push Not at hΦ
   obtain ⟨x₀, hx₀, h0⟩ := hΦ
   choose p hp using fun x u => heisO_factor ψ S T hE x u
   have key : ∀ g, IsThetaFunO ψ S T g → HasShape ψ S T a Φ g → ∀ ℓ, InvForm ψ S T a ℓ → ∀ x, IsHalf a x →
@@ -1553,7 +1547,7 @@ theorem cross_law {χS χT : (AE D)ˣ →* Circle} {om : GA D S × GA D T →* M
   rw [ef, GlobalTheory.SplitScalar.heisO_smul, map_smul, smul_eq_mul] at e1
   rw [ew, GlobalTheory.SplitScalar.heisO_smul, map_smul, smul_eq_mul, hc₀ _ (GlobalTheory.SplitHecke.isHalf_actO κ 1 hx'), hc₀ _ hx'] at e2
   unfold coef
-  rw [if_pos (GlobalTheory.SplitHecke.isHalf_actO κ 1 hx), if_pos hx]
+  rw [ite_eq_left (GlobalTheory.SplitHecke.isHalf_actO κ 1 hx), ite_eq_left hx]
   have e3 : c * Φ (actO S T κ 1 x') = s * Φ x' := mul_left_cancel₀ hc0 (by linear_combination e2)
   apply mul_left_cancel₀ hc
   linear_combination (Φ x') * e1 - (ℓ (heisO ψ S T x f)) * e3
@@ -1575,15 +1569,15 @@ theorem omegaQ_split {a b : ℕ} (Q : Finset (Pl D.host.E)) (r : ℕ) (ξ : ∀ 
     · rfl
   rw [key, key, key]
   by_cases h : ∀ P ∈ Q, LowZero r (y P) ∧ IsUnit (topL r (y P)).det
-  · rw [if_pos h, if_pos (fun P hP' => h P (by rw [Finset.mem_singleton.1 hP']; exact hP)),
-      if_pos (fun P hP' => h P (Finset.mem_of_mem_erase hP')), Finset.prod_singleton, Finset.mul_prod_erase Q F hP]
-  · rw [if_neg h]
+  · rw [ite_eq_left h, ite_eq_left (fun P hP' => h P (by rw [Finset.mem_singleton.1 hP']; exact hP)),
+      ite_eq_left (fun P hP' => h P (Finset.mem_of_mem_erase hP')), Finset.prod_singleton, Finset.mul_prod_erase Q F hP]
+  · rw [ite_eq_right h]
     by_cases h1 : ∀ P ∈ ({PP} : Finset (Pl D.host.E)), LowZero r (y P) ∧ IsUnit (topL r (y P)).det
-    · rw [if_pos h1, if_neg (fun h2 => h fun P hP' => by
+    · rw [ite_eq_left h1, ite_eq_right (fun h2 => h fun P hP' => by
         by_cases e : P = PP
         · exact h1 P (Finset.mem_singleton.2 e)
         · exact h2 P (Finset.mem_erase.2 ⟨e, hP'⟩)), mul_zero]
-    · rw [if_neg h1, zero_mul]
+    · rw [ite_eq_right h1, zero_mul]
 
 theorem idem_over {e : AE D} {PP : Pl D.host.E} {v : HeightOneSpectrum (𝓞 D.host.F)}
     (he : Formalism.L2.NTheta.IsIdemAt e PP) (hv : Over PP v) :
@@ -1770,8 +1764,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
-theorem _root_.GlobalTheory.T.thetaFunction_local_generation_inertPlace_offLevel : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))) (v : HeightOneSpectrum (𝓞 D.host.F)), v ∈ Sb → (∀ ε, IsPlaceIdem D v ε → ∀ e, IsSplitIdem D e → e * algebraMap (AF D.host.F) (AE D) ε = 0) → (∀ PP, PP ∈ R.Pg ∨ PP ∈ R.Q t → ¬ GlobalTheory.DownLift.GenFinite.Over PP v) → ∀ (f : WO (Vc D i) (Wc D i) → ℂ), GlobalTheory.DownLift.GenFinite.TypeIn R i t Sb f → GlobalTheory.DownLift.GenFinite.CleanIn R i t Sb f → GlobalTheory.DownLift.GenFinite.LikeOff R i t Sb f → f ∈ Submodule.span ℂ (GlobalTheory.DownLift.GenFinite.StepGen R i t (GlobalTheory.DownLift.GenFinite.dropPl Sb v)) := by
-  first | exact @GlobalTheory.DownLift.GenFinite.Inert.step_inert
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaFunctionLocalGenerationInertPlaceOffLevelStatement =====
@@ -1788,8 +1780,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
-theorem _root_.GlobalTheory.T.thetaFunction_localGeneration_splitPlaceOffLevels : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))) (v : HeightOneSpectrum (𝓞 D.host.F)), v ∈ Sb → (∃ ε e, IsPlaceIdem D v ε ∧ IsSplitIdem D e ∧ e * algebraMap (AF D.host.F) (AE D) ε ≠ 0) → (∀ PP, PP ∈ R.Pg ∨ PP ∈ R.Q t → ¬ GlobalTheory.DownLift.GenFinite.Over PP v) → ∀ (f : WO (Vc D i) (Wc D i) → ℂ), GlobalTheory.DownLift.GenFinite.TypeIn R i t Sb f → GlobalTheory.DownLift.GenFinite.CleanIn R i t Sb f → GlobalTheory.DownLift.GenFinite.LikeOff R i t Sb f → f ∈ Submodule.span ℂ (GlobalTheory.DownLift.GenFinite.StepGen R i t (GlobalTheory.DownLift.GenFinite.dropPl Sb v)) := by
-  first | exact @GlobalTheory.DownLift.SplitGen.gen_split
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaFunctionLocalGenerationSplitPlaceOffLevelsStatement =====
@@ -1869,8 +1859,8 @@ theorem gen_of_type_clean : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Typ
     · exact hpg ⟨PP, h, ho⟩
     · exact hq ⟨PP, h, ho⟩
   by_cases hs : ∃ ε e, IsPlaceIdem D v ε ∧ IsSplitIdem D e ∧ e * algebraMap (AF D.host.F) (AE D) ε ≠ 0
-  · exact GlobalTheory.T.thetaFunction_localGeneration_splitPlaceOffLevels D G Pl0 T A Ks R F hG hP i t Sb v hv hs hoff f hT hC hL
-  · refine GlobalTheory.T.thetaFunction_local_generation_inertPlace_offLevel hH D G Pl0 T A Ks R F hG hP i t Sb v hv ?_ hoff f hT hC hL
+  · exact GlobalTheory.DownLift.SplitGen.gen_split D G Pl0 T A Ks R F hG hP i t Sb v hv hs hoff f hT hC hL
+  · refine GlobalTheory.DownLift.GenFinite.Inert.step_inert hH D G Pl0 T A Ks R F hG hP i t Sb v hv ?_ hoff f hT hC hL
     intro ε hε e he
     by_contra hne
     exact hs ⟨ε, e, hε, he, hne⟩

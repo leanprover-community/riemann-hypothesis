@@ -85,7 +85,7 @@ theorem WtQ.cls_rep (X : WtQ L n) : clsW X.rep = X := Subtype.ext X.2.choose_spe
 section
 
 def LocAt (π : NG.AutRep L n) (w : HeightOneSpectrum (𝓞 L)) (x : GlobalTheory.LocGL.IrrGL (k := w.adicCompletion L)) : Prop :=
-  ∃ (s : SplitPlace L) (σ : GlobalTheory.SmGL.IrrRep (GL (Fin n) (s.w.adicCompletion L))) (h : s.w = w),
+  ∃ (s : SplitPlace L) (σ : GlobalTheory.SmGL.IrrRep (GL (Fin n) (s.w.adicCompletion L))) (_ : s.w = w),
     IsLocS π.S s σ ∧ HEq (GlobalTheory.LocLanglands.cls σ) x
 
 end
@@ -107,13 +107,6 @@ def satOf (π : NG.AutRep L n) (w : HeightOneSpectrum (𝓞 L)) : Multiset ℂ :
   if h : ∃ (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (Dv : InertDatum L n v w) (α : Fin (n / 2) → ℂ),
       NG.OverPl w v ∧ NG.SatAt π Dv α
   then Finset.univ.val.map h.choose_spec.choose_spec.choose else Multiset.replicate (n / 2) 1
-
-theorem satOf_card (π : NG.AutRep L n) (w : HeightOneSpectrum (𝓞 L)) : Multiset.card (satOf π w) = n / 2 := by
-  unfold satOf
-  split_ifs <;> simp
-
-theorem infOf_card (lam : Fin n → ℤ) : Multiset.card (NG.infOf lam) = n := by
-  simp [NG.infOf]
 
 theorem infOf_nodup_alg {lam : Fin n → ℤ} (hl : Antitone lam) : (NG.infOf lam).Nodup ∧
     ∀ x ∈ NG.infOf lam, ∃ k : ℤ, x = (k : ℂ) + ((n : ℂ) - 1) / 2 := by

@@ -33,13 +33,6 @@ theorem llPos_lt (j : ℤ) (l l' : ℕ) (hll : l < l') (hl' : l' < (Fr.LLset j).
   rw [e l (by omega), e l' hl']
   exact hs (a := ⟨l, by rw [hlen]; omega⟩) (b := ⟨l', by rw [hlen]; exact hl'⟩) hll
 
-private theorem fr_le_fr_of_le_of_valid (hV : Fr.Valid L₁ N₁) (j : ℤ) :
-    ∀ i i', i ≤ i' → i' < r → Fr.fr j i ≤ Fr.fr j i' := by
-  intro i i' hii' hi'
-  induction i', hii' using Nat.le_induction with
-  | base => exact le_rfl
-  | succ k hik ih => exact (ih (by omega)).trans (hV.2.2.1 j k (by omega)).le
-
 private theorem llPos_mem_LLset' (j : ℤ) (l : ℕ) (hl : l < (Fr.LLset j).card) : llPos Fr j l ∈ Fr.LLset j := by
   unfold llPos
   have hlen : ((Fr.LLset j).sort (· ≤ ·)).length = (Fr.LLset j).card := Finset.length_sort _
@@ -78,11 +71,11 @@ theorem posU_le_iff (hV : Fr.Valid L₁ N₁) (j : ℤ) (a b : ℕ) (ha : a < (F
 
 theorem posU_ll (j : ℤ) (l : ℕ) (hl : l < (Fr.LLset j).card) : posU Fr (Fr.LLset j).card j l = llPos Fr j l := by
   unfold posU
-  rw [if_pos hl]
+  rw [ite_eq_left hl]
 
 theorem posU_fr (j : ℤ) (i : ℕ) : posU Fr (Fr.LLset j).card j ((Fr.LLset j).card + i) = Fr.fr j i := by
   unfold posU
-  rw [if_neg (by omega), Nat.add_sub_cancel_left]
+  rw [ite_eq_right (by omega), Nat.add_sub_cancel_left]
 
 theorem w_lt_posU (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (i u : ℕ) (hi : i < r) (hu : u < (Fr.LLset j).card + r) :
     Fr.fr (j - 1) i < posU Fr (Fr.LLset j).card j u := by

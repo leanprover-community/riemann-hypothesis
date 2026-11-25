@@ -127,7 +127,6 @@ theorem archSec_exists_eq_smul : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   by_cases ha0 : a = 0
   · refine ⟨1, one_ne_zero, ?_⟩
     have ht0 : t.sig = 0 := by
-      set_option synthInstance.maxHeartbeats 200000 in
         rw [hta, ha0, zero_smul]
     have hi0 : idem Z = 0 := by rw [← t.mul_inv, ht0, zero_mul]
     have hs0 : s.sig = 0 := by rw [← s.idem_sig, hi0, zero_mul]
@@ -150,20 +149,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.IndefiniteRowSideFullHecke.HermitianCompactForm GlobalTheory.Toroidal GlobalTheory.DetLine
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.AnFrameC ReciprocityTheory.ChartRestriction.G.PullbackSections.ExpRows GlobalTheory.DetLine.GoodTransport
-namespace GlobalTheory.DetLine.PeriodFlat
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {D : Datum H} {l : Level H}
-section Linear
-variable {g : ℕ} {ty : Fin g → (E →+* ℂ)} {P : D.La →+ (Fin g → ℂ)} {Hm : Matrix (Fin g) (Fin g) ℂ}
-end Linear
-section Fibre
-variable {Xo : Moduli D l} {σ : KA l →+* ℂ} {g₀ : ℕ} {ty : Fin g₀ → (E →+* ℂ)} (Fu : FamilyUnif Xo σ ty) (i : Fin Fu.n)
-variable {Fu i} {P : (Fu.Di i).La →+ (Fin g₀ → ℂ)}
-end Fibre
-section Model
-variable {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β}
-  {U : (Xo.XF c).Opens} {τ : E →+* ℂ}
-end Model
-end GlobalTheory.DetLine.PeriodFlat
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt
   GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore GlobalTheory.BdryUnit in
 theorem GlobalTheory.DetLine.PeriodFlat.detLine_exists_horizontal_section : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (x : ℝ), Laws U x → ∀ (Z : Comp Xo c) (τ : Psi H), ∃ (Y : Model Xo c (RingHom.id c.F)) (V : (Xo.XF c).Opens) (sig : GlobalTheory.IndefiniteRowSideFullHecke.FramedFlatCoordinates.Rule Y V τ.1), (V : Set (Xo.XF c)) = Z ∧ sig ∈ GlobalTheory.IndefiniteRowSideFullHecke.FramedFlatCoordinates.sections Y V τ.1 ∧ GlobalTheory.IndefiniteRowSideFullHecke.FramedFlatCoordinates.VanishesNowhere sig ∧ GlobalTheory.IndefiniteRowSideFullHecke.FramedFlatCoordinates.IsHorizontal sig := by

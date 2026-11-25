@@ -166,7 +166,7 @@ theorem coef_eq {R U : Type} [CommRing R] [AddCommGroup U] [Module R U] {n : ℕ
   funext l
   have h0 : ∑ m, (c m - (Pi.single i 1 : Fin n → R) m) • x m = 0 := by
     simp only [sub_smul, Finset.sum_sub_distrib, ← h, Pi.single_apply, ite_smul, one_smul, zero_smul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
   exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 hx _ h0 l)
 
 variable {A Ω T F V N : Type} [CommRing A] [Field Ω] [CommRing T] [AddCommGroup F] [Module A F]
@@ -780,17 +780,7 @@ private theorem iota_multi_mem_span_of_mem_span {R : Subring Ω} {r : ℕ} {e : 
   intros
   apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.WedgeFrame.ιMulti_mem_span <;> assumption
 
-theorem ιMulti_ne_zero {r : ℕ} {e : Fin r → E} (h : LinearIndependent Ω e) :
-    exteriorPower.ιMulti Ω r e ≠ 0 := by
-  apply PositivityTheory.Xgn.ComponentDegreeAlt.wedge_ne_zero <;> assumption
-
 end General
-
-section Int
-
-open CptModel
-
-end Int
 
 end GlobalTheory.CompanionTheory.Ar.Flat.GenModel
 end -- clump:auto
@@ -835,7 +825,7 @@ theorem exists_wedge_coeff {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (C
     fun i => hb ▸ frame_mem_of_isVBOn hx hL hv i
   refine ⟨α, ?_, hα⟩
   rintro rfl
-  exact GenModel.ιMulti_ne_zero hv.1 (by rw [hα, zero_smul])
+  exact PositivityTheory.Xgn.ComponentDegreeAlt.wedge_ne_zero hv.1 (by rw [hα, zero_smul])
 
 theorem isGenAt_div : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (V : Type) [AddCommGroup V] [Module Ω V] (A B : Lat ξ V) (p q : ℕ) (Vp Vq : Submodule Ω V) (T : Set (Cpt ξ)) (b₁ v₁ : Fin p → V) (b₂ v₂ : Fin q → V) (x : Cpt ξ), x ∈ T → A.IsVBOn T p Vp → B.IsVBOn T q Vq → LinearIndependent Ω b₁ → Submodule.span Ω (Set.range b₁) = Vp → LinearIndependent Ω b₂ → Submodule.span Ω (Set.range b₂) = Vq → A.IsFrameAt v₁ x → B.IsFrameAt v₂ x → ∃ α κ : Ω, α ≠ 0 ∧ κ ≠ 0 ∧ exteriorPower.ιMulti Ω p v₁ = α • exteriorPower.ιMulti Ω p b₁ ∧ exteriorPower.ιMulti Ω q v₂ = κ • exteriorPower.ιMulti Ω q b₂ ∧ (lineLat A B p q (exteriorPower.ιMulti Ω p b₁) (exteriorPower.ιMulti Ω q b₂)).IsGenAt x (α / κ) := by
   intro X Ω _ ξ V _ _ A B p q Vp Vq T b₁ v₁ b₂ v₂ x hx hA hB hb₁ hs₁ hb₂ hs₂ hv₁ hv₂
@@ -844,8 +834,8 @@ theorem isGenAt_div : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (Co
   have hco : IsCoeffAt A B p q (exteriorPower.ιMulti Ω p b₁) (exteriorPower.ιMulti Ω q b₂) x (κ / α) :=
     ⟨α, κ, hα, hκ, by rw [PositivityTheory.Xgn.LineLatticeVectorBundle.wedge_frame hv₁, e₁], by rw [PositivityTheory.Xgn.LineLatticeVectorBundle.wedge_frame hv₂, e₂],
       div_mul_cancel₀ _ hα⟩
-  have key := _root_.PositivityTheory.Xgn.line_lattice_vector_bundle X Ω ξ V A B p q Vp Vq T _ _ hA hB (GenModel.ιMulti_ne_zero hb₁)
-    (GenModel.ιMulti_ne_zero hb₂) ⟨x, hx, _, hco⟩
+  have key := _root_.PositivityTheory.Xgn.line_lattice_vector_bundle X Ω ξ V A B p q Vp Vq T _ _ hA hB (PositivityTheory.Xgn.ComponentDegreeAlt.wedge_ne_zero hb₁)
+    (PositivityTheory.Xgn.ComponentDegreeAlt.wedge_ne_zero hb₂) ⟨x, hx, _, hco⟩
   exact ⟨α, κ, hα, hκ, e₁, e₂, key.2.2 x hx v₁ v₂ α κ hv₁ hv₂ e₁ e₂⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat.LineGenerator

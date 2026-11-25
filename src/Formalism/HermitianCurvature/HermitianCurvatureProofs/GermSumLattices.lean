@@ -18,12 +18,12 @@ theorem finsum_if {α : Type} {P : α → Prop} {inst : DecidablePred P} (hfin :
   rw [finsum_eq_sum_of_support_subset (s := hfin.toFinset)]
   · apply Finset.sum_congr rfl
     intro x hx
-    rw [if_pos (by simpa using hx)]
+    rw [ite_eq_left (by simpa using hx)]
   · intro x hx
     simp only [Function.mem_support] at hx
     by_contra h
     apply hx
-    rw [if_neg]
+    rw [ite_eq_right]
     simpa using h
 
 section Top

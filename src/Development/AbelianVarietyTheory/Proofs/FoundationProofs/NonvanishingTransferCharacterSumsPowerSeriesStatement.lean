@@ -20,57 +20,13 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AlgebraMa
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralOfNormLeOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowerSeriesEqOfCongruentValuesAtPrimitiveRoots
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsLocallyConstantCycMod
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmulRight
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
@@ -424,7 +380,7 @@ theorem sum_units_char_pow (m : ℕ) (hm : 1 ≤ m) (z : Qbar l) (ψ : Dirichlet
     ∑ b : (ZMod (l ^ m))ˣ, ψ b * (z ^ (b : ZMod (l ^ m)).val) ^ j = ψ⁻¹ (j : ZMod (l ^ m)) * gSum m z ψ := by
   haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
   have key := GlobalTheory.EisM.sum_primChar_mul_rootPow_mod_pow (Qbar l) l m m z ψ (Fact.out) hm le_rfl hz hψ (j : ℤ)
-  simp only [Nat.sub_self, pow_zero, one_dvd, if_true, one_mul, Int.ediv_one, Int.cast_natCast] at key
+  simp only [Nat.sub_self, pow_zero, one_dvd, ite_true, one_mul, Int.ediv_one, Int.cast_natCast] at key
   rw [sum_units_eq_sum ψ (fun a => (z ^ a.val) ^ j)]
   unfold gSum
   rw [sum_units_eq_sum ψ (fun a => z ^ a.val)]
@@ -745,14 +701,6 @@ noncomputable section
 open Finset
 open scoped Classical
 
-namespace GlobalTheory.KummerEisensteinGalois
-
-theorem gaussSum_mul_gaussSum_inv_prim {K : Type} [Field K] {n : ℕ} [NeZero n]
-    {χ : DirichletCharacter K n} {e : AddChar (ZMod n) K} (hχ : χ.IsPrimitive)
-    (he : e.IsPrimitive) : gaussSum χ e * gaussSum χ⁻¹ e⁻¹ = (n : K) := by
-  apply GlobalTheory.GaussInt.gaussSum_mul_gaussSum_inv_of_isPrimitive <;> assumption
-
-end GlobalTheory.KummerEisensteinGalois
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -802,7 +750,7 @@ theorem gSum_mul_gSum_inv_prim : ∀ (l : ℕ) [Fact l.Prime] (m : ℕ) (z : Qba
     rw [sum_mulChar_eq_sum_units]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [AddChar.inv_apply', AddChar.zmodChar_apply, inv_pow]
-  rw [h1, h2, GlobalTheory.KummerEisensteinGalois.gaussSum_mul_gaussSum_inv_prim hψ he]
+  rw [h1, h2, GlobalTheory.GaussInt.gaussSum_mul_gaussSum_inv_of_isPrimitive hψ he]
   push_cast
   rfl
 
@@ -963,7 +911,7 @@ theorem norm_gSum_le : ∀ (l : ℕ) [Fact l.Prime] (m : ℕ) (z : Qbar l) (ψ :
     calc ‖(l : Qbar l) ^ k‖ * ‖g x0‖ ≤ ‖(l : Qbar l) ^ k‖ * 1 :=
           mul_le_mul_of_nonneg_left (hg1 x0) (norm_nonneg _)
       _ = _ := mul_one _
-  · push_neg at hχ
+  · push Not at hχ
     obtain ⟨y, hy⟩ := hχ
     have hI := hinv x0 y
     have h0 : ∑ x ∈ Finset.univ.filter (fun x => π x = π x0), g x = 0 := by
@@ -986,8 +934,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ PowerSeries GlobalTheory.KZ.Cmp
 
-theorem _root_.GlobalTheory.T.norm_gaussSumModPrimePower_le_half_power : ∀ (l : ℕ) [Fact l.Prime] (m : ℕ) (z : Qbar l) (ψ : DirichletCharacter (Qbar l) (l ^ m)), z ^ (l ^ m) = 1 → ‖gSum m z ψ‖ ≤ ‖(l : Qbar l) ^ (m / 2)‖ := by
-  first | (exact @GlobalTheory.KZ.Cmp.norm_gSum_le)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormGaussSumModPrimePowerLeHalfPowerStatement =====
@@ -1190,7 +1136,7 @@ theorem exists_decomp (hl : l ≠ 2) (R : ℕ) {j : ℕ} (hj : ¬ l ∣ j) :
     exact c.ne_zero h0
   · refine ((ZMod.natCast_eq_natCast_iff _ _ _).1 ?_).symm
     by_contra h1
-    exact ht (if_neg h1)
+    exact ht (ite_eq_right h1)
 
 theorem dvd_of_modEq {n a b : ℕ} (h : a ≡ b [MOD n]) : (n : ℤ_[l]) ∣ (b : ℤ_[l]) - a := by
   have h1 := map_dvd (Int.castRingHom ℤ_[l]) (Nat.modEq_iff_dvd.1 h)
@@ -1316,7 +1262,6 @@ theorem tval_eq_sum_pow_of_integral : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) 
   rcases hdeg with hd | rfl
   · have h1 := Polynomial.aeval_eq_sum_range' (R := c.O) (x := z) hd
     have h2 : Polynomial.aeval z Q = tval F N z := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp [Q, tval, map_sum]
     rw [← h2, h1]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -1666,7 +1611,7 @@ theorem nonvanishing_transfer : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (Gs L 
       rw [tval_C_mul, tval_C_mul]
       refine cg_div_gauss l k c₁ (chSum Gs (k + 1) z ψ) (chSum L (k + 1) z ψ) _ _ _ _
         (1 - (c₀ : Qbar l) * ψ⁻¹ (c₀ : ZMod (l ^ (k + 1)))) _ _ a a' κ p (by omega) (hv _).1 (hv' _).1 ha ha' hp1 hN
-        (_root_.GlobalTheory.KZ.Cmp.gSum_mul_gSum_inv_prim l (k + 1) z ψ hz hψ) (GlobalTheory.T.norm_gaussSumModPrimePower_le_half_power l (k + 1) z⁻¹ ψ⁻¹ hz.inv.pow_eq_one) g1 ?_ (hzψ ψ hψ)
+        (_root_.GlobalTheory.KZ.Cmp.gSum_mul_gSum_inv_prim l (k + 1) z ψ hz hψ) (GlobalTheory.KZ.Cmp.norm_gSum_le l (k + 1) z⁻¹ ψ⁻¹ hz.inv.pow_eq_one) g1 ?_ (hzψ ψ hψ)
       rw [hAL, tval_sub_C_mul]
       convert g2 using 1 <;> ring)
   have hy : ‖(1 + (l : Qbar l)) ^ e - 1‖ ≤ 1 := by

@@ -46,12 +46,11 @@ private theorem cpull_inr_desc {K L M : Cx R} (c : K ⟶ M) (e : L ⟶ M) (I : C
 
 end UpperTheory.Cb.EtaleMayerVietoris
 
-
 open UpperTheory.Cb.EtaleMayerVietoris in
 theorem UpperTheory.Cb.etale_mayer_vietoris_long_exact :
     LateralTheory.E.MayerVietorisSequence.LES := by
   intro R _ F
-  obtain ⟨d0, hex, hnat⟩ := GlobalTheory.T.hypercohomology_longExact_first_of_injective R (res R F) (_root_.GlobalTheory.EtC.ResBasic.res_basic R F).2.1
+  obtain ⟨d0, hex, hnat⟩ := GlobalTheory.EtC.longExact_first_of_injective R (res R F) (_root_.GlobalTheory.EtC.ResBasic.res_basic R F).2.1
   refine ⟨fun a b c e w hS n => d0 _ hS n, ?_, ?_⟩
   · intro N K L M a b c e w hS n
     have hE := hex _ hS n

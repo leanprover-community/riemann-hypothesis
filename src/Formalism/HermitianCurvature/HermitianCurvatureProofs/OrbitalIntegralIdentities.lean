@@ -95,11 +95,3 @@ theorem jf_equiv (D : RealPlaceData k r Wp Wq) (F : Mat k r → (Wq →L[ℂ] Wp
 end
 
 end Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-open scoped Matrix.Norms.Elementwise
-
-end Formalism.FourierDecayAlt.P

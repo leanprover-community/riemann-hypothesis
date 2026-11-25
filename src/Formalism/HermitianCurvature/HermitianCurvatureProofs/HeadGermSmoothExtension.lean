@@ -209,12 +209,12 @@ theorem good_dzb {Φ : X → V1 E} (h : Good Φ) : Good (dzbF Φ) := by
 theorem opP_apply (κ : ℂ) (f : V1 E) {τ : ℂ} (hτ : τ ≠ 0) :
     ((opP κ f : V1 E) : ℂ → E) τ = τ • PBP.dz (f : ℂ → E) τ + κ • (f : ℂ → E) τ := by
   show off0 (fun τ => τ • PBP.dz (f : ℂ → E) τ + κ • (f : ℂ → E) τ) τ = _
-  rw [off0, if_neg hτ]
+  rw [off0, ite_eq_right hτ]
 
 theorem opPb_apply (κ : ℂ) (f : V1 E) {τ : ℂ} (hτ : τ ≠ 0) :
     ((opPb κ f : V1 E) : ℂ → E) τ = conj τ • PBP.dzb (f : ℂ → E) τ + κ • (f : ℂ → E) τ := by
   show off0 (fun τ => conj τ • PBP.dzb (f : ℂ → E) τ + κ • (f : ℂ → E) τ) τ = _
-  rw [off0, if_neg hτ]
+  rw [off0, ite_eq_right hτ]
 
 section ok
 
@@ -380,7 +380,6 @@ theorem pg_sum (hℓ : Continuous ℓ) {ι : Type*} (s : Finset ι) (f : ι → 
 
 variable {S : Type} [Fintype S] [DecidableEq S]
 
-
 variable (μ ℓ) in
 def EntrywiseClass (M : Wd.SlopeTestRemainingChoices S (Q.Pr (V1 E))) : Prop := ∀ a b, PG μ ℓ (M a b)
 
@@ -534,10 +533,10 @@ theorem nL_apply {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) (p q : Fin (2
       (if h : p.val = j + 2 * ρ + k ∧ j + 2 * ρ + k + 1 ≤ q.val then a ⟨2 * (j + ρ) + k - q.val, by omega⟩ else 0) := by
     split_ifs with h
     · rw [Finset.sum_eq_single ⟨2 * (j + ρ) + k - q.val, by omega⟩]
-      · rw [if_pos]
+      · rw [ite_eq_left]
         constructor <;> apply Fin.ext <;> simp [esI] <;> omega
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨_, h2⟩
         apply hb
         apply Fin.ext
@@ -547,7 +546,7 @@ theorem nL_apply {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) (p q : Fin (2
         omega
       · simp
     · refine Finset.sum_eq_zero fun b _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h1, h2⟩
       apply h
       have e1 := congrArg Fin.val h1
@@ -559,10 +558,10 @@ theorem nL_apply {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) (p q : Fin (2
       conj (a c) else 0) = (if h : p.val < j ∧ q.val = j then conj (a ⟨p.val, h.1⟩) else 0) := by
     split_ifs with h
     · rw [Finset.sum_eq_single ⟨p.val, h.1⟩]
-      · rw [if_pos]
+      · rw [ite_eq_left]
         constructor <;> apply Fin.ext <;> simp [eI] <;> omega
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, _⟩
         apply hb
         apply Fin.ext
@@ -572,7 +571,7 @@ theorem nL_apply {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) (p q : Fin (2
         omega
       · simp
     · refine Finset.sum_eq_zero fun b _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h1, h2⟩
       apply h
       have e1 := congrArg Fin.val h1
@@ -606,10 +605,10 @@ theorem cHc_zero {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) :
   simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply, cL_last, Matrix.zero_apply]
   refine Finset.sum_eq_zero fun v _ => ?_
   by_cases hv : v.val = 2 * ρ + k
-  · rw [if_pos hv, Finset.sum_eq_single v]
+  · rw [ite_eq_left hv, Finset.sum_eq_single v]
     · have h := hpk_last (k := k) hρ v
       rw [show (⟨2 * ρ + k, by omega⟩ : Fin (2 * ρ + k + 1)) = v from Fin.ext hv.symm] at h
-      rw [h, if_neg (show ¬ (v.val = 0) by omega)]
+      rw [h, ite_eq_right (show ¬ (v.val = 0) by omega)]
       simp
     · intro u _ hu
       by_cases hu' : u.val = 2 * ρ + k
@@ -623,10 +622,10 @@ theorem wcH_apply {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) (α : Fin j)
   rw [Matrix.mul_assoc, Matrix.mul_apply, Finset.sum_eq_single α.rev]
   · rw [show G.wMat j α α.rev = 1 by simp [G.wMat], one_mul, Matrix.mul_apply,
       Finset.sum_eq_single ⟨2 * ρ + k, by omega⟩]
-    · rw [hpk_last hρ, Matrix.conjTranspose_apply, Matrix.of_apply, cL_last, if_pos rfl, Fin.rev_rev]
+    · rw [hpk_last hρ, Matrix.conjTranspose_apply, Matrix.of_apply, cL_last, ite_eq_left rfl, Fin.rev_rev]
       split_ifs <;> simp
     · intro u _ hu
-      rw [Matrix.conjTranspose_apply, Matrix.of_apply, cL_last, if_neg (fun h => hu (Fin.ext h))]
+      rw [Matrix.conjTranspose_apply, Matrix.of_apply, cL_last, ite_eq_right (fun h => hu (Fin.ext h))]
       simp
     · simp
   · intro β _ hβ
@@ -647,14 +646,14 @@ theorem nL_eq {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) :
     simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
       Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
       Matrix.fromCols_apply_inr, Matrix.zero_apply, Matrix.one_apply, Matrix.neg_apply, Matrix.of_apply,
-      EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, if_false, v1, v2, v3]
+      EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, ite_false, v1, v2, v3]
   · have := α.isLt; have := β.isLt
     rw [dite_eq_right (by omega), dite_eq_right (by omega)]; ring
   · have := α.isLt; have := v.isLt
     rw [wcH_apply hρ, dite_eq_right (by omega)]
     by_cases hv : v.val = 0
-    · rw [dite_eq_left ⟨α.isLt, by omega⟩, if_pos hv]; simp
-    · rw [dite_eq_right (by omega), if_neg hv]; simp
+    · rw [dite_eq_left ⟨α.isLt, by omega⟩, ite_eq_left hv]; simp
+    · rw [dite_eq_right (by omega), ite_eq_right hv]; simp
   · have := α.isLt; have := β.isLt
     rw [dite_eq_right (by omega), dite_eq_right (by omega)]; ring
   · have := u.isLt; have := β.isLt
@@ -665,12 +664,12 @@ theorem nL_eq {j ρ : ℕ} (hρ : 1 ≤ ρ) (a : Fin j → ℂ) :
     rw [cL_last, dite_eq_right (show ¬(j + u.val < j ∧ j + (2 * ρ + k + 1) + β.val = j) by omega)]
     by_cases hu : u.val = 2 * ρ + k
     · rw [dite_eq_left (show j + u.val = j + 2 * ρ + k ∧ j + 2 * ρ + k + 1 ≤ j + (2 * ρ + k + 1) + β.val by omega),
-        if_pos hu]
+        ite_eq_left hu]
       have e : (⟨2 * (j + ρ) + k - (j + (2 * ρ + k + 1) + β.val), by omega⟩ : Fin j) = β.rev :=
         Fin.ext (by simp [Fin.rev]; omega)
       rw [e]; ring
     · rw [dite_eq_right (show ¬(j + u.val = j + 2 * ρ + k ∧ j + 2 * ρ + k + 1 ≤ j + (2 * ρ + k + 1) + β.val) by omega),
-        if_neg hu]; ring
+        ite_eq_right hu]; ring
   · have := α.isLt; have := β.isLt
     rw [dite_eq_right (by omega), dite_eq_right (by omega)]; ring
   · have := α.isLt; have := v.isLt
@@ -788,9 +787,6 @@ theorem side_zero_of_local_properness (hPr : ProperLeftVariablesDomain) : CutHB.
 
 end Formalism.FourierDecayAlt.P.SliceIntegralLemmas
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.SideZeroOfLocalProperness =====
@@ -900,18 +896,12 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselWordSmoothness
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.PBQ
 
-def ProperDomPH : Prop :=
-  ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : KB.Pl P Wp Wq)
-    (j : ℕ) (hj : j ≤ P.r) (Cs : Set (B.Mat P.k P.r)), IsCompact Cs →
-    PartialBesselProperness.Proper (p.T.bs j) p.T.base (by omega : j + (P.r - j) = P.r) Cs (domP P.k P.r j p.T.base.z p.T.base.z')
-
 section
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
 
-theorem smooth_pbT (hP : ProperDomPH) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
+theorem smooth_pbT (hP : Formalism.FourierDecayAlt.P.PBQ.ProperDomP) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     (j : ℕ) (hj : j ≤ P.r) (hF : KB.CptCoef p.T.base F) :
     Q.SmoothLev P.k P.r 0 (domP P.k P.r j p.T.base.z p.T.base.z') (pbT p j hj F) := by
   obtain ⟨hck, ⟨R, hR⟩, -⟩ := hF
@@ -924,7 +914,7 @@ theorem smooth_pbT (hP : ProperDomPH) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat
   exact Formalism.FourierDecayAlt.P.partial_bessel_smooth_compact_support P.k j (P.r - j) P.r Wp Wq (p.T.bs j) p.T.base (by omega) hzl F _ hck hCs hz
     _ (isOpen_domP P.k P.r j p.T.base.z p.T.base.z') (hP Wp Wq P p j hj _ hCs) x hx.2 hx.1.1
 
-theorem word_smooth_partial_bessel_induction (hP : ProperDomPH) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
+theorem word_smooth_partial_bessel_induction (hP : Formalism.FourierDecayAlt.P.PBQ.ProperDomP) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     (j : ℕ) (hj : j + 1 ≤ P.r) (hF : KB.CptCoef p.T.base F) :
     ∀ (w : List C.Letter) (e : Wd.Ix (Fin w.length)),
       Q.SmoothLev P.k P.r 0 (domP P.k P.r j p.T.base.z p.T.base.z')
@@ -938,7 +928,7 @@ theorem word_smooth_partial_bessel_induction (hP : ProperDomPH) (P : M.Par) (p :
 
 end
 
-theorem wordSmooth_of (hP : ProperDomPH) : CutHB.WordSmooth := by
+theorem wordSmooth_of (hP : Formalism.FourierDecayAlt.P.PBQ.ProperDomP) : CutHB.WordSmooth := by
   intro Wp Wq _ _ _ _ _ _ P p F j hj w hF _ e
   exact word_smooth_partial_bessel_induction hP P p F j hj hF w e
 

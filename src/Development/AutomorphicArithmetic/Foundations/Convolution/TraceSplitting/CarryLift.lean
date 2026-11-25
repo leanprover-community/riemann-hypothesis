@@ -80,7 +80,7 @@ private theorem atEx (V : Submodule ℂ (LL μ)) (hV : IsSummand μ V) : ∃ Λ 
     (SatakeParameterExistence.cx UpperTheory.V.Af.formsFiniteGL n π).mono fun w ⟨B, hB⟩ => ⟨_, (sSatIff K n μ π V hπ w _).2 ⟨B, rfl, hB⟩⟩
   refine ⟨Λ, fun w => if h : ∃ B, SSat μ V w B then h.choose else 0, _, h, hΛ, fun w hw => ?_⟩
   have hw' : ∃ B, SSat μ V w B := not_not.1 hw
-  simp only [dif_pos hw']
+  simp only [dite_eq_left hw']
   exact hw'.choose_spec
 
 private theorem satOf {π : CuspSub K n} {V : Submodule ℂ (LL μ)} {Λ t} (h : Carries μ π V) (H : AtAE μ V Λ t) :

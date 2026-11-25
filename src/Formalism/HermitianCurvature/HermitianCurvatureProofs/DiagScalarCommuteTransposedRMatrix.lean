@@ -321,9 +321,9 @@ theorem letter_wave (σ : Site A) (f fi : A) (s : K) (l : Letter K S)
       Matrix.diagonal (fun _ => f) * (if l.plus then Ts σ l.pt else (Ts σ l.pt).map star) := by
   obtain ⟨h1, h2, h3⟩ := hW
   by_cases hl : l.plus
-  · simp only [hl, if_true]
+  · simp only [hl, ite_true]
     exact (Formalism.YangianSpanCharacter.Final.T_PlaneWave K A σ.p σ.c σ.ci f s l.pt hc hci hp).2.2
-  · simp only [hl, Bool.false_eq_true, if_false]
+  · simp only [hl, Bool.false_eq_true, ite_false]
     unfold Ts
     rw [Tm_map_star]
     refine (Formalism.YangianSpanCharacter.Final.T_PlaneWave K A (star σ.p) (star σ.c) (star σ.ci) f (star s) (star l.pt)
@@ -608,16 +608,16 @@ theorem planeWaveWord (QQ : K → M2 A) (f fi : A) (s : K) (w : List (Letter K S
     · rw [mul_assoc, (comm_insL (cen_Uinv _) hVi).left_comm, h2, mul_one, insL_Um_Uinv]
     · unfold RRw
       by_cases hl : l.plus
-      · simp only [hl, if_true]
+      · simp only [hl, ite_true]
         exact plus_RR l.intersection_update_fsHerm_neg_one s hV hVi hRR (hT _) h1 h3 (h4 _)
-      · simp only [hl, Bool.false_eq_true, if_false]
+      · simp only [hl, Bool.false_eq_true, ite_false]
         exact minus_RR l.intersection_update_fsHerm_neg_one s hV hVi hRR (hT _) h1 h3 (h4 _)
     · intro Y
       unfold TTw
       by_cases hl : l.plus
-      · simp only [hl, if_true]
+      · simp only [hl, ite_true]
         exact plus_TT l.intersection_update_fsHerm_neg_one s _ hV (hT _) (h4 _)
-      · simp only [hl, Bool.false_eq_true, if_false]
+      · simp only [hl, Bool.false_eq_true, ite_false]
         exact minus_TT l.intersection_update_fsHerm_neg_one s _ hV hVi (hT _) (h4 _)
 
 end Steps

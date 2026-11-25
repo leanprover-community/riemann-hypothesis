@@ -176,7 +176,7 @@ theorem jwGram_of (hIC : IdxChange) : JwGram := by
 
     rw [map_sum, map_zero] at this
     simp only [map_smul, hpair, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at this
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at this
     exact this
   have hspK : Submodule.span K (Set.range f) = ⊤ :=
     hf.1.span_eq_top_of_card_eq_finrank' (by simp)
@@ -271,10 +271,7 @@ theorem ratHermLcv_of (hLB : LcvBasis) (hIC : IdxChange) (hEx : LocBasisEx) : Ra
   classical
   have hJ := jwGram_of hIC
   set e : Fin d → Fin d → K := fun i => Pi.single i 1 with he_def
-  have he : LinearIndependent K e := by
-    have : e = ⇑(Pi.basisFun K (Fin d)) := funext fun i => (Pi.basisFun_apply K (Fin d) i).symm
-    rw [this]
-    exact (Pi.basisFun K (Fin d)).linearIndependent
+  have he : LinearIndependent K e := Pi.linearIndependent_single_one (Fin d) K
   have hdetH := det_ne_zero hR
   obtain ⟨hfinA, hlcv⟩ := hLB K d X (fun v => (hR.2 v).1) T hT e he
   have hgram : ∀ v, gram X v e = H.map v.embedding := by
@@ -321,9 +318,8 @@ theorem ratHermLcv_of (hLB : LcvBasis) (hIC : IdxChange) (hEx : LocBasisEx) : Ra
   have hlw : ∀ w, lw (conjPl w) = lw w := fun w => (valuation_basic_properties K w).2.2.1
   set a : HeightOneSpectrum (𝓞 K) → ℝ := fun w => lw w * (idx w S T : ℝ) with ha
   set c : HeightOneSpectrum (𝓞 K) → ℝ := fun w => lw w * (vw w H.det : ℝ) with hc
-  have hinj : Function.Injective (conjPl (K := K)) := fun x y hxy => by
-    have := congrArg conjPl hxy
-    rwa [ValuationRepresentative.conjPl_conjPl, ValuationRepresentative.conjPl_conjPl] at this
+  have hinj : Function.Injective (conjPl (K := K)) :=
+    Function.Involutive.injective ValuationRepresentative.conjPl_conjPl
   have hfinA' : (Function.support fun w => a (conjPl w)).Finite := by
     rw [show (fun w => a (conjPl w)) = a ∘ conjPl from rfl, Function.support_comp_eq_preimage]
     exact hfinA.preimage hinj.injOn

@@ -260,7 +260,6 @@ theorem finiteDimensional_adjoin_restrict {F K : Type} [Field F] [Field K] [Alge
     IsScalarTower.of_algebraMap_eq fun _ => rfl
   exact Module.Finite.of_restrictScalars_finite (IntermediateField.adjoin F {α}) _ _
 
-
 open GlobalTheory.FN.LevelGal in
 theorem finiteDimensional_lvl {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (hj : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) (M : ℕ) (hM : 0 < M) :
@@ -316,18 +315,6 @@ lemma toGQ_val (m : Matrix (Fin 2) (Fin 2) ℤ) (h : 0 < m.det) :
 lemma ofSL_val (γ : SL(2, ℤ)) :
     (((ofSL γ : GQ) : GL (Fin 2) ℚ) : Matrix (Fin 2) (Fin 2) ℚ) = (γ : Matrix (Fin 2) (Fin 2) ℤ).map (Int.castRingHom ℚ) := by
   rfl
-
-lemma toGQ_mul (A B : Matrix (Fin 2) (Fin 2) ℤ) (hA : 0 < A.det) (hB : 0 < B.det) :
-    toGQ (A * B) = toGQ A * toGQ B := by
-  have hAB : 0 < (A * B).det := by rw [Matrix.det_mul]; exact mul_pos hA hB
-  apply Subtype.ext; apply Units.ext
-  rw [toGQ_val _ hAB]
-  simp only [Subgroup.coe_mul, Units.val_mul]
-  rw [toGQ_val _ hA, toGQ_val _ hB, Matrix.map_mul]
-
-lemma toGQ_SL (γ : SL(2, ℤ)) : toGQ (γ : Matrix (Fin 2) (Fin 2) ℤ) = ofSL γ := by
-  apply Subtype.ext; apply Units.ext
-  rw [toGQ_val _ (by simp), ofSL_val]
 
 lemma mem_Gamma_of_mul (M q : ℕ) (hqM : Nat.Coprime q M) (N : SL(2, ℤ)) (B m : Matrix (Fin 2) (Fin 2) ℤ)
     (hm : (N : Matrix (Fin 2) (Fin 2) ℤ) * B = m)
@@ -416,7 +403,7 @@ theorem exists_coset (M q : ℕ) (hM : 0 < M) (hq : q.Prime) (hqM : Nat.Coprime 
     set c : ZMod q := ((m 1 0 : ℤ) : ZMod q) with hc
     set d : ZMod q := ((m 1 1 : ℤ) : ZMod q) with hd
     have hac : a ≠ 0 ∨ c ≠ 0 := by
-      by_contra hcon; push_neg at hcon
+      by_contra hcon; push Not at hcon
       exact hdiv ⟨(hz _).mpr hcon.1, (hz _).mpr hcon.2⟩
     obtain ⟨t, ht1, ht2⟩ : ∃ t : ZMod q, b = a * t * (M : ZMod q) ∧ d = c * t * (M : ZMod q) := by
       rcases hac with ha0 | hc0
@@ -462,7 +449,7 @@ theorem reps_distinct (M q : ℕ) (hq : q.Prime) (hqM : Nat.Coprime q M) (σ : S
   have e11 := E 1 1
   unfold reps at e00 e01 e10 e11
   by_cases hi : (i : ℕ) < q <;> by_cases hk : (k : ℕ) < q <;>
-    simp only [hi, hk, if_true, if_false] at e00 e01 e10 e11 <;>
+    simp only [hi, hk, ite_true, ite_false] at e00 e01 e10 e11 <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two] at e00 e01 e10 e11
   ·
     have hdv : (q : ℤ) ∣ ((i : ℕ) - (k : ℕ) : ℤ) * M := ⟨(g : Matrix (Fin 2) (Fin 2) ℤ) 0 1, by
@@ -552,8 +539,8 @@ theorem GlobalTheory.hecke_product_invariant : ∀ {Ω : Type} [Field Ω] [Algeb
   calc ∏ i : Fin (q + 1), X.sl (ofSL γ) (X.sl (toGQ (reps M q σ i)) f)
       = ∏ i : Fin (q + 1), X.sl (toGQ (reps M q σ (e i))) f := by
         refine Finset.prod_congr rfl (fun i _ => ?_)
-        rw [← X.sl_mul, ← toGQ_SL γ, ← toGQ_mul _ _ (hpos i) (by simp), hπ i,
-          toGQ_mul _ _ (by simp) (hpos _), toGQ_SL, X.sl_mul, hf _ (hg i)]
+        rw [← X.sl_mul, ← GlobalTheory.KZ.Betti.toGQ_sl γ, ← GlobalTheory.KZ.MobLaws.toGQ_mul _ _ (hpos i) (by simp), hπ i,
+          GlobalTheory.KZ.MobLaws.toGQ_mul _ _ (by simp) (hpos _), GlobalTheory.KZ.Betti.toGQ_sl, X.sl_mul, hf _ (hg i)]
         rfl
     _ = ∏ i : Fin (q + 1), X.sl (toGQ (reps M q σ i)) f := Equiv.prod_comp e (fun i => X.sl (toGQ (reps M q σ i)) f)
 end -- clump:auto
@@ -751,11 +738,7 @@ theorem finiteDimensional_adjoin_map {F K L : Type} [Field F] [Field K] [Field L
     rw [← h1]
     exact ⟨e, e.2, rfl⟩
   let g : E →+* E' :=
-    { toFun := fun e => ⟨algebraMap K L e, hmem e⟩
-      map_one' := by ext; simp
-      map_mul' := by intros; ext; simp
-      map_zero' := by ext; simp
-      map_add' := by intros; ext; simp }
+    (((IsScalarTower.toAlgHom F K L).comp E.val).codRestrict E'.toSubalgebra hmem).toRingHom
   letI : Algebra E E' := g.toAlgebra
   haveI : IsScalarTower E E' L := IsScalarTower.of_algebraMap_eq (fun _ => rfl)
   haveI : Module.Finite E L := Module.Finite.trans K L
@@ -806,7 +789,7 @@ theorem core {F K L : Type} [Field F] [IsAlgClosed F] [Field K] [Field L] [Algeb
   obtain ⟨d, hd⟩ := IsAlgClosed.exists_pow_nat_eq c hl.pos
   have hcval : V.valuation c = 1 := by
     rw [val_eq_one_iff, ValuationSubring.mem_nonunits_iff_or]
-    push_neg
+    push Not
     exact ⟨hcV, hc0, hciV⟩
   have hcW : W'.valuation (algebraMap F L c) = 1 :=
     (val_eq_one_iff_of_mem_iff (algebraMap F L) hFL c).2 hcval
@@ -946,14 +929,6 @@ section -- clump:auto
 
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
-
-namespace GlobalTheory.KZ
-
-theorem Tower.jK_transcendental {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) :
-    Transcendental Ω X.jK := by
-  apply GlobalTheory.K4.jK_transcendental
-
-end GlobalTheory.KZ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerJInvariantTranscendental =====
@@ -1081,7 +1056,6 @@ end GlobalTheory.KronRatio
 
 namespace GlobalTheory.KZ
 
-
 open GlobalTheory.KroneckerCongruence GlobalTheory.KronRatio in
 theorem kronecker_ratio_reduces_to_const : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), Function.Injective ε → (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → ∀ (M : ℕ) (f : X.Kˣ), 0 < M → (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (f : X.K) = f) → ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ (V : ValuationSubring Ω) (s : Ω ≃ₐ[ℚ] Ω), ((q : ℕ) : Ω) ∈ V.nonunits → (∀ x ∈ V, s x ∈ V ∧ s.symm x ∈ V ∧ V.valuation (s x - x ^ q) < 1) → ∀ σ : SL(2, ℤ), ((en σ 0 1 : ZMod M) = 0 ∧ (en σ 1 0 : ZMod M) = 0 ∧ (en σ 1 1 : ZMod M) = q) → ∀ W : ValuationSubring X.K, (∀ a : Ω, algebraMap Ω X.K a ∈ W ↔ a ∈ V) → (∀ g : X.K, (∀ r, (X.exp g).coeff r ∈ V) → (∀ r, r ≠ 0 → (X.exp g).coeff r ∈ V.nonunits) → W.valuation (g - algebraMap Ω X.K ((X.exp g).coeff 0)) < 1) → ∃ κ : Ω, κ ≠ 0 ∧ W.valuation (algebraMap Ω X.K κ * ((∏ j ∈ Finset.range q, X.sl (toGQ !![1, (j * M : ℤ); 0, (q : ℤ)]) (f : X.K)) * X.sl (toGQ ((σ : Matrix (Fin 2) (Fin 2) ℤ) * !![(q : ℤ), 0; 0, 1])) (f : X.K)) / (X.gal s (f : X.K) * (X.gal s.symm (X.sl (ofSL σ) (f : X.K))) ^ q) - 1) < 1 := by
   intro Ω _ _ _ ε X hε hj M f hM hf
@@ -1093,7 +1067,7 @@ theorem kronecker_ratio_reduces_to_const : ∀ {Ω : Type} [Field Ω] [Algebra �
   have hF : ∀ σ : SL(2, ℤ), X.sl (ofSL σ) (f : X.K) = F (red σ) := by
     intro σ
     have h : ∃ σ', red σ' = red σ := ⟨σ, rfl⟩
-    have e : F (red σ) = X.sl (ofSL h.choose) (f : X.K) := dif_pos h
+    have e : F (red σ) = X.sl (ofSL h.choose) (f : X.K) := dite_eq_left h
     have hσ' : red h.choose = red σ := h.choose_spec
     have hγ : σ * h.choose⁻¹ ∈ CongruenceSubgroup.Gamma M := by
       have : σ * h.choose⁻¹ ∈ red.ker := by
@@ -1240,10 +1214,6 @@ theorem lev_sl {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : 
 end GlobalTheory.KZ.ESFun
 
 namespace GlobalTheory.KZ.ESFun
-theorem jTr : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε), Transcendental Ω X.jK := _root_.GlobalTheory.KZ.Tower.jK_transcendental
-end GlobalTheory.KZ.ESFun
-
-namespace GlobalTheory.KZ.ESFun
 
 theorem prod_mem_Un {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (m : ℕ) {ι : Type}
     (t : Finset ι) (u : ι → X.Kˣ) (h : ∀ i ∈ t, u i ∈ X.Un m) : (∏ i ∈ t, u i) ∈ X.Un m := by
@@ -1267,7 +1237,7 @@ theorem eichler_shimura_kummer : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [Is
   obtain ⟨L, hL, hjL, hfd⟩ := _root_.GlobalTheory.KZ.LevelField.exists_level_field ε X hε hj M hM
   have htr : Transcendental Ω (⟨X.jK, hjL⟩ : L) := by
     intro halg
-    exact jTr X (by simpa using halg.algHom L.val)
+    exact GlobalTheory.K4.jK_transcendental X (by simpa using halg.algHom L.val)
   obtain ⟨R, hR⟩ := _root_.GlobalTheory.KZ.FinLev.finite_mod_powers ε X hε hj M (l ^ n) hM (pow_pos hlpos n)
   have key : ∀ r : X.Kˣ, ∃ S : Finset ℕ, (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (r : X.K) = r) →
       (¬ ∃ c : Ω, c ≠ 0 ∧ ∃ u : X.Kˣ, (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (u : X.K) = u) ∧
@@ -1779,7 +1749,6 @@ theorem rel_BSet [IsAlgClosure ℚ Ω] (X : Tower Ω ε) (hε : Function.Injecti
 end GlobalTheory.KZ.ESmod
 
 namespace GlobalTheory.KZ
-
 
 open ESmod in
 theorem eichlerShimura_B_mod : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), Function.Injective ε → (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → ∀ (N l w : ℕ) [Fact l.Prime], l ≠ 2 → 5 ≤ N → Nat.Coprime N l → Odd w → ∀ n : ℕ, ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ s : Ω ≃ₐ[ℚ] Ω, FrobAt q s → ∀ b ∈ X.B N l w, ∀ u, (X.galB l s (X.galB l s b) - X.heckeT N l q (X.galB l s b) + ((q : ℤ_[l]) ^ (w + 1)) • X.diam N l q b) u ∈ (idl l) ^ n • (⊤ : Submodule ℤ_[l] (X.Khat l)) := by

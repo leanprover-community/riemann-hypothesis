@@ -25,12 +25,6 @@ namespace Formalism.NG
 
 universe u
 
-section EpsDual
-variable (O OO Q : Type*) [CommRing O] [Ring OO] [Algebra O OO] [AddCommGroup Q] [Module O Q]
-  (ε : OO)
-
-end EpsDual
-
 def StatMatlis : Prop :=
   ∀ (O N : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup N]
     [Module O N], IsFiniteLength O N →

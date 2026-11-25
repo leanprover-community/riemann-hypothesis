@@ -22,11 +22,7 @@ theorem eU_apply (a : S) (i j : Fin 2) (x y : Ix S) :
 
 theorem eU_mul_apply (a : S) (i j : Fin 2) (B : SlopeTestRemainingChoices S A) (x y : Ix S) :
     ((eU a i j : SlopeTestRemainingChoices S A) * B) x y = if x a = i then B (Function.update x a j) y else 0 := by
-  rw [Matrix.mul_apply]
-  simp only [eU_apply]
-  by_cases h : x a = i
-  · simp [h, ite_mul, Finset.sum_ite_eq']
-  · simp [h]
+  exact Formalism.FourierDecayAlt.P.Wd1.eU_mul_apply a i j B x y
 
 theorem eU_comm_of_ne {a c : S} (hc : c ≠ a) (i j k l : Fin 2) :
     Commute (eU c i j : SlopeTestRemainingChoices S A) (eU a k l) := by
@@ -80,11 +76,7 @@ theorem freeOf2_rmatrix_transpose {a c : S} (hc : c ≠ a) (d : K) : FreeOf2 c (
   exact free_smul _ (free_sub (free_smul _ (freeOf2_one c i j)) (free_eU hc i j))
 
 theorem free_ins {a c : S} (hc : c ≠ a) {M : M2 (SlopeTestRemainingChoices S A)} (hM : FreeOf2 c M) :
-    FreeOf c (ins a M) := by
-  intro p q
-  unfold ins
-  exact Commute.sum_right _ _ _ fun i _ => Commute.sum_right _ _ _ fun j _ =>
-    (eU_comm_of_ne hc p q i j).mul_right (hM i j p q)
+    FreeOf c (ins a M) := Formalism.FourierDecayAlt.P.Wd1.ins_free hc M hM
 
 theorem freeOf2_lift (c : S) (M : M2 A) : FreeOf2 c (lift0 M : M2 (SlopeTestRemainingChoices S A)) := fun i j => free_io c (M i j)
 

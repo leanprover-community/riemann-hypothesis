@@ -139,19 +139,19 @@ theorem g_le_of (hW : W.Hyp) {x : ℤ} (hx : W.h0 ≤ 4 * W.T * x) : W.g ≤ (x 
 
 theorem adj_ge (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (b : ℕ) = a + 1) (hb : W.p ≤ (b : ℕ)) :
     W.g ≤ reWt W.u' τ a - reWt W.u' τ b := by
-  obtain ⟨-, h2, h3⟩ := GlobalTheory.T.dividedWeight_gaps_block_and_bar ι N W hW hD τ a b hab
+  obtain ⟨-, h2, h3⟩ := GlobalTheory.MeanTop.divided_gaps ι N W hW hD τ a b hab
   have hk := hW.kc_lt
   by_cases hp : (b : ℕ) = W.p
   · have := g_le_of W hW (h2 hp).2
     have ha : (a : ℕ) < W.p := by omega
     have hb' : ¬ (b : ℕ) < W.p := by omega
-    simp only [reWt, Wts.u', ha, hb', if_true, if_false]
+    simp only [reWt, Wts.u', ha, hb', ite_true, ite_false]
     push_cast at this ⊢
     linarith
   · have := g_le_of W hW (h3 hp (by omega))
     have ha : ¬ (a : ℕ) < W.p := by omega
     have hb' : ¬ (b : ℕ) < W.p := by omega
-    simp only [reWt, Wts.u', ha, hb', if_false]
+    simp only [reWt, Wts.u', ha, hb', ite_false]
     push_cast at this ⊢
     linarith
 
@@ -161,12 +161,12 @@ theorem adj_lt (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (b : �
   · have := adj_ge W hW hD τ a b hab hb
     have := g_pos W hW
     linarith
-  · obtain ⟨h1, -, -⟩ := GlobalTheory.T.dividedWeight_gaps_block_and_bar ι N W hW hD τ a b hab
+  · obtain ⟨h1, -, -⟩ := GlobalTheory.MeanTop.divided_gaps ι N W hW hD τ a b hab
     have h := h1 (by omega)
     have h' : W.u1 τ b < W.u1 τ a := by omega
     have ha : (a : ℕ) < W.p := by omega
     have hb' : (b : ℕ) < W.p := by omega
-    simp only [reWt, Wts.u', ha, hb', if_true]
+    simp only [reWt, Wts.u', ha, hb', ite_true]
     exact_mod_cast h'
 
 theorem regular (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : a < b) :
@@ -181,15 +181,12 @@ theorem anti (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : a ≤ b)
 
 theorem far (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (ha : W.p ≤ (a : ℕ)) (hab : a ≠ b) :
     W.g ≤ |reWt W.u' τ a - reWt W.u' τ b| := by
-  have hk := hW.kc_lt
   rcases lt_or_gt_of_ne hab with h | h
   · have h' : (a : ℕ) < b := h
-    have hb := b.2
     have h1 := adj_ge W hW hD τ a ⟨a + 1, by omega⟩ rfl (by simp only; omega)
     have h2 := anti W hW hD τ ⟨a + 1, by omega⟩ b (show (a : ℕ) + 1 ≤ b from h')
     exact le_trans (by linarith) (le_abs_self _)
   · have h' : (b : ℕ) < a := h
-    have hb := a.2
     have h1 := adj_ge W hW hD τ ⟨a - 1, by omega⟩ a (by simp only; omega) ha
     have h2 := anti W hW hD τ b ⟨a - 1, by omega⟩ (show (b : ℕ) ≤ a - 1 by omega)
     exact le_trans (by linarith) (neg_le_abs _)
@@ -265,7 +262,6 @@ open scoped BigOperators Matrix
 open Polynomial
 
 namespace GlobalTheory.PrimeLogSum
-
 
 open scoped BigOperators Matrix in
 open Polynomial in
@@ -391,8 +387,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.CovHt
 
 namespace GlobalTheory.CovHt.BudgetPf
@@ -491,7 +485,6 @@ theorem l1_u_le {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.Wts
   classical
   have hkN : W.kc < N := hW.kc_lt.trans hW.p_lt
   have hc : (0 : ℝ) ≤ W.c0 := by exact_mod_cast hW.weightConst_nonneg
-  have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg _
   have key : ∀ τ, ∑ i, |(W.u τ i : ℝ)| ≤ N * W.S + ((N - W.kc : ℕ) : ℝ) * (2 * W.b) := fun τ => by
     calc ∑ i, |(W.u τ i : ℝ)| ≤ ∑ i : Fin N, (W.S + if i ∈ Finset.Ici (⟨W.kc, hkN⟩ : Fin N) then 2 * W.b else 0) := by
           refine Finset.sum_le_sum fun i _ => ?_
@@ -525,8 +518,6 @@ theorem pp_bounds {PP A : ℝ} (h : HostNum D L PP A 1) : (D.R.f : ℝ) ^ 2 * (D
   rw [mul_pow, mul_pow]
   refine le_trans ?_ (le_mul_of_one_le_right (by positivity) (one_le_pow₀ hL))
   gcongr <;> first | assumption | norm_num
-
-
 
 theorem sizes {PP A : ℝ} (h : HostNum D L PP A 1) (hw : WtNum p i PP) (h0 : ℤ) (S eta : ℝ) (hS : 0 ≤ S) (he : 0 ≤ eta)
     (hP : PP * (S + eta) ≤ 100 * L.sc.w'' D.R.n)

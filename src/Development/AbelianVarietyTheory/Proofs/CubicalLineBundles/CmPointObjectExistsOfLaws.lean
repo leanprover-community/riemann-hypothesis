@@ -148,7 +148,7 @@ theorem definite_datum_form_pos :
     have key : ∀ τ, Nat.card {i // (e i).1 = τ} = n τ := fun τ => by
       rw [Nat.card_congr ((e.subtypeEquiv (q := fun s => s.1 = τ) fun _ => Iff.rfl).trans (Equiv.sigmaSubtype τ))]
       simp
-    exact ⟨_, fun i => (e i).1, fun τ => ⟨fun h => (key τ).trans (if_pos h), fun h => (key τ).trans (if_neg h)⟩⟩
+    exact ⟨_, fun i => (e i).1, fun τ => ⟨fun h => (key τ).trans (ite_eq_left h), fun h => (key τ).trans (ite_eq_right h)⟩⟩
   obtain ⟨Pe, hP⟩ := _root_.GlobalTheory.PeriodNonempty.exists_isPeriod E H D g ty hty
   have hcard : ∀ i, Nat.card {j // ty j = ty i} ≠ 0 := fun i =>
     haveI : Nonempty {j // ty j = ty i} := ⟨⟨i, rfl⟩⟩

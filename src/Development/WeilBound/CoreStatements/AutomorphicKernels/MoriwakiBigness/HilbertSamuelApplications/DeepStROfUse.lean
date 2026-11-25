@@ -168,8 +168,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
   CartesianMonoidalCategory MonObj IsLocalRing NumberField
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.TorsionFactsCompare
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -357,8 +355,8 @@ theorem costTwo_bound (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Re
     intro p _
     rw [exTwo, GlobalTheory.CovHt.htEx, ← hd, ← hn]
     by_cases h2 : p = 2
-    · subst h2; simp only [if_true]; ring_nf
-    · simp only [h2, if_false]; ring
+    · subst h2; simp only [ite_true]; ring_nf
+    · simp only [h2, ite_false]; ring
   have ha0 : ∀ p : ℕ, p.Prime → 0 ≤ Real.log p / ((p : ℝ) - 1) := fun p hp => by
     have : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
     exact div_nonneg (Real.log_natCast_nonneg p) (by linarith)
@@ -476,7 +474,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open scoped Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.Ar.Rec
 
@@ -881,7 +878,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open scoped Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.Ar.Rec
 
@@ -900,7 +896,6 @@ open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.Char
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open scoped Matrix
 open scoped GlobalTheory.CompHt
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

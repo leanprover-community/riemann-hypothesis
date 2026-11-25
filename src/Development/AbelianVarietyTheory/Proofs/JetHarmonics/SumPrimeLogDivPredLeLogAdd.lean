@@ -1,55 +1,12 @@
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 public import Mathlib.Analysis.SpecialFunctions.Stirling
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 public import Mathlib.Data.Nat.Prime.Factorial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.NumberTheory.Primorial
 
 @[expose] public section
@@ -133,17 +90,9 @@ private lemma mul_sum_prime_log_div_le_log_factorial_add (N : ℕ) :
       exact ⟨Nat.lt_succ_of_le ((hp.1.dvd_factorial).1 hp.2.1), hp.1⟩
     · intro i _
       simp
-  have htheta : ∑ p ∈ P, Real.log p ≤ N * Real.log 4 := by
-    rw [← Real.log_prod (fun p hp => by
-      have := (Finset.mem_filter.1 hp).2.pos
-      positivity), ← Real.log_pow]
-    apply Real.log_le_log
-    · exact Finset.prod_pos fun p hp => by
-        have := (Finset.mem_filter.1 hp).2.pos
-        positivity
-    · have h := primorial_le_four_pow N
-      have h' : ((primorial N : ℕ) : ℝ) ≤ ((4 ^ N : ℕ) : ℝ) := by exact_mod_cast h
-      simpa [primorial, hP, Nat.cast_prod] using h'
+  have htheta : ∑ p ∈ P, Real.log p ≤ N * Real.log 4 :=
+    (Chebyshev.theta_eq_sum_primesLE_log N).symm.trans_le
+      ((Chebyshev.theta_le_log4_mul_x (Nat.cast_nonneg N)).trans_eq (mul_comm _ _))
   rw [Finset.mul_sum, hfac]
   calc ∑ p ∈ P, (N : ℝ) * (Real.log p / p)
       ≤ ∑ p ∈ P, (((N.factorial).factorization p : ℝ) * Real.log p + Real.log p) := by

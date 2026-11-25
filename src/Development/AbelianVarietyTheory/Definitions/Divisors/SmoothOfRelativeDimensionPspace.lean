@@ -65,14 +65,6 @@ theorem form_eq {d : ℕ} {g : MvPolynomial (Fin (M + 1)) k} (hg : g.IsHomogeneo
   exact congrArg (fun a : Algebra k Γ(PSpace k M, ⊤) =>
     letI := a; Twist.formSec (coord k M) (mem_polyGrading_natCast.2 hg)) (algebraΓ_eq k M)
 
-theorem del_eq_one : (projSys k M).del = 1 := by
-  have h := interNum_const_of_polynomial k (structureModule (PSpace k M)) (O1_isLB k M) (d := M)
-    (Polynomial.preHilbertPoly ℚ M 0) (Polynomial.natDegree_preHilbertPoly ℚ M 0).le
-    (ProjCoh.chi_sheafO_eq_eval k M)
-  rw [Polynomial.coeff_preHilbertPoly_self, mul_inv_cancel₀ (Nat.cast_ne_zero.2 M.factorial_ne_zero)] at h
-  rw [LinSys.del, algebraΓ_eq]
-  exact_mod_cast h
-
 theorem eq_of_sameImage {y y' : PSpace k M} (h : (projSys k M).SameImage y y') : y = y' := by
   refine ProjectiveSpectrum.ext (HomogeneousIdeal.ext' fun d g hg => ?_)
   replace hg : g.IsHomogeneous d := hg

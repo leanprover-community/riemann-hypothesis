@@ -489,9 +489,6 @@ theorem glue_units {Z : Scheme.{0}} [IsReduced Z] (V : Z.Opens) (P : Z.Opens →
 
 end GlobalTheory.KeyOpen
 
-namespace GlobalTheory.KeyOpen
-
-end GlobalTheory.KeyOpen
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -940,7 +937,7 @@ theorem exists_denominator {A : Type} [CommRing A] [IsDomain A] [IsDiscreteValua
     isUnit_iff_ne_zero.2 ((map_ne_zero_iff _ hf).2 h0)
   obtain ⟨ψ, hψ⟩ := exists_away_lift (S := S) _ f hu
   have hψi : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨⟨a, m⟩, ha⟩ :=
       IsLocalization.surj (Submonoid.powers (PowerSeries.C ϖ * PowerSeries.X : PowerSeries A)) x
@@ -1162,7 +1159,6 @@ theorem exists_integral_frac {F : Type} [Field F] [NumberField F] (W : Valuation
     rw [← hz]
     exact z.2
   let φ : 𝓞 F →+* W := (algebraMap (𝓞 F) F).codRestrict W.toSubring hmem
-  have hφ : ∀ y : 𝓞 F, ((φ y : W) : F) = (y : F) := fun _ => rfl
   let q : Ideal (𝓞 F) := (IsLocalRing.maximalIdeal W).comap φ
   have hunit : ∀ s : 𝓞 F, s ∉ q → IsUnit (φ s) := fun s hs => by
     by_contra h
@@ -1497,7 +1493,7 @@ theorem extend_of_integral_at_dvr : ∀ (X : Scheme.{0}) (G W₀ : X.Opens) (hle
   have hN : ⊤ ≤ η ⁻¹ᵁ X.basicOpen s := generic_le hG (X.basicOpen_le s) ⟨p, hps⟩
   have inj : Function.Injective (ev η (X.basicOpen s) hN) := by
     haveI := hG.isLocalization_basicOpen s
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨⟨a, m⟩, e⟩ := IsLocalization.surj (Submonoid.powers s) x
     have h1 : algebraMap Γ(X, G) K a = 0 := by
@@ -1564,9 +1560,7 @@ theorem powerSeries_dvd_of_sum_bounded : ∀ (G H : PowerSeries ℂ) (T C : ℝ)
       · rw [PowerSeries.coeff_of_lt_order_toNat j hj]; simp
       · obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le (not_lt.1 hj)
         rw [norm_mul, norm_mul, norm_pow, norm_pow, ← hρ, hq₁n, div_pow, pow_add, pow_add]
-        have hc := norm_nonneg (PowerSeries.coeff (m + d) H)
         have hpow : ρ ^ d ≤ ρ₁ ^ d := pow_le_pow_left₀ hρ0 hρle d
-        have hρ₁m : 0 < ρ₁ ^ m := pow_pos hρ₁pos m
         calc ‖PowerSeries.coeff (m + d) H‖ * (ρ ^ m * ρ ^ d)
             ≤ ‖PowerSeries.coeff (m + d) H‖ * (ρ ^ m * ρ₁ ^ d) := by gcongr
           _ = ρ ^ m / ρ₁ ^ m * (‖PowerSeries.coeff (m + d) H‖ * (ρ₁ ^ m * ρ₁ ^ d)) := by
@@ -1596,9 +1590,7 @@ theorem powerSeries_dvd_of_sum_bounded : ∀ (G H : PowerSeries ℂ) (T C : ℝ)
       have hρpos : 0 < ‖eTwoPi w‖ := norm_pos_iff.2 hq0
       have hg := (hyp w hwT).2.2 (hne w hwT hw2)
       have hb := hbnd w hw0.le
-      have hS₁0 : 0 ≤ S₁ := tsum_nonneg fun _ => norm_nonneg _
       have hρm : 0 < ‖eTwoPi w‖ ^ m := pow_pos hρpos m
-      have hρ₁m : 0 < ρ₁ ^ m := pow_pos hρ₁pos m
       rw [norm_mul, norm_zpow, zpow_neg, zpow_natCast]
       have h1 : ‖g w‖ ≤ max C 0 * ((‖eTwoPi w‖ / ρ₁) ^ m * S₁) :=
         hg.trans ((mul_le_mul_of_nonneg_right (le_max_left C 0) (norm_nonneg _)).trans
@@ -1736,7 +1728,6 @@ theorem norm_bounds {κ : KeyRule} (hκ : IsKeyRule κ) (x : KeyIn ℂ) {τ Mx :
   have e := hκ.1 ℂ P hg rig hrig _ hth₀ v₀ hv₀ th hth v hv c₀ Mx e₁ hMv
   rw [hκ.2.2.2.1 ⟨P, hg, rig, hrig, th₀, hth₀, v₀, hv₀⟩ u τ a b k₁ k₂ hab.1 hab.2 k₃ k₄ k₅ k₆, Units.val_one,
     _root_.mul_one] at e
-  have q : 0 < ‖c₀‖ := norm_pos_iff.2 hc
   have e' : ‖(κ ℂ ⟨P, hg, rig, hrig, th, hth, v, hv⟩ : ℂ)‖ = (‖Mx.det‖ / ‖c₀‖ ^ 2) ^ 4 := by
     have := congrArg (‖·‖) e
     simp only [norm_mul, norm_pow] at this

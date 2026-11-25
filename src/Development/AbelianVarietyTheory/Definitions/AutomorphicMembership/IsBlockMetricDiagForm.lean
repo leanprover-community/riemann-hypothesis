@@ -196,7 +196,7 @@ theorem exists_isBlockMetric (y : Sp ℂ ⟶ X) : ∃ h : TanM y t.G →ₗ[ℂ]
       by_cases h : τ' = ρ
       · subst h; rw [Pi.single_eq_same]; exact hv a
       · simp [Pi.single_eq_of_ne h]) τ
-    rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_of_ne hτ] at this
+    rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_of_ne hτ] at this
   have hf : ∀ v w, (∑ τ, (g.compl₂ (e τ)).comp (e τ)) v w = ∑ τ, g (e τ v) (e τ w) := fun v w => by
     simp [LinearMap.sum_apply]
   refine ⟨∑ τ, (g.compl₂ (e τ)).comp (e τ), fun v w => ?_, fun v hv => ?_, fun ρ ρ' v w h hv hw => ?_⟩

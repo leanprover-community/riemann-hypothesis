@@ -594,7 +594,7 @@ theorem UpperTheory.V.Z.Sym.Wt.twineC :
   have := hqThree k ((τ v + a) / 2) ((τ v - a) / 2)
   rw [h1, h2] at this
   rw [Fintype.sum_bool, ← this]
-  simp only [if_true, Bool.false_eq_true, if_false, Nat.add_sub_cancel, trOne _ _ _ _ hc]
+  simp only [ite_true, Bool.false_eq_true, ite_false, Nat.add_sub_cancel, trOne _ _ _ _ hc]
   ring
 end -- clump:auto
 end -- clump:auto

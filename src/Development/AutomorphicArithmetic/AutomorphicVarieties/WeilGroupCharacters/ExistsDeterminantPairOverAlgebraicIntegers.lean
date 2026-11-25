@@ -167,7 +167,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.QuotientBasisFiniteDimensional.qb_fd :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {ι : Type} [Finite ι]
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {ι : Type} [Finite ι]
     (f : ι → PadicAlgCl l),
     ∃ (K : IntermediateField ℚ_[l] (PadicAlgCl l)), FiniteDimensional ℚ_[l] ↥K ∧ ∀ (i : ι), f i ∈ K := by
   intro l _ ι _ f
@@ -186,8 +186,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.FiniteModuleImageInFiniteExtension.qb_fdmod :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {M : Type}
-    [inst_1 : AddCommGroup M] [inst_2 : _root_.Module ℤ_[l] M] [Module.Finite ℤ_[l] M] (f : M →ₗ[ℤ_[l]] PadicAlgCl l),
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {M : Type}
+    [AddCommGroup M] [_root_.Module ℤ_[l] M] [Module.Finite ℤ_[l] M] (f : M →ₗ[ℤ_[l]] PadicAlgCl l),
     ∃ (K : IntermediateField ℚ_[l] (PadicAlgCl l)),
       FiniteDimensional ℚ_[l] ↥K ∧ ∀ (x : M), (f : M → PadicAlgCl l) x ∈ K := by
   intro l _ M _ _ hM f

@@ -3,47 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IndicatorFunctionIdentity
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddCharConductorAndHaarIntegersExist
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -88,7 +49,7 @@ theorem ite_mem_SB {P : X → Prop} (hK : IsCompact {x | P x}) (ho : IsOpen {x |
     (fun x => if P x then (1 : ℂ) else 0) ∈ SB X := by
   have hc : IsClosed {x | P x} := hK.isClosed
   change IsLocallyConstant _ ∧ HasCompactSupport _
-  refine ⟨fun t => ?_, HasCompactSupport.intro hK fun x hx => if_neg hx⟩
+  refine ⟨fun t => ?_, HasCompactSupport.intro hK fun x hx => ite_eq_right hx⟩
   have ht : (fun x => if P x then (1 : ℂ) else 0) ⁻¹' t =
       ({x | P x} ∩ {_x | (1 : ℂ) ∈ t}) ∪ ({x | P x}ᶜ ∩ {_x | (0 : ℂ) ∈ t}) := by
     ext x
@@ -315,7 +276,7 @@ theorem fpair_ne_zero (χ : AddChar k Circle) (hχ : Continuous χ) (ε : k) (h�
       T.indicator (fun _ => ((μ.real (L : Set (n → k)) : ℝ) : ℂ)) η := by
     intro η
     by_cases hη : η ∈ T
-    · rw [Set.indicator_apply, if_pos hη]
+    · rw [Set.indicator_apply, ite_eq_left hη]
       have hη' := (hmT η).mp hη
       have : (fun y => vecInd L y * (χ (ε * (η ⬝ᵥ y)) : ℂ)) = (L : Set (n → k)).indicator fun _ => (1 : ℂ) := by
         funext y
@@ -324,7 +285,7 @@ theorem fpair_ne_zero (χ : AddChar k Circle) (hχ : Continuous χ) (ε : k) (h�
         · simp [vecInd, hy]
       rw [this, integral_indicator_const _ hLm]
       simp
-    · rw [Set.indicator_apply, if_neg hη]
+    · rw [Set.indicator_apply, ite_eq_right hη]
       have hex : ∃ y ∈ L, χ (ε * (η ⬝ᵥ y)) ≠ 1 := by
         by_contra! hcon
         exact hη ((hmT η).mpr hcon)

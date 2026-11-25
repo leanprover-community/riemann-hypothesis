@@ -239,15 +239,7 @@ lemma pullbackSection_mem_thetaSpace {q n : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp
   · unfold s0
     have hk : ∀ k : Fin n, Differentiable ℂ (fun v : Fin n → Vsp X.dim => s fun _ => π (v k)) :=
       fun k => hs.1.comp (nA_pi_diff X (q := q) k)
-    have hp : ∀ t : Finset (Fin n),
-        Differentiable ℂ (fun v : Fin n → Vsp X.dim => ∏ k ∈ t, s fun _ => π (v k)) := by
-      intro t
-      induction t using Finset.induction_on with
-      | empty => simp
-      | insert a t ha ih =>
-        simp only [Finset.prod_insert ha]
-        exact (hk a).mul ih
-    exact hp Finset.univ
+    exact fun x => (HasFDerivAt.finsetProd fun k _ => (hk k x).hasFDerivAt).differentiableAt
   · have key : ∀ k, s (fun _ => π ((v + γ) k)) = (X.eps (γ k) : ℂ) ^ q *
         cexp ((q : ℂ) * Real.pi * Hf (v k) (γ k) + q * Real.pi * Hf (γ k) (γ k) / 2) *
           s (fun _ => π (v k)) := by

@@ -46,8 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
@@ -170,5 +168,3 @@ theorem GlobalTheory.hasTh_baseChange : Out.Laws2 → ∀ (o : Type) [CommRing o
   convert Q using 2 with a a
   · exact Over.OverMorphism.ext (Category.assoc (spMap φ) x (t.lab a).left)
   · exact congrArg (fun q => q.hom (v a)) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom φ))
-
-end

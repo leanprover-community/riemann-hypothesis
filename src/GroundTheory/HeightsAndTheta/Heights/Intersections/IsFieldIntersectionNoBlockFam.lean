@@ -77,12 +77,4 @@ def ArithmeticIntersectionIntegral.Statement : Prop :=
     ptsIntegral P' (pot L') (logNormRat A' (rename v f) (rename v g)) =
       (J (fibreIdeal κ G) 0 Fin.elim0 : ℝ) * ptsIntegral (imageZ v P') (pot L) (logNormRat A f g)
 
-section Inhabitants
-
-open IndefiniteRowSideFullHecke.Inter
-
-variable {F : Type} [Field F] {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.Inter

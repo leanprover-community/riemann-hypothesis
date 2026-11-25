@@ -75,7 +75,7 @@ theorem exists_pivot {α : Type} [DecidableEq α] (R0 : Subring LL) (hv : ∀ x 
           have e : f y / f j * (f j / f a) = f y / f a := by
             field_simp
           rwa [e] at h3
-    · push_neg at hex
+    · push Not at hex
       have hfa : f a ≠ 0 := by
         rcases Finset.mem_insert.mp hx with rfl | hx'
         · exact hfx
@@ -130,7 +130,7 @@ theorem desc_main (A : Subring Kf) (hA : ∀ x : Kf, x ∈ A ∨ x⁻¹ ∈ A) (
         obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual LL (Kf ⧸ Submodule.span LL {(1 : Kf)}),
             φ ((Submodule.span LL {(1 : Kf)}).mkQ (c x0)) ≠ 0 := by
           by_contra hc'
-          push_neg at hc'
+          push Not at hc'
           exact hmk ((Module.forall_dual_apply_eq_zero_iff LL _).mp hc')
         set ℓ : Kf →ₗ[LL] LL := φ.comp (Submodule.span LL {(1 : Kf)}).mkQ with hℓ
         have hℓ1 : ℓ 1 = 0 := by
@@ -363,7 +363,7 @@ theorem even_mat (v : Fin P.nV) (s : Fin (P.n' v)) (hs : Even s.val)
     (niAt P rfl pos N v s).map embLL * zAt P rfl pos (mcOf M embLL) y v s =
       kcOf M N embLL (pos ⟨v, s⟩) * y (pos ⟨v, s⟩) := by
   unfold niAt zAt reM
-  rw [if_pos hs, if_pos hs, sub_rfl, sub_rfl]
+  rw [ite_eq_left hs, ite_eq_left hs, sub_rfl, sub_rfl]
   show _ = ((((N (pos ⟨v, s⟩))⁻¹ * M (pos ⟨v, s⟩) : GL (Fin (P.m + 1)) LL) :
     Matrix (Fin (P.m + 1)) (Fin (P.m + 1)) LL).map embLL) * _
   rw [Units.val_mul, Matrix.map_mul, Matrix.mul_assoc]
@@ -384,7 +384,7 @@ theorem odd_mat (v : Fin P.nV) (s : Fin (P.n' v)) (hs : ¬ Even s.val)
       Matrix (Fin (P.m + 1)) (Fin (P.m + 1)) LL).map embLL) * y (pos ⟨v, s⟩))⁻¹ = _
     rw [Units.val_mul, Matrix.map_mul, Matrix.mul_assoc, Matrix.mul_inv_rev, hN]
   unfold niAt zAt reM revCol
-  rw [if_neg hs, if_neg hs, sub_rfl, sub_rfl, hK, Matrix.transpose_mul,
+  rw [ite_eq_right hs, ite_eq_right hs, sub_rfl, sub_rfl, hK, Matrix.transpose_mul,
     Matrix.submatrix_mul _ _ id id Fin.rev Function.bijective_id, Matrix.submatrix_id_id, Matrix.transpose_map]
 
 theorem blk_ev (hodd : ∀ (m : ℕ) (lam : Fin (m + 1) → ℤ), Antitone lam → OddFact (K := ℂ) ℤ m lam)

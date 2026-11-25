@@ -50,10 +50,8 @@ import Mathlib.Tactic.ReduceModChar
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.NonVan
 open GlobalTheory.UT.CoefBasic
 
@@ -91,4 +89,3 @@ theorem exists_sec_ne_zero : LL → ∀ (R : Type) [CommRing R] [IsDomain R] (A 
     module
 
 end GlobalTheory.UT.NonVan
-end

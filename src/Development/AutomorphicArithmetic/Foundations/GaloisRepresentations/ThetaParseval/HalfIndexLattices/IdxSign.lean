@@ -588,12 +588,6 @@ open Formalism.IndefR.DatumF MeasureTheory GlobalTheory.FinWeil GlobalTheory.Fin
 open PositivityTheory.ThKW PositivityTheory.ThKW.AutEtaA
 open UpperTheory.TP.W
 
-section
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-
-end
-
 private theorem false_of_three_distinct_primes_over_of_finrank_eq_two {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (h2 : Module.finrank F E = 2) (v : HeightOneSpectrum (𝓞 F)) (P Q R : HeightOneSpectrum (𝓞 E))
     (hP : HeightOneSpectrum.under (𝓞 F) P = v) (hQ : HeightOneSpectrum.under (𝓞 F) Q = v)
@@ -850,7 +844,7 @@ private theorem relIndex_map_of_injOn {G G' : Type} [AddGroup G] [AddGroup G'] (
     (hH : H ≤ R) (hK : K ≤ R) (hf : ∀ x ∈ R, f x = 0 → x = 0) :
     (H.map f).relIndex (K.map f) = H.relIndex K := by
   have hinj : Function.Injective (f.comp R.subtype) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     exact Subtype.ext (hf x x.2 hx)
   have h1 := AddSubgroup.relIndex_map_map_of_injective (H.addSubgroupOf R) (K.addSubgroupOf R) hinj

@@ -123,24 +123,6 @@ theorem exists_localWeil_vacuum_kernel (hW : WeilExistsFull D) (hV : VacExistsO 
 
 end Stages3
 
-section Stages4
-
-open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.WeilFull Formalism.IndefR.Fin
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {F : Face D A}
-
-namespace RealDat
-
-variable (R : RealDat D A Ks) (F)
-
-variable {R F}
-
-end RealDat
-
-
-end Stages4
-
 end Formalism.IndefR.Links
 
 end

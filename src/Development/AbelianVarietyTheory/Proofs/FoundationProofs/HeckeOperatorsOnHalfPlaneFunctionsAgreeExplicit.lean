@@ -2,49 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -75,7 +32,7 @@ theorem slash_upper (k : ℤ) (a b d : ℤ) (ha : 0 < a) (hd : 0 < d) (f : ℍ �
   have hsm : G • τ = ofComplex (((a : ℂ) * τ + b) / d) := by
     rw [← ofComplex_apply (G • τ), coe_smul_of_det_pos hpos]
     simp [num, denom, e00, e01, e10, e11]
-  rw [ModularForm.slash_apply, hsm, σ, if_pos hpos, hG]
+  rw [ModularForm.slash_apply, hsm, σ, ite_eq_left hpos, hG]
   have hden : denom G τ = d := by simp [denom, e10, e11]
   rw [hden, abs_of_pos (by positivity)]
   simp
@@ -115,9 +72,9 @@ theorem tq_eq (k : ℤ) (q : ℕ) (σ : SL(2, ℤ)) (f : ℍ → ℂ) (hq : 0 < 
     TqF k q σ f = GlobalTheory.Hk.heckeT k q σ f := by
   have hsplit : TqF k q σ f = UlF k q f + f ∣[k] toGL (mat σ * dg q 1) := by
     have e : ∀ i : Fin q, tqFam q σ i.castSucc = ulFam q i := fun i => by
-      rw [tqFam, if_pos (by simp)]; rfl
+      rw [tqFam, ite_eq_left (by simp)]; rfl
     have e2 : tqFam q σ (Fin.last q) = mat σ * dg q 1 := by
-      rw [tqFam, if_neg (by simp)]
+      rw [tqFam, ite_eq_right (by simp)]
     simp only [TqF, UlF, hkF]
     rw [Fin.sum_univ_castSucc, e2]
     simp only [e]

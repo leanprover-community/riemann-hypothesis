@@ -42,7 +42,7 @@ theorem exists_gl_col {K : Type} [Field K] {m : ℕ} (i₀ : Fin m) (v : Fin m �
     ∃ a : GL (Fin m) K, ∀ k, a.1 k i₀ = v k := by
   by_cases h0 : v i₀ ≠ 0
   · exact gl_col_of_ne i₀ v h0
-  push_neg at h0
+  push Not at h0
   obtain ⟨k, hk⟩ := Function.ne_iff.1 hv
   have hki : k ≠ i₀ := fun h => hk (by rw [h, h0]; rfl)
   set w : Fin m → K := v + Pi.single i₀ (v k) with hw

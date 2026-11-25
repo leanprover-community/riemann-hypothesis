@@ -307,11 +307,11 @@ theorem exists_X {S : Finset (Pl D)} (hS2 : ∀ v ∉ S, (2 : 𝓞 D.host.F) ∉
   have hb : ∀ v i j, b v i j ∈ intLoc D.host.F D.host.E v := by
     intro v i j
     by_cases hv : v ∈ S
-    · simp only [b, dif_pos hv]; exact zero_mem _
-    · simp only [b, dif_neg hv]; exact (hx v hv).1 i j
+    · simp only [b, dite_eq_left hv]; exact zero_mem _
+    · simp only [b, dite_eq_right hv]; exact (hx v hv).1 i j
   obtain ⟨X, hXc, hXi⟩ := glue_mat D b hb
   have hXv : ∀ v (hv : v ∉ S), X.map (cv D v) = x v hv := by
-    intro v hv; ext i j; rw [Matrix.map_apply, hXc]; simp only [b, dif_neg hv]
+    intro v hv; ext i j; rw [Matrix.map_apply, hXc]; simp only [b, dite_eq_right hv]
   have hXinf : X.map (infPart D) = 0 := by ext i j; exact hXi i j
   have hz : ∀ v, ∃ z ∈ intLoc D.host.F D.host.E v, cv D v (bD (mat k) + bC (mat k) * X).det * z = 1 := by
     intro v
@@ -326,13 +326,13 @@ theorem exists_X {S : Finset (Pl D)} (hS2 : ∀ v ∉ S, (2 : 𝓞 D.host.F) ∉
     · intro v
       rw [cj_apply, cv_cA, hXc, hXc]
       by_cases hv : v ∈ S
-      · simp only [b, dif_pos hv, Matrix.zero_apply, map_zero]
-      · simp only [b, dif_neg hv]
+      · simp only [b, dite_eq_left hv, Matrix.zero_apply, map_zero]
+      · simp only [b, dite_eq_right hv]
         have := congrFun (congrFun (hx v hv).2.1 i) j
         rw [cj_apply] at this
         exact this
     · rw [cj_apply, infPart_cA, hXi, hXi, map_zero]
-  · ext i j; rw [Matrix.map_apply, hXc]; simp only [b, dif_pos hv, Matrix.zero_apply]
+  · ext i j; rw [Matrix.map_apply, hXc]; simp only [b, dite_eq_left hv, Matrix.zero_apply]
   · rw [hXc]; exact hb v i j
   · refine isUnit_of_comp D _ hz ?_
     rw [det_map_u, hinf, hXinf, blocks_one.2.2.1, blocks_one.2.2.2]; simp

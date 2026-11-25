@@ -147,8 +147,8 @@ theorem kink {n' : ℕ} (hn : Even n') (TT : Finset (Fin n')) (q : ℝ) (hq : 2 
     apply Finset.sum_congr rfl
     intro y _
     by_cases hd : dMinus TT y = 0
-    · rw [if_pos hd, if_neg (not_not.2 hd)]
-    · rw [if_neg hd, if_pos hd]
+    · rw [ite_eq_left hd, ite_eq_right (not_not.2 hd)]
+    · rw [ite_eq_right hd, ite_eq_left hd]
       simp only [hg, hxm]
       rw [posAdd_back y _ (dMinus_spec TT y hd).2.1, min_comm]
   rw [h1]
@@ -182,7 +182,7 @@ theorem kink {n' : ℕ} (hn : Even n') (TT : Finset (Fin n')) (q : ℝ) (hq : 2 
     have hyS := (Finset.mem_filter.1 hy).1
     have d1 := (Finset.mem_filter.1 hyS).2
     have o1 := (Finset.mem_filter.1 (Finset.mem_filter.1 hyS).1).2
-    rw [if_pos (dMinus_odd hn TT y o1 d1), e1]
+    rw [ite_eq_left (dMinus_odd hn TT y o1 d1), e1]
   rw [h2]
   have hg0 : ∀ e, 0 ≤ g x e := fun e => le_min (div_nonneg (ha x hxT) (by positivity)) (hW _)
   apply Summable.sum_le_tsum
@@ -207,12 +207,12 @@ theorem fill_ge_one (X : Inst D L) (P : ParameterChoice' D L) {a b : HH D → �
   have hx := sc_x_pos L.sc
   unfold fill
   by_cases ht : z.1 = false ∧ z.2 ∈ D.host.TT
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     have h1 := (X.off_top j z ht).1
     have h2 := (hW z.2 ht.2).2.2
     have h3 : 0 ≤ L.sc.b' / L.sc.x := div_nonneg (by linarith) hx.le
     linarith
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     by_cases hth : IsThickPl D z
     · have := (X.off_thick j z hth).1
       have := sc_one_le_b L.sc
@@ -403,7 +403,7 @@ theorem kinkHH (X : Inst D L) (P : ParameterChoice' D L) {a b : HH D → ℤ} (h
     have hyT := hmemT y (Finset.mem_filter.1 hy).1
     have hf : fill X b j (false, phi D p t0 y) = (b (phi D p t0 y) : ℝ) + X.off j (false, phi D p t0 y) := by
       unfold fill
-      rw [if_pos ⟨rfl, hyT⟩]
+      rw [ite_eq_left ⟨rfl, hyT⟩]
     obtain ⟨o1, o2⟩ := X.off_top j (false, phi D p t0 y) ⟨rfl, hyT⟩
     unfold fillG
     rw [hf]
@@ -566,13 +566,13 @@ theorem lo_D (K : Consts) (L : SizeData₂ D) (C bo : ℝ) {p : ℕ} (hc : IsRes
     (hX : (p : ℝ) < L.sc.X') : lo K L C bo p = C * (cG L + L.etaSz) * Real.logb p (2 * L.sc.a) +
       C * (rG L.sc : ℝ) * L.sc.b' * Real.log L.sc.x +
       C * Real.log L.sc.x * (La K L.sc * L.sc.a / ((p : ℝ) * D.R.k) + L.sc.a * (p : ℝ) ^ (-(L1 D L.sc p : ℝ))) := by
-  simp only [lo, if_pos hc, if_pos h0, if_pos (And.intro hc hX)]
+  simp only [lo, ite_eq_left hc, ite_eq_left h0, ite_eq_left (And.intro hc hX)]
 
 theorem lo_E (K : Consts) (L : SizeData₂ D) (C bo : ℝ) {p : ℕ} (hc : IsResidueClassZero D p) (h0 : L.sc.p0 D.R.k ≤ (p : ℝ))
     (hX : (p : ℝ) < L.sc.X') : lo K L C bo p = C * (cG L + L.etaSz) * Real.logb p (2 * L.sc.a) +
       (L.sc.b' / L.sc.x + L.etaSz + C * L.sc.w'' D.R.n * Real.log L.sc.x / L.sc.delta1 + bo) +
       C * Real.log L.sc.x * (La K L.sc * L.sc.a / ((p : ℝ) * D.R.k) + L.sc.a / (p : ℝ) ^ 2) := by
-  simp only [lo, if_pos hc, if_neg (not_lt.2 h0), if_pos hX, if_pos (And.intro hc hX)]
+  simp only [lo, ite_eq_left hc, ite_eq_right (not_lt.2 h0), ite_eq_left hX, ite_eq_left (And.intro hc hX)]
 
 theorem La_nonneg (K : Consts) (hLa : 0 ≤ K.La) (s : Scale) : 0 ≤ La K s := by
   unfold La
@@ -624,7 +624,7 @@ theorem starAt_D (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
   have hPr : Pr X K b p j t0 ≤ 3 * (rG L.sc : ℝ) * ((Nv X p t0 : ℝ) * L.sc.b' +
       (addOrderOf (hP D p) : ℝ) * (L.sc.w'' D.R.n + L.etaSz + cG L + Nm D)) := by
     unfold Pr
-    rw [if_neg (not_le.2 h0), partner_count_of_central hc]
+    rw [ite_eq_right (not_le.2 h0), partner_count_of_central hc]
     have e1 : (Nv X p t0 : ℝ) * (2 * L.sc.b' + cG L) ≤ (Nv X p t0 : ℝ) * (3 * L.sc.b') :=
       mul_le_mul_of_nonneg_left (by linarith) (by linarith)
     have e2 : 0 ≤ (addOrderOf (hP D p) : ℝ) * (L.sc.w'' D.R.n + L.etaSz + cG L + Nm D) :=
@@ -637,10 +637,10 @@ theorem starAt_D (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
     linarith
   have htv : tv X K a b p t0 = tIIf K L p (addOrderOf (hP D p)) (Nv X p t0) := by
     unfold tv
-    rw [if_pos h0, partner_count_of_central hc]
+    rw [ite_eq_left h0, partner_count_of_central hc]
   have hDp : Dp K L p = DIIf K L p (addOrderOf (hP D p)) := by
     unfold Dp
-    rw [if_pos h0, partner_count_of_central hc]
+    rw [ite_eq_left h0, partner_count_of_central hc]
   have hN0 : (0 : ℝ) ≤ (Nv X p t0 : ℝ) := by linarith
   have hr0 : (0 : ℝ) ≤ (rG L.sc : ℝ) := by linarith
   have ht0' : 0 ≤ tIIf K L p (addOrderOf (hP D p)) (Nv X p t0) := by
@@ -751,14 +751,14 @@ theorem starAt_E (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
       (∑ s ∈ (topsOn X p t0).filter (fun s => ¬ IsV X p s), (fillG X b j (false, s) - (b s : ℝ))) +
       K.Pr1 * (addOrderOf (hP D p) : ℝ) * (L.sc.w'' D.R.n + L.etaSz + cG L + Nm D) := by
     unfold Pr
-    rw [if_pos h0, partner_count_of_central hc]
+    rw [ite_eq_left h0, partner_count_of_central hc]
   have htv : tv X K a b p t0 =
       tIf K L p (addOrderOf (hP D p)) (topsPos D p t0) (wPos D p t0 a) (wPos D p t0 b) := by
     unfold tv
-    rw [if_neg (not_lt.2 h0)]
+    rw [ite_eq_right (not_lt.2 h0)]
   have hDp : Dp K L p = DIf K L p (addOrderOf (hP D p)) := by
     unfold Dp
-    rw [if_neg (not_lt.2 h0), partner_count_of_central hc]
+    rw [ite_eq_right (not_lt.2 h0), partner_count_of_central hc]
 
   have hKk : 0 ≤ ∑ y ∈ (topsPos D p t0).filter (fun y => ¬ IsTypeV y),
         (if dMinus (topsPos D p t0) y = 0 then 0 else

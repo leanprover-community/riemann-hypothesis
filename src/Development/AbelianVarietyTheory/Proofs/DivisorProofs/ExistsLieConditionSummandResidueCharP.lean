@@ -415,7 +415,6 @@ theorem exists_eigen_coordinates_range_quot : ∀ {C : Type} [CommRing C] [IsLoc
     obtain ⟨u, hu, hxu⟩ := hD (π x) (LinearMap.mem_range_self π x)
     rw [hpx, hEu _ (LinearMap.mem_range_self π x) u hu hxu]
     exact hu i c
-  have hpe : ∀ i w, (∀ c, σb c w = χ i c • w) → e i (p i w) = p i w := fun i w _ => he2 i _ (hpE i w)
   have hpπ : ∀ i w, πb (p i w) = p i w := by
     intro i w
     simp only [p]
@@ -483,8 +482,8 @@ theorem exists_eigen_coordinates_range_quot : ∀ {C : Type} [CommRing C] [IsLoc
       simp
     · have : f i' t' (b i t) = 0 := by
         obtain ⟨w, hw⟩ := hb i t
-        rw [← hfp, ← hw, hpp, if_neg hii, map_zero]
-      rw [this, if_neg]
+        rw [← hfp, ← hw, hpp, ite_eq_right hii, map_zero]
+      rw [this, ite_eq_right]
       intro h; exact hii (congrArg Sigma.fst h)
 
 end GlobalTheory
@@ -977,7 +976,7 @@ theorem GlobalTheory.HTSummand.Corep.mat_sum (n : ℕ) (α : Type) [CommRing α]
     rw [Finset.sum_eq_single a (fun b _ hb => by simp [Matrix.single_apply, hb]) (by simp)]
     simp
   · exact Finset.sum_eq_zero fun x _ => by
-      simp only [Matrix.single_apply]; rw [if_neg]; rintro ⟨rfl, rfl⟩; exact h rfl
+      simp only [Matrix.single_apply]; rw [ite_eq_right]; rintro ⟨rfl, rfl⟩; exact h rfl
 
 theorem GlobalTheory.HTSummand.Corep.mat_sand (n : ℕ) (α : Type) [CommRing α] (i j z : Fin n) (M : Matrix (Fin n) (Fin n) α) :
     Matrix.single z i 1 * M * Matrix.single j z 1 = Matrix.scalar _ (M i j) * Matrix.single z z 1 := by

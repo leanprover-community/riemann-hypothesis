@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -65,7 +64,7 @@ theorem isLog_local (A : PAlg l) (n : ℕ) (e w w' : A.W) (y y' : A.Acr n) (he :
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [mul_left_comm, h3 k, mul_left_comm]
 
-theorem logEx : CrystallineSemistableComparison.E.LogEx := fun l _ A n =>
+theorem logEx : CrystallineSemistableComparison.E.LogEx := fun _ _ A n =>
   ⟨isLog_exists A n, fun w y y' => isLog_unique A n w y y', fun e w w' y y' => isLog_local A n e w w' y y'⟩
 
 end GlobalTheory.CompanionTheory.CrisLog

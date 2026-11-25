@@ -100,14 +100,14 @@ theorem UpperTheory.V.KT.hnfone :
   · intro A hdet hnrm
     have hA : A.det ≠ 0 ∧ nrmDet A = I := ⟨hdet, hnrm⟩
     have hex : ∃ A', (A'.det ≠ 0 ∧ nrmDet A' = I) ∧ key A' = key A := ⟨A, hA, rfl⟩
-    have hrep : rep (key A) = Classical.choose hex := dif_pos hex
+    have hrep : rep (key A) = Classical.choose hex := dite_eq_left hex
     obtain ⟨hA'P, hA'k⟩ := Classical.choose_spec hex
     obtain ⟨h1, h2⟩ := Classical.choose_spec (hB A hA)
     obtain ⟨h1', h2'⟩ := Classical.choose_spec (hB _ hA'P)
     have hkk : (Classical.choose (hB _ hA'P)).map (Ideal.Quotient.mk (Ideal.span {(I : 𝓞 L)})) =
         (Classical.choose (hB A hA)).map (Ideal.Quotient.mk _) := by
       have keyeq : ∀ (M : Matrix (Fin N) (Fin N) (𝓞 L)) (h : M.det ≠ 0 ∧ nrmDet M = I),
-          key M = (Classical.choose (hB M h)).map (Ideal.Quotient.mk _) := fun M h => dif_pos h
+          key M = (Classical.choose (hB M h)).map (Ideal.Quotient.mk _) := fun M h => dite_eq_left h
       exact (keyeq _ hA'P).symm.trans (hA'k.trans (keyeq A hA))
     have hent : ∀ i j, ∃ x, Classical.choose (hB A hA) i j - Classical.choose (hB _ hA'P) i j =
         (I : 𝓞 L) * x := by

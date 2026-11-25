@@ -169,13 +169,13 @@ theorem presL {Y : B.Mat k (j + ρ)} (hY : inLieP k j ρ Y) : Pres (Set.range (e
   have h1 : ∑ m, Yᴴ i m * Hpk k (j + ρ) m b = 0 := by
     refine Finset.sum_eq_zero fun m _ => ?_
     by_cases hm : m.val < j
-    · rw [hpk_row m b (by omega), if_neg (by omega), mul_zero]
+    · rw [hpk_row m b (by omega), ite_eq_right (by omega), mul_zero]
     · rw [Matrix.conjTranspose_apply, hY.2 m i hi (by omega), star_zero, zero_mul]
   have h2 : ∑ m, Hpk k (j + ρ) i m * Y m b = Y c b := by
     rw [Finset.sum_eq_single c]
-    · rw [hpk_row i c (by omega), if_pos (by omega), one_mul]
+    · rw [hpk_row i c (by omega), ite_eq_left (by omega), one_mul]
     · intro m _ hm
-      rw [hpk_row i m (by omega), if_neg, zero_mul]
+      rw [hpk_row i m (by omega), ite_eq_right, zero_mul]
       intro h
       apply hm
       ext

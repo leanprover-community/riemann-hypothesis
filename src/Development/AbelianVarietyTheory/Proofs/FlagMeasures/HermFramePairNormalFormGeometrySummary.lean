@@ -3,53 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SameBlockAppend
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairIdealKillsDiscriminantModules
 
@@ -799,11 +755,11 @@ theorem _root_.GlobalTheory.DegCnt.NFGeom.isCompl [FiniteDimensional K V] :
 
       rw [map_sub, map_sub, map_smulₛₗ, _root_.Formalism.HermitianLatticeCounting.P.pairing_isotropicSpan_lastVector _ (_root_.Formalism.HermitianLatticeCounting.P.e_mem_X _ b), smul_zero, sub_zero, hp2, map_sum,
       Finset.sum_eq_single_of_mem b (Finset.mem_filter.2 ⟨Finset.mem_univ _, hb⟩)]
-      · rw [map_smulₛₗ, N.ist_e _ _ hb, if_pos rfl, starRingEnd_apply,
+      · rw [map_smulₛₗ, N.ist_e _ _ hb, ite_eq_left rfl, starRingEnd_apply,
           star_star, smul_eq_mul, mul_one, sub_self]
       · intro a ha hab
         rw [map_smulₛₗ, N.ist_e _ _ (Finset.mem_filter.1 ha).2,
-          if_neg (fun h => hab h.symm), smul_zero]
+          ite_eq_right (fun h => hab h.symm), smul_zero]
     have hii : H.B N.F.z (v - p2 - s • N.F.z) = 0 := by
 
       rw [map_sub, map_sub, map_smulₛₗ, hp2, map_sum]
@@ -877,11 +833,11 @@ theorem _root_.GlobalTheory.DegCnt.NFGeom.finrank_Wt [FiniteDimensional K V] :
     intro g i
 
     rw [map_sum, Finset.sum_eq_single i]
-    · rw [map_smulₛₗ, N.ist_e _ _ i.2, if_pos rfl, smul_eq_mul, mul_one,
+    · rw [map_smulₛₗ, N.ist_e _ _ i.2, ite_eq_left rfl, smul_eq_mul, mul_one,
         starRingEnd_apply]
     · intro a _ hai
       rw [map_smulₛₗ, N.ist_e _ _ a.2,
-        if_neg (fun h => hai (Subtype.ext h).symm), smul_zero]
+        ite_eq_right (fun h => hai (Subtype.ext h).symm), smul_zero]
     · intro h
       exact absurd (Finset.mem_univ i) h
   have hIst : N.Ist = Submodule.span K (Set.range

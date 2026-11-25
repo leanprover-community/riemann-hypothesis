@@ -19,58 +19,15 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAlgebra
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsConjGaugeInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GaugeMeasureMatrixAlgebraSubgroupLocalAsymptotic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocSizeBlocks
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Order.Sigma
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
@@ -224,7 +181,7 @@ theorem exists_measurable_levMap (n n₀ a : ℕ) (j : Fin a → ℕ) (ε : Fin 
     if hz : z ∈ S then (hex z hz).choose else 1
   have hθ : ∀ z ∈ S, uMat (θ z) = lev ε B B₀ (fun i => Matrix.of (z.1 i)) (uMat z.2) := by
     intro z hz
-    simp only [θ, dif_pos hz]
+    simp only [θ, dite_eq_left hz]
     exact (hex z hz).choose_spec
   refine ⟨θ, ?_, fun z hz => hθ z hz⟩
   have hdet : ∀ i, Measurable fun z : (∀ i, Fin (j i) → Fin (j i) → ℂ) × UJ ε₀ => (Matrix.of (z.1 i)).det :=
@@ -244,8 +201,8 @@ theorem exists_measurable_levMap (n n₀ a : ℕ) (j : Fin a → ℕ) (ε : Fin 
       else (fun r s => uMat (1 : UJ ε) r s) := by
     funext z
     by_cases hz : z ∈ S
-    · simp only [Function.comp_apply, if_pos hz, hθ z hz]
-    · simp only [Function.comp_apply, if_neg hz, θ, dif_neg hz]
+    · simp only [Function.comp_apply, ite_eq_left hz, hθ z hz]
+    · simp only [Function.comp_apply, ite_eq_right hz, θ, dite_eq_right hz]
   rw [heq]
   exact Measurable.ite hS (measurable_lev ε ε₀ B B₀) measurable_const
 
@@ -691,8 +648,6 @@ open Formalism.REAL (Jm UJ Jm_mul_self Jm_conjTranspose)
 namespace GlobalTheory.LeviUnip
 
 variable {n n₀ a : ℕ} {j : Fin a → ℕ}
-
-theorem uone {ε : Fin n → Bool} : uMat (1 : UJ ε) = 1 := rfl
 
 theorem col_mem {B : ∀ i, Matrix (Fin n) (Fin (j i)) ℂ} {W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)}
     (hB : SpansFlag B W) {k : Fin (a + 1)} {i : Fin a} (hi : i.castSucc < k) (u : Fin (j i) → ℂ) :

@@ -46,9 +46,6 @@ theorem embeddedResolutionRule_isPullbackBlowupSequence_of_smooth
     (hsq : IsPullback D'.emb ψ φ D.emb) :
     IsPullbackBlowupSequence ψ (embeddedResolutionRuleOfPrincipalization A hw k Y' p' D')
       (embeddedResolutionRuleOfPrincipalization A hw k Y p D) := by
-  have : AlgebraicGeometry.Flat φ := inferInstance
-  have : AlgebraicGeometry.QuasiCompact D.emb := inferInstance
-  have : AlgebraicGeometry.QuasiCompact D'.emb := inferInstance
   have hker : D'.emb.ker = D.emb.ker.comap φ :=
     ker_eq_comap_ker_of_isPullback_of_flat hsq.flip
   have hI' : NonzeroOnComponents (D.emb.ker.comap φ) := hker ▸ D'.nonzeroOnComponents_ker

@@ -10,55 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LinearCha
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentHaarAndModulus
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnipotentRadicalBasic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 public import Mathlib.Topology.Algebra.Group.Matrix
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -327,7 +279,7 @@ theorem measurePreserving_mul {n : Type} [Fintype n] [Fintype {rs // S rs}]
       obtain rfl : (j x).1 = r := congrArg Prod.fst hx
       obtain rfl : (j x).2 = s := congrArg Prod.snd hx
       have hne : (j x).1 ≠ (j x).2 := fun h => absurd (hjb x) (by rw [h]; exact lt_irrefl _)
-      rw [if_neg (hjS x), ext_pos (S := S') _ (hjb x), Matrix.sub_apply, Matrix.one_apply_ne hne, sub_zero, hE]
+      rw [ite_eq_right (hjS x), ext_pos (S := S') _ (hjb x), Matrix.sub_apply, Matrix.one_apply_ne hne, sub_zero, hE]
       exact h1 x
     · rw [Matrix.sub_apply, hE' β r s fun x h => hx ⟨x, h⟩, sub_self]
       split_ifs with h

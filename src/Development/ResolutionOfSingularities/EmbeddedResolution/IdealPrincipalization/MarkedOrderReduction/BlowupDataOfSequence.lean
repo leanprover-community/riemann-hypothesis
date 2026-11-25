@@ -36,20 +36,6 @@ theorem BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length {X : S
   rw [BlowupSequenceData.toSequenceOfBlowups_length]
   rfl
 
-private theorem ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt {X : Scheme.{u}} (s : SequenceOfBlowups X) (j : ℕ) :
-    (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.schemeAt j = s.schemeAt j :=
-  (BlowupSequenceData.toSequenceOfBlowups_schemeAt _ j).trans (BlowupSequenceData.ofSequenceOfBlowups_schemeAt s j)
-
-private theorem le_length_of_le_ofSequenceOfBlowups_length {X : Scheme.{u}} (s : SequenceOfBlowups X) {j : ℕ}
-    (hj : j ≤ (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.length) : j ≤ s.length := by
-  rw [BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length] at hj
-  exact hj
-
-private theorem le_ofSequenceOfBlowups_length_of_le_length {X : Scheme.{u}} (s : SequenceOfBlowups X) {j : ℕ}
-    (hj : j ≤ s.length) : j ≤ (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.length := by
-  rw [BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length]
-  exact hj
-
 theorem BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups {X : Scheme.{u}} (t : SequenceOfBlowups X) (j : ℕ) :
     (BlowupSequenceData.ofSequenceOfBlowups t).toSequenceOfBlowups.projectionToBase j = t.projectionToBase j :=
   (BlowupSequenceData.toSequenceOfBlowups_projectionToBase (BlowupSequenceData.ofSequenceOfBlowups t) j).trans (BlowupSequenceData.ofSequenceOfBlowups_projectionToBase t j)
@@ -61,9 +47,7 @@ variable {X X' : Scheme.{u}} {φ : X' ⟶ X} {s' : SequenceOfBlowups X'} {s : Se
 def ofSequenceOfBlowupsMap (c : SequenceOfBlowupsPullback φ s' s) (j : ℕ)
     (hj : j ≤ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length) :
     (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.schemeAt j ⟶ (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.schemeAt (c.idx j) :=
-  eqToHom (by exact ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s' j) ≫
-    c.map j (by exact le_length_of_le_ofSequenceOfBlowups_length s' hj) ≫
-    eqToHom (by exact (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s (c.idx j)).symm)
+  eqToHom (rfl : _ = s'.schemeAt j) ≫ c.map j hj ≫ eqToHom (rfl : s.schemeAt _ = _)
 
 theorem index_ofSequenceOfBlowups_length (c : SequenceOfBlowupsPullback φ s' s) :
     c.idx (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length = (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.length := by
@@ -86,65 +70,36 @@ theorem index_lt_index_succ_of_lt_length_ofSequenceOfBlowups (c : SequenceOfBlow
 
 private theorem ofSequenceOfBlowups_map_eq (c : SequenceOfBlowupsPullback φ s' s) (j : ℕ)
     (hj : j ≤ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length) :
-    ofSequenceOfBlowupsMap c j hj = c.map j (le_length_of_le_ofSequenceOfBlowups_length s' hj) := by
-  show 𝟙 (s'.schemeAt j) ≫ c.map j (le_length_of_le_ofSequenceOfBlowups_length s' hj) ≫ 𝟙 (s.schemeAt (c.idx j))
-      = c.map j (le_length_of_le_ofSequenceOfBlowups_length s' hj)
-  exact (Category.id_comp _).trans (Category.comp_id _)
-
-private theorem isPullback_congr {A B C D : Scheme.{u}} {f f' : A ⟶ B} {g g' : A ⟶ C}
-    {h h' : B ⟶ D} {k k' : C ⟶ D} (hf : f = f') (hg : g = g') (hh : h = h') (hk : k = k')
-    (H : IsPullback f g h k) : IsPullback f' g' h' k' := by
-  subst hf
-  subst hg
-  subst hh
-  subst hk
-  exact H
+    ofSequenceOfBlowupsMap c j hj = c.map j hj := by
+  show 𝟙 _ ≫ c.map j hj ≫ 𝟙 _ = c.map j hj
+  simp
 
 theorem isPullback_projectionToBase_ofSequenceOfBlowups (c : SequenceOfBlowupsPullback φ s' s) :
     ∀ (j : ℕ) (hj : j ≤ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length),
       IsPullback (ofSequenceOfBlowupsMap c j hj) ((BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.projectionToBase j)
         ((BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.projectionToBase (c.idx j)) φ := by
   intro j hj
-  exact isPullback_congr (ofSequenceOfBlowups_map_eq c j hj).symm
-    (BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups s' j).symm
-    (BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups s (c.idx j)).symm rfl
-    (c.isPullback j (le_length_of_le_ofSequenceOfBlowups_length s' hj))
+  rw [ofSequenceOfBlowups_map_eq,
+    BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups,
+    BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups]
+  exact c.isPullback j hj
 
-private theorem ofSequenceOfBlowups_transitionMap {W : Scheme.{u}} (t : SequenceOfBlowups W) {i i' : ℕ}
-    (h : i ≤ i') : (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap h = t.transitionMap h := by
-  induction h with
-  | refl =>
-      have e1 : (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap (le_refl i) = 𝟙 ((BlowupSequenceData.ofSequenceOfBlowups t).obj i) := by
-        rw [BlowupSequenceData.transitionMap_refl]
-      have e2 : t.transitionMap (le_refl i) = 𝟙 (t.schemeAt i) := by
-        rw [SequenceOfBlowups.transitionMap_self_eq_id]
-      exact e1.trans e2.symm
-  | @step m hm ih =>
-      have hmap : (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap (Nat.le_succ m) = t.transitionMapSucc m :=
-        (BlowupSequenceData.transitionMap_succ (BlowupSequenceData.ofSequenceOfBlowups t) m).trans (BlowupSequenceData.ofSequenceOfBlowups_blowupMorphism t m)
-      have h1 : (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap (Nat.le_trans hm (Nat.le_succ m))
-          = (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap (Nat.le_succ m) ≫ (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap hm :=
-        (BlowupSequenceData.transitionMap_comp_transitionMap (BlowupSequenceData.ofSequenceOfBlowups t) hm (Nat.le_succ m)).symm
-      have h2a : (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap (Nat.le_succ m) ≫ (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap hm
-          = t.transitionMapSucc m ≫ (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap hm :=
-        congrArg (fun f : t.schemeAt (m + 1) ⟶ t.schemeAt m => f ≫ (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap hm) hmap
-      have h2b : t.transitionMapSucc m ≫ (BlowupSequenceData.ofSequenceOfBlowups t).transitionMap hm
-          = t.transitionMapSucc m ≫ t.transitionMap hm :=
-        congrArg (fun g : t.schemeAt m ⟶ t.schemeAt i => t.transitionMapSucc m ≫ g) ih
-      have h3 : t.transitionMapSucc m ≫ t.transitionMap hm = t.transitionMap (Nat.le_trans hm (Nat.le_succ m)) := by
-        rw [SequenceOfBlowups.blowupMorphism_eq_transitionMap]
-        exact SequenceOfBlowups.transitionMap_trans t hm (Nat.le_succ m)
-      exact h1.trans (h2a.trans (h2b.trans h3))
-
-private theorem ofSequenceOfBlowups_toSequenceOfBlowups_transitionMap {W : Scheme.{u}} (t : SequenceOfBlowups W) {i i' : ℕ}
-    (h : i ≤ i') : (BlowupSequenceData.ofSequenceOfBlowups t).toSequenceOfBlowups.transitionMap h = t.transitionMap h :=
-  (BlowupSequenceData.toSequenceOfBlowups_transitionMap (BlowupSequenceData.ofSequenceOfBlowups t) h).trans (ofSequenceOfBlowups_transitionMap t h)
-
-private theorem ofSequenceOfBlowups_toSequenceOfBlowups_blowupMorphism {W : Scheme.{u}} (t : SequenceOfBlowups W) (i : ℕ) :
-    (BlowupSequenceData.ofSequenceOfBlowups t).toSequenceOfBlowups.transitionMapSucc i = t.transitionMapSucc i :=
-  (SequenceOfBlowups.blowupMorphism_eq_transitionMap ((BlowupSequenceData.ofSequenceOfBlowups t).toSequenceOfBlowups) i).trans
-    ((ofSequenceOfBlowups_toSequenceOfBlowups_transitionMap t (Nat.le_succ i)).trans
-      (SequenceOfBlowups.blowupMorphism_eq_transitionMap t i).symm)
+private theorem ofSequenceOfBlowups_transitionMap {W : Scheme.{u}} (t : SequenceOfBlowups W)
+    {i i' : ℕ} (h : i ≤ i') :
+    (BlowupSequenceData.ofSequenceOfBlowups t).toSequenceOfBlowups.transitionMap h =
+      t.transitionMap h := by
+  induction i', h using Nat.le_induction with
+  | base =>
+    rw [SequenceOfBlowups.transitionMap_self_eq_id, SequenceOfBlowups.transitionMap_self_eq_id]
+    rfl
+  | succ m hm ih =>
+    rw [← SequenceOfBlowups.transitionMap_trans _ hm (Nat.le_succ m),
+      ← SequenceOfBlowups.blowupMorphism_eq_transitionMap,
+      BlowupSequenceData.toSequenceOfBlowups_blowupMorphism]
+    show t.transitionMapSucc m ≫
+      (BlowupSequenceData.ofSequenceOfBlowups t).toSequenceOfBlowups.transitionMap hm = _
+    rw [ih, SequenceOfBlowups.blowupMorphism_eq_transitionMap]
+    exact SequenceOfBlowups.transitionMap_trans t hm (Nat.le_succ m)
 
 theorem ofSequenceOfBlowups_blowupMorphism_comp_map (c : SequenceOfBlowupsPullback φ s' s) :
     ∀ (j : ℕ) (hj : j < (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length),
@@ -157,24 +112,16 @@ theorem ofSequenceOfBlowups_blowupMorphism_comp_map (c : SequenceOfBlowupsPullba
     rw [BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length] at h
     exact h
   rw [ofSequenceOfBlowups_map_eq c j (le_of_lt hj), ofSequenceOfBlowups_map_eq c (j + 1) hj,
-    ofSequenceOfBlowups_toSequenceOfBlowups_blowupMorphism, ofSequenceOfBlowups_toSequenceOfBlowups_transitionMap]
+    ofSequenceOfBlowups_transitionMap, BlowupSequenceData.toSequenceOfBlowups_blowupMorphism]
   exact c.step j hlt
-
-private theorem eqToHom_refl_comp_comp_eqToHom_refl {A B : Scheme.{u}} (hA : A = A) (hB : B = B)
-    (f : A ⟶ B) : eqToHom hA ≫ f ≫ eqToHom hB = f := by
-  simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
 
 theorem center_ofSequenceOfBlowups_eq_comap (c : SequenceOfBlowupsPullback φ s' s) :
     ∀ (j : ℕ) (hj : j < (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length),
       (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.center j =
         ((BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups.center (c.idx j)).comap (ofSequenceOfBlowupsMap c j (le_of_lt hj)) := by
   intro j hj
-  have hj' : j < s'.length := lt_of_lt_of_le hj (le_of_eq (BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length s'))
-  have hmap : ofSequenceOfBlowupsMap c j (le_of_lt hj) = c.map j (le_of_lt hj') :=
-    eqToHom_refl_comp_comp_eqToHom_refl (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s' j) (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s (c.idx j)).symm
-      (c.map j (le_length_of_le_ofSequenceOfBlowups_length s' (le_of_lt hj)))
-  rw [hmap]
-  exact c.center_comap j hj'
+  rw [ofSequenceOfBlowups_map_eq]
+  exact c.center_comap j hj
 
 theorem center_ofSequenceOfBlowups_ne_top (c : SequenceOfBlowupsPullback φ s' s) :
     ∀ j : ℕ, j < (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length →
@@ -218,9 +165,7 @@ def toBlowupDataOfSeq (c : SequenceOfBlowupsPullback φ s' s) :
 def transportedMap
     (c : SequenceOfBlowupsPullback φ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups)
     (j : ℕ) (hj : j ≤ s'.length) : s'.schemeAt j ⟶ s.schemeAt (c.idx j) :=
-  eqToHom (by exact (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s' j).symm) ≫
-    c.map j (by exact le_ofSequenceOfBlowups_length_of_le_length s' hj) ≫
-    eqToHom (by exact ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s (c.idx j))
+  eqToHom (rfl : s'.schemeAt j = _) ≫ c.map j hj ≫ eqToHom (rfl : _ = s.schemeAt (c.idx j))
 
 theorem ofSequenceOfBlowups_index_length
     (c : SequenceOfBlowupsPullback φ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups) :
@@ -251,18 +196,19 @@ theorem index_lt_index_succ_of_lt_length
 private theorem transportedMap_eq_map
     (c : SequenceOfBlowupsPullback φ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups)
     (j : ℕ) (hj : j ≤ s'.length) :
-    transportedMap c j hj = c.map j (le_ofSequenceOfBlowups_length_of_le_length s' hj) :=
-  eqToHom_refl_comp_comp_eqToHom_refl (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s' j).symm (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s (c.idx j))
-    (c.map j (le_ofSequenceOfBlowups_length_of_le_length s' hj))
+    transportedMap c j hj = c.map j hj := by
+  show 𝟙 _ ≫ c.map j hj ≫ 𝟙 _ = c.map j hj
+  simp
 
 theorem isPullback_transportedMap
     (c : SequenceOfBlowupsPullback φ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups) :
     ∀ (j : ℕ) (hj : j ≤ s'.length),
       IsPullback (transportedMap c j hj) (s'.projectionToBase j) (s.projectionToBase (c.idx j)) φ := by
   intro j hj
-  exact isPullback_congr (transportedMap_eq_map c j hj).symm (BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups s' j)
-    (BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups s (c.idx j)) rfl
-    (c.isPullback j (le_ofSequenceOfBlowups_length_of_le_length s' hj))
+  rw [transportedMap_eq_map,
+    ← BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups s' j,
+    ← BlowupSequenceData.projectionToBase_toSequenceOfBlowups_ofSequenceOfBlowups s (c.idx j)]
+  exact c.isPullback j hj
 
 theorem blowupMorphism_comp_map_of_ofSequenceOfBlowups
     (c : SequenceOfBlowupsPullback φ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups) :
@@ -274,7 +220,8 @@ theorem blowupMorphism_comp_map_of_ofSequenceOfBlowups
     rw [BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length]
     exact hj
   have key := c.step j hj'
-  rw [ofSequenceOfBlowups_toSequenceOfBlowups_blowupMorphism, ofSequenceOfBlowups_toSequenceOfBlowups_transitionMap] at key
+  rw [ofSequenceOfBlowups_transitionMap,
+    BlowupSequenceData.toSequenceOfBlowups_blowupMorphism] at key
   rw [transportedMap_eq_map c j (le_of_lt hj), transportedMap_eq_map c (j + 1) hj]
   exact key
 
@@ -283,14 +230,8 @@ theorem center_eq_comap_transportedMap
     ∀ (j : ℕ) (hj : j < s'.length),
       s'.center j = (s.center (c.idx j)).comap (transportedMap c j (le_of_lt hj)) := by
   intro j hj
-  have hj' : j < (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups.length := by
-    rw [BlowupSequenceData.toSequenceOfBlowups_ofSequenceOfBlowups_length]
-    exact hj
-  have hmap : transportedMap c j (le_of_lt hj) = c.map j (le_of_lt hj') :=
-    eqToHom_refl_comp_comp_eqToHom_refl (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s' j).symm (ofSequenceOfBlowups_toSequenceOfBlowups_schemeAt s (c.idx j))
-      (c.map j (le_ofSequenceOfBlowups_length_of_le_length s' (le_of_lt hj)))
-  rw [hmap]
-  exact c.center_comap j hj'
+  rw [transportedMap_eq_map]
+  exact c.center_comap j hj
 
 theorem center_ne_top_of_pullback_ofSequenceOfBlowups
     (c : SequenceOfBlowupsPullback φ (BlowupSequenceData.ofSequenceOfBlowups s').toSequenceOfBlowups (BlowupSequenceData.ofSequenceOfBlowups s).toSequenceOfBlowups) :

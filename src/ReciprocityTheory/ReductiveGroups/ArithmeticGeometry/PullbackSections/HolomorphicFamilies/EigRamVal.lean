@@ -129,7 +129,7 @@ theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeO
     unfold vV; rw [map_one, WithZero.log_one]; simp
   refine Ideal.isPrime_iff.2 ⟨(Ideal.ne_top_iff_one _).2 ?_, ?_⟩
   · rw [mem_primeOf]
-    push_neg
+    push Not
     refine ⟨?_, one_ne_zero⟩
     simp [hv1]
   · intro x y hxy
@@ -150,7 +150,7 @@ theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeO
 theorem w_zero_of_not_mem (ψ : E →+* k) (hψ : Function.Injective ψ) {x : 𝓞 E}
     (hx : x ∉ primeOf (V := V) ψ hψ) : vV V (ψ (x : E)) = 0 := by
   rw [mem_primeOf] at hx
-  push_neg at hx
+  push Not at hx
   exact le_antisymm hx.1 (w_nonneg ψ x)
 
 theorem mem_factors_of_mem {P : Ideal (𝓞 E)} (hP : P.IsPrime) (hP0 : P ≠ ⊥) {x : 𝓞 E} (hx0 : x ≠ 0) (hx : x ∈ P) :

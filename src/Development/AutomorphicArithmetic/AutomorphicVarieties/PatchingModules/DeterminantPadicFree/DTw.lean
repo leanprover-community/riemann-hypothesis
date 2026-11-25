@@ -17,7 +17,7 @@ private theorem single_mem_ev_of_same_block {F : Type} [CommRing F] {n a : ℕ} 
     (h : ((p : ℕ) < a ↔ (q : ℕ) < a)) : Matrix.single p q c ∈ Ev F F n a := by
   intro i j
   refine ⟨fun _ => Submodule.mem_top, fun hij => ?_⟩
-  rw [Submodule.mem_bot, Matrix.single_apply, if_neg]
+  rw [Submodule.mem_bot, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   exact hij h
 
@@ -30,17 +30,17 @@ theorem UpperTheory.V.Pa.Det.derEv :
   have hβ : ∀ i : Fin n, ((i : ℕ) < a ↔ (β i : ℕ) < a) := by
     intro i
     by_cases h : (i : ℕ) < a
-    · simp only [β, dif_pos h]
+    · simp only [β, dite_eq_left h]
       exact ⟨fun _ => Nat.zero_lt_of_lt h, fun _ => h⟩
-    · simp only [β, dif_neg h]
+    · simp only [β, dite_eq_right h]
       exact ⟨fun h' => absurd h' h, fun h' => absurd h' (lt_irrefl _)⟩
   have hβeq : ∀ i j : Fin n, ((i : ℕ) < a ↔ (j : ℕ) < a) → β i = β j := by
     intro i j h
     by_cases hi : (i : ℕ) < a
     · have hj := h.mp hi
-      simp only [β, dif_pos hi, dif_pos hj]
+      simp only [β, dite_eq_left hi, dite_eq_left hj]
     · have hj : ¬ (j : ℕ) < a := fun hj => hi (h.mpr hj)
-      simp only [β, dif_neg hi, dif_neg hj]
+      simp only [β, dite_eq_right hi, dite_eq_right hj]
   let E : Fin n → Fin n → Matrix (Fin n) (Fin n) F := fun i j => Matrix.single i j 1
   let u : Fin n → Matrix (Fin n) (Fin n) F := fun k => E k (β k)
   let v : Fin n → Matrix (Fin n) (Fin n) F := fun k => E (β k) k
@@ -82,9 +82,9 @@ theorem UpperTheory.V.Pa.Det.derEv :
             rw [Finset.sum_sub_distrib, ← Finset.mul_sum, hsum, mul_one]
             congr 1
             rw [Finset.sum_eq_single j]
-            · rw [hEu, if_pos rfl]
+            · rw [hEu, ite_eq_left rfl]
             · intro k _ hk
-              rw [hEu, if_neg (Ne.symm hk), map_zero, zero_mul]
+              rw [hEu, ite_eq_right (Ne.symm hk), map_zero, zero_mul]
             · simp
     rw [h1, h2]
     abel
@@ -120,22 +120,6 @@ section -- clump:auto
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private theorem exists_factor {F A M : Type} [Field F] [AddCommGroup A] [Module F A] [AddCommGroup M] [Module F M]
-    (T S : A →ₗ[F] M) (h : LinearMap.ker T ≤ LinearMap.ker S) : ∃ d : M →ₗ[F] M, ∀ c, d (T c) = S c := by
-  let S' : LinearMap.range T →ₗ[F] M :=
-    ((LinearMap.ker T).liftQ S h).comp T.quotKerEquivRange.symm.toLinearMap
-  obtain ⟨d, hd⟩ := LinearMap.exists_extend S'
-  refine ⟨d, fun c => ?_⟩
-  have h1 : d (T c) = S' ⟨T c, LinearMap.mem_range_self T c⟩ := by
-    rw [← hd]
-    rfl
-  have h2 : T.quotKerEquivRange.symm ⟨T c, LinearMap.mem_range_self T c⟩ = Submodule.Quotient.mk c := by
-    rw [LinearEquiv.symm_apply_eq]
-    apply Subtype.ext
-    rw [LinearMap.quotKerEquivRange_apply_mk]
-  rw [h1]
-  simp only [S', LinearMap.comp_apply, LinearEquiv.coe_coe, h2, Submodule.liftQ_apply]
-
 theorem UpperTheory.V.Pa.Det.der :
     ∀ {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F G n) (z : G → Matrix (Fin n) (Fin n) F), TwCoc (fun _ => 1) D.r D.G' z → (∀ i j, D.KillsRel z i j) → ∃ Y, ∀ g ∈ D.G', z g = dTw (fun _ => 1) D.r Y g := by
   intro F G _ _ n D z hz hk
@@ -152,11 +136,16 @@ theorem UpperTheory.V.Pa.Det.der :
       (Finsupp.mem_supported F _).1 c.2 hg
     have := hk i j (c : G →₀ F) hsupp (by simpa [T, Finsupp.linearCombination_apply] using hc)
     simpa [S, Finsupp.linearCombination_apply] using this
-  obtain ⟨d, hd⟩ := exists_factor T S hTS
-  have hdr : ∀ g ∈ D.G', d (D.r g) = z g * D.r g := by
-    intro g hg
-    have := hd ⟨Finsupp.single g 1, Finsupp.single_mem_supported F 1 hg⟩
-    simpa [T, S] using this
+  let S' : LinearMap.range T →ₗ[F] Matrix (Fin n) (Fin n) F :=
+    ((LinearMap.ker T).liftQ S hTS).comp T.quotKerEquivRange.symm.toLinearMap
+  obtain ⟨d, hd⟩ := LinearMap.exists_extend S'
+  have hdr : ∀ g ∈ D.G', d (D.r g) = z g * D.r g := fun g hg => by
+    let c : A := ⟨Finsupp.single g 1, Finsupp.single_mem_supported F 1 hg⟩
+    have h1 := LinearMap.congr_fun hd ⟨T c, LinearMap.mem_range_self T c⟩
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, S', LinearEquiv.coe_coe,
+      LinearMap.quotKerEquivRange_symm_apply_image, Submodule.mkQ_apply,
+      Submodule.liftQ_apply] at h1
+    simpa [T, S, c] using h1
   have hr1 : ∀ g, D.r g⁻¹ * D.r g = 1 := fun g => by
     rw [← map_mul, inv_mul_cancel, map_one]
   have hgen : ∀ g ∈ D.G', ∀ h ∈ D.G',

@@ -439,7 +439,7 @@ theorem VerticalEmbedding.proof (hD : regularityDehomogenization_holds.Statement
     if h : ReciprocityTheory.ChartRestriction.G.Geo.IsRelevant W then ∏ k, (X ⟨k, (h k).choose⟩ : MRing ι) ^ a k else 1
   have ht : ∀ W : Ideal (MRing ι), W.IsPrime → ReciprocityTheory.ChartRestriction.G.Geo.IsRelevant W → IsMultiHomog (t W) a ∧ t W ∉ W := by
     intro W hWp hW
-    simp only [t, dif_pos hW]
+    simp only [t, dite_eq_left hW]
     refine ⟨AvoidRing.isMultiHomog_coordProd _ _, fun hmem => ?_⟩
     obtain ⟨k, -, hk⟩ := hWp.prod_mem_iff.mp hmem
     exact (hW k).choose_spec (hWp.mem_of_pow_mem _ hk)
@@ -468,7 +468,7 @@ theorem VerticalEmbedding.proof (hD : regularityDehomogenization_holds.Statement
     intro s hs hsP W hW
     have hA : IsSectionOn P (HermLine.ofMetrics (fun k => fsMetric (ι := ι k)) (fun k => (a k : ℤ))) s :=
       ⟨a, fun _ => rfl, hs, hsP⟩
-    rw [if_neg (not_isHorizontal_of_dimOne arithVarZero hP hA hW)]
+    rw [ite_eq_right (not_isHorizontal_of_dimOne arithVarZero hP hA hW)]
     obtain ⟨-, -, hta, htW, hy⟩ := hdata s W hW
     obtain ⟨hyW, hm⟩ := hD K ι P s (t W) a W (y s W) hP.2.1 hs hsP hW hta htW (hy s)
     have hy0 : y s W ≠ 0 := by

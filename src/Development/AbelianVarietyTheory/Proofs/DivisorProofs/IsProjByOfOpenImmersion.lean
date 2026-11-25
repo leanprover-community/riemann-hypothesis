@@ -999,23 +999,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 variable {X₀ : Scheme.{0}} {S : Type} [CommRing S]
 
-section Group
-
-variable (G : Over X₀) [GrpObj G] [IsCommMonObj G]
-
-variable (x : Sp S ⟶ X₀) {d : ℕ}
-
-
-variable {G x}
-
-end Group
-
-section Germ
-
-variable {G : Over X₀} [GrpObj G] {x : Sp S ⟶ X₀} {d : ℕ}
-
-end Germ
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 abbrev PrimIso (t : SAB H X₀) : Type :=
@@ -1128,24 +1111,6 @@ theorem isGen_divEquiv (φ : K → (X ⟶ X)) (ε : K → ℤ) (w : LB.Iso L (LB
       (congrArg₂ (· * ·) (gm_g_div φ ε i j y hy.1 hy.2) (hv j y hy.2)).symm)
 
 end General
-
-section Jets
-
-variable {S : Type} [CommRing S] {d : ℕ}
-
-end Jets
-
-section Compare
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X₀ : Scheme.{0}} (t : SAB H X₀)
-
-variable {S : Type} [CommRing S] (x : Sp S ⟶ X₀) {d : ℕ}
-
-variable {t x}
-
-variable {j : JetPts t.G x d} (act : 𝓞 E → Germ.Pt S 1 d) (e : FrameFam t.G x t.PP.L j) (w : PrimIso t)
-
-end Compare
 
 end GlobalTheory.GermSectionCompare
 end -- clump:auto
@@ -1500,7 +1465,7 @@ theorem coboundary_of_exact {κ : Type} [LinearOrder κ] (W : κ → X.Opens)
       SecOnR.restrict f M (le_inf (hle (by simp)) (hle (by simp))) (Φ k l) := by
     intro k l hkl
     have hn : ({k, l} : Finset κ).Nonempty := by simp
-    simp only [x, dif_pos hn]
+    simp only [x, dite_eq_left hn]
     exact hcongr (by simp [hkl.le]) (by simp [hkl.le]) _ _
   have hE := (cechComplex_exactAt_succ_iff (secCube f M W) 0).1 hW
   have hd : Cube.d (secCube f M W) (0 + 2) (fun s => x s.1) = 0 := by

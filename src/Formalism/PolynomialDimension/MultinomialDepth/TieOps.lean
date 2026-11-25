@@ -265,17 +265,17 @@ theorem fock_mul_monomial_orthogonal (j0 : ℕ) (s t : Finset (Fin N × Fin r �
   rw [Finset.sum_mul, Finset.sum_mul, gammaIntegralityLemmas.fock_sum_left, gammaIntegralityLemmas.fock_sum_left, gammaIntegralityLemmas.prod_eq_wf]
   simp only [gammaIntegralityLemmas.fock_sum_right, monomial_mul, mul_one, gammaIntegralityLemmas.fock_monomial]
   by_cases hmm : m = m'
-  · rw [if_pos hmm, Finset.sum_mul]
+  · rw [ite_eq_left hmm, Finset.sum_mul]
     refine Finset.sum_congr rfl fun a ha => ?_
     rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun b hb => ?_
     by_cases hab : a = b
-    · rw [if_pos hab, if_pos (by rw [hab, hmm]), wf_add_disj j0 a m (hs a ha) hm]; ring
-    · rw [if_neg hab, if_neg (fun h => hab ((add_eq_add_iff_disj j0 a b m m' (hs a ha) (ht b hb) hm hm').mp h).1),
+    · rw [ite_eq_left hab, ite_eq_left (by rw [hab, hmm]), wf_add_disj j0 a m (hs a ha) hm]; ring
+    · rw [ite_eq_right hab, ite_eq_right (fun h => hab ((add_eq_add_iff_disj j0 a b m m' (hs a ha) (ht b hb) hm hm').mp h).1),
         zero_mul]
-  · rw [if_neg hmm]
+  · rw [ite_eq_right hmm]
     refine Finset.sum_eq_zero fun a ha => Finset.sum_eq_zero fun b hb => ?_
-    rw [if_neg (fun h => hmm ((add_eq_add_iff_disj j0 a b m m' (hs a ha) (ht b hb) hm hm').mp h).2)]
+    rw [ite_eq_right (fun h => hmm ((add_eq_add_iff_disj j0 a b m m' (hs a ha) (ht b hb) hm hm').mp h).2)]
 
 theorem fock_mul_mono (j0 : ℕ) {g g' : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hg : IsF (fsj N r j0) g)
     (hg' : IsF (fsj N r j0) g') (m m' : Fin N × Fin r →₀ ℕ) (hm : ∀ v, m v ≠ 0 → ¬ fsj N r j0 v)
@@ -468,7 +468,7 @@ theorem phi_mem' (L : Letters N) (T : TieData) (j : Fin T.t) (h : T.pos j + 1 < 
     (T.phi p L j : Module.End ℚ_[p] (MvPolynomial (Fin N × Fin r) ℚ_[p])) ∈
       FockB.Ops {v : Fin N × Fin r | (v.1 : ℕ) = T.pos j ∨ (v.1 : ℕ) = T.pos j + 1} := by
   unfold TieData.phi
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   unfold tiePhiAt
   refine FockB.ops_mono ?_ (tiePhi_mem' _ _ _ _ _)
   rintro v (⟨c, rfl⟩ | ⟨c, rfl⟩)
@@ -516,16 +516,16 @@ theorem phi_glAct (c d : Fin r) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
           (if e = c then -(X (a, c) * X (b, d)) else 0) + (if e = d then X (a, c) * X (b, d) else 0) := by
         intro e
         have hXa : glAct p L (T.pos i + 1 + 1) c d (X (a, e)) = if e = d then X (a, c) else 0 := by
-          rw [glAct_X_gen, if_pos (show (a : ℕ) < T.pos i + 1 + 1 by show T.pos i < _; omega), hva]; simp
+          rw [glAct_X_gen, ite_eq_left (show (a : ℕ) < T.pos i + 1 + 1 by show T.pos i < _; omega), hva]; simp
         have hXb : glAct p L (T.pos i + 1 + 1) c d (X (b, e)) = if e = c then -X (b, d) else 0 := by
-          rw [glAct_X_gen, if_pos (show (b : ℕ) < T.pos i + 1 + 1 by show T.pos i + 1 < _; omega), hvb]; simp
+          rw [glAct_X_gen, ite_eq_left (show (b : ℕ) < T.pos i + 1 + 1 by show T.pos i + 1 < _; omega), hvb]; simp
         rw [Formalism.GM.M.FB.glAct_mul, hXa, hXb]
         split_ifs with h1 h2 h2
         · subst h1; subst h2; ring
         · subst h1; ring
         · subst h2; ring
         · ring
-      simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       ring
     rw [h0, mul_zero, add_zero]
   have hF : ∀ (c d : Fin r) (y : MvPolynomial (Fin N × Fin r) ℚ_[p]),
@@ -549,7 +549,7 @@ theorem phi_glAct (c d : Fin r) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
   have cP : Commute (glAct p L (T.pos i + 1 + 1) c d : Module.End ℚ_[p] (MvPolynomial (Fin N × Fin r) ℚ_[p]))
       (T.phi p L i) := by
     unfold TieData.phi
-    rw [dif_pos h]
+    rw [dite_eq_left h]
     unfold tiePhiAt Formalism.GM.tiePhi
     refine Commute.sum_right _ _ _ fun j _ => Commute.smul_right ?_ _
     rw [← Module.End.mul_eq_comp]
@@ -597,7 +597,7 @@ theorem phi_Ffull (ρ : Fin r) (n : Fin T.t → ℕ) (f : MvPolynomial (Fin (T.p
   have h : T.pos i + 1 < N := by omega
   rw [Ffull_eq]
   unfold TieData.phi
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   unfold tiePhiAt
   rw [← tiePhi_rename _ (inclusion_prodMap_injective hK)]
   have e1 : ιF N (T.pos i + 1) (Fin.castSucc (Fin.last (T.pos i))) = ⟨T.pos i, by omega⟩ := by
@@ -627,10 +627,6 @@ theorem gam_eq (ρ : Fin r) (n : Fin T.t → ℕ) (f f' : MvPolynomial (Fin (T.p
   rfl
 
 end Tie2
-
-end Formalism.CountingSumsFrames.TO
-
-namespace Formalism.CountingSumsFrames.TO
 
 end Formalism.CountingSumsFrames.TO
 
@@ -754,13 +750,13 @@ theorem projC [NeZero r] (L : Letters N) (ρ : Fin r) (e1 j0 : ℕ) (hj0 : j0 �
     exact lcomp_keep P (Pol p r L' : Set _) _ (fun j _ u hu => hPpol L' hL' j u hu) x hx
   · intro x k
     by_cases hk : J k < j0
-    · rw [Mup, if_pos hk]
+    · rw [Mup, ite_eq_left hk]
       have hfix : P ⟨J k, hk⟩ (lcomp P (List.finRange j0) x) = lcomp P (List.finRange j0) x :=
         lcomp_fix P hPP hcomm _ ⟨J k, hk⟩ (List.mem_finRange _) x
       have h1 : lcomp P (List.finRange j0) x ∈ LinearMap.range (P ⟨J k, hk⟩) := ⟨_, hfix⟩
       rw [(hPt ⟨J k, hk⟩).2.1] at h1
       exact (iSup₂_le fun la hla => isoC_le_ycond L (J k) la (M k) (hla k rfl)) h1
-    · rw [Mup, if_neg hk, Formalism.GM.DimensionMonotonicity.ycond_top]; exact Submodule.mem_top
+    · rw [Mup, ite_eq_right hk, Formalism.GM.DimensionMonotonicity.ycond_top]; exact Submodule.mem_top
   · intro L' hL' x hxP hxY
     refine lcomp_fixed P x (fun j => ?_) _
     have hPt' := isTypeProj_congr L L' hL' j univ (Tj j) (P j) (hPt j)
@@ -794,7 +790,7 @@ theorem projC [NeZero r] (L : Letters N) (ρ : Fin r) (e1 j0 : ℕ) (hj0 : j0 �
     rw [hmemS]
     refine ⟨hxP, fun k hk => ?_⟩
     have := hxY k
-    rw [Mup, if_pos (by rw [hk]; exact j.isLt), hk] at this
+    rw [Mup, ite_eq_left (by rw [hk]; exact j.isLt), hk] at this
     rw [ycond_congr L L' hL']
     exact this
   · intro x hx
@@ -872,9 +868,9 @@ theorem glAct_glAct_X (L : Letters N) (j : ℕ) (c d : Fin r) (hcd : c ≠ d) (v
   obtain ⟨i, a⟩ := v
   rw [glAct_X_gen]
   split_ifs with h1 h2 h3 h3
-  · rw [glAct_X_gen, if_pos h1, if_pos h2, if_neg hcd]
+  · rw [glAct_X_gen, ite_eq_left h1, ite_eq_left h2, ite_eq_right hcd]
   · exact map_zero _
-  · rw [map_neg, glAct_X_gen, if_pos h1, if_neg h2, if_neg (Ne.symm hcd), neg_zero]
+  · rw [map_neg, glAct_X_gen, ite_eq_left h1, ite_eq_right h2, ite_eq_right (Ne.symm hcd), neg_zero]
   · exact map_zero _
   · exact map_zero _
 
@@ -1070,9 +1066,9 @@ theorem Ffull_C (w : Fin r → ℤ) (f : MvPolynomial (Fin (T.pos i + 1) × Fin 
     (Submodule.mem_inf.mp (Submodule.mem_inf.mp (Submodule.mem_inf.mp hf).1).1).1
   refine Submodule.mem_inf.mpr ⟨Ffull_pol LL T hadm i ρ n f hP hS, (Submodule.mem_iInf _).mpr fun k => ?_⟩
   by_cases hk : T.J k < T.pos i + 1 + 1
-  · rw [Mup, if_pos hk]
+  · rw [Mup, ite_eq_left hk]
     exact Ffull_ycond LL T hadm i ρ n w f hf hS k (by omega)
-  · rw [Mup, if_neg hk, Formalism.GM.DimensionMonotonicity.ycond_top]; exact Submodule.mem_top
+  · rw [Mup, ite_eq_right hk, Formalism.GM.DimensionMonotonicity.ycond_top]; exact Submodule.mem_top
 
 theorem Ffull_inj (f : MvPolynomial (Fin (T.pos i + 1) × Fin r) ℚ_[p])
     (hP : f ∈ Pol p r ((LL.setTies T n).takeD (T.pos i + 1)))
@@ -1167,7 +1163,7 @@ theorem hw_is_Ffull (μ : Fin r → ℤ) (v : MvPolynomial (Fin N × Fin r) ℚ_
     simp only [h3] at h2
     rw [h2]
     simp only [Lz]
-    rw [if_pos (by rw [ιF_val hK]; exact a.isLt), deg_compat LL T hadm i n]
+    rw [ite_eq_left (by rw [ιF_val hK]; exact a.isLt), deg_compat LL T hadm i n]
   have hFI : F ∈ IntPol p (Fin (T.pos i + 1 + 1) × Fin r) := mem_intPol_of_norm _ fun m => by
     have := Formalism.CountingSumsFrames.intPol_norm v hint (Finsupp.mapDomain ι m)
     rwa [← hF, coeff_rename_mapDomain ι hι] at this
@@ -1198,7 +1194,7 @@ theorem hw_is_Ffull (μ : Fin r → ℤ) (v : MvPolynomial (Fin N × Fin r) ℚ_
       rw [e1, e2]
       apply ycond_pull LL T hadm i n
       have h1 := (Submodule.mem_iInf _).mp hvY k
-      rw [Mup, if_pos (by omega)] at h1
+      rw [Mup, ite_eq_left (by omega)] at h1
       rw [← hF] at h1
       exact h1
     · have ht : T.thrUpTo i k = ⊤ := by simp [TieData.thrUpTo, hk]
@@ -1244,7 +1240,7 @@ theorem hw_is_Ffull (μ : Fin r → ℤ) (v : MvPolynomial (Fin N × Fin r) ℚ_
       simp only [freeze, map_sum, Finset.mul_sum]
     have h5 : F = freeze p LLK ρ (n i) (weightedHomogeneousComponent (wv LLK (T.pos i + 1)) w f) := by
       have h6 : weightedHomogeneousComponent (wv (LLK.snoc (n i)) (T.pos i + 1 + 1)) μ F = F := by
-        rw [weightedHomogeneousComponent_of_mem hFw, if_pos rfl]
+        rw [weightedHomogeneousComponent_of_mem hFw, ite_eq_left rfl]
 
       rw [← h6, ← hfF, hfr, map_sum]
       simp only [weightedHomogeneousComponent_of_mem (hcW _)]
@@ -1311,11 +1307,11 @@ theorem Ffull_indep (Ω : Finset (Fin r → ℤ)) (nb : (Fin r → ℤ) → ℕ)
       (wtsp_iff LLK (T.pos i + 1) w.1 _).mp (Submodule.mem_inf.mp (hf w.1 a)).2
     rw [map_smul, weightedHomogeneousComponent_of_mem hW]
     by_cases h : x0.1 = w
-    · rw [if_pos h, if_pos (congrArg Subtype.val h)]
-    · rw [if_neg h, if_neg (fun h' => h (Subtype.ext h')), smul_zero]
+    · rw [ite_eq_left h, ite_eq_left (congrArg Subtype.val h)]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h (Subtype.ext h')), smul_zero]
   simp only [h4] at h3
   rw [Finset.sum_eq_single x0.1 (fun w _ hw => by simp [Ne.symm hw]) (fun h => absurd (Finset.mem_univ _) h)] at h3
-  simp only [if_true] at h3
+  simp only [ite_true] at h3
   have := Fintype.linearIndependent_iff.mp (hli x0.1.1) (fun a => c ⟨x0.1, a⟩) h3 x0.2
   simpa using this
 
@@ -1414,7 +1410,7 @@ theorem isWt_iff_wh (L : Letters N) (j : ℕ) (ν : Fin r → ℤ) (x : MvPolyno
     exact weightedHomogeneousComponent_mem _ _ _
   · intro h
     show weightedHomogeneousComponent (wv L j) ν x = x
-    rw [weightedHomogeneousComponent_of_mem h, if_pos rfl]
+    rw [weightedHomogeneousComponent_of_mem h, ite_eq_left rfl]
 
 section
 
@@ -1784,7 +1780,7 @@ theorem smith_bases {σ : Type} (nb : ℕ) (f : Fin nb → MvPolynomial σ ℚ_[
     have : ∀ y, ∑ a, U x a * U⁻¹ a y = (1 : Matrix (Fin nb) (Fin nb) ℚ_[p]) x y := by
       intro y
       rw [← Matrix.mul_nonsing_inv U hUu, Matrix.mul_apply]
-    simp only [this, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [this, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   refine ⟨fun a => ∑ x, U⁻¹ a x • f x, fun b => ∑ y, V⁻¹ y b • f y, ?_, ?_, ?_, ?_, ?_⟩
   · exact fun a => Lat.sum_mem fun x _ => int_smul_mem Lat _ (hUi a x) _ (hfL x)
   · exact fun b => Lat.sum_mem fun y _ => int_smul_mem Lat _ (hVi y b) _ (hfL y)
@@ -1866,8 +1862,8 @@ theorem Cset_thrUpTo [NeZero r] (L : Letters N) (T : TieData) (i : Fin T.t) :
   refine iInf_congr fun k => ?_
   unfold Mup TieData.thrUpTo
   by_cases h : T.J k < T.pos i + 1 + 1
-  · rw [if_pos h, if_pos h, if_pos (by omega)]
-  · rw [if_neg h, if_neg h]
+  · rw [ite_eq_left h, ite_eq_left h, ite_eq_left (by omega)]
+  · rw [ite_eq_right h, ite_eq_right h]
 
 theorem YYsp_eq [NeZero N] [NeZero r] (LL : Letters N) (T : TieData) (i : Fin T.t) (ρ : Fin r) (n : Fin T.t → ℕ)
     (f : MvPolynomial (Fin (T.pos i + 1) × Fin r) ℚ_[p]) :
@@ -1941,13 +1937,13 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
   have hgϖ : ∀ x, (GA p L (T.pos i + 1 + 1)).IsHW (la x) (gϖ x) := by
     intro x
     by_cases hx : ‖d x‖ < (p : ℝ) ^ (-E)
-    · simp only [gϖ, if_pos hx]; exact isHW_zero' L _ _
-    · simp only [gϖ, if_neg hx]; exact hh x
+    · simp only [gϖ, ite_eq_left hx]; exact isHW_zero' L _ _
+    · simp only [gϖ, ite_eq_right hx]; exact hh x
   have hgϖC : ∀ x, gϖ x ∈ Cset p L (T.pos i + 1 + 1) T.J T.thr := by
     intro x
     by_cases hx : ‖d x‖ < (p : ℝ) ^ (-E)
-    · simp only [gϖ, if_pos hx]; exact Submodule.zero_mem _
-    · simp only [gϖ, if_neg hx]; exact hhC x
+    · simp only [gϖ, ite_eq_left hx]; exact Submodule.zero_mem _
+    · simp only [gϖ, ite_eq_right hx]; exact hhC x
   have hgτ : ∀ y, (GA p L (T.pos i + 1 + 1)).IsHW (la y) (gτ y) := by
     intro y
     rw [isHW_iff]
@@ -1955,15 +1951,15 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
     by_cases hz : la z = la y ∧ ¬ ‖d z‖ < (p : ℝ) ^ (-E)
     · refine Submodule.smul_mem _ _ ?_
       rw [← isHW_iff, ← hz.1]; exact hh2 z
-    · simp only [tc, if_neg hz, zero_smul]; exact Submodule.zero_mem _
+    · simp only [tc, ite_eq_right hz, zero_smul]; exact Submodule.zero_mem _
   have hgτC : ∀ y, gτ y ∈ Cset p L (T.pos i + 1 + 1) T.J T.thr :=
     fun y => Submodule.sum_mem _ fun z _ => Submodule.smul_mem _ _ (hh2C z)
   have htc : ∀ z y, ‖tc z y‖ ≤ 1 := by
     intro z y
     by_cases hz : la z = la y ∧ ¬ ‖d z‖ < (p : ℝ) ^ (-E)
-    · simp only [tc, if_pos hz, norm_mul]
+    · simp only [tc, ite_eq_left hz, norm_mul]
       exact mul_le_one₀ (good_norm E hE (d z) hz.2).1 (by positivity) (by rw [← norm_mul]; exact hG0 z y)
-    · simp only [tc, if_neg hz, norm_zero]; exact zero_le_one
+    · simp only [tc, ite_eq_right hz, norm_zero]; exact zero_le_one
   have hgτi : ∀ y, gτ y ∈ IntPol p (Fin N × Fin r) :=
     fun y => Submodule.sum_mem _ fun z _ => smul_int (htc z y) (hh2i z)
   obtain ⟨ϖ, hϖ1, hϖ2, hϖ3, -, -, hϖ6, hϖ7⟩ :=
@@ -2020,24 +2016,24 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
           intro z
           by_cases hz : la z = la y ∧ ¬ ‖d z‖ < (p : ℝ) ^ (-E)
           · have h1 := hdiag x z (hxy.trans hz.1.symm)
-            simp only [tc, if_pos hz]
+            simp only [tc, ite_eq_left hz]
             have h2 : c / d z * (cst * fock p (h' z) (h' y)) * fock p (T.phi p L i (h' x)) (h'' z) =
                 c / d z * fock p (h' z) (h' y) * (cst * fock p (T.phi p L i (h' x)) (h'' z)) := by ring
             rw [h2, h1]
             by_cases hzx : z = x
             · subst hzx
-              rw [if_pos rfl, if_pos rfl, if_neg hz.2]
+              rw [ite_eq_left rfl, ite_eq_left rfl, ite_eq_right hz.2]
               have hd0 := (good_norm E hE (d z) hz.2).2
               field_simp
-            · rw [if_neg (Ne.symm hzx), if_neg hzx, mul_zero]
-          · simp only [tc, if_neg hz, zero_mul]
+            · rw [ite_eq_right (Ne.symm hzx), ite_eq_right hzx, mul_zero]
+          · simp only [tc, ite_eq_right hz, zero_mul]
             by_cases hzx : z = x
             · subst hzx
-              rw [if_pos rfl]
+              rw [ite_eq_left rfl]
               have : ‖d z‖ < (p : ℝ) ^ (-E) := by
                 by_contra h; exact hz ⟨hxy, h⟩
-              rw [if_pos this]
-            · rw [if_neg hzx]
+              rw [ite_eq_left this]
+            · rw [ite_eq_right hzx]
         have hsum : fock p (T.phi p L i (h' x)) (gτ y) =
             if ‖d x‖ < (p : ℝ) ^ (-E) then 0 else c * fock p (h' x) (h' y) := by
           simp only [gτ]
@@ -2047,9 +2043,9 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
           simp
         rw [hsum]
         by_cases hx : ‖d x‖ < (p : ℝ) ^ (-E)
-        · simp only [gϖ, if_pos hx]
+        · simp only [gϖ, ite_eq_left hx]
           rw [gammaIntegralityLemmas.fock_zero_left]; ring
-        · simp only [gϖ, if_neg hx]
+        · simp only [gϖ, ite_eq_right hx]
           ring
     have key := fock_ext_reduce (T.pos i + 1 + 1) (T.phi p L i) (inOp L (T.pos i + 1 + 1) Pi τ)
       (inOp L (T.pos i + 1 + 1) Pi ϖ) c (Cset p L (T.pos i + 1 + 1) T.J T.thr)
@@ -2066,8 +2062,8 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
     exact phi_ext_comm L T hadm i j hij _ (inOp_isF L (T.pos i + 1 + 1) _ T.J T.thr Pi ϖ hPi hEϖ) u
   · exact (count_le L (T.pos i + 1 + 1) _ T.J T.thr Pi hPi h' la hh hhC hli hsp
       (fun x => ‖d x‖ < (p : ℝ) ^ (-E)) ϖ hEϖ
-      (fun x hx => hϖ6 x (by simp only [gϖ, if_neg hx]))
-      (fun x hx => hϖ7 x (by simp only [gϖ, if_pos hx]))).trans
+      (fun x hx => hϖ6 x (by simp only [gϖ, ite_eq_right hx]))
+      (fun x hx => hϖ7 x (by simp only [gϖ, ite_eq_left hx]))).trans
       (Finset.sum_le_sum fun x _ => transport_le L (T.pos i + 1 + 1) _ T.J T.thr Pi hPi h' la hh hhC hli hsp x (vv x)
         (hvv x) (hvvC x) (hvv0 x))
 
@@ -2082,7 +2078,3 @@ theorem mmwZ_polZ [NeZero r] {K : ℕ} (LLw : Letters K) {q : ℕ} (J : Fin q �
     (Submodule.mem_inf.mp hg).1).1).1).1, (Submodule.mem_inf.mp hg).2⟩
 
 end Formalism.CountingSumsFrames.TO
-
-namespace Formalism.CountingSumsFrames
-
-end Formalism.CountingSumsFrames

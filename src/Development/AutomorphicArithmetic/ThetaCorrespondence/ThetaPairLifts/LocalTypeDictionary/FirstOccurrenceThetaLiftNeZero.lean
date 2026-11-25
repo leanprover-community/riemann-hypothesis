@@ -501,7 +501,7 @@ theorem bottom_theta_lift_ne_zero : _root_.GlobalTheory.FunPr.ThetaLocalInputs ‚
     rw [hlam P, h0]
     simp
   by_contra hc'
-  push_neg at hc'
+  push Not at hc'
   apply hP'
   apply hinj
   rw [‚Üê hI' t P', map_zero]

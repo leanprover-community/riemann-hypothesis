@@ -38,11 +38,11 @@ theorem exists_smInd_bump {G W : Type} [Group G] [TopologicalSpace G] [IsTopolog
   let pick : G → H := fun x => if h : S x then h.choose else 1
   have pick_spec : ∀ x, S x → ((pick x : H) : G)⁻¹ * x ∈ K := by
     intro x h
-    simp only [pick, dif_pos h]
+    simp only [pick, dite_eq_left h]
     exact h.choose_spec
   let F : G → W := fun x => if S x then σ (pick x) v else 0
-  have F_pos : ∀ x, S x → F x = σ (pick x) v := fun x h => if_pos h
-  have F_neg : ∀ x, ¬ S x → F x = 0 := fun x h => if_neg h
+  have F_pos : ∀ x, S x → F x = σ (pick x) v := fun x h => ite_eq_left h
+  have F_neg : ∀ x, ¬ S x → F x = 0 := fun x h => ite_eq_right h
   have S_left : ∀ (q : H) x, S x → S (q * x) := by
     rintro q x ⟨p, hp⟩
     exact ⟨q * p, by simpa [mul_assoc] using hp⟩

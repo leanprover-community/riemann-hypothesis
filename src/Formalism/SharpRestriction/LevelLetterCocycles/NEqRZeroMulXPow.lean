@@ -162,7 +162,7 @@ theorem bT_le_two_mul_b' (P : ParameterChoice' D L) (t : D.host.TT) : (L.bT t : 
       rw [this]
       linarith only [mul_le_mul_of_nonneg_right h4 hb'.le, hb']
     linarith
-  · push_neg at hL
+  · push Not at hL
     have : LevelStarExponents.Nstar L * L.sc.x ^ L.sc.eps * L.LaG * L.sc.b' / D.R.k ≤ 0 := by
       apply div_nonpos_of_nonpos_of_nonneg _ hk.le
       exact mul_nonpos_of_nonpos_of_nonneg
@@ -975,25 +975,25 @@ theorem lenB_split {C : ℝ} (hC : 0 < C) {l : ℕ} (hl : 2 ≤ l) :
       _ ≤ (3 + 2 * C) * D.R.f * D.R.m * (Real.log l * eP L C l) := mul_le_mul_of_nonneg_right this h0
   unfold lenB
   by_cases hs : SplitK D l
-  · rw [if_pos hs]
+  · rw [ite_eq_left hs]
     have h1 : ¬ cB L l := fun h => h.1 hs
     have h2 : ¬ cC L l := fun h => h.1 hs
     have h3 : ¬ cD L l := fun h => h.1 hs
-    rw [if_neg h1, if_neg h2, if_neg h3]
+    rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3]
     linarith
-  · rw [if_neg hs]
+  · rw [ite_eq_right hs]
     by_cases hb : (l : ℝ) < lA L ∧ 4 * D.host.Lw < ordH D l
-    · rw [if_pos hb]
+    · rw [ite_eq_left hb]
       have h1 : cB L l := ⟨hs, hb⟩
       have h2 : ¬ cC L l := fun h => h.2.1 hb
       have h3 : ¬ cD L l := fun h => h.2.1 hb
-      rw [if_pos h1, if_neg h2, if_neg h3]
+      rw [ite_eq_left h1, ite_eq_right h2, ite_eq_right h3]
       have : Real.log l * (4 * (D.R.f : ℝ) * (C * D.R.r * rowBr L l)) =
           4 * D.R.f * C * D.R.r * (Real.log l * rowBr L l) := by ring
       linarith
-    · rw [if_neg hb]
+    · rw [ite_eq_right hb]
       have h1 : ¬ cB L l := fun h => hb h.2
-      rw [if_neg h1]
+      rw [ite_eq_right h1]
       have hsplit : Real.log l * (4 * (D.R.f : ℝ) * (C * D.R.r * (hB L / (l : ℝ) ^ 2 + flatB L C l)) +
           2 * (D.R.f : ℝ) * (C * D.R.m * eP L C l)) =
           4 * D.R.f * C * D.R.r * hB L * (Real.log l / (l : ℝ) ^ 2) +
@@ -1003,11 +1003,11 @@ theorem lenB_split {C : ℝ} (hC : 0 < C) {l : ℕ} (hl : 2 ≤ l) :
       by_cases hc : lA L ≤ l
       · have h2 : cC L l := ⟨hs, hb, hc⟩
         have h3 : ¬ cD L l := fun h => (not_lt.2 hc) h.2.2
-        rw [if_pos h2, if_neg h3]
+        rw [ite_eq_left h2, ite_eq_right h3]
         linarith
       · have h2 : ¬ cC L l := fun h => hc h.2.2
         have h3 : cD L l := ⟨hs, hb, lt_of_not_ge hc⟩
-        rw [if_neg h2, if_pos h3]
+        rw [ite_eq_right h2, ite_eq_left h3]
         linarith
 
 end Formalism.MainNotions.TwistedPlaces
@@ -1364,8 +1364,8 @@ theorem band_pt {l : ℕ} (hl : 2 ≤ l) :
               mul_le_mul_of_nonneg_left this hlog
           _ = 16 * D.R.m * L.sc.b * (Real.log l / l) := by ring
       linarith
-    · push_neg at hc
-      rw [if_pos hc.le]
+    · push Not at hc
+      rw [ite_eq_left hc.le]
       have : (D.R.r : ℝ) * eta₃ L ≤ 4 * D.R.m * L.sc.b := by
         calc (D.R.r : ℝ) * eta₃ L ≤ 4 * D.R.m * L.sc.w'' D.R.n := hre
           _ ≤ 4 * D.R.m * L.sc.b := by gcongr; linarith

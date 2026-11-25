@@ -67,8 +67,6 @@ section -- clump:auto
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum
 open scoped BigOperators
 
-theorem _root_.GlobalTheory.T.thetaPair_coordinates_conjugate_bound : ∀ (D : D7), Inp D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (t0 : ℂ) (Q : ℕ), Crv D cc δ → GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D cc δ) t0 → ∀ (P : Pair D cc δ t0 Q), 0 < Q → ∀ (B : ℝ), 1 ≤ B → (∀ τ, (P.n τ : ℝ) ≤ 2 * B) → ∀ (ρ : Qbar →ₐ[ℚ] ℂ) t0', GL3Theta.IsTwoTorsionPointUnkilled D (lamConj Qbar ρ (lamOf D cc δ)) t0' → ∀ h T, P.coord h T ∈ Qbar ∧ ‖cj Qbar ρ (P.coord h T)‖ ^ 2 ≤ (Nat.card (Cls D P.a (intG D P.a)) : ℝ) ^ 2 * (Q : ℝ) ^ (P.a * P.d) * (((P.a.factorial : ℝ) ^ (∑ τ, P.n τ)) ^ 2 * (3 * (2 * ((fF D * P.a * P.d : ℕ) : ℝ) * D.host.rdE + 1) ^ (fF D * P.a * P.d) * nrm1Sq (lamConj Qbar ρ (lamOf D cc δ)) (GL3Theta.th0 (lamConj Qbar ρ (lamOf D cc δ)) t0') ^ (fF D * P.a * P.d) * (2 * Real.exp 1 * Real.pi * B / area (lamConj Qbar ρ (lamOf D cc δ))) ^ (P.a * ∑ τ, P.n τ))) := by
-  first | exact @GlobalTheory.NormSum.CoordConj.coord_conj_le
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaPairCoordinatesConjugateBoundStatement =====
@@ -165,8 +163,6 @@ theorem cls_le_exp (f k : ℕ) (n r l L : ℝ) (hf : 1 ≤ f) (hk : (k : ℝ) �
     exact mul_le_exp (by positivity) (mul_le_exp (by positivity) (le_exp_self 12) e1) e2
   · push_cast
     linarith [mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hk0 hk 2) (Nat.cast_nonneg f)]
-
-
 
 theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) (hN : 1 ≤ N) (had : a ≤ d)
     (hd : d ≤ 2 * N) (hs : (s : ℝ) ≤ 2 * f * B) (hQ : 0 < Q) (hB : 1 ≤ B) (hL : 1 ≤ L) (hr : 1 ≤ r)
@@ -287,8 +283,6 @@ theorem sum_prod_le {α β : Type} [Fintype α] [Fintype β] (g : α × β → �
   refine (Finset.sum_le_card_nsmul _ _ X fun p _ => h p).trans (le_of_eq ?_)
   rw [Finset.card_univ, Fintype.card_prod, nsmul_eq_mul, Nat.cast_mul, Nat.card_eq_fintype_card]
 
-
-
 theorem norm_meanInf_posLog_le : ∃ C : ℝ, 0 < C ∧ ∀ (D : D7), Inp D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (t0 : ℂ) (Q : ℕ), Crv D cc δ → GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D cc δ) t0 → 0 < Q → ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (σ : K →+* ℂ) (N : ℕ) (B L : ℝ) (P : Pair D cc δ t0 Q) (x : K), 1 ≤ N → 1 ≤ B → 1 ≤ L → Real.log D.host.rdE ≤ L → |logDerivativeAtOne D| ≤ L → P.Small N B → σ x = (P.norm : ℂ) → Formalism.PairingDivisionLocalBalance.meanInf K (fun v => Real.posLog ‖v.embedding x‖) ≤ C * fF D * (2 * (N : ℝ)) * B * (L + Real.log (B * (2 * (N : ℝ)))) + C * fF D * (N : ℝ) ^ 2 * (L + Real.log ((fF D : ℝ) * (2 * (N : ℝ)) * B)) + C * (N : ℝ) ^ 2 * Real.log Q := by
   obtain ⟨C₀, hC₀, hmean⟩ := _root_.GlobalTheory.PositiveMeans.means_le
   refine ⟨1100 + 4 * C₀, by positivity, ?_⟩
@@ -300,7 +294,7 @@ theorem norm_meanInf_posLog_le : ∃ C : ℝ, 0 < C ∧ ∀ (D : D7), Inp D → 
   have hca := (GlobalTheory.NormSum.cls_finite_card_le D P.a).2.1
   have hcT := (GlobalTheory.MinorBound.minor_bound D P.a P.d P.n (fun _ => 0) 0 1 B one_pos hB le_rfl hsm.2
     (differentiable_const _) (fun z => by simp)).1
-  have hcoord := GlobalTheory.T.thetaPair_coordinates_conjugate_bound D hI cc δ t0 Q hc ht P hQ B hB hsm.2
+  have hcoord := GlobalTheory.NormSum.CoordConj.coord_conj_le D hI cc δ t0 Q hc ht P hQ B hB hsm.2
   let _ : Fintype (Cls D P.d P.J) := Fintype.ofFinite _
   have hwp : wpF (lamOf D cc δ) t0 ∈ Qbar := by
     refine (htor t0 ⟨2, two_pos, by exact_mod_cast ht.1⟩ fun h0 => ?_).1

@@ -15,46 +15,10 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameAtOfU
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameHeckeCharSplitSupportedEqProdResidueStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilActionLiftPairStepVectorInvLevelChar
 import Formalism.LocalToGlobal.Columns.AdelicLemmas
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.RealisedChainTorusEq
 
 @[expose] public section
@@ -130,26 +94,26 @@ theorem val_ker {T0 : Type} {L : LevCh D T0} {μ0 : T0} (hL : L.Is μ0) {ξ : Fo
   have e1 := GlobalTheory.T.tameHeckeChar_splitSupported_eq_prod_residue D _ _ P e (fun PP => if PP ∈ L.Pg then (L.chi ((j : ℕ) + 1) PP)⁻¹ else 1) (hL.mu0 j) he
     (fun PP h => ⟨(L.C.isMu0 j).tame PP, by
       by_cases hg : PP ∈ L.Pg
-      · rw [if_pos hg]; exact hL.chi j PP hg
-      · rw [if_neg hg]; exact GlobalTheory.VecInv.isRes_one (h2 PP (((hP _).1 h).resolve_left hg))⟩) x a a' u hx ha hu
+      · rw [ite_eq_left hg]; exact hL.chi j PP hg
+      · rw [ite_eq_right hg]; exact GlobalTheory.VecInv.isRes_one (h2 PP (((hP _).1 h).resolve_left hg))⟩) x a a' u hx ha hu
   have e2 := GlobalTheory.T.tameHeckeChar_splitSupported_eq_prod_residue D _ _ P e (fun PP => if PP ∈ Q then ξR PP else 1) hchr he
     (fun PP h => ⟨htame PP, by
       by_cases hg : PP ∈ Q
-      · rw [if_pos hg]; exact hres PP hg
-      · rw [if_neg hg]; exact GlobalTheory.VecInv.isRes_one (h3 PP (((hP _).1 h).resolve_right hg))⟩) x a a' u hx ha hu
+      · rw [ite_eq_left hg]; exact hres PP hg
+      · rw [ite_eq_right hg]; exact GlobalTheory.VecInv.isRes_one (h3 PP (((hP _).1 h).resolve_right hg))⟩) x a a' u hx ha hu
   have e3 := GlobalTheory.T.tameHeckeChar_splitSupported_eq_prod_residue D _ _ P e (fun _ => 1) hL.eta he
     (fun PP _ => ⟨GlobalTheory.VecInv.tameAt_of_unrAt (L.C.isEta.unr PP), GlobalTheory.VecInv.isRes_one (L.C.isEta.unr PP)⟩) x a a' u hx ha hu
   refine ⟨?_, ?_, Subtype.ext (e3.trans (Finset.prod_eq_one fun _ _ => rfl))⟩
   · rw [e1, Units.coe_prod]
     symm
     refine Finset.prod_subset_one_on_sdiff (fun PP h => (hP _).2 (Or.inl h)) (fun PP h => ?_) fun PP h => ?_
-    · rw [if_neg (Finset.mem_sdiff.1 h).2]; rfl
-    · rw [if_pos h]; rfl
+    · rw [ite_eq_right (Finset.mem_sdiff.1 h).2]; rfl
+    · rw [ite_eq_left h]; rfl
   · rw [e2, Units.coe_prod]
     symm
     refine Finset.prod_subset_one_on_sdiff (fun PP h => (hP _).2 (Or.inr h)) (fun PP h => ?_) fun PP h => ?_
-    · rw [if_neg (Finset.mem_sdiff.1 h).2]; rfl
-    · rw [if_pos h]
+    · rw [ite_eq_right (Finset.mem_sdiff.1 h).2]; rfl
+    · rw [ite_eq_left h]
 
 end GlobalTheory.KerMove
 

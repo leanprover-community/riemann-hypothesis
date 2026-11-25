@@ -34,13 +34,6 @@ structure Link (D : D7) (u : D.what₂.Word) (W : Tower D) where
   Θ : Desc D u
   Θ_eq : ∀ F, ∃ T₀ : W.CP P 0, W.IsDn (eT F) T₀ ∧ Θ F = jE T₀
 
-namespace Link
-
-variable {D : D7} {u : D.what₂.Word} {W : Tower D} (L : Link D u W)
-
-
-end Link
-
 structure STrue (D : D7) (F₀ : ∀ u, Formalism.L2.Forms.Forms0 D u) extends STies D where
 
   hF : FinX Y
@@ -54,12 +47,6 @@ structure STrue (D : D7) (F₀ : ∀ u, Formalism.L2.Forms.Forms0 D u) extends S
   locTied : Formalism.L2.SG.Pf.LocCP.LocTied D
 
   pin : ∀ x : X.B.I.E, HEq (X.ιE x) x
-
-section Bare
-
-variable {D : D7} {F₀ : ∀ u, Formalism.L2.Forms.Forms0 D u}
-
-end Bare
 
 section Built
 
@@ -85,12 +72,6 @@ theorem TrueD.sTies {D : D7} (hD : TrueD D) :
     ∃ S : STies D, FinX S.Y ∧ Formalism.L2.SG.Pf.LocCP.LocTied D :=
   TrueD.elim (Q := fun D => ∃ S : STies D, FinX S.Y ∧ Formalism.L2.SG.Pf.LocCP.LocTied D)
     (fun _ _ _ _ _ w => ⟨w.S.toSTies, w.S.hF, w.S.locTied⟩) hD
-
-section Maps
-
-variable {B : Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)}
-
-end Maps
 
 end Built
 

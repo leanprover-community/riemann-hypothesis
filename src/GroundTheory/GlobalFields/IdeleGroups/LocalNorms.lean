@@ -185,14 +185,14 @@ theorem mem_range_ideleNorm (x : IdeleGroup K)
     fun v ↦ if h : IdeleGroup.finiteProj v x ∈ (integerUnitsOver L v).map (finiteLocalNorm L v)
       then (Subgroup.mem_map.1 h).choose else (MonoidHom.mem_range.1 (hfin v)).choose
   have hyf_int : ∀ᶠ v in cofinite, yf v ∈ integerUnitsOver L v := hint.mono fun v h ↦ by
-    simp only [yf, dif_pos h]
+    simp only [yf, dite_eq_left h]
     exact (Subgroup.mem_map.1 h).choose_spec.1
   have hyf : ∀ v, finiteLocalNorm L v (yf v) = IdeleGroup.finiteProj v x := by
     intro v
     by_cases h : IdeleGroup.finiteProj v x ∈ (integerUnitsOver L v).map (finiteLocalNorm L v)
-    · simp only [yf, dif_pos h]
+    · simp only [yf, dite_eq_left h]
       exact (Subgroup.mem_map.1 h).choose_spec.2
-    · simp only [yf, dif_neg h]
+    · simp only [yf, dite_eq_right h]
       exact (MonoidHom.mem_range.1 (hfin v)).choose_spec
   exact ⟨glue yf hyf_int (fun v ↦ (MonoidHom.mem_range.1 (hinf v)).choose),
     ideleNorm_glue _ _ _ hyf fun v ↦ (MonoidHom.mem_range.1 (hinf v)).choose_spec⟩

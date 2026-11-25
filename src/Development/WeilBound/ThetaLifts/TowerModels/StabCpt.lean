@@ -64,11 +64,6 @@ theorem isCompact_latHat (X : Spc F E n) (hX : X.L.FG) : IsCompact (latHat X : S
 variable (F) in
 def eF : AF F := pairA F 0 1
 
-theorem vec_bound (X : Spc F E n) (hX : X.L.IsFullLattice E) (x : Fin n → E) :
-    ∃ C : Set (Fin n → AE F E), IsCompact C ∧ ∀ M : Matrix (Fin n) (Fin n) (AE F E),
-      (∀ y ∈ latHat X, M *ᵥ y ∈ latHat X) → M *ᵥ (eF F • incV F x) ∈ C :=
-  _root_.GlobalTheory.ThK.Dbl.St.vec_bound X hX x
-
 theorem fin_bound (X : Spc F E n) (hX : X.L.IsFullLattice E) (i j : Fin n) :
     ∃ C : Set (AE F E), IsCompact C ∧ ∀ M : Matrix (Fin n) (Fin n) (AE F E),
       (∀ y ∈ latHat X, M *ᵥ y ∈ latHat X) → eF F • M i j ∈ C :=

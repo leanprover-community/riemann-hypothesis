@@ -169,11 +169,7 @@ theorem absNorm_mul_relIndex_one {K : Type} [Field K] [NumberField K] (C : Submo
       AddSubgroup.index_eq_card]
     rfl
   rw [hiJ, hid] at htower
-  have hb : (Algebra.norm ℤ d).natAbs ≠ 0 := by
-    rw [← Ideal.absNorm_span_singleton]
-    intro h
-    rw [Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot] at h
-    exact hd0 h
+  have hb : (Algebra.norm ℤ d).natAbs ≠ 0 := Int.natAbs_ne_zero.2 (Algebra.norm_ne_zero_iff.2 hd0)
   have hbq : ((Algebra.norm ℤ d).natAbs : ℚ) ≠ 0 := by exact_mod_cast hb
   have hcast : ((|Algebra.norm ℤ d| : ℤ) : ℚ) = ((Algebra.norm ℤ d).natAbs : ℚ) := by
     simp [Nat.cast_natAbs, Int.cast_abs]

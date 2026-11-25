@@ -495,7 +495,7 @@ theorem cutSH_opClosed_of (h2 : FamAlg) (h3 : FamDeriv) (h4 : RepLin) (h5 : FamJ
     change pOp (⟨0, by omega⟩ : Fin (P.r - j)) (fun c' => (Ψ : Fn P.k (P.r - j) (Wq →L[ℂ] Wp)) c' (gi j hj x.2))
       (cc j hj t x.1) = _
     unfold pOp
-    rw [if_pos (hom t ht x hx), opc_cc_zero]
+    rw [ite_eq_left (hom t ht x hx), opc_cc_zero]
     unfold wirt
     rw [hD 1 t ht x hx, hD Complex.I t ht x hx]
     module
@@ -519,7 +519,7 @@ theorem cutSH_opClosed_of (h2 : FamAlg) (h3 : FamDeriv) (h4 : RepLin) (h5 : FamJ
     change pbOp (⟨0, by omega⟩ : Fin (P.r - j)) (fun c' => (Ψ : Fn P.k (P.r - j) (Wq →L[ℂ] Wp)) c' (gi j hj x.2))
       (cc j hj t x.1) = _
     unfold pbOp
-    rw [if_pos (hom t ht x hx), opc_cc_zero]
+    rw [ite_eq_left (hom t ht x hx), opc_cc_zero]
     unfold wirtBar
     rw [hD 1 t ht x hx, hD Complex.I t ht x hx]
     module

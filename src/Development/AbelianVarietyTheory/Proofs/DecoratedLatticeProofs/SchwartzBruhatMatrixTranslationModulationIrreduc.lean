@@ -4,56 +4,12 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMea
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsNeZeroOfEventually
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MatrixIntegersModNatFinite
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MatrixIntegralOfAddCharTraceDual
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -76,8 +32,8 @@ def ind (K : AddSubgroup G) (t : G) : ℂ := by
 theorem ind_add (K : AddSubgroup G) (t : G) {u : G} (hu : u ∈ K) : ind K (t + u) = ind K t := by
   unfold ind
   by_cases ht : t ∈ K
-  · rw [if_pos ht, if_pos (add_mem ht hu)]
-  · rw [if_neg ht, if_neg fun h => ht ((add_mem_cancel_right hu).1 h)]
+  · rw [ite_eq_left ht, ite_eq_left (add_mem ht hu)]
+  · rw [ite_eq_right ht, ite_eq_right fun h => ht ((add_mem_cancel_right hu).1 h)]
 
 theorem ind_mem {B : Type} (e : B → G → ℂ) (he : ∀ b t u, e b (t + u) = e b t * e b u)
     (W : Submodule ℂ (G → ℂ)) (hM : ∀ Φ ∈ W, ∀ b, (fun t => e b t * Φ t) ∈ W) (K : AddSubgroup G)
@@ -113,7 +69,7 @@ theorem ind_mem {B : Type} (e : B → G → ℂ) (he : ∀ b t u, e b (t + u) = 
   funext t
   by_cases ht : t ∈ K
   · simp [ind, ht, k1 t ht]
-  · rw [ind, if_neg ht]
+  · rw [ind, ite_eq_right ht]
     by_cases hft : f t = 0
     · exact (k2 t hft).symm
     · obtain ⟨p, hp, u, hu, rfl⟩ := hP t hft
@@ -342,10 +298,10 @@ theorem sb_irreducible : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalS
       have : nsmulAddMonoidHom (n * m) u ∈ lat k Y Y' n := by
         rw [lat, AddSubgroup.mem_map]
         exact ⟨m • u, nsmul_mem hu m, (mul_smul n m u).symm⟩
-      rw [ind, if_pos this]
+      rw [ind, ite_eq_left this]
     · have : t ∈ lat k Y Y' n := by
         by_contra h
-        exact ht (by rw [ind, if_neg h])
+        exact ht (by rw [ind, ite_eq_right h])
       rw [lat, AddSubgroup.mem_map] at this
       obtain ⟨u, hu, rfl⟩ := this
       rw [one_smul]

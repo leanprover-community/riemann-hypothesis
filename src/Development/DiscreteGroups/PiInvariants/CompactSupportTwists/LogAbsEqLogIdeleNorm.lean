@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Conti
 
 set_option linter.all false
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.Desc
 

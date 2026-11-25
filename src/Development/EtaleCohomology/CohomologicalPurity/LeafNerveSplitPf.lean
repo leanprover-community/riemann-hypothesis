@@ -29,10 +29,10 @@ theorem tprod_castSucc {R : Type} [CommRing R] {m : ℕ} (u : Fin m → Rˣ) (i 
     by_cases hj : j = i
     · subst hj; simp
     · have : j.val ≠ i.val := fun h => hj (Fin.ext h)
-      simp only [Fin.val_castSucc, Fin.val_succ, hj, if_false, one_mul]
+      simp only [Fin.val_castSucc, Fin.val_succ, hj, ite_false, one_mul]
       by_cases h1 : i.val ≤ j.val
-      · rw [if_pos h1, if_pos (by omega)]
-      · rw [if_neg h1, if_neg (by omega)]
+      · rw [ite_eq_left h1, ite_eq_left (by omega)]
+      · rw [ite_eq_right h1, ite_eq_right (by omega)]
   rw [Finset.prod_congr rfl (fun j _ => h j), Finset.prod_mul_distrib, Finset.prod_ite_eq']
   simp
 
@@ -73,7 +73,7 @@ theorem chain_ext {N k : ℕ} {U : Scheme.{0}} {m : ℕ} (x y : ComposableArrows
       have hy := (y.map' i.val (i.val + 1)).2 j
       have hu' := hu ⟨i.val, hlt⟩
       change (x.obj i).1 j = (y.obj i).1 j
-      erw [hx, hy, hu', e]
+      rw [hx, hy, hu', e]
   exact ComposableArrows.ext (fun i => hobj (m - i.val) i (by omega))
     (fun i hi => (Vec.hom_subsingleton N k U _ _).elim _ _)
 

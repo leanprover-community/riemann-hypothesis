@@ -10,59 +10,17 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueFixe
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsAbsoluteValueOfIsDiscreteValuationRing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Carver
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PartSpan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.MvPowerSeries.Inverse
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -159,7 +117,7 @@ private theorem pf_unit {O X σ : Type} [CommRing O] [AddCommGroup X] (wt : σ �
   · rw [← hG, coeff_mul, coeff_mul]
     refine Finset.sum_congr rfl fun q hq => ?_
     by_cases h1 : Finsupp.weight wt q.1 = 0
-    · rw [coeff_wcomp, if_pos]
+    · rw [coeff_wcomp, ite_eq_left]
       rwa [← Finset.HasAntidiagonal.mem_antidiagonal.1 hq, map_add, h1, zero_add] at hn
     · rw [hU _ h1, zero_mul, zero_mul]
   · rw [one_mem_wtPart O wt n hn]
@@ -215,7 +173,7 @@ private theorem pf_nonint {K : Type} [Field K] [Algebra O K] (ξ : W.A →ₐ[O]
     have := (Polynomial.eval₂_reverse_eq_zero_iff (algebraMap O K) (ξ u)⁻¹ p).2 hpa
     rwa [invOf_eq_inv, inv_inv] at this
   have hU : (monomial n 1 : MvPowerSeries W.σ O) ∈ wtPart O W.wt 0 := fun d hd => by
-    rw [coeff_monomial, if_neg]
+    rw [coeff_monomial, ite_eq_right]
     rintro rfl
     exact hd h0
   have hU' : Polynomial.aeval (monomial n 1 : MvPowerSeries W.σ O) p.reverse ∈ wtPart O W.wt 0 := by
@@ -226,7 +184,7 @@ private theorem pf_nonint {K : Type} [Field K] [Algebra O K] (ξ : W.A →ₐ[O]
     rw [isUnit_iff_constantCoeff, Polynomial.map_aeval_eq_aeval_map (φ := RingHom.id O) (ψ := constantCoeff)
       (by ext a; simp [MvPowerSeries.algebraMap_apply])]
     have : constantCoeff (monomial n 1 : MvPowerSeries W.σ O) = 0 := by
-      rw [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, if_neg hn.symm]
+      rw [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, ite_eq_right hn.symm]
     rw [this, Polynomial.map_id, ← Polynomial.coeff_zero_eq_aeval_zero, Polynomial.coeff_zero_reverse, hp.leadingCoeff]
     exact isUnit_one
   obtain ⟨G, hG, hG1⟩ := pf_unit W.wt hU' hunit
@@ -293,7 +251,7 @@ private theorem pf_agree (hι : Function.Injective ι)
       obtain ⟨c, hc, hc'⟩ := pf_step W ξ ι t g hg (J ^ N) J {n | Finsupp.weight W.wt n = 0 ∧ n ≠ 0} 0
         (fun n hn => hn.1) (fun n hn => by
           have := GlobalTheory.algHom_sub_constantCoeff_mem g hJ (monomial n 1)
-          rwa [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, if_neg hn.2.symm, map_zero,
+          rwa [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, ite_eq_right hn.2.symm, map_zero,
             sub_zero] at this) ih
         (b - algebraMap O _ (constantCoeff b)) (fun n hn => by
           rw [map_sub, MvPowerSeries.algebraMap_apply, coeff_C]

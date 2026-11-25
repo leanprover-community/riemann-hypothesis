@@ -34,24 +34,4 @@ theorem perFr_neg (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : Fr
 
 end Mat
 
-section Fam
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
-
-end Fam
-
-section Final
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
-
-end Final
-
-section Rows
-
-variable {D : D7}
-
-end Rows
-
 end Formalism.L2.Pj

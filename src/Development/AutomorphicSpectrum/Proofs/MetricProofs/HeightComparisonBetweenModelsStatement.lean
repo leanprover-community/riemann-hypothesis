@@ -297,7 +297,7 @@ theorem ptsIntegral_word_eq_mInt : ∀ (K : Type) [Fintype K] (J : K → Type) [
     by_cases hj : (j : ℕ) < i
     · rw [positionPot_lt _ _ _ hj, add_ofFun_U] at hy
       rw [positionPot_lt _ _ _ hj, add_ofFun_U]
-      simp only [if_pos hj, _root_.one_mul, add_ofFun_φ]
+      simp only [ite_eq_left hj, _root_.one_mul, add_ofFun_φ]
       obtain ⟨hyU, hyY⟩ := hy
       obtain ⟨U, hUo, hyU', hUs, s, hs, hh, G, hG, hre⟩ := S.th_ref x y₀ hyU.1
       obtain ⟨U₂, hU₂o, hy₂, hU₂s, G₂, hG₂, hre₂⟩ := sum_log_vertFactor_local D M (D.SB B)
@@ -321,7 +321,7 @@ theorem ptsIntegral_word_eq_mInt : ∀ (K : Type) [Fintype K] (J : K → Type) [
         linarith
     · rw [positionPot_ge _ _ _ hj, add_ofFun_U] at hy
       rw [positionPot_ge _ _ _ hj, add_ofFun_U]
-      simp only [if_neg hj, _root_.one_mul, add_ofFun_φ, add_zero]
+      simp only [ite_eq_right hj, _root_.one_mul, add_ofFun_φ, add_zero]
       obtain ⟨hyU, hyY⟩ := hy
       obtain ⟨U, hUo, hyU', hUs, s, hs, hh, G, hG, hre⟩ := hPn x y₀ hyU
       exact ⟨U ∩ S.R.Yo, hUo.inter hYo, ⟨hyU', hyY⟩, fun y hy => ⟨hUs hy.1, hy.2⟩, s,
@@ -476,13 +476,13 @@ theorem tendsto_arLimFun (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.Metr
     · intro j
       by_cases h : (j : ℕ) < i
       · simpa [h] using hph
-      · simp only [h, if_false]
+      · simp only [h, ite_false]
         intro j'
         exact contDiffOn_const
     · have h1 := hpsh 1 one_pos
       filter_upwards [hbd, h1] with t ht ht1 j
       by_cases h : (j : ℕ) < i
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         refine ⟨ht.1, ?_, fun x hx => ?_⟩
         · have : Θ.rsmul 1 = Θ := by
             cases Θ
@@ -494,7 +494,7 @@ theorem tendsto_arLimFun (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.Metr
             mul_le_mul_of_nonneg_right (by rw [hCc]; linarith [abs_nonneg C₁, abs_nonneg Bκ]) hL
           have h5 : |C₁| ≤ Cc := by rw [hCc]; linarith [abs_nonneg S.R.Clog, abs_nonneg Bκ]
           exact ⟨by linarith, by linarith⟩
-      · simp only [h, if_false]
+      · simp only [h, ite_false]
         refine ⟨fun j' => contDiffOn_const, hΘN, fun x hx => ?_⟩
         have hL := hlogr x hx
         have := mul_nonneg hCc0 hL
@@ -502,9 +502,9 @@ theorem tendsto_arLimFun (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.Metr
         exact ⟨by linarith, hCc0⟩
     · intro j k K' hK' hK'c
       by_cases h : (j : ℕ) < i
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         exact _root_.GlobalTheory.CompanionTheory.Ar.Giv.regWeight_tendsto_C2_of_tied K J (mCoordIdeal D.y) D.n M D.Xo (muLine Hd) S hS k K' hK' hK'c
-      · simp only [h, if_false]
+      · simp only [h, ite_false]
         exact ⟨tuo_const _ _ _, tuo_const _ _ _, tuo_const _ _ _⟩
     · filter_upwards [hbd] with t ht
       refine ⟨?_, fun x hx => ?_⟩
@@ -582,7 +582,7 @@ theorem tendsto_arLimFun (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.Metr
     have hint : ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ i ∈ Finset.range (D.n + 1),
         MIntegrable M.atlas (positionPot S.R.th Pn (S.regWeight t) i) (GT t) :=
       (Filter.eventually_all_finset _).2 fun i _ => (hconv i).2.1
-    filter_upwards [GlobalTheory.T.regularized_hodge_metric_smooth K J II Ψ Ω W D Hd M S B hS, hbd, hint] with t hsp hb hi
+    filter_upwards [GlobalTheory.CompanionTheory.Ar.Cusp.muReg_smooth_log K J II Ψ Ω W D Hd M S B hS, hbd, hint] with t hsp hb hi
     obtain ⟨hsm, hdeg, hlog⟩ := hsp
     have hT := _root_.GlobalTheory.CompanionTheory.Ar.Tele.telescope hLoc K J II (mCoordIdeal D.y) D.n Nb (muReg Hd S B t) hII D.arith hNb hsm
       (hdeg.trans hNa.symm)

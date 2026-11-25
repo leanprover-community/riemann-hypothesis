@@ -127,10 +127,6 @@ namespace GlobalTheory.SelfDualIndex
 
 variable {E : Type} [Field E] [NumberField E] {p : ℕ}
 
-theorem bdd_of_fg {Λ : Submodule (𝓞 E) (Fin p → E)} (h : Λ.FG) : GlobalTheory.BetaEx.Bdd Λ := by
-  apply _root_.GlobalTheory.LatIndexDeg.bdd_of_fg <;> assumption
-
-
 omit [NumberField E] in
 theorem ιMulti_single_ne_zero :
     exteriorPower.ιMulti E p (fun j : Fin p => (Pi.single j (1 : E) : Fin p → E)) ≠ 0 := by
@@ -142,7 +138,6 @@ theorem ιMulti_single_ne_zero :
   rw [show (Matrix.of fun j : Fin p => (Pi.single j (1 : E) : Fin p → E)) = 1 from by
     ext i j; simp [Matrix.one_apply, Pi.single_apply, eq_comm], Matrix.det_one] at this
   exact one_ne_zero this
-
 
 omit [NumberField E] in
 theorem idx_eq (Λ : Submodule (𝓞 E) (Fin p → E)) (J : Ideal (𝓞 E)) (hJ : J • GlobalTheory.BetaEx.detSpan Λ = 1) :
@@ -243,7 +238,7 @@ theorem idx_mul_map_bar_eq : ∀ (E : Type) [Field E] [NumberField E] (bar : �
     convert hO b using 1
     funext a
     exact (hb a).symm
-  obtain ⟨J, -, hJ, -⟩ := GlobalTheory.BetaEx.exists_index_ideal _ Λ hstd (bdd_of_fg hfg)
+  obtain ⟨J, -, hJ, -⟩ := GlobalTheory.BetaEx.exists_index_ideal _ Λ hstd (GlobalTheory.LatIndexDeg.bdd_of_fg hfg)
     (fun m _ => GlobalTheory.BetaEx.exists_smul_std m)
   rw [GlobalTheory.DetIdeal.detSpan_std] at hJ
   have hJ1 : J • GlobalTheory.BetaEx.detSpan Λ = 1 := hJ.symm
@@ -287,7 +282,7 @@ theorem idx_mul_map_bar_eq : ∀ (E : Type) [Field E] [NumberField E] (bar : �
         simp [hbd, smul_eq_mul]
       rw [this, Matrix.mulVec_smul, hw, smul_zero, zero_dotProduct]
       simp
-    obtain ⟨k, hk0, hk⟩ := bdd_of_fg hfg
+    obtain ⟨k, hk0, hk⟩ := GlobalTheory.LatIndexDeg.bdd_of_fg hfg
     obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
       by_contra! hne
       exact hw0 (funext hne)
@@ -470,7 +465,6 @@ private theorem one_mem_colon_one_smul_of_fg {E : Type} [Field E] [NumberField E
     exact hinv s hs
   rw [mul_comm, ← Algebra.smul_def]
   exact Submodule.smul_mem_smul hi ha
-
 
 open NumberField in
 open scoped nonZeroDivisors in
@@ -1142,7 +1136,7 @@ theorem idealSt_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     Submodule.FG.of_le (LieLattice.lieLat_fg_and_span_eq_top K _ FP).1
       (Submodule.span_mono fun c ⟨u, hu, _⟩ => ⟨u, hu⟩)
   have hrk : latRank K (FP.eigLat (X.A true).t.act τ) = 1 := by
-    rw [(GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A true) FP 1 0 X.split X.typeP X.ρ_sq).1 τ, if_pos hτ]
+    rw [(GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A true) FP 1 0 X.split X.typeP X.ρ_sq).1 τ, ite_eq_left hτ]
   rw [subP, hdesc FP FB MP hMP τ hτ τE hτE]
   exact _root_.GlobalTheory.IdxTensor.idx_image_eq_map E K τ τE hτE p _ _ _ MP Λ hfgA hrk (fun a => hinj (.inl a))
     (iSupIndep.comp hind (f := fun a : Fin p => ((Sum.inl a : Fin p ⊕ Fin 0), τ)) fun a b e => by simpa using e)
@@ -1184,10 +1178,6 @@ theorem latRank_iSup {K V ι : Type} [Field K] [NumberField K] [AddCommGroup V] 
     first
     | exact hi.dfinsupp_lsum_injective
   rw [← DirectSum.range_coeLinearMap, LinearMap.finrank_range_of_inj hinj, Module.finrank_directSum]
-
-end GlobalTheory.FlatCore.CMDiff
-
-namespace GlobalTheory.FlatCore.CMDiff
 
 end GlobalTheory.FlatCore.CMDiff
 
@@ -1454,7 +1444,6 @@ open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain ReciprocityTh
 noncomputable section
 namespace GlobalTheory.FlatCM.ImageDeg
 
-
 open GlobalTheory.HermHom in
 theorem form_diff_eq_pair : ThetaUnifAV → Out.Laws → ∀ (K : Type) [Field K] [NumberField K] (P : Out.PolAV (Sp (𝓞 K))) (F : GenFib P)
   (P' : Out.PolAV (Sp (𝓞 K))) (F' : GenFib P') (h : HermFam K (Fin F.P₀.g → K)) (h' : HermFam K (Fin F'.P₀.g → K))
@@ -1577,8 +1566,8 @@ theorem deg_images : CMCurve → ThetaUnifAV → Out.Laws → HomExtDvr → ∀ 
   obtain ⟨-, -, hinj, hind, -⟩ := Indep.letters_independent hU hL E H K ρ σ₁ p q X FA FB M hM
   have hrP := (_root_.GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A true) FP 1 0 X.split X.typeP X.ρ_sq).1 τ
   have hrQ := (_root_.GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A false) FQ 0 1 X.split X.typeM X.ρ_sq).1 (τ.comp (H.bar : 𝓞 E →+* 𝓞 E))
-  rw [if_pos hτ] at hrP
-  rw [if_neg (by rw [hτ']; exact hne)] at hrQ
+  rw [ite_eq_left hτ] at hrP
+  rw [ite_eq_right (by rw [hτ']; exact hne)] at hrQ
   have hΩP : 2 * deg hP (FP.eigLat (X.A true).t.act τ) = (logOm E χ).re := by
     have := hD E H χ hχ K ρ (X.A true) X.split X.ρ_sq X.typeP FP hP hhP τ hτ
     rw [← this, Complex.ofReal_re]
@@ -1662,8 +1651,8 @@ theorem cmDiff_definite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     have : (2 : 𝓞 K) * ρ = 0 := by linear_combination -e
     exact hρ ((mul_eq_zero.1 this).resolve_left two_ne_zero)
   have hdec := (GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ X.B F p 0 X.split X.typeB X.ρ_sq).1
-  have hrkP : latRank K (F.eigLat X.B.t.act τ) = p := by rw [hdec, if_pos hτ]
-  have hrkQ : latRank K (F.eigLat X.B.t.act τb) = 0 := by rw [hdec, if_neg hne]
+  have hrkP : latRank K (F.eigLat X.B.t.act τ) = p := by rw [hdec, ite_eq_left hτ]
+  have hrkQ : latRank K (F.eigLat X.B.t.act τb) = 0 := by rw [hdec, ite_eq_right hne]
   have hfg : ∀ σ, (F.eigLat X.B.t.act σ).FG := fun σ =>
     Submodule.FG.of_le (LieLattice.lieLat_fg_and_span_eq_top K _ F).1
       (Submodule.span_mono fun c ⟨u, hu, _⟩ => ⟨u, hu⟩)

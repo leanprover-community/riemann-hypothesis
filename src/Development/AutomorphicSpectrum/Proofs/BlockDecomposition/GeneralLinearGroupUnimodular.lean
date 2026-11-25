@@ -116,7 +116,7 @@ theorem char_dg (χ : GL (Fin n) ℂ →* ℝ≥0) (hz : ∀ z : GL (Fin n) ℂ,
     intro k l
     rw [hv_def, Finset.prod_apply, Finset.prod_apply]
     exact Fintype.prod_equiv (Equiv.mulRight (Equiv.swap k l)) _ _
-      (fun σ => by simp [Equiv.Perm.mul_apply, Equiv.swap_apply_right])
+      (fun σ => by simp [Equiv.swap_apply_right])
   have hcent : ∀ g, dg v * g = g * dg v := by
     intro g
     ext1

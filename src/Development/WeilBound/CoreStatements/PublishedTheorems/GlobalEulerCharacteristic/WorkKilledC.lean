@@ -55,33 +55,10 @@ theorem rat_eq_one_of_padicValRat {q : ℚ} (hq : 0 < q) (h : ∀ p : ℕ, p.Pri
     have := h p hp
     simp only [padicValRat, padicValInt] at this
     omega
-  have hn0 : q.num.natAbs ≠ 0 := by
-    have := Rat.num_pos.2 hq
-    omega
-  have hnum : ∀ p : ℕ, p.Prime → ¬ p ∣ q.num.natAbs := by
-    intro p hp hd
-    have := Fact.mk hp
-    have h1 := one_le_multiplicity_of_dvd hn0 hd
-    have hd' : p ∣ q.den := by
-      by_contra hnd
-      rw [hval p hp, multiplicity_eq_zero_of_not_dvd hnd] at h1
-      omega
-    exact Nat.not_coprime_of_dvd_of_dvd hp.one_lt hd hd' q.reduced
-  have hden : ∀ p : ℕ, p.Prime → ¬ p ∣ q.den := by
-    intro p hp hd
-    have := Fact.mk hp
-    have h1 := one_le_multiplicity_of_dvd q.den_nz hd
-    have hd' : p ∣ q.num.natAbs := by
-      by_contra hnd
-      rw [← hval p hp, multiplicity_eq_zero_of_not_dvd hnd] at h1
-      omega
-    exact Nat.not_coprime_of_dvd_of_dvd hp.one_lt hd' hd q.reduced
-  have h1 : q.num.natAbs = 1 := Nat.eq_one_iff_not_exists_prime_dvd.2 hnum
-  have h2 : q.den = 1 := Nat.eq_one_iff_not_exists_prime_dvd.2 hden
-  have h3 : q.num = 1 := by
-    have := Rat.num_pos.2 hq
-    omega
-  exact Rat.ext h3 h2
+  have hn0 := Rat.num_pos.2 hq
+  have hnd := (Nat.eq_iff_prime_multiplicity_eq _ _ (by omega) q.den_nz).2 hval
+  have h2 : q.den = 1 := (Nat.coprime_self _).1 (hnd ▸ q.reduced)
+  exact Rat.ext (show q.num = 1 by omega) h2
 
 theorem shortExact_of_fun {k G : Type} [CommRing k] [Group G] (T : ShortComplex (Rep.{0} k G))
     (h1 : Function.Injective T.f.hom) (h2 : ∀ y, T.g.hom y = 0 → ∃ x, T.f.hom x = y)

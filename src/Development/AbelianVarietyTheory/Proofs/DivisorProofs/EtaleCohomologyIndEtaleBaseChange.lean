@@ -77,7 +77,7 @@ open Polynomial
 
 theorem bijective_of_subsingleton {X Y : Type*} [Subsingleton X] [Subsingleton Y] (f : X → Y) (x : X) :
     Function.Bijective f :=
-  ⟨fun a b _ => Subsingleton.elim a b, fun y => ⟨x, Subsingleton.elim _ _⟩⟩
+  ⟨fun a b _ => Subsingleton.elim a b, fun _ => ⟨x, Subsingleton.elim _ _⟩⟩
 
 theorem idem_of_domain {A : Type} [CommRing A] [IsDomain A] (e : A) (he : IsIdempotentElem e) :
     e = 0 ∨ e = 1 := by

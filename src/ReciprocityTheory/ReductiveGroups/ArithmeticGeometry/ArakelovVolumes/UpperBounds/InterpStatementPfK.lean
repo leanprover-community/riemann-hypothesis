@@ -81,12 +81,6 @@ theorem lact_rmul_diff {f : V (nd X) → Frame X.Ψ r} (hf : Differentiable ℂ 
     | exact Differentiable.fun_sum fun k _ => (differentiable_const _).mul
         (Differentiable.fun_sum fun l _ => (frame_entry_diff X hf τ k l).mul (differentiable_const _))
 
-private lemma continuous_dmin_Gm (τ : X.Ψ) (i : Fin (r + 1)) :
-    Continuous fun x : Frame X.Ψ r => dmin X.Gm x τ i := by
-  unfold dmin lminor gram hermC col mat
-  first
-    | fun_prop
-
 theorem isOpen_dom : IsOpen X.dom := by
   apply _root_.ReciprocityTheory.ChartRestriction.G.FD.FourierCoefficientDomain.isOpen_dom <;> assumption
 

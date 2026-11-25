@@ -309,8 +309,6 @@ theorem muPM (hq : q ≠ 3) (hmu : ∀ k : ℕ, k ∣ QS Ξ e →
   unfold host
   apply ModData.muPM (hq := hq) (hmu := hmu)
 
-theorem coprimeFifteen_of_coprime (h : Nat.Coprime M 15) : (host Ξ e hH hc he hs).CoprimeFifteen :=
-  (Nat.Coprime.mul_left (Nat.Coprime.pow_left _ (by norm_num)) h).coprime_dvd_left (QS_dvd_mul Ξ e)
 
 theorem exists_sqq : ∃ s : (host Ξ e hH hc he hs).E, s ^ 2 = -((host Ξ e hH hc he hs).q : (host Ξ e hH hc he hs).E) ∧
     ∀ σ : (host Ξ e hH hc he hs).E ≃ₐ[ℚ] (host Ξ e hH hc he hs).E,
@@ -367,9 +365,6 @@ theorem exceptional_character_condition : (host Ξ e hH hc he hs).ExceptionalCha
   rw [h4] at h5
   norm_num at h5
 
-theorem o_eq_level : (frame Ξ e).o = (Level.ofSub Ξ).o := by
-  rw [o_eq]
-  rfl
 
 end Host
 

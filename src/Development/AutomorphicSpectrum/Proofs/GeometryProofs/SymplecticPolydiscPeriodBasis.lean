@@ -36,7 +36,7 @@ open Matrix Metric GroundTheory.Heights₂.Heights.Regular
 
 theorem P_injective {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : LogPeriods n a g Λ)
     {w : Fin n → ℂ} (hw : w ∈ logCover L.a_le) : Function.Injective (L.P w) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   apply L.unimod.1
   refine LinearMap.ext fun y => ?_
@@ -159,11 +159,11 @@ theorem exists_seq (h : a ≤ n) : ∃ u : ℕ → Fin n → ℂ, (∀ m, u m �
     Tendsto (fun m => expCover a (u m)) atTop (𝓝 0) := by
   refine ⟨fun m k => if k.val < a then -((m : ℂ) + 1) else (((m : ℂ) + 2))⁻¹, fun m => ⟨fun j => ?_, fun k hk => ?_⟩, ?_⟩
   · have : (Fin.castLE h j).val < a := j.2
-    simp only [this, if_true, Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
+    simp only [this, ite_true, Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
     have : (0 : ℝ) ≤ m := Nat.cast_nonneg m
     linarith
   · have : ¬ k.val < a := by omega
-    simp only [this, if_false, norm_inv]
+    simp only [this, ite_false, norm_inv]
     have h2 : ‖(m : ℂ) + 2‖ = (m : ℝ) + 2 := by
       have : (m : ℂ) + 2 = ((m + 2 : ℕ) : ℂ) := by push_cast; ring
       rw [this, Complex.norm_natCast]; push_cast; ring
@@ -174,13 +174,13 @@ theorem exists_seq (h : a ≤ n) : ∃ u : ℕ → Fin n → ℂ, (∀ m, u m �
     intro k
     simp only [expCover, Pi.zero_apply]
     by_cases hk : k.val < a
-    · simp only [hk, if_true]
+    · simp only [hk, ite_true]
       rw [tendsto_zero_iff_norm_tendsto_zero]
       simp only [Complex.norm_exp, Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
       refine Real.tendsto_exp_atBot.comp ?_
       refine tendsto_neg_atTop_atBot.comp ?_
       exact tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
-    · simp only [hk, if_false]
+    · simp only [hk, ite_false]
       rw [tendsto_zero_iff_norm_tendsto_zero]
       have h2 : ∀ m : ℕ, ‖((m : ℂ) + 2)⁻¹‖ = ((m : ℝ) + 2)⁻¹ := by
         intro m

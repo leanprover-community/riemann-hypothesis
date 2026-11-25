@@ -20,7 +20,7 @@ private def extendExponentsByZero (m s : ℕ) (t : Fin m → Fin (s + 1)) (j : �
 
 private theorem extendExponentsByZero_apply_of_lt (m s : ℕ) (t : Fin m → Fin (s + 1)) (j : ℕ) (hj : j < m) :
     extendExponentsByZero m s t j = (t ⟨j, hj⟩ : ℕ) :=
-  dif_pos hj
+  dite_eq_left hj
 
 private theorem le_sum_mul_min_of_le_sum (m s : ℕ) (c : ℕ → ℕ)
     (hc : s ≤ ∑ j ∈ Finset.range m, (m - j) * c j) :
@@ -131,7 +131,7 @@ theorem tunedSheaf_eq_top_of_orderAtLeastLocus_eq_empty (k : Type u) [Field k] [
   have hm2 : m - (m - 1) = 1 := by omega
   have heq : ∑ j ∈ Finset.range m, (m - j) * (if j = m - 1 then s else 0)
       = (m - (m - 1)) * (if m - 1 = m - 1 then s else 0) :=
-    Finset.sum_eq_single (m - 1) (fun b _ hb => by rw [if_neg hb, mul_zero])
+    Finset.sum_eq_single (m - 1) (fun b _ hb => by rw [ite_eq_right hb, mul_zero])
       (fun hb => absurd hmem hb)
   have h3 : (m - (m - 1)) * (if m - 1 = m - 1 then s else 0) = s := by simp [hm2]
   have hsum : s ≤ ∑ j ∈ Finset.range m, (m - j) * (if j = m - 1 then s else 0) :=
@@ -147,7 +147,7 @@ theorem tunedSheaf_eq_top_of_orderAtLeastLocus_eq_empty (k : Type u) [Field k] [
       by_cases hj : j = m - 1
       · subst hj
         rw [htop, ← Scheme.IdealSheafData.one_eq_top, one_pow]
-      · rw [if_neg hj, pow_zero]
+      · rw [ite_eq_right hj, pow_zero]
     rw [h1, Scheme.IdealSheafData.one_eq_top]
   rw [tunedSheaf_eq_iSup]
   exact top_le_iff.mp (le_trans (le_of_eq hprod.symm)

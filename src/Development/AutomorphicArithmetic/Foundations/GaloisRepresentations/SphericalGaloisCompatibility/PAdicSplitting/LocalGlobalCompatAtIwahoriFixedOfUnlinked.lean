@@ -236,8 +236,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
 open GlobalTheory.AboveL
 
-theorem _root_.GlobalTheory.T.exists_normV_eq_normV_under_pow : ∀ (K M : Type) [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M] (w : HeightOneSpectrum (𝓞 M)), ∃ f : ℕ, normV w = normV (w.under (𝓞 K)) ^ f := by
-  first | exact @GlobalTheory.AboveL.ResDeg.normV_eq_under_pow
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsNormVEqNormVUnderPowStatement =====
@@ -298,7 +296,6 @@ theorem normChar_locInf {K L : Type} [Field K] [NumberField K] [Field L] [Number
   rw [this]
   simp
 
-
 open scoped GroundTheory.Global.AdeleBaseChange in
 open GlobalTheory.UnitaryHeckeBaseChange in
 theorem ideleNorm_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (x : (AdeleRing (𝓞 E) E)ˣ) :
@@ -337,10 +334,10 @@ theorem ideleNorm_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (x : (Ad
 
 theorem main : ∀ (K M : Type) [Field K] [NumberField K] [IsCMField K] [Field M] [NumberField M] [IsCMField M] [Algebra K M] (a : ℕ) (χ : HChar (maximalRealSubfield K)), (∀ v : InfinitePlace (maximalRealSubfield K), χ.locInf v (-1) = (-1) ^ a) → ∃ χ' : HChar (maximalRealSubfield M), (∀ u : InfinitePlace (maximalRealSubfield M), χ'.locInf u (-1) = (-1) ^ a) ∧ ∀ x : Ideles M, (compNorm M χ').1 x = (compNorm K χ).1 (GroundTheory.Global.ideleNorm K M x) := by
   intro K M _ _ _ _ _ _ _ a χ hsign
-  letI : Algebra (maximalRealSubfield K) (maximalRealSubfield M) := (realHom K M).toAlgebra
-  haveI : IsScalarTower (maximalRealSubfield K) (maximalRealSubfield M) M :=
+  let : Algebra (maximalRealSubfield K) (maximalRealSubfield M) := (realHom K M).toAlgebra
+  have : IsScalarTower (maximalRealSubfield K) (maximalRealSubfield M) M :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl
-  haveI : IsScalarTower (maximalRealSubfield K) K M :=
+  have : IsScalarTower (maximalRealSubfield K) K M :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl
   refine ⟨normChar (maximalRealSubfield M) χ,
     fun u => (normChar_locInf χ u (IsTotallyReal.isReal u)).trans (hsign _), fun x => ?_⟩
@@ -438,8 +435,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
 open GlobalTheory.AboveL
 
-theorem _root_.GlobalTheory.T.unramifiedAt_value_heckeChar_comp_ideleNorm : ∀ (K M : Type) [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M] (ψ : HChar K) (ψ' : HChar M), (∀ x : Ideles M, ψ'.1 x = ψ.1 (GroundTheory.Global.ideleNorm K M x)) → ∀ (w : HeightOneSpectrum (𝓞 M)) (f : ℕ), normV w = normV (w.under (𝓞 K)) ^ f → ψ.UnrAt (w.under (𝓞 K)) → ψ'.UnrAt w ∧ ψ'.val w = ψ.val (w.under (𝓞 K)) ^ f := by
-  first | exact @GlobalTheory.NormValGen.unrAt_val_of_comp_norm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnramifiedAtValueHeckeCharCompIdeleNormStatement =====
@@ -469,8 +464,8 @@ private theorem pol_norm (hjs : GlobalTheory.Published.JacquetShalikaRigidity) (
   have hT' := (HeightOneSpectrum.tendsto_under_cofinite K M).eventually (hT.and hU)
   have hbc' := (conjSrc_injective (IsCMField.complexConj M).toRingEquiv).tendsto_cofinite.eventually hbc
   filter_upwards [hT', hbc, hbc'] with w ⟨hTw, hUw⟩ hw hcw
-  obtain ⟨f, hf⟩ := GlobalTheory.T.exists_normV_eq_normV_under_pow K M w
-  obtain ⟨hu', hval⟩ := GlobalTheory.T.unramifiedAt_value_heckeChar_comp_ideleNorm K M (compNorm K χ) (compNorm M χ') hN w f hf hUw
+  obtain ⟨f, hf⟩ := GlobalTheory.AboveL.ResDeg.normV_eq_under_pow K M w
+  obtain ⟨hu', hval⟩ := GlobalTheory.NormValGen.unrAt_val_of_comp_norm K M (compNorm K χ) (compNorm M χ') hN w f hf hUw
   refine ⟨hu', ?_⟩
   obtain ⟨B, hB1, hB2⟩ := hw f hf
   have hcu := GlobalTheory.T.under_conjugatePlace_eq_conjugatePlace_under K M w
@@ -562,9 +557,9 @@ theorem UpperTheory.Gal.NearKilling.weakRes :
   intro E M Ω _ _ _ _ _ _ _ _ _ _ _ _ _ l _ ι a π P hL r hr
   obtain ⟨hc, hss, hatt⟩ := hr
   refine ⟨hc.comp (UpperTheory.V.Af.continuous_restrictScalarsHom E M Ω), ?_, ?_⟩
-  · haveI := finiteIndex_range_res E M Ω
+  · have := finiteIndex_range_res E M Ω
     set H := (UpperTheory.V.Af.Bc.res E Ω M).range with hH
-    haveI : (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)).FiniteIndex := finiteIndex_comap _ _
+    have : (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)).FiniteIndex := finiteIndex_comap _ _
     refine isSSRep_of_finiteIndex _ (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)) ?_
     have hrange : ((UpperTheory.V.Af.Bc.res E Ω M).comp (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)).subtype).range = H.normalCore := by
       ext x
@@ -761,12 +756,6 @@ namespace GlobalTheory.RoadU.FinTwist
 
 open GlobalTheory.ContraPair GlobalTheory.HeightCounting.Blocks
 
-end GlobalTheory.RoadU.FinTwist
-
-namespace GlobalTheory.RoadU.FinTwist
-
-open GlobalTheory.ContraPair GlobalTheory.HeightCounting.Blocks
-
 theorem isAlg_zero {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {κ : HChar K} {m : ℕ} (hm : 0 < m)
     (h : κ ^ m = 1) : κ.IsAlg 0 := fun k => isAlgPos_zero_of_orderDvd hm h k fun φ => by
   have h := IsTotallyComplex.complexEmbedding_not_isReal (Complex.ofRealHom.comp φ)
@@ -899,7 +888,7 @@ private theorem pairwise_of_map {α β : Type*} (f : α → β) {r : β → β �
   induction t using Quot.inductionOn with
   | h l =>
     have h' : Multiset.Pairwise r ((l.map f : List β) : Multiset β) := h
-    haveI : Std.Symm r := ⟨fun _ _ e => hr e⟩
+    have : Std.Symm r := ⟨fun _ _ e => hr e⟩
     rw [Multiset.pairwise_coe_iff_pairwise, List.pairwise_map] at h'
     exact ⟨l, rfl, h'⟩
 
@@ -922,7 +911,7 @@ theorem UpperTheory.Gal.ToralGalois.R2.mixedOf :
     MixedOf := by
   intro E Ω _ _ _ _ _ _ n π w σ hσ hfix hap A h rc hrc hm
   obtain ⟨a, ha, L⟩ := hrc
-  haveI : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
+  have : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
   have hg : IsGeneric σ.ρ := GlobalTheory.CuspRep.Generic.isGeneric_of_isLocComp E n π w σ hσ
   have hnu : ∀ (z : IrrGL (k := w.adicCompletion E)) (s : ℂ), IsGeneric z.rep → IsGeneric (z.nu s).rep :=
     fun z s hz => (isGeneric_congr (IrrGL.twEquiv z _ _)).1 ((isGeneric_twist_iff _).2 hz)
@@ -991,7 +980,7 @@ open UpperTheory.Gal.ToralGalois.R2
 theorem UpperTheory.Gal.ToralGalois.R2.recChars :
     UpperTheory.Gal.InertialTypesAlt.SuppIne → RecChars := by
   intro hSI M Ω _ _ _ _ _ A u h n T ξ hξ hsup
-  haveI : CharZero (u.adicCompletion M) := charZero_of_injective_algebraMap (algebraMap M _).injective
+  have : CharZero (u.adicCompletion M) := charZero_of_injective_algebraMap (algebraMap M _).injective
   have hsupx : HasSupport (IrrGL.of T.ρ T.smooth T.irred).rep (chars ξ hξ) :=
     hsup.of_equiv (IrrGL.equivOf T.ρ T.smooth T.irred)
   have hnu := GlobalTheory.RoadU.TwistSupp.supp_nu_chars (u.adicCompletion M) (IrrGL.of T.ρ T.smooth T.irred) n ξ
@@ -1072,7 +1061,7 @@ theorem UpperTheory.Gal.ToralGalois.R2.toTor :
     UpperTheory.Gal.InertialTypesAlt.SuppBC → UpperTheory.Gal.NearKilling.UnrField → UpperTheory.Gal.NearKilling.AllLift → UpperTheory.Gal.NearKilling.IneNorm → InfLifts → RecChars → UpperTheory.Zero.LLC.RecTExists → ToTor := by
   intro hSupp hUnr hLift hIne hInf hChars hRec E Ω _ _ _ _ _ _ l _ ι n hn π χ hs r hr w σ hσ hQ hM A h rc hrc
   obtain ⟨p, hp, i, hi⟩ := hQ
-  haveI := hp
+  have := hp
   obtain ⟨hq, hsp⟩ := split_of_padic w p i hi
   have hf : 0 < n.factorial := Nat.factorial_pos n
   have hSfin : {u : HeightOneSpectrum (𝓞 E) | ¬ ∃ B, (CG.mk π).HasSat u B}.Finite := by
@@ -1082,7 +1071,7 @@ theorem UpperTheory.Gal.ToralGalois.R2.toTor :
   obtain ⟨Xf, hXT, hXw, -⟩ := hUnr E Ω w hsp _ hf _ hSfin
   obtain ⟨P, χ', hPL, hPs, hPr⟩ := hLift E Ω l n hn π χ hs _ (fun u hu => not_not.1 hu) Xf hXT
   obtain ⟨w', h', -⟩ := GlobalTheory.AboveL.exists_isPlaceOver_of_tower E Xf.K Ω A w h
-  haveI : w'.asIdeal.LiesOver w.asIdeal := ⟨(GlobalTheory.AboveL.comap_eq_of_placeOver h h').symm⟩
+  have : w'.asIdeal.LiesOver w.asIdeal := ⟨(GlobalTheory.AboveL.comap_eq_of_placeOver h h').symm⟩
   have hXfix := (hXw A h).1
   have hnorm := (hXw A h).2 w' h'
   obtain ⟨σ', hσ', -⟩ := LocEx.exists_isLocComp GlobalTheory.automorphicFormsFiniteGL Xf.K n P w'

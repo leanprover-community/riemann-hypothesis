@@ -36,61 +36,12 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RootsNorm
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGammaZeroPartitionWeight
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RankinValuesAtZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFormCoeffSeqLinearStructure
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Mathlib.Data.Nat.Choose.Multinomial
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashIntMatrixPosDetProperties
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoeffHeckeVOperatorPolynomialGrowthQExpansion
-import Mathlib.NumberTheory.MulChar.Lemmas
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EisensteinLatticeFunctionIsModularFormCoeffSeq
-import Mathlib.NumberTheory.LSeries.Basic
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TwistedLvalueNeZeroEdge
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -106,15 +57,8 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
 namespace GlobalTheory.DepletedValue
 
-lemma isUnit_of_isCoprime {n : ℕ} {d : ℤ} (h : IsCoprime d (n : ℤ)) : IsUnit (d : ZMod n) := by
-  obtain ⟨u, v, huv⟩ := h
-  have h1 := congrArg (Int.cast : ℤ → ZMod n) huv
-  push_cast at h1
-  simp only [ZMod.natCast_self, mul_zero, add_zero] at h1
-  exact isUnit_iff_exists_inv.mpr ⟨_, by rw [mul_comm]; exact h1⟩
-
 lemma ch_ne_zero {n : ℕ} (χ : DirichletCharacter ℂ n) {d : ℤ} (h : IsCoprime d (n : ℤ)) : ch χ d ≠ 0 :=
-  ((isUnit_of_isCoprime h).map χ).ne_zero
+  ((GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime h).map χ).ne_zero
 
 lemma ch_inv {n : ℕ} (χ : DirichletCharacter ℂ n) (d : ℤ) : ch χ⁻¹ d = (ch χ d)⁻¹ :=
   MulChar.inv_apply_eq_inv' _ _
@@ -123,7 +67,7 @@ lemma ch_mul {n : ℕ} (θ χ : DirichletCharacter ℂ n) (d : ℤ) : ch (θ * �
   simp [ch]
 
 lemma ch_one {n : ℕ} {d : ℤ} (h : IsCoprime d (n : ℤ)) : ch (1 : DirichletCharacter ℂ n) d = 1 :=
-  MulChar.one_apply (isUnit_of_isCoprime h)
+  MulChar.one_apply (GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime h)
 
 lemma ch_dvd {l : ℕ} (hl : l.Prime) (ψ : DirichletCharacter ℂ l) {d : ℤ} (h : (l : ℤ) ∣ d) : ch ψ d = 0 := by
   haveI : Fact l.Prime := ⟨hl⟩
@@ -230,7 +174,7 @@ lemma good_ne (e N l : ℕ) (χ θ : DirichletCharacter ℂ N) (ψ : DirichletCh
     ring
   have hEn : ∀ c' : ℂ, ∀ n, n ≠ 0 → (eis (e + 1) c₁ (hat φ) fun _ => 1) n = κ * (eis (e + 1) c' (fun y => ch ψ⁻¹ y * hat ⇑(θ * χ) y) fun _ => 1) n := by
     intro c' n hn
-    simp only [eis, if_neg hn, Finset.mul_sum, hhat]
+    simp only [eis, ite_eq_right hn, Finset.mul_sum, hhat]
     exact Finset.sum_congr rfl (fun _ _ => by ring)
   have hκ0 : κ ≠ 0 := by
     intro h0
@@ -309,7 +253,7 @@ lemma good_one (e N l : ℕ) (χ θ : DirichletCharacter ℂ N) (φ : DirichletC
     rcases eq_or_ne n 0 with rfl | hn
     · simp [hBsdef, eis, Vo]
     · rw [Pi.add_apply, Pi.smul_apply, smul_eq_mul, neg_mul (et * (l : ℂ) ^ e) (Vo l Bs n), ← hVpart n hn, hBsdef]
-      simp only [eis, if_neg hn, hinv]
+      simp only [eis, ite_eq_right hn, hinv]
       rw [← sub_eq_add_neg, ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl (fun p _ => ?_)
       by_cases h : (l : ℤ) ∣ (p.1 : ℤ)
@@ -341,7 +285,7 @@ lemma good_one (e N l : ℕ) (χ θ : DirichletCharacter ℂ N) (φ : DirichletC
         ch θ' l * (l : ℂ) * eis (e + 1) c'' (fun x => if (l : ℤ) ∣ x then hat ⇑θ' x else 0) (fun _ => 1) n - ch θ' l * Bs n := by
       rw [hV, Pi.add_apply, Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul, pow_succ]; ring
     rw [hsplit, hBsdef]
-    simp only [eis, if_neg hn, Finset.mul_sum, ← Finset.sum_sub_distrib, hhatE]
+    simp only [eis, ite_eq_right hn, Finset.mul_sum, ← Finset.sum_sub_distrib, hhatE]
     refine Finset.sum_congr rfl (fun p _ => ?_)
     split_ifs <;> ring
   have hRmf : MF (e + 1) (N * l) (ch φ⁻¹) ((ch θ' l * (et * (l : ℂ) ^ (e + 1))) • Vo l Bs + (-ch θ' l) • Bs) := by
@@ -642,10 +586,6 @@ namespace GlobalTheory.EisM
 lemma repL_det (L q : ℕ) (i : Option (Fin q)) : (repL L q i).det = q := by
   cases i <;> simp [repL, Matrix.det_fin_two_of]
 
-lemma gamma0_lower_dvd {L : ℕ} (γ : Gamma0 L) : (L : ℤ) ∣ ((γ : SL(2, ℤ)) : M2) 1 0 := by
-  have := Gamma0_mem.mp γ.2
-  exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp (by exact_mod_cast this)
-
 lemma exists_kernel_param {K : Type*} [Field K] (a b c d l : K) (hl : l ≠ 0)
     (hdet : a * d - b * c = 0) (hbd : b ≠ 0 ∨ d ≠ 0) : ∃ u, a = l * u * b ∧ c = l * u * d := by
   by_cases hd : d = 0
@@ -670,7 +610,7 @@ theorem repL_LRep : ∀ L q : ℕ, q.Prime → ¬ q ∣ L → LRep L (DT L q) (r
   · rintro ⟨γ, i⟩ -
     refine ⟨?_, ?_⟩
     · simp [Matrix.det_mul, repL_det]
-    · have h := gamma0_lower_dvd γ
+    · have h := GlobalTheory.EisM.RightRepU.dvd_10 γ
       cases i with
       | none => simpa [repL, Matrix.mul_apply, Fin.sum_univ_two] using h
       | some j =>
@@ -796,10 +736,6 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
 namespace GlobalTheory.EisM
 
-private theorem slz_const_mul (k : ℕ) (δ : M2) (c : ℂ) (g : ℍ → ℂ) (τ : ℍ) :
-    slz k δ (fun σ => c * g σ) τ = c * slz k δ g τ := by
-  unfold slz; ring
-
 private theorem slz_sub (k : ℕ) (δ : M2) (g g' : ℍ → ℂ) (τ : ℍ) :
     slz k δ (fun σ => g σ - g' σ) τ = slz k δ g τ - slz k δ g' τ := by
   unfold slz; ring
@@ -882,14 +818,14 @@ theorem sum_slz_repL_Vo : ∀ (k N l : ℕ) (ε : DirichletCharacter ℂ N) (h :
   have hterm : ∀ j : Fin l, slz k (repL (N * l) l (some j)) (qs (Vo l h)) τ =
       ((l : ℂ) ^ (k - 1))⁻¹ * slz k D (slz k (repL N l (some j)) F) τ := by
     intro j
-    rw [hVfun, slz_const_mul]
+    rw [hVfun, GlobalTheory.LevelLower.slz_smul]
     congr 1
     rw [← (hcoc F hk).1 D _ hdetD (hdetA _ j), hmat j, (hcoc F hk).1 _ D (hdetA _ j) hdetD]
   simp only [hterm]
   rw [← Finset.mul_sum, ← slz_sum]
   have hfun : (fun σ => ∑ j : Fin l, slz k (repL N l (some j)) F σ) = fun σ => (ch ε l)⁻¹ * (t * F σ - slz k E F σ) := by
     funext σ; exact key σ
-  rw [hfun, slz_const_mul, slz_sub, slz_const_mul]
+  rw [hfun, GlobalTheory.LevelLower.slz_smul, slz_sub, GlobalTheory.LevelLower.slz_smul]
   have hDE : slz k D (slz k E F) τ = (l : ℂ) ^ k / (l : ℂ) ^ 2 * F τ := by
     rw [← (hcoc F hk).1 E D hdetE hdetD, hED]
     exact (hcoc F hk).2.2.2.2 l τ hl0
@@ -925,7 +861,7 @@ theorem qExpansionFunction_coeffHeckeVOperator_eq_tsum (l : ℕ) (hl : 0 < l) (a
     simpa [hl.ne'] using h
   rw [← hinj.tsum_eq]
   · congr 1; ext m
-    simp only [dvd_mul_right, if_true, Nat.mul_div_cancel_left m hl]
+    simp only [dvd_mul_right, ite_true, Nat.mul_div_cancel_left m hl]
     congr 2; push_cast; ring
   · intro n hn
     by_cases h : l ∣ n
@@ -1202,13 +1138,6 @@ noncomputable section
 
 namespace GlobalTheory.EisM
 
-theorem zv_unit_of_isCoprime {L : ℕ} {d : ℤ} (h : IsCoprime d (L : ℤ)) : IsUnit (d : ZMod L) := by
-  obtain ⟨u, v, huv⟩ := h
-  have h1 := congrArg (Int.cast : ℤ → ZMod L) huv
-  push_cast at h1
-  rw [ZMod.natCast_self, mul_zero, add_zero] at h1
-  exact isUnit_iff_exists_inv.mpr ⟨_, (mul_comm _ _).trans h1⟩
-
 theorem zv_apply_ne_zero {L : ℕ} (χ : DirichletCharacter ℂ L) {x : ZMod L} (hx : IsUnit x) : χ x ≠ 0 := by
   obtain ⟨u, rfl⟩ := hx
   intro h
@@ -1305,7 +1234,7 @@ theorem eigF_value_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃
   obtain ⟨c₁, hE, hlat⟩ := _root_.GlobalTheory.EisForm.eis_latF_mf (e + 1) (N * l) 1 (fun _ => 1) (ch φ⁻¹) (fun _ => 1) φ (by omega) hNl one_pos
     hat0 (fun _ => rfl)
     (fun d hd => by
-      have hu : IsUnit (d : ZMod (N * l)) := _root_.GlobalTheory.DepletedValue.isUnit_of_isCoprime (by simpa using hd)
+      have hu : IsUnit (d : ZMod (N * l)) := _root_.GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime (by simpa using hd)
       refine ⟨fun y => ?_, fun x => by ring⟩
       unfold ch
       rw [map_mul, ← mul_assoc, mul_comm (φ⁻¹ _), mul_assoc, zv_inv_mul φ hu, mul_one])
@@ -1327,15 +1256,15 @@ theorem eigF_value_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃
     have h1 := (_root_.GlobalTheory.EisM.mul_main).2 e (e + 1) (N * l) _ _ FF E hFF hE'
     rw [show e + (e + 1) = 2 * e + 1 by ring] at h1
     refine (_root_.GlobalTheory.EisM.mf_linear (2 * e + 1) (N * l) _).2.2.2.1 _ _ (fun d hd => ?_) h1
-    have hu : IsUnit (d : ZMod (N * l)) := zv_unit_of_isCoprime hd
+    have hu : IsUnit (d : ZMod (N * l)) := GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime hd
     have hd' : IsCoprime d (N : ℤ) := by
       have : IsCoprime d ((N : ℤ) * (l : ℤ)) := by simpa using hd
       exact this.of_mul_right_left
     have hd'' : IsCoprime d (l : ℤ) := by
       have : IsCoprime d ((N : ℤ) * (l : ℤ)) := by simpa using hd
       exact this.of_mul_right_right
-    have uN := _root_.GlobalTheory.DepletedValue.isUnit_of_isCoprime hd'
-    have ul := _root_.GlobalTheory.DepletedValue.isUnit_of_isCoprime hd''
+    have uN := _root_.GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime hd'
+    have ul := _root_.GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime hd''
     have e1 := hφ d
     unfold ch at e1 ⊢
     rw [MulChar.mul_apply] at e1

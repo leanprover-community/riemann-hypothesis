@@ -30,11 +30,11 @@ theorem gb_entry {i j : Fin (2 * r + k + 1)} (hj : r ≤ j.val) (hj' : j.val ≤
   by_cases h : i = j
   · subst h
     have h1 : ¬ (i.val < r ∧ i.val + i.val = 2 * r + k) := by omega
-    rw [if_neg h1, if_neg h1, if_pos ⟨hj, hj', rfl⟩, if_pos rfl]
+    rw [ite_eq_right h1, ite_eq_right h1, ite_eq_left ⟨hj, hj', rfl⟩, ite_eq_left rfl]
   · have h1 : ¬ (i.val < r ∧ i.val + j.val = 2 * r + k) := by omega
     have h2 : ¬ (j.val < r ∧ i.val + j.val = 2 * r + k) := by omega
     have h3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = j) := fun hh => h hh.2.2
-    rw [if_neg h1, if_neg h2, if_neg h3, if_neg h]
+    rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, ite_eq_right h]
 
 theorem gb_mulVec {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) :
     Hpk k r *ᵥ v = fun i => (if i.val = r + k then -1 else 1) * v i := by
@@ -42,11 +42,11 @@ theorem gb_mulVec {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) :
   simp only [Matrix.mulVec, dotProduct]
   rw [Finset.sum_eq_single i]
   · by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
-    · rw [gb_entry hi.1 hi.2, if_pos rfl]
+    · rw [gb_entry hi.1 hi.2, ite_eq_left rfl]
     · rw [hv i (by omega)]; ring
   · intro b _ hb
     by_cases hb' : r ≤ b.val ∧ b.val ≤ r + k
-    · rw [gb_entry hb'.1 hb'.2, if_neg (Ne.symm hb)]; ring
+    · rw [gb_entry hb'.1 hb'.2, ite_eq_right (Ne.symm hb)]; ring
     · rw [hv b (by omega)]; ring
   · intro h; exact absurd (Finset.mem_univ i) h
 
@@ -99,10 +99,10 @@ theorem gb_pos {z v : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < T
     intro a b ha
     rw [gb_herm ha, ← Finset.add_sum_erase _ _ (Finset.mem_univ t)]
     congr 1
-    · rw [if_pos htv]; ring
+    · rw [ite_eq_left htv]; ring
     · refine Finset.sum_congr rfl fun i hi => ?_
       have hne : i.val ≠ r + k := fun h => Finset.ne_of_mem_erase hi (Fin.ext (by rw [htv]; exact h))
-      rw [if_neg hne]; ring
+      rw [ite_eq_right hne]; ring
   have nsq : ∀ x : ℂ, (star x * x).re = ‖x‖ ^ 2 := by
     intro x
     rw [← Complex.normSq_eq_norm_sq]
@@ -265,9 +265,9 @@ theorem exists_frame_of_positive_vector {a b : Fin (2 * r + k + 1) → ℂ} (hb 
       · rw [Fin.snoc_castSucc]; exact hB1 j
     · intro i j
       refine Fin.lastCases ?_ (fun i' => ?_) i <;> refine Fin.lastCases ?_ (fun j' => ?_) j
-      · rw [Fin.snoc_last, if_pos rfl]; exact hs
-      · rw [Fin.snoc_last, Fin.snoc_castSucc, h2, if_neg (Fin.castSucc_lt_last j').ne']
-      · rw [Fin.snoc_last, Fin.snoc_castSucc, h1, if_neg (Fin.castSucc_lt_last i').ne]
+      · rw [Fin.snoc_last, ite_eq_left rfl]; exact hs
+      · rw [Fin.snoc_last, Fin.snoc_castSucc, h2, ite_eq_right (Fin.castSucc_lt_last j').ne']
+      · rw [Fin.snoc_last, Fin.snoc_castSucc, h1, ite_eq_right (Fin.castSucc_lt_last i').ne]
       · rw [Fin.snoc_castSucc, Fin.snoc_castSucc, hB2]
         by_cases h : i' = j' <;> simp [h]
     · intro i w hw

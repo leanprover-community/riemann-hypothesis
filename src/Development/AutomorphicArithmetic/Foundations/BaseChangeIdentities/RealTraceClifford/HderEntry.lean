@@ -39,7 +39,7 @@ theorem UpperTheory.RealTr.basic :
   have hval : ∀ {U : Type} [NormedAddCommGroup U] [InnerProductSpace ℂ U] (π : G n →* (U →L[ℂ] U)) (g : G n),
       piM π g.val = π g := by
     intro U _ _ π g
-    simp only [piM, dif_pos g.isUnit]
+    simp only [piM, dite_eq_left g.isUnit]
     congr 1
     exact Units.ext rfl
   refine ⟨?_, hmem, ?_, ?_, ?_⟩

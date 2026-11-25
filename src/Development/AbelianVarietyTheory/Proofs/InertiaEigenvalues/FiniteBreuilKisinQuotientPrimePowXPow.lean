@@ -44,7 +44,7 @@ theorem finite_quot : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (n
   rw [Ideal.Quotient.eq]
   have hw : ∀ i < c, w i - coeff i s ∈ J := by
     intro i hi
-    simp only [w, dif_pos hi]
+    simp only [w, dite_eq_left hi]
     rw [← Ideal.Quotient.eq]
     exact Ideal.Quotient.mk_out _
   have hsplit : (∑ i ∈ Finset.range c, C (w i) * X ^ i) - s =

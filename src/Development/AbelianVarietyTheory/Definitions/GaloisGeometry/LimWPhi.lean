@@ -22,7 +22,7 @@ def GapJ (a : ℕ) (J : Multiset ℤ) : Prop :=
   ∀ i : ℕ, i + 1 < a →
     (J.sort (· ≤ ·)).getD (i + 1) 0 - (J.sort (· ≤ ·)).getD 0 0 > (a : ℤ) * ((J.sort (· ≤ ·)).getD i 0 - (J.sort (· ≤ ·)).getD 0 0)
 
-def WtLac : SeedWtU := fun E _ _ _ l _ a ι w₀ v' U U' =>
+def WtLac : SeedWtU := fun E _ _ _ _ _ a ι w₀ v' U U' =>
   SameWtOff ι w₀ v' U U' ∧ ∃ τ₀ : E →+* ℂ, OverPl ι τ₀ v' ∧ ∀ lam, HasWeightAt U' τ₀ lam → ∀ J : Multiset ℤ,
     J.map (fun n : ℤ => (n : ℂ)) = (infOfWeight lam).map (fun z => ((a : ℂ) - 1) / 2 - z) → GapJ a J
 

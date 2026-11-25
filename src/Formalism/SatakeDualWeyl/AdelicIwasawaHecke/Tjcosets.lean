@@ -172,21 +172,21 @@ theorem tjcosets_entries (n j : ℕ) (ϖ : L) (hϖ : ϖ ≠ 0)
   constructor
   · intro hall a b ha hb
     have h1 := hall a b
-    rw [if_pos ha, if_neg (not_lt.2 hb), mul_one] at h1
+    rw [ite_eq_left ha, ite_eq_right (not_lt.2 hb), mul_one] at h1
     rw [tjcosets_bc_apply]
     exact (hmax _).1 h1
   · intro hpar a b
     by_cases ha : (a : ℕ) < j <;> by_cases hb : (b : ℕ) < j
-    · rw [if_pos ha, if_pos hb, mul_comm ϖ⁻¹, mul_assoc, inv_mul_cancel₀ hϖ, mul_one]
+    · rw [ite_eq_left ha, ite_eq_left hb, mul_comm ϖ⁻¹, mul_assoc, inv_mul_cancel₀ hϖ, mul_one]
       exact ((h : Matrix (Fin n) (Fin n) O) a b).2
-    · rw [if_pos ha, if_neg hb, mul_one]
+    · rw [ite_eq_left ha, ite_eq_right hb, mul_one]
       apply (hmax _).2
       have := hpar a b ha (not_lt.1 hb)
       rw [tjcosets_bc_apply] at this
       exact this
-    · rw [if_neg ha, if_pos hb, one_mul]
+    · rw [ite_eq_right ha, ite_eq_left hb, one_mul]
       exact O.mul_mem ((h : Matrix (Fin n) (Fin n) O) a b).2 hϖO
-    · rw [if_neg ha, if_neg hb, one_mul, mul_one]
+    · rw [ite_eq_right ha, ite_eq_right hb, one_mul, mul_one]
       exact ((h : Matrix (Fin n) (Fin n) O) a b).2
 
 theorem tjcosets_stab (n j : ℕ) (ϖ : L) (hϖO : ϖ ∈ O) (hϖ : ϖ ≠ 0)

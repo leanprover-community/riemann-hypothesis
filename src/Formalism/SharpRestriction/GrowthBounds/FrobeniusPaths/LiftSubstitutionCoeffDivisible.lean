@@ -156,22 +156,22 @@ lemma liftSubst_X_mem {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ) (g : M
     (hg : IsGLW g) (v : ι × Fin k) : liftSubst p f O w r LL g (X v) ∈ usSub O w LL r := by
   simp only [liftSubst, MvPolynomial.aeval_X]
   by_cases hv : LL.vec v.1 = true
-  · rw [if_pos hv]
+  · rw [ite_eq_left hv]
     refine Subalgebra.sum_mem _ (fun b _ => Subalgebra.mul_mem _ ?_ ?_)
     · by_cases hb : r ≤ b.val
-      · rw [if_pos hb]
+      · rw [ite_eq_left hb]
         exact wX_mem_goodSub (v.1, b) (by rw [degUS_single]; simp [hv, hb])
-      · rw [if_neg hb]
+      · rw [ite_eq_right hb]
         exact X_mem_goodSub (v.1, b) (by rw [degUS_single]; simp [hv, hb])
     · rw [sigMat_inv p f O g hg, sigMat_apply]
       exact C_mem_sub _ _
-  · rw [if_neg hv]
+  · rw [ite_eq_right hv]
     have hv' : LL.vec v.1 = false := by simpa using hv
     refine Subalgebra.sum_mem _ (fun b _ => Subalgebra.mul_mem _ ?_ ?_)
     · by_cases hb : b.val < r
-      · rw [if_pos hb]
+      · rw [ite_eq_left hb]
         exact wX_mem_goodSub (v.1, b) (by rw [degUS_single]; simp [hv', hb])
-      · rw [if_neg hb]
+      · rw [ite_eq_right hb]
         exact X_mem_goodSub (v.1, b) (by rw [degUS_single]; simp [hv', hb])
     · rw [sigMat_apply]
       exact C_mem_sub _ _
@@ -265,11 +265,11 @@ lemma exists_A {ι : Type} (S : UniformizedDVR p O) (LL : LiftLetters ι) (r : �
     ∃ A : O, dW O S.w LL r l b * A = dW O S.w LL r l c * NO p f O LL g g' l c b := by
   unfold dW
   by_cases hb : (LL.vec l = true ∧ r ≤ b.val) ∨ (LL.vec l = false ∧ b.val < r)
-  · rw [if_pos hb]
+  · rw [ite_eq_left hb]
     by_cases hc : (LL.vec l = true ∧ r ≤ c.val) ∨ (LL.vec l = false ∧ c.val < r)
-    · rw [if_pos hc]
+    · rw [ite_eq_left hc]
       exact ⟨_, rfl⟩
-    · rw [if_neg hc, one_mul]
+    · rw [ite_eq_right hc, one_mul]
       unfold NO
       by_cases hv : LL.vec l = true
       · have hbr : r ≤ b.val := by simpa [hv] using hb
@@ -277,7 +277,7 @@ lemma exists_A {ι : Type} (S : UniformizedDVR p O) (LL : LiftLetters ι) (r : �
           have := hc
           simp [hv] at this
           omega
-        rw [if_pos hv]
+        rw [ite_eq_left hv]
         obtain ⟨e, he⟩ := w_dvd_psi p f O S (LL.pos l) _ (plane_block p f r g' g hg h.ge c b hcr hbr)
         exact ⟨e, he.symm⟩
       · have hv' : LL.vec l = false := by simpa using hv
@@ -286,10 +286,10 @@ lemma exists_A {ι : Type} (S : UniformizedDVR p O) (LL : LiftLetters ι) (r : �
           have := hc
           simp [hv'] at this
           omega
-        rw [if_neg hv]
+        rw [ite_eq_right hv]
         obtain ⟨e, he⟩ := w_dvd_psi p f O S (LL.pos l) _ (plane_block p f r g g' hg' h.le b c hbr hcr)
         exact ⟨e, he.symm⟩
-  · rw [if_neg hb]
+  · rw [ite_eq_right hb]
     exact ⟨_, one_mul _⟩
 
 def Theta {ι : Type} (A : ι → Fin k → Fin k → O) :
@@ -309,18 +309,18 @@ lemma liftSubst_X_vec {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ) (g : M
     liftSubst p f O w r LL g (X (l, a)) =
       ∑ b : Fin k, C (algebraMap O (KK O) (dW O w LL r l b)) * X (l, b) * C (sigMat p f O g⁻¹ (LL.pos l) b a) := by
   simp only [liftSubst, MvPolynomial.aeval_X]
-  rw [if_pos hv, sigMat_inv p f O g hg]
+  rw [ite_eq_left hv, sigMat_inv p f O g hg]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   congr 1
   unfold dW
   by_cases hb : r ≤ b.val
-  · rw [if_pos hb, if_pos (Or.inl ⟨hv, hb⟩)]
+  · rw [ite_eq_left hb, ite_eq_left (Or.inl ⟨hv, hb⟩)]
   · have hc : ¬ ((LL.vec l = true ∧ r ≤ b.val) ∨ (LL.vec l = false ∧ b.val < r)) := by
       rintro (⟨_, h⟩ | ⟨h, _⟩)
       · exact hb h
       · rw [hv] at h
         cases h
-    rw [if_neg hb, if_neg hc, map_one, map_one, one_mul]
+    rw [ite_eq_right hb, ite_eq_right hc, map_one, map_one, one_mul]
 
 lemma liftSubst_X_cov {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ) (g : Matrix (Fin k) (Fin k) (WF p f))
     (l : ι) (a : Fin k) (hv : LL.vec l = false) :
@@ -328,18 +328,18 @@ lemma liftSubst_X_cov {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ) (g : M
       ∑ b : Fin k, C (algebraMap O (KK O) (dW O w LL r l b)) * X (l, b) * C (sigMat p f O g (LL.pos l) a b) := by
   simp only [liftSubst, MvPolynomial.aeval_X]
   have hv2 : ¬ (LL.vec l = true) := by simp [hv]
-  rw [if_neg hv2]
+  rw [ite_eq_right hv2]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   congr 1
   unfold dW
   by_cases hb : b.val < r
-  · rw [if_pos hb, if_pos (Or.inr ⟨hv, hb⟩)]
+  · rw [ite_eq_left hb, ite_eq_left (Or.inr ⟨hv, hb⟩)]
   · have hc : ¬ ((LL.vec l = true ∧ r ≤ b.val) ∨ (LL.vec l = false ∧ b.val < r)) := by
       rintro (⟨h, _⟩ | ⟨_, h⟩)
       · rw [hv] at h
         cases h
       · exact hb h
-    rw [if_neg hb, if_neg hc, map_one, map_one, one_mul]
+    rw [ite_eq_right hb, ite_eq_right hc, map_one, map_one, one_mul]
 
 lemma Theta_comp {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ)
     (g g' : Matrix (Fin k) (Fin k) (WF p f)) (hg : IsGLW g) (hg' : IsGLW g') (A : ι → Fin k → Fin k → O)
@@ -357,7 +357,7 @@ lemma Theta_comp {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ)
     have hNO : ∀ b, NO p f O LL g g' l c b = psiO p f O (LL.pos l) ((g'⁻¹ * g) c b) := by
       intro b
       unfold NO
-      rw [if_pos hv]
+      rw [ite_eq_left hv]
     have hterm : ∀ b, C (algebraMap O (KK O) (dW O w LL r l b)) * (X (l, c) * C (algebraMap O (KK O) (A l c b))) *
           C (sigMat p f O g⁻¹ (LL.pos l) b a) =
         X (l, c) * C (algebraMap O (KK O) (dW O w LL r l c) * sigMat p f O (g'⁻¹ * g) (LL.pos l) c b *
@@ -386,7 +386,7 @@ lemma Theta_comp {ι : Type} (w : O) (LL : LiftLetters ι) (r : ℕ)
     have hNO : ∀ b, NO p f O LL g g' l c b = psiO p f O (LL.pos l) ((g⁻¹ * g') b c) := by
       intro b
       unfold NO
-      rw [if_neg hv]
+      rw [ite_eq_right hv]
     have hterm : ∀ b, C (algebraMap O (KK O) (dW O w LL r l b)) * (X (l, c) * C (algebraMap O (KK O) (A l c b))) *
           C (sigMat p f O g (LL.pos l) a b) =
         X (l, c) * C (algebraMap O (KK O) (dW O w LL r l c) * sigMat p f O g (LL.pos l) a b *

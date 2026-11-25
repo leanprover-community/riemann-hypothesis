@@ -432,7 +432,6 @@ theorem powSpan_le (R : Subalgebra o Ω) (p : ℕ) (X : AddSubgroup Ω) (hX : �
 
 end GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices
 
-
 open GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices in
 theorem GlobalTheory.CompanionTheory.Ar.Num.HaSteps.main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Type} [Zero F] [One F] [Fintype F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ} (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : ℕ) (w : Ω) (χ : Sg → F → Ω), CharData R p w χ → D.Base R p w → p.Prime → IsNoetherianRing R → IsFractionRing R Ω → IsIntegrallyClosedIn R Ω → ∀ φ : Equiv.Perm Sg, D.TestFacts R p w χ φ → D.Good₁ R p χ → D.Good₂ R p χ → (∀ τ i, D.dId R p (χ τ) i = D.xId (χ τ) i) ∧ (∀ τ (i : Fin n), (D.stepGraph τ (χ τ) i).map (AddMonoidHom.snd _ _) = D.kk τ i) ∧ ∀ τ i, (D.stepGraph (φ τ) (χ (φ τ)) i).comap (AddMonoidHom.inl _ _) = powSpan R p (D.xId (χ τ) i) := by
   intro o Ω _ _ _ F _ _ _ n Sg r s D R p w χ hc hb hp hN hF hI φ hT hG hG2
@@ -501,10 +500,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence
 
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
-theorem mem_span {E : Type} [AddCommGroup E] [Module Ω E] (R : Subalgebra o Ω) {S : Set E} {e : E}
-    (h : e ∈ S) : e ∈ spanOver R S :=
-  AddSubgroup.subset_closure ⟨1, R.one_mem, e, h, (one_smul _ _).symm⟩
-
 theorem bc_smul {C : Type} [Field C] [Algebra Ω C] {ι : Type} (w : Ω) (v : ι → Ω) :
     bcMap Ω C ι (w • v) = algebraMap Ω C w • bcMap Ω C ι v := by
   funext i
@@ -520,7 +515,6 @@ theorem pow_one_smul_mem {E : Type} [AddCommGroup E] [Module Ω E] {R : Subalgeb
   exact hL.1 c hc _ hv
 
 end GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence
-
 
 open GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence in
 theorem GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence.main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Type} [Zero F] [One F] [Fintype F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ} (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : ℕ) (w : Ω) (χ : Sg → F → Ω), CharData R p w χ → D.Base R p w → p.Prime → IsNoetherianRing R → IsFractionRing R Ω → IsIntegrallyClosedIn R Ω → ∀ φ : Equiv.Perm Sg, D.TestFacts R p w χ φ → D.Good₁ R p χ → D.Good₂ R p χ → ∀ τ, D.imH R p τ (χ τ) = D.om τ ∧ D.kerH R p τ (χ τ) = divLat w (D.lie τ) := by
@@ -539,7 +533,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence.main : ∀ 
     · intro C _ _ _ _ RC hRC
       have h : bcMap Ω C _ v ∈ (D.bc RC).imH RC p τ (fun a => algebraMap Ω C (χ τ a)) := by
         rw [hbc1 C RC hRC.2.2.2 τ]
-        exact mem_span RC ⟨v, hv, rfl⟩
+        exact GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices.mem_span RC ⟨v, hv, rfl⟩
       have e := (hT C RC hRC).im τ
       exact e.le h
   · refine _root_.GlobalTheory.CompanionTheory.Ar.Num.HaLattice.main R p hp hp0 hN hF hI _ _ (hG2.im τ) v (pow_one_smul_mem (hG2.im τ) hw ?_) ?_
@@ -547,7 +541,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence.main : ∀ 
     · intro C _ _ _ _ RC hRC
       rw [← hbc1 C RC hRC.2.2.2 τ]
       have e := (hT C RC hRC).im τ
-      exact e.ge (mem_span RC ⟨v, hv, rfl⟩)
+      exact e.ge (GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices.mem_span RC ⟨v, hv, rfl⟩)
   · show w • v ∈ D.lie τ
     refine _root_.GlobalTheory.CompanionTheory.Ar.Num.HaLattice.main R p hp hp0 hN hF hI _ _ flie _ (pow_one_smul_mem flie hw ?_) ?_
     · obtain ⟨⟨a, b⟩, ⟨h, -⟩, rfl⟩ := hv
@@ -555,7 +549,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence.main : ∀ 
     · intro C _ _ _ _ RC hRC
       have h : bcMap Ω C _ v ∈ (D.bc RC).kerH RC p τ (fun a => algebraMap Ω C (χ τ a)) := by
         rw [((hbc2 C RC hRC.2.2.2).2 τ).1]
-        exact mem_span RC ⟨v, hv, rfl⟩
+        exact GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices.mem_span RC ⟨v, hv, rfl⟩
       have e := (hT C RC hRC).ker τ
       rw [bc_smul]
       exact e.le h
@@ -568,7 +562,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.HodgeAnnihilatorSequence.main : ∀ 
       refine e.ge ?_
       show algebraMap Ω C w • bcMap Ω C _ v ∈ (D.bc RC).lie τ
       rw [← bc_smul]
-      exact mem_span RC ⟨_, hv', rfl⟩
+      exact GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices.mem_span RC ⟨_, hv', rfl⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeImageLattice =====

@@ -23,59 +23,11 @@ public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntEa
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntPull
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntWAPlaces
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.FinalEq
-import Mathlib.Algebra.Order.Floor.Extended
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.KappaSelfDualFourthPowerLattice
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Star.Int
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.FinitelyGeneratedModPow
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
@@ -85,9 +37,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExist
 import Formalism.LocalToGlobal.AlgebraicTheory.StatementA
 import Formalism.LocalToGlobal.GlobalTheory.GL3.NormNatCoprime
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.Th0CharMulOpUTh0HalfPeriodEq
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -460,14 +409,14 @@ theorem hermitianSelfDual_of_fourfoldBlock {n : Type} [Fintype n] [DecidableEq n
       exact ⟨m, by rw [key, hm]⟩
     rw [hsd] at h1
     have h2 := h1 0
-    rwa [Formalism.L2.Th1.H.CmData.slice_embA, if_pos rfl] at h2
+    rwa [Formalism.L2.Th1.H.CmData.slice_embA, ite_eq_left rfl] at h2
   · intro hx y hy
     have h1 : Formalism.L2.Th1.H.CmData.embA 0 x ∈ dualLat (matH (blk4 h)) (pow4 Λ) := by
       rw [hsd]
       exact Formalism.L2.Th1.H.CmData.embA_mem Λ 0 hx
     obtain ⟨m, hm⟩ := h1 _ (Formalism.L2.Th1.H.CmData.embA_mem Λ 0 hy)
     refine ⟨m, ?_⟩
-    rw [key, Formalism.L2.Th1.H.CmData.slice_embA, if_pos rfl] at hm
+    rw [key, Formalism.L2.Th1.H.CmData.slice_embA, ite_eq_left rfl] at hm
     exact hm
 
 end GlobalTheory.ThLoc.LocStd
@@ -558,7 +507,7 @@ theorem locNorm_reix (a₀ : ℕ) (b₀ c₀ : ℤ) (dK : ℕ) (ha : 0 < a₀) (
     show (∑ i, ∑ j, y i * _ * conj (x j)) = conj (∑ i, ∑ j, x i * _ * conj (y j))
 
     simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, map_sum, map_mul, Complex.conj_conj, map_inv₀, Complex.conj_ofReal]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_sum, map_mul, Complex.conj_conj, map_inv₀, Complex.conj_ofReal]
     refine Finset.sum_congr rfl fun i _ => ?_
     ring
   have hα : ∀ x, alphaQ (Real.sqrt dK / 2) (Formalism.L2.Th1.H.stdH L₀ (Fin 4 × n')) x =
@@ -643,7 +592,7 @@ theorem latAt_std : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Taylor
     let lm : TaylorLogMetric.Qbar →+* ℂ_[p] := (ι : ℂ →+* ℂ_[p]).comp (TaylorLogMetric.Qbar).val.toRingHom
     obtain ⟨h1, h2⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.RestC.chiFacUnit χ hχ p lm N N' L L' hA hL hL'
     have e : TaylorLogMetric.lamC lm (Base.chiFac χ N N' L L') = ι (Base.chiFac χ N N' L L') := by
-      simp only [TaylorLogMetric.lamC, dif_pos h1]
+      simp only [TaylorLogMetric.lamC, dite_eq_left h1]
       rfl
     rw [← e, h2]
   have key := Formalism.L2.Ker.KS.locNorm_thF_of s B' _root_.GlobalTheory.locNormScale _root_.GlobalTheory.locNormPow_tensorPowers _root_.GlobalTheory.locNormInter χ a₀ b₀ c₀ ha hd lam hlam p ι

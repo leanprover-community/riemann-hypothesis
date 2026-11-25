@@ -57,13 +57,13 @@ theorem mirror_right_rule_holds : RightRuleEv := by
   rw [h]
   congr 1
   simp only [xbv, fvec, hpos, Fin.val_succ]
-  rw [dif_pos (show b.val + 1 < r by omega)]
+  rw [dite_eq_left (show b.val + 1 < r by omega)]
   rw [Formalism.FourierDecayAlt.P.SignAntidiagonal.herm_bvec_eI]
   by_cases hh : a.val = b.val + 1
   · simp [hh, bvec, esI]
-  · rw [if_neg hh]
+  · rw [ite_eq_right hh]
     simp only [bvec, Pi.single_apply, esI, Fin.ext_iff]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
 
 theorem mirror_torus_cell_holds : TorusCellv := by
   intro E _ _ k r D f hD hS c hc g hg hWD l
@@ -218,7 +218,7 @@ theorem mirror_left_rule_cell_holds : LeftRuleCellv := by
   have hb1 : (b.succ : Fin (r + 1)).val < r := by simp; omega
   have hga : g *ᵥ bvec (eI k r a) = bvec (eI k r a) := (hg.2 a (by simp)).1
   have hTa := hTe a hba
-  rw [if_pos (by simp)] at hTa
+  rw [ite_eq_left (by simp)] at hTa
   have hU : T * g ∈ UH (Hpk k r) := hg₁.1
   have key : ((T * g)⁻¹ *ᵥ bvec (eI k r ⟨b.val + 1, by omega⟩)) (esI k r a) =
       if a.val = b.val + 1 then star (c a) else 0 := by
@@ -227,22 +227,22 @@ theorem mirror_left_rule_cell_holds : LeftRuleCellv := by
       Matrix.mul_nonsing_inv _ (Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hU), Matrix.one_mulVec, ← Matrix.mulVec_mulVec, hga, hTa,
       herm_smul_right', ← Formalism.FourierDecayAlt.P.Qx2.herm_star, Formalism.FourierDecayAlt.P.SignAntidiagonal.herm_bvec_eI]
     by_cases hh : a.val = b.val + 1
-    · rw [if_pos hh]
+    · rw [ite_eq_left hh]
       have : (bvec (esI k r a) : Fin (2 * r + k + 1) → ℂ) (esI k r ⟨b.val + 1, by omega⟩) = 1 := by
         simp [bvec, esI, hh]
       rw [this, star_one, mul_one]
-    · rw [if_neg hh]
+    · rw [ite_eq_right hh]
       have : (bvec (esI k r a) : Fin (2 * r + k + 1) → ℂ) (esI k r ⟨b.val + 1, by omega⟩) = 0 := by
         simp only [bvec, Pi.single_apply, esI, Fin.ext_iff]
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
       rw [this, star_zero, mul_zero]
   have hy : yv k r z b.succ (T * g) ⟨2 * r + k - a.val - b.val - 1, hjlt⟩ =
       if a.val = b.val + 1 then star (c a) else 0 := by
-    simp only [yv, hpos, fvec, dif_pos hb1]
+    simp only [yv, hpos, fvec, dite_eq_left hb1]
     exact key
   rw [hy]
   by_cases hh : a.val = b.val + 1
-  · rw [if_pos hh, if_pos hh, div_eq_inv_mul]
-  · rw [if_neg hh, if_neg hh, mul_zero]
+  · rw [ite_eq_left hh, ite_eq_left hh, div_eq_inv_mul]
+  · rw [ite_eq_right hh, ite_eq_right hh, mul_zero]
 
 end Formalism.FourierDecayAlt.P.CutMP.TVG

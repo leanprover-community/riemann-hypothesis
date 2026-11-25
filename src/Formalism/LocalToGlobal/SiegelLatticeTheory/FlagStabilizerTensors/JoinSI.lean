@@ -206,7 +206,7 @@ theorem twist_of_mk {K : Type} [Field K] (σ : K →+* ℂ) (v : NumberField.Inf
   subst h
   have hs : Formalism.IndefR.Links.sgAt σ (NumberField.InfinitePlace.mk σ) = σ := by
     unfold Formalism.IndefR.Links.sgAt
-    exact if_pos rfl
+    exact ite_eq_left rfl
   unfold Formalism.IndefR.Links.twAt
   rw [hs]
   split_ifs with h1

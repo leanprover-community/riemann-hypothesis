@@ -274,9 +274,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     {O : Type} [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
 
-def invariantLattice (T : LocLat G Qp LL O) : Submodule O ↥T.L.T :=
-  ⨅ g : G, LinearMap.ker (actT T.L g - LinearMap.id)
-
 def fixDD (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Submodule O (W.DD T) :=
   LinearMap.ker (W.φD T - LinearMap.id) ⊓ LinearMap.ker (W.γD T W.gamK - LinearMap.id) ⊓
     ⨅ δ ∈ W.DelF, LinearMap.ker (W.γD T δ - LinearMap.id)

@@ -371,20 +371,9 @@ section Local
 
 variable {A : Type u} [CommRing A] [IsNoetherianRing A] [IsLocalRing A]
 
-theorem withBot_eq_one {d : WithBot ℕ∞} (h1 : d ≤ 1) (h0 : ¬ d ≤ 0) : d = 1 := by
-  induction d using WithBot.recBotCoe with
-  | bot => exact absurd bot_le h0
-  | coe e =>
-    have h1' : e ≤ 1 := by exact_mod_cast h1
-    have h0' : ¬ e ≤ 0 := fun h => h0 (by exact_mod_cast h)
-    induction e using ENat.recTopCoe with
-    | top => exact absurd h1' (by simp)
-    | coe n =>
-      have a1 : n ≤ 1 := by exact_mod_cast h1'
-      have a0 : ¬ n ≤ 0 := fun h => h0' (by exact_mod_cast h)
-      have hn : n = 1 := by omega
-      subst hn
-      first | rfl
+theorem withBot_eq_one {d : WithBot ℕ∞} (h1 : d ≤ 1) (h0 : ¬ d ≤ 0) : d = 1 :=
+  le_antisymm h1 (not_lt.1 fun h => h0 (by
+    simpa using (ENat.WithBot.lt_add_one_iff (m := 0)).1 (by simpa using h)))
 
 theorem dim_quot_eq_one_iff (hdim : ringKrullDim A = 1) (q : Ideal A) [q.IsPrime] :
     ringKrullDim (A ⧸ q) = 1 ↔ ¬ q.IsMaximal := by

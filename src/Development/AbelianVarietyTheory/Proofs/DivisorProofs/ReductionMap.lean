@@ -18,61 +18,13 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DegreePartIn
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSeqOfStep
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuasiLogReduces
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.CoeffSingleLawAdd
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.KerIdealCompOfSurjective
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingletonConstGenInjective
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsCounitDerivationCounitComp
 import Mathlib.RingTheory.MvPowerSeries.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.DiscreteValuationRing
-import Mathlib.Order.CompletePartialOrder
 import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Embedding
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -106,7 +58,7 @@ theorem eq_zero_or_single {ι : Type} [Fintype ι] [DecidableEq ι] (γ : ι →
     have : ∑ i ∈ Finset.univ.erase t, γ i ≥ 0 := Nat.zero_le _
     simp only [Finsupp.single_eq_same]
     omega
-  · simp only [Finsupp.single_apply, Ne.symm hts, if_false]
+  · simp only [Finsupp.single_apply, Ne.symm hts, ite_false]
     have : γ t ≤ ∑ i ∈ Finset.univ.erase s, γ i :=
       Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_erase.mpr ⟨hts, Finset.mem_univ t⟩)
     omega
@@ -183,7 +135,7 @@ theorem coeff_single_coc {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
     unfold swap at h
     rw [coeff_single_linear_substitution_pair _ _ _ (fun _ => constantCoeff_X _) (fun _ => constantCoeff_X _)] at h
     simp only [GlobalTheory.FormalCalc.coeff_single_X] at h
-    simp only [Sum.inr.injEq, reduceCtorEq, if_false, mul_zero, Finset.sum_const_zero, mul_ite, mul_one] at h
+    simp only [Sum.inr.injEq, reduceCtorEq, ite_false, mul_zero, Finset.sum_const_zero, mul_ite, mul_one] at h
     rw [← h]
     simp [hinl]
 
@@ -302,8 +254,8 @@ theorem coeff_mono3 (a b c i j l : ℕ) (r : ℕ) :
     monomial_mul_monomial, monomial_mul_monomial, coeff_monomial]
   have := threeVariableMonomialExponent_eq_iff i j l a b c
   by_cases h : a = i ∧ b = j ∧ c = l
-  · rw [if_pos (this.2 h), if_pos h]; simp
-  · rw [if_neg (fun h' => h (this.1 h')), if_neg h, zero_mul]
+  · rw [ite_eq_left (this.2 h), ite_eq_left h]; simp
+  · rw [ite_eq_right (fun h' => h (this.1 h')), ite_eq_right h, zero_mul]
 
 theorem coeff_left (p q i j l : ℕ) :
     coeff (ex3 i j l) ((X 0 + X 1) ^ p * X 2 ^ q : MvPowerSeries (Fin 3) R) =
@@ -321,7 +273,7 @@ theorem coeff_left (p q i j l : ℕ) :
     · exact if_congr (by omega) rfl rfl
     · rw [Nat.choose_eq_zero_of_lt (by omega)]; simp
   · intro k _ hk
-    exact if_neg fun h' => hk h'.1
+    exact ite_eq_right fun h' => hk h'.1
   · intro hi
     rw [Nat.choose_eq_zero_of_lt (by simpa using hi)]; simp
 
@@ -336,7 +288,7 @@ theorem coeff_right (p q i j l : ℕ) :
     · exact if_congr (by omega) rfl rfl
     · rw [Nat.choose_eq_zero_of_lt (by omega)]; simp
   · intro k _ hk
-    exact if_neg fun h' => hk h'.2.1
+    exact ite_eq_right fun h' => hk h'.2.1
   · intro hi
     rw [Nat.choose_eq_zero_of_lt (by simpa using hi)]; simp
 
@@ -462,21 +414,21 @@ theorem relations : ∀ (R : Type) [CommRing R] (d : ℕ) (c : MvPowerSeries (Fi
     have h := congrArg (coeff (ex3 i j l)) hid
     rw [map_sub, map_add (f := _), map_sub, map_zero,
       coeff_powerSeriesEvalTwoGroups_piSingle c m (by simp) (by simp) _ j l
-        (fun p q hpq => by rw [coeff_yz, if_neg (by omega)]),
+        (fun p q hpq => by rw [coeff_yz, ite_eq_right (by omega)]),
       coeff_powerSeriesEvalTwoGroups_piSingle c m (by simp) (by simp) _ (i + j) l
-        (fun p q hpq => by rw [coeff_left, if_neg hpq]),
+        (fun p q hpq => by rw [coeff_left, ite_eq_right hpq]),
       coeff_powerSeriesEvalTwoGroups_piSingle c m (by simp) (by simp) _ i (j + l)
-        (fun p q hpq => by rw [coeff_right, if_neg hpq]),
+        (fun p q hpq => by rw [coeff_right, ite_eq_right hpq]),
       coeff_powerSeriesEvalTwoGroups_piSingle c m (by simp) (by simp) _ i j
-        (fun p q hpq => by rw [coeff_xy, if_neg (by omega)]),
-      coeff_yz, coeff_left, coeff_right, coeff_xy, if_neg (by omega), if_pos ⟨rfl, rfl⟩,
-      if_pos ⟨rfl, rfl⟩] at h
+        (fun p q hpq => by rw [coeff_xy, ite_eq_right (by omega)]),
+      coeff_yz, coeff_left, coeff_right, coeff_xy, ite_eq_right (by omega), ite_eq_left ⟨rfl, rfl⟩,
+      ite_eq_left ⟨rfl, rfl⟩] at h
     simp only [true_and] at h
     linear_combination h
   refine ⟨fun n hn => ?_, fun i j l hi _ hl => ?_⟩
   · simpa using key n 0 0 hn
   · have h := key i j l hi
-    rw [if_neg (by omega)] at h
+    rw [ite_eq_right (by omega)] at h
     linear_combination -h
 
 end GlobalTheory.Katz.CocRel
@@ -638,9 +590,9 @@ theorem symmCocycle_sum : ∀ (A B : Type) [AddCommGroup A] [AddCommGroup B] (γ
     have ih' := ih (fun j => x (Fin.castSucc j)) (fun j => y (Fin.castSucc j))
     simp only [Finset.sum_filter] at ih' ⊢
     simp only [Fin.sum_univ_castSucc, Fin.castSucc_lt_castSucc_iff, Fin.castSucc_lt_last,
-      if_true, lt_irrefl, if_false, add_zero] at ih' ⊢
+      ite_true, lt_irrefl, ite_false, add_zero] at ih' ⊢
     have hl : ∀ i : Fin d, ¬ (Fin.last d < i.castSucc) := fun i => not_lt.mpr (Fin.castSucc_lt_last i).le
-    simp only [hl, if_false, add_zero] at ih' ⊢
+    simp only [hl, ite_false, add_zero] at ih' ⊢
     have k := symmCocycle_swap γ hs hc (∑ m : Fin d, x m.castSucc) (x (Fin.last d)) (∑ m : Fin d, y m.castSucc) (y (Fin.last d))
     rw [ih'] at k
     rw [Finset.sum_add_distrib]
@@ -695,13 +647,6 @@ theorem subst_powerSeriesEvalTwoGroups {τ τ' : Type} [Finite τ] {u v : Fin d 
   congr 1
   funext s
   cases s <;> rfl
-
-theorem op_addLaw {τ : Type} {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
-    (hv : ∀ i, constantCoeff (v i) = 0) : op (addLaw R d) u v = u + v := by
-  funext i
-  unfold op addLaw at2
-  rw [subst_add (hs2 hu hv), subst_X (hs2 hu hv), subst_X (hs2 hu hv)]
-  rfl
 
 end GlobalTheory.SymCocAdd
 
@@ -913,12 +858,12 @@ theorem homogCoc_red_cob : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [Ch
         have := formalCoboundary_add (hconst k) bN (b - bN)
         rw [add_sub_cancel] at this
         rw [this, map_add (f := _), _root_.GlobalTheory.Katz.coeff_cob1_addLaw_eq_zero_of_degree_eq k d N (b - bN) (fun α hα => by
-          rw [map_sub, hbNc, if_pos hα, sub_self]) γ hγ, add_zero]
+          rw [map_sub, hbNc, ite_eq_left hα, sub_self]) γ hγ, add_zero]
       conv_lhs => rw [hb]
       rw [map_add (f := _), map_add (f := _), e1]
 
     · rw [hhom γ hγ, map_add (f := _), map_sum, (_root_.GlobalTheory.homog_cob_addLaw k d N).1 bN (fun α hα => by
-      rw [hbNc, if_neg hα]) γ hγ, zero_add]
+      rw [hbNc, ite_eq_right hα]) γ hγ, zero_add]
       refine (Finset.sum_eq_zero fun m _ => ?_).symm
       simp only [cm]
       rw [_root_.GlobalTheory.coeff_at2_single_X_inl_inr]
@@ -984,17 +929,17 @@ theorem homogCoc_red_cob : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [Ch
       · rw [hi, h]; simp
       · rw [hj, h]; simp
     by_cases hs : α = Finsupp.single (Sum.inl m) i + Finsupp.single (Sum.inr m) j
-    · rw [if_pos hs]
+    · rw [ite_eq_left hs]
       by_cases hin : 0 < i ∧ i < N ∧ j = N - i
       · obtain ⟨w, hw1, hw2⟩ := ht m i hin.1 hin.2.1
         refine ⟨w, ?_, ?_⟩
         · rw [Finset.sum_eq_single_of_mem i (Finset.mem_Ioo.2 ⟨hin.1, hin.2.1⟩)]
-          · rw [if_pos (hs.trans (by rw [hin.2.2])), hw1]
-          · intro i' _ hne; rw [if_neg]; intro h; exact hne (key i' h).1.symm
+          · rw [ite_eq_left (hs.trans (by rw [hin.2.2])), hw1]
+          · intro i' _ hne; rw [ite_eq_right]; intro h; exact hne (key i' h).1.symm
         · rw [hw2]; simp only [ha]; rw [← hin.2.2, ← hs]
       · refine ⟨0, ?_, ?_⟩
         · rw [Finset.sum_eq_zero, mul_zero, map_zero]
-          intro i' hi'; rw [if_neg]; intro h
+          intro i' hi'; rw [ite_eq_right]; intro h
           obtain ⟨e1, e2⟩ := key i' h
           rw [Finset.mem_Ioo] at hi'
           exact hin ⟨e1 ▸ hi'.1, e1 ▸ hi'.2, e1 ▸ e2⟩
@@ -1010,18 +955,18 @@ theorem homogCoc_red_cob : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [Ch
               rw [this, hzero]
           · refine (hhom α ?_).symm
             rw [hs, map_add (f := _), Finsupp.degree_single, Finsupp.degree_single]; exact hd
-    · rw [if_neg hs]
+    · rw [ite_eq_right hs]
       refine ⟨0, ?_, by simp⟩
       rw [Finset.sum_eq_zero, mul_zero, map_zero]
-      intro i' _; rw [if_neg]; intro h
+      intro i' _; rw [ite_eq_right]; intro h
       apply hs; obtain ⟨e1, e2⟩ := key i' h; rw [e1, e2]; exact h
   refine ⟨Katz.lift p bN + ∑ m, t m • (X m ^ N : MvPowerSeries (Fin d) (Fr p k)), ?_, ?_⟩
   · intro α hα
 
-    rw [map_add (f := _), map_sum, coeff_lift, hbNc, if_neg hα, WittVector.teichmuller_zero, map_zero,
+    rw [map_add (f := _), map_sum, coeff_lift, hbNc, ite_eq_right hα, WittVector.teichmuller_zero, map_zero,
     zero_add]
     refine Finset.sum_eq_zero fun m _ => ?_
-    rw [map_smul, coeff_X_pow, if_neg, smul_zero]
+    rw [map_smul, coeff_X_pow, ite_eq_right, smul_zero]
     intro h; apply hα; rw [h, Finsupp.degree_single]
   · have h1 : Red p (cob1 (addLaw (Fr p k) d) (Katz.lift p bN)) (cob1 (addLaw k d) bN) := by
       rw [← lift_addLaw p k d]
@@ -1337,16 +1282,16 @@ theorem GlobalTheory.Katz.quasiLog_approx_step : ∀ (p : ℕ) [Fact p.Prime] (k
     intro γ hγ
     rw [map_sub, map_sub, he, hlo]
     by_cases h1 : γ.degree < N
-    · rw [if_pos h1, if_neg (by omega)]; ring
-    · rw [if_neg h1, if_pos (by omega)]; ring
+    · rw [ite_eq_left h1, ite_eq_right (by omega)]; ring
+    · rw [ite_eq_right h1, ite_eq_left (by omega)]; ring
   have hlowI : low ∈ intBy p k _ (p : WittVector p k) := by
     intro γ
     rw [hlo]
     by_cases h1 : γ.degree < N
-    · rw [if_pos h1]; exact hlow γ h1
-    · rw [if_neg h1]; exact ⟨0, by simp⟩
+    · rw [ite_eq_left h1]; exact hlow γ h1
+    · rw [ite_eq_right h1]; exact ⟨0, by simp⟩
   have ehom : ∀ γ : Fin d ⊕ Fin d →₀ ℕ, γ.degree ≠ N → coeff γ e = 0 := by
-    intro γ hγ; rw [he, if_neg hγ]
+    intro γ hγ; rw [he, ite_eq_right hγ]
   have eord : ∀ γ : Fin d ⊕ Fin d →₀ ℕ, γ.degree < N → coeff γ e = 0 :=
     fun γ hγ => ehom γ (by omega)
   have hcob2e : cob2 (addLaw (Fr p k) d) e ∈ intBy p k _ (p : WittVector p k) := by
@@ -1366,11 +1311,11 @@ theorem GlobalTheory.Katz.quasiLog_approx_step : ∀ (p : ℕ) [Fact p.Prime] (k
     intro γ
     rw [map_sub, HOM.2.2.1, he, he, degree_mapDomain_swap_ord]
     by_cases hγ : γ.degree = N
-    · rw [if_pos hγ, if_pos hγ]
+    · rw [ite_eq_left hγ, ite_eq_left hγ]
       obtain ⟨w, hw⟩ := hgs γ
       rw [map_sub, HOM.2.2.1] at hw
       exact ⟨w, hw⟩
-    · rw [if_neg hγ, if_neg hγ]; exact ⟨0, by simp⟩
+    · rw [ite_eq_right hγ, ite_eq_right hγ]; exact ⟨0, by simp⟩
   obtain ⟨h, hhom, hint⟩ := _root_.GlobalTheory.Katz.lazard_mod_p_frac p k d N e hN ehom hcob2e hswape
   have hord : ∀ α : Fin d →₀ ℕ, α.degree < N → coeff α h = 0 := fun α hα => hhom α (by omega)
   have hsub : cob1 (fun i => Katz.lift p (μ i)) (f - h) =
@@ -1388,7 +1333,7 @@ theorem GlobalTheory.Katz.quasiLog_approx_step : ∀ (p : ℕ) [Fact p.Prime] (k
     · rw [hL1 h1, sub_zero]; exact hlow γ h1
     · have hN' : γ.degree = N := by omega
       rw [hL2 hN'.le]
-      have : coeff γ g = coeff γ e := by rw [he, if_pos hN']
+      have : coeff γ g = coeff γ e := by rw [he, ite_eq_left hN']
       rw [this, ← map_sub]
       exact hint γ
   have hnegq : -h ∈ quasiInt p k (Fin d) := by
@@ -1528,11 +1473,11 @@ theorem quasiInt_of_cob1_int_of_lin_int : ∀ (p : ℕ) [Fact p.Prime] (k : Type
           by_cases hβ : β.degree < N
           · obtain ⟨w, hw⟩ := ih β.degree hβ β rfl j
             refine ⟨w, ?_⟩
-            rw [hg, if_pos hβ]; exact hw
-          · exact ⟨0, by rw [hg, if_neg hβ]; simp⟩
+            rw [hg, ite_eq_left hβ]; exact hw
+          · exact ⟨0, by rw [hg, ite_eq_right hβ]; simp⟩
         have hh : ∀ β : Fin d →₀ ℕ, β.degree < N → coeff β (f - g) = 0 := by
           intro β hβ
-          rw [map_sub, hg, if_pos hβ, sub_self]
+          rw [map_sub, hg, ite_eq_left hβ, sub_self]
         have hc : ∀ γ : Fin d ⊕ Fin d →₀ ℕ, γ.degree = N → ∃ w : WittVector p k,
             coeff γ (cob1 (fun i => Katz.lift p (μ i)) (g + (f - g))) =
               algebraMap (WittVector p k) (Fr p k) w := by
@@ -1543,7 +1488,7 @@ theorem quasiInt_of_cob1_int_of_lin_int : ∀ (p : ℕ) [Fact p.Prime] (k : Type
         obtain ⟨w, hw⟩ := _root_.GlobalTheory.Katz.WDer.main p k d μ hμ N g (f - g) hN hgq hh hc α i hα
         refine ⟨w, ?_⟩
         have hfα : coeff α (f - g) = coeff α f := by
-          rw [map_sub, hg, if_neg (by omega), sub_zero]
+          rw [map_sub, hg, ite_eq_right (by omega), sub_zero]
         rw [← hfα]; exact hw
   show ∀ (α : Fin d →₀ ℕ) (i : Fin d), ∃ w : WittVector p k,
     (α i : Fr p k) * coeff α f = algebraMap _ (Fr p k) w

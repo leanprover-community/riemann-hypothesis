@@ -288,27 +288,8 @@ section Norms
 
 variable (l : ℕ) [Fact l.Prime]
 
-theorem norm_twentySeven_eq_one_of_five_le (h5 : 5 ≤ l) : ‖(27 : ℂ_[l])‖ = 1 := by
-  have h : ¬ l ∣ 27 := by
-    intro h
-    have h3 : l ∣ 3 := (Fact.out : l.Prime).dvd_of_dvd_pow (show l ∣ 3 ^ 3 by simpa using h)
-    have := Nat.le_of_dvd (by norm_num) h3
-    omega
-  simpa using _root_.ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl_of_not_dvd l h
-
-theorem norm_1728_eq_one_of_five_le' (h5 : 5 ≤ l) : ‖(1728 : ℂ_[l])‖ = 1 := by
-  have h : ¬ l ∣ 1728 := by
-    intro h
-    have h' : l ∣ 2 ^ 6 * 3 ^ 3 := by simpa using h
-    rcases (Fact.out : l.Prime).dvd_mul.1 h' with h2 | h3
-    · have := Nat.le_of_dvd (by norm_num) ((Fact.out : l.Prime).dvd_of_dvd_pow h2)
-      omega
-    · have := Nat.le_of_dvd (by norm_num) ((Fact.out : l.Prime).dvd_of_dvd_pow h3)
-      omega
-  simpa using _root_.ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl_of_not_dvd l h
-
 theorem norm_sub_1728_eq_one_of_norm_lt_one (h5 : 5 ≤ l) {J : ℂ_[l]} (hJ : ‖J‖ < 1) : ‖J - 1728‖ = 1 := by
-  have h := norm_1728_eq_one_of_five_le' l h5
+  have h := ReciprocityTheory.ChartRestriction.L1.norm_1728_eq_one_of_five_le l h5
   have hne : ‖J‖ ≠ ‖-(1728 : ℂ_[l])‖ := by rw [norm_neg, h]; exact hJ.ne
   rw [sub_eq_add_neg, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm hne, norm_neg, h]
   exact max_eq_right hJ.le
@@ -317,8 +298,8 @@ theorem norm_weierstrass_coeff_small_j (h5 : 5 ≤ l) {J : ℂ_[l]} (hJ : ‖J�
     ‖27 * J / (J - 1728)‖ = ‖J‖ ∧
       ‖(27 * J / (J - 1728)) ^ 3 - 27 * (27 * J / (J - 1728)) ^ 2‖ = ‖J‖ ^ 2 := by
   have h1 := norm_sub_1728_eq_one_of_norm_lt_one l h5 hJ
-  have h27 := norm_twentySeven_eq_one_of_five_le l h5
-  have h1728 := norm_1728_eq_one_of_five_le' l h5
+  have h27 := ReciprocityTheory.ChartRestriction.L1.valDiv2_norm_27 l h5
+  have h1728 := ReciprocityTheory.ChartRestriction.L1.norm_1728_eq_one_of_five_le l h5
   have hne : J - 1728 ≠ 0 := by
     intro h
     rw [h, norm_zero] at h1

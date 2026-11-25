@@ -471,10 +471,10 @@ theorem kPsiIn_of_hom (B : Base) [IsCMField B.host.E] {Hh : ReciprocityTheory.Ch
       (emb_sqrt_iff B.host _).2 g.2
     have h0 : Hh.rt0 = Complex.I * (Real.sqrt B.host.d : ℂ) := h2.trans (cmHostBaseEmbedding_sqrtMinusD B.host)
     have m1 : Dw.mult (embSum B.host (Sum.inl g)) = (B.R.sigW j).1 := by
-      rw [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum.mult, if_pos (by rw [h1, h0]; exact hs)]
+      rw [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum.mult, ite_eq_left (by rw [h1, h0]; exact hs)]
       exact hp
     have m2 : Dw.mult (embSum B.host (Sum.inr g)) = (B.R.sigW j).2 := by
-      rw [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum.mult, if_neg]
+      rw [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum.mult, ite_eq_right]
       · exact hq
       · rw [h1, h0]
         change ¬ starRingEnd ℂ (B.host.emb g B.host.sqrtMinusD) = _

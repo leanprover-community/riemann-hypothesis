@@ -14,8 +14,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open Formalism.L2.Pj.SaturatedCharts (toT prodPts_of_combAt combAt_of_prodPts chartTan_of tanAt_of isTan_iff' fst_comp_jetTan)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Lemmas
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}}
@@ -84,12 +82,5 @@ theorem dir_tan {d : ℕ} (xc : ∀ m, jOG (𝟙 (Sp V)) d m 1 ⟶ t.G)
   exact h3 _ _ hobj
 
 end Lemmas
-
-section Main
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
-
-end Main
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1

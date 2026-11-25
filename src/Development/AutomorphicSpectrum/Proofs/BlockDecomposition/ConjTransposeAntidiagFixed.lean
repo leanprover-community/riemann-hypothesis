@@ -71,7 +71,7 @@ theorem cI_tr_cJ (a : ℕ) (h : 2 * (a + 2) ≤ n) : (cM L (cI n a h))ᵀ * cM L
   have := p.2
   have := r.2
   simp only [cI, cJ, Fin.ext_iff, Matrix.zero_apply]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem cJ_tr_cI (a : ℕ) (h : 2 * (a + 2) ≤ n) : (cM L (cJ n a h))ᵀ * cM L (cI n a h) = 0 := by
   rw [cM_tr_mul]
@@ -79,7 +79,7 @@ theorem cJ_tr_cI (a : ℕ) (h : 2 * (a + 2) ≤ n) : (cM L (cJ n a h))ᵀ * cM L
   have := p.2
   have := r.2
   simp only [cI, cJ, Fin.ext_iff, Matrix.zero_apply]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 def blockM (a : ℕ) (h : 2 * (a + 2) ≤ n) (X Y : Matrix (Fin 2) (Fin 2) L) : Matrix (Fin n) (Fin n) L :=
   1 + cM L (cI n a h) * (X - 1) * (cM L (cI n a h))ᵀ + cM L (cJ n a h) * (Y - 1) * (cM L (cJ n a h))ᵀ
@@ -316,7 +316,7 @@ theorem cM_conj_same {c : Fin 2 → Fin n} (hc : Function.Injective c) (P : Matr
 theorem cM_conj_out {c : Fin 2 → Fin n} (P : Matrix (Fin 2) (Fin 2) L) {b d : Fin n}
     (h : (∀ p, b ≠ c p) ∨ ∀ p, d ≠ c p) : (cM L c * P * (cM L c)ᵀ) b d = 0 := by
   rw [cM_conj_apply]
-  refine Finset.sum_eq_zero fun p _ => Finset.sum_eq_zero fun r _ => if_neg ?_
+  refine Finset.sum_eq_zero fun p _ => Finset.sum_eq_zero fun r _ => ite_eq_right ?_
   rintro ⟨h1, h2⟩
   rcases h with h | h
   · exact h p h1

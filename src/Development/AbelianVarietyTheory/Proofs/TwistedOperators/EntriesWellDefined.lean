@@ -20,54 +20,10 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OpEOmTarg
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentExistsResidueCardPowMemNhds
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SecondCountableLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Ring.IsFormallyReal
@@ -281,9 +237,9 @@ theorem exists_isCosetFn (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
     have hx : ∃ g, P x g := ⟨g, hg⟩
     obtain ⟨u, hu, j, hj, e⟩ := hx.choose_spec
     obtain ⟨u', hu', j', hj', e'⟩ := hg
-    simp only [f, dif_pos hx]
+    simp only [f, dite_eq_left hx]
     rw [deltaR_eq H hu hu' hj hj' (e.symm.trans e')]
-  have fneg : ∀ x, (¬ ∃ g, P x g) → f x = 0 := fun x hx => by simp only [f, dif_neg hx]
+  have fneg : ∀ x, (¬ ∃ g, P x g) → f x = 0 := fun x hx => by simp only [f, dite_eq_right hx]
   have left : ∀ u ∈ N k n c 1, ∀ (g g' : GL n k) x, P x g' → P (u * embX c g * x) (g * g') := by
     rintro u hu g g' x ⟨u', hu', j, hj, rfl⟩
     refine ⟨u * (embX c g * u' * (embX c g)⁻¹), mul_mem hu (Radical.conj_mem _ hu'), j, hj, ?_⟩
@@ -808,8 +764,8 @@ theorem _root_.GlobalTheory.CosetQuotInt.isQuotInt_cosetFn (k : Type) [Field k] 
       rw [hFdef]
       dsimp only
       by_cases hy : h⁻¹ * y ∈ J
-      · rw [if_pos hy, if_pos (QuotientGroup.eq.2 hy).symm]
-      · rw [if_neg hy, if_neg (fun (he : (y : GL (n ⊕ Fin c) k ⧸ J) = h) =>
+      · rw [ite_eq_left hy, ite_eq_left (QuotientGroup.eq.2 hy).symm]
+      · rw [ite_eq_right hy, ite_eq_right (fun (he : (y : GL (n ⊕ Fin c) k ⧸ J) = h) =>
           hy (QuotientGroup.eq.1 he.symm))]
     rw [hFq]
     exact hSB
@@ -844,10 +800,10 @@ theorem _root_.GlobalTheory.CosetQuotInt.isQuotInt_cosetFn (k : Type) [Field k] 
         rw [hFdef]
         by_cases hin : h⁻¹ * (_root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k) *
             (u₀ * _root_.GlobalTheory.RootEx.embX c x₀)) * h ∈ J
-        · rw [if_pos (hiff.2 hin), Set.indicator_of_mem
+        · rw [ite_eq_left (hiff.2 hin), Set.indicator_of_mem
             (show _ ∈ _root_.GlobalTheory.StepData.Cgrp J h from
               _root_.GlobalTheory.StepData.mem_Cgrp.2 ⟨hyP, hin⟩), mul_one]
-        · rw [if_neg (fun h' => hin (hiff.1 h')), Set.indicator_of_notMem
+        · rw [ite_eq_right (fun h' => hin (hiff.1 h')), Set.indicator_of_notMem
             (show _ ∉ _root_.GlobalTheory.StepData.Cgrp J h from
               fun h' => hin (_root_.GlobalTheory.StepData.mem_Cgrp.1 h').2), mul_zero]
       simp_rw [hpt, integral_const_mul]
@@ -860,7 +816,7 @@ theorem _root_.GlobalTheory.CosetQuotInt.isQuotInt_cosetFn (k : Type) [Field k] 
       have hpt : ∀ (g : GL n k) (u : _root_.GlobalTheory.RootEx.N k n c 1),
           F (_root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k) * x) = 0 := by
         intro g u
-        rw [hFdef, if_neg]
+        rw [hFdef, ite_eq_right]
         intro hmem
         apply hx
         refine (@DoubleCoset.eq _ _ _ _ _ _).2 ⟨(_root_.GlobalTheory.RootEx.embX c g *
@@ -873,8 +829,8 @@ theorem _root_.GlobalTheory.CosetQuotInt.isQuotInt_cosetFn (k : Type) [Field k] 
       funext y
       rw [hFdef]
       by_cases hy : h⁻¹ * y ∈ J
-      · rw [if_pos hy, Set.indicator_of_mem (show y ∈ (fun y => h⁻¹ * y) ⁻¹' (J : Set _) from hy)]
-      · rw [if_neg hy,
+      · rw [ite_eq_left hy, Set.indicator_of_mem (show y ∈ (fun y => h⁻¹ * y) ⁻¹' (J : Set _) from hy)]
+      · rw [ite_eq_right hy,
           Set.indicator_of_notMem (show y ∉ (fun y => h⁻¹ * y) ⁻¹' (J : Set _) from hy)]
     rw [hFind, integral_indicator_const _
       (hJo.measurableSet.preimage (measurable_const_mul h⁻¹)), measureReal_def,

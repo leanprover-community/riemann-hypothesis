@@ -17,66 +17,12 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHa
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StarMulOfMemKc
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PolyGrowthStatementPfB
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TranslateChartBallDistortion
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Presheaf
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyCompactDualHaar
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeMeasureUnitaryDetOneFactorNearIdentity, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieHaarLeTwoMulTangentNormalizedHaar, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieHaarLeTwoMulTangentNormalizedHaarStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHaarFrameBallLowerBound, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupMeasureDecomposition, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanMassProductLowerBoundUnitaryPq, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanMassProductLowerBoundUnitaryPqStatement
@@ -259,7 +205,7 @@ theorem norm_sMat_dg_mul {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {c : ℂ} (hc : �
   rw [hmat, Matrix.det_mul, det_dg]
   simp only [dg, Matrix.sub_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Function.update_apply, Pi.one_apply]
   by_cases ha : a = a₀ <;> by_cases hb : b = a₀
-  · simp only [ha, hb, if_true]
+  · simp only [ha, hb, ite_true]
     congr 2
     rw [mul_inv]; field_simp
   · have : a ≠ b := by rintro rfl; exact hb ha
@@ -343,7 +289,7 @@ theorem exp_box {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {n : ℝ} (hn : n = ((p + q
     calc ∑ i ∈ Finset.univ.erase a₀, ‖X.1 i i‖ ≤ ∑ _i ∈ Finset.univ.erase a₀, 9 / 10 * ε * n⁻¹ := by
           refine Finset.sum_le_sum fun i hi => ?_
           have h1 := (hX i i).le
-          rwa [rad, if_pos ⟨rfl, Finset.ne_of_mem_erase hi⟩] at h1
+          rwa [rad, ite_eq_left ⟨rfl, Finset.ne_of_mem_erase hi⟩] at h1
       _ ≤ ∑ _i : Fin p ⊕ Fin q, 9 / 10 * ε * n⁻¹ :=
           Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _) fun _ _ _ => by positivity
       _ = 9 / 10 * ε := by
@@ -363,7 +309,7 @@ theorem exp_box {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {n : ℝ} (hn : n = ((p + q
     unfold sMat
     simp only [dg, Matrix.sub_apply, Matrix.mul_diagonal, Function.update_apply, Pi.one_apply] at h0 ⊢
     by_cases hb : b = a₀
-    · rw [if_pos hb]
+    · rw [ite_eq_left hb]
       by_cases hab : a = b
       · subst hab
         subst hb
@@ -384,7 +330,7 @@ theorem exp_box {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {n : ℝ} (hn : n = ((p + q
         linarith
       · rw [Matrix.one_apply_ne hab, sub_zero] at h0 ⊢
         rwa [norm_mul, norm_inv, hz1, inv_one, mul_one]
-    · rwa [if_neg hb, mul_one]
+    · rwa [ite_eq_right hb, mul_one]
   · linarith [Complex.abs_im_le_norm X.1.trace]
   · rw [hdet, Complex.norm_exp, Real.exp_eq_one_iff] at hz1
     rw [hdet]
@@ -569,7 +515,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat Global
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
 open scoped ENNReal
 
-
 theorem _root_.GlobalTheory.T.lieHaar_le_two_mul_tangentNormalizedHaar : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (hG : G.det ≠ 0) (lam : Measure (realLie Ψ G)) [lam.IsAddHaarMeasure], ∃ δ : ℝ, 0 < δ ∧ ∀ s : Set (realLie Ψ G), MeasurableSet s → s ⊆ Metric.ball 0 δ → lam s ≤ 2 * tangentHaar (realSU Ψ G) (lam.map Subtype.val) (GlobalTheory.SUVol.DensOne.chartExp Ψ G hG '' s) := by
   first | exact @GlobalTheory.CovTop.VolUp.LowDens.lam_le_two_mul_tangentHaar
 end -- clump:auto
@@ -591,11 +536,6 @@ noncomputable section
 namespace GlobalTheory.CovTop.VolUp.LowBall
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-
-theorem exists_lam (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r)
-    (hx : ∀ τ, (mat x τ).det ≠ 0) :
-    ∃ lam : Measure (realLie Ψ G), lam.IsAddHaarMeasure ∧ lam.map Subtype.val = riemLie Ψ G x := by
-  apply _root_.GlobalTheory.CovTop.VolUp.UpBall.exists_lam <;> assumption
 
 theorem exists_conj_bound (Ψ : Finset (E →+* ℂ)) (x : Frame Ψ r) (hx : ∀ τ, (mat x τ).det ≠ 0) :
     ∃ C : ℝ, 0 < C ∧ ∀ (t : ℝ) (X : Ψ → Fin r → Fin r → ℂ), 0 ≤ t →
@@ -661,7 +601,7 @@ theorem riemHaar_frBall_ge : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
       ENNReal.ofReal ((ε / (2 * ((Ψ.card : ℝ) * (r : ℝ) ^ 2))) ^ (Ψ.card * (r ^ 2 - 1)) / 2) ≤
         riemHaar Ψ G x (frBall Ψ G x ε) := by
   intro E _ _ _ r Ψ G x hr hG hx
-  obtain ⟨lam, hlam, hmap⟩ := exists_lam Ψ G x hx
+  obtain ⟨lam, hlam, hmap⟩ := GlobalTheory.CovTop.VolUp.UpBall.exists_lam Ψ G x hx
   obtain ⟨δ, hδ, hlow⟩ := GlobalTheory.T.lieHaar_le_two_mul_tangentNormalizedHaar E r Ψ G hG lam
   obtain ⟨C, hC, hconj⟩ := exists_conj_bound Ψ x hx
   obtain ⟨δ', hδ', hexp⟩ := exists_exp_entry (Fin r)
@@ -838,8 +778,6 @@ theorem constant_bound : ∀ (f r : ℕ) (ε : ℝ), 1 ≤ f → 1 ≤ r → 0 <
     rw [e1, mul_pow (5 / 2 : ℝ), ← mul_pow (200 * (r : ℝ)) a N]
     have hp : 0 ≤ (200 * (r : ℝ) * a) ^ N := pow_nonneg hq _
     linarith [mul_le_mul_of_nonneg_right h52 hp]
-  have hεn : 0 < ε ^ n := pow_pos hε _
-  have han0 : 0 < a ^ n := pow_pos ha0 _
   have hw : 0 ≤ ε ^ n / a ^ n / 2 := by positivity
   calc (200 * (r : ℝ)) ^ N * ε ^ n = ((200 * (r : ℝ)) ^ N * a ^ n * 2) * (ε ^ n / a ^ n / 2) := by
         field_simp
@@ -1007,7 +945,6 @@ theorem arith (f r : ℕ) (ε : ℝ) (hr : 1 ≤ r) (hε : 0 < ε) :
         _ ≤ 2 ^ (r ^ 2) := pow_le_pow_right₀ (by norm_num) (by rw [sq]; exact Nat.mul_le_mul_left _ (Nat.sub_le _ _))
     have h8 : (8 : ℝ) ^ (r ^ 2 - 1) ≤ 8 ^ (r ^ 2) := pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _)
     rw [le_div_iff₀ (pow_pos hr0 _), mul_pow]
-    have hε' : 0 ≤ ε ^ (r ^ 2 - 1) := pow_nonneg hε.le _
     calc (1 / 16 : ℝ) ^ (r ^ 2) * (8 ^ (r ^ 2 - 1) * ε ^ (r ^ 2 - 1)) * (r : ℝ) ^ (r - 1)
         ≤ (1 / 16 : ℝ) ^ (r ^ 2) * (8 ^ (r ^ 2) * ε ^ (r ^ 2 - 1)) * 2 ^ (r ^ 2) := by gcongr
       _ = ((1 / 16 : ℝ) * 8 * 2) ^ (r ^ 2) * ε ^ (r ^ 2 - 1) := by rw [mul_pow, mul_pow]; ring
@@ -1158,7 +1095,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat Global
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
 open scoped ENNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto

@@ -43,13 +43,6 @@ def IsSub (D' : Submodule LL D) : Prop :=
 
 end FilPhi
 
-namespace FilPhi
-
-variable {LL : Type} [Field LL] {D D' : Type} [AddCommGroup D] [Module LL D] [AddCommGroup D']
-  [Module LL D'] {n : ℕ} {Emb : Type} [Fintype Emb]
-
-end FilPhi
-
 structure PeriodData (G : Type) [Group G] (Qp K₀ K : Type) [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     (B BdR : Type) [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]

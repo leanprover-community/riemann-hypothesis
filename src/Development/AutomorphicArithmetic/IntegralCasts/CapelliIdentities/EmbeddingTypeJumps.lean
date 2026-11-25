@@ -7,7 +7,7 @@ import Mathlib.Tactic.Linter.Style
 
 noncomputable def UpperTheory.Reformulated.B.EmbeddingTypeJumps.crd :
     {E : Type} →
-      [inst : Field E] → [inst_1 : NumberField E] → [inst_2 : StarRing E] → (W : Formalism.BasicNotions.HSpace E) → Set (Fin W.rank → E) :=
+      [Field E] → [NumberField E] → [StarRing E] → (W : Formalism.BasicNotions.HSpace E) → Set (Fin W.rank → E) :=
     fun {E : Type} [Field E] [NumberField E] [StarRing E] (W : Formalism.BasicNotions.HSpace E) ↦
       {x : Fin W.rank → E | ∑ i : Fin W.rank, x i • (W.frame : Fin W.rank → W.V) i ∈ W.L0}
 
@@ -51,8 +51,8 @@ private theorem UpperTheory.Reformulated.B.EmbeddingTypeJumps.exists_int_smul_me
   exact ⟨⟨_, hstar⟩, rfl⟩
 
 theorem UpperTheory.Reformulated.B.EmbeddingTypeJumps.crd_low :
-    ∀ {F E : Type} [inst : Field F] [NumberField F] [inst_2 : Field E] [inst_3 : NumberField E] [inst_4 : Algebra F E]
-      [inst_5 : StarRing E] (W : Formalism.BasicNotions.HSpace E),
+    ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+      [StarRing E] (W : Formalism.BasicNotions.HSpace E),
       ∃ (c : NumberField.RingOfIntegers F),
         c ≠ (0 : NumberField.RingOfIntegers F) ∧
           ∀ (i : Fin W.rank) (e : E), IsIntegral ℤ e → Pi.single i ((↑c : F) • e) ∈ UpperTheory.Reformulated.B.EmbeddingTypeJumps.crd W := by

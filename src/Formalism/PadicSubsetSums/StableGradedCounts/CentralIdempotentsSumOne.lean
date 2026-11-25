@@ -52,7 +52,7 @@ theorem centralIdem_act {G V W : Type} [Group G] [Fintype G] [AddCommGroup V] [M
     exact_mod_cast (Module.finrank_pos (R := ℂ) (M := W)).ne'
   rw [e, hμ]
   split_ifs with hiso
-  · rw [if_pos hiso] at horth
+  · rw [ite_eq_left hiso] at horth
     obtain ⟨φ⟩ := hiso
     have hdim : Module.finrank ℂ V = Module.finrank ℂ W := φ.toLinearEquiv.finrank_eq
     have hsum : ∑ g, σ.character g * ρ.character g⁻¹ = (Fintype.card G : ℂ) := by
@@ -63,7 +63,7 @@ theorem centralIdem_act {G V W : Type} [Group G] [Fintype G] [AddCommGroup V] [M
       have := mul_right_cancel₀ hd (htr.trans (one_mul _).symm)
       exact this
     rw [this, one_smul]
-  · rw [if_neg hiso] at horth
+  · rw [ite_eq_right hiso] at horth
     have hsum : ∑ g, σ.character g * ρ.character g⁻¹ = 0 := by
       simpa [hc0] using horth
     rw [hsum, mul_zero] at htr
@@ -103,10 +103,10 @@ theorem central_idempotents_sum_one : CentralIdemSumOne := by
     obtain ⟨i₀, φ, hφ⟩ := hfull W σ hσ
 
     rw [hz, map_sum, Finset.sum_eq_single i₀]
-    · rw [centralIdem_act (ρ i₀) σ (hirr i₀) hσ, if_pos]
+    · rw [centralIdem_act (ρ i₀) σ (hirr i₀) hσ, ite_eq_left]
       exact ⟨(Representation.Equiv.mk φ (fun g => LinearMap.ext fun x => hφ g x)).symm⟩
     · intro i _ hi
-      rw [centralIdem_act (ρ i) σ (hirr i) hσ, if_neg]
+      rw [centralIdem_act (ρ i) σ (hirr i) hσ, ite_eq_right]
       rintro ⟨ψ⟩
       apply hi
       apply hne

@@ -71,9 +71,7 @@ theorem projectedVector_add (b : Fin k → Fin r → K) (q q' : Fin r → K) :
 theorem projectedVector_zero (b : Fin k → Fin r → K) : hpv b 0 = 0 := by
   have e : hReF (fun σ : K →+* ℂ => hPm σ b *ᵥ fun l => σ ((0 : Fin r → K) l)) = 0 := by
     funext p
-    simp only [hReF, Pi.zero_apply, map_zero]
-    rw [show (fun _ : Fin r => (0 : ℂ)) = 0 from rfl, mulVec_zero]
-    split_ifs <;> simp
+    simp [hReF, show (fun _ : Fin r => (0 : ℂ)) = 0 from rfl, mulVec_zero]
   simp only [hpv, hRe, e, WithLp.toLp_zero]
 
 noncomputable def hpvHom (b : Fin k → Fin r → K) : (Fin r → K) →+ EuclideanSpace ℝ (hIdx K r) where
@@ -156,23 +154,18 @@ theorem embeddingColumns_conjugate (σ : K →+* ℂ) (b : Fin k → Fin r → K
   ext l j
   simp [hBm, NumberField.ComplexEmbedding.conjugate_coe_eq]
 
-private lemma map_star_inv {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) :
-    A⁻¹.map (starRingEnd ℂ) = (A.map (starRingEnd ℂ))⁻¹ := by
-  have h : ∀ M : Matrix (Fin n) (Fin n) ℂ, M.map (starRingEnd ℂ) = Mᴴᵀ := by
-    intro M
-    ext i j
-    simp [conjTranspose_apply]
-  rw [h, h, ← transpose_nonsing_inv, conjTranspose_nonsing_inv]
-
 theorem orthogonalProjector_conjugate (σ : K →+* ℂ) {b : Fin k → Fin r → K} (hb : LinearIndependent K b) :
     hPm (conjugate σ) b = (hPm σ b).map (starRingEnd ℂ) := by
+  have hst : ∀ M : Matrix (Fin k) (Fin k) ℂ, M.map (starRingEnd ℂ) = Mᴴᵀ := fun M => by
+    ext; simp [conjTranspose_apply]
   unfold hPm
-  rw [embeddingColumns_conjugate σ b]
-  have h1 : ((hBm σ b).map (starRingEnd ℂ))ᴴ = (hBm σ b)ᴴ.map (starRingEnd ℂ) := by
-    ext i j
-    simp [conjTranspose_apply]
-  rw [h1, ← Matrix.map_mul, ← map_star_inv, Matrix.map_sub _ (map_sub _),
-    Matrix.map_one _ (map_zero _) (map_one _), Matrix.map_mul, Matrix.map_mul]
+  rw [embeddingColumns_conjugate σ b, ← conjTranspose_map (starRingEnd ℂ : ℂ → ℂ) fun _ => rfl,
+    ← Matrix.map_mul]
+  conv_rhs =>
+    rw [Matrix.map_sub _ (map_sub _), Matrix.map_one _ (map_zero _) (map_one _),
+      Matrix.map_mul, Matrix.map_mul]
+  rw [hst ((hBm σ b)ᴴ * hBm σ b), hst ((hBm σ b)ᴴ * hBm σ b)⁻¹,
+    ← transpose_nonsing_inv, conjTranspose_nonsing_inv]
 
 theorem orthogonalProjector_mulVec_conjugate (σ : K →+* ℂ) {b : Fin k → Fin r → K} (hb : LinearIndependent K b)
     (x : Fin r → K) :
@@ -190,11 +183,7 @@ theorem conj_sum_projected_inner (b : Fin k → Fin r → K) (hb : LinearIndepen
         (star (hPm σ b *ᵥ fun l => σ (x l)) ⬝ᵥ (hPm σ b *ᵥ fun l => σ (y l))) := by
 
   rw [map_sum]
-  have hinv : Function.Involutive (NumberField.ComplexEmbedding.conjugate (K := K)) := by
-    intro σ
-    ext z
-    simp
-  refine Fintype.sum_bijective _ hinv.bijective _ _ (fun σ => ?_)
+  refine Fintype.sum_bijective _ (involutive_conjugate K).bijective _ _ (fun σ => ?_)
   rw [orthogonalProjector_mulVec_conjugate σ hb x, orthogonalProjector_mulVec_conjugate σ hb y,
     NumberField.ComplexEmbedding.conjugate_coe_eq, NumberField.ComplexEmbedding.conjugate_coe_eq]
 

@@ -143,12 +143,12 @@ theorem sum_ind_block {A : Type} [CommRing A] {r : ℕ} (T : Finset (Fin r)) :
         exact absurd (h2 k0 hk0T (lt_of_not_ge hlt)) (not_lt.2 hik0)
       · rintro rfl
         exact ⟨hik0, fun t ht htk => lt_of_not_ge fun hit => absurd (hmin t ht hit) (not_le.2 htk)⟩
-    rw [Finset.sum_eq_single_of_mem k0 hk0T, ind_apply, ind_apply, if_pos ((hb k0 hk0T).2 rfl), if_pos hi]
+    rw [Finset.sum_eq_single_of_mem k0 hk0T, ind_apply, ind_apply, ite_eq_left ((hb k0 hk0T).2 rfl), ite_eq_left hi]
     intro k hk hkk
-    rw [ind_apply, if_neg fun h => hkk ((hb k hk).1 h)]
-  · rw [ind_apply, if_neg hi]
+    rw [ind_apply, ite_eq_right fun h => hkk ((hb k hk).1 h)]
+  · rw [ind_apply, ite_eq_right hi]
     refine Finset.sum_eq_zero fun k hk => ?_
-    rw [ind_apply, if_neg fun h => hi ⟨k, hk, h.1⟩]
+    rw [ind_apply, ite_eq_right fun h => hi ⟨k, hk, h.1⟩]
 
 theorem ind_block_mul_ind_block {A : Type} [CommRing A] {r : ℕ} (T : Finset (Fin r)) {k l : Fin r} (hk : k ∈ T) (hl : l ∈ T) (hkl : k ≠ l) :
     (ind (block T k) : Fin r → A) * ind (block T l) = 0 := by
@@ -161,8 +161,8 @@ theorem ind_block_mul_ind_block {A : Type} [CommRing A] {r : ℕ} (T : Finset (F
       rcases lt_or_gt_of_ne hkl with h | h
       · exact absurd (h2.2 k hk h) (not_lt.2 h1.1)
       · exact absurd (h1.2 l hl h) (not_lt.2 h2.1)
-    · rw [if_neg h2, mul_zero]
-  · rw [if_neg h1, zero_mul]
+    · rw [ite_eq_right h2, mul_zero]
+  · rw [ite_eq_right h1, zero_mul]
 
 theorem prX_ind_le {A : Type} [CommRing A] (s : A →+* A) {n r : ℕ} (J : Matrix (Fin n) (Fin n) A) (Z W : Matrix (Fin n) (Fin r) A)
     (k : Fin r) : prX s J Z W (ind {i | i ≤ k}) =
@@ -224,7 +224,7 @@ theorem prX_mulVec_eq_zero {Z W : Matrix (Fin n) (Fin r) A} {I : Set (Fin r)} {y
     rw [mulVec_diagonal, ind_apply]
     by_cases hi : i ∈ I
     · rw [hy i hi, mul_zero]; rfl
-    · rw [if_neg hi, zero_mul]; rfl
+    · rw [ite_eq_right hi, zero_mul]; rfl
   rw [prX, Matrix.mul_assoc (Z * diagonal _), ← mulVec_mulVec, ← mulVec_mulVec, this, mulVec_zero]
 
 theorem mulVec_col {m : ℕ} (M : Matrix (Fin n) (Fin n) A) (N : Matrix (Fin n) (Fin m) A) (i : Fin m) :
@@ -234,7 +234,6 @@ theorem mulVec_col {m : ℕ} (M : Matrix (Fin n) (Fin n) A) (N : Matrix (Fin n) 
 end Gen
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -267,9 +266,6 @@ theorem adMat_one {a : ℕ} : adMat F (1 : Matrix (Fin a) (Fin a) E) = 1 := Matr
 theorem mat_mul_inv (g : GAd σ J) : (matHom _ σ J g).1 * (matHom _ σ J g⁻¹).1 = 1 := by
   rw [← Units.val_mul, ← map_mul, mul_inv_cancel, map_one, Units.val_one]
 
-theorem mat_inv_mul (g : GAd σ J) : (matHom _ σ J g⁻¹).1 * (matHom _ σ J g).1 = 1 := by
-  rw [← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one]
-
 theorem mat_unitary (g : GAd σ J) :
     cT (sigR (AF F) σ) (matHom _ σ J g).1 * adMat F J * (matHom _ σ J g).1 = adMat F J := g.2
 
@@ -281,9 +277,9 @@ theorem exists_onPart (g : GAd σ J) {Q : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)
     (hc : (matHom _ σ J g).1 * Q = Q * (matHom _ σ J g).1) :
     ∃ m : GAd σ J, (matHom _ σ J m).1 = onPart Q (matHom _ σ J g).1 ∧
       (matHom _ σ J m⁻¹).1 = onPart Q (matHom _ σ J g⁻¹).1 :=
-  ⟨mkPt _ _ (onPart_inv hQ hc (mat_mul_inv g) (mat_inv_mul g))
-    (onPart_inv hQ (comm_inv hc (mat_mul_inv g) (mat_inv_mul g)) (mat_inv_mul g) (mat_mul_inv g))
-    (onPart_unitary hQ hQJ hc (mat_unitary g) (mat_mul_inv g) (mat_inv_mul g)), rfl, rfl⟩
+  ⟨mkPt _ _ (onPart_inv hQ hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g))
+    (onPart_inv hQ (comm_inv hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g)) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) (mat_mul_inv g))
+    (onPart_unitary hQ hQJ hc (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g)), rfl, rfl⟩
 
 variable (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y)
 include h hJ hW
@@ -299,7 +295,6 @@ theorem adFrame : cT (sigR (AF F) σ) (adMat F X) * adMat F J * adMat F X = 0 �
 end Adelic
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -327,10 +322,10 @@ theorem isComm_of_mem_levi {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi 
       (adMat F Y).submatrix id (Fin.castLE j.2) = 1 := by rw [cT_sub_mul, fxy, Matrix.submatrix_one _ inj]
   refine ⟨?_, ?_⟩
   · rw [prX_ind_le]
-    exact comm_of_frame h1 (mat_unitary g) (mat_mul_inv g) (mat_inv_mul g) eB eC
+    exact comm_of_frame h1 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) eB eC
   · change _ * prX _ _ (adMat F Y) (adMat F X) _ = prX _ _ (adMat F Y) (adMat F X) _ * _
     rw [prX_ind_le]
-    exact comm_of_frame h2 (mat_unitary g) (mat_mul_inv g) (mat_inv_mul g) eC eB
+    exact comm_of_frame h2 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) eC eB
 
 theorem mem_levi_of_isComm {T : Finset (Fin r)} {m : GAd σ J}
     (hm : ∀ j ∈ T, IsComm (sigR (AF F) σ) (adMat F J) (adMat F X) (adMat F Y) (matHom _ σ J m).1 (ind {i | i ≤ j}))
@@ -378,7 +373,6 @@ theorem isComm_block {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi σ J X
 end Levi
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -445,7 +439,7 @@ theorem exists_uPart {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi σ J X
     funext a
     rw [Matrix.transpose_apply, Matrix.sub_apply]
     erw [Matrix.mul_diagonal]
-    rw [ind_apply, if_pos hi, mul_one, sub_self]
+    rw [ind_apply, ite_eq_left hi, mul_one, sub_self]
     rfl
   have hX : P * adMat F X = adMat F X * diagonal (ind (upTo T)) := by
     simp only [P, prj, Matrix.add_mul, prX_mul_X fyx, prY_mul_X fxx, add_zero]
@@ -459,7 +453,6 @@ theorem exists_uPart {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi σ J X
 end Parts
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -727,7 +720,6 @@ theorem exists_KG_of_stab {n : ℕ} {e : Fin n → Bool} {f k : Matrix (Fin n) (
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D}
   {ε : D.what₂.Tau → Fin V.rank → Bool} {fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ}
 
-
 open GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.KInf in
 theorem kInf_spec (hθ : IsInfFam θ) (hfr : IsFrameFam V ε fr) (κ : ∀ τ, Formalism.REAL.KG (ε τ)) :
     kInf θ V ε fr κ ∈ GinfC V ∧ ∀ τ, infMat D.sp.cm.sig V.gram (θ τ) (kInf θ V ε fr κ) =
@@ -964,13 +956,8 @@ theorem exists_decomp : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[
   simp only [mul_assoc]
   rw [← mul_assoc (kInf θ V ε fr κ) c u, hcomm.eq, mul_assoc]
 
-theorem finiteDimensional_coeffSpan {K W : Type} [Group K] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
-    (ρ : Representation ℂ K W) : FiniteDimensional ℂ (GlobalTheory.Published.AutFin.coeffSpan ρ) :=
-  _root_.UpperTheory.Reformulated.B.EvaluationMap.main ρ
-
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D}
   {ε : D.what₂.Tau → Fin V.rank → Bool} {fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ}
-
 
 open Classical in
 theorem eq_zero_of_kInf {W : D.what₂.Tau → Type} [∀ τ, AddCommGroup (W τ)] [∀ τ, Module ℂ (W τ)]
@@ -1004,7 +991,7 @@ theorem exists_finset_sep_levi : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.ho
   intro D θ hθ V U hU ε fr hfr W _ _ _ ρ hρ c m X Y hW T hT
   classical
   obtain ⟨C, hC⟩ := exists_decomp D θ hθ V U hU ε fr hfr m X Y hW T
-  haveI := fun τ => finiteDimensional_coeffSpan (ρ τ)
+  haveI := fun τ => GlobalTheory.CompanionTheory.CTFin.UniSol.finiteDimensional_coeffSpan (ρ τ)
   choose S hS using fun τ => exists_finset_sep (GlobalTheory.Published.AutFin.coeffSpan (ρ τ))
   refine ⟨(C ×ˢ Fintype.piFinset S).image fun p => p.1 * kInf θ V ε fr p.2, fun φ hφ h0 => ?_⟩
   funext g

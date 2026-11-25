@@ -352,7 +352,7 @@ theorem assemble {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] 
     exact hQt z' c hc
   have hQconj : ∀ z, Qf (fun p => starRingEnd ℂ (z p)) = Qf z := by
     intro z
-    simp only [Qf, Fintype.sum_prod_type, Fintype.sum_bool, GG, aa, if_true, if_false,
+    simp only [Qf, Fintype.sum_prod_type, Fintype.sum_bool, GG, aa, ite_true, ite_false,
       Bool.false_eq_true, nd_conj]
     refine Finset.sum_congr rfl fun j _ => ?_
     have e1 : MvPolynomial.eval (fun p => starRingEnd ℂ (z p)) (MvPolynomial.map (starRingEnd ℂ) (G j)) =
@@ -635,11 +635,11 @@ theorem padExp_apply (p : (k : K) → ι k) (T : ℕ) (m : (Σ k, ι k) →₀ �
   · rw [Finsupp.single_apply]
     by_cases h : i = p k
     · subst h; simp
-    · rw [if_neg, if_neg h]
+    · rw [ite_eq_right, ite_eq_right h]
       intro e
       exact h (eq_of_heq (Sigma.mk.inj_iff.1 e).2).symm
   · intro b _ hb
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro e
     exact hb (Sigma.mk.inj_iff.1 e).1
   · simp
@@ -651,7 +651,7 @@ theorem blkDeg_padExp (p : (k : K) → ι k) (T : ℕ) (m : (Σ k, ι k) →₀ 
   simp only [padExp_apply]
   rw [Finset.sum_eq_single (p k)]
   · simp [blkDeg]
-  · intro b _ hb; rw [if_neg hb]
+  · intro b _ hb; rw [ite_eq_right hb]
   · simp
 
 theorem blkDeg_le_totalDegree {Q : MvPolynomial (Σ k, ι k) ℂ} {m : (Σ k, ι k) →₀ ℕ} (hm : m ∈ Q.support)
@@ -701,8 +701,8 @@ theorem exists_homogenize (p : (k : K) → ι k) (Q : MvPolynomial (Fin (Fintype
     rw [Fintype.prod_sigma, Fintype.prod_sigma, Fintype.prod_sigma]
     have hpad : ∀ k, ∏ i, z ⟨k, i⟩ ^ padExp p T m ⟨k, i⟩ = z ⟨k, p k⟩ ^ (T - blkDeg m k) := fun k => by
       rw [Finset.prod_eq_single (p k)]
-      · rw [padExp_apply, if_pos rfl]
-      · intro b _ hb; rw [padExp_apply, if_neg hb, pow_zero]
+      · rw [padExp_apply, ite_eq_left rfl]
+      · intro b _ hb; rw [padExp_apply, ite_eq_right hb, pow_zero]
       · simp
     simp only [hpad, ReciprocityTheory.AnForm.R.affCoord, div_pow]
     have hden : ∀ k, ∏ i, z ⟨k, p k⟩ ^ m ⟨k, i⟩ = z ⟨k, p k⟩ ^ blkDeg m k := fun k => by
@@ -724,7 +724,7 @@ theorem exists_homogenize (p : (k : K) → ι k) (Q : MvPolynomial (Fin (Fintype
     refine Finset.sum_eq_zero fun m hm => ?_
     rw [eval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
     refine mul_eq_zero_of_right _ (Finset.prod_eq_zero (Finset.mem_univ ⟨k, p k⟩) ?_)
-    rw [hk, Finsupp.coe_add, Pi.add_apply, padExp_apply, if_pos rfl]
+    rw [hk, Finsupp.coe_add, Pi.add_apply, padExp_apply, ite_eq_left rfl]
     exact zero_pow (by have := hlt m hm k; omega)
 
 end
@@ -924,12 +924,12 @@ theorem exists_res {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι 
     intro k l
     by_cases h : ∃ l, d.σ l = some k
     · have hc0 := Classical.choose_spec h
-      simp only [σ', dif_pos h, Option.some.injEq]
+      simp only [σ', dite_eq_left h, Option.some.injEq]
       constructor
       · rintro rfl; exact hc0
       · intro hl
         exact d.σ_injOn (hJ' _ _ hc0) (hJ' _ _ hl) (by rw [hc0, hl])
-    · simp only [σ', dif_neg h]
+    · simp only [σ', dite_eq_right h]
       constructor
       · intro h'; cases h'
       · intro hl; exact absurd ⟨l, hl⟩ h
@@ -1021,7 +1021,7 @@ theorem exists_res {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι 
     · intro z hz
       by_cases h0 : ∃ k, z ⟨k, E.symm (idx x₀) k⟩ = 0
       · exact hG0 z h0
-      push_neg at h0
+      push Not at h0
       rw [hG1 z h0]
       refine mul_eq_zero_of_right _ ?_
       obtain ⟨N, hN⟩ := d.mem_bd
@@ -1127,7 +1127,7 @@ theorem eq_zero_of_eval_torus {F : MvPolynomial K ℂ}
     rw [map_mul, map_zero, map_prod]
     by_cases hc : ∀ k, c k ≠ 0
     · rw [h c hc, zero_mul]
-    · push_neg at hc
+    · push Not at hc
       obtain ⟨k, hk⟩ := hc
       rw [Finset.prod_eq_zero (Finset.mem_univ k) (by simp [hk]), mul_zero]
   rcases mul_eq_zero.1 h2 with h3 | h3
@@ -1247,7 +1247,7 @@ theorem exists_homogIdeal {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintyp
       rw [Ideal.mem_bot] at hzi
       exact hli.ne_zero i (by rw [hzi, map_zero])
     rw [← hbot] at hR
-    push_neg at hR
+    push Not at hR
     obtain ⟨g, hg, s, hs1, hs2⟩ := hR
     have hs3 : (s : Ω) ≠ 0 := fun h0 => hs2 ((Ideal.mem_bot).2 (Subtype.ext h0))
     rw [hs1] at hs3

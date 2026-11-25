@@ -75,7 +75,7 @@ theorem val_det_le_one {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero 
       intro j
       by_cases hj : j = j0
       · simp [a, hj]
-      · simp only [a, hj, if_false, map_div₀]
+      · simp only [a, hj, ite_false, map_div₀]
         exact div_le_one_of_le₀ (hj0 j (Finset.mem_univ _)) zero_le'
     let B' : Matrix (Fin (m + 1)) (Fin (m + 1)) K := fun i j => B i j - a j * B i j0
     have hB'0 : ∀ i, B' i j0 = B i j0 := fun i => by simp [B', a]
@@ -86,7 +86,7 @@ theorem val_det_le_one {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero 
     have hrow : ∀ l, B' 0 (j0.succAbove l) = 0 := by
       intro l
       have hne : j0.succAbove l ≠ j0 := Fin.succAbove_ne j0 l
-      simp only [B', a, hne, if_false]
+      simp only [B', a, hne, ite_false]
       field_simp
       ring
     have hrow' : ∀ j, j ≠ j0 → B' 0 j = 0 := by
@@ -201,7 +201,7 @@ theorem norm_det_le {m : ℕ} (C : Matrix (Fin m) (Fin m) ℂ) (a : Fin m → �
     rw [hfj] at hdef
     rw [hdef, Matrix.mul_apply]
     simp only [T, Wm, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, one_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     congr 1
     rw [← Finset.sum_filter]
     apply Finset.sum_congr
@@ -422,12 +422,6 @@ theorem pow_iff_of_left {S' : Scheme.{0}} {b b' : S' ⟶ S} (h : b = b') (y : Ov
 
 variable (a : ArchFrame P z g)
 
-theorem pt_over (w : Fin g → ℂ) : a.pt w ≫ G.hom = z := by
-  have h1 := a.cart.1.w
-  have h2 : (a.u.ex w).left ≫ a.A.hom = 𝟙 _ := Over.w (a.u.ex w)
-  simp only [ArchFrame.pt, Category.assoc, h1]
-  rw [reassoc_of% h2]
-
 def lift (q : 𝟙_ (Over (Sp ℂ)) ⟶ a.A) : Over.mk ((𝟙_ (Over (Sp ℂ))).hom ≫ z) ⟶ G :=
   Over.homMk (q.left ≫ a.φ) (by
     have h1 := a.cart.1.w
@@ -640,7 +634,7 @@ theorem tors_mean (D : PPData H L) (th : Out.H0 D.t.PP.L 1) (f : ∀ σ, D.Frame
     · exact (pow_eq_one_iff (f (res τ)) (y τ i.1) (r τ i.1) (hr τ i.1) m).1 (hy1 τ i.1)
     · exact (hne τ i.1 _ (hr τ i.1)).1 i.2
     · intro w hw hθw
-      let yw : Over.mk (emb (res τ)) ⟶ D.t.G := Over.homMk ((f (res τ)).pt w) (pt_over (f (res τ)) w)
+      let yw : Over.mk (emb (res τ)) ⟶ D.t.G := Over.homMk ((f (res τ)).pt w) (GlobalTheory.CompanionTheory.Ar.Sl.Basis.pt_hom (f (res τ)) w)
       have hyw : yw ^ m = 1 := (pow_eq_one_iff (f (res τ)) yw w rfl m).2 hw
       obtain ⟨i, hi, huniq⟩ := hu ℂ τ (emb (res τ)) yw (hemb τ).symm hyw
       have hi' : (y τ i).left = (f (res τ)).pt w := by rw [hyl]; exact hi.symm

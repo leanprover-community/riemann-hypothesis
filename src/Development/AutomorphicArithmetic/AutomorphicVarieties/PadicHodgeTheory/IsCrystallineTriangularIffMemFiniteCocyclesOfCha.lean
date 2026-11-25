@@ -56,9 +56,6 @@ theorem UpperTheory.isCrystalline_triangular_iff_mem_finiteCocycles_of_charData 
     simp only [Pi.sub_apply, hz, hz', chRep_apply]
     ring
   refine ⟨hZ, ?_⟩
-  have w0 : wt1 0 = 1 := rfl
-  have w1 : wt1 1 = 0 := rfl
-  have w2 : wt1 2 = -1 := rfl
   have cd : ∀ i j, Continuous fun g => (((κ i / κ j) g : Bˣ) : B) := fun i j => cont_char_div (hκ.cont i) (hκ.cont j)
   have crk : ∀ i, IsCr φ (chRep (κ i)) := fun i =>
     crUnr φ hφ _ (contAction_chRep (hκ.cont i)) (e * wt1 i) fun g hg v => by

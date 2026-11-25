@@ -2,50 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PhiTopAgree
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SymLevelTestFunctionsAgreeRationalPoints
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -165,7 +121,7 @@ theorem withCol_toLoc {E k : Type} [Field E] [NumberField E] [StarRing E]
       unfold atNL
       rw [dite_eq_left (by omega)]
       simp only [LinearMap.coe_proj, Function.eval, Pi.single_apply, Fin.ext_iff, Fin.val_castAdd]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     rw [h1, h2, zero_mul, add_zero]
   · simp only [withCol, fromBlocks_apply₁₂, toLoc, Equiv.trans_apply, Equiv.sumCongr_apply, Sum.map_inl, Sum.map_inr,
       finSumFinEquiv_apply_left, finSumFinEquiv_apply_right, joinCol_apply]
@@ -174,12 +130,12 @@ theorem withCol_toLoc {E k : Type} [Field E] [NumberField E] [StarRing E]
       funext l
       have hl := l.isLt
       simp only [Pi.single_apply, Fin.ext_iff, Fin.val_castAdd, Fin.val_natAdd, Pi.zero_apply]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     have h2 : atNL E (n' + (0 + 1)) n' (Pi.single (Fin.natAdd n' (finCongr (rfl : 0 + 1 = 0 + 1) j)) 1) = 1 := by
       unfold atNL
       rw [dite_eq_left (by omega)]
       simp only [LinearMap.coe_proj, Function.eval, Pi.single_apply, Fin.ext_iff, Fin.val_natAdd]
-      rw [if_pos (by omega)]
+      rw [ite_eq_left (by omega)]
     rw [h1, map_zero, Pi.zero_apply, h2, one_mul]
     rw [zero_add (y' (e r))]
     rfl
@@ -242,6 +198,6 @@ theorem psiAgree_of_atType : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : 
     exact withCol_toLoc ι e e' hc1 hc0 x₀ y'
   rw [one_mul, Chain.Psi, om_one_one, hmat, hPhi, PsiAt, omPhi_one_one]
   unfold PhiAt
-  rw [if_pos hA.mem, if_pos hA.sharp, hrS, hr]
+  rw [ite_eq_left hA.mem, ite_eq_left hA.sharp, hrS, hr]
 
 end GlobalTheory.SymBridge

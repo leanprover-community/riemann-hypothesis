@@ -49,12 +49,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument
 
 open QuadraticAlgebra UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc
 
-private theorem stab_smul_comm {T Y : Type} [CommGroup T] [MulAction T Y] (t : T) (y : Y) :
-    MulAction.stabilizer T (t • y) = MulAction.stabilizer T y := by
-  ext s
-  simp only [MulAction.mem_stabilizer_iff]
-  rw [smul_smul, mul_comm, ← smul_smul, smul_left_cancel_iff]
-
 private theorem out_mk_smul {T Y : Type} [Group T] [MulAction T Y] (y : Y) :
     ∃ t : T, (Quotient.mk (MulAction.orbitRel T Y) y).out = t • y := by
   obtain ⟨t, ht⟩ := MulAction.orbitRel_apply.mp (Quotient.mk_out (s := MulAction.orbitRel T Y) y)
@@ -146,4 +140,4 @@ theorem UpperTheory.V.Z.Sym.Loc.wTrans :
     obtain ⟨t, ht⟩ := out_mk_smul (T := T) (pick o)
     show _ = ((MulAction.stabilizer T (Quotient.mk (MulAction.orbitRel T Y') (pick o)).out).relIndex C : ℂ) *
       k' (Quotient.mk (MulAction.orbitRel T Y') (pick o)).out
-    rw [ht, stab_smul_comm, hk', ← hkk _ _ (pick_R o), stab_eq _ _ (pick_R o) o.2 (pick_k o)]
+    rw [ht, MulAction.stabilizer_smul_eq_right, hk', ← hkk _ _ (pick_R o), stab_eq _ _ (pick_R o) o.2 (pick_k o)]

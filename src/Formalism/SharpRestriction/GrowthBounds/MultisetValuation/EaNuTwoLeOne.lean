@@ -34,12 +34,12 @@ theorem ea_block_le {J i : ℕ} (h1 : k1 + 1 < i) (h2 : i ≤ NN k1 t J) : (i - 
 theorem ea_nu_head (J : ℕ) (s : Fin n') {i : ℕ} (h1 : 1 ≤ i) (h2 : i ≤ k1 + 1) :
     nu t lam0 w J s i = lamI lam0 s i + w J s := by
   unfold nu
-  rw [if_pos ⟨h1, h2⟩]
+  rw [ite_eq_left ⟨h1, h2⟩]
 
 theorem ea_nu_tail (J : ℕ) (s : Fin n') {i : ℕ} (h1 : k1 + 1 < i) (h2 : i ≤ NN k1 t J) :
     nu t lam0 w J s i = -w ((i - (k1 + 2)) / (t + 1) + 1) s + w J s := by
   unfold nu
-  rw [if_neg (by omega), if_pos ⟨h1, h2⟩]
+  rw [ite_eq_right (by omega), ite_eq_left ⟨h1, h2⟩]
 
 theorem ea_nu_nonneg (h : Std p n' k1 t m c r TT a b lam0 w) {J : ℕ} (hJ1 : 1 ≤ J) (hJ : J ≤ m) (s : Fin n') (i : ℕ) :
     0 ≤ nu t lam0 w J s i := by
@@ -97,7 +97,7 @@ theorem ea_nu_last (J : ℕ) (s : Fin n') {i : ℕ} (h1 : NN k1 t J < i) (h2 : i
   unfold NN at h1 h2
   unfold nu
   have e : (J + 1) * (t + 1) = J * (t + 1) + (t + 1) := by ring
-  rw [if_neg (by omega), if_pos ⟨by omega, by unfold NN; omega⟩]
+  rw [ite_eq_right (by omega), ite_eq_left ⟨by omega, by unfold NN; omega⟩]
   have hq : (i - (k1 + 2)) / (t + 1) = J := Nat.div_eq_of_lt_le (by omega) (by omega)
   rw [hq]
   ring

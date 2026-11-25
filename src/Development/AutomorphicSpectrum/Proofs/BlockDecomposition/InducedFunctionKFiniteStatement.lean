@@ -63,13 +63,6 @@ section -- clump:auto
 
 open MvPolynomial Formalism.BasicNotions.TH
 
-namespace GlobalTheory.LowStable
-
-theorem X_mul_pderiv_totalDegree_le {σ : Type} (u v : σ) (g : MvPolynomial σ ℂ) :
-    (X u * pderiv v g).totalDegree ≤ g.totalDegree := by
-  apply GlobalTheory.KFixIrr.LowStable.deg_X_pderiv
-
-end GlobalTheory.LowStable
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowIrreducibleKStable =====
@@ -102,7 +95,6 @@ def Qf (e : Fin n → ℤ) (g : Mat n) : ℂ := ∏ j, GlobalTheory.CompanionThe
 
 def wf (e : Fin n → ℤ) (m : ℤ) (p : MvPolynomial (Fin n × Fin n) ℂ) : Mat n → ℂ :=
   (GLs n).indicator fun g => Qf e g * g.det ^ m * evP p g
-
 
 open scoped ComplexOrder in
 theorem gm_ne_zero (j : Fin n) {g : Mat n} (hg : g ∈ GLs n) : GlobalTheory.CompanionTheory.ModelS.gm j g ≠ 0 := by
@@ -236,7 +228,7 @@ theorem fderiv_evalMatrix_mul_single (p : MvPolynomial (Fin n × Fin n) ℂ) (g 
     fderiv ℂ (evP p) g (g * Matrix.single a b (1 : ℂ)) = evP (Tp a b p) g := by
   rw [fderiv_evalMatrix, evP_Tp]
   refine Finset.sum_congr rfl fun c _ => ?_
-  simp only [mul_single_entry, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [mul_single_entry, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 def detP : MvPolynomial (Fin n × Fin n) ℂ := (Matrix.mvPolynomialX (Fin n) (Fin n) ℂ).det
@@ -303,12 +295,12 @@ theorem detz_fderiv (m : ℤ) {g : Mat n} (hg : g ∈ GLs n) (a b : Fin n) :
   have h3 : HasDerivAt (fun t : ℂ => g.det ^ m * (1 + if a = b then t else 0) ^ m)
       ((if a = b then (m : ℂ) else 0) * g.det ^ m) 0 := by
     by_cases h : a = b
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       have h4 : HasDerivAt (fun z : ℂ => z ^ m) ((m : ℂ) * (1 + 0 : ℂ) ^ (m - 1)) (1 + 0) :=
         hasDerivAt_zpow m _ (Or.inl (by simp))
       have h5 := (h4.comp_const_add 1 0).const_mul (g.det ^ m)
       simpa [mul_comm] using h5
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       simpa using hasDerivAt_const (0 : ℂ) (g.det ^ m * (1 + 0 : ℂ) ^ m)
   rw [funext h2] at h1
   exact h1.unique h3
@@ -447,8 +439,8 @@ theorem Kf_wf (e : Fin n → ℤ) (m : ℤ) (p : MvPolynomial (Fin n × Fin n) �
     have := Qf_kill e _ hX hg hQd
     rwa [Matrix.mul_add, map_add] at this
   rw [Kf_val a b w hg, Eu_val, Eu_val, hfd, hL]
-  simp only [_root_.add_apply, _root_.smul_apply, smul_eq_mul, hres, if_true, Bool.false_eq_true,
-    if_false]
+  simp only [_root_.add_apply, _root_.smul_apply, smul_eq_mul, hres, ite_true, Bool.false_eq_true,
+    ite_false]
   rw [hI a b, hI b a, hIr, hIr]
   rw [← hI a b, ← hI b a]
   have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
@@ -509,7 +501,7 @@ theorem fRaw_factor (lam : Fin n → ℤ) (hl : Antitone lam) (lev : Fin n → �
         have := Fin.val_lt_last h
         omega
       have h0 := dif_nonneg hμ j hlt
-      simp only [h, if_false, one_mul, hx]
+      simp only [h, ite_false, one_mul, hx]
       rw [← zpow_natCast, Int.toNat_of_nonneg h0]
   have key : ∏ j, GlobalTheory.CompanionTheory.ModelS.lm j g ^ GlobalTheory.CompanionTheory.ModelS.dif μ j =
       g.det ^ GlobalTheory.CompanionTheory.ModelS.dif μ (Fin.last k) * ∏ j, GlobalTheory.CompanionTheory.ModelS.lm j g ^ x j := by
@@ -541,7 +533,7 @@ theorem Tp_mem (a b : Fin n) (d : ℕ) {q : MvPolynomial (Fin n × Fin n) ℂ}
   have hN := (MvPolynomial.mem_restrictTotalDegree _ _ _).1 hq
   simp only [Tp, LinearMap.sum_apply]
   refine Submodule.sum_mem _ fun c _ => ?_
-  exact (MvPolynomial.mem_restrictTotalDegree _ _ _).2 ((GlobalTheory.LowStable.X_mul_pderiv_totalDegree_le _ _ q).trans hN)
+  exact (MvPolynomial.mem_restrictTotalDegree _ _ _).2 ((GlobalTheory.KFixIrr.LowStable.deg_X_pderiv _ _ q).trans hN)
 
 end GlobalTheory.CompanionTheory.ModelS.FFin
 end -- clump:auto
@@ -563,7 +555,6 @@ open PositivityTheory.RgTw (Mat)
 open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 
 open GlobalTheory.CompanionTheory.ModelS.FFin in
 theorem GlobalTheory.CompanionTheory.ModelS.FFin.fRaw_finite (n : ℕ) (lam : Fin n → ℤ) (hl : Antitone lam) (lev : Fin n → ℕ)
@@ -608,7 +599,6 @@ open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
 open PositivityTheory.RgTw (Mat)
 open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end -- clump:auto
 end -- clump:auto

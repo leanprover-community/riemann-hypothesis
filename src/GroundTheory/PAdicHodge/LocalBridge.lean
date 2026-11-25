@@ -119,31 +119,11 @@ local instance valuativeExtension_intermediateField {F : Type*} [Field F] [Algeb
     ValuativeExtension E L :=
   ⟨fun {_ _} => by rw [subfield_vle_iff_norm_le, subfield_vle_iff_norm_le]; rfl⟩
 
-section Unique
-
-variable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] K]
-
-end Unique
-
 section Inclusion
 
 variable {K L : IntermediateField ℚ_[p] (PadicAlgCl p)} (h : K ≤ L)
 
 end Inclusion
-
-section Galois
-
-variable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (L : IntermediateField K (PadicAlgCl p))
-  [Normal K L]
-
-end Galois
-
-section Examples
-
-variable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] K]
-  (L : IntermediateField K (PadicAlgCl p)) [FiniteDimensional K L]
-
-end Examples
 
 /-! The `ValuativeRel` structure on subfields of `PadicAlgCl p` defined above (from the norm) and the
 instances built on it are not global instances: `GroundTheory.LocalField.intermediateField_valuativeRel`

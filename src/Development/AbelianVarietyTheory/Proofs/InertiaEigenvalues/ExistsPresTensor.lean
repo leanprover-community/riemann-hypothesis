@@ -954,7 +954,7 @@ theorem ringHom_eq_of_agree {O k : Type} [CommRing O] [CommRing k] (f g : O⟦X�
 
   have htail : PowerSeries.X ^ (n + 1) ∣ a - (PowerSeries.trunc (n + 1) a : O⟦X⟧) := by
     refine PowerSeries.X_pow_dvd_iff.mpr fun m hm => ?_
-    rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hm, sub_self]
+    rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, ite_eq_left hm, sub_self]
   obtain ⟨b, hb⟩ := htail
   have ha : a = (PowerSeries.trunc (n + 1) a : O⟦X⟧) + PowerSeries.X ^ (n + 1) * b := by
     rw [← hb]; ring

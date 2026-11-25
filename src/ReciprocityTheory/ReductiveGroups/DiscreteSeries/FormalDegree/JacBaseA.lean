@@ -173,7 +173,7 @@ theorem dpbP_E {ε : Fin n → Bool} (w : PCoord ε → ℂ) : dpbP ε (dpbE ε 
   funext ab
   obtain ⟨⟨a, b⟩, hab, hne⟩ := ab
   have h1 : ¬ (a < b ∧ ε b ≠ ε a) := fun h => absurd h.1 (not_lt.mpr hab.le)
-  simp only [dpbP, dpbE, LinearMap.coe_mk, AddHom.coe_mk, pmat, dif_pos (And.intro hab hne), dif_neg h1,
+  simp only [dpbP, dpbE, LinearMap.coe_mk, AddHom.coe_mk, pmat, dite_eq_left (And.intro hab hne), dite_eq_right h1,
     star_star]
   rw [Complex.real_smul]
   push_cast
@@ -192,18 +192,18 @@ theorem dpbE_P {ε : Fin n → Bool} (W : Matrix (Fin n) (Fin n) ℂ) :
   by_cases hε : ε a = ε b
   · have h1 : ¬ (b < a ∧ ε a ≠ ε b) := fun h => h.2 hε
     have h2 : ¬ (a < b ∧ ε b ≠ ε a) := fun h => h.2 hε.symm
-    rw [dif_neg h1, dif_neg h2, if_pos hε, if_pos hε.symm]
+    rw [dite_eq_right h1, dite_eq_right h2, ite_eq_left hε, ite_eq_left hε.symm]
     simp
-  · rw [if_neg hε, if_neg (Ne.symm hε)]
+  · rw [ite_eq_right hε, ite_eq_right (Ne.symm hε)]
     rcases lt_trichotomy a b with h | h | h
     · have h1 : ¬ (b < a ∧ ε a ≠ ε b) := fun h' => absurd h'.1 (not_lt.mpr h.le)
-      rw [dif_neg h1, dif_pos (And.intro h (Ne.symm hε))]
+      rw [dite_eq_right h1, dite_eq_left (And.intro h (Ne.symm hε))]
       simp only [Complex.real_smul]
       push_cast
       simp only [star_add, star_mul', star_star, star_div₀, star_one, star_ofNat, star_neg]
       ring
     · exact absurd (h ▸ rfl) hε
-    · rw [dif_pos (And.intro h hε)]
+    · rw [dite_eq_left (And.intro h hε)]
       simp only [star_neg, Complex.real_smul]
       push_cast
       ring
@@ -220,14 +220,14 @@ theorem dpb_shc_neg (u : ℝ) : shc (-u) = shc u := by
   unfold shc
   by_cases h : u = 0
   · simp [h]
-  · rw [if_neg (neg_ne_zero.mpr h), if_neg h, Real.sinh_neg, neg_div_neg_eq]
+  · rw [ite_eq_right (neg_ne_zero.mpr h), ite_eq_right h, Real.sinh_neg, neg_div_neg_eq]
 
 theorem dpb_shc_fac : (fun u : ℝ => u * ((shc u - 1) / u)) = fun u => shc u - 1 := by
   funext u
   unfold shc
   by_cases h : u = 0
   · simp [h]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     field_simp
 
 theorem dpb_theta_ad {J Y : Matrix (Fin n) (Fin n) ℂ} (hJ : J * J = 1) (hY : J * Y * J = -Y)
@@ -588,7 +588,7 @@ theorem pmat_smul' (c : ℝ) (v : PCoord ε → ℂ) : pmat (c • v) = c • pm
 
 theorem pmat_apply_coord (v : PCoord ε → ℂ) (ab : PCoord ε) : pmat v ab.1.1 ab.1.2 = v ab := by
   obtain ⟨⟨a, b⟩, h⟩ := ab
-  simp only [pmat, dif_pos h]
+  simp only [pmat, dite_eq_left h]
 
 theorem pmat_ne_zero (v : PCoord ε → ℂ) (hv : v ≠ 0) : pmat v ≠ 0 := by
   intro h
@@ -1018,17 +1018,6 @@ theorem jac_pos' {ε : Fin n → Bool} (y : PCoord ε → ℂ) : 0 < Jac y := by
   unfold Jac
   exact Finset.prod_pos (fun a _ => Finset.prod_pos (fun b _ => _root_.ReciprocityTheory.ChartRestriction.DS.pb_shc_pos _))
 
-def pmatLin (ε : Fin n → Bool) : (PCoord ε → ℂ) →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ where
-  toFun := pmat
-  map_add' z w := by
-    ext a b
-    simp only [pmat, Matrix.add_apply]
-    split_ifs <;> simp
-  map_smul' c z := by
-    ext a b
-    simp only [pmat, Matrix.smul_apply, RingHom.id_apply]
-    split_ifs <;> simp
-
 def crdLin (ε : Fin n → Bool) : Matrix (Fin n) (Fin n) ℂ →ₗ[ℝ] (PCoord ε → ℂ) where
   toFun X := fun ab => X ab.1.1 ab.1.2
   map_add' _ _ := rfl
@@ -1107,7 +1096,7 @@ section Op
 open scoped Matrix.Norms.Operator
 
 def pmatC (ε : Fin n → Bool) : (PCoord ε → ℂ) →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
-  LinearMap.toContinuousLinearMap (pmatLin ε)
+  LinearMap.toContinuousLinearMap (ReciprocityTheory.ChartRestriction.DS.dpbE ε)
 
 def crdC (ε : Fin n → Bool) : Matrix (Fin n) (Fin n) ℂ →L[ℝ] (PCoord ε → ℂ) :=
   LinearMap.toContinuousLinearMap (crdLin ε)
@@ -1211,7 +1200,7 @@ theorem jacBase' {ε : Fin n → Bool} (y : PCoord ε → ℂ) :
     |LinearMap.det ((fderiv ℝ (actR (ε := ε) (NormedSpace.exp (pmat y))) 0 :
       (PCoord ε → ℂ) →L[ℝ] (PCoord ε → ℂ)) : (PCoord ε → ℂ) →ₗ[ℝ] (PCoord ε → ℂ))| * Jac y = 1 := by
   let S : (PCoord ε → ℂ) →L[ℝ] (PCoord ε → ℂ) :=
-    LinearMap.toContinuousLinearMap (crdLin ε ∘ₗ shcAdLin y ∘ₗ pmatLin ε)
+    LinearMap.toContinuousLinearMap (crdLin ε ∘ₗ shcAdLin y ∘ₗ ReciprocityTheory.ChartRestriction.DS.dpbE ε)
   have hS : fderiv ℝ (shcAdC y) 0 = S := S.fderiv
   have h1 := detP y
   rw [hS] at h1

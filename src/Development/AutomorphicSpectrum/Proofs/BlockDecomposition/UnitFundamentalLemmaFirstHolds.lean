@@ -37,13 +37,13 @@ theorem exists_doubleCoset_reps {G : Type*} [Group G] (H K : Subgroup G) (A : Se
   have hf : ∀ q, Quotient.mk s (f q) = q := by
     intro q
     by_cases hq : ∃ a ∈ A, (Quotient.mk s a) = q
-    · simp only [f, dif_pos hq]; exact hq.choose_spec.2
-    · simp only [f, dif_neg hq]; exact Quotient.out_eq q
+    · simp only [f, dite_eq_left hq]; exact hq.choose_spec.2
+    · simp only [f, dite_eq_right hq]; exact Quotient.out_eq q
   refine ⟨Set.range f, ?_, ?_, ?_⟩
   · intro a ha
     have hq : ∃ a' ∈ A, Quotient.mk s a' = Quotient.mk s a := ⟨a, ha, rfl⟩
     refine ⟨Quotient.mk s a, ?_⟩
-    simp only [f, dif_pos hq]
+    simp only [f, dite_eq_left hq]
     exact hA _ hq.choose_spec.1 _ ha (Quotient.exact hq.choose_spec.2)
   · intro g
     exact ⟨f (Quotient.mk s g), ⟨_, rfl⟩, Quotient.exact (hf (Quotient.mk s g))⟩

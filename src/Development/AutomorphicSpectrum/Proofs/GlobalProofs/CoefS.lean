@@ -15,10 +15,6 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
-def boxF {M : ℕ} (A : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fin 1 → Fin M → Fv F v ⊗[F] E)) :
-    Set (Fin 1 → Fin M → Af F ⊗[F] E) :=
-  {X | ∀ v, projV v X ∈ A v}
-
 def intF (S : Finset (HeightOneSpectrum (𝓞 F))) : Set (Af F) :=
   {y | ∀ v, v ∉ S → y v ∈ v.adicCompletionIntegers F}
 

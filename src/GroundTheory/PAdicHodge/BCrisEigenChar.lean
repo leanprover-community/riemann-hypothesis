@@ -52,6 +52,7 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Algebra.Group.Units
 
 open scoped GroundTheory.PAdicHodge.LocalBridge
 
@@ -101,15 +102,7 @@ theorem exists_eigenChar {x : ℂ_[p]} (hx : x ≠ 0)
       rw [hq σ, mul_assoc, mul_inv_cancel₀ hx, mul_one]
     rw [e]
     exact (continuous_id.smul continuous_const).mul continuous_const
-  refine ⟨ψ₀.toHomUnits, ?_, fun σ => hq σ⟩
-  rw [Units.continuous_iff]
-  refine ⟨hcont₀, ?_⟩
-  have e : (fun σ => (((ψ₀.toHomUnits σ)⁻¹ : ℚ_[p]ˣ) : ℚ_[p])) = ψ₀ ∘ fun σ => σ⁻¹ := by
-    funext σ
-    rw [← map_inv]
-    rfl
-  rw [e]
-  exact hcont₀.comp continuous_inv
+  exact ⟨ψ₀.toHomUnits, Continuous.of_coeHom_comp hcont₀, fun σ => hq σ⟩
 
 theorem norm_eigen_eq_one {x : ℂ_[p]} (hx : x ≠ 0) {σ : Gal(PadicAlgCl p/K)} {q : ℚ_[p]}
     (h : σ • x = algebraMap ℚ_[p] ℂ_[p] q * x) : ‖q‖ = 1 := by

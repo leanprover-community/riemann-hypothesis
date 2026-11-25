@@ -64,8 +64,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh10.fin_of_hom :
-    ∀ {S R M : Type} [inst : CommRing S] [inst_1 : CommRing R]
-    [inst_2 : AddCommGroup M] [inst_3 : _root_.Module S M] [inst_4 : _root_.Module R M] [Module.Finite S M] (f : S → R),
+    ∀ {S R M : Type} [CommRing S] [CommRing R]
+    [AddCommGroup M] [_root_.Module S M] [_root_.Module R M] [Module.Finite S M] (f : S → R),
     (∀ (a : S) (m : M), a • m = f a • m) → Module.Finite R M := by
   intro S R M _ _ _ _ _ hfin f hf
   obtain ⟨T, hT⟩ := hfin.fg_top

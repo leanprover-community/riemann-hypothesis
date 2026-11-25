@@ -269,7 +269,7 @@ theorem homLat_fg {K : Type} [Field K] [NumberField K] {a b : ℕ}
       map_add' := fun y z => by ext1 x; simp [toMat_add, Matrix.add_mulVec]
       map_smul' := fun c y => by ext1 x; simp [toMat_smul, Matrix.smul_mulVec] }
   have hF : Function.Injective F := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro y hy
     rw [Submodule.span_span_of_tower] at hAs
     have : Matrix.toLin' (toMat y) = 0 := by
@@ -509,24 +509,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.HN Formalism.HermitianLatticesTheory Matrix NumberField Finset
-open GlobalTheory.HomCover in
-
-theorem _root_.GlobalTheory.T.lattice_pair_volume_bounds :
-    ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] (a b : ℕ)
-      (X : InfinitePlace K → Matrix (Fin a) (Fin a) ℂ)
-      (X' : InfinitePlace K → Matrix (Fin b) (Fin b) ℂ)
-      (A : Submodule (𝓞 K) (Fin a → K)) (B : Submodule (𝓞 K) (Fin b → K)) (lo hi : ℝ),
-      (∀ w, IsUnit (X w).det) → (∀ w, IsUnit (X' w).det) → A.FG → B.FG →
-      Submodule.span K (A : Set (Fin a → K)) = ⊤ →
-      Submodule.span K (B : Set (Fin b → K)) = ⊤ → 0 < lo → 0 < hi →
-      (∀ N, N ≤ A → N ≠ ⊥ → lo ≤ Formalism.HN.size (Pi.basisFun K (Fin a)) X N) →
-      Formalism.HN.largestSize (Pi.basisFun K (Fin b)) X' B ≤ hi →
-      ∀ T : InfinitePlace K → Matrix (Fin b) (Fin a) ℂ,
-        ∃ φ : Matrix (Fin b) (Fin a) K, (∀ y ∈ A, φ *ᵥ y ∈ B) ∧
-          Real.sqrt (∑ w, ∑ i, ∑ j, ‖(T w - (X' w)⁻¹ * φ.map w.embedding * X w) i j‖ ^ 2) ≤
-            (a : ℝ) * b * Real.sqrt (Formalism.HN.nPl K) *
-              |(discr K : ℝ)| ^ ((1 : ℝ) / (2 * (Formalism.HN.nPl K : ℝ))) * hi / (2 * lo) := by
-  apply _root_.GlobalTheory.HomCover.exists_hom_near
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatticePairVolumeBoundsStatement =====
@@ -887,7 +869,7 @@ theorem subquot_cover : ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [_
     GlobalTheory.T.quotient_lattice_realized_isometrically K n X A S hX hA hSat
   obtain ⟨r, e, X'', P, B, hr, hX'', hP, hPe, hB, hBspan, heB, hRB, hlB⟩ :=
     _root_.GlobalTheory.exists_isometric_realisation_of_sublattice K n X R hX hR
-  obtain ⟨φ', hφ'B, hbound⟩ := GlobalTheory.T.lattice_pair_volume_bounds K m r X' X''
+  obtain ⟨φ', hφ'B, hbound⟩ := GlobalTheory.HomCover.exists_hom_near K m r X' X''
     (A.map ((Matrix.toLin' q).restrictScalars (𝓞 K))) B lo hi hX' hX'' (hA.map _) hB hspan
     hBspan hlo hhi
     (fun N' hN' hN'0 => by
@@ -1000,7 +982,7 @@ theorem exists_invol (I : AutInst) (x : I.GA) (w : InfinitePlace I.E) :
   by_cases h : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
   · refine ⟨RingHom.id ℂ, fun z => rfl, fun z => rfl, fun a => by rw [h]; rfl, ?_⟩
     unfold frm
-    rw [if_pos h]
+    rw [ite_eq_left h]
     ext i j
     simp
   · have h2 : ComplexEmbedding.conjugate w.embedding = I.φ (w.comap (algebraMap I.F I.E)) :=
@@ -1009,7 +991,7 @@ theorem exists_invol (I : AutInst) (x : I.GA) (w : InfinitePlace I.E) :
     · rw [← h2]
       simp [ComplexEmbedding.conjugate_coe_eq]
     · unfold frm
-      rw [if_neg h]
+      rw [ite_eq_right h]
 
 private theorem map_conj_mulVec_map_inv_mulVec {n : ℕ} (σ : ℂ →+* ℂ) (M T : Matrix (Fin n) (Fin n) ℂ) (hM : IsUnit M.det)
     (u : Fin n → ℂ) :

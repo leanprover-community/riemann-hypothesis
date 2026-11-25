@@ -134,7 +134,7 @@ theorem lvBasis_letter_span (hspan : Submodule.span LL (Set.range (W.cmp T)) = D
       · subst hij
         rw [map_sub, smul_sub, h1, ((lvBasis_mem_DcrisL PD T.ρ _ _).1 hd).2 c]
       · rw [sub_zero, h1]) (by simp [Finset.sum_sub_distrib, hzs]) j
-  rw [if_pos rfl, sub_eq_zero] at key
+  rw [ite_eq_left rfl, sub_eq_zero] at key
   rw [← key]
   exact hzj
 

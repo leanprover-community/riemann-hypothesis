@@ -58,10 +58,6 @@ def NDOfWhit : Prop := Unfold → ThetaCoef → WhitNDg → CoefND
 
 end PositivityTheory.PfSWUS
 
-namespace PositivityTheory.PfSWUS
-
-end PositivityTheory.PfSWUS
-
 end D7S
 
 end

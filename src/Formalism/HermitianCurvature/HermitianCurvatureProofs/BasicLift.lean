@@ -82,9 +82,9 @@ theorem PT.lag {d : ℕ} {f : ℂ → A} {c : A} (h : PT d f c) :
   rw [Finset.sum_comm]
   simp_rw [← Finset.sum_smul]
   rw [Finset.sum_eq_single (Fin.last d)]
-  · rw [key, if_pos (by simp), one_smul, ha]
+  · rw [key, ite_eq_left (by simp), one_smul, ha]
   · intro j _ hj
-    rw [key, if_neg, zero_smul]
+    rw [key, ite_eq_right, zero_smul]
     intro hjd
     exact hj (Fin.ext (by simpa using hjd))
   · intro h0

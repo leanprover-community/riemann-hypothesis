@@ -370,7 +370,7 @@ theorem poisson_formula_punctured (f : ℂ → ℝ) (ρ R M : ℝ) (hρ : 0 < ρ
     have hev : Φ =ᶠ[𝓝 z] ReciprocityTheory.AnForm.A.poissonInt f ρ := by
       filter_upwards [Metric.isOpen_ball.mem_nhds hzb] with y hy
       have : ‖y‖ < ρ := by simpa using hy
-      simp only [Φ, if_pos this]
+      simp only [Φ, ite_eq_left this]
     exact (InnerProductSpace.harmonicAt_congr_nhds hev).mpr
       (ReciprocityTheory.AnForm.A.poissonInt_harmonicAt hρ hfc hzb)
   have hΦcont : ContinuousOn Φ (Metric.closedBall 0 ρ) := by
@@ -380,22 +380,22 @@ theorem poisson_formula_punctured (f : ℂ → ℝ) (ρ R M : ℝ) (hρ : 0 < ρ
     · have hzle : ‖z‖ ≤ ρ := by simpa using hz
       have hzeq : ‖z‖ = ρ := le_antisymm hzle (not_lt.mp hzl)
       have hzs : z ∈ Metric.sphere (0 : ℂ) ρ := by simpa using hzeq
-      have hΦz : Φ z = f z := by simp only [Φ, if_neg hzl]
+      have hΦz : Φ z = f z := by simp only [Φ, ite_eq_right hzl]
       rw [← Metric.ball_union_sphere]
       apply ContinuousWithinAt.union
       · rw [ContinuousWithinAt, hΦz]
         refine Filter.Tendsto.congr' ?_ (ReciprocityTheory.AnForm.A.poissonInt_tendsto hρ hfc hzs)
         filter_upwards [self_mem_nhdsWithin] with y hy
         have : ‖y‖ < ρ := by simpa using hy
-        simp only [Φ, if_pos this]
+        simp only [Φ, ite_eq_left this]
       · rw [ContinuousWithinAt, hΦz]
         refine Filter.Tendsto.congr' ?_ (hfc z hzs)
         filter_upwards [self_mem_nhdsWithin] with y hy
         have hy' : ‖y‖ = ρ := by simpa using hy
-        simp only [Φ, if_neg (not_lt.mpr hy'.ge)]
+        simp only [Φ, ite_eq_right (not_lt.mpr hy'.ge)]
   have hΦb : ∀ z : ℂ, ‖z‖ = ρ → Φ z = f z := by
     intro z hz
-    simp only [Φ, if_neg (not_lt.mpr hz.ge)]
+    simp only [Φ, ite_eq_right (not_lt.mpr hz.ge)]
   have hS : {z : ℂ | 0 < ‖z‖ ∧ ‖z‖ ≤ ρ} ⊆ Metric.closedBall 0 ρ := fun z hz => by
     simpa using hz.2
   have hfS : ContinuousOn f {z : ℂ | 0 < ‖z‖ ∧ ‖z‖ ≤ ρ} := fun z hz =>
@@ -403,9 +403,9 @@ theorem poisson_formula_punctured (f : ℂ → ℝ) (ρ R M : ℝ) (hρ : 0 < ρ
   have hΦbd : ∀ z : ℂ, 0 < ‖z‖ → ‖z‖ ≤ ρ → |Φ z| ≤ M := by
     intro z hz0 hzρ
     by_cases hzl : ‖z‖ < ρ
-    · simp only [Φ, if_pos hzl]
+    · simp only [Φ, ite_eq_left hzl]
       exact hPbd z hzl
-    · simp only [Φ, if_neg hzl]
+    · simp only [Φ, ite_eq_right hzl]
       exact hB z (norm_pos_iff.mp hz0) (lt_of_le_of_lt hzρ hρR)
   have hA := le_zero_of_bddAbove_punctured (fun z => f z - Φ z) ρ (2 * M) hρ
     (hfS.sub (hΦcont.mono hS))
@@ -425,7 +425,7 @@ theorem poisson_formula_punctured (f : ℂ → ℝ) (ρ R M : ℝ) (hρ : 0 < ρ
       have h2 := abs_le.mp (hΦbd z hz0 hzρ)
       linarith [h1.1, h1.2, h2.1, h2.2])
     w (norm_pos_iff.mpr hw0) hwρ
-  have hΦw : Φ w = ReciprocityTheory.AnForm.A.poissonInt f ρ w := by simp only [Φ, if_pos hwρ]
+  have hΦw : Φ w = ReciprocityTheory.AnForm.A.poissonInt f ρ w := by simp only [Φ, ite_eq_left hwρ]
   have hfw : f w = ReciprocityTheory.AnForm.A.poissonInt f ρ w := by linarith
   rw [hfw]
   have hint := GlobalTheory.CompanionTheory.Ar.PB.Flat.integral_angMeas (fun z => poissonKernel 0 w z * f z) ρ
@@ -846,9 +846,6 @@ theorem smoothOn_comp_compatChart (e : ℕ) (X : Type) [TopologicalSpace X] (A :
     hG.contDiffAt (hO.mem_nhds hyO)
   exact (hGat.comp y hτ).contDiffWithinAt
 
-theorem smoothOn_comp_compatChart' : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e X) (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (O : Set (Fin e → ℂ)) (G : (Fin e → ℂ) → ℝ), IsCompatChart A ψ → IsOpen O → O ⊆ ψ.target → ContDiffOn ℝ ∞ G O → A.SmoothOn (ψ.source ∩ ψ ⁻¹' O) (G ∘ ψ) :=
-  fun e X _ A ψ O G h1 h2 h3 h4 => smoothOn_comp_compatChart e X A ψ O G h1 h2 h3 h4
-
 end GlobalTheory.CompanionTheory.Metric
 end -- clump:auto
 end -- clump:auto
@@ -1027,7 +1024,7 @@ theorem locExt : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas 
   refine ⟨ψ.source ∩ ψ ⁻¹' Metric.ball (ψ x) (r / 2), fun y => (G ∘ ψ) y - th.φ x y,
     ψ.isOpen_inter_preimage Metric.isOpen_ball, ⟨hxψ, Metric.mem_ball_self (half_pos hr)⟩, ?_, ?_⟩
   · intro j
-    have h1 := _root_.GlobalTheory.CompanionTheory.Metric.smoothOn_comp_compatChart' e X A ψ (Metric.ball (ψ x) (r / 2)) G hψ Metric.isOpen_ball
+    have h1 := _root_.GlobalTheory.CompanionTheory.Metric.smoothOn_comp_compatChart e X A ψ (Metric.ball (ψ x) (r / 2)) G hψ Metric.isOpen_ball
       (fun z hz => (hball (hhalf hz)).1.1) hGs
     exact (h1 j).sub ((hth.1 x j).mono fun y hy => ⟨hy.1, hNU hy.2⟩)
   · intro y hy hyb
@@ -1136,9 +1133,9 @@ theorem glue : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e 
   · have hu' : ∀ x, ∀ y ∈ N x, (if y ∈ B then E y y else u y) = E x y := by
       intro x y hy
       by_cases hB : y ∈ B
-      · rw [if_pos hB]
+      · rw [ite_eq_left hB]
         exact hagree y x y ⟨hx y, hy⟩
-      · rw [if_neg hB]
+      · rw [ite_eq_right hB]
         exact (hE x y hy hB).symm
     intro j z hz
     have hzt : z ∈ (A.chart j).target := hz.1

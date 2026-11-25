@@ -92,7 +92,7 @@ theorem grSS_of :
       · simp
   have hblk : ∀ i, IsInv ρ (blk k c i) := by
     intro i g u hu j hj
-    rw [key g i u hu j, if_neg hj]
+    rw [key g i u hu j, ite_eq_right hj]
   have hsup : ⨆ i, blk k c i = ⊤ := by
     rw [eq_top_iff]
     intro v _
@@ -588,7 +588,7 @@ private theorem exists_linearIndep_levels_span_eq_of_monotone {k : Type} [Field 
     refine ⟨b, fun x => if x ∈ s then lev x else n, hb, ?_, ?_⟩
     · intro x hx
       by_cases h : x ∈ s
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         exact Nat.lt_succ_of_lt (hlev x h)
       · simp [h]
     · intro i hi
@@ -597,7 +597,7 @@ private theorem exists_linearIndep_levels_span_eq_of_monotone {k : Type} [Field 
           ext x
           by_cases h : x ∈ s
           · simp [h, hsb h]
-          · simp only [Set.mem_setOf_eq, h, if_false, false_and, iff_false]
+          · simp only [Set.mem_setOf_eq, h, ite_false, false_and, iff_false]
             rintro ⟨-, h'⟩
             omega
         rw [hset]
@@ -611,7 +611,7 @@ private theorem exists_linearIndep_levels_span_eq_of_monotone {k : Type} [Field 
           · intro hx
             refine ⟨hx, ?_⟩
             by_cases h : x ∈ s
-            · simp only [h, if_true]
+            · simp only [h, ite_true]
               exact Nat.lt_succ_of_lt (hlev x h)
             · simp [h]
         rw [hset]
@@ -877,8 +877,8 @@ theorem UpperTheory.Gal.Int.Geo.grHom_of :
     · apply Finset.sum_congr rfl
       intro l _
       by_cases h1 : c i = c l
-      · rw [if_pos h1, if_pos (h1 ▸ hij)]
-      · rw [if_neg h1, zero_mul]
+      · rw [ite_eq_left h1, ite_eq_left (h1 ▸ hij)]
+      · rw [ite_eq_right h1, zero_mul]
         rcases lt_or_gt_of_ne h1 with h | h
         · rw [hN (show c j < c l by omega), mul_zero]
         · rw [hM h, zero_mul]
@@ -1024,7 +1024,6 @@ private theorem pj_tr {L L' : IntermediateField k Ω} (h : L ≤ L') :
       ← CommRingCat.ofHom_comp, pj_snd]
     rfl
 
-
 variable (k Ω) in
 private def Gd : (FI k Ω)ᵒᵖ ⥤ Scheme.{0} where
   obj L := geom L.unop.1 p
@@ -1044,7 +1043,6 @@ private def Gd : (FI k Ω)ᵒᵖ ⥤ Scheme.{0} where
       rw [Category.assoc, tr_snd, ← Category.assoc, tr_snd, Category.assoc, ← Spec.map_comp,
         ← CommRingCat.ofHom_comp]
       rfl
-
 
 variable (k Ω) in
 private def cn : Cone (Gd k Ω p) where
@@ -1545,18 +1543,12 @@ private theorem invariant_inf {Γ k : Type} [Group Γ] [Field k] {d : ℕ} {ρ :
   intro g v hv
   exact ⟨hU g v hv.1, hV g v hv.2⟩
 
-private theorem invariant_bot_alt {Γ k : Type} [Group Γ] [Field k] {d : ℕ} (ρ : Γ →* GL (Fin d) k) :
-    IsInv ρ (⊥ : Submodule k (Fin d → k)) := by
-  intro g v hv
-  rw [(Submodule.mem_bot k).1 hv, Matrix.mulVec_zero]
-  exact Submodule.zero_mem _
-
 theorem UpperTheory.Gal.Int.Geo.sSOfSum_of :
     SSOfSum := by
   intro Γ k _ _ d ρ B hB hS hT W hW
   obtain ⟨W', ⟨hinv, hdis⟩, hmax⟩ :=
     (wellFounded_gt (α := Submodule k (Fin d → k))).has_min
-      {X | IsInv ρ X ∧ Disjoint W X} ⟨⊥, invariant_bot_alt ρ, disjoint_bot_right⟩
+      {X | IsInv ρ X ∧ Disjoint W X} ⟨⊥, inv_bot ρ, disjoint_bot_right⟩
   have key : ∀ i, B i ≤ W ⊔ W' := by
     intro i
     rcases hS i (B i ⊓ (W ⊔ W')) (invariant_inf (hB i) (invariant_sup_alt hW hinv)) inf_le_left with h | h

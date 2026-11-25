@@ -34,61 +34,13 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDivLattice
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaSupportInDivLattice
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.PicardGroup
 import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.KernelLattices.TopLawQ
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
 import Formalism.LocalToGlobal.Columns.ChainInst
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.TrueKernelJetsMulDetCharactersMemCoefficientFiel, Development.AbelianVarietyTheory.Proofs.SatakeParameters.TrueKernelJetsMulDetCharactersMemCoefficientFielStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoefficientFieldConditionOfStandardKernelCompari, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ColumnSidePropertiesTrueColumns, Development.AbelianVarietyTheory.Proofs.SatakeParameters.StandardKernelDataWithStandardBaseLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.EvGLawOfFixedCol, Development.AbelianVarietyTheory.Proofs.SatakeParameters.BlockExtMemTwistedK1, Development.AbelianVarietyTheory.Proofs.SatakeParameters.PrincipalCongruenceLeTwistedK1, Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowTypeCharacterBlockSumOneEq, Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelQuotientEqTwistedTop, Development.AbelianVarietyTheory.Proofs.SatakeParameters.TypePrimeLevelLastStepSymmetricRowsEqTwistLevel, Development.AbelianVarietyTheory.Proofs.SatakeParameters.TrueChainStabilisersEqStandardBaseLevelPoints, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConditionsAtStandardKernelComparisonTrueColumns, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConditionsAtStandardKernelComparisonTrueColumnsStatement
@@ -100,8 +52,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 
-
-
 namespace GlobalTheory.Mem.Col2.TC
 
 open GlobalTheory.LvT.Built.KMap
@@ -110,7 +60,7 @@ theorem rho_jet_mem : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → T
   classical
   intro B X I h hP l Z hJ u a i hi c c' e he
   obtain ⟨hX, hPr, -⟩ := base_fields_primes_ok B X
-  obtain ⟨hLa, hE⟩ := GlobalTheory.T.trueColumn_periodLattice_vacuumSmooth I h hP l Z a u i hi
+  obtain ⟨hLa, hE⟩ := GlobalTheory.Mem.Col2.TC.laHyp_eSmooth_true I h hP l Z a u i hi
   set p := (I.stp u a i).rep c
   set p' := (I.stp u a (i + 1)).rep c'
   have hN : IsSdLat p.1.1.deco.1.N := ⟨p.1.1.deco.2.lat, p.1.1.deco.2.uni⟩
@@ -240,13 +190,10 @@ private theorem monoDeg_eq_nuDeg_of_degAt_eq_sum_nuT {B : Base} {X : PreX B.toPr
     exact Finset.sum_congr rfl fun r _ => nuT_cast_eq_nuW I l Z u hi τ r
   exact (congrArg (Nat.cast : ℕ → ℤ) hm).trans h3
 
-
-
 theorem rk_of_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (L : SizeData₂ (I.rec7 l Z)) (hT : GatTies (I.rec7 l Z)) (Gi : G.Inst (I.rec7 l Z) L) (Gl : G.LatInst (I.rec7 l Z)) (K : G.Consts) (Y : DivX (I.rec7 l Z)) (cX : ExtraC) (ex : Extra (I.rec7 l Z) L hT Gi Gl K Y cX) (t : KerEntTied ex), ColIn.JetsIn I → I.StdKer l Z t → t.RK := by
   intro B X I hok hpins l Z L hT Gi Gl K Y cX ex t hJ hS u μ hμ i hi c c' m hm
   rw [hS.O.dgen u μ, hS.O.Th u μ i c c']
   exact GlobalTheory.T.trueKernelJets_mul_detCharacters_mem_coefficientField I hok hpins l Z hJ u μ i hi c c' m fun τ => monoDeg_eq_nuDeg_of_degAt_eq_sum_nuT I l Z u hi τ m (hm τ)
-
 
 end GlobalTheory.Pdv
 
@@ -261,8 +208,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-
-
 
 namespace GlobalTheory.Pdv
 
@@ -358,8 +303,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-
-
 
 theorem GlobalTheory.Pdv.stdKer_stdRd : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (L : SizeData₂ (I.rec7 l Z)) (hT : GatTies (I.rec7 l Z)) (Gi : G.Inst (I.rec7 l Z) L) (Gl : G.LatInst (I.rec7 l Z)) (K : G.Consts) (Y : DivX (I.rec7 l Z)) (cX : ExtraC) (ex : Extra (I.rec7 l Z) L hT Gi Gl K Y cX) (t : KerEntTied ex), I.StdKer l Z t → ∃ t' : KerEntTied ex, I.StdKer l Z t' ∧ GlobalTheory.Pdv.StdRd I l Z t' ∧ t'.TopPinned := by
   intro B X I hOk hP l Z L hT Gi Gl K Y cX ex t hS
@@ -608,7 +551,7 @@ theorem det_sumE {E : Type} [Field E] {n : ℕ} (r : ℕ) (hr : r ≤ n) (j : Sp
   rw [Finset.sum_eq_single (Fin.last m)]
   · have e1 : A.submatrix (finCongr hm).symm (finCongr hm).symm (Fin.last m) (Fin.last m) = 1 := by
       show Loc.atN ((sumE rfl j 1) (Loc.eN E (r + m + 1) (r + m))) (r + m) = 1
-      rw [atN_sumE_last, if_pos rfl]
+      rw [atN_sumE_last, ite_eq_left rfl]
     rw [e1, Fin.succAbove_last, Fin.val_last, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul, one_mul]
     congr 1
     ext s t
@@ -619,7 +562,7 @@ theorem det_sumE {E : Type} [Field E] {n : ℕ} (r : ℕ) (hr : r ≤ n) (j : Sp
     have hb' : b.1 < m := Fin.val_lt_last hb
     have e1 : A.submatrix (finCongr hm).symm (finCongr hm).symm (Fin.last m) b = 0 := by
       show Loc.atN ((sumE rfl j 1) (Loc.eN E (r + m + 1) (r + b.1))) (r + m) = 0
-      rw [atN_sumE_last, if_neg (by omega)]
+      rw [atN_sumE_last, ite_eq_right (by omega)]
     rw [e1, mul_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
@@ -724,7 +667,7 @@ theorem levGTop_rPsymF_eq_twLt : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (C
   rw [levGTop_PsymF]
   show _ = colLevSym Ch R.m w
   unfold colLevSym
-  rw [if_neg (by have := R.two_le_m; omega), dite_eq_right (by omega), dite_eq_right (by omega)]
+  rw [ite_eq_right (by have := R.two_le_m; omega), dite_eq_right (by omega), dite_eq_right (by omega)]
   rfl
 
 end GlobalTheory
@@ -738,8 +681,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-
-
 
 noncomputable section
 
@@ -767,7 +708,7 @@ theorem rep_coset_empty {B : Base} {X : PreX B.toPre} (I : TC B X) (u : B.Word) 
   have key : ∀ y : Ys B.fields (B.R.N i), y = Ys.triv _ _ → ∀ s N, s ∈ y.ys N → s = ∅ := by
     rintro y rfl s N hs
     exact hs
-  exact key _ (by unfold ysAt; exact if_neg hi) _ _ ((I.stp u a i).rep c).2
+  exact key _ (by unfold ysAt; exact ite_eq_right hi) _ _ ((I.stp u a i).rep c).2
 
 theorem stabStd_eq_stabSet_triv {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (u : B.Word) (a : I.ι) (i : ℕ) (hi : i + 1 ≠ B.R.m) (c : ((I.rec7 l Z).chTw u a).cls i) :

@@ -23,7 +23,7 @@ noncomputable def IsHolCusp : {E : Type} →
             (X : Comp → ReciprocityTheory.ChartRestriction.G.FD.Data E r) →
               ((c : Comp) → ReciprocityTheory.ChartRestriction.G.FD.Wt (X c).Ψ r) →
                 FDSec X → Prop :=
-  fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {r} {Comp} X la P => ∀ (c : Comp), P c ∈ (X c).SS (la c)
+  fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {_} {Comp} X la P => ∀ (c : Comp), P c ∈ (X c).SS (la c)
 
 noncomputable def holSub : {E : Type} →
   [inst : Field E] →
@@ -34,7 +34,7 @@ noncomputable def holSub : {E : Type} →
             (X : Comp → ReciprocityTheory.ChartRestriction.G.FD.Data E r) →
               ((c : Comp) → ReciprocityTheory.ChartRestriction.G.FD.Wt (X c).Ψ r) →
                 Submodule ℂ (FDSec X) :=
-  fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {r} {Comp} X la =>
+  fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {_} {_} X la =>
     Submodule.span ℂ {P | IsHolCusp X la P}
 
 theorem holSub_mul : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]

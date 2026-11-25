@@ -378,7 +378,7 @@ theorem exists_adapted [hA : ArithBase o Ω] (hB : BaseFacts S M U₀ EE) (Q : C
       rfl
     rw [e1, Matrix.mulVec_mulVec]
     congr 1
-    exact (map_mul (algebraMap o Ω).mapMatrix _ _).symm.trans (congrArg _ ((hmul _ _).trans (if_pos rfl)))
+    exact (map_mul (algebraMap o Ω).mapMatrix _ _).symm.trans (congrArg _ ((hmul _ _).trans (ite_eq_left rfl)))
 
 end Base
 
@@ -473,7 +473,7 @@ theorem mem_G_iff [hA : ArithBase o Ω] (hB : BaseFacts S M U₀ EE) (Q : Clos �
         rw [hj] at h0
         rw [h0]
         exact Submodule.subset_span ⟨j, hj, rfl⟩
-      · rw [← hwt j, Matrix.mulVec_mulVec, hP, ← Matrix.map_mul, hmul, if_neg (Ne.symm hj), Matrix.map_zero _ (map_zero _),
+      · rw [← hwt j, Matrix.mulVec_mulVec, hP, ← Matrix.map_mul, hmul, ite_eq_right (Ne.symm hj), Matrix.map_zero _ (map_zero _),
           Matrix.zero_mulVec]
         exact Submodule.zero_mem _
 
@@ -558,7 +558,7 @@ theorem exists_matrix [hA : ArithBase o Ω] (hB : BaseFacts S M U₀ EE) (Q : Cl
       exact congrArg (· * _) (RatModel.val_gPt rfl ((a * g) i j)).symm
     refine eq_of_ne_zero (fun c => (S.proj _ c).map (y₀.comp (algebraMap o S.R))) (fun c c' h => ?_) _ hb
       (fun j => t.l.wt (t.cls j)) t.wt ((n.map (ZH.OO p).subtype) i) (wt i) ?_ (j := j) fun h0 => hij ?_
-    · rw [← Matrix.map_mul, hmul, if_neg h, Matrix.map_zero _ (map_zero _)]
+    · rw [← Matrix.map_mul, hmul, ite_eq_right h, Matrix.map_zero _ (map_zero _)]
     · rw [e2]
       funext k
       refine Eq.trans ?_ (congrArg (M.val (ZH.gPt p ≫ y)) (congrFun (hwt i) k))
@@ -1232,7 +1232,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 end -- clump:auto
 end -- clump:auto

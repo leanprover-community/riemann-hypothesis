@@ -31,17 +31,8 @@ theorem jetTan_alt {κ : Type} [DecidableEq κ] (ℓ j : κ) :
 
 private theorem aug_mk_lemma_2 {κ : Type} (r : MvPolynomial κ R) :
     (jetAug : Jet R κ (0 + 1) →ₐ[R] R) (Ideal.Quotient.mk (orig R κ ^ (0 + 1 + 1)) r) = constantCoeff r := by
-  have e : (jetAug : Jet R κ (0 + 1) →ₐ[R] R) (Ideal.Quotient.mk (orig R κ ^ (0 + 1 + 1)) r)
-      = (aeval fun _ : κ => (0 : R)) r := by
-    first | rfl
-  rw [e]
-  refine MvPolynomial.induction_on (motive := fun r => (aeval fun _ : κ => (0 : R)) r = constantCoeff r) r ?_ ?_ ?_
-  · intro a
-    simp
-  · intro p q hp hq
-    simp only [map_add (f := _), hp, hq]
-  · intro p i _
-    simp
+  change (aeval fun _ : κ => (0 : R)) r = constantCoeff r
+  simp [aeval_zero']
 
 private theorem orig_sq_lemma_3 {κ : Type} : orig R κ ^ (0 + 1 + 1) = orig R κ * orig R κ := by
   first | exact pow_two _
@@ -95,7 +86,7 @@ theorem eq_zero_of_tan {κ : Type} [Fintype κ] [DecidableEq κ] (p : Jet R κ (
     have h := ht ℓ
 
     simp only [map_sum, map_mul, AlgHom.commutes, jetTan_alt, mul_ite, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at h
+    Finset.mem_univ, ite_true] at h
     first
       | (rw [← Algebra.smul_def] at h; simpa using congrArg TrivSqZeroExt.snd h)
   simp only [ha, map_zero, zero_mul, Finset.sum_const_zero]

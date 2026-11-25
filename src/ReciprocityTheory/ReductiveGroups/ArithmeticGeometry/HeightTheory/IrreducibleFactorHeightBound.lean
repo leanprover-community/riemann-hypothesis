@@ -112,7 +112,7 @@ theorem algebraicIndependent_scaledForms {K Ω : Type} [Field K] [CharZero K] [F
     show (∑ o : Option (Fin D), _) = _
     rw [Finset.sum_eq_single none]
     · simp
-    · intro o _ ho; rw [if_neg]; exact fun h => ho (hρ h)
+    · intro o _ ho; rw [ite_eq_right]; exact fun h => ho (hρ h)
     · simp
   have hpt1 : ∀ b j, pt (some (ρ (some b), j)) = (if j = jc then -y (jc.succAbove (J b)) else 0) +
       (if j = jc.succAbove (J b) then 1 else 0) := by
@@ -120,7 +120,7 @@ theorem algebraicIndependent_scaledForms {K Ω : Type} [Field K] [CharZero K] [F
     show (∑ o : Option (Fin D), _) = _
     rw [Finset.sum_eq_single (some b)]
     · simp
-    · intro o _ ho; rw [if_neg]; exact fun h => ho (hρ h)
+    · intro o _ ho; rw [ite_eq_right]; exact fun h => ho (hρ h)
     · simp
   have hptn : pt none = 1 := rfl
   have hne : ∀ b, jc.succAbove (J b) ≠ jc := fun b => Fin.succAbove_ne jc (J b)
@@ -418,7 +418,7 @@ theorem polyIn_monomial_of_eq_zero (i : V) (t : V →₀ ℕ) (ht : t i = 0) (a 
   have hvi : v ≠ i := by
     rintro rfl
     exact (Finsupp.mem_support_iff.mp hv) ht
-  rw [if_neg hvi, map_pow]
+  rw [ite_eq_right hvi, map_pow]
 
 theorem polyIn_monomial (i : V) (u : V →₀ ℕ) (a : R) :
     asPolyInVar i (MvPolynomial.monomial u a) =
@@ -430,17 +430,17 @@ theorem polyIn_monomial (i : V) (u : V →₀ ℕ) (a : R) :
     rw [MvPolynomial.monomial_mul, one_mul]
   rw [e, map_mul, polyIn_monomial_of_eq_zero i (u.erase i) (by simp) a,
     ← MvPolynomial.X_pow_eq_monomial,
-    map_pow, asPolyInVar, MvPolynomial.aeval_X, if_pos rfl, mul_comm]
+    map_pow, asPolyInVar, MvPolynomial.aeval_X, ite_eq_left rfl, mul_comm]
 
 theorem coeffIn_eq_polyIn_coeff (i : V) (k : ℕ) (P : MvPolynomial V R) :
     ReciprocityTheory.MultiplicativeHeights.coeffIn i k P = (asPolyInVar i P).coeff k := by
   classical
   refine MvPolynomial.induction_on' P (fun u a => ?_) (fun p q hp hq => ?_)
   · rw [coeffIn_eq_sum i k _ {u} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl, polyIn_monomial, Polynomial.coeff_C_mul_X_pow]
+      MvPolynomial.coeff_monomial, ite_eq_left rfl, polyIn_monomial, Polynomial.coeff_C_mul_X_pow]
     by_cases h : u i = k
-    · rw [if_pos h, if_pos h.symm]
-    · rw [if_neg h, if_neg (Ne.symm h)]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
   · rw [coeffIn_add_alt, map_add (f := _), Polynomial.coeff_add, hp, hq]
 
 theorem coeffIn_map {S : Type*} [CommRing S] (φ : R →+* S) (hφ : Function.Injective φ) (i : V)
@@ -584,7 +584,7 @@ theorem gaussAbs_monomial {σ : Type*} (w : FinitePlace K) (s : σ →₀ ℕ) (
     · exact le_rfl
     · rw [map_zero]; exact apply_nonneg w κ
   · have := ReciprocityTheory.MultiplicativeHeights.coeff_le_gauss_abs w (MvPolynomial.monomial s κ) s
-    rwa [MvPolynomial.coeff_monomial, if_pos rfl] at this
+    rwa [MvPolynomial.coeff_monomial, ite_eq_left rfl] at this
 
 theorem sum_log_abs_eq_zero (κ : K) (hκ : κ ≠ 0) :
     ∑ᶠ w : FinitePlace K, Real.log (w κ) + ∑ φ : K →+* ℂ, Real.log ‖φ κ‖ = 0 := by

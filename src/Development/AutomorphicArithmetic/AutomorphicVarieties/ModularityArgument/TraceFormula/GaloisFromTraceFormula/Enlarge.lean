@@ -2,42 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GaloisFromTraceFormula.EvaluationAtUnitaryOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GlobalTraceComparison.TraceAsymptotics.SplitLineAlt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GaloisFromTraceFormula.DescWeakOfRunTh
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GlobalTraceComparison.CuspidalContribution.LevShrink
 
@@ -97,9 +61,9 @@ theorem UpperTheory.V.Z.Tf.GaloisFromTraceFormula.enlarge :
   let f₂ : Pl E → Ex (Fin (a + 1) × Fin (b + 1)) := fun w => if w ∈ T then e₂ w else .one
   have hfU : ∀ w, w ∉ T → U1 (f₁ w) := by
     intro w hw
-    simp only [f₁, if_neg hw]
+    simp only [f₁, ite_eq_right hw]
     exact list_prod_unitary_test hdU _
-  have hf₂ : ∀ w, w ∉ T → f₂ w = .one := fun w hw => by simp only [f₂, if_neg hw]
+  have hf₂ : ∀ w, w ∉ T → f₂ w = .one := fun w hw => by simp only [f₂, ite_eq_right hw]
   have hT'ns : ∀ w ∈ T', w ∉ T → ¬ IsSplitAt w := by
     intro w hw hwT
     rcases Finset.mem_union.1 hw with h | h
@@ -123,7 +87,7 @@ theorem UpperTheory.V.Z.Tf.GaloisFromTraceFormula.enlarge :
   · intro i
     refine Finset.prod_eq_zero (i := u i) (Finset.mem_union_right _ (Finset.mem_image_of_mem _ (Finset.mem_univ i))) ?_
     have : ev2 a b (u i) (f₁ (u i)) (C₁ i (u i)) (C₂ i (u i)) = 0 := by
-      simp only [f₁, if_neg (huT i)]
+      simp only [f₁, ite_eq_right (huT i)]
       refine listProd_ev_zero _ (hd0 i) _ ?_
       simp [L]
     rw [this, zero_mul]
@@ -133,7 +97,7 @@ theorem UpperTheory.V.Z.Tf.GaloisFromTraceFormula.enlarge :
     have hsub : T ⊆ T' := Finset.subset_union_left
     rw [← Finset.prod_subset hsub]
     · refine Finset.prod_congr rfl fun w hw => ?_
-      simp only [f₁, f₂, if_pos hw]
+      simp only [f₁, f₂, ite_eq_left hw]
     · intro w hw hwT
       rcases Finset.mem_union.1 hw with h | h
       · exact absurd h hwT
@@ -146,17 +110,17 @@ theorem UpperTheory.V.Z.Tf.GaloisFromTraceFormula.enlarge :
       intro w Q₁ Q₂ h₁ h₂
       unfold fam
       by_cases hwZ : w ∈ Z
-      · simp only [if_pos hwZ]
-      simp only [if_neg hwZ]
+      · simp only [ite_eq_left hwZ]
+      simp only [ite_eq_right hwZ]
       by_cases hwT : w ∈ T
       · have hw' : w ∈ T' := Finset.mem_union_left _ hwT
-        simp only [if_pos hwT, if_pos hw', f₁, f₂]
+        simp only [ite_eq_left hwT, ite_eq_left hw', f₁, f₂]
       by_cases hw' : w ∈ T'
-      · simp only [if_neg hwT, if_pos hw']
+      · simp only [ite_eq_right hwT, ite_eq_left hw']
         rw [hf₂ w hwT]
         exact hSt E hunr w (hT'ns w hw' hwT) a b _
           (.mul ((hfU w hwT).pow k) ((U1.one).pow k)) Q₁ Q₂ h₁ h₂
-      · simp only [if_neg hwT, if_neg hw']
+      · simp only [ite_eq_right hwT, ite_eq_right hw']
     unfold PositivityTheory.Rg.BcB.G8.geomSt2
     refine finsum_mem_congr rfl fun p hp => ?_
     congr 1

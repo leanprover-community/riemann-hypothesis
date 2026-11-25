@@ -140,7 +140,7 @@ theorem frame_inv_poly' (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
       rw [Polynomial.coeff_mul, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun x hx => ?_
       have hx' := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
-      rw [hGPc, hHPc, if_pos (by omega), if_pos (by omega), map_mul, hzz x.1 (by omega),
+      rw [hGPc, hHPc, ite_eq_left (by omega), ite_eq_left (by omega), map_mul, hzz x.1 (by omega),
         hyy k' x.2 (by omega)]
       ring
     rw [Finset.sum_congr rfl fun m _ => hk m, ← Finset.mul_sum, hcoef t, hcst]
@@ -295,7 +295,7 @@ theorem sec_unique (hinj : Function.Injective (algebraMap O LL)) (hV : Formalism
         rw [h, map_mul, hpK, apply_ite (algebraMap O (LetA O n)), map_one, map_zero]
         ring
       rw [Finset.sum_congr rfl fun k _ => this k, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
-      simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have hS3 : ∑ m, GY k₀ m * E m = -(W.π₀ * Λ ^ 2 * ∑ m, GY k₀ m * (letE a * δ m)) := by
       rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun m _ => by rw [hEm m]; ring

@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace LateralTheory.E.LSurjChartPf
 
 theorem bij_iff {A A' : Type} [CommRing A] [CommRing A'] [Algebra A A'] (S : Subalgebra A A') (r : S) :

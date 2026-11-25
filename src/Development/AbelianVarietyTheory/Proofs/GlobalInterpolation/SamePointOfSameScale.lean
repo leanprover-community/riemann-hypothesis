@@ -2,43 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -97,8 +62,8 @@ theorem off_lift {C : FC} {cD ch : ℝ} (p : Pt C) (hv : Val C cD ch p.L) (j : �
   unfold G.fill at hf
   by_cases ht : t ∈ p.D.host.TT
   · have h1 := htop τ ⟨t, ht⟩ hτe
-    rw [if_pos ⟨rfl, ht⟩, h1] at hf
-    rw [if_pos ht]
+    rw [ite_eq_left ⟨rfl, ht⟩, h1] at hf
+    rw [ite_eq_left ht]
     unfold G.bL at hf
     rw [dite_eq_left ht] at hf
     push_cast at hf ⊢
@@ -114,8 +79,8 @@ theorem off_lift {C : FC} {cD ch : ℝ} (p : Pt C) (hv : Val C cD ch p.L) (j : �
       · intro h
         obtain ⟨s, -, hst⟩ := Finset.mem_image.1 h
         exact hP.2 _ _ hst.symm)
-    rw [if_neg (fun h => ht h.2), h1] at hf
-    rw [if_neg ht]
+    rw [ite_eq_right (fun h => ht h.2), h1] at hf
+    rw [ite_eq_right ht]
     push_cast at hf ⊢
     linarith
 
@@ -145,12 +110,12 @@ theorem same_of_from : ∀ (C : FC) (cD ch : ℝ) (p p' : Pt C) (R : Ranks) (H :
     by_cases hj : j ∈ SizeData₂.lifts p.D
     · rw [off_lift p hv j hj t, off_lift p' hv' j (hl ▸ hj) t', hs, hn]
       by_cases ht : t ∈ p.D.host.TT
-      · rw [if_pos ht, if_pos (hm.1 ht)]
-      · rw [if_neg ht, if_neg (fun h => ht (hm.2 h))]
+      · rw [ite_eq_left ht, ite_eq_left (hm.1 ht)]
+      · rw [ite_eq_right ht, ite_eq_right (fun h => ht (hm.2 h))]
     · rw [hC.2 j hj t, hC'.2 j (hl ▸ hj) t', hs, hn]
       by_cases ht : t ∈ p.D.host.TT
-      · rw [if_pos ht, if_pos (hm.1 ht)]
-      · rw [if_neg ht, if_neg (fun h => ht (hm.2 h))]
+      · rw [ite_eq_left ht, ite_eq_left (hm.1 ht)]
+      · rw [ite_eq_right ht, ite_eq_right (fun h => ht (hm.2 h))]
   · funext l n' TT a' b'
     rw [p.xa.ex.kapI_def l n' TT a' b', p'.xa.ex.kapI_def l n' TT a' b', kapISet_congr p.L p'.L hRR hs hSc]
   · funext l

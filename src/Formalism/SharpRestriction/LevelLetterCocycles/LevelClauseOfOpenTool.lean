@@ -326,27 +326,24 @@ theorem kills_q (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F : La
 def boxM (d : ℕ) (b : ZMod n → ℕ) (S η : ℕ) (i : ZMod n) : ℕ :=
   if (i.val + d) % 2 = 0 then b i + S else η
 
-def boxh (d : ℕ) (b : ZMod n → ℕ) (S η : ℕ) (i : ZMod n) : ℕ :=
-  if (i.val + d) % 2 = 0 then η else b i + S
-
 theorem jumpsLet_box [NeZero n] (W : LocWach PD LL O v n) {d : ℕ} {T₁ T₂ : LocLat G Qp LL O}
     {F : LatHom T₁.L T₂.L} {b : ZMod n → ℕ} {S η m : ℕ}
     (hS : Formalism.MainNotions.RamifiedCoefficientChains.SetCS W d T₁ T₂ F b S η m) :
-    Formalism.MainNotions.LiftingTheory.JumpsLet W T₁ (boxM d b S η) (boxh d b S η) := by
+    Formalism.MainNotions.LiftingTheory.JumpsLet W T₁ (boxM d b S η) (Formalism.MainNotions.RamifiedCoefficientChains.hiW d b S η) := by
   intro i τ hτ a ha
   have h := hS.2.2.2.2.2.2.1 i τ hτ a ha
   have hη : 2 * ⌊Formalism.MainNotions.RamifiedCoefficientChains.aR PD.p (Formalism.MainNotions.RamifiedCoefficientChains.hpar n b S + η)⌋₊ + η + 1 ≤ b i :=
     Formalism.MainNotions.RamifiedCoefficientChains.floor_a_le _ _ _ _ (by have := hS.2.1; omega) (hS.2.2.2.2.2.2.2.2.1 i)
   unfold Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS at h
-  unfold boxM boxh
+  unfold boxM Formalism.MainNotions.RamifiedCoefficientChains.hiW
   by_cases hi : (i.val + d) % 2 = 0
-  · simp only [hi, if_true] at h ⊢
+  · simp only [hi, ite_true] at h ⊢
     rcases h with h | h
     · obtain ⟨h1, h2⟩ := h
       exact ⟨h1, by omega⟩
     · obtain ⟨h1, h2⟩ := h
       exact ⟨by push_cast at h1 ⊢; omega, h2⟩
-  · simp only [hi, if_false] at h ⊢
+  · simp only [hi, ite_false] at h ⊢
     rcases h with h | h
     · obtain ⟨h1, h2⟩ := h
       exact ⟨by omega, h2⟩
@@ -354,10 +351,10 @@ theorem jumpsLet_box [NeZero n] (W : LocWach PD LL O v n) {d : ℕ} {T₁ T₂ :
       exact ⟨h1, by push_cast at h2 ⊢; omega⟩
 
 theorem Hmax_box [NeZero n] (d : ℕ) (b : ZMod n → ℕ) (S η : ℕ) :
-    Formalism.MainNotions.LiftingTheory.Hmax n (boxM d b S η) (boxh d b S η) ≤ Formalism.MainNotions.RamifiedCoefficientChains.hpar n b S + η := by
+    Formalism.MainNotions.LiftingTheory.Hmax n (boxM d b S η) (Formalism.MainNotions.RamifiedCoefficientChains.hiW d b S η) ≤ Formalism.MainNotions.RamifiedCoefficientChains.hpar n b S + η := by
   refine Finset.sup_le fun k _ => ?_
   have h := Formalism.MainNotions.RamifiedCoefficientChains.add_le_hpar n b S (k : ZMod n)
-  unfold boxM boxh
+  unfold boxM Formalism.MainNotions.RamifiedCoefficientChains.hiW
   split_ifs <;> omega
 
 def QToolOpen [NeZero n] (W : LocWach PD LL O v n) : Prop :=
@@ -381,8 +378,8 @@ theorem QTool_of_open [NeZero n] (W : LocWach PD LL O v n) (hWA : Formalism.Main
   have hCA := hS.1
   have h11 := hS.2.1
   have hSur := hS.2.2.2.2.2.1
-  have hN : Formalism.MainNotions.LiftingTheory.Hmax n (boxM d b S η) (boxh d b S η) / (PD.p - 1) + 1 +
-      Formalism.MainNotions.LiftingTheory.eWA PD.p (Formalism.MainNotions.LiftingTheory.Hmax n (boxM d b S η) (boxh d b S η)) - 1 ≤
+  have hN : Formalism.MainNotions.LiftingTheory.Hmax n (boxM d b S η) (Formalism.MainNotions.RamifiedCoefficientChains.hiW d b S η) / (PD.p - 1) + 1 +
+      Formalism.MainNotions.LiftingTheory.eWA PD.p (Formalism.MainNotions.LiftingTheory.Hmax n (boxM d b S η) (Formalism.MainNotions.RamifiedCoefficientChains.hiW d b S η)) - 1 ≤
       ⌈Formalism.MainNotions.RamifiedCoefficientChains.aR PD.p (Formalism.MainNotions.RamifiedCoefficientChains.hpar n b S + η)⌉₊ :=
     (q_exp_le_floor PD.p _ _ (by omega) (Hmax_box d b S η)).trans (Nat.floor_le_ceil _)
   refine ⟨fun i => ⟨h1 i, hWA hCA T₁ T₂ F Mi hi hSur hJ i,

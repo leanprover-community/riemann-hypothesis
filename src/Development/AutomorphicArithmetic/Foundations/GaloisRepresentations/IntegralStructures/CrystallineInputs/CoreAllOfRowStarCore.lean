@@ -185,7 +185,7 @@ theorem ex_good_of_ex_csd : AutomorphicFormsFiniteGL → Ex .csd → Ex .good :=
   have hsplit : GlobalTheory.UnitaryBC.IsSplitAt w₀ := by
     by_contra h
     exact (hs.2.2.2.2 w₀ h).1 hw₀
-  obtain ⟨κ, m, hκ, -, hs'⟩ := GlobalTheory.T.exists_good_conjSelfDual_twist_split_unramified hA E l a ha π χ hs w₀ hsplit
+  obtain ⟨κ, m, hκ, -, hs'⟩ := GlobalTheory.GoodCsdTwist.exists_goodCsd_twist hA E l a ha π χ hs w₀ hsplit
   obtain ⟨r', hr'c, hr'⟩ := hcsd E Ω l ι a ha (π.twist κ) _ hs'
   have hκi : (κ⁻¹).IsAlg (-m) := fun k => by
     rw [HChar.inf_inv, Units.val_inv_eq_inv_val, hκ k, ← Finset.prod_inv_distrib]
@@ -213,7 +213,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Gal
 
 noncomputable section
 namespace GlobalTheory.RoadU
-
 
 open UpperTheory.V.Af in
 theorem frobEig_of_dec {E Ω : Type} [Field E] [NumberField E]
@@ -248,7 +247,6 @@ theorem frobEig_of_dec {E Ω : Type} [Field E] [NumberField E]
     exact hg τ⁻¹
   rw [e, ← hq, ← key, Units.val_mul, Units.val_mul, Matrix.charpoly_mul_comm, ← mul_assoc, ← Units.val_mul, inv_mul_cancel,
     Units.val_one, one_mul]
-
 
 end GlobalTheory.RoadU
 end
@@ -311,7 +309,6 @@ theorem satWD_map_mul (h : Formalism.ConjugateSelfDual.IsPlaceOver A w) (a : ℕ
   rw [← lpChar_lpOfChar, hM, satWD, satWD, GlobalTheory.NuShift.lpChar_lpTw, hU]
 
 end GlobalTheory.RoadU.PhiTwist
-
 
 end
 end -- clump:auto
@@ -430,7 +427,7 @@ theorem isSpherical_twist_of_unr {E : Type} [Field E] [NumberField E] [_root_.Nu
 theorem holds_good_crys : AutomorphicFormsFiniteGL → HeckeLAdicCharacterAbove → Holds .csd .crys → Holds .good .crys := by
   intro hF hA hC E Ω _ _ _ _ _ _ l _ ι a ha π χ hs r hr w hw
   intro P AI hT A hAw O _ _ _ Bw hj σ hσ hsph
-  obtain ⟨κ, m, hκ, hκu, hcs⟩ := GlobalTheory.T.exists_good_conjSelfDual_twist_split_unramified hF E l a ha π χ hs w hw
+  obtain ⟨κ, m, hκ, hκu, hcs⟩ := GlobalTheory.GoodCsdTwist.exists_goodCsd_twist hF E l a ha π χ hs w hw
   obtain ⟨art, hart, hch⟩ := (GlobalArtinReciprocity.heckeLAdicCharacter_and_principalIdealSt
     _root_.CompanionTheory.FamInh.globalArtin).1 E Ω
   obtain ⟨μ, ⟨hμc, hμ⟩, -⟩ := hch l ι κ m (fun k _ => hκ k)
@@ -554,10 +551,6 @@ open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual 
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.GLq
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.GalCut GlobalTheory.RoadU GlobalTheory.AboveL
 
-namespace GlobalTheory.RoadU.UnrTwist
-
-end GlobalTheory.RoadU.UnrTwist
-
 namespace GlobalTheory.RoadU
 open GlobalTheory.RoadU.UnrTwist in
 theorem _root_.UpperTheory.Gal.Int.Inp.holdsS_good_unr : UpperTheory.Gal.Int.Inp.Inp → SphericalLevelCondition .csd .unr → SphericalLevelCondition .good .unr := by
@@ -608,7 +601,7 @@ theorem _root_.UpperTheory.Gal.Int.Inp.holdsS_good_dR_of_csd : UpperTheory.Gal.I
   intro hI hC E Ω _ _ _ _ _ _ l _ ι a ha π χ hs r hr w hw B hB
   have hF := GlobalTheory.automorphicFormsFiniteGL
   have hA := hI.hk
-  obtain ⟨κ, m, hκ, hu, hcs⟩ := GlobalTheory.T.exists_good_conjSelfDual_twist_split_unramified hF E l a ha π χ hs w hw
+  obtain ⟨κ, m, hκ, hu, hcs⟩ := GlobalTheory.GoodCsdTwist.exists_goodCsd_twist hF E l a ha π χ hs w hw
   obtain ⟨art, hart, hμ⟩ := (GlobalTheory.Published.GlobalArtinReciprocity.heckeLAdicCharacter_and_principalIdealSt
     _root_.CompanionTheory.FamInh.globalArtin).1 E Ω
   have hκp : GlobalTheory.HeckeGal.IsAlgPos κ m := GlobalTheory.HeckeGal.isAlgPos_of_isAlg hκ
@@ -695,15 +688,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Gal
 
 noncomputable section
 
-namespace GlobalTheory.RoadU.PhiTwist
-
-open GlobalTheory.GalCut.IwaTwist GlobalTheory.GalCut7.IwahoriTwist UpperTheory.V UpperTheory.V.Af ValuativeRel
-
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-  {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)}
-
-end GlobalTheory.RoadU.PhiTwist
-
 namespace GlobalTheory.RoadU
 
 open GlobalTheory.GalCut.IwaTwist GlobalTheory.GalCut7.IwahoriTwist GlobalTheory.RoadU.PhiTwist UpperTheory.V UpperTheory.V.Af in
@@ -775,8 +759,8 @@ theorem _root_.UpperTheory.Gal.Int.Inp.holdsS_good_phi : UpperTheory.Gal.Int.Inp
     simpa [GlobalTheory.TripleGal.rk1, Function.comp_def] using this
   have hdR := (GlobalTheory.Published.heckeLAdicCharacterAbove_iff.1 hI.hk E Ω l P AI ⟨T⟩ ι art hart κ m μ hκ' hμc hL w A h O Bw hj).1
   have hPμ := GlobalTheory.Published.DeRhamPotSemistable.isPstAt hI.pst T Bw _ hcμ hdR
-  have hP := isPstAt_of_isSstAt P AI ⟨T⟩ Bw _ hsst
-  have hP' := isPstAt_of_isSstAt P AI ⟨T⟩ Bw _ c1s
+  have hP := GlobalTheory.GalCut.IwaAll.isPstAt_of_isSstAt P AI ⟨T⟩ Bw _ hsst
+  have hP' := GlobalTheory.GalCut.IwaAll.isPstAt_of_isSstAt P AI ⟨T⟩ Bw _ c1s
   rw [htw] at hP'
   have hWD : wdAt P ι Bw h hj ((tw r μ).comp (ReciprocityTheory.Gal.Dec (F := E) A).subtype) =
       (wdAt P ι Bw h hj (r.comp (ReciprocityTheory.Gal.Dec (F := E) A).subtype)).lpTwist ((κ.loc w).comp a') (ha'.smooth hc.1) := by
@@ -841,8 +825,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.GalCut GlobalTheory.RoadU GlobalTheory.AboveL
 
 namespace GlobalTheory.RoadU
-
-
 
 theorem _root_.UpperTheory.Gal.Int.Inp.holdsS_dR_all_of_good : UpperTheory.Gal.Int.Inp.Inp → SphericalLevelCondition .good .dR → SphericalLevelCondition .all .dR := by
   intro hI hG E Ω _ _ _ _ _ _ l _ ι a ha π χ hS r hr w _ B hB
@@ -939,9 +921,9 @@ theorem _root_.UpperTheory.Gal.Int.Inp.holdsS_all_phi : UpperTheory.Gal.Int.Inp.
   have hQ := GlobalTheory.QuadLiftBridge.quadLift hIn.ac hIn.js
   obtain ⟨Q, hQdec, hQsplit, hQram, hQgood⟩ := (_root_.GlobalTheory.GalCut.infinite_qcm_split_good hF E Ω l a π w).nonempty
   obtain ⟨P, hP⟩ := hQ E Q.K Q.two a ha π hQram
-  obtain ⟨⟨χ', hsc'⟩, -⟩ := GlobalTheory.T.polarizedPair_baseChange_polarized_same_weight hF hIn.js hIn.gk E Q.K l a ha π χ P hP hsc.all
+  obtain ⟨⟨χ', hsc'⟩, -⟩ := GlobalTheory.LiftPolar.main hF hIn.js hIn.gk E Q.K l a ha π χ P hP hsc.all
   have hsc'' : InScope .good l P χ' := ⟨hsc'.1, hsc'.2.1, hQgood P hP⟩
-  have hr' := GlobalTheory.T.weaklyAttachedGaloisRepresentation_baseChange_restrict E Q.K Ω l ι a π P hP r hr
+  have hr' := GlobalTheory.GalCut.weak_comp_res E Q.K Ω l ι a π P hP r hr
   have hdec := hQdec A h
   have hjK := GlobalTheory.RealGal.bridge_j_mem_Kw_of_dec_le E Ω Q.K l A O Bw hdec
   obtain ⟨Bw', e1, e2, e3⟩ := UpperTheory.V.Af.Cq.exBridge E Q.K Ω l A O Bw hjK
@@ -988,7 +970,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Gal
 
 noncomputable section
 namespace GlobalTheory.RoadU
-
 
 open UpperTheory.V.Af in
 theorem _root_.UpperTheory.Gal.Int.Inp.ex_all_of_good : UpperTheory.Gal.Int.Inp.Inp → Ex .good → SphericalLevelCondition .good .unr → Ex .all := by

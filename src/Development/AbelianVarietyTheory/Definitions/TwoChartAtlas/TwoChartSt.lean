@@ -236,9 +236,6 @@ def GermExSt : Prop := ∀ (R : Type) [CommRing R] (G : Over (Spec (CommRingCat.
 section Basic₂
 open ReciprocityTheory.ChartRestriction.G.TB.WickVanishing
 
-theorem toJet_one {κ : Type} [Finite κ] (m : ℕ) : toJet m (1 : MvPowerSeries κ R) = 1 := by
-  simp [toJet, truncTotal_one (Nat.succ_ne_zero m)]
-
 theorem toJet_X {κ : Type} [Finite κ] (m : ℕ) (j : κ) : toJet m (X j : MvPowerSeries κ R) = zR m j := by
   classical
   unfold toJet

@@ -92,7 +92,7 @@ theorem gcL_bdd (j : Fin G.T.t → ℕ) (jp : ℕ) (D : ℤ) :
       simpa using this
     have h1 := congrArg (fun u => bePhi p (r := r) G j jp u (y i)) h0
     simp only [bePhi_sum_left, bePhi_smul_left, hxy] at h1
-    rw [Finset.sum_eq_single i (fun k _ hk => by rw [if_neg hk, mul_zero]) (fun h => absurd hi h), if_pos rfl] at h1
+    rw [Finset.sum_eq_single i (fun k _ hk => by rw [ite_eq_right hk, mul_zero]) (fun h => absurd hi h), ite_eq_left rfl] at h1
     have h2 : bePhi p (r := r) G j jp 0 (y i) = 0 := by
       have := bePhi_smul_left p (r := r) G j jp 0 0 (y i)
       simpa using this
@@ -114,7 +114,7 @@ theorem xiMons_spec (n : ℕ) (m : Formalism.GM.M.BVar N r G.T.t →₀ ℕ) (hm
     rw [Finsupp.finsetSum_apply, Finset.sum_eq_single c]
     · simp
     · intro d _ hd
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       exact hd (xiVar_inj (r := r) G h)
     · intro h; exact absurd (Finset.mem_univ c) h
@@ -124,7 +124,7 @@ theorem xiMons_spec (n : ℕ) (m : Formalism.GM.M.BVar N r G.T.t →₀ ℕ) (hm
     apply Finsupp.mem_support_iff.1 hv
     rw [Finsupp.finsetSum_apply]
     refine Finset.sum_eq_zero fun d _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     exact hne d h.symm
   · have : (∑ d : Fin r, Finsupp.single (Formalism.GM.M.xiVar N r G.T.t d) (e d)).sum (fun _ k => k) = ∑ c, e c := by
@@ -148,9 +148,9 @@ theorem card_xiMons_eq (n : ℕ) : (xiMons (r := r) G n).card = dXi r n := by
     funext c
     have := congrArg (fun f : Formalism.GM.M.BVar N r G.T.t →₀ ℕ => f (Formalism.GM.M.xiVar N r G.T.t c)) h
     simp only [Finsupp.finsetSum_apply] at this
-    rwa [Finset.sum_eq_single c (fun d _ hd => by rw [Finsupp.single_apply, if_neg (fun h => hd (xiVar_inj (r := r) G h))])
+    rwa [Finset.sum_eq_single c (fun d _ hd => by rw [Finsupp.single_apply, ite_eq_right (fun h => hd (xiVar_inj (r := r) G h))])
       (fun h => absurd (Finset.mem_univ c) h), Finset.sum_eq_single c
-      (fun d _ hd => by rw [Finsupp.single_apply, if_neg (fun h => hd (xiVar_inj (r := r) G h))])
+      (fun d _ hd => by rw [Finsupp.single_apply, ite_eq_right (fun h => hd (xiVar_inj (r := r) G h))])
       (fun h => absurd (Finset.mem_univ c) h), Finsupp.single_eq_same, Finsupp.single_eq_same] at this
 
 end Level

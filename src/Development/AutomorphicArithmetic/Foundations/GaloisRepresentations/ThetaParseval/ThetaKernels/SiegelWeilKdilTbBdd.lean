@@ -79,12 +79,10 @@ theorem continuous_mh_k : Continuous (mh_k d) := by
   · exact (IsModuleTopology.continuous_of_linearMap ((bA_k d).coord p.2.2)).comp
       ((continuous_id.matrix_elem p.1 q.1).mul (continuous_const (y := bA_k d q.2.2)))
   · exact continuous_const
-private theorem mulVec_ext {A B : Matrix (Ix_k d) (Ix_k d) (AF F)} (h : ∀ c, A *ᵥ c = B *ᵥ c) : A = B := by
-  ext p q; simpa [Matrix.mulVec_single_one] using congrFun (h (Pi.single q 1)) p
 private def mhU : GL (Fin d.m) (AE F E) →* GL (Ix_k d) (AF F) :=
-  Units.map ⟨⟨mh_k d, mulVec_ext d fun c => by
+  Units.map ⟨⟨mh_k d, Matrix.ext_iff_mulVec.2 fun c => by
       rw [← crd_cmb_k d c, ← crd_mul_k, Matrix.one_mul, crd_cmb_k, Matrix.one_mulVec]⟩,
-    fun _ _ => mulVec_ext d fun c => by
+    fun _ _ => Matrix.ext_iff_mulVec.2 fun c => by
       rw [← crd_cmb_k d c, ← crd_mul_k, Matrix.mul_assoc, crd_mul_k, crd_mul_k, crd_cmb_k, Matrix.mulVec_mulVec]⟩
 private def xi : d.ME ≃ (Ix_k d → F) :=
   ⟨fun X p => d.bs.repr (X p.1 p.2.1) p.2.2, fun c i j => ∑ k, c (i, j, k) • d.bs k,
@@ -93,9 +91,7 @@ private def xi : d.ME ≃ (Ix_k d → F) :=
 theorem cpt_k (hS : GlobalTheory.Published.SiegelSetUnitary) : GlobalTheory.ThK.Dbl.Cpt σ d.A.J := by
   have hC := cptAll_of_k PositivityTheory.ThKEst.grpTop_of _root_.PositivityTheory.ThKEst.epsOf_of_k
     (PositivityTheory.ThKEst.siegelAll_of hS) PositivityTheory.ThKEst.finVolU PositivityTheory.ThKF.unimodularity_holds
-  rcases d.ok.sign with ⟨h1, -⟩ | ⟨h1, -⟩
-  · exact hC F E σ d.B d.m d.A d.r d.s d.ok.good (Or.inl h1) d.ok.aniso
-  · exact hC F E σ d.B d.m d.A d.r d.s d.ok.good (Or.inr h1) d.ok.aniso
+  exact hC F E σ d.B d.m d.A d.r d.s d.ok.good (d.ok.sign.imp And.left And.left) d.ok.aniso
 end Tb
 theorem thetaBdd_of_k (hS : GlobalTheory.Published.SiegelSetUnitary) : ThetaBdd_k := by
   intro F E _ _ _ _ _ σ d Fn hF; obtain ⟨Ω, hΩ, cov⟩ := (Tb.cpt_k d hS).cov
@@ -480,7 +476,7 @@ private theorem rho_zero_line (Ψ : d.Fn) (u : M2 d) : d.dd.rho d.B.ψ (realAd F
 private theorem rho_D {Φ : d.Fn} (hΦ : Φ ∈ d.sch) {u : M2 d} (hu : At (evI F) u) (v : M2 d) :
     d.dd.rho d.B.ψ v (Box.D (d.dd.e u) Φ) =
       Box.D (d.dd.e u) (d.dd.rho d.B.ψ v Φ) + (cI * (trI (sp d v u) : ℂ)) • d.dd.rho d.B.ψ v Φ := by
-  have hw : At (evI F) (d.dd.e u) := fun s hs => by rw [← map_smul, hu s hs, map_zero]
+  have hw := Box.at_e d.dd.e hu
   have hΨ : d.dd.rho d.B.ψ v Φ ∈ d.sch := GlobalTheory.HeisSchA.schr_mem_schA _ d.ok.good.std _ Φ hΦ
   funext z
   have h1 : HasDerivAt (fun t : ℝ => d.dd.rho d.B.ψ v (d.dd.rho d.B.ψ (realAd F t • u) Φ) z)
@@ -514,10 +510,9 @@ private theorem vec_eq_zero {y : d.κ → AF F} (hy : At (evI F) y) (h0 : Box.nf
     (Dense.snd_eq_zero hy i)
 private theorem eq_zero_of_nf {u : M2 d} (hu : At (evI F) u) (h1 : Box.nf (d.dd.e u).1 = 0)
     (h2 : Box.nf (d.dd.e u).2 = 0) : u = 0 := by
-  have he : At (evI F) (d.dd.e u) := fun s hs => by rw [← map_smul, hu s hs, map_zero]
   rw [← d.dd.e.map_eq_zero_iff]
-  exact Prod.ext (vec_eq_zero (fun c hc => congrArg Prod.fst (he c hc)) h1)
-    (vec_eq_zero (fun c hc => congrArg Prod.snd (he c hc)) h2)
+  exact Prod.ext (vec_eq_zero (fun c hc => congrArg Prod.fst (Box.at_e d.dd.e hu c hc)) h1)
+    (vec_eq_zero (fun c hc => congrArg Prod.snd (Box.at_e d.dd.e hu c hc)) h2)
 private theorem exists_at' (ξ : d.κ → mixedEmbedding.mixedSpace F) :
     ∃ v : M2 d, At (evI F) v ∧ d.dd.e v = (Dense.pt ξ 0, 0) :=
   ⟨d.dd.e.symm (Dense.pt ξ 0, 0), fun s hs => by
@@ -634,12 +629,11 @@ private theorem hasDerivAt_c2 {Φ : d.Fn} (hΦ : Φ ∈ d.sch) {Z : M1 d} (hZ : 
     simp only [td_realAd_zero, zero_mul, map_zero_eq_one, one_mul, zero_add]
     rw [map_add (f := _), Box.D_add_left, T_add, e2, trI, evI_neg', map_neg]; simp only [mZ, trI]; push_cast; ring
   push Not at hB
-  have he1 : At (evI F) (d.dd.e (Z * (c2 d)ᵀ)) := fun s hs => by rw [← map_smul, hu s hs, map_zero]
+  have he1 := Box.at_e d.dd.e hu
   have hsp (v) (hv : At (evI F) v) : sp d (Z * (c2 d)ᵀ) v = 0 := by
     obtain ⟨Z₁, Z₂, h1, -, rfl⟩ := split_arch hv
-    have he2 : At (evI F) (d.dd.e (Z₁ * (dg d)ᵀ)) := fun s hs => by rw [← map_smul, at_mul' h1 _ s hs, map_zero]
     rw [sp_add_r, sp_c2_iso, add_zero, sp_eq, vec_eq_zero (fun c hc => congrArg Prod.fst (he1 c hc)) ha,
-      vec_eq_zero (fun c hc => congrArg Prod.fst (he2 c hc)) (hB Z₁ h1)]; simp
+      vec_eq_zero (fun c hc => congrArg Prod.fst (Box.at_e d.dd.e (at_mul' h1 _) c hc)) (hB Z₁ h1)]; simp
   have h2 : Box.nf (d.dd.e (Z * (c2 d)ᵀ)).2 = 0 := funext fun j => by
     obtain ⟨v, hv, ev⟩ := exists_at' (d := d) (Pi.single j 1); have hzv := hsp v hv
     rw [sp_eq, ev, vec_eq_zero (fun c hc => congrArg Prod.fst (he1 c hc)) ha] at hzv
@@ -653,17 +647,20 @@ private theorem hasDerivAt_c2 {Φ : d.Fn} (hΦ : Φ ∈ d.sch) {Z : M1 d} (hZ : 
   have hZ0 : Z = 0 := c2_mul_inj (eq_zero_of_nf hu ha h2); subst hZ0
   simp only [smul_zero, add_zero, Matrix.zero_mul, map_zero, D_zero (d := d), d.T_zero, Pi.zero_apply]
   exact hasDerivAt_const _ _
+private theorem cA_map {p q : Type} (w : InfinitePlace F) (x : Matrix p q (AE F E)) :
+    (x.map (cA σ)).map (piInf (d.B.emb w)) = (x.map (piInf (d.B.emb w))).map star :=
+  Matrix.ext fun _ _ => Dense.piInf_cA d.ok.good.cm _ _
+private theorem dbl_map (w : InfinitePlace F) : (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) = dbl (d.Y.J.map (d.B.emb w).1) := by
+  rw [Krd.dbl_incM_k, map_incM']; ext (_ | _) (_ | _) <;> simp [dbl, Matrix.fromBlocks]
+private theorem b_inv_mul (w : InfinitePlace F) : (d.b⁻¹).1.map (d.B.emb w).1 * d.b.1.map (d.B.emb w).1 = 1 := by
+  rw [← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
 theorem trace_sp (x y : M2 d) : trI (sp d x y) = ∑ w, -(2 * (Matrix.trace
     ((x.map (piInf (d.B.emb w)))ᵀ * d.A.J.map (d.B.emb w).1 * (y.map (piInf (d.B.emb w))).map star *
       (dbl (d.Y.J.map (d.B.emb w).1))ᵀ)).re) := by
   have h := d.ok.good.cm; rw [trI, Dense.trace_evI h.1]; refine sum_congr rfl fun w _ => ?_
-  have e : (y.map (cA σ)).map (piInf (d.B.emb w)) = (y.map (piInf (d.B.emb w))).map star :=
-    Matrix.ext fun _ _ => Dense.piInf_cA h _ _
-  have eJ : (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) = dbl (d.Y.J.map (d.B.emb w).1) := by
-    rw [Krd.dbl_incM_k, td_map_incM]; ext (_ | _) (_ | _) <;> simp [dbl]
   rw [sp, symp, Dense.ext_trace h (d.B.emb w), Dense.piInf_cA h, neg_one_mul, map_neg, Dense.hTens_tr,
     AddMonoidHom.map_trace (piInf (d.B.emb w)), Matrix.map_mul, Matrix.map_mul, Matrix.map_mul,
-    Matrix.transpose_map, Matrix.transpose_map, td_map_incM, eJ, e]; simp; ring
+    Matrix.transpose_map, Matrix.transpose_map, td_map_incM, dbl_map, cA_map]; simp; ring
 def kfS (d : SD_k σ) : Submodule ℂ d.Fn where
   carrier := {Φ | ∃ N : Submodule ℂ d.Fn, FiniteDimensional ℂ N ∧ N ≤ d.sch ∧ Φ ∈ N ∧ ∀ k ∈ d.K, ∀ Ψ ∈ N, d.om k Ψ ∈ N}
   zero_mem' := ⟨⊥, inferInstance, bot_le, zero_mem _,
@@ -696,20 +693,14 @@ theorem commute_thB (R : RD_k d) {k : d.G} (hk : k ∈ d.K) (w : InfinitePlace F
     Commute ((mat2 k).map (piInf (d.B.emb w))) (thB d R.ε w) := by
   have e1 : d.b.1.map (d.B.emb w).1 * (d.b⁻¹).1.map (d.B.emb w).1 = 1 := by
     rw [← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
-  have e2 : (d.b⁻¹).1.map (d.B.emb w).1 * d.b.1.map (d.B.emb w).1 = 1 := by
-    rw [← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
   have hMk : (inFrame d.b k).map (piInf (d.B.emb w)) =
       (d.b⁻¹).1.map (d.B.emb w).1 * (mat2 k).map (piInf (d.B.emb w)) * d.b.1.map (d.B.emb w).1 := by
     rw [inFrame, Matrix.map_mul, Matrix.map_mul, map_incM', map_incM']
-  have hDw : (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) = dbl (d.Y.J.map (d.B.emb w).1) := by
-    rw [Krd.dbl_incM_k, map_incM']; ext (_ | _) (_ | _) <;> simp [dbl, Matrix.fromBlocks]
   have hk2 : ((mat2 k).map (piInf (d.B.emb w)))ᵀ * (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) *
       ((mat2 k).map (piInf (d.B.emb w))).map star = (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) := by
-    have cstA (x : d.Mn2) : (x.map (cA σ)).map (piInf (d.B.emb w)) = (x.map (piInf (d.B.emb w))).map star :=
-      Matrix.ext fun i j => Dense.piInf_cA d.ok.good.cm (d.B.emb w) (x i j)
-    simpa only [mat2, Matrix.map_mul, Matrix.transpose_map, cstA] using
+    simpa only [mat2, Matrix.map_mul, Matrix.transpose_map, cA_map] using
       congrArg (fun x => x.map (piInf (d.B.emb w))) k.2
-  exact commute_of_unitary_conjugate e1 e2 hMk (((d.ok.stdK k).1 hk).1 w) (hDw.symm ▸ frame_form R w) hk2
+  exact commute_of_unitary_conjugate e1 (b_inv_mul w) hMk (((d.ok.stdK k).1 hk).1 w) ((dbl_map (d := d) w).symm ▸ frame_form R w) hk2
 def vacF (R : RD_k d) (g : FinFn d) (X : M1 d) : ℂ :=
   (∏ w, gs (2 * Real.pi) (R.loc w X)) * g fun k => (d.crd X k).2
 private def qL (R : RD_k d) (X Z : M1 d) (t : ℝ) : ℝ :=
@@ -777,10 +768,8 @@ theorem vac_rel (g : FinFn d) {Φ : d.Fn} (hΦ : Φ ∈ d.sch) (hT : d.T Φ = va
     d.T (Box.D (d.dd.e u') Φ) X = I * d.T (Box.D (d.dd.e u) Φ) X := by
   rw [T_D_vac R g hΦ hT hu' X, T_D_vac R g hΦ hT hu X, ← mul_assoc, mul_sum]
   congr 1; refine sum_congr rfl fun w _ => ?_
-  have e2 : (d.b⁻¹).1.map (d.B.emb w).1 * d.b.1.map (d.B.emb w).1 = 1 := by
-    rw [← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
   have hfi : (R.fr w).1 * ((R.fr w)⁻¹).1 = 1 := by rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
-  exact Sw_rel e2 hfi (frame_form R w) (R.hfr w) R.hζ (d.cw w X) (d.cw w u) (d.cw w u') (hr w)
+  exact Sw_rel (b_inv_mul w) hfi (frame_form R w) (R.hfr w) R.hζ (d.cw w X) (d.cw w u) (d.cw w u') (hr w)
 end
 private theorem om_D (k : d.G) {u : M2 d} (hu : At (evI F) u) {Φ : d.Fn} (hΦ : Φ ∈ d.sch) :
     d.om k (Box.D (d.dd.e u) Φ) = Box.D (d.dd.e (actB (cA σ) k u)) (d.om k Φ) := by

@@ -233,7 +233,3 @@ theorem radRedSurj_of (hL : LocSec) (hR : RepSmooth) : NF.RadRedSurj := by
     · rw [Set.indicator_of_notMem hq, hφ0 _ hq]
 
 end Formalism.FourierDecayAlt.P.NFRadRedS
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

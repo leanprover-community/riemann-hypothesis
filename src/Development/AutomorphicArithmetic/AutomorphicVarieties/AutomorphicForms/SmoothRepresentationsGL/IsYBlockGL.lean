@@ -18,8 +18,8 @@ private theorem isY_blockGL {K : Type} [Field K] {n k : ℕ} (hk : k < n) (γ : 
   intro i hi
   have hik : ¬ i.val < k := by omega
   refine ⟨?_, fun j hj => ?_⟩
-  · rw [coe_blockGL, blockMat_apply, dite_eq_right hik, if_pos rfl]
-  · rw [coe_blockGL, blockMat_apply, dite_eq_right hik, if_neg hj.ne']
+  · rw [coe_blockGL, blockMat_apply, dite_eq_right hik, ite_eq_left rfl]
+  · rw [coe_blockGL, blockMat_apply, dite_eq_right hik, ite_eq_right hj.ne']
 
 
 open GroundTheory.Automorphic.FourierWhittaker in

@@ -514,7 +514,6 @@ theorem retract_localises : ∀ (T O A₁ EA₁ : Type) [CommRing T] [CommRing O
   have hunit : ∀ y : QA₁.primeCompl, IsUnit (ρ' y) := by
     intro y
     by_contra hy
-    have h1 : ρ' y ∈ maximalIdeal A₁ := (mem_maximalIdeal _).2 hy
     have h2 : algebraMap T O (i₁ (ρ' y)) ∈ maximalIdeal O := by
       rw [mem_maximalIdeal, mem_nonunits_iff]
       intro hu
@@ -819,10 +818,7 @@ theorem exists_eq_of_aeval_eq_zero {T K : Type} [CommRing T] [IsDomain T] [Field
 
 theorem isIntegrallyClosed_of_absIntClosed (T : Type) [CommRing T] [IsDomain T]
     (hT : GlobalTheory.LocAcyc.AbsIntClosed T) : IsIntegrallyClosed T := by
-  rw [isIntegrallyClosed_iff (FractionRing T)]
-  intro x hx
-  obtain ⟨f, hf, h⟩ := hx
-  exact exists_eq_of_aeval_eq_zero hT _ f hf rfl x (by rw [aeval_def]; exact h)
+  exact GlobalTheory.VertUnitsNoeth.isIntegrallyClosed_of_absIntClosed' T hT
 
 end GlobalTheory.LocAcycEmbed
 

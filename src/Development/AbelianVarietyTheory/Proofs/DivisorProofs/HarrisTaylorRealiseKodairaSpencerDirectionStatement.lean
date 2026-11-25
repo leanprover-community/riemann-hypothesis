@@ -15,56 +15,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorLieMultiplicitySquareZeroLift
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorLiftLieOfHodgeSummandLieStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorPrimeToPLevelLiftSquareZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SmoothOfRelativeDimensionTensor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeFirstDeRhamStructure
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubsingletonOfFibres
-import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
 import Mathlib.Algebra.Azumaya.Basic
 
@@ -186,8 +141,6 @@ theorem pairing_eps_eq_zero {k : Type} [Field k] {M : Type*} [AddCommGroup M] [M
   · simp [TrivSqZeroExt.algebraMap_eq_inl]
     linear_combination hbc
 
-
-
 theorem graphFil_isotropic : ∀ (k : Type) [Field k] (A₀ : Over (Sp k)) [GrpObj A₀], IsAbelianScheme A₀ →
     ∀ (P : LB (A₀ ⊗ A₀).left), P.IsLB → ∀ (φ : LinearMap.BilinForm k (HdR A₀)),
     GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) A₀ A₀ P φ → ∀ f : HdR A₀ →ₗ[k] HdR A₀,
@@ -255,8 +208,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 
-theorem _root_.GlobalTheory.T.dualNumberGraphFiltration_isotropic_of_skew : ∀ (k : Type) [Field k] (A₀ : Over (Sp k)) [GrpObj A₀], IsAbelianScheme A₀ → ∀ (P : LB (A₀ ⊗ A₀).left), P.IsLB → ∀ (φ : LinearMap.BilinForm k (HdR A₀)), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) A₀ A₀ P φ → ∀ f : HdR A₀ →ₗ[k] HdR A₀, (∀ x ∈ Fil A₀, ∀ y ∈ Fil A₀, φ (f x) y + φ x (f y) = 0) → ∀ φ' : Crys (epsDP k) (GlobalTheory.DeRham.epsRed k) A₀ →ₗ[DualNumber k] Crys (epsDP k) (GlobalTheory.DeRham.epsRed k) A₀ →ₗ[DualNumber k] DualNumber k, GlobalTheory.AbDual.IsCorrForm (epsDP k) (GlobalTheory.DeRham.epsRed k) A₀ A₀ P φ' → ∀ d ∈ GlobalTheory.HTRealise.graphFil A₀ f, ∀ d' ∈ GlobalTheory.HTRealise.graphFil A₀ f, φ' d d' = 0 := by
-  first | (exact @GlobalTheory.HTRealise.graphFil_isotropic)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualNumberGraphFiltrationIsotropicOfSkewStatement =====
@@ -377,10 +328,6 @@ theorem exists_idem (β : R →+* k) (hx : ∀ i j : Fin D.a, i ≠ j → ∃ x,
   · refine Finset.prod_eq_zero (Finset.mem_erase.2 ⟨h, Finset.mem_univ m⟩) ?_
     rw [hq, sub_self, mul_zero]
 
-theorem chars_ne (β : R →+* k) : ∀ i j : Fin D.a, i ≠ j → ∃ x, β (b.t i x) ≠ β (b.t j x) := by
-  intros
-  apply _root_.GlobalTheory.HTLieRho.exists_sep <;> assumption
-
 end GlobalTheory.HTRealise.LieCond
 
 namespace GlobalTheory.HTRealise.LieCond
@@ -454,8 +401,6 @@ end GlobalTheory.HTRealise.LieCond
 
 namespace GlobalTheory.HTRealise
 
-
-
 open LieCond in
 theorem eigen_decomp_graphFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R]
     (b : GlobalTheory.UPel.HT.Base D R) (N : ℕ) (k : Type) [Field k] (β : R →+* k) (s : Sp k ⟶ Sp R)
@@ -482,7 +427,7 @@ theorem eigen_decomp_graphFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.U
   obtain ⟨hx, hy⟩ := (mem_graphFil_iff_coords (f := f) hcoord).1 hd
   change Ω u - ρ • u ∈ Fil o₀.A at hx
   change Ω v - ρ • v - f (Ω u - ρ • u) ∈ Fil o₀.A at hy
-  obtain ⟨e, he⟩ := exists_idem (b := b) β (chars_ne β)
+  obtain ⟨e, he⟩ := exists_idem (b := b) β (fun _ _ hij => b.exists_char_separation β hij)
   obtain ⟨u', hu'def⟩ : ∃ u', u' = δ⁻¹ • (Ω u - ρ' • u) := ⟨_, rfl⟩
   obtain ⟨v', hv'def⟩ : ∃ v', v' = δ⁻¹ • (Ω v - ρ' • v) := ⟨_, rfl⟩
   have hrho : ∀ z, δ⁻¹ • (Ω z - ρ' • z) ∈ GlobalTheory.HTCount.rhoPart o₀ β := fun z =>
@@ -625,8 +570,6 @@ theorem crysRed_pull_constMor_pull (A₀ : Over (Sp k)) [GrpObj A₀] (c : primD
     (homMor (dp0 k) (𝟙 _) (𝟙 A₀)) (fun _ ↦ rfl) (by simp) c]
   exact Subtype.ext (IsMor.pullCohomologyOne_id _ c.1)
 
-
-
 theorem mem_Fil_iff_exists_graphFil_corr (A₀ : Over (Sp k)) [GrpObj A₀] (hA : IsAbelianScheme A₀)
     (f : HdR A₀ →ₗ[k] HdR A₀) (y : HdR A₀) :
     y ∈ Fil A₀ ↔ ∃ d ∈ graphFil A₀ f,
@@ -664,8 +607,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 
-theorem _root_.GlobalTheory.T.mem_hodgeFiltration_iff_dualNumberGraph_reduction : ∀ (k : Type) [Field k] (A₀ : Over (Sp k)) [GrpObj A₀], IsAbelianScheme A₀ → ∀ (f : HdR A₀ →ₗ[k] HdR A₀) (y : HdR A₀), y ∈ Fil A₀ ↔ ∃ d ∈ GlobalTheory.HTRealise.graphFil A₀ f, (GlobalTheory.Published.GrothendieckMessing.crysRedMor (epsDP k) rfl A₀).Corr d y := by
-  first | (exact @GlobalTheory.HTRealise.mem_Fil_iff_exists_graphFil_corr)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHodgeFiltrationIffDualNumberGraphReductionStatement =====
@@ -779,10 +720,10 @@ theorem realise_core (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p)
     fun r => ⟨TrivSqZeroExt.inl r, rfl⟩
   have hA₀ := o₀.ab
   have hCompl := @_root_.GlobalTheory.HTRealise.graphFil_exists_isCompl k _ o₀.A o₀.grp hA₀ f
-  have hReduction := @GlobalTheory.T.mem_hodgeFiltration_iff_dualNumberGraph_reduction k _ o₀.A o₀.grp hA₀ f
+  have hReduction := @GlobalTheory.HTRealise.mem_Fil_iff_exists_graphFil_corr k _ o₀.A o₀.grp hA₀ f
   have hStable (c : D.O) := @_root_.GlobalTheory.HTRealise.push_mem_graphFil
     k _ o₀.A o₀.grp (o₀.act.act c) (o₀.act.hom c) f (hf.1 c)
-  have hIsotropic := @GlobalTheory.T.dualNumberGraphFiltration_isotropic_of_skew
+  have hIsotropic := @GlobalTheory.HTRealise.graphFil_isotropic
     k _ o₀.A o₀.grp hA₀ o₀.P o₀.isLB φ hφ f hf.2.2
   have hLie := _root_.GlobalTheory.HTRealise.eigen_decomp_graphFil p D R b N k β _ o₀ f hZ hf.2.1
   obtain ⟨o', m', hE⟩ := lift_with_filtration p D R b N hN (DualNumber k) k

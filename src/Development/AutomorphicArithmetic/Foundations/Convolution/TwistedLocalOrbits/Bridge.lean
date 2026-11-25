@@ -71,11 +71,9 @@ private theorem closedEmb_incl (n : ℕ) :
 
 private theorem ram_one (h : IsUnramifiedLoc k E) : (_root_.Ideal.ramificationIdx (_root_.IsLocalRing.maximalIdeal (_root_.Valuation.integer (_root_.ValuativeRel.valuation E))) (_root_.Valuation.integer (_root_.ValuativeRel.valuation k))) = 1 := by
   obtain ⟨π, hπ, hmax⟩ := h
-  have key : ∀ x : 𝒪[E], x ∈ IsLocalRing.maximalIdeal 𝒪[E] ↔ valuation E (x : E) < 1 := by
-    intro x
-    rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
-      (Valuation.integer.integers (valuation E)).isUnit_iff_valuation_eq_one]
-    exact ⟨fun h => lt_of_le_of_ne x.2 h, fun h => h.ne⟩
+  have key : ∀ x : 𝒪[E], x ∈ IsLocalRing.maximalIdeal 𝒪[E] ↔ valuation E (x : E) < 1 := fun x =>
+    (IsLocalRing.mem_maximalIdeal x).trans
+      (mem_nonunits_iff.trans Valuation.Integer.not_isUnit_iff_valuation_lt_one)
   have hπk : π ∈ 𝒪[k] := (GroundTheory.LocalField.algebraMap_mem_integer_iff k E π).1 hπ.le
   have hm : (⟨π, hπk⟩ : 𝒪[k]) ∈ IsLocalRing.maximalIdeal 𝒪[k] := by
     intro hu

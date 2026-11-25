@@ -112,7 +112,7 @@ theorem segDual_precedes_iff (Δ Δ' : Segment k) : (segDual Δ).Precedes (segDu
 end
 
 theorem segDual_precedes : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ Δ' : Segment k),
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ Δ' : Segment k),
     (segDual Δ).Precedes (segDual Δ') ↔ Δ'.Precedes Δ := by
   intro k _ _ _ _ hA Δ Δ'
   have hadm (x : IrrGL (k := k)) : IsAdmissible x.rep :=

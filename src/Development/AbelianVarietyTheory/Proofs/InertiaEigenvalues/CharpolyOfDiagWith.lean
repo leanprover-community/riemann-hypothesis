@@ -257,8 +257,7 @@ theorem mem_NΔl_iff (hr : ∀ a, (∃ b, J b = a) ↔ ∀ δ ∈ W.DelF, W.γ�
     exact ⟨c, by rw [hxa, th_apply]; simp only [hc]⟩
   · rintro ⟨c, rfl⟩
     refine ⟨⟨th_mem_N W T J b i c, fun δ hδ => ?_⟩, th W T J b i c, th_mem_N W T J b i c, ?_⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [th_apply, map_sum]
+    · rw [th_apply, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [γD_smulA, γA_single, (hb _).2 δ hδ, (hr _).1 ⟨_, rfl⟩ δ hδ]
     · change (letE i : LetA O n) • th W T J b i c = _
@@ -430,7 +429,7 @@ theorem exists_eta [CharZero LL] {g : W.Gam} (hJ : QFrame W g J) (ζ : LL) (hζ 
     have h1 := congrArg (coeff 0) hE1
     have h2 := congrArg (coeff 1) hE'
     rw [coeff_derivative, coeff_zero_eq_constantCoeff, hE0] at h1
-    rw [coeff_succ_X_mul, coeff_zero_eq_constantCoeff, map_sub, coeff_one, if_neg one_ne_zero] at h2
+    rw [coeff_succ_X_mul, coeff_zero_eq_constantCoeff, map_sub, coeff_one, ite_eq_right one_ne_zero] at h2
     rw [isUnit_iff_constantCoeff, ← h2]
     simp only [Nat.cast_zero, zero_add, mul_one] at h1
     simp [h1]
@@ -477,7 +476,7 @@ theorem diagQuot [IsDomain O] [CharZero LL] (hinj : Function.Injective (algebraM
   have hχ : (1 + (PD.p : LL)) ≠ 0 := by exact_mod_cast (by omega : 1 + PD.p ≠ 0)
   have hX : X - ((PD.p : ℕ) : O⟦X⟧) ≠ 0 := fun h => by
     have := congrArg (coeff 1) h
-    rw [← map_natCast (C : O →+* O⟦X⟧), map_sub, coeff_one_X, coeff_C, if_neg one_ne_zero, sub_zero,
+    rw [← map_natCast (C : O →+* O⟦X⟧), map_sub, coeff_one_X, coeff_C, ite_eq_right one_ne_zero, sub_zero,
       map_zero] at this
     exact one_ne_zero this
   refine ⟨fun x hx => ?_, Module.Free.of_equiv eq.symm, Module.Finite.equiv eq.symm, ?_, ?_, fun nb hnb => ?_⟩

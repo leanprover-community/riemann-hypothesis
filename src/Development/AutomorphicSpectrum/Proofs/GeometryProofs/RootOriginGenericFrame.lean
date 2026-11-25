@@ -81,7 +81,7 @@ def push : TanM x₁ t₁.G →ₗ[R] TanM x₂ t₂.G where
   map_add' u v := tv_injective (pushHom_mul m h _ _)
   map_smul' a v := tv_injective (pushHom_smT m h a (tv v))
 
-theorem push_injective : Function.Injective (push (x₁ := x₁) m h) := fun u v e =>
+theorem push_injective : Function.Injective (push (x₁ := x₁) m h) := fun _ _ e =>
   tv_injective (pushHom_injective m h (congrArg tv e))
 
 theorem push_surjective : Function.Surjective (push (x₁ := x₁) m h) := by

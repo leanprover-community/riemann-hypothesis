@@ -17,40 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLatticeIf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MatrixGaussSumSingularAndInvertible
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemCompletedPairLatticeIffFrameMatrixIntegralOnHStatement
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemCompletedLatticeOfFrameMatrixIntegral
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
@@ -58,24 +24,18 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMu
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulOfResSNeOne
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
 import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GramMapMulInv
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHatIffOfSelfDual
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FinPartDetAtInvInt
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ModelLatA
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Divisors.KerDatTuple
 import Development.AbelianVarietyTheory.Definitions.Foundations.ThetaSeriesTies
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsSplitOfMemAdmissibleConjugatePairPlaces
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivOfNotLinearIndependent
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -91,8 +51,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalis
 open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie GlobalTheory.OnTies GlobalTheory.OnCmp GlobalTheory.BaseCmp
 open scoped TensorProduct
 open Classical
-
-
 
 namespace GlobalTheory.BaseCmp
 
@@ -122,8 +80,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalis
 open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie GlobalTheory.OnTies GlobalTheory.OnCmp GlobalTheory.BaseCmp
 open scoped TensorProduct
 open Classical
-
-
 
 theorem _root_.GlobalTheory.T.completedPairLattice_dilation_mem_of_integer : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m) (ϖ : 𝓞 D.host.E), ∀ y ∈ lattice₂ R i, dil i (ϖ : D.host.E) y ∈ lattice₂ R i := by
   first | exact @GlobalTheory.BaseCmp.dil_mem_latP
@@ -209,9 +165,9 @@ theorem GlobalTheory.HalfLiftRed.exists_half_dil_redM_eq : ∀ (D : D7) (G : Typ
     intro PP hPP PP' hPP'
     by_cases hq : PP' = PP
     · subst hq
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact (GlobalTheory.IdemRes.resS_idem_eq_one D _ _ (h1 PP' hPP')).2
-    · rw [if_neg hq]
+    · rw [ite_eq_right hq]
       have hne : PP ≠ PP' := fun h => hq h.symm
       have horth : es PP * es PP' = 0 :=
         (GlobalTheory.PlaceModelSum.eq_or_mul_eq_zero (h1 PP hPP).1 (h1 PP' hPP').1).resolve_left fun h => by
@@ -266,9 +222,9 @@ theorem GlobalTheory.HalfLiftRed.exists_half_dil_redM_eq : ∀ (D : D7) (G : Typ
       rw [hsub, RingHom.map_mul, hres PP.1 PP.2, one_mul, map_sum]
     simp_rw [RingHom.map_mul, Formalism.L2.DIV.resS_oToS]
     rw [Finset.sum_eq_single PP]
-    · rw [hdel PP.1 PP.2 PP.1 PP.2, if_pos rfl, one_mul, ha]
+    · rw [hdel PP.1 PP.2 PP.1 PP.2, ite_eq_left rfl, one_mul, ha]
     · intro b _ hb
-      rw [hdel PP.1 PP.2 b.1 b.2, if_neg (fun h => hb (Subtype.ext h)), zero_mul]
+      rw [hdel PP.1 PP.2 b.1 b.2, ite_eq_right (fun h => hb (Subtype.ext h)), zero_mul]
     · intro h; exact absurd (Finset.mem_attach _ _) h
 
 end
@@ -286,8 +242,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalis
 open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie GlobalTheory.OnTies GlobalTheory.OnCmp GlobalTheory.BaseCmp
 open scoped TensorProduct
 open Classical
-
-
 
 theorem _root_.GlobalTheory.T.exists_half_dilated_reduction_residueMatrices : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m), VStd D i → ∀ (Q : Finset (Pl D.host.E)), (∃ t, Q ⊆ R.Q t) → ∀ eQ : AE D, IsIdemSum eQ Q → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ Q, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∀ x : ∀ PP : ↥Q, Matrix (Fin (Wc D i).rank) (Fin (Vc D i).rank) (kP PP.1), ∃ y : WO (Vc D i) (Wc D i), IsHalf eQ y ∧ dil i (ϖ : D.host.E) y ∈ lattice₂ R i ∧ ∀ PP : ↥Q, redM PP.1 (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (dil i (ϖ : D.host.E) y)) = x PP := by
   first | exact @GlobalTheory.HalfLiftRed.exists_half_dil_redM_eq
@@ -366,7 +320,7 @@ theorem fac {D : D7} (Φ : AddChar (EAf D) ℂ) (Q : Finset (Pl D.host.E)) (a : 
   have hψ : ∀ PP ∈ Q, ∀ w (hw : w ∈ Formalism.L2.Herm.intAf D.host.F D.host.E),
       ψP PP (resS D.host.F PP ⟨w, hw⟩) = Φ (a PP * w) := by
     intro PP hPP w hw
-    simp only [ψP, dif_pos hPP]
+    simp only [ψP, dite_eq_left hPP]
     exact hcong PP hPP _ ⟨w, hw⟩ (hL PP _)
   refine ⟨ψP, fun PP hPP => ?_, hψ⟩
   obtain ⟨w, hw, hne⟩ := h2 PP hPP
@@ -380,7 +334,6 @@ theorem fac {D : D7} (Φ : AddChar (EAf D) ℂ) (Q : Finset (Pl D.host.E)) (a : 
   have := DFunLike.congr_fun h (c⁻¹ * x)
   rw [AddChar.mulShift_apply, ← mul_assoc, mul_inv_cancel₀ hc, one_mul] at this
   simpa using this
-
 
 open GlobalTheory.StdFrames (cpt) in
 theorem mem_int_of_mul {D : D7} {PP : Pl D.host.E} {e : AE D} (he : Formalism.L2.NTheta.IsIdemAt e PP) {ϖ : 𝓞 D.host.E}
@@ -615,8 +568,6 @@ open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie Glo
 open scoped TensorProduct
 open Classical
 
-
-
 namespace GlobalTheory.GaussUnit
 
 theorem isIntegral_of_eq {x y : ℂ} (h : IsIntegral ℤ x) (e : y = x) : IsIntegral ℤ y := e ▸ h
@@ -709,10 +660,6 @@ open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie Glo
 open scoped TensorProduct
 open Classical
 
-
-
-theorem _root_.GlobalTheory.T.mem_completedPairLattice_iff_adjointFrameMatrix_integral_conjHalf : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m), VStd D i → ∀ (Q : Finset (Pl D.host.E)), (∃ t, Q ⊆ R.Q t) → ∀ eQ : AE D, IsIdemSum eQ Q → ∀ t : WO (Vc D i) (Wc D i), IsHalf (cA D eQ) t → (IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) (t)) ↔ t ∈ lattice₂ R i) := by
-  first | exact @GlobalTheory.QHalfLat.isIntM_adj_iff_mem_latP
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemCompletedPairLatticeIffAdjointFrameMatrixInteStatement =====
@@ -728,10 +675,6 @@ open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie Glo
 open scoped TensorProduct
 open Classical
 
-
-
-theorem _root_.GlobalTheory.T.mem_lattice_iff_uniformiser_reduction_vanishes : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m), VStd D i → ∀ (Q : Finset (Pl D.host.E)), (∃ t, Q ⊆ R.Q t) → ∀ eQ : AE D, IsIdemSum eQ Q → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ Q, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∀ z : WO (Vc D i) (Wc D i), IsHalf eQ z → dil i (ϖ : D.host.E) z ∈ lattice₂ R i → (z ∈ lattice₂ R i ↔ ∀ PP ∈ Q, redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (dil i (ϖ : D.host.E) z)) = 0) := by
-  first | exact @GlobalTheory.DilKer.mem_localLattice_iff_redM
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLatticeIffUniformiserReductionVanishesStatement =====
@@ -746,8 +689,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalis
 open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie GlobalTheory.OnTies GlobalTheory.OnCmp GlobalTheory.BaseCmp
 open scoped TensorProduct
 open Classical
-
-
 
 namespace GlobalTheory.ResidueFourier
 
@@ -779,12 +720,12 @@ theorem sum_char_trace {n r : ℕ} {ψ : AddChar k ℂ} (hψ : ψ.IsPrimitive) (
       simp
   refine Eq.trans h ?_
   by_cases hw : w = 0
-  · rw [if_pos (h2.2 hw), if_pos hw, Nat.card_eq_fintype_card]
+  · rw [ite_eq_left (h2.2 hw), ite_eq_left hw, Nat.card_eq_fintype_card]
     have : Fintype.card (Matrix (Fin r) (Fin n) k) = Fintype.card k ^ (n * r) := by
       change Fintype.card (Fin r → Fin n → k) = _
       simp [pow_mul]
     rw [this]; push_cast; rfl
-  · rw [if_neg (fun h => hw (h2.1 h)), if_neg hw]
+  · rw [ite_eq_right (fun h => hw (h2.1 h)), ite_eq_right hw]
 
 theorem inversion {n r : ℕ} {ψ : AddChar k ℂ} (hψ : ψ.IsPrimitive) (f : Matrix (Fin n) (Fin r) k → ℂ)
     (u : Matrix (Fin n) (Fin r) k) :
@@ -800,10 +741,10 @@ theorem inversion {n r : ℕ} {ψ : AddChar k ℂ} (hψ : ψ.IsPrimitive) (f : M
       neg_add_eq_sub]
   simp only [h1]
   rw [Finset.sum_comm, Finset.sum_eq_single u]
-  · rw [← Finset.mul_sum, sum_char_trace hψ, if_pos (sub_self u)]
+  · rw [← Finset.mul_sum, sum_char_trace hψ, ite_eq_left (sub_self u)]
     field_simp
   · intro v _ hv
-    rw [← Finset.mul_sum, sum_char_trace hψ, if_neg (fun h => hv (sub_eq_zero.1 h).symm), mul_zero]
+    rw [← Finset.mul_sum, sum_char_trace hψ, ite_eq_right (fun h => hv (sub_eq_zero.1 h).symm), mul_zero]
   · simp
 
 def embTop (n : ℕ) {r : ℕ} (g : Matrix (Fin r) (Fin r) k) : Matrix (Fin n) (Fin r) k :=
@@ -859,14 +800,14 @@ theorem transform {n r : ℕ} (h : r ≤ n) {ψ : AddChar k ℂ} (hψ : ψ.IsPri
     · intro a _
       simp
     · intro u _ hu
-      rw [dif_neg, zero_mul]
+      rw [dite_eq_right, zero_mul]
       rintro ⟨hl, hd⟩
       exact hu ⟨((Matrix.isUnit_iff_isUnit_det _).2 hd).unit, by simp, embTop_topL hl⟩
     · intro g _
       have hx : IsUnit (topL r (embTop n (g : Matrix (Fin r) (Fin r) k))).det := by
         rw [topL_embTop h]; exact (Matrix.isUnit_iff_isUnit_det _).1 g.isUnit
       have hdet : hx.unit = Matrix.GeneralLinearGroup.det g := Units.ext (by simp [topL_embTop h])
-      rw [dif_pos ⟨lowZero_embTop _, hx⟩, trace_embTop h, hdet, zpow_neg_one, Units.val_inv_eq_inv_val]
+      rw [dite_eq_left ⟨lowZero_embTop _, hx⟩, trace_embTop h, hdet, zpow_neg_one, Units.val_inv_eq_inv_val]
   rw [step]
   by_cases hy : IsUnit (topL r x).det
   · have hm := (Matrix.isUnit_iff_isUnit_det _).2 hy
@@ -875,9 +816,9 @@ theorem transform {n r : ℕ} (h : r ≤ n) {ψ : AddChar k ℂ} (hψ : ψ.IsPri
     have key := h1 hm.unit
     rw [hdet] at key
     simp only [IsUnit.unit_spec, one_mul] at key
-    rw [key, dif_pos hy, mul_comm]
+    rw [key, dite_eq_left hy, mul_comm]
   · have hz : (topL r x).det = 0 := by simpa using hy
-    rw [h0 _ hz, dif_neg hy, mul_zero]
+    rw [h0 _ hz, dite_eq_right hy, mul_zero]
 
 end Local
 
@@ -885,10 +826,10 @@ theorem dite_prod {ι : Type} (Q : Finset ι) (p : ι → Prop) (f : ∀ i, p i 
     (if h : ∀ i ∈ Q, p i then ∏ i ∈ Q.attach, f i.1 (h i.1 i.2) else 0) =
       ∏ i ∈ Q.attach, if h : p i.1 then f i.1 h else 0 := by
   split_ifs with h
-  · exact Finset.prod_congr rfl fun i _ => (dif_pos (h i.1 i.2)).symm
-  · push_neg at h
+  · exact Finset.prod_congr rfl fun i _ => (dite_eq_left (h i.1 i.2)).symm
+  · push Not at h
     obtain ⟨i, hi, hp⟩ := h
-    exact (Finset.prod_eq_zero (Finset.mem_attach Q ⟨i, hi⟩) (dif_neg hp)).symm
+    exact (Finset.prod_eq_zero (Finset.mem_attach Q ⟨i, hi⟩) (dite_eq_right hp)).symm
 
 theorem omegaQ_fourier : ∀ (D : D7) [∀ PP : Pl D.host.E, Fintype (kP PP)] (Q : Finset (Pl D.host.E)) (n r : ℕ), r ≤ n → ∀ (ψP : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ) (ξ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ), (∀ PP ∈ Q, (ψP PP).IsPrimitive) → (∀ PP ∈ Q, ξ PP ≠ 1) → ∃ c : (∀ PP : ↥Q, Matrix (Fin r) (Fin n) (kP PP.1)) → ℂ, (∀ u : ∀ PP : Pl D.host.E, Matrix (Fin n) (Fin r) (kP PP), omegaQ Q r ξ (-1) u = ∑ x, c x * ∏ PP ∈ Q.attach, ψP PP.1 (Matrix.trace (x PP * u PP.1))) ∧ ∀ (x : ∀ PP : ↥Q, Matrix (Fin r) (Fin n) (kP PP.1)) (y : ∀ PP : Pl D.host.E, Matrix (Fin r) (Fin n) (kP PP)), (∀ PP : ↥Q, y PP.1 = x PP) → c (-x) = (∏ PP ∈ Q.attach, ((Nat.card (kP PP.1) : ℂ) ^ (n * r))⁻¹ * ∑ g : GL (Fin r) (kP PP.1), (((ξ PP.1 (Matrix.GeneralLinearGroup.det g))⁻¹ : ℂˣ) : ℂ) * ψP PP.1 (Matrix.trace (g : Matrix (Fin r) (Fin r) (kP PP.1)))) * omegaFlat Q r ξ y := by
   intro D _ Q n r hrn ψP ξ hψ hξ
@@ -991,9 +932,9 @@ theorem datum_conj_half_fourier : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
   obtain ⟨ψP, hψP, hchar⟩ := _root_.GlobalTheory.QResChar.char_eq_prod D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ ϖ hϖ hϖQ
   obtain ⟨c, hinv, hc⟩ := _root_.GlobalTheory.ResidueFourier.omegaQ_fourier D Q (Vc D i).rank (Wc D i).rank hrn ψP ξR hψP hξ
   choose yx hyh hyl hyr using GlobalTheory.T.exists_half_dilated_reduction_residueMatrices D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ ϖ hϖ hϖQ
-  have hker := GlobalTheory.T.mem_lattice_iff_uniformiser_reduction_vanishes D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ ϖ hϖ hϖQ
-  have h4a := GlobalTheory.T.mem_completedPairLattice_iff_adjointFrameMatrix_integral_conjHalf D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ
-  have h4b := GlobalTheory.T.mem_completedPairLattice_iff_frameMatrix_integral_on_half D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ
+  have hker := GlobalTheory.DilKer.mem_localLattice_iff_redM D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ ϖ hϖ hϖQ
+  have h4a := GlobalTheory.QHalfLat.isIntM_adj_iff_mem_latP D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ
+  have h4b := GlobalTheory.HalfLatInt.isIntM_iff_mem_latP D G Pl0 T0 A Ks R F hC hG i hV Q hQ eQ heQ
   have hdm := GlobalTheory.T.completedPairLattice_dilation_mem_of_integer D G Pl0 T0 A Ks R i ϖ
   have key : ∀ g : WO (Vc D i) (Wc D i) → ℂ,
       ∑ y ∈ Finset.univ.image yx, (∑ x ∈ Finset.univ.filter (fun x => yx x = y), c x) * g y = ∑ x, c x * g (yx x) := by
@@ -1013,20 +954,20 @@ theorem datum_conj_half_fourier : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
     by_cases ht : IsHalf (cA D eQ) t
     · by_cases hl : t ∈ lattice₂ R i
       · have hint := (h4a t ht).2 hl
-        rw [if_pos ⟨ht, hint⟩, halfInd, if_pos ⟨hl, ht⟩, one_mul, hinv]
+        rw [ite_eq_left ⟨ht, hint⟩, halfInd, ite_eq_left ⟨hl, ht⟩, one_mul, hinv]
         refine Finset.sum_congr rfl fun x _ => ?_
         rw [hchar t (yx x) ht hl (hyh x) (hyl x), ← Finset.prod_attach Q]
         refine congrArg _ (Finset.prod_congr rfl fun PP _ => ?_)
         rw [hyr x PP]
-      · rw [if_neg (fun h => hl ((h4a t ht).1 h.2)), halfInd, if_neg (fun h => hl h.1), zero_mul]
-    · rw [if_neg (fun h => ht h.1), halfInd, if_neg (fun h => ht h.2), zero_mul]
+      · rw [ite_eq_right (fun h => hl ((h4a t ht).1 h.2)), halfInd, ite_eq_right (fun h => hl h.1), zero_mul]
+    · rw [ite_eq_right (fun h => ht h.1), halfInd, ite_eq_right (fun h => ht h.2), zero_mul]
   · intro t
     rw [key (fun y => halfInd eQ (lattice₂ R i) (t + y)), flatDat]
     by_cases ht : IsHalf eQ t
     · have hdt : IsHalf eQ (dil i (ϖ : D.host.E) t) := (isHalf_dil i hϖ' t).2 ht
       by_cases hl : dil i (ϖ : D.host.E) t ∈ lattice₂ R i
       · have hint := (h4b _ hdt).2 hl
-        rw [if_pos ⟨hdt, hint⟩]
+        rw [ite_eq_left ⟨hdt, hint⟩]
         set ρt : ∀ PP : ↥Q, Matrix (Fin (Wc D i).rank) (Fin (Vc D i).rank) (kP PP.1) :=
           fun PP => redM PP.1 (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (dil i (ϖ : D.host.E) t)) with hρt
         have hterm : ∀ x, halfInd eQ (lattice₂ R i) (t + yx x) = if x = -ρt then 1 else 0 := by
@@ -1041,8 +982,8 @@ theorem datum_conj_half_fourier : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
               refine (hker _ hh hdl).2 fun PP hPP => ?_
               rw [dil_add, redM_frMapO_add _ _ _ _ _ hint hintx, hyr x ⟨PP, hPP⟩, hx]
               simp [hρt]
-            rw [if_pos hx, if_pos ⟨hm, hh⟩]
-          · rw [if_neg hx, if_neg]
+            rw [ite_eq_left hx, ite_eq_left ⟨hm, hh⟩]
+          · rw [ite_eq_right hx, ite_eq_right]
             rintro ⟨hm, -⟩
             apply hx
             funext PP
@@ -1051,21 +992,21 @@ theorem datum_conj_half_fourier : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
             rw [Pi.neg_apply, hρt]
             exact eq_neg_of_add_eq_zero_right h0
         simp_rw [hterm, mul_ite, mul_one, mul_zero]
-        rw [Finset.sum_ite_eq' Finset.univ (-ρt) c, if_pos (Finset.mem_univ _)]
+        rw [Finset.sum_ite_eq' Finset.univ (-ρt) c, ite_eq_left (Finset.mem_univ _)]
         exact hc ρt _ fun PP => rfl
-      · rw [if_neg (fun h => hl ((h4b _ hdt).1 h.2))]
+      · rw [ite_eq_right (fun h => hl ((h4b _ hdt).1 h.2))]
         rw [mul_zero]
         refine Finset.sum_eq_zero fun x _ => ?_
-        rw [halfInd, if_neg, mul_zero]
+        rw [halfInd, ite_eq_right, mul_zero]
         rintro ⟨hm, -⟩
         apply hl
         have := hdm _ hm
         rw [dil_add] at this
         simpa using sub_mem this (hyl x)
-    · rw [if_neg (fun h => ht ((isHalf_dil i hϖ' t).1 h.1))]
+    · rw [ite_eq_right (fun h => ht ((isHalf_dil i hϖ' t).1 h.1))]
       rw [mul_zero]
       refine Finset.sum_eq_zero fun x _ => ?_
-      rw [halfInd, if_neg, mul_zero]
+      rw [halfInd, ite_eq_right, mul_zero]
       rintro ⟨-, hh⟩
       exact ht (isHalf_of_add hh (hyh x))
 
@@ -1084,8 +1025,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalis
 open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie GlobalTheory.OnTies GlobalTheory.OnCmp GlobalTheory.BaseCmp
 open scoped TensorProduct
 open Classical
-
-
 
 end -- clump:auto
 end -- clump:auto

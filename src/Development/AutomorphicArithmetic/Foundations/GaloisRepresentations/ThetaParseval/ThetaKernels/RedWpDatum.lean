@@ -576,7 +576,7 @@ theorem eta_cut_k (hB : GoodK σ B) (h2 : ResEtaF η 1) (hε : IsHalfF σ ε) (u
   have e2 := GlobalTheory.SplitDetCharF.char_norm hB.cm h2 (cutRat _ h3 u) (cutRat ε hε.idem (map (σ : E →* E) u))
     (by
     rw [cutRat_val, cutRat_val, map_add (f := _), map_sub, map_mul, map_one,
-      GlobalTheory.HeisLineF.cAF_cAF σ (GlobalTheory.SplitDetCharF.sig_invol hB.cm), _root_.PositivityTheory.ThKW.TauSpanIdentities.cAF_inc]
+      GlobalTheory.HeisLineF.cAF_cAF σ (GlobalTheory.SplitDetCharF.sig_invol hB.cm), _root_.GlobalTheory.HeisLineF.cAF_incAF]
     rfl)
   rw [e1, map_mul, mul_assoc, e2, mul_one]
 theorem real_data_k (C : Ctx_k σ B JS JT ξ₀ θ ι) (hs : CartF σ JS JT ξ₀ B θ s) {g : GAF σ

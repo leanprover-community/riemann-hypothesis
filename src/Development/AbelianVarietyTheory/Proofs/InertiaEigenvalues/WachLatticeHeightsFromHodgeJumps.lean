@@ -421,14 +421,13 @@ theorem indep_lead {L M ι : Type} [Field L] [AddCommGroup M] [Module L M] {w : 
     have h2 := conv_lead (e := (PowerSeries.X * w) ^ m) (a := m) (pow_dvd_pow_of_dvd (dvd_mul_right _ _) m)
       (f := fun k => c ^ k • g j k) (b := 0) (fun k hk => by simp only [hg j k hk, smul_zero])
     rw [add_zero] at h2
-    rw [hu, h2, mul_pow, PowerSeries.coeff_X_pow_mul', if_pos le_rfl]
+    rw [hu, h2, mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl]
     simp
   rw [h1]
   exact hi.units_smul fun _ => Units.mk0 _ hc
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 2000000 in
 theorem heights_from_jumps : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (loc l)) (locT : ∀ (l : ℕ) [Fact l.Prime], Formalism.BasicNotions.LocTied l (loc l) (locA l)) (HW : HWOf loc) (F : FonOf loc locA HW) (Cm : CmpOf loc locA HW F), p5L loc HW locA F := by
   intro loc locA locT HW F Cm l _ K s LL h T Mi hi hT hJ
   set W := (HW l).W K s LL h with hW

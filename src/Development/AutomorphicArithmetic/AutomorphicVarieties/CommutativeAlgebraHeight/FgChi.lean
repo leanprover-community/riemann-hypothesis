@@ -28,18 +28,11 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg UpperTheory.V.CA
 
-private theorem dli_left_inv {E : Type} [Ring E] {j : E} (hj : j ∈ Ring.jacobson E) :
-    ∃ z : E, z * (1 - j) = 1 := by
-  rw [← Ideal.jacobson_bot, Ideal.mem_jacobson_iff] at hj
-  obtain ⟨z, hz⟩ := hj (-1)
-  rw [Ideal.mem_bot] at hz
-  refine ⟨z, ?_⟩
-  rw [← sub_eq_zero, ← hz]
-  noncomm_ring
-
 private theorem dli_idem_zero {E : Type} [Ring E] {u : E} (hu : IsIdempotentElem u)
     (hj : u ∈ Ring.jacobson E) : u = 0 := by
-  obtain ⟨z, hz⟩ := dli_left_inv hj
+  obtain ⟨z, hz⟩ := Ideal.exists_mul_add_sub_mem_of_mem_jacobson (I := ⊥) (-u)
+    (by rw [Ideal.jacobson_bot]; exact neg_mem hj)
+  rw [Ideal.mem_bot, sub_eq_zero, neg_add_eq_sub] at hz
   calc u = z * (1 - u) * u := by rw [hz, one_mul]
     _ = 0 := by rw [mul_assoc, sub_mul, one_mul, hu.eq, sub_self, mul_zero]
 
@@ -50,7 +43,9 @@ private theorem dli_mem_max {A B E : Type} [CommRing A] [CommRing B] [Ring E] [A
   obtain ⟨b, m, hm, hbm⟩ := hM.exists_inv hyM
   have h1 : ι (b * y) ∈ Ring.jacobson E := by
     rw [map_mul]; exact Ideal.mul_mem_left _ _ hy
-  obtain ⟨z, hz⟩ := dli_left_inv h1
+  obtain ⟨z, hz⟩ := Ideal.exists_mul_add_sub_mem_of_mem_jacobson (I := ⊥) (-(ι (b * y)))
+    (by rw [Ideal.jacobson_bot]; exact neg_mem h1)
+  rw [Ideal.mem_bot, sub_eq_zero, neg_add_eq_sub] at hz
   have hm' : 1 - ι (b * y) = ι m := by
     rw [← map_one ι, ← map_sub, ← hbm]; simp
   rw [hm'] at hz

@@ -241,7 +241,7 @@ theorem exInv (ω : Fin n → kˣ →* ℂˣ) : ∃ φ : (glIwa k n).T →* ℂ�
   rw [h1]
   simp only [χ, MonoidHom.finsetProd_apply]
   rw [Finset.prod_eq_single i (fun j _ hj => by
-    simp [MonoidHom.comp_apply, Pi.mulSingle_apply, hj]) (by simp)]
+    simp [MonoidHom.comp_apply, hj]) (by simp)]
   simp [MonoidHom.comp_apply]
 
 theorem Uc_le (c : ℕ) : Uc k c ≤ Uo k := by

@@ -151,9 +151,7 @@ namespace GlobalTheory.FunObj.CosetTT
 
 variable {D : D7}
 
-theorem sd_stdL (n : ℕ) : SD D (stdL D n) := by
-  obtain ⟨Lt, h1, h2, -⟩ := exists_lattice_of_adelic_point D n
-  rw [← h2]; exact (h1 _).2
+theorem sd_stdL (n : ℕ) : SD D (stdL D n) := GlobalTheory.FinWeil.RatTransl.sd_std D n
 
 theorem wd_mem_TT_of_nsmul {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (hc : Crv D cc δ) {a d : ℕ} {x : VC D a d}
     {M : ℕ} (hM : 0 < M) (hx : M • x ∈ La0 D (tor0 D cc δ) a d) {F : VC D a d → ℂ}

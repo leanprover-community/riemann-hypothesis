@@ -273,7 +273,6 @@ end -- clump:auto
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFunctionalTwoSided =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFunctionalTwoSided", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupRepTwistedIsUnitaryRep\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupsClosedUnitaryWCompact\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnimodularBesselSubgroupsUWN\npublic import Mathlib.MeasureTheory.Function.L2Space\nimport Formalism.FormalDegreeBessel.FinalG\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
-set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
@@ -289,7 +288,6 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 variable {Wp : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
 variable {Wq : Type*} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
 
-
 omit [CompleteSpace H] in
 theorem integrable_inner_prod {μ : Measure α} {ν : Measure β} [SFinite μ] [SFinite ν]
     {F : α → H} {G : β → H} (hF : Integrable F μ) (hG : Integrable G ν) :
@@ -304,7 +302,6 @@ theorem inner_integral_integral {μ : Measure α} {ν : Measure β} [SFinite μ]
   simp_rw [integral_inner hG]
   rw [← inner_conj_symm, ← integral_inner hF, ← integral_conj]
   simp_rw [inner_conj_symm]
-
 
 omit [CompleteSpace H] in
 theorem integrable_coord_smul {μ : Measure α} [IsFiniteMeasure μ] {u : α → H} {a : α → Wp} {C D : ℝ}
@@ -405,9 +402,6 @@ section Group
 variable {k r : ℕ}
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-theorem isUnit_det_of_mem {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det :=
-  ((uHGroup _ (Hpk k r) (Matrix.isUnit_det_of_left_inverse (hpkFacts k r).2.1)).2.2 g hg).1
-
 theorem ae_mem {S : Set (Mat k r)} {μ : Measure (Mt k r)} (hμ : IsHaarOn S μ) :
     ∀ᵐ s ∂μ, (Matrix.of s : Mat k r) ∈ S := hμ.2.2.1
 
@@ -437,7 +431,7 @@ theorem integral_sub_var {S : Set (Mat k r)} (hS : IsClosedSub k r S) {μ : Meas
     refine integral_congr_ae (Filter.Eventually.of_forall fun p => ?_)
     have h2 : rmulM (Matrix.of t : Mat k r)⁻¹ (rmulM (Matrix.of t : Mat k r) p) = p :=
       Matrix.mul_nonsing_inv_cancel_right (Matrix.of t : Mat k r) (Matrix.of p : Mat k r)
-        (isUnit_det_of_mem (hS.1 ht))
+        (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hS.1 ht))
     have h3 : rmulM (Matrix.of t : Mat k r) p = lmulM (Matrix.of p) t := rfl
     simp only [Set.indicator, h2]
     rw [h3]
@@ -459,7 +453,7 @@ theorem inner_inv_left {S : Set (Mat k r)} (hS : IsClosedSub k r S) {σ : Mat k 
   let L : H →ₗᵢ[ℂ] H := ⟨(σ s : H →ₗ[ℂ] H), hσ.2.1 s hs⟩
   have h1 : σ s (σ s⁻¹ u) = u := by
     have := hσ.1.2 s hs _ (hS.2.2.2.2 s hs)
-    rw [Matrix.mul_nonsing_inv _ (isUnit_det_of_mem (hS.1 hs)), hσ.1.1] at this
+    rw [Matrix.mul_nonsing_inv _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hS.1 hs)), hσ.1.1] at this
     exact (congrArg (fun T : H →L[ℂ] H => T u) this).symm
   have h2 := L.inner_map_map (σ s⁻¹ u) v
   change ⟪σ s (σ s⁻¹ u), σ s v⟫_ℂ = _ at h2
@@ -485,7 +479,7 @@ theorem aesm_of_continuousOn {X : Type*} [NormedAddCommGroup X] {S : Set (Mat k 
 theorem continuousOn_rep_inv {S : Set (Mat k r)} (hS : IsClosedSub k r S) {σ : Mat k r → (H →L[ℂ] H)}
     (hσ : IsURepOn S σ) (u : H) : ContinuousOn (fun s : Mat k r => σ s⁻¹ u) S := by
   refine (hσ.2.2 u).comp (f := fun s : Mat k r => s⁻¹) (fun s hs => ?_) hS.2.2.2.2
-  obtain ⟨d, hd⟩ := isUnit_det_of_mem (hS.1 hs)
+  obtain ⟨d, hd⟩ := GlobalTheory.SgInf.isUnit_det_of_mem_GG (hS.1 hs)
   exact (continuousAt_matrix_inv s (hd ▸ NormedRing.inverse_continuousAt d)).continuousWithinAt
 
 theorem aesm_rep_inv {S : Set (Mat k r)} (hS : IsClosedSub k r S) {μ : Measure (Mt k r)}
@@ -529,7 +523,7 @@ theorem sum_norm_side [CompleteSpace H] {S : Set (Mat k r)} (hS : IsClosedSub k 
     filter_upwards [ae_restrict_of_ae (ae_mem hμ)] with s hs
     have hti := hS.2.2.2.2 _ ht
     have hsi := hS.2.2.2.2 _ hs
-    rw [of_rmulM, Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (isUnit_det_of_mem (hS.1 ht)),
+    rw [of_rmulM, Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hS.1 ht)),
       coef, rep_mul_apply hσ hs hti, rep_mul_apply hP ht hsi, inner_inv_left hS hσ hs,
       inner_inv_left hS hP ht]
   · refine Integrable.of_bound ((hu.comp_fst.inner (𝕜 := ℂ) hu.comp_snd).mul
@@ -676,7 +670,7 @@ theorem dd_pair {τ : ℝ} (hτ : τ ≠ 0) {i j : Fin (2 * r + k + 1)} (h : i.v
 theorem dd_middle (τ : ℝ) {i : Fin (2 * r + k + 1)} (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     dd k r τ i = 1 := by
   unfold dd
-  rw [if_neg (by omega), if_pos h2]
+  rw [ite_eq_right (by omega), ite_eq_left h2]
 
 theorem dil_entry (a b : ℝ) (m : Mat k r) (i j : Fin (2 * r + k + 1)) :
     (dil k r a * m * dil k r b) i j = dd k r a i * m i j * dd k r b j := by
@@ -712,8 +706,8 @@ theorem dil_mem {τ : ℝ} (hτ : τ ≠ 0) : dil k r τ ∈ UH (Hpk k r) := by
       rw [dd_middle τ hr hk, one_mul, mul_one]
     · have h0 : Hpk k r i j = 0 := by
         simp only [Hpk]
-        rw [if_neg (fun hc => h1 ⟨Or.inl hc.1, hc.2⟩), if_neg (fun hc => h1 ⟨Or.inr hc.1, hc.2⟩),
-          if_neg h2]
+        rw [ite_eq_right (fun hc => h1 ⟨Or.inl hc.1, hc.2⟩), ite_eq_right (fun hc => h1 ⟨Or.inr hc.1, hc.2⟩),
+          ite_eq_right h2]
       rw [h0, mul_zero, zero_mul]
 
 theorem Hpk_row {i p t : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val)
@@ -721,12 +715,12 @@ theorem Hpk_row {i p t : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val)
   have hpo : ¬ (r ≤ p.val ∧ p.val ≤ r + k) := by omega
   simp only [Hpk]
   rcases eq_or_ne t i with rfl | hti
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     rcases h with h | h
-    · rw [if_neg (by omega), if_pos ⟨h, by omega⟩]
-    · rw [if_pos ⟨by omega, by omega⟩]
+    · rw [ite_eq_right (by omega), ite_eq_left ⟨h, by omega⟩]
+    · rw [ite_eq_left ⟨by omega, by omega⟩]
   · have hv : t.val ≠ i.val := fun e => hti (Fin.ext e)
-    rw [if_neg hti, if_neg (by omega), if_neg (by omega), if_neg (fun hc => hpo ⟨hc.1, hc.2.1⟩)]
+    rw [ite_eq_right hti, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (fun hc => hpo ⟨hc.1, hc.2.1⟩)]
 
 theorem uw_col {z : Fin (2 * r + k + 1) → ℂ} {h : Mat k r} (hh : h ∈ UWset k r z)
     {p : Fin (2 * r + k + 1)} (hp : p.val < r ∨ r + k < p.val) (s : Fin (2 * r + k + 1)) :
@@ -769,9 +763,9 @@ theorem uw_zero {z : Fin (2 * r + k + 1) → ℂ} {h : Mat k r} (hh : h ∈ UWse
     · simp
   have e := congrFun (congrFun hU p) j
   rw [Matrix.mul_apply] at e
-  simp only [hleft, hrow, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at e
+  simp only [hleft, hrow, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at e
   have hji : j ≠ i := fun hc => by subst hc; omega
-  rw [if_neg hji] at e
+  rw [ite_eq_right hji] at e
   exact e
 
 theorem dil_comm {z : Fin (2 * r + k + 1) → ℂ} (τ : ℝ) {h : Mat k r} (hh : h ∈ UWset k r z) :
@@ -829,11 +823,11 @@ theorem contract {τ : ℝ} (hτ : 1 ≤ τ) {m : Mat k r} (hm : m ∈ Nset k r)
   rw [dil_inv hτ0, Matrix.sub_apply, Matrix.sub_apply, dil_entry, Matrix.one_apply]
   rcases lt_trichotomy i j with hij | rfl | hij
   · have hij' : i.val < j.val := hij
-    rw [if_neg hij.ne, sub_zero, sub_zero]
+    rw [ite_eq_right hij.ne, sub_zero, sub_zero]
     by_cases hmid : r ≤ i.val ∧ j.val ≤ r + k
     · have h0 : m i j = 0 := by
         have e := hb i j (by omega) hmid.2 hmid.1
-        rwa [if_neg hij.ne] at e
+        rwa [ite_eq_right hij.ne] at e
       rw [h0]
       simp
     · have hw := wt_lt (k := k) (r := r) hij' hmid
@@ -842,12 +836,12 @@ theorem contract {τ : ℝ} (hτ : 1 ≤ τ) {m : Mat k r} (hm : m ∈ Nset k r)
       rw [norm_zpow, Complex.norm_real, Real.norm_of_nonneg hpos.le, ← _root_.zpow_neg_one]
       exact _root_.zpow_le_zpow_right₀ hτ (by omega)
   · have h1 : m i i = 1 := by simpa using apply_self_eq_one_of_mem_Nset hm i
-    rw [h1, if_pos rfl, mul_one, dd_inv_mul hτ0, sub_self, _root_.zpow_zero]
+    rw [h1, ite_eq_left rfl, mul_one, dd_inv_mul hτ0, sub_self, _root_.zpow_zero]
     simp
   · have h0 : m i j = 0 := by
       have e := Formalism.FourierDecayAlt.P.UnipotentUpperFacts.N_upper hm i j hij.le
-      rwa [if_neg hij.ne'] at e
-    rw [if_neg hij.ne', h0]
+      rwa [ite_eq_right hij.ne'] at e
+    rw [ite_eq_right hij.ne', h0]
     simp
 
 theorem main : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), inWb k r z → (∀ τ : ℝ, 0 < τ → dil k r τ ∈ GG k r ∧ (∀ h ∈ UWset k r z, dil k r τ * h = h * dil k r τ) ∧ (∀ m ∈ Nset k r, dil k r τ * m * (dil k r τ)⁻¹ ∈ Nset k r ∧ (dil k r τ)⁻¹ * m * dil k r τ ∈ Nset k r)) ∧ (∀ τ : ℝ, 1 ≤ τ → ∀ m ∈ Nset k r, ∀ i j, ‖((dil k r τ)⁻¹ * m * dil k r τ - 1) i j‖ ≤ τ⁻¹ * ‖(m - 1) i j‖) := by
@@ -919,13 +913,6 @@ theorem exists_bound {C : Set (Mat k r)} (hC : IsCompact C) : ∃ M, 0 ≤ M ∧
   obtain ⟨M, hM⟩ := (hC.image continuous_sn).bddAbove
   exact ⟨max M 0, le_max_right _ _, fun a ha => (hM ⟨a, ha, rfl⟩).trans (le_max_left _ _)⟩
 
-theorem isUnit_det_of_mem {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det := by
-  have hH : Hpk k r * Hpk k r = 1 := (hpkFacts k r).2.1
-  have h : gᴴ * Hpk k r * g = Hpk k r := hg
-  have : (Hpk k r * gᴴ * Hpk k r) * g = 1 := by
-    rw [mul_assoc, mul_assoc, ← mul_assoc gᴴ, h, hH]
-  exact Matrix.isUnit_det_of_left_inverse this
-
 def cj (a b : Mat k r) (hab : a * b = 1) (hba : b * a = 1) : Mt k r ≃ₜ Mt k r where
   toFun x := b * Matrix.of x * a
   invFun x := a * Matrix.of x * b
@@ -940,9 +927,6 @@ def cj (a b : Mat k r) (hab : a * b = 1) (hba : b * a = 1) : Mt k r ≃ₜ Mt k 
 
 theorem of_cj (a b : Mat k r) (hab : a * b = 1) (hba : b * a = 1) (x : Mt k r) :
     (Matrix.of (cj a b hab hba x) : Mat k r) = b * Matrix.of x * a := rfl
-
-theorem continuous_lmulM (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) :=
-  continuous_const.matrix_mul (continuous_id (X := Mat k r))
 
 theorem of_lmulM (a : Mat k r) (x : Mt k r) : (Matrix.of (lmulM a x) : Mat k r) = a * Matrix.of x := rfl
 
@@ -966,12 +950,12 @@ theorem isHaarOn_map_cj {S : Set (Mat k r)} (hS : IsClosed S) {μ : Measure (Mt 
     congr 1
     ext x
     exact not_congr (mem_iff_cj hab hba h1 h2 x)
-  · rw [Measure.map_map (continuous_lmulM s).measurable hm]
+  · rw [Measure.map_map (Formalism.FourierDecayAlt.P.B2x1.lmulM_cont s).measurable hm]
     have : lmulM s ∘ cj a b hab hba = cj a b hab hba ∘ lmulM (a * s * b) := by
       funext x
       show s * (b * Matrix.of x * a) = b * (a * s * b * Matrix.of x) * a
       simp only [← mul_assoc, hba, one_mul]
-    rw [this, ← Measure.map_map hm (continuous_lmulM _).measurable, hinv _ (h1 s hs)]
+    rw [this, ← Measure.map_map hm (Formalism.FourierDecayAlt.P.B2x1.lmulM_cont _).measurable, hinv _ (h1 s hs)]
 
 def AA (S H : Set (Mat k r)) (t : ℝ) : Set (Mt k r) :=
   {x | Matrix.of x ∈ S} ∩ {x | ∃ h ∈ H, sn (h * Matrix.of x) < t}
@@ -982,7 +966,7 @@ theorem isOpen_U (H : Set (Mat k r)) (t : ℝ) :
       ⋃ h ∈ H, {x : Mt k r | sn (lmulM h x) < t} := by
     ext x; simp only [Set.mem_setOf_eq, Set.mem_iUnion, exists_prop]; rfl
   rw [this]
-  exact isOpen_biUnion fun h _ => isOpen_lt (continuous_sn.comp (continuous_lmulM h)) continuous_const
+  exact isOpen_biUnion fun h _ => isOpen_lt (continuous_sn.comp (Formalism.FourierDecayAlt.P.B2x1.lmulM_cont h)) continuous_const
 
 theorem measurableSet_AA {S : Set (Mat k r)} (hS : IsClosed S) (H : Set (Mat k r)) (t : ℝ) :
     MeasurableSet (AA S H t) := by
@@ -996,7 +980,7 @@ theorem AA_bound {S H : Set (Mat k r)} (hH : IsClosedSub k r H) {M : ℝ} (hM : 
     {x : Mt k r} (hx : x ∈ AA S H t) : sn (Matrix.of x) ≤ dd k r * M * t := by
   obtain ⟨-, h, hh, hlt⟩ := hx
   have : (Matrix.of x : Mat k r) = h⁻¹ * (h * Matrix.of x) := by
-    rw [← mul_assoc, Matrix.nonsing_inv_mul _ (isUnit_det_of_mem (hH.1 hh)), one_mul]
+    rw [← mul_assoc, Matrix.nonsing_inv_mul _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hH.1 hh)), one_mul]
   rw [this]
   exact sn_mul_le (hM _ (hH.2.2.2.2 _ hh)) hlt.le
 
@@ -1006,8 +990,8 @@ theorem lmulM_mem_AA {S H : Set (Mat k r)} (hS : IsClosedSub k r S) (hH : IsClos
     lmulM (h₀ * m) x ∈ AA S H (t * (1 + dd k r * (dd k r * (dd k r * M * ε) * M))) := by
   obtain ⟨hxS, h, hh, hlt⟩ := hx
   refine ⟨hS.2.2.2.1 _ hc _ hxS, h * h₀⁻¹, hH.2.2.2.1 _ hh _ (hH.2.2.2.2 _ h0), ?_⟩
-  have e0 := Matrix.nonsing_inv_mul _ (isUnit_det_of_mem (hH.1 h0))
-  have e1 := Matrix.nonsing_inv_mul _ (isUnit_det_of_mem (hH.1 hh))
+  have e0 := Matrix.nonsing_inv_mul _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hH.1 h0))
+  have e1 := Matrix.nonsing_inv_mul _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hH.1 hh))
   have : h * h₀⁻¹ * Matrix.of (lmulM (h₀ * m) x) =
       h * Matrix.of x + (h * (m - 1) * h⁻¹) * (h * Matrix.of x) := by
     rw [of_lmulM]
@@ -1055,7 +1039,7 @@ theorem exists_isFolner : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (μS
   obtain ⟨M, hM0, hM⟩ := exists_bound hHc
   set a : ℕ → Mat k r := fun j => dil k r ((j : ℝ) + 1) with ha
   have hτ : ∀ j : ℕ, (0 : ℝ) < (j : ℝ) + 1 := fun j => by positivity
-  have hu : ∀ j, IsUnit (a j).det := fun j => isUnit_det_of_mem (hd1 _ (hτ j)).1
+  have hu : ∀ j, IsUnit (a j).det := fun j => GlobalTheory.SgInf.isUnit_det_of_mem_GG (hd1 _ (hτ j)).1
   have hab : ∀ j, a j * (a j)⁻¹ = 1 := fun j => Matrix.mul_nonsing_inv _ (hu j)
   have hba : ∀ j, (a j)⁻¹ * a j = 1 := fun j => Matrix.nonsing_inv_mul _ (hu j)
   have hc1 : ∀ j, ∀ h ∈ UWset k r z, a j * h = h * a j := fun j => (hd1 _ (hτ j)).2.1
@@ -1115,7 +1099,7 @@ theorem exists_isFolner : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (μS
     obtain ⟨h, hh, m, hm, rfl⟩ := hCS hs
     have hmb : sn (m - 1) ≤ dd k r * M * K + 1 := by
       have : m = h⁻¹ * (h * m) := by
-        rw [← mul_assoc, Matrix.nonsing_inv_mul _ (isUnit_det_of_mem (hH.1 hh)), one_mul]
+        rw [← mul_assoc, Matrix.nonsing_inv_mul _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG (hH.1 hh)), one_mul]
       have hb := sn_mul_le (hM _ (hH.2.2.2.2 _ hh)) (hK _ hs)
       rw [← this] at hb
       linarith [sn_sub_le m 1, sn_one_le (k := k) (r := r)]
@@ -1565,7 +1549,6 @@ theorem dis_of_continuousOn {Ω S S' : Set (Mat k r)} {μG μS μS' ν : Measure
     rw [hf0e p hp]
 
 end GlobalTheory.SgInf.FatouI
-
 
 open GlobalTheory.SgInf.FatouI in
 theorem GlobalTheory.SgInf.lintegral_hsNormSq_Iint_le : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp] [CompleteSpace Wp] {Wq : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] [CompleteSpace Wq] (σ : Mat k r → (H →L[ℂ] H)) (w : H) (a : ℝ) (μG : Measure (Mt k r)) (d : ℝ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (π : Mat k r → (Wp →L[ℂ] Wp)) (μS : Measure (Mt k r)) (z' : Fin (2 * r + k + 1) → ℂ) (c' : Fin r → ℂ) (π' : Mat k r → (Wq →L[ℂ] Wq)) (μS' : Measure (Mt k r)) , Std σ w a μG d → Side z π μS → Side z' π' μS' → ∀ ν : Measure (Mt k r), IsDis (Greg k r z z') μG μS μS' ν → ∀ x ∈ DD σ w, ∀ y ∈ DD σ w, ∀ (ξ : Wp) (ξ' : Wq), ∫⁻ γ, ENNReal.ofReal (hsNormSq (Iint (psiGen k r z c) (psiGen k r z' c') π π' μS μS' σ x y ξ ξ' (Matrix.of γ))) ∂ν ≤ ENNReal.ofReal (d⁻¹ * (⟪ξ, be (psiGen k r z c) π μS σ y y ξ⟫_ℂ).re * (⟪ξ', be (psiGen k r z' c') π' μS' σ x x ξ'⟫_ℂ).re) := by

@@ -5,7 +5,7 @@ public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh34.aux1.{u_1} :
-    ∀ (K : Type u_1) [inst : Field K] [inst_1 : NumberField K],
+    ∀ (K : Type u_1) [Field K] [NumberField K],
       ∑ x : NumberField.InfinitePlace K,
           (↑x.mult : ℝ) *
             ((NumberField.InfinitePlace.Completion.extensionEmbedding x : x.Completion → ℂ)
@@ -17,7 +17,7 @@ theorem UpperTheory.Reformulated.B.Qh34.aux1.{u_1} :
   rw [h, map_zero, Complex.zero_re, mul_zero]
 
 theorem UpperTheory.Reformulated.B.Qh34.aux2.{u_1} :
-    ∀ (K : Type u_1) [inst : Field K] [inst_1 : NumberField K] (x y : NumberField.InfiniteAdeleRing K),
+    ∀ (K : Type u_1) [Field K] [NumberField K] (x y : NumberField.InfiniteAdeleRing K),
       ∑ w : NumberField.InfinitePlace K,
           (↑w.mult : ℝ) * ((NumberField.InfinitePlace.Completion.extensionEmbedding w : w.Completion → ℂ) ((x + y) w)).re =
         ∑ w : NumberField.InfinitePlace K,
@@ -31,7 +31,7 @@ theorem UpperTheory.Reformulated.B.Qh34.aux2.{u_1} :
   rw [h, map_add (f := _), Complex.add_re, mul_add]
 
 noncomputable def UpperTheory.Reformulated.B.Qh34.infiniteTrace.{u_1} :
-    (K : Type u_1) → [inst : Field K] → [NumberField K] → NumberField.InfiniteAdeleRing K →+ ℝ :=
+    (K : Type u_1) → [Field K] → [NumberField K] → NumberField.InfiniteAdeleRing K →+ ℝ :=
     fun (K : Type u_1) [Field K] [NumberField K] ↦
       {
         toFun := fun (x : NumberField.InfiniteAdeleRing K) ↦
@@ -40,7 +40,7 @@ noncomputable def UpperTheory.Reformulated.B.Qh34.infiniteTrace.{u_1} :
         map_zero' := UpperTheory.Reformulated.B.Qh34.aux1 K, map_add' := UpperTheory.Reformulated.B.Qh34.aux2 K : NumberField.InfiniteAdeleRing K →+ ℝ }
 
 theorem UpperTheory.Reformulated.B.Qh34.infiniteTrace_algebraMap.{u_1} :
-    ∀ (K : Type u_1) [inst : Field K] [inst_1 : NumberField K] (k : K),
+    ∀ (K : Type u_1) [Field K] [NumberField K] (k : K),
       (UpperTheory.Reformulated.B.Qh34.infiniteTrace K : NumberField.InfiniteAdeleRing K → ℝ)
           ((Algebra.algebraMap K (NumberField.InfiniteAdeleRing K) : K → NumberField.InfiniteAdeleRing K) k) =
         (↑((Algebra.trace ℚ K : K → ℚ) k) : ℝ) := by

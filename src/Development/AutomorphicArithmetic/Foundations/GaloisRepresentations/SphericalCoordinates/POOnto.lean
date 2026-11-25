@@ -40,7 +40,7 @@ theorem mul_comm_of_padic_split (p : ℕ) [Fact p.Prime] {O : Type} [Ring O] [Mo
 
 theorem algebraMap_injective_of_free {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] [Algebra (𝓞 F) O] [Nontrivial O]
     [Module.Free ℤ O] : Function.Injective (algebraMap (𝓞 F) O) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   by_contra h0
   have hI : RingHom.ker (algebraMap (𝓞 F) O) ≠ ⊥ := fun h => h0 (by

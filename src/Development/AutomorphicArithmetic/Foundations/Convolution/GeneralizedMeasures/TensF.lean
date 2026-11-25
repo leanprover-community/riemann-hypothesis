@@ -30,7 +30,6 @@ theorem UpperTheory.ConvolutionTheory.GM.avgF :
   have ho : ∀ v, v ∉ Set.range w → f v = (GLnLocal.integralGL (v.adicCompletion F) n : Set (C.Gw n v)).indicator 1 := by
     intro v hv
     exact hoff v (fun h => hv (hr ▸ h))
-  set_option synthInstance.maxHeartbeats 200000 in
   obtain ⟨e, he, ⟨U, hUo, hU⟩, -⟩ := UpperTheory.ConvolutionTheory.Tf.finTens F n (Measure.haar) (Measure.haar) r w hw f ht ho
   refine ⟨e, ?_, fun x => he x, fun x => ?_⟩
   · rw [IsLocallyConstant.iff_eventually_eq]

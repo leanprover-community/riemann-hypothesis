@@ -286,7 +286,7 @@ theorem exists_reduce_row (l : Fin n → ℕ) {h : GL (Fin n) F} (hB : h ∈ Iwa
     · simp
   have hEd : ∀ a, E a a = 1 := fun a => by
     simp only [hE, hA, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply_eq]
-    rw [if_neg (fun h => by obtain ⟨rfl, h2⟩ := h; exact lt_irrefl _ h2), add_zero]
+    rw [ite_eq_right (fun h => by obtain ⟨rfl, h2⟩ := h; exact lt_irrefl _ h2), add_zero]
   have hEO : ∀ a b, E a b ∈ 𝒪[F] := fun a b => by
     simp only [hE, hA, Matrix.add_apply, Matrix.of_apply]
     refine Subring.add_mem _ ?_ ?_
@@ -314,12 +314,12 @@ theorem exists_reduce_row (l : Fin n → ℕ) {h : GL (Fin n) F} (hB : h ∈ Iwa
     rw [Units.val_mul, hEg, hE, Matrix.mul_add, Matrix.mul_one, Matrix.add_apply, Matrix.mul_apply]
     congr 1
     by_cases hib : i < b
-    · rw [if_pos hib, Finset.sum_eq_single i]
+    · rw [ite_eq_left hib, Finset.sum_eq_single i]
       · simp [hA, hib]
       · intro m _ hm
         simp [hA, hm]
       · simp
-    · rw [if_neg hib]
+    · rw [ite_eq_right hib]
       exact Finset.sum_eq_zero fun m _ => by simp [hA, hib]
   refine ⟨Eg, hEgK, (Iwasawa.borel F n).mul_mem hB (unipotent_le_borel F n hEgN), fun a => ?_,
     fun a b => ?_, fun a b hia => ?_, fun j hij => ⟨e j, ?_⟩⟩
@@ -330,7 +330,7 @@ theorem exists_reduce_row (l : Fin n → ℕ) {h : GL (Fin n) F} (hB : h ∈ Iwa
     · exact Subring.mul_mem _ (hO a i) (Subring.neg_mem _ (hyO b))
     · exact (𝒪[F]).zero_mem
   · rw [hmul, hBU hia, zero_mul, ite_self, add_zero]
-  · rw [hmul, if_pos hij, hd]
+  · rw [hmul, ite_eq_left hij, hd]
     linear_combination hxy j
 
 theorem exists_normalGL {g : GL (Fin n) F} (hg : ∀ i j, g i j ∈ 𝒪[F]) :

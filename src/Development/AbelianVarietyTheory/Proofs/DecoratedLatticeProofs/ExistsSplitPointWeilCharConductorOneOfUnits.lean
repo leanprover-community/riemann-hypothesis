@@ -68,40 +68,6 @@ open scoped NNReal ENNReal
 noncomputable section
 namespace GlobalTheory.CollapseCompare
 
-section Average
-variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [AddCommGroup V] [Module ℂ V]
-
-end Average
-
-section Pointwise
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
-
-variable [MeasurableSpace k] [BorelSpace k]
-
-variable {ν : Measure k} {μX : Measure (GL n k)} {μG : Measure (GL (n ⊕ Fin c) k)}
-  {J : Subgroup (GL (n ⊕ Fin c) k)} {bas : GL (n ⊕ Fin c) k} {ψ : AddChar k Circle} {μ : kˣ →* ℂˣ}
-  {lam : J →* ℂˣ} {κ : ℝ}
-
-
-
-
-
-
-end Pointwise
-
-section Transport
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
-
-
-
-
-
-variable [MeasurableSpace k] [BorelSpace k]
-
-end Transport
-
 section Normalise
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
@@ -125,10 +91,6 @@ theorem hasConductor_mulShift {ψ : AddChar k Circle} {β : kˣ} (h : HasConduct
 variable [MeasurableSpace k] [BorelSpace k]
 
 end Normalise
-
-section Main
-
-end Main
 
 end GlobalTheory.CollapseCompare
 end -- clump:auto

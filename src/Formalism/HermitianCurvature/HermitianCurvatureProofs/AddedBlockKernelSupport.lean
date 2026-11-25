@@ -50,15 +50,8 @@ theorem blk_lt_length : ∀ (l : List ℕ) (j : ℕ), j < l.sum → blk l j < l.
       omega
 
 theorem sum_sub {k n : ℕ} (e : Fin k → Fin n) (he : Function.Injective e) (f : Fin n → K)
-    (hf : ∀ b, b ∉ Set.range e → f b = 0) : ∑ b, f b = ∑ i, f (e i) := by
-  classical
-  rw [← Finset.sum_image (s := Finset.univ) (g := e) (f := f) (fun x _ y _ h => he h)]
-  symm
-  apply Finset.sum_subset (Finset.subset_univ _)
-  intro b _ hb
-  apply hf
-  rintro ⟨i, rfl⟩
-  exact hb (Finset.mem_image_of_mem e (Finset.mem_univ i))
+    (hf : ∀ b, b ∉ Set.range e → f b = 0) : ∑ b, f b = ∑ i, f (e i) :=
+  (Fintype.sum_of_injective e he (fun i => f (e i)) f hf fun _ => rfl).symm
 
 theorem det_sub_mem {k n : ℕ} {Z : Matrix (Fin n) (Fin n) K} (hZ : IsInt R Z)
     (r c : Fin k → Fin n) : (Z.submatrix r c).det ∈ R := by
@@ -184,17 +177,17 @@ theorem supp_one (h : Point K) (s : ℕ) (hs : 1 ≤ s) (t : Kˣ)
     show (if (b : ℕ) = revIn (h.1 ++ [s]) a then
         ((Function.update h.2 h.1.length t (blk (h.1 ++ [s]) a) : Kˣ) : K) else 0) = _
     rw [revIn_app_lt s h.1 a.val ha, blk_app_lt s h.1 a.val ha, Function.update_apply,
-      if_neg (ne_of_lt (blk_lt_length h.1 a.val ha))]
+      ite_eq_right (ne_of_lt (blk_lt_length h.1 a.val ha))]
     by_cases hb : b.val < h.1.sum
     · rw [dite_eq_left hb]
       rfl
     · have hne : ¬ ((b : ℕ) = revIn h.1 a) := fun hc => hb (by rw [hc]; exact hrev)
-      rw [dite_eq_right hb, if_neg hne]
+      rw [dite_eq_right hb, ite_eq_right hne]
   · intro a b ha
     show (if (b : ℕ) = revIn (h.1 ++ [s]) a then
         ((Function.update h.2 h.1.length t (blk (h.1 ++ [s]) a) : Kˣ) : K) else 0) =
       if (b : ℕ) + 1 = (h.1 ++ [s]).sum then (t : K) else 0
-    rw [ha, revIn_app h.1 s hs, blk_app h.1 s hs, Function.update_apply, if_pos rfl]
+    rw [ha, revIn_app h.1 s hs, blk_app h.1 s hs, Function.update_apply, ite_eq_left rfl]
     split_ifs <;> first | rfl | omega
 
 end Supp
@@ -218,7 +211,7 @@ theorem Formalism.FourierDecayAlt.P.added_block_kernel_support : Formalism.Fouri
     by_contra hc
     apply hq
     unfold pairTerm
-    rw [if_neg hc, zero_mul, zero_mul]
+    rw [ite_eq_right hc, zero_mul, zero_mul]
   exact ⟨supp_one R h s hs t _ hc.1, supp_one R h' s hs t' _ hc.2⟩
 
 namespace Formalism.FourierDecayAlt.P.A5x7
@@ -260,7 +253,7 @@ theorem lu_int {n : ℕ} {h u : Matrix (Fin n) (Fin n) K} (hh : IsLowUni h) (hu 
         exact R.zero_mem
       · rw [Fin.ext heq, hhD j]
         exact R.one_mem
-    · push_neg at hij
+    · push Not at hij
       have hterm : ∀ k ∈ Finset.univ.erase j, h i k * u k j ∈ R := by
         intro k hk
         have hkj : k ≠ j := Finset.ne_of_mem_erase hk
@@ -458,7 +451,7 @@ theorem Formalism.FourierDecayAlt.P.zero_kernel_all_ones : Formalism.FourierDeca
     obtain ⟨i2, j2, k2⟩ := orb_of_int R h' hh' _ b1 b2
     unfold pairTerm
     dsimp only
-    rw [if_pos ⟨i1, i2⟩, card_iso_one R j1 k1 j2 k2, phase_one R ψ hψ h _ a1 a2,
+    rw [ite_eq_left ⟨i1, i2⟩, card_iso_one R j1 k1 j2 k2, phase_one R ψ hψ h _ a1 a2,
       phase_one R ψ hψ h' _ b1 b2]
     simp
   · rintro ⟨q1, q2⟩ hq
@@ -467,7 +460,7 @@ theorem Formalism.FourierDecayAlt.P.zero_kernel_all_ones : Formalism.FourierDeca
       exact hq (by rw [(int_iff R h hh q1).1 c1, (int_iff R h' hh' q2).1 c2])
     unfold pairTerm
     dsimp only
-    rw [if_neg hnc, zero_mul, zero_mul]
+    rw [ite_eq_right hnc, zero_mul, zero_mul]
 
 namespace Formalism.FourierDecayAlt.P.A5x7
 

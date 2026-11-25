@@ -24,7 +24,7 @@ def valMap (x : Sp C ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) : Γ(X, U) 
   x.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of C)).hom
 
 theorem valR_eq (x : Sp C ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
-    valR x U f = (valMap x U h).hom f := dif_pos h
+    valR x U f = (valMap x U h).hom f := dite_eq_left h
 
 theorem valF_eq_valR {F : Type} [Field F] (x : Sp F ⟶ X) (U : X.Opens) (f : Γ(X, U)) :
     valF x U f = valR x U f := rfl
@@ -455,18 +455,6 @@ def specHomeomorph (C : Type) [CommRing C] [TopologicalSpace C] [IsTopologicalRi
     exact (continuous_valR_top (C := C) _).congr fun x => (preimage_apply x a).symm
   continuous_invFun := continuous_specMap A
 
-def affineHomeomorph {U : X.Opens} (hU : IsAffineOpen U) :
-    {x : Sp C ⟶ X // ⊤ ≤ x ⁻¹ᵁ U} ≃ₜ (Γ(X, U) ⟶ CommRingCat.of C) where
-  toFun x := valMap x.1 U x.2
-  invFun φ := ⟨Spec.map φ ≫ hU.fromSpec, le_preimage_specMap_fromSpec hU φ⟩
-  left_inv x := Subtype.ext (specMap_valMap_fromSpec hU x.1 x.2)
-  right_inv φ := valMap_specMap_fromSpec hU φ _
-  continuous_toFun := by
-    refine continuous_induced_rng.2 (continuous_pi fun f => ?_)
-    exact (continuousOn_iff_continuous_restrict.1 (continuousOn_valR (C := C) f)).congr
-      fun x => valR_eq x.1 U x.2 f
-  continuous_invFun := ((continuous_comp _).comp (continuous_specMap _)).subtype_mk _
-
 theorem continuous_spMap_comp {C₀ : Type} [CommRing C₀] [TopologicalSpace C₀] [IsLocalRing C₀]
     (σ : C₀ →+* C) (hσ : Continuous σ) : Continuous fun x : Sp C₀ ⟶ X => spMap σ ≫ x := by
   refine continuous_iff_continuousAt.2 fun x => ?_
@@ -574,7 +562,7 @@ theorem isEmbedding_of_isPullback {P S : Scheme.{0}} {fst : P ⟶ X} {snd : P �
     if h : ⊤ ≤ (y ≫ fst) ⁻¹ᵁ U ∧ ⊤ ≤ (y ≫ snd) ⁻¹ᵁ V then pushout.desc _ _ (hcond y h.1 h.2)
     else pushout.desc _ _ (hcond z hzU hzV)
   have hψ : ∀ (y : Sp C ⟶ P) (h1 : ⊤ ≤ (y ≫ fst) ⁻¹ᵁ U) (h2 : ⊤ ≤ (y ≫ snd) ⁻¹ᵁ V),
-      ψ y = pushout.desc _ _ (hcond y h1 h2) := fun y h1 h2 => dif_pos ⟨h1, h2⟩
+      ψ y = pushout.desc _ _ (hcond y h1 h2) := fun y h1 h2 => dite_eq_left ⟨h1, h2⟩
   have hlim : Tendsto ψ l (𝓝 (ψ z)) := by
     rw [(isEmbedding_pushout (R := CommRingCat.of C) a b).tendsto_nhds_iff]
     refine Tendsto.prodMk_nhds ?_ ?_

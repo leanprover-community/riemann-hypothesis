@@ -116,7 +116,7 @@ theorem heckeD_eq_sum_of_agree {L : Type} [Field L] [NumberField L] [IsCMField L
     · obtain ⟨x, hx, rfl⟩ := h
       obtain ⟨γ, ⟨hγ, e⟩, -⟩ := h2 x hx
       exact Finset.mem_coe.2 (Finset.mem_image.2 ⟨γ, hγ, QuotientGroup.eq.2 ((hmem γ (h1 γ hγ) x hx).2 e)⟩)
-    · exact absurd (dif_neg h) hc
+    · exact absurd (dite_eq_right h) hc
 
 theorem norms_eq {L : Type} [Field L] [NumberField L] [IsCMField L] (s : SplitPlace L) :
     Formalism.UG.qV L (GlobalTheory.HeckeFrob.conjSplit s).w = normV (GlobalTheory.HeckeFrob.conjSplit s).w ∧

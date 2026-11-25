@@ -165,16 +165,6 @@ open scoped TensorProduct
 
 noncomputable section
 
-namespace GlobalTheory.ContraProd
-
-section General
-
-variable {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-
-end General
-
-end GlobalTheory.ContraProd
-
 noncomputable section
 
 namespace GlobalTheory.ContraProd

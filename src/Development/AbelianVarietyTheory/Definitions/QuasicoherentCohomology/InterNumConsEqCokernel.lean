@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomolo
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 

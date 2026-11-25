@@ -2,53 +2,10 @@ module
 
 public import Formalism.PeriodIntegrals.UpqRep
 public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.HarishChandraParameters
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -108,12 +65,12 @@ theorem cDom_iff (ε : Fin n → Bool) (ω Λ : Fin n → ℝ) :
     refine ⟨fun a b => if a < b ∧ ε a = ε b then c (a, b) else 0, ?_, ?_⟩
     · intro a b hab
       by_contra hn
-      exact hab (if_neg hn)
+      exact hab (ite_eq_right hn)
     · rw [h, ← Fintype.sum_prod_type', HarishChandraRootData.cptPairs, Finset.sum_filter]
       refine Finset.sum_congr rfl fun x _ => ?_
       by_cases hx : x.1 < x.2 ∧ ε x.1 = ε x.2
-      · simp [if_pos hx, root_eq]
-      · simp [if_neg hx]
+      · simp [ite_eq_left hx, root_eq]
+      · simp [ite_eq_right hx]
 
 theorem torus_eq (θ : Fin n → ℝ) :
     (Matrix.diagonal fun a => Complex.exp ((θ a : ℂ) * Complex.I)) = HarishChandraRootData.torus θ := by
@@ -234,7 +191,7 @@ theorem cptLE_pair {ε : Fin n → Bool} {ω Λ : Fin n → ℝ} (h : HarishChan
   have key : ∑ i : Fin n, ((i : ℕ) : ℝ) * ((c x : ℝ) * HarishChandraRootData.root x.1 x.2 i) =
       (c x : ℝ) * (((x.1 : ℕ) : ℝ) - ((x.2 : ℕ) : ℝ)) := by
     simp only [HarishChandraRootData.root, Pi.sub_apply, Pi.single_apply, mul_sub, Finset.sum_sub_distrib,
-      mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     ring
   rw [key]
   apply mul_nonpos_of_nonneg_of_nonpos (Nat.cast_nonneg _)
@@ -277,7 +234,7 @@ theorem highest_dominant {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ 
   have hPK : P ∈ HarishChandraRootData.grpK ε := by
     refine ⟨?_, fun i j hij => ?_⟩
     · rw [Matrix.mem_unitaryGroup_iff, hPstar, hPP]
-    · rw [hP, Matrix.of_apply, if_neg]
+    · rw [hP, Matrix.of_apply, ite_eq_right]
       rintro rfl
       exact hij (hεs i).symm
   have hcomm : ∀ θ : Fin n → ℝ, HarishChandraRootData.torus θ * P = P * HarishChandraRootData.torus (fun i => θ (s i)) := by
@@ -287,9 +244,9 @@ theorem highest_dominant {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ 
     simp only [HarishChandraRootData.torus, Matrix.submatrix_apply, id, Matrix.diagonal_apply]
     by_cases hik : i = s k
     · have hk : s i = k := by rw [hik, hs_def, Equiv.swap_apply_self]
-      rw [if_pos hik, if_pos hk, hk, ← hik]
+      rw [ite_eq_left hik, ite_eq_left hk, hk, ← hik]
     · have hk : s i ≠ k := fun h' => hik (by rw [← h', hs_def, Equiv.swap_apply_self])
-      rw [if_neg hik, if_neg hk]
+      rw [ite_eq_right hik, ite_eq_right hk]
   have hTK : ∀ θ, HarishChandraRootData.torus θ ∈ HarishChandraRootData.grpK ε := torus_mem ε
   obtain ⟨v, hvS, hv0, hvw⟩ := h.exists_highest
   have hvw' : ∀ θ, σ (HarishChandraRootData.torus θ) v = HarishChandraRootData.wtChar Λ θ • v := hvw

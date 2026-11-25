@@ -113,9 +113,6 @@ end Conj
 section Gen
 variable {D : D7} {M : MtFam D}
 
-theorem jMt_inj' (μ : D.what₂.Tup) (j : ℕ) : Function.Injective (D.what₂.jMt μ j) := by
-  apply _root_.Formalism.L2.jMt_injective
-
 theorem hypOutside_transport' {μ μ' : D.what₂.Tup} {j j' : ℕ} (hμ : μ = μ') (hj : j = j')
     (a1 : 1 ≤ j) (a2 : j ≤ D.R.m) (b1 : 1 ≤ j') (b2 : j' ≤ D.R.m)
     (B : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)))) :
@@ -174,7 +171,7 @@ theorem hT_of (T : NormalizedLocalCompatibility D M) (hstd : HeckeStd T.B)
     (T.B.hL_def (D.nd.j i) (D.nd.w i) a1 a2 v k s ϖ hg hc hu) (D.nd.mu i) (D.nd.j i) (mtL_eq D hi) (D.nd.mu_w i) rfl
     a1 a2 x
   have hx' : x' = cast (mtL_eq D hi).symm (T.B.hL (D.nd.j i) (D.nd.w i) v k (cast (mtL_eq D hi) x)) :=
-    ((M.loc i).real_inj.comp (jMt_inj' _ _)) (hx.trans H1.symm)
+    ((M.loc i).real_inj.comp (Formalism.L2.jMt_injective _ _)) (hx.trans H1.symm)
   have hcx : castMt D hi x' = T.B.hL (D.nd.j i) (D.nd.w i) v k (castMt D hi x) := by
     rw [hx']; unfold castMt; exact cast_cast _ _ _
   have hS := commute_gens T hstd (D.nd.w i) a1 a2
@@ -310,13 +307,10 @@ theorem qPl_sub {D : D7} {cf : CharFrame D} {C : NChoice D} (tp : TupTied D cf C
   refine HChar.UnrAt.mul ((cf.isMu0 j).unr w' fun k hk => hg ⟨w', hov, k, hk⟩) (HChar.UnrAt.mul ?_ ?_)
   · unfold CharFrame.delAt
     split_ifs with h
-    · exact cf.isDel'.unr w' fun hp => hno.2 (by rw [if_pos h]; exact hp)
-    · exact cf.isDel.unr w' fun hp => hno.2 (by rw [if_neg h]; exact hp)
+    · exact cf.isDel'.unr w' fun hp => hno.2 (by rw [ite_eq_left h]; exact hp)
+    · exact cf.isDel.unr w' fun hp => hno.2 (by rw [ite_eq_right h]; exact hp)
   · exact ((tp.psi_is w hw).ram w').2 hno.1
 
 end Chars
-
-
-
 
 end GlobalTheory.FitHecke

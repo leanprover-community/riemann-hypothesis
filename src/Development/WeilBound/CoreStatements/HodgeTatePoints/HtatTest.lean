@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPo
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HTChartExists
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHtBc
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLieBc
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLieIso
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateConstantDividesPSq
@@ -21,6 +20,32 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatBcTors
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLie
+
+section
+@[expose] public section
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+
+namespace PositivityTheory.HtPt.Htat
+
+theorem lie_bc_iso : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [Smooth G.hom] (R R' : Type) [CommRing R] [CommRing R'] [Algebra R R'] (x : Sp R ⟶ S) (E : Type) [AddCommGroup E] [Module R E] (E' : Type) [AddCommGroup E'] [Module R' E'] [Module R E'] [IsScalarTower R R' E'] (M : LieModel G x E) (M' : LieModel G (spMap (algebraMap R R') ≫ x) E') (j : E →ₗ[R] E'), (∀ e, ((M'.pt (j e)).left ≫ (𝟙 G.left) = ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (GlobalTheory.CompanionTheory.Ar.dualMap (algebraMap R R')) ≫ (M.pt e).left)) → IsBaseChange R' j := by
+  intro S G _ _ R R' _ _ _ x E _ _ E' _ _ _ _ M M' j hj
+  refine (PositivityTheory.HtPt.Htat.lie_proj S G R x E M).2.2 R' E' M' j fun e => ?_
+  have h := hj e
+  change _ ≫ _ = _ ≫ _ at h
+  rw [Category.comp_id] at h
+  exact h
+
+end PositivityTheory.HtPt.Htat
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsLast, Development.WeilBound.CoreStatements.HodgeTatePoints.HtatRed, Development.WeilBound.CoreStatements.HodgeTatePoints.HtatTest
@@ -522,10 +547,6 @@ theorem reduces_at_point (hPt : PointHT) (E : Type) [Field E] [NumberField E] [I
 
 end PositivityTheory.HtPt.Htat.TestPts
 
-namespace PositivityTheory.HtPt.Htat
-
-
-end PositivityTheory.HtPt.Htat
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

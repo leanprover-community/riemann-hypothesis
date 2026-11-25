@@ -13,9 +13,6 @@ open Finset GlobalTheory.CompanionTheory.CoefId
 
 namespace GlobalTheory.CompanionTheory.CoefId
 
-theorem unitCircle_infinite : {z : ℂ | ‖z‖ = 1}.Infinite := by
-  apply GroundTheory.Heights₂.Heights.ComplexSets.UnitaryZariskiDense.unit_circle_infinite
-
 theorem poly_zero_of_torus {n : ℕ} (p : MvPolynomial (Fin n) ℂ)
     (h : ∀ z : Fin n → ℂ, (∀ a, ‖z a‖ = 1) → Function.Injective (fun a => z a ^ 2) →
       MvPolynomial.eval z p = 0) : p = 0 := by
@@ -31,7 +28,7 @@ theorem poly_zero_of_torus {n : ℕ} (p : MvPolynomial (Fin n) ℂ)
     have := congrArg (MvPolynomial.eval (fun a => if a = q.1 then (1 : ℂ) else 0)) h1
     simp [hlt.ne'] at this
   have hz : p * D = 0 := by
-    apply MvPolynomial.funext_set (fun _ => {z : ℂ | ‖z‖ = 1}) (fun _ => unitCircle_infinite)
+    apply MvPolynomial.funext_set (fun _ => {z : ℂ | ‖z‖ = 1}) (fun _ => GroundTheory.Heights₂.Heights.ComplexSets.UnitaryZariskiDense.unit_circle_infinite)
     intro x hx
     have hx' : ∀ a, ‖x a‖ = 1 := fun a => hx a (Set.mem_univ a)
     rw [map_mul, map_zero]
@@ -100,7 +97,7 @@ theorem coeff_zero_of_torus {n : ℕ} (S : Finset (Fin n → ℤ)) (h : (Fin n �
   rw [MvPolynomial.coeff_sum, Finset.sum_eq_single m] at h1
   · simpa [MvPolynomial.coeff_monomial] using h1
   · intro b hb hne
-    rw [MvPolynomial.coeff_monomial, if_neg fun e => hne (hinj b hb m hm e)]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right fun e => hne (hinj b hb m hm e)]
   · exact fun h' => absurd hm h'
 
 theorem laurent_indep_torus {n : ℕ} {ι κ : Type} (I : Finset ι) (J : Finset κ) (f : ι → ℂ)

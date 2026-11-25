@@ -102,7 +102,7 @@ theorem op_sum {ι : Type*} (S : Finset ι) (u : ι → Sym m n) (f : PX m n) : 
 
 theorem op_monomial (t : Ix m n ⊕ Ix m n →₀ ℕ) (a : ℂ) (f : PX m n) : op (monomial t a) f = a • opMono t f := by
   classical
-  rw [op_eq_of_subset _ {t} (MvPolynomial.support_monomial_subset), Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  rw [op_eq_of_subset _ {t} (MvPolynomial.support_monomial_subset), Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem op_add_f (u : Sym m n) (f g : PX m n) : op u (f + g) = op u f + op u g := by
   simp only [op, opMono_add, smul_add, Finset.sum_add_distrib]
@@ -171,16 +171,16 @@ theorem op_X_mul (u : Sym m n) : ∀ (k : Ix m n) (g : PX m n),
     intro k g
     rcases j with j | j
     · rw [op_mul_inl, op_mul_inl, hp, pderiv_mul, pderiv_X, op_add, op_mul_inl]
-      simp only [Pi.single_apply, reduceCtorEq, if_false, mul_zero, op_zero, add_zero]
+      simp only [Pi.single_apply, reduceCtorEq, ite_false, mul_zero, op_zero, add_zero]
       ring
     · rw [op_mul_inr, op_mul_inr, pderiv_mul, pderiv_mul, pderiv_X, pderiv_X, op_add_f, op_add, hp, op_mul_inr]
       by_cases h : j = k
       · subst h
-        simp only [Pi.single_apply, if_true, mul_one, one_mul]
+        simp only [Pi.single_apply, ite_true, mul_one, one_mul]
         ring
       · have h' : (Sum.inr k : Ix m n ⊕ Ix m n) ≠ Sum.inr j := fun e => h (Sum.inr_injective e).symm
         have e1 : ¬ (k = j) := fun e => h e.symm
         have e2 : ¬ ((Sum.inr j : Ix m n ⊕ Ix m n) = Sum.inr k) := fun e => h (Sum.inr_injective e)
-        simp only [Pi.single_apply, e1, e2, if_false, zero_mul, mul_zero, op_zero, add_zero, op_zero_f, zero_add]
+        simp only [Pi.single_apply, e1, e2, ite_false, zero_mul, mul_zero, op_zero, add_zero, op_zero_f, zero_add]
 
 end PositivityTheory.Rg.Sw.LC.PolynomialDifferentialOperators

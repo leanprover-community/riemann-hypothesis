@@ -133,14 +133,4 @@ def ratR {K : Type} [Field K] {D : ℕ} (x : Fin (D + 1) → K) (l : Fin (D + 1)
 omit [IsIntegral X] in
 def fib (X : Scheme.{0}) (ℓ : ℕ) : Set X := {x | ringChar (X.residueField x) = ℓ}
 
-section Inhabitants
-
-open ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y
-open scoped ComplexOrder
-
-omit [IsIntegral X]
-
-
-end Inhabitants
-
 end GlobalTheory.HSAmp

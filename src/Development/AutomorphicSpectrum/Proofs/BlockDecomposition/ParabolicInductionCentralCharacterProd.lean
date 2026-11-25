@@ -70,7 +70,7 @@ theorem piTensor_scalar {Γ X : α → Type} [∀ a, Group (Γ a)] [∀ a, AddCo
 theorem scalar_mem_parab (e : (Σ a, m a) ≃ n) (t : kˣ) :
     Matrix.GeneralLinearGroup.scalar n t ∈ parab k e := by
   refine mem_parab.2 fun i j hij => ?_
-  rw [scalar_apply, if_neg]
+  rw [scalar_apply, ite_eq_right]
   rintro rfl
   exact lt_irrefl _ hij
 

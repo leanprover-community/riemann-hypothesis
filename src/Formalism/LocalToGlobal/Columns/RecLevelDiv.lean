@@ -161,7 +161,7 @@ theorem rld_ofLocal_chi (Hl : ∀ PP : SG, Subgroup (GL (Fin r) (kP PP.1))) (cl 
 
 omit [StarRing E] in
 theorem rld_parDat_cg (c : ℕ) (w : SG) : (parDat h t s P χ).cg (c + 1) w.1 = χ w c := by
-  simp only [parDat, dif_pos w.2, Nat.add_sub_cancel]
+  simp only [parDat, dite_eq_left w.2, Nat.add_sub_cancel]
 
 
 include ht hn in
@@ -211,16 +211,10 @@ theorem levChr_parFam_eq_levChar (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af 
     congr 1
     rw [← Finset.prod_coe_sort SG]
     refine Finset.prod_congr rfl fun w _ => Finset.prod_congr rfl fun c _ => ?_
-    simp only [dif_pos w.2, Nat.add_sub_cancel]
+    simp only [dite_eq_left w.2, Nat.add_sub_cancel]
   rw [eL, eR, Finset.prod_mul_distrib]
 
 end Cmp
-
-section FinCol
-
-variable {κ K : Type} [CommRing κ] [Field K] {n r : ℕ}
-
-end FinCol
 
 section Cols
 
@@ -232,12 +226,6 @@ theorem t_pos (R : Ranks) : 0 < R.t := by
   exact R.t_odd.pos
 
 end Cols
-
-section SharpFin
-
-variable {κ K : Type} [CommRing κ] [Field K]
-
-end SharpFin
 
 section Sharp
 

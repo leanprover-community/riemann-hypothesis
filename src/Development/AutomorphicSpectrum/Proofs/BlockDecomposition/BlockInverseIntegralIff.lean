@@ -41,7 +41,7 @@ theorem blk_inv_val {E : Type} [Field E] [NumberField E] {n a b : ℕ} (h : a + 
     rw [fromBlocks_multiply, ← fromBlocks_one]
     congr 1
     · simp
-    · simp [← Matrix.mul_assoc, a2, Matrix.mul_assoc]
+    · simp [Matrix.mul_assoc]
     · simp
     · simp
   have r1 : reindex (finSumFinEquiv.trans (finCongr h)) (finSumFinEquiv.trans (finCongr h))

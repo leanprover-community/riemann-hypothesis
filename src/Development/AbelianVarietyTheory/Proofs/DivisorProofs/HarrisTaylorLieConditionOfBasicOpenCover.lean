@@ -3,43 +3,8 @@ module
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieRankAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DualMapSOfIdToRingHom
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
 
@@ -136,10 +101,6 @@ section Geo
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.PullbackSections GlobalTheory.UPel.HT
 
-theorem spMap_comp_loc {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
-
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {R' : Type} [CommRing R']
 
 theorem tan_iff (x : Sp R' ⟶ S) (v : epsPtR x ⟶ A) :
@@ -201,7 +162,7 @@ variable {R'' : Type} [CommRing R'']
 def rho (x : Sp R' ⟶ S) (g : R' →+* R'') : epsPtR (spMap g ≫ x) ⟶ epsPtR x :=
   Over.homMk (spMap (Chart.dualMapR g)) (by
     show spMap _ ≫ spMap (algebraMap R' (DualNumber R')) ≫ x = spMap (algebraMap R'' (DualNumber R'')) ≫ spMap g ≫ x
-    rw [← Category.assoc, ← Category.assoc, spMap_comp_loc, spMap_comp_loc]
+    rw [← Category.assoc, ← Category.assoc, GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring]
     have e : (Chart.dualMapR g).comp (algebraMap R' (DualNumber R')) =
         (algebraMap R'' (DualNumber R'')).comp g := by
       refine RingHom.ext fun z => TrivSqZeroExt.ext ?_ ?_ <;>
@@ -273,7 +234,7 @@ theorem eq_zero_of_res (x : Sp R' ⟶ S) (t : Finset R') (ht : Ideal.span (t : S
     rw [MonObj.comp_one]
     exact congrArg tv (h a.1 a.2)
   have ha : 𝒰.f a = spMap (Chart.toL (a : R')) ≫ spMap (Chart.dAway (a : R')) := by
-    rw [spMap_comp_loc, Chart.toL_comp]
+    rw [GlobalTheory.spMap_comp_ring, Chart.toL_comp]
     rfl
   have hleft := congrArg (fun φ => φ.left) hlocal
   change spMap (Chart.dAway (a : R')) ≫ (tv U).left =

@@ -215,7 +215,7 @@ private theorem chr_el {a b : Fin n} (hab : (b : ℕ) = a + 1) (h : a ≠ b) (ψ
     simp only [Finset.mem_filter] at hpq
     have hpq' : p ≠ q := fun e => by subst e; omega
     have hn : ¬ (a = p ∧ b = q) := fun ⟨e1, e2⟩ => hne (by rw [e1, e2])
-    rw [conj_apply, el_apply, Matrix.one_apply_ne hpq', Matrix.single_apply, if_neg hn]
+    rw [conj_apply, el_apply, Matrix.one_apply_ne hpq', Matrix.single_apply, ite_eq_right hn]
     simp
   · intro hab'
     exact absurd (Finset.mem_filter.2 ⟨Finset.mem_univ (a, b), hab⟩) hab'

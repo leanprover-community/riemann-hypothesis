@@ -97,7 +97,7 @@ theorem conj_cell {X : Fin n → ℝ} {a : ℝ → GR n} (ha : ∀ s, IsDil X s 
   have hm : mR (a h * g * a h) = mR (a h) * mR g * mR (a h) := rfl
   rw [hm, h1, hg]
   simp only [JJ, nU, bS, fromBlocks_multiply]
-  congr 1 <;> simp [diagonal_mul_diagonal, ← Complex.ofReal_mul, ← Real.exp_add, Matrix.mul_assoc, ← Complex.exp_add]
+  congr 1 <;> simp [diagonal_mul_diagonal, Matrix.mul_assoc, ← Complex.exp_add]
   ext i j
   by_cases hij : i = j <;> simp [hij]
 

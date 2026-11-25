@@ -111,15 +111,7 @@ theorem hLoc_mul (q k₀ : GR n) (hq : (mR q).toBlocks₂₁ = 0) (hk : InK (mR 
 lemma exists_normalizer {S : Matrix (Fin n) (Fin n) ℂ} (hH : S.IsHermitian) (hP : S.PosSemidef)
     (hd : S.det ≠ 0) : ∃ T : Matrix (Fin n) (Fin n) ℂ, T * S * Tᴴ = 1 := by
   classical
-  have hpos : ∀ i, 0 < hH.eigenvalues i := by
-    intro i
-    have h0 : 0 ≤ hH.eigenvalues i := hP.eigenvalues_nonneg i
-    have hne : hH.eigenvalues i ≠ 0 := by
-      intro h
-      apply hd
-      rw [hH.det_eq_prod_eigenvalues]
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp [h])
-    exact lt_of_le_of_ne h0 (Ne.symm hne)
+  have hpos : ∀ i, 0 < hH.eigenvalues i := (hP.posDef_iff_det_ne_zero.2 hd).eigenvalues_pos
   obtain ⟨U, hU⟩ : ∃ U : Matrix (Fin n) (Fin n) ℂ, U = (hH.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) :=
     ⟨_, rfl⟩
   have hUU : star U * U = 1 := by

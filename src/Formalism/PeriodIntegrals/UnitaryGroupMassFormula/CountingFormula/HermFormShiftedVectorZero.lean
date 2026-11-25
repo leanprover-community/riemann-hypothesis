@@ -17,8 +17,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Induced
 
 variable (D : D7) {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
@@ -194,8 +192,6 @@ open Classical
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem hT_swap (D : D7) (x y : (VS D).V) : (VS D).hT x y = star ((VS D).hT y x) := by
   rw [← (VS D).herm.eq y x, starRingEnd_apply]
@@ -703,8 +699,6 @@ open Classical
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Adjust
 

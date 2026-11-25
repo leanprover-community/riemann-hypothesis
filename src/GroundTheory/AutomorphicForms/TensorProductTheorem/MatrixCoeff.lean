@@ -14,7 +14,7 @@ open Set
 
 namespace RestrictedTensor
 
-variable {G : Type*} [Group G] {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
+variable {G : Type*} [Monoid G] {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
   [Module ℂ W]
 
 def orbitSpan (ρ : Representation ℂ G V) (v : V) : Subrepresentation ρ where

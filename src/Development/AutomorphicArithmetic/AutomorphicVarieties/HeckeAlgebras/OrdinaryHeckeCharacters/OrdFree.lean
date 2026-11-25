@@ -108,7 +108,7 @@ theorem UpperTheory.exists_linear_preimage_of_successive_approximation :
   let a' : ℕ → M → ι → A := fun k g => if h : g ∈ V k then (hstep k g h).choose else 0
   have ha' : ∀ k g, g ∈ V k → (∀ i, a' k g i ∈ I ^ k) ∧ g - σ (a' k g) ∈ V (k + 1) := by
     intro k g h
-    simp only [a', dif_pos h]
+    simp only [a', dite_eq_left h]
     exact (hstep k g h).choose_spec
   let r : ℕ → M := fun n => Nat.rec f (fun n g => g - σ (a' (j + n) g)) n
   have hrs : ∀ n, r (n + 1) = r n - σ (a' (j + n) (r n)) := fun n => rfl

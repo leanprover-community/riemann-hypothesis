@@ -174,7 +174,7 @@ theorem quadratic_kappa_identity : GQKap := by
     ring
   have hsc : ∀ (w : (MA.DQ P).Pr) (f : M.Ty P → MA.SmQ P.r P.TT),
       MA.actA P (MA.sc P (MA.DQ P) w) f = fun ρ => w.1 (f ρ) := VLem.actA_sc P
-  have hGGi : Intw P Bs e d.L.GGi (MA.ggiA P (MA.DQ P)) := by
+  have hGGi : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.GGi (MA.ggiA P (MA.DQ P)) := by
     intro Φ
     rw [hL.2.2.2.2.2.2.2.2.2.2.2.1]
     refine (trR_fn P Bs hpl X e 5 (Ring.inverse (ggS P))
@@ -183,7 +183,7 @@ theorem quadratic_kappa_identity : GQKap := by
     exact (hsc ((MA.DQ P).ggiP P.TT) (trR P Bs e Φ)).symm
   have hTT : 0 ≤ P.TT := (mul_pos hP.T_pos hP.T'_pos).le
   haveI : Fact ((MA.DQ P).Laws P.TT) := ⟨Formalism.FourierDecayAlt.P.analytic_laws P.r P.TT hTT⟩
-  have hx : ∀ Y : ℝ, Intw P Bs e (d.κ fun ρ => M.xC P ρ (Y : ℂ)) (MA.kap P (MA.DQ P) fun ρ => M.xC P ρ (Y : ℂ)) := by
+  have hx : ∀ Y : ℝ, UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.κ fun ρ => M.xC P ρ (Y : ℂ)) (MA.kap P (MA.DQ P) fun ρ => M.xC P ρ (Y : ℂ)) := by
     intro Y
     have h1 := intw_mul hsm hGGi (hQ Y 1 1)
     have e1 : d.L.GGi * d.QQ (Y : ℂ) 1 1 = d.κ fun ρ => M.xC P ρ (Y : ℂ) := by
@@ -194,17 +194,17 @@ theorem quadratic_kappa_identity : GQKap := by
       rw [← mul_assoc, Formalism.FourierDecayAlt.P.MAx1.D5.ggi_gg, one_mul]; rfl
     rw [e1, e2] at h1; exact h1
   obtain ⟨Y₀, hinj⟩ := Formalism.FourierDecayAlt.P5.Kfp.sep_real hP
-  refine lagrange_all (fun f => Intw P Bs e (d.κ f) (MA.kap P (MA.DQ P) f)) ?_ ?_ ?_ _ (hx Y₀) hinj
+  refine lagrange_all (fun f => UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.κ f) (MA.kap P (MA.DQ P) f)) ?_ ?_ ?_ _ (hx Y₀) hinj
   · intro c
     have e1 : d.κ (fun _ => c) = algebraMap ℂ _ c := d.κ.commutes c
     have e2 : MA.kap P (MA.DQ P) (fun _ => c) = algebraMap ℂ _ c := (MA.kap P (MA.DQ P)).commutes c
-    show Intw P Bs e (d.κ (fun _ => c)) (MA.kap P (MA.DQ P) (fun _ => c))
+    show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.κ (fun _ => c)) (MA.kap P (MA.DQ P) (fun _ => c))
     rw [e1, e2]; exact intw_alg hsm c
   · intro f g hf hg
-    show Intw P Bs e (d.κ (f + g)) (MA.kap P (MA.DQ P) (f + g))
+    show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.κ (f + g)) (MA.kap P (MA.DQ P) (f + g))
     rw [map_add (f := _), map_add (f := _)]; exact intw_add hsm hf hg
   · intro f g hf hg
-    show Intw P Bs e (d.κ (f * g)) (MA.kap P (MA.DQ P) (f * g))
+    show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.κ (f * g)) (MA.kap P (MA.DQ P) (f * g))
     rw [map_mul, map_mul]; exact intw_mul hsm hf hg
 
 end main
@@ -312,12 +312,12 @@ private theorem ne_and_unique_index_of_up {l : ℕ} (hl : l ∈ Finset.Icc 1 (P.
   rw [Finset.mem_Icc] at hl
   obtain ⟨i, hi⟩ : ∃ i : Fin (P.k - 1), (i : ℕ) + 1 = l := ⟨⟨l - 1, by omega⟩, show l - 1 + 1 = l by omega⟩
   have h1 := hU i
-  rw [if_pos hi] at h1
+  rw [ite_eq_left hi] at h1
   refine ⟨fun h => ?_, fun j hj h2 => ?_⟩
   · subst h
     omega
   · have h3 := h2 i
-    rw [if_neg (by omega)] at h3
+    rw [ite_eq_right (by omega)] at h3
     omega
 
 theorem projected_block_lower_sum (hR : Rai κ S) {B : A} (hB : ∀ f, Commute (κ f) B) {l : ℕ} (hl : l ∈ Finset.Icc 1 (P.k - 1))
@@ -441,7 +441,7 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
       Gauge.rawR P Bs.μsec e (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ ∈ MA.smSub P.r P.TT)
 include hsm
 
-theorem intw_zero : Gauge.GC.Intw P Bs e 0 0 := by
+theorem intw_zero : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e 0 0 := by
   intro Φ
   have h0 : Gauge.GC.trR P Bs e 0 = 0 := by
     have h := Gauge.GC.trR_smul hsm (0 : ℂ) 0
@@ -450,14 +450,14 @@ theorem intw_zero : Gauge.GC.Intw P Bs e 0 0 := by
   exact h0
 
 theorem intw_smul' (c : ℂ) {X : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {X' : MA.A P (MA.DQ P)}
-    (h : Gauge.GC.Intw P Bs e X X') : Gauge.GC.Intw P Bs e (c • X) (c • X') := by
+    (h : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e X X') : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (c • X) (c • X') := by
   intro Φ
   rw [Gauge.GC.actA_smulM, ← h Φ, ← Gauge.GC.trR_smul hsm]
   rfl
 
 theorem intw_sum' {ι : Type} (s : Finset ι) (X : ι → Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π'))
-    (X' : ι → MA.A P (MA.DQ P)) (h : ∀ i ∈ s, Gauge.GC.Intw P Bs e (X i) (X' i)) :
-    Gauge.GC.Intw P Bs e (∑ i ∈ s, X i) (∑ i ∈ s, X' i) := by
+    (X' : ι → MA.A P (MA.DQ P)) (h : ∀ i ∈ s, UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (X i) (X' i)) :
+    UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (∑ i ∈ s, X i) (∑ i ∈ s, X' i) := by
   classical
   revert h
   refine Finset.induction_on s (fun _ => ?_) (fun a t hat ih h => ?_)
@@ -467,7 +467,7 @@ theorem intw_sum' {ι : Type} (s : Finset ι) (X : ι → Q.Pr (Q.RadSp P.k P.r 
     exact _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.intw_add hsm (h a (Finset.mem_insert_self a t)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
 theorem intw_ite' (c : Prop) [Decidable c] {X : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {X' : MA.A P (MA.DQ P)}
-    (h : c → Gauge.GC.Intw P Bs e X X') : Gauge.GC.Intw P Bs e (if c then X else 0) (if c then X' else 0) := by
+    (h : c → UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e X X') : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (if c then X else 0) (if c then X' else 0) := by
   split_ifs with hc
   · exact h hc
   · exact intw_zero hsm
@@ -478,8 +478,8 @@ private theorem intw_mul' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSp
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par}
     {Bs : B.RealPlaceData P.k P.r Wp Wq} {e : M.Ty P → ℂ → (Wq →L[ℂ] Wp)}
     {X Y : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {X' Y' : MA.A P (MA.DQ P)}
-    (hX : Gauge.GC.Intw P Bs e X X') (hY : Gauge.GC.Intw P Bs e Y Y') :
-    Gauge.GC.Intw P Bs e (X * Y) (X' * Y') := by
+    (hX : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e X X') (hY : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e Y Y') :
+    UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (X * Y) (X' * Y') := by
   intro Φ
   rw [Gauge.actA_mul, ← hY Φ, ← hX]
   all_goals rfl
@@ -531,7 +531,7 @@ theorem quadratic_shift_identity : GQSS := by
   obtain ⟨hPl, -, -, hRel, -⟩ := hAct
   have hP : P.OK := hPl.1
   have hsm := Gauge.GC.radial_space_smoothness Wp Wq P Bs hPl hk e hF
-  have hpj : ∀ ρ : M.Ty P, Gauge.GC.Intw P Bs e (pj d.κ ρ) (pj (MA.kap P (MA.DQ P)) ρ) :=
+  have hpj : ∀ ρ : M.Ty P, UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (pj d.κ ρ) (pj (MA.kap P (MA.DQ P)) ρ) :=
     fun ρ => hκ _
   have hfn : ∀ f (g : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')),
       g ∈ d.L.fns ∪ {d.L.nab, d.L.nabs} → Commute (d.κ f) g :=
@@ -927,12 +927,12 @@ theorem mat_gen {Ty : Type} [Fintype Ty] [DecidableEq Ty] (Qd : Ty → (Wq →L[
     B.hsInner (∑ π', ∑ ρ', c π' ρ' • Qd ρ' (T0 (Qd π' (e π)))) (e ρ) = c π ρ * B.hsInner (T0 (e π)) (e ρ) := by
   rw [kap_hsInner_sum_left, Finset.sum_eq_single π]
   · rw [kap_hsInner_sum_left, Finset.sum_eq_single ρ]
-    · rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline π π, hline ρ ρ, if_pos rfl, if_pos rfl]
+    · rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline π π, hline ρ ρ, ite_eq_left rfl, ite_eq_left rfl]
     · intro ρ' _ hne
-      rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline ρ' ρ, if_neg hne, hsInner_zero_r, mul_zero]
+      rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline ρ' ρ, ite_eq_right hne, hsInner_zero_r, mul_zero]
     · intro h; exact absurd (Finset.mem_univ ρ) h
   · intro π' _ hne
-    rw [hline π' π, if_neg hne, map_zero]
+    rw [hline π' π, ite_eq_right hne, map_zero]
     simp only [map_zero, smul_zero, Finset.sum_const_zero]
     exact _root_.Formalism.FourierDecayAlt.P5.HerA.hsInner_zero_left _
   · intro h; exact absurd (Finset.mem_univ π) h
@@ -1075,7 +1075,7 @@ theorem theta_gauge_constancy_holds : ThtGaugeConstOfCore := by
   have hSSF := hA (Wp (S.pl v)) (Wq (S.pl v)) (D.parOf S v) (T v).base hk X d hAct e hFrB hGQ
   refine ⟨θ, fun ζ hζ π ρ hup => ?_⟩
   have hent := hE (Wp (S.pl v)) (Wq (S.pl v)) (D.parOf S v) (T v).base hk X d hAct e hFrB hSSF l hl SS hSS ζ hζ π ρ
-  rw [if_pos hup] at hent
+  rw [ite_eq_left hup] at hent
   obtain ⟨hP1, hH1, -, -⟩ := hDU Cc E Wp Wq S T f χ ν' m₀ top A₀ hB v ζ hζ
   set n0 := SSn.nu0 S.G.k S.G.r (T v).base.z (T v).base.z' (T v).base.μsec ζ with hn0
   have hN0 : PRho.nrmW S.G.k S.G.r (T v).base.z n0 = 1 := by
@@ -1288,7 +1288,7 @@ theorem theta_constancy_assembly_scalar : ThConstOfCutS := by
   intro ζ hζ π ρ hup Xf hXf hfix
   have hex : ∃ ρ, M.Up P l π ρ := ⟨ρ, hup⟩
   have hρ : hex.choose = ρ := tc_up_unique hex.choose_spec hup
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   have := (main π hex.choose hex.choose_spec).choose_spec ζ hζ Xf hXf hfix
   subst hρ
   exact this

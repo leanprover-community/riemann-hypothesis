@@ -179,7 +179,7 @@ private theorem supp_chR (n : ℕ) (x : Wt n) (h : cf (chR n) x ≠ 0) :
   refine ⟨B, Finset.mem_powerset.1 hB, ?_⟩
   rw [cf_ex] at hne
   by_contra hc
-  exact hne (if_neg fun e => hc e.symm)
+  exact hne (ite_eq_right fun e => hc e.symm)
 
 private theorem rt_self {n : ℕ} (a : Fin n) : rt a a = 0 := by simp [rt]
 

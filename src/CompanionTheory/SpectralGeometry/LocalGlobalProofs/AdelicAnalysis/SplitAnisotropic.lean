@@ -17,15 +17,6 @@ open scoped TensorProduct ENNReal NNReal Matrix
 
 namespace GlobalTheory.CompanionTheory.SW.AlgSplit
 
-theorem det_blockOne {K : Type} [CommRing K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
-    (blockOne t A).det = t * A.det := by
-  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
-  have hz : ∀ j : Fin M, blockOne t A 0 j.succ = 0 := by intro j; simp [blockOne]
-  have h00 : blockOne t A 0 0 = t := by simp [blockOne]
-  have h0 : (blockOne t A).submatrix Fin.succ Fin.succ = A := by
-    ext i j; simp [blockOne]
-  simp [hz, h00, h0]
-
 theorem split_anisotropic : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin (M + 1)) (Fin (M + 1)) E), IsHermND σ J → ∀ (t : F) (x : Fin (M + 1) → E), t ≠ 0 → hE σ J x x = algebraMap F E t → ∃ (g : GL (Fin (M + 1)) E) (J₁ : Matrix (Fin M) (Fin M) E), IsHermND σ J₁ ∧ blockOne (algebraMap F E t) J₁ = cT (σ : E →+* E) (g : Matrix (Fin (M + 1)) (Fin (M + 1)) E) * J * g ∧ ∀ i, (g : Matrix (Fin (M + 1)) (Fin (M + 1)) E) i 0 = x i := by
   intro F E _ _ _ _ _ σ hCM M J hJ t x ht hx
   obtain ⟨-, -, -, hconj⟩ := hCM

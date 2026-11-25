@@ -717,7 +717,6 @@ end -- clump:auto
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsURepOnOfIsTau =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsURepOnOfIsTau", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InnerRepK\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdLeadMinorDecay\nimport Development.AbelianVarietyTheory.Proofs.FlagMeasures.ScalarOfMultOne\nimport Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.Normed.Algebra.MatrixExponential\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
-set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
@@ -1052,8 +1051,8 @@ theorem single_comm_Jm {a b : Fin n} (h : ε a = ε b) :
   rw [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.single_apply]
   by_cases h1 : a = i ∧ b = k
   · rcases h1 with ⟨rfl, rfl⟩
-    rw [if_pos ⟨rfl, rfl⟩, h, one_mul, mul_one]
-  · rw [if_neg h1, zero_mul, mul_zero]
+    rw [ite_eq_left ⟨rfl, rfl⟩, h, one_mul, mul_one]
+  · rw [ite_eq_right h1, zero_mul, mul_zero]
 
 theorem inK_of_skew {Y : Matrix (Fin n) (Fin n) ℂ} (h : Yᴴ = -Y) (h' : Y * Jm ε = Jm ε * Y) : inK ε Y := by
   refine ⟨?_, h'⟩
@@ -1128,7 +1127,7 @@ theorem fderiv_tau_thE {abelian₂ Λ : Fin n → ℝ} {u : V} (hτ : IsTau ε a
     split_ifs <;> simp <;> ring
   have hthE : thE ε (a, b) = -((1 / 2 : ℂ) • ((S - T) - Complex.I • (Complex.I • (S + T)))) := by
     rw [smul_smul, Complex.I_mul_I]
-    simp only [thE, Formalism.REAL.sgn, hab, if_true, Complex.ofReal_one]
+    simp only [thE, Formalism.REAL.sgn, hab, ite_true, Complex.ofReal_one]
     module
   rw [hthE, map_neg, map_smul, map_sub, map_smul]
   simp only [ContinuousLinearMap.neg_apply, ContinuousLinearMap.smul_apply,
@@ -1453,7 +1452,7 @@ theorem int_of_isWtOn {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H
     simpa using this.symm
   obtain ⟨m, hm⟩ := Complex.exp_eq_one_iff.1 e2
   refine ⟨m, ?_⟩
-  simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at hm
+  simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at hm
   have h3 : ((μ i : ℝ) : ℂ) = m := by
     refine mul_right_cancel₀ Complex.two_pi_I_ne_zero ?_
     rw [← hm]; push_cast; ring

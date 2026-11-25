@@ -32,7 +32,7 @@ theorem keyL_inj {i j : Lt n} (h : keyL i = keyL j) : i = j := by
   have hq := GlobalTheory.CompanionTheory.RealMult.BdSqProof.key_lt q
   have hk : key p = key q → p = q := fun e => CompanionTheory.D.LK.Car.key_inj e
   have hn : n * n < (n + 1) * (n + 1) := by nlinarith
-  cases s <;> cases t <;> simp only [keyL, Bool.false_eq_true, if_false, if_true] at h
+  cases s <;> cases t <;> simp only [keyL, Bool.false_eq_true, ite_false, ite_true] at h
   · rw [hk (by omega)]
   · omega
   · omega
@@ -136,7 +136,7 @@ theorem cq_closed {lev : Fin n → ℕ} {S : Lt n → Prop} (h : IsSubL lev S) (
   obtain ⟨u, r⟩ := k
   have hu : u = (s == t) := by
     by_contra hne
-    exact hc (if_neg hne)
+    exact hc (ite_eq_right hne)
   subst hu
   have hcp : cp p q r ≠ 0 := by
     intro h0
@@ -187,7 +187,7 @@ theorem Ts_comm {E1 E2 : Fin n → Fin n → Module.End ℂ V} (h : PairRel E1 E
   have b2 : (true == false) = false := rfl
   have b3 : (false == false) = true := rfl
   have b4 : (true == true) = true := rfl
-  cases s <;> cases t <;> simp only [Ts, Bool.false_eq_true, if_false, if_true, e1, e2, e3, e4, h1, h2, b1, b2, b3, b4] <;>
+  cases s <;> cases t <;> simp only [Ts, Bool.false_eq_true, ite_false, ite_true, e1, e2, e3, e4, h1, h2, b1, b2, b3, b4] <;>
     split_ifs <;> first | abel
 
 theorem Tl_comm {E1 E2 : Fin n → Fin n → Module.End ℂ V} (h : PairRel E1 E2) (i j : Lt n) :
@@ -231,9 +231,9 @@ theorem bracket_eq :
     rw [Finset.sum_eq_single (s == i) (fun u _ hu => Finset.sum_eq_zero fun y _ => by simp [tq, hu]) (by simp)]
     refine Finset.sum_congr rfl fun k _ => ?_
     by_cases h : t.1.2 = j.1.1 ∧ k.1.1 = t.1.1 ∧ k.1.2 = j.1.2
-    · rw [if_pos h, tq, if_pos ⟨rfl, h.1, Prod.ext h.2.1 h.2.2⟩, one_smul]
-    · refine (if_neg h).trans ?_
-      rw [tq, if_neg, zero_smul]
+    · rw [ite_eq_left h, tq, ite_eq_left ⟨rfl, h.1, Prod.ext h.2.1 h.2.2⟩, one_smul]
+    · refine (ite_eq_right h).trans ?_
+      rw [tq, ite_eq_right, zero_smul]
       intro h'
       have h2 : k.1 = (t.1.1, j.1.2) := h'.2.2
       exact h ⟨h'.2.1, by rw [h2], by rw [h2]⟩
@@ -313,16 +313,16 @@ theorem lift_mem {P : Finset (Lt n) → Prop} (T : V →ₗ[ℂ] W) {x : Cq n V}
 theorem ann_ne {i : Lt n} {x : Cq n V} {A : Finset (Lt n)} (h : annq i x A ≠ 0) :
     i ∉ A ∧ x (insert i A) ≠ 0 := by
   by_cases hi : i ∈ A
-  · exact absurd (by rw [ann_apply, if_pos hi]) h
+  · exact absurd (by rw [ann_apply, ite_eq_left hi]) h
   · refine ⟨hi, fun h0 => h ?_⟩
-    rw [ann_apply, if_neg hi, h0, smul_zero]
+    rw [ann_apply, ite_eq_right hi, h0, smul_zero]
 
 theorem cre_ne {i : Lt n} {x : Cq n V} {A : Finset (Lt n)} (h : creq i x A ≠ 0) :
     i ∈ A ∧ x (A.erase i) ≠ 0 := by
   by_cases hi : i ∈ A
   · refine ⟨hi, fun h0 => h ?_⟩
-    rw [cre_apply, if_pos hi, h0, smul_zero]
-  · exact absurd (by rw [cre_apply, if_neg hi]) h
+    rw [cre_apply, ite_eq_left hi, h0, smul_zero]
+  · exact absurd (by rw [cre_apply, ite_eq_right hi]) h
 
 theorem ann_deg {m : ℕ} (i : Lt n) {x : Cq n V} (hx : DegQ (m + 1) x) : DegQ m (annq i x) := by
   intro A hA

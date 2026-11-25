@@ -24,51 +24,13 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SelfDualM
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BesselToFourierJacobiDepthLatticeSplitsStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenericCharacterTrivialBesselStepUnitriangularStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FrameTransport.InstIsModTopTens
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHatMxHomLatIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSelfDualAdelicFrameLevelOne
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SmulMemLatOIdem
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.CoordDnApply
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LatHatOpenAndContinuous
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
@@ -209,7 +171,6 @@ theorem finLat_comap_mul {k n k' m' : ℕ} {A : AddSubgroup (Mx D k' m')} (hA : 
 
 end GlobalTheory.BesselPieceB
 
-
 open GlobalTheory.BesselPieceB in
 theorem GlobalTheory.BesselPieceB.finLat_pcBF_B : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m),
     FinLat (pcBF W F ρ h).B₁ ∧ FinLat (pcBF W F ρ h).B₂ := by
@@ -266,8 +227,6 @@ theorem smul_mem_latA_idLat (I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) {a
   | zero => rw [smul_zero]; exact zero_mem _
   | add z z' _ _ hz hz' => rw [smul_add]; exact add_mem hz hz'
   | neg z _ hz => rw [smul_neg]; exact neg_mem hz
-
-
 
 theorem mulVec_latA_idLat (hM : ∀ v, P v → ∀ y ∈ latV T Λ (· = v), M *ᵥ y ∈ latV T Λ (· = v))
     (hΛ : Submodule.IsLattice D.host.E Λ) (I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) {z : Fin T.rank → AE D}
@@ -438,9 +397,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-
-
-
 namespace GlobalTheory.BigRow
 
 variable {D : D7}
@@ -489,7 +445,6 @@ theorem exists_nsmul_mem {K : Type} [Field K] [NumberField K] (I : FractionalIde
   refine ⟨z * b, 𝔪.mul_mem_right _ hz, ?_⟩
   rw [← map_natCast (algebraMap (𝓞 K) K), ← hzd, map_mul, map_mul, hb, Algebra.smul_def]
   ring
-
 
 theorem nsmul_tmul (N : ℕ) (α : AF D.host.F) (x : D.host.E) :
     (N • (α ⊗ₜ[D.host.F] x) : AE D) = α ⊗ₜ[D.host.F] ((N : D.host.E) * x) := by
@@ -575,13 +530,10 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.nsmul_projection_xColumns_mem_selfDual_lattice : OnStd fun {D} _ _ {sc} {G} _ F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∃ N : ℕ, 0 < N ∧ ∀ u ∈ latBig G (2 * ρ + 1), N • (u ⬝ (F.dB ρ h).jX ⬝ (F.dB ρ h).pX) ∈ latBig G (2 * ρ + 1) := by
-  first | exact @GlobalTheory.ProjXCols.nsmul_projX_mem_latBig
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.NsmulProjectionXColumnsMemSelfDualLatticeStatement =====
@@ -701,9 +653,6 @@ theorem continuous_extY : Continuous fun x : Mx D W.rank ρ => dV.extY W x := by
 theorem continuous_symplO : Continuous fun p : WO V W × WO V W => symplO V W p.1 p.2 :=
   Formalism.IndefR.Eqv.continuous_trace.comp (continuous_const.mul Formalism.IndefR.Eqv.continuous_hO)
 
-
-
-
 theorem ann_open (hψ : Continuous ψ) (hψ1 : ∀ x, ‖ψ x‖ = 1) (C : Set (Mx D W.rank ρ)) (hC : IsCompact C)
     (hΓC : ∀ a, dV.extX W a ∈ Γ → a ∈ C) :
     ∃ U : Set (Mx D W.rank ρ), IsOpen U ∧ (0 : Mx D W.rank ρ) ∈ U ∧ ∀ a' ∈ U, MxAt (fun _ => True) a' → a' ∈ ann dV ψ Γ := by
@@ -736,7 +685,6 @@ theorem ann_open (hψ : Continuous ψ) (hψ1 : ∀ x, ‖ψ x‖ = 1) (C : Set (
   have := huv hn
   simp only [Set.mem_setOf_eq, hpow] at this
   exact this
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem ann_isCompact (K : Set (Mx D W.rank ρ)) (hK : IsCompact K) (hSK : ∀ a' ∈ ann dV ψ Γ, a' ∈ K)
@@ -771,9 +719,6 @@ end GlobalTheory.AnnPiece
 
 namespace GlobalTheory.AnnPiece
 
-
-
-
 theorem pcBF_A₂_compact_open : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m),
     IsCompact ((pcBF W F ρ h).A₂ : Set (Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ)) ∧
     ∃ U : Set (Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ), IsOpen U ∧ (0 : Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ) ∈ U ∧
@@ -783,7 +728,7 @@ theorem pcBF_A₂_compact_open : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2
   obtain ⟨hR, -, hB, -⟩ := (GlobalTheory.T.grid_lattices_compact_selfDual_splitting D hq T L μ0 hL sc G W M hM F hF).1 (2 * ρ + 1) hi
   obtain ⟨Na, hNa, hNa'⟩ : ∃ N : ℕ, 0 < N ∧ ∀ u ∈ latBig G (2 * ρ + 1), N • u ∈ latRow G (2 * ρ + 1) := _root_.GlobalTheory.BigRow.exists_nsmul_latBig_mem_latRow D hq T L μ0 hL sc G W M hM F hF (2 * ρ + 1) hi
   obtain ⟨Nb, hNb, hNb'⟩ : ∃ N : ℕ, 0 < N ∧ ∀ u ∈ latBig G (2 * ρ + 1),
-      N • (u ⬝ (F.dB ρ h).jX ⬝ (F.dB ρ h).pX) ∈ latBig G (2 * ρ + 1) := GlobalTheory.T.nsmul_projection_xColumns_mem_selfDual_lattice D hq T L μ0 hL sc G W M hM F hF ρ h
+      N • (u ⬝ (F.dB ρ h).jX ⬝ (F.dB ρ h).pX) ∈ latBig G (2 * ρ + 1) := GlobalTheory.ProjXCols.nsmul_projX_mem_latBig D hq T L μ0 hL sc G W M hM F hF ρ h
   have hC : ∀ u' : WO (G.V (.grid (2 * ρ + 1 + 1) 0)) (G.V (.grid (2 * ρ + 1) 0)), MxAt (fun _ => True) u' →
       (∀ u ∈ latBig G (2 * ρ + 1), W.ψ (symplO _ _ u u') = 1) → u' ∈ latBig G (2 * ρ + 1) := _root_.GlobalTheory.AscFin.latBig_ann_right D hq T L μ0 hL sc G W M hM F hF (2 * ρ + 1) hi
   rw [A₂_eq]
@@ -910,8 +855,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.selfDualModulusShift_half_mem_completedModulusHom : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}, L.Is μ₀ → OffQ D → ∀ (G : GridData L sc) (i : ℕ), i < D.R.m → ∀ e : AE D, IsIdemSum e G.pl.W0 → ∀ u ∈ latBig G i, e • u ∈ hatMx (G.modul • homLat (G.Λ (.grid (i + 1) 0)) (G.Λ (.grid i 0))) := by
-  first | exact @GlobalTheory.HalfOut.smul_mem_hatMx_of_mem_latBig
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SelfDualModulusShiftHalfMemCompletedModulusHomStatement =====
@@ -933,12 +876,6 @@ noncomputable section
 namespace GlobalTheory.AscFin.BidualLattice
 
 variable {D : D7}
-
-
-
-theorem latO_negSp (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E))
-    (P : HeightOneSpectrum (𝓞 D.host.F) → Prop) : latO (negSp S) T LS LT P = latO S T LS LT P := by
-  first | exact _root_.GlobalTheory.CoreRowLat.latO_negSp | exact @_root_.GlobalTheory.CoreRowLat.latO_negSp | apply _root_.GlobalTheory.CoreRowLat.latO_negSp <;> assumption
 
 theorem extY_jY_mem {S S₀ T : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {LS : Lat S} {L₀ : Lat S₀} {LT : Lat T}
     (hS : IsSelfDualC S LS) (hT : IsSelfDualC T LT) (hm : ∀ v, MonoAt d LS L₀ v) {u : WO S T}
@@ -1003,7 +940,7 @@ theorem bidual_main (hin : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
   have hrowO : ∀ u ∈ latRow G (2 * ρ + 1), u ∈ latO (G.V (.grid (2 * ρ + 2) 0)) (G.V (.grid (2 * ρ + 1) 0))
       (G.Λ (.grid (2 * ρ + 2) 0) : Set _) (G.Λ (.grid (2 * ρ + 1) 0) : Set _) (fun _ => True) := fun u hu => by
     have h0 := hu.1
-    rwa [BidualLattice.latO_negSp] at h0
+    rwa [GlobalTheory.CoreRowLat.latO_negSp] at h0
   have hA2 : ∀ a', MxAt (fun _ => True) a' → (∀ b, (F.dB ρ h).extX _ b ∈ latRow G (2 * ρ + 1) →
       W.ψ (symplO _ _ ((F.dB ρ h).extX _ b) ((F.dB ρ h).extY _ a')) = 1) →
       W.ψ (symplO _ _ ((F.dB ρ h).extX _ a) ((F.dB ρ h).extY _ a')) = 1 :=
@@ -1015,7 +952,7 @@ theorem bidual_main (hin : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
     have hb' := hrowO _ hb
     exact (GlobalTheory.SelfDualAt.latO_ann_at D W.ψ hψ _ _ _ _ hSV hSW _ _ (GlobalTheory.FinPl.LatMem.latO_mxAt hb')).1 hb' _ ha'
   refine ⟨?_, fun e he => ?_⟩
-  · exact (BidualLattice.latO_negSp (G.V (.grid (2 * ρ + 2) 0)) _ _ _ _).ge hO
+  · exact (GlobalTheory.CoreRowLat.latO_negSp (G.V (.grid (2 * ρ + 2) 0)) _ _ _ _).ge hO
   · have hee : e * e = e := GlobalTheory.PlaceDatum.idemSum_mul_self he
     have hsx : ∀ x : Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ, (F.dB ρ h).extX _ (e • x) = e • (F.dB ρ h).extX _ x :=
       fun x => by simp only [HypDec.extX_apply, Matrix.smul_mul]
@@ -1034,7 +971,7 @@ theorem bidual_main (hin : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
     rwa [hsx, smul_smul, hee] at h2
 
 theorem bidual_pcBF : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ a, MxAt (fun _ => True) a → (∀ a' ∈ (pcBF W F ρ h).A₂, W.ψ (symplO _ _ ((F.dB ρ h).extX _ a) ((F.dB ρ h).extY _ a')) = 1) → a ∈ (pcBF W F ρ h).A₁ :=
-  bidual_main _root_.GlobalTheory.DepHalf.smul_mem_latBig GlobalTheory.T.selfDualModulusShift_half_mem_completedModulusHom
+  bidual_main _root_.GlobalTheory.DepHalf.smul_mem_latBig GlobalTheory.HalfOut.smul_mem_hatMx_of_mem_latBig
 
 end GlobalTheory.AscFin.BidualLattice
 

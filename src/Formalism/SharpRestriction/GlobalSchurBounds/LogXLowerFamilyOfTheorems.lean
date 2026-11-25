@@ -77,21 +77,12 @@ theorem FamGLmin.link8 {𝒞 : FamClass} {C5 : ℝ} (h : FamGLmin 𝒞 C5) (Cabs
   ((h.link7 Cabs C0 hCabs hC0).and (Closed.of_class (P := fun Fm _ => ChosenWall Fm) fun Fm _ hc => hW Fm hc)).imp
     fun Fm CH _ ⟨l, hWa⟩ hT _ => linkGLOBAL_of_7w Fm Cabs CH C0 Cabs 0 (l hT) hWa
 
-theorem family_theorems_two_and_five {eps : ℝ} (Fm : FamP eps) (hW : FamU Fm fun D u => Nonempty (product_first_zeroth_parts.FreeT D u))
-    (hμ : FamU Fm product_first_zeroth_parts.SlopeLine) (hI : FamU Fm LocalLatticeBases.HeckeIntegralLevelZero) (hR : FamU Fm LocalLatticeBases.HeckeRamifiedLevelZero) (hB : FamU Fm LocalLatticeBases.SecondBranchInclusionLength) :
-    FamU Fm product_first_zeroth_parts.family_property_and ∧ FamU Fm LocalLatticeBases.CongruenceLatticeLengthBound :=
-  ⟨(hW.and hμ).mono fun _ _ hS h => by obtain ⟨⟨W⟩, hm⟩ := h; exact product_first_zeroth_parts.division_side_conditions_at_sizeData hS W hm,
-   (hB.and (hI.and hR)).mono fun _ _ hS h => LocalLatticeBases.congruence_no_kernel_minimal hS h.1 h.2.1 h.2.2⟩
-
 theorem FamGLmin.muRank {𝒞 : FamClass} {C5 : ℝ} (h : FamGLmin 𝒞 C5) (C0 : ℝ) (hC0 : 0 < C0) :
     Closed 𝒞 fun Fm CH => TuSize Fm → ChosenE Fm C0 CH → NuFullF Fm ∧ J.MuRank Fm :=
   (h.hW.and (h.hμ.and (h.hI.and (h.hR.and h.hB)))).imp fun Fm _ _ ⟨hW, hμ, hI, hR, hB⟩ hTu hCh => by
-    have tSet : SettingEventually Fm := Formalism.L2.GlobalTheoryTheory.Places.settingF_of Fm hTu
     obtain ⟨hT2, hT5⟩ := family_theorems_two_and_five Fm hW hμ hI hR hB
-    have hE : J.LvlF Fm := lvlF_of Fm tSet hT2 hT5
-    have hNF : NuFullF Fm := nuFullF_of Fm (nuCommensF_min Fm hE)
     obtain ⟨_, _, _, _, _, _, _, _, _, _, _, cPr, _⟩ := hCh
-    exact ⟨hNF, muRank_min Fm hC0 cPr hNF hE tSet⟩
+    exact muRank_items Fm C0 hC0 hT2 hT5 hTu cPr
 
 end Formalism.MainNotions.Wire
 

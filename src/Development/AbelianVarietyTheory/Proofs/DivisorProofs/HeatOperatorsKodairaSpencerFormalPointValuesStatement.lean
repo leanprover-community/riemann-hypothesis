@@ -20,54 +20,12 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Den
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeA
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FromSpecAppLETopEq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalHeatOperatorsAbelianLocusStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan
 import Mathlib.Algebra.Azumaya.Basic
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.AlgebraicGeometry.QuasiAffine
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueSpecializes
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeB
@@ -757,7 +715,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 open GlobalTheory.Heat in
 theorem GlobalTheory.Heat.ringOp_conj_pow_gen : ∀ (Ω : Type) [CommRing Ω] [IsDomain Ω] (n : ℕ) (d : Derivation ℤ (FractionRing Ω) (FractionRing Ω)) (δ : Fin n → Derivation ℤ (FractionRing Ω) (FractionRing Ω)) (Θ : Matrix (Fin n) (Fin n) (FractionRing Ω)), (2 : FractionRing Ω) ≠ 0 → ∀ (u : Fin n → FractionRing Ω) (p p' c : FractionRing Ω), c ≠ 0 → ∃ (d' : Derivation ℤ (FractionRing Ω) (FractionRing Ω)) (u'' : Fin n → FractionRing Ω) (q q' : FractionRing Ω), (∀ y, (∀ a, δ a y = 0) → d' y = d y) ∧ ∀ (k : ℕ) (f : FractionRing Ω), ringOp ⇑d (fun a => ⇑(δ a)) Θ u p p' k (c ^ k * f) = c ^ k * ringOp ⇑d' (fun a => ⇑(δ a)) Θ u'' q q' k f := by
   intro Ω _ _ n d δ Θ h2 u p p' c hc
@@ -866,7 +823,7 @@ theorem injective_of_val (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] (�
     (x' : Sp Ω ⟶ G.left) : x' ≫ G.hom = spMap φ →
     (∀ (O : G.left.Opens) (f : Γ(G.left, O)), ⊤ ≤ x' ⁻¹ᵁ O → valR x' O f = 0 → f = 0) → Function.Injective φ := by
   intro hx hv
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro r hr
   have hf := hv ⊤ _ (fun _ _ => trivial) ((valR_top_comp R G Ω φ x' hx r).trans hr)
   have he : (η[G]).left ≫ G.hom = 𝟙 _ := by
@@ -990,7 +947,7 @@ theorem valR_cst_eq_iota : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) (Ω : T
   let F : Γ(Sp R, (Sp R).basicOpen s) →+* FractionRing Ω :=
     (Scheme.ΓSpecIso (CommRingCat.of (FractionRing Ω))).hom.hom.comp (z.appLE (GlobalTheory.HeatV.bo R c).1 ⊤ h').hom
   have hF : ∀ θ, valR z (GlobalTheory.HeatV.bo R c).1 θ = F θ := fun θ => by
-    simp only [valR, dif_pos h']; rfl
+    simp only [valR, dite_eq_left h']; rfl
   suffices e : F = iota by rw [hF]; exact DFunLike.congr_fun e θ
   refine IsLocalization.ringHom_ext (Submonoid.powers s) (S := Γ(Sp R, (Sp R).basicOpen s)) ?_
   ext y0
@@ -1043,9 +1000,6 @@ open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory
 
 namespace GlobalTheory.HeatVal
 
-theorem rsT_self {Y : Scheme.{0}} {O₀ : Y.Opens} (s : Γ(Y, O₀)) : rsT s O₀ = s := by
-  simp [GlobalTheory.KS.rsT]
-
 theorem valR_eq {A : Type} [CommRing A] {X : Scheme.{0}} (x : Sp A ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
     valR x U f = ((Scheme.ΓSpecIso (CommRingCat.of A)).hom.hom.comp (x.appLE U ⊤ h).hom) f := by
   unfold valR; rw [dite_eq_left h]; rfl
@@ -1087,7 +1041,7 @@ theorem value_opV_ringOp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     intro F
 
     simp only [GlobalTheory.HeatV.opV, ringOp, map_add (f := _), map_sub, map_mul, map_sum, map_natCast, map_ofNat, map_pow, hd0, hdd,
-    hc', rsT_self, RingHom.mapMatrix_apply, Matrix.map_apply]
+    hc', GlobalTheory.Heat.WtAlg.rsT_self, RingHom.mapMatrix_apply, Matrix.map_apply]
   obtain ⟨ω', hω'⟩ := _root_.GlobalTheory.HeatV.exists_isValue t.G.left t.PP.L t.PP.isLB Ω x' g hg k σ'
   refine ⟨ω', hω', ?_⟩
   have h1 := he₀ k σ ω hω

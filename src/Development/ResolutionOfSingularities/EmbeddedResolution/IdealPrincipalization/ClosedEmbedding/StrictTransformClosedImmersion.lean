@@ -10,8 +10,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem comap_eq_ker_of_mono {U V : Scheme.{u}} (j : U ⟶ V) [Mono j]
@@ -129,8 +127,6 @@ theorem image_strictTransform_eq_strictTransform_image {A A' A₁ A'₁ : Scheme
     Scheme.Hom.ker ((Blowup.strictTransform π Z D).subschemeι ≫ j₁) =
       Blowup.strictTransform π' (Scheme.Hom.ker (Z.subschemeι ≫ j))
         (Scheme.Hom.ker (D.subschemeι ≫ j)) := by
-  have : IsClosedImmersion
-      (j₁ ∣_ complComapSupport π' (Scheme.Hom.ker (Z.subschemeι ≫ j))) := inferInstance
   have hDle : Scheme.Hom.ker j ≤ Scheme.Hom.ker (D.subschemeι ≫ j) := by
     rw [Scheme.Hom.ker_comp, Scheme.IdealSheafData.ker_subschemeι,
       ← Scheme.IdealSheafData.map_bot j]

@@ -380,7 +380,7 @@ theorem exists_equivariant_extension :
     rw [dite_eq_left h]
     obtain ⟨hc', κ', hκ', e⟩ := h.choose_spec.choose_spec
     exact wd _ _ _ _ hc' hc κ' hκ' κ hκ e.symm
-  have h0 : ∀ g, ¬ Ω g → f g = 0 := fun g h => dif_neg h
+  have h0 : ∀ g, ¬ Ω g → f g = 0 := fun g h => dite_eq_right h
   refine ⟨f, ?_, ?_, ?_, ?_⟩
   · intro q g
     by_cases h : Ω g
@@ -1324,7 +1324,7 @@ theorem two_orbits [NonarchimedeanGroup G] {Q P : Subgroup G} {w : G}
   let O : S.toSubmodule →ₗ[ℂ] cIndSpace H₂ τ₂ :=
     ((resInd σ H₂ hH₂ τ₂ E₂ hE₂).comp S.toSubmodule.subtype).codRestrict _ mem2
   have hOinj : Function.Injective O := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf
     refine Subtype.ext (Subtype.ext (Subtype.ext (funext fun g => ?_)))
     rcases hcov g with h | ⟨q, hq, p, hp, rfl⟩
@@ -1361,7 +1361,7 @@ theorem orbit_cover {i t : ℕ} (h : (i + 1) + t = i + t + 1) (ht : 0 < t) (g : 
   by_cases hy : ∀ a : Fin (i + 1), ((g⁻¹ : GL (Fin (i + t + 1)) k) : Matrix (Fin (i + t + 1)) (Fin (i + t + 1)) k)
       (Fin.last (i + t)) (stdSum h (Sum.inl a)) = 0
   · exact Or.inl ((_root_.GlobalTheory.CompanionTheory.BZRes.ClosedOrbit.mem_dcos_iff k h ht g).2 hy)
-  · push_neg at hy
+  · push Not at hy
     exact Or.inr ((_root_.GlobalTheory.CompanionTheory.BZRes.mem_dcos_wGL_iff k h ht g).2 hy)
 
 theorem isClosed_orbit {i t : ℕ} (h : (i + 1) + t = i + t + 1) (ht : 0 < t) :

@@ -377,14 +377,6 @@ variable {D cc δ}
 
 variable {LL : Type} [Field LL] [NumberField LL] {ι : LL →+* ℂ}
 
-namespace ExtraTie
-
-end ExtraTie
-
-namespace PerTie
-
-end PerTie
-
 end Comparison₂
 
 section Free
@@ -412,7 +404,7 @@ theorem sum_dual_family {r : ℕ} {a a' : Fin r → D.host.E}
     rw [map_mul]; ring
   simp only [h2] at h1
   simp only [sub_mul, Finset.sum_sub_distrib, Finset.sum_mul, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [Finset.sum_comm, ← h1, sub_self]
 
 theorem mem_ellT_iff {M : IntermediateField ℚ ℂ} [NumberField M] (hM : ∀ τ x, embT D τ x ∈ M)
@@ -428,7 +420,7 @@ theorem mem_ellT_iff {M : IntermediateField ℚ ℂ} [NumberField M] (hM : ∀ �
       induction hv using Submodule.span_induction with
       | mem x hx =>
         obtain ⟨a, ha, rfl⟩ := hx
-        simp only [TaylorLogMetric.liftM, dif_pos (hM _ _), ← map_mul]
+        simp only [TaylorLogMetric.liftM, dite_eq_left (hM _ _), ← map_mul]
         have e2 := GlobalTheory.InducedType.sum_eq_trace D (a * D.host.conj y)
         erw [e2]
         obtain ⟨c, hc⟩ := (factMMUnimodular D.R D.host a).1 ha y hy
@@ -459,7 +451,7 @@ theorem mem_ellT_iff {M : IntermediateField ℚ ℂ} [NumberField M] (hM : ∀ �
     apply Subtype.ext
     have e : ∀ k, (((c k • (fun σ => TaylorLogMetric.liftM M (embT D σ (a k)))) σ : M) : ℂ) =
         (x : ℂ) * (embT D τ (D.host.conj (a' k)) * embT D σ (a k)) := fun k => by
-      simp only [TaylorLogMetric.liftM, dif_pos (hM _ _), Pi.smul_apply]
+      simp only [TaylorLogMetric.liftM, dite_eq_left (hM _ _), Pi.smul_apply]
       rw [← mul_assoc]
       rfl
     rw [Finset.sum_apply, IntermediateField.coe_sum]

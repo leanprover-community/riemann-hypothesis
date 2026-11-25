@@ -4,54 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCoTyp
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParahoricDatumEigenvectorTwoBlockParahoric
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasBoundedSumsOne
 
 @[expose] public section
@@ -273,7 +225,7 @@ theorem lowerDiagonalBlockAsGL_val_eq_toBlocks_two_two {j : GL (A ⊕ D) k} (hj 
     refine isUnit_iff_ne_zero.2 fun h0 => ?_
     have := (GlobalTheory.DatumEigen.val_det_blocks hj).2
     rw [h0, map_zero] at this; exact zero_ne_one this
-  rw [lowerDiagonalBlockAsGL, dif_pos h]; rfl
+  rw [lowerDiagonalBlockAsGL, dite_eq_left h]; rfl
 
 theorem lowerDiagonalBlockAsGL_mem_integralGeneralLinear {j : GL (A ⊕ D) k} (hj : j ∈ parahoric k A D) : lowerDiagonalBlockAsGL j ∈ KO k D := by
   refine mem_KO_of ?_ ?_
@@ -322,7 +274,7 @@ theorem card_filter_eq {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (
     if h : ∃ g, g ∈ RK ∧ g⁻¹ * (lowerDiagonalBlockAsGL j * T) ∈ KO k D then h.choose else 1
   have spec : ∀ j ∈ parahoric k A D, pick j ∈ RK ∧ (pick j)⁻¹ * (lowerDiagonalBlockAsGL j * T) ∈ KO k D := fun j hj => by
     have h := (hRK.2 (lowerDiagonalBlockAsGL j) (lowerDiagonalBlockAsGL_mem_integralGeneralLinear hj)).exists
-    simp only [pick, dif_pos h]; exact h.choose_spec
+    simp only [pick, dite_eq_left h]; exact h.choose_spec
   have uniq : ∀ j ∈ parahoric k A D, ∀ g ∈ RK, g⁻¹ * (lowerDiagonalBlockAsGL j * T) ∈ KO k D → pick j = g :=
     fun j hj g hg h => (hRK.2 (lowerDiagonalBlockAsGL j) (lowerDiagonalBlockAsGL_mem_integralGeneralLinear hj)).unique (spec j hj) ⟨hg, h⟩
   have hY : ∀ j ∈ parahoric k A D, IsIntM (nmat u * j * dg A T).val.toBlocks₁₂ →
@@ -498,13 +450,13 @@ theorem term_eq {ξ : kˣ →* ℂˣ} (hξ : IsTame ξ) {x : Matrix (A ⊕ D') (
       show valuation k ((x * (j * dg A T).val).toBlocks₁₁.det - x.toBlocks₁₁.det * j.val.toBlocks₁₁.det) < 1
       rw [hz11]
       exact hc
-    simp only [datum, dif_pos hs, dif_pos hx]
+    simp only [datum, dite_eq_left hs, dite_eq_left hx]
     rw [t1, t2, ← Units.val_mul]
     congr 1
     simp only [map_mul]
     group
   · have hs : ¬ InSupp (x * (j * dg A T).val) := fun h => hP (hiff.1 h)
-    simp only [datum, dif_neg hs, mul_zero]
+    simp only [datum, dite_eq_right hs, mul_zero]
 
 end GlobalTheory.ParHeckeSource
 
@@ -526,8 +478,8 @@ theorem sum_reps_datum_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologic
       intro g _
       simp only [liftS, intInd]
       by_cases h : ∀ i j, (schur x * g.val) i j ∈ 𝒪[k]
-      · rw [if_pos h, if_pos (show IsIntM (schur x * g.val) from h), mul_one]
-      · rw [if_neg h, if_neg (show ¬ IsIntM (schur x * g.val) from h), mul_zero]
+      · rw [ite_eq_left h, ite_eq_left (show IsIntM (schur x * g.val) from h), mul_one]
+      · rw [ite_eq_right h, ite_eq_right (show ¬ IsIntM (schur x * g.val) from h), mul_zero]
     rw [Finset.sum_congr rfl hL, Finset.sum_congr rfl hRt, ← Finset.sum_filter, ← Finset.sum_filter,
       Finset.sum_const, Finset.sum_const, hcard (unip_int hx) (schur x)]
   · have hL : ∀ j ∈ R, ((ξ (GeneralLinearGroup.det j) * (ξ (d j))⁻¹ : ℂˣ) : ℂ) * datum ξ (x * (j * dg A T).1) = 0 := by
@@ -541,9 +493,9 @@ theorem sum_reps_datum_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologic
         rw [e] at h1
         have h2 := (GlobalTheory.DatumEigen.inSupp_mul h1 (inv_mem hj)).1
         rwa [Matrix.mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.mul_one] at h2)
-      simp only [datum, dif_neg hs, mul_zero]
+      simp only [datum, dite_eq_right hs, mul_zero]
     rw [Finset.sum_eq_zero hL, Finset.sum_eq_zero]
     intro g _
-    simp only [liftS, datum, dif_neg hx, zero_mul]
+    simp only [liftS, datum, dite_eq_right hx, zero_mul]
 
 end GlobalTheory.ParHeckeSource

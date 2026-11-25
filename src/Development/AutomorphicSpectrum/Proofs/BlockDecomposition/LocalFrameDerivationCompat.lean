@@ -391,10 +391,10 @@ theorem sum_sgn {B : Type} [CommRing B] {m d : ℕ} (I : Idx m d) (a : Fin d →
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun π _ => ?_
   rw [Finset.sum_eq_single (I.1 ∘ π)]
-  · simp only [if_true, Matrix.of_apply, Function.comp_apply]
+  · simp only [ite_true, Matrix.of_apply, Function.comp_apply]
     rw [Units.smul_def]
   · intro J _ hJ
-    rw [if_neg hJ, zero_smul]
+    rw [ite_eq_right hJ, zero_smul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -608,12 +608,12 @@ theorem det_delta {R : Type} [CommRing R] {m d : ℕ} (I L : Idx m d) :
     (Matrix.of fun k l => if I.1 k = L.1 l then (1 : R) else 0).det = if I = L then 1 else 0 := by
   by_cases h : I = L
   · subst h
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have e : (Matrix.of fun k l => if I.1 k = I.1 l then (1 : R) else 0) = 1 := by
       ext k l
       simp [Matrix.one_apply, I.2.injective.eq_iff]
     rw [e, Matrix.det_one]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     have hk : ∃ k, ∀ l, I.1 k ≠ L.1 l := by
       by_contra! hc
       apply h
@@ -717,7 +717,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
 open GlobalTheory.CatH (face toLast)
 
@@ -743,7 +742,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
 open GlobalTheory.CatH (face toLast)
 

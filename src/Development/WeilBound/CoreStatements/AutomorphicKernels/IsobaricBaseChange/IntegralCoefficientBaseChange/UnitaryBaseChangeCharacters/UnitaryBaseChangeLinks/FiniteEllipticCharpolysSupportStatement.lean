@@ -34,14 +34,6 @@ namespace GlobalTheory.CptBound
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem isOpen_le_exp (w : Pl E) (m : ℤ) :
-    IsOpen {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp m} := by
-  apply _root_.GlobalTheory.PowBdd.isOpen_le_exp
-
-theorem exists_bound_of_isCompact (w : Pl E) {S : Set (w.adicCompletion E)} (hS : IsCompact S) :
-    ∃ γ : WithZero (Multiplicative ℤ), ∀ x ∈ S, Valued.v x ≤ γ := by
-  apply _root_.GlobalTheory.PowBdd.exists_bound_of_isCompact <;> assumption
-
 theorem charpoly_coeff_eq {R : Type} [CommRing R] (n : ℕ) (M : Matrix (Fin n) (Fin n) R) (k : ℕ) :
     M.charpoly.coeff k = MvPolynomial.eval (fun ij : Fin n × Fin n => M ij.1 ij.2)
       (MvPolynomial.map (Int.castRingHom R) ((Matrix.charpoly.univ ℤ (Fin n)).coeff k)) := by
@@ -80,7 +72,7 @@ theorem charpoly_det_bounded_of_isCompact : ∀ (E : Type) [Field E] [NumberFiel
       ((fun y : GLw n w => (y⁻¹ : GLw n w).val.det) '' C) with hS
   have hSc : IsCompact S :=
     ((Finset.range (n + 1)).isCompact_biUnion fun k _ => hC.image (hco k)).union (hC.image hdet)
-  obtain ⟨γ, hγ⟩ := exists_bound_of_isCompact w hSc
+  obtain ⟨γ, hγ⟩ := GlobalTheory.PowBdd.exists_bound_of_isCompact w hSc
   refine ⟨γ, fun y hy => ⟨fun k => ?_, hγ _ (Or.inr ⟨y, hy, rfl⟩)⟩⟩
   by_cases hk : k < n + 1
   · exact hγ _ (Or.inl (Set.mem_biUnion (Finset.mem_range.2 hk) ⟨y, hy, rfl⟩))
@@ -347,7 +339,7 @@ theorem finpoly : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E 
   have hpart := GlobalTheory.T.exists_mem_section_valuation_eq_conj E S hS
   let p : Pl E → Pl E := fun u => if h : u ∈ S then u else (hpart u h).choose
   have hpS : ∀ u, u ∉ S → p u ∈ S ∧ ∀ x : E, u.valuation E x = (p u).valuation E (IsCMField.complexConj E x) := by
-    intro u hu; simp only [p, dif_neg hu]; exact (hpart u hu).choose_spec
+    intro u hu; simp only [p, dite_eq_right hu]; exact (hpart u hu).choose_spec
   let Γ : Pl E → WithZero (Multiplicative ℤ) := fun u => if u ∈ S then γ u else γ (p u) * γ (p u)
   have hB : {w | ¬ f w = (KL n w : Set (UL n w)).indicator 1}.Finite := Filter.eventually_cofinite.1 hev
   have hΓ : ∀ᶠ u in cofinite, Γ u ≤ 1 := by
@@ -369,8 +361,8 @@ theorem finpoly : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E 
   rintro P ⟨hP, hPS⟩
   refine ⟨hP.1, hP.2.1, hP.2.2.2, fun k => hd _ fun u => ?_⟩
   by_cases huS : u ∈ S
-  · simp only [Γ, if_pos huS]; exact (hγ u P (hPS u huS)).1 k
-  · simp only [Γ, if_neg huS]
+  · simp only [Γ, ite_eq_left huS]; exact (hγ u P (hPS u huS)).1 k
+  · simp only [Γ, ite_eq_right huS]
     obtain ⟨hpu, hv⟩ := hpS u huS
     obtain ⟨hb1, hb2⟩ := hγ (p u) P (hPS _ hpu)
     rw [hv, conj_coeff n P hP k]

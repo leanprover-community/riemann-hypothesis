@@ -497,7 +497,7 @@ theorem eq_one_of_jets (hs : ∀ a : 𝓞 E, star a = H.bar a) {X : Scheme.{0}} 
     rw [← hF m, z, map_zero]
     have e : ((xk m).appLE ⊤ ⊤ (le_rfl : (⊤ : (Sp (Jet k (Fin 1 × Fin d) m)).Opens) ≤ xk m ⁻¹ᵁ ⊤)).hom (f - 1) =
         (xk m).appTop.hom (f - 1) := by
-      simp only [Scheme.Hom.appLE, homOfLE_refl, op_id, CategoryTheory.Functor.map_id, map_sub, map_one]
+      simp only [Scheme.Hom.appLE, map_sub, map_one]
       first | rfl
     rw [e, map_sub, map_one, h m, sub_self])
   exact sub_eq_zero.1 (h0 hz)
@@ -546,7 +546,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl Formalism.L2.Pj GlobalTheory.CompanionTheory.Ar.Flat.FrGauge
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto

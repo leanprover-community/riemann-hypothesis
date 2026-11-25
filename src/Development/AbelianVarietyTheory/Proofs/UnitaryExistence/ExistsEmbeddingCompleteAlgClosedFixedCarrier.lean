@@ -4,46 +4,10 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsComplexE
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsAbsoluteValueOfIsDiscreteValuationRing
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 public import Mathlib.RingTheory.Algebraic.Cardinality
 public import Mathlib.RingTheory.Localization.Cardinality
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.Valuation.Integral
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalRingCardinality.DataTheta
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
@@ -72,10 +36,6 @@ theorem mk_le_of_denseRange {A C : Type} [MetricSpace C] (f : A → C) (hf : Den
   have hinj : Function.Injective s := fun x y hxy =>
     tendsto_nhds_unique (hs x) (hxy ▸ hs y)
   simpa using mk_le_of_injective hinj
-
-theorem mk_le_continuum_of_finite_residueField (V : Type) [CommRing V] [IsLocalRing V]
-    [IsNoetherianRing V] [Finite (ResidueField V)] : #V ≤ 𝔠 := by
-  apply _root_.GlobalTheory.ComplexEmbedding.mk_le_continuum_of_finite_residueField
 
 theorem exists_small_closed_subfield {K C : Type} [Field K] [NontriviallyNormedField C]
     [IsUltrametricDist C] [CompleteSpace C] [IsAlgClosed C] [Algebra K C] (hK : #K ≤ 𝔠)
@@ -188,7 +148,7 @@ theorem exists_embedding_and_extension :
     haveI : Finite (ResidueField T.V) := hfin
     have hK : #T.Fr ≤ 𝔠 :=
       (IsLocalization.cardinalMk_le (nonZeroDivisors T.V)).trans
-        (mk_le_continuum_of_finite_residueField T.V)
+        (GlobalTheory.ComplexEmbedding.mk_le_continuum_of_finite_residueField T.V)
     have hx : 1 < ‖algebraMap T.Fr C (algebraMap T.V T.Fr p)⁻¹‖ := by
       rw [map_inv₀, norm_inv, hCp, inv_inv]; exact h1
     obtain ⟨L, hKL, hcl, hac, hL⟩ := exists_small_closed_subfield hK hx

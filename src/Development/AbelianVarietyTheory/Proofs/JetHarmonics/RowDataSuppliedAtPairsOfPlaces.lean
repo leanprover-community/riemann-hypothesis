@@ -48,58 +48,16 @@ public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.JetAt0Prod
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NuLocCLeNuPlEBaseChange
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieAdm
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 import Formalism.LocalToGlobal.CharacterGerms.PlugUP
 import Mathlib.Algebra.Order.Star.Real
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AddCurveStableOfIntegralGaugedFormalGroupLaw
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CocycleIntegral
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.BlockProdMemChartFamilyAtPlacePairs, Development.AbelianVarietyTheory.Proofs.JetHarmonics.CharacterBoundPairsOfPlacesIntegralChart, Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonDegenerateAndRowConditionTwoPairsOfPlaces, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.HasGaugeAdjointTeichmullerEndPairPlaces, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CartHypOfFormalBiextension, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.GermsDerivKernelOfFormal, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.SubstOneVariableUncurryEqSubst, Development.AbelianVarietyTheory.Proofs.JetHarmonics.RowDataSuppliedAtPairsOfPlaces
@@ -157,7 +115,7 @@ theorem poly_eq (b : RF.GlobalTheory d) (M : Fin 2 → ZMod d → ℕ) (h : ∀ 
       simp [RF.GlobalTheory.wt, he]
     · intro he
       refine h _ _ _ ?_
-      simp only [RF.GlobalTheory.wt, and_self, if_true]
+      simp only [RF.GlobalTheory.wt, and_self, ite_true]
       omega
   | ch g a u =>
     simp only [RF.GlobalTheory.wt]
@@ -178,7 +136,7 @@ theorem poly_eq (b : RF.GlobalTheory d) (M : Fin 2 → ZMod d → ℕ) (h : ∀ 
         intro k hk
         rw [Finset.mem_Icc] at hk
         simp only [RF.GlobalTheory.wt]
-        rw [if_pos ⟨trivial, hk⟩]
+        rw [ite_eq_left ⟨trivial, hk⟩]
       refine Finset.prod_congr_of_eq_on_inter ?_ ?_ ?_
       · intro k hk hk'
         have : e a k = 0 := by
@@ -188,7 +146,7 @@ theorem poly_eq (b : RF.GlobalTheory d) (M : Fin 2 → ZMod d → ℕ) (h : ∀ 
       · intro k _ hk
         rw [Finset.mem_Icc] at hk
         simp only [RF.GlobalTheory.wt]
-        rw [if_neg (fun h => hk h.2), pow_zero]
+        rw [ite_eq_right (fun h => hk h.2), pow_zero]
       · intro k hk _
         rw [h1 k hk, map_pow]
     · intro g' _ hg
@@ -210,7 +168,7 @@ theorem le_rows (b : RF.GlobalTheory d) (g : Fin 2) (a : ZMod d) (k : ℕ) (h : 
   | mon g' e N =>
     simp only [RF.GlobalTheory.wt] at h
     by_contra hk
-    rw [if_neg] at h
+    rw [ite_eq_right] at h
     · exact h rfl
     · rintro ⟨-, -, h3⟩
       exact hk (h3.trans (min_le_left _ _))
@@ -290,9 +248,9 @@ theorem isImgO {dd n : ℕ} (inj : Function.Injective fun x : Orb × Fin 2 × ZM
     obtain ⟨x, -, rfl⟩ := Finset.mem_image.1 (MvPolynomial.vars_rename _ _ hℓ)
     beta_reduce
     rw [hx, Finset.sum_eq_single x.2]
-    · rw [hU, if_pos rfl, one_smul]
+    · rw [hU, ite_eq_left rfl, one_smul]
     · intro w _ hw
-      rw [if_neg (fun h => hw (hi h)), zero_smul]
+      rw [ite_eq_right (fun h => hw (hi h)), zero_smul]
     · simp
   · rw [MvPolynomial.aeval_rename]
     have : ((fun ℓ : Formalism.L2.Pj.Letter Ty r n => ∑ w : WVO (Ix r tau),
@@ -301,10 +259,10 @@ theorem isImgO {dd n : ℕ} (inj : Function.Injective fun x : Orb × Fin 2 × ZM
       funext x
       simp only [Function.comp]
       rw [hx, Finset.sum_eq_single x.2]
-      · rw [if_pos rfl, map_one, one_mul]
+      · rw [ite_eq_left rfl, map_one, one_mul]
         rfl
       · intro w _ hw
-        rw [if_neg (fun h => hw (hi h)), map_zero, zero_mul]
+        rw [ite_eq_right (fun h => hw (hi h)), map_zero, zero_mul]
       · simp
     rw [this, MvPolynomial.aeval_X_left_apply]
 
@@ -327,13 +285,13 @@ theorem rename_minor {J : Fin 2 → Type} [∀ g, Fintype (J g)] (o : Orb) (X : 
     GlobalTheory.CombMinor.cMat]
   have hρ : ρ.val < N := lt_of_lt_of_le ρ.2 hN
   rw [Finset.sum_eq_single (col ⟨ρ.val, hρ⟩)]
-  · rw [ind, dite_eq_left hρ, if_pos rfl, map_one, one_mul]
+  · rw [ind, dite_eq_left hρ, ite_eq_left rfl, map_one, one_mul]
     congr 1
     simp only [Function.comp, RF.Flag.letter]
     rw [sigma_eq _ a (Fin.castLE hk i) (h1 g a (Fin.castLE hr i)) (h2 g a (Fin.castLE hr i))]
     rfl
   · intro b _ hb
-    rw [ind, dite_eq_left hρ, if_neg hb, map_zero, zero_mul]
+    rw [ind, dite_eq_left hρ, ite_eq_right hb, map_zero, zero_mul]
   · simp
 
 theorem sum_fin_gap (m i : ℕ) (f : ℕ → ℕ) :
@@ -440,18 +398,18 @@ theorem prod_mem [Fintype Ty] (O : Subring C) (cc : Ty → Ty) (isX : Ty → Pro
       · rw [Fintype.sum_sigma, Finset.sum_eq_single s]
         · simp
         · intro s' _ hs
-          refine Finset.sum_eq_zero fun k _ => if_neg fun h => hs ?_
+          refine Finset.sum_eq_zero fun k _ => ite_eq_right fun h => hs ?_
           have h3 : ((o, g, s') : Orb × Fin 2 × ZMod d) = (o, g, s) := inj h.1
           simpa using h3
         · simp
       · intro g' _ hs
-        refine Finset.sum_eq_zero fun k _ => if_neg fun h => hs ?_
+        refine Finset.sum_eq_zero fun k _ => ite_eq_right fun h => hs ?_
         have h3 : ((o, g', k.1) : Orb × Fin 2 × ZMod d) = (o, g, s) := inj h.1
         simp only [Prod.mk.injEq] at h3
         exact h3.2.1
       · simp
     · intro o' _ hs
-      refine Finset.sum_eq_zero fun k _ => if_neg fun h => hs ?_
+      refine Finset.sum_eq_zero fun k _ => ite_eq_right fun h => hs ?_
       have h3 : ((o', k.2.1, k.2.2.1) : Orb × Fin 2 × ZMod d) = (o, g, s) := inj h.1
       simp only [Prod.mk.injEq] at h3
       exact h3.1
@@ -670,7 +628,7 @@ theorem van_h {n : ℕ} (j : Fin n) {b : Fin dd → PS C n dd} (hb : Zc b) :
   rintro ⟨s, x⟩ hs ν hν
   obtain rfl : s = 0 := hs
   show coeff ν (X (j, x) : PS C n dd) = 0
-  rw [coeff_X, if_neg]
+  rw [coeff_X, ite_eq_right]
   rintro rfl
   exact hν (j, x) (by simp) rfl
 
@@ -1198,7 +1156,7 @@ theorem deriv_genVec {n : ℕ} (b : Fin n) (u : Fin dd → C) (co : WVO I → C)
       by_cases h : ρ = b'
       · subst h
         simp [smul_eq_C_mul]
-      · rw [pderiv_X_of_ne (by simp [Ne.symm h]), if_neg h, smul_zero]
+      · rw [pderiv_X_of_ne (by simp [Ne.symm h]), ite_eq_right h, smul_zero]
     · intro w' _ hw'
       rw [Derivation.map_smul, pderiv_X_of_ne (by simp [hw']), smul_zero]
     · simp
@@ -1353,7 +1311,7 @@ theorem supply_pairs : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.ChartRes
   refine RF.blkAdm _ F Finset.univ _ (fun o _ => hdich o) (fun _ _ => hj) fun o _ g s q hq => ?_
   rw [hrk]
   by_contra hc
-  exact hq (by unfold gap; rw [if_neg fun h => hc h.2])
+  exact hq (by unfold gap; rw [ite_eq_right fun h => hc h.2])
 
 end GlobalTheory.RowAt
 end -- clump:auto

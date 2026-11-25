@@ -9,51 +9,12 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CotangentIma
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsStandardBasisExtensionDetNeZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RegularSequenceExtendCoords
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLinearHomPull
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitMkOfFormallyUnramified
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
-import Mathlib.Algebra.Azumaya.Basic
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -188,17 +149,17 @@ theorem exists_basis_of_dual {K R : Type} [CommRing R] [IsNoetherianRing R] (hQ 
     have h2 : g l * u l = 0 := by
       rw [← hsum (fun k => g k * u k) l, h1]; rfl
     by_cases hl : l ∈ Set.range e
-    · simp only [u, if_pos hl] at h2
+    · simp only [u, ite_eq_left hl] at h2
       exact mem_of_mul_mem hQ (d l) ⊥ (fun r hr => by rw [Ideal.mem_bot.1 hr, map_zero]; exact zero_mem _)
         (t := z l) (by simp [hd]) (by rw [mul_comm, h2]; exact zero_mem _)
-    · simpa only [u, if_neg hl, mul_one] using h2
+    · simpa only [u, ite_eq_right hl, mul_one] using h2
   have hsp : ⊤ ≤ Submodule.span R (Set.range v) := by
     rintro ⟨D, hD⟩ -
     obtain ⟨hD0, hD1⟩ := (hM D).1 hD
     have hdiv : ∀ k, u k ∣ D (z k) := by
       intro k
       by_cases hk : k ∈ Set.range e
-      · simp only [u, if_pos hk]
+      · simp only [u, ite_eq_left hk]
         obtain ⟨j, rfl⟩ := hk
         have h1 := Ideal.mem_span_singleton.1 (hD1 _ (Ideal.mem_span_singleton_self _))
         rw [← Finset.mul_prod_erase _ _ (Finset.mem_univ j), D.leibniz, smul_eq_mul, smul_eq_mul] at h1
@@ -216,7 +177,7 @@ theorem exists_basis_of_dual {K R : Type} [CommRing R] [IsNoetherianRing R] (hQ 
             exact Ideal.mem_span_singleton.1 (mem_of_mul_mem hQ (d (e i)) _
               (mem_span_of_dvd _ (by simp [hd, hij])) (by simp [hd]) (Ideal.mem_span_singleton.2 ha))
         exact h3 _ (Finset.notMem_erase _ _) _ h2
-      · simp only [u, if_neg hk, one_dvd]
+      · simp only [u, ite_eq_right hk, one_dvd]
     choose g hg using hdiv
     refine (Submodule.mem_span_range_iff_exists_fun R).2 ⟨g, Subtype.ext ?_⟩
     conv_rhs => rw [show (⟨D, hD⟩ : M).1 = D from rfl, hspan D hD0]

@@ -68,7 +68,7 @@ theorem levN_smul_alg (i : ZMod n) (ζ : LL) (o : O) (x : ↥(W.N T)) (k : ℤ) 
   rw [W.levN_smul, AlgHom.commutes, Algebra.algebraMap_eq_smul_one (A := PowerSeries LL) o]
   try simp only [serMul]
   rw [finsum_eq_single _ 0 (fun j hj => by
-    rw [PowerSeries.coeff_smul, PowerSeries.coeff_one, if_neg hj, smul_zero, zero_smul])]
+    rw [PowerSeries.coeff_smul, PowerSeries.coeff_one, ite_eq_right hj, smul_zero, zero_smul])]
   rw [PowerSeries.coeff_smul, PowerSeries.coeff_zero_one, Nat.cast_zero, sub_zero,
     Algebra.smul_def o (1 : LL), mul_one]
 

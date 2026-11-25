@@ -119,13 +119,6 @@ structure An {e : ℕ} (M : Man e) (ι : Type) (N : ℕ) where
 
   phS : (ι → Fin N → ℝ) → ℝ → M.Fun
 
-namespace An
-
-variable {e : ℕ} {M : Man e} {ι : Type} [Fintype ι] {N : ℕ} (F : An M ι N) (j : ℕ)
-
-
-end An
-
 variable {D : D7} (Y : ShimX D.what₂.Tau)
 
 structure Real0 where

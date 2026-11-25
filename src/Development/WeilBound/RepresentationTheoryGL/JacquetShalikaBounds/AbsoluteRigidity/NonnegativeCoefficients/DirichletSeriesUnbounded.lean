@@ -107,13 +107,8 @@ theorem dirichlet_series_unbounded : LandauL → NewtonLow → EulerLog → Remo
     exact (le_abs_self _).trans this
   choose F σ0 hFa hFe using fun ij : ι × ι => hS.rs (x ij.1) (x ij.2)
   set G : ℂ → ℂ := fun s => ∏ ij : ι × ι, F ij s with hG
-  have hGa : ∀ σ : ℝ, 0 < σ → AnalyticAt ℂ G σ := fun σ hσ => by
-    have := Finset.analyticAt_prod (𝕜 := ℂ) (f := F) (c := (σ : ℂ)) Finset.univ (fun ij _ => hFa ij σ hσ)
-    have e : G = ∏ ij ∈ Finset.univ, F ij := by
-      funext s
-      simp [hG, Finset.prod_apply]
-    rw [e]
-    exact this
+  have hGa : ∀ σ : ℝ, 0 < σ → AnalyticAt ℂ G σ := fun σ hσ =>
+    Finset.analyticAt_fun_prod (𝕜 := ℂ) Finset.univ fun ij _ => hFa ij σ hσ
   set B : ℝ := 2 + ∑ ij, |σ0 ij| with hBd
   have hB : ∀ ij, σ0 ij ≤ B := fun ij => by
     have := Finset.single_le_sum (f := fun ij => |σ0 ij|) (fun _ _ => abs_nonneg _) (Finset.mem_univ ij)

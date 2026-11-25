@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinear
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulMemBall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenFixedOfSubgroup
 public import Mathlib.Topology.Algebra.Group.Units
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactInductionTwistedKernel
@@ -22,6 +21,78 @@ import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmb
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.LeibnizDerivatives.EPGFalseEqLastIff
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn
 import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Matrix GlobalTheory.BZMir GlobalTheory.SplitWeil ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.Onto
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+def ballSub (s : kˣ) : AddSubgroup k where
+  carrier := cball s
+  zero_mem' := by simp [cball]
+  add_mem' := add_mem_cball
+  neg_mem' := neg_mem_cball
+
+theorem mul_mem_ball {s : kˣ} (hs : valuation k (s : k) ≤ 1) {x y : k} (hx : x ∈ cball s)
+    (hy : y ∈ cball s) : x * y ∈ cball s := by
+  show valuation k (x * y) ≤ valuation k (s : k)
+  rw [map_mul]
+  calc valuation k x * valuation k y ≤ valuation k (s : k) * 1 :=
+        mul_le_mul' hx (le_trans hy hs)
+    _ = valuation k (s : k) := mul_one _
+
+def NearOne (s : kˣ) {m : ℕ} (A : Matrix (Fin m) (Fin m) k) : Prop :=
+  ∀ a b, A a b - (1 : Matrix (Fin m) (Fin m) k) a b ∈ cball s
+
+theorem NearOne.mul {s : kˣ} (hs : valuation k (s : k) ≤ 1) {m : ℕ}
+    {A B : Matrix (Fin m) (Fin m) k} (hA : NearOne s A) (hB : NearOne s B) : NearOne s (A * B) := by
+  intro a b
+  have e : (A * B) a b - (1 : Matrix (Fin m) (Fin m) k) a b =
+      ((A - 1) * (B - 1)) a b + (A a b - (1 : Matrix (Fin m) (Fin m) k) a b) +
+        (B a b - (1 : Matrix (Fin m) (Fin m) k) a b) := by
+    have : A * B - 1 = (A - 1) * (B - 1) + (A - 1) + (B - 1) := by noncomm_ring
+    exact congrFun (congrFun this a) b
+  rw [e]
+  refine add_mem_cball (add_mem_cball ?_ (hA a b)) (hB a b)
+  rw [Matrix.mul_apply]
+  exact (ballSub s).sum_mem fun l _ => mul_mem_ball hs (hA a l) (hB l b)
+
+
+variable (k) in
+def congGL (s : kˣ) (hs : valuation k (s : k) ≤ 1) (m : ℕ) : Subgroup (GL (Fin m) k) where
+  carrier := {g | NearOne s (g : Matrix (Fin m) (Fin m) k) ∧
+    NearOne s ((g⁻¹ : GL (Fin m) k) : Matrix (Fin m) (Fin m) k)}
+  one_mem' := by
+    constructor <;> intro a b <;> simp [cball]
+  mul_mem' := by
+    rintro g h ⟨g1, g2⟩ ⟨h1, h2⟩
+    refine ⟨?_, ?_⟩
+    · rw [Units.val_mul]
+      exact g1.mul hs h1
+    · rw [_root_.mul_inv_rev, Units.val_mul]
+      exact h2.mul hs g2
+  inv_mem' := by
+    rintro g ⟨g1, g2⟩
+    exact ⟨g2, by simpa using g1⟩
+
+
+variable (k) in
+def congM (s : kˣ) (hs : valuation k (s : k) ≤ 1) (n : ℕ) : Subgroup (Mir k n) :=
+  (congGL k s hs (n + 1)).comap (Mir k n).subtype
+
+end GlobalTheory.CompanionTheory.BZPhiPG.Onto
+
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BumpSectionValueLocalIntegral, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupOpenCompact, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupsBasisNhds, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ShiftedEmbeddingMemCongruenceIff, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothSubrepCompactInductionSpan, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnipotentBallMemCongruence, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnipotentCongruenceFactorization, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedEvaluationSurjective
@@ -428,8 +499,8 @@ theorem average_cut (H : Subgroup G) (ρ : Representation ℂ H W)
     have e1 : (cInd H ρ ((q.out : K₁) : G) B).1.1.1 g = B.1.1.1 (g * ((q.out : K₁) : G)) := rfl
     rw [e1, hB]
     by_cases h : g * ((q.out : K₁) : G) ∈ dc H K' c
-    · rw [Set.indicator_of_mem h, hy g _ q.out.2, if_pos h, one_smul]
-    · rw [Set.indicator_of_notMem h, if_neg h, zero_smul]
+    · rw [Set.indicator_of_mem h, hy g _ q.out.2, ite_eq_left h, one_smul]
+    · rw [Set.indicator_of_notMem h, ite_eq_right h, zero_smul]
   have hleft : ∀ (b : H) g, φ ((b : G) * g) = φ g := by
     intro b g
     simp only [φ, mul_assoc, dc_left H K' c (b : G) b.2]
@@ -473,11 +544,11 @@ theorem average_cut (H : Subgroup G) (ρ : Representation ℂ H W)
       Finset.single_le_sum (f := fun q : K₁ ⧸ L =>
         if c * ((q.out : K₁) : G) ∈ dc H K' c then 1 else 0) (fun _ _ => Nat.zero_le _)
         (Finset.mem_univ q₀)
-    rw [if_pos h4] at h5
+    rw [ite_eq_left h4] at h5
     omega
   have hoff : ∀ g, g ∉ dc H K₁ c → φ g = 0 := by
     intro g hg
-    refine Finset.sum_eq_zero fun q _ => if_neg fun h => hg ?_
+    refine Finset.sum_eq_zero fun q _ => ite_eq_right fun h => hg ?_
     obtain ⟨b, k, hk, e⟩ := h
     exact (dc_right H K₁ c _ q.out.2 g).1 ⟨b, k, hle hk, e⟩
   have hc0 : (φ c : ℂ) ≠ 0 := by exact_mod_cast hφc

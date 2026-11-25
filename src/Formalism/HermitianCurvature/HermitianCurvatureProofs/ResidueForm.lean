@@ -54,7 +54,7 @@ lemma eU_same (a : S) (i : Fin 2) : (eU a i i : SlopeTestRemainingChoices S A) =
       · subst hb
         rw [h1, h2]
       · exact h3 b hb
-    rw [if_neg hn, if_neg hxy]
+    rw [ite_eq_right hn, ite_eq_right hxy]
 
 lemma dg_io (g : Ix S → ℂ) (x : A) : (dg g * io x : SlopeTestRemainingChoices S A) = io x * dg g := by
   apply Matrix.ext
@@ -232,7 +232,6 @@ lemma io_smul (c : ℂ) (x : A) : (io (c • x) : SlopeTestRemainingChoices S A)
   simp [io, Matrix.scalar_apply, Matrix.diagonal_apply, Matrix.smul_apply]
 
 lemma io_sum {J : Type} (s : Finset J) (x : J → A) : (io (∑ j ∈ s, x j) : SlopeTestRemainingChoices S A) = ∑ j ∈ s, io (x j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [io, map_sum]
 
 lemma Kw_nil {r : ℕ} (L : LevelData A r) : (Kw L ([] : List (Letter ℂ S)) : SlopeTestRemainingChoices S A) = 0 := by

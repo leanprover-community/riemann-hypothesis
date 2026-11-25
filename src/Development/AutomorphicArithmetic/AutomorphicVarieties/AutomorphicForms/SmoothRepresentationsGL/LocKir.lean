@@ -75,7 +75,7 @@ theorem UpperTheory.V.Af.Smo.locKir :
       refine ⟨fun ξ => if e : ∃ s : GL (Fin n) (w.adicCompletion E), s.val = rowM m' ξ then e.choose else 1,
         fun ξ s hs => ?_⟩
       have e : ∃ s : GL (Fin n) (w.adicCompletion E), s.val = rowM m' ξ := ⟨s, hs⟩
-      simp only [dif_pos e]
+      simp only [dite_eq_left e]
       exact Units.ext (e.choose_spec.trans hs.symm)
     obtain ⟨σ, hσ⟩ := hσ
     refine ⟨c, fun p => h (p.val m') * H₀ (p * (σ (p.val m'))⁻¹), ?_, fun W hW hWU p hp => ?_⟩

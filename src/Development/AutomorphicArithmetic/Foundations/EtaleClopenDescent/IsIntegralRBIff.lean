@@ -26,13 +26,13 @@ theorem isIntegral_rB_iff (y : L) :
       map_mul' := fun a b => Subtype.ext (map_mul _ _ _)
       map_zero' := Subtype.ext (map_zero _)
       map_add' := fun a b => Subtype.ext (map_add _ _ _) }
-  letI : Algebra (rA k x I) (rB k K x I) := j.toAlgebra
-  haveI : IsScalarTower (rA k x I) (rB k K x I) L := .of_algebraMap_eq fun a => by
+  let : Algebra (rA k x I) (rB k K x I) := j.toAlgebra
+  have : IsScalarTower (rA k x I) (rB k K x I) L := .of_algebraMap_eq fun a => by
     change algebraMap F L a = algebraMap K L (algebraMap F K a)
     exact IsScalarTower.algebraMap_apply F K L _
-  haveI : Algebra.IsIntegral (rA k x I) (rB k K x I) := ⟨fun b => by
+  have : Algebra.IsIntegral (rA k x I) (rB k K x I) := ⟨fun b => by
     have hb : IsIntegral (rA k x I) (b : K) := b.2
-    haveI : IsScalarTower (rA k x I) (rB k K x I) K := .of_algebraMap_eq fun a => rfl
+    have : IsScalarTower (rA k x I) (rB k K x I) K := .of_algebraMap_eq fun a => rfl
     exact (isIntegral_algebraMap_iff (A := rB k K x I) (B := K) ).1 hb⟩
   exact ⟨fun h => h.tower_top, fun h => isIntegral_trans y h⟩
 end
@@ -95,10 +95,10 @@ theorem isFinCover_pull (hc : c ≫ p = p') [IsFinite c] [Etale c] (hK : instK =
     obtain ⟨i, hi⟩ := TopologicalSpace.Opens.mem_iSup.1 hz
     exact TopologicalSpace.Opens.mem_iSup.2 ⟨i, hi⟩
   refine ⟨?_, hcov⟩
-  haveI : CharZero F := charZero_of_injective_algebraMap (algebraMap ℂ F).injective
-  haveI := hx.fin
-  haveI := hff.1
-  haveI : FiniteDimensional F Y.functionField := FiniteDimensional.trans F Z.functionField Y.functionField
+  have : CharZero F := charZero_of_injective_algebraMap (algebraMap ℂ F).injective
+  have := hx.fin
+  have := hff.1
+  have : FiniteDimensional F Y.functionField := FiniteDimensional.trans F Z.functionField Y.functionField
   refine IsFinCover.of_charZero hx.pd inferInstance fun i => ?_
   exact GlobalTheory.smooth_sections_in_functionField Y p' (SmoothOfRelativeDimension.smooth d p') hL _
     (haff {i} ⟨i, by simp⟩) (hne {i}) _ fun y => mem_rB_pull hc hK hL hg hU {i} ⟨i, by simp⟩ _ rfl (hne {i}) y

@@ -237,7 +237,6 @@ theorem quasiCompact_coverMap_comp_structureMorphism (T : MarkedIdealWithBoundar
     isAffine_coverTriple_scheme T hv hgood
   have : AlgebraicGeometry.IsAffine (MaxContactCoverData.coverTriple T hv).scheme :=
     isAffine_coverTriple_scheme T hv hgood
-  have : Subsingleton ↥(AlgebraicGeometry.Spec (CommRingCat.of T.base)) := inferInstance
   constructor
   intro U _hU _hUc
   by_cases hUe : U = ∅

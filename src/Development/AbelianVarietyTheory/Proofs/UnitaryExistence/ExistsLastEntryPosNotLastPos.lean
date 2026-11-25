@@ -74,12 +74,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 def RowsDominant (Dw : Datum H) (a : (E →+* ℂ) × ℕ → ℕ) : Prop :=
   ∀ τ : E →+* ℂ, Antitone fun i : Fin (Dw.mult τ) => a (τ, i)
 
-section Rig
-
-variable {X : Scheme.{0}} (A : Over X) [GrpObj A] [IsCommMonObj A] (L : RigLB A)
-
-end Rig
-
 variable {Dw : Datum H} {l : Level H} (Xo : Moduli Dw l) (c : Coeff l)
 
 end GlobalTheory.IndefiniteRowSideFullHecke.JetRangeLevelFactor
@@ -110,15 +104,15 @@ theorem not_inPsi_conjugate {τ : E →+* ℂ} (h : InPsi H τ) : ¬ InPsi H (Co
   rw [ComplexEmbedding.conjugate_coe_eq, h, (rt0_conj_neg_ne_zero H).1] at h'
   exact (rt0_conj_neg_ne_zero H).2 (by linear_combination (-1 / 2 : ℂ) * h')
 
-theorem mult_of_inPsi {τ : E →+* ℂ} (h : InPsi H τ) : Dw.mult τ = Dw.p := if_pos h
+theorem mult_of_inPsi {τ : E →+* ℂ} (h : InPsi H τ) : Dw.mult τ = Dw.p := ite_eq_left h
 
-theorem mult_of_not_inPsi {τ : E →+* ℂ} (h : ¬ InPsi H τ) : Dw.mult τ = Dw.q := if_neg h
+theorem mult_of_not_inPsi {τ : E →+* ℂ} (h : ¬ InPsi H τ) : Dw.mult τ = Dw.q := ite_eq_right h
 
 def trunc (Dw : Datum H) (a : (E →+* ℂ) × ℕ → ℕ) : (E →+* ℂ) × ℕ → ℕ :=
   fun x => if x.2 < Dw.mult x.1 then a x else 0
 
 theorem trunc_row (a : (E →+* ℂ) × ℕ → ℕ) (τ : E →+* ℂ) (i : Fin (Dw.mult τ)) : trunc Dw a (τ, i) = a (τ, i) :=
-  if_pos i.isLt
+  ite_eq_left i.isLt
 
 theorem rowsDominant_of_dom {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} (h : Dom a n) : RowsDominant Dw a :=
   fun τ _ _ hij => h.1 τ hij
@@ -154,14 +148,14 @@ theorem exists_harmA_ne_zero {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} (ha : 
     intro τ i j hij
     have := congrArg Fin.val hij
     by_cases h : InPsi H τ
-    · simp only [col, dif_pos h] at this
+    · simp only [col, dite_eq_left h] at this
       exact Fin.ext this
-    · simp only [col, dif_neg h] at this
+    · simp only [col, dite_eq_right h] at this
       exact Fin.ext (by omega)
   have hdis : ∀ τ, InPsi H τ → ∀ i j, col τ i ≠ col (ComplexEmbedding.conjugate τ) j := by
     intro τ h i j hij
     have := congrArg Fin.val hij
-    simp only [col, dif_pos h, dif_neg (not_inPsi_conjugate h)] at this
+    simp only [col, dite_eq_left h, dite_eq_right (not_inPsi_conjugate h)] at this
     have := i.isLt
     have := mult_of_inPsi (Dw := Dw) h
     omega
@@ -171,7 +165,7 @@ theorem exists_harmA_ne_zero {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} (ha : 
   · exact minorMonomial_mem_harmonic _ _ _ cols _ _
       (fun τ h s s' i j => hdis τ h (Fin.castLE s.isLt i) (Fin.castLE s'.isLt j)) _
   · exact minorMonomial_rowInvariant _ _ _ cols _
-  · exact minorMonomial_rowDegree _ _ _ cols _ (antitone_trunc ha) fun τ => if_neg (lt_irrefl _)
+  · exact minorMonomial_rowDegree _ _ _ cols _ (antitone_trunc ha) fun τ => ite_eq_right (lt_irrefl _)
   · exact minorMonomial_coeff_mem Dw.mult n c.F cols _ _
   · exact minorMonomial_ne_zero _ _ _ cols (fun τ s => (hinj τ).comp (Fin.castLE_injective s.isLt)) _
 

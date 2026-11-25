@@ -208,7 +208,7 @@ theorem unrNorm : UnrNorm := by
   intro F E _ _ _ _ _ v w σw l N hN hq a
   refine MonoidHom.ext fun x => ?_
   have h := hN.abs x
-  rw [GlobalTheory.LGrp.nabs_eq_zpow, GlobalTheory.LGrp.nabs_eq_zpow, GlobalTheory.T.residue_card_eq_abs_norm F v, GlobalTheory.T.residue_card_eq_abs_norm E w.1, hq] at h
+  rw [GlobalTheory.LGrp.nabs_eq_zpow, GlobalTheory.LGrp.nabs_eq_zpow, GlobalTheory.CompanionTheory.ResCardAbsNorm.resCard_completion_eq_absNorm F v, GlobalTheory.CompanionTheory.ResCardAbsNorm.resCard_completion_eq_absNorm E w.1, hq] at h
   have h' := zpow_inj_of_absNorm v h
   have h'' := neg_injective h'
   simp only [MonoidHom.comp_apply, GlobalTheory.SmGL.unrChar_apply, h'']
@@ -797,7 +797,6 @@ private theorem jacA_refl {k V : Type} [Field k] {n : ℕ} [AddCommGroup V] [Mod
   refine LinearMap.ext fun y => ?_
   obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ y
   rfl
-
 
 theorem UpperTheory.Gal.Join.coreId (h1 : VarEx) (h2 : VarTrace) (h3 : ElemPairJ) : CoreId := by
   intro F E _ _ _ _ _ _ _ _ σ hσ hp n hn v w hns σw N hs hN π P hP hW τ τ' hτ hτ'

@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.ProjectiveLineTwoAffineCh
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.t_E2Cut LateralTheory.E.GeometricData LateralTheory.E.ProjectiveLineCharts₂
 
 namespace LateralTheory.E.ChartBC_nnmPf

@@ -49,7 +49,7 @@ def TowES : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O], ¬ IsUnit (p : O) →
   ∀ (K : Type) [Field K] [Algebra O K], (p : K) ≠ 0 → (∀ a : IsLocalRing.ResidueField O, a ^ p ^ f = a) →
   ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] [Algebra K Ω] (V : ValuationSubring Ω)
-    (hV : ∀ a : O, algebraMap K Ω (algebraMap O K a) ∈ V),
+    (_ : ∀ a : O, algebraMap K Ω (algebraMap O K a) ∈ V),
     (∀ a ∈ IsLocalRing.maximalIdeal O, V.valuation (algebraMap K Ω (algebraMap O K a)) < 1) → V.valuation (l : Ω) = 1 →
   ∀ (L : Type) [Field L] [Algebra ℚ_[l] L] (H : HTower K) (θ : H.Γ → L), Nice H → ∀ (C : Cover H θ O) (ϑ : ℕ → L), C.Cong p f n ϑ →
   (∀ σ : Ω ≃ₐ[K] Ω, ∀ x ∈ piece l H Ω L θ, galV l H Ω L σ x ∈ piece l H Ω L θ) →

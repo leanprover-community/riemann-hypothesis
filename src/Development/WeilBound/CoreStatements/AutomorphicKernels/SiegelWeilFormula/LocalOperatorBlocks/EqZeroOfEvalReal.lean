@@ -35,38 +35,6 @@ def reP (p : MvPolynomial σ ℂ) : MvPolynomial σ ℝ := ∑ k ∈ p.support, 
 
 def imaginary (p : MvPolynomial σ ℂ) : MvPolynomial σ ℝ := ∑ k ∈ p.support, MvPolynomial.monomial k (AddMonoidAlgebra.coeff p k).im
 
-theorem coeff_reP (p : MvPolynomial σ ℂ) (k : σ →₀ ℕ) : AddMonoidAlgebra.coeff (reP p) k = (AddMonoidAlgebra.coeff p k).re := by
-  classical
-  rw [reP, MvPolynomial.coeff_sum]
-  simp only [MvPolynomial.coeff_monomial]
-  rw [Finset.sum_ite_eq']
-  split_ifs with h
-  · rfl
-  · rw [MvPolynomial.notMem_support_iff.1 h, Complex.zero_re]
-
-theorem coeff_imP (p : MvPolynomial σ ℂ) (k : σ →₀ ℕ) : AddMonoidAlgebra.coeff (imaginary p) k = (AddMonoidAlgebra.coeff p k).im := by
-  classical
-  rw [imaginary, MvPolynomial.coeff_sum]
-  simp only [MvPolynomial.coeff_monomial]
-  rw [Finset.sum_ite_eq']
-  split_ifs with h
-  · rfl
-  · rw [MvPolynomial.notMem_support_iff.1 h, Complex.zero_im]
-
-theorem eval_map_real (q : MvPolynomial σ ℝ) (y : σ → ℝ) :
-    MvPolynomial.eval (fun i => (y i : ℂ)) (MvPolynomial.map (algebraMap ℝ ℂ) q) = ((MvPolynomial.eval y q : ℝ) : ℂ) := by
-  induction q using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p i hp => simp [hp]
-
-theorem eq_map_re_add_im (p : MvPolynomial σ ℂ) :
-    p = MvPolynomial.map (algebraMap ℝ ℂ) (reP p) + MvPolynomial.C Complex.I * MvPolynomial.map (algebraMap ℝ ℂ) (imaginary p) := by
-  ext k
-  rw [MvPolynomial.coeff_add, MvPolynomial.coeff_C_mul, MvPolynomial.coeff_map, MvPolynomial.coeff_map, coeff_reP,
-    coeff_imP]
-  apply Complex.ext <;> simp
-
 theorem eq_zero_of_eval_real (p : MvPolynomial σ ℂ) (h : ∀ y : σ → ℝ, MvPolynomial.eval (fun i => (y i : ℂ)) p = 0) :
     p = 0 :=
   _root_.GlobalTheory.UnitaryZariskiDense.eq_zero_of_eval_real p h

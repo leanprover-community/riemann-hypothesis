@@ -48,7 +48,7 @@ theorem UpperTheory.V.CA.d_poly :
     simp [g, t]
   rw [h2, D.homog, h3] at h1
   have hc := congrArg (fun p : (MvPolynomial ι A)[X] => p.coeff n) h1
-  simp only [g, t, scale_coeff, IsScalarTower.coe_toAlgHom', Polynomial.coeff_X_pow_mul', le_refl, if_true,
+  simp only [g, t, scale_coeff, IsScalarTower.coe_toAlgHom', Polynomial.coeff_X_pow_mul', le_refl, ite_true,
     Nat.sub_self] at hc
   have hP : MvPolynomial.homogeneousComponent n (D.poly x) = D.poly x := by
     rw [← hc]

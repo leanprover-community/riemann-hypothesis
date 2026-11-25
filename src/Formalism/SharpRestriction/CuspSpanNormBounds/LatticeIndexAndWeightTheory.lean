@@ -18,12 +18,6 @@ export Formalism.MainNotions.S.UnitaryVolumeMass (KTwoParameterConditions Kpp)
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt
 
-section Hyps
-
-variable (D : D7) (large₂ : SizeData₂ D)
-
-end Hyps
-
 def IsInertiaCyclotomicGeneratorElement {D : D7} {u u' : D.what₂.Word} (t : D.s.Term u u') : Prop :=
   D.s.relevant t ∧ D.s.Gterm t = 0 ∧ ¬ D.s.isId t
 
@@ -105,42 +99,6 @@ def TieOK (u : D.what₂.Word) : Prop :=
   (∀ t : D.s.Term u u, FrameHyp X t) ∧ TermInj X u ∧ NormOK X u ∧ AmpOK X
 
 end Datum
-
-section Terms
-
-variable (D : D7) (large₂ : SizeData₂ D) (X : TermTie D)
-
-end Terms
-
-section Size
-
-variable (D : D7) (large₂ : SizeData₂ D)
-
-end Size
-
-section Mass
-
-variable (D : D7) (large₂ : SizeData₂ D)
-
-end Mass
-
-section Targets
-
-variable (D : D7) (large₂ : SizeData₂ D) (X : TermTie D)
-
-end Targets
-
-section Packet
-
-variable (D : D7) (large₂ : SizeData₂ D) (X : TermTie D) (G : GlobalTheoryTheory.GenusMassVolumes.GaugeFam D.host.F D.host.E D.sp.cm.sig)
-
-end Packet
-
-section Family
-
-variable {eps : ℝ} (Fm : FamP eps) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
-
-end Family
 
 end Formalism.MainNotions.LatticeIndexAndWeightTheory
 

@@ -80,13 +80,13 @@ theorem fac_cone {T₀ : Finset (Pl F)} {u : Pl F → ℂ} {k : ℂ} (hk : k ≠
     hv (Finset.mem_insert_of_mem (Finset.mem_union_right _ ((Set.Finite.mem_toFinset _).2 hn)))
   have pne : (∏ v ∈ T \ T₀, u v) ≠ 0 := Finset.prod_ne_zero_iff.2 fun v hv => (hu v (Finset.mem_sdiff.1 hv).2).1
   refine ⟨(∏ v ∈ T \ T₀, u v)⁻¹ * k, fun v => if v ∈ T then Λ v (φ v) else M₁.vac v, mul_ne_zero (inv_ne_zero pne) hk,
-    ⟨fun v => ?_, T.eventually_cofinite_notMem.mono fun v hv => if_neg hv⟩, fun v => ?_, fun f x hx => ?_⟩
+    ⟨fun v => ?_, T.eventually_cofinite_notMem.mono fun v hv => ite_eq_right hv⟩, fun v => ?_, fun f x hx => ?_⟩
   · beta_reduce
     split_ifs with hT
     exacts [mapS v _ (a.1 v), hv v (off v hT ▸ a.1 v)]
   · by_cases hT : v ∈ T
-    · exact ⟨1, by beta_reduce; rw [if_pos hT, one_smul]⟩
-    · exact ⟨u v, by beta_reduce; rw [if_neg hT, off v hT, (hu v fun h => hT (sub h)).2]⟩
+    · exact ⟨1, by beta_reduce; rw [ite_eq_left hT, one_smul]⟩
+    · exact ⟨u v, by beta_reduce; rw [ite_eq_right hT, off v hT, (hu v fun h => hT (sub h)).2]⟩
   · have b := a.upd hx
     have := h T sub f _ (fun v => le v (b.1 v)) fun v hv => by
       rw [Function.update_of_ne (fun e : v = v₀ => hv (by rw [e]; exact Finset.mem_insert_self _ _)), off v hv]
@@ -94,7 +94,7 @@ theorem fac_cone {T₀ : Finset (Pl F)} {u : Pl F → ℂ} {k : ℂ} (hk : k ≠
     congr 3
     funext v
     by_cases e : v = v₀
-    · subst e; rw [Function.update_self, Function.update_self, if_pos (Finset.mem_insert_self _ _)]
+    · subst e; rw [Function.update_self, Function.update_self, ite_eq_left (Finset.mem_insert_self _ _)]
     · rw [Function.update_of_ne e, Function.update_of_ne e]
 
 theorem ev_pol {e : Fn F n d →ₗ[ℂ] Fn F n₁ d₁} (h : IsEvLoc M M₁ e L Λ) (g : M.IsGood B.ψ) (g₁ : M₁.IsGood B.ψ)
@@ -125,7 +125,7 @@ theorem pt_of (hi : ∃ f ∈ M.Pol B.ψ B.emb, pi₁ (L f) ≠ 0) (T : Finset (
     (h2 : ∀ v ∉ T, M.vac v ∈ S v ∧ p₁ v (Λ v (M.vac v)) ≠ 0) : Pt B M S pi₁ p₁ L Λ := by
   obtain ⟨f, hf, h0⟩ := hi
   choose x hx hx' using h1
-  refine ⟨f, hf, fun v => if h : v ∈ T then x v h else M.vac v, ⟨fun v => ?_, T.eventually_cofinite_notMem.mono fun v hv => dif_neg hv⟩,
+  refine ⟨f, hf, fun v => if h : v ∈ T then x v h else M.vac v, ⟨fun v => ?_, T.eventually_cofinite_notMem.mono fun v hv => dite_eq_right hv⟩,
     h0, fun v => ?_⟩ <;> dsimp only <;> split_ifs with h
   exacts [hx v h, (h2 v h).1, hx' v h, (h2 v h).2]
 

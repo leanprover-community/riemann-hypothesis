@@ -757,13 +757,6 @@ open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.
 noncomputable section
 namespace GlobalTheory.CompanionTheory.WeilSiegel.Free.Aniso
 
-theorem free_v {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (hJ : IsHermND σ J)
-    {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (lam : Measure (Fv F v))
-    (hlam : lam.IsAddHaarMeasure) (n : ℕ) :
-    ∃ m, IsGramFibFree (Fv F v) σ J n (coordW (Fv F v) b lam n M) (coordHerm (Fv F v) σ b lam n) m :=
-  GlobalTheory.CompanionTheory.WeilSiegel.HypStep.fam_fin σ hCM J hJ b v lam hlam n
-
 theorem good_mass_free : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ t : F, t ≠ 0 → ∀ (n : ℕ) (T : Matrix (Fin n) (Fin n) E) (hT : ∀ a b, σ (T b a) = T a b) (hT' : ∀ a b, σ (blockOne (algebraMap F E t) T b a) = blockOne (algebraMap F E t) T a b) (d : ℕ) (b : Module.Basis (Fin d) F E), ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ∀ lam : Measure (Fv F v), lam.IsAddHaarMeasure → ∀ m m₁ m', IsGramFibFree (Fv F v) σ (blockOne (algebraMap F E t) J) (n + 1) (coordW (Fv F v) b lam (n + 1) (M + 1)) (coordHerm (Fv F v) σ b lam (n + 1)) m → IsGramFib (Fv F v) σ (blockOne (algebraMap F E t) J) 1 (coordW (Fv F v) b lam 1 (M + 1)) (coordHerm (Fv F v) σ b lam 1) m₁ → IsGramFibFree (Fv F v) σ J n (coordW (Fv F v) b lam n M) (coordHerm (Fv F v) σ b lam n) m' → ∀ c : ℝ≥0, (coordK (Fv F v) b lam).map (fun y => inclR (Fv F v) (algebraMap F E t) * y) = c • coordK (Fv F v) b lam → m (hermOf (Fv F v) σ _ hT') (latV b v) = (c : ℝ≥0∞) ^ n * (m' (hermOf (Fv F v) σ T hT) (latV b v) * m₁ (hermScal (Fv F v) σ (algebraMap F (Fv F v) t)) (latV b v)) := by
   intro F E _ _ _ _ _ σ hCM M J hJ t ht n T hT hT' d b
   obtain ⟨hdet, hherm, -, -⟩ := BlockAlg.block_alg F E σ hCM M J t
@@ -841,7 +834,7 @@ theorem aniso_step : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
   obtain ⟨m₁inf, hm₁inf⟩ := Step.loc_families σ hCM _ hJ' (Ainf F) hLi b laminf hinf.1 1
   obtain ⟨m'inf, hm'inf⟩ := GlobalTheory.CompanionTheory.WeilSiegel.HypStep.fam_inf σ hCM J hJ b laminf hinf.1 n
   choose m₁ hm₁ using fun v => Step.loc_families σ hCM _ hJ' (Fv F v) (hLv v) b (lam v) (hlam v).1 1
-  choose m' hm' using fun v => free_v σ hCM J hJ b v (lam v) (hlam v).1 n
+  choose m' hm' using fun v => GlobalTheory.CompanionTheory.WeilSiegel.HypStep.fam_fin σ hCM J hJ b v (lam v) (hlam v).1 n
   obtain ⟨⟨μ₁, hμ₁⟩, hFV⟩ := _root_.GlobalTheory.CompanionTheory.SW.finVol_unitaryGroup F E σ hCM M J hJ
   obtain ⟨⟨𝓕₁, h𝓕₁⟩, -⟩ := hFV μ₁ hμ₁
 
@@ -1808,7 +1801,7 @@ theorem swFree_singular : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
         ((Matrix.isUnit_iff_isUnit_det _).1 g.isUnit).ne_zero
       have hd₁ : T₁.det = 0 := by
         have h := congrArg Matrix.det hb
-        rw [BlockAlg.det_blockOne, Matrix.det_mul, Matrix.det_mul, hd] at h
+        rw [det_blockOne,Matrix.det_mul, Matrix.det_mul, hd] at h
         simp only [mul_zero, zero_mul] at h
         exact (mul_eq_zero.1 h).resolve_left hta
       have hX₁ := frames_right σ J T g X hX
@@ -1861,7 +1854,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

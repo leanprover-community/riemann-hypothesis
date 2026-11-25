@@ -50,16 +50,10 @@ theorem UpperTheory.V.AlgebraTools.lag_coi :
     intro i
     have := hq X i
     rwa [aeval_X, eval_X] at this
-  have hcomm : ∀ y i, Commute y P → Commute y (lag a P i) := by
-    intro y i hy
-    rw [hL]
-    generalize L i = f
-    induction f using Polynomial.induction_on' with
-    | add p q hp hq => rw [map_add (f := _)]; exact hp.add_right hq
-    | monomial n c =>
-      rw [aeval_monomial]
-      exact Commute.mul_right (show Commute y (algebraMap R E c) from (Algebra.commutes c y).symm)
-        (hy.pow_right n)
+  have hcomm : ∀ y i, Commute y P → Commute y (lag a P i) := fun y i hy => by
+    rw [hL, aeval_def, eval₂_eq_sum_range]
+    exact Commute.sum_right _ _ _ fun k _ =>
+      (Algebra.commute_algebraMap_right _ y).mul_right (hy.pow_right k)
   have hsum : ∑ i, lag a P i = 1 := by
     have h1 : ∏ i, (X - C (a i)) ∣ 1 - ∑ i, L i := by
       apply Finset.prod_dvd_of_coprime
@@ -67,7 +61,7 @@ theorem UpperTheory.V.AlgebraTools.lag_coi :
         exact isCoprime_X_sub_C_of_isUnit_sub (ha i j hij)
       · intro k _
         rw [dvd_iff_isRoot, IsRoot, eval_sub, eval_one, eval_finsetSum]
-        simp only [hLe, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+        simp only [hLe, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
     obtain ⟨g, hg⟩ := h1
     have h2 := congrArg (aeval P) hg
 
@@ -77,8 +71,8 @@ theorem UpperTheory.V.AlgebraTools.lag_coi :
   refine ⟨⟨⟨fun i => ?_, fun i j hij => ?_⟩, hsum⟩, hP, hq, hcomm⟩
   · show lag a P i * lag a P i = lag a P i
     have := hq (L i) i
-    rw [← hL, hLe, if_pos rfl, one_smul] at this
+    rw [← hL, hLe, ite_eq_left rfl, one_smul] at this
     exact this
   · have := hq (L i) j
-    rw [← hL, hLe, if_neg hij, zero_smul] at this
+    rw [← hL, hLe, ite_eq_right hij, zero_smul] at this
     exact this

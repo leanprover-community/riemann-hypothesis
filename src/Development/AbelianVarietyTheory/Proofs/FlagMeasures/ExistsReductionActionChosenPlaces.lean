@@ -11,51 +11,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicLattice
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExtIdMulSupNatCastConj
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MulVecMemConjSmulOfAdjoint
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
@@ -304,12 +260,6 @@ theorem epsV_mem (v : HeightOneSpectrum (𝓞 F)) (u : HeightOneSpectrum (𝓞 E
 
 end Adelic
 
-theorem extId_eq_map (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : extId I 𝔞 = 𝔞.map (Inhab.psi I.F I.E) := by
-  unfold extId Ideal.map
-  congr 1
-  ext z
-  exact ⟨fun ⟨a, ha, e⟩ => ⟨a, ha, (Subtype.ext e).symm⟩, fun ⟨a, ha, e⟩ => ⟨a, ha, e ▸ rfl⟩⟩
-
 end PrimeIdem
 
 open PrimeIdem Formalism.UG Formalism.UG.P
@@ -331,7 +281,7 @@ theorem exists_prime_idempotent : ∀ (I : AutInst) (w : HeightOneSpectrum (𝓞
     by_cases h : u.under (𝓞 I.F) = w.under (𝓞 I.F)
     · exact h4 u hu ((hun u).1 (h ▸ hgv))
     · rw [← h2]; exact Ideal.mul_mem_right _ _ (epsV_mem _ u h)
-  simp only [extId_eq_map]
+  simp only [GlobalTheory.RowLev.extId_eq_map_psi]
   refine ⟨ε, h1, h3, h7, h5, fun hw => ?_⟩
   let st : 𝓞 I.E →+* 𝓞 I.E := RingOfIntegers.mapRingHom (starRingEnd I.E)
   have hst : ∀ a : 𝓞 I.E, (st a : I.E) = star (a : I.E) := fun a => rfl
@@ -826,9 +776,6 @@ theorem exists_prod_le_of_isRadical {R : Type*} [CommRing R] [IsDedekindDomain R
   have hv : v ∈ hfin.toFinset := (Set.Finite.mem_toFinset hfin).2 (Ideal.dvd_iff_le.2 hle)
   exact (Ideal.prod_le_inf.trans (Finset.inf_le hv)) hx
 
-theorem extId_eq_image (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : extId I 𝔞 = 𝔞.map (Inhab.psi I.F I.E) := by
-  apply _root_.GlobalTheory.RowLev.PrimeIdem.extId_eq_map <;> assumption
-
 private theorem isCoprime_map_of_ne {R S : Type*} [CommRing R] [IsDedekindDomain R] [CommRing S]
     (f : R →+* S) {u v : HeightOneSpectrum R} (huv : u ≠ v) :
     IsCoprime (u.asIdeal.map f) (v.asIdeal.map f) := by
@@ -869,7 +816,7 @@ theorem mem_extId_smul_forall_iff : ∀ (I : AutInst) (m : ℕ), 1 ≤ m → (Id
       exact Nat.cast_ne_zero.2 (by omega)
     have key : y ∈ (Ideal.span {(m : 𝓞 I.E)}).map (Inhab.psi I.F I.E) • I.Lf :=
       mem_map_smul_of_forall_mem_map_smul (Inhab.psi I.F I.E) I.Lf h0 hrad hy fun u hu => by
-        rw [← extId_eq_image I]
+        rw [← GlobalTheory.RowLev.extId_eq_map_psi I]
         exact h u (hu (Ideal.mem_span_singleton_self _))
     rw [Ideal.map_span, Set.image_singleton, map_natCast, Submodule.ideal_span_singleton_smul,
       Submodule.mem_smul_pointwise_iff_exists] at key
@@ -878,7 +825,7 @@ theorem mem_extId_smul_forall_iff : ∀ (I : AutInst) (m : ℕ), 1 ≤ m → (Id
     rw [← hzy, Nat.cast_smul_eq_nsmul, Nat.cast_smul_eq_nsmul]
   · rintro ⟨z, hz, rfl⟩ u hu
     have hm' : (m : IntAf I.F I.E) ∈ extId I u.asIdeal := by
-      rw [extId_eq_image, ← map_natCast (Inhab.psi I.F I.E)]
+      rw [GlobalTheory.RowLev.extId_eq_map_psi, ← map_natCast (Inhab.psi I.F I.E)]
       exact Ideal.mem_map_of_mem _ hu
     rw [Nat.cast_smul_eq_nsmul, ← Nat.cast_smul_eq_nsmul (IntAf I.F I.E)]
     exact Submodule.smul_mem_smul hm' hz
@@ -996,8 +943,8 @@ theorem exists_idem_intAd (x : intAd F) : ∃ μ : intAd F, (μ * x) * (μ * x) 
       rwa [HeightOneSpectrum.mem_adicCompletionIntegers] at this
     show Valued.v ((1 - ((μ * x : intAd F) : Af F) v) * (x : Af F) v * (y : Af F) v + 1) = 1
     by_cases h : Valued.v ((x : Af F) v) = 1
-    · rw [hprod v, if_pos h, sub_self, zero_mul, zero_mul, zero_add, map_one]
-    · rw [hprod v, if_neg h, sub_zero, one_mul, add_comm]
+    · rw [hprod v, ite_eq_left h, sub_self, zero_mul, zero_mul, zero_add, map_one]
+    · rw [hprod v, ite_eq_right h, sub_zero, one_mul, add_comm]
       apply Valuation.map_one_add_of_lt
       rw [map_mul]
       calc Valued.v ((x : Af F) v) * Valued.v ((y : Af F) v) ≤ Valued.v ((x : Af F) v) * 1 :=
@@ -1118,12 +1065,12 @@ theorem psi_mem_map_iff (𝔞 : Ideal (𝓞 E)) (h : 𝔞 ≠ ⊥) (a : 𝓞 E) 
 
 end
 
-theorem extId_eq_map (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : extId I 𝔞 = 𝔞.map (psi I.F I.E) := by
-  apply _root_.GlobalTheory.RowLev.PrimeIdem.extId_eq_map <;> assumption
+theorem GlobalTheory.RowLev.extId_eq_map_psi (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : extId I 𝔞 = 𝔞.map (psi I.F I.E) := by
+  apply _root_.GlobalTheory.RowLev.extId_eq_map_psi <;> assumption
 
 theorem extId_principal_and_inter : ∀ (I : AutInst) (𝔞 : Ideal (𝓞 I.E)), 𝔞 ≠ ⊥ → (∃ t : IntAf I.F I.E, IsUnit (t : (I.E ⊗[I.F] Af I.F)) ∧ extId I 𝔞 = Ideal.span {t}) ∧ ∀ (a : 𝓞 I.E) (h : Formalism.UG.inclE (F := I.F) (Af I.F) (a : I.E) ∈ IntAf I.F I.E), (⟨_, h⟩ : IntAf I.F I.E) ∈ extId I 𝔞 ↔ a ∈ 𝔞 := by
   intro I 𝔞 h𝔞
-  rw [extId_eq_map]
+  rw [GlobalTheory.RowLev.extId_eq_map_psi]
   exact ⟨exists_map_psi_eq_span 𝔞 h𝔞, fun a _ => psi_mem_map_iff 𝔞 h𝔞 a⟩
 
 end GlobalTheory.RowLev

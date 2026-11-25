@@ -46,7 +46,7 @@ theorem antitone_eq {n k : ℕ} {a : Fin n → ℤ} (ha : Antitone a) (h0 : ∀ 
         omega
     rw [hs, sum_ite_lt] at hle
     have : k ≤ (i : ℕ) := by omega
-    rw [hc, if_neg (by omega)]
+    rw [hc, ite_eq_right (by omega)]
   · have hle : ∑ j : Fin n, (if (j : ℕ) < (i : ℕ) + 1 then (1 : ℤ) else 0) ≤ ∑ j, a j := by
       refine Finset.sum_le_sum fun j _ => ?_
       split_ifs with hj
@@ -57,7 +57,7 @@ theorem antitone_eq {n k : ℕ} {a : Fin n → ℤ} (ha : Antitone a) (h0 : ∀ 
     have : (i : ℕ) < k := by
       push_cast at hle
       omega
-    rw [hc, if_pos this]
+    rw [hc, ite_eq_left this]
 
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {n : ℕ} {ϖ : w.adicCompletion E}
 

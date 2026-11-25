@@ -33,12 +33,9 @@ variable {n' r K m : ℕ} [NeZero n'] (Fr : Frames n' r) (p : ℕ) {O : Type} [C
 def psiExpP (a : TL J nL r × Fin r →₀ ℕ) : TV n' (m + 1) →₀ ℕ :=
   a.sum fun v e => Finsupp.single (plVar Fr hk nL v.1 v.2) (lowP Fr p v.1 * e)
 
-def PsiP : MvPolynomial (TL J nL r × Fin r) (KK O) →ₐ[KK O] MvPolynomial (TV n' (m + 1)) (KK O) :=
-  aeval fun v => X (plVar Fr hk nL v.1 v.2) ^ lowP Fr p v.1
-
 theorem PsiP_monomial (a : TL J nL r × Fin r →₀ ℕ) (c : KK O) :
-    PsiP (O := O) Fr p hk nL (monomial a c) = monomial (psiExpP Fr p hk nL a) c := by
-  unfold PsiP psiExpP
+    Formalism.MainNotions.Proposition5Numerics.upPl (O := O) Fr p hk nL (monomial a c) = monomial (psiExpP Fr p hk nL a) c := by
+  unfold Formalism.MainNotions.Proposition5Numerics.upPl psiExpP
   rw [aeval_monomial, monomial_finsupp_sum_index, MvPolynomial.algebraMap_eq]
   congr 1
   refine Finsupp.prod_congr fun v _ => ?_
@@ -61,7 +58,7 @@ theorem psiExpP_apply {L₁ N₁ : ℕ} (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r)
   rw [Finsupp.sum_apply, Finsupp.sum_eq_single (x, a')]
   · rw [Finsupp.single_eq_same]
   · intro v _ hv
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     obtain ⟨e1, e2⟩ := plVar_inj hk hV hr hJ hnL h
     exact hv (Prod.ext e1 e2)
@@ -79,7 +76,7 @@ theorem plMon_psiExpP_add {L₁ N₁ : ℕ} (hp : 0 < p) (hV : Fr.Valid L₁ N�
 theorem levelAtPrime_character_mul {L₁ N₁ : ℕ} (hp : 0 < p) (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (hJ : J = Fr.J)
     (hnL : ∀ j, nL j = (Fr.LLset (segZ j)).card) (H : MvPolynomial (TL J nL r × Fin r) (KK O))
     (c : TV n' (m + 1) →₀ ℕ) :
-    levP Fr p hk nL (PsiP (O := O) Fr p hk nL H * monomial c 1) = monomial (plMon Fr p hk nL c) 1 * H := by
+    levP Fr p hk nL (Formalism.MainNotions.Proposition5Numerics.upPl (O := O) Fr p hk nL H * monomial c 1) = monomial (plMon Fr p hk nL c) 1 * H := by
   induction H using MvPolynomial.induction_on' with
   | monomial a k =>
     rw [PsiP_monomial, monomial_mul, T5.monomialSubstitution_monomial, plMon_psiExpP_add p hk hp hV hr hJ hnL, monomial_mul, mul_one,
@@ -121,7 +118,7 @@ theorem seg_PsiP (p : ℕ) {n' r K m : ℕ} [NeZero n'] [NeZero r] (O : Type) [C
     (hgP : ∀ j (mm : Fin r), Dt.gP j mm = (Fr.fr (segZ j + 1) (r - 1) - Fr.fr (segZ j) (r - 1)).toNat)
     (j : ZMod J) (A : MvPolynomial (ℤ × Fin r) O) (hA : A ∈ supported O {v : ℤ × Fin r | v.1 ∈ Fr.letters (segZ j)}) :
     MvPolynomial.map (algebraMap O (KK O)) (rename (castV hk) (phSeg O K p Fr (segZ j) (plEmb O r K A))) =
-      PsiP (O := O) Fr p hk Dt.nL (Dt.ph (chi Fr Dt.nL (KK O) j (MvPolynomial.map (algebraMap O (KK O)) A))) := by
+      Formalism.MainNotions.Proposition5Numerics.upPl (O := O) Fr p hk Dt.nL (Dt.ph (chi Fr Dt.nL (KK O) j (MvPolynomial.map (algebraMap O (KK O)) A))) := by
   have hsp := Formalism.MainNotions.NormalSetCounting.restSpec n' r Fr L₁ N₁ hV J Dt.nL hnL j
   obtain ⟨-, hper, hmono, hgap, -⟩ := hV
   have hr : 1 ≤ r := Nat.one_le_iff_ne_zero.mpr (NeZero.ne r)
@@ -130,16 +127,16 @@ theorem seg_PsiP (p : ℕ) {n' r K m : ℕ} [NeZero n'] [NeZero r] (O : Type) [C
   | mem x hx =>
     obtain ⟨⟨y, a⟩, hy, rfl⟩ := hx
     have hy' : y ∈ Fr.letters (segZ j) := hy
-    simp only [plEmb, phSeg, chi, rename_X, aeval_X, map_pow, map_X, if_pos hy']
+    simp only [plEmb, phSeg, chi, rename_X, aeval_X, map_pow, map_X, ite_eq_left hy']
     rcases hsp y hy' with ⟨l, rfl, hml⟩ | ⟨mm, rfl, hml⟩ | ⟨mm, rfl, hml⟩
     · rw [hml]
-      simp only [SignedChainData.ph, PsiP, aeval_X]
+      simp only [SignedChainData.ph, Formalism.MainNotions.Proposition5Numerics.upPl, aeval_X]
       rfl
     · rw [hml]
-      simp only [SignedChainData.ph, PsiP, aeval_X]
+      simp only [SignedChainData.ph, Formalism.MainNotions.Proposition5Numerics.upPl, aeval_X]
       rfl
     · rw [hml]
-      simp only [SignedChainData.ph, PsiP, aeval_X, map_pow, ← pow_mul, SignedChainData.P]
+      simp only [SignedChainData.ph, Formalism.MainNotions.Proposition5Numerics.upPl, aeval_X, map_pow, ← pow_mul, SignedChainData.P]
       obtain ⟨s, hs, hsh⟩ := Formalism.MainNotions.Proposition5Numerics.DdG.shift Fr hper hJ (j - 1)
       simp only [sub_add_cancel] at hsh
       have hA1 : ∀ k, Fr.fr (segZ (j - 1)) k = Fr.fr (segZ j - 1) k + s := fun k => (hsh k).1
@@ -184,7 +181,7 @@ theorem restTr : RestTr := by
   · have hseg : ∀ j : ZMod J,
         MvPolynomial.map (algebraMap O (KK O))
           (rename (castV hk) (phSeg O K p Fr ((j.val : ℕ) : ℤ) (plEmb O r K (A ((j.val : ℕ) : ℤ))))) =
-        PsiP (O := O) Fr p hk Dt.nL
+        Formalism.MainNotions.Proposition5Numerics.upPl (O := O) Fr p hk Dt.nL
           (Dt.ph (chi Fr Dt.nL (KK O) j (MvPolynomial.map (algebraMap O (KK O)) (A (segZ j))))) := by
       intro j
       have hj : j.val < Fr.J := by
@@ -192,7 +189,7 @@ theorem restTr : RestTr := by
         exact ZMod.val_lt j
       exact seg_PsiP p O hk Fr L₁ N₁ hV Dt hJ hnL hgP j (A (segZ j)) (hA j.val hj)
     have hz : zPl p O hk Fr A l ga =
-        PsiP (O := O) Fr p hk Dt.nL (∏ j : ZMod J,
+        Formalism.MainNotions.Proposition5Numerics.upPl (O := O) Fr p hk Dt.nL (∏ j : ZMod J,
           Dt.ph (chi Fr Dt.nL (KK O) j (MvPolynomial.map (algebraMap O (KK O)) (A (segZ j))))) *
         monomial (l.mapDomain (castV hk) + ga) 1 := by
       unfold zPl

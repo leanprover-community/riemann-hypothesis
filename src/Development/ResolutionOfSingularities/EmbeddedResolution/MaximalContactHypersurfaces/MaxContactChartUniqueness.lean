@@ -752,7 +752,6 @@ private theorem map_le_map_and_sub_mem_of_etaleCoordinates_shift (kk : Type u) [
         exact Submodule.zero_mem _
   have hrep := isTaylorExpansionOn_mvPolynomial (k := kk) (ι := ι) φ φ'
     δ (φ b) hβ hconst hderivConst hvar
-  have : Algebra.FormallyUnramified (MvPolynomial ι kk) R := inferInstance
   refine ⟨fun M J hbM hMJ => ?_, fun Iid hbI f => ?_⟩
   · exact map_le_map_of_pow_mul_iterate_deriv_mem (MvPolynomial ι kk) φ φ'
       δ (φ b) b J hcong hβ hrep rfl
@@ -959,8 +958,6 @@ theorem stalkIdeal_comap_chartPullbackPoint_eq
   have hsb : (chartPullbackSnd c₁ c₂).base (chartPullbackPoint c₁ c₂ x hx h) = x :=
     chartPullbackSnd_base_chartPullbackPoint c₁ c₂ x hx h
   let instRk : Algebra k ↥(X.presheaf.stalk x) := stalkAlgebra k p x
-  have instBnoeth : IsNoetherianRing
-      ↥((chartPullback c₁ c₂).presheaf.stalk (chartPullbackPoint c₁ c₂ x hx h)) := inferInstance
   let instAlgebraRat : Algebra ℚ ↥((chartPullback c₁ c₂).presheaf.stalk (chartPullbackPoint c₁ c₂ x hx h)) :=
     RingHom.toAlgebra
       ((stalkAlgebraMap k (chartPullbackFst c₁ c₂ ≫ p) (chartPullbackPoint c₁ c₂ x hx h)).comp
@@ -1157,8 +1154,6 @@ private theorem chartPullbackFstStalkMap_eq_snd_of_coord_eq_zero
       (X.presheaf.germ U x hx).hom (c₁.coord i) = (X.presheaf.germ U x hx).hom (c₂.coord i) :=
     fun i hi => congrArg _ (hcoord i hi)
   let instRk : Algebra k ↥(X.presheaf.stalk x) := stalkAlgebra k p x
-  have instBnoeth : IsNoetherianRing
-      ↥((chartPullback c₁ c₂).presheaf.stalk (chartPullbackPoint c₁ c₂ x hx h)) := inferInstance
   let instAlgebraRat : Algebra ℚ ↥((chartPullback c₁ c₂).presheaf.stalk (chartPullbackPoint c₁ c₂ x hx h)) :=
     RingHom.toAlgebra
       ((stalkAlgebraMap k (chartPullbackFst c₁ c₂ ≫ p) (chartPullbackPoint c₁ c₂ x hx h)).comp

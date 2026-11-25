@@ -170,7 +170,7 @@ theorem cutG_mem_congGrp (V : HSp D) (I : Ideal (AE D)) (ε : AF D.host.F) (hε 
     (hg : g ∈ congGrp V I) : cutG V ε hε g ∈ congGrp V I := by
   rw [mem_congGrp_iff] at hg ⊢
   intro i j
-  rw [mt_cutG, cut_sub_one, Matrix.smul_apply, smul_eq_mul]
+  rw [mt_cutG, GlobalTheory.FinPl.KSplit.cut_sub_one, Matrix.smul_apply, smul_eq_mul]
   exact Ideal.mul_mem_left _ _ (hg i j)
 
 theorem grpAt_mono (V : HSp D) {P P' : Pl D → Prop} (h : ∀ p, P p → P' p) : grpAt V P ≤ grpAt V P' := by
@@ -198,9 +198,6 @@ theorem locHom_eq_one {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
 end GlobalTheory.PenLev.CongruenceSubgroupLevelSupport
 end
 
-noncomputable section
-
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TupleFreeLevelStep =====
@@ -269,7 +266,7 @@ theorem cutAt_mem (V : HSp D) (v : GlobalTheory.FinPl.Pl D) (g : GA D V) : cutAt
 theorem compAt_cutAt (V : HSp D) (v : GlobalTheory.FinPl.Pl D) (g : GA D V) (i j) :
     GlobalTheory.FinPl.compAt D v (Formalism.L2.Theta.mt V (cutAt V v g) i j) = GlobalTheory.FinPl.compAt D v (Formalism.L2.Theta.mt V g i j) := by
   rw [mt_cutG, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, smul_eq_mul, RingHom.map_add (f := _), RingHom.map_mul,
-    RingHom.map_mul, RingHom.map_sub, RingHom.map_one, (parts_idemQ {v}).2 v, if_pos (Finset.mem_singleton_self v), sub_self,
+    RingHom.map_mul, RingHom.map_sub, RingHom.map_one, (parts_idemQ {v}).2 v, ite_eq_left (Finset.mem_singleton_self v), sub_self,
     zero_mul, one_mul, add_zero]
 
 theorem grpAt_mono (V : HSp D) {P Q : GlobalTheory.FinPl.Pl D → Prop} (h : ∀ v, P v → Q v) : grpAt V P ≤ grpAt V Q := fun g hg =>
@@ -427,9 +424,9 @@ theorem coset_at (q : PtAt R sel mu cst u j) (h : j + 1 = R.m) {y : Sp X.E (R.N 
   have hs : (q.1.1.deco.1.liftFr w).symm (((qOf w.1 : ℕ) : X.E) • y) ∈ stdAt X.E _ w.1 :=
     (hf.1 _).1 (by rw [LinearEquiv.apply_symm_apply]; exact hq)
   refine ⟨?_, by rw [← map_smul]; exact hs, ?_⟩
-  · have hfr : frsF sel mu q.1.1 ⟨w.1, Finset.mem_union_left _ w.2⟩ = q.1.1.deco.1.liftFr w := dif_pos w.2
+  · have hfr : frsF sel mu q.1.1 ⟨w.1, Finset.mem_union_left _ w.2⟩ = q.1.1.deco.1.liftFr w := dite_eq_left w.2
     ext z
-    simp only [cosetIn, Set.mem_setOf_eq, if_pos w.2, pow_zero, inv_one, one_smul, hfr]
+    simp only [cosetIn, Set.mem_setOf_eq, ite_eq_left w.2, pow_zero, inv_one, one_smul, hfr]
     constructor
     · rintro ⟨y', hy', hz⟩
       have h1 : (q.1.1.deco.1.liftFr w).symm y' - (q.1.1.deco.1.liftFr w).symm y ∈ stdAt X.E (R.N j) w.1 := by
@@ -598,7 +595,7 @@ theorem cosetIn_p0_eq_of_reads (hW : _root_.GlobalTheory.Fam.AllFamilyConditions
     have hq := TopFrames.intAt_q_mul (A := J.A) ⟨w.1, Finset.mem_union_left _ w.2⟩ w.2 hj (J.ι _ α)
     have hco := hJ.cosG n α e he c
     have hfr : Formalism.L2.Col.frsF I.sel (I.tup (W.P.I.tup t)) (J.A.p0 _ (J.ι _ α)).1.1 ⟨w.1, Finset.mem_union_left _ w.2⟩ =
-      (J.A.p0 _ (J.ι _ α)).1.1.deco.1.liftFr w := dif_pos w.2
+      (J.A.p0 _ (J.ι _ α)).1.1.deco.1.liftFr w := dite_eq_left w.2
     rw [hfr] at hF hq
     generalize (J.A.p0 _ (J.ι _ α)).1.1.deco.1.liftFr w = f at hF hq ⊢
     generalize Formalism.L2.Col.repY (J.A.p0 ((a.G n).s + 1) (J.ι _ α)).1.2 = y at hq hco ⊢
@@ -842,13 +839,6 @@ open GlobalTheory.StepData GlobalTheory.SplitWeil
 open ValuativeRel
 noncomputable section
 namespace GlobalTheory.PenLevPrime
-section Comp
-
-variable {D : D7}
-end Comp
-section Level
-variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word}
-end Level
 
 theorem uloc_le_levelPrime_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (I.rec7 l Z)} {cX : ExtraC} {ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), _root_.GlobalTheory.Fam.AllFamilyConditions W → ∀ (u : B.Word) (a : _root_.GlobalTheory.Fam.GeometricFamily W u), a.Is → a.True → ∀ j (hj : j + 1 = B.R.m), ∀ t (J : _root_.GlobalTheory.Fam.QuadraticExtensionData a t), J.Reads → ∀ (α : J.Ch j) t' (J' : _root_.GlobalTheory.Fam.QuadraticExtensionData a t'), J'.Reads → ∀ (α' : J'.Ch j) (v : HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F)), ((B.T u : ℕ) : 𝓞 (I.rec7 l Z).host.F) ∈ v.asIdeal → (J.A.K j (show j ≤ B.R.m by omega) (J.ι j α)).lev.Uloc v ≤ (J'.A.K j (show j ≤ B.R.m by omega) (J'.ι j α')).lev.Uloc v := by
   intro B X I l Z L hT Gi Gl Kc Yd cX ex W hW u a ha hTr j hj t J hJ α t' J' hJ' α' v hv
@@ -899,19 +889,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open scoped TensorProduct Classical
 open GlobalTheory.StepData GlobalTheory.SplitWeil
 open ValuativeRel
-noncomputable section
-namespace GlobalTheory.PenLevOff
-section Cut
-open GlobalTheory.FinPl GlobalTheory.FinPl.SetCut
-
-variable {D : D7}
-end Cut
-section Level
-variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a : I.ι}
-  {Ch : ℕ → Type} {A : TwDat I l Z u a Ch}
-end Level
-end GlobalTheory.PenLevOff
-end
 
 theorem GlobalTheory.PenLevOff.uloc_le_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (I.rec7 l Z)} {cX : ExtraC} {ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), _root_.GlobalTheory.Fam.AllFamilyConditions W → ∀ (u : B.Word) (a : _root_.GlobalTheory.Fam.GeometricFamily W u), a.Is → a.True → ∀ j (hj : j + 1 = B.R.m), ∀ t (J : _root_.GlobalTheory.Fam.QuadraticExtensionData a t), J.Reads → ∀ (α : J.Ch j) t' (J' : _root_.GlobalTheory.Fam.QuadraticExtensionData a t'), J'.Reads → ∀ (α' : J'.Ch j) (v : HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F)), ¬ _root_.GlobalTheory.PenBridge.finitePlaceCondition J v → ¬ _root_.GlobalTheory.PenBridge.finitePlaceCondition J' v → (J.A.K j (show j ≤ B.R.m by omega) (J.ι j α)).lev.Uloc v ≤ (J'.A.K j (show j ≤ B.R.m by omega) (J'.ι j α')).lev.Uloc v := by
   intro B X I l Z L hT Gi Gl Kc Yd cX ex W hW u a ha haT j hj t J hJ α t' J' hJ' α' v hv hv'
@@ -1067,8 +1044,6 @@ open scoped TensorProduct Classical
 open GlobalTheory.StepData GlobalTheory.SplitWeil
 open ValuativeRel
 noncomputable section
-namespace GlobalTheory.PenBridge.SuppLev
-end GlobalTheory.PenBridge.SuppLev
 open GlobalTheory.PenBridge in
 
 theorem GlobalTheory.PenBridge.supp_mem_level_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (I.rec7 l Z)} {cX : ExtraC} {ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), _root_.GlobalTheory.Fam.AllFamilyConditions W → ∀ (u : B.Word) (a : _root_.GlobalTheory.Fam.GeometricFamily W u), a.Is → a.True → ∀ j (hj : j + 1 = B.R.m), ∀ t (J : _root_.GlobalTheory.Fam.QuadraticExtensionData a t), J.Reads → ∀ t' (J' : _root_.GlobalTheory.Fam.QuadraticExtensionData a t'), J'.Reads → ∀ (α' : J'.Ch j) (P : Finset (GlobalTheory.FinPl.Pl (I.rec7 l Z))), (∀ p ∈ P, _root_.GlobalTheory.PenBridge.finitePlaceCondition J p ∧ ¬ _root_.GlobalTheory.PenBridge.finitePlaceCondition J' p) → ∀ x ∈ GlobalTheory.FinPl.grpAt _ (· ∈ P), (∀ i, (J.G i).q.v ∈ P → _root_.GlobalTheory.PenBridge.reductionHomAtLastLevel J j hj x i ∈ KO (J.G i).k _) → x ∈ J'.A.U j (J'.ι j α') := by
@@ -1122,12 +1097,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open scoped TensorProduct Classical
 open GlobalTheory.StepData GlobalTheory.SplitWeil
 open ValuativeRel
-noncomputable section
-namespace GlobalTheory.PenLev.CongruenceSubgroupLevelSupport
-open GlobalTheory.FinPl GlobalTheory.FinPl.SetCut
-variable {D : D7}
-end GlobalTheory.PenLev.CongruenceSubgroupLevelSupport
-end
 noncomputable section
 open GlobalTheory.FinPl GlobalTheory.FinPl.SetCut GlobalTheory.PenLev.CongruenceSubgroupLevelSupport in
 theorem GlobalTheory.PenLev.relax_le_sup_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (I.rec7 l Z)} {cX : ExtraC} {ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), _root_.GlobalTheory.Fam.AllFamilyConditions W → ∀ (u : B.Word) (a : _root_.GlobalTheory.Fam.GeometricFamily W u), a.Is → a.True → ∀ j (hj : j + 1 = B.R.m), ∀ t (J : _root_.GlobalTheory.Fam.QuadraticExtensionData a t), J.Reads → ∀ (α : J.Ch j) t' (J' : _root_.GlobalTheory.Fam.QuadraticExtensionData a t'), J'.Reads → ∀ (α' : J'.Ch j), ∀ g ∈ _root_.GlobalTheory.PenLev.relaxedLevelSubgroup J j hj α, g ∈ J'.A.U j (J'.ι j α') ⊔ GlobalTheory.FinPl.grpAt _ (_root_.GlobalTheory.PenBridge.finitePlaceCondition J') := by

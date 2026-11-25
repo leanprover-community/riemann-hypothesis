@@ -67,7 +67,7 @@ theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD
     dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
   unfold dv
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [Pi.single_apply, hm']) (by simp)]
+  rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [hm']) (by simp)]
   simp
 
 theorem dvO_lin (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) {I : Type} (s : Finset I)
@@ -125,8 +125,7 @@ theorem avg_props {T : LocLat G Qp LL O} (a : ZMod n) {z : W.DD T} (hz : z ∈ W
     (∑ δ ∈ W.DelF, W.γD T δ z) ∈ W.NΔ T ∧
       (letE a : LetA O n) • (∑ δ ∈ W.DelF, W.γD T δ z) = ∑ δ ∈ W.DelF, W.γD T δ z := by
   refine ⟨⟨Submodule.sum_mem _ fun δ _ => W.N_Γ T δ z hz, fun δ' hδ' => ?_⟩, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Finset.sum_nbij' (δ' * ·) (δ'⁻¹ * ·) (fun g hg => TypesA.delF_mul W hδ' hg)
       (fun g hg => TypesA.delF_mul W (TypesA.delF_inv W hδ') hg) (fun g _ => by simp) (fun g _ => by simp)
       (fun g _ => ?_)

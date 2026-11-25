@@ -101,10 +101,8 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.MultiplicityCoverHypotheses
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.WeightSetResidueCharacteristic
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.AllStagesAtMemberOfSpecializations
-public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExBLIsLinkedPrmRStatement
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.FiniteLevelAndSecond
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MemberEClosing
-public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SlotMvPrmRNelStatement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -183,7 +181,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffCo
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopAdm
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.Tactic.Linter.HaveILetI
-import Lean.Exception
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Wp3ApplyEqSqMulSubSqMul
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ConcreteLevelAdelicSubset
 
@@ -1158,7 +1155,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.Has3NeoOfSteps =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicRowsDivisionOverReplacedLaterStages =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicRowsDivisionOverReplacedLaterStages", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReplacementValuesBaseLevelTypePartsEq\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMovedRowLiftDataToFittingStages\nimport Lean.Exception\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicRowsDivisionOverReplacedLaterStages", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReplacementValuesBaseLevelTypePartsEq\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMovedRowLiftDataToFittingStages\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1172,25 +1169,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.R3.Rw.Mv
 
--- Use the kernel to compare fully elaborated types across the two stages.
-open Lean Elab Tactic in
-local elab "exact_by_kernel " term:term : tactic =>
-  closeMainGoalUsing `exact_by_kernel fun target _ => do
-    let value ← elabTerm term none
-    Term.synthesizeSyntheticMVarsNoPostponing
-    let value ← instantiateMVars value
-    let actual ← instantiateMVars (← Meta.inferType value)
-    let target ← instantiateMVars target
-    let lctx ← instantiateLCtxMVars (← getLCtx)
-    match Kernel.isDefEq (← getEnv) lctx actual target with
-    | .ok true => pure value
-    | .ok false => throwError "expected{indentExpr target}\nbut the term has type{indentExpr actual}"
-    | .error error => throwError (error.toMessageData (← getOptions))
-
--- Named `kcEx%` (not `kc%`): the clump imports LayerUpStatement, whose global `kc%`
--- macro would make every `kc%` here ambiguous and elaborate the slow fallback too.
-local macro "kcEx%" t:term:max : term => `(by first | exact_by_kernel $t | with_unfolding_all exact ($t :))
-
 
 section
 variable {B : Base} {C : Cols B} {a : Late B C} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
@@ -1198,22 +1176,22 @@ variable {B : Base} {C : Cols B} {a : Late B C} {G : Type} [Group G] [Fintype G]
   {R : RealDat3 a.D A Ks} {F : Face3 a.D A} {X0 : BaseLevelRowSide a.D} {Y : Read (A3 := A) R.toRealDat F.lv2 X0} (Z : ReadL R F X0 Y)
   (u : Parts R)
 
-theorem jWu_heq : HEq (jWu Z u) Z.jW := by exact_by_kernel (HEq.refl Z.jW)
+theorem jWu_heq : HEq (jWu Z u) Z.jW := by unfold jWu; exact HEq.refl Z.jW
 
-theorem eRRu_heq : HEq (eRRu Z u) Z.eRR := by exact_by_kernel (HEq.refl Z.eRR)
+theorem eRRu_heq : HEq (eRRu Z u) Z.eRR := by unfold eRRu; exact HEq.refl Z.eRR
 
-theorem eRR0u_heq : HEq (riemannRochSpaceCoordinateEquiv Z u) Z.eRR0 := by exact_by_kernel (HEq.refl Z.eRR0)
+theorem eRR0u_heq : HEq (riemannRochSpaceCoordinateEquiv Z u) Z.eRR0 := by unfold riemannRochSpaceCoordinateEquiv; exact HEq.refl Z.eRR0
 
 variable (c : Refill a)
 
 theorem readL_jW : HEq (letI := alg c.to iK; (readL c Z).jW) Z.jW := by
-  exact_by_kernel (jWu_heq Z (partsB c R))
+  dsimp only [readL]; exact jWu_heq Z (partsB c R)
 
 theorem readL_eRR : HEq (letI := alg c.to iK; (readL c Z).eRR) Z.eRR := by
-  exact_by_kernel (eRRu_heq Z (partsB c R))
+  dsimp only [readL]; exact eRRu_heq Z (partsB c R)
 
 theorem transportedReading_baseRowLatticeCoordinates : HEq (letI := alg c.to iK; (readL c Z).eRR0) Z.eRR0 := by
-  exact_by_kernel (eRR0u_heq Z (partsB c R))
+  dsimp only [readL]; exact eRR0u_heq Z (partsB c R)
 
 end
 
@@ -1222,23 +1200,23 @@ end
 theorem rowsAre_refill : ∀ (B : Base) (C : Cols B) (a : Late B C) (c : Refill a) (px : PreX B.toPre) (I : ColIn B px) (hX : B.fields.Ok) (T : TwDat B) (Wt : Set B.places.Pl) (ix : C.Tup ≃ I.ι) (p0 : BaseLevelRowSide a.D) (r : RowsAre a.st I hX T Wt ix p0), ∃ r' : RowsAre c.to.st I hX T Wt ix (Tr.baseLevelRowSideTransport c p0), r'.z = Mv.cpDat c.to c.same r.z ∧ HEq r'.Y.tup r.Y.tup ∧ HEq r'.Y.tupT r.Y.tupT ∧ HEq r'.Y.PY.ψ r.Y.PY.ψ ∧ HEq (fun i => (r'.Y.PW i).ψ) (fun i => (r.Y.PW i).ψ) ∧ HEq (fun π => principalLevelFrame.rowRepR r'.z.R.θ (r'.Y.eFT π)) (fun π => principalLevelFrame.rowRepR r.z.R.θ (r.Y.eFT π)) ∧ HEq (fun x => (r'.Y.Ish.jE x).1) (fun x => (r.Y.Ish.jE x).1) ∧ HEq (fun x => (r'.Y.Iz.jE x).1) (fun x => (r.Y.Iz.jE x).1) ∧ HEq r'.Y.eE r.Y.eE ∧ HEq r'.Y.jA r.Y.jA ∧ HEq r'.Y.jA0 r.Y.jA0 ∧ HEq r'.Y.eMt r.Y.eMt ∧ HEq r'.Y.mj.eW r.Y.mj.eW ∧ HEq r'.Z.jW r.Z.jW ∧ HEq r'.Z.eRR r.Z.eRR ∧ HEq r'.Z.eRR0 r.Z.eRR0 := by
   intro B C a c px I hX T Wt ix p0 r
   letI := r.z.alg
-  refine ⟨⟨Mv.cpDat c.to c.same r.z, (kcEx% (holds_tr c.to r.intersectionNumber_baseChange)), (kcEx% (read c r.Y)), (kcEx% (readL c r.Z)),
-    (kcEx% r.tup_ix)⟩, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · exact_by_kernel (HEq.refl r.Y.tup)
-  · exact (kcEx% (HEq.refl r.Y.tupT))
-  · exact (kcEx% (HEq.refl r.Y.PY.ψ))
-  · exact (kcEx% (HEq.refl (fun i => (r.Y.PW i).ψ)))
-  · exact (kcEx% (heq_of_eq (funext fun π => (rep_eq c r.Y π).symm)))
-  · exact_by_kernel (HEq.refl (fun x => (r.Y.Ish.jE x).1))
-  · exact_by_kernel (HEq.refl (fun x => (r.Y.Iz.jE x).1))
-  · exact (kcEx% (HEq.refl r.Y.eE))
-  · exact (kcEx% (HEq.refl r.Y.jA))
-  · exact (kcEx% (HEq.refl r.Y.jA0))
-  · exact (kcEx% (HEq.refl r.Y.eMt))
-  · exact (kcEx% (HEq.refl r.Y.mj.eW))
-  · exact (kcEx% (readL_jW r.Z c))
-  · exact (kcEx% (readL_eRR r.Z c))
-  · exact (kcEx% (transportedReading_baseRowLatticeCoordinates r.Z c))
+  refine ⟨⟨Mv.cpDat c.to c.same r.z, ((holds_tr c.to r.intersectionNumber_baseChange)), ((read c r.Y)), ((readL c r.Z)),
+    (r.tup_ix)⟩, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (HEq.refl r.Y.tup)
+  · exact ((HEq.refl r.Y.tupT))
+  · exact ((HEq.refl r.Y.PY.ψ))
+  · exact ((HEq.refl (fun i => (r.Y.PW i).ψ)))
+  · exact ((heq_of_eq (funext fun π => (rep_eq c r.Y π).symm)))
+  · exact (HEq.refl (fun x => (r.Y.Ish.jE x).1))
+  · exact (HEq.refl (fun x => (r.Y.Iz.jE x).1))
+  · exact ((HEq.refl r.Y.eE))
+  · exact ((HEq.refl r.Y.jA))
+  · exact ((HEq.refl r.Y.jA0))
+  · exact ((HEq.refl r.Y.eMt))
+  · exact ((HEq.refl r.Y.mj.eW))
+  · exact ((readL_jW r.Z c))
+  · exact ((readL_eRR r.Z c))
+  · exact ((transportedReading_baseRowLatticeCoordinates r.Z c))
 
 end GlobalTheory.Mem.R3.Rw.Mv
 
@@ -1607,32 +1585,10 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Fo
 open GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr GlobalTheory.Mem.SRe
 
 namespace GlobalTheory.Mem.Top.Bl
-theorem exists_baseLattice_of_pair_alt (hA : _root_.GlobalTheory.Mem.Top.Bl.HypAAlt) (hE : _root_.GlobalTheory.Mem.Top.Bl.EllipticHypothesis) (hH : _root_.GlobalTheory.Mem.Top.Bl.MultiplicityCoverHypotheses) (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (hN : _root_.GlobalTheory.Mem.Top.Bl.LocalLanglandsHypothesis hL) (N Ng : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL)
-    (toB : ∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (_root_.GlobalTheory.HeightCounting.Up.extensionWithLaw hL K B f T w Z Wt p0 t nch n xd c))
-    (toN : ∀ K B f T w Z Wt p0 t nch n xd c, Ng K B f T w Z Wt p0 t nch n xd c →
-      Nonempty (N K B f T w Z Wt p0 t nch n xd c) ∧ GoodO (w.D Z) nch xd)
-    (has3 : StepW Start (Has3 (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s))
-    (lv : LevelThreeCondition (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s) (lvg : LevelThreeCondition (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension Ng SExt.none).s)
-    (intersection_update_fsHerm_neg_one : PositionMv (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s)
-    (second : Pass KPx (IsBuiltE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s) fun K B f T =>
-      ∃ w : ColW B f T, Start K B f T w ∧ Has3 (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension Ng SExt.none).s K B f T w)
-    (hMQ : _root_.GlobalTheory.Mem.Top.Bl.MultiplicityCondition (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none)) :
-    MemberE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s ∧
-      GlobalTheory.Fc.ExBL KPx (IsBuiltE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s) (IsGoodE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none).s)
-        (_root_.GlobalTheory.Mem.Top.Bl.BundleLinkage (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none)) := by
-  have exp := _root_.GlobalTheory.Mem.Top.ExportTrue.exportF_prmR_alt_alt hE.e1 hE.e2 hE.e3 hE.e4 hE.e5 hE.e6 hE.e7 hE.e8 hE.e9 hE.e10 hE.e11 hE.e12 hE.e13 hA.a6 hE.e14 hA.a22
-    hE.e15 hE.e16 hE.e17 hE.e18 hE.e19 hE.e20 hE.e21 hE.e22 hE.e23 hE.e24 hE.e25 hN.pr hN.ser hL hN.parMem N
-    SExt.none toB
-  refine ⟨?_, ?_⟩
-  · exact _root_.GlobalTheory.Mem.Top.Closing.memberE_closing_alt_alt hA.a1 hA.a2 hA.a3 hA.a11 hA.a10 hA.a6 hA.a12 hA.a13 hA.a14 hA.a16 hA.a17 hA.a18 hA.a8 hA.a6 hA.a7
-      hA.a5 hA.a19 hA.a20 hA.a21 hL N Ng has3 lv lvg exp second toN
-  · exact _root_.GlobalTheory.Mem.Top.Bl.exBL_isLinked_prmR_alt hH.h1.q12 hH.cover hA.a5 hA.a7 hA.a8 hA.a9 hA.a10 hA.a6 hA.a22 hA.a23 hA.a1 hL N
-      (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N SExt.none) rfl toB intersection_update_fsHerm_neg_one hMQ
-theorem exists_baseLattice_of_prime_alt : _root_.GlobalTheory.Mem.Top.Bl.HypAAlt → _root_.GlobalTheory.Mem.Top.Bl.EllipticHypothesis → _root_.GlobalTheory.Mem.Top.Bl.MultiplicityCoverHypotheses → ExistsUnlocalizedSaturatedState → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.Mem.Top.Bl.LocalLanglandsHypothesis hL → ∀ cDep : ℝ,
-    _root_.GlobalTheory.Mem.Top.Bl.MultiplicityCondition (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension (_root_.GlobalTheory.HeightCounting.Up.extensionWithOrigin hL cDep) SExt.none) → MemberE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension (_root_.GlobalTheory.HeightCounting.Up.extensionWithOrigin hL cDep) SExt.none).s ∧
-      GlobalTheory.Fc.ExBL KPx (IsBuiltE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension (_root_.GlobalTheory.HeightCounting.Up.extensionWithOrigin hL cDep) SExt.none).s)
-        (IsGoodE (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension (_root_.GlobalTheory.HeightCounting.Up.extensionWithOrigin hL cDep) SExt.none).s) (_root_.GlobalTheory.Mem.Top.Bl.BundleLinkage (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension (_root_.GlobalTheory.HeightCounting.Up.extensionWithOrigin hL cDep) SExt.none)) := by
-  intro hA hE hH hW hL hN cDep hMQ
+theorem memberE_extensionWithOrigin (hA : HypAAlt) (hE : EllipticHypothesis)
+    (hH : MultiplicityCoverHypotheses) (hW : ExistsUnlocalizedSaturatedState)
+    (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (hN : LocalLanglandsHypothesis hL) (cDep : ℝ) :
+    MemberE (parametersOfExtension (extensionWithOrigin hL cDep) SExt.none).s := by
   have holdsW : WeightCaseCondition := _root_.GlobalTheory.Mem.R3.Rw.AtDatumEvaluation.w_of_multEq_and_test_at_weights hH.h1 hH.h3 hH.multW
   have datE : DatExt := _root_.GlobalTheory.Mem.R3.Rw.datExt_of_hypotheses hH.cover hA.a5 hA.a6 hA.a7 hA.a8 hA.a9 hA.a10
   obtain ⟨sA, sMt, sRat, sCusp, -, -, -, sC, -, stages⟩ :=
@@ -1644,16 +1600,12 @@ theorem exists_baseLattice_of_prime_alt : _root_.GlobalTheory.Mem.Top.Bl.HypAAlt
   have has3 := _root_.GlobalTheory.Mem.Top.Bl.has3_neo_of_localLanglands_alt
     hL cDep hW sA sMt sRat sCusp settings series points sC fin SExt.none
   have lv := _root_.GlobalTheory.HeightCounting.Up.lv3Mv_extensionWithOrigin_and_nEog hL cDep SExt.none
-  refine exists_baseLattice_of_pair_alt hA hE hH hL hN
-    (_root_.GlobalTheory.HeightCounting.Up.extensionWithOrigin hL cDep)
-    (_root_.GlobalTheory.HeightCounting.Up.GeometricNormExtension hL cDep)
-    ?_ ?_ has3 lv.1 lv.2
-    (_root_.GlobalTheory.HeightCounting.Up.movable_prmR_nel_alt hL cDep)
-    (second SExt.none) hMQ
-  · intro K B f T w Z Wt p0 t nch n xd c h
-    exact ⟨h.1.1⟩
-  · intro K B f T w Z Wt p0 t nch n xd c h
-    exact ⟨⟨h.1⟩, h.2.down⟩
+  have exp := _root_.GlobalTheory.Mem.Top.ExportTrue.exportF_prmR_alt_alt hE.e1 hE.e2 hE.e3 hE.e4 hE.e5 hE.e6 hE.e7 hE.e8 hE.e9 hE.e10 hE.e11 hE.e12 hE.e13 hA.a6 hE.e14 hA.a22
+    hE.e15 hE.e16 hE.e17 hE.e18 hE.e19 hE.e20 hE.e21 hE.e22 hE.e23 hE.e24 hE.e25 hN.pr hN.ser hL hN.parMem (extensionWithOrigin hL cDep)
+    SExt.none (fun _ _ _ _ _ _ _ _ _ _ _ _ _ h => ⟨h.1.1⟩)
+  exact _root_.GlobalTheory.Mem.Top.Closing.memberE_closing_alt_alt hA.a1 hA.a2 hA.a3 hA.a11 hA.a10 hA.a6 hA.a12 hA.a13 hA.a14 hA.a16 hA.a17 hA.a18 hA.a8 hA.a6 hA.a7
+    hA.a5 hA.a19 hA.a20 hA.a21 hL (extensionWithOrigin hL cDep) (GeometricNormExtension hL cDep)
+    has3 lv.1 lv.2 exp (second SExt.none) (fun _ _ _ _ _ _ _ _ _ _ _ _ _ h => ⟨⟨h.1⟩, h.2.down⟩)
 end GlobalTheory.Mem.Top.Bl
 end
 section

@@ -207,23 +207,23 @@ private theorem exists_restricted_box_subset_of_isOpen {x : Af F} {U : Set (Af F
   have hEsub : ∀ v, E v ⊆ (fun z => z - x v) ⁻¹' (v.adicCompletionIntegers F : Set (Fv F v)) := by
     intro v
     by_cases hv : v ∈ I
-    · rw [hEv v, if_pos hv]
+    · rw [hEv v, ite_eq_left hv]
       exact (hVsub v).trans inter_subset_right
-    · rw [hEv v, if_neg hv]
+    · rw [hEv v, ite_eq_right hv]
   refine ⟨E, fun v => ?_, ?_, fun v => ?_, ?_⟩
   · obtain ⟨hT1, hT2, -, -⟩ := preimage_sub_integers_mem_and_eq_of_mem v (x v)
     by_cases hv : v ∈ I
-    · rw [hEv v, if_pos hv]
+    · rw [hEv v, ite_eq_left hv]
       exact ⟨hVc v, hT2.of_isClosed_subset (hVc v).1 ((hVsub v).trans inter_subset_right)⟩
-    · rw [hEv v, if_neg hv]
+    · rw [hEv v, ite_eq_right hv]
       exact ⟨hT1, hT2⟩
   · filter_upwards [hSc, hI.compl_mem_cofinite] with v hvS hvI
-    rw [hEv v, if_neg hvI]
+    rw [hEv v, ite_eq_right hvI]
     exact (preimage_sub_integers_mem_and_eq_of_mem v (x v)).2.2.2 hvS
   · by_cases hv : v ∈ I
-    · rw [hEv v, if_pos hv]
+    · rw [hEv v, ite_eq_left hv]
       exact hxV v
-    · rw [hEv v, if_neg hv]
+    · rw [hEv v, ite_eq_right hv]
       exact (preimage_sub_integers_mem_and_eq_of_mem v (x v)).2.2.1
   · intro z hz
     have hz1 : ∀ v, z v ∈ E v := hz
@@ -235,7 +235,7 @@ private theorem exists_restricted_box_subset_of_isOpen {x : Af F} {U : Set (Af F
         simpa using add_mem (hzE v) h2⟩
     have hz' : z' ∈ ((↑) : _ → Π v, Fv F v) ⁻¹' N := hIt fun v hv => by
       have h := hz1 v
-      rw [hEv v, if_pos hv] at h
+      rw [hEv v, ite_eq_left hv] at h
       exact ((hVsub v) h).1
     exact hNU hz'
 

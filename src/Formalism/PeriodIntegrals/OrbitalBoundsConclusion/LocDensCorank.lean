@@ -173,7 +173,7 @@ theorem sat_of (hR : RedData ϖ k r n b Λ) (hϖ : Irreducible ϖ)
       exact hdu.smul_left_cancel.mp h0
     rw [hx0]
     exact zero_mem _
-  push_neg at hall
+  push Not at hall
   obtain ⟨a0, ha0⟩ := hall
   obtain ⟨j, z, hz, hzeq, a1, ha1⟩ :=
     minpow hR hϖ o3 (fun a => ((h a : M.L.O) : E)) (fun a => (h a).2) a0 ha0
@@ -204,7 +204,7 @@ theorem sat_of (hR : RedData ϖ k r n b Λ) (hϖ : Irreducible ϖ)
     have h3 := Submodule.smul_mem (Submodule.span M.L.O (Set.range v)) (⟨_, hmem⟩ : M.L.O)
       (Submodule.subset_span ⟨a, rfl⟩)
     rwa [Subring.smul_def] at h3
-  · push_neg at hjm
+  · push Not at hjm
     rw [show m = j + ((m - j - 1) + 1) by omega, pow_add, mul_smul] at key
     have e1 := (hϖu.pow j).smul_left_cancel.mp key
     have hzs : ∑ a, z a • v a = algebraMap F E (ϖ : F) •
@@ -323,14 +323,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 
 open Formalism.MainNotions.S Module
 open ValuativeRel
-
-theorem flb_int_mem {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E]
-    [Algebra F E] [TopologicalSpace E] (L : Loc.LocE F E) (a : 𝒪[F]) : algebraMap F E a ∈ L.O := by
-  exact (L.O_def _).2 isIntegral_algebraMap
-
-theorem flb_cj_mem {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E]
-    [Algebra F E] [TopologicalSpace E] (L : Loc.LocE F E) {x : E} (hx : x ∈ L.O) : L.cj x ∈ L.O := by
-  exact (L.O_def _).2 (((L.O_def x).1 hx).map ((L.cj : E →ₐ[F] E).restrictScalars 𝒪[F]))
 
 theorem flb_pid {E : Type} [CommRing E] (S : Subring E) (p : E) (hp : p ∈ S)
     (hfac : ∀ x ∈ S, x ≠ 0 → ∃ k : ℕ, ∃ u ∈ S, (∃ w ∈ S, u * w = 1) ∧ x = p ^ k * u) :
@@ -548,8 +540,8 @@ theorem flb_main {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [C
     intro y hy
     obtain ⟨c, hcO, rfl⟩ := hexpb y hy
     rw [flb_h_sum_right]
-    simp only [hdb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-    exact flb_cj_mem M.L (hcO k)
+    simp only [hdb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+    exact PI.UnitaryGroupMassFormula.CntFormula.fl_cj_mem M.L (hcO k)
   obtain ⟨c', hc'O, hc'⟩ := hexpb d hdΛ
   have hz : ∑ m', (G⁻¹ k m' - c' m') • b m' = 0 := by
     simp only [sub_smul, Finset.sum_sub_distrib]
@@ -564,10 +556,10 @@ theorem flatBasis_of (h1 : FLocO) : FLatBasis := by
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[F]
   obtain ⟨-, hden0, hfac⟩ := h1 F E M.L hF hc hE ϖ hϖ
   have hnt : Nontrivial E := Module.nontrivial_of_finrank_pos (R := F) (by rw [M.L.rank]; norm_num)
-  refine flb_main M hE hnt ?_ (flb_pid M.L.O _ (flb_int_mem M.L ϖ) hfac) V H Λ hΛ
+  refine flb_main M hE hnt ?_ (flb_pid M.L.O _ (PI.UnitaryGroupMassFormula.CntFormula.fl_int_mem M.L ϖ) hfac) V H Λ hΛ
   intro x
   obtain ⟨c, hc0, hcx⟩ := hden0 x
-  refine ⟨_, flb_int_mem M.L c, ?_, hcx⟩
+  refine ⟨_, PI.UnitaryGroupMassFormula.CntFormula.fl_int_mem M.L c, ?_, hcx⟩
   have hcF : (c : F) ≠ 0 := by exact_mod_cast hc0
   exact (map_ne_zero_iff _ (algebraMap F E).injective).mpr hcF
 

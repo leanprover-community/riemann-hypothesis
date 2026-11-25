@@ -395,7 +395,7 @@ theorem exists_decay_siegel (hn : 0 < n) {Φ : Matrix (Fin n) (Fin n) 𝔸[K] �
     unfold twistedWeight
     rw [← hW]
     by_cases hbox : IsInBox I W
-    · rw [if_pos hbox, mul_one, mul_one]
+    · rw [ite_eq_left hbox, mul_one, mul_one]
       have hdet : (Reduction.detModule K n (x⁻¹ * AdelicGLn.diagonal K n γ * y) : ℝ) = 1 := by
         have hmem : x⁻¹ * AdelicGLn.diagonal K n γ * y ∈ Reduction.normOneGL (K := K) (n := n) :=
           mul_mem (mul_mem (inv_mem hx1) (Reduction.rationalGL_le_normOneGL ⟨γ, rfl⟩)) hy1
@@ -405,7 +405,7 @@ theorem exists_decay_siegel (hn : 0 < n) {Φ : Matrix (Fin n) (Fin n) 𝔸[K] �
       rw [hWG] at hw
       rw [mul_assoc]
       exact mul_le_mul_of_nonneg_left (inv_one_add_mul_pow_add_le hρ1 hc₀ hw M M') hC₁
-    · simp only [if_neg hbox, mul_zero, le_refl]
+    · simp only [ite_eq_right hbox, mul_zero, le_refl]
   have hsumγ : Summable fun γ : GL (Fin n) K =>
       twistedWeight I M x y (γ : Matrix (Fin n) (Fin n) K) :=
     hsum.comp_injective (fun _ _ h => Units.ext h)

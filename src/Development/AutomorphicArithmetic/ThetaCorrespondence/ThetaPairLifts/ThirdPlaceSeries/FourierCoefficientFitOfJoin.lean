@@ -1118,7 +1118,7 @@ theorem leaves_of_sum {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : De
     have e2 : (O.ee C b O.sv0 : ℝ) * Real.log (O.qq O.sv0) ≤ O.PPF C b + Real.log (O.qq O.sv0) := by
       have h := Nat.floor_le (div_nonneg hP0 hlq.le)
       rw [le_div_iff₀ hlq] at h
-      simp only [FunData.ee, if_true]
+      simp only [FunData.ee, ite_true]
       push_cast
       linarith
     rw [e1]
@@ -1201,11 +1201,6 @@ section -- clump:auto
 section
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain Formalism.L2.Indef Formalism.L2.Indef.Tree GlobalTheory.BigTop GlobalTheory.BigTop.Fun
 noncomputable section
-namespace GlobalTheory.BigTop.Fun.RamSum
-section Norms
-variable {F : Type} [Field F] [NumberField F]
-end Norms
-end GlobalTheory.BigTop.Fun.RamSum
 namespace GlobalTheory.BigTop.Fun
 open RamSum
 theorem ramified_sums_seventh_bound_alt : _root_.GlobalTheory.BigTop.Fun.RamifiedSumBound' := by
@@ -1529,8 +1524,6 @@ section -- clump:auto
 section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.BigTop GlobalTheory.BigTop.Fun GlobalTheory.SqTop NumberField
-namespace GlobalTheory.BigTop.Fun.ThbTie
-end GlobalTheory.BigTop.Fun.ThbTie
 open GlobalTheory.BigTop.Fun.ThbTie in
 theorem GlobalTheory.BigTop.Fun.thb_tie_alt (hS : _root_.GlobalTheory.BigTop.Fun.SettingAtPoint)
     (hd : Closed FamHyp fun Fm _ => _root_.GlobalTheory.BigTop.EventuallyAtPoints Fm fun x _ i _ => |(Fm.L x i).logDerivativeAtOne| ≤ (Fm.L x i).sc.x ^ (Fm.L x i).sc.eps)

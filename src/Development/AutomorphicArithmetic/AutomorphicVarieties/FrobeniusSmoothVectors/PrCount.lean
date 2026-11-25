@@ -76,7 +76,7 @@ theorem UpperTheory.V.Fr.pr_count :
       rw [h] at hH0
       exact hX₀ ((Submodule.mem_bot K).1 hH0)
     omega
-  · push_neg at hinv
+  · push Not at hinv
     obtain ⟨s, hs⟩ := hinv
     have hD0 : D₀ ∈ LinearMap.ker f := by
       rw [LinearMap.mem_ker]

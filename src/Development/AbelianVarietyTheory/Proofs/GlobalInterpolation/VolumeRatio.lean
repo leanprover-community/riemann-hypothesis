@@ -54,55 +54,12 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTh
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RealPlaceMeasures
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Unfolding
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.VolIndep
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Finiteness.Quotient
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Algebra.Group.Units
@@ -111,7 +68,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.InFrameStabilize
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Polynomial.Basic
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
@@ -1186,7 +1142,7 @@ theorem fibre_lintegral_ne_zero : ActionCoordinates.QuotientMeasure → CDHaar �
   let s : ActionCoordinates.Wsp P Q → UpqT P Q := fun y => if h : ActionCoordinates.qf y = β then s0 y h else 1
   have hs : ∀ y, ActionCoordinates.qf y = β → ActionCoordinates.act (s y)⁻¹ x₀ = y := by
     intro y hy
-    simp only [s, dif_pos hy]
+    simp only [s, dite_eq_left hy]
     exact hs0 y hy
   have hc : Continuous fun g : UpqT P Q => ActionCoordinates.act g⁻¹ x₀ :=
     (hcl.continuous.comp continuous_inv).matrix_mulVec continuous_const
@@ -1514,7 +1470,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem hR_ratTup (R : Type) [CommRing R] [Algebra F R] {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (x y : Fin M → E) :
     hR R σ J (fun i => inclR R (x i)) (fun i => inclR R (y i)) = inclR R (hE σ J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [hR, hE, Formalism.UG.hform, JR, sigR, inclR, map_sum, Algebra.TensorProduct.tmul_mul_tmul]
 
 theorem exists_bump {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] {x : V}
@@ -1758,7 +1713,6 @@ theorem tsum_coords (D : D7) (W : HSpace D.host.E) (s : Bool) (β : D.host.F)
   rw [← eq.tsum_eq]; rfl
 
 
-set_option maxHeartbeats 1000000 in
 theorem ratio_of_setting (hL5 : PlaceSplittingTypes.SelfDualLatticeDensity) (hR3 : ActionCoordinates.RealPlaceMeasures)
     (hEu : LocalAdditiveCharacterDual.EulerProductOfDensities)
     (hSW : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),

@@ -447,8 +447,8 @@ theorem gaussAbs_C (w : NumberField.FinitePlace K) {σ : Type*} (c : K) :
   by_cases hc : c = 0
   · subst hc
     simp
-  · rw [MvPolynomial.support_C, if_neg hc]
-    simp only [Finset.sup_singleton, MvPolynomial.coeff_C, if_true]
+  · rw [MvPolynomial.support_C, ite_eq_right hc]
+    simp only [Finset.sup_singleton, MvPolynomial.coeff_C, ite_true]
     exact Real.coe_toNNReal _ (by positivity)
 
 end ReciprocityTheory.ChartRestriction.G.T0.HeightMultiplicativity
@@ -480,7 +480,7 @@ theorem gaussAbs_prim {σ : Type*} (la : HeightOneSpectrum (𝓞 K)) (x : MvPoly
     gaussAbs (FinitePlace.mk la) (MvPolynomial.map (algebraMap (𝓞 K) K) x) = 1 := by
   classical
   rw [MvPolynomial.mem_map_C_iff] at hx
-  push_neg at hx
+  push Not at hx
   obtain ⟨s0, hs0⟩ := hx
   have hw : ∀ a : 𝓞 K, FinitePlace.mk la (algebraMap (𝓞 K) K a) ≤ 1 := fun a => by
     rw [FinitePlace.mk_apply]

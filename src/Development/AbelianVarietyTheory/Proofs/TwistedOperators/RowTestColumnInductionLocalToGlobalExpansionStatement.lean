@@ -575,7 +575,7 @@ theorem isThetaAt_pureTensorO (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ)
   rw [← e₀, ← e₁]
   by_cases hx : ∀ x : WO S T, IsHalf e x ∨ IsHalf (cA D e) x → x.map (infPart D) = 0
   · exact isThetaAt_map F (fun x h => hF' x (hx x h)) h
-  · push_neg at hx
+  · push Not at hx
     obtain ⟨x, hx, hx'⟩ := hx
     obtain ⟨Tm, hTm⟩ := h.1
     have a : f₀ = 0 := by
@@ -632,31 +632,26 @@ theorem sum_mul_sum_orth {R ι : Type} [Ring R] [DecidableEq ι] (f : ι → R) 
   calc ∑ i ∈ S, ∑ j ∈ S', f i * f j = ∑ i ∈ S, if i ∈ S' then f i else 0 := by
         refine Finset.sum_congr rfl fun i _ => ?_
         by_cases hi : i ∈ S'
-        · rw [if_pos hi, Finset.sum_eq_single_of_mem i hi fun j _ hji => horth i j (Ne.symm hji), hid]
-        · rw [if_neg hi]
+        · rw [ite_eq_left hi, Finset.sum_eq_single_of_mem i hi fun j _ hji => horth i j (Ne.symm hji), hid]
+        · rw [ite_eq_right hi]
           exact Finset.sum_eq_zero fun j hj => horth i j fun hij => hi (by rw [hij]; exact hj)
     _ = ∑ i ∈ S ∩ S', f i := Finset.sum_ite_mem S S' f
-
-theorem isIdemAt_of_single {D : D7} {a : AE D} {w : Pl D.host.E} (h : IsIdemSum a {w}) :
-    Formalism.L2.NTheta.IsIdemAt a w := by
-  obtain ⟨⟨es, hes, rfl⟩, -⟩ := h
-  simpa using hes w (Finset.mem_singleton_self w)
 
 private theorem mul_self_eq_of_isIdemAt {D : D7} {x : AE D} {w : Formalism.L2.DIV.Pl D.host.E}
     (hx : Formalism.L2.NTheta.IsIdemAt x w) : x * x = x := by
   have h := GlobalTheory.PartialIdemSum.mul_sum_of_isIdemAt hx {w} (fun _ => x) (by simpa using hx)
-  simpa only [Finset.sum_singleton, Finset.mem_singleton_self, if_true] using h
+  simpa only [Finset.sum_singleton, Finset.mem_singleton_self, ite_true] using h
 
 private theorem mul_eq_zero_of_isIdemAt_of_ne {D : D7} {x y : AE D} {w w' : Formalism.L2.DIV.Pl D.host.E}
     (hx : Formalism.L2.NTheta.IsIdemAt x w) (hy : Formalism.L2.NTheta.IsIdemAt y w') (hne : w ≠ w') : x * y = 0 := by
   have h := GlobalTheory.PartialIdemSum.mul_sum_of_isIdemAt hx {w'} (fun _ => y) (by simpa using hy)
-  rwa [Finset.sum_singleton, if_neg (by simpa using hne)] at h
+  rwa [Finset.sum_singleton, ite_eq_right (by simpa using hne)] at h
 
 private theorem eq_of_isIdemAt_of_isIdemAt {D : D7} {x y : AE D} {w : Formalism.L2.DIV.Pl D.host.E}
     (hx : Formalism.L2.NTheta.IsIdemAt x w) (hy : Formalism.L2.NTheta.IsIdemAt y w) : x = y := by
   have h1 := GlobalTheory.PartialIdemSum.mul_sum_of_isIdemAt hx {w} (fun _ => y) (by simpa using hy)
   have h2 := GlobalTheory.PartialIdemSum.mul_sum_of_isIdemAt hy {w} (fun _ => x) (by simpa using hx)
-  simp only [Finset.sum_singleton, Finset.mem_singleton_self, if_true] at h1 h2
+  simp only [Finset.sum_singleton, Finset.mem_singleton_self, ite_true] at h1 h2
   calc x = x * y := h1.symm
     _ = y * x := mul_comm x y
     _ = y := h2
@@ -664,7 +659,7 @@ private theorem eq_of_isIdemAt_of_isIdemAt {D : D7} {x y : AE D} {w : Formalism.
 theorem sum_single : ∀ (D : D7) (e : AE D) (P : Finset (Pl D.host.E)), IsIdemSum e P → ∀ (eL : P → AE D), (∀ w, IsIdemSum (eL w) {w.1}) → e = ∑ w, eL w ∧ (∀ S : Finset P, IsIdemSum (∑ w ∈ S, eL w) (S.map (Function.Embedding.subtype _))) ∧ ∀ S S' : Finset P, (∑ w ∈ S, eL w) * (∑ w ∈ S', eL w) = ∑ w ∈ S ∩ S', eL w := by
   intro D e P he eL hL
   obtain ⟨⟨es, hes, hsum⟩, he0⟩ := he
-  have hat : ∀ w : P, Formalism.L2.NTheta.IsIdemAt (eL w) w.1 := fun w => isIdemAt_of_single (hL w)
+  have hat : ∀ w : P, Formalism.L2.NTheta.IsIdemAt (eL w) w.1 := fun w => GlobalTheory.PlaceChain.idemAt_of_single (hL w)
   have hprod : ∀ S S' : Finset P, (∑ w ∈ S, eL w) * (∑ w ∈ S', eL w) = ∑ w ∈ S ∩ S', eL w := fun S S' =>
     sum_mul_sum_orth eL (fun w => mul_self_eq_of_isIdemAt (hat w))
       (fun w w' hne => mul_eq_zero_of_isIdemAt_of_ne (hat w) (hat w') fun h => hne (Subtype.ext h)) S S'
@@ -801,23 +796,23 @@ theorem tens_sb (ha : a * a = a) (hb : b * b = b) (hΛa : ∀ u ∈ Λ, a • u 
   obtain ⟨-, l, hl, g2, g3⟩ := hΨ
   refine ⟨fun t ht => ?_, k * l, Nat.mul_pos hk hl, fun u hu hh t => ?_, fun t ht => ?_⟩
   · by_contra h
-    exact ht (if_neg h)
+    exact ht (ite_eq_right h)
   · have hh' : IsHalf (a + b) ((k * l) • u) := half_iff.2 (aux4 _ (half_iff.1 hh))
     unfold tens
     by_cases h : IsHalf (a + b) t
-    · rw [if_pos h, if_pos ((half_add_iff hh' t).2 h), smul_add, smul_add]
+    · rw [ite_eq_left h, ite_eq_left ((half_add_iff hh' t).2 h), smul_add, smul_add]
       have e1 : a • ((k * l) • u) = k • (l • (a • u)) := aux1 a k l u
       have e2 : b • ((k * l) • u) = l • (k • (b • u)) := by rw [mul_comm k l]; exact aux1 b l k u
       rw [e1, e2, h2 _ (nsmul_mem (hΛa u hu) l) (half_iff.2 (aux2 ha l u)),
         g2 _ (nsmul_mem (hΛb u hu) k) (half_iff.2 (aux2 hb k u))]
-    · rw [if_neg h, if_neg fun h' => h ((half_add_iff hh' t).1 h')]
+    · rw [ite_eq_right h, ite_eq_right fun h' => h ((half_add_iff hh' t).1 h')]
   · unfold tens at ht
     by_cases h : IsHalf (a + b) t
-    · rw [if_pos h] at ht
+    · rw [ite_eq_left h] at ht
       have e : (k * l) • t = l • (k • (a • t)) + k • (l • (b • t)) := aux3 k l (half_iff.1 h)
       rw [e]
       exact add_mem (nsmul_mem (h3 _ (left_ne_zero_of_mul ht)) l) (nsmul_mem (g3 _ (right_ne_zero_of_mul ht)) k)
-    · exact absurd (if_neg h) ht
+    · exact absurd (ite_eq_right h) ht
 
 theorem tens_ind (ha : a * a = a) (hb : b * b = b) (hΛa : ∀ u ∈ Λ, a • u ∈ Λ) (hΛb : ∀ u ∈ Λ, b • u ∈ Λ) :
     tens a b (halfInd a Λ) (halfInd b Λ) = halfInd (a + b) Λ := by
@@ -826,17 +821,17 @@ theorem tens_ind (ha : a * a = a) (hb : b * b = b) (hΛa : ∀ u ∈ Λ, a • u
   have h2 : IsHalf b (b • y) := half_iff.2 (by rw [smul_smul, hb])
   unfold tens halfInd
   by_cases h : IsHalf (a + b) y
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     by_cases hy : y ∈ Λ
-    · rw [if_pos ⟨hΛa y hy, h1⟩, if_pos ⟨hΛb y hy, h2⟩, if_pos ⟨hy, h⟩, one_mul]
-    · rw [if_neg (fun h' : y ∈ Λ ∧ _ => hy h'.1)]
+    · rw [ite_eq_left ⟨hΛa y hy, h1⟩, ite_eq_left ⟨hΛb y hy, h2⟩, ite_eq_left ⟨hy, h⟩, one_mul]
+    · rw [ite_eq_right (fun h' : y ∈ Λ ∧ _ => hy h'.1)]
       by_cases hay : a • y ∈ Λ
       · have : b • y ∉ Λ := fun hby => hy (by
           have := add_mem hay hby
           rwa [← add_smul, half_iff.1 h] at this)
-        rw [if_neg (fun h' : b • y ∈ Λ ∧ _ => this h'.1), mul_zero]
-      · rw [if_neg (fun h' : a • y ∈ Λ ∧ _ => hay h'.1), zero_mul]
-  · rw [if_neg h, if_neg (fun h' : y ∈ Λ ∧ _ => h h'.2)]
+        rw [ite_eq_right (fun h' : b • y ∈ Λ ∧ _ => this h'.1), mul_zero]
+      · rw [ite_eq_right (fun h' : a • y ∈ Λ ∧ _ => hay h'.1), zero_mul]
+  · rw [ite_eq_right h, ite_eq_right (fun h' : y ∈ Λ ∧ _ => h h'.2)]
 
 theorem tens_model (ψ : AddChar (AF D.host.F) ℂ) (ha : a * a = a) (hb : b * b = b) (hab : a * b = 0)
     (hΛa : ∀ u ∈ Λ, a • u ∈ Λ) (hΛb : ∀ u ∈ Λ, b • u ∈ Λ) {f₀ : WO S T → ℂ} {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)}
@@ -890,8 +885,6 @@ theorem orth_of_idemSum {D : D7} {a b : AE D} {P Q R : Finset (Pl D.host.E)} (ha
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) {t : T}
 
-
-
 theorem exists_prod {p : Pair T} (hS : IsSelfDualC (G.pS p) (G.latS p)) (hT : IsSelfDualC (G.pT p) (G.latT p))
     (d₁ d₂ : FinDatum G t p) (c₁ c₂ : WO (G.pS p) (G.pT p) →₀ ℂ) (he : IsIdemSum (d₁.e + d₂.e) (d₁.P ∪ d₂.P))
     (h₁ : IsCombOf W d₁ c₁) (h₂ : IsCombOf W d₂ c₂) :
@@ -918,7 +911,7 @@ theorem exists_prod {p : Pair T} (hS : IsSelfDualC (G.pS p) (G.latS p)) (hT : Is
       z_cen := (FinDatum.vacuum G t p).z_cen
       z_supp := (FinDatum.vacuum G t p).z_supp }
   refine ⟨d, c, rfl, rfl, ⟨fun u hu => ?_, fun u hu => ?_, fun f₀ hth hvac => ⟨?_, fun Tm hTm => ?_⟩⟩,
-    fun y hy => if_pos hy, hc⟩
+    fun y hy => ite_eq_left hy, hc⟩
   · obtain ⟨x, hx, y, hy, rfl⟩ := hsupp u hu
     rw [Matrix.map_add _ (fun a b => RingHom.map_add _ a b), h₁.1 x hx, h₂.1 y hy, add_zero]
   · obtain ⟨x, hx, y, hy, rfl⟩ := hsupp u hu
@@ -996,8 +989,8 @@ theorem prodD_empty (a : ι → AE D) (Ψ : ι → WO S T → ℂ) (Λ : AddSubg
   unfold prodD halfInd
   rw [Finset.sum_empty, Finset.prod_empty]
   by_cases h : IsHalf (0 : AE D) y
-  · rw [if_pos h, if_pos ⟨(GlobalTheory.VecProd.isHalf_zero_iff y).1 h ▸ Λ.zero_mem, h⟩]
-  · rw [if_neg h, if_neg fun h' => h h'.2]
+  · rw [ite_eq_left h, ite_eq_left ⟨(GlobalTheory.VecProd.isHalf_zero_iff y).1 h ▸ Λ.zero_mem, h⟩]
+  · rw [ite_eq_right h, ite_eq_right fun h' => h h'.2]
 
 theorem prodD_insert {a : ι → AE D} (ho : ∀ v w, v ≠ w → a v * a w = 0) (Ψ : ι → WO S T → ℂ) {s : Finset ι} {w : ι}
     (hw : w ∉ s) : prodD a Ψ (insert w s) = tens (a w) (prodD a Ψ s) (Ψ w) := by
@@ -1012,8 +1005,8 @@ theorem prodD_insert {a : ι → AE D} (ho : ∀ v w, v ≠ w → a v * a w = 0)
   unfold prodD
   rw [Finset.sum_insert hw, Finset.prod_insert hw, hp]
   by_cases h : IsHalf (a w + ∑ v ∈ s, a v) y
-  · rw [if_pos h, if_pos (hiff.1 h), mul_comm]
-  · rw [if_neg h, if_neg fun h' => h (hiff.2 h'), zero_mul]
+  · rw [ite_eq_left h, ite_eq_left (hiff.1 h), mul_comm]
+  · rw [ite_eq_right h, ite_eq_right fun h' => h (hiff.2 h'), zero_mul]
 
 theorem prodD_congr (a : ι → AE D) {Ψ Ψ' : ι → WO S T → ℂ} {s : Finset ι} (h : ∀ w ∈ s, Ψ w = Ψ' w) :
     prodD a Ψ s = prodD a Ψ' s := by
@@ -1059,11 +1052,11 @@ theorem exists_chain [Fintype ι] {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam 
     if w ∈ s then Ψ w else halfInd (a w) (latO S T ΛS ΛT fun _ => True)
   have hmix : ∀ s w, IsSBHalf (a w) (latO S T ΛS ΛT fun _ => True) (mix s w) := fun s w => by
     by_cases h : w ∈ s
-    · simp only [mix, if_pos h]; exact hΨ w
-    · simp only [mix, if_neg h]; exact GlobalTheory.isSBHalf_halfInd _ _
+    · simp only [mix, ite_eq_left h]; exact hΨ w
+    · simp only [mix, ite_eq_right h]; exact GlobalTheory.isSBHalf_halfInd _ _
   have hV0 : Tm (prodD a (mix ∅) Finset.univ) = f₀ := by
     rw [prodD_congr a (Ψ' := fun w => halfInd (a w) (latO S T ΛS ΛT fun _ => True))
-      (fun w _ => if_neg (Finset.notMem_empty w)), prodD_ind ho hi hΛ]
+      (fun w _ => ite_eq_right (Finset.notMem_empty w)), prodD_ind ho hi hΛ]
     have h := hTm.vac
     rwa [one_smul] at h
   have hstep : ∀ s w, w ∉ s → IsThetaAt ψ (symplO S T) (heisO ψ S T) (a w) (latO S T ΛS ΛT fun _ => True) 1
@@ -1076,13 +1069,13 @@ theorem exists_chain [Fintype ι] {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam 
         (halfInd (a w) (latO S T ΛS ΛT fun _ => True)) := by
       conv_lhs => rw [hu]
       rw [prodD_insert ho _ hne]
-      simp only [mix, if_neg hw]
+      simp only [mix, ite_eq_right hw]
     have e2 : prodD a (mix (insert w s)) Finset.univ = tens (a w) (prodD a (mix s) (Finset.univ.erase w)) (Ψ w) := by
       conv_lhs => rw [hu]
       rw [prodD_insert ho _ hne, prodD_congr a (Ψ := mix (insert w s)) (Ψ' := mix s) fun v hv => by
         have hvw : v ≠ w := Finset.ne_of_mem_erase hv
         simp only [mix, Finset.mem_insert, hvw, false_or]]
-      simp only [mix, if_pos (Finset.mem_insert_self w s)]
+      simp only [mix, ite_eq_left (Finset.mem_insert_self w s)]
     have hTm' : IsPlaceModel ψ (symplO S T) (heisO ψ S T) ((∑ v ∈ Finset.univ.erase w, a v) + a w)
         (latO S T ΛS ΛT fun _ => True) 1 f₀ Tm := by
       rwa [Finset.sum_erase_add _ _ (Finset.mem_univ w)]
@@ -1092,26 +1085,21 @@ theorem exists_chain [Fintype ι] {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam 
     exact ⟨⟨_, hM⟩, fun T' hT' => GlobalTheory.PlaceVec.placeModel_unique hψ hS hT (hi w) (hinf w) hM hT' (hΨ w)⟩
   refine ⟨fun s => Tm (prodD a (mix s) Finset.univ), hV0, ?_, fun s => ?_, hstep⟩
   · rw [hall Tm hTm]
-    exact congrArg Tm (prodD_congr a fun w hw => if_pos hw)
+    exact congrArg Tm (prodD_congr a fun w hw => ite_eq_left hw)
   · induction s using Finset.induction_on with
     | empty => beta_reduce; rw [hV0]; exact h₀
     | insert w s hw ih => exact GlobalTheory.JointHarm.isThetaFunO_of_isThetaAt hψ hθ (hstep s w hw) ih
-
-theorem idemAt_of_single {a : AE D} {w : Pl D.host.E} (h : IsIdemSum a {w}) : Formalism.L2.NTheta.IsIdemAt a w := by
-  obtain ⟨⟨es, hes, rfl⟩, -⟩ := h
-  rw [Finset.sum_singleton]
-  exact hes w (Finset.mem_singleton_self w)
 
 theorem sum_eq {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) {a : P → AE D}
     (ha : ∀ w, IsIdemSum (a w) {w.1}) : ∑ w, a w = e := by
   obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
   rw [← Finset.sum_coe_sort P es]
   exact Finset.sum_congr rfl fun w _ => by
-    rw [GlobalTheory.IdemAtPl.eq_atPl_of_isIdemAt (idemAt_of_single (ha w)), GlobalTheory.IdemAtPl.eq_atPl_of_isIdemAt (hes w.1 w.2)]
+    rw [GlobalTheory.IdemAtPl.eq_atPl_of_isIdemAt (GlobalTheory.PlaceChain.idemAt_of_single (ha w)), GlobalTheory.IdemAtPl.eq_atPl_of_isIdemAt (hes w.1 w.2)]
 
 theorem orth {a b : AE D} {v w : Pl D.host.E} (ha : IsIdemSum a {v}) (hb : IsIdemSum b {w}) (h : v ≠ w) : a * b = 0 := by
-  have h1 := cpt_of_isIdemAt (idemAt_of_single ha)
-  have h2 := cpt_of_isIdemAt (idemAt_of_single hb)
+  have h1 := cpt_of_isIdemAt (GlobalTheory.PlaceChain.idemAt_of_single ha)
+  have h2 := cpt_of_isIdemAt (GlobalTheory.PlaceChain.idemAt_of_single hb)
   refine ae_ext ?_ fun Q => ?_
   · rw [map_mul, GlobalTheory.PlaceVec.idemSum_infPart ha, zero_mul, map_zero]
   · rw [map_mul, map_mul, map_zero, map_zero]
@@ -1123,7 +1111,7 @@ theorem map_cpt_smul {a : AE D} {w : Pl D.host.E} (ha : IsIdemSum a {w}) {m n : 
     ((a • y).map fun x => cpt w (toEAf D x)) = y.map fun x => cpt w (toEAf D x) := by
   ext i j
   simp only [Matrix.map_apply, Matrix.smul_apply, smul_eq_mul]
-  rw [map_mul, map_mul, (cpt_of_isIdemAt (idemAt_of_single ha)).1, one_mul]
+  rw [map_mul, map_mul, (cpt_of_isIdemAt (GlobalTheory.PlaceChain.idemAt_of_single ha)).1, one_mul]
 
 theorem subset_vectors : Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (t : T) (e : AE D), IsIdemSum e (locPl ch.G t) → ∀ (φ : (∀ w : locPl ch.G t, ∀ b : GlobalTheory.SplitFlip.Edge, Matrix (Fin ((locGrid ch.G t w.1).rank b.tgt)) (Fin ((locGrid ch.G t w.1).rank b.src)) (Kw w.1) → ℂ)), (∀ w : locPl ch.G t, ∀ b ∈ GlobalTheory.SplitFlip.oppositePath D.R.m, GlobalTheory.SplitFlip.IsNatDatum (unifAt w.1) (depthAt ch.G w.1) (φ w b)) → ∀ (fd : SchDown ch.G t), (∀ j : Fin D.R.m, IsLocVec ch.W (.mu t D.R.m j) e (ch.rm.vT D.R.m j) (fun y => if IsHalf e y then ∏ w : locPl ch.G t, φ w (.theta D.R.m j) (ch.S.B.coord t w.1 (X := (D.R.m, j + 1)) (Y := (D.R.m, j)) ⟨le_rfl, j.2⟩ ⟨le_rfl, j.2.le⟩ (y.map fun a => cpt w.1 (toEAf D a))) else 0) (fd j)) → ∀ (eL : locPl ch.G t → AE D), (∀ w, IsIdemSum (eL w) {w.1}) → ∃ V : Finset (locPl ch.G t) → SchDown ch.G t, V ∅ = (fun j : Fin D.R.m => ch.rm.vT D.R.m j) ∧ V Finset.univ = fd ∧ (∀ S j, IsThetaFunO ch.W.ψ _ _ (V S j)) ∧ ∀ (S : Finset (locPl ch.G t)) (w : locPl ch.G t), w ∉ S → ∀ j : Fin D.R.m, IsLocVec ch.W (.mu t D.R.m j) (eL w) (V S j) (fun y => if IsHalf (eL w) y then φ w (.theta D.R.m j) (ch.S.B.coord t w.1 (X := (D.R.m, j + 1)) (Y := (D.R.m, j)) ⟨le_rfl, j.2⟩ ⟨le_rfl, j.2.le⟩ (y.map fun a => cpt w.1 (toEAf D a))) else 0) (V (insert w S) j) := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch _ => ?_⟩⟩
@@ -1180,7 +1168,7 @@ theorem subset_vectors : Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (t : T) (
       unfold prodD
       rw [hsum]
       refine if_congr Iff.rfl (Finset.prod_congr rfl fun w _ => ?_) rfl
-      refine (if_pos (Factor.half_of_idem (hi w) y)).trans ?_
+      refine (ite_eq_left (Factor.half_of_idem (hi w) y)).trans ?_
       exact congrArg (fun z => φ w (.theta D.R.m j) (ch.S.B.coord t w.1 (X := (D.R.m, j + 1)) (Y := (D.R.m, j)) ⟨le_rfl, j.2⟩ ⟨le_rfl, j.2.le⟩ z)) (map_cpt_smul (heL w) y)
     obtain ⟨V, h1, h2, h3, h4⟩ := exists_chain ch.W.ψ_std ch.W.θ_is hS hT ho hi hinf hΨ
       (ch.rm.vT_is t D.R.m j le_rfl j.2).2.theta (f := fd j) (by rw [hsum, hprod]; exact (hfd j).2)
@@ -1244,7 +1232,7 @@ theorem vacuum_isCombOf {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L
       obtain rfl := eq_zero_of_isHalf_zero hy0
       simp [_root_.GlobalTheory.SplitScalar.heisO_zero, _root_.GlobalTheory.PlaceModel.symplO_zero_right]
     · have h0 : halfInd (0 : AE D) (latO (G.pS p) (G.pT p) ↑(G.latS p) ↑(G.latT p) fun _ => True) 0 = 1 := by
-        rw [halfInd, if_pos ⟨zero_mem _, _root_.GlobalTheory.SplitScalar.isHalf_zero _⟩]
+        rw [halfInd, ite_eq_left ⟨zero_mem _, _root_.GlobalTheory.SplitScalar.isHalf_zero _⟩]
       rw [he]
       simp [h0]
     · intro Tm hT
@@ -1253,7 +1241,6 @@ theorem vacuum_isCombOf {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L
       exact this.symm
 
 end GlobalTheory.VacComb
-
 
 open GlobalTheory.VacComb in
 theorem GlobalTheory.VacComb.main : Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (t : T) (j : Fin D.R.m), IsCombOf ch.W (FinDatum.vacuum ch.G t (.top t j)) (Finsupp.single 0 1) := by
@@ -1277,8 +1264,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 open Classical
 
 namespace GlobalTheory.LocAsm
-
-
 
 theorem columnInduction : Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (s : ℤˣ) (t : T) (β : CosFam ch.G t) (ζ : locPl ch.G t → ℂ), (∀ w : locPl ch.G t, GlobalTheory.LocAsm.PlaceCl ch s t w (β w) (ζ w)) → ∀ (M : Vol ch.G) (hM : M.Is t) (b b₀ : Pts ch.G), IsRep t ch.S.B s β b → IsBase t ch.S.B b₀ → ∀ e : AE D, IsIdemSum e (locPl ch.G t) → ∀ (φ : (∀ w : locPl ch.G t, ∀ b : GlobalTheory.SplitFlip.Edge, Matrix (Fin ((locGrid ch.G t w.1).rank b.tgt)) (Fin ((locGrid ch.G t w.1).rank b.src)) (Kw w.1) → ℂ)), (∀ w : locPl ch.G t, ∀ b ∈ GlobalTheory.SplitFlip.oppositePath D.R.m, GlobalTheory.SplitFlip.IsNatDatum (unifAt w.1) (depthAt ch.G w.1) (φ w b)) → ∀ (fd : SchDown ch.G t), (∀ j : Fin D.R.m, IsLocVec ch.W (.mu t D.R.m j) e (ch.rm.vT D.R.m j) (fun y => if IsHalf e y then ∏ w : locPl ch.G t, φ w (.theta D.R.m j) (ch.S.B.coord t w.1 (X := (D.R.m, j + 1)) (Y := (D.R.m, j)) ⟨le_rfl, j.2⟩ ⟨le_rfl, j.2.le⟩ (y.map fun a => cpt w.1 (toEAf D a))) else 0) (fd j)) → ∀ (eL : locPl ch.G t → AE D), (∀ w, IsIdemSum (eL w) {w.1}) → ∀ (I : locPl ch.G t → Type) (S : ∀ w, Finset (I w)) (x : ∀ w, I w → ℂ) (d : ∀ w, I w → ∀ j : Fin D.R.m, FinDatum ch.G t (.top t j)) (c : ∀ w, I w → Combs ch.G), (∀ w, ∀ i ∈ S w, ∀ j : Fin D.R.m, (d w i j).e = eL w ∧ IsCombOf ch.W (d w i j) ((c w i).1 j)) → (∀ w (y : ∀ j : Fin D.R.m, WO (ch.G.V (.top j)) (ch.G.V (.top (j + 1)))), (∀ j, IsHalf (eL w) (y j)) → ∑ i ∈ S w, x w i * ∏ j, (d w i j).fn (y j) = flatTensor one_le_sLen (psiAt ch.W w.1) (unitVol w.1) (moved (locGrid ch.G t w.1) (keepAt ch.G w.1) ((repsAt ch.G t w.1).elt (β w)) ((locGrid ch.G t w.1).lines₂ (GlobalTheory.SplitFlip.oppositePath D.R.m) (GlobalTheory.LocAsm.exOne (φ w)))) (ch.S.colAt t w.1 y) 0) → ∃ (J : Type) (SJ : Finset J) (xJ : J → ℂ) (dJ : J → ∀ j : Fin D.R.m, FinDatum ch.G t (.top t j)) (cJ : J → ∀ j : ℕ, WO (ch.G.V (.top j)) (ch.G.V (.top (j + 1))) →₀ ℂ), (∀ a ∈ SJ, ∀ j : Fin D.R.m, (dJ a j).e = e ∧ IsCombOf ch.W (dJ a j) (cJ a j)) ∧ (∀ u : ∀ j : Fin D.R.m, WO (ch.G.V (.top j)) (ch.G.V (.top (j + 1))), (∀ j, IsHalf e (u j)) → ∑ a ∈ SJ, xJ a * ∏ j, (dJ a j).fn (u j) = ∏ w : locPl ch.G t, flatTensor one_le_sLen (psiAt ch.W w.1) (unitVol w.1) (moved (locGrid ch.G t w.1) (keepAt ch.G w.1) ((repsAt ch.G t w.1).elt (β w)) ((locGrid ch.G t w.1).lines₂ (GlobalTheory.SplitFlip.oppositePath D.R.m) (GlobalTheory.LocAsm.exOne (φ w)))) (ch.S.colAt t w.1 u) 0) ∧ ∀ (P : PolDown ch.G) (p : Pts ch.G), IsRealPt p → ∀ u : ColPt ch.G, evT (conAt ch.W hM (fockD ch.W t fd P) (p * b)) 1 u 0 = (∏ w, ζ w) * ∑ a ∈ SJ, xJ a * evT (combC ch.W (cJ a, 0) (conAt ch.W hM (fockD ch.W t (fun j => ch.rm.vT D.R.m j) P) (p * b₀))) 1 u 0 := by
   refine big_mono (fun {D} {Γ} _ _ {Pl0 T} {A} {Ks} _ _ _ {R} ch h => ?_)
@@ -1357,7 +1342,7 @@ theorem columnInduction : Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (s : ℤ
         rw [h0 j]
         show halfInd (0 : AE D) _ 0 = 1
         unfold halfInd
-        rw [if_pos ⟨zero_mem _, fun a b' => by simp⟩]
+        rw [ite_eq_left ⟨zero_mem _, fun a b' => by simp⟩]
       · intro P p hp u
         simp only [hV0, hq0 p hp, Finset.prod_empty, Finset.sum_singleton, one_mul, hcombC1]
     | insert w S₀ hw ih =>

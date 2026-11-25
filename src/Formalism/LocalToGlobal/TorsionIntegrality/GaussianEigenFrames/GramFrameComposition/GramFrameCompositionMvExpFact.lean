@@ -184,7 +184,7 @@ theorem pair_row {H : Type} [Fintype H] [DecidableEq H] {N0 N1 : ℕ} (u : H →
     simp
   · rintro ⟨a', ⟨⟨b', h'⟩, p'⟩⟩ _ hne
     obtain ⟨a, ⟨⟨b, h⟩, p⟩⟩ := x
-    rw [if_neg]
+    rw [ite_eq_right]
     · simp
     rintro ⟨rfl, rfl, rfl, hb⟩
     apply hne

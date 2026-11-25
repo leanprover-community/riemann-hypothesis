@@ -28,8 +28,6 @@ namespace Formalism.FourierDecayAlt.P.S3dx6
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 theorem gN_mt_cont : Continuous fun x : Mt k r => B.gN (Matrix.of x) := by

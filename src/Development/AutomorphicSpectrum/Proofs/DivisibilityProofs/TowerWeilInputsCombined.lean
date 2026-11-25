@@ -71,7 +71,7 @@ theorem flag_height_I9 : PB.FlagHeight → PB.Inputs → ∀ II : IntersectionSy
   intro hFH hIn II hII Ψ _ _ N _ hN
   have hA : IsArithVar (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1) := by
     rw [flag_dim_eq_antisymmetric_degree]
-    exact (_root_.GlobalTheory.CompanionTheory.Ar.PB.flag_isArithVar_and_image Ψ N hN).1
+    exact (_root_.PositivityTheory.Xgp.t_fl_arith Ψ N hN).1
   have hev : ∀ lam : Wt Ψ N, hhFl Ψ N II (linRoot lam ^ (dimFl Ψ N + 1)) =
       eval (fun x => lam x.1 x.2) (PB.hFlPoly Ψ N II) := fun lam =>
     _root_.GlobalTheory.CompanionTheory.Ar.Top.hhFl_linRoot_pow II hII Ψ N lam hN hA
@@ -212,7 +212,6 @@ end GlobalTheory.CompanionTheory.Ar.Top.HhLabel
 
 namespace GlobalTheory.CompanionTheory.Ar.Top
 
-
 open HhLabel in
 theorem hhFl_labelInv : ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ]
     (N : ℕ) [Nonempty Ψ], 2 ≤ N → IsArithVar (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1) →
@@ -285,7 +284,6 @@ noncomputable section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 
 namespace GlobalTheory.CompanionTheory.Ar.Top.HhTestProof
-
 
 open scoped ComplexOrder MatrixOrder in
 theorem det_one_add_bound {a b : ℕ} (Z : Matrix (Fin a) (Fin b) ℂ) (hZ : ∀ i k, ‖Z i k‖ = 1) :
@@ -471,10 +469,10 @@ theorem negX_fibClass (j : ℕ) : negX (fibClass j : RP Ψ N) = vR j := by
 def sAll : RP Ψ N := ∑ τ, pk τ 1
 
 theorem muSmall_of_le {j : ℕ} (h : N - j ≤ j) : (muSmall j : RP Ψ N) = muR j := by
-  rw [muSmall, if_pos h, muR_eq]
+  rw [muSmall, ite_eq_left h, muR_eq]
 
 theorem muR_sub_muSmall {j : ℕ} (h : ¬ N - j ≤ j) : (muR j : RP Ψ N) - muSmall j = sAll := by
-  rw [muSmall, if_neg h, muR_eq, sAll, sub_neg_eq_add, ← Finset.sum_add_distrib]
+  rw [muSmall, ite_eq_right h, muR_eq, sAll, sub_neg_eq_add, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [pk, pkLow, Finset.sum_filter, Finset.sum_filter, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -611,7 +609,7 @@ theorem hhTestBound_hhFl : GroundTheory.Heights₂.Heights.LowerBoundFree.Grassm
   have hN : 2 ≤ N := by omega
   obtain ⟨hT, hdeg, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.testPoly_facts Ψ N j hj hjN
   have hA : IsArithVar (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1) := by
-    have := (_root_.GlobalTheory.CompanionTheory.Ar.PB.flag_isArithVar_and_image Ψ N hN).1
+    have := (_root_.PositivityTheory.Xgp.t_fl_arith Ψ N hN).1
     rwa [GroundTheory.Heights₂.Heights.antisymDegree, Nat.choose_two_right] at this
   have hkill : ∀ τ (Q : RP Ψ N), Q.IsHomogeneous (dimFl Ψ N) → hhFl Ψ N II (pk τ 1 * Q) = 0 :=
     fun τ Q hQ => _root_.RootFieldNumerics.flag_height_power_sum_zero II hII Ψ N τ Q hN hA hQ
@@ -695,7 +693,7 @@ theorem gap_nonneg_of_dominant {Ψ : Type} [Fintype Ψ] {N : ℕ} {j : ℕ} (hj1
     {mu : Wt Ψ N} (hd : Dominant mu) (τ : Ψ) : 0 ≤ gap j mu τ := by
   have h1 : j - 1 < N := by omega
   have hle : mu τ ⟨j, hjN⟩ ≤ mu τ ⟨j - 1, h1⟩ := hd τ ⟨j - 1, h1⟩ ⟨j, hjN⟩ (by rw [Fin.mk_le_mk]; omega)
-  simp only [gap, ent, dif_pos h1, dif_pos hjN]
+  simp only [gap, ent, dite_eq_left h1, dite_eq_left hjN]
   exact sub_nonneg.mpr hle
 
 theorem NefThreshold.mono {Ψ : Type} [Fintype Ψ] {N : ℕ} {j : ℕ} (hj1 : 1 ≤ j) (hjN : j < N)
@@ -1220,7 +1218,7 @@ theorem inv_linear_eval (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (l
     rw [← hc, coeff_sum, Finset.sum_eq_single p]
     · simp
     · intro q _ hq
-      rw [MvPolynomial.coeff_smul, coeff_X, if_neg, smul_zero]
+      rw [MvPolynomial.coeff_smul, coeff_X, ite_eq_right, smul_zero]
       intro h
       exact hq (Finsupp.single_left_injective one_ne_zero h)
     · simp
@@ -1449,7 +1447,6 @@ private theorem inWall_and_dominant_of_eq_neighbors {Ψ : Type} [Fintype Ψ] [De
   · intro s a b hab
     exact hdom s ((b : ℕ) - (a : ℕ)) a b (by have := Fin.le_iff_val_le_val.1 hab; omega)
 
-
 open GroundTheory.Heights₂.Heights in
 theorem antisymmetry_tower_theorem : GroundTheory.Heights₂.Heights.AntisymPerturbation.Statement → ∀ II : IntersectionSystem, ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) (hh : RP Ψ N →ₗ[ℝ] ℝ), T.Proportional → T.ThmW II → T.I8 II hh → I9 (Ψ := Ψ) (N := N) hh → T.ThmB II hh := by
   intro hS II Ψ _ _ N T hh hprop hW h8 h9
@@ -1592,7 +1589,7 @@ theorem chain_tower : PB.FlagHeight → PB.Inputs → SuccessiveMinimaLowerBound
   have hB : T.ThmB II (hhFl Ψ N II) := _root_.RootFieldNumerics.antisymmetry_tower_theorem hAP II Ψ N T (hhFl Ψ N II) hP hW hI8 hI9
   have he : GroundTheory.Heights₂.Heights.antisymDegree Ψ N = dimFl Ψ N := by
     simp [GroundTheory.Heights₂.Heights.antisymDegree, dimFl, Nat.choose_two_right]
-  have hAr := (_root_.GlobalTheory.CompanionTheory.Ar.PB.flag_isArithVar_and_image Ψ N hN).1
+  have hAr := (_root_.PositivityTheory.Xgp.t_fl_arith Ψ N hN).1
   rw [he] at hAr
   have hLab : LabelInv (Ψ := Ψ) (N := N) (hhFl Ψ N II) := _root_.GlobalTheory.CompanionTheory.Ar.Top.hhFl_labelInv II hII Ψ N hN hAr
   have hBA : T.ThmBA II (hhFl Ψ N II) := _root_.GlobalTheory.CompanionTheory.Ar.Top.thmBA_of_thmB_propA II Ψ N T (hhFl Ψ N II) hB hPA hLab

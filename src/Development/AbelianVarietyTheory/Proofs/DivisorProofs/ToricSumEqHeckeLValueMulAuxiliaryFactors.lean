@@ -17,54 +17,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharUnr
 public import Formalism.PairingDivisors.StatementA
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasSumZeroOfTwoLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEntireLatticeSumOfHeckeLContinuation
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Analysis.Normed.Group.Tannery
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartEqOneOfFibres
@@ -257,12 +214,12 @@ theorem tsum_fin (hω : ∀ u ∈ U, ω u = 1) {B M M' : Set G} (hB : Summable (
   simp only [cs, Set.indicator_apply, Set.mem_setOf_eq]
   by_cases a : z.out ∈ M'
   · obtain ⟨r, ⟨hr, hr'⟩, hu⟩ := h1 _ a
-    rw [if_pos a, Finset.sum_eq_single r, if_pos hr']
+    rw [ite_eq_left a, Finset.sum_eq_single r, ite_eq_left hr']
     · intro b hb hne
-      exact if_neg fun hh => hne (hu b ⟨hb, hh⟩)
+      exact ite_eq_right fun hh => hne (hu b ⟨hb, hh⟩)
     · exact fun hh => absurd hr hh
-  · rw [if_neg a]
-    exact (Finset.sum_eq_zero fun r hr => if_neg fun hh => a (h2 r hr _ hh)).symm
+  · rw [ite_eq_right a]
+    exact (Finset.sum_eq_zero fun r hr => ite_eq_right fun hh => a (h2 r hr _ hh)).symm
 
 theorem tendsto_tsum_one (hω : ∀ u ∈ U, ω u = 1) {B : Set G} (hB : Summable (cs U ω B)) {ι : Type} (l : Filter ι)
     (M : ι → Set G) (h : ∀ s, M s ⊆ B) (h1 : ∀ y ∈ U, ∀ s, y ∈ M s) (h2 : ∀ y ∉ U, ∀ᶠ s in l, y ∉ M s) :
@@ -274,10 +231,10 @@ theorem tendsto_tsum_one (hω : ∀ u ∈ U, ω u = 1) {B : Set G} (hB : Summabl
     (Eventually.of_forall fun s z => norm_indicator_le_of_subset (h s) _ _)
   have h4 : z.out ∈ U ↔ z = 1 := by rw [← QuotientGroup.eq_one_iff, QuotientGroup.out_eq']
   by_cases a : z = 1
-  · rw [if_pos a]
+  · rw [ite_eq_left a]
     refine tendsto_const_nhds.congr fun s => ?_
     rw [cs, Set.indicator_of_mem (h1 _ (h4.2 a) s), hω _ (h4.2 a)]
-  · rw [if_neg a]
+  · rw [ite_eq_right a]
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [h2 _ (fun hh => a (h4.1 hh))] with s hs
     rw [cs, Set.indicator_of_notMem hs]
@@ -412,7 +369,6 @@ theorem val_single {P : HeightOneSpectrum (𝓞 E)} {x : (P.adicCompletion E)ˣ}
   by_cases h : w = P
   · subst h; rw [single_self, hx]
   · rw [suppAt_single P x w h, map_one]
-
 
 open Classical in
 theorem unif_shift {m : HeightOneSpectrum (OF E) → ℕ} {T : Finset (HeightOneSpectrum (𝓞 E))} {w : HeightOneSpectrum (𝓞 E)}
@@ -619,7 +575,6 @@ theorem val_eq_of_idealOf_eq {y y' : (Af E)ˣ} (h : ∀ w, Valued.v ((y : Af E) 
 
 end GlobalTheory.CMVal.IdeleIdeal
 
-
 open GlobalTheory.CMVal.IdeleIdeal in
 theorem GlobalTheory.CMVal.exists_idele_section_of_ideal : ∀ (E : Type) [Field E] [NumberField E] , ∃ g : Ideal (𝓞 E) → (Af E)ˣ, ∀ y : (Af E)ˣ, (∀ w, Valued.v ((y : Af E) w) ≤ 1) → ∃ J : Ideal (𝓞 E), modF y = ((Ideal.absNorm J : ℕ) : ℝ)⁻¹ ∧ ∀ w, Valued.v ((((g J)⁻¹ * y : (Af E)ˣ) : Af E) w) = 1 := by
   intro E _ _
@@ -627,7 +582,7 @@ theorem GlobalTheory.CMVal.exists_idele_section_of_ideal : ∀ (E : Type) [Field
   refine ⟨fun J => if h : ∃ y : (Af E)ˣ, (∀ w, Valued.v ((y : Af E) w) ≤ 1) ∧ idealOf y = J then h.choose else 1,
     fun y hy => ⟨idealOf y, modF_eq hy, fun w => ?_⟩⟩
   have h : ∃ y' : (Af E)ˣ, (∀ w, Valued.v ((y' : Af E) w) ≤ 1) ∧ idealOf y' = idealOf y := ⟨y, hy, rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   rw [Units.val_mul, mul_coord, inv_coord, map_mul, map_inv₀,
     val_eq_of_idealOf_eq h.choose_spec.1 hy h.choose_spec.2 w, inv_mul_cancel₀ (IdeleModule.coord_ne y w)]
 end -- clump:auto
@@ -818,9 +773,9 @@ theorem exists_split_unif_idele : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   set S := Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) v with hS
   have hmem : ∀ P, P ∈ S ↔ Over P v := fun P => mem_aboveF P v
   have hin : ∀ P, Over P v → ((∏ P ∈ S, single P (coord P y) : (Af E)ˣ) : Af E) P = iota x P := fun P hP => by
-    rw [Fibre.prod_single_apply, if_pos ((hmem P).2 hP), hy]
+    rw [Fibre.prod_single_apply, ite_eq_left ((hmem P).2 hP), hy]
   have hout : ∀ P, ¬ Over P v → ((∏ P ∈ S, single P (coord P y) : (Af E)ˣ) : Af E) P = 1 := fun P hP => by
-    rw [Fibre.prod_single_apply, if_neg (fun h => hP ((hmem P).1 h))]
+    rw [Fibre.prod_single_apply, ite_eq_right (fun h => hP ((hmem P).1 h))]
   refine ⟨∏ P ∈ S, single P (coord P y), hin, hout, ?_, fun χ hχ => ?_⟩
   · have hS2 : S = {P₁, P₂} := by
       ext R
@@ -1102,7 +1057,7 @@ theorem FS_union (T s : Finset (HeightOneSpectrum (𝓞 E))) (hs : ∀ w ∈ s, 
     obtain ⟨h1, h2, h3⟩ := hs w (Finset.mem_insert_self _ _)
     have h4 := tsum_split hω hB (MS_subset m (s ∪ T)) (MS_anti m (Finset.subset_insert w _)) (stable_MS hm (s ∪ T)) (unifAt w)
       (unif_shift h1 (by simp [hw, h2]))
-    have h5 : eulerFactor χ S w = (1 - omega χ S (unifAt w))⁻¹ := by rw [eulerFactor, if_pos h3, omega_unifAt]
+    have h5 : eulerFactor χ S w = (1 - omega χ S (unifAt w))⁻¹ := by rw [eulerFactor, ite_eq_left h3, omega_unifAt]
     have h6 := one_sub_omega_ne hu hS w
     rw [ih fun w' hw' => hs w' (Finset.mem_insert_of_mem hw'), Finset.prod_insert hw, Finset.insert_union, h5]
     have h7 : FS c χ S m (insert w (s ∪ T)) = (1 - omega χ S (unifAt w)) * FS c χ S m (s ∪ T) := by
@@ -1196,7 +1151,6 @@ theorem update_le (v : HeightOneSpectrum (OF E)) {k : ℕ} (hk : m v = k + 1) (v
   · subst e; rw [Function.update_self]; have := hm v'; omega
   · rw [Function.update_of_ne e]; exact hm v'
 
-
 include hω hB hm in
 open Classical in
 theorem FS_ram (hF : TrivOnF χ) (T : Finset (HeightOneSpectrum (𝓞 E))) {v : HeightOneSpectrum (OF E)} (hv : Splits v) {k : ℕ}
@@ -1204,13 +1158,12 @@ theorem FS_ram (hF : TrivOnF χ) (T : Finset (HeightOneSpectrum (𝓞 E))) {v : 
     (hr : ∀ w, Over w v → ¬ UnrAt χ w) :
     FS c χ S m T = (∏ w ∈ fib v, eulerFactor χ S w) * FS c χ S m (fib v ∪ T) := by
   rw [FS_step hω hB hm hF T hv hk hT, FS_zero hω (update_le hm v hk) T hP (by rwa [Function.update_self]),
-    Finset.prod_eq_one fun w hw => by rw [eulerFactor, if_neg (hr w ((mem_aboveF w v).1 hw))]]
+    Finset.prod_eq_one fun w hw => by rw [eulerFactor, ite_eq_right (hr w ((mem_aboveF w v).1 hw))]]
   ring
 
 def eFactor (χ : HChar E) (S : ℂ) (q : HeightOneSpectrum (OF E)) (P : HeightOneSpectrum (𝓞 E)) : ℂ :=
   (1 - (val χ P : ℂ) * (Ideal.absNorm q.asIdeal : ℂ) ^ (-S)) * (1 - (val χ P : ℂ)⁻¹ * (Ideal.absNorm q.asIdeal : ℂ) ^ (-S)) +
     ((Ideal.absNorm q.asIdeal : ℂ) - 1) * ((Ideal.absNorm q.asIdeal : ℂ) ^ (-S)) ^ 2
-
 
 include hω hB hu hS hm in
 open Classical in
@@ -1241,14 +1194,13 @@ theorem FS_unr (hF : TrivOnF χ) (T : Finset (HeightOneSpectrum (𝓞 E))) {v : 
   rw [FS_step hω hB hm hF T hv hk hT, h1, h2]
   conv => enter [1, 2, 2, 1]; rw [hfib]
   conv => enter [2, 1, 2]; rw [hfib]
-  rw [Finset.prod_pair hne, eulerFactor, eulerFactor, if_pos h, if_pos h', (s2 P hP).1, (s2 P' hP').1, hval,
+  rw [Finset.prod_pair hne, eulerFactor, eulerFactor, ite_eq_left h, ite_eq_left h', (s2 P hP).1, (s2 P' hP').1, hval,
     Units.val_inv_eq_inv_val, eFactor]
   generalize (1 - (val χ P : ℂ) * (Ideal.absNorm v.asIdeal : ℂ) ^ (-S)) = a at *
   generalize (1 - (val χ P : ℂ)⁻¹ * (Ideal.absNorm v.asIdeal : ℂ) ^ (-S)) = b at *
   field_simp
 
 end
-
 
 open Classical in
 theorem hasSum_euler : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Type) [Fintype I] (φ : I → E →+* ℂ), IsCMType φ → ∀ (s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (OF E)) (Q : Finset (HeightOneSpectrum (OF E))) (χ : HChar E) (Pq : HeightOneSpectrum (OF E) → HeightOneSpectrum (𝓞 E)) (S L : ℂ), UnramFin E → IsBaseCond 𝔣 → IsFinSetSplitPlacesCoprimeConductor 𝔣 Q → IsValChar φ s κ 𝔣 Q χ → (∀ q ∈ Q, Over (Pq q) q) → 1 < S.re → HasProd (eulerFactor χ S) L → open Classical in HasSum (fun z : {z : (Af E)ˣ ⧸ hatOUnits (condQ 𝔣 Q) // ∃ y : (Af E)ˣ, (QuotientGroup.mk y : (Af E)ˣ ⧸ hatOUnits (condQ 𝔣 Q)) = z ∧ (y : Af E) ∈ hatO (condQ 𝔣 Q)} => (finPart χ z.1.out : ℂ) * ((modF z.1.out : ℝ) : ℂ) ^ S) (L * ∏ q ∈ Q.filter (fun q => UnrAt χ (Pq q)), ((1 - (val χ (Pq q) : ℂ) * (Ideal.absNorm q.asIdeal : ℂ) ^ (-S)) * (1 - (val χ (Pq q) : ℂ)⁻¹ * (Ideal.absNorm q.asIdeal : ℂ) ^ (-S)) + ((Ideal.absNorm q.asIdeal : ℂ) - 1) * ((Ideal.absNorm q.asIdeal : ℂ) ^ (-S)) ^ 2)) := by
@@ -1408,18 +1360,8 @@ theorem term_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [F
   linear_combination (finPart χ (Units.map (algebraMap E (Af E)).toMonoidHom k) : ℂ) * h3 -
     (term φ (2 * s) κ 0 k * (((∏ i, ‖φ i (k : E)‖ ^ 2) : ℝ) : ℂ) ^ s) * h5
 
-def twistFin {E : Type} [Field E] [NumberField E] (χ : HChar E) (S : ℂ) : (Af E)ˣ →* ℂ where
-  toFun y := (finPart χ y : ℂ) * ((modF y : ℝ) : ℂ) ^ S
-  map_one' := by
-    have : modF (1 : (Af E)ˣ) = 1 := modF_unit (c := ⊤) (one_mem _)
-    simp [this]
-  map_mul' y y' := by
-    rw [map_mul, modF_mul, Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg (modF_pos y).le (modF_pos y').le,
-      Units.val_mul]
-    ring
-
 theorem twistFin_apply {E : Type} [Field E] [NumberField E] (χ : HChar E) (S : ℂ) (y : (Af E)ˣ) :
-    twistFin χ S y = (finPart χ y : ℂ) * ((modF y : ℝ) : ℂ) ^ S := rfl
+    GlobalTheory.CMVal.Euler.omega χ S y = (finPart χ y : ℂ) * ((modF y : ℝ) : ℂ) ^ S := rfl
 
 theorem hasSum_classes {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [Fintype I] {φ : I → E →+* ℂ}
     (hφ : IsCMType φ) {s : ℕ} {κ : I → ℕ} {χ : HChar E} (h : HasInf χ φ fun i => (κ i : ℤ) + s)
@@ -1427,21 +1369,21 @@ theorem hasSum_classes {E : Type} [Field E] [NumberField E] [IsCMField E] {I : T
     {σ T : ℂ} {S : PicO c → ℂ}
     (hS : ∀ q, HasSum (fun x : modUnits (lattice c q.out) => term φ (2 * s) κ σ x.1.out) (S q))
     (hT : HasSum (fun z : {z : (Af E)ˣ ⧸ hatOUnits c // ∃ y : (Af E)ˣ,
-      (QuotientGroup.mk y : (Af E)ˣ ⧸ hatOUnits c) = z ∧ (y : Af E) ∈ hatO c} => twistFin χ (s + σ) z.1.out) T) :
-    HasSum (fun q : PicO c => (twistFin χ (s + σ) q.out)⁻¹ * S q) T := by
+      (QuotientGroup.mk y : (Af E)ˣ ⧸ hatOUnits c) = z ∧ (y : Af E) ∈ hatO c} => GlobalTheory.CMVal.Euler.omega χ (s + σ) z.1.out) T) :
+    HasSum (fun q : PicO c => (GlobalTheory.CMVal.Euler.omega χ (s + σ) q.out)⁻¹ * S q) T := by
   obtain ⟨e, he⟩ := _root_.GlobalTheory.CMVal.LatBij.exists_equiv E 𝔣 c h𝔣 hd hc
   rw [← e.hasSum_iff] at hT
   refine HasSum.sigma hT fun q => ?_
-  refine ((hS q).mul_left (twistFin χ (s + σ) q.out)⁻¹).congr_fun fun x => ?_
+  refine ((hS q).mul_left (GlobalTheory.CMVal.Euler.omega χ (s + σ) q.out)⁻¹).congr_fun fun x => ?_
   let k : Eˣ := Units.mk0 x.1.out (out_mem_lattice x).2
   have h1 := he ⟨q, x⟩ (Units.map (algebraMap E (Af E)).toMonoidHom k * (q.out)⁻¹) rfl
   obtain ⟨u, hu⟩ := QuotientGroup.mk_out_eq_mul (hatOUnits c)
     (Units.map (algebraMap E (Af E)).toMonoidHom k * (q.out)⁻¹)
-  have h2 : twistFin χ (s + σ) u = 1 := by
+  have h2 : GlobalTheory.CMVal.Euler.omega χ (s + σ) u = 1 := by
     rw [twistFin_apply, hχ u u.2, modF_unit u.2]; simp
-  have h3 : term φ (2 * s) κ σ x.1.out = twistFin χ (s + σ) (Units.map (algebraMap E (Af E)).toMonoidHom k) :=
+  have h3 : term φ (2 * s) κ σ x.1.out = GlobalTheory.CMVal.Euler.omega χ (s + σ) (Units.map (algebraMap E (Af E)).toMonoidHom k) :=
     term_eq hφ h σ k
-  show twistFin χ (s + σ) (e ⟨q, x⟩).1.out = _
+  show GlobalTheory.CMVal.Euler.omega χ (s + σ) (e ⟨q, x⟩).1.out = _
   rw [h1, hu, map_mul, map_mul, h2, h3, mul_one, mul_comm, map_inv]
 
 theorem toricSum_eq : (∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Type) [Fintype I] (φ : I → E →+* ℂ) (m : I → ℤ) (χ : HChar E), IsCMType φ → IsUnitary χ → HasInf χ φ m → (∃ i, m i ≠ 0) → ∃ Λ, IsHeckeL χ Λ) → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Type) [Fintype I] (φ : I → E →+* ℂ), IsCMType φ → ∀ (s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (OF E)) (Q : Finset (HeightOneSpectrum (OF E))) (χ : HChar E) (Pq : HeightOneSpectrum (OF E) → HeightOneSpectrum (𝓞 E)) (Λ : ℂ → ℂ), UnramFin E → 1 ≤ s → IsBaseCond 𝔣 → IsFinSetSplitPlacesCoprimeConductor 𝔣 Q → IsValChar φ s κ 𝔣 Q χ → (∀ q ∈ Q, Over (Pq q) q) → IsHeckeL χ Λ → open Classical in IsToricSum φ s κ (condQ 𝔣 Q) χ (Λ s * ∏ q ∈ Q.filter (fun q => UnrAt χ (Pq q)), Formalism.PairingDivisionLocalBalance.eq (Ideal.absNorm q.asIdeal) s (val χ (Pq q) : ℂ)) := by
@@ -1455,7 +1397,7 @@ theorem toricSum_eq : (∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I
     _root_.GlobalTheory.CMVal.LatEnt.exists_isLatSum hH E I φ hφ s κ 𝔣 _ χ hU hs h𝔣 hd hc hχ.1 hχ.2.2.1 htriv q.out
   refine ⟨hfin, S, hS, ?_⟩
   have := Fintype.ofFinite (PicO (condQ 𝔣 Q))
-  have key : (fun σ : ℂ => ∑ q : PicO (condQ 𝔣 Q), (twistFin χ (s + σ) q.out)⁻¹ * S q σ) = fun σ : ℂ =>
+  have key : (fun σ : ℂ => ∑ q : PicO (condQ 𝔣 Q), (GlobalTheory.CMVal.Euler.omega χ (s + σ) q.out)⁻¹ * S q σ) = fun σ : ℂ =>
       Λ (s + σ) * ∏ q ∈ Q.filter (fun q => UnrAt χ (Pq q)),
         ((1 - (val χ (Pq q) : ℂ) * (Ideal.absNorm q.asIdeal : ℂ) ^ (-(s + σ))) *
           (1 - (val χ (Pq q) : ℂ)⁻¹ * (Ideal.absNorm q.asIdeal : ℂ) ^ (-(s + σ))) +

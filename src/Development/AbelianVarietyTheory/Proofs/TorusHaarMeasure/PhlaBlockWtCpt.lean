@@ -2,48 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.PnormInvStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfD
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
@@ -66,9 +25,9 @@ theorem tele_tail (L : ℕ → ℝ) (p : ℕ) : ∀ r : ℕ, p ≤ r →
   | base =>
     rw [sub_self]
     refine Finset.sum_eq_zero fun i hi => ?_
-    rw [if_pos (Finset.mem_range.1 hi), zero_mul]
+    rw [ite_eq_left (Finset.mem_range.1 hi), zero_mul]
   | succ n hn ih =>
-    rw [Finset.sum_range_succ, ih, if_neg (not_lt.2 hn)]
+    rw [Finset.sum_range_succ, ih, ite_eq_right (not_lt.2 hn)]
     ring
 
 theorem phla_blockWt_cpt {r : ℕ} (X : Data E r) (x0 : Frame X.Ψ r) (ho : IsOrth X x0)
@@ -79,15 +38,15 @@ theorem phla_blockWt_cpt {r : ℕ} (X : Data E r) (x0 : Frame X.Ψ r) (ho : IsOr
   set x := cpt X x0 z
   let L' : ℕ → ℝ := fun k => if h : k < r + 1 then IW.Lm X x τ ⟨k, h⟩ else 0
   have h1 : ∀ i : Fin r, IW.Lm X x τ i.succ = L' (i + 1) := fun i => by
-    simp only [L', dif_pos (Nat.succ_lt_succ i.isLt)]; rfl
+    simp only [L', dite_eq_left (Nat.succ_lt_succ i.isLt)]; rfl
   have h2 : ∀ i : Fin r, IW.Lm X x τ i.castSucc = L' i := fun i => by
-    simp only [L', dif_pos (Nat.lt_succ_of_lt i.isLt)]; rfl
+    simp only [L', dite_eq_left (Nat.lt_succ_of_lt i.isLt)]; rfl
   have hk : ∀ i : Fin r, ((blockWt X τ i : ℤ) : ℝ) = if (i : ℕ) < X.p0 then (0 : ℝ) else 1 :=
     fun i => by unfold blockWt; split_ifs <;> simp
   have hLr : L' r = 0 := by
-    simp only [L', dif_pos (Nat.lt_succ_self r)]; exact IW.Lm_last_cpt X x0 ho z τ
+    simp only [L', dite_eq_left (Nat.lt_succ_self r)]; exact IW.Lm_last_cpt X x0 ho z τ
   have hLp : L' X.p0 = Real.log ‖dmin X.Gm x τ ⟨X.p0, Nat.lt_succ_of_le X.p0_le⟩‖ := by
-    simp only [L', dif_pos (Nat.lt_succ_of_le X.p0_le)]; rfl
+    simp only [L', dite_eq_left (Nat.lt_succ_of_le X.p0_le)]; rfl
   simp_rw [h1, h2, hk]
   rw [Fin.sum_univ_eq_sum_range
     (fun i => (if i < X.p0 then (0 : ℝ) else 1) * (L' (i + 1) - L' i)) r, tele_tail L' X.p0 r X.p0_le,
@@ -109,10 +68,10 @@ theorem coeff_cases (p : ℕ) {a b : ℕ} (h : b < a) (u v : ℝ) :
     (b < p ∧ p ≤ a ∧ sgn p a * sgn p b * (v - u) = u - v) := by
   unfold sgn
   by_cases ha : a < p
-  · left; refine ⟨ha, ?_⟩; rw [if_pos ha, if_pos (h.trans ha)]; ring
+  · left; refine ⟨ha, ?_⟩; rw [ite_eq_left ha, ite_eq_left (h.trans ha)]; ring
   · by_cases hb : b < p
-    · right; right; refine ⟨hb, not_lt.1 ha, ?_⟩; rw [if_neg ha, if_pos hb]; ring
-    · right; left; refine ⟨not_lt.1 hb, ?_⟩; rw [if_neg ha, if_neg hb]; ring
+    · right; right; refine ⟨hb, not_lt.1 ha, ?_⟩; rw [ite_eq_right ha, ite_eq_left hb]; ring
+    · right; left; refine ⟨not_lt.1 hb, ?_⟩; rw [ite_eq_right ha, ite_eq_right hb]; ring
 
 theorem curv_and_margin :
     (∀ (r : ℕ) (X : Data E r) (la : Wt X.Ψ r) (x : Frame X.Ψ r), IsOrth X x → ∀ ξ : Fin (nd X) → ℂ, leviM X (phla X la) x 0 ξ = ∑ e : Ent X, sgn X.p0 e.2.1.1 * sgn X.p0 e.2.1.2 * ((la e.1 e.2.1.2 : ℝ) - (la e.1 e.2.1.1 : ℝ)) * ‖ξ (Fintype.equivFin (Ent X) e)‖ ^ 2) →

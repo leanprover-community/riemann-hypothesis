@@ -71,19 +71,10 @@ lemma s_ct {m : ℕ} {A : E → Matrix (Fin m) (Fin m) ℂ} (hA : Sm A s) : Sm (
   simp only [Matrix.conjTranspose_apply]
   exact s_star (sm_iff.1 hA j i)
 
-private lemma sm_finset_prod {ι : Type*} (u : Finset ι) {f : ι → E → ℂ} (h : ∀ i ∈ u, Sm (f i) s) :
-    Sm (fun x => ∏ i ∈ u, f i x) s := by
-  classical
-  induction u using Finset.induction_on with
-  | empty => simpa using contDiffOn_const
-  | insert a u ha ih =>
-    simp only [Finset.prod_insert ha]
-    exact (h a (Finset.mem_insert_self a u)).mul (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
 lemma s_det {p : ℕ} {M : E → Matrix (Fin p) (Fin p) ℂ} (h : ∀ i j, Sm (fun x => M x i j) s) :
     Sm (fun x => (M x).det) s := by
   simp only [Matrix.det_apply']
-  exact ContDiffOn.sum fun σ _ => contDiffOn_const.mul (sm_finset_prod _ fun i _ => h (σ i) i)
+  exact ContDiffOn.sum fun σ _ => contDiffOn_const.mul (contDiffOn_prod fun i _ => h (σ i) i)
 
 lemma s_adj {p : ℕ} {M : E → Matrix (Fin p) (Fin p) ℂ} (h : ∀ i j, Sm (fun x => M x i j) s) (a b : Fin p) :
     Sm (fun x => (M x).adjugate a b) s := by
@@ -91,9 +82,9 @@ lemma s_adj {p : ℕ} {M : E → Matrix (Fin p) (Fin p) ℂ} (h : ∀ i j, Sm (f
   refine s_det fun i j => ?_
   simp only [Matrix.updateRow_apply]
   by_cases hi : i = b
-  · simp only [hi, if_true]
+  · simp only [hi, ite_true]
     exact contDiffOn_const
-  · simp only [hi, if_false]
+  · simp only [hi, ite_false]
     exact h i j
 
 variable {k r : ℕ}
@@ -103,9 +94,9 @@ lemma s_wbPart {v : E → Fin (2 * r + k + 1) → ℂ} (hv : Sm v s) : Sm (fun x
   intro i
   simp only [wbPart]
   by_cases hc : r ≤ i.val ∧ i.val ≤ r + k
-  · simp only [hc, and_self, if_true]
+  · simp only [hc, and_self, ite_true]
     exact sv_iff.1 hv i
-  · simp only [hc, if_false]
+  · simp only [hc, ite_false]
     exact contDiffOn_const
 
 lemma s_prW (z : Fin (2 * r + k + 1) → ℂ) {v : E → Fin (2 * r + k + 1) → ℂ} (hv : Sm v s) :

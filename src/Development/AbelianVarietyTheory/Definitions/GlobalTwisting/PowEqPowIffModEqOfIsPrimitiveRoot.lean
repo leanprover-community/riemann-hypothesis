@@ -13,15 +13,8 @@ namespace GlobalTheory.NT.Model
 open NumberField IsDedekindDomain GlobalTheory.NT
 
 theorem absNorm_eq (p : HeightOneSpectrum (𝓞 ℚ)) :
-    Ideal.absNorm p.asIdeal = (Rat.HeightOneSpectrum.primesEquiv p : ℕ) := by
-  have h1 : p.asIdeal = Ideal.span {((Rat.HeightOneSpectrum.natGenerator p : ℕ) : 𝓞 ℚ)} := by
-    have h2 := congrArg (Ideal.comap (Rat.IsIntegralClosure.intEquiv (𝓞 ℚ)))
-      (Rat.HeightOneSpectrum.span_natGenerator p)
-    rw [Ideal.comap_map_of_bijective _ (RingEquiv.bijective _)] at h2
-    rw [← h2, ← Ideal.map_symm, Ideal.map_span, Set.image_singleton]
-    simp
-  rw [h1, Ideal.absNorm_span_natCast, NumberField.RingOfIntegers.rank, Module.finrank_self, pow_one]
-  rfl
+    Ideal.absNorm p.asIdeal = (Rat.HeightOneSpectrum.primesEquiv p : ℕ) :=
+  GlobalTheory.NT.absNorm_rat p
 
 theorem pow_eq_pow_iff_modEq_of_isPrimitiveRoot {R : Type} [CommRing R] [IsDomain R] {ζ : R} {m : ℕ} [NeZero m] (h : IsPrimitiveRoot ζ m)
     {a b : ℕ} : ζ ^ a = ζ ^ b ↔ a ≡ b [MOD m] := by

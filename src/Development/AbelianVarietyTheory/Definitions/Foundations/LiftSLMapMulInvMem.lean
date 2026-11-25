@@ -11,8 +11,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open scoped MatrixGroups Matrix
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
@@ -35,7 +33,7 @@ theorem eval_clsK (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) {w : X.K}
 
 theorem clsK_zero (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) : clsK X l n 0 = 0 := by
   unfold clsK
-  exact dif_neg fun h => h rfl
+  exact dite_eq_right fun h => h rfl
 
 theorem cls_mul (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) (f g : X.Kˣ) :
     X.cls l n (f * g) = X.cls l n f + X.cls l n g := by

@@ -61,7 +61,7 @@ theorem bil_map (f : R →+* S) (g : Germ.PS R 2 d) (m n : ℕ) :
 
 theorem map_mulVec' (f : R →+* S) (M : Matrix (Fin d) (Fin d) R) (v : Fin d → R) :
     (fun i => f (M.mulVec v i)) = (M.map f).mulVec fun i => f (v i) :=
-  funext fun i => RingHom.map_mulVec _ _ _ _
+  funext fun _ => RingHom.map_mulVec _ _ _ _
 
 theorem vmap_transH (f : R →+* S) (φ ψ : Germ.Pt R 1 d) (lam : Germ.PS R 2 d)
     (y : (Fin d → R) × (Fin d → R)) :

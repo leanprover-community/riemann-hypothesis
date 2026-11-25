@@ -53,19 +53,13 @@ open GlobalTheory.TopExt
 variable {R F H L : Type*} [CommRing R] [AddCommGroup F] [Module R F] [AddCommGroup H] [Module R H]
   [AddCommGroup L] [Module R L]
 
-
-variable (R F) in
-noncomputable def gradeProj (n : ℕ) : ExteriorAlgebra R F →ₗ[R] ⋀[R]^n F :=
-  DirectSum.component R ℕ (fun k => ⋀[R]^k F) n ∘ₗ
-    (DirectSum.decomposeLinearEquiv (fun k : ℕ => ⋀[R]^k F)).toLinearMap
-
 theorem gradeProj_same {n : ℕ} (x : ⋀[R]^n F) :
-    gradeProj R F n (x : ExteriorAlgebra R F) = x := by
+    GlobalTheory.TopForm.extProj R F n (x : ExteriorAlgebra R F) = x := by
   change (DirectSum.decompose (fun k : ℕ => ⋀[R]^k F) (x : ExteriorAlgebra R F)) n = x
   rw [DirectSum.decompose_coe, DirectSum.of_eq_same]
 
 theorem gradeProj_ne {m n : ℕ} (h : m ≠ n) (x : ⋀[R]^m F) :
-    gradeProj R F n (x : ExteriorAlgebra R F) = 0 := by
+    GlobalTheory.TopForm.extProj R F n (x : ExteriorAlgebra R F) = 0 := by
   change (DirectSum.decompose (fun k : ℕ => ⋀[R]^k F) (x : ExteriorAlgebra R F)) n = 0
   exact Subtype.ext (DirectSum.decompose_of_mem_ne _ x.2 h)
 
@@ -75,8 +69,8 @@ theorem exists_bigradedProj {i : F →ₗ[R] H} {s : L →ₗ[R] H} {r : H →�
     ∃ Ψ : ∀ a b : ℕ, ExteriorAlgebra R H →ₗ[R] (⋀[R]^a F) ⊗[R] (⋀[R]^b L),
       ∀ (a b a' b' : ℕ) (x : ⋀[R]^a' F) (y : ⋀[R]^b' L),
         Ψ a b (wedgeMap i s a' b' (x ⊗ₜ y) : ExteriorAlgebra R H) =
-          gradeProj R F a (x : ExteriorAlgebra R F) ⊗ₜ
-            gradeProj R L b (y : ExteriorAlgebra R L) := by
+          GlobalTheory.TopForm.extProj R F a (x : ExteriorAlgebra R F) ⊗ₜ
+            GlobalTheory.TopForm.extProj R L b (y : ExteriorAlgebra R L) := by
   let e : (0 : QuadraticForm R H) →qᵢ
       (QuadraticMap.prod (0 : QuadraticForm R F) (0 : QuadraticForm R L)) :=
     { r.prod π with map_app' := fun x => by simp }
@@ -89,7 +83,7 @@ theorem exists_bigradedProj {i : F →ₗ[R] H} {s : L →ₗ[R] H} {r : H →�
   have h₂ : Φ.comp (ExteriorAlgebra.map s) = GradedTensorProduct.includeRight _ _ := by
     ext x
     simp [Φ, he, hrs, hπs]
-  refine ⟨fun a b => TensorProduct.map (gradeProj R F a) (gradeProj R L b) ∘ₗ
+  refine ⟨fun a b => TensorProduct.map (GlobalTheory.TopForm.extProj R F a) (GlobalTheory.TopForm.extProj R L b) ∘ₗ
     (GradedTensorProduct.of R (CliffordAlgebra.evenOdd (0 : QuadraticForm R F))
       (CliffordAlgebra.evenOdd (0 : QuadraticForm R L))).symm.toLinearMap ∘ₗ Φ.toLinearMap, ?_⟩
   intro a b a' b' x y
@@ -99,7 +93,7 @@ theorem exists_bigradedProj {i : F →ₗ[R] H} {s : L →ₗ[R] H} {r : H →�
   simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, AlgHom.toLinearMap_apply,
     coe_wedgeMap_tmul, map_mul, hx, hy, GradedTensorProduct.includeLeft_apply,
     GradedTensorProduct.includeRight_apply, GradedTensorProduct.tmul_one_mul_one_tmul]
-  change TensorProduct.map (gradeProj R F a) (gradeProj R L b)
+  change TensorProduct.map (GlobalTheory.TopForm.extProj R F a) (GlobalTheory.TopForm.extProj R L b)
     ((x : ExteriorAlgebra R F) ⊗ₜ (y : ExteriorAlgebra R L)) = _
   rw [TensorProduct.map_tmul]
 
@@ -137,8 +131,8 @@ theorem wedgeSum_injective {i : F →ₗ[R] H} {s : L →ₗ[R] H} {r : H →ₗ
   obtain ⟨Ψ, hΨ⟩ := exists_bigradedProj hri hrs hπi hπs
   have key : ∀ (a b a' b' : ℕ) (t : (⋀[R]^a F) ⊗[R] (⋀[R]^b L)),
       Ψ a' b' (wedgeMap i s a b t : ExteriorAlgebra R H) =
-        TensorProduct.map (gradeProj R F a' ∘ₗ (⋀[R]^a F).subtype)
-          (gradeProj R L b' ∘ₗ (⋀[R]^b L).subtype) t := by
+        TensorProduct.map (GlobalTheory.TopForm.extProj R F a' ∘ₗ (⋀[R]^a F).subtype)
+          (GlobalTheory.TopForm.extProj R L b' ∘ₗ (⋀[R]^b L).subtype) t := by
     intro a b a' b' t
     induction t using TensorProduct.inductionOn with
     | add x y hx hy =>
@@ -153,14 +147,14 @@ theorem wedgeSum_injective {i : F →ₗ[R] H} {s : L →ₗ[R] H} {r : H →ₗ
 
     rw [coe_wedgeSum, map_sum, Finset.sum_eq_single a']
     · rw [key]
-      have h₁ : gradeProj R F a' ∘ₗ (⋀[R]^(a' : ℕ) F).subtype = LinearMap.id :=
+      have h₁ : GlobalTheory.TopForm.extProj R F a' ∘ₗ (⋀[R]^(a' : ℕ) F).subtype = LinearMap.id :=
         LinearMap.ext gradeProj_same
-      have h₂ : gradeProj R L (c - a') ∘ₗ (⋀[R]^(c - a') L).subtype = LinearMap.id :=
+      have h₂ : GlobalTheory.TopForm.extProj R L (c - a') ∘ₗ (⋀[R]^(c - a') L).subtype = LinearMap.id :=
         LinearMap.ext gradeProj_same
       rw [h₁, h₂, TensorProduct.map_id, LinearMap.id_apply]
     · intro a _ hne
       rw [key]
-      have h₁ : gradeProj R F a' ∘ₗ (⋀[R]^(a : ℕ) F).subtype = 0 :=
+      have h₁ : GlobalTheory.TopForm.extProj R F a' ∘ₗ (⋀[R]^(a : ℕ) F).subtype = 0 :=
         LinearMap.ext (gradeProj_ne (Fin.val_ne_of_ne hne))
       rw [h₁, TensorProduct.map_zero_left, LinearMap.zero_apply]
     · simp
@@ -268,39 +262,30 @@ theorem exists_retraction (K A B R : Type) [CommRing K] [CommRing A] [CommRing B
       (∀ x, r (KaehlerDifferential.mapBaseChange K A R x) = x) ∧
       (∀ y, r (KaehlerDifferential.mapBaseChange K B R y) = 0) := by
   let e := KaehlerDifferential.tensorKaehlerEquiv K B A R
-  refine ⟨e.symm.toLinearMap ∘ₗ KaehlerDifferential.map K B R R, ?_, ?_⟩
-  · intro x
-    have key : KaehlerDifferential.map K B R R (KaehlerDifferential.mapBaseChange K A R x) = e x := by
-      induction x with
-      | add x y hx hy => simp only [map_add (f := _), hx, hy]
-      | tmul s w =>
-        have hw : w ∈ Submodule.span A (Set.range (KaehlerDifferential.D K A)) := by
-          rw [KaehlerDifferential.span_range_derivation]; trivial
-        induction hw using Submodule.span_induction generalizing s with
-        | mem w hw =>
-          obtain ⟨a, rfl⟩ := hw
-          simp [e, KaehlerDifferential.mapBaseChange_tmul, KaehlerDifferential.map_D]
-        | zero => simp
-        | add u v _ _ hu hv => simp only [tmul_add, map_add (f := _), hu, hv]
-        | smul a u _ hu =>
-          rw [← TensorProduct.smul_tmul]
-          exact hu _
-    simp [key]
-  · intro y
-    induction y with
-    | add x y hx hy => simp only [map_add (f := _), hx, hy, add_zero]
-    | tmul s w =>
-      have hw : w ∈ Submodule.span B (Set.range (KaehlerDifferential.D K B)) := by
-        rw [KaehlerDifferential.span_range_derivation]; trivial
-      induction hw using Submodule.span_induction generalizing s with
-      | mem w hw =>
-        obtain ⟨b, rfl⟩ := hw
-        simp [KaehlerDifferential.mapBaseChange_tmul, KaehlerDifferential.map_D]
-      | zero => simp
-      | add u v _ _ hu hv => simp only [tmul_add, map_add (f := _), hu, hv, add_zero]
-      | smul b u _ hu =>
-        rw [← TensorProduct.smul_tmul]
-        exact hu _
+  let r := e.symm.toLinearMap ∘ₗ KaehlerDifferential.map K B R R
+  have hA : r ∘ₗ KaehlerDifferential.mapBaseChange K A R = LinearMap.id := by
+    apply TensorProduct.AlgebraTensorModule.curry_injective
+    apply LinearMap.ext
+    intro s
+    apply LinearMap.ext_on (KaehlerDifferential.span_range_derivation K A)
+    rintro _ ⟨a, rfl⟩
+    have key : KaehlerDifferential.map K B R R
+        (KaehlerDifferential.mapBaseChange K A R (s ⊗ₜ KaehlerDifferential.D K A a)) =
+        e (s ⊗ₜ KaehlerDifferential.D K A a) := by
+      simp [e, KaehlerDifferential.mapBaseChange_tmul, KaehlerDifferential.map_D]
+    change e.symm (KaehlerDifferential.map K B R R
+      (KaehlerDifferential.mapBaseChange K A R (s ⊗ₜ KaehlerDifferential.D K A a))) = _
+    rw [key, LinearEquiv.symm_apply_apply]
+    rfl
+  have hB : r ∘ₗ KaehlerDifferential.mapBaseChange K B R = 0 := by
+    apply TensorProduct.AlgebraTensorModule.curry_injective
+    apply LinearMap.ext
+    intro s
+    apply LinearMap.ext_on (KaehlerDifferential.span_range_derivation K B)
+    rintro _ ⟨b, rfl⟩
+    change r (KaehlerDifferential.mapBaseChange K B R (s ⊗ₜ KaehlerDifferential.D K B b)) = 0
+    simp [r, KaehlerDifferential.mapBaseChange_tmul, KaehlerDifferential.map_D]
+  exact ⟨r, fun x => LinearMap.congr_fun hA x, fun y => LinearMap.congr_fun hB y⟩
 
 theorem range_sup_range (K A B R : Type) [CommRing K] [CommRing A] [CommRing B] [CommRing R]
     [Algebra K A] [Algebra K B] [Algebra K R] [Algebra A R] [Algebra B R]

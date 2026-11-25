@@ -178,9 +178,9 @@ theorem embM_eq_leviEmb (n j : ℕ) (g : GL (Fin n) k) :
       rw [Matrix.one_apply]
       by_cases h : i = l
       · subst h
-        rw [if_pos rfl, if_pos rfl]
+        rw [ite_eq_left rfl, ite_eq_left rfl]
       · have h' : (i : ℕ) ≠ l := fun e' => h (Fin.ext e')
-        rw [if_neg h, if_neg (by omega)]
+        rw [ite_eq_right h, ite_eq_right (by omega)]
 
 theorem unipRad_apply {n t N : ℕ} (h : ∑ a, dd n t a = N) {u : GL (Fin N) k}
     (hu : u ∈ unipRad k (stdBlocks (dd n t) h)) (a b : Fin N) (hab : (b : ℕ) < n ∨ n ≤ (a : ℕ)) :

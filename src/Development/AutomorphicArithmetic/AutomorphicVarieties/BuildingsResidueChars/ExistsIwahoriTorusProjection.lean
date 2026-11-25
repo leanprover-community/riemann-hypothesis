@@ -28,7 +28,7 @@ private theorem torus_fn {G : Type} [Group G] (I : Iwa G) :
   refine ⟨fun b => if h : ∃ t : I.T, ∃ y ∈ I.Nm 0, ∃ x ∈ I.N, b = y * t * x then h.choose else 1, ?_⟩
   intro t y hy x hx
   have h : ∃ t' : I.T, ∃ y' ∈ I.Nm 0, ∃ x' ∈ I.N, y * t * x = y' * t' * x' := ⟨t, y, hy, x, hx, rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   obtain ⟨y', hy', x', hx', e⟩ := h.choose_spec
   exact torus_uniq I hy hy' hx hx' e
 

@@ -71,18 +71,12 @@ theorem fischer_smul_right (c : ℂ) (f g : MvPolynomial σ ℂ) :
 @[simp] theorem fischer_zero_right (f : MvPolynomial σ ℂ) : fischer f 0 = 0 := by simp [fischer]
 
 theorem fischer_sum_left {ι : Type*} (s : Finset ι) (f : ι → MvPolynomial σ ℂ)
-    (g : MvPolynomial σ ℂ) : fischer (∑ i ∈ s, f i) g = ∑ i ∈ s, fischer (f i) g := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, fischer_add_left, ih]
+    (g : MvPolynomial σ ℂ) : fischer (∑ i ∈ s, f i) g = ∑ i ∈ s, fischer (f i) g :=
+  map_sum (AddMonoidHom.mk ⟨(fischer · g), fischer_zero_left g⟩ (fischer_add_left · · g)) f s
 
 theorem fischer_sum_right {ι : Type*} (s : Finset ι) (f : MvPolynomial σ ℂ)
-    (g : ι → MvPolynomial σ ℂ) : fischer f (∑ i ∈ s, g i) = ∑ i ∈ s, fischer f (g i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, fischer_add_right, ih]
+    (g : ι → MvPolynomial σ ℂ) : fischer f (∑ i ∈ s, g i) = ∑ i ∈ s, fischer f (g i) :=
+  map_sum (AddMonoidHom.mk ⟨(fischer f ·), fischer_zero_right f⟩ (fischer_add_right f)) g s
 
 theorem fischer_conj_symm (f g : MvPolynomial σ ℂ) : star (fischer f g) = fischer g f := by
   classical
@@ -116,26 +110,26 @@ theorem fischer_X_mul (a : σ) (f g : MvPolynomial σ ℂ) :
           have := congrArg (fun m => m a) h
           simp only [Finsupp.coe_add, Pi.add_apply, Finsupp.single_eq_same] at this
           omega
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
         split_ifs <;> simp [ht]
       · have hle : Finsupp.single a 1 ≤ t := by
           intro v
           by_cases hv : v = a
           · subst hv; simp only [Finsupp.single_eq_same]; omega
-          · rw [Finsupp.single_apply, if_neg (Ne.symm hv)]; exact Nat.zero_le _
+          · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hv)]; exact Nat.zero_le _
         have hiff : Finsupp.single a 1 + s = t ↔ s = t - Finsupp.single a 1 := by
           constructor
           · rintro rfl; simp
           · rintro rfl; rw [add_comm]; exact tsub_add_cancel_of_le hle
         by_cases h : s = t - Finsupp.single a 1
         · have h' := hiff.2 h
-          rw [if_pos h', if_pos h]
+          rw [ite_eq_left h', ite_eq_left h]
           have hsa : (s a + 1 : ℕ) = t a := by
             rw [← h']; simp [add_comm]
           rw [add_comm (Finsupp.single a 1) s, mfact_add_single, ← hsa]
           push_cast
           ring
-        · rw [if_neg (fun h' => h (hiff.1 h')), if_neg h]
+        · rw [ite_eq_right (fun h' => h (hiff.1 h')), ite_eq_right h]
 
 theorem fischer_pderiv (a : σ) (f g : MvPolynomial σ ℂ) :
     fischer (pderiv a f) g = fischer f (X a * g) := by

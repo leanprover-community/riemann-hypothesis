@@ -83,9 +83,7 @@ theorem stdRho_cont (ε : Fin n → Bool) :
 
 theorem std_exp_entry_hasDerivAt (X : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) (X i j) 0 := by
-  first
-    | exact _root_.GlobalTheory.RightDerivSmooth.hasDerivAt_exp_entry
-    | apply _root_.GlobalTheory.RightDerivSmooth.hasDerivAt_exp_entry <;> first | assumption | rfl | infer_instance
+  exact GlobalTheory.RightDerivSmooth.hasDerivAt_exp_entry X i j
 
 theorem stdRho_hasDeriv (ε : Fin n → Bool) :
     ∀ X, inK ε X → ∀ γ : ℝ → KG ε, (∀ t : ℝ, toMK (γ t) = NormedSpace.exp ((t : ℂ) • X)) →

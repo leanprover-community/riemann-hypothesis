@@ -224,7 +224,4 @@ theorem poisson_gen {ι : C →+ V} (hι : Function.Injective ι) {μ : Measure 
 
 end Gen
 
-section Adelic
-
-end Adelic
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.PoiAbs

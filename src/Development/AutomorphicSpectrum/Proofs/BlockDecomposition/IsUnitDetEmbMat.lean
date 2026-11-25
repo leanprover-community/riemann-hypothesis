@@ -175,7 +175,7 @@ theorem exists_gen (ρ : Representation LL G V) (τ : K →ₐ[Qp] LL) (J : ℤ)
       (fun x hx => (filV_exh PD (LL := LL) x).imp fun _ ha => ⟨hx, ha⟩)
       (fun x hx => filV_sep PD (LL := LL) x fun a => (hx a).2) J h
   have hJ := h J
-  rw [if_pos rfl] at hJ
+  rw [ite_eq_left rfl] at hJ
   unfold multV at hJ
   have hle : finrank LL (FildR PD ρ τ J) ≤ 1 := by
     rw [← h1]; exact Submodule.finrank_mono inf_le_left
@@ -216,10 +216,10 @@ theorem multV_of_gen (ρ : Representation LL G V) (τ : K →ₐ[Qp] LL) (J : �
   have hone : finrank LL (LL ∙ z) = 1 := finrank_span_singleton hz0
   unfold multV
   rcases lt_trichotomy a J with ha | ha | ha
-  · rw [hlo a ha.le, hlo (a + 1) (by omega), if_neg ha.ne]; simp
+  · rw [hlo a ha.le, hlo (a + 1) (by omega), ite_eq_right ha.ne]; simp
   · subst ha
-    rw [hlo a le_rfl, hhi (a + 1) (by omega), if_pos rfl, hone]; simp
-  · rw [hhi a ha, hhi (a + 1) (by omega), if_neg ha.ne']; simp
+    rw [hlo a le_rfl, hhi (a + 1) (by omega), ite_eq_left rfl, hone]; simp
+  · rw [hhi a ha, hhi (a + 1) (by omega), ite_eq_right ha.ne']; simp
 
 end Period
 

@@ -41,11 +41,7 @@ theorem closure_inter_open_eq {S U : Set X} (hS : IsClosed S) (hirr : IsIrreduci
     (hU : IsOpen U) (hne : (S ∩ U).Nonempty) : closure (S ∩ U) = S := by
   apply Set.Subset.antisymm
   · exact hS.closure_subset_iff.mpr Set.inter_subset_left
-  · intro x hx
-    rw [mem_closure_iff]
-    intro o ho hxo
-    obtain ⟨c, hcS, hc⟩ := hirr.2 o U ho hU ⟨x, hx, hxo⟩ hne
-    exact ⟨c, hc.1, hcS, hc.2⟩
+  · exact subset_closure_inter_of_isPreirreducible_of_isOpen hirr.2 hU hne
 
 theorem isIrreducible_preimage_of_isEmbedding {f : Y → X} (hf : Topology.IsEmbedding f)
     {T : Set X} (hT : IsIrreducible T) (hTr : T ⊆ Set.range f) :

@@ -32,8 +32,6 @@ section -- clump:auto
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_character_section : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] [IsNoetherianRing R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (χ : T →* Rˣ), ∃ s : Γ(Γ.G.left, ⊤), Γ.HasValues s (fun t => ((χ t : Rˣ) : R)) := by
-  first | exact @PositivityTheory.UnitarySelfGeneration.ht_char_section
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsCharacterSection =====
@@ -126,7 +124,7 @@ theorem exists_alt [IsCommMonObj G] (hw : GenWeil G L ξ N e) (h : Γ'.IsTorsion
     if hg : g ^ N = 1 then Units.map kk.toMonoidHom (χ (tors_pt k h hk g hg).choose) else 1
   have hφ : ∀ g t, g ^ N = 1 → g.left = ptG k i t → φ g = Units.map kk.toMonoidHom (χ t) := by
     intro g t hg et
-    simp only [φ, dif_pos hg]
+    simp only [φ, dite_eq_left hg]
     rw [tors_inj k h ((tors_pt k h hk g hg).choose_spec.symm.trans et)]
   obtain ⟨y, hy, hye⟩ := hw.perfect φ (fun g g' hg hg' => by
     obtain ⟨t, ht⟩ := tors_pt k h hk g hg
@@ -495,7 +493,7 @@ theorem core_ge [IsDomain R] [IsIntegrallyClosed R] [IsNoetherianRing R] (hN : N
       (fun s t h => tors_inj (kL hg) htor ((hgl s).symm.trans
         ((congrArg (fun z : {x : Over.mk ξ ⟶ G // x ^ N = 1} => z.1.left) h).trans (hgl t))))
   obtain ⟨χ, hχ⟩ := exists_chi (kL hg) hw hN htor hk hfrac' hy
-  obtain ⟨s, hs⟩ := _root_.GlobalTheory.CompanionTheory.Relay.exists_character_section R T Γ' χ
+  obtain ⟨s, hs⟩ := _root_.PositivityTheory.UnitarySelfGeneration.ht_char_section R T Γ' χ
 
   have hval0 : ∀ g₁ : Over.mk ξ ⟶ G, g₁ ^ N = 1 → ∀ h : ⊤ ≤ g₁.left ⁻¹ᵁ W, BT.valAt g₁.left W h f = (e y g₁ : Ω) := by
     intro g₁ hg₁ h

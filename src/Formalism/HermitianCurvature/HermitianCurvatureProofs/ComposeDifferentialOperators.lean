@@ -55,7 +55,7 @@ private lemma rw_congr_on_domL {O : Set (Mat k r)} (hO : IsOpen O) {H H' : Mat k
     apply Filter.EventuallyEq.deriv_eq
     filter_upwards [crv_ev (x := (false, X)) hO hgO] with t ht
     have hm := crv_mem (x := (false, X)) hX hg t
-    simp only [crv, Bool.false_eq_true, if_false] at ht hm
+    simp only [crv, Bool.false_eq_true, ite_false] at ht hm
     exact ih' _ hm ht
 
 lemma opApply_congr (Θ : DiffOp k r Wp Wq) {O : Set (Mat k r)} (hO : IsOpen O) {H H' : Mat k r → (Wq →L[ℂ] Wp)}

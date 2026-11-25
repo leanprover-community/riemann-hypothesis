@@ -21,23 +21,10 @@ open NumberField IsDedekindDomain Formalism.L2.Host Matrix GlobalTheory.PRep Glo
 open GlobalTheory.CuspRep (SmIrr Af locGL pLoc finGL)
 
 namespace UpperTheory.V.Af.Nf.LocalComponentIsotypic
-open GlobalTheory.RealGal.LocCompRProof (orb orb_comm orb_act annPart exists_type)
+open GlobalTheory.RealGal.LocCompRProof (orb orb_comm orb_act annPart exists_type cpt_fin fin_loc)
 
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {n : ℕ}
-
-private theorem cpt_fin (π : TR.CuspSub F n) (k : TR.Kinf F n) (g : GL (Fin n) (Af F)) (y : π.V) :
-    π.op (.cpt k) (π.finPart g y) = π.finPart g (π.op (.cpt k) y) := by
-  refine Subtype.ext ?_
-  change (TR.rt F n (TR.infGL F n (Unitary.toUnits k)) * TR.rt F n (finGL F n g)) y.1 =
-    (TR.rt F n (finGL F n g) * TR.rt F n (TR.infGL F n (Unitary.toUnits k))) y.1
-  rw [← map_mul, ← map_mul, TR.infGL_comm]
-
-private theorem fin_loc (π : TR.CuspSub F n) (w : HeightOneSpectrum (𝓞 F)) {k : GL (Fin n) (Af F)}
-    (hk : GeneralLinearGroup.map (pLoc F w) k = 1) (g : GL (Fin n) (w.adicCompletion F)) (y : π.V) :
-    π.finPart k (π.locRep w g y) = π.locRep w g (π.finPart k y) := by
-  simp only [TR.CuspSub.locRep, MonoidHom.comp_apply]
-  rw [← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul, GlobalTheory.CuspRep.LocUniq.comm_locGL w hk]
 
 private theorem bot_or_top (π : TR.CuspSub F n) (w : HeightOneSpectrum (𝓞 F)) (W : Submodule ℂ π.V)
     (h1 : ∀ g, ∀ x ∈ W, π.locRep w g x ∈ W)

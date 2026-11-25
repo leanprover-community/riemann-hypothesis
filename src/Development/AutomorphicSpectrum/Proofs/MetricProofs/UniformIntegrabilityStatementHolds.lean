@@ -636,9 +636,9 @@ theorem tail_mixed (hTB : TailBoundStatement) {n : ℕ} {Y : Type} [TopologicalS
       exact ⟨this, le_rfl⟩
   · intro i x y
     by_cases hi : (i : ℕ) < b
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       exact h1 i hi x y
-    · simp only [hi, if_false, add_zero]
+    · simp only [hi, ite_false, add_zero]
       exact h2 i hi x y
 
 end Tail
@@ -834,11 +834,11 @@ theorem green_small_core (hUI : GroundTheory.Heights₂.Heights.AnalyticLimit.Un
             (fun i => (hfam i t ht htt).2.1)
             (fun i y hy => ⟨(hfam i t ht htt).2.2.2 y hy, (hfam i t ht htt).2.2.1 y⟩) ?_ ?_)
         · intro i hi x y
-          have : mixedForms Om.pot (curForms thS uS t) b i = curForms thS uS t i := if_pos hi
+          have : mixedForms Om.pot (curForms thS uS t) b i = curForms thS uS t i := ite_eq_left hi
           rw [this]
           rfl
         · intro i hi x y
-          have : mixedForms Om.pot (curForms thS uS t) b i = Om.pot := if_neg hi
+          have : mixedForms Om.pot (curForms thS uS t) b i = Om.pot := ite_eq_right hi
           rw [this]
       tailComp := fun k b hb t ht hl => by
         have htt := le_of_ell_le ht₁ ht hl
@@ -854,12 +854,12 @@ theorem green_small_core (hUI : GroundTheory.Heights₂.Heights.AnalyticLimit.Un
               (isPotential_ofFun A _ (hfam _ t ht htt).1)) (hfam _ t ht htt).2.1)
         · intro i hi x y
           have : restForms Om.pot (curForms thS uS t) b i = curForms thS uS t i.castSucc :=
-            if_pos hi
+            ite_eq_left hi
           show (restForms Om.pot (curForms thS uS t) b i).φ x.1 y.1 = _
           rw [this]
           rfl
         · intro i hi x y
-          have : restForms Om.pot (curForms thS uS t) b i = Om.pot := if_neg hi
+          have : restForms Om.pot (curForms thS uS t) b i = Om.pot := ite_eq_right hi
           show (restForms Om.pot (curForms thS uS t) b i).φ x.1 y.1 = _
           rw [this]
           rfl }

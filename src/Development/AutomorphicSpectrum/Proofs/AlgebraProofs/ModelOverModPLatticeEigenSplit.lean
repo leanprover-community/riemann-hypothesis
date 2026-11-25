@@ -72,18 +72,18 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
               overlap := ?_ }, ?_⟩
     · intro s a ha e he
       by_cases h : mseg x s = 0
-      · simp only [h, if_true, AddSubgroup.mem_bot] at he ⊢
+      · simp only [h, ite_true, AddSubgroup.mem_bot] at he ⊢
         rw [he, smul_zero]
-      · simp only [h, if_false] at he ⊢
+      · simp only [h, ite_false] at he ⊢
         exact hfam.1 s h a ha e he
     · intro s hs
-      simp only [hs, if_false]
+      simp only [hs, ite_false]
       exact (hloc s hs).2
     · intro s t hs ht e he
-      simp only [hs, ht, if_false] at he ⊢
+      simp only [hs, ht, ite_false] at he ⊢
       exact hfam.2 s t hs ht e he
     · intro s hs
-      simp only [hs, if_false]
+      simp only [hs, ite_false]
   obtain ⟨F, hF⟩ : ∃ F : (∀ k, ι k) → AddSubgroup V,
       F = fun s => (Δ s).comap (AddMonoidHom.inl V V₂) := ⟨_, rfl⟩
   have memF : ∀ s b, b ∈ F s ↔ (b, (0 : V₂)) ∈ Δ s := by
@@ -255,10 +255,6 @@ theorem mem_stdLat (R : Subalgebra o Ω) {κ : Type} (v : κ → Ω) :
     v ∈ stdLat R κ ↔ ∀ i, v i ∈ R := by
   simp [stdLat, AddSubgroup.mem_pi]
 
-theorem mem_dotDual (R : Subalgebra o Ω) {m : ℕ} (L : AddSubgroup (Fin m → Ω)) (v : Fin m → Ω) :
-    v ∈ dotDual R L ↔ ∀ l ∈ L, l ⬝ᵥ v ∈ R := by
-  simp [dotDual, AddSubgroup.mem_iInf]
-
 variable {F : Type} [Zero F] [One F] [Fintype F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ}
 
 theorem af_le_std (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : ℕ) (w : Ω) (hB : D.Base R p w)
@@ -285,7 +281,7 @@ theorem af_le_std (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : 
 theorem std_le_hh (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : ℕ) (w : Ω) (hB : D.Base R p w)
     (χ : F → Ω) (h0 : χ 0 = 0) (h1 : χ 1 = 1) : stdLat R (Fin n) ≤ D.hh R p χ := by
   intro v hv
-  refine (mem_dotDual R _ v).2 fun l hl => ?_
+  refine (PositivityTheory.Xgn.A_dotdual_bc.mem_dotDual R _ v).2 fun l hl => ?_
   have hl' := (mem_stdLat R l).1 (af_le_std D R p w hB χ h0 h1 hl)
   have hv' := (mem_stdLat R v).1 hv
   exact sum_mem fun i _ => R.mul_mem (hl' i) (hv' i)
@@ -300,7 +296,7 @@ theorem smul_mem_std_of_mem_hh (D : LieLatticeData Ω F n Sg r s) (R : Subalgebr
     · subst hj; simp [one_mem]
     · simp [Pi.single_eq_of_ne hj, zero_mem]
   have hm : w • (Pi.single i 1 : Fin n → Ω) ∈ D.af R p χ := h ⟨_, hi, rfl⟩
-  have := (mem_dotDual R _ b).1 hb _ hm
+  have := (PositivityTheory.Xgn.A_dotdual_bc.mem_dotDual R _ b).1 hb _ hm
   simpa [smul_dotProduct, single_one_dotProduct] using this
 
 theorem mem_kerH (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : ℕ) (τ : Sg) (χ : F → Ω)
@@ -515,7 +511,7 @@ theorem main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Sub
       exact R.mul_mem ha hb
     · intro j hj
       have hne : i ≠ j := ne_of_lt hj
-      simp only [hfix j hj.le, Pi.single_apply, hne, if_false, mul_zero]
+      simp only [hfix j hj.le, Pi.single_apply, hne, ite_false, mul_zero]
     · simp only [hfix i le_rfl, Pi.single_eq_same, mul_one]
 
 end GlobalTheory.CompanionTheory.Ar.Num.HhGraded
@@ -1630,7 +1626,7 @@ theorem algebraMap_injective_of_model {O : Type} [CommRing O] [IsDomain O] [IsDi
     {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have h3 := h.2.2.1
   have hmem : a ∈ (mcIdeal O x).comap (C : O →+* _) := by

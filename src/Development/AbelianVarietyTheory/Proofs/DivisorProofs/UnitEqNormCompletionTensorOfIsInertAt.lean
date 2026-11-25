@@ -72,7 +72,7 @@ theorem exists_root_quadratic_of_approx {F : Type} [Field F] [NumberField F]
   obtain ⟨a, ha, -⟩ := HenselianRing.is_henselian (I := Ideal.span {a₀ ^ 2 + p * a₀ + q}) _ hf a₀
     (by simpa using Ideal.subset_span (Set.mem_singleton _)) (by
       have : eval a₀ (derivative (X ^ 2 + C p * X + C q : (v.adicCompletionIntegers F)[X])) = 2 * a₀ + p := by
-        simp only [derivative_add, derivative_X_pow, derivative_mul, derivative_C, derivative_X, eval_add, eval_mul, eval_C, eval_X, eval_pow, zero_mul, zero_add, mul_one, add_zero, eval_natCast, Nat.cast_ofNat]
+        simp only [derivative_add, derivative_X_pow, derivative_mul, derivative_C, derivative_X, eval_add, eval_mul, eval_C, eval_X, eval_pow, zero_mul, zero_add, mul_one, add_zero, Nat.cast_ofNat]
         ring
       rw [this]; exact hd.map _)
   exact ⟨a, by simpa [IsRoot] using ha⟩

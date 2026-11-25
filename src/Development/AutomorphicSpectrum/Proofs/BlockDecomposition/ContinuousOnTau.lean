@@ -851,8 +851,8 @@ theorem idem_eq {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) :
   · rw [RingHom.map_sub, he.2 v, sub_eq_zero]
     change _ = evFin D.host.F v (sS S 1) ⊗ₜ[D.host.F] (1 : D.host.E)
     by_cases h : v ∈ S
-    · rw [if_pos h, evFin_sS_one_mem h]; rfl
-    · rw [if_neg h, evFin_sS_one_not h, TensorProduct.zero_tmul]
+    · rw [ite_eq_left h, evFin_sS_one_mem h]; rfl
+    · rw [ite_eq_right h, evFin_sS_one_not h, TensorProduct.zero_tmul]
 
 theorem unit_AE {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) :
     IsOpen {z : AE D | IsUnit (1 - e + e * z)} ∧

@@ -109,7 +109,7 @@ theorem hilbFn_eq_finrank (y : (Σ k, ι k) → Ω) (a : K → ℕ) :
     ((φ₁.quotKerEquivRange.symm.trans (Submodule.quotEquivOfEq _ _ hk)).trans φ₂.quotKerEquivRange)
   rw [h₁, h₂] at h
   unfold NumbersDVR.hilbFn
-  rw [if_pos (fun k => Nat.cast_nonneg _)]
+  rw [ite_eq_left (fun k => Nat.cast_nonneg _)]
   show ((Module.finrank ℚ (NumbersDVR.gradedPiece P a) : ℕ) : ℤ) = _
   rw [h]
 

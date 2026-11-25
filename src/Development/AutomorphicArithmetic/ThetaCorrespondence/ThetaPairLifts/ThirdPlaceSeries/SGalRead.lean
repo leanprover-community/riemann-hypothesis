@@ -140,12 +140,6 @@ noncomputable section
 
 namespace GlobalTheory.ResLoc
 
-section
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.RowTie
-  GlobalTheory.SplitRead GlobalTheory.XiOver Formalism.L2.Host
-
-end
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain GlobalTheory.LocalInv
 open GlobalTheory.IndefiniteRowSideFullHecke.NoLocalInvariantsRankParts GlobalTheory.ParamRep
 
@@ -408,9 +402,6 @@ open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
 open GlobalTheory.TypeLeaf (WildOne FrobDense)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (OnW IsBaseChange IsGaloisRepOf IsReduction Zbar GaloisReps GalE toFb)
 open scoped Pointwise
-section Wild
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
-end Wild
 section Row
 variable {D : D7} (Y : NTw D.R D.host D.what₂ D.LL0 D.nd)
 theorem charpoly_cConj_eq_charpoly_inv_of_mem_ine (hD : FrobDense D) {n : ℕ} {π : D.naut.CG n} (hπ : D.naut.csd π) {l : ℕ} [Fact l.Prime]
@@ -426,8 +417,6 @@ theorem charpoly_cConj_eq_charpoly_inv_of_mem_ine (hD : FrobDense D) {n : ℕ} {
   obtain ⟨q, q1, q2⟩ := hρ.2.2 s⁻¹
   rw [← p2, ← q2, Polynomial.map_injective _ Subtype.val_injective (p1.trans (h.trans q1.symm))]
 end Row
-section Triples
-end Triples
 end GlobalTheory.TripleResidual
 end
 end
@@ -452,8 +441,6 @@ theorem exists_galRep_cast_alt {D : D7} {a p q : ℕ} [Fact p.Prime] [Fact q.Pri
     {r : GalE D →* GL (Fin a) (Qbar p)} (hr : _root_.UpperTheory.GalS.IsGaloisRepOfN D π p ι r) : ∃ r', _root_.UpperTheory.GalS.IsGaloisRepOfN D π q (qCast h ι) r' := by
   subst h
   exact ⟨r, hr⟩
-end GlobalTheory.ResLoc
-namespace GlobalTheory.ResLoc
 end GlobalTheory.ResLoc
 end
 end
@@ -514,21 +501,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepO
 open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
 variable {D : D7}
 section API
-end API
-end GlobalTheory.Triple
-end
-end
-section
-section
-namespace GlobalTheory.Triple
-open NumberField IsDedekindDomain Polynomial Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N
-open Formalism.L2.Host (HChar CharFrame embLL0 eExp ValLL0)
-open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-open GlobalTheory.GalChar (IsGal toQ block)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE toFb)
-open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
-variable {D : D7}
-section API
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
   {i : X.Tw} {b : Bool} {ρ : Reading X i b} {s : X.Sig i} {σ : D.what₂.FT} {π : D.naut.CG D.R.r}
   {r : GalE D →* GL (Fin D.R.r) (Qbar (X.l i))} {ν : GalE D →* (X.O0 i)ˣ} {w : D.what₂.places.Pl}
@@ -568,32 +540,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepO
 open GlobalTheory.TwistAbove (twGL)
 variable {D : D7} {C : CharFrame D} {art : Neutral.B1.Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E D.nd.Om}
 end GlobalTheory.TripInhab
-end
-end
-section
-section
-namespace GlobalTheory.TripleAdm
-open NumberField IsDedekindDomain Polynomial Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-open Formalism.CyclotomicNorms (Fbar rootsBar IsGood IrredOn BB primeToPart)
-open GlobalTheory.TameLabels GlobalTheory.TripleResidual
-open GlobalTheory.TypeLeaf (WildOne FrobDense)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf IsReduction Zbar GalE toFb)
-open GlobalTheory.Triple (IsParam IsResidual Reading IsChars IsTripleWith IsTripleFor IsTripleOf IsTriple muBase hframe jIdx)
-open GlobalTheory.TwistDet GlobalTheory.GalChar Formalism.L2.Host
-variable {D : D7}
-section Row
-variable {σ : D.what₂.FT} {π : D.naut.CG D.R.r} {w : D.what₂.places.Pl}
-end Row
-end GlobalTheory.TripleAdm
-end
-end
-section
-section
-namespace GlobalTheory.ResLoc
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
-open GlobalTheory.EigTie (IsRowPar plRed)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE OnW)
-end GlobalTheory.ResLoc
 end
 end
 section
@@ -645,33 +591,6 @@ theorem resTied_of_points_alt_alt {D : D7} (hC : GlobalTheory.RowTie.ChebSplit D
     congr 4
     exact (Pl.ι (D.nd.w i)).apply_symm_apply _
 end GlobalTheory.ResLoc
-end
-end
-section
-section
-namespace GlobalTheory.TripleResidual
-open NumberField IsDedekindDomain Polynomial Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
-open GlobalTheory.TypeLeaf (WildOne FrobDense)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (OnW IsBaseChange IsGaloisRepOf IsReduction Zbar GaloisReps GalE toFb)
-open scoped Pointwise
-section Row
-variable {D : D7} (Y : NTw D.R D.host D.what₂ D.LL0 D.nd)
-end Row
-end GlobalTheory.TripleResidual
-end
-end
-section
-section
-namespace GlobalTheory.Triple
-open NumberField IsDedekindDomain Polynomial Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction.Gen
-open Formalism.L2.Host (HChar CharFrame)
-open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-open GlobalTheory.GalChar (IsGal toQ)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE)
-open GlobalTheory.TripleGal (UnrRho HkFrob)
-variable {D : D7} {X : NTw D.R D.host D.what₂ D.LL0 D.nd} {i : X.Tw}
-end GlobalTheory.Triple
 end
 end
 section

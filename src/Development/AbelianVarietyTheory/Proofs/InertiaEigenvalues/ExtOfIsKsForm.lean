@@ -162,20 +162,6 @@ theorem record_heq {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData D'.R
     record_heq_2 xTw h2.O h2.crO hi,
     record_heq_3 a1 a2 (eq_of_heq nOm) ninstOm nalgOm nplOm xTw h2.O0 h2.crO0 h2.O h2.crO h2.algO h2.S0 hd hi⟩
 
-section Ext
-
-variable {LL LL' Ks Ks' WL WL' G G' : Type} [Field LL] [Field LL'] [NumberField LL']
-  [Field Ks] [NumberField Ks] [Algebra Ks LL] [Field Ks'] [NumberField Ks'] [Algebra Ks' LL']
-  [AddCommGroup WL] [Module LL WL] [Module Ks WL] [Module (𝓞 Ks) WL] [IsScalarTower (𝓞 Ks) Ks WL] [IsScalarTower Ks LL WL]
-  [AddCommGroup WL'] [Module LL' WL'] [Module Ks' WL'] [Module (𝓞 Ks') WL'] [IsScalarTower (𝓞 Ks') Ks' WL']
-  [IsScalarTower Ks' LL' WL']
-  {W : (LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
-  {W' : (LL' →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W' σ)] [∀ σ, InnerProductSpace ℂ (W' σ)]
-  [Group G] [Group G']
-  {ι : LL →+* LL'} {eK : Ks ≃+* Ks'} {γ : G ≃* G'} {A : Arith.FormsL LL Ks WL W G} {A' : Arith.FormsL LL' Ks' WL' W' G'}
-
-end Ext
-
 end GlobalTheory.TwInputs.Move.Forms
 
 end

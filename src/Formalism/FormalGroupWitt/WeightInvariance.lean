@@ -1,5 +1,7 @@
 module
 
+import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+
 public import Formalism.FormalGroupWitt.SubstInjectiveV
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.MemSpanOfNormLe
@@ -49,7 +51,7 @@ theorem coeff_expand_eq_zero {R : Type*} [CommRing R] {τ : Type*} (q : ℕ) (hq
         omega
       · exact h
     nlinarith
-  · push_neg at hdiv
+  · push Not at hdiv
     obtain ⟨i, hi⟩ := hdiv
     exact MvPowerSeries.coeff_expand_of_not_dvd q hq φ hi
 
@@ -214,7 +216,7 @@ theorem main : Formalism.FG.CoeffBoundV.{u, v, w} := by
                   (MvPowerSeries.expand q hq (MvPowerSeries.map σ (f l)))‖ * ‖(p : K)‖ ^ K0 := by
                   field_simp
               _ ≤ 1 := h12
-    · push_neg at hdiv
+    · push Not at hdiv
       obtain ⟨i, hi⟩ := hdiv
       refine ⟨0, fun i => by simp, ?_⟩
       have hz : ∀ l, MvPowerSeries.coeff n (MvPowerSeries.expand q hq (MvPowerSeries.map σ (f l))) = 0 :=
@@ -320,7 +322,7 @@ theorem main (hC : Formalism.FG.CoeffBoundV.{u, v, v}) : Formalism.FG.FunEqSubst
     intro i
     rw [hβ, MvPowerSeries.constantCoeff_expand, MvPowerSeries.constantCoeff_map, hα0, map_zero]
   have hαqI : ∀ i, IntegralMv (αq i) := by
-    intro i; rw [hαq]; exact Formalism.FG.IntegralSubstitution.integral_pow (hαI i) q
+    intro i; rw [hαq]; exact Formalism.ELL.SubstitutionCoefficientCongruence.integral_pow (hαI i) q
   have hdiv : ∀ i, DivByMv (p : K) (αq i - β i) := by
     intro i; rw [hαq, hβ]; exact Formalism.LT.FrobCongr_valid K p q hq σ hS τ (α i) (hαI i)
   have hβI : ∀ i, IntegralMv (β i) := by
@@ -372,8 +374,8 @@ theorem main (hC : Formalism.FG.CoeffBoundV.{u, v, v}) : Formalism.FG.FunEqSubst
         (n.prod (fun s e => αq s ^ e) - n.prod (fun s e => β s ^ e)) := by
       unfold Finsupp.prod
       exact bd_prod_sub (by positivity) (fun i => αq i ^ n i) (fun i => β i ^ n i) n.support
-        (fun i _ => Formalism.FG.IntegralSubstitution.integral_pow (hαqI i) _)
-        (fun i _ => Formalism.FG.IntegralSubstitution.integral_pow (hβI i) _) (fun i _ => hpow i)
+        (fun i _ => Formalism.ELL.SubstitutionCoefficientCongruence.integral_pow (hαqI i) _)
+        (fun i _ => Formalism.ELL.SubstitutionCoefficientCongruence.integral_pow (hβI i) _) (fun i _ => hpow i)
     calc ‖σ (MvPowerSeries.coeff n (f k))‖ *
           ‖MvPowerSeries.coeff d (n.prod (fun s e => αq s ^ e) - n.prod (fun s e => β s ^ e))‖
         ≤ ‖σ (MvPowerSeries.coeff n (f k))‖ * (‖(p : K)‖ ^ k' * ‖(p : K)‖) :=

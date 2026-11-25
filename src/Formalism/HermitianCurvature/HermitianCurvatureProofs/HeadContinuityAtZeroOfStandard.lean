@@ -41,11 +41,11 @@ theorem rr_top_re_nonneg (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ
   by_cases h1 : D.IsLocPt h i ∧ D.IsLocPt h i
   · rw [dite_eq_left h1, dite_eq_right (by omega)]
     by_cases h2 : i = P.r + 1
-    · rw [if_pos h2]
+    · rw [ite_eq_left h2]
       by_cases h3 : w = []
-      · rw [if_pos h3]
+      · rw [ite_eq_left h3]
         exact hsInner_self_re_nonneg _
-      · rw [if_neg h3]
+      · rw [ite_eq_right h3]
         unfold Top.topOf
         rw [Complex.re_sum]
         refine Finset.sum_nonneg fun e _ => ?_
@@ -53,7 +53,7 @@ theorem rr_top_re_nonneg (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ
         refine Finset.sum_nonneg fun ρ _ => ?_
         rw [Complex.re_ofReal_mul]
         exact mul_nonneg (mul_self_nonneg _) (hsInner_self_re_nonneg _)
-    · rw [if_neg h2]
+    · rw [ite_eq_right h2]
       simp
   · rw [dite_eq_right h1]
     simp
@@ -113,7 +113,7 @@ theorem limZeroAt_of_limits (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (χ : ℝ →
     · rw [← hzero, div_zero]
       exact hb
   · right
-    push_neg at hb
+    push Not at hb
     exact div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonneg_of_nonpos hsz0 hb.le) hn0
 
 end

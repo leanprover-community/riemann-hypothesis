@@ -35,57 +35,13 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.LiftApply
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeSemisimpleGeneralisedEigenNewformGamma1Gamm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.RingTheory.Henselian
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondOperatorOfMatrixCongr
 import Mathlib.Tactic.Lemma
@@ -122,8 +78,8 @@ theorem sgD_fams : ∀ (N l : ℕ), 0 < N → l.Prime → ¬ l ∣ N → (∀ d 
   intro N l hN hl hlN
   refine ⟨fun d hd => isDiamondMatrixAtLevel_of_gamma1Gamma0 hl hlN (Betti.isDiam_sgD hN.ne' hl.ne_zero hd), fun q => ?_, ?_, fun d => ?_⟩
   · rw [Fin.sum_univ_castSucc]
-    simp only [opL, Finset.sum_range, GlobalTheory.HeckeFamilyMatrices.tqFam, Fin.coe_castSucc, Fin.is_lt, if_true, Fin.val_last,
-      lt_irrefl, if_false, GlobalTheory.HeckeFamilyMatrices.dg, GlobalTheory.HeckeFamilyMatrices.mat]
+    simp only [opL, Finset.sum_range, GlobalTheory.HeckeFamilyMatrices.tqFam, Fin.coe_castSucc, Fin.is_lt, ite_true, Fin.val_last,
+      lt_irrefl, ite_false, GlobalTheory.HeckeFamilyMatrices.dg, GlobalTheory.HeckeFamilyMatrices.mat]
   · simp only [opL, Finset.sum_range, GlobalTheory.HeckeFamilyMatrices.ulFam]
   · simp [opL, GlobalTheory.HeckeFamilyMatrices.mat]
 
@@ -142,18 +98,6 @@ open scoped MatrixGroups
 
 namespace GlobalTheory.KZ.H3
 
-theorem polySlash_one_of_mem (w : ℕ) (p : Polynomial ℂ) (hp : p ∈ Polynomial.degreeLT ℂ (w + 1)) :
-    GlobalTheory.HeckeFamilyMatrices.slP w (1 : Matrix (Fin 2) (Fin 2) ℤ) p = p := by
-  simp [GlobalTheory.HeckeFamilyMatrices.slP]
-  rw [Polynomial.mem_degreeLT] at hp
-  have hn : p.natDegree < w + 1 := by
-    by_cases h0 : p = 0
-    · simp [h0]
-    · exact (Polynomial.natDegree_lt_iff_degree_lt h0).2 hp
-  conv_rhs => rw [p.as_sum_range' (w + 1) hn]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Polynomial.smul_X_eq_monomial]
-
 theorem eichlerShimuraCocycle_eq_zero_of_closure (Γ : Subgroup SL(2, ℤ)) (w : ℕ) (z : GlobalTheory.HeckeFamilyMatrices.Z1 Γ w) (S : Set Γ)
     (hS : Subgroup.closure S = ⊤) (hz : ∀ s ∈ S, (z : Γ → Polynomial ℂ) s = 0) :
     (z : Γ → Polynomial ℂ) = 0 := by
@@ -164,7 +108,7 @@ theorem eichlerShimuraCocycle_eq_zero_of_closure (Γ : Subgroup SL(2, ℤ)) (w :
     have hid : GlobalTheory.HeckeFamilyMatrices.slP w (GlobalTheory.HeckeFamilyMatrices.mat (1 : Γ)) ((z : Γ → Polynomial ℂ) 1) = (z : Γ → Polynomial ℂ) 1 := by
       have : GlobalTheory.HeckeFamilyMatrices.mat ((1 : Γ) : SL(2, ℤ)) = 1 := by simp [GlobalTheory.HeckeFamilyMatrices.mat]
       rw [this]
-      exact polySlash_one_of_mem w _ (hdeg 1)
+      exact GlobalTheory.HeckeFamilyMatrices.CocBound.polySlash_one w _ (hdeg 1)
     rw [hid] at h
     have : (z : Γ → Polynomial ℂ) 1 + (z : Γ → Polynomial ℂ) 1 - (z : Γ → Polynomial ℂ) 1 = 0 := by
       rw [← h]; ring
@@ -473,7 +417,7 @@ theorem hasSum_uOp (q : ℕ) (f : ℍ → ℂ) (a : ℕ → ℂ) (hq0 : 0 < q)
   rw [← hinj.hasSum_iff fun n hn => by simp [hrange n hn]] at hC
   have hD := hC.mul_left (q : ℂ)⁻¹
   refine cast (congrArg (HasSum · (uOp q f τ)) (funext fun n => ?_)) hD
-  simp only [Function.comp, dvd_mul_right, if_true, pow_mul, hxq, smul_eq_mul]
+  simp only [Function.comp, dvd_mul_right, ite_true, pow_mul, hxq, smul_eq_mul]
   field_simp
 
 end GlobalTheory.Hk
@@ -516,7 +460,7 @@ theorem vOp_hasSum (q : ℕ) (f : ℍ → ℂ) (a : ℕ → ℂ) (hq : 0 < q)
     simp [this]
   · convert h1 using 1
     funext m
-    simp only [Function.comp, dvd_mul_right, if_true, Nat.mul_div_cancel_left _ hq, hqp, ← pow_mul]
+    simp only [Function.comp, dvd_mul_right, ite_true, Nat.mul_div_cancel_left _ hq, hqp, ← pow_mul]
 
 end GlobalTheory.Hk
 end -- clump:auto
@@ -653,21 +597,6 @@ open scoped MatrixGroups ModularForm Manifold
 
 namespace GlobalTheory.Hk
 
-lemma isDia_mul_of_isDia {N l : ℕ} {d e : ℤ} {σ τ : SL(2, ℤ)} (hσ : IsDia N l d σ)
-    (hτ : IsDia N l e τ) : IsDia N l (d * e) (σ * τ) := by
-  obtain ⟨h1, h2⟩ := hσ
-  obtain ⟨h3, h4⟩ := hτ
-  have h1' : ((σ 1 0 : ℤ) : ZMod N) = 0 := by
-    have := congrArg (ZMod.castHom (dvd_mul_right N l) (ZMod N)) h1
-    simpa using this
-  refine ⟨?_, ?_⟩
-  · simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
-    push_cast
-    rw [h1, h3]; ring
-  · simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
-    push_cast
-    rw [h1', h2, h4]; ring
-
 lemma heckeT_congr_dia {N l q : ℕ} {k : ℤ} {σ τ : SL(2, ℤ)} (hN : 0 < N)
     (hσ : IsDia N l q σ) (hτ : IsDia N l q τ) (f : ModularForm (lev N l) k) :
     heckeT k q σ ⇑f = heckeT k q τ ⇑f := by
@@ -702,21 +631,21 @@ lemma heckeT_coeff_formula_comm_distinct_primes {q r : ℕ} (hq : q.Prime) (hr :
     have d2 : r * n / q = r * (n / q) := Nat.mul_div_assoc r hqn
     have d3 : n / r / q = n / q / r := by
       rw [Nat.div_div_eq_div_mul, Nat.div_div_eq_div_mul, mul_comm]
-    simp only [hqn, hrn, i3, i4, if_true, d1, d2, d3]
+    simp only [hqn, hrn, i3, i4, ite_true, d1, d2, d3]
     ring
   · have i3 : ¬ r ∣ n / q := by
       intro h
       exact hrn (h.trans (Nat.div_dvd_of_dvd hqn))
     have d2 : r * n / q = r * (n / q) := Nat.mul_div_assoc r hqn
-    simp only [hqn, hrn, i3, if_true, if_false, d2]
+    simp only [hqn, hrn, i3, ite_true, ite_false, d2]
     ring
   · have i4 : ¬ q ∣ n / r := by
       intro h
       exact hqn (h.trans (Nat.div_dvd_of_dvd hrn))
     have d1 : q * n / r = q * (n / r) := Nat.mul_div_assoc q hrn
-    simp only [hqn, hrn, i4, if_true, if_false, d1]
+    simp only [hqn, hrn, i4, ite_true, ite_false, d1]
     ring
-  · simp only [hqn, hrn, if_false]
+  · simp only [hqn, hrn, ite_false]
     ring
 
 theorem heckeT_comm : ∀ (N l q r : ℕ) (k : ℤ) (σ τ : SL(2, ℤ)), 0 < N → q.Prime → r.Prime →
@@ -740,8 +669,8 @@ theorem heckeT_comm : ∀ (N l q r : ℕ) (k : ℤ) (σ τ : SL(2, ℤ)), 0 < N 
       rw [hgq, hfτ, _root_.GlobalTheory.Hk.heckeT_dia_comm N l q k r σ τ hN hq hqN hσ hτ f]
     have dd : dia k τ ⇑fσ = dia k σ ⇑fτ := by
       have h' : IsDia N l ((r : ℤ) * q) (σ * τ) := by
-        rw [mul_comm]; exact isDia_mul_of_isDia hσ hτ
-      rw [hfσ, hfτ, _root_.GlobalTheory.Hk.dia_mul N l k q r σ τ (σ * τ) hN hσ hτ (isDia_mul_of_isDia hσ hτ) f,
+        rw [mul_comm]; exact GlobalTheory.Hk.isDia_mul hσ hτ
+      rw [hfσ, hfτ, _root_.GlobalTheory.Hk.dia_mul N l k q r σ τ (σ * τ) hN hσ hτ (GlobalTheory.Hk.isDia_mul hσ hτ) f,
         _root_.GlobalTheory.Hk.dia_mul N l k r q τ σ (σ * τ) hN hτ hσ h' f]
     have key : h1 = h2 := by
       apply _root_.GlobalTheory.Hk.eq_of_coef_eq N l k hN
@@ -939,18 +868,6 @@ namespace GlobalTheory.HeckeFamilyMatrices.Comm
 
 open CongruenceSubgroup
 
-theorem cj_sub {Γ : Type} (u v : Γ → ℂ[X]) : cj (u - v) = cj u - cj v := by
-  funext γ
-  simp [cj, Polynomial.map_sub]
-
-theorem intCast_of_dvd {m n : ℕ} (h : m ∣ n) {x a : ℤ} (hx : ((x : ℤ) : ZMod n) = a) :
-    ((x : ℤ) : ZMod m) = a := by
-  have := congrArg (ZMod.castHom h (ZMod m)) hx
-  simpa using this
-
-theorem gamma_le_lev (N l : ℕ) : Gamma (N * l) ≤ Lev N l :=
-  _root_.GlobalTheory.HeckeFamilyMatrices.EisT.gamma_le_lev N l
-
 theorem comm_of_decomp {Γ : Subgroup SL(2, ℤ)} {w : ℕ} (A B : Module.End ℂ (Γ → ℂ[X]))
     (hA : ∀ z ∈ B1 Γ w, A z ∈ B1 Γ w) (hB : ∀ z ∈ B1 Γ w, B z ∈ B1 Γ w)
     (hAc : ∀ z, cj (A z) = A (cj z)) (hBc : ∀ z, cj (B z) = B (cj z))
@@ -960,7 +877,7 @@ theorem comm_of_decomp {Γ : Subgroup SL(2, ℤ)} {w : ℕ} (A B : Module.End �
   have hcj : ∀ z ∈ B1 Γ w, cj z ∈ B1 Γ w := (cj_mem_Z1_cj_mem_B1_per_smul Γ w).2.1
   have e : A (B (x + cj y + b)) - B (A (x + cj y + b)) =
       (A (B x) - B (A x)) + cj (A (B y) - B (A y)) + (A (B b) - B (A b)) := by
-    simp only [cj_sub, hAc, hBc, map_add (f := _)]
+    simp only [GlobalTheory.HeckeFamilyMatrices.Semi.cj_sub, hAc, hBc, map_add (f := _)]
     abel
   rw [e]
   exact add_mem (add_mem hx (hcj _ hy)) (sub_mem (hA _ (hB _ hb)) (hB _ (hA _ hb)))
@@ -1056,7 +973,7 @@ theorem heckeDiamond_commute_mod_coboundaries_gamma1Gamma0_alt : ∀ (N l k : �
     exact ⟨g, hg.trans (bDd _ _ _).symm⟩
 
   obtain ⟨f, h, hES⟩ := _root_.GlobalTheory.HeckeFamilyMatrices.EichlerShimura.exists_per_add_cj_per N (N * l) (Lev N l) k hN (Nat.mul_pos hN0 hl0)
-    (gamma_le_lev N l) inf_le_left hodd hk z hz
+    (GlobalTheory.HeckeFamilyMatrices.EisT.gamma_le_lev N l) inf_le_left hodd hk z hz
   obtain ⟨b, hb, rfl⟩ : ∃ b ∈ B1 (Lev N l) (k - 2),
       z = per (Lev N l) (k - 2) ⇑f + cj (per (Lev N l) (k - 2) ⇑h) + b :=
     ⟨_, hES, by abel⟩
@@ -1215,7 +1132,7 @@ theorem dict_hk : ∀ (N l w : ℕ) (α : Matrix (Fin 2) (Fin 2) ℤ) (ι : Type
     exact ⟨_, fun z hz => incr hdet hF ⟨γ, hγ⟩ π g hg z hz⟩
   · funext γ
     have hex := exists_perm hδ γ
-    simp only [GlobalTheory.HeckeFamilyMatrices.hk, LinearMap.pi_apply, dif_pos hex, LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply]
+    simp only [GlobalTheory.HeckeFamilyMatrices.hk, LinearMap.pi_apply, dite_eq_left hex, LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply]
 
     rw [cocP, incr hdet hF γ hex.choose (fun i => (hex.choose_spec i).choose)
     (fun i => (hex.choose_spec i).choose_spec) _ hI, map_sum]
@@ -1271,7 +1188,6 @@ end GlobalTheory.KZ.CocPot
 
 namespace GlobalTheory.KZ
 
-
 open CocPot in
 theorem cocP_laws : ∀ (w N l : ℕ), 0 < N → 0 < l → (∀ F ∈ Pot ℂ w (Gam N l), cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) F ∈ GlobalTheory.HeckeFamilyMatrices.Z1 (GlobalTheory.HeckeFamilyMatrices.Lev N l) w ∧ (∀ γ : GlobalTheory.HeckeFamilyMatrices.Lev N l, ∀ τ ∈ Hs, deh (slP ((γ : SL(2, ℤ)) : Matrix (Fin 2) (Fin 2) ℤ) (F (mob (ofSL γ) τ)) - F τ) = cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) F γ) ∧ (cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) F ∈ GlobalTheory.HeckeFamilyMatrices.B1 (GlobalTheory.HeckeFamilyMatrices.Lev N l) w → F ∈ Triv ℂ w (Gam N l))) ∧ (∀ F G, cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) (F + G) = cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) F + cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) G) ∧ (∀ (c : ℂ) F, cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) (c • F) = c • cocP (GlobalTheory.HeckeFamilyMatrices.Lev N l) F) := by
   intro w N l _ _
@@ -1326,21 +1242,6 @@ def opZ (N l w : ℕ) : Letter → Module.End ℂ (GlobalTheory.HeckeFamilyMatri
   | Letter.T q => GlobalTheory.HeckeFamilyMatrices.TqZ (GlobalTheory.HeckeFamilyMatrices.Lev N l) w q (sgD N l q)
   | Letter.U => GlobalTheory.HeckeFamilyMatrices.UlZ (GlobalTheory.HeckeFamilyMatrices.Lev N l) w l
   | Letter.D d => GlobalTheory.HeckeFamilyMatrices.DdZ (GlobalTheory.HeckeFamilyMatrices.Lev N l) w (sgD N l d)
-
-section
-open GlobalTheory.HeckeFamilyMatrices Polynomial
-
-theorem eichlerShimuraCoboundaries_le_eichlerShimuraCocycles (Γ : Subgroup SL(2, ℤ)) (w : ℕ) : B1 Γ w ≤ Z1 Γ w := by
-  rintro z ⟨⟨p, hp⟩, rfl⟩
-  refine ⟨fun γ => ?_, fun γ δ => ?_⟩
-  · exact Submodule.sub_mem _ (_root_.GlobalTheory.HeckeFamilyMatrices.SlPAct.polySlash_act w (mat γ) 1 p hp).1 hp
-  · change GlobalTheory.HeckeFamilyMatrices.slP w (mat (γ * δ : Γ)) p - p = GlobalTheory.HeckeFamilyMatrices.slP w (mat δ) (GlobalTheory.HeckeFamilyMatrices.slP w (mat γ) p - p) + (GlobalTheory.HeckeFamilyMatrices.slP w (mat δ) p - p)
-    have e : mat (γ * δ : Γ) = mat γ * mat δ := by
-      simp only [mat, Subgroup.coe_mul, Matrix.SpecialLinearGroup.coe_mul]
-    rw [e, (_root_.GlobalTheory.HeckeFamilyMatrices.SlPAct.polySlash_act w (mat γ) (mat δ) p hp).2.1, map_sub]
-    abel
-
-end
 
 theorem letter_pot (N l w : ℕ) (hN : 5 ≤ N) (hl : l.Prime) (hlN : ¬ l ∣ N) (T : Letter) (hT : admitted N l T) :
     ∀ F ∈ Pot ℂ w (Gam N l), opL ℂ N l T F ∈ Pot ℂ w (Gam N l) ∧
@@ -1502,7 +1403,7 @@ theorem ssPotB_at_newform : ∀ (k : ℕ) (g : UpperTheory.V.Af.Newform k) (N l 
     | D d =>
       have hd : Nat.Coprime d N := ht
       refine (key (fun u => if (u : ZMod N) = (d : ZMod N) then d else (u : ZMod N).val) ?_ ?_ z hz n hgen).2.2
-        (ZMod.unitOfCoprime d hd) d (if_pos (ZMod.coe_unitOfCoprime d hd))
+        (ZMod.unitOfCoprime d hd) d (ite_eq_left (ZMod.coe_unitOfCoprime d hd))
       · intro u; split_ifs
         · exact hd
         · exact hval1 u
@@ -1510,7 +1411,7 @@ theorem ssPotB_at_newform : ∀ (k : ℕ) (g : UpperTheory.V.Af.Newform k) (N l 
         · exact h.symm
         · exact hval2 u
   obtain ⟨P, hP, hP1, hPz⟩ := _root_.GlobalTheory.exists_genEig_idem_poly ℂ (GlobalTheory.HeckeFamilyMatrices.Lev N l → Polynomial ℂ) (GlobalTheory.HeckeFamilyMatrices.Z1 (GlobalTheory.HeckeFamilyMatrices.Lev N l) (k - 2))
-    (GlobalTheory.HeckeFamilyMatrices.B1 (GlobalTheory.HeckeFamilyMatrices.Lev N l) (k - 2)) Letter (admitted N l) (opZ N l (k - 2)) lam (eichlerShimuraCoboundaries_le_eichlerShimuraCocycles _ _)
+    (GlobalTheory.HeckeFamilyMatrices.B1 (GlobalTheory.HeckeFamilyMatrices.Lev N l) (k - 2)) Letter (admitted N l) (opZ N l (k - 2)) lam (GlobalTheory.HeckeFamilyMatrices.EichlerShimura.coboundaries_le_cocycles _ _)
     (_root_.GlobalTheory.KZ.H3.lev_fd N l (k - 2) hN0 hl0) (fun t ht => (hpres t ht).1) (fun t ht => (hpres t ht).2) hcomm heig
   refine ⟨P, hP, hP1, fun F hF T hT => ?_⟩
   obtain ⟨hD1, hD2, hD3⟩ := _root_.GlobalTheory.KZ.cocP_laws (k - 2) N l hN0 hl0

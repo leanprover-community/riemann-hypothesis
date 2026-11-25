@@ -146,8 +146,8 @@ theorem hor_exp [IsDomain O] (Ti : Comparison₂ W levB) (hR : Formalism.MainNot
   have hx : (letE c' : LetA O n) • (⟨Hh, hHN⟩ : ↥(W.N T)) = ⟨Hh, hHN⟩ := Subtype.ext hl
   intro k hk
   rcases lt_trichotomy k 0 with hneg | rfl | hpos
-  · rw [if_neg (by omega), ← hx]; exact Ti.hneg T hTc c' _ k hneg
-  · rw [if_pos rfl, ← Ti.hcmp T hTc c' ⟨Hh, hHN⟩, hx, ← Formalism.MainNotions.UnusedSlot80.ArcF.cmpD_of_mem W T hHN]
+  · rw [ite_eq_right (by omega), ← hx]; exact Ti.hneg T hTc c' _ k hneg
+  · rw [ite_eq_left rfl, ← Ti.hcmp T hTc c' ⟨Hh, hHN⟩, hx, ← Formalism.MainNotions.UnusedSlot80.ArcF.cmpD_of_mem W T hHN]
     have hM : 0 < M := by
       rcases Nat.eq_zero_or_pos M with h | h
       · rw [h, mul_zero] at hk; exact absurd hk (by omega)
@@ -173,7 +173,7 @@ theorem hor_exp [IsDomain O] (Ti : Comparison₂ W levB) (hR : Formalism.MainNot
     · simp
     · intro m _ hm; simp [hm]
     · intro h; exact absurd (Finset.mem_univ j) h
-  · rw [if_neg (by omega)]
+  · rw [ite_eq_right (by omega)]
     obtain ⟨x', hx'Δ, hx'e⟩ := (hsol j).1 M κ y hy
     rw [← hHe, smul_zero, sub_zero] at hx'e
     have hγ : W.γD T W.gam Hh = Hh + W.π₀ ^ M • x' := by

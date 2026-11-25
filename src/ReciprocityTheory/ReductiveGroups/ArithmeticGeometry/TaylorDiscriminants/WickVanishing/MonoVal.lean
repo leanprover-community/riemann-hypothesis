@@ -55,10 +55,4 @@ theorem coeff_fold {ι : Type} (cd : ι → σ) (hc : Function.Injective cd) (m 
 
 end Pair
 
-section Pair2
-
-variable {k : Type} [CommRing k]
-
-end Pair2
-
 end ReciprocityTheory.ChartRestriction.G.TB.MV

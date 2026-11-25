@@ -37,55 +37,13 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmallFundamen
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.DeepKernelBound
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DeepRegionExponents
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Formalism.HarderNarasimhan.ShiftInvariance
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproximationUnitaryUnipotentRadical
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Compactness.Paracompact
@@ -1198,9 +1156,9 @@ theorem unipotent_orbit_cover : ∀ (I : AutInst) (x : I.GA) (g q : ℕ), 1 ≤ 
 
   obtain ⟨τ', hτ'⟩ : ∃ f : ℕ → ℝ, f = fun i => if h : i < a then τ ⟨i, h⟩ else 1 / 2 := ⟨_, rfl⟩
   have hτ'lt : ∀ i (h : i < a), τ' i = τ ⟨i, h⟩ := by
-    intro i h; rw [hτ']; exact dif_pos h
+    intro i h; rw [hτ']; exact dite_eq_left h
   have hτ'ge : ∀ i, a ≤ i → τ' i = 1 / 2 := by
-    intro i h; rw [hτ']; exact dif_neg (not_lt.2 h)
+    intro i h; rw [hτ']; exact dite_eq_right (not_lt.2 h)
   have hpos : ∀ i ≤ a, 0 < τ' i := by
     intro i _
     rcases lt_or_ge i a with h | h

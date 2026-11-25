@@ -3,50 +3,10 @@ module
 public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 public import Mathlib.Analysis.Normed.Module.Connected
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.Finsupp.Encodable
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
 import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Baire.LocallyCompactRegular
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import Mathlib.Analysis.Analytic.Basic
@@ -125,17 +85,17 @@ theorem exists_veryGeneral_point_of_holomorphic_family :
   have hWo : ∀ F, IsOpen (W F) := by
     intro F
     by_cases h : Set.EqOn (f F) 0 Ω
-    · simp only [W, if_pos h]
+    · simp only [W, ite_eq_left h]
       exact isOpen_univ
-    · simp only [W, if_neg h]
+    · simp only [W, ite_eq_right h]
       exact ((hfd F).continuousOn.isOpen_inter_preimage hΩo isOpen_compl_singleton).union
         isClosed_closure.isOpen_compl
   have hWd : ∀ F, Dense (W F) := by
     intro F
     by_cases h : Set.EqOn (f F) 0 Ω
-    · simp only [W, if_pos h]
+    · simp only [W, ite_eq_left h]
       exact dense_univ
-    · simp only [W, if_neg h]
+    · simp only [W, ite_eq_right h]
       have hsub : Ω ⊆ closure (Ω ∩ f F ⁻¹' {0}ᶜ) := by
         intro q hq
         by_contra hq'
@@ -157,7 +117,7 @@ theorem exists_veryGeneral_point_of_holomorphic_family :
   · have hmem : (Fin.cons c' z' : Fin (m + 1) → ℂ) ∈ Ω := ⟨by simpa using hz', by simpa using hc'⟩
     simpa [f] using h hmem
   · have hpW' := Set.mem_iInter.1 hpW F
-    simp only [W, if_neg h] at hpW'
+    simp only [W, ite_eq_right h] at hpW'
     rcases hpW' with hp' | hp'
     · exact absurd hF hp'.2
     · exact absurd (subset_closure hpΩ) hp'

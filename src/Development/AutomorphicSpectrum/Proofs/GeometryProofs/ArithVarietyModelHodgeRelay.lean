@@ -156,7 +156,7 @@ theorem exists_tensor_equiv (A : Subalgebra R (X → R)) (B : Subalgebra R (Y �
       exact mul_mem_pspan a.2 b.2
     | add a b ha hb => rw [map_add (f := _)]; exact C.add_mem ha hb
   have hinj : Function.Injective m := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro w hw
     obtain ⟨n, l, b, h⟩ := exists_dual_family (R := R) A
     let c : (A →ₗ[R] R) → A ⊗[R] B →ₗ[R] B := fun l => (TensorProduct.lid R B).toLinearMap ∘ₗ l.rTensor B
@@ -388,19 +388,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace PositivityTheory.HtPt.Htat
-
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct in
-open GlobalTheory.CompanionTheory.Ar.BT in
-theorem bt_sub_eq_top : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (U : Γ.G.left.Opens), Γ.IsFinOpenSub U → Γ.btOrder U = Γ.btOrder ⊤ :=
-  @_root_.PositivityTheory.HtPt.Htat.HopfOrderEqTop.btOrder_eq_top @hens_normal @PositivityTheory.UnitarySelfGeneration.bt_exists_bc @reg_pull
-
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct in
-open GlobalTheory.CompanionTheory.Ar.BT in
-theorem bt_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] [IsNoetherianRing R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T), IsHopfOrder (Γ.btOrder ⊤) :=
-  @_root_.PositivityTheory.HtPt.Htat.HopfOrderTop.btOrder_top_isHopfOrder @hens_normal @PositivityTheory.UnitarySelfGeneration.bt_exists_bc @reg_pull
-
-end PositivityTheory.HtPt.Htat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfFin =====
@@ -428,19 +415,9 @@ def toPull {Y : Over S'} (g : Over.mk (Y.hom ≫ x) ⟶ G) : Y ⟶ (Over.pullbac
 theorem toPull_fst {Y : Over S'} (g : Over.mk (Y.hom ≫ x) ⟶ G) :
     (toPull x G g).left ≫ pullback.fst G.hom x = g.left := pullback.lift_fst _ _ _
 
-variable {x G} in
-theorem hom_ext_pull {Y : Over S'} {y z : Y ⟶ (Over.pullback x).obj G}
-    (h : y.left ≫ pullback.fst G.hom x = z.left ≫ pullback.fst G.hom x) : y = z := by
-  ext
-  refine pullback.hom_ext h ?_
-  have h1 := Over.w y
-  have h2 := Over.w z
-  simp only [Over.pullback_obj_hom] at h1 h2
-  rw [h1, h2]
-
 theorem toPull_eq {Y : Over S'} (g : Over.mk (Y.hom ≫ x) ⟶ G) :
     toPull x G g = toPull x _ (𝟙 (Over.mk (Y.hom ≫ x))) ≫ (Over.pullback x).map g := by
-  apply hom_ext_pull
+  apply GlobalTheory.CompanionTheory.Ar.BT.Tors.hom_ext_pull
   have h1 : ((Over.pullback x).map g).left ≫ pullback.fst G.hom x = pullback.fst _ x ≫ g.left :=
     pullback.lift_fst _ _ _
   have h2 := toPull_fst x _ (𝟙 (Over.mk (Y.hom ≫ x)))
@@ -461,7 +438,7 @@ def ofPull {Y : Over S'} (y : Y ⟶ (Over.pullback x).obj G) : Over.mk (Y.hom �
     simp [pullback.condition, reassoc_of% h1])
 
 theorem toPull_ofPull {Y : Over S'} (y : Y ⟶ (Over.pullback x).obj G) : toPull x G (ofPull x G y) = y := by
-  apply hom_ext_pull
+  apply GlobalTheory.CompanionTheory.Ar.BT.Tors.hom_ext_pull
   rw [toPull_fst]
   rfl
 
@@ -576,7 +553,6 @@ include hE
 
 theorem sub_eq_top_of : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (U : Γ.G.left.Opens), Γ.IsFinOpenSub U → Γ.btOrder U = Γ.btOrder ⊤ :=
   _root_.PositivityTheory.HtPt.Htat.HopfOrderEqTop.btOrder_eq_top @Htat.hens_normal hE @Htat.reg_pull
-
 
 omit hE in
 theorem exists_ind {R T H : Type} [CommRing R] [CommGroup T] [CommGroup H] (K : Subgroup T) (A : Subalgebra R (K → R))
@@ -1343,7 +1319,7 @@ theorem map_surjective (Γ₁ : QFGroup R H) (Γ : QFGroup R T) (a : Γ₁.G ⟶
 theorem btOrder_ind [IsIntegrallyClosed R] [Finite T] (Γ : QFGroup R T) (U : Γ.G.left.Opens) (hsub : Γ.IsFinOpenSub U)
     (H : Subgroup T) (hH : ∀ t, t ∈ H ↔ ⊤ ≤ (Γ.pt t).left ⁻¹ᵁ U) :
     Γ.btOrder ⊤ = indOrder H.subtype (resOrder H.subtype (Γ.btOrder ⊤)) := by
-  have htop := PositivityTheory.HtPt.Htat.bt_sub_eq_top R T Γ U hsub
+  have htop := PositivityTheory.UnitarySelfGeneration.bt_sub_eq_top R T Γ U hsub
   obtain ⟨H', A, hH', hA, hAf⟩ := PositivityTheory.HtPt.Twhopf.sub_order R T Γ U hsub
   obtain rfl : H = H' := Subgroup.ext fun t => (hH t).trans (hH' t).symm
   have key : Γ.btOrder U = indOrder H.subtype A := by
@@ -1430,7 +1406,7 @@ theorem exists_struct (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNo
   obtain ⟨κ, -, hb⟩ := exists_split p hT H.subtype (QuotientGroup.mk' H) H.subtype_injective
     (QuotientGroup.mk'_surjective H) fun t => (QuotientGroup.eq_one_iff t).trans
       ⟨fun h => ⟨⟨t, h⟩, rfl⟩, fun ⟨m, h⟩ => h ▸ m.2⟩
-  have hAf := PositivityTheory.HtPt.Htat.bt_hopf R H Γf
+  have hAf := PositivityTheory.UnitarySelfGeneration.bt_hopf R H Γf
   have r₁ : resOrder H.subtype (Γ.btOrder ⊤) = Γf.btOrder ⊤ := PositivityTheory.HtPt.Mk.res_bt_order_top @_root_.GlobalTheory.CompanionTheory.Ar.BT.QFGroup.exists_isBaseChange_of_injective R T Γ H Γf u H.subtype hu hcl
   have r₂ : resOrder α (Γf.btOrder ⊤) = muOrder R M :=
     (PositivityTheory.HtPt.Mk.res_bt_order_top @_root_.GlobalTheory.CompanionTheory.Ar.BT.QFGroup.exists_isBaseChange_of_injective R H Γf M ΓM a α hα ha).trans (mu_torus R M ΓM _ p iM hp1 hM).2
@@ -1768,7 +1744,7 @@ theorem core (hD : HodgeTateDatumStatement) (hO : OrdinaryCurveStatement) (p : �
   have key := PositivityTheory.HtPt.Stight.BadRed.main hD hO p C v V hv hp hc P' Tr (Additive B) pt hpt (Additive M) (Additive Q)
     (fun x => congrArg (fun z => z.1.1) (hT' ((x.toMul, 1), 1))) (fun x => congrArg (fun z => z.2) (hT' (1, x.toMul)))
   rw [eT, mu_eq v hv h hh hmu, int_eq h] at key
-  have hA := PositivityTheory.HtPt.Htat.bt_hopf R _ Γ
+  have hA := PositivityTheory.UnitarySelfGeneration.bt_hopf R _ Γ
   obtain ⟨d, hd, hdf⟩ := hA.full
   obtain ⟨AA, hAA⟩ := PositivityTheory.HtPt.Mk.bt_pgsh V C hv.hom_inj N _
     (PositivityTheory.HtPt.Mh.ext_tensor R _ V _ hA ⟨d, (map_ne_zero_iff h hh).2 hd, hdf⟩).1
@@ -1861,7 +1837,6 @@ open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
-
 
 end -- clump:auto
 end -- clump:auto

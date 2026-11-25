@@ -103,24 +103,24 @@ theorem wdCas : WDCas := by
   have hU' : IsUnitary ε (fun a b => if ε a = ε b then E a b else 0) := by
     intro a b x y
     by_cases h : ε a = ε b
-    · simp only [if_pos h, if_pos h.symm]
+    · simp only [ite_eq_left h, ite_eq_left h.symm]
       exact hU a b x y
     · have h' : ¬ ε b = ε a := fun e => h e.symm
-      simp only [if_neg h, if_neg h', LinearMap.zero_apply, inner_zero_left, inner_zero_right,
+      simp only [ite_eq_right h, ite_eq_right h', LinearMap.zero_apply, inner_zero_left, inner_zero_right,
         mul_zero]
   have hCas' : Cas (fun a b => if ε a = ε b then E a b else 0) = CasK ε E := by
     unfold Cas CasK
     refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
     by_cases h : ε a = ε b
-    · simp only [if_pos h, if_pos h.symm]
+    · simp only [ite_eq_left h, ite_eq_left h.symm]
     · have h' : ¬ ε b = ε a := fun e => h e.symm
-      simp only [if_neg h, if_neg h', zero_mul]
+      simp only [ite_eq_right h, ite_eq_right h', zero_mul]
   have hCasK' : CasK ε (fun a b => if ε a = ε b then E a b else 0) = CasK ε E := by
     unfold CasK
     refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
     by_cases h : ε a = ε b
-    · simp only [if_pos h, if_pos h.symm]
-    · simp only [if_neg h]
+    · simp only [ite_eq_left h, ite_eq_left h.symm]
+    · simp only [ite_eq_right h]
   have hS : (∑ a, ∑ b, ‖E a b w‖ ^ 2) =
       (∑ a, ∑ b, ‖(if ε a = ε b then E a b else 0) w‖ ^ 2) +
         ∑ a, ∑ b, (if ε a = ε b then 0 else ‖E a b w‖ ^ 2) := by
@@ -148,7 +148,6 @@ alias casCentral := _root_.Formalism.REAL.casimir_central_holds
 end Formalism.REAL
 
 namespace Formalism.REAL
-theorem diagChar : DiagChar := diagChar_of generatorPowDiagRecursion_holds
 end Formalism.REAL
 
 namespace Formalism.REAL

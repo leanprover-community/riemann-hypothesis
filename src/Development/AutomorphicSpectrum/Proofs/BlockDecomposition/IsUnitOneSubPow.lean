@@ -7,8 +7,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory AlgebraicGeometry Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.E GlobalTheory.EtC
 
 noncomputable section

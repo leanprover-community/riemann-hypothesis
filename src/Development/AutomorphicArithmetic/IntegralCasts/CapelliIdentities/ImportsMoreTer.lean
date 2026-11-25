@@ -9,7 +9,7 @@ public import Mathlib.LinearAlgebra.LinearIndependent.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf50.multiset_eq_of_sum :
-    ∀ {Γ : Type} [inst : Monoid Γ] (s t : Multiset (Γ →* ℂ)),
+    ∀ {Γ : Type} [Monoid Γ] (s t : Multiset (Γ →* ℂ)),
     (∀ (g : Γ),
         (Multiset.map (fun (f : Γ →* ℂ) ↦ (f : Γ → ℂ) g) s).sum =
           (Multiset.map (fun (f : Γ →* ℂ) ↦ (f : Γ → ℂ) g) t).sum) →

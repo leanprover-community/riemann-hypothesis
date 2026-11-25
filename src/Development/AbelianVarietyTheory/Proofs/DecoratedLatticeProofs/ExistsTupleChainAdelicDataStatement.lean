@@ -179,19 +179,6 @@ noncomputable section
 
 namespace GlobalTheory.MuLift
 
-section Ring
-
-end Ring
-
-section General
-
-open NumberField Formalism.L2.DIV
-open scoped TensorProduct
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-end General
-
 section Adelic
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links
@@ -421,15 +408,6 @@ theorem stepCh_all {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : 
   · exact stepCh_above I l Z u a i h
 
 end SMid
-
-theorem levData {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (i : ℕ) (hi : i ≤ B.R.m)
-    {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 B.host.F))} {cl : Type} {stab : cl → Type} [∀ c, Group (stab c)]
-    {lat : cl → Submodule (𝓞 B.host.E) (Fin (B.R.N i) → B.host.E)} (K : LevelChart (I.rec7 l Z) T bad i hi stab lat) :
-    ∃ (U : Subgroup (GA (I.rec7 l Z) ((I.rec7 l Z).sp.X i))) (chi : U →* ℂˣ) (h : cl → GA (I.rec7 l Z) ((I.rec7 l Z).sp.X i)),
-      (∀ g, g ∈ U ↔ g ∈ GfC _ ∧ ∃ κ : K.lev.U, κ.1.1 = finM _ (rankN (I.rec7 l Z) i hi) g) ∧
-      (∀ (g : U) (κ : K.lev.U), κ.1.1 = finM _ (rankN (I.rec7 l Z) i hi) g.1 → chi g = K.lev.chi κ) ∧
-      (∀ c, h c ∈ GfC _ ∧ finM _ (rankN (I.rec7 l Z) i hi) (h c) = (K.y c).1.1) :=
-  GlobalTheory.T.chartLevelCharacterReps_on_adelicUnitaryPoints I l Z i hi K
 
 theorem pointOf {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ)
     (hi : i ≤ B.R.m) {C : Type} (chOf : (I.stp u a i).Cl → C) (Lb : C → Submodule (𝓞 B.host.E) (Fin (B.R.N i) → B.host.E))

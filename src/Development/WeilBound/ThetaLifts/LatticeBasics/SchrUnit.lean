@@ -64,7 +64,7 @@ theorem schr_unit {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (ν : @Measure (κ 
 open scoped Classical in
 theorem ev_adm (x : κ → AF F) : (LinearMap.proj x : ((κ → AF F) → ℂ) →ₗ[ℂ] ℂ) ∈ (adeleClass F).adm κ := fun g _ =>
   ⟨g (fun i => (x i).2) • ((BoundedContinuousFunction.evalCLM ℂ fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1).comp
-    (SchwartzMap.toBoundedContinuousFunctionCLM ℂ _ ℂ)), fun f => mul_comm _ _⟩
+    (SchwartzMap.toBoundedContinuousFunctionCLM ℂ _ ℂ)), fun _ => mul_comm _ _⟩
 
 variable {f : SInf F κ} {φ : ∀ v : Pl F, (κ → Fv F v) → ℂ} (hS : ∀ v, φ v ∈ SB _)
   (hs : ∀ᶠ v in cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1)

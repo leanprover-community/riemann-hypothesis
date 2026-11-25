@@ -192,7 +192,6 @@ theorem valuation_le_exp_neg_card_inertia (R K L : Type) [CommRing R] [IsDomain 
   have hval := HeightOneSpectrum.valuation_liesOver L w P z
   rw [← hcard] at hval
   change w.valuation E z ^ Nat.card H = P.valuation L y at hval
-  have hn : Nat.card H ≠ 0 := Nat.card_pos.ne'
   have hz : w.valuation E z < 1 := by
     by_contra h
     rw [not_lt] at h

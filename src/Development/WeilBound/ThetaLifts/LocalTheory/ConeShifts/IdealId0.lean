@@ -279,7 +279,7 @@ theorem exists_gen {P : Finset (Pl F)} {𝔞 : FI E} (h : Pr P 𝔞) : ∃ T l, 
   · obtain ⟨w, hw, rfl⟩ := Finset.mem_image.1 hv
     exact hf.mem_toFinset.1 hw (h w hP)
   · by_cases hw : w.under (𝓞 F) = v
-    · rw [cp_idem hw, cp_idem hw, cp_prod, if_neg fun hm => hv (Finset.mem_image.2 ⟨w, hm, hw⟩), map_one]
+    · rw [cp_idem hw, cp_idem hw, cp_prod, ite_eq_right fun hm => hv (Finset.mem_image.2 ⟨w, hm, hw⟩), map_one]
     · rw [cp_idem_ne hw, cp_idem_ne hw]
   · rw [cp_prod]
     split_ifs with hw
@@ -503,7 +503,7 @@ theorem idealVal_codiff {B : Base F E} (hB : B.IsGood σ) {ν : Chr F E} (hν : 
     · rw [Units.coe_prod, map_prod]
       exact Finset.prod_eq_one fun v _ => by rw [ideleMap_localIdele, inf_prod]
     · by_cases hw : w.under (𝓞 F) = v
-      · rw [cp_idem hw, cp_idem hw, hc, if_neg (hw ▸ hv), map_one]
+      · rw [cp_idem hw, cp_idem hw, hc, ite_eq_right (hw ▸ hv), map_one]
       · rw [cp_idem_ne hw, cp_idem_ne hw]
     · rw [hc]
       split_ifs with hw

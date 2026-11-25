@@ -245,7 +245,7 @@ theorem localization_away_injective_of_dvd (R : Type) [CommRing R] [IsNoetherian
     simpa using hle hx
   refine ⟨t, ht, ?_⟩
   intro c ⟨d, hd⟩ κ hκ
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨⟨a, m⟩, rfl⟩ := IsLocalization.mk'_surjective (Submonoid.powers c) x
   have hspec := IsLocalization.mk'_spec (Localization.Away c) a m
@@ -320,11 +320,6 @@ theorem spMap_inclusion_comp {S : Type} [CommRing S] {A B C : Subring S} (h₁ :
   rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
   rfl
 
-theorem spMap_subtype_comp {S : Type} [CommRing S] {A B : Subring S} (h : A ≤ B) :
-    spMap B.subtype ≫ spMap (Subring.inclusion h) = spMap A.subtype := by
-  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
-  rfl
-
 theorem exists_isPullback_lift {X₀ X₁ T₀ T₁ T₂ : Scheme.{0}} {f₀ : X₀ ⟶ T₀} {f₁ : X₁ ⟶ T₁}
     {π₁ : X₁ ⟶ X₀} {u : T₁ ⟶ T₂} {v : T₂ ⟶ T₀} {w : T₁ ⟶ T₀} (huv : u ≫ v = w)
     (hp : IsPullback π₁ f₁ f₀ w) :
@@ -341,7 +336,6 @@ end GlobalTheory.IsoSpread
 
 namespace GlobalTheory
 
-
 open GlobalTheory.IsoSpread in
 theorem iso_spreads_to_subring :
     ∀ (S : Type) [CommRing S] (R₀ : Subring S) (X X₀ Z : Scheme.{0}) (f : X ⟶ Sp S) (f₀ : X₀ ⟶ Sp R₀) (q : Z ⟶ Sp R₀) (π : X ⟶ X₀) [QuasiCompact f₀] [QuasiSeparated f₀] [LocallyOfFinitePresentation f₀] [QuasiCompact q] [QuasiSeparated q] [LocallyOfFinitePresentation q] (φ : X ⟶ Z), IsPullback π f f₀ (spMap R₀.subtype) → IsPullback φ f q (spMap R₀.subtype) → ∃ F : Finset S, ∀ (R₁ : Subring S) (hle : R₀ ≤ R₁), (F : Set S) ⊆ R₁ → ∀ (X₁ : Scheme.{0}) (f₁ : X₁ ⟶ Sp R₁) (π₁ : X₁ ⟶ X₀) (j : X ⟶ X₁), IsPullback π₁ f₁ f₀ (spMap (Subring.inclusion hle)) → j ≫ π₁ = π → j ≫ f₁ = f ≫ spMap R₁.subtype → ∃ ψ : X₁ ⟶ Z, j ≫ ψ = φ ∧ IsPullback ψ f₁ q (spMap (Subring.inclusion hle)) := by
@@ -357,8 +351,8 @@ theorem iso_spreads_to_subring :
   have h₀₂ : R₀ ≤ R₂ := fun x hx ↦ Subring.subset_closure (Or.inl (Or.inl hx))
   have hFa : (Fa : Set S) ⊆ R₂ := fun x hx ↦ Subring.subset_closure (Or.inl (Or.inr hx))
   have hFb : (Fb : Set S) ⊆ R₂ := fun x hx ↦ Subring.subset_closure (Or.inr hx)
-  obtain ⟨j₂, hj₂f, hj₂s, hj₂⟩ := exists_isPullback_lift (spMap_subtype_comp h₀₂) hπ
-  obtain ⟨k₂, hk₂f, hk₂s, hk₂⟩ := exists_isPullback_lift (spMap_subtype_comp h₀₂) hφ
+  obtain ⟨j₂, hj₂f, hj₂s, hj₂⟩ := exists_isPullback_lift (GlobalTheory.SiegBaseChange.spMap_subtype_comp_inclusion h₀₂) hπ
+  obtain ⟨k₂, hk₂f, hk₂s, hk₂⟩ := exists_isPullback_lift (GlobalTheory.SiegBaseChange.spMap_subtype_comp_inclusion h₀₂) hφ
   obtain ⟨ψ₂, hψ₂, hψ₂q⟩ := ha R₂ h₀₂ hFa _ _ _ j₂ (IsPullback.of_hasPullback _ _) hj₂f hj₂s
   obtain ⟨χ₂, hχ₂, hχ₂q⟩ := hb R₂ h₀₂ hFb _ _ _ k₂ (IsPullback.of_hasPullback _ _) hk₂f hk₂s
   let α₂ := pullback.lift ψ₂ (pullback.snd f₀ (spMap (Subring.inclusion h₀₂)))
@@ -398,7 +392,7 @@ theorem iso_spreads_to_subring :
   have hjm : j ≫ m = j₂ := by
     apply pullback.hom_ext
     · rw [Category.assoc, hmf, hj₁, hj₂f]
-    · rw [Category.assoc, hms, reassoc_of% hjf, spMap_subtype_comp, hj₂s]
+    · rw [Category.assoc, hms, reassoc_of% hjf, GlobalTheory.SiegBaseChange.spMap_subtype_comp_inclusion, hj₂s]
   have hw : (m ≫ ψ₂) ≫ q = f₁ ≫ spMap (Subring.inclusion hle) := by
     rw [Category.assoc, hψ₂q, reassoc_of% hmf, hp₁.w]
   let α : X₁ ⟶ pullback q (spMap (Subring.inclusion hle)) := pullback.lift (m ≫ ψ₂) f₁ hw
@@ -829,7 +823,6 @@ theorem exists_spread_of_pullbacks : ∀ (g n : ℕ) (B : Type) [CommRing B] (ζ
     hinj _ ⟨r₀ * s, by ring⟩ lr (lamc _ hr)
   let er : Localization.Away (r₀ * t₁ * s) ≃+* R₁ :=
     RingEquiv.ofBijective lr.rangeRestrict ⟨fun x y hxy => hlinj (congrArg Subtype.val hxy), lr.rangeRestrict_surjective⟩
-  have erv : ∀ x, (er x : Localization.AtPrime 𝔭) = lr x := fun _ => rfl
   obtain ⟨⟨d', hd'⟩, -⟩ := GlobalTheory.siegPre_pullback g n B ζ (Sp R) (Sp (Localization.Away (r₀ * t₁ * s)))
     (spMap β) (spMap ((algebraMap R (Localization.Away (r₀ * t₁ * s))).comp β))
     (spMap (algebraMap R (Localization.Away (r₀ * t₁ * s)))) d (spc _ _).symm
@@ -925,14 +918,6 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.SiegelNoeth
 
-theorem spMap_comp_eq {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (a : A →+* B) (b : B →+* C) :
-    spMap (b.comp a) = spMap b ≫ spMap a := by
-  simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]
-
-theorem spMap_id_eq (A : Type) [CommRing A] : spMap (RingHom.id A) = 𝟙 (Sp A) := by
-  simp only [spMap]
-  exact Spec.map_id _
-
 theorem classify_noetherian : ∀ (g n : ℕ), 1 ≤ g → 3 ≤ n → Odd n → ∀ F : SFam g n (zetaAway n), ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (β : cycAway n →+* R) (c : SiegPre g n (zetaAway n) (spMap β)), c.Principal → ∃ f : Sp R ⟶ F.X, f ≫ F.s = spMap β ∧ SiegPB c F.univ f := by
   intro g n hg hn hodd F R _ _ β c hc
   refine _root_.GlobalTheory.SiegZar.classified_of_local g n hg hn hodd F (Sp R) (spMap β) c hc ?_
@@ -947,7 +932,7 @@ theorem classify_noetherian : ∀ (g n : ℕ), 1 ≤ g → 3 ≤ n → Odd n →
     have hP := (GlobalTheory.SiegelRingChange.siegPre_pull_ringChange g n (cycAway n) (cycAway n) (zetaAway n) (zetaAway n)
       (RingHom.id _) (Sp R) (Sp (Localization.AtPrime 𝔭)) (spMap β)
       (spMap ((algebraMap R (Localization.AtPrime 𝔭)).comp β)) (spMap (algebraMap R (Localization.AtPrime 𝔭))) rfl
-      (by rw [spMap_id_eq, Category.comp_id]; exact (spMap_comp_eq _ _).symm)).2.1 c c' hc' hc
+      (by rw [GlobalTheory.ZM.GoodFibre.spMap_id, Category.comp_id]; exact (GlobalTheory.Cris.spMap_comp _ _).symm)).2.1 c c' hc' hc
     exact _root_.GlobalTheory.SiegelFamLocal.exists_point_of_principal g n hg hn hodd F (Localization.AtPrime 𝔭) ((algebraMap R (Localization.AtPrime 𝔭)).comp β) c' hP
   obtain ⟨r, hr, H⟩ := _root_.GlobalTheory.SiegSpread.classified_basicOpen g n hg hn hodd F R β c 𝔭 hc loc
   let j : Sp (Localization.Away r) ⟶ Sp R := spMap (algebraMap R (Localization.Away r))
@@ -1029,18 +1014,6 @@ section Pull
 variable {S S' : Scheme.{0}} {A : Over S} {A' : Over S'} [GrpObj A] [GrpObj A'] {f : S' ⟶ S}
   {φ : A'.left ⟶ A.left} {φ₂ : (A' ⊗ A').left ⟶ (A ⊗ A).left}
 
-theorem lift_one_id (h : IsGrpPullback A' A f φ) (sq : IsSquare φ φ₂) :
-    (lift (1 : A' ⟶ A') (𝟙 A')).left ≫ φ₂ = φ ≫ (lift (1 : A ⟶ A) (𝟙 A)).left := by
-  have := GlobalTheory.SiegelPull.lift_sq sq (T := Over.mk (φ ≫ A.hom)) (T' := A') (𝟙 A'.left) (1 : A' ⟶ A') (𝟙 A')
-    (Z := A) φ (1 : A ⟶ A) (𝟙 A) (by exact (Category.id_comp _).trans (_root_.GlobalTheory.PPAS.one_comp_of_isGrpPullback h)) (by simp)
-  exact (Category.id_comp _).symm.trans this
-
-theorem lift_id_one (h : IsGrpPullback A' A f φ) (sq : IsSquare φ φ₂) :
-    (lift (𝟙 A') (1 : A' ⟶ A')).left ≫ φ₂ = φ ≫ (lift (𝟙 A) (1 : A ⟶ A)).left := by
-  have := GlobalTheory.SiegelPull.lift_sq sq (T := Over.mk (φ ≫ A.hom)) (T' := A') (𝟙 A'.left) (𝟙 A') (1 : A' ⟶ A')
-    (Z := A) φ (𝟙 A) (1 : A ⟶ A) (by simp) (by exact (Category.id_comp _).trans (_root_.GlobalTheory.PPAS.one_comp_of_isGrpPullback h))
-  exact (Category.id_comp _).symm.trans this
-
 theorem lift_swap (sq : IsSquare φ φ₂) :
     (lift (snd A' A') (fst A' A')).left ≫ φ₂ = φ₂ ≫ (lift (snd A A) (fst A A)).left := by
   have := GlobalTheory.SiegelPull.lift_sq sq (T := Over.mk (φ₂ ≫ (A ⊗ A).hom)) (T' := A' ⊗ A') (𝟙 _) (snd A' A') (fst A' A')
@@ -1064,10 +1037,10 @@ def onPull (c : SiegPre h M ζ s) (A' : Over S') [GrpObj A'] (φ : A'.left ⟶ c
     isLB := pull_isLB c.isLB φ₂
     rig₁ := by
       obtain ⟨t, ht⟩ := c.rig₁
-      exact gen_chartPull (chartPullLinComb c.P φ₂ _ _ _ φ fun _ => lift_one_id pb sq) t ht
+      exact gen_chartPull (chartPullLinComb c.P φ₂ _ _ _ φ fun _ => GlobalTheory.PreEtaPull.lift_one_id pb sq) t ht
     rig₂ := by
       obtain ⟨t, ht⟩ := c.rig₂
-      exact gen_chartPull (chartPullLinComb c.P φ₂ _ _ _ φ fun _ => lift_id_one pb sq) t ht
+      exact gen_chartPull (chartPullLinComb c.P φ₂ _ _ _ φ fun _ => GlobalTheory.PreEtaPull.lift_id_one pb sq) t ht
     symm := LBIso.chartPull (ReciprocityTheory.ChartRestriction.G.Geo.Tor.chartPullPull c.P _ _ rfl) (chartPullLinComb c.P _ _ _ _ φ₂ fun _ => lift_swap sq) c.symm
     lev := fun a => GlobalTheory.SiegelPull.secPull pb (c.lev a)
     lev_add := fun a b => GlobalTheory.SiegelPull.push_injective pb _ (by

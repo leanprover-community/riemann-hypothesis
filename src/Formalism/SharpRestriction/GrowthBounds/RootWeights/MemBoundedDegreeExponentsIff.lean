@@ -221,24 +221,8 @@ theorem asm_bin_deg {σ : Type*} (k : σ) (j : ℕ) : (asm_bin σ k j).totalDegr
 private theorem choose_lemma (n : ℕ) : ∀ j : ℕ,
     ((j.factorial : ℚ))⁻¹ * ∏ i ∈ range j, ((n : ℚ) - (i : ℚ)) = (n.choose j : ℚ) := by
   intro j
-  induction j with
-  | zero => simp
-  | succ j ih =>
-    have hj : (j.factorial : ℚ) ≠ 0 := by positivity
-    have key : (n.choose (j + 1) : ℚ) * ((j : ℚ) + 1) = (n.choose j : ℚ) * ((n : ℚ) - j) := by
-      rcases Nat.lt_or_ge n j with h | h
-      · rw [Nat.choose_eq_zero_of_lt h, Nat.choose_eq_zero_of_lt (by omega)]
-        simp
-      · have := congrArg (Nat.cast : ℕ → ℚ) (Nat.choose_succ_right_eq n j)
-        push_cast [Nat.cast_sub h] at this
-        linarith
-    rw [Finset.prod_range_succ, Nat.factorial_succ]
-    push_cast
-    have e1 : (∏ i ∈ range j, ((n : ℚ) - (i : ℚ))) = (n.choose j : ℚ) * j.factorial := by
-      rw [← ih]
-      field_simp
-    rw [e1, inv_mul_eq_iff_eq_mul₀ (by positivity)]
-    linear_combination (-(j.factorial : ℚ)) * key
+  rw [← descPochhammer_eval_eq_prod_range, descPochhammer_eval_eq_descFactorial,
+    Nat.descFactorial_eq_factorial_mul_choose, Nat.cast_mul, inv_mul_cancel_left₀ (by positivity)]
 
 theorem asm_bin_eval {σ : Type*} (k : σ) (j : ℕ) (e : σ → ℕ) :
     MvPolynomial.eval (fun k => (e k : ℚ)) (asm_bin σ k j) = ((e k).choose j : ℚ) := by

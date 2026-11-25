@@ -36,7 +36,6 @@ theorem set_eq_preimage {ι : Type} [Fintype ι] [DecidableEq ι] (A : Matrix ι
 
 end PSymplBoxVolume
 
-
 open PSymplBoxVolume in
 theorem SymplBoxVolume.proof : SymplBoxVolume.Statement := by
   intro ι _ _ A a hA ha
@@ -84,7 +83,6 @@ theorem symplOmega_eq_sum {R : Type*} [CommRing R] {l : Type*} [Fintype l] [Deci
   ring
 
 end PSymplCons
-
 
 open PSymplCons in
 theorem SymplCons.proof : SymplCons.Statement := by
@@ -189,7 +187,6 @@ theorem clearCol_mul_succ {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
 
 end PSymplDetSchur
 
-
 open PSymplDetSchur in
 theorem SymplDetSchur.proof : SymplDetSchur.Statement := by
   intro n A ha
@@ -248,7 +245,6 @@ lemma row_inr (i : Fin n) :
     symplExt α β γ δ Q (Sum.inr i.succ) = symplCons 0 0 (Q (Sum.inr i)) := rfl
 
 end PSymplExtMem
-
 
 open PSymplExtMem in
 theorem SymplExtMem.proof (h1 : SymplOmegaMem.Statement) (h2 : SymplCons.Statement) :
@@ -411,7 +407,6 @@ lemma gram_diag {l : Type*} [Fintype l] (P : Matrix l l ℤ) (G : Matrix l l ℝ
   rfl
 
 end PSymplGramMem
-
 
 open PSymplGramMem in
 theorem SymplGramMem.proof : SymplGramMem.Statement := by
@@ -663,7 +658,6 @@ theorem volume_fundamentalDomain_basisFun (ι : Type) [Fintype ι] :
 
 end PSymplMinkowskiBox
 
-
 open PSymplMinkowskiBox in
 theorem SymplMinkowskiBox.proof (h1 : SymplBoxVolume.Statement) : SymplMinkowskiBox.Statement := by
   intro ι _ _ A a hdet ha hprod
@@ -770,7 +764,6 @@ theorem symplCons_one_zero {R : Type*} [CommRing R] {n : ℕ} :
     simp [symplCons, Fin.succ_ne_zero]
 
 end PSymplOrbit
-
 
 open PSymplOrbit in
 theorem SymplOrbit.proof (h1 : SymplExtMem.Statement) (h2 : SymplExtVecMul.Statement)
@@ -920,7 +913,6 @@ theorem entry {l : Type*} [Fintype l] (E H : Matrix l l ℝ) (x y : l) :
 
 end PSymplReduceConj
 
-
 open PSymplReduceConj in
 theorem SymplReduceConj.proof : SymplReduceConj.Statement := by
   intro n H Q
@@ -1018,7 +1010,6 @@ theorem reduce_row {n : ℕ} (H : Matrix (Fin (n + 1) ⊕ Fin (n + 1)) (Fin (n +
 
 end PSymplReduceMem
 
-
 open PSymplReduceMem in
 theorem SymplReduceMem.proof (h1 : SymplOmegaMem.Statement) (h2 : SymplCons.Statement) :
     SymplReduceMem.Statement := by
@@ -1058,7 +1049,6 @@ theorem sum_mul_symplCons {n : ℕ} (c : ℝ) (x : Fin n ⊕ Fin n → ℝ)
   ring
 
 end PSymplReducePosDef
-
 
 open PSymplReducePosDef in
 theorem SymplReducePosDef.proof : SymplReducePosDef.Statement := by
@@ -1205,13 +1195,7 @@ lemma intVec_smul {ι : Type} (m : ℤ) (w : ι → ℤ) : intVec (m • w) = (m
   funext i
   simp [intVec]
 
-lemma qf_smul {ι : Type} [Fintype ι] (Y : Matrix ι ι ℝ) (c : ℝ) (x : ι → ℝ) :
-    qf Y (c • x) = c ^ 2 * qf Y x := by
-  simp only [qf, mulVec_smul, dotProduct_smul, smul_dotProduct, smul_eq_mul]
-  ring
-
 end PSymplShortPrim
-
 
 open PSymplShortPrim in
 theorem SymplShortPrim.proof : SymplShortPrim.Statement := by
@@ -1232,7 +1216,7 @@ theorem SymplShortPrim.proof : SymplShortPrim.Statement := by
     have := hG.dotProduct_mulVec_pos hwR
     simpa [qf] using this
   have hle := hmin w hw
-  rw [hvw, intVec_smul, qf_smul] at hle
+  rw [hvw, intVec_smul, GroundTheory.Heights₂.Heights.PSymplMinExists.qf_smul] at hle
   have hm2 : ((m : ℝ)) ^ 2 ≤ 1 := by
     by_contra h
     rw [not_le] at h
@@ -1337,7 +1321,6 @@ theorem twoBlock_mul_transpose {n : ℕ} {c d x y : ℤ} (h : x * c + y * d = 1)
   first | linarith | (split_ifs <;> simp_all [Fin.ext_iff]) | simp [Fin.ext_iff]
 
 end PSymplTwoRow
-
 
 open PSymplTwoRow in
 theorem SymplTwoRow.proof : SymplTwoRow.Statement := by

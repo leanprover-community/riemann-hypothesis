@@ -163,7 +163,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.vertAt_eq_cycList : ∀ (K : Type) [
       simpa using hp
     rw [divCycle_extTo p P f W' hWp]
     beta_reduce
-    rw [if_pos hQp]
+    rw [ite_eq_left hQp]
     congr 1
     have h := vNumL_extTo p (W'.comap (MvPolynomial.map (Int.castRingHom (ZP p)))) l
     rw [extTo_comap] at h
@@ -178,4 +178,4 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.vertAt_eq_cycList : ∀ (K : Type) [
     have h1 := left_ne_zero_of_mul hW
     refine ⟨h1, ?_⟩
     by_contra hp
-    exact right_ne_zero_of_mul hW (if_neg hp)
+    exact right_ne_zero_of_mul hW (ite_eq_right hp)

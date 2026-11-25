@@ -64,18 +64,18 @@ open Classical in
 def cutIdem (T : Finset (HeightOneSpectrum (𝓞 F))) : Af F :=
   ⟨fun v => if v ∈ T then 1 else 0, Eventually.of_forall fun v => by
     by_cases h : v ∈ T
-    · simp only [h, if_true]; exact one_mem _
-    · simp only [h, if_false]; exact zero_mem _⟩
+    · simp only [h, ite_true]; exact one_mem _
+    · simp only [h, ite_false]; exact zero_mem _⟩
 
 theorem evalV_cutIdem_of_mem {T : Finset (HeightOneSpectrum (𝓞 F))} {v : HeightOneSpectrum (𝓞 F)} (h : v ∈ T) :
     Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v (cutIdem T) = 1 := by
   classical
-  exact if_pos h
+  exact ite_eq_left h
 
 theorem evalV_cutIdem_of_notMem {T : Finset (HeightOneSpectrum (𝓞 F))} {v : HeightOneSpectrum (𝓞 F)} (h : v ∉ T) :
     Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v (cutIdem T) = 0 := by
   classical
-  exact if_neg h
+  exact ite_eq_right h
 
 theorem tendsto_cutIdem_mul (a : Af F) :
     Tendsto (fun T : Finset (HeightOneSpectrum (𝓞 F)) => cutIdem T * a) atTop (𝓝 a) := by

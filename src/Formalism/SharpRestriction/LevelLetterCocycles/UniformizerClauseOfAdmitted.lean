@@ -393,7 +393,7 @@ theorem refine (b : Basis ι O M) (S : Set ι) (P : Submodule O M) (hP : P ≤ s
     rw [hQdef, Basis.mem_span_image] at hy
     by_contra h
     exact hi (hy (Finsupp.mem_support_iff.2 h))
-  have hfQ : ∀ i ∈ S, f i ∈ Q := fun i hi => by simp only [f, dif_pos hi]; exact (c _).2
+  have hfQ : ∀ i ∈ S, f i ∈ Q := fun i hi => by simp only [f, dite_eq_left hi]; exact (c _).2
   have hli' : LinearIndependent O f := by
     rw [Fintype.linearIndependent_iff]
     intro g hg
@@ -404,11 +404,11 @@ theorem refine (b : Basis ι O M) (S : Set ι) (P : Submodule O M) (hP : P ≤ s
       simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
       map_zero, Finsupp.coe_zero, Pi.zero_apply] at h1
       rw [Finset.sum_eq_single i₀] at h1
-      · simpa [f, dif_neg hi₀, Basis.repr_self] using h1
+      · simpa [f, dite_eq_right hi₀, Basis.repr_self] using h1
       · intro i _ hii
         by_cases hiS : i ∈ S
         · rw [hcQ _ (hfQ i hiS) i₀ hi₀, smul_zero]
-        · simp [f, dif_neg hiS, Basis.repr_self, hii]
+        · simp [f, dite_eq_right hiS, Basis.repr_self, hii]
       · simp
     have e : ∑ i, g i • f i = ∑ j : S, g j • ((c j : Q) : M) := by
       rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun i => i ∈ S),
@@ -416,7 +416,7 @@ theorem refine (b : Basis ι O M) (S : Set ι) (P : Submodule O M) (hP : P ≤ s
           (fun i hi => by rw [hout i (Finset.mem_filter.1 hi).2, zero_smul]), add_zero,
         Finset.sum_subtype (Finset.univ.filter (fun i => i ∈ S)) (p := fun i => i ∈ S) (by simp)]
       refine Finset.sum_congr rfl fun j _ => ?_
-      simp only [f, dif_pos j.2]
+      simp only [f, dite_eq_left j.2]
     have hin : ∑ j : S, g j • c j = 0 := by
       apply Subtype.ext
       rw [Submodule.coe_sum, Submodule.coe_zero]
@@ -437,8 +437,8 @@ theorem refine (b : Basis ι O M) (S : Set ι) (P : Submodule O M) (hP : P ≤ s
       rw [Submodule.map_span] at h2
       refine span_mono ?_ h2
       rintro _ ⟨y, ⟨j, rfl⟩, rfl⟩
-      exact ⟨j.1, by simp [f, dif_pos j.2]⟩
-    · exact subset_span ⟨i, by simp [f, dif_neg hiS]⟩
+      exact ⟨j.1, by simp [f, dite_eq_left j.2]⟩
+    · exact subset_span ⟨i, by simp [f, dite_eq_right hiS]⟩
   let b' := Basis.mk hli' hsp
   have hb' : ∀ i, b' i = f i := Basis.mk_apply hli' hsp
   have hP2 : P = span O (b' '' (Subtype.val '' (S'' : Set S))) := by
@@ -450,17 +450,17 @@ theorem refine (b : Basis ι O M) (S : Set ι) (P : Submodule O M) (hP : P ≤ s
     ext x
     constructor
     · rintro ⟨_, ⟨j, hj, rfl⟩, rfl⟩
-      exact ⟨j.1, ⟨j, hj, rfl⟩, by rw [hb']; simp [f, dif_pos j.2]⟩
+      exact ⟨j.1, ⟨j, hj, rfl⟩, by rw [hb']; simp [f, dite_eq_left j.2]⟩
     · rintro ⟨_, ⟨j, hj, rfl⟩, rfl⟩
-      exact ⟨c j, ⟨j, hj, rfl⟩, by rw [hb']; simp [f, dif_pos j.2]⟩
-  refine ⟨b', fun i hi => by rw [hb']; simp [f, dif_neg hi], ?_, canon b' P _ hP2⟩
+      exact ⟨c j, ⟨j, hj, rfl⟩, by rw [hb']; simp [f, dite_eq_left j.2]⟩
+  refine ⟨b', fun i hi => by rw [hb']; simp [f, dite_eq_right hi], ?_, canon b' P _ hP2⟩
   have himg : b' '' S = Q.subtype '' Set.range c := by
     ext x
     constructor
     · rintro ⟨i, hi, rfl⟩
-      exact ⟨c ⟨i, hi⟩, ⟨_, rfl⟩, by rw [hb']; simp [f, dif_pos hi]⟩
+      exact ⟨c ⟨i, hi⟩, ⟨_, rfl⟩, by rw [hb']; simp [f, dite_eq_left hi]⟩
     · rintro ⟨_, ⟨j, rfl⟩, rfl⟩
-      exact ⟨j.1, j.2, by rw [hb']; simp [f, dif_pos j.2]⟩
+      exact ⟨j.1, j.2, by rw [hb']; simp [f, dite_eq_left j.2]⟩
   rw [himg, ← Submodule.map_span, c.span_eq, Submodule.map_subtype_top]
 
 theorem chain (b : Basis ι O M) (F : ℕ → Submodule O M) (hF : ∀ k, F (k + 1) ≤ F k)
@@ -571,7 +571,6 @@ end Count
 end Formalism.MainNotions.RamifiedCoefficientChains.S9.AdB
 
 noncomputable section
-
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.AdL
 
@@ -693,7 +692,6 @@ end Formalism.MainNotions.RamifiedCoefficientChains.S9.AdL
 
 noncomputable section
 
-
 namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.AdM
 
 open Module Submodule Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.RamifiedCoefficientChains Formalism.MainNotions.RamifiedCoefficientChains.S9 Formalism.MainNotions.RamifiedCoefficientChains.S9.ShB TensorProduct
@@ -723,10 +721,6 @@ theorem filLev_zero_high (hbij : Function.Bijective (algebraMap K₀ K)) (T : Lo
   have hx0 := Formalism.MainNotions.UnusedSlot80.LevC.fil_high W T i τ hover hbij.2 H (hJ τ hτ) u hu (by simpa using hxD) hxF
   simp [hx0]
 
-theorem ring_clauses_at_uniformizer (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (T : LocLat G Qp LL O)
-    (hT : IsCrys PD T.ρ) : Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT.Ring9 W := by
-  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.GM.ring_clauses_at_uniformizer <;> assumption
-
 theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExactStrict PD LL) (hC : Formalism.MainNotions.RamifiedCoefficientChains.CrysSubQuot PD LL)
     (hQ : Formalism.MainNotions.RamifiedCoefficientChains.DdREqDcris PD LL) (h3 : Formalism.MainNotions.DeltaInvariantLattices.P3W W) (h5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W)
     (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hV : Formalism.MainNotions.WachCoordinates.Br.ValRing (LL := LL) O v) : AdaptBas W := by
@@ -736,7 +730,7 @@ theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisE
   have hT : IsCrys PD T₂.ρ := hS.2.2.2.2.2.1.2.1
   obtain ⟨hdom, hdvr, hfr⟩ := hS.2.2.2.1
   have := hdom; have := hdvr; have := hfr
-  have hR9 := ring_clauses_at_uniformizer W h9 hCA T₂ hT
+  have hR9 := Formalism.MainNotions.RamifiedCoefficientChains.S9.GM.ring_clauses_at_uniformizer W h9 hCA T₂ hT
   have hηb := Formalism.MainNotions.N.Pv.LocalLengthBound.rk_eta_lt W hS i
 
   obtain ⟨e, he⟩ := (Formalism.MainNotions.RamifiedCoefficientChains.Sh.basTool_of W h9 hCA T₂ hT (i - 1)).1
@@ -801,7 +795,7 @@ theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisE
     refine filLev_zero_high W hCA.1 T₂ i η (fun τ hτ a ha => ?_) _ (by omega)
     have hw := Formalism.MainNotions.N.Pv.LocalLengthBound.rk_jumps₂ W hE hC hQ hS i τ hτ a ha
     unfold JumpWinS at hw
-    rw [if_pos hie] at hw
+    rw [ite_eq_left hie] at hw
     simp only [Set.mem_union, Set.mem_Icc] at hw
     push_cast at hw
     omega
@@ -827,7 +821,7 @@ theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisE
     intro j hj
     have hne : ((Finset.Icc (-(η : ℤ)) η).filter fun u => j ∈ Sset u).Nonempty :=
       ⟨-(η : ℤ), Finset.mem_filter.2 ⟨Finset.mem_Icc.2 ⟨le_rfl, by omega⟩, hj⟩⟩
-    have hl : lev j = ((Finset.Icc (-(η : ℤ)) η).filter fun u => j ∈ Sset u).max' hne := dif_pos hne
+    have hl : lev j = ((Finset.Icc (-(η : ℤ)) η).filter fun u => j ∈ Sset u).max' hne := dite_eq_left hne
     have hmem := Finset.max'_mem _ hne
     rw [hl]
     obtain ⟨hIcc, hjS⟩ := Finset.mem_filter.1 hmem
@@ -980,8 +974,6 @@ theorem uniformizer_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : F
 theorem level_tools_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.WachCoordinates.adm7 D HW F Cm :=
   Formalism.MainNotions.UnusedSlot80.tools_unramified_statement D HW F Cm ⟨fun l _ K s LL h => (hA.1 l K s LL h).2.2.1, laurent_clause_of_admitted' D HW F Cm hA,
     uniformizer_clause_of_admitted D HW F Cm hA⟩
-
-
 
 theorem dual_lemma_of_admitted (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
     (hg : Loc.Good K 1 LL) [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] : LemmaDN ((HW l).W K 1 LL hg) := by

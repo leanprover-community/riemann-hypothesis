@@ -68,9 +68,6 @@ lemma list_sum_nonneg {α : Type*} (L : List α) (f : α → ℝ) (h : ∀ a ∈
 end Formalism.FourierDecayAlt.P.ListSumInequalities
 open Formalism.FourierDecayAlt.P.Ux1 hiding gN_pos
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

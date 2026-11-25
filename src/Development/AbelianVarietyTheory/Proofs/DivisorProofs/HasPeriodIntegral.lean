@@ -40,52 +40,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateSan
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsNilDualFrobenius
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogarithmIntegersAdaptedBasisNoLieComponents
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmegaBaseChangeBijectiveOfPEqZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantCoeffNmul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocalizationAway
@@ -124,7 +80,7 @@ theorem baseChange_bijective_of_ker {O : Type} [CommRing O] {M N : Type} [AddCom
     refine TensorProduct.ext' fun c m => ?_
     rw [LinearMap.lTensor_tmul, LinearMap.smul_apply, LinearMap.id_apply, ← TensorProduct.smul_tmul,
       Algebra.smul_def, ha, zero_mul, TensorProduct.zero_tmul, LinearMap.zero_apply]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨y, rfl⟩ := (hex' x).1 hx
   rw [hz, LinearMap.zero_apply]
@@ -158,7 +114,6 @@ theorem finrank_cot_congr {k X Y : Type} [Field k] [CommRing X] [CommRing Y] [Bi
   · rw [← cotMap_comp, h1, cotMap_id]
 
 end GlobalTheory.PDivGroup.DimSum
-
 
 open Module PDiv in
 theorem GlobalTheory.PDivGroup.chart_dim_add_finrank_dual_lie : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C]
@@ -244,7 +199,7 @@ theorem coeff_subst_elim_zero {R : Type} [CommRing R] {d : ℕ}
       rfl
   rw [← coeff_embDomain_rename (Function.Embedding.inl : Fin d ↪ Fin d ⊕ Fin d), hr,
     OnePair.coeff_subst_kill]
-  rw [if_pos]
+  rw [ite_eq_left]
   rintro (i | i) hi
   · simp at hi
   · simp
@@ -349,7 +304,7 @@ theorem in_expand {σ : Type} (p : ℕ) (hp : p ≠ 0) {N : Ideal B} {f : MvPowe
       by ext i; simp [Nat.mul_div_cancel' (h i)]⟩
     rw [← hm, coeff_expand_smul]
     exact hf m
-  · push_neg at h
+  · push Not at h
     obtain ⟨i, hi⟩ := h
     exact ⟨0, N.zero_mem, by rw [coeff_expand_of_not_dvd p hp f hi, map_zero]⟩
 
@@ -430,7 +385,6 @@ theorem cob1_expand_frobenius_map (p : ℕ) (hp : p ≠ 0) (t : B →+* B) (s : 
 end GlobalTheory.QLog.FrobQL
 
 namespace GlobalTheory.QLog
-
 
 open GlobalTheory.QLog.FrobQL in
 theorem ql_frob : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
@@ -690,7 +644,6 @@ private lemma eval_algebraMap_trunc'_map_eq_algebraMap_eval {B Q : Type} [CommRi
     MvPolynomial.eval₂_comp_left, RingHom.comp_id]
   rfl
 
-
 open MvPowerSeries in
 theorem _root_.GlobalTheory.QLog.hasPeriod_linear : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : _root_.GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta.IsPrimitiveSystem ε), ∀ F : _root_.GlobalTheory.QLog.BFrame ε, ∀ (G : _root_.GlobalTheory.PDivGroup p O) (d : ℕ) (c : _root_.GlobalTheory.QLog.Chart G d) (μ' : Fin d → MvPowerSeries (Fin d ⊕ Fin d) F.B), _root_.GlobalTheory.QLog.IsLift F.θ μ' → (∀ i, map F.θ (μ' i) = c.μ i) → ∀ (f g : MvPowerSeries (Fin d) F.Q) (t : G.Tate) (y y' b : F.B), c.HasPeriod F.θ t f y → c.HasPeriod F.θ t g y' → c.HasPeriod F.θ t (f + algebraMap F.B F.Q b • g) (y + b * y') ∧ (∀ s : MvPowerSeries (Fin d) F.B, constantCoeff s = 0 → c.HasPeriod F.θ t (map (algebraMap F.B F.Q) s) 0) := by
   intro p _ C _ _ _ v O _ _ _ _ _ _ ε _ F G d c μ' _ _ f g t y y' b hf hg
@@ -747,7 +700,6 @@ section -- clump:auto
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
 namespace GlobalTheory.QLog
-
 
 open MvPowerSeries in
 theorem _root_.GlobalTheory.QLog.hasPeriod_reduce : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : _root_.GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta.IsPrimitiveSystem ε), ∀ F : _root_.GlobalTheory.QLog.BFrame ε, ∀ (G : _root_.GlobalTheory.PDivGroup p O) (d : ℕ) (c : _root_.GlobalTheory.QLog.Chart G d) (μ' : Fin d → MvPowerSeries (Fin d ⊕ Fin d) F.B), _root_.GlobalTheory.QLog.IsLift F.θ μ' → (∀ i, map F.θ (μ' i) = c.μ i) → ∀ (E : Type) [CommRing E] [Algebra O E], _root_.GlobalTheory.QLog.IsFrame p E (RingHom.id O) → ∀ Θ : F.Q →+* E, (∀ b, Θ (algebraMap F.B F.Q b) = algebraMap O E (F.θ b)) → ∀ (f : MvPowerSeries (Fin d) F.Q) (t : G.Tate) (y : F.B), _root_.GlobalTheory.QLog.QL μ' ⊤ f → c.HasPeriod F.θ t f y → c.HasPeriod (RingHom.id O) t (map Θ f) (F.θ y) := by
@@ -955,7 +907,6 @@ private theorem hasVal_zero_of_constantCoeff_eq_zero {p : ℕ} {B Q : Type} [Com
   rw [h0, MvPolynomial.eval_zero, MvPolynomial.constantCoeff_eq, MvPowerSeries.coeff_trunc']
   simp [hf]
 
-
 open MvPowerSeries in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.QLogPeriod.hasPeriod_hodgeTate : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (G : _root_.GlobalTheory.PDivGroup p O) (d : ℕ) (c : _root_.GlobalTheory.QLog.Chart G d), ∀ (E : Type) [CommRing E] [Algebra O E], _root_.GlobalTheory.QLog.IsFrame p E (RingHom.id O) → ∀ (f : MvPowerSeries (Fin d) E) (l : G.dual.Lie), _root_.GlobalTheory.QLog.QL c.μ ⊤ f → c.IsLie f l → ∀ t : G.Tate, c.HasPeriod (RingHom.id O) t f (l (G.hodgeTate t)) := by
@@ -1030,10 +981,6 @@ open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory
 
 noncomputable section
 
-namespace GlobalTheory.QLog.FrobPeriod
-
-end GlobalTheory.QLog.FrobPeriod
-
 namespace GlobalTheory.QLog
 
 open MvPowerSeries in
@@ -1107,14 +1054,12 @@ private lemma subst_inr_zero_pderiv_coboundary_eq {Q : Type} [CommRing Q] {d : �
   have he0 : HasSubst (Sum.elim (fun k : Fin d => (X k : MvPowerSeries (Fin d) Q))
       fun _ : Fin d => 0) := hasSubst_of_constantCoeff_zero (by rintro (k | k) <;> simp)
   have hν : HasSubst ν := hasSubst_of_constantCoeff_zero hν0
-  have hL : HasSubst (fun k : Fin d => (X (Sum.inl k) : MvPowerSeries (Fin d ⊕ Fin d) Q)) :=
-    hasSubst_of_constantCoeff_zero (by simp)
   have hR : HasSubst (fun k : Fin d => (X (Sum.inr k) : MvPowerSeries (Fin d ⊕ Fin d) Q)) :=
     hasSubst_of_constantCoeff_zero (by simp)
   rw [map_sub, map_sub, _root_.GlobalTheory.PSChain.pderiv_subst_chain _ hν0, _root_.GlobalTheory.PSChain.pderiv_subst_chain _ (by simp),
     _root_.GlobalTheory.PSChain.pderiv_subst_chain _ (by simp)]
-  simp only [pderiv_X, Pi.single_apply, Sum.inr.injEq, reduceCtorEq, if_false, mul_zero,
-    Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [pderiv_X, Pi.single_apply, Sum.inr.injEq, reduceCtorEq, ite_false, mul_zero,
+    Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [← coe_substAlgHom he0]
 
   simp only [map_sub, map_sum, map_mul]
@@ -1231,7 +1176,6 @@ private lemma hasVal_map_of_compatible {p : ℕ} {B Q : Type} [CommRing B]
     funext i
     simp [hs]
   rw [key, ← map_sub, hb, hs, map_mul, map_pow, map_natCast]
-
 
 open MvPowerSeries in
 set_option autoImplicit false in
@@ -1385,10 +1329,6 @@ theorem subst_nmul {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
     simp only [subst_X hb, Sum.elim_inl, Sum.elim_inr]
     rw [ih, subst_self, id, Nat.cast_succ, add_smul, one_smul]
 
-theorem nmul_succ {S : Type} [CommRing S] (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S) (n : ℕ) :
-    nmul μ (n + 1) = op μ (nmul μ n) fun i => X i := by
-  rw [nmul, Function.iterate_succ_apply', ← nmul]
-
 theorem up_nmul {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q]
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : ∀ i, constantCoeff (μ i) = 0) (n : ℕ) :
     up Q (nmul μ n) = nmul (up Q μ) n := by
@@ -1450,7 +1390,6 @@ theorem hasPeriod_add_smul (t : G.Tate) {f g : MvPowerSeries (Fin d) F.Q} {y y' 
 theorem hasPeriod_map_zero (t : G.Tate) (s : MvPowerSeries (Fin d) F.B) (hs : constantCoeff s = 0) :
     c.HasPeriod F.θ t (map (algebraMap F.B F.Q) s) 0 := by
   have hz := hasPeriod_zero c F.frame t
-  have hd : DIn (⊤ : Ideal F.B) (0 : MvPowerSeries (Fin d) F.Q) := din_of_in (in_zero ⊤)
   first
   | exact (_root_.GlobalTheory.QLog.hasPeriod_linear p C v O hv ε hε F G d c μ' hL hμ 0 0 t 0 0 0 hz hz).2 s hs
 

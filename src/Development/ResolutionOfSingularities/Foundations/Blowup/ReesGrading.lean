@@ -94,27 +94,11 @@ theorem reesGrading_iSupIndep (I : Ideal R) : iSupIndep (reesGrading I) := by
     · simpa using hcoeff i hi
   exact Subtype.ext (by simpa using hp0)
 
-private theorem coeff_mem_pow (I : Ideal R) (p : ↥(reesAlgebra I)) (i : ℕ) :
-    ((p : R[X])).coeff i ∈ I ^ i := p.2 i
-
-private theorem monomial_mem_reesGrading (I : Ideal R) {n : ℕ} {r : R} (hr : r ∈ I ^ n) :
-    (⟨Polynomial.monomial n r, reesAlgebra.monomial_mem.mpr hr⟩ : ↥(reesAlgebra I))
-      ∈ reesGrading I n := by
-  refine (mem_reesGrading_iff_coeff I n _).2 fun i hi => ?_
-  show (Polynomial.monomial n r : R[X]).coeff i = 0
-  simp [Polynomial.coeff_monomial, Ne.symm hi]
-
-theorem reesGrading_iSup_eq_top (I : Ideal R) : (⨆ n : ℕ, reesGrading I n) = ⊤ := by
-  refine Submodule.eq_top_iff'.2 fun p => ?_
-  have hval : ∀ x y : ↥(reesAlgebra I),
-      (reesAlgebra I).val x = (reesAlgebra I).val y → x = y := fun _ _ h => Subtype.ext h
-  have hsum : p = ∑ i ∈ (p : R[X]).support,
-      (⟨Polynomial.monomial i ((p : R[X]).coeff i),
-        reesAlgebra.monomial_mem.mpr (coeff_mem_pow I p i)⟩ : ↥(reesAlgebra I)) :=
-    hval _ _ (by rw [map_sum]; exact Polynomial.as_sum_support _)
-  rw [hsum]
-  exact sum_mem fun i _ => Submodule.mem_iSup_of_mem i
-    (monomial_mem_reesGrading I (coeff_mem_pow I p i))
+theorem reesGrading_iSup_eq_top (I : Ideal R) : (⨆ n : ℕ, reesGrading I n) = ⊤ :=
+  Submodule.eq_top_iff'.2 fun p => by
+    rw [reesAlgebra.as_sum_support p]
+    exact sum_mem fun i _ => Submodule.mem_iSup_of_mem i
+      ((mem_reesGrading_iff_monomial I i _).2 ⟨_, p.2 i, rfl⟩)
 
 theorem reesGrading_isInternal (I : Ideal R) : DirectSum.IsInternal (reesGrading I) := by
   exact (DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top (reesGrading I)).2
@@ -169,25 +153,6 @@ noncomputable def reesGenerator (I : Ideal R) (a : ↥I) : ↥(reesAlgebra I) :=
 theorem reesGenerator_mem_reesGrading (I : Ideal R) (a : ↥I) : reesGenerator I a ∈ reesGrading I 1 :=
   reesDegreeOneMonomial_mem_reesGrading I a.2
 
-private noncomputable def reesMonomialOfCoeff (I : Ideal R) (p : ↥(reesAlgebra I)) (i : ℕ) :
-    ↥(reesAlgebra I) :=
-  reesMonomial I i ((p : R[X]).coeff i) (coeff_mem_pow I p i)
-
-private theorem reesComponent_coe (I : Ideal R) (p : ↥(reesAlgebra I)) (i : ℕ) :
-    ((reesMonomialOfCoeff I p i : ↥(reesAlgebra I)) : R[X])
-      = Polynomial.monomial i ((p : R[X]).coeff i) := rfl
-
-private theorem reesComponent_mem_reesGrading (I : Ideal R) (p : ↥(reesAlgebra I)) (i : ℕ) :
-    reesMonomialOfCoeff I p i ∈ reesGrading I i := by
-  refine (mem_reesGrading_iff_coeff I i _).2 fun j hj => ?_
-  simp [reesComponent_coe, Polynomial.coeff_monomial, Ne.symm hj]
-
-private theorem eq_sum_reesComponent (I : Ideal R) (p : ↥(reesAlgebra I)) :
-    p = ∑ i ∈ (p : R[X]).support, reesMonomialOfCoeff I p i := by
-  have hval : ∀ x y : ↥(reesAlgebra I),
-      (reesAlgebra I).val x = (reesAlgebra I).val y → x = y := fun _ _ h => Subtype.ext h
-  exact hval _ _ (by rw [map_sum]; exact Polynomial.as_sum_support _)
-
 private theorem mem_span_reesGenerator_of_eq_monomial_succ (I : Ideal R) :
     ∀ (n : ℕ) (r : R), r ∈ I ^ (n + 1) →
       ∀ x : ↥(reesAlgebra I), (x : R[X]) = Polynomial.monomial (n + 1) r →
@@ -237,45 +202,30 @@ theorem reesGrading_irrelevant_le_span (I : Ideal R) :
   intro p hp
   have hp1 : p ∈ HomogeneousIdeal.irrelevant (reesGrading I) := hp
   rw [HomogeneousIdeal.mem_irrelevant_iff] at hp1
-  have hsum : p = ∑ i ∈ (p : R[X]).support, reesMonomialOfCoeff I p i := eq_sum_reesComponent I p
-  have hmapsum : (GradedRing.proj (reesGrading I) 0)
-        (∑ i ∈ (p : R[X]).support, reesMonomialOfCoeff I p i)
-      = ∑ i ∈ (p : R[X]).support, (GradedRing.proj (reesGrading I) 0) (reesMonomialOfCoeff I p i) :=
-    map_sum (GradedRing.proj (reesGrading I) 0) (fun i => reesMonomialOfCoeff I p i)
-      ((p : R[X]).support)
-  have hprojsum : ∑ i ∈ (p : R[X]).support,
-      (GradedRing.proj (reesGrading I) 0) (reesMonomialOfCoeff I p i) = 0 := by
-    rw [← hmapsum, ← hsum]
-    exact hp1
-  have hsingle : ∑ i ∈ (p : R[X]).support,
-      (GradedRing.proj (reesGrading I) 0) (reesMonomialOfCoeff I p i)
-      = (GradedRing.proj (reesGrading I) 0) (reesMonomialOfCoeff I p 0) := by
-    refine Finset.sum_eq_single 0 (fun i _ hi => ?_) (fun h0 => ?_)
-    · rw [GradedRing.proj_apply]
-      exact DirectSum.decompose_of_mem_ne (reesGrading I) (reesComponent_mem_reesGrading I p i) hi
-    · have hc : (p : R[X]).coeff 0 = 0 :=
-        not_not.mp (fun h => h0 (Polynomial.mem_support_iff.mpr h))
-      have hz : reesMonomialOfCoeff I p 0 = 0 := by
-        refine Subtype.ext ?_
-        show Polynomial.monomial 0 ((p : R[X]).coeff 0) = (0 : R[X])
-        rw [hc, map_zero]
-      rw [hz, map_zero]
-  have hz0 : reesMonomialOfCoeff I p 0 = 0 := by
-    have h1 : (GradedRing.proj (reesGrading I) 0) (reesMonomialOfCoeff I p 0) = 0 := by
-      rw [← hsingle]
-      exact hprojsum
-    rw [GradedRing.proj_apply,
-      DirectSum.decompose_of_mem_same (reesGrading I) (reesComponent_mem_reesGrading I p 0)] at h1
-    exact h1
-  rw [hsum]
+  have hmem : ∀ i, (⟨Polynomial.monomial i (p.val.coeff i),
+      reesAlgebra.monomial_coeff_mem p i⟩ : ↥(reesAlgebra I)) ∈ reesGrading I i :=
+    fun i => reesMonomial_mem_reesGrading I (p.2 i)
+  have hz0 : (⟨Polynomial.monomial 0 (p.val.coeff 0),
+      reesAlgebra.monomial_coeff_mem p 0⟩ : ↥(reesAlgebra I)) = 0 := by
+    rw [reesAlgebra.as_sum_support p, map_sum] at hp1
+    rw [Finset.sum_eq_single 0 (fun i _ hi => by
+        rw [GradedRing.proj_apply]
+        exact DirectSum.decompose_of_mem_ne (reesGrading I) (hmem i) hi) (fun h0 => by
+        have hc : p.val.coeff 0 = 0 := not_not.mp fun h => h0 (Polynomial.mem_support_iff.mpr h)
+        have hz : (⟨Polynomial.monomial 0 (p.val.coeff 0),
+            reesAlgebra.monomial_coeff_mem p 0⟩ : ↥(reesAlgebra I)) = 0 :=
+          Subtype.ext (by
+            show Polynomial.monomial 0 (p.val.coeff 0) = (0 : R[X])
+            rw [hc, map_zero])
+        rw [hz, map_zero])] at hp1
+    rwa [GradedRing.proj_apply,
+      DirectSum.decompose_of_mem_same (reesGrading I) (hmem 0)] at hp1
+  rw [reesAlgebra.as_sum_support p]
   refine sum_mem fun i _ => ?_
   rcases Nat.eq_zero_or_pos i with rfl | hi
-  · rw [hz0]
-    exact zero_mem _
+  · rw [hz0]; exact zero_mem _
   · obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hi.ne'
-    exact mem_span_reesGenerator_of_eq_monomial_succ I k ((p : R[X]).coeff (k + 1))
-      (coeff_mem_pow I p (k + 1)) (reesMonomialOfCoeff I p (k + 1))
-      (reesComponent_coe I p (k + 1))
+    exact mem_span_reesGenerator_of_eq_monomial_succ I k (p.val.coeff (k + 1)) (p.2 (k + 1)) _ rfl
 
 noncomputable def reesDegreeZeroMonomial (I : Ideal R) (r : R) : ↥(reesGrading I 0) :=
   ⟨reesMonomial I 0 r (mem_pow_zero I r),

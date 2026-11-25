@@ -28,15 +28,8 @@ theorem ord_pos {n' m : ℕ} (r : ℕ) (lam : Fin n' → Fin (m + 1) → ℤ) (h
       omega
   have hcard : ((Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card : ℤ) ≤ r := by
     have : (Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card ≤ r := by
-      calc (Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card
-          ≤ (Finset.range r).card := by
-            apply Finset.card_le_card_of_injOn (fun a => a.val)
-            · intro a ha
-              simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at ha
-              simpa using ha
-            · intro a _ b _ hab
-              exact Fin.ext hab
-        _ = r := Finset.card_range r
+      rw [Fin.card_filter_val_lt]
+      exact min_le_right _ _
     exact_mod_cast this
   calc ∑ a : Fin (m + 1) with a.val < r, (lamAt lam s a - lamAt lam s (Fin.last m))
       ≤ ∑ _a : Fin (m + 1) with _a.val < r, (lam s 0 - lam s (Fin.last m)) := Finset.sum_le_sum fun a _ => hterm a
@@ -73,12 +66,12 @@ theorem ordMax_rest {n' m : ℕ} (hm : 2 ≤ m) {TT : Finset (Fin n')} {aT bT : 
       have h01 : lam0 s 1 ≤ lam0 s 0 := hdom s (Fin.zero_le _)
       have hc1 := abs_le.1 (hc 1 (by omega) (by omega))
       unfold dT flatDeg
-      rw [if_pos hs, if_pos hs, Int.toNat_of_nonneg (by omega), elast]
+      rw [ite_eq_left hs, ite_eq_left hs, Int.toNat_of_nonneg (by omega), elast]
       omega
     · have h1 := abs_le.1 ((hb s).2 hs 0)
       have h2 := abs_le.1 ((hb s).2 hs (Fin.last m))
       unfold dT
-      rw [if_neg hs, if_neg hs]
+      rw [ite_eq_right hs, ite_eq_right hs]
       push_cast
       omega
   unfold ordMax

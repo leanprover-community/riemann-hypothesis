@@ -89,7 +89,7 @@ theorem nF_fromCols_sel_le [IsUltrametricDist K] [Fintype ι] [DecidableEq ι] [
   refine nF_le_of_minors _ (nF_nonneg' C) fun u => ?_
   by_cases hu : ∀ k, ∃ x, u x = s k
   swap
-  · push_neg at hu
+  · push Not at hu
     obtain ⟨k, hk⟩ := hu
     have : ((fromCols Eᵀ C).submatrix u id).det = 0 := by
       refine det_eq_zero_of_column_eq_zero (Sum.inl k) fun x => ?_
@@ -99,7 +99,7 @@ theorem nF_fromCols_sel_le [IsUltrametricDist K] [Fintype ι] [DecidableEq ι] [
   by_cases inj : Function.Injective u
   swap
   · rw [Function.Injective] at inj
-    push_neg at inj
+    push Not at inj
     obtain ⟨x, y, hxy, hne⟩ := inj
     have : ((fromCols Eᵀ C).submatrix u id).det = 0 :=
       det_zero_of_row_eq hne (by ext j; simp [hxy])

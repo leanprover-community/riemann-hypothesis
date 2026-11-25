@@ -41,8 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct ContDiff
 
@@ -145,5 +143,3 @@ variable {μ 𝓕}
 end Target
 
 end GlobalTheory.MixModel.Check
-
-end

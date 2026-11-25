@@ -32,53 +32,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SurjectiveOp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppInjectiveOfIsDominant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedGroupMorphismsAgreeOfSectionRatiosStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGenericFibreHomOfFormalSectionRatiosStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.TypeStar
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpansionIntegralSectionIntegralNoetherianLocal
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EventuallySectionAndRelAmplePowDiv
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
@@ -99,14 +55,9 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.MumMult
 
-theorem map_map_homOfLE {X : Scheme.{0}} {U V W : X.Opens} (h1 : V ≤ U) (h2 : W ≤ V) (x : Γ(X, U)) :
-    (X.presheaf.map (homOfLE h2).op).hom ((X.presheaf.map (homOfLE h1).op).hom x) =
-      (X.presheaf.map (homOfLE (h2.trans h1)).op).hom x := by
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl
-
 theorem map_res_homOfLE {X : Scheme.{0}} {U V W : X.Opens} (h1 : V ≤ U) (h2 : W ≤ V) (u : Γ(X, U)ˣ) :
     (X.presheaf.map (homOfLE h2).op).hom (res h1 u).val = (res (h2.trans h1) u).val :=
-  map_map_homOfLE h1 h2 u.val
+  ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres h1 h2 u.val
 
 theorem sum_attach_eq_sum_of_subset {β M : Type*} [AddCommMonoid M] {S S' : Finset β} (hS : S ⊆ S') (F : β → M)
     (T : S → M) (hT : ∀ x, T x = F x) (hz : ∀ α ∈ S', α ∉ S → F α = 0) :
@@ -162,7 +113,7 @@ theorem eq_of_expandsAt_of_chartExpOn : ∀ (R : Type) [CommRing R] [IsDomain R]
     have E2V := congrArg ((thickObj R I e G).left.presheaf.map (homOfLE hV2).op).hom
       (E2 p jf jt rfl (hcoh S₂))
 
-    simp only [map_mul, map_pow, map_sum, map_res_homOfLE, map_map_homOfLE] at E1V E2V
+    simp only [map_mul, map_pow, map_sum, map_res_homOfLE, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres] at E1V E2V
     let tV : ∀ α, α ∈ S₁ ∪ S₂ → Γ((thickObj R I e G).left, U.expW e p i' (S₁ ∪ S₂) jf jt ⊓ W) :=
       fun α h => ((thickObj R I e G).left.presheaf.map
           (homOfLE (inf_le_left.trans (U.expW_le_f e p i' jf jt h))).op).hom
@@ -174,23 +125,23 @@ theorem eq_of_expandsAt_of_chartExpOn : ∀ (R : Type) [CommRing R] [IsDomain R]
       intro α h hn
       have h0 : ((U.gt e).pG.left.app (LB.wchart D.toPre.P.L (D.toPre.famφB α) (jf α))).hom
           ((f α).f (jf α)) = 0 := h1v α hn (jf α)
-      simp only [F, dif_pos h, tV]
+      simp only [F, dite_eq_left h, tV]
       rw [h0, map_zero, zero_mul]
     have hz2 : ∀ α ∈ S₁ ∪ S₂, α ∉ S₂ → F α = 0 := by
       intro α h hn
       have h0 : ((U.gt e).pG.left.app (LB.wchart D.toPre.P.L (D.toPre.famφB α) (jf α))).hom
           ((f α).f (jf α)) = 0 := h2v α hn (jf α)
-      simp only [F, dif_pos h, tV]
+      simp only [F, dite_eq_left h, tV]
       rw [h0, map_zero, zero_mul]
     rw [sum_attach_eq_sum_of_subset Finset.subset_union_left F _ (fun x => ?_) hz1] at E1V
     rw [sum_attach_eq_sum_of_subset Finset.subset_union_right F _ (fun x => ?_) hz2] at E2V
     rotate_left
-    · simp only [F, dif_pos (Finset.mem_union_right S₁ x.2), tV]
+    · simp only [F, dite_eq_left (Finset.mem_union_right S₁ x.2), tV]
       congr 1 <;> first | rfl | exact map_res_homOfLE _ _ _
-    · simp only [F, dif_pos (Finset.mem_union_left S₂ x.2), tV]
+    · simp only [F, dite_eq_left (Finset.mem_union_left S₂ x.2), tV]
       congr 1 <;> first | rfl | exact map_res_homOfLE _ _ _
     refine ⟨U.expW e p i' (S₁ ∪ S₂) jf jt ⊓ W, inf_le_right, ⟨hmem _, hy⟩, ?_⟩
-    rw [map_map_homOfLE]
+    rw [ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres]
     exact ((Units.isUnit _).pow k).mul_left_cancel (E1V.trans E2V.symm)
   choose V hVW hyV hEq using key
   refine TopCat.Sheaf.eq_of_locally_eq' (thickObj R I e G).left.sheaf (fun y : W => V y.1 y.2) W
@@ -295,7 +246,6 @@ open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out
 
 namespace GlobalTheory
 
-
 open IsDiscreteValuationRing in
 theorem mul_dvd_pow_of_quadratic_bound_dvr {V : Type} [CommRing V] [IsDomain V]
     [IsDiscreteValuationRing V] {X : Type} [AddCommGroup X] (h h' : X →+ X) (C : ℕ)
@@ -329,7 +279,6 @@ theorem mul_dvd_pow_of_quadratic_bound_dvr {V : Type} [CommRing V] [IsDomain V]
       have := congrArg (addVal V) e
       simp only [addVal_mul, hn, addVal_eq_zero_iff.2 hu, zero_add] at this
       exact_mod_cast this) y
-  have key' : n (h y) ≤ C * n y := by exact_mod_cast key
   rw [← addVal_le_iff_dvd, addVal_mul, addVal_pow, hn, hn, nsmul_eq_mul]
   have : n y + n (h y) ≤ N * n y := by nlinarith [Nat.mul_le_mul_right (n y) hN]
   exact_mod_cast this
@@ -389,7 +338,6 @@ theorem int_cauchy_schwarz {X : Type} [AddCommGroup X] (F : X →+ X →+ ℤ)
     exact h1
   rcases (hpos u).lt_or_eq with ht | ht
   · have h2 := key (-(F u v)) (F u u)
-    have h3 : 0 ≤ F u u * (F u u * F v v - F u v ^ 2) := by linarith [h2]
     have h4 : 0 ≤ F u u * F v v - F u v ^ 2 := by
       by_contra! hc
       linarith [mul_neg_of_pos_of_neg ht hc]
@@ -694,7 +642,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMumfordMultiplierExponentNonzeroSectionStatement =====
@@ -788,10 +735,10 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R 
     · obtain ⟨c, hc, -⟩ := (hP k hk).choose_spec
       have e1 := hc e s₁ i i'
       have e2 := hc e s₂ i i'
-      have hS : S k = (hP k hk).choose := dif_pos hk
+      have hS : S k = (hP k hk).choose := dite_eq_left hk
       rw [hS, e1, e2]
       ring
-    · have hS : S k = fun _ => zeroSec _ := dif_neg hk
+    · have hS : S k = fun _ => zeroSec _ := dite_eq_right hk
       rw [hS]
       dsimp only [zeroSec]
       erw [map_zero, map_zero]
@@ -808,7 +755,7 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R 
     have hyW : y ∈ ((b 0).left ≫ (fstG (maximalIdeal R) 0 G).left) ⁻¹ᵁ secChart U.LG.L i ⊓
         (fstG (maximalIdeal R) 0 G).left ⁻¹ᵁ secChart U.LG.L i' :=
       ⟨Scheme.basicOpen_le _ _ hu, hi'⟩
-    have hS : S k = (hP k hk).choose := dif_pos hk
+    have hS : S k = (hP k hk).choose := dite_eq_left hk
     refine ⟨s₀, y, i, i', hu, ?_⟩
     rw [hS]
     have key := hc 0 s₀ i i'

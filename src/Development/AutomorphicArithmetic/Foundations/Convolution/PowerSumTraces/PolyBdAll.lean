@@ -97,7 +97,6 @@ theorem UpperTheory.ConvolutionTheory.C.polyBdAll :
     obtain ⟨m, hmC, hm⟩ := hCc b hb ρ hρ hsieg kk hkk x hx R hR1 hR
     have hS : MeasurableSet ((fun y => x * y) '' tsupport (a : normOneGL (K := K) (n := n) → ℂ)) :=
       (a.hasCompactSupport.image (continuous_const_mul x)).measurableSet
-    set_option synthInstance.maxHeartbeats 200000 in
     have h1 := enorm_rconv_sq_le (Gam K n) μ a φ x hS (fun y hy => image_eq_zero_of_notMem_tsupport
       fun h' => hy ⟨x⁻¹ * y, h', by simp⟩) hm
     rw [← mul_assoc] at h1

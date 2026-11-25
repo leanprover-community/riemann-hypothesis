@@ -122,8 +122,7 @@ theorem mem_hLat_of (hV : Seed.FrmC.StdLat V) (h : Bridge.Gf V) {x : Fin V.rank 
   Submodule.subset_span ((mem_set_iff hV h x).2 hx)
 
 theorem isLattice (hV : Seed.FrmC.StdLat V) (h : Bridge.Gf V) : Submodule.IsLattice D.host.E (Bridge.hLat V h) := by
-  intros
-  apply _root_.GlobalTheory.RepsCompare.isLattice_hLat <;> assumption
+  apply GlobalTheory.RepsCompare.isLattice_hLat
 
 theorem smul_mem_hLat_mul (hV : Seed.FrmC.StdLat V) (h x : Bridge.Gf V) (p : ℕ)
     (hp : ∀ a b, (p : EAf D) * swapAE D ((x⁻¹ : Bridge.Gf V).1.val a b) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) :

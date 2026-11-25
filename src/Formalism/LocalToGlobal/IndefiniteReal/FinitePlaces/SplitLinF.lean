@@ -37,8 +37,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix
@@ -87,8 +85,6 @@ theorem symplO_nsmul_right (t y : WO S T) (k : ℕ) : symplO S T t (k • y) = s
   | zero => rw [zero_smul, zero_smul, symplO_zero_right, symplO_zero_left]
   | succ n ih => rw [succ_nsmul, succ_nsmul, symplO_add_right, symplO_add_left, ih]
 
-
-
 theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g : GA D S} {h : GA D T}
     (hg : SuppAt e₁ S g) (hh : SuppAt e₁ T h) {t : WO S T} (ht : IsHalf e t) (h0 : ∀ i j, e₁ * t i j = 0) :
     actO S T g h t = t := by
@@ -103,7 +99,7 @@ theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g
       rw [← hh i k, mul_comm (e₁ + cA D e₁), mul_assoc, hz k j, mul_zero]
     have h3 : ∑ k, ((mt T h) - 1) i k * t k j = 0 := Finset.sum_eq_zero fun k _ => h2 k
     simp only [Matrix.sub_apply, sub_mul, Finset.sum_sub_distrib, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at h3
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h3
     rw [Matrix.mul_apply]
     exact sub_eq_zero.1 h3
   have hR : HMul.hMul (t : Matrix (Fin T.rank) (Fin S.rank) (AE D)) (mt S g) = t := by
@@ -112,7 +108,7 @@ theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g
       rw [← hg k j, ← mul_assoc, mul_comm (t i k), hz i k, zero_mul]
     have h3 : ∑ k, t i k * ((mt S g) - 1) k j = 0 := Finset.sum_eq_zero fun k _ => h2 k
     simp only [Matrix.sub_apply, mul_sub, Finset.sum_sub_distrib, Matrix.one_apply, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h3
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h3
     rw [Matrix.mul_apply]
     exact sub_eq_zero.1 h3
   have hinv : HMul.hMul (mt S g) (mt S g⁻¹) = (1 : Matrix (Fin S.rank) (Fin S.rank) (AE D)) := by
@@ -122,8 +118,6 @@ theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g
     rw [Matrix.mul_assoc, hinv, Matrix.mul_one]
   unfold actO
   rw [hL, hR']
-
-
 
 theorem evalYZero_zero (ψ : AddChar (AF D.host.F) ℂ) {e e₁ : AE D} (he₁ : IsSplitIdem D e₁) (h1 : e₁ * e = e₁)
     (Λ : AddSubgroup (WO S T))
@@ -372,7 +366,7 @@ theorem chi_sum_X {k : ℕ} [Fintype (Qt k (L ⊓ X))] {y : W} (hy : y ∈ Yk L 
       hLL _ (b.out : ↥(L ⊓ X)).2 y (AddSubgroup.mem_inf.2 ⟨hyL, hy'.1⟩)
     simp only [h1, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
   · have hne : ¬ ∀ x ∈ L ⊓ X, χ x y = 1 := fun hall => hyL (hdY y hy'.1 hall)
-    push_neg at hne
+    push Not at hne
     obtain ⟨u, hu, hχu⟩ := hne
     let m : Qt k (L ⊓ X) := QuotientAddGroup.mk ⟨u, hu⟩
     have hkey : ∀ b : Qt k (L ⊓ X), χ (((b + m).out : ↥(L ⊓ X)) : W) y = χ ((b.out : ↥(L ⊓ X)) : W) y * χ u y := by
@@ -442,7 +436,6 @@ theorem piK_vac {k : ℕ} [Finite (Qt k (L ⊓ X))] [Finite (Ik L Y k)] {w : V} 
     rw [← hvx]
     exact L.nsmul_mem (AddSubgroup.mem_inf.1 hv).1 k
   exact_mod_cast (Finset.card_pos.2 ⟨_, h0⟩).ne'
-
 
 include hY hXY hχl hχr hχ0 hLL hdY hfinX hfinY htf in
 theorem vac_eq_zero_of_mem_span (hoY : ∀ y ∈ Y, ∃ k : ℕ, 0 < k ∧ k • y ∈ L) (Θ : Set V)
@@ -577,8 +570,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix
@@ -587,18 +578,6 @@ open scoped TensorProduct
 namespace Formalism.IndefR.Fin
 
 variable {D : D7} (S T : HSp D)
-
-theorem suppAt_inv_fp {e : AE D} {V : HSp D} {g : GA D V} (hg : SuppAt e V g) : SuppAt e V g⁻¹ := by
-  have hinv : HMul.hMul (mt V g⁻¹) (mt V g) = (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) := by
-    rw [← Formalism.IndefR.Eqv.mt_mul, inv_mul_cancel, Formalism.IndefR.Eqv.mt_one]
-  have hd : (mt V g⁻¹ : Matrix (Fin V.rank) (Fin V.rank) (AE D)) - 1 =
-      -(HMul.hMul (mt V g⁻¹) ((mt V g : Matrix (Fin V.rank) (Fin V.rank) (AE D)) - 1)) := by
-    rw [Matrix.mul_sub, hinv, Matrix.mul_one, neg_sub]
-  intro i j
-  rw [hd, Matrix.neg_apply, mul_neg, Matrix.mul_apply, Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [mul_left_comm, hg k j]
 
 theorem actO_nsmul (g : GA D S) (h : GA D T) (k : ℕ) (t : WO S T) : actO S T g h (k • t) = k • actO S T g h t := by
   induction k with
@@ -671,9 +650,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix MeasureTheory NumberField
@@ -736,7 +712,6 @@ theorem facts_at_e₁ (hPD : PlaceLatDual D) {ψ : AddChar (AF D.host.F) ℂ} (h
   · rw [symplO_right_ce₁ S T hxe]
     exact H _ (hi (cA D e₁) hc₁ y hy) (hmapH (cA D e₁) hc₁.1 y)
 
-
 open Classical in
 theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := by
   intro ψ S T χS χT om hω ΛS ΛT hS hT P e he f₀ hf₀ hvac Tm hTm e₁ he₁ h1 g h hg hh x y hx hy
@@ -752,7 +727,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
   set c : ℂ := (r : ℂ) * (splitFacO χS χT x y : ℂ) with hcdef
   have hc0 : c ≠ 0 := mul_ne_zero (by exact_mod_cast hr.ne') (Circle.coe_ne_zero _)
   obtain ⟨k₁, hk₁, h₁⟩ := hvi e₁ he₁ g h hg hh
-  obtain ⟨k₂, hk₂, h₂⟩ := hvi e₁ he₁ g⁻¹ h⁻¹ (suppAt_inv_fp hg) (suppAt_inv_fp hh)
+  obtain ⟨k₂, hk₂, h₂⟩ := hvi e₁ he₁ g⁻¹ h⁻¹ (Formalism.IndefR.Fin.PDB.supp_inv hg) (Formalism.IndefR.Fin.PDB.supp_inv hh)
   have h₁' : ∀ t ∈ latAll S T ΛS ΛT, k₁ • actO S T g⁻¹⁻¹ h⁻¹⁻¹ t ∈ latAll S T ΛS ΛT := by
     simpa only [inv_inv] using h₁
   have hSBp : ∀ Φ, IsSBHalf e (latAll S T ΛS ΛT) Φ →
@@ -796,7 +771,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
         · have h1' : symplO S T t (actO S T g⁻¹ h⁻¹ u) = symplO S T (actO S T g h t) u := by
             rw [← Formalism.IndefR.Eqv.symplO_actO S T g h t (actO S T g⁻¹ h⁻¹ u), Formalism.IndefR.Eqv.actO_inv_actO]
           rw [h1', (hd2 u (chalf_sub_of S T h1 hue)).2 hu _ hc.1 hc.2, one_mul]
-        · have : halfInd e (latAll S T ΛS ΛT) (actO S T g h t) = 0 := by unfold halfInd; rw [if_neg hc]
+        · have : halfInd e (latAll S T ΛS ΛT) (actO S T g h t) = 0 := by unfold halfInd; rw [ite_eq_right hc]
           rw [this, mul_zero]
     have hfix : ∀ u ∈ latAll S T ΛS ΛT, (IsHalf e₁ u ∨ IsHalf (cA D e₁) u) →
         heisO ψ S T u (om (g, h) (Tm (fun t => halfInd e (latAll S T ΛS ΛT) (actO S T g h t))) - c • f₀) =
@@ -864,7 +839,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
       · have h2 := (isHalf_actO_iff S T g h t).2 ht
         simp only [hstab t ht, ht, h2, and_true]
       · have h2 : ¬ IsHalf e (actO S T g h t) := fun h' => ht ((isHalf_actO_iff S T g h t).1 h')
-        simp only [ht, h2, and_false, if_false]
+        simp only [ht, h2, and_false, ite_false]
     rw [hindeq, hf₀T] at hw
     have hU := hω.om_unit μ 𝓕 hHaar hFD (g, h) f₀ hf₀
     rw [hw] at hU

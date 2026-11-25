@@ -40,52 +40,10 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaR
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsSimInducing
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.TotalDegreeLeOfRowDeg
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsLocallyNoetherian
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SumSupportCMul
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsoEqOfMapsAlongSection
@@ -297,7 +255,6 @@ theorem mem_block (M₁ : Submodule (𝓞 E) (Fin n₁ → E)) (M₂ : Submodule
     (v : Fin (n₁ + n₂) → E) : v ∈ (blockLat ⟨M₁⟩ ⟨M₂⟩).La ↔
       (fun i => v (Fin.castAdd n₂ i)) ∈ M₁ ∧ (fun j => v (Fin.natAdd n₁ j)) ∈ M₂ := Iff.rfl
 
-
 omit [NumberField E] in
 theorem det_block (u : Matrix (Fin (n₁ + n₂)) (Fin (n₁ + n₂)) E)
     (h : ∀ i j, u (Fin.castAdd n₂ i) (Fin.natAdd n₁ j) = 0) :
@@ -308,7 +265,6 @@ theorem det_block (u : Matrix (Fin (n₁ + n₂)) (Fin (n₁ + n₂)) E)
   congr 1
   ext i j
   rcases i with i | i <;> rcases j with j | j <;> simp [h]
-
 
 omit [NumberField E] in
 theorem det_pure_mem (M₁ : Submodule (𝓞 E) (Fin n₁ → E)) (M₂ : Submodule (𝓞 E) (Fin n₂ → E))
@@ -521,7 +477,7 @@ theorem rowShift_rename_col (g : Fin n → Fin m) (σ : T) (i i' : Fin (r σ)) (
     obtain ⟨rfl, hb⟩ := hb
     simp only [heq_eq_eq, Prod.mk.injEq] at hb
     obtain ⟨rfl, rfl⟩ := hb
-    rw [if_pos ⟨g x, rfl⟩, if_pos ⟨x, rfl⟩]
+    rw [ite_eq_left ⟨g x, rfl⟩, ite_eq_left ⟨x, rfl⟩]
     simp [col]
   · have h' : ¬ ∃ b, (⟨τ, (j, g x)⟩ : Formalism.L2.Pj.Letter T r m) = ⟨σ, (i, b)⟩ := by
       rintro ⟨b, hb⟩
@@ -529,7 +485,7 @@ theorem rowShift_rename_col (g : Fin n → Fin m) (σ : T) (i i' : Fin (r σ)) (
       obtain ⟨rfl, hb⟩ := hb
       simp only [heq_eq_eq, Prod.mk.injEq] at hb
       exact h ⟨x, by rw [hb.1]⟩
-    rw [if_neg h, if_neg h']
+    rw [ite_eq_right h, ite_eq_right h']
     simp [col]
 
 variable {n₁ n₂ : ℕ}
@@ -973,20 +929,9 @@ theorem finsum_block {K S Q J J₁ J₂ : Type} [Field K] [CommRing S] [Algebra 
   haveI : Fintype Q := Fintype.ofFinite Q
   rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype,
     Finset.sum_mul_sum, ← Fintype.sum_prod_type']
-  let eq : (Fin (n₁ + n₂) → Q) ≃ (Fin n₁ → Q) × (Fin n₂ → Q) :=
-    { toFun := fun q => (fun i => q (Fin.castAdd n₂ i), fun j => q (Fin.natAdd n₁ j))
-      invFun := fun p => Fin.append p.1 p.2
-      left_inv := by
-        intro q
-        funext i
-        refine Fin.addCases (fun i => ?_) (fun j => ?_) i
-        · simp
-        · simp
-      right_inv := by
-        intro p
-        ext i <;> simp }
+  let eq := (Fin.appendEquiv (α := Q) n₁ n₂).symm
   refine Fintype.sum_equiv eq _ _ (fun q => ?_)
-  simp only [eq, Equiv.coe_fn_mk]
+  simp only [eq, Fin.appendEquiv_symm_apply]
   have hJ : ∀ (a : Fin n₁ → Q) (b : Fin n₂ → Q), ∑ i : J, A₁ a (e i).1 * A₂ b (e i).2 = (∑ i, A₁ a i) * ∑ j, A₂ b j := by
     intro a b
     rw [Finset.sum_mul_sum, ← Fintype.sum_prod_type']
@@ -1171,8 +1116,6 @@ section Chart
 
 open GlobalTheory.ChartPush
 
-
-
 theorem hv_push [StarRing (𝓞 E)] {nab : NabV Xo c} {nab₂ : NabV Xo₂ c₂} (hn : IsNab Xo c nab)
     (hn₂ : IsNab Xo₂ c₂ nab₂) {ρ : Xo₂.X ⟶ Xo.X} (ν : SABMap Xo₂.univ.t Xo.univ.t ρ) {S : Type} [Field S]
     [Algebra c.F S] [Algebra c₂.F S] {y : FrPt Xo c S} {y₂ : FrPt Xo₂ c₂ S} {pm : Gx y₂.x ⟶ Gx y.x}
@@ -1312,7 +1255,7 @@ theorem pow_eq_one_of_inZh {m N : ℕ} {T : Over Xo.X} {z : Fin m → (T ⟶ Xo.
   have h := hz.2 1 (fun v hv => by rwa [Matrix.one_mulVec]) (fun i j => if i = j then (N : 𝓞 E) else 0)
     (fun i j => by by_cases e : i = j <;> simp [Matrix.one_apply, e]) b
   rw [List.prod_ofFn, Finset.prod_eq_single b (fun j _ hj => by
-    rw [if_neg hj.symm, ← Nat.cast_zero, comp_act_natCast, pow_zero]) (by simp), if_pos rfl, comp_act_natCast] at h
+    rw [ite_eq_right hj.symm, ← Nat.cast_zero, comp_act_natCast, pow_zero]) (by simp), ite_eq_left rfl, comp_act_natCast] at h
   exact h
 
 section Cover
@@ -1449,7 +1392,6 @@ theorem exists_value [StarRing (𝓞 E)] {nab : NabV Xo c} {n : ℕ} {d : DeltaD
 
 end GlobalTheory.StdCover
 
-
 open scoped Classical in
 theorem GlobalTheory.shortValAt_std_cover_eq_thValAt : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)] (nab : NabV Xo c) (n : ℕ) (d : DeltaDat Xo c n), d.IsLev → IsNab Xo c nab → IsNab d.Xo₂ d.c₂ d.nab₂ → ∀ (m N : ℕ) (a : (E →+* ℂ) × ℕ → ℕ) (x : Fin m → Dw.La) (P : MvPolynomial (LtN Dw m) c.F) (q₀ : Fin m → LevQ Dw d.l₂), GenLat.LevOK (⟨stdLat E m⟩ : GenLat E m) N d.l₂.M → P ∈ harmA c a m → (∀ b, levRep (q₀ b) ∈ (d.I • ⊤ : Submodule (𝓞 E) Dw.La) ∧ levRep (q₀ b) - (d.pd : 𝓞 E) • x b ∈ (l.Mb • ⊤ : Submodule (𝓞 E) Dw.La)) → ∀ (k : Type) [Field k] [IsAlgClosed k] [Algebra c.F k] [Algebra d.c₂.F k], (∀ t : c.F, algebraMap d.c₂.F k (d.eF t) = algebraMap c.F k t) → ∀ (y : FrPt Xo c k) (y₂ : FrPt d.Xo₂ d.c₂ k), FrOver d y₂ y → ∀ v v' : k, ShortValAt d.Xo₂ d.c₂ d.nab₂ (fun q : Fin m → LevQ Dw d.l₂ => if q = q₀ then (Nat.card (Fin m → LevQ Dw d.l₂) : d.c₂.F) else 0) (⟨stdLat E m⟩ : GenLat E m) 1 N (MvPolynomial.map (d.eF : c.F →+* d.c₂.F) P) y₂ v → ThValAt Xo c nab y x P v' → v = v' := by
   intro hCI E _ _ _ H Dw l Xo c _ nab n d hd hn hn₂ m N a x P q₀ hN hP hq k _ _ _ _ hk y y₂ hy v v' hv hv'
@@ -1474,7 +1416,7 @@ theorem GlobalTheory.shortValAt_std_cover_eq_thValAt : Formalism.MainNotions.Mod
   have e₄ := GlobalTheory.thetaValue_natural hL hCI E H Dw l Xo c nab hn k Ω ψ y u hu a m x P hP v' w hv' hw
   apply ψ.toRingHom.injective
   change χ (φ₁ v) = ψ v'
-  rw [e₄, e₁, finsum_eq_single _ q₀ (fun q hq => by rw [if_neg hq, map_zero, zero_mul]), if_pos rfl, map_mul,
+  rw [e₄, e₁, finsum_eq_single _ q₀ (fun q hq => by rw [ite_eq_right hq, map_zero, zero_mul]), ite_eq_left rfl, map_mul,
     map_mul χ, e₂, χ.commutes, χ.commutes,
     Finset.sum_congr rfl fun i _ => e₃ (z i) (F q₀ i) (GlobalTheory.StdCover.pow_eq_one_of_inZh (hz i)) (hF q₀ i),
     Finset.sum_const, Finset.card_univ, Fintype.card_fin]

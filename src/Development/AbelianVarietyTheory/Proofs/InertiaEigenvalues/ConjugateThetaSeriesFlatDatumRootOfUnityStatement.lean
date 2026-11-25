@@ -81,8 +81,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
-
 set_option maxRecDepth 100000 in
 theorem GlobalTheory.ConjTwist.conjFun_ser : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2 → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec) (O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0)) (ph : Fin D.R.m → ℂ), 8 * D.R.f * D.R.r + 4 ≤ D.R.nV → GlobalTheory.Hk3.Core R F → Finite T0 → Nonempty (FWTie T R κ v₀) → IoExt R → QGuard R → ∀ i : Fin D.R.m, OMPins T R κ v₀ O i → PhaseTie T R κ v₀ O ph i → ∀ (c : VsV D i ℂ →ₗ[ℂ] (R.cV i).W), ExtC R i (inC (O i).c') (O i).c0' c → ∀ u : (∀ ρ, lowT (R.MW i (sg0 D A)) ρ), (∀ ρ, (u ρ : (R.MW i (sg0 D A)).sm ρ) = v₀ i (sg0 D A) ρ) → ∀ τ : ℂ ≃+* ℂ, FixBase T R i τ → ∃ ζ0 : ℂ, IsRoot1 ζ0 ∧ ∀ t t' : T0, ConjTup R τ t t' → ∃ s : (AE D)ˣ, ∀ h ∈ GfC (Vc D i), ∀ x x' : VsV D i ℂ, ConjVec i τ x x' → ConjFun (O i) (κ i) τ (ζ0 * ((R.xi t' s : Circle) : ℂ)) (fun g => ph i * ser R i t (R.vP i t) u h (c x) g) (fun g => ph i * ser R i t' (R.vP i t') u h (c x') g) := by
   intro hCI D G _ _ Pl0 T0 A T _ R F κ v₀ O ph hn hC hT0 hFW hIo hQ i hP hPh c hc u hu τ hfix
@@ -90,7 +88,7 @@ theorem GlobalTheory.ConjTwist.conjFun_ser : Formalism.MainNotions.ModuliIntegra
   refine ⟨ζ0, hζ, fun t t' ht => ?_⟩
   obtain ⟨s, Hs⟩ := H t t' ht
   refine ⟨s, fun h hh x x' hx => ?_⟩
-  obtain ⟨y, y', hy, he⟩ := GlobalTheory.T.exists_conjugateForms_thetaLift_eq_thetaSeries D G Pl0 T0 A T R F κ v₀ hC hFW i Unit (fun _ => A.μ0) (O i) hP.2 c hc τ t t' hfix ht h hh x x' hx
+  obtain ⟨y, y', hy, he⟩ := GlobalTheory.ConjTwist.exists_conjForm_thF_eq_ser D G Pl0 T0 A T R F κ v₀ hC hFW i Unit (fun _ => A.μ0) (O i) hP.2 c hc τ t t' hfix ht h hh x x' hx
   have hv : (fun ρ => (u ρ : (R.MW i (sg0 D A)).sm ρ)) = v₀ i (sg0 D A) := funext hu
   have e1 : (fun g => ph i * ser R i t (R.vP i t) u h (c x) g) = fun g => ph i * R.thF i t y (v₀ i (sg0 D A)) g := by
     funext g
@@ -113,9 +111,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
-
-
-
 
 noncomputable section
 
@@ -420,7 +415,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
 noncomputable section
 
 namespace GlobalTheory.ZRep
@@ -486,7 +480,6 @@ theorem isIntM_smul_iff (Q : Finset (Pl D.host.E)) (es : Pl D.host.E → AE D) (
     rwa [redM_of_int PP hN] at this
 
 end GlobalTheory.ZRep
-
 
 open GlobalTheory.ZRep in
 theorem GlobalTheory.ZRep.central_reps : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0
@@ -611,7 +604,7 @@ theorem GlobalTheory.ZRep.central_reps : ∀ (D : D7) (G : Type) [Group G] [Fint
   subst hΛ
   set Λ := latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (fun _ => True) with hΛ
   have H1e : ∀ w : WO (Vc D i) (Wc D i), IsHalf e w → (w ∈ Λ ↔ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) w)) :=
-    GlobalTheory.T.mem_completedLattice_half_iff_frameMatrix_integral D _ _ _ _ _ _ sV sW fV fW (R.Q t) e hq hP
+    GlobalTheory.HalfOInt.mem_latO_iff_frMapO_int D _ _ _ _ _ _ sV sW fV fW (R.Q t) e hq hP
   have H1c : ∀ w : WO (Vc D i) (Wc D i), IsHalf (cA D e) w → (w ∈ Λ ↔ IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) w)) :=
     fun w hw => ⟨fun h => GlobalTheory.HalfAdjInt.frMapAdj_int_of_half D _ _ _ _ _ _ sV sW fV fW _ e hq hP w h hw,
       fun h => GlobalTheory.HalfAdjLattice.mem_latO_of_adj_int D _ _ _ _ _ _ sV sW fV fW _ e hq hP w hw h⟩
@@ -622,8 +615,8 @@ theorem GlobalTheory.ZRep.central_reps : ∀ (D : D7) (G : Type) [Group G] [Fint
     fun c hci w hw hh => (H1c _ (isHalf_smul c hh)).2 (by
       rw [GlobalTheory.RedHalfDrop.frMapAdj_smul_eq]; exact isIntM_smul hci ((H1c w hh).1 hw))
   have hπci : toEAf D (cA D (cA D π)) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by rw [cA_cA]; exact hπi
-  have Dc := GlobalTheory.T.mem_completedLattice_conjugateHalf_iff_dual D R.ψ _ _ _ _ hψ sV sW e he_idem hc heInf heInt
-  have De := GlobalTheory.T.mem_completedLattice_conjugateHalf_iff_dual D R.ψ _ _ _ _ hψ sV sW (cA D e) hce_idem hcc hceInf hceInt
+  have Dc := GlobalTheory.ConjHalfDual.mem_latO_iff_of_conjHalf D R.ψ _ _ _ _ hψ sV sW e he_idem hc heInf heInt
+  have De := GlobalTheory.ConjHalfDual.mem_latO_iff_of_conjHalf D R.ψ _ _ _ _ hψ sV sW (cA D e) hce_idem hcc hceInf hceInt
 
   let Λe : AddSubgroup (WO (Vc D i) (Wc D i)) :=
     { carrier := {w | IsHalf e w ∧ actO (Vc D i) (Wc D i) z⁻¹ 1 w ∈ Λ}
@@ -836,8 +829,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
-
 namespace GlobalTheory.FlatForm
 
 open GlobalTheory.FlatConj
@@ -912,8 +903,8 @@ theorem fourier_flat (k : Type) [Field k] [Fintype k] (ψ : AddChar k ℂ) (ξ :
   rw [sum_GL_character_neg_det_addChar_trace, sum_addChar_trace_rectMatrix_mul ψ hψ u₂]
   by_cases hu2 : u₂ = 0
   swap
-  · rw [if_neg hu2, mul_zero, dite_eq_right (fun h => hu2 ((lowZero_iff_submatrix_natAdd_eq_zero u).mp h.1)), mul_zero]
-  rw [if_pos hu2]
+  · rw [ite_eq_right hu2, mul_zero, dite_eq_right (fun h => hu2 ((lowZero_iff_submatrix_natAdd_eq_zero u).mp h.1)), mul_zero]
+  rw [ite_eq_left hu2]
   by_cases hdet : IsUnit u₁.det
   swap
   · have h0 : u₁.det = 0 := by
@@ -923,7 +914,7 @@ theorem fourier_flat (k : Type) [Field k] [Fintype k] (ψ : AddChar k ℂ) (ξ :
     rw [topLeftBlock_eq_submatrix_castAdd] at h
     exact hdet h
   have hh : LowZero r u ∧ IsUnit (topL r u).det := ⟨(lowZero_iff_submatrix_natAdd_eq_zero u).mpr hu2, by rw [topLeftBlock_eq_submatrix_castAdd]; exact hdet⟩
-  rw [dif_pos hh]
+  rw [dite_eq_left hh]
   set a : GL (Fin r) k := Matrix.GeneralLinearGroup.mkOfDetNeZero u₁ hdet.ne_zero
   have ha := hinv a
   simp only [Matrix.one_mul] at ha
@@ -977,7 +968,7 @@ theorem omegaQ_eq_gauss_mul_flat_transform (D : D7) [inst : ∀ PP : Pl D.host.E
       convert GlobalTheory.FlatFourierQ.dite_prod' Q (fun PP => IsUnit (topL r (Y PP)).det) (fun PP h => ((ξ PP h.unit : ℂˣ) : ℂ))
     rw [e0, Finset.attach_eq_univ]
     refine Finset.prod_congr rfl fun PP _ => ?_
-    simp only [dif_pos PP.2]
+    simp only [dite_eq_left PP.2]
   have hprod : (∏ PP ∈ Q, C PP) = ∏ PP : ↥Q, C PP := (Finset.prod_coe_sort Q C).symm
   show _ = (∏ PP ∈ Q, C PP)⁻¹ * _
   simp only [hf, ← Finset.prod_mul_distrib]
@@ -1157,7 +1148,6 @@ theorem chrW_val {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : 
 
 end GlobalTheory.FlatConst
 
-
 open GlobalTheory.FlatConst in
 theorem GlobalTheory.FlatConst.flat_const : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T0) (es : Pl D.host.E → AE D) (ϖ : Pl D.host.E → 𝓞 D.host.E) (n : ℕ) (x : (AE D)ˣ), (∀ PP ∈ R.Q t, Formalism.L2.NTheta.IsIdemAt (es PP) PP) → (∑ PP ∈ R.Q t, es PP) * cA D (∑ PP ∈ R.Q t, es PP) = 0 → (∀ PP ∈ R.Q t, ϖ PP ∈ PP.asIdeal ∧ ϖ PP ∉ PP.asIdeal ^ 2) → (x : AE D) = 1 + ∑ PP ∈ R.Q t, cA D (es PP) * (incA D (star (ϖ PP : D.host.E)) ^ n - 1) → ∃ b : ℂ, (∀ τ : ℂ ≃+* ℂ, FixBase T R i τ → τ (b * ∏ PP ∈ R.Q t, (((Real.sqrt (Ideal.absNorm PP.asIdeal : ℝ) : ℝ) : ℂ)⁻¹) ^ n) = b * ∏ PP ∈ R.Q t, (((Real.sqrt (Ideal.absNorm PP.asIdeal : ℝ) : ℝ) : ℂ)⁻¹) ^ n) ∧ (∀ t' : T0, (((Lift.chrTh (R.toLevCh.mu t') R.eta ((i : ℕ) + 1)).2 x : Circle) : ℂ)⁻¹ = b * ((R.xi t' x⁻¹ : Circle) : ℂ)) ∧ (∀ (t' : T0) (S : Finset (Pl D.host.E)), S ⊆ R.Q t' → ∀ u : ∀ PP : Pl D.host.E, (kP PP)ˣ, ∃ s : (AE D)ˣ, ∏ PP ∈ S, ((R.xiR t' PP (u PP) : ℂˣ) : ℂ) = ((R.xi t' s : Circle) : ℂ)) := by
   intro D G _ _ Pl0 T0 A T _ R F hC i t es ϖ n x hes hc hϖ hx
@@ -1256,9 +1246,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
-
-
 namespace GlobalTheory.FlatForm
 
 theorem lift_eq_gauss_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m) (t₀ : T0), VStd D i → ∀ eQ : AE D, IsIdemSum eQ (R.Q t₀) → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ R.Q t₀, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∃ ψP : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ, (∀ PP ∈ R.Q t₀, (ψP PP).IsPrimitive) ∧ ∀ t : T0, R.Q t = R.Q t₀ → ∀ (eg : AE D) (fg : WO (Vc D i) (Wc D i) → ℂ), IsIdemSum eg R.Pg → IsThetaAt R.ψ (symplO (Vc D i) (Wc D i)) (heisO R.ψ (Vc D i) (Wc D i)) (cA D eg) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) 1 (R.vacP i) (fun x => if IsHalf (cA D eg) x ∧ IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x) then omegaK R.Pg (fun PP => redM PP (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x)) else 0) fg → ∀ Gc : ℂ, Gc = (∏ PP ∈ R.Q t₀, ((Nat.card (kP PP) : ℂ) ^ ((Vc D i).rank * (Wc D i).rank) * (GlobalTheory.FlatConj.gaussP PP (ψP PP) (R.xiR t PP) (Wc D i).rank)⁻¹))⁻¹ → IsSBHalf eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (fun x => Gc * (if IsHalf eQ (x.map fun w => incA D (ϖ : D.host.E) * w) ∧ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) then omegaFlat (R.Q t) (Wc D i).rank (R.xiR t) (fun PP => redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w))) else 0)) ∧ ∀ (Tm : (WO (Vc D i) (Wc D i) → ℂ) →ₗ[ℂ] (WO (Vc D i) (Wc D i) → ℂ)), IsPlaceModel R.ψ (symplO (Vc D i) (Wc D i)) (heisO R.ψ (Vc D i) (Wc D i)) eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) 1 fg Tm → R.vP i t = Tm (fun x => Gc * (if IsHalf eQ (x.map fun w => incA D (ϖ : D.host.E) * w) ∧ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) then omegaFlat (R.Q t) (Wc D i).rank (R.xiR t) (fun PP => redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w))) else 0)) := by
@@ -1305,7 +1292,7 @@ theorem lift_eq_gauss_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
     have hi : IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) ((-u).map fun w => incA D (ϖ : D.host.E) * w)) := by
       rw [F2, LiftFlatModel.frMapO_neg]
       exact LiftFlatModel.isIntM_neg (hRs u hu').2
-    rw [if_pos ⟨hh, hi⟩]
+    rw [ite_eq_left ⟨hh, hi⟩]
     apply LiftFlatModel.omegaFlat_congr
     intro PP hPP
     rw [dite_eq_left hPP, F2, LiftFlatModel.frMapO_neg, LiftFlatModel.redM_neg _ (hRs u hu').2]
@@ -1331,14 +1318,14 @@ theorem lift_eq_gauss_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
           (hiii x hxh u huR).2 ⟨hx.2, fun PP hPP => by rw [hured ⟨PP, hPP⟩, neg_neg]⟩
         have hhalf : IsHalf eQ (x + u) := (LiftFlatModel.isHalf_add_iff (hRs u huR).1).2 hxh
         rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u) = 1 from
-          if_pos ⟨hmem, hhalf⟩, mul_one, hPsiNeg u huR, if_pos hx]
+          ite_eq_left ⟨hmem, hhalf⟩, mul_one, hPsiNeg u huR, ite_eq_left hx]
         apply LiftFlatModel.omegaFlat_congr
         intro PP hPP
         rw [dite_eq_left hPP]
         show _ = -(redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (u.map fun w => incA D (ϖ : D.host.E) * w)))
         rw [hured ⟨PP, hPP⟩, neg_neg]
       · intro u' hu' hne
-        rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u') = 0 from if_neg ?_,
+        rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u') = 0 from ite_eq_right ?_,
           mul_zero]
         rintro ⟨hmem, -⟩
         obtain ⟨-, hred⟩ := (hiii x hxh u' hu').1 hmem
@@ -1347,10 +1334,10 @@ theorem lift_eq_gauss_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
           rw [hred PP.1 PP.2, neg_neg]⟩)
       · intro h
         exact absurd huR h
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       symm
       refine Finset.sum_eq_zero fun u hu' => ?_
-      rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u) = 0 from if_neg ?_,
+      rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u) = 0 from ite_eq_right ?_,
         mul_zero]
       rintro ⟨hmem, hhalf⟩
       have hxh : IsHalf eQ x := (LiftFlatModel.isHalf_add_iff (hRs u hu').1).1 hhalf
@@ -1367,8 +1354,8 @@ theorem lift_eq_gauss_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
     intro x
     by_cases hx : x ∈ latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (fun _ => True) ∧ IsHalf (cA D eQ) x
     · have hint := (hiv x hx.2).1 hx.1
-      rw [if_pos ⟨hx.2, hint⟩, show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 1 from
-        if_pos hx, one_mul, hfin, Finset.mul_sum]
+      rw [ite_eq_left ⟨hx.2, hint⟩, show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 1 from
+        ite_eq_left hx, one_mul, hfin, Finset.mul_sum]
       symm
       refine Finset.sum_bij (fun u _ => fun PP : ↥(R.Q t) => redM PP.1 (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i)
           (u.map fun w => incA D (ϖ : D.host.E) * w))) (fun _ _ => Finset.mem_univ _) ?_ ?_ ?_
@@ -1380,11 +1367,11 @@ theorem lift_eq_gauss_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
       · intro u hu'
         rw [hPsiNeg u hu', hv x hx.2 hint u hu', ← Finset.univ_eq_attach]
         ring
-    · rw [show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 0 from if_neg hx,
-        zero_mul, if_neg]
+    · rw [show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 0 from ite_eq_right hx,
+        zero_mul, ite_eq_right]
       rintro ⟨hh, hint⟩
       exact hx ⟨(hiv x hh).2 hint, hh⟩
-  have hθ := GlobalTheory.T.thetaLiftVector_isThetaFunction_twoStepModel D G Pl0 T0 A Ks R F hC hQG i t eg eQ fg heg heQ hfg
+  have hθ := GlobalTheory.ConjTwist.isThetaAt_vP_twoStep D G Pl0 T0 A Ks R F hC hQG i t eg eQ fg heg heQ hfg
   have hvP := LiftFlatModel.thetaAt_sum hθ (fun u hu' => by rw [LiftFlatModel.cA_cA]; exact (hRs u hu').1) hB
   have hΨ : ∀ x : WO (Vc D i) (Wc D i), Gc * (if IsHalf eQ (x.map fun w => incA D (ϖ : D.host.E) * w) ∧
         IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) then
@@ -1557,8 +1544,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
-
 theorem GlobalTheory.FlatConj.flat_conj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m) (τ : ℂ ≃+* ℂ) (t t' : T0), VStd D i → FixBase T R i τ → ConjTup R τ t t' → ∀ f f', IsFlatVec R i t f → IsFlatVec R i t' f' → ∃ (z : GA D (Vc D i)) (c c' : ℂ) (s : (AE D)ˣ), IsCentAt i (R.Q t) z ∧ f = c • R.ωP i t (z, 1) (R.vP i t) ∧ f' = c' • R.ωP i t' (z, 1) (R.vP i t') ∧ c' = ((R.xi t' s : Circle) : ℂ) * τ c := by
   intro D G _ _ Pl0 T0 A T _ R F κ v₀ hC hQG i τ t t' hV hFix hct f f' hf hf'
   obtain ⟨z, B, ε, r, ψP, hz, hB, hprim, hform⟩ := _root_.GlobalTheory.FlatForm.flat_eq_gauss_smul_om D G Pl0 T0 A T R F hC hQG i t hV
@@ -1574,13 +1559,13 @@ theorem GlobalTheory.FlatConj.flat_conj : ∀ (D : D7) (G : Type) [Group G] [Fin
   choose a ha using hg
   let v : Pl D.host.E → ℂ := fun PP => if h : PP ∈ R.Q t then ((R.xiR t' PP (a PP h) : ℂˣ) : ℂ) else 1
   obtain ⟨s3, e3⟩ := GlobalTheory.FlatConj.prod_val (R.xi t') (R.Q t) v fun PP hP => by
-    simp only [v, dif_pos hP]
+    simp only [v, dite_eq_left hP]
     exact GlobalTheory.FlatConj.xiR_val hC t' PP (hct.1 ▸ hP) _
   have hprod : ∏ PP ∈ R.Q t, τ (GlobalTheory.FlatConj.gaussP PP (ψP PP) (R.xiR t PP) r) =
       (∏ PP ∈ R.Q t, v PP) ^ r * ∏ PP ∈ R.Q t, GlobalTheory.FlatConj.gaussP PP (ψP PP) (R.xiR t' PP) r := by
     rw [← Finset.prod_pow, ← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun PP hP => ?_
-    simp only [v, dif_pos hP]
+    simp only [v, dite_eq_left hP]
     exact ha PP hP
   refine ⟨z, _, _, s2 * s1⁻¹ * s3 ^ (-((r : ℤ) * ε)), hz, e1, e2, ?_⟩
   have hX : ((R.xi t' s1 : Circle) : ℂ) ≠ 0 := Circle.coe_ne_zero _
@@ -1608,8 +1593,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-theorem _root_.GlobalTheory.T.thetaSeries_translated_datum_at_translated_class : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T0) (z : GA D (Vc D i)) (c : ℂ), z ∈ GfC (Vc D i) → ∀ (u : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) (h : GA D (Vc D i)) (w : (R.cV i).W) (g : GA D (Wc D i)), ser R i t (c • R.ωP i t (z, 1) (R.vP i t)) u h w g = c * ser R i t (R.vP i t) u (h * z) w g := by
-  first | exact @GlobalTheory.Adopt.thetaSeries_translated_datum_at_translated_class
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaSeriesTranslatedDatumAtTranslatedClassStatement =====
@@ -1687,8 +1670,6 @@ theorem GlobalTheory.ConjTwist.FlatSeries.conjFun_scale (O : OMDat T.toCore R i 
   exact ⟨key.1, fun n a f ha g => key.2 n a f ha g⟩
 end
 
-
-
 theorem GlobalTheory.ConjTwist.FlatSeries.conj_flat_series : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2 → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec) (O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0)) (ph : Fin D.R.m → ℂ), 8 * D.R.f * D.R.r + 4 ≤ D.R.nV → GlobalTheory.Hk3.Core R F → Finite T0 → Nonempty (FWTie T R κ v₀) → IoExt R → QGuard R → ∀ i : Fin D.R.m, OMPins T R κ v₀ O i → PhaseTie T R κ v₀ O ph i → ∀ (c : VsV D i ℂ →ₗ[ℂ] (R.cV i).W), ExtC R i (inC (O i).c') (O i).c0' c → ∀ u : (∀ ρ, lowT (R.MW i (sg0 D A)) ρ), (∀ ρ, (u ρ : (R.MW i (sg0 D A)).sm ρ) = v₀ i (sg0 D A) ρ) → ∀ τ : ℂ ≃+* ℂ, FixBase T R i τ → ∃ ζ0 : ℂ, IsRoot1 ζ0 ∧ ∀ t t' : T0, ConjTup R τ t t' → ∀ f f', IsFlatVec R i t f → IsFlatVec R i t' f' → ∃ s : (AE D)ˣ, ∀ h ∈ GfC (Vc D i), ∀ x x' : VsV D i ℂ, ConjVec i τ x x' → ConjFun (O i) (κ i) τ (ζ0 * ((R.xi t' s : Circle) : ℂ)) (fun g => ph i * ser R i t f u h (c x) g) (fun g => ph i * ser R i t' f' u h (c x') g) := by
   intro hCI D G _ _ Pl0 T0 A T _ R F κ v₀ O ph hn hCore hT0 hFW hIo hQ i hPins hPh cc hcc u hu τ hFix
   obtain ⟨ζ0, hζ0, hser⟩ := _root_.GlobalTheory.ConjTwist.conjFun_ser hCI D G Pl0 T0 A T R F κ v₀ O ph hn hCore hT0 hFW hIo hQ i hPins hPh cc hcc u hu τ hFix
@@ -1702,11 +1683,11 @@ theorem GlobalTheory.ConjTwist.FlatSeries.conj_flat_series : Formalism.MainNotio
   have sc := GlobalTheory.ConjTwist.FlatSeries.conjFun_scale (O i) (κ i) τ base hC
   have e1 : (fun g => ph i * ser R i t (C • R.ωP i t (z, 1) (R.vP i t)) u h (cc x) g) =
       fun g => C * (ph i * ser R i t (R.vP i t) u (h * z) (cc x) g) := funext fun g => by
-    rw [GlobalTheory.T.thetaSeries_translated_datum_at_translated_class D G Pl0 T0 A T.Q.c.F R F hCore i t z C hzG u h (cc x) g]
+    rw [CompanionTheory.Member.thetaSeries_translated_datum_eq_translated_class D G Pl0 T0 A T.Q.c.F R F hCore i t z C hzG u h (cc x) g]
     ring
   have e2 : (fun g => ph i * ser R i t' (C' • R.ωP i t' (z, 1) (R.vP i t')) u h (cc x') g) =
       fun g => C' * (ph i * ser R i t' (R.vP i t') u (h * z) (cc x') g) := funext fun g => by
-    rw [GlobalTheory.T.thetaSeries_translated_datum_at_translated_class D G Pl0 T0 A T.Q.c.F R F hCore i t' z C' hzG u h (cc x') g]
+    rw [CompanionTheory.Member.thetaSeries_translated_datum_eq_translated_class D G Pl0 T0 A T.Q.c.F R F hCore i t' z C' hzG u h (cc x') g]
     ring
   rw [e1, e2]
   have e3 : ζ0 * ((R.xi t' (s * s₂) : Circle) : ℂ) = ζ0 * ((R.xi t' s : Circle) : ℂ) * ((R.xi t' s₂ : Circle) : ℂ) := by

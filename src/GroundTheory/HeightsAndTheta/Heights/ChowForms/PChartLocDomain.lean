@@ -42,8 +42,7 @@ theorem linForm_not_mem_sup {I : Ideal (MvPolynomial (Fin n) F)} (hI : IsProjPri
     fun hg => by rw [← hφ]; exact aeval_mul_of_isHomogeneous hg _ _
   have hle : I ⊔ Ideal.span {linForm t - 1} ≤ RingHom.ker ψ := by
     refine sup_le (fun g hg => ?_) ?_
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [RingHom.mem_ker, ← sum_homogeneousComponent g, map_sum]
+    · rw [RingHom.mem_ker, ← sum_homogeneousComponent g, map_sum]
       refine Finset.sum_eq_zero fun d _ => ?_
       rw [hhom (homogeneousComponent_isHomogeneous d g)]
       have : φ (homogeneousComponent d g) = 0 := by

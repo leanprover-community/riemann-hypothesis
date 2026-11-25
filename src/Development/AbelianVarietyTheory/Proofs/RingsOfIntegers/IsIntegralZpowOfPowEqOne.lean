@@ -3,44 +3,7 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsQuotEquiv
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HalvesFreeAndAdjoint
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfTies
 import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
@@ -107,7 +70,7 @@ theorem datum_isIntegral : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     obtain ⟨-, htrans, adj, -, hadj⟩ := GlobalTheory.HalfPairing.halves_free_and_adjoint E H Dw l Xo c n d hd
     let pad : (Fin n → LaJ Xo c d) → Fin (Dw.p + Dw.q) → LaJ Xo c d :=
       fun z i => if h : i.val < n then z ⟨i.val, h⟩ else 0
-    have hpadv : ∀ z i (h : i.val < n), pad z i = z ⟨i.val, h⟩ := fun z i h => dif_pos h
+    have hpadv : ∀ z i (h : i.val < n), pad z i = z ⟨i.val, h⟩ := fun z i h => dite_eq_left h
     have hpad : ∀ z : Fin n → LaJ Xo c d, Submodule.span (𝓞 E) (z '' {b | b.val < Dw.p + Dw.q}) = ⊤ →
         Submodule.span (𝓞 E) (Set.range (pad z)) = ⊤ := by
       intro z hz

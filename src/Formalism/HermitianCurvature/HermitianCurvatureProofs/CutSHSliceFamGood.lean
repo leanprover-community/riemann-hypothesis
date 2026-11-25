@@ -115,7 +115,7 @@ private theorem mMap_mem_GV_of_isUnit_det_of_mem_GV {k j ρ : ℕ} (Z : Matrix (
     rw [Finset.sum_eq_single b.rev]
     · simp [Fin.rev_rev, Fin.rev_inj, eq_comm]
     · intro c _ hc
-      rw [if_neg (fun h => hc ((hr c b).2 h))]
+      rw [ite_eq_right (fun h => hc ((hr c b).2 h))]
       simp
     · simp
   have hwh : (G.wMat j).conjTranspose = G.wMat j := by
@@ -565,9 +565,6 @@ theorem radial_entry_lower_zero (y : U.RC k 1 ρ) :
     U.Rn k 1 ρ y (U.eB k 1 ρ (Sum.inr 0)) (U.eB k 1 ρ (Sum.inl (Sum.inl 0))) = 0 := by
   simp [radical_unipotent_rank_one_apply]
 
-theorem hpk_le (a b : Fin (2 * ρ + k + 1)) : ‖Hpk k ρ a b‖ ≤ 1 := by
-  unfold Hpk; split_ifs <;> simp
-
 theorem vm_bd {N : ℕ} (s : Fin N → ℂ) (H : Matrix (Fin N) (Fin N) ℂ) (hH : ∀ i j, ‖H i j‖ ≤ 1) {A : ℝ}
     (hA : 0 ≤ A) (hs : ∀ i, ‖s i‖ ≤ A) (v : Fin N) : ‖Matrix.vecMul s H v‖ ≤ N * A := by
   rw [Matrix.vecMul]
@@ -666,7 +663,7 @@ theorem rad_main (t : ℂ) (γ : B.Mat k ρ) (x x' : U.RC k 1 ρ) {R δ : ℝ} (
   have hcx : ∀ v, ‖cy x v‖ ≤ R / δ := fun v =>
     div_bd hδ ht (by rw [← norm_neg, ← PVO]; exact hQ _ _)
   have hux : ∀ v, ‖Matrix.vecMul (star (cy x)) (Hpk k ρ) v‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ) :=
-    vm_bd _ _ hpk_le hRd (fun i => by rw [Pi.star_apply, norm_star]; exact hcx i)
+    vm_bd _ _ Formalism.FourierDecayAlt.P.CapelliWordSumExpansion.hpk_entry hRd (fun i => by rw [Pi.star_apply, norm_star]; exact hcx i)
   have hnn : ‖nn x‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * ((((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ)) * (R / δ)) :=
     dot_bd _ _ hnR hRd hux hcx
   rw [PLO] at eO
@@ -699,7 +696,7 @@ theorem rad_main (t : ℂ) (γ : B.Mat k ρ) (x x' : U.RC k 1 ρ) {R δ : ℝ} (
   have hcx' : ∀ v, ‖cy x' v‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ) := by
     intro v
     rw [← norm_star, ← Pi.star_apply, ← hs]
-    exact vm_bd _ _ hpk_le hRd hu' v
+    exact vm_bd _ _ Formalism.FourierDecayAlt.P.CapelliWordSumExpansion.hpk_entry hRd hu' v
   have hnn' : ‖nn x'‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * ((R / δ) * (((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ))) :=
     dot_bd _ _ hRd hnR hu' hcx'
   have ha' : ‖-(1 / 2 : ℂ) * nn x' + Complex.I * (dy x' : ℂ)‖ ≤ R / δ := by
@@ -726,7 +723,7 @@ theorem rad_main (t : ℂ) (γ : B.Mat k ρ) (x x' : U.RC k 1 ρ) {R δ : ℝ} (
         linarith
   · intro i j
     have h := eV i (U.eB k 1 ρ (Sum.inl (Sum.inr j)))
-    simp only [rn_VV, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    simp only [rn_VV, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     rw [← h]
     calc _ ≤ ‖P (U.eB k 1 ρ (Sum.inl (Sum.inr i))) (U.eB k 1 ρ (Sum.inl (Sum.inr j)))‖ +
           ‖cy x i * P (U.eB k 1 ρ (Sum.inr 0)) (U.eB k 1 ρ (Sum.inl (Sum.inr j)))‖ := norm_add_le _ _
@@ -887,9 +884,9 @@ theorem point_smooth : PtSmooth := by
       unfold ell
       refine ContDiff.sum fun a _ => ?_
       by_cases h : a.val + 1 < m
-      · simp only [dif_pos h]
+      · simp only [dite_eq_left h]
         exact hE _ _
-      · simp only [dif_neg h, Matrix.mulVec, dotProduct]
+      · simp only [dite_eq_right h, Matrix.mulVec, dotProduct]
         exact ContDiff.sum fun b _ => (hE _ _).mul contDiff_const
     unfold psi
     have hre : ContDiff ℝ ∞ (fun x : U.RC k 1 ρ => (((cStd * ell k m z (rn1 e x)).re : ℝ) : ℂ)) :=

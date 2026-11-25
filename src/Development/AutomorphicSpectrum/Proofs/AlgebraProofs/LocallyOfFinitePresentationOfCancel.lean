@@ -61,8 +61,8 @@ private lemma exists_retr {C D : Type*} [CommRing C] [CommRing D] [Algebra C D] 
 end FiniteTypeOfFiniteProjectiveExtension
 
 theorem UpperTheory.Reformulated.B.FiniteTypeDescent.main.{u_1, u_2, u_3} :
-    ∀ (R : Type u_1) (C : Type u_2) (D : Type u_3) [inst : CommRing R] [inst_1 : CommRing C] [inst_2 : CommRing D]
-      [inst_3 : Algebra R C] [inst_4 : Algebra C D] [inst_5 : Algebra R D] [IsScalarTower R C D] [Module.Finite C D]
+    ∀ (R : Type u_1) (C : Type u_2) (D : Type u_3) [CommRing R] [CommRing C] [CommRing D]
+      [Algebra R C] [Algebra C D] [Algebra R D] [IsScalarTower R C D] [Module.Finite C D]
       [Module.Projective C D],
       Function.Injective (⇑(Algebra.algebraMap C D) : C → D) → ∀ [Algebra.FiniteType R D], Algebra.FiniteType R C := by
   intro R C D _ _ _ _ _ _ _ _ _ hinj hft

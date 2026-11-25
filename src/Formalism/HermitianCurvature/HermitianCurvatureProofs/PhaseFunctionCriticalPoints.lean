@@ -174,7 +174,7 @@ theorem phase_function_deriv : Formalism.FourierDecayAlt.G.PhaseFunctionDeriv :=
       unfold hess
       rw [prod_split x j]
       have := hx i; have := hx j; have := hQ j
-      simp only [if_neg hij]
+      simp only [ite_eq_right hij]
       field_simp
 
 theorem phase_function_critical_points : Formalism.FourierDecayAlt.G.PhaseFunctionCritical := by
@@ -270,7 +270,7 @@ theorem root_set_characterization : Formalism.FourierDecayAlt.G.RootSetSpec := b
     have hprim := Complex.isPrimitiveRoot_exp s hs.ne'
     unfold rootSet
     rw [Multiset.toFinset_card_of_nodup (hprim.nthRoots_nodup ha), hprim.card_nthRoots]
-    rw [if_pos (IsAlgClosed.exists_pow_nat_eq a hs)]
+    rw [ite_eq_left (IsAlgClosed.exists_pow_nat_eq a hs)]
 
 theorem stationary_leading_constant : Formalism.FourierDecayAlt.G.LeadingConstant := by
   intro m τ ζ hτ hζ

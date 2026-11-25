@@ -33,9 +33,6 @@ theorem hpk_conjT (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
 theorem sg_lt {k r i : ℕ} (h : i < 2 * r + k + 1) : sg k r i < 2 * r + k + 1 := by
   unfold sg; split_ifs <;> omega
 
-theorem sg_sg {k r i : ℕ} (h : i < 2 * r + k + 1) : sg k r (sg k r i) = i := by
-  unfold sg; split_ifs <;> omega
-
 theorem sg_rk {k r i : ℕ} (h : i < 2 * r + k + 1) : sg k r i = r + k ↔ i = r + k := by
   unfold sg; split_ifs <;> omega
 
@@ -91,7 +88,7 @@ theorem io_out (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1))
     (hq : q.val = 0 ∨ q.val = 2 * (1 + r') + k) : ιLev k 1 r' g p q = if p = q then 1 else 0 := by
   unfold ιLev
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
-  · rw [dite_eq_left hp, dite_eq_right (by omega), if_neg (fun h => by subst h; omega)]
+  · rw [dite_eq_left hp, dite_eq_right (by omega), ite_eq_right (fun h => by subst h; omega)]
   · rw [dite_eq_right hp]
 
 theorem io_out' (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1))
@@ -109,7 +106,7 @@ theorem io_lv (g : Mat k r') (v : Fin (2 * r' + k + 1) → ℂ) :
     exact Finset.sum_congr rfl fun q _ => by rw [io_in, lv_in]
   · rw [lv_out _ p (by omega)]
     exact Finset.sum_eq_zero fun q _ => by
-      rw [io_out' g p _ (by omega), if_neg (fun h => by rw [h, sh_val] at hp; omega), zero_mul]
+      rw [io_out' g p _ (by omega), ite_eq_right (fun h => by rw [h, sh_val] at hp; omega), zero_mul]
 
 theorem io_bvec_out (g : Mat k r') (q : Fin (2 * (1 + r') + k + 1)) (hq : q.val = 0 ∨ q.val = 2 * (1 + r') + k) :
     ιLev k 1 r' g *ᵥ bvec q = bvec q := by
@@ -120,7 +117,7 @@ theorem bvec_lv (q : Fin (2 * r' + k + 1)) : (bvec (sh q) : Fin (2 * (1 + r') + 
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
   · obtain ⟨p', rfl⟩ := exists_sh p hp
     rw [lv_in]; unfold bvec; simp only [Pi.single_apply, Fin.ext_iff, sh_val]; simp
-  · rw [lv_out _ p (by omega)]; unfold bvec; rw [Pi.single_apply, if_neg (fun h => by rw [h, sh_val] at hp; omega)]
+  · rw [lv_out _ p (by omega)]; unfold bvec; rw [Pi.single_apply, ite_eq_right (fun h => by rw [h, sh_val] at hp; omega)]
 
 theorem io_bvec_sh (g : Mat k r') (q : Fin (2 * r' + k + 1)) :
     ιLev k 1 r' g *ᵥ bvec (sh q) = liftVec k 1 r' (g *ᵥ bvec q) := by
@@ -148,11 +145,11 @@ theorem io_conjT (g : Mat k r') : ιLev k 1 r' gᴴ = (ιLev k 1 r' g)ᴴ := by
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1 <;>
     by_cases hq : 1 ≤ q.val ∧ q.val < 2 * r' + k + 1 + 1
   · rw [dite_eq_left hp, dite_eq_left hq, dite_eq_left hq, dite_eq_left hp, conjTranspose_apply]
-  · rw [dite_eq_left hp, dite_eq_right hq, dite_eq_right hq, if_neg (fun h => by subst h; exact hq hp), star_zero]
-  · rw [dite_eq_right hp, dite_eq_left hq, dite_eq_right hp, if_neg (fun h => by subst h; exact hp hq), star_zero]
+  · rw [dite_eq_left hp, dite_eq_right hq, dite_eq_right hq, ite_eq_right (fun h => by subst h; exact hq hp), star_zero]
+  · rw [dite_eq_right hp, dite_eq_left hq, dite_eq_right hp, ite_eq_right (fun h => by subst h; exact hp hq), star_zero]
   · rw [dite_eq_right hp, dite_eq_right hq]; by_cases h : p = q
     · subst h; simp
-    · rw [if_neg h, if_neg (Ne.symm h), star_zero]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h), star_zero]
 
 end Lev
 

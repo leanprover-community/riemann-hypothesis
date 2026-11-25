@@ -15,60 +15,9 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Emb
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.IsOrth
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentHaarRealSUOfMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PhaseFrame
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.ThetaMetrics.NormDetStrongContragredientDomRestrictAnnihilato, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewFamilyEqOfStrictLowerOfDiagIm, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewFamilyInnerReEqStrictLowerAddDiagIm, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialUnitaryLieAlgebraEntriesOrthonormalFrame, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianMeasureLieAlgebraEqSmulMapChartLebesgu
@@ -539,10 +488,10 @@ theorem riemLie_eq_smul_map (E : Type) [Field E] [NumberField E] [IsCMField E] (
     rw [hT0]
     have key := _root_.GlobalTheory.skewFamily_eq_of_strictLower_of_diagIm s hs (fun p => frameL x (D w) p) (fun p => Y.1 p) (hskw w).1 (hskw w).2 hY.1 hY.2
       (fun τ a b hab => by
-        simp only [frameL_apply, (hD w).2.1 τ a b hab, nmat, dif_pos hab, w, PiLp.toLp_apply, Equiv.symm_apply_apply])
+        simp only [frameL_apply, (hD w).2.1 τ a b hab, nmat, dite_eq_left hab, w, PiLp.toLp_apply, Equiv.symm_apply_apply])
       (fun τ a ha => by
         simp only [frameL_apply, (hD w).2.2 τ a, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
-          Complex.ofReal_im, zero_mul, one_mul, zero_add, angles, dif_pos (show (a : ℕ) < r - 1 by omega), w])
+          Complex.ofReal_im, zero_mul, one_mul, zero_add, angles, dite_eq_left (show (a : ℕ) < r - 1 by omega), w])
     ext p
     exact congrFun key p
   let T : ChartSp X ≃ₗ[ℝ] S := LinearEquiv.ofBijective T0 ⟨hT0inj, hT0surj⟩
@@ -558,7 +507,7 @@ theorem riemLie_eq_smul_map (E : Type) [Field E] [NumberField E] [IsCMField E] (
         v.1 (Fintype.equivFin (Ent X) q) := by
       intro v q
       rw [frameL_apply, (hD v).2.1 _ _ _ q.2.2]
-      simp only [nmat, dif_pos q.2.2]
+      simp only [nmat, dite_eq_left q.2.2]
     have hdg : ∀ (v : ChartSp X) τ a, (frameL x (D v) (τ, a, a)).im = angles (v.2 τ) a := by
       intro v τ a
       rw [frameL_apply, (hD v).2.2]; simp

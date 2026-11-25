@@ -1008,7 +1008,6 @@ theorem weilSL2_hermitian : WeilEt → GammaOne → ∀ (F E : Type) [Nontrivial
   have hnorm : ∀ y : A.L, Algebra.trace F A.K (A.NL y) = Algebra.trace F E (star (j y) ⬝ᵥ j y) / 2 := by
     intro y
     have : star (j y) ⬝ᵥ j y = algebraMap F E (∑ i, e (A.NL y) i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [dotProduct, Pi.star_apply, map_sum, hNe y, mul_comm]
     rw [this, htr2, _root_.GlobalTheory.trace_eq_sum_coords_of_algEquiv r e]; field_simp
   have testj : ∀ φ : (Fin r → E) → ℂ, IsTest φ → IsTest (fun y : A.L => φ (j y)) := fun φ hφ =>

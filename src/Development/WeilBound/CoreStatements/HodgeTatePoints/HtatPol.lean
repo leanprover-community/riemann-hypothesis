@@ -96,7 +96,7 @@ private theorem exists_finrank_family_mod_smul {R : Type} [CommRing R] [IsDedeki
     intro P hP i
     have : u i - m P i = ∑ Q ∈ F, (e Q - if P = Q then 1 else 0) • m Q i := by
       simp only [u, sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul,
-        Finset.sum_ite_eq, hP, if_true]
+        Finset.sum_ite_eq, hP, ite_true]
     rw [this]
     exact Submodule.sum_mem _ fun Q hQ => Submodule.smul_mem_smul (he Q hQ P hP) Submodule.mem_top
   set N := Submodule.span R (Set.range u) ⊔ Ideal.span {a} • (⊤ : Submodule R M)

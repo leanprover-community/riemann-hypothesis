@@ -31,7 +31,7 @@ private theorem map_reducible_three_dim {G R S : Type} [Group G] [CommRing R] [C
   · ext i j
     simp [r0, GG.map, tor_val, Matrix.diagonal_apply]
     split_ifs
-    · simp only [← map_zpow, ← map_pow, Units.coe_map]
+    · simp only [← map_zpow, Units.coe_map]
       rfl
     · exact map_zero f
   · simp [r0, GG.map]

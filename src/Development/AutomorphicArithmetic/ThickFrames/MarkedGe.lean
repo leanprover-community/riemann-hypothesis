@@ -149,7 +149,7 @@ theorem UpperTheory.BernoulliSumsFrobeniusOrbits.marked_ge :
         apply Finset.prod_eq_zero (i := j) (Finset.mem_range.2 (by omega))
         by_cases hj : Even j
         · have hne : ¬ Even (j + 1) := Nat.not_even_iff_odd.2 hj.add_one
-          simp only [hg, hA, if_pos hj]
+          simp only [hg, hA, ite_eq_left hj]
           apply ind_neg'
           intro h
           exact hc ⟨fun _ => h, fun he => absurd he hne⟩
@@ -158,7 +158,7 @@ theorem UpperTheory.BernoulliSumsFrobeniusOrbits.marked_ge :
             · exact absurd h hj
             · exact h.add_one
           have hno : ¬ Odd (j + 1) := Nat.not_odd_iff_even.2 hev
-          simp only [hg, hA, if_neg hj]
+          simp only [hg, hA, ite_eq_right hj]
           apply ind_neg'
           intro h
           exact hc ⟨fun ho => absurd ho hno, fun _ => h⟩
@@ -169,18 +169,18 @@ theorem UpperTheory.BernoulliSumsFrobeniusOrbits.marked_ge :
         exP p (A j) (g j) := by
     intro j _
     by_cases hj : Even j
-    · rw [if_pos hj]
+    · rw [ite_eq_left hj]
       have hcard : (A j).card = u := GlobalTheory.RandomTops.cell_card (by omega)
       have := one_sub_pow_le_bernoulliExpectation_empty (fun b => (hp b).2) h1 (A j)
       rw [hcard] at this
-      simpa only [hg, if_pos hj] using this
-    · rw [if_neg hj]
+      simpa only [hg, ite_eq_left hj] using this
+    · rw [ite_eq_right hj]
       have hAj : A j = Finset.Ico (s * ((6 * r + 1) * u) + j * u) (s * ((6 * r + 1) * u) + j * u + u) := by
         simp only [hA, Formalism.G0.cell, Nat.add_sub_cancel]
         congr 1
         ring
       rw [hAj]
-      simpa only [hg, if_neg hj] using le_bernoulliExpectation_singleton_even hp h0 h1 (s * ((6 * r + 1) * u) + j * u) u
+      simpa only [hg, ite_eq_right hj] using le_bernoulliExpectation_singleton_even hp h0 h1 (s * ((6 * r + 1) * u) + j * u) u
   have hprod := Finset.prod_le_prod₀ (fun j _ => by split_ifs <;> positivity) hlow
   have h6 : 6 * r + 1 = 2 * (3 * r) + 1 := by ring
   rw [h6, GlobalTheory.RandomTops.prod_alternate] at hprod

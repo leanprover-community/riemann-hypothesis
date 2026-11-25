@@ -81,7 +81,7 @@ theorem re_trace_eq (ε : Fin m → Bool) (u y : Fin m → Fin n → ℂ) :
   have hs : (starRingEnd ℂ) (sgn ε a) = sgn ε a := by
     simp only [sgn]; split_ifs <;> simp
   rw [hs, ← Complex.star_def]
-  simp only [Matrix.diagonal_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Matrix.diagonal_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring_nf
 
 theorem haar_Lc : ∃ c : ℝ, 0 < c ∧ ∀ F : V m n → ℂ, Continuous F →

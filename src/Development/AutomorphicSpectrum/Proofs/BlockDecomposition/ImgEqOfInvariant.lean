@@ -120,10 +120,10 @@ theorem exists_signs (ι : A → A) (hι : ∀ a, ι (ι a) = a) :
       constructor
       · rintro ⟨j, ⟨rfl, h⟩ | ⟨rfl, h⟩⟩
         · by_contra hc
-          simp only [e, hc, if_false] at h
+          simp only [e, hc, ite_false] at h
           split_ifs at h
         · by_contra hc
-          simp only [e, hc, if_false] at h
+          simp only [e, hc, ite_false] at h
           split_ifs at h
       · intro ha
         have hna := hI a ha

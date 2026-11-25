@@ -99,8 +99,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.hasSemiAbelianUniformisation_of_finiteExt_trans : ∀ (R R' : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [CommRing R'] [IsDomain R'] [IsLocalRing R'] (ρ : R →+* R'), FinExt ρ → ∀ (D : DegData R (maximalIdeal R)) (D' : DegData R' (maximalIdeal R')), Nonempty (IsPullDeg ρ D.toPre D'.toPre) → HasFin D' → HasFin D := by
-  first | exact @GlobalTheory.Mum.hasFin_of_finExt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasSemiAbelianUniformisationOfFiniteExtTransStatement =====
@@ -123,8 +121,8 @@ theorem app_bijective (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (hR :
     (hp : IsPullback β G'.hom G.hom M.π) : ∀ V : G.left.Opens, Function.Bijective (β.app V).hom := by
   obtain ⟨hN, -, hI, -⟩ := hR
   haveI := M.proper
-  exact GlobalTheory.T.app_bijective_of_flat_baseChange_globalFunctions R M.S G.left G'.left M.π G.hom β G'.hom inferInstance inferInstance
-    (GlobalTheory.T.appTop_bijective_and_surjective_normalDomain R M).1 hf hp
+  exact GlobalTheory.Mum.app_bijective_of_flat_baseChange R M.S G.left G'.left M.π G.hom β G'.hom inferInstance inferInstance
+    (GlobalTheory.Mum.Modif.appTop_bijective_surjective R M).1 hf hp
 
 theorem exists_closed_spec (R : Type) [CommRing R] [IsLocalRing R] (G : Over (Sp R)) (hG : QuasiCompact G.hom)
     (y : G.left) (hy : G.hom y = closedPoint R) :
@@ -494,7 +492,7 @@ theorem exists_cp_descent : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRin
   obtain ⟨w, hw⟩ := hLw
   obtain ⟨_, -, _, -⟩ := hR
   have hp := (isGen_iff w).1 hw
-  obtain ⟨hbijπ, hsurjπ⟩ := GlobalTheory.T.appTop_bijective_and_surjective_normalDomain R M
+  obtain ⟨hbijπ, hsurjπ⟩ := GlobalTheory.Mum.Modif.appTop_bijective_surjective R M
   have := M.proper
   have hf1 : Flat G.hom := by have := hG.smooth; infer_instance
   have hf2 : Flat (G2 G).hom := flat_tensor _ _
@@ -503,7 +501,7 @@ theorem exists_cp_descent : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRin
   have key : ∀ {Y Z : Scheme.{0}} (y : Y ⟶ Sp R) (p : Z ⟶ Y) (q : Z ⟶ M.S), Flat y → IsPullback p q y M.π →
       (∀ V, Function.Bijective (p.app V).hom) ∧ (∀ {X : Scheme.{0}} (a b : Y ⟶ X), p ≫ a = p ≫ b → a = b) := by
     intro Y Z y p q hy hpb
-    have hb := GlobalTheory.T.app_bijective_of_flat_baseChange_globalFunctions R M.S Y Z M.π y p q inferInstance inferInstance hbijπ hy hpb
+    have hb := GlobalTheory.Mum.app_bijective_of_flat_baseChange R M.S Y Z M.π y p q inferInstance inferInstance hbijπ hy hpb
     have : Surjective p := MorphismProperty.of_isPullback hpb.flip hsurjπ
     exact ⟨hb, fun a b e => cancel_of_surjective p (fun V => (hb V).1) a b e⟩
   obtain ⟨A2, A3, A4⟩ := _root_.GlobalTheory.Mum.PowCart.isPullback_pow h
@@ -830,10 +828,6 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.Mum
 
-theorem specMap_contravariant_comp_ringHom {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp [spMap, ← Spec.map_comp]
-
 theorem Near.closed_product_unique : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (M : Modif R) (G' : Over M.S) [GrpObj G'] (E : Emb M.π G') (N : Near M.π G') (fU : N.U.left ⟶ PSpace R E.N) (l : pullback N.U.hom M.π ⟶ E.H.toScheme), l ≫ E.H.ι = N.u → l ≫ E.f = pullback.fst _ _ ≫ fU → Surjective M.π → ∀ (Ω : Type) [Field Ω] (κ : ResidueField R →+* Ω) (s s' : Sp Ω ⟶ M.S) (a b c c' : Sp Ω ⟶ N.U.left) (x y : Over.mk s ⟶ G') (x' y' : Over.mk s' ⟶ G'), s ≫ M.π = spMap (κ.comp (residue R)) → s' ≫ M.π = spMap (κ.comp (residue R)) → N.Pt s a x.left → N.Pt s b y.left → N.Pt s c (x * y).left → N.Pt s' a x'.left → N.Pt s' b y'.left → N.Pt s' c' (x' * y').left → c = c' := by
   intro R _ _ _ M G' _ E N fU l hl1 hl2 hsurj Ω _ κ s s' a b c c' x y x' y' hs hs' ha hb hc ha' hb' hc'
   obtain ⟨Ω₁, _, io₁, ca, cb, hca, hcb, hcc⟩ := _root_.GlobalTheory.Mum.closed_product_image R M G' E N fU l hl1 hl2 Ω κ s a b c x y hs ha hb hc
@@ -875,7 +869,7 @@ theorem Near.closed_product_unique : ∀ (R : Type) [CommRing R] [IsDomain R] [I
   have hco : ∀ d : Sp Ω ⟶ N.U.left, d ≫ N.U.hom = spMap (κ.comp (residue R)) →
       (spMap (j₁.comp io₁) ≫ d) ≫ N.U.hom = spMap (((j₁.comp io₁).comp κ).comp (residue R)) := by
     intro d hd
-    rw [Category.assoc, hd, specMap_contravariant_comp_ringHom]
+    rw [Category.assoc, hd, GlobalTheory.spMap_comp_ring]
   have key := _root_.GlobalTheory.Mum.ClosedFibreInj.closedFibre_inj R M G' E N fU l hl1 hl2 hsurj Ω₃ ((j₁.comp io₁).comp κ) (spMap (j₁.comp io₁) ≫ c)
     (spMap (j₁.comp io₁) ≫ c') (hco c (hlies s c _ hs hc)) (hco c' (hlies s' c' _ hs' hc'))
     (by simpa only [Category.assoc] using hfU)
@@ -1113,7 +1107,7 @@ theorem morphism_descends : ∀ (R : Type) [CommRing R] (S Y Z W : Scheme.{0}) (
   have hg := IsOpenImmersion.lift_fac O'.ι _ hrange
   haveI hiso : IsIso (p.app (V.ι ''ᵁ ⊤)) :=
     (ConcreteCategory.isIso_iff_bijective _).mpr
-      (GlobalTheory.T.app_bijective_of_flat_baseChange_globalFunctions R S Y Z π y p q inferInstance inferInstance hbij hflat hpb _)
+      (GlobalTheory.Mum.app_bijective_of_flat_baseChange R S Y Z π y p q inferInstance inferInstance hbij hflat hpb _)
   haveI : IsIso (p ∣_ V).appTop := by
     rw [morphismRestrict_appTop]
     refine @IsIso.comp_isIso _ _ _ _ _ _ _ hiso ?_
@@ -1182,10 +1176,10 @@ theorem descend_glue : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRin
       simp only [a, Category.assoc, ← morphismRestrict_ι, pullback.condition_assoc]
     · rw [morphismRestrict_ι]
       simp only [a, Category.assoc, ← morphismRestrict_ι]
-  obtain ⟨m, hm, -⟩ := GlobalTheory.T.exists_descent_of_equalised_proper_cover_normal R S (⨆ i, V i).toScheme (p ⁻¹ᵁ (⨆ i, V i)).toScheme W π ((⨆ i, V i).ι ≫ y)
+  obtain ⟨m, hm, -⟩ := GlobalTheory.MorDescent.descend R S (⨆ i, V i).toScheme (p ⁻¹ᵁ (⨆ i, V i)).toScheme W π ((⨆ i, V i).ι ≫ y)
     (p ∣_ (⨆ i, V i)) ((p ⁻¹ᵁ (⨆ i, V i)).ι ≫ q) hπp hπs hSi hflat hsq (Z.homOfLE hV' ≫ h) heq
   refine ⟨hV', m, hm, fun W' g g' hg => ?_⟩
-  have key := GlobalTheory.T.exists_descent_of_equalised_proper_cover_normal R S (⨆ i, V i).toScheme (p ⁻¹ᵁ (⨆ i, V i)).toScheme W' π ((⨆ i, V i).ι ≫ y)
+  have key := GlobalTheory.MorDescent.descend R S (⨆ i, V i).toScheme (p ⁻¹ᵁ (⨆ i, V i)).toScheme W' π ((⨆ i, V i).ι ≫ y)
     (p ∣_ (⨆ i, V i)) ((p ⁻¹ᵁ (⨆ i, V i)).ι ≫ q) hπp hπs hSi hflat hsq ((p ∣_ (⨆ i, V i)) ≫ g)
     (by rw [pullback.condition_assoc])
   exact key.unique rfl hg.symm
@@ -1210,7 +1204,7 @@ namespace GlobalTheory.Mum
 theorem Near.law_of_emb : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (M : Modif R) (G' : Over M.S) [GrpObj G'] [IsCommMonObj G'], IsSemiAbelian G' → ∀ (E : Emb M.π G') (N : Near M.π G') (fU : N.U.left ⟶ PSpace R E.N) (l : pullback N.U.hom M.π ⟶ E.H.toScheme), l ≫ E.H.ι = N.u → l ≫ E.f = pullback.fst _ _ ≫ fU → N.Law := by
   intro R _ _ _ hR M G' _ _ _ E N fU l hl1 hl2
   obtain ⟨hNoeth, -, hIC, -⟩ := hR
-  obtain ⟨hbij, hsurj⟩ := GlobalTheory.T.appTop_bijective_and_surjective_normalDomain R M
+  obtain ⟨hbij, hsurj⟩ := GlobalTheory.Mum.Modif.appTop_bijective_surjective R M
   haveI := M.proper
   haveI := M.integral
   haveI := N.smooth
@@ -1356,9 +1350,9 @@ theorem GlobalTheory.Mum.hasFin_of_labCover : ∀ (R : Type) [CommRing R] [IsDom
   have hLc : LBIso U''.LG.L (P.L.L.pull (β' ≫ β)) :=
     LBIso.trans U''.LG.isLB (pull_isLB C'.P.L.isLB β') (pull_isLB P.L.isLB _) hL' h₂
   obtain ⟨R₁, _, _, _, ρ₁, D₁, G₁, _, _, β₁, A₁, U₁, hρ₁, hD₁, hβ₁, -⟩ :=
-    GlobalTheory.T.exists_finiteExtension_uniformisation_of_trait_unif R' ⟨hρ.1, inferInstance⟩ D' G P hG W' hW' (io.comp φ) (hio.comp hφ) inferInstance G'' (β' ≫ β) D'' A'' U''
+    GlobalTheory.Mum.Ident.exists_finExt_unif R' ⟨hρ.1, inferInstance⟩ D' G P hG W' hW' (io.comp φ) (hio.comp hφ) inferInstance G'' (β' ≫ β) D'' A'' U''
       hcomp hLc ⟨hD''⟩
-  exact GlobalTheory.T.hasSemiAbelianUniformisation_of_finiteExt_trans R R' ρ hρ D D' hD'
+  exact GlobalTheory.Mum.hasFin_of_finExt R R' ρ hρ D D' hD'
     ⟨R₁, _, _, _, ρ₁, D₁, hρ₁, hD₁, G₁, _, _, A₁, semiAbelian_of_pull hβ₁ hG, ⟨U₁⟩⟩
 end -- clump:auto
 end -- clump:auto

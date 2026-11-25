@@ -4,48 +4,10 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.AppLESur
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsExtensionPullOver
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdIso
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 
@@ -152,16 +114,16 @@ theorem valR_appLE (x : Sp R ⟶ Y) (g : Y ⟶ X) (U : X.Opens) (W : Y.Opens) (e
   have h' : ⊤ ≤ (x ≫ g) ⁻¹ᵁ U := fun p _ => e (h trivial)
   have key : g.appLE U W e ≫ x.appLE W ⊤ h = (x ≫ g).appLE U ⊤ h' := by
     rw [Scheme.Hom.appLE_comp_appLE]
-  rw [valR, valR, dif_pos h, dif_pos h', ← key]
+  rw [valR, valR, dite_eq_left h, dite_eq_left h', ← key]
   rfl
 
 private lemma valR_mul_lemma_2 {R : Type} [CommRing R] (x : Sp R ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U)
     (f g : Γ(Y, U)) : valR x U (f * g) = valR x U f * valR x U g := by
-  rw [valR, valR, valR, dif_pos h, dif_pos h, dif_pos h, map_mul, map_mul]
+  rw [valR, valR, valR, dite_eq_left h, dite_eq_left h, dite_eq_left h, map_mul, map_mul]
 
 private lemma isUnit_valR_of_unit {R : Type} [CommRing R] (x : Sp R ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U)
     (u : Γ(Y, U)ˣ) : IsUnit (valR x U (u : Γ(Y, U))) := by
-  rw [valR, dif_pos h]
+  rw [valR, dite_eq_left h]
   exact (u.isUnit.map _).map _
 
 theorem crd_secOfIso [IsLocalRing R] {A B : LB Y} {u : LB.Iso A B} (hu : u.IsGen) (hA : A.IsLB) (hB : B.IsLB)
@@ -273,7 +235,7 @@ theorem crd_comb {V K : Type} [CommRing V] [CommRing K] {L : LB X} {T : Type} [F
     intro k
     rw [← valR_constHom π' x ψ hx _ hl' k]
     unfold valHom
-    rw [valR, dif_pos hl']
+    rw [valR, dite_eq_left hl']
     rfl
   have hsum : (LB.Sec.f (s i) l : Γ(Y, (LB.LinComb L φ' ε).U l)) =
       ∑ j, constHom π' _ (a i j) * LB.Sec.f (pullOver L ε hp hφ (σ j)) l := by
@@ -287,7 +249,7 @@ theorem crd_comb {V K : Type} [CommRing V] [CommRing K] {L : LB X} {T : Type} [F
       valR x ((LB.LinComb L φ' ε).U l) (∑ j, f j) = ∑ j, valR x ((LB.LinComb L φ' ε).U l) (f j) := by
     intro f
 
-    simp only [valR, dif_pos hl', map_sum]
+    simp only [valR, dite_eq_left hl', map_sum]
   show ∑ j, ψ (a i j) * w j = (c : R) * valR x _ (LB.Sec.f (s i) l)
   rw [hsum, hadd, Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_

@@ -692,21 +692,21 @@ private theorem embQ_fl (l : ℕ) [hl : Fact l.Prime] (T : Type) [AddCommGroup T
       map_zero' := by
         funext i
         by_cases h : (i : ℕ) < d
-        · simp only [h, dif_pos, hzero, Pi.zero_apply]
-        · simp only [h, dif_neg, not_false_eq_true, Pi.zero_apply]
+        · simp only [h, dite_eq_left, hzero, Pi.zero_apply]
+        · simp only [h, dite_eq_right, not_false_eq_true, Pi.zero_apply]
       map_add' := by
         intro s t
         funext i
         by_cases h : (i : ℕ) < d
-        · simp only [h, dif_pos, hadd, Pi.add_apply]
-        · simp only [h, dif_neg, not_false_eq_true, Pi.add_apply, add_zero] }
+        · simp only [h, dite_eq_left, hadd, Pi.add_apply]
+        · simp only [h, dite_eq_right, not_false_eq_true, Pi.add_apply, add_zero] }
   refine ⟨g, ?_⟩
   intro s t hst
   have key : E.toFun s = E.toFun t := by
     funext j
     have := congr_fun hst (Fin.castLE hd j)
     simp only [g, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Fin.coe_castLE, Fin.eta] at this
-    rwa [dif_pos j.isLt, dif_pos j.isLt] at this
+    rwa [dite_eq_left j.isLt, dite_eq_left j.isLt] at this
   calc s = E.invFun (E.toFun s) := (E.left_inv s).symm
     _ = E.invFun (E.toFun t) := by rw [key]
     _ = t := E.left_inv t
@@ -757,7 +757,7 @@ theorem UpperTheory.V.Two.embedQZ :
       have h3 := hιinj h2
       simpa using h3
     exact hg (by rw [hgt, map_zero])
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   have hxi : ∀ x : D, LinearMap.pi y x = 0 → ∀ i, y i x = 0 := by
     intro x hx i
@@ -1070,10 +1070,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base UpperTheory.V.Kum UpperTheory.V.Two
 open scoped Pointwise
 
-private theorem not_lt_one_of_coprime {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {p m : ℕ} (h : p.Coprime m)
-    (hp : A.valuation (p : Ω) < 1) : ¬ A.valuation (m : Ω) < 1 := by
-  apply _root_.not_valuation_lt_one_of_coprime_of_lt_one <;> assumption
-
 theorem UpperTheory.V.Two.ineTwo :
     ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (M : AbF) (p : ℕ) (A : ValuationSubring Ω), p.Coprime (2 * M.m) → A.valuation (p : Ω) < 1 → Ine (F := ℚ) A ≤ cycU 2 (abU Ω (withI M)) := by
   intro Ω _ _ _ M p A hcop hp
@@ -1084,12 +1080,12 @@ theorem UpperTheory.V.Two.ineTwo :
     exact Nat.Coprime.mul_right hM (by simpa using Nat.Coprime.pow_right 2 h2)
   intro g hg
   refine ⟨?_, ?_⟩
-  · have := ineChar Ω (withI M).m A (not_lt_one_of_coprime A hW hp) hg
+  · have := ineChar Ω (withI M).m A (not_valuation_lt_one_of_coprime_of_lt_one A hW hp) hg
     rw [MonoidHom.mem_ker] at this
     show galChar Ω (withI M).m g ∈ (withI M).H
     rw [this]
     exact Subgroup.one_mem _
-  · exact (places ℚ Ω 2 A).2.2.2 (not_lt_one_of_coprime A h2 hp) hg
+  · exact (places ℚ Ω 2 A).2.2.2 (not_valuation_lt_one_of_coprime_of_lt_one A h2 hp) hg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.QuadraticExtensions.IneTwo =====
@@ -1573,7 +1569,7 @@ theorem UpperTheory.V.Two.orbTwo :
     calc _ ≤ (abU Ω M).index * ((cycZ ℚ Ω 2).ker ⊔ Dec A₀).index := hle
       _ ≤ M.deg * c := by rw [hi]; exact Nat.mul_le_mul_left _ hKDle
       _ = c * M.deg := Nat.mul_comm _ _
-  · push_neg at hex
+  · push Not at hex
     exact ⟨∅, by simp, by simp, fun A hA => absurd hA (not_lt.mpr (hex A))⟩
 end -- clump:auto
 end -- clump:auto
@@ -1890,7 +1886,7 @@ theorem towerFixed (hFW : Published.FerreroWashington) (l : ℕ) [hl : Fact l.Pr
       Tower.GenLE ℤ_[l] (Tower.XX l L) R ∧ Tower.IsTower l L R := by
   have hμ : ∀ (L : Type) [Field L] [NumberField L], IsAbField A L → HasMuQ l L := fun L _ _ hL => by
     unfold HasMuQ
-    rw [if_neg h2]
+    rw [ite_eq_right h2]
     exact hasMuQ.1 l A L hA hL
   obtain ⟨r, hr⟩ := abRk hFW l A hμ
   refine ⟨max 1 r, fun L _ _ hL => ?_⟩

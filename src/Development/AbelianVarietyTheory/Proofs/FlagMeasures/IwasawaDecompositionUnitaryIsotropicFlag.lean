@@ -8,56 +8,14 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.HermitianCurvature.StatementB
 import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
@@ -437,15 +395,15 @@ theorem exists_diagonal_blocks (P : ℕ → A) (h0 : P 0 = 0) (hl : ∀ i k, i �
   have ht : ∀ x : A, (∑ i ∈ range a, Q i * x * Q i) * P a = ∑ i ∈ range a, Q i * x * Q i := fun x => by
     rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun i hi => ?_
-    rw [mul_assoc _ (Q i), hQP, if_pos (Finset.mem_range.1 hi)]
+    rw [mul_assoc _ (Q i), hQP, ite_eq_left (Finset.mem_range.1 hi)]
   have hs : ∀ (x : A) k, k < a → (∑ i ∈ range a, Q i * x * Q i) * Q k = Q k * x * Q k := fun x k hk => by
     rw [Finset.sum_mul, Finset.sum_eq_single k]
-    · rw [mul_assoc _ (Q k), hQQ, if_pos rfl]
+    · rw [mul_assoc _ (Q k), hQQ, ite_eq_left rfl]
     · intro i _ hik
-      rw [mul_assoc _ (Q i), hQQ, if_neg hik, mul_zero]
+      rw [mul_assoc _ (Q i), hQQ, ite_eq_right hik, mul_zero]
     · intro h; exact absurd (Finset.mem_range.2 hk) h
   have hz : ∀ x : A, (∀ i, P i * x * P i = x * P i) → ∀ i, Q i * x * P i = 0 := fun x hx i => by
-    rw [mul_assoc, ← hx, ← mul_assoc, ← mul_assoc, hQP, if_neg (lt_irrefl _), zero_mul, zero_mul]
+    rw [mul_assoc, ← hx, ← mul_assoc, ← mul_assoc, hQP, ite_eq_right (lt_irrefl _), zero_mul, zero_mul]
   refine ⟨∑ i ∈ range a, Q i * p * Q i, ∑ i ∈ range a, Q i * q * Q i, ?_, hc p, hc q, ht p, ht q, fun i hi => ?_⟩
   · have := Finset.sum_range_sub P a
     rw [h0, sub_zero] at this
@@ -456,9 +414,9 @@ theorem exists_diagonal_blocks (P : ℕ → A) (h0 : P 0 = 0) (hl : ∀ i k, i �
       conv_lhs => rw [show Q i * q * Q i = Q i * q * P (i + 1) - Q i * q * P i by simp only [Q, mul_sub]]
       rw [hz q hq, sub_zero]
     have e2 : P (i + 1) * p * Q i = p * Q i := by
-      have : Q i = P (i + 1) * Q i := by rw [hPQ, if_pos (Nat.lt_succ_self i)]
+      have : Q i = P (i + 1) * Q i := by rw [hPQ, ite_eq_left (Nat.lt_succ_self i)]
       rw [this, ← mul_assoc, hp, mul_assoc]
-    rw [e1, mul_assoc (Q i * q), mul_assoc (Q i * q), e2, mul_assoc, ← mul_assoc q, hqp, one_mul, hQQ, if_pos rfl]
+    rw [e1, mul_assoc (Q i * q), mul_assoc (Q i * q), e2, mul_assoc, ← mul_assoc q, hqp, one_mul, hQQ, ite_eq_left rfl]
   · have e0 : ∀ x : A, x * P (i + 1) = x * Q i + x * P i := fun x => by simp only [Q, mul_sub, sub_add_cancel]
     have e1 : P i * ((∑ i ∈ range a, Q i * p * Q i) * P (i + 1)) = (∑ i ∈ range a, Q i * p * Q i) * P i := by
       rw [← mul_assoc, hc, mul_assoc, hl _ _ (Nat.le_succ i)]

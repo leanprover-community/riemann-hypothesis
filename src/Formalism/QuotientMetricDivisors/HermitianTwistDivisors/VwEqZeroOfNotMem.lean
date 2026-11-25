@@ -26,7 +26,7 @@ theorem vw_eq_zero_of_not_mem (w : HeightOneSpectrum (𝓞 K)) (s : 𝓞 K) (hs 
     rw [Ideal.dvd_span_singleton]; exact hs
   have hirr : Irreducible w.asIdeal := (Ideal.prime_of_isPrime w.ne_bot w.isPrime).irreducible
   have hc := mt (Associates.count_ne_zero_iff_dvd hJ hirr).mp hnd
-  push_neg at hc
+  push Not at hc
   unfold vw
   rw [show (s : K) = algebraMap (𝓞 K) K s from rfl, ← FractionalIdeal.coeIdeal_span_singleton,
     FractionalIdeal.count_coe K w hJ, Nat.cast_eq_zero]

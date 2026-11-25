@@ -507,7 +507,8 @@ theorem std_iso {X : Stages} {px : PreX X.B.toPre} {I : Col2.ColIn X.B px} {hX :
     rw [Formalism.L2.Col.decoPt_mk]
     unfold LiftBrg.ptL
     refine congrArg (Formalism.L2.Col.decoOf ∅ _) (hx'.trans ?_)
-    exact cast_one (LiftBrg.rkEq X i).symm (Formalism.UG.bc (swapAE X.toD7) (h : GL (Fin (Vc X.toD7 i).rank) _))
+    simp only [matIn, mul_one, inv_one, one_mul]
+    rfl
   refine ⟨e, he.2.2.1, fun γ γE g h1 h2 x => ?_, fun t ok φ h => ?_⟩
   · have h5 := he.2.2.2 γ γE g h1 h2 x
     have h3 : (fun τ => Formalism.UG.bc (X.B.embLL.comp (X.B.fields.emb τ)) g) = fun τ => Formalism.UG.bc (tauE X.toD7 τ) g :=
@@ -549,7 +550,7 @@ theorem rs_coef : ∀ {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre} {T : TwD
     (if (w'.st Z').toD7.sp.Vneg ((i' : ℕ) + 1) then -(Vc (w'.st Z').toD7 i').gram else (Vc (w'.st Z').toD7 i').gram)
     (by
       rw [GlobalTheory.StdFrame.neg_eq_false_of_posDef _ i' (B.V_posDef ((i' : ℕ) + 1) (by omega) i'.2)]
-      simp only [Bool.false_eq_true, if_false]
+      simp only [Bool.false_eq_true, ite_false]
       exact GlobalTheory.Mem.R3.BrgRead.gram_V (w'.st Z') w'.ok.spaces i')
   choose c0 hc1 hc2 hc3 using hG
   refine ⟨cp, c0, ?_, fun i' => (z.pins.char.base.models.cV i'), hc1, hc2, ?_⟩

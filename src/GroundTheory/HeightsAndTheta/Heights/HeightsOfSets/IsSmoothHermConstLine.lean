@@ -70,9 +70,6 @@ theorem isMultiHomog_mul {p q : MRing ι} {a b : K → ℕ} (hp : IsMultiHomog p
     (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_mul hp hq
 
-theorem isMultiHomog_one : IsMultiHomog (1 : MRing ι) 0 :=
-  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_one
-
 theorem isMultiHomog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X p
 
@@ -289,7 +286,7 @@ theorem inter_nonneg (hV : CurveDivVertical.Statement) (hI : IsIntersectionFamil
   unfold recR
   rw [sub_nonneg]
   refine le_trans h2 (finsum_nonneg fun V ↦ finsum_nonneg fun hV' ↦ ?_)
-  rw [if_neg (hV K ι W _ d hW (isMultiHomog_chartMon c d) hc V hV')]
+  rw [ite_eq_right (hV K ι W _ d hW (isMultiHomog_chartMon c d) hc V hV')]
   exact mul_nonneg (Nat.cast_nonneg _)
     (mul_nonneg (Int.cast_nonneg (geoNum_zero_nonneg _ _)) (Real.log_natCast_nonneg _))
 

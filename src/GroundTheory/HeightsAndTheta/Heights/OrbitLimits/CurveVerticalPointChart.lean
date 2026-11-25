@@ -62,11 +62,8 @@ theorem mem_of_aeval_eq (y : (Σ k, ι k) → Ω) {W : Ideal (MRing ι)} (hPW : 
 
 theorem chartMono_notMem {W : Ideal (MRing ι)} (hWp : W.IsPrime) {c : ∀ k, ι k}
     (hc : ∀ k, (X ⟨k, c k⟩ : MRing ι) ∉ W) (e : K → ℕ) :
-    HilbertSamuel.SmallSectionsNonzero.chartMono c e ∉ W := by
-  classical
-  rw [HilbertSamuel.SmallSectionsNonzero.chartMono, Ideal.IsPrime.prod_mem_iff]
-  rintro ⟨k, -, hk⟩
-  exact hc k (hWp.mem_of_pow_mem _ hk)
+    HilbertSamuel.SmallSectionsNonzero.chartMono c e ∉ W :=
+  Inter.AvoidRing.coordProd_not_mem hWp c hc e
 
 theorem mem_of_chartMono_mul {W : Ideal (MRing ι)} (hWp : W.IsPrime) {c : ∀ k, ι k}
     (hc : ∀ k, (X ⟨k, c k⟩ : MRing ι) ∉ W) {e : K → ℕ} {f : MRing ι}

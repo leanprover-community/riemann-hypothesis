@@ -125,11 +125,11 @@ open Classical in
 theorem adAt_sig_idem (P w : HeightOneSpectrum (𝓞 E)) : adAt F w (σ (idem F P)) = if conjPrime₂ w = P then 1 else 0 := by
   split_ifs with h
   · have e := valued_sigR hc w (idem F P - 1)
-    rw [map_sub (adAt F (conjPrime₂ w)), adAt_idem, if_pos h, map_one, sub_self, map_zero, Valuation.zero_iff, map_sub,
+    rw [map_sub (adAt F (conjPrime₂ w)), adAt_idem, ite_eq_left h, map_one, sub_self, map_zero, Valuation.zero_iff, map_sub,
       map_sub, map_one, map_one, sub_eq_zero] at e
     exact e
   · have e := valued_sigR hc w (idem F P)
-    rwa [adAt_idem, if_neg h, map_zero, Valuation.zero_iff] at e
+    rwa [adAt_idem, ite_eq_right h, map_zero, Valuation.zero_iff] at e
 
 variable (Q : Finset (HeightOneSpectrum (𝓞 E)))
 
@@ -310,7 +310,7 @@ theorem exists_modify (hQ : ∀ P ∈ Q, conjPrime₂ P ∉ Q) {x : GL (Fin n) (
     intro w hw i j
 
     rw [Units.val_mul, Matrix.mul_apply, map_sum]
-    simp only [g, map_mul, hG, if_neg hw]
+    simp only [g, map_mul, hG, ite_eq_right hw]
     split_ifs with h
     · have := valued_pullV_le x ((hfr w h (Pi.single j 1)).2 (le_locP w _ (by simpa using single_mem_stdLat (E := E) j 1))) i
 
@@ -325,7 +325,7 @@ theorem exists_modify (hQ : ∀ P ∈ Q, conjPrime₂ P ∉ Q) {x : GL (Fin n) (
     intro w hw i j
 
     rw [mul_inv_rev, inv_inv, Units.val_mul, Matrix.mul_apply, map_sum]
-    simp only [g, Units.inv_mk, map_mul, hG', if_neg hw]
+    simp only [g, Units.inv_mk, map_mul, hG', ite_eq_right hw]
     split_ifs with h
     · refine valued_symm_le (u := fun l => (x : Matrix (Fin n) (Fin n) (AfE F E)) l j) (hfr w h)
         ((carries_globLat x _).2 ((mem_latS_std _).2 fun l => ?_)) i
@@ -345,10 +345,10 @@ theorem exists_modify (hQ : ∀ P ∈ Q, conjPrime₂ P ∉ Q) {x : GL (Fin n) (
       rwa [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_rev, inv_inv, mul_inv_cancel_right] at this
     · have := mulVec_int i1 h i
       rwa [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel_right] at this
-  · exact (hG P i j).trans (if_pos hP)
+  · exact (hG P i j).trans (ite_eq_left hP)
 
-  · simp only [pullV, Formalism.L2.Col.pullV, Matrix.mulVec, dotProduct, map_sum, map_mul, g, Units.inv_mk, hG', if_neg h,
-    if_neg h']
+  · simp only [pullV, Formalism.L2.Col.pullV, Matrix.mulVec, dotProduct, map_sum, map_mul, g, Units.inv_mk, hG', ite_eq_right h,
+    ite_eq_right h']
 
 
 variable (hc) in
@@ -382,12 +382,12 @@ theorem exists_isPtOf_cm (n : ℕ) (ST SG Q : Finset (HeightOneSpectrum (𝓞 E)
     rw [← hN] at hv
     rw [c3 _ (Finset.disjoint_left.1 h2 P.2) (h4 _ (Or.inl P.2)).2.2, ← hd]
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv), e]
+    rw [ite_eq_left (le_locP _ _ hv), e]
     exact hasRes_redA _ ((mem_globLat x v).1 hv i)
   · rw [← hN] at hv
     rw [c3 _ (Finset.disjoint_left.1 h3 P.2) (h4 _ (Or.inr (Or.inl P.2))).2.2, ← hd]
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv)]
+    rw [ite_eq_left (le_locP _ _ hv)]
     exact hasRes_redA _ ((mem_globLat x v).1 hv i)
   · rw [c2 _ P.2, ptFr_of_mem p (Finset.disjoint_right.1 h3 P.2) P.2]
     rfl

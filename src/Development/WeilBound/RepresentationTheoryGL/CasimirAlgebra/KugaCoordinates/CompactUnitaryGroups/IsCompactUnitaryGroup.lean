@@ -41,16 +41,16 @@ theorem coord_conjugate {E : Type} [Field E] [_root_.NumberField.IsTotallyComple
 
 theorem coord_embedding {E : Type} [Field E] (w : InfinitePlace E) (c : Cinf E) :
     coord w.embedding c = c w := by
-  rw [coord_eq, InfinitePlace.mk_embedding, if_pos rfl]
+  rw [coord_eq, InfinitePlace.mk_embedding, ite_eq_left rfl]
 
 theorem continuous_coord {E : Type} [Field E] (τ : E →+* ℂ) : Continuous (coord τ : Cinf E → ℂ) := by
   have e : (coord τ : Cinf E → ℂ) = fun c => if (InfinitePlace.mk τ).embedding = τ then
       c (InfinitePlace.mk τ) else starRingEnd ℂ (c (InfinitePlace.mk τ)) := funext (coord_eq τ)
   rw [e]
   by_cases h : (InfinitePlace.mk τ).embedding = τ
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     exact continuous_apply _
-  · simp only [if_neg h]
+  · simp only [ite_eq_right h]
     exact Complex.continuous_conj.comp (continuous_apply _)
 
 theorem isCompact_unitaryGroup (E : Type) [Field E] (a : ℕ) :

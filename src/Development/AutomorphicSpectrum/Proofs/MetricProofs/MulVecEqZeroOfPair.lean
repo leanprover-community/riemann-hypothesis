@@ -65,7 +65,7 @@ theorem exp_pair_eq {a g : ℕ} (T : Matrix (Fin g) (Fin g) ℂ)
   simp only [Complex.exp_sum, Complex.exp_int_mul, exp_coord_eq, mul_zpow,
     Finset.prod_mul_distrib]
   congr 1
-  simp only [← Finset.prod_zpow, ← _root_.zpow_mul, ← Complex.exp_int_mul]
+  simp only [← Finset.prod_zpow, ← Complex.exp_int_mul]
   rw [Finset.prod_comm]
   refine Finset.prod_congr rfl fun j _ => ?_
   rw [← Complex.exp_sum]

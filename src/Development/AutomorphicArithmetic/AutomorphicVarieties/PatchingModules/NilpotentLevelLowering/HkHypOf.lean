@@ -362,7 +362,7 @@ private theorem satInd_trc {I K : Subgroup G} (h : I ≤ K) (hf : FinOrb K I 1) 
     rfl
   simp only [key]
   by_cases hy : g⁻¹ * y ∈ K
-  · rw [if_pos hy]
+  · rw [ite_eq_left hy]
     have hmem : ((g⁻¹ * y : G) : G ⧸ I) ∈ MulAction.orbit K ((1 : G) : G ⧸ I) :=
       MulAction.mem_orbit_iff.2 ⟨⟨g⁻¹ * y, hy⟩, by
         show (((g⁻¹ * y : G) * 1 : G) : G ⧸ I) = _
@@ -373,9 +373,9 @@ private theorem satInd_trc {I K : Subgroup G} (h : I ≤ K) (hf : FinOrb K I 1) 
     simp only [e2]
     rw [Finset.sum_ite_eq']
     simp
-  · rw [if_neg hy]
+  · rw [ite_eq_right hy]
     refine Finset.sum_eq_zero fun q _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hq
     obtain ⟨k, hk⟩ := MulAction.mem_orbit_iff.1 q.2
     have h1 : (((k : G) * 1 : G) : G ⧸ I) = ((g⁻¹ * y : G) : G ⧸ I) := hk.trans hq
@@ -849,8 +849,7 @@ private theorem bern_ev {O H E : Type} [CommRing O] [IsDomain O] [Ring H] [Algeb
     congr 1
     rw [Hk.Bern.one, Finset.sum_mul, Finset.mul_sum]
     exact Finset.sum_congr rfl fun w _ => (hkBern O n _ _ b).2 z hz w
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, ← map_mul, ← map_sum]
+  · simp only [AlgHom.comp_apply, ← map_mul, ← map_sum]
     rw [hkSum O n _ _ b hF ι a c hd]
   · simp only [AlgHom.comp_apply]
     rw [← map_mul, ← map_mul, hkSandwich O n _ _ b hF y, map_mul]

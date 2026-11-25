@@ -27,54 +27,10 @@ public import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExceptionalDirichletZeroUniqueZeroFreeRegion
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SumRpowZerosLe
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
@@ -454,7 +410,7 @@ theorem recip_le_sum_windows {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q
     apply mul_nonneg (inv_nonneg.mpr (Nat.cast_nonneg j))
     apply add_nonneg <;> split_ifs <;> norm_num
   by_cases h1 : 1 < |ρ.im|
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     obtain ⟨hre0, hre1, hT, hL⟩ := hρ
     rw [sub_zero] at hT
     have hk1 : 1 ≤ ⌊|ρ.im|⌋₊ := Nat.le_floor (by rw [Nat.cast_one]; exact h1.le)
@@ -470,14 +426,14 @@ theorem recip_le_sum_windows {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q
           have hab : |ρ.im| = ρ.im := abs_of_nonneg him
           rw [abs_le]
           constructor <;> linarith
-        rw [if_pos hmem]
+        rw [ite_eq_left hmem]
         split_ifs <;> norm_num
       · have hmem : ρ ∈ zerosIn χ (-(⌊|ρ.im|⌋₊ : ℝ)) 1 := by
           refine ⟨hre0, hre1, ?_, hL⟩
           have hab : |ρ.im| = -ρ.im := abs_of_neg him
           rw [abs_le]
           constructor <;> linarith
-        rw [if_pos hmem]
+        rw [ite_eq_left hmem]
         split_ifs <;> norm_num
     calc 1 / ‖ρ‖ ≤ ((⌊|ρ.im|⌋₊ : ℕ) : ℝ)⁻¹ := by
           rw [one_div]
@@ -486,7 +442,7 @@ theorem recip_le_sum_windows {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q
           (if ρ ∈ zerosIn χ (-(⌊|ρ.im|⌋₊ : ℝ)) 1 then 1 else 0)) :=
           le_mul_of_one_le_right (inv_nonneg.mpr hkpos.le) hind
       _ ≤ _ := Finset.single_le_sum (fun j _ => hnn j) (Finset.mem_Icc.mpr ⟨hk1, hkT⟩)
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     exact Finset.sum_nonneg (fun j _ => hnn j)
 
 theorem zsumR_recip_le : GlobalTheory.Mem.An.ZeroCount → ∃ C : ℝ, ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ.IsPrimitive → ∀ T : ℝ, 2 ≤ T → zsumR χ 0 T (fun ρ => if 1 < |ρ.im| then 1 / ‖ρ‖ else 0) ≤ C * Real.log (q * T) ^ 2 ∧ zsumR χ 0 1 (fun _ => 1) ≤ C * Real.log (3 * q) := by
@@ -723,11 +679,11 @@ theorem left_zeros {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (u T : �
   refine norm_sum_le_of_le _ fun ρ _ => ?_
   have hu0 : 0 < u := by linarith
   by_cases h : 1 / 2 ≤ ρ.re
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     have : (ord χ ρ : ℂ) = zmult χ ρ := rfl
     rw [this, sub_self, norm_zero]
     positivity
-  · rw [if_neg h, sub_zero, norm_mul, norm_div, Complex.norm_cpow_eq_rpow_re_of_pos hu0,
+  · rw [ite_eq_right h, sub_zero, norm_mul, norm_div, Complex.norm_cpow_eq_rpow_re_of_pos hu0,
       Complex.norm_natCast, Real.sqrt_eq_rpow]
     have h1 : u ^ ρ.re ≤ u ^ (1 / 2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hu (not_le.mp h).le
     calc (zmult χ ρ : ℝ) * (u ^ ρ.re / ‖ρ‖) = u ^ ρ.re * ((zmult χ ρ : ℝ) * (1 / ‖ρ‖)) := by ring
@@ -842,8 +798,8 @@ theorem explicit_formula_right : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q]
     unfold Formalism.MainNotions.GlobalTheoryTheory.psi0
     congr 1
     by_cases h : χ = 1
-    · rw [if_pos h, if_pos (hone.mpr h)]
-    · rw [if_neg h, if_neg (mt hone.mp h)]
+    · rw [ite_eq_left h, ite_eq_left (hone.mpr h)]
+    · rw [ite_eq_right h, ite_eq_right (mt hone.mp h)]
   have hu0 : 0 < u := by linarith
   have hZ0 : 0 ≤ zsumR χ.primitiveCharacter 0 1 (fun ρ => 1 / ‖ρ‖) := by
     rw [zsumR_eq]
@@ -1313,7 +1269,7 @@ theorem exists_list : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (χ : Diri
     rw [Multiset.count_sum', Finset.sum_eq_single_of_mem w hw]
     · simp
     · intro b _ hb
-      rw [Multiset.count_replicate, if_neg hb]
+      rw [Multiset.count_replicate, ite_eq_right hb]
   · rw [finsum_mem_eq_finite_toFinset_sum _ hfin] at hsum
     rw [Multiset.card_sum]
     simp only [Multiset.card_replicate]
@@ -1426,7 +1382,7 @@ theorem repulsion : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ₁ χ : 
       obtain ⟨V, d, -, r⟩ := exists_erase hβ hβ' W3 t fun hd => by
         rw [← Multiset.one_le_count_iff_mem, m3 β hd hβ1 hz₁]; exact one_le_ord χ₁ hβ1 hz₁
       refine ⟨W2, V, le_rfl, d, hρ2, fun j => ?_⟩
-      rw [if_pos rfl, if_neg h1, Complex.zero_re]
+      rw [ite_eq_left rfl, ite_eq_right h1, Complex.zero_re]
       linarith [r j]
     by_cases b : χ = χ₁
     · subst b
@@ -1438,10 +1394,10 @@ theorem repulsion : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ₁ χ : 
           rw [m2 ρ hρd hρ1 hz, hb]
           simpa [hb] using hcase
         · exact Or.inl hb
-      · rw [if_neg a, if_pos (hmul.2 rfl), Complex.zero_re]
+      · rw [ite_eq_right a, ite_eq_left (hmul.2 rfl), Complex.zero_re]
         linarith [r j]
     · refine ⟨W2, W3, le_rfl, le_rfl, hρ2, fun j => ?_⟩
-      rw [if_neg a, if_neg (mt hmul.1 b), Complex.zero_re]
+      rw [ite_eq_right a, ite_eq_right (mt hmul.1 b), Complex.zero_re]
       have : (0 : ℝ) ≤ j * (1 - β) := by have : 0 ≤ 1 - β := by linarith
                                          positivity
       have : (0 : ℝ) ≤ 1 / 2 ^ j := by positivity
@@ -1480,8 +1436,8 @@ theorem repulsion : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ₁ χ : 
     have a3 := s3 k
     have b1 := r1 (k + 1)
     have b2 := r23 (k + 1)
-    rw [if_pos rfl] at a0
-    rw [if_neg h1, Complex.zero_re] at a1
+    rw [ite_eq_left rfl] at a0
+    rw [ite_eq_right h1, Complex.zero_re] at a1
     simp only [Complex.add_re] at hp ⊢
     have f : (8 * C + 4) * L / 2 ^ (k + 1) = 4 * (2 * C * L / 2 ^ (k + 1)) + 4 * L * (1 / 2 ^ (k + 1)) := by
       ring
@@ -1520,9 +1476,9 @@ lemma orth (M : ℕ) [NeZero M] (b : ℕ) (hb : Nat.Coprime b M) (u : ℝ) :
   rw [h2, h]
   by_cases hn : n ≡ b [MOD M]
   · have : (b : ZMod M) = n := (ZMod.natCast_eq_natCast_iff _ _ _).2 hn.symm
-    rw [if_pos hn, if_pos this]; push_cast; ring
+    rw [ite_eq_left hn, ite_eq_left this]; push_cast; ring
   · have : ¬ (b : ZMod M) = n := fun h => hn ((ZMod.natCast_eq_natCast_iff _ _ _).1 h).symm
-    rw [if_neg hn, if_neg this]; simp
+    rw [ite_eq_right hn, ite_eq_right this]; simp
 
 lemma zsum (s t : Set ℂ) (ht : t.Finite) (hst : s ⊆ t) (o : ℂ → ℕ) (u : ℝ) (hu : 0 < u)
     (h : ∀ ρ ∈ s, 1 / 2 ≤ ρ.re) :
@@ -1556,7 +1512,7 @@ lemma combine (M : ℕ) [NeZero M] (b : ℕ) (hb : Nat.Coprime b M) (u E x : ℝ
     IsUnit.of_mul_eq_one (b : ZMod M) (ZMod.inv_mul_of_unit _ hu)
   have h4 : ∑ χ : DirichletCharacter ℂ M, χ (b : ZMod M)⁻¹ * (if χ = 1 then (u : ℂ) else 0) = u := by
     simp_rw [mul_ite, mul_zero]
-    rw [Finset.sum_ite_eq', if_pos (Finset.mem_univ _), MulChar.one_apply hui, one_mul]
+    rw [Finset.sum_ite_eq', ite_eq_left (Finset.mem_univ _), MulChar.one_apply hui, one_mul]
   have key : (((M.totient : ℝ) * psiAP M b u - (u - x) : ℝ) : ℂ) =
       ∑ χ : DirichletCharacter ℂ M, χ (b : ZMod M)⁻¹ *
         (((∑ n ∈ Finset.Icc 1 ⌊u⌋₊, ((Λ n : ℝ) : ℂ) * χ (n : ZMod M)) -
@@ -1604,20 +1560,20 @@ lemma struct (M : ℕ) [NeZero M] (b : ℕ) (hb : Nat.Coprime b M) (θ : ℤ) (�
             ∑ᶠ ρ ∈ zerosBox χ (1 / 2) T \ {(β : ℂ)}, (ord χ ρ : ℂ) * ((u : ℂ) ^ ρ / ρ) := by
           conv_lhs => rw [hi]
           rw [finsum_mem_insert _ (by simp) ((h1 χ).1.diff), ho]; simp
-        simp only [if_true]
+        simp only [ite_true]
         rw [this, add_sub_cancel_left]
         refine zsum (zerosBox χ (1 / 2) T \ {(β : ℂ)}) _ ((h1 χ).1.inter_of_left _) (fun ρ hρ => ⟨hρ.1, ?_⟩) _ u hu fun ρ hρ => hρ.1.1
         rcases h2 χ ρ hρ.1 with h | h
         · exact absurd h.2 hρ.2
         · exact h
-      · simp only [if_neg hχ]
+      · simp only [ite_eq_right hχ]
         rw [sub_zero]
         refine zsum _ _ ((h1 χ).1.inter_of_left _) (fun ρ hρ => ⟨hρ, ?_⟩) _ u hu fun ρ hρ => hρ.1
         rcases h2 χ ρ hρ with h | h
         · exact absurd h.1 hχ
         · exact h
     · simp_rw [mul_ite, mul_zero]
-      rw [Finset.sum_ite_eq', if_pos (Finset.mem_univ _)]
+      rw [Finset.sum_ite_eq', ite_eq_left (Finset.mem_univ _)]
       have ha : χ₁ (b : ZMod M) * χ₁ (b : ZMod M) = 1 := by
         have := congrArg (fun ψ : DirichletCharacter ℂ M => ψ (b : ZMod M)) hsq
         simp only [pow_two, MulChar.mul_apply, MulChar.one_apply hbu] at this

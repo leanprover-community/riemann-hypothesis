@@ -93,13 +93,4 @@ theorem loopsAmp_at {C' Cl Cg cb Cw cT CT C0 A C K₀ A₀ : ℝ}
 
 end One
 
-section Fam
-
-variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
-  (Yt : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
-    LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' C1)
-  (Cc : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ConcAt (Fm.D x i) (At x hx i))
-
-end Fam
-
 end Formalism.L2.SG.LoopsEv

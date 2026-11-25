@@ -350,7 +350,7 @@ theorem rhoVr_unitary (γ : Matrix (Fin n) (Fin n) E) (h : γᴴ * γ = 1) (v : 
 
 theorem natW_cast (μ : DomWeight n) (i : Fin n) : (μ.natW i : ℤ) = μ.w i - μ.detShift := by
   have : μ.detShift ≤ μ.w i := by
-    rw [DomWeight.detShift, dif_pos i.pos]
+    rw [DomWeight.detShift, dite_eq_left i.pos]
     exact μ.anti (by rw [Fin.le_def]; have := i.isLt; simp only; omega)
   rw [DomWeight.natW, Int.toNat_of_nonneg (by omega)]
 
@@ -483,30 +483,30 @@ theorem gaStar_pG {a : (E →+* ℂ) × ℕ → ℕ} (ha : IsPartFam Dw a) (hn :
   have e : ∏ b : Fin n, embF c σ (u (if InPsi H σ then b else b.rev)) ^ part Dw a σ b =
       ∏ i : Fin (Dw.mult σ), (∏ b ∈ Finset.range (i + 1), x b) ^ aStep Dw a σ i := by
     have t := tele x (part Dw a σ) (part_anti ha σ) (Dw.mult σ)
-    rw [show part Dw a σ (Dw.mult σ) = 0 from if_neg (lt_irrefl _), pow_zero, mul_one,
+    rw [show part Dw a σ (Dw.mult σ) = 0 from ite_eq_right (lt_irrefl _), pow_zero, mul_one,
       Finset.prod_subset (Finset.range_mono hm) (f := fun b => x b ^ part Dw a σ b) (fun b _ hb => by
-        rw [show part Dw a σ b = 0 from if_neg (by simpa using hb), pow_zero]),
+        rw [show part Dw a σ b = 0 from ite_eq_right (by simpa using hb), pow_zero]),
       Finset.prod_range, Finset.prod_range] at t
     refine Eq.trans ?_ (t.symm.trans ?_)
     · refine Finset.prod_congr rfl fun b _ => ?_
-      simp only [x, dif_pos b.isLt]
+      simp only [x, dite_eq_left b.isLt]
     · refine Finset.prod_congr rfl fun i _ => ?_
-      rw [aStep, part, part, if_pos i.isLt]
+      rw [aStep, part, part, ite_eq_left i.isLt]
   rw [e, map_prod, ← Finset.prod_smul]
   refine Finset.prod_congr rfl fun i _ => ?_
   have hi : i.val + 1 ≤ n := lt_of_lt_of_le i.isLt hm
-  rw [dif_pos hi, map_pow, ← smul_pow]
+  rw [dite_eq_left hi, map_pow, ← smul_pow]
   congr 1
   by_cases hσ : InPsi H σ
-  · rw [if_pos hσ, gaStar_minorP, Finset.prod_range]
+  · rw [ite_eq_left hσ, gaStar_minorP, Finset.prod_range]
     congr 1
     refine Finset.prod_congr rfl fun b _ => ?_
-    simp only [x, dif_pos (lt_of_lt_of_le b.isLt hi), if_pos hσ]
+    simp only [x, dite_eq_left (lt_of_lt_of_le b.isLt hi), ite_eq_left hσ]
     rfl
-  · rw [if_neg hσ, gaStar_minorP, Finset.prod_range, ← Equiv.prod_comp Fin.revPerm]
+  · rw [ite_eq_right hσ, gaStar_minorP, Finset.prod_range, ← Equiv.prod_comp Fin.revPerm]
     congr 1
     refine Finset.prod_congr rfl fun b _ => ?_
-    simp only [x, dif_pos (lt_of_lt_of_le b.isLt hi), if_neg hσ]
+    simp only [x, dite_eq_left (lt_of_lt_of_le b.isLt hi), ite_eq_right hσ]
     congr 2
     apply Fin.ext
     have := b.isLt
@@ -537,7 +537,7 @@ theorem gaStar_pG_vac {a : (E →+* ℂ) × ℕ → ℕ} (ha : IsPartFam Dw a) (
   have h1 : ¬ InPsi H (ComplexEmbedding.conjugate τ.1) := by
     have := Harm.not_mem_hostType_iff H τ.1
     exact fun h => this.2 h τ.2
-  simp only [if_pos τ.2, if_neg h1]
+  simp only [ite_eq_left τ.2, ite_eq_right h1]
   rw [Matrix.det_diagonal, map_prod, ← Finset.prod_zpow, ← Equiv.prod_comp Fin.revPerm
     (fun b => embF c (ComplexEmbedding.conjugate τ.1) (IsCMField.complexConj E (t b.rev)) ^
       part Dw a (ComplexEmbedding.conjugate τ.1) b), ← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
@@ -666,11 +666,11 @@ theorem exponents_eq_zero {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host
     refine this.trans (Finset.sum_congr rfl fun τ _ => ?_)
     have h1 : ¬ InPsi H (ComplexEmbedding.conjugate τ.1) := fun h => (Harm.not_mem_hostType_iff H τ.1).2 h τ.2
     have h2 : τ.1 (star z) = ComplexEmbedding.conjugate τ.1 z := IsCMField.complexEmbedding_complexConj E τ.1 z
-    simp only [μ, dif_pos τ.2, dif_neg h1, ComplexEmbedding.involutive_conjugate E τ.1, map_sub, h2]
+    simp only [μ, dite_eq_left τ.2, dite_eq_right h1, ComplexEmbedding.involutive_conjugate E τ.1, map_sub, h2]
     ring)
   funext τ
   have := hμ τ.1
-  simp only [μ, dif_pos τ.2] at this
+  simp only [μ, dite_eq_left τ.2] at this
   exact_mod_cast this
 
 section Scalar
@@ -705,7 +705,7 @@ variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {l : Level H}
 
 theorem rhoM_coe (emb : Ix → E →+* c.F) (lam : Ix → DomWeight n) (g : GL (Fin n) E) :
     rhoM c emb lam (g : Matrix (Fin n) (Fin n) E) = rhoVr emb lam g := by
-  rw [rhoM, dif_pos ((Matrix.isUnit_iff_isUnit_det _).1 g.isUnit)]
+  rw [rhoM, dite_eq_left ((Matrix.isUnit_iff_isUnit_det _).1 g.isUnit)]
   exact congrArg _ (Units.ext rfl)
 
 theorem ne_zero_of_hwOK {lam : Ix → DomWeight n} {hw : VVc c lam} (h : hwOK c lam hw) : hw ≠ 0 := fun h0 => by
@@ -829,7 +829,7 @@ theorem weight_eq_of_tie (e : Ix ≃ Psi H) (ha : IsPartFam Dw a) (hok : hwOK c 
   have : (lam x).w = (lamP Dw n ha (fun τ => if hn : 0 < n then -κ (e.symm τ) ⟨0, hn⟩ else 0) (e x)).w := by
     funext i
     have := hκ x ⟨0, i.pos⟩ i
-    simp only [lamP, dif_pos i.pos, Equiv.symm_apply_apply, this]
+    simp only [lamP, dite_eq_left i.pos, Equiv.symm_apply_apply, this]
     simp [κ, lamP]
   generalize lam x = μ, lamP Dw n ha _ (e x) = ν at this
   cases μ

@@ -353,7 +353,7 @@ theorem ep_inert : ∀ (p N j : ℕ), 2 ≤ p → j ≤ N → HasSum (fun n : �
       have hf : (fun k : ℕ => (if Even (2 * k + 1) then (j : ℝ) else (N : ℝ) - j) /
           (p : ℝ) ^ (2 * k + 1)) = fun k => ((N : ℝ) - j) / p * ((p : ℝ) ^ 2)⁻¹ ^ k := by
         funext k
-        rw [if_neg (Nat.not_even_two_mul_add_one k), inv_pow, ← pow_mul, pow_succ,
+        rw [ite_eq_right (Nat.not_even_two_mul_add_one k), inv_pow, ← pow_mul, pow_succ,
           ← div_eq_mul_inv, div_div, mul_comm ((p : ℝ) ^ (2 * k)) (p : ℝ)]
       rw [hf]
       exact hg.mul_left _
@@ -362,7 +362,7 @@ theorem ep_inert : ∀ (p N j : ℕ), 2 ≤ p → j ≤ N → HasSum (fun n : �
       have hf : (fun k : ℕ => (if Even (2 * k + 1 + 1) then (j : ℝ) else (N : ℝ) - j) /
           (p : ℝ) ^ (2 * k + 1 + 1)) = fun k => (j : ℝ) / (p : ℝ) ^ 2 * ((p : ℝ) ^ 2)⁻¹ ^ k := by
         funext k
-        rw [if_pos ⟨k + 1, by ring⟩, inv_pow, ← pow_mul, ← div_eq_mul_inv, div_div, ← pow_add,
+        rw [ite_eq_left ⟨k + 1, by ring⟩, inv_pow, ← pow_mul, ← div_eq_mul_inv, div_div, ← pow_add,
           show 2 * k + 1 + 1 = 2 + 2 * k by ring]
       rw [hf]
       exact hg.mul_left _
@@ -534,13 +534,13 @@ theorem deltaTerm_one : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) 
       congr 1
       rcases hs : fr n with σ | σ
       · have : Odd n := (h n).1 ⟨σ, hs⟩
-        rw [if_pos this.add_one]
+        rw [ite_eq_left this.add_one]
         rfl
       · have : ¬ Odd n := fun ho => by
           obtain ⟨σ', h'⟩ := (h n).2 ho
           rw [hs] at h'
           cases h'
-        rw [if_neg (by simpa [Nat.even_add_one] using this)]
+        rw [ite_eq_right (by simpa [Nat.even_add_one] using this)]
         rfl
     unfold Bound₂.ep
     rw [e, (ep_inert p N j hp hj).1.tsum_eq]
@@ -687,7 +687,7 @@ theorem arMono_add_single (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (M
           (Finsupp.toMultiset (m.mapDomain some)).toList[(k : ℕ)] := by
         exact List.getElem_append_left hk
       rw [this, hL, Fin.snoc_castSucc]
-      simp only [monoLines, dif_pos hk]
+      simp only [monoLines, dite_eq_left hk]
       rfl
   have hLs : ∀ j, IsSmoothHerm (L j) := by
     intro j
@@ -702,10 +702,10 @@ theorem arMono_add_single (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (M
       rw [hlen₁]; exact i.2
     have h₂ : (σ i : ℕ) < ((Finsupp.toMultiset (m.mapDomain some)).toList ++ [some r]).length := by
       simp [hlen₀, (σ i).2]
-    simp only [monoLines, dif_pos h₁, Function.comp, hval (σ i) h₂, hσ i h₁ h₂]
+    simp only [monoLines, dite_eq_left h₁, Function.comp, hval (σ i) h₂, hσ i h₁ h₂]
     rfl
   unfold RootModel.arMono
-  rw [if_pos hdeg, hnone, pow_zero, mul_one, hfun]
+  rw [ite_eq_left hdeg, hnone, pow_zero, mul_one, hfun]
   congr 1
   exact (hII M.K M.ι).1 M.P (dimFl Ψ N + 1) L σ M.arith hLs
 
@@ -1272,7 +1272,7 @@ theorem geoMono_eq (hD : DegreeStatement) (Ψ : Type) [Fintype Ψ] [DecidableEq 
     Finsupp.mapDomain_notin_range _ _ (by simp)
   rw [ptsIntegral_line_eq hD M t 1]
   unfold RootModel.geoMono
-  rw [if_pos hdeg, hnone, pow_zero, mul_one]
+  rw [ite_eq_left hdeg, hnone, pow_zero, mul_one]
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Flat
@@ -1385,7 +1385,7 @@ theorem propFTopE_spec {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (T : 
     |propFTopE T frob p τ| ≤ N / ((p : ℝ) - 1) ∧
       ∀ Q : RP Ψ N, deltaTerm T.j p τ (frob p τ) 1 Q = propFTopE T frob p τ * Real.log p * degFl Q := by
   have h := Classical.choose_spec (_root_.GlobalTheory.CompanionTheory.Ar.Flat.deltaTerm_one Ψ N T.j p τ (frob p τ) T.j_lt.le hp)
-  simp only [propFTopE, dif_pos hp]
+  simp only [propFTopE, dite_eq_left hp]
   exact ⟨h.1, h.2.2.2⟩
 
 theorem propFTop : PropFTop := by
@@ -1443,15 +1443,15 @@ theorem propFTop : PropFTop := by
       (fun p hp => (hS p hp).1)
       (fun p hp => by
         by_cases hb : p ∈ T.bad
-        · simp only [v', hb, if_true]; exact (hdv p hb).1
+        · simp only [v', hb, ite_true]; exact (hdv p hb).1
         · simp [v', hb])
       (fun p hp => by
         have hlog : 0 ≤ Real.log p := Real.log_natCast_nonneg p
         by_cases hb : p ∈ T.bad
-        · simp only [d', v', hb, if_true]
+        · simp only [d', v', hb, ite_true]
           refine (hdv p hb).2.trans (le_of_eq ?_)
           ring
-        · simp only [d', v', hb, if_false, mul_zero, add_zero, abs_neg, abs_mul, abs_of_nonneg hlog]
+        · simp only [d', v', hb, ite_false, mul_zero, add_zero, abs_neg, abs_mul, abs_of_nonneg hlog]
           exact mul_le_mul_of_nonneg_right
             (propFTopE_spec T frob p τ (hS p hp).1.two_le).1 hlog)
       (by rw [hvb]; exact hvsum)

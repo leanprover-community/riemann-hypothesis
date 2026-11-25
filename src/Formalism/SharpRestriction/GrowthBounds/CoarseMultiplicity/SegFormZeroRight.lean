@@ -18,7 +18,7 @@ theorem famOK_zero {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing
   by_cases hb : b = β j
   · subst hb
     have hm := (Submodule.mem_pi.mp hL) (β j) (Set.mem_univ _)
-    rw [if_neg hj] at hm
+    rw [ite_eq_right hj] at hm
     simpa using hm
   · exact hz b hb
 

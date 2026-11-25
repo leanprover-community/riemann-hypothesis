@@ -268,7 +268,7 @@ theorem scaledPeriod_mem_sum (la la' : Wt X.Ψ r) (j : Fin (Fintype.card X.Ψ)) 
 theorem fj_eq_zero_of_not_freq (la : Wt X.Ψ r) (ξ : Fin r → E) (ν : X.Ψ → ℝ) (P : Frame X.Ψ r → ℂ)
     (x : Frame X.Ψ r) (h : ¬ ∀ p ∈ X.periods la, ∃ k : ℤ, 2 * ∑ τ, ν τ * p τ = k) :
     X.fj la ξ ν P x = 0 := by
-  rw [Data.fj, if_neg h]
+  rw [Data.fj, ite_eq_right h]
 
 private lemma diag_ne_lemma {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) (τ : X.Ψ) (i : Fin r) :
     b τ i i ≠ 0 := by
@@ -416,7 +416,7 @@ private lemma flowmv_lemma_28 (ξ : Fin r → E) (τ : X.Ψ) (s : ℂ) (p : Fin 
   funext a
   simp only [Matrix.mulVec, dotProduct, Data.flowMat, Matrix.of_apply, sub_mul,
     Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hermC, Data.emb]
+    ite_true, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hermC, Data.emb]
   congr 1
   simp only [Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun k _ => ?_

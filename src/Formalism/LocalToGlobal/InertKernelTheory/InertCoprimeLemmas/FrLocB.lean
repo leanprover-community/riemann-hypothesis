@@ -25,10 +25,7 @@ section Gen
 
 variable {K : Type*} [Field K] [NumberField K]
 
-theorem spanPrime (p : ℕ) [hp : Fact p.Prime] : (Ideal.span {(p : ℤ)}).IsPrime :=
-  (Ideal.span_singleton_prime (by exact_mod_cast hp.out.ne_zero)).mpr (Nat.prime_iff_prime_int.mp hp.out)
-
-attribute [local instance] spanPrime
+attribute [local instance] Formalism.FrobeniusOrbits.SplitK.span_prime
 
 abbrev Sp (K : Type*) [Field K] [NumberField K] (p : ℕ) [Fact p.Prime] : Submonoid (𝓞 K) :=
   Algebra.algebraMapSubmonoid (𝓞 K) (Ideal.span {(p : ℤ)}).primeCompl
@@ -554,9 +551,9 @@ theorem local_orthonormal_basis : LocBasisMM := by
         rw [_root_.Formalism.L2.KerInert.FrLocB.hK_smul_right']
       rw [e2, hc, hK_sum_smul_right]
       rw [Finset.sum_eq_single n]
-      · rw [hK_symm, hw, if_pos rfl, map_one, mul_one]
+      · rw [hK_symm, hw, ite_eq_left rfl, map_one, mul_one]
       · intro i _ hi
-        rw [hK_symm, hw, if_neg hi, map_zero, mul_zero]
+        rw [hK_symm, hw, ite_eq_right hi, map_zero, mul_zero]
       · intro h; exact absurd (Finset.mem_univ n) h
     show G0.hK D ((S : D.host.K) • w n) y ∈ _
     rw [e1]

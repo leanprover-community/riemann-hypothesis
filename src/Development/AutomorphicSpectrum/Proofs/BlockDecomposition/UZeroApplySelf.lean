@@ -7,7 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 
 namespace GlobalTheory.CompanionTheory.RootAdjoin
@@ -221,7 +220,7 @@ theorem T_add (a : Q p d) (k : Fin d) : T t (a + u p k 0) = T t a * t k := by
     intro j
     by_cases hj : j = k
     · subst hj
-      simp only [Pi.add_apply, AddSubmonoid.coe_add, u_zero_apply_self, if_true]
+      simp only [Pi.add_apply, AddSubmonoid.coe_add, u_zero_apply_self, ite_true]
       rw [Nat.floor_add_one (a j).2.1, pow_succ]
     · simp [u_zero_apply_ne hj, hj]
   simp only [T, h, Finset.prod_mul_distrib]

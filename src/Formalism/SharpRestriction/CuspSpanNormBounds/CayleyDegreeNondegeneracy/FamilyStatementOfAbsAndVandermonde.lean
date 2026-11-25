@@ -29,11 +29,11 @@ theorem deg_hc_int {N : ℕ} {μ : Fin N → ℝ} (h : IsHCParam μ) (I : Finset
   obtain ⟨m, hm⟩ := h.2 x
   by_cases hx : x ∈ I
   · refine ⟨m + 1, ?_⟩
-    simp only [Pi.add_apply, epsI, if_pos hx]
+    simp only [Pi.add_apply, epsI, ite_eq_left hx]
     push_cast
     linarith
   · refine ⟨m, ?_⟩
-    simp only [Pi.add_apply, epsI, if_neg hx]
+    simp only [Pi.add_apply, epsI, ite_eq_right hx]
     linarith
 
 theorem deg_hc_diff {N : ℕ} {μ : Fin N → ℝ} (h : IsHCParam μ) (a b : Fin N) : ∃ m : ℤ, μ a - μ b = (m : ℝ) := by
@@ -52,12 +52,12 @@ theorem deg_hc_drop {N : ℕ} {μ : Fin N → ℝ} (h : IsHCParam μ) (I : Finse
   simp only [Pi.add_apply, epsI, Finset.mem_insert] at h2 ⊢
   by_cases hja : j = a
   · subst hja
-    rw [if_neg ha]
+    rw [ite_eq_right ha]
     split_ifs <;> linarith
   · by_cases hia : i = a
     · subst hia
       have hj : j ∉ I := fun hh => lt_asymm hij (hmax j hh)
-      rw [if_neg ha, if_neg hj]
+      rw [ite_eq_right ha, ite_eq_right hj]
       linarith
     · simpa [hja, hia] using h2
 

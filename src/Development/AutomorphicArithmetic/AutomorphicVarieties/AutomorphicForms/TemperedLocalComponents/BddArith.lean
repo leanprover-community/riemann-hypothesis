@@ -367,7 +367,7 @@ theorem UpperTheory.adelic_rep_dimension_bounded :
   have hk : ∀ j, k (rsel j) • v = V (rsel j).1 := by
     intro j
     have hex : ∃ g : Γ, g • v = V (rsel j).1 := ⟨gsel j, hgv j⟩
-    have hkj : k (rsel j) = Classical.choose hex := dif_pos hex
+    have hkj : k (rsel j) = Classical.choose hex := dite_eq_left hex
     rw [hkj]
     exact Classical.choose_spec hex
   have hmem : ∀ j, gsel j * (k (rsel j))⁻¹ ∈ MulAction.stabilizer Γ (V (rsel j).1) := by
@@ -1062,10 +1062,10 @@ theorem UpperTheory.fixedOrbits_finite_representatives :
   let bb : Z → Z := fun z => if hz : z ∈ W then (hb z hz).choose else z
   let hh : Z → G := fun z => if hz : z ∈ W then (hb z hz).choose_spec.2.choose else 1
   have bbB : ∀ z ∈ W, bb z ∈ B1 := fun z hz => by
-    simp only [bb, dif_pos hz]
+    simp only [bb, dite_eq_left hz]
     exact (hb z hz).choose_spec.1
   have hhb : ∀ z ∈ W, hh z • bb z = z := fun z hz => by
-    simp only [bb, hh, dif_pos hz]
+    simp only [bb, hh, dite_eq_left hz]
     exact (hb z hz).choose_spec.2.choose_spec
   have hcoc : ∀ z ∈ W, (hh z)⁻¹ * σ (hh z) ∈ MulAction.stabilizer G (bb z) := by
     intro z hz
@@ -1425,20 +1425,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qe19.LiftEquiv :
-    Prop :=
-    ∀ (Γ X : Type) [inst : Group Γ] [inst_1 : MulAction Γ X],
-      (∀ (x : X), Finite ↥(MulAction.stabilizer Γ x)) →
-        ∀ (A B : Rep.{0, 0, 0} ℂ Γ) (f : A ⟶ B),
-          Function.Surjective (⇑(Rep.Hom.hom f) : (↑A : Type) → (↑B : Type)) →
-            ∀ (φ : X → (↑B : Type)),
-              (∀ (g : Γ) (x : X),
-                  φ (g • x) = ((B.ρ : Γ → (↑B : Type) →ₗ[ℂ] (↑B : Type)) g : (↑B : Type) → (↑B : Type)) (φ x)) →
-                ∃ (ψ : X → (↑A : Type)),
-                  (∀ (g : Γ) (x : X),
-                      ψ (g • x) = ((A.ρ : Γ → (↑A : Type) →ₗ[ℂ] (↑A : Type)) g : (↑A : Type) → (↑A : Type)) (ψ x)) ∧
-                    ∀ (x : X), (Rep.Hom.hom f : (↑A : Type) → (↑B : Type)) (ψ x) = φ x
-
 private theorem UpperTheory.Reformulated.B.Qe19.fixed_lift {Γ : Type} [Group Γ] (H : Subgroup Γ) [Finite H]
     (A B : Rep.{0, 0, 0} ℂ Γ) (f : A ⟶ B) (hf : Function.Surjective (Rep.Hom.hom f))
     (b : B) (hb : ∀ h ∈ H, B.ρ h b = b) :
@@ -1455,8 +1441,7 @@ private theorem UpperTheory.Reformulated.B.Qe19.fixed_lift {Γ : Type} [Group Γ
     refine Fintype.sum_equiv (Equiv.mulLeft (⟨h, hh⟩ : H)) _ _ ?_
     intro k
     simp [map_mul]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum]
+  · rw [map_smul, map_sum]
     have h1 : ∀ k : H, (Rep.Hom.hom f) (A.ρ k a) = b := by
       intro k
       rw [Rep.hom_comm_apply, ha, hb k k.2]
@@ -1464,7 +1449,7 @@ private theorem UpperTheory.Reformulated.B.Qe19.fixed_lift {Γ : Type} [Group Γ
     rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
 
 theorem UpperTheory.Reformulated.B.Qe19.pins_of_closed_subgroup_padic_character_inv :
-    UpperTheory.Reformulated.B.Qe19.LiftEquiv := by
+    UpperTheory.V.Af.BA.LiftEquiv := by
   intro Γ X _ _ hfin A B f hf φ hφ
   have h1 : ∀ x : X, ∃ a : A, (∀ h ∈ MulAction.stabilizer Γ x, A.ρ h a = a) ∧
       (Rep.Hom.hom f) a = φ x := by
@@ -1640,7 +1625,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField UpperTheory.V UpperTheory.V.KT UpperTheory.V.Af.BA
-
 
 theorem UpperTheory.real_structure_action_of_real_involution :
     UpperTheory.V.Af.BA.ReInv → UpperTheory.V.Af.BA.ActRe := by
@@ -1818,7 +1802,6 @@ private theorem exact_of {A B C : Rep.{0} ℂ Γ} {f : A ⟶ B} {g : B ⟶ C} (w
   exact (forget₂ (Rep ℂ Γ) (ModuleCat ℂ)).reflects_exact_of_faithful _
     ((ShortComplex.moduleCat_exact_iff _).2 fun x hx => (h x).1 hx)
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem main : UpperTheory.V.Af.BA.ResOf := by
   intro Γ _ X d ε hX hε h0 hd
   have hdd : ∀ p, d (p + 1) ≫ d p = 0 := fun p => comp_zero_of (hd p)

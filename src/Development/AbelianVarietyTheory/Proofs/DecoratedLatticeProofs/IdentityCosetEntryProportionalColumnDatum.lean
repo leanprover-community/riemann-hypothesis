@@ -5,50 +5,6 @@ public import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ResiduesOfCompletionAtPrimeWithUniformizer
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SymLevelTestFunctionsAgreeRationalPoints
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnfoldingIntegralEqFiniteSumOverNumberField
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -203,7 +159,7 @@ theorem volN_one_ne (j : ℕ) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Pr.
       (Loc.N1 X.E (R.N j) (cOf R j) ⊓ stabL X.E _ (lamYat (Pr := Pr) (R := R) j P)) ≠ 0 := by
   have hJ : Jat (Pr := Pr) (R := R) true j P ≤ stabL X.E _ (lamYat (Pr := Pr) (R := R) j P) := by
     unfold Jat lamYat
-    rw [if_pos hP, if_pos rfl, if_pos hP]
+    rw [ite_eq_left hP, ite_eq_left rfl, ite_eq_left hP]
     exact inf_le_left
   have hle : Loc.Cbe (Jat (Pr := Pr) (R := R) true j P) (1 : AutY X R j) ⊓ Loc.N1 X.E (R.N j) (cOf R j) ≤
       Loc.N1 X.E (R.N j) (cOf R j) ⊓ stabL X.E _ (lamYat (Pr := Pr) (R := R) j P) := by
@@ -219,7 +175,7 @@ theorem volN_one_ne (j : ℕ) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Pr.
   refine inv_ne_zero ?_
   rw [Nat.cast_ne_zero]
   unfold Jat lamYat
-  rw [if_pos hP, if_pos rfl, if_pos hP]
+  rw [ite_eq_left hP, ite_eq_left rfl, ite_eq_left hP]
   exact hne
 
 end Vol
@@ -293,7 +249,7 @@ theorem entry_agree : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X
       unfold XiAt E1at
       rw [omPhi_one Ch sel mu cst j P hq hu]
       unfold PhiAt
-      rw [if_pos hA.mem, if_pos hA.sharp, hrS, hr]
+      rw [ite_eq_left hA.mem, ite_eq_left hA.sharp, hrS, hr]
     rw [e1, hsum x, e2, map_mul]
     have h1 : σ₀ V⁻¹ ≠ 0 := (map_ne_zero σ₀).2 (inv_ne_zero hvol)
     rw [div_mul_eq_mul_div, eq_div_iff h1]

@@ -13,8 +13,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qo3.exists_smul_mem_of_mem_span :
-    ∀ {L V : Type} [inst : Field L] [NumberField L] [inst_2 : AddCommGroup V]
-    [inst_3 : _root_.Module L V] [inst_4 : _root_.Module (NumberField.RingOfIntegers L) V]
+    ∀ {L V : Type} [Field L] [NumberField L] [AddCommGroup V]
+    [_root_.Module L V] [_root_.Module (NumberField.RingOfIntegers L) V]
     [IsScalarTower (NumberField.RingOfIntegers L) L V] (Y : Submodule (NumberField.RingOfIntegers L) V) {S : Set V},
     (∀ x ∈ S, x ∈ Y) →
       ∀ {p : V},

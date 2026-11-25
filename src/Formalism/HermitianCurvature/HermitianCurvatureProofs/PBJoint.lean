@@ -59,8 +59,3 @@ theorem prod_dlB {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : Inf
 end
 
 end Formalism.FourierDecayAlt.P.PBJoint
-
-namespace Formalism.FourierDecayAlt.P
-
-
-end Formalism.FourierDecayAlt.P

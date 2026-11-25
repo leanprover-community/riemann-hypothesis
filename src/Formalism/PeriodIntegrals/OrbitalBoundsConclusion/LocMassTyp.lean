@@ -288,7 +288,7 @@ theorem kUnip1_of (hS : SplitR) : KUnip1 := by
   have hUdiag : ∀ a, U a a = 1 := fun a => by
     simp [hU, uMat, hsc1]
   have hUlow : ∀ a b, b < a → U a b = 0 := fun a b hba => by
-    simp only [hU, Matrix.of_apply, uMat, if_neg (ne_of_gt hba), dif_neg (not_lt_of_gt hba),
+    simp only [hU, Matrix.of_apply, uMat, ite_eq_right (ne_of_gt hba), dite_eq_right (not_lt_of_gt hba),
       mul_zero]
   have hUI : ∀ a b, U a b ∈ OEv (E := E) v := by
     intro a b
@@ -364,8 +364,8 @@ theorem kUnip1_of (hS : SplitR) : KUnip1 := by
   have hlast : ∀ c, U (Fin.last r) c = if c = Fin.last r then 1 else 0 := by
     intro c
     by_cases hc : c = Fin.last r
-    · rw [if_pos hc, hc, hUdiag]
-    · rw [if_neg hc]
+    · rw [ite_eq_left hc, hc, hUdiag]
+    · rw [ite_eq_right hc]
       exact hUlow _ _ (lt_of_le_of_ne (Fin.le_last c) hc)
   have hYoff : ∀ c d, ¬ (c = Fin.last r ∧ d = Fin.last r) →
       Formalism.UG.hform (sigR (Fv F v) σ) (JR (Fv F v) J) (Y0 c) (Y0 d) = 0 := by
@@ -573,12 +573,6 @@ theorem dV_ne : dV v ≠ 0 := by
   · exact h.choose_spec.1
   · exact one_ne_zero
 
-theorem alp_ne (r : ℕ) (a : Fin (r + 1)) : alp v r a ≠ 0 := by
-  unfold alp
-  split_ifs
-  · exact pow_ne_zero _ (inv_ne_zero (dV_ne v))
-  · exact one_ne_zero
-
 end Alg
 
 section Main
@@ -619,7 +613,7 @@ theorem uo_of_mem {y : HA (Fv F v) σ J}
         sc (E := E) v (alp v r b) := by
       rw [sc_mul]
       congr 1
-      field_simp [alp_ne v r a]
+      field_simp [PI.LocMassTypW.alp_ne' v r a]
     calc c a * sc (E := E) v (alp v r a)
         = uMat v x a b * (sc (E := E) v ((alp v r a)⁻¹ * alp v r b) *
             sc (E := E) v (alp v r a)) := by simp only [c]; ring
@@ -628,7 +622,7 @@ theorem uo_of_mem {y : HA (Fv F v) σ J}
     rw [key]
     exact kvc_mem_lat σ J v Λ hk (hy.1 b)
   have := hy.2 c hmem a
-  simp only [c, uMat, if_neg hab.ne, dif_pos hab] at this
+  simp only [c, uMat, ite_eq_right hab.ne, dite_eq_left hab] at this
   exact this
 
 end Main
@@ -659,13 +653,13 @@ theorem stepC_at {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
       ∑ a, uMat v x a b • ratV (F := F) (Fv F v) (F0 P a) := by
     intro x b
     by_cases hx : x ∈ UO (E := E) v r
-    · simp only [t, dif_pos hx]
+    · simp only [t, dite_eq_left hx]
       exact (hK0 x hx).choose_spec.1 b
-    · simp only [t, dif_neg hx]
+    · simp only [t, dite_eq_right hx]
       exact (hE0 x).choose_spec b
   have htK : ∀ x ∈ UO (E := E) v r, y * t x * y⁻¹ ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v := by
     intro x hx
-    simp only [t, dif_pos hx]
+    simp only [t, dite_eq_left hx]
     exact (hK0 x hx).choose_spec.2
   have hiff : ∀ x (s0 : S0 (Fv F v) σ J P), (s0 : HA (Fv F v) σ J) * t x ∈ C ↔
       x ∈ UO (E := E) v r ∧ s0 ∈ stabilizerConjugateCompact σ J v P Λ y := by

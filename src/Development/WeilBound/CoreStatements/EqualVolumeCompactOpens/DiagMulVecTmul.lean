@@ -16,7 +16,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.DYhc9.IsLat :
-    {E : Type} → [inst : Field E] → {N : ℕ} → Submodule (NumberField.RingOfIntegers E) (Fin N → E) → Prop :=
+    {E : Type} → [Field E] → {N : ℕ} → Submodule (NumberField.RingOfIntegers E) (Fin N → E) → Prop :=
     fun {E : Type} [Field E] {N : ℕ} (Λ : Submodule (NumberField.RingOfIntegers E) (Fin N → E)) ↦
       Λ.FG ∧ Submodule.span E (↑Λ : Set (Fin N → E)) = ⊤
 
@@ -41,7 +41,7 @@ private theorem UpperTheory.Reformulated.B.DYhc9.exists_denom {E : Type} [Field 
     exact hint'.neg
 
 theorem UpperTheory.Reformulated.B.DYhc9.main :
-    ∀ {E : Type} [inst : Field E] [NumberField E] {N : ℕ} {Λ : Submodule (NumberField.RingOfIntegers E) (Fin N → E)},
+    ∀ {E : Type} [Field E] [NumberField E] {N : ℕ} {Λ : Submodule (NumberField.RingOfIntegers E) (Fin N → E)},
       UpperTheory.Reformulated.B.DYhc9.IsLat Λ → ∀ (x : Fin N → E), ∃ (m : ℕ), m ≠ (0 : ℕ) ∧ (↑m : E) • x ∈ Λ := by
   intro E _ _ N Λ h x
   have hx : x ∈ Submodule.span E (Λ : Set (Fin N → E)) := by

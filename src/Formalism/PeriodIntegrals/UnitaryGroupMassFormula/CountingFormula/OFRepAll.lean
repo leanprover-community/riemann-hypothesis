@@ -42,8 +42,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem inW_add (D : Formalism.BasicNotions.D7) {x y : (VS D).V} (hx : InW D x) (hy : InW D y) : InW D (x + y) := by
   unfold InW at *
   obtain ⟨h1, h2, h3⟩ := hx
@@ -276,8 +274,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem gen_red {M : Type*} [AddCommGroup M] (P : Submodule ℤ M) (hP : P.FG) (N : ℤ) (hN : N ≠ 0) :
     ∃ Rs : Set M, Rs.Finite ∧ ∀ x ∈ P, ∃ q ∈ P, ∃ ρ ∈ Rs, x = N • q + ρ := by
   obtain ⟨s, hs⟩ := hP
@@ -455,8 +451,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def DefFinW : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (P : Submodule ℤ (VS D).V), P.FG → ∀ c : D.host.E,
     {w : (VS D).V | w ∈ P ∧ (∀ a, (VS D).hT (D.sp.hypE a) w = 0) ∧ (∀ a, (VS D).hT (D.sp.hypF a) w = 0) ∧
@@ -558,8 +552,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem hswap (D : Formalism.BasicNotions.D7) (x y : (VS D).V) : (VS D).hT y x = star ((VS D).hT x y) := ((VS D).herm.eq x y).symm
 
 theorem hzero_swap (D : Formalism.BasicNotions.D7) {x y : (VS D).V} (h : (VS D).hT x y = 0) : (VS D).hT y x = 0 := by
@@ -569,12 +561,6 @@ theorem hFE (D : Formalism.BasicNotions.D7) (i i' : Fin D.R.rS) :
     (VS D).hT (D.sp.hypF i) (D.sp.hypE i') = if i' = i then 1 else 0 := by
   rw [hswap, D.sp.hyp_ef i' i]
   split_ifs <;> simp
-
-theorem hEz (D : Formalism.BasicNotions.D7) (i : Fin D.R.rS) : (VS D).hT (D.sp.hypE i) D.sp.zm = 0 := by
-  rw [hswap, (D.sp.hyp_orthz i).1, star_zero]
-
-theorem hFz (D : Formalism.BasicNotions.D7) (i : Fin D.R.rS) : (VS D).hT (D.sp.hypF i) D.sp.zm = 0 := by
-  rw [hswap, (D.sp.hyp_orthz i).2, star_zero]
 
 theorem real_of_emb (D : Formalism.BasicNotions.D7) (τ : D.host.E →+* ℂ) (w : (VS D).V) :
     τ ((VS D).hT w w) = ((τ ((VS D).hT w w)).re : ℂ) := by
@@ -601,17 +587,17 @@ theorem semidef (D : Formalism.BasicNotions.D7) (w : (VS D).V) (hE : ∀ a, (VS 
     · have ha : a ≠ a' := fun h => hij (by rw [h])
       have ha' : a' ≠ a := fun h => ha h.symm
       simp only [wv, Sum.elim_inl, map_sub, LinearMap.sub_apply, D.sp.hyp_ee, D.sp.hyp_ff, D.sp.hyp_ef,
-        hFE, if_neg ha, if_neg ha']
+        hFE, ite_eq_right ha, ite_eq_right ha']
       simp
     · cases b'
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, if_false, map_sub,
-          LinearMap.sub_apply, hEz, hFz, sub_zero]
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, LinearMap.sub_apply, hE, hF,
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, ite_false, map_sub,
+          LinearMap.sub_apply, PI.UnitaryGroupMassFormula.CntFormula.hEZ, PI.UnitaryGroupMassFormula.CntFormula.hFZ, sub_zero]
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, ite_true, map_sub, LinearMap.sub_apply, hE, hF,
           sub_zero]
     · cases b
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, if_false, map_sub,
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, ite_false, map_sub,
           (D.sp.hyp_orthz a').1, (D.sp.hyp_orthz a').2, sub_zero]
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, hzero_swap D (hE a'),
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, ite_true, map_sub, hzero_swap D (hE a'),
           hzero_swap D (hF a'), sub_zero]
     · cases b <;> cases b'
       · exact absurd rfl hij
@@ -622,21 +608,21 @@ theorem semidef (D : Formalism.BasicNotions.D7) (w : (VS D).V) (hE : ∀ a, (VS 
     intro i
     rcases i with a | b
     · simp only [wv, d, Sum.elim_inl, map_sub, LinearMap.sub_apply, D.sp.hyp_ee, D.sp.hyp_ff,
-        D.sp.hyp_ef, hFE, if_true]
+        D.sp.hyp_ef, hFE, ite_true]
       rw [map_zero, map_one]
       push_cast; ring
     · cases b
-      · simp only [wv, d, Sum.elim_inr, Bool.false_eq_true, if_false, D.sp.zm_norm, map_neg,
+      · simp only [wv, d, Sum.elim_inr, Bool.false_eq_true, ite_false, D.sp.zm_norm, map_neg,
           map_natCast]
         push_cast; ring
-      · simp only [wv, d, Sum.elim_inr, if_true]
+      · simp only [wv, d, Sum.elim_inr, ite_true]
         exact real_of_emb D τ w
   have hneg : ∀ i, d i < 0 := by
     intro i
     rcases i with a | b
     · simp [d]
     · cases b
-      · simp only [d, Sum.elim_inr, Bool.false_eq_true, if_false]; linarith
+      · simp only [d, Sum.elim_inr, Bool.false_eq_true, ite_false]; linarith
       · simpa [d] using hlt
   have hc := PI.CntNotPosW.card_le_of_negFamily (VS D) τ hτ (D.sp.Y_sig 0 τ) wv d hoff hdiag hneg
   have hq : ((D.sp.Y 0).sig τ).2 = D.R.rS + 1 := by rw [D.sp.baseSpace_signature_eq τ]; rfl
@@ -698,11 +684,11 @@ theorem isotropic_zero (D : Formalism.BasicNotions.D7) (w : (VS D).V) (hE : ∀ 
   have hWE : ∀ b, (VS D).hT (D.sp.hypE b) xW = 0 := by
     intro b
 
-    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, D.sp.hyp_ee, D.sp.hyp_ef, hEz]
+    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, D.sp.hyp_ee, D.sp.hyp_ef, PI.UnitaryGroupMassFormula.CntFormula.hEZ]
   have hWF : ∀ b, (VS D).hT (D.sp.hypF b) xW = 0 := by
     intro b
 
-    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, D.sp.hyp_ff, hFE, hFz]
+    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, D.sp.hyp_ff, hFE, PI.UnitaryGroupMassFormula.CntFormula.hFZ]
   have hWz : (VS D).hT D.sp.zm xW = 0 := by
 
     simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, (D.sp.hyp_orthz _).1, (D.sp.hyp_orthz _).2, hzz]
@@ -753,13 +739,10 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 private theorem stage1_span_eq_top_of_unimodular (D : Formalism.BasicNotions.D7) {Λ : Submodule (𝓞 D.host.E) (VS D).V}
     (hL : Λ.FG) (hU : Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ) :
     Submodule.span D.host.E (Λ : Set (VS D).V) = ⊤ := by
   exact Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top hU (VS D).herm hL
-
 
 theorem inW_neg (D : Formalism.BasicNotions.D7) {x : (VS D).V} (hx : InW D x) : InW D (-x) := by
   simpa using inW_smul D (-1) hx
@@ -865,7 +848,7 @@ theorem stage1_of_unipotentIntegralIsGroup (hN : UnipotentIntegralIsGroup) : Sta
       abel
     rw [Finset.sum_congr rfl fun a _ => e4 a, Finset.sum_add_distrib, ← Finset.smul_sum]
     simp only [tv, Pm, Matrix.sub_apply, Matrix.one_apply, sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul,
-      zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.mul_apply, Finset.sum_smul,
+      zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.mul_apply, Finset.sum_smul,
       Finset.sum_neg_distrib, Finset.smul_sum, smul_smul]
     rw [Finset.sum_comm (f := fun a b' => (betaZ D Z a b * R b' a) • pWf D x b')]
     have e5 : ∀ b' a, (betaZ D Z a b * R b' a) • pWf D x b' = (R b' a * betaZ D Z a b) • pWf D x b' :=

@@ -53,7 +53,7 @@ theorem fockB_comm (f g : MvPolynomial σ K) : fockB f g = fockB g f := by
 theorem fockB_monomial_left (m : σ →₀ ℕ) (a : K) (g : MvPolynomial σ K) :
     fockB (monomial m a) g = a * g.coeff m * (mfact m : K) := by
   classical
-  rw [fockB_eq_sum _ g {m} support_monomial_subset, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  rw [fockB_eq_sum _ g {m} support_monomial_subset, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 variable {ι : Type} [Fintype ι] {n : ℕ} (sg : ι → DomWeight n)
 
@@ -109,7 +109,7 @@ theorem fockB_projVV_basis [CharZero K] (p : Pol K ι n) (k : VVIdx sg) :
     rw [fockB_comm (bVVfun K sg i)]
     ring
   rw [Finset.sum_comm]
-  simp only [e, hinv, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [e, hinv, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   exact fockB_comm _ _
 
 theorem fockB_projVV [CharZero K] (p : Pol K ι n) (v : Pol K ι n) (hv : v ∈ VV K sg) :
@@ -157,7 +157,7 @@ theorem zExp_apply (b : ι → Fin n → ℕ) (τ : ι) (a s : Fin (n + 1)) :
     · rw [Finset.sum_eq_single ⟨s.val, h.2⟩]
       · simp [h.1, Fin.ext_iff]
       · intro s' _ hs'
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e
         apply hs'
         have := congrArg (fun x => x.2.2.val) e
@@ -165,12 +165,12 @@ theorem zExp_apply (b : ι → Fin n → ℕ) (τ : ι) (a s : Fin (n + 1)) :
       · simp
     · intro τ' _ hτ'
       refine Finset.sum_eq_zero fun s' _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact hτ' (congrArg Prod.fst e)
     · simp
   · refine Finset.sum_eq_zero fun τ' _ => Finset.sum_eq_zero fun s' _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     apply h
     simp only [Prod.mk.injEq] at e
@@ -264,19 +264,19 @@ theorem fockB_coefLast (hN : N = n + 1) (b : ι → Fin n → ℕ) (f : Pol K ι
       LinearMap.mulLeft_apply, monomial_mul, one_mul, smul_eq_mul]
     rw [fockB_monomial_left, coeff_monomial]
     by_cases ht : IsTop rfl b m
-    · rw [if_pos ht, fockB_monomial_left, coeff_monomial]
+    · rw [ite_eq_left ht, fockB_monomial_left, coeff_monomial]
       by_cases hc : m' = m.comapDomain (upVar rfl) (upVar_inj rfl).injOn
       · have hm := (isTop_iff b m m').1 ⟨ht, hc.symm⟩
-        rw [if_pos hc, if_pos (by rw [hm]; exact add_comm _ _)]
+        rw [ite_eq_left hc, ite_eq_left (by rw [hm]; exact add_comm _ _)]
         rw [← hc, hm, mfact_raise]
         push_cast
         ring
-      · rw [if_neg hc, if_neg]
+      · rw [ite_eq_right hc, ite_eq_right]
         · simp
         · intro e
           exact hc ((isTop_iff b m m').2 (by rw [← e]; exact add_comm _ _) |>.2).symm
-    · rw [if_neg ht]
-      rw [if_neg]
+    · rw [ite_eq_right ht]
+      rw [ite_eq_right]
       · simp [fockB]
       · intro e
         exact ht ((isTop_iff b m m').2 (by rw [← e]; exact add_comm _ _)).1
@@ -539,15 +539,15 @@ theorem lx_zExp_top (b : ι → Fin n → ℕ) (τ : ι) (s : Fin n) : zExp hN b
     Finset.sum_eq_single_of_mem s (Finset.mem_univ _)]
   · simp
   · intro s' _ hs
-    exact if_neg fun h => hs (iC_inj hN (congrArg (fun x => x.2.2) h))
+    exact ite_eq_right fun h => hs (iC_inj hN (congrArg (fun x => x.2.2) h))
   · intro τ' _ hτ
-    exact Finset.sum_eq_zero fun s' _ => if_neg fun h => hτ (congrArg Prod.fst h)
+    exact Finset.sum_eq_zero fun s' _ => ite_eq_right fun h => hτ (congrArg Prod.fst h)
 
 theorem lx_zExp_off (b : ι → Fin n → ℕ) (v : ι × Fin N × Fin N) (hv : v.2.1 ≠ iL hN ∨ v.2.2 = iL hN) :
     zExp hN b v = 0 := by
   classical
   rw [lx_zExp_apply]
-  refine Finset.sum_eq_zero fun τ _ => Finset.sum_eq_zero fun s _ => if_neg ?_
+  refine Finset.sum_eq_zero fun τ _ => Finset.sum_eq_zero fun s _ => ite_eq_right ?_
   intro h
   subst h
   rcases hv with h | h
@@ -601,13 +601,13 @@ theorem lx_coeff_coefLast (b : ι → Fin n → ℕ) (f : Pol K ι N) (m' : ι �
     simp only [coe_basisMonomials, lcoeff_apply]
     rw [coeff_monomial]
     by_cases hT : IsTop hN b m
-    · rw [if_pos hT, coeff_monomial]
+    · rw [ite_eq_left hT, coeff_monomial]
       by_cases hm : m.comapDomain (upVar hN) (upVar_inj hN).injOn = m'
-      · rw [if_pos hm, if_pos ((lx_isTop_iff hN b m m').1 ⟨hT, hm⟩)]
-      · rw [if_neg hm, if_neg]
+      · rw [ite_eq_left hm, ite_eq_left ((lx_isTop_iff hN b m m').1 ⟨hT, hm⟩)]
+      · rw [ite_eq_right hm, ite_eq_right]
         intro h
         exact hm ((lx_isTop_iff hN b m m').2 h).2
-    · rw [if_neg hT, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, if_neg]
+    · rw [ite_eq_right hT, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, ite_eq_right]
       intro h
       exact hT ((lx_isTop_iff hN b m m').2 h).1
   exact LinearMap.congr_fun key f
@@ -657,13 +657,13 @@ variable {K}
 
 theorem lx_detShift_N (lam : DomWeight N) : lam.detShift = lam.w (iL hN) := by
   unfold DomWeight.detShift
-  rw [dif_pos (by omega)]
+  rw [dite_eq_left (by omega)]
   congr 1
   exact Fin.ext (by simp [iL]; omega)
 
 theorem lx_detShift_n (sg : DomWeight n) (hn : 0 < n) : sg.detShift = sg.w ⟨n - 1, by omega⟩ := by
   unfold DomWeight.detShift
-  rw [dif_pos hn]
+  rw [dite_eq_left hn]
 
 variable (lam : DomWeight N) (sg : DomWeight n)
 
@@ -793,13 +793,13 @@ theorem lx_lxW_R (τ : ι) (v : Fin (n + 1) × Fin n) :
     · intro h; exact Fin.ext (by have := congrArg Fin.val h; simpa [iL] using this)
     · intro h; exact Fin.ext (by simp [h, iL])
   by_cases h : v.1 = Fin.last n
-  · rw [if_pos ⟨rfl, e.2 h⟩, if_pos h]
+  · rw [ite_eq_left ⟨rfl, e.2 h⟩, ite_eq_left h]
     rfl
-  · rw [if_neg (fun h' => h (e.1 h'.2)), if_neg h]
+  · rw [ite_eq_right (fun h' => h (e.1 h'.2)), ite_eq_right h]
 
 theorem lx_lxW_R_ne {τ τ' : ι} (h : τ' ≠ τ) (v : Fin (n + 1) × Fin n) : lxW hN τ (lxR hN τ' v) = 0 := by
   unfold lxW lxR
-  rw [if_neg (fun h' => h h'.1)]
+  rw [ite_eq_right (fun h' => h h'.1)]
 
 theorem lx_omg (τ : ι) (m : Fin (n + 1) × Fin n →₀ ℕ) :
     (((Finsupp.weight (lxW hN τ) (Finsupp.mapDomain (lxR hN τ) m) : ℕ) : ℤ)) =
@@ -814,12 +814,12 @@ theorem lx_omg (τ : ι) (m : Fin (n + 1) × Fin n →₀ ℕ) :
   rw [lx_lxW_R]
   unfold Formalism.BranchingDeterminantCap.zW
   by_cases h : v.1 = Fin.last n
-  · simp only [if_pos h, Pi.single_apply]
+  · simp only [ite_eq_left h, Pi.single_apply]
     rw [Finset.sum_eq_single v.2]
     · simp; ring
     · intro s _ hs; simp [hs]
     · simp
-  · simp [if_neg h]
+  · simp [ite_eq_right h]
 
 theorem lx_low_of (τ : ι) (D : ℤ) (L : MvPolynomial (Fin (n + 1) × Fin n) K) (hL : Formalism.BranchingDeterminantCap.IsLow D L) :
     LxLow hN τ D (rename (lxR hN τ) L) := by
@@ -836,12 +836,12 @@ theorem lx_w_single {β M : Type} [AddCommMonoid M] (w : β → M) (v : β) (c :
 
 theorem lx_lxW_top (τ : ι) (s : Fin n) : lxW hN τ (τ, iL hN, iC hN s) = s.val + 1 := by
   unfold lxW
-  rw [if_pos ⟨rfl, rfl⟩]
+  rw [ite_eq_left ⟨rfl, rfl⟩]
   rfl
 
 theorem lx_lxW_other {τ τ' : ι} (h : τ' ≠ τ) (a s : Fin N) : lxW hN τ (τ', a, s) = 0 := by
   unfold lxW
-  rw [if_neg (fun h' => h h'.1)]
+  rw [ite_eq_right (fun h' => h h'.1)]
 
 theorem weight_monomial_shift_eq_omega (b : ι → Fin n → ℕ) (τ : ι) (m' : ι × Fin n × Fin n →₀ ℕ) :
     ((Finsupp.weight (lxW hN τ) (Finsupp.mapDomain (upVar hN) m' + zExp hN b) : ℕ) : ℤ) =
@@ -1071,7 +1071,7 @@ theorem lm_colW (v : Fin (n + 1) × Fin n) :
     constructor
     · intro e; subst e; exact Fin.ext (by simp [iC])
     · intro e; exact Fin.ext (by rw [← e]; simp [iC])
-  · rw [Pi.single_apply, if_neg]
+  · rw [Pi.single_apply, ite_eq_right]
     intro e
     apply h
     rw [e]
@@ -1106,9 +1106,9 @@ theorem lm_colAdd (l' j' : Fin n) :
   simp only [AlgHom.comp_apply, rename_X, Formalism.GradedWeylDivisibility.colAddGen, aeval_X]
   have hj : (lxRho hN v).2 = iC hN j' ↔ v.2 = j' := ⟨fun h => iC_inj hN h, fun h => by rw [← h]; rfl⟩
   by_cases h : v.2 = j'
-  · rw [if_pos (hj.2 h), if_pos h]
+  · rw [ite_eq_left (hj.2 h), ite_eq_left h]
     simp [rename_X, lxRho]
-  · rw [if_neg (fun h' => h (hj.1 h')), if_neg h]
+  · rw [ite_eq_right (fun h' => h (hj.1 h')), ite_eq_right h]
     simp [rename_X]
 
 theorem lm_colAdd_last (l : Fin N) :
@@ -1117,7 +1117,7 @@ theorem lm_colAdd_last (l : Fin N) :
   apply MvPolynomial.algHom_ext
   intro v
   simp only [AlgHom.comp_apply, rename_X, Formalism.GradedWeylDivisibility.colAddGen, aeval_X]
-  rw [if_neg]
+  rw [ite_eq_right]
   exact lx_iC_ne_iL hN v.2
 
 theorem lm_rename_mem (lam : DomWeight N) (G : MvPolynomial (Fin (n + 1) × Fin n) K)
@@ -1341,7 +1341,7 @@ theorem sameShiftTr (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D
   have e := lam_last_two D u τ ⟨D.R.N D.R.m - 1 - 1 + 1, by omega⟩ ⟨D.R.N D.R.m - 1 - 1, by omega⟩
     (by simp; omega) (by simp; omega)
   unfold SameShift DomWeight.detShift
-  rw [dif_pos hpos, dif_pos hpos']
+  rw [dite_eq_left hpos, dite_eq_left hpos']
   have e2 : (lamTr D u τ).w ⟨D.R.N D.R.m - 1, by omega⟩ = (lamTr D u τ).w ⟨D.R.N D.R.m - 1 - 1 + 1, by omega⟩ := by
     congr 1; ext; simp; omega
   rw [e2]
@@ -1796,16 +1796,16 @@ theorem hwA_ndE_sum {K : Type} [Field K] {r n : ℕ} (l j : Fin n) (f : MvPolyno
     rw [hwA_sum_app, ndE, mkDerivation_X]
     simp only [pderiv_X, Pi.single_apply]
     by_cases hv : v.2 = j
-    · rw [if_pos hv, Finset.sum_eq_single v.1]
-      · rw [if_pos (by rw [← hv]), mul_one]
+    · rw [ite_eq_left hv, Finset.sum_eq_single v.1]
+      · rw [ite_eq_left (by rw [← hv]), mul_one]
       · intro b _ hb
-        rw [if_neg (by intro h; exact hb (by rw [h])), mul_zero]
+        rw [ite_eq_right (by intro h; exact hb (by rw [h])), mul_zero]
       · intro h; exact absurd (Finset.mem_univ _) h
-    · rw [if_neg hv]
+    · rw [ite_eq_right hv]
       symm
       apply Finset.sum_eq_zero
       intro b _
-      rw [if_neg (by intro h; exact hv (by rw [h])), mul_zero]
+      rw [ite_eq_right (by intro h; exact hv (by rw [h])), mul_zero]
   rw [h, hwA_sum_app]
 
 theorem hwA_rE_sum {K : Type} [Field K] {r n : ℕ} (a a' : Fin r) (f : MvPolynomial (Fin r × Fin n) K) :
@@ -1817,16 +1817,16 @@ theorem hwA_rE_sum {K : Type} [Field K] {r n : ℕ} (a a' : Fin r) (f : MvPolyno
     rw [hwA_sum_app, rE, mkDerivation_X]
     simp only [pderiv_X, Pi.single_apply]
     by_cases hv : v.1 = a'
-    · rw [if_pos hv, Finset.sum_eq_single v.2]
-      · rw [if_pos (by rw [← hv]), mul_one]
+    · rw [ite_eq_left hv, Finset.sum_eq_single v.2]
+      · rw [ite_eq_left (by rw [← hv]), mul_one]
       · intro b _ hb
-        rw [if_neg (by intro h; exact hb (by rw [h])), mul_zero]
+        rw [ite_eq_right (by intro h; exact hb (by rw [h])), mul_zero]
       · intro h; exact absurd (Finset.mem_univ _) h
-    · rw [if_neg hv]
+    · rw [ite_eq_right hv]
       symm
       apply Finset.sum_eq_zero
       intro b _
-      rw [if_neg (by intro h; exact hv (by rw [h])), mul_zero]
+      rw [ite_eq_right (by intro h; exact hv (by rw [h])), mul_zero]
   rw [h, hwA_sum_app]
 
 theorem hwA_coeff_euler {K : Type} [Field K] {r n : ℕ} (a : Fin r) (f : MvPolynomial (Fin r × Fin n) K)
@@ -1886,9 +1886,9 @@ theorem hwA_slice_unique (ν : Fin N → ℕ) (ρ : Fin n → ℕ) (m m' : Fin N
 open Classical in
 def hwAw : Fin N × Fin N → ℕ := fun v => if v.1 = v.2 ∧ v.1 ≠ iL hN then 1 else 0
 
-theorem hwAw_diag (a : Fin N) (ha : a ≠ iL hN) : hwAw hN (a, a) = 1 := if_pos ⟨rfl, ha⟩
+theorem hwAw_diag (a : Fin N) (ha : a ≠ iL hN) : hwAw hN (a, a) = 1 := ite_eq_left ⟨rfl, ha⟩
 
-theorem hwAw_off (a j : Fin N) (h : a ≠ j) : hwAw hN (a, j) = 0 := if_neg fun h' => h h'.1
+theorem hwAw_off (a j : Fin N) (h : a ≠ j) : hwAw hN (a, j) = 0 := ite_eq_right fun h' => h h'.1
 
 theorem hwA_top (lam : DomWeight N) (sg : DomWeight n) (f : MvPolynomial (Fin N × Fin N) K)
     (hf : f ∈ nablaSq K N lam) (hw : IsHwRow hN sg f) (hne : f ≠ 0) :
@@ -2115,7 +2115,7 @@ theorem hwB_xiB_euler (lam sg : Fin n → ℕ) (hIL : Formalism.BranchingDetermi
     rE K (n + 1) n a.castSucc a.castSucc (Formalism.BranchingDeterminantCap.xiB K lam sg) = (sg a : K) • Formalism.BranchingDeterminantCap.xiB K lam sg := by
   have e : Formalism.BranchingDeterminantCap.bmRho lam sg a.castSucc = sg a := by
     unfold Formalism.BranchingDeterminantCap.bmRho
-    rw [dif_pos (show (a.castSucc).val < n from a.2)]
+    rw [dite_eq_left (show (a.castSucc).val < n from a.2)]
     rfl
   rw [hwB_euler a.castSucc _ _ (Formalism.BranchingDeterminantCap.bm_xi_row (R := K) lam sg hIL), e]
 
@@ -2135,9 +2135,9 @@ theorem hwB_rename_rho (a a' : Fin n) (f : MvPolynomial (Fin (n + 1) × Fin n) K
       rw [h]
       exact Fin.ext rfl
   by_cases hv : v.1 = a'.castSucc
-  · rw [if_pos hv, if_pos (e.2 hv), rename_X]
+  · rw [ite_eq_left hv, ite_eq_left (e.2 hv), rename_X]
     exact congrArg X (Prod.ext (Fin.ext rfl) rfl)
-  · rw [if_neg hv, if_neg (fun h => hv (e.1 h)), map_zero]
+  · rw [ite_eq_right hv, ite_eq_right (fun h => hv (e.1 h)), map_zero]
 
 theorem hwB_xi (lam : DomWeight N) (sg : DomWeight n) (hI : Interlace hN lam sg) (hS : SameShift lam sg) :
     IsHwRow hN sg (xiBr K hN lam sg) := by
@@ -2182,7 +2182,7 @@ theorem hwB_pOne (lam : DomWeight N) (sg : DomWeight n) : IsHwRow hN sg (pOne K 
       (∏ s : Fin n, X (iL hN, iC hN s) ^ (bBr hN lam sg s).toNat) = 0 := by
     intro a a'
     refine hwB_prod_zero _ _ _ fun s _ => hwB_pow_zero _ _ _ ?_
-    rw [hwB_rE_X, if_neg]
+    rw [hwB_rE_X, ite_eq_right]
     exact fun h => lx_iC_ne_iL hN a' h.symm
   unfold pOne
   rw [hwB_ext_rename]
@@ -2324,7 +2324,7 @@ theorem hwD_mfact_add_single (m : σ →₀ ℕ) (i : σ) : mfact (m + Finsupp.s
     intro x hx
     by_cases hxi : x = i
     · simp [hxi]
-    · rw [Finsupp.mem_support_iff, Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm hxi), add_zero] at hx
+    · rw [Finsupp.mem_support_iff, Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hxi), add_zero] at hx
       exact Finset.mem_insert_of_mem (Finsupp.mem_support_iff.mpr hx)
   rw [hwD_mfact_sub _ _ h1, hwD_mfact_sub m _ (Finset.subset_insert i m.support),
     ← Finset.mul_prod_erase _ _ (Finset.mem_insert_self i m.support),
@@ -2333,7 +2333,7 @@ theorem hwD_mfact_add_single (m : σ →₀ ℕ) (i : σ) : mfact (m + Finsupp.s
       ∏ k ∈ (insert i m.support).erase i, (m k).factorial := by
     refine Finset.prod_congr rfl fun k hk => ?_
     have hki : k ≠ i := Finset.ne_of_mem_erase hk
-    rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm hki), add_zero]
+    rw [Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hki), add_zero]
   rw [h2, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
   ring
 
@@ -2562,16 +2562,16 @@ theorem lastAll_tr (a : ι → Kˣ) : (invTrK (lastAll N a))⁻¹ = lastAll N a 
   simp only [lastAll, lastGL_apply]
   by_cases h : i = j
   · subst h; simp
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 
 theorem torus_action_last_row_var (a : ι → Kˣ) (τ : ι) (s : Fin n) :
     trAct (lastAll N a) (X (τ, iL hN, iC hN s) : Pol K ι N) = (a τ : K) • X (τ, iL hN, iC hN s) := by
   rw [trAct_X, Finset.sum_eq_single (iL hN)]
-  · simp only [lastAll, lastGL_apply, if_true]
-    rw [if_pos (by simp [iL, hN]), smul_eq_C_mul]
+  · simp only [lastAll, lastGL_apply, ite_true]
+    rw [ite_eq_left (by simp [iL, hN]), smul_eq_C_mul]
   · intro b _ hb
     simp only [lastAll, lastGL_apply]
-    rw [if_neg hb, map_zero, zero_mul]
+    rw [ite_eq_right hb, map_zero, zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem trAct_last_up (a : ι → Kˣ) (p : Pol K ι n) : trAct (lastAll N a) (upperParabolic hN p) = upperParabolic hN p := by
@@ -2581,11 +2581,11 @@ theorem trAct_last_up (a : ι → Kˣ) (p : Pol K ι n) : trAct (lastAll N a) (u
     simp only [AlgHom.comp_apply]
     unfold upperParabolic
     rw [rename_X, trAct_X, Finset.sum_eq_single (iC hN v.2.1)]
-    · simp only [upVar, lastAll, lastGL_apply, if_true]
-      rw [if_neg (by have := v.2.1.2; simp [iC, hN]; omega), map_one, one_mul]
+    · simp only [upVar, lastAll, lastGL_apply, ite_true]
+      rw [ite_eq_right (by have := v.2.1.2; simp [iC, hN]; omega), map_one, one_mul]
     · intro b _ hb
       simp only [upVar, lastAll, lastGL_apply]
-      rw [if_neg hb, map_zero, zero_mul]
+      rw [ite_eq_right hb, map_zero, zero_mul]
     · intro h; exact absurd (Finset.mem_univ _) h
   exact AlgHom.congr_fun this p
 
@@ -2659,9 +2659,9 @@ theorem det_lastGL' (a : Kˣ) : Matrix.GeneralLinearGroup.det (Formalism.MainNot
   apply Units.ext
   simp only [Formalism.MainNotions.PrimeDegreeVariant.lastGL, diagGL, Matrix.GeneralLinearGroup.val_det_apply, Matrix.det_diagonal]
   rw [Finset.prod_eq_single (iL hN)]
-  · rw [if_pos (by simp [iL, hN])]
+  · rw [ite_eq_left (by simp [iL, hN])]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     · rfl
     · intro h
       apply hb
@@ -2956,8 +2956,8 @@ lemma inC_eval_rowGen {r n : ℕ} (a b : Fin r) (t : ℚ) (f : MvPolynomial (Fin
       congr 1
       · simp
       · by_cases hb : v.1 = b
-        · simp only [hb, true_and, if_true, Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_C]
-          rw [Finset.sum_eq_single a (fun x _ hx => by simp [hx]) (by simp), if_pos rfl, mul_comm]
+        · simp only [hb, true_and, ite_true, Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_C]
+          rw [Finset.sum_eq_single a (fun x _ hx => by simp [hx]) (by simp), ite_eq_left rfl, mul_comm]
         · simp [hb]
   exact congrArg (fun φ => φ f) this
 
@@ -2972,8 +2972,8 @@ lemma inC_mat_eq {r : ℕ} (a b : Fin r) (t : ℚ) : inC_mat a b t = 1 + Matrix.
   simp only [inC_mat, Matrix.add_apply, Matrix.one_apply, Matrix.single_apply]
   congr 1
   by_cases h : c = b ∧ d = a
-  · rw [if_pos h, if_pos ⟨h.1.symm, h.2.symm⟩]
-  · rw [if_neg h, if_neg (fun h' => h ⟨h'.1.symm, h'.2.symm⟩)]
+  · rw [ite_eq_left h, ite_eq_left ⟨h.1.symm, h.2.symm⟩]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h ⟨h'.1.symm, h'.2.symm⟩)]
 
 lemma inC_mat_det {r : ℕ} (a b : Fin r) (t : ℚ) (ht : t ≠ -1) : (inC_mat a b t).det ≠ 0 := by
   by_cases hab : b = a
@@ -2990,7 +2990,7 @@ lemma inC_mat_det {r : ℕ} (a b : Fin r) (t : ℚ) (ht : t ≠ -1) : (inC_mat a
         · exact absurd (h2.1.trans h2.2.symm) h1
         · simp [h1, h2]
     rw [this, Matrix.det_diagonal, Finset.prod_ite_eq' Finset.univ b (fun _ => 1 + t)]
-    simp only [Finset.mem_univ, if_true]
+    simp only [Finset.mem_univ, ite_true]
     intro h
     apply ht
     linarith
@@ -3030,7 +3030,7 @@ lemma inC_ker_rowDiv {n : ℕ} {σ : Type} (sg : Fin n → ℕ)
     exact (Set.finite_singleton _).infinite_compl
   have := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p k) hP0
   simp only [hP, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply, Finset.sum_ite_eq',
-    if_pos hk, Polynomial.coeff_zero] at this
+    ite_eq_left hk, Polynomial.coeff_zero] at this
   exact this
 
 theorem inC_cyc {n : ℕ} {σ : Type} (sg : Fin n → ℕ) (hsg : Antitone sg)
@@ -3890,7 +3890,7 @@ theorem nm_c_le (hI : Br.Interlace hN l s) : |((cBr hN l s : ℤ) : ℝ)| ≤ Fo
     omega
   have hsp : l.spread = a + N := by
     unfold DomWeight.spread
-    rw [dif_pos hNpos, ha]
+    rw [dite_eq_left hNpos, ha]
     have e1 : lxLamF hN l 0 = l.w ⟨0, hNpos⟩ := congrArg l.w (Fin.ext rfl)
     have e2 : lxLamF hN l (Fin.last n) = l.w ⟨N - 1, by omega⟩ := congrArg l.w (Fin.ext (by simp; omega))
     rw [e1, e2]
@@ -3975,9 +3975,9 @@ theorem nm_nuNext (i : Fin n) : nuNext l.natW (iC hN i) = nuNext (lamN hN l) i :
   unfold nuNext
   have hi := i.2
   by_cases h : i.val + 1 < n
-  · rw [dif_pos h, dif_pos (by simp only [iC]; omega)]
+  · rw [dite_eq_left h, dite_eq_left (by simp only [iC]; omega)]
     rfl
-  · rw [dite_eq_right h, dif_pos (by simp only [iC]; omega)]
+  · rw [dite_eq_right h, dite_eq_left (by simp only [iC]; omega)]
     have : (⟨(iC hN i).val + 1, by simp only [iC]; omega⟩ : Fin N) = iL hN := Fin.ext (by simp only [iC, iL]; omega)
     rw [this, nm_natW_last]
 
@@ -4012,7 +4012,7 @@ theorem nm_kap_le_weyl (hI : Br.Interlace hN l s) (hS : SameShift l s) :
 theorem nm_lamZ (a : Fin (n + 1)) : lamZ (lamN hN l) a = (l.natW (Fin.cast hN.symm a) : ℤ) := by
   unfold lamZ
   by_cases h : a.val < n
-  · rw [dif_pos h]; rfl
+  · rw [dite_eq_left h]; rfl
   · rw [dite_eq_right h]
     have : Fin.cast hN.symm a = iL hN := Fin.ext (by have := a.2; simp only [iL, Fin.val_cast]; omega)
     rw [this, nm_natW_last]; rfl

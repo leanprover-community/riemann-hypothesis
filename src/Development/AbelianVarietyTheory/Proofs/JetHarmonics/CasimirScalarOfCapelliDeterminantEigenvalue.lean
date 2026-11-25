@@ -3,51 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QdetTopThreeOrders
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import Formalism.HermitianCurvature.BesselNonvanishingReduction
 import Formalism.HermitianCurvature.StatementI
@@ -141,7 +99,7 @@ theorem scalar_core (n : ℕ) (hn : 2 ≤ n) (ρ μ a : Fin n → ℂ) (b : Fin 
   have c2 : ∀ p : ℂ[X], (X * p).coeff 2 = p.coeff 1 := fun p => coeff_X_mul p 1
   rw [c1] at k1
   rw [c2] at k2
-  simp only [Polynomial.finsetSum_coeff, coeff_C_mul, (rev_coeff _ _).1, (rev_coeff _ _).2.1, le_refl, if_true,
+  simp only [Polynomial.finsetSum_coeff, coeff_C_mul, (rev_coeff _ _).1, (rev_coeff _ _).2.1, le_refl, ite_true,
     Nat.sub_self, mul_one] at k1 k2
   norm_num at k1 k2
   constructor
@@ -164,7 +122,7 @@ theorem sum_sq_split {A : Type} [AddCommGroup A] {n : ℕ} (F : Fin n → Fin n 
     · simp [h]
     · simp [h, h.ne', h.not_gt]
   rw [sum_congr rfl fun i _ => sum_congr rfl fun j _ => h1 i j]
-  simp only [sum_add_distrib, sum_filter, sum_ite_eq, mem_univ, if_true]
+  simp only [sum_add_distrib, sum_filter, sum_ite_eq, mem_univ, ite_true]
   rw [add_assoc, sum_comm (f := fun i j => if j < i then F i j else 0)]
 
 theorem sum_diff {A : Type} [AddCommGroup A] [Module ℂ A] {n : ℕ} (x : Fin n → A) :
@@ -196,7 +154,7 @@ theorem sq_sub_cas {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → 
   have hij : i ≠ j := (mem_filter.1 hj).2.ne
   have h1 := hE i j j i
   have h2 := hE i i j j
-  simp only [if_true, hij, hij.symm, if_false, sub_zero] at h1 h2
+  simp only [ite_true, hij, hij.symm, ite_false, sub_zero] at h1 h2
   rw [two_smul, ← h1, ← sub_eq_zero.1 h2]
   abel
 

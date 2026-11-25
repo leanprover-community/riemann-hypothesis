@@ -55,7 +55,7 @@ theorem fock_form_monomial {σ : Type} (m : σ →₀ ℕ) (c : K) (G : MvPolyno
     fock (monomial m c) G = c * G.coeff m * (expFact m : K) := by
   classical
   rw [fock_form_finset_sum _ G {m} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 theorem exponent_factorial_add_single_one {σ : Type} [Fintype σ] (u : σ →₀ ℕ) (v : σ) :
     expFact (u + Finsupp.single v 1) = (u v + 1) * expFact u := by
@@ -88,10 +88,10 @@ theorem fock_mul_adjoint_pderiv {σ : Type} [Fintype σ] (v : σ) (F G : MvPolyn
         MvPolynomial.coeff_monomial, add_comm (Finsupp.single v 1) m, exponent_factorial_add_single_one]
       by_cases h : n = m + Finsupp.single v 1
       · subst h
-        simp only [add_tsub_cancel_right, if_true, Finsupp.add_apply, Finsupp.single_eq_same]
+        simp only [add_tsub_cancel_right, ite_true, Finsupp.add_apply, Finsupp.single_eq_same]
         push_cast
         ring
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         by_cases h' : n - Finsupp.single v 1 = m
         · have hv : n v = 0 := by
             by_contra hv

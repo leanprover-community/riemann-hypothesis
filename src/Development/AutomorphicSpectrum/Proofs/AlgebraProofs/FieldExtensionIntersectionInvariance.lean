@@ -1446,7 +1446,7 @@ theorem fibre_degree (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
   rw [← key4, finsum_eq_sum_of_support_subset _ (s := 𝒲.toFinset),
     Finset.sum_set_coe 𝒲 (f := fun W' => divCycle P' (rr j ι' O f) W' * (srd j W' : ℤ))]
   · refine Finset.sum_congr rfl fun W' h => ?_
-    rw [if_pos (Set.mem_toFinset.mp h).2.2]
+    rw [ite_eq_left (Set.mem_toFinset.mp h).2.2]
   · intro W' h
     rw [Function.mem_support] at h
     rw [Set.coe_toFinset]
@@ -1559,26 +1559,26 @@ theorem push (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
           (if (C ϖ : MRing (fun k => ι' (j k)) O) ∈ W then vNum W a else 0)) := by
     intro W
     by_cases hW : (C ϖ : MRing (fun k => ι' (j k)) O) ∈ W
-    · rw [if_pos hW, hδ, ← fibre_num hϖ hP' hP hf hfP hW φ hφ a,
+    · rw [ite_eq_left hW, hδ, ← fibre_num hϖ hP' hP hf hfP hW φ hφ a,
         finsum_eq_sum_of_support_subset _ (s := hZ.toFinset), Finset.sum_filter]
       · refine Finset.sum_congr rfl fun W' _ => ?_
         by_cases h1 : W'.comap (rr j ι' O) = W
-        · rw [if_pos h1, if_pos h1, hg_def]
+        · rw [ite_eq_left h1, ite_eq_left h1, hg_def]
           dsimp only
-          rw [if_pos ((C_mem_comap j ι' W').mp (by rw [h1]; exact hW))]
-        · rw [if_neg h1, if_neg h1]
+          rw [ite_eq_left ((C_mem_comap j ι' W').mp (by rw [h1]; exact hW))]
+        · rw [ite_eq_right h1, ite_eq_right h1]
       · intro W' hW'
         refine hZ.mem_toFinset.mpr ?_
         rw [Function.mem_support] at hW' ⊢
         intro h0
         apply hW'
         simp [h0]
-    · rw [if_neg hW, mul_zero, mul_zero]
+    · rw [ite_eq_right hW, mul_zero, mul_zero]
       refine Finset.sum_eq_zero fun W' hW' => ?_
       have h1 := (Finset.mem_filter.mp hW').2
       rw [hg_def]
       dsimp only
-      rw [if_neg (fun h => hW (h1 ▸ (C_mem_comap j ι' W').mpr h)), mul_zero]
+      rw [ite_eq_right (fun h => hW (h1 ▸ (C_mem_comap j ι' W').mpr h)), mul_zero]
   unfold cycEval
   rw [mul_finsum]
   calc (∑ᶠ W', g W') = ∑ W' ∈ hZ.toFinset, g W' := finsum_eq_sum_of_support_subset g hg

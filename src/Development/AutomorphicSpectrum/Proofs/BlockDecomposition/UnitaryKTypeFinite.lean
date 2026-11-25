@@ -702,10 +702,10 @@ theorem skew_add_upper {n : ℕ} (𝔤 : Submodule ℝ (Matrix (Fin n) (Fin n) �
     have hji' : j < i := hji
     have hle : h i ≤ h j := hanti hji'.le
     have h1 : P i j = 0 := by
-      rw [P_ent, if_neg (not_lt.2 hle)]
+      rw [P_ent, ite_eq_right (not_lt.2 hle)]
     have h2 : Y i j = 0 := Y_diag hji'.ne'
     have h3 : Mᴴ i j = 0 := by
-      rw [Matrix.conjTranspose_apply, M_ent, if_neg (not_lt.2 hle)]; simp
+      rw [Matrix.conjTranspose_apply, M_ent, ite_eq_right (not_lt.2 hle)]; simp
     simp only [Matrix.add_apply, h1, h2, h3, add_zero]
 
 end GlobalTheory.CompanionTheory.IwasawaGen

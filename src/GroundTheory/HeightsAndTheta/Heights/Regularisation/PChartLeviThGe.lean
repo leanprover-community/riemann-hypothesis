@@ -157,11 +157,7 @@ theorem exists_levi_lower (hpot : IsPotential A om) (hpos : IsPosPot A om)
         (K ×ˢ sphere (0 : Fin D → ℂ) 1) := fun q hq =>
       (continuousAt_levi_self hpot hψ (hKs hq.1) q.2).continuousWithinAt
     obtain ⟨q1, hq1, hmin⟩ := (hK.prod (isCompact_sphere 0 1)).exists_isMinOn hne hcont
-    have hq1v : q1.2 ≠ 0 := by
-      intro h0
-      have := hq1.2
-      rw [mem_sphere_zero_iff_norm, h0, norm_zero] at this
-      exact zero_ne_one this
+    have hq1v : q1.2 ≠ 0 := ne_zero_of_mem_unit_sphere ⟨q1.2, hq1.2⟩
     refine ⟨_, levi_pos_compat hpot hpos hψ (om.mem_U q1.1) (hKs hq1.1) hq1v, ?_⟩
     intro p hp x hx v
     rw [levi_base_indep hpot hψ hx (om.mem_U p) (hKs hp) v]

@@ -58,8 +58,7 @@ open GlobalTheory.MixModel.OrthDec
 variable {D : D7} {S A B : HSp D} (d : GlobalTheory.MixModel.OrthDec S A B)
 
 theorem heisO_zero' (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (f : WO S T → ℂ) : heisO ψ S T 0 f = f := by
-  funext w
-  simp only [heisO, GlobalTheory.MixModel.symplOH_zero_right, AddChar.map_zero_eq_one, one_mul, add_zero]
+  exact GlobalTheory.MixPer.heisO_zero ψ S T f
 
 theorem resS_symm_left (T : HSp D) (u : WO A T) :
     (d.resS T).symm (u, 0) = GlobalTheory.MixModel.sandwich (1 : Mx D T.rank T.rank) d.pA u := by

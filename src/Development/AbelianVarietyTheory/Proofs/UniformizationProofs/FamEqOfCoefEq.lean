@@ -52,10 +52,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.CoefDet
 
 theorem fn_ext_of_points {F : Type} [Field F] [IsAlgClosed F] {Y : Scheme.{0}} [IsReduced Y]
@@ -104,4 +102,3 @@ theorem fam_eq_of_coef_eq : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (k : ℕ)
     (sec_trans (s'.s χ) r z hz (hJ.mem _ r)).symm)
 
 end GlobalTheory.UT.CoefDet
-end

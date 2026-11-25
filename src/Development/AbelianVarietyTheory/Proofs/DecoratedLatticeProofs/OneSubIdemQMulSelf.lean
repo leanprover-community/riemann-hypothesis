@@ -4,45 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlace
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentTwistedGroupEndomorphism
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlaceIdempotentActsOnSupportedAndOff
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
@@ -74,10 +35,10 @@ theorem evalV_indQ (Q : Finset (Pl D)) (w : Pl D) :
     intro v _
     by_cases hwv : w = v
     · subst hwv
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       change (singleV D.host.F w 1) w = 1
       exact RestrictedProduct.single_eq_same _ _ _
-    · rw [if_neg hwv]
+    · rw [ite_eq_right hwv]
       change (singleV D.host.F v 1) w = 0
       exact RestrictedProduct.single_eq_of_ne (fun u : Pl D => u.adicCompletionIntegers D.host.F)
         (1 : Fv D.host.F v) hwv
@@ -128,12 +89,12 @@ theorem mem_idAt_iff_mul (P : Pl D → Prop) [DecidablePred P] (c : AE D) (h0 : 
     · intro w
       rw [RingHom.map_sub, RingHom.map_mul, hc w]
       by_cases h : P w
-      · rw [if_pos h, one_mul, sub_self]
-      · rw [if_neg h, haw w h, zero_mul, sub_zero]
+      · rw [ite_eq_left h, one_mul, sub_self]
+      · rw [ite_eq_right h, haw w h, zero_mul, sub_zero]
   · intro ha
     refine ⟨?_, fun w hw => ?_⟩
     · rw [← ha, RingHom.map_mul, h0, zero_mul]
-    · rw [← ha, RingHom.map_mul, hc w, if_neg hw, zero_mul]
+    · rw [← ha, RingHom.map_mul, hc w, ite_eq_right hw, zero_mul]
 
 theorem mem_idOff_iff_mul (P : Pl D → Prop) [DecidablePred P] (c : AE D) (h0 : infPart D c = 0)
     (hc : ∀ w, compAt D w c = if P w then 1 else 0) (a : AE D) : a ∈ idOff D P ↔ c * a = 0 := by
@@ -146,10 +107,10 @@ theorem mem_idOff_iff_mul (P : Pl D → Prop) [DecidablePred P] (c : AE D) (h0 :
       rw [RingHom.map_mul, hc w]
       by_cases h : P w
       · rw [ha w h, mul_zero]
-      · rw [if_neg h, zero_mul]
+      · rw [ite_eq_right h, zero_mul]
   · intro ha w hw
     have := congrArg (compAt D w) ha
-    rwa [RingHom.map_mul, hc w, if_pos hw, one_mul, RingHom.map_zero] at this
+    rwa [RingHom.map_mul, hc w, ite_eq_left hw, one_mul, RingHom.map_zero] at this
 
 open Classical in
 theorem mem_idAt_Q_iff (Q : Finset (Pl D)) (a : AE D) :

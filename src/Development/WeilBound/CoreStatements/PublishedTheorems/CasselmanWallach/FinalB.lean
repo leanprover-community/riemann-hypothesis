@@ -554,7 +554,7 @@ theorem mem_Es {μ : ℝ} {v : V} : v ∈ Es ε E μ ↔ Eig ε E μ v :=
   Module.End.mem_eigenspace_iff
 
 theorem fd (h : Mod ε E) (μ : ℝ) : FiniteDimensional ℂ (Es ε E μ) := by
-  haveI := h.fin μ
+  have := h.fin μ
   refine Submodule.finiteDimensional_of_le (S₂ := Submodule.span ℂ {v : V | ∃ μ' ≤ μ, Eig ε E μ' v}) ?_
   intro v hv
   exact Submodule.subset_span ⟨μ, le_rfl, mem_Es.mp hv⟩
@@ -565,7 +565,7 @@ open EigenspaceDecomposition in
 theorem eigenbasis_of_basic : A0 → EigenbasisExists := by
   intro hA n ε V _ _ E h
   obtain ⟨hsym, hnn, -, -⟩ := hA n ε V E h
-  haveI : ∀ μ : ℝ, FiniteDimensional ℂ (Es ε E μ) := fun μ => fd h μ
+  have : ∀ μ : ℝ, FiniteDimensional ℂ (Es ε E μ) := fun μ => fd h μ
   let f : (Σ μ : ℝ, Fin (Module.finrank ℂ (Es ε E μ))) → V :=
     fun i => ((stdOrthonormalBasis ℂ (Es ε E i.1)) i.2 : V)
   have hOF : OrthogonalFamily ℂ (fun μ : ℝ => Es ε E μ) (fun μ => (Es ε E μ).subtypeₗᵢ) :=
@@ -603,13 +603,13 @@ theorem eigenbasis_of_basic : A0 → EigenbasisExists := by
     rw [h0, norm_zero] at this
     exact zero_ne_one this
   · intro R
-    haveI := h.fin R
+    have := h.fin R
     let W := Submodule.span ℂ {v : V | ∃ μ ≤ R, Eig ε E μ v}
     let g : {i : (Σ μ : ℝ, Fin (Module.finrank ℂ (Es ε E μ))) | i.1 ≤ R} → W :=
       fun i => ⟨f i.1, Submodule.subset_span ⟨i.1.1, i.2, heig i.1⟩⟩
     have hg : LinearIndependent ℂ g :=
       LinearIndependent.of_comp W.subtype (hli.comp _ Subtype.val_injective)
-    haveI := hg.finite
+    have := hg.finite
     exact Set.toFinite _
 
 end PositivityTheory.CW
@@ -778,7 +778,7 @@ theorem comm_pow (E : Fin n → Fin n → Module.End ℂ V) (hE : IsGlRep E) (c 
     rw [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
     simp only [key, ih, hE c d]
     simp only [sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero, Finset.sum_add_distrib,
-      Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     by_cases h1 : d = a <;> by_cases h2 : b = c <;> simp [h1, h2] <;> abel
 
 end CasimirPowerCommute
@@ -788,7 +788,7 @@ theorem gelfand_central_holds : A2 := by
   have hc := CasimirPowerCommute.comm_pow E h.gl c d k
   rw [← sub_eq_zero, Matrix.trace, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
   simp only [Matrix.diag_apply, hc, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, sub_self]
+    Finset.mem_univ, ite_true, sub_self]
 
 end PositivityTheory.CW
 
@@ -861,9 +861,9 @@ theorem Xp_inP (ε : Fin n → Bool) (p : Fin n × Fin n) (hp : p ∈ nc ε) : i
       Matrix.single_apply]
     by_cases h1 : a = i ∧ b = j <;> by_cases h3 : b = i ∧ a = j
     · exact absurd (h1.1.trans h3.1.symm) hne
-    · obtain ⟨rfl, rfl⟩ := h1; simp only [if_neg h3, hσ]; ring
-    · obtain ⟨rfl, rfl⟩ := h3; simp only [if_neg h1, hσ]; ring
-    · simp only [if_neg h1, if_neg h3]; ring
+    · obtain ⟨rfl, rfl⟩ := h1; simp only [ite_eq_right h3, hσ]; ring
+    · obtain ⟨rfl, rfl⟩ := h3; simp only [ite_eq_right h1, hσ]; ring
+    · simp only [ite_eq_right h1, ite_eq_right h3]; ring
   have hh : (Xp a b)ᴴ = Xp a b := by
     ext i j
     simp only [Xp, Matrix.conjTranspose_apply, Matrix.add_apply, Matrix.single_apply]
@@ -1079,7 +1079,7 @@ theorem a9_of_a0_a1_eigenbasis_a6 : A0 → A1 → CasimirIsRealScalar → A6 →
       rw [LinearMap.sum_apply, inner_sum, ← Finset.sum_neg_distrib]
       refine Finset.sum_congr rfl fun p hp => ?_
       have hne : ε p.1 ≠ ε p.2 := (Finset.mem_filter.mp hp).2
-      rw [hM.uni, adjSign, if_neg hne]
+      rw [hM.uni, adjSign, ite_eq_right hne]
       simp
     have hv0 := norm_nonneg v
     have hTv0 := norm_nonneg ((∑ p ∈ nc ε, E p.2 p.1 * Z ε E p.1 p.2) v)
@@ -1156,9 +1156,9 @@ theorem Z_eq (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ V} (h
   simp_rw [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_sub_distrib, ite_mul_sub_mul_ite, mul_mul_sub_mul_mul_eq_add, hE]
   simp only [sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero]
   simp only [ite_sub_add_sub_eq, ← ite_and, Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  simp only [and_comm (b := _ = a), and_comm (b := b = _), Finset.sum_ite_eq', Finset.sum_ite_eq, ite_and, Finset.mem_univ, if_true]
+  simp only [and_comm (b := _ = a), and_comm (b := b = _), Finset.sum_ite_eq', Finset.sum_ite_eq, ite_and, Finset.mem_univ, ite_true]
   simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq', Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   simp only [@eq_comm _ (ε a), @eq_comm _ (ε b), ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
   apply Finset.sum_eq_zero
   intro x _
@@ -1424,17 +1424,17 @@ theorem charpoly_eq {R : Type} [CommRing R] [Algebra ℚ R] [Nontrivial R] {n : 
   ext j
   rw [Polynomial.coeff_X_pow]
   rcases lt_trichotomy j n with hj | hj | hj
-  · rw [if_neg hj.ne]
+  · rw [ite_eq_right hj.ne]
     have hz := hRev (n - j) (by omega)
     rw [← Matrix.reverse_charpoly, Polynomial.coeff_reverse, hdeg,
       Polynomial.revAt_le (by omega)] at hz
     rwa [show n - (n - j) = j by omega] at hz
-  · rw [if_pos hj]
+  · rw [ite_eq_left hj]
     have hl := (Matrix.charpoly_monic N).leadingCoeff
     rw [Polynomial.leadingCoeff, hdeg] at hl
     rw [hj]
     exact hl
-  · rw [if_neg hj.ne']
+  · rw [ite_eq_right hj.ne']
     exact Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
 
 end CharpolyPowerTraces

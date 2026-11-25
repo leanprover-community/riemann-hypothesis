@@ -50,7 +50,7 @@ private theorem UpperTheory.Reformulated.B.Qh3.int_mul {Ω ι : Type} [Measurabl
     (Filter.Eventually.of_forall fun ω ↦ hb _)
 
 theorem UpperTheory.Reformulated.B.Qh3.real_diff :
-    ∀ {Ω ι : Type} [inst : MeasurableSpace Ω] [Fintype ι]
+    ∀ {Ω ι : Type} [MeasurableSpace Ω] [Fintype ι]
     (ν : MeasureTheory.Measure Ω) (X : Ω → ι → ℝ) (f : Ω → ℝ),
     Measurable X →
       MeasureTheory.Integrable f ν →

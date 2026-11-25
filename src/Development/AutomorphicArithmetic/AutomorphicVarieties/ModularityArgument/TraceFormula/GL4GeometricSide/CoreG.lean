@@ -175,10 +175,10 @@ theorem tri_le (e : Fin n → Fin n → ℝ) (h0 : ∀ a, e a a = 0) (ha : ∀ a
     · subst hac
       simp [h0]
     · have hn : ¬ (a = a ∧ a = c) := fun h => hac h.2
-      rw [if_neg hn, h0 a]
+      rw [ite_eq_right hn, h0 a]
       rcases hs a c hac with h | h <;> rw [h] <;> norm_num
   · have hn : ¬ (a = b ∧ b = c) := fun h => hab h.1
-    rw [if_neg hn]
+    rw [ite_eq_right hn]
     by_cases hbc : b = c
     · subst hbc
       rw [h0 b]
@@ -230,21 +230,13 @@ theorem sgnB_sign {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) (a
   · have hn : (a, b) ∉ B := fun hm => absurd (hB _ hm) (not_lt_of_gt h)
     by_cases hm : (b, a) ∈ B <;> simp [h, h.not_gt, hn, hm] <;> norm_num
 
-theorem card_fst (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.1 = a).card = (univ.filter fun b => (a, b) ∈ B).card :=
-  _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_fst B a
-
-theorem card_snd (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.2 = a).card = (univ.filter fun b => (b, a) ∈ B).card :=
-  _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_snd B a
-
 theorem sum_sgnB (B : Finset (Fin n × Fin n)) (a : Fin n) :
     ∑ b, sgnB B a b = 2 * (rhoV n a - wtB B a) := by
   unfold sgnB
   rw [Finset.sum_sub_distrib, sum_sgn, ← Finset.mul_sum, Finset.sum_sub_distrib, Finset.sum_boole,
     Finset.sum_boole]
   unfold wtB
-  rw [card_fst, card_snd]
+  rw [GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_fst, GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_snd]
   ring
 
 theorem nsq_rho_sub_le {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) :
@@ -410,7 +402,7 @@ theorem multG_of (hCp : Compress) (hM : MultFor) (hA : AdmLeast) (h1 : N1) (hC :
   have hne_h : (harmSet lam).Nonempty := ⟨_, muQ_mem_harmSet (fun a => a) (isLev_id lam)⟩
   by_cases hex : ∃ μ ∈ harmSet lam, hwSp E1 E2 μ ≠ ⊥
   swap
-  · push_neg at hex
+  · push Not at hex
     obtain ⟨μ₀, hμ₀⟩ := hne_h
     refine ⟨μ₀, hμ₀, fun μ hμ _ => hex μ hμ, ?_⟩
     intro v w hv _ hv0
@@ -508,20 +500,20 @@ theorem mul_sg_self (lev : Fin n → ℕ) (a b : Fin n) :
   · have h' : (lev a : ℝ) < lev b := by exact_mod_cast h
     have hs : sg lev a b = 1 := by
       unfold sg
-      rw [if_pos h, if_neg (by omega)]
+      rw [ite_eq_left h, ite_eq_right (by omega)]
       norm_num
     rw [hs, abs_of_neg (by linarith)]
     ring
   · have hs : sg lev a b = 0 := by
       unfold sg
-      rw [if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
       norm_num
     rw [hs, h]
     simp
   · have h' : (lev b : ℝ) < lev a := by exact_mod_cast h
     have hs : sg lev a b = -1 := by
       unfold sg
-      rw [if_neg (by omega), if_pos h]
+      rw [ite_eq_right (by omega), ite_eq_left h]
       norm_num
     rw [hs, abs_of_pos (by linarith)]
     ring

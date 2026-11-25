@@ -18,62 +18,17 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Stalk
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeDescentDataChartsCommon
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalGroupRangeUnionClosedFibres
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsSchemeTheoreticallyDominantSpecOfInjective
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.SiegelToroidalIntegral
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Tactic.Basify
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
-import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierSectionsFlatBaseChangeLinearlyDisjoint
 import Mathlib.AlgebraicGeometry.QuasiAffine
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsCommMonObjOfDominant, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtendsToSemiAbelianOfLocalGroups, Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeDescentGradedFamilyNonzero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierMultipleGlobalSectionsEqSpanRegularLattic, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCartierSectionLocusOfAmpleSpan, Development.AbelianVarietyTheory.Proofs.DivisorProofs.PsiAlgebraMap, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralSeparatedProjModelGradedFunctions, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGlueMorphismsIntegralAgreeAtGenericPoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHomToAffineOpenOfFunctionFieldMapRegular, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericPointCompStructureEqSpecMapConstants, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RegularAndUnitPreservedByFunctionFieldCompatible, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMapIntegralSchemeToGradedProjModel, Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyDescentSeparatedEmbedding, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasExtOfSetup
@@ -277,7 +232,6 @@ theorem isSemiAbelian_of_ext (hC : σ.Common) (G : Over (Sp σ.R)) [GrpObj G] (�
 end GlobalTheory.Desc.UnionFib
 
 namespace GlobalTheory.Desc
-
 
 open UnionFib GroupGlue in
 theorem Emb.hasExt_of_locGrp : ∀ (σ : Setup) (E : Emb σ), σ.Common → (∀ x : Sp σ.R, ∃ g : σ.R, g ∉ x.asIdeal ∧ ∃ (H : Over (Sp (Localization.Away g))) (_ : GrpObj H) (h : H.left ⟶ E.P), E.LocGrp g H h ∧ Set.range h = E.U ∩ E.p ⁻¹' {z : Sp σ.R | g ∉ z.asIdeal}) → HasExt (awayMap σ.f) σ.A := by
@@ -521,7 +475,6 @@ theorem finite_vert (σ : Setup) :
 
 end GlobalTheory.DescSpan
 
-
 open GlobalTheory.DescSpan in
 theorem GlobalTheory.Desc.sec_eq_spanBy_N : ∀ (σ : Setup) (k : ℕ), Sec σ.D k = spanBy (GlobalTheory.Desc.cst σ.A.hom) (σ.N k) := by
   intro σ k
@@ -721,7 +674,7 @@ def decHom (hN : GradedFam c₀ N) : ring hN →+ DirectSum ℕ (fun k => piece 
 instance gradedMonoid (hN : GradedFam c₀ N) : SetLike.GradedMonoid (piece hN) where
   one_mem j hj := by
     change (1 : F[X]).coeff j = 0
-    rw [coeff_one, if_neg hj]
+    rw [coeff_one, ite_eq_right hj]
   mul_mem i j a b ha hb := by
     rw [mem_piece_iff] at ha hb
     intro l hl
@@ -750,7 +703,6 @@ instance gradedRing (hN : GradedFam c₀ N) : GradedRing (piece hN) :=
         exact Subtype.ext (comp_of_mem hN y.2)) }
 
 section Frac
-
 
 variable (F) in
 def cL : F →+* FractionRing F[X] := (algebraMap F[X] (FractionRing F[X])).comp C
@@ -789,7 +741,6 @@ theorem valL_mk (g : NumDenSameDeg (piece hN) P.primeCompl) :
   rw [← map_mul]
   congr 1
   rw [hnum, hden, coeff_monomial_same, coeff_monomial_same, monomial_mul_C, mul_div_cancel₀ _ hs]
-
 
 variable (F) in
 def eqR : F ≃+* (cL F).range :=
@@ -1234,7 +1185,6 @@ theorem exists_ringHom_fnOf_eq {Y P : Scheme.{0}} [IsIntegral Y] [IsIntegral P] 
   · exact (ht (a + b)).trans (((congrArg φ (map_add _ a b)).trans (map_add φ _ _)).trans
       ((congrArg₂ (· + ·) (ht a) (ht b)).symm.trans (map_add (fnOf U hU) (t a) (t b)).symm))
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_hom_of_regAt_fnOf : ∀ (Y P : Scheme.{0}) [IsIntegral Y] [IsIntegral P] (U : Y.Opens), genericPoint Y ∈ U → ∀ (V : P.Opens), IsAffineOpen V → ∀ (hVη : genericPoint P ∈ V) (φ : P.functionField →+* Y.functionField), (∀ s : Γ(P, V), ∀ y ∈ U, RegAt y (φ (fnOf V hVη s))) → ∃ f : U.toScheme ⟶ P, (∀ y : U.toScheme, f y ∈ V) ∧ ∀ l : Sp Y.functionField ⟶ U.toScheme, l ≫ U.ι = gp Y → l ≫ f = spMap φ ≫ gp P := by
   intro Y P _ _ U hU V hV hVη φ h
@@ -1377,7 +1327,6 @@ theorem fnOf_app_eq {Y P : Scheme.{0}} [IsIntegral Y] [IsIntegral P] (m : Y ⟶ 
 
 end GlobalTheory.Desc.StalkMap
 
-
 open GlobalTheory.Desc.StalkMap in
 theorem GlobalTheory.Desc.regAt_map_of_gp : ∀ (Y P : Scheme.{0}) [IsIntegral Y] [IsIntegral P] (m : Y ⟶ P)
     (φ : P.functionField →+* Y.functionField), gp Y ≫ m = spMap φ ≫ gp P → ∀ (y : Y) (v : P.functionField),
@@ -1414,12 +1363,6 @@ theorem sep (R : Type) [CommRing R] (P : Scheme.{0}) (p : P ⟶ Sp R) [IsSeparat
   refine ⟨?_⟩
   rw [terminal.hom_ext (terminal.from P) (p ≫ terminal.from _)]
   infer_instance
-
-theorem regAt_pow {Y : Scheme.{0}} [IsIntegral Y] {y : Y} {x : Y.functionField} (h : RegAt y x) (m : ℕ) :
-    RegAt y (x ^ m) := by
-  induction m with
-  | zero => rw [pow_zero]; exact (unitAt_one y).regAt
-  | succ n ih => rw [pow_succ]; exact ih.mul h
 
 theorem reg_div (Y : Scheme.{0}) [IsIntegral Y] (D : CartierDiv Y) (k m : ℕ) (u a : Y.functionField) (y : Y)
     (ha : a ∈ Sec D (k * m)) (hu : y ∈ locus D k u) : RegAt y (a / u ^ m) := by
@@ -1655,7 +1598,6 @@ theorem onV_of (σ : Setup) (x : Sp σ.R) (P : Scheme.{0}) [IsIntegral P] (p : P
 end GlobalTheory.Desc.EmbeddingLemmas
 
 namespace GlobalTheory.Desc
-
 
 open GlobalTheory.Desc.EmbeddingLemmas in
 theorem nonempty_emb : ∀ σ : Setup, σ.Common → Nonempty (Emb σ) := by

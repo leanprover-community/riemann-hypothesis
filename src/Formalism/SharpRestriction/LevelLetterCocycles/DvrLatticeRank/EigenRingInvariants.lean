@@ -59,7 +59,7 @@ theorem ev_inj {a : O} (ha : a ∈ IsLocalRing.maximalIdeal O) {c c' : O}
   have hrec : ∀ n, PowerSeries.coeff (R := O) n H = a * PowerSeries.coeff (R := O) (n + 1) H := by
     intro n
     have hn := congrArg (PowerSeries.coeff (R := O) (n + 1)) hH
-    rw [PowerSeries.coeff_C, if_neg (by omega : n + 1 ≠ 0), sub_mul, map_sub, PowerSeries.coeff_succ_X_mul,
+    rw [PowerSeries.coeff_C, ite_eq_right (by omega : n + 1 ≠ 0), sub_mul, map_sub, PowerSeries.coeff_succ_X_mul,
       PowerSeries.coeff_C_mul] at hn
     linear_combination -hn
   have hmem : ∀ n, PowerSeries.coeff (R := O) 0 H ∈ (IsLocalRing.maximalIdeal O) ^ n := by
@@ -174,51 +174,5 @@ theorem card_le_of_dvd {f v k : PowerSeries O} {s : ℕ} (T : Finset O)
     rw [e3, map_mul, map_pow, constantCoeff_X, zero_pow (by omega), zero_mul]
 
 end Order
-
-end DualFramesAlt.eigenRingInvariants
-
-namespace DualFramesAlt.eigenRingInvariants
-
-open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums
-
-variable {l : ℕ} [hl : Fact l.Prime]
-
-section O
-
-variable {O : Type*} [CommRing O] [Algebra ℤ_[l] O] {a ζ : O}
-
-end O
-
-end DualFramesAlt.eigenRingInvariants
-
-namespace DualFramesAlt.eigenRingInvariants
-
-open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
-
-variable {l : ℕ} [hl : Fact l.Prime]
-
-section Act
-
-variable {O : Type*} [CommRing O] [Algebra ℤ_[l] O]
-
-variable [IsDomain O]
-
-end Act
-
-end DualFramesAlt.eigenRingInvariants
-
-namespace DualFramesAlt.eigenRingInvariants
-
-open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
-
-variable {l : ℕ} [hl : Fact l.Prime]
-
-section Fiber
-
-variable {O : Type*} [CommRing O] [IsDomain O] [IsLocalRing O] [Algebra ℤ_[l] O]
-
-variable [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
-
-end Fiber
 
 end DualFramesAlt.eigenRingInvariants

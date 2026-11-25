@@ -13,8 +13,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem isMaxContactHypersurface_of_eq_of_eq_of_eq (k : Type u) [Field k] {P : Scheme.{u}}
@@ -51,7 +49,6 @@ private theorem isMaxContactHypersurface_comap_iso (k : Type u) [Field k] {X Y :
     (A : Y.IdealSheafData) (m : ℕ) (H : Y.IdealSheafData)
     (h : IsMaxContactHypersurface k q A m H) :
     IsMaxContactHypersurface k (e.hom ≫ q) (A.comap e.hom) m (H.comap e.hom) := by
-  have : AlgebraicGeometry.Smooth e.hom := inferInstance
   have hmax : maxContactIdeal k (e.hom ≫ q) (A.comap e.hom) m
       = (maxContactIdeal k q A m).comap e.hom := by
     rw [maxContactIdeal_eq_derivIdealSheafIterate, maxContactIdeal_eq_derivIdealSheafIterate]
@@ -273,5 +270,3 @@ theorem inStrictNormalCrossingPosition_iteratedStrictTransform_cons_drop (hstar 
         ((u.boundary j).drop S.boundary.length) (u.isBlowup j hjl) hsncj hcons
 
 end FunctorialResolution.EmbeddedResolution
-
-end

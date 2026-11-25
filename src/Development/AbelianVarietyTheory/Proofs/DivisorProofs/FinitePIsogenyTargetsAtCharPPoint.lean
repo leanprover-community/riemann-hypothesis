@@ -310,9 +310,6 @@ theorem inK_of_inK {A B B' : Over (Sp k)} [GrpObj A] [GrpObj B] [GrpObj B'] (π 
 
 end GlobalTheory.IwLevel.KerDet
 
-namespace GlobalTheory.IwLevel
-
-end GlobalTheory.IwLevel
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -606,7 +603,7 @@ theorem star_ker_le {k : Type} [CommRing k] {s : Sp k ⟶ Sp R} {c : ℕ} {o o�
       (hker : ∀ (S : Type) [CommRing S] [Algebra k S] (z : GlobalTheory.PDiv.SpAlg k S ⟶ A),
         z ^ n = 1 → z ≫ F = 1) : ∃ f : A ⟶ B, IsMonHom f ∧ F = mulN A n ≫ f := by
     haveI := hA.comm
-    obtain ⟨hfin, hflat, hsurj⟩ := GlobalTheory.T.abelianScheme_mulN_finite_flat_surjective k A hA n hn
+    obtain ⟨hfin, hflat, hsurj⟩ := GlobalTheory.MulFlatSurj.finite_flat_surjective_mulN k A hA n hn
     haveI : IsMonHom (mulN A n) := GlobalTheory.MulEtaleDvr.isMonHom_mulN A n
     have hqc : QuasiCompact (mulN A n).left := inferInstance
     have h : ∀ (T : Over (Sp k)) (x : T ⟶ A), x ≫ mulN A n = 1 → x ≫ F = 1 := by
@@ -1015,10 +1012,6 @@ open GlobalTheory.IwLevel
 
 namespace GlobalTheory.HTLieFix
 
-end GlobalTheory.HTLieFix
-
-namespace GlobalTheory.HTLieFix
-
 theorem one_left' {S : Scheme.{0}} {G X : Over S} [GrpObj G] : (1 : X ⟶ G).left = X.hom ≫ η[G].left := rfl
 end GlobalTheory.HTLieFix
 
@@ -1274,7 +1267,7 @@ theorem exists_local_idempotents {B : Type} [CommRing B] (c : B) [Finite (B ⧸ 
     refine hz _ fun J => ?_
     have := Ideal.sum_mem (J.asIdeal ^ (n + 1)) (t := Finset.univ) fun I _ => he I J
 
-    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq, if_pos (Finset.mem_univ _), ← map_sum] at this
+    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq, ite_eq_left (Finset.mem_univ _), ← map_sum] at this
     simpa using this
   · rw [← Ideal.Quotient.eq_zero_iff_mem]
     refine hz _ fun J => ?_
@@ -1297,7 +1290,7 @@ theorem exists_local_idempotents {B : Type} [CommRing B] (c : B) [Finite (B ⧸ 
       by_cases hJ : J = I
       · rw [← hJ]; exact hcm.symm
       · have := he I J
-        rw [if_neg hJ, sub_zero] at this
+        rw [ite_eq_right hJ, sub_zero] at this
         exact (h (hcm ▸ (Ideal.pow_le_self (Nat.succ_ne_zero n) this : π (e I) ∈ P.map π))).elim
     rw [key P hP hc h, key P' hP' hc' h']
 
@@ -1512,7 +1505,6 @@ theorem kill_of_dvd {n : ℕ} {o o' : Obj b N s} {ψ : o.A ⟶ o'.A} (h : IsPIso
     ← Category.assoc, hx, MonObj.one_comp, MonObj.one_comp]
 
 end GlobalTheory.UPel.HT.ES.KerFin
-
 
 open GlobalTheory.UPel.HT.ES.KerFin in
 theorem GlobalTheory.UPel.HT.ES.KerFin.finite_kernels : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 → ∀ (c : ℕ) (k : Type) [Field k] [IsAlgClosed k] [CharP k p] (s : Sp k ⟶ Sp R) (o : Obj b N s), Set.Finite {P : ∀ T : Over (Sp k), (T ⟶ o.A) → Prop | ∃ (o' : Obj b N s) (ψ : o.A ⟶ o'.A), IsPIsog c o o' ψ ∧ P = fun T x => x ≫ ψ = 1} := by
@@ -1752,7 +1744,6 @@ theorem exists_factor {A A₁ A₂ : Over S} [GrpObj A] [GrpObj A₁] [IsCommMon
   rw [← cancel_epi ((𝟙 A) ^ c), ← Category.assoc, pow_id_comp, ← comp_pow_id, ← h₂, Category.assoc, e,
     ← Category.assoc, h₁]
 
-
 open GlobalTheory.CechPic GlobalTheory.BirigUniq in
 theorem pic_eq_zero_of_pull {X B : Over S} [GrpObj X] [GrpObj B] (hX : IsAbelianScheme X)
     (hB : IsAbelianScheme B) (k : ℕ) (hk : 0 < k) (χ : X ⟶ B) (χ' : B ⟶ X) [IsMonHom χ]
@@ -1794,7 +1785,6 @@ theorem grpSchemeSquareProductMap_eq_tensorHom {A A' : Over S} [GrpObj A] [IsCom
   have : lift (fst A A ≫ ψ) (snd A A ≫ ψ) = ψ ⊗ₘ ψ := by
     apply CartesianMonoidalCategory.hom_ext <;> simp
   exact congrArg (fun f : A ⊗ A ⟶ A' ⊗ A' => f.left) this
-
 
 open GlobalTheory.CechPic GlobalTheory.BirigUniq in
 theorem exists_objMap_of_ker_eq : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → ∀ (c : ℕ) (S : Scheme.{0}) [IsLocallyNoetherian S] (s : S ⟶ Sp R) (o o₁ o₂ : Obj b N s) (ψ₁ : o.A ⟶ o₁.A) (ψ₂ : o.A ⟶ o₂.A), IsPIsog c o o₁ ψ₁ → IsPIsog c o o₂ ψ₂ → (∀ (T : Over S) (x : T ⟶ o.A), x ≫ ψ₁ = 1 ↔ x ≫ ψ₂ = 1) → ∃ m : ObjMap o₁ o₂ (𝟙 S), ψ₁.left ≫ m.φ = ψ₂.left := by

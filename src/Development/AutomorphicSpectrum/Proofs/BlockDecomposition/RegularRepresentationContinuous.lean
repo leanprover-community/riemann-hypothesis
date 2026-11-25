@@ -31,7 +31,7 @@ theorem translations_strongly_continuous :
       (by norm_num : (2 : ENNReal) ≠ ⊤)
     refine key.congr fun h => ?_
     have hm' : MeasurePreserving (fun y : G n => y * h) μ μ := measurePreserving_mul_right μ h
-    simp only [rR, dif_pos hm']
+    simp only [rR, dite_eq_left hm']
     rfl
   · let g : G n → C(G n, G n) := fun y => ⟨fun z => y⁻¹ * z, continuous_const.mul continuous_id⟩
     have hg : Continuous g :=

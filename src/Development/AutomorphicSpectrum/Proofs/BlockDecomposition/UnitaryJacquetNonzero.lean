@@ -252,7 +252,7 @@ private lemma entry_bound {L : Type} [Field L] [Valued L (WithZero (Multiplicati
     · exact hi
     · exact hi.le
   · intro hlt
-    rw [if_neg (by omega)] at hi
+    rw [ite_eq_right (by omega)] at hi
     exact hi
 
 end UpperTheory.Reformulated.B.IwahoriEntryBound.Helpers
@@ -394,7 +394,7 @@ theorem iwEnt_of_mem {g : GL (Fin n) L} (hg : g ∈ IwGL L n) : IwEnt (g : Matri
   have hm := Set.smul_mem_smul_set (a := Matrix.GeneralLinearGroup.toLin g) he
   rw [hs] at hm
   have hi := hm i
-  rw [if_neg (lt_irrefl _)] at hi
+  rw [ite_eq_right (lt_irrefl _)] at hi
   have e : ((Matrix.GeneralLinearGroup.toLin g) • (Pi.single j (1 : L) : Fin n → L)) i =
       (g : Matrix (Fin n) (Fin n) L) i j := by
     show (Matrix.mulVec (g : Matrix (Fin n) (Fin n) L) (Pi.single j (1 : L) : Fin n → L)) i = _
@@ -436,7 +436,7 @@ theorem minor_diag {M : Matrix (Fin n) (Fin n) L} (hM : IwEnt M) (hd : ∀ i, Va
     · obtain ⟨x, hx⟩ := hex
       exact term_lt hM f f s hx
     · exfalso
-      push_neg at hex
+      push Not at hex
       apply hs1
       ext x
       have := perm_sum_eq s (fun x => ((f x).val : ℤ)) (fun x => by exact_mod_cast hex x) x
@@ -652,7 +652,6 @@ theorem perm_mul {L : Type} [Field L] {n : ℕ} {W : Matrix (Fin n) (Fin n) L} {
 end GlobalTheory.CompanionTheory.SatPow.Triang
 
 namespace GlobalTheory.CompanionTheory.SatPow
-
 
 open Triang in
 theorem cell_triang : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (n : ℕ) (t w w' b r i : GU σ n) (π π' : Equiv.Perm (Fin n)), IsDiagM (t : GL (Fin n) L) → IsStrictDom (t : GL (Fin n) L) → IsPermW w π → IsPermW w' π' → IsBorelU b → r ∈ IwU σ n → i ∈ IwU σ n → w * r * t = b * w' * i → permWt t π' < permWt t π ∨ (π' = π ∧ ∀ a : Fin n, ordL (((b : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) a a) = ordL (((t : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) (π a) (π a))) := by
@@ -919,17 +918,13 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qf37.aOp :
-    {G : Type} → [Group G] → Finset G → G → (G → ℂ) → G → ℂ :=
-    fun {G : Type} [Group G] (R : Finset G) (t : G) (φ : G → ℂ) (g : G) ↦ ∑ r ∈ R, φ (g * r * t)
-
 theorem UpperTheory.Reformulated.B.Qf37.aOp_rightInvariant :
     ∀ {G : Type} [inst : Group G] {I : Subgroup G} {t : G} {R : Finset G},
       (∀ r ∈ R, r ∈ I) →
         (∀ i ∈ I, ∃! r : G, r ∈ R ∧ t⁻¹ * (r⁻¹ * i) * t ∈ I) →
           ∀ {φ : G → ℂ},
             (∀ (g i : G), i ∈ I → φ (g * i) = φ g) →
-              ∀ (g i : G), i ∈ I → UpperTheory.Reformulated.B.Qf37.aOp R t φ (g * i) = UpperTheory.Reformulated.B.Qf37.aOp R t φ g := by
+              ∀ (g i : G), i ∈ I → GlobalTheory.CompanionTheory.SatPow.aOp R t φ (g * i) = GlobalTheory.CompanionTheory.SatPow.aOp R t φ g := by
   intro G inst I t R hR hU φ hφ g i hi
   have hex : ∀ r ∈ R, ∃ s, s ∈ R ∧ t⁻¹ * (s⁻¹ * (i * r)) * t ∈ I := fun r hr =>
     (hU (i * r) (I.mul_mem hi (hR r hr))).exists
@@ -946,7 +941,7 @@ theorem UpperTheory.Reformulated.B.Qf37.aOp_rightInvariant :
     have h5 : t⁻¹ * (b⁻¹ * b) * t ∈ I := by
       simp
     exact (hU b (hR b hb)).unique ⟨ha, h4⟩ ⟨hb, h5⟩
-  unfold UpperTheory.Reformulated.B.Qf37.aOp
+  unfold GlobalTheory.CompanionTheory.SatPow.aOp
   refine Finset.sum_bij σ hσR hinj ?_ ?_
   · intro b hb
     obtain ⟨a, ha, hab⟩ := Finset.surj_on_of_inj_on_of_card_le σ hσR
@@ -1355,7 +1350,7 @@ theorem abs_main {G : Type} [Group G] (K I : Subgroup G) (hIK : I ≤ K) (hfin :
       show aOp R t (((A ^ j) v : Wsp) : G → ℂ) = _
       rw [ih]
   have hAinj : Function.Injective A := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     exact Subtype.ext (hinj a a.2 (congrArg Subtype.val ha))
   have hl0 : l v = 0 := by
@@ -1472,14 +1467,14 @@ theorem finiteDimensional_iwFix (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ x, Valu
   let wOf : Equiv.Perm (Fin n) → GU σ n := fun π => if h : ∃ w : GU σ n, IsPermW w π then h.choose else 1
   have hwOf : ∀ (w : GU σ n) π, IsPermW w π → wOf π = w := fun w π hw => by
     have h : ∃ w : GU σ n, IsPermW w π := ⟨w, hw⟩
-    simp only [wOf, dif_pos h]
+    simp only [wOf, dite_eq_left h]
     exact isPermW_unique h.choose_spec hw
   let F : iwFix σ n q α →ₗ[ℂ] (Equiv.Perm (Fin n) → ℂ) :=
     { toFun := fun φ π => (φ : GU σ n → ℂ) (wOf π)
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
   refine FiniteDimensional.of_injective F ?_
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro φ hφ
   refine Subtype.ext (funext fun g => ?_)
   obtain ⟨b, w, i, π, hb, hw, hi, rfl⟩ := _root_.GlobalTheory.CompanionTheory.BruhatIw.bruhat_iwasawa L σ n hσ hσv g
@@ -1595,7 +1590,6 @@ theorem avg_translate (ρ : Representation ℂ G V) (K : Subgroup G) {x : V}
   exact finsum_comp_equiv (Equiv.mulRight (QuotientGroup.mk k : K ⧸ (stab ρ K x).normalCore))
 
 end GlobalTheory.CompanionTheory.KAvg
-
 
 open GlobalTheory.OrbitAvg GlobalTheory.CompanionTheory.KAvg in
 theorem GlobalTheory.CompanionTheory.KAvg.kInvForm : PositivityTheory.SphericalProduct.KInvForm := by

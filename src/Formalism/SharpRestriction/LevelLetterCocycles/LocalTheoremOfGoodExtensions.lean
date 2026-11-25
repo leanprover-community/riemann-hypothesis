@@ -21,28 +21,6 @@ namespace Formalism.MainNotions.ElementDenominator
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module
 
-section Orbit
-
-variable {G LL : Type} [Group G] [Field LL] (I : Subgroup G) [hI : I.Normal] (Fr : G)
-
-end Orbit
-
-section Iner
-
-variable {G : Type} [Group G] {Qp K₀ K K₀' K' : Type} [Field Qp] [Field K₀] [Field K]
-    [Field K₀'] [Field K']
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    [Algebra Qp K₀'] [Algebra Qp K'] [Algebra K₀' K'] [IsScalarTower Qp K₀' K']
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra K₀' B] [IsScalarTower Qp K₀' B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    [Algebra K₀' BdR] [Algebra K' BdR] [IsScalarTower Qp K' BdR]
-    [IsScalarTower K₀' K' BdR] [IsScalarTower Qp K₀' BdR]
-    (PC : PotCrysData G Qp K₀ K K₀' K' B BdR)
-
-end Iner
-
 section PartII
 
 variable {l : ℕ} [Fact l.Prime]
@@ -193,16 +171,6 @@ theorem two_mul_val_factorial_le (l : ℕ) [hl : Fact l.Prime] (h2 : l ≠ 2) (n
     Nat.mul_le_mul_right _ (by omega)
   omega
 
-private theorem padicValInt_neg_natCast_add_one (l i : ℕ) :
-    padicValInt l (-((i : ℤ) + 1)) = padicValNat l (i + 1) := by
-  simp only [padicValInt]
-  rw [show (-((i : ℤ) + 1)).natAbs = i + 1 by omega, Nat.padicValNat_def]
-
-private theorem padicValInt_natCast_add_one (l i : ℕ) :
-    padicValInt l ((i : ℤ) + 1) = padicValNat l (i + 1) := by
-  simp only [padicValInt]
-  rw [show ((i : ℤ) + 1).natAbs = i + 1 by omega, Nat.padicValNat_def]
-
 theorem valuationSumBound : LiftExp := by
   intro l h J hl hl2 hJ h0
   have : Fact l.Prime := ⟨hl⟩
@@ -223,12 +191,13 @@ theorem valuationSumBound : LiftExp := by
     rw [hA, Finset.sum_image (fun x _ y _ e => by simpa using e)]
     rw [← sum_one_add_val l h]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    simp only [hf, padicValInt_neg_natCast_add_one]
+    simp only [hf, padicValInt, Int.natAbs_neg, ← Nat.cast_add_one, Int.natAbs_natCast,
+      Nat.padicValNat_def]
   have hB_sum : ∑ j ∈ B, f j = 2 * h + padicValNat l (2 * h).factorial := by
     rw [hB, Finset.sum_image (fun x _ y _ e => by simpa using e)]
     rw [← sum_one_add_val l (2 * h)]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    simp only [hf, padicValInt_natCast_add_one]
+    simp only [hf, ← Nat.cast_add_one, padicValInt.of_nat, Nat.padicValNat_def]
   have hJle : ∑ j ∈ J, f j ≤ ∑ j ∈ A ∪ B, f j := Finset.sum_le_sum_of_subset hsub
   have hU := Finset.sum_union_inter (s₁ := A) (s₂ := B) (f := f)
   have e1 := two_mul_val_factorial_le l hl2 (2 * (2 * h))

@@ -631,14 +631,14 @@ theorem mem_chartLatNm_of_disc : (∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (A
   have hN' : ∀ c, 0 < N' c := by
     intro c
     by_cases h : ∀ k, y ⟨k, c k⟩ ≠ 0
-    · simp only [N', dif_pos h]
+    · simp only [N', dite_eq_left h]
       exact hN0 c h
-    · simp only [N', dif_neg h]
+    · simp only [N', dite_eq_right h]
       exact one_pos
   refine ⟨∏ c, N' c, Finset.prod_pos fun c _ => hN' c, ?_⟩
   intro c hc
   obtain ⟨m, hm⟩ : N' c ∣ ∏ c, N' c := Finset.dvd_prod_of_mem _ (Finset.mem_univ c)
-  have hNc : N' c = N c hc := by simp only [N', dif_pos hc]
+  have hNc : N' c = N c hc := by simp only [N', dite_eq_left hc]
   have hmem : ((∏ c, N' c : ℕ) : Ω) * s * ∏ k, y ⟨k, c k⟩ ^ (-(((1 : ℕ) : ℤ) * a k)) ∈ chartRingZ y c := by
     have e : ((∏ c, N' c : ℕ) : Ω) * s * ∏ k, y ⟨k, c k⟩ ^ (-(((1 : ℕ) : ℤ) * a k)) =
         (m : Ω) * ((N c hc : Ω) * (s * ∏ k, y ⟨k, c k⟩ ^ (-a k))) := by

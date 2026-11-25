@@ -11,8 +11,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.Integra
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Core.Rk.IP.Model
 
 open scoped ComplexConjugate Matrix NNReal ComplexOrder
@@ -68,7 +66,7 @@ theorem isSplit_two (v : FinPl D) (h2 : (2 : 𝓞 D.host.F) ∈ v.asIdeal) : For
       exact Ideal.mem_map_of_mem _ h2
     have hp : ω * (1 - ω) = 2 * k := RingOfIntegers.ext (by
       push_cast at hω ⊢
-      simp only [map_mul, map_sub, map_one, map_ofNat, map_natCast]
+      simp only [map_ofNat]
       linear_combination -hω)
     have hone : ω ∈ w.asIdeal → False := fun h =>
       w.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (by have := add_mem h (hcω ▸ hst ω h); rwa [add_sub_cancel] at this))
@@ -91,5 +89,3 @@ theorem isSphOff_of_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : 
     simpa [nrm2] using h' p hp
 
 end GlobalTheory.Core.Rk.IP.Model
-
-end

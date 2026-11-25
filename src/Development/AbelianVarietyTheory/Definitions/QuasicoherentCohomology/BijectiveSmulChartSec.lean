@@ -368,8 +368,6 @@ section OverBase
 
 open MonoidalCategory CartesianMonoidalCategory ReciprocityTheory.ChartRestriction.G.Out
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S : Scheme.{0}} (A : Over S) [GrpObj A] (L₀ : LB A.left) (a : ℤ) (T : Over S)
 
 def globalEquivSecM : Γ(toMod (LPow A L₀ a T), ⊤) ≃+ SecM A L₀ a T where

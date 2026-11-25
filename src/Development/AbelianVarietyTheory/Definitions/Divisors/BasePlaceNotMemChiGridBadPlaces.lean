@@ -87,8 +87,6 @@ def stA (sc : Consts) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
 def stAbar (sc : Consts) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
   D.host.AAbar * ((P.modul sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)⁻¹
 
-def sigma0 (sc : Consts) : ℝ := ∑ v ∈ P.S0, (P.depth sc v : ℝ) * Real.log (Ideal.absNorm v.asIdeal)
-
 theorem mem_S0_of_sum_eq {v : Pl D.host.F} : v ∈ P.S0 ↔ v = P.v0 ∨ v ∈ S1 D := by simp [S0]
 
 theorem under_w {v : Pl D.host.F} (h : v ∈ P.S0) : (P.w v).under (𝓞 D.host.F) = v := P.w_over v h
@@ -137,11 +135,11 @@ def columnBlock (L : LevCh D T) : ℕ → LSp D
 theorem colY_lt (L : LevCh D T) {j : ℕ} (h : j < D.R.m) : columnBlock L j = ⟨Yc D j, L.ΛY j⟩ := by
   cases j with
   | zero => rfl
-  | succ j => exact if_pos h
+  | succ j => exact ite_eq_left h
 
 theorem colY_m (L : LevCh D T) : columnBlock L D.R.m = ⟨D.sp.X', L.ΛX⟩ := by
   obtain ⟨j, hj⟩ : ∃ j, D.R.m = j + 1 := ⟨D.R.m - 1, by have := D.R.two_le_m; omega⟩
-  have : columnBlock L (j + 1) = ⟨D.sp.X', L.ΛX⟩ := if_neg (by omega)
+  have : columnBlock L (j + 1) = ⟨D.sp.X', L.ΛX⟩ := ite_eq_right (by omega)
   rw [← this, ← hj]
 
 def vtxOf (L : LevCh D T) (W : ℕ → ℕ → LSp D) : ℕ → ℕ → LSp D

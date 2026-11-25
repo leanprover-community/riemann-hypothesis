@@ -2,6 +2,7 @@ module
 
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceRelations
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
+import Mathlib.Data.Finset.Sort
 
 @[expose] public section
 
@@ -59,37 +60,6 @@ private theorem comap_pullbackIsoOfEq {X X' : Scheme.{u}} (φ : X' ⟶ X) (s : S
   subst h
   simp [pullbackProjectionToBaseIsoOfEq]
 
-private theorem strictMono_enumeration_le {n m L : ℕ} {r q : ℕ → ℕ} {P : ℕ → Prop}
-    (hr2 : ∀ i j : ℕ, j ≤ n → i < j → r i < r j)
-    (hq1 : ∀ i, i < m → q i < L)
-    (hq2 : ∀ i j : ℕ, j ≤ m → i < j → q i < q j)
-    (hr4 : ∀ i, i < L → (P i ↔ ∃ j, j < n ∧ r j = i))
-    (hq4 : ∀ i, i < L → (P i ↔ ∃ j, j < m ∧ q j = i)) :
-    ∀ i, i < n → i < m → r i ≤ q i := by
-  have main : ∀ k i : ℕ, i < k → i < n → i < m → r i ≤ q i := by
-    intro k
-    induction k with
-    | zero => intro i hik; exact absurd hik (Nat.not_lt_zero i)
-    | succ k ih =>
-      intro i hik hin him
-      by_contra hcon
-      push Not at hcon
-      have hqL : q i < L := hq1 i him
-      obtain ⟨j, hjn, hj⟩ := (hr4 (q i) hqL).mp ((hq4 (q i) hqL).mpr ⟨i, him, rfl⟩)
-      have hji : j < i := by
-        by_contra hc
-        push Not at hc
-        rcases Nat.eq_or_lt_of_le hc with h' | h'
-        · rw [← h'] at hj
-          omega
-        · have hlt := hr2 i j hjn.le h'
-          omega
-      have h1 : r j ≤ q j := ih j (by omega) (by omega) (by omega)
-      have h2 : q j < q i := hq2 j i him.le hji
-      omega
-  intro i hin him
-  exact main (i + 1) i (Nat.lt_succ_self i) hin him
-
 private theorem strictMono_enumeration_unique {n m L : ℕ} {r q : ℕ → ℕ} {P : ℕ → Prop}
     (hr1 : ∀ i, i < n → r i < L)
     (hr2 : ∀ i j : ℕ, j ≤ n → i < j → r i < r j)
@@ -100,30 +70,35 @@ private theorem strictMono_enumeration_unique {n m L : ℕ} {r q : ℕ → ℕ} 
     (hqm : q m = L)
     (hq4 : ∀ i, i < L → (P i ↔ ∃ j, j < m ∧ q j = i)) :
     n = m ∧ ∀ i, i ≤ n → r i = q i := by
-  have le1 := strictMono_enumeration_le hr2 hq1 hq2 hr4 hq4
-  have le2 := strictMono_enumeration_le hq2 hr1 hr2 hq4 hr4
-  have heq : ∀ i, i < n → i < m → r i = q i := fun i h1 h2 =>
-    le_antisymm (le1 i h1 h2) (le2 i h2 h1)
-  have hnm : n = m := by
-    rcases lt_trichotomy n m with hlt | heqnm | hgt
-    · exfalso
-      have hqn : q n < L := hq1 n hlt
-      obtain ⟨j, hjn, hj⟩ := (hr4 (q n) hqn).mp ((hq4 (q n) hqn).mpr ⟨n, hlt, rfl⟩)
-      have ha : r j = q j := heq j hjn (hjn.trans hlt)
-      have hb : q j < q n := hq2 j n hlt.le hjn
-      omega
-    · exact heqnm
-    · exfalso
-      have hrm : r m < L := hr1 m hgt
-      obtain ⟨j, hjm, hj⟩ := (hq4 (r m) hrm).mp ((hr4 (r m) hrm).mpr ⟨m, hgt, rfl⟩)
-      have ha : r j = q j := heq j (hjm.trans hgt) hjm
-      have hb : r j < r m := hr2 j m hgt.le hjm
-      omega
-  refine ⟨hnm, ?_⟩
-  intro i hi
-  rcases Nat.eq_or_lt_of_le hi with h | h
-  · rw [h, hrn, hnm, hqm]
-  · exact heq i h (by omega)
+  classical
+  let s : Finset ℕ := (Finset.range L).filter P
+  have hspec : ∀ {k : ℕ} {f : ℕ → ℕ}, (∀ i, i < k → f i < L) →
+      (∀ i j, j ≤ k → i < j → f i < f j) → (∀ i, i < L → (P i ↔ ∃ j, j < k ∧ f j = i)) →
+      ∃ hk : s.card = k, (fun i : Fin k => f i) = s.orderEmbOfFin hk := by
+    intro k f hf1 hf2 hf4
+    have hmono : StrictMono (fun i : Fin k => f i) := fun i j hij => hf2 i j j.isLt.le hij
+    have himg : Finset.univ.image (fun i : Fin k => f i) = s := by
+      ext x
+      simp only [Finset.mem_image, Finset.mem_univ, true_and, Finset.mem_filter,
+        Finset.mem_range, s]
+      refine ⟨fun ⟨i, hi⟩ => ?_, fun ⟨hx, hP⟩ => ?_⟩
+      · have hx : x < L := hi ▸ hf1 i i.isLt
+        exact ⟨hx, (hf4 x hx).mpr ⟨i, i.isLt, hi⟩⟩
+      · obtain ⟨j, hj, hjk⟩ := (hf4 x hx).mp hP
+        exact ⟨⟨j, hj⟩, hjk⟩
+    have hk : s.card = k := by
+      rw [← himg, Finset.card_image_of_injective _ hmono.injective, Finset.card_univ,
+        Fintype.card_fin]
+    exact ⟨hk, Finset.orderEmbOfFin_unique hk
+      (fun i => by rw [← himg]; exact Finset.mem_image_of_mem _ (Finset.mem_univ i)) hmono⟩
+  obtain ⟨hkr, hfr⟩ := hspec hr1 hr2 hr4
+  obtain ⟨hkq, hfq⟩ := hspec hq1 hq2 hq4
+  have hnm : n = m := hkr.symm.trans hkq
+  subst hnm
+  refine ⟨rfl, fun i hi => ?_⟩
+  rcases Nat.eq_or_lt_of_le hi with rfl | hlt
+  · exact hrn.trans hqm.symm
+  · exact congrFun (hfr.trans hfq.symm) ⟨i, hlt⟩
 
 namespace IsPullbackBlowupSequence
 

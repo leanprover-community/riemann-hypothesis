@@ -39,7 +39,7 @@ theorem uMat_apply (X : Pos n → R) (a b : Fin n) :
   simp only [uMat, Matrix.add_apply, Matrix.one_apply, uN_apply]
   by_cases h1 : a = b
   · subst h1; simp
-  · rw [if_neg h1, if_neg h1, zero_add]
+  · rw [ite_eq_right h1, ite_eq_right h1, zero_add]
 
 theorem uMat_zero : uMat (0 : Pos n → R) = 1 := by simp [uMat, uN_zero]
 
@@ -47,10 +47,10 @@ theorem det_uMat (X : Pos n → R) : (uMat X).det = 1 := by
   have hT : (uMat X).IsUpperTriangular := by
     intro a b hab
     have hab' : b < a := hab
-    rw [uMat_apply, if_neg (ne_of_gt hab'), dite_eq_right (not_lt.2 hab'.le)]
+    rw [uMat_apply, ite_eq_right (ne_of_gt hab'), dite_eq_right (not_lt.2 hab'.le)]
   rw [Matrix.det_of_isUpperTriangular hT]
   refine Finset.prod_eq_one fun a _ => ?_
-  rw [uMat_apply, if_pos rfl]
+  rw [uMat_apply, ite_eq_left rfl]
 
 def uGL (X : Pos n → R) : GL (Fin n) R :=
   ((Matrix.isUnit_iff_isUnit_det (uMat X)).2 (by rw [det_uMat]; exact isUnit_one)).unit
@@ -173,7 +173,7 @@ theorem blockMat_apply (hj : j ≤ n) (h : Matrix (Fin j) (Fin j) R) (a b : Fin 
         Matrix.zero_apply]
   · rw [splitIdx_of_ge hj a (not_lt.1 ha), dite_eq_right ha]
     by_cases hb : b.val < j
-    · rw [splitIdx_of_lt hj b hb, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply, if_neg]
+    · rw [splitIdx_of_lt hj b hb, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply, ite_eq_right]
       intro hab; subst hab; exact ha hb
     · rw [splitIdx_of_ge hj b (not_lt.1 hb), Matrix.fromBlocks_apply₂₂, Matrix.one_apply]
       congr 1

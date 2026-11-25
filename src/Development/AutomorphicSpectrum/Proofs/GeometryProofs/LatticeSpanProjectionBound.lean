@@ -95,9 +95,9 @@ theorem two_frames (Ω Ω₀ : Type) [Field Ω] [Field Ω₀] (i : Ω₀ →+* �
       have hψv : ψ (κ • b j) = c a := by
 
         rw [← hc, map_sum, Finset.sum_eq_single a]
-        · rw [map_smul, hψ, hπ, if_pos rfl, map_one, smul_eq_mul, mul_one]
+        · rw [map_smul, hψ, hπ, ite_eq_left rfl, map_one, smul_eq_mul, mul_one]
         · intro x _ hx
-          rw [map_smul, hψ, hπ, if_neg (Ne.symm hx), map_zero, smul_zero]
+          rw [map_smul, hψ, hπ, ite_eq_right (Ne.symm hx), map_zero, smul_zero]
         · intro ha; exact absurd (Finset.mem_univ a) ha
       have hspan : κ • b j ∈ Submodule.span W (ι '' L₀) := by
         rw [← hL]; exact Submodule.subset_span (hκ j)

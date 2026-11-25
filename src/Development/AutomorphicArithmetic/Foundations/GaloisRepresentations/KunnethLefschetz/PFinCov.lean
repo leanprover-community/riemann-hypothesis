@@ -9,7 +9,6 @@ public import Development.EtaleCohomology.EtaleTrace.GenOnAgreePf
 public import Mathlib.RingTheory.MvPolynomial.Ideal
 public import Mathlib.Tactic.ENatToNat
 public import Development.EtaleCohomology.EtaleTrace.GenInPf
-public import Development.EtaleCohomology.EtaleTrace.GenEtalePfCut
 public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 public import Development.EtaleCohomology.EtaleTrace.GenUsePf
 public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
@@ -22,6 +21,7 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
+public import Development.EtaleCohomology.EtaleTrace.GenEtalePf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.EtaleTrace.ChartGenOnPf, Development.EtaleCohomology.EtaleTrace.ChartOverKPf, Development.EtaleCohomology.EtaleTrace.FibreOfEtalePf, Development.EtaleCohomology.EtaleTrace.FieldDimPf, Development.EtaleCohomology.EtaleTrace.FinSurjPfDense, Development.EtaleCohomology.EtaleTrace.FinSurjPfAll, Development.EtaleCohomology.EtaleTrace.GenAwayEvalPf, Development.EtaleCohomology.EtaleTrace.GenEtaleAtBotPf, Development.EtaleCohomology.EtaleTrace.GenEtalePfData, Development.EtaleCohomology.EtaleTrace.GenOfAwayPf, Development.EtaleCohomology.EtaleTrace.GenUseBackPf, Development.EtaleCohomology.EtaleTrace.HomRelPf, Development.EtaleCohomology.EtaleTrace.JetIndepPf, Development.EtaleCohomology.EtaleTrace.JetSpanPf, Development.EtaleCohomology.EtaleTrace.JetUnramPf, Development.EtaleCohomology.EtaleTrace.ProjectPf, Development.EtaleCohomology.EtaleTrace.RatPtInPf, Development.EtaleCohomology.EtaleTrace.StepPf, Development.EtaleCohomology.EtaleTrace.TrdegLePf, Development.EtaleCohomology.KummerExtensions.EtaleProjectiveChartGenericValuationIdentity, Development.EtaleCohomology.EtaleTrace.FinLCover, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.PFinCov
@@ -497,6 +497,83 @@ end -- clump:auto
 -- ===== clump member: Development.EtaleCohomology.EtaleTrace.GenEtaleAtBotPf =====
 -- clump-header: {"m": "Development.EtaleCohomology.EtaleTrace.GenEtaleAtBotPf", "h": "module\n\npublic import Development.EtaleCohomology.EtaleTrace.GenEtalePfCut\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.Order.CompletePartialOrder\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
+
+section
+section -- clump:auto
+@[expose] public section
+
+open CategoryTheory Limits AlgebraicGeometry
+
+namespace LateralTheory.EtaleTrace.Cov
+
+theorem etaleOverBasic : EtaleOverBasic := by
+  intro X P π U hU hU' a H
+  have hle : π ⁻¹ᵁ P.basicOpen a ≤ π ⁻¹ᵁ U := π.preimage_mono (P.basicOpen_le a)
+  have key : RingHom.Etale (π.app (P.basicOpen a)).hom := by
+    letI := (π.app U).hom.toAlgebra
+    letI : Algebra Γ(X, π ⁻¹ᵁ U) Γ(X, π ⁻¹ᵁ P.basicOpen a) := (X.presheaf.map (homOfLE hle).op).hom.toAlgebra
+    letI : Algebra Γ(P, P.basicOpen a) Γ(X, π ⁻¹ᵁ P.basicOpen a) := (π.app _).hom.toAlgebra
+    letI : Algebra Γ(P, U) Γ(X, π ⁻¹ᵁ P.basicOpen a) := (π.app U ≫ X.presheaf.map (homOfLE hle).op).hom.toAlgebra
+    haveI : IsScalarTower Γ(P, U) Γ(X, π ⁻¹ᵁ U) Γ(X, π ⁻¹ᵁ P.basicOpen a) := IsScalarTower.of_algebraMap_eq' rfl
+    haveI : IsScalarTower Γ(P, U) Γ(P, P.basicOpen a) Γ(X, π ⁻¹ᵁ P.basicOpen a) := by
+      refine IsScalarTower.of_algebraMap_eq' ?_
+      show (π.app U ≫ X.presheaf.map (homOfLE hle).op).hom =
+        (P.presheaf.map (homOfLE (P.basicOpen_le a)).op ≫ π.app (P.basicOpen a)).hom
+      rw [π.naturality]; rfl
+    have hA : IsLocalization.Away a Γ(P, P.basicOpen a) := hU.isLocalization_basicOpen a
+    have gen : ∀ (W : X.Opens) (e : W ≤ π ⁻¹ᵁ U), W = X.basicOpen (π.app U a) →
+        @IsLocalization.Away _ _ (π.app U a) Γ(X, W) _ (X.presheaf.map (homOfLE e).op).hom.toAlgebra := by
+      rintro W e rfl; exact hU'.isLocalization_basicOpen _
+    exact H _ _ hA (gen _ hle (π.preimage_basicOpen a))
+  haveI : IsAffine (P.basicOpen a).toScheme := hU.basicOpen a
+  haveI : IsAffine (π ⁻¹ᵁ P.basicOpen a).toScheme := by
+    have := hU'.basicOpen (π.app U a); rw [← π.preimage_basicOpen a] at this; exact this
+  rw [HasRingHomProperty.iff_of_isAffine (P := @Etale), morphismRestrict_appTop]
+  have hW : (P.basicOpen a).ι ''ᵁ ⊤ = P.basicOpen a := by simp
+  have gen2 : ∀ (W : P.Opens) (T : X.Opens) (h : T = π ⁻¹ᵁ W), W = P.basicOpen a →
+      RingHom.Etale (π.app W ≫ X.presheaf.map (eqToHom h).op).hom := by
+    rintro W T h rfl
+    subst h
+    simpa using key
+  exact gen2 _ _ _ hW
+
+end LateralTheory.EtaleTrace.Cov
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.EtaleCohomology.EtaleTrace.GenEtalePfBasic =====
+
+section -- clump:auto
+@[expose] public section
+
+open CategoryTheory Limits AlgebraicGeometry
+
+namespace LateralTheory.EtaleTrace.Cov
+
+def GenAffineData : Prop := ∀ (k : Type) [Field k] [IsAlgClosed k] {X P : Scheme.{0}} [IsIntegral X] [IsIntegral P]
+  (p : X ⟶ S k) (r : P ⟶ S k) (π : X ⟶ P), π ≫ r = p → LocallyOfFiniteType r → IsFinite π → Surjective π →
+  ∃ U : P.Opens, IsAffineOpen U ∧ (U : Set P).Nonempty ∧ IsAffineOpen (π ⁻¹ᵁ U) ∧ IsNoetherianRing Γ(P, U) ∧
+    (π.app U).hom.Finite ∧ Function.Injective (π.app U).hom
+
+def GenEtaleAtBot : Prop := ∀ {X P : Scheme.{0}} [IsIntegral X] [IsIntegral P] (π : X ⟶ P) (U : P.Opens), IsAffineOpen U →
+  (U : Set P).Nonempty → IsAffineOpen (π ⁻¹ᵁ U) → (π.app U).hom.Finite → Function.Injective (π.app U).hom →
+  (π.stalkMap (genericPoint X)).hom.FormallyUnramified →
+  ∃ _ : (⊥ : Ideal Γ(X, π ⁻¹ᵁ U)).IsPrime,
+    (letI := (π.app U).hom.toAlgebra; Algebra.IsEtaleAt Γ(P, U) (⊥ : Ideal Γ(X, π ⁻¹ᵁ U)))
+
+theorem GenAffineSetup_of (h1 : GenAffineData) (h2 : GenEtaleAtBot) : GenAffineSetup := by
+  intro k _ _ X P _ _ p r π hπ hr hfin hsurj hun
+  obtain ⟨U, hU, hne, hU', hN, hf, hi⟩ := h1 k p r π hπ hr hfin hsurj
+  exact ⟨U, hU, hne, hU', hN, hf, hi, h2 π U hU hne hU' hf hi hun⟩
+
+theorem GenEtale_of' (h1 : GenAffineData) (h2 : GenEtaleAtBot) : GenEtale :=
+  GenEtale_of (GenAffineSetup_of h1 h2) etaleOverBasic
+
+end LateralTheory.EtaleTrace.Cov
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.EtaleCohomology.EtaleTrace.GenEtalePfCut =====
+end
+
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry
@@ -758,7 +835,7 @@ namespace LateralTheory.EtaleTrace.Cov
 
 lemma gub_stalk_inj {X : Scheme.{0}} [IsIntegral X] (x : X) :
     Function.Injective (algebraMap (X.presheaf.stalk x) X.functionField) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   obtain ⟨U, hxU, s, rfl⟩ := X.presheaf.exists_germ_eq a
   have : Nonempty U := ⟨⟨x, hxU⟩⟩
@@ -896,7 +973,7 @@ theorem HomRel_of : HomRel := by
     exact hm (homogeneousComponent_eq_zero m G (by omega))
   have hc := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p m) (hsum.symm.trans hGx)
   simp only [Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_zero] at hc
-  rwa [Finset.sum_ite_eq, if_pos hmem] at hc
+  rwa [Finset.sum_ite_eq, ite_eq_left hmem] at hc
 
 end LateralTheory.EtaleTrace.Cov
 end -- clump:auto
@@ -926,7 +1003,7 @@ theorem jetIndep_chain {n : ℕ} (w : Fin n → K) (F : MvPolynomial (Fin n) k) 
     simp only [map_mul, aeval_X, Derivation.leibniz, hf, pderiv_X, Finset.smul_sum, Derivation.leibniz]
     simp [Pi.single_apply]
     simp only [apply_ite (aeval w), map_zero, add_smul, ite_smul, zero_smul, Finset.sum_add_distrib,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, mul_smul]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, mul_smul]
 
 theorem jetIndep_pderiv {n : ℕ} (w : Fin n → K) (hw : LinearIndependent K (jet k w)) {m : ℕ}
     (F : MvPolynomial (Fin n) k) (hF : F.IsHomogeneous m) (h0 : aeval w F = 0) (j : Fin n) :

@@ -32,16 +32,6 @@ private theorem exists_pow_mul_mul_mem_subring {R : Type*} [CommRing R] (S : Sub
   rw [e]
   exact S.mul_mem hi hj
 
-private theorem exists_pow_mul_finset_sum_mem_subring {R : Type*} [CommRing R] (S : Subring R) (q : R) (hq : q ∈ S) {ι : Type*}
-    (s : Finset ι) (f : ι → R) (h : ∀ i ∈ s, ∃ k : ℕ, q ^ k * f i ∈ S) :
-    ∃ k : ℕ, q ^ k * ∑ i ∈ s, f i ∈ S := by
-  classical
-  revert h
-  refine Finset.induction_on s (fun _ => ⟨0, by simp⟩) ?_
-  intro a s ha ih h
-  rw [Finset.sum_insert ha]
-  exact exists_pow_mul_add_mem_subring S q hq (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
 theorem witt_ring_structure : PI.WfRing := by
   classical
   intro p _ σ f g hf hg
@@ -53,6 +43,8 @@ theorem witt_ring_structure : PI.WfRing := by
   · rw [map_sub]
     exact exists_pow_mul_sub_mem_subring _ _ hq (hf n) (hg n)
   · rw [MvPowerSeries.coeff_mul]
-    exact exists_pow_mul_finset_sum_mem_subring _ _ hq _ _ fun x _ => exists_pow_mul_mul_mem_subring _ (hf x.1) (hg x.2)
+    refine Finset.sum_induction _ (fun y => ∃ k : ℕ, (p : ℂ_[p]) ^ k * y ∈ PI.Wp p)
+      (fun _ _ => exists_pow_mul_add_mem_subring _ _ hq) ⟨0, by simp⟩
+      fun x _ => exists_pow_mul_mul_mem_subring _ (hf x.1) (hg x.2)
   · rw [MvPowerSeries.coeff_C_mul]
     exact exists_pow_mul_mul_mem_subring _ hc (hf n)

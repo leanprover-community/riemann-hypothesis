@@ -11,53 +11,9 @@ public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLattices
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproximationAdditiveQuadraticExtension
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
@@ -195,12 +151,6 @@ theorem nonempty_place' : Nonempty (HeightOneSpectrum (𝓞 F)) := by
 theorem nontrivial_Ep (A : Places F E sig) (p : HeightOneSpectrum (𝓞 F)) : Nontrivial (A.loc p).Ep :=
   Module.nontrivial_of_finrank_pos (R := (A.loc p).Fp) (by rw [(A.loc p).rank]; norm_num)
 
-theorem sig_sig (A : Places F E sig) (y : E) : sig (sig y) = y := by
-  obtain ⟨p⟩ := nonempty_place' (F := F)
-  haveI := nontrivial_Ep A p
-  apply (A.loc p).ιE.injective
-  rw [← (A.loc p).cj_ιE, ← (A.loc p).cj_ιE, ← A.L_cj, (A.L p).cj_cj]
-
 theorem sig_ne_id (A : Places F E sig) : ¬ ∀ y, sig y = y := by
   intro h
   obtain ⟨p⟩ := nonempty_place' (F := F)
@@ -271,14 +221,13 @@ theorem isIntegral_of_quadratic (y a b : E) (ha : IsIntegral ℤ a) (hb : IsInte
 
 end GlobalTheory.HL.GlueInt
 
-
 open GlobalTheory.HL.GlueInt in
 theorem GlobalTheory.HL.isIntegral_of_forall_mem_O : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (y : E), (∀ p, (A.loc p).ιE y ∈ (A.L p).O) →
     IsIntegral ℤ y := by
   intro F E _ _ _ _ _ sig A y hy
-  obtain ⟨a, ha⟩ := fix_mem A (y + sig y) (by rw [map_add (f := _), sig_sig A, add_comm])
-  obtain ⟨b, hb⟩ := fix_mem A (y * sig y) (by rw [map_mul, sig_sig A, mul_comm])
+  obtain ⟨a, ha⟩ := fix_mem A (y + sig y) (by rw [map_add (f := _), GlobalTheory.HL.StrongApprox.sig_sig A, add_comm])
+  obtain ⟨b, hb⟩ := fix_mem A (y * sig y) (by rw [map_mul, GlobalTheory.HL.StrongApprox.sig_sig A, mul_comm])
   obtain ⟨a0, rfl⟩ := int_of_loc A a fun p => by
     rw [ha, map_add (f := _)]; exact (A.L p).O.add_mem (hy p) (sig_mem A y p (hy p))
   obtain ⟨b0, rfl⟩ := int_of_loc A b fun p => by
@@ -381,8 +330,6 @@ theorem smul_mem_of_mem' (Λ : Submodule O (Fin n → R)) {c : R} (hc : c ∈ O)
   have := Λ.smul_mem (⟨c, hc⟩ : O) hx
   simpa [Subring.smul_def] using this
 
-alias exists_nat_smul_mem := _root_.GlobalTheory.NatSmulMem.exists_nat_smul_mem
-
 theorem exists_nat_between (Λ : Submodule O (Fin n → R)) (hfg : Λ.FG)
     (hsp : Submodule.span R (Λ : Set (Fin n → R)) = ⊤)
     (hd : ∀ y : R, ∃ m : ℕ, m ≠ 0 ∧ (m : R) * y ∈ O) :
@@ -415,7 +362,7 @@ theorem exists_nat_between (Λ : Submodule O (Fin n → R)) (hfg : Λ.FG)
       exact O.mul_mem a.2 (hx i)
 
   have hsingle : ∀ i : Fin n, ∃ m : ℕ, m ≠ 0 ∧ (m : R) • (Pi.single i 1 : Fin n → R) ∈ Λ := fun i =>
-    exists_nat_smul_mem Λ (fun y => ⟨md y, hmd0 y, hmd y⟩) (by rw [hsp]; exact Submodule.mem_top)
+    GlobalTheory.NatSmulMem.exists_nat_smul_mem Λ (fun y => ⟨md y, hmd0 y, hmd y⟩) (by rw [hsp]; exact Submodule.mem_top)
   choose ms hms0 hms using hsingle
   set m2 : ℕ := ∏ i, ms i with hm2
   have hm20 : m2 ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hms0 i

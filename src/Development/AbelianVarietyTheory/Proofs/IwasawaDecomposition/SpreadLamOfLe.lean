@@ -504,7 +504,7 @@ theorem hcW_injective {s : Scale} {C : FC} {cD ch : ℝ} {P : PreCh} {q1 : ℕ} 
   have e2 := h.code u' (placeNo P.H 0) l.1 l.2
   rw [huu, e2] at e1
   change _ - (if c u' l then _ else _) = _ - (if c u l then _ else _) at e1
-  cases h1 : c u l <;> cases h2 : c u' l <;> simp only [h1, h2, if_true, Bool.false_eq_true, if_false] at e1 ⊢ <;> (exfalso; linarith)
+  cases h1 : c u l <;> cases h2 : c u' l <;> simp only [h1, h2, ite_true, Bool.false_eq_true, ite_false] at e1 ⊢ <;> (exfalso; linarith)
 
 
 

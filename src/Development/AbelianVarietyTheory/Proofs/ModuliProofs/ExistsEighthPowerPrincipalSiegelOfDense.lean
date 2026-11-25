@@ -644,47 +644,12 @@ namespace GlobalTheory.SharpFamRel
 
 section Group
 
-theorem epi_of_isPullback {K : Type} [Field K] {S' : Scheme.{0}} {f : S' ⟶ Sp K} [Nonempty S'] {X₀ X : Scheme.{0}}
-    {p₀ : X₀ ⟶ Sp K} {p : X ⟶ S'} {h : X ⟶ X₀} (H : IsPullback h p p₀ f) : Epi h := by
-  have hs : Surjective f := ⟨fun y => by
-    obtain ⟨z⟩ := ‹Nonempty S'›
-    exact ⟨z, Subsingleton.elim _ _⟩⟩
-  have : Flat h := MorphismProperty.of_isPullback H.flip inferInstance
-  have : Surjective h := MorphismProperty.of_isPullback H.flip hs
-  exact Flat.epi_of_flat_of_surjective h
-
 variable {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] {f : S' ⟶ S} {φ : G'.left ⟶ G.left}
   (h : IsGrpPullback G' G f φ)
 
 section Points
 
 variable {T : Over S} {T' : Over S'} (U : Over.mk (T'.hom ≫ f) ⟶ T)
-
-theorem eq_up {x' y' : T' ⟶ G'} {x y : T ⟶ G} (hx : pushPt h.1.w x' = U ≫ x) (hy : pushPt h.1.w y' = U ≫ y)
-    (e : x = y) : x' = y' := by
-  subst e
-  have e' : x'.left ≫ φ = y'.left ≫ φ := congrArg CommaMorphism.left (hx.trans hy.symm)
-  exact Over.OverMorphism.ext (h.1.hom_ext e' (by rw [Over.w x', Over.w y']))
-
-theorem eq_down (hU : Epi U.left) {x' y' : T' ⟶ G'} {x y : T ⟶ G} (hx : pushPt h.1.w x' = U ≫ x)
-    (hy : pushPt h.1.w y' = U ≫ y) (e : x' = y') : x = y := by
-  subst e
-  apply Over.OverMorphism.ext
-  rw [← cancel_epi U.left]
-  simpa using congrArg CommaMorphism.left (hx.symm.trans hy)
-
-theorem push_mul {x' y' : T' ⟶ G'} {x y : T ⟶ G} (hx : pushPt h.1.w x' = U ≫ x) (hy : pushPt h.1.w y' = U ≫ y) :
-    pushPt h.1.w (x' * y') = U ≫ (x * y) := by
-  have hm := h.2 T' x' y' (pushPt h.1.w x') (pushPt h.1.w y') rfl rfl
-  rw [hx, hy, ← MonObj.comp_mul] at hm
-  exact Over.OverMorphism.ext hm.symm
-
-theorem push_comp {x' : T' ⟶ G'} {x : T ⟶ G} (hx : pushPt h.1.w x' = U ≫ x) {a' : G' ⟶ G'} {a : G ⟶ G}
-    (ha : a'.left ≫ φ = φ ≫ a.left) : pushPt h.1.w (x' ≫ a') = U ≫ x ≫ a := by
-  apply Over.OverMorphism.ext
-  have hx' : x'.left ≫ φ = U.left ≫ x.left := congrArg CommaMorphism.left hx
-  simp only [pushPt, Over.homMk_left, Over.comp_left]
-  rw [Category.assoc, ha, ← Category.assoc, hx', Category.assoc]
 
 end Points
 
@@ -757,8 +722,8 @@ theorem transfer_end [IsReduced S] {F G : ∀ {S : Scheme.{0}} {s : S ⟶ Sp o} 
     ⟨φc, hc, -, -, hac⟩, hC⟩
   have : Nonempty (Sp ℂ) := inferInstanceAs (Nonempty (PrimeSpectrum ℂ))
   have e0 : F t₀ = G t₀ :=
-    eq_down hc (selfMap hc) (epi_of_isPullback hc.1) (hF tc t₀ hc hac) (hG tc t₀ hc hac) (H tc hC)
-  have e1 : F tx = G tx := eq_up h0 (selfMap h0) (hF tx t₀ h0 ha0) (hG tx t₀ h0 ha0) e0
+    _root_.GlobalTheory.ShapePull.eq_down hc (selfMap hc) (_root_.GlobalTheory.ShapePull.epi_of_isPullback hc.1) (hF tc t₀ hc hac) (hG tc t₀ hc hac) (H tc hC)
+  have e1 : F tx = G tx := _root_.GlobalTheory.ShapePull.eq_up h0 (selfMap h0) (hF tx t₀ h0 ha0) (hG tx t₀ h0 ha0) e0
   refine ⟨tx.A.left, Sp K, φx, tx.A.hom, x, hx.1, hp, ?_⟩
   have k1 : (F tx).left ≫ φx = φx ≫ (F t).left := congrArg CommaMorphism.left (hF tx t hx hax)
   have k2 : (G tx).left ≫ φx = φx ≫ (G t).left := congrArg CommaMorphism.left (hG tx t hx hax)
@@ -780,8 +745,8 @@ theorem transfer_pt [IsReduced S]
       exact ⟨z, Subsingleton.elim _ _⟩⟩
     exact Flat.epi_of_flat_of_surjective (spMap j)
   have e0 : F t₀ = G t₀ :=
-    eq_down hc (baseMap (spMap j)) hepi (hF tc t₀ hc hpc hac) (hG tc t₀ hc hpc hac) (H tc hC)
-  have e1 : F tx = G tx := eq_up h0 (baseMap (spMap i)) (hF tx t₀ h0 hp0 ha0) (hG tx t₀ h0 hp0 ha0) e0
+    _root_.GlobalTheory.ShapePull.eq_down hc (baseMap (spMap j)) hepi (hF tc t₀ hc hpc hac) (hG tc t₀ hc hpc hac) (H tc hC)
+  have e1 : F tx = G tx := _root_.GlobalTheory.ShapePull.eq_up h0 (baseMap (spMap i)) (hF tx t₀ h0 hp0 ha0) (hG tx t₀ h0 hp0 ha0) e0
   refine ⟨Sp K, Sp K, x, 𝟙 _, x, by rw [hbase]; exact IsPullback.of_id_snd, hp, ?_⟩
   have k1 : (F tx).left ≫ φx = x ≫ (F t).left := congrArg CommaMorphism.left (hF tx t hx hpx hax)
   have k2 : (G tx).left ≫ φx = x ≫ (G t).left := congrArg CommaMorphism.left (hG tx t hx hpx hax)
@@ -871,7 +836,7 @@ theorem sharp_family_relations : ∀ (h g : ℕ) (W : Matrix (Fin 8) (Fin 8) ℤ
     · intro _ _ _ _ t' t _ _ hp hact
       exact push_end hp (hact j'')
     · intro _ _ _ _ t' t _ _ hp hact
-      exact push_mul hp (selfMap hp) (push_end hp (hact j)) (push_end hp (hact j'))
+      exact _root_.GlobalTheory.ShapePull.push_mul hp (selfMap hp) (push_end hp (hact j)) (push_end hp (hact j'))
   · refine transfer_end (F := fun t => t.act j) (G := fun t => 𝟙 t.A) ?_ ?_
       (fun tc hC => by obtain ⟨c, -, hc⟩ := hC; exact (rel_of_isSharp hc).2.2.1 j hj) t hD
     · intro _ _ _ _ t' t _ _ hp hact
@@ -882,7 +847,7 @@ theorem sharp_family_relations : ∀ (h g : ℕ) (W : Matrix (Fin 8) (Fin 8) ℤ
       (G := fun t => (List.ofFn fun i' => t.pt i' ^ bas.symm (fun u => ∑ v, a j u v • bas (Pi.single i 1) v) i').prod) ?_ ?_
       (fun tc hC => by obtain ⟨c, -, hc⟩ := hC; exact (rel_of_isSharp hc).2.2.2 j i) t hD
     · intro _ _ _ _ t' t f _ hp hpt hact
-      exact push_comp hp (baseMap f) (Over.OverMorphism.ext (hpt i)) (hact j)
+      exact _root_.GlobalTheory.ShapePull.push_comp hp (baseMap f) (Over.OverMorphism.ext (hpt i)) (hact j)
     · intro _ S' _ _ t' t f _ hp hpt _
       let e : (Out.baseOver S' ⟶ t'.A) →* (Over.mk ((Out.baseOver S').hom ≫ f) ⟶ t.A) :=
         MonoidHom.mk' (pushPt hp.1.w) fun x y => Over.OverMorphism.ext (hp.2 _ x y _ _ rfl rfl).symm
@@ -974,7 +939,7 @@ theorem eq_one_of_slice_trivial : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ) (S : Sche
   have h1 : x' = 1 := KerPow.eq_one_of_locGen hK x' fun _ => ⟨⊤, trivial, H.pull _ fun _ => rfl⟩
   have h0 := hx' 0
   have := hpr 0
-  rw [h1, MonObj.one_comp, if_pos rfl] at h0
+  rw [h1, MonObj.one_comp, ite_eq_left rfl] at h0
   exact h0.symm
 
 end GlobalTheory.FormBundleKer
@@ -1328,8 +1293,8 @@ theorem sum_single {G M : Type*} [Group G] [AddCommGroup M] (B : G → G → M)
   · simp
   · by_cases a₁ : b.1 = 0
     · have a₂ : b.2 ≠ 0 := fun a₂ => hb (Prod.ext a₁ a₂)
-      rw [if_neg a₂, z₂, smul_zero]
-    · rw [if_neg a₁, z₁, smul_zero]
+      rw [ite_eq_right a₂, z₂, smul_zero]
+    · rw [ite_eq_right a₁, z₁, smul_zero]
 
 open GlobalTheory.CechPic in
 theorem relAmple_diag : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ) (S : Scheme.{0}) [IsLocallyNoetherian S] (G A : Over S) [GrpObj G] [IsCommMonObj G] [GrpObj A] [IsCommMonObj A] (pr : Fin 8 → (G ⟶ A)) (L : LB G.left) (P : LB (G2 A).left), IsE8 W → IsAbelianScheme G → IsAbelianScheme A → (∀ u, IsMonHom (pr u)) → (∀ (T : Over S) (y : Fin 8 → (T ⟶ A)), ∃! x : T ⟶ G, ∀ u, x ≫ pr u = y u) → L.IsLB → P.IsLB → (∀ (T : Over S) (x x' y : T ⟶ A), (∃ t : (LB.LinComb P (K := Fin 3) ![(lift (x * x') y).left, (lift x y).left, (lift x' y).left] ![1, -1, -1]).Gen, t.IsGen) ∧ ∃ t : (LB.LinComb P (K := Fin 3) ![(lift y (x * x')).left, (lift y x).left, (lift y x').left] ![1, -1, -1]).Gen, t.IsGen) → LBIso L (LB.LinComb P (K := Fin 8 × Fin 8) (fun uv => (lift (pr uv.1) (pr uv.2)).left) (fun uv => W uv.1 uv.2)) → Out.RelAmple G L → Out.RelAmple A (P.pull (lift (𝟙 A) (𝟙 A)).left) := by
@@ -1337,7 +1302,7 @@ theorem relAmple_diag : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ) (S : Scheme.{0}) [I
   obtain ⟨j, hj, -⟩ := hpr A fun v => if v = 0 then 𝟙 A else 1
   have := hG.proper
   have hcl : IsClosedImmersion j.left := GlobalTheory.Retract.isClosedImmersion_section (r := (pr 0).left)
-    (by rw [← Over.comp_left, hj, if_pos rfl, Over.id_left]) (Over.w (pr 0))
+    (by rw [← Over.comp_left, hj, ite_eq_left rfl, Over.id_left]) (Over.w (pr 0))
   have hpos := diag_pos hW 0
   have hn : 0 < (W 0 0).toNat := by omega
   have hD : (P.pull (lift (𝟙 A) (𝟙 A)).left).IsLB := LB.isLB_pull hP _

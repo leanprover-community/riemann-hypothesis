@@ -18,12 +18,6 @@ variable {K E : Type} [Field K] [AddCommGroup E] [Module ℂ E]
 
 end Abstract
 
-section Interface
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {A : DefAmb Bs}
-
-end Interface
-
 section Concrete
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}

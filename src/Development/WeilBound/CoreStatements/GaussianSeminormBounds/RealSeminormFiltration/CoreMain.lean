@@ -162,7 +162,7 @@ theorem local_of (act : Mat r s →ₗ[ℂ] Module.End ℂ M) (hL : IsLie act) (
     if h : sameBlock a b then (ρ a b).restrict (fun x hx => hBK a b h x hx) else 0
   have hρ0 : ∀ a b, sameBlock a b → ∀ v : B, ((ρ0 a b v : B) : A) = ρ a b v := by
     intro a b h v
-    simp only [ρ0, dif_pos h, LinearMap.restrict_apply]
+    simp only [ρ0, dite_eq_left h, LinearMap.restrict_apply]
   have hcas0 : casK ρ0 = ((c0 : ℝ) : ℂ) • 1 := by
     refine LinearMap.ext fun v => Subtype.ext ?_
     have := casK_intertw (ρ := ρ0) (ρ' := ρ) B.subtype (fun a b h v => hρ0 a b h v) v

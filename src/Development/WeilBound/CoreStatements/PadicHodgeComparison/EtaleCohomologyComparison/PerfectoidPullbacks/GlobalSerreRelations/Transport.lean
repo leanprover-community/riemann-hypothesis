@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StableCo
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section

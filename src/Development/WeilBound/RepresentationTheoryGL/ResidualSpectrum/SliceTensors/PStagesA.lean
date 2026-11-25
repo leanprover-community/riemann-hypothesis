@@ -81,7 +81,7 @@ theorem unip_lev_cc (x : BlockIx (r + s) r → R) (m : GL (Fin r) R × GL (Fin s
     ((unip x * lev R r s m : GL (Fin (r + s)) R) : Matrix _ _ R) (Fin.castAdd s i) (Fin.castAdd s j) = (m.1 : Matrix _ _ R) i j := by
   simp only [Units.val_mul, Matrix.mul_apply, Fin.sum_univ_add, unip_col, lev_nc, lev_cc, mul_zero,
     Finset.sum_const_zero, add_zero, Matrix.one_apply, Fin.castAdd_inj, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem unip_lev_nn (x : BlockIx (r + s) r → R) (m : GL (Fin r) R × GL (Fin s) R) (i j : Fin s) :
     ((unip x * lev R r s m : GL (Fin (r + s)) R) : Matrix _ _ R) (Fin.natAdd r i) (Fin.natAdd r j) = (m.2 : Matrix _ _ R) i j := by

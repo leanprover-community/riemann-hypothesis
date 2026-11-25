@@ -30,7 +30,7 @@ theorem logNorm_infId (u : (Cinf E)ˣ) : logNorm E (infId E u) = ∑ w, 2 * Real
   have h2 : ((infPart E (infId E u) : (InfiniteAdeleRing E)ˣ) : InfiniteAdeleRing E) = infEq E u := by
     change (1 : InfiniteAdeleRing E) - infEq E 1 + infEq E u = _
     simp
-  rw [h2, InfinitePlace.mult, if_neg (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w))]
+  rw [h2, InfinitePlace.mult, ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w))]
   have h3 : ‖infEq E u w‖ = ‖(u : Cinf E) w‖ :=
     (InfinitePlace.Completion.isometryEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).symm.isometry.norm_map_of_map_zero
       (map_zero (InfinitePlace.Completion.ringEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).symm) _
@@ -50,11 +50,5 @@ theorem expo_absC (s : ℂ) (τ : E →+* ℂ) : expo (absC E s) τ = s := by
     change 2 * Real.log ‖Complex.exp (atEmb τ z w)‖ = 0
     simp [atEmb, hw]
   · simp
-
-section CM
-
-variable {L : Type} [Field L] [NumberField L] [IsCMField L]
-
-end CM
 
 end GlobalTheory.CuspRep.Model

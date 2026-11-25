@@ -103,19 +103,6 @@ theorem normAt_one (e : K →+* ℂ) {W : Type} [NormedAddCommGroup W] [InnerPro
 
 end Std
 
-section WithRRDef
-
-variable {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
-
-end WithRRDef
-
-section Small
-
-variable (D : D7) {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
-  {n : ℕ} (c : OrthonormalBasis (Fin n) ℂ EE)
-
-end Small
-
 end GlobalTheory.ProvRowSide
 
 end

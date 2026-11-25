@@ -109,23 +109,21 @@ open GlobalTheory.ArcCoeff
 
 namespace GlobalTheory.ArcCoeffAt
 
-theorem coeff_evR_eq_fj_anLie : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Unf Xo c σ r) (Uw : UnfWit U) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (a : ArcIn Dw l β ℂ (σ.comp β)) (χ : Sp (PowerSeries ℂ) ⟶ Y.X) (W : Wit Y a χ) (Ha : HolArc Y σ a χ W Uw.F) [Algebra c.F ℂ⸨X⸩] (th : a.D₀.P.L.Sec) (ξ : Module.Dual ℤ a.D₀.X) (ν₀ : E) (jj : ℤ) (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), GlobalTheory.Reg.EvLaws Xo c → GoodEmb c σ → IsUnf U → (∀ x : c.F, algebraMap c.F ℂ⸨X⸩ x = HahnSeries.ofPowerSeries ℤ ℂ (PowerSeries.C (R := ℂ) (σ x))) → χ ≫ Y.s = spMap (PowerSeries.C (R := ℂ)) ≫ spMap (σ.comp β) → Mono (spMap β) → PushInvertible Y.t.G Y.t.PP.L → ThNZ th → Module.finrank (𝓞 E) a.D₀.X = 1 → ξ ≠ 0 → BetaAt ξ l.M' a.be ν₀ jj → Dom a' n → (∀ k, TransvIn (U.X k) l.M' (laU U a' n k)) → ∀ w₁ : ℂ, Ha.T < w₁.im → ∃ (k : U.Comp) (ξ' : Fin r → E) (sE : E) (C : ℝ), (U.X k).IsIso ξ' ∧ IsBePar ξ a.be sE ∧ (∀ τ : (U.X k).Ψ, 0 < (τ.1 sE).re) ∧ (∀ (N : ℕ) (s : E), LevelPar ξ N s → ∀ v ∈ (U.X k).Λ, ∃ u ∈ (U.X k).Λ, (transvMat (U.X k).Gm ξ' (s * (U.X k).κ0)).mulVec v - v = (N : E) • u) ∧ 0 < C ∧ (∀ v, Arch.IsThNormAt a.D₀.P a.D₀.rig th (RingHom.id ℂ) v → C ≤ v * Real.sqrt |((NumberField.discr E : ℤ) : ℝ)|) ∧ ∀ (e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR ℂ)) (z : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → (Fin Uw.g → ℂ)) (y : FrPt Xo c ℂ⸨X⸩), IsArcFr W e th (HahnSeries.ofPowerSeries ℤ ℂ) y → (∀ τ i, AnVec Ha (e τ i) (z τ i)) → ∃ (x : (U.X k).dom) (κ : ℂ), ∃ (L : (Fin Uw.g → ℂ) ≃ₗ[ℂ] (Fin Uw.g → ℂ)) (gm : (Uw.F.Di Ha.i).La ≃ₗ[𝓞 E] (Uw.F.Di (Uw.ik k)).La), AnLie Uw.F Ha.i (Ha.Pw w₁) (U.un k x) z ∧ (∀ v, Uw.Pm k x (gm v) = L (Ha.Pw w₁ v)) ∧ (∀ v v', (Uw.F.Di (Uw.ik k)).EF (gm v) (gm v') = (Uw.F.Di Ha.i).EF v v') ∧ (∀ τ i, L (z τ i) = Pi.single (Uw.e.symm ⟨τ, i⟩) 1) ∧ (∃ t, (∀ v', -(Uw.F.Di Ha.i).EF t v' = ξ (Ha.y v')) ∧ (Uw.φ k (gm t) : Fin r → E) = ξ') ∧ ‖κ‖ = (C * ∏ τ, ((U.X k).tt ξ' x.1 τ)⁻¹) ^ ((n : ℝ) / 2) * (U.X k).nfac (laU U 0 n k) x.1 ∧ ∀ F ∈ sec Xo c a' n, (U.X k).IsBddSec (laU U a' n k) (rdU U F k) → (evR Xo c F y).coeff jj * eTwoPi w₁ ^ jj = κ * (U.X k).fj (laU U a' n k) ξ' (fun τ => (τ.1 ν₀).re) (rdU U F k) x.1 := by
+theorem coeff_evR_eq_fj_anLie : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Unf Xo c σ r) (Uw : UnfWit U) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (a : ArcIn Dw l β ℂ (σ.comp β)) (χ : Sp (PowerSeries ℂ) ⟶ Y.X) (W : Wit Y a χ) (Ha : HolArc Y σ a χ W Uw.F) [Algebra c.F ℂ⸨X⸩] (th : a.D₀.P.L.Sec) (ξ : Module.Dual ℤ a.D₀.X) (ν₀ : E) (jj : ℤ) (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), GlobalTheory.Reg.EvLaws Xo c → GoodEmb c σ → IsUnf U → (∀ x : c.F, algebraMap c.F ℂ⸨X⸩ x = HahnSeries.ofPowerSeries ℤ ℂ (PowerSeries.C (R := ℂ) (σ x))) → χ ≫ Y.s = spMap (PowerSeries.C (R := ℂ)) ≫ spMap (σ.comp β) → Mono (spMap β) → PushInvertible Y.t.G Y.t.PP.L → ThNZ th → Module.finrank (𝓞 E) a.D₀.X = 1 → ξ ≠ 0 → BetaAt ξ l.M' a.be ν₀ jj → Dom a' n → (∀ k, TransvIn (U.X k) l.M' (laU U a' n k)) → ∀ w₁ : ℂ, Ha.T < w₁.im → ∃ (k : U.Comp) (ξ' : Fin r → E) (C : ℝ), (U.X k).IsIso ξ' ∧ 0 < C ∧ ∀ (e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR ℂ)) (z : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → (Fin Uw.g → ℂ)) (y : FrPt Xo c ℂ⸨X⸩), IsArcFr W e th (HahnSeries.ofPowerSeries ℤ ℂ) y → (∀ τ i, AnVec Ha (e τ i) (z τ i)) → ∃ (x : (U.X k).dom) (κ : ℂ), ∃ (L : (Fin Uw.g → ℂ) ≃ₗ[ℂ] (Fin Uw.g → ℂ)) (gm : (Uw.F.Di Ha.i).La ≃ₗ[𝓞 E] (Uw.F.Di (Uw.ik k)).La), AnLie Uw.F Ha.i (Ha.Pw w₁) (U.un k x) z ∧ (∀ v, Uw.Pm k x (gm v) = L (Ha.Pw w₁ v)) ∧ (∀ τ i, L (z τ i) = Pi.single (Uw.e.symm ⟨τ, i⟩) 1) ∧ (∃ t, (∀ v', -(Uw.F.Di Ha.i).EF t v' = ξ (Ha.y v')) ∧ (Uw.φ k (gm t) : Fin r → E) = ξ') ∧ ‖κ‖ = (C * ∏ τ, ((U.X k).tt ξ' x.1 τ)⁻¹) ^ ((n : ℝ) / 2) * (U.X k).nfac (laU U 0 n k) x.1 ∧ ∀ F ∈ sec Xo c a' n, (U.X k).IsBddSec (laU U a' n k) (rdU U F k) → (evR Xo c F y).coeff jj * eTwoPi w₁ ^ jj = κ * (U.X k).fj (laU U a' n k) ξ' (fun τ => (τ.1 ν₀).re) (rdU U F k) x.1 := by
   intro hL hL2 E _ _ _ H Dw l Xo c σ r U Uw _ _ O _ β Y a χ W Ha _ th ξ ν₀ jj a' n hEv hσ hU halg hχ hmono hpush hth
     hrk hξ0 hβ hD hTr w₁ hw₁
   obtain ⟨Θ⟩ := GlobalTheory.ArcTheta.nonempty_thetaDat hL hL2 E H Dw l Xo c σ O β Y a χ W _ _ Uw.F Ha
     ((GlobalTheory.Relab.relab_good E H l c σ hσ).2.2.2 Dw Uw.g Uw.e) th hth
   obtain ⟨k, ξ', sE, hiso, hbe, hpos, hlev, hdict⟩ :=
     GlobalTheory.ArcFlow.holArc_eq_flow_orbit hL hL2 E H Dw l Xo c σ r U Uw O β Y a χ W Ha hσ hU hrk ξ hξ0 w₁ hw₁
-  obtain ⟨C₀, hC₀, hC₀', hcov⟩ := GlobalTheory.LatticeCovolumeL2.det_im_eq_covol E H Dw l Xo c σ r U Uw O β Y a χ W Ha th Θ k ξ' hσ hU hiso hrk
+  obtain ⟨C₀, hC₀, -, hcov⟩ := GlobalTheory.LatticeCovolumeL2.det_im_eq_covol E H Dw l Xo c σ r U Uw O β Y a χ W Ha th Θ k ξ' hσ hU hiso hrk
   set B : ℝ := ‖Θ.κ‖ ^ 2 * (Real.sqrt (2 ^ (Uw.g - Θ.S.card) * ((((Θ.τ w₁).map Complex.im).submatrix
     (fun k : {k // k ∉ Θ.S} => k.1) (fun k : {k // k ∉ Θ.S} => k.1)).det)))⁻¹ with hBdef
   have hB : 0 < B := by
     have h1 := ((Θ.pos w₁ hw₁).2.submatrix (e := fun k : {k // k ∉ Θ.S} => k.1) Subtype.val_injective).det_pos
     have h2 := norm_pos_iff.2 Θ.κ_ne
     positivity
-  refine ⟨k, ξ', sE, B * C₀, hiso, hbe, hpos, hlev, mul_pos hB hC₀, fun v hv => ?_, fun e z y hy hz => ?_⟩
-  · rw [_root_.GlobalTheory.AbelianPartNorm.norm_eq hL hL2 E H Dw l Xo c σ O β Y a χ W _ _ Uw.F Ha th Θ w₁ v hw₁ hv]
-    exact mul_le_mul_of_nonneg_left hC₀' hB.le
+  refine ⟨k, ξ', B * C₀, hiso, mul_pos hB hC₀, fun e z y hy hz => ?_⟩
   have hzt := _root_.GlobalTheory.ArcType.main hL hL2 E H Dw l Xo c σ r U Uw O β Y a χ W Ha y e th z hσ halg (GlobalTheory.ThetaShiftProofs.mono_j Y hmono) hy hz
   obtain ⟨x, hx, L, gm, hEF, hLz, ⟨t, ht, htξ⟩, hflow⟩ := hdict z hzt
   obtain ⟨T', hT'⟩ := _root_.GlobalTheory.ArcQ.hasSum_evR_arc hL hL2 E H Dw l Xo c σ O β Y a χ W _ _ Uw.F Ha y e th Θ z hEv halg hχ hmono hpush hth hy hz
@@ -172,7 +170,7 @@ theorem coeff_evR_eq_fj_anLie : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field
       (hU.2.2.2.2.1 a' n hD F.1 F.2 k).1.comp hfl.differentiableOn
         fun w hw => (hflow w (max_lt_iff.1 hw).1).1⟩)
     (fun F w hw => ⟨rfl, (hcw w hw F.1 F.2).2⟩)
-  refine ⟨⟨x, hx⟩, κ, L, gm, ?_, fun v => ?_, hEF, hLz, ⟨t, ht, htξ⟩, hκ, fun F hF hbdd => ?_⟩
+  refine ⟨⟨x, hx⟩, κ, L, gm, ?_, fun v => ?_, hLz, ⟨t, ht, htξ⟩, hκ, fun F hF hbdd => ?_⟩
   · obtain ⟨h1, -, h3⟩ := hflow w₁ hw₁
     have e0 : (⟨_, h1⟩ : (U.X k).dom) = ⟨x, hx⟩ := Subtype.ext (by
       simp only [sub_self, zero_mul]
@@ -357,11 +355,11 @@ theorem exists_move (hσ : GoodEmb c σ) (hU : IsUnf U) (hpr : GlobalTheory.Fram
     (fun τ a ha => GlobalTheory.ArcFlow.eq_of_hermC_lattice (U.X k) τ.1 _ _ fun w hw => by
       have h1 := key w hw (idx.symm (τ, a))
       rw [hper, hper] at h1
-      simpa only [Equiv.apply_symm_apply, if_pos ha] using h1)
+      simpa only [Equiv.apply_symm_apply, ite_eq_left ha] using h1)
     (fun τ a ha => row_eq_of_lattice (U.X k) τ.1 _ _ a fun w hw => by
       have h1 := key w hw (idx.symm (τ, a))
       rw [hper, hper] at h1
-      simpa only [Equiv.apply_symm_apply, if_neg ha] using h1)
+      simpa only [Equiv.apply_symm_apply, ite_eq_right ha] using h1)
   refine ⟨gm, hΓ, b, hb, hxb, fun t t' ht => ?_⟩
   rw [← hg, (Uw.period k x').2.1 ((hP t).trans ht)]
 
@@ -496,7 +494,7 @@ theorem exists_cfOf_ne_zero : Known → ∀ (E : Type) [Field E] [NumberField E]
   obtain ⟨w₁, sf, hs, L₀, t, t', hw₁, ht, ht', hL₀t, hu, hex⟩ := htie _ _ d.Y _ W₁ Ha
   let f : aC.D₀.X ≃ₗ[𝓞 E] d.a.D₀.X := { p.xe with map_smul' := hp.2.1 }
   have hξf : ξC = s.ξ.comp (f.toLinearMap.restrictScalars ℤ) := LinearMap.ext hξC
-  obtain ⟨k', ξ'', sE, C, hiso', -, -, -, hC, -, hmain⟩ := GlobalTheory.ArcCoeffAt.coeff_evR_eq_fj_anLie h1 h2 E H Dw l Xo c _ r
+  obtain ⟨k', ξ'', C, hiso', hC, hmain⟩ := GlobalTheory.ArcCoeffAt.coeff_evR_eq_fj_anLie h1 h2 E H Dw l Xo c _ r
     U Uw _ _ d.Y (aC.restrict (c.V d.Wp).subtype) _ W₁ Ha th₁ ξC s.ν₀ d.jj a' n hev hgood hunf (fun _ => rfl) hover₁
     (mono_spMap_subtype _) hpush (hnz _ _ hth₁ hth) (f.finrank_eq.trans s.rk)
     (fun h => s.ξ_ne (LinearMap.ext fun y => by
@@ -524,7 +522,7 @@ theorem exists_cfOf_ne_zero : Known → ∀ (E : Type) [Field E] [NumberField E]
   choose Xm hXd hXm using fun τ => exists_inverse_comb Uw.e τ (fun i => L₀ (z₁ τ i))
     ((hzt τ).1.map' L₀.toLinearMap L₀.ker) fun i => type_map Uw.e Uw.F hP hQ L₀.toLinearMap hex τ _ ((hzt τ).2 i)
   obtain ⟨e₂, y, he₂, hy, hval⟩ := key (fun v => Xm v.1 v.2.1 v.2.2) hXd
-  obtain ⟨x', κ, L, gm, hlie, hgm, -, hLz, ⟨t₂, ht₂, ht₂'⟩, hκ, hco⟩ := hmain e₂ _ y hy he₂
+  obtain ⟨x', κ, L, gm, hlie, hgm, hLz, ⟨t₂, ht₂, ht₂'⟩, hκ, hco⟩ := hmain e₂ _ y hy he₂
   have hL₀z : ∀ τ i, L₀ (∑ j, Xm τ i j • z₁ τ j) = Pi.single (Uw.e.symm ⟨τ, i⟩) 1 := fun τ i => by
 
     rw [← hXm τ i, map_sum]

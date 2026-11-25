@@ -41,7 +41,7 @@ theorem coeff_relation {O : Type*} [CommRing O] [IsDomain O] {d₁ d : ℕ} (p :
   obtain ⟨R, hR⟩ := heq j
   have h1 : coeff k (C p ^ K * (∑ m, F m * C (μ m j) -
       (if j = k₀ then C p ^ s * X ^ S * Q else 0))) = 0 := by
-    rw [hR, coeff_X_pow_mul', if_neg (by omega)]
+    rw [hR, coeff_X_pow_mul', ite_eq_right (by omega)]
 
   simp only [← map_pow, coeff_C_mul, map_sub, map_sum, coeff_mul_C] at h1
   have h2 := sub_eq_zero.mp ((mul_eq_zero.mp h1).resolve_left (pow_ne_zero _ hp))
@@ -110,8 +110,7 @@ theorem liftΔ [FiniteDimensional Qp LL] (W : LocWach PD LL O v n) (hcase : Form
     refine ⟨?_, fun δ' hδ' => ?_⟩
     · rw [hn₁, ← algebraMap_smul (LetA O n)]
       exact (W.N T₁).smul_mem _ ((W.N T₁).sum_mem fun δ _ => W.N_Γ T₁ δ x₁ hx₁N)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hn₁, map_smul, map_sum]
+    · rw [hn₁, map_smul, map_sum]
       congr 1
       refine Finset.sum_nbij' (δ' * ·) (δ'⁻¹ * ·) (fun g hg => TypesA.delF_mul W hδ' hg)
         (fun g hg => TypesA.delF_mul W (TypesA.delF_inv W hδ') hg) (fun g _ => by simp)
@@ -180,7 +179,6 @@ theorem coeff_p1_pow_top_isUnit {O : Type*} [CommRing O] [IsDomain O] [IsDiscret
   rw [add_sub_cancel_right] at this
   exact (IsLocalRing.mem_maximalIdeal _).1 this hu
 
-
 open Formalism.MainNotions.UnusedSlot80.SatW in
 theorem isUnit_ps [FiniteDimensional Qp LL] (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.LiftingTheory.CaseA W)
     (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (s : ℕ) :
@@ -211,13 +209,6 @@ theorem phi_sq_pi0_pow_eq_pi0_lambda_sq (W : LocWach PD LL O v n) (hR : GS.RD W)
   rw [← key]
   exact W.AΔ.pow_mem (GS.φpow_mem (W := W) 2 (TypesA.pi0_mem_ADelta W)) _
 
-theorem dv_eq_sum_single (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T)
-    (c₀ : Fin d → LL) : dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
-  unfold dv
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.sum_eq_single m (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp), Pi.single_eq_same,
-    one_smul]
-
 theorem filS_anti (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (a : ZMod n) (s : ℕ) {u u' : ℤ}
     (h : u ≤ u') : FilS W T a s u' ≤ FilS W T a s u :=
   Submodule.map_mono (inf_le_inf_right _ (Formalism.MainNotions.UnusedSlot80.LevR.filCris_anti T.ρ h))
@@ -232,10 +223,10 @@ theorem sum_unit_inv {R : Type*} [CommRing R] {d₁ d : ℕ} (th : R) (hthu : Is
     exact Finset.sum_congr rfl fun m _ => by ring
   rw [h1, hcr j]
   by_cases hj : j = k₀
-  · rw [if_pos hj, if_pos hj]
+  · rw [ite_eq_left hj, ite_eq_left hj]
     have := hthu.val_inv_mul
     linear_combination P * this
-  · rw [if_neg hj, if_neg hj, mul_zero]
+  · rw [ite_eq_right hj, ite_eq_right hj, mul_zero]
 
 theorem crisMap_dvO (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (e : ℕ)
     {d₁ d : ℕ} (b₁ : Fin d₁ → W.DD T₁) (b : Fin d → W.DD T₂) (μ : Fin d₁ → Fin d → O)
@@ -244,7 +235,7 @@ theorem crisMap_dvO (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F 
     Formalism.MainNotions.TruncatedSeriesCountingBounds.crisMap B F.f (dvO W T₁ e b₁ c₁) = algebraMap O LL P • dv W T₂ e b (Pi.single k₀ 1) := by
   unfold dvO
 
-  rw [dv_eq_sum_single, map_sum]
+  rw [Formalism.MainNotions.N.FrobeniusPowerSeries.TC.dv_eq_sum, map_sum]
   simp only [map_smul, hμ]
   unfold dvO
   rw [← dv_sum W T₂ e b Finset.univ (fun m => algebraMap O LL (c₁ m)) (fun m k => algebraMap O LL (μ m k)),
@@ -358,13 +349,13 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hpsu : ∀ s, IsUnit (algebraMap (LetA O n) W.EE (ps W s)) := ArcLengthTwoLifting.isUnit_ps W hcase hP9 T₁ hT₁
   have hHs0 : A.Hs c 2 0 = A.h := by
     unfold ArcP.Hs
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro (h | h)
     · rw [hty0] at h; exact Formalism.MainNotions.LocalTheoryWindows.LT.noConfusion h
     · rw [hAj] at h; omega
   have hHs1 : A.Hs c 2 1 = A.G₀ := by
     unfold ArcP.Hs
-    rw [if_pos]
+    rw [ite_eq_left]
     right; rw [hAj]
   have hΛ_eq : Λ = ps W 0 ^ A.h * ps W 1 ^ (w + S) := by
     rw [hΛdef, abelian₂, hlen, Finset.prod_range_succ, Finset.prod_range_succ, Finset.prod_range_zero, one_mul,
@@ -440,7 +431,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hdvO0 : ∀ c' : Fin d₁ → O, dvO W T₁ L b₁ c' = 0 → c' = 0 := by
     intro c' h
     have h2 : ∑ m, algebraMap O LL (c' m) • dv W T₁ L b₁ (Pi.single m 1) = 0 := by
-      rw [← ArcLengthTwoLifting.dv_eq_sum_single]; exact h
+      rw [← Formalism.MainNotions.N.FrobeniusPowerSeries.TC.dv_eq_sum]; exact h
     have := Fintype.linearIndependent_iff.1 hlin₁.1 _ h2
     funext m; exact hinj (by rw [this m]; simp)
   have hL0 : 0 < L := by rw [hlen]; norm_num
@@ -498,7 +489,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
         rw [hΦ]
         conv_lhs => rw [← Nat.sub_add_cancel hd1, ← Nat.sub_add_cancel hd0]
         ring
-      simp only [ht, if_neg hci]
+      simp only [ht, ite_eq_right hci]
       rw [hΦs, IsScalarTower.algebraMap_apply O (LetA O n) W.EE]
       have hE' := hE
       simp only [map_mul] at hE'
@@ -568,7 +559,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     intro i hci
     apply Br.inj
     rw [← hTt i]
-    simp only [ht, if_neg hci, Pi.mul_apply, Pi.pow_apply, hletcc, hpsc, hVv, hP0, one_mul, map_mul, map_pow]
+    simp only [ht, ite_eq_right hci, Pi.mul_apply, Pi.pow_apply, hletcc, hpsc, hVv, hP0, one_mul, map_mul, map_pow]
     ring
   have hT0 : ∀ i, c₀ i = 0 → Tt i = 0 := by
     intro i hci
@@ -686,9 +677,9 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     simp only [map_mul, map_sub, map_sum, map_pow, hιC, map_natCast]
     by_cases hjk : j = k₀
     · subst hjk
-      simp only [if_true, Pi.single_eq_same, map_one, mul_one, map_mul, map_pow, map_natCast] at e4 ⊢
+      simp only [ite_true, Pi.single_eq_same, map_one, mul_one, map_mul, map_pow, map_natCast] at e4 ⊢
       linear_combination e4
-    · simp only [if_neg hjk, Pi.single_eq_of_ne hjk, map_zero, mul_zero, neg_zero, add_zero, sub_zero] at e4 ⊢
+    · simp only [ite_eq_right hjk, Pi.single_eq_of_ne hjk, map_zero, mul_zero, neg_zero, add_zero, sub_zero] at e4 ⊢
       linear_combination e4
   have hcr := ArcLengthTwo.coeff_relation ((PD.p : ℕ) : O) hp0 Fq μ k₀ K (A.σ PD.p + rr + A.σ PD.p) S A.h k₀'
     (Br.P.p 1 ^ y) hk₀h (by omega) hrel

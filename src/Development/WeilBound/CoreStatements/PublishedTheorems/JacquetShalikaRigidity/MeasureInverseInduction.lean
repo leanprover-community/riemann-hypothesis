@@ -16,8 +16,6 @@ namespace PositivityTheory.AdelicQuotientData
 
 namespace MeasureInverseInduction
 
-set_option synthInstance.maxHeartbeats 400000
-
 variable {E : Type} [Field E] [NumberField E] {k : ℕ}
 
 theorem countGL : Countable (GL (Fin k) E) := by
@@ -115,7 +113,6 @@ theorem main_nuG (hD0 : D0) (hN1 : N1) (Γ : Set (GL (Fin k) E)) (d : ℕ) (hd :
 end MeasureInverseInduction
 
 open MeasureInverseInduction in
-set_option synthInstance.maxHeartbeats 400000 in
 theorem galois_fixed_adelic_matrices_descend : D0 → N0 → N1 → N3 := by
   intro hD0 hN0 hN1 E _ _ _ k
   have hP : ∀ m < k, SFinite (nuP E k m) ∧ Measure.map (fun h => h⁻¹) (nuP E k m) = nuP E k m ∧

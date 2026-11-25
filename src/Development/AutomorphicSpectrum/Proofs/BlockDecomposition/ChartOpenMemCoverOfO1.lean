@@ -12,7 +12,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
 namespace GlobalTheory.CompanionTheory.ConeChart
@@ -53,7 +52,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
 namespace GlobalTheory.CompanionTheory.ConeWchMem

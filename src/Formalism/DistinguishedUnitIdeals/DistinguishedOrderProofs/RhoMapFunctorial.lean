@@ -18,19 +18,14 @@ section basic
 variable {O : Type} [CommRing O] {V : Type} [AddCommGroup V] [Module (PowerSeries O) V]
 
 theorem mem_sm {a : PowerSeries O} {S : Submodule (PowerSeries O) V} {v : V} :
-    v ∈ sm a S ↔ ∃ u ∈ S, a • u = v := by
-  show v ∈ S.map (LinearMap.lsmul (PowerSeries O) V a) ↔ _
-  rw [Submodule.mem_map]
-  simp only [LinearMap.lsmul_apply]
+    v ∈ sm a S ↔ ∃ u ∈ S, a • u = v := Formalism.ExponentWindows.E.S1.mem_sm
 
 theorem smul_mem_sm (a : PowerSeries O) {S : Submodule (PowerSeries O) V} {u : V} (hu : u ∈ S) :
     a • u ∈ sm a S :=
   mem_sm.2 ⟨u, hu, rfl⟩
 
 theorem sm_le (a : PowerSeries O) (S : Submodule (PowerSeries O) V) : sm a S ≤ S := by
-  intro v hv
-  obtain ⟨u, hu, rfl⟩ := mem_sm.1 hv
-  exact S.smul_mem a hu
+  exact Formalism.ExponentWindows.E.S1.sm_le a S
 
 theorem sm_of_span {a b : PowerSeries O} (h : b ∈ Ideal.span {a})
     {S : Submodule (PowerSeries O) V} {u : V} (hu : u ∈ S) : b • u ∈ sm a S := by
@@ -62,27 +57,19 @@ variable {O : Type} [CommRing O] {B : Base O} {n : ℕ} {V : Type} [AddCommGroup
 private theorem phiIt_zero_lemma_2 (i : ZMod n) (v : V) : L.phiIt i 0 v = v := rfl
 
 theorem phiIt_zero (i : ZMod n) (k : ℕ) : L.phiIt i k 0 = 0 := by
-  induction k with
-  | zero => rfl
-  | succ k ih => rw [Formalism.ExponentWindows.E.S1.phiIt_succ, ih, map_zero]
+  exact Formalism.ExponentWindows.E.S1.phiIt_map_zero L i k
 
 theorem phiIt_add (i : ZMod n) (k : ℕ) (u v : V) :
     L.phiIt i k (u + v) = L.phiIt i k u + L.phiIt i k v := by
-  induction k with
-  | zero => rfl
-  | succ k ih => simp only [Formalism.ExponentWindows.E.S1.phiIt_succ, ih, map_add (f := _)]
+  exact Formalism.ExponentWindows.E.S1.phiIt_add L i k u v
 
 theorem phiIt_sub (i : ZMod n) (k : ℕ) (u v : V) :
     L.phiIt i k (u - v) = L.phiIt i k u - L.phiIt i k v := by
-  induction k with
-  | zero => rfl
-  | succ k ih => simp only [Formalism.ExponentWindows.E.S1.phiIt_succ, ih, map_sub]
+  exact Formalism.ExponentWindows.E.S1.phiIt_sub L i k u v
 
 theorem phiIt_smul (i : ZMod n) (k : ℕ) (a : PowerSeries O) (v : V) :
     L.phiIt i k (a • v) = ((⇑B.φ)^[k] a) • L.phiIt i k v := by
-  induction k with
-  | zero => rfl
-  | succ k ih => simp only [Formalism.ExponentWindows.E.S1.phiIt_succ, ih, L.φ_semi, Function.iterate_succ_apply']
+  exact Formalism.ExponentWindows.E.S1.phiIt_smul L i k a v
 
 theorem phiIt_C (i : ZMod n) (k : ℕ) (m : O) (v : V) :
     L.phiIt i k (C m • v) = C m • L.phiIt i k v := by
@@ -115,9 +102,7 @@ theorem phiIt_mem_pull {i : ZMod n} (k : ℕ) {v : V} (hv : v ∈ L.N i) :
   Submodule.subset_span (Set.mem_image_of_mem (L.phiIt i k) hv)
 
 theorem γ_N (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) {i : ZMod n} {v : V}
-    (hv : v ∈ L.N i) : L.γ i v ∈ L.N i := by
-  have h := (L.N i).add_mem (sm_le X (L.N i) (h1 i v hv)) hv
-  rwa [sub_add_cancel] at h
+    (hv : v ∈ L.N i) : L.γ i v ∈ L.N i := Formalism.ExponentWindows.E.S1.gam_N L h1 i hv
 
 theorem γ_pull (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) {i : ZMod n} {k : ℕ} {v : V}
     (hv : v ∈ L.pull i k) : L.γ (i + (k : ZMod n)) v ∈ L.pull i k := by
@@ -314,18 +299,10 @@ variable {O : Type} [CommRing O] {B : Base O} {n : ℕ} {V V' : Type} [AddCommGr
   {L : Lat B n V} {L' : Lat B n V'} (h : LatHom L L')
 
 theorem hom_phiIt (i : ZMod n) (k : ℕ) (v : V) : h.f (L.phiIt i k v) = L'.phiIt i k (h.f v) := by
-  induction k with
-  | zero => rfl
-  | succ k ih => rw [Formalism.ExponentWindows.E.S1.phiIt_succ, Formalism.ExponentWindows.E.S1.phiIt_succ, h.φ_comm, ih]
+  exact Formalism.ExponentWindows.E.S1.hom_phiIt h i k v
 
 theorem hom_pull {i : ZMod n} {k : ℕ} {v : V} (hv : v ∈ L.pull i k) : h.f v ∈ L'.pull i k := by
-  have hle : L.pull i k ≤ (L'.pull i k).comap h.f := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨u, hu, rfl⟩
-    show h.f (L.phiIt i k u) ∈ L'.pull i k
-    rw [hom_phiIt]
-    exact phiIt_mem_pull L' k (h.map_N i u hu)
-  exact hle hv
+  exact Formalism.ExponentWindows.E.S1.hom_pull h i k hv
 
 theorem hom_sm {a : PowerSeries O} {S : Submodule (PowerSeries O) V}
     {S' : Submodule (PowerSeries O) V'} (hS : ∀ v ∈ S, h.f v ∈ S') {v : V} (hv : v ∈ sm a S) :
@@ -427,9 +404,5 @@ theorem rho_map_linear : RhoLin := by
       exact zero_mem _
   · intro i
     exact sub_mem (hz' i) (Submodule.smul_mem _ _ (hz i))
-
-namespace IdempotentNormalFormsRhoFacts
-
-end IdempotentNormalFormsRhoFacts
 
 end Formalism.ExponentWindows.E

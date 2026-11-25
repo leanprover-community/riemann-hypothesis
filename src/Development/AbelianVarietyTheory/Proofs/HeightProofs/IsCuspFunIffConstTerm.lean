@@ -569,11 +569,6 @@ theorem GQ_eq : GQ V = ratPts D.sp.cm V := (ratPts_eq D.sp.cm V).symm
 theorem GfC_eq : GfC V = finPts D.sp.cm V := by
   ext g; exact ⟨fun h => Subtype.ext h, fun h => congrArg Subtype.val h⟩
 
-theorem isInfFam_iff (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) :
-    IsInfFam θ ↔ θ = fun τ => infEmb D.sp.cm (tauE D τ) :=
-  ⟨fun h => funext fun τ => isInfEmb_unique _ _ _ (h τ) (isInfEmb_infEmb _ _),
-    fun h _ => h ▸ isInfEmb_infEmb _ _⟩
-
 theorem isIsoFrame_iff {r : ℕ} (C : Matrix (Fin V.rank) (Fin r) D.host.E) :
     IsIsoFrame V C ↔ LinearIndependent D.host.E Cᵀ ∧ IsIsotropic V (colSpan V C) :=
   ⟨fun h => ⟨h.2.1, (isIsotropic_colSpan D.sp.cm V C h.2.1).2 ⟨h.1, h.2.2⟩⟩, fun h =>

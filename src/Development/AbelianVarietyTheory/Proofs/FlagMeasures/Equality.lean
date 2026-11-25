@@ -11,49 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRing
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermExponentsNonnegAndDefectGroupBound
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermInvariantsIndependentOfWitnesses
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitEntries
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 
@@ -109,7 +66,7 @@ theorem equality : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F
       rw [mass_eq_sumCls L r k S d _ (fun _ _ _ _ _ => trivial)]
       unfold Frames.sumCls
       let o₀ : MulAction.orbitRel.Quotient S.St (Set S.FrP) := Quotient.mk _ C0
-      rw [tsum_eq_single o₀ (fun o ho => if_neg fun hI => ho (by
+      rw [tsum_eq_single o₀ (fun o ho => ite_eq_right fun hI => ho (by
         obtain ⟨h, hh, e⟩ := hall _ hI
         rw [← Quotient.out_eq o]
         exact Quotient.sound ⟨⟨h, hh⟩, e.symm⟩))]
@@ -147,19 +104,19 @@ theorem equality : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F
       unfold Frames.mass
       rw [tsum_eq_single o₁]
       · congr
-      · exact fun o ho => if_neg (hone o ho)
+      · exact fun o ho => ite_eq_right (hone o ho)
     have e2 : (S.amp d fun _ => True) =
         if S.IsTerm d o₁.out ∧ True then (S.mu o₁.out : ℂ) * S.om d o₁.out else 0 := by
       unfold Frames.amp
       rw [tsum_eq_single o₁]
       · congr
-      · exact fun o ho => if_neg (hone o ho)
+      · exact fun o ho => ite_eq_right (hone o ho)
     rw [e1] at hm ⊢
     rw [e2]
     by_cases hT : S.IsTerm d o₁.out ∧ True
     swap
-    · simp only [if_neg hT]; simp
-    simp only [if_pos hT] at hm ⊢
+    · simp only [ite_eq_right hT]; simp
+    simp only [ite_eq_left hT] at hm ⊢
     have hom : ‖S.om d o₁.out‖ = 1 := by
       obtain ⟨p, hp⟩ := hT.1
       exact (WitIndep.witness_independence L r k S d _ _ _ hp).2.2.2.2

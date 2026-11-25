@@ -340,7 +340,7 @@ theorem main {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.Prime] {
 
       rw [← hexp, Finset.sum_mul, map_sum] at h
       simpa only [smul_mul_assoc, map_smul, hBD, htb, smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true] using h
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true] using h
     rw [← hexp]
     simp [hc0]
   let φ : ℚ_[ℓ] ⊗[ℚ] K →ₗ[ℚ_[ℓ]] ℚ_[ℓ] := (Algebra.trace ℚ_[ℓ] Fp).comp π.toLinearMap
@@ -355,7 +355,7 @@ theorem main {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.Prime] {
           if j = i then 1 else 0 := fun i => htb i j
 
       simp only [β, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, htb', smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rfl
     intro x
     exact congrArg (fun L => L x) hL

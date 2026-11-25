@@ -73,8 +73,4 @@ def loopRowsOf (H : TieHyp W hI) (A : AmpDat X) (hV : PvalForm W hI A) (hRR : Ro
 
 end AtTermTieOf
 
-section Inhab
-
-end Inhab
-
 end Formalism.L2.SG.LoopTieOf

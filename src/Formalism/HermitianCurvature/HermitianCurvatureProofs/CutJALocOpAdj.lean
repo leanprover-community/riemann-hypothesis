@@ -52,11 +52,7 @@ theorem rw_congr_GV {F₀ : Type} [NormedAddCommGroup F₀] [NormedSpace ℂ F�
 theorem opApply_congr_GV (Θ : B.DiffOp k r Wp Wq) {O : Set (B.Mat k r)} (hO : IsOpen O)
     {f₁ f₂ : B.Mat k r → (Wq →L[ℂ] Wp)} (h : ∀ g ∈ B.GV k r, g ∈ O → f₁ g = f₂ g) :
     ∀ g ∈ B.GV k r, g ∈ O → B.opApply Θ f₁ g = B.opApply Θ f₂ g := by
-  intro g hg hgO
-  unfold B.opApply
-  congr 1
-  refine List.map_congr_left fun T _ => ?_
-  rw [rw_congr_GV hO h T.word_lie g hg hgO]
+  apply Formalism.FourierDecayAlt.P.MinorPolynomials.opApply_congr <;> assumption
 
 theorem opAdj_congr_GV (Θ : B.DiffOp k r Wp Wq) {O : Set (B.Mat k r)} (hO : IsOpen O)
     {f₁ f₂ : B.Mat k r → (Wq →L[ℂ] Wp)} (h : ∀ g ∈ B.GV k r, g ∈ O → f₁ g = f₂ g) :

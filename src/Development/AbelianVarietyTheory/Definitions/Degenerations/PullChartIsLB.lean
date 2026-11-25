@@ -45,8 +45,6 @@ def hilb {k J : Type} [Field k] [Finite J] (C : Set (J → k)) (d : ℕ) : ℕ :
   Module.finrank k ((MvPolynomial.homogeneousSubmodule J k d).map
     (LinearMap.pi fun v : C => (MvPolynomial.aeval (R := k) v.1).toLinearMap))
 
-attribute [local instance] SplitExt.free SplitExt.finite
-
 structure FibPre (k : Type) [Field k] where
   E : SplitExt (Sp k)
   G : Over (Sp k)

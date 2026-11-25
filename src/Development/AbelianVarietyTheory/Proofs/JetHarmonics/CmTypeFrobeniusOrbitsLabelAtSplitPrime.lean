@@ -7,45 +7,8 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThre
 public import Development.AbelianVarietyTheory.Definitions.Jets.IsSelfOf
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmEmbeddingsIntegralAndDistinctModMaximal
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.FieldTheory.Galois.IsGaloisGroup
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
 import Formalism.LocalToGlobal.Divisibility.Numbers
@@ -333,7 +296,7 @@ theorem labelling_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   have h2 : V.l ≠ 2 := by
     intro h
     unfold NumDatum.cls primeClass at hcls
-    rw [if_pos (show V.l ∈ N.H.small from h ▸ Nat.mem_primeFactors.2 ⟨Nat.prime_two, N.H.two_dvd_QS, N.H.QS_pos.ne'⟩)] at hcls
+    rw [ite_eq_left (show V.l ∈ N.H.small from h ▸ Nat.mem_primeFactors.2 ⟨Nat.prime_two, N.H.two_dvd_QS, N.H.QS_pos.ne'⟩)] at hcls
     exact absurd hcls (by decide)
   have hj : jacobiSym (-(H.d : ℤ)) V.l = 1 := by
     rw [hP.d_eq]
@@ -412,7 +375,7 @@ theorem labelling_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     · obtain ⟨z', hz'⟩ := (hP.psi _).1 ((inPsi_conj_iff H τ).2 hτ)
       obtain ⟨p, hp, -⟩ := hZ z'
       refine ⟨(⟨p.1, hp.1⟩, 1, p.2), ?_⟩
-      simp only [tauSp, hp.2, hz', one_ne_zero, if_false]
+      simp only [tauSp, hp.2, hz', one_ne_zero, ite_false]
       exact star_star τ
   · intro z g s x
     have h1 : pos z (s + 1).val = pos z (s.val + 1) := by

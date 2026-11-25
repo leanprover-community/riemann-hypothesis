@@ -80,13 +80,8 @@ theorem opNorm_le_hs (A : Wq →L[ℂ] Wp) :
     ‖A‖ ≤ (Module.finrank ℂ Wq : ℝ) * ‖Formalism.L2.SG.PackageTie.hsEmb A‖ := by
   refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun x => ?_
   let b := stdOrthonormalBasis ℂ Wq
-  have hcomp : ∀ i, ‖A (b i)‖ ≤ ‖Formalism.L2.SG.PackageTie.hsEmb A‖ := by
-    intro i
-    have h1 : ‖A (b i)‖ ^ 2 ≤ ‖Formalism.L2.SG.PackageTie.hsEmb A‖ ^ 2 := by
-      rw [PiLp.norm_sq_eq_of_L2]
-      exact Finset.single_le_sum (f := fun j => ‖(Formalism.L2.SG.PackageTie.hsEmb A) j‖ ^ 2)
-        (fun j _ => by positivity) (Finset.mem_univ i)
-    exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 h1
+  have hcomp : ∀ i, ‖A (b i)‖ ≤ ‖Formalism.L2.SG.PackageTie.hsEmb A‖ := fun i =>
+    PiLp.norm_apply_le (Formalism.L2.SG.PackageTie.hsEmb A) i
   calc ‖A x‖ = ‖∑ i, ⟪b i, x⟫_ℂ • A (b i)‖ := by
         conv_lhs => rw [← b.sum_repr' x]
 
@@ -284,11 +279,11 @@ theorem tens_mem_span (u : D.what₂.Word) (x : ∀ v, X.Vloc u v) :
     simp only [e, X.tensU_inner]
     by_cases hij : i = j
     · subst hij
-      rw [if_pos rfl]
-      exact Finset.prod_eq_one fun v _ => by rw [orthonormal_iff_ite.1 (b v).orthonormal, if_pos rfl]
-    · rw [if_neg hij]
+      rw [ite_eq_left rfl]
+      exact Finset.prod_eq_one fun v _ => by rw [orthonormal_iff_ite.1 (b v).orthonormal, ite_eq_left rfl]
+    · rw [ite_eq_right hij]
       obtain ⟨v, hv⟩ := Function.ne_iff.1 hij
-      exact Finset.prod_eq_zero (Finset.mem_univ v) (by rw [orthonormal_iff_ite.1 (b v).orthonormal, if_neg hv])
+      exact Finset.prod_eq_zero (Finset.mem_univ v) (by rw [orthonormal_iff_ite.1 (b v).orthonormal, ite_eq_right hv])
   have hc : ∀ i, ‖⟪e i, X.tensU u x⟫_ℂ‖ ^ 2 = ∏ v, ‖⟪b v (i v), x v⟫_ℂ‖ ^ 2 := by
     intro i
     rw [he_def]
@@ -338,11 +333,11 @@ theorem finrank_Vpi (u : D.what₂.Word) :
     simp only [e, X.tensU_inner]
     by_cases hij : i = j
     · subst hij
-      rw [if_pos rfl]
-      exact Finset.prod_eq_one fun v _ => by rw [orthonormal_iff_ite.1 (b v).orthonormal, if_pos rfl]
-    · rw [if_neg hij]
+      rw [ite_eq_left rfl]
+      exact Finset.prod_eq_one fun v _ => by rw [orthonormal_iff_ite.1 (b v).orthonormal, ite_eq_left rfl]
+    · rw [ite_eq_right hij]
       obtain ⟨v, hv⟩ := Function.ne_iff.1 hij
-      exact Finset.prod_eq_zero (Finset.mem_univ v) (by rw [orthonormal_iff_ite.1 (b v).orthonormal, if_neg hv])
+      exact Finset.prod_eq_zero (Finset.mem_univ v) (by rw [orthonormal_iff_ite.1 (b v).orthonormal, ite_eq_right hv])
   have htop : ⊤ ≤ Submodule.span ℂ (Set.range e) := by
     rw [← X.tensU_span u, Submodule.span_le]
     rintro _ ⟨x, rfl⟩
@@ -354,13 +349,5 @@ theorem dimTie (u : D.what₂.Word) : DimTie (X := X) u := by
   simpa [DimTie, dimPi, finrank_Vpi, Nat.cast_prod] using Fintype.prod_equiv X.pl _ _ fun v => finrank_loc X u v
 
 end Dim
-
-section FinX
-
-open Formalism.L2.SG.Full
-
-variable {D : D7} {X : HidaSetting D} (Y : Full X)
-
-end FinX
 
 end Formalism.L2.SG.Pf

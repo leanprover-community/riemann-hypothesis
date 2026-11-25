@@ -192,8 +192,8 @@ private theorem Z_fin (hn : 0 < n) (μ : Measure (normOneGL (K := E) (n := n))) 
     if w ∈ T.marked then U w else kerS (T.J w) (T.χ w) (T.chr w)
   have hU' : ∀ w ∈ P, CO (U' w) := fun w _ => by
     by_cases hw : w ∈ T.marked
-    · simpa only [U', if_pos hw] using hU w hw
-    · simpa only [U', if_neg hw] using kerS_co (T.co w) (T.chr w)
+    · simpa only [U', ite_eq_left hw] using hU w hw
+    · simpa only [U', ite_eq_right hw] using kerS_co (T.co w) (T.chr w)
   haveI := UpperTheory.ConvolutionTheory.C.eigAdm E n hn μ (Measure.map (glueA D n) (Measure.pi fun _ => νF)) β (y ^ (m + 1)) (pow_ne_zero _ hy.ne') P U' hU'
   refine Submodule.finiteDimensional_of_le (fun v hv => ?_)
     (S₂ := eigIn (cuspidalL2 μ) (Oinf μ (Measure.map (glueA D n) (Measure.pi fun _ => νF)) β) (y ^ (m + 1)) ⊓ sphOff μ P ⊓
@@ -217,8 +217,8 @@ private theorem Z_fin (hn : 0 < n) (μ : Measure (normOneGL (K := E) (n := n))) 
     simp
   · refine (Submodule.mem_iInf _).2 fun w => (Submodule.mem_iInf _).2 fun _ => ?_
     by_cases hw : w ∈ T.marked
-    · simpa only [U', if_pos hw] using hf' w hw
-    · simp only [U', if_neg hw]
+    · simpa only [U', ite_eq_left hw] using hf' w hw
+    · simp only [U', ite_eq_right hw]
       refine (mem_fixL' μ _ _ _).2 fun x hx => ?_
       rw [(mem_eigL' μ _ _ _ _).1 (h3 w hw) x hx.1, hx.2, one_smul]
 

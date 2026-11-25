@@ -79,9 +79,9 @@ theorem pOp_fsv_smul (t : ℂ) (l : Fin m) (φ : (Fin m → ℂ) → E) (c : Fin
       fsv t (c l) • pOp l φ c + t • fsv t (c l) • (c l • φ c) := by
   unfold pOp
   by_cases h : c ∈ OmX m
-  · rw [if_pos h, if_pos h, (wirt_fsv_smul t l φ c (hd h)).1]
+  · rw [ite_eq_left h, ite_eq_left h, (wirt_fsv_smul t l φ c (hd h)).1]
     module
-  · rw [if_neg h, if_neg h, h0 h]
+  · rw [ite_eq_right h, ite_eq_right h, h0 h]
     simp
 
 theorem pbOp_fsv_smul (t : ℂ) (l : Fin m) (φ : (Fin m → ℂ) → E) (c : Fin m → ℂ)
@@ -90,10 +90,10 @@ theorem pbOp_fsv_smul (t : ℂ) (l : Fin m) (φ : (Fin m → ℂ) → E) (c : Fi
       fsv (-t) (c l) • pbOp l φ c + conj t • fsv (-t) (c l) • (star (c l) • φ c) := by
   unfold pbOp
   by_cases h : c ∈ OmX m
-  · rw [if_pos h, if_pos h, (wirt_fsv_smul (-t) l φ c (hd h)).2]
+  · rw [ite_eq_left h, ite_eq_left h, (wirt_fsv_smul (-t) l φ c (hd h)).2]
     simp only [map_neg, neg_neg, Complex.star_def]
     module
-  · rw [if_neg h, if_neg h, h0 h]
+  · rw [ite_eq_right h, ite_eq_right h, h0 h]
     simp
 
 end Leibniz

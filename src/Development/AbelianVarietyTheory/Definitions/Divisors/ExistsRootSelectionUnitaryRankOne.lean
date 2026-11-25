@@ -100,66 +100,56 @@ def IsTest {H : Type} [Group H] (θ : H →* H) (K₀ K : Subgroup H) (φ : H �
   Subgroup.Commensurable K K₀ ∧ K.map θ ≤ K ∧ (∀ k ∈ K, ∀ g, φ (k⁻¹ * g * θ k) = φ g) ∧
     ∃ S : Finset H, ∀ g, φ g ≠ 0 → ∃ s ∈ S, ∃ k₁ ∈ K₀, ∃ k₂ ∈ K₀, g = k₁ * s * k₂
 
-namespace Pair
-
-variable {G : HTGroup p}
-
-def pol (P : Pair G) : Polynomial G.F := minpoly G.F (P.γ : G.C)
-
-def Rel (P Q : Pair G) : Prop :=
-  ∃ (y : G.Cˣ) (s : ℚ), 0 < s ∧ (Q.β : G.C) = algebraMap ℚ G.C s * (y * P.β * sh G y) ∧ Q.γ = y * P.γ * y⁻¹
-
-def cent (P : Pair G) : Subgroup (G.Cˣ × ℚˣ) where
-  carrier := {y | y.1 * P.γ = P.γ * y.1 ∧ (y.1 : G.C) * P.β * sh G y.1 = algebraMap ℚ G.C y.2 * P.β}
+def centOf (G : HTGroup p) (β γ : G.Cˣ) : Subgroup (G.Cˣ × ℚˣ) where
+  carrier := {y | y.1 * γ = γ * y.1 ∧ (y.1 : G.C) * β * sh G y.1 = algebraMap ℚ G.C y.2 * β}
   one_mem' := ⟨by simp, by simp [sh]⟩
   mul_mem' := by
     rintro ⟨y, s⟩ ⟨y', s'⟩ ⟨h1, h2⟩ ⟨h1', h2'⟩
     refine ⟨?_, ?_⟩
-    · change y * y' * P.γ = P.γ * (y * y')
-      change y * P.γ = P.γ * y at h1
-      change y' * P.γ = P.γ * y' at h1'
+    · change y * y' * γ = γ * (y * y')
+      change y * γ = γ * y at h1
+      change y' * γ = γ * y' at h1'
       rw [mul_assoc, h1', ← mul_assoc, h1, mul_assoc]
-    · change (y : G.C) * P.β * sh G y = algebraMap ℚ G.C s * P.β at h2
-      change (y' : G.C) * P.β * sh G y' = algebraMap ℚ G.C s' * P.β at h2'
-      change ((y * y' : G.Cˣ) : G.C) * P.β * sh G ((y * y' : G.Cˣ) : G.C) =
-        algebraMap ℚ G.C ((s * s' : ℚˣ) : ℚ) * P.β
+    · change (y : G.C) * β * sh G y = algebraMap ℚ G.C s * β at h2
+      change (y' : G.C) * β * sh G y' = algebraMap ℚ G.C s' * β at h2'
+      change ((y * y' : G.Cˣ) : G.C) * β * sh G ((y * y' : G.Cˣ) : G.C) =
+        algebraMap ℚ G.C ((s * s' : ℚˣ) : ℚ) * β
       have e : sh G ((y * y' : G.Cˣ) : G.C) = sh G y' * sh G y := by
         simp only [sh, Units.val_mul, map_mul, MulOpposite.unop_mul]
       rw [e, Units.val_mul, Units.val_mul, map_mul]
-      calc (y : G.C) * y' * P.β * (sh G y' * sh G y) = y * (y' * P.β * sh G y') * sh G y := by
+      calc (y : G.C) * y' * β * (sh G y' * sh G y) = y * (y' * β * sh G y') * sh G y := by
             simp only [mul_assoc]
-        _ = algebraMap ℚ G.C s' * (y * P.β * sh G y) := by
+        _ = algebraMap ℚ G.C s' * (y * β * sh G y) := by
             rw [h2']; simp only [← Algebra.smul_def, mul_smul_comm, smul_mul_assoc]
         _ = _ := by rw [h2, ← mul_assoc, ← map_mul, ← map_mul, mul_comm (s' : ℚ)]
   inv_mem' := by
     rintro ⟨y, s⟩ ⟨h1, h2⟩
-    change y * P.γ = P.γ * y at h1
-    change (y : G.C) * P.β * sh G y = algebraMap ℚ G.C s * P.β at h2
+    change y * γ = γ * y at h1
+    change (y : G.C) * β * sh G y = algebraMap ℚ G.C s * β at h2
     refine ⟨?_, ?_⟩
-    · change y⁻¹ * P.γ = P.γ * y⁻¹
+    · change y⁻¹ * γ = γ * y⁻¹
       rw [inv_mul_eq_iff_eq_mul, ← mul_assoc, h1, mul_inv_cancel_right]
-    · change ((y⁻¹ : G.Cˣ) : G.C) * P.β * sh G ((y⁻¹ : G.Cˣ) : G.C) =
-        algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * P.β
+    · change ((y⁻¹ : G.Cˣ) : G.C) * β * sh G ((y⁻¹ : G.Cˣ) : G.C) =
+        algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * β
       have e : sh G y * sh G ((y⁻¹ : G.Cˣ) : G.C) = 1 := by
         simp only [sh]
         rw [← MulOpposite.unop_mul, ← map_mul, Units.inv_mul, map_one, MulOpposite.unop_one]
       have hs : algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * algebraMap ℚ G.C (s : ℚ) = 1 := by
         rw [← map_mul, Units.inv_mul, map_one]
-      calc ((y⁻¹ : G.Cˣ) : G.C) * P.β * sh G ((y⁻¹ : G.Cˣ) : G.C)
-          = algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * (((y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C (s : ℚ) * P.β) *
+      calc ((y⁻¹ : G.Cˣ) : G.C) * β * sh G ((y⁻¹ : G.Cˣ) : G.C)
+          = algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * (((y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C (s : ℚ) * β) *
               sh G ((y⁻¹ : G.Cˣ) : G.C)) := by
             rw [← mul_assoc, ← mul_assoc, ← mul_assoc, Algebra.commutes ((s⁻¹ : ℚˣ) : ℚ), mul_assoc ((y⁻¹ : G.Cˣ) : G.C) _ (algebraMap ℚ G.C (s : ℚ)), hs, mul_one]
-        _ = algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * ((((y⁻¹ : G.Cˣ) : G.C) * y) * P.β *
+        _ = algebraMap ℚ G.C ((s⁻¹ : ℚˣ) : ℚ) * ((((y⁻¹ : G.Cˣ) : G.C) * y) * β *
               (sh G y * sh G ((y⁻¹ : G.Cˣ) : G.C))) := by
             rw [← h2]; simp only [mul_assoc]
         _ = _ := by rw [Units.inv_mul, e, one_mul, mul_one]
 
-def self (P : Pair G) : P.cent := ⟨(P.γ, P.c), rfl, P.sim⟩
-
-def toAf (P : Pair G) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) P.β x t) : P.cent →* G.GAf :=
+def toAfOf (G : HTGroup p) (β γ : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ)
+    (hx : Triv G (AfP p) β x t) : centOf G β γ →* G.GAf :=
   MonoidHom.codRestrict
     ((((MulAut.conj x).toMonoidHom.comp (Units.map (inC G (AfP p)).toMonoidHom)).prodMap
-      (Units.map (algebraMap ℚ (AfP p)).toMonoidHom)).comp P.cent.subtype) _ fun y => by
+      (Units.map (algebraMap ℚ (AfP p)).toMonoidHom)).comp (centOf G β γ).subtype) _ fun y => by
       have h := congrArg (inC G (AfP p)) y.2.2
       rw [map_mul, map_mul, map_mul] at h
       have e1 : inC G (AfP p) (sh G y.1.1) = (starT G.star (AfP p) (inC G (AfP p) y.1.1)).unop :=
@@ -169,8 +159,24 @@ def toAf (P : Pair G) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G 
         rw [← IsScalarTower.algebraMap_apply]
         exact (Algebra.TensorProduct.includeRight : G.C →ₐ[ℚ] AfP p ⊗[ℚ] G.C).commutes _
       rw [e1, e2] at h
-      exact conj_mul_star (starT G.star (AfP p)) (inC G (AfP p) P.β) x
+      exact conj_mul_star (starT G.star (AfP p)) (inC G (AfP p) β) x
         (Units.map (inC G (AfP p)).toMonoidHom y.1.1) t _ hx h
+
+namespace Pair
+
+variable {G : HTGroup p}
+
+def pol (P : Pair G) : Polynomial G.F := minpoly G.F (P.γ : G.C)
+
+def Rel (P Q : Pair G) : Prop :=
+  ∃ (y : G.Cˣ) (s : ℚ), 0 < s ∧ (Q.β : G.C) = algebraMap ℚ G.C s * (y * P.β * sh G y) ∧ Q.γ = y * P.γ * y⁻¹
+
+def cent (P : Pair G) : Subgroup (G.Cˣ × ℚˣ) := centOf G P.β P.γ
+
+def self (P : Pair G) : P.cent := ⟨(P.γ, P.c), rfl, P.sim⟩
+
+def toAf (P : Pair G) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) P.β x t) : P.cent →* G.GAf :=
+  toAfOf G P.β P.γ x t hx
 
 def atP (P : Pair G) : Gp G := locC G (P.γ, P.c)
 
@@ -228,7 +234,7 @@ theorem isTest_indicator {H : Type} [Group H] (θ : H →* H) (K : Subgroup H) (
         rw [e]; exact K.mul_mem (K.mul_mem hk h) (K.inv_mem hθ))
       simp [hg, h']
   · have hgK : g ∈ K := by
-      by_contra hn; exact hg (by simp [Set.indicator_apply, hn])
+      by_contra hn; exact hg (by simp [hn])
     exact ⟨1, Finset.mem_singleton_self _, 1, K.one_mem, g, hgK, by simp⟩
 
 end Inhabitants

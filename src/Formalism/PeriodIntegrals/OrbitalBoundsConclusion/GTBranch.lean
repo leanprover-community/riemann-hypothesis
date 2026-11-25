@@ -94,7 +94,7 @@ theorem stepA_apply (p q : Fin (n + 1)) (x : Fin (n + 1) × Fin (n + 1) → ℂ)
       (if q < j then -(x (p, j) / x (p, q)) *
         (if p < a ∧ a.val < n then x (a, q) + -(x (a, q) / x (p, q)) * x (p, q) else x (a, q)) else 0) := by
   simp only [stepA, lhwline_mcol, lhwline_mrow, Finset.mem_filter, Finset.mem_univ, true_and,
-    lt_irrefl, false_and, if_false]
+    lt_irrefl, false_and, ite_false]
   split_ifs <;> ring
 
 theorem stepA_cleared (k : ℕ) (hk : k < n) (y : Fin (n + 1) × Fin (n + 1) → ℂ)
@@ -106,18 +106,18 @@ theorem stepA_cleared (k : ℕ) (hk : k < n) (y : Fin (n + 1) × Fin (n + 1) →
   rcases lt_trichotomy j.val k with hj | hj | hj
   · have h1 : y (⟨k, by omega⟩, j) = 0 := hy _ _ (by show k < n; omega) (by show k ≠ j.val; omega) (Or.inr hj)
     have h2 : y (a, j) = 0 := hy _ _ ha hne (Or.inr hj)
-    rw [if_neg (show ¬ k < j.val by omega)]
+    rw [ite_eq_right (show ¬ k < j.val by omega)]
     split_ifs <;> simp [h1, h2]
   · have hjq : j = ⟨k, by omega⟩ := Fin.ext hj
     rw [hjq]
-    simp only [lt_irrefl, if_false, add_zero]
+    simp only [lt_irrefl, ite_false, add_zero]
     split_ifs with ha'
     · rw [neg_mul, div_mul_cancel₀ _ hp, add_neg_cancel]
     · rw [← hjq]
       exact hy _ _ ha hne (Or.inl (by omega))
   · have ha2 : a.val ≤ k := by omega
     have hka : ¬ (k < a.val ∧ a.val < n) := by omega
-    simp only [if_neg hka, if_pos hj]
+    simp only [ite_eq_right hka, ite_eq_left hj]
     rcases lt_or_eq_of_le ha2 with ha2 | ha2
     · have h1 : y (a, j) = 0 := hy _ _ ha hne (Or.inl ha2)
       have h2 : y (a, ⟨k, by omega⟩) = 0 := hy _ _ ha (by show a.val ≠ k; omega) (Or.inl ha2)
@@ -169,7 +169,7 @@ theorem elimA_cleared (x : Fin (n + 1) × Fin (n + 1) → ℂ)
     intro hk
     have hkn : k < n := by omega
     have hc := ih (by omega)
-    simp only [elimA, dif_pos hkn]
+    simp only [elimA, dite_eq_left hkn]
     apply stepA_cleared k hkn _ hc
     apply pivotA_ne k hkn _ hc
     have hk1 : k + 1 ≤ n + 1 := by omega
@@ -357,7 +357,7 @@ theorem mkPtA_D (dv : Fin n → ℂ) (z : Fin (n + 1) → ℂ) : IsDPtA (mkPtA d
   | last => simp [mkPtA]
   | cast k =>
     simp only [mkPtA, Fin.lastCases_castSucc]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact hne rfl
 
@@ -433,7 +433,7 @@ theorem eps_A (kap : Fin n → ℕ) (ν : Fin (n + 1) → ℕ) (f : MvPolynomial
         simp [Y, lhwline_rowOp, lhwline_colOp, mkPtA, zz, (Fin.castSucc_lt_last i').ne']
       | cast k =>
         simp only [Y, lhwline_rowOp, lhwline_colOp, mkPtA, zz, Fin.lastCases_castSucc, Fin.lastCases_last,
-          Fin.castSucc_inj, (Fin.castSucc_lt_last i').ne', if_false]
+          Fin.castSucc_inj, (Fin.castSucc_lt_last i').ne', ite_false]
         by_cases hk : k = i'
         · subst hk
           simp [hne]
@@ -496,7 +496,7 @@ theorem eps_A (kap : Fin n → ℕ) (ν : Fin (n + 1) → ℕ) (f : MvPolynomial
             simp [dv, h1]
           · simp [dv, h1, h2]
       rw [Finset.prod_congr rfl (fun a _ => this a), Finset.prod_mul_distrib, Finset.prod_ite_eq',
-        Finset.prod_ite_eq', if_pos (Finset.mem_univ _), if_pos (Finset.mem_univ _)]
+        Finset.prod_ite_eq', ite_eq_left (Finset.mem_univ _), ite_eq_left (Finset.mem_univ _)]
     have h2 : ∏ k : Fin n, zz e (Fin.castSucc k) ^ (ν (Fin.castSucc k) - kap k) = (-1 / e) ^ (νp - kap i') := by
       have : ∀ k : Fin n, zz e (Fin.castSucc k) ^ (ν (Fin.castSucc k) - kap k) =
           if k = i' then (-1 / e) ^ (νp - kap i') else 1 := by
@@ -505,7 +505,7 @@ theorem eps_A (kap : Fin n → ℕ) (ν : Fin (n + 1) → ℕ) (f : MvPolynomial
         · subst hk
           simp [zz, hνp]
         · simp [zz, hk]
-      rw [Finset.prod_congr rfl (fun k _ => this k), Finset.prod_ite_eq', if_pos (Finset.mem_univ _)]
+      rw [Finset.prod_congr rfl (fun k _ => this k), Finset.prod_ite_eq', ite_eq_left (Finset.mem_univ _)]
     have h3 : zz e (Fin.last n) = 1 := by
       simp [zz, (Fin.castSucc_lt_last i').ne']
     rw [h1, h2, h3, one_pow, mul_one, mul_assoc, ← pow_add, Nat.add_sub_cancel' hle]
@@ -523,7 +523,7 @@ theorem eps_A (kap : Fin n → ℕ) (ν : Fin (n + 1) → ℕ) (f : MvPolynomial
     field_simp
     ring
   have hco := congrArg (fun r : Polynomial ℂ => r.coeff (kap i)) hq0
-  simp only [hq, Polynomial.coeff_sub, Polynomial.coeff_mul_X_pow', if_neg (not_le.mpr hlt), Polynomial.coeff_zero, zero_sub, neg_eq_zero] at hco
+  simp only [hq, Polynomial.coeff_sub, Polynomial.coeff_mul_X_pow', ite_eq_right (not_le.mpr hlt), Polynomial.coeff_zero, zero_sub, neg_eq_zero] at hco
   simp at hco
   rcases hco with h | h
   · exact hc h
@@ -791,7 +791,7 @@ theorem embGL_unitri_B {n N : ℕ} (h : n + 1 = N) (u : GL (Fin n) ℂ) (hl : �
   · rw [embGL_apply_B]
     by_cases ha : a.1 < n
     · rw [dite_eq_left ha, dite_eq_left ha]; exact hd _
-    · rw [dite_eq_right ha, if_neg ha]
+    · rw [dite_eq_right ha, ite_eq_right ha]
   · have ha2 := a.2
     have hb2 := b.2
     rw [embGL_apply_B] at hne
@@ -800,10 +800,10 @@ theorem embGL_unitri_B {n N : ℕ} (h : n + 1 = N) (u : GL (Fin n) ℂ) (hl : �
       have hba : ¬ (a.1 < b.1) := fun hlt => hne (hl _ _ (Fin.mk_lt_mk.mpr hlt))
       have hne' : a.1 ≠ b.1 := fun e => hab (Fin.ext e)
       unfold prowB
-      rw [if_pos ha, if_pos hb]
+      rw [ite_eq_left ha, ite_eq_left hb]
       omega
     · rw [dite_eq_left hb, dite_eq_right ha] at hne; exact absurd rfl hne
-    · rw [dite_eq_right hb, if_pos ha] at hne; exact absurd rfl hne
+    · rw [dite_eq_right hb, ite_eq_left ha] at hne; exact absurd rfl hne
     · exact absurd (Fin.ext (by omega)) hab
   · have ha2 := a.2
     have hb2 := b.2
@@ -812,7 +812,7 @@ theorem embGL_unitri_B {n N : ℕ} (h : n + 1 = N) (u : GL (Fin n) ℂ) (hl : �
     · rw [dite_eq_left hb, dite_eq_left ha]
       exact hl _ _ (Fin.mk_lt_mk.mpr (Fin.lt_def.mp hab))
     · exact absurd (lt_trans (Fin.lt_def.mp hab) hb) ha
-    · rw [dite_eq_right hb, if_pos ha]
+    · rw [dite_eq_right hb, ite_eq_left ha]
     · have := Fin.lt_def.mp hab
       omega
 
@@ -855,7 +855,7 @@ theorem swapM_sq {n : ℕ} (σ : Equiv.Perm (Fin n)) (hσ : ∀ j, σ (σ j) = j
   rw [Finset.sum_eq_single (σ i)]
   · simp [hσ]
   · intro b _ hb
-    rw [if_neg (Ne.symm hb), zero_mul]
+    rw [ite_eq_right (Ne.symm hb), zero_mul]
   · simp
 
 def swapGL {n : ℕ} (σ : Equiv.Perm (Fin n)) (hσ : ∀ j, σ (σ j) = j) : GL (Fin n) ℂ :=
@@ -866,11 +866,11 @@ def tauB {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (a : Fin N) : Fin
 
 theorem tauB_val {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (a : Fin N) (ha : a.1 < n) :
     (tauB h σ a).1 = (σ ⟨a.1, ha⟩).1 := by
-  unfold tauB; rw [dif_pos ha]
+  unfold tauB; rw [dite_eq_left ha]
 
 theorem tauB_of_not {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (a : Fin N) (ha : ¬ a.1 < n) :
     tauB h σ a = a := by
-  unfold tauB; rw [dif_neg ha]
+  unfold tauB; rw [dite_eq_right ha]
 
 theorem tauB_invol {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ : ∀ j, σ (σ j) = j) (a : Fin N) :
     tauB h σ (tauB h σ a) = a := by
@@ -889,7 +889,7 @@ theorem swap_entry_B {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ 
   have hb2 := b.2
   rw [embGL_apply_B]
   by_cases hb : b.1 < n <;> by_cases ha : a.1 < n
-  · rw [dif_pos hb, dif_pos ha]
+  · rw [dite_eq_left hb, dite_eq_left ha]
     show swapM σ ⟨b.1, hb⟩ ⟨a.1, ha⟩ = _
     simp only [swapM, Matrix.of_apply]
     have key : σ ⟨b.1, hb⟩ = ⟨a.1, ha⟩ ↔ b = tauB h σ a := by
@@ -903,17 +903,17 @@ theorem swap_entry_B {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ 
           rw [← tauB_val h σ a ha, e])
         rw [e2, hσ]
     by_cases hk : b = tauB h σ a
-    · rw [if_pos hk, if_pos (key.mpr hk)]
-    · rw [if_neg hk, if_neg (fun e => hk (key.mp e))]
-  · rw [dif_pos hb, dif_neg ha, tauB_of_not h σ a ha, if_neg (fun e : b = a => ha (e ▸ hb))]
+    · rw [ite_eq_left hk, ite_eq_left (key.mpr hk)]
+    · rw [ite_eq_right hk, ite_eq_right (fun e => hk (key.mp e))]
+  · rw [dite_eq_left hb, dite_eq_right ha, tauB_of_not h σ a ha, ite_eq_right (fun e : b = a => ha (e ▸ hb))]
   · have hne : b ≠ tauB h σ a := by
       intro e
       apply hb
       rw [e, tauB_val h σ a ha]
       exact (σ _).isLt
-    rw [dif_neg hb, if_pos ha, if_neg hne]
+    rw [dite_eq_right hb, ite_eq_left ha, ite_eq_right hne]
   · have hab : b = a := Fin.ext (by omega)
-    rw [dif_neg hb, if_neg ha, tauB_of_not h σ a ha, if_pos hab]
+    rw [dite_eq_right hb, ite_eq_right ha, tauB_of_not h σ a ha, ite_eq_left hab]
 
 theorem rowAct_swap_B {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ : ∀ j, σ (σ j) = j) :
     Formalism.GradedWeylDivisibility.rowAct ℂ (n := N)
@@ -923,9 +923,9 @@ theorem rowAct_swap_B {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ
   intro v
   rw [rowAct_X_B, rename_X]
   rw [Finset.sum_eq_single (tauB h σ v.1)]
-  · rw [Matrix.transpose_apply, swap_entry_B, if_pos rfl, map_one, one_mul]
+  · rw [Matrix.transpose_apply, swap_entry_B, ite_eq_left rfl, map_one, one_mul]
   · intro b _ hb
-    rw [Matrix.transpose_apply, swap_entry_B, if_neg hb, map_zero, zero_mul]
+    rw [Matrix.transpose_apply, swap_entry_B, ite_eq_right hb, map_zero, zero_mul]
   · simp
 
 theorem wnB_tau {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ : ∀ j, σ (σ j) = j)
@@ -934,15 +934,15 @@ theorem wnB_tau {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ : ∀
   by_cases ha : v.1.1 < n
   · have h2 : (tauB h σ v.1).1 < n := by rw [tauB_val h σ _ ha]; exact (σ _).isLt
     dsimp only [wnB]
-    rw [dif_pos h2, dif_pos ha]
+    rw [dite_eq_left h2, dite_eq_left ha]
     have e : (⟨(tauB h σ v.1).1, h2⟩ : Fin n) = σ ⟨v.1.1, ha⟩ := Fin.ext (tauB_val h σ _ ha)
     rw [e, Pi.single_apply, Pi.single_apply]
     by_cases hj : σ j = ⟨v.1.1, ha⟩
-    · rw [if_pos hj, if_pos (by rw [← hj, hσ])]
-    · rw [if_neg hj, if_neg (fun e => hj (by rw [e, hσ]))]
+    · rw [ite_eq_left hj, ite_eq_left (by rw [← hj, hσ])]
+    · rw [ite_eq_right hj, ite_eq_right (fun e => hj (by rw [e, hσ]))]
   · have h2 : ¬ (tauB h σ v.1).1 < n := by rw [tauB_of_not h σ _ ha]; exact ha
     dsimp only [wnB]
-    rw [dif_neg h2, dif_neg ha]
+    rw [dite_eq_right h2, dite_eq_right ha]
     rfl
 
 theorem weight_tau_B {n N : ℕ} (h : n + 1 = N) (σ : Equiv.Perm (Fin n)) (hσ : ∀ j, σ (σ j) = j)
@@ -1017,13 +1017,13 @@ theorem antitone_of_succ_B {n : ℕ} (m : Fin n → ℕ)
   have hM : Antitone M := by
     refine antitone_nat_of_succ_le fun k => ?_
     by_cases hk1 : k + 1 < n
-    · simp only [M, dif_pos hk1, dif_pos (show k < n by omega)]
+    · simp only [M, dite_eq_left hk1, dite_eq_left (show k < n by omega)]
       exact hdom k hk1
-    · simp only [M, dif_neg hk1]
+    · simp only [M, dite_eq_right hk1]
       exact Nat.zero_le _
   intro a b hab
   have := hM (Fin.le_def.mp hab)
-  simp only [M, dif_pos a.2, dif_pos b.2] at this
+  simp only [M, dite_eq_left a.2, dite_eq_left b.2] at this
   exact this
 
 theorem torus_fix_B {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (g : MvPolynomial (Fin N × Fin N) ℂ)
@@ -1253,12 +1253,6 @@ namespace PI.WGB
 open Formalism.BasicNotions Formalism.GradedWeylDivisibility MvPolynomial
 open Formalism.REAL (fockF)
 
-theorem natW_antiC {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  intro i j hij
-  have := lam.anti hij
-  unfold DomWeight.natW
-  exact Int.toNat_le_toNat (by omega)
-
 theorem twist_id (a b : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) (cF cE : ℤ) (d : ℕ) (hc : cE = cF + d) :
     a ^ cF * star (b ^ cF) * (star b * a) ^ d = a ^ cE * star (b ^ cE) := by
   subst hc
@@ -1279,7 +1273,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
     ∃ φ : MvPolynomial (Fin n × Fin n) ℂ →ₗ[ℂ] MvPolynomial (Fin (n + 1) × Fin (n + 1)) ℂ,
       IsEqv rfl mu lam φ ∧ φ (extremal ℂ n mu) = f := by
   have hI : Interlace rfl lam mu := (ha n (n + 1) rfl lam mu f f hf hf hfix hfix hne).2
-  have heM : extremal ℂ n mu ∈ nablaSq ℂ n mu := hwMem ℂ n n le_rfl mu.natW (natW_antiC mu)
+  have heM : extremal ℂ n mu ∈ nablaSq ℂ n mu := hwMem ℂ n n le_rfl mu.natW (PI.WHw.natW_antitone mu)
   have heN : extremal ℂ n mu ≠ 0 := hwNe ℂ n n le_rfl mu.natW
 
   have hge : 0 < n → lam.detShift ≤ mu.detShift := by
@@ -1288,7 +1282,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
     have e1 : ∀ j : Fin (n + 1), j.val = n → lam.w j = lam.w ⟨n + 1 - 1, by omega⟩ :=
       fun j hj => congrArg lam.w (Fin.ext (by simp only; omega))
     rw [e1 _ (by simp only; omega)] at h1
-    simp only [DomWeight.detShift, dif_pos hn, dif_pos (Nat.succ_pos n)]
+    simp only [DomWeight.detShift, dite_eq_left hn, dite_eq_left (Nat.succ_pos n)]
     omega
   obtain ⟨d, hd⟩ : ∃ d : ℕ, d = (mu.detShift - lam.detShift).toNat := ⟨_, rfl⟩
   have hκ'e : ∀ i, (mu.natW i : ℤ) + mu.detShift = mu.w i := by
@@ -1296,7 +1290,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
     have hn : 0 < n := lt_of_le_of_lt (Nat.zero_le _) i.isLt
     have hle : mu.w ⟨n - 1, by omega⟩ ≤ mu.w i :=
       mu.anti (Fin.le_iff_val_le_val.mpr (by simp only; omega))
-    simp only [DomWeight.natW, DomWeight.detShift, dif_pos hn] at hle ⊢
+    simp only [DomWeight.natW, DomWeight.detShift, dite_eq_left hn] at hle ⊢
     rw [Int.toNat_of_nonneg (by omega)]
     omega
   have hcE : 0 < n → mu.detShift = lam.detShift + (d : ℤ) := by
@@ -1311,7 +1305,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
     have h2 := hcE hn
     push_cast
     omega
-  have hκfA : Antitone (fun i => mu.natW i + d) := fun i j hij => Nat.add_le_add_right (natW_antiC mu hij) d
+  have hκfA : Antitone (fun i => mu.natW i + d) := fun i j hij => Nat.add_le_add_right (PI.WHw.natW_antitone mu hij) d
 
   obtain ⟨hUf, hTf⟩ := fixed_data (k := 1) f lam.detShift mu.w (fun i => mu.natW i + d) hκf
     (fun g h1 h2 => by
@@ -1353,7 +1347,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
           ((g' : Matrix (Fin n) (Fin n) ℂ).conjTranspose * (g : Matrix (Fin n) (Fin n) ℂ))) := by
     intro g g'
     unfold veC
-    have := gram_of (k := 0) (f := extremal ℂ n mu) mu.natW (natW_antiC mu) hUe hTe
+    have := gram_of (k := 0) (f := extremal ℂ n mu) mu.natW (PI.WHw.natW_antitone mu) hUe hTe
       (g : Matrix (Fin n) (Fin n) ℂ) (g' : Matrix (Fin n) (Fin n) ℂ)
     rw [iotaC_zero, iotaC_zero] at this
     rw [sqAct_eq, sqAct_eq, fockF_smul_left, fockF_smul_right, this]
@@ -1500,12 +1494,8 @@ namespace PI.WGB
 
 open Formalism.BasicNotions MvPolynomial
 
-theorem natW_anti_D {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  intro i j hij
-  exact Int.toNat_le_toNat (sub_le_sub_right (lam.anti hij) _)
-
 theorem extremal_mem_D (n : ℕ) (mu : DomWeight n) : extremal ℂ n mu ∈ nablaSq ℂ n mu :=
-  Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl mu.natW (natW_anti_D mu)
+  Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl mu.natW (PI.WHw.natW_antitone mu)
 
 theorem extremal_ne_D (n : ℕ) (mu : DomWeight n) : extremal ℂ n mu ≠ 0 :=
   Formalism.GradedWeylDivisibility.hwNe ℂ n n le_rfl mu.natW

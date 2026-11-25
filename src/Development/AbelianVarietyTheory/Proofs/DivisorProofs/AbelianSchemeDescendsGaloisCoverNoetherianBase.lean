@@ -5,49 +5,9 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.QuotientDesce
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGaloisCoverQuotientFreeFiniteAction
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GaloisCoverDescentAndCartesianSquares
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GeometricallyConnectedOfIsPullback
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
-import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.SRelOneOneIff
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.SiegelToroidalIntegral
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -81,15 +41,6 @@ theorem isGaloisCover_act (hc : IsGaloisCover Ga ρ π) (T : Over Y) :
   ((_root_.GlobalTheory.ZM.galoisCover_descent X Y π Ga ρ hc).2.2 _ _ (pullback.fst T.hom π) (act hc T) (pullback.snd T.hom π) T.hom
     (act_snd hc T) pullback.condition.symm).2 (IsPullback.of_hasPullback T.hom π).flip (act_fst hc T)
 
-theorem cover_ext (hc : IsGaloisCover Ga ρ π) {Z : Scheme.{0}} {f g : Y ⟶ Z} (h : π ≫ f = π ≫ g) :
-    f = g :=
-  ((_root_.GlobalTheory.ZM.galoisCover_descent X Y π Ga ρ hc).1 Z (π ≫ g) fun a ↦ by rw [← Category.assoc, hc.inv]).unique h rfl
-
-theorem up_injective (hc : IsGaloisCover Ga ρ π) (H : IsPullback φ G.hom G'.hom π) {T : Over Y}
-    {x y : T ⟶ G'} (e : up H x = up H y) : x = y := by
-  refine Over.OverMorphism.ext (cover_ext (isGaloisCover_act hc T) ?_)
-  rw [← up_left H, ← up_left H, e]
-
 noncomputable def equivariant [GrpObj G] (hc : IsGaloisCover Ga ρ π)
     (hν : ∀ a, IsGrpPullback G G (ρ a) (ν a)) (T : Over Y) : Subgroup ((Over.pullback π).obj T ⟶ G) :=
   ⨅ a : Ga, (preHom (Over.homMk (act hc T a) (act_snd hc T a))).eqLocus
@@ -120,51 +71,6 @@ theorem up_mem [GrpObj G] (hc : IsGaloisCover Ga ρ π) (H : IsPullback φ G.hom
   · rw [Category.assoc, Category.assoc, hφ, up_left, reassoc_of% h₁]
   · rw [Category.assoc, Category.assoc, (hν a).1.w, e, act_snd, reassoc_of% e]
 
-theorem exists_grpObj [GrpObj G] [IsCommMonObj G] (hc : IsGaloisCover Ga ρ π)
-    (H : IsPullback φ G.hom G'.hom π) (hν : ∀ a, IsGrpPullback G G (ρ a) (ν a))
-    (hφ : ∀ a, ν a ≫ φ = φ) : ∃ _ : GrpObj G', IsCommMonObj G' ∧ IsGrpPullback G G' π φ := by
-  have inj {T : Over Y} {x y : T ⟶ G'} (e : up H x = up H y) : x = y := up_injective hc H e
-  have mem {T : Over Y} (z : T ⟶ G') := up_mem hc H hν hφ z
-  obtain ⟨m, hm⟩ := exists_up hc H hν hφ (mul_mem (mem (fst G' G')) (mem (snd G' G')))
-  obtain ⟨e, he⟩ := exists_up hc H hν hφ (T := 𝟙_ _) (one_mem _)
-  obtain ⟨i, hi⟩ := exists_up hc H hν hφ (inv_mem (mem (𝟙 G')))
-  have hm' {T : Over Y} (u : T ⟶ G' ⊗ G') :
-      up H (u ≫ m) = up H (u ≫ fst _ _) * up H (u ≫ snd _ _) := by
-    rw [up_comp, hm, MonObj.comp_mul, ← up_comp, ← up_comp]
-  have he' {T : Over Y} (u : T ⟶ 𝟙_ _) : up H (u ≫ e) = 1 := by
-    rw [up_comp, he, MonObj.comp_one]
-  letI : GrpObj G' :=
-    { one := e
-      mul := m
-      one_mul := inj (by
-        rw [hm', whiskerRight_fst, he', _root_.one_mul, whiskerRight_snd, leftUnitor_hom])
-      mul_one := inj (by
-        rw [hm', whiskerLeft_snd, he', _root_.mul_one, whiskerLeft_fst, rightUnitor_hom])
-      mul_assoc := inj (by
-        rw [← Category.assoc, hm' (m ▷ G'), hm' (_ ≫ G' ◁ m), whiskerRight_fst, whiskerRight_snd,
-          Category.assoc, Category.assoc, whiskerLeft_fst, whiskerLeft_snd, hm' (fst _ _),
-          ← Category.assoc _ _ m, hm', Category.assoc, Category.assoc, associator_hom_fst,
-          associator_hom_snd_fst, associator_hom_snd_snd, _root_.mul_assoc])
-      inv := i
-      left_inv := inj (by rw [hm', he', lift_fst, lift_snd, hi, inv_mul_cancel])
-      right_inv := inj (by rw [hm', he', lift_fst, lift_snd, hi, mul_inv_cancel]) }
-  have hmul {T : Over Y} (x y : T ⟶ G') : up H (x * y) = up H x * up H y := by
-    rw [Hom.mul_def]
-    exact (hm' _).trans (by rw [lift_fst, lift_snd])
-  have hcomm : IsCommMonObj G' := ⟨inj (by
-    refine (hm' _).trans (Eq.trans ?_ hm.symm)
-    rw [braiding_hom_fst, braiding_hom_snd, mul_comm])⟩
-  have sec {T : Over X} : ∃ s : T ⟶ (Over.pullback π).obj (Over.mk (T.hom ≫ π)),
-      s.left ≫ pullback.fst _ π = 𝟙 T.left :=
-    ⟨Over.homMk (pullback.lift (𝟙 T.left) T.hom (Category.id_comp _)) (pullback.lift_snd ..),
-      pullback.lift_fst ..⟩
-  refine ⟨inferInstance, hcomm, H, fun T x y x₀ y₀ hx hy ↦ ?_⟩
-  obtain ⟨s, hs⟩ := sec (T := T)
-  have k (z : Over.mk (T.hom ≫ π) ⟶ G') : (s ≫ up H z).left ≫ φ = z.left := by
-    rw [Over.comp_left, Category.assoc, up_left, reassoc_of% hs]
-  rw [← k, hmul, MonObj.comp_mul, QuotientDescent.hom_ext H ((k x₀).trans hx),
-    QuotientDescent.hom_ext H ((k y₀).trans hy)]
-
 end GaloisDescentNoetherian
 
 open GaloisDescentNoetherian
@@ -184,7 +90,7 @@ theorem abelianScheme_descends_galoisCover_noetherian :
   have H : IsPullback φ G.hom (Over.mk v).hom π :=
     (((_root_.GlobalTheory.ZM.galoisCover_descent X Y π Ga ρ hc).2.2 _ _ φ ν G.hom v (fun a ↦ (hν a).1.w) hv.symm).1 hφ).flip
   have := hG.comm
-  obtain ⟨inst, hcomm, hp⟩ := exists_grpObj (G' := Over.mk v) hc H hν hφ.inv
+  obtain ⟨inst, hcomm, hp⟩ := GlobalTheory.GaloisDescent.exists_grpObj (G' := Over.mk v) hc H hν hφ.inv
   refine ⟨Over.mk v, inst, φ, ?_, hp, hφ⟩
   have := hc.fin
   have := hc.etale

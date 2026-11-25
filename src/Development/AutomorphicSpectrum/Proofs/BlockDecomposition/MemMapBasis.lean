@@ -41,8 +41,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExtendedDivided
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 
 noncomputable section
@@ -358,7 +356,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 
 namespace GlobalTheory.CompanionTheory.RootsDivide
@@ -458,7 +455,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 
 namespace GlobalTheory.CompanionTheory.PerfectWittMaps
@@ -1088,7 +1084,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 
 namespace GlobalTheory.CompanionTheory.TwistedUnit
@@ -1453,16 +1448,16 @@ theorem main : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F : Fn O} {
   let χ : Gam d → X.ι → Acris l := fun g a =>
     if h : a = X.a₀ then 1 else ∏ j, ε.qk (mm a h) ^ (Multiplicative.toAdd g j * cc a h j)
   have hχ : ∀ g a (h : a ≠ X.a₀), χ g a = ∏ j, ε.qk (mm a h) ^ (Multiplicative.toAdd g j * cc a h j) :=
-    fun g a h => dif_neg h
+    fun g a h => dite_eq_right h
   have hflat := (GlobalTheory.CompanionTheory.LiftFlat.lift_flat 𝓛.i 𝓛.t 𝓛.et).1
   letI alg : Algebra ((SingleObj.functor γ).obj (SingleObj.star _)).B X.E := X.alg
-  have hA := @ni_of_basis (bs l k n) (Lc F κ k n) (Acris l) _ ((base l).cris n) ρ hρ ε.μ (ε.μ_mem k (base l) n) d _ _ θ X.ι X.E _ alg X.b X.a₀ X.b_a₀ e₀ hbij hal χ (fun g => dif_pos rfl)
+  have hA := @ni_of_basis (bs l k n) (Lc F κ k n) (Acris l) _ ((base l).cris n) ρ hρ ε.μ (ε.μ_mem k (base l) n) d _ _ θ X.ι X.E _ alg X.b X.a₀ X.b_a₀ e₀ hbij hal χ (fun g => dite_eq_left rfl)
   refine hA ?_ (fun r => fil (DD k (base l) n) r) ?_ ?_ hflat ?_ ?_
   · intro g a
     show (mapAcr (γ' g).asHom.1 n) (e₀ (X.b a)) =
       (mapAcr 𝒯.A.fromBase n) ((base l).cris n (χ g a)) * e₀ (X.b a)
     by_cases ha : a = X.a₀
-    · have h0 : χ g a = 1 := dif_pos ha
+    · have h0 : χ g a = 1 := dite_eq_left ha
       have hb1 : e₀ (X.b a) = 1 := by rw [ha, X.b_a₀, map_one]
       rw [hb1, h0, map_one, map_one, map_one, mul_one]
     · have hbe : e₀ (X.b a) = ∏ j, 𝒯.A.toAcr n (WittVector.teichmuller l (𝒯.c j (mm a ha) : 𝒯.A.A)) ^ cc a ha j := by

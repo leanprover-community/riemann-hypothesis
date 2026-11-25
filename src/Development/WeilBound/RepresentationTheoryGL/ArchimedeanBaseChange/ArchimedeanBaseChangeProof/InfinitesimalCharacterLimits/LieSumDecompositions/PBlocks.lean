@@ -637,15 +637,15 @@ theorem proj_decomp {P : ι → Submodule ℂ M} (hP : ∀ k, ∀ φ ∈ P k, �
     rw [← hμ, map_sum]
     rw [Finset.sum_congr rfl (g := fun k => if k = i then (μ k : M) else 0) (fun k hk => by
       by_cases h : k = i
-      · subst h; rw [if_pos rfl, proj_self hP hlam SS k (μ k).2]
-      · rw [if_neg h, proj_other hP SS i k hk h (μ k).2])]
+      · subst h; rw [ite_eq_left rfl, proj_self hP hlam SS k (μ k).2]
+      · rw [ite_eq_right h, proj_other hP SS i k hk h (μ k).2])]
     rw [Finset.sum_ite_eq']
   refine ⟨fun i => ?_, ?_⟩
   · rw [key]
     split_ifs
     · exact (μ i).2
     · exact (P i).zero_mem
-  · rw [Finset.sum_congr rfl (fun i hi => by rw [key, if_pos hi]), hμ]
+  · rw [Finset.sum_congr rfl (fun i hi => by rw [key, ite_eq_left hi]), hμ]
 
 theorem proj_commute (SS : Finset ι) (i : ι) (B : Module.End ℂ M) (hB : ∀ l, Commute (A l) B) :
     Commute (proj A χ lam SS i) B := by
@@ -697,7 +697,7 @@ theorem proj_exists {a : ℕ} (L : Submodule ℂ (Sm E a)) (SS : Finset ((E →+
     if h : σ ≠ σ' then Classical.choose (hsep σ σ' h) else (Classical.arbitrary _, 0)
   have hlam : ∀ σ σ', σ ≠ σ' → χ σ (lam σ σ') ≠ χ σ' (lam σ σ') := by
     intro σ σ' h
-    simp only [lam, dif_pos h]
+    simp only [lam, dite_eq_left h]
     exact Classical.choose_spec (hsep σ σ' h)
   have hP : ∀ k, ∀ φ ∈ BlockCapelli.Eig L k sh, ∀ l, A l φ = χ k l • φ := fun k φ hφ l => hφ.2 l.1 l.2
   refine ⟨proj A χ lam SS, fun σ o => proj_commute SS σ _ fun l => GlobalTheory.SpehInfChar.cap_commute_act l.1 l.2 o,
@@ -786,13 +786,13 @@ theorem blocks_of (hfg : FgSl) : Blocks := by
   have hdec : ∀ j ∈ Finset.range N, dec j ∈ SS := by
     intro j hj
     have h := Finset.mem_range.1 hj
-    simp only [dec, dif_pos h]
+    simp only [dec, dite_eq_left h]
     exact (SS.equivFin.symm ⟨j, h⟩).2
   have hreidx : ∀ f : ((E →+* ℂ) → Multiset ℂ) × ((E →+* ℂ) → Multiset ℂ) → Sm E (r + s),
       ∑ j ∈ Finset.range N, f (dec j) = ∑ p ∈ SS, f p := by
     intro f
     rw [Finset.sum_range (fun j => f (dec j))]
-    have e : ∀ i : Fin N, f (dec i) = f (SS.equivFin.symm i).1 := fun i => by simp only [dec, dif_pos i.2, Fin.eta]
+    have e : ∀ i : Fin N, f (dec i) = f (SS.equivFin.symm i).1 := fun i => by simp only [dec, dite_eq_left i.2, Fin.eta]
     simp only [e]
     rw [Equiv.sum_comp SS.equivFin.symm (fun x => f x.1), Finset.sum_coe_sort SS f]
   refine ⟨Finset.range N, fun j => P' (dec j), fun j => tw ((LS U T).map (z₁ (dec j).1)) (-(s : ℂ) / 2),

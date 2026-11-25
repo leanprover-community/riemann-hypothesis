@@ -2,46 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ShearMeasurability
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,15 +18,15 @@ def coords {r : ℕ} (A : Matrix (Fin r) (Fin r) ℂ) : UT r → ℂ := fun p =>
 
 theorem upper_of_lt {r : ℕ} (x : UT r → ℂ) {a b : Fin r} (h : a < b) : upper x a b = x ⟨(a, b), h⟩ := by
   unfold upper
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 theorem upper_diag {r : ℕ} (x : UT r → ℂ) (a : Fin r) : upper x a a = 1 := by
   unfold upper
-  rw [dif_neg (lt_irrefl a), if_pos rfl]
+  rw [dite_eq_right (lt_irrefl a), ite_eq_left rfl]
 
 theorem upper_of_gt {r : ℕ} (x : UT r → ℂ) {a b : Fin r} (h : b < a) : upper x a b = 0 := by
   unfold upper
-  rw [dif_neg (lt_asymm h), if_neg (ne_of_gt h)]
+  rw [dite_eq_right (lt_asymm h), ite_eq_right (ne_of_gt h)]
 
 theorem mul_apply_lt {r : ℕ} (x y : UT r → ℂ) {a b : Fin r} (h : a < b) :
     (upper x * upper y) a b = x ⟨(a, b), h⟩ + y ⟨(a, b), h⟩ +
@@ -76,26 +38,26 @@ theorem mul_apply_lt {r : ℕ} (x y : UT r → ℂ) {a b : Fin r} (h : a < b) :
     intro c
     rcases lt_trichotomy c a with hca | hca | hac
     · have hcb : c ≠ b := ne_of_lt (hca.trans h)
-      rw [upper_of_gt x hca, zero_mul, if_neg (ne_of_lt hca), if_neg hcb,
-        if_neg (fun k => lt_asymm hca k.1)]
+      rw [upper_of_gt x hca, zero_mul, ite_eq_right (ne_of_lt hca), ite_eq_right hcb,
+        ite_eq_right (fun k => lt_asymm hca k.1)]
       simp
     · subst hca
-      rw [upper_diag, one_mul, upper_of_lt y h, if_pos rfl, if_neg (ne_of_lt h),
-        if_neg (fun k => lt_irrefl _ k.1)]
+      rw [upper_diag, one_mul, upper_of_lt y h, ite_eq_left rfl, ite_eq_right (ne_of_lt h),
+        ite_eq_right (fun k => lt_irrefl _ k.1)]
       simp
     · rcases lt_trichotomy c b with hcb | hcb | hbc
-      · rw [if_neg (ne_of_gt hac), if_neg (ne_of_lt hcb), if_pos ⟨hac, hcb⟩]
+      · rw [ite_eq_right (ne_of_gt hac), ite_eq_right (ne_of_lt hcb), ite_eq_left ⟨hac, hcb⟩]
         simp
       · subst hcb
-        rw [upper_diag, mul_one, upper_of_lt x h, if_neg (ne_of_gt h), if_pos rfl,
-          if_neg (fun k => lt_irrefl _ k.2)]
+        rw [upper_diag, mul_one, upper_of_lt x h, ite_eq_right (ne_of_gt h), ite_eq_left rfl,
+          ite_eq_right (fun k => lt_irrefl _ k.2)]
         simp
-      · rw [upper_of_gt y hbc, mul_zero, if_neg (ne_of_gt hac), if_neg (ne_of_gt hbc),
-          if_neg (fun k => lt_asymm hbc k.2)]
+      · rw [upper_of_gt y hbc, mul_zero, ite_eq_right (ne_of_gt hac), ite_eq_right (ne_of_gt hbc),
+          ite_eq_right (fun k => lt_asymm hbc k.2)]
         simp
   rw [Finset.sum_congr rfl (fun c _ => key c), Finset.sum_add_distrib, Finset.sum_add_distrib,
     Finset.sum_ite_eq' Finset.univ a, Finset.sum_ite_eq' Finset.univ b]
-  simp only [Finset.mem_univ, if_true]
+  simp only [Finset.mem_univ, ite_true]
   ring
 
 theorem upper_coords_mul {r : ℕ} (x y : UT r → ℂ) : upper (coords (upper x * upper y)) = upper x * upper y := by
@@ -121,9 +83,9 @@ theorem upper_coords_mul {r : ℕ} (x y : UT r → ℂ) : upper (coords (upper x
 theorem continuous_upper (r : ℕ) : Continuous (upper : (UT r → ℂ) → Matrix (Fin r) (Fin r) ℂ) := by
   refine continuous_pi fun a => continuous_pi fun b => ?_
   by_cases h : a < b
-  · simp only [upper, dif_pos h]
+  · simp only [upper, dite_eq_left h]
     exact continuous_apply _
-  · simp only [upper, dif_neg h]
+  · simp only [upper, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_upperIn {r : ℕ} (β : Fin r → ℕ) : Continuous (upperIn β) := by
@@ -131,9 +93,9 @@ theorem continuous_upperIn {r : ℕ} (β : Fin r → ℕ) : Continuous (upperIn 
       if h : β p.1.1 = β p.1.2 then x ⟨p, h⟩ else 0 := by
     refine continuous_pi fun p => ?_
     by_cases h : β p.1.1 = β p.1.2
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact continuous_apply _
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact continuous_const
   exact (continuous_upper r).comp hg
 
@@ -142,9 +104,9 @@ theorem continuous_upperOff {r : ℕ} (β : Fin r → ℕ) : Continuous (upperOf
       if h : β p.1.1 ≠ β p.1.2 then x ⟨p, h⟩ else 0 := by
     refine continuous_pi fun p => ?_
     by_cases h : β p.1.1 ≠ β p.1.2
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact continuous_apply _
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact continuous_const
   exact (continuous_upper r).comp hg
 
@@ -177,8 +139,8 @@ private theorem shearCond_prodMap {r : ℕ} (β : Fin r → ℕ) :
     rw [hin, hoff, mul_apply_lt _ _ h]
     by_cases hb : β a = β b
     · have hb' : ¬ β a ≠ β b := not_not.mpr hb
-      simp only [if_pos hb, if_neg hb', add_zero, add_sub_cancel_left]
-    · simp only [if_neg hb, if_pos hb, zero_add, add_sub_cancel_left]
+      simp only [ite_eq_left hb, ite_eq_right hb', add_zero, add_sub_cancel_left]
+    · simp only [ite_eq_right hb, ite_eq_left hb, zero_add, add_sub_cancel_left]
   rw [e x, e y]
   refine Finset.sum_congr rfl fun c _ => ?_
   split_ifs with hc

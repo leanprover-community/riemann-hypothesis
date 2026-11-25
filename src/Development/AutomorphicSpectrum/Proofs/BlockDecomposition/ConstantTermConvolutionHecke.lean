@@ -212,7 +212,7 @@ theorem finite_out {G H : Type} [Group G] [Group H] [TopologicalSpace G] [IsTopo
   refine ⟨hfin.toFinset.image pick, fun z hz => ?_⟩
   refine Finset.mem_image.2 ⟨((θ z : G) : G ⧸ K'), hfin.mem_toFinset.2 ⟨_, hz, rfl⟩, ?_⟩
   have hx : ∃ z', θ z' ∈ C ∧ ((θ z' : G) : G ⧸ K') = ((θ z : G) : G ⧸ K') := ⟨z, hz, rfl⟩
-  simp only [pick, dif_pos hx]
+  simp only [pick, dite_eq_left hx]
   exact QuotientGroup.eq.2 (hθ _ _ (QuotientGroup.eq.1 hx.choose_spec.2))
 
 end Generic

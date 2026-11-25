@@ -49,7 +49,7 @@ theorem BaseChangeColon.genNum_linear_in_polynomial : ∀ (F : Type) [Field F] (
     | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, hadd, ih]
   · intro μ c
     rw [key _ {μ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl]
+      MvPolynomial.coeff_monomial, ite_eq_left rfl]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.IdealCycleValues.GenNumLinearInPolynomial =====

@@ -442,11 +442,11 @@ theorem exists_continuous_latBasis_of_arc : ∀ (E : Type) [Field E] [NumberFiel
   have hsv : ∀ s : ℂ, ‖sv s‖ = ‖s‖ := fun s => pi_norm_const s
   have hdom : ∀ s : ℂ, s.re < 0 → sv s ∈ GlobalTheory.ShFam.Hor.logDom 1 1 := fun s hsr k => by
     show if (k : ℕ) < 1 then (sv s k).re < 0 else ‖sv s k‖ < 1
-    rw [if_pos k.isLt]
+    rw [ite_eq_left k.isLt]
     exact hsr
   have hlogExp : ∀ s : ℂ, GlobalTheory.ShFam.Hor.logExp 1 (sv s) = sv (Complex.exp s) := fun s => funext fun k => by
     show (if (k : ℕ) < 1 then Complex.exp (sv s k) else sv s k) = Complex.exp s
-    rw [if_pos k.isLt]
+    rw [ite_eq_left k.isLt]
   have hexpball : ∀ s : ℂ, s.re < 0 → sv (Complex.exp s) ∈ Metric.ball (0 : Fin 1 → ℂ) 1 := fun s hsr => by
     rw [mem_ball_zero_iff, hsv, Complex.norm_exp]
     exact Real.exp_lt_one_iff.mpr hsr
@@ -756,7 +756,7 @@ theorem polyGrowth_spread_of_integral_monodromy : ∀ (g m : ℕ) (lam : ℂ →
             calc C ≤ max C 0 := le_max_left _ _
               _ = max C 0 * 1 := (mul_one _).symm
               _ ≤ max C 0 * B ^ (n + 1) := mul_le_mul_of_nonneg_left hBn hM
-      · push_neg at hsm
+      · push Not at hsm
         have hn0 : (0 : ℝ) ≤ 2 * Real.pi * n := by positivity
         have hcast : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
         rw [hcast] at hi
@@ -965,7 +965,6 @@ theorem _root_.GlobalTheory.T.exists_continuous_period_basis_along_arc : ∀ (E 
         rw [hsre']
         refine (abs_sub _ _).trans ?_
         rw [abs_neg, abs_of_pos (by positivity)]
-      have h4 : 0 ≤ w.im - 1 := by linarith
       have h5 : 0 ≤ |Real.log ρ₀| + 2 * Real.pi * |R| + 1 := by positivity
       nlinarith [Real.pi_pos]
     have hpow : (1 + ‖sOf w‖) ^ k ≤ D ^ k * w.im ^ k := by
@@ -1161,13 +1160,13 @@ theorem periods_le_of_mem_lattice : ∀ (E : Type) [Field E] [NumberField E] [Is
     intro τ i hτ
     rcases hτ with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · obtain ⟨s, -, hs⟩ := hidx τ (N - (U.X k).p0) (by
-        rw [if_pos (((hX k).2 _).1 h1), (hX k).1, hN, Nat.add_sub_cancel])
+        rw [ite_eq_left (((hX k).2 _).1 h1), (hX k).1, hN, Nat.add_sub_cancel])
       exact ⟨s ⟨i, h2⟩, hs _⟩
     · have hcc : NumberField.ComplexEmbedding.conjugate (conjEmb τ) = τ := RingHom.ext fun a => by
         simp [conjEmb, NumberField.ComplexEmbedding.conjugate_coe_eq]
       have hne : ¬ τ (H.rt : E) = H.rt0 := fun h =>
         ((U.X k).cmType (conjEmb τ)).1 h1 (by rw [hcc]; exact ((hX k).2 τ).2 h)
-      obtain ⟨s, -, hs⟩ := hidx τ (U.X k).p0 (by rw [if_neg hne, (hX k).1])
+      obtain ⟨s, -, hs⟩ := hidx τ (U.X k).p0 (by rw [ite_eq_right hne, (hX k).1])
       exact ⟨s ⟨i, h2⟩, hs _⟩
   refine ⟨(∑ j, (|n b₀ j| : ℝ)) * C, Bx, ?_⟩
   filter_upwards [(tendsto_comap (f := Complex.im) (x := atTop)).eventually (eventually_gt_atTop T₁)]

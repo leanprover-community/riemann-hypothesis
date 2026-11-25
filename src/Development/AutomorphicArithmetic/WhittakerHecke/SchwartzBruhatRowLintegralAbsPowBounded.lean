@@ -101,7 +101,7 @@ theorem UpperTheory.schwartzBruhat_row_lintegral_abs_pow_bounded :
       refine ⟨(finPartPi x, -(k 0 1).2, (k 0 0).2), ⟨hxL, ?_, ?_⟩, (fin_eq _).symm⟩
       · exact Subring.neg_mem _ (mem_integralFiniteAdeles.2 fun v => hk.2 v 0 1)
       · exact mem_integralFiniteAdeles.2 fun v => hk.2 v 0 0
-    rw [if_pos hmem, ← ENNReal.ofReal_mul (by positivity)]
+    rw [ite_eq_left hmem, ← ENNReal.ofReal_mul (by positivity)]
     rw [← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
     refine ENNReal.ofReal_le_ofReal ?_
     have hle := abs_re_le hk.1 ((z : (A ℚ)ˣ) : A ℚ)

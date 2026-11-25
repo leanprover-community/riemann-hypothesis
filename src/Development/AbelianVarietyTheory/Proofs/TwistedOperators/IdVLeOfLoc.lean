@@ -100,11 +100,11 @@ theorem line_mem_iff {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrtho
     rw [Finset.sum_eq_single q]
     · have h1 : q.rev.1 + q.1 + 1 = c := by rw [Fin.val_rev]; omega
       have h2 : q.rev ≠ q := by intro h; rw [Fin.ext_iff, Fin.val_rev] at h; omega
-      rw [if_pos h1, if_neg h2, mul_one]
+      rw [ite_eq_left h1, ite_eq_right h2, mul_one]
     · intro p _ hp
       have : ¬ (q.rev.1 + p.1 + 1 = c) := by
         intro h; apply hp; rw [Fin.ext_iff]; rw [Fin.val_rev] at h; omega
-      rw [if_neg this, mul_zero, zero_mul]
+      rw [ite_eq_right this, mul_zero, zero_mul]
     · simp
   have hlat : ∀ y ∈ d.lat Λ 𝔟, r ⬝ᵥ y ∈ FractionalIdeal.spanSingleton _ x⁻¹ * 𝔟 q := by
     rintro _ ⟨y, -, u, hu, rfl⟩
@@ -153,7 +153,7 @@ theorem line_mem_iff {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrtho
       · funext k
         have e1 : x * d.a k q * (x⁻¹ * b') = 1 * (d.a *ᵥ Pi.single q b') k := by
           simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-            if_true]
+            ite_true]
           field_simp
         rw [mul_comm (pairA D.host.F 0 α ⊗ₜ[D.host.F] (x⁻¹ * b')), GlobalTheory.SeeSaw.IdVMul.incA_mul_tmul, e1]
     | zero =>

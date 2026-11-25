@@ -106,26 +106,13 @@ variable {Kf : Type} [Field Kf]
 theorem sumSupp_add {σ R M : Type*} [CommSemiring R] [AddCommMonoid M] (g : (σ →₀ ℕ) → R →+ M)
     (F G : MvPolynomial σ R) :
     ∑ mo ∈ (F + G).support, g mo ((F + G).coeff mo) =
-      ∑ mo ∈ F.support, g mo (F.coeff mo) + ∑ mo ∈ G.support, g mo (G.coeff mo) := by
-  classical
-  have key : ∀ H : MvPolynomial σ R, H.support ⊆ F.support ∪ G.support →
-      ∑ mo ∈ H.support, g mo (H.coeff mo) = ∑ mo ∈ F.support ∪ G.support, g mo (H.coeff mo) := by
-    intro H hH
-    refine Finset.sum_subset hH fun mo _ hmo => ?_
-    rw [MvPolynomial.notMem_support_iff.mp hmo, map_zero]
-  rw [key _ MvPolynomial.support_add, key F Finset.subset_union_left, key G Finset.subset_union_right,
-    ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun mo _ => ?_
-  rw [MvPolynomial.coeff_add, map_add (f := _)]
+      ∑ mo ∈ F.support, g mo (F.coeff mo) + ∑ mo ∈ G.support, g mo (G.coeff mo) :=
+  Finsupp.sum_hom_add_index (f := F.coeff) (g := G.coeff) g
 
 theorem sumSupp_smul {σ R S M : Type*} [CommSemiring R] [Semiring S] [Module S R] [AddCommMonoid M] [Module S M]
     (g : (σ →₀ ℕ) → R →ₗ[S] M) (c : S) (F : MvPolynomial σ R) :
-    ∑ mo ∈ (c • F).support, g mo ((c • F).coeff mo) = c • ∑ mo ∈ F.support, g mo (F.coeff mo) := by
-  rw [Finset.smul_sum]
-  refine (Finset.sum_subset MvPolynomial.support_smul fun mo _ hmo => ?_).trans
-    (Finset.sum_congr rfl fun mo _ => ?_)
-  · rw [MvPolynomial.notMem_support_iff.mp hmo, map_zero]
-  · rw [MvPolynomial.coeff_smul, map_smul]
+    ∑ mo ∈ (c • F).support, g mo ((c • F).coeff mo) = c • ∑ mo ∈ F.support, g mo (F.coeff mo) :=
+  Finsupp.sum_smul_index_linearMap' (v := F.coeff) (c := c) (h := g)
 
 def mono2 {σ τ : Type} (a : σ →₀ ℕ) (b : τ →₀ ℕ) : Kf →ₗ[Kf] MvPolynomial σ (MvPolynomial τ Kf) where
   toFun x := monomial a (monomial b x)
@@ -249,7 +236,7 @@ theorem valS_C_nn (LL : Letters ι) (S : Set ι) (c : Kf) :
       subst h
       exact hneg (by simp)
     apply hm
-    rw [LaurentPolynomial.C_apply, if_neg hk0]
+    rw [LaurentPolynomial.C_apply, ite_eq_right hk0]
   · first
       | exact (hm rfl).elim
 

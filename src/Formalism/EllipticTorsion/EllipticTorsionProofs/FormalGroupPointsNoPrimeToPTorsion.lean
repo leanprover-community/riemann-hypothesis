@@ -110,7 +110,7 @@ lemma lsq {l a b : K} {M : ℝ} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) (hM : 
     (h : ‖l ^ 2 + a * l - b‖ ≤ M) : ‖l‖ ^ 2 ≤ M := by
   by_cases hL : ‖l‖ ≤ 1
   · exact (pow_le_one₀ (norm_nonneg _) hL).trans hM
-  · push_neg at hL
+  · push Not at hL
     have h1 : ‖a * l - b‖ < ‖l ^ 2‖ := by
       have : ‖a * l - b‖ ≤ ‖l‖ := sub_le (mul_le_of_one ha) (hb.trans hL.le)
       rw [norm_pow]; exact this.trans_lt (by rw [sq]; exact lt_mul_of_one_lt_right (by linarith) hL)
@@ -232,7 +232,7 @@ lemma sumz (hW : IntegralModel W) {x1 x2 x3 y1 y2 y3 l v : K}
     have h12 : 1 < ‖x1‖ * ‖x2‖ := hX1.trans (lt_mul_of_one_lt_right (by linarith) hX2)
     exact h12.trans (lt_mul_of_one_lt_right (by linarith) hX3)
   have hV1 : 1 < ‖v‖ := by
-    by_contra hc; push_neg at hc
+    by_contra hc; push Not at hc
     have : ‖v ^ 2 + W.a₃ * v - W.a₆‖ ≤ 1 :=
       sub_le (add_le (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hc)
         ((mul_le_of_one h3).trans hc)) h6

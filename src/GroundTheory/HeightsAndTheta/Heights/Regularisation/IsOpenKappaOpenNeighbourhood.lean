@@ -116,12 +116,6 @@ structure PeriodPolydisc (n a g : ℕ) where
   period : ∀ i : Fin n, (i : ℕ) < a → ∀ w ∈ coverSet n a,
     τ (w + Pi.single i (2 * Real.pi * Complex.I)) = τ w + (B i).map (fun m : ℤ => (m : ℂ))
 
-namespace PeriodPolydisc
-
-variable {n a g : ℕ} (P : PeriodPolydisc n a g)
-
-end PeriodPolydisc
-
 theorem im_mul_inv_two_pi_I (x : ℝ) (w : ℂ) :
     ((x : ℂ) * (2 * Real.pi * Complex.I)⁻¹ * w).im = -x * w.re / (2 * Real.pi) := by
   have hπ : (Real.pi : ℝ) ≠ 0 := Real.pi_ne_zero

@@ -1,53 +1,10 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 public import Mathlib.RingTheory.AdicCompletion.Topology
 public import Mathlib.RingTheory.MvPowerSeries.Evaluation
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.RingTheory.Ideal.BigOperators
 
@@ -81,20 +38,20 @@ private theorem mvPowerSeries_mem_span_X_of_constantCoeff_zero {σ R : Type} [Fi
     · subst hd
       rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, h0]
       refine (Finset.sum_eq_zero fun s _ => ?_).symm
-      rw [if_neg]
+      rw [ite_eq_right]
       simp
     · obtain ⟨s0, hs0, hds0⟩ := hsel d hd
       have hle0 : Finsupp.single s0 1 ≤ d := Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr hds0)
       rw [Finset.sum_eq_single s0]
-      · rw [if_pos hle0]
+      · rw [ite_eq_left hle0]
         show _ = (if sel (d - Finsupp.single s0 1 + Finsupp.single s0 1) = some s0 then
           MvPowerSeries.coeff (d - Finsupp.single s0 1 + Finsupp.single s0 1) h else 0)
-        rw [tsub_add_cancel_of_le hle0, if_pos hs0]
+        rw [tsub_add_cancel_of_le hle0, ite_eq_left hs0]
       · intro s _ hs
         split_ifs with hle
         · show (if sel (d - Finsupp.single s 1 + Finsupp.single s 1) = some s then
             MvPowerSeries.coeff (d - Finsupp.single s 1 + Finsupp.single s 1) h else 0) = 0
-          rw [tsub_add_cancel_of_le hle, hs0, if_neg]
+          rw [tsub_add_cancel_of_le hle, hs0, ite_eq_right]
           intro h'
           exact hs (Option.some_injective _ h').symm
         · rfl

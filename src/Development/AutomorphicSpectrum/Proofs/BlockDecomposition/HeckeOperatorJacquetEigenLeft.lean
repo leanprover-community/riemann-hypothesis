@@ -227,12 +227,12 @@ theorem conj_entries {m r : ℕ} (hmr : m ≤ r) (x : GL (Fin N) k)
     simp
   rw [conj_apply, nsmul_omegaVec_apply, nsmul_omegaVec_apply]
   by_cases h1 : (i : ℕ) < d 0 <;> by_cases h2 : (j : ℕ) < d 0
-  · rw [if_pos h1, if_pos h2, unipRad_same d hd x hx i j (by simp [h1, h2])]
+  · rw [ite_eq_left h1, ite_eq_left h2, unipRad_same d hd x hx i j (by simp [h1, h2])]
     refine ⟨0, zero_mem _, ?_⟩
     rw [mul_right_comm, hcancel]
     simp
   · have hne : i ≠ j := fun h => h2 (h ▸ h1)
-    rw [if_pos h1, if_neg h2, Matrix.one_apply_ne hne]
+    rw [ite_eq_left h1, ite_eq_right h2, Matrix.one_apply_ne hne]
     refine ⟨_, hi i j, ?_⟩
     have hu : ((Zls.unifU k ^ (r : ℤ) : kˣ) : k) = ((Zls.unif k : 𝒪[k]) : k) ^ r := by
       rw [zpow_natCast, Units.val_pow_eq_pow_val]
@@ -242,9 +242,9 @@ theorem conj_entries {m r : ℕ} (hmr : m ≤ r) (x : GL (Fin N) k)
     simp only [zpow_zero, mul_one, sub_zero]
     rw [mul_assoc, ← pow_add, Nat.sub_add_cancel hmr, mul_comm]
   · have hne : i ≠ j := fun h => h1 (h ▸ h2)
-    rw [if_neg h1, if_pos h2, Matrix.one_apply_ne hne, unipRad_lower d hd x hx i j (by omega) h2]
+    rw [ite_eq_right h1, ite_eq_left h2, Matrix.one_apply_ne hne, unipRad_lower d hd x hx i j (by omega) h2]
     exact ⟨0, zero_mem _, by simp⟩
-  · rw [if_neg h1, if_neg h2, unipRad_same d hd x hx i j (by simp [h1, h2])]
+  · rw [ite_eq_right h1, ite_eq_right h2, unipRad_same d hd x hx i j (by simp [h1, h2])]
     exact ⟨0, zero_mem _, by simp⟩
 
 theorem conj_mem_Km {m r : ℕ} (hmr : m ≤ r) (x : GL (Fin N) k)

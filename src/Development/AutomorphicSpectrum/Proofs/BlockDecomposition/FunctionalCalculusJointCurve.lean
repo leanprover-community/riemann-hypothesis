@@ -374,7 +374,7 @@ variable [MeasurableSpace (G n)] [BorelSpace (G n)] {μ : Measure (G n)} [μ.IsH
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
 theorem cls_of {K : Mat n → V} (h : MemLp (fun y : G n => K y.val) 2 μ) : cls μ K = h.toLp _ :=
-  dif_pos h
+  dite_eq_left h
 
 theorem norm_cls_sq {K : Mat n → V} (h : MemLp (fun y : G n => K y.val) 2 μ) :
     ‖cls μ K‖ ^ 2 = ∫ y : G n, ‖K y.val‖ ^ 2 ∂μ := by

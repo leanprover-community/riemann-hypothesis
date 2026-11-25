@@ -11,8 +11,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem ker_le_ker_of_comp_eq {A B T : Scheme.{u}} (f : A ⟶ T) (g : B ⟶ T) (e : A ⟶ B)
@@ -76,7 +74,6 @@ theorem comap_strictTransform_of_iso {X X₁ X₁' : Scheme.{u}} (π : X₁ ⟶ 
   have hcomp : (strictTransformι π Z D ≫ inv f.hom) ≫ f.hom
       = strictTransformι π Z D := by
     rw [Category.assoc, IsIso.inv_hom_id, Category.comp_id]
-  have : QuasiCompact (strictTransformι π Z D ≫ inv f.hom) := inferInstance
   have : QuasiCompact ((strictTransformι π Z D ≫ inv f.hom) ≫ f.hom) := by
     rw [hcomp]
     infer_instance
@@ -184,5 +181,3 @@ theorem map_comap_strictTransform_append_exceptionalIdeal {X X₁ S S₁ : Schem
   · rw [comap_exceptionalIdeal_of_commSq π ι ι₁ ρ hsq Z]
 
 end FunctorialResolution.EmbeddedResolution
-
-end

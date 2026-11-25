@@ -59,10 +59,6 @@ namespace GlobalTheory.SquareChars
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
-theorem isHeckeChar_mul' {c c' : (AE D)ˣ →* Circle} (h : IsHeckeChar D c) (h' : IsHeckeChar D c') :
-    IsHeckeChar D (c * c') :=
-  ⟨h.1.mul h'.1, fun x => by rw [MonoidHom.mul_apply, h.2 x, h'.2 x, mul_one]⟩
-
 theorem chi_hecke_res (G : GridData L sc) {μ₀ : T} (hL : L.Is μ₀) (i : Fin D.R.m) :
     IsHeckeChar D (G.ch.chi (D.R.m - i)) ∧ ResEta D (G.ch.chi (D.R.m - i)) 0 := by
   have h1 : 1 ≤ D.R.m - (i : ℕ) := by omega
@@ -115,7 +111,7 @@ theorem square_chars : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G 
   have hα : ResEta D (alpha G t i j) (spW₁ G i j).rank :=
     resEta_parity (resEta_mul hμ0 hη1) (by rw [zero_add]; exact p2)
   have h2 : Module.finrank D.host.F D.host.E = 2 := D.sp.cm.deg2
-  exact ⟨isHeckeChar_mul' hχ hη, isHeckeChar_mul' hμ hη,
+  exact ⟨GlobalTheory.WeilChange.hecke_mul hχ hη, GlobalTheory.WeilChange.hecke_mul hμ hη,
     GlobalTheory.T.restrictsToQuadraticSignPow_of_restrictsToQuadraticCharPow D.host.F D.host.E h2 _ _ hβ, GlobalTheory.T.restrictsToQuadraticSignPow_of_restrictsToQuadraticCharPow D.host.F D.host.E h2 _ _ hα⟩
 
 end GlobalTheory.SquareChars

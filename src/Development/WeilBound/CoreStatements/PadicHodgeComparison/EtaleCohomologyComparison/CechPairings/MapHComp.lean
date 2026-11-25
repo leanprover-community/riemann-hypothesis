@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
 universe w w' w'' t t' v u v' u' v'' u''
 theorem CrystallineSemistableComparison.P.cls_surj : ∀ {R : Type} [CommRing R] (K : Cx.{w} R) (n : ℕ), (∀ x : K.H n, ∃ a ha, x = K.cls a ha) ∧ (∀ (a : K.X n) ha, K.cls a ha = 0 ↔ a ∈ K.B n) ∧ (∀ (a b : K.X n) ha hb, K.cls a ha = K.cls b hb ↔ a - b ∈ K.B n) ∧ (∀ (a b : K.X n) ha hb hab, K.cls (a + b) hab = K.cls a ha + K.cls b hb) ∧ (∀ (r : R) (a : K.X n) ha hb, K.cls (r • a) hb = r • K.cls a ha) := by

@@ -135,8 +135,8 @@ private theorem gen {G Q : Type} [CommGroup G] [TopologicalSpace G] [IsTopologic
       · exact (measure_mono (t := Set.univ ×ˢ Sᶜ) fun p hp => ⟨trivial, fun hu => h (hF _ _ hu α hp).2⟩).trans hn.le
     rw [hm, Measure.sum_apply _ hK.measurableSet]
     refine (ENNReal.tsum_le_tsum hb).trans_lt ?_
-    rw [tsum_eq_sum (s := F) fun α h => if_neg h]
-    exact ENNReal.sum_lt_top.2 fun α h => by rw [if_pos h]; exact measure_Icc_lt_top⟩
+    rw [tsum_eq_sum (s := F) fun α h => ite_eq_right h]
+    exact ENNReal.sum_lt_top.2 fun α h => by rw [ite_eq_left h]; exact measure_Icc_lt_top⟩
   have e := Measure.isMulLeftInvariant_eq_smul m μ
   refine ⟨m.haarScalarFactor μ, fun h0 => ?_, fun h hh => ?_⟩
   · rw [h0, zero_smul] at e

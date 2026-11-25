@@ -12,50 +12,10 @@ public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CharacterBlocksAttainBound
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MonomialBlockSupplyBothTypings
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.OddLevelBlockBoundAttained
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Order.Star.Int
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.OrbitSumFiftyOne, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsGoodIntegerPlanLowLevelsBound, Development.AbelianVarietyTheory.Proofs.JetHarmonics.FlowProgrammeBoundsAndLowLevelOptimum, Development.AbelianVarietyTheory.Proofs.JetHarmonics.InertPrimeValueLePlanBlocks, Development.AbelianVarietyTheory.Proofs.JetHarmonics.InertPrimeDepthContentBoundProof
@@ -120,10 +80,10 @@ theorem blockBd_le {l n m i y I S : ℕ} {x : ℝ} (hl : 5 ≤ l) (hn : 1 ≤ n)
   · have : (y : ℝ) = 0 := by nlinarith
     have hy : y = 0 := by exact_mod_cast this
     simp [blockBd, hy, hx]
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
   by_cases hy : y = 0
   · subst hy
-    simp only [blockBd, if_true, Nat.cast_zero, mul_zero, sub_zero] at h2 ⊢
+    simp only [blockBd, ite_true, Nat.cast_zero, mul_zero, sub_zero] at h2 ⊢
     linarith
   have hiI : (i : ℝ) + 1 ≤ I := by exact_mod_cast hi hx
   have hp : (1 : ℝ) ≤ (l : ℝ) ^ i := one_le_pow₀ (by linarith)
@@ -135,7 +95,7 @@ theorem blockBd_le {l n m i y I S : ℕ} {x : ℝ} (hl : 5 ≤ l) (hn : 1 ≤ n)
       mul_le_mul hiI (by linarith) (by positivity) (by positivity)
     have hmy : (0 : ℝ) ≤ m * y := by positivity
     nlinarith [mul_le_mul_of_nonneg_right this hmy]
-  simp only [blockBd, bdP, hy, if_false]
+  simp only [blockBd, bdP, hy, ite_false]
   linarith
 
 theorem exists_plan : ∀ (l d : ℕ) [NeZero d], 5 ≤ l → ∀ (n m k S : ℕ), 1 ≤ n → 1 ≤ k → ∀ (W : ZMod d → ℕ) (Ws : ZMod d → ℝ) (Good : ZMod d → ℕ → Set ℕ),
@@ -352,8 +312,8 @@ theorem bg_add {d : ℕ} [NeZero d] (hd : Even d) (a : ZMod d) (i : ℕ) (hi : O
     omega
   unfold RF.bg
   by_cases ha : Even a.val
-  · rw [if_pos ha, if_neg (by rw [h]; simpa using ha)]; rfl
-  · rw [if_neg ha, if_pos (h.2 ha)]; rfl
+  · rw [ite_eq_left ha, ite_eq_right (by rw [h]; simpa using ha)]; rfl
+  · rw [ite_eq_right ha, ite_eq_left (h.2 ha)]; rfl
 
 variable {C : Type} [Field C] {V : VF C} {d : ℕ} [NeZero d] {I J : Fin 2 → Type}
   [∀ g, Fintype (I g)] [∀ g, Fintype (J g)]
@@ -471,7 +431,7 @@ theorem blocks_wt {W : ZMod d → ℕ} (X : RowData C V d I J) (hX : X.Alt) (p :
       by_cases h0 : ga g a k = 0
       · simp [rst, h0]
       · have := hs g a k h0
-        rw [if_pos ⟨rfl, by omega, by omega⟩, if_pos rfl]
+        rw [ite_eq_left ⟨rfl, by omega, by omega⟩, ite_eq_left rfl]
     · simp [hg]
   have hmon2 : (if g = 0 then rst X.n ga g a k else 0) + (if g = 1 then rst X.n ga g a k else 0) =
       rst X.n ga g a k := by fin_cases g <;> simp
@@ -484,7 +444,7 @@ theorem blocks_wt {W : ZMod d → ℕ} (X : RowData C V d I J) (hX : X.Alt) (p :
     rw [Finset.sum_eq_single (a - (i : ZMod d))]
     · rw [← bg_add hX.1 _ i hi']; simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨-, h, -⟩
       exact hb (by rw [h]; simp)
     · simp
@@ -506,7 +466,7 @@ theorem blocks_wt {W : ZMod d → ℕ} (X : RowData C V d I J) (hX : X.Alt) (p :
   rw [h1, h2, h3]
   by_cases hc : g = RF.bg a ∧ k = X.n
   · obtain ⟨rfl, rfl⟩ := hc
-    simp only [rst, and_self, if_true]
+    simp only [rst, and_self, ite_true]
     rw [hm a, p.bal a]
     ring
   · simp [rst, hc]

@@ -28,7 +28,6 @@ public import ReciprocityTheory.ResidueCardinality.ArtinOntoB
 public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitPlaceEq
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RankOneBaseWeightEqCmTheta
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitPlOfNotIsConjPl
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelGroupWithCharacterAtTypePlaces
@@ -154,7 +153,7 @@ def vRing (v : AddValuation K (WithTop ℤ)) : ValuationSubring K where
     · right
       show 0 ≤ v x⁻¹
       by_contra hy
-      push_neg at hx hy
+      push Not at hx hy
       have hx0 : x ≠ 0 := by
         rintro rfl
         rw [v.map_zero] at hx
@@ -393,7 +392,7 @@ theorem star_mul_self_of_pow (D : D7) (ζ : (↥D.LL0)ˣ) (n : ℕ) (hn : n ≠ 
 
 theorem readT_false_eq (D : D7) (T : TwR D.LL0 D.nd) (hstar : ∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0)
     (i : T.Tw) (x : ↥D.LL0) : readT D T i false x = readT D T i true ⟨star (x : D.what₂.LL), hstar x⟩ := by
-  simp only [readT, RingHom.comp_apply, Bool.false_eq_true, if_false, if_true]
+  simp only [readT, RingHom.comp_apply, Bool.false_eq_true, ite_false, ite_true]
   rw [T.restX_coefficientEmbedding_conj i x ⟨star (x : D.what₂.LL), hstar x⟩ rfl]
 
 theorem readT_false_mul_true (D : D7) (T : TwR D.LL0 D.nd) (hstar : ∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0)
@@ -417,7 +416,7 @@ theorem psiUT_eq_thSide : ∀ (D : D7) (S : RatDat D.ntw) (In : RatIn D S) (T : 
   · simp only [psiUT, MonoidHom.comp_apply, psiUOf_apply, map_prod]
     refine Finset.prod_congr rfl fun kv _ => ?_
     cases b
-    · simp only [thSide, Bool.false_eq_true, if_false, MonoidHom.inv_apply, MonoidHom.comp_apply]
+    · simp only [thSide, Bool.false_eq_true, ite_false, MonoidHom.inv_apply, MonoidHom.comp_apply]
       apply Units.ext
       rw [Units.coe_map, Units.val_inv_eq_inv_val, Units.coe_map]
       refine eq_inv_of_mul_eq_one_left ?_
@@ -767,7 +766,7 @@ theorem formsExport_eq : ∀ (D : D7) (S : RatDat D.ntw) (In : RatIn D S) (T : T
       show a ⊗ₜ[S.Ks] (LinearEquiv.ofEq _ _ hW (f w)) = a ⊗ₜ[S.Ks] (f' (LinearEquiv.ofEq _ _ hW w))
       exact congrArg (a ⊗ₜ[S.Ks] ·) (Subtype.ext (hf w))
     | add y z hy hz => rw [map_add (f := _), map_add (f := _), hy, hz, map_add (f := _), map_add (f := _)]
-  have hc : ∀ g', cR D S In.chi j g' = chiL S j (In.chi j h1 h2) g' := fun g' => dif_pos ⟨h1, h2⟩
+  have hc : ∀ g', cR D S In.chi j g' = chiL S j (In.chi j h1 h2) g' := fun g' => dite_eq_left ⟨h1, h2⟩
   have hsm : ∀ (r : T.O i') (y : KT D T i' b ⊗[S.Ks] ↥(WKr D S j)),
       e ((show KT D T i' b from algebraMap (T.O i') (FractionRing (T.O i')) r) • y) =
         (show KT D T i' b from algebraMap (T.O i') (FractionRing (T.O i')) r) • e y := fun r y => e.map_smul _ y
@@ -811,7 +810,7 @@ theorem formsExport_eq : ∀ (D : D7) (S : RatDat D.ntw) (In : RatIn D S) (T : T
             fun x hx => In.hs j h1 h2 k P x hx) (e x)
     rw [LinearEquiv.map_smul, hbc _ _ ?_ x]
     intro w
-    rw [hLr, dif_pos ⟨h1, h2⟩]
+    rw [hLr, dite_eq_left ⟨h1, h2⟩]
     rfl
 
 end GlobalTheory.HeightCounting.FormsStep
@@ -951,7 +950,7 @@ theorem qpOf_half : ∀ (D : D7) (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfi
   · by_cases hq : P ∈ qpOf D Pq S
     · exact ⟨P, hq, Or.inl rfl⟩
     · have hn : ¬ ∀ v, NG.OverPl P v → P = Pq v ∨ Pq v ∉ S := fun h => hq ((memq P).2 ⟨hP, h⟩)
-      push_neg at hn
+      push Not at hn
       obtain ⟨v, hv, -, hin⟩ := hn
       refine ⟨Pq v, (memq _).2 ⟨hin, fun v' hv' => Or.inl ?_⟩, ?_⟩
       · rw [overPl_unique D (hPq v) hv']
@@ -1115,7 +1114,10 @@ theorem isConjPl_conjPlE {D : D7} (P : PlE D.host) : Formalism.BasicNotions.IsCo
   rw [GlobalTheory.SplitConjPlace.mem_conjPlE]
   have : IsCMField.ringOfIntegersComplexConj D.host.E y = x := by
     apply RingOfIntegers.ext
-    rw [IsCMField.coe_ringOfIntegersComplexConj, hxy, GlobalTheory.LocM.complexConj_eq_conj,
+    have hconj (a : D.host.E) : IsCMField.complexConj D.host.E a = D.host.conj a := by
+      apply D.host.φ₀.injective
+      rw [NumberField.IsCMField.complexEmbedding_complexConj, Formalism.HC.HostAx.conjE_apply]
+    rw [IsCMField.coe_ringOfIntegersComplexConj, hxy, hconj,
       GlobalTheory.FixedPlaceSplit.host_conj_conj]
   rw [this]
 
@@ -1256,7 +1258,7 @@ theorem levDatum_forms_alt : GlobalTheory.Published.GlobalArtinReciprocity → �
   let sp : PlE D.host → SplitPlace D.host.E := fun P =>
     if h : IsSplitPl D.host P then (_root_.GlobalTheory.HeightCounting.SplitPlaceOf.exists_splitPlace D P h).choose else Classical.arbitrary _
   have hsp : ∀ P, IsSplitPl D.host P → (sp P).w = P := fun P h => by
-    simp only [sp, dif_pos h]; exact (_root_.GlobalTheory.HeightCounting.SplitPlaceOf.exists_splitPlace D P h).choose_spec
+    simp only [sp, dite_eq_left h]; exact (_root_.GlobalTheory.HeightCounting.SplitPlaceOf.exists_splitPlace D P h).choose_spec
   have hspw : ∀ P, (P ∈ qpOf D Pq Q ∨ P ∈ qpOf D Pq (T.pD i) ∨ ∃ kv, P = NX.pG D kv) → (sp P).w = P := by
     rintro P (h | h | ⟨kv, rfl⟩)
     · exact hsp P (hQs P (qpOf_sub D Pq Q h))
@@ -1535,9 +1537,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
   GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
 namespace GlobalTheory.HeightCounting.FormsStep
-section SigMake
-variable (D : D7) (T : TwR D.LL0 D.nd) {S : RatDat D.ntw} (In : RatIn D S)
-end SigMake
 theorem span_eig_BI_alt (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE) (S : RatDat D.ntw)
     (In : RatIn D S) (b0 b1 : Big D) (Sx : Finset (PlE D.host)) (T : TwR D.LL0 D.nd) (Sp : RingSpec D cf b0 b1 Sx T)
     (hst : HkStab D T S In) (hSb : In.Sb ⊆ Sx) (hstar : ∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0)

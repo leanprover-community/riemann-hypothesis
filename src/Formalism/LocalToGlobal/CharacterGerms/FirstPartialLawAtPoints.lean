@@ -45,12 +45,6 @@ theorem IsIU.one {σ : Type} : IsIU V (1 : MvPowerSeries σ C) := by
 theorem IsIU.mul {σ : Type} {U U' : MvPowerSeries σ C} (h : IsIU V U) (h' : IsIU V U') : IsIU V (U * U') :=
   ⟨IntS.mul h.1 h'.1, by rw [map_mul, AddValuation.map_mul, h.2, h'.2, add_zero]⟩
 
-section Defs
-
-variable (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o))
-
-end Defs
-
 end Formalism.L2.FormalSeriesBounds
 end -- clump:auto
 end -- clump:auto
@@ -165,12 +159,6 @@ theorem hAt_zero_right {c : Fin dd → MvPowerSeries τ C} (hc : ∀ i, MvPowerS
 def GoodPt (V : VF C) (a : Fin dd → MvPowerSeries τ C) : Prop :=
   (∀ i, MvPowerSeries.constantCoeff (a i) = 0) ∧ ∀ i, IntS V (a i)
 
-private theorem intS_subst_of_intS {σ : Type} [Finite σ] {a : σ → MvPowerSeries τ C}
-    (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) (ha : ∀ s, IntS V (a s)) {f : MvPowerSeries σ C}
-    (hf : IntS V f) : IntS V (MvPowerSeries.subst a f) := by
-  first
-    | exact IntS.subst ha0 ha hf
-
 theorem GoodPt.add {a b : Fin dd → MvPowerSeries τ C} (ha : GoodPt V a) (hb : GoodPt V b) : GoodPt V (addAt Y a b) := by
   have h0 : ∀ q, MvPowerSeries.constantCoeff (P2 a b q) = 0 := by
     intro q
@@ -186,7 +174,7 @@ theorem GoodPt.add {a b : Fin dd → MvPowerSeries τ C} (ha : GoodPt V a) (hb :
     · exact hb.2 _
   refine ⟨fun i => cc_addAt Y ha.1 hb.1 i, fun i => ?_⟩
   show IntS V (MvPowerSeries.subst (P2 a b) (Y.B.G.F i))
-  exact intS_subst_of_intS h0 hI (Y.intF i)
+  exact IntS.subst h0 hI (Y.intF i)
 
 theorem GoodPt.zero : GoodPt V (fun _ : Fin dd => (0 : MvPowerSeries τ C)) := by
   refine ⟨fun _ => map_zero _, fun _ => ?_⟩
@@ -200,7 +188,7 @@ theorem GoodPt.zero : GoodPt V (fun _ : Fin dd => (0 : MvPowerSeries τ C)) := b
 theorem GoodPt.act (x : O) {a : Fin dd → MvPowerSeries τ C} (ha : GoodPt V a) : GoodPt V (actAt Y x a) := by
   refine ⟨fun i => cc_actAt Y x ha.1 i, fun i => ?_⟩
   show IntS V (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => a q.2) (Y.B.A.act x i))
-  exact intS_subst_of_intS (a := fun q : Fin 1 × Fin dd => a q.2) (fun q => ha.1 q.2) (fun q => ha.2 q.2)
+  exact IntS.subst (a := fun q : Fin 1 × Fin dd => a q.2) (fun q => ha.1 q.2) (fun q => ha.2 q.2)
     (Y.intAct x i)
 
 def sumL : List (Fin dd → MvPowerSeries τ C) → (Fin dd → MvPowerSeries τ C)

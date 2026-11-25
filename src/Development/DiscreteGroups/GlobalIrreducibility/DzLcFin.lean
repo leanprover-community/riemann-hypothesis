@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.GLq
 open scoped Classical
 

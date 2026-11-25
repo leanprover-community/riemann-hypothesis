@@ -59,9 +59,9 @@ theorem liftM_one : liftM (1 : SlopeTestRemainingChoices (Fin n) A) = 1 := by
   rw [liftM_apply, Matrix.one_apply, Matrix.one_apply]
   by_cases h0 : z 0 = z' 0
   · by_cases ht : Fin.tail z = Fin.tail z'
-    · rw [if_pos h0, if_pos ht, if_pos ((ix_ext_iff z z').2 ⟨h0, ht⟩)]
-    · rw [if_pos h0, if_neg ht, if_neg (fun h => ht ((ix_ext_iff z z').1 h).2)]
-  · rw [if_neg h0, if_neg (fun h => h0 ((ix_ext_iff z z').1 h).1)]
+    · rw [ite_eq_left h0, ite_eq_left ht, ite_eq_left ((ix_ext_iff z z').2 ⟨h0, ht⟩)]
+    · rw [ite_eq_left h0, ite_eq_right ht, ite_eq_right (fun h => ht ((ix_ext_iff z z').1 h).2)]
+  · rw [ite_eq_right h0, ite_eq_right (fun h => h0 ((ix_ext_iff z z').1 h).1)]
 
 theorem liftM_zero : liftM (0 : SlopeTestRemainingChoices (Fin n) A) = 0 := by
   ext z z'; simp [liftM_apply]
@@ -107,11 +107,11 @@ theorem eU_succ (a : Fin n) (i j : Fin 2) : (eU a.succ i j : SlopeTestRemainingC
       exact Fin.cases (motive := fun b => b ≠ a.succ → x b = y b) (fun _ => h0)
         (fun b' hb' => h3 b' (fun h => hb' (by rw [h]))) b hb
   by_cases h0 : x 0 = y 0
-  · rw [if_pos h0]
+  · rw [ite_eq_left h0]
     by_cases h : Fin.tail x a = i ∧ Fin.tail y a = j ∧ ∀ b, b ≠ a → Fin.tail x b = Fin.tail y b
-    · rw [if_pos h, if_pos (key.2 ⟨h0, h⟩)]
-    · rw [if_neg h, if_neg (fun h' => h (key.1 h').2)]
-  · rw [if_neg h0, if_neg (fun h' => h0 (key.1 h').1)]
+    · rw [ite_eq_left h, ite_eq_left (key.2 ⟨h0, h⟩)]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h (key.1 h').2)]
+  · rw [ite_eq_right h0, ite_eq_right (fun h' => h0 (key.1 h').1)]
 
 theorem io_succ (x : A) : (io x : SlopeTestRemainingChoices (Fin (n + 1)) A) = liftM (io x) := by
   ext z z'
@@ -119,9 +119,9 @@ theorem io_succ (x : A) : (io x : SlopeTestRemainingChoices (Fin (n + 1)) A) = l
   simp only [io, Matrix.scalar_apply, Matrix.diagonal_apply]
   by_cases h0 : z 0 = z' 0
   · by_cases ht : Fin.tail z = Fin.tail z'
-    · rw [if_pos h0, if_pos ht, if_pos ((ix_ext_iff z z').2 ⟨h0, ht⟩)]
-    · rw [if_pos h0, if_neg ht, if_neg (fun h => ht ((ix_ext_iff z z').1 h).2)]
-  · rw [if_neg h0, if_neg (fun h => h0 ((ix_ext_iff z z').1 h).1)]
+    · rw [ite_eq_left h0, ite_eq_left ht, ite_eq_left ((ix_ext_iff z z').2 ⟨h0, ht⟩)]
+    · rw [ite_eq_left h0, ite_eq_right ht, ite_eq_right (fun h => ht ((ix_ext_iff z z').1 h).2)]
+  · rw [ite_eq_right h0, ite_eq_right (fun h => h0 ((ix_ext_iff z z').1 h).1)]
 
 theorem liftZero_succ_eq_map (M : M2 A) : (lift0 M : M2 (SlopeTestRemainingChoices (Fin (n + 1)) A)) = (lift0 M).map liftM := by
   ext i j; simp [lift0, io_succ]
@@ -328,9 +328,9 @@ theorem JF_uInv (Bs : B.RealPlaceData k r Wp Wq) (ε : ℝ) (s : ℂ) {h : B.Mat
   | l :: w, x, hx, e => by
     rw [uInv_cons, uInv_cons]
     by_cases h0 : e 0 = 0
-    · rw [if_pos h0, if_pos h0]
+    · rw [ite_eq_left h0, ite_eq_left h0]
       exact JF_uInv Bs ε s hh w _ (fun e' => hx _) _
-    · rw [if_neg h0, if_neg h0]
+    · rw [ite_eq_right h0, ite_eq_right h0]
       generalize (if l.1 = true then s else (starRingEnd ℂ) s) = c
       have h1 := uInv_nice Bs ε s w (fun e' => x (Fin.cons 1 e')) (fun e' => hx _) (fun a => e a.succ)
       have h2 := uInv_nice Bs ε s w (fun e' => x (Fin.cons 0 e')) (fun e' => hx _) (fun a => e a.succ)

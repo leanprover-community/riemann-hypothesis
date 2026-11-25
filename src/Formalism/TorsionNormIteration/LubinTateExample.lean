@@ -135,9 +135,6 @@ theorem FunEqHom_of' (h1 : SolveExists.{u, 0}) (h2 : InvIntegralOfClass.{u, 0})
 
 end Formalism.LT.Asm
 
-namespace Formalism.LT
-
-end Formalism.LT
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -241,7 +241,7 @@ theorem det_vV_add_eq_zero : ∀ (K : Type) [Field K] [NumberField K] (𝔓 : He
     have hk : ∑ i, algebraMap T.V T.Fr (q i) * (∑ j, C i j • fun k => iK (u j k)) k = iK (b l k) := by
       rw [← congrFun hq k, Finset.sum_apply]
       simp only [Pi.smul_apply, Algebra.smul_def]
-    simp only [Finset.sum_mul, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Finset.sum_mul, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Finset.sum_comm]
     calc ∑ i, ∑ m, algebraMap T.V T.Fr (q i) * P i m * B m k
         = ∑ i, algebraMap T.V T.Fr (q i) * (∑ j, C i j • fun k => iK (u j k)) k := by
@@ -386,7 +386,6 @@ namespace GlobalTheory.FlatChar
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
 
-
 open Classical in
 theorem exOf_flatWt_some (τ : Psi H) (σ : E →+* ℂ) (i : Fin (Dw.mult σ)) :
     exOf Dw (flatWt Dw τ) 0 (some ⟨σ, i⟩) = if σ = τ.1 then -1 else if σ = conjEmb τ.1 then 1 else 0 := by
@@ -415,8 +414,8 @@ theorem exOf_flatWt_some (τ : Psi H) (σ : E →+* ℂ) (i : Fin (Dw.mult σ)) 
       · intro e'; apply Subtype.ext; show conjEmb σ = τ.1; rw [e', conjEmb_conjEmb]
     by_cases e : σ = conjEmb τ.1
     · have h2 := hiff.2 e
-      rw [if_neg hne, if_pos e]
-      simp only [flatWt, parWt, if_pos h2]
+      rw [ite_eq_right hne, ite_eq_left e]
+      simp only [flatWt, parWt, ite_eq_left h2]
       norm_num
     · have : (⟨conjEmb σ, h'⟩ : Psi H) ≠ τ := fun e' => e (hiff.1 e')
       simp [flatWt, parWt, this, e, hne]
@@ -436,12 +435,12 @@ theorem flatWt_char (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Reci
     · congr 1
       · rw [← Finset.prod_inv_distrib]
         refine Finset.prod_congr rfl fun i _ => ?_
-        rw [exOf_flatWt_some, if_pos rfl, zpow_neg_one]
+        rw [exOf_flatWt_some, ite_eq_left rfl, zpow_neg_one]
       · refine Finset.prod_congr rfl fun i _ => ?_
-        rw [exOf_flatWt_some, if_neg hne.symm, if_pos rfl, zpow_one]
+        rw [exOf_flatWt_some, ite_eq_right hne.symm, ite_eq_left rfl, zpow_one]
     · rintro σ ⟨h1, h2⟩
       refine Finset.prod_eq_one fun i _ => ?_
-      rw [exOf_flatWt_some, if_neg h1, if_neg h2, zpow_zero]
+      rw [exOf_flatWt_some, ite_eq_right h1, ite_eq_right h2, zpow_zero]
   rw [key, ← Units.coe_prod, ← Units.coe_prod, ← Units.val_mul]
   congr 1
   rw [mul_comm, mul_inv_cancel_left]
@@ -788,7 +787,6 @@ theorem sc_left {R : Type} [CommRing R] {G : Over (Sp R)} (a : R) (v : epsR R �
 
 end GlobalTheory.PtDeg.FrameEig
 
-
 open GlobalTheory.PtDeg.FrameEig in
 theorem GlobalTheory.PtDeg.frameCoord_mem_span_eigLat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K : Type) [Field K] [NumberField K] [Algebra c.F K] (y : FrPt Xo c K) (B : GlobalTheory.CM.PAT H (Sp (𝓞 K))) (t₀ : SAB H (Sp K)) (m1 : SABMap t₀ Xo.univ.t y.x) (m2 : SABMap t₀ B.t (spMap (algebraMap (𝓞 K) K))) (F : GlobalTheory.CM.GenFib B.pol) (ρ : E →+* ℂ) (tt : 𝓞 E →+* 𝓞 K), (∀ a, ((tt a : 𝓞 K) : K) = algebraMap c.F K (embK c ρ a)) → ∀ (u : Fin (Dw.mult ρ) → Fin F.P₀.g → K), GlobalTheory.PtDeg.FrameCoord y m1 m2 F ρ u → ∀ j, u j ∈ Submodule.span K (F.eigLat B.t.act tt : Set (Fin F.P₀.g → K)) := by
   intro E _ _ _ H Dw l Xo c K _ _ _ y B t₀ m1 m2 F ρ tt htt u hu j
@@ -1006,9 +1004,6 @@ open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory GlobalTheory.CM GlobalTheory.LamT
 namespace GlobalTheory.PtDeg.LieModel
 
-theorem spMap_dualMap_id (R : Type) [CommRing R] : spMap (dualMap (RingHom.id R)) = 𝟙 _ := by
-  rw [_root_.Formalism.L2.Pj.dualMap_id]; exact Spec.map_id _
-
 theorem generic_coords_in_span : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (K : Type) [Field K] [NumberField K] (B : GlobalTheory.CM.PAT H (Sp (𝓞 K))) (t₀ : SAB H (Sp K)) (m2 : SABMap t₀ B.t (spMap (algebraMap (𝓞 K) K))) (F : GlobalTheory.CM.GenFib B.pol) (T : CDVR) (iK : K →+* T.Fr) (ρV : 𝓞 K →+* T.V), (algebraMap T.V T.Fr).comp ρV = iK.comp (algebraMap (𝓞 K) K) → ∀ (G : GlobalTheory.CM.PAT H (Sp T.V)) (t' : SAB H (Sp T.Fr)) (n : SABMap G.t B.t (spMap ρV)) (n' : SABMap t' t₀ (spMap iK)) (m2' : SABMap t' G.t (spMap (algebraMap T.V T.Fr))), m2'.φ ≫ n.φ = n'.φ ≫ m2.φ → ∀ (v' : Fin F.P₀.g → (epsR T.Fr ⟶ t'.G)), IsLieBasis v' → (∀ k, (v' k).left ≫ n'.φ ≫ m2.φ = spMap (Formalism.L2.Pj.dualMap iK) ≫ (F.v k).left ≫ F.φ) → ∀ (vV : Fin F.P₀.g → (epsR T.V ⟶ G.t.G)) (M : Fin F.P₀.g → Fin F.P₀.g → K), IsLieBasis vV → (∀ k, ∃ w : epsR K ⟶ F.P₀.A, IsLieComb (M k) F.v w ∧ spMap (Formalism.L2.Pj.dualMap (algebraMap T.V T.Fr)) ≫ (vV k).left ≫ n.φ = spMap (Formalism.L2.Pj.dualMap iK) ≫ w.left ≫ F.φ) → ∀ (ub : epsOver T.V T.V ⟶ G.t.G) (u'' : Sp (DualNumber T.Fr) ⟶ t'.G.left), IsTan ub → u'' ≫ m2'.φ = spMap (Formalism.L2.Pj.dualMap (algebraMap T.V T.Fr)) ≫ ub.left → ∃ (a : Fin F.P₀.g → T.V) (w'' : epsR T.Fr ⟶ t'.G), w''.left = u'' ∧ IsLieComb (∑ k, algebraMap T.V T.Fr (a k) • fun l => iK (M k l)) v' w'' := by
   intro E _ _ _ H K _ _ B t₀ m2 F T iK ρV hρV G t' n n' m2' h2 v' hv' hv'φ vV M hvV hM ub u'' hub hu''
 
@@ -1049,8 +1044,8 @@ theorem generic_coords_in_span : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     have hf : spMap (RingHom.id T.Fr) ≫ (spMap iK ≫ spMap (algebraMap (𝓞 K) K)) =
         spMap iK ≫ spMap (algebraMap (𝓞 K) K) := by rw [_root_.GlobalTheory.LevelFibre.spMap_id', Category.id_comp]
     have hm := LetterInt.comb_match hB F.fib.2.1 (RingHom.id T.Fr) iK hf
-      (fun i => by rw [spMap_dualMap_id, Category.id_comp]; exact hv'φ i) (fun _ => rfl) hw₁ hwk
-    rw [spMap_dualMap_id, Category.id_comp] at hm
+      (fun i => by rw [GlobalTheory.PtDeg.FrameGen.spMap_dualMap_id, Category.id_comp]; exact hv'φ i) (fun _ => rfl) hw₁ hwk
+    rw [GlobalTheory.PtDeg.FrameGen.spMap_dualMap_id, Category.id_comp] at hm
     have he : w₁ = g k := by
       refine Over.OverMorphism.ext (hB.1.hom_ext ?_ ((Over.w w₁).trans (Over.w (g k)).symm))
       rw [hm, ← hwkeq, ← h2, ← Category.assoc (g k).left, hg1, Category.assoc]
@@ -1062,9 +1057,9 @@ theorem generic_coords_in_span : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   have hf2 : spMap (algebraMap T.V T.Fr) ≫ 𝟙 (Sp T.V) = spMap (RingHom.id T.Fr) ≫ spMap (algebraMap T.V T.Fr) := by
     rw [_root_.GlobalTheory.LevelFibre.spMap_id', Category.id_comp, Category.comp_id]
   have hm2 := LetterInt.comb_match (_root_.GlobalTheory.ObjComp.isGrpPullback_id G.t.G) m2'.cart (algebraMap T.V T.Fr) (RingHom.id T.Fr) hf2
-    (v₁ := vV) (v₂ := g) (fun i => by rw [spMap_dualMap_id, Category.id_comp, Category.comp_id, hg1])
+    (v₁ := vV) (v₂ := g) (fun i => by rw [GlobalTheory.PtDeg.FrameGen.spMap_dualMap_id, Category.id_comp, Category.comp_id, hg1])
     (c₁ := a) (c₂ := fun k => algebraMap T.V T.Fr (a k)) (fun _ => rfl) ha hw
-  rw [spMap_dualMap_id, Category.id_comp, Category.comp_id] at hm2
+  rw [GlobalTheory.PtDeg.FrameGen.spMap_dualMap_id, Category.id_comp, Category.comp_id] at hm2
   have hleft : w.left = u'' := by
     refine m2'.cart.1.hom_ext ?_ ((Over.w w).trans hw''.symm)
     rw [← hm2, hu'']
@@ -1484,7 +1479,7 @@ lemma clear_last_column {n : ℕ} (A : Matrix (Fin (n+1)) (Fin (n+1)) F) :
   by_cases hz : ∀ i, A i (Fin.last n) = 0
   · refine ⟨1, by simp, fun i => ?_⟩
     simp [hz]
-  push_neg at hz
+  push Not at hz
   obtain ⟨i1, hi1⟩ := hz
   obtain ⟨i0, hmax⟩ := exists_max_val V F (fun i => A i (Fin.last n))
   have h0 : A i0 (Fin.last n) ≠ 0 := by
@@ -1509,8 +1504,8 @@ lemma clear_last_column {n : ℕ} (A : Matrix (Fin (n+1)) (Fin (n+1)) F) :
       simp [E, hne, hb]
   · rw [Matrix.map_mul, Matrix.mul_assoc, permMatrix_map, Matrix.mul_apply,
       Fintype.sum_eq_add i.castSucc (Fin.last n) (Fin.castSucc_lt_last i).ne]
-    · simp only [permMatrix_mul_apply, E, Matrix.map_apply, Matrix.of_apply, if_true,
-        (Fin.castSucc_lt_last i).ne, if_false, map_one, map_neg, hq]
+    · simp only [permMatrix_mul_apply, E, Matrix.map_apply, Matrix.of_apply, ite_true,
+        (Fin.castSucc_lt_last i).ne, ite_false, map_one, map_neg, hq]
       have : σ (Fin.last n) = i0 := by simp [hσ]
       rw [this]
       field_simp

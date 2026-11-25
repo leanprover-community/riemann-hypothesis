@@ -41,25 +41,6 @@ section -- clump:auto
 noncomputable section
 open scoped BigOperators
 
-namespace Formalism.L2.Th1.Top
-
-open Formalism.InvariantFactorPaths.G7 (UnrOK)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open Formalism.L2.Th1.H (cmL CmOK matH stdH stdLat blk4 pow4 imgLat relIdx IsIsom)
-
-def FrameExistsH : Prop :=
-  ∀ (a₀ : ℕ) (b₀ c₀ : ℤ) (dK : ℕ) (ha : 0 < a₀) (hdK : 0 < dK) (lam : ℂ) (hlam : lam ≠ 0), CmOK a₀ b₀ c₀ dK →
-  ∀ (l : ℕ) [Fact l.Prime], 5 ≤ l → ¬ l ∣ dK → (¬ ∃ a : ZMod l, a ^ 2 = -(dK : ZMod l)) →
-  ∀ (ι : ℂ ≃+* ℂ_[l]) (σ : MaximalUnramifiedExtension l →+* MaximalUnramifiedExtension l), UnrOK (MaximalUnramifiedExtension l) l σ →
-  ∀ (n : Type) [Fintype n] [DecidableEq n] (h : Matrix n n ℂ) (Λ : AddSubgroup (n → ℂ))
-    (g₀ g₁ : (Fin 4 × n → ℂ) ≃ₗ[ℂ] (Fin 4 × n → ℂ)), IsLatH (cmL a₀ b₀ dK ha hdK lam hlam) b₀ dK h Λ g₀ →
-    IsIsom (matH (blk4 h)) (stdH (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
-      (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) →
-    ¬ l ∣ relIdx (stdLat (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
-      (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ)) →
-    ∃ (γ : Matrix (Fin 4 × n) (Fin 4 × n) (MaximalUnramifiedExtension l)) (B' : Matrix n n ℂ_[l]), IsFrameH σ ι g₁ γ B'
-
-end Formalism.L2.Th1.Top
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -320,9 +301,9 @@ lemma vol_std_ne_bot {a : ℕ} {b : ℤ} {d : ℕ} {ha : 0 < a} {hd : 0 < d} {la
         UnitDetRootDefs.cmPair]
       exact Submodule.subset_span (Set.mem_insert _ _)
     by_cases h : i = j
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       exact hω
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       exact zero_mem _
   · have hD : (Matrix.of fun (j i : m) => if i = j then lam * (a : ℂ) else 0) =
         Matrix.diagonal (fun _ => lam * (a : ℂ)) := by
@@ -490,7 +471,7 @@ theorem mv_mul_apply {R : Type*} [CommRing R] (a : Fin 4) (G : Matrix (Fin 4 × 
   · rw [Fintype.sum_eq_single (0, z.2)]
     · simp [h]
     · intro y hy
-      rw [if_neg, zero_mul]
+      rw [ite_eq_right, zero_mul]
       rintro ⟨-, h0, h2⟩
       exact hy (Prod.ext h0 h2.symm)
   · simp [h]
@@ -502,7 +483,7 @@ theorem blockShift_mul_apply {R : Type*} [CommRing R] (k : Fin 4) (G : Matrix (F
   · rw [Fintype.sum_eq_single (k, z.2)]
     · simp [h]
     · intro y hy
-      rw [if_neg, zero_mul]
+      rw [ite_eq_right, zero_mul]
       rintro ⟨-, h0, h2⟩
       exact hy (Prod.ext h0 h2.symm)
   · simp [h]
@@ -515,7 +496,7 @@ theorem mv_mulVec (a : Fin 4) (y : Fin 4 × n → ℂ) :
   · rw [Fintype.sum_eq_single (0, x.2)]
     · simp [h]
     · intro z hz
-      rw [if_neg, zero_mul]
+      rw [ite_eq_right, zero_mul]
       rintro ⟨-, h0, h2⟩
       exact hz (Prod.ext h0 h2.symm)
   · simp [h]
@@ -528,7 +509,7 @@ theorem blockShift_mulVec (k : Fin 4) (y : Fin 4 × n → ℂ) :
   · rw [Fintype.sum_eq_single (k, x.2)]
     · simp [h]
     · intro z hz
-      rw [if_neg, zero_mul]
+      rw [ite_eq_right, zero_mul]
       rintro ⟨-, h0, h2⟩
       exact hz (Prod.ext h0 h2.symm)
   · simp [h]
@@ -595,7 +576,7 @@ theorem blockDiag_mul_blockShift {R : Type*} [CommRing R] (P : Matrix n n R) (k 
   · intro z hz
     by_cases hc : z.1 = 0 ∧ y.1 = k ∧ z.2 = y.2
     · exact absurd (Prod.ext hc.1 hc.2.2 : z = (0, y.2)) hz
-    · rw [if_neg hc, mul_zero]
+    · rw [ite_eq_right hc, mul_zero]
 
 theorem exists_cols (G Gi : Matrix (Fin 4 × n) (Fin 4 × n) ℂ) (hG : G * Gi = 1) :
     ∃ w : n → Fin 4 × n, IsUnit (Matrix.of fun i j => G (0, i) (w j)) := by
@@ -1560,16 +1541,16 @@ theorem blockShift_mul_apply {m : Type*} [Fintype m] (c : Fin 4) (X : Matrix (Fi
     (w : m) : ((bmv0 c : Matrix (Fin 4 × n) (Fin 4 × n) K) * X) (b, i) w = if b = 0 then X (c, i) w else 0 := by
   simp only [bmv0, Matrix.mul_apply, ite_mul, one_mul, zero_mul]
   by_cases hb : b = 0
-  · rw [if_pos hb, Finset.sum_eq_single (c, i)]
+  · rw [ite_eq_left hb, Finset.sum_eq_single (c, i)]
     · simp [hb]
     · rintro ⟨b', j⟩ _ hne
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨-, h1, h2⟩
       exact hne (Prod.ext h1 h2.symm)
     · simp
-  · rw [if_neg hb]
+  · rw [ite_eq_right hb]
     refine Finset.sum_eq_zero fun y _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨h, -⟩
     exact hb h
 
@@ -1635,7 +1616,6 @@ open Matrix
 namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Loc
 open Formalism.L2.Th1.Top.FrP Jac
 
-
 theorem local_core' : LocCore := by
   intro l _ dK σ δ h5 hld hin hσ hδ hσδ n _ _ M₁ M₂ R₁ R₂ c hc hGram hmv
   set S := setup h5 dK hld hin σ hσ δ hδ hσδ with hS
@@ -1685,7 +1665,7 @@ theorem local_core' : LocCore := by
   have hZc : ∀ b, what₂ M b = Z * U b := by
     intro b; refine Matrix.ext fun i w => ?_
     have := congrFun (congrFun (hUeq b) (0, i)) w
-    rw [blockShift_mul_apply, if_pos rfl] at this
+    rw [blockShift_mul_apply, ite_eq_left rfl] at this
     exact this
   have hrowsN : ∀ b, what₂ (M * U 0) b = if b = 0 then Z else 0 := by
     intro b; refine Matrix.ext fun i w => ?_
@@ -1862,7 +1842,7 @@ namespace Formalism.L2.Th1.Top
 
 open Formalism.L2.Th1.H (localStandard kappaExists)
 
-theorem frameExistsH : FrameExistsH := FrP.hermFrame_holds
+theorem frameExistsH : Formalism.L2.Th1.Top.FrP.HermFrame := FrP.hermFrame_holds
 
 theorem uniformGaussModels_fact_variant : ThetaFourthPowerShapeNormalised := theta_kappa_shape_holds localStandard kappaExists
 

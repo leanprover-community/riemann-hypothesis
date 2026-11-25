@@ -110,11 +110,11 @@ theorem exists_decomp (K : OpenSubgroup G) (hK : IsCompact (K : Set G)) (f : SB 
     rw [e, ind_apply]
     by_cases h : π x = q
     · have hm : x * q.out ∈ K := (key x q).2 h
-      rw [if_pos h, Set.indicator_of_mem (show x * q.out ∈ (K : Set G) from hm), mul_one]
+      rw [ite_eq_left h, Set.indicator_of_mem (show x * q.out ∈ (K : Set G) from hm), mul_one]
       have := hf _ hm q.out⁻¹
       rw [mul_inv_cancel_right] at this
       exact this.symm
-    · rw [if_neg h, Set.indicator_of_notMem
+    · rw [ite_eq_right h, Set.indicator_of_notMem
         (show x * q.out ∉ (K : Set G) from fun hm => h ((key x q).1 hm)), mul_zero]
   rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq]
   split_ifs with h

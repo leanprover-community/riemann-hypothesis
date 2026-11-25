@@ -224,21 +224,8 @@ lemma Icc_one_eq_Ioc (k : ℕ) : Finset.Icc 1 k = Finset.Ioc 0 k := by
 
 lemma sum_log_eq (k : ℕ) :
     ∑ n ∈ Finset.Ioc 0 k, Real.log n = ∑ n ∈ Finset.Ioc 0 k, Λ n * ((k / n : ℕ) : ℝ) := by
-  have h1 : ∀ n ∈ Finset.Ioc 0 k, Real.log n = ∑ d ∈ n.divisors, Λ d :=
-    fun n _ => ArithmeticFunction.vonMangoldt_sum.symm
-  rw [Finset.sum_congr rfl h1]
-  rw [Finset.sum_comm' (t' := Finset.Ioc 0 k) (s' := fun d => (Finset.Ioc 0 k).filter (d ∣ ·))]
-  · refine Finset.sum_congr rfl fun d _ => ?_
-    rw [Finset.sum_const, Nat.Ioc_filter_dvd_card_eq_div, nsmul_eq_mul, mul_comm]
-  · intro n d
-    simp only [Finset.mem_Ioc, Nat.mem_divisors, Finset.mem_filter]
-    constructor
-    · rintro ⟨⟨h0, hk⟩, hd, -⟩
-      have hle := Nat.le_of_dvd h0 hd
-      have hpos := Nat.pos_of_dvd_of_pos hd h0
-      exact ⟨⟨⟨h0, hk⟩, hd⟩, hpos, by omega⟩
-    · rintro ⟨⟨⟨h0, hk⟩, hd⟩, -, -⟩
-      exact ⟨⟨h0, hk⟩, hd, by omega⟩
+  simpa only [ArithmeticFunction.vonMangoldt_mul_zeta, ArithmeticFunction.log_apply] using
+    ArithmeticFunction.sum_Ioc_mul_zeta_eq_sum (R := ℝ) ArithmeticFunction.vonMangoldt k
 
 lemma mertens_upper (k : ℕ) (hk : 1 ≤ k) : A k ≤ Real.log k + (Real.log 4 + 4) := by
   have hk0 : (0:ℝ) < k := by exact_mod_cast hk
@@ -613,16 +600,6 @@ lemma partner_inPhi {g : E0 × H} (t : H) (hg : ¬ InPhi (g + topPl t)) : InPhi 
 
 end
 
-section
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
-
-end
-
-section
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
-
-end
-
 end CR
 
 theorem proposition_size_bound : GrowthSizeBound := by
@@ -834,7 +811,7 @@ lemma deriv_char (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (ψ : A
   have ty := truncC (fun n => (Λ n : ℂ) * primVal D ψ n) y _ hyM
   have tz := truncC (fun n => (Λ n : ℂ) * primVal D ψ n) z _ hzM
   unfold GPsi
-  rw [if_neg hψ, if_neg hψ, ty, tz]
+  rw [ite_eq_right hψ, ite_eq_right hψ, ty, tz]
   have e : (∑ n ∈ Icc 1 ⌊max y z⌋₊, (Λ n : ℂ) * primVal D ψ n * ((max (y / n - 1) 0 : ℝ) : ℂ) + (y : ℂ) * ell ψ)
       - (∑ n ∈ Icc 1 ⌊max y z⌋₊, (Λ n : ℂ) * primVal D ψ n * ((max (z / n - 1) 0 : ℝ) : ℂ) + (z : ℂ) * ell ψ)
       = ∑ n ∈ Icc 1 ⌊max y z⌋₊, (Λ n : ℂ) * primVal D ψ n * ((max (y / n - 1) 0 - max (z / n - 1) 0 : ℝ) : ℂ)
@@ -880,7 +857,7 @@ lemma wG_char (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (ψ : AddC
       = ∑ n ∈ Icc 1 M, (Λ n : ℂ) * primVal D ψ n * ((max (A / n - w) 0 : ℝ) : ℂ) + (A : ℂ) * ell ψ := by
   have t := truncC (fun n => (Λ n : ℂ) * primVal D ψ n) (A / w) M hM
   unfold GPsi
-  rw [if_neg hψ, t, mul_add, Finset.mul_sum]
+  rw [ite_eq_right hψ, t, mul_add, Finset.mul_sum]
   congr 1
   · apply Finset.sum_congr rfl
     intro n hn

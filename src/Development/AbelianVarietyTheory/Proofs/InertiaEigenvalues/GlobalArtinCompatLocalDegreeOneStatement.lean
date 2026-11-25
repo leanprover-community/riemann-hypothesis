@@ -110,27 +110,6 @@ theorem isOpen_valuation_lt_one {F : Type} [Field F] [NumberField F] (P : Height
   have h := Valued.isOpen_ball (P.adicCompletion F) 1
   simpa only [Valuation.restrict_lt_iff_lt_embedding, map_one] using h
 
-theorem valuation_lt_one_of_continuous {F F' : Type} [Field F] [NumberField F] [Field F'] [NumberField F']
-    {P : HeightOneSpectrum (𝓞 F)} {P' : HeightOneSpectrum (𝓞 F')}
-    (i : P.adicCompletion F →+* P'.adicCompletion F') (hi : Continuous i)
-    {x : P.adicCompletion F} (hx : Valued.v x < 1) : Valued.v (i x) < 1 := by
-  have hU : {y : P'.adicCompletion F' | Valued.v y < 1} ∈ 𝓝 (i 0) := by
-    rw [map_zero]
-    exact (isOpen_valuation_lt_one P').mem_nhds (by simp)
-  have hV := hi.continuousAt.preimage_mem_nhds hU
-  obtain ⟨γ, hγ⟩ := Valued.mem_nhds_zero.1 hV
-  have hγ0 : (MonoidWithZeroHom.ValueGroup₀.embedding γ.1) ≠ 0 := by
-    simp
-  obtain ⟨n, hn⟩ := exists_pow_lt₀ hx (Units.mk0 _ hγ0)
-  have hxn : x ^ n ∈ i ⁻¹' {y : P'.adicCompletion F' | Valued.v y < 1} := by
-    apply hγ
-    show Valued.v.restrict (x ^ n) < γ.1
-    rw [Valuation.restrict_lt_iff_lt_embedding, map_pow]
-    exact hn
-  have h1 : Valued.v (i x) ^ n < 1 := by simpa [map_pow] using hxn
-  by_contra h
-  exact absurd h1 (not_lt.2 (one_le_pow₀ (not_lt.1 h)))
-
 end GlobalTheory.PlaceOver
 
 namespace GlobalTheory.PlaceOver
@@ -148,7 +127,7 @@ theorem comap_eq_of_continuous_iso : ∀ (E E' : Type) [Field E] [NumberField E]
     have h1 : Valued.v (algebraMap E (w.adicCompletion E) (e : E)) < 1 := by
       rw [GlobalTheory.RayFromArtin.valued_algebraMap]
       exact (HeightOneSpectrum.valuation_lt_one_iff_mem (K := E) w e).2 he
-    have h2 := valuation_lt_one_of_continuous (i : w.adicCompletion E →+* w'.adicCompletion E') hi h1
+    have h2 := _root_.GlobalTheory.ConjParahoric.val_lt_one_map (i : w.adicCompletion E →+* w'.adicCompletion E') hi h1
     have h3 : (i : w.adicCompletion E →+* w'.adicCompletion E') (algebraMap E (w.adicCompletion E) (e : E)) =
         algebraMap E' (w'.adicCompletion E') (algebraMap E E' (e : E)) := hc _
     rw [h3, GlobalTheory.RayFromArtin.valued_algebraMap] at h2
@@ -860,7 +839,7 @@ theorem res_art_eq_art (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algeb
   obtain ⟨a, hap, hapos⟩ := _root_.GlobalTheory.FinPlaceApproxPos.approxpos_target E' TSK (fun u => if u = w' then (y : E') else 1) (P0 + m)
   have haW : w'.valuation E' (a - y) ≤ WithZero.exp (-((P0 : ℤ) + m)) := by
     have := hap w' hWT
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     exact val_le_of_le₁ w' this (by push_cast; omega)
   have hz : w'.valuation E' (a / y - 1) ≤ WithZero.exp (-(P0 : ℤ)) :=
     val_div_sub_one_le₁ w' y.ne_zero le_rfl haW
@@ -874,7 +853,7 @@ theorem res_art_eq_art (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algeb
   have hauy : au = y * zu := by simp [zu]
   have hoth : ∀ u ∈ TSK, u ≠ w' → u.valuation E' (a - 1) ≤ WithZero.exp (-(P0 : ℤ)) := fun u hu hne => by
     have := hap u hu
-    rw [if_neg hne] at this
+    rw [ite_eq_right hne] at this
     exact val_le_of_le₁ u this (by push_cast; omega)
 
   have F1 : ψ1 (locUnit E' w' au) = ψ1 (locUnit E' w' y) := by

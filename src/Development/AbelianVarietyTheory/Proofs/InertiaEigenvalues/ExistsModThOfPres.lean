@@ -94,8 +94,6 @@ theorem aeval_apply_comm {O : Type} [CommRing O] {k : Type} [Field k] [Algebra O
       Module.End.mul_apply, Module.End.mul_apply, Module.algebraMap_end_apply,
       Module.algebraMap_end_apply, hJ, pow_apply_comm J ν μ hνμ]
 
-alias main := _root_.GlobalTheory.AevalCommute.aeval_apply_comm
-
 end GlobalTheory.AevalCommute
 end -- clump:auto
 end -- clump:auto
@@ -120,7 +118,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n₀ : ℕ}
     (W : LocWach PD LL O v n₀) {k : Type} [Field k] [Algebra O k]
-
 
 omit [TopologicalSpace G] [Algebra Qp LL] [TopologicalSpace LL] in
 theorem exists_c (hk : (PD.p : k) = 0) (u : Oˣ) (hu : (u : O) = 1 + (PD.p : O)) :
@@ -160,17 +157,6 @@ theorem γD_smulA (T : LocLat G Qp LL O) (g : W.Gam) (a : LetA O n₀) (x : W.DD
     W.γD T g (a • x) = W.γA g a • W.γD T g x := by
   rw [← algebraMap_smul W.EE a x, W.γD_smul, W.γE_ext, algebraMap_smul]; rfl
 
-theorem sum_Del {M : Type} [AddCommMonoid M] (f : W.Gam → M) {δ : W.Gam} (hδ : δ ∈ W.DelF) :
-    ∑ ε ∈ W.DelF, f (δ * ε) = ∑ ε ∈ W.DelF, f ε := by
-  have hm : ∀ g, g ∈ W.DelF ↔ IsOfFinOrder g := fun g => by
-    rw [W.DelF_def, isOfFinOrder_iff_pow_eq_one]
-  refine Finset.sum_bij' (fun ε _ => δ * ε) (fun ε _ => δ⁻¹ * ε) ?_ ?_ ?_ ?_ ?_
-  · intro a ha; exact (hm _).2 (((hm _).1 hδ).mul ((hm _).1 ha))
-  · intro a ha; exact (hm _).2 (((hm _).1 hδ).inv.mul ((hm _).1 ha))
-  · intro a _; simp
-  · intro a _; simp
-  · intro a _; rfl
-
 theorem γA_q {δ : W.Gam} (hδ : δ ∈ W.DelF) :
     W.γA δ (W.π₀ + (PD.p : LetA O n₀)) = W.π₀ + (PD.p : LetA O n₀) := by
   rw [map_add (f := _), map_natCast]
@@ -179,7 +165,7 @@ theorem γA_q {δ : W.Gam} (hδ : δ ∈ W.DelF) :
   change W.γ₀ δ W.π₀₁ = W.π₀₁
 
   rw [LocWach.π₀₁, map_add (f := _), map_sub, map_one, map_natCast, map_sum,
-  ← sum_Del W (fun ε => W.γ₀ ε (1 + PowerSeries.X)) hδ]
+  ← GlobalTheory.Present.RedLat.sum_del W (fun ε => W.γ₀ ε (1 + PowerSeries.X)) hδ]
   simp only [map_mul, AlgHom.mul_apply]
 
 theorem γA_e (g : W.Gam) (i : ZMod n₀) : W.γA g (letE i) = letE i := by
@@ -264,7 +250,7 @@ theorem red_div (hq : Onto T A q) (hk : (PD.p : k) = 0) (hc : (W.DelF.card : k) 
   have hz' : ∑ δ ∈ W.DelF, W.γD T δ z ∈ W.NΔ T := by
     refine ⟨Submodule.sum_mem _ fun δ _ => W.N_Γ T δ z hz, fun δ hδ => ?_⟩
 
-    rw [map_sum, ← sum_Del W (fun ε => W.γD T ε z) hδ]
+    rw [map_sum, ← GlobalTheory.Present.RedLat.sum_del W (fun ε => W.γD T ε z) hδ]
     simp only [W.γD_mul]
   have he : (letE (τ i) : LetA O n₀) • (y : W.DD T) ∈ DΔ W T := fun δ hδ => by
     rw [γD_smulA, γA_e, y.2.2 δ hδ]
@@ -468,7 +454,6 @@ theorem span_ind {A D V : Type} [CommRing A] [AddCommGroup D] [Module A D] [AddC
 
 variable {k : Type} [Field k] [Algebra O k] {l : ℕ} [Fact l.Prime] [CharP k l] {n : ℕ} {R : RingPG k l}
   {ι : k⸨X⸩ →ₐ[k] k⸨X⸩}
-
 
 variable (k l) in
 def DelAct : Prop :=
@@ -1442,7 +1427,6 @@ theorem sen_gen [IsDomain O] (p : Pres W F ι τ γ) (hp : ((PD.p : ℕ) : k) = 
   rw [← X_smul_eq, ← h2, h1, one_smul, hw, map_sub, map_sum, hnab]
   simp only [hO', Matrix.map_apply]
 
-
 omit [TopologicalSpace G] [TopologicalSpace LL] in
 theorem exists_isC (hp : ((PD.p : ℕ) : k) = 0) (u : Oˣ) (hu : (u : O) = 1 + ((PD.p : ℕ) : O)) :
     ∃ c : ℤ → O, GlobalTheory.WachUse.IsC PD LL c ∧ ∀ a : ℤ, algebraMap O k (c a) = -(a : k) := by
@@ -1461,8 +1445,6 @@ theorem map_prod_c (c : ℤ → O) (hc : ∀ a : ℤ, algebraMap O k (c a) = -(a
   simp [hc]
 
 end Gen
-
-
 
 theorem sen_base : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW l P) (S : TopSit P) (k : Type) [Field k] [Algebra S.O k] [CharP k l], S.IsRes k → ∀ {R : RingPG k l} (ι : k⸨X⸩ →ₐ[k] k⸨X⸩) (F : DFun R S.n S.G) (τ : ZMod S.n → ZMod (Module.finrank ℚ_[l] ↥(K0 S.K))) (γ : (S.W H).Gam) (p : Pres (S.W H) F ι τ γ), GlobalTheory.IndefiniteRowSideFullHecke.OnePlusPowerCharacters.IsCyclotomic R ι → (∀ i, (S.W H).emb (τ i) = S.emb i) → ((S.W H).χΓ γ : S.O) = 1 + (l : S.O) → GlobalTheory.WachUse.QN (S.W H) → ∀ (T : LocLat S.G ℚ_[l] ↥S.LL.1 S.O) (A : Ob k S.G) q (U : ZMod S.n → Multiset ℤ), Onto T A q → KerIs S.Γ.lam q → CrysWith (P.PD S.K) S.emb T.ρ U → ∀ N : Lats k S.n A.m, (∀ i y, y ∈ N i ↔ ∃ x : ↥(DΔ (S.W H) T), (x : (S.W H).DD T) ∈ (S.W H).N T ∧ p.j T A q i x = y) → ∀ i x, sen ((F.D A).γ i) (N i) x = resCount (U i) 0 x := by
   intro l _ P H S k _ _ _ hk R ι F τ γ p hι hτ hγ hQ T A q U hO hK hU N hN i x

@@ -4,49 +4,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoMvps
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Gordan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.MvPowerSeries.Substitution
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -62,7 +22,7 @@ private theorem weight_zero_power_series_surjective (O : Type) [CommRing O] {σ 
   let a : τ → MvPowerSeries σ O := fun s => monomial (g s) 1
   have ha : HasSubst a := hasSubst_of_constantCoeff_zero fun s => by
     show constantCoeff (monomial (g s) (1 : O)) = 0
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, if_neg (hg0 s).symm]
+    rw [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, ite_eq_right (hg0 s).symm]
   have hprod : ∀ d : τ →₀ ℕ, (d.prod fun s e => a s ^ e) = monomial (Finsupp.linearCombination ℕ g d) (1 : O) := by
     intro d
     induction d using Finsupp.induction_linear with
@@ -91,7 +51,7 @@ private theorem weight_zero_power_series_surjective (O : Type) [CommRing O] {σ 
   refine ⟨substAlgHom ha, fun F n hn => ?_, fun f hf => ?_⟩
   · rw [hco]
     refine finsum_eq_zero_of_forall_eq_zero fun d => ?_
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     rintro rfl
     exact hn (hw d)
   · choose! e he using hgen
@@ -105,14 +65,14 @@ private theorem weight_zero_power_series_surjective (O : Type) [CommRing O] {σ 
     rw [hco]
     by_cases hn : Finsupp.weight wt n = 0
     · rw [finsum_eq_single _ (e n)]
-      · rw [hF, he n hn, if_pos rfl, if_pos rfl, mul_one]
+      · rw [hF, he n hn, ite_eq_left rfl, ite_eq_left rfl, mul_one]
       · intro d hd
         by_cases h : n = Finsupp.linearCombination ℕ g d
-        · rw [hF, ← h, if_neg hd, zero_mul]
-        · rw [if_neg h, mul_zero]
+        · rw [hF, ← h, ite_eq_right hd, zero_mul]
+        · rw [ite_eq_right h, mul_zero]
     · rw [hf n hn]
       refine finsum_eq_zero_of_forall_eq_zero fun d => ?_
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       rintro rfl
       exact hn (hw d)
 

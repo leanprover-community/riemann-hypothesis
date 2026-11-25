@@ -407,11 +407,6 @@ private theorem K0_mem {l : ℕ} [Fact l.Prime] (K : FinExt l) (c : ↥(K0 K)) :
     ← algebraMap_smul ↥K.1]
   exact Submodule.smul_mem _ _ ((PP l).PD K).one_mem
 
-private theorem fil_iff {l : ℕ} [Fact l.Prime] (K K' : FinExt l) (x : Bdr l) :
-    x ∈ ((PP l).PD K).Fil 0 ↔ x ∈ ((PP l).PD K').Fil 0 := by
-  obtain ⟨T⟩ := tiedP l
-  rw [T.fil, T.fil]
-
 theorem UpperTheory.norm_le_one_of_mem_spectrum_frobenius_matrix_fil_zero :
     ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (f : ℕ), 0 < f → (∀ x : ↥(K0 K), (((PP l).PD K).σ)^[f] x = x) → ∀ {d : ℕ} (M M' : Matrix (Fin d) (Fin d) (Bcr l)) (F : Matrix (Fin d) (Fin d) ↥(K0 K)), M' * M = 1 → (∀ (k : ℕ) i j, (PP l).ιB (((PP l).φB)^[k] (M i j)) ∈ ((PP l).PD (botExt l)).Fil 0) → M.map (((PP l).φB)^[f]) = M * F.map (algebraMap ↥(K0 K) (Bcr l)) → ∀ a ∈ spectrum (Om l) (F.map (algebraMap ↥(K0 K) (Om l))), ‖a‖ ≤ 1 := by
   intro l _ K f hf hσ d M M' F hM hFil hφ a ha
@@ -440,7 +435,7 @@ theorem UpperTheory.norm_le_one_of_mem_spectrum_frobenius_matrix_fil_zero :
     simp only [hXd, Matrix.mul_apply, Matrix.map_apply]
     refine Subring.sum_mem _ fun c _ => Subring.mul_mem _ (fun n => ?_) (K0_mem K _)
     rw [AlgHom.coe_pow]
-    exact (fil_iff _ _ _).1 (hFil n i c)
+    exact (Set.ext_iff.1 ((PP l).PD_Fil (botExt l) K 0) _).1 (hFil n i c)
   have hbS : (X.submatrix s id).det ∈ filS K := by
     rw [Matrix.det_apply']
     exact Subring.sum_mem _ fun p _ => Subring.mul_mem _ (intCast_mem _ _)
@@ -455,7 +450,7 @@ theorem UpperTheory.norm_le_one_of_mem_spectrum_frobenius_matrix_fil_zero :
   have hle := UpperTheory.norm_le_one_of_frobenius_pow_eigenvector_mem_fil_zero K f hf hσ _ F'.det hs hb fun i => by
     have := hbS i
     rw [AlgHom.coe_pow] at this
-    exact (fil_iff _ _ _).1 this
+    exact (Set.ext_iff.1 ((PP l).PD_Fil K (botExt l) 0) _).1 this
   rw [hdet] at hle
   exact (pow_le_one_iff_of_nonneg (norm_nonneg a) hr.ne').1 hle
 end -- clump:auto

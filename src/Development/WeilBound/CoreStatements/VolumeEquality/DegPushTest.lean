@@ -94,7 +94,7 @@ theorem monoLines_perm {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype 
       ((Finsupp.toMultiset (∑ j, Finsupp.single (w j) 1 : J →₀ ℕ)).toList).map fun x => (l x).a := by
     refine List.ext_getElem (by simp) fun i h h' => ?_
     have hi : i < (Finsupp.toMultiset (∑ j, Finsupp.single (w j) 1 : J →₀ ℕ)).toList.length := by simpa using h'
-    simp only [List.getElem_ofFn, List.getElem_map, monoLines, dif_pos hi, List.get_eq_getElem]
+    simp only [List.getElem_ofFn, List.getElem_map, monoLines, dite_eq_left hi, List.get_eq_getElem]
   rw [h4]
   have h5 := h2.map fun x => (l x).a
   rwa [List.map_ofFn] at h5
@@ -128,7 +128,7 @@ theorem geoFun_word (hI : PB.Inputs) (w : Fin (dimFl Ψ N) → Ψ × Fin N) :
   have h4 := GlobalTheory.CompanionTheory.Ar.Giv.degreeGeneric_of_degree hI.degree M.K M.ι M.P (dimFl Ψ N)
     (monoLines (M.line 1) (∑ j, Finsupp.single (some (w j)) 1) (dimFl Ψ N)) M.arith (monoLines_smooth _ hs _ _)
   have hδ : (M.δ : ℝ) ≠ 0 := Nat.cast_ne_zero.2 M.δ_pos.ne'
-  rw [h1, RootModel.geoFun, Module.Basis.constr_basis, RootModel.geoMono, if_pos h2, h3, pow_zero, mul_one, div_mul_cancel₀ _ hδ]
+  rw [h1, RootModel.geoFun, Module.Basis.constr_basis, RootModel.geoMono, ite_eq_left h2, h3, pow_zero, mul_one, div_mul_cancel₀ _ hδ]
   refine h4.trans (congrArg _ ?_)
   refine (intNum_perm _ _ _ (monoLines_perm (M.line 1) fun j => some (w j))).trans ?_
   simp only [RootModel.line, M.x_deg]

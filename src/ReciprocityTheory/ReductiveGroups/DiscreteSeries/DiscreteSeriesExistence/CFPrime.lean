@@ -40,9 +40,7 @@ theorem diagE_eT (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M
 
 theorem casimir_eT (E : Fin n → Fin n → Module.End ℂ M) :
     casimir (eT (n := n) E) = TensorProduct.map (casimir E) LinearMap.id := by
-  apply TensorProduct.ext'
-  intro m f
-  simp [casimir, eT, LinearMap.sum_apply, TensorProduct.sum_tmul]
+  exact ReciprocityTheory.ChartRestriction.DS.ssh_casimir_eT E
 
 theorem cfp_map_sub_smul_one (T : Module.End ℂ M) (c : ℂ) :
     TensorProduct.map (T - c • 1) (LinearMap.id : Fock n →ₗ[ℂ] Fock n) =

@@ -401,12 +401,6 @@ theorem Rat.ipAt_indep (R : S.Rat) (h : S.Ok) (s : S.Sec) (v : InfinitePlace K) 
 
 end GSD
 
-namespace GSD
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : GSD K}
-
-end GSD
-
 section ColsRat
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)

@@ -14,7 +14,7 @@ variable {A K : Type} [CommRing A] [IsLocalRing A] [Field K] [Algebra A K]
 
 def chartEquiv {Z : Scheme.{0}} {U : Z.Opens} (φ : Γ(Z, U) →+* K) (hi : Function.Injective φ) (B : Subalgebra A K)
     (hr : φ.range = B.toSubring) : Γ(Z, U) ≃+* B :=
-  (RingEquiv.ofBijective φ.rangeRestrict ⟨fun a b h => hi (congrArg Subtype.val h), φ.rangeRestrict_surjective⟩).trans
+  (RingEquiv.ofBijective φ.rangeRestrict ⟨fun _ _ h => hi (congrArg Subtype.val h), φ.rangeRestrict_surjective⟩).trans
     (RingEquiv.subringCongr hr)
 
 theorem chartEquiv_apply {Z : Scheme.{0}} {U : Z.Opens} (φ : Γ(Z, U) →+* K) (hi : Function.Injective φ)
@@ -83,7 +83,7 @@ def CoverOfData : Prop := ∀ (A : Type) [CommRing A] [IsLocalRing A] (K : Type)
     Charts B C t → ChartData p B C t → Cover p B C t
 
 def Overlap : Prop := ∀ (A : Type) [CommRing A] [IsLocalRing A] (K : Type) [Field K] [Algebra A K]
-  {Z : Scheme.{0}} (p : Z ⟶ Spec (CommRingCat.of A)) (B C : Subalgebra A K) (t : K), Charts B C t →
+  {Z : Scheme.{0}} (_ : Z ⟶ Spec (CommRingCat.of A)) (B C : Subalgebra A K) (t : K), Charts B C t →
   ∀ (U V : Z.Opens) (φU : Γ(Z, U) →+* K) (φV : Γ(Z, V) →+* K) (φW : Γ(Z, U ⊓ V) →+* K)
     (hU : IsAffineOpen U) (hV : IsAffineOpen V), IsAffineOpen (U ⊓ V) → U ⊔ V = ⊤ →
     ∀ (iU : Function.Injective φU) (iV : Function.Injective φV), Function.Injective φW →

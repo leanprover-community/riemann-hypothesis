@@ -22,56 +22,17 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunct
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryPairPartnerInverseTransposeStatement
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SiegelRuleDiagonalDoubledSchroedingerModelStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.RingTheory.PicardGroup
 import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
 import Development.AbelianVarietyTheory.Definitions.Foundations.WittIndexEqZeroIff
 import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Mathlib.Algebra.Azumaya.Basic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledUnitaryPartnerDiagStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransportedWeilDatumIsUnitaryAdelicSchwartzStatement
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledDarbouxCoordsRationalOfRationalStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledGramSatisfiesXiRelationStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDoubledPairWeilDatumSchrodingerTransport, Development.AbelianVarietyTheory.Definitions.LatticeFrames.ConclusionZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitarySplittingTransportedDoubledWeilDatum, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledCoordsThetaTransformProductEqTensorConjStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledWeilDatumFirstFactorOnDoublingTensor, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledWeilDatumFirstFactorOnDoublingTensorStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaTransformInjOnAdelicSchwartzSpace, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaTransformInjOnAdelicSchwartzSpaceStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealGramHermitianSpaceDoubledBlockDiagonal, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledSchroedingerModelSiegelRule, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledSchroedingerModelSiegelRuleStatement
@@ -86,15 +47,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-theorem _root_.GlobalTheory.T.doubledDarbouxCoords_rational_of_rational : ∀ (D : D7) (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E)
-    (ξ : AF D.host.F ⊗[D.host.F] D.host.E) (κ : Type) [Fintype κ]
-    (co : GlobalTheory.WeilM.Darboux (GlobalTheory.WeilM.symp (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) ξ (incM D.host.F JA) (incM D.host.F JB)) κ),
-    (∀ x : Matrix (Fin T.rank) (Fin S.rank) D.host.E, ∃ y z : κ → D.host.F,
-      co.e (incM D.host.F x) = (fun i => algebraMap D.host.F (AF D.host.F) (y i), fun i => algebraMap D.host.F (AF D.host.F) (z i))) →
-    ∀ x : Matrix (Fin T.rank) (Fin (GlobalTheory.Doubling.dblSp S).rank) D.host.E, ∃ y z : κ ⊕ κ → D.host.F,
-      (GlobalTheory.DblSchr.ddr co).e (incM D.host.F x) =
-        (fun i => algebraMap D.host.F (AF D.host.F) (y i), fun i => algebraMap D.host.F (AF D.host.F) (z i)) := by
-  first | exact @GlobalTheory.DblSchr.ddr_rat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledDarbouxCoordsRationalOfRationalStatement =====
@@ -109,10 +61,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-theorem _root_.GlobalTheory.T.doubledGram_satisfies_xi_relation : ∀ (D : D7) (S : HSp D) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E) (ξ : AF D.host.F ⊗[D.host.F] D.host.E),
-    ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹) →
-    ξ • incM D.host.F (GlobalTheory.DblSchr.JBd S JB) = incM D.host.F (D.host.xi0 • (GlobalTheory.Doubling.dblSp S).gram⁻¹) := by
-  first | exact @GlobalTheory.DblSchr.dblGram_xi
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledGramSatisfiesXiRelationStatement =====
@@ -154,8 +102,8 @@ theorem exists_dbl_weilDatum_transport : ∀ (D : D7) (ψ : AddChar (AF D.host.F
     Formalism.L2.Theta.resEta_parity r0 (by show 0 % 2 = (S.rank + S.rank) % 2; omega)
   obtain ⟨ωd, hωd⟩ := GlobalTheory.weilRepresentationUnitaryPair D ψ (GlobalTheory.Doubling.dblSp S) T 1 χT hψ h1 hT r1 rT
   refine ⟨ωd, hωd, ?_⟩
-  exact GlobalTheory.T.exists_weilDatum_transport_adelicSchwartz_thetaTransform D ψ hψ (GlobalTheory.Doubling.dblSp S) T 1 χT h1 hT r1 rT JA (JBd S JB) ξ hJA
-    (GlobalTheory.T.doubledGram_satisfies_xi_relation D S JB ξ hξ) (κ ⊕ κ) (ddr co) (GlobalTheory.T.doubledDarbouxCoords_rational_of_rational D S T JA JB ξ κ co hco) ωd hωd
+  exact GlobalTheory.ThetaTransform.exists_isTransport D ψ hψ (GlobalTheory.Doubling.dblSp S) T 1 χT h1 hT r1 rT JA (JBd S JB) ξ hJA
+    (GlobalTheory.DblSchr.dblGram_xi D S JB ξ hξ) (κ ⊕ κ) (ddr co) (GlobalTheory.DblSchr.ddr_rat D S T JA JB ξ κ co hco) ωd hωd
 
 end GlobalTheory.DblSchr
 end -- clump:auto
@@ -256,8 +204,6 @@ end GlobalTheory.DblSchr
 
 namespace GlobalTheory.DblSchr
 
-
-
 theorem isUSplitting_omdOf : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS χT : (AE D)ˣ →* Circle), IsHeckeChar D χS → IsHeckeChar D χT →
       ResEta D χS S.rank → ResEta D χT T.rank →
@@ -328,15 +274,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-theorem _root_.GlobalTheory.T.doubledCoordsThetaTransform_product_eq_tensor_conj : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
-    ∀ (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E)
-      (ξ : AF D.host.F ⊗[D.host.F] D.host.E) (κ : Type) [Fintype κ]
-      (co : GlobalTheory.WeilM.Darboux (GlobalTheory.WeilM.symp (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) ξ (incM D.host.F JA) (incM D.host.F JB)) κ),
-      ∀ φ₁ ∈ GlobalTheory.WeilM.schA D.host.F κ, ∀ φ₂ ∈ GlobalTheory.WeilM.schA D.host.F κ,
-        GlobalTheory.WeilSchrodinger.thetaTr D.host.F (GlobalTheory.DblSchr.ddr co) ψ (GlobalTheory.WeilM.boxFun φ₁ φ₂) =
-          GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.delta S T (GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ φ₁)
-            (GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ (fun x => starRingEnd ℂ (φ₂ (-x)))) := by
-  first | exact @GlobalTheory.Adopt.doubledCoordsThetaTransform_product_eq_tensor_conj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledCoordsThetaTransformProductEqTensorConjStatement =====
@@ -555,13 +492,13 @@ theorem restr_boxFun : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar 
   have hΦ := GlobalTheory.SchwartzBox.boxFun_mem_schA D.host.F κ κ φ₁ hφ₁ φ₂ hφ₂
   have t2 := homd 1 (reG _ finSumFinEquiv.symm (incM_JBd S JB) gd) (io S (gs, 1)) 1 hh2 hgdd _ hΦ
   have hφ₂' := _root_.GlobalTheory.Adopt.adelicSchwartzSpace_closed_under_conj_reflection D.host.F κ φ₂ hφ₂
-  have th₁ := GlobalTheory.T.isThetaFunction_thetaTransform_rationalDarboux D ψ hψ S T JA JB ξ hA hB κ co hrat φ₁ hφ₁
-  have th₂ := GlobalTheory.T.isThetaFunction_thetaTransform_rationalDarboux D ψ hψ S T JA JB ξ hA hB κ co hrat _ hφ₂'
-  have key := t2.2.trans ((congrArg (ωd (io S (gs, 1), 1)) (GlobalTheory.T.doubledCoordsThetaTransform_product_eq_tensor_conj D ψ hψ S T JA JB ξ κ co φ₁ hφ₁ φ₂ hφ₂)).trans
+  have th₁ := GlobalTheory.ThetaTransformTheta.isThetaFunO_thetaTr D ψ hψ S T JA JB ξ hA hB κ co hrat φ₁ hφ₁
+  have th₂ := GlobalTheory.ThetaTransformTheta.isThetaFunO_thetaTr D ψ hψ S T JA JB ξ hA hB κ co hrat _ hφ₂'
+  have key := t2.2.trans ((congrArg (ωd (io S (gs, 1), 1)) (DoublingThetaSums.GlobalTheory.CompanionTheory.DblTheta.thetaTr_ddr_boxFun D ψ hψ S T JA JB ξ κ co φ₁ hφ₁ φ₂ hφ₂)).trans
     ((GlobalTheory.T.doubledWeilDatum_firstFactor_on_doublingTensor D ψ hψ S T χS χT ω hω ωd hωd gs _ _ th₁ th₂).trans
       ((congrArg (fun f => GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.delta S T f
         (GlobalTheory.WeilSchrodinger.thetaTr D.host.F co ψ (fun x => starRingEnd ℂ (φ₂ (-x))))) t1.2.symm).trans
-        (GlobalTheory.T.doubledCoordsThetaTransform_product_eq_tensor_conj D ψ hψ S T JA JB ξ κ co _ t1.1 φ₂ hφ₂).symm)))
+        (DoublingThetaSums.GlobalTheory.CompanionTheory.DblTheta.thetaTr_ddr_boxFun D ψ hψ S T JA JB ξ κ co _ t1.1 φ₂ hφ₂).symm)))
   refine GlobalTheory.T.thetaTransform_injOn_adelicSchwartzSpace D ψ hψ (κ ⊕ κ) _ t2.1 _ (GlobalTheory.SchwartzBox.boxFun_mem_schA D.host.F κ κ _ t1.1 φ₂ hφ₂) fun w => ?_
   have := congrFun key ((ddr co).e.symm w)
   simpa only [GlobalTheory.WeilSchrodinger.thetaTr, GlobalTheory.WeilM.Darboux.rho, LinearEquiv.apply_symm_apply] using this
@@ -635,7 +572,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto

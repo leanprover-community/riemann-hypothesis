@@ -23,14 +23,9 @@ namespace LiftGraphMetric
 theorem pderiv_rename_of_not_mem_range {σ τ R : Type*} [CommSemiring R] {f : σ → τ} {t : τ}
     (ht : t ∉ Set.range f) (p : MvPolynomial σ R) : pderiv t (rename f p) = 0 := by
   classical
-  induction p using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p n hp =>
-    have hne : f n ≠ t := fun h => ht ⟨n, h⟩
-    simp only [map_mul, rename_X, Derivation.leibniz, hp, smul_eq_mul]
-    rw [pderiv_X, Pi.single_eq_of_ne hne]
-    simp
+  refine pderiv_eq_zero_of_notMem_vars fun h => ?_
+  obtain ⟨i, _, hi⟩ := mem_vars_rename f p h
+  exact ht ⟨i, hi⟩
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {r : ℕ}
 
@@ -38,10 +33,8 @@ def oldEmb (r : ℕ) : (Σ k, ι k) → (Σ k, addIdx ι r k) := fun p => ⟨som
 
 theorem oldEmb_injective : Function.Injective (oldEmb (ι := ι) r) := by
   rintro ⟨k, i⟩ ⟨k', i'⟩ h
-  have h1 : k = k' := Option.some.inj (congrArg Sigma.fst h)
-  subst h1
-  have h2 := eq_of_heq (Sigma.mk.inj h).2
-  subst h2
+  dsimp [oldEmb] at h
+  cases h
   rfl
 
 def oldCLM (r : ℕ) : ((Σ k, addIdx ι r k) → ℂ) →L[ℂ] ((Σ k, ι k) → ℂ) :=
@@ -60,15 +53,13 @@ variable {Ω : Type} [Field Ω]
 theorem rename_mem_mCoordIdeal (y : (Σ k, ι k) → Ω) (v : Fin r → Ω) {f : MRing ι}
     (hf : f ∈ mCoordIdeal y) : rename (oldEmb r) f ∈ mCoordIdeal (addBlock y v) := by
   rw [mCoordIdeal, RingHom.mem_ker] at hf ⊢
-  have key : ∀ g : MRing ι, mConeMap (addBlock y v) (rename (oldEmb r) g) = rename some (mConeMap y g) := by
-    intro g
-    simp only [mConeMap, aeval_rename]
-    induction g using MvPolynomial.induction_on with
-    | C a => simp
-    | add p q hp hq => simp [hp, hq]
-    | mul_X p n hp =>
-      simp only [map_mul, aeval_X, hp, Function.comp_apply, rename_C, rename_X]
-      rfl
+  have key := RingHom.congr_fun (MvPolynomial.ringHom_ext
+    (f := (mConeMap (addBlock y v)).toRingHom.comp (rename (oldEmb r)).toRingHom)
+    (g := (rename some).toRingHom.comp (mConeMap y).toRingHom)
+    (fun _ => by simp [mConeMap]) fun p => by
+      simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_X,
+        mConeMap, aeval_X, map_mul, rename_C]; rfl) f
+  dsimp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe] at key
   rw [key, hf, map_zero]
 
 theorem oldPart_mem_mcPts {y : (Σ k, ι k) → Ω} {v : Fin r → Ω} {z : (Σ k, addIdx ι r k) → ℂ}
@@ -146,12 +137,12 @@ theorem proof (hF : LiftGraphFactor.Statement) : LiftGraphMetric.Statement := by
     { a := unitDeg none
       h := fun z => if z ∈ U then F z else 0
       pos := fun z hz => by
-        simp only [if_pos (show z ∈ U from hz)]
+        simp only [ite_eq_left (show z ∈ U from hz)]
         exact hFpos z hz
       smul := by
         intro c z hc
         by_cases hz : z ∈ U
-        · rw [if_pos ((hmemU c hc z).2 hz), if_pos hz]
+        · rw [ite_eq_left ((hmemU c hc z).2 hz), ite_eq_left hz]
           let c' : K → ℂ := fun k => c (some k)
           have hc' : ∀ k, c' k ≠ 0 := fun k => hc _
           have h1 : N.h (basePart₂ (fun p => c p.1 * z p)) = (∏ k, ‖c' k‖ ^ N.a k) * N.h (basePart₂ z) :=
@@ -179,7 +170,7 @@ theorem proof (hF : LiftGraphFactor.Statement) : LiftGraphMetric.Statement := by
           simp only [F]
           rw [hprod, hs1, hs2, h1, mul_pow, hpow]
           field_simp
-        · rw [if_neg (mt (hmemU c hc z).1 hz), if_neg hz, mul_zero] }
+        · rw [ite_eq_right (mt (hmemU c hc z).1 hz), ite_eq_right hz, mul_zero] }
   have hAh : ∀ z, A.h z = if z ∈ U then F z else 0 := fun z => rfl
   have h2le : (2 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤)
   have hoR : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : (Σ k, addIdx ι r k) → ℂ => basePart₂ z) :=
@@ -194,7 +185,7 @@ theorem proof (hF : LiftGraphFactor.Statement) : LiftGraphMetric.Statement := by
   have hFs : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F U :=
     ((hNo.pow a).mul (hS.contDiffOn.sqrt fun z hz => (hSpos z hz).ne')).div
       (hΦo.sqrt fun z hz => (hΦpos z hz).ne') fun z hz => (Real.sqrt_pos.2 (hΦpos z hz)).ne'
-  have hAs : IsSmoothHerm A := hFs.congr fun z hz => by rw [hAh, if_pos hz]
+  have hAs : IsSmoothHerm A := hFs.congr fun z hz => by rw [hAh, ite_eq_left hz]
   refine ⟨A, rfl, ?_, ⟨hAs, ?_⟩, ?_⟩
   ·
     intro z
@@ -202,13 +193,13 @@ theorem proof (hF : LiftGraphFactor.Statement) : LiftGraphMetric.Statement := by
       simp only [U, Set.mem_setOf_eq, ne_eq, map_eq_zero]
     rw [hAh, hAh]
     by_cases hz : z ∈ U
-    · rw [if_pos (hmem.2 hz), if_pos hz]
+    · rw [ite_eq_left (hmem.2 hz), ite_eq_left hz]
       have e1 : N.h (basePart₂ fun p => (starRingEnd ℂ) (z p)) = N.h (basePart₂ z) := hNc (basePart₂ z)
       have e2 : Φ (basePart₂ fun p => (starRingEnd ℂ) (z p)) = Φ (basePart₂ z) := hΦc (basePart₂ z)
       simp only [F, S]
       rw [e1, e2]
       simp only [Complex.norm_conj]
-    · rw [if_neg (mt hmem.1 hz), if_neg hz]
+    · rw [ite_eq_right (mt hmem.1 hz), ite_eq_right hz]
   ·
     intro z hz ξ hξ
     have hzU : z ∈ U := hz.1
@@ -218,7 +209,7 @@ theorem proof (hF : LiftGraphFactor.Statement) : LiftGraphMetric.Statement := by
         (a : ℝ) * Real.log (N.h (basePart₂ x)) +
           (1 / 2 : ℝ) * (Real.log (S x) + (-1 : ℝ) * Real.log (Φ (basePart₂ x))) := by
       filter_upwards [hUo.mem_nhds hzU] with x hx
-      rw [hAh, if_pos hx]
+      rw [hAh, ite_eq_left hx]
       have hN0 := hNpos x hx
       have hS0 := hSpos x hx
       have hΦ0 := hΦpos x hx
@@ -258,7 +249,7 @@ theorem proof (hF : LiftGraphFactor.Statement) : LiftGraphMetric.Statement := by
     have hzU : z ∈ U := hz.1
     have h := hΦv z hz j
     have hΦ0 : 0 < Real.sqrt (Φ (basePart₂ z)) := Real.sqrt_pos.2 (hΦpos z hzU)
-    rw [hAh, if_pos hzU]
+    rw [hAh, ite_eq_left hzU]
     simp only [F]
     rw [mul_div_assoc', ← mul_assoc, h, mul_div_assoc, div_self hΦ0.ne', mul_one]
 

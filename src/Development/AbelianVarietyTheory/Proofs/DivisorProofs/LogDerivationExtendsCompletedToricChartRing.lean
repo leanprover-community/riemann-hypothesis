@@ -33,60 +33,11 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSecti
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VanishingIdealComapOfIsOpenImmersion
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.WMultA
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.Finite
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.MvPowerSeries.Equiv
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
@@ -96,7 +47,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.Cha
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtArith
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.Tactic.Basify
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivationExtendStalkOfIso, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ImportsRest, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPrimitiveElementUnramified, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HenselRootsCompatible, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolynomialApproxPowMaximal, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolynomialApproxUniqueness, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDerivationExtensionCompletedEtaleChart, Development.AbelianVarietyTheory.Proofs.DivisorProofs.StalkIdealVanishingIdealPreimageIso, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToricChartDerivationBoundaryParamMemSpan, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDerivationExtendsCompletedToricChartRing
@@ -764,7 +714,6 @@ theorem main : ∀ (A : Type) [CommRing A] [IsLocalRing A] (k : Type) [Field k] 
   have hfst : ∀ r, (Ψ r).fst = r := fun r => (RingHom.congr_fun hid r).symm
   let L : ChartRing k m d →ₗ[ℤ] ChartRing k m d :=
     (AddMonoidHom.mk' (fun r => (Ψ r).snd) (fun x y => by simp)).toIntLinearMap
-  have hL : ∀ r, L r = (Ψ r).snd := fun r => rfl
   refine ⟨{ toLinearMap := L
             map_one_eq_zero' := by
               show (Ψ 1).snd = 0
@@ -946,7 +895,6 @@ theorem logDer_extend_chartRing : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     simp only [TopologicalSpace.Opens.coe_compl, Set.mem_preimage, Set.mem_compl_iff, SetLike.mem_coe]
     rw [mem_genBd]
     unfold GlobalTheory.LogKS.interior Model.j
-    have hc : ∀ w, (Y.jQ ≫ pullback.fst Y.s (spMap (RingHom.id c.F))) w = genι Y (Y.jQ w) := fun w => rfl
     simp only [Set.mem_range]
     constructor
     · rintro h ⟨w, hw⟩

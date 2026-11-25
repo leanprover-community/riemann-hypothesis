@@ -73,9 +73,6 @@ end
 
 end GlobalTheory.Mem.R3.LiftBrg.StdFrame
 
-namespace GlobalTheory.Mem.R3.LiftBrg
-
-end GlobalTheory.Mem.R3.LiftBrg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemStOneOfInt =====

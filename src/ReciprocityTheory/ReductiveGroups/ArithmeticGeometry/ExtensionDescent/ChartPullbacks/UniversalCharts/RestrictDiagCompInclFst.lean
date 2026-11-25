@@ -55,7 +55,7 @@ theorem delta_sq : (RingHom.ker (TrivSqZeroExt.fstHom R R (R × R))) ^ (1 + 1) =
 def deltaJ : JetR R (Fin 2) 1 →ₐ[R] TrivSqZeroExt R (R × R) :=
   jetLift (R := R) (RingHom.ker (TrivSqZeroExt.fstHom R R (R × R))) delta_sq
     (fun i => TrivSqZeroExt.inr (if i = 0 then ((1 : R), (0 : R)) else (0, 1)))
-    (fun i => (RingHom.mem_ker).mpr rfl)
+    (fun _ => (RingHom.mem_ker).mpr rfl)
 
 def rD (l : R × R →ₗ[R] R) : JetR R (Fin 2) 1 →ₐ[R] DualNumber R :=
   (TrivSqZeroExt.map l).comp deltaJ

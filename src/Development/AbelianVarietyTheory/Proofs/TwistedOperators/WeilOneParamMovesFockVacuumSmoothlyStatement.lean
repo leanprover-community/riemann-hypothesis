@@ -205,7 +205,7 @@ theorem contDiff_of_func_eq (c : ℝ → ℂ) (E : ℝ → ℝ → ℂ) (U : Set
       have h1 : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun q : ℝ × ℝ => φr (-q.2)) q :=
         (hφr.comp (contDiff_snd.neg)).contDiffAt
       exact h1.mul h2
-    · push_neg at hq2
+    · push Not at hq2
       have hev : ∀ᶠ q' in 𝓝 q, r/2 < |q'.2| :=
         continuousAt_const.eventually_lt (by fun_prop) (by linarith)
       refine contDiffAt_const (c := (0:ℂ)).congr_of_eventuallyEq ?_

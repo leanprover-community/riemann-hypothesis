@@ -19,10 +19,6 @@ noncomputable section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
 
-private lemma sum_castLE_lemma {r k : ℕ} (hk : k ≤ r) (f : Fin r → ℂ)
-    (hf : ∀ j : Fin r, k ≤ (j : ℕ) → f j = 0) : ∑ j, f j = ∑ j : Fin k, f (Fin.castLE hk j) := by
-  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.sum_eq_sum_castLE_of_eq_zero <;> assumption
-
 lemma rmul_mem_dom {z b : Frame X.Ψ r} (hz : z ∈ X.dom) (hb : b ∈ Bor X.Ψ r) : rmul z b ∈ X.dom := by
   apply ReciprocityTheory.ChartRestriction.G.AR.Up.OntoS.dom_rmul <;> assumption
 

@@ -77,8 +77,8 @@ theorem UpperTheory.V.Af.Nf.liftK :
     simp only [Matrix.mul_apply, Fin.sum_univ_two, Matrix.star_apply, map_add (f := _), map_mul, Matrix.one_apply] at h
     rw [apply_ite ev, map_one, map_zero] at h
     exact h
-  have h1 : x.val 0 0 ^ 2 + x.val 0 1 ^ 2 = 1 := by have := hr 0 0; simp only [if_true] at this; linear_combination this
-  have h2 : x.val 1 0 ^ 2 + x.val 1 1 ^ 2 = 1 := by have := hr 1 1; simp only [if_true] at this; linear_combination this
+  have h1 : x.val 0 0 ^ 2 + x.val 0 1 ^ 2 = 1 := by have := hr 0 0; simp only [ite_true] at this; linear_combination this
+  have h2 : x.val 1 0 ^ 2 + x.val 1 1 ^ 2 = 1 := by have := hr 1 1; simp only [ite_true] at this; linear_combination this
   have h3 : x.val 0 0 * x.val 1 0 + x.val 0 1 * x.val 1 1 = 0 := by simpa using hr 0 1
   change TR.cptRep ℚ 2 r φ ∈ _
   rw [e]

@@ -47,8 +47,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta
 open scoped TensorProduct Matrix
 
-noncomputable section
-
 namespace GlobalTheory.IdemPrime
 
 open GlobalTheory.IdemModTwo GlobalTheory.SplitIdem
@@ -205,5 +203,3 @@ theorem exists_isIdemAt : ∀ (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) (
   rw [hI, hφ, mem_iff he, map_inv₀, map_inv₀, not_le, one_lt_inv₀ (zero_lt_iff.2 hx0)]
 
 end GlobalTheory.IdemPrime
-
-end

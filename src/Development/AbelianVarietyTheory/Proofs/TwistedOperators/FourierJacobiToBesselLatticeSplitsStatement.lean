@@ -113,7 +113,7 @@ theorem projX_embedding_lattice : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (
     intro p q
     rw [Matrix.mul_apply]
     simp only [Matrix.conjTranspose_apply]
-    simp only [P, apply_ite star, star_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [P, apply_ite star, star_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have := p.2; have := q.2
     simp only [hN, antiDiagonalSignGramMatrix, Fin.ext_iff, Fin.val_rev, Fin.val_castLE]
     split_ifs <;> first | (exfalso; omega) | ring
@@ -126,7 +126,7 @@ theorem projX_embedding_lattice : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (
     rw [h2] at h1
     have h3 := congrFun (congrFun h1 p) p
     rw [Matrix.mul_apply] at h3
-    simp only [hPN, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Q, Matrix.one_apply_eq] at h3
+    simp only [hPN, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Q, Matrix.one_apply_eq] at h3
     simpa using h3
   have hqX : d.qX = Pᴴ * a.aᴴ * B.gram := by
     rw [HypDec.qX, heP, Matrix.conjTranspose_mul]
@@ -143,14 +143,14 @@ theorem projX_embedding_lattice : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (
     split_ifs with hq
     · rw [Finset.sum_eq_single ⟨q.1, hq⟩]
       · have e1 : q = Fin.castLE hρc ⟨q.1, hq⟩ := Fin.ext rfl
-        simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
-        rw [← mul_assoc, mul_comm ((-D.host.xi0) ^ _), hdiag, one_mul, if_pos e1, ← e1]
+        simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+        rw [← mul_assoc, mul_comm ((-D.host.xi0) ^ _), hdiag, one_mul, ite_eq_left e1, ← e1]
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e; apply hb; ext; simp only [Fin.ext_iff, Fin.val_castLE] at e ⊢; omega
       · simp
     · refine Finset.sum_eq_zero fun b _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e; apply hq; rw [e]; simp
   refine ⟨0, Λ.zero_mem, Q *ᵥ ((Pᴴ * N) *ᵥ u), fun q => ?_, ?_⟩
   · rw [hu']; split_ifs
@@ -185,7 +185,7 @@ variable {D : D7}
 theorem colsOf_eq_mul {n c k : ℕ} (a : Matrix (Fin n) (Fin c) D.host.E) (f : Fin k → Fin c) (s : Fin k → D.host.E) :
     colsOf a f s = a * Matrix.of (fun q p => if q = f p then s p else 0) := by
   ext i p
-  simp only [colsOf, Matrix.mul_apply, Matrix.of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [colsOf, Matrix.mul_apply, Matrix.of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   exact mul_comm _ _
 
 theorem antiDiagonalGram_neg_one_castLE_row {c ρ : ℕ} (h : 2 * ρ ≤ c) (p : Fin ρ) (r : Fin c) :
@@ -216,7 +216,7 @@ theorem projY_mem_lat : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (a : Hermit
     rw [HypDec.qY, hE, conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc a.aᴴ, hgram]
     ext p r
     simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, hPe, Matrix.of_apply, apply_ite star, star_zero, ite_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, hf, antiDiagonalGram_neg_one_castLE_row h, mul_ite, mul_one, mul_zero]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, hf, antiDiagonalGram_neg_one_castLE_row h, mul_ite, mul_one, mul_zero]
   have hS : ∀ p, s p * star (t p) = 1 := by
     intro p
     have h1 : d.eᴴ * B.gram * d.e' = 1 := by
@@ -225,7 +225,7 @@ theorem projY_mem_lat : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (a : Hermit
     have h2 : (d.qY * a.a * Pe') p p = 1 := by
       rw [Matrix.mul_assoc, ← hE', HypDec.qY, h1, Matrix.one_apply_eq]
     rw [hQA] at h2
-    simp only [Matrix.mul_apply, hPe', Matrix.of_apply, ite_mul, zero_mul, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+    simp only [Matrix.mul_apply, hPe', Matrix.of_apply, ite_mul, zero_mul, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
     rw [mul_comm]; exact h2
   refine ⟨0, Λ.zero_mem, fun q => ∑ p, if q = (f p).rev then u q else 0, fun q => ?_, ?_⟩
   · refine Submodule.sum_mem _ fun p _ => ?_
@@ -241,8 +241,8 @@ theorem projY_mem_lat : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (a : Hermit
     refine Finset.sum_congr rfl fun p _ => ?_
     by_cases hq : q = (f p).rev
     · subst hq
-      simp only [if_true, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, hS p, one_mul]
-    · simp only [hq, if_false, zero_mul, Finset.sum_const_zero]
+      simp only [ite_true, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, hS p, one_mul]
+    · simp only [hq, ite_false, zero_mul, Finset.sum_const_zero]
 
 end GlobalTheory.AscFin
 end -- clump:auto
@@ -406,8 +406,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.depthLatticeGridRow_stable_wittTargetProjections : OnStd fun {D} _ _ {sc} {G} _ F => ∀ σ (_ : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * σ + 2), ((F.dB σ h').jX * (F.dB σ h').pX) * u ∈ latRow G (2 * σ + 2) ∧ ((F.dB σ h').jY * (F.dB σ h').pY) * u ∈ latRow G (2 * σ + 2) := by
-  first | exact @GlobalTheory.AscFin.latRow_proj_tgt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.DepthLatticeGridRowStableWittTargetProjectionsStatement =====
@@ -425,8 +423,6 @@ open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 open GlobalTheory.CharXFB
 
-theorem _root_.GlobalTheory.T.hermitianPairing_fourierJacobi_step_basePoint_columns : OnStd fun {D} _ _ {sc} {G} _ F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m) (a' : Mx D (G.V (.grid (2 * σ + 2) 0)).rank (σ + 1)) (p : Fin (σ + 1)), hA _ (fun k => xFB F σ h' k p) (fun k => a' k p) = hA _ (ratV fun k => (G.colDec (2 * σ + 2) (by omega) h').a k (Fin.castLE (by omega) p)) ((F.dJ (σ + 1) h).extY (G.V (.grid (2 * σ + 2) 0)) a' *ᵥ ratV fun k => (G.colDec (2 * (σ + 1) + 1) (by omega) (by omega)).a k (Fin.castLE (by omega) p : Fin (2 * (σ + 1) + 1 - 1)).rev) := by
-  first | exact @GlobalTheory.CharXFB.hA_xFB_col
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianPairingFourierJacobiStepBasePointColumnStatement =====
@@ -457,8 +453,8 @@ theorem mul_ePl {v : GlobalTheory.FinPl.Pl D} {α : Af D.host.F} (h : ∀ w, w �
   show evalV D.host.F w (α * _) = evalV D.host.F w α
   rw [map_mul, GlobalTheory.FinPlLoc.evalV_ePl]
   by_cases hw : w = v
-  · rw [if_pos hw, mul_one]
-  · rw [if_neg hw, mul_zero, h w hw]
+  · rw [ite_eq_left hw, mul_one]
+  · rw [ite_eq_right hw, mul_zero, h w hw]
 
 theorem smul_mem_homLat {m n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
     {Λ' : Submodule (𝓞 D.host.E) (Fin m → D.host.E)} {𝔪 : Ideal (𝓞 D.host.E)} (h𝔪 : 𝔪 ≠ ⊥)
@@ -568,7 +564,6 @@ theorem modul_not_le {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) {Q 
 
 end GlobalTheory.DepthMap
 
-
 open GlobalTheory.DepthMap in
 theorem GlobalTheory.DepthMap.smul_mulVec_mem_latV : All fun {D} _ _ {sc} {G} _ _ => ∀ i, i < D.R.m → ∀ u ∈ latRow G i, ∀ v ∈ G.pl.S0, ∀ y ∈ latV (G.V (.grid (i + 1) 0)) (G.Λ (.grid (i + 1) 0)) (· = v), ∀ s ∈ GlobalTheory.SeeSaw.idV (D.host.AA⁻¹ * ((G.pl.modul sc : Ideal (𝓞 D.host.E)) : GlobalTheory.SeeSaw.FI D)⁻¹) v, s • (u *ᵥ y) ∈ latV (G.V (.grid i 0)) (G.Λ (.grid i 0)) (· = v) := by
   intro D hD T L μ0 hL sc G W M hM i hi u hu v hv y hy s hs
@@ -639,7 +634,7 @@ theorem GlobalTheory.DepthMap.smul_mulVec_mem_latV : All fun {D} _ _ {sc} {G} _ 
       have hz : pairA D.host.F 0 (GlobalTheory.FinPlLoc.ePl D (· = v)) ⊗ₜ[D.host.F] c ∈
           GlobalTheory.SeeSaw.idV ((G.pl.modul sc : Ideal (𝓞 D.host.E)) : GlobalTheory.SeeSaw.FI D)⁻¹ v :=
         AddSubgroup.subset_closure ⟨_, GlobalTheory.FinPlLoc.ePl_int _, fun w hw => by
-          rw [GlobalTheory.FinPlLoc.evalV_ePl, if_neg hw], c, hc, rfl⟩
+          rw [GlobalTheory.FinPlLoc.evalV_ePl, ite_eq_right hw], c, hc, rfl⟩
       have hs' : pairA D.host.F 0 α ⊗ₜ[D.host.F] b ∈ GlobalTheory.SeeSaw.idV D.host.AA⁻¹ v :=
         AddSubgroup.subset_closure ⟨α, hα, hsupp, b, hb, rfl⟩
       show (pairA D.host.F 0 α ⊗ₜ[D.host.F] (b * c)) • (u *ᵥ y) ∈ _
@@ -854,8 +849,6 @@ open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 open GlobalTheory.CharXFB
 
-theorem _root_.GlobalTheory.T.psiE_off_S0_column_pair : All fun {D} _ _ {sc} {G} W _ => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m) (u : WO (G.V (.grid (2 * σ + 2 + 1) 0)) (G.V (.grid (2 * σ + 2) 0))), u ∈ latRow G (2 * σ + 2) → ∀ (p : Fin (σ + 1)) (v : GlobalTheory.FinPl.Pl D), v ∉ G.pl.S0 → psiE W.ψ (GlobalTheory.FinPlLoc.idem D (· = v) * (incA D D.host.xi0 * hA _ (ratV fun k => (G.colDec (2 * σ + 2) (by omega) h').a k (Fin.castLE (by omega) p)) (u *ᵥ ratV fun k => (G.colDec (2 * (σ + 1) + 1) (by omega) (by omega)).a k (Fin.castLE (by omega) p : Fin (2 * (σ + 1) + 1 - 1)).rev))) = 1 := by
-  first | exact @GlobalTheory.CharXFB.OffPl.psi_pair_trivial_off
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.PsiEOffS0ColumnPairStatement =====
@@ -891,7 +884,7 @@ theorem charx_fb : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 
   change psiE W.ψ _ = 1
   refine Finset.sum_induction _ (fun z => psiE W.ψ z = 1) (fun a b ha hb => by rw [psiE_add, ha, hb, one_mul])
     (psiE_zero W.ψ) fun p _ => ?_
-  rw [GlobalTheory.T.hermitianPairing_fourierJacobi_step_basePoint_columns D hD T L μ0 hL sc G W M hM F hF σ h h' a' p]
+  rw [GlobalTheory.CharXFB.hA_xFB_col D hD T L μ0 hL sc G W M hM F hF σ h h' a' p]
   refine GlobalTheory.FinPl.PsiUnit.psiE_eq_one_of_local W.ψ W.ψ_std.1.1 (P := fun _ => True) ?_ fun v _ => ?_
   · have hu : MxAt (fun _ => True) ((F.dJ (σ + 1) h).extY (G.V (.grid (2 * σ + 2) 0)) a') :=
       mxAt_of_mem_depLat (p := .chi (2 * σ + 2) 0) ha'
@@ -900,7 +893,7 @@ theorem charx_fb : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 
     exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_right _ _ (hu k l)
   · by_cases hv : v ∈ G.pl.S0
     · exact _root_.GlobalTheory.CharXFB.HeisenbergPairBadPlaces.traceCharacter_trivial_heisenbergPair_at_badPlaces D hD T L μ0 hL sc G W M hM σ h h' _ ha' p v hv
-    · exact GlobalTheory.T.psiE_off_S0_column_pair D hD T L μ0 hL sc G W M hM σ h h' _ ha' p v hv
+    · exact GlobalTheory.CharXFB.OffPl.psi_pair_trivial_off D hD T L μ0 hL sc G W M hM σ h h' _ ha' p v hv
 
 end GlobalTheory.CharXFB
 end -- clump:auto
@@ -969,13 +962,11 @@ alias mxAt_mul := _root_.GlobalTheory.AscFinWit.mxAt_mul'
 
 end
 
-
-
 theorem splits_FB : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m),
     Splits (F.dJ (σ + 1) h) (F.dB σ h') (pcFB W F σ h h') (xFB F σ h') 0 W.ψ (latRow G (2 * σ + 2)) := by
   intro D hq T L μ0 hL sc G W M hM F hF σ h h'
   have hS := GlobalTheory.T.depthLatticeGridRow_stable_witt_projections D hq T L μ0 hL sc G W M hM F hF σ h h'
-  have hT := GlobalTheory.T.depthLatticeGridRow_stable_wittTargetProjections D hq T L μ0 hL sc G W M hM F hF σ h h'
+  have hT := GlobalTheory.AscFin.latRow_proj_tgt D hq T L μ0 hL sc G W M hM F hF σ h h'
   have hC := GlobalTheory.T.fourierJacobi_basePoint_character_trivial_depthLattice D hq T L μ0 hL sc G W M hM F hF σ h h'
   have hB := GlobalTheory.T.depthLatticeGridRow_le_selfDualHomLatticeShift D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) (by omega)
   refine ⟨fun u hu => ?_⟩

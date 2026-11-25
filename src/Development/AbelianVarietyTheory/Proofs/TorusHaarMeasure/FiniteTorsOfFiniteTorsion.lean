@@ -8,48 +8,9 @@ public import ReciprocityTheory.DualLattices.FormalChartAtZero
 public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.EvBasicNEvalSubCoeffMem
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.Finsupp.Interval
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.FormalGroupTorsionCharts, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FiniteTorsOfFiniteTorsion
@@ -379,26 +340,6 @@ theorem _root_.GlobalTheory.ChartCompare.nEval_sub_mem (f : MvPowerSeries σ R�
 
 end Eval
 
-section Law
-
-open MvPowerSeries
-
-variable {g : ℕ}
-
-end Law
-
-section Nil
-
-variable {K : LAlg R₀}
-
-end Nil
-
-section Chart
-
-variable {B : BX R₀} {K : LAlg R₀} {g : ℕ}
-
-end Chart
-
 section Torsion
 
 universe v
@@ -419,16 +360,6 @@ end OfFin
 
 
 end Torsion
-
-section Bundle
-
-universe v
-
-variable {B : BX R₀} {g : ℕ} {p : ℕ} [Fact p.Prime] {k : LAlg R₀} {O : ResAlg k} {W : NilAlg k}
-  {C : Type v} [Field C] [Algebra (O.alg : Type) C] [IsFractionRing (O.alg : Type) C]
-
-
-end Bundle
 
 universe v
 

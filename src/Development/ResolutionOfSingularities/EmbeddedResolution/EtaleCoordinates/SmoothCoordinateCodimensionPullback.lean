@@ -9,8 +9,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace HasSmoothCoordCodim
@@ -40,8 +38,6 @@ theorem resLE_open {X X' : Scheme.{u}}
   intro x
   obtain ⟨U, hU, q, hq, hqs, hker⟩ := h ((τ ⁻¹ᵁ O).ι.base x)
   have : AlgebraicGeometry.Smooth q := hq
-  have : AlgebraicGeometry.Smooth O.ι := inferInstance
-  have : AlgebraicGeometry.Smooth (O.ι.resLE U (O.ι ⁻¹ᵁ U) le_rfl) := inferInstance
   have hw : O.ι.base ((τ.resLE O (τ ⁻¹ᵁ O) le_rfl).base x) = τ.base ((τ ⁻¹ᵁ O).ι.base x) :=
     congrArg (fun m : (τ ⁻¹ᵁ O).toScheme ⟶ X' => m.base x) (Scheme.Hom.resLE_comp_ι τ le_rfl)
   refine ⟨O.ι ⁻¹ᵁ U, ?_, O.ι.resLE U (O.ι ⁻¹ᵁ U) le_rfl ≫ q, inferInstance, ?_, ?_⟩
@@ -69,8 +65,6 @@ theorem comp_iso_hom {X X' X'' : Scheme.{u}}
   intro x
   obtain ⟨U, hU, q, hq, hqs, hker⟩ := h x
   have : AlgebraicGeometry.Smooth q := hq
-  have : AlgebraicGeometry.Smooth φ.inv := inferInstance
-  have : AlgebraicGeometry.Smooth (φ.inv.resLE U (φ.inv ⁻¹ᵁ U) le_rfl) := inferInstance
   have hs' : φ.inv ≫ s = s' := by rw [← hφ, Iso.inv_hom_id_assoc]
   refine ⟨φ.inv ⁻¹ᵁ U, ?_, φ.inv.resLE U (φ.inv ⁻¹ᵁ U) le_rfl ≫ q, inferInstance, ?_, ?_⟩
   · show φ.inv.base ((τ ≫ φ.hom).base x) ∈ U
@@ -104,5 +98,3 @@ theorem iso_hom_comp {X X' X₀ : Scheme.{u}}
 end HasSmoothCoordCodim
 
 end FunctorialResolution.EmbeddedResolution
-
-end

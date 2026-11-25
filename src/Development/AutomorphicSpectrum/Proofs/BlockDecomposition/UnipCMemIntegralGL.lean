@@ -226,7 +226,7 @@ theorem rho_central {z : Fin n → ℂˣ} (hH : Heig ρ v z) :
 theorem lamS_compl (S : Finset (Fin n)) :
     lamS Sᶜ = -lamS S + lamS (Finset.univ : Finset (Fin n)) := by
   funext i
-  simp only [lamS, Pi.add_apply, Pi.neg_apply, Finset.mem_compl, Finset.mem_univ, if_true]
+  simp only [lamS, Pi.add_apply, Pi.neg_apply, Finset.mem_compl, Finset.mem_univ, ite_true]
   split_ifs <;> norm_num
 
 theorem coeff_compl {z : Fin n → ℂˣ} (hU : Unit' ρ B) (hH : Heig ρ v z) (S : Finset (Fin n)) :

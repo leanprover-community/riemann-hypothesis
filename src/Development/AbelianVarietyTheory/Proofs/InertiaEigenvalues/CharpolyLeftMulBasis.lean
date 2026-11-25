@@ -119,15 +119,15 @@ theorem GlobalTheory.det_trace_pow_prod : ∀ (E A₁ A₂ : Type) [Field E] [Co
     intro k
     by_cases hk : (k : ℕ) < a
     · simp [q, hk]
-    · simp only [q, hk, if_false]
+    · simp only [q, hk, ite_false]
       rw [(monic_X_pow _).natDegree_mul (LinearMap.charpoly_monic _), natDegree_X_pow, hdeg₁]
       omega
   have hm : ∀ k, (q k).Monic := by
     intro k
     by_cases hk : (k : ℕ) < a
-    · simp only [q, hk, if_true]
+    · simp only [q, hk, ite_true]
       exact monic_X_pow _
-    · simp only [q, hk, if_false]
+    · simp only [q, hk, ite_false]
       exact (monic_X_pow _).mul (LinearMap.charpoly_monic _)
   refine ⟨(-1) ^ (a * b), by rw [← mul_pow, neg_one_mul, neg_neg, one_pow], ?_⟩
   rw [det_trace_monic (g₁, g₂) _ q hd hm]

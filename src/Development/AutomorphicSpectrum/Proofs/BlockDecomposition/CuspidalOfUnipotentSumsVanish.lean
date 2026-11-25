@@ -74,7 +74,7 @@ theorem pm_conj {K : Type} [Field K] [Fintype K] [DecidableEq K] {ι : Type} [Fi
     fun _ => rfl
   simp only [Units.val_mul, Matrix.mul_apply, hp, hg, Matrix.submatrix_apply]
   simp only [ite_mul, one_mul, zero_mul]
-  rw [Finset.sum_eq_single (σ.symm i) (fun x _ hx => if_neg (fun h => hx (by simp [h]))) (by simp)]
+  rw [Finset.sum_eq_single (σ.symm i) (fun x _ hx => ite_eq_right (fun h => hx (by simp [h]))) (by simp)]
   simp
 
 theorem eq_zero_of_sum_char {G V : Type} [Group G] [Fintype G] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
@@ -132,8 +132,8 @@ theorem isCuspidal_of_sum_char : ∀ (K : Type) [Field K] [Fintype K] [Decidable
     refine eq_zero_of_sum_char τ.ρ (stdRadical K d a) ?_
     refine Eq.trans (Finset.sum_congr rfl fun u _ => ?_) (h a ha0 had)
     by_cases hu : u ∈ stdRadical K d a
-    · rw [if_pos hu, if_pos (mem_stdRadical.1 hu)]; rfl
-    · rw [if_neg hu, if_neg (fun h' => hu (mem_stdRadical.2 h'))]
+    · rw [ite_eq_left hu, ite_eq_left (mem_stdRadical.1 hu)]; rfl
+    · rw [ite_eq_right hu, ite_eq_right (fun h' => hu (mem_stdRadical.2 h'))]
 
   have hent : ∀ (x : GL (Fin d) K) (i j : Fin d),
       ((pm (K := K) σ * x * (pm (K := K) σ)⁻¹ : GL (Fin d) K) : Matrix (Fin d) (Fin d) K) (σ i) (σ j) =

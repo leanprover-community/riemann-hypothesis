@@ -87,10 +87,6 @@ theorem heisO_sum' {ι : Type} (s : Finset ι) (w : WO S T) (F : ι → WO S T �
   funext z
   simp only [heisO, Finset.sum_apply, Finset.mul_sum]
 
-theorem symplOH_add_self (x y : WO S T) : symplOH S T x y + symplOH S T x y = symplO S T x y := by
-  unfold symplOH
-  rw [← add_mul, ← map_add (f := _), show (1 / 2 : D.host.F) + 1 / 2 = 1 by norm_num, map_one, one_mul]
-
 theorem thetaInner_sign_smul_heisenberg (hψ : IsStdChar D ψ (-1)) {μ : Measure (WO S T)} {𝓕 : Set (WO S T)}
     (hc : IsCovolOne (ratL T S) μ 𝓕) {v φ : WO S T → ℂ} (hv : IsThetaFunO ψ S T v) (hφ : IsThetaFunO ψ S T φ)
     {u : WO S T} {c : ℂ} (hc1 : c = 1 ∨ c = -1) (hu : heisO ψ S T u v = c • v) :
@@ -118,8 +114,6 @@ theorem exists_level {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
     (GlobalTheory.LatFinGen.latO_finitely_generated D S T ΛS ΛT hS hT)).1 U hU
   exact ⟨N, hN, fun u hu => hfix _ (hNU u hu)
     (GlobalTheory.VacUnique.latO_inf S T _ _ _ (AddSubgroup.nsmul_mem _ hu N))⟩
-
-
 
 theorem average {θ : InfFam D} {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ}
     {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ}
@@ -155,7 +149,7 @@ theorem average {θ : InfFam D} {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin
     exact ⟨ε, h1, h2 v hlat⟩
   choose ε hε1 hε2 using hε
   have hψsq : ∀ u u' : Λ, ψ (symplOH S T u u') * ψ (symplOH S T u u') = 1 := fun u u' => by
-    rw [← AddChar.map_add_eq_mul, symplOH_add_self]
+    rw [← AddChar.map_add_eq_mul, Formalism.IndefR.Fin.symplOH_two]
     exact (hdual u (hinf u u.2)).1 u.2 u' u'.2
   have hcoef : ∀ u u' : Λ, ε u' * ε u = ψ (symplOH S T u u') * ε (u + u') := fun u u' => by
     apply hv0
@@ -191,7 +185,7 @@ theorem average {θ : InfFam D} {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin
       have : r = (t : WO S T) - (2 * N) • u := by rw [e]; abel
       rw [this]; exact sub_mem t.2 (AddSubgroup.nsmul_mem _ hu _)
     refine ⟨⟨r, hr⟩, ?_⟩
-    simp only [dif_pos hrΛ]
+    simp only [dite_eq_left hrΛ]
     rw [QuotientAddGroup.eq]
     exact ⟨⟨u, hu⟩, Subtype.ext (by simp [e])⟩
   haveI : Fintype (Λ ⧸ K) := Fintype.ofFinite _
@@ -251,8 +245,6 @@ theorem isAlgComb_finset {f₀ : WO S T → ℂ} {ι : Type} (s : Finset ι) (F 
 theorem isAlgComb_self (f₀ : WO S T → ℂ) : GlobalTheory.MovedAlg.IsAlgComb ψ S T f₀ f₀ :=
   ⟨1, fun _ => 1, fun _ => 0, fun _ => isAlgebraic_one, fun _ => Matrix.map_zero _ (map_zero _), by
     simp [GlobalTheory.SplitScalar.heisO_zero]⟩
-
-
 
 theorem om_vac_algComb : ∀ {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}
     {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ} {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ}

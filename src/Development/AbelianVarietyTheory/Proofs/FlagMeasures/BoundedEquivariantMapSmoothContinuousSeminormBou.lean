@@ -809,7 +809,7 @@ theorem sobolev_at_one_G : ∀ (k r : ℕ) (μG : Measure (Mt k r)), IsHaarOn (G
   have hfin : IsFiniteMeasureOnCompacts μG := by
     obtain ⟨hG, -⟩ := closedSub_groups k r (bvec (wI k r (Fin.last k))) (fun i hi => by
       simp only [bvec, wI]
-      rw [Pi.single_apply, if_neg]
+      rw [Pi.single_apply, ite_eq_right]
       intro h; rw [h] at hi; simp at hi) (by
       have h : herm (Hpk k r) (bvec (wI k r (Fin.last k))) (bvec (wI k r (Fin.last k))) =
           Hpk k r (wI k r (Fin.last k)) (wI k r (Fin.last k)) := by

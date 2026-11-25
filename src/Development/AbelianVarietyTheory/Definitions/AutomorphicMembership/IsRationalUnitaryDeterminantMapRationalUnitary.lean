@@ -181,7 +181,7 @@ theorem exists_diag_upF_eq (k : Fˣ) {T : Set (HeightOneSpectrum (𝓞 L))} (hT 
   have hc : ∀ w, compAt w P = if w.under (𝓞 F) ∈ S then compAt w d else 1 := fun w => by
     rw [hP, map_prod, Finset.prod_congr rfl fun v _ => compAt_locF F w v k, Finset.prod_ite_eq]
   have h1 : ∀ w, w.under (𝓞 F) ∈ S → compAt w (P⁻¹ * d) = 1 := fun w hw => by
-    have e : compAt w d = compAt w P := by rw [hc, if_pos hw]
+    have e : compAt w d = compAt w P := by rw [hc, ite_eq_left hw]
     rw [map_mul, e, ← map_mul, inv_mul_cancel, map_one]
   have hmem : ∀ w, w ∈ T ∪ {v | IdlFact.valAt v d ≠ 1} → w.under (𝓞 F) ∈ S := fun w hw =>
     Finset.mem_image_of_mem _ (hfin.mem_toFinset.2 hw)
@@ -190,7 +190,7 @@ theorem exists_diag_upF_eq (k : Fˣ) {T : Set (HeightOneSpectrum (𝓞 L))} (hT 
   by_cases hw : w.under (𝓞 F) ∈ S
   · rw [h1 w hw, map_one]
   · have e : compAt w (P⁻¹ * d) = compAt w d := by
-      have e' : compAt w P = 1 := by rw [hc, if_neg hw]
+      have e' : compAt w P = 1 := by rw [hc, ite_eq_right hw]
       rw [← one_mul (compAt w _), ← e', ← map_mul, mul_inv_cancel_left]
     rw [e]
     by_contra hne

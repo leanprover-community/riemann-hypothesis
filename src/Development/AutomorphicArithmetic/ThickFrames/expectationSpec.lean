@@ -25,17 +25,7 @@ private theorem ex_insert {a : ℕ} {S : Finset ℕ} (ha : a ∉ S) (f : Finset 
     ring
   · refine Finset.sum_congr rfl fun T hT => ?_
     have haT : a ∉ T := fun h => ha (Finset.mem_powerset.1 hT h)
-    have e : insert a S \ insert a T = S \ T := by
-      ext x
-      simp only [Finset.mem_sdiff, Finset.mem_insert]
-      constructor
-      · tauto
-      · rintro ⟨h1, h2⟩
-        refine ⟨Or.inr h1, ?_⟩
-        rintro (rfl | h)
-        · exact ha h1
-        · exact h2 h
-    rw [Finset.prod_insert haT, e]
+    rw [Finset.prod_insert haT, Finset.insert_sdiff_insert, Finset.sdiff_insert_of_notMem ha]
     ring
 
 private theorem ex_congr {S : Finset ℕ} {f g : Finset ℕ → ℝ} (h : ∀ T ⊆ S, f T = g T) :

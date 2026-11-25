@@ -1,43 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.IsSelfOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 
 @[expose] public section
@@ -53,13 +16,13 @@ private theorem gap_step (r : ℕ) (a : ℕ → ℕ) (h : ∀ i j, i ≤ j → j
   unfold gap
   by_cases h1 : k + 1 < r
   · have := h k (k + 1) (by omega) h1
-    rw [if_pos (show 1 ≤ k + 1 ∧ k + 1 ≤ r by omega), if_pos h1, if_pos (show k < r by omega),
+    rw [ite_eq_left (show 1 ≤ k + 1 ∧ k + 1 ≤ r by omega), ite_eq_left h1, ite_eq_left (show k < r by omega),
       Nat.add_sub_cancel]
     omega
   · by_cases h2 : k < r
-    · rw [if_pos (show 1 ≤ k + 1 ∧ k + 1 ≤ r by omega), if_neg h1, if_pos h2, Nat.add_sub_cancel]
+    · rw [ite_eq_left (show 1 ≤ k + 1 ∧ k + 1 ≤ r by omega), ite_eq_right h1, ite_eq_left h2, Nat.add_sub_cancel]
       omega
-    · rw [if_neg (show ¬ (1 ≤ k + 1 ∧ k + 1 ≤ r) by omega), if_neg h1, if_neg h2]
+    · rw [ite_eq_right (show ¬ (1 ≤ k + 1 ∧ k + 1 ≤ r) by omega), ite_eq_right h1, ite_eq_right h2]
 
 private theorem gap_tele (r : ℕ) (a : ℕ → ℕ) (h : ∀ i j, i ≤ j → j < r → a j ≤ a i) (i K : ℕ)
     (hK : i ≤ K) :
@@ -84,12 +47,12 @@ theorem gap_sums : ∀ (r : ℕ) (a : ℕ → ℕ), (∀ i j, i ≤ j → j < r 
   intro r a h
   refine ⟨fun k hk => ?_, fun K hK => ⟨fun i hi => ?_, ?_⟩⟩
   · by_contra hc
-    exact hk (by unfold gap; rw [if_neg hc])
+    exact hk (by unfold gap; rw [ite_eq_right hc])
   · have := gap_tele r a h i K (by omega)
-    rw [if_neg (show ¬ K < r by omega), if_pos hi, add_zero] at this
+    rw [ite_eq_right (show ¬ K < r by omega), ite_eq_left hi, add_zero] at this
     exact this
   · have := gap_parts r a h K
-    rw [if_neg (show ¬ K < r by omega), mul_zero, add_zero] at this
+    rw [ite_eq_right (show ¬ K < r by omega), mul_zero, add_zero] at this
     rw [this, Fin.sum_univ_eq_sum_range a r, ← Finset.sum_filter]
     congr 1
     ext i

@@ -91,14 +91,6 @@ structure Rows {I : Type} {m : ℕ} (F : Fam I m) where
 namespace Fam6
 variable {I : Type} {m : ℕ} (F : Fam I m)
 
-def FoAll : ℝ :=
-  ∑ j, ∑ᶠ z : HeightOneSpectrum (𝓞 F.K), lw z * (if plOf z ∈ F.S then ramE (plOf z) * F.Fj j (plOf z) else 0)
-
-def EAll (u : I) (j : Fin m) : ℝ :=
-  ∑ᶠ z : HeightOneSpectrum (𝓞 F.K), lw z * (if plOf z ∈ F.S then ramE (plOf z) * F.Ej u j (plOf z) else 0)
-
-def sMean [Fintype I] : ℝ := WeightedMeanLemmas.sF F.du (fun u => muDef (F.b u) (F.X u) (F.N' u)) F.h
-
 end Fam6
 
 namespace Fam6

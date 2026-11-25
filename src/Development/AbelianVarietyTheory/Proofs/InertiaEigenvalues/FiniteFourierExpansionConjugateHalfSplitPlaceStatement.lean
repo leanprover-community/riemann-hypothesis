@@ -118,7 +118,7 @@ theorem interp_of_sep {α : Type} [DecidableEq α] (P : Set (α → ℂ)) (h1 : 
   simp only [Pi.smul_apply, smul_eq_mul]
   rw [Finset.sum_congr rfl fun a ha => by rw [hδ a ha x hx]]
   simp only [mul_ite, mul_one, mul_zero]
-  rw [Finset.sum_ite_eq s (rep x) f, if_pos (hrep x hx), hf x hx]
+  rw [Finset.sum_ite_eq s (rep x) f, ite_eq_left (hrep x hx), hf x hx]
 
 theorem finite_cover_pow {O K : Type} [CommRing O] [Field K] [Algebra O K] (ϖ : O) (hϖ : algebraMap O K ϖ ≠ 0)
     (N M : ℕ) (hfin : Finite (O ⧸ Ideal.span {ϖ ^ (N + M)})) (m n : Type) [Fintype m] [Fintype n] [DecidableEq m]
@@ -234,7 +234,7 @@ theorem finite_fourier_half : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsS
   have hpick : ∀ x ∈ K, pick (q x) ∈ K ∧ q (pick (q x)) = q x := by
     intro x hx
     have h : ∃ x' ∈ K, q x' = q x := ⟨x, hx, rfl⟩
-    simp only [pick, dif_pos h]
+    simp only [pick, dite_eq_left h]
     exact h.choose_spec
   have hsep : ∀ a' ∈ hfinK.toFinset.image pick, ∀ b' ∈ hfinK.toFinset.image pick, a' ≠ b' →
       ∃ g ∈ P, g a' ≠ g b' ∧ ∀ x ∈ K, g x = g (pick (q x)) := by

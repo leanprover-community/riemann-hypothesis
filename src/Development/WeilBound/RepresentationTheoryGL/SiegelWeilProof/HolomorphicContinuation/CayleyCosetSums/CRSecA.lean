@@ -46,7 +46,7 @@ theorem contDiffAt_mul' {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {�
 theorem contDiff_mul' {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {ι : Type} [Fintype ι]
     {f g : E → Matrix ι ι ℂ} {k : WithTop ℕ∞} (hf : ContDiff ℝ k f) (hg : ContDiff ℝ k g) :
     ContDiff ℝ k (fun y => f y * g y) :=
-  contDiff_iff_contDiffAt.2 fun x => contDiffAt_mul' hf.contDiffAt hg.contDiffAt
+  contDiff_iff_contDiffAt.2 fun _ => contDiffAt_mul' hf.contDiffAt hg.contDiffAt
 
 private theorem hasDerivAt_exp_smul_apply_zero {ι : Type} [Fintype ι] (M0 : Matrix ι ι ℂ) (a b : ι) :
     AnalyticAt ℂ (fun M : Matrix ι ι ℂ => M a b) M0 := by

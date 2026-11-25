@@ -41,10 +41,6 @@ section Ops
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
 
-def diaG (c : DiaG (E := X.E) (ST := ST)) : Module.End X.K (formGSD C Λ).EqFun :=
-  (LocOp.ofMap (S := formGSD C Λ) (S' := formGSD C Λ) (MonoidHom.id _) (fun d => DecoSet.dia c d) LinearMap.id
-    (fun g d => DecoSet.dia_smul c (FormG.incl Λ g) d) (fun _ _ => rfl)).op
-
 def diamondOperatorOnForms' (P : ST) (c : (𝓞 X.E ⧸ P.1.asIdeal)ˣ) : Module.End X.K (formGSD C Λ).EqFun :=
   (LocOp.ofMap (S := formGSD C Λ) (S' := formGSD C Λ) (MonoidHom.id _) (fun d => DecoSet.dia1 P c d) LinearMap.id
     (fun g d => DecoSet.dia_smul _ (FormG.incl Λ g) d) (fun _ _ => rfl)).op

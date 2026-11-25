@@ -177,7 +177,7 @@ variable {P : Type} [SemilatticeInf P]
 
 def coind (M : P → ModuleCat.{0} R) : Pᵒᵖ ⥤ ModuleCat.{0} R where
   obj a := ModuleCat.of R (∀ b : {b : P // b ≤ a.unop}, M b.1)
-  map {a a'} φ := ModuleCat.ofHom
+  map {_ _} φ := ModuleCat.ofHom
     { toFun := fun f b ↦ f ⟨b.1, b.2.trans (leOfHom φ.unop)⟩
       map_add' := fun _ _ ↦ rfl
       map_smul' := fun _ _ ↦ rfl }

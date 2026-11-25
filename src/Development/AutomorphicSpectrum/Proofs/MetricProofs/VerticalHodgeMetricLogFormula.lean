@@ -20,13 +20,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp
 
-private theorem zpow_finset_sum_divisor {α : Type*} (s : Finset α) (f : α → ℤ) {x : ℝ} (hx : x ≠ 0) :
-    x ^ (∑ p ∈ s, f p) = ∏ p ∈ s, x ^ f p := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert a s ha ih => rw [Finset.sum_insert ha, Finset.prod_insert ha, zpow_add₀ hx, ih]
-
 theorem log_muVert_h_of_mem : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (B : ℕ), ∀ z ∈ mcPts (mCoordIdeal D.y), Real.log ((muVert Hd B).h z) = Real.log ((muLine Hd).h z) + ∑ p ∈ D.SB B, Real.log (D.vertFactor p z) := by
   intro K _ J _ II Ψ _ Ω _ _ W _ _ D Hd B z hz
   have hP : ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomogIdeal (ReciprocityTheory.ChartRestriction.G.Geo.mCoordIdeal D.y) := D.arith.2.1.2.1
@@ -41,7 +34,7 @@ theorem log_muVert_h_of_mem : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k
     unfold muVert
     refine GroundTheory.Heights₂.Heights.LowerBoundFree.NbarSmooth.hermOfFun_h_of_mem hP ?_ hz (mul_pos hLpos hPpos)
     intro w hw c hc
-    have hc' : ∀ k, ‖c k‖ ≠ 0 := fun k => norm_ne_zero_iff.mpr (hc k)
+    have hcpos : ∀ k, 0 < ‖c k‖ := fun k => norm_pos_iff.mpr (hc k)
     have h1 : (muLine Hd).h (torusSmul c w) = (∏ k, ‖c k‖ ^ Hd.aMu k) * (muLine Hd).h w :=
       (muLine Hd).smul c w hc
     have h2 : ∀ p ∈ D.SB B, D.vertFactor p (torusSmul c w) =
@@ -52,7 +45,10 @@ theorem log_muVert_h_of_mem : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k
       rw [Finset.prod_comm, ← Finset.prod_mul_distrib]
       refine Finset.prod_congr rfl fun k _ => ?_
       simp only [muTwDeg, Pi.add_apply, Finset.sum_apply]
-      rw [zpow_add₀ (hc' k), zpow_finset_sum_divisor _ _ (hc' k)]
+      rw [zpow_add₀ (hcpos k).ne']
+      congr 1
+      rw [← Real.rpow_intCast, Int.cast_sum, Real.rpow_sum_of_pos (hcpos k)]
+      simp_rw [Real.rpow_intCast]
     rw [h1, Finset.prod_congr rfl h2, Finset.prod_mul_distrib, h3]
     ring
   rw [hF, Real.log_mul hLpos.ne' hPpos.ne', Real.log_prod fun p hp => (hVpos p hp).ne']

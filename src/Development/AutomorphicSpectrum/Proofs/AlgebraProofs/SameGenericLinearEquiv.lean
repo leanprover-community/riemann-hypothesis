@@ -112,7 +112,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
       frame_transport _ e (EB 1) FB'
         (pull_transport O x z e E' F' (fun s hs v => (he s hs v).2) _ _ hp1 hF') w _ hfp.flag',
       fun i j hij => ?_, hfp.vertical, fun i => ?_⟩
-    · rw [Module.Basis.repr_self, Finsupp.single_apply, if_neg hij.ne]
+    · rw [Module.Basis.repr_self, Finsupp.single_apply, ite_eq_right hij.ne]
     · have := hfp.generic i
       rw [Module.Basis.repr_self] at this ⊢
       exact this

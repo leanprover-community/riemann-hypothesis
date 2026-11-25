@@ -9,14 +9,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.S.UnitaryLevelOperators
 
-section Gauge
-
-open Matrix MeasureTheory TensorProduct
-open scoped ContDiff
-open Formalism.QuantumDeterminants Formalism.MainNotions.S.TopsChoicePartA
-
-end Gauge
-
 section LevelR
 
 open Matrix MeasureTheory TensorProduct
@@ -52,12 +44,6 @@ def IsKFinCoefT {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpac
     (σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H))
     (f : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wq →L[ℂ] Wp)) : Prop :=
   ∃ a ∈ UH (Hpk k r), ∃ b ∈ UH (Hpk k r), IsKFinCoefH σ (fun g => f (a * g * b))
-
-section Lists
-
-variable {m : ℕ} {E : Type*} [AddCommGroup E] [Module ℂ E]
-
-end Lists
 
 def headEl (k j r' : ℕ) (h : Matrix (Fin j) (Fin j) ℂ)
     (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :

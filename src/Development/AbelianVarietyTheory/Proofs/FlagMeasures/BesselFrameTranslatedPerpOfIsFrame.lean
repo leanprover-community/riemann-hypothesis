@@ -12,55 +12,11 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUni
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupSecondKindCoordinatesNearOne
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothInExponentialCoordsIffFirstSecondKind
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.Linter.HaveILetI
@@ -577,8 +533,8 @@ theorem colW_mulVec (x : Fin (2 * r + k + 1) → ℂ) (a : Fin k) :
 
 theorem colE_mulVec (x : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     (((colE k r)ᴴ * Hpk k r) *ᵥ x) a = x (esI k r a) := by
-  have h1 : piI k r (eI k r a) = esI k r a := Fin.ext (by rw [piI_val, if_neg (by simp only [eI]; omega)]; rfl)
-  have h2 : epsI k r (eI k r a) = 1 := if_neg (by simp only [eI]; omega)
+  have h1 : piI k r (eI k r a) = esI k r a := Fin.ext (by rw [piI_val, ite_eq_right (by simp only [eI]; omega)]; rfl)
+  have h2 : epsI k r (eI k r a) = 1 := ite_eq_right (by simp only [eI]; omega)
   rw [← mulVec_mulVec, mulVec, dotProduct]
   simp [colE, apply_ite, Hpk_mulVec_apply, h1, h2]
 
@@ -596,7 +552,7 @@ theorem frame_perp (hg : g ∈ UH (Hpk k r)) (x : Fin (2 * r + k + 1) → ℂ) (
 
 theorem frame_perp_bvec (hg : g ∈ UH (Hpk k r)) {j : Fin (2 * r + k + 1)} (hj : ¬ InB k r j) :
     ((g * colW k r)ᴴ * Hpk k r) *ᵥ (g *ᵥ bvec j) = 0 := funext fun a => by
-  rw [frame_perp hg, bvec_apply, if_neg (ne_of_inB (inB_bl a) hj)]; rfl
+  rw [frame_perp hg, bvec_apply, ite_eq_right (ne_of_inB (inB_bl a) hj)]; rfl
 
 theorem not_inB_eI (a : Fin r) : ¬ InB k r (eI k r a) := by simp only [InB, eI]; omega
 
@@ -622,7 +578,7 @@ theorem isFrame (hg : IsFrameW k r z g) (hz : inWb k r z) (hT : 0 < Tz k r z) :
   e_iso := by
     ext a b
     have := colE_mulVec (fun i => colE k r i b) a
-    rw [show colE k r (esI k r a) b = 0 from if_neg (by simp only [esI, eI, Fin.ext_iff]; omega)] at this
+    rw [show colE k r (esI k r a) b = 0 from ite_eq_right (by simp only [esI, eI, Fin.ext_iff]; omega)] at this
     exact this,
   e_perp := by
     ext a b

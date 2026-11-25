@@ -131,7 +131,7 @@ def MeanEx (X : Inst D L) (K : Consts) : Prop :=
 
 theorem inWin_sizeData (L : SizeData₂ D) : InWin L (aL L) (bL L) := by
   intro t ht
-  simp only [aL, bL, dif_pos ht]
+  simp only [aL, bL, dite_eq_left ht]
   exact ⟨(L.aT_win _).1, (L.aT_win _).2, L.bT_ge _⟩
 
 def AdmFam {eps : ℝ} (Fm : FamP eps) (K : Consts) (X : ∀ x (i : Fm.Ix x), Inst (Fm.D x i) (Fm.L x i))

@@ -253,7 +253,7 @@ theorem eq_zero_of_LU {f : (ι → GL (Fin n) ℂ) → ℂ} (hf : Continuous f)
     Filter.eventually_all.2 fun τ => PI.UnitaryGroupMassFormula.HwConjInf.dense_LU (g τ).val
   have hval : ∀ x τ, (M x τ).det ≠ 0 → (c x τ).val = M x τ := by
     intro x τ hx
-    simp only [c, dif_pos hx]
+    simp only [c, dite_eq_left hx]
     rfl
   have hc : Tendsto c (𝓝[≠] 0) (𝓝 g) := by
     refine tendsto_pi_nhds.2 fun τ => ?_
@@ -432,11 +432,11 @@ theorem ptOf_single (τ : ι) (B : GL (Fin n) ℂ) : upt (ptOf emb (Pi.mulSingle
   · rw [ptOf_conj emb hinj hcm]
     have h2 : ComplexEmbedding.conjugate (emb t) ≠ emb τ := fun e => hcm τ t e.symm
     by_cases h : t = τ
-    · subst h; simp only [tauPt, if_neg h2, if_true, Pi.mulSingle_eq_same]
+    · subst h; simp only [tauPt, ite_eq_right h2, ite_true, Pi.mulSingle_eq_same]
     · have h1 : ComplexEmbedding.conjugate (emb t) ≠ ComplexEmbedding.conjugate (emb τ) := fun e => h (hinj (by
         have := congrArg ComplexEmbedding.conjugate e
         rwa [conj_conj, conj_conj] at this))
-      simp only [tauPt, if_neg h2, if_neg h1, Pi.mulSingle_eq_of_ne h, inv_one, Units.val_one, Matrix.transpose_one]
+      simp only [tauPt, ite_eq_right h2, ite_eq_right h1, Pi.mulSingle_eq_of_ne h, inv_one, Units.val_one, Matrix.transpose_one]
 
 theorem ptOf_rat (γ₀ : GL (Fin n) L) (h : γ₀ ∈ GQ0 L n) : ptOf emb (mtwEmb emb γ₀) = ratPt γ₀.val := by
   funext σ

@@ -26,10 +26,4 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
 
 end Gen
 
-section Rec
-
-variable {d : ColDat} (a : ColArgs d)
-
-end Rec
-
 end Formalism.L2.Col

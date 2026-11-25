@@ -31,12 +31,6 @@ export Formalism.MainNotions.S.LocalFrameAxioms (LocMatch FrameAx PsiAx k_le_nS 
 def vmOf (D : D7) {k0 : ℕ} (hk : k0 + 1 = D.R.k) (G : GramWordSpace.GramMap k0 D.R.rS) : ValMap D.R.k D.R.rS :=
   hk ▸ G.toValMap
 
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Family
-
 end Formalism.MainNotions.BlockEstimateTheorem
 
 end
@@ -48,66 +42,6 @@ end -- clump:auto
 -- clump-header: {"m": "Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateWords", "h": "module\n\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.OscillatoryIntegralBounds\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\npublic import Formalism.HermitianCurvature.StatementTA\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.RadialGaugeOfGaugeIdentitySlices\n\n"}
 section -- clump:auto
 @[expose] public section
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 section PartLat1
 
@@ -140,10 +74,6 @@ end Formalism.MainNotions.BlockEstimateWords
 end
 
 end PartLat1
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 section PartLat2b
 
@@ -187,14 +117,6 @@ end Formalism.MainNotions.BlockEstimateWords
 end
 
 end PartLat2b
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 section PartDefs3
 
@@ -273,46 +195,6 @@ end Formalism.MainNotions.BlockEstimateWords
 end
 
 end PartDefs3
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 end -- clump:auto
 end -- clump:auto

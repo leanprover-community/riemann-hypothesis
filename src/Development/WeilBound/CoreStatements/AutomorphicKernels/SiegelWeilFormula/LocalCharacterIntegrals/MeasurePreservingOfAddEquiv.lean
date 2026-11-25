@@ -28,10 +28,6 @@ section -- clump:auto
 
 namespace PositivityTheory.SiegelWeilFormula.OswLocFin
 
-theorem eq_one_of_re_pow_two (w : ℂ) (hw : ‖w‖ = 1) (hre : ∀ k : ℕ, 1 / 2 < (w ^ (2 ^ k)).re) :
-    w = 1 := by
-  apply PI.VolStabSW.VolAAW.eq_one_of_pow <;> assumption
-
 theorem no_small_subgroups {K : Type*} [NormedField K] [IsUltrametricDist K] [ProperSpace K]
     (χ : K → ℂ) (hc : Continuous χ) (hadd : ∀ x y, χ (x + y) = χ x * χ y) (h0 : χ 0 = 1)
     (hn : ∀ x, ‖χ x‖ = 1) : ∃ ε > 0, ∀ t : K, ‖t‖ ≤ ε → χ t = 1 := by
@@ -63,7 +59,7 @@ theorem no_small_subgroups {K : Type*} [NormedField K] [IsUltrametricDist K] [Pr
     rw [norm_sub_rev] at this
     simp only [Complex.sub_re, Complex.one_re] at this
     linarith
-  exact eq_one_of_re_pow_two (χ t) (hn t) hre
+  exact PI.VolStabSW.VolAAW.eq_one_of_pow (χ t) (hn t) hre
 
 end PositivityTheory.SiegelWeilFormula.OswLocFin
 end -- clump:auto

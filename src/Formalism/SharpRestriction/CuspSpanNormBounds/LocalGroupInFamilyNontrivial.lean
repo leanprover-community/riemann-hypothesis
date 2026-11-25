@@ -91,13 +91,6 @@ def detNrmP (δ : ∀ p, (D.s.atP p).Fp) (T T' : ℕ) (p : PlF D) {n : ℕ} (h :
   | some a => (M p).detMod a
   | none => 0
 
-def ptApp {n : ℕ} (h : Point D.host.E n) (t : D.host.E) (ht : t ≠ 0) (s : ℕ) (hs : 1 ≤ s) :
-    Point D.host.E (n + s) :=
-  ⟨h.1 ++ [(t, s)], fun b hb => by
-    rcases List.mem_append.1 hb with hb | hb
-    · exact h.2.1 b hb
-    · simp at hb; subst hb; exact ⟨ht, hs⟩, by simp [h.2.2]⟩
-
 def Dmin {n : ℕ} (w : Point D.host.E n) (l : ℕ) : D.host.E :=
   if hl : l ≤ n then ((ptMat w).submatrix (Fin.castLE hl) (Fin.castLE hl)).det else 0
 

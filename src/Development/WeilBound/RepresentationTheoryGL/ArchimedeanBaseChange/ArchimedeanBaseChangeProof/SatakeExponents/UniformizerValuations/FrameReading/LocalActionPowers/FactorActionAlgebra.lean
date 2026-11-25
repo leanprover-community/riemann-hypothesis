@@ -25,7 +25,7 @@ import GroundTheory.LocalFields.PadicLogSeries
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralCongruenceLevelEqCount
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairMaximalCompactOpenCompact, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.FmTermZero, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowAlg, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousCj, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowLev, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.Pfmpow, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.FactorActionAlgebra
+-- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairMaximalCompactOpenCompact, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.FmTermZero, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowAlg, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowLev, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.Pfmpow, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.FactorActionAlgebra
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairMaximalCompactOpenCompact =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairMaximalCompactOpenCompact", "h": "module\n\npublic import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.FmTools\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HintConstMul\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasSatGLOfInvT\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousMapGLSpl\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralOfTwistConjugatePlace\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
@@ -50,10 +50,6 @@ def epsS {S : Set (Pl E)} (a b : ℕ) : ∀ i : Slot S, GLw a i.pl × GLw b i.pl
   | .inl w => (locGL E a w.1).prodMap (locGL E b w.1)
   | .inr w => ((thF E a).comp (locGL E a w.1)).prodMap ((thF E b).comp (locGL E b w.1))
 
-def selS {S : Set (Pl E)} (φ₁ φ₂ : ∀ w : Pl E, LF a b w) : ∀ i : Slot S, LF a b i.pl
-  | .inl w => φ₁ w.1
-  | .inr w => φ₂ w.1
-
 theorem continuous_thF (n : ℕ) : Continuous (thF E n) :=
   GlobalTheory.ThetaPull.continuous_thetaGL _ (continuous_conjFin _)
 
@@ -72,7 +68,7 @@ theorem embT_prod (w : Pl E) : (embT a w).prodMap (embT b w) =
   · exact GlobalTheory.ThetaPull.thetaA_finGL _
 
 theorem actS_eq {S : Set (Pl E)} (φ₁ φ₂ : ∀ w : Pl E, LF a b w) (i : Slot S) (G : H E a b → ℂ) :
-    actS φ₁ φ₂ i G = act ((fHm E a b).comp (epsS a b i)) (K2 a b i.pl) (selS φ₁ φ₂ i) G := by
+    actS φ₁ φ₂ i G = act ((fHm E a b).comp (epsS a b i)) (K2 a b i.pl) (GlobalTheory.CompanionTheory.FinActS.sf φ₁ φ₂ i) G := by
   rcases i with w | w
   · rfl
   · show act ((embT a w.1).prodMap (embT b w.1)) (K2 a b w.1) (φ₂ w.1) G = _
@@ -89,7 +85,7 @@ theorem hecke_of_test {φ : ∀ w : Pl E, LF a b w} (h : IsTestP φ) (w : Pl E) 
   exact ⟨(K₁ w).prod (K₂ w), (h₁.1 w).1.prod (h₂.1 w).1, h₃.1 w⟩
 
 theorem hecke_sel {S : Set (Pl E)} {φ₁ φ₂ : ∀ w : Pl E, LF a b w} (h₁ : IsTestP φ₁) (h₂ : IsTestP φ₂) (i : Slot S) :
-    ∃ A : Subgroup (GLw a i.pl × GLw b i.pl), IsOpen (A : Set (GLw a i.pl × GLw b i.pl)) ∧ IsHecke A (selS φ₁ φ₂ i) := by
+    ∃ A : Subgroup (GLw a i.pl × GLw b i.pl), IsOpen (A : Set (GLw a i.pl × GLw b i.pl)) ∧ IsHecke A (GlobalTheory.CompanionTheory.FinActS.sf φ₁ φ₂ i) := by
   rcases i with w | w
   · exact hecke_of_test h₁ w.1
   · exact hecke_of_test h₂ w.1
@@ -144,8 +140,8 @@ theorem epsS_comm {S : Set (Pl E)} (hS : IsSection S) {i j : Slot S} (hij : i �
     exact Prod.ext (comm_TT hne _ _) (comm_TT hne _ _)
 
 theorem selS_conv {S : Set (Pl E)} (φ₁ φ₂ ψ₁ ψ₂ : ∀ w : Pl E, LF a b w) (i : Slot S) :
-    selS (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₁ w) (ψ₁ w)) (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₂ w) (ψ₂ w)) i =
-      fun m => hint (K2 a b i.pl) fun m' => selS φ₁ φ₂ i m' * selS ψ₁ ψ₂ i (m'⁻¹ * m) := by
+    GlobalTheory.CompanionTheory.FinActS.sf (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₁ w) (ψ₁ w)) (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₂ w) (ψ₂ w)) i =
+      fun m => hint (K2 a b i.pl) fun m' => GlobalTheory.CompanionTheory.FinActS.sf φ₁ φ₂ i m' * GlobalTheory.CompanionTheory.FinActS.sf ψ₁ ψ₂ i (m'⁻¹ * m) := by
   rcases i with w | w <;> rfl
 
 theorem actAlg : ActAlg := by
@@ -205,7 +201,7 @@ theorem fm_term_zero (hP : (↑P : Set (Pl E)) ⊆ S) {L : LM κ B.a B.b} (hL : 
     intro h
     by_contra hne
     apply (GlobalTheory.CompanionTheory.FinTestTw.factors_ne_zero (hL.1 _ _) hL.2 hne w.1 (hP w.2)).1
-    simp only [LM.ent, dif_pos w.2]
+    simp only [LM.ent, dite_eq_left w.2]
     exact congrFun hw _
   simp [fm, h0]
 
@@ -235,7 +231,7 @@ theorem fmAtP_holds : FmAtPOf := by
     intro z
     by_cases hz : ∃ t, z = g t
     · obtain ⟨t, rfl⟩ := hz
-      rw [Finset.sum_eq_single t (fun t' _ ht' => if_neg fun h => ht' (hginj h).symm) (by simp), if_pos rfl]
+      rw [Finset.sum_eq_single t (fun t' _ ht' => ite_eq_right fun h => ht' (hginj h).symm) (by simp), ite_eq_left rfl]
       have hez : e (g t) = Function.update (e x) w₀ t := by simp [hg]
       rw [fm_term_act hS hFC hFA hL x (g t) (Sum.inl ⟨w₀.1, hP w₀.2⟩) (F (p, g t)) (hF _) ?_ y]
       · simp only [actS, LM.ent]
@@ -248,7 +244,7 @@ theorem fmAtP_holds : FmAtPOf := by
           rintro rfl
           exact hw (hP w.2) rfl
         rw [Function.update_of_ne hne]
-    · rw [Finset.sum_eq_zero fun t _ => if_neg fun h => hz ⟨t, h⟩]
+    · rw [Finset.sum_eq_zero fun t _ => ite_eq_right fun h => hz ⟨t, h⟩]
       have : ∃ w : P, w ≠ w₀ ∧ e x w ≠ e z w := by
         by_contra hall
         push Not at hall
@@ -278,7 +274,7 @@ theorem fmOff_holds : FmOffOf := by
   · rw [fm_term_act hS hFC hFA hL x x i₀ (F (p, x)) (hF _) (fun i hi => hQ.2 i hi p x x fun _ _ => rfl) y]
     rcases i₀ with ⟨w, hw⟩ | ⟨w, hw⟩
     · have hwP : w ∉ P := fun h => hoff w h hw rfl
-      simp [actS, LM.ent, dif_neg hwP]
+      simp [actS, LM.ent, dite_eq_right hwP]
     · rfl
   · intro z _ hz
     have : ∃ w : P, e x w ≠ e z w := by
@@ -335,20 +331,20 @@ theorem isTestFunction_modify {φ ψ : ∀ w : Pl E, GLw a w × GLw b w → ℂ}
   refine ⟨fun w => if w ∈ T then V₁ w else K₁ w, fun w => if w ∈ T then V₂ w else K₂ w, ⟨fun w => ?_, ?_⟩,
     ⟨fun w => ?_, ?_⟩, fun w => ?_, ?_⟩
   · by_cases h : w ∈ T
-    · simp only [h, if_true]; exact hV₁ w
-    · simp only [h, if_false]; exact hK₁.1 w
+    · simp only [h, ite_true]; exact hV₁ w
+    · simp only [h, ite_false]; exact hK₁.1 w
   · filter_upwards [hK₁.2, T.finite_toSet.compl_mem_cofinite] with w hw hwT
     simp only [Set.mem_compl_iff, Finset.mem_coe] at hwT
-    simp only [hwT, if_false, hw]
+    simp only [hwT, ite_false, hw]
   · by_cases h : w ∈ T
-    · simp only [h, if_true]; exact hV₂ w
-    · simp only [h, if_false]; exact hK₂.1 w
+    · simp only [h, ite_true]; exact hV₂ w
+    · simp only [h, ite_false]; exact hK₂.1 w
   · filter_upwards [hK₂.2, T.finite_toSet.compl_mem_cofinite] with w hw hwT
     simp only [Set.mem_compl_iff, Finset.mem_coe] at hwT
-    simp only [hwT, if_false, hw]
+    simp only [hwT, ite_false, hw]
   · by_cases h : w ∈ T
-    · simp only [h, if_true]; exact hin w h
-    · simp only [h, if_false]; rw [hout w h]; exact hT.1 w
+    · simp only [h, ite_true]; exact hin w h
+    · simp only [h, ite_false]; rw [hout w h]; exact hT.1 w
   · filter_upwards [hT.2, T.finite_toSet.compl_mem_cofinite] with w hw hwT
     simp only [Set.mem_compl_iff, Finset.mem_coe] at hwT
     rw [hout w hwT, hw]
@@ -426,7 +422,7 @@ theorem dg_mul_left (V : ∀ w : Pl E, Subgroup (GLw a w × GLw b w)) (w : Pl E)
   rw [Finset.sum_eq_single x]
   · simp [dg]
   · intro z _ hz
-    simp only [dg, if_neg (Ne.symm hz)]
+    simp only [dg, ite_eq_right (Ne.symm hz)]
     exact mconv_zero_left _
   · simp
 
@@ -435,7 +431,7 @@ theorem dg_mul_right (V : ∀ w : Pl E, Subgroup (GLw a w × GLw b w)) (w : Pl E
   rw [Finset.sum_eq_single y]
   · simp [dg]
   · intro z _ hz
-    simp only [dg, if_neg hz]
+    simp only [dg, ite_eq_right hz]
     exact mconv_zero_right _
   · simp
 
@@ -553,27 +549,8 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowAlg =====
 
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousCj =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousCj", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.TwistedConjugationNorms.LocalMatchingOfAssemblyHypotheses\nimport Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.TwistedConjugationNorms.OneCoset\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
-open PositivityTheory.Rg.Bc.ArchbcB.B.M4 PositivityTheory.Rg.Bc.ArchbcB.B.M4.Tw
-open scoped Classical
-
-noncomputable section
-
-namespace GlobalTheory.CompanionTheory.IwUFacts
-
-end GlobalTheory.CompanionTheory.IwUFacts
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousCj =====
-
 -- ===== clump member: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowLev =====
--- clump-header: {"m": "Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowLev", "h": "module\n\npublic import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.ActHecke\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousInvolutiveLocalTransposeInverse\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBallSubset\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousCj\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties\nimport GroundTheory.GlobalFields.LocalFieldAtPlace\nimport GroundTheory.LocalFields.PadicLogSeries\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralCongruenceLevelEqCount\n\n"}
+-- clump-header: {"m": "Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.PfmpowLev", "h": "module\n\npublic import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.ActHecke\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousInvolutiveLocalTransposeInverse\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBallSubset\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties\nimport GroundTheory.GlobalFields.LocalFieldAtPlace\nimport GroundTheory.LocalFields.PadicLogSeries\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralCongruenceLevelEqCount\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -717,8 +694,8 @@ theorem fmPowOf_holds : FmPowOf := by
       · rw [hL0s]
     · obtain ⟨hne', hwP⟩ := Finset.mem_erase.1 hw
       unfold LM.ent
-      rw [dif_pos hwP]
-      simp only [hL0, only0, if_neg hne']
+      rw [dite_eq_left hwP]
+      simp only [hL0, only0, ite_eq_right hne']
       exact hdgH w _ _
   have hL1ok : L1.Ok P := by
     refine ⟨fun x y => isTestFunction_modify (hL.1 x y) {w₀.1} V₁ V₂ hV₁ hV₂ (fun w hw => ?_) (fun w hw => ?_), by rw [hL1t]; exact hL.2⟩
@@ -729,15 +706,15 @@ theorem fmPowOf_holds : FmPowOf := by
       · rw [hL1s]
     · rw [Finset.mem_singleton.1 hw]
       unfold LM.ent
-      rw [dif_pos hw₀P]
-      simp only [hL1, rest1, if_true]
+      rw [dite_eq_left hw₀P]
+      simp only [hL1, rest1, ite_true]
       exact hdgH _ _ _
 
   set Φ : ∀ w : Pl E, GLw B.a w × GLw B.b w → ℂ := fun w => if w ∈ P then idem (V w) else L.s w with hΦ
   have hΦt : IsTestP Φ := by
     refine isTestFunction_modify (hL.1 (e k) (e k)) P V₁ V₂ hV₁ hV₂ (fun w hw => ?_) (fun w hw => ?_)
-    · simp only [hΦ, if_neg hw, LM.ent, dif_neg hw]
-    · simp only [hΦ, if_pos hw]; exact hVH w
+    · simp only [hΦ, ite_eq_right hw, LM.ent, dite_eq_right hw]
+    · simp only [hΦ, ite_eq_left hw]; exact hVH w
   have hΨt : IsTestP L.t := hL.2
   let Good : (Unit × B.κ → H E B.a B.b → ℂ) → Prop := fun G =>
     ∀ i, HasLev (G i) ∧ ∀ j : Slot S, actS Φ L.t j (G i) = G i
@@ -749,7 +726,7 @@ theorem fmPowOf_holds : FmPowOf := by
     have hQ : Quiet S P B e L0 i₀ G := by
       refine ⟨fun w hwP hw x' y' hxy => ?_, fun j hj q x' y' hag => ?_⟩
       · have hne' : w ≠ w₀.1 := fun h => hw (hP hwP) (by subst h; rfl)
-        simp only [hL0, only0, if_neg hne', dg, if_neg hxy]
+        simp only [hL0, only0, ite_eq_right hne', dg, ite_eq_right hxy]
         rfl
       · obtain ⟨⟩ := q
         cases j with
@@ -757,13 +734,13 @@ theorem fmPowOf_holds : FmPowOf := by
           have hent : LM.ent P L0 (e x') (e y') w'.1 = Φ w'.1 := by
             unfold LM.ent
             by_cases hwP : w'.1 ∈ P
-            · rw [dif_pos hwP]
+            · rw [dite_eq_left hwP]
               have hne' : w'.1 ≠ w₀.1 := fun h => hj (by rw [hi₀]; congr 1; exact Subtype.ext h)
               have hxy : e x' ⟨w'.1, hwP⟩ = e y' ⟨w'.1, hwP⟩ := hag ⟨w'.1, hwP⟩ fun h he =>
                 hne' (congrArg Subtype.val (Sum.inl_injective he)).symm
-              simp only [hL0, only0, if_neg hne', dg, hxy, if_true, hΦ, if_pos hwP]
-            · rw [dif_neg hwP]
-              simp only [hL0, only0, hΦ, if_neg hwP]
+              simp only [hL0, only0, ite_eq_right hne', dg, hxy, ite_true, hΦ, ite_eq_left hwP]
+            · rw [dite_eq_right hwP]
+              simp only [hL0, only0, hΦ, ite_eq_right hwP]
           show actP w'.1 (LM.ent P L0 (e x') (e y') w'.1) (G ((), y')) = G ((), y')
           rw [hent]
           exact (hG ((), y')).2 (Sum.inl w')
@@ -773,7 +750,7 @@ theorem fmPowOf_holds : FmPowOf := by
           exact (hG ((), y')).2 (Sum.inr w')
     have h := hAtP E κ S P B e hS hP Unit L0 w₀ G hL0ok (fun i => (hG i).1) hQ () x
     rw [h]
-    simp only [hL0, only0, if_true]
+    simp only [hL0, only0, ite_true]
 
   have hterm : ∀ (x : B.κ) (y : κ w₀) (g : H E B.a B.b → ℂ), HasLev g → (∀ j : Slot S, actS Φ L.t j g = g) →
       HasLev (actP w₀.1 (L.m w₀.1 (e x w₀) y) g) ∧
@@ -782,7 +759,7 @@ theorem fmPowOf_holds : FmPowOf := by
     set ψ₁ := LM.ent P L (e x) (Function.update (e x) w₀ y) with hψ₁
     have hψt : IsTestP ψ₁ := hL.1 _ _
     have hψw : ψ₁ w₀.1 = L.m w₀.1 (e x w₀) y := by
-      simp only [hψ₁, LM.ent, dif_pos hw₀P, Function.update_self]
+      simp only [hψ₁, LM.ent, dite_eq_left hw₀P, Function.update_self]
     have hT : actP w₀.1 (L.m w₀.1 (e x w₀) y) g = actS ψ₁ L.t i₀ g := by
       show _ = actP w₀.1 (ψ₁ w₀.1) g
       rw [hψw]
@@ -793,7 +770,7 @@ theorem fmPowOf_holds : FmPowOf := by
       have key := (hAct E B.a B.b S hS Φ L.t ψ₁ L.t hΦt hΨt hψt hΨt g g hg hg i₀ i₀).2.2.2
       rw [← key]
       show actP w₀.1 (mconv (Φ w₀.1) (ψ₁ w₀.1)) g = actP w₀.1 (ψ₁ w₀.1) g
-      have hΦw : Φ w₀.1 = idem (V w₀.1) := by simp only [hΦ, if_pos hw₀P]
+      have hΦw : Φ w₀.1 = idem (V w₀.1) := by simp only [hΦ, ite_eq_left hw₀P]
       rw [hΦw, mconv_idem_left (hVo _) (hVK _) fun v hv g' => ?_]
       rw [hψw]
       exact ((hbi w₀.1 hw₀P (e x w₀) y v (hVU w₀.1 hv) g').1)
@@ -850,10 +827,10 @@ theorem fmPowOf_holds : FmPowOf := by
       show actP w'.1 (Φ w'.1) (F (p, i.2)) = F (p, i.2)
       have hfix := ((hF (p, i.2)).2 w'.1 w'.2).1
       by_cases hwP : w'.1 ∈ P
-      · simp only [hΦ, if_pos hwP]
+      · simp only [hΦ, ite_eq_left hwP]
         exact ((hIdem E B.a B.b w'.1 (V w'.1) (F (p, i.2)) (hVo _) (hVK _) (hF (p, i.2)).1).1).2
           (fixed_mono _ (hVU w'.1) hfix)
-      · simp only [hΦ, if_neg hwP, hs]
+      · simp only [hΦ, ite_eq_right hwP, hs]
         exact ((hIdem E B.a B.b w'.1 (U₁ w'.1) (F (p, i.2)) (hU₁.1 _).1 (hU₁.1 _).2 (hF (p, i.2)).1).1).2 hfix
     | inr w' =>
       show actT w'.1 (L.t w'.1) (F (p, i.2)) = F (p, i.2)

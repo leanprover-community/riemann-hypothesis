@@ -4,58 +4,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsFFNeZeroThree
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsClopenIsCompactMapsPair
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -150,20 +98,20 @@ theorem exists_pull (h : ∀ z ∈ L, x₀ *ᵥ z ∈ LY) (fW : Module.Dual 𝓀
     ((mulVecLin x₀).restrictScalars 𝒪[k]).restrict h)
   have hf' : ∀ z : L, f₀ (Red.mk L z) = fW (Red.mk LY ⟨x₀ *ᵥ z, h z z.2⟩) := hf
   refine ⟨f₀, hf', fun w => ?_⟩
-  rw [finsum_eq_single _ f₀ fun f' hne => ?_, compInd, if_pos ⟨h, fun z => (hf' z).symm⟩, mul_one]
-  rw [compInd, if_neg, mul_zero]
+  rw [finsum_eq_single _ f₀ fun f' hne => ?_, compInd, ite_eq_left ⟨h, fun z => (hf' z).symm⟩, mul_one]
+  rw [compInd, ite_eq_right, mul_zero]
   rintro ⟨_, h'⟩
   exact hne (dual_ext fun z => (h' z).symm.trans (hf' z).symm)
 
 theorem compInd_of_not (h : ¬ ∀ z ∈ L, x₀ *ᵥ z ∈ LY) (f' : Module.Dual 𝓀[k] (Red L))
-    (fW : Module.Dual 𝓀[k] (Red LY)) : compInd L LY f' fW x₀ = 0 := if_neg fun h' => h h'.1
+    (fW : Module.Dual 𝓀[k] (Red LY)) : compInd L LY f' fW x₀ = 0 := ite_eq_right fun h' => h h'.1
 
 theorem latInd_eq_finsum (fW : Module.Dual 𝓀[k] (Red LY)) :
     latInd L LY x₀ = ∑ᶠ f' : Module.Dual 𝓀[k] (Red L), compInd L LY f' fW x₀ := by
   by_cases h : ∀ z ∈ L, x₀ *ᵥ z ∈ LY
   · obtain ⟨f₀, -, hf⟩ := exists_pull h fW
-    simpa [latInd, if_pos h] using (hf fun _ => 1).symm
-  · simp [compInd_of_not h, latInd, if_neg h]
+    simpa [latInd, ite_eq_left h] using (hf fun _ => 1).symm
+  · simp [compInd_of_not h, latInd, ite_eq_right h]
 
 variable (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (ε : 𝓀[k]ˣ) (P : Pair k n')
 
@@ -172,14 +120,14 @@ theorem term_eq_finsum (fW : Module.Dual 𝓀[k] (Red LY)) :
       χ (-((ε : 𝓀[k]) * f' (qvec q P))) * compInd P.ker LY f' fW x₀ := by
   by_cases h : ∀ z ∈ P.ker, x₀ *ᵥ z ∈ LY
   · obtain ⟨f₀, h0, hf⟩ := exists_pull h fW
-    rw [hf fun f' => χ (-((ε : 𝓀[k]) * f' (qvec q P))), term, dif_pos h, qvec, h0]
-  · simp [compInd_of_not h, term, dif_neg h]
+    rw [hf fun f' => χ (-((ε : 𝓀[k]) * f' (qvec q P))), term, dite_eq_left h, qvec, h0]
+  · simp [compInd_of_not h, term, dite_eq_right h]
 
 theorem term_zero : term q χ ε P LY 0 = latInd P.ker LY := by
   ext x₀
   by_cases h : ∀ z ∈ P.ker, x₀ *ᵥ z ∈ LY
-  · simp [term, dif_pos h, latInd, if_pos h]
-  · simp [term, dif_neg h, latInd, if_neg h]
+  · simp [term, dite_eq_left h, latInd, ite_eq_left h]
+  · simp [term, dite_eq_right h, latInd, ite_eq_right h]
 
 variable [LY.IsFullLattice k] (fW : {f : Module.Dual 𝓀[k] (Red LY) // f ≠ 0})
 
@@ -384,9 +332,9 @@ theorem integral_qLat (η : n → k) :
       by_cases hy : q.inv • y ∈ L
       · have h1 := h _ hy
         rw [hd, q.smul_inv_smul] at h1
-        rw [if_pos hy, Set.indicator_of_mem (show y ∈ {y : n → k | q.inv • y ∈ L} from hy),
+        rw [ite_eq_left hy, Set.indicator_of_mem (show y ∈ {y : n → k | q.inv • y ∈ L} from hy),
           apply_int_eq_one hψ ⟨_, h1⟩, Circle.coe_one, mul_one]
-      · rw [if_neg hy, Set.indicator_of_notMem (show y ∉ {y : n → k | q.inv • y ∈ L} from hy), zero_mul]
+      · rw [ite_eq_right hy, Set.indicator_of_notMem (show y ∉ {y : n → k | q.inv • y ∈ L} from hy), zero_mul]
     simp only [this]
     rw [integral_indicator_const _ (isClopen_isCompact_qLat q L).1.2.measurableSet]
     simp [volQ]
@@ -427,8 +375,8 @@ theorem datumHat_eq :
   haveI := secondCountable k
   by_cases h : ∀ z ∈ P.ker, x₀ *ᵥ z ∈ L
   swap
-  · have : ∀ y, datum q P L x₀ y = 0 := fun y => if_neg fun h' => h h'.1
-    simp [datumHat, this, term, dif_neg h]
+  · have : ∀ y, datum q P L x₀ y = 0 := fun y => ite_eq_right fun h' => h h'.1
+    simp [datumHat, this, term, dite_eq_right h]
   have hψ' := hasConductor_mulShift hψ ε
   set w := x₀ *ᵥ (q.1 • P.vec) with hw
   have hF : ∀ y, datum q P L x₀ y * (ψ (((ε : 𝒪[k]) : k) * (η ⬝ᵥ y)) : ℂ) =
@@ -449,8 +397,8 @@ theorem datumHat_eq :
   simp only [cosetInd_eq]
   split_ifs with hD
   · obtain ⟨f, hf⟩ := exists_lifts hD
-    rw [finsum_eq_single _ f fun g hg => by rw [if_neg fun h' => hg (lifts_unique h' hf), mul_zero],
-      if_pos hf, mul_one, mul_comm, term, dif_pos h]
+    rw [finsum_eq_single _ f fun g hg => by rw [ite_eq_right fun h' => hg (lifts_unique h' hf), mul_zero],
+      ite_eq_left hf, mul_one, mul_comm, term, dite_eq_left h]
     obtain ⟨s, hs, e⟩ := hf ⟨w, h _ (Pair.smul_mem_ker q.mem_max P.hasVal_vec.mem)⟩
     have e' : -(((resUnit ε : 𝓀[k]ˣ) : 𝓀[k]) * residue 𝒪[k] s) = residue 𝒪[k] (-(ε * s)) := by simp [resUnit]
     have hs' : (s : k) = (q.1 : k) * (η ⬝ᵥ w) := by rw [hs, smul_dotProduct]; rfl

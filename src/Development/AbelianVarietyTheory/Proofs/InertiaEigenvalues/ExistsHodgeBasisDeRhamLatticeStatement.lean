@@ -76,7 +76,6 @@ theorem deRham_filtered_Ql (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAi
   have hDd : (DdR (P.PD K) ρ').restrictScalars ℚ_[l] = DdR (P.PD K) ρ := by
     ext x
     rw [Submodule.restrictScalars_mem, hD]
-  set_option synthInstance.maxHeartbeats 200000 in
   have hDr : finrank ↥LL.1 ↥(DdR (P.PD K) ρ') = finrank ℚ_[l] ↥(DdR (P.PD K) ρ) := by
     rw [← hDd, LinearEquiv.finrank_eq
       ((Submodule.restrictScalarsEquiv ℚ_[l] ↥LL.1 _ (DdR (P.PD K) ρ')).restrictScalars ℚ_[l]),
@@ -284,7 +283,7 @@ theorem exists_adapted_family (F : ℤ → Submodule k M) (hF : Antitone F) :
   have hbdd : ∃ b, ∀ z, D ≤ F z → z ≤ b := by
     obtain ⟨x, hxD, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hD
     have : ¬ ∀ a, x ∈ F a := fun h => hx0 (hsep x hxD h)
-    push_neg at this
+    push Not at this
     obtain ⟨a, ha⟩ := this
     refine ⟨a, fun z hz => ?_⟩
     by_contra hlt
@@ -340,7 +339,7 @@ theorem exists_adapted_family (F : ℤ → Submodule k M) (hF : Antitone F) :
         · simpa using ha
       rw [hall, Set.image_univ, Set.Sum.elim_range, Submodule.span_union, hspan, hcspan, hsup]
       exact hx.1
-    · push_neg at ha
+    · push Not at ha
       have hx' : x ∈ D' ⊓ F a := ⟨⟨hx.1, hF (by omega) hx.2⟩, hx.2⟩
       refine Submodule.span_mono ?_ (hfil a hx')
       rintro _ ⟨j, hj, rfl⟩
@@ -540,7 +539,6 @@ theorem exists_hodge : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P : LocPrime
     linarith
   have hsep : ∀ v ∈ D, (∀ a, v ∈ F a) → v = 0 := fun v _ hv =>
     funext fun i => (P.PD K).Fil_sep (v i) fun a => (hmemF a v).1 (hv a) i
-  set_option synthInstance.maxHeartbeats 200000 in
   obtain ⟨b0, h0, hbF0, hbrep0⟩ := _root_.GlobalTheory.AdaptedBasis.exists_adapted_basis D F hF hex hsep
   set e := finCongr hfr
   set b := b0.reindex e with hb

@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Principal
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
@@ -43,11 +41,3 @@ theorem prin_sub_multi {n : ℕ} (χ : Fin n → kˣ →* ℂˣ) :
   exact h
 
 end UpperTheory.TNZ.Grp.P_spOrd
-
-namespace UpperTheory.TNZ.Grp
-
-open UpperTheory.TNZ.Grp.P_spOrd GlobalTheory.LocGL.SupportRing
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
-
-end UpperTheory.TNZ.Grp

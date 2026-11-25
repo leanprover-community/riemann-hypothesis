@@ -128,7 +128,7 @@ theorem testEx_of_trivial (hχ : ∀ x y, χ x y = 1) (L : AddSubgroup V)
     refine ⟨fun _ => 1, continuous_const, HasCompactSupport.intro hLc (fun x hx => absurd (hL x) hx), ?_, ⟨0, one_ne_zero⟩⟩
     simp only [hχ, mul_one]
     exact integrable_const _
-  · push_neg at hL
+  · push Not at hL
     obtain ⟨t, ht⟩ := hL
     set g : V → ℂ := (L : Set V).indicator (fun _ => (1 : ℂ)) with hg
     have hcg : Continuous fun x => g (-t + x) := hind.comp' (continuous_const.add continuous_id)

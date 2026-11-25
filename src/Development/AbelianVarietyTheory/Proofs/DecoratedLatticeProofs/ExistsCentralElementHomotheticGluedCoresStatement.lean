@@ -177,10 +177,6 @@ open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 open IsLocalRing
 
-theorem _root_.GlobalTheory.T.localLattice_exists_scalar_bound_attained : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] (L : Submodule 𝒪[k] (n → k)), L.IsFullLattice k → Nonempty n → ∃ c : k, c ≠ 0 ∧ (∀ x ∈ L, ∀ j, c⁻¹ * x j ∈ 𝒪[k]) ∧ ∃ x ∈ L, ∃ j, x j = c := by
-  intro k _ _ _ _ n _ L hL hn
-  first
-  | exact GlobalTheory.lattice_exists_scalar_bound_attained k n L hL hn
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LocalLatticeExistsScalarBoundAttainedStatement =====
@@ -295,7 +291,7 @@ theorem latPair_hasVal_residue_of_transvections : ∀ (k : Type) [Field k] [Valu
     rw [hcoef]
     by_cases h : j = b
     · subst h; simp only [Pi.single_eq_same]; exact one_mem _
-    · simp only [Pi.single_apply, h, if_false]; exact zero_mem _)
+    · simp only [Pi.single_apply, h, ite_false]; exact zero_mem _)
   let v : n → 𝓀[k] := fun b => P.fn ⟨e b, hmem b⟩
   have hv : ∀ b, P.HasVal (e b) (v b) := fun b => P.hasVal_fn ⟨e b, hmem b⟩
   have hzero : ∀ a, a ≠ i → v a = 0 := by
@@ -363,8 +359,6 @@ open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 open IsLocalRing
 
-theorem _root_.GlobalTheory.T.transvectionInvariant_pair_functional_residue : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (i : n) (P : GlobalTheory.LatPair.Pair k n) (c : k), 2 ≤ Fintype.card n → c ≠ 0 → (∀ x : n → k, x ∈ P.lat ↔ ∀ j, c⁻¹ * x j ∈ 𝒪[k]) → (∀ (x : n → k) (a : 𝓀[k]), P.HasVal x a → ∀ (b d : n) (t : 𝒪[k]), b ≠ d → (b ≠ i ∨ t ∈ IsLocalRing.maximalIdeal 𝒪[k]) → P.HasVal (x + Pi.single b ((t : k) * x d)) a) → ∃ ε : 𝓀[k], ε ≠ 0 ∧ ∀ (x : n → k) (hx : ∀ j, c⁻¹ * x j ∈ 𝒪[k]), P.HasVal x (IsLocalRing.residue 𝒪[k] ⟨c⁻¹ * x i, hx i⟩ * ε) := by
-  first | exact @GlobalTheory.latPair_hasVal_residue_of_transvections
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TransvectionInvariantPairFunctionalResidueStatement =====
@@ -497,8 +491,6 @@ open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 open IsLocalRing
 
-theorem _root_.GlobalTheory.T.transvectionStable_localLattice_shape : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (i : n) (L : Submodule 𝒪[k] (n → k)) (c : k), 3 ≤ Fintype.card n → c ≠ 0 → (∀ x ∈ L, ∀ (b d : n) (t : 𝒪[k]), b ≠ d → (b ≠ i ∨ t ∈ IsLocalRing.maximalIdeal 𝒪[k]) → x + Pi.single b ((t : k) * x d) ∈ L) → (∀ x ∈ L, ∀ j, c⁻¹ * x j ∈ 𝒪[k]) → (∃ x ∈ L, ∃ j, x j = c) → (∀ x : n → k, x ∈ L ↔ ∀ j, c⁻¹ * x j ∈ 𝒪[k]) ∨ (∀ x : n → k, x ∈ L ↔ (∀ j, c⁻¹ * x j ∈ 𝒪[k]) ∧ ∃ s : 𝒪[k], s ∈ IsLocalRing.maximalIdeal 𝒪[k] ∧ (s : k) = c⁻¹ * x i) := by
-  first | exact @GlobalTheory.LatPairStab.stable_lattice_shape
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TransvectionStableLocalLatticeShapeStatement =====
@@ -648,12 +640,12 @@ theorem eq_scalar_smul_of_stab : ∀ (k : Type) [Field k] [ValuativeRel k] [Topo
   have hbound : ∃ c : k, c ≠ 0 ∧ (∀ x ∈ Q.lat, ∀ j, c⁻¹ * x j ∈ 𝒪[k]) ∧
       ∃ x ∈ Q.lat, ∃ j, x j = c := by
     first
-    | exact GlobalTheory.T.localLattice_exists_scalar_bound_attained k n Q.lat Q.isLat ⟨i⟩
+    | exact GlobalTheory.lattice_exists_scalar_bound_attained k n Q.lat Q.isLat ⟨i⟩
   obtain ⟨c, hc0, hcb, hca⟩ := hbound
-  rcases GlobalTheory.T.transvectionStable_localLattice_shape k n i Q.lat c hn hc0 hlat hcb hca with hA | hB
+  rcases GlobalTheory.LatPairStab.stable_lattice_shape k n i Q.lat c hn hc0 hlat hcb hca with hA | hB
   swap
   · exact (_root_.GlobalTheory.LatPair.no_pair_on_scaled_kernel k n i Q c hn hc0 hB hcl).elim
-  obtain ⟨ε, hε0, hε⟩ := GlobalTheory.T.transvectionInvariant_pair_functional_residue k n i Q c (by omega) hc0 hA hcl
+  obtain ⟨ε, hε0, hε⟩ := GlobalTheory.latPair_hasVal_residue_of_transvections k n i Q c (by omega) hc0 hA hcl
   obtain ⟨w, hw⟩ := IsLocalRing.residue_surjective (R := 𝒪[k]) ε
   have hwu : IsUnit w := by
     rw [← IsLocalRing.notMem_maximalIdeal, ← IsLocalRing.residue_eq_zero_iff, hw]
@@ -804,7 +796,6 @@ theorem glued_zero {n : Type} [Fintype n] [DecidableEq n] {q : GlobalTheory.LatP
     exact ⟨0, by simpa using h, by simp⟩
 
 end GlobalTheory.Core.Mi.LatMatch.StabPair
-
 
 open GlobalTheory.Core.Mi.LatMatch.StabPair in
 theorem GlobalTheory.Core.Mi.LatMatch.moves_emb_iff_smul_eq : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (S A L : HSp D) (o : OrthDec S A L) (ζ : Fin L.rank → D.host.E) (n : Type) [Fintype n] [DecidableEq n] (β : GlobalTheory.FinPl.Frame p A n) (β₀ : GlobalTheory.FinPl.Frame p S (n ⊕ Fin 1)) (M : Lat S) (q : GlobalTheory.LatPair.Unif k) (m : k) (P : GlobalTheory.LatPair.Pair k n), IsSumFrame o ζ β β₀ → IsSelfDualC S M → m ≠ 0 → GluedW β₀ M q m P → ∀ g : GL n k, Moves S (o.emb (β.gl g, 1)) M M (· = p.v) ↔ g • P = P := by

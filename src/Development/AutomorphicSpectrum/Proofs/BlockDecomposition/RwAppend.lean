@@ -57,7 +57,7 @@ theorem rR_coe (hU : Unimod) (h : G n) (x : Lp V 2 μ) : rR μ V h x =ᵐ[μ] fu
   haveI := (hU n μ).1
   have hm : MeasurePreserving (fun y : G n => y * h) μ μ := measurePreserving_mul_right μ h
   have : rR μ V h x = Lp.compMeasurePreserving (fun y : G n => y * h) hm x := by
-    simp only [rR, dif_pos hm]
+    simp only [rR, dite_eq_left hm]
     rfl
   rw [this]
   exact Lp.coeFn_compMeasurePreserving x hm
@@ -66,12 +66,12 @@ theorem cls_of_ae {f : Mat n → V} {x : Lp V 2 μ} (h : (fun y : G n => f y.val
     MemLp (fun y : G n => f y.val) 2 μ ∧ cls μ f = x := by
   have hm : MemLp (fun y : G n => f y.val) 2 μ := (memLp_congr_ae h).2 (Lp.memLp x)
   refine ⟨hm, ?_⟩
-  simp only [cls, dif_pos hm]
+  simp only [cls, dite_eq_left hm]
   exact Lp.ext (hm.coeFn_toLp.trans h)
 
 theorem coe_cls {f : Mat n → V} (h : MemLp (fun y : G n => f y.val) 2 μ) :
     (cls μ f : G n → V) =ᵐ[μ] fun y => f y.val := by
-  simp only [cls, dif_pos h]
+  simp only [cls, dite_eq_left h]
   exact h.coeFn_toLp
 
 end Mol

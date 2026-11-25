@@ -66,14 +66,13 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AcrisMemLatticeSub, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniquePeriodOfCompatible, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemLatticeIdealIffSum, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeDpowClosedOfHyp, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FontaineLatticeDpowClosed, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesLatticeSub, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesTPowerSpan, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeSubReductionMem, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFiltrationSpanTPow, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesField, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesFieldStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesIntegers, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesIntegersStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeIsDPMorphismOfCompat, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisIsDPMorphism, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisIsDPMorphismStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIdealEqMap, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaAlgebraMapIntegers, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaLamEqToB, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLamGaloisEquivariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisA, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisB, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphism, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphismStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBAlgebraMapField, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBEqZeroIffTPowDvd, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBGaloisEquivariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBSurjective, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelXiMemIdealAndThetaCompat, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.LatLink
+-- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AcrisMemLatticeSub, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniquePeriodOfCompatible, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemLatticeIdealIffSum, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeDpowClosedOfHyp, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FontaineLatticeDpowClosed, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesLatticeSub, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesTPowerSpan, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeSubReductionMem, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFiltrationSpanTPow, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesField, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesFieldStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesIntegers, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesIntegersStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeIsDPMorphismOfCompat, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisIsDPMorphism, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisIsDPMorphismStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIdealEqMap, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaAlgebraMapIntegers, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaLamEqToB, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLamGaloisEquivariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisB, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphism, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphismStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBAlgebraMapField, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBEqZeroIffTPowDvd, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBGaloisEquivariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBSurjective, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelXiMemIdealAndThetaCompat, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.LatLink
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AcrisMemLatticeSub =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AcrisMemLatticeSub", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Ring.IsFormallyReal\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -142,15 +141,12 @@ theorem factorial_mul_dpow_xi (n : ℕ) :
 theorem pk_toB_algebraMap (k : ℕ) (w : AInf ℂ_[l] l) :
     pk l k (toBDeRhamPlus (normInteger ℂ_[l]) l (algebraMap (AInf ℂ_[l] l) 𝔸 w)) = fk l k w := rfl
 
-
 theorem pk_toB_mem (k M : ℕ) {s : 𝔸} (hs : s ∈ ACris.ACrisZero ℂ_[l] l) :
     pk l k (toBDeRhamPlus (normInteger ℂ_[l]) l s) ∈ sub (fk l k) (xi0 l) l M :=
   map_adjoin_mem (W := AInf ℂ_[l] l) (A := 𝔸) (B := BdRp l) (C := Bk l k)
     (toBDeRhamPlus (normInteger ℂ_[l]) l) (pk l k) (fk l k) (pk_toB_algebraMap l k) (xi0 l)
     (Fact.out : l.Prime).ne_zero M (fun n => ACris.dpow n (xi0 l))
     (factorial_mul_dpow_xi l) (mem_adjoin_dpow l hs)
-
-
 
 theorem cris_in (l : ℕ) [Fact l.Prime] (M k : ℕ) (c : Acris l) :
     Lat.pk l k (ACris.iota ℂ_[l] l c) ∈ Lat.sub (Lat.fk l k) (xi0 l) l M := by
@@ -178,8 +174,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniquePeriodOfCompatible", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -290,15 +284,6 @@ namespace GlobalTheory.CompanionTheory.LatIdeal
 
 section
 variable {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (f : W →+* B) (ξ : W) (l M : ℕ)
-
-theorem dpE_succ_mem_IB (i : ℕ) : Lat.dpE f ξ l M (i + 1) ∈ Lat.IB f ξ := by
-  have h1 : Lat.η f ξ l M ∈ Lat.IB f ξ := by
-    unfold Lat.η Lat.IB
-    rw [Algebra.smul_def]
-    exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _)
-  unfold Lat.dpE
-  rw [Algebra.smul_def, pow_succ]
-  exact Ideal.mul_mem_left _ _ (Ideal.mul_mem_left _ _ h1)
 
 theorem dpE_zero : Lat.dpE f ξ l M 0 = 1 := by
   unfold Lat.dpE
@@ -414,7 +399,7 @@ theorem mem_I_iff (m : ℕ) (H : Lat.Hyp f ξ l m) (x : Lat.A f ξ l M) :
     have hS : c.sum (fun i w => f w * Lat.dpE f ξ l M (i + 1)) ∈ Lat.IB f ξ :=
       by
         unfold Finsupp.sum
-        exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (dpE_succ_mem_IB f ξ l M i))
+        exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (GlobalTheory.CompanionTheory.LatPrime.dpE_succ_mem_IB f ξ l M i))
     have hw : f w₀ ∈ Lat.IB f ξ := by
       have h2 := sub_mem hx hS
       rwa [hc, add_sub_cancel_right] at h2
@@ -435,7 +420,7 @@ theorem mem_I_iff (m : ℕ) (H : Lat.Hyp f ξ l m) (x : Lat.A f ξ l M) :
     ring
   · rintro ⟨n, c, hc⟩
     rw [hc]
-    exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (dpE_succ_mem_IB f ξ l M _))
+    exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (GlobalTheory.CompanionTheory.LatPrime.dpE_succ_mem_IB f ξ l M _))
 
 end
 
@@ -538,8 +523,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
@@ -569,8 +552,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesLatticeSub", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -703,8 +684,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
@@ -805,7 +784,6 @@ theorem pInv_eq_tBdR {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (t : (per l 
   exact (RingEquiv.symm_apply_eq _).2 rfl
 
 end GlobalTheory.CompanionTheory.LatPdpB
-
 
 open GlobalTheory.CompanionTheory.LatPdpB in
 theorem GlobalTheory.CompanionTheory.LatPdpB.dividedPowerFiltration_lev_eq_span_pow : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {M : ℕ} (h : LevHyp l K M) (k : ℕ), ∀ (r : ℕ) (t : (per l K).P), (t : (per l K).B) = (per l K).tB → pdP (lev h k).γB r = Ideal.span {(lev h k).toB t ^ r} := by
@@ -958,8 +936,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
@@ -1057,7 +1033,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -1159,38 +1134,6 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLamGaloisEquivariant =====
 
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisA =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisA", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
-section -- clump:auto
-@[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
-
-noncomputable section
-
-open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
-
-namespace GlobalTheory.CompanionTheory.LatLevel
-
-theorem dk_gB {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {M : ℕ}
-    (h : LevHyp l K M) (k : ℕ) (g : K.fixingSubgroup) (x : Bk l (k + 1)) :
-    dk l k (gB h (k + 1) g x) = gB h k g (dk l k x) := by
-  obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
-  simp only [dk, gB, Ideal.quotientMap_mk, Ideal.Quotient.factor_mk]
-
-theorem levSys_dA_σA {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {M : ℕ}
-    (h : LevHyp l K M) : ∀ m g a,
-    (levSys h).dA m (((levSys h).L (m + 1)).σA g a) = ((levSys h).L m).σA g ((levSys h).dA m a) := by
-  intro m g a
-  apply Subtype.ext
-  exact dk_gB h (m + 1) g a.1
-
-end GlobalTheory.CompanionTheory.LatLevel
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisA =====
-
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisB =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisB", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
@@ -1219,8 +1162,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphism", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1494,11 +1435,9 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelXiMemIdealAndThetaCompat =====
 
 -- ===== clump member: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.LatLink =====
--- clump-header: {"m": "Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.LatLink", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.ChainOf\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AcrisMemLatticeSub\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLatticeBoundIntegers\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniquePeriodOfCompatible\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FontaineLatticeDpowClosed\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesLatticeSub\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesTPowerSpan\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeSubReductionMem\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFiltrationSpanTPow\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesFieldStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesIntegersStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisIsDPMorphismStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIdealEqMap\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaAlgebraMapIntegers\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaLamEqToB\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLamGaloisEquivariant\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLatticeBase\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisA\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisB\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphismStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBAlgebraMapField\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBEqZeroIffTPowDvd\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBGaloisEquivariant\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBSurjective\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.LatLink", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.ChainOf\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AcrisMemLatticeSub\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLatticeBoundIntegers\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniquePeriodOfCompatible\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FontaineLatticeDpowClosed\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesLatticeSub\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisPreservesTPowerSpan\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeSubReductionMem\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFiltrationSpanTPow\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesFieldStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisFixesIntegersStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelGaloisIsDPMorphismStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIdealEqMap\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaAlgebraMapIntegers\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelIotaLamEqToB\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLamGaloisEquivariant\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelLatticeBase\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionGaloisB\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelSystemTransitionIsDPMorphismStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBAlgebraMapField\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBEqZeroIffTPowDvd\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBGaloisEquivariant\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelToBSurjective\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1576,7 +1515,6 @@ theorem levSys_good (h : LevHyp l K M) : (levSys h).Good := by
     ddp := _root_.GlobalTheory.CompanionTheory.LatC.levSys_ddp h
     ddpB m := dp_of_char (K := K) ((levSys h).L (m + 1)).γB ((levSys h).L m).γB ((levSys h).L (m + 1)).ι ((levSys h).L m).ι
       ((levSys h).dA m) ((levSys h).dB m) (_root_.GlobalTheory.CompanionTheory.LatC.lev_IB_eq_map h (m + 2)) (_root_.GlobalTheory.CompanionTheory.LatC.lev_IB_eq_map h (m + 1)) (GlobalTheory.T.level_system_transition_isDPMorphism h m).1 (sys_dι h m)
-    dσ := _root_.GlobalTheory.CompanionTheory.LatLevel.levSys_dA_σA h
     dσB := _root_.GlobalTheory.CompanionTheory.LatLevel.dB_sigmaB h
     cpl := _root_.GlobalTheory.CompanionTheory.LatC.levSys_existsUnique h
   }

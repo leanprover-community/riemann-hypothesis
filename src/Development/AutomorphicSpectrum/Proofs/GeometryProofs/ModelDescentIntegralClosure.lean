@@ -57,7 +57,7 @@ omit [Fintype K] [DecidableEq K] [∀ k, Fintype (ι k)] in
 theorem of_idealCycle_ne {R : Type} [CommRing R] {J W : Ideal (MRing ι R)} (h : idealCycle J W ≠ 0) :
     W ∈ J.minimalPrimes ∧ IsRelevant W := by
   by_contra h'
-  exact h (dif_neg h')
+  exact h (dite_eq_right h')
 
 omit [Fintype K] [DecidableEq K] [∀ k, Fintype (ι k)] in
 theorem cycEval_eq_zero {R : Type} [CommRing R] {J : Ideal (MRing ι R)} {n : Ideal (MRing ι R) → ℤ}
@@ -175,9 +175,9 @@ theorem NN_add (hϖ : Irreducible ϖ) {d : ℕ} {J : Ideal (MRing ι O)} (hJ : I
       by_cases hIW : I ≤ W
       · have h2 : W ∈ I.minimalPrimes :=
           ⟨⟨hW.1.1.1, hIW⟩, fun Q hQ hQW => hW.1.2 ⟨hQ.1, hI.trans hQ.2⟩ hQW⟩
-        exact dif_pos ⟨h2, hW.2⟩
+        exact dite_eq_left ⟨h2, hW.2⟩
       · rw [multAt_zero hIW]
-        exact dif_neg fun h => hIW h.1.1.2
+        exact dite_eq_right fun h => hIW h.1.1.2
     have h2 : multAt J W ≠ ⊤ := ReciprocityTheory.ChartRestriction.G.AI.I1.locLen_ne_top hW.1
     have h3 := FiltrationStepLength.full O K ι J W x
     rw [h1 J le_rfl, h1 _ le_sup_left, h1 _ (le_colon J x), h3]
@@ -434,7 +434,7 @@ omit [IsDiscreteValuationRing O'] in
 theorem flat_of (hϖ : Irreducible ϖ) (hϖ' : Irreducible ϖ') (h : algebraMap O O' ϖ = u * ϖ' ^ e) :
     Module.Flat O O' := by
   have hinj : Function.Injective (algebraMap O O') := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     by_contra h0
     obtain ⟨n, v, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible h0 hϖ

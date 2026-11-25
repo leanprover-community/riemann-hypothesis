@@ -3,50 +3,6 @@ module
 public import Mathlib.Algebra.Group.Subgroup.Defs
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.SetTheory.Cardinal.Finite
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
@@ -127,8 +83,8 @@ private theorem sum_conj_double_coset_eq_of_invariant {G : Type} [Group G] [Fint
   by_cases hx : x ∈ H ∧ w⁻¹ * x * w ∈ K
   · have hc := hφ k⁻¹ (K.inv_mem hk) _ hx.2
     rw [inv_inv] at hc
-    rw [if_pos hx, if_pos ⟨eH.2 hx.1, eK.2 hx.2⟩, hlam h hh x hx.1, hc]
-  · rw [if_neg hx, if_neg]
+    rw [ite_eq_left hx, ite_eq_left ⟨eH.2 hx.1, eK.2 hx.2⟩, hlam h hh x hx.1, hc]
+  · rw [ite_eq_right hx, ite_eq_right]
     rintro ⟨h1, h2⟩
     exact hx ⟨eH.1 h1, eK.1 h2⟩
 
@@ -142,12 +98,12 @@ theorem mackey_doubleCoset_pairing : ∀ (G : Type) [Group G] [Fintype G] (H K :
         (if x ∈ H ∧ y⁻¹ * x * y ∈ K then lam x * φ (y⁻¹ * x * y) else 0) := by
     intro x
     by_cases hx : x ∈ H
-    · rw [if_pos hx]
+    · rw [ite_eq_left hx]
       simp only [Finset.mul_sum]
       refine Finset.sum_congr rfl fun y _ => ?_
       by_cases hy : y⁻¹ * x * y ∈ K
-      · rw [if_pos hy, if_pos ⟨hx, hy⟩]; ring
-      · rw [if_neg hy, if_neg (fun hc => hy hc.2)]; ring
+      · rw [ite_eq_left hy, ite_eq_left ⟨hx, hy⟩]; ring
+      · rw [ite_eq_right hy, ite_eq_right (fun hc => hy hc.2)]; ring
     · simp [hx]
   rw [Finset.sum_congr rfl (fun x _ => h1 x), ← Finset.mul_sum, Finset.sum_comm]
   have h2 : ∀ y : G, (∑ x : G,
@@ -158,10 +114,10 @@ theorem mackey_doubleCoset_pairing : ∀ (G : Type) [Group G] [Fintype G] (H K :
     intro y
     obtain ⟨i, ⟨hi, h, hhH, k, hkK, rfl⟩, huniq⟩ := hR y
     rw [Finset.sum_eq_single_of_mem i hi]
-    · rw [if_pos ⟨h, hhH, k, hkK, rfl⟩]
+    · rw [ite_eq_left ⟨h, hhH, k, hkK, rfl⟩]
       exact sum_conj_double_coset_eq_of_invariant H K (w i) h k hhH hkK lam φ hlam hφ
     · intro j hj hji
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hP
       exact hji (huniq j ⟨hj, hP⟩)
   rw [Finset.sum_congr rfl (fun y _ => h2 y), Finset.sum_comm]

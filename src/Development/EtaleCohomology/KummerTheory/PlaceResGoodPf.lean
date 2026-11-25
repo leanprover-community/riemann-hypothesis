@@ -5,8 +5,6 @@ import Mathlib.FieldTheory.PurelyInseparable.Exponent
 
 @[expose] public section
 
-noncomputable section
-
 open IsLocalRing
 
 namespace LateralTheory.KummerTheory

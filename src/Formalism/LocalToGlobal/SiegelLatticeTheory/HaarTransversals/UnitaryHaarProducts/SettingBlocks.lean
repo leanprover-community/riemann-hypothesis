@@ -359,10 +359,6 @@ end Formalism.L2.SG.SplitPrimeNormLemmas
 
 namespace Formalism.L2.SG.SplitPrimeNormLemmas
 
-end Formalism.L2.SG.SplitPrimeNormLemmas
-
-namespace Formalism.L2.SG.SplitPrimeNormLemmas
-
 open Formalism.MainNotions.S Formalism.MainNotions.CayleySignature
 
 def BesselNVGap : Prop :=

@@ -85,7 +85,7 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
 
       rw [← hexp, Finset.sum_mul, map_sum] at h
       simpa only [smul_mul_assoc, map_smul, hBA, htb, smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true] using h
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true] using h
     rw [← hexp]
     simp [hc0]
   let φ : ℚ_[ℓ] ⊗[ℚ] K →ₗ[ℚ_[ℓ]] ℚ_[ℓ] :=
@@ -99,7 +99,7 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
       rw [hBb, LinearMap.comp_apply, LinearMap.mulLeft_apply]
 
       simp only [β, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, htb, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     intro x
     exact congrArg (fun L => L x) hL
   have hker : ∀ x, piMap K ℓ Fp ι x = 0 → β * x = 0 := by
@@ -141,7 +141,7 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
       intro j
 
       simp only [t, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, hdb, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     intro a
     have ha : (a : K) = ∑ j, ((RingOfIntegers.basis K).repr a j) • b j := by
       have h := congrArg (algebraMap (𝓞 K) K) ((RingOfIntegers.basis K).sum_repr a)

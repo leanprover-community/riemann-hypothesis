@@ -9,48 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Con
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceHermitianFrameProperties
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.InfPartOfSplitIdem
 import Formalism.LocalRingCardinality.DataHost
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGeneratorNeZero
 import Development.AbelianVarietyTheory.Definitions.Divisors.NatCastSmulMemHatL
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
@@ -130,9 +88,9 @@ theorem colFix_apply_col {f : a → n} (hf : Function.Injective f) (ξ : a → n
     (p₀ : a) : colFix f ξ i (f p₀) = ξ p₀ i := by
   simp only [colFix, Matrix.of_apply]
   rw [Finset.sum_eq_single p₀]
-  · rw [if_pos rfl, mul_one]; ring
+  · rw [ite_eq_left rfl, mul_one]; ring
   · intro p _ hp
-    rw [if_neg (fun h => hp (hf h).symm), mul_zero]
+    rw [ite_eq_right (fun h => hp (hf h).symm), mul_zero]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem rowFix_sub_one_mem (I : Ideal O) (g : b → n) (ζ : b → n → O)
@@ -145,9 +103,9 @@ theorem rowFix_apply_row {g : b → n} (hg : Function.Injective g) (ζ : b → n
     (q₀ : b) : rowFix g ζ (g q₀) j = ζ q₀ j := by
   simp only [rowFix, Matrix.of_apply]
   rw [Finset.sum_eq_single q₀]
-  · rw [if_pos rfl, one_mul]; ring
+  · rw [ite_eq_left rfl, one_mul]; ring
   · intro q _ hq
-    rw [if_neg (fun h => hq (hg h).symm), zero_mul]
+    rw [ite_eq_right (fun h => hq (hg h).symm), zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem rowFix_apply_col (f : a → n) (g : b → n) (ζ : b → n → O)
@@ -213,9 +171,9 @@ theorem GlobalTheory.AscFin.exists_gl_congr_cols_rows : ∀ (O : Type) [CommRing
       have := congrFun (congrFun hWmm l) (f p)
       rw [Matrix.mul_apply, Matrix.one_apply] at this
       simpa only [hmcol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-        if_true] using this
+        ite_true] using this
     rw [Matrix.mul_apply]
-    simp only [hWcol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hWcol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact colFix_apply_col hf ξ i p
   · intro q
     rw [hval, ← Matrix.vecMul_vecMul]
@@ -283,7 +241,7 @@ theorem mem_idOff_iff_pr {D : D7} {k : Type} [Field k] [ValuativeRel k] [Topolog
       · rw [zero_mul]
     · intro h
       have h' := congrArg (GlobalTheory.FinPl.compAt D p.v) h
-      rwa [map_mul, hcomp, if_pos rfl, one_mul, map_zero] at h'
+      rwa [map_mul, hcomp, ite_eq_left rfl, one_mul, map_zero] at h'
   have hpr : ∀ x, p.pr x = 0 ↔ p.e * x = 0 := fun x =>
     ⟨fun h => by rw [← p.sec_pr, h, map_zero],
      fun h => by rw [← p.pr_sec (p.pr x), p.sec_pr, h, map_zero]⟩
@@ -320,8 +278,8 @@ theorem fix_last {k : Type} [CommRing k] {ρ : ℕ} (G U Uc : Matrix (Fin (ρ + 
         · subst hi
           subst hj
           simp
-        · rw [if_neg hj, mul_zero, hG i j (fun h => hj h.1)]
-      · rw [if_neg hi, zero_mul, zero_mul, hG i j (fun h => hi h.2)]
+        · rw [ite_eq_right hj, mul_zero, hG i j (fun h => hj h.1)]
+      · rw [ite_eq_right hi, zero_mul, zero_mul, hG i j (fun h => hi h.2)]
     · intro a _ ha
       rw [hG a (Fin.last ρ) (fun h => ha h.2), mul_zero]
     · simp
@@ -350,11 +308,11 @@ theorem core_coord {O k : Type} [CommRing O] [Field k] [Algebra O k] (hinj : Fun
   choose z2 hz2I hz2 using ha2
   have hs : ∀ q, s q ≠ 0 := fun q h => by
     have h' := h1 q (ι q)
-    rw [h, zero_mul, if_pos rfl] at h'
+    rw [h, zero_mul, ite_eq_left rfl] at h'
     exact zero_ne_one h'
   have ht : ∀ q, t q ≠ 0 := fun q h => by
     have h' := h2 q (ι' q)
-    rw [h, zero_mul, if_pos rfl] at h'
+    rw [h, zero_mul, ite_eq_left rfl] at h'
     exact zero_ne_one h'
   have hP : ∀ i q, P i q = (s q)⁻¹ * (if i = ι q then 1 else 0) := by
     intro i q
@@ -370,8 +328,8 @@ theorem core_coord {O k : Type} [CommRing O] [Field k] [Algebra O k] (hinj : Fun
     by_cases hi : i = ι' q
     · by_cases hi' : i = ι p
       · exact absurd (hx p q (hi.symm.trans hi')) hqp
-      · rw [if_neg hi', mul_zero, mul_zero]
-    · rw [if_neg hi, mul_zero, zero_mul]
+      · rw [ite_eq_right hi', mul_zero, mul_zero]
+    · rw [ite_eq_right hi, mul_zero, zero_mul]
   have hpair : (Q + QA) * (P + PA) = Q * P := hG.trans (fix_last (Q * P) U Uc hU hUc hQP)
   obtain ⟨ξ, hξd⟩ : ∃ ξ : Fin (ρ + 1) → Fin N → O, ∀ p i, ξ p i = (if i = ι p then 1 else 0) + z1 p i :=
     ⟨_, fun _ _ => rfl⟩
@@ -404,9 +362,9 @@ theorem core_coord {O k : Type} [CommRing O] [Field k] [Algebra O k] (hinj : Fun
     intro q p
     rw [Matrix.mul_apply, Finset.mul_sum, Finset.sum_eq_single (ι' q)]
     · rw [show t q * s p * (Q q (ι' q) * P (ι' q) p) = (t q * Q q (ι' q)) * (s p * P (ι' q) p) by ring,
-        h2, h1, if_pos rfl, one_mul]
+        h2, h1, ite_eq_left rfl, one_mul]
     · intro i _ hi
-      rw [show t q * s p * (Q q i * P i p) = (t q * Q q i) * (s p * P i p) by ring, h2, if_neg hi, zero_mul]
+      rw [show t q * s p * (Q q i * P i p) = (t q * Q q i) * (s p * P i p) by ring, h2, ite_eq_right hi, zero_mul]
     · simp
   have hdot : ∀ p q, η q ⬝ᵥ ξ p = if ι' q = ι p then 1 else 0 := by
     intro p q
@@ -421,10 +379,10 @@ theorem core_coord {O k : Type} [CommRing O] [Field k] [Algebra O k] (hinj : Fun
   refine ⟨K, hKI, ?_, ?_⟩
   · ext i p
     rw [Matrix.mul_apply, Finset.sum_eq_single (ι p)]
-    · rw [Matrix.map_apply, hKcol, hξ, hP, if_pos rfl, mul_one, mul_comm, ← mul_assoc,
+    · rw [Matrix.map_apply, hKcol, hξ, hP, ite_eq_left rfl, mul_one, mul_comm, ← mul_assoc,
         inv_mul_cancel₀ (hs p), one_mul]
     · intro j _ hj
-      rw [hP, if_neg hj, mul_zero, mul_zero]
+      rw [hP, ite_eq_right hj, mul_zero, mul_zero]
     · simp
   · ext q j
     have hr := congrFun (hKrow q) j

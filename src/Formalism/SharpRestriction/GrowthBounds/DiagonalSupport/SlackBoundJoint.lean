@@ -28,12 +28,6 @@ namespace Formalism.MainNotions.Pf14
 
 open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-section Pos
-
-variable {n' : ℕ} [NeZero n']
-
-end Pos
-
 section Fr
 
 variable {n' r : ℕ} [NeZero n'] {F : Frames n' r} {L₁ N₁ : ℕ}

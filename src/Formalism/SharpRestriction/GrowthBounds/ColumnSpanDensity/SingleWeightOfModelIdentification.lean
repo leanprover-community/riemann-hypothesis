@@ -35,18 +35,6 @@ def eulY (f : PolXY K k) : PolXY K k := ∑ i : Fin k, X (Sum.inr i) * pderiv (S
 
 variable {K k}
 
-theorem ctrF_apply (f : PolXY K k) :
-    ctrF K k f = ∑ i : Fin k, pderiv (Sum.inl i) (pderiv (Sum.inr i) f) := by
-  simp [ctrF, LinearMap.sum_apply]
-
-theorem pderiv_inl_h (i : Fin k) : pderiv (Sum.inl i) (hXY K k) = X (Sum.inr i) := by
-  classical
-  simp [hXY, pderiv_X, Pi.single_apply, Finset.sum_ite_eq']
-
-theorem pderiv_inr_h (i : Fin k) : pderiv (Sum.inr i) (hXY K k) = X (Sum.inl i) := by
-  classical
-  simp [hXY, pderiv_X, Pi.single_apply, Finset.sum_ite_eq']
-
 theorem ctrF_h_mul (f : PolXY K k) :
     ctrF K k (hXY K k * f) = hXY K k * ctrF K k f + (k : K) • f + eulX_har K k f + eulY K k f := by
   classical
@@ -54,9 +42,9 @@ theorem ctrF_h_mul (f : PolXY K k) :
       hXY K k * pderiv (Sum.inl i) (pderiv (Sum.inr i) f) + f +
         X (Sum.inl i) * pderiv (Sum.inl i) f + X (Sum.inr i) * pderiv (Sum.inr i) f := by
     intro i
-    rw [pderiv_mul, pderiv_inr_h, map_add (f := _), pderiv_mul, pderiv_mul, pderiv_inl_h, pderiv_X_self]
+    rw [pderiv_mul, Formalism.CountingSumsFrames.Har2.pderiv_inr_h, map_add (f := _), pderiv_mul, pderiv_mul, Formalism.CountingSumsFrames.Har2.pderiv_inl_h, pderiv_X_self]
     ring
-  rw [ctrF_apply, ctrF_apply, eulX_har, eulY, Finset.sum_congr rfl (fun i _ => key i)]
+  rw [Formalism.CountingSumsFrames.Har2.ctrF_apply, Formalism.CountingSumsFrames.Har2.ctrF_apply, eulX_har, eulY, Finset.sum_congr rfl (fun i _ => key i)]
   simp only [Finset.sum_add_distrib, Finset.mul_sum, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin]
   rw [← Nat.cast_smul_eq_nsmul K]
@@ -104,24 +92,6 @@ theorem slTwoCommutator_holds : SlTwo := by
   simp only [Algebra.smul_def, Nat.cast_add, Nat.cast_mul, Nat.cast_one, Nat.cast_zero, map_add (f := _), map_mul,
       map_one, map_zero, map_natCast]
   ring
-
-section Gen2
-
-variable {K : Type} [Field K] {k : ℕ}
-
-end Gen2
-
-section Fis
-
-variable {K : Type} [Field K] {k : ℕ}
-
-end Fis
-
-section Can
-
-variable {K : Type} [Field K] {k : ℕ}
-
-end Can
 
 end Formalism.CountingSumsFrames
 end -- clump:auto
@@ -276,10 +246,10 @@ theorem oneTop_abs (K : Type) [Field K] [CharZero K] (k P Q p : ℕ) (hk : 1 ≤
     if hj : j ≤ min P Q then E j hj ∘ₗ s j else 0
   have hpr : ∀ j (hj : j ≤ min P Q) x, pr j x = β j (Dc j hj x) := by
     intro j hj x
-    simp only [pr, dif_pos hj, LinearMap.comp_apply]
+    simp only [pr, dite_eq_left hj, LinearMap.comp_apply]
   have hio : ∀ j (hj : j ≤ min P Q) f, io j (β j f) = E j hj f := by
     intro j hj f
-    simp only [io, dif_pos hj, LinearMap.comp_apply]
+    simp only [io, dite_eq_left hj, LinearMap.comp_apply]
     exact hEβ j hj f
   have hterm : ∀ j (hj : j ≤ min P Q) x,
       ((α (io j (pr j x)) : Formalism.CountingSumsFrames.PolAB K k P Q) : Formalism.CountingSumsFrames.PolXY K k) =

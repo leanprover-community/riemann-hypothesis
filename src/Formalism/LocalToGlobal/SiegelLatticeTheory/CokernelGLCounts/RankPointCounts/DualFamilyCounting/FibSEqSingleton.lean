@@ -101,7 +101,7 @@ theorem card_glue (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
     obtain ⟨Λ, ⟨hΛ, hin, hout⟩, -⟩ := exists_unique_patch hK hF hN s
       (fun 𝔭 => if hp : 𝔭 ∈ s then (τ ⟨𝔭, hp⟩).1 else ⊥) (by
         intro 𝔭 hp
-        simp only [dif_pos hp]
+        simp only [dite_eq_left hp]
         obtain ⟨⟨A, hA, e⟩, -, hU, hW⟩ := (τ ⟨𝔭, hp⟩).2
         refine ⟨by rw [← e, LocF.locF_idem], A, { toIsLattice := hA, span_eq_top := ?_ }, e⟩
         have hle : locF 𝔭.1 A ≤ (Submodule.span K (A : Set V)).restrictScalars (𝓞 K) := by
@@ -116,7 +116,7 @@ theorem card_glue (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
     have hfib : ∀ 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, locF 𝔭.1 Λ ∈ fibS h U 𝔭.1 M T := by
       intro 𝔭
       by_cases hp : 𝔭 ∈ s
-      · rw [hin 𝔭 hp, dif_pos hp]
+      · rw [hin 𝔭 hp, dite_eq_left hp]
         exact (τ ⟨𝔭, hp⟩).2
       · rw [hout 𝔭 hp, hsing 𝔭 hp]
         exact Set.mem_singleton _
@@ -136,6 +136,6 @@ theorem card_glue (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
     funext 𝔭
     apply Subtype.ext
     show locF 𝔭.1.1 Λ = (τ 𝔭).1
-    rw [hin 𝔭.1 𝔭.2, dif_pos 𝔭.2]
+    rw [hin 𝔭.1 𝔭.2, dite_eq_left 𝔭.2]
 
 end Formalism.L2.SG.Pf.G8

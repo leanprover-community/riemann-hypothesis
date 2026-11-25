@@ -47,13 +47,13 @@ private theorem sgnAct_one_add (I : Ideal C) (hI : I * I = ⊥) (q : GL (Fin m) 
   have hXX : X * X = 0 := mul_eq_zero_of_entIn I hI X X hX hX
   by_cases hs : s = 1
   · subst hs
-    rw [if_pos rfl, map_one, MulAut.one_apply, hq]
+    rw [ite_eq_left rfl, map_one, MulAut.one_apply, hq]
   · have hs' : s = -1 := by
       rcases Int.units_eq_one_or s with h | h
       · exact absurd h hs
       · exact h
     subst hs'
-    rw [sgnAct_neg_one, theta_val, if_neg hs]
+    rw [sgnAct_neg_one, theta_val, ite_eq_right hs]
     have h1 : (q : Matrix (Fin m) (Fin m) C) * ((q⁻¹ : GL (Fin m) C) : Matrix (Fin m) (Fin m) C) = 1 := by
       rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
     have h2 : (1 - X) * (q : Matrix (Fin m) (Fin m) C) = 1 := by

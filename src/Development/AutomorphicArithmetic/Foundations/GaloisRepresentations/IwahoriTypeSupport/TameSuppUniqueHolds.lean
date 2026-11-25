@@ -250,7 +250,7 @@ theorem UpperTheory.Gal.TypesAndIwahori.typeToIw :
           have h1 := congrArg Units.val (hu (stdBlocks d hd ⟨a, j⟩))
           simp only [val_diagT, diagonal_apply_eq]
           rw [← h1]
-          simp only [unitIncl, Units.coe_map, MonoidHom.coe_coe]
+          simp only [unitIncl, Units.coe_map]
           refine lt_of_eq_of_lt (congrArg (valuation k) (sub_eq_zero.2 rfl)) ?_
           simp)
       rw [hx]

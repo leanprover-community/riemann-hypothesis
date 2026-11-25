@@ -258,7 +258,6 @@ theorem GlobalTheory.ShellPiece.setIntegral_coset_eq_zero : ∀ (k : Type) [Fiel
     · simp [Pi.mulSingle_eq_of_ne h]
   have hcomm : Commute d D := Units.ext (by simp [hd, hD, diagonal_mul_diagonal, mul_comm])
   set k0 := x * D * x⁻¹ with hk0
-  have hk0K : k0 ∈ KO k (Fin a) := mul_mem (mul_mem hx hDK) (inv_mem hx)
   set S := {g : GL (Fin a) k | (x * d)⁻¹ * g ∈ KO k (Fin a)} with hS
   have key : ∀ g, (x * d)⁻¹ * (k0 * g) = D * ((x * d)⁻¹ * g) := fun g => by
     have h1 : d⁻¹ * D = D * d⁻¹ := (hcomm.inv_left).eq
@@ -350,7 +349,7 @@ theorem shell_eq_zero_of_support : ∀ (k : Type) [Field k] [ValuativeRel k] [To
     (φ : Matrix (Fin a) (Fin a) k → ℂ) (M' : ℕ), Function.support φ ⊆ scaledInt ϖ a (-(M' : ℤ)) →
     ∀ n : Fin a → ℤ, ¬ (∀ i, -(M' : ℤ) ≤ n i) → ∀ z : ℂ, shell μ ϖ ν z φ n = 0 := by
   intro k _ _ _ _ _ _ ϖ hϖ ν a μ φ M' hS n hn z
-  push_neg at hn
+  push Not at hn
   obtain ⟨i, hi⟩ := hn
   rw [shell]
   refine setIntegral_eq_zero_of_forall_eq_zero fun g hg => ?_

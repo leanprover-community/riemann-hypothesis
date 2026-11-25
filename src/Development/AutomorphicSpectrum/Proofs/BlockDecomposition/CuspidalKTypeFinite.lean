@@ -282,7 +282,6 @@ theorem exists_testFn {N : Set (GL (Fin a) (Cinf E))} (hN : N ∈ 𝓝 1) {U : S
     (hU : IsOpen (U : Set (GL (Fin a) (Af E)))) (hUc : IsCompact (U : Set (GL (Fin a) (Af E)))) :
     ∃ f : GA E a → ℝ, Continuous f ∧ HasCompactSupport f ∧ 0 ≤ f ∧ f 1 ≠ 0 ∧
       ∀ g, f g ≠ 0 → GeneralLinearGroup.map (pInf E) g ∈ N ∧ GeneralLinearGroup.map (pFin E) g ∈ U := by
-  set_option synthInstance.maxHeartbeats 200000 in
   classical
   haveI := locallyCompactSpace_GL (E := E) (a := a)
   obtain ⟨φ, hφ, hφs, hφ0, hφ1, hφN⟩ := GlobalTheory.CompanionTheory.Bump.exists_nonneg_bump (1 : GL (Fin a) (Cinf E)) N hN

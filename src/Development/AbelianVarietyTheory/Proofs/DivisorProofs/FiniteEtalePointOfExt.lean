@@ -72,15 +72,8 @@ theorem hom_eq_of_lTorsion {Ω : Type} [Field Ω] [IsAlgClosed Ω] {A : Over (Sp
 theorem exists_prime_ne_zero (k : Type) [Field k] : ∃ l : ℕ, l.Prime ∧ (l : k) ≠ 0 := by
   obtain ⟨p, hp⟩ := CharP.exists k
   by_cases h2 : p = 2
-  · subst h2
-    refine ⟨3, Nat.prime_three, fun h3 ↦ ?_⟩
-    have := (CharP.cast_eq_zero_iff k 2 3).mp (by exact_mod_cast h3)
-    omega
-  · refine ⟨2, Nat.prime_two, fun h3 ↦ ?_⟩
-    have h4 := (CharP.cast_eq_zero_iff k p 2).mp (by exact_mod_cast h3)
-    rcases (Nat.dvd_prime Nat.prime_two).mp h4 with h5 | h5
-    · exact CharP.char_ne_one k p h5
-    · exact h2 h5
+  · exact ⟨3, Nat.prime_three, CharP.cast_ne_zero_of_ne_of_prime k Nat.prime_three (by omega)⟩
+  · exact ⟨2, Nat.prime_two, CharP.cast_ne_zero_of_ne_of_prime k Nat.prime_two h2⟩
 
 theorem endo_descent (B : Over (Sp k₀)) [GrpObj B] (hB : IsAbelianScheme B)
     (f : (Over.pullback (spMap (algebraMap k₀ K))).obj B ⟶

@@ -1,53 +1,10 @@
 module
 
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 public import Mathlib.Data.Matrix.PEquiv
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
 import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Basic.PEquiv
 public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
@@ -94,7 +51,7 @@ theorem ddChar_exists_unit [Finite R]
       · exact ⟨false, by simp [Ideal.Quotient.eq_zero_iff_mem.2 hc]⟩
       · refine ⟨true, ?_⟩
         have h1 := hno c hc
-        simp only [if_true]
+        simp only [ite_true]
         rw [eq_comm, ← sub_eq_zero, ← map_one (Ideal.Quotient.mk m.asIdeal), ← map_sub,
           Ideal.Quotient.eq_zero_iff_mem]
         exact h1
@@ -200,7 +157,7 @@ theorem ddChar_diag_single (ψ : GL n R →* A) (i j : n) (u : Rˣ) :
     simp only [Matrix.submatrix_apply, id, diagonal_apply, σ, Equiv.symm_swap]
     by_cases hab : a = b
     · subst hab
-      simp only [if_true]
+      simp only [ite_true]
       simp [Pi.mulSingle_apply, Equiv.swap_apply_def]
       split_ifs <;> simp_all
     · have : Equiv.swap i j a ≠ Equiv.swap i j b := fun h => hab ((Equiv.swap i j).injective h)
@@ -245,13 +202,8 @@ theorem ddChar_diag (ψ : GL n R →* A) (g : GL n R)
     rw [Finset.prod_congr rfl fun k _ => ddChar_diag_single ψ k j0 (dv k)]
     rw [show (∏ k, ψ (ddCharDiag (Pi.mulSingle j0 (dv k) : n → Rˣ))) =
       φ (∏ k, (Pi.mulSingle j0 (dv k) : n → Rˣ)) from (map_prod φ _ _).symm]
-    have e2 : ∏ k, (Pi.mulSingle j0 (dv k) : n → Rˣ) = (Pi.mulSingle j0 (∏ k, dv k) : n → Rˣ) := by
-      funext i
-      rw [Finset.prod_apply]
-      by_cases hi : i = j0
-      · subst hi
-        simp
-      · simp [hi]
+    have e2 : ∏ k, (Pi.mulSingle j0 (dv k) : n → Rˣ) = (Pi.mulSingle j0 (∏ k, dv k) : n → Rˣ) :=
+      (map_prod (MonoidHom.mulSingle (fun _ : n => Rˣ) j0) dv Finset.univ).symm
     rw [e2, hprod, Pi.mulSingle_one, map_one]
 
 theorem ddChar_vecMulVec_sq {x y : n → R} (h : y ⬝ᵥ x = 0) :
@@ -397,7 +349,7 @@ theorem ddChar_induction [Finite R] (ψ : GL n R →* A) (u : Rˣ) (hu : IsUnit 
     have hg2a : ∀ i, i ≠ a → (g2 : Matrix n n R) i a = 0 := by
       intro i hia
       rw [e2]
-      simp only [x2, if_neg hia]
+      simp only [x2, ite_eq_right hia]
       change (g1 : Matrix n n R) i a + -((g1 : Matrix n n R) i a * ci) * C = 0
       rw [neg_mul, mul_assoc, hciC, mul_one, add_neg_cancel]
     have hg2aj : ∀ j, (g2 : Matrix n n R) a j = (g1 : Matrix n n R) a j := by
@@ -410,7 +362,7 @@ theorem ddChar_induction [Finite R] (ψ : GL n R →* A) (u : Rˣ) (hu : IsUnit 
         rw [hg2aj]
         exact hs1 i j hij hout
       · rw [e2, hs1 i j hij hout, zero_add]
-        simp only [x2, if_neg hia]
+        simp only [x2, ite_eq_right hia]
         rcases hout with h | h
         · rw [hs1 i a hia (Or.inl h), zero_mul, neg_zero, zero_mul]
         · have haj : a ≠ j := fun e => h (e ▸ Finset.mem_insert_self a s)
@@ -434,7 +386,7 @@ theorem ddChar_induction [Finite R] (ψ : GL n R →* A) (u : Rˣ) (hu : IsUnit 
       by_cases hia : i = a
       · subst hia
         have hja : j ≠ i := fun e => hij e.symm
-        simp only [y3, if_neg hja]
+        simp only [y3, ite_eq_right hja]
         rw [hg2aa, mul_neg, ← mul_assoc, hCci, one_mul, add_neg_cancel]
       · rw [hg2a i hia, zero_mul, add_zero]
         by_cases hja : j = a

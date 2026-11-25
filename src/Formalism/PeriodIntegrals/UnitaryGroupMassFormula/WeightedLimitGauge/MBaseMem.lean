@@ -49,16 +49,16 @@ lemma emb_out_col (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   unfold embWb
   rw [dite_eq_right (fun h => hj h.2)]
   by_cases h : q = j
-  · subst h; rw [if_pos ⟨rfl, hj⟩, if_pos rfl]
-  · rw [if_neg (fun h' => h h'.1), if_neg h]
+  · subst h; rw [ite_eq_left ⟨rfl, hj⟩, ite_eq_left rfl]
+  · rw [ite_eq_right (fun h' => h h'.1), ite_eq_right h]
 
 lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : ¬ mid k r q) :
     embWb k r μ q j = if q = j then 1 else 0 := by
   unfold embWb
   rw [dite_eq_right (fun h => hq h.1)]
   by_cases h : q = j
-  · rw [if_pos ⟨h, hq⟩, if_pos h]
-  · rw [if_neg (fun h' => h h'.1), if_neg h]
+  · rw [ite_eq_left ⟨h, hq⟩, ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h h'.1), ite_eq_right h]
 
 lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : mid k r q) (hj : mid k r j) :
     embWb k r μ q j = μ (midx hq) (midx hj) := by

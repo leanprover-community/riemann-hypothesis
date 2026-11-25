@@ -164,10 +164,4 @@ theorem isom_iff_model (Dw : Datum H) (V : HSp D) {r : ℕ} (hr : V.rank = r)
   · intro h x y
     rw [halt, h, neg_neg]
 
-namespace Ctx
-
-variable {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {V : HSp D} {r : ℕ} (C : Ctx Xo c σ V r)
-
-end Ctx
-
 end GlobalTheory.Member

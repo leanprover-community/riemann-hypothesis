@@ -20,51 +20,7 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AnnihilationOperatorSchroedingerFunctionsDoubledStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchrodingerThetaEqSchwartzBruhatStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.Linter.Style
@@ -452,10 +408,10 @@ theorem exists_poly_mul_gauss_of_annC : ∀ (D : D7) (V : HSp D) (n : ℕ) (l : 
   funext k
   obtain ⟨τ, i, j, b⟩ := k
   cases b
-  · simp only [φ, r, Bool.false_eq_true, if_false, if_true, map_mul, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X,
+  · simp only [φ, r, Bool.false_eq_true, ite_false, ite_true, map_mul, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X,
       Matrix.of_apply, Algebra.algebraMap_self, RingHom.id_apply, Complex.re_eq_add_conj]
     ring
-  · simp only [φ, r, Bool.false_eq_true, if_false, if_true, map_mul, map_sub, MvPolynomial.aeval_C, MvPolynomial.aeval_X,
+  · simp only [φ, r, Bool.false_eq_true, ite_false, ite_true, map_mul, map_sub, MvPolynomial.aeval_C, MvPolynomial.aeval_X,
       Matrix.of_apply, Algebra.algebraMap_self, RingHom.id_apply, Complex.im_eq_sub_conj]
     ring
 
@@ -536,11 +492,11 @@ theorem slice_polyGauss : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V :
       ext i j
       by_cases h : τ' = τ
       · subst h
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         show z τ' i j + ((t : ℂ) • X) i j = z τ' i j + t • w τ' i j
         rw [hw0, Complex.real_smul]
         rfl
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         show z τ' i j + (0 : Matrix (Fin V.rank) (Fin n) ℂ) i j = z τ' i j + t • w τ' i j
         rw [hw1 τ' h]
         simp

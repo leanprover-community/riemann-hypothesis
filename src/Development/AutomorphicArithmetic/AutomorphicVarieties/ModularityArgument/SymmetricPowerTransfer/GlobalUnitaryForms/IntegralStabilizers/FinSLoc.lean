@@ -133,17 +133,11 @@ theorem mem_KD {g : DX Δ} : g ∈ KD Δ O ↔ (∀ i j, IsIntegral O (mt g i j)
     · simp only [map_mul, map_one]
       exact (g : GL (Fin 2) (Lsq K Δ)).inv_mul
 
-theorem isIntegral_star {a : Lsq K Δ} (h : IsIntegral O a) : IsIntegral O (star a) := by
-  let f : Lsq K Δ →ₐ[O] Lsq K Δ := { starRingEnd (Lsq K Δ) with
-    commutes' := fun r => by
-      change star (algebraMap O (Lsq K Δ) r) = _
-      rw [IsScalarTower.algebraMap_apply O K (Lsq K Δ)]
-      ext <;> simp }
-  exact h.map f
+theorem isIntegral_star {a : Lsq K Δ} (h : IsIntegral O a) : IsIntegral O (star a) :=
+  h.map (QuadraticAlgebra.starAlgEquiv : Lsq K Δ ≃ₐ[K] Lsq K Δ)
 
 theorem isIntegral_coords {a : Lsq K Δ} (h : IsIntegral O a) {m : K} (hm : IsIntegral O m) (hmΔ : IsIntegral O (m * Δ)) :
     IsIntegral O (2 * m * Δ * a.re) ∧ IsIntegral O (2 * m * Δ * a.im) := by
-  have inj : Function.Injective (algebraMap K (Lsq K Δ)) := fun x y h => by simpa using congrArg QuadraticAlgebra.re h
   have h1 : IsIntegral O (2 * a.re) := by
     rw [← isIntegral_algebraMap_iff (B := Lsq K Δ)]
     convert h.add (isIntegral_star h) using 1

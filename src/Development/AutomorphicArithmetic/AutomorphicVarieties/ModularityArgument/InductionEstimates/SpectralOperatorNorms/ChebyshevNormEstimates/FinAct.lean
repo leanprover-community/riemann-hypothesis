@@ -369,7 +369,7 @@ theorem regroup (s : Finset GF) (c : GF → ℂ) (T : Finset ℝ) (hT : ∀ h �
   simp only [lin_apply, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun h hh => ?_
-  rw [Finset.sum_eq_single_of_mem _ (hT h hh x) fun t _ ht => by simp only [if_neg ht.symm, mul_zero, zero_mul], if_pos rfl]
+  rw [Finset.sum_eq_single_of_mem _ (hT h hh x) fun t _ ht => by simp only [ite_eq_right ht.symm, mul_zero, zero_mul], ite_eq_left rfl]
   ring
 
 theorem theta_id {β : ℝ → ℂ} (hβc : HasCompactSupport β) (s : Finset GF) (c : GF → ℂ) (T : Finset ℝ) (hT : ∀ h ∈ s, ∀ x, dl x h ∈ T)
@@ -429,20 +429,19 @@ theorem act_of {H V : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [No
     filter_upwards [this, Lp.coeFn_zero V 2 (volume : Measure ℝ)] with x h1 h2
     rw [h2]
     exact h1.trans (by simp)
-  refine ⟨Finsupp.onFinset T (fun t => if t ∈ T then U t else 0) fun t ht => by_contra fun hn => ht (if_neg hn), 0,
+  refine ⟨Finsupp.onFinset T (fun t => if t ∈ T then U t else 0) fun t ht => by_contra fun hn => ht (ite_eq_right hn), 0,
     ⟨continuous_const, HasCompactSupport.zero⟩, fun x => ?_, fun z => ?_⟩
 
   · rw [Finsupp.onFinset_sum (g := fun (t : ℝ) (c : V →L[ℂ] V) => c.compLpL 2 volume (sh V t x)) _ fun t => h0 _, hc, add_zero, h, map_sum]
-    exact Finset.sum_congr rfl fun t ht => by rw [if_pos ht]
+    exact Finset.sum_congr rfl fun t ht => by rw [ite_eq_left ht]
   · rw [Finsupp.onFinset_sum (g := fun (t : ℝ) (c : V →L[ℂ] V) => Complex.exp (z * t) • c) _ fun t => smul_zero _]
     simp only [symb, Pi.zero_apply, smul_zero, integral_zero, add_zero]
-    exact Finset.sum_congr rfl fun t ht => by rw [if_pos ht]
+    exact Finset.sum_congr rfl fun t ht => by rw [ite_eq_left ht]
 
 theorem ofin_apply {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure] (m : Measure (AdelicGLn.FiniteAdelicGL K n)) [m.IsHaarMeasure]
     (e : TF K n) (w : L2 μ) : Ofin μ m e w = ∫ h, e h • rightRegularRep (Gam K n) μ (MultiplicityOne.finProj K n h) w ∂m :=
   UnitaryRep.integrated_ccToL1_apply _ m e w
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem actEx [_root_.NumberField.IsTotallyComplex K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure] {μ₂ : Measure (G1 K 2)} [μ₂.IsHaarMeasure]
     {τ₁ τ₂ : Submodule ℂ (L2 μ₂)} (h₁ : CuspIrr μ₂ τ₁) (h₂ : CuspIrr μ₂ τ₂) {D : TypeDat K (2 + 2)} {d : ℕ} (A : Line μ τ₁ τ₂ D d)

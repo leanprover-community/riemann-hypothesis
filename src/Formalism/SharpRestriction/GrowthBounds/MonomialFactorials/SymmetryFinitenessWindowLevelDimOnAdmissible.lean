@@ -309,7 +309,7 @@ theorem phisB_rename_mul (hB : G.BlockOK) (j : Fin G.T.t → ℕ) (jp : ℕ) (y 
   · congr 1
     unfold Formalism.GM.M.TieData.phis
     refine foldr_rename _ _ _ _ (fun i _ F => ?_) y
-    simp only [Formalism.GM.M.TieData.phi, dif_pos (hlt i), Formalism.GM.M.tiePhiAt]
+    simp only [Formalism.GM.M.TieData.phi, dite_eq_left (hlt i), Formalism.GM.M.tiePhiAt]
     rw [hfin0, hfin1, hlet0, hlet1]
     exact Formalism.CountingSumsFrames.TO.tiePhi_rename (Formalism.GM.M.chainEmb N r G.T.t) hinj
       (fun c : Fin r => ((⟨G.T.pos i, by have := hlt i; omega⟩ : Fin N), c))
@@ -374,11 +374,6 @@ theorem mono_chain_zero (n : ℕ) (m : Formalism.GM.M.BVar N r G.T.t →₀ ℕ)
   simp only [Formalism.GM.M.chainEmb, Formalism.GM.M.xiVar, Sum.inl.injEq, Prod.mk.injEq] at hd
   exact absurd hd.1 (Fin.castSucc_ne_last x.1)
 
-theorem chainEmb_inj : Function.Injective (Formalism.GM.M.chainEmb N r G.T.t) := by
-  intro x y h
-  simp only [Formalism.GM.M.chainEmb, Sum.inl.injEq, Prod.mk.injEq] at h
-  exact Prod.ext (Fin.castSucc_injective _ h.1) h.2
-
 theorem cf_mul (n : ℕ) (m : Formalism.GM.M.BVar N r G.T.t →₀ ℕ) (hm : m ∈ xiMons (r := r) G n) :
     (((n.factorial / (m.prod fun _ k => k.factorial) : ℕ) : ℚ_[p]) * (mfac m : ℚ_[p])) = (n.factorial : ℚ_[p]) := by
   obtain ⟨-, -, h3⟩ := xiMons_spec (r := r) G n m hm
@@ -437,13 +432,13 @@ theorem plusAW_of_blockOK (hB : G.BlockOK) (j : Fin G.T.t → ℕ) (jp : ℕ) (D
     rw [bePhi_smul_right]
     unfold bePhi
     rw [phisB_rename_mul p (r := r) G hB j jp _ _ (fun a c => pderiv_chain_mono p (r := r) G (G.B - jp) m hm a c),
-      fockK_rename_mul _ (chainEmb_inj (r := r) G) _ _ m m' 1 (mono_chain_zero (r := r) G (G.B - jp) m hm)
+      fockK_rename_mul _ (Formalism.GM.M.chainEmb_inj (r := r) G) _ _ m m' 1 (mono_chain_zero (r := r) G (G.B - jp) m hm)
         (mono_chain_zero (r := r) G (G.B - jp) m' hm')]
     have hxy' : Formalism.GM.M.fock p (G.T.phis p (r := r) (G.lettersAt j jp) (x i)) (y i') /
         ∏ a, (((G.lettersAt j jp).deg a).factorial : ℚ_[p]) = if i = i' then (p : ℚ_[p]) ^ D else 0 := hxy i i'
     by_cases hmm : m = m'
     · subst hmm
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have hcf := cf_mul p (r := r) G (G.B - jp) m hm
       have hdeg : (degFact G j jp : ℚ_[p]) =
           (∏ a, (((G.lettersAt j jp).deg a).factorial : ℚ_[p])) * ((G.B - jp).factorial : ℚ_[p]) := by
@@ -468,9 +463,9 @@ theorem plusAW_of_blockOK (hB : G.BlockOK) (j : Fin G.T.t → ℕ) (jp : ℕ) (D
         field_simp
       rw [key, hxy']
       by_cases hii : i = i'
-      · rw [if_pos hii, if_pos (hkk.2 ⟨hii, rfl⟩)]
-      · rw [if_neg hii, if_neg (fun h => hii (hkk.1 h).1)]
-    · rw [if_neg hmm, if_neg (fun h => hmm (hkk.1 h).2)]
+      · rw [ite_eq_left hii, ite_eq_left (hkk.2 ⟨hii, rfl⟩)]
+      · rw [ite_eq_right hii, ite_eq_right (fun h => hii (hkk.1 h).1)]
+    · rw [ite_eq_right hmm, ite_eq_right (fun h => hmm (hkk.1 h).2)]
       simp
   have hmem := le_csSup (gcL_bdd p (r := r) G j jp D) ⟨fun k => _, fun k => _, hXm, hYm, hpair⟩
   rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_coe, hcard] at hmem

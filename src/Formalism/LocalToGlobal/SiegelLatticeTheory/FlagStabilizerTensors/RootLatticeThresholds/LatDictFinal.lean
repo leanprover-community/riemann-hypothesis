@@ -75,9 +75,9 @@ theorem gl_mul {s : Finset ι} {e : ι → R} (he : Orth s e) (M N : Matrix n n 
     rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun i hi => ?_
     rw [Finset.mul_sum, Finset.sum_eq_single i]
-    · rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, he i hi i hi, if_pos rfl]
+    · rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, he i hi i hi, ite_eq_left rfl]
     · intro b hb hbi
-      rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, he i hi b hb, if_neg (Ne.symm hbi), zero_smul]
+      rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, he i hi b hb, ite_eq_right (Ne.symm hbi), zero_smul]
     · intro h
       exact absurd hi h
   rw [add_mul, mul_add, mul_add, h1, Finset.mul_sum, Finset.sum_mul, add_assoc, ← Finset.sum_add_distrib,
@@ -97,11 +97,11 @@ theorem gl_mulVec (s : Finset ι) (e : ι → R) (M : Matrix n n R) (A : ι → 
 theorem gl_proj {s : Finset ι} {e : ι → R} (he : Orth s e) (M : Matrix n n R) (A : ι → Matrix n n R)
     (y : n → R) {j : ι} (hj : j ∈ s) : e j • (gl s e M A *ᵥ y) = e j • (A j *ᵥ y) := by
   rw [gl_mulVec, smul_add, Finset.smul_sum, Finset.sum_eq_single j]
-  · rw [smul_smul, he j hj j hj, if_pos rfl, ← smul_add, Matrix.sub_mulVec]
+  · rw [smul_smul, he j hj j hj, ite_eq_left rfl, ← smul_add, Matrix.sub_mulVec]
     congr 1
     abel
   · intro b hb hbj
-    rw [smul_smul, he j hj b hb, if_neg (Ne.symm hbj), zero_smul]
+    rw [smul_smul, he j hj b hb, ite_eq_right (Ne.symm hbj), zero_smul]
   · exact fun h => absurd hj h
 
 theorem gl_proj0 {s : Finset ι} {e : ι → R} {f : R} (hf : ∀ i ∈ s, f * e i = 0) (M : Matrix n n R)
@@ -171,11 +171,11 @@ theorem eT_orth (i j : HeightOneSpectrum (𝓞 F)) :
   show eT {i} v * eT {j} v = (if i = j then eT {i} else 0) v
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     by_cases hv : v ∈ ({i} : Set (HeightOneSpectrum (𝓞 F)))
     · rw [eT_of_mem hv, mul_one]
     · rw [eT_of_not hv, mul_zero]
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     show eT {i} v * eT {j} v = 0
     by_cases hv : v ∈ ({i} : Set (HeightOneSpectrum (𝓞 F)))
     · have hv' : v ∉ ({j} : Set (HeightOneSpectrum (𝓞 F))) := by
@@ -376,10 +376,10 @@ theorem glue (T : Set (HeightOneSpectrum (𝓞 I.F))) (w : Fin I.n → I.E)
     by_cases hvT : v ∈ T
     · rw [eT_of_mem hvT]
       by_cases hvm : mO ∈ v.asIdeal
-      · rw [if_neg (fun h => h.2 hvm), if_pos ⟨hvT, hvm⟩, zero_mul, zero_add,
+      · rw [ite_eq_right (fun h => h.2 hvm), ite_eq_left ⟨hvT, hvm⟩, zero_mul, zero_add,
           inv_mul_cancel₀ (ne0 (hav' v hvT hvm))]
-      · rw [if_pos ⟨hvT, hvm⟩, if_neg (fun h => hvm h.2), zero_mul, add_zero, inv_mul_cancel₀ (ne0 hvm)]
-    · rw [eT_of_not hvT, if_neg (fun h => hvT h.1), if_neg (fun h => hvT h.1), zero_mul, zero_mul, add_zero]
+      · rw [ite_eq_left ⟨hvT, hvm⟩, ite_eq_right (fun h => hvm h.2), zero_mul, add_zero, inv_mul_cancel₀ (ne0 hvm)]
+    · rw [eT_of_not hvT, ite_eq_right (fun h => hvT h.1), ite_eq_right (fun h => hvT h.1), zero_mul, zero_mul, add_zero]
   rw [hid, map_add (f := _), map_mul, map_mul, add_smul, mul_smul, mul_smul, ← iv_OF, ← iv_OF]
   exact add_mem (DictLat.Lf_smul I (iA_mem I hu0) (DictLat.iv_mem I hmw))
     (DictLat.Lf_smul I (iA_mem I hu1) (DictLat.iv_mem I haw))
@@ -486,7 +486,7 @@ theorem adelic_gluing : Z0.AdelGlue := by
     refine (hfin.image fun p => if hp : p.IsMaximal then under I p hp else Classical.arbitrary _).subset ?_
     rintro q ⟨p, hp, hne, hq⟩
     refine ⟨p, ⟨hp, hne⟩, ?_⟩
-    simp only [dif_pos hp]
+    simp only [dite_eq_left hp]
     exact HeightOneSpectrum.ext hq
   have hQex : ∀ q ∈ Q, ∃ p : Ideal (𝓞 I.E), p.IsMaximal ∧
       p.comap (algebraMap (𝓞 I.F) (𝓞 I.E)) = q.asIdeal :=
@@ -496,22 +496,22 @@ theorem adelic_gluing : Z0.AdelGlue := by
     if h : q ∈ Q then γ (Classical.choose (hQex q h)) else 1
   have hgU : ∀ q, g q ∈ Formalism.UG.UJ (starRingEnd I.E) I.J := fun q => by
     by_cases h : q ∈ Q
-    · simp only [g, dif_pos h]; exact hγU _
-    · simp only [g, dif_neg h]; exact one_mem _
+    · simp only [g, dite_eq_left h]; exact hγU _
+    · simp only [g, dite_eq_right h]; exact one_mem _
   have hgs : ∀ q a, (g q : Matrix (Fin I.n) (Fin I.n) I.E) *ᵥ s a = s a := fun q a => by
     by_cases h : q ∈ Q
-    · simp only [g, dif_pos h]; exact hγs _ a
-    · simp only [g, dif_neg h, Units.val_one, Matrix.one_mulVec]
+    · simp only [g, dite_eq_left h]; exact hγs _ a
+    · simp only [g, dite_eq_right h, Units.val_one, Matrix.one_mulVec]
   have hgz : ∀ q, (g q : Matrix (Fin I.n) (Fin I.n) I.E) *ᵥ z = z := fun q => by
     by_cases h : q ∈ Q
-    · simp only [g, dif_pos h]; exact hγz _
-    · simp only [g, dif_neg h, Units.val_one, Matrix.one_mulVec]
+    · simp only [g, dite_eq_left h]; exact hγz _
+    · simp only [g, dite_eq_right h, Units.val_one, Matrix.one_mulVec]
   have hgloc : ∀ q ∈ Q, ∀ p : Ideal (𝓞 I.E), p.IsMaximal →
       p.comap (algebraMap (𝓞 I.F) (𝓞 I.E)) = q.asIdeal →
       ∀ v, v ∈ locE I p M ↔ ∃ w ∈ locE I p I.L, (g q : Matrix (Fin I.n) (Fin I.n) I.E) *ᵥ w = v := by
     intro q hq p hp hpq v
     have hc := Classical.choose_spec (hQex q hq)
-    simp only [g, dif_pos hq]
+    simp only [g, dite_eq_left hq]
     rw [loc_congr I hp hc.1 (hpq.trans hc.2.symm) M, loc_congr I hp hc.1 (hpq.trans hc.2.symm) I.L]
     exact hloc _ hc.1 v
 

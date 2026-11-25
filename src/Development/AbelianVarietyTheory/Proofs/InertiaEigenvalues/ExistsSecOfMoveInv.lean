@@ -160,7 +160,7 @@ theorem exists_sec_of_moveInv (d : DeltaDat Xo c n) (hlev : d.IsLev) {a : (E →
     obtain ⟨w₂, hx₂, ho⟩ := hlift k hk w w₂'.x (ho'.1.trans hb.1) w₂'.x_over
     have hb₂ := hbor k hk _ w w' w₂ w₂' ho ho' hx₂.symm hb
     have e := (hd p y).exists.choose_spec k hk χ w w₂ hw ho
-    rw [evR_frBor hG hb₂, map_mul, map_wchar]
+    rw [evR_frBor hG hb₂, map_mul, GlobalTheory.ThetaValueWeight.map_wchar]
     exact congrArg (_ * ·) e
   · intro k _ _ _ _ hk y y₂ ho
     have hy := hAll k y

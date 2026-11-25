@@ -50,10 +50,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 section Linfty
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
-lemma tst_exp_hasSum_linfty {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
-    HasSum (fun j : ℕ => ((j.factorial : ℂ)⁻¹) • X ^ j) (NormedSpace.exp X) :=
-  NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) X
-
 end Linfty
 
 private theorem exp_entry_lemma_2 {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (j l : Fin n) :
@@ -72,10 +68,6 @@ private theorem smul_mulVec_lemma {n : ℕ} (c : ℂ) (M : Matrix (Fin n) (Fin n
     (c • M) *ᵥ v = c • (M *ᵥ v) := by
   ext x
   simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
-
-lemma tst_exp_mulVec {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ) (hv : X *ᵥ v = 0) :
-    NormedSpace.exp X *ᵥ v = v :=
-  _root_.PI.QnHermHaar.HermitianAdjointLemmas.exp_mulVec_fix X v hv
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -455,7 +447,7 @@ theorem restricted_gram_hermitian_involution : HmFacts := by
     by_cases h : a = b
     · subst h
       simp
-    · rw [if_neg h, if_neg (fun e => h (rel_posL_injective k r i e))]
+    · rw [ite_eq_right h, ite_eq_right (fun e => h (rel_posL_injective k r i e))]
 
 end PI.QnHermHaar
 end -- clump:auto
@@ -535,7 +527,7 @@ theorem hermitian_algebra_generation : HermAlgFrom := by
       rcases mul_self_eq_one_iff.mp (hdd b) with h | h
       · simp [hd, h]
       · have hne : hH.eigenvalues b ≠ 1 := by rw [h]; norm_num
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
         simp [hd, h]
     refine ⟨P, star P, fun b => if hH.eigenvalues b = 1 then 1 else -1, hQP, hPQ,
       fun i j => by rw [Matrix.star_apply], fun i j => by rw [Matrix.star_apply, star_star], fun k b => ?_,

@@ -33,9 +33,6 @@ def eOp : Module.End (FractionRing (X.O i)) (Y.Fm i j b) :=
   MonoidAlgebra.lift (FractionRing (X.O i)) (Module.End (FractionRing (X.O i)) (Y.Fm i j b)) (G0g N)
     (LinearEquiv.automorphismGroup.toLinearMapMonoidHom.comp (Y.actG i j b)) (Y.eAlg i b)
 
-def AOp : Module.End (FractionRing (X.O i)) (Y.Fm i j b) :=
-  ((Nat.card (G0g N) : ℕ) : FractionRing (X.O i)) • eOp Y i j b
-
 def typePart : Submodule (FractionRing (X.O i)) (Y.Fm i j b) :=
   ⨅ u : Y.U, Module.End.eigenspace
     ((Y.actG i j b u : Y.Fm i j b ≃ₗ[FractionRing (X.O i)] Y.Fm i j b) :
@@ -47,9 +44,6 @@ def V0 : Submodule (FractionRing (X.O i)) (Y.Fm i j b) :=
 
 def Theta : Submodule (X.O i) (Y.Fm i j b) :=
   Submodule.span (X.O i) (Set.range (Y.th i j b))
-
-def ATheta : Submodule (X.O i) (Y.Fm i j b) :=
-  (Theta Y i j b).map ((AOp Y i j b).restrictScalars (X.O i))
 
 variable (O' : Type) [CommRing O'] [IsDomain O'] [IsDiscreteValuationRing O'] [Algebra (X.O i) O']
 
@@ -66,14 +60,6 @@ def incl : X.Ok i k ⊗[X.O i] Y.Fm i j b →ₗ[X.O i] FmExt Y i j b O' :=
       (IsScalarTower.toAlgHom (X.O i) (X.Ok i k) O')).toLinearMap
 
 end Lattices
-
-section Statement
-
-variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
-
-variable (bkP : BKPh X)
-
-end Statement
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators
 

@@ -26,7 +26,7 @@ theorem abs_tLoc (l : D.what₂.Tau → ℝ) (τ : D.what₂.Tau) : |tLoc l τ| 
 theorem trace_gramB_real {m : ℕ} (ε : Fin m → Bool) (b : Bool) (u : Fin m → Fin n → ℂ) :
     (gramB ε b u).trace = ((∑ a ∈ Finset.univ.filter (fun a => ε a = b), ∑ j, ‖u a j‖ ^ 2 : ℝ) : ℂ) := by
 
-  simp only [gramB, evX, Qb, map_sum, map_mul, MvPolynomial.eval_X, if_true, Bool.false_eq_true, if_false,
+  simp only [gramB, evX, Qb, map_sum, map_mul, MvPolynomial.eval_X, ite_true, Bool.false_eq_true, ite_false,
   Matrix.trace, Matrix.diag]
   push_cast
   rw [Finset.sum_comm]

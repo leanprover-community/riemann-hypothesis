@@ -244,7 +244,3 @@ theorem existsUnique_doubleCoset {G H : Type} [Group G] [Group H] (π : G →* H
     exact ⟨⟨γ, hγ⟩, ⟨π k, hk⟩, by rw [map_mul, map_mul, ha]; rfl⟩
 
 end GlobalTheory.DefiniteClassAvg
-
-namespace GlobalTheory.DefiniteClassAvg
-
-end GlobalTheory.DefiniteClassAvg

@@ -353,7 +353,7 @@ theorem cdom_antisymm {k : ℕ} {μ Λ : Fin k → ℝ} (h1 : CDom (allPos k) μ
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun b _ => ?_
     simp only [Pi.single_apply, mul_sub, mul_ite, mul_one, mul_zero, Finset.sum_sub_distrib,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     ring
   have hneg : ∀ d : Fin k → Fin k → ℕ, (∀ a b, d a b ≠ 0 → a < b ∧ allPos k a = allPos k b) →
       ∀ a b, (d a b : ℝ) * (((a : ℕ) : ℝ) - ((b : ℕ) : ℝ)) ≤ 0 := by

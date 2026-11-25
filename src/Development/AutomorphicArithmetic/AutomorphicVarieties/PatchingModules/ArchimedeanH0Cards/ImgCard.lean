@@ -541,7 +541,7 @@ private theorem fc_sol {J : Type} (Φ : (Y → Matrix (Fin n) (Fin n) K⟦X⟧) 
     · by_cases hk : k < m
       · simp only [e _ _ _ k hk]
         exact (fc_lc m fun g => f (φ g) i j).1 (h1 i j) k hk
-      · simp only [f', coeff_mk, if_neg hk]
+      · simp only [f', coeff_mk, ite_eq_right hk]
         exact IsLocallyConstant.const _
     · have : ∀ y i j, ∃ c, f' y i j - f y i j = X ^ m * c := fun y i j =>
         X_pow_dvd_iff.2 fun k hk => by rw [map_sub, e y i j k hk, sub_self]

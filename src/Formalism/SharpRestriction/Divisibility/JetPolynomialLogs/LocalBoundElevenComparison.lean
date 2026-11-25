@@ -87,8 +87,8 @@ theorem proposition_six : PropSix7 := by
     funext s
     simp only [Pi.add_apply, hE', hWs]
     by_cases hs : s ∈ TT
-    · rw [if_pos hs, hon s hs]; ring
-    · rw [if_neg hs, hoff s hs]; ring
+    · rw [ite_eq_left hs, hon s hs]; ring
+    · rw [ite_eq_right hs, hoff s hs]; ring
 
   obtain ⟨⟨sD, hsD, -, hFsD⟩, -⟩ := hA l d hl hd hev D hD0
   have h2 := (hc l d hl hd hev D E' sD hD0 hE'0 ⟨hsD, hFsD⟩).2
@@ -230,7 +230,7 @@ theorem gain_ge_inner_sum : GainDominatesInnerSum := by
     swap
     · simp [ho]
     rcases lt_trichotomy (e : ℕ∞) (dTop d TT s) with hlt | heq | hgt
-    · rw [if_pos (show Odd e ∧ (e : ℕ∞) < dTop d TT s from ⟨ho, hlt⟩)]
+    · rw [ite_eq_left (show Odd e ∧ (e : ℕ∞) < dTop d TT s from ⟨ho, hlt⟩)]
       split_ifs
       · apply max_le_max _ le_rfl
         rw [hsub]; linarith
@@ -238,13 +238,13 @@ theorem gain_ge_inner_sum : GainDominatesInnerSum := by
     · obtain ⟨⟨-, hmem⟩, hmin⟩ := least_odd_top_level_spec TT s e heq.symm
       have hP : ∃ s' ∈ TT, IsLeast {e' : ℕ | Odd e' ∧ s + (e' : ZMod d) = s'} e :=
         ⟨s + (e : ZMod d), hmem, ⟨ho, rfl⟩, fun e' he' => hmin e' he'.1 (he'.2 ▸ hmem)⟩
-      rw [if_neg (show ¬ (Odd e ∧ (e : ℕ∞) < dTop d TT s) from fun h => (lt_irrefl _ (heq ▸ h.2))),
-        if_neg (show ¬ (Odd e ∧ dTop d TT s < (e : ℕ∞)) from fun h => (lt_irrefl _ (heq ▸ h.2)))]
+      rw [ite_eq_right (show ¬ (Odd e ∧ (e : ℕ∞) < dTop d TT s) from fun h => (lt_irrefl _ (heq ▸ h.2))),
+        ite_eq_right (show ¬ (Odd e ∧ dTop d TT s < (e : ℕ∞)) from fun h => (lt_irrefl _ (heq ▸ h.2)))]
       split_ifs with h
       · exact absurd hP h.2
       · exact le_rfl
-    · rw [if_neg (show ¬ (Odd e ∧ (e : ℕ∞) < dTop d TT s) from fun h => (not_lt.mpr hgt.le h.2)),
-        if_pos (show Odd e ∧ dTop d TT s < (e : ℕ∞) from ⟨ho, hgt⟩)]
+    · rw [ite_eq_right (show ¬ (Odd e ∧ (e : ℕ∞) < dTop d TT s) from fun h => (not_lt.mpr hgt.le h.2)),
+        ite_eq_left (show Odd e ∧ dTop d TT s < (e : ℕ∞) from ⟨ho, hgt⟩)]
       split_ifs
       · exact max_le (by rw [hsub]; linarith) hA'
       · exact hA'
@@ -319,11 +319,6 @@ theorem tieB : TieB := tieB_of integrality_of_letter_log
 
 end Formalism.MainNotions.DIV.Bridge.OneLetterJetKernel
 
-namespace Formalism.MainNotions.DIV.Bridge.DworkPowerSeriesWeights
-
-open Formalism.MainNotions Formalism.MainNotions.DIV.Bridge.OneLetterJetKernel
-
-end Formalism.MainNotions.DIV.Bridge.DworkPowerSeriesWeights
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -370,8 +365,8 @@ theorem local_bound_eleven_comparison (L : product_zeroth_first_parts.Loc) (k : 
   have h3 : 3 ≤ L.l := (by norm_num : 3 ≤ 5).trans L.J.five_le_l
   have key := Formalism.DworkPowerSeriesWeights.OddLevelGainBounds.normCor7 L.l L.d h3 L.J.two_le_d L.J.d_even L.TT (fun _ => 0) (fun _ => 0)
     (fun s => L.Dl s) k 0 w E (1 / 2) _ (by norm_num) (by norm_num) hk hw hE
-    (fun s hs => by simp only [Dl, if_neg hs]; exact hD1 s hs)
-    (fun s hs => by simp only [Dl, if_pos hs, Nat.sub_zero]; exact hD2 s hs) le_rfl
+    (fun s hs => by simp only [Dl, ite_eq_right hs]; exact hD1 s hs)
+    (fun s hs => by simp only [Dl, ite_eq_left hs, Nat.sub_zero]; exact hD2 s hs) le_rfl
   rw [Real.rpow_le_rpow_left_iff_of_base_lt_one (by norm_num) (by norm_num)] at key
   simp only [top0, zero_sub, Dl, Nat.sub_zero, ite_self, sub_zero, ← lpF_eq_Fnum,
     Finset.sum_neg_distrib] at key

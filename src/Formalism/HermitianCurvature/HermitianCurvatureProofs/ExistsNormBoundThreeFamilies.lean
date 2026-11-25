@@ -37,7 +37,7 @@ def CV {S : Type} (Bs : B.RealPlaceData k ρ Wp Wq) (x : Wd.Ix S → B.Mat k ρ 
 variable {S : Type} {Bs : B.RealPlaceData k ρ Wp Wq}
 
 theorem cpt_zero : KB.CptCoef Bs (fun _ : B.Mat k ρ => (0 : Wq →L[ℂ] Wp)) :=
-  ⟨Formalism.FourierDecayAlt.P.BetaSesquilinearity.CkOn_zero, ⟨0, fun g _ h => (h rfl).elim⟩, ⟨1, one_pos, fun g _ h => (h rfl).elim⟩⟩
+  ⟨Formalism.FourierDecayAlt.P.BetaSesquilinearity.CkOn_zero, ⟨0, fun _ _ h => (h rfl).elim⟩, ⟨1, one_pos, fun _ _ h => (h rfl).elim⟩⟩
 
 theorem cpt_add {F G : B.Mat k ρ → (Wq →L[ℂ] Wp)} (hF : KB.CptCoef Bs F) (hG : KB.CptCoef Bs G) :
     KB.CptCoef Bs (fun g => F g + G g) := by
@@ -59,7 +59,7 @@ theorem cv_smul (c : ℂ) {x : Wd.Ix S → B.Mat k ρ → (Wq →L[ℂ] Wp)} (hx
 
 theorem nv_of_cv [Fintype (Wd.Ix S)] {x : Wd.Ix S → B.Mat k ρ → (Wq →L[ℂ] Wp)} (hx : CV Bs x) :
     ∃ ε, 0 < ε ∧ NV Bs ε x :=
-  common_eps (fun e ε => JC.NiceCoef Bs ε (x e)) (fun e ε ε' h _ h' => nice_mono h h') fun e => nice_of_cpt (hx e)
+  common_eps (fun e ε => JC.NiceCoef Bs ε (x e)) (fun _ _ _ h _ h' => nice_mono h h') fun e => nice_of_cpt (hx e)
 
 theorem exists_norm_bound_three_families [Fintype (Wd.Ix S)] {S' S'' : Type} [Fintype (Wd.Ix S')] [Fintype (Wd.Ix S'')]
     {x : Wd.Ix S → B.Mat k ρ → (Wq →L[ℂ] Wp)} {y : Wd.Ix S' → B.Mat k ρ → (Wq →L[ℂ] Wp)}

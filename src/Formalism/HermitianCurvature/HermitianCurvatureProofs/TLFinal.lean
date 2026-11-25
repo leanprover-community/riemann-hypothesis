@@ -279,22 +279,22 @@ theorem top_lift_exists : Formalism.FourierDecayAlt.TL.TopLiftExists3 := by
       intro M0
       unfold P5.act Top.firstStateVector
       rw [Finset.sum_eq_single Wd.e1]
-      · exact congrArg _ (if_pos rfl)
+      · exact congrArg _ (ite_eq_left rfl)
       · intro b _ hb
         have hb' : ¬ (b = fun _ => 0) := hb
-        rw [if_neg hb', map_zero]
+        rw [ite_eq_right hb', map_zero]
       · simp
     rw [hact]
     by_cases hne : w = []
     · subst hne
-      simp only [if_true]
+      simp only [ite_true]
       have h1 : (Fr.ofWord L st (D.positionted ([] : List C.Letter))).F * P5.bTall L (D.positionted ([] : List C.Letter)) = 1 := by
         simp [D.positionted, Fr.ofWord, P5.bTall, P5.bTl, Wd.bT, Fr.Start.frame]
       have he : e = Wd.e1 := funext fun i => (Nat.not_lt_zero _ i.2).elim
       rw [h1, he]
       change Top.IsRadOf P Bs Φ F
       exact hΦ
-    · rw [if_neg hne]
+    · rw [ite_eq_right hne]
       obtain ⟨nf, fib, -, -, hR⟩ := hDw w e hw
       exact hR F hFc Φ hΦ
   · intro w hw e
@@ -304,7 +304,7 @@ theorem top_lift_exists : Formalism.FourierDecayAlt.TL.TopLiftExists3 := by
         by norm_num <;> positivity, ?_⟩
       · convert hD0 using 2
       · intro F g _
-        rw [if_pos hne, hD0F]
+        rw [ite_eq_left hne, hD0F]
     · obtain ⟨nf, fib, h1, h2, -⟩ := hDw w e hw
       refine ⟨nf, fib, _, _, Dw w e, h1, h2, ?_, ?_, ?_⟩
       · push_cast
@@ -312,7 +312,7 @@ theorem top_lift_exists : Formalism.FourierDecayAlt.TL.TopLiftExists3 := by
       · push_cast
         nlinarith [show (0:ℝ) ≤ (w.length:ℝ) * (2 * (P.r:ℝ) + P.k + 1) by positivity]
       · intro F g _
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
 
 end Formalism.FourierDecayAlt.P
 end -- clump:auto

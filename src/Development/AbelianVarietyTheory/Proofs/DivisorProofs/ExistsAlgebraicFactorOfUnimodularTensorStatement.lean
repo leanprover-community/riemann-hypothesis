@@ -19,49 +19,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RosatiAdjMum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorActionCompatibleWithDegeneration
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorDegenerationTauBalancedOfAdjointIntMatriceStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FacAlg
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsToricRankOne
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NonemptyFiniteNormalising
-import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -78,8 +38,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.mumfordTensorData_latticeFactor_props : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D D' W) (s : SymUnit r) (i₀ : Fin r), letI := T.mod s; (∀ y, T.xp i₀ (T.xi i₀ y) = y) ∧ (∀ z, T.xi i₀ (T.xp i₀ z) = TensO.idem s i₀ • z) ∧ Function.Injective (fun y => star (TensO.idem s i₀) • TensO.binv s • T.xi i₀ y) ∧ ∀ z, ∃ y, star (TensO.idem s i₀) • z = star (TensO.idem s i₀) • TensO.binv s • T.xi i₀ y := by
-  first | exact @GlobalTheory.Mum.tens_factor_latt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MumfordTensorDataLatticeFactorPropsStatement =====
@@ -94,7 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
-
 
 end -- clump:auto
 end -- clump:auto
@@ -460,10 +417,10 @@ theorem pair_pull : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Ad
       simp only [Sum.elim_inl, GlobalTheory.TensPair.lamPts_pull, Fintype.prod_prod_type]
       symm
       rw [Finset.prod_eq_single i₀ ?_ (by simp)]
-      · exact Finset.prod_congr rfl fun j _ => Finset.prod_congr rfl fun l _ => by rw [if_pos rfl]
+      · exact Finset.prod_congr rfl fun j _ => Finset.prod_congr rfl fun l _ => by rw [ite_eq_left rfl]
       · intro i _ hi
         refine Finset.prod_eq_one fun j _ => ?_
-        rw [Fin.prod_univ_four, if_neg hi]
+        rw [Fin.prod_univ_four, ite_eq_right hi]
         simp only [GlobalTheory.PolDeg.lamPts, Oε, _root_.one_mul]
         simp
         apply Additive.ofMul.injective
@@ -477,8 +434,8 @@ theorem pair_pull : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Ad
       val (D.toPre.tau a b) (𝟙 _) z J' = GlobalTheory.PolDeg.lamVal w (lift (toUnit (TK R) ≫ D.toPre.c a) (toUnit (TK R) ≫ D.toPre.c b) : TK R ⟶ G2 D.toPre.P.A).left z J J' *
         val (D'.toPre.tau (T.xi i₀ a) b') (𝟙 _) z J by
     exact key _ (fun j => (Tens.xe_smul T (symUnitOf W h) (TensO.binv _) (T.xi i₀ b) j).trans (by
-      rw [Finset.sum_eq_single i₀ (fun k _ hk => by rw [GlobalTheory.TensPair.xe_xi, if_neg hk, smul_zero]) (by simp),
-        GlobalTheory.TensPair.xe_xi, if_pos rfl]))
+      rw [Finset.sum_eq_single i₀ (fun k _ hk => by rw [GlobalTheory.TensPair.xe_xi, ite_eq_right hk, smul_zero]) (by simp),
+        GlobalTheory.TensPair.xe_xi, ite_eq_left rfl]))
   intro b' hb'
   have hPl : (lift (toUnit (TK R) ≫ D'.toPre.c (T.xi i₀ a)) (toUnit (TK R) ≫ D'.toPre.c b') : TK R ⟶ G2 D'.toPre.P.A).left =
       (lift (toUnit (TK R) ≫ D.toPre.c a) (toUnit (TK R) ≫ D.toPre.c b) : TK R ⟶ G2 D.toPre.P.A).left ≫
@@ -491,9 +448,9 @@ theorem pair_pull : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Ad
   have hPi : ∏ i, ∏ j, val (D.toPre.tau (T.xe (T.xi i₀ a) i) (T.xe b' j)) (𝟙 _) z J' ^ ((W + W.transpose) i j) =
       ∏ j, val (D.toPre.tau a (TensO.mat _ (TensO.binv (symUnitOf W h)) j i₀ • b)) (𝟙 _) z J' ^ ((W + W.transpose) i₀ j) := by
     rw [Finset.prod_eq_single i₀ (fun i _ hi => Finset.prod_eq_one fun j _ => by
-      rw [GlobalTheory.TensPair.xe_xi, if_neg hi, t0, one_zpow]) (by simp)]
+      rw [GlobalTheory.TensPair.xe_xi, ite_eq_right hi, t0, one_zpow]) (by simp)]
     refine Finset.prod_congr rfl fun j _ => ?_
-    rw [GlobalTheory.TensPair.xe_xi, if_pos rfl, hb']
+    rw [GlobalTheory.TensPair.xe_xi, ite_eq_left rfl, hb']
   have e1 := hv₁ (T.xi i₀ a) b' z J' J hJ' hJ
   rw [hPi, hPl] at e1
   have e2 := hvw _ (lift (toUnit (TK R) ≫ D.toPre.c a) (toUnit (TK R) ≫ D.toPre.c b) : TK R ⟶ G2 D.toPre.P.A).left z J' hJ'
@@ -584,8 +541,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.tensor_action_compatible_with_degeneration : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D D' W) (s : SymUnit r), letI := T.mod s; ∀ (a : TensO s) (y : D'.X), D'.c (a • y) = D'.c y ≫ T.act (TensO.mat s a) := by
-  first | exact @GlobalTheory.Mum.Tens.c_smul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorActionCompatibleWithDegenerationStatement =====
@@ -701,7 +656,7 @@ theorem Tens.nonempty_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
   letI := T.mod s
   obtain ⟨hhom, h1, hmul, hadd⟩ := _root_.GlobalTheory.Mum.TensAct.act_ring R D.toPre D'.toPre W T
   obtain ⟨hinc, hip, hpi, hcx⟩ := _root_.GlobalTheory.Mum.tens_inc_pr_facts R D.toPre D'.toPre W T i₀
-  obtain ⟨hxx, hxe, hinj, honto⟩ := GlobalTheory.T.mumfordTensorData_latticeFactor_props R D.toPre D'.toPre W T s i₀
+  obtain ⟨hxx, hxe, hinj, honto⟩ := GlobalTheory.Mum.tens_factor_latt R D.toPre D'.toPre W T s i₀
   obtain ⟨w, hw, htau⟩ := _root_.GlobalTheory.Mum.pairing_factor R hR D D' W hdet hpos T i₀
   have hp : 0 < (s.1 : Matrix (Fin r) (Fin r) ℤ) i₀ i₀ := by
     have h := hpos.diag_pos (i := i₀)
@@ -716,7 +671,7 @@ theorem Tens.nonempty_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
                     map_mul := fun a b => hmul _ _
                     map_add := fun a b => hadd _ _
                     rosati := _root_.GlobalTheory.Mum.rosatiAdj_tens R hR D D' W hdet hpos T }
-           c_lin := GlobalTheory.T.tensor_action_compatible_with_degeneration R D.toPre D'.toPre W T s
+           c_lin := GlobalTheory.Mum.Tens.c_smul R D.toPre D'.toPre W T s
            tau_bal := _root_.GlobalTheory.Mum.TensBal.tauBal_tens R hR D D' W hdet hpos T }
     e := TensO.idem s i₀
     f := TensO.binv s

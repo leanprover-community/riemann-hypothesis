@@ -21,7 +21,7 @@ private theorem single_comm {R : Type} [CommRing R] {n : ℕ} (i j k m : Fin n) 
     refine Finset.sum_eq_zero fun t _ => ?_
     by_cases hj : j = t
     · subst hj
-      simp only [Ne.symm h, false_and, if_false, mul_zero]
+      simp only [Ne.symm h, false_and, ite_false, mul_zero]
     · simp [hj]
 
 private theorem unitMap_comm {R : Type} [CommRing R] [Algebra ℝ R] {n : ℕ} {A : Type} [Ring A] [Algebra ℂ A]

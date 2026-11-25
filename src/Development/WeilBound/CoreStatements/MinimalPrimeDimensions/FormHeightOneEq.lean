@@ -889,7 +889,7 @@ theorem exists_unitary {N m : ℕ} (Q : Matrix (Fin N) (Fin m) ℂ)
       fun a b h => Subtype.ext (Fin.ext (congrArg Fin.val h :))
     convert h1 using 1
     funext k
-    exact dif_pos k.2
+    exact dite_eq_left k.2
   obtain ⟨b, hb⟩ := hv.exists_orthonormalBasis_extension_of_card_eq (by simp)
   refine ⟨Matrix.of fun k a => b k a, fun x => ?_, ?_⟩
   · let x' : EuclideanSpace ℂ (Fin m) := WithLp.toLp 2 fun a => starRingEnd ℂ (x a)
@@ -910,10 +910,10 @@ theorem exists_unitary {N m : ℕ} (Q : Matrix (Fin N) (Fin m) ℂ)
   · ext j a
     rw [Matrix.mul_apply, Fintype.sum_eq_single (Fin.castLE hle j)]
     · have hj : ((Fin.castLE hle j : Fin m) : ℕ) < N := j.2
-      simp only [Matrix.of_apply, Fin.val_castLE, if_true, one_mul]
+      simp only [Matrix.of_apply, Fin.val_castLE, ite_true, one_mul]
       rw [hb _ hj]
       simp only [v]
-      rw [dif_pos hj]
+      rw [dite_eq_left hj]
       change Q j a = ∑ i, Q i a * (EuclideanSpace.basisFun (Fin N) ℂ j) i
       simp [EuclideanSpace.basisFun_apply]
     · intro k hk

@@ -42,43 +42,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormLocalEqu
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrimeEqOfClassicalPointSameCentre
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolarizationScaledMultiple
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgClosedOfFixedPoints
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
@@ -89,7 +52,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalMod
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.AuxiliaryInertOddPrime
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChartA
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.BaseChangeKernels.SurjOfCover
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtArith
@@ -105,11 +67,8 @@ import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.UnitThetaConst
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.WeightSpaceValuesIntegralTorsionBoundShortestVecStatement
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.UniformisationExistenceAndTorsionStatements
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NonemptyFiniteRootsOfBimul
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsMaximalComapMaximalIdealOO
-import Mathlib.NumberTheory.NumberField.ClassNumber
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteRegularThetaSetupCover, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPadicTraitLiftFiniteThroughPoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowNormValLeUnitaryThetaFiniteModels, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMemGenericPointsMemClosure, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsThetaSetupRegularOverModuliPoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClosedSingletonOfIsFiniteOfIsClosedImage, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryClassicalTraitPeriodsBoundedBelow, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClassicalTraitPeriodsBoundedBelowClosedPoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryThetaSystemClassicalTraitsClosedPoi, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryClassSumsDeeperLevelIntegralClosure, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryFourierClassSumsDeeperLevel, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryClassicalTraitsFourierTermsAllLevels, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryApproxPoincareSeries, Development.AbelianVarietyTheory.Definitions.Divisors.UApproxAtZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryApproxPoincareSeriesAtMul, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealSheafDescendingDivisorPower
@@ -726,7 +685,6 @@ theorem eq_zero_of_sum_eq_zero (hpq : ¬ 1 ≤ Dw.p + Dw.q) (T : UTrait Xo c) (x
 
 end GlobalTheory.UPoinc.PerBound
 
-
 open GlobalTheory.UPoinc.PerBound in
 theorem GlobalTheory.UPoinc.lam_of_closed : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (C : UCompact Xo c) (X₁ : USetup C) (p : ℕ) [Fact p.Prime] (z₁ : X₁.M.Z), IsClosed ({z₁} : Set X₁.M.Z) → ∃ K : ℝ, ∀ (t : UCTrait X₁ p z₁) (x : t.T.P.D.toPre.X), x ≠ 0 → ∃ h ∈ maximalIdeal (X₁.M.Z.presheaf.stalk z₁), Real.exp (-(K * (t.sc * t.T.be x x))) ≤ ‖t.val h‖ := by
   intro E _ _ _ H Dw l Xo c C X₁ p _ z₁ hz
@@ -844,7 +802,6 @@ namespace GlobalTheory.UPoinc.PreSys
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {C : UCompact Xo c} {X₁ : USetup C} {p : ℕ} [Fact p.Prime] {z₁ : X₁.M.Z}
 
-
 variable (E X₁ p) in
 abbrev Key : Type :=
   (Sp (OO p) ⟶ X₁.M.Z) × (Σ k : ℕ, (𝓞 E →+* Module.End ℤ (Fin k → ℤ)) × ((Fin k → ℤ) → (Fin k → ℤ) → ℝ))
@@ -872,7 +829,6 @@ def keyOf (t : UCTrait X₁ p z₁) : Key E X₁ p :=
 
 theorem rep_keyOf (t : UCTrait X₁ p z₁) : Rep t (keyOf t) := ⟨rfl, coord t, coord_actOf t, fun _ _ => rfl⟩
 
-
 variable (X₁ p z₁) in
 def Pts : Type := {q : Key E X₁ p // ∃ t : UCTrait X₁ p z₁, Rep t q}
 
@@ -895,7 +851,6 @@ theorem exists_equiv_of_rep {t t' : UCTrait X₁ p z₁} {q : Key E X₁ p} (h :
   show _ = t'.sc * t'.T.be (g (f u)) (g (f v))
   simp only [g, LinearEquiv.trans_apply, LinearEquiv.symm_apply_apply]
   rw [← hfb, ← hfb']
-
 
 variable (X₁ p z₁) in
 noncomputable def sys : FPre (H.bar : 𝓞 E → 𝓞 E) (min Dw.p Dw.q) p (X₁.M.Z.presheaf.stalk z₁) where
@@ -929,7 +884,6 @@ theorem sys_lam (hz : IsClosed ({z₁} : Set X₁.M.Z)) : (sys X₁ p z₁).abel
   exact ⟨K, fun y x hx => hK (pick y) x hx⟩
 
 end GlobalTheory.UPoinc.PreSys
-
 
 open GlobalTheory Classical in
 theorem GlobalTheory.UPoinc.PreSys.main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H), 1 ≤ Dw.p + Dw.q → ∀ (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (C : UCompact Xo c) (X₁ : USetup C) (p : ℕ) [Fact p.Prime] (z₁ : X₁.M.Z), IsClosed ({z₁} : Set X₁.M.Z) → ∃ (Φ : FPre (H.bar : 𝓞 E → 𝓞 E) (min Dw.p Dw.q) p (X₁.M.Z.presheaf.stalk z₁)), UMatches Φ ∧ Φ.abelian₂ ∧ (∀ y, ∃ t : UCTrait X₁ p z₁, (∀ a, Φ.ev y a = t.val a) ∧ ∃ e : Φ.X y ≃ₗ[𝓞 E] t.T.P.D.toPre.X, ∀ a b, Φ.sc y * Φ.β y a b = t.sc * t.T.be (e a) (e b)) := by
@@ -1082,7 +1036,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   let wit : ∀ y, (Fin 1 → Φ.X y) → (Fin 1 → Φ.X y) := fun y μ => if h : NS y μ then h.choose else μ
   have hwit : ∀ y μ, NS y μ → Cg y (wit y μ) μ ∧ wit y μ ≠ μ ∧ qv y (wit y μ) ≤ qv y μ := by
     intro y μ h
-    simp only [wit, dif_pos h]
+    simp only [wit, dite_eq_left h]
     exact h.choose_spec
   have hel : ∀ y μ, ∃ e : PadicAlgCl p, ‖e‖ = Real.exp (-(Φ.sc y * qv y μ)) := by
     intro y μ
@@ -1143,7 +1097,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
         · rw [norm_zero]; exact (Real.exp_pos _).le
     · by_cases hns : NS y μ
       · refine ⟨Sum.inr ⟨y, μ⟩, ?_⟩
-        simp only [t, Sum.elim_inr, g, if_pos hns]
+        simp only [t, Sum.elim_inr, g, ite_eq_left hns]
         exact hel y μ
       · have hstrict : ∀ μ' : Fin 1 → Φ.X y, (∀ u, CongMod N (μ' u) (μ u)) → μ' ≠ μ →
             qW !![(1 : ℤ)] (Φ.β y) μ < qW !![(1 : ℤ)] (Φ.β y) μ' := by
@@ -1161,7 +1115,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
           simpa using this
         refine ⟨Sum.inl κ, ?_⟩
         simp only [t, Sum.elim_inl, hsel']
-        rw [if_pos trivial, hF, norm_pow, hnorm, ← Real.exp_nat_mul]; congr 1; push_cast; ring
+        rw [ite_eq_left trivial, hF, norm_pow, hnorm, ← Real.exp_nat_mul]; congr 1; push_cast; ring
   · rintro cc cc' (κ | s) h
     · simp only [f, Sum.elim_inl, hcls cc cc' κ h]
     · rfl
@@ -1175,7 +1129,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
       have hsum : ∑ μ ∈ S, t y μ (Sum.inl κ) = t y s (Sum.inl κ) := by
         refine Finset.sum_eq_single_of_mem s hmem (fun μ hμ hne => ?_)
         simp only [t, Sum.elim_inl]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact hne (h.trans (hselc y μ _ (hS' μ hμ)))
       have hF : F (fun u => (k y).symm (s u)) κ = F cc κ := by
@@ -1184,7 +1138,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
         simpa using this
       rw [hsum]
       simp only [t, Sum.elim_inl, hss]
-      rw [if_pos trivial, hF]
+      rw [ite_eq_left trivial, hF]
       simp [f, hε.le]
     · by_cases hy : y = y'
       · subst hy
@@ -1194,7 +1148,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
           simp only [t, Sum.elim_inr, dite_true]
           by_cases hns : NS y μ
           · obtain ⟨hw1, hw2, -⟩ := hwit y μ hns
-            simp only [g, if_pos hns]
+            simp only [g, ite_eq_left hns]
             by_cases hc : Cg y μ (fun u => k y (cc u))
             · have hμS : μ ∈ S := hS₀ μ (by simp) (fun u => by simpa using hc u)
               have hwS : wit y μ ∈ S := hS₀ _ (by simp) (fun u => by simpa using _root_.GlobalTheory.Poinc.GalTrans.cm_trans (hw1 u) (hc u))
@@ -1205,7 +1159,7 @@ theorem main_of_core (hcore : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
                 · subst h1; simp [hw2.symm]
                 · simp [h1]
               rw [Finset.sum_congr rfl (fun ν _ => e ν), Finset.sum_add_distrib, Finset.sum_ite_eq' S μ,
-                Finset.sum_ite_eq' S (wit y μ), if_pos hμS, if_pos hwS, add_neg_cancel]
+                Finset.sum_ite_eq' S (wit y μ), ite_eq_left hμS, ite_eq_left hwS, add_neg_cancel]
             · refine Finset.sum_eq_zero (fun ν hν => ?_)
               have h1 : ν ≠ μ := fun h => hc (h ▸ hS' ν hν)
               have h2 : ν ≠ wit y μ := fun h => hc (fun u => _root_.GlobalTheory.Poinc.GalTrans.cm_trans (_root_.GlobalTheory.Poinc.GalTrans.cm_symm (hw1 u)) (h ▸ hS' ν hν u))
@@ -1397,7 +1351,6 @@ theorem exists_hasSupports_cm (q : ℕ) (φ : InvFun (𝓞 E)) (hpol : IsPolFan 
   exists_hasSupports (𝓞 E) H.bar q φ hpol fun X _ _ _ _ hX r γ hγ => _root_.GlobalTheory.Poinc.exists_supports_cm E H φ X (hpol X hX) r γ hγ
 
 end GlobalTheory.UPoinc.GApprox
-
 
 open GlobalTheory.UPoinc.GApprox in
 theorem GlobalTheory.UPoinc.exists_uApproxAt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H), 1 ≤ Dw.p + Dw.q → ∀ (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (C : UCompact Xo c) (X₁ : USetup C), ∀ φ : InvFun (𝓞 E), IsPolFan H.bar (min Dw.p Dw.q) φ → ∃ d : ℕ, 1 ≤ d ∧ UApproxAt X₁ φ d := by

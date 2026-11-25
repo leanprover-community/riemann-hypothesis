@@ -50,8 +50,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.D
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.AutomorphicEvaluation Formalism.IndefR.principalLevelFrame Formalism.L2.DIV Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting MeasureTheory NumberField ReciprocityTheory.Aut Formalism.AUTREP GlobalTheory.Mem.SRe GlobalTheory.LabPin
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.SplitPairK
 
 open Matrix Formalism.MainNotions.S GlobalTheory.RowLev
@@ -197,5 +195,3 @@ theorem GlobalTheory.SplitPairK.mem_kset_of_split : ∀ (I : Formalism.MainNotio
   refine ⟨fun hy => mv_mem I hβ hεi k h1 h2 h3 hy, fun hy => ?_⟩
   have := mv_mem I hβ hεi k⁻¹ h1' h3 h3' hy
   rwa [Matrix.mulVec_mulVec, _root_.Formalism.L2.SG.Pf.unitaryCongruence.fmat_inv_mul, Matrix.one_mulVec] at this
-
-end

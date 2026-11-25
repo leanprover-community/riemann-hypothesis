@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExample
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop
 
@@ -23,13 +21,6 @@ theorem chi_eq_one (h : Y.Good e o) (σ : Y.d.c₂.F →+* ℂ) (hσ : GoodEmb Y
   GlobalTheory.OneEmbeddingProbe.chi_eq_one _ (h.chiTriv σ hσ) k la γ hγ
 
 end Cover
-
-section Base
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) (i : Fin D.R.m)
-
-end Base
 
 section Weights
 
@@ -51,5 +42,3 @@ theorem exZ_shiftG (s : ℤ) : exZ Dw (shiftG Dw a (2 * m) s) = exOf Dw (laOf Dw
 end Weights
 
 end GlobalTheory.CovTop.Model
-
-end

@@ -55,8 +55,4 @@ theorem dvr_fraction_field_charZero_prime (S : UniformizedDVR p O) (hp : p.Prime
 
 end Arith
 
-section Order
-
-end Order
-
 end Formalism.MainNotions.G.GLWeightTheory

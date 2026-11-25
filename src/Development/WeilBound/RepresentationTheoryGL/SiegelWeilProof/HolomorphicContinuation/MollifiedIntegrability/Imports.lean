@@ -16,7 +16,6 @@ public import Mathlib.Topology.Algebra.MvPolynomial
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ContinuousEvX
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ContinuousEvXI
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.GaussS
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.NullSec
@@ -84,6 +83,90 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.SimpleRing.Principal
+
+section
+@[expose] public section
+
+noncomputable section
+
+open MeasureTheory
+
+namespace PositivityTheory.Rg.Sw.WR.D
+
+open PositivityTheory.Rg.Sw
+
+variable {m n : ℕ}
+
+theorem gramX_star (ε : Fin m → Bool) (x : Fin m → Fin n → ℂ) (i j : Fin n) :
+    star (gramX ε x i j) = gramX ε x j i := by
+
+  simp only [gramX, Qp, Qb, evX, map_sub, map_sum, map_mul, MvPolynomial.eval_X, ↓reduceIte,
+  Bool.false_eq_true, star_sub, star_sum, star_mul, star_star]
+
+theorem herm_hinv (T : Matrix (Fin n) (Fin n) ℂ) (hT : ∀ i j, star (T i j) = T j i) : herm (hinv T) = T := by
+  ext i j
+  have h1 : (T j i).re = (T i j).re := by rw [← hT i j]; simp
+  have h2 : (T j i).im = -(T i j).im := by rw [← hT i j]; simp
+  apply Complex.ext
+  · simp [herm, hinv, h1, h2]
+    try ring
+  · simp [herm, hinv, h1, h2]
+    try ring
+
+theorem hinv_herm' (y : E n) : hinv (herm y) = y := by
+  funext i j
+  simp [hinv, herm]
+  ring
+
+theorem herm_mul_apply (y y' : E n) (i j : Fin n) :
+    herm y i j * herm y' j i =
+      (((y i j * y' i j + y j i * y' j i) / 2 : ℝ) : ℂ) + Complex.I * (((y i j * y' j i - y j i * y' i j) / 2 : ℝ) : ℂ) := by
+  apply Complex.ext <;> simp [herm] <;> ring
+
+theorem trace_herm_mul (y y' : E n) : (herm y * herm y').trace = ((ip y y' : ℝ) : ℂ) := by
+  have h1 : ∑ i, ∑ j, (y i j * y' j i - y j i * y' i j) / 2 = 0 := by
+    simp only [sub_div, Finset.sum_sub_distrib]
+    rw [Finset.sum_comm (f := fun i j => y j i * y' i j / 2)]
+    exact sub_self _
+  have h2 : ∑ i, ∑ j, (y i j * y' i j + y j i * y' j i) / 2 = ip y y' := by
+    simp only [add_div, Finset.sum_add_distrib]
+    rw [Finset.sum_comm (f := fun i j => y j i * y' j i / 2)]
+    simp only [ip, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    ring
+  calc (herm y * herm y').trace = ∑ i, ∑ j, herm y i j * herm y' j i := by
+        simp [Matrix.trace, Matrix.mul_apply]
+    _ = ((∑ i, ∑ j, (y i j * y' i j + y j i * y' j i) / 2 : ℝ) : ℂ) +
+          Complex.I * ((∑ i, ∑ j, (y i j * y' j i - y j i * y' i j) / 2 : ℝ) : ℂ) := by
+        simp only [herm_mul_apply, Finset.sum_add_distrib, Complex.ofReal_sum, Finset.mul_sum]
+    _ = ((ip y y' : ℝ) : ℂ) := by rw [h1, h2]; simp
+
+theorem evX_detQ (ε : Fin m → Bool) (x : Fin m → Fin n → ℂ) : evX (detQ ε) x = (gramX ε x).det := by
+  rw [evX, detQ, RingHom.map_det]
+  rfl
+
+theorem continuous_evX (P : PX m n) : Continuous fun x : Fin m → Fin n → ℂ => evX P x := by
+  refine (MvPolynomial.continuous_eval P).comp (continuous_pi fun k => ?_)
+  split_ifs
+  · exact continuous_star.comp ((continuous_apply _).comp (continuous_apply _))
+  · exact (continuous_apply _).comp (continuous_apply _)
+
+theorem continuous_qX (ε : Fin m → Bool) : Continuous (qX (n := n) ε) := by
+  unfold qX hinv gramX
+  exact continuous_pi fun i => continuous_pi fun j =>
+    (Complex.continuous_re.comp (continuous_evX _)).add (Complex.continuous_im.comp (continuous_evX _))
+
+theorem algA : AlgA := by
+  intro m n ε
+  refine ⟨fun y x => ?_, fun x => herm_hinv _ (gramX_star ε x), hinv_herm', evX_detQ ε, continuous_qX ε⟩
+  have h := trace_herm_mul y (qX ε x)
+  rwa [show herm (qX ε x) = gramX ε x from herm_hinv _ (gramX_star ε x)] at h
+
+end PositivityTheory.Rg.Sw.WR.D
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ClsShift, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.CardAddB, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ExpCombine, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.StepB, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.StepC, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ContinuousCexpIp, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.DerivFA, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.DerivF, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.DensOf3, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.GWickB, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.GWickA, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.EvXPderivPhiP, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.GWickC, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ImportsAlt, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.Imports
@@ -1146,7 +1229,7 @@ variable {m n : ℕ}
 theorem gramX_apply (ε : Fin m → Bool) (x : Fin m → Fin n → ℂ) (i j : Fin n) :
     gramX ε x i j = ∑ a, sgn ε a * star (x a i) * x a j := by
 
-  simp only [gramX, Qp, Qb, map_sub, map_sum, map_mul, evX, eval_X, if_true, Bool.false_eq_true, if_false]
+  simp only [gramX, Qp, Qb, map_sub, map_sum, map_mul, evX, eval_X, ite_true, Bool.false_eq_true, ite_false]
   rw [Finset.sum_filter, Finset.sum_filter, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
   cases h : ε a <;> simp [sgn, h]
@@ -1356,10 +1439,10 @@ theorem dEv_wirt (P : PX m n) (x : Fin m → Fin n → ℂ) (a : Fin m) (j : Fin
   simp only [dEv, ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
     smul_eq_mul, Finset.mul_sum, ← Finset.sum_sub_distrib]
   rw [Finset.sum_eq_single (a, j, false)]
-  · have := crd_wirt a j (a, j, false); simp only [if_true] at this
+  · have := crd_wirt a j (a, j, false); simp only [ite_true] at this
     rw [← this]; ring
   · intro k _ hk
-    have := crd_wirt a j k; rw [if_neg hk] at this
+    have := crd_wirt a j k; rw [ite_eq_right hk] at this
     calc _ = evX (pderiv k P) x * (crd k (fun a' i' => if a' = a ∧ i' = j then (1 : ℂ) else 0) -
           Complex.I * crd k (fun a' i' => if a' = a ∧ i' = j then Complex.I else 0)) := by ring
       _ = 0 := by rw [this, mul_zero]
@@ -1472,8 +1555,8 @@ theorem wick_of (hI : IntegP) : Wick := by
       refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => ?_
       ring
     rw [h2]
-    simp only [h1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, neg_neg]
-    simp only [evX, map_mul, eval_X, if_true]
+    simp only [h1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, neg_neg]
+    simp only [evX, map_mul, eval_X, ite_true]
     ring
   rw [hsec]
   simp_rw [key]

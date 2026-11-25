@@ -16,45 +16,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrientedHerm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SeesawOneSourceOrthogonalSumTargets
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNeZeroAtZero
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianAdjointLawsStandardCharacter
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section
@@ -108,27 +70,27 @@ theorem attChr_inv_mul (μ η : C) (n : ℕ) :
     (Formalism.IndefR.Lift.attChr μ η n)⁻¹ * (μ * η ^ (n % 2)) = η ^ (2 * (n % 2)) := by
   unfold Formalism.IndefR.Lift.attChr
   rcases Nat.even_or_odd n with h | h
-  · rw [if_neg (Nat.not_odd_iff_even.2 h), Nat.even_iff.1 h]
+  · rw [ite_eq_right (Nat.not_odd_iff_even.2 h), Nat.even_iff.1 h]
     simp
-  · rw [if_pos h, Nat.odd_iff.1 h, pow_one, _root_.mul_inv_rev, inv_inv, mul_assoc, inv_mul_cancel_left,
+  · rw [ite_eq_left h, Nat.odd_iff.1 h, pow_one, _root_.mul_inv_rev, inv_inv, mul_assoc, inv_mul_cancel_left,
       show 2 * 1 = 2 from rfl, pow_two]
 
 theorem attChr_mul (μ χ η : C) (n : ℕ) :
     Formalism.IndefR.Lift.attChr χ η n * (μ * η ^ (n % 2)) = μ * χ := by
   unfold Formalism.IndefR.Lift.attChr
   rcases Nat.even_or_odd n with h | h
-  · rw [if_neg (Nat.not_odd_iff_even.2 h), Nat.even_iff.1 h]
+  · rw [ite_eq_right (Nat.not_odd_iff_even.2 h), Nat.even_iff.1 h]
     simp [mul_comm]
-  · rw [if_pos h, Nat.odd_iff.1 h, pow_one, mul_comm μ η, ← mul_assoc, mul_assoc χ, inv_mul_cancel, mul_one, mul_comm]
+  · rw [ite_eq_left h, Nat.odd_iff.1 h, pow_one, mul_comm μ η, ← mul_assoc, mul_assoc χ, inv_mul_cancel, mul_one, mul_comm]
 
 theorem attChr_div (μ χ η : C) {a b : ℕ} (hab : Odd a ↔ Odd b) (k : ℕ) :
     Formalism.IndefR.Lift.attChr μ η a * (Formalism.IndefR.Lift.attChr χ η b)⁻¹ = μ * η ^ k / (χ * η ^ k) := by
   unfold Formalism.IndefR.Lift.attChr
   rw [mul_div_mul_right_eq_div]
   by_cases h : Odd a
-  · rw [if_pos h, if_pos (hab.1 h), _root_.mul_inv_rev, inv_inv, div_eq_mul_inv, mul_assoc, ← mul_assoc η⁻¹, inv_mul_cancel,
+  · rw [ite_eq_left h, ite_eq_left (hab.1 h), _root_.mul_inv_rev, inv_inv, div_eq_mul_inv, mul_assoc, ← mul_assoc η⁻¹, inv_mul_cancel,
       one_mul]
-  · rw [if_neg h, if_neg (fun h' => h (hab.2 h')), div_eq_mul_inv]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hab.2 h')), div_eq_mul_inv]
 
 end Chars
 

@@ -77,15 +77,11 @@ private theorem kills {n : ℕ} {A G : Type} [CommRing A] [Group G] (D : GDet n 
     (hD : ∀ i ≤ n, ∀ h ∈ H, ∀ g, D.lam i (MonoidAlgebra.single (g * h) 1) = D.lam i (MonoidAlgebra.single g 1))
     {h : G} (hh : h ∈ H) : D.Kills (MonoidAlgebra.single h 1 - 1) := by
   intro S _ _ u
-  have hu : ∃ (ι : Type) (_ : Fintype ι) (g : ι → G) (s : ι → S), u = ∑ a, MonoidAlgebra.single (g a) (s a) := by
-    induction u using MonoidAlgebra.induction_linear with
-    | zero => exact ⟨Empty, inferInstance, Empty.elim, Empty.elim, by simp⟩
-    | single g r => exact ⟨Unit, inferInstance, fun _ => g, fun _ => r, by simp⟩
-    | add a b ha hb =>
-      obtain ⟨ι, _, g, s, rfl⟩ := ha
-      obtain ⟨ι', _, g', s', rfl⟩ := hb
-      exact ⟨ι ⊕ ι', inferInstance, Sum.elim g g', Sum.elim s s', by simp⟩
-  obtain ⟨ι, _, g, s, rfl⟩ := hu
+  obtain ⟨ι, _, g, s, rfl⟩ : ∃ (ι : Type) (_ : Fintype ι) (g : ι → G) (s : ι → S),
+      u = ∑ a, MonoidAlgebra.single (g a) (s a) :=
+    ⟨u.coeff.support, inferInstance, Subtype.val, fun a => u.coeff a.1,
+      ((Finset.sum_coe_sort u.coeff.support fun g => MonoidAlgebra.single g (u.coeff g)).trans
+        (MonoidAlgebra.sum_coeff_single u)).symm⟩
   have h1 := key D H hD (ι := ι ⊕ ι) (Sum.elim (fun a => g a * h) g) (Sum.elim g g)
     (by rintro (a | a)
         · simpa using hh

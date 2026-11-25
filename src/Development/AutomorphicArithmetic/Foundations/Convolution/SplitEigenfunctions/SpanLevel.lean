@@ -664,7 +664,7 @@ private theorem inner_der (N : MeasE E) {Ψ Q : GL (Fin 2) (A E) → ℂ} (hΨ :
     HasDerivAt (fun u => mean N fun x => Ψ (x * (y * g u))) (mean N fun x => Q (x * (y * g s))) s := by
   obtain ⟨B, hB⟩ := hQ.bdd ((fun u => y * g u) '' Metric.closedBall s 1)
     ((isCompact_closedBall s 1).image (continuous_const.mul hg))
-  haveI : IsFiniteMeasure (N.μ.restrict N.D) := ⟨by simpa using vol_lt N⟩
+  have : IsFiniteMeasure (N.μ.restrict N.D) := ⟨by simpa using vol_lt N⟩
   have hm : ∀ {P : GL (Fin 2) (A E) → ℂ}, Continuous P → ∀ k,
       AEStronglyMeasurable (fun h : G1 E => P (gl h * k)) (N.μ.restrict N.D) := fun hP k =>
     (hP.comp (Matrix.SpecialLinearGroup.continuous_toGL.mul continuous_const)).aestronglyMeasurable
@@ -713,7 +713,7 @@ private theorem outer_der (N : MeasE E) {Ψ Q : GL (Fin 2) (A E) → ℂ} (hΨ :
     calc _ ≤ b z := h1
       _ ≤ ‖(b z : ℂ)‖ := by rw [Complex.norm_real]; exact le_abs_self _
       _ ≤ B := hB _ hab
-  haveI : IsFiniteMeasure ((normOneMeasure E).restrict (normOneFundamentalDomain E)) :=
+  have : IsFiniteMeasure ((normOneMeasure E).restrict (normOneFundamentalDomain E)) :=
     ⟨by simpa using normOneMeasure_normOneFundamentalDomain_lt_top E⟩
   have hint : ∀ (M : GL (Fin 2) (A E) → ℂ), Continuous M → (∀ γ y, M (ratGL E 2 γ * y) = M y) → ∀ k,
       IntegrableOn (fun z : IdeleGroup.normOneSubgroup E => M (aE (z : IdeleGroup E) * k))
@@ -915,14 +915,14 @@ private theorem exists_fixed_pair [TopologicalSpace G] [IsTopologicalGroup G] (h
     (hK : IsCompact (K : Set G)) (l : W →ₗ[ℂ] ℂ) (hl : ∀ k ∈ K, ∀ v, l (ρ k v) = l v) (y : W) :
     ∃ y' ∈ fixed ρ K, l y' = l y := by
   classical
-  haveI : CompactSpace K := isCompact_iff_compactSpace.1 hK
+  have : CompactSpace K := isCompact_iff_compactSpace.1 hK
   have hfi : (GlobalTheory.OrbitAvg.stab ρ K y).FiniteIndex := by
     have ho : IsOpen (GlobalTheory.OrbitAvg.stab ρ K y : Set K) := (hρ y).preimage continuous_subtype_val
-    haveI := (GlobalTheory.OrbitAvg.stab ρ K y).quotient_finite_of_isOpen ho
+    have := (GlobalTheory.OrbitAvg.stab ρ K y).quotient_finite_of_isOpen ho
     exact Subgroup.finiteIndex_of_finite_quotient
   refine ⟨GlobalTheory.OrbitAvg.avg ρ K y,
     GlobalTheory.LGrp.mem_fixed.2 fun u hu => GlobalTheory.OrbitAvg.avg_invariant ρ K hfi ⟨u, hu⟩, ?_⟩
-  haveI := Fintype.ofFinite (K ⧸ GlobalTheory.OrbitAvg.stab ρ K y)
+  have := Fintype.ofFinite (K ⧸ GlobalTheory.OrbitAvg.stab ρ K y)
   have hc : ((GlobalTheory.OrbitAvg.stab ρ K y).index : ℂ) ≠ 0 := by exact_mod_cast hfi.index_ne_zero
   have h1 : ∀ q : K ⧸ GlobalTheory.OrbitAvg.stab ρ K y, l (ρ (q.out : K) y) = l y := fun q => hl _ q.out.2 y
 
@@ -966,7 +966,7 @@ private theorem sat_eq_of_eig {E : Type} [Field E] [NumberField E] {n : ℕ} {w 
       obtain ⟨a, ha, b, hb, e⟩ : ∃ a ∈ GLint (Fin n) (Ov E w), ∃ b ∈ GLint (Fin n) (Ov E w),
           g = a * dGL n ϖ j * b := by
         by_contra hn
-        exact hg (if_neg hn)
+        exact hg (ite_eq_right hn)
       exact ⟨a, ha, b, hb, _, invT_dGL c ϖ j, e⟩)
   rw [hE' _ hp j hj, hY.2.2.2 _ hp j hj, map_smul, smul_eq_mul] at key
   exact mul_right_cancel₀ hne key
@@ -1216,7 +1216,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.splitEig :
     refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
     beta_reduce
     rw [map_mul, map_mul, ← mul_assoc g, ← mul_assoc _ _ (lc w (gm k.1)), hFix _ _ hk]
-  haveI : CompactSpace (GlobalTheory.LFun.KGL v (n := 2)) :=
+  have : CompactSpace (GlobalTheory.LFun.KGL v (n := 2)) :=
     isCompact_iff_compactSpace.mp (GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL v 2).2
   have hsm : ∀ f, ∀ᶠ h in 𝓝 (1 : GlobalTheory.LFun.KGL v (n := 2)), π.locRep v ((GlobalTheory.LFun.KGL v (n := 2)).subtype h) f = f := fun f =>
     (continuous_subtype_val.tendsto (1 : GlobalTheory.LFun.KGL v (n := 2))).eventually

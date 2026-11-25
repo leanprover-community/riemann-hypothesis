@@ -27,7 +27,6 @@ import Mathlib.Tactic.Linter.Style
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 open TensorProduct
 
@@ -191,7 +190,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry Polynomial DividedPowers GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.B
 open TensorProduct
 
@@ -374,8 +372,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
 namespace GlobalTheory.CompanionTheory.TowerEx
@@ -389,7 +385,7 @@ theorem compl_factor {E S B : Type} [CommRing E] [CommRing S] [CommRing B] {π :
   let q : E ⧸ Ideal.span {π} →+* S ⧸ Ideal.span {g π} := Ideal.quotientMap _ g hle
   have hqm : ∀ x, q (Ideal.Quotient.mk _ x) = Ideal.Quotient.mk _ (g x) := fun x => Ideal.quotientMap_mk
   have hinj : Function.Injective q := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
     rw [hqm, Ideal.Quotient.eq_zero_iff_mem] at hx

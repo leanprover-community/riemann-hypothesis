@@ -94,26 +94,6 @@ def bcMap (f : H ⟶ (Over.pullback p).obj G) [IsMonHom f] : CubeMap H G where
 
 end BaseChange
 
-section Sym
-
-variable {S : Scheme.{0}} (G : Over S) [GrpObj G]
-
-variable {G} {S' : Scheme.{0}} {H : Over S'} [GrpObj H]
-
-end Sym
-
-section IsoPull
-
-variable {X X' Y Y' : Scheme.{0}} (L : LB X) (M : LB X')
-
-end IsoPull
-
-section Generic
-
-variable (R : Type) [CommRing R] [IsDomain R]
-
-end Generic
-
 section Levels
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegPre R}

@@ -322,9 +322,9 @@ theorem mhl_prV_pullV_eta (hc : Formalism.BasicNotions.CMData F E) {n : ℕ} [Ne
   simp only [Matrix.mulVec, dotProduct]
 
   rw [map_sum, Finset.sum_eq_single i]
-  · rw [map_mul, mhl_prV_eta_inv, if_pos rfl, map_mul]
+  · rw [map_mul, mhl_prV_eta_inv, ite_eq_left rfl, map_mul]
   · intro j _ hj
-    rw [map_mul, mhl_prV_eta_inv, if_neg (Ne.symm hj), map_zero, map_zero, zero_mul]
+    rw [map_mul, mhl_prV_eta_inv, ite_eq_right (Ne.symm hj), map_zero, map_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ i) h
 
@@ -501,7 +501,7 @@ theorem mhlPhi_surj (x : UAd hc n) (Pb : Pl E) {k : ℕ} (hk : k ≤ n) :
   have hloc : z ∈ localization₂ Pb.asIdeal (Formalism.UG.CS.globLat (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (stdLat E n)) :=
     le_locP Pb _ hz
   have h1 := congrFun hbz ⟨i.1, lt_of_lt_of_le i.2 hk⟩
-  simp only [decoRaw, if_pos hloc, dif_pos i.2] at h1
+  simp only [decoRaw, ite_eq_left hloc, dite_eq_left i.2] at h1
   exact h1
 
 theorem mhl_ker_phi (hov : IsOver v Pb) (hov2 : ∀ Q : Pl E, IsOver v Q → Q = Pb ∨ Q = conjPrime₂ Pb)
@@ -614,26 +614,26 @@ theorem mhl_exists_adapted {K : Type} [Field K] {n k : ℕ} (hk : k ≤ n) (ψ :
       map_add' := fun w w' => by
         funext j
         by_cases h : j.1 < k
-        · simp only [dif_pos h, map_add (f := _), Pi.add_apply]
-        · simp only [dif_neg h, map_add (f := _), Pi.add_apply]
+        · simp only [dite_eq_left h, map_add (f := _), Pi.add_apply]
+        · simp only [dite_eq_right h, map_add (f := _), Pi.add_apply]
       map_smul' := fun c w => by
         funext j
         by_cases h : j.1 < k
-        · simp only [dif_pos h, map_smul, Pi.smul_apply, RingHom.id_apply]
-        · simp only [dif_neg h, map_smul, Pi.smul_apply, RingHom.id_apply] }
+        · simp only [dite_eq_left h, map_smul, Pi.smul_apply, RingHom.id_apply]
+        · simp only [dite_eq_right h, map_smul, Pi.smul_apply, RingHom.id_apply] }
   have hA : Function.Injective A := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro w hw
     have h1 : ψ w = 0 := by
       funext i
       have h := congrFun hw ⟨i.1, lt_of_lt_of_le i.2 hk⟩
-      simp only [A, LinearMap.coe_mk, AddHom.coe_mk, dif_pos i.2, Pi.zero_apply] at h
+      simp only [A, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left i.2, Pi.zero_apply] at h
       exact h
     have h2 : e (p w) = 0 := by
       funext m
       have h := congrFun hw ⟨m.1 + k, by omega⟩
       have hm : ¬ (m.1 + k < k) := by omega
-      simp only [A, LinearMap.coe_mk, AddHom.coe_mk, dif_neg hm, Pi.zero_apply] at h
+      simp only [A, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_right hm, Pi.zero_apply] at h
       have e' : (⟨m.1 + k - k, by omega⟩ : Fin (n - k)) = m := Fin.ext (by simp)
       rw [e'] at h
       exact h
@@ -658,7 +658,7 @@ theorem mhl_exists_adapted {K : Type} [Field K] {n k : ℕ} (hk : k ≤ n) (ψ :
     rw [← hAA, A'.symm_apply_apply]
   · show (LinearMap.toMatrix' A *ᵥ w) _ = _
     rw [LinearMap.toMatrix'_mulVec]
-    simp only [A, LinearMap.coe_mk, AddHom.coe_mk, dif_pos i.2]
+    simp only [A, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left i.2]
 
 end MhlSurj
 
@@ -741,7 +741,7 @@ theorem mhl_surj (ST SG : Finset (Pl E)) (hov : IsOver v Pb) (hov2 : ∀ Q : Pl 
     have hbe : (decoRaw ∅ {Pb} X).be ⟨Pb, Finset.mem_singleton_self Pb⟩ z = 0 := by
       show (open Classical in if z ∈ localization₂ Pb.asIdeal (Formalism.UG.CS.globLat X (stdLat E n))
         then fun i => redA Pb (pullV X z i) else 0) = 0
-      rw [if_pos hloc]
+      rw [ite_eq_left hloc]
       funext i
       exact congrFun hz0 i
     have hPbN := hOk.be_ker ⟨Pb, Finset.mem_singleton_self Pb⟩ z hz hbe

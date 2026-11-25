@@ -109,7 +109,8 @@ theorem isPrimitive_inv {N : ℕ} {χ : DirichletCharacter ℂ N} (h : χ.IsPrim
 theorem zero_symm {N : ℕ} [NeZero N] {χ : DirichletCharacter ℂ N} (hχ : χ.IsPrimitive) {ρ : ℂ}
     (h0 : 0 < ρ.re) (h1 : ρ.re < 1) (hz : DirichletCharacter.LFunction χ ρ = 0) :
     DirichletCharacter.LFunction χ⁻¹ (1 - ρ) = 0 := by
-  apply _root_.Claim.prim_reflect <;> assumption
+  have hne : ρ ≠ 1 := fun e => by rw [e, Complex.one_re] at h1; exact lt_irrefl _ h1
+  exact _root_.Claim.prim_reflect χ hχ h0 hne hz
 
 
 def GoodAll (Q : ℝ) (f : ℕ → ℂ) (M : ℕ) : Prop :=

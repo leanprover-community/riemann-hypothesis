@@ -66,7 +66,7 @@ theorem dual_le_span (F : HermLattice K i) :
   have e1 : x = ∑ j, a j • (Pi.single j (algebraMap (𝓞 K) K e)⁻¹ : Fin i → K) := by
     ext l
     simp only [Finset.sum_apply, Pi.smul_apply, Pi.single_apply, smul_ite, smul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact (ha l).symm
   rw [e1]
   exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
@@ -130,7 +130,7 @@ theorem DualLatticeModPrime.proof : DualLatticeModPrime.Statement := by
       set_option synthInstance.maxHeartbeats 100000 in
         simp only [x, map_sum, map_smul, Module.Basis.repr_self, Finsupp.coe_finsetSum, Finset.sum_apply,
         Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     obtain ⟨s, hs, hsx⟩ := exists_smul_mem 𝔭 D x.2
     have hs0 : Ideal.Quotient.mk 𝔭 s ≠ 0 := fun h => hs (Ideal.Quotient.eq_zero_iff_mem.mp h)
     obtain ⟨c, hc⟩ := Ideal.Quotient.exists_inv hs0

@@ -16,7 +16,7 @@ theorem UpperTheory.V.Loc.prF :
   obtain ⟨hfin, -, h1, h2⟩ := UpperTheory.V.Loc.tateRat (v := l) (l := l) hP φ hφ ρ hc
   have hB := (UpperTheory.V.Loc.z1fMap φ ρ ρ).1 hc
   rw [hd, finrank_bot] at h2
-  rw [h0, finrank_bot, h2, if_pos rfl, zero_add, zero_add] at h1
+  rw [h0, finrank_bot, h2, ite_eq_left rfl, zero_add, zero_add] at h1
   have htop : finiteCohomology φ ρ = ⊤ := Submodule.eq_top_of_finrank_eq (hf.trans h1.symm)
   refine le_antisymm (fun c hc' => hc'.1) (fun c hc' => ?_)
   have hm : (Submodule.mkQ _ (⟨c, hc'⟩ : ↥(ReciprocityTheory.Gal.Z1 ρ)) : ReciprocityTheory.Gal.H1 ρ) ∈ finiteCohomology φ ρ := by

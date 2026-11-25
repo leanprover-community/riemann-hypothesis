@@ -16,14 +16,6 @@ namespace Formalism.MainNotions.TheoremBConstants
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates Formalism.MainNotions.BesselShellMomentBounds
 
-section PieceA1
-
-end PieceA1
-
-section PieceA2
-
-end PieceA2
-
 section PieceA3
 
 def PieriShellBound (D : D7) (Ch Cg Cq C1 CA CQ : ℝ) : Prop :=
@@ -49,18 +41,6 @@ def PieriShellBound (D : D7) (Ch Cg Cq C1 CA CQ : ℝ) : Prop :=
 
 end PieceA3
 
-section PieceA4
-
-open Formalism.HermitianLatticeCounting.ExpansionTerms
-
-section Geo
-
-variable {k r : ℕ}
-
-end Geo
-
-end PieceA4
-
 section PieceB1
 
 def FrC (D : D7) (Cf ka : ℝ) : ℝ :=
@@ -74,27 +54,6 @@ def GapFr (D : D7) (Cgf : ℝ) (ε : Fin (2 * D.R.rS + D.R.k + 1) → Bool) (lam
       (((3 * (D.R.rS + 1) : ℕ) : ℝ) * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 + ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 3))
 
 end PieceB1
-
-section PieceB2
-
-section HS
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-end HS
-
-section Loc
-
-variable {k r : ℕ}
-
-end Loc
-
-end PieceB2
-
-section PieceB3
-
-end PieceB3
 
 section PieceB4
 
@@ -577,23 +536,17 @@ end PieceB8
 
 section PieceB9
 
-section Gen
-
-variable {n : ℕ}
-
-end Gen
-
 theorem epsSH_both (D : D7) : ∃ a b : Fin (2 * D.R.rS + D.R.k + 1), epsSH D.R a ≠ epsSH D.R b := by
   have hk := Ranks.k_ge D.R
   refine ⟨⟨0, by omega⟩, ⟨D.R.k, by omega⟩, ?_⟩
   have h1 : epsSH D.R ⟨0, by omega⟩ = true := by
     unfold epsSH epsS
     simp only [Fin.val_cast]
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
   have h2 : epsSH D.R ⟨D.R.k, by omega⟩ = false := by
     unfold epsSH epsS
     simp only [Fin.val_cast]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     have : D.R.k - (D.R.k - 1) = 1 := by omega
     simp [this]
   rw [h1, h2]
@@ -613,13 +566,5 @@ theorem lam_eq_of_dist0 (D : D7) {Ch Cg : ℝ} {T T' : ℕ} {b : ℝ} (X : BData
       (fun i _ => abs_nonneg _) (Finset.mem_univ a)) h))
 
 end PieceB10
-
-section PieceB11
-
-end PieceB11
-
-section PieceB12
-
-end PieceB12
 
 end Formalism.MainNotions.TheoremBConstants

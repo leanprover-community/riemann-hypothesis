@@ -346,8 +346,7 @@ theorem op_mem (hJ : NG.HypOutside J χ B) (hs : s.v ∉ B) (hϖ : ∃ ϖ : s.v.
   obtain ⟨S, hS⟩ := exists_sum (W := W) (emb s n) (comm_KL s) (dosetInd_mem s d)
   obtain ⟨N, hN0, hN⟩ := hN
   refine ⟨⟨fun γ g => ?_, N, hN0, fun κ hκ g => ?_⟩, fun κ => funext fun g => op_equiv hJ hs hϖ hf d κ g⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-    rw [hS, hS, map_sum]
+  · rw [hS, hS, map_sum]
     exact Finset.sum_congr rfl fun c _ => by rw [mul_assoc, hf.1.1, map_smul]
   · obtain ⟨hm, h1⟩ := hN κ hκ
     have := op_equiv hJ hs hϖ hf d ⟨κ, hm⟩ g
@@ -386,12 +385,6 @@ theorem tSet_same (s s' : SplitPlace L) (hv : s'.v = s.v) {ϖ' : s'.v.adicComple
       emb_loc s (emb_triv s' _)]
 
 end Same
-
-section Int
-
-variable {R : Type} [CommRing R] [Algebra R ℂ]
-
-end Int
 
 end CompanionTheory.L3H
 end -- clump:auto

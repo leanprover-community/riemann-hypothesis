@@ -96,13 +96,8 @@ theorem lq_open (hQ : QOpen q) : IsOpen {x : UAd hc n | (x : GL (Fin n) 𝒜) �
     rw [hc', ← map_mul, mul_inv_cancel₀ ha0', map_one]
   let W : Set (GL (Fin n) 𝒜) := {u | ∀ i j, c * ((u : Matrix (Fin n) (Fin n) 𝒜) i j - (1 : Matrix (Fin n) (Fin n) 𝒜) i j) ∈
     Formalism.L2.Herm.intAf F E}
-  have hWo : IsOpen W := by
-    have : W = ⋂ i, ⋂ j, (fun u : GL (Fin n) 𝒜 => c * ((u : Matrix (Fin n) (Fin n) 𝒜) i j - (1 : Matrix (Fin n) (Fin n) 𝒜) i j)) ⁻¹'
-        (Formalism.L2.Herm.intAf F E : Set 𝒜) := by
-      ext u; simp [W]
-    rw [this]
-    refine isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun j => rlt_isOpen_intAf.preimage ?_
-    exact continuous_const.mul ((Units.continuous_val.matrix_elem i j).sub continuous_const)
+  have hWo : IsOpen W := rlt_isOpen_intAf.matrix.preimage
+    ((Units.continuous_val.sub continuous_const).const_smul c)
   have hW1 : (1 : GL (Fin n) 𝒜) ∈ W := by
     intro i j
     simp
@@ -136,13 +131,8 @@ theorem lq_compact (hQ : QOpen q) : IsCompact (levUQ hc n ST SG Q H q : Set (GL 
     Subgroup.isClosed_of_isOpen _ (lq_open q H hQ)
   have hUA : levUQ hc n ST SG Q H q ≤ UAd hc n := (levUQ_le q H).trans (levU_le_UAd hc n ST SG H)
   have himg : (levUQ hc n ST SG Q H q : Set (GL (Fin n) 𝒜)) =
-      Subtype.val '' (((levUQ hc n ST SG Q H q).subgroupOf (UAd hc n) : Subgroup (UAd hc n)) : Set (UAd hc n)) := by
-    ext u
-    constructor
-    · intro hu
-      exact ⟨⟨u, hUA hu⟩, hu, rfl⟩
-    · rintro ⟨x, hx, rfl⟩
-      exact hx
+      Subtype.val '' (((levUQ hc n ST SG Q H q).subgroupOf (UAd hc n) : Subgroup (UAd hc n)) : Set (UAd hc n)) :=
+    (Set.image_preimage_eq_of_subset fun u hu => ⟨⟨u, hUA hu⟩, rfl⟩).symm
   have hclosed : IsClosed (levUQ hc n ST SG Q H q : Set (GL (Fin n) 𝒜)) := by
     rw [himg]
     exact (rlt_isClosed_UAd hc n).isClosedEmbedding_subtypeVal.isClosedMap _ hcl

@@ -579,7 +579,7 @@ theorem AuxiliaryNormPrimes.partial_trace_of_frames (D : D7) (large₂ : SizeDat
           gcongr
   exact (ENNReal.mul_le_mul_iff_right (by simpa using hK₁) ENNReal.ofReal_ne_top).1 step
 
-theorem ptArith {b m Ca Cf Cb Cβ C x : ℝ} (hb : 1 ≤ b) (hm : 1 ≤ m) (hCa : 0 ≤ Ca) (hCf : 0 ≤ Cf) (_hCb : 0 ≤ Cb)
+theorem ptArith {b m Ca Cf Cb Cβ C x : ℝ} (hb : 1 ≤ b) (hm : 1 ≤ m) (hCa : 0 ≤ Ca) (hCf : 0 ≤ Cf)
     (hβ : 0 ≤ Cβ) (hC1 : Ca + Cβ * (Cf + Cb + Cf * Cb) ≤ C) (hC2 : Cb ≤ C) (hx : 1 ≤ x) :
     b ^ (Ca * m ^ 2) * ((b ^ Cβ) ^ (Cf * m ^ 2) * ((b ^ Cβ) ^ (Cb * m ^ 4) *
       ((b ^ Cβ) ^ (Cf * m ^ 2) * x) ^ (Cb * m ^ 2))) ≤ b ^ (C * m ^ 4) * x ^ (C * m ^ 2) := by
@@ -620,7 +620,7 @@ theorem AuxiliaryNormPrimes.plancherelBoundOneParameter_of_uniformity (D : D7) (
     unfold Scale.b
     exact Real.one_le_exp (Real.rpow_nonneg (le_of_lt (lt_trans zero_lt_one large₂.sc.one_lt_alt)) _)
   have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast le_trans (by norm_num) D.R.two_le_m
-  exact ptArith hb hm hCa hCf hCb (by linarith) hC1 hC2 hx
+  exact ptArith hb hm hCa hCf (by linarith) hC1 hC2 hx
 
 theorem one_le_b_of_StdHyp {Ch Cg : ℝ} {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ}
     {u u' : Fin k → ℝ} {T T' ka b : ℝ} (hCh : 0 < Ch) (h : StdHyp Ch Cg k r ε lam u u' T T' ka b) : 1 ≤ b := by

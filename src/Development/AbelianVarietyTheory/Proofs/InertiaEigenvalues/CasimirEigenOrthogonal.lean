@@ -18,7 +18,7 @@ variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyCompl
 open Classical in
 def cls (x : Sm E N) : L2 (latticeGL E N) μ := if hx : x ∈ W then toL2ₗ μ W h ⟨x, hx⟩ else 0
 
-theorem cls_mk {x : Sm E N} (hx : x ∈ W) : cls h x = toL2ₗ μ W h ⟨x, hx⟩ := dif_pos hx
+theorem cls_mk {x : Sm E N} (hx : x ∈ W) : cls h x = toL2ₗ μ W h ⟨x, hx⟩ := dite_eq_left hx
 
 theorem cls_add {x y : Sm E N} (hx : x ∈ W) (hy : y ∈ W) : cls h (x + y) = cls h x + cls h y := by
   rw [cls_mk h (W.add_mem hx hy), cls_mk h hx, cls_mk h hy, ← map_add (f := _)]; rfl

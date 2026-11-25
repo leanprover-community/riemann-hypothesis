@@ -530,7 +530,7 @@ theorem rootCoord_one (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS) :
   rw [Matrix.one_mulVec]
   split_ifs with h
   · show hJ _ (rv X.B.I v (X.crd (X.fY a))) (rv X.B.I v (X.crd (X.eX ⟨a.1 + 1, h⟩))) = 0
-    rw [Formalism.L2.SG.PoincareInHH.Cut.hJ_crd, Formalism.L2.SG.PoincareInHH.Cut.hT_f_e, if_neg, map_zero]
+    rw [Formalism.L2.SG.PoincareInHH.Cut.hJ_crd, Formalism.L2.SG.PoincareInHH.Cut.hT_f_e, ite_eq_right, map_zero]
     exact fun hc => Nat.succ_ne_self a.1 (congrArg Fin.val hc)
   · show hJ _ (rv X.B.I v (X.crd (X.fY a))) (rv X.B.I v (X.crd (X.zu u))) = 0
     rw [Formalism.L2.SG.PoincareInHH.Cut.hJ_crd, (X.zu_orth u a).2, map_zero]
@@ -979,9 +979,3 @@ theorem locReprodStep_of (hS : LocScalarStep) : LocReprodStep := by
   exact fun xv => ⟨(hc xv).1, by rw [(hc xv).2, h1, one_smul]⟩
 
 end Formalism.L2.SG.Pf.WuDec
-
-namespace Formalism.L2.SG.Pf
-
-open Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.Pf.WuDec
-
-end Formalism.L2.SG.Pf

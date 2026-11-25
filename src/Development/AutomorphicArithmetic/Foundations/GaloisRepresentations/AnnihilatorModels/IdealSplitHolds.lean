@@ -1083,7 +1083,6 @@ open GlobalTheory.IwLevel (InSub IsIsogDeg)
 open GlobalTheory.AbDual (IsAdditive swap)
 open UpperTheory.Gal.crystallineComparison UpperTheory.Gal.crystallineComparison.Mod
 
-set_option backward.isDefEq.respectTransparency.types false in
 private noncomputable def powSuccIso {S : Scheme.{0}} (A : Over S) (k : ℕ) :
     GlobalTheory.KS.pow A (k + 1) ≅ A ⨯ GlobalTheory.KS.pow A k :=
   let f : GlobalTheory.KS.pow A (k + 1) ⟶ A := Pi.π _ 0
@@ -1344,7 +1343,7 @@ theorem UpperTheory.Gal.crystallineComparison.Mod.quasiInv_of :
   have hgψ : ψ ≫ g.hom = 𝟙 o.A ^ c := by
     rw [← hfhom, ← hg]
     rfl
-  haveI : Flat (Over.Hom.left ψ) := (GlobalTheory.T.dim_eq_flat_finrank_eq_deg_of_isIsogeny κ Av Av' q hq).2.1
+  haveI : Flat (Over.Hom.left ψ) := (GlobalTheory.AV.AbVar.isogeny_flat_finrank κ Av Av' q hq).2.1
   haveI : Surjective (Over.Hom.left ψ) := hsur
   haveI : Epi (Over.Hom.left ψ) := Flat.epi_of_flat_of_surjective _
   refine ⟨g.hom, hgm, hgψ, ?_⟩

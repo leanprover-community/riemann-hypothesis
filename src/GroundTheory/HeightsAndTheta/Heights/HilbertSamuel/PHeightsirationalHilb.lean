@@ -167,7 +167,7 @@ theorem BlockBirationalHilbert.proof (hV : HilbFnValueSpan.Statement) : BlockBir
         (isMultiHomog_prod _ _ (fun a => blockDeg k₀ (c a.1 a.2)) fun a _ => hh a.1 a.2) ?_, ?_⟩
     · funext k
       by_cases hk : k = k₀
-      · simp only [Pi.add_apply, Finset.sum_apply, blockDeg, hk, if_true]
+      · simp only [Pi.add_apply, Finset.sum_apply, blockDeg, hk, ite_true]
         rw [← Finset.add_sum_erase _ _ hmem]
         ring
       · simp [blockDeg, hk, Finset.sum_apply]

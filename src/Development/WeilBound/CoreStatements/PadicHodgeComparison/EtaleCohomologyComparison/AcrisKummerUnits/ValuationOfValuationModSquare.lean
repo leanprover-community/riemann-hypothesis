@@ -7,8 +7,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry GroundTheory.PAdicHodge
@@ -34,7 +32,7 @@ theorem valuation_of_valuation_mod_square (ϖ : S) [IsAdicComplete (Ideal.span {
 theorem aic_of_mod (ϖ : S) [IsAdicComplete (Ideal.span {ϖ}) S] (h0 : ϖ ∈ nonZeroDivisors S) (hv : Val ϖ)
     (h : Aic (S ⧸ Ideal.span {ϖ ^ 2})) : Aic S := by
   refine _root_.GlobalTheory.CompanionTheory.AicLimit.aic_of_step ϖ (RL.step_glob ϖ fun m hm => ?_) (_root_.GlobalTheory.CompanionTheory.ValPowDvd.dvd_of_pow_mul_dvd_pow ϖ h0 hv)
-  refine RL.step_comp _ (mk_mem_jacobson (mem_jacobson_of_complete ϖ) _) ((RL.dich_comp ϖ m hm.isPrime).2 h0)
+  refine GlobalTheory.CompanionTheory.NewtonStep.step_comp _ (mk_mem_jacobson (mem_jacobson_of_complete ϖ) _) ((RL.dich_comp ϖ m hm.isPrime).2 h0)
     ((RL.dich_comp ϖ m hm.isPrime).1 hv) ((_root_.GlobalTheory.CompanionTheory.SurjPass.absolutely_closed_comparable_surjective (Ideal.quotientMap _ (Ideal.Quotient.mk (compI m)) ?_) ?_).1 h)
   · rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_comap, map_pow]
     exact Ideal.mem_span_singleton_self _

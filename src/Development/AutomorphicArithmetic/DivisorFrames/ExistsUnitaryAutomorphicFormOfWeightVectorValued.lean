@@ -182,7 +182,7 @@ theorem UpperTheory.exists_admissible_equivariantFormsRep :
       rw [Submodule.coe_sum, LinearMap.sum_apply]
       refine Finset.sum_congr rfl fun i hi => ?_
       rw [eqRep_apply]
-      simp only [y', dif_pos (hy i hi)]
+      simp only [y', dite_eq_left (hy i hi)]
     have h2 := hsum κ s y' c (Subtype.ext (LinearMap.ext fun v => (hy' _ v).trans (h v)))
     exact (hy' f' v).symm.trans (LinearMap.congr_fun (congrArg Subtype.val h2) v)
 end -- clump:auto

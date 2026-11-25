@@ -39,7 +39,7 @@ theorem coeff_mem_of_eval {σ : Type*} (U : Submodule ℂ (MvPolynomial σ ℂ))
       (Set.infinite_of_injective_forall_mem Nat.cast_injective (fun n => hroot n))
     have hc := congrArg (fun r => _root_.AddMonoidAlgebra.coeff (M := ℕ) r k) hq0
     simp only [hq, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_zero,
-      Finset.sum_ite_eq, Finset.mem_range, Nat.lt_succ_iff.mpr hk, if_true] at hc
+      Finset.sum_ite_eq, Finset.mem_range, Nat.lt_succ_iff.mpr hk, ite_true] at hc
     simpa using hc
   · rw [Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)]
     simp
@@ -53,7 +53,7 @@ private theorem eval_rowGen_X_eq_rowAct_one_add_single {N n : ℕ} (a b : Fin N)
     simp only [Matrix.add_apply, Matrix.one_apply, Matrix.single_apply, ite_and]
     split_ifs <;> subst_vars <;> simp_all [add_mul]
   simp only [rowGen, rowAct, MvPolynomial.aeval_X, hterm, Finset.sum_add_distrib, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   by_cases h : i = b
   · simp [h]
     ring
@@ -78,7 +78,7 @@ theorem det_one_add_single_ne {N : ℕ} (a b : Fin N) (n : ℕ) :
       ext i j
       simp only [Matrix.add_apply, Matrix.one_apply, Matrix.single_apply, Matrix.diagonal_apply, ite_and]
       split_ifs <;> subst_vars <;> simp_all
-    rw [hd, Matrix.det_diagonal, Finset.prod_ite_eq', if_pos (Finset.mem_univ a)]
+    rw [hd, Matrix.det_diagonal, Finset.prod_ite_eq', ite_eq_left (Finset.mem_univ a)]
     have h1 : ((n : ℂ) + 1) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
     rwa [add_comm] at h1
   · rw [show (1 + Matrix.single a b (n : ℂ)) = Matrix.transvection a b (n : ℂ) from rfl,
@@ -143,7 +143,7 @@ theorem fixed_vectors_killed : FixedKilledC := by
       · exact absurd (h.1.trans h.2.symm) hne
       · simp
   have h4 := coeff_mem_of_eval ⊥ _ key k
-  rw [Submodule.mem_bot, Polynomial.coeff_sub, Polynomial.coeff_C, if_neg (by omega), sub_zero] at h4
+  rw [Submodule.mem_bot, Polynomial.coeff_sub, Polynomial.coeff_C, ite_eq_right (by omega), sub_zero] at h4
   exact h4
 
 end PI.WHw

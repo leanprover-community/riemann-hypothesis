@@ -177,7 +177,7 @@ theorem clampT_le {T : ℝ} (t : ℝ) : clampT T t ≤ T := by
   · exact le_rfl
 
 theorem clampT_eq {T t : ℝ} (h0 : 0 < t) (h1 : t ≤ T) : clampT T t = t := by
-  unfold clampT; rw [if_pos ⟨h0, h1⟩]
+  unfold clampT; rw [ite_eq_left ⟨h0, h1⟩]
 
 def avgSys {e : ℕ} {σ : Type} (S : AnSys e σ) (c : S.X → S.X) (C T : ℝ)
     (hreg : ∀ a, IsRegFamily S.A S.Θ S.L S.s (S.th a) (S.ph a)

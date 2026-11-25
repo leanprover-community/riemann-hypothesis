@@ -84,32 +84,9 @@ variable {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] {n : ℕ
 
 theorem qdet_map (f : A →ₐ[ℂ] B) (E : Fin n → Fin n → A) (u : ℂ) :
     Formalism.REAL.qdet (fun a b => f (E a b)) u = f (Formalism.REAL.qdet E u) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [Formalism.REAL.qdet, Formalism.REAL.qminor, Formalism.REAL.Tm, map_sum, map_mul, map_intCast, map_list_prod,
     List.map_ofFn, Function.comp_def, map_add, AlgHom.commutes, apply_ite f, map_zero]
 
 end Transport
-
-end GlobalTheory.CapelliUniv
-
-namespace GlobalTheory.CapelliUniv
-
-open Formalism.REAL GlobalTheory.SmoothForms
-
-end GlobalTheory.CapelliUniv
-
-namespace GlobalTheory.CapelliUniv
-
-open Formalism.REAL GlobalTheory.SmoothForms
-
-attribute [local instance] LieRing.ofAssociativeRing LieAlgebra.ofAssociativeAlgebra
-
-end GlobalTheory.CapelliUniv
-
-namespace GlobalTheory.CapelliUniv
-
-open Formalism.REAL GlobalTheory.SmoothForms
-
-attribute [local instance] LieRing.ofAssociativeRing LieAlgebra.ofAssociativeAlgebra
 
 end GlobalTheory.CapelliUniv

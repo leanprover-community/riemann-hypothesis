@@ -944,7 +944,7 @@ theorem lin_normal (K : ℕ) (M : ℕ → Matrix m m F) (h : Normal (K + 1) M) :
   · intro n hn r c
     have h0 : n ≠ 0 := by omega
     have h1 : n ≠ 1 := by omega
-    simp only [lin, h0, h1, if_false]
+    simp only [lin, h0, h1, ite_false]
     split_ifs
     · exact h.small _ (by omega) _ _
     · simp

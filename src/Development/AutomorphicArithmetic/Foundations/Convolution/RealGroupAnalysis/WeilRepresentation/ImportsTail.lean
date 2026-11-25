@@ -161,7 +161,7 @@ theorem UpperTheory.ConvolutionTheory.R2.H.stdAe :
       rw [cosetIndicator_apply] at hi
       have hm : (x i).2 - b i ∈ idealFiniteAdeles J := by
         by_contra hc
-        exact hi (if_neg hc)
+        exact hi (ite_eq_right hc)
       have hv := (mem_idealFiniteAdeles J).1 hm v
       rw [hJ, neg_zero, WithZero.exp_zero] at hv
       have e : (x i).2 v = ((x i).2 - b i) v + (b i) v := by
@@ -1137,7 +1137,7 @@ theorem UpperTheory.ConvolutionTheory.R2.H.unrInert :
     have h3 := hin.norm
     rw [e] at h3
     nlinarith
-  rw [if_neg hn] at hval
+  rw [ite_eq_right hn] at hval
   obtain ⟨α, β, rfl⟩ := Multiset.card_eq_two.1 (GlobalTheory.LFun.HasSatGL.card hB)
   obtain ⟨α', β', rfl⟩ := Multiset.card_eq_two.1 (GlobalTheory.LFun.HasSatGL.card hB')
   obtain ⟨p, hp⟩ : ∃ p, Formalism.UG.IsUnifV F v p := v.valuedAdicCompletion_surjective F _

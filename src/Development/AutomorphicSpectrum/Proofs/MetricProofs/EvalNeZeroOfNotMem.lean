@@ -43,7 +43,7 @@ theorem dy_eq_zero {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι 
     {y : (Σ k, ι k) → Φ} {Ψ : Type} {N j : ℕ} (M : FlagModel y Ψ N j) {p : Ψ × Fin N} (h : (p.2 : ℕ) + 1 = N)
     {k : K} (hk : ¬ ∀ p', M.blk p' ≠ some k) : M.dy p k = 0 := by
   unfold FlagModel.dy
-  rw [dif_neg hk, blk_none_of_top M h]
+  rw [dite_eq_right hk, blk_none_of_top M h]
   simp
 
 theorem gramLog_top {N : ℕ} (j : ℕ) (g : Matrix (Fin N) (Fin N) ℂ) :
@@ -81,7 +81,7 @@ theorem stepPot_top {N : ℕ} {j : ℕ} (hj : j ≤ N) (i : Fin N) (h : (i : ℕ
 
 theorem minorIJ_one_self {N : ℕ} (S : Finset (Fin N)) : minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) S S = 1 := by
   unfold minorIJ
-  rw [dif_pos rfl, Matrix.submatrix_one _ (S.orderEmbOfFin rfl).injective, Matrix.det_one]
+  rw [dite_eq_left rfl, Matrix.submatrix_one _ (S.orderEmbOfFin rfl).injective, Matrix.det_one]
 
 theorem detFac_one {N : ℕ} (j : ℕ) (i : Fin N) : detFac j i (1 : Matrix (Fin N) (Fin N) ℂ) = 1 := by
   unfold detFac
@@ -269,7 +269,7 @@ theorem log_hom_eq {M : FlagModel y Ψ N j} {n : ℕ} (BM : BaseMetric M n) {p :
     refine sameOrbit_trans ⟨fun k => t k.1, fun k => ht0 _, rfl⟩ ho
   have hone : ∀ k, basePart M.blk z' ⟨k, (BM.F l).c k⟩ = 1 := by
     intro k
-    have e : cz M (BM.F l) z k.1 = z ⟨k.1, (BM.F l).c k⟩ := dif_pos k.2
+    have e : cz M (BM.F l) z k.1 = z ⟨k.1, (BM.F l).c k⟩ := dite_eq_left k.2
     show t k.1 * z ⟨k.1, (BM.F l).c k⟩ = 1
     rw [ht]
     simp only
@@ -385,12 +385,12 @@ theorem local_log_norm {M : FlagModel y Ψ N j} {n : ℕ} (BM : BaseMetric M n) 
     by_cases h : ∀ p', M.blk p' ≠ some k
     · have e : ℓ k ∘ (R.A.chart c).symm = (fun t => R.lift x₀ t (w ⟨k, h⟩)) ∘ (R.A.chart c).symm := by
         funext t
-        simp only [ℓ, Function.comp_apply, dif_pos h]
+        simp only [ℓ, Function.comp_apply, dite_eq_left h]
       rw [e]
       exact hE ⟨k, h⟩ c u ⟨hu.1, hu.2.1.1⟩
     · have e : ℓ k ∘ (R.A.chart c).symm = fun _ => 1 := by
         funext t
-        simp only [ℓ, Function.comp_apply, dif_neg h]
+        simp only [ℓ, Function.comp_apply, dite_eq_right h]
       rw [e]
       exact analyticAt_const
   have hfH : R.A.HoloOn W fun t => f (pr t) :=

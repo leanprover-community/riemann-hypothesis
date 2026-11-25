@@ -47,53 +47,12 @@ public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.Growt
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaRunParametersAtTypePrimesProduct
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.PageRows
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LocalFormOfWeakForm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsNullVal
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.ProjectiveLattices.PhiSetPullSub
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -112,13 +71,10 @@ open Formalism.MainNotions Formalism.BasicNotions NumberField IsDedekindDomain F
 
 variable {D : Formalism.BasicNotions.D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 
-theorem phiC_nonneg (X : WeightAlgebra.PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) (y : X.Pt la) : 0 ≤ X.phiC la y := by
-  apply Formalism.MainNotions.Gaps.T0.phiC_nonneg
-
 theorem mem_Mlat (X : WeightAlgebra.PJ D B P j) (i : ℕ) (η : B.Cusp j (Formalism.L2.Pj.wEt D j i)) (h : EtVal X i η) :
     η ∈ B.Mlat j _ := by
   refine (X.Mlat_eq _ η).2 fun la y => le_trans ?_ (h la y)
-  exact EReal.coe_nonneg.2 (mul_nonneg (by positivity) (phiC_nonneg X la y))
+  exact EReal.coe_nonneg.2 (mul_nonneg (by positivity) (Formalism.MainNotions.Gaps.T0.phiC_nonneg X la y))
 
 end GlobalTheory.EtaValuationTest
 end -- clump:auto
@@ -138,7 +94,7 @@ namespace GlobalTheory.EtaInt
 theorem etVal_integral :
     ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (i : ℕ) (η : (recB h.toLawsCore).Cusp j (wEt D j i)), (Formalism.MainNotions.ModuliIntegralCharts.H1.EtVal (recPJ h j hj) i η ↔ Formalism.L2.Pj.EtVal h j hj i η) ∧ (∀ la (y : (recPJ h j hj).Pt la), 0 ≤ (recPJ h j hj).phiC la y) ∧ (Formalism.L2.Pj.EtVal h j hj i η → IntAlg η.1 ∧ η ∈ (recB h.toLawsCore).Mlat j (wEt D j i)) := by
   intro D T h j hj i η
-  refine ⟨Iff.rfl, GlobalTheory.EtaValuationTest.phiC_nonneg _, fun hv => ?_⟩
+  refine ⟨Iff.rfl, Formalism.MainNotions.Gaps.T0.phiC_nonneg _, fun hv => ?_⟩
   have hm : η ∈ (recB h.toLawsCore).Mlat j (wEt D j i) :=
     GlobalTheory.EtaValuationTest.mem_Mlat (recPJ h j hj) i η hv
   refine ⟨?_, hm⟩
@@ -191,15 +147,6 @@ theorem vV_unit_mul_pow {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuatio
     ← WithZero.exp_nsmul, WithZero.log_exp]
   simp
 
-theorem norm_map_unit {V F : Type} [CommRing V] [NormedField F] (f : V →+* F) (hf : ∀ a, ‖f a‖ ≤ 1)
-    (u : Vˣ) : ‖f u‖ = 1 := by
-  have h : ‖f u‖ * ‖f (u⁻¹ : Vˣ)‖ = 1 := by
-    rw [← norm_mul, ← map_mul, Units.mul_inv, map_one, norm_one]
-  refine le_antisymm (hf _) ?_
-  calc (1 : ℝ) = ‖f u‖ * ‖f (u⁻¹ : Vˣ)‖ := h.symm
-    _ ≤ ‖f u‖ * 1 := mul_le_mul_of_nonneg_left (hf _) (norm_nonneg _)
-    _ = ‖f u‖ := _root_.mul_one _
-
 theorem logb_norm_uniformiser : ∀ (K : Type) [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) (T : CDVR) (io : K →+* T.Fr) (e : ℕ), OverLa la T.V io e → ∀ (ϖ : T.V), Irreducible ϖ → ∀ (C : SCF (Formalism.MainNotions.WeightAlgebra.resCh la)) (f : T.V →+* ↥C.S), (∀ a, ‖f a‖ ≤ 1) → -Real.logb (Formalism.MainNotions.WeightAlgebra.resCh la) ‖f ϖ‖ * ((e : ℝ) * Formalism.BasicNotions.eWL K la) = 1 ∧ 0 < Formalism.BasicNotions.eWL K la := by
   intro K _ _ la T io e ho ϖ hϖ C f hf
   have hE := Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.eWL_eq la
@@ -215,7 +162,7 @@ theorem logb_norm_uniformiser : ∀ (K : Type) [Field K] [NumberField K] (la : H
   rw [← hu, map_natCast, ← map_natCast io, ho.2, hv] at h1
   have h2 : ((e : ℝ) * E) = n := by exact_mod_cast h1
   have h3 : ‖f ϖ‖ ^ n = ((Formalism.MainNotions.WeightAlgebra.resCh la : ℕ) : ℝ)⁻¹ := by
-    rw [← hn, ← map_natCast f, hu, map_mul, norm_mul, norm_map_unit f hf u, _root_.one_mul, map_pow, norm_pow]
+    rw [← hn, ← map_natCast f, hu, map_mul, norm_mul, GlobalTheory.PeriodBalance.norm_unit f hf u, _root_.one_mul, map_pow, norm_pow]
   have hp1 : (1 : ℝ) < ((Formalism.MainNotions.WeightAlgebra.resCh la : ℕ) : ℝ) := by exact_mod_cast hp.one_lt
   have h4 := congrArg (Real.logb (Formalism.MainNotions.WeightAlgebra.resCh la)) h3
   rw [Real.logb_pow, Real.logb_inv, Real.logb_self_eq_one hp1] at h4
@@ -358,7 +305,7 @@ theorem recPJ_phiC {D : D7} {T : Top D} (h : LawsP T) {j : ℕ} (hj : InR D j) (
     (recPJ h j hj).phiC la y =
       (eWL T.Q.c.F la : ℝ) * (T.G.P.loc (T.G.dat j) (WeightAlgebra.resCh la)).phiCy (imgV y) := by
   unfold WeightAlgebra.PJ.phiC
-  rw [if_pos h2]
+  rw [ite_eq_left h2]
   rfl
 
 theorem etVal_of_isEtaRule : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (h1 : 1 ≤ j) (h2 : j < D.R.m) (i : ℕ) (η : (recB h.toLawsCore).Cusp j (wEt D j i)) (J : Type) [Fintype J] (n : ℕ) (cf : J → ℤ) (xs : J → Fin n → LatMod (T.Q.Dw j) (5 ^ 4)), Nat.card (LevGrp (T.Q.Dw j) (5 ^ 4)) = 2 * 5 ^ 4 * i → Spans xs → IsEtaRule (T.Q.Xo j) T.Q.c 5 cf xs η.1 → EtVal h j ⟨h1, h2.le⟩ i η := by
@@ -429,7 +376,7 @@ theorem exists_form_four_clauses (D : D7) (T : Top D) (h : LawsP T) (DF q : ℕ)
         supC (T.Q.Xo j) T.Q.c (T.U j) (xiR D) (goodOf T.Q.c σ) 0 (2 * 5 ^ 4 * D.R.r * i) f := by
       change cutN T.C T.Ns j (wEt D j i) σ ⟨f, hmem⟩ = _
       unfold cutN
-      rw [if_pos hj]
+      rw [ite_eq_left hj]
       unfold Core.Ns
       rw [hw, hn]
     have hs0 := (recB h.toLawsCore).supN_nonneg j _ σ ⟨f, hmem⟩
@@ -642,9 +589,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons Formalism.MainNotions.Gaps Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.RunJoin
 
 namespace GlobalTheory.EtaBoundForm
-
-
-
 
 theorem exists_etaOK : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CT : ℝ) (ka wL wF : WeightFamilies.Wt D j) (Tn nP nW : ℕ) (h0 : ℝ), PageOK large₂ (recPJ h j hj) H C2 A2 CT ka wL wF Tn nP nW h0 → j < D.R.m → ∃ (i : ℕ) (et : (recB h.toLawsCore).Cusp j (etWt D j i)), EtaOK h j hj large₂ wL i et := by
   intro D T h j hj large₂ H C2 A2 CT ka wL wF Tn nP nW h0 hP hjm

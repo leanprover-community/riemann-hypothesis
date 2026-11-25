@@ -525,16 +525,6 @@ open Formalism.MainNotions.DIV.Cons (intO)
 
 namespace GlobalTheory.FlagEmb.CellClosed
 
-theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp only [spMap, ← Spec.map_comp]
-  rfl
-
-theorem sp_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g := by
-  have e := Spec.map_injective h
-  ext a
-  exact congrArg (fun t => t.hom a) e
-
 theorem unit_of_pt_eq {O A : Type} [CommRing O] [CommRing A] {N : ℕ} {b b' : O →+* A} {v v' : Fin (N + 1) → A} {hv hv'}
     (h : pt b v hv = pt b' v' hv') : ∃ u : Aˣ, v' = u • v := by
   have pt_str : ∀ (c : O →+* A) (v : Fin (N + 1) → A) (hv : Ideal.span (Set.range v) = ⊤),
@@ -544,7 +534,7 @@ theorem unit_of_pt_eq {O A : Type} [CommRing O] [CommRing A] {N : ℕ} {b b' : O
     congr 1
     ext1
     exact RingHom.ext fun r => MvPolynomial.eval₂Hom_C c v r
-  have hb : b = b' := sp_inj (by rw [← pt_str b v hv, ← pt_str b' v' hv', h])
+  have hb : b = b' := GlobalTheory.FullPoint.spMap_inj (by rw [← pt_str b v hv, ← pt_str b' v' hv', h])
   subst hb
   exact (pt_eq_pt_iff b hv hv').1 h
 
@@ -610,11 +600,11 @@ theorem over_inj {R : Type} [CommRing R] {φ φ' : Γ(X, U.1) →+* R}
     (e : spMap φ ≫ U.2.fromSpec = spMap φ' ≫ U.2.fromSpec) : φ = φ' := by
   have : IsOpenImmersion U.2.fromSpec := U.2.isOpenImmersion_fromSpec
   have : Mono U.2.fromSpec := IsOpenImmersion.mono _
-  exact sp_inj ((cancel_mono U.2.fromSpec).1 e)
+  exact GlobalTheory.FullPoint.spMap_inj ((cancel_mono U.2.fromSpec).1 e)
 
 theorem base_eq (hb : h ≫ p0 = cbase m U) {R : Type} [CommRing R] (ψ : CR m U →+* R) :
     (spMap ψ ≫ h) ≫ p0 = spMap (ψ.comp MvPolynomial.C) ≫ U.2.fromSpec := by
-  rw [Category.assoc, hb, cbase, ← Category.assoc, sp_comp]
+  rw [Category.assoc, hb, cbase, ← Category.assoc, GlobalTheory.spMap_comp_ring]
 
 theorem unit_of_eq (hp : ∀ en, ∃ hu, h ≫ p en = pt a (plk (uvec c w) en.2.1) hu) {R : Type} [CommRing R]
     (ψ : CR m U →+* R) (en : En m) {b : O →+* R} {v hv} (e : (spMap ψ ≫ h) ≫ p en = pt b v hv) :
@@ -747,8 +737,8 @@ theorem exists_lift (hD : LeftInv D c) (hb : h ≫ p0 = cbase m U)
   obtain ⟨φ0, hφ0⟩ := _root_.GlobalTheory.LevelFibre.exists_spMap (A := Γ(X, U.1)) (B := R) (IsOpenImmersion.lift U.2.fromSpec (z ≫ p0) hU)
   have hz0 : z ≫ p0 = spMap φ0 ≫ U.2.fromSpec := by rw [← hφ0, IsOpenImmersion.lift_fac]
   have hC : ψ.comp MvPolynomial.C = (algebraMap R K).comp φ0 :=
-    over_inj (by rw [← base_eq hb ψ, e, Category.assoc, hz0, ← Category.assoc, sp_comp])
-  have hk : φk = π.comp φ0 := over_inj (by rw [← hφk, Category.assoc, hz0, ← Category.assoc, sp_comp])
+    over_inj (by rw [← base_eq hb ψ, e, Category.assoc, hz0, ← Category.assoc, GlobalTheory.spMap_comp_ring])
+  have hk : φk = π.comp φ0 := over_inj (by rw [← hφk, Category.assoc, hz0, ← Category.assoc, GlobalTheory.spMap_comp_ring])
   obtain ⟨bO, hbO⟩ := _root_.GlobalTheory.LevelFibre.exists_spMap (A := O) (B := R) (z ≫ p0 ≫ s)
   have hpt : ∀ en, ∃ (v : Fin (plN M en.1 + 1) → R) (hv : Ideal.span (Set.range v) = ⊤), z ≫ p en = pt bO v hv :=
     fun en => exists_eq_pt bO (z ≫ p en) (by rw [Category.assoc, hs, hbO])
@@ -812,7 +802,7 @@ theorem exists_lift (hD : LeftInv D c) (hb : h ≫ p0 = cbase m U)
     exact Submodule.zero_mem _
   refine ext_of_isDominant_of_isSeparated (p0 ≫ s) ?_ (spMap (algebraMap R K)) ?_
   · rw [← Category.assoc, base_eq hb, MvPolynomial.eval₂Hom_comp_C, ← hz0, Category.assoc]
-  · rw [← Category.assoc, sp_comp, hχ, e]
+  · rw [← Category.assoc, GlobalTheory.spMap_comp_ring, hχ, e]
 
 theorem closed_of [Finite T] (hD : LeftInv D c) (hb : h ≫ p0 = cbase m U)
     (hp : ∀ en, ∃ hu, h ≫ p en = pt a (plk (uvec c w) en.2.1) hu) {W : P.Opens} (hW : IsCellOpen p0 p U D w W)
@@ -852,7 +842,7 @@ theorem closed_of [Finite T] (hD : LeftInv D c) (hb : h ≫ p0 = cbase m U)
     obtain ⟨χ, hχ₁, hχ₂⟩ := exists_lift hD hb hp hW hs _ hz ψ e
     refine CommSq.HasLift.mk' ⟨spMap χ, ?_, ?_⟩
     · change spMap (algebraMap S.R S.K) ≫ spMap χ = S.i₁
-      rw [sp_comp, hχ₁, hψ]
+      rw [GlobalTheory.spMap_comp_ring, hχ₁, hψ]
     · rw [← cancel_mono W.ι, Category.assoc, hfac, hχ₂]
   have : IsProper h' := IsProper.of_valuativeCriterion h' hV
   exact (IsClosedImmersion.iff_isProper_and_mono h').2 ⟨inferInstance, inferInstance⟩
@@ -915,7 +905,7 @@ theorem exists_lower_mul_upper (A : Matrix (Fin n) (Fin n) K)
   refine ⟨Matrix.of fun i k => if h : (k : ℕ) < i then -v i ⟨k, h⟩ else if k = i then 1 else 0, ?_, ?_, ?_⟩
   · intro i k h
     simp only [Matrix.of_apply]
-    rw [dite_eq_right (by have := Fin.lt_def.mp h; omega), if_neg (ne_of_gt h)]
+    rw [dite_eq_right (by have := Fin.lt_def.mp h; omega), ite_eq_right (ne_of_gt h)]
   · intro i
     simp
   · intro i j h
@@ -927,12 +917,12 @@ theorem exists_lower_mul_upper (A : Matrix (Fin n) (Fin n) K)
       simp only [Matrix.of_apply]
       rcases lt_trichotomy k i with h | h | h
       · have hk : (k : ℕ) < i := h
-        rw [dite_eq_left hk, dite_eq_left hk, if_neg (ne_of_lt h), add_zero]
+        rw [dite_eq_left hk, dite_eq_left hk, ite_eq_right (ne_of_lt h), add_zero]
       · subst h; simp
       · have hk : ¬ (k : ℕ) < i := by have := Fin.lt_def.mp h; omega
-        rw [dite_eq_right hk, dite_eq_right hk, if_neg (ne_of_gt h), if_neg (ne_of_gt h), zero_mul, add_zero]
+        rw [dite_eq_right hk, dite_eq_right hk, ite_eq_right (ne_of_gt h), ite_eq_right (ne_of_gt h), zero_mul, add_zero]
     rw [Finset.sum_congr rfl fun k _ => hsplit k, Finset.sum_add_distrib, Finset.sum_ite_eq',
-      if_pos (Finset.mem_univ _)]
+      ite_eq_left (Finset.mem_univ _)]
     have hs : ∑ k : Fin i, -v i k * A (Fin.castLE i.isLt.le k) j =
         ∑ k : Fin n, (if h : (k : ℕ) < i then -v i ⟨k, h⟩ * A k j else 0) := by
       refine Fintype.sum_of_injective (Fin.castLE i.isLt.le) (Fin.castLE_injective _) _ _ (fun k hk => ?_)
@@ -1012,7 +1002,7 @@ theorem exists_cell (T : Type) (m : T → ℕ) (K : Type) [Field K] (M : ℕ) (D
           rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun r _ => by ring, h1]
       by_cases hi : i' = i
       · subst hi; simp [wLet]
-      · rw [if_neg hi, if_neg, mul_zero]
+      · rw [ite_eq_right hi, ite_eq_right, mul_zero]
         intro he
         simp only [wLet, Sigma.mk.injEq, heq_eq_eq, true_and] at he
         exact hi ((w τ).injective he).symm
@@ -1030,7 +1020,7 @@ theorem exists_cell (T : Type) (m : T → ℕ) (K : Type) [Field K] (M : ℕ) (D
     intro τ i j
     unfold cell
     rcases lt_trichotomy i j with h | h | h
-    · rw [dite_eq_right (not_lt.2 h.le), if_neg h.ne, hN τ i j h]
+    · rw [dite_eq_right (not_lt.2 h.le), ite_eq_right h.ne, hN τ i j h]
     · subst h; simp [hN1]
     · rw [dite_eq_left h]
   rintro ⟨τ, j⟩
@@ -1063,10 +1053,6 @@ open Formalism.MainNotions.DIV.Cons (intO)
 
 namespace GlobalTheory.FlagEmb.Overlap
 
-theorem spMap_spMap {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] (f : R →+* R') (g : R' →+* R'') :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
-
 theorem exists_fieldPoint {A : Type} [CommRing A] (y : Sp A) :
     ∃ (k : Type) (_ : Field k) (ψ : A →+* k), ∀ q : Sp k, spMap ψ q = y := by
   refine ⟨(show PrimeSpectrum A from y).asIdeal.ResidueField, inferInstance, algebraMap _ _, fun q => ?_⟩
@@ -1096,7 +1082,7 @@ theorem range_inter_cellOpen_subset : ∀ (O K : Type) [CommRing O] [Field K] (�
   rw [Category.assoc, hp.base] at hφ
   have hφ' : spMap φ ≫ (V b).2.fromSpec =
       spMap (ψ'.comp (MvPolynomial.C : Γ(X, (V b').1) →+* CR m (V b'))) ≫ (V b').2.fromSpec := by
-    rw [← hφ, cbase, ← Category.assoc, spMap_spMap]
+    rw [← hφ, cbase, ← Category.assoc, GlobalTheory.spMap_comp_ring]
   have hu : InBlock (fun z => φ ∘ c b z) (fun z => ψ' ∘ uvec (c b') w' z) := by
     have := inBlock_cellVec (hc.compat k b b' φ _ hφ') w' (ψ' ∘ MvPolynomial.X)
     convert this using 2 with z
@@ -1127,7 +1113,7 @@ theorem range_inter_cellOpen_subset : ∀ (O K : Type) [CommRing O] [Field K] (�
     · funext z r; simp
     · funext r; simp
   have key := _root_.GlobalTheory.FlagEmb.cell_pt_eq_of_tri O K β X s T m M B V α c D P p0 p h hc hp k b b' w w' (MvPolynomial.eval₂Hom φ x) ψ' d
-    (by rw [hφ, cbase, ← Category.assoc, spMap_spMap, MvPolynomial.eval₂Hom_comp_C]) hd
+    (by rw [hφ, cbase, ← Category.assoc, GlobalTheory.spMap_comp_ring, MvPolynomial.eval₂Hom_comp_C]) hd
     (by simpa only [hψ] using ht)
   obtain ⟨q⟩ : Nonempty (Sp k) := inferInstanceAs (Nonempty (PrimeSpectrum k))
   exact ⟨spMap (MvPolynomial.eval₂Hom φ x : CR m (V b) →+* k) q, by
@@ -1269,10 +1255,6 @@ open Formalism.MainNotions.DIV.Cons (intO)
 
 namespace GlobalTheory.FlagEmb.Valu
 
-theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) :=
-  (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
-
 theorem exists_of_closedPoint {A : Type} [CommRing A] [IsLocalRing A] {X : Scheme.{0}} (x : Sp A ⟶ X)
     (U : X.affineOpens) (hx : x (IsLocalRing.closedPoint A) ∈ (U.1 : Set X)) :
     ∃ φ : Γ(X, U.1) →+* A, x = spMap φ ≫ U.2.fromSpec := by
@@ -1309,7 +1291,7 @@ theorem map_uvec {X : Scheme.{0}} {T : Type} {m : T → ℕ} {M : ℕ} {U : X.af
 theorem sp_cbase {X : Scheme.{0}} {T : Type} {m : T → ℕ} {U : X.affineOpens} {S : Type} [CommRing S]
     (ψ : CR m U →+* S) :
     spMap ψ ≫ cbase m U = spMap (ψ.comp (MvPolynomial.C : Γ(X, U.1) →+* CR m U)) ≫ U.2.fromSpec := by
-  rw [cbase, ← Category.assoc, sp_comp]
+  rw [cbase, ← Category.assoc, GlobalTheory.spMap_comp_ring]
 
 theorem exists_integral_cell : ∀ (O K : Type) [CommRing O] [Field K] (β : O →+* K) (X : Scheme.{0}) (s : X ⟶ Sp O) (T : Type) [Finite T] (m : T → ℕ) (M : ℕ) (B : Type) (V : B → X.affineOpens) (α : ∀ b, K →+* Γ(X, (V b).1)) (c D : ∀ b, Let m → Fin (M + 1) → Γ(X, (V b).1)) (P : Scheme.{0}) (p0 : P ⟶ X) (p : ∀ en : En m, P ⟶ PSpace O (plN M en.1)) (h : ∀ b, Pm m → (Sp (CR m (V b)) ⟶ P)), IsCover β s V α c D → IsPlk β s V α c p0 p h → ∀ (A k : Type) [CommRing A] [IsDomain A] [ValuationRing A] [Field k] [Algebra A k] [IsFractionRing A k] b' w' (a : Sp k ⟶ Sp (CR m (V b'))) (x : Sp A ⟶ X), Set.range x ⊆ ⋃ b, ((V b).1 : Set X) → a ≫ cbase m (V b') = spMap (algebraMap A k) ≫ x → ∃ b w, ∃ l : Sp A ⟶ Sp (CR m (V b)), l ≫ cbase m (V b) = x ∧ spMap (algebraMap A k) ≫ l ≫ h b w = a ≫ h b' w' := by
   intro O K _ _ β X s T _ m M B V α c D P p0 p h hC hP A k _ _ _ _ _ _ b' w' a x hx ha
@@ -1318,7 +1300,7 @@ theorem exists_integral_cell : ∀ (O K : Type) [CommRing O] [Field K] (β : O �
   obtain ⟨φ, rfl⟩ := exists_of_closedPoint x (V b) hb
   have ha' : spMap ((algebraMap A k).comp φ) ≫ (V b).2.fromSpec =
       spMap (ψ'.comp (MvPolynomial.C : Γ(X, (V b').1) →+* CR m (V b'))) ≫ (V b').2.fromSpec := by
-    rw [← sp_cbase, ha, ← Category.assoc, sp_comp]
+    rw [← sp_cbase, ha, ← Category.assoc, GlobalTheory.spMap_comp_ring]
   obtain ⟨w, y, d, hy, hd, ht⟩ := _root_.GlobalTheory.FlagEmb.exists_integral_cell T m k (ValuationRing.valuation A k).valuationSubring M _ _
     (inBlock_cellVec (hC.compat k b b' _ _ ha') w' (ψ' ∘ MvPolynomial.X))
     (indep_cellVec _ _ w' _ ((hC.inv b').map _))
@@ -1329,7 +1311,7 @@ theorem exists_integral_cell : ∀ (O K : Type) [CommRing O] [Field K] (β : O �
   have hχ' : ((algebraMap A k).comp χ).comp (MvPolynomial.C : Γ(X, (V b).1) →+* CR m (V b)) =
       (algebraMap A k).comp φ := by rw [RingHom.comp_assoc, hχ]
   refine ⟨b, w, spMap χ, by rw [sp_cbase, hχ], ?_⟩
-  rw [← Category.assoc, sp_comp]
+  rw [← Category.assoc, GlobalTheory.spMap_comp_ring]
   refine _root_.GlobalTheory.FlagEmb.cell_pt_eq_of_tri O K β X s T m M B V α c D P p0 p h hC hP k b b' w w' _ ψ' d ?_ hd ?_
   · rw [sp_cbase, sp_cbase, hχ', ha']
   · have e : ((algebraMap A k).comp χ) ∘ MvPolynomial.X = y := funext fun v => by

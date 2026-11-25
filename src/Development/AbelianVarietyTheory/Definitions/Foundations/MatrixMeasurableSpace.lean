@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.Analysis.Matrix.MeasurableSpace
 public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.RepresentationTheory.Basic
@@ -52,8 +53,8 @@ def om {a b : Type*} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] (μ
     ((nabs k (Matrix.GeneralLinearGroup.det h) ^ (-(Fintype.card a : ℝ) / 2) : ℝ) : ℂ) *
     Φ ((h⁻¹ : GL b k).val * x * g.val)
 
-instance matrixMeasurableSpace {m n α : Type*} [MeasurableSpace α] : MeasurableSpace (Matrix m n α) :=
-  (MeasurableSpace.pi : MeasurableSpace (m → n → α))
+@[reducible] instance matrixMeasurableSpace {m n α : Type*} [MeasurableSpace α] : MeasurableSpace (Matrix m n α) :=
+  Matrix.instMeasurableSpace
 
 variable [MeasurableSpace k] [BorelSpace k]
 

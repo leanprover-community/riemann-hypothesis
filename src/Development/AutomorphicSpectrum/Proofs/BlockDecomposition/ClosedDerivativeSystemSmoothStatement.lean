@@ -110,12 +110,6 @@ end Norm
 
 end Chart
 
-section Orbit
-
-variable {ι : Type} [Fintype ι] {a : ℕ} {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X]
-
-end Orbit
-
 end GlobalTheory.CompanionTheory.SmoothVectors
 
 end
@@ -169,7 +163,6 @@ open MeasureTheory Matrix Finset Filter Topology
 open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc GlobalTheory.CompanionTheory.PresSobA
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 noncomputable section
 
 end -- clump:auto

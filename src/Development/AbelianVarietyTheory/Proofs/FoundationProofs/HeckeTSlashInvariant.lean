@@ -3,52 +3,10 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeOperatorsOnHalfPlaneFunctionsAgreeExplicit
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
 import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondDiagMulEqMulOfDvdLowerLeftGamma1InterGamm, Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondDiagMulEqMulUpperTriangularOfNotDvdLowerL, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeTqRepresentativesCosetsDistinct, Development.AbelianVarietyTheory.Proofs.FoundationProofs.UpperMulEqMulDiamondDiagGamma1InterGamma0, Development.AbelianVarietyTheory.Proofs.FoundationProofs.UpperTriangularMulEqMulUpperTriangularGamma1Inte, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeTSlashInvariant
@@ -235,7 +193,7 @@ theorem tqFam_cosets_distinct : ∀ (q : ℕ) (σ g : SL(2, ℤ)) (i i' : Fin (q
   have hi := i.isLt
   have hi' := i'.isLt
   by_cases h1 : (i : ℕ) < q <;> by_cases h2 : (i' : ℕ) < q <;>
-    simp only [h1, h2, if_true, if_false, dg, Matrix.mul_apply, Fin.sum_univ_two,
+    simp only [h1, h2, ite_true, ite_false, dg, Matrix.mul_apply, Fin.sum_univ_two,
       Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.empty_val', Matrix.cons_val_fin_one] at e00 e01 e10 e11
   ·
@@ -419,24 +377,24 @@ theorem reps (N l q : ℕ) (σ γ : SL(2, ℤ)) (hq : q.Prime) (hqN : ¬ q ∣ N
     (hγ : γ ∈ GlobalTheory.Hk.lev N l) (i : Fin (q + 1)) :
     ∃ i' : Fin (q + 1), ∃ γ' ∈ GlobalTheory.Hk.lev N l, tqFam q σ i * mat γ = mat γ' * tqFam q σ i' := by
   by_cases hi : (i : ℕ) < q
-  · have e : tqFam q σ i = !![(1 : ℤ), ((i : ℕ) : ℤ); 0, (q : ℤ)] := by rw [tqFam, if_pos hi]
+  · have e : tqFam q σ i = !![(1 : ℤ), ((i : ℕ) : ℤ); 0, (q : ℤ)] := by rw [tqFam, ite_eq_left hi]
     rw [e]
     by_cases hd : (q : ℤ) ∣ mat γ 0 0 + ((i : ℕ) : ℤ) * mat γ 1 0
     · obtain ⟨γ', h1, h2⟩ := _root_.GlobalTheory.Hk.upper_mul_eq_mul_diamond_diag N l q i σ γ hq hqN hσ hi hγ hd
       refine ⟨Fin.last q, γ', h1, ?_⟩
-      rw [h2, tqFam, if_neg (by simp)]
+      rw [h2, tqFam, ite_eq_right (by simp)]
     · obtain ⟨j', hj', γ', h1, h2⟩ := _root_.GlobalTheory.Hk.tinv_fin_fin N l q i γ hq hqN hi hγ hd
       refine ⟨⟨j', by omega⟩, γ', h1, ?_⟩
-      rw [h2, tqFam, if_pos (by simpa using hj')]
-  · have e : tqFam q σ i = mat σ * dg q 1 := by rw [tqFam, if_neg hi]
+      rw [h2, tqFam, ite_eq_left (by simpa using hj')]
+  · have e : tqFam q σ i = mat σ * dg q 1 := by rw [tqFam, ite_eq_right hi]
     rw [e]
     by_cases hd : (q : ℤ) ∣ mat γ 1 0
     · obtain ⟨γ', h1, h2⟩ := _root_.GlobalTheory.Hk.dia_diag_mul_of_dvd_lowerLeft N l q σ γ hq hqN hσ hγ hd
       refine ⟨Fin.last q, γ', h1, ?_⟩
-      rw [h2, tqFam, if_neg (by simp)]
+      rw [h2, tqFam, ite_eq_right (by simp)]
     · obtain ⟨j', hj', γ', h1, h2⟩ := _root_.GlobalTheory.HkInvFin.sigma_dg_mul_eq N l q σ γ hq hqN hσ hγ hd
       refine ⟨⟨j', by omega⟩, γ', h1, ?_⟩
-      rw [h2, tqFam, if_pos (by simpa using hj')]
+      rw [h2, tqFam, ite_eq_left (by simpa using hj')]
 
 theorem perm (N l q : ℕ) (σ γ : SL(2, ℤ)) (hq : q.Prime) (hqN : ¬ q ∣ N * l) (hσ : GlobalTheory.Hk.IsDia N l q σ)
     (hγ : γ ∈ GlobalTheory.Hk.lev N l) :

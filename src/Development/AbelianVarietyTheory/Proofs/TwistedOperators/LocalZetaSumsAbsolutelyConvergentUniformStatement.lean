@@ -118,13 +118,12 @@ theorem kerGL_norm {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (
 
 end GlobalTheory.FinZeta.AbsZeta
 
-
 open GlobalTheory.FinZeta.AbsZeta in
 theorem GlobalTheory.FinZeta.AbsZeta.hasSum_norm_kerGL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (r t : ℕ), r ≤ t → ∀ (z : ℂˣ) (φ : GL (Fin r) (w.adicCompletion E) → ℂ), ‖(z : ℂ)‖ = 1 → KerGL w (r + t) z φ → ∃ B : Multiset ℂˣ, B.card = r ∧ (∀ β ∈ B, ‖(β : ℂ)‖ ≤ (qV E w : ℝ) ^ (((r : ℝ) - 1) / 2) ∧ ‖((β⁻¹ : ℂˣ) : ℂ)‖ ≤ (qV E w : ℝ) ^ (((r : ℝ) - 1) / 2)) ∧ HasSum (fun a : GL (Fin r) (w.adicCompletion E) ⧸ KGL w (n := r) => ((‖φ a.out‖ : ℝ) : ℂ)) (eulerFac B (npow w (-((1 + (t : ℂ)) / 2))) * eulerFac (B.map fun β => β⁻¹) (npow w (-((1 + (t : ℂ)) / 2))) * ∏ i ∈ Finset.Ioc t (r + t), (1 - ((qV E w : ℂ) ^ i)⁻¹)) := by
   intro H E _ _ w r t hrt z φ hz hφ
   obtain ⟨B, hB, hbd⟩ := GlobalTheory.T.exists_satakeParam_trivialBound_unitaryGL E w r ℂ (Representation.trivial ℂ _ ℂ) (trivial_isUnitarisable _) 1 one_ne_zero
     (GlobalTheory.LGrp.mem_fixed.2 fun _ _ => rfl) (fun h _ => ⟨_, (mul_one _).symm⟩)
-  have hs := GlobalTheory.T.unramified_zeta_sum_GL_cosets H E w r t hrt 1 (fun g => ((‖φ g‖ : ℝ) : ℂ)) (by simp) (kerGL_norm hz hφ) ℂ
+  have hs := GlobalTheory.ZetaGL.zeta_sum_GL H E w r t hrt 1 (fun g => ((‖φ g‖ : ℝ) : ℂ)) (by simp) (kerGL_norm hz hφ) ℂ
     (Representation.trivial ℂ _ ℂ) 1 B hB hbd LinearMap.id ⟨1, fun g => by simp⟩
   refine ⟨B, ?_, hbd, ?_⟩
   · have hB' := hB
@@ -182,7 +181,7 @@ theorem hasSum_norm_kerU : ∀ (L : Type) [Field L] [Valued L (WithZero (Multipl
     simp only
     rw [hK d g hg k₁ hk₁ k₂ hk₂]
     simp [norm_zpow, hz]
-  have h := GlobalTheory.T.hasSum_unramifiedZetaSum_unitary_inert L ϖ σ q r t hU hrt 1 _ (by simp) hKψ ℂ (GlobalTheory.LGrp.charRep 1) x _ hx bound LinearMap.id
+  have h := GlobalTheory.ZetaSumU.hasSum_zetaSum_inert L ϖ σ q r t hU hrt 1 _ (by simp) hKψ ℂ (GlobalTheory.LGrp.charRep 1) x _ hx bound LinearMap.id
     ⟨‖x‖, fun g => by simp⟩
   have hx0 : x ≠ 0 := hx.1
   have h' := h.mul_right x⁻¹
@@ -354,7 +353,6 @@ open scoped TensorProduct
 noncomputable section
 
 namespace GlobalTheory.FinZeta.UnitaryBound
-
 
 theorem norm_prod_sub_one_le (c : ℝ) (M : Multiset ℂ) (h : ∀ z ∈ M, ‖z - 1‖ ≤ c) :
     ‖M.prod - 1‖ ≤ (1 + c) ^ M.card - 1 := by

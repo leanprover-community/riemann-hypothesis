@@ -57,7 +57,7 @@ theorem wI_le (L Q : A) (W e c y : ℕ) (hW : 1 ≤ W) (h : c * W + y ≤ e + 1)
       rw [← mul_assoc, ← pow_add, Nat.add_sub_cancel' hca]
     rw [SetLike.mem_coe, e1]
     exact Ideal.mul_mem_right _ _ (Ideal.subset_span (Set.mem_insert _ _))
-  · push_neg at hca
+  · push Not at hca
     have h1 : (a + 1) * W ≤ c * W := Nat.mul_le_mul_right W hca
     rw [add_mul, one_mul] at h1
     have hyb : y ≤ b := by linarith

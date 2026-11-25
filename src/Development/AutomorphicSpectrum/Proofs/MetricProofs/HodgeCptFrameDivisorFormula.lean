@@ -562,10 +562,6 @@ theorem map_colFrame {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V] {i 
 
 end Pure
 
-theorem isExtOver_mk (Ω G V : Type) [Field Ω] [Field G] [Algebra Ω G] [AddCommGroup V] [Module Ω V] :
-    IsExtOver (algebraMap Ω G) (TensorProduct.mk Ω G V 1).toAddMonoidHom := by
-  apply GlobalTheory.CompanionTheory.Ar.FlagBun.Flags.isExtOver_mk
-
 end PositivityTheory.Xgp.c_fm_exists_flags_dualflag
 
 private theorem dual_lemma_4 {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V] {r : ℕ}
@@ -580,13 +576,13 @@ private theorem dual_lemma_4 {Ω V : Type} [Field Ω] [AddCommGroup V] [Module �
   rw [LinearMap.sum_apply]
 
   simp only [LinearMap.smul_apply, map_sum, map_smul, hv, smul_eq_mul, mul_ite, mul_one, mul_zero,
-  Finset.sum_ite_eq, Finset.mem_univ, if_true, Matrix.transpose_apply]
+  Finset.sum_ite_eq, Finset.mem_univ, ite_true, Matrix.transpose_apply]
   exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
 
 open PositivityTheory.Xgp.c_fm_exists_flags_dualflag in
 theorem PositivityTheory.Xgp.t_c_fm_exists_flags_dualflag : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) (x : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S x) (τ : CMType H) (X' : Scheme.{0}) (G : Type) [Field G] [Algebra Ω G] (ξ' : Spec (CommRingCat.of G) ⟶ X') (pr : X' ⟶ 𝔐.X) (Li' : Type) [AddCommGroup Li'] [Module G Li'] (j : 𝔐.Li →+ Li') (bO : Module.Basis (Fin D.q) Ω (Module.Dual Ω (𝔐.Vgen (.inr τ)))) (v : Fin D.q → 𝔐.Vgen (.inr τ)) (u : Matrix (Fin D.q) (Fin D.q) G), IsExtOver (algebraMap Ω G) j → GlobalTheory.CompanionTheory.Ar.Dominates ξ' 𝔐.ξ pr (algebraMap Ω G) → (∀ a b, bO a (v b) = if a = b then 1 else 0) → (∀ a, u a a = 1) → (∀ a b, a < b → u a b = 0) → ((omBundle 𝔐 τ).pull ξ' pr (TensorProduct.mk Ω G (Module.Dual Ω (𝔐.Vgen (.inr τ))) 1).toAddMonoidHom).IsFlagVBOn Set.univ (fun k => ∑ l, u l k • TensorProduct.mk Ω G (Module.Dual Ω (𝔐.Vgen (.inr τ))) 1 (bO l)) → ((𝔐.V (.inr τ)).pull ξ' pr j).IsFlagVBOn Set.univ (fun k => colFrame (fun a => j (v a)) uᵀ⁻¹ k.rev) := by
   intro E _ _ _ H D l Xo cc Y S Ω _ K _ J x 𝔐 τ X' G _ _ ξ' pr Li' _ _ j bO v u hj hdom hv hu1 hu0 hflag
-  have hmk := isExtOver_mk Ω G (Module.Dual Ω (𝔐.Vgen (.inr τ)))
+  have hmk := GlobalTheory.CompanionTheory.Ar.FlagBun.Flags.isExtOver_mk Ω G (Module.Dual Ω (𝔐.Vgen (.inr τ)))
   set mk := (TensorProduct.mk Ω G (Module.Dual Ω (𝔐.Vgen (.inr τ))) 1).toAddMonoidHom with hmkdef
   have hc : LinearIndependent G (fun l => mk (bO l)) := hmk.2 _ bO bO.linearIndependent
   have hu : IsUnit u.det := by
@@ -845,7 +841,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl
 
-
 attribute [local instance] MvPolynomial.algebraMvPolynomial in
 theorem PositivityTheory.Xgp.c_fm_exists_flags_degree.core {F₀ Ω G I : Type} [Field F₀] [Field Ω] [Field G] [Algebra F₀ Ω]
     [Algebra Ω G] [Algebra F₀ G] [IsScalarTower F₀ Ω G] [Algebra.IsAlgebraic F₀ Ω] (x : I → G)
@@ -965,15 +960,15 @@ theorem PositivityTheory.Xgp.t_c_fm_exists_flags_revgen : ∀ (Ω G : Type) [Fie
   refine PositivityTheory.Xgp.GenFam.of_gen hu ?_ ?_ ?_
   · intro s a
     by_cases h : P s
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       exact (key s).1 a
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       exact hd s a
   · intro s a b hab
     by_cases h : P s
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       exact (key s).2.1 a b hab
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       exact hl s a b hab
   · intro s a b
     have hsub : ∀ x y, (if P s then revInv (u s) else u s) x y ∈
@@ -981,9 +976,9 @@ theorem PositivityTheory.Xgp.t_c_fm_exists_flags_revgen : ∀ (Ω G : Type) [Fie
           (if P q.fst then revInv (u q.fst) else u q.fst) q.snd.1 q.snd.2) :=
       fun x y => IntermediateField.subset_adjoin _ _ ⟨⟨s, x, y⟩, rfl⟩
     by_cases h : P s
-    · rw [if_pos h] at hsub
+    · rw [ite_eq_left h] at hsub
       exact (key s).2.2 _ hsub a b
-    · rw [if_neg h] at hsub
+    · rw [ite_eq_right h] at hsub
       exact hsub a b
 end -- clump:auto
 end -- clump:auto
@@ -1199,8 +1194,6 @@ theorem gen_of_mat' (F₀ Ω G : Type) [Field F₀] [Field Ω] [Field G] [Algebr
   haveI : IsScalarTower F₀ Ω G := IsScalarTower.of_algebraMap_eq fun a => (RingHom.congr_fun hι a).symm
   exact gen_of_mat F₀ Ω G E₀ E' j₀ S r V₀ c b U A d hc hsemi hlin hU hA hb hd hfin
 
-
-
 theorem exists_colFlags : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K₀ : Type) [Fintype K₀] (J₀ : K₀ → Type) [∀ k, Fintype (J₀ k)] (x₀ : (Σ k, J₀ k) → Ω) (𝔐 : HodgeCpt Y S x₀) (bW : WBases 𝔐) (bO : OmBases 𝔐) (n m : CMType H ⊕ CMType H → ℕ) (φ : ∀ s, Fin (n s) → Module.Dual Ω (EE 𝔐)) (d : ℕ), FormsOK 𝔐 bW bO m φ → 𝔐.IsCover d → ∀ (𝔐' : HodgeCpt Y S (yv (p := D.p) (q := D.q) (aOf 𝔐 bW bO φ) x₀)) (pr : 𝔐'.X ⟶ 𝔐.X) (j : 𝔐.Li →+ 𝔐'.Li), HodgeOver 𝔐' 𝔐 pr (algebraMap Ω (GenField Ω (rk (CMType H) D.p D.q))) j → Submodule.span (GenField Ω (rk (CMType H) D.p D.q)) (Set.range j) = ⊤ → (∀ s, 𝔐'.V s = (𝔐.V s).pull 𝔐'.ξ pr j) → ∃ Fl : 𝔐'.Flag, Fl.deg = d ∧ ColFlags 𝔐 bW bO j Fl := by
   classical
   intro E _ _ _ H D l Xo c Y S Ω _ _ K₀ _ J₀ _ x₀ 𝔐 bW bO n m φ d hF hC 𝔐' pr j hO hspan hV
@@ -1295,7 +1288,7 @@ theorem exists_colFlags : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     rintro (τ | τ)
     · exact ⟨(bW τ).linearIndependent.map' (𝔐.Vgen (.inl τ)).subtype (Submodule.ker_subtype _), fun k => (bW τ k).2⟩
     · have h1 : LinearIndependent Ω (v τ) := LinearIndependent.of_pairwise_dual_eq_zero_one (v τ) (bO τ)
-        (fun a b hab => (hv τ a b).trans (if_neg hab)) (fun a => by rw [hv, if_pos rfl])
+        (fun a b hab => (hv τ a b).trans (ite_eq_right hab)) (fun a => by rw [hv, ite_eq_left rfl])
       have h2 := h1.map' (𝔐.Vgen (.inr τ)).subtype (Submodule.ker_subtype _)
       exact ⟨h2.comp Fin.rev Fin.rev_injective, fun k => (v τ k.rev).2⟩
   have hA : ∀ s, ∃ A : Matrix (Fin (labelRk D s)) (Fin (labelRk D s)) Ω, IsUnit A.det ∧
@@ -1312,8 +1305,8 @@ theorem exists_colFlags : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   have hU : IsGenFam Ω (GenField Ω (rk (CMType H) D.p D.q)) U :=
     _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl.isGenFam_revInv_ite Ω _ _ (rk (CMType H) D.p D.q) (genU Ω (rk (CMType H) D.p D.q)) (fun s => Sum.isRight s = true)
       (genU_isGenFam Ω _)
-  have hUl : ∀ τ, U (.inl τ) = genU Ω (rk (CMType H) D.p D.q) (.inl τ) := fun τ => if_neg (by simp)
-  have hUr : ∀ τ, U (.inr τ) = revInv (genU Ω (rk (CMType H) D.p D.q) (.inr τ)) := fun τ => if_pos (by simp)
+  have hUl : ∀ τ, U (.inl τ) = genU Ω (rk (CMType H) D.p D.q) (.inl τ) := fun τ => ite_eq_right (by simp)
+  have hUr : ∀ τ, U (.inr τ) = revInv (genU Ω (rk (CMType H) D.p D.q) (.inr τ)) := fun τ => ite_eq_left (by simp)
   let b : ∀ s, Fin (labelRk D s) → 𝔐'.Li := fun s k => ∑ a, U s a k • j (eb s a)
   have hbW : ∀ τ k, b (.inl τ) k = ∑ a, genU Ω (rk (CMType H) D.p D.q) (.inl τ) a k • j (bW τ a) := fun τ k => by
     show ∑ a, U (.inl τ) a k • j (bW τ a) = _

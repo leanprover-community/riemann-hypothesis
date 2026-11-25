@@ -9,40 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilRepresent
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPlaceModelCompRestrictToHalfLatticeIndicator
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOrEqOfPlaceIdem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RangeSndRel
 
 @[expose] public section
@@ -66,17 +32,17 @@ theorem prodHalf_halfInd {m n : ℕ} {a b : AE D} (ha : a * a = a) (hb : b * b =
   rw [prodHalf_apply]
   by_cases hx : IsHalf (a + b) x
   · have hx' : a • x + b • x = x := by rw [← add_smul]; exact (isHalf_iff' _ _).1 hx
-    rw [if_pos hx, mul_one]
+    rw [ite_eq_left hx, mul_one]
     unfold halfInd
     by_cases hxΛ : x ∈ Λ
-    · rw [if_pos ⟨hΛ a ha x hxΛ, isHalf_smul ha x⟩, if_pos ⟨hΛ b hb x hxΛ, isHalf_smul hb x⟩, if_pos ⟨hxΛ, hx⟩, one_mul]
-    · rw [if_neg (show ¬ (x ∈ Λ ∧ IsHalf (a + b) x) from fun h => hxΛ h.1)]
+    · rw [ite_eq_left ⟨hΛ a ha x hxΛ, isHalf_smul ha x⟩, ite_eq_left ⟨hΛ b hb x hxΛ, isHalf_smul hb x⟩, ite_eq_left ⟨hxΛ, hx⟩, one_mul]
+    · rw [ite_eq_right (show ¬ (x ∈ Λ ∧ IsHalf (a + b) x) from fun h => hxΛ h.1)]
       by_cases h1 : a • x ∈ Λ
-      · rw [if_neg (show ¬ (b • x ∈ Λ ∧ IsHalf b (b • x)) from fun h => hxΛ (hx' ▸ add_mem h1 h.1)), mul_zero]
-      · rw [if_neg (show ¬ (a • x ∈ Λ ∧ IsHalf a (a • x)) from fun h => h1 h.1), zero_mul]
-  · rw [if_neg hx, mul_zero]
+      · rw [ite_eq_right (show ¬ (b • x ∈ Λ ∧ IsHalf b (b • x)) from fun h => hxΛ (hx' ▸ add_mem h1 h.1)), mul_zero]
+      · rw [ite_eq_right (show ¬ (a • x ∈ Λ ∧ IsHalf a (a • x)) from fun h => h1 h.1), zero_mul]
+  · rw [ite_eq_right hx, mul_zero]
     unfold halfInd
-    rw [if_neg (show ¬ (x ∈ Λ ∧ IsHalf (a + b) x) from fun h => hx h.2)]
+    rw [ite_eq_right (show ¬ (x ∈ Λ ∧ IsHalf (a + b) x) from fun h => hx h.2)]
 
 theorem exists_compl_idem {e e₀ : AE D} {P P₀ : Finset (Pl D.host.E)} (hsub : P₀ ⊆ P) (he : IsIdemSum e P)
     (he₀ : IsIdemSum e₀ P₀) : ∃ b, e = e₀ + b ∧ b * b = b ∧ e₀ * b = 0 := by

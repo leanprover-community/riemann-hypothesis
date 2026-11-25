@@ -116,42 +116,10 @@ theorem topologicalKrullDim_lt_top_of_finite_isOpenCover {X : Type u} [Topologic
     exact le_trans (hN i) (Nat.mono_cast (Finset.le_sup (Finset.mem_univ i)))
   exact lt_of_le_of_lt hle (natCast_withBot_lt_top _)
 
-private theorem two_ne_zero_withBotENat : (2 : WithBot ℕ∞) ≠ 0 := by
-  intro h
-  have h' : ((2 : ℕ∞) : WithBot ℕ∞) = ((0 : ℕ∞) : WithBot ℕ∞) := h
-  have h2 : (2 : ℕ∞) = 0 := WithBot.coe_injective h'
-  simp at h2
-
-private theorem two_mul_natCast_add_one (m : ℕ) :
-    (2 : WithBot ℕ∞) * ((m : ℕ∞) : WithBot ℕ∞) + 1 = (((2 * m + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := by
-  have e2 : (2 : WithBot ℕ∞) = ((2 : ℕ∞) : WithBot ℕ∞) := rfl
-  have e1 : (1 : WithBot ℕ∞) = ((1 : ℕ∞) : WithBot ℕ∞) := rfl
-  rw [e2, e1, ← WithBot.coe_mul, ← WithBot.coe_add]
-  congr 1
-
-private theorem two_mul_add_one_lt_top {a : WithBot ℕ∞} (h : a ≠ ⊤) : 2 * a + 1 < ⊤ := by
-  induction a using WithBot.recBotCoe with
-  | bot =>
-    rw [WithBot.mul_bot two_ne_zero_withBotENat, WithBot.bot_add]
-    exact bot_lt_top
-  | coe b =>
-    induction b using WithTop.recTopCoe with
-    | top => exact absurd rfl h
-    | coe m =>
-      refine lt_of_eq_of_lt ?_ (natCast_withBot_lt_top (2 * m + 1))
-      exact two_mul_natCast_add_one m
-
 private theorem ringKrullDim_mvPolynomial_lt_top (k : Type u) [Field k] (n : ℕ) :
     ringKrullDim (MvPolynomial (Fin n) k) < ⊤ := by
-  induction n with
-  | zero =>
-    have h0 : ((0 : ℕ) : WithBot ℕ∞) = 0 := Nat.cast_zero
-    rw [ringKrullDim_eq_of_ringEquiv (MvPolynomial.isEmptyRingEquiv k (Fin 0)),
-      ringKrullDim_eq_zero_of_field k, ← h0]
-    exact natCast_withBot_lt_top 0
-  | succ m ih =>
-    rw [ringKrullDim_eq_of_ringEquiv (MvPolynomial.finSuccEquiv k m).toRingEquiv]
-    exact lt_of_le_of_lt Polynomial.ringKrullDim_le (two_mul_add_one_lt_top (ne_of_lt ih))
+  rw [MvPolynomial.ringKrullDim_of_isNoetherianRing_of_finite, ringKrullDim_eq_zero_of_field, zero_add]
+  exact natCast_withBot_lt_top _
 
 theorem ringKrullDim_lt_top_of_finiteType (k : Type u) [Field k] (A : Type v) [CommRing A]
     [Algebra k A] [Algebra.FiniteType k A] : ringKrullDim A < ⊤ := by

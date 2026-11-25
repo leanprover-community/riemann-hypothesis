@@ -48,8 +48,8 @@ theorem cj_algebraMap {E : Type} [Field E] [NumberField E] [IsCMField E] {w : Pl
 theorem nrmL_locEl {E : Type} [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E) (δ : GL (Fin n) E) :
     nrmL n w (locEl n w δ) = GeneralLinearGroup.map (algebraMap E (w.adicCompletion E)) (δ * thE E n δ) := by
   by_cases h : IsSplitAt w
-  · simp only [nrmL, locEl, if_pos h]
-  · simp only [nrmL, locEl, if_neg h]
+  · simp only [nrmL, locEl, ite_eq_left h]
+  · simp only [nrmL, locEl, ite_eq_right h]
     rw [map_mul]
     congr 1
     exact (GlobalTheory.ThetaPull.map_thetaGL (algebraMap E (w.adicCompletion E)) _ (GlobalTheory.BCT.cj w)

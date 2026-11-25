@@ -100,12 +100,7 @@ theorem exists_two_emb {K Ω : Type} [Field K] [CharZero K] [Countable K] [Field
   letI : Algebra K ℂ := σ.toAlgebra
   have hi : IsIntegral K a := ha.isIntegral
   have hirr := minpoly.irreducible hi
-  have hdeg : 2 ≤ (minpoly K a).natDegree := by
-    by_contra h
-    have h0 : (minpoly K a).natDegree ≠ 0 := hirr.natDegree_pos.ne'
-    have h1 : (minpoly K a).natDegree = 1 := by omega
-    exact hne (minpoly.mem_range_of_degree_eq_one K a
-      ((Polynomial.degree_eq_iff_natDegree_eq_of_pos one_pos).2 h1))
+  have hdeg : 2 ≤ (minpoly K a).natDegree := (minpoly.two_le_natDegree_iff hi).2 hne
   have hcard := IntermediateField.card_algHom_adjoin_integral K (K := ℂ) (α := a) hi
     hirr.separable (IsAlgClosed.splits _)
   have : Finite (K⟮a⟯ →ₐ[K] ℂ) := by

@@ -35,63 +35,14 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaMu
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationSectionFirstPower
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeyValueTwoFibresLocalRingStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorusExt
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.MemSpanOfCardLe
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidStA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.CanonGenIsGen
@@ -100,13 +51,9 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators
 import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Data.Finsupp.Encodable
-import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueSectionOfDense
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaEmbeddingSectionsBaseChangeAffine
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsReducedSchemeOfSmoothOfIsIntegrallyClosed
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsNonvanishing
@@ -363,13 +310,7 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.MBLow.BddPS
 
-def bdd (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] : Subring (PowerSeries C) :=
-  GlobalTheory.BoundedPowerSeriesDisc.boundedSeries C
-
 variable {C : Type} [NontriviallyNormedField C] [IsUltrametricDist C]
-
-noncomputable def ev [CompleteSpace C] (π : C) (h : ‖π‖ < 1) : bdd C →+* C :=
-  GlobalTheory.BoundedPowerSeriesDisc.evalBounded π h
 
 alias main := _root_.GlobalTheory.SummableSeriesBounds.main
 
@@ -388,8 +329,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.MBLow GlobalTheory.SecJet
 open scoped CategoryTheory.Obj
 
-theorem _root_.GlobalTheory.T.bounded_power_series_evaluation_divisibility : ∀ (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] [CompleteSpace C] (π : C), ‖π‖ < 1 → ∃ (B : Subring (PowerSeries C)) (ev : B →+* C) (t : B), (∀ Φ, Φ ∈ B ↔ ∃ b : ℝ, ∀ n, ‖PowerSeries.coeff n Φ‖ ≤ b) ∧ (∀ Φ : B, ev Φ = ∑' n, PowerSeries.coeff n (Φ : PowerSeries C) * π ^ n) ∧ t ≠ 0 ∧ (∀ Φ, ev Φ = 0 ↔ t ∣ Φ) ∧ ∀ Φ : B, Φ ≠ 0 → ∃ n : ℕ, ¬ t ^ n ∣ Φ := by
-  first | exact @GlobalTheory.MBLow.BddPS.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedPowerSeriesEvaluationDivisibilityStatement =====
@@ -619,7 +558,6 @@ end GlobalTheory.MBLow.OrdRing
 
 namespace GlobalTheory.MBLow
 
-
 open GlobalTheory.MBLow.OrdRing in
 theorem exists_localRing_of_order : ∀ (A B C Ω : Type) [CommRing A] [IsDomain A] [CommRing B] [IsDomain B] [Field C] [Field Ω] (f : A →+* B) (ev : B →+* C) (t : B) (i : A →+* Ω), Function.Injective f → Function.Injective i → t ≠ 0 → (∀ b, ev b = 0 ↔ t ∣ b) → (∀ b : B, b ≠ 0 → ∃ n : ℕ, ¬ t ^ n ∣ b) → ∃ (W : Type) (_ : CommRing W) (_ : IsDomain W) (_ : IsNoetherianRing W) (_ : IsLocalRing W) (_ : IsIntegrallyClosed W) (g : A →+* W) (i₀ : W →+* Ω) (i₁ : W →+* C), Function.Injective i₀ ∧ i₀.comp g = i ∧ i₁.comp g = ev.comp f ∧ (∀ a, i₁ a ≠ 0 → IsUnit a) ∧ ∀ q : Ideal W, q.IsPrime → q = RingHom.ker i₀ ∨ q = RingHom.ker i₁ := by
   intro A B C Ω _ _ _ _ _ _ f ev t i hf hi ht hker hfin
@@ -778,7 +716,6 @@ theorem radius_ge (ε : ℝ) (Φ : PowerSeries ℂ)
 
 end GlobalTheory.PowEval
 
-
 open GlobalTheory.PowEval in
 theorem GlobalTheory.exists_injective_evalAt_closure : ∀ (ε : ℝ) (S : Set (PowerSeries ℂ)), 0 < ε → S.Countable → (∀ Φ ∈ S, ∀ u : ℂ, u ≠ 0 → ‖u‖ < ε → Summable fun n => ‖PowerSeries.coeff n Φ * u ^ n‖) → ∃ (u : ℂ) (i : Subring.closure S →+* ℂ), u ≠ 0 ∧ ‖u‖ < ε ∧ Function.Injective i ∧ ∀ Φ : Subring.closure S, i Φ = ∑' n, PowerSeries.coeff n (Φ : PowerSeries ℂ) * u ^ n := by
   intro ε S hε hS h
@@ -885,7 +822,7 @@ theorem ring_of_deformation : ∀ (C : Type) [NontriviallyNormedField C] [IsUltr
   set G : Set (PowerSeries C) :=
     Set.range (fun x : o => PowerSeries.C (x : C)) ∪ Set.range Φ with hG
   set A : Subring (PowerSeries C) := Subring.closure G with hA
-  obtain ⟨B, ev, t, hB, hev, ht, hevt, hfin⟩ := GlobalTheory.T.bounded_power_series_evaluation_divisibility C π hπ
+  obtain ⟨B, ev, t, hB, hev, ht, hevt, hfin⟩ := GlobalTheory.SummableSeriesBounds.main C π hπ
   have hAB : A ≤ B := by
     refine Subring.closure_le.2 ?_
     rintro _ (⟨x, rfl⟩ | ⟨a, rfl⟩)

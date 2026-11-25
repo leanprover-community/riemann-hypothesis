@@ -6,41 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsVol
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMulRightInvariantHaarAdelicUnitaryGroupHermiti
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RightInvariantOfFiniteCovolume
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.VolumePerpendicular
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.AdelicUnitaryGroups
 import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
@@ -175,34 +140,6 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism
 open GlobalTheory.VolTransport GlobalTheory.IndefiniteRowSideFullHecke.SignatureLatticeIndependence
 open scoped TensorProduct Matrix ENNReal
 
-theorem isFundamentalDomain_map {G H : Type} [Group G] [Group H] [MeasurableSpace G] [MeasurableSpace H]
-    (φ : G ≃* H) (hc : Measurable φ) (hc' : Measurable φ.symm) (Γ : Subgroup G) (Γ' : Subgroup H)
-    (hQ : ∀ g, g ∈ Γ ↔ φ g ∈ Γ') (μ : Measure G) (𝓕 : Set G) :
-    IsFundamentalDomain Γ 𝓕 μ ↔ IsFundamentalDomain Γ' (φ '' 𝓕) (μ.map φ) := by
-  let ψ : G ≃ᵐ H := ⟨φ.toEquiv, hc, hc'⟩
-  have hψ : MeasurePreserving ψ μ (μ.map φ) := ⟨ψ.measurable, rfl⟩
-  constructor
-  · intro h
-    have e : φ '' 𝓕 = φ.symm ⁻¹' 𝓕 := φ.toEquiv.image_eq_preimage_symm 𝓕
-    rw [e]
-    exact h.preimage_of_equiv (f := φ.symm) (MeasurePreserving.symm ψ hψ).quasiMeasurePreserving
-      (e := fun γ => ⟨φ γ, (hQ γ).1 γ.2⟩)
-      ⟨fun a b hab => Subtype.ext (φ.injective (congrArg Subtype.val hab)),
-        fun b => ⟨⟨φ.symm b, (hQ _).2 (by simp)⟩, Subtype.ext (by simp)⟩⟩
-      fun γ y => by
-        show φ.symm (φ γ * y) = γ * φ.symm y
-        rw [map_mul, φ.symm_apply_apply]
-  · intro h
-    have e : 𝓕 = φ ⁻¹' (φ '' 𝓕) := (φ.injective.preimage_image 𝓕).symm
-    rw [e]
-    exact h.preimage_of_equiv (f := φ) hψ.quasiMeasurePreserving
-      (e := fun γ => ⟨φ.symm γ, (hQ _).2 (by simp)⟩)
-      ⟨fun a b hab => Subtype.ext (φ.symm.injective (congrArg Subtype.val hab)),
-        fun b => ⟨⟨φ b, (hQ b).1 b.2⟩, Subtype.ext (by simp)⟩⟩
-      fun γ y => by
-        show φ (φ.symm γ * y) = γ * φ y
-        rw [map_mul, φ.apply_symm_apply]
-
 variable {D : D7}
 
 theorem isoPair_of_isometry (V V' : HSp D) (e : V.V ≃ₗ[D.host.E] V'.V)
@@ -269,7 +206,7 @@ theorem isometryTransport (D : D7) : IsometryTransport D := by
     have := conjA_rat h.symm _ hg
     rwa [← conjA_symm h, MulEquiv.symm_apply_apply] at this⟩
   refine ⟨⟨conjA h, c1, c2⟩, fun g => ?_, hQ, fun μ => ⟨isVolMeas_map V V' h l1 l2 P Q μ, fun hμ => ?_⟩,
-    fun μ _ 𝓕 => isFundamentalDomain_map (conjA h) c1.measurable c2.measurable (GQ V) (GQ V') hQ μ 𝓕⟩
+    fun μ _ 𝓕 => GlobalTheory.VolIndepCompare.isFundamentalDomain_iff_image (conjA h) c1.measurable c2.measurable (GQ V) (GQ V') hQ μ 𝓕⟩
   · have e1 := conjA_mat h g
     have e2 := h.adelic.2.1
     unfold Intertwines pointMatrix baseChange frameMatrix

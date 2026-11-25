@@ -80,7 +80,7 @@ theorem zw_ann (P : M.Par) (hTT : 0 < P.TT) (ψ : ℂ → ℂ) :
     have h' : P.TT < Complex.normSq ζ := h
     have hle : P.T * P.T' ≤ Complex.normSq ζ := le_of_lt h'
     unfold wR B2.zWeight
-    rw [if_pos hle, Real.sq_sqrt (pow_nonneg (sub_nonneg.2 (le_of_lt (show P.TT < Complex.normSq ζ from h))) _)]
+    rw [ite_eq_left hle, Real.sq_sqrt (pow_nonneg (sub_nonneg.2 (le_of_lt (show P.TT < Complex.normSq ζ from h))) _)]
     rfl
   · rw [Set.indicator_of_notMem h, JCx2.rb_zWeight_zero_of_not (k := P.k) (T := P.T) (T' := P.T') h hζ]
     simp

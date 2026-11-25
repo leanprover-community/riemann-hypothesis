@@ -11,53 +11,12 @@ public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import Mathlib.RingTheory.KrullDimension.PID
 public import Mathlib.RingTheory.PowerSeries.Ideal
 public import Mathlib.RingTheory.PrincipalIdealDomainOfPrime
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.RingTheory.AdicCompletion.Completeness
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -193,10 +152,6 @@ variable {R : Type*} [CommRing R] [IsDomain R] {f : R} (hf : f ≠ 0)
   (S : Type*) [CommRing S] [Algebra R S] [IsLocalization.Away f S]
 include hf
 
-theorem isDomain_away : IsDomain S :=
-  IsLocalization.isDomain_of_le_nonZeroDivisors (M := Submonoid.powers f) S
-    (powers_le_nonZeroDivisors_of_noZeroDivisors hf)
-
 omit hf
 
 end Away
@@ -258,9 +213,6 @@ theorem maximalIdeal_eq_span (hπ : Irreducible π) :
     maximalIdeal O⟦X⟧ = Ideal.span {C π, X} := by
   rw [maximalIdeal_eq_comap, ← map_C_sup_span_X, hπ.maximalIdeal_eq, Ideal.map_span,
     Set.image_singleton, Ideal.span_insert]
-
-theorem C_ne_zero (hπ : Irreducible π) : (C π : O⟦X⟧) ≠ 0 := fun h =>
-  hπ.ne_zero (by simpa using congr(constantCoeff $h))
 
 theorem eq_span_X_or_eq_maximalIdeal (P : Ideal O⟦X⟧) [hP : P.IsPrime] (hX : X ∈ P) :
     P = Ideal.span {X} ∨ P = maximalIdeal O⟦X⟧ := by
@@ -355,8 +307,6 @@ variable (hπ : Irreducible π)
 @[simp] theorem ev_X : ev hπ X = π := evalAdic_X _ _
 
 @[simp] theorem ev_C (a : O) : ev hπ (C a) = a := (ev hπ).commutes a
-
-theorem ev_surjective : Function.Surjective (ev hπ) := fun a => ⟨C a, ev_C hπ a⟩
 
 instance isLocalHom_ev : IsLocalHom (ev hπ) :=
   isLocalHom_of_X_mem _ (by rw [ev_X]; exact hπ.not_isUnit)

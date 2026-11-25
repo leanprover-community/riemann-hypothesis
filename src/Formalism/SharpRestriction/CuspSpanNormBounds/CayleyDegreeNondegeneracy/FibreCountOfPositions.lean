@@ -87,10 +87,7 @@ theorem c3eqv_Xflag_zero : Xflag F 0 = ⊥ := by
   simp
 
 theorem c3eqv_Xsp_eq : Xsp F = Xflag F r := by
-  unfold Xsp Xflag Formalism.MainNotions.S.FlagG.X Formalism.MainNotions.S.FlagG.Xa
-  congr 1
-  ext v
-  simp only [Set.mem_range, Set.mem_image, Set.mem_setOf_eq, Fin.is_lt, true_and]
+  exact (Formalism.MainNotions.LatticeGluingRadicals.c_Xflag_r F).symm
 
 variable {F} {Λ : Submodule (𝓞 E) S.V}
 

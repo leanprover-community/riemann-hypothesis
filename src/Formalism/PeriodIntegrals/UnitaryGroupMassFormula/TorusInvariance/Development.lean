@@ -60,24 +60,6 @@ section Alg
 
 variable {A : Type*} [Ring A] [Algebra ℂ A] {n : ℕ}
 
-lemma tm_inter (E E' : Fin n → Fin n → A) (R : A) (h : ∀ a b, E a b * R = R * E' a b) (u : ℂ)
-    (a b : Fin n) : Tm E u a b * R = R * Tm E' u a b := by
-  unfold Tm
-  rw [add_mul, mul_add, h]
-  congr 1
-  split_ifs
-  · exact Algebra.commutes u R
-  · simp
-
-lemma prod_inter (E E' : Fin n → Fin n → A) (R : A) (h : ∀ a b, E a b * R = R * E' a b)
-    (l : List (ℂ × Fin n × Fin n)) :
-    (l.map fun p => Tm E p.1 p.2.1 p.2.2).prod * R = R * (l.map fun p => Tm E' p.1 p.2.1 p.2.2).prod := by
-  induction l with
-  | nil => simp
-  | cons p l ih =>
-    simp only [List.map_cons, List.prod_cons]
-    rw [mul_assoc, ih, ← mul_assoc, tm_inter E E' R h, mul_assoc]
-
 lemma qminor_inter (E E' : Fin n → Fin n → A) (R : A) (h : ∀ a b, E a b * R = R * E' a b)
     {t : ℕ} (α β : Fin t → Fin n) (u : ℂ) : qminor E α β u * R = R * qminor E' α β u := by
   apply _root_.AAInvW.qminor_intertwine <;> assumption

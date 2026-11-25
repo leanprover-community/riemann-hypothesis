@@ -149,12 +149,7 @@ lemma rightCoaction_counit [IsMonHom i] [Mono v] (b : B) :
     IsMonHom.one_hom, ← Hom.one_def, inv_one, _root_.one_smul] at h
   have h' : specHom (φ.comp ρ) = specHom (AlgHom.id R B) := by
     rw [← cancel_mono v]; exact h
-  have h1 : φ (ρ b) = b := congr($(specHom_injective h') b)
-  refine Eq.trans ?_ h1
-  generalize ρ b = z
-  induction z with
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul x y => simp [φ, Algebra.smul_def, _root_.mul_comm]
+  exact coaction_counit_of_eq ρ b congr($(specHom_injective h') b)
 
 lemma rightCoaction_assoc [IsMonHom i] [Mono v] (b : B) :
     TensorProduct.assoc R B Λ Λ (ρ.toLinearMap.rTensor Λ (ρ b)) =
@@ -176,52 +171,11 @@ lemma rightCoaction_assoc [IsMonHom i] [Mono v] (b : B) :
       (Bialgebra.comulAlgHom R Λ)) ≫ i = (specHom r₁ ≫ i) * (specHom r₂ ≫ i) := by
     rw [specHom_lift_comul, MonObj.mul_comp]
   rw [h₀, ← mul_smul, ← mul_inv_rev, ← hm, ← h₂, cancel_mono] at h₁
-  have h : φ₂ (ρ b) = φ₁ (ρ b) := congr($(specHom_injective h₁.symm) b)
-  have e₁ (z : B ⊗[R] Λ) :
-      TensorProduct.assoc R B Λ Λ (ρ.toLinearMap.rTensor Λ z) = φ₁ z := by
-    induction z with
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-    | tmul x y =>
-      simp only [LinearMap.rTensor_tmul, AlgHom.toLinearMap_apply, φ₁,
-        Algebra.TensorProduct.lift_tmul, AlgHom.comp_apply]
-      generalize ρ x = w
-      induction w with
-      | add x y hx hy => simp only [map_add (f := _), add_tmul, add_mul, hx, hy]
-      | tmul x y => simp [φ₀, l, r₁, r₂]
-  have e₂ (z : B ⊗[R] Λ) : (Coalgebra.comul (R := R) (A := Λ)).lTensor B z = φ₂ z := by
-    induction z with
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-    | tmul x y =>
-      simp only [LinearMap.lTensor_tmul, φ₂, Algebra.TensorProduct.lift_tmul, AlgHom.comp_apply,
-        Bialgebra.comulAlgHom_apply]
-      generalize Coalgebra.comul (R := R) y = w
-      induction w with
-      | add x y hx hy => simp only [map_add (f := _), tmul_add, mul_add, hx, hy]
-      | tmul x y => simp [l, r₁, r₂]
-  rw [e₁, e₂, h]
+  exact coaction_assoc_of_eq ρ b congr($(specHom_injective h₁.symm) b)
 
 lemma rightCoaction_free [Mono i] [Mono v] [Module.Finite R Λ] (hf : IsFreeAction H Z) :
-    Function.Surjective (productMap (includeLeft : B →ₐ[R] B ⊗[R] Λ) ρ) := by
-  let m := productMap (includeLeft : B →ₐ[R] B ⊗[R] Λ) ρ
-  have : Epi (CommRingCat.ofHom m.toRingHom) := by
-    refine ⟨fun {T} φ ψ h ↦ ?_⟩
-    have hm (z) : φ (m z) = ψ (m z) := congr($h z)
-    let : Algebra R T := (φ.hom.comp (algebraMap R (B ⊗[R] Λ))).toAlgebra
-    let φ' : B ⊗[R] Λ →ₐ[R] T := ⟨φ.hom, fun _ ↦ rfl⟩
-    let ψ' : B ⊗[R] Λ →ₐ[R] T := ⟨ψ.hom, fun r ↦ by
-      have := hm (algebraMap R _ r)
-      rw [AlgHom.commutes] at this
-      exact this.symm⟩
-    have h₁ : φ'.comp includeLeft = ψ'.comp (includeLeft : B →ₐ[R] B ⊗[R] Λ) := by
-      ext b
-      have := hm (b ⊗ₜ 1)
-      rw [productMap_left_apply] at this
-      exact this
-    have h₂ : φ'.comp ρ = ψ'.comp ρ := by
-      ext b
-      have := hm (1 ⊗ₜ b)
-      rw [productMap_right_apply] at this
-      exact this
+    Function.Surjective (productMap (includeLeft : B →ₐ[R] B ⊗[R] Λ) ρ) :=
+  surjective_productMap_of_cancel ρ fun φ' ψ' h₁ h₂ ↦ by
     have h₃ := specHom_comp_rightCoaction i v ρ hρ φ'
     rw [h₂, specHom_comp_rightCoaction i v ρ hρ ψ', h₁] at h₃
     have h₄ : specHom (φ'.comp includeRight) ≫ i = specHom (ψ'.comp includeRight) ≫ i := by
@@ -231,19 +185,7 @@ lemma rightCoaction_free [Mono i] [Mono v] [Module.Finite R Λ] (hf : IsFreeActi
       have : (g₁ * g₂⁻¹) • x = x := by
         rw [mul_smul, h₃, smul_inv_smul]
       exact mul_inv_eq_one.1 (hf _ _ _ this)
-    have h₅ := specHom_injective ((cancel_mono i).1 h₄)
-    have : φ' = ψ' := Algebra.TensorProduct.ext h₁ h₅
-    ext1
-    exact congr(($this).toRingHom)
-  refine RingHom.surjective_of_epi_of_finite (CommRingCat.ofHom m.toRingHom) ?_
-  refine RingHom.Finite.of_comp_finite
-    (f := (includeLeftRingHom : B →+* B ⊗[R] B)) ?_
-  have : (CommRingCat.ofHom m.toRingHom).hom.comp (includeLeftRingHom : B →+* B ⊗[R] B) =
-      algebraMap B (B ⊗[R] Λ) := by
-    ext b
-    simp [m]
-  rw [this, RingHom.finite_algebraMap]
-  infer_instance
+    exact specHom_injective ((cancel_mono i).1 h₄)
 
 end Coaction
 
@@ -718,7 +660,6 @@ open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hyp
 namespace GlobalTheory.CompanionTheory.FreeQuotGlue
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_colimit_of_quotient_charts : ∀ {X : Scheme.{0}} (R : X → X → Prop) (𝒰 : Set X.Opens), (∀ U ∈ 𝒰, ∀ V ∈ 𝒰, ∀ x : X, x ∈ U → x ∈ V → ∃ W ∈ 𝒰, x ∈ W ∧ W ≤ U ∧ W ≤ V) → (∀ x : X, ∃ U : 𝒰, x ∈ U.1) → ∀ (Y : 𝒰 → Scheme.{0}) (q : ∀ U : 𝒰, U.1.toScheme ⟶ Y U), (∀ U, Epi (q U)) → (∀ U, Function.Surjective (q U)) → (∀ (U : 𝒰) (u v : U.1.toScheme), q U u = q U v ↔ R (U.1.ι u) (U.1.ι v)) → (∀ (U : 𝒰) (x y : X), R x y → x ∈ U.1 → y ∈ U.1) → ∀ (k : ∀ U V : 𝒰, U.1 ≤ V.1 → (Y U ⟶ Y V)), (∀ U V h, IsOpenImmersion (k U V h)) → (∀ U V h, q U ≫ k U V h = X.homOfLE h ≫ q V) → ∃ (Y' : Scheme.{0}) (π : X ⟶ Y') (em : ∀ U, Y U ⟶ Y') (_ : ∀ U, IsOpenImmersion (em U)), (∀ U, U.1.ι ≫ π = q U ≫ em U) ∧ (∀ U, π ⁻¹ᵁ (em U).opensRange = U.1) ∧ ∀ y : Y', ∃ U, ∃ z : Y U, em U z = y := by
   intro X R 𝒰 hbas hc Y q hepi hsurj hfib hst k hko hqk
   have hr (U : 𝒰) : U.1.ι.opensRange = U.1 := Scheme.Opens.opensRange_ι _

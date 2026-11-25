@@ -186,7 +186,7 @@ theorem EW_add_single (hwe : ∀ c d, w c ≠ e d) (c : Fin r) (g : MvPolynomial
 
   simp only [EW, map_sum, Derivation.leibniz, pderiv_X, smul_eq_mul]
   refine Finset.sum_congr rfl fun c' _ => ?_
-  rw [Pi.single_apply, if_neg (hwe c' c), pderiv_comm (w c') (e c)]
+  rw [Pi.single_apply, ite_eq_right (hwe c' c), pderiv_comm (w c') (e c)]
   simp
 
 theorem EW_pderiv_w (hw : Function.Injective w) (c : Fin r) (g : MvPolynomial σ k) :
@@ -515,7 +515,7 @@ theorem pow_Dp_omega (he : Function.Injective e) (hwe : ∀ c d, w c ≠ e d) (�
 
     simp [map_sum, Derivation.leibniz, pderiv_X, Pi.single_apply, he.eq_iff, hwe]
   have hX : pderiv (e ρ) (X (w ρ) : MvPolynomial σ k) = 0 := by
-    rw [pderiv_X, Pi.single_apply, if_neg (hwe ρ ρ)]
+    rw [pderiv_X, Pi.single_apply, ite_eq_right (hwe ρ ρ)]
   induction i with
   | zero => simp
   | succ i ih =>
@@ -835,7 +835,7 @@ theorem quot_mem_pol (LL : M.Letters (N + 1)) (ρ : Fin r) (e : ℕ) (f h : MvPo
       · simp
       · intro c _ hc; simp [Ne.symm hc]
       · simp
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       exact Finset.sum_eq_zero fun c _ => by simp [Ne.symm hi]
   rw [hs] at h2
   show ∑ c, m (i, c) = Function.update LL.deg (Fin.last N) (LL.deg (Fin.last N) - e) i

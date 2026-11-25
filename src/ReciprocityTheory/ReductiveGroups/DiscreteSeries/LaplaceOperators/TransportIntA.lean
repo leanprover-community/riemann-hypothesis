@@ -3,6 +3,7 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.VolUFactProdMulLe
 
 @[expose] public section
 
@@ -44,16 +45,6 @@ theorem jm_ext_neg {n : ℕ} (ε : Fin n → Bool) (v : {i // ε i = false} → 
   rw [Formalism.REAL.Jm, Matrix.mulVec_diagonal]
   by_cases h : ε i = false <;> simp [extL, h]
 
-private theorem pq_lemma {n : ℕ} (η : Fin n → Bool) : pOf η + qOf η = n := by
-  classical
-  unfold pOf qOf
-  rw [← Finset.card_union_of_disjoint (Finset.disjoint_filter.2 fun a _ h1 h2 => by simp_all)]
-  have hu : (Finset.univ.filter fun a => η a = true) ∪ (Finset.univ.filter fun a => η a = false) =
-      Finset.univ := by
-    ext a
-    cases h : η a <;> simp [h]
-  rw [hu, Finset.card_univ, Fintype.card_fin]
-
 theorem pOf_le_of_conj {n : ℕ} (ε ε' : Fin n → Bool) (Q : Matrix (Fin n) (Fin n) ℂ)
     (hQ : Qᴴ * Formalism.REAL.Jm ε * Q = Formalism.REAL.Jm ε') : pOf ε' ≤ pOf ε := by
   classical
@@ -85,7 +76,7 @@ theorem pOf_le_of_conj {n : ℕ} (ε ε' : Fin n → Bool) (Q : Matrix (Fin n) (
   have hr2 : Module.finrank ℂ (LinearMap.range f2) = qOf ε := by
     rw [LinearMap.finrank_range_of_inj hf2, Module.finrank_fintype_fun_eq_card, Fintype.card_subtype]
     rfl
-  have hpq := pq_lemma ε
+  have hpq := ReciprocityTheory.ChartRestriction.DS.volU_pOf_add_qOf ε
   have hsum := Submodule.finrank_sup_add_finrank_inf_eq (LinearMap.range f1) (LinearMap.range f2)
   rw [hr1, hr2] at hsum
   have hle : Module.finrank ℂ ↥(LinearMap.range f1 ⊔ LinearMap.range f2) ≤ n := by
@@ -134,7 +125,7 @@ theorem cayley_signature' {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
   have h2 : pOf ε ≤ pOf ε0 :=
     pOf_le_of_two ε0 ε _ P0 P hP0 hP.2 ((Matrix.isUnit_iff_isUnit_det P).1 hP.1)
   have h0 : pOf ε0 = k + r := hε0
-  have hpq := pq_lemma ε
+  have hpq := ReciprocityTheory.ChartRestriction.DS.volU_pOf_add_qOf ε
   constructor <;> omega
 
 end ReciprocityTheory.ChartRestriction.DS.Lap.TransportIntA

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.ConjugateSelfDual.Statement
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter

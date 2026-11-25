@@ -131,7 +131,7 @@ theorem exists_det_one_mul_stdBlock {K : Type} [Field K] {n r : ℕ} (hrn : r < 
   let D : Matrix (Fin n) (Fin n) K := Matrix.diagonal fun a => if a = last then g₀.det⁻¹ else 1
   let g := g₀ * D
   have hgdet : g.det = 1 := by
-    simp only [g, D, Matrix.det_mul, Matrix.det_diagonal, Finset.prod_ite_eq', Finset.mem_univ, if_true]
+    simp only [g, D, Matrix.det_mul, Matrix.det_diagonal, Finset.prod_ite_eq', Finset.mem_univ, ite_true]
     exact mul_inv_cancel₀ hdet
   have hU : IsUnit g := (Matrix.isUnit_iff_isUnit_det g).mpr (by rw [hgdet]; exact isUnit_one)
   refine ⟨hU.unit, ?_, ?_⟩
@@ -141,17 +141,17 @@ theorem exists_det_one_mul_stdBlock {K : Type} [Field K] {n r : ℕ} (hrn : r < 
       intro a c; rw [Fin.ext_iff, Fin.coe_castLE]
     have hτc : ∀ c : Fin r, τ (Fin.castLE hrn.le c) = Sum.inl c := by
       intro c
-      simp only [τ, Fin.coe_castLE, dif_pos c.isLt]
+      simp only [τ, Fin.coe_castLE, dite_eq_left c.isLt]
     rw [IsUnit.unit_spec]
     ext i c
     simp only [g, D, Matrix.mul_apply, Matrix.diagonal_apply, Matrix.of_apply, hE]
-    simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have hne : Fin.castLE hrn.le c ≠ last := by
       intro h
       have h2 := congrArg Fin.val h
       simp only [Fin.coe_castLE, last] at h2
       omega
-    simp only [if_neg hne]
+    simp only [ite_eq_right hne]
     show b (τ (Fin.castLE hrn.le c)) i = y i c
     rw [hτc, hb]
     rfl
@@ -408,11 +408,11 @@ theorem datum_move (R : RealDat D A Ks) (i : Fin D.R.m) (Q : Finset (Pl D.host.E
   by_cases hx : IsHalf (cA D e) x ∧ IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x)
   · obtain ⟨i1, i2⟩ := GlobalTheory.AdjDatumMove.red_actO _ _ (R.βV i) (R.βW i) hm hh1 hx.2
     simp only
-    rw [if_pos ⟨(GlobalTheory.SchrMove.isHalf_actO_iff m 1 x).2 hx.1, i1⟩, if_pos hx, funext i2]
+    rw [ite_eq_left ⟨(GlobalTheory.SchrMove.isHalf_actO_iff m 1 x).2 hx.1, i1⟩, ite_eq_left hx, funext i2]
     simp only [map_one, Formalism.L2.DIV.redFn_one, inv_one, Units.val_one, Matrix.mul_one]
     exact omegaFree_move R i Q ξR y₀ (fun PP => redFn (R.βV i) PP (finE (Vc D i) m)) hQ hM _
   · simp only
-    rw [if_neg hx, if_neg]
+    rw [ite_eq_right hx, ite_eq_right]
     rintro ⟨h1, h2⟩
     refine hx ⟨(GlobalTheory.SchrMove.isHalf_actO_iff m 1 x).1 h1, ?_⟩
     have h4 := (GlobalTheory.AdjDatumMove.red_actO _ _ (R.βV i) (R.βW i) (g := m⁻¹) (h := (1 : GA D (Wc D i))⁻¹)

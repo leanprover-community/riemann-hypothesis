@@ -43,7 +43,6 @@ theorem exists_equiv (h1 : φ '' Set.range R.P = Set.range R'.P) (h3 : ∀ a x, 
 
 theorem proj_equiv (h3 : ∀ a x, φ (R.B a x) = R'.B a (φ x)) (s : 𝓞 E →+* ℂ) (x : Fin g → ℂ) :
     proj R'.B s (φ x) = φ (proj R.B s x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [proj_apply, map_sum, map_smul, h3]
 
 theorem nz_map {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (h2 : ∀ x y, R'.ip (φ x) (φ y) = R.ip x y)

@@ -210,9 +210,9 @@ theorem coeff_det_pencil_mem : ∀ {Γ X O : Type} [Group Γ] [CommRing O] {n : 
   rw [hfun]
   refine Subalgebra.sum_mem _ fun d _ => ?_
   by_cases hd : d 0 = j
-  · simp only [hd, if_true]
+  · simp only [hd, ite_true]
     exact key d
-  · simp only [hd, if_false]
+  · simp only [hd, ite_false]
     exact T.zero_mem
 
 end GlobalTheory.SpanRing
@@ -1695,7 +1695,7 @@ theorem exists_good (rep : N.X i → (GE N →* GL (Fin R.nV) (N.O i)))
     rw [prod_Icc_eq, hβp, ← Equiv.prod_comp x'.2 (fun c => Polynomial.X - Polynomial.C (β x'.1 c))]
     simp only [root_succ]
   have hE := fun x' : N.X i × Equiv.Perm (Fin R.t) =>
-    GlobalTheory.T.idempotentBlock_rootFactors_rank_one_domain R.nV R.t (eB x'.1) (X0 x'.1) (fun c => root β c x') (two_le_ranks_t R)
+    GlobalTheory.RootFactor.rank_one_and_sq R.nV R.t (eB x'.1) (X0 x'.1) (fun c => root β c x') (two_le_ranks_t R)
       (congrFun hid.2.2.1 _) (congrFun hX1 _) (congrFun hX2 _) (by
         intro c hc c' hc' h
         obtain ⟨a, rfl⟩ := exists_succ hc

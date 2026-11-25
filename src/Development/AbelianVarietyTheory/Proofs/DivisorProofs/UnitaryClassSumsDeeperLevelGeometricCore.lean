@@ -347,7 +347,7 @@ theorem deep_eq_of_congMod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   obtain ⟨yy, hyy, hcomp⟩ := GlobalTheory.T.unitary_trait_labels_extend_to_deeper_level E H Dw hpq l Xo cf C X₁ D w₁ w₂ htie p z₁ ct₁ yy₁ hyy₁ y' rfl
   let ct₂ : UCTrait D.X p z₂ := { D.lift ct₁ y' rfl with cen := hcen }
   have hyy₂ : UIsLabW D.X w₂ ct₂ yy := hyy
-  obtain ⟨e, he⟩ := GlobalTheory.T.exists_linearEquiv_labelledLattices_unitaryTraits E H Dw hpq l Xo cf C D.X w₂ hproj p z₂ ct₀ ct₂ yy₀ yy hyy₀ hyy₂
+  obtain ⟨e, he⟩ := GlobalTheory.UPoinc.exists_linearEquiv_labelled_of_uIsLabW E H Dw hpq l Xo cf C D.X w₂ hproj p z₂ ct₀ ct₂ yy₀ yy hyy₀ hyy₂
   have h1 := he a ν ha
   have h2 := he a' ν' ha'
   obtain ⟨w, hw⟩ := hcong
@@ -651,8 +651,8 @@ theorem exists_level (X₁ : USetup C) (K : ℕ) (hK : 0 < K) (hKu : IsUnit (K :
         IsGrpPullback P.A X₁.ρ.P.A (spMap h) ψ ∧ LBIso P.L (X₁.ρ.P.L.pull ψ) ∧
         Nonempty (Out.Level P K (unitOn ((Units.map (algebraMap o₂ R : o₂ →* R)) ze))) := by
   haveI : CharZero X₁.Ω₁ := ArithBase.char X₁.o₁
-  obtain ⟨Ω₂, _, _, Q, φ, ζ, hfd, hgal, hζ, hg, hpb, hlb, hlev⟩ := GlobalTheory.T.exists_symplecticLevel_genericFibre_galoisExtension X₁.S.R.val.toRingHom X₁.ρ.P K hK
-  obtain ⟨o₂, _, _, _, κ, ze, hfin, hcomp, hze⟩ := GlobalTheory.T.exists_arithBase_finite_containing_rootOfUnity (o₁ := X₁.o₁) (Ω₁ := X₁.Ω₁) Ω₂ K ζ hK hζ
+  obtain ⟨Ω₂, _, _, Q, φ, ζ, hfd, hgal, hζ, hg, hpb, hlb, hlev⟩ := GlobalTheory.LevelGalois.exists_level_galois X₁.S.R.val.toRingHom X₁.ρ.P K hK
+  obtain ⟨o₂, _, _, _, κ, ze, hfin, hcomp, hze⟩ := GlobalTheory.Poinc.exists_arithBase_rootOfUnity (o₁ := X₁.o₁) (Ω₁ := X₁.Ω₁) Ω₂ K ζ hK hζ
   have hKu₂ : IsUnit (K : o₂) := by simpa using hKu.map κ
   have hlev' : Nonempty (Out.Level Q K (unitOn (Units.map (algebraMap o₂ Ω₂ : o₂ →* Ω₂) ze))) := by rw [hze]; exact hlev
   obtain ⟨R, h, P, ψ, hR, hfr, hh, hPg, hPpb, hPlb, hPlev⟩ :=
@@ -662,9 +662,6 @@ theorem exists_level (X₁ : USetup C) (K : ℕ) (hK : 0 < K) (hKu : IsUnit (K :
 
 end GlobalTheory.UPoinc.UDeepEx
 
-namespace GlobalTheory.UPoinc.UDeepEx
-
-end GlobalTheory.UPoinc.UDeepEx
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -976,7 +973,7 @@ theorem exists_udeep_proj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     rw [hN₂]
     exact (hdm.trans (dvd_pow_self _ two_ne_zero)).trans (dvd_mul_left _ _)
   obtain ⟨lab, hsame, hrange⟩ :=
-    GlobalTheory.T.exists_thetaLabel_common_generic_fibre_pullback X₁.S S₂ X₁.ρ ρ₂ (fun _ => 𝟙 _) (fun _ => 𝟙 _) (algebraMap X₁.Ω₁ Ω₂) h' (φ ≫ ψ) hval hpb' hlb'
+    GlobalTheory.Poinc.DeepLab.exists_lab_same X₁.S S₂ X₁.ρ ρ₂ (fun _ => 𝟙 _) (fun _ => 𝟙 _) (algebraMap X₁.Ω₁ Ω₂) h' (φ ≫ ψ) hval hpb' hlb'
       (fun _ => by simp) hd₂
   have hsame' : USame X₁.ρ ρ₂ lab (algebraMap X₁.Ω₁ Ω₂) := by
     obtain ⟨P₀, a, a', -, h₁, h₂, h₃, h₄, -, h₅⟩ := hsame
@@ -1008,20 +1005,6 @@ namespace GlobalTheory.UPoinc.USum
 section Cong
 variable {Y : Type} [AddCommGroup Y]
 
-theorem cm_trans {N : ℕ} {x y z : Y} (h : CongMod N x y) (h' : CongMod N y z) : CongMod N x z := by
-  obtain ⟨w, rfl⟩ := h
-  obtain ⟨w', rfl⟩ := h'
-  exact ⟨w' + w, by rw [smul_add]; abel⟩
-
-theorem cm_symm {N : ℕ} {x y : Y} (h : CongMod N x y) : CongMod N y x := by
-  obtain ⟨w, rfl⟩ := h
-  exact ⟨-w, by rw [smul_neg]; abel⟩
-
-theorem cm_map {Y' : Type} [AddCommGroup Y'] (f : Y →+ Y') {N : ℕ} {x y : Y} (h : CongMod N x y) :
-    CongMod N (f x) (f y) := by
-  obtain ⟨w, rfl⟩ := h
-  exact ⟨f w, by rw [map_add (f := _), map_nsmul]⟩
-
 theorem cm_of_mk {N : ℕ} {x y : Y} (h : (QuotientAddGroup.mk x : ModN N Y) = QuotientAddGroup.mk y) : CongMod N x y := by
   rw [QuotientAddGroup.eq] at h
   obtain ⟨w, hw⟩ := h
@@ -1038,7 +1021,6 @@ end Cong
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {S : ThetaSys o Ω} {ρ : S.Real} {M : RatModel o Ω} {p : ℕ}
   [Fact p.Prime] {Y : Type} [AddCommGroup Y] {q : Y → ℝ}
 
-
 variable (ρ M q) in
 def GLab (y : Sp (PadicAlgCl p) ⟶ M.Z) (yy : S.Gam →+ ModN (S.r * S.N) Y) : Prop :=
   ∃ (c₀ : Ω) (hc : c₀ ≠ 0) (R' : Subalgebra o Ω) (fg : R'.FG) (frac : ∀ x : Ω, ∃ a ∈ R', ∃ b ∈ R', x = a / b)
@@ -1048,12 +1030,6 @@ def GLab (y : Sp (PadicAlgCl p) ⟶ M.Z) (yy : S.Gam →+ ModN (S.r * S.N) Y) : 
       ∃ (u : ρ'.UTest p y₀) (lb : u.Lab) (j : u.D.toPre.X ≃+ Y), (∀ χ, lb.q χ = q (j χ)) ∧
         ∀ a χ, lb.yy a = QuotientAddGroup.mk χ → yy a = QuotientAddGroup.mk (j χ)
 
-theorem same_of_uSame {o Ω o' Ω' : Type} [CommRing o] [Field Ω] [Algebra o Ω] [CommRing o'] [Field Ω'] [Algebra o' Ω']
-    {S : ThetaSys o Ω} {S' : ThetaSys o' Ω'} {ρ : S.Real} {ρ' : S'.Real} {lab : S.Gam → S'.Gam} {φ : Ω →+* Ω'}
-    (h : USame ρ ρ' lab φ) : Same ρ (fun _ => 𝟙 _) ρ' (fun _ => 𝟙 _) lab φ := by
-  obtain ⟨P₀, a, a', h₁, h₂, l₁, l₂, hp⟩ := h
-  exact ⟨P₀, a, a', fun _ => 𝟙 _, h₁, h₂, l₁, l₂, fun _ => ⟨by simp, by simp⟩, hp⟩
-
 theorem GLab.conj [IsNoetherianRing o] (hM : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme M.Z) {σ : Ω →+* Ω} {g : S.Gam → S.Gam}
     (hg : IsConj ρ σ g) {s : M.Z ⟶ M.Z} (hs : M.pt ≫ s = spMap σ ≫ M.pt) {y : Sp (PadicAlgCl p) ⟶ M.Z}
     {yy yy' : S.Gam →+ ModN (S.r * S.N) Y} (h₁ : GLab ρ M q y yy) (h₂ : GLab ρ M q (y ≫ s) yy') :
@@ -1061,8 +1037,8 @@ theorem GLab.conj [IsNoetherianRing o] (hM : ReciprocityTheory.ChartRestriction.
   obtain ⟨c₀, hc, R', fg, frac, hth, hev, ρ', hS, -, hR, y₀, hy₀, u, lb, j, hq, hyy⟩ := h₁
   obtain ⟨c₁, hc₁, R'', fg₁, frac₁, hth₁, hev₁, ρ'', hS₁, -, hR₁, y₁, hy₁, u', lb', j', hq', hyy'⟩ := h₂
   obtain ⟨P, b, t, hb, ht, l₁, lt, hp⟩ := hg
-  obtain ⟨Q, b', b'', hb', hb'', l', l'', hpQ, -⟩ := GalTrans.exists_generic ρ _ ρ' _ ρ'' _ _ _ (same_of_uSame hS)
-    (same_of_uSame hS₁) σ g P b t (fun _ => 𝟙 _) hb ht l₁ lt (fun _ => ⟨by simp, by simp⟩) hp
+  obtain ⟨Q, b', b'', hb', hb'', l', l'', hpQ, -⟩ := GalTrans.exists_generic ρ _ ρ' _ ρ'' _ _ _ (GlobalTheory.UPoinc.USpread.same_of_uSame hS)
+    (GlobalTheory.UPoinc.USpread.same_of_uSame hS₁) σ g P b t (fun _ => 𝟙 _) hb ht l₁ lt (fun _ => ⟨by simp, by simp⟩) hp
   obtain ⟨P₀, a, a', ha, ha', hL, hL', hlab, -⟩ := GalTrans.spread M hM ρ' ρ'' σ s hs y hR hR₁ y₀ y₁ hy₀ hy₁ u u' Q
     hb' hb'' l' l''
   obtain ⟨e, hψ, htor⟩ := _root_.GlobalTheory.UnifTorsK.main _ _ ρ' ρ'' p y₀ y₁ u u' P₀ a a' ha ha' hL hL'
@@ -1087,9 +1063,9 @@ theorem GLab.conj [IsNoetherianRing o] (hM : ReciprocityTheory.ChartRestriction.
     have Q₂ := (hf1' pk' x').2 hpk'.symm
     rw [hyy' k _ (lb'.yy_eq _ pk' x' Q₂ hx')]
     have c₀ : CongMod (S.r * S.N) (j.symm ν) pk.y := by
-      simpa using cm_map j.symm.toAddMonoidHom (cm_of_mk (hν.symm.trans (hyy _ _ (lb.yy_eq _ pk x Q₁ hx))))
-    exact cm_mk (cm_map j'.toAddMonoidHom (cm_trans (htor _ pk pk' x x' w hrN Q₁ Q₂ hw hwa hwa')
-      (cm_symm (cm_map e.toAddMonoidHom c₀))))
+      simpa using GlobalTheory.UPoinc.ULabUniq.cm_map j.symm.toAddMonoidHom (cm_of_mk (hν.symm.trans (hyy _ _ (lb.yy_eq _ pk x Q₁ hx))))
+    exact cm_mk (GlobalTheory.UPoinc.ULabUniq.cm_map j'.toAddMonoidHom (GlobalTheory.UPoinc.ULabUniq.cm_trans (htor _ pk pk' x x' w hrN Q₁ Q₂ hw hwa hwa')
+      (GlobalTheory.UPoinc.ULabUniq.cm_symm (GlobalTheory.UPoinc.ULabUniq.cm_map e.toAddMonoidHom c₀))))
 
 theorem GLab.tendsto {y : Sp (PadicAlgCl p) ⟶ M.Z} {yy : S.Gam →+ ModN (S.r * S.N) Y} (h : GLab ρ M q y yy) :
     Filter.Tendsto q Filter.cofinite Filter.atTop := by
@@ -1126,7 +1102,6 @@ theorem GLab.exists_div [ArithBase o Ω] (hd : M.HasDiv S.th) {y : Sp (OO p) ⟶
     congr 2
     have := hdv.1
     field_simp
-  have hn' : ‖y₀ ⟨c₀ * S.th a, hth a⟩‖ = sc := hn
   have b₁ := RatModel.norm_val_le_one hz (hdv.2 a)
   have b₂ := hle' d
   refine le_antisymm b₁ (not_lt.1 fun hlt => ?_)
@@ -1147,12 +1122,12 @@ theorem GLab.norms [ArithBase o Ω] (hM : ReciprocityTheory.ChartRestriction.G.G
     ext b
     obtain ⟨χ, hχ⟩ := QuotientAddGroup.mk_surjective (l.yy b)
     rw [AddMonoidHom.mem_ker, AddMonoidHom.mem_ker, hyy b χ hχ.symm, ← hχ]
-    exact ⟨fun h => cm_mk (by simpa using cm_map j.symm.toAddMonoidHom (cm_of_mk (y := 0) h)),
-      fun h => cm_mk (y := 0) (by simpa using cm_map j.toAddMonoidHom (cm_of_mk (y := 0) h))⟩
+    exact ⟨fun h => cm_mk (by simpa using GlobalTheory.UPoinc.ULabUniq.cm_map j.symm.toAddMonoidHom (cm_of_mk (y := 0) h)),
+      fun h => cm_mk (y := 0) (by simpa using GlobalTheory.UPoinc.ULabUniq.cm_map j.toAddMonoidHom (cm_of_mk (y := 0) h))⟩
   have hla : l.yy a = QuotientAddGroup.mk ν := by
     obtain ⟨χ, hχ⟩ := QuotientAddGroup.mk_surjective (l.yy a)
     rw [← hχ]
-    exact cm_mk (by simpa using cm_map j.symm.toAddMonoidHom (cm_of_mk ((hyy a χ hχ.symm).symm.trans ha)))
+    exact cm_mk (by simpa using GlobalTheory.UPoinc.ULabUniq.cm_map j.symm.toAddMonoidHom (cm_of_mk ((hyy a χ hχ.symm).symm.trans ha)))
   have hwt : l.wt (m • ν) = wtChar S (S.perp l.yy.ker) (m • a) :=
     AddMonoidHom.ext (l.wt_eq (m • a) _ (by rw [map_nsmul, hla]; rfl))
   have hint : ∀ a : o, ‖y₀ (algebraMap o R' a)‖ ≤ 1 := fun a => by
@@ -1212,11 +1187,6 @@ theorem GLab.norms [ArithBase o Ω] (hM : ReciprocityTheory.ChartRestriction.G.G
 
     rw [← norm_mul, ← e₂, map_sum]
     simp only [map_mul]
-  have hm0 : (m : ℝ) ≠ 0 := by
-    have := S.N_ge
-    rintro h0
-    obtain rfl : m = 0 := by exact_mod_cast h0
-    omega
   have hqm : ∀ χ, l.q (m • χ) = (S.N : ℝ) * l.q χ := fun χ => by
     rw [← natCast_zsmul, QuadraticMap.map_smul, congrArg (Nat.cast : ℕ → ℝ) hm]
     simp [sq]
@@ -1274,15 +1244,10 @@ theorem gLab_of {X : USetup C} {p : ℕ} [Fact p.Prime] {z : X.M.Z} {ct : UCTrai
 
 theorem normal (X : USetup C) : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X.M.Z := GlobalTheory.IsNormalScheme.pred _ (h := X.normal)
 
-theorem be_pos (T : UTrait Xo cf) (x : T.P.D.toPre.X) (hx : x ≠ 0) : 0 < T.be x x := by
-  obtain ⟨j, hj⟩ := IsMonomial.exists_pos (IsLocalRing.maximalIdeal.isMaximal T.V).ne_top T.mono hx
-  fin_cases j
-  simpa using hj
-
 theorem be_nonneg (T : UTrait Xo cf) (x : T.P.D.toPre.X) : 0 ≤ T.be x x := by
   by_cases hx : x = 0
   · simp [hx]
-  · exact (be_pos T x hx).le
+  · exact (GlobalTheory.UPoinc.UGalLab.be_pos T x hx).le
 
 theorem norm_unif {X : USetup C} {p : ℕ} [Fact p.Prime] {z : X.M.Z} (c : UCTrait X p z) :
     0 < ‖c.ι (algebraMap c.T.V (FractionRing c.T.V) c.T.ϖ)‖ ∧ ‖c.ι (algebraMap c.T.V (FractionRing c.T.V) c.T.ϖ)‖ < 1 := by
@@ -1308,12 +1273,6 @@ theorem exists_root {X : USetup C} {p : ℕ} [Fact p.Prime] {z : X.M.Z} (c : UCT
   push_cast
   ring
 
-theorem three_le_level (X : USetup C) : 3 ≤ X.S.r * X.S.N := by
-  have hr := X.S.r_pos
-  have h2 := X.S.N_ge
-  obtain ⟨k, hk⟩ := odd_level X.ρ
-  nlinarith [show 3 ≤ X.S.N by omega]
-
 theorem eq_of_qf {X : USetup C} {p : ℕ} [Fact p.Prime] {z : X.M.Z} (c : UCTrait X p z)
     (κ : c.T.P.D.toPre.X ≃+ c.T.P.D.toPre.X) (hq : ∀ x, qf c (κ x) = qf c x) (L : ℕ) (hL : 3 ≤ L)
     (hc : ∀ x, CongMod L (κ x) x) (x : c.T.P.D.toPre.X) : κ x = x := by
@@ -1334,7 +1293,7 @@ theorem eq_of_qf {X : USetup C} {p : ℕ} [Fact p.Prime] {z : X.M.Z} (c : UCTrai
     rw [hβ, hβ]
     show c.T.be (κ u) (κ v) + c.T.be (κ v) (κ u) = _
     linarith
-  have he := eq_refl_of_isometry_congMod _ β (fun u hu => by rw [hβ]; have := be_pos c.T u hu; linarith) e hiso L hL hc
+  have he := eq_refl_of_isometry_congMod _ β (fun u hu => by rw [hβ]; have := GlobalTheory.UPoinc.UGalLab.be_pos c.T u hu; linarith) e hiso L hL hc
   simpa [e] using congrArg (fun f : c.T.P.D.toPre.X ≃ₗ[ℤ] c.T.P.D.toPre.X => f x) he
 
 theorem congMod_cancel {Y : Type} [AddCommGroup Y] [Module.Free ℤ Y] {M d L : ℕ} (hm : M = d * L) (hd : d ≠ 0) {x y : Y}
@@ -1404,9 +1363,9 @@ theorem exists_lab {a : D.X.S.Gam} (ha : (X₁.S.r * X₁.S.N) • a = 0) : ∃ 
 
 theorem div_deep (hpq : 1 ≤ Dw.p + Dw.q) {z₁ : X₁.M.Z} {x₀ : X₁.S.Gam} (hx : X₁.M.Div X₁.S.th x₀ z₁) {z' : D.X.M.Z}
     (hz' : D.q z' = z₁) : D.X.M.Div D.X.S.th (D.lab x₀) z' := by
-  obtain ⟨a, ha, hdv⟩ := exists_div_torsion hpq D.X z' ((three_le_level X₁).trans' (by norm_num)) (level_dvd D)
+  obtain ⟨a, ha, hdv⟩ := exists_div_torsion hpq D.X z' ((GlobalTheory.UPoinc.UGalLab.three_le_level X₁).trans' (by norm_num)) (level_dvd D)
   obtain ⟨b, rfl⟩ := exists_lab D ha
-  obtain ⟨k, hk, e⟩ := DivDeep.same_ratio (same_of_uSame D.same) x₀ b
+  obtain ⟨k, hk, e⟩ := DivDeep.same_ratio (GlobalTheory.UPoinc.USpread.same_of_uSame D.same) x₀ b
   set φ := algebraMap X₁.Ω₁ D.X.Ω₁
   have h₁ : φ (X₁.S.th x₀) ≠ 0 := (map_ne_zero φ).2 hx.1
   have h₂ := hdv.1
@@ -1483,7 +1442,7 @@ theorem mem_ker_of_lab (hc : D.Compat yy₁ yy) [Module.Free ℤ Y] {κ : X₁.S
   obtain ⟨ν, hν⟩ := QuotientAddGroup.mk_surjective (yy₁ κ)
   have := hc κ ν hν.symm
   rw [e', show yy (D.lab κ) = QuotientAddGroup.mk (d • 0) by rw [smul_zero]; exact hκ] at this
-  exact hν.symm.trans (cm_mk (y := 0) (cm_symm (congMod_cancel e hd (cm_of_mk this))))
+  exact hν.symm.trans (cm_mk (y := 0) (GlobalTheory.UPoinc.ULabUniq.cm_symm (congMod_cancel e hd (cm_of_mk this))))
 
 theorem wtChar_eq (hs : Function.Surjective yy) {a a' : D.X.S.Gam} {ν ν' : Y} (ha : yy a = QuotientAddGroup.mk ν)
     (ha' : yy a' = QuotientAddGroup.mk ν') (h : CongMod D.m ν ν') :
@@ -1547,7 +1506,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
         exact (g₀.norms (normal D.X) hy₀ hd₂ D.sq (hα ν)).1 hmin h hh ξ k hk hξ)
       (fun ν hmin => by
         obtain ⟨h, hh, e, hn⟩ := (g₀.norms (normal D.X) hy₀ hd₂ D.sq (hα ν)).2 hmin _
-          ((three_le_level X₁).trans' (by norm_num)) D.dvd
+          ((GlobalTheory.UPoinc.UGalLab.three_le_level X₁).trans' (by norm_num)) D.dvd
         obtain ⟨b, hb⟩ := exists_lab D e
         have hb' : b ∈ yy₁.ker := mem_ker_of_lab D c₀ (by rw [hb]; exact nsmul_mem hh _)
         obtain ⟨ξ, k, hk, hξ, e'⟩ := hf₁ (D.m • α ν) b h (k₀.le hh) hb.symm
@@ -1566,7 +1525,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
     have g₂ : GLab D.X.ρ D.X.M (qf ct) (gPt p ≫ y) yy := gLab_lift D ct h₂
     obtain ⟨κ', hκq, hκ⟩ := g₀.conj (normal D.X) hg hs' (by rw [e]; exact g₂)
     obtain ⟨d, hd, e₁, e₂⟩ := exists_cofactor D
-    have hid := eq_of_qf ct κ' hκq _ (three_le_level X₁) fun x => by
+    have hid := eq_of_qf ct κ' hκq _ (GlobalTheory.UPoinc.UGalLab.three_le_level X₁) fun x => by
       obtain ⟨b, hb⟩ := on₁ (QuotientAddGroup.mk x)
       have := (hκ (D.lab b) _ (by rw [hgl]; exact c₀ b x hb)).symm.trans (hc b x hb)
       rw [e₂, map_nsmul] at this
@@ -1589,7 +1548,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
       exact mul_mem (Subalgebra.algebraMap_mem _ _) (mul_mem (root_mem_O D.X z' hk' hu) ((div_deep D hpq hx₀ hz').2 b))
     · simp only [hf₀ _ _ he]
       exact zero_mem _
-  · simp only [dif_pos hl]
+  · simp only [dite_eq_left hl]
     exact (key ct yy₁ hl).choose_spec
 
 end GlobalTheory.UPoinc.USum
@@ -1649,7 +1608,7 @@ theorem classSums_core : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   choose yy₁ hyy₁ using fun y => GlobalTheory.T.exists_labels_unitaryClassicalTrait E H Dw hpq l Xo cf C X₁ w₁ p z₁ (ct y)
   choose yy hyy hcomp using fun y => GlobalTheory.T.unitary_trait_labels_extend_to_deeper_level E H Dw hpq l Xo cf C X₁ D w₁ w₂ htie p z₁ (ct y) (yy₁ y) (hyy₁ y) (y₂ y) (hq y)
   have hyy₂ : ∀ y, UIsLabW D.X w₂ (ct₂ y) (yy y) := fun y => hyy y
-  choose d hd using fun y => GlobalTheory.T.exists_linearEquiv_labelledLattices_unitaryTraits E H Dw hpq l Xo cf C D.X w₂ hproj p z₂ (ct₂ y₀) (ct₂ y) (yy y₀) (yy y) (hyy₂ y₀) (hyy₂ y)
+  choose d hd using fun y => GlobalTheory.UPoinc.exists_linearEquiv_labelled_of_uIsLabW E H Dw hpq l Xo cf C D.X w₂ hproj p z₂ (ct₂ y₀) (ct₂ y) (yy y₀) (yy y) (hyy₂ y₀) (hyy₂ y)
   let k : ∀ y, Φ.X y₀ ≃ₗ[𝓞 E] Φ.X y := fun y =>
     if h : y = y₀ then (by subst h; exact LinearEquiv.refl _ _) else (e y₀).trans ((d y).trans (e y).symm)
   have hk0 : k y₀ = LinearEquiv.refl (𝓞 E) (Φ.X y₀) := by simp [k]
@@ -1657,7 +1616,7 @@ theorem classSums_core : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     intro y a x hax
     by_cases h : y = y₀
     · subst h; simpa [hk0] using hax
-    · simp only [k, dif_neg h, LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
+    · simp only [k, dite_eq_right h, LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
       exact hd y a _ hax
   have hsurj := (GlobalTheory.UPoinc.uIsLab_onto_and_ker E H Dw hpq l Xo cf C D.X p z₂ (ct₂ y₀) (yy y₀) (hyy₂ y₀).uIsLab).1
   choose A hA using fun x : (ct y₀).T.P.D.toPre.X =>
@@ -1728,7 +1687,7 @@ theorem classSums_core : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     obtain ⟨yy', hyy', hcomp'⟩ := GlobalTheory.T.unitary_trait_labels_extend_to_deeper_level E H Dw hpq l Xo cf C X₁ D w₁ w₂ htie p z₁ (ct y₀) (yy₁ y₀) (hyy₁ y₀) (y₂ y₀ ≫ s) hqs
     let ct₂' : UCTrait D.X p z₂ := { D.lift (ct y₀) (y₂ y₀ ≫ s) hqs with cen := hcs }
     have hyy'₂ : UIsLabW D.X w₂ ct₂' yy' := hyy'
-    obtain ⟨g, hg⟩ := GlobalTheory.T.exists_linearEquiv_labelledLattices_unitaryTraits E H Dw hpq l Xo cf C D.X w₂ hproj p z₂ (ct₂ y₀) ct₂' (yy y₀) yy' (hyy₂ y₀) hyy'₂
+    obtain ⟨g, hg⟩ := GlobalTheory.UPoinc.exists_linearEquiv_labelled_of_uIsLabW E H Dw hpq l Xo cf C D.X w₂ hproj p z₂ (ct₂ y₀) ct₂' (yy y₀) yy' (hyy₂ y₀) hyy'₂
     have hrel : ∀ x, yy' x = yy y₀ (aσ x) :=
       haσ p z₁ (ct y₀) (yy₁ y₀) (hyy₁ y₀).uIsLab (y₂ y₀) (hq y₀) hqs (yy y₀) yy' (hyy y₀).uIsLab (hcomp y₀) hyy'.uIsLab hcomp'
     let γ : Φ.X y₀ ≃ₗ[𝓞 E] Φ.X y₀ := (e y₀).trans (g.trans (e y₀).symm)

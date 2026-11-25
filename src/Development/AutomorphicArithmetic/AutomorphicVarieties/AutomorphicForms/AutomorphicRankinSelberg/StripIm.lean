@@ -55,11 +55,6 @@ private theorem pt_re_im (x y : ℝ) (hy : 0 < y) :
     UpperHalfPlane.ofComplex_apply_of_im_pos (by simpa using hy)]
   simp
 
-private theorem measurableSet_strip' : MeasurableSet UpperTheory.V.Af.Rs.strip := by
-  have hre : Continuous fun z : ℍ => z.re := Complex.continuous_re.comp UpperHalfPlane.continuous_coe
-  exact (measurableSet_le measurable_const hre.measurable).inter
-    (measurableSet_lt hre.measurable measurable_const)
-
 private theorem volume_restrict_strip_eq_map_withDensity (hV : UpperTheory.V.Af.Rs.VolMap) :
     (volume : Measure ℍ).restrict UpperTheory.V.Af.Rs.strip =
       Measure.map (fun p : ℝ × ℝ => UpperTheory.V.Af.Rs.pt p.1 p.2)

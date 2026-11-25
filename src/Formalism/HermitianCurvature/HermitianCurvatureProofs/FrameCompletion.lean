@@ -50,7 +50,7 @@ theorem herm_comb {m : ℕ} {vs : List (Fin (2 * r + k + 1) → ℂ)} {C : Fin m
     (hC : IsFrameOf k r vs C) (f g : Fin m → ℂ) :
     herm (Hpk k r) (∑ a, f a • C a) (∑ b, g b • C b) = ∑ a, f a * star (g a) := by
   rw [herm_lsum]
-  simp only [herm_rsum, hC.2.1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [herm_rsum, hC.2.1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem complete {x : Fin (2 * r + k + 1) → ℂ} {Bs : Fin k → Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x)
     (hxx : herm (Hpk k r) x x ≠ 0) (hB : IsFrameOf k r [x] Bs) {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) :
@@ -114,7 +114,7 @@ theorem exists_frame_two : Formalism.FourierDecayAlt.Qr.FrameExists2 := by
   · rw [HermitianFormSums.herm_comb hC, ← hin, orthonormal_iff_ite.1 b.orthonormal]
     by_cases h : i = j
     · subst h; simp
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_right h, ite_eq_right]
       intro h'
       exact h (Fin.castSucc_injective _ h').symm
   · simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
@@ -127,7 +127,7 @@ theorem exists_frame_two : Formalism.FourierDecayAlt.Qr.FrameExists2 := by
       have h1 : ∑ a, (b j.castSucc) a * star (ε a) = inner ℂ (b (Fin.last n)) (b j.castSucc) := by
         rw [hin, hbl]
       rw [show (∑ a, (b j.castSucc) a * star (herm (Hpk (n + 1) r) v (C a))) = ∑ a, (b j.castSucc) a * star (ε a) from rfl,
-        h1, orthonormal_iff_ite.1 b.orthonormal, if_neg]
+        h1, orthonormal_iff_ite.1 b.orthonormal, ite_eq_right]
       exact (Fin.castSucc_lt_last j).ne'
 
 theorem qr_frameChange_of : Formalism.FourierDecayAlt.Qr.EcLie → Formalism.FourierDecayAlt.Qr.FrameGl → Formalism.FourierDecayAlt.Qr.FrameChange := by
@@ -148,10 +148,10 @@ theorem qr_frameChange_of : Formalism.FourierDecayAlt.Qr.EcLie → Formalism.Fou
       · rw [hCc]; exact hB'.1 a
     · refine Fin.lastCases ?_ (fun a => ?_) a
       · refine Fin.lastCases ?_ (fun b => ?_) b
-        · rw [hCl, hee, if_pos rfl]
-        · rw [hCl, hCc, heB, if_neg (Fin.castSucc_lt_last b).ne']
+        · rw [hCl, hee, ite_eq_left rfl]
+        · rw [hCl, hCc, heB, ite_eq_right (Fin.castSucc_lt_last b).ne']
       · refine Fin.lastCases ?_ (fun b => ?_) b
-        · rw [hCl, hCc, hBe, if_neg (Fin.castSucc_lt_last a).ne]
+        · rw [hCl, hCc, hBe, ite_eq_right (Fin.castSucc_lt_last a).ne]
         · rw [hCc, hCc, hB'.2.1]
           simp only [Fin.castSucc_inj]
     · simp only [List.mem_cons, List.not_mem_nil, or_false] at hv

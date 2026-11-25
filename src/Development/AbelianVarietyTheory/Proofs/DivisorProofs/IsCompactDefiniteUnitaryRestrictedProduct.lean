@@ -8,41 +8,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Conti
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdmissibleLocalComponentDefiniteUnitary
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedPlaceUnitaryLocalPointsEquivLocalUnitaryGro
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -168,17 +134,17 @@ theorem GlobalTheory.BCT.LocCpt.loc_cpt : ∀ (E : Type) [Field E] [NumberField 
   have hD : ∀ w, IsCompact (D w) := by
     intro w
     by_cases hw : w ∈ S
-    · simp only [D, if_pos hw]; exact (hC w).image continuous_subtype_val
-    · simp only [D, if_neg hw]; exact ((hC _).image continuous_subtype_val).image (hφ w)
+    · simp only [D, ite_eq_left hw]; exact (hC w).image continuous_subtype_val
+    · simp only [D, ite_eq_right hw]; exact ((hC _).image continuous_subtype_val).image (hφ w)
   have hDK : ∀ᶠ w in cofinite, D w ⊆ GlobalTheory.LFun.KGL w (n := n) := by
     have h1 : ∀ᶠ w in cofinite, C (conjSrc c w) = KL n (conjSrc c w) :=
       (conjSrc_injective c).tendsto_cofinite.eventually hCK
     filter_upwards [hCK, h1] with w hw hw'
     by_cases hwS : w ∈ S
-    · simp only [D, if_pos hwS, hw]
+    · simp only [D, ite_eq_left hwS, hw]
       rintro _ ⟨k, hk, rfl⟩
       exact Subgroup.mem_subgroupOf.1 hk
-    · simp only [D, if_neg hwS, hw']
+    · simp only [D, ite_eq_right hwS, hw']
       rintro _ ⟨_, ⟨k, hk, rfl⟩, rfl⟩
       have hk' : (k : GL (Fin n) _) ∈ GlobalTheory.LFun.KGL (conjSrc c w) (n := n) := Subgroup.mem_subgroupOf.1 hk
       have hO : ∀ y, y ∈ ((conjSrc c w).adicCompletionIntegers E : Set _) →
@@ -223,9 +189,9 @@ theorem GlobalTheory.BCT.LocCpt.loc_cpt : ∀ (E : Type) [Field E] [NumberField 
         cLoc u (x : UA E n) := fun u => Units.ext rfl
     rw [e]
     by_cases hwS : w ∈ S
-    · simp only [D, if_pos hwS]
+    · simp only [D, ite_eq_left hwS]
       exact (hmem x w).1 (hx w hwS)
-    · simp only [D, if_neg hwS]
+    · simp only [D, ite_eq_right hwS]
       have hw' := (mem_or_conj_mem hS w).resolve_left hwS
       refine ⟨cLoc (conjSrc c w) (x : UA E n), (hmem x _).1 (hx _ hw'), ?_⟩
       exact (cLoc_eq_invT (x : UA E n) w).symm

@@ -49,6 +49,3 @@ open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPo
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
 open Formalism.MainNotions.S
-
-theorem _root_.GlobalTheory.T.infinitePart_act_discreteSeriesHom_factorwise : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H), ∀ Φ ∈ homDS M ρ U, ∀ (g : GA D V) y, ρ (toInf V g : GA D V) (Φ y) = Φ fun τ => dsRep M τ (projArch D.sp.cm.sig V.gram (placeOf D τ) g) (y τ) := by
-  first | exact @GlobalTheory.TrAct.toInf_apply_homDS

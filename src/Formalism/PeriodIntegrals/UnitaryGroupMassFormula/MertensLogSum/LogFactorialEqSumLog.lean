@@ -24,15 +24,6 @@ theorem S_mono {m n : ℕ} (h : m ≤ n) : S m ≤ S n := by
     apply div_nonneg (Real.log_nonneg _) (Nat.cast_nonneg _)
     exact_mod_cast hx.1.1
 
-theorem log_factorial_eq_sum_log (n : ℕ) :
-    Real.log (n ! : ℝ) = ∑ k ∈ Ioc 0 n, Real.log (k : ℝ) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [Finset.sum_Ioc_succ_top (Nat.zero_le _), ← ih, Nat.factorial_succ, Nat.cast_mul,
-      Real.log_mul (by positivity) (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n))]
-    push_cast; ring
-
 theorem log_factorial_eq (n : ℕ) :
     Real.log (n ! : ℝ) = ∑ d ∈ Ioc 0 n, Λ d * ((n / d : ℕ) : ℝ) := by
   apply _root_.GlobalTheory.log_factorial_eq_sum_vonMangoldt_mul_div <;> assumption

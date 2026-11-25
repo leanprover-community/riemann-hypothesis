@@ -148,13 +148,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.HarmonicAny
 
-
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.FrameBiextId GlobalTheory.ChartCmp ReciprocityTheory.ChartRestriction.G.TB.WickVanishing Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh GlobalTheory.ChartField in
-open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct) in
-theorem chartVal_indep_of_harmonic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (S : Type) [Field S] [Algebra c.F S] [Algebra ℚ S] (y : FrPt Xo c S) (C C' : ChartAt Xo c y) (k n : ℕ) (F : Fin n → LB.Sec (LPow Xo.univ.t.G Xo.univ.t.PP.L k (ptO Xo y.x))) (f : Fin n → MvPowerSeries (Fin 1 × Fin C.d) S) (f' : Fin n → MvPowerSeries (Fin 1 × Fin C'.d) S), (∀ b, IsGerm y C.d C.x C.B.A.act C.e C.wP k (F b) (f b)) → (∀ b, IsGerm y C'.d C'.x C'.B.A.act C'.e C'.wP k (F b) (f' b)) → ∀ (P : MvPolynomial (LtN Dw n) c.F), P ∈ harmK Dw.mult n c.F ComplexEmbedding.conjugate (InPsi H) (fun _ => 1) → chartVal C k f P = chartVal C' k f' P := by
-  exact _root_.GlobalTheory.ChartField.chartVal_indep_of_harmonic
-
-
 theorem sum_map_of_harmonic {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
     {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)] (nab : NabV Xo c)
     (hnab : IsNab Xo c nab) {S S' : Type} [CommRing S] [Algebra c.F S] [Algebra ℚ S]
@@ -182,7 +175,6 @@ theorem sum_map_of_harmonic {E : Type} [Field E] [NumberField E] [IsCMField E] {
   obtain ⟨B', x2, e2, -, hF, hA, -, -, -, -, hch, hfr, hga, hrig, hgerm⟩ :=
     GlobalTheory.rawChart_baseChange E H Dw l Xo c S S' ψ y.x y.u (ChartAt.toRaw C)
   let z : FrPt Xo c S' := ⟨_, xo', _, tan', eig', basis', s', gen'⟩
-  set_option backward.isDefEq.respectTransparency false in
   let C2 : ChartAt Xo c z :=
     ⟨C.d, B', fun ℓ j => ψ (C.uvec ℓ j), x2, e2, C.wP, MvPowerSeries.map (ψ : S →+* S') C.h,
       ⟨hch.zero, hch.trunc, hch.law, hch.act, hch.tan, hch.basis⟩,
@@ -191,7 +183,7 @@ theorem sum_map_of_harmonic {E : Type} [Field E] [NumberField E] [IsCMField E] {
       (MvPowerSeries.map (ψ : S →+* S') (f b)) := fun b => hgerm k (F b) (F' b) (f b) (hF' b) (hf b)
   obtain ⟨C3, hex3, hpin3⟩ := hnab.2 S' z
   choose f3 hf3 using fun b => hex3 k (F' b)
-  have hI := chartVal_indep_of_harmonic E H Dw l Xo c hnab.1 S' z C2 C3 k n F' _ f3 hg2 hf3 P hP
+  have hI := GlobalTheory.ChartField.chartVal_indep_of_harmonic E H Dw l Xo c hnab.1 S' z C2 C3 k n F' _ f3 hg2 hf3 P hP
   have e3 : (∑ m ∈ P.support, algebraMap c.F S' (P.coeff m) * ∏ b, nab z k (F' b) (colOf m b)) =
       chartVal C3 k f3 P := by
     unfold chartVal
@@ -457,7 +449,6 @@ open NumberField TensorProduct
 namespace GlobalTheory.IntSepElement
 
 variable (E : Type) [Field E] [NumberField E]
-
 
 open scoped Classical in
 noncomputable def dualB : Module.Basis (Module.Free.ChooseBasisIndex ℤ (𝓞 E)) ℚ E :=
@@ -754,7 +745,7 @@ theorem dpolyOf_monomial_one {k : Type} [CommRing k] {d : ℕ} (F : Fin d → PS
     unfold DpolyOf
     refine Finset.sum_subset MvPolynomial.support_monomial_subset fun x _ hx => ?_
     rw [MvPolynomial.notMem_support_iff.1 hx, map_zero, zero_mul]
-  rw [e, Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl, map_one, one_mul]
+  rw [e, Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl, map_one, one_mul]
 
 theorem pow_mul_nabVal_mem {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O] (k : Type)
     [CommRing k] [Algebra ℚ k] [Algebra R k] (B : FB R d O) (g : PS k 2 d) (hg : B.IsCanonGauge k g) (δ : k)
@@ -973,7 +964,7 @@ theorem hv_bound [StarRing (𝓞 E)] (nab : NabV Xo c) (hnab : IsNab Xo c nab) {
   have e₀ : ∀ m, ∏ b, nab y.1 k (F b) (colOf m b) =
       ∏ b, C₀.B.nabVal T.Fr C₀.h H.w0 k (f₀ b) C₀.uvec (MvPolynomial.monomial (colOf m b) 1) := fun m =>
     Finset.prod_congr rfl fun b _ => hpin k (F b) (f₀ b) (hf₀ b) (colOf m b)
-  have h := GlobalTheory.HarmonicAny.chartVal_indep_of_harmonic E H Dw l Xo c hnab.1 T.Fr y.1 C₀ C' k n F f₀
+  have h := GlobalTheory.ChartField.chartVal_indep_of_harmonic E H Dw l Xo c hnab.1 T.Fr y.1 C₀ C' k n F f₀
     (fun b => MvPowerSeries.map (algebraMap T.V T.Fr) (f b)) hf₀ hf P hP
   have e₁ : hv Xo c nab y.1 k F P = chartVal C₀ k f₀ P := by
     simp only [hv, chartVal, e₀]
@@ -1157,8 +1148,6 @@ theorem evR_pow_succ (f : Rul Xo c) {S : Type} [CommRing S] [Algebra c.F S] (y :
   induction e with
   | zero => rw [zero_add, pow_one, pow_one]
   | succ e ih => rw [pow_succ f, pow_succ (evR Xo c f y), ← ih]; exact evalAt_mul _ _ _ _ _
-
-
 
 theorem bddAll_of_theta_sum_on_cover : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r), (∀ σ, GoodEmb c σ → IsUnf (U σ)) → ∀ (la : HeightOneSpectrum (𝓞 c.F)) (p : ℕ), p.Prime → (p : 𝓞 c.F) ∈ la.asIdeal → l.GoodAt p → ∀ [StarRing (𝓞 E)] (a : (E →+* ℂ) × ℕ → ℕ) (n d N m : ℕ) (dδ : DeltaDat Xo c n) (La : GenLat E n) (cs : Fin m → Rul dδ.Xo₂ dδ.c₂) (e : ℕ) (w : Fin m → (Fin n → LevQ Dw dδ.l₂) → c.F) (P : Fin m → MvPolynomial (LtN Dw n) c.F) (f : Rul Xo c), Dom a n → dδ.IsLev → IsNab dδ.Xo₂ dδ.c₂ dδ.nab₂ → La.Unimod → La.TrivAt dδ.l₂.M → La.LevOK N dδ.l₂.M → 0 < e → (∀ t, cs t ∈ sec dδ.Xo₂ dδ.c₂ 0 0 ∧ cs t ^ (e + 1) = cs t) → (∀ t q, la.valuation c.F (w t q) ≤ 1) → (∀ t, P t ∈ harmK Dw.mult n c.F ComplexEmbedding.conjugate (InPsi H) (fun _ => 1) ∧ (P t).IsHomogeneous d ∧ ∀ k, la.valuation c.F ((P t).coeff k) ≤ 1) → f ∈ cusp Xo c U a n → (∀ (k : Type) [Field k] [IsAlgClosed k] [Algebra c.F k] [Algebra dδ.c₂.F k], (∀ x : c.F, algebraMap dδ.c₂.F k (dδ.eF x) = algebraMap c.F k x) → ∀ (y : FrPt Xo c k) (y₂ : FrPt dδ.Xo₂ dδ.c₂ k), FrOver dδ y₂ y → ∃ v : Fin m → k, (∀ t, thLaValAt dδ.Xo₂ dδ.c₂ dδ.nab₂ (fun q => dδ.eF (w t q)) La N (MvPolynomial.map (dδ.eF : c.F →+* dδ.c₂.F) (P t)) y₂ (v t)) ∧ evR Xo c f y = ∑ t, evR dδ.Xo₂ dδ.c₂ (cs t) y₂ * v t) → BddAll Xo c la (((La.mIdx N (Dw.p + Dw.q) * Nat.card (Fin n → LevQ Dw dδ.l₂) : ℕ) : c.F) * ((2 * NumberField.discr E * N : ℤ) : c.F) ^ d) f := by
   intro E _ _ _ H Dw l Xo c r U hU la p hp hpl hl _ a n d N m dδ La cs e w P f hdom hlev hnab hun htr hN he hcs hw hP hf

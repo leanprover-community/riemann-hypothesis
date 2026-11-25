@@ -118,7 +118,7 @@ theorem cellRes_locMul (hW : W ≤ Module.annihilator (MRingOver S ι) M) {J I :
       GenTwistGenerated.cellRes_mk h, locMul_mk]
     rfl
   · unfold KH.cellRes
-    rw [dif_neg h]
+    rw [dite_eq_right h]
     simp only [LinearMap.zero_apply, map_zero]
 
 theorem act_mem (hW : W ≤ Module.annihilator (MRingOver S ι) M) {𝓜 : (K → ℤ) → Submodule S M}

@@ -384,19 +384,19 @@ theorem _root_.GlobalTheory.idealCharacterL_continuation_ne_zero_one :
           else 0) := by
       intro P
       by_cases hP : P ∈ S
-      · rw [if_pos hP]
+      · rw [ite_eq_left hP]
         have hXP : X P.asIdeal = 0 := hXzero _ (by
           rw [sup_eq_left.mpr ((hmemS P).mp hP)]
           exact P.isPrime.ne_top)
         rw [hXP, zero_mul, sub_zero, Complex.log_one, neg_zero, zero_add]
-      · rw [if_neg hP, add_zero, hcX P (fun h => hP ((hmemS P).mpr h))]
+      · rw [ite_eq_right hP, add_zero, hcX P (fun h => hP ((hmemS P).mpr h))]
     show LX s * F s = _
-    rw [tsum_congr hsplit, hsa.tsum_add (summable_of_ne_finset_zero (s := S) fun P hP => if_neg hP),
-      tsum_eq_sum (s := S) (fun P hP => if_neg hP), Complex.exp_add, ← hLX s hs, hF,
+    rw [tsum_congr hsplit, hsa.tsum_add (summable_of_ne_finset_zero (s := S) fun P hP => ite_eq_right hP),
+      tsum_eq_sum (s := S) (fun P hP => ite_eq_right hP), Complex.exp_add, ← hLX s hs, hF,
       Complex.exp_sum]
     congr 1
     refine Finset.prod_congr rfl fun P hP => ?_
-    rw [if_pos hP, Complex.exp_neg, Complex.exp_log (hfac P s hs0)]
+    rw [ite_eq_left hP, Complex.exp_neg, Complex.exp_log (hfac P s hs0)]
   · show LX 1 * F 1 ≠ 0
     rw [hF]
     exact mul_ne_zero hLX1 (Finset.prod_ne_zero_iff.mpr fun P _ => inv_ne_zero (hfac P 1 (by simp)))
@@ -614,14 +614,14 @@ theorem exists_continuous_ne_zero_one :
     by_cases hy : y = 0
     · simp [ψ, hy]
     have hxy : x * y ≠ 0 := mul_ne_zero hx hy
-    simp only [ψ, dif_neg hx, dif_neg hy, dif_neg hxy]
+    simp only [ψ, dite_eq_right hx, dite_eq_right hy, dite_eq_right hxy]
     rw [← Units.val_mul, ← map_mul]
     congr 3
     ext
     simp
   have hψunit : ∀ u : (ZMod m)ˣ, ψ (u : ZMod m) = ((χ u : ℂˣ) : ℂ) := by
     intro u
-    simp only [ψ, dif_neg u.ne_zero]
+    simp only [ψ, dite_eq_right u.ne_zero]
     congr 3
     ext
     simp
@@ -639,7 +639,7 @@ theorem exists_continuous_ne_zero_one :
   have hXnorm : ∀ I, I ≠ ⊥ → I ⊔ M = ⊤ → ‖X I‖ = 1 := by
     intro I _ hI
     have hne := (hcop I).1 hI
-    simp only [X, ψ, dif_neg hne]
+    simp only [X, ψ, dite_eq_right hne]
     exact GlobalTheory.Mem.RayPrimes.norm_char χ _
   have hXzero : ∀ I, I ⊔ M ≠ ⊤ → X I = 0 := by
     intro I hI

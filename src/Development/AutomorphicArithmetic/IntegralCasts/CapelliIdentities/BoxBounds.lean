@@ -7,7 +7,7 @@ public import Mathlib.RingTheory.Localization.Finiteness
 
 noncomputable def UpperTheory.Reformulated.B.BoxBounds.box :
     {K : Type} → [inst : Field K] → {i : ℕ} → K → Submodule (NumberField.RingOfIntegers K) (Fin i → K) :=
-    fun {K : Type} [Field K] {i : ℕ} (c : K) ↦ Submodule.pi Set.univ fun (x : Fin i) ↦ NumberField.RingOfIntegers K ∙ c
+    fun {K : Type} [Field K] {i : ℕ} (c : K) ↦ Submodule.pi Set.univ fun (_ : Fin i) ↦ NumberField.RingOfIntegers K ∙ c
 
 theorem UpperTheory.Reformulated.B.BoxBounds.exists_box_le :
     ∀ {K : Type} [inst : Field K] [NumberField K] {i : ℕ} (L : Submodule (NumberField.RingOfIntegers K) (Fin i → K)),

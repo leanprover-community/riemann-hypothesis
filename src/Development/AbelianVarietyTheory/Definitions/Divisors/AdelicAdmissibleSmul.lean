@@ -4,41 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 
 @[expose] public section
 
-noncomputable section
-
-open Matrix
-open scoped NNReal Classical
-
-namespace GlobalTheory.WeilM.SplitModel
-
-variable {K : Type} [Field K]
-
-variable {ι : Type} [Fintype ι] [DecidableEq ι]
-
-variable [Invertible (2 : K)]
-
-
-
-
-
-variable [Fintype K]
-
-variable [TopologicalSpace K] [DiscreteTopology K] [IsTopologicalRing K]
-
-
-
-
-
-end GlobalTheory.WeilM.SplitModel
-
-namespace GlobalTheory.WeilM.SplitModel
-
-end GlobalTheory.WeilM.SplitModel
-
-end
-
-noncomputable section
-
 open MeasureTheory Matrix ValuativeRel NumberField
 open scoped NNReal Topology
 
@@ -64,28 +29,5 @@ theorem rho_diag (ψ : AddChar R ℂ) {ξ : E} {JA : Matrix α α E} {JB : Matri
 
 end Alg
 
-section Forms
-
-variable {R : Type} [CommRing R] [Invertible (2 : R)] {E : Type} [CommRing E] [Algebra R E] {c : E →ₐ[R] E}
-  {α β κ : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ]
-
-
-
-
-end Forms
-
-section RankZero
-
-variable {R : Type} [CommRing R] [Invertible (2 : R)] {E : Type} [CommRing E] [Algebra R E] {c : E →ₐ[R] E}
-  {α β κ : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ]
-
-
-variable [TopologicalSpace R] [TopologicalSpace E] [IsTopologicalRing E] [IsModuleTopology R E] {C : TestClass R}
-
-
-
-end RankZero
-
 
 end GlobalTheory.WeilM.SiegelModel
-end

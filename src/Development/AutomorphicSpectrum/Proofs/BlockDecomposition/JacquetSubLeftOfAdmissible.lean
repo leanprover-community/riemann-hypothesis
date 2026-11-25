@@ -117,8 +117,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYha2.main :
-    ∀ {X Y : Type} [inst : AddCommGroup X] [inst_1 : _root_.Module ℂ X] [inst_2 : AddCommGroup Y]
-      [inst_3 : _root_.Module ℂ Y] {x : X} {y : Y}, x ≠ (0 : X) → y ≠ (0 : Y) → x ⊗ₜ[ℂ] y ≠ (0 : TensorProduct ℂ X Y) := by
+    ∀ {X Y : Type} [AddCommGroup X] [_root_.Module ℂ X] [AddCommGroup Y]
+      [_root_.Module ℂ Y] {x : X} {y : Y}, x ≠ (0 : X) → y ≠ (0 : Y) → x ⊗ₜ[ℂ] y ≠ (0 : TensorProduct ℂ X Y) := by
   intro X Y _ _ _ _ x y hx hy h
   obtain ⟨f, hf⟩ := Module.Projective.exists_dual_ne_zero ℂ hx
   obtain ⟨g, hg⟩ := Module.Projective.exists_dual_ne_zero ℂ hy

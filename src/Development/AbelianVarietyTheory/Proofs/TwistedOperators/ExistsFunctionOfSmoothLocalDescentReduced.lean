@@ -133,10 +133,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori (IsLi
 
 namespace GlobalTheory.SmoothLocalDescent
 
-theorem eq_of_forall_geom {R : Type} [CommRing R] [_root_.IsReduced R] (a b : R)
-    (h : ∀ (k : Type) [Field k] [IsAlgClosed k] (χ : R →+* k), χ a = χ b) : a = b := by
-  first | exact _root_.GlobalTheory.CoverDescent.eq_of_geometric_points | exact @_root_.GlobalTheory.CoverDescent.eq_of_geometric_points | apply _root_.GlobalTheory.CoverDescent.eq_of_geometric_points <;> assumption
-
 open scoped TensorProduct in
 theorem exists_lift_geom (R S : Type) [CommRing R] [CommRing S] [Algebra R S]
     [Algebra.FiniteType R S] [Module.FaithfullyFlat R S] (k : Type) [Field k] [IsAlgClosed k]

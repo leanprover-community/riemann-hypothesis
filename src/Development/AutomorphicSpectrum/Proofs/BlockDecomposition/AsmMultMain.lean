@@ -86,7 +86,7 @@ private theorem sum_amat_first_index_eq {n : ℕ} (l : Fin n → ℂ) (j : Fin n
     · subst h1
       simp
     · simp [h1]
-  simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, Finset.filter_gt_eq_Iio,
     Fin.card_Iio]
   simp [sub_eq_add_neg]
@@ -100,7 +100,7 @@ private theorem sum_amat_second_index_eq {n : ℕ} (l : Fin n → ℂ) (j : Fin 
     · subst h1
       simp
     · simp [h1]
-  simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, Finset.filter_lt_eq_Ioi,
     Fin.card_Ioi]
   simp [sub_eq_add_neg]

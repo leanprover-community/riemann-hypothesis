@@ -608,7 +608,6 @@ theorem qc_resY_X_zero (A : Type) [CommRing A] (r : ℕ) (a : Fin (r + 1 + 1)) :
 
 theorem qc_resY_X_mid (A : Type) [CommRing A] (r : ℕ) (a : Fin (r + 1 + 1)) (j : Fin r) :
     resY A r (X (a, midI r j)) = ∑ i : Fin r, X (i, j) * (if a.val = (midI r i).val then 1 else 0) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [resY, subY, midOf_midI, idPoint, map_sum]
 
 theorem qc_resY_X_mid_mid (A : Type) [CommRing A] (r : ℕ) (i j : Fin r) :
@@ -679,7 +678,7 @@ theorem qc_shapeC_om (r s : ℕ) (hs : s ≤ r) : shapeC 1 (qcOm r s) = qcOm (r 
   · subst h0
     simp
   · have h0' : t.val ≠ 0 := fun h => h0 (Fin.ext h)
-    rw [if_neg h0]
+    rw [ite_eq_right h0]
     unfold midOf
     by_cases h1 : 0 < t.val ∧ t.val < r + 1
     · rw [dite_eq_left h1]
@@ -733,7 +732,7 @@ theorem qc_lift_bidet (A : Type) [CommRing A] (r : ℕ) : ∀ (K : ℕ) (sz : Fi
       · intro t ht
         rw [qc_shapeDeg_succ, Pi.add_apply, hd t ht]
         simp only [qcOm, ht]
-        rw [if_pos (Nat.pos_of_ne_zero hz)]
+        rw [ite_eq_left (Nat.pos_of_ne_zero hz)]
         omega
       · intro hr
         exfalso
@@ -835,10 +834,6 @@ theorem midOf_zero (r : ℕ) : midOf (0 : Fin (r + 1 + 1)) = none := by
 theorem subY_X_zero (A : Type) [CommRing A] (r : ℕ) (a : Fin (r + 1 + 1)) : subY A r (X (a, 0)) = X (a, 0) := by
   simp only [subY, aeval_X, midOf_zero]
 
-theorem subY_X_mid (A : Type) [CommRing A] (r : ℕ) (a : Fin (r + 1 + 1)) (j : Fin r) :
-    subY A r (X (a, midI r j)) = ∑ i : Fin r, C (X (i, j)) * X (a, midI r i) := by
-  simp only [subY, aeval_X, midOf_midI]
-
 def dOneY (A : Type) [CommRing A] (r : ℕ) :
     Matrix (Fin (r + 1)) (Fin (r + 1)) (MvPolynomial (Fin (r + 1 + 1) × Fin (r + 1 + 1)) (MvPolynomial (Fin r × Fin r) A)) :=
   fun s t => Fin.cases (Fin.cases 1 (fun _ => 0) t) (fun s' => Fin.cases 0 (fun t' => C (X (s', t'))) t) s
@@ -886,7 +881,7 @@ theorem subY_covY (K : Type) [Field K] (r : ℕ) (i : Fin (r + 1 + 1)) :
         ∑ s : Fin r, map C (X (i.succAbove a, s.succ.castSucc)) * C (X (s, j))
       have e : ∀ s : Fin r, s.succ.castSucc = midI r s := fun s => (Fin.succ_castSucc s).symm
       simp only [e, map_X]
-      rw [subY_X_mid]
+      rw [Formalism.MainNotions.flipOneThree.Pf.QB.subY_X_mid]
       exact Finset.sum_congr rfl fun s _ => mul_comm _ _
   have hdet : subY K r (Matrix.det fun a b : Fin (r + 1) =>
       (X (i.succAbove a, b.castSucc) : MvPolynomial (Fin (r + 1 + 1) × Fin (r + 1 + 1)) K)) =
@@ -963,12 +958,12 @@ theorem qt_cnt (m : ℕ) (i a' : Fin (m + 1)) :
   simp only [Pi.single_apply]
   split_ifs with h
   · subst h
-    exact Finset.sum_eq_zero fun p _ => if_neg (Fin.succAbove_ne a' p).symm
+    exact Finset.sum_eq_zero fun p _ => ite_eq_right (Fin.succAbove_ne a' p).symm
   · obtain ⟨q, rfl⟩ := Fin.exists_succAbove_eq h
     rw [Finset.sum_eq_single q]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro p _ hp
-      exact if_neg fun e => hp (Fin.succAbove_right_injective e).symm
+      exact ite_eq_right fun e => hp (Fin.succAbove_right_injective e).symm
     · intro hq
       exact absurd (Finset.mem_univ q) hq
 
@@ -1427,12 +1422,6 @@ namespace Formalism.MainNotions.flipOneThree.Pf
 
 open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.CountingSumsFrames Formalism.CountingSumsFrames.Har4 Formalism.GradedWeylDivisibility MvPolynomial Formalism.MainNotions.G.LatticeSystems
 
-theorem ta_last_ne (m : ℕ) (hm : 1 ≤ m) : Fin.last m ≠ 0 := by
-  intro h
-  have h2 := congrArg Fin.val h
-  simp at h2
-  omega
-
 section L
 
 variable {p n' : ℕ} (R : RS p n') (m : ℕ) (hm : 1 ≤ m) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) R.Kf) (hg : IsUnit g.det)
@@ -1444,7 +1433,7 @@ theorem ta_vec_mem (P : ℕ) (a : MvPolynomial (Fin (m + 1)) R.Kf) (ha : a.IsHom
   have := R.std.1.frac_O
   have hinj : Function.Injective (algebraMap R.O R.Kf) := IsFractionRing.injective R.O R.Kf
   refine (mem_invariant_sections_iff_integral hinj m _ (letterWt_anti m P true) g hg _).2 ?_
-  have h0 : letterWt m P true (Fin.last m) = 0 := by simp [letterWt, ta_last_ne m hm]
+  have h0 : letterWt m P true (Fin.last m) = 0 := by simp [letterWt, Formalism.MainNotions.flipOneThree.Pf.last_ne_zero'' m hm]
   rw [h0, zpow_zero, one_smul, rowAct_inv_cancel g hg]
   refine intCapP R.O R.Kf hinj (m + 1) _ _ ?_ (fun u => ta_Int_coeff (ta_Int_rename _ hI) u)
   rw [ta_nuOf_vec m P hm]
@@ -1469,7 +1458,7 @@ theorem ta_vec_of (P : ℕ) (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) R.Kf)
   have := R.std.1.frac_O
   have hinj : Function.Injective (algebraMap R.O R.Kf) := IsFractionRing.injective R.O R.Kf
   have h1 := (mem_invariant_sections_iff_integral hinj m _ (letterWt_anti m P true) g hg _).1 hF
-  have h0 : letterWt m P true (Fin.last m) = 0 := by simp [letterWt, ta_last_ne m hm]
+  have h0 : letterWt m P true (Fin.last m) = 0 := by simp [letterWt, Formalism.MainNotions.flipOneThree.Pf.last_ne_zero'' m hm]
   rw [h0, zpow_zero, one_smul] at h1
   have h2 := intO_le _ _ _ h1
   rw [ta_nuOf_vec m P hm] at h2

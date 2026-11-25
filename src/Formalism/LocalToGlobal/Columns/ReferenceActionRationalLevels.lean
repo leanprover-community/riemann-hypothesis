@@ -166,25 +166,11 @@ structure ColIface (K : Type) [Field K] [NumberField K] [StarRing K] (I : Type) 
 
   Mtil_good : Mtil.Good
 
-section Places
-
-variable {K : Type} [Field K] [NumberField K]
-
-end Places
-
 namespace ColIface
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} (C : ColIface K I)
 
 end ColIface
-
-section Sig
-
-open Formalism.L2.GlobalTheoryTheory
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type}
-
-end Sig
 
 section Glue
 
@@ -227,25 +213,6 @@ theorem exists_smul_le_of_lattice {M N : Submodule (𝓞 K) V} (hM : M.FG) (hN :
   apply _root_.Formalism.L2.SG.Pf.LatDict.uniform_mul <;> assumption
 
 end Glue
-
-section ItMLoc
-
-variable {K : Type} [Field K] [NumberField K]
-variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
-end ItMLoc
-
-section NuSpec
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Chars X Pr R.m}
-
-end NuSpec
-
-section SgFin
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type}
-
-end SgFin
 
 structure ScNum where
 
@@ -365,18 +332,5 @@ def ColArg.tau (w : HeightOneSpectrum (𝓞 X.K)) : ℝ := if prW w ∈ A.served
 
 
 end Conc
-
-section RowSide
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (hX : X.Ok)
-
-end RowSide
-
-section Empty
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end Empty
 
 end Formalism.L2.Col

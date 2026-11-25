@@ -127,8 +127,8 @@ end Generic
 
 theorem UpperTheory.Prune.bkExt_holds :
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (h9 : Formalism.MainNotions.LocalSituation.adm9 D HW F) (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F)
-    (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL) (h5 : 5 ≤ l) (e) (he : UnitGen ((HW l).W K 1 LL h.2.2) e),
+    (_ : Formalism.MainNotions.LocalSituation.adm9 D HW F) (_ : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F)
+    (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL) (_ : 5 ≤ l) (e) (_ : UnitGen ((HW l).W K 1 LL h.2.2) e),
     BKExt ((HW l).W K 1 LL h.2.2) e := by
   intro D HW F h9 hFont l _ K LL h h5 e he
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2

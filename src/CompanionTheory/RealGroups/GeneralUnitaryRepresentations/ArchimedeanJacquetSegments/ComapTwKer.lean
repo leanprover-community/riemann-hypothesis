@@ -386,7 +386,7 @@ theorem ker_Q' (ψ : AddChar k Circle) {n t N : ℕ} (h : n + t = N) {V : Type} 
       rcases b with b | b
       · simp only [fromBlocks_apply₁₁, fromBlocks_apply₂₁, Matrix.zero_apply, mul_zero,
           Finset.sum_const_zero, add_zero, Matrix.one_apply, mul_ite, mul_one, mul_zero,
-          Finset.sum_ite_eq', Finset.mem_univ, if_true]
+          Finset.sum_ite_eq', Finset.mem_univ, ite_true]
         exact hcol i _ (by simp)
       · obtain ⟨a', rfl⟩ := (stdSum h).surjective i
         rcases a' with a' | a'

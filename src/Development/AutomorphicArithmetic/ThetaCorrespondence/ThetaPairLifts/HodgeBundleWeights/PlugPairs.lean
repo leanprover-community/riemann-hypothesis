@@ -21,49 +21,14 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.LevelStabilisers.MemStabOfLev
 public import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ProductMapEquality.PiCdEqMap
 public import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.UpperFactors.FactorUpper
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
 import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
 import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasAtOf
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsPrincipalLevelSubgroupOpen
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Tactic.NormNum.Parity
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsCompactDualHaar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PolyGrowthStatementPfB
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ConstantSupremum.Imports
@@ -140,11 +105,11 @@ theorem finE_mem_lev_of_isKM : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (F
   refine Formalism.L2.DIV.mem_lev.2 ⟨Formalism.L2.DIV.mem_parLev.2 ⟨hU, hS, fun PP _ => ?_, fun PP _ => ?_⟩, ?_⟩
   · intro i j hij
     exfalso
-    simp only [Formalism.L2.DIV.blkOf, if_pos (hb i), if_pos (hb j)] at hij
+    simp only [Formalism.L2.DIV.blkOf, ite_eq_left (hb i), ite_eq_left (hb j)] at hij
     exact lt_irrefl _ hij
   · intro i j hij
     exfalso
-    simp only [Formalism.L2.DIV.blk2, if_pos (hb i), if_pos (hb j)] at hij
+    simp only [Formalism.L2.DIV.blk2, ite_eq_left (hb i), ite_eq_left (hb j)] at hij
     exact lt_irrefl _ hij
   · rw [hP]; exact Subgroup.mem_top _
 
@@ -163,7 +128,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat Global
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
 open scoped ENNReal
 
-
 theorem _root_.GlobalTheory.T.finitePart_mem_fullLevel_of_keeps_selfDualLattice : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank), Formalism.IndefR.Links.IsSDFrame V β Λ 1 → V.rank ≤ L.r → L.P.H = ⊤ → ∀ h : GA D V, IsKM (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) (GlobalTheory.Member.latC V : Set (Fin V.rank → D.host.E)) 1 ((finHom V h).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) → finE V h ∈ Formalism.L2.DIV.lev D.sp.cm V.gram β L := by
   first | exact @GlobalTheory.CovTop.VolUp.FullLevel.finE_mem_lev_of_isKM
 end -- clump:auto
@@ -178,11 +142,7 @@ section -- clump:auto
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
 open scoped ENNReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.measure_translateLevel_realBox_le_index_mul : ∀ (D : D7) (V : HSp D) (θ : InfFam D) (A : Frames V) (m : ∀ ρ, Measure (Upq V ρ)) (rp : GA D V →* (∀ ρ, Upq V ρ)) (K K₀ : Subgroup (GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D))) (μ : Measure (GA D V)), V.SigOK → IsInfFam θ → IsFrames V A → (∀ ρ, IsMinf (m ρ)) → Continuous rp → IsRealPart V θ A rp → K ≤ K₀ → K.relIndex K₀ ≠ 0 → IsOpen {h : GA D V | finE V h ∈ K} → IsMeasLev V K μ → ∀ g ∈ GfC V, ∀ B : Set (∀ ρ, Upq V ρ), MeasurableSet B → μ {h | finE V (g⁻¹ * h) ∈ K₀ ∧ rp h ∈ B} ≤ (K.relIndex K₀ : ℝ≥0∞) * Measure.pi m B := by
-  first | exact @GlobalTheory.CovTop.VolBox.meas_translate_le
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureTranslateLevelRealBoxLeIndexMulStatement =====
@@ -269,7 +229,6 @@ theorem bound (f r d : ℕ) (L n v M rd : ℝ) (hd : (d : ℝ) = 2 * f) (hL : 1 
           mul_le_mul hn' (mul_le_mul hv' hM' hM0.le (Real.exp_pos _).le) (by positivity) (Real.exp_pos _).le
       _ = _ := by rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes in
 theorem up_core (hV : VolSt) (hS : StabSt) (hN : NumSt) (D : D7) (Tu : Type) (C : LevCh D Tu) (t0 : Tu) (hC : C.Is t0)
     (i : Fin D.R.m) (P : LevelP C.Pg D.R.r ℂ) (μ : MeasureTheory.Measure (GA D (Wc D i))) (𝓕 : Set (GA D (Wc D i)))
@@ -283,7 +242,7 @@ theorem up_core (hV : VolSt) (hS : StabSt) (hN : NumSt) (D : D7) (Tu : Type) (C 
   obtain ⟨⟨θ, hθ⟩, H1⟩ := hF.1.2
   obtain ⟨⟨A, hA⟩, H2⟩ := H1 θ hθ
   obtain ⟨⟨m, hm⟩, -⟩ := H2 A hA
-  obtain ⟨rp, hrpc, hrp⟩ := GlobalTheory.T.exists_continuous_realComponentHom_unitaryAdelic D (Wc D i) θ A (D.sp.W_sig _) hθ hA
+  obtain ⟨rp, hrpc, hrp⟩ := GlobalTheory.CovTop.VolUp.exists_realPart_hom D (Wc D i) θ A (D.sp.W_sig _) hθ hA
   haveI := fun P Q => (GlobalTheory.UpqTopology.upq_lcsc P Q).1
   haveI := fun P Q => (GlobalTheory.UpqTopology.upq_lcsc P Q).2.1
   haveI := fun P Q => (GlobalTheory.UpqTopology.upq_lcsc P Q).2.2.1
@@ -301,7 +260,7 @@ theorem up_core (hV : VolSt) (hS : StabSt) (hN : NumSt) (D : D7) (Tu : Type) (C 
     rw [inv_one, one_mul]
     have hk : h ∈ KM (Wc D i) 1 := (hS.1 D (Wc D i)).1 ▸ hh
     exact GlobalTheory.T.finitePart_mem_fullLevel_of_keeps_selfDualLattice D (Wc D i) (C.βW i) (C.ΛW i) _ (hC.βW i) hrk.le rfl h hk
-  have h44 := GlobalTheory.T.measure_translateLevel_realBox_le_index_mul D (Wc D i) θ A m rp (levW C i P) K₀ μ (D.sp.W_sig _) hθ hA hm hrpc hrp
+  have h44 := GlobalTheory.CovTop.VolBox.meas_translate_le D (Wc D i) θ A m rp (levW C i P) K₀ μ (D.sp.W_sig _) hθ hA hm hrpc hrp
     (fun k hk => ⟨hk.1, Subgroup.mem_top _⟩) hn (GlobalTheory.ParahoricCompact.isOpen_comap_lev _ _ _) hF.1 1 (GfC _).one_mem B hBm
   set c := ReciprocityTheory.ChartRestriction.DS.volU (Wc D i).rank ^ D.R.f * Formalism.MainNotions.StandardLattice.massI D (Wc D i).rank with hc
   have hkey : μ 𝓕 * Measure.pi m B ≤ ((n : ℝ≥0∞) * ENNReal.ofReal c) * Measure.pi m B := by
@@ -363,10 +322,6 @@ theorem up_core (hV : VolSt) (hS : StabSt) (hN : NumSt) (D : D7) (Tu : Type) (C 
 
 end MainStatements.Tam.A
 
-namespace MainStatements.Tam
-
-end MainStatements.Tam
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -383,8 +338,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 open MeasureTheory Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR.Mult Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped ENNReal
 noncomputable section
-namespace MainStatements.Tam.A
-end MainStatements.Tam.A
 namespace MainStatements.Tam
 theorem tamagawa_number_upper_bound : VolSt → StabSt → NumSt → _root_.MainStatements.Tam.ArchimedeanTamagawaUpperBound := fun hV hS hN hP D Tu C t0 hC i P μ 𝓕 hF L hL =>
   MainStatements.Tam.A.up_core hV hS hN D Tu C t0 hC i P μ 𝓕 hF L hL (_root_.GlobalTheory.CovTop.LevelIndex.level_index_le_bound hP D Tu C t0 hC i P)
@@ -421,9 +374,6 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH 
 open scoped ENNReal
 theorem tamagawa_pairs_compatible : _root_.GlobalTheory.T.CovolumeRatioIdentity := _root_.MainStatements.Tam.Plug.tamagawa_number_upper_bound
 theorem tamagawa_pairs_product : _root_.GlobalTheory.T.FieldOfDefinitionDescentProp := fun _ => low
-section
-open ReciprocityTheory.L2DbarEstimates GlobalTheory.SupConstSize Real
-end
 end MainStatements.Tam.Plug
 end
 end

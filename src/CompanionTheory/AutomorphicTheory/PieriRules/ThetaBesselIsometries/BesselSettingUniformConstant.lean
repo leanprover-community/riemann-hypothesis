@@ -72,9 +72,9 @@ private theorem continuous_ell_matrix_of {k r : ℕ} (z : Fin (2 * r + k + 1) �
   unfold Formalism.QuantumDeterminants.ell
   refine continuous_finsetSum _ (fun a _ => ?_)
   by_cases h : (a : ℕ) + 1 < r
-  · simp only [dif_pos h, Matrix.of_apply]
+  · simp only [dite_eq_left h, Matrix.of_apply]
     fun_prop
-  · simp only [dif_neg h, Matrix.mulVec, dotProduct, Matrix.of_apply]
+  · simp only [dite_eq_right h, Matrix.mulVec, dotProduct, Matrix.of_apply]
     exact continuous_finsetSum _ (fun j _ => by fun_prop)
 
 theorem besPhInt_xi_cont {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]

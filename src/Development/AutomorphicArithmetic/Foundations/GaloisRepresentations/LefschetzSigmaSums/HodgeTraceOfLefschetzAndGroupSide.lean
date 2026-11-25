@@ -94,27 +94,12 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.UPel.HT.GenProj
 
-def baseOfGBase {p : ℕ} [Fact p.Prime] {D : Datum p} (gb : GBase D.toG ℂ) : Base D ℂ where
-  unit k hk := by
-    refine isUnit_iff_ne_zero.mpr (Nat.cast_ne_zero.mpr ?_)
-    rintro rfl
-    exact (Fact.out : p.Prime).one_lt.ne' (Nat.coprime_zero_left p |>.mp hk)
-  ρ := gb.ρ
-  ρ_root := gb.ρ_root
-  t := gb.t
-  t_ω := gb.t_ω
-  comax := gb.comax
-  apart i j _ k _ _ β := by
-    exfalso
-    haveI : CharZero k := (RingHom.charZero_iff β.injective).mp inferInstance
-    exact (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero) (CharP.cast_eq_zero k p)
-
 theorem isProjOver_genModel : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p), D.CompactB → ∀ (gb : GBase D.toG ℂ) (N : ℕ),
     3 ≤ N → N.Coprime p → ∀ X : GenModel gb N, IsProjOver X.s := by
   intro p _ D hC gb N hN hNp X
-  obtain ⟨M⟩ := _root_.GlobalTheory.UPel.HT.model_nonempty p D ℂ (baseOfGBase gb) N hN hNp
-  have hM : IsProjOver M.s := GlobalTheory.UPel.HT.Model.isProjOver_of_compactB p D ℂ (baseOfGBase gb) N hN hNp hC M
-  obtain ⟨j, _, hj, hjs, _⟩ := _root_.GlobalTheory.UPel.HT.GenCmp.genModel_eq_genericFibre p D ℂ (baseOfGBase gb) ℂ (RingHom.id ℂ) gb rfl (fun _ => rfl) N hN hNp M X
+  obtain ⟨M⟩ := _root_.GlobalTheory.UPel.HT.model_nonempty p D ℂ (GlobalTheory.UPel.HT.Gen.CxSmooth.baseOfG gb) N hN hNp
+  have hM : IsProjOver M.s := GlobalTheory.UPel.HT.Model.isProjOver_of_compactB p D ℂ (GlobalTheory.UPel.HT.Gen.CxSmooth.baseOfG gb) N hN hNp hC M
+  obtain ⟨j, _, hj, hjs, _⟩ := _root_.GlobalTheory.UPel.HT.GenCmp.genModel_eq_genericFibre p D ℂ (GlobalTheory.UPel.HT.Gen.CxSmooth.baseOfG gb) ℂ (RingHom.id ℂ) gb rfl (fun _ => rfl) N hN hNp M X
   rw [← hjs]
   exact GlobalTheory.ProjSpace.isProjOver_comp_of_isClosedImmersion j (GlobalTheory.ProjSpace.isProjOver_pullback_snd (RingHom.id ℂ) hM)
 
@@ -315,7 +300,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.cntFn_of :
   refine ⟨?_, ?_, ?_⟩
   · intro k hk y
     constructor
-    · haveI : (M.subgroupOf K').Normal := ⟨fun n hn g => by
+    · have : (M.subgroupOf K').Normal := ⟨fun n hn g => by
         rw [Subgroup.mem_subgroupOf] at hn ⊢
         simpa using hMn g g.2 n hn⟩
       unfold cntFn
@@ -336,7 +321,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.cntFn_of :
     obtain ⟨q, hq⟩ := hnz y hy
     refine ⟨(h * ((Quotient.out q : K') : Γ) * y)⁻¹, K.inv_mem hq, _, (Quotient.out q).2, ?_⟩
     group
-  · haveI : (M.subgroupOf K').FiniteIndex := Subgroup.finiteIndex_iff.mpr hidx
+  · have : (M.subgroupOf K').FiniteIndex := Subgroup.finiteIndex_iff.mpr hidx
     refine (Set.finite_range (fun q : K' ⧸ M.subgroupOf K' =>
       ((((Quotient.out q : K') : Γ)⁻¹ * h⁻¹ : Γ) : Γ ⧸ K))).subset ?_
     intro y hy
@@ -407,8 +392,8 @@ theorem UpperTheory.Gal.LocalSmoothExtension.cntSum_of :
       have e := hnorm (r x)⁻¹ (K'.inv_mem (hKK' (hrK x))) _ hx
       convert e using 1
       group
-  haveI : Finite (K' ⧸ M.subgroupOf K') := Finite.of_surjective φ hφ.2
-  letI : Fintype (K' ⧸ M.subgroupOf K') := Fintype.ofFinite _
+  have : Finite (K' ⧸ M.subgroupOf K') := Finite.of_surjective φ hφ.2
+  let : Fintype (K' ⧸ M.subgroupOf K') := Fintype.ofFinite _
   have hL : ∑ z : (K' ⧸ K.subgroupOf K') × Δ, P (h * ↑(Quotient.out z.1) * r z.2)
       = ∑ z : (K' ⧸ K.subgroupOf K') × Δ, P (h * ↑(Quotient.out (φ z))) := by
     refine Finset.sum_congr rfl fun z _ => ?_
@@ -489,7 +474,7 @@ theorem coeffOcc_of : CoeffOcc := by
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hji
-      rw [if_neg (fun e => hji (hinj e).symm), mul_zero]
+      rw [ite_eq_right (fun e => hji (hinj e).symm), mul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   have hP : P.coeff (h i) = if h i ∈ Finset.range (d + 1) then (-1) ^ (h i) * t (h i) else 0 := by
@@ -689,9 +674,9 @@ theorem geoStep_of :
   have b₀ : T.X.admitted (T.lev N') (T.lev N) h := ⟨hΔ, fun u hu => hm3 (T.lev N, h) (by simp) u (hle hu)⟩
   obtain ⟨hcx, hfin, het, F, A, hF, hA, hsum⟩ := FK p D G L sc gb std i₀ v hv k T N' N hdvd d hd h a₀ b₀ hreg α hα
   refine ⟨hcx, fun y => ?_⟩
-  haveI := T.X.fin (T.lev N') (T.lev N) a₀.1 a₀.2
-  haveI := T.X.etale (T.lev N') (T.lev N) a₀.1 a₀.2
-  haveI := hd
+  have := T.X.fin (T.lev N') (T.lev N) a₀.1 a₀.2
+  have := T.X.etale (T.lev N') (T.lev N) a₀.1 a₀.2
+  have := hd
   have hq1 : T.X.tr _ _ 1 a₀.1 a₀.2 ≫ qAt T N = qAt T N' := T.X.tr_q _ _ _ _ _
   have hqh : T.X.tr _ _ h b₀.1 b₀.2 ≫ qAt T N = qAt T N' := T.X.tr_q _ _ _ _ _
   have hop := fun a b => HO T.X (hodge ℂ a b) (HG ℂ a b) (T.lev N') (T.lev N) h a₀ b₀
@@ -820,12 +805,12 @@ theorem UpperTheory.Gal.LocalSmoothExtension.hodgeEig_of :
   intro gb hgb T N σ i₀ h hH J ψ θ f hψ hf hS i
   have hκ : (hTr p D G L (conjWt σ lam) i₀ h hH).choose ≤ k := by
     have := hkB σ i₀ h hH
-    simpa only [κ, dif_pos hH] using this
+    simpa only [κ, dite_eq_left hH] using this
   obtain ⟨c, hc⟩ := (hTr p D G L (conjWt σ lam) i₀ h hH).choose_spec k hκ
   obtain ⟨hproj, d, hd⟩ := hProj p D G L hSc gb k T N
   have hcT := hc hSc gb hgb T N d hd
   have hG : ∀ a b, (UpperTheory.Gal.G3.hodge ℂ a b).Good := fun a b => hGood ℂ a b
-  haveI hFD : ∀ b : Fin (d + 1), FiniteDimensional ℂ (hodgeH (qAt T N) (h i) b.1) :=
+  have hFD : ∀ b : Fin (d + 1), FiniteDimensional ℂ (hodgeH (qAt T N) (h i) b.1) :=
     fun b => hFin _ _ d hd hproj _ _
   have hWd : ∀ (a b : ℕ) (w : List J), T.X.IsFn (T.lev N) (wordFn (L.KN N.1) ψ w f) ∧
       hk T N (wordFn (L.KN N.1) ψ w f) a b = (w.map fun j => hk T N (ψ j) a b).prod * hk T N f a b := by
@@ -886,7 +871,7 @@ open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.
 theorem UpperTheory.Gal.LocalSmoothExtension.hodgeFin_of :
     HolomorphicLefschetzFormula → HodgeFin := by
   intro hW Z s d hsm hproj a b
-  haveI := hsm
+  have := hsm
   have hF : ∀ y : CxPts (Scheme.emptyTo Z ≫ s) (RingHom.id ℂ),
       y ∈ (∅ : Finset (CxPts (Scheme.emptyTo Z ≫ s) (RingHom.id ℂ))) ↔
         y.1 ≫ Scheme.emptyTo Z = y.1 ≫ Scheme.emptyTo Z :=
@@ -976,7 +961,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.homEx_of :
     fun _ _ => rfl
   refine ⟨?_, fun ψ₁ ψ₂ h => ext'' ψ₁ ψ₂ h, ?_⟩
   · intro ψ hψ
-    haveI := hψ
+    have := hψ
     have w : (m'.φ ≫ ψ.left) ≫ o''.A.hom = o₁'.A.hom ≫ f := by
       rw [Category.assoc, Over.w ψ, m'.cart.1.w]
     let ψ₁ : o₁'.A ⟶ o₁''.A :=
@@ -1172,11 +1157,11 @@ theorem UpperTheory.Gal.LocalSmoothExtension.kSProj_of :
   constructor
   · obtain ⟨M, i, hi, hi'⟩ := hPr p D hSc.cpt gb N.1 N.2.1 N.2.2 (T.M N) k
     refine ⟨M, (T.e N).hom ≫ i, ?_, ?_⟩
-    · haveI := hi
+    · have := hi
       infer_instance
     · rw [Category.assoc, hi']
   · obtain ⟨d, hd⟩ := hSm D.toG gb N.1 N.2.1 (T.M N) k
-    haveI := hd
+    have := hd
     have h0 : SmoothOfRelativeDimension 0 (T.e N).hom := inferInstance
     have h2 := AlgebraicGeometry.smoothOfRelativeDimension_comp (n := 0) (m := d) (T.e N).hom
       ((KS.pow (T.M N).univ.A k).hom ≫ (T.M N).s)
@@ -1373,16 +1358,15 @@ section -- clump:auto
 
 open UpperTheory.Gal.LocalSmoothExtension
 
-
 open AlgebraicGeometry CategoryTheory Limits GlobalTheory.HodgeCoh in
 theorem UpperTheory.Gal.LocalSmoothExtension.occOf_of :
     MemOp → UpperTheory.Gal.G3.HodgeGood → UpperTheory.Gal.G3.HodgeTr → UpperTheory.Gal.G3.BcGood.{0} → UpperTheory.Gal.G3.OpBc.{0} → UpperTheory.Gal.G3.OpTr.{0} → UpperTheory.Gal.G3.BcSplits → OccOf := by
   intro memop hg htr bcg opbc optr bcs p _ D G L R _ _ gb k T N J g τ θ a b x hx hxe
-  letI : Algebra R ℂ := τ.toAlgebra
+  let : Algebra R ℂ := τ.toAlgebra
   refine ⟨b, x, hx, fun j => ?_⟩
   obtain ⟨-, hfin, het, hop⟩ := memop p D G L R gb k T N J g j
-  haveI := hfin
-  haveI := het
+  have := hfin
+  have := het
   have hΘ := bcg (UpperTheory.Gal.G3.hodge ℂ a b) (Spec.map (CommRingCat.ofHom τ)) (hg ℂ a b)
   have hs : (T.tower N g).s j ≫ (T.tower N g).q = (T.tower N g).s j ≫ (T.tower N g).q := rfl
   have h2 := opbc (UpperTheory.Gal.G3.hodge ℂ a b) (Spec.map (CommRingCat.ofHom τ)) (T.tower N g).q
@@ -1391,8 +1375,8 @@ theorem UpperTheory.Gal.LocalSmoothExtension.occOf_of :
   obtain ⟨hf', he', -⟩ := bcs (Spec.map (CommRingCat.ofHom τ)) (T.tower N g).q
     ((T.tower N g).s j ≫ (T.tower N g).q) ((T.tower N g).s j ≫ (T.tower N g).q) ((T.tower N g).s j) hs
     ((T.tower N g).s j) hs PEmpty (fun e => e.elim) (fun e => e.elim)
-  haveI := hf'
-  haveI := he'
+  have := hf'
+  have := he'
   have ht' : UpperTheory.Gal.G3.bcMap (Spec.map (CommRingCat.ofHom τ)) ((T.tower N g).t j) ((T.tower N g).comm j) ≫
       pullback.snd (T.tower N g).q (Spec.map (CommRingCat.ofHom τ)) =
       UpperTheory.Gal.G3.bcMap (Spec.map (CommRingCat.ofHom τ)) ((T.tower N g).s j) hs ≫
@@ -1430,14 +1414,14 @@ private theorem isSquare_square_compatible_homs {S : Scheme.{0}} {A A' : Over S}
 theorem UpperTheory.Gal.LocalSmoothExtension.polPull_of :
     PolPull := by
   intro G R _ _ b N N' S S₁ s s₁ f o' o'' o₁' o₁'' m' m'' ψ ψ₁ hc c ⟨h⟩
-  letI := o'.grp
-  letI := o'.comm
-  letI := o''.grp
-  letI := o''.comm
-  letI := o₁'.grp
-  letI := o₁'.comm
-  letI := o₁''.grp
-  letI := o₁''.comm
+  let := o'.grp
+  let := o'.comm
+  let := o''.grp
+  let := o''.comm
+  let := o₁'.grp
+  let := o₁'.comm
+  let := o₁''.grp
+  let := o₁''.comm
   have hsq : Hecke.sq2 ψ₁ ≫ m''.φ₂ = m'.φ₂ ≫ Hecke.sq2 ψ := by
     apply MapComp.isSquare_unique (MapComp.isSquare_comp (isSquare_square_compatible_homs ψ₁) m''.sq)
     rw [hc]
@@ -1527,7 +1511,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.sigmaSplit_of :
   have hpt : ∀ (Ω : Type) [Field Ω] (y : UpperTheory.Gal.G3.sp Ω ⟶ ∐ fun _ : I => Y),
       ∃ i : I, ∃ y' : UpperTheory.Gal.G3.sp Ω ⟶ Y, y' ≫ Sigma.ι (fun _ : I => Y) i = y := by
     intro Ω _ y
-    haveI := UpperTheory.Gal.LocalSmoothExtension.sp_subsingleton Ω
+    have := UpperTheory.Gal.LocalSmoothExtension.sp_subsingleton Ω
     obtain ⟨p⟩ := hne Ω
     obtain ⟨⟨i, a⟩, ha⟩ := (sigmaMk (fun _ : I => Y)).surjective (y.base p)
     rw [sigmaMk_mk] at ha
@@ -1553,7 +1537,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.sigmaSplit_of :
           rw [← Category.assoc] at h
           exact (cancel_mono _).1 h
         rw [hδu δ' hx]
-      · haveI := isEmpty_of_commSq_sigmaι_of_ne (g := fun _ : I => Y) (a := x ≫ σ δ') (b := y')
+      · have := isEmpty_of_commSq_sigmaι_of_ne (g := fun _ : I => Y) (a := x ≫ σ δ') (b := y')
           ⟨by rw [Category.assoc]; exact h⟩ hii
         obtain ⟨p⟩ := hne Ω
         exact isEmptyElim p
@@ -1581,9 +1565,9 @@ theorem UpperTheory.Gal.LocalSmoothExtension.tatePull_of :
       ∃ I₁ : UpperTheory.Gal.Int.Geo.TIso o₁ t, ∀ n y,
         (I₁.ev n y).left ≫ m.φ = (I.ev n y).left := by
   intro p _ D R _ _ b N S S₁ s s₁ f o o₁ m k _ t I
-  letI := o.grp
-  letI := o₁.grp
-  letI := o.comm
+  let := o.grp
+  let := o₁.grp
+  let := o.comm
   have hl : ∀ x : Over.mk t ⟶ o₁.A,
       Over.Hom.left (pushHom m.cart (Over.mk t) x) = Over.Hom.left x ≫ m.φ := fun _ => rfl
   let E := MulEquiv.ofBijective (pushHom m.cart (Over.mk t))
@@ -1634,8 +1618,8 @@ open UpperTheory.Gal.Int.Geo (IsTrans TIso)
 private theorem pt_ext {G : GDatum} {R : Type} [CommRing R] [Algebra ℚ R] {b : GBase G R} {N : ℕ}
     {S S₁ T : Scheme.{0}} {s : S ⟶ Sp R} {s₁ : S₁ ⟶ Sp R} {f : S₁ ⟶ S} {o : GObj b N s} {o₁ : GObj b N s₁}
     (m : GObjMap o₁ o f) {t : T ⟶ S₁} (x y : Over.mk t ⟶ o₁.A) (h : x.left ≫ m.φ = y.left ≫ m.φ) : x = y := by
-  letI := o.grp
-  letI := o₁.grp
+  let := o.grp
+  let := o₁.grp
   apply GlobalTheory.SiegelPull.push_injective m.cart (Over.mk t)
   exact Over.OverMorphism.ext h
 
@@ -1644,10 +1628,10 @@ theorem UpperTheory.Gal.LocalSmoothExtension.transPull_of :
   intro hHom hPol hTate p _ D G L R _ _ b N N' S S₁ s s₁ f hfs o' o'' o₁' o₁'' m' m'' h ψ hT
   obtain ⟨hψ, hact, ⟨ψ', d, hψ', hact', hc1, hc2, hd⟩, hpolc, hgeo⟩ := hT
   obtain ⟨c, hcp, hpol, hrest⟩ := hpolc
-  letI := o'.grp
-  letI := o''.grp
-  letI := o₁'.grp
-  letI := o₁''.grp
+  let := o'.grp
+  let := o''.grp
+  let := o₁'.grp
+  let := o₁''.grp
   obtain ⟨hlift, huniq, hpow⟩ := hHom D.toG R b N N' S S₁ s s₁ f o' o'' o₁' o₁'' m' m''
   obtain ⟨hlift', huniq', hpow'⟩ := hHom D.toG R b N' N S S₁ s s₁ f o'' o' o₁'' o₁' m'' m'
   have hu₁ := (hHom D.toG R b N' N' S S₁ s s₁ f o' o' o₁' o₁' m' m').2.1
@@ -1759,7 +1743,6 @@ private theorem pull_congr' {B : Scheme.{0}} {R : Type} [Field R] (Θ : UpperThe
   subst e
   rfl
 
-
 open CategoryTheory Limits AlgebraicGeometry in
 private theorem pull_base {B : Scheme.{0}} {R : Type} [Field R] (Θ : UpperTheory.Gal.G3.Th.{0} B R) {W Z Z' : Scheme.{0}}
     {p : Z ⟶ B} {p' : Z' ⟶ B} (c : W ⟶ Z) {J : Type} [Fintype J] (f : J → (W ⟶ Z')) (A : Θ.H p' →ₗ[R] Θ.H p)
@@ -1768,7 +1751,6 @@ private theorem pull_base {B : Scheme.{0}} {R : Type} [Field R] (Θ : UpperTheor
     Θ.pull c rfl (A x) = ∑ j, Θ.pull (f j) (hf' j) x := by
   subst hc
   exact H x
-
 
 open CategoryTheory Limits AlgebraicGeometry in
 private theorem op_core (hFn : CntFn) (hSum : CntSum) (hSig : SigmaFEt) (hSpl : SigmaSplit)
@@ -1799,15 +1781,15 @@ private theorem op_core (hFn : CntFn) (hSum : CntSum) (hSig : SigmaFEt) (hSpl : 
     have hd := Subgroup.relIndex_dvd_of_le_left K' hMK
     rw [h0] at hd
     exact hidx (Nat.eq_zero_of_zero_dvd hd)
-  haveI : ((X.K i).subgroupOf K').FiniteIndex := ⟨hne⟩
-  haveI : IsFinite (X.tr m i 1 a1 b1) := X.fin m i a1 b1
-  haveI : Etale (X.tr m i 1 a1 b1) := X.etale m i a1 b1
+  have : ((X.K i).subgroupOf K').FiniteIndex := ⟨hne⟩
+  have : IsFinite (X.tr m i 1 a1 b1) := X.fin m i a1 b1
+  have : Etale (X.tr m i 1 a1 b1) := X.etale m i a1 b1
   have hsig := hSig (X.Z m) (X.Z i) (X.tr m i 1 a1 b1) (K' ⧸ (X.K i).subgroupOf K')
   refine ⟨hIsFn, hsig.1, hsig.2, fun Θ hΘ => ?_⟩
   obtain ⟨Γ₀, _, _, r, cadm, hr, huq, hgal⟩ :=
     hGal X m i ⟨a1, b1⟩ (fun k hk u hu => hn k (hKK hk) u hu)
-  letI : Fintype Γ₀ := Fintype.ofFinite Γ₀
-  letI : Fintype (K' ⧸ (X.K i).subgroupOf K') := Fintype.ofFinite _
+  let : Fintype Γ₀ := Fintype.ofFinite Γ₀
+  let : Fintype (K' ⧸ (X.K i).subgroupOf K') := Fintype.ofFinite _
   have HarishChandraLabels : ∀ c ∈ K', X.admitted m i (h * c) := fun c hc => ⟨hΔ c hc, fun u hu => hadm c hc u hu⟩
   have adm : ∀ z : (K' ⧸ (X.K i).subgroupOf K') × Γ₀, X.admitted m i (h * (z.1.out : Γ) * r z.2) :=
     fun z => UpperTheory.Gal.G3.Tower.admitted.mul (cadm z.2) (HarishChandraLabels _ z.1.out.2)

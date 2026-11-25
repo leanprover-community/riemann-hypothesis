@@ -153,10 +153,4 @@ lemma xs_mem {n : ℕ} (k : Fin n) (i : Fin d) : xs S d k i ∈ Io S (Fin n × F
 lemma lin_mem {n : ℕ} (A : Fin d → Fin d → S) (k : Fin n) (i : Fin d) : lin A k i ∈ Io S (Fin n × Fin d) :=
   Ideal.sum_mem _ fun _ _ => Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨_, rfl⟩)
 
-section Main
-
-variable [Algebra ℚ S]
-
-end Main
-
 end Formalism.MainNotions.ModuliIntegralCharts.H1.PairEvaluation

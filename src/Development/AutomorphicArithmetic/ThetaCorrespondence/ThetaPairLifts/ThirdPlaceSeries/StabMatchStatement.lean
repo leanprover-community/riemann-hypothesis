@@ -48,66 +48,26 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Bes
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsCentralElementHomotheticGluedCoresStatement
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BotOfPlacedBy
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OneSubIdemQMulSelf
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ThetaIdentityOfMapsAll
 import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FractionalIdealCompletionPropertiesAtPlaceStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeSelfDualTraceForm
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiStarOfMid
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PairForm
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
-import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticesAgreeAlmostEverywhere
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualImageAdelicPointWittCore
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -240,13 +200,13 @@ theorem exists_div_indP (v : GlobalTheory.FinPl.Pl D) (g : ℕ) (hg : (g : 𝓞 
     · subst hw
       have h2 : Valued.v (algebraMap D.host.F (w.adicCompletion D.host.F) (g : D.host.F)⁻¹) =
           w.valuation D.host.F (g : D.host.F)⁻¹ := HeightOneSpectrum.valuedAdicCompletion_eq_valuation' w _
-      rw [if_pos rfl, one_mul, HeightOneSpectrum.mem_adicCompletionIntegers, h2, map_inv₀]
+      rw [ite_eq_left rfl, one_mul, HeightOneSpectrum.mem_adicCompletionIntegers, h2, map_inv₀]
       have h1 : w.valuation D.host.F (g : D.host.F) = 1 := by
         have := HeightOneSpectrum.valuation_of_algebraMap (K := D.host.F) w (g : 𝓞 D.host.F)
         rw [HeightOneSpectrum.intValuation_eq_one_iff.2 hg] at this
         simpa using this
       rw [h1, inv_one]
-    · rw [if_neg hw, zero_mul]; exact zero_mem _
+    · rw [ite_eq_right hw, zero_mul]; exact zero_mem _
   · rw [mul_left_comm, ← map_natCast (algebraMap D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F)) g, ← map_mul,
       mul_inv_cancel₀ hg0, map_one, mul_one]
 
@@ -575,7 +535,7 @@ theorem last_sameAt {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
         a * cA D (∑ l, (∑ m, cA D (ratV (vecB B.o B.ζ) m) * gA B.V₀ m l) * y l) ∈ idV 𝔑 v) := by
     intro a ha y hy
     have hzi : (∑ l, (∑ m, cA D (ratV (vecB B.o B.ζ) m) * gA B.V₀ m l) * y l) ∈ idAt D (· = v) :=
-      sum_mem fun l _ => Ideal.mul_mem_left _ _ (latV_entry_mem' hy l)
+      sum_mem fun l _ => Ideal.mul_mem_left _ _ (GlobalTheory.FinPlLoc.latV_idAt hy l)
     rw [incAdj_yZero_mulVec D ρ B J hρ a y, hL _ (Ideal.mul_mem_left _ _ hzi), map_mul, map_mul, cA_cA,
       GlobalTheory.DualPairCheck.cA_incA, e, h3 _ _ (inv_ne_zero hξ)]
     have e4 : incA D (D.host.xi0⁻¹)⁻¹ * (incA D (star D.host.xi0⁻¹) * a *
@@ -631,7 +591,7 @@ theorem GlobalTheory.Core.Mi.LatMatch.lastAt_of_goodBF : ∀ (D : D7) (ψ : AddC
       ∀ a ∈ idAt D (· = v), a • ratV (col J.d j) ∈ latV J.W LW (· = v) ↔ a ∈ idV (𝔟 j) v := by
     intro j
     have hs := Classical.choose_spec (GlobalTheory.T.selfDualLattice_rationalLineTrace_fractionalIdeal D J.W LW (col J.d j) hG.sdW (col_ne_zero _ _))
-    simp only [𝔟, dif_pos j.2, Fin.eta]
+    simp only [𝔟, dite_eq_left j.2, Fin.eta]
     exact ⟨hs.1, hs.2.2 v⟩
   have hmono : GlobalTheory.SeeSaw.MonoId J.d LW LW₀ 𝔟 v :=
     ⟨hG.monoW, fun j a ha => by rw [colMul_jX]; exact (h𝔟 j).2 a ha⟩
@@ -876,15 +836,15 @@ theorem wShape_of_besFrame_loc : ∀ {D : D7} {c : Comm D} {v : VCom c} (G : GLo
     intro i j hj
     have h : j.1 < ρ := hj ▸ i.2
     have : (⟨j.1, h⟩ : Fin ρ) = i := Fin.ext hj
-    simp only [Yr, dif_pos h, this]
+    simp only [Yr, dite_eq_left h, this]
   have YrZ : ∀ (j : Fin (G.s + 1)), j.1 = ρ → Yr j = t / G.sc 0 := by
     intro j hj
-    simp only [Yr, dif_neg (show ¬ j.1 < ρ by omega), if_pos hj]
+    simp only [Yr, dite_eq_right (show ¬ j.1 < ρ by omega), ite_eq_left hj]
   have YrE' : ∀ (i : Fin ρ) (j : Fin (G.s + 1)), j.1 + i.1 = 2 * ρ → Yr j = x' i / cE' i := by
     intro i j hj
     have h : 2 * ρ - j.1 < ρ := by omega
     have : (⟨2 * ρ - j.1, h⟩ : Fin ρ) = i := Fin.ext (by simp; omega)
-    simp only [Yr, dif_neg (show ¬ j.1 < ρ by omega), if_neg (show ¬ j.1 = ρ by omega), dif_pos h, this]
+    simp only [Yr, dite_eq_right (show ¬ j.1 < ρ by omega), ite_eq_right (show ¬ j.1 = ρ by omega), dite_eq_left h, this]
   have hlat : (∀ a, Y (Sum.inl a) ∈ 𝒪[G.k]) ↔ (fun r => G.q.sec (y r)) ∈ GlobalTheory.FinPl.latV (c.X 0) (c.x 0).L (· = G.q.v) := by
     have h := G.latX 0 (by omega) ((G.FX 0 (by omega)).γ *ᵥ y)
     rw [Matrix.mulVec_mulVec, (G.FX 0 (by omega)).βγ, Matrix.one_mulVec] at h
@@ -1444,7 +1404,7 @@ theorem unit_at {v : GlobalTheory.FinPl.Pl D} {T : ℕ} (hT : (T : 𝓞 D.host.F
   rw [Algebra.smul_def, map_mul, AlgHom.commutes, GlobalTheory.FinPlLoc.evalV_ePl]
   by_cases hw : w = v
   · subst hw
-    rw [HeightOneSpectrum.mem_adicCompletionIntegers, if_pos rfl, mul_one]
+    rw [HeightOneSpectrum.mem_adicCompletionIntegers, ite_eq_left rfl, mul_one]
     show Valued.v (((T : D.host.F)⁻¹ : D.host.F) : w.adicCompletion D.host.F) ≤ 1
     rw [HeightOneSpectrum.valuedAdicCompletion_eq_valuation', map_inv₀]
     have h1 : w.valuation D.host.F (T : D.host.F) = 1 := by
@@ -1452,7 +1412,7 @@ theorem unit_at {v : GlobalTheory.FinPl.Pl D} {T : ℕ} (hT : (T : 𝓞 D.host.F
       rw [HeightOneSpectrum.intValuation_eq_one_iff.2 hT] at this
       simpa using this
     rw [h1, inv_one]
-  · rw [if_neg hw, mul_zero]; exact zero_mem _
+  · rw [ite_eq_right hw, mul_zero]; exact zero_mem _
 
 def traceLine {S A L : HSp D} (o : OrthDec S A L) (M' : Lat S) (v : GlobalTheory.FinPl.Pl D) :
     AddSubgroup (Fin L.rank → AE D) where
@@ -1670,7 +1630,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (latV Moves MonoAt OrthAt PrimAt idAt intAt grpAt colMul Lat SplitPt GoodBF GluedCore IsSumFrame)
 open GlobalTheory.SeeSaw (idV dI FI)
 open ValuativeRel

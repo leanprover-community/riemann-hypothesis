@@ -26,46 +26,7 @@ public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Mathlib.LinearAlgebra.Dimension.RankNullity
 public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerAdditivityExactSequence
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerIndependenceOfOrder
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.RuleFin
@@ -75,12 +36,7 @@ import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.Quo
 import Mathlib.RingTheory.MvPowerSeries.NoZeroDivisors
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerVanishingBelowDimension
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -499,7 +455,7 @@ theorem UpperTheory.V.Alg.M.ift_holds :
       simp only [Matrix.mul_apply, Matrix.of_apply, this, Matrix.one_apply, Subtype.ext_iff, eq_comm]
     · have := hX i.1
 
-      simp only [G, g, dif_pos i.2, map_sub, map_sum, map_smul] at this
+      simp only [G, g, dite_eq_left i.2, map_sub, map_sum, map_smul] at this
       simp only [Matrix.of_apply]
       linear_combination this
   · have := key f 0 (by simp)
@@ -511,7 +467,7 @@ theorem UpperTheory.V.Alg.M.ift_holds :
       simp only [G]
       split_ifs with h
       · simp
-      · rw [ift_coeff_X, if_neg (fun h' => hs (by rw [h'])), mul_zero]
+      · rw [ift_coeff_X, ite_eq_right (fun h' => hs (by rw [h'])), mul_zero]
     · simp
 end -- clump:auto
 end -- clump:auto
@@ -591,7 +547,7 @@ private theorem lin_span {O A τ : Type} [CommRing O] [IsDomain O] [CommRing A] 
   have hgl : ∀ i', MvPowerSeries.coeff (Finsupp.single i' 1) (φ g) =
       MvPowerSeries.coeff (Finsupp.single i' 1) (φ f0) := by
     intro i'
-    rw [hgdef, map_sub, map_sub, AlgHom.commutes, MvPowerSeries.algebraMap_apply, MvPowerSeries.coeff_C, if_neg (by simp),
+    rw [hgdef, map_sub, map_sub, AlgHom.commutes, MvPowerSeries.algebraMap_apply, MvPowerSeries.coeff_C, ite_eq_right (by simp),
       sub_zero]
   obtain ⟨c, hc, hs⟩ := hZ _ ⟨g, ⟨hg0, hgx⟩, rfl⟩
   obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun O).1 hs
@@ -614,8 +570,8 @@ private theorem lin_span {O A τ : Type} [CommRing O] [IsDomain O] [CommRing A] 
   rw [← Finset.mul_sum, h1, MvPowerSeries.coeff_X]
   by_cases hii : i' = i
   · subst hii
-    rw [if_pos rfl, hf0, lin_proj 𝒜 wt φ h.graded i' hi, inv_mul_cancel₀ (mul_ne_zero hc' hf)]
-  · rw [if_neg (fun h0 => hii (Finsupp.single_left_injective one_ne_zero h0))]
+    rw [ite_eq_left rfl, hf0, lin_proj 𝒜 wt φ h.graded i' hi, inv_mul_cancel₀ (mul_ne_zero hc' hf)]
+  · rw [ite_eq_right (fun h0 => hii (Finsupp.single_left_injective one_ne_zero h0))]
     have : MvPowerSeries.coeff (Finsupp.single i' 1) (φ f0) = 0 := by
       by_cases hw : wt i' = 0
       · rw [hf0, lin_proj 𝒜 wt φ h.graded i' hw, hf' i' hii]

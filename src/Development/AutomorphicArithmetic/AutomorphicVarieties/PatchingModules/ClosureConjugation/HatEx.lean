@@ -398,11 +398,6 @@ section -- clump:auto
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.CA UpperTheory.V.Pa Polynomial
 open scoped TensorProduct
 
-private theorem lift_eq' {n : ℕ} {B C G : Type} [CommRing B] [CommRing C] [Algebra B C] [Group G]
-    (ρ : G →* Matrix (Fin n) (Fin n) C) (z : MonoidAlgebra B G) :
-    MonoidAlgebra.lift B _ G ρ z = GDet.repAlg ρ C (MonoidAlgebra.mapRingHom G (algebraMap B C) z) := by
-  apply _root_.lift_eq <;> assumption
-
 theorem UpperTheory.V.Pa.rep_quot :
     ∀ {l : ℕ} [Fact l.Prime] {L : Loc} {G G0 : Glob l L} {h : G.Hom G0} {n : ℕ} {x : NP G0.frame n} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] [Algebra ℤ_[l] O] [Algebra O x.K] {r : Resid G.frame O n} {B : Type} [CommRing B] [Algebra O B] [IsCO O B] {u : Pair r B} (P : OoPt h x u), ∃ ρ : u.D.CHQuot P.gens →+* Matrix (Fin n) (Fin n) x.A, ∀ y, ρ (u.D.toQuot P.gens y) = P.rep y := by
   intro l _ L G G0 h n x O _ _ _ _ _ _ r B _ _ _ u P
@@ -423,7 +418,7 @@ theorem UpperTheory.V.Pa.rep_quot :
   have h4 : ∀ z ∈ P.gens,
       MonoidAlgebra.lift B (Matrix (Fin n) (Fin n) x.A) G.G₀ (mat (x.ρ.comp h.p₀)) z = 0 := by
     intro z hz
-    rw [lift_eq']
+    rw [lift_eq]
     exact rep_gens P z hz
   obtain ⟨ρ, hρ⟩ := f_rep (maximalIdeal x.A) u.D (mat (x.ρ.comp h.p₀)) P.gens h1 h2 h3 h4
   refine ⟨ρ.toRingHom, fun y => ?_⟩
@@ -432,7 +427,7 @@ theorem UpperTheory.V.Pa.rep_quot :
   have hy := congrArg (fun φ => φ y) hext
   simp only [AlgHom.comp_apply] at hy
   change ρ (u.D.toQuot P.gens y) = _
-  rw [hy, lift_eq']
+  rw [hy, lift_eq]
   rfl
 end -- clump:auto
 end -- clump:auto
@@ -794,8 +789,8 @@ theorem UpperTheory.V.Pa.hat_ex :
     rw [hrep, map_one, map_one, Matrix.smul_apply, Matrix.algebraMap_matrix_apply]
     by_cases hij : i = j
     · subst hij
-      rw [Matrix.one_apply_eq, if_pos rfl, hB, smul_eq_mul, mul_one]
-    · rw [Matrix.one_apply_ne hij, if_neg hij, smul_zero, map_zero]
+      rw [Matrix.one_apply_eq, ite_eq_left rfl, hB, smul_eq_mul, mul_one]
+    · rw [Matrix.one_apply_ne hij, ite_eq_right hij, smul_zero, map_zero]
   have hφ : PhiCond G.frame.G₀ l := phi_fg _ P.fg
   have hn : 1 ≤ n := le_trans x.a_pos x.a_le
   haveI : IsAdicComplete (maximalIdeal B) B := IsCO.complete (O := O)

@@ -438,7 +438,7 @@ private theorem int_comb_periods_mem_lattice (L : PeriodPair) (a b : ℤ) :
 
 private theorem semiChar_zero_eq_one (L : PeriodPair) : Formalism.L2.Th1.F.semiChar L 0 = 1 := by
   unfold Formalism.L2.Th1.F.semiChar
-  rw [if_pos (by rw [zero_div]; exact L.lattice.zero_mem)]
+  rw [ite_eq_left (by rw [zero_div]; exact L.lattice.zero_mem)]
 
 private theorem quasiPeriodic_zero_semiChar_zero (L : PeriodPair) : QP L 0 (Formalism.L2.Th1.F.semiChar L 0) := by
   rw [semiChar_zero_eq_one]
@@ -470,13 +470,13 @@ lemma qp_coords (hq : ZetaQuasi) (hl : SigmaLogDeriv) (ho : SigmaOdd) (hz : Sigm
       have h3 := qp_two_mul L ih' (semiChar_sq L _)
       have hs1 : Formalism.L2.Th1.F.semiChar L (((2 * a' : ℤ) : ℂ) * L.ω₁ + ((2 * b' : ℤ) : ℂ) * L.ω₂) = 1 := by
         unfold Formalism.L2.Th1.F.semiChar
-        rw [if_pos h2]
+        rw [ite_eq_left h2]
       rw [hs1, show (((2 * a' : ℤ) : ℂ) * L.ω₁ + ((2 * b' : ℤ) : ℂ) * L.ω₂)
           = 2 * ((a' : ℂ) * L.ω₁ + (b' : ℂ) * L.ω₂) by push_cast; ring]
       exact h3
     · have hs1 : Formalism.L2.Th1.F.semiChar L ((a : ℂ) * L.ω₁ + (b : ℂ) * L.ω₂) = -1 := by
         unfold Formalism.L2.Th1.F.semiChar
-        rw [if_neg h2]
+        rw [ite_eq_right h2]
       rw [hs1]
       exact qp_of_half_notMem hq hl ho hz L (int_comb_periods_mem_lattice L a b) h2
 

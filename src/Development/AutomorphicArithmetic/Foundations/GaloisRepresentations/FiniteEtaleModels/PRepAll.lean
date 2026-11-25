@@ -383,7 +383,7 @@ theorem exists_finiteEtale_linTorsHom : ∀ (p : ℕ) [Fact p.Prime] (D : Datum 
     (Out.powIsLimit K n).hom_ext fun ⟨j⟩ => by
       have := e (bb j)
       rw [hb] at this
-      exact hcan _ _ (by simp only [x, Category.assoc] at this; exact this)
+      exact hcan _ _ (by simp only [x] at this; exact this)
   obtain ⟨h', hh'⟩ := (Hi T h).1 ((HU T h).1 fun c a => by rw [hhe, hllin, ← hhe a, Category.assoc])
   refine ⟨h', fun a => by beta_reduce; rw [← Category.assoc, hh', hhe], fun g hg => ?_⟩
   exact (cancel_mono i).1 (hext _ _ fun a => by

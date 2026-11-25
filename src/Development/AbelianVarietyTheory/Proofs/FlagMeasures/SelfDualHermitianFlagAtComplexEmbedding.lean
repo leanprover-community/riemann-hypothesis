@@ -4,48 +4,6 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowersMulZero
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PerpSetBaseChange
 import ReciprocityTheory.SemistableReduction.SemiContractC
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -56,17 +14,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.DenominatorTheorem
-
-open NumberField
-
-theorem main_theorem : ∀ {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
-    (G : Submodule (NumberField.RingOfIntegers E) (Fin n → E)),
-    Submodule.span E (↑G : Set (Fin n → E)) = ⊤ → ∀ (y : Fin n → E),
-    ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ c • y ∈ G := by
-  apply ReciprocityTheory.MultiplicativeHeights.sc_scale
-
-end GlobalTheory.DenominatorTheorem
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.MainTheorem =====
@@ -133,7 +80,7 @@ theorem locDual : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (n m : �
     refine mulVec_mem_of_span φ _ _ _ ?_
       (GlobalTheory.PerpBaseChange.mem_span_of_forms φ ∅ (P *ᵥ z) (by simp))
     intro y _
-    obtain ⟨c, hc, hy⟩ := _root_.GlobalTheory.DenominatorTheorem.main_theorem _ hsp y
+    obtain ⟨c, hc, hy⟩ := _root_.Bl.general_b_fact_second.goal1 _ hsp y
     exact mem_locFlag_of_smul φ P F m hc hy
   refine ⟨⟨?_, ?_, ?_, ?_⟩, htop⟩
   · intro a b hab
@@ -176,7 +123,7 @@ theorem locDual : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (n m : �
       refine mulVec_mem_of_span φ _ _ _ ?_
         (GlobalTheory.PerpBaseChange.mem_span_of_forms φ (f '' (F b : Set _)) (P *ᵥ z) ?_)
       · intro y hy
-        obtain ⟨c, hc, hcy⟩ := _root_.GlobalTheory.DenominatorTheorem.main_theorem _ hsp y
+        obtain ⟨c, hc, hcy⟩ := _root_.Bl.general_b_fact_second.goal1 _ hsp y
         refine mem_locFlag_of_smul φ P F _ hc ((hd b hb _).2 ⟨hcy, fun x hx => ?_⟩)
         have h1 : star x ⬝ᵥ (J *ᵥ y) = 0 := hy (f x) ⟨x, hx, rfl⟩
         rw [Matrix.mulVec_smul, dotProduct_smul, h1, smul_zero]

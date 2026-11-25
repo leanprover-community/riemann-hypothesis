@@ -22,7 +22,7 @@ def fn (z : κ → AF F) : κ → Af F := fun i => (z i).2
 
 omit [Fintype κ] in
 theorem pt_self (z : κ → AF F) : pt (nf z) (fn z) = z :=
-  funext fun i => Prod.ext ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm_apply_apply _) rfl
+  funext fun _ => Prod.ext ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm_apply_apply _) rfl
 
 theorem nf_pt (x : κ → mixedEmbedding.mixedSpace F) (y : κ → Af F) : nf (pt x y) = x := evI_pt x y
 

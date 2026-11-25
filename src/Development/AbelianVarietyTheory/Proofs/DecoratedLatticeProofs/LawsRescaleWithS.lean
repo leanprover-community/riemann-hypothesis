@@ -108,8 +108,4 @@ theorem pureTensorO_smul (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T :
 
 end GlobalTheory.SeeSaw.Resc
 
-namespace GlobalTheory.SeeSaw.Resc
-
-end GlobalTheory.SeeSaw.Resc
-
 end

@@ -37,7 +37,7 @@ theorem smoothLev_of_ckOn {F : Mat k r → (Wq →L[ℂ] Wp)} (hF : CkOn ⊤ (GV
   exact ⟨U, f', hU, hgU, hf', fun g hg hgl => hff g hg hgl.1⟩
 
 theorem mem_level_zero_of_mem_group {g : Mat k r} (hg : g ∈ GV k r) : g ∈ Glev k r 0 :=
-  ⟨hg, fun a ha => absurd ha (Nat.not_lt_zero _)⟩
+  ⟨hg, fun _ ha => absurd ha (Nat.not_lt_zero _)⟩
 
 theorem tL_zero_fn (z z' : Fin (2 * r + k + 1) → ℂ) (Y : ℂ) (a b : Fin 2) {g : Mat k r} (hg : g ∈ GV k r) :
     tL k r z z' 0 Y a b (fun _ : Mx k r => (0 : Wq →L[ℂ] Wp)) g = 0 := by

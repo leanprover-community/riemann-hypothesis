@@ -643,7 +643,7 @@ private theorem w_mul {R : Type} [CommRing R] (M : Matrix (Fin (2 + 2)) (Fin (2 
   rw [Matrix.mul_apply, Fin.sum_univ_add]
   simp only [wGL, Matrix.reindex_apply, Matrix.submatrix_apply, finSumFinEquiv_symm_apply_natAdd,
     finSumFinEquiv_symm_apply_castAdd, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.zero_apply, zero_mul,
-    Finset.sum_const_zero, add_zero, Matrix.one_apply, ite_mul, one_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_const_zero, add_zero, Matrix.one_apply, ite_mul, one_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 private theorem mul_w {R : Type} [CommRing R] (M : Matrix (Fin (2 + 2)) (Fin (2 + 2)) R) (j : Fin 2) (k : Fin (2 + 2)) :
     (M * ((wGL R)⁻¹).val) k (Fin.castAdd 2 j) = M k (Fin.natAdd 2 j) := by
@@ -651,7 +651,7 @@ private theorem mul_w {R : Type} [CommRing R] (M : Matrix (Fin (2 + 2)) (Fin (2 
   change (∑ i, _ * (wGL R).inv _ _) + (∑ i, _ * (wGL R).inv _ _) = _
   simp only [wGL, Matrix.reindex_apply, Matrix.submatrix_apply, finSumFinEquiv_symm_apply_natAdd,
     finSumFinEquiv_symm_apply_castAdd, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₁₁, Matrix.zero_apply, mul_zero,
-    Finset.sum_const_zero, zero_add, Matrix.one_apply, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_const_zero, zero_add, Matrix.one_apply, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 private theorem swap_int {K : Type} [Field K] [NumberField K] (F : G1 K (2 + 2) → ℂ) (hF : Continuous F)
     (hfin : ∀ C : Set (G1 K (2 + 2)), IsCompact C → {q : Cos K | ∃ g ∈ C, F ((q.out : G1 K (2 + 2)) * g) ≠ 0}.Finite)

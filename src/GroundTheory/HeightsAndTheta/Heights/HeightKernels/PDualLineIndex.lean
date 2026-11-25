@@ -157,12 +157,6 @@ namespace MetSpace
 
 variable (S : MetSpace E)
 
-end MetSpace
-
-namespace MetSpace
-
-variable (S : MetSpace E)
-
 def toSp (τ : InfinitePlace E) : Fib τ.embedding S.V ≃ₗ[ℂ] S.FibSp τ := LinearEquiv.refl ℂ _
 
 def fibSub (W : Submodule E S.V) (τ : InfinitePlace E) : Submodule ℂ (S.FibSp τ) :=
@@ -315,12 +309,6 @@ variable (S : MetSpace E)
 
 end MetSpace
 
-namespace MetSpace
-
-variable (S : MetSpace E)
-
-end MetSpace
-
 structure SelfDualFrame (F E : Type) [Field F] [Field E] [NumberField E] [Algebra F E]
     [Algebra.IsQuadraticExtension F E] where
 
@@ -336,12 +324,6 @@ structure SelfDualFrame (F E : Type) [Field F] [Field E] [NumberField E] [Algebr
   θ_θ : ∀ τ u, θ τ (θ τ u) = u
   θ_isometry : ∀ τ u v, inner ℂ (θ τ u) (θ τ v) = inner ℂ u v
   majorant : ∀ τ (y y' : S.V), inner ℂ (θ τ (S.pt τ y)) (S.pt τ y') = τ.embedding (B.toSesq y y')
-
-namespace SelfDualFrame
-
-variable {F : Type} [Field F] [Algebra F E] [Algebra.IsQuadraticExtension F E]
-
-end SelfDualFrame
 
 section Standard
 
@@ -419,20 +401,6 @@ namespace DualHomPf
 
 open NumberField Module FunctionalEquationAlt FunctionalEquationAlt.MetSpace NumberField.InfinitePlace
 open scoped InnerProductSpace nonZeroDivisors ComplexConjugate
-
-section NumberFieldFacts
-
-variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-
-open Classical
-
-end NumberFieldFacts
-
-section DualLattice
-
-variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-
-end DualLattice
 
 section DualBasis
 
@@ -565,35 +533,6 @@ theorem exists_dualBasis (A : Submodule (𝓞 E) V) (hA : A.FG) :
 
 end DualBasis2
 
-section Fibres
-
-variable {E : Type} [Field E] [NumberField E]
-
-variable (S : MetSpace E) (τ : InfinitePlace E)
-
-end Fibres
-
-section Adjoints
-
-variable {H₁ H₂ : Type} [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [FiniteDimensional ℂ H₁]
-  [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] [FiniteDimensional ℂ H₂]
-
-end Adjoints
-
-section IdealMaps
-
-variable {E : Type} [Field E] [NumberField E]
-variable {V V' : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
-  [AddCommGroup V'] [Module E V'] [Module (𝓞 E) V'] [IsScalarTower (𝓞 E) E V']
-
-end IdealMaps
-
-section FibMaps
-
-variable {E : Type} [Field E] [NumberField E]
-
-end FibMaps
-
 end DualHomPf
 
 open NumberField Module FunctionalEquationAlt FunctionalEquationAlt.MetSpace DualHomPf
@@ -704,7 +643,7 @@ theorem proof : LineIdealDual.Statement := by
         rw [← hKid j k, map_sum, Finset.mul_sum]
         exact Finset.sum_congr rfl fun i _ ↦ by rw [map_mul]; ring
       simp only [e, apply_ite (algebraMap K K'), map_one, map_zero, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     choose y hy using h
     rw [hid' (a • v)]
     refine Submodule.sum_mem _ fun i _ ↦ ?_
@@ -836,7 +775,7 @@ theorem dualPointCoord_ne_zero {K : Type} [Field K] [NumberField K] {i : ℕ} (F
   simp only [Λ, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.zero_apply,
     zsmul_eq_mul, Pi.mul_apply, Pi.intCast_apply, Pi.single_apply, mul_ite, mul_one, mul_zero,
     apply_ite (algebraMap K K'), map_intCast, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at this
+    Finset.mem_univ, ite_true] at this
   rcases mul_eq_zero.mp this with h | h
   · apply hD
     have h' : algebraMap K K' (D : K) = 0 := by rw [map_intCast]; exact h

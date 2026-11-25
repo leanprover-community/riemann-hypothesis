@@ -121,7 +121,3 @@ theorem no_jump (ρ : Representation LL G V) (hρ : ∀ g x, ρ g x = x) (τ : K
     rw [e (a + 1) (by omega), e a (by omega)]
 
 end PI.HodgeOfFon.W.Triv
-
-namespace PI.HodgeOfFon.W
-
-end PI.HodgeOfFon.W

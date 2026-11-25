@@ -14,8 +14,6 @@ public import Mathlib.Analysis.Calculus.ContDiff.Operations
 open MeasureTheory Topology Set Filter
 open scoped ContDiff
 
-noncomputable section
-
 namespace CompanionTheory.D.gk.admitted.Gard
 
 section Param

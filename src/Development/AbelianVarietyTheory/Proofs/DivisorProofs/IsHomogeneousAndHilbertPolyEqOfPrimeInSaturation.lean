@@ -55,14 +55,6 @@ open MvPolynomial Filter
 
 namespace GlobalTheory
 
-namespace SatHilb
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-variable {ι K : Type*} [Field K]
-
-end SatHilb
-
 open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma homogeneousComponent_add_X_pow_mul {K : Type} [Field K] {N : ℕ} (j : Fin N) (m n : ℕ)
@@ -78,7 +70,7 @@ private lemma homogeneousComponent_add_X_pow_mul {K : Type} [Field K] {N : ℕ} 
   rw [Finset.sum_eq_single n]
   · simp [add_comm]
   · intro i _ hi
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   · intro hn
     rw [Finset.mem_range, not_lt] at hn
     rw [homogeneousComponent_eq_zero n g (by omega), mul_zero, ite_self]
@@ -115,14 +107,14 @@ private lemma homogeneousComponent_mem_of_isPrime_of_X_pow_saturation {K : Type}
       rw [mem_support_iff, coeff_homogeneousComponent] at he
       have hdeg : e.degree = n := by
         by_contra hne
-        exact he (if_neg hne)
+        exact he (ite_eq_right hne)
       have he0 : e ≠ 0 := by
         rintro rfl
         simp at hdeg
         omega
       obtain ⟨i, hi⟩ := Finsupp.ne_iff.mp he0
       exact ⟨i, Set.mem_univ _, hi⟩
-  · push_neg at hX
+  · push Not at hX
     obtain ⟨j, hj⟩ := hX
     intro g hg n
     obtain ⟨m, hm⟩ := hs g hg j
@@ -170,7 +162,7 @@ private lemma exists_homogeneous_mem_of_X_pow_mul_mem_of_homogeneous {K : Type} 
     exact I.mul_mem_left _ (hmexp g hgQ j)
   refine ⟨B + D, fun n hn h hQ hh => ?_⟩
   have hhn : h = homogeneousComponent n h := by
-    rw [homogeneousComponent_of_mem hh, if_pos rfl]
+    rw [homogeneousComponent_of_mem hh, ite_eq_left rfl]
   rw [← hG] at hQ
   obtain ⟨f, -, hf⟩ := Submodule.mem_span_finset.mp hQ
 

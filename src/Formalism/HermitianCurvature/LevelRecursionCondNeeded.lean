@@ -13,12 +13,6 @@ noncomputable section
 
 abbrev Sesq (M : Type) [AddCommGroup M] [Module ℂ M] : Type := M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ
 
-section Defs
-
-variable {R M : Type} [Ring R] [Algebra ℂ R] [AddCommGroup M] [Module ℂ M] [Module R M]
-
-end Defs
-
 def lagCo {d : ℕ} (y : Fin (d + 1) → ℝ) (j : Fin (d + 1)) : ℝ := ∏ i ∈ univ.erase j, (y j - y i)⁻¹
 
 def PolyStep {V : Type} [AddCommGroup V] [Module ℂ V] (K d : ℕ) (s : Fin K → ℂ)
@@ -35,20 +29,6 @@ def ExtractK : Prop :=
 
 def thGrid {K d : ℕ} (grid : Fin K → Fin (d + 1) → ℝ) (j : Fin K → Fin (d + 1)) : ℝ :=
   ∏ a, (|lagCo (grid a) (j a)| / ∑ i, |lagCo (grid a) i|)
-
-def DualWeights : Prop :=
-  ∀ (Ls : Type) [Fintype Ls] (ω N N' : Ls → ℝ), (∀ L, 0 ≤ ω L) → (∀ L, 0 ≤ N L) → (∀ L, 0 ≤ N' L) →
-    0 < ∑ L, ω L →
-    (∑ L, (ω L / (2 * ∑ L', ω L') + ω L / (2 * ∑ L', ω L'))) = 1 ∧
-    (∑ L, ω L * √(N L * N' L)) ≤
-      (∑ L, ω L) * (∑ L, (ω L / (2 * ∑ L', ω L') * N L + ω L / (2 * ∑ L', ω L') * N' L))
-
-def ExtractCheb : Prop :=
-  ∀ (V : Type) [SeminormedAddCommGroup V] [NormedSpace ℂ V] (K d : ℕ) (s : Fin K → ℂ)
-    (W : ℕ → (Fin K → ℝ) → V) (α β : Fin K → ℝ),
-    1 ≤ d → (∀ a, α a < β a) → PolyStep K d s W → ∀ (y₀ : Fin K → ℝ) (B : ℝ),
-    (∀ j : Fin K → Fin (d + 1), ‖W K fun a => Formalism.SA.C.chebPt (α a) (β a) d (j a)‖ ≤ B) →
-    (∏ a, ‖s a‖) * ‖W 0 y₀‖ ≤ (∏ a, (1 / 2) * (4 / (β a - α a)) ^ d) * B
 
 def ChebSharp : Prop :=
   ∀ (α β : ℝ) (n : ℕ), α < β → 1 ≤ n →

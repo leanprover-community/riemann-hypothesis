@@ -54,14 +54,14 @@ theorem sum_root_fund {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (r : �
       (if j = k0 then ∑ k ∈ Finset.Iic j, f (x0, k) else 0) -
         (if (j : ℕ) + 1 = k0 then ∑ k ∈ Finset.Iic j, f (x0, k) else 0) := by
     intro j
-    simp only [rootOnFund, if_true]
+    simp only [rootOnFund, ite_true]
     split_ifs <;> simp
-  simp only [hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rcases k0 with ⟨k, hk⟩
   cases k with
   | zero =>
     have hsum : ∑ j : Fin N, (if (j : ℕ) + 1 = (0 : ℕ) then ∑ k ∈ Finset.Iic j, f (x0, k) else 0) = 0 :=
-      Finset.sum_eq_zero fun j _ => if_neg (by omega)
+      Finset.sum_eq_zero fun j _ => ite_eq_right (by omega)
     have hI : Finset.Iic (⟨0, hk⟩ : Fin N) = {⟨0, hk⟩} := by
       ext j
       simp only [Finset.mem_Iic, Finset.mem_singleton, Fin.le_def, Fin.ext_iff]
@@ -75,7 +75,7 @@ theorem sum_root_fund {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (r : �
       rw [Finset.sum_eq_single ⟨k', hk'⟩]
       · simp
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hj'
         apply hj
         ext

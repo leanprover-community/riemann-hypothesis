@@ -56,9 +56,6 @@ import Mathlib.Tactic.ReduceModChar
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.UnitaryBC UpperTheory.V UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
@@ -132,9 +129,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.UnitaryBC UpperTheory.V UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
@@ -149,7 +143,7 @@ private theorem hecke_poly_coeff_zero {A : Type} [CommRing A] (n q : ℕ) (a : �
     (heckePol n q a).coeff i = 0 := by
   rw [Hi.heckePol, finsetSum_coeff]
   refine Finset.sum_eq_zero fun j _ => ?_
-  rw [coeff_C_mul_X_pow, if_neg]
+  rw [coeff_C_mul_X_pow, ite_eq_right]
   omega
 private theorem norm_lt_one_of_residue_zero {l : ℕ} [Fact l.Prime] (c : Coef l) (b : c.O) (hb : residue c.O b = 0) :
     ‖algebraMap c.O (Qbar l) b‖ < 1 := by

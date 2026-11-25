@@ -98,7 +98,7 @@ theorem GlobalTheory.EvenOnto.parBound_of_rapidDecay : GlobalTheory.Published.Cu
   obtain ⟨hu0, hpar⟩ := hB
   have hex : ∃ v, PiLocalization₂.val u v ≠ 0 := by
     by_contra h
-    push_neg at h
+    push Not at h
     apply hu0
     apply Subtype.ext
     apply LinearMap.ext
@@ -406,7 +406,7 @@ theorem ontoAll_of : ∀ D : D7, FinDim D → MetEx D → EigSpan D → ParIndep
     intro i i' hii'
     have := hne i i' hii'
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact this hcon
   · intro u B hu
     exact hadj ipD₀ ip₀ ipD ip hm₀ hm u B hu

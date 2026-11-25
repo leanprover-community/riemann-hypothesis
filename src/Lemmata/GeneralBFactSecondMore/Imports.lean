@@ -8,8 +8,8 @@ public import Mathlib.NumberTheory.NumberField.Basic
 namespace Bl.general_b_fact_second'
 
 theorem goal1 :
-  ∀ {E U : Type} [inst : Field.{0} E] [NumberField.{0} E] [inst_2 : AddCommGroup.{0} U] [inst_3 : Module.{0, 0} E U]
-  [inst_4 : Module.{0, 0} (NumberField.RingOfIntegers.{0} E) U]
+  ∀ {E U : Type} [Field.{0} E] [NumberField.{0} E] [AddCommGroup.{0} U] [Module.{0, 0} E U]
+  [Module.{0, 0} (NumberField.RingOfIntegers.{0} E) U]
   [IsScalarTower.{0, 0, 0} (NumberField.RingOfIntegers.{0} E) E U]
   (N : Submodule.{0, 0} (NumberField.RingOfIntegers.{0} E) U),
   Eq.{1} (Submodule.span.{0, 0} E (SetLike.coe.{0, 0} N)) Top.top.{0} →

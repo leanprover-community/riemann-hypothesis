@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory AlgebraicGeometry Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.E GlobalTheory.EtC
 
 namespace GlobalTheory.CompanionTheory.KapSpecProof

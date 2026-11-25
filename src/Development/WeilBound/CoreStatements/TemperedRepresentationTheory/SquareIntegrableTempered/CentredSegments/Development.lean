@@ -4,19 +4,16 @@ public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PiTensorIrreducibleNontrivial
 public import Mathlib.Basic.Real.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitarisableSegmentTwistPrecedesAddOneLe
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CentredSegments.IrreducibleUnif
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.TemperedProducts.CentredSegSqInt
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.RepresentationTheory.Irreducible
 public import Mathlib.Topology.Instances.Matrix
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleIrreducibleCentralScalar
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.StandardFunctorsFiniteLength
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorJacquetEigenLeft
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorJacquetEigenRight
@@ -24,13 +21,9 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetQ
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformizerPowTendstoZero
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSqIntCoeffOfIsSquareIntegrable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CartanDecompositionCongruence
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupAntitone
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupBasisNhds
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupFiniteVolume
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DoubleCosetVolumeFormula
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixCoefficientCartanTranslate
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixCoefficientHeckeDecay
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableProdPowMultiIndex
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Mathlib.Tactic.Linter.HaveILetI
@@ -39,6 +32,342 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurable
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIrreducibleSubquotient
+public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
+public import Mathlib.Topology.Algebra.InfiniteSum.Defs
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+public import Mathlib.Analysis.Normed.Ring.InfiniteSum
+public import Mathlib.Analysis.SpecificLimits.Basic
+
+section
+@[expose] public section
+
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL
+
+namespace Zz
+
+def CentredSegSqInt (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] : Prop :=
+  ∀ (Δ : Segment k) (y : IrrGL (k := k)), IsLSeg Δ y.rep → (∀ (t : kˣ) (c : ℂ), Zl.ScalarBy y t c → ‖c‖ = 1) →
+    IsSqIntCoeff y.rep
+
+end Zz
+
+end
+end
+end
+
+
+@[expose] public section
+
+namespace GlobalTheory.CompanionTheory.Summability
+
+theorem summable_prod_pow_multiIndex : ∀ (r : ℕ) (x : Fin r → ℝ), (∀ i, 0 ≤ x i) → (∀ i, x i < 1) →
+    Summable (fun j : Fin r → ℕ => ∏ i, x i ^ j i) := by
+  intro r
+  induction r with
+  | zero =>
+    intro x _ _
+    exact (hasSum_fintype _).summable
+  | succ r ih =>
+    intro x h0 h1
+    let e : ℕ × (Fin r → ℕ) ≃ (Fin (r + 1) → ℕ) :=
+      { toFun := fun p => Fin.cons p.1 p.2
+        invFun := fun j => (j 0, Fin.tail j)
+        left_inv := fun p => by simp
+        right_inv := fun j => by simp }
+    rw [← e.summable_iff]
+    have hA : Summable (fun n : ℕ => x 0 ^ n) := summable_geometric_of_lt_one (h0 0) (h1 0)
+    have hB : Summable (fun j : Fin r → ℕ => ∏ i, x i.succ ^ j i) :=
+      ih (fun i => x i.succ) (fun i => h0 _) (fun i => h1 _)
+    have hM := hA.mul_of_nonneg hB (fun n => pow_nonneg (h0 0) n)
+      (fun j => Finset.prod_nonneg (fun i _ => pow_nonneg (h0 _) _))
+    refine hM.congr ?_
+    rintro ⟨n, j⟩
+    simp [e, Fin.prod_univ_succ]
+
+end GlobalTheory.CompanionTheory.Summability
+end
+
+
+section
+@[expose] public section
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult
+
+namespace GlobalTheory.CompanionTheory.TensorIrr
+
+theorem nontrivial_space_of_isIrreducible {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
+    (ρ : Representation ℂ G V) (h : ρ.IsIrreducible) : Nontrivial V := by
+  by_contra hV
+  rw [not_nontrivial_iff_subsingleton] at hV
+  exact bot_ne_top (α := Subrepresentation ρ)
+    (Subrepresentation.ext (Subsingleton.elim _ _))
+
+theorem nontrivial_piTensorProduct_of_nontrivial {ι : Type} [Fintype ι] {V : ι → Type}
+    [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)] [∀ i, Nontrivial (V i)] :
+    Nontrivial (PiTensorProduct ℂ V) := by
+  have hv : ∀ i, ∃ v : V i, v ≠ 0 := fun i => exists_ne 0
+  choose v hv using hv
+  have hf : ∀ i, ∃ f : Module.Dual ℂ (V i), f (v i) ≠ 0 := fun i => by
+    by_contra hc
+    exact hv i ((Module.forall_dual_apply_eq_zero_iff ℂ (v i)).1
+      fun f => not_not.1 (not_exists.1 hc f))
+  choose f hf using hf
+  let F : (Π i, V i) →ₘₗ[ℂ] ℂ := (MultilinearMap.mkPiAlgebra ℂ ι ℂ).compLinearMap f
+  have hF : PiTensorProduct.lift F (PiTensorProduct.tprod ℂ v) ≠ 0 := by
+    rw [PiTensorProduct.lift.tprod]
+    simpa [F] using Finset.prod_ne_zero_iff.2 fun i _ => hf i
+  refine ⟨PiTensorProduct.tprod ℂ v, 0, fun h => hF ?_⟩
+  rw [h, map_zero]
+
+theorem nontrivial_piTensorProduct_irrGL : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], ∀ {h : ℕ} (x : Fin h → IrrGL (k := k)), Nontrivial (PiTensorProduct ℂ (fun a => (x a).2.rep.V)) := by
+  intro k _ _ _ _ h x
+  have : ∀ a, Nontrivial (x a).2.rep.V := fun a =>
+    nontrivial_space_of_isIrreducible _ (x a).2.rep.irr
+  exact nontrivial_piTensorProduct_of_nontrivial
+
+end GlobalTheory.CompanionTheory.TensorIrr
+end
+end
+
+
+section
+@[expose] public section
+
+open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.CongruenceCoef
+
+theorem conj_mem_Km (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (N m : ℕ) {p x : GL (Fin N) k}
+    (hp : p ∈ KO k (Fin N)) (hx : x ∈ Zls.Km k N m) : p * x * p⁻¹ ∈ Zls.Km k N m := by
+  obtain ⟨a, rfl⟩ := hp
+  obtain ⟨b, hb, rfl⟩ := hx
+  refine ⟨a * b * a⁻¹, ?_, by simp only [map_mul, map_inv]⟩
+  exact (MonoidHom.normal_ker _).conj_mem b hb a
+
+theorem mem_fixed_iff {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ G V) (H : Subgroup G) (v : V) :
+    v ∈ fixed π H ↔ ∀ h ∈ H, π h v = v := by
+  constructor
+  · intro hv h hh
+    have := hv ⟨h, hh⟩
+    simpa using this
+  · intro hv h
+    simpa using hv h h.2
+
+theorem coef_const_translated_double_coset :
+    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), ∀ (m : ℕ) (v : V), v ∈ fixed π (Zls.Km k N m) → ∀ l : Module.Dual ℂ V, (∀ x ∈ Zls.Km k N m, l ∘ₗ π x = l) → ∀ (p1 p2 : GL (Fin N) k), p1 ∈ KO k (Fin N) → p2 ∈ KO k (Fin N) → (π p2 v ∈ fixed π (Zls.Km k N m)) ∧ (∀ x ∈ Zls.Km k N m, (l ∘ₗ π p1) ∘ₗ π x = l ∘ₗ π p1) ∧ ∀ (D : GL (Fin N) k), ∀ x ∈ Zls.Km k N m, ∀ y ∈ Zls.Km k N m, l (π (p1 * x * D * y * p2) v) = (l ∘ₗ π p1) (π D (π p2 v)) := by
+  intro k _ _ _ _ N V _ _ π m v hv l hl p1 p2 hp1 hp2
+  have hv' := (mem_fixed_iff π _ v).1 hv
+  have h1 : ∀ y ∈ Zls.Km k N m, π y (π p2 v) = π p2 v := by
+    intro y hy
+    have hc : p2⁻¹ * y * p2⁻¹⁻¹ ∈ Zls.Km k N m := conj_mem_Km k N m (inv_mem hp2) hy
+    have e : y * p2 = p2 * (p2⁻¹ * y * p2⁻¹⁻¹) := by group
+    have h := hv' _ hc
+    calc π y (π p2 v) = π (y * p2) v := by rw [map_mul, Module.End.mul_apply]
+      _ = π p2 (π (p2⁻¹ * y * p2⁻¹⁻¹) v) := by rw [e, map_mul, Module.End.mul_apply]
+      _ = π p2 v := by rw [h]
+  have h2 : ∀ x ∈ Zls.Km k N m, (l ∘ₗ π p1) ∘ₗ π x = l ∘ₗ π p1 := by
+    intro x hx
+    have hc : p1 * x * p1⁻¹ ∈ Zls.Km k N m := conj_mem_Km k N m hp1 hx
+    have e : p1 * x = (p1 * x * p1⁻¹) * p1 := by group
+    have h := hl _ hc
+    ext w
+    have hw := LinearMap.congr_fun h (π p1 w)
+    simp only [LinearMap.comp_apply] at hw ⊢
+    calc l (π p1 (π x w)) = l (π (p1 * x) w) := by rw [map_mul, Module.End.mul_apply]
+      _ = l (π (p1 * x * p1⁻¹) (π p1 w)) := by rw [e, map_mul, Module.End.mul_apply]; simp
+      _ = l (π p1 w) := hw
+  refine ⟨(mem_fixed_iff π _ _).2 h1, h2, ?_⟩
+  intro D x hx y hy
+  have h3 := LinearMap.congr_fun (h2 x hx) (π D (π p2 v))
+  simp only [LinearMap.comp_apply] at h3
+  have e : π (p1 * x * D * y * p2) v = π p1 (π x (π D (π y (π p2 v)))) := by
+    simp only [map_mul, Module.End.mul_apply]
+  rw [e, h1 y hy, h3]
+  simp only [LinearMap.comp_apply]
+
+end GlobalTheory.CompanionTheory.CongruenceCoef
+end
+end
+
+
+section
+@[expose] public section
+
+open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.KmVol
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem isCompact_integralGL (N : ℕ) :
+    IsCompact {g : GL (Fin N) k | (∀ i j, (g : Matrix (Fin N) (Fin N) k) i j ∈ 𝒪[k]) ∧
+      ∀ i j, ((g⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) i j ∈ 𝒪[k]} := by
+  haveI : T2Space k := GlobalTheory.SplitWeil.t2Space k
+  have hO : IsCompact ((𝒪[k] : Subring k) : Set k) := IsNonarchimedeanLocalField.isCompact_closedBall k 1
+  have hM : IsCompact {A : Matrix (Fin N) (Fin N) k | ∀ i j, A i j ∈ 𝒪[k]} := by
+    have h := isCompact_univ_pi fun _ : Fin N => isCompact_univ_pi fun _ : Fin N => hO
+    have e : {A : Matrix (Fin N) (Fin N) k | ∀ i j, A i j ∈ 𝒪[k]} =
+        Set.univ.pi fun _ : Fin N => Set.univ.pi fun _ : Fin N => ((𝒪[k] : Subring k) : Set k) :=
+      Set.ext fun A => ⟨fun h i _ j _ => h i j, fun h i j => h i trivial j trivial⟩
+    exact e ▸ h
+  have h := (Units.isClosedEmbedding_embedProduct (α := Matrix (Fin N) (Fin N) k)).isCompact_preimage
+    (hM.prod (hM.image MulOpposite.continuous_op))
+  convert h using 1
+  ext g
+  exact ⟨fun h => ⟨h.1, _, h.2, rfl⟩, fun ⟨h1, A, hA, e⟩ => ⟨h1, fun i j => by
+    have : A = ((g⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) := MulOpposite.op_injective e
+    exact this ▸ hA i j⟩⟩
+
+theorem Km_subset_integralGL (N m : ℕ) :
+    (Zls.Km k N m : Set (GL (Fin N) k)) ⊆
+      {g : GL (Fin N) k | (∀ i j, (g : Matrix (Fin N) (Fin N) k) i j ∈ 𝒪[k]) ∧
+        ∀ i j, ((g⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) i j ∈ 𝒪[k]} := by
+  have key : ∀ (h : GL (Fin N) 𝒪[k]) (i j : Fin N),
+      ((Matrix.GeneralLinearGroup.map (n := Fin N) (algebraMap 𝒪[k] k) h : GL (Fin N) k) :
+        Matrix (Fin N) (Fin N) k) i j ∈ 𝒪[k] := fun h i j =>
+    ((h : Matrix (Fin N) (Fin N) 𝒪[k]) i j).2
+  rintro g ⟨h, -, rfl⟩
+  refine ⟨key h, fun i j => ?_⟩
+  rw [← map_inv]
+  exact key h⁻¹ i j
+
+theorem measure_image_Km_lt_top : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N : ℕ) [MeasurableSpace (AdGL k N)] [BorelSpace (AdGL k N)] (μ : MeasureTheory.Measure (AdGL k N)), μ.IsHaarMeasure → ∀ m : ℕ, μ ((QuotientGroup.mk : GL (Fin N) k → AdGL k N) '' (Zls.Km k N m : Set (GL (Fin N) k))) < ⊤ := by
+  intro k _ _ _ _ N _ _ μ hμ m
+  refine lt_of_le_of_lt (measure_mono (Set.image_mono (Km_subset_integralGL N m))) ?_
+  exact ((isCompact_integralGL N).image QuotientGroup.continuous_mk).measure_lt_top
+
+end GlobalTheory.CompanionTheory.KmVol
+end
+end
+
+
+section
+@[expose] public section
+
+open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.CongruenceSubgroups
+
+theorem Km_antitone : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (N m m' : ℕ), m ≤ m' → Zls.Km k N m' ≤ Zls.Km k N m := by
+  intro k _ _ _ _ N m m' h
+  rintro _ ⟨g, hg, rfl⟩
+  refine ⟨g, ?_, rfl⟩
+  have hle : Ideal.span {Zls.unif k ^ m'} ≤ Ideal.span {Zls.unif k ^ m} :=
+    Ideal.span_singleton_le_span_singleton.2 (pow_dvd_pow _ h)
+  have hg' : Matrix.GeneralLinearGroup.map (n := Fin N)
+      (Ideal.Quotient.mk (Ideal.span {Zls.unif k ^ m'})) g = 1 := hg
+  have h2 := congrArg (Matrix.GeneralLinearGroup.map (n := Fin N) (Ideal.Quotient.factor hle)) hg'
+  rw [map_one] at h2
+  show Matrix.GeneralLinearGroup.map (n := Fin N)
+      (Ideal.Quotient.mk (Ideal.span {Zls.unif k ^ m})) g = 1
+  rw [← h2]
+  ext i j
+  simp [Matrix.GeneralLinearGroup.map]
+
+end GlobalTheory.CompanionTheory.CongruenceSubgroups
+end
+end
+
+
+section
+@[expose] public section
+
+open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.SchurCentre
+
+theorem scalar_acts_by_scalar : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), IsSmooth π → π.IsIrreducible → IsAdmissible π → ∀ t : kˣ, ∃ c : ℂ, ∀ v, π (Matrix.GeneralLinearGroup.scalar (Fin N) t) v = c • v := by
+  intro k _ _ _ _ N V _ _ π hs hirr hadm t
+  haveI := hirr
+
+  have hz : ∀ g : GL (Fin N) k, g * Matrix.GeneralLinearGroup.scalar (Fin N) t =
+      Matrix.GeneralLinearGroup.scalar (Fin N) t * g := by
+    intro g
+    ext i j
+    simp [Matrix.GeneralLinearGroup.scalar, Matrix.mul_apply, Matrix.diagonal_apply, mul_comm]
+  set z := Matrix.GeneralLinearGroup.scalar (Fin N) t with hzdef
+  have hcomm : ∀ (g : GL (Fin N) k) (w : V), π g (π z w) = π z (π g w) := by
+    intro g w
+    rw [← Module.End.mul_apply, ← map_mul, hz g, map_mul, Module.End.mul_apply]
+
+  obtain ⟨v, hv⟩ : ∃ v : V, v ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply (bot_ne_top : (⊥ : Subrepresentation π) ≠ ⊤)
+    apply Subrepresentation.toSubmodule_injective
+    change (⊥ : Submodule ℂ V) = ⊤
+    ext u
+    simp [h u]
+
+  let S : Subgroup (GL (Fin N) k) :=
+    { carrier := {g | π g v = v}
+      mul_mem' := by
+        intro a b ha hb
+        simp only [Set.mem_setOf_eq, map_mul, Module.End.mul_apply] at *
+        rw [hb, ha]
+      one_mem' := by simp
+      inv_mem' := by
+        intro a ha
+        simp only [Set.mem_setOf_eq] at *
+        conv_lhs => rw [← ha]
+        rw [← Module.End.mul_apply, ← map_mul]
+        simp }
+  let K : Subgroup (GL (Fin N) k) := GlobalTheory.SplitWeil.KO k (Fin N) ⊓ S
+  have hKo : IsOpen (K : Set (GL (Fin N) k)) :=
+    (GlobalTheory.SplitFlip.isOpen_KO (k := k) (n := Fin N)).inter (hs v)
+  have hKc : IsCompact (K : Set (GL (Fin N) k)) :=
+    (GlobalTheory.SplitFlip.isCompact_KO (k := k) (n := Fin N)).of_isClosed_subset
+      (Subgroup.isClosed_of_isOpen K hKo) (fun _ h => h.1)
+  haveI hfd : FiniteDimensional ℂ (fixed π K) := hadm.2 K hKo hKc
+  have hmem : ∀ w : V, w ∈ fixed π K ↔ ∀ h : K, π (h : GL (Fin N) k) w = w := by
+    intro w
+    show (∀ h : K, _ = _) ↔ _
+    simp
+  have hvK : v ∈ fixed π K := (hmem v).2 fun h => h.2.2
+  haveI : Nontrivial (fixed π K) :=
+    ⟨⟨⟨v, hvK⟩, 0, fun h => hv (congrArg Subtype.val h)⟩⟩
+  have hst : ∀ w ∈ fixed π K, π z w ∈ fixed π K := by
+    intro w hw
+    refine (hmem _).2 fun h => ?_
+    rw [hcomm, (hmem w).1 hw h]
+  obtain ⟨c, hc⟩ := Module.End.exists_eigenvalue ((π z).restrict hst)
+  obtain ⟨w, hw⟩ := hc.exists_hasEigenvector
+  have hw0 : (w : V) ≠ 0 := fun h => hw.2 (Subtype.ext h)
+  have hwc : π z (w : V) = c • (w : V) := by
+    have := congrArg Subtype.val hw.apply_eq_smul
+    simpa using this
+
+  let f : Representation.IntertwiningMap π π :=
+    { toLinearMap := π z - c • LinearMap.id
+      isIntertwining' := by
+        intro g
+        ext u
+        simp [hcomm] }
+  refine ⟨c, fun u => ?_⟩
+  rcases Representation.IsIrreducible.bijective_or_eq_zero f with hb | h0
+  · exfalso
+    apply hw0
+    apply hb.1
+    show π z (w : V) - c • (w : V) = f 0
+    rw [hwc, sub_self, map_zero]
+  · have := congrArg (fun F : Representation.IntertwiningMap π π => F u) h0
+    have h1 : π z u - c • u = 0 := this
+    exact sub_eq_zero.1 h1
+
+end GlobalTheory.CompanionTheory.SchurCentre
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralCharacterEqOfScalar, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralCharacterTwistPowDegree, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContractingUnitAbsPowBounds, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetTwoFactorCentralCharacterMul, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RealPowPartialSegmentLtOne, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentJacquetTwoFactorSplit, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentRepCentralCharacterFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentredSegmentSquareIntegrable, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeSpectralOfStrictExponent, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SquareIntegrableOfHeckeSpectral, Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CentredSegments.Development

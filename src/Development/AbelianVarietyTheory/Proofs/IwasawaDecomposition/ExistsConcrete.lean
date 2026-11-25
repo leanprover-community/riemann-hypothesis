@@ -124,20 +124,6 @@ section Adelic
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem adelic_ext {n : ℕ} (g h : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F))
-    (H : ∀ v : HeightOneSpectrum (𝓞 F), bc (prV (E := E) v) g = bc (prV (E := E) v) h) : g = h := by
-  apply Units.ext
-  ext i j
-  rw [← sub_eq_zero]
-  apply Formalism.UG.P.afsplit_inj
-  intro w
-  rw [map_sub]
-  have h1 := congrArg Units.val (H w)
-  rw [Formalism.UG.P.afsplit_coe_bc_prV, Formalism.UG.P.afsplit_coe_bc_prV] at h1
-  have := congrFun (congrFun h1 i) j
-  simp only [Matrix.map_apply] at this
-  rw [this, sub_self]
-
 theorem exists_trivial_on {n : ℕ} (σ : E →ₐ[F] E) (J : Matrix (Fin n) (Fin n) E) (s : Finset (HeightOneSpectrum (𝓞 F)))
     (g : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) (hg : g ∈ UPts σ J (FiniteAdeleRing (𝓞 F) F)) :
     ∃ k ∈ UPts σ J (FiniteAdeleRing (𝓞 F) F), (∀ v ∈ s, bc (prV (E := E) v) k = 1) ∧
@@ -245,7 +231,7 @@ theorem exists_psiTied {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad
       (∀ w : HeightOneSpectrum (𝓞 F), ((p : ℕ) : 𝓞 F) ∉ w.asIdeal →
         bc (prV (E := E) w) k.1 = bc (prV (E := E) w) (reGL hk _ a.1)) → κ a = k := by
     intro a k k1 k2
-    refine Subtype.ext (adelic_ext _ _ fun v => ?_)
+    refine Subtype.ext (Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0.adelic_GL_ext_local _ _ fun v => ?_)
     by_cases hv : ((p : ℕ) : 𝓞 F) ∈ v.asIdeal
     · rw [h1 a v hv, k1 v hv]
     · rw [h2 a v hv, k2 v hv]
@@ -260,8 +246,6 @@ theorem exists_psiTied {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad
 end Gen
 
 attribute [local instance] Formalism.BasicNotions.factResChar
-
-
 
 theorem exists_psi : ∀ (D : D7) (L0 : LevelData D) (T : ∀ u : D.what₂.Word, Forms0 D u), (∀ u, Joint0 L0 u (T u)) → (∀ u, LevelZeroCharacterRational T u) →
     ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
@@ -362,16 +346,6 @@ namespace GlobalTheory.ClassRank
 variable {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
   {P : Places p O Kf}
 
-theorem gPos_mul (v : Fin P.nV) (s : Fin (P.n' v)) (A B : Matrix (Fin (P.m + 1)) (Fin (P.m + 1)) (P.Qq v)) :
-    P.gPos v s (A * B) = P.gPos v s A * P.gPos v s B := by
-  ext a b
-
-  simp only [Places.gPos, Matrix.mul_apply, map_sum, map_mul]
-
-theorem gPos_one (v : Fin P.nV) (s : Fin (P.n' v)) : P.gPos v s 1 = 1 := by
-  ext a b
-  by_cases h : a = b <;> simp [Places.gPos, Matrix.one_apply, h]
-
 theorem subst_comp (G H : ∀ v, Fin (P.n' v) → Matrix (Fin (P.m + 1)) (Fin (P.m + 1)) Kf) :
     (P.subst G).comp (P.subst H) = P.subst fun v s => H v s * G v s := by
   apply MvPolynomial.algHom_ext
@@ -399,11 +373,11 @@ theorem natAct_mul (A B : ∀ v, GL (Fin (P.m + 1)) (P.Qq v)) (F : P.Xsp) :
     (fun v s => P.gPos v s ((B v)⁻¹ : GL (Fin (P.m + 1)) (P.Qq v))))
   simp only [AlgHom.comp_apply] at h
   simp only [Places.natAct, LinearMap.smul_apply, AlgHom.toLinearMap_apply, map_smul, smul_smul, h,
-    mul_inv_rev, Units.val_mul, gPos_mul, Matrix.det_mul, mul_zpow, Finset.prod_mul_distrib]
+    mul_inv_rev, Units.val_mul, Formalism.MainNotions.G.LatticeSystems.jd_gPos_mul, Matrix.det_mul, mul_zpow, Finset.prod_mul_distrib]
   first | (congr 1; exact mul_comm _ _)
 
 theorem natAct_one (F : P.Xsp) : P.natAct (fun _ => 1) F = F := by
-  simp only [Places.natAct, inv_one, Units.val_one, gPos_one, Matrix.det_one, one_zpow, Finset.prod_const_one,
+  simp only [Places.natAct, inv_one, Units.val_one, Formalism.MainNotions.G.LatticeSystems.jd_gPos_one, Matrix.det_one, one_zpow, Finset.prod_const_one,
     one_smul, subst_one, AlgHom.toLinearMap_apply, AlgHom.id_apply]
 
 variable (C : Level P)
@@ -415,11 +389,6 @@ theorem actX_mul (γ δ : C.Γ) (F : P.Xsp) : C.actX (γ * δ) F = C.actX γ (C.
 theorem actX_one (F : P.Xsp) : C.actX 1 F = F := by
   simp only [Level.actX, map_one]
   exact natAct_one F
-
-theorem smul_mul (γ δ : C.Γ) (L : P.Tup) : C.smul (γ * δ) L = C.smul γ (C.smul δ L) := by
-  funext v
-  simp only [Level.smul, map_mul, Units.val_mul, Matrix.mulVecLin_mul, ← Submodule.map_comp]
-  rfl
 
 theorem smul_one (L : P.Tup) : C.smul 1 L = L := by
   funext v
@@ -438,7 +407,7 @@ theorem isLatTup_smul (γ : C.Γ) {L : P.Tup} (hL : P.IsLatTup L) : P.IsLatTup (
 theorem isLatTup_smul_iff (γ : C.Γ) (L : P.Tup) : P.IsLatTup (C.smul γ L) ↔ P.IsLatTup L := by
   refine ⟨fun h => ?_, isLatTup_smul C γ⟩
   have := isLatTup_smul C γ⁻¹ h
-  rwa [← smul_mul, inv_mul_cancel, smul_one] at this
+  rwa [← Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, inv_mul_cancel, smul_one] at this
 
 theorem mem_funMod_iff (Hv : P.Tup → Submodule O P.Xsp) (F : P.Tup → P.Xsp) :
     F ∈ C.funMod Hv ↔ (∀ L, P.IsLatTup L → F L ∈ Hv L) ∧ (∀ L, ¬ P.IsLatTup L → F L = 0) ∧
@@ -460,7 +429,7 @@ def evalReps (Hv : P.Tup → Submodule O P.Xsp) {ι : Type} {rep : ι → P.Tup}
 
 theorem evalReps_injective (Hv : P.Tup → Submodule O P.Xsp) {ι : Type} {rep : ι → P.Tup} (hr : IsReps C rep) :
     Function.Injective (evalReps C Hv hr) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro F hF
   obtain ⟨-, h0, hγ⟩ := (mem_funMod_iff C Hv F.1).1 F.2
   apply Subtype.ext
@@ -486,25 +455,25 @@ theorem evalReps_surjective (Hv : P.Tup → Submodule O P.Xsp)
     intro i γ
     have h := isLatTup_smul C γ (hr.lat i)
     have e := hgam _ h
-    simp only [F, dif_pos h]
+    simp only [F, dite_eq_left h]
     generalize idx _ h = j at e ⊢
     generalize gam _ h = δ at e ⊢
     have e' : C.smul (δ⁻¹ * γ) (rep i) = rep j := by
-      rw [smul_mul, e, ← smul_mul, inv_mul_cancel, smul_one]
+      rw [Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, e, ← Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, inv_mul_cancel, smul_one]
     obtain rfl := hr.inj _ _ _ e'
     obtain rfl : δ = γ := inv_mul_eq_one.1 (htriv _ _ (hr.lat i) e')
     rfl
-  refine ⟨⟨F, (mem_funMod_iff C Hv F).2 ⟨fun L hL => ?_, fun L hL => dif_neg hL, fun γ L => ?_⟩⟩, ?_⟩
+  refine ⟨⟨F, (mem_funMod_iff C Hv F).2 ⟨fun L hL => ?_, fun L hL => dite_eq_right hL, fun γ L => ?_⟩⟩, ?_⟩
   · obtain ⟨i, γ, rfl⟩ := hr.surj L hL
     rw [key, ← hact γ _ (hr.lat i)]
     exact Submodule.smul_mem _ _ ⟨_, (x i).2, rfl⟩
   · by_cases hL : P.IsLatTup L
     · obtain ⟨i, δ, rfl⟩ := hr.surj L hL
-      rw [← smul_mul, key, key, map_mul, Units.val_mul, mul_smul, actX_mul]
+      rw [← Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, key, key, map_mul, Units.val_mul, mul_smul, actX_mul]
       congr 1
       exact (((C.actX γ).restrictScalars O).map_smul _ _).symm
-    · have h1 : F L = 0 := dif_neg hL
-      have h2 : F (C.smul γ L) = 0 := dif_neg (fun h => hL ((isLatTup_smul_iff C γ L).1 h))
+    · have h1 : F L = 0 := dite_eq_right hL
+      have h2 : F (C.smul γ L) = 0 := dite_eq_right (fun h => hL ((isLatTup_smul_iff C γ L).1 h))
       rw [h1, h2, map_zero, smul_zero]
   · funext i
     apply Subtype.ext
@@ -730,7 +699,7 @@ theorem actHW (G : GAtP p) (c : G.comp) : (G.lev c).ActHW := by
     exact h1 γ L hL x hx
   · intro y hy
     have h := h1 γ⁻¹ _ (isLatTup_smul _ γ hL) y hy
-    rw [← smul_mul, inv_mul_cancel, smul_one] at h
+    rw [← Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, inv_mul_cancel, smul_one] at h
     refine ⟨_, h, ?_⟩
     show (G.lev c).actX γ ((G.lev c).actX γ⁻¹ y) = y
     rw [← actX_mul, mul_inv_cancel, actX_one]
@@ -775,7 +744,7 @@ theorem card_ssIdx_natW {N m : ℕ} (h : m + 1 = N) (lam : Formalism.BasicNotion
   subst h
   have : nuOf l = lam.natW := by
     funext t
-    simp only [nuOf, Formalism.BasicNotions.DomWeight.natW, Formalism.BasicNotions.DomWeight.detShift, hl, dif_pos (Nat.succ_pos m)]
+    simp only [nuOf, Formalism.BasicNotions.DomWeight.natW, Formalism.BasicNotions.DomWeight.detShift, hl, dite_eq_left (Nat.succ_pos m)]
     rfl
   rw [this]
 
@@ -786,8 +755,6 @@ section Record
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.G Formalism.L2.Forms GlobalTheory.Mem.LocalPack
 
 attribute [local instance] Formalism.BasicNotions.factResChar
-
-
 
 theorem locPack_d_eq (D : D7) (L0 : LevelData D) (u : D.what₂.Word) (T : Forms0 D u) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (X : LocPack D u (L0 u) (D.what₂.places.resChar w))
@@ -1132,12 +1099,10 @@ theorem cc_pow (e : Formalism.HC.Frame) (m : ℕ) : e.cc ^ m = 1 ∨ e.cc ^ m = 
 theorem frob_eq_mul (h : R.MA) : ((c0, h) : R.GG) = (zPsi R.toFrame h : R.GG) * R.cc := by
   rw [zPsi_eq, mul_assoc, _root_.Formalism.HC.Frame.cc_mul_cc, mul_one]
 
-
 variable (H) in
 def tw (i : H.E →+* Qn p n) (g : R.GG) : H.E →+* Qn p n := i.comp (H.sigmaOf g : H.E →+* H.E)
 
 theorem tw_apply (i : H.E →+* Qn p n) (g : R.GG) (x : H.E) : tw H i g x = i (H.sigmaOf g x) := rfl
-
 
 variable (H) in
 def twF (i : H.E →+* Qn p n) (g : R.GG) : H.F →+* Qn p n := (tw H i g).comp (algebraMap H.F H.E)
@@ -1203,7 +1168,6 @@ theorem fr_pow_apply {Q : HeightOneSpectrum (𝓞 H.E)} {i : H.E →+* Qn p n} (
   | zero => simp [Host.sigmaOf]
   | succ s ih => rw [pow_succ, pow_succ, RingAut.mul_apply, fr_apply hfr hi, ih, sigmaOf_mul]
 
-
 include hfr h2 he in
 theorem degree_eq {Q : HeightOneSpectrum (𝓞 H.E)} {i : H.E →+* Qn p n} (hi : Good Q i) (hn : n ≠ 0) : n = orderOf h := by
   have h1 : ((c0, h) : R.GG) ^ n = 1 := sigmaOf_inj (H := H) (AlgEquiv.ext fun x => i.injective (by
@@ -1221,7 +1185,6 @@ variable {Q₀ : HeightOneSpectrum (𝓞 H.E)} {i : H.E →+* Qn p n} (hi : Good
 include hi in
 theorem good_tw (g : R.GG) : Good (plc (tw H i g)) (tw H i g) := good_aut hi _ fun _ => rfl
 
-
 include hun hfr hi hn in
 theorem exists_pow_of_plc_eq {g g' : R.GG} (e : plc (tw H i g') = plc (tw H i g)) : ∃ s : ℕ, g' = g * (c0, h) ^ s := by
   have := hun _ (p_mem_plc (tw H i g))
@@ -1231,14 +1194,12 @@ theorem exists_pow_of_plc_eq {g g' : R.GG} (e : plc (tw H i g') = plc (tw H i g)
   rw [sigmaOf_mul]
   exact (hs x).trans (fr_pow_apply hfr (good_tw hi g) s x)
 
-
 include hun hfr he hi hn in
 theorem plc_ne_conj (g : R.GG) : plc (tw H i (g * R.cc)) ≠ plc (tw H i g) := fun e => by
   obtain ⟨s, hs⟩ := exists_pow_of_plc_eq hun hfr hi hn e
   have h1 := (R.toFrame.cc_mem_zpowers_iff (c0, h)).1 (by
     rw [mul_left_cancel hs]; exact Subgroup.npow_mem_zpowers _ s)
   exact Nat.not_even_iff_odd.2 h1.2 he
-
 
 include hun hfr he hi hn in
 theorem good_twF (g : R.GG) : Good (plc (twF H i g)) (twF H i g) :=
@@ -1509,11 +1470,6 @@ theorem embK_embAlg (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.
     (z : D.what₂.LL) : embK D L0 u w hg (embRec D w (nFr D (D.what₂.places.resChar w)) z) = lamV (embAlg D L0 u w hg) (D.what₂.embLL z) :=
   (Classical.choose_spec (Classical.choose_spec (Classical.choose_spec (GlobalTheory.PlaceOrbit.exists_locId D u (L0 u) w hg)))).1 z
 
-def awayChar (T : ∀ u : D.what₂.Word, Forms0 D u) (hJ : ∀ u, Joint0 L0 u (T u)) (hψ : ∀ u, LevelZeroCharacterRational T u) (u : D.what₂.Word)
-    (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
-    Formalism.L2.Herm.awayFrom₂ (L0 u) (D.what₂.places.resChar w) →* (ORec D w (nFr D (D.what₂.places.resChar w)))ˣ :=
-  Classical.choose (GlobalTheory.Mem.AwayChar.exists_psi D L0 T hJ hψ u w hg)
-
 def gatOf (I : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
       LocId (L0 u) (D.what₂.places.resChar w) (nOrb (zH D.R.toFrame (hP D (D.what₂.places.resChar w))))
         (WQ (D.what₂.places.resChar w) (nFr D (D.what₂.places.resChar w)))
@@ -1523,7 +1479,6 @@ def gatOf (I : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.wha
     (sc : Scale) (u : D.what₂.Word) (w : D.what₂.places.Pl) (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
     GAtP (D.what₂.places.resChar w) :=
   (packC D (fun u => L0 u) I ψ u w h).gat (rSc sc D.R.k (D.what₂.places.resChar w)) (epSc D.R sc 1 (D.what₂.places.resChar w))
-
 
 theorem gatOf_d (T : ∀ u : D.what₂.Word, Forms0 D u) (hJ : ∀ u, Joint0 L0 u (T u)) (I) (ψ) (sc : Scale) (u : D.what₂.Word)
     (w : D.what₂.places.Pl) (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
@@ -1536,7 +1491,6 @@ theorem gatOf_d (T : ∀ u : D.what₂.Word, Forms0 D u) (hJ : ∀ u, Joint0 L0 
 section Main
 
 variable {D L0}
-
 
 theorem posOK_placeId (hS : Formalism.L2.Herm.StdTied D) (hC : Companion D L0)
     (ψ : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →

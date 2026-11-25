@@ -78,7 +78,7 @@ theorem sum_St_LL (F : SumFacts X p K) (hr : 0 < r) (hp : 0 < p) (j0 : Fin X.F.J
       if posOf n' x = posOf n' x0 then
         sumBin r K ((X.a' p K (posOf n' x0) - ∑ c, v c) / X.Pz p K (j.val : ℤ) x) else 1)
       (fun j _ => sum_one_le_prod _ _ (hin j)) (Finset.mem_univ j0)
-  simp only [if_true] at s1
+  simp only [ite_true] at s1
   exact s1.trans s2
 
 theorem sum_St_fr (F : SumFacts X p K) (hr : 0 < r) (hp : 0 < p) (j0 : ℤ) (i : Fin r) :

@@ -405,25 +405,15 @@ namespace GlobalTheory.InertBigCell
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {v : Pl (F := F)} {w : HeightOneSpectrum (𝓞 E)}
 
-theorem gl_iotaW_apply (hw : Formalism.UG.IsInertAt F E v w) (x : w.adicCompletion E) :
-    iotaW hw x = GlobalTheory.InertLocField.liftT E v ((InertChart.complEquiv hw (under_eq_of_isInertAt hw)).symm x) := rfl
-
-theorem gl_iotaW_mul (hw : Formalism.UG.IsInertAt F E v w) (x y : w.adicCompletion E) :
-    iotaW hw (x * y) = iotaW hw x * iotaW hw y := by
-  rw [gl_iotaW_apply, gl_iotaW_apply, gl_iotaW_apply, map_mul, GlobalTheory.InertLocField.liftT_mul]
-
-theorem gl_iotaW_injective (hw : Formalism.UG.IsInertAt F E v w) : Function.Injective (iotaW hw) := fun x y hxy =>
-  (InertChart.complEquiv hw (under_eq_of_isInertAt hw)).symm.injective (GlobalTheory.InertLocField.liftT_injective v hxy)
-
 theorem gl_idem_mul_iotaW (hw : Formalism.UG.IsInertAt F E v w) (x : w.adicCompletion E) :
     algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1) * iotaW hw x = iotaW hw x := by
-  rw [← Algebra.smul_def, GlobalTheory.InertLocField.liftV_one_smul, gl_iotaW_apply, GlobalTheory.InertLocField.evT_liftT]
+  rw [← Algebra.smul_def, GlobalTheory.InertLocField.liftV_one_smul, GlobalTheory.InertBigCell.iotaW_apply, GlobalTheory.InertLocField.evT_liftT]
 
 theorem gl_iotaW_one (hw : Formalism.UG.IsInertAt F E v w) :
     iotaW hw 1 = algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1) := by
   have h := GlobalTheory.InertLocField.liftV_one_smul (E := E) v 1
   rw [Algebra.smul_def, mul_one, _root_.map_one (GlobalTheory.InertLocField.evT E v)] at h
-  rw [gl_iotaW_apply, _root_.map_one]
+  rw [GlobalTheory.InertBigCell.iotaW_apply, _root_.map_one]
   exact h.symm
 
 theorem gl_compl_idem (hw : Formalism.UG.IsInertAt F E v w) :
@@ -446,7 +436,7 @@ theorem gl_map_mul_map (hw : Formalism.UG.IsInertAt F E v w) (P Q : Matrix ι ι
 
   rw [Matrix.mul_apply, Matrix.map_apply, Matrix.mul_apply, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Matrix.map_apply, Matrix.map_apply, gl_iotaW_mul]
+  rw [Matrix.map_apply, Matrix.map_apply, GlobalTheory.InertBigCell.iotaW_mul]
 
 theorem gl_map_one_eq (hw : Formalism.UG.IsInertAt F E v w) :
     (1 : Matrix ι ι (w.adicCompletion E)).map (iotaW hw) =
@@ -485,11 +475,11 @@ theorem glueW_props : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Numb
   · rw [glueW, gl_map_one_eq, ← add_smul, sub_add_cancel, one_smul]
   · intro P Q hPQ
     have h : P.map (iotaW hw) = Q.map (iotaW hw) := add_left_cancel hPQ
-    exact Matrix.ext fun i j => gl_iotaW_injective hw (congrFun (congrFun h i) j)
+    exact Matrix.ext fun i j => GlobalTheory.InertBigCell.iotaW_injective hw (congrFun (congrFun h i) j)
   · intro P u hu
     rw [gl_glueW_sub_one]
     ext i j
-    rw [Matrix.smul_apply, Matrix.map_apply, Matrix.zero_apply, gl_iotaW_apply]
+    rw [Matrix.smul_apply, Matrix.map_apply, Matrix.zero_apply, GlobalTheory.InertBigCell.iotaW_apply]
     exact GlobalTheory.InertLocField.at_liftT v _ u hu
   · intro M hM
     have hent : ∀ i j, ∃ y, GlobalTheory.InertLocField.liftT E v y = (M - 1) i j := fun i j =>
@@ -500,7 +490,7 @@ theorem glueW_props : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     refine ⟨1 + Matrix.of fun i j => InertChart.complEquiv hw (under_eq_of_isInertAt hw) (y i j), ?_⟩
     have hX : (Matrix.of fun i j => InertChart.complEquiv hw (under_eq_of_isInertAt hw) (y i j)).map (iotaW hw) = M - 1 := by
       ext i j
-      rw [Matrix.map_apply, Matrix.of_apply, gl_iotaW_apply, RingEquiv.symm_apply_apply, hy]
+      rw [Matrix.map_apply, Matrix.of_apply, GlobalTheory.InertBigCell.iotaW_apply, RingEquiv.symm_apply_apply, hy]
     have h := gl_glueW_sub_one hw (1 + Matrix.of fun i j => InertChart.complEquiv hw (under_eq_of_isInertAt hw) (y i j))
     rw [add_sub_cancel_left, hX] at h
     exact sub_left_inj.mp h
@@ -514,7 +504,7 @@ theorem glueW_props : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     rw [glueW, Matrix.add_mulVec, hd, Pi.add_apply, Pi.smul_apply, smul_eq_mul,
     GlobalTheory.InertBigCell.one_sub_mul_iotaW, zero_add, Matrix.mulVec, dotProduct, Matrix.mulVec, dotProduct, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [Matrix.map_apply, gl_iotaW_mul]
+    rw [Matrix.map_apply, GlobalTheory.InertBigCell.iotaW_mul]
 
 end GlobalTheory.InertBigCell
 end -- clump:auto
@@ -1337,7 +1327,6 @@ theorem exists_bigCell : (∀ {O : Type} [CommRing O] [IsLocalRing O] (c : O →
     exact hP0U
   let p : GlobalTheory.DblVac.UD σ W := ⟨u, hu⟩
   have hp : GlobalTheory.DblVac.matD p = glueW hw P0 := rfl
-  have hp' : GlobalTheory.DblVac.matD p⁻¹ = glueW hw P0' := rfl
   have hmul : ∀ a c : GlobalTheory.DblVac.UD σ W, GlobalTheory.DblVac.matD (a * c) = GlobalTheory.DblVac.matD a * GlobalTheory.DblVac.matD c :=
     fun _ _ => rfl
   have hpl : ∀ z ∈ GlobalTheory.DblVac.latD W v, GlobalTheory.DblVac.matD p *ᵥ z ∈ GlobalTheory.DblVac.latD W v :=

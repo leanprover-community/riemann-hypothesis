@@ -572,7 +572,7 @@ theorem exists_frame_of_sig {F E : Type} [Field F] [NumberField F] [Field E] [Nu
     rw [det_submatrix_equiv_self] at h5 ⊢
     have h6 : ∏ i, algebraMap F E (a' i) = (∏ i, algebraMap F E (a i)) * algebraMap F E c := by
       simp only [a', map_mul, Finset.prod_mul_distrib, apply_ite (algebraMap F E), map_one,
-        Finset.prod_ite_eq', Finset.mem_univ, if_true]
+        Finset.prod_ite_eq', Finset.mem_univ, ite_true]
     rw [hc, det_submatrix_equiv_self] at *
     rw [blockM_det, h6, ← mul_assoc, ← blockM_det, mul_div_cancel₀ _ h5]
   obtain ⟨R, hR, hRe⟩ := GlobalTheory.HermAdelicNorm.congr_of_signature_of_adelic_norm F E cm m G

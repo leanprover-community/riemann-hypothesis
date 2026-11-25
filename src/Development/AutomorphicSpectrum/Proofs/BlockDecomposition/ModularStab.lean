@@ -167,7 +167,6 @@ theorem skewPart_split {d e : AE D} (he : cA D e = -e) (hde : d * e = 1) (x : Mx
   rw [sub_add_add_cancel]
   exact this
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem continuous_skewPart : Continuous (skewPartHom D n) := by
   haveI : IsTopologicalAddGroup (Mx D n n) := (lattice_Mx D n n).1
   have h : Continuous fun x : Mx D n n => x - adj x := continuous_id.sub (continuous_adj (D := D) (m := n) (n := n))
@@ -182,8 +181,6 @@ theorem lr_skew_symm (a : GL (Fin n) (AE D)) :
   fun s hs => (skewConj (a⁻¹).1 ⟨s, hs⟩).2
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem map_skewConj : ∀ (D : D7) (r : ℕ) (κ : Measure (skewA D r)), κ.IsAddHaarMeasure → ∀ a : GL (Fin r) (AE D), κ.map (skewConj a.1) = ((absA D (Matrix.GeneralLinearGroup.det a) ^ r)⁻¹ : ℝ≥0) • κ := by
   intro D n κ hκ a
   obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D n n
@@ -883,9 +880,9 @@ theorem mass_const {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     have h3 : E.indicator (1 : G → ℝ≥0∞) (q.1 * (q0 * k)) = E.indicator (1 : G → ℝ≥0∞) (q * p).1 := by
       classical
       by_cases hm : (q * p).1 ∈ E
-      · rw [Set.indicator_apply, Set.indicator_apply, if_pos (hmem.mpr hm), if_pos hm]
+      · rw [Set.indicator_apply, Set.indicator_apply, ite_eq_left (hmem.mpr hm), ite_eq_left hm]
         rfl
-      · rw [Set.indicator_apply, Set.indicator_apply, if_neg (fun h => hm (hmem.mp h)), if_neg hm]
+      · rw [Set.indicator_apply, Set.indicator_apply, ite_eq_right (fun h => hm (hmem.mp h)), ite_eq_right hm]
     rw [h3, h2]
     ring
   have hΔp : (Measure.modularCharacterFun p : ℝ≥0∞) = (δ p : ℝ≥0∞) := by

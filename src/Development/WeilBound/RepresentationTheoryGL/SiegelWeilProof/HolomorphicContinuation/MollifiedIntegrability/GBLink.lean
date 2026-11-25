@@ -61,8 +61,8 @@ theorem herm_re_im_vkl (k l : Fin n) :
     split_ifs <;> first | (exfalso; tauto) | norm_num
   have e7 : (if l = i ∧ k = j then (1 : ℂ) else 0) = (((if i = l ∧ j = k then (1 : ℝ) else 0) : ℝ) : ℂ) := by
     by_cases h : i = l ∧ j = k
-    · rw [if_pos h, if_pos ⟨h.1.symm, h.2.symm⟩]; simp
-    · rw [if_neg h, if_neg (fun h' => h ⟨h'.1.symm, h'.2.symm⟩)]; simp
+    · rw [ite_eq_left h, ite_eq_left ⟨h.1.symm, h.2.symm⟩]; simp
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h ⟨h'.1.symm, h'.2.symm⟩)]; simp
   rw [e1, e2, e3, e4, e5, e6, e7]
   push_cast
   ring_nf

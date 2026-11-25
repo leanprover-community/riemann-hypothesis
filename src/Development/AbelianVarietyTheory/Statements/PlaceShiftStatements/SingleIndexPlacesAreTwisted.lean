@@ -109,17 +109,10 @@ section Index
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 
-theorem sIdx_eq {W : Type} [AddCommGroup W] [Module R W] (l : ℕ) (M N : Submodule R W) :
-    Formalism.MainNotions.IntegralHeckeForms.sIdx l M N =
-      (signedLength M N : ℝ) / ((IsDiscreteValuationRing.addVal R (l : R)).toNat : ℝ) := by
-  simp only [Formalism.MainNotions.IntegralHeckeForms.sIdx, Formalism.MainNotions.IntegralHeckeForms.lenR, signedLength, relLength_eq_length_quotient_comap]
-  push_cast
-  rw [sub_div]
-
 theorem sIdx_map {W W' : Type} [AddCommGroup W] [Module R W] [AddCommGroup W'] [Module R W']
     (f : W →ₗ[R] W') (hf : Function.Injective f) (l : ℕ) (M N : Submodule R W) :
     Formalism.MainNotions.IntegralHeckeForms.sIdx l (M.map f) (N.map f) = Formalism.MainNotions.IntegralHeckeForms.sIdx l M N := by
-  simp only [sIdx_eq, signedLength, relLength_map_of_injective f hf]
+  simp only [GlobalTheory.sIdx_eq_signedLength_div, signedLength, relLength_map_of_injective f hf]
 
 variable {W : Type} [AddCommGroup W] [Module (FractionRing R) W] [Module R W]
   [IsScalarTower R (FractionRing R) W]
@@ -343,18 +336,6 @@ variable (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
 
 end Basis
 
-section Main
-
-variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
-  (bkP : BKPh X)
-
-variable (Y : NExp D.R D.host D.what₂ D.LL0 N X) (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
-
-
-
-
-end Main
-
 end GlobalTheory.ExportCompare
 
 end
@@ -452,7 +433,7 @@ theorem relLength_read (h : Induces emb v) (rd : V →ₛₗ[emb] W) {ι : Type}
       refine Finset.sum_congr rfl fun a _ => ?_
       simp only [Pi.add_apply, Pi.smul_apply, TensorProduct.add_tmul, TensorProduct.smul_tmul']
   have hinj : Function.Injective g := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro t ht
     obtain ⟨c, hc, s, hs⟩ := hnorm t
     have h1 : ∑ a, algebraMap O' (FractionRing O') (s a) • rd (b a) = 0 := by
@@ -625,7 +606,7 @@ theorem Reads.lix_le [StarRing K] {v : HeightOneSpectrum (𝓞 K)} {e : V →ₗ
     unfold LengthCommensurable at this ⊢
     rwa [relLength_map_of_injective _ (toFrac_injective _ _ _), relLength_map_of_injective _ (toFrac_injective _ _ _)]
   · have := h2 O' hi hf _ l0
-    rw [← Set.image_congr fun y _ => up_eq Y i j b O' k y, sIdx_eq (X.l i) _ ((eTh Y i j b (SgJ Y E i j b)).baseChange O'),
+    rw [← Set.image_congr fun y _ => up_eq Y i j b O' k y, GlobalTheory.sIdx_eq_signedLength_div (X.l i) _ ((eTh Y i j b (SgJ Y E i j b)).baseChange O'),
       signedLength, sub_self, Int.cast_zero, zero_div, zero_add] at this
     rw [eΘ, eX, sIdx_map _ (toFrac_injective _ _ _), ← hl]
     exact this

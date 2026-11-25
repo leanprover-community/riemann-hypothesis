@@ -111,13 +111,6 @@ theorem fixedFrameOfWord_last_eq_anisotropic : (GlobalTheory.TypeAsm.F0 X u).e (
   rw [GlobalTheory.TypeAsm.fv_last]
   exact X.flagZVector u
 
-theorem fixedFrameOfWord_isotropicSpan_eq : (GlobalTheory.TypeAsm.F0 X u).X = Submodule.span D.host.E (Set.range X.eX) := by
-  unfold Formalism.HermitianLatticeCounting.S6.FlagD.X Formalism.HermitianLatticeCounting.S6.FlagD.Xa
-  congr 1
-  ext v
-  simp only [Set.mem_image, Set.mem_setOf_eq, Set.mem_range, fixedFrameOfWord_castSucc_eq_hyperbolic]
-  exact ⟨fun ⟨b, _, h⟩ => ⟨b, h⟩, fun ⟨b, h⟩ => ⟨b, b.isLt, h⟩⟩
-
 theorem hT_span_left {v : (VS D).V} (hv : ∀ a, (VS D).hT (X.eX a) v = 0) {y : (VS D).V}
     (hy : y ∈ Submodule.span D.host.E (Set.range X.eX)) : (VS D).hT y v = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hy
@@ -129,10 +122,6 @@ theorem hT_span_span {y y' : (VS D).V} (hy : y ∈ Submodule.span D.host.E (Set.
   refine hT_span_left X (fun a => ?_) hy
   exact p_symm_zero (VS D) (hT_span_left X (fun b => X.ee b a) hy')
 
-theorem hT_f_e (a b : Fin D.R.rS) : (VS D).hT (X.fY b) (X.eX a) = if a = b then 1 else 0 := by
-  rw [a_herm (S := VS D) (X.eX a) (X.fY b), X.ef a b]
-  split_ifs <;> simp
-
 theorem span_eq_zero {d : (VS D).V} (hd : d ∈ Submodule.span D.host.E (Set.range X.eX))
     (h : ∀ b, (VS D).hT (X.fY b) d = 0) : d = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hd
@@ -140,7 +129,7 @@ theorem span_eq_zero {d : (VS D).V} (hd : d ∈ Submodule.span D.host.E (Set.ran
     intro b
     have := h b
 
-    simpa [map_sum, hT_f_e] using this
+    simpa [map_sum, GlobalTheory.RowsOrb.Basic.hT_fe] using this
   simp [hc]
 
 end GlobalTheory.RowsOrb.ModelIso
@@ -162,7 +151,6 @@ theorem corr_mem (W : Submodule D.host.E (VS D).V) (w : W) :
   exact Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
 
 end GlobalTheory.RowsOrb.ModelIso
-
 
 open GlobalTheory.RowsOrb.ModelIso in
 theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (W : Submodule D.host.E (VS D).V)
@@ -200,8 +188,8 @@ theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (
       exact p_symm_zero (VS D) (hT_span_left X (fun a => X.ee a b) hc)
     · set_option synthInstance.maxHeartbeats 100000 in
         rw [map_sub, corr_apply, map_sum]
-        simp only [map_smul, hT_f_e, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-          if_true, sub_self]
+        simp only [map_smul, GlobalTheory.RowsOrb.Basic.hT_fe, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
+          ite_true, sub_self]
   have hmUb : ∀ w : W, (⟨(w : (VS D).V) - corr X W w, hmWb w⟩ : GlobalTheory.RowsOrb.Wb X) ∈ GlobalTheory.RowsOrb.Ub X u := by
     intro w
     rw [GlobalTheory.RowsOrb.mem_Ub]
@@ -232,7 +220,7 @@ theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (
       · rw [fixedFrameOfWord_castSucc_eq_hyperbolic]; exact p_symm_zero (VS D) ((((x : GlobalTheory.RowsOrb.Wb X)).2 b).1)
     obtain ⟨y, ⟨w, rfl⟩, z, hz, hyz⟩ := Submodule.mem_sup.1 ((hE.2 _).1 hv)
     refine ⟨w, ?_⟩
-    rw [fixedFrameOfWord_isotropicSpan_eq] at hz
+    rw [GlobalTheory.RowsOrb.Uniq.fixedFrameOfWord_isotropicSpan_eq] at hz
     have hd : ((x : GlobalTheory.RowsOrb.Wb X) : (VS D).V) - ((g w : GlobalTheory.RowsOrb.Wb X) : (VS D).V) = 0 := by
       apply span_eq_zero X
       · rw [hg, ← hyz]
@@ -255,7 +243,7 @@ theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (
     have h2 := (hXW (e x) (corr_mem X W (e y))).2
     have h3 := hT_span_span X (corr_mem X W (e x)) (corr_mem X W (e y))
     simp only [map_sub, LinearMap.sub_apply, h1, h2, h3, sub_zero]
-  · rw [hxe x, sub_sub_cancel, fixedFrameOfWord_isotropicSpan_eq]
+  · rw [hxe x, sub_sub_cancel, GlobalTheory.RowsOrb.Uniq.fixedFrameOfWord_isotropicSpan_eq]
     exact corr_mem X W (e x)
 end -- clump:auto
 end -- clump:auto
@@ -289,7 +277,7 @@ theorem eq_zero_of_mem_span_eX (X : HidaSetting D) (w : (VS D).V)
       intro a
       rw [a_herm, X.ef a b]
       split_ifs <;> simp
-    simp only [hfe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    simp only [hfe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     exact h
   simp [hc]
 
@@ -690,7 +678,6 @@ theorem transport (u : D.what₂.Word) (δ : (VS D).V →ₗ[D.host.E] (VS D).V)
 
 end GlobalTheory.RowsOrb.StabAct
 
-
 open GlobalTheory.RowsOrb.StabAct GlobalTheory.RowsOrb.Uniq in
 theorem GlobalTheory.RowsOrb.exists_gz_lmap : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word), ∀ γ ∈ stabF D (X.Fu u),
     ∃ g : GlobalTheory.RowsOrb.Gz X u, ∀ Λ : Submodule (𝓞 D.host.E) (VS D).V,
@@ -848,7 +835,6 @@ private theorem full_of_unimodular {K V : Type} [Field K] [NumberField K] [StarR
   exact RingOfIntegers.not_isField K
     (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 K) K) (Field.toIsField K))
 
-
 theorem mem_genus_of_isUnimodular : ∀ (D : D7) (large₂ : SizeData₂ D), GlobalTheory.TypeAsm.Std D large₂ → ∀ (X : HidaSetting D) (u : D.what₂.Word) (Λ : Submodule (𝓞 D.host.E) (VS D).V), Submodule.IsLattice D.host.E Λ → Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ → Λ ∈ Formalism.HermitianLatticesTheory.genus (VS D).hT (VS D).L0 := by
   intro D large₂ hS _ _ Λ hΛ hU
   have hCM : Formalism.HermitianLatticesTheory.IsCMUnram D.host.E := (GlobalTheory.TypeAsm.hostC D large₂ hS).1
@@ -969,7 +955,6 @@ theorem lmap_eq (u : D.what₂.Word) (L : Submodule (𝓞 D.host.E) (GlobalTheor
 
 end GlobalTheory.RowsOrb.Parts
 
-
 open GlobalTheory.RowsOrb.Parts in
 theorem GlobalTheory.RowsOrb.parts_of_lat : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (L : Submodule (𝓞 D.host.E) (GlobalTheory.RowsOrb.Wb X)), XLam (latSpanS (fun a => aaD D a) X.eX ⊔ L.map ((GlobalTheory.RowsOrb.Wb X).subtype.restrictScalars (𝓞 D.host.E)) ⊔ latSpanS (fun a => (aaD D a)⁻¹) X.fY) (lf D (X.Fu u)) = XS D (X.Fu u) ∧ XLam (VS D).L0 (lf D (X.Fu u)) = XS D (X.Fu u) ∧ GlobalTheory.RowsOrb.Lmap X u (latSpanS (fun a => aaD D a) X.eX ⊔ L.map ((GlobalTheory.RowsOrb.Wb X).subtype.restrictScalars (𝓞 D.host.E)) ⊔ latSpanS (fun a => (aaD D a)⁻¹) X.fY) = L ∧ ∀ w : GlobalTheory.RowsOrb.Wb X, (w : (VS D).V) ∈ Lsub (latSpanS (fun a => aaD D a) X.eX ⊔ L.map ((GlobalTheory.RowsOrb.Wb X).subtype.restrictScalars (𝓞 D.host.E)) ⊔ latSpanS (fun a => (aaD D a)⁻¹) X.fY) (lf D (X.Fu u)) → w ∈ L := by
   intro D X u L
@@ -998,7 +983,6 @@ section -- clump:auto
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.LatticeGluingRadicals
-
 
 theorem GlobalTheory.RowsOrb.exists_row_of_unimod : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word), GlobalTheory.TypeAsm.Std D large₂ → ∀ L : Submodule (𝓞 D.host.E) (GlobalTheory.RowsOrb.Wb X), Submodule.IsLattice D.host.E L → Formalism.HermitianLatticesTheory.IsUnimodular (GlobalTheory.RowsOrb.hb X) L → (∀ t : D.host.E, t • GlobalTheory.RowsOrb.zb X u ∈ L ↔ t ∈ (1 : Submodule (𝓞 D.host.E) D.host.E)) → ∃ Λ ∈ Y.what₂ u, ∃ g : GlobalTheory.RowsOrb.Gz X u, g • GlobalTheory.RowsOrb.Lmap X u Λ = L := by
   intro D large₂ X Y u hStd L hL hU hprim
@@ -1186,7 +1170,6 @@ theorem cardE (α : Type) [Nonempty α] :
     simp
   · rw [Nat.card_eq_zero_of_infinite, ENat.card_eq_top_of_infinite]
     simp
-
 
 theorem rowsOrbC : GlobalTheory.TypeAsm.RowsOrbC := by
   intro D large₂ X Y u hS W HW hEmb φ hφ Λ₀ hΛ₀

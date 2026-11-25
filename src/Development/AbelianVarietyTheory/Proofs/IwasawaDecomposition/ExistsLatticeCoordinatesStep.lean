@@ -357,14 +357,6 @@ theorem tanLin_injective (h : ⊤ ≤ x ⁻¹ᵁ V) {n : ℕ} (s : Fin n → Γ(
 
 end Lin
 
-section Phi
-
-variable {X X' X₀ Z : Scheme.{0}} {t : SAB H X} {t' : SAB H X'} {t₀ : SAB H X₀} {τ : X ⟶ X₀} {τ' : X' ⟶ X₀}
-  (mu : SABMap t t₀ τ) (mu' : SABMap t' t₀ τ') {π : Z ⟶ X} {g : Z ⟶ X'} (e : g ≫ τ' = π ≫ τ)
-  {S : Type} [CommRing S]
-
-end Phi
-
 end GlobalTheory.GrCl
 end -- clump:auto
 end -- clump:auto

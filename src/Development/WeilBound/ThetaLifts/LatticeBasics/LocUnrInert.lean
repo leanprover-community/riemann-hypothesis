@@ -65,15 +65,6 @@ namespace GlobalTheory.CompanionTheory.InertZetaTop
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {q n : ℕ}
 
-theorem section_eq (hC : Completion) {ϖ : Lˣ} (hU : IsUnramInv (ϖ : L) σ q) {χ : Lˣ →* ℂˣ} (hχ : IsUnr χ) {s : ℂ}
-    {Φ : GD σ n → ℂ} (hΦ : IsSphSec σ q n χ s Φ) (g : GU σ n) {l : ℕ} (h : HasLen (mat g) l) :
-    Φ (io1 σ n g) = varX q n (χ ϖ) s ^ l := by
-  apply GlobalTheory.InertZeta.section_eq <;> assumption
-
-theorem closedForm_eq {q : ℕ} (hq : q ≠ 0) (n m : ℕ) (ε s : ℂ) (α : Fin (n / 2) → ℂˣ) (hε : ε = (-1) ^ m) :
-    closedForm q n (varX q n ε s) (varY q ε s) α = stdL q n α ε (s + 1 / 2) / dFac q n m s := by
-  apply GlobalTheory.InertZeta.closedForm_eq <;> assumption
-
 theorem unramDoublingInert : UnramDoublingInert := by
   intro L _ _ _ ϖ σ q n hU _ _ μ _ hμ χ hχ s Φ hΦ α w hw
   have hq : q ≠ 0 := by have := hU.2.2.2.2.2.1; omega
@@ -131,10 +122,10 @@ theorem prod_fold (T : ℕ → ℂ) (n : ℕ) :
     (∏ i : Fin (n / 2), T (n - 1 - i) * T i) * (if Odd n then T (n / 2) else 1) = ∏ k ∈ Finset.range n, T k := by
   rw [Fin.prod_univ_eq_prod_range (fun i => T (n - 1 - i) * T i), Finset.prod_mul_distrib]
   obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
-  · rw [if_neg (by simp), show 2 * m / 2 = m by omega, two_mul, Finset.prod_range_add, mul_one, mul_comm,
+  · rw [ite_eq_right (by simp), show 2 * m / 2 = m by omega, two_mul, Finset.prod_range_add, mul_one, mul_comm,
       ← Finset.prod_range_reflect (fun i => T (m + i))]
     exact congrArg _ (Finset.prod_congr rfl fun i hi => congrArg T (by have := Finset.mem_range.1 hi; omega))
-  · rw [if_pos (by simp), show (2 * m + 1) / 2 = m by omega, show 2 * m + 1 = m + 1 + m by ring, Finset.prod_range_add,
+  · rw [ite_eq_left (by simp), show (2 * m + 1) / 2 = m by omega, show 2 * m + 1 = m + 1 + m by ring, Finset.prod_range_add,
       Finset.prod_range_succ, ← Finset.prod_range_reflect (fun i => T (m + 1 + i)), mul_assoc, mul_comm]
     exact congrArg _ (Finset.prod_congr rfl fun i hi => congrArg T (by have := Finset.mem_range.1 hi; omega))
 
@@ -434,7 +425,7 @@ theorem main : LocUnrInert := by
   rw [integral_map_equiv] at i2
   simp only [e2] at i1 i2
   refine ⟨i1, ?_⟩
-  rw [locD, if_neg fun ⟨τ⟩ => not_isSplit_of_isInertAt hw (SplitChart.isSplit_of_algHom hB.cm τ)]
+  rw [locD, ite_eq_right fun ⟨τ⟩ => not_isSplit_of_isInertAt hw (SplitChart.isSplit_of_algHom hB.cm τ)]
   refine i2.trans (Finset.prod_congr rfl fun i _ => ?_)
   rw [Lv, show Formalism.L2.Host.aboveF (L := E) F v = {w} by ext u; simp [mem_aboveF, under_eq_iff hw], Finset.prod_singleton, locL,
     charFam_of_unrAt (hu w h), eulerFac_singleton, val, locChar, MonoidHom.comp_apply, MonoidHom.comp_apply, chi_at hw hr (hu w h),

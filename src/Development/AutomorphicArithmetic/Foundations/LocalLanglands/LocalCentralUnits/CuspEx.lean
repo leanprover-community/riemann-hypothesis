@@ -550,7 +550,7 @@ theorem UpperTheory.exists_unit_residue_logarithm_of_roots_of_unity :
   have key : ∀ (a : Cˣ) (y : v.valuationSubring), (y : C) = ((a : C) ^ N - 1) / ϖ → abelian₂ a = ρ y := by
     intro a y hy
     have hm : ((a : C) ^ N - 1) / ϖ ∈ v.valuationSubring := hy ▸ y.2
-    simp only [abelian₂, dif_pos hm]
+    simp only [abelian₂, dite_eq_left hm]
     congr 1
     exact Subtype.ext hy.symm
   have hϖm : ϖ ∈ v.valuationSubring := by
@@ -1278,7 +1278,7 @@ private theorem rad_iff {a b n : ℕ} (hn : a + b = n) (M : Mt g n) :
         have := congrFun (congrFun h3 ⟨i - a, hi'⟩) ⟨j - a, hj'⟩
         have e1 : a + ((i : ℕ) - a) = i := by omega
         have e2 : a + ((j : ℕ) - a) = j := by omega
-        simp only [br, entN, e1, e2, i.2, j.2, and_self, dif_pos, Units.val_one] at this
+        simp only [br, entN, e1, e2, i.2, j.2, and_self, dite_eq_left, Units.val_one] at this
         rw [this, Matrix.one_apply, Matrix.one_apply]
         simp only [Fin.ext_iff]
         congr 1
@@ -1303,7 +1303,7 @@ private theorem rad_iff {a b n : ℕ} (hn : a + b = n) (M : Mt g n) :
         have := h _ _ hc
         simp only at this
         omega
-      simp only [tl, entN, hi, hj, and_self, dif_pos, Units.val_one, hh, Matrix.one_apply, Fin.ext_iff]
+      simp only [tl, entN, hi, hj, and_self, dite_eq_left, Units.val_one, hh, Matrix.one_apply, Fin.ext_iff]
     · ext i j
       have hi : a + (i : ℕ) < n := by omega
       have hj : a + (j : ℕ) < n := by omega
@@ -1312,7 +1312,7 @@ private theorem rad_iff {a b n : ℕ} (hn : a + b = n) (M : Mt g n) :
         have := h _ _ hc
         simp only at this
         omega
-      simp only [br, entN, hi, hj, and_self, dif_pos, Units.val_one, hh, Matrix.one_apply, Fin.ext_iff]
+      simp only [br, entN, hi, hj, and_self, dite_eq_left, Units.val_one, hh, Matrix.one_apply, Fin.ext_iff]
       simp
 
 private theorem rad_inv {a b n : ℕ} (hn : a + b = n) {x : Gn g n}
@@ -1709,8 +1709,8 @@ theorem cuspEx : CuspEx := by
   haveI : Nonempty (WD h) := ⟨WD.lpZero (h := h)⟩
   choose! J hJ using junkEx E Ω A w h
   let r : IrrGL (k := w.adicCompletion E) → WD h := fun x => if GoodCusp x then r₀ x else (J x.1).lpTw (e x)
-  have rg : ∀ x, GoodCusp x → r x = r₀ x := fun x hx => if_pos hx
-  have rb : ∀ x, ¬ GoodCusp x → r x = (J x.1).lpTw (e x) := fun x hx => if_neg hx
+  have rg : ∀ x, GoodCusp x → r x = r₀ x := fun x hx => ite_eq_left hx
+  have rb : ∀ x, ¬ GoodCusp x → r x = (J x.1).lpTw (e x) := fun x hx => ite_eq_right hx
   have two : ∀ x : IrrGL (k := w.adicCompletion E), x.IsCusp → ¬ GoodCusp x → 2 ≤ x.1 := by
     intro x hx hb
     have h0 := hx.1

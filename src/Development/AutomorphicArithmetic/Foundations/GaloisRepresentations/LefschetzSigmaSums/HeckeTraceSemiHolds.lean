@@ -1126,10 +1126,10 @@ theorem UpperTheory.Gal.LocalSmoothExtension.schWConj_of :
     rfl
   · have h0 : schW lam χ = 0 := by
       unfold schW
-      exact dif_neg h
+      exact dite_eq_right h
     have h1 : schW (conjWt σ lam) χ = 0 := by
       unfold schW
-      exact dif_neg h
+      exact dite_eq_right h
     rw [h0, h1, map_zero]
 end -- clump:auto
 end -- clump:auto
@@ -1246,7 +1246,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.traceSemi_of :
       rintro ⟨t, ⟨c⟩⟩
       obtain ⟨c', -⟩ := exists_basis (semi_symm h) c
       exact H ⟨_, ⟨c'.reindexFinsetRange⟩⟩
-    simp only [LinearMap.trace, dif_neg H, dif_neg H', LinearMap.zero_apply, map_zero]
+    simp only [LinearMap.trace, dite_eq_right H, dite_eq_right H', LinearMap.zero_apply, map_zero]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LefschetzSigmaSums.PTraceSemi =====

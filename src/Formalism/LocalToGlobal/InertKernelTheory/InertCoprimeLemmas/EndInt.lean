@@ -98,15 +98,7 @@ variable {p : ℕ} [Fact p.Prime]
 theorem mulBy_g (g : G1 p) (hOk : g.Ok) (c : ℂ_[p]) :
     (g.mulBy c (Xv ()) : MvPowerSeries Unit ℂ_[p]) =
       Formalism.L2.Th1.C.mulBy (Formalism.L2.Th1.A.logSer g.W) (Formalism.L2.Th1.A.expSer g.W) c := by
-  have hl : g.l = Formalism.L2.Th1.A.logSer g.W := Formalism.L2.KerInert.Dict.formal_logarithm_agree p g.W g.wq hOk.2.1
-  have he : g.ex = Formalism.L2.Th1.A.expSer g.W := Formalism.L2.KerInert.Dict.formal_exponential_agree p g hOk
-  have hX : PowerSeries.subst (Xv () : MvPowerSeries Unit ℂ_[p]) g.l = g.l := by
-    show PowerSeries.subst (PowerSeries.X : PowerSeries ℂ_[p]) g.l = g.l
-    rw [← one_smul ℂ_[p] (PowerSeries.X : PowerSeries ℂ_[p]), ← PowerSeries.rescale_eq_subst,
-      PowerSeries.rescale_one, RingHom.id_apply]
-  unfold G1.mulBy G1.pt G1.lg Formalism.L2.Th1.C.mulBy
-  rw [hX, hl, he]
-  rfl
+  exact Formalism.L2.KerInert.ModelP.mulBy_g g hOk c
 
 theorem coeffIn_g (g : G1 p) (hOk : g.Ok) : Formalism.L2.Th1.C.CoeffIn (RB p) g.W := by
   obtain ⟨⟨h1, h2, h3, h4, h6, -⟩, -⟩ := hOk

@@ -178,7 +178,7 @@ theorem step (hA : HasStableRangeOne A) (m : ℕ) (hm : m < k) (X : GL (Fin k) A
   have hX1 : ∀ a b, X1 a b = Xm a b + if a = p then ∑ i ∈ s, c1 i * Xm i b else 0 :=
     fun a b => rowT_mul_apply p c1 s Xm a b
   have hX1pp : X1 p p = Xm p p + t * ∑ i ∈ s, Xm i p * Y p i := by
-    rw [hX1, if_pos rfl, Finset.mul_sum]
+    rw [hX1, ite_eq_left rfl, Finset.mul_sum]
     congr 1
     exact Finset.sum_congr rfl (fun i _ => by rw [hc1]; ring)
   have hUnit : IsUnit (X1 p p) := by
@@ -189,10 +189,10 @@ theorem step (hA : HasStableRangeOne A) (m : ℕ) (hm : m < k) (X : GL (Fin k) A
   have hwu : w * X1 p p = 1 := hUnit.val_inv_mul
   have X1_ne : ∀ a b, a ≠ p → X1 a b = Xm a b := by
     intro a b ha
-    rw [hX1, if_neg ha, add_zero]
+    rw [hX1, ite_eq_right ha, add_zero]
   have X1_p_low : ∀ b : Fin k, b.val < m → X1 p b = 0 := by
     intro b hb
-    rw [hX1, if_pos rfl, z2 p b hb (nev p b (by omega)), zero_add]
+    rw [hX1, ite_eq_left rfl, z2 p b hb (nev p b (by omega)), zero_add]
     apply Finset.sum_eq_zero
     intro i hi
     have := (mem_s i).1 hi
@@ -205,15 +205,15 @@ theorem step (hA : HasStableRangeOne A) (m : ℕ) (hm : m < k) (X : GL (Fin k) A
     fun a b => colT_mul_apply p c2 s X1 a b
   have X2_notin : ∀ a b, a ∉ s → X2 a b = X1 a b := by
     intro a b ha
-    rw [hX2, if_neg ha, add_zero]
+    rw [hX2, ite_eq_right ha, add_zero]
   have X2_s_p : ∀ a, a ∈ s → X2 a p = 0 := by
     intro a ha
-    rw [hX2, if_pos ha, hc2]
+    rw [hX2, ite_eq_left ha, hc2]
     linear_combination (-(X1 a p)) * hwu
   have X2_s_low : ∀ a b, a ∈ s → b.val < m → X2 a b = 0 := by
     intro a b ha hb
     have := (mem_s a).1 ha
-    rw [hX2, if_pos ha, X1_p_low b hb, mul_zero, add_zero, X1_ne a b (fun h => hps (h ▸ ha))]
+    rw [hX2, ite_eq_left ha, X1_p_low b hb, mul_zero, add_zero, X1_ne a b (fun h => hps (h ▸ ha))]
     exact z2 a b hb (nev a b (by omega))
 
   set c3 : Fin k → A := fun j => -(w * X2 p j) with hc3
@@ -234,11 +234,11 @@ theorem step (hA : HasStableRangeOne A) (m : ℕ) (hm : m < k) (X : GL (Fin k) A
     · exact isUnit_one
   have dp : d p = w := by
     rw [hdd]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   have dne : ∀ a, a ≠ p → d a = 1 := by
     intro a ha
     rw [hdd]
-    exact if_neg ha
+    exact ite_eq_right ha
   have gL : InG (diagonal d * C * R1) :=
     inG_mul (inG_mul (inG_diag d hd) (inG_colT p c2 s hps)) (inG_rowT p c1 s hps)
   have gR : InG Rr := inG_rowT p c3 s hps
@@ -259,12 +259,12 @@ theorem step (hA : HasStableRangeOne A) (m : ℕ) (hm : m < k) (X : GL (Fin k) A
     exact hX a b (Or.inl ha)
   · rw [ha, dp]
     rcases tri b with hb | hb | hb
-    · rw [hX3, if_neg (fun h => by have := (mem_s b).1 h; omega), add_zero, X2_notin p b hps,
+    · rw [hX3, ite_eq_right (fun h => by have := (mem_s b).1 h; omega), add_zero, X2_notin p b hps,
         X1_p_low b hb, mul_zero, Matrix.one_apply_ne (nev p b (by omega))]
-    · rw [hb, hX3, if_neg hps, add_zero, X2_notin p p hps, Matrix.one_apply_eq]
+    · rw [hb, hX3, ite_eq_right hps, add_zero, X2_notin p p hps, Matrix.one_apply_eq]
       exact hwu
     · have := (mem_s b).1 hb
-      rw [hX3, if_pos hb, hc3, X2_notin p b hps, X2_notin p p hps,
+      rw [hX3, ite_eq_left hb, hc3, X2_notin p b hps, X2_notin p p hps,
         Matrix.one_apply_ne (nev p b (by omega))]
       linear_combination (-(w * X1 p b)) * huw - (w ^ 2 * X1 p p) * X2_notin p b hps
   · have ham := (mem_s a).1 ha
@@ -273,7 +273,7 @@ theorem step (hA : HasStableRangeOne A) (m : ℕ) (hm : m < k) (X : GL (Fin k) A
       rcases hab with h | h
       · omega
       · exact h
-    rw [dne a hap, one_mul, hX3, if_neg (fun h => by have := (mem_s b).1 h; omega), add_zero]
+    rw [dne a hap, one_mul, hX3, ite_eq_right (fun h => by have := (mem_s b).1 h; omega), add_zero]
     rcases tri b with hb | hb | hb
     · rw [X2_s_low a b ha hb, Matrix.one_apply_ne (nev a b (by omega))]
     · rw [hb, X2_s_p a ha, Matrix.one_apply_ne hap]

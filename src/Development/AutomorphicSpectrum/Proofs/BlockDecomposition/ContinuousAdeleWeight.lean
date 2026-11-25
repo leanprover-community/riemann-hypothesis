@@ -43,8 +43,8 @@ theorem adeleWeight_mono {L L' : (FractionalIdeal (𝓞 K)⁰ K)ˣ}
   unfold adeleWeight
   by_cases h1 : y.2 ∈ idealFiniteAdeles L
   · have h2 : y.2 ∈ idealFiniteAdeles L' := idealFiniteAdeles_subset h h1
-    simp only [if_pos h1, if_pos h2, le_refl]
-  · rw [if_neg h1]
+    simp only [ite_eq_left h1, ite_eq_left h2, le_refl]
+  · rw [ite_eq_right h1]
     split_ifs
     · positivity
     · exact le_rfl
@@ -54,7 +54,7 @@ theorem adeleWeight_mono {L L' : (FractionalIdeal (𝓞 K)⁰ K)ˣ}
   have h0 : (0 : 𝔸[K]).2 ∈ idealFiniteAdeles L := zero_mem _
   have h1 : homeomorphMixedSpace K (0 : 𝔸[K]).1 = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace K)
   unfold adeleWeight
-  rw [if_pos h0, h1]
+  rw [ite_eq_left h0, h1]
   simp
 
 theorem continuous_adeleWeight (L : (FractionalIdeal (𝓞 K)⁰ K)ˣ) (A : ℕ) :

@@ -2,7 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DownRight
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlphaDivBetaRamifiedAtLevelStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlphaDivBetaRamifiedAtLevel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlphaDivBetaRamifiedFirstStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlphaUnramifiedOutsideStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BetaUnramifiedOutsideStatement
@@ -143,8 +143,8 @@ private theorem exps (hL : Lc.Is μ₀) (i j : Fin D.R.m) (τf : InfinitePlace D
       (∀ t, HasExp (fun w => ⟨(starRingEnd ℂ).comp (tauE D (τf w)), hτf w⟩) (alpha G t i j) mα) ∧
       HasExp (fun w => ⟨(starRingEnd ℂ).comp (tauE D (τf w)), hτf w⟩) (beta G i j) mβ ∧
       ∀ w, ((rankV D (i + 1) (j + 1) + rankV D i j : ℕ) : ℤ) < mα w - mβ w := by
-  choose mα hα eα using fun t => GlobalTheory.T.hasArchimedeanCharExponents_conj_of_hasInfExp _ _ (fun τ => GlobalTheory.SquareExps.alpha_exp (G := G) hL t i j j.2 τ) τf hτf
-  obtain ⟨mβ, hβ, eβ⟩ := GlobalTheory.T.hasArchimedeanCharExponents_conj_of_hasInfExp _ _ (fun τ => GlobalTheory.SquareExps.beta_exp (G := G) hL i j i.2 τ) τf hτf
+  choose mα hα eα using fun t => GlobalTheory.ConjInfExp.hasExp_conj_of_hasInfExp _ _ (fun τ => GlobalTheory.SquareExps.alpha_exp (G := G) hL t i j j.2 τ) τf hτf
+  obtain ⟨mβ, hβ, eβ⟩ := GlobalTheory.ConjInfExp.hasExp_conj_of_hasInfExp _ _ (fun τ => GlobalTheory.SquareExps.beta_exp (G := G) hL i j i.2 τ) τf hτf
   refine ⟨mα μ₀, mβ, fun t => ?_, hβ, fun w => ?_⟩
   · have e : mα μ₀ = mα t := funext fun w => by
       have := (eα μ₀ w).trans (eα t w).symm

@@ -22,50 +22,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Tendst
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ActionCoordinates
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
@@ -107,9 +63,6 @@ theorem act_mul (g h : UpqT P Q) (x : Sp P Q) : act (g * h) x = act g (act h x) 
 
 theorem act_one (x : Sp P Q) : act (1 : UpqT P Q) x = x := Matrix.one_mulVec x
 
-theorem act_inv_act (g : UpqT P Q) (x : Sp P Q) : act g⁻¹ (act g x) = x := by
-  rw [← act_mul, inv_mul_cancel, act_one]
-
 theorem act_act_inv (g : UpqT P Q) (x : Sp P Q) : act g (act g⁻¹ x) = x := by
   rw [← act_mul, mul_inv_cancel, act_one]
 
@@ -122,9 +75,6 @@ theorem herm_act (g : UpqT P Q) (x y : Sp P Q) : herm (act g x) (act g y) = herm
   have hu : (UpqT.mat g)ᴴ * Formalism.UG.Jpq P Q * UpqT.mat g = Formalism.UG.Jpq P Q := g.2
   rw [herm_eq_dot, herm_eq_dot, act, act, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec,
     Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hu]
-
-theorem herm_eq_sum (x y : Sp P Q) : herm x y = ∑ i, (sg i : ℂ) * (x i * star (y i)) := by
-  simp [herm, sg, Fintype.sum_sum_type, sub_eq_add_neg]
 
 def incl (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) :
     Matrix (Fin P ⊕ Fin Q) (Fin P' ⊕ Fin Q') ℂ :=
@@ -150,10 +100,10 @@ theorem isPerpEmb_base (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (h
     (j₀ : UpqT P' Q' → UpqT P Q) (hj : IsBlockEmb e j₀) :
     IsPerpEmb (baseVec e) (incl e) j₀ := by
   refine ⟨fun u v => ?_, fun y => ?_, fun g => ⟨?_, fun u => ?_⟩⟩
-  · rw [herm_eq_sum, herm_eq_sum, ← e.sum_comp, Fintype.sum_option]
+  · rw [GlobalTheory.CompactDualQuot.PerpConj.herm_eq_sum, GlobalTheory.CompactDualQuot.PerpConj.herm_eq_sum, ← e.sum_comp, Fintype.sum_option]
     simp only [incl_none, incl_some, he _, zero_mul, mul_zero, zero_add]
   · have h1 : herm y (baseVec e) = (sg (e none) : ℂ) * y (e none) := by
-      rw [herm_eq_sum, ← e.sum_comp, Fintype.sum_option]
+      rw [GlobalTheory.CompactDualQuot.PerpConj.herm_eq_sum, ← e.sum_comp, Fintype.sum_option]
       simp [baseVec]
     have h2 : (sg (e none) : ℂ) ≠ 0 := by exact_mod_cast sg_ne_zero _
     rw [h1, mul_eq_zero, or_iff_right h2]
@@ -188,9 +138,9 @@ theorem isPerpEmb_translate {x₀ : Sp P Q} {A : Matrix (Fin P ⊕ Fin Q) (Fin P
     rw [hA]
     constructor
     · intro hu; rw [hu]
-    · intro hu; rw [← act_inv_act g₀ (A *ᵥ u), hu, act_inv_act]
-  · simp only [act_mul, act_inv_act, (h.2.2 g).1]
-  · simp only [hA, act_mul, act_inv_act, (h.2.2 g).2]
+    · intro hu; rw [← GlobalTheory.FibreInvariance.act_inv_act g₀ (A *ᵥ u), hu, GlobalTheory.FibreInvariance.act_inv_act]
+  · simp only [act_mul, GlobalTheory.FibreInvariance.act_inv_act, (h.2.2 g).1]
+  · simp only [hA, act_mul, GlobalTheory.FibreInvariance.act_inv_act, (h.2.2 g).2]
 
 theorem exists_isPerpEmb : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)),
     SignCompat e → ∀ j₀ : UpqT P' Q' → UpqT P Q, IsBlockEmb e j₀ → ∀ g₀ : UpqT P Q,
@@ -252,7 +202,6 @@ private lemma sum_norm_sum_mul_matrix_le_mul_sum_norm_of_norm_le {α : Type*} [F
     _ = K * ∑ c, ∑ b, ‖Y c b‖ := by
         rw [Finset.sum_comm, Finset.mul_sum]
         simp_rw [Finset.mul_sum]
-
 
 open MeasureTheory Matrix Filter Topology in
 open scoped ENNReal NNReal in
@@ -701,9 +650,6 @@ theorem Jpq_eq (P Q : ℕ) : Formalism.UG.Jpq P Q = Matrix.diagonal fun i => (sg
 theorem sg_mul_self (i : Fin P ⊕ Fin Q) : (sg i : ℂ) * sg i = 1 := by
   rcases sg_eq i with h | h <;> rw [h] <;> simp
 
-theorem norm_sg (i : Fin P ⊕ Fin Q) : ‖(sg i : ℂ)‖ = 1 := by
-  rcases sg_eq i with h | h <;> rw [h] <;> simp
-
 theorem mem_lieU_iff (X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :
     X ∈ lieU P Q ↔ ∀ a b, X a b = -((sg a : ℂ) * sg b) * (starRingEnd ℂ) (X b a) := by
   change Xᴴ * Formalism.UG.Jpq P Q + Formalism.UG.Jpq P Q * X = 0 ↔ _
@@ -750,7 +696,7 @@ theorem row_eq (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (X : lieU 
 
 theorem coord_injective (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (he : SignCompat e) :
     Function.Injective (coord e he) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro X h
   have h1 : (X.val (e none) (e none)).im = 0 := congrArg (fun t => t.1.1) h
   have h2 : ∀ a, X.val (e (some a)) (e none) = 0 := fun a => congrArg (fun t => t.1.2 a) h
@@ -801,7 +747,7 @@ theorem matrixEntryAbsSum_unitaryLie_coordinates_split (e : Option (Fin P' ⊕ F
     simp
   have h2 : ∀ b, ‖X.val (e none) (e (some b))‖ = ‖X.val (e (some b)) (e none)‖ := by
     intro b
-    rw [row_eq, norm_mul, norm_neg, norm_mul, norm_sg, norm_sg]; simp
+    rw [row_eq, norm_mul, norm_neg, norm_mul, GlobalTheory.TangentSection.norm_sg, GlobalTheory.TangentSection.norm_sg]; simp
   change ∑ i, ∑ j, ‖X.val i j‖ = |(X.val (e none) (e none)).im| +
     2 * ∑ a, ‖X.val (e (some a)) (e none)‖ + ∑ a, ∑ b, ‖X.val (e (some a)) (e (some b))‖
   have h3 : ∀ i, ∑ j, ‖X.val i j‖ = ‖X.val i (e none)‖ + ∑ b, ‖X.val i (e (some b))‖ := by
@@ -849,7 +795,7 @@ theorem omega_split : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ 
     have m1 := mp_interchange ((volume : Measure ℝ).prod μ) lam' ((volume : Measure ℝ).prod μ) lam'
     have m2 := mp_interchange (volume : Measure ℝ) μ (volume : Measure ℝ) μ
     have m3 := mp_colrow (fun b => -((sg (e none) : ℂ) * sg (e (some b))))
-      (fun b => by rw [norm_neg, norm_mul, norm_sg, norm_sg, mul_one])
+      (fun b => by rw [norm_neg, norm_mul, GlobalTheory.TangentSection.norm_sg, GlobalTheory.TangentSection.norm_sg, mul_one])
     have m4 : MeasurePreserving _ (lam'.prod lam') volume := ⟨(hc P' Q').measurable, h2⟩
     have m5 := hf.comp ((((mp_diag.prod m3).comp m2).prod m4).comp m1)
     rw [Measure.map_prod_map _ _ hm hm, Measure.map_map (hc P Q).measurable (hm.prodMap hm),
@@ -1032,8 +978,8 @@ theorem ptGauge_act_le (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (g
     Finset.sum_le_sum fun i _ => Finset.single_le_sum (f := fun j => ‖(UpqT.mat g - 1) i j‖)
       (fun _ _ => norm_nonneg _) (Finset.mem_univ _)
   rw [← e.sum_comp, Fintype.sum_option] at h2
-  simp only [Matrix.sub_apply, Matrix.one_apply, e.injective.eq_iff, if_true, reduceCtorEq,
-    if_false, sub_zero] at h2
+  simp only [Matrix.sub_apply, Matrix.one_apply, e.injective.eq_iff, ite_true, reduceCtorEq,
+    ite_false, sub_zero] at h2
   simp only [ptGauge, h1]
   linarith [norm_nonneg (UpqT.mat g (e none) (e none) - 1)]
 

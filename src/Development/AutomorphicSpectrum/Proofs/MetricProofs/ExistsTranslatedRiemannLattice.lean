@@ -33,11 +33,6 @@ theorem sum_embeddings_cm {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (f
   classical
   let m : Ψ × Bool → (E →+* ℂ) := fun p =>
     if p.2 then (starRingEnd ℂ).comp (embOf (σ p.1)) else embOf (σ p.1)
-  have hc : ∀ s t : 𝓞 E →+* ℂ, (starRingEnd ℂ).comp s = (starRingEnd ℂ).comp t → s = t := by
-    intro s t h
-    ext x
-    have := congrArg (fun r : 𝓞 E →+* ℂ => starRingEnd ℂ (r x)) h
-    simpa using this
   have hcc : ∀ s : 𝓞 E →+* ℂ, (starRingEnd ℂ).comp ((starRingEnd ℂ).comp s) = s := by
     intro s
     ext x
@@ -49,22 +44,22 @@ theorem sum_embeddings_cm {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (f
     constructor
     · rintro ⟨τ, b⟩ ⟨τ', b'⟩ h
       have h' := congrArg (fun r : E →+* ℂ => r.comp (algebraMap (𝓞 E) E)) h
-      cases b <;> cases b' <;> simp only [m, Bool.false_eq_true, if_true, if_false, hr, restr_embOf] at h'
+      cases b <;> cases b' <;> simp only [m, Bool.false_eq_true, ite_true, ite_false, hr, restr_embOf] at h'
       · rw [hσ.1 h']
       · exact absurd ⟨τ, h'⟩ ((hσ.2 (σ τ')).1 ⟨τ', rfl⟩)
       · exact absurd ⟨τ', h'.symm⟩ ((hσ.2 (σ τ)).1 ⟨τ, rfl⟩)
-      · rw [hσ.1 (hc _ _ h')]
+      · rw [hσ.1 ((RingHom.cancel_left star_injective).1 h')]
     · intro φ
       by_cases h : ∃ τ, σ τ = φ.comp (algebraMap (𝓞 E) E)
       · obtain ⟨τ, hτ⟩ := h
         refine ⟨(τ, false), ?_⟩
-        simp only [m, Bool.false_eq_true, if_false, hτ, embOf_restr]
+        simp only [m, Bool.false_eq_true, ite_false, hτ, embOf_restr]
       · have h2 : ∃ τ, σ τ = (starRingEnd ℂ).comp (φ.comp (algebraMap (𝓞 E) E)) := by
           by_contra h3
           exact h ((hσ.2 _).2 h3)
         obtain ⟨τ, hτ⟩ := h2
         refine ⟨(τ, true), ?_⟩
-        simp only [m, if_true]
+        simp only [m, ite_true]
         apply hom_ext
         rw [hr, hτ, hcc]
   rw [← (Equiv.ofBijective m hm).sum_comp, Fintype.sum_prod_type]
@@ -240,12 +235,8 @@ theorem perExt_of_P {R R' : RiemLat E g Λ} {ai : Ψ → Matrix (Fin (j + j')) (
 
 open Classical in
 theorem rotL_single (ai : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (τ : Ψ) (y : Fin (j + j') → ℂ) :
-    rotL ai (Pi.single τ y) = Pi.single τ (ai τ *ᵥ y) := by
-  funext t
-  by_cases ht : t = τ
-  · subst ht
-    simp [rotL]
-  · simp [rotL, Pi.single_eq_of_ne ht]
+    rotL ai (Pi.single τ y) = Pi.single τ (ai τ *ᵥ y) :=
+  (Pi.single_op (fun t v => ai t *ᵥ v) (fun _ => mulVec_zero _) τ y).symm
 
 theorem pPart_rot {R R' : RiemLat E g Λ} {ai : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ}
     (h : ∀ x, R'.P x = C.perExt R (rotL ai (C.vec x))) (τ : Ψ) (y : Fin (j + j') → ℂ) :

@@ -70,26 +70,9 @@ namespace Data
 
 variable {r : ℕ} (X : Data E r)
 
-lemma positive_part_add (x : Frame X.Ψ r) (τ : X.Ψ) (u v : Fin r → ℂ) :
-    X.ppos x τ (u + v) = X.ppos x τ u + X.ppos x τ v := by
-  simp only [ppos, hC_add_left, add_mul, Finset.sum_add_distrib, add_smul]
-
 private lemma hermC_Gm_eq_conj_swap (τ : X.Ψ) (u w : Fin r → ℂ) :
     hermC τ.1 X.Gm u w = conj (hermC τ.1 X.Gm w u) := by
   apply _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.hermC_eq_conj_hermC_swap' <;> assumption
-
-private lemma hermC_finset_sum_left (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {ι : Type*}
-    (s : Finset ι) (f : ι → Fin r → ℂ) (w : Fin r → ℂ) :
-    hermC τ G (∑ i ∈ s, f i) w = ∑ i ∈ s, hermC τ G (f i) w := by
-  induction s using Finset.cons_induction with
-  | empty => simp [hC_zero_left]
-  | cons i s hi ih => rw [Finset.sum_cons, Finset.sum_cons, hC_add_left, ih]
-
-private lemma sum_mul_mul_eq_of_mul_eq_one {n : ℕ} (k : Fin n → ℂ) (A B : Matrix (Fin n) (Fin n) ℂ)
-    (h : A * B = 1) (a : Fin n) : ∑ b, (∑ a', k a' * A a' b) * B b a = k a := by
-  calc ∑ b, (∑ a', k a' * A a' b) * B b a = Matrix.vecMul (Matrix.vecMul k A) B a := rfl
-    _ = Matrix.vecMul k (A * B) a := by rw [Matrix.vecMul_vecMul]
-    _ = k a := by rw [h, Matrix.vecMul_one]
 
 lemma ppos_idem {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (v : Fin r → ℂ) :
     X.ppos x τ (X.ppos x τ v) = X.ppos x τ v := by
@@ -100,7 +83,7 @@ def Jp (x : Frame X.Ψ r) (τ : X.Ψ) (v : Fin r → ℂ) : Fin r → ℂ := (2 
 lemma Jp_add (x : Frame X.Ψ r) (τ : X.Ψ) (u v : Fin r → ℂ) :
     X.Jp x τ (u + v) = X.Jp x τ u + X.Jp x τ v := by
   funext i
-  simp only [Jp, positive_part_add, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+  simp only [Jp, ReciprocityTheory.ChartRestriction.G.FD.Data.ppos_add, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
   ring
 
 lemma Jp_smul (x : Frame X.Ψ r) (τ : X.Ψ) (c : ℂ) (v : Fin r → ℂ) :

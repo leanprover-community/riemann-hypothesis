@@ -129,17 +129,8 @@ theorem finite_support_blockFin (y : Cone n K) (k : ι) (hy : y k ≠ 0) :
 
 theorem sum_log_places_eq_zero {t : K} (ht : t ≠ 0) :
     (∑ᶠ v : FinitePlace K, Real.log (v t)) + ∑ σ : K →+* ℂ, Real.log ‖σ t‖ = 0 := by
-  have hfin : (Function.mulSupport fun w : FinitePlace K ↦ w t).Finite :=
-    FinitePlace.hasFiniteMulSupport ht
-  have hprod := FinitePlace.prod_eq_inv_abs_norm ht
-  rw [finprod_eq_prod_of_mulSupport_subset (s := hfin.toFinset) _
-    (fun v hv ↦ Finset.mem_coe.mpr (hfin.mem_toFinset.mpr hv))] at hprod
-  have hsupp : (Function.support fun v : FinitePlace K ↦ Real.log (v t)) ⊆ hfin.toFinset := by
-    intro v hv
-    refine Finset.mem_coe.mpr (hfin.mem_toFinset.mpr fun h ↦ hv ?_)
-    simp only [h, Real.log_one]
-  rw [finsum_eq_sum_of_support_subset _ hsupp,
-    ← Real.log_prod (fun v _ ↦ (FinitePlace.pos_iff.mpr ht).ne'), hprod]
+  rw [← Real.log_finprod (f := fun v : FinitePlace K ↦ v t) fun _ ↦ FinitePlace.pos_iff.mpr ht,
+    FinitePlace.prod_eq_inv_abs_norm ht]
   have h1 : (((Algebra.norm ℚ t : ℚ) : ℂ)) = ∏ σ : K →+* ℂ, σ t := by
     have := Algebra.norm_eq_prod_embeddings ℚ ℂ t
     rw [eq_ratCast] at this

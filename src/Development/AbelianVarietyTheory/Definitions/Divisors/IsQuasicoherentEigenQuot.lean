@@ -165,16 +165,6 @@ variable {σ : ι → (O →+* k)}
 variable [Algebra k Γ(X, ⊤)] (ρ : O →+* End F)
 
 
-namespace IsSplitBy
-
-variable [DecidableEq ι] (h : IsSplitBy σ)
-
-variable [Fintype ι]
-
-
-
-end IsSplitBy
-
 end Split
 
 section Frobenius

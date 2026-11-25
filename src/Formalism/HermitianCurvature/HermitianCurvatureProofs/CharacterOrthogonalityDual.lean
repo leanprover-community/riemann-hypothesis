@@ -84,9 +84,9 @@ theorem finsum_char {G : Type} [AddCommGroup G] [Finite G] (χ : AddChar G ℂ) 
   rw [finsum_eq_sum_of_fintype, AddChar.sum_eq_ite, Nat.card_eq_fintype_card]
   constructor
   · intro hg
-    rw [if_pos (AddChar.eq_zero_iff.2 hg)]
+    rw [ite_eq_left (AddChar.eq_zero_iff.2 hg)]
   · intro hg
-    rw [if_neg (AddChar.ne_zero_iff.2 hg)]
+    rw [ite_eq_right (AddChar.ne_zero_iff.2 hg)]
 
 variable {C : Type} [AddCommGroup C] [Module R C]
 
@@ -181,10 +181,10 @@ theorem sum_over_dual' (h : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R
       (f := fun α : C →ₗ[R] KR R => psiKR R ψ (α x))
   rw [← h2, h1, Nat.card_congr (Submodule.topEquiv (R := R) (M := C →ₗ[R] KR R)).toEquiv]
   by_cases hx : x = 0
-  · rw [if_pos hx, if_pos]
+  · rw [ite_eq_left hx, ite_eq_left]
     intro α _
     rw [hx, map_zero]
-  · rw [if_neg hx, if_neg]
+  · rw [ite_eq_right hx, ite_eq_right]
     intro hcon
     exact hx (hsep x fun α => hcon α Submodule.mem_top)
 
@@ -198,7 +198,7 @@ theorem card_dual (h : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R) [Fi
   have e1 : ∑ c : C, ∑ α : C →ₗ[R] KR R, psiKR R ψ (α c) = (Nat.card (C →ₗ[R] KR R) : ℂ) := by
     simp_rw [← finsum_eq_sum_of_fintype (fun α : C →ₗ[R] KR R => psiKR R ψ (α _)),
       sum_over_dual' h hsep]
-    rw [Finset.sum_ite_eq' Finset.univ (0 : C), if_pos (Finset.mem_univ _)]
+    rw [Finset.sum_ite_eq' Finset.univ (0 : C), ite_eq_left (Finset.mem_univ _)]
   have e2 : ∑ c : C, ∑ α : C →ₗ[R] KR R, psiKR R ψ (α c) = (Nat.card C : ℂ) := by
     rw [Finset.sum_comm]
     have h5 : ∀ α : C →ₗ[R] KR R, ∑ c : C, psiKR R ψ (α c) =
@@ -207,7 +207,7 @@ theorem card_dual (h : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R) [Fi
       rw [← finsum_eq_sum_of_fintype, sum_over_C h]
       split_ifs <;> rfl
     simp_rw [h5]
-    rw [Finset.sum_ite_eq' Finset.univ (0 : C →ₗ[R] KR R), if_pos (Finset.mem_univ _)]
+    rw [Finset.sum_ite_eq' Finset.univ (0 : C →ₗ[R] KR R), ite_eq_left (Finset.mem_univ _)]
   exact_mod_cast e1.symm.trans e2
 
 end Alg2

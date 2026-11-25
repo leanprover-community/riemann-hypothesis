@@ -10,8 +10,6 @@ import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChartA
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan
@@ -61,11 +59,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 
 theorem stalkMap_gm {X Y Z : Scheme.{0}} (r : Z ⟶ Y) (f : Y ⟶ X) (z : Z) (U : X.Opens) (h : f (r z) ∈ U) (a : Γ(X, U)ˣ) :
     Units.map (r.stalkMap z).hom.toMonoidHom (gm f (r z) U a) = gm (r ≫ f) z U a := by
-  apply Units.ext
-  rw [gm_val (r ≫ f) z U h]
-  show (r.stalkMap z).hom (gm f (r z) U a).val = _
-  rw [gm_val f (r z) U h]
-  exact Scheme.Hom.germ_stalkMap_apply r (f ⁻¹ᵁ U) z h _
+  exact (GlobalTheory.ConstFam.gm_comp_stalkMap r f z U h a).symm
 
 
 end GlobalTheory.UChart.SepBModel

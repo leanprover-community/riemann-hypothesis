@@ -576,7 +576,7 @@ private theorem arch {l : ℕ} [Fact l.Prime] (𝔞 : Amb l) (A : Type) [CommRin
   obtain ⟨b, rfl⟩ := 𝔞.V.valuation_surjective y
   by_cases ha : 𝔞.V.valuation a ≤ 1
   · exact ⟨0, by simpa using ha⟩
-  push_neg at ha
+  push Not at ha
   have ha0 : a ≠ 0 := by
     rintro rfl
     simp at ha
@@ -635,7 +635,7 @@ theorem UpperTheory.V.Ws.Po.ambAbs :
     if h : γ = 0 then 0 else Real.exp (φ (Additive.ofMul (Units.mk0 γ h)))
   have g0 : gg 0 = 0 := by simp [gg]
   have gpos : ∀ γ, γ ≠ 0 → 0 < gg γ := fun γ h => by
-    simp only [gg, dif_neg h]
+    simp only [gg, dite_eq_right h]
     exact Real.exp_pos _
   have gmono : StrictMono gg := by
     intro γ δ h
@@ -643,7 +643,7 @@ theorem UpperTheory.V.Ws.Po.ambAbs :
     by_cases hγ : γ = 0
     · rw [hγ, g0]
       exact gpos δ hδ
-    · simp only [gg, dif_neg hγ, dif_neg hδ]
+    · simp only [gg, dite_eq_right hγ, dite_eq_right hδ]
       apply Real.exp_lt_exp.2
       apply hφm
       exact (show Units.mk0 γ hγ < Units.mk0 δ hδ from h)
@@ -657,12 +657,12 @@ theorem UpperTheory.V.Ws.Po.ambAbs :
     by_cases hδ : δ = 0
     · simp [hδ, g0]
     have hγδ : γ * δ ≠ 0 := mul_ne_zero hγ hδ
-    simp only [gg, dif_neg hγ, dif_neg hδ, dif_neg hγδ, ← Real.exp_add, ← map_add (f := _)]
+    simp only [gg, dite_eq_right hγ, dite_eq_right hδ, dite_eq_right hγδ, ← Real.exp_add, ← map_add (f := _)]
     congr 2
     rw [← ofMul_mul, Units.mk0_mul]
   have g1 : gg 1 = 1 := by
     have h1 : (1 : 𝔞.V.ValueGroup) ≠ 0 := one_ne_zero
-    simp only [gg, dif_neg h1, Units.mk0_one, ofMul_one, map_zero, Real.exp_zero]
+    simp only [gg, dite_eq_right h1, Units.mk0_one, ofMul_one, map_zero, Real.exp_zero]
   let w : AbsoluteValue 𝔞.K ℝ :=
     { toFun := fun x => gg (𝔞.V.valuation x)
       map_mul' := fun x y => by
@@ -941,7 +941,7 @@ private theorem xr_const {O S σ : Type} [CommRing O] [CommRing S] [Algebra O S]
       have hdvd : X s ∣ g - r := by
         rw [MvPowerSeries.X_dvd_iff]
         intro n hn
-        rw [map_sub, hr, if_pos hn, sub_self]
+        rw [map_sub, hr, ite_eq_left hn, sub_self]
       obtain ⟨q, hq⟩ := hdvd
       have hrI : F r ∈ I := by
         apply ih
@@ -1035,7 +1035,7 @@ theorem UpperTheory.V.Ws.Po.extR :
         W.π.commutes _⟩
       show ∀ k : W.σ →₀ ℕ, Finsupp.weight W.wt k ≠ 0 → MvPowerSeries.coeff k _ = 0
       intro k hk
-      rw [← MvPowerSeries.c_eq_algebraMap, MvPowerSeries.coeff_C, if_neg]
+      rw [← MvPowerSeries.c_eq_algebraMap, MvPowerSeries.coeff_C, ite_eq_right]
       rintro rfl
       exact hk (map_zero _)
     have h3 := hη0 _ hb (by

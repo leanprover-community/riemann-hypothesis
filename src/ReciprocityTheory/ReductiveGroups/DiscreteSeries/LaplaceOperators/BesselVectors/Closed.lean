@@ -795,11 +795,11 @@ theorem k3V (n : ℕ) : QuotientHighestWeightTensorStandard n := by
     rw [entry_bounds_of_partialSum, Pi.smul_apply] at h1
     by_cases hac : c0 = a
     · subst hac
-      rw [if_pos rfl] at h1
+      rw [ite_eq_left rfl] at h1
       rw [Pi.sub_apply, Pi.single_eq_same, Complex.ofReal_sub, Complex.ofReal_one, sub_smul,
         one_smul, ← h1]
       abel
-    · rw [if_neg hac, add_zero] at h1
+    · rw [ite_eq_right hac, add_zero] at h1
       rw [Pi.sub_apply, Pi.single_eq_of_ne (Ne.symm hac), sub_zero, h1]
   obtain ⟨u, huV, hu0, huK⟩ := hV.2.2.2
   have hbd1 : ∀ k, kirrPs k ν1 ≤ kirrPs k (lowK ε lam + Pi.single c0 1) := by

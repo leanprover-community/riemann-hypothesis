@@ -6,49 +6,8 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VoganNormSqHolomorphicLowestKTypeSubRootLt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComplexifiedDerivedActionIsLieActionStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothVectorsSubspaceStableSobolevFormDerivStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -182,7 +141,7 @@ lemma vNormSq_lt (p : ℕ) (ε : Fin n → Bool) (hε : ∀ a, ε a = decide ((a
         simp only [decide_eq_false_iff_not] at this
         rw [Fin.lt_def] at hij
         omega
-      simp only [root, Pi.sub_apply, Pi.single_apply, if_neg hi, if_neg hj]
+      simp only [root, Pi.sub_apply, Pi.single_apply, ite_eq_right hi, ite_eq_right hj]
       split_ifs <;> norm_num)
     simp only [mul_comm _ (root c0 a0 _)] at this
     rw [sum_root_mul] at this
@@ -396,8 +355,8 @@ theorem lowK_killed : ∀ (n p : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ
   have hH : (Formalism.REAL.Jm ε).IsHermitian := Jm_conjTranspose ε
   have hdet : (Formalism.REAL.Jm ε).det ≠ 0 := (Matrix.isUnit_det_of_left_inverse (Jm_mul_self ε)).ne_zero
   have hU : IsURepOn (Formalism.QuantumDeterminants.UH (Formalism.REAL.Jm ε)) σ := hσ
-  obtain ⟨hspan, hsmv⟩ := GlobalTheory.T.smoothVectors_subspace_stable_sobolevForm_deriv n _ H σ hH hdet hU
-  have hlie := GlobalTheory.T.complexifiedDerivedAction_isLieAction n _ H σ hH hdet hU
+  obtain ⟨hspan, hsmv⟩ := GlobalTheory.UnitarySmVec.smoothVec_basic n _ H σ hH hdet hU
+  have hlie := GlobalTheory.HolDict.LieAct.main n _ H σ hH hdet hU
   obtain ⟨W, hWf, hWK, hWle, hvW⟩ := exists_fin_stable lam hv
   set J := Formalism.REAL.Jm ε with hJ
   let V : Submodule ℂ H := W ⊓ Submodule.span ℂ {w | SmoothVec (lieH J) σ w}
@@ -493,12 +452,12 @@ theorem lowK_killed : ∀ (n p : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ
         · have := congrFun (congrFun hZ1 i) j
           simp only [hJ, Formalism.REAL.Jm, Matrix.mul_diagonal] at this
           by_contra hj
-          rw [if_neg hj] at this
+          rw [ite_eq_right hj] at this
           exact hij (by linear_combination (-1 / 2 : ℂ) * this)
         · have := congrFun (congrFun hZ2 i) j
           simp only [hJ, Formalism.REAL.Jm, Matrix.diagonal_mul, Matrix.neg_apply] at this
           by_contra hi
-          rw [if_pos (by simpa using hi)] at this
+          rw [ite_eq_left (by simpa using hi)] at this
           exact hij (by linear_combination (1 / 2 : ℂ) * this)
     exact hu0 (inner_self_eq_zero.1 (Submodule.mem_orthogonal_singleton_iff_inner_left.1 (h huS)))
   obtain ⟨a', c', ha', hc', w, hw, hwu⟩ := hex

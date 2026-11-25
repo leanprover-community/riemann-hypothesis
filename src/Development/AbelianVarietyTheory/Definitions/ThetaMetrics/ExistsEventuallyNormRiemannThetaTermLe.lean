@@ -506,10 +506,4 @@ theorem IsSiegel.riemannTheta_ne_zero {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω) 
   obtain ⟨x, -, hx⟩ := h.exists_riemannTheta_add_ofReal_ne_zero a b 0
   exact fun H => hx (congrFun H _)
 
-section Theta
-
-open ReciprocityTheory.PTheta
-
-end Theta
-
 end GlobalTheory

@@ -26,53 +26,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFinite
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGeneratorOfTheoremOfCubeTenPointsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrpPullbackPointsLiftMulInvStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrreducibleSpaceFibreSemiAbelianFieldPointStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsGloballyGeneratedIffGeneratingSections
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
@@ -81,13 +37,9 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatD
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsLocalThetaSectionFibreNonzero
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Lemma
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.CanonGenIsGen
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.StTransl
-import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.Tactic.Basify
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -236,7 +188,7 @@ theorem exists_sec_of_flat {R R' : Type} [CommRing R] [CommRing R'] (g : R →+*
     have hu2 := isUnit_of_mul_isUnit_right hu1
     rw [ha i j X' π z k hk] at hu2
     exact TopologicalSpace.Opens.mem_iSup.2 ⟨k, (_root_.GlobalTheory.LBGerm.isUnit_gs_iff π z _ hk _).1 (isUnit_of_mul_isUnit_left hu2)⟩
-  · push_neg at hne
+  · push Not at hne
     refine ⟨⟨fun _ => 0, fun _ _ => by simp⟩, fun z hz => False.elim ?_⟩
     obtain ⟨k, hk⟩ := exists_chart hM (π z)
     have hz' : z ∈ (M.pull π).U (fun _ => k) := mem_pull.2 hk
@@ -715,7 +667,6 @@ theorem exists_gen_near_of_finFlat : ∀ (R : Type) [CommRing R] [IsDomain R] [I
   obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.GenRestrict.exists_gen_restrict Z' (L.pull k') hL' _ _ hle s (fun z₀ hz₀ => hV₁ z₀ (by
     rw [Scheme.Hom.comp_apply, ← hcomm]
     exact hf1 hz₀))
-  have hsurjp : Function.Surjective (p.app (Y.basicOpen f)).hom := (hbij _).2
   let e := RingEquiv.ofBijective (p.app (Y.basicOpen f)).hom (hbij _)
   haveI hm : (Ideal.comap e.symm.toRingHom M).IsMaximal :=
     Ideal.comap_isMaximal_of_surjective _ e.symm.surjective
@@ -884,7 +835,7 @@ theorem gen_of_ten {T S : Scheme.{0}} (π : S ⟶ T) (G : Over T) [GrpObj G] (G'
     (h : ∀ f ∈ ten G, ∀ z, f.left (ζ z) ∈ farSet β θ) : ∃ t : LB.Gen (P.L.L.pull k), t.IsGen := by
   have hw : ζ ≫ (G ⊗ G ⊗ G ⊗ G).hom = (Over.mk (k ≫ G'.hom)).hom ≫ π := by
     rw [← Over.w (fst G _), ← Category.assoc, hζ, Category.assoc, hpb.1.w]; exact (Category.assoc _ _ _).symm
-  obtain ⟨hl, hm⟩ := GlobalTheory.T.grpPullback_points_lift_and_compat_mul_inv T S π G G' β hpb (Over.mk (k ≫ G'.hom)) (G ⊗ G ⊗ G ⊗ G) ζ hw
+  obtain ⟨hl, hm⟩ := GlobalTheory.Mum.grpPullback_points_lift_mul_inv T S π G G' β hpb (Over.mk (k ≫ G'.hom)) (G ⊗ G ⊗ G ⊗ G) ζ hw
   obtain ⟨a, ha⟩ := hl (snd _ _ ≫ fst _ _)
   obtain ⟨b, hb⟩ := hl (snd _ _ ≫ snd _ _ ≫ fst _ _)
   obtain ⟨c, hc⟩ := hl (snd _ _ ≫ snd _ _ ≫ snd _ _)
@@ -920,7 +871,7 @@ theorem exists_gen_near_closed_point : ∀ (R : Type) [CommRing R] [IsDomain R] 
   have := M.proper
   have hβ : IsProper β := MorphismProperty.of_isPullback hpb.1.flip M.proper
   have hgi : GeometricallyIrreducible G.hom :=
-    ⟨geometrically_iff_of_isClosedUnderIsomorphisms.mpr fun Ω _ s => GlobalTheory.T.irreducibleSpace_fibre_semiAbelian_fieldPoint _ G hG Ω s⟩
+    ⟨geometrically_iff_of_isClosedUnderIsomorphisms.mpr fun Ω _ s => GlobalTheory.SemiAbFibre.irreducibleSpace_fibre _ G hG Ω s⟩
   have s₂ : Smooth (G ⊗ G).hom := inferInstanceAs (Smooth (pullback.fst G.hom G.hom ≫ G.hom))
   have i₂ : GeometricallyIrreducible (G ⊗ G).hom := GeometricallyIrreducible.comp (pullback.fst G.hom G.hom) G.hom
   have s₃ : Smooth (G ⊗ G ⊗ G).hom := inferInstanceAs (Smooth (pullback.fst G.hom (G ⊗ G).hom ≫ G.hom))

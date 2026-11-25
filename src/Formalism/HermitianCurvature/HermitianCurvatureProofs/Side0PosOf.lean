@@ -89,10 +89,6 @@ end Formalism.FourierDecayAlt.P.SliceIntegralLemmas
 
 namespace Formalism.FourierDecayAlt.P.SliceIntegralLemmas
 
-end Formalism.FourierDecayAlt.P.SliceIntegralLemmas
-
-namespace Formalism.FourierDecayAlt.P.SliceIntegralLemmas
-
 theorem side0Pos_of'' (hPr : ProperLeftVariablesDomain) : CutHB.Side0Pos :=
   side0Pos_of Formalism.FourierDecayAlt.P.letters_pass_partial_bessel hPr CutHB.pts
 

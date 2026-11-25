@@ -49,10 +49,10 @@ theorem hasFDerivAt_eval (P : MvPolynomial J ℂ) (x : J → ℂ) :
       rw [Derivation.leibniz, pderiv_X]
       by_cases hq : q = q0
       · subst hq
-        simp only [Pi.single_eq_same, smul_eq_mul, map_add (f := _), map_mul, eval_X, map_one, if_true]
+        simp only [Pi.single_eq_same, smul_eq_mul, map_add (f := _), map_mul, eval_X, map_one, ite_true]
         ring
       · rw [Pi.single_eq_of_ne' hq]
-        simp only [smul_eq_mul, map_add (f := _), map_mul, eval_X, map_zero, if_neg hq]
+        simp only [smul_eq_mul, map_add (f := _), map_mul, eval_X, map_zero, ite_eq_right hq]
         ring
     have e : (fun y : J → ℂ => eval y (p * X q0)) = fun y => eval y p * y q0 := by funext y; simp
     rw [e]
@@ -61,7 +61,7 @@ theorem hasFDerivAt_eval (P : MvPolynomial J ℂ) (x : J → ℂ) :
         ∑ q, eval x (pderiv q (p * X q0)) * w q := by simp
     rw [lhs]
     simp only [key, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true]
+      ite_true]
     simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
       ContinuousLinearMap.proj_apply]
     have hs : (∑ q, eval x (pderiv q p) • ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : J => ℂ) q) w =
@@ -107,12 +107,8 @@ section Levi
 variable {J : Type} [Fintype J]
 
 theorem leviForm_congr {φ ψ : (J → ℂ) → ℝ} {z : J → ℂ} (h : φ =ᶠ[𝓝 z] ψ) (w : J → ℂ) :
-    leviForm φ z w = leviForm ψ z w := by
-  have h1 : fderiv ℝ φ =ᶠ[𝓝 z] fderiv ℝ ψ := by
-    filter_upwards [h.eventuallyEq_nhds] with y hy
-    exact hy.fderiv_eq
-  unfold leviForm
-  rw [h1.fderiv_eq]
+    leviForm φ z w = leviForm ψ z w :=
+  PowerBlockMetric.leviForm_congr h w
 
 theorem eventually_differentiableAt {f : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffAt ℝ 2 f z) :
     ∀ᶠ y in 𝓝 z, DifferentiableAt ℝ f y :=
@@ -222,10 +218,8 @@ theorem rename_mem {y : (Σ k, ι k) → Ω} {N : ℕ} (v : Fin N → Ω) {F : M
   rw [RingHom.mem_ker, mConeMap_rename_old, h, map_zero]
 
 theorem oldPart_mem {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {z : (Σ k, addIdx ι N k) → ℂ}
-    (hz : z ∈ mcPts (mCoordIdeal (addBlock y v))) : basePart₂ z ∈ mcPts (mCoordIdeal y) := by
-  refine ⟨fun k => hz.1 (some k), fun F hF => ?_⟩
-  rw [← eval_rename_old]
-  exact hz.2 _ (rename_mem v hF)
+    (hz : z ∈ mcPts (mCoordIdeal (addBlock y v))) : basePart₂ z ∈ mcPts (mCoordIdeal y) :=
+  PowerBlockMetric.oldPart_mem hz
 
 theorem fderiv_old_eq_zero {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {z w : (Σ k, addIdx ι N k) → ℂ}
     (hw : IsConeTangent (Int.castRingHom ℂ) (mCoordIdeal (addBlock y v)) z w) {F : MRing ι}

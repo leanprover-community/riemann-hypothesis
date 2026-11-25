@@ -68,12 +68,12 @@ theorem th21 (t0 t1 t2 : TauC Y u u') (h0 : Gt t0 ≠ 0) (h1 : Gt t1 ≠ 0) (h2 
   have hTh1 : Th t0.lam (lf D (X.Fu u)) t0.frame t1.frame (t1.lin * t0.lin⁻¹) = Hp t0.lam (lf D (X.Fu u)) t0.frame := by
     have h : Formalism.L2.SG.TermOp.s0T t0 t1 = 1 := hs01
     unfold Formalism.L2.SG.TermOp.s0T at h
-    rw [if_pos ⟨hl1.symm, hl1'.symm⟩] at h
+    rw [ite_eq_left ⟨hl1.symm, hl1'.symm⟩] at h
     exact (CorankRelation.s0_eq_one_iff_Th_eq_Hp D.R.k hdim t0.lam hlat _ t0.frame t1.frame _ hLF hL0 hG0).1 h
   have hTh2 : Th t0.lam (lf D (X.Fu u)) t0.frame t2.frame (t2.lin * t0.lin⁻¹) = Hp t0.lam (lf D (X.Fu u)) t0.frame := by
     have h : Formalism.L2.SG.TermOp.s0T t0 t2 = 1 := hs02
     unfold Formalism.L2.SG.TermOp.s0T at h
-    rw [if_pos ⟨hl2.symm, hl2'.symm⟩] at h
+    rw [ite_eq_left ⟨hl2.symm, hl2'.symm⟩] at h
     exact (CorankRelation.s0_eq_one_iff_Th_eq_Hp D.R.k hdim t0.lam hlat _ t0.frame t2.frame _ hLF hL0 hG0).1 h
   have hsym1 := CorankRelation.Th_symm D.R.k hdim t0.lam hlat _ t0.frame t1.frame (t1.lin * t0.lin⁻¹) hLF hL0 hL1 hG0 hG1
     (CorankRelation.frame_mem_iff t0 t1) hTh1
@@ -189,14 +189,14 @@ theorem lemmaG3_of_inputs (hT : 3 ≤ Tu D u) (hT' : 3 ≤ Tu D u') (t0 t1 t2 : 
       intro hG
       apply h0
       simp only [Formalism.L2.SG.TermOp.Gt]
-      rw [if_pos]
+      rw [ite_eq_left]
       exact (Formalism.L2.SG.TermDef.Gt_mk (PI.TermAttrConst.UnitaryGroupMassFormula.gFun_all _ _ _) _).trans hG
     have hG12 : Gval (lf D (X.Fu u)) t.frame = Gval (lf D (X.Fu u)) t0.frame := by
       rw [← Formalism.L2.SG.Pf.SatGram.gterm_G Y t, ← Formalism.L2.SG.Pf.SatGram.gterm_G Y t0, hG]
     have hs0' : Lat.s0 t0.lam (lf D (X.Fu u)) t0.frame t.frame (t.lin * t0.lin⁻¹) D.R.k = 1 := by
       have h1 : Formalism.L2.SG.TermOp.s0T t0 t = 1 := hs0
       unfold Formalism.L2.SG.TermOp.s0T at h1
-      rw [if_pos ⟨hlam.symm, hlam'.symm⟩] at h1
+      rw [ite_eq_left ⟨hlam.symm, hlam'.symm⟩] at h1
       exact h1
     have hTh := (CorankRelation.s0_eq_one_iff_Th_eq_Hp D.R.k hdim t0.lam
       (by first | exact hlat) _ t0.frame t.frame _ hLF hL1 hG1).1 hs0'

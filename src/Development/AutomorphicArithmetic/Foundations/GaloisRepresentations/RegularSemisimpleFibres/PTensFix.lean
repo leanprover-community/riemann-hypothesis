@@ -21,21 +21,21 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.SmoothTensorFactor.IsSmooth :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       ∀ (v : V), IsOpen {g : G | ((ρ : G → V →ₗ[k] V) g : V → V) v = v}
 
 noncomputable def UpperTheory.Reformulated.B.SmoothTensorFactor.piTensor :
     {F : Type} →
-      [inst : Field F] →
+      [Field F] →
         {α : Type} →
           {Γ X : α → Type} →
-            [inst_1 : (a : α) → Group (Γ a)] →
-              [inst_2 : (a : α) → AddCommGroup (X a)] →
-                [inst_3 : (a : α) → _root_.Module F (X a)] →
+            [(a : α) → Group (Γ a)] →
+              [(a : α) → AddCommGroup (X a)] →
+                [(a : α) → _root_.Module F (X a)] →
                   ((a : α) → Representation F (Γ a) (X a)) →
                     Representation F ((a : α) → Γ a) (PiTensorProduct F fun (a : α) ↦ X a) :=
     fun {F : Type} [Field F] {α : Type} {Γ X : α → Type} [(a : α) → Group (Γ a)] [(a : α) → AddCommGroup (X a)]
@@ -45,9 +45,9 @@ noncomputable def UpperTheory.Reformulated.B.SmoothTensorFactor.piTensor :
 noncomputable def UpperTheory.Reformulated.B.SmoothTensorFactor.intersection_update_fsHerm_neg_one :
     {s : ℕ} →
       {G V : Fin s → Type} →
-        [inst : (a : Fin s) → Group (G a)] →
-          [inst_1 : (a : Fin s) → AddCommGroup (V a)] →
-            [inst_2 : (a : Fin s) → _root_.Module ℂ (V a)] →
+        [(a : Fin s) → Group (G a)] →
+          [(a : Fin s) → AddCommGroup (V a)] →
+            [(a : Fin s) → _root_.Module ℂ (V a)] →
               ((a : Fin s) → Representation ℂ (G a) (V a)) → (a : Fin s) → Representation ℂ (G a) (PiTensorProduct ℂ V) :=
     fun {s : ℕ} {G V : Fin s → Type} [(a : Fin s) → Group (G a)] [(a : Fin s) → AddCommGroup (V a)]
         [(a : Fin s) → _root_.Module ℂ (V a)] (σ : (a : Fin s) → Representation ℂ (G a) (V a)) (a : Fin s) ↦
@@ -92,8 +92,8 @@ private lemma UpperTheory.Reformulated.B.SmoothTensorFactor.stab_mem_nhds {s : �
     rw [map_add (f := _), h1', h2']
 
 theorem UpperTheory.Reformulated.B.SmoothTensorFactor.position_smooth :
-    ∀ {s : ℕ} {G V : Fin s → Type} [inst : (a : Fin s) → Group (G a)] [inst_1 : (a : Fin s) → AddCommGroup (V a)]
-      [inst_2 : (a : Fin s) → _root_.Module ℂ (V a)] [inst_3 : (a : Fin s) → TopologicalSpace (G a)]
+    ∀ {s : ℕ} {G V : Fin s → Type} [(a : Fin s) → Group (G a)] [(a : Fin s) → AddCommGroup (V a)]
+      [(a : Fin s) → _root_.Module ℂ (V a)] [(a : Fin s) → TopologicalSpace (G a)]
       [∀ (a : Fin s), IsTopologicalGroup (G a)] (σ : (a : Fin s) → Representation ℂ (G a) (V a)),
       (∀ (a : Fin s), UpperTheory.Reformulated.B.SmoothTensorFactor.IsSmooth (σ a)) →
         ∀ (a : Fin s), UpperTheory.Reformulated.B.SmoothTensorFactor.IsSmooth (UpperTheory.Reformulated.B.SmoothTensorFactor.intersection_update_fsHerm_neg_one σ a) := by

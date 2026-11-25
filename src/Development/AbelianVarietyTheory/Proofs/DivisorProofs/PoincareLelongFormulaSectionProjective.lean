@@ -51,44 +51,7 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogResolutionProjectiveOfPrincipalisation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPullbackSectionZerosNormMultiplicities
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConjFsBasisOfUnitary
 import Mathlib.Analysis.Calculus.ContDiff.WithLp
 import Mathlib.Analysis.InnerProductSpace.Calculus
@@ -100,13 +63,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueDegreeGeneri
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueDegreeOfIsOpenImmersion
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TopologicalKrullDimEqOfIsIsoRestrict
 import Mathlib.AlgebraicGeometry.QuasiAffine
-import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.FirstChernLeviEqConstant
 import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoices
 import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
@@ -115,7 +73,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsLatBasisZe
 import Mathlib.Algebra.Azumaya.Basic
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsoIsMonHomOfIsGtOfRangeEq
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLinearEquivLift
-import Mathlib.RingTheory.TotallySplit
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpanFinrankMaximalIdealLeNcardOfLeSupSq
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AmpleOnAbelianBase
@@ -127,8 +84,6 @@ import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Development.AbelianVarietyTheory.Definitions.Divisors.DetJacMatCoordsEqTransitionJacobianDet
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -941,7 +896,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points Gl
 
 namespace GlobalTheory.Mix
 
-
 open GlobalTheory.Mean4O.CombForm in
 theorem exists_subAtlas : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}) (p : X ⟶ Sp k) (q : Y ⟶ Sp k) (σ : k →+* ℂ), IsProjOver p → ∀ (π : Y ⟶ X) [IsClosedImmersion π] (hπ : π ≫ p = q) (e : ℕ) (A : FinHolAtlas (e + 1) (CxPts p σ)), IsAlgAtlas A → SmoothOfRelativeDimension e q → ∃ B : FinHolAtlas e (Set.range (ptMap π hπ σ)), HoloMap B A Subtype.val ∧ ∀ (L : Fin e → MLine p σ) (v : CxPts p σ → ℝ), Continuous v → mInt B (fun i => (L i).φ.locPot.pullback Subtype.val continuous_subtype_val) (v ∘ Subtype.val) = Mix.int (fun i => (L i).pull π hπ) (fun y => v (ptMap π hπ σ y)) := by
   intro k _ X Y p q σ hp π _ hπ e A hA hs
@@ -1347,9 +1301,9 @@ theorem isSNC_locSec : ∀ (F : Type) [Field F] (X : Scheme.{0}) [IsIntegral X] 
     simp only [Set.mem_inter_iff, Set.mem_setOf_eq, mem_range_ptMap_closι]
     refine and_comm.trans (and_congr_right fun hy => ?_)
     by_cases h : x.1 (IsLocalRing.closedPoint ℂ) ∈ Closeds.closure {z a}
-    · simp only [τ, dif_pos h, Option.some.injEq, exists_eq_left', hev y hy]
+    · simp only [τ, dite_eq_left h, Option.some.injEq, exists_eq_left', hev y hy]
       exact ((hN hy).2.2.1 ⟨a, h⟩).symm
-    · simp only [τ, dif_neg h, reduceCtorEq, false_and, exists_false, iff_false]
+    · simp only [τ, dite_eq_right h, reduceCtorEq, false_and, exists_false, iff_false]
       exact (hN hy).2.2.2.1 a h
   · exact (hA.holoOn_iff hA.anRead ψ.open_source).2 ((hA.anRead.holoOn_ev V.1 (G' 0)).mono hψV)
   · intro y hy
@@ -1359,9 +1313,9 @@ theorem isSNC_locSec : ∀ (F : Type) [Field F] (X : Scheme.{0}) [IsIntegral X] 
     congr 1
     rw [Finset.prod_eq_one (s := Finset.univ)
       (f := fun a : {a // ¬ x.1 (IsLocalRing.closedPoint ℂ) ∈ Closeds.closure {z a}} => _)
-      (fun a _ => by simp only [τ, dif_neg a.2]), mul_one]
+      (fun a _ => by simp only [τ, dite_eq_right a.2]), mul_one]
     refine Finset.prod_congr (by ext; simp) fun a _ => ?_
-    simp only [τ, dif_pos a.2, map_pow, hev y hy, ev_eq (hψV hy)]
+    simp only [τ, dite_eq_left a.2, map_pow, hev y hy, ev_eq (hψV hy)]
 
 end GlobalTheory.SecSnc
 end -- clump:auto
@@ -1463,7 +1417,7 @@ open ReciprocityTheory.AnForm.R
 namespace GlobalTheory.SncLocal
 
 theorem mem_comps_of_compList {X : Scheme.{0}} {B : Set X} {m : ℕ} {C : Fin m → Closeds X}
-    (hC : FinalTheorems.CompList B C) (i : Fin m) : (C i : Set X) ∈ ReciprocityTheory.AnForm.R.comps B := by
+    (hC : FinalTheorems.CompList B C) (i : Fin m) : (C i : Set X) ∈ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH B := by
   classical
   refine ⟨⟨hC.1 i, hC.2.1 ▸ Set.subset_iUnion (fun j => (C j : Set X)) i⟩, fun D hD hiD => ?_⟩
   obtain ⟨z, hz, hDz⟩ := (isIrreducible_iff_sUnion_isClosed.1 hD.1)
@@ -1487,16 +1441,16 @@ theorem lSncAt_of_snc (X : Scheme.{0}) [IsNoetherian X] (B : Closeds X) (m : ℕ
   have hs : ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) = B := by simp
   obtain ⟨O, hxO, -, hO⟩ := exists_open_comps x U hx f J hrsp hZU
   have key : ∀ i : {i : Fin m // x ∈ C i}, ∃ j ∈ J,
-      ReciprocityTheory.AnForm.R.IsBranch ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) (f j) x (C i.1) ∧
+      ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) (f j) x (C i.1) ∧
       stalkId (Scheme.IdealSheafData.vanishingIdeal (C i.1)) x =
         Ideal.span {X.presheaf.germ U.1 x hx (f j)} := by
     rintro ⟨i, hxi⟩
     have hCi : ((C i : Closeds X) : Set X) ∈
-        ReciprocityTheory.AnForm.R.comps ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) :=
+        ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) :=
       hs ▸ mem_comps_of_compList hC i
     have hO' := hO _ hCi
     have hq : ∀ q : PrimeSpectrum (X.presheaf.stalk x), X.fromSpecStalk x q ∈ (C i : Set X) ↔
-        ∃ j ∈ J, ReciprocityTheory.AnForm.R.IsBranch ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X)
+        ∃ j ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X)
           (f j) x (C i) ∧ X.presheaf.germ U.1 x hx (f j) ∈ q.asIdeal := by
       intro q
       have hqO : X.fromSpecStalk x q ∈ (O : Set X) := by

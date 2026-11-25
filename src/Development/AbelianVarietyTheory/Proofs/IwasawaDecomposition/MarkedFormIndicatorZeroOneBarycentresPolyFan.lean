@@ -6,43 +6,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SysEx
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MarkedFormIndicatorValueInvariantHostFixingAut
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolFanExistsMarkedFormInCell
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolFanMarkedFormUniqueInCell
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
-import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -71,11 +35,6 @@ theorem apply_eq_zero_of_isotropic {X : Type} [AddCommGroup X] {x : LinearMap.Bi
 variable {O : Type} [CommRing O] {bar : O → O} {ψ lab : InvFun O}
   {X X₁ : Type} [AddCommGroup X] [Module O X] [AddCommGroup X₁] [Module O X₁]
   {r : X →ₗ[O] X₁} {s : X₁ →ₗ[O] X}
-
-def pullHom (r : X →ₗ[O] X₁) : LinearMap.BilinForm ℤ X₁ →ₗ[ℤ] LinearMap.BilinForm ℤ X where
-  toFun := pull r
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
 
 theorem pull_pull (h : ∀ a, r (s a) = a) (β : LinearMap.BilinForm ℤ X₁) : pull s (pull r β) = β :=
   LinearMap.ext₂ fun a b => by simp [h]
@@ -129,7 +88,7 @@ theorem isMarked_pull_iff' (h : ∀ a, r (s a) = a) (i : ℕ) (β : LinearMap.Bi
   have hsum : ∀ S : Finset (LinearMap.BilinForm ℤ X₁), ∑ x ∈ S.map ⟨pull r, pull_injective h⟩, x = pull r (∑ x ∈ S, x) :=
     fun S => by
       rw [Finset.sum_map]
-      exact (map_sum (pullHom r) (fun x => x) S).symm
+      exact (map_sum (GlobalTheory.PolFan.CarDim.pullLin r) (fun x => x) S).symm
   unfold IsMarked
   rw [evalZ_pull _ hr]
   refine and_congr ⟨fun hx => ?_, pull_mem r⟩ (and_congr (hr.forall (p := fun y => 0 ≤ β y y)).symm
@@ -214,7 +173,6 @@ theorem exists_markFun {O : Type} [CommRing O] (bar : O → O) (ψ lab : InvFun 
     · rfl
     · rfl
 
-
 open Classical in
 theorem evalZ_markFun {O : Type} [CommRing O] {bar : O → O} {ψ lab : InvFun O} {i : ℕ} {w : InvFun O}
     (hw : ∀ n B, w.toFun n B = markVal bar ψ lab i n B) {X : Type} [AddCommGroup X] [Module O X] [Module.Finite O X]
@@ -250,7 +208,7 @@ theorem exists_markFun_props : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   · rw [ev]
     split_ifs <;> simp
   · obtain ⟨β₀, h0, hc0⟩ := _root_.GlobalTheory.PolFan.Mark.exists_isMarked_inRCone E H q ψ lab i hD hψ hlab X hX m v hv β hβ hp hc hl
-    exact ⟨β₀, h0.1, h0.2.1, by rw [ev, if_pos h0], hc0⟩
+    exact ⟨β₀, h0.1, h0.2.1, by rw [ev, ite_eq_left h0], hc0⟩
 
 end GlobalTheory.PolFan.Mark
 end -- clump:auto

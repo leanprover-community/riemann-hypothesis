@@ -266,22 +266,6 @@ end Functors
 
 end GlobalTheory.EtC.Psi
 
-namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
-
-variable (R : Type) [CommRing R]
-
-section Flat
-variable {Z Y U Z' Y' U' : Scheme.{0}}
-
-end Flat
-
-section HX
-variable {Z Z' : Scheme.{0}}
-
-end HX
-
-end GlobalTheory.EtC.Psi
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

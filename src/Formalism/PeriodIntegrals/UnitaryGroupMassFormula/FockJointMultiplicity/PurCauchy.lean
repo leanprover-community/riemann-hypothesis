@@ -92,7 +92,7 @@ theorem elim_step {m n : ℕ} (ι : Fin (m + 1) × Fin (n + 1) → σ) (hι : Fu
       by_cases hv : ∃ x, ι x = v
       · obtain ⟨x, rfl⟩ := hv
         exact fill_ι hι M y x
-      · push_neg at hv
+      · push Not at hv
         exact fill_not ι M y v hv
     have h1 : aeval (fill ι M1 y) f = aeval (fill ι M y) f :=
       aeval_fill_sub_multiple_of_zeroth_line ι hι f (fun b hb => hf.1 0 b hb) M y 0 (Finset.univ.erase 0) (by simp)
@@ -232,7 +232,7 @@ theorem aeval_killS_free {S : Set σ} {Q : MvPolynomial σ ℂ} (h : ∀ e ∈ Q
   congr 1
   refine Finset.prod_congr rfl fun v hv => ?_
   have hvS : v ∉ S := fun hvS => (Finsupp.mem_support_iff.mp hv) (h e he v hvS)
-  simp only [killS, if_neg hvS]
+  simp only [killS, ite_eq_right hvS]
 
 private theorem pderiv_eq_zero_of_forall_support_apply_eq_zero {v : σ} {Q : MvPolynomial σ ℂ} (h : ∀ e ∈ Q.support, e v = 0) :
     pderiv v Q = 0 := by

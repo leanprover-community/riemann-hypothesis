@@ -217,7 +217,7 @@ lemma label_second {l k t h : ℕ} {i : ℝ} {xm mB : ℤ} (hl : l.Prime) (hi : 
     · rw [h0] at he
       have hd : xm - ct = (d0 : ℤ) := by push_cast at he; linarith
       have hlt : ((d0 : ℕ) : ℤ) < xm - mB := by omega
-      rw [hA, if_pos hlt]
+      rw [hA, ite_eq_left hlt]
       have hdR : ((xm - ct : ℤ) : ℝ) = (d0 : ℝ) := by rw [hd]; norm_cast
       rw [hdR]
     · have hd0nn : (0 : ℤ) ≤ (d0 : ℤ) := by positivity
@@ -245,7 +245,7 @@ lemma label_second {l k t h : ℕ} {i : ℝ} {xm mB : ℤ} (hl : l.Prime) (hi : 
   have hH : ∑ j ∈ Finset.range (h / l), F (j + 1) = (i / l) * ((harmonic (h / l) : ℚ) : ℝ) := by
     simp only [harmonic, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [hF, if_neg (by omega)]
+    rw [hF, ite_eq_right (by omega)]
     push_cast
     field_simp
   have hlog := label_harm_le hlpos hlh
@@ -261,7 +261,7 @@ lemma label_second {l k t h : ℕ} {i : ℝ} {xm mB : ℤ} (hl : l.Prime) (hi : 
         Finset.sum_le_sum_of_subset_of_nonneg (Finset.image_subset_iff.mpr hmaps)
           (fun j _ _ => hF0 j)
     _ = ∑ j ∈ Finset.range (h / l), F (j + 1) + F 0 := Finset.sum_range_succ' _ _
-    _ = (i / l) * ((harmonic (h / l) : ℚ) : ℝ) + A := by rw [hH, hF 0, if_pos rfl]
+    _ = (i / l) * ((harmonic (h / l) : ℚ) : ℝ) + A := by rw [hH, hF 0, ite_eq_left rfl]
     _ ≤ A + (i / (l : ℝ)) * (1 + Real.log ((h : ℝ) / (l : ℝ))) := by linarith
 
 theorem labelSumLe_holds : LabelSum := by
@@ -445,8 +445,8 @@ theorem boxesOfLabel_le_bound (k j t w M i : ℕ) (lam : Fin (k + j) → ℕ) (x
   have hk : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ k := by exact_mod_cast h2.1
   have ht : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ t := by exact_mod_cast h2.2
   by_cases hct : ct < xm
-  · rw [if_pos hct] at h1
-    rw [if_pos hct, if_pos hct]
+  · rw [ite_eq_left hct] at h1
+    rw [ite_eq_left hct, ite_eq_left hct]
     have h1' : (boxesOfLabel t w M lam tau ct : ℝ) ≤ (j : ℝ) + (cloudBoxes k j t w M lam tau ct : ℝ) := by
       exact_mod_cast h1
     have h3 := counts_deep_holds k j t w M i lam xm xp hR tau htau ct hct
@@ -455,8 +455,8 @@ theorem boxesOfLabel_le_bound (k j t w M i : ℕ) (lam : Fin (k + j) → ℕ) (x
     have h4 : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ (i : ℝ) / ((xm - ct : ℤ) : ℝ) := (le_div_iff₀ hpos).mpr h3'
     have h5 := le_min (le_min hk ht) h4
     linarith
-  · rw [if_neg hct] at h1
-    rw [if_neg hct, if_neg hct]
+  · rw [ite_eq_right hct] at h1
+    rw [ite_eq_right hct, ite_eq_right hct]
     have h1' : (boxesOfLabel t w M lam tau ct : ℝ) ≤ (0 : ℝ) + (cloudBoxes k j t w M lam tau ct : ℝ) := by
       exact_mod_cast h1
     have h5 := le_min (le_min hk ht) hk
@@ -640,7 +640,7 @@ theorem harmonic_positive_log_holds : HarmPosLog := by
       linarith
   · intro h1 h2
     unfold harm
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     have hl0 : (0 : ℝ) < (l : ℝ) := by exact_mod_cast h1
     have hx : (1 : ℝ) ≤ (h : ℝ) / (l : ℝ) := by
       rw [le_div_iff₀ hl0, one_mul]
@@ -689,8 +689,8 @@ theorem indexIntegral_shift (l : ℕ) (xm xp mB : ℤ) : IlInd l (xm - mB) (xp -
     · rintro ⟨y, h1, h2, h3⟩
       exact ⟨y - mB, by omega, by omega, by simpa using h3⟩
   by_cases hc : ∃ y : ℤ, xm ≤ y ∧ y ≤ xp ∧ (l : ℤ) ∣ y - mB
-  · rw [if_pos hc, if_pos (h.mpr hc)]
-  · rw [if_neg hc, if_neg (fun h' => hc (h.mp h'))]
+  · rw [ite_eq_left hc, ite_eq_left (h.mpr hc)]
+  · rw [ite_eq_right hc, ite_eq_right (fun h' => hc (h.mp h'))]
 
 theorem indexIntegral_nonneg (l : ℕ) (xm xp mB : ℤ) : 0 ≤ IlInd l xm xp mB := by
   unfold IlInd
@@ -719,7 +719,7 @@ theorem label_sum_plus_holds : LabelSumPlus := by
           add_zero]
     rw [hL]
     unfold labelSumBoundPos harm
-    rw [if_pos hlh, add_zero]
+    rw [ite_eq_left hlh, add_zero]
     refine add_nonneg (mul_nonneg (Nat.cast_nonneg _) (add_nonneg (div_nonneg ?_ (Nat.cast_nonneg _))
       (indexIntegral_nonneg _ _ _ _))) (gated_min_nonneg l k t i hi _)
     exact_mod_cast (by omega : (0 : ℤ) ≤ xp - xm)
@@ -728,7 +728,7 @@ theorem label_sum_plus_holds : LabelSumPlus := by
     rw [← labelLHS_shift_to_zero] at h1
     unfold labelSumBound at h1
     unfold labelSumBoundPos harm
-    rw [if_neg hlh]
+    rw [ite_eq_right hlh]
     have e : xp - mB - (xm - mB) = xp - xm := by ring
     rw [indexIntegral_shift, e] at h1
     simp only [sub_zero] at h1
@@ -792,7 +792,7 @@ theorem second_valuation_holds : Step2Val := by
     intro ct hct
     have hlt := (Finset.mem_Ioo.mp hct).2
     have hm := multiplicity_bound_holds k j t w M i lam xm xp hR ct
-    rw [if_pos hlt, if_pos hlt] at hm
+    rw [ite_eq_left hlt, ite_eq_left hlt] at hm
     calc (mu t (M - w) i (dual M lam) (cont t w M ct) : ℝ) * (vl l (ct - maxB t w) : ℝ)
         ≤ ((j : ℝ) + min (min (k : ℝ) (t : ℝ)) ((i : ℝ) / ((xm - ct : ℤ) : ℝ))) * (vl l (ct - maxB t w) : ℝ) :=
           mul_le_mul_of_nonneg_right hm (Nat.cast_nonneg _)
@@ -805,7 +805,7 @@ theorem second_valuation_holds : Step2Val := by
     · intro ct hct
       have hge := (Finset.mem_Ico.mp hct).1
       have hm := multiplicity_bound_holds k j t w M i lam xm xp hR ct
-      rw [if_neg (by omega), if_neg (by omega), zero_add] at hm
+      rw [ite_eq_right (by omega), ite_eq_right (by omega), zero_add] at hm
       exact mul_le_mul_of_nonneg_right (le_trans hm (min_le_right _ _)) (Nat.cast_nonneg _)
     · intro ct _ _
       exact mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)

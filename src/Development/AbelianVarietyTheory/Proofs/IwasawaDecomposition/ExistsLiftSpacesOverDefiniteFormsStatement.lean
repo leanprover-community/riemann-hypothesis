@@ -115,8 +115,6 @@ theorem chiKs_of_pins : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T 
   obtain ⟨y, hy⟩ := h
   exact ⟨y, D.what₂.embLL.injective (hy.trans ((Units.coe_prod _ _).trans (hP.char.base.grp.chiW i g).symm))⟩
 
-
-
 theorem exists_oLat_good : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd), (∀ o : D.what₂.O, ∃ k : Ks, algebraMap Ks D.what₂.LL k = D.what₂.OtoLL o) → Inputs D → Pins R F cG → Holds R F → ∀ (i : Fin D.R.m) (M : Type) [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (E : M →ₗ[ℂ] (R.toRealDat.HW i (sg0 D A3.A)).H), Function.Injective E → LinearMap.range E = (R.toRealDat.Wat i (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A))).comap (R.toRealDat.HW i (sg0 D A3.A)).e → ∃ L : Rows.OLat D.what₂.O (D.what₂.embLL.comp D.what₂.OtoLL) M, ∀ x, x ∈ L.carrier ↔ ∃ v ∈ (R.toRealDat.FW i).MK, v ∈ (R.toRealDat.FW i).Wgood F.lv2.P0 F.lv2.ψ0⁻¹ (fun g => (idemOf A3.A.X).coeff g) ∧ E x = (R.toRealDat.FW i).j (sg0 D A3.A) v := by
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG hO _ hP hH i M _ _ _ E hinj hrange
   classical
@@ -371,13 +369,11 @@ theorem exists_embed {K N W : Type} [Field K] [AddCommGroup N] [Module ℂ N] [N
     rw [← inner_conj_symm, h1]
     exact hC.herm ⟨_, hm v⟩ ⟨_, hm (j x)⟩
   refine ⟨J, ?_, hr, hall, hJ⟩
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro u hu
   have h := hall u u
   rw [show ip (J u) (J u) = ip 0 (J u) by rw [hu], hz] at h
   exact inner_self_eq_zero.1 h
-
-
 
 theorem lift_forms_embed : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd), (∀ o : D.what₂.O, ∃ k : Ks, algebraMap Ks D.what₂.LL k = D.what₂.OtoLL o) → Inputs D → Pins R F cG → Holds R F → ∀ (y : Hd R.toRealDat) (i : Fin D.R.m) (t : T) (W : Type) [NormedAddCommGroup W] [InnerProductSpace ℂ W] (j : (Fin (lDim D A3.A F.lv2.P0 F.lv2.ψ0 i t) → D.what₂.LL) →ₛₗ[D.what₂.embLL] W), LinearIndependent ℂ (fun k => j (Pi.single k 1)) → Submodule.span ℂ (Set.range fun k => j (Pi.single k 1)) = ⊤ → (∀ x x', ⟪j x, j x'⟫_ℂ = D.what₂.embLL (Formalism.DivisionValues.hform (lH D A3.A F.lv2.P0 F.lv2.ψ0 i t) x x')) → ∃ J : W →ₗ[ℂ] (GA D ((y.L F.lv2).V i) → (y.L F.lv2).TauV i), Function.Injective J ∧ LinearMap.range J = (y.L F.lv2).Amt (y.tup t) i ∧ (∀ x x', ⟪x, x'⟫_ℂ = (y.L F.lv2).ipA (y.tup t) i (J x) (J x')) ∧ ∀ x, J (j x) = R.toRealDat.extV i t (R.toRealDat.jV i t (liftForm A3.A F.lv2.P0 F.lv2.ψ0 i t x)) := by
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG _ _ hP hH y i t W _ _ j li sp hip
@@ -500,8 +496,6 @@ open scoped TensorProduct InnerProductSpace ComplexOrder
 attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw
 
-theorem _root_.GlobalTheory.T.liftHilbertModel_injective_contains_goodForms : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd), (∀ o : D.what₂.O, ∃ k : Ks, algebraMap Ks D.what₂.LL k = D.what₂.OtoLL o) → Inputs D → Pins R F cG → Holds R F → ∀ (y : Hd R.toRealDat) (i : Fin D.R.m), Function.Injective (R.toRealDat.HW i (sg0 D A3.A)).e ∧ R.toRealDat.Wat i (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A)) ≤ LinearMap.range (R.toRealDat.HW i (sg0 D A3.A)).e ∧ ∀ u v, (y.L F.lv2).ipWc i (PiTensorProduct.lift ((R.toRealDat.HW i (sg0 D A3.A)).e u)) (PiTensorProduct.lift ((R.toRealDat.HW i (sg0 D A3.A)).e v)) = (((RealDat.nP F.lv2 false)⁻¹ : ℝ) : ℂ) * ⟪u, v⟫_ℂ := by
-  first | exact @GlobalTheory.LiftHilbertModel.hilbert_model_lift
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftHilbertModelInjectiveContainsGoodFormsStatement =====
@@ -620,7 +614,6 @@ theorem GlobalTheory.LiftSpaces.exists_thetaMap {D : D7} {C : ChainReal D} (L : 
   rw [← LinearEquiv.ofInjective_apply (f := jM) (h := hinj), LinearEquiv.apply_symm_apply]
   rfl
 
-
 theorem GlobalTheory.LiftSpaces.exists_lift_spaces : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd), (∀ o : D.what₂.O, ∃ k : Ks, algebraMap Ks D.what₂.LL k = D.what₂.OtoLL o) → Inputs D → Pins R F cG → Holds R F → ∀ (y : Hd R.toRealDat), ∀ (Φ : Type) (rep : Φ → Formalism.L2.NG.FinTyp D.host.E D.R.r), Reps y F.lv2 rep → ∀ (m : D.what₂.Tup → ℕ → Mat1 D.what₂.LL G) (s : D.what₂.Tup → ℕ → Sp1 D.what₂.O (D.what₂.embLL.comp D.what₂.OtoLL) G) (tL : ∀ μ j, Tie1 D.what₂.embLL (m μ j) (s μ j)) (hL : ∀ (i : Fin D.R.m) t, m (y.tup t) ((i : ℕ) + 1) = lMat A3.A F.lv2.P0 F.lv2.ψ0 i t), ∃ l : LfD D.what₂.O (D.what₂.embLL.comp D.what₂.OtoLL) D.what₂.Tup Φ fun μ j => (s μ j).A, Nonempty (LfT y F.lv2 rep (Mt := fun μ j => (s μ j).A) (fun i t x => ((tL (y.tup t) ((i : ℕ) + 1)).cast (hL i t)).j x) l) := by
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG hO hI hP hH y Φ rep hR m s tL hL
   classical
@@ -632,7 +625,7 @@ theorem GlobalTheory.LiftSpaces.exists_lift_spaces : ∀ (D : D7) (G : Type) [Gr
     ⟨fun j => if hj : 1 ≤ j ∧ j ≤ D.R.m then Module.finrank ℂ
       ((R.toRealDat.Wat ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩ (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A))).comap
         (R.toRealDat.HW ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩ (sg0 D A3.A)).e) else 0,
-      fun j hj => dif_pos hj, fun j hj => dif_neg hj⟩
+      fun j hj => dite_eq_left hj, fun j hj => dite_eq_right hj⟩
 
   have hE : ∀ j (hj : 1 ≤ j ∧ j ≤ D.R.m), ∃ E : EuclideanSpace ℂ (Fin (d j)) →ₗ[ℂ]
       (R.toRealDat.HW ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩ (sg0 D A3.A)).H, Function.Injective E ∧
@@ -651,7 +644,7 @@ theorem GlobalTheory.LiftSpaces.exists_lift_spaces : ∀ (D : D7) (G : Type) [Gr
       LinearMap.range (jMJ j hj) = (y.L F.lv2).Wc ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩ ∧
       ∀ x x', ⟪x, x'⟫_ℂ = (y.L F.lv2).ipWc ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩ (jMJ j hj x) (jMJ j hj x') := by
     intro j hj
-    obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.liftHilbertModel_injective_contains_goodForms D G Pl0 I0 T A3 Ks R F cG hO hI hP hH y ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩
+    obtain ⟨h1, h2, h3⟩ := GlobalTheory.LiftHilbertModel.hilbert_model_lift D G Pl0 I0 T A3 Ks R F cG hO hI hP hH y ⟨j - 1, Nat.lt_of_lt_of_le (Nat.sub_lt hj.1 Nat.one_pos) hj.2⟩
     obtain ⟨e1, e2, -, e4⟩ := hEJ j hj
     refine ⟨?_, ?_, ?_⟩
     · intro x x' hx
@@ -757,11 +750,11 @@ theorem GlobalTheory.LiftSpaces.exists_lift_spaces : ∀ (D : D7) (G : Type) [Gr
     read := fun i t _ x => (hJM (y.tup t) ((i : ℕ) + 1) (hji i)).2 t rfl x }⟩⟩
   · intro μ hμ i x h w hw e hg
     show jMJ ((i : ℕ) + 1) (hji i) ((if hj : (1 ≤ (i : ℕ) + 1 ∧ (i : ℕ) + 1 ≤ D.R.m) ∧ y.Us μ then TH μ ((i : ℕ) + 1) hj.1 else 0) x) = _
-    rw [dif_pos ⟨hji i, hμ⟩]
+    rw [dite_eq_left ⟨hji i, hμ⟩]
     exact hTH μ ((i : ℕ) + 1) (hji i) hμ x h w hw e hg
   · intro μ hμ j
     show (if hj : (1 ≤ j ∧ j ≤ D.R.m) ∧ y.Us μ then TH μ j hj.1 else 0) = 0
-    rw [dif_neg (fun h => hμ h.2)]
+    rw [dite_eq_right (fun h => hμ h.2)]
   · intro j hj
     show Subsingleton (EuclideanSpace ℂ (Fin (d j)))
     rw [hd0 j (by omega)]
@@ -769,7 +762,7 @@ theorem GlobalTheory.LiftSpaces.exists_lift_spaces : ∀ (D : D7) (G : Type) [Gr
   · intro i π v
     show v ∈ (if hj : 1 ≤ (i : ℕ) + 1 ∧ (i : ℕ) + 1 ≤ D.R.m then
       (y.prtW F.lv2 ⟨(i : ℕ) + 1 - 1, by omega⟩ (rep π)).comap (jMJ ((i : ℕ) + 1) hj) else ⊥) ↔ _
-    rw [dif_pos (hji i)]
+    rw [dite_eq_left (hji i)]
     exact Iff.rfl
 end -- clump:auto
 end -- clump:auto

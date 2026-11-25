@@ -235,7 +235,7 @@ def comp (m : CoefMap σ F F') (n : CoefMap τ F' F'') : CoefMap (τ.comp σ) F 
   G := n.G ⋙ m.G
   α T := (n.α T).comp (m.α (n.G.obj T))
   naturality φ b := (congrArg (n.α _) (m.naturality (n.G.map φ) b)).trans (n.naturality φ _)
-  smul T r b := (congrArg (n.α _) (m.smul _ r b)).trans (n.smul _ _ _)
+  smul _ r b := (congrArg (n.α _) (m.smul _ r b)).trans (n.smul _ _ _)
 
 def restrict (F : C ⥤ CommAlgCat.{0} R) (G : C' ⥤ C) : CoefMap (RingHom.id R) F (G ⋙ F) where
   G := G

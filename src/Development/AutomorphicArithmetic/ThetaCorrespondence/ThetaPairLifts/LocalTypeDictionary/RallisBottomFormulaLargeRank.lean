@@ -135,7 +135,7 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumUnderAdeli
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockVacuumRealRestrictionGaussianEntire
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBottomTriplePeriodConst, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleExistsNonzero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomTripleThetaKernelLeftRationalInvar, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomTripleThetaKernelLeftRationalInvarStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralFundamentalDomainEqVolMulClassSum, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleThetaEval, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomKernelMulLargeLevel, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.InfinityTypeOfFiniteCharacter, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaIntegralClassSumFormula, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleNonzeroPeriod, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleArchimedeanConstant, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleConstantExists, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsBottomStratumIntertwiner, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomLayerParametersMatch, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaKernelFiniteDimensional, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.RallisBottomFormulaLargeRank
+-- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBottomTriplePeriodConst, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleExistsNonzero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomTripleThetaKernelLeftRationalInvar, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomTripleThetaKernelLeftRationalInvarStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralFundamentalDomainEqVolMulClassSum, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleThetaEval, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomKernelMulLargeLevel, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.InfinityTypeOfFiniteCharacter, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaIntegralClassSumFormula, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleArchimedeanConstant, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleConstantExists, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsBottomStratumIntertwiner, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomLayerParametersMatch, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaKernelFiniteDimensional, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.RallisBottomFormulaLargeRank
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBottomTriplePeriodConst =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBottomTriplePeriodConst", "h": "module\n\npublic import Mathlib.Algebra.BigOperators.Finprod\npublic import Mathlib.Basic.Complex.Basic\nimport Formalism.LocalRingCardinality.DataHost\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.UnitCharTriangle\nimport Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGeneratorNeZero\nimport Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder\nimport Development.AbelianVarietyTheory.Definitions.Divisors.FlatTensorVacuum\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm\nimport Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver\nimport Formalism.LocalRingCardinality.DataTheta\nimport Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.IntegralLeaf.LeafINTFree\nimport Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData\nimport Formalism.LocalToGlobal.IndefiniteReal.LinksDefs\nimport Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction\nimport Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast\nimport Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes\n\n"}
@@ -180,18 +180,6 @@ open GlobalTheory.NormSum (Pair Tup)
 open Classical
 
 noncomputable section
-
-namespace GlobalTheory.BotFormula.ClassSumMonotone
-open GlobalTheory.SqTop
-
-theorem gbig_mono' {Q Q' : GP} (h : GBig Q) (H : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts}
-    (G : GridData Lc sc) (μ₀ : T) (C x b : ℝ), Q G μ₀ C x b → Q' G μ₀ C x b) : GBig Q' := by
-  obtain ⟨CF0, h⟩ := h
-  refine ⟨CF0, fun ε CF hCF => ?_⟩
-  obtain ⟨C0, x₀, h⟩ := h ε CF hCF
-  exact ⟨C0, x₀, fun C hC D large₂ he hx hR T Lc μ₀ hL G => H _ _ _ _ _ (h C hC D large₂ he hx hR T Lc μ₀ hL G)⟩
-
-end GlobalTheory.BotFormula.ClassSumMonotone
 
 end
 end -- clump:auto
@@ -368,9 +356,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
 
-
-
-
 noncomputable section
 
 namespace GlobalTheory.BotBigLevel
@@ -432,12 +417,12 @@ theorem stdFst_actO (ν : (Formalism.L2.Theta.AE D)ˣ →* Circle) {e : Formalis
   unfold stdFst
   rw [hact]
   by_cases hc : IsHalf e y ∧ IsIntM (frMapO S T βS βT y) ∧ ∀ i j, S.rank ≤ i.1 → InId I (frMapO S T βS βT y i j)
-  · rw [if_pos hc, if_pos ⟨(GlobalTheory.SchrMove.isHalf_actO_iff g 1 y).2 hc.1,
+  · rw [ite_eq_left hc, ite_eq_left ⟨(GlobalTheory.SchrMove.isHalf_actO_iff g 1 y).2 hc.1,
       Formalism.IndefR.Fin.LevelGroupLemmas.Lat.isIntM_mul hc.2.1 (isIntM_frG hg'),
       fun i j hi => inId_mul_right (isIntM_frG hg') (fun l => hc.2.2 i l hi) j⟩, topL_mul_sq,
       unitChar_congr ν e (Matrix.det_mul_comm _ _),
       unitChar_mul ν hee hK (isUnitDet_frG he hg') (isUnitDet_frG he hg), detIdl_inv hee, map_inv, inv_inv]
-  · rw [if_neg hc, if_neg, mul_zero]
+  · rw [ite_eq_right hc, ite_eq_right, mul_zero]
     rintro ⟨h1, h2, h3⟩
     refine hc ⟨(GlobalTheory.SchrMove.isHalf_actO_iff g 1 y).1 h1, ?_, fun i j hi => ?_⟩
     · rw [hback]; exact Formalism.IndefR.Fin.LevelGroupLemmas.Lat.isIntM_mul h2 (isIntM_frG hg)
@@ -531,10 +516,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
 
-
 noncomputable section
-namespace GlobalTheory.BotBigLevel
-end GlobalTheory.BotBigLevel
 theorem GlobalTheory.BotBigLevel.bottom_kernel_mul_large_level : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
     (∀ D, GlobalTheory.NormSum.Inp D) → GlobalTheory.SqTop.BotSmall →
     GlobalTheory.SqTop.GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil), IsStdChar D W.ψ (-1) → ∀ (i j : Fin D.R.m) (A A' WW : HSp D)
@@ -762,7 +744,7 @@ theorem GlobalTheory.BotFormula.bottom_thetaIntegral_eq_classSum : _root_.Global
               v * ∑ᶠ x : GlobalTheory.NormSum.Cls D P.a (GlobalTheory.NormSum.intG D P.a),
                 ((GlobalTheory.NormSum.gam D (GlobalTheory.NormSum.intG D P.a) x.out : ℂ))⁻¹ * X.ker W.ψ W.θ s (GlobalTheory.BotFormula.minorF ea ed T) g (pt x.out) := by
   intro hPr hTA hLM hInp hBS
-  refine GlobalTheory.BotFormula.ClassSumMonotone.gbig_mono' (GlobalTheory.BottomIPData.gbig_and (_root_.GlobalTheory.BotBigLevel.bottom_kernel_mul_large_level hPr hTA hLM hInp hBS) (_root_.GlobalTheory.T.bottom_kernel_real_invariant hPr hTA hLM hInp hBS)) ?_
+  refine GlobalTheory.BottomIPData.gbig_mono (GlobalTheory.BottomIPData.gbig_and (_root_.GlobalTheory.BotBigLevel.bottom_kernel_mul_large_level hPr hTA hLM hInp hBS) (_root_.GlobalTheory.T.bottom_kernel_real_invariant hPr hTA hLM hInp hBS)) ?_
   intro D T Lc sc G μ₀ C x b H
   obtain ⟨H3, H4⟩ := H
   intro W hW i j A A' WW X δ t0 hX
@@ -778,29 +760,6 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaIntegralClassSumFormula =====
 
--- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleNonzeroPeriod =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleNonzeroPeriod", "h": "module\n\npublic import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
-open Formalism.DivisionValues (vw)
-open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-open GlobalTheory.NormSum (Pair Tup)
-open Classical
-
-noncomputable section
-
-namespace GlobalTheory.KerFin
-
-end GlobalTheory.KerFin
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleNonzeroPeriod =====
-
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFinPt\npublic import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart\npublic import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MemHalfCosetSelf\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJet\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
@@ -813,17 +772,7 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.bottomTriple_thetaKernel_minors_eq_const_conjJet : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (W : G.Weil),
-    IsStdChar D W.ψ (-1) → ∀ (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW), IsBottomTri W i j X →
-    ∀ (r : ℂ) (rc : ℝ), r ≠ 0 → (∀ τ, rc * ‖r‖ ^ 2 = 2 * ‖tauE D τ D.host.xi0‖) → ∀ n₀ : D.what₂.Tau → ℕ,
-    ∃ Ω : ℂ, Ω ≠ 0 ∧ ∀ (a d : ℕ) (n : D.what₂.Tau → ℕ) (ea : a = A.rank) (ed : d = WW.rank), n = n₀ →
-      ∀ (s : T) (g : GA D WW) (y : GA D A), g ∈ GfC WW → y ∈ GfC A → ∀ Tu : Tup D a d n,
-        X.ker W.ψ W.θ s (GlobalTheory.BotFormula.minorF ea ed Tu) g y =
-          Ω * starRingEnd ℂ (Formalism.MainNotions.GL3Theta.applyAt0 D (GlobalTheory.NormSum.minorPol D Tu)
-            (GlobalTheory.AdForm.xiN W.θ A WW ea.symm ed.symm r rc fun w => starRingEnd ℂ (X.ω s (y, g) (X.f s) w))) := by
-  first | exact @GlobalTheory.BotFormula.ConjJet.ker_minorF_eq_conj_jet
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement =====
@@ -950,8 +899,8 @@ theorem bottom_finParts {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Co
     HasFinPart ((G.ch.chi (D.R.m - i) * L.eta ^ (rankV D i j % 2)) /
       (L.mu s (j + 1) * L.eta ^ (rankV D i j % 2)))⁻¹ P.W.chV' (-P.W.ep') := by
   refine ⟨fun x y hxy => ?_, fun x y hxy => ?_⟩
-  · have h1 := GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ (G.ch.chi_eq (D.R.m - i) (by omega) (by omega)) x y hxy
-    have h2 := GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ hL.eta x y hxy
+  · have h1 := GlobalTheory.FinIdlRead.chr_finIdl _ _ (G.ch.chi_eq (D.R.m - i) (by omega) (by omega)) x y hxy
+    have h2 := GlobalTheory.FinIdlRead.chr_finIdl _ _ hL.eta x y hxy
     have e : (betaH G i j)⁻¹.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) =
         ((G.ch.chiH (D.R.m - i)).1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) *
           L.C.eta.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) ^ (rankV D i j % 2))⁻¹ := rfl
@@ -964,7 +913,7 @@ theorem bottom_finParts {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Co
     have e : (nuH G s i j)⁻¹.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) =
         ((nuH G s i j).1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y))⁻¹ := rfl
     rw [eν, zpow_neg, hB.chars.2 y, e, inv_inv]
-    exact GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ (chrEq_nu G s i j hL) x y hxy
+    exact GlobalTheory.FinIdlRead.chr_finIdl _ _ (chrEq_nu G s i j hL) x y hxy
 
 end GlobalTheory.BotIntertw
 
@@ -1091,7 +1040,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomLayerParametersMatch =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaKernelFiniteDimensional =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaKernelFiniteDimensional", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible\npublic import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFinPt\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ApplyAt0Smul\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleNonzeroPeriod\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasInfOfChars\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomLayerParametersMatch\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomThetaKernelFiniteDimensional", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible\npublic import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFinPt\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ApplyAt0Smul\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasInfOfChars\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BottomLayerParametersMatch\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1119,7 +1068,7 @@ theorem bottomTheta_kernel_finite : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
   intro D T Lc sc G μ₀ C x b q2 q3 W hW i j A A' WW X δ t0 hX hβ
   obtain ⟨r, rc, κ, hr, hrc, hκ, H2⟩ := q2 W hW i j A A' WW X δ t0 hX hβ
   obtain ⟨n₀, H3⟩ := q3 i j δ t0
-  obtain ⟨Ω, hΩ, H1⟩ := GlobalTheory.T.bottomTriple_thetaKernel_minors_eq_const_conjJet G W hW i j A A' WW X hX r rc hr hrc n₀
+  obtain ⟨Ω, hΩ, H1⟩ := GlobalTheory.BotFormula.ConjJet.ker_minorF_eq_conj_jet G W hW i j A A' WW X hX r rc hr hrc n₀
   refine ⟨Ω * starRingEnd ℂ κ, mul_ne_zero hΩ ((map_ne_zero _).2 hκ), fun s Q P P' hB => ?_⟩
   obtain ⟨u, hu0, huQ, huU, hEq⟩ := H2 s Q P P' hB
   refine ⟨u, hu0, huQ, huU, fun ea ed h g x y hg hy Tu => ?_⟩

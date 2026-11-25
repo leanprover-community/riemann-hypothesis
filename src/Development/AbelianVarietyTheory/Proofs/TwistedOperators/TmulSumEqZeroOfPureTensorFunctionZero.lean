@@ -14,43 +14,8 @@ public import Mathlib.LinearAlgebra.Multilinear.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultilinearSumEqOfProdFunEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompactSupportFinprodSchwartzBruhatFiniteAdel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantFinprodSchwartzBruhatFiniteAdel
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenIntertwinerModels, Development.AbelianVarietyTheory.Proofs.TwistedOperators.TmulSumEqZeroOfPureTensorFunctionZero
@@ -144,7 +109,7 @@ theorem sum_local_eq_zero (vac : ∀ v : Pl F, (κ → Fv F v) → ℂ) (h0 : �
     intro i
     filter_upwards [hstd, T.finite_toSet.compl_mem_cofinite] with v hv hvT
     have hvT' : v ∉ T := hvT
-    simp only [w, dif_neg hvT']
+    simp only [w, dite_eq_right hvT']
     exact hp' v hv i
   let y : κ → Af F := fun i => ⟨fun v => w v i, hw i⟩
   have hy : ∀ v, (fun i => evalV F v (y i)) = w v := fun _ => rfl
@@ -156,14 +121,14 @@ theorem sum_local_eq_zero (vac : ∀ v : Pl F, (κ → Fv F v) → ℂ) (h0 : �
     · simp [hvT] at hv
     · intro he
       apply hv
-      simp only [if_neg hvT]
+      simp only [ite_eq_right hvT]
       rw [he, Set.indicator_of_mem (show p v ∈ {x | ∀ i, x i ∈ v.adicCompletionIntegers F} from hp' v he)]
       rfl
   have hC : (∏ᶠ v, if v ∈ T then (1 : ℂ) else vac v (p v)) ≠ 0 :=
     finprod_induction (fun c : ℂ => c ≠ 0) one_ne_zero (fun a b ha hb => mul_ne_zero ha hb) fun v => by
       by_cases hvT : v ∈ T
       · simp [hvT]
-      · simp only [if_neg hvT]; exact hp v
+      · simp only [ite_eq_right hvT]; exact hp v
   have hval : ∀ i, finPr (φ i) y = (∏ v : T, φ i v (z v)) * ∏ᶠ v, if v ∈ T then (1 : ℂ) else vac v (p v) := by
     intro i
     have e1 : (fun v => φ i v fun j => evalV F v (y j)) =
@@ -176,13 +141,13 @@ theorem sum_local_eq_zero (vac : ∀ v : Pl F, (κ → Fv F v) → ℂ) (h0 : �
     have hAfin : (Function.mulSupport fun v => if v ∈ T then φ i v (w v) else 1).Finite := by
       refine T.finite_toSet.subset fun v hv => ?_
       by_contra h
-      exact hv (if_neg h)
+      exact hv (ite_eq_right h)
     show (∏ᶠ v, φ i v fun j => evalV F v (y j)) = _
     rw [e1, finprod_mul_distrib hAfin hCfin]
     congr 1
     rw [finprod_eq_prod_of_mulSupport_subset (s := T) _ (fun v hv => by
       by_contra h
-      exact hv (if_neg h))]
+      exact hv (ite_eq_right h))]
     rw [← Finset.prod_coe_sort T]
     refine Finset.prod_congr rfl fun v _ => ?_
     simp [v.2, w]

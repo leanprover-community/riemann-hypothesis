@@ -130,14 +130,6 @@ private theorem adj_sub_one (X : M4 R) : adj (X - 1) = adj X - 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [adj_apply, sgn, Fin.rev]
 
-private theorem unit_of_sub [IsLocalRing R] {x y : R} (hy : IsUnit y) (h : x - y ∈ maximalIdeal R) : IsUnit x := by
-  by_contra hx
-  have hx' : x ∈ maximalIdeal R := (mem_maximalIdeal x).mpr hx
-  have hy' : y ∈ maximalIdeal R := by
-    have := Ideal.sub_mem _ hx' h
-    rwa [sub_sub_cancel] at this
-  exact (mem_maximalIdeal y).mp hy' hy
-
 private def sg (R : Type) [CommRing R] : Fin 4 → R := ![1, -1, 1, -1]
 
 private theorem sg_sq (i : Fin 4) : sg R i * sg R i = 1 := by fin_cases i <;> simp [sg]
@@ -185,7 +177,7 @@ theorem UpperTheory.V.Ws.normal :
     rw [e, Matrix.add_apply, Matrix.add_apply]
     exact Ideal.add_mem _ (Ideal.add_mem _ (mulL _ _ (adjM _ hu1) i j) (adjM _ hu1 i j)) (hu1 i j)
   have hWu : ∀ i, IsUnit ((adj u * u) i i) := fun i =>
-    unit_of_sub isUnit_one (by
+    UpperTheory.V.Ws.unit_of_sub_mem isUnit_one (by
       have := hW1 i i
       rwa [Matrix.sub_apply, Matrix.one_apply_eq] at this)
   have hkey : ν • (adj u * u) = adj (Matrix.diagonal d) * (adj u * u) * Matrix.diagonal d := by
@@ -218,7 +210,7 @@ theorem UpperTheory.V.Ws.normal :
     have hu : IsUnit (d i.rev * d j - ν) := by
       rw [← hdd i, ← mul_sub]
       refine (hdu _).mul ?_
-      refine unit_of_sub (hdiff j i (Ne.symm hij)) ?_
+      refine UpperTheory.V.Ws.unit_of_sub_mem (hdiff j i (Ne.symm hij)) ?_
       have := Ideal.sub_mem _ (hdg j) (hdg i)
       convert this using 1
       ring
@@ -339,7 +331,7 @@ theorem UpperTheory.V.Ws.normal :
     have ht'1 : ∀ j, t' j = 1 := by
       intro j
       have h := hent2 j j
-      have hu : IsUnit (u j j) := unit_of_sub isUnit_one (by
+      have hu : IsUnit (u j j) := UpperTheory.V.Ws.unit_of_sub_mem isUnit_one (by
         have := hu1 j j
         rwa [Matrix.sub_apply, Matrix.one_apply_eq] at this)
       have h0 : u j j * (t' j - 1) = 0 := by

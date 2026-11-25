@@ -41,8 +41,7 @@ theorem segPos_spec {n' : ℕ} (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (i :
   exact ⟨hs, h1, h4, h4 ▸ h2, h4 ▸ h3⟩
 
 theorem mem_evenTops {n' : ℕ} (TT : Finset (Fin n')) (x : Fin n') : x ∈ evenTops TT ↔ x ∈ TT ∧ Even x.val := by
-  unfold evenTops
-  rw [Finset.mem_sort, Finset.mem_filter]
+  exact Formalism.MainNotions.ColumnSystems.Pf.ev_mem TT x
 
 theorem segStart_spec {n' : ℕ} (TT : Finset (Fin n')) (j : Fin (numSeg TT)) :
     segStart TT j ∈ TT ∧ Even (segStart TT j).val :=

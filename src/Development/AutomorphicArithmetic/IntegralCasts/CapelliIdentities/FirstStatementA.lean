@@ -5,7 +5,7 @@ public import Mathlib.NumberTheory.NumberField.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.FirstStatementA.main :
-    ∀ {E : Type} [inst : Field E]
+    ∀ {E : Type} [Field E]
     [NumberField E] {n : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)),
     ∀ x ∈ Submodule.span E (↑L : Set (Fin n → E)), ∃ (m : ℤ), m ≠ (0 : ℤ) ∧ m • x ∈ L := by
   intro E _ _ n L x hx

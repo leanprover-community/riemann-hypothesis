@@ -81,7 +81,7 @@ theorem determinant_block_leading_term : DetBlockLead := by
     by_cases hall : ∀ i, e (σ i) = e i
     · refine Finset.prod_congr rfl (fun i _ => ?_)
       simp [hM, Matrix.of_apply, hall i]
-    · push_neg at hall
+    · push Not at hall
       have hex : ∃ j, e j < e (σ j) := by
         by_contra! hno
         have hsum : ∑ j, e (σ j) = ∑ j, e j := Equiv.sum_comp σ e
@@ -285,7 +285,7 @@ lemma det_block_norm {F : Type} [NormedField F] {n : ℕ} (B G : Matrix (Fin n) 
   classical
   have hBT : B.BlockTriangular e := by
     intro i j hij
-    rw [hB, if_neg (ne_of_gt hij)]
+    rw [hB, ite_eq_right (ne_of_gt hij)]
   have hblock : ∀ a, B.toSquareBlock e a = β a • G.toSquareBlock e a := by
     intro a
     ext i j
@@ -517,7 +517,7 @@ lemma lead_part (hDeg : GamDeg) (hLead : GamLead) {p : ℕ} [hp : Fact p.Prime] 
     · exact h
     · exfalso
       have hc := congrArg (AddMonoidAlgebra.coeff · mm) h0
-      rw [coeff_initPart, if_pos h.symm, MvPolynomial.coeff_zero] at hc
+      rw [coeff_initPart, ite_eq_left h.symm, MvPolynomial.coeff_zero] at hc
       exact (MvPolynomial.mem_support_iff.mp hmm) hc
 
   have hGblk : ∀ a', ((p : ℝ) ^ (-κ)) ^ (Fintype.card {b // ord b = a'}) ≤
@@ -605,10 +605,6 @@ lemma lead_bound (p : ℕ) [hp : Fact p.Prime] {n : ℕ} (β : Fin n → ℝ) (d
 
 end Formalism.GM.MeanGammaLemmas
 
-namespace Formalism.GM
-open Polynomial Finset Formalism.GM.M Formalism.GM.MeanGammaLemmas
-
-end Formalism.GM
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam =====

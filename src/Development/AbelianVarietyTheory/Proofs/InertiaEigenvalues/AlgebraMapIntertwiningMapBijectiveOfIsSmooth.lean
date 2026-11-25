@@ -92,7 +92,7 @@ theorem linearIndependent_resolvent (T : Module.End ℂ V)
   · obtain ⟨k, hk, hk0⟩ := Finset.prod_eq_zero_iff.1 h3
     exact absurd (sub_eq_zero.1 hk0).symm (Finset.mem_erase.1 hk).1
 
-theorem exists_not_isUnit_sub : ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : Module ℂ V] [Nontrivial V], Module.rank ℂ V ≤ Cardinal.aleph0 → ∀ (T : Module.End ℂ V), ∃ (c : ℂ), ¬IsUnit (T - (Algebra.algebraMap ℂ (Module.End ℂ V) : ℂ → Module.End ℂ V) c) := by
+theorem exists_not_isUnit_sub : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] [Nontrivial V], Module.rank ℂ V ≤ Cardinal.aleph0 → ∀ (T : Module.End ℂ V), ∃ (c : ℂ), ¬IsUnit (T - (Algebra.algebraMap ℂ (Module.End ℂ V) : ℂ → Module.End ℂ V) c) := by
   intro V _ _ _ hrank T
   by_contra! hcon
   obtain ⟨v, hv⟩ := exists_ne (0 : V)

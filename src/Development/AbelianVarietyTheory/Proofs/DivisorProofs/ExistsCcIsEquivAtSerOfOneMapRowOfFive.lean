@@ -71,40 +71,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilActio
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NotIsOfFinOrderUnitQuot
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.InfinityTypes
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPairRecordCore
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
@@ -141,11 +107,7 @@ import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ModelLatA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.WeightFloorInequalities
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ValuesAlgIffValuesUnitOfNe
@@ -329,7 +291,7 @@ theorem delta_extremal_weight_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintyp
     · subst e
       rw [show compAt R.θ ρ (Formalism.L2.Theta.mt (Wc D i) g) = _ from a2, ← Matrix.mul_assoc, ← Matrix.mul_assoc, h1,
         Matrix.one_mul, Matrix.mul_assoc, h1, Matrix.mul_one]
-      simp only [θs, if_true]
+      simp only [θs, ite_true]
     · rw [show compAt R.θ ρ (Formalism.L2.Theta.mt (Wc D i) g) = _ from a3 ρ e, Matrix.mul_one, h1]
       simp [θs, e]
   have e1 : ∀ ρ, (R.BV i ρ)⁻¹ * compAt R.θ ρ (Formalism.L2.Theta.mt (Vc D i) 1) * R.BV i ρ = 1 := fun ρ => by
@@ -350,7 +312,7 @@ theorem delta_extremal_weight_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintyp
   congr 1
   by_cases hp : (j : ℕ) < ((Wc D i).sig (tauE D τ)).1
   · simp [θs, hp, mul_assoc]
-  · rw [if_neg hp, if_neg hp, if_neg (by have := hpq τ; omega),
+  · rw [ite_eq_right hp, ite_eq_right hp, ite_eq_right (by have := hpq τ; omega),
       show (Wc D i).rank - 1 - ((Wc D i).rank - 1 - (j - ((Wc D i).sig (tauE D τ)).1)) =
         j - ((Wc D i).sig (tauE D τ)).1 by omega]
     simp [θs, mul_assoc]
@@ -560,7 +522,7 @@ theorem letters_eq_fockVars_ofCore3 : ∀ (D : D7) (G : Type) [Group G] [Fintype
   have hP := hT.laws.pins
   have hm : ∀ τ, τ ∉ X.Ψ → (T.Q.Dw ((i : ℕ) + 1)).mult τ ≤ X.p0 := fun τ hτ => by
     unfold Datum.mult
-    rw [if_neg fun h : τ (T.Q.H.rt : D.host.E) = T.Q.H.rt0 => hτ ((hM.psi τ).2 (ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.exists_tau_of_inPsi T.Q hP.1 τ h)), hp]
+    rw [ite_eq_right fun h : τ (T.Q.H.rt : D.host.E) = T.Q.H.rt0 => hτ ((hM.psi τ).2 (ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.exists_tau_of_inPsi T.Q hP.1 τ h)), hp]
   obtain ⟨h1, h2⟩ := Dic.letter Dc (fun τ => RingHom.ext fun _ => rfl) hm ℓ
   obtain ⟨g1, g2, g3⟩ := hv (Dc.eL ℓ)
   refine ⟨g2.trans h1, ?_⟩
@@ -849,7 +811,7 @@ theorem exact_identity_ofFive (hC : GlobalTheory.Core5 R F) (hT : TieIn T R κ v
     ring
   have had := ad_value_ofFive hC hT O hP hka hδ t h J' hR y xs hpl g' γ hγ _ g Dc hX hp hrt _ hon hinv (hbas _) hΛ mk₂ ha₂ v _ hv
     (hfr ▸ hrd') Y hY
-  have hrdU : rdU (unfO O) f (O.dict g').1 (O.dict g').2 = _ := (dif_pos hx).trans hgeo
+  have hrdU : rdU (unfO O) f (O.dict g').1 (O.dict g').2 = _ := (dite_eq_left hx).trans hgeo
   have e1 := congrArg (clsSum (inC O.c') ((unfO O).X (O.dict g').1) Dc.hr Dc.bas Dc.idx Dc.eL (O.w t) (O.La t) (O.Nc t) (O.gam t)
     (O.vol t) (O.ep t) (fun j => O.io (xs j)) ((unfO O).X (O.dict g').1).Λ v Y) hfr
   rw [had.trans (congrArg (fun z => _ * z) e1.symm), hrdU]
@@ -1125,9 +1087,9 @@ theorem io_eq_phase_smul_ofCore3 : ∀ (D : D7) (G : Type) [Group G] [Fintype G]
       refine toF_pG O.c' hl hty i1 _ _ _ _ _ (fun τ => by rw [hsig, d1]) (fun τ => by rw [hsig, d2]) (fun τ k hk => ?_)
         fun τ k hk => ?_
       · rw [d1] at hk
-        exact (w3 τ k).1.trans ((dif_pos hk).trans ((hT.kap i τ).1 ⟨k, hk⟩))
+        exact (w3 τ k).1.trans ((dite_eq_left hk).trans ((hT.kap i τ).1 ⟨k, hk⟩))
       · rw [d2] at hk
-        exact (w3 τ k).2.trans ((dif_pos hk).trans ((hT.kap i τ).2.1 ⟨k, hk⟩))
+        exact (w3 τ k).2.trans ((dite_eq_left hk).trans ((hT.kap i τ).2.1 ⟨k, hk⟩))
     obtain ⟨a, ha, ha'⟩ := proportional ((R.cV i).ρ.comp (GQ (Vc D i)).subtype) _ r1 (fun γ hγ => hγ) r2 A₀ (PT A.μ0 ∘ₗ B₀)
       (fun γ => by
         obtain ⟨γE, a, k, h1, h2, h3, h4, h5, h6⟩ := rat_parts hθ hP.std γ
@@ -1212,7 +1174,7 @@ theorem cover_value_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
   obtain ⟨a, ha⟩ := hrat γ' hγ'
   have hv := hval k γ' ⟨hγ', h2, h3⟩
   rw [(hO.tuple t).xi _ _ (hmul _ _ _ _ ha hxk), map_mul, (hR.lev.xi (tup t)).1.2 a, _root_.one_mul] at hv
-  exact (evR_eq_of_point _ hlev.2.2.2.2.2.2.2.1 _ y₂ hpt).trans ((dif_pos hd).symm.trans hv)
+  exact (evR_eq_of_point _ hlev.2.2.2.2.2.2.2.1 _ y₂ hpt).trans ((dite_eq_left hd).symm.trans hv)
 
 end GlobalTheory.AdTh.CoverVal
 end

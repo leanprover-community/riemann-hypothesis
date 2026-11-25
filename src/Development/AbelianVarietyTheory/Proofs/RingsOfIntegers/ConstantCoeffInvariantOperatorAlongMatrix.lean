@@ -6,44 +6,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscrim
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.MvPowerSeriesSubstConstTermsLocalAlgHomSpec
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FoldPermutation
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FormalGroupCopies
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Mathlib.RingTheory.MvPolynomial
@@ -241,14 +204,14 @@ theorem foldr_add_single {ι β : Type} [DecidableEq ι] (D : ι → β → β) 
     rw [List.foldr_cons, List.foldr_cons, ih hL.2]
     by_cases h : l = a
     · subst h
-      rw [if_neg hL.1, if_pos List.mem_cons_self, Finsupp.add_apply, Finsupp.single_eq_same,
+      rw [ite_eq_right hL.1, ite_eq_left List.mem_cons_self, Finsupp.add_apply, Finsupp.single_eq_same,
         Function.iterate_succ_apply']
     · rw [Finsupp.add_apply, Finsupp.single_eq_of_ne' h, add_zero]
       by_cases h2 : l ∈ L
-      · rw [if_pos h2, if_pos (List.mem_cons_of_mem _ h2)]
+      · rw [ite_eq_left h2, ite_eq_left (List.mem_cons_of_mem _ h2)]
         have hc : Function.Commute (D a) (D l) := fun g => hD a l g
         exact (hc.iterate_left (m a)) _
-      · rw [if_neg h2, if_neg (by simp [h, h2])]
+      · rw [ite_eq_right h2, ite_eq_right (by simp [h, h2])]
 
 open Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies in
 theorem dpoly_mul_X (G : FGLaw k d) {ι : Type} [Fintype ι] (cp : ι → Fin n) (u : ι → Fin d → k)
@@ -262,7 +225,7 @@ theorem dpoly_mul_X (G : FGLaw k d) {ι : Type} [Fintype ι] (cp : ι → Fin n)
     unfold DmonN
     rw [foldr_add_single (fun l => DofN G.F (cp l) (u l))
       (fun a b g => Formalism.MainNotions.ModuliIntegralCharts.H1.FoldPermutation.dofN_comm G _ _ _ _ g) m l _ (Finset.nodup_toList _),
-      if_pos (Finset.mem_toList.2 (Finset.mem_univ l))]
+      ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ l))]
   | add P Q hP hQ => rw [add_mul, dpoly_add, dpoly_add, dofN_add, hP, hQ]
 
 open Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies in
@@ -344,8 +307,8 @@ theorem tan_matV {n : ℕ} (mu : Matrix (Fin n) (Fin n) O) (j : Fin n) (v : Fin 
       rw [mapPt_comp1 K _ _ (GlobalTheory.DerivEndo.cc_pt s), mapPt_pt]
       exact (tan_pt (lawK K B) j v s).comp _ ((actKO K B).const (mu b s)) ((actKO K B).hom (mu b s)))
     (List.finRange n)).2
-  rw [← Fin.sum_univ_def, Finset.sum_eq_single j (fun s _ hs => by rw [if_neg hs, Matrix.mulVec_zero]) (by simp),
-    if_pos rfl] at h
+  rw [← Fin.sum_univ_def, Finset.sum_eq_single j (fun s _ hs => by rw [ite_eq_right hs, Matrix.mulVec_zero]) (by simp),
+    ite_eq_left rfl] at h
   unfold matV
   simp only [e, List.ofFn_eq_map]
   exact h

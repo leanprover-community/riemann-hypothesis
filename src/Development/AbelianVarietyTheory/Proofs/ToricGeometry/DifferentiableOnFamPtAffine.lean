@@ -3,47 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TangentBijectionOfValues
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsConstOfCover
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsLinearOfMulPeriod
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 
 @[expose] public section
@@ -182,11 +144,7 @@ theorem top_le_const (y : 𝟙_ (Over (Sp ℂ)) ⟶ A) (U : A.left.Opens) (h' : 
 
 theorem surjective_residue_slice [Subsingleton (PrimeSpectrum R)] (ρ : R →ₐ[ℂ] ℂ) :
     Function.Surjective (lift (toUnit A ≫ resPt ρ) (𝟙 A)).left := by
-  have hc : spMap ρ.toRingHom ≫ spMap (algebraMap ℂ R) = 𝟙 (Sp ℂ) := by
-    rw [← Spec.map_comp, ← Spec.map_id]
-    congr 1
-    ext a
-    exact ρ.commutes a
+  have hc : spMap ρ.toRingHom ≫ spMap (algebraMap ℂ R) = 𝟙 (Sp ℂ) := Over.w (resPt ρ)
   have wP : (fst (spO R) A).left ≫ (spO R).hom = (snd (spO R) A).left ≫ A.hom :=
     (Over.w (fst (spO R) A)).trans (Over.w (snd (spO R) A)).symm
   have hL1 : (lift (toUnit A ≫ resPt ρ) (𝟙 A)).left ≫ (fst (spO R) A).left = A.hom ≫ spMap ρ.toRingHom := by

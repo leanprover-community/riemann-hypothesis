@@ -7,8 +7,6 @@ import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.FrobeniusOrbits Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host
 
 namespace GlobalTheory.Mem.Chr.DetGroupModel
@@ -42,7 +40,7 @@ theorem diag_eq (k : Lˣ) : diagUnits L k = infDiag k * finPartI L (diagUnits L 
   rw [h2]
   refine Prod.ext (funext fun w => ?_) ?_
   · show _ = ((∏ w, infIdele L w (atInf w k) : Ideles L) : AdeleRing (𝓞 L) L).1 w * 1
-    rw [(h1 _).2 w, if_pos (Finset.mem_univ _), mul_one]; rfl
+    rw [(h1 _).2 w, ite_eq_left (Finset.mem_univ _), mul_one]; rfl
   · show _ = ((∏ w, infIdele L w (atInf w k) : Ideles L) : AdeleRing (𝓞 L) L).2 * _
     rw [(h1 _).1, one_mul]; rfl
 

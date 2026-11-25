@@ -64,7 +64,7 @@ theorem isMeasDef_of_isTermVol {L : LevCh D T} {sc : Consts} {G : GridData L sc}
   · exact isDefiniteSpace_of_isV (node_isV G hL (X := .top j) h.le)
   · have e := hM.1 j h
     unfold Vol.IsAt at e
-    rw [if_pos (by simp [Node.neg])] at e
+    rw [ite_eq_left (by simp [Node.neg])] at e
     exact e
   · have hV := node_isV G hL (X := .grid i D.R.m) ⟨h, le_rfl⟩
     have e : Node.neg D.R.m (.grid i D.R.m) = 0 := by simp [Node.neg]
@@ -72,7 +72,7 @@ theorem isMeasDef_of_isTermVol {L : LevCh D T} {sc : Consts} {G : GridData L sc}
     exact isDefiniteSpace_of_isV hV
   · have e := hM.2 i h
     unfold Vol.IsAt at e
-    rw [if_pos (by simp [Node.neg])] at e
+    rw [ite_eq_left (by simp [Node.neg])] at e
     exact e
 
 end GlobalTheory.RowClaim.TermVolDef

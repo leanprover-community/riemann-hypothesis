@@ -53,58 +53,15 @@ public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorStatus
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BundleBothPartsOfStandardKernelAndSixHypotheses
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CoreAltAltBis
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BuiltCHasPart
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
 import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeUnderScaleOfGeneral
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGBasic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.ExistsWittSeriesInverseFormalGroupIso
 import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.ConjCls
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinRecursion
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Joints
 import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
@@ -114,8 +71,6 @@ import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThre
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.TypeStar
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.BeWInertOfSigma
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -125,8 +80,6 @@ import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.BeWInertOfSi
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowHServOfKerServ", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasPartAnd\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CountsIrreducibilityConstants\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr\nimport Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeUnderScaleOfGeneral\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory Formalism.MainNotions.RT GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Fc
@@ -425,18 +378,6 @@ namespace GlobalTheory.CobSimeqProof
 open Formalism.DworkPowerSeriesWeights (Integral)
 open Formalism.InvariantFactorPaths.G7 (cob)
 
-theorem simeq_neg {K ι : Type} [NormedField K] [IsUltrametricDist K] [CharZero K] {f g : MvPowerSeries ι K}
-    (h : Formalism.InvariantFactorPaths.G7.Simeq f g) : Formalism.InvariantFactorPaths.G7.Simeq (-f) (-g) := by
-  have h' := (Formalism.InvariantFactorPaths.G7.Top.simeqRules K ι).2.1 f g h
-  unfold Formalism.InvariantFactorPaths.G7.Simeq at h' ⊢
-  rwa [show -f - -g = g - f by ring]
-
-theorem integral_X {K ι : Type} [NormedField K] (i : ι) : Integral (MvPowerSeries.X i : MvPowerSeries ι K) := by
-  classical
-  intro n
-  rw [MvPowerSeries.coeff_X]
-  split_ifs <;> simp
-
 theorem cobSimeq : Formalism.L2.KerInert.BeCob.CobSimeq := by
   intro K _ _ _ F hF0 hFI f f' h
   have R := Formalism.InvariantFactorPaths.G7.Top.simeqRules K Unit
@@ -446,10 +387,10 @@ theorem cobSimeq : Formalism.L2.KerInert.BeCob.CobSimeq := by
         (MvPowerSeries.subst φ (f' : MvPowerSeries Unit K)) :=
     fun φ h0 hI => R.2.2.2.2 (Fin 2) f f' φ h0 hI h
   have h1 := hs (fun _ => F) (fun _ => hF0) (fun _ => hFI)
-  have h2 := simeq_neg (hs (fun _ => MvPowerSeries.X 0) (fun _ => MvPowerSeries.constantCoeff_X _)
-    (fun _ => integral_X _))
-  have h3 := simeq_neg (hs (fun _ => MvPowerSeries.X 1) (fun _ => MvPowerSeries.constantCoeff_X _)
-    (fun _ => integral_X _))
+  have h2 := Formalism.L2.KerInert.BeCob.simeq_neg (hs (fun _ => MvPowerSeries.X 0) (fun _ => MvPowerSeries.constantCoeff_X _)
+    (fun _ => Formalism.L2.KerInert.BeCob.integral_X _))
+  have h3 := Formalism.L2.KerInert.BeCob.simeq_neg (hs (fun _ => MvPowerSeries.X 1) (fun _ => MvPowerSeries.constantCoeff_X _)
+    (fun _ => Formalism.L2.KerInert.BeCob.integral_X _))
   have R2 := Formalism.InvariantFactorPaths.G7.Top.simeqRules K (Fin 2)
   have H := R2.2.2.2.1 _ _ _ _ (R2.2.2.2.1 _ _ _ _ h1 h2) h3
   have e : ∀ q : PowerSeries K, cob F q = MvPowerSeries.subst (fun _ => F) (q : MvPowerSeries Unit K) +
@@ -559,41 +500,6 @@ open Formalism.DworkPowerSeriesWeights (Integral)
 open Formalism.L2.KerInert.BeCob (eLT vLT ThetaTie ShortIso)
 open Formalism.L2.KerInert.BeCob (cc_lgF' lgF_eq_logF)
 
-section IntPS
-
-variable {K : Type} [NormedField K] [IsUltrametricDist K]
-
-theorem integral_ps' {K : Type} [NormedField K] {f : PowerSeries K}
-    (h : ∀ k, ‖PowerSeries.coeff k f‖ ≤ 1) : Integral (f : MvPowerSeries Unit K) := by
-  intro n
-  have e : n = Finsupp.single () (n ()) := Finsupp.ext fun u => by rcases u with ⟨⟩; simp
-  rw [e]
-  exact h (n ())
-
-theorem ips_add' {f g : PowerSeries K} (hf : Integral (f : MvPowerSeries Unit K))
-    (hg : Integral (g : MvPowerSeries Unit K)) : Integral ((f + g : PowerSeries K) : MvPowerSeries Unit K) := by
-  apply integral_ps'; intro k
-  rw [map_add (f := _)]
-  exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (_root_.GlobalTheory.CurveDictionary.ips hf k) (_root_.GlobalTheory.CurveDictionary.ips hg k))
-
-theorem ips_sub' {f g : PowerSeries K} (hf : Integral (f : MvPowerSeries Unit K))
-    (hg : Integral (g : MvPowerSeries Unit K)) : Integral ((f - g : PowerSeries K) : MvPowerSeries Unit K) := by
-  apply integral_ps'; intro k
-  rw [map_sub, sub_eq_add_neg]
-  exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (_root_.GlobalTheory.CurveDictionary.ips hf k) (by rw [norm_neg]; exact _root_.GlobalTheory.CurveDictionary.ips hg k))
-
-theorem ips_Cmul' {c : K} (hc : ‖c‖ ≤ 1) {f : PowerSeries K} (hf : Integral (f : MvPowerSeries Unit K)) :
-    Integral ((PowerSeries.C c * f : PowerSeries K) : MvPowerSeries Unit K) := by
-  apply integral_ps'; intro k
-  rw [PowerSeries.coeff_C_mul, norm_mul]
-  exact mul_le_one₀ hc (norm_nonneg _) (_root_.GlobalTheory.CurveDictionary.ips hf k)
-
-theorem ips_mul' {f g : PowerSeries K} (hf : Integral (f : MvPowerSeries Unit K))
-    (hg : Integral (g : MvPowerSeries Unit K)) : Integral ((f * g : PowerSeries K) : MvPowerSeries Unit K) :=
-  Formalism.InvariantFactorPaths.G7.LogarithmEquivalence.integral_mul' hf hg
-
-end IntPS
-
 theorem shortIso_holds : ShortIso := by
   intro K _ _ _ h2 h3 W hW
   obtain ⟨hxI, hx1, hA, -⟩ := Formalism.L2.Th1.A.bridgeCurve K W hW
@@ -668,36 +574,17 @@ theorem shortIso_holds : ShortIso := by
   have ha12 : ‖W.a₁ / 2‖ ≤ 1 := by rw [norm_div, h2, div_one]; exact hi1
   have ha32 : ‖W.a₃ / 2‖ ≤ 1 := by rw [norm_div, h2, div_one]; exact hi3
   have hX2 : Integral (((PowerSeries.X : PowerSeries K) ^ 2 : PowerSeries K) : MvPowerSeries Unit K) := by
-    rw [pow_two]; exact ips_mul' _root_.Formalism.L2.Th1.D.FormalExponential.integral_X _root_.Formalism.L2.Th1.D.FormalExponential.integral_X
+    rw [pow_two]; exact Formalism.L2.KerInert.BeCob.ips_mul _root_.Formalism.L2.Th1.D.FormalExponential.integral_X _root_.Formalism.L2.Th1.D.FormalExponential.integral_X
   have hX3 : Integral (((PowerSeries.X : PowerSeries K) ^ 3 : PowerSeries K) : MvPowerSeries Unit K) := by
-    rw [pow_succ]; exact ips_mul' hX2 _root_.Formalism.L2.Th1.D.FormalExponential.integral_X
+    rw [pow_succ]; exact Formalism.L2.KerInert.BeCob.ips_mul hX2 _root_.Formalism.L2.Th1.D.FormalExponential.integral_X
   have hNI : Integral ((N : PowerSeries K) : MvPowerSeries Unit K) := by
-    rw [hN]; exact ips_add' hxI (ips_Cmul' hb2 hX2)
+    rw [hN]; exact Formalism.L2.KerInert.BeCob.ips_add hxI (Formalism.L2.KerInert.BeCob.ips_Cmul hb2 hX2)
   have hDI : Integral ((D : PowerSeries K) : MvPowerSeries Unit K) := by
     rw [hD]
-    exact ips_sub' (ips_sub' hxI (ips_mul' (ips_Cmul' ha12 _root_.Formalism.L2.Th1.D.FormalExponential.integral_X) hxI)) (ips_Cmul' ha32 hX3)
+    exact Formalism.L2.KerInert.BeCob.ips_sub (Formalism.L2.KerInert.BeCob.ips_sub hxI (Formalism.L2.KerInert.BeCob.ips_mul (Formalism.L2.KerInert.BeCob.ips_Cmul ha12 _root_.Formalism.L2.Th1.D.FormalExponential.integral_X) hxI)) (Formalism.L2.KerInert.BeCob.ips_Cmul ha32 hX3)
   have hDiI : Integral ((D⁻¹ : PowerSeries K) : MvPowerSeries Unit K) :=
     Formalism.InvariantFactorPaths.G7.LogarithmEquivalence.integral_of_mul_eq_one hDI hD1 hDinv
-  exact ips_mul' (ips_mul' _root_.Formalism.L2.Th1.D.FormalExponential.integral_X hNI) hDiI
-
-theorem exists_witt_series_inverse_formalGroup_iso_short {l : ℕ} [Fact l.Prime] {g : G1 l} (hOk : g.Ok) (hLT : LTIso g) :
-    ∃ w : PowerSeries (WW l), PowerSeries.map (wToC l) w = vLT hLT := by
-  apply _root_.GlobalTheory.InverseSeriesIntegral.exists_witt_series_inverse_formalGroup_iso <;> assumption
-
-theorem v_integral' {l : ℕ} [Fact l.Prime] {g : G1 l} (hOk : g.Ok) (hLT : LTIso g) (n : ℕ) :
-    ‖PowerSeries.coeff n (vLT hLT)‖ ≤ 1 := by
-  obtain ⟨w, hw⟩ := exists_witt_series_inverse_formalGroup_iso_short hOk hLT
-  rw [← hw, PowerSeries.coeff_map]
-  have := Formalism.L2.G.Pend.norm_wToC_pow_mul l 0 (PowerSeries.coeff n w)
-  simpa using this
-
-theorem norm_nat_one' {l : ℕ} [Fact l.Prime] (h5 : 5 ≤ l) (m : ℕ) (hm1 : 0 < m) (hm : m < 5) :
-    ‖(m : ℂ_[l])‖ = 1 := by
-  have hp : l.Prime := Fact.out
-  refine Formalism.DworkPowerSeriesWeights.norm_natCast_eq_one_of_not_dvd hp (Formalism.L2.Th1.D.UnramifiedCompletion.normL_lt_one l) ?_
-  intro h
-  have := Nat.le_of_dvd hm1 h
-  omega
+  exact Formalism.L2.KerInert.BeCob.ips_mul (Formalism.L2.KerInert.BeCob.ips_mul _root_.Formalism.L2.Th1.D.FormalExponential.integral_X hNI) hDiI
 
 theorem thetaTie_holds : ThetaTie := by
   intro l _ h5 g hLT hOk n
@@ -711,8 +598,8 @@ theorem thetaTie_holds : ThetaTie := by
   have hlW0 : PowerSeries.constantCoeff (Formalism.L2.Th1.A.logSer g.W) = 0 := by rw [← hgl]; exact Formalism.MainNotions.J.cc_l g
   have hvl : PowerSeries.subst (vLT hLT) (Formalism.L2.Th1.A.logSer g.W) = PowerSeries.C (eLT hLT)⁻¹ * lgF ℂ_[l] l := by
     rw [← hgl]; exact Formalism.L2.G.Pend.lg_pt g hex hinv hv0
-  have h2 : ‖(2 : ℂ_[l])‖ = 1 := by exact_mod_cast norm_nat_one' h5 2 (by norm_num) (by norm_num)
-  have h3 : ‖(3 : ℂ_[l])‖ = 1 := by exact_mod_cast norm_nat_one' h5 3 (by norm_num) (by norm_num)
+  have h2 : ‖(2 : ℂ_[l])‖ = 1 := by exact_mod_cast Formalism.L2.KerInert.BeCob.norm_nat_one h5 2 (by norm_num) (by norm_num)
+  have h3 : ‖(3 : ℂ_[l])‖ = 1 := by exact_mod_cast Formalism.L2.KerInert.BeCob.norm_nat_one h5 3 (by norm_num) (by norm_num)
   have hiso := shortIso_holds ℂ_[l] h2 h3 g.W (Formalism.L2.KerInert.Dict.intModel_of_ok hOk)
   have hθ : thetaS l (Formalism.L2.Th1.A.g₂ g.W) (Formalism.L2.Th1.A.g₃ g.W) (eLT hLT)⁻¹ =
       MvPowerSeries.subst (fun _ => vLT hLT) (PowerSeries.subst (Formalism.L2.Th1.A.logSer g.W)
@@ -721,7 +608,7 @@ theorem thetaTie_holds : ThetaTie := by
     rw [Formalism.L2.Th1.A.uSerEq ℂ_[l] _ _, ← PowerSeries.subst_def,
       PowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.of_constantCoeff_zero' hlW0) hvS, hvl]
   rw [hθ]
-  exact Formalism.InvariantFactorPaths.G7.LogarithmEquivalence.integral_subst' (fun _ => hvcc) (fun _ => integral_ps' (v_integral' hOk hLT)) hiso
+  exact Formalism.InvariantFactorPaths.G7.LogarithmEquivalence.integral_subst' (fun _ => hvcc) (fun _ => Formalism.L2.KerInert.BeCob.integral_ps (Formalism.L2.KerInert.BeCob.v_integral hOk hLT)) hiso
     (Finsupp.single () n)
 
 end GlobalTheory.ShortModelTheta
@@ -743,14 +630,8 @@ open Formalism.MainNotions.GL3Theta
 
 variable {p : ℕ} [Fact p.Prime]
 
-theorem coefWf_phW_of_kur (W : WeierstrassCurve ℂ_[p]) (h1 : W.a₁ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p)
-    (h2 : W.a₂ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (h3 : W.a₃ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (h4 : W.a₄ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p)
-    (h6 : W.a₆ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) {s2 : ℂ_[p]} (hs : s2 ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) :
-    CoefWf (Formalism.L2.Th1.B.phW W s2 : MvPowerSeries Unit ℂ_[p]) := by
-  apply _root_.Formalism.L2.KerInert.Dict.coefWf_phW <;> assumption
-
 theorem coefWf_phW : ∀ (p : ℕ) [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]), W.a₁ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₂ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₃ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₄ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₆ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → ∀ s2 : ℂ_[p], s2 ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → Formalism.MainNotions.GL3Theta.CoefWf (Formalism.L2.Th1.B.phW W s2 : MvPowerSeries Unit ℂ_[p]) :=
-  fun _ _ W h1 h2 h3 h4 h6 _ hs => coefWf_phW_of_kur W h1 h2 h3 h4 h6 hs
+  fun _ _ W h1 h2 h3 h4 h6 _ hs => Formalism.L2.KerInert.Dict.coefWf_phW W h1 h2 h3 h4 h6 hs
 
 end GlobalTheory.CoefWfUnram
 end -- clump:auto
@@ -823,8 +704,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 namespace GlobalTheory.Svd.LinkStd
@@ -851,8 +730,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.Svd
 namespace GlobalTheory.Svd
@@ -874,8 +751,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ServHRowLinkRStatement =====
@@ -884,8 +759,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowHServOfLink", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CoreAltAltBis\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CountsIrreducibilityConstants\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowHServOfKerServ\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ServHRowLinkRStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
@@ -907,8 +780,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowHServOfLinkStatement", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CoreAltAltBis\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CountsIrreducibilityConstants\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowHServOfLink\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 end -- clump:auto
 end -- clump:auto

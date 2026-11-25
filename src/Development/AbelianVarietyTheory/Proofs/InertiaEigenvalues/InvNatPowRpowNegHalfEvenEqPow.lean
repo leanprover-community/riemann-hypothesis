@@ -92,8 +92,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 
-theorem _root_.GlobalTheory.T.splitPlaceChart_finiteAdeleTensor_levels : ∀ (D : D7) (e : AE D) (P : Pl D.host.E) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsIdemAt e P → GlobalTheory.SplitHecke.Chart e v π → ∃ φ : Datum.EAf D →+* Fv D.host.F v, (∀ a, φ (toEAf D a) = π a) ∧ (∀ N : Datum.EAf D, toEAf D e * N ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ↔ GlobalTheory.SplitHecke.IsInt (GlobalTheory.SplitHecke.Ov D v) (φ N)) ∧ (∀ (m n : ℕ) (N : Matrix (Fin m) (Fin n) (Datum.EAf D)), IsIntM N → ∀ z : Matrix (Fin m) (Fin n) (GlobalTheory.SplitHecke.Ov D v), z.map (algebraMap (GlobalTheory.SplitHecke.Ov D v) (Fv D.host.F v)) = N.map φ → prim (redM P N) = prim (z.map (IsLocalRing.residue (GlobalTheory.SplitHecke.Ov D v)))) ∧ ∀ (V : HSp D) (β : GL (Fin V.rank) (Datum.EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)), Lev.IsBaseFrame V β Λ 1 → GlobalTheory.SplitHecke.Frame V e π (Matrix.GeneralLinearGroup.map φ β) := by
-  first | exact @GlobalTheory.ChartLevels.chart_levels
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceChartFiniteAdeleTensorLevelsStatement =====
@@ -240,7 +238,6 @@ theorem cond_eq {p : O} (hp : algebraMap O K p ≠ 0) {r n : ℕ} (g : GL (Fin r
     inv_mul_cancel₀ hp, one_smul]
   rfl
 
-
 open IsLocalRing in
 theorem count_eq [Finite (ResidueField O)] {p : O} (hp : Irreducible p) {r n k : ℕ} (hk : k ≤ r) {ι : Type}
     {α : GL (Fin r) K} {R : Finset ι} {ρ : ι → GL (Fin r) K} (hα : Hk O p k α) (hR : Reps O α R ρ)
@@ -277,7 +274,6 @@ theorem sum_smul_row {F : Type} [Field F] {r n : ℕ} (y : Matrix (Fin r) (Fin n
   simp [Matrix.mulVec, dotProduct, Finset.sum_apply, Matrix.row, mul_comm]
 
 end Pure
-
 
 open IsLocalRing in
 theorem sum_hecke_indicator_eq_prim : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] [Finite (IsLocalRing.ResidueField O)] (p : O), Irreducible p → ∀ (r n : ℕ) (ι : Type) (α : ℕ → GL (Fin r) K) (R : ℕ → Finset ι) (ρ : ι → GL (Fin r) K), (∀ k ∈ Finset.Icc 1 r, Hk O p k (α k) ∧ Reps O (α k) (R k) ρ) → ∀ z : Matrix (Fin r) (Fin n) O, (1 : ℂ) + ∑ k ∈ Finset.Icc 1 r, (-1 : ℂ) ^ k * (Nat.card (IsLocalRing.ResidueField O) : ℂ) ^ (k * (k - 1) / 2) * (Nat.card {γ : ι // γ ∈ R k ∧ IntM O (((ρ γ)⁻¹).1 * z.map (algebraMap O K))} : ℂ) = ((prim (z.map (IsLocalRing.residue O)) : ℚ) : ℂ) := by
@@ -321,9 +317,9 @@ theorem sum_hecke_indicator_eq_prim : ∀ (O K : Type) [CommRing O] [IsDomain O]
   rw [e1, ← Finset.sum_subset (Finset.range_subset_range.2 (show c + 1 ≤ r + 1 by omega)) (fun k hk hk' => ?_)]
   · refine Eq.trans (GlobalTheory.GaussSubspace.sum_card_subspaces (ResidueField O) c ℂ 1) ?_
     rcases Nat.eq_zero_or_pos c with h0 | h0
-    · rw [prim, if_pos (hli.2 h0), h0, Finset.prod_range_zero]
+    · rw [prim, ite_eq_left (hli.2 h0), h0, Finset.prod_range_zero]
       simp
-    · rw [prim, if_neg (fun H => by have := hli.1 H; omega)]
+    · rw [prim, ite_eq_right (fun H => by have := hli.1 H; omega)]
       obtain ⟨m, hm⟩ : ∃ m, c = m + 1 := ⟨c - 1, by omega⟩
       rw [hm, Finset.prod_range_succ', pow_zero, one_mul, sub_self, mul_zero]
       simp
@@ -345,7 +341,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 
-
 noncomputable section
 
 namespace GlobalTheory.DistRel
@@ -359,7 +354,6 @@ theorem prod_ite_split {ι : Type} [Fintype ι] [DecidableEq ι] (i₀ : ι) (A 
   refine Finset.prod_congr rfl fun i _ => ?_
   split_ifs <;> simp
 
-
 open Classical in
 theorem datumFn_prim (B : Base S T) (Q : Finset (Pl D.host.E)) {P : Pl D.host.E} (hP : P ∈ Q)
     (φ : ∀ PP : Pl D.host.E, Matrix (Fin T.rank) (Fin S.rank) (kP PP) → ℂ) (x : WO S T) :
@@ -372,13 +366,13 @@ theorem datumFn_prim (B : Base S T) (Q : Finset (Pl D.host.E)) {P : Pl D.host.E}
     have h1 : ∀ PP : ↥Q, (if PP.1 = P then ((prim (y PP.1) : ℚ) : ℂ) else φ PP.1 (y PP.1)) =
         if PP = ⟨P, hP⟩ then ((prim (y P) : ℚ) : ℂ) else φ PP.1 (y PP.1) := fun PP => by
       by_cases h : PP.1 = P
-      · rw [if_pos h, if_pos (Subtype.ext h), h]
-      · rw [if_neg h, if_neg fun e => h (congrArg Subtype.val e)]
+      · rw [ite_eq_left h, ite_eq_left (Subtype.ext h), h]
+      · rw [ite_eq_right h, ite_eq_right fun e => h (congrArg Subtype.val e)]
     have h2 : ∀ PP : ↥Q, (if PP.1 = P then (1 : ℂ) else φ PP.1 (y PP.1)) =
         if PP = ⟨P, hP⟩ then 1 else φ PP.1 (y PP.1) := fun PP => by
       by_cases h : PP.1 = P
-      · rw [if_pos h, if_pos (Subtype.ext h)]
-      · rw [if_neg h, if_neg fun e => h (congrArg Subtype.val e)]
+      · rw [ite_eq_left h, ite_eq_left (Subtype.ext h)]
+      · rw [ite_eq_right h, ite_eq_right fun e => h (congrArg Subtype.val e)]
     simp only [h1, h2]
     rw [mul_assoc]
     congr 1
@@ -490,8 +484,8 @@ theorem halfInd_smul {m n : ℕ} {e : AE D} (he : e * e = e) (Λ : AddSubgroup (
     halfInd e Λ (e • y) = if e • y ∈ Λ then 1 else 0 := by
   unfold halfInd
   by_cases h : e • y ∈ Λ
-  · rw [if_pos ⟨h, isHalf_smul he y⟩, if_pos h]
-  · rw [if_neg fun h' => h h'.1, if_neg h]
+  · rw [ite_eq_left ⟨h, isHalf_smul he y⟩, ite_eq_left h]
+  · rw [ite_eq_right fun h' => h h'.1, ite_eq_right h]
 
 end GlobalTheory.DistRel
 
@@ -536,8 +530,8 @@ theorem datum_rel (B : Base S T) (hB : B.Good) {Q : Finset (Pl D.host.E)} (hQ : 
     · refine Finset.prod_congr rfl fun PP _ => ?_
       dsimp only
       by_cases h : PP.1 = P
-      · rw [if_pos h, if_pos h]
-      · rw [if_neg h, if_neg h, hy PP.1 (Finset.mem_union_right _ (Finset.mem_erase.2 ⟨h, PP.2⟩))]
+      · rw [ite_eq_left h, ite_eq_left h]
+      · rw [ite_eq_right h, ite_eq_right h, hy PP.1 (Finset.mem_union_right _ (Finset.mem_erase.2 ⟨h, PP.2⟩))]
   have hR := datumFn_eq_restrict hB.frame hQ.1 hsub hdep
   rw [hid] at hR
   set a' := halfIdem B.G.Pg (B.de.Q ∪ Q.erase P)
@@ -582,7 +576,7 @@ theorem datum_rel (B : Base S T) (hB : B.Good) {Q : Finset (Pl D.host.E)} (hQ : 
     have hm := _root_.GlobalTheory.HeckeMobius.sum_hecke_indicator_eq_prim (Ov D v) (Fv D.host.F v) p hp T.rank S.rank (GA D T) (fun k => rho T π β' (α k)) R (rho T π β')
       hHk z
     rw [hz] at hm
-    rw [if_pos hY0, mul_one]
+    rw [ite_eq_left hY0, mul_one]
     have e2 : C + ∑ k ∈ Finset.Icc 1 T.rank, (-1 : ℂ) ^ k * (Nat.card (IsLocalRing.ResidueField (Ov D v)) : ℂ) ^ (k * (k - 1) / 2) *
         (C * (Nat.card {γ : GA D T // γ ∈ R k ∧ IntM (Ov D v) (((rho T π β' γ)⁻¹).1 * Y)} : ℂ)) =
         C * ((prim (z.map (IsLocalRing.residue (Ov D v))) : ℚ) : ℂ) := by
@@ -594,13 +588,13 @@ theorem datum_rel (B : Base S T) (hB : B.Good) {Q : Finset (Pl D.host.E)} (hQ : 
     by_cases hC0 : C = 0
     · rw [hC0, zero_mul, zero_mul]
     · congr 1
-      have hd : B.F.datumFn B.G (B.de.Q ∪ Q) ω1 x ≠ 0 := by rw [key0, if_pos hY0, mul_one]; exact hC0
+      have hd : B.F.datumFn B.G (B.de.Q ∪ Q) ω1 x ≠ 0 := by rw [key0, ite_eq_left hY0, mul_one]; exact hC0
       have hI : IsIntM (frMapO S T B.F.βS B.F.βT x) := by
         by_contra hn
         apply hd
-        simp only [Frame.datumFn, hn, and_false, if_false, mul_zero]
+        simp only [Frame.datumFn, hn, and_false, ite_false, mul_zero]
       exact_mod_cast hφ3 _ _ _ hI z hz
-  · rw [if_neg hY0, mul_zero, zero_mul, zero_add]
+  · rw [ite_eq_right hY0, mul_zero, zero_mul, zero_add]
     refine (Finset.sum_eq_zero fun k hk => ?_).symm
     have h0 : Nat.card {γ : GA D T // γ ∈ R k ∧ IntM (Ov D v) (((rho T π β' γ)⁻¹).1 * Y)} = 0 := by
       refine Nat.card_eq_zero.2 (Or.inl ⟨fun ⟨γ, hγ, h⟩ => hY0 ?_⟩)
@@ -679,7 +673,7 @@ theorem vec_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.
   have he : IsIdemAt (idemAt P) P := hS'.isIdemAt (hq' (Finset.mem_union_right _ hP))
   obtain ⟨v, π, hπ⟩ := GlobalTheory.T.exists_place_chart_of_splitIdempotent (idemAt P) he.1
   obtain ⟨⟨p, hpϖ, hp⟩, hq⟩ := GlobalTheory.T.splitChart_uniformiser_and_residueCard (idemAt P) P v π he hπ ϖ hϖ1 hϖ2
-  obtain ⟨φv, hφ1, hφ2, hφ3, hfr⟩ := GlobalTheory.T.splitPlaceChart_finiteAdeleTensor_levels D (idemAt P) P v π he hπ
+  obtain ⟨φv, hφ1, hφ2, hφ3, hfr⟩ := GlobalTheory.ChartLevels.chart_levels D (idemAt P) P v π he hπ
   have hq0 : Ideal.absNorm P.asIdeal ≠ 0 := fun h => P.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
   have : Finite (IsLocalRing.ResidueField (Ov D v)) := Nat.finite_of_card_ne_zero (hq ▸ hq0)
   have hdr := datum_rel B hB hQ hP φ he.1 hπ φv hφ1 hφ2 hφ3 (hfr T B.F.βT B.F.ΛT hbT) hp hpϖ α R hα
@@ -712,7 +706,7 @@ theorem vec_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.
     rw [hL]
     congr 1
     obtain ⟨-, k₁, hk₁, k₂, hk₂, hγe⟩ := ((hα k hk).2.2.1 γ hγ)
-    have hH := GlobalTheory.T.modulus_unramifiedChar_det_heckeDoubleCoset_split D T P (idemAt P) he ϖ hϖ1 hϖ2 x hx k (α k) (hα k hk).1 k₁ hk₁ k₂ hk₂
+    have hH := GlobalTheory.SplitDetValue.det_modulus_chi D T P (idemAt P) he ϖ hϖ1 hϖ2 x hx k (α k) (hα k hk).1 k₁ hk₁ k₂ hk₂
       (GlobalTheory.VecInv.detAt (idemAt P) he.1.1 T γ) (by rw [← hγe]; exact GlobalTheory.VecInv.isDetAt_detAt _ he.1.1 T γ)
     obtain ⟨hH1, hH2⟩ := hH
     have hmu := hH2 Circle (B.mu * 1) (fun y h1 h2 h3 => by

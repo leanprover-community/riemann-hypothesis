@@ -2,46 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalCoefficientElementarySymm
 
 @[expose] public section
@@ -66,14 +27,14 @@ theorem exists_esymm_eq (n : ℕ) (a : ℕ → ℂ) (h0 : a 0 = 1) (hn : a n ≠
   have hqc : ∀ k (hk : k < n), q.coeff k = c ⟨k, hk⟩ := by
     intro k hk
     rw [hq, Polynomial.finsetSum_coeff, Finset.sum_eq_single (⟨k, hk⟩ : Fin n)]
-    · rw [Polynomial.coeff_C_mul_X_pow, if_pos rfl]
+    · rw [Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl]
     · intro i _ hi
-      rw [Polynomial.coeff_C_mul_X_pow, if_neg]
+      rw [Polynomial.coeff_C_mul_X_pow, ite_eq_right]
       intro h; exact hi (Fin.ext h.symm)
     · intro h; exact absurd (Finset.mem_univ _) h
   have hpc : ∀ k (hk : k < n), p.coeff k = c ⟨k, hk⟩ := by
     intro k hk
-    rw [hp, Polynomial.coeff_add, Polynomial.coeff_X_pow, if_neg hk.ne, zero_add, hqc k hk]
+    rw [hp, Polynomial.coeff_add, Polynomial.coeff_X_pow, ite_eq_right hk.ne, zero_add, hqc k hk]
   have hroots : Multiset.card p.roots = p.natDegree := by
     first
     | exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits p)
@@ -133,11 +94,11 @@ theorem heckeVec_Tj_zero (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion 
     unfold Tj
     rw [Set.indicator_apply]
     by_cases hg : g ∈ KGL w (n := n)
-    · rw [if_pos hg, if_pos]
+    · rw [ite_eq_left hg, ite_eq_left]
       · rfl
       · simp only [Set.mem_setOf_eq]
         exact ⟨g, hg, 1, one_mem _, by simp [hd]⟩
-    · rw [if_neg hg, if_neg]
+    · rw [ite_eq_right hg, ite_eq_right]
       simp only [Set.mem_setOf_eq]
       rintro ⟨a, ha, b, hb, hab⟩
       apply hg
@@ -147,9 +108,9 @@ theorem heckeVec_Tj_zero (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion 
   unfold heckeVec
   rw [finsum_eq_single _ (QuotientGroup.mk 1 : GL (Fin n) (w.adicCompletion E) ⧸ KGL w (n := n))]
   · obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul (KGL w (n := n)) (1 : GL (Fin n) (w.adicCompletion E))
-    rw [hk, one_mul, hK, if_pos k.2, one_smul, hfix _ k.2]
+    rw [hk, one_mul, hK, ite_eq_left k.2, one_smul, hfix _ k.2]
   · intro c hc
-    rw [hK, if_neg, zero_smul]
+    rw [hK, ite_eq_right, zero_smul]
     intro hmem
     apply hc
     rw [← QuotientGroup.out_eq' c]

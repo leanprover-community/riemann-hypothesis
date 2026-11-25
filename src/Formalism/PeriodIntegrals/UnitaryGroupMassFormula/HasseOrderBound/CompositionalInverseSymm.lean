@@ -62,7 +62,7 @@ theorem sum_multinomial_sub (β : σ →₀ ℕ) (hβ : β ≠ 0) :
     have herase : ∀ i ∈ β.support.erase p, (β - Finsupp.single p 1 : σ →₀ ℕ) i = β i := by
       intro i hi
       have hne : p ≠ i := (Finset.ne_of_mem_erase hi).symm
-      rw [Finsupp.tsub_apply, Finsupp.single_apply, if_neg hne, Nat.sub_zero]
+      rw [Finsupp.tsub_apply, Finsupp.single_apply, ite_eq_right hne, Nat.sub_zero]
     have hpp : (β - Finsupp.single p 1 : σ →₀ ℕ) p = β p - 1 := by
       rw [Finsupp.tsub_apply, Finsupp.single_eq_same]
     have hsum : ∑ i ∈ β.support, (β - Finsupp.single p 1 : σ →₀ ℕ) i = ∑ i ∈ β.support, β i - 1 := by
@@ -165,7 +165,7 @@ theorem L_mul_F (c : σ →₀ A) (s t : A) (hst : s * t = 1) (k : ℕ) :
       ∑ p ∈ c.support ∪ β.support,
       (if Finsupp.single p 1 ≤ β then c p * cf c t (k + 1) (β - Finsupp.single p 1 : σ →₀ ℕ) else 0) :=
     Finset.sum_subset Finset.subset_union_right (fun p _ hp => by
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       have h' := Finsupp.single_le_iff.1 h
       exact hp (Finsupp.mem_support_iff.2 (by omega)))
@@ -173,7 +173,7 @@ theorem L_mul_F (c : σ →₀ A) (s t : A) (hst : s * t = 1) (k : ℕ) :
       (if Finsupp.single p 1 ≤ β then c p * cf c t (k + 1) (β - Finsupp.single p 1 : σ →₀ ℕ) else 0) =
       ∑ p ∈ β.support, c p * cf c t (k + 1) (β - Finsupp.single p 1 : σ →₀ ℕ) :=
     Finset.sum_congr rfl (fun p hp =>
-      if_pos (Finsupp.single_le_iff.2 (Nat.one_le_iff_ne_zero.2 (Finsupp.mem_support_iff.1 hp))))
+      ite_eq_left (Finsupp.single_le_iff.2 (Nat.one_le_iff_ne_zero.2 (Finsupp.mem_support_iff.1 hp))))
   rw [h1, ← h2, h3, coeff_F, coeff_F]
   exact cf_rec c s t hst k β
 
@@ -280,7 +280,7 @@ theorem compositionalInverseSymm : S1 := by
     rw [Finsupp.prod_fintype _ _ (by intro p; simp)]
     simp only [Finsupp.coe_equivFunOnFinite_symm]
     rw [Fintype.prod_prod_type, Fin.prod_univ_succ]
-    simp only [cS_eq, Fin.succ_ne_zero, if_false, if_true, map_prod, map_pow]
+    simp only [cS_eq, Fin.succ_ne_zero, ite_false, ite_true, map_prod, map_pow]
     split_ifs with h
     · simp [h]
     · push Not at h

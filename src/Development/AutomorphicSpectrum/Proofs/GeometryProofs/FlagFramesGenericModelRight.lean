@@ -649,15 +649,15 @@ theorem exists_lu_of_leading_minors {F : Type} [Field F] {r : ℕ} (Y : Matrix (
       (fun _ _ => Finset.mem_univ _) (fun j _ hj => ?_) (fun b _ => ?_)
     · have hjk : ¬ (j : ℕ) < (k : ℕ) + 1 := fun hlt =>
         hj ⟨⟨j, hlt⟩, by simp, by ext; simp⟩
-      simp only [C, dif_neg hjk, mul_zero]
+      simp only [C, dite_eq_right hjk, mul_zero]
     · have hb : ((Fin.castLE k.2 b : Fin r) : ℕ) < (k : ℕ) + 1 := b.2
-      simp only [C, dif_pos hb]
+      simp only [C, dite_eq_left hb]
       rfl
   refine ⟨C, Y * C, fun l k hkl => ?_, fun l k hlk => ?_, fun l => ?_, rfl⟩
   · have hn : ¬ (l : ℕ) < (k : ℕ) + 1 := by
       have : (k : ℕ) < l := hkl
       omega
-    simp only [C, dif_neg hn]
+    simp only [C, dite_eq_right hn]
   · have hlt : (l : ℕ) < (k : ℕ) + 1 := by
       have : (l : ℕ) < k := hlk
       omega
@@ -1012,18 +1012,9 @@ theorem unitAt_mul' {p : Cpt ξ} {f g : Ω} (hf : unitAt ξ p f) (hg : unitAt ξ
 
 theorem unitAt_prod' {p : Cpt ξ} {ι : Type} (s : Finset ι) (f : ι → Ω) (h : ∀ i ∈ s, unitAt ξ p (f i)) :
     unitAt ξ p (∏ i ∈ s, f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    rw [Finset.prod_empty]
-    unfold GlobalTheory.CompanionTheory.Ar.unitAt
-    refine ⟨one_ne_zero, one_mem _, ?_⟩
-    rw [inv_one]
-    exact one_mem _
-  | @insert a s ha ih =>
-    rw [Finset.prod_insert ha]
-    exact unitAt_mul' (h a (Finset.mem_insert_self a s))
-      (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
+  refine Finset.prod_induction f (unitAt ξ p) (fun _ _ ha hb => unitAt_mul' ha hb) ?_ h
+  unfold GlobalTheory.CompanionTheory.Ar.unitAt
+  refine ⟨one_ne_zero, one_mem _, by rw [inv_one]; exact one_mem _⟩
 
 theorem exists_dual_family {E : Type} [AddCommGroup E] [Module Ω E] {r : ℕ} {β : Fin r → E}
     (hβ : LinearIndependent Ω β) :

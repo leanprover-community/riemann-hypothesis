@@ -106,11 +106,11 @@ theorem cast_apply_eq {i j : ι} (e : p i = p j) (h : i = j) :
 
 theorem comb_inl (hp : Function.Injective p) (i : ι) : comb p A y0 z (.inl (p i)) = A i (z i) := by
   have h : ∃ j, p j = p i := ⟨i, rfl⟩
-  simp only [comb, dif_pos h]
+  simp only [comb, dite_eq_left h]
   exact cast_apply_eq h.choose_spec (hp h.choose_spec)
 
 theorem comb_inl_of_not (a : α) (h : ¬ ∃ i, p i = a) : comb p A y0 z (.inl a) = y0 (.inl a) := by
-  simp only [comb, dif_neg h]
+  simp only [comb, dite_eq_right h]
 
 theorem comb_update [DecidableEq ι] [DecidableEq (α ⊕ β)] (hp : Function.Injective p) (i : ι) (x : E i) :
     comb p A y0 (Function.update z i x) = Function.update (comb p A y0 z) (.inl (p i)) (A i x) := by
@@ -361,30 +361,30 @@ theorem finiteDimensional_homDS_span (hπ : IsIrrUnitary π) (hds : HasDSComp M 
   have hyT : ∀ v ∈ T, y v ∈ Submodule.span ℂ (b v) := by
     rintro _ ⟨v, -, rfl⟩
     by_cases h : v ∈ Sb
-    · simp only [b, if_pos h]
+    · simp only [b, ite_eq_left h]
       have e : Set.range (bas v) = (Q v).subtype '' Set.range (Module.finBasis ℂ (Q v)) := by
         rw [← Set.range_comp]; rfl
       rw [e, Submodule.span_image, (Module.finBasis ℂ (Q v)).span_eq, Submodule.map_top, Submodule.range_subtype]
       exact hyQ v
-    · simp only [b, if_neg h]
+    · simp only [b, ite_eq_right h]
       have : Q v ≤ ℂ ∙ ξ (.inr v) := not_not.1 h
       exact this (hyQ v)
   refine Submodule.span_le.2 ?_ (mem_span_of_mem_span (fun y hy => hB.pure_update hy) b hT hy hyT)
   rintro _ ⟨y', hy'off, hy'T, rfl⟩
   have hk : ∀ v : Sb, ∃ j, y' (.inr v) = bas v j := fun v => by
     have := hy'T (.inr v) ⟨v, Or.inl v.2, rfl⟩
-    simp only [b, if_pos v.2] at this
+    simp only [b, ite_eq_left v.2] at this
     obtain ⟨j, hj⟩ := this
     exact ⟨j, hj.symm⟩
   choose k hk using hk
   have hagree : ∀ v, y0 k (.inr v) = y' (.inr v) := fun v => by
     by_cases h : v ∈ Sb
-    · simp only [y0, dif_pos h]
+    · simp only [y0, dite_eq_left h]
       exact (hk ⟨v, h⟩).symm
-    · simp only [y0, dif_neg h]
+    · simp only [y0, dite_eq_right h]
       by_cases hv : y (.inr v) ≠ ξ (.inr v)
       · have := hy'T (.inr v) ⟨v, Or.inr hv, rfl⟩
-        simp only [b, if_neg h] at this
+        simp only [b, ite_eq_right h] at this
         exact this.symm
       · rw [hy'off (.inr v) (by rintro ⟨u, hu, e⟩; obtain rfl := Sum.inr_injective e; exact hu.elim h hv)]
         exact (not_not.1 hv).symm
@@ -473,7 +473,7 @@ theorem exists_finset_sum_translate_fixed {G X : Type} [Group G] [TopologicalSpa
   have hf : ∀ y ∈ F, f y ∈ K ∧ ρ (f y) x = y := by
     intro y hy
     have h := (hFmem y).1 hy
-    simp only [f, dif_pos h]
+    simp only [f, dite_eq_left h]
     exact h.choose_spec
   refine ⟨F.image f, ?_, ?_, ?_⟩
   · intro g hg

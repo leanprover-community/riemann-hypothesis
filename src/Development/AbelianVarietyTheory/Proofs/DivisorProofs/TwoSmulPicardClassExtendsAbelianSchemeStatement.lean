@@ -236,7 +236,6 @@ theorem commGroup_inv_eq_conj_twist_identity {G : Type} [CommGroup G] (a b g : G
 
 end GlobalTheory.ExtendClass
 
-
 open GlobalTheory.GlueLineBundle TopologicalSpace GlobalTheory.ExtendClass in
 theorem GlobalTheory.extend_class_of_locally_trivial : ∀ (X : Scheme.{0}) [IsLocallyNoetherian X], ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X → ∀ W : X.Opens, (∀ z : X, ringKrullDim ((X).presheaf.stalk z) ≤ 1 → z ∈ W) → ∀ c : Pic W.toScheme, (∀ x : X, ∃ N : X.Opens, x ∈ N ∧ GlobalTheory.CechPic.pull (X.homOfLE (inf_le_right : N ⊓ W ≤ W)) c = 0) → ∃ c' : Pic X, GlobalTheory.CechPic.pull W.ι c' = c := by
   intro X _ hX W hW c hc
@@ -266,9 +265,6 @@ theorem GlobalTheory.extend_class_of_locally_trivial : ∀ (X : Scheme.{0}) [IsL
         have hx : W.ι z ∈ N x := hz.1.1
         have hy : W.ι z ∈ N y := hz.1.2
         have hw : W.ι z ∈ N w := hz.2
-        have h1 : W.ι z ∈ N x ⊓ N y := ⟨hx, hy⟩
-        have h2 : W.ι z ∈ N y ⊓ N w := ⟨hy, hw⟩
-        have h3 : W.ι z ∈ N x ⊓ N w := ⟨hx, hw⟩
         dsimp only [L] at hz ⊢
         rw [map_mul, gm_res W.ι z _ hz, gm_res W.ι z _ hz, gm_res W.ι z _ hz]
         rw [hgr x y z k hx hy hk, hgr y w z k hy hw hk, hgr x w z k hx hw hk, commGroup_cocycle_mul_inv_mul_mul_inv] }
@@ -332,7 +328,6 @@ theorem exists_units_of_gen_restrict {Z : Scheme.{0}} (L : LB Z) (O : Z.Opens) (
   have hW : O.ι z ∈ L.U i ⊓ L.U j ⊓ O := ⟨⟨hi, hj⟩, hx⟩
   have hWi : O.ι z ∈ L.U i ⊓ O := ⟨hi, hx⟩
   have hWj : O.ι z ∈ L.U j ⊓ O := ⟨hj, hx⟩
-  have hWij : O.ι z ∈ L.U i ⊓ L.U j := ⟨hi, hj⟩
   have l₁ : L.U i ⊓ L.U j ⊓ O ≤ L.U i ⊓ L.U j := inf_le_left
   have l₂ : L.U i ⊓ L.U j ⊓ O ≤ L.U j ⊓ O := le_inf (inf_le_left.trans inf_le_right) inf_le_right
   have key := gm_inj O.ι z (U := L.U i ⊓ O) (U' := L.U i ⊓ L.U j ⊓ O) hWi hW
@@ -617,7 +612,7 @@ theorem pull_mul_add_pull_mul_inv_of_opens : ∀ (S : Scheme.{0}) [IsLocallyNoet
     rw [map_one, MonObj.comp_one]
   rw [key _ _ hmul, key _ _ hinv, key _ _ hx, key _ _ ha, key _ _ hainv, key _ _ hone]
   simp only [pull_comp]
-  exact GlobalTheory.T.theorem_of_square_cechPicard_translates U.toScheme A' hA' (pull e.inv c) Y' x' a'
+  exact GlobalTheory.SquareSym.pull_mul_add_pull_mul_inv U.toScheme A' hA' (pull e.inv c) Y' x' a'
 
 end GlobalTheory.SquareOpen
 end -- clump:auto
@@ -804,8 +799,6 @@ theorem surjective_inf_of_geometricallyIntegral :
       Surjective (O.ι ≫ f) → Surjective (O'.ι ≫ f) → Surjective ((O ⊓ O').ι ≫ f) := by
   intro Z T f _ O O' hO hO'
   refine ⟨fun t => ?_⟩
-  have hint : IsIntegral (f.fiber t) :=
-    GeometricallyIntegral.geometrically_isIntegral _ _ _ (IsPullback.of_hasPullback f (T.fromSpecResidueField t))
   have hi : IsPreirreducible (f ⁻¹' {t}) := by
     rw [← Scheme.Hom.range_fiberι, ← Set.image_univ]
     exact (PreirreducibleSpace.isPreirreducible_univ).image _ (f.fiberι t).continuous.continuousOn
@@ -1249,7 +1242,7 @@ theorem factor_locus : ∀ (X T : Scheme.{0}) (W : X.Opens) (c : Pic W.toScheme)
     exact ⟨z', h⟩)
   have hk : k ≫ (j ∣_ W) = X.homOfLE (inf_le_right : N ⊓ W ≤ W) := IsOpenImmersion.lift_fac _ _ _
   rw [← hk, pull_comp]
-  refine GlobalTheory.T.nonvanishingLocus_pullback_and_vanish_into_locus.2 _ _ k _ V hV fun z => ?_
+  refine GlobalTheory.LocusPull.locus_pull.2 _ _ k _ V hV fun z => ?_
   obtain ⟨z', hz'V, h⟩ := hz z
   have hkz : k z = z' := (j ∣_ W).isOpenEmbedding.injective (by
     have e : (j ∣_ W) (k z) = X.homOfLE (inf_le_right : N ⊓ W ≤ W) z := congrArg (fun f => f.base z) hk

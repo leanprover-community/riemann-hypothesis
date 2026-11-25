@@ -160,7 +160,7 @@ theorem mem_so (hM : M.IsGood ψ) (t : E →ₐ[F] Fv F v) {Ψ} (hΨ : Ψ ∈ sc
     let s : Pl F → ℂ := fun w => if w = v then ψ' (fun i => evFin F v (x i)) else 1
     have hfs : (Function.mulSupport s).Finite := (Set.finite_singleton v).subset fun w hw => by
       by_contra h
-      exact hw (if_neg h)
+      exact hw (ite_eq_right h)
     have key : (fun w => Function.update φ v ψ' w (fun i => evFin F w (x i))) =
         fun w => s w * Function.update φ v 1 w (fun i => evFin F w (x i)) := by
       funext w
@@ -169,8 +169,8 @@ theorem mem_so (hM : M.IsGood ψ) (t : E →ₐ[F] Fv F v) {Ψ} (hΨ : Ψ ∈ sc
         simp [s]
       · simp [s, h]
     unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
-    rw [key, finprod_mul_distrib hfs hfin, finprod_eq_single s v fun w hw => if_neg hw]
-    simp only [s, if_true]
+    rw [key, finprod_mul_distrib hfs hfin, finprod_eq_single s v fun w hw => ite_eq_right hw]
+    simp only [s, ite_true]
     ring
   have hrepl : ∀ x y, pure f (Function.update φ v 1) (repl v x y) = pure f (Function.update φ v 1) x := by
     intro x y

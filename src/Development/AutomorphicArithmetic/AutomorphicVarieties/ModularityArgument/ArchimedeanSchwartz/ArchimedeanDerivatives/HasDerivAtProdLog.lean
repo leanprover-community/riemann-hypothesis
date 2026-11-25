@@ -58,40 +58,10 @@ namespace UpperTheory.V.Z.Inf
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ}
 
-private theorem prod_coord (d : Cinf K) : ∏ σ : K →+* ℂ, coord σ d = ((∏ w, ‖d w‖ ^ 2 : ℝ) : ℂ) := by
-  apply _root_.UpperTheory.V.Z.Inf.prod_coord <;> assumption
-
-private theorem nrm_eq (x : Lie K n) : ((nrm x : ℝ) : ℂ) = ∏ σ, detAt σ x := (prod_coord _).symm
-
-omit [NumberField K] [_root_.NumberField.IsTotallyComplex K] in
-private theorem detAt_ne {x : Lie K n} (hx : x ∈ invSet K n) (σ : K →+* ℂ) : detAt σ x ≠ 0 :=
-  (((Matrix.isUnit_iff_isUnit_det _).1 hx).map (coord σ)).ne_zero
-
-private theorem nrm_slit {x : Lie K n} (hx : x ∈ invSet K n) : ∏ σ, detAt σ x ∈ Complex.slitPlane := by
-  have h0 : ((nrm x : ℝ) : ℂ) ≠ 0 := by
-    rw [nrm_eq]; exact Finset.prod_ne_zero_iff.2 fun σ _ => detAt_ne hx σ
-  have h1 : 0 ≤ nrm x := Finset.prod_nonneg fun w _ => by positivity
-  rw [← nrm_eq]
-  exact Complex.ofReal_mem_slitPlane.2 (lt_of_le_of_ne h1 fun h => h0 (by rw [← h]; simp))
-
 private theorem wt_eq (u : ℂ) (e : (K →+* ℂ) → ℕ) :
     (wt u e : Lie K n → ℂ) = fun x => (∏ σ, detAt σ x) ^ u * ∏ σ, (detAt σ x)⁻¹ ^ e σ := by
-  funext x; rw [wt, nrm_eq]
-
-omit [_root_.NumberField.IsTotallyComplex K] in
-private theorem contDiff_detAt (σ : K →+* ℂ) : ContDiff ℝ ∞ (detAt σ : Lie K n → ℂ) := by
-  let l : Cinf K →ₗ[ℝ] ℂ :=
-    { toFun := coord σ, map_add' := map_add _, map_smul' := GlobalTheory.IsoPull.coord_smul σ }
-  exact (LinearMap.toContinuousLinearMap l).contDiff.comp contDiff_det
-
-private theorem contDiffAt_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) {x : Lie K n} (hx : x ∈ invSet K n) :
-    ContDiffAt ℝ ∞ (wt u e) x := by
-  rw [wt_eq]
-  refine ContDiffAt.mul ?_ (contDiffAt_prod fun σ _ => ((contDiff_detAt σ).contDiffAt.inv (detAt_ne hx σ)).pow _)
-  have h1 : ContDiffAt ℂ ∞ (fun z : ℂ => z ^ u) (∏ σ, detAt σ x) :=
-    (analyticAt_id.cpow analyticAt_const (nrm_slit hx)).contDiffAt
-  exact (h1.restrict_scalars ℝ).comp x (f := fun x => ∏ σ, detAt σ x)
-    (contDiffAt_prod fun σ _ => (contDiff_detAt σ).contDiffAt)
+  funext x
+  rw [wt, show ((nrm x : ℝ) : ℂ) = ∏ σ, detAt σ x from (prod_coord _).symm]
 
 private theorem det_one_add_single {R : Type} [CommRing R] (a b : Fin n) (c : R) :
     (1 + Matrix.single a b c).det = 1 + if a = b then c else 0 := by
@@ -118,22 +88,21 @@ private theorem detAt_line (σ : K →+* ℂ) (a b : Fin n) (c : Cinf K) (x : Li
   · rw [GlobalTheory.IsoPull.coord_smul, Complex.real_smul]
   · simp
 
-private theorem hasDerivAt_prod_log {ι : Type} (S : Finset ι) (f : ι → ℂ → ℂ) (l : ι → ℂ) (z : ℂ)
-    (h : ∀ i, HasDerivAt (f i) (l i * f i z) z) :
-    HasDerivAt (fun s => ∏ i ∈ S, f i s) ((∑ i ∈ S, l i) * ∏ i ∈ S, f i z) z := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simpa using hasDerivAt_const z (1 : ℂ)
-  | insert j S hj ih =>
-    simp only [Finset.prod_insert hj, Finset.sum_insert hj]
-    exact ((h j).fun_mul ih).congr_deriv (by ring)
-
-private theorem hasDerivAt_k {ι : Type} [Fintype ι] (d c : ι → ℂ) (hd : ∀ i, d i ≠ 0) (hs : ∏ i, d i ∈ Complex.slitPlane)
-    (u : ℂ) (e : ι → ℕ) :
+private theorem hasDerivAt_k {ι : Type} [Fintype ι] (d c : ι → ℂ) (hd : ∀ i, d i ≠ 0)
+    (hs : ∏ i, d i ∈ Complex.slitPlane) (u : ℂ) (e : ι → ℕ) :
     HasDerivAt (fun s : ℂ => (∏ i, d i * (1 + s * c i)) ^ u * ∏ i, (d i * (1 + s * c i))⁻¹ ^ e i)
       ((∑ i, (u - e i) * c i) * ((∏ i, d i) ^ u * ∏ i, (d i)⁻¹ ^ e i)) 0 := by
-  have h1 : ∀ i, HasDerivAt (fun s : ℂ => d i * (1 + s * c i)) (c i * (d i * (1 + 0 * c i))) 0 := fun i =>
-    ((((hasDerivAt_id (0 : ℂ)).mul_const (c i)).const_add 1).const_mul (d i)).congr_deriv (by ring)
+  classical
+  have hprod : ∀ {f : ι → ℂ → ℂ} {l : ι → ℂ}, (∀ i, HasDerivAt (f i) (l i * f i 0) 0) →
+      HasDerivAt (fun s => ∏ i, f i s) ((∑ i, l i) * ∏ i, f i 0) 0 := fun {f l} h =>
+    (HasDerivAt.fun_finsetProd fun i _ => h i).congr_deriv (by
+      rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [smul_eq_mul, mul_left_comm, Finset.prod_erase_mul _ (fun j => f j 0) (Finset.mem_univ i)])
+  have h1 : ∀ i, HasDerivAt (fun s : ℂ => d i * (1 + s * c i)) (c i * (d i * (1 + 0 * c i))) 0 :=
+    fun i =>
+      ((((hasDerivAt_id (0 : ℂ)).mul_const (c i)).const_add 1).const_mul (d i)).congr_deriv
+        (by ring)
   have h2 : ∀ i, HasDerivAt (fun s : ℂ => (d i * (1 + s * c i))⁻¹ ^ e i)
       ((-(e i : ℂ) * c i) * (d i * (1 + 0 * c i))⁻¹ ^ e i) 0 := fun i => by
     have hi := hd i
@@ -141,8 +110,8 @@ private theorem hasDerivAt_k {ι : Type} [Fintype ι] (d c : ι → ℂ) (hd : �
     cases e i with
     | zero => simp
     | succ k => simp only [zero_mul, add_zero, mul_one, Nat.add_sub_cancel, pow_succ]; field_simp
-  have h3 := (hasDerivAt_prod_log Finset.univ _ _ 0 h1).cpow_const (c := u) (by simpa using hs)
-  have h4 := hasDerivAt_prod_log Finset.univ _ _ 0 h2
+  have h3 := (hprod h1).cpow_const (c := u) (by simpa using hs)
+  have h4 := hprod h2
   refine (h3.fun_mul h4).congr_deriv ?_
   have hP := Complex.slitPlane_ne_zero hs
   simp only [zero_mul, add_zero, mul_one, sub_mul, Finset.sum_sub_distrib, ← Finset.mul_sum, neg_mul,
@@ -155,13 +124,18 @@ private theorem fderiv_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) (a b : Fin n) (c
       (∑ σ, (u - e σ) * if a = b then coord σ c else 0) * wt u e x := by
   obtain ⟨w, hw⟩ : ∃ w, w = rmul (toL (single a b c)) x := ⟨_, rfl⟩
   rw [← hw]
-  have hd : DifferentiableAt ℝ (wt u e) x := (contDiffAt_wt u e hx).differentiableAt (by simp)
+  have hd : DifferentiableAt ℝ (wt u e) x :=
+    ((contDiffOn_wt u e).contDiffAt (isOpen_invSet.mem_nhds hx)).differentiableAt (by simp)
   have hline : HasDerivAt (fun s : ℝ => x + s • w) w 0 := by
     simpa using ((hasDerivAt_id (0 : ℝ)).smul_const w).const_add x
   have hd' : HasFDerivAt (wt u e) (fderiv ℝ (wt u e) x) ((fun s : ℝ => x + s • w) 0) := by
     simpa using hd.hasFDerivAt
   have h1 := hd'.comp_hasDerivAt (0 : ℝ) hline
-  have h2 := hasDerivAt_k (fun σ => detAt σ x) (fun σ => if a = b then coord σ c else 0) (detAt_ne hx) (nrm_slit hx) u e
+  have hs : ∏ σ, detAt σ x ∈ Complex.slitPlane := by
+    rw [show ∏ σ, detAt σ x = (nrm x : ℂ) from prod_coord _]
+    exact Complex.ofReal_mem_slitPlane.2 (nrm_pos hx)
+  have h2 := hasDerivAt_k (fun σ => detAt σ x) (fun σ => if a = b then coord σ c else 0)
+    (detAt_ne_zero hx) hs u e
   have h3 := HasDerivAt.comp_ofReal (z := 0) h2
   have e1 : (wt u e ∘ fun s : ℝ => x + s • w) = fun s : ℝ =>
       (∏ σ, detAt σ x * (1 + (s : ℂ) * if a = b then coord σ c else 0)) ^ u *
@@ -177,7 +151,7 @@ private theorem rd_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) (τ : K →+* ℂ) (
   rw [rd, fderiv_wt u e a b _ hx, fderiv_wt u e a b _ hx]
   split_ifs with h
   · have : ∑ σ, (u - e σ) * ((1 / 2 : ℂ) * (coord σ (atEmb τ 1) - Complex.I * coord σ (atEmb τ Complex.I))) = u - e τ := by
-      simp only [UpperTheory.V.WeylC.coord_hol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [UpperTheory.V.WeylC.coord_hol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← this]
     simp only [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun σ _ => by ring
@@ -208,7 +182,8 @@ private theorem rd_chart_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) (τ : K →+* 
     rd τ a b (fun y => chart ψ.1 g y * wt u e y) x =
       chart (Eop τ a b ψ).1 g x * wt u e x + (if a = b then u - e τ else 0) * (chart ψ.1 g x * wt u e x) := by
   have hc : DifferentiableAt ℝ (chart ψ.1 g) x := (contDiffAt_chart ψ.2 g hx).differentiableAt (by simp)
-  have ho : DifferentiableAt ℝ (wt u e) x := (contDiffAt_wt u e hx).differentiableAt (by simp)
+  have ho : DifferentiableAt ℝ (wt u e) x :=
+    ((contDiffOn_wt u e).contDiffAt (isOpen_invSet.mem_nhds hx)).differentiableAt (by simp)
   have h : rd τ a b (fun y => chart ψ.1 g y * wt u e y) x =
       rd τ a b (chart ψ.1 g) x * wt u e x + chart ψ.1 g x * rd τ a b (wt u e) x := by
     unfold rd
@@ -237,9 +212,9 @@ private theorem foldr_chart_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) (τ : K →
       rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
       simp
     by_cases hpj : p j = j
-    · simp only [if_pos hpj, Module.algebraMap_end_apply, map_smul, smul_eq_mul, hj]
+    · simp only [ite_eq_left hpj, Module.algebraMap_end_apply, map_smul, smul_eq_mul, hj]
       ring
-    · simp only [if_neg hpj, LinearMap.zero_apply, map_zero]
+    · simp only [ite_eq_right hpj, LinearMap.zero_apply, map_zero]
       ring
 
 end UpperTheory.V.Z.Inf
@@ -248,8 +223,8 @@ open UpperTheory.V.Z.Inf in
 theorem UpperTheory.V.Z.Inf.ptwOf :
     UpperTheory.V.Z.Inf.PtwOf := by
   intro hWeyl K _ _ _ n τ φ m hm g u e x hx
-  have hs : ContDiffOn ℝ ∞ (fun y => chart φ.1 g y * wt u e y) (invSet K n) := fun y hy =>
-    ((contDiffAt_chart φ.2 g hy).mul (contDiffAt_wt u e hy)).contDiffWithinAt
+  have hs : ContDiffOn ℝ ∞ (fun y => chart φ.1 g y * wt u e y) (invSet K n) :=
+    (φ.2 g).mul (contDiffOn_wt u e)
   have hW := hWeyl K n τ (invSet K n) isOpen_invSet _ hs x hx
   have hfold := fun p => foldr_chart_wt u e τ g p φ (List.finRange n) x hx
   simp only [hfold] at hW
@@ -266,7 +241,7 @@ theorem UpperTheory.V.Z.Inf.ptwOf :
     congr 1
     ring
   rw [hcap, hm, ← chartL_apply, map_smul, chartL_apply, smul_eq_mul] at hq
-  have hd := detAt_ne hx τ
+  have hd := detAt_ne_zero hx τ
   have hW' : detAt τ x * detD τ (fun y => chart φ.1 g y * wt u e y) x =
       (m.map (u - e τ + ((n : ℂ) - 1) / 2 + ·)).prod * chart φ.1 g x * wt u e x := by
     rw [hW, hq, Finset.sum_mul]

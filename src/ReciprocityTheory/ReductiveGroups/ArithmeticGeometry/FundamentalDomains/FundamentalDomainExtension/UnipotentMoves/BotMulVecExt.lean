@@ -245,7 +245,7 @@ private lemma hermC_mat_mulVec_eq_sum_sgn_of_isOrtho {x : Frame X.Ψ r} (ho : X.
   rw [hermC_mulVec_mulVec_eq_sum_gram', ho τ]
   first
     | simp only [Matrix.diagonal_apply, mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
 
 lemma maj_ortho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c : Fin r → ℂ) :
     X.maj x τ (mat x τ *ᵥ c) = nsq c := by
@@ -262,7 +262,7 @@ lemma maj_ortho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c : Fin r →
     unfold Data.posPart
     rw [hgp, inv_one]
     simp only [hcol, Matrix.one_apply, mul_ite, ite_mul, mul_one, mul_zero, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Complex.re_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     have hs : ((sgn X.p0 (Fin.castLE X.p0_le a : ℕ) : ℝ) : ℂ) = 1 := by simp [sgn]

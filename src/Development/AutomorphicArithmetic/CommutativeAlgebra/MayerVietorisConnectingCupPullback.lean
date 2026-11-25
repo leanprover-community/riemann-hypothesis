@@ -95,15 +95,6 @@ private theorem aw_pb {I J K : Cx R} (μ : Pair I J K) {E' E : Spc} (π : E' ⟶
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [ev_pb, ev_pb, sub_map, sub_map]
 
-private theorem aw_zero {I J K : Cx R} (μ : Pair I J K) {E : Spc} {n m k : ℤ} (hk : n + m = k)
-    (a : Cochain ((chains R).obj E) I n) : μ.IsAW hk a (0 : Cochain ((chains R).obj E) J m) 0 := by
-  obtain ⟨z, hz, -⟩ := (_root_.GlobalTheory.EtC.isAW_existsUnique_biadditive R μ hk).1 a (0 : Cochain ((chains R).obj E) J m)
-  have h2 := (_root_.GlobalTheory.EtC.isAW_existsUnique_biadditive R μ hk).2.2 a 0 0 z z hz hz
-  rw [add_zero] at h2
-  have h3 : z + z = z := GlobalTheory.EtC.CupSpec.isAW_unique μ hk h2 hz
-  have h4 : z = 0 := by simpa using h3
-  exact h4 ▸ hz
-
 private theorem aw_delta {I J K : Cx R} (μ : Pair I J K) {E' E : Spc} (π : E' ⟶ E) {n m : ℤ}
     {a : Cochain ((chains R).obj E') I n} {z : Cocycle ((chains R).obj E) I (n + 1)} {η : Cocycle ((chains R).obj E) J m}
     {a' : Cochain ((chains R).obj E') K (n + m)} {z' : Cochain ((chains R).obj E) K (n + m + 1)}
@@ -112,7 +103,7 @@ private theorem aw_delta {I J K : Cx R} (μ : Pair I J K) {E' E : Spc} (π : E' 
   have h3 : μ.IsAW hk (δ n (n + 1) a) (pbz π η).1 (pb π z') := ha ▸ aw_pb μ π hk h2
   have h4 : μ.IsAW (by omega : n + (m + 1) = n + m + 1) a (δ m (m + 1) (pbz π η).1) 0 := by
     rw [Cocycle.δ_eq_zero]
-    exact aw_zero μ _ a
+    exact GlobalTheory.EtC.CupSpec.isAW_zero_right μ _ a
   have h5 := _root_.GlobalTheory.EtC.aw_leibniz_rule R μ rfl a (pbz π η).1 a' (pb π z') 0 h1 h3 h4
   simpa using h5
 

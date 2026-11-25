@@ -690,15 +690,6 @@ open scoped Matrix MatrixGroups ModularForm
 
 namespace UpperTheory.V.Br
 
-private theorem nsl_aff (k : ℕ) (f : ℍ → ℂ) (z : ℍ) :
-    nsl k f (aff (Units.mk0 z.im z.im_pos.ne') z.re : GL (Fin 2) ℝ) UpperHalfPlane.I =
-      ((z.im ^ ((k : ℝ) / 2) : ℝ) : ℂ) * f z := by
-  have hd : (aff (Units.mk0 z.im z.im_pos.ne') z.re : GL (Fin 2) ℝ).val.det = z.im := by simp [aff, Matrix.det_fin_two]
-  have hz : (z.im : ℂ) * Complex.I + z.re = z := by
-    rw [add_comm]; exact Complex.re_add_im (z : ℂ)
-  rw [nsl, hd, abs_of_pos z.im_pos, sign_pos z.im_pos]
-  simp [aff, hz]
-
 private theorem isLow_fin {k : ℕ} {φ : TR.Sm ℚ 2} (h : IsLow k φ) (u : GL (Fin 2) (Af ℚ)) : IsLow k (TR.finRep ℚ 2 u φ) := by
   have e : ∀ v i j, TR.Eop v i j (TR.finRep ℚ 2 u φ) = TR.finRep ℚ 2 u (TR.Eop v i j φ) := fun v i j =>
     LinearMap.congr_fun (TR.lie_rt_fin _ u) φ

@@ -67,7 +67,7 @@ theorem comp_comm2 (G₁ : GlW K U n) (G₂ : GlW K V n) (θ : U →ₗ[K] V)
   rw [map_sum, map_sum, Finset.sum_eq_single μ]
   · exact (hw μ).symm
   · intro ν _ hne
-    rw [← hw ν, G₂.idem, if_neg (Ne.symm hne)]
+    rw [← hw ν, G₂.idem, ite_eq_right (Ne.symm hne)]
   · intro h
     exact absurd (Finset.mem_insert_self μ S) h
 
@@ -455,7 +455,7 @@ theorem typeInt_of (hNat : InvNat) (hHom : HomInv) (hSchur : SchurTrace) : TypeI
         show (((res G (G.gS {h}) (G.gS_stable {h})).comp μ x : G.gS {h}) : V) ∈ M
         rw [res_comp_coe]
         exact hD.graded μ _ hx
-  · push_neg at hex
+  · push Not at hex
     refine ⟨0, ?_, fun _ _ _ _ => rfl, fun m _ _ => by simp⟩
     intro x hx
     have hle : (⨆ v : {v : V // G.IsHW la v ∧ v ∈ W}, G.gS {(v : V)}) ≤ ⊥ := by

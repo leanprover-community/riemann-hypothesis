@@ -44,9 +44,7 @@ theorem ext_eB {M N : B.Mat k (j + ρ)} (h : ∀ x y : Ix k j ρ, M (eB k j ρ x
   simpa using h ((eB k j ρ).symm i) ((eB k j ρ).symm b)
 
 theorem hpk_conjTranspose (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
-  ext i b
-  simp only [Matrix.conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> (try simp) <;> omega
+  exact Formalism.FourierDecayAlt.P.Ux3.hpk_herm k r
 
 end blocks
 
@@ -61,15 +59,7 @@ theorem w_w_mul' {n : ℕ} (M : Matrix (Fin j) (Fin n) ℂ) : G.wMat j * (G.wMat
   rw [← Matrix.mul_assoc, wMat_mul_self, Matrix.one_mul]
 
 theorem Rn_unitary (x : RC k j ρ) : (Rn k j ρ x)ᴴ * Hpk k (j + ρ) * Rn k j ρ x = Hpk k (j + ρ) := by
-  rw [hpkBlocks k j ρ]
-  unfold Rn
-  rw [block3_conjTranspose, block3_mul, block3_mul]
-  congr 1 <;> simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add,
-    Matrix.conjTranspose_one, Matrix.conjTranspose_zero, Matrix.conjTranspose_neg, Matrix.conjTranspose_mul,
-    Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_conjTranspose, skewOf_conjTranspose,
-    Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, w_w_mul, w_w_mul', wMat_mul_self,
-    neg_zero, neg_add_cancel, Matrix.smul_mul, star_neg, star_div₀, star_one, star_ofNat]
-  all_goals module
+  exact Formalism.FourierDecayAlt.P.Ux3.rn_unitary x
 
 end rad
 

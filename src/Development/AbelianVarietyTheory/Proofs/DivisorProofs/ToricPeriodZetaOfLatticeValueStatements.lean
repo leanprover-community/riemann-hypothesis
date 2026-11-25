@@ -49,56 +49,12 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareBottom
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomothetyLatSum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticePrincMulUnit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModFMulPosPrincipal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsRingEquivOfIsTranscendenceBasis
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
@@ -975,7 +931,7 @@ theorem locEps_tame_twist : ∀ (E : Type) [Field E] [NumberField E] (K : Type) 
       show χ.locK w (unif w ^ (1 + diffExp w)) * ξ.locK w (unif w ^ (1 + diffExp w)) = _
       rw [pow_add, pow_one, map_mul, zero_add]
       rfl
-    rw [locEps, locEps, if_neg one_ne_zero, if_pos rfl, gaussSumAt_unr_mul hχ one_ne_zero, hqw, e1, e2, map_mul, map_mul,
+    rw [locEps, locEps, ite_eq_right one_ne_zero, ite_eq_left rfl, gaussSumAt_unr_mul hχ one_ne_zero, hqw, e1, e2, map_mul, map_mul,
       hx1, hgG, map_pow σ, map_natCast σ]
     simp only [Units.val_mul]
     ring
@@ -1047,7 +1003,7 @@ theorem sum_mul_eq_of_concentrated {U : Type} [CommGroup U] [Fintype U] (H : Sub
       have := huniq u u₀ hu hu₀
       rwa [mul_comm] at this
     rw [← hg u₀ _ h2, h1]
-  · push_neg at hex
+  · push Not at hex
     exact ⟨1, main 1 fun u hu => absurd (hex u) hu⟩
 
 end GlobalTheory.TameTwist
@@ -1093,7 +1049,7 @@ theorem gaussTerm_mul_one_add (χ : HChar E) (w : HeightOneSpectrum (𝓞 E)) (c
   have h1 : r * (1 + z) ≠ 0 := by rw [← he]; exact mul_ne_zero hr e.ne_zero
   have hu : Units.mk0 _ h1 = Units.mk0 r hr * e := by ext; simp [he]
   have hψ : r * (1 + z) / c = r / c + r * z / c := by ring
-  rw [gaussTerm, gaussTerm, dif_neg h1, dif_neg hr, hu, map_mul, hψ, map_add (f := _), psiAt_add]
+  rw [gaussTerm, gaussTerm, dite_eq_right h1, dite_eq_right hr, hu, map_mul, hψ, map_add (f := _), psiAt_add]
   simp only [mul_inv, Units.val_mul]
   ring
 
@@ -1145,7 +1101,7 @@ theorem mem_of_psiAt_eq_one {w : HeightOneSpectrum (𝓞 E)} {c : Eˣ}
     rw [psiAt_conductor, ht, WithZero.exp_le_exp]
     push_cast
     omega
-  push_neg at hnot
+  push Not at hnot
   obtain ⟨r, hr, hψ⟩ := hnot
   obtain ⟨r₀, hr₀⟩ := Formalism.UG.P.glint_exists_approx w ⟨r, hr⟩
   apply hψ
@@ -1210,7 +1166,7 @@ theorem gaussSumAt_mul_tame {χ ξ : HChar E} {w : HeightOneSpectrum (𝓞 E)} (
   have hg : ∀ u, ∀ k ∈ H, g (u * k) = g u := by
     intro u k hk
     show twInv ξ w (rep ↑(u * k)) = twInv ξ w (rep ↑u)
-    rw [twInv, twInv, dif_neg (hne (u * k)), dif_neg (hne u)]
+    rw [twInv, twInv, dite_eq_right (hne (u * k)), dite_eq_right (hne u)]
     have hd := valuation_sub_le (E := E) (w := w) (a := 1) (y := rep ↑(u * k)) (y' := rep ↑u)
       (by rw [pow_one]; exact hH' u k hk)
     have hξ1 : ξ.LevelLe w 1 := hξ
@@ -1280,7 +1236,7 @@ theorem gaussSumAt_mul_tame {χ ξ : HChar E} {w : HeightOneSpectrum (𝓞 E)} (
   rw [gaussSumAt, gaussSumAt, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype]
   simp_rw [gaussTerm_mul]
   have hg0 : g u₀ = (((ξ.locK w (Units.mk0 _ (hne u₀)))⁻¹ : ℂˣ) : ℂ) := by
-    simp only [g, twInv, dif_neg (hne u₀)]
+    simp only [g, twInv, dite_eq_right (hne u₀)]
   rw [← hg0]
   exact hu₀
 
@@ -1312,7 +1268,7 @@ theorem locEps_mul_tame : ∀ (E : Type) [Field E] [NumberField E] (χ ξ : HCha
     exact absurd ((hχ 1).1 h2) (by omega)
   · obtain ⟨x₀, hx₀⟩ := gaussSumAt_mul_tame hχ2 hξ (valuation_unif_pow w (2 + diffExp w))
     refine ⟨unif w ^ (2 + diffExp w) * x₀⁻¹, ?_⟩
-    rw [locEps, locEps, if_neg two_ne_zero, if_neg two_ne_zero, hx₀]
+    rw [locEps, locEps, ite_eq_right two_ne_zero, ite_eq_right two_ne_zero, hx₀]
     have hm : ∀ x, (χ * ξ).locK w x = χ.locK w x * ξ.locK w x := fun x => rfl
     rw [hm, map_mul, map_inv]
     simp only [Units.val_mul, Units.val_inv_eq_inv_val]
@@ -1356,7 +1312,7 @@ theorem twist_ram_prime_dvd_Qn : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : 
     have hv := (Model.isValChar_nu hL G i j (s := 0) (Nat.zero_le _)).1
     have hE := hv.2.2.2 (w.under (𝓞 D.host.F)) w rfl
     have hexp := (hE.2 (Finset.notMem_empty _) 0).1 ((Formalism.L2.Host.HChar.unrAt_iff _ _).1 hnu)
-    rw [Model.expIn_condF, if_pos hS, condExp] at hexp
+    rw [Model.expIn_condF, ite_eq_left hS, condExp] at hexp
     split_ifs at hexp <;> omega
 
   obtain ⟨PP, hPP, hw⟩ : ∃ PP ∈ Lc.Q t, w = PP ∨ Formalism.IndefR.Lev.IsConjPl PP w := by
@@ -1711,7 +1667,7 @@ theorem exists_rep_trivial_above : ∀ (E : Type) [Field E] [NumberField E] [IsC
   · rw [QuotientGroup.mk_mul, QuotientGroup.mk_inv, hy1, QuotientGroup.mk_mul,
       (QuotientGroup.eq_one_iff A).2 hA, (QuotientGroup.eq_one_iff u).2 hu, one_mul, inv_one, mul_one]
   · have hwT : w ∈ hfin.toFinset := hfin.mem_toFinset.2 hw
-    rw [Units.val_mul, _root_.GlobalTheory.CMVal.Euler.mul_coord, _root_.GlobalTheory.CMVal.Euler.inv_coord, hudef, prod_single_coord, if_pos hwT, coe_coord]
+    rw [Units.val_mul, _root_.GlobalTheory.CMVal.Euler.mul_coord, _root_.GlobalTheory.CMVal.Euler.inv_coord, hudef, prod_single_coord, ite_eq_left hwT, coe_coord]
     exact mul_inv_cancel₀ (by rw [← coe_coord]; exact (coord w y1).ne_zero)
 
 end GlobalTheory.CMVal.TrivAbove

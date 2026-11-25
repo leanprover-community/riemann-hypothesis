@@ -23,61 +23,17 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckDeformationOfLifting
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GroupObjectLiftDividedPowers
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftLeftFst
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.PullbackCarrier
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Lemma
-import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.SiegelToroidalIntegral
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Definitions.Divisors.InfUniv
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BirigidifiedLiftPullbackOneProdEndomorphism, Development.AbelianVarietyTheory.Proofs.DivisorProofs.BirigidifiedLiftSymmetricOfSymmetricReduction, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompEqOfSqZeroAgreePairs, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompEqOfSqZeroAgreePairsStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHomTrivIff, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrpObjEqOneOfPowEqOneOfSqZeroTrivial, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrpObjEqOneOfPowEqOneOfSqZeroTrivialStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftAmpleKer, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftedPolarisationKernelKilledOfUnit, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelAmpleLiftOfNilpotentDividedPowersThickening, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorExistsPolarisationBundleLift
@@ -228,32 +184,29 @@ lemma preimage_eq_of_agree (hπ : Function.Surjective π) (hsq : RingHom.ker π 
   simp only [Over.comp_left, Over.homMk_left] at e
   exact preimage_eq _ hf.surj e V
 
-noncomputable def alg (X : Over (Sp C)) (V : X.left.Opens) : C →+* Γ(X.left, V) :=
-  ((Scheme.ΓSpecIso (CommRingCat.of C)).inv ≫ X.hom.appLE ⊤ V le_top).hom
-
 lemma fromSpec_over (X : Over (Sp C)) {V : X.left.Opens} (hV : IsAffineOpen V) :
-    hV.fromSpec ≫ X.hom = spMap (alg X V) := by
+    hV.fromSpec ≫ X.hom = spMap (GlobalTheory.SecGlue.Pair.strHom X V) := by
   have h := IsAffineOpen.SpecMap_appLE_fromSpec X.hom (isAffineOpen_top (Spec (CommRingCat.of C))) hV
     (le_top : V ≤ X.hom ⁻¹ᵁ ⊤)
   rw [IsAffineOpen.fromSpec_top, Scheme.isoSpec_Spec_inv] at h
-  rw [← h, alg, spMap, CommRingCat.ofHom_hom, Spec.map_comp]
+  rw [← h, GlobalTheory.SecGlue.Pair.strHom, spMap, CommRingCat.ofHom_hom, Spec.map_comp]
 
 lemma appLE_alg {X Y : Over (Sp C)} (f : X ⟶ Y) (V : Y.left.Opens) (V' : X.left.Opens)
-    (hf : V' ≤ f.left ⁻¹ᵁ V) (c : C) : f.left.appLE V V' hf (alg Y V c) = alg X V' c := by
-  simp only [alg, CommRingCat.hom_comp, RingHom.comp_apply]
+    (hf : V' ≤ f.left ⁻¹ᵁ V) (c : C) : f.left.appLE V V' hf (GlobalTheory.SecGlue.Pair.strHom Y V c) = GlobalTheory.SecGlue.Pair.strHom X V' c := by
+  simp only [GlobalTheory.SecGlue.Pair.strHom, CommRingCat.hom_comp, RingHom.comp_apply]
   exact comp_appLE_apply f.left Y.hom (Over.w f) _ _ _ _ _ _ _
 
 lemma sub_mem (hπ : Function.Surjective π) {X Y : Over (Sp C)} {f f' : X ⟶ Y}
     (h : ∀ (T₀ : Over (Sp C₀)) (y : Over.mk (T₀.hom ≫ spMap π) ⟶ X), y ≫ f = y ≫ f')
     {V : Y.left.Opens} (hV : IsAffineOpen V) {V' : X.left.Opens} (hV' : IsAffineOpen V')
     (hf : V' ≤ f.left ⁻¹ᵁ V) (hf' : V' ≤ f'.left ⁻¹ᵁ V) (s : Γ(Y.left, V)) :
-    f.left.appLE V V' hf s - f'.left.appLE V V' hf' s ∈ (RingHom.ker π).map (alg X V') := by
-  set J := (RingHom.ker π).map (alg X V')
+    f.left.appLE V V' hf s - f'.left.appLE V V' hf' s ∈ (RingHom.ker π).map (GlobalTheory.SecGlue.Pair.strHom X V') := by
+  set J := (RingHom.ker π).map (GlobalTheory.SecGlue.Pair.strHom X V')
   let q : Γ(X.left, V') →+* Γ(X.left, V') ⧸ J := Ideal.Quotient.mk J
   let ψ : C₀ →+* Γ(X.left, V') ⧸ J :=
-    (Ideal.quotientMap J (alg X V') Ideal.le_comap_map).comp
+    (Ideal.quotientMap J (GlobalTheory.SecGlue.Pair.strHom X V') Ideal.le_comap_map).comp
       (RingHom.quotientKerEquivOfSurjective hπ).symm.toRingHom
-  have hψ : ψ.comp π = q.comp (alg X V') := by
+  have hψ : ψ.comp π = q.comp (GlobalTheory.SecGlue.Pair.strHom X V') := by
     ext c
     have e : (RingHom.quotientKerEquivOfSurjective hπ).symm (π c) = Ideal.Quotient.mk _ c :=
       (RingEquiv.symm_apply_eq _).mpr rfl
@@ -296,7 +249,6 @@ end GlobalTheory.SqZeroAgree
 
 namespace GlobalTheory
 
-
 open MulUnramified SqZeroAgree in
 theorem comp_eq_of_sqZero_agree : ∀ (C C₀ : Type) [CommRing C] [CommRing C₀] (π : C →+* C₀),
     Function.Surjective π → RingHom.ker π ^ 2 = 0 → ∀ (K G : Over (Sp C)) (g g' : K ⟶ G),
@@ -323,7 +275,7 @@ theorem comp_eq_of_sqZero_agree : ∀ (C C₀ : Type) [CommRing C] [CommRing C�
       w.left.appLE V' W hWV' (g'.left.appLE V V' hV'V₂ s) := by
     intro s
     have hx := sub_mem π hπ hg hV hV' hV'V hV'V₂ s
-    have e := eq_on_map (RingHom.ker π) hsq (alg K V') (alg T W) (w.left.appLE V' W hWV').hom
+    have e := eq_on_map (RingHom.ker π) hsq (GlobalTheory.SecGlue.Pair.strHom K V') (GlobalTheory.SecGlue.Pair.strHom T W) (w.left.appLE V' W hWV').hom
       (w'.left.appLE V' W hWV'₂).hom (RingHom.ext (appLE_alg w V' W hWV'))
       (RingHom.ext (appLE_alg w' V' W hWV'₂)) (sub_mem π hπ hw hV' hW hWV' hWV'₂) hx
     have e' : w'.left.appLE V' W hWV'₂ (g.left.appLE V V' hV'V s) =
@@ -523,7 +475,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 
 namespace GlobalTheory.KerLiftUnit
-
 
 open GlobalTheory.AbDual GlobalTheory.CechPic GlobalTheory.PrinThicken in
 theorem ker_pow_eq_one_of_lift : ∀ (C C₀ : Type) [CommRing C] [IsLocalRing C] [IsArtinianRing C] [CommRing C₀] (π : C →+* C₀), Function.Surjective π → RingHom.ker π ^ 2 = 0 → ∀ (A₀ : Over (Sp C₀)) [GrpObj A₀] [IsCommMonObj A₀] (A : Over (Sp C)) [GrpObj A] [IsCommMonObj A] (i : A₀.left ⟶ A.left), IsGrpPullback A₀ A (spMap π) i → IsAbelianScheme A → ∀ (l : (G2 A₀).left ⟶ (G2 A).left), Geo.Tor.IsSquare i l → ∀ (P₀ : LB (G2 A₀).left) (P : LB (G2 A).left), P₀.IsLB → P.IsLB → (∃ t : (P.pull (lift (1 : A ⟶ A) (𝟙 A)).left).Gen, t.IsGen) → (∃ t : (P.pull (lift (𝟙 A) (1 : A ⟶ A)).left).Gen, t.IsGen) → LBIso P (P.pull (lift (snd A A) (fst A A)).left) → Out.RelAmple A (P.pull (lift (𝟙 A) (𝟙 A)).left) → LBIso (P.pull l) P₀ → ∀ (e : ℕ), IsUnit (e : C) → (∀ (T : Over (Sp C₀)) (x : T ⟶ A₀), (∃ t : (P₀.pull (lift (snd A₀ T ≫ x) (fst A₀ T)).left).Gen, t.IsGen) → x ^ e = 1) → ∀ (T : Over (Sp C)) (x : T ⟶ A), (∃ t : (P.pull (lift (snd A T ≫ x) (fst A T)).left).Gen, t.IsGen) → x ^ e = 1 := by

@@ -28,7 +28,7 @@ theorem exists_deriv (α : K) (ε : ℝ) (hε : 0 < ε) (m : ℕ) (c : ℝ) (hc 
       ∃ Q : ℤ[X], ‖aeval α Q‖ < ε * ‖aeval α (derivative Q)‖ ^ 2 := by
   by_cases H : ∃ Q : ℤ[X], ‖aeval α Q‖ < ε * ‖aeval α (derivative Q)‖ ^ 2
   · exact ⟨1, one_pos, fun _ _ _ => H⟩
-  · push_neg at H
+  · push Not at H
     have key : ∀ m : ℕ, ∀ c : ℝ, 0 < c → ∃ δ > 0, ∀ P : ℤ[X],
         ‖aeval α P‖ < δ → ‖aeval α (derivative^[m] P)‖ < c := by
       intro m

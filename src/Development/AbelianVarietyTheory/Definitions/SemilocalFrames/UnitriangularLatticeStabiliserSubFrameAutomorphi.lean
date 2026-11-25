@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc
@@ -95,17 +93,6 @@ theorem ext_unitary {p : PlF D} {h : GV D} (hh : h ∈ Formalism.HermitianLattic
     | add a b _ _ ha hb => rw [map_add (f := _), h_add_right, h_add_right, ha, hb]
     | smul c a _ ha => rw [map_smul, h_smul_right, h_smul_right, ha]
     | mem b hb => obtain ⟨b, rfl⟩ := hb; exact key a b
-
-end
-
-section
-variable {Z : LocDat D} {FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS} {Tn T'n : ℕ}
-  {F : LFlag (D.sp.Y 0) D.R.rS (Tn : D.host.E)} {F' : LFlag (D.sp.Y 0) D.R.rS (T'n : D.host.E)}
-
-end
-
-section
-variable {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
 
 end
 

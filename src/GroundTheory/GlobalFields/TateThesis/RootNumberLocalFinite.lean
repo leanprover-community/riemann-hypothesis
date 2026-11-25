@@ -26,12 +26,7 @@ variable {K : Type*} [Field K] [NumberField K]
 
 theorem sqrt_natCast_prod {ι : Type*} (s : Finset ι) (f : ι → ℕ) :
     Real.sqrt ((∏ i ∈ s, f i : ℕ) : ℝ) = ∏ i ∈ s, Real.sqrt (f i : ℝ) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.prod_insert ha, Finset.prod_insert ha, Nat.cast_mul,
-      Real.sqrt_mul (Nat.cast_nonneg _), ih]
+  rw [Nat.cast_prod, Real.sqrt_prod s fun i _ => Nat.cast_nonneg _]
 
 namespace HeckeCharacter
 
@@ -116,12 +111,7 @@ theorem valued_inv_of_toFractionalIdeal_eq {δ : (FiniteAdeleRing (𝓞 K) K)ˣ}
   have h1 := χ.valued_of_toFractionalIdeal_eq hδ v
   have h2 := congrArg Valued.v (units_mul_inv_apply δ v)
   rw [map_mul, map_one, h1] at h2
-  calc Valued.v (((δ⁻¹ : (FiniteAdeleRing (𝓞 K) K)ˣ) : FiniteAdeleRing (𝓞 K) K) v)
-      = exp (χ.condExp v + differentExp v) *
-          (exp (-(χ.condExp v + differentExp v)) *
-            Valued.v (((δ⁻¹ : (FiniteAdeleRing (𝓞 K) K)ˣ) : FiniteAdeleRing (𝓞 K) K) v)) := by
-        rw [← mul_assoc, ← exp_add, add_neg_cancel, exp_zero, one_mul]
-    _ = exp (χ.condExp v + differentExp v) := by rw [h2, mul_one]
+  rw [eq_inv_of_mul_eq_one_right h2, WithZero.exp_neg, inv_inv]
 
 theorem inv_apply_eq {δ : (FiniteAdeleRing (𝓞 K) K)ˣ} (v : HeightOneSpectrum (𝓞 K)) :
     ((δ⁻¹ : (FiniteAdeleRing (𝓞 K) K)ˣ) : FiniteAdeleRing (𝓞 K) K) v =
@@ -261,12 +251,12 @@ theorem finiteFourier_mul_eq_finprod_localEpsilon {δ : (FiniteAdeleRing (𝓞 K
   set c : HeightOneSpectrum (𝓞 K) → ℂ := fun v ↦ if v ∈ S then s v * I v else 1 with hcdef
   have hc : (Function.mulSupport c).Finite := S.finite_toSet.subset fun v hv ↦ by
     by_contra h
-    exact hv (if_neg h)
+    exact hv (ite_eq_right h)
   have hcS : ∏ᶠ v, c v = ∏ v ∈ S, s v * I v := by
     rw [finprod_eq_prod_of_mulSupport_subset c (s := S) fun v hv ↦ by
       by_contra h
-      exact hv (if_neg h)]
-    exact Finset.prod_congr rfl fun v hv ↦ if_pos hv
+      exact hv (ite_eq_right h)]
+    exact Finset.prod_congr rfl fun v hv ↦ ite_eq_left hv
   rw [finprod_congr (χ.localEpsilon_half_eq hδ),
     finprod_mul_distrib (χ.finite_mulSupport_localComponent δ) hc, ← χ.toIdele_ofFinite_eq_finprod δ,
     hcS, χ.finiteFourier_finiteTestFun_inv_eq hδ]

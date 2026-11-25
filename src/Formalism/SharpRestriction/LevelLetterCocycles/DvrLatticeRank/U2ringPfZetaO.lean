@@ -393,17 +393,17 @@ theorem u2ringPfD_main [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
   have hφroot : ∀ k, ∃ u : PowerSeries O, PowerSeries.X - PowerSeries.C (root k) = φY k * u := by
     intro k
     by_cases hk : k < NR
-    · exact ⟨1, by simp only [φY, if_pos hk, mul_one]⟩
+    · exact ⟨1, by simp only [φY, ite_eq_left hk, mul_one]⟩
     · refine ⟨PowerSeries.C (((ha.unit⁻¹ : Oˣ) : O) ^ m), ?_⟩
-      simp only [φY, root, if_neg hk, map_zero, sub_zero]
+      simp only [φY, root, ite_eq_right hk, map_zero, sub_zero]
       rw [mul_comm, ← mul_assoc, ← map_mul, ← mul_pow, ha.val_inv_mul, one_pow, map_one, one_mul]
   have hΓφ : ∀ k, Γ (φY k) = φY k * θY k := by
     intro k
     by_cases hk : k < NR
     · have hj := hdiv k hk
-      simp only [φY, θY, θ', root, rI, if_pos hk, dif_pos hj]
+      simp only [φY, θY, θ', root, rI, ite_eq_left hk, dite_eq_left hj]
       exact hΓlin ⟨k / m, hj⟩
-    · simp only [φY, θY, if_neg hk]
+    · simp only [φY, θY, ite_eq_right hk]
       rw [map_mul, hΓC, hΓX, hXG]
       ring
   have hPY : ∀ k, (∏ j ∈ Finset.range k, f j) c = ψ (∏ j ∈ Finset.range k, φY j) := by
@@ -416,10 +416,10 @@ theorem u2ringPfD_main [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
     rw [map_prod, Finset.prod_congr rfl fun j _ => hΓφ j, Finset.prod_mul_distrib]
   have hprod : ∏ k ∈ Finset.range (NR + 1), φY k = PowerSeries.X * EY ^ m := by
     have h0 : φY NR = PowerSeries.C (a ^ m) * PowerSeries.X := by
-      simp only [φY, if_neg (lt_irrefl NR)]
+      simp only [φY, ite_eq_right (lt_irrefl NR)]
     have h1 : ∏ k ∈ Finset.range NR, φY k =
         ∏ k ∈ Finset.range NR, (PowerSeries.X - PowerSeries.C (rI (k / m))) :=
-      Finset.prod_congr rfl fun k hk => by simp only [φY, root, if_pos (Finset.mem_range.1 hk)]
+      Finset.prod_congr rfl fun k hk => by simp only [φY, root, ite_eq_left (Finset.mem_range.1 hk)]
     have h3 := DualFramesAlt.BlockProductRing.prod_div_block m hm (fun j => PowerSeries.X - PowerSeries.C (rI j)) e
     have h2 : ∏ j ∈ Finset.range e, (PowerSeries.X - PowerSeries.C (rI j)) =
         ∏ j, (PowerSeries.X - PowerSeries.C (r j)) := by
@@ -563,7 +563,7 @@ theorem u2ringPfD_main [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
           intro i hi
           have hiN : i < NR := lt_trans (Finset.mem_range.1 hi) hlt
           have hij := hdiv i hiN
-          simp only [θY, θ', if_pos hiN, dif_pos hij]
+          simp only [θY, θ', ite_eq_left hiN, dite_eq_left hij]
           split_ifs with hik
           · have e0 : (⟨i / m, hij⟩ : Fin e) = ⟨k / m, hj⟩ := Fin.ext hik
             rw [e0]; exact hcjmk

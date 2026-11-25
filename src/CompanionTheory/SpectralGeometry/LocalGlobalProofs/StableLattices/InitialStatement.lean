@@ -11,8 +11,6 @@ import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ENNReal
 

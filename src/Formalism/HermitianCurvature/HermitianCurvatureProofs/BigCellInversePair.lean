@@ -59,9 +59,3 @@ theorem sgs_invP (p : SS k r) (hp1 : IsUnit (Matrix.of p.1.1 : Mat k r).det) (hp
   simp only [mul_assoc, Matrix.mul_nonsing_inv_cancel_left, Matrix.mul_nonsing_inv, hp1, hp2, hp3, hp4, mul_one]
 
 end Formalism.FourierDecayAlt.P.BigCellInversePair
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-end Formalism.FourierDecayAlt.P

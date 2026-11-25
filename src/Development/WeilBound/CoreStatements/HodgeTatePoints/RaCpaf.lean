@@ -158,8 +158,7 @@ theorem lifts : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C
       rw [Pi.smul_apply, Algebra.smul_def, map_mul]
       conv_lhs => rw [hr i, map_mul]
       field_simp
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ← Finset.sum_sub_distrib]
+    · rw [map_sum, ← Finset.sum_sub_distrib]
       refine v.map_sum_lt one_ne_zero fun i _ => ?_
       have h0 := he0' i
       have h2 : algebraMap R C (l i) * (g i x / algebraMap R C (e i)) -

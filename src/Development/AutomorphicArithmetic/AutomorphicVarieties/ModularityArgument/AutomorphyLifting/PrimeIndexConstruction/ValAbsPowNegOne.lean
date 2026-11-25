@@ -299,7 +299,7 @@ private theorem indSys_indSat (h2 : Module.finrank F E = 2) (hex : ∀ᶠ w in F
     refine (hex.image fun w => w.under (𝓞 F)).subset fun v hv => ?_
     by_contra h0
     exact hv fun w hw => not_not.1 fun hP => h0 ⟨w, hP, hw⟩
-  refine ((GlobalTheory.AboveL.SatBC.tendsto_under F E).eventually hev).mono fun w hw => ⟨fun w' hne hu => ?_, fun hq => ?_⟩
+  refine ((GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.tendsto_under F E).eventually hev).mono fun w hw => ⟨fun w' hne hu => ?_, fun hq => ?_⟩
   · obtain ⟨B, hB⟩ := hw w rfl
     obtain ⟨B', hB'⟩ := hw w' hu
     exact ⟨B, B', hB, hB', Or.inl ⟨w, w', hne.symm, rfl, hu, B, B', hB, hB', rfl⟩⟩
@@ -393,7 +393,7 @@ private theorem indSys_of_att {K M Ω : Type} [Field K] [NumberField K] [_root_.
       ring
     rw [e2]
     exact sat_tw hBp (-1)
-  filter_upwards [hsys, (GlobalTheory.AboveL.SatBC.tendsto_under K M).eventually key] with w hw hk
+  filter_upwards [hsys, (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.tendsto_under K M).eventually key] with w hw hk
   refine ⟨fun w' hne hw' => ?_, fun hq => ?_⟩
   · obtain ⟨B, B', h1, h2', h3⟩ := hw.1 w' hne hw'
     exact ⟨B, B', h1, h2', hk _ h3⟩

@@ -3,45 +3,9 @@ module
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.KaSmallNonpos
 public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.OEOsInjective
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpUniqJet
 import Development.AbelianVarietyTheory.Definitions.Jets.EmbShortThLeThetaPlain
@@ -79,11 +43,11 @@ private lemma ofGaps_eq_sub_mul {p : ℕ} (a b g : Fin p → ℕ) (T : ℕ)
     by_cases h : (i : ℕ) + 1 < p
     · rw [_root_.Formalism.MainNotions.DIV.Cons.ofGaps_succ g i h]
       push_cast
-      rw [ih ⟨(i : ℕ) + 1, h⟩ (by simp only; omega), hg i, if_pos h]
+      rw [ih ⟨(i : ℕ) + 1, h⟩ (by simp only; omega), hg i, ite_eq_left h]
       unfold _root_.Formalism.MainNotions.WeightAlgebra.gapZ
       rw [dite_eq_left h, dite_eq_left h]
       ring
-    · rw [_root_.Formalism.MainNotions.DIV.Cons.ofGaps_last g i h, hg i, if_neg h]
+    · rw [_root_.Formalism.MainNotions.DIV.Cons.ofGaps_last g i h, hg i, ite_eq_right h]
 
 set_option autoImplicit false in
 variable {D : _root_.Formalism.BasicNotions.D7} {j : ℕ} in
@@ -138,13 +102,13 @@ theorem _root_.GlobalTheory.RunWeightTest.isF'_fWt (ka : _root_.Formalism.MainNo
     · refine Int.toNat_of_nonneg ?_
       rw [hl, _root_.Formalism.MainNotions.DIV.Cons.gapZ_ofGaps]
       unfold _root_.Formalism.MainNotions.DIV.Cons.lGapP
-      rw [if_pos h]
+      rw [ite_eq_left h]
       have := mul_toNat_fdiv_add_two_le_of_add_two_le hK (gapZ_nonneg_of_antitone' _ (ka.aPlus_antitone τ) k)
       linarith
     · refine Int.toNat_of_nonneg ?_
       rw [hl, _root_.Formalism.MainNotions.DIV.Cons.ofGaps_last _ k h]
       unfold _root_.Formalism.MainNotions.DIV.Cons.lGapP
-      rw [if_neg h]
+      rw [ite_eq_right h]
       refine sub_nonneg.mpr (mul_toNat_fdiv_le_of_le_of_nonneg hK ?_ (by positivity))
       refine (sub_le_self _ ?_).trans (sub_le_self _ ?_) <;> positivity
   · have hl : (_root_.Formalism.MainNotions.DIV.Cons.lWt D ka T nW hW).aM τ = _root_.Formalism.MainNotions.DIV.Cons.ofGaps (_root_.Formalism.MainNotions.DIV.Cons.lGapM D ka T τ) := rfl
@@ -155,13 +119,13 @@ theorem _root_.GlobalTheory.RunWeightTest.isF'_fWt (ka : _root_.Formalism.MainNo
     · refine Int.toNat_of_nonneg ?_
       rw [hl, _root_.Formalism.MainNotions.DIV.Cons.gapZ_ofGaps]
       unfold _root_.Formalism.MainNotions.DIV.Cons.lGapM
-      rw [if_pos h]
+      rw [ite_eq_left h]
       have := mul_toNat_fdiv_add_two_le_of_add_two_le hK (gapZ_nonneg_of_antitone' _ (ka.aM_anti τ) k)
       linarith
     · refine Int.toNat_of_nonneg ?_
       rw [hl, _root_.Formalism.MainNotions.DIV.Cons.ofGaps_last _ k h]
       unfold _root_.Formalism.MainNotions.DIV.Cons.lGapM
-      rw [if_neg h]
+      rw [ite_eq_right h]
       have := mul_toNat_fdiv_le_of_le_of_nonneg hK le_rfl (show (0 : ℤ) ≤ ka.aM τ k by positivity)
       linarith
 
@@ -202,12 +166,6 @@ theorem dimY_eq_flag {j : ℕ} (hj : InR D j) : WeightFamilies.dimY D j = D.R.f 
   rw [h, choose_two_add, Nat.choose_two_right, Nat.choose_two_right]
 
 variable {L : SizeData₂ D} {P : ParameterChoice' D L}
-
-section Record
-
-variable {B : WeightFamilies.Prov D} {Q : ModuliIntegralCharts.Prov D} {j : ℕ} (X : WeightAlgebra.PJ D B Q j)
-
-end Record
 
 end GlobalTheory.DepthBoundTest
 end -- clump:auto

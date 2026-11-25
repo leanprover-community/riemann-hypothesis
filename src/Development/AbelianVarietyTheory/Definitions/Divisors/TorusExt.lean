@@ -42,7 +42,7 @@ variable {K : Type} [Field K] [NumberField K] (F : SemiFib K)
 
 def IsUnif (s : K →+* ℂ) {g : ℕ} (Λ : Submodule ℤ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ)
     (W : Fin F.P₀.g → Fin g → ℂ) : Prop :=
-  ∃ (Q : Out.PolAV (Sp ℂ)) (e : Q.g = g) (ψ : Q.A.left ⟶ F.P₀.A.left) (v' : Fin F.P₀.g → (epsR ℂ ⟶ Q.A))
+  ∃ (Q : Out.PolAV (Sp ℂ)) (_ : Q.g = g) (ψ : Q.A.left ⟶ F.P₀.A.left) (v' : Fin F.P₀.g → (epsR ℂ ⟶ Q.A))
     (u : HolUnif Q.A Q.L g) (χ : u.Λ → ℂ),
     IsPolFibre s F.P₀ Q ψ ∧ u.Λ = Λ ∧ u.IsAH Hm χ ∧ ∀ i, IsVecOver s ψ (F.v i) (v' i) ∧ u.IsDiff (W i) (v' i)
 

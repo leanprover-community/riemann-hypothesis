@@ -76,7 +76,7 @@ theorem nLeD_all {p n' : ℕ} (R : RS p n') {m : ℕ} (lam0 : Fin n' → Fin (m 
       by_cases hab : a = b
       · subst hab; simp
       · have : ((i, a) : Fin Ne × Fin n) ≠ (i, b) := fun h => hab (Prod.mk.inj h).2
-        rw [if_neg hab, if_neg this]; simp
+        rw [ite_eq_right hab, ite_eq_right this]; simp
     · have hne : es l ≠ es i := fun h => hil (hinj h).symm
       have hXs := CCL_other R lam0 t c (es i) (es l) (hes _).1 ((hes _).2.trans (hes _).2.symm) hne (hx i a)
       obtain ⟨b', hb⟩ := be_scale_Re R lam0 (es l) c hXs (hy l b)
@@ -396,16 +396,16 @@ theorem cloud_count (hS : LemmaSMat) (hRet : LatRetract) (hBP : BePerfect) (hD3 
   rw [be_smul, be_pull, h24]
   by_cases hab : a = b
   · subst hab
-    rw [if_pos rfl, be_smulK_left, hFgg]
+    rw [ite_eq_left rfl, be_smulK_left, hFgg]
     by_cases hij : i = j
     · subst hij
-      rw [if_pos rfl, if_pos rfl]
+      rw [ite_eq_left rfl, ite_eq_left rfl]
       simp only [map_mul, map_pow, map_natCast]
       rw [← mul_assoc, ← pow_add, Nat.sub_add_cancel (hka a)]
     · have : ((a, i) : Fin nb × Fin r) ≠ (a, j) := fun h => hij (Prod.mk.inj h).2
-      rw [if_neg hij, if_neg this, mul_zero, mul_zero]
+      rw [ite_eq_right hij, ite_eq_right this, mul_zero, mul_zero]
   · have : ((b, i) : Fin nb × Fin r) ≠ (a, j) := fun h => hab (Prod.mk.inj h).1.symm
-    rw [if_neg hab, if_neg this]
+    rw [ite_eq_right hab, ite_eq_right this]
     simp [be]
 
 end Formalism.MainNotions.flipOneThree.Pf
@@ -539,7 +539,7 @@ theorem lemmaSMat {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
         have hne : i0 ≠ i0.succAbove k' := Fin.ne_succAbove i0 k'
         have hne' : i0.succAbove k' ≠ i0 := Fin.succAbove_ne i0 k'
         simp only [S, Em, Matrix.mul_apply, Matrix.of_apply, sub_mul, Finset.sum_sub_distrib, ite_mul,
-          one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.one_apply]
+          one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.one_apply]
         simp [hne]
       have hrow : Ei * N = (z1 * z2) • dd := by
         ext i l

@@ -158,8 +158,6 @@ open NumberField IsDedekindDomain GlobalTheory.UnitaryBC
 
 namespace GlobalTheory.SplitUnram
 
-
-
 theorem isUnramifiedAt_of_isSplitAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L]
     (w : HeightOneSpectrum (𝓞 L)), IsSplitAt w →
     Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield L)) w.asIdeal := by
@@ -365,8 +363,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.BC
 
 attribute [local instance] borelG borelF borelA
@@ -404,7 +400,6 @@ theorem gen_tr (gen : Γ → Prod' H d) (β : ∀ s, H s →L[ℂ] H s) (m : ℕ
 
 end Gen
 
-
 theorem chiTr' : ChiTr := fun _ _ _ _ _ _ _ _ _ _ G Q h₀ h =>
   gen_tr (H := G.H) G.gen G.βop G.m G.v G.v_ne G.a₀ (fun x => G.c x G.i₀) (fun x => (G.vblk x).1) h₀ Q
     fun s χ h1 h2 h3 => h s χ ⟨h1, h2, h3⟩
@@ -429,8 +424,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open PositivityTheory.RgTw (Mat G)
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.BC
 
@@ -474,7 +467,6 @@ theorem val_tD (v : InfinitePlace E) (s : Bool) (m : ℕ) (side : Bool)
   cases side <;> simp <;> ring
 
 end
-
 
 theorem identOf' : IdentOf := by
   intro hG hR E _ _ _ n π S T F₀ F i χ hχ O
@@ -740,8 +732,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation (Tr pairSpace)
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.Bc.ArchbcB.B
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.PCandTb
 
 attribute [local instance] borelG borelF borelA
@@ -822,7 +812,7 @@ theorem candT_of (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3 : RS.JoinSat) : CandT
   have hm : (F.d.betaL _ (F₀.C.le i)).m w = fun x y => if x = y then F.d.qT (F₀.C.a i) w x.1.1 else 0 := by
     funext x y
     show (if w ∈ F.d.T then _ else _) = _
-    rw [if_pos hwd]
+    rw [ite_eq_left hwd]
     rfl
   let G' : F.d.kap w → H E (F₀.C.a i) (n - F₀.C.a i) → ℂ := fun y => G (α, Function.update x ⟨w, hwP⟩ y)
   change (locM w ((F.d.betaL _ (F₀.C.le i)).m w))^[F.m] G' ≠ 0 at hx
@@ -839,7 +829,7 @@ theorem candT_of (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3 : RS.JoinSat) : CandT
   · exfalso
     have h0 : F.d.qT (F₀.C.a i) w s.1.1 = 0 := by
       funext y
-      simp only [LocData.qT, dif_neg hadm]
+      simp only [LocData.qT, dite_eq_right hadm]
       rfl
     obtain ⟨k, hk⟩ : ∃ k, F.m = k + 1 := ⟨F.m - 1, by have := F.m_pos; omega⟩
     rw [h0, hk, Function.iterate_succ_apply', Psmall.actP_zero] at hs
@@ -849,7 +839,7 @@ theorem candT_of (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3 : RS.JoinSat) : CandT
         (((I2 (F₀.C.a i) (n - F₀.C.a i) w).relIndex (K2 (F₀.C.a i) (n - F₀.C.a i) w) : ℕ) : ℂ)) *
       dc2 w (F.d.ϖ w) (restr (j : Fin n → ℤ) _ hadm.2.1) (restr (j : Fin n → ℤ) _ hadm.2.2) g := by
     funext g
-    simp only [LocData.qT, dif_pos hadm, Finsupp.sum]
+    simp only [LocData.qT, dite_eq_left hadm, Finsupp.sum]
     rw [← Finset.sum_coe_sort]
   rw [hq] at hs
   obtain ⟨ξa, ξb, hJ, hsum⟩ := h1 E n (F₀.C.a i) (n - F₀.C.a i) F₀.μ s₁ s₂ Pa Pb D hc.ctx w (F.d.ϖ w)
@@ -905,7 +895,6 @@ open scoped Classical TensorProduct
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
 namespace PositivityTheory.Rg.BcB.F.Tail
 
 namespace R2
@@ -924,9 +913,9 @@ theorem dcos_eq (m : ℕ) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin m �
     dcos m w (tdiag ϖ x) = GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.cosetInd (fun i => ϖ ^ x i) := by
   funext g
   by_cases h : ∃ a ∈ iwGL m w, ∃ b ∈ iwGL m w, g = a * tdiag ϖ x * b
-  · rw [dcos, if_pos h, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.cosetInd, Set.indicator_of_mem]
+  · rw [dcos, ite_eq_left h, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.cosetInd, Set.indicator_of_mem]
     exact h
-  · rw [dcos, if_neg h, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.cosetInd, Set.indicator_of_notMem]
+  · rw [dcos, ite_eq_right h, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.cosetInd, Set.indicator_of_notMem]
     exact h
 
 theorem dcos_right (m : ℕ) (w : Pl E) (t g : GLw m w) (i : GLw m w) (hi : i ∈ iwGL m w) :
@@ -949,8 +938,6 @@ theorem smul_cancel {M : Type} [AddCommGroup M] [Module ℂ M] {δ dh c p d : �
     ring
   rw [e] at h
   exact (smul_right_injective M hne h).symm
-
-
 
 theorem sat_of_eig (hSub : PExp.SubEig) (hCC0 : PExp.CosetCount) (hTE : PExp.TorusExp) (hDl : PExp.DlBridge)
     (hES : PExp.ExpToSat) {m : ℕ} (P : Pre E m) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ)
@@ -991,7 +978,6 @@ theorem sat_of_eig (hSub : PExp.SubEig) (hCC0 : PExp.CosetCount) (hTE : PExp.Tor
   have hall := hTE (w.adicCompletion E) m P'.V P'.ρ ϖ hD.1 ξ c y hy0 hyfix hstep
   obtain ⟨hsph, b, hb, hsum⟩ := hES E w P.c m P.N P.h (fun i => P.σ i w) P' ξ hsub hm ⟨y, hy0, hall⟩
   exact ⟨b, fun i => ⟨hsph i, hb i⟩, hsum⟩
-
 
 theorem rExpRead_of (h0 : PExp.HkEFin) (h1 : PExp.TensHk) (h2 : PExp.TensEig) (h3 : PExp.TensEigR)
     (h4 : PExp.ContrFix) (hSub : PExp.SubEig) (hCC0 : PExp.CosetCount) (hTE : PExp.TorusExp) (hDl : PExp.DlBridge)
@@ -1124,7 +1110,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation Posi
 open scoped Classical TensorProduct
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 namespace PositivityTheory.Rg.BcB.F.Tail.JB
 
@@ -1345,12 +1330,12 @@ theorem key_mem {n : ℕ} (P₀ P : Pre E n) (w : Pl E) (hP : PreEquiv P₀ P) :
   have hc := c_eq hP
   obtain ⟨e, he, -⟩ := hP
   intro j _
-  simp only [key, dif_pos hc]
+  simp only [key, dite_eq_left hc]
   exact ⟨e.symm (Fin.cast hc j), by show P₀.cls _ w = _; rw [he, Equiv.apply_symm_apply]⟩
 
 theorem key_eqv {n : ℕ} (P₀ P Q : Pre E n) (w : Pl E) (hP : P₀.c = P.c) (hQ : P₀.c = Q.c)
     (hk : key P₀ w P = key P₀ w Q) : Nonempty ((lp P w).Equiv (lp Q w)) := by
-  simp only [key, dif_pos hP, dif_pos hQ] at hk
+  simp only [key, dite_eq_left hP, dite_eq_left hQ] at hk
   obtain ⟨e1, ⟨φ1⟩⟩ := lp_equiv_cast P w hP
   obtain ⟨e2, ⟨φ2⟩⟩ := lp_equiv_cast Q w hQ
   obtain ⟨ψ⟩ := GlobalTheory.CompanionTheory.SegReorder.famCongr (f := fun j => P.cls (Fin.cast hP j) w)
@@ -1401,13 +1386,13 @@ theorem mem_zs (Pa : Pre E a) (Pb : Pre E b) (w : Pl E) (ϖ : (w.adicCompletion 
     (h : ∃ p, Good Pa Pb w κ p) (ξ : (Fin a → ℂˣ) × (Fin b → ℂˣ)) (hJ : JEig h.choose.1 h.choose.2 w ϖ ξ.1 ξ.2) :
     ξ ∈ ZS Pa Pb w ϖ κ := by
   unfold ZS
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   exact hJ
 
 theorem ms_eq (Pa : Pre E a) (Pb : Pre E b) (w : Pl E)
     (κ : (Fin Pa.c → GlobalTheory.LocGL.IrrGL (k := w.adicCompletion E)) × (Fin Pb.c → GlobalTheory.LocGL.IrrGL (k := w.adicCompletion E)))
     (h : ∃ p, Good Pa Pb w κ p) : MS Pa Pb w κ = fr w h.choose :=
-  dif_pos h
+  dite_eq_left h
 
 theorem jEigFin_at (Pa : Pre E a) (Pb : Pre E b) (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) :
     ∃ (Z : Set ((Fin a → ℂˣ) × (Fin b → ℂˣ))) (m : ℕ), Z.Finite ∧ ∀ (Pa' : Pre E a) (Pb' : Pre E b),
@@ -1575,8 +1560,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo.He2
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.CG
@@ -1589,16 +1572,12 @@ theorem fin_reps {X : Type} {α : Type 1} [Finite X] (Q : X → α → Prop) :
   simp only [Equiv.symm_apply_apply] at this ⊢
   exact this
 
-
-
 def ClauseB {hR : Rd.ReadLimit} {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {π : Submodule ℂ (UA E n → ℂ)}
     {S : Finset (Pl E)} (F₀ : Frame0 hR π S) (d : LocData E n) : Prop :=
   ∀ w ∈ F₀.d₀.S₀, ∃ (k : ℕ) (Dl : Fin k → Pre E n), ∀ i s₁ s₂ Pa Pb D, F₀.Cand d i s₁ s₂ Pa Pb D →
       ∃ j, (∀ τ : SmIrr (GLw n w), GlobalTheory.SmGL.IsSubquotient τ.ρ (prodAt D w) ↔ GlobalTheory.SmGL.IsSubquotient τ.ρ (prodAt (Dl j) w)) ∧
         Module.finrank ℂ ↥(fixed (prodAt D w) (F₀.d₀.K' w)) = Module.finrank ℂ ↥(fixed (prodAt (Dl j) w) (F₀.d₀.K' w)) ∧
         FiniteDimensional ℂ ↥(fixed (prodAt (Dl j) w) (F₀.d₀.K' w))
-
-
 
 theorem candB (hEq : StrictEqv) (hSPr : StrictProd) (hSJ : StrictJoin) (hII : IsoInv) (hAd : AdmProd)
     {hR : Rd.ReadLimit} {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {π : Submodule ℂ (UA E n → ℂ)}
@@ -1635,9 +1614,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.CG
@@ -1653,12 +1629,12 @@ theorem rl_levels (hR : Rd.ReadLimit) (E : Type) [Field E] [NumberField E] [IsCM
     (Mb : Mods E b) (K₁ : Subgroup (GL (Fin a) (Af E))) (K₂ : Subgroup (GL (Fin b) (Af E)))
     (h1 : IsOpen (K₁ : Set (GL (Fin a) (Af E)))) (h2 : IsOpen (K₂ : Set (GL (Fin b) (Af E)))) :
     Levels E (rlΘ₁ hR E a b Ma Mb K₁ K₂) ∧ Levels E (rlΘ₂ hR E a b Ma Mb K₁ K₂) :=
-  (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.2.1 a b Ma Mb K₁ K₂ h1 h2
+  (rl_spec hR E).2.1 a b Ma Mb K₁ K₂ h1 h2
 
 theorem rl_ktypes (hR : Rd.ReadLimit) (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (Ma : Mods E a)
     (Mb : Mods E b) : KTypes E (rlΩ₁ hR E a b Ma Mb) ∧ KTypes E (rlΩ₂ hR E a b Ma Mb) :=
-  ⟨((hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.1 a b Ma Mb).2.2.1,
-    ((hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.1 a b Ma Mb).2.2.2.1⟩
+  ⟨((rl_spec hR E).1 a b Ma Mb).2.2.1,
+    ((rl_spec hR E).1 a b Ma Mb).2.2.2.1⟩
 
 theorem ub_fin {α ι : Type} [Fintype ι] {κ : ι → Type} [∀ i, Fintype (κ i)] (T : Finset α) (f : ∀ i, κ i → α → ℕ) :
     ∃ m, ∀ i k, ∀ w ∈ T, f i k w ≤ m := by
@@ -1667,19 +1643,16 @@ theorem ub_fin {α ι : Type} [Fintype ι] {κ : ι → Type} [∀ i, Fintype (�
     _ ≤ ∑ k', ∑ w' ∈ T, f i k' w' := Finset.single_le_sum (f := fun k' => ∑ w' ∈ T, f i k' w') (fun _ _ => Nat.zero_le _) (Finset.mem_univ k)
     _ ≤ ∑ i', ∑ k', ∑ w' ∈ T, f i' k' w' := Finset.single_le_sum (f := fun i' => ∑ k', ∑ w' ∈ T, f i' k' w') (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
 
-
 def ClauseA {hR : Rd.ReadLimit} {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {π : Submodule ℂ (UA E n → ℂ)}
     {S : Finset (Pl E)} (F₀ : Frame0 hR π S) (T' : Finset (Pl E)) (d : LocData E n) : Prop :=
   ∀ i w, ∃ Z : Set ((Fin (F₀.C.a i) → ℂˣ) × (Fin (n - F₀.C.a i) → ℂˣ)), Z.Finite ∧
     ∀ s₁ s₂ Pa Pb D, F₀.Cand d i s₁ s₂ Pa Pb D → w ∈ T' →
       ∀ ξa ξb, JEig Pa Pb w (F₀.d₀.ϖ w) ξa ξb → (ξa, ξb) ∈ Z
 
-
 def ClauseC {hR : Rd.ReadLimit} {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {π : Submodule ℂ (UA E n → ℂ)}
     {S : Finset (Pl E)} (F₀ : Frame0 hR π S) (T' : Finset (Pl E)) (d : LocData E n) : Prop :=
   ∃ m₀ : ℕ, ∀ i s₁ s₂ Pa Pb D, F₀.Cand d i s₁ s₂ Pa Pb D → ∀ w ∈ T',
     Module.finrank ℂ ↥(fixed (pairAt Pa Pb w) (I2 (F₀.C.a i) (n - F₀.C.a i) w)) ≤ m₀
-
 
 theorem candFin_d (hJ : JEigFin) (hFS : FinStrict) (hEq : StrictEqv) (hSP : StrictPre) (hSPr : StrictProd)
     (hSJ : StrictJoin) (hCP : CandParts) (hII : IsoInv) (hAd : AdmProd)
@@ -1716,7 +1689,6 @@ theorem candFin_d (hJ : JEigFin) (hFS : FinStrict) (hEq : StrictEqv) (hSP : Stri
     have h1 := ((hZ i w ja jb).2 Pa Pb (preEquiv_symm (hSP E _ _ _ ha)) (preEquiv_symm (hSP E _ _ _ hb))).1
     exact h1.trans (hub i (ja, jb) w hw)
 
-
 theorem candFin_of : CandFinOf := by
   intro hJ hFS hEq hSP hSPr hSJ hCP hLO hII hAd
   intro hR E _ _ _ hU n hn π hπ S F₀ T' c e b hT'
@@ -1740,8 +1712,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
@@ -1818,8 +1788,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 

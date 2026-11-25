@@ -162,7 +162,7 @@ theorem rk_low₂ (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExa
         intro hj
         have hw := hJ _ hj
         unfold Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS at hw
-        rw [if_pos hi] at hw
+        rw [ite_eq_left hi] at hw
         rcases hw with hw | hw
         · have := hw.1
           push_cast at this ha
@@ -171,7 +171,7 @@ theorem rk_low₂ (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExa
           push_cast at ha
           omega
       unfold Formalism.WeaklyAdmissibleFiltrations.IsJumpV at hnj
-      push_neg at hnj
+      push Not at hnj
       push_cast
       rw [← add_assoc, hnj, ih h1]
   rcases le_or_gt a lo with h | h

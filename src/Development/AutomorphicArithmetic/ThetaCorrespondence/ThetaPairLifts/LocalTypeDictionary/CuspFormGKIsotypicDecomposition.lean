@@ -535,10 +535,6 @@ end GlobalTheory.CuspGKId
 
 noncomputable section
 
-namespace GlobalTheory.CuspGKId
-
-end GlobalTheory.CuspGKId
-
 noncomputable section
 
 namespace GlobalTheory.CuspGKId
@@ -786,9 +782,6 @@ end Avg
 
 end GlobalTheory.FiniteGKSum
 
-namespace GlobalTheory.FiniteGKSum
-
-end GlobalTheory.FiniteGKSum
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -805,8 +798,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open scoped TensorProduct
 open Classical
 noncomputable section
-namespace GlobalTheory.FiniteGKSum
-end GlobalTheory.FiniteGKSum
 namespace GlobalTheory.FiniteGKSum
 open Formalism.REAL Formalism.MainNotions.S GlobalTheory.SmoothGlob GlobalTheory.LowTypeDetermined GlobalTheory.TypeSum GlobalTheory.PointAtPlaceHom GlobalTheory.IndefiniteRowSideFullHecke.FinitePartTypes GlobalTheory.SeriesToClosure
   GlobalTheory.FiniteGKSum in
@@ -999,11 +990,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
 open scoped TensorProduct
 open Classical
-namespace GlobalTheory.CuspGKId
-end GlobalTheory.CuspGKId
 noncomputable section
-namespace GlobalTheory.CuspGKId
-end GlobalTheory.CuspGKId
 noncomputable section
 namespace GlobalTheory.CuspGKId
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D}
@@ -1100,11 +1087,7 @@ theorem cuspForm_local_sum_generates : _root_.GlobalTheory.FunPr.ThetaLocalInput
     rfl
 end GlobalTheory.CuspGKId
 noncomputable section
-namespace GlobalTheory.CuspGKId
-end GlobalTheory.CuspGKId
 noncomputable section
-namespace GlobalTheory.CuspGKId
-end GlobalTheory.CuspGKId
 noncomputable section
 namespace GlobalTheory.CuspGKId
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D} {S : D.what₂.Tau → SPar}

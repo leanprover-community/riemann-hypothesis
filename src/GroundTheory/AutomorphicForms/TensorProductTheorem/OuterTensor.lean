@@ -158,7 +158,7 @@ theorem isIrreducible_outerTensor {ρ₁ : Representation ℂ M₁ V₁} {ρ₂ 
       | zero => simp
       | add x z _ _ hx hz => rw [TensorProduct.add_tmul]; exact Y.toSubmodule.add_mem hx hz
       | smul c x _ hx => rw [← TensorProduct.smul_tmul']; exact Y.toSubmodule.smul_mem c hx
-    have ha := h1 a (mem_span_mOrbit (ρ := ρ₁) hj₀ a)
+    have ha := h1 a (mem_span_orbit (ρ := ρ₁) hj₀ a)
     have h2 : ∀ b'' ∈ Submodule.span ℂ (range fun m => ρ₂ m (b j₀)),
         a ⊗ₜ[ℂ] b'' ∈ Y.toSubmodule := by
       intro b'' hb''
@@ -170,7 +170,7 @@ theorem isIrreducible_outerTensor {ρ₁ : Representation ℂ M₁ V₁} {ρ₂ 
       | zero => simp
       | add x z _ _ hx hz => rw [TensorProduct.tmul_add]; exact Y.toSubmodule.add_mem hx hz
       | smul c x _ hx => rw [TensorProduct.tmul_smul]; exact Y.toSubmodule.smul_mem c hx
-    exact h2 b' (mem_span_mOrbit (ρ := ρ₂) (b.ne_zero j₀) b')
+    exact h2 b' (mem_span_orbit (ρ := ρ₂) (b.ne_zero j₀) b')
   have hbt : (⊥ : Subrepresentation ρ) ≠ ⊤ := by
     intro h
     obtain ⟨a, ha⟩ := exists_ne (0 : V₁)

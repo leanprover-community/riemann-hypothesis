@@ -106,7 +106,7 @@ theorem UpperTheory.Gal.Gen.countCore_pf :
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
   have hinj : Function.Injective ev := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf0
     have hz : ∀ j y, f.1.1 (B j) (p y) = 0 := fun j y => congrFun hf0 (y, j)
     refine Subtype.ext (Subtype.ext (LinearMap.ext fun v => funext fun g => ?_))

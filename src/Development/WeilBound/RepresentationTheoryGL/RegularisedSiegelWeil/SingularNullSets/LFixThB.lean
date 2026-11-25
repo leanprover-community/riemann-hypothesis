@@ -19,8 +19,6 @@ open GlobalTheory.RegSch (ikS projS Lvl)
 
 namespace PositivityTheory.Rg.Rsw.L.LFixTh
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
 
 open PositivityTheory.Rg.Rsw.L
 
@@ -87,8 +85,8 @@ theorem good_neg {S : Finset (Pl D)} {e : AE D} {f : Mx D ρ p → ℂ} (hf : Go
       exact neg_mem (H v hv i j)
   have h := hf (-x)
   by_cases hx : IntOff S x
-  · rw [if_pos hx, h, if_pos (hi.2 hx), smul_neg]
-  · rw [if_neg hx, h, if_neg (fun H => hx (hi.1 H)), mul_zero]
+  · rw [ite_eq_left hx, h, ite_eq_left (hi.2 hx), smul_neg]
+  · rw [ite_eq_right hx, h, ite_eq_right (fun H => hx (hi.1 H)), mul_zero]
 
 theorem kOff_entry {S : Finset (Pl D)} {g : G D n} (hg : g ∈ KOff D n S) (k l : Fin (n + n)) :
     (∀ w, compInf D.host.F D.host.E w (mat g k l) = (1 : Matrix (Fin (n + n)) (Fin (n + n)) _) k l) ∧

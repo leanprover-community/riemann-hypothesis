@@ -51,7 +51,7 @@ theorem goal1 : PI.SSAscent.UnitaryGroupMassFormula.TraceNilStep := by
         map_mul, hrM, mul_zero]
     exact (sub_eq_zero.mp (by rwa [mul_sub, mul_one] at h2)).symm
   have ht : Matrix.trace (Polynomial.aeval M (u * Polynomial.X ^ k)) = 0 :=
-    trace_aeval_eq_zero M h _ (by rw [Polynomial.coeff_mul_X_pow', if_neg (by lia)])
+    trace_aeval_eq_zero M h _ (by rw [Polynomial.coeff_mul_X_pow', ite_eq_right (by lia)])
   have hE0 := idem_eq_zero _ hE ht
   refine ⟨k, ?_⟩
   calc M ^ k = M ^ k * Polynomial.aeval M (u * Polynomial.X ^ k + v * q) := by rw [huv, map_one, mul_one]

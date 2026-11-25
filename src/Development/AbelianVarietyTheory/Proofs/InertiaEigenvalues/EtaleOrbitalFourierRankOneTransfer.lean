@@ -1420,7 +1420,7 @@ theorem rankOne : RankOne := by
       rw [hl, lam_sum A ψ hψ m.μK hμ a Sf r jx hjx c hc, e14]
       rw [Finset.sum_congr rfl (fun x' hx' => by rw [e15 x' hx'])]
       have hx₀f : x₀ ∈ Sf := (hmem x₀).2 hx₀
-      simp only [mul_ite, mul_zero, Finset.sum_ite_eq', hx₀f, if_true]
+      simp only [mul_ite, mul_zero, Finset.sum_ite_eq', hx₀f, ite_true]
       have hm := hmatch x₀ hx₀ y₀ hy₀
       rw [← ha₀'] at hm
       rw [hm]
@@ -1468,7 +1468,7 @@ theorem rankOne : RankOne := by
     lam_sum A ψ hψ m.μK hμ a Sf r jw hjw c hc, e14,
     Finset.sum_congr rfl (fun x' hx' => by rw [e15 x' hx'])] at hz
   have hxf : x ∈ Sf := (hmem x).2 hx
-  simp only [mul_ite, mul_zero, Finset.sum_ite_eq', hxf, if_true] at hz
+  simp only [mul_ite, mul_zero, Finset.sum_ite_eq', hxf, ite_true] at hz
   have horb : A.orbL m.ν (φw x) y = γ x * A.orbL m.ν (fourB (m.μL x) (A.kerL ψ x) (φ x)) y := by
     simp only [Et.orbL, φw]
     rw [← integral_const_mul]

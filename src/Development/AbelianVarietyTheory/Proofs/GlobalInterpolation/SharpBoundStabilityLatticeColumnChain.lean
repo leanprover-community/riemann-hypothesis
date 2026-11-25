@@ -82,19 +82,6 @@ namespace GlobalTheory.LvT.Built.DilPass
 
 variable {D : D7} {u : D.what₂.Word}
 
-theorem isDil_act {q : ℕ} {F : Type} [Field F] {Lc : LocF q F} {n : ℕ} {g : GL (Fin n) Lc.K} {a : F}
-    {p p' p₁ p₁' : LocF.PP Lc n} (h : LocF.PP.IsDil a p p') (h₁ : p.IsAct g p₁) (h₂ : p'.IsAct g p₁') :
-    LocF.PP.IsDil a p₁ p₁' := by
-  have hs : ∀ x : Fin n → Lc.K, ∃ y, Matrix.mulVec (g : Matrix (Fin n) (Fin n) Lc.K) y = x := fun x =>
-    ⟨Matrix.mulVec ((g⁻¹ : GL (Fin n) Lc.K) : Matrix (Fin n) (Fin n) Lc.K) x, by
-      rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]⟩
-  refine ⟨?_, fun x => ?_⟩
-  · ext x
-    obtain ⟨y, rfl⟩ := hs x
-    rw [(h₁ y).1, (h₂ y).1, h.1]
-  · obtain ⟨y, rfl⟩ := hs x
-    rw [(h₁ y).2, (h₂ y).2, h.2]
-
 theorem ext_ev {B : Built.Dat D u} {i : ℕ} {sp : Split (B.J.A i) B.J.T} {M : PtModel B.ch i} (R : B.Real i sp M)
     {V : Type} [AddCommGroup V] [Module ℂ V] (φ ψ : M.Val →ₗ[ℂ] V)
     (h : ∀ F (y : M.Val), y.1 = B.ev i F → φ y = ψ y) : φ = ψ := by
@@ -148,7 +135,6 @@ theorem jj_iK (w : D.what₂.places.Pl) (v : B.ch.A.vT) (x : B.E) :
     jj R w v (R.iK v x) = B.emb (B.Z.tauOf w (B.pr v)) (if B.Z.seenP w then x else star x) := by
   unfold jj
   split_ifs <;> simp [starRingEnd_apply]
-
 
 variable (M) in
 def co : M.Val →ₗ[ℂ] Pol ℂ D.what₂.Tau (D.R.N i) :=
@@ -213,7 +199,6 @@ theorem co_range : LinearMap.range (co M) = Formalism.MainNotions.product_first_
       exact Submodule.mem_map_of_mem hP
     exact ⟨⟨_, h⟩, co_of_eq rfl⟩
 
-
 variable (M) in
 def wl (w : D.what₂.places.Pl) (L : Submodule (𝓞 B.E) (Fin (D.R.N i) → B.E)) : AddSubgroup M.Val where
   carrier := {y | ∃ F ∈ B.valAt w i L, y.1 = B.ev i F}
@@ -261,9 +246,9 @@ theorem gm_iK (w : D.what₂.places.Pl) (v : B.ch.A.vT) (g : GL (Fin (D.R.N i)) 
   split_ifs with hs
   · congr 1
     refine Units.ext (Matrix.ext fun a b => ?_)
-    exact (jj_iK R w v _).trans (by rw [if_pos hs]; rfl)
+    exact (jj_iK R w v _).trans (by rw [ite_eq_left hs]; rfl)
   · refine Units.ext (Matrix.ext fun a b => ?_)
-    exact (jj_iK R w v _).trans (by rw [if_neg hs]; rfl)
+    exact (jj_iK R w v _).trans (by rw [ite_eq_right hs]; rfl)
 
 theorem exists_map (v : B.ch.A.vT) (h : GL (Fin (D.R.N i)) (M.Lc v).K) :
     ∃ g, h = Matrix.GeneralLinearGroup.map (R.iK v).toRingHom g :=
@@ -357,22 +342,22 @@ theorem valIs (hS : B.Sees) : R.ValIs (coord R hS) := by
     obtain ⟨a, ha⟩ := exists_sepElt sp.nonconj
     by_cases hs : B.Z.seenP w = true
     · have := valB_iff R hS hw ∅ (R.pt b d) hd.Lsh_full_lattice (fun v x => by
-        rw [if_pos ⟨hs, Finset.notMem_empty v⟩, hd.locP_Lsh ha (B.pr v)]
+        rw [ite_eq_left ⟨hs, Finset.notMem_empty v⟩, hd.locP_Lsh ha (B.pr v)]
         exact R.pt_L b d v x) y
-      rw [if_pos hs] at this
+      rw [ite_eq_left hs] at this
       rw [(B.hJ.tied i).Lsh_eq]
       exact this
     · have := valB_iff R hS hw ∅ (R.pt b d) hd.L_full_lattice (fun v x => by
-        rw [if_neg fun h => hs h.1]
+        rw [ite_eq_right fun h => hs h.1]
         exact ker_iff R b d v x) y
-      rw [if_neg hs] at this
+      rw [ite_eq_right hs] at this
       rw [(B.hJ.tied i).Lsh_eq]
       exact this
   · intro w hw hs b d y
     have := valB_iff R hS hw Finset.univ (R.pt b d) ((B.hJ.tied i).ok b d).L_full_lattice (fun v x => by
-      rw [if_neg fun h => h.2 (Finset.mem_univ v)]
+      rw [ite_eq_right fun h => h.2 (Finset.mem_univ v)]
       exact ker_iff R b d v x) y
-    rw [if_pos hs] at this
+    rw [ite_eq_left hs] at this
     exact this
 
 theorem ev_rho (b) (g : (B.I.S i).G b) (F : B.V i) :
@@ -678,7 +663,7 @@ theorem valB_of_inc : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u) (i : ℕ) (
     intro v'
     by_cases h : v' = v
     · subst h
-      rw [if_neg (fun h => h.2 hv), if_pos ⟨hw, Finset.notMem_erase _ _⟩, hk]
+      rw [ite_eq_right (fun h => h.2 hv), ite_eq_left ⟨hw, Finset.notMem_erase _ _⟩, hk]
     · rw [hoff v' h]
       have : v' ∈ V.erase v ↔ v' ∈ V := by simp [h]
       simp only [this]
@@ -703,8 +688,6 @@ noncomputable section
 namespace GlobalTheory.LvT.UKS
 
 variable {D : D7} {u : D.what₂.Word} {X : Ch D u}
-
-alias emb_mem_Fi := _root_.GlobalTheory.LvT.emb_mem_Fi
 
 theorem inv_natCast_mem (w : D.what₂.places.Pl) (n : ℕ) (hn : ¬ D.what₂.places.resChar w ∣ n) :
     ((n : D.what₂.LL))⁻¹ ∈ Ow D w := by
@@ -844,7 +827,7 @@ theorem ukSharp (D : D7) (u : D.what₂.Word) (X : Ch D u) (Lv : LevTie X) (Vt :
   have hC := (Vt i hi.le).2
   have hC' := (Vt (i + 1) hi).2
   have h0 : ExtIn (Vt i hi.le).1 w ∅ (X.fm.emb i x) :=
-    extIn_of_valIn hC hw (emb_mem_Fi X i x) ((hC.S_on w hw _ (emb_mem_Fi X i x)).1 ⟨x, hx, rfl⟩)
+    extIn_of_valIn hC hw (GlobalTheory.LvT.emb_mem_Fi X i x) ((hC.S_on w hw _ (GlobalTheory.LvT.emb_mem_Fi X i x)).1 ⟨x, hx, rfl⟩)
   suffices h : ExtIn (Vt (i + 1) hi).1 w ∅
       (tpow X (if X.fm.seenP w then 2 * ∑ τ, Wt X τ + D.R.f * D.R.N D.R.m else 0) •
         Uprod X (i + 1) w (KT X i (X.fm.emb i x))) from (hC'.S_on w hw _ h.mem_Fi).2 h.valIn
@@ -872,14 +855,14 @@ theorem ukSharp (D : D7) (u : D.what₂.Word) (X : Ch D u) (Lv : LevTie X) (Vt :
     obtain ⟨n, hn⟩ := Int.le.dest hle
     have h4 := h3.pow_smul hC' hw n
     rw [smul_smul, ← zpow_natCast, ← zpow_add₀ hT, add_comm (n : ℤ), hn, zpow_natCast] at h4
-    rw [if_pos hs]
+    rw [ite_eq_left hs]
     exact h4
   · have hs' : X.fm.seenP w = false := by simpa using hs
     have h1 := extIn_K (V := ∅) hC' (Kt i hi) (hK.tgt i hi) hw (hst i hi.le) 1 (fun p p' y hy => by
       obtain ⟨y', hy', e⟩ := hK.bar i hi w hw hs' p p' y hy
       rw [one_smul, e]
       exact pow_smul_mem hC' hw hy' _) h0
-    rw [if_neg hs]
+    rw [ite_eq_right hs]
     simpa [tpow, Uprod, VVT, hs'] using h1
 
 end GlobalTheory.LvT.UKS
@@ -1242,11 +1225,6 @@ namespace GlobalTheory.LvT.Built.IntPPass
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem.Col2 GlobalTheory.LvT GlobalTheory.LvT.Built
 
-theorem ev_smul {D : D7} {u : D.what₂.Word} (B : Built.Dat D u) (i : ℕ) (c : D.what₂.LL) (F : B.V i) :
-    B.ev i (c • F) = D.what₂.embLL c • B.ev i F := by
-  unfold Built.Dat.ev
-  exact map_smulₛₗ _ _ _
-
 theorem intP_of_kerP : ∀ (D : D7) (u : D.what₂.Word) (B : Built.Dat D u) (i : ℕ) (sp : Split (B.J.A i) B.J.T) (sp' : Split (B.J.A (i + 1)) B.J.T) (M : PtModel B.ch i) (M' : PtModel B.ch (i + 1)) (R : B.Real i sp M) (R' : B.Real (i + 1) sp' M') (k : B.Ker i) (Co : M.Coord) (Co' : M'.Coord) (K : KerPt M M'), K.TgtEq → Built.Dat.KerIs R R' K k → Co.Ok → Co'.Ok → R.ValIs Co → R'.ValIs Co' → Built.Dat.KerP k → K.IntP Co Co' := by
   intro D u B i sp sp' M M' R R' k Co Co' K hT hK hCo hCo' hV hV' hP w hw hs p p' y hy
   obtain ⟨ζ, b, d, rfl⟩ := R.surj p
@@ -1264,7 +1242,7 @@ theorem intP_of_kerP : ∀ (D : D7) (u : D.what₂.Word) (B : Built.Dat D u) (i 
   rw [hT, hyy, K.src, ← map_smul]
   refine (GlobalTheory.LvT.ValEq.valB_laws D u B.ch (i + 1) M' Co' hCo' w hw Finset.univ (R'.pt b' d')).2.2.2 g' _ ?_
   refine (hV'.ker w hw hs b' d' _).2 ⟨_, h1, ?_⟩
-  rw [ev_smul, ← h2, map_zpow₀, map_natCast]
+  rw [GlobalTheory.LvT.Built.BarPass.ev_smul, ← h2, map_zpow₀, map_natCast]
   rfl
 
 end GlobalTheory.LvT.Built.IntPPass
@@ -1386,7 +1364,7 @@ theorem chain_into (hF : FormsStable X) (h4 : LevelChainUOperatorCommutation X) 
 
 theorem card_VVT {w : D.what₂.places.Pl} (h : X.fm.seenP w = true) : (VVT X w).card = (tops D).card := by
   unfold VVT
-  rw [if_pos h]
+  rw [ite_eq_left h]
   refine Finset.card_bij (fun v _ => X.fm.tauOf w v) (fun v hv => (Finset.mem_filter.1 hv).2)
     (fun a _ b _ hab => (X.fm.tauOf w).injective hab) (fun τ hτ => ?_)
   exact ⟨(X.fm.tauOf w).symm τ, Finset.mem_filter.2 ⟨Finset.mem_univ _, by simpa using hτ⟩, by simp⟩
@@ -1423,7 +1401,7 @@ theorem loss_eq {s : ℕ} (hs : D.R.t + 1 = 2 * s) (w : D.what₂.places.Pl) :
       s * (VVT X w).card * ∑ j ∈ Finset.range (D.R.m + 1), j : ℕ) : ℝ) = (D.R.m : ℝ) * ET X w := by
   unfold ET
   by_cases h : X.fm.seenP w = true
-  · rw [if_pos h, if_pos h, card_VVT h]
+  · rw [ite_eq_left h, ite_eq_left h, card_VVT h]
     unfold ETpi
     have h1 : ((D.R.t : ℝ) + 1) = 2 * s := by exact_mod_cast hs
     have h2 : ((∑ j ∈ Finset.range (D.R.m + 1), j : ℕ) : ℝ) * 2 = ((D.R.m : ℝ) + 1) * D.R.m := by
@@ -1434,12 +1412,11 @@ theorem loss_eq {s : ℕ} (hs : D.R.t + 1 = 2 * s) (w : D.what₂.places.Pl) :
     generalize (∑ j ∈ Finset.range (D.R.m + 1), j : ℕ) = S at h2 ⊢
     push_cast
     linear_combination ((s : ℝ) * ((tops D).card : ℝ) / 2) * h2
-  · have : VVT X w = ∅ := by unfold VVT; rw [if_neg h]
-    rw [if_neg h, if_neg h, this]
+  · have : VVT X w = ∅ := by unfold VVT; rw [ite_eq_right h]
+    rw [ite_eq_right h, ite_eq_right h, this]
     simp
 
 end ColSharp
-
 
 open ColSharp in
 theorem levelChainSharpColumnValuation_of_stability : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u),
@@ -1599,17 +1576,6 @@ theorem prime_le_of_embed_GL {E G : Type} [Field E] [NumberField E] [Group G] [F
     ((LinearMap.GeneralLinearGroup.generalLinearEquiv E (Fin n → E)).injective.comp
       ((Matrix.GeneralLinearGroup.toLin (n := Fin n) (R := E)).injective.comp hφ)) hp hd
 
-section Concrete
-
-variable {F : Fields} {Pr : Primes F} {R : Ranks} {W : Wts F Pr.Word R} {a : ℝ}
-
-variable {n : ℕ} {ST SG Q : Finset (HeightOneSpectrum (𝓞 F.E))}
-
-variable (sel : HeightOneSpectrum (𝓞 F.F) → HeightOneSpectrum (𝓞 F.E)) {S : Set ℕ} (mu : Tup F.F F.E F.K S)
-  (cst : LocCst F (rowSG Pr sel mu)) (L : ChIdx F Pr R (QE sel (mu : Chr F.F F.E F.K)))
-
-end Concrete
-
 section Record
 
 variable {D : D7} {u : D.what₂.Word}
@@ -1663,7 +1629,7 @@ theorem natAbs_lamT_le_Wt (X : Ch D u) (j : ℕ) (hj : j ≤ D.R.m) (τ : D.what
   refine le_trans ?_ (Finset.le_sup (f := fun a : Fin (D.R.N j) =>
     if a.1 = 0 ∧ τ ∈ topsOf D.host D.eTau then 0
     else ((X.fm.lam j τ).w a - ((j * (D.R.t + 1) / 2 : ℕ) : ℤ)).natAbs) (Finset.mem_univ a))
-  rw [if_neg ha]
+  rw [ite_eq_right ha]
   exact le_rfl
 
 theorem lamT_last (X : Ch D u) (i : ℕ) (hi : i < D.R.m) (τ : D.what₂.Tau) (a : Fin (D.R.N (i + 1)))

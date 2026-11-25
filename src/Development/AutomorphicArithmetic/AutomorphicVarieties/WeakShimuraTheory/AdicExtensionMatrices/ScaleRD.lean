@@ -82,7 +82,7 @@ theorem UpperTheory.V.Ws.sxScaleRD :
   let pre : LaurentSeries R → S := fun z => if h : ∃ y, e y = z then h.choose else 0
   have hpre : ∀ z, (∃ y, e y = z) → e (pre z) = z := by
     intro z h
-    simp only [pre, dif_pos h]
+    simp only [pre, dite_eq_left h]
     exact h.choose_spec
   have hpre0 : ∀ x : R, e (pre (HahnSeries.single 0 x)) = HahnSeries.single 0 x := by
     intro x

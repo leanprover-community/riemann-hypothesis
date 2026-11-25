@@ -57,7 +57,7 @@ variable {p : ℕ} {G : Formalism.MainNotions.G.GAtP p} (Fl : Formalism.MainNoti
 theorem nd_al_le (s : Fin (G.P.n' v)) (hs : s ∈ Fl.TT v) (hm : 2 ≤ G.P.m) :
     al (Fl.TT v) (G.P.lam0 v) s ≤ Fl.a v s + (Fl.c : ℤ) := by
   unfold al
-  rw [if_pos hs, lambda_index_one v s hm, lambda_index_two v s hm]
+  rw [ite_eq_left hs, lambda_index_one v s hm, lambda_index_two v s hm]
   have hb := (Fl.base v s).1 hs
   have := (abs_le.1 (hb.2.2 ⟨1, by omega⟩ (by simp) (by simp; omega))).1
   have h0 : G.P.lam0 v s ⟨0, by omega⟩ = Fl.a v s := hb.1
@@ -86,7 +86,7 @@ theorem nd_lsz_le (s : Fin (G.P.n' v)) (hm : 2 ≤ G.P.m) (j : ℕ) (hj : 1 ≤ 
   have e : ∑ i ∈ Icc 1 (NN G.P.m Fl.t j), nu Fl.t (G.P.lam0 v) (Fl.w v) j s i - al (Fl.TT v) (G.P.lam0 v) s =
       ∑ i ∈ Icc 1 (NN G.P.m Fl.t j), (nu Fl.t (G.P.lam0 v) (Fl.w v) j s i -
         if i = 1 then al (Fl.TT v) (G.P.lam0 v) s else 0) := by
-    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq' _ 1, if_pos h1N]
+    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq' _ 1, ite_eq_left h1N]
   rw [e]
   have hb : ∀ i ∈ Icc 1 (NN G.P.m Fl.t j), (nu Fl.t (G.P.lam0 v) (Fl.w v) j s i -
         if i = 1 then al (Fl.TT v) (G.P.lam0 v) s else 0) ≤ (Fl.c : ℤ) + Fl.w v j s := by
@@ -94,22 +94,22 @@ theorem nd_lsz_le (s : Fin (G.P.n' v)) (hm : 2 ≤ G.P.m) (j : ℕ) (hj : 1 ≤ 
     rw [Finset.mem_Icc] at hi
     unfold nu
     by_cases hik : i ≤ G.P.m + 1
-    · rw [if_pos ⟨hi.1, hik⟩]
+    · rw [ite_eq_left ⟨hi.1, hik⟩]
       by_cases hi1 : i = 1
       · subst hi1
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         unfold al
         by_cases hs : s ∈ Fl.TT v
-        · rw [if_pos hs]
+        · rw [ite_eq_left hs]
           have := nd_lam_le Fl v s hm 2 (by omega) (by omega) (fun _ => le_rfl)
           omega
-        · rw [if_neg hs]
+        · rw [ite_eq_right hs]
           have := nd_lam_le Fl v s hm 1 le_rfl (by omega) (fun h => absurd h hs)
           omega
-      · rw [if_neg hi1]
+      · rw [ite_eq_right hi1]
         have := nd_lam_le Fl v s hm i hi.1 hik (fun _ => by omega)
         omega
-    · rw [if_neg (fun h => hik h.2), if_pos ⟨by omega, hi.2⟩, if_neg (by omega)]
+    · rw [ite_eq_right (fun h => hik h.2), ite_eq_left ⟨by omega, hi.2⟩, ite_eq_right (by omega)]
       have := nd_c_le_w Fl v s ((i - (G.P.m + 2)) / (Fl.t + 1) + 1) (Nat.le_add_left 1 _)
       have hc : (0 : ℤ) ≤ (Fl.c : ℤ) := Int.natCast_nonneg _
       omega

@@ -598,16 +598,16 @@ theorem exists_tateIso_of_perp {E : Type} [Field E] [NumberField E] [IsCMField E
   · split_ifs with hn
     · rw [map_smul, hlin n hn]
     · exact (hact c).symm
-  · simp only [if_pos hn]
+  · simp only [ite_eq_left hn]
     exact (hko n hn).1
-  · simp only [if_pos hn]
+  · simp only [ite_eq_left hn]
     exact (hko n hn).2
-  · simp only [if_pos hn, if_pos (Nat.mul_pos hn hm)]
+  · simp only [ite_eq_left hn, ite_eq_left (Nat.mul_pos hn hm)]
     exact htow n m hn hm _
-  · simp only [if_pos hn]
+  · simp only [ite_eq_left hn]
     exact hiso'' n hn w w'
   · show _ = if 0 < n then b n (s (f a)) else 1
-    rw [if_pos hn]
+    rw [ite_eq_left hn]
     obtain ⟨w, hw⟩ := ((hko n hn).2 _).1 (hpow n hn a)
     obtain ⟨c, hc⟩ := TorsIsometry.exists_eq_nsmul_of_dvd D'.EF D'.unimod n (f a - w) fun w' => by
       have h₁ := hiso' n hn a w'
@@ -700,7 +700,7 @@ theorem exists_gradedTateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMFie
       have e : unitOn (c * c) = unitOn c * unitOn c := map_mul _ _ _
       exact mul_eq_left.1 (huniq n 1 y _ _ (e ▸ h₁) h))
     (fun n hn a a' => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       have h := (TorusExt.qkAdd_iff hB _ _ _).1
         ((TorusExt.qkAdd_iff_of_equiv hB (hq n hn a) (hq n hn a') (I.add n hn a a')).2 (hq n hn (a + a')))
       rw [← eq_of_equiv hB hn h (by
@@ -708,7 +708,7 @@ theorem exists_gradedTateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMFie
         rw [hy, hy, hy, add_zero])]
       exact TorusExt.add_b _ _)
     (fun n hn c a => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       have h := (TorusExt.qkAct_iff hB hG P.oD _ _ _).1
         ((TorusExt.qkAct_iff_of_equiv hB hG P.oD (hq n hn a) (I.lin n hn c a)).2 (hq n hn (c • a)))
       rw [← eq_of_equiv hB hn h (by
@@ -716,18 +716,18 @@ theorem exists_gradedTateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMFie
         rw [hy, hy, smul_zero])]
       exact TorusExt.gtSmul_b hG P.oD _ _)
     (fun n hn a => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       exact b_pow hB _ (hy n hn a))
     (fun n m hn hm a => by
-      simp only [dif_pos hn, dif_pos (Nat.mul_pos hn hm)]
+      simp only [dite_eq_left hn, dite_eq_left (Nat.mul_pos hn hm)]
       obtain ⟨r, r₁, r₂, r₃⟩ := I.tower n m hn hm a
       exact b_tower hB hn (hq _ _ a) (hy _ _ a) r₁ r₂ r₃ (hq n hn a) (hy n hn a))
     (fun n hn a a' => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       exact (UT.WeilAbelianPart.weilQkIs_iff_weilIs_abelianPart hL R _ hR.1 P.D F n hn _ _ (hy n hn a) (hy n hn a')
         _).1 (PhiOperatorCompare.weilQkIs_of_equiv hB (hq n hn a) (hq n hn a') (I.isom n hn a a')))
   refine ⟨I', h₁, fun n hn a r hr hr₀ => ?_⟩
-  rw [← h₂ n hn a, dif_pos hn, eq_of_equiv hB hn
+  rw [← h₂ n hn a, dite_eq_left hn, eq_of_equiv hB hn
     (TorusExt.equiv_trans hB (TorusExt.equiv_symm hB hr) (hq n hn a)) (hr₀.trans (hy n hn a).symm)]
 
 end GlobalTheory.LowDat.GradedTate
@@ -779,8 +779,8 @@ theorem exists_tateIso_toA : ∀ {E : Type} [Field E] [NumberField E] [IsCMField
   choose f f₁ f₂ f₃ f₄ f₅ f₆ using hT F
   obtain ⟨ev, ev0, evp⟩ : ∃ ev : ℕ → D.La → (TFK (R := R) F ⟶ P.A.A), (∀ a, ev 0 a = 1) ∧
       ∀ n (hn : 0 < n) a, ev n a = f n hn (I.ev n a) :=
-    ⟨fun n a => if hn : 0 < n then f n hn (I.ev n a) else 1, fun a => dif_neg (lt_irrefl 0),
-      fun n hn a => dif_pos hn⟩
+    ⟨fun n a => if hn : 0 < n then f n hn (I.ev n a) else 1, fun a => dite_eq_right (lt_irrefl 0),
+      fun n hn a => dite_eq_left hn⟩
   have add : ∀ n a b, ev n (a + b) = ev n a * ev n b := fun n a b => by
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · rw [ev0, ev0, ev0, _root_.one_mul]
@@ -1593,10 +1593,10 @@ theorem finrank_eq_of_detCond (D : Datum H) {S : Scheme.{0}} (P : PolAV S) (act 
         rw [← map_neg, ← hb]; rfl
       rw [e]
       by_cases hτ : τ H.rt = ρ
-      · refine ⟨by rw [if_pos hτ]; exact (h τ).1 hτ, ?_⟩
-        rw [if_pos hτ, if_neg (by rw [hτ]; exact h0.symm)]
-      · refine ⟨by rw [if_neg hτ]; exact (h τ).2 hτ, ?_⟩
-        rw [if_neg hτ, if_pos (by rw [(sq_eq_sq_iff_eq_or_eq_neg.1 hs).resolve_left hτ, neg_neg]), add_comm])
+      · refine ⟨by rw [ite_eq_left hτ]; exact (h τ).1 hτ, ?_⟩
+        rw [ite_eq_left hτ, ite_eq_right (by rw [hτ]; exact h0.symm)]
+      · refine ⟨by rw [ite_eq_right hτ]; exact (h τ).2 hτ, ?_⟩
+        rw [ite_eq_right hτ, ite_eq_left (by rw [(sq_eq_sq_iff_eq_or_eq_neg.1 hs).resolve_left hτ, neg_neg]), add_comm])
   have := D.fin
   have := D.proj
   have : Module.Finite ℤ D.La := Module.Finite.trans (𝓞 E) D.La

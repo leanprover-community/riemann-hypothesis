@@ -41,11 +41,3 @@ theorem integral_map_sum {α ι E : Type*} [MeasurableSpace α] [NormedAddCommGr
     rw [integral_add hi (integrable_map_sum L φ hL), ih hL]
 
 end Formalism.FourierDecayAlt.P.CapelliUnderIntegral
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-open scoped Matrix.Norms.Elementwise
-
-end Formalism.FourierDecayAlt.P

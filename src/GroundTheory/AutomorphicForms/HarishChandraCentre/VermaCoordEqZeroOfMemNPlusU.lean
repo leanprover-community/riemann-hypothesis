@@ -75,11 +75,11 @@ noncomputable def vermaCoord (lam : Fin n → ℂ) : U n →ₗ[ℂ] ((Fin n × 
 
 theorem vermaCoord_canon_of_hasUpper (lam : Fin n → ℂ) {m : Fin n × Fin n →₀ ℕ} (h : HasUpper m) :
     vermaCoord lam (canon m) = 0 := by
-  rw [vermaCoord, ← pbw_apply, Module.Basis.constr_basis, if_pos h]
+  rw [vermaCoord, ← pbw_apply, Module.Basis.constr_basis, ite_eq_left h]
 
 theorem vermaCoord_canon_of_not (lam : Fin n → ℂ) {m : Fin n × Fin n →₀ ℕ} (h : ¬ HasUpper m) :
     vermaCoord lam (canon m) = Finsupp.single (lowPart m) (eval lam (monomial (diagExp m) 1)) := by
-  rw [vermaCoord, ← pbw_apply, Module.Basis.constr_basis, if_neg h]
+  rw [vermaCoord, ← pbw_apply, Module.Basis.constr_basis, ite_eq_right h]
 
 theorem vermaCoord_eq_zero_of_mem_nPlusU (lam : Fin n → ℂ) {x : U n} (hx : x ∈ nPlusU n) :
     vermaCoord lam x = 0 := by
@@ -178,7 +178,7 @@ theorem canon_single (a : Fin n × Fin n) (m : ℕ) : canon (Finsupp.single a m)
       · subst hb
         simp [(List.nodup_cons.1 hl).1]
       · simp [Ne.symm hb, hb]
-  rw [key _ nodup_letters, if_pos (mem_letters a)]
+  rw [key _ nodup_letters, ite_eq_left (mem_letters a)]
 
 theorem vermaCoord_e_pow (lam : Fin n → ℂ) {a : Fin n × Fin n} (ha : IsLower a) (m : ℕ) :
     vermaCoord lam (e a ^ m) = Finsupp.single (Finsupp.single a m) 1 := by
@@ -299,7 +299,7 @@ theorem e_upper_simple_mul_pow_sub_mem (hij : (j : ℕ) = i + 1) (m : ℕ) :
   have hne : i ≠ j := fun h => by rw [h] at hij; omega
   have hxy : e (i, j) * e (j, i) = e (j, i) * e (i, j) + (e (i, i) - e (j, j)) := by
     have := e_mul_sub_mul (i, j) (j, i)
-    simp only [if_true] at this
+    simp only [ite_true] at this
     rw [← this]; abel
   have hh : ∀ p : ℕ, (e (i, i) - e (j, j)) * e (j, i) ^ p =
       e (j, i) ^ p * (e (i, i) - e (j, j)) - (2 * (p : ℂ)) • e (j, i) ^ p := by

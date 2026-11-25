@@ -45,30 +45,6 @@ theorem isGrpPullback_id (A : Over S) [GrpObj A] : IsGrpPullback A A (𝟙 S) (�
   have h3 : e ≫ (x₀ * y₀) = x * y := by rw [MonObj.comp_mul, h1, h2]
   rw [← h3]; simp [e]
 
-def HomFixRep.toTrivial (A : Over S) [GrpObj A] (L : LB A.left) (M : LB (𝟙_ (Over S)).left)
-    (h : LBIso (L.pull (𝟙 _)) ((M.pull (𝟙 _)).pull (toUnit A).left)) : HomFixRep A (𝟙_ (Over S)) L M where
-  H := S
-  π := 𝟙 S
-  AH := A
-  BH := 𝟙_ (Over S)
-  φA := 𝟙 _
-  φB := 𝟙 _
-  pbA := isGrpPullback_id A
-  pbB := isGrpPullback_id _
-  Φ := toUnit A
-  hom := inferInstance
-  iso := h
-  rep := by
-    intro T t A' B' _ _ φA' φB' Φ' hA hB _ _
-    refine ⟨t, ⟨by simp, φA', φB', hA, hB, by simp, by simp, ?_⟩, fun h hh => by simpa using hh.1⟩
-    have h1 := hA.1.w
-    have h2 := hB.1.w
-    have h3 := Over.w Φ'
-    have h4 := Over.w (toUnit A)
-    have h5 : φB' = B'.hom ≫ t := by simpa using h2
-    have h6 : (toUnit A).left = A.hom := by simpa using h4
-    rw [h5, h6, ← Category.assoc, h3]; exact h1.symm
-
 def trivLB (X : Scheme.{0}) : LB X where
   «ι» := PUnit
   U := fun _ => ⊤

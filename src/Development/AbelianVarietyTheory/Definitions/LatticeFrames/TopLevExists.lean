@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUni
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField
 open Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Forms
 open scoped TensorProduct
@@ -88,5 +86,3 @@ theorem valC_ne_bot {ι : Type} [Fintype ι] {n : ℕ} (G : ι → Matrix (Fin n
   exact one_ne_zero this
 
 end GlobalTheory.Core.Rk.Top.Model
-
-end

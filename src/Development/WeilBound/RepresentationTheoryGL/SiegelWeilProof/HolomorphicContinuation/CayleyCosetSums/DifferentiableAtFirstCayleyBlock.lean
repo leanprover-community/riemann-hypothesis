@@ -126,9 +126,9 @@ theorem da_inv {f : M2 n → Matrix (Fin n) (Fin n) ℂ} {x : M2 n} (hf : Differ
     refine differentiableAt_det_of_differentiableAt_entries fun a b => ?_
     simp only [Matrix.updateRow_apply]
     by_cases hab : a = j
-    · simp only [hab, if_true]
+    · simp only [hab, ite_true]
       exact differentiableAt_const _
-    · simp only [hab, if_false]
+    · simp only [hab, ite_false]
       exact da_apply hf a b
   have hd : DifferentiableAt ℂ (fun y => ((f y).det)⁻¹) x := (differentiableAt_det_of_differentiableAt_entries (da_apply hf)).inv h
   refine da_matrix fun i j => ?_

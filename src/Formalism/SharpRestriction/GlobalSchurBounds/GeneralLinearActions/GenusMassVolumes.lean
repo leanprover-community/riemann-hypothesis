@@ -333,9 +333,6 @@ instance instMulActionTup (n : ℕ) : MulAction (HA R σ J) (Fin n → Fin M →
 def Hstab (x : Fin 1 → Fin M → E) : Subgroup (HA R σ J) :=
   MulAction.stabilizer (HA R σ J) (ratTup (F := F) R x)
 
-def HstabFin (x : Fin 1 → Fin M → E) : Subgroup (Hstab R σ J x) :=
-  ((HFinIn R σ J) ⊓ Hstab R σ J x).subgroupOf (Hstab R σ J x)
-
 instance measHerm [TopologicalSpace R] (n : ℕ) : MeasurableSpace (HermR R σ n) := borel _
 
 end More

@@ -120,7 +120,7 @@ theorem eig_dual : ∀ (K : Type) [Field K] (C : ACurve K) (d : ℕ) (L : C.I �
 
     simp only [LinearMap.smul_apply, Matrix.toLin'_apply, hy, smul_smul, ← map_mul,
     ← Finset.sum_smul, ← map_sum]
-    rw [hc s, if_pos rfl, map_one, one_smul]
+    rw [hc s, ite_eq_left rfl, map_one, one_smul]
   have hETW : ∀ z, E.transpose.mulVec z ∈ W' := by
     intro z
     rw [hW', mem_eig]

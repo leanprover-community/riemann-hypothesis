@@ -400,7 +400,7 @@ theorem hasDerivAt_eval {σ : Type*} [Fintype σ] (x : ℂ → σ → ℂ) (x' :
       by_cases h : k = i
       · subst h
         simp
-      · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm h), map_zero, if_neg h]
+      · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm h), map_zero, ite_eq_right h]
     have hf : (fun w => MvPolynomial.eval (x w) (p * MvPolynomial.X i)) =
         fun w => MvPolynomial.eval (x w) p * x w i := by
       funext w
@@ -415,7 +415,7 @@ theorem hasDerivAt_eval {σ : Type*} [Fintype σ] (x : ℂ → σ → ℂ) (x' :
       rw [MvPolynomial.pderiv_mul, map_add (f := _), map_mul, map_mul, MvPolynomial.eval_X, hX k]
       split_ifs <;> ring
     rw [Finset.sum_congr rfl (fun k _ => hs k), Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.sum_mul]
-    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     ring
 
 theorem pt_mul (X : Fin n → ℝ) (v : Fin m → Fin n → ℂ) (z : ℂ) (a : Fin m) (j : Fin n) :
@@ -452,7 +452,6 @@ theorem eval_dil (X : Fin n → ℝ) (v : Fin m → Fin n → ℂ) (z : ℂ) (P 
             MvPolynomial.eval (GlobalTheory.CompanionTheory.DilFam.pt X v z) (MvPolynomial.pderiv (a, j, true) P) -
           2 * ((2 * Real.pi : ℝ) : ℂ) * (GlobalTheory.CompanionTheory.DilFam.pt X v z (a, j, false) *
             GlobalTheory.CompanionTheory.DilFam.pt X v z (a, j, true) * MvPolynomial.eval (GlobalTheory.CompanionTheory.DilFam.pt X v z) P))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [PositivityTheory.Rg.Sw.dil, LinearMap.sum_apply,
       LinearMap.smul_apply, LinearMap.add_apply, LinearMap.sub_apply, LinearMap.comp_apply,
       LinearMap.mulLeft_apply, LinearMap.id_apply, Derivation.coeFn_coe, map_sum, map_add, map_sub,

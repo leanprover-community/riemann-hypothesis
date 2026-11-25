@@ -102,8 +102,6 @@ private theorem isNorm_late {B : GlobalTheory.Mem.Base} {C : Cols B} {a b c : La
       (real3 b (iK := iK) R) v₀ j X ν) :
     @IsNorm c.D G _ _ Pl0 I0 T (famInThreeCoefficientChange c A) Ks _ _ (alg c iK)
       (real3 c (iK := iK) R) v₀ j (@baT B C b c (Vc b.D j) (Wc b.D j) X) ν := by
-  set_option backward.isDefEq.lazyProjDelta false in
-  set_option backward.isDefEq.lazyWhnfCore false in
   obtain ⟨h0, c', ⟨g, c0R, c0L, hF, u, hu, hh⟩, hn⟩ := h
   refine ⟨h0, c', ⟨g, c0R, c0L, ?_, u, hu, hh⟩, hn⟩
   exact ⟨hF.ranks, hF.v0, hF.tauL_ok, hF.pl_inj, hF.q, hF.S_fin, hF.ok,
@@ -132,8 +130,6 @@ private theorem realPin_oth {B : GlobalTheory.Mem.Base} {C : Cols B} {W : RowsRe
       (alg (Oth.L ⟨V, S, { N1 with nexp := ex', nStage_trivialCharacter_coeff_eq := h0', nth := th' }, G0'⟩) iK)
       (real3 (Oth.L ⟨V, S, { N1 with nexp := ex', nStage_trivialCharacter_coeff_eq := h0', nth := th' }, G0'⟩) (iK := iK) R)
       cG (@seT B C W ⟨V, S, N1, G0'⟩ ⟨V, S, { N1 with nexp := ex', nStage_trivialCharacter_coeff_eq := h0', nth := th' }, G0'⟩ N1.nd N1.ntw ρ) := by
-  set_option backward.isDefEq.lazyProjDelta false in
-  set_option backward.isDefEq.lazyWhnfCore false in
   let _ : Algebra Ks (Oth.L ⟨V, S, N1, G0'⟩).D.what₂.LL := alg (Oth.L ⟨V, S, N1, G0'⟩) iK
   let _ : Algebra Ks (Oth.L ⟨V, S, { N1 with nexp := ex', nStage_trivialCharacter_coeff_eq := h0', nth := th' }, G0'⟩).D.what₂.LL :=
     alg (Oth.L ⟨V, S, { N1 with nexp := ex', nStage_trivialCharacter_coeff_eq := h0', nth := th' }, G0'⟩) iK
@@ -185,8 +181,6 @@ def rhoP : Setup (DN x (nP p)).ntw :=
   (by with_unfolding_all exact ((@seT B w.C _ (oth x N₁) (oth x (nP p)) (((DN x N₁).nd)) (((DN x N₁).ntw)) ((p.ρ))) : _))
 
 theorem goodP : (rhoP p).Good := by
-  set_option backward.isDefEq.lazyProjDelta false in
-  set_option backward.isDefEq.lazyWhnfCore false in
   with_unfolding_all
     exact @seGood B w.C _ (oth x N₁) (oth x (nP p)) (DN x N₁).nd (DN x N₁).ntw p.ρ p.good
 
@@ -200,8 +194,6 @@ private theorem realRd_eq (i : (DN x N₁).ntw.Tw) (j : Fin (DN x N₁).R.m) (b 
     realRd (ysP p) (datTw x (nP p)).geo.v₀ (goodP p) i j b ν =
       @rdT B w.C _ (oth x N₁) (oth x (nP p)) (DN x N₁).nd (DN x N₁).ntw p.ρ i j b p.ex
         (realRd YS (datTw x N₁).geo.v₀ p.good i j b ν) := by
-  set_option backward.isDefEq.lazyProjDelta false in
-  set_option backward.isDefEq.lazyWhnfCore false in
   with_unfolding_all exact rfl
 
 theorem ratP (i : (DN x N₁).ntw.Tw) (j : Fin (DN x N₁).R.m) (b : Bool) (ν : ℂ) :
@@ -216,8 +208,6 @@ theorem ratP (i : (DN x N₁).ntw.Tw) (j : Fin (DN x N₁).R.m) (b : Bool) (ν :
 theorem normP (i : (DN x N₁).ntw.Tw) (j : Fin (DN x N₁).R.m) (b : Bool) (ν : ℂ) :
     IsNorm (datTw x (nP p)).R (datTw x (nP p)).geo.v₀ ((rhoP p).B ((i)) ((j)) b) ν ↔
       IsNorm (datTw x N₁).R (datTw x N₁).geo.v₀ (p.ρ.B i j b) ν := by
-  set_option backward.isDefEq.lazyProjDelta false in
-  set_option backward.isDefEq.lazyWhnfCore false in
   with_unfolding_all
     exact ⟨@isNormN K B f T w P x (nP p) N₁ j ((rhoP p).B i j b) ν,
       @isNormN K B f T w P x N₁ (nP p) j (p.ρ.B i j b) ν⟩
@@ -242,15 +232,11 @@ def exP (hu : GlobalTheory.UnivChar.IsUnivChar (DN x N₁).nexp) : ExportTie (ys
       realRd (ysP p) (datTw x (nP p)).geo.v₀ (goodP p) i j b ν =
         @rdT B w.C _ (oth x N₁) (oth x (nP p)) (DN x N₁).nd (DN x N₁).ntw p.ρ i j b p.ex
           (realRd YS (datTw x N₁).geo.v₀ p.good i j b ν) := fun i j b ν => by
-    set_option backward.isDefEq.lazyProjDelta false in
-    set_option backward.isDefEq.lazyWhnfCore false in
     with_unfolding_all exact rfl
   { ρ := rhoP p
     good := goodP p
     pin := pinP p
     vec := fun j => by
-      set_option backward.isDefEq.lazyProjDelta false in
-      set_option backward.isDefEq.lazyWhnfCore false in
       obtain ⟨h1, h2⟩ := p.vec j
       refine ⟨h1, fun hs hu' => ?_⟩
       obtain ⟨u, hu1, ⟨u0, w0, hEq, hnorm, hio⟩⟩ := hu'
@@ -276,8 +262,6 @@ def pvP (PV : ∀ j : Fin (DN x (nP p)).R.m, principalLevelFrame.RowPsi (Vc (DN 
     fun R => ⟨R.ψ, R.inj, R.into, R.onto⟩
   f (a := (oTw x (nP p)).Z) (b := (oTw x N₁).Z) (PV j)
 
-set_option backward.isDefEq.lazyProjDelta false in
-set_option backward.isDefEq.lazyWhnfCore false in
 def serP (hu : GlobalTheory.UnivChar.IsUnivChar (DN x N₁).nexp) (ho : NoOff (DN x N₁))
     (hs : ∀ i j b h1 h2 (y : (DN x N₁).nexp.Fm i j b), y ∈ (DN x N₁).nexp.Bsup i j b ↔
       YS.eF i j b h1 h2 y ∈ Bsup (ratDatR (datTw x N₁).R (datTw x N₁).cG kKs hk) i j b)
@@ -384,7 +368,7 @@ theorem GlobalTheory.TwInputs.tauG_read (hGAR : GlobalTheory.Published.GlobalArt
   have hex : ∃ s : Formalism.ConjugateSelfDual.G D.host.E D.nd.Om, NX.TameRep (D.naut.plGw k v) 1 s u := ⟨σ, hTR⟩
   have e2 : NX.tameVal (D.ntw.chi1 i (j.1 + 1) b) (D.naut.plGw k v) 1 u = D.ntw.chi1 i (j.1 + 1) b σ := by
     unfold NX.tameVal
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     refine _root_.GlobalTheory.TameTau.char_eq_of_tameRep_congr (D.naut.plGw k v) (D.ntw.twistBaseCoefficientRing_isAdic i) _ (D.ntw.twistCharacterFamily_continuous i (j.1 + 1) b) (by omega) hm
       (fun A hA s hs => ?_) _ _ u u hex.choose_spec hTR (by rw [sub_self]; exact zero_mem _)
     rw [hN]
@@ -455,7 +439,7 @@ theorem GlobalTheory.TwInputs.exists_tau_family : GlobalTheory.Published.GlobalA
   intro i j b kv x h1 h2 hl
   obtain ⟨j', rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
   have h : j' + 1 - 1 < D.R.m := by omega
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact ht ⟨j', h⟩ kv i b x hl
 
 end

@@ -48,8 +48,6 @@ def SigmaDegreeTwoSidedBoundOfGap (D : D7) : Prop :=
     D.dsig ρ ≤ 4 * dTau (rowSgn D) (rowLam D ρ) *
       (3 * (pY D : ℝ) * (qY D : ℝ) * lamAbs (rowLam D ρ)) ^ (pY D * qY D)
 
-def DstarM (D : D7) : ℝ := DstarP D (D.host.g 0) (D.host.g 1) (massI D D.R.r) D.dsig
-
 def BaseVolumeEqualsMass (D : D7) : Prop := volY0 D = massI D D.R.r
 
 def piN (n g : ℕ) : ℝ := ∏ i ∈ Finset.Icc 1 n, (1 - ((g : ℝ) ^ i)⁻¹)
@@ -280,12 +278,5 @@ theorem part_five_family_of_explicit {eps : ℝ} (Fm : Formalism.MainNotions.Fam
   refine ⟨max 11 (16 + 3 * C0), max x0 x1, fun x hx hxx i => ?_⟩
   exact part_five_all_of_explicit _ _ C0 C0 _ (hx0 x (le_trans (le_max_left _ _) hx) hxx i)
     (fun Δ w hB => hx1 x (le_trans (le_max_right _ _) hx) hxx i Δ w hB) (le_max_left _ _) (le_max_right _ _)
-
-section DS
-
-open Formalism.MainNotions.S MeasureTheory Matrix
-open scoped InnerProductSpace ComplexOrder
-
-end DS
 
 end Formalism.MainNotions.StandardLattice

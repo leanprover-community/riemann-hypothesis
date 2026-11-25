@@ -93,12 +93,8 @@ theorem det_int {m : Type} [Fintype m] [DecidableEq m] {M : Matrix m m k} (hM : 
   rw [eM, ← RingHom.map_det]
   exact (M'.det).2
 
-theorem eq_one_of_mul {a b : ValueGroupWithZero k} (ha : a ≤ 1) (hb : b ≤ 1) (h : a * b = 1) : a = 1 := by
-  refine le_antisymm ha ?_
-  by_contra hlt
-  replace hlt := not_le.1 hlt
-  have : a * b < 1 := (mul_le_of_le_one_right' hb).trans_lt hlt
-  exact this.ne h
+theorem eq_one_of_mul {a b : ValueGroupWithZero k} (ha : a ≤ 1) (hb : b ≤ 1) (h : a * b = 1) : a = 1 :=
+  eq_one_of_one_le_mul_left ha hb h.ge
 
 theorem tame_eq {ξ : kˣ →* ℂˣ} (hξ : IsTame ξ) {a b : kˣ} (hb : valuation k (b : k) = 1)
     (h : valuation k ((a : k) - b) < 1) : ξ a = ξ b := by

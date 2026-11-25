@@ -116,7 +116,6 @@ open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheor
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
 
-
 namespace GlobalTheory.BigOn.Exp.TwConj
 
 open GlobalTheory.ConjTwist
@@ -217,7 +216,6 @@ open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheor
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
 
-
 namespace GlobalTheory.BigOn.Exp.TwConj
 
 open GlobalTheory.ConjTwist
@@ -231,8 +229,8 @@ theorem scale_pow_eq_of_isScale {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl
   obtain ⟨gR', cR0', cL0', hT', u', hu', hF'⟩ := h'
   have huu : u' = u := funext fun τ => Subtype.ext ((hu' τ).trans (hu τ).symm)
   subst huu
-  obtain ⟨a, ⟨k, hk, hak⟩, ha⟩ := GlobalTheory.T.definiteSideRealisations_coefMap_differ_rootOfUnity _ _ _ _ _ _ _ _ _ _ _ _ _ hT hT' j
-  obtain ⟨F, x, hx⟩ := GlobalTheory.T.exists_coefficientPolynomial_GLFunction_ne_zero (FWT.lamV D j)
+  obtain ⟨a, ⟨k, hk, hak⟩, ha⟩ := GlobalTheory.CoefRoot.coef_root _ _ _ _ _ _ _ _ _ _ _ _ _ hT hT' j
+  obtain ⟨F, x, hx⟩ := GlobalTheory.CoeffNonvanish.exists_coefFn_ne_zero (FWT.lamV D j)
   have e1 := hF' F
   rw [ha] at e1
   erw [LinearMap.map_smul, LinearMap.map_smul, hF F] at e1
@@ -278,7 +276,6 @@ theorem exists_fixed_of_mem_span {D : D7} (j : Fin D.R.m) {W M : Type} [AddCommG
       have ha : (τ : ℂ →+* ℂ) (a : ℂ) = a := by rw [← ho]; exact hτ _
       rw [Submodule.coe_smul, MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, ← e1, ha]
 
-
 end GlobalTheory.BigOn.Exp.TwConj
 end -- clump:auto
 end -- clump:auto
@@ -290,8 +287,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
@@ -299,7 +294,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
-
 
 namespace GlobalTheory.BigOn.Exp.TwConj
 open GlobalTheory.ConjTwist
@@ -357,8 +351,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CoefAtOfTwAdmStatement =====
@@ -374,7 +366,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
-
 
 namespace GlobalTheory.ConjExpandRational
 
@@ -409,8 +400,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
@@ -418,7 +407,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
-
 
 namespace GlobalTheory.ConjExpandRational
 end GlobalTheory.ConjExpandRational
@@ -469,8 +457,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ConjExpansionRationalStatement =====
@@ -485,7 +471,6 @@ open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
-
 
 namespace GlobalTheory.BigOn.Exp.TwConj
 
@@ -519,15 +504,12 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
-
 
 namespace GlobalTheory.BigOn.Exp.TwConj
 open GlobalTheory.ConjTwist
@@ -572,8 +554,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.FixAtHoldsStatement =====
@@ -583,8 +563,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
@@ -592,7 +570,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries GlobalTheory.ConjTwist Formalism.IndefR.Lev
 open scoped TensorProduct
-
 
 namespace GlobalTheory.BigOn.Exp.TwConj
 section Lev
@@ -691,15 +668,11 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.E
 open GlobalTheory.BigOn.Exp.TwConj GlobalTheory.IdemSupport
 open Formalism.L2.Host (HChar IsDelta IsPsi)
 
-
 namespace GlobalTheory.BigOn.Exp.TwConj.LevAt
 
 section Places
 
 variable {D : D7}
-
-theorem cP_cP (P : Pl D.host.E) : cP (cP P) = P :=
-  HeightOneSpectrum.ext (Ideal.ext fun x => by rw [mem_cP, mem_cP, cO_cO])
 
 theorem conjIdeal_eq_cP (P : Pl D.host.E) : Formalism.HermitianLatticesTheory.conjIdeal (K := D.host.E) P.asIdeal = (cP P).asIdeal := by
   have : {r : 𝓞 D.host.E | ∃ s ∈ P.asIdeal, algebraMap _ D.host.E r = star (algebraMap _ D.host.E s)} =
@@ -723,8 +696,8 @@ theorem card_cP (P : Pl D.host.E) : Nat.card (kP (cP P)) = Nat.card (kP P) :=
 
 theorem mem_or_conj {Q : Finset (Pl D.host.E)} {P : Pl D.host.E} :
     (P ∈ Q ∨ ∃ P' ∈ Q, Lev.IsConjPl P' P) ↔ P ∈ Q ∨ cP P ∈ Q := by
-  refine or_congr_right ⟨fun ⟨P', h, e⟩ => ?_, fun h => ⟨_, h, (isConjPl_iff _ _).2 (cP_cP P).symm⟩⟩
-  rw [(isConjPl_iff _ _).1 e, cP_cP]
+  refine or_congr_right ⟨fun ⟨P', h, e⟩ => ?_, fun h => ⟨_, h, (isConjPl_iff _ _).2 (GlobalTheory.StdFrames.cP_cP P).symm⟩⟩
+  rw [(isConjPl_iff _ _).1 e, GlobalTheory.StdFrames.cP_cP]
   exact h
 
 theorem splitOff_iff {P : Pl D.host.E} {S : Set (Pl D.host.E)} : Bridge.SplitOff P S ↔ cP P ≠ P ∧ P ∉ S ∧ cP P ∉ S := by
@@ -769,7 +742,7 @@ theorem twLev_of_conj {R : RealDat D A Ks} (hL : R.toLevCh.Is A.μ0) (hF : R.IsF
     ∃ xiR, TwLev R χ xi Q xiR := by
   choose xiR hxiR using fun v => exists_isRes (h4 v)
   have k : ∀ P ∈ Q, ∃ P' ∈ R.Q t, P = P' ∨ P = cP P' := fun P hP =>
-    ((hc P).1 (Or.inl hP)).elim (fun h => ⟨P, h, Or.inl rfl⟩) fun h => ⟨_, h, Or.inr (cP_cP P).symm⟩
+    ((hc P).1 (Or.inl hP)).elim (fun h => ⟨P, h, Or.inl rfl⟩) fun h => ⟨_, h, Or.inr (GlobalTheory.StdFrames.cP_cP P).symm⟩
   have kn : ∀ P ∈ Q, ∃ P' ∈ R.Q t, (∀ n : ℕ, (n : 𝓞 D.host.E) ∈ P.asIdeal ↔ (n : 𝓞 D.host.E) ∈ P'.asIdeal) ∧
       (∀ n : ℕ, (n : 𝓞 D.host.E) ∈ P.asIdeal ^ 2 ↔ (n : 𝓞 D.host.E) ∈ P'.asIdeal ^ 2) ∧ Nat.card (kP P) = Nat.card (kP P') ∧
       cP P ≠ P := fun P hP => by
@@ -777,7 +750,7 @@ theorem twLev_of_conj {R : RealDat D A Ks} (hL : R.toLevCh.Is A.μ0) (hF : R.IsF
     have hne : cP P' ≠ P' := fun e => (hL.Q_pl t P' h).2 P' h ((isConjPl_iff _ _).2 e.symm)
     rcases e with rfl | rfl
     · exact ⟨P, h, fun _ => Iff.rfl, fun _ => Iff.rfl, rfl, hne⟩
-    · exact ⟨P', h, GlobalTheory.StdFrames.natCast_mem_cP P', nat_mem_sq_cP P', card_cP P', by rw [cP_cP]; exact hne.symm⟩
+    · exact ⟨P', h, GlobalTheory.StdFrames.natCast_mem_cP P', nat_mem_sq_cP P', card_cP P', by rw [GlobalTheory.StdFrames.cP_cP]; exact hne.symm⟩
   refine ⟨xiR, h1, h2, h3, h4, fun P hP => ⟨?_, fun P' hP' hc' => ?_⟩, fun P hP => ?_, fun p hp => ?_, fun P => ?_,
     fun P _ => hxiR P, fun P hP => ?_, fun i P hP => ?_, fun P hP P' hP' => hch.one P (hQ P hP) P' (hQ P' hP'), fun P hP => ?_⟩
   · obtain ⟨P', h, -, e2, e3, -⟩ := kn P hP
@@ -940,7 +913,6 @@ theorem exists_delta (C : Formalism.L2.Host.CharFrame D) (i : D.ntw.Tw) : ∃ q 
   · rw [← Finset.mem_coe, D.ntw.pD_eq]
     rfl
 
-
 open Classical in
 theorem twLev_pow (hm : RecTies p) (hF : p.R.toRealDat.IsFam) (hG : QGuard p.R.toRealDat) (hw : D.plEq w ∈ p.R.twPl) (j : Fin D.R.m)
     (hlow : ∀ P ∈ ex.nch.Q w, ((D.host.pde * D.host.pde' : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal)
@@ -966,7 +938,7 @@ theorem twLev_pow (hm : RecTies p) (hF : p.R.toRealDat.IsFam) (hG : QGuard p.R.t
   refine twLev_of_conj hL hF hG (p.R.mu (D.plEq w)) hch (fun P hP => ((hQ P).1 hP).2) (fun P => ?_) (fun r hr P hP hm => ?_)
     (GlobalTheory.TwistChr.chrEq_mul (hp.delta _ j _) hc) (fin_mul hδ hψ hl _) (hδ.triv.mul (trivOn_pow hψ.triv a)) (tame_mul hδ hψ _)
     (fun v => by rw [h2]; exact unr_iff hδ hψ hl ha v) fun v hv => ?_
-  · rw [hQ, hQ, ← k2, ← k2, cP_cP, or_comm (a := cP P ∈ _) (b := P ∈ _), ← and_or_left, and_iff_left_iff_imp]
+  · rw [hQ, hQ, ← k2, ← k2, GlobalTheory.StdFrames.cP_cP, or_comm (a := cP P ∈ _) (b := P ∈ _), ← and_or_left, and_iff_left_iff_imp]
     intro h
     have hne : P ≠ cP P := fun e => by
       have h' : P ∈ p.R.Q (p.R.mu (D.plEq w)) := h.elim id fun h => e ▸ h
@@ -1002,8 +974,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
@@ -1013,8 +983,6 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.E
 open GlobalTheory.BigOn.Exp.TwConj GlobalTheory.IdemSupport
 open Formalism.L2.Host (HChar IsDelta IsPsi)
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp.TwConj
 open LevAt in
 theorem twLevAt_holds_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → _root_.GlobalTheory.BigOn.Exp.TwAdmAlt → _root_.GlobalTheory.BigOn.Exp.TwistCharacter →
@@ -1065,8 +1033,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
@@ -1074,7 +1040,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries GlobalTheory.ConjTwist Formalism.IndefR.Lev
 open scoped TensorProduct
-
 
 namespace GlobalTheory.BigOn.Exp.TwConj
 open Classical in
@@ -1138,8 +1103,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TupAtStatement =====
@@ -1149,8 +1112,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain
@@ -1158,7 +1119,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
-
 
 namespace GlobalTheory.BigOn.Exp.TwConj
 open GlobalTheory.ConjTwist
@@ -1211,8 +1171,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TwOneOfStepsStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowAtOfRatStep\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TwOneOfSteps\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 end -- clump:auto
 end -- clump:auto

@@ -44,67 +44,15 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalTopF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DivisorCenterProperLift
 public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.ExistsLogResolution
 public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.LogResolutionMultiplierLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.FirstChernLeviEqConstant
 import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoices
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PnPosOfGeneratesAt
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
-import Mathlib.Algebra.Order.Star.Rat
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
@@ -114,7 +62,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.CanonGenIsGen
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.StTransl
-import Mathlib.SetTheory.ZFC.PSet
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormOrderBirationalPullback
@@ -160,20 +107,6 @@ theorem presents_zpow {D : CartierDiv X} {L : LB X} {r : L.ι → X.functionFiel
   exact (fnOf_resG l hjj _).symm
 
 end Bundle
-
-section Comb
-
-variable {X : Scheme.{0}} [IsIntegral X] {ι : Type} (T : ι → LB X) (b : ι → ℤ)
-
-variable {k : Type} [CommRing k] {p : X ⟶ Sp k} {σ : k →+* ℂ}
-
-end Comb
-
-section Met
-
-variable {F : Type} [Field F] [NumberField F] {C : CxSt F} {Y : Var F}
-
-end Met
 
 end GlobalTheory.CombChern
 end -- clump:auto
@@ -602,11 +535,11 @@ theorem bertini_cotangent_independent : ∀ (k A : Type) [Field k] [CharZero k] 
       if h : algebraMap A R (∑ p, u (j, p) • f p) ∈ maximalIdeal R then w ⟨j, h⟩ / w i₀ else 0
     have hJ : i₀.1 ∈ J := Finset.mem_map_of_mem _ hi₀
     have hx := hu (J, i₀.1, p₀) (Finset.mem_univ _)
-    simp only [Qf, dif_pos hJ] at hx
+    simp only [Qf, dite_eq_left hJ] at hx
     refine (hC J i₀.1 p₀ hJ).choose_spec.2 u hx (ResidueField R) φ c ?_ ?_ ?_ ?_
     · exact fun h => hp₀ ((residue_algebraMap_eq_zero_iff_mem q _).1 h)
     · show c i₀.1 = 1
-      rw [show c i₀.1 = w i₀ / w i₀ from dif_pos i₀.2]
+      rw [show c i₀.1 = w i₀ / w i₀ from dite_eq_left i₀.2]
       exact div_self hne
     · intro i hi
       obtain ⟨j, _, rfl⟩ := Finset.mem_map.1 hi
@@ -621,7 +554,7 @@ theorem bertini_cotangent_independent : ∀ (k A : Type) [Field k] [CharZero k] 
       rw [Finset.sum_map]
       convert key using 2 with j hj
       show c j.1 * φ _ = _
-      rw [show c j.1 = w j / w i₀ from dif_pos j.2]
+      rw [show c j.1 = w j / w i₀ from dite_eq_left j.2]
       rfl
 
 end GlobalTheory
@@ -1122,7 +1055,7 @@ theorem neg_one_lt_formOrd_sub_sum : ∀ (Y : Scheme.{0}) [IsIntegral Y] [IsLoca
         have : (0 : ℚ) < E.ord (v j) := by exact_mod_cast hj
         nlinarith [hc j]⟩
     linarith
-  · push_neg at h
+  · push Not at h
     have h' : ∀ j, E.ord (v j) = 0 := fun j => le_antisymm (h j) (hnn j)
     simp only [h', Int.cast_zero, mul_zero, Finset.sum_const_zero, sub_zero]
     linarith

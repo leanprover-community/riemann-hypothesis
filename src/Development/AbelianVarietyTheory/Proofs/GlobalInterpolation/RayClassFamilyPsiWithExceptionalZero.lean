@@ -12,58 +12,15 @@ public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TruncatedPerronPsi
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AnalyticAtDslope
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LSeries.Dirichlet
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BdIntEqZeroOfPrimitive
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -449,7 +406,7 @@ theorem truncated_perron_of_le_two_vonMangoldt : ∃ C : ℝ, 0 < C ∧ ∀ (c :
           push_cast
           linarith [hfar.2]
         exact_mod_cast h2
-      rw [if_pos hmem]
+      rw [ite_eq_left hmem]
       linarith)
   refine hbound.trans ?_
   have hZ : ∑' n : ℕ, 1 / (n : ℝ) ^ (1 + 1 / (2 * Real.log u)) ≤ 1 + 2 * Real.log u := by
@@ -813,9 +770,9 @@ theorem contour (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (Z : Finset ℝ) (c₀ C
       AnalyticAt ℂ (fun s : ℂ => if χ = 1 then 1 / (s - 1) else (0 : ℂ)) s := by
     intro s hs
     by_cases h : χ = 1
-    · simp only [if_pos h]
+    · simp only [ite_eq_left h]
       exact analyticAt_const.div (analyticAt_id.sub analyticAt_const) (sub_ne_zero.2 hs)
-    · simp only [if_neg h]
+    · simp only [ite_eq_right h]
       exact analyticAt_const
   have key := shift
     (fun s => deriv (𝓕.F χ) s / 𝓕.F χ s - (if χ = 1 then 1 / (s - 1) else 0))
@@ -833,7 +790,7 @@ theorem contour (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (Z : Finset ℝ) (c₀ C
         ((u : ℂ) ^ (β : ℂ) / (β : ℂ)) = ∑ β ∈ Z', (u : ℂ) ^ (β : ℂ) / (β : ℂ) :=
       Finset.sum_congr rfl fun β h => by
         have hne : (β : ℂ) ≠ 1 := fun e => h1Z (Finset.mem_image.2 ⟨β, h, e⟩)
-        rw [if_neg hne, one_mul]
+        rw [ite_eq_right hne, one_mul]
     have e3 : (if (1 : ℂ) = 1 then (if χ = 1 then -1 else 0) else 1) *
         ((u : ℂ) ^ (1 : ℂ) / (1 : ℂ)) = -(if χ = 1 then (u : ℂ) else 0) := by
       split_ifs <;> simp_all
@@ -878,14 +835,14 @@ theorem contour (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (Z : Finset ℝ) (c₀ C
         have := (hZ1 β h5).2.1
         linarith
       refine ⟨_, (han 1 h1).deriv.div (han 1 h1) hF, Eventually.of_forall fun s => ?_⟩
-      simp only [if_true, Pi.div_apply]
+      simp only [ite_true, Pi.div_apply]
       split_ifs <;> ring
     · have hp1 : p ≠ 1 := fun e => h1Z (e ▸ hp)
       obtain ⟨β, h1, rfl⟩ := Finset.mem_image.1 hp
       obtain ⟨h2, h3⟩ := Finset.mem_filter.1 h1
       obtain ⟨g, hg, h⟩ := logDeriv_simple (han β h3.le) (hZ1 β h2).2.2.1 (hZ1 β h2).2.2.2
       refine ⟨_, hg.sub (hite _ hp1), h.mono fun s hs => ?_⟩
-      simp only [if_neg hp1, Pi.sub_apply, hs]
+      simp only [ite_eq_right hp1, Pi.sub_apply, hs]
       ring
   · intro s h1 h2 h3 h4
     have far : ∀ x : ℝ, d ≤ |σ - x| → d ≤ ‖s - (x : ℂ)‖ := by

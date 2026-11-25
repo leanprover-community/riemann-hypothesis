@@ -22,58 +22,15 @@ public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DoubledFlagSumEqUnipotentDimAndLayerProd
 public import Mathlib.LinearAlgebra.Matrix.Trace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagUnipotentRadicalClosedSubgroupKeeps
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.Tactic.Polynomial.Basic
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.InitialStatement
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
@@ -576,10 +533,6 @@ theorem homSub_stable {f g : Matrix (Fin n) (Fin n) ℂ} {P Q : Submodule ℂ (F
   · rw [twoSided_mulVec]
     exact hQ _ (hX.2 _)
 
-theorem detOn_pos {f g : Matrix (Fin n) (Fin n) ℂ} (hgf : g * f = 1) (V : Submodule ℂ (Fin n → ℂ))
-    (hV : ∀ y ∈ V, f *ᵥ y ∈ V) : 0 < detOn f V := by
-  apply GlobalTheory.CompanionTheory.RgStart.detOn_pos_of_left_inv <;> assumption
-
 def killing (N : Submodule ℂ (Matrix (Fin n) (Fin n) ℂ)) (V : Submodule ℂ (Fin n → ℂ)) :
     Submodule ℂ (Matrix (Fin n) (Fin n) ℂ) := N ⊓ homSub V ⊤
 
@@ -752,8 +705,8 @@ theorem flag_finrank_det : ∀ (n : ℕ) (f g : Matrix (Fin n) (Fin n) ℂ) (r :
     have hnorm := congrArg (fun z : ℂ => ‖z‖) hm
     simp only [norm_mul] at hnorm
     rw [hA, hB] at hnorm
-    have hx := detOn_pos hgf (F k) (hfF k)
-    have hy := detOn_pos hgf (F (k + 1)) (hfF (k + 1))
+    have hx := GlobalTheory.CompanionTheory.RgStart.detOn_pos_of_left_inv hgf (F k) (hfF k)
+    have hy := GlobalTheory.CompanionTheory.RgStart.detOn_pos_of_left_inv hgf (F (k + 1)) (hfF (k + 1))
     have hle1 : Module.finrank ℂ (F k) ≤ Module.finrank ℂ (F (k + 1)) :=
       Submodule.finrank_mono (hmono k)
     have hle2 : Module.finrank ℂ (F (k + 1)) ≤ n := by
@@ -1188,7 +1141,6 @@ variable {n : ℕ} {ε : Fin n → Bool}
 def basisMat (V : Submodule ℂ (Fin n → ℂ)) : Matrix (Fin n) (Fin (Module.finrank ℂ V)) ℂ :=
   Matrix.of fun j i => (Module.finBasis ℂ V i : Fin n → ℂ) j
 
-
 variable (ε) in
 def pairMap (V : Submodule ℂ (Fin n → ℂ)) : (Fin n → ℂ) →ₗ[ℂ] (Fin (Module.finrank ℂ V) → ℂ) :=
   ((basisMat V)ᴴ * Formalism.REAL.Jm ε).mulVecLin
@@ -1526,7 +1478,6 @@ theorem inG_conj (m : UJ ε) {X : Matrix (Fin n) (Fin n) ℂ} (h : inG ε X) : i
     _ = 0 := by
         rw [e2]; simp only [Matrix.mul_assoc]; exact neg_add_cancel _
 
-
 variable (ε) in
 def perpJ (V : Submodule ℂ (Fin n → ℂ)) : Submodule ℂ (Fin n → ℂ) where
   carrier := {y | ∀ x ∈ V, star x ⬝ᵥ (Jm ε *ᵥ y) = 0}
@@ -1538,7 +1489,6 @@ def perpJ (V : Submodule ℂ (Fin n → ℂ)) : Submodule ℂ (Fin n → ℂ) wh
 
 theorem mem_perpJ {V : Submodule ℂ (Fin n → ℂ)} {y : Fin n → ℂ} :
     y ∈ perpJ ε V ↔ ∀ x ∈ V, star x ⬝ᵥ (Jm ε *ᵥ y) = 0 := Iff.rfl
-
 
 variable (ε) in
 def lieSub : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ) where
@@ -1567,14 +1517,13 @@ variable {a : ℕ}
 def natFlag (W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)) (s : ℕ) : Submodule ℂ (Fin n → ℂ) :=
   W ⟨min s a, by omega⟩
 
-
 variable (ε) in
 def dblFlag (W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)) (s : ℕ) : Submodule ℂ (Fin n → ℂ) :=
   if s ≤ a then natFlag W s else perpJ ε (natFlag W (2 * a + 1 - s))
 
 variable {j : Fin a → ℕ} {W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)}
 
-theorem dblFlag_le {s : ℕ} (hs : s ≤ a) : dblFlag ε W s = natFlag W s := by rw [dblFlag, if_pos hs]
+theorem dblFlag_le {s : ℕ} (hs : s ≤ a) : dblFlag ε W s = natFlag W s := by rw [dblFlag, ite_eq_left hs]
 
 theorem dblFlag_fin (i : Fin (a + 1)) : dblFlag ε W i = W i := by
   rw [dblFlag_le (Nat.lt_succ_iff.mp i.isLt)]
@@ -1593,7 +1542,7 @@ theorem dblFlag_last : dblFlag ε W a = W (Fin.last a) := by
   rwa [Fin.val_last] at h
 
 theorem dblFlag_sub {s : ℕ} (hs : s ≤ a) : dblFlag ε W (2 * a + 1 - s) = perpJ ε (dblFlag ε W s) := by
-  rw [dblFlag_le hs, dblFlag, if_neg (by omega), show 2 * a + 1 - (2 * a + 1 - s) = s by omega]
+  rw [dblFlag_le hs, dblFlag, ite_eq_right (by omega), show 2 * a + 1 - (2 * a + 1 - s) = s by omega]
 
 theorem dblFlag_dual {s : ℕ} (hs : s ≤ 2 * a + 1) :
     dblFlag ε W (2 * a + 1 - s) = perpJ ε (dblFlag ε W s) := by
@@ -1634,11 +1583,11 @@ theorem dblFlag_mono (hW : IsIsoFlag ε j W) : Monotone (dblFlag ε W) := by
   by_cases ht : t ≤ a
   · rw [dblFlag_le (hst.trans ht), dblFlag_le ht]
     exact nm hst
-  · have et : dblFlag ε W t = perpJ ε (natFlag W (2 * a + 1 - t)) := by rw [dblFlag, if_neg ht]
+  · have et : dblFlag ε W t = perpJ ε (natFlag W (2 * a + 1 - t)) := by rw [dblFlag, ite_eq_right ht]
     by_cases hs : s ≤ a
     · rw [dblFlag_le hs, et]
       exact (nm hs).trans (iso.trans (anti (nm (by omega))))
-    · have es : dblFlag ε W s = perpJ ε (natFlag W (2 * a + 1 - s)) := by rw [dblFlag, if_neg hs]
+    · have es : dblFlag ε W s = perpJ ε (natFlag W (2 * a + 1 - s)) := by rw [dblFlag, ite_eq_right hs]
       rw [es, et]
       exact anti (nm (by omega))
 
@@ -1664,7 +1613,7 @@ theorem dblFlag_keeps (m : UJ ε) (hm : ∀ i, ∀ y ∈ W i, uMat m *ᵥ y ∈ 
   by_cases hs : s ≤ a
   · rw [dblFlag_le hs] at hy ⊢
     exact hm _ y hy
-  · have e : dblFlag ε W s = perpJ ε (natFlag W (2 * a + 1 - s)) := by rw [dblFlag, if_neg hs]
+  · have e : dblFlag ε W s = perpJ ε (natFlag W (2 * a + 1 - s)) := by rw [dblFlag, ite_eq_right hs]
     rw [e, mem_perpJ] at hy ⊢
     intro x hx
     have h1 := GlobalTheory.FlagLeviGroup.form_inv m⁻¹ x y

@@ -124,29 +124,9 @@ open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal GlobalT
 
 namespace GlobalTheory.LatAlgebraic
 
-theorem natAbs_discr_of_finrank_one (F : Type) [Field F] [NumberField F] (h : Module.finrank ℚ F = 1) :
-    (discr F).natAbs = 1 := by
-  have hb : (⊥ : Subalgebra ℚ F) = ⊤ := Subalgebra.bot_eq_top_of_finrank_eq_one h
-  let e : ℚ ≃ₐ[ℚ] F := (Algebra.botEquiv ℚ F).symm.trans ((Subalgebra.equivOfEq _ _ hb).trans Subalgebra.topEquiv)
-  rw [← NumberField.discr_eq_discr_of_algEquiv (f := e), NumberField.discr_rat]
-  rfl
-
 theorem two_le_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] (h : UnramFin E) :
     2 ≤ Module.finrank ℚ (maximalRealSubfield E) := by
   apply _root_.GlobalTheory.LatConjOne.two_le_finrank_of_unramFin <;> assumption
-
-theorem card_eq_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [Fintype I]
-    {φ : I → E →+* ℂ} (h : IsCMType φ) : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E) := by
-  apply _root_.GlobalTheory.LatValRam.card_eq_finrank <;> assumption
-
-theorem cmPeriodConstant_eq_of_card_cmType {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
-    (hcard : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E)) (d s : ℕ) (hs : 1 ≤ s) (κ : I → ℕ) :
-    C0 E d (2 * s) κ = GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.cWt E (2 * s) *
-      (∏ i, ∏ j ∈ Finset.range (κ i), (((2 * s : ℕ) : ℝ) + j)) * (2 * Real.pi / Real.sqrt d) ^ (∑ i, κ i) := by
-  have hk : 1 ≤ 2 * s := by omega
-  rw [cmValueConst_eq, GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.cWt, Finset.prod_congr rfl (fun i _ => GlobalTheory.LatValRam.gamma_nat_add (2 * s) (κ i) hk),
-    Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, hcard]
-  ring
 
 end GlobalTheory.LatAlgebraic
 end -- clump:auto
@@ -377,7 +357,6 @@ private lemma ecoef_mem_algebraicClosure_of_isCoef {F : Type} [Field F] [NumberF
   · rw [mem_algebraicClosure_iff]
     exact isAlgebraic_realEmbedding_apply i ξ
 
-
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.hser_coeff_isAlgebraic : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F) (a₀ : ℂ) (a : F → ℂ) (x : F) (s N : ℕ) (κ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℕ) (c : ℕ → ℂ) (n : ℕ), k = 2 * s → _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a → IsAlgebraic ℚ a₀ → (∀ m, IsAlgebraic ℚ (c m)) → IsAlgebraic ℚ (PowerSeries.coeff n (_root_.GlobalTheory.HilbFam.hser k N 𝔞 a x κ c)) := by
@@ -589,7 +568,7 @@ theorem latAlg_of_siegelKlingen : GlobalTheory.Published.SiegelKlingenDeligneRib
   have hφθ : ∀ i, φ i (algebraMap K E θ) = (τ : ℂ) := by
     intro i; rw [← RingHom.comp_apply, hφι i, hθτ]
   obtain ⟨e, he⟩ := GlobalTheory.CMTypeEmb.exists_equiv E I φ hCM
-  have hcard : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E) := GlobalTheory.LatAlgebraic.card_eq_finrank hCM
+  have hcard : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E) := GlobalTheory.LatValRam.card_eq_finrank hCM
   have hI : Nonempty I := Fintype.card_pos_iff.1 (by omega)
   obtain ⟨i₀⟩ := hI
   have hθF : algebraMap K E θ ∉ Set.range (fun x : maximalRealSubfield E => (x : E)) := by
@@ -682,7 +661,7 @@ theorem latAlg_of_siegelKlingen : GlobalTheory.Published.SiegelKlingenDeligneRib
   have hC0 : ((C0 E d (2 * s) κ : ℝ) : ℂ) = (GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.cWt E (2 * s) : ℂ) *
       (((∏ i, ∏ j ∈ Finset.range (κ i), (((2 * s : ℕ) : ℝ) + j)) : ℝ) : ℂ) *
       (2 * (Real.pi : ℂ) / ((Real.sqrt d : ℝ) : ℂ)) ^ k := by
-    rw [GlobalTheory.LatAlgebraic.cmPeriodConstant_eq_of_card_cmType hcard d s hs κ]; push_cast; ring
+    rw [GlobalTheory.LatValRam.cmPeriodConstant_eq_of_card_cmType hcard d s hs κ]; push_cast; ring
   rw [GlobalTheory.LatValRam.risingFactor_eq] at hDg
   have key2 : GlobalTheory.ToricTransport.coordIn E d s κ Ω₀ (S 0) = ((-1 : ℂ) ^ k)⁻¹ *
       (2 * ((τ.im : ℝ) : ℂ) / ((Real.sqrt d : ℝ) : ℂ)) ^ k * c ^ (2 * s * f + 2 * k) *
@@ -773,7 +752,6 @@ theorem prime_eq_of_mem {A : Type} [CommRing A] {v : Ideal A} (hv : v.IsPrime) {
   simp only [map_natCast] at *
   exact v.add_mem (v.mul_mem_left _ hpv) (v.mul_mem_left _ hqv)
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds (c_vp delta_vp IsFieldData) in
 theorem ne_d_of_c_eq_zero {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I] {d : ℕ} {φ : I → E →+* ℂ}
     (hF : IsFieldData d φ) {𝔣 : Ideal (OF E)} (h𝔣 : IsBaseCond 𝔣) {l : ℕ} (hc : c_vp 𝔣 l = 0) : l ≠ d := by
@@ -795,19 +773,6 @@ theorem ne_d_of_c_eq_zero {E : Type} [Field E] [NumberField E] {I : Type} [Finty
     · exact discr_ne_zero E h0
     · omega
 
-theorem card_eq_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [Fintype I]
-    {φ : I → E →+* ℂ} (h : IsCMType φ) : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E) := by
-  apply GlobalTheory.LatValRam.card_eq_finrank <;> assumption
-
-theorem cmPeriodConstant_eq_of_card_cmType {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
-    (hcard : Fintype.card I = Module.finrank ℚ (maximalRealSubfield E)) (d s : ℕ) (hs : 1 ≤ s) (κ : I → ℕ) :
-    C0 E d (2 * s) κ = GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.cWt E (2 * s) *
-      (∏ i, ∏ j ∈ Finset.range (κ i), (((2 * s : ℕ) : ℝ) + j)) * (2 * Real.pi / Real.sqrt d) ^ (∑ i, κ i) := by
-  have hk : 1 ≤ 2 * s := by omega
-  rw [cmValueConst_eq, GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.cWt, Finset.prod_congr rfl (fun i _ => GlobalTheory.LatValRam.gamma_nat_add (2 * s) (κ i) hk),
-    Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, hcard]
-  ring
-
 theorem per_factor (a b Ω r π : ℂ) (k n : ℕ) (ha : a ≠ 0) (hb : b ≠ 0) (hΩ : Ω ≠ 0) (hr : r ≠ 0) (hpi : π ≠ 0) :
     (b / a) ^ n / a ^ k * (((a * b * r / (2 * π))⁻¹) ^ n * (a / Ω) ^ (k + 2 * n)) =
       (2 * π / r) ^ n / Ω ^ (k + 2 * n) := by
@@ -820,7 +785,6 @@ theorem per_factor (a b Ω r π : ℂ) (k n : ℕ) (ha : a ≠ 0) (hb : b ≠ 0)
   have h6 : a ^ k ≠ 0 := pow_ne_zero _ ha
   field_simp
   ring
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds (ValGe_vp betaBound_vp c_vp cE_vp a0 n_vp) in
 theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.Statement → JetInt → LatIntUnr := by
@@ -836,7 +800,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
     exact latDisc_ne_zero Λ (by rw [← hΩ]; simp)
   obtain ⟨a, b, hab, hT⟩ := hJ E I d φ s hF hs z hz 𝔣 Λ h𝔣 hΛ l hl Q hQ hQl y hy lam Ω hΩ
   have hCM : IsCMType φ := hF.2.2.2.2.2.2.1
-  have hcard := card_eq_finrank hCM
+  have hcard := GlobalTheory.LatValRam.card_eq_finrank hCM
   have hf2 : 2 ≤ Module.finrank ℚ (maximalRealSubfield E) := hcard ▸ hF.2.2.2.2.2.1
   have hc0 : condQ 𝔣 Q ≠ ⊥ := by
     show 𝔣 * ∏ q ∈ Q, q.asIdeal ≠ 0
@@ -850,7 +814,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
   have hp : ∀ i, Sz l lam 0 (a i * b i * (Real.sqrt d : ℝ) / (2 * Real.pi))⁻¹ := by
     intro i
     have := (hab i).2.2.2
-    rwa [hc, if_neg hld, add_zero] at this
+    rwa [hc, ite_eq_right hld, add_zero] at this
   have hsd : ((Real.sqrt d : ℝ) : ℂ) ≠ 0 := by
     have : (0 : ℝ) < Real.sqrt d := Real.sqrt_pos.2 (by exact_mod_cast hF.1.pos)
     exact_mod_cast this.ne'
@@ -875,7 +839,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
       simp [Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK, mul_comm]
     have hsq : ((-1 : ℂ) ^ (∑ i, κ i)) * (-1) ^ (∑ i, κ i) = 1 := by
       rw [← mul_pow]; norm_num
-    rw [hDg, GlobalTheory.LatValRam.risingFactor_eq, cmPeriodConstant_eq_of_card_cmType hcard d s hs κ, hM]
+    rw [hDg, GlobalTheory.LatValRam.risingFactor_eq, GlobalTheory.LatValRam.cmPeriodConstant_eq_of_card_cmType hcard d s hs κ, hM]
     calc _ = ((GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.cWt E (2 * s) : ℝ) : ℂ) *
           (((∏ i, ∏ j ∈ Finset.range (κ i), (((2 * s : ℕ) : ℝ) + j)) : ℝ) : ℂ) * S 0 *
           ((2 * (Real.pi : ℂ) / ((Real.sqrt d : ℝ) : ℂ)) ^ (∑ i, κ i) /
@@ -894,7 +858,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
     refine GlobalTheory.LatValRam.sz_neg_one_pow_mul _ (GlobalTheory.LatValRam.sz_mono (GlobalTheory.LatValRam.sz_mul hTg (GlobalTheory.LatValRam.sz_prod Finset.univ
       (fun i => ((κ i : ℕ) : ℝ) * 0 + ((2 * s + 2 * κ i : ℕ) : ℝ) * (a0 𝔣 l : ℝ)) _
       (fun i _ => GlobalTheory.LatValRam.sz_mul (GlobalTheory.LatValRam.sz_pow (hp i) _) (GlobalTheory.LatValRam.sz_pow (hab i).2.2.1 _)))) (le_of_eq ?_))
-    simp only [betaBound_vp, n_vp, if_pos hc, Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK]
+    simp only [betaBound_vp, n_vp, ite_eq_left hc, Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK]
     push_cast
     simp only [mul_zero, zero_add, add_mul, Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum, Finset.sum_const,
       Finset.card_univ, nsmul_eq_mul]
@@ -925,9 +889,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates (iterD)
 namespace GlobalTheory.JetExp
 
 variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]}
-
-theorem sz_mono {r r' : ℝ} {x : ℂ} (h : r ≤ r') (hx : Sz l lam r x) : Sz l lam r' x :=
-  ⟨hx.1, hx.2.trans (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (Fact.out : l.Prime).one_lt.le) h)⟩
 
 theorem norm_factorial_inv_le (n : ℕ) : ‖((n.factorial : ℂ_[l]))‖⁻¹ ≤ (l : ℝ) ^ (n : ℝ) := by
   have hp : l.Prime := Fact.out
@@ -963,8 +924,7 @@ theorem expansion_of_jetInt : JetInt → Expansion := by
     refine Finset.prod_congr rfl fun i _ => ?_
     rw [div_mul_eq_div_div, div_eq_mul_inv (_ / _)]
   rw [e]
-  refine sz_mono ?_ (GlobalTheory.LatValRam.sz_mul h1 h2)
-  have hK : (0 : ℝ) ≤ ((∑ i, κ i : ℕ) : ℝ) := Nat.cast_nonneg _
+  refine GlobalTheory.QFam.SzSum.sz_mono ?_ (GlobalTheory.LatValRam.sz_mul h1 h2)
   split_ifs <;> nlinarith
 
 end GlobalTheory.JetExp

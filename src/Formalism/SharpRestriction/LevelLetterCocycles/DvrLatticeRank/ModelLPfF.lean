@@ -101,8 +101,7 @@ theorem nl_smulA {b : LetA O n} (hb : b ∈ W.AΔ) {x : LA W T π' c} (hx : x �
     obtain ⟨m, a, y, ⟨hy, he⟩, hg⟩ := hx
     refine Submodule.subset_span
       ⟨m, fun j => ⟨b * a j, W.AΔ.mul_mem hb (a j).2⟩, y, ⟨hy, ?_⟩, fun τ ζ hpt => ?_⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hcomm, he, map_sum]
+    · rw [hcomm, he, map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [htmul, ← map_mul]
       congr 2

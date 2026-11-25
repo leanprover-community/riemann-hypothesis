@@ -25,7 +25,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : �
 theorem sum_sub_delta (X : Matrix (Fin r) (Fin r) E) (g : Fin r → S.V) (a : Fin r) :
     ∑ c, X c a • g c - g a = ∑ c, (X c a - if c = a then 1 else 0) • g c := by
   simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 theorem psiF_mem (Λ : Submodule (𝓞 E) S.V) (e f : Fin r → S.V) (U U' : Matrix (Fin r) (Fin r) E) (m : E)
     (hm : star m = m) (hint : ∀ x ∈ Λ, ∀ y ∈ Λ, ∃ o : 𝓞 E, (o : E) = S.hT x y)

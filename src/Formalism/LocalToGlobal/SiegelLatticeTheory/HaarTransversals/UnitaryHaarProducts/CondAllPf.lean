@@ -42,9 +42,6 @@ namespace Formalism.L2.SG.Pf.LocTr
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
-theorem isDiffVal_dV : Formalism.L2.SG.LocVol.IsDiffVal v (Formalism.L2.SG.LocVol.dV v) := by
-  apply Formalism.L2.SG.Pf.NcVal.OmVSt.OmX.dV_isDiffVal
-
 open Classical in
 theorem single_at (y : Fv F v) : (singleV F v y) v = y := by
   first
@@ -120,7 +117,7 @@ theorem bwd (x : Fv F v) (hx : Formalism.L2.SG.LocVol.dV v * x ∈ v.adicComplet
   intro d0 hd0
 
   have hD : Valued.v (algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F d0)) ≤
-      Valued.v (Formalism.L2.SG.LocVol.dV v) := (isDiffVal_dV v).2.1 d0 hd0
+      Valued.v (Formalism.L2.SG.LocVol.dV v) := (Formalism.L2.SG.Pf.NcVal.OmVSt.OmX.dV_isDiffVal v).2.1 d0 hd0
   have hI := mem_intAd.mp hq
   apply mem_integers_of_valuation_le_one
   intro w
@@ -171,7 +168,7 @@ theorem fwd (x : Fv F v)
     (hP : ∀ y ∈ v.adicCompletionIntegers F, ∀ q : F,
       singleV F v (x * y) - algebraMap F (Af F) q ∈ Formalism.UG.intAd F → ∃ n : ℤ, Algebra.trace ℚ F q = n) :
     Formalism.L2.SG.LocVol.dV v * x ∈ v.adicCompletionIntegers F := by
-  have hD := isDiffVal_dV v
+  have hD := Formalism.L2.SG.Pf.NcVal.OmVSt.OmX.dV_isDiffVal v
   by_contra hnot
   rw [mem_adicCompletionIntegers, not_le] at hnot
   set δ := Formalism.L2.SG.LocVol.dV v with hδ

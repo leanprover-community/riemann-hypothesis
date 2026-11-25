@@ -3,6 +3,7 @@ module
 public import Formalism.ThetaSupremumBounds.StatementA
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
 public import Formalism.ThetaSupremumBounds.GaussianShiftBounds.FockJet
@@ -261,32 +262,16 @@ open scoped ComplexConjugate Real
 
 namespace Formalism.DimensionVariation
 
-private theorem integral_complex_exp_neg_mul_sq_norm {c : ℝ} (hc : 0 < c) :
-    ∫ z : ℂ, Real.exp (-(c * ‖z‖ ^ 2)) = π / c := by
-  calc ∫ z : ℂ, Real.exp (-(c * ‖z‖ ^ 2))
-      = ∫ z : ℂ, (fun p : ℝ × ℝ => Real.exp (-c * p.1 ^ 2) * Real.exp (-c * p.2 ^ 2))
-          (Complex.measurableEquivRealProd z) := by
-        congr 1
-        funext z
-        show Real.exp (-(c * ‖z‖ ^ 2)) = Real.exp (-c * z.re ^ 2) * Real.exp (-c * z.im ^ 2)
-        rw [← Real.exp_add, Complex.sq_norm, Complex.normSq_apply]
-        congr 1
-        ring
-    _ = ∫ p : ℝ × ℝ, Real.exp (-c * p.1 ^ 2) * Real.exp (-c * p.2 ^ 2) :=
-        Complex.volume_preserving_equiv_real_prod.integral_comp'
-          (fun p : ℝ × ℝ => Real.exp (-c * p.1 ^ 2) * Real.exp (-c * p.2 ^ 2))
-    _ = (∫ x : ℝ, Real.exp (-c * x ^ 2)) * ∫ y : ℝ, Real.exp (-c * y ^ 2) :=
-        integral_prod_mul (fun x : ℝ => Real.exp (-c * x ^ 2)) (fun y : ℝ => Real.exp (-c * y ^ 2))
-    _ = π / c := by
-        rw [integral_gaussian, Real.mul_self_sqrt (div_nonneg Real.pi_pos.le hc.le)]
-
 theorem gaussianIntegralDiagonal : GaussCoord := by
   intro κ hκ b hb
   have hint_r : ∫ u : κ → ℂ, Real.exp (-∑ x, b x * ‖u x‖ ^ 2) = ∏ x, π / b x := by
     simp_rw [← Finset.sum_neg_distrib, Real.exp_sum]
     rw [integral_fintype_prod_volume_eq_prod
       (fun x (z : ℂ) => Real.exp (-(b x * ‖z‖ ^ 2)))]
-    exact Finset.prod_congr rfl fun x _ => integral_complex_exp_neg_mul_sq_norm (hb x)
+    refine Finset.prod_congr rfl fun x _ => ?_
+    have hg := GaussianFourier.integral_rexp_neg_mul_sq_norm (V := ℂ) (hb x)
+    rw [Complex.finrank_real_complex, show ((2 : ℕ) : ℝ) / 2 = 1 by norm_num, Real.rpow_one] at hg
+    simpa only [neg_mul] using hg
   refine ⟨?_, hint_r⟩
   by_contra hni
   have h0 : ∫ u : κ → ℂ, Real.exp (-∑ x, b x * ‖u x‖ ^ 2) = 0 := integral_undef hni

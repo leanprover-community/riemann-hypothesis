@@ -57,7 +57,7 @@ theorem exists_upper_of_minors : ∀ (N j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ
         rw [det_sub_eq_minorIJ h (stepCols N j i) _ fun a => ?_]
         · exact hmin i hp
         · have : ¬ ((i : ℕ) + 1 ≤ j) := by omega
-          simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg this, Fin.le_def, hb, iff_true]
+          simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right this, Fin.le_def, hb, iff_true]
           omega
     · by_cases hl : (b : ℕ) + 1 = N
       · rw [det_sub_congr h _ (fun a : Fin N => ¬ (a : ℕ) < N - j) fun a => by
@@ -71,7 +71,7 @@ theorem exists_upper_of_minors : ∀ (N j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ
         rw [det_sub_eq_minorIJ h (stepCols N j i) _ fun a => ?_]
         · exact hmin i hp
         · have : (i : ℕ) + 1 ≤ j := by omega
-          simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos this, Fin.le_def, hb, iff_false]
+          simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left this, Fin.le_def, hb, iff_false]
           omega
   obtain ⟨B, h1, h2, h3⟩ := hbd.exists_upper hu
   refine ⟨B, h1, h2, fun hB => ?_, h3⟩

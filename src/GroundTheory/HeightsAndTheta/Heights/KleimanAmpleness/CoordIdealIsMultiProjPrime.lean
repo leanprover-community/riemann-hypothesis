@@ -83,51 +83,6 @@ variable (S)
 
 end Cl
 
-section Filtration
-
-open ReciprocityTheory.ChartRestriction.G.Geo
-
-variable (S : Type) [CommRing S] (N : ℕ)
-variable {M : Type} [AddCommGroup M] [Module (Poly S N) M] [Module S M] [IsScalarTower S (Poly S N) M]
-
-
-variable {S N}
-variable {Ω : Type} [Field Ω] [Algebra S Ω]
-
-variable (S)
-
-end Filtration
-
-section Comparison₂
-
-open ReciprocityTheory.ChartRestriction.G.Geo
-
-variable {S : Type} [CommRing S] {σ : Type} {Ω : Type} [Field Ω] [Algebra S Ω]
-
-
-end Comparison₂
-
-section Inhabitants
-
-open ReciprocityTheory.ChartRestriction.G.Geo
-
-variable (S : Type) [CommRing S] (N : ℕ)
-
-variable {S} {Ω : Type} [Field Ω] [Algebra S Ω]
-
-end Inhabitants
-
-section Inhabitants2
-
-open ReciprocityTheory.ChartRestriction.G.Geo
-
-variable {S : Type} [CommRing S] {N : ℕ} {Ω : Type} [Field Ω] [Algebra S Ω]
-
-
-variable (S N)
-
-end Inhabitants2
-
 end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman

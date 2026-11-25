@@ -33,10 +33,7 @@ theorem crd_tmul (v : HeightOneSpectrum (𝓞 F)) (a : Fv F v) (e : E) (k : Fin 
   simp [bV, Algebra.TensorProduct.basis_repr_tmul, Algebra.smul_def, mul_comm]
 
 theorem exists_den (x : E) : ∃ y : ℤ, y ≠ 0 ∧ IsIntegral ℤ ((y : E) * x) := by
-  have h1 : IsAlgebraic ℚ x := Algebra.IsAlgebraic.isAlgebraic x
-  have h2 : IsAlgebraic ℤ x := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 h1
-  obtain ⟨y, hy, hi⟩ := h2.exists_integral_multiple
-  exact ⟨y, hy, by rwa [zsmul_eq_mul] at hi⟩
+  exact GlobalTheory.LatFin.exists_int_mul_integral x
 
 def den (x : E) : ℤ := Classical.choose (exists_den x)
 

@@ -343,16 +343,6 @@ open scoped ENNReal NNReal MatrixGroups
 
 noncomputable section
 
-namespace PositivityTheory.PlacePermOperatorBicommutantSpan
-
-theorem sb_indL {F : Type} [Field F] [NumberField F] {ι : Type} [Fintype ι] {a : ℕ} (ha : 0 < a) :
-    SB (indL (F := F) (ι := ι) a) := by
-  apply _root_.CompanionTheory.PlacePermOperatorBicommutantSpan.sb_indL <;> assumption
-
-theorem bounded_a : ∀ (F : Type) [Field F] [NumberField F] [MeasurableSpace (A F)] [BorelSpace (A F)] (lf : Measure (A F)), lf.IsAddHaarMeasure → lf (Oh F) = 1 → ∀ ψ : AddChar (A F) ℂ, IsStdChar F ψ → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (M : ℕ) (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ)) (P : InfinitePlace F → Matrix ι ι ℝ), QSetup M B ρ P → 3 ≤ M → ∀ (Ω : Type) [MeasurableSpace Ω] (Pr : Measure Ω) (gf : Ω → Matrix ι ι (A F)) (gi : Ω → InfinitePlace F → Matrix ι ι ℝ), CountData M B ρ Pr gf gi → ∃ C : ℝ, ∀ a : ℕ, 0 < a → ∀ x : InfinitePlace F → ℝ, SB (indL (F := F) (ι := ι) a) ∧ ‖((∫ ω, theta B ρ P (gf ω) (gi ω) (indL a) (fun w => (x w : ℂ) + Complex.I) ∂Pr) - eis ψ lf B ρ P (indL a) (fun w => (x w : ℂ) + Complex.I))‖ ≤ C * (a : ℝ) ^ (Module.finrank ℚ F * M) :=
-  _root_.CompanionTheory.PlacePermOperatorBicommutantSpan.bounded_a
-
-end PositivityTheory.PlacePermOperatorBicommutantSpan
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -434,7 +424,7 @@ theorem fourier_coefficient_any : ∀ (F : Type) [Field F] [NumberField F], ∀ 
       by_cases hall : ∀ ω, s z ω = 0
       · exact Or.inr hall
       left
-      push_neg at hall
+      push Not at hall
       obtain ⟨ω, hω⟩ := hall
       obtain ⟨r, hr⟩ := integral_of_ne_zero (hOrth ω) hint hmem hω
       obtain ⟨r₀, hr₀⟩ := hNβ
@@ -719,12 +709,12 @@ theorem core_zero : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F �
   have hQ : QSetup M B ρ P := ⟨hF, hc, hB, hdet, hρ, hP, hPP⟩
   have hC : CountData M B ρ Pr gf gi := ⟨inferInstance, m1, m2, fun ω => ⟨o2 ω, o1 ω⟩, hcnt⟩
   obtain ⟨ψ, hψ⟩ := (_root_.GlobalTheory.CompanionTheory.SW.Core.StdChar.main F).1
-  obtain ⟨C, hb⟩ := PositivityTheory.PlacePermOperatorBicommutantSpan.bounded_a F lf hlf h1 ψ hψ ι M B ρ P hQ hM Ω Pr gf gi hC
+  obtain ⟨C, hb⟩ := CompanionTheory.PlacePermOperatorBicommutantSpan.bounded_a F lf hlf h1 ψ hψ ι M B ρ P hQ hM Ω Pr gf gi hC
   choose! Df d1 d2 d3 d4 d5 using _root_.GlobalTheory.CompanionTheory.SW.Core.Dens.density_main F lf hlf h1 ψ hψ ι M B ρ P hQ hM
   obtain ⟨Di, i1, i2, i3, i4, i5⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.Dens.density_of_q F ι M B ρ P hQ hM
   refine ⟨C, Df, Di, fun a ha => ⟨d1 a ha, d2 a ha, d3 a ha⟩, ⟨i1, i2, i3⟩, fun a ha => ?_⟩
   obtain ⟨-, -, -, -, -, -, hint, -, hK, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
-  have hs := PositivityTheory.PlacePermOperatorBicommutantSpan.sb_indL (F := F) (ι := ι) ha
+  have hs := CompanionTheory.PlacePermOperatorBicommutantSpan.sb_indL (F := F) (ι := ι) ha
   obtain ⟨N₁, p1, n1⟩ := _root_.GlobalTheory.CompanionTheory.SW.FstarPer.fstar_periodic F lf hlf h1 ψ hψ ι M B ρ P hQ _ hs
   have hq : Continuous (qf (hf F) (Bf B) : (ι → A F) → A F) := by unfold qf; fun_prop
   obtain ⟨N₂, p2, n2⟩ := hK _ ((hs.2.isCompact.image hq).insert (algebraMap F (A F) 0))

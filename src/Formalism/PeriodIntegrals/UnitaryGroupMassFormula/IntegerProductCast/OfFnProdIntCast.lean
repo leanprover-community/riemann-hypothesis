@@ -40,10 +40,10 @@ theorem star_Tm {A : Type} [Ring A] [StarRing A] [Algebra ℂ A] [StarModule ℂ
   rw [star_add, hs]
   by_cases h : c = d
   · subst h
-    rw [if_pos rfl, if_pos rfl, Int.units_mul_self, Units.val_one, Int.cast_one, one_mul,
+    rw [ite_eq_left rfl, ite_eq_left rfl, Int.units_mul_self, Units.val_one, Int.cast_one, one_mul,
       Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one, star_smul, star_one]
     exact (one_mul _).symm
-  · rw [if_neg h, if_neg (Ne.symm h), star_zero, zero_add, zero_add]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), star_zero, zero_add, zero_add]
 
 def conjRev (t : ℕ) : Equiv.Perm (Fin t) ≃ Equiv.Perm (Fin t) where
   toFun σ := Fin.revPerm * σ * Fin.revPerm

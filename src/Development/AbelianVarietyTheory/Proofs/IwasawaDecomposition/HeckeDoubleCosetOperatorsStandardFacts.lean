@@ -266,7 +266,7 @@ theorem heckeD_eq_sum {J : Subgroup (GAf L n)} {v : HeightOneSpectrum (𝓞 L⁺
     · obtain ⟨x, hx, rfl⟩ := h
       obtain ⟨γ, ⟨hγ, e⟩, -⟩ := h2 x hx
       exact Finset.mem_coe.2 (Finset.mem_image.2 ⟨γ, hγ, QuotientGroup.eq.2 e⟩)
-    · exact absurd (dif_neg h) hc
+    · exact absurd (dite_eq_right h) hc
 
 theorem exists_int_of_normalizes {F Γ : Type} [Field F] [LinearOrderedCommGroupWithZero Γ] (w : Valuation F Γ)
     (O : Subring F) (hO : ∀ x, x ∈ O ↔ w x ≤ 1) (g : GL (Fin n) F)
@@ -454,8 +454,7 @@ theorem heckeD_mem {ρ : Representation ℂ (GQ L n) W} {J : Subgroup (GAf L n)}
     rw [← map_smul, ← hf.2 ⟨κ, hκ⟩, rt_rt, rt_rt]
     simp
   refine ⟨⟨fun γ g => ?_, ?_⟩, key⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [heckeD_type hB hv h1 h2 hf, Finset.sum_apply, Finset.sum_apply, map_sum]
+  · rw [heckeD_type hB hv h1 h2 hf, Finset.sum_apply, Finset.sum_apply, map_sum]
     refine Finset.sum_congr rfl fun δ _ => ?_
     show f (γ * g * δ) = ρ γ (f (g * δ))
     rw [mul_assoc, hf.1.1]

@@ -16,48 +16,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFinPar
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSubSelf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -217,11 +178,6 @@ theorem tmul_ne_zero_of_ne {P Q : Type} [AddCommGroup P] [Module ℂ P] [AddComm
     one_smul] at this
   exact hx this
 
-theorem pure_neg {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (f : SInf F κ)
-    (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ) : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure (-f) φ = -GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ := by
-  funext x
-  simp [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure, neg_mul]
-
 theorem exists_not_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (a a' : ℕ) (G : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a') (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E)
     (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V G.W) (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V' G.W) (R : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.RealMaps F a a')
@@ -244,13 +200,13 @@ theorem exists_not_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E
   let φ : ∀ v : Pl F, (Fin a × Fin (a + a') → Fv F v) → ℂ := fun v => if v ∈ Xc.T then ψ0 v else G.M.vac v
   have hφSB : ∀ v, φ v ∈ GlobalTheory.WeilM.SB _ := fun v => by
     by_cases h : v ∈ Xc.T
-    · simp only [φ, h, if_true]; exact hψ0 v
-    · simp only [φ, h, if_false]; exact (hvac v).1
+    · simp only [φ, h, ite_true]; exact hψ0 v
+    · simp only [φ, h, ite_false]; exact (hvac v).1
   have hφout : ∀ v ∉ Xc.T, φ v = G.M.vac v := fun v h => by simp [φ, h]
   have hφne : ∀ v, Rf.p v (φ v) ≠ 0 := fun v => by
     by_cases h : v ∈ Xc.T
-    · simp only [φ, h, if_true]; exact hψ0ne v
-    · simp only [φ, h, if_false]; exact (hM.fin.sph v h).2
+    · simp only [φ, h, ite_true]; exact hψ0ne v
+    · simp only [φ, h, ite_false]; exact (hM.fin.sph v h).2
   refine ⟨GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ, ?_, ?_⟩
   · have := sum_pure_mem_algD G.M Bs.ψ Bs.emb Xc.T (m := 1) (fun _ => f) (fun _ => φ) (fun _ => ⟨hfP, hφSB, hφout⟩)
     simpa using this
@@ -258,7 +214,7 @@ theorem exists_not_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E
     let g : Fin (m + 1) → SInf F (Fin a × Fin (a + a')) := Fin.cons (-f) f'
     let χ : Fin (m + 1) → ∀ v : Pl F, (Fin a × Fin (a + a') → Fv F v) → ℂ := Fin.cons φ φ'
     have h0 : ∑ i, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure (g i) (χ i) = 0 := by
-      simp only [Fin.sum_univ_succ, g, χ, Fin.cons_zero, Fin.cons_succ, pure_neg, ← hΦ, neg_add_cancel]
+      simp only [Fin.sum_univ_succ, g, χ, Fin.cons_zero, Fin.cons_succ, GlobalTheory.PolKer.RelV.pure_neg, ← hΦ, neg_add_cancel]
     have hout : ∀ i, ∀ v ∉ T, χ i v = G.M.vac v := by
       intro i v hv
       induction i using Fin.cases with
@@ -406,7 +362,6 @@ open NumberField IsDedekindDomain
 open scoped TensorProduct
 
 namespace GlobalTheory.PolKer
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels in
 theorem polMatch_zero_iff_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
@@ -711,8 +666,7 @@ theorem polarization_zero_of_compact : _root_.GlobalTheory.FunPr.ThetaLocalInput
   have hρ : ∀ i, R.p (D (f i)) = ρ (R.p (f i)) := fun i =>
     (GlobalTheory.ThK.RealUniq.induced_apply π hπ (D.restrict hDm) ker0 ⟨f i, (hf i).1⟩).symm
   refine ⟨T, hT, m, fun i => D (f i), φ, fun i => ⟨hDm _ (hf i).1, (hf i).2⟩, ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => hpure i
   · have := congrArg (LinearMap.rTensor _ ρ) hz
 

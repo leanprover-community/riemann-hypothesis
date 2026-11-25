@@ -17,56 +17,10 @@ public import Mathlib.RingTheory.TensorProduct.Free
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StructureSheafCohomologyPullbackCompCupIdStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGrpObjIsGrpPullbackOfIsPullbackStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StructureSheafCohomologyAbelianVarietyAlgClosedStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.CommAlgFunctorCoboundaryZeroMemCocyclesOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.OneFormMapEqKaehlerDifferentialMap
 import Development.AbelianVarietyTheory.Definitions.Divisors.Pullback1MemHodgeFiltration
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
@@ -95,7 +49,7 @@ theorem pullHO_injective_field (K L : Type) [Field K] [Field L] [Algebra K L] (X
     (s' : X' ⟶ Sp L) (φ : X' ⟶ X) (h : IsPullback φ s' s (spMap (algebraMap K L))) (hs : IsSeparated s)
     (hq : QuasiCompact s) :
     Function.Injective (pullHO1 h.w) ∧ Function.Injective (pullHO2 h.w) := by
-  obtain ⟨⟨e1, he1⟩, ⟨e2, he2⟩⟩ := GlobalTheory.T.structure_cohomology_flat_base_change K L X X' s s' φ h hs hq
+  obtain ⟨⟨e1, he1⟩, ⟨e2, he2⟩⟩ := GlobalTheory.AbCoh.flat_baseChange_HO K L X X' s s' φ h hs hq
   refine ⟨fun a b hab ↦ ?_, fun a b hab ↦ ?_⟩
   · apply one_tmul_injective_field K L
     apply e1.injective
@@ -286,10 +240,10 @@ theorem wedgeO_descends_field : ∀ (K L : Type) [Field K] [Field L] [Algebra K 
   intro K L _ _ _ A _ B _ φ h hA hB
   have hp : IsProper A.hom := hA.proper
   obtain ⟨⟨e₁, he₁⟩, e₂, he₂⟩ :=
-    GlobalTheory.T.structure_cohomology_flat_base_change K L A.left B.left A.hom B.hom φ h.1 inferInstance inferInstance
+    GlobalTheory.AbCoh.flat_baseChange_HO K L A.left B.left A.hom B.hom φ h.1 inferInstance inferInstance
   refine GlobalTheory.T.exteriorSquare_equiv_of_baseChange_field K L _ _ _ _ (cup (OAff A.hom)) (cup (OAff B.hom)) e₁ e₂ (fun a b ↦ ?_) hB
   rw [he₁, he₁, he₂]
-  exact (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.2.1 K L A.left B.left A.hom B.hom _ φ h.1.w).1 a b
+  exact (GlobalTheory.AbCoh.pull_comp_cup_id.2.1 K L A.left B.left A.hom B.hom _ φ h.1.w).1 a b
 
 end GlobalTheory.AbCoh
 end -- clump:auto
@@ -314,7 +268,7 @@ theorem abelian_HO_field_any : ∀ (K : Type) [Field K] (A : Over (Sp K)) [GrpOb
   let σ : K →+* L := algebraMap K L
   have hpb : IsPullback (pullback.fst A.hom (spMap σ)) (pullback.snd A.hom (spMap σ)) A.hom (spMap σ) :=
     IsPullback.of_hasPullback _ _
-  obtain ⟨inst, hgp, habB, hsmB⟩ := GlobalTheory.T.exists_grpObj_isGrpPullback_of_isPullback' K L σ A _ _ _ hpb
+  obtain ⟨inst, hgp, habB, hsmB⟩ := GlobalTheory.AbCoh.exists_grpObj_isGrpPullback_of_isPullback K L σ A _ _ _ hpb
   have hB := @GlobalTheory.T.structureSheafCohomology_abelianVariety_algClosed L _ _ (Over.mk (pullback.snd A.hom (spMap σ))) inst g (habB hab) (hsmB g hsm)
   obtain ⟨hfin, hrk, hw, hnp, hax⟩ := hB
   obtain ⟨hfinA, hrkA⟩ := @_root_.GlobalTheory.AbCoh.finrank_HO1_descend_field K L _ _ _ A _ _ inst _ hgp hab g hfin hrk

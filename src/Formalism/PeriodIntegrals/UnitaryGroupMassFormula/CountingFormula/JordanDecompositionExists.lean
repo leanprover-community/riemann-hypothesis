@@ -476,8 +476,6 @@ theorem iInf_localization_eq [IsDedekindDomain R] (hR : ¬ IsField R) (L : Submo
 
 end Loc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def JdS (D : Formalism.BasicNotions.D7) : Ideal (𝓞 D.host.E) :=
   Ideal.map (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) (differentIdeal ℤ (𝓞 D.host.F))
 
@@ -712,8 +710,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.R6
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem finrank_OF_OE (D : Formalism.BasicNotions.D7) : Module.finrank (𝓞 D.host.F) (𝓞 D.host.E) = 2 := by
   apply _root_.Formalism.L2.SG.Pf.NcReal.JX.CovB.finrank_O <;> assumption
 
@@ -774,8 +770,6 @@ noncomputable section
 namespace PI.UnitaryGroupMassFormula.CntFormula.R6
 
 open Formalism.HermitianLattices.Ext.L3
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem gZ_ne_zero (D : Formalism.BasicNotions.D7) (T T' : D.host.E) (Z : MatZ D)
     (hpos : Formalism.MainNotions.S.LocalSplitGroups.TotPos (GZ T T' Z)) : GZ T T' Z ≠ 0 := by

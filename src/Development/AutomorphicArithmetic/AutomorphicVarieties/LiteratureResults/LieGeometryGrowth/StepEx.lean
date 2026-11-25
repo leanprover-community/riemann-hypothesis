@@ -836,13 +836,13 @@ end
 
 private def rmul (M : Matrix (Fin a) (Fin a) (Cinf E)) : (Fin a → Cinf E) →ₗ[ℝ] (Fin a → Cinf E) where
   toFun v := v ᵥ* M
-  map_add' v w := Matrix.add_vecMul _ _ _
-  map_smul' c v := Matrix.smul_vecMul _ _ _
+  map_add' _ _ := Matrix.add_vecMul _ _ _
+  map_smul' _ _ := Matrix.smul_vecMul _ _ _
 
 private def lmul (v : Fin a → Cinf E) : Matrix (Fin a) (Fin a) (Cinf E) →ₗ[ℝ] (Fin a → Cinf E) where
   toFun M := v ᵥ* M
-  map_add' M M' := Matrix.vecMul_add _ _ _
-  map_smul' c M := Matrix.vecMul_smul _ _ _
+  map_add' _ _ := Matrix.vecMul_add _ _ _
+  map_smul' _ _ := Matrix.vecMul_smul _ _ _
 
 private theorem order (ι : Type) (x : ι → Fin a → Cinf E) (N : ℕ) (hx : Scale (fun i => qf (x i)) N) (n : ℕ) :
     ∀ P ∈ poly E a, ContDiffOn ℝ n (msum x P) (invSet E a) := by

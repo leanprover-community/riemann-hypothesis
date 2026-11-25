@@ -39,16 +39,16 @@ theorem gaussRed_coeff {Ω U : Type} [Field Ω] [Field U] [Algebra Ω U] {σ : T
   rw [MvPolynomial.coeff_sum]
   by_cases h : α ∈ p.support
   · rw [Finset.sum_eq_single α]
-    · rw [MvPolynomial.coeff_monomial, if_pos rfl]
+    · rw [MvPolynomial.coeff_monomial, ite_eq_left rfl]
     · intro b _ hb
-      rw [MvPolynomial.coeff_monomial, if_neg hb]
+      rw [MvPolynomial.coeff_monomial, ite_eq_right hb]
     · intro h'
       exact absurd h h'
   · have h0 : p.coeff α = 0 := by simpa [MvPolynomial.mem_support_iff] using h
     have hz : (⟨p.coeff α, hc α⟩ : V.comap (algebraMap Ω U)) = 0 := Subtype.ext h0
     rw [Finset.sum_eq_zero, hz, map_zero]
     intro b hb
-    rw [MvPolynomial.coeff_monomial, if_neg]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right]
     rintro rfl
     exact h hb
 

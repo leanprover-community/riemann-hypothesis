@@ -21,19 +21,7 @@ def evRed : bk.S →+* OCb l := (WittVector.constantCoeff (p := l) (R := OCb l))
 theorem evRed_X : bk.evRed X = bk.flat := by
   simp [evRed, bk.ev_X, WittVector.constantCoeff_apply, WittVector.teichmuller_coeff_zero]
 
-theorem flat_ne_zero : bk.flat ≠ 0 := by
-  intro h0
-  have hX : bk.ev X = 0 := by rw [bk.ev_X, h0]; exact WittVector.teichmuller_zero l
-  obtain ⟨w, hw⟩ := bk.coeff_zero
-  have hE : bk.ev bk.E = (l : Ainf l) * wA l bk.a (w : Wq l bk.a) := by
-    conv_lhs => rw [eq_X_mul_shift_add_const bk.E]
-    rw [map_add (f := _), map_mul, hX, zero_mul, zero_add, bk.ev_C, Polynomial.constantCoeff_coe, hw, map_mul,
-      map_natCast]
-  have hl' : (l : Ainf l) ∈ RingHom.ker (Per.θ l) := by
-    rw [← bk.span_ev, hE, Ideal.span_singleton_mul_right_unit ((w.isUnit).map (wA l bk.a))]
-    exact Ideal.mem_span_singleton_self _
-  rw [RingHom.mem_ker, map_natCast] at hl'
-  exact Nat.cast_ne_zero.2 hl.out.ne_zero hl'
+theorem flat_ne_zero : bk.flat ≠ 0 := GlobalTheory.BSP.FlatDisc.flat_ne_zero bk
 
 theorem dvd_of_evRed_eq_zero (x : bk.S) (hx : bk.evRed x = 0) : (l : bk.S) ∣ x := by
   set r := WittVector.constantCoeff (p := l) (R := Fq l bk.a) with hr

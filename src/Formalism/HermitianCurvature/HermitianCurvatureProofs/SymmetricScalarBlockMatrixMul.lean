@@ -106,12 +106,12 @@ theorem hpk_row (k r : ℕ) (a : ℕ) (ha : a < r) (c : Fin (2 * r + k + 1)) :
     Hpk k r ⟨a, by omega⟩ c = if c = ⟨2 * r + k - a, by omega⟩ then 1 else 0 := by
   unfold Hpk
   by_cases hc : c = ⟨2 * r + k - a, by omega⟩
-  · rw [if_pos hc, if_pos]
+  · rw [ite_eq_left hc, ite_eq_left]
     subst hc
     refine ⟨ha, ?_⟩
     show a + (2 * r + k - a) = 2 * r + k
     omega
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hv : c.val ≠ 2 * r + k - a := fun h => hc (Fin.ext h)
     have e1 : ¬ ((⟨a, by omega⟩ : Fin (2 * r + k + 1)).val < r ∧ (⟨a, by omega⟩ : Fin (2 * r + k + 1)).val + c.val = 2 * r + k) := by
       rintro ⟨_, h⟩; exact hv (by simp only at h; omega)
@@ -120,7 +120,7 @@ theorem hpk_row (k r : ℕ) (a : ℕ) (ha : a < r) (c : Fin (2 * r + k + 1)) :
     have e3 : ¬ (r ≤ (⟨a, by omega⟩ : Fin (2 * r + k + 1)).val ∧ (⟨a, by omega⟩ : Fin (2 * r + k + 1)).val ≤ r + k ∧
         (⟨a, by omega⟩ : Fin (2 * r + k + 1)) = c) := by
       rintro ⟨h, _⟩; simp only at h; omega
-    rw [if_neg e1, if_neg e2, if_neg e3]
+    rw [ite_eq_right e1, ite_eq_right e2, ite_eq_right e3]
 
 theorem zhat_apply_low (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (a b : Fin (r + 1)) (ha : a.val < r) (hb : b.val < r) :
@@ -145,12 +145,6 @@ theorem zhDmin : ZhDmin := by
   · rfl
   · simp; omega
   · simp; omega
-
-theorem symmetricScalarBlockMatrix_mul {p s : ℕ} (A A' : Matrix (Fin p) (Fin p) ℂ) (B B' : Matrix (Fin p) (Fin s) ℂ)
-    (C C' : Matrix (Fin s) (Fin p) ℂ) (D D' : Matrix (Fin s) (Fin s) ℂ) :
-    blk2 A B C D * blk2 A' B' C' D' = blk2 (A * A' + B * C') (A * B' + B * D') (C * A' + D * C') (C * B' + D * D') := by
-  simp only [blk2, Matrix.reindex_apply]
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
 
 theorem block2_det_lower_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (C : Matrix (Fin s) (Fin p) ℂ)
     (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A 0 C D).det = A.det * D.det := by
@@ -279,12 +273,12 @@ theorem fm_eq (z : Fin (2 * (j + ρ) + k + 1) → ℂ) (hz : inWb k (j + ρ) z) 
   rcases x with ((x | x) | x) <;> rcases y with (y | y)
   · rw [fvec_apply_lt z hz _ _ (by rw [block_index_first_val]; omega), block_index_first_val, column_index_first_val]
     simp [Matrix.one_apply, Fin.ext_iff, eq_comm]
-  · rw [fvec_apply_lt z hz _ _ (by rw [block_index_first_val]; omega), block_index_first_val, column_index_second_val, if_neg (by omega)]
+  · rw [fvec_apply_lt z hz _ _ (by rw [block_index_first_val]; omega), block_index_first_val, column_index_second_val, ite_eq_right (by omega)]
     simp
   · by_cases hlt : j + x.val < j + ρ
-    · rw [fvec_apply_lt z hz _ _ (by rw [block_index_middle_val]; omega), block_index_middle_val, column_index_first_val, if_neg (by omega)]
+    · rw [fvec_apply_lt z hz _ _ (by rw [block_index_middle_val]; omega), block_index_middle_val, column_index_first_val, ite_eq_right (by omega)]
       simp
-    · rw [fvec_apply_ge z _ _ (by rw [block_index_middle_val]; omega), column_index_first_val, if_neg (by omega)]
+    · rw [fvec_apply_ge z _ _ (by rw [block_index_middle_val]; omega), column_index_first_val, ite_eq_right (by omega)]
       simp
   · simp only [Matrix.fromRows_apply_inl, Matrix.fromBlocks_apply₂₂, Matrix.of_apply]
     unfold fvec
@@ -293,8 +287,8 @@ theorem fm_eq (z : Fin (2 * (j + ρ) + k + 1) → ℂ) (hz : inWb k (j + ρ) z) 
     · rw [dite_eq_left (by omega), dite_eq_left hc]
       simp only [bvec, eI, Pi.single_apply, Fin.ext_iff, block_index_middle_val]
       by_cases hxy : x.val = y.val
-      · rw [if_pos (by omega), if_pos hxy]
-      · rw [if_neg (by omega), if_neg hxy]
+      · rw [ite_eq_left (by omega), ite_eq_left hxy]
+      · rw [ite_eq_right (by omega), ite_eq_right hxy]
     · rw [dite_eq_right (by omega), dite_eq_right hc]
       simp only [lowV]
       congr 1
@@ -467,10 +461,6 @@ theorem skewOf_apply_lt {n : ℕ} (q : (G.UT n → ℂ) × (Fin n → ℝ)) (a b
     skewOf q a b = q.1 ⟨(a, b), h⟩ := by
   simp [skewOf, G.strictUpper, h, not_lt.mpr h.le, ne_of_lt h]
 
-theorem skewOf_apply_diag {n : ℕ} (q : (G.UT n → ℂ) × (Fin n → ℝ)) (a : Fin n) :
-    skewOf q a a = Complex.I * (q.2 a : ℂ) := by
-  simp [skewOf, G.strictUpper]
-
 theorem skewOf_inj {n : ℕ} (q q' : (G.UT n → ℂ) × (Fin n → ℝ)) (h : skewOf q = skewOf q') : q = q' := by
   obtain ⟨u, d⟩ := q
   obtain ⟨u', d'⟩ := q'
@@ -482,7 +472,7 @@ theorem skewOf_inj {n : ℕ} (q q' : (G.UT n → ℂ) × (Fin n → ℝ)) (h : s
   have h2 : d = d' := by
     funext i
     have := congrFun (congrFun h i) i
-    simp only [skewOf_apply_diag] at this
+    simp only [_root_.Formalism.FourierDecayAlt.P.Ux2.skewOf_diag] at this
     have h3 := mul_left_cancel₀ Complex.I_ne_zero this
     simpa using h3
   rw [h1, h2]
@@ -583,7 +573,7 @@ theorem skewOf_coords {n : ℕ} (S : Matrix (Fin n) (Fin n) ℂ) (hS : Sᴴ = -S
   rcases lt_trichotomy a b with h | rfl | h
   · rw [skewOf_apply_lt _ _ _ h]
     rfl
-  · rw [skewOf_apply_diag]
+  · rw [_root_.Formalism.FourierDecayAlt.P.Ux2.skewOf_diag]
     have h1 : star (S a a) = -S a a := by
       simpa [Matrix.conjTranspose_apply] using congrFun (congrFun hS a) a
     have h2 := congrArg Complex.re h1

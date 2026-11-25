@@ -246,8 +246,7 @@ open IsLocalRing
 theorem UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr :
     ∀ (A : Type) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A] [IsAdicComplete (maximalIdeal A) A]
       (p : ℕ) [Fact p.Prime] [CharP A p] [Finite (ResidueField A)] (t : A), Irreducible t →
-      ∃ e : PowerSeries (ResidueField A) ≃+* A, e PowerSeries.X = t ∧
-        ∀ c, residue A (e (PowerSeries.C c)) = c := by
+      Nonempty (PowerSeries (ResidueField A) ≃+* A) := by
   intro A _ _ _ _ p _ _ _ t ht
   classical
   have hH : ∀ x y : A, (∀ n : ℕ, x - y ∈ maximalIdeal A ^ n) → x = y := fun x y h =>
@@ -347,9 +346,7 @@ theorem UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr :
       linear_combination -(hc n)
     rw [h2]
     exact Ideal.sub_mem _ (hEq n F) (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow htm n))
-  exact ⟨RingEquiv.ofBijective e0 ⟨hinj, hsurj⟩, hX, fun c => by
-    show residue A (e0 (PowerSeries.C c)) = c
-    rw [hres, PowerSeries.constantCoeff_C]⟩
+  exact ⟨RingEquiv.ofBijective e0 ⟨hinj, hsurj⟩⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaDvrPs =====
@@ -360,15 +357,6 @@ section -- clump:auto
 @[expose] public section
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
-
-private theorem padic_hom_unique {l : ℕ} [Fact l.Prime] {R : Type} [CommRing R] (hl : (l : R) = 0)
-    (f g : ℤ_[l] →+* R) : f = g := by
-  ext z
-  obtain ⟨y, hy⟩ := Ideal.mem_span_singleton'.1 (PadicInt.appr_spec 1 z)
-  have hz : z = y * (l : ℤ_[l]) + (z.appr 1 : ℤ_[l]) := by
-    rw [pow_one] at hy; rw [hy]; ring
-  rw [hz]
-  simp [hl]
 
 private theorem adic_push {R R' : Type} [CommRing R] [IsLocalRing R] [CommRing R'] [IsLocalRing R'] (f : R →+* R')
     [IsLocalHom f] {Γ : Type} [TopologicalSpace Γ] {a : Γ → R}
@@ -405,7 +393,7 @@ private theorem span_push {K K' : Type} [Field K] [Field K'] {n a : ℕ} (j : Po
     · have hE : Matrix.single p q (1 : PowerSeries K) ∈ Ev (PowerSeries K) (PowerSeries K) n a := by
         intro p' q'
         refine ⟨fun _ => trivial, fun e => ?_⟩
-        rw [Submodule.mem_bot, Matrix.single_apply, if_neg]
+        rw [Submodule.mem_bot, Matrix.single_apply, ite_eq_right]
         rintro ⟨rfl, rfl⟩
         exact e hpq
       obtain ⟨s, hs⟩ := h _ hE
@@ -505,7 +493,7 @@ theorem UpperTheory.V.Pa.Det.extEx :
   haveI := hA.finite
   haveI := hA.char
   obtain ⟨t, ht⟩ := IsDiscreteValuationRing.exists_irreducible A'
-  obtain ⟨e, -, -⟩ := UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr A' l t ht
+  obtain ⟨e⟩ := UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr A' l t ht
   letI : Algebra ℤ_[l] (ResidueField A') := ((residue A').comp (j₀.comp (algebraMap ℤ_[l] x.A))).toAlgebra
   let j : x.A →+* PowerSeries (ResidueField A') := (e.symm : A' →+* _).comp j₀
   have hj : Function.Injective j := e.symm.injective.comp hinj
@@ -513,8 +501,8 @@ theorem UpperTheory.V.Pa.Det.extEx :
   have hjf : j.Finite := RingHom.Finite.comp (RingHom.Finite.of_surjective _ e.symm.surjective) hfin
   have h0 : (l : PowerSeries (ResidueField A')) = 0 := e.injective (by simp)
   have he : pushCh j (F.eps ℤ_[l] x.A) = F.eps ℤ_[l] (PowerSeries (ResidueField A')) := by
-    have := padic_hom_unique h0 (j.comp ((algebraMap ℤ_[l] x.A).comp (algebraMap ℤ_[l] ℤ_[l])))
-      ((algebraMap ℤ_[l] _).comp (algebraMap ℤ_[l] ℤ_[l]))
+    have := ((Det.zlUniq l).2 (j.comp ((algebraMap ℤ_[l] x.A).comp (algebraMap ℤ_[l] ℤ_[l])))
+      ((algebraMap ℤ_[l] _).comp (algebraMap ℤ_[l] ℤ_[l])) h0).1
     unfold GFrame.eps
     rw [← this]
     rfl
@@ -553,16 +541,6 @@ private theorem map_finite {K L : Type} [Field K] [Field L] [Finite L] (f : K �
   refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ?_)
   simp
 
-private theorem bijective_residue_comp_powerSeries_C (F : Type) [Field F] :
-    Function.Bijective ((residue (PowerSeries F)).comp (PowerSeries.C (R := F))) := by
-  refine ⟨RingHom.injective _, fun y => ?_⟩
-  obtain ⟨x, rfl⟩ := residue_surjective y
-  refine ⟨PowerSeries.constantCoeff x, ?_⟩
-  rw [RingHom.comp_apply, ← sub_eq_zero, ← map_sub, residue_eq_zero_iff, mem_maximalIdeal,
-    mem_nonunits_iff, PowerSeries.isUnit_iff_constantCoeff, map_sub, PowerSeries.constantCoeff_C,
-    sub_self]
-  exact not_isUnit_zero
-
 theorem UpperTheory.V.Pa.Det.resExt :
     ∀ (l : ℕ) [Fact l.Prime] {K : Type} [Field K] [Finite K] [CharP K l] (d D : ℕ), Nat.card K = l ^ d → d ∣ D → D ≠ 0 → ∃ (A' : Type) (_ : CommRing A') (_ : IsDomain A') (_ : IsDiscreteValuationRing A') (_ : IsEqDVR l A') (j : PowerSeries K →+* A'), Function.Injective j ∧ IsLocalHom j ∧ j.Finite ∧ Nat.card (ResidueField A') = l ^ D ∧ Irreducible (j PowerSeries.X) := by
   intro l _ K _ _ _ d D hK hdD hD
@@ -584,7 +562,7 @@ theorem UpperTheory.V.Pa.Det.resExt :
     charP_of_injective_ringHom (PowerSeries.C (R := GaloisField l D)).injective l
   haveI : UpperTheory.V.Pa.IsEqDVR l (PowerSeries (GaloisField l D)) :=
     ⟨by rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance,
-      Finite.of_surjective _ (bijective_residue_comp_powerSeries_C (GaloisField l D)).2, inferInstance⟩
+      Finite.of_equiv _ PowerSeries.residueFieldOfPowerSeries.symm.toEquiv, inferInstance⟩
   refine ⟨PowerSeries (GaloisField l D), inferInstance, inferInstance, inferInstance, inferInstance,
     PowerSeries.map φ, PowerSeries.map_injective _ φ.injective, ⟨fun ψ hψ => ?_⟩,
     map_finite φ, ?_, ?_⟩
@@ -592,8 +570,7 @@ theorem UpperTheory.V.Pa.Det.resExt :
       map_ne_zero_iff _ φ.injective] at hψ
     rw [PowerSeries.isUnit_iff_constantCoeff, isUnit_iff_ne_zero]
     exact hψ
-  · rw [← Nat.card_congr (Equiv.ofBijective _ (bijective_residue_comp_powerSeries_C (GaloisField l D))),
-      GaloisField.card l D hD]
+  · rw [Nat.card_congr PowerSeries.residueFieldOfPowerSeries.toEquiv, GaloisField.card l D hD]
   · rw [PowerSeries.map_X]
     exact PowerSeries.X_irreducible
 end -- clump:auto
@@ -752,25 +729,10 @@ section -- clump:auto
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private theorem charP_of_padic {l : ℕ} [Fact l.Prime] {K : Type} [Field K] [Finite K] (f : ℤ_[l] →+* K) :
-    CharP K l := by
-  obtain ⟨p, hp⟩ := CharP.exists K
-  have hpr : p.Prime := CharP.char_is_prime K p
-  by_cases h : p = l
-  · subst h
-    exact hp
-  · exfalso
-    have hu : IsUnit (p : ℤ_[l]) := by
-      rw [PadicInt.isUnit_iff, PadicInt.norm_natCast_eq_one_iff]
-      exact (Nat.coprime_primes Fact.out hpr).2 (Ne.symm h)
-    have hu' := hu.map f
-    rw [map_natCast, CharP.cast_eq_zero] at hu'
-    exact not_isUnit_zero hu'
-
 theorem UpperTheory.V.Pa.Det.onePt :
     ∀ {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) {q : ℕ} (sg : Fin q → F.G₀), (∀ a, ((mat x.ρ (sg a)).charpoly.map (algebraMap x.A (FractionRing x.A))).Separable) → Detects k (Set.range sg) → ∃ d : ℕ, d ≠ 0 ∧ ∀ D, d ∣ D → D ≠ 0 → ∃ (x' : NP F n) (j : x.A →+* x'.A) (k' : Kap x') (al : Fin q → Fin n → x'.A), x.Ext x' j ∧ Nat.card x'.K = l ^ D ∧ Detects k' (Set.range sg) ∧ ∀ a, Function.Injective (al a) ∧ (mat x'.ρ (sg a)).charpoly = ∏ b, (Polynomial.X - Polynomial.C (al a b)) := by
   intro l _ F n x k q sg hsep hdet
-  haveI : CharP x.K l := charP_of_padic (algebraMap ℤ_[l] x.K)
+  haveI : CharP x.K l := (Det.zlUniq l).1 (algebraMap ℤ_[l] x.K)
   have hmat : ∀ (y y' : NP F n) (j : y.A →+* y'.A), y.Ext y' j → ∀ g, mat y'.ρ g = (mat y.ρ g).map j := by
     intro y y' j h g
     rw [h.2.2.2.1]
@@ -779,7 +741,7 @@ theorem UpperTheory.V.Pa.Det.onePt :
     Det.splitEx l (n := n) (fun a => (mat x.ρ (sg a)).charpoly)
       (fun a => ⟨Matrix.charpoly_monic _, by simp [Matrix.charpoly_natDegree_eq_dim], hsep a⟩)
   obtain ⟨x1, J1, e1, hE1, he1, -⟩ := Det.extEx x A1 j1 hj1i hj1l hj1f
-  haveI : CharP x1.K l := charP_of_padic (algebraMap ℤ_[l] x1.K)
+  haveI : CharP x1.K l := (Det.zlUniq l).1 (algebraMap ℤ_[l] x1.K)
   haveI := Fintype.ofFinite x1.K
   obtain ⟨d, -, hcard⟩ := FiniteField.card x1.K l
   refine ⟨(d : ℕ), d.ne_zero, ?_⟩

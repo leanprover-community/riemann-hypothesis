@@ -135,7 +135,6 @@ theorem deriv_sum' {n N M : ℕ} (J : Ideal (On p n)) (D : Derivation (O0 p) (On
   congr 1
   ring
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem coef {N M : ℕ} (m : ℕ) (a : Fin N → Fin M → O0 p) (w α β : On p (m + 1))
     (hsum : w = ∑ i : Fin N, ∑ j : Fin M,
       algebraMap (O0 p) (On p (m + 1)) (a i j) * xn p (m + 1) ^ (i : ℕ) * yn p (m + 1) ^ (j : ℕ))
@@ -313,7 +312,7 @@ theorem psi_part {T : GlobalTheory.K5.Tower p Ω} {n : ℕ} {ψ : O0 p →+* Ω}
     exact this
   have hpos : (0 : ℤ) < (p : ℤ) ^ n := pow_pos (by exact_mod_cast hp.out.pos) n
   have hs := hψ.sub (EvTwist.contr ((p : ℤ) ^ n) hpos B) B (fun _ => rfl) (fun r hr => by
-    rw [hBc, hc, EvTwist.part_coeff, if_neg]
+    rw [hBc, hc, EvTwist.part_coeff, ite_eq_right]
     intro h
     apply hr
     have := Int.emod_add_mul_ediv (r + i) ((p ^ n : ℕ) : ℤ)

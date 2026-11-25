@@ -42,47 +42,6 @@ public import Development.WeilBound.RepresentationTheoryGL.LimitMultiplicityWeig
 public import Development.WeilBound.RepresentationTheoryGL.LimitMultiplicityWeights.RegularClassIntegrals.PVanish
 public import Development.WeilBound.RepresentationTheoryGL.LimitMultiplicityWeights.RegularClassIntegrals.PWeightDiag
 public import Development.WeilBound.RepresentationTheoryGL.LimitMultiplicityWeights.RegularClassIntegrals.RegClassIntHolds
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 import Mathlib.Tactic.Linter.HaveILetI
@@ -92,24 +51,9 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.InnerEqZeroOfNot
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.InverseChamberMap
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceAdeleRing
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SchurOrthogonalitySquareIntegrable
-import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RegularSemisimpleUnitaryGroupConcrete
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MulMemRiemannRochSpaceAdd
@@ -192,7 +136,7 @@ theorem classSum_regroup : ∀ {G : Type} [Group G] (g : G → ℂ), (Function.s
     obtain ⟨δ, hδ⟩ := δ
     simp [g', hall δ hδ]
   · have hall' : ¬ ∀ δ ∈ ({δ | IsConj γ δ} : Set G), P δ := hall
-    push_neg at hall'
+    push Not at hall'
     obtain ⟨δ0, hδ0, hnP⟩ := hall'
     symm
     have : ∀ δ : ({δ | IsConj γ δ} : Set G), g' δ = 0 := by
@@ -276,12 +220,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.IwahoriEigenObj
-
-theorem iwahoriEigenvalues : GlobalTheory.IndefiniteRowSideFullHecke.IwahoriSubgroup.IwahoriEigenvalues :=
-  GlobalTheory.IwahoriEigen.iwahoriEigenvalues
-
-end GlobalTheory.IwahoriEigenObj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.IwahoriEigenvalues =====
@@ -413,7 +351,6 @@ theorem isMulCommutative_cent_projArch_ratEmb {γ : GRat σ J} (hγ : IsRegSS γ
     IsMulCommutative (Orb.cent (projArch σ J w (ratEmb σ J γ))) :=
   Orb.isMulCommutative_cent_HA (isRegSS_projArch_ratEmb hγ w)
 
-
 end General
 
 end GlobalTheory.ArchVanish
@@ -421,7 +358,6 @@ end GlobalTheory.ArchVanish
 end
 
 namespace GlobalTheory.ArchVanish
-
 
 end GlobalTheory.ArchVanish
 end -- clump:auto
@@ -1392,17 +1328,17 @@ lemma key (S : ℂ → ℝ) (hS : ∀ z, 0 < S z) (z w : ℂ) (h : star z * w = 
     have hs : (((Real.sqrt (S z)) : ℝ) : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (hS z)).ne'
     simp only [rho, hn, hcc]
-    rw [if_pos h1, if_neg (by linarith), if_pos h2, Complex.star_def, Complex.conj_ofReal]
+    rw [ite_eq_left h1, ite_eq_right (by linarith), ite_eq_left h2, Complex.star_def, Complex.conj_ofReal]
     exact mul_inv_cancel₀ hs
   · have h2 : ‖z‖⁻¹ = 1 := by rw [← h1, inv_one]
     simp only [rho, hn, hcc]
-    rw [if_neg (by linarith), if_neg (by linarith), if_neg (by linarith), if_neg (by linarith)]
+    rw [ite_eq_right (by linarith), ite_eq_right (by linarith), ite_eq_right (by linarith), ite_eq_right (by linarith)]
     simp
   · have h2 : 1 < ‖z‖⁻¹ := by nlinarith
     have hs : (((Real.sqrt (S (star z)⁻¹)) : ℝ) : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (hS _)).ne'
     simp only [rho, hn, hcc]
-    rw [if_neg (by linarith), if_pos h1, if_pos h2, star_inv₀, Complex.star_def, Complex.conj_ofReal]
+    rw [ite_eq_right (by linarith), ite_eq_left h1, ite_eq_left h2, star_inv₀, Complex.star_def, Complex.conj_ofReal]
     exact inv_mul_cancel₀ hs
 
 end MainStatements.WeightKernel.PShiftT
@@ -1423,7 +1359,7 @@ theorem shiftT : ShiftT := by
   have hSl : ∀ i, S (l i) = σ i := by
     intro i
     have h : ∃ j, l j = l i := ⟨i, rfl⟩
-    simp only [S, dif_pos h]
+    simp only [S, dite_eq_left h]
     rw [hl (Classical.choose_spec h)]
   refine ⟨fun i => rho S (l i), ?_, ?_⟩
   · ext i j
@@ -1440,7 +1376,7 @@ theorem shiftT : ShiftT := by
       _ = J i j := by rw [e2, one_mul]
   · intro i hi
     show ‖rho S (l i)‖ ^ 2 = σ i
-    rw [rho, if_pos hi, hSl, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _),
+    rw [rho, ite_eq_left hi, hSl, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _),
       Real.sq_sqrt (hσ i).le]
 
 end MainStatements.WeightKernel
@@ -1715,7 +1651,6 @@ noncomputable section
 namespace GlobalTheory.PsCo.Plug
 open MainStatements.WeightKernel
 
-
 theorem hyperX : CuspAny → ArchZero → GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.RegularSemisimple → HyperZeroX := by
   intro hCA hAZ hRS D V lam S M T U μa μf μ _ _ fa ff hTD γ hreg hirr hna
   obtain ⟨Φ, L, a, hgood⟩ := exists_isGood V
@@ -1876,7 +1811,7 @@ open GlobalTheory.TrMult
 
 theorem GlobalTheory.PsCo.Plug.ellipticSideDirect : GlobalTheory.Published.CuspTraceClass → EllTraceX := fun tc =>
   GlobalTheory.PsCo.Plug.ellTrace_of_middleX MainStatements.WeightKernel.regClassInt_holds (GlobalTheory.T.siegel_implies_regular_class_finite CompanionTheory.Prw.siegelCore_holds) (GlobalTheory.T.cuspidalOperators_vanishingRadicalIntegrals_unitaryGroup tc)
-    _root_.GlobalTheory.Proof.parabolic_and_constant_term.parabolicAndConstTermX GlobalTheory.IwahoriEigenObj.iwahoriEigenvalues _root_.GlobalTheory.RegSSObj.regularSemisimple _root_.GlobalTheory.NonFieldType.nonFieldTypeVanishingX
+    _root_.GlobalTheory.Proof.parabolic_and_constant_term.parabolicAndConstTermX GlobalTheory.IwahoriEigen.iwahoriEigenvalues _root_.GlobalTheory.RegSSObj.regularSemisimple _root_.GlobalTheory.NonFieldType.nonFieldTypeVanishingX
     (GlobalTheory.PsCo.Plug.hyperZero_of_intX MainStatements.WeightKernel.regClassInt_holds _root_.GlobalTheory.RegSSObj.regularSemisimple)
 
 end

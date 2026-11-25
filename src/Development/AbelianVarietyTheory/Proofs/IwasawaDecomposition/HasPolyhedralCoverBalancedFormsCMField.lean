@@ -346,7 +346,7 @@ theorem lowerBlock_eq_zero_of_gap : ∀ (n : ℕ) (K c : ℝ), ∃ R : ℝ, 1 �
       · rw [hvl i s hs]; simp; positivity
       by_cases ht : j < t
       · rw [hS.lower t j ht]; simp; positivity
-      push_neg at hs ht
+      push Not at hs ht
       have hsm := hWsmall s t (le_trans ht hj) (le_trans hi hs)
       have hu1 : |u t j| ≤ 1 := by
         rcases eq_or_lt_of_le ht with h | h
@@ -380,13 +380,13 @@ theorem lowerBlock_eq_zero_of_gap : ∀ (n : ℕ) (K c : ℝ), ∃ R : ℝ, 1 �
   intro t _
   by_cases ht : q < t
   · simp [hvl t q ht]
-  push_neg at ht
+  push Not at ht
   have hz : ∑ s, u p s * B s t = 0 := by
     apply Finset.sum_eq_zero
     intro s _
     by_cases hs : s < p
     · simp [hS.lower p s hs]
-    push_neg at hs
+    push Not at hs
     simp [hB, hAzero s t (le_trans hkp hs) (le_trans ht hqk)]
   rw [hz, zero_mul]
 
@@ -550,7 +550,7 @@ theorem balanced_entries_bounded : ∀ (n : ℕ) (K : ℝ), ∃ C : ℝ, ∀ (A 
           · exact h
         rw [hz]
         simpa using hB
-      · push_neg at hgap
+      · push Not at hgap
         have hm : (p : ℕ) + ((q : ℕ) - p) < n := by omega
         have h1 := gap_chain (d := d) (by linarith) p ((q : ℕ) - p) hm
           (fun k k' hk hpk hk' => hgap k k' hk hpk (by rw [Fin.le_def]; omega))
@@ -836,7 +836,7 @@ theorem hasRedCover (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host
     simp [Matrix.sum_apply, vecMulVec_apply]
   simp only [pullR_apply, LinearEquiv.coe_coe, he, hl, LinearMap.sum_apply, LinearMap.smul_apply, toReal_apply, smul_eq_mul]
   rw [Fintype.sum_prod_type, Finset.sum_eq_single (⟨ρ, hρ⟩ : ↥hF.toFinset)]
-  · simp only [if_true, sqForm_basis]
+  · simp only [ite_true, sqForm_basis]
     rw [← Finset.sum_coe_sort S]
     push_cast
     rfl

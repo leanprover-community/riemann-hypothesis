@@ -27,7 +27,7 @@ theorem letter_level_zero_eq {k r : ℕ} {E : Type} [NormedAddCommGroup E] [Norm
     rcases l with ⟨b, Y⟩
     cases b <;>
       simp [D.vLet, C3.AAop, C3.AAvop, qminorOp, Matrix.det_isEmpty, Finset.univ_unique] <;>
-      rw [if_pos (show StrictMono _ from fun a => a.elim0)] <;> simp [hD0]
+      rw [ite_eq_left (show StrictMono _ from fun a => a.elim0)] <;> simp [hD0]
   · have he1 : e = 1 := by omega
     subst he1
     simp [D.vLet]
@@ -38,9 +38,9 @@ theorem slicePolyAll : SlicePolyAll := by
   · subst hj0
     refine ⟨fun _ => if e = 0 then KB.slv p.T F 0 hj w' h hh.2 else 0, rfl, fun l => ?_, fun t => ?_⟩
     · by_cases he : e = 0
-      · simp only [he, if_true]
+      · simp only [he, ite_true]
         exact nice_vec_of_cpt (p.T.bs 0) (fun a => Formalism.FourierDecayAlt.P.slice_compact_support_coefficient Wp Wq P p F 0 hj w' h hh hF a)
-      · simp only [he, if_false]
+      · simp only [he, ite_false]
         exact ⟨0, fun a => Formalism.FourierDecayAlt.P.JCx2.mn_nice_zero⟩
     · intro a g hg
       show D.castF _ (D.sliceAt P.k P.r p.T.base.z p.T.base.z'

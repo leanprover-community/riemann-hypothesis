@@ -27,12 +27,12 @@ def cc (τ : E →+* ℂ) : Cinf E →+* ℂ :=
 theorem cc_of_eq {τ : E →+* ℂ} (h : (InfinitePlace.mk τ).embedding = τ) (x : Cinf E) :
     cc τ x = x (InfinitePlace.mk τ) := by
   classical
-  unfold cc; rw [if_pos h]; rfl
+  unfold cc; rw [ite_eq_left h]; rfl
 
 theorem cc_of_ne {τ : E →+* ℂ} (h : ¬ (InfinitePlace.mk τ).embedding = τ) (x : Cinf E) :
     cc τ x = starRingEnd ℂ (x (InfinitePlace.mk τ)) := by
   classical
-  unfold cc; rw [if_neg h]; rfl
+  unfold cc; rw [ite_eq_right h]; rfl
 
 theorem cc_embedding (w : InfinitePlace E) (x : Cinf E) : cc w.embedding x = x w := by
   have h : (InfinitePlace.mk w.embedding).embedding = w.embedding := by rw [InfinitePlace.mk_embedding]
@@ -42,10 +42,7 @@ theorem cc_ext {x y : Cinf E} (h : ∀ τ, cc τ x = cc τ y) : x = y :=
   funext fun w => (cc_embedding w x).symm.trans ((h _).trans (cc_embedding w y))
 
 theorem conj_ne (τ : E →+* ℂ) : ComplexEmbedding.conjugate τ ≠ τ := fun h =>
-  (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex (InfinitePlace.mk τ)))
-    (InfinitePlace.isReal_iff.2 (by
-      rcases InfinitePlace.embedding_mk_eq τ with e | e <;> rw [e] <;>
-        [exact ComplexEmbedding.isReal_iff.2 h; exact ComplexEmbedding.isReal_iff.2 (by rw [h]; exact h)]))
+  NumberField.IsTotallyComplex.complexEmbedding_not_isReal τ (ComplexEmbedding.isReal_iff.2 h)
 
 theorem cc_conj (τ : E →+* ℂ) (x : Cinf E) :
     cc (ComplexEmbedding.conjugate τ) x = starRingEnd ℂ (cc τ x) := by
@@ -102,8 +99,8 @@ theorem eq_atEmb {τ : E →+* ℂ} {z : ℂ} {x : Cinf E} (h0 : ∀ w, w ≠ In
   · subst hw
     rw [Pi.single_eq_same]
     by_cases h : (InfinitePlace.mk τ).embedding = τ
-    · rw [if_pos h, ← h1, cc_of_eq h]
-    · rw [if_neg h, ← h1, cc_of_ne h, starRingEnd_self_apply]
+    · rw [ite_eq_left h, ← h1, cc_of_eq h]
+    · rw [ite_eq_right h, ← h1, cc_of_ne h, starRingEnd_self_apply]
   · rw [Pi.single_eq_of_ne hw, h0 w hw]
 
 theorem atEmb_apply_ne {τ : E →+* ℂ} (z : ℂ) {w : InfinitePlace E} (hw : w ≠ InfinitePlace.mk τ) :
@@ -118,8 +115,8 @@ theorem cc_atEmb (τ : E →+* ℂ) (z : ℂ) : cc τ (atEmb τ z) = z := by
   have e : atEmb τ z = Pi.single (InfinitePlace.mk τ)
       (if (InfinitePlace.mk τ).embedding = τ then z else starRingEnd ℂ z) := rfl
   by_cases h : (InfinitePlace.mk τ).embedding = τ
-  · rw [cc_of_eq h, e, Pi.single_eq_same, if_pos h]
-  · rw [cc_of_ne h, e, Pi.single_eq_same, if_neg h, starRingEnd_self_apply]
+  · rw [cc_of_eq h, e, Pi.single_eq_same, ite_eq_left h]
+  · rw [cc_of_ne h, e, Pi.single_eq_same, ite_eq_right h, starRingEnd_self_apply]
 
 def Lx (σ : E ≃+* E) : Cinf E →+* Cinf E := RingHom.pi fun w => cc (w.embedding.comp (σ : E →+* E))
 

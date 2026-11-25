@@ -80,20 +80,13 @@ theorem minorIJ_block_zero {R : Type} [CommRing R] {j : ℕ} {i : Fin N} {h : Ma
     generalize (stepCols N j i).orderEmbOfFin rfl c = b at hb
     generalize I.orderEmbOfFin e r = a at haB
     by_cases hc : (i : ℕ) + 1 ≤ j
-    · simp only [stepCols, wIdx, Finset.mem_filter, Finset.mem_univ, true_and, if_pos hc] at hb haB
+    · simp only [stepCols, wIdx, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left hc] at hb haB
       omega
-    · simp only [stepCols, omIdx, Finset.mem_filter, Finset.mem_univ, true_and, if_neg hc] at hb haB
+    · simp only [stepCols, omIdx, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right hc] at hb haB
       omega
   · unfold minorIJ
     rw [dite_eq_right e]
 
 end Minors
-
-section Model
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ] {y : (Σ k, ι k) → Φ}
-  {Ψ : Type} {N j : ℕ}
-
-end Model
 
 end GlobalTheory.CompanionTheory.Ar.PB

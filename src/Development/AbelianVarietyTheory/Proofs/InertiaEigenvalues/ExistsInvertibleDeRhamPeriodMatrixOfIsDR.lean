@@ -25,7 +25,7 @@ theorem exists_fixed_of_stable {F ι : Type} [Field F] [Fintype ι] [DecidableEq
     ⟨_, v₀, hv₀, h0, rfl⟩
   obtain ⟨w, hwN, hw0, hwk⟩ := Nat.find_spec hex
   obtain ⟨j₀, hj₀⟩ : ∃ j, w j ≠ 0 := by
-    by_contra h; push_neg at h; exact hw0 (funext h)
+    by_contra h; push Not at h; exact hw0 (funext h)
   set v := (w j₀)⁻¹ • w with hv
   have hvN : v ∈ N := N.smul_mem _ hwN
   have hvj : v j₀ = 1 := by simp [hv, hj₀]
@@ -154,7 +154,6 @@ theorem exists_period_matrix_of_isDR : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrim
       (P.PD K).invdR (w j) fun g => by rw [P.PD_actdR]; exact hwfix _ ⟨g, rfl⟩ j
     choose c hc using hwK
     have hQw : Q0 *ᵥ w = 0 := by simpa using hwN
-    set_option synthInstance.maxHeartbeats 100000 in
     have hsum : ∑ j, c j • bK j = 0 := by
       apply Subtype.ext
       funext i

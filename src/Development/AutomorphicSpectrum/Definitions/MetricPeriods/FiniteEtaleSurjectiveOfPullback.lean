@@ -325,7 +325,7 @@ theorem omBundle_dualFrame {Ω : Type} [Field Ω] {K : Type} [Fintype K] {J : K 
     rw [Module.apply_evalEquiv_symm_apply, ← hC, Module.Basis.coord_apply, C.repr_self, Finsupp.single_apply]
   · intro v hv
     have hli : LinearIndependent Ω v := LinearIndependent.of_pairwise_dual_eq_zero_one v φ
-      (fun a b hab => (hv a b).trans (if_neg hab)) (fun a => by rw [hv, if_pos rfl])
+      (fun a b hab => (hv a b).trans (ite_eq_right hab)) (fun a => by rw [hv, ite_eq_left rfl])
     let C := basisOfLinearIndependentOfCardEqFinrank' v hli (by simp [hrk])
     have hC : ⇑C = v := by simp [C]
     have hr : ∀ e a, C.repr e a = φ a e := fun e a => by

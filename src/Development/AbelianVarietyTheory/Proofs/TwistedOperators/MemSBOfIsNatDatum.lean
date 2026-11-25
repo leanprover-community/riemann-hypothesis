@@ -202,7 +202,7 @@ theorem datum_placesA : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
     · rw [Set.indicator_of_mem (mem_halfPt.2 hu), Finset.prod_congr rfl fun w hw =>
         (congrArg _ ((hco w).2.2.1 u).symm).trans ((hv w hw).2 _ ((hh w hw).2.2.2.2 u).1)]
       by_cases hl : mapV e u ∈ latV G i j ∧ mapW e u ∈ latW G i j
-      · rw [if_pos ⟨hl.1, hu.1⟩, if_pos ⟨hl.2, hu.2⟩, mul_one, mul_one]
+      · rw [ite_eq_left ⟨hl.1, hu.1⟩, ite_eq_left ⟨hl.2, hu.2⟩, mul_one, mul_one]
         exact Finset.prod_congr rfl fun w hw => Set.indicator_of_mem (((hh w hw).2.2.2.2 u).2.2 hl.1 hl.2) _
       · have : ∃ w ∈ locPl G t, ofMaps e (atPl w 1 • mapV e u, atPl w 1 • mapW e u) ∉ latPt e (w.under (𝓞 D.host.F)) := by
           by_contra! hall
@@ -211,12 +211,12 @@ theorem datum_placesA : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
         obtain ⟨w, hw, hn⟩ := this
         rw [Finset.prod_eq_zero hw (Set.indicator_of_notMem hn _)]
         rcases not_and_or.1 hl with hl | hl
-        · rw [if_neg fun h => hl h.1, zero_mul, mul_zero]
-        · rw [if_neg fun h : _ ∧ IsHalf ε (mapW e u) => hl h.1, mul_zero, mul_zero]
+        · rw [ite_eq_right fun h => hl h.1, zero_mul, mul_zero]
+        · rw [ite_eq_right fun h : _ ∧ IsHalf ε (mapW e u) => hl h.1, mul_zero, mul_zero]
     · rw [Set.indicator_of_notMem (mt mem_halfPt.1 hu)]
       rcases not_and_or.1 hu with hl | hl
-      · rw [if_neg fun h => hl h.2, zero_mul, mul_zero]
-      · rw [if_neg fun h : _ ∧ IsHalf ε (mapW e u) => hl h.2, mul_zero, mul_zero]
+      · rw [ite_eq_right fun h => hl h.2, zero_mul, mul_zero]
+      · rw [ite_eq_right fun h : _ ∧ IsHalf ε (mapW e u) => hl h.2, mul_zero, mul_zero]
   have hR := GlobalTheory.InductLagr.rel_of_vac Γ.M W.ψ hstd hG (locPl G t) (fun w => w.under (𝓞 D.host.F)) (Good.under_injOn hL G t) _
     (fun w => mixHalf e (atPl w 1)) (fun w => mixHalf e (cA D (atPl w 1))) (mixCo B t e) ι (halfPt e ε) R (c • f₀)
     (fun w hw => hι w hw) (fun w hw u hu => ⟨(hh w hw).1 u hu, mem_halfPt.2 (hA w hw u hu)⟩) (fun w hw => (hh w hw).2.1)

@@ -163,8 +163,8 @@ theorem coord_mem_RL {S T : HSp D} (frS : GL (Fin S.rank) D.host.E) (frT : GL (F
 
 theorem mem_La_of_finRat : ∀ {D : D7} (S T : HSp D) (frS : GL (Fin S.rank) D.host.E) (frT : GL (Fin T.rank) D.host.E), Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) frS.1 * S.gram * frS.1 = 1 → Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) frT.1 * T.gram * frT.1 = 1 → ∀ (Ls : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (Lt : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), SD D Ls → SD D Lt → ∀ (δ : ℂ) (v : Matrix (Fin T.rank) (Fin S.rank) D.host.E), GlobalTheory.VacUnique.finRat S T v ∈ latO S T (GlobalTheory.MovedDict.inV frS Ls) (GlobalTheory.MovedDict.inV frT Lt) (fun _ => True) → δ • (fun τ a b => ((GlobalTheory.FockPos.frAt frT τ)⁻¹ * Matrix.of (GlobalTheory.VacUnique.infRat S T v τ) * GlobalTheory.FockPos.frAt frS τ) a b) ∈ Formalism.MainNotions.TaylorLogMetric.La D (Formalism.MainNotions.TaylorLogMetric.tor0 D D.host.ccK δ) Ls Lt := by
   intro D S T frS frT hS hT Ls Lt hLs hLt δ v hv
-  obtain ⟨ΛS, hΛS, hSD⟩ := GlobalTheory.T.isSelfDual_image_orthonormalFrame_lattice S frS hS Ls hLs
-  obtain ⟨ΛT, hΛT, hTD⟩ := GlobalTheory.T.isSelfDual_image_orthonormalFrame_lattice T frT hT Lt hLt
+  obtain ⟨ΛS, hΛS, hSD⟩ := GlobalTheory.MovedDict.isSelfDualC_inV S frS hS Ls hLs
+  obtain ⟨ΛT, hΛT, hTD⟩ := GlobalTheory.MovedDict.isSelfDualC_inV T frT hT Lt hLt
   obtain ⟨ψ, hψ⟩ := GlobalTheory.StdAdelicChar.exists_isStdChar D
   rw [← hΛS, ← hΛT] at hv
   have hrat := (GlobalTheory.AdForm.RatLat.finTens_mem_iff hψ hSD hTD v).1 hv
@@ -203,9 +203,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
 
-
-theorem _root_.GlobalTheory.T.entire_eq_of_monomial_derivations_at_zero_eq : ∀ {D : D7} {N N' : ℕ} (Φ Ψ : Formalism.MainNotions.TaylorLogMetric.VC D N N' → ℂ), Differentiable ℂ Φ → Differentiable ℂ Ψ → (∀ k : Formalism.MainNotions.GL3Theta.Idx D N N' →₀ ℕ, Formalism.MainNotions.GL3Theta.applyAt0 D (MvPolynomial.monomial k 1) Φ = Formalism.MainNotions.GL3Theta.applyAt0 D (MvPolynomial.monomial k 1) Ψ) → Φ = Ψ := by
-  first | exact @GlobalTheory.EntireJetUniq.eq_of_applyAt0_monomial_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.EntireEqOfMonomialDerivationsAtZeroEqStatement =====
@@ -228,9 +225,6 @@ open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
 noncomputable section
 
 namespace GlobalTheory.MultLatDecomp
-
-
-
 
 theorem heisO_eq_root_smul_finRat : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsStdChar D ψ (-1) → IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ f : WO S T → ℂ, IsLatVac (heisO ψ S T) (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True) f → ∀ n : ℕ, 0 < n → ∀ w : WO S T, n • w ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) (fun _ => True) → ∃ (M : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (ζ : ℂ), (∃ m : ℕ, 0 < m ∧ ζ ^ m = 1) ∧ GlobalTheory.VacUnique.finRat S T (n • M) ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) (fun _ => True) ∧ heisO ψ S T w f = ζ • heisO ψ S T (GlobalTheory.VacUnique.finRat S T M) f := by
   intro D ψ S T ΛS ΛT hψ hS hT f hf n hn w hw
@@ -312,7 +306,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
-
 
 theorem _root_.GlobalTheory.T.heisenberg_root_smul_finiteRational_latticeDecomp : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsStdChar D ψ (-1) → IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ f : WO S T → ℂ, IsLatVac (heisO ψ S T) (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True) f → ∀ n : ℕ, 0 < n → ∀ w : WO S T, n • w ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) (fun _ => True) → ∃ (M : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (ζ : ℂ), (∃ m : ℕ, 0 < m ∧ ζ ^ m = 1) ∧ GlobalTheory.VacUnique.finRat S T (n • M) ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) (fun _ => True) ∧ heisO ψ S T w f = ζ • heisO ψ S T (GlobalTheory.VacUnique.finRat S T M) f := by
   first | exact @GlobalTheory.MultLatDecomp.heisO_eq_root_smul_finRat
@@ -398,8 +391,8 @@ theorem core (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D)
   obtain rfl := cart_one frT hT hcT
   have hψ : IsStdChar D ψ (-1) := hF.1
   have hθ : IsInfFam θ := hF.2.inf
-  obtain ⟨ΛS, hΛSe, hΛS⟩ := GlobalTheory.T.isSelfDual_image_orthonormalFrame_lattice S frS hS Ls hLs
-  obtain ⟨ΛT, hΛTe, hΛT⟩ := GlobalTheory.T.isSelfDual_image_orthonormalFrame_lattice T frT hT Lt hLt
+  obtain ⟨ΛS, hΛSe, hΛS⟩ := GlobalTheory.MovedDict.isSelfDualC_inV S frS hS Ls hLs
+  obtain ⟨ΛT, hΛTe, hΛT⟩ := GlobalTheory.MovedDict.isSelfDualC_inV T frT hT Lt hLt
   rw [← hΛSe, ← hΛTe] at hF hw
   obtain ⟨M, ζ, hζ, hnM, heq⟩ := GlobalTheory.T.heisenberg_root_smul_finiteRational_latticeDecomp ψ S T ΛS ΛT hψ hΛS hΛT F hF.2.lat n hn w hw
   rw [hΛSe, hΛTe] at hnM
@@ -417,7 +410,7 @@ theorem core (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D)
     have hx : 0 < Formalism.L2.Pj.xiR D := GlobalTheory.SupDict.xiR_pos D
     exact_mod_cast (Real.sqrt_pos.2 (by positivity)).ne'
   have hΦeq : Φ = fun z => c * Θ₀ (δ • z) := by
-    refine GlobalTheory.T.entire_eq_of_monomial_derivations_at_zero_eq Φ _ hΦd ((hΘ.comp (differentiable_id.const_smul δ)).const_mul c) fun k => ?_
+    refine GlobalTheory.EntireJetUniq.eq_of_applyAt0_monomial_eq Φ _ hΦd ((hΘ.comp (differentiable_id.const_smul δ)).const_mul c) fun k => ?_
     have h1 := GlobalTheory.T.fockMonomial_at_origin_gaussian_entire_orthonormal ψ θ S T frS frT hψ hθ hS hT F Φ hΦd hΦ k
     have h2 := hj k
     rw [applyAt0_scale Θ₀ hΘ c δ k]

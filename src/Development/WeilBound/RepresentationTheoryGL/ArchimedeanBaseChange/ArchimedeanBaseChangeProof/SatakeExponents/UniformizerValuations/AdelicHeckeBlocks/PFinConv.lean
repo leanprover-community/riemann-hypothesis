@@ -192,9 +192,9 @@ theorem reindex (S : Set (Pl E)) (A B : Pl E → ℂ)
     rintro w ⟨hw, hB⟩
     rw [Function.mem_mulSupport] at hB
     by_cases hs : IsSplitAt w
-    · rw [if_pos hs] at hB
+    · rw [ite_eq_left hs] at hB
       exact ⟨⟨w, hw, hs⟩, hB, rfl⟩
-    · rw [if_neg hs] at hB
+    · rw [ite_eq_right hs] at hB
       exact absurd rfl hB
   rw [finprod_mem_mul_distrib' hA hB, finprod_sum_elim _ hfin]
   have e₂ : ∏ᶠ w ∈ S, (if IsSplitAt w then B w else 1) = ∏ᶠ w ∈ {w | w ∈ S ∧ IsSplitAt w}, B w := by
@@ -283,9 +283,9 @@ theorem finFn_hcs {S : Set (Pl E)} (hev : ∀ x : Gf E a b, ∀ᶠ i : Slot S in
   have hC : ∀ i : Slot S, IsCompact (cset φ₁ φ₂ i) := fun i => by
     unfold cset
     by_cases h : sf φ₁ φ₂ i = (K2 a b i.pl : Set (GLw a i.pl × GLw b i.pl)).indicator 1
-    · rw [if_pos h]; exact (GlobalTheory.BCT.StTw2Add.isOpen_isCompact_KK a b i.pl).2
-    · rw [if_neg h]; exact (hL i).2.2.1
-  have hCe : ∀ᶠ i in cofinite, cset φ₁ φ₂ i = K2 a b i.pl := hLe.mono fun i hi => if_pos hi.2
+    · rw [ite_eq_left h]; exact (GlobalTheory.BCT.StTw2Add.isOpen_isCompact_KK a b i.pl).2
+    · rw [ite_eq_right h]; exact (hL i).2.2.1
+  have hCe : ∀ᶠ i in cofinite, cset φ₁ φ₂ i = K2 a b i.pl := hLe.mono fun i hi => ite_eq_left hi.2
   change IsCompact (closure (Function.support (finFn S φ₁ φ₂)))
   set_option synthInstance.maxHeartbeats 200000 in
     refine IsCompact.closure_of_subset (hcpt _ hC hCe) fun x hx i => ?_
@@ -293,11 +293,11 @@ theorem finFn_hcs {S : Set (Pl E)} (hev : ∀ x : Gf E a b, ∀ᶠ i : Slot S in
   have hne : sf φ₁ φ₂ i (i.cp a b x) ≠ 0 := fun h0 => hx (finprod_eq_zero _ i h0 (fin_one hev hind x))
   unfold cset
   by_cases h : sf φ₁ φ₂ i = (K2 a b i.pl : Set (GLw a i.pl × GLw b i.pl)).indicator 1
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     by_contra hn
     rw [h, Set.indicator_of_notMem hn] at hne
     exact hne rfl
-  · rw [if_neg h]; exact subset_tsupport _ hne
+  · rw [ite_eq_right h]; exact subset_tsupport _ hne
 
 theorem finFn_inv {S : Set (Pl E)}
     (hmul : ∀ (i : Slot S) (x y : Gf E a b), i.cp a b (x * y) = i.cp a b x * i.cp a b y)

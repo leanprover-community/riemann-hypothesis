@@ -55,14 +55,14 @@ private theorem sum_quadratic_column_indicator_eq_dotProduct_mulVec {k : Type} [
       if b = b' then dotProduct u (β.mulVec v) + dotProduct v (β.mulVec u) else 0 := by
   by_cases hb : b = b'
   · subst hb
-    simp only [Prod.mk.injEq, ite_and, mul_ite, mul_one, mul_zero, Finset.sum_add_distrib, if_true]
+    simp only [Prod.mk.injEq, ite_and, mul_ite, mul_one, mul_zero, Finset.sum_add_distrib, ite_true]
     simp [Finset.sum_ite_eq', Finset.sum_ite_irrel]
     simp only [dotProduct, Matrix.mulVec, Finset.mul_sum]
     congr 1
     · exact Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => by ring
     · rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => by ring
-  · rw [if_neg hb]
+  · rw [ite_eq_right hb]
     refine Finset.sum_eq_zero fun x _ => Finset.sum_eq_zero fun y _ =>
       Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun l _ => ?_
     by_cases hc : c = b
@@ -211,11 +211,6 @@ open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 namespace ReciprocityTheory.ChartRestriction.G.TB.G2
 
 variable {k : Type} [CommRing k] {d : ℕ}
-
-section Mon
-variable (F : Fin d → PS k 2 d) {ι : Type} (u : ι → Fin d → k)
-
-end Mon
 
 section abelian₂
 variable {ι : Type} [Fintype ι] [DecidableEq ι] (ψ : List ι → k)
@@ -432,8 +427,8 @@ theorem killAdd_of (hQ : QuadColDerivSt) : KillAddSt := by
     (quadCol (n := n) β)
     (fun l l' => by
       by_cases h : l.2 = l'.2
-      · rw [if_pos h, if_pos h.symm, add_comm]
-      · rw [if_neg h, if_neg (Ne.symm h)])
+      · rw [ite_eq_left h, ite_eq_left h.symm, add_comm]
+      · rw [ite_eq_right h, ite_eq_right (Ne.symm h)])
     h0 (fun l => h1 (u l.1) l.2) (fun l l' => h2 (u l.1) (u l'.1) l.2 l'.2) P hP g (m • Y)
   have e : FB.expS k (m • quadCol (n := n) β) * g = g * (1 + quadCol (n := n) β * (m • Y)) := by
     rw [FB.expS, hY, mul_comm, smul_mul_assoc, mul_smul_comm]

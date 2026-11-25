@@ -16,27 +16,18 @@ theorem UpperTheory.Reformulated.B.Qf5.matIrr_conj :
       (∀ g ∈ U, a g = (↑h⁻¹ : Matrix (Fin m) (Fin m) R) * a' g * (↑h : Matrix (Fin m) (Fin m) R)) →
         UpperTheory.Reformulated.B.Qf5.MatIrr U a → UpperTheory.Reformulated.B.Qf5.MatIrr U a' := by
   intro G R _ _ m U a a' h hconj hirr W hW
-  have hcancel : ∀ w : Fin m → R,
-      (↑h : Matrix (Fin m) (Fin m) R).mulVec ((↑h⁻¹ : Matrix (Fin m) (Fin m) R).mulVec w) = w := by
-    intro w
-    rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
-  have hmem : ∀ v : Fin m → R,
-      v ∈ W.comap (Matrix.mulVecLin (↑h : Matrix (Fin m) (Fin m) R)) ↔
-        (↑h : Matrix (Fin m) (Fin m) R).mulVec v ∈ W := fun v => Iff.rfl
-  have hinv : ∀ g ∈ U, ∀ v ∈ W.comap (Matrix.mulVecLin (↑h : Matrix (Fin m) (Fin m) R)),
-      (a g).mulVec v ∈ W.comap (Matrix.mulVecLin (↑h : Matrix (Fin m) (Fin m) R)) := by
+  let e := (Matrix.GeneralLinearGroup.toLin h).toLinearEquiv
+  have hinv : ∀ g ∈ U, ∀ v ∈ W.comap e.toLinearMap,
+      (a g).mulVec v ∈ W.comap e.toLinearMap := by
     intro g hg v hv
-    rw [hmem] at hv ⊢
-    rw [hconj g hg, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hcancel]
+    change (↑h : Matrix (Fin m) (Fin m) R).mulVec v ∈ W at hv
+    change (↑h : Matrix (Fin m) (Fin m) R).mulVec ((a g).mulVec v) ∈ W
+    rw [hconj g hg, Matrix.mulVec_mulVec, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
+      Units.mul_inv, Matrix.one_mul, ← Matrix.mulVec_mulVec]
     exact hW g hg _ hv
+  have cancel := Submodule.comap_injective_of_surjective e.surjective
   rcases hirr _ hinv with hb | ht
-  · left
-    rw [Submodule.eq_bot_iff] at hb ⊢
-    intro w hw
-    have h0 := hb ((↑h⁻¹ : Matrix (Fin m) (Fin m) R).mulVec w) (by rw [hmem, hcancel]; exact hw)
-    rw [← hcancel w, h0, Matrix.mulVec_zero]
-  · right
-    rw [Submodule.eq_top_iff'] at ht ⊢
-    intro w
-    have h1 := (hmem _).1 (ht ((↑h⁻¹ : Matrix (Fin m) (Fin m) R).mulVec w))
-    rwa [hcancel] at h1
+  · have hbot : (⊥ : Submodule R (Fin m → R)).comap e.toLinearMap = ⊥ :=
+      LinearMap.ker_eq_bot.mpr e.injective
+    exact Or.inl (cancel (hb.trans hbot.symm))
+  · exact Or.inr (cancel (ht.trans (Submodule.comap_top _).symm))

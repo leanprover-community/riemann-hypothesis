@@ -329,7 +329,7 @@ theorem main_ind (c : E ≃+* E) (hcc : ∀ x, c (c x) = x)
       refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
       · simp [hee]
       · simp only [Fin.cons_zero, Fin.cons_succ]
-        rw [hsym (v' j) e, hv'e, map_zero, if_neg (Fin.succ_ne_zero j).symm]
+        rw [hsym (v' j) e, hv'e, map_zero, ite_eq_right (Fin.succ_ne_zero j).symm]
       · simp [hv'e]
       · simp [hv'o]
     · rw [Fin.range_cons, Submodule.span_insert, hv'sp]
@@ -389,25 +389,6 @@ end GlobalTheory.SelfDualLattice
 
 namespace GlobalTheory.SelfDualLattice
 
-theorem exists_orthonormal_family (K : UQ)
-    (hN : ∀ u : K.Oˣ, K.c (algebraMap K.O K.E u) = algebraMap K.O K.E u →
-      ∃ z : K.Oˣ, algebraMap K.O K.E u = algebraMap K.O K.E z * K.c (algebraMap K.O K.E z))
-    (hT : ∃ z : K.O, algebraMap K.O K.E z + K.c (algebraMap K.O K.E z) = 1) (n : ℕ) :
-    ∀ (V : Type) [AddCommGroup V] [Module K.E V] [Module K.O V] [IsScalarTower K.O K.E V]
-      [Module.Finite K.E V] (h : V → V → K.E), Module.finrank K.E V = n →
-      (∀ x y z, h (x + y) z = h x z + h y z) → (∀ (c : K.E) x z, h (c • x) z = c * h x z) →
-      (∀ x y, h y x = K.c (h x y)) → ∀ L : Submodule K.O V, L.FG →
-      Submodule.span K.E (L : Set V) = ⊤ →
-      (∀ y, y ∈ L ↔ ∀ z ∈ L, h y z ∈ (algebraMap K.O K.E).range) →
-      ∃ m, ∃ v : Fin m → V, (∀ i j, h (v i) (v j) = if i = j then 1 else 0) ∧
-        Submodule.span K.O (Set.range v) = L := by
-  first
-  | (apply _root_.GlobalTheory.UnitPairNorm.main <;> assumption)
-
-end GlobalTheory.SelfDualLattice
-
-namespace GlobalTheory.SelfDualLattice
-
 theorem exists_orthonormal_basis : ∀ (K : UQ) (V : Type) [AddCommGroup V] [Module K.E V] [Module K.O V]
     [IsScalarTower K.O K.E V] [Module.Finite K.E V] (h : V → V → K.E),
     (∀ x y z, h (x + y) z = h x z + h y z) → (∀ (c : K.E) x z, h (c • x) z = c * h x z) →
@@ -418,7 +399,7 @@ theorem exists_orthonormal_basis : ∀ (K : UQ) (V : Type) [AddCommGroup V] [Mod
       ∀ i j, h (b i) (b j) = if i = j then 1 else 0 := by
   intro K V _ _ _ _ _ h hadd hsmul hsym L hfg hspan hdual
   obtain ⟨hN, hT, -, -⟩ := _root_.GlobalTheory.UnitLemma.UnramNorm.unram_quadratic_facts K
-  obtain ⟨m, v, hvo, hvs⟩ := exists_orthonormal_family K hN hT _ V h rfl hadd hsmul hsym L hfg hspan hdual
+  obtain ⟨m, v, hvo, hvs⟩ := GlobalTheory.UnitPairNorm.main K hN hT _ V h rfl hadd hsmul hsym L hfg hspan hdual
   have hli : LinearIndependent K.E v := by
     rw [Fintype.linearIndependent_iff]
     intro g hg i

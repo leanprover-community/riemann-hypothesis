@@ -228,15 +228,6 @@ theorem isOver_iff (i : ZMod n) (τ : K →ₐ[Qp] LL) : IsOver W i τ ↔ OverL
 theorem jumps_iff (M h : ZMod n → ℕ) : JumpsBounded W T M h ↔ JumpsLet W T M h :=
   ⟨fun H τ i hτ => H i τ ((isOver_iff W i τ).2 hτ), fun H i τ hτ => H τ i ((isOver_iff W i τ).1 hτ)⟩
 
-theorem φA_letE (i : ZMod n) : W.φA (letE (i - 1)) = letE i := by
-  funext j
-  change W.φ₀ ((letE (i - 1) : LetA O n) (j - 1)) = _
-  by_cases hj : j = i
-  · subst hj
-    simp [letE]
-  · have : j - 1 ≠ i - 1 := fun h => hj (sub_left_injective h)
-    simp [letE, hj, this]
-
 theorem pole_iff (i : ZMod n) (m : ℕ) :
     (∀ y ∈ phiStar W T i, W.Q ^ m • y ∈ W.Nl T i) ↔
       ∀ x ∈ W.Nl T (i - 1), W.Q ^ m • W.φD T x ∈ W.N T := by
@@ -249,7 +240,7 @@ theorem pole_iff (i : ZMod n) (m : ℕ) :
       obtain ⟨x, hx, rfl⟩ := hy
       refine (mem_Nl_iff W T i _).2 ⟨H x hx, ?_⟩
       have h1 := ((mem_Nl_iff W T (i - 1) x).1 hx).2
-      rw [smul_comm, ← φA_letE W i, ← φD_smulA, h1]
+      rw [smul_comm, ← GlobalTheory.NL.Heights.φA_letE W i, ← φD_smulA, h1]
     | zero => simp
     | add a b _ _ ha hb => rw [smul_add]; exact Submodule.add_mem _ ha hb
     | smul c a _ ha => rw [smul_comm]; exact Submodule.smul_mem _ _ ha
@@ -338,11 +329,6 @@ theorem van_of_one {ι : Type} [Fintype ι] (nb : Module.Basis ι (LetA O n) ↥
   rw [mul_pow, mul_pow] at e2
   linear_combination -e2
 
-theorem lev_letE (i : ZMod n) (ζ : LL) : W.lev i ζ (letE i) = 1 := by
-  have := W.lev_letter i ζ (1 - letE i) (by simp [letE])
-  rw [map_sub, map_one] at this
-  exact (sub_eq_zero.1 this).symm
-
 theorem memLoc_iff {ι : Type} [Fintype ι] (nb : Module.Basis ι (LetA O n) ↥(W.N T))
     {i : ZMod n} {ζ : LL} (hζ : QRoot W i ζ) {y : W.DD T} (hy : MemInv W T i y) :
     MemLoc W T i ζ y ↔ Van W T i ζ y := by
@@ -422,7 +408,7 @@ theorem van_letE_iff {ι : Type} [Fintype ι] (nb : Module.Basis ι (LetA O n) �
       rw [smul_comm (W.Q ^ k) (letE i : LetA O n), ← add_smul, add_sub_cancel, one_smul]
     rw [e]
     refine Submodule.add_mem _ (H k hk') (Submodule.smul_mem_smul ?_ hk)
-    rw [mem_vanI, map_sub, map_one, lev_letE, sub_self]
+    rw [mem_vanI, map_sub, map_one, GlobalTheory.NL.LevPt.lev_letE, sub_self]
     exact dvd_zero _
   · intro H
     refine van_of_one W T nb hζ hk' ?_
@@ -557,7 +543,6 @@ variable {W : LocWach PD LL O v n} {RA RW : Type} [CommRing RA] [CommRing RW] [A
     [Algebra O RW] {inclR : RA →ₐ[O] RW} {φR : RW →ₐ[O] RW} {gR : G → (RW →ₐ[O] RW)} {πA : RA}
 
 end Generic
-
 
 open TensorProduct in
 theorem _root_.GlobalTheory.HeightsFromJumpsCompare.heightsFromJumps_iff (l : ℕ) [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l) (AI : _root_.Formalism.BasicNotions.LocAinf l P)
@@ -780,7 +765,7 @@ theorem exists_inv {n : ℕ} (T : LocLat G Qp LL O) (b : Module.Basis (Fin n) (L
     have e1 : ∑ m, (∑ j, c k j * PA m j - if m = k then W.Q ^ h * (letE i : LetA O f) else 0) •
         (b m : W.DD T) = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
-        if_true, Finset.sum_smul, mul_smul]
+        ite_true, Finset.sum_smul, mul_smul]
       rw [← hc k, sub_eq_zero, Finset.sum_comm]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [hφ, Finset.smul_sum]
@@ -948,7 +933,7 @@ theorem exists_equiv {L : Type} [Field L] {n : ℕ} (B : Mx L n (n + 1)) (C : Mx
     ∃ e : (Fin (n + 1) → L) ≃ₗ[L] (Fin n → L) × (Fin 1 → L), ∀ v, e v = (B.mulVec v, C.mulVec v) := by
   let φ : (Fin (n + 1) → L) →ₗ[L] (Fin n → L) × (Fin 1 → L) := (Matrix.toLin' B).prod (Matrix.toLin' C)
   have hi : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro v hv
     exact h v (congrArg Prod.fst hv) (congrArg Prod.snd hv)
   exact ⟨φ.linearEquivOfInjective hi (by simp), fun v => rfl⟩
@@ -1027,7 +1012,7 @@ theorem mat_identity {S M M' : Type} [CommRing S] [AddCommGroup M] [Module S M] 
 
   simp only [hv, hv', hY, map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply,
   Module.Basis.repr_self, Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-  Finset.mem_univ, if_true] at h
+  Finset.mem_univ, ite_true] at h
   simp only [Matrix.mul_apply]
   rw [Finset.sum_congr rfl (fun m _ => mul_comm (G' r m) (X m k)), ← h]
   exact Finset.sum_congr rfl fun m _ => mul_comm _ _
@@ -1237,7 +1222,6 @@ theorem exists_unit_tie (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) {n : ℕ}
     rw [map_add (f := _)]
     exact Submodule.add_mem _ hy hz
 
-
 include E in
 theorem rank_eq_of_tie (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[l] O]
     [NeZero f] (h1 : (1 : RW') ∉ Ideal.map (algebraMap O RW') (maximalIdeal O))
@@ -1288,9 +1272,6 @@ theorem rank_eq_of_tie (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) [IsDomain O] [IsD
     exact (hψC (a r k)).symm
 
 end Generic
-
-
-
 
 theorem main : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (loc l)) (HW : HWOf loc) (F : FonOf loc locA HW) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hA : CaseA K LL) (T T' : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (n n' : ℕ) (b : Module.Basis (Fin n) (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥(((HW l).W K 1 LL hA.2.2).N T)) (b' : Module.Basis (Fin n') (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥(((HW l).W K 1 LL hA.2.2).N T')) (g : LatHom T.L T'.L) (A : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → Mx (PowerSeries ↥(OL LL)) n' n) (e : Module.Basis (Fin n) ↥(OL LL) ↥T.L.T) (e' : Module.Basis (Fin n') ↥(OL LL) ↥T'.L.T) (a : Mx ↥(OL LL) n' n), IsCrys ((loc l).PD K) T.ρ → IsCrys ((loc l).PD K) T'.ρ → IsMapMat ((HW l).W K 1 LL hA.2.2) g b b' A → (∀ k, g.f (e k : T.V) = ∑ m, ((a m k : ↥(OL LL)) : ↥LL.1) • (e' m : T'.V)) → ∀ i, lrank ((A i).map (PowerSeries.map (residue ↥(OL LL)))) = (a.map (residue ↥(OL LL))).rank := by
   intro loc locA HW F l _ K LL hA T T' n n' b b' g A e e' a hT hT' hmap ha i
@@ -1361,9 +1342,6 @@ theorem wachMap_comp_coeff (W : LocWach PD LL O v f) {T T' T'' : LocLat G Qp LL 
   simpa [Finset.sum_apply, map_sum, Finsupp.smul_apply, b''.repr_self, Finsupp.single_apply] using this
 
 end Gen
-
-
-
 
 theorem isMapMat_comp_mul : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW l P) (K LL : FinExt l) (hA : CaseA K LL) (T T' T'' : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (n n' n'' : ℕ) (b : Module.Basis (Fin n) (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T)) (b' : Module.Basis (Fin n') (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T')) (b'' : Module.Basis (Fin n'') (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T'')) (g : LatHom T.L T'.L) (g' : LatHom T'.L T''.L) (g'' : LatHom T.L T''.L) (A : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → Mx (PowerSeries ↥(OL LL)) n' n) (A' : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → Mx (PowerSeries ↥(OL LL)) n'' n') (A'' : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → Mx (PowerSeries ↥(OL LL)) n'' n), IsMapMat (H.W K 1 LL hA.2.2) g b b' A → IsMapMat (H.W K 1 LL hA.2.2) g' b' b'' A' → IsMapMat (H.W K 1 LL hA.2.2) g'' b b'' A'' → (∀ x, g''.f x = g'.f (g.f x)) → ∀ i, A'' i = A' i * A i := by
   intro l _ P H K LL hA T T' T'' n n' n'' b b' b'' g g' g'' A A' A'' h1 h2 h3 hc i
@@ -1516,7 +1494,6 @@ theorem mapMat_mul {n n' n'' : ℕ} {r : ↥(GK K) →* GL (Fin n) ↥(OL LL)} {
   rw [_root_.GlobalTheory.WachPlace.isMapMat_comp_mul (HW l) K LL hA (latOf r hr) (latOf r' hr') (latOf r'' hr'') n n' n'' b b' b''
     (homOf hr hr' a ha) (homOf hr' hr'' a' ha') (homOf hr hr'' a'' ha'') A A' A'' h h' h'' hc i, Matrix.map_mul]
 
-
 include locT F Cm in
 
 theorem exists_positions {n t h R : ℕ} {r : ↥(GK K) →* GL (Fin n) ↥(OL LL)} {ψ : Fin t → ↥(GK K) →* GL (Fin 1) ↥(OL LL)}
@@ -1649,8 +1626,6 @@ theorem glue_orbits {ι X : Type} (σ : Equiv.Perm ι) (Rel : ι → X → X →
 end GlobalTheory.WachPlace
 
 namespace GlobalTheory.WachPlace
-
-
 
 theorem exists_positions_global (hBS : GlobalTheory.Published.BhattScholzeCrystallineLattices) {E Ω : Type} [Field E] [NumberField E]
     [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) (hd : ¬ (l : ℤ) ∣ NumberField.discr E)

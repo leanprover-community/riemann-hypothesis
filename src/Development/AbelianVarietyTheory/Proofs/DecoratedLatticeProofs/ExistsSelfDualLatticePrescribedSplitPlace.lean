@@ -58,30 +58,20 @@ namespace GlobalTheory.SplitLat
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-def place (q : SplitPt D k) : GlobalTheory.LocMod.Place D k where
-  e := q.e
-  split := q.split
-  π := q.pr
-  ι := q.sec
-  π_ι := q.pr_sec
-  ι_π := q.sec_pr
-  cont_π := q.cont_pr
-  cont_ι := q.cont_sec
-
 theorem suppAt_one (e : AE D) (S : HSp D) : SuppAt e S 1 := by
   intro i j
   simp [Formalism.L2.Theta.mt]
 
 theorem isLoc_one (q : SplitPt D k) {S : HSp D} {Y : Type} [Fintype Y] [DecidableEq Y]
-    (F : GlobalTheory.LocMod.Frame k S.rank Y) : (place q).IsLoc F 1 1 := by
+    (F : GlobalTheory.LocMod.Frame k S.rank Y) : (GlobalTheory.LocMod.Place.ofSplitPt q).IsLoc F 1 1 := by
   refine ⟨suppAt_one _ _, ?_⟩
-  simp [Formalism.L2.Theta.mt, F.βγ, place]
+  simp [Formalism.L2.Theta.mt, F.βγ, GlobalTheory.LocMod.Place.ofSplitPt]
 
 theorem locGrp (q : SplitPt D k) (S : HSp D) (Y : Type) [Fintype Y] [DecidableEq Y]
     (F : GlobalTheory.LocMod.Frame k S.rank Y) :
-    (∀ gk : GL Y k, ∃! g, (place q).IsLoc F g gk) ∧ (∀ g, SuppAt (place q).e S g → ∃ gk, (place q).IsLoc F g gk) ∧
-      ∀ g gk h hk, (place q).IsLoc F g gk → (place q).IsLoc F h hk → (place q).IsLoc F (g * h) (gk * hk) :=
-  (_root_.GlobalTheory.LocGrp.local_groups D k (place q)).1 S Y F
+    (∀ gk : GL Y k, ∃! g, (GlobalTheory.LocMod.Place.ofSplitPt q).IsLoc F g gk) ∧ (∀ g, SuppAt (GlobalTheory.LocMod.Place.ofSplitPt q).e S g → ∃ gk, (GlobalTheory.LocMod.Place.ofSplitPt q).IsLoc F g gk) ∧
+      ∀ g gk h hk, (GlobalTheory.LocMod.Place.ofSplitPt q).IsLoc F g gk → (GlobalTheory.LocMod.Place.ofSplitPt q).IsLoc F h hk → (GlobalTheory.LocMod.Place.ofSplitPt q).IsLoc F (g * h) (gk * hk) :=
+  (_root_.GlobalTheory.LocGrp.local_groups D k (GlobalTheory.LocMod.Place.ofSplitPt q)).1 S Y F
 
 def frameOf (q : SplitPt D k) (S : HSp D) (Y : Type) [Fintype Y] [DecidableEq Y]
     (F : GlobalTheory.LocMod.Frame k S.rank Y) : Frame q S Y where

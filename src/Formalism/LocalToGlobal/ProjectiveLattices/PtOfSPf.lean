@@ -1,6 +1,5 @@
 module
 
-
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrameLaws
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
@@ -39,12 +38,6 @@ open scoped CategoryTheory.Obj
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
-
-theorem pos_ppx_le {S T : Type} [CommRing S] [CommRing T] {x : Sp S ⟶ Xo.X} {x' : Sp T ⟶ Xo.X}
-    (pm : Gx x' ⟶ Gx x)
-    (hs : pm ≫ (snd (Over.mk x) Xo.univ.t.G).left = (snd (Over.mk x') Xo.univ.t.G).left)
-    (i : Fin 1 → Xo.univ.t.PP.L.ι) : (PPx x').U i ≤ pm ⁻¹ᵁ (PPx x).U i := by
-  apply _root_.ReciprocityTheory.ChartRestriction.G.PullbackSections.wtf_ppx_le <;> assumption
 
 theorem pos_frMap (hS : ReciprocityTheory.ChartRestriction.G.Out.SecBaseChangeAnySt) (hT : ReciprocityTheory.ChartRestriction.G.Out.SecTwistSt) {K₁ K₂ : Type}
     [Field K₁] [Field K₂] [Algebra c.F K₁] [Algebra c.F K₂] (φ : K₁ →ₐ[c.F] K₂) (y : FrPt Xo c K₁) :
@@ -160,10 +153,6 @@ section Gen
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
-theorem pos_dualMap_comp {R S T : Type} [CommRing R] [CommRing S] [CommRing T] (f : R →+* S) (g : S →+* T) :
-    dualMap (g.comp f) = (dualMap g).comp (dualMap f) :=
-  RingHom.ext fun x => by ext <;> simp [dualMap]
-
 theorem pos_frMap_trans {S T U : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T] [CommRing U]
     [Algebra c.F U] {φ : S →ₐ[c.F] T} {ψ : T →ₐ[c.F] U} {y : FrPt Xo c S} {z : FrPt Xo c T} {w : FrPt Xo c U}
     (h₁ : FrMap φ y z) (h₂ : FrMap ψ z w) : FrMap (ψ.comp φ) y w := by
@@ -273,8 +262,6 @@ def PtOfSBody (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.
           (∑ k', algebraMap (Kp (recPlus h j hj) la G.N) L
             (@algebraMap (Op (recPlus h j hj) la G.N) (Kp (recPlus h j hj) la G.N) _ _ _ (Tv (recPlus h j hj) la G.N (0, k'))) *
             evR (T.Q.Xo j) T.Q.c ((G.w k' : T.R j)) y) ^ k
-
-
 
 theorem ptOfS_all [Finite (Comp (T.Q.Xo j) T.Q.c)] (hS : ReciprocityTheory.ChartRestriction.G.Out.SecBaseChangeAnySt)
     (hTw : ReciprocityTheory.ChartRestriction.G.Out.SecTwistSt) (hFT : GenFromTest (T.Q.Xo j) T.Q.c hG) (hV : GenValInjSt h j hG)

@@ -76,9 +76,9 @@ theorem holoOn_minorIJ {N : ℕ} {V : Set X} {m : X → Matrix (Fin N) (Fin N) �
     A.HoloOn V fun y => minorIJ (m y) I J := by
   unfold minorIJ
   by_cases e : I.card = J.card
-  · simp only [dif_pos e]
+  · simp only [dite_eq_left e]
     exact holoOn_det fun a b => h _ _
-  · simp only [dif_neg e]
+  · simp only [dite_eq_right e]
     exact holoOn_const _ _
 
 theorem holoOn_detFac {N j : ℕ} (i : Fin N) {V : Set X} {m : X → Matrix (Fin N) (Fin N) ℂ}
@@ -109,7 +109,7 @@ end Holo
 
 theorem minorIJ_one_self {N : ℕ} (I : Finset (Fin N)) : minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) I I = 1 := by
   unfold minorIJ
-  rw [dif_pos rfl, Matrix.submatrix_one _ (I.orderEmbOfFin rfl).injective, Matrix.det_one]
+  rw [dite_eq_left rfl, Matrix.submatrix_one _ (I.orderEmbOfFin rfl).injective, Matrix.det_one]
 
 theorem detFac_ne_zero' {N j : ℕ} (hj : j ≤ N) (i : Fin N) {H : Matrix (Fin N) (Fin N) ℂ}
     (hb : IsBlockDiag j H) (hd : H.det ≠ 0) : detFac j i H ≠ 0 := by
@@ -168,7 +168,7 @@ theorem isPshOn_stepPot : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
     · refine ⟨Gh, hGh, fun y' hy' => ?_⟩
       have hy3 := hV''s hy'
       show (if q.2 = p.2 then Φl else fun y' => stepPot N j q.2 (g y')) y' = stepPot N j q.2 (g y') + (Gh y').re
-      rw [if_pos hq, hq, hGre y' hy', (hstep p.2 y' hy3).2]
+      rw [ite_eq_left hq, hq, hGre y' hy', (hstep p.2 y' hy3).2]
       have hE := hEq y' hy3.1 hy3.2.2
       have hl : Real.log ‖f y'‖ = Real.log ‖D y'‖ - Real.log ‖detFac j p.2 (H y')‖ := by
         simp only [f]
@@ -180,7 +180,7 @@ theorem isPshOn_stepPot : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
       ring
     · refine ⟨fun _ => 0, holoOn_const _ _, fun y' _ => ?_⟩
       show (if q.2 = p.2 then Φl else fun y' => stepPot N j q.2 (g y')) y' = stepPot N j q.2 (g y') + ((0 : ℂ)).re
-      rw [if_neg hq]
+      rw [ite_eq_right hq]
       simp
   have hsrc : y₁ ∈ (R.A.chart c).source := (R.A.chart c).map_target hyt
   obtain ⟨Lm, -, hL, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.levi_diagonal_of_isPeriodChart e R.X R.A Unit N j M.j_le pot y₁ V'' (fun _ => g) hPC c hsrc
@@ -188,7 +188,7 @@ theorem isPshOn_stepPot : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
   have e1 : (R.A.chart c) y₁ = y₀ := (R.A.chart c).right_inv hyt
   have e2 : (pot ((), p.2)).φ y₁ = Φl := by
     show (if p.2 = p.2 then Φl else fun y' => stepPot N j p.2 (g y')) = Φl
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   rw [e2, e1] at hlev
   show 0 ≤ levi (Φl ∘ (R.A.chart c).symm) y₀ w
   rw [hlev]

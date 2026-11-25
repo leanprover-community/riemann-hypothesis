@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Layer
 open MeasureTheory NumberField Matrix Finset
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.Count.Test
 
 open Formalism.MainNotions.S GlobalTheory.Count

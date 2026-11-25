@@ -13,67 +13,13 @@ public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianLieMeasureFrameBoxGe
 public import Formalism.LocalRingCardinality.SpanPowerMembership.LeOfEventuallyDown
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyCompactDualHaar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PolyGrowthStatementPfB
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Separation.CompletelyRegular
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TranslateChartBallDistortion
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Sheaves.Presheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameBallSubsetExpChartImageFrameBox, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHaarLeOneOfDimZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemRealLieIffTraceFreeSkewSigns, Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormSkewHermitianBasisVectorEqSqrtTwo, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewHermitianBasisVectorTraceFreeSkewCond, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewHermitianCoordinateDualBasisVector, Development.AbelianVarietyTheory.Proofs.DivisorProofs.VolumeCoordinateBoxLeHadamard, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianLieMeasureFrameBoxLe, Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentNormalizedHaarLeTwoMulLieHaar, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHaarFrameBallLe, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHaarFrameBallLeStatement
@@ -330,8 +276,8 @@ private theorem permJ' {r : ℕ} (p q : ℕ) (e : Fin p ⊕ Fin q ≃ Fin r) :
   ext a b
   simp [Matrix.mul_apply, permM, Equiv.apply_eq_iff_eq_symm_apply, diagonal_apply, Formalism.UG.Jpq]
   by_cases hab : a = b
-  · subst hab; rw [if_pos rfl]; rcases e.symm a with i | i <;> simp
-  · rw [if_neg hab]
+  · subst hab; rw [ite_eq_left rfl]; rcases e.symm a with i | i <;> simp
+  · rw [ite_eq_right hab]
     have h := e.symm.injective.ne hab
     revert h
     generalize e.symm a = i
@@ -421,19 +367,19 @@ theorem boxEnt_norm_sq_eq {r : ℕ} (d : Fin r → ℝ) (hd : ∀ a, d a = 1 ∨
   · refine ⟨(a, b), (b, a), ?_, ?_⟩
     · intro e; simp only [Prod.mk.injEq] at e; exact h.ne e.1
     · rintro ⟨a', b'⟩
-      simp only [boxEnt, if_pos h, Prod.mk.injEq]
+      simp only [boxEnt, ite_eq_left h, Prod.mk.injEq]
       split_ifs <;> (try simp only [norm_neg, hdd, norm_one, norm_zero]) <;> first | (norm_num; done) | (rename_i h1 h2; exact absurd (h1.1.symm.trans h2.1) h.ne)
   · subst h
     have haz : a ≠ z := fun e => hab (by rw [e])
     refine ⟨(a, a), (z, z), ?_, ?_⟩
     · intro e; simp only [Prod.mk.injEq] at e; exact haz e.1
     · rintro ⟨a', b'⟩
-      simp only [boxEnt, lt_irrefl, if_false, Prod.mk.injEq]
+      simp only [boxEnt, lt_irrefl, ite_false, Prod.mk.injEq]
       split_ifs <;> simp_all
   · refine ⟨(b, a), (a, b), ?_, ?_⟩
     · intro e; simp only [Prod.mk.injEq] at e; exact h.ne e.1
     · rintro ⟨a', b'⟩
-      simp only [boxEnt, if_neg (not_lt.2 h.le), if_pos h, Prod.mk.injEq]
+      simp only [boxEnt, ite_eq_right (not_lt.2 h.le), ite_eq_left h, Prod.mk.injEq]
       split_ifs <;> (try simp only [norm_mul, hdd, Complex.norm_I, norm_zero]) <;> first | (norm_num; done) | (rename_i h1 h2; exact absurd (h1.1.symm.trans h2.1) h.ne)
 
 theorem norm_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ k, ‖boxVec d z k‖ = √2 := by
@@ -448,7 +394,7 @@ theorem norm_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r 
       intro p
       rw [← hPn p]
       simp [boxVec]
-    simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     norm_num
   · intro τ' _ hτ'
     apply Finset.sum_eq_zero
@@ -476,12 +422,12 @@ theorem sum_boxEnt_diag {r : ℕ} (d : Fin r → ℝ) (z a b : Fin r) (h : (a, b
   · refine Finset.sum_eq_zero fun c _ => ?_
     have h1 : ¬ (c = a ∧ c = b) := fun hc => hab.ne (hc.1.symm.trans hc.2)
     have h2 : ¬ (c = b ∧ c = a) := fun hc => hab.ne (hc.2.symm.trans hc.1)
-    simp only [boxEnt, if_pos hab, if_neg h1, if_neg h2]
+    simp only [boxEnt, ite_eq_left hab, ite_eq_right h1, ite_eq_right h2]
   · subst hab
     have haz : a ≠ z := fun hz => h (by rw [hz])
     have : ∀ c, boxEnt d z a a c c = (if c = a then Complex.I else 0) + (if c = z then -Complex.I else 0) := by
       intro c
-      simp only [boxEnt, lt_irrefl, if_false, and_self]
+      simp only [boxEnt, lt_irrefl, ite_false, and_self]
       by_cases h1 : c = a
       · subst h1
         simp [haz]
@@ -490,14 +436,14 @@ theorem sum_boxEnt_diag {r : ℕ} (d : Fin r → ℝ) (z a b : Fin r) (h : (a, b
   · refine Finset.sum_eq_zero fun c _ => ?_
     have h1 : ¬ (c = a ∧ c = b) := fun hc => hab.ne' (hc.1.symm.trans hc.2)
     have h2 : ¬ (c = b ∧ c = a) := fun hc => hab.ne' (hc.2.symm.trans hc.1)
-    simp only [boxEnt, if_pos hab, if_neg hab.not_gt, if_neg h1, if_neg h2]
+    simp only [boxEnt, ite_eq_left hab, ite_eq_right hab.not_gt, ite_eq_right h1, ite_eq_right h2]
 
 theorem boxEnt_skew {r : ℕ} (d : Fin r → ℝ) (hd : ∀ a, d a = 1 ∨ d a = -1) (z a b a' b' : Fin r) :
     boxEnt d z a b b' a' * (d b' : ℂ) + (d a' : ℂ) * (starRingEnd ℂ) (boxEnt d z a b a' b') = 0 := by
   rcases lt_trichotomy a b with hab | hab | hab
   · have hne := hab.ne
     have hne' := hab.ne'
-    simp only [boxEnt, if_pos hab]
+    simp only [boxEnt, ite_eq_left hab]
     by_cases h1 : a' = a ∧ b' = b
     · obtain ⟨rfl, rfl⟩ := h1
       rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
@@ -506,24 +452,24 @@ theorem boxEnt_skew {r : ℕ} (d : Fin r → ℝ) (hd : ∀ a, d a = 1 ∨ d a =
         rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
       · have h1' : ¬ (b' = b ∧ a' = a) := fun hc => h1 hc.symm
         have h2' : ¬ (b' = a ∧ a' = b) := fun hc => h2 hc.symm
-        simp only [if_neg h1, if_neg h2, if_neg h1', if_neg h2']
+        simp only [ite_eq_right h1, ite_eq_right h2, ite_eq_right h1', ite_eq_right h2']
         simp
   · subst hab
-    simp only [boxEnt, lt_irrefl, if_false]
+    simp only [boxEnt, lt_irrefl, ite_false]
     by_cases h1 : a' = a ∧ b' = a
     · obtain ⟨rfl, rfl⟩ := h1
       simp [mul_comm]
     · have h1' : ¬ (b' = a ∧ a' = a) := fun hc => h1 hc.symm
-      simp only [if_neg h1, if_neg h1']
+      simp only [ite_eq_right h1, ite_eq_right h1']
       by_cases h2 : a' = z ∧ b' = z
       · obtain ⟨rfl, rfl⟩ := h2
         simp [mul_comm]
       · have h2' : ¬ (b' = z ∧ a' = z) := fun hc => h2 hc.symm
-        simp only [if_neg h2, if_neg h2']
+        simp only [ite_eq_right h2, ite_eq_right h2']
         simp
   · have hne := hab.ne
     have hne' := hab.ne'
-    simp only [boxEnt, if_pos hab, if_neg hab.not_gt]
+    simp only [boxEnt, ite_eq_left hab, ite_eq_right hab.not_gt]
     by_cases h1 : a' = a ∧ b' = b
     · obtain ⟨rfl, rfl⟩ := h1
       rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
@@ -532,7 +478,7 @@ theorem boxEnt_skew {r : ℕ} (d : Fin r → ℝ) (hd : ∀ a, d a = 1 ∨ d a =
         rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
       · have h1' : ¬ (b' = b ∧ a' = a) := fun hc => h1 hc.symm
         have h2' : ¬ (b' = a ∧ a' = b) := fun hc => h2 hc.symm
-        simp only [if_neg h1, if_neg h2, if_neg h1', if_neg h2']
+        simp only [ite_eq_right h1, ite_eq_right h2, ite_eq_right h1', ite_eq_right h2']
         simp
 
 theorem skewCond_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ))
@@ -541,13 +487,13 @@ theorem skewCond_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   by_cases hτ : τ = k.1
   · have he : ∀ a b, boxVec d z k (τ, a, b) = boxEnt (d τ) z k.2.1.1 k.2.1.2 a b := by
       intro a b
-      simp only [boxVec, if_pos hτ]
+      simp only [boxVec, ite_eq_left hτ]
       rw [hτ]
     simp only [he]
     exact ⟨sum_boxEnt_diag _ _ _ _ k.2.2, fun a b => boxEnt_skew _ (hd τ) _ _ _ _ _⟩
   · have he : ∀ a b, boxVec d z k (τ, a, b) = 0 := by
       intro a b
-      simp only [boxVec, if_neg hτ]
+      simp only [boxVec, ite_eq_right hτ]
     simp [he]
 
 end GlobalTheory.CovTop.VolUp.FrameBox
@@ -586,10 +532,10 @@ theorem boxCoord_boxVec (E : Type) [Field E] [NumberField E] [IsCMField E] (r : 
   simp only [true_and]
   clear hjk
   split_ifs with h1 h1' h3 h3 h3 h3 h3 h3
-  all_goals simp only [LinearMap.coe_comp, Function.comp_apply, Complex.reLm_coe, Complex.imLm_coe, LinearMap.restrictScalars_apply, ContinuousLinearMap.coe_coe, PiLp.proj_apply, boxEnt, if_true]
+  all_goals simp only [LinearMap.coe_comp, Function.comp_apply, Complex.reLm_coe, Complex.imLm_coe, LinearMap.restrictScalars_apply, ContinuousLinearMap.coe_coe, PiLp.proj_apply, boxEnt, ite_true]
   all_goals rcases lt_trichotomy a b with h2 | rfl | h2
-  all_goals (try simp only [lt_irrefl, if_false])
-  all_goals (try simp only [h2, not_lt_of_gt h2, if_true, if_false])
+  all_goals (try simp only [lt_irrefl, ite_false])
+  all_goals (try simp only [h2, not_lt_of_gt h2, ite_true, ite_false])
   all_goals clear _hd
   all_goals (split_ifs with e1 e2 <;> (try obtain ⟨rfl, rfl⟩ := h1') <;> (try obtain ⟨rfl, rfl⟩ := e1) <;> (try obtain ⟨rfl, rfl⟩ := e2) <;> (try simp))
   all_goals (try (simp only [Fin.lt_iff_val_lt_val, Fin.ext_iff, Prod.ext_iff, ne_eq] at *; omega))
@@ -702,8 +648,8 @@ theorem riemLie_frameBox_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     intro g j
 
     simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, map_smul, w, hdual, smul_eq_mul, mul_ite, mul_one, mul_zero]
-    rw [Fintype.sum_eq_single j (fun k hk => by rw [if_neg (Ne.symm hk)])]
-    rw [if_pos rfl]
+    rw [Fintype.sum_eq_single j (fun k hk => by rw [ite_eq_right (Ne.symm hk)])]
+    rw [ite_eq_left rfl]
   have hli : LinearIndependent ℝ w := by
     rw [Fintype.linearIndependent_iff]
     intro g hg j

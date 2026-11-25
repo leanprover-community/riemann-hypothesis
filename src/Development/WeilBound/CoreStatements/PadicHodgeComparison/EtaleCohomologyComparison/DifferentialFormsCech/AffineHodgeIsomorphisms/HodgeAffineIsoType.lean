@@ -39,7 +39,6 @@ import Mathlib
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 universe u v w
 
@@ -139,7 +138,6 @@ theorem cocycle_zero (hU : ∀ α, Cosieve (U α)) (α : C → ι) (hα : ∀ T,
   exact (add_neg_eq_zero.1 e.symm)
 
 end GlobalTheory.CompanionTheory.CechRowExact
-
 
 open GlobalTheory.CompanionTheory.CechRowExact in
 theorem GlobalTheory.CompanionTheory.CechRowExact.cech_rows : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ ModuleCat.{w} R) {ι : Type} (U : ι → ObjectProperty C), (∀ α, Cosieve (U α)) → (∀ T, ∃ α, U α T) → ∀ q, ((cechCC F U).dcx.row q).ResUpTo 1 ((cechAugRowU F U).ε q) := by
@@ -779,14 +777,14 @@ theorem isForm_res (q : Z ⟶ Spec (CommRingCat.of K)) {V V' : Z.Opens} (k : V' 
     { v := fun T g => if h : inU q V' T.obj then Λ'.v ⟨T.obj, h⟩ (φ g) else Λ₀.v T g
       hv := fun T g => by
         by_cases h : inU q V' T.obj
-        · simp only [dif_pos h]
+        · simp only [dite_eq_left h]
           refine (Λ'.hv ⟨T.obj, h⟩ (φ g)).trans ?_
           rw [hφ]
           exact ev_res q k T.obj h T.property g
-        · simp only [dif_neg h]
+        · simp only [dite_eq_right h]
           exact Λ₀.hv T g }
   have hv : ∀ (T : (inU q V').FullSubcategory) (g : Sec q V),
-      Λ.v ((ObjectProperty.ιOfLE (inU_mono q k)).obj T) g = Λ'.v T (φ g) := fun T g => dif_pos T.property
+      Λ.v ((ObjectProperty.ιOfLE (inU_mono q k)).obj T) g = Λ'.v T (φ g) := fun T g => dite_eq_left T.property
   have hz := GlobalTheory.CompanionTheory.ConeRep.rep_resB (thA (smFun Z q)) (thFil (smFun Z q) (a : ℤ)) (thFil (smFun Z q) ((a : ℤ) + 1))
     (inU_mono q k) (Λ.form g₀ g) c (hc Λ)
   have e : Λ'.form (φ g₀) (fun j => φ (g j)) = resB (thA (smFun Z q)) (inU_mono q k) (Λ.form g₀ g) := by
@@ -1021,15 +1019,10 @@ theorem carry_form (Λ : LiftsT q) {m n : ℕ} (s : ComposableArrows (Thick (smF
   refine congrArg₂ (· * ·) rfl (Finset.prod_congr rfl fun k _ => ?_)
   rw [map_sub, carry, carry]
 
-def someLifts (q : X ⟶ Spec (CommRingCat.of K)) : LiftsT q where
-  v T g := Function.surjInv Ideal.Quotient.mk_surjective
-    (ev (γ := dividedPowersBot K) (p := 0) (q := q) (κ := Ideal.Quotient.mk ⊥) T (inTop q T) g)
-  hv T g := Function.surjInv_eq _ _
-
 theorem isFormT_unique {a : ℕ} {g₀ : Γ(X, ⊤)} {g : Fin a → Γ(X, ⊤)} {c c' : Hdg q a a}
     (h : IsFormT q g₀ g c) (h' : IsFormT q g₀ g c') : c = c' := by
-  obtain ⟨f, hf, e, hz⟩ := h (someLifts q)
-  obtain ⟨f', hf', e', hz'⟩ := h' (someLifts q)
+  obtain ⟨f, hf, e, hz⟩ := h (GlobalTheory.CompanionTheory.OmCls.liftsTopBot q)
+  obtain ⟨f', hf', e', hz'⟩ := h' (GlobalTheory.CompanionTheory.OmCls.liftsTopBot q)
   have : f = f' := funext fun s => Subtype.ext ((hz s).trans (hz' s).symm)
   subst this
   exact e.trans e'.symm
@@ -1124,21 +1117,12 @@ theorem bilin_ext {H₁ H₂ H₃ M₁ M₂ M₃ : Type*} [AddCommGroup H₁] [A
     (S₁ : Set M₁) (S₂ : Set M₂) (h₁ : Submodule.span K S₁ = ⊤) (h₂ : Submodule.span K S₂ = ⊤)
     (gen : ∀ ω ∈ S₁, ∀ η ∈ S₂, e₃ (B (e₁.symm ω) (e₂.symm η)) = Wd ω η) (x : H₁) (y : H₂) :
     e₃ (B x y) = Wd (e₁ x) (e₂ y) := by
-  have all : ∀ (ω : M₁) (η : M₂), e₃ (B (e₁.symm ω) (e₂.symm η)) = Wd ω η := by
-    intro ω η
-    have hω : ω ∈ Submodule.span K S₁ := h₁ ▸ Submodule.mem_top
-    have hη : η ∈ Submodule.span K S₂ := h₂ ▸ Submodule.mem_top
-    induction hω using Submodule.span_induction with
-    | zero => simp
-    | add u v _ _ hu hv => simp only [map_add (f := _), LinearMap.add_apply, hu, hv]
-    | smul r u _ hu => simp only [map_smul, LinearMap.smul_apply, hu]
-    | mem u hu =>
-      induction hη using Submodule.span_induction with
-      | zero => simp
-      | add u v _ _ hu hv => simp only [map_add (f := _), hu, hv]
-      | smul r u _ hu => simp only [map_smul, hu]
-      | mem v hv => exact gen u hu v hv
-  simpa using all (e₁ x) (e₂ y)
+  let f := (B.compl₁₂ e₁.symm.toLinearMap e₂.symm.toLinearMap).compr₂ e₃.toLinearMap
+  have hf : f = Wd :=
+    LinearMap.ext_on h₁ fun u hu => LinearMap.ext_on h₂ fun v hv => gen u hu v hv
+  simpa only [f, LinearMap.compr₂_apply, LinearMap.compl₁₂_apply, LinearEquiv.coe_coe,
+    LinearEquiv.symm_apply_apply] using
+    LinearMap.congr_fun (LinearMap.congr_fun hf (e₁ x)) (e₂ y)
 
 theorem exists_bil (q : X ⟶ Spec (CommRingCat.of K)) (a b : ℕ) :
     ∃ B : Hdg q a a →ₗ[K] Hdg q b b →ₗ[K] Hdg q (a + b) (a + b), ∀ u v, B u v = cupH q rfl rfl u v := by
@@ -1506,8 +1490,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers GlobalTheory.CechDR GlobalTheory.HodgeCoh
@@ -1588,8 +1570,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers GlobalTheory.CechDR GlobalTheory.HodgeCoh
@@ -1619,8 +1599,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.DifferentialFormsCech.AffineHodgeIsomorphisms.HodgeAffineIsoType", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraMapZeroEquiv\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.InstFintypeHodgeBidegree\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.IsDlogFirstChernClass\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormUniq\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AffineFormsOfFormUniqueness\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.DifferentialFormsCech.AffineHodgeIsomorphisms.HdgAffIsoOnto\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.FormUniq\npublic import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.OmNatB\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

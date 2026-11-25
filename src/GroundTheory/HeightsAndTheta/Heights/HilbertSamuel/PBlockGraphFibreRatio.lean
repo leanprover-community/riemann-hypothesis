@@ -24,12 +24,10 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem eval_mConeMap {Ω : Type} [Field Ω] (v : (Σ k, ι k) → Ω) (s : K → Ω) (f : MRing ι) :
     eval s (mConeMap v f) = aeval (fun p => s p.1 * v p) f := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp [mConeMap]
-  | add f g hf hg => rw [map_add (f := _), map_add (f := _), map_add (f := _), hf, hg]
-  | mul_X f p hf =>
-    rw [map_mul, map_mul, map_mul, hf]
-    simp [mConeMap, mul_comm]
+  exact RingHom.congr_fun (MvPolynomial.ringHom_ext
+    (f := (eval s).comp (mConeMap v).toRingHom)
+    (g := (aeval (fun p => s p.1 * v p)).toRingHom)
+    (fun _ => by simp [mConeMap]) fun p => by simp [mConeMap, mul_comm]) f
 
 theorem aeval_smul_of_isMultiHomog {Ω : Type} [Field Ω] (v : (Σ k, ι k) → Ω) (s : K → Ω) {f : MRing ι}
     {d : K → ℕ} (hf : IsMultiHomog f d) :
@@ -57,17 +55,11 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem graphMap_rename_inlV (P : Ideal (MRing ι)) (g : (Σ k, ι₂ k) → MRing ι) (f : MRing ι) :
     graphMap P g (rename (inlV (ι₂ := ι₂)) f) = C (Ideal.Quotient.mk P f) := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp [graphMap]
-  | add f f' hf hf' =>
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_add (f := _), hf, hf', map_add (Ideal.Quotient.mk P),
-        map_add (C : (MRing ι ⧸ P) →+* MvPolynomial K₂ (MRing ι ⧸ P))]
-  | mul_X f p hf =>
-    rw [map_mul, map_mul, hf, rename_X, map_mul, map_mul]
-    congr 1
-    rw [graphMap, eval₂Hom_X']
-    rfl
+  refine RingHom.congr_fun (MvPolynomial.ringHom_ext
+    (f := (graphMap P g).comp (rename (inlV (ι₂ := ι₂))).toRingHom)
+    (g := C.comp (Ideal.Quotient.mk P)) (fun _ => by simp [graphMap]) fun p => by
+      simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_X]
+      rw [graphMap, eval₂Hom_X']; rfl) f
 
 theorem mem_iff_aeval_inl {P : Ideal (MRing ι)} {g : (Σ k, ι₂ k) → MRing ι}
     (G : GenFibre (inrV (ι := ι) (ι₂ := ι₂)) (graphIdeal P g)) (f : MRing ι) :
@@ -172,7 +164,7 @@ theorem BlockGraphFibreRatio.proof : BlockGraphFibreRatio.Statement := by
     intro h0
     rw [hker, graphMap_nForm hI] at h0
     have h1 := congrArg (AddMonoidAlgebra.coeff · (Finsupp.single () 1)) h0
-    rw [coeff_C_mul, coeff_X, if_pos rfl, mul_one, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, Ideal.Quotient.eq_zero_iff_mem] at h1
+    rw [coeff_C_mul, coeff_X, ite_eq_left rfl, mul_one, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, Ideal.Quotient.eq_zero_iff_mem] at h1
     exact hl h1
   have hcross : ∀ a, aeval G.x' (nForm k₀ N a) * z ⟨k₀, l⟩ = z ⟨k₀, a⟩ * aeval G.x' (nForm k₀ N l) := by
     intro a

@@ -57,11 +57,11 @@ theorem sum_pairs {M : Type} [AddCommGroup M] (n : ℕ) (T : Fin (n + 3) → Fin
       rcases lt_or_gt_of_ne hp.1 with h | h
       · refine ⟨(⟨i, by omega⟩, ⟨j - 1, by omega⟩), Finset.mem_univ _, ?_⟩
         simp only
-        rw [if_pos (by simp [Fin.le_def]; omega)]
+        rw [ite_eq_left (by simp [Fin.le_def]; omega)]
         simp [Prod.ext_iff, Fin.ext_iff]; omega
       · refine ⟨(⟨i - 1, by omega⟩, ⟨j, by omega⟩), Finset.mem_univ _, ?_⟩
         simp only
-        rw [if_neg (by simp [Fin.le_def]; omega)]
+        rw [ite_eq_right (by simp [Fin.le_def]; omega)]
         simp [Prod.ext_iff, Fin.ext_iff]; omega
     · rintro ⟨i, j⟩ -
       simp only

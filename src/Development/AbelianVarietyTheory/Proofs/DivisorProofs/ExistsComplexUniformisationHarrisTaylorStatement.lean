@@ -554,7 +554,7 @@ namespace GlobalTheory.UPel.HT.LieType
 theorem exists_ext (F : Type) [Field F] [NumberField F] (τ : 𝓞 F →+* ℂ) :
     ∃ τ' : F →+* ℂ, ∀ c : 𝓞 F, τ' (c : F) = τ c := by
   have hinj : Function.Injective τ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     by_contra hne
     have hI := Ideal.comap_ne_bot_of_integral_mem (R := ℤ) (I := RingHom.ker τ) hne (by simpa [RingHom.mem_ker] using hx)
@@ -618,18 +618,10 @@ theorem lie_isType : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [Comm
     fun τ' => root_cases D.disc_neg hr (hτω τ')
 
   have hinj : Function.Injective τ := by
-    intro i j hij
-    by_contra hne
-    have hle : Ideal.span (Set.range fun x => b.t i x - b.t j x) ≤ RingHom.ker σ := by
-      rw [Ideal.span_le]
-      rintro _ ⟨x, rfl⟩
-      have h1 := hτ' i x
-      have h2 := hτ' j x
-      rw [hij] at h1
-      simp [RingHom.mem_ker, ← h1, ← h2]
-    rw [b.comax i j hne] at hle
-    have : (1 : R) ∈ RingHom.ker σ := hle Submodule.mem_top
-    simp [RingHom.mem_ker] at this
+    intro i j h
+    by_contra hij
+    obtain ⟨c, hc⟩ := b.exists_char_separation σ hij
+    exact hc (by rw [← hτ' i c, ← hτ' j c, h])
   have hτA : ∀ i, τ i (D.ω : D.F) = r := fun i => by rw [hτ', b.t_ω]
   set d : (D.F →+* ℂ) → ℕ := fun τ' => Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ') with hd
 
@@ -1242,8 +1234,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped Matrix
 open GlobalTheory.UPel.HT
 
-theorem _root_.GlobalTheory.T.uniformised_complex_fibre_marked_lattice_class : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e, 0 < N → N.Coprime p → UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → ∃ t', D.Cls N D' t' ∧ ∀ a, ∃ x, t' a = t a + N • x := by
-  first | exact @GlobalTheory.UPel.HT.unifAt_cls
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedComplexFibreMarkedLatticeClassStatement =====
@@ -1416,7 +1406,7 @@ theorem exists_unifAt : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [C
     show Mi *ᵥ (ρ' a *ᵥ z) = ρ a *ᵥ (Mi *ᵥ z)
     rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hinv]
   have hU2 := unifAt_change hU hl hc
-  obtain ⟨t', hcls, ht'⟩ := GlobalTheory.T.uniformised_complex_fibre_marked_lattice_class p D R b N σ ρ o h hL D' t _ _ hN hNp hU2
+  obtain ⟨t', hcls, ht'⟩ := GlobalTheory.UPel.HT.unifAt_cls p D R b N σ ρ o h hL D' t _ _ hN hNp hU2
   have hmk : IsMarkedIsom N D' D' t t' (LinearEquiv.refl D.O D'.La) := by
     refine ⟨fun x y => rfl, fun a => ?_⟩
     obtain ⟨x, hx⟩ := ht' a

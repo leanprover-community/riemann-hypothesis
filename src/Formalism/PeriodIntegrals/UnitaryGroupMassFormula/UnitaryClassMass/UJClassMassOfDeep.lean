@@ -83,7 +83,7 @@ theorem crdBounds : CrdBounds := by
   · rw [intF_smul]
     exact h1 x hx i
   · show ∑ j, (Pi.single i ((((y2 : 𝓞 F) : F)) • e) : Fin M → E) j • b j ∈ L0
-    rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp),
+    rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj]) (by simp),
       Pi.single_eq_same, intF_smul, smul_assoc, smul_comm]
     exact int_smul_mem L0 he (h2 i)
 

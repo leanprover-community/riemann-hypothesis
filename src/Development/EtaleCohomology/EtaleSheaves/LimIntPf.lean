@@ -5,7 +5,6 @@ public import Mathlib.AlgebraicGeometry.AffineTransitionLimit
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.CoverCut
 
 namespace LateralTheory.E.LimIntPf

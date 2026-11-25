@@ -116,7 +116,7 @@ theorem spectral_right_rho_action : RDSRhR := by
     have h1 := (hch Φ (x.1, y) hxy).1
     rw [← eT] at h1
     rw [R.LevelData.Ar, h1]
-    simp only [crd, Q.cmp, if_true]
+    simp only [crd, Q.cmp, ite_true]
     exact (PBN.vAB_loc Y P.r _ _ (fun c' hc' => hΦ (c', y) ⟨hc', hy.1, hy.2⟩) x.1 hx.1).1
   have hB : ∀ y ∈ Glev P.k P.r (Fin.last P.r) ∩ Qx8.Dp P.k P.r z z',
       (((L.Br Y).1 Φ : RadSp P.k P.r z z' π π') : Fn P.k P.r (Wq →L[ℂ] Wp)) x.1 y =
@@ -126,7 +126,7 @@ theorem spectral_right_rho_action : RDSRhR := by
     have h1 := (hch Φ (x.1, y) hxy).2
     rw [← eT] at h1
     rw [R.LevelData.Br, h1]
-    simp only [crd, Q.cmp, if_neg (show (1 : Fin 2) ≠ 0 by decide)]
+    simp only [crd, Q.cmp, ite_eq_right (show (1 : Fin 2) ≠ 0 by decide)]
     exact (PBN.vAB_loc Y P.r _ _ (fun c' hc' => hΦ (c', y) ⟨hc', hy.1, hy.2⟩) x.1 hx.1).2
   have e1 : (((RhR L st Y).1 Φ : RadSp P.k P.r z z' π π') : Fn P.k P.r (Wq →L[ℂ] Wp)) x.1 x.2 =
       (((L.Drb).1 ((st.QQ Y 1 0).1 ((L.Ar Y).1 Φ) + (st.QQ Y 1 1).1 ((L.Br Y).1 Φ)) :

@@ -251,9 +251,9 @@ theorem derUnipM_decomp {m n : ℕ} (hnm : n ≤ m) (u : derUnipM k (m + 1) n) :
     simp only [blockMat, eLast, Pi.single_apply]
     by_cases hj : j = Fin.last m
     · subst hj
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact hB.2 _
-    · rw [if_neg hj]
+    · rw [ite_eq_right hj]
       exact hB.1 _ _ (Fin.castSucc_lt_castSucc_iff.2 (Fin.lt_last_iff_ne_last.2 hj))
   have ha₀D : a₀ ∈ derUnip k (m + 1) n := by
     refine ⟨(mem_unipB k).2 ⟨fun i j hji => ?_, fun i => ?_⟩, (mem_colFix_iff _).2 fun i j hj => ?_⟩
@@ -272,7 +272,7 @@ theorem derUnipM_decomp {m n : ℕ} (hnm : n ≤ m) (u : derUnipM k (m + 1) n) :
   rw [add_mul, one_mul]
   ext i j
   rw [Matrix.add_apply, Matrix.mul_apply, Fin.sum_univ_castSucc]
-  simp only [colMat, Fin.castSucc_ne_last, if_false, zero_mul, Finset.sum_const_zero, zero_add, if_true]
+  simp only [colMat, Fin.castSucc_ne_last, ite_false, zero_mul, Finset.sum_const_zero, zero_add, ite_true]
   induction j using Fin.lastCases with
   | last =>
     induction i using Fin.lastCases with

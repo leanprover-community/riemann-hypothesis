@@ -39,13 +39,6 @@ open IsDiscreteValuationRing Pointwise
 
 namespace GlobalTheory
 
-section TorsionFree
-
-variable {R V : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup V]
-  [Module R V] [Module.IsTorsionFree R V]
-
-end TorsionFree
-
 section Span
 
 variable {R : Type*} (K : Type*) {V : Type*} [CommRing R] [IsDomain R] [Field K] [Algebra R K]
@@ -281,8 +274,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
-
 noncomputable section
 
 namespace GlobalTheory.CovTop.BadRep
@@ -425,7 +416,6 @@ theorem basis_of_form {K M R V : Type} [Field K] [Field M] [Algebra K M] [AddCom
       h3, Submodule.map_top, LinearMap.range_comp, LinearEquiv.range, Submodule.map_top, Submodule.range_subtype]
 
 
-set_option maxHeartbeats 1000000 in
 theorem rank_gen {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F}
     {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec}
     (fw : FWTie T R κ v₀) (Fc : Face D A) (i : Fin D.R.m) (act : G → T.R ((i : ℕ) + 1) →ₗ[T.Q.c.F] T.R ((i : ℕ) + 1))
@@ -467,7 +457,6 @@ theorem rank_gen {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T
   rfl
 
 
-set_option maxHeartbeats 1000000 in
 theorem rep_data {T : CoreJ D} (hT : LawsJ T) {j : ℕ} (hj : InR D j) (Y : Deep T.toCore j) {e : ℕ} {o : ℝ} (hY : Y.Good e o)
     {a : (D.host.E →+* ℂ) × ℕ → ℕ} {n : ℕ} (hD : Dom a n) {G : Type} [Group G]
     (lev : G → (T.Q.Dw j).La →ₗ[𝓞 D.host.E] (T.Q.Dw j).La)

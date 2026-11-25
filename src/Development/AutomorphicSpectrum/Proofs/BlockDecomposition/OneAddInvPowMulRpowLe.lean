@@ -192,11 +192,11 @@ theorem integrable_weight {σ : ℝ} (hσ : 1 < σ) : ∃ A₀ : ℕ, ∀ (L : (
   have hI := infiniteZetaBound_nonneg σ k a
   by_cases hb : (b : FiniteAdeleRing (𝓞 K) K) ∈ idealFiniteAdeles L
   · have hfz : finiteZetaBound L σ b = finiteModule (ofFinite b) ^ σ := by
-      rw [finiteZetaBound, if_pos hb]
+      rw [finiteZetaBound, ite_eq_left hb]
     have hb' : (x : 𝔸[K]).2 ∈ idealFiniteAdeles L := hb
     have hw : adeleWeight L A (x : 𝔸[K]) = ((1 + ‖homeomorphMixedSpace K (x : 𝔸[K]).1‖) ^ A)⁻¹ := by
       unfold adeleWeight
-      rw [if_pos hb']
+      rw [ite_eq_left hb']
     rw [hfz, ideleModule_rpow_eq, hw]
     set y := homeomorphMixedSpace K (x : 𝔸[K]).1
     have hy0 : 0 ≤ ‖y‖ := norm_nonneg _
@@ -233,7 +233,7 @@ theorem integrable_weight {σ : ℝ} (hσ : 1 < σ) : ∃ A₀ : ℕ, ∀ (L : (
   · have hb' : (x : 𝔸[K]).2 ∉ idealFiniteAdeles L := hb
     have hw : adeleWeight L A (x : 𝔸[K]) = 0 := by
       unfold adeleWeight
-      rw [if_neg hb']
+      rw [ite_eq_right hb']
     rw [hw, zero_mul]
     exact mul_nonneg hI (finiteZetaBound_nonneg _ _ _)
 
@@ -308,7 +308,7 @@ theorem majorant_tensor (φ : 𝓢(ι → mixedSpace K, ℂ)) (I : (FractionalId
   simp only [GJMatrix.schwartzBruhatTensorPi, GJMatrix.finiteTensor, cosetIndicator_apply,
     Finset.prod_boole, Finset.mem_univ, true_implies]
   by_cases hm' : ∀ i, GJMatrix.finPartPi Y i - b i ∈ idealFiniteAdeles I
-  · rw [if_pos hm', mul_one]
+  · rw [ite_eq_left hm', mul_one]
     have hy := hfin m hm y hm'
     set z := GJMatrix.infPartPi Y
     have hcD : c m ≤ D' := (le_abs_self _).trans
@@ -342,7 +342,7 @@ theorem majorant_tensor (φ : 𝓢(ι → mixedSpace K, ℂ)) (I : (FractionalId
         have : t = D' + D' * ‖z‖ := by simp only [t]; ring
         linarith [hyz i]
       unfold adeleWeight
-      rw [if_pos (hy i)]
+      rw [ite_eq_left (hy i)]
       exact inv_anti₀ (by positivity) (pow_le_pow_left₀ (by positivity) hle A)
     have hprod : (t ^ (N * A))⁻¹ ≤ ∏ i, adeleWeight L A (y i) := by
       calc (t ^ (N * A))⁻¹ = ∏ _i : ι, (t ^ A)⁻¹ := by
@@ -356,7 +356,7 @@ theorem majorant_tensor (φ : 𝓢(ι → mixedSpace K, ℂ)) (I : (FractionalId
           field_simp
       _ ≤ P * D' ^ (N * A) * ∏ i, adeleWeight L A (y i) :=
           mul_le_mul_of_nonneg_left hprod (by positivity)
-  · rw [if_neg hm', mul_zero, norm_zero]
+  · rw [ite_eq_right hm', mul_zero, norm_zero]
     exact hR0
 
 theorem exists_majorant {Ψ : (ι → 𝔸[K]) → ℂ} (hΨ : Ψ ∈ GJMatrix.schwartzBruhatPi (K := K) (ι := ι))
@@ -737,7 +737,7 @@ theorem clause_two {Ψ : (ι → 𝔸[K]) → ℂ} (hΨ : Ψ ∈ GJMatrix.schwar
   have hle : lineInt L A x (ν l) ≤ ∑ i, if ν l i = 1 then lineInt L A x (ν l) else 0 := by
     have := Finset.single_le_sum (f := fun i ↦ if ν l i = 1 then lineInt L A x (ν l) else 0)
       (fun i _ ↦ by split_ifs; exacts [lineInt_nonneg _ _ _ _, le_rfl]) (Finset.mem_univ (ix l))
-    simpa only [hν1, if_true] using this
+    simpa only [hν1, ite_true] using this
   have hintν : Integrable (lineFn L A x (ν l)) (ideleMeasure K) :=
     integrable_lineFn (by linarith) (h₁ L A hA₁) (hν1 l)
   have hintr : Integrable (lineFn L A x l.rep) (ideleMeasure K) := by

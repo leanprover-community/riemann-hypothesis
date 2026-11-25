@@ -13,52 +13,9 @@ public import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassFamilyPsiWithExceptionalZero
 public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Aesop.Main
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Linter.Style
@@ -433,13 +390,13 @@ theorem norm_F_one_ge : ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ (𝓕 : LFam) (χ
   have hP : ∀ t, 0 < t → |th (bRe 𝓕 1) t - ρ / t| ≤ C * 𝓕.B ^ 11 * min t (1 / t) := by
     intro t ht
     have := ((H 𝓕 1).1 t ht).2
-    rw [th_eq h11, LFam.res, if_pos rfl, ← Complex.ofReal_div, ← Complex.ofReal_sub,
+    rw [th_eq h11, LFam.res, ite_eq_left rfl, ← Complex.ofReal_div, ← Complex.ofReal_sub,
       Complex.norm_real, Real.norm_eq_abs] at this
     exact this
   have hQ : ∀ t, 0 < t → |th (bRe 𝓕 χ) t| ≤ C * 𝓕.B ^ 11 * min t (1 / t) := by
     intro t ht
     have := ((H 𝓕 χ).1 t ht).2
-    rw [th_eq hχ, LFam.res, if_neg h1, zero_div, sub_zero,
+    rw [th_eq hχ, LFam.res, ite_eq_right h1, zero_div, sub_zero,
       Complex.norm_real, Real.norm_eq_abs] at this
     exact this
   have hQ' : ∀ t, 1 ≤ t → |th (bRe 𝓕 χ) t| ≤ C * 𝓕.B * Real.exp (-(t / 2)) := by
@@ -775,13 +732,13 @@ theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G 
     by_cases h1 : χ = 1
     · subst h1
       have hB := hb 𝓕 1 σ hσ1 hσ2 T hT
-      rw [if_pos rfl, hpole] at hB
+      rw [ite_eq_left rfl, hpole] at hB
       have h0 := (_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 1 1 σ 0 hσ1).2.1
       exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc hXT (by linarith)
     · have hB := hb 𝓕 χ σ hσ1 hσ2 T hT
-      rw [if_neg h1] at hB
+      rw [ite_eq_right h1] at hB
       have hB1 := hb 𝓕 1 σ hσ1 hσ2 ∅ (by simp)
-      rw [if_pos rfl, hpole, Finset.sum_empty] at hB1
+      rw [ite_eq_left rfl, hpole, Finset.sum_empty] at hB1
       have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ χ σ 0 hσ1).2.2 hχ hχ).1
       exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc hXT (by linarith)
   · exfalso
@@ -789,18 +746,18 @@ theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G 
     · subst h1
       have hψ1 : ψ ≠ 1 := fun h => hcp h.symm
       have hB1 := hb 𝓕 1 σ hσ1 hσ2 {β} (sg 1 β hβ hz)
-      rw [if_pos rfl, hpole, Finset.sum_singleton] at hB1
+      rw [ite_eq_left rfl, hpole, Finset.sum_singleton] at hB1
       have hBψ := hb 𝓕 ψ σ hσ1 hσ2 {β'} (sg ψ β' hβ' hz')
-      rw [if_neg hψ1, Finset.sum_singleton] at hBψ
+      rw [ite_eq_right hψ1, Finset.sum_singleton] at hBψ
       have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 ψ ψ σ 0 hσ1).2.2 hψ hψ).1
       exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F 1) β : ℝ) / (σ - β) +
         (analyticOrderNatAt (𝓕.F ψ) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
     · by_cases h2 : ψ = 1
       · subst h2
         have hB1 := hb 𝓕 1 σ hσ1 hσ2 {β'} (sg 1 β' hβ' hz')
-        rw [if_pos rfl, hpole, Finset.sum_singleton] at hB1
+        rw [ite_eq_left rfl, hpole, Finset.sum_singleton] at hB1
         have hBχ := hb 𝓕 χ σ hσ1 hσ2 {β} (sg χ β hβ hz)
-        rw [if_neg h1, Finset.sum_singleton] at hBχ
+        rw [ite_eq_right h1, Finset.sum_singleton] at hBχ
         have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ χ σ 0 hσ1).2.2 hχ hχ).1
         exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) +
           (analyticOrderNatAt (𝓕.F 1) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
@@ -811,13 +768,13 @@ theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G 
             _ = (χ * ψ) * ψ := (mul_assoc _ _ _).symm
             _ = ψ := by rw [h, one_mul]
         have hB1 := hb 𝓕 1 σ hσ1 hσ2 ∅ (by simp)
-        rw [if_pos rfl, hpole, Finset.sum_empty] at hB1
+        rw [ite_eq_left rfl, hpole, Finset.sum_empty] at hB1
         have hBχ := hb 𝓕 χ σ hσ1 hσ2 {β} (sg χ β hβ hz)
-        rw [if_neg h1, Finset.sum_singleton] at hBχ
+        rw [ite_eq_right h1, Finset.sum_singleton] at hBχ
         have hBψ := hb 𝓕 ψ σ hσ1 hσ2 {β'} (sg ψ β' hβ' hz')
-        rw [if_neg h2, Finset.sum_singleton] at hBψ
+        rw [ite_eq_right h2, Finset.sum_singleton] at hBψ
         have hBχψ := hb 𝓕 (χ * ψ) σ hσ1 hσ2 ∅ (by simp)
-        rw [if_neg hχψ, Finset.sum_empty] at hBχψ
+        rw [ite_eq_right hχψ, Finset.sum_empty] at hBχψ
         have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ ψ σ 0 hσ1).2.2 hχ hψ).2
         exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) +
           (analyticOrderNatAt (𝓕.F ψ) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
@@ -927,10 +884,6 @@ theorem re_LSeries_le : ∃ C : ℝ, 0 < C ∧ ∀ (𝓕 : LFam) (χ : AddChar �
   rw [sub_re, hsum] at hre
   linarith
 
-theorem one_le_ell (𝓕 : LFam) (t : ℝ) : 1 ≤ 𝓕.ell t := by
-  have := 𝓕.two_lt_ell t
-  linarith
-
 theorem ell_zero_le (𝓕 : LFam) (t : ℝ) : 𝓕.ell 0 ≤ 𝓕.ell t := by
   unfold LFam.ell
   have hB : (0 : ℝ) < 𝓕.B := by linarith [𝓕.B_ge]
@@ -975,7 +928,7 @@ theorem inv_le_ell : ∃ K : ℝ, 0 < K ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕
   set ρ : ℂ := ((1 - δ : ℝ) : ℂ) + γ * I with hρ
   have hℓ0 := ell_zero_le 𝓕 γ
   have hℓ2 := ell_two_le 𝓕 γ
-  have hℓ1 := one_le_ell 𝓕 γ
+  have hℓ1 := GlobalTheory.Hk.PsiExc.one_le_ell 𝓕 γ
   have hCℓ0 : C * 𝓕.ell 0 ≤ C * 𝓕.ell γ := mul_le_mul_of_nonneg_left hℓ0 hC.le
   have hCℓ2 : C * 𝓕.ell (2 * γ) ≤ 2 * (C * 𝓕.ell γ) := by nlinarith
   obtain ⟨v, hv⟩ : ∃ v : ℝ, v = 1 / ε := ⟨_, rfl⟩
@@ -1039,7 +992,7 @@ theorem inv_le_ell : ∃ K : ℝ, 0 < K ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕
         have hb := hR 𝓕 χ (60 * ε) 0 (1 / (60 * ε)) ha0 ha2 (by positivity) (fun _ => hP)
           {ρ, ρ'} hnear
         rw [hsum, e0, h1] at hb
-        have hC0 : 0 ≤ C * 𝓕.ell 0 := mul_nonneg hC.le (by linarith [one_le_ell 𝓕 0])
+        have hC0 : 0 ≤ C * 𝓕.ell 0 := mul_nonneg hC.le (by linarith [GlobalTheory.Hk.PsiExc.one_le_ell 𝓕 0])
         linarith
       · have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ χ (1 + 60 * ε) 0 (by linarith)).2.2 hχ2 hχ2).1
         have hb1 := hR 𝓕 1 (60 * ε) 0 (1 / (60 * ε)) ha0 ha2 (by positivity) (fun _ => hP)

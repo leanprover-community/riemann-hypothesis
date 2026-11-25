@@ -39,7 +39,6 @@ namespace UpperTheory.HilbertEisensteinWeightOne.EisensteinIntegrability
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-
 variable (F) in
 def gauss : 𝓢(NumberField.mixedEmbedding.mixedSpace F, ℂ) :=
   SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (mixedToEuclidean F)
@@ -49,7 +48,6 @@ def gJ (J : (FractionalIdeal (𝓞 F)⁰ F)ˣ) : Ad F → ℂ := schwartzBruhatT
 
 theorem gJ_mem (J : (FractionalIdeal (𝓞 F)⁰ F)ˣ) : gJ J ∈ schwartzBruhat F :=
   schwartzBruhatTensor_mem _ (cosetIndicator_mem_finiteSchwartzBruhat J 0)
-
 
 variable (F) in
 def invN (N : ℕ) : IdeleGroup F :=
@@ -146,7 +144,6 @@ private theorem sq_lin_le {a b p q H : ℝ} (hp : |p| ≤ H) (hq : |q| ≤ H) :
   nlinarith [sq_nonneg (a * p - b * q), mul_le_mul_of_nonneg_left hp2 (sq_nonneg a),
     mul_le_mul_of_nonneg_left hq2 (sq_nonneg b)]
 
-
 open Classical in
 theorem dom_gen {Kc : Set (Matrix (Fin 2) (Fin 2) (Ad F))} (hK : IsCompact Kc) {L : Set (Af F)} (hL : IsCompact L) :
     ∃ (J : (FractionalIdeal (𝓞 F)⁰ F)ˣ) (N : ℕ), ∀ A ∈ Kc, ∀ y : Fin 2 → Ad F,
@@ -211,7 +208,7 @@ theorem dom_gen {Kc : Set (Matrix (Fin 2) (Fin 2) (Ad F))} (hK : IsCompact Kc) {
       · exact Or.inl ⟨_, ⟨⟨hy.1, hy.2⟩, hA⟩, rfl⟩
       · exact Or.inr ⟨_, ⟨⟨hy.1, hy.2⟩, hA⟩, rfl⟩
     exact hmem
-  rw [norm_gJ_invN, norm_gJ_invN, if_pos (hfin 0), if_pos (hfin 1), mul_one, mul_one, ← Real.exp_add]
+  rw [norm_gJ_invN, norm_gJ_invN, ite_eq_left (hfin 0), ite_eq_left (hfin 1), mul_one, mul_one, ← Real.exp_add]
   refine (arch_norm_le _ _).trans (Real.exp_le_exp.2 ?_)
   simp_rw [pInf_vecMul]
   rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
@@ -267,7 +264,6 @@ theorem finite_dd : {w : HeightOneSpectrum (𝓞 F) | dd w ≠ 0}.Finite := by
   simp only [Set.mem_ofPred_eq, dd, ordI, Nat.cast_ne_zero] at hw ⊢
   exact (Associates.count_ne_zero_iff_dvd h0 w.irreducible).1 hw
 
-
 variable (F) in
 def idealOf (e : HeightOneSpectrum (𝓞 F) → ℤ) : (FractionalIdeal (𝓞 F)⁰ F)ˣ := ∏ᶠ w, primeIdealUnit w ^ e w
 
@@ -316,21 +312,14 @@ theorem norm_phiH_le {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H 
     positivity
   · simp
 
-private theorem continuous_pInf_coord (v : InfinitePlace F) :
-    Continuous fun x : Ad F => UpperTheory.V.TR.pInf F x v := by
-  have h : (fun x : Ad F => UpperTheory.V.TR.pInf F x v) =
-      fun x => (homeomorphMixedSpace F x.1).1 ⟨v, IsTotallyReal.isReal v⟩ := funext fun x => pInf_apply_eq x v
-  rw [h]
-  exact (continuous_apply _).comp (continuous_fst.comp ((homeomorphMixedSpace F).continuous.comp continuous_fst))
-
 private theorem continuous_arch_comp {X : Type*} [TopologicalSpace X] {a b : X → Ad F} (ha : Continuous a)
     (hb : Continuous b) : Continuous fun p => arch (UpperTheory.V.TR.pInf F (a p)) (UpperTheory.V.TR.pInf F (b p)) := by
   unfold arch
   refine continuous_finsetProd _ fun v _ => ?_
   have h1 : Continuous fun p => ((UpperTheory.V.TR.pInf F (a p) v : ℝ) : ℂ) :=
-    Complex.continuous_ofReal.comp ((continuous_pInf_coord v).comp ha)
+    Complex.continuous_ofReal.comp ((UpperTheory.HilbertEisensteinWeightOne.EisensteinIntegrability.continuous_pInf_apply v).comp ha)
   have h2 : Continuous fun p => ((UpperTheory.V.TR.pInf F (b p) v : ℝ) : ℂ) :=
-    Complex.continuous_ofReal.comp ((continuous_pInf_coord v).comp hb)
+    Complex.continuous_ofReal.comp ((UpperTheory.HilbertEisensteinWeightOne.EisensteinIntegrability.continuous_pInf_apply v).comp hb)
   exact (h1.add (continuous_const.mul h2)).mul
     (Complex.continuous_exp.comp (continuous_const.mul ((h1.pow 2).add (h2.pow 2))))
 
@@ -443,10 +432,10 @@ theorem pair_sum {α : Type*} [Zero α] {f : α → ℝ} (hf0 : ∀ x, 0 ≤ f x
         fin_cases i
         · exact h0
         · exact h1
-      have : f' (ξ.1 1) = f (ξ.1 1) := by simp only [f', if_neg h1]
+      have : f' (ξ.1 1) = f (ξ.1 1) := by simp only [f', ite_eq_right h1]
       rw [this]
       linarith [mul_nonneg (hf'0 (ξ.1 0)) (hf0 (ξ.1 1))]
-    · have : f' (ξ.1 0) = f (ξ.1 0) := by simp only [f', if_neg h0]
+    · have : f' (ξ.1 0) = f (ξ.1 0) := by simp only [f', ite_eq_right h0]
       rw [this]
       linarith [mul_nonneg (hf0 (ξ.1 0)) (hf'0 (ξ.1 1))]
   have hQs : Summable (fun ξ : {ξ : Fin 2 → α // ξ ≠ 0} => g (e ξ.1)) := hQ.subtype _
@@ -599,8 +588,8 @@ theorem thetaS_bound {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H 
     by_cases h2 : pFin F (y 0) ∈ idealFiniteAdeles (Jc c) ∧ pFin F (y 1) - 1 ∈ idealFiniteAdeles (Jc c)
     · have h3 : pFin F (y 0) ∈ L ∧ pFin F (y 1) ∈ L :=
         ⟨Or.inl h2.1, Or.inr (mem_vadd_idealFiniteAdeles.2 h2.2)⟩
-      rw [if_pos h2, if_pos h3, norm_one]
-    · rw [if_neg h2, norm_zero]
+      rw [ite_eq_left h2, ite_eq_left h3, norm_one]
+    · rw [ite_eq_right h2, norm_zero]
       split_ifs <;> norm_num
   have hsumPhi : Summable fun ξ : {ξ : Fin 2 → F // ξ ≠ 0} =>
       ‖Phi c (rowA ξ.1 ᵥ* (h : Matrix (Fin 2) (Fin 2) (Ad F)))‖ :=

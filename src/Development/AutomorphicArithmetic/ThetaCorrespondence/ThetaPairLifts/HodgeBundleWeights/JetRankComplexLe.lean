@@ -57,57 +57,8 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ProportionalityPrincipleCompactification
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToroidalFlagNonempty
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.WeightPrincipalisationBound
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsChartOfIsLocalRing
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
 import Development.AbelianVarietyTheory.Definitions.Divisors.LinearIndependentBasisCoords
@@ -116,7 +67,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleE
 import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidStA
-import Mathlib.Tactic.Basify
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallySubsingletonCohTwistZOfIsProjOver
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsLinearMapMultilinearMapBaseChange
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.HigherDirectImagesVanishOfIsAffineHom
@@ -130,8 +80,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNonzeroLocusForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyHomologyEquiv
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenFrExAndGenFromTest
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Definitions.Divisors.BadElt
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagSpaceComponentSmoothProjectiveConnected
@@ -1427,18 +1375,6 @@ theorem gapGe_zero_of_antitone {E : Type} [Field E] [NumberField E] [IsCMField E
 
 end
 
-section
-open CategoryTheory AlgebraicGeometry NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta
-open GlobalTheory GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.HSApp GlobalTheory.DegVal GlobalTheory.DegCmp
-open GlobalTheory.AllWt (Psi wtOf cuspOn cuspW latOn latW normOn petOn GoodOn GoodW rankOn degOn rankW)
-open GlobalTheory.CompHt (hodgeWt)
-open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pull KeepsCusp)
-open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
-open GlobalTheory.BadCount
-
-end
-
 end GlobalTheory.JetRank
 
 end
@@ -1462,28 +1398,6 @@ open scoped TensorProduct
 open Limits
 open scoped GlobalTheory.CompHt
 namespace GlobalTheory.JetRank
-section Nef
-variable {k : Type} [Field k] {X : Scheme.{0}} [Algebra k Γ(X, ⊤)]
-end Nef
-section
-open NumberField Formalism.L2.Pj Formalism.BasicNotions GlobalTheory.Vanishing GlobalTheory.Adelic GlobalTheory.CompHS GlobalTheory.HSApp
-open GlobalTheory.AllWt (wtOf cuspOn)
-open GlobalTheory.FlagMod (FlagCover)
-open GlobalTheory.FlagTan (dimFlag)
-section Moving
-open GlobalTheory.Vanishing.H0 GlobalTheory.LB GlobalTheory.TangentOrigin
-open GlobalTheory.AllWt (secZ exOf)
-open GlobalTheory.CompHt (genVal)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
-  {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : FlagCover Y} {Z : Comp Xo c} {r : ℕ}
-  {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r}
-end Moving
-section Comp
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
-  {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : FlagCover Y} {Z : Comp Xo c} {r : ℕ}
-  {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r}
-end Comp
-end
 section
 open CategoryTheory AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta

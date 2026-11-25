@@ -21,52 +21,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InvVolMulPosLeConj
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerStabilizersCommensurableVolume
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetMassLeAndFinite
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
@@ -228,7 +184,6 @@ private lemma apply_mem_moved_smul_iff_of_mem_St {h : S.GLV}
     _root_.GlobalTheory.HL.eich L S.Hm a b c v ∈ Λ
   rw [eich_apply_apply_of_mem_St S hh, _root_.GlobalTheory.FrameAct.mem_smul_iff]
 
-
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
@@ -296,12 +251,6 @@ namespace GlobalTheory.HL.TraceVol
 
 def dfam {E V ι : Type} [CommRing E] [AddCommGroup V] [Module E V] (t : E) (g g' : ι → V) : ι ⊕ ι → V :=
   Sum.elim g fun b => t • (g' b - g b)
-
-section
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F]
-  {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : LocE F E} {r k : ℕ}
-
-end
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
@@ -532,7 +481,7 @@ private theorem unitriangular_sum_sub_mem_span_lower {E V : Type} [CommRing E] [
     · simp [hs.2]
     · simp [hs.1 i j h, not_lt.2 h.le, h.ne']
   rw [Finset.sum_congr rfl (fun i _ => key i), Finset.sum_add_distrib, Finset.sum_ite_eq']
-  simp only [Finset.mem_univ, if_true, add_sub_cancel_right]
+  simp only [Finset.mem_univ, ite_true, add_sub_cancel_right]
   refine Submodule.sum_mem _ fun i _ => ?_
   split_ifs with h
   · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, h, rfl⟩)
@@ -671,7 +620,6 @@ private theorem relIndex_symm_of_blockFrameMatrix_lemma_2 {F : Type} [Field F] [
     simpa using _root_.GlobalTheory.UnramVal.vE_zpow_mul_unit L hϖ 0 1
   rw [hv, zpow_zero, one_mul] at h3
   exact ⟨by exact_mod_cast h3.symm, h2⟩
-
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
@@ -1297,15 +1245,15 @@ theorem kernel_weight : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSp
       intro w Λ₁ hw
       by_cases hP : P Λ₁
       · obtain ⟨Λ₂, h1, -, h3⟩ := hmove w hw.1
-        rw [if_pos hP, huniq w Λ₁ Λ₂ hw h1, h3]
-        exact if_pos ⟨Λ₁, hw, hP⟩
-      · rw [if_neg hP]
-        refine if_neg ?_
+        rw [ite_eq_left hP, huniq w Λ₁ Λ₂ hw h1, h3]
+        exact ite_eq_left ⟨Λ₁, hw, hP⟩
+      · rw [ite_eq_right hP]
+        refine ite_eq_right ?_
         rintro ⟨Λ₂, h1, h2⟩
         exact hP (huniq w Λ₂ Λ₁ h1 hw ▸ h2))
     (by
       intro w hw
-      refine if_neg ?_
+      refine ite_eq_right ?_
       rintro ⟨Λ₂, h1, -⟩
       exact hw h1.1)
   obtain ⟨-, hLn, hHn, -, hLb, hHb⟩ := _root_.GlobalTheory.HL.MoveTotal.total_moves L r k S hk j β βJ d Λ hT hF
@@ -1318,18 +1266,18 @@ theorem kernel_weight : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSp
     simp only [Pi.add_apply, hH, ind, G]
     by_cases hw : S.Mv (j + 1) d Λ w
     · by_cases hex : ∃ Λ₁, S.MvTo (j + 1) d Λ Λ₁ w ∧ P Λ₁
-      · rw [if_pos hex, if_pos hw]
+      · rw [ite_eq_left hex, ite_eq_left hw]
         split_ifs <;> simp
       · have hl : ¬ S.NoLeak Λ w.2.1 := by
           intro hl
           obtain ⟨Λ₁, h1, h2, -⟩ := hmove w hw
           exact hex ⟨Λ₁, h1, h2, _root_.GlobalTheory.HL.OffLeak.inFF_moved_of_not_leak L r k S j β βJ d Λ hT hF _ _ _ _ hw hl Λ₁ h1.2⟩
-        rw [if_neg hex, if_pos hw, if_pos ⟨hw, hl⟩]
+        rw [ite_eq_right hex, ite_eq_left hw, ite_eq_left ⟨hw, hl⟩]
         simp [hom, hchi]
     · have hex : ¬ ∃ Λ₁, S.MvTo (j + 1) d Λ Λ₁ w ∧ P Λ₁ := by
         rintro ⟨Λ₂, h1, -⟩
         exact hw h1.1
-      rw [if_neg hex, if_neg hw, if_neg (fun h => hw h.1)]
+      rw [ite_eq_right hex, ite_eq_right hw, ite_eq_right (fun h => hw h.1)]
       simp)
   rw [hc3, hc2] at hb
   have hcK : 0 ≤ S.cK β βJ := by
@@ -1380,14 +1328,14 @@ open scoped Pointwise ENNReal Classical in
 private theorem ind_eq_one_of_pos {W : Type} {P : W → Prop} {w : W} (h : P w) :
     _root_.GlobalTheory.IdxInt.ind P w = 1 := by
   unfold _root_.GlobalTheory.IdxInt.ind
-  exact if_pos h
+  exact ite_eq_left h
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 private theorem ind_eq_zero_of_not {W : Type} {P : W → Prop} {w : W} (h : ¬ P w) :
     _root_.GlobalTheory.IdxInt.ind P w = 0 := by
   unfold _root_.GlobalTheory.IdxInt.ind
-  exact if_neg h
+  exact ite_eq_right h
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
@@ -1431,7 +1379,6 @@ private theorem exists_MvTo_isTerm_of_Mv_of_InFF [IsNonarchimedeanLocalField F] 
   · unfold _root_.GlobalTheory.HL.Frames.IsTerm
     exact ⟨⟨_, _⟩, hW⟩
 
-
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 open ValuativeRel MeasureTheory in
@@ -1451,8 +1398,8 @@ theorem _root_.GlobalTheory.HL.kern_row_sum : ∀ {F : Type} [Field F] [Valuativ
     (fun _ => 1) (_root_.GlobalTheory.IdxInt.ind Good)
     (fun w Λ₁ h => by
       by_cases hP : S.IsTerm d Λ₁ ∧ S.InFF β (↑j + 1) βJ d Λ₁
-      · rw [if_pos hP, ind_eq_one_of_pos ⟨Λ₁, h, hP⟩]
-      · rw [if_neg hP, ind_eq_zero_of_not]
+      · rw [ite_eq_left hP, ind_eq_one_of_pos ⟨Λ₁, h, hP⟩]
+      · rw [ite_eq_right hP, ind_eq_zero_of_not]
         rintro ⟨Λ₂, h₂, hP₂⟩
         exact hP (eq_of_MvTo_of_MvTo S h₂ h ▸ hP₂))
     (fun w hw => ind_eq_zero_of_not fun ⟨Λ₁, h, _⟩ =>
@@ -1594,8 +1541,8 @@ theorem sum_eq_sum_of_symm_rel {ι : Type*} (Z : Finset ι) (r : ι → ι → P
   rw [key F, key H, Finset.sum_comm]
   refine Finset.sum_congr rfl fun q hq => Finset.sum_congr rfl fun p hp => ?_
   by_cases h : r p q
-  · rw [if_pos h, if_pos (hr _ _ h), div_eq_div_iff (hd p hp) (hd q hq), hFH p hp q hq h]
-  · rw [if_neg h, if_neg (fun h' => h (hr _ _ h'))]
+  · rw [ite_eq_left h, ite_eq_left (hr _ _ h), div_eq_div_iff (hd p hp) (hd q hq), hFH p hp q hq h]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hr _ _ h'))]
 
 section
 variable {G X : Type} [Group G] [MulAction G X] (St : Subgroup G)
@@ -1683,12 +1630,12 @@ theorem norm_orbit_sum_le_of_symm_kernel : ∀ {G X : Type} [Group G] [MulAction
   have t1 : (∑' o : MulAction.orbitRel.Quotient St X,
       if P o.out then ((mu o.out : ℝ) : ℂ) * om o.out else 0) =
       ∑ o ∈ O, ((mu o.out : ℝ) : ℂ) * om o.out := by
-    rw [tsum_eq_sum (s := O) (fun o ho => if_neg (fun h => ho ((hO o).2 h)))]
-    exact Finset.sum_congr rfl fun o ho => if_pos ((hO o).1 ho)
+    rw [tsum_eq_sum (s := O) (fun o ho => ite_eq_right (fun h => ho ((hO o).2 h)))]
+    exact Finset.sum_congr rfl fun o ho => ite_eq_left ((hO o).1 ho)
   have t2 : (∑' o : MulAction.orbitRel.Quotient St X, if P o.out then mu o.out else 0) =
       ∑ o ∈ O, mu o.out := by
-    rw [tsum_eq_sum (s := O) (fun o ho => if_neg (fun h => ho ((hO o).2 h)))]
-    exact Finset.sum_congr rfl fun o ho => if_pos ((hO o).1 ho)
+    rw [tsum_eq_sum (s := O) (fun o ho => ite_eq_right (fun h => ho ((hO o).2 h)))]
+    exact Finset.sum_congr rfl fun o ho => ite_eq_left ((hO o).1 ho)
   refine (congrArg norm t1).trans_le (le_of_le_of_eq ?_ (congrArg (2 * e * ·) t2.symm))
   have huniq : ∀ (o o' : MulAction.orbitRel.Quotient St X) (g : G), g ∈ St →
       g • o.out = o'.out → o = o' := by
@@ -1811,10 +1758,10 @@ theorem ofReal_tsum_ite {ι : Type} (p : ι → Prop) (f : ι → ℝ) (hf : ∀
       ∑' i, if p i then ENNReal.ofReal (f i) else 0 := by
   have hs : ∀ i, i ∉ hfin.toFinset → ¬ p i := fun i hi h => hi (hfin.mem_toFinset.2 h)
   have hs' : ∀ i ∈ hfin.toFinset, p i := fun i hi => hfin.mem_toFinset.1 hi
-  rw [tsum_eq_sum (s := hfin.toFinset) (fun i hi => if_neg (hs i hi)),
-    tsum_eq_sum (s := hfin.toFinset) (fun i hi => if_neg (hs i hi)),
-    Finset.sum_congr rfl (fun i hi => if_pos (hs' i hi)),
-    Finset.sum_congr rfl (fun i hi => if_pos (hs' i hi)),
+  rw [tsum_eq_sum (s := hfin.toFinset) (fun i hi => ite_eq_right (hs i hi)),
+    tsum_eq_sum (s := hfin.toFinset) (fun i hi => ite_eq_right (hs i hi)),
+    Finset.sum_congr rfl (fun i hi => ite_eq_left (hs' i hi)),
+    Finset.sum_congr rfl (fun i hi => ite_eq_left (hs' i hi)),
     ENNReal.ofReal_sum_of_nonneg (fun i _ => hf i)]
 
 theorem amp_le_mass {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]

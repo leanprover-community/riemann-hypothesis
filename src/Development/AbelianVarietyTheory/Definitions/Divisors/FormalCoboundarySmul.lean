@@ -264,14 +264,8 @@ variable {p d e : ℕ} {G H : _root_.GlobalTheory.PDivGroup p k} (c : _root_.Glo
 theorem _root_.GlobalTheory.Katz.Chart.nil₂ (n : ℕ) (i : Fin d ⊕ Fin d) :
     IsNilpotent (c.x₂ n i) := by
   rcases i with i | i
-  · obtain ⟨m, hm⟩ := c.nil n i
-    exact ⟨m, by
-      simp only [_root_.GlobalTheory.Katz.Chart.x₂, Sum.elim_inl]
-      rw [Algebra.TensorProduct.tmul_pow, hm, one_pow, TensorProduct.zero_tmul]⟩
-  · obtain ⟨m, hm⟩ := c.nil n i
-    exact ⟨m, by
-      simp only [_root_.GlobalTheory.Katz.Chart.x₂, Sum.elim_inr]
-      rw [Algebra.TensorProduct.tmul_pow, hm, one_pow, TensorProduct.tmul_zero]⟩
+  · exact (c.nil n i).map (Algebra.TensorProduct.includeLeft (R := k) (S := k) (B := G.A n))
+  · exact (c.nil n i).map (Algebra.TensorProduct.includeRight (R := k) (A := G.A n))
 
 def ev₂ (n : ℕ) : MvPowerSeries (Fin d ⊕ Fin d) k →ₐ[k] G.A n ⊗[k] G.A n :=
   evA k (c.x₂ n) (c.nil₂ n)

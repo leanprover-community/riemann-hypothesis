@@ -7,7 +7,7 @@ public import Mathlib.NumberTheory.Padics.Complex
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G.{u_1, u_2} :
-    (F : Type u_1) → (Ω : Type u_2) → [inst : Field F] → [inst_1 : Field Ω] → [Algebra F Ω] → Type u_2 :=
+    (F : Type u_1) → (Ω : Type u_2) → [Field F] → [Field Ω] → [Algebra F Ω] → Type u_2 :=
     fun (F : Type u_1) (Ω : Type u_2) [Field F] [Field Ω] [Algebra F Ω] ↦ Gal(Ω/F)
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.Qbar :
@@ -17,18 +17,18 @@ public import Mathlib.NumberTheory.Padics.Complex
 noncomputable def UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycZ.{u_1, u_2} :
     (F : Type u_1) →
       (Ω : Type u_2) →
-        [inst : Field F] →
-          [inst_1 : Field Ω] →
-            [inst_2 : Algebra F Ω] → (l : ℕ) → [inst_3 : Fact (Nat.Prime l)] → UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G F Ω →* ℤ_[l]ˣ :=
+        [Field F] →
+          [Field Ω] →
+            [Algebra F Ω] → (l : ℕ) → [Fact (Nat.Prime l)] → UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G F Ω →* ℤ_[l]ˣ :=
     fun (F : Type u_1) (Ω : Type u_2) [Field F] [Field Ω] [Algebra F Ω] (l : ℕ) [Fact (Nat.Prime l)] ↦
       (cyclotomicCharacter Ω l).comp (MulSemiringAction.toRingAut (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G F Ω) Ω)
 
 noncomputable def UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycBar :
     (E Ω : Type) →
-      [inst : Field E] →
-        [inst_1 : Field Ω] →
-          [inst_2 : Algebra E Ω] →
-            (l : ℕ) → [inst_3 : Fact (Nat.Prime l)] → UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G E Ω →* (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.Qbar l)ˣ :=
+      [Field E] →
+        [Field Ω] →
+          [Algebra E Ω] →
+            (l : ℕ) → [Fact (Nat.Prime l)] → UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G E Ω →* (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.Qbar l)ˣ :=
     fun (E Ω : Type) [Field E] [Field Ω] [Algebra E Ω] (l : ℕ) [Fact (Nat.Prime l)] ↦
       (Units.map
             (↑((Algebra.algebraMap ℚ_[l] (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.Qbar l)).comp PadicInt.Coe.ringHom) :
@@ -36,8 +36,8 @@ noncomputable def UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycBa
         (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycZ E Ω l)
 
 theorem UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cont_cyc :
-    ∀ (F Ω : Type) [inst : Field F] [NumberField F] [inst_2 : Field Ω] [inst_3 : Algebra F Ω] (l : ℕ)
-      [inst_4 : Fact (Nat.Prime l)],
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] (l : ℕ)
+      [Fact (Nat.Prime l)],
       Continuous (⇑(UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycBar F Ω l) : UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G F Ω → (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.Qbar l)ˣ) := by
   intro F Ω _ _ _ _ l _
   have h1 : Continuous (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycZ F Ω l) := cyclotomicCharacter.continuous l F Ω

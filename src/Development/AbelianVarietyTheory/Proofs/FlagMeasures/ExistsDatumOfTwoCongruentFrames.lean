@@ -5,53 +5,9 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalId
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramePairCoordinatesTransportInnerLattices
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameDualUnipotentGroupActsUnitriangularOnto
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
@@ -571,10 +527,10 @@ theorem isotropic_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalS
     · intro a b
       dsimp only
       rcases lt_trichotomy a b with h | rfl | h
-      · rw [if_pos h, if_neg (not_lt.2 h.le), if_neg h.ne', map_zero, add_zero]
-      · rw [if_neg (lt_irrefl a), if_pos rfl]
+      · rw [ite_eq_left h, ite_eq_right (not_lt.2 h.le), ite_eq_right h.ne', map_zero, add_zero]
+      · rw [ite_eq_right (lt_irrefl a), ite_eq_left rfl]
         exact hxe a
-      · rw [if_neg (not_lt.2 h.le), if_neg h.ne', if_pos h, map_neg, ← H.h_herm (y b) (y a),
+      · rw [ite_eq_right (not_lt.2 h.le), ite_eq_right h.ne', ite_eq_left h, map_neg, ← H.h_herm (y b) (y a),
           zero_add]
   have he : ∀ k : Fin r, Fr.f k.castSucc ∈ Λ := fun k => hFr.1.1 k.castSucc
   have hEf : ∀ (k : Fin r) b, H.h (Fr.f k.castSucc) (Fr.f b) = 0 := fun k b =>
@@ -594,7 +550,7 @@ theorem isotropic_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalS
       add_zero, hyf]
   · simp only [H.h_add_left, h_add_right, h_sum_left, h_sum_right, H.h_smul_left, h_smul_right,
       hyE, hEy, hEf, mul_zero, mul_ite, mul_one, Finset.sum_const_zero, add_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     linear_combination hm a b
 
 end GlobalTheory.IsotropicDual
@@ -667,9 +623,6 @@ lemma prF_inW (v : V) : InW Fr (Fr.prF v) := by
 lemma prF_e (b : Fin r) : Fr.prF (Fr.f b.castSucc) = 0 := by
   rw [prF_eq]; simp [Fr.h_es, e_e]
 
-lemma prF_es (b : Fin r) : Fr.prF (Fr.es b) = 0 := by
-  rw [prF_eq]; simp [Fr.h_ss, es_e]
-
 lemma prF_of_inW {w : V} (hw : InW Fr w) : Fr.prF w = w := by
   rw [prF_eq]; simp [fun a => (hw a).1, fun a => (hw a).2]
 
@@ -713,13 +666,13 @@ lemma ey (a b : Fin r) : H.h (Fr.f b.castSucc) (y a) = if b = a then 1 else 0 :=
 
 include hy1 in
 lemma yz (a : Fin r) : H.h (y a) (Fr.f (Fin.last r)) = 0 := by
-  rw [hy1, if_neg (Fin.castSucc_lt_last a).ne']
+  rw [hy1, ite_eq_right (Fin.castSucc_lt_last a).ne']
 
 lemma Nl_e (b : Fin r) : Nl Fr y (Fr.f b.castSucc) = 0 := by
   rw [Nl_apply, prF_e]; simp [e_e, HermSp.h_zero_left]
 
 lemma Nl_es (b : Fin r) : Nl Fr y (Fr.es b) = y b - Fr.es b := by
-  rw [Nl_apply, prF_es]; simp [es_e, HermSp.h_zero_left]
+  rw [Nl_apply, GlobalTheory.HL.CoordInnerSnd.prF_es]; simp [es_e, HermSp.h_zero_left]
 
 lemma Nl_perp {v : V} (hv : ∀ b : Fin r, H.h v (Fr.f b.castSucc) = 0) :
     Nl Fr y v = -∑ j, H.h (Fr.prF v) (y j) • Fr.f j.castSucc := by

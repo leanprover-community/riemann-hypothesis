@@ -81,7 +81,7 @@ theorem colAddGen_rowAct {R : Type*} [CommRing R] {r n : ℕ} (g : Matrix (Fin r
     simp only [AlgHom.comp_apply, colAddGen, rowAct, rowActO, aeval_X, map_sum,
     map_mul, aeval_C, MvPolynomial.algebraMap_eq]
     by_cases h : t = j
-    · simp only [h, if_true, aeval_X, map_add (f := _), map_mul, Option.elim]
+    · simp only [h, ite_true, aeval_X, map_add (f := _), map_mul, Option.elim]
       rw [Finset.mul_sum, ← Finset.sum_add_distrib]
       exact Finset.sum_congr rfl fun b _ => by ring
     · simp [h]

@@ -196,7 +196,6 @@ theorem norm_le_one_iff_mem (he : ∀ x, x ∈ (algebraMap K.O K.E).range ↔ Va
   rw [he]
   exact Valued.toNormedField.norm_le_one_iff
 
-
 omit [IsCMField E] in
 theorem exists_norm_ge (he : ∀ x, x ∈ (algebraMap K.O K.E).range ↔ Valued.v (e x) ≤ 1) (R : ℝ) :
     ∃ c : K.E, c ≠ 0 ∧ R ≤ ‖e c‖ := by
@@ -216,7 +215,6 @@ theorem exists_norm_ge (he : ∀ x, x ∈ (algebraMap K.O K.E).range ↔ Valued.
   refine ⟨((algebraMap K.O K.E π)⁻¹) ^ n, pow_ne_zero _ (inv_ne_zero hπ0), ?_⟩
   rw [map_pow, norm_pow]
   exact hn.le
-
 
 omit [IsCMField E] in
 theorem exists_fg_of_crd_le (he : ∀ x, x ∈ (algebraMap K.O K.E).range ↔ Valued.v (e x) ≤ 1) (R : ℝ) :
@@ -616,22 +614,18 @@ theorem sf_crd (c : w.adicCompletion E →+* w.adicCompletion E) (he : ∀ x, e 
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-theorem crd_zero : crd e b (0 : B.A) = 0 := by
-  funext i; simp [crd]
-
 theorem ofCrd_add (u v : Fin a → w.adicCompletion E) : ofCrd e b (u + v) = ofCrd e b u + ofCrd e b v := by
   apply crd_injective e b
   rw [crd_add, crd_ofCrd, crd_ofCrd, crd_ofCrd]
 
 end Crd
 
-
 open GlobalTheory.UnitLemma GlobalTheory.TwOrbLat in
 theorem twCent_eq_map : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : Pl E), ¬ IsSplitAt w → ∀ (K : GlobalTheory.UnitLemma.UQ) (e : K.E ≃+* w.adicCompletion E), (∀ x, e (K.c x) = cj w (e x)) → ∀ (a : ℕ) (B : GlobalTheory.UnitLemma.InvAlg K), B.P.Separable → ∀ (β : B.Aˣ) (ε : B.A), (ε = 1 ∨ ε = -1) → B.σ (β : B.A) = β * (ε * B.g) → ∀ (b : Module.Basis (Fin a) K.E B.A) (δ : GLw a w), (∀ i j, ((δ.val * GlobalTheory.Tw.Phi a (w.adicCompletion E))⁻¹)ᵀ i j = e (B.herm β (b i) (b j))) → twCent (thL a w) δ = B.T.map (GlobalTheory.TwOrbLat.mulGL e b) := by
   intro E _ _ _ w hw K e he a B hP β ε hε hβ b δ hG
   have hth : thL a w = thetaGL a (cj w) := by
     unfold thL
-    rw [if_neg hw]
+    rw [ite_eq_right hw]
   rw [hth]
   have hs := sf_crd e b (cj w) he _ (β : B.A) hG
   ext g
@@ -868,7 +862,7 @@ theorem twist_integral_iff_unimodular : ∀ (E : Type) [Field E] [NumberField E]
     rfl
   have step1 : q⁻¹ * δ * thL a w q ∈ GlobalTheory.LFun.KGL w (n := a) ↔ Yg ∈ GlobalTheory.LFun.KGL w (n := a) := by
     have hth : thL a w q = PhiU a F * invT a F (GeneralLinearGroup.map c q) * (PhiU a F)⁻¹ := by
-      simp only [GlobalTheory.BCT.thL, if_neg hw]
+      simp only [GlobalTheory.BCT.thL, ite_eq_right hw]
       rfl
     have hP : PhiU a F ∈ GlobalTheory.LFun.KGL w (n := a) := PhiU_mem _
     rw [hth, show q⁻¹ * δ * (PhiU a F * invT a F (GeneralLinearGroup.map c q) * (PhiU a F)⁻¹) =
@@ -1088,8 +1082,8 @@ theorem GlobalTheory.TwOrbLat.twOrb_unit_eq_orbSum : ∀ (E : Type) [Field E] [N
       rw [one_mul] at this
       simp only [Set.indicator_apply, SetLike.mem_coe, Pi.one_apply]
       by_cases h : P y
-      · rw [if_pos h, if_pos ((this.2 h))]
-      · rw [if_neg h, if_neg (fun h' => h (this.1 h'))]
+      · rw [ite_eq_left h, ite_eq_left ((this.2 h))]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h (this.1 h'))]
     unfold GlobalTheory.TwOrbConj.summand
     rw [hconst, avg_const, hRel]
     split_ifs <;> simp

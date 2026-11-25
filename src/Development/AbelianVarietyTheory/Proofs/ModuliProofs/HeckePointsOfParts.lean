@@ -41,8 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
@@ -57,9 +55,3 @@ theorem fibPt_injective {X : Scheme.{0}} (G : Over X) {k : Type} [Field k] {y : 
   simpa only [fibPt, pullback.lift_fst] using this)
 
 end GlobalTheory.HeckePoint
-
-namespace GlobalTheory
-
-open HeckePoint
-
-end GlobalTheory

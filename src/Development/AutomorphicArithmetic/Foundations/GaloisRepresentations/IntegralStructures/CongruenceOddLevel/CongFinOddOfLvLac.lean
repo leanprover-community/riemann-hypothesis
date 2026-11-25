@@ -119,8 +119,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix GlobalTheory.CuspRep GlobalTheory.UnitaryBC
 
-theorem _root_.GlobalTheory.T.exists_conj_polynomial_definiteUnitary_rational : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (σ : ℂ ≃+* ℂ), ∀ p ∈ Algebra.adjoin ℂ {f : infU E n → ℂ | ∃ (τ : E →+* ℂ) (i j : Fin n), f = fun x => (cEmb τ x.1).val i j}, ∃ p' ∈ Algebra.adjoin ℂ {f : infU E n → ℂ | ∃ (τ : E →+* ℂ) (i j : Fin n), f = fun x => (cEmb τ x.1).val i j}, ∀ γ ∈ ratU E n, ∀ k : infU E n, cInf k.1 = cInf γ → p' k = σ (p k) := by
-  first | exact @GlobalTheory.UnitaryBC.exists_conj_polyFun
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsConjPolynomialDefiniteUnitaryRationalStatement =====
@@ -186,7 +184,7 @@ theorem exists_fun_of_poly_smooth : ∀ (E : Type) [Field E] [NumberField E] [Is
     exact isOpen_iInter_of_finite hVo
   · choose N c d _ hcd using fun i => hco _ (hp i)
     let f : (Σ i, Fin (N i)) → UA E n → ℂ := fun s x => c s.1 s.2 (b x) * e s.1 (a x)
-    haveI : FiniteDimensional ℂ (Submodule.span ℂ (Set.range f)) :=
+    have : FiniteDimensional ℂ (Submodule.span ℂ (Set.range f)) :=
       FiniteDimensional.span_of_finite ℂ (Set.finite_range f)
     refine Submodule.finiteDimensional_of_le (S₂ := Submodule.span ℂ (Set.range f)) (Submodule.span_le.2 ?_)
     rintro _ ⟨k, rfl⟩
@@ -219,7 +217,7 @@ theorem exists_conj_isAutFormU (E : Type) [Field E] [NumberField E] [IsCMField E
     (φ : UA E n → ℂ) (hφ : IsAutFormU φ) :
     ∃ φ' : UA E n → ℂ, IsAutFormU φ' ∧ ∀ g ∈ finU (E := E) (n := n), φ' g = σ (φ g) := by
   obtain ⟨m, p, e, hpe, hdec⟩ := _root_.GlobalTheory.UnitaryDecomp.exists_poly_mul_autForm E n φ hφ
-  choose p' hp' hpp using fun i => GlobalTheory.T.exists_conj_polynomial_definiteUnitary_rational E n σ (p i) (hpe i).1
+  choose p' hp' hpp using fun i => GlobalTheory.UnitaryBC.exists_conj_polyFun E n σ (p i) (hpe i).1
   obtain ⟨hD, -, -, a, b, -, -, hab, -⟩ := _root_.GlobalTheory.UnitarySplit.dense_and_split E n
   obtain ⟨φ', hc, hl, hk, hv⟩ := _root_.GlobalTheory.UnitaryBC.exists_fun_of_poly_smooth E n m p' (fun i g => σ (e i g.1)) hp' (fun i => by
     refine ⟨
@@ -278,7 +276,6 @@ def gen (t : (E →+* ℂ) × Fin n × Fin n) : infU E n → ℂ := fun x => (cE
 
 def mono (l : List ((E →+* ℂ) × Fin n × Fin n)) : infU E n → ℂ := (l.map gen).prod
 
-
 variable (E n) in
 def polys (N : ℕ) : Submodule ℂ (infU E n → ℂ) :=
   Submodule.span ℂ (mono '' {l | l.length ≤ N})
@@ -288,7 +285,6 @@ theorem polys_fd (N : ℕ) : FiniteDimensional ℂ (polys E n N) :=
 
 theorem polys_mono {N N' : ℕ} (h : N ≤ N') : polys E n N ≤ polys E n N' :=
   Submodule.span_mono (Set.image_mono fun _ hl => le_trans hl h)
-
 
 variable (E n) in
 abbrev gens : Set (infU E n → ℂ) := {f : infU E n → ℂ | ∃ (τ : E →+* ℂ) (i j : Fin n), f = fun x => (cEmb τ x.1).val i j}
@@ -401,7 +397,7 @@ theorem conj_span_finite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     rw [hψ.2.1 k hk, mul_assoc, hψ.1 γ hγ]
     conv_lhs => rw [hab s]
     simp only [mul_assoc]
-  haveI := polys_fd (E := E) (n := n) N
+  have := polys_fd (E := E) (n := n) N
   let f : M →ₗ[ℂ] ((s : S') → polys E n N) :=
     { toFun := fun ψ s => ⟨fun x => ψ.1 (s.1 * x), ψ.2.2.2 s.1 s.2⟩
       map_add' := fun _ _ => rfl
@@ -539,16 +535,16 @@ theorem orbit_finite_mem_finite_ext : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l 
   intro l _ ι J z hfin
   classical
   set O := Set.range fun σ : ℂ ≃+* ℂ => fun j => σ (z j) with hO
-  haveI : Finite O := hfin.to_subtype
+  have : Finite O := hfin.to_subtype
   set w : J → Qbar l := fun j => ι.symm (z j) with hw
   let K : Finset J → IntermediateField ℚ_[l] (Qbar l) := fun s =>
     IntermediateField.adjoin ℚ_[l] (w '' (s : Set J))
   have hKfin : ∀ s, FiniteDimensional ℚ_[l] (K s) := fun s => by
-    haveI : Finite (w '' (s : Set J)) := (s.finite_toSet.image w).to_subtype
+    have : Finite (w '' (s : Set J)) := (s.finite_toSet.image w).to_subtype
     exact IntermediateField.finiteDimensional_adjoin (fun x _ => Algebra.IsIntegral.isIntegral x)
   have hbound : ∀ s, Module.finrank ℚ_[l] (K s) ≤ Nat.card O := by
     intro s
-    haveI := hKfin s
+    have := hKfin s
     rw [← AlgHom.card ℚ_[l] (K s) (Qbar l), ← Nat.card_eq_fintype_card]
     let g : (K s →ₐ[ℚ_[l]] Qbar l) → O := fun φ =>
       ⟨fun j => ι (φ.liftNormal (Qbar l) (w j)),
@@ -567,11 +563,11 @@ theorem orbit_finite_mem_finite_ext : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l 
   have hne : R.Nonempty := ⟨_, ∅, rfl⟩
   have hbdd : BddAbove R := ⟨Nat.card O, by rintro _ ⟨s, rfl⟩; exact hbound s⟩
   obtain ⟨s0, hs0⟩ := Nat.sSup_mem hne hbdd
-  haveI := hKfin s0
+  have := hKfin s0
   refine ⟨K s0, inferInstance, fun j => ?_⟩
   have hle : K s0 ≤ K (insert j s0) :=
     IntermediateField.adjoin.mono _ _ _ (Set.image_mono (by simp))
-  haveI := hKfin (insert j s0)
+  have := hKfin (insert j s0)
   have heq : K s0 = K (insert j s0) := by
     apply IntermediateField.eq_of_le_of_finrank_le hle
     rw [show Module.finrank ℚ_[l] (K s0) = sSup R from hs0]
@@ -723,22 +719,6 @@ namespace GlobalTheory.CongW.TypeExists
 
 variable {R : Type} [CommRing R]
 
-theorem mem_ker_reduction_iff {a : ℕ} (I : Ideal R) (g : GL (Fin a) R) :
-    g ∈ (Matrix.GeneralLinearGroup.map (n := Fin a) (Ideal.Quotient.mk I)).ker ↔
-      ∀ i j, (g : Matrix (Fin a) (Fin a) R) i j - (1 : Matrix (Fin a) (Fin a) R) i j ∈ I :=
-  _root_.GlobalTheory.CuspType.mem_ker_map_mk_iff I g
-
-theorem exists_eq_one_add_smul' {a : ℕ} (c : R) (g : GL (Fin a) R)
-    (hg : g ∈ (Matrix.GeneralLinearGroup.map (n := Fin a) (Ideal.Quotient.mk (Ideal.span {c}))).ker) :
-    ∃ x : Matrix (Fin a) (Fin a) R, (g : Matrix (Fin a) (Fin a) R) = 1 + c • x := by
-  have h := (mem_ker_reduction_iff _ g).1 hg
-  choose x hx using fun i j => Ideal.mem_span_singleton'.1 (h i j)
-  refine ⟨Matrix.of fun i j => x i j, ?_⟩
-  ext i j
-  have := hx i j
-  rw [Matrix.add_apply, Matrix.smul_apply, Matrix.of_apply, smul_eq_mul, mul_comm, this]
-  ring
-
 def powChar (n : ℕ) [NeZero n] (ζ : ℂˣ) (hζ : ζ ^ n = 1) : Multiplicative (ZMod n) →* ℂˣ where
   toFun x := ζ ^ (Multiplicative.toAdd x).val
   map_one' := by simp
@@ -750,21 +730,14 @@ def powChar (n : ℕ) [NeZero n] (ζ : ℂˣ) (hζ : ζ ^ n = 1) : Multiplicativ
 theorem powChar_apply (n : ℕ) [NeZero n] (ζ : ℂˣ) (hζ : ζ ^ n = 1) (x : Multiplicative (ZMod n)) :
     powChar n ζ hζ x = ζ ^ (Multiplicative.toAdd x).val := rfl
 
-theorem conj_vecMulVec {K : Type} [Field K] {a : ℕ} (W : Submodule K (Fin a → K))
-    (g g' : Matrix (Fin a) (Fin a) K) (hgg' : g * g' = 1) (p q : Fin a → K)
-    (hp : g *ᵥ p ∈ W) (hq : ∀ y, g *ᵥ y ∈ W → q ⬝ᵥ y = 0) :
-    (∀ v, (g * vecMulVec p q * g') *ᵥ v ∈ W) ∧ ∀ v ∈ W, (g * vecMulVec p q * g') *ᵥ v = 0 :=
-  _root_.GlobalTheory.CuspType.conj_vecMulVec W g g' hgg' p q hp hq
-
-
 open GlobalTheory.CongW.TypeExists in
 theorem exists_congruence_surj : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} [Fact l.Prime] {a : ℕ}, 1 ≤ a → ∀ (w₀ : HeightOneSpectrum (𝓞 E)), ((l : ℕ) : 𝓞 E) ∈ w₀.asIdeal → ∀ (m : ℕ) (N : Set (GL (Fin a) (w₀.adicCompletion E))), IsOpen N → (1 : GL (Fin a) (w₀.adicCompletion E)) ∈ N → ∃ (J : Subgroup (GL (Fin a) (w₀.adicCompletion E))) (θ : J →* Multiplicative (ZMod (l ^ m))), (J : Set (GL (Fin a) (w₀.adicCompletion E))) ⊆ N ∧ IsOpen (J : Set (GL (Fin a) (w₀.adicCompletion E))) ∧ IsCompact (J : Set (GL (Fin a) (w₀.adicCompletion E))) ∧ (∀ x ∈ J, ∀ k : ℕ, 0 < k → x ^ k = 1 → x = 1) ∧ Function.Surjective θ := by
   intro E _ _ _ l _ a ha w hlw m N hNo h1N
   classical
   have hl : l.Prime := Fact.out
-  haveI : CharZero (w.adicCompletion E) :=
+  have : CharZero (w.adicCompletion E) :=
     charZero_of_injective_algebraMap (algebraMap E (w.adicCompletion E)).injective
-  haveI : CharZero (w.adicCompletionIntegers E) :=
+  have : CharZero (w.adicCompletionIntegers E) :=
     (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)).charZero
   have hlR : ¬ IsUnit (l : w.adicCompletionIntegers E) := by
     rw [HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one]
@@ -800,7 +773,7 @@ theorem exists_congruence_surj : ∀ {E : Type} [Field E] [NumberField E] [IsCMF
   ·
     intro g hg n hn hpow
     obtain ⟨g₀, hg₀, rfl⟩ := Subgroup.mem_map.1 hg
-    obtain ⟨x, hx⟩ := exists_eq_one_add_smul' _ g₀ hg₀
+    obtain ⟨x, hx⟩ := GlobalTheory.CuspType.exists_eq_one_add_smul _ g₀ hg₀
     have h1 : g₀ ^ n = 1 := hι (by rw [map_pow, hpow, map_one])
     have h2 : (1 + ((l : w.adicCompletionIntegers E) ^ k) • x) ^ n = 1 := by
       rw [← hcdef, ← hx, ← Units.val_pow_eq_pow_val, h1, Units.val_one]
@@ -836,7 +809,7 @@ theorem exists_congruence_surj : ∀ {E : Type} [Field E] [NumberField E] [IsCMF
       by_cases hi : i = i0 <;> simp [d, d', hi]
     let h₀ : GL (Fin a) (w.adicCompletionIntegers E) :=
       ⟨1 + c • x, Matrix.diagonal d', by rw [hxd, hdd'], by rw [hxd, hd'd]⟩
-    have hh₀ : h₀ ∈ K₀ := (mem_ker_reduction_iff _ h₀).2 fun i j => by
+    have hh₀ : h₀ ∈ K₀ := (GlobalTheory.CuspType.mem_ker_map_mk_iff _ h₀).2 fun i j => by
       show (1 + c • x) i j - (1 : Matrix (Fin a) (Fin a) _) i j ∈ _
       rw [Matrix.add_apply, add_sub_cancel_left, Matrix.smul_apply, smul_eq_mul]
       exact Ideal.mem_span_singleton'.2 ⟨x i j, mul_comm _ _⟩
@@ -846,7 +819,7 @@ theorem exists_congruence_surj : ∀ {E : Type} [Field E] [NumberField E] [IsCMF
     have hval : (lam₀.comp e.symm.toMonoidHom) (e ⟨h₀, hh₀⟩) = Multiplicative.ofAdd 1 := by
       rw [MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulEquiv.symm_apply_apply,
         hlam₀ ⟨h₀, hh₀⟩ x rfl, htr, hφ1]
-    haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
+    have : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
     intro z
     refine ⟨(e ⟨h₀, hh₀⟩) ^ (Multiplicative.toAdd z).val, ?_⟩
     rw [map_pow, hval, ← ofAdd_nsmul, nsmul_one, ZMod.natCast_zmod_val, ofAdd_toAdd]
@@ -855,11 +828,11 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
   intro E _ _ w a l hl hlw ha2 N hN m₀
   have ha : 1 ≤ a := by omega
   classical
-  haveI : CharZero (w.adicCompletion E) :=
+  have : CharZero (w.adicCompletion E) :=
     charZero_of_injective_algebraMap (algebraMap E (w.adicCompletion E)).injective
-  haveI : CharZero (w.adicCompletionIntegers E) :=
+  have : CharZero (w.adicCompletionIntegers E) :=
     (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)).charZero
-  haveI : Finite (IsLocalRing.ResidueField (w.adicCompletionIntegers E)) :=
+  have : Finite (IsLocalRing.ResidueField (w.adicCompletionIntegers E)) :=
     Formalism.UG.P.glint_finite_residueField w
   have hlR : ¬ IsUnit (l : w.adicCompletionIntegers E) := by
     rw [HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one]
@@ -898,7 +871,7 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
   ·
     intro g hg hfin
     obtain ⟨g₀, hg₀, rfl⟩ := Subgroup.mem_map.1 hg
-    obtain ⟨x, hx⟩ := exists_eq_one_add_smul' _ g₀ hg₀
+    obtain ⟨x, hx⟩ := GlobalTheory.CuspType.exists_eq_one_add_smul _ g₀ hg₀
     obtain ⟨n, hn, hpow⟩ := isOfFinOrder_iff_pow_eq_one.1 hfin
     have h1 : g₀ ^ n = 1 := hι (by rw [map_pow, hpow, map_one])
     have h2 : (1 + ((l : w.adicCompletionIntegers E) ^ m) • x) ^ n = 1 := by
@@ -942,7 +915,7 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
       ⟨1 + ((l : w.adicCompletionIntegers E) ^ m) • x, 1 - ((l : w.adicCompletionIntegers E) ^ m) • x,
         by rw [add_mul, one_mul, mul_sub, mul_one, hyy, sub_zero, sub_add_cancel],
         by rw [sub_mul, one_mul, mul_add, mul_one, hyy, add_zero, add_sub_cancel_right]⟩
-    have hh₀ : h₀ ∈ K₀ := (mem_ker_reduction_iff _ h₀).2 fun i j => by
+    have hh₀ : h₀ ∈ K₀ := (GlobalTheory.CuspType.mem_ker_map_mk_iff _ h₀).2 fun i j => by
       show (1 + ((l : w.adicCompletionIntegers E) ^ m) • x) i j - (1 : Matrix (Fin a) (Fin a) _) i j ∈ _
       rw [Matrix.add_apply, add_sub_cancel_left, Matrix.smul_apply, smul_eq_mul]
       exact Ideal.mem_span_singleton'.2 ⟨x i j, mul_comm _ _⟩
@@ -953,14 +926,14 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
     have hval : (lam₀.comp e.symm.toMonoidHom) (e ⟨h₀, hh₀⟩) = Multiplicative.ofAdd 1 := by
       rw [MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulEquiv.symm_apply_apply,
         hlam₀ ⟨h₀, hh₀⟩ x rfl, htr, hφ1]
-    haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
+    have : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
     intro z
     refine ⟨(e ⟨h₀, hh₀⟩) ^ (Multiplicative.toAdd z).val, ?_⟩
     rw [map_pow, hval, ← ofAdd_nsmul, nsmul_one, ZMod.natCast_zmod_val, ofAdd_toAdd]
   ·
     intro ζ hζ hζ1 σ v hv hev
-    haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
-    haveI : Fact (1 < l ^ m) := ⟨Nat.one_lt_pow (by omega) hl.one_lt⟩
+    have : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
+    have : Fact (1 < l ^ m) := ⟨Nat.one_lt_pow (by omega) hl.one_lt⟩
     refine ⟨σ.smooth, fun s d e' he => ?_⟩
     obtain ⟨W, hW0, hWT, hWcrit⟩ := _root_.GlobalTheory.UnipFlag.exists_sub (w.adicCompletion E) a s d e' he
     refine _root_.GlobalTheory.jacquet_subsingleton_of_char_nontrivial_on_conj (GL (Fin a) (w.adicCompletion E)) σ.V σ.ρ σ.irred
@@ -1003,7 +976,7 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
       ⟨1 + ((l : w.adicCompletionIntegers E) ^ m) • x, 1 - ((l : w.adicCompletionIntegers E) ^ m) • x,
         by rw [add_mul, one_mul, mul_sub, mul_one, hyy, sub_zero, sub_add_cancel],
         by rw [sub_mul, one_mul, mul_add, mul_one, hyy, add_zero, add_sub_cancel_right]⟩
-    have hh₀ : h₀ ∈ K₀ := (mem_ker_reduction_iff _ h₀).2 fun i j => by
+    have hh₀ : h₀ ∈ K₀ := (GlobalTheory.CuspType.mem_ker_map_mk_iff _ h₀).2 fun i j => by
       show (1 + ((l : w.adicCompletionIntegers E) ^ m) • x) i j - (1 : Matrix (Fin a) (Fin a) _) i j ∈ _
       rw [Matrix.add_apply, add_sub_cancel_left, Matrix.smul_apply, smul_eq_mul]
       exact Ideal.mem_span_singleton'.2 ⟨x i j, mul_comm _ _⟩
@@ -1029,7 +1002,7 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
           ext i; simp [p]
         rw [this, Matrix.mulVec_smul]
         exact W.smul_mem _ ((hmem _).1 hw)
-      obtain ⟨h1, h2⟩ := conj_vecMulVec W _ _ hgg p q hp fun y hy => hf y ((hmem y).2 hy)
+      obtain ⟨h1, h2⟩ := GlobalTheory.CuspType.conj_vecMulVec W _ _ hgg p q hp fun y hy => hf y ((hmem y).2 hy)
       exact hWcrit _ (fun v => by rw [hconj]; exact h1 v) (fun v hv => by rw [hconj]; exact h2 v hv)
     · have htr : (B * x).trace = 1 := by
         rw [Matrix.mul_smul, Matrix.trace_smul, mul_vecMulVec, trace_vecMulVec, smul_eq_mul,
@@ -1041,9 +1014,6 @@ theorem exists_type_surj : ∀ (E : Type) [Field E] [NumberField E] (w : HeightO
 
 end GlobalTheory.CongW.TypeExists
 
-namespace GlobalTheory.CongW
-
-end GlobalTheory.CongW
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTorsionFreeSurjZmod =====
@@ -1094,7 +1064,7 @@ theorem exists_ellType (ha : 1 ≤ a) (w₀ : HeightOneSpectrum (𝓞 E)) (hl : 
       TypeExists.exists_type_surj E w₀ a l hlp hl ha2 N hN m₀
     refine ⟨m, J, lam, hmm, hJN, hJo, hJc,
       fun x hx k hk hxk => hJtf x hx (isOfFinOrder_iff_pow_eq_one.2 ⟨k, hk, hxk⟩), hsurj, fun χ hχ σ v hv0 hv => ?_⟩
-    haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ hlp.ne_zero⟩
+    have : NeZero (l ^ m) := ⟨pow_ne_zero _ hlp.ne_zero⟩
     refine hsc (χ (Multiplicative.ofAdd 1)) ?_ (fun h => hχ (MonoidHom.ext fun z => ?_)) σ v hv0 fun g => ?_
     · rw [← map_pow, ← ofAdd_nsmul, nsmul_one, ZMod.natCast_self, ofAdd_zero, map_one]
     · rw [hchar χ z, h, one_pow, MonoidHom.one_apply]

@@ -116,7 +116,7 @@ theorem hasSum_card_cosets_diag : GlobalTheory.Published.UnramifiedDoublingGL �
         DoubleCoset.doubleCoset (T d) (KGL w (n := r) : Set (GL (Fin r) (w.adicCompletion E))) (KGL w (n := r))} : ℝ) : ℂ)) d
         • (1 : ℂ) := fun d => heckeVec_trivial_dosetInd hK (T d)
   refine ⟨B, hbd, ?_⟩
-  have key := GlobalTheory.T.hasSum_heckeEigenvalue_generatingSeries_GL hP E w r ℂ ρ 1 B hB ϖ hϖ T hT _ hc
+  have key := GlobalTheory.FinZeta.GLSeries.hasSum_hecke_eigenvalues hP E w r ℂ ρ 1 B hB ϖ hϖ T hT _ hc
   beta_reduce at key
   exact key
 

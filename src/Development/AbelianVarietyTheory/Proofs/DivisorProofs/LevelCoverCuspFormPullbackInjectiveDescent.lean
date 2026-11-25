@@ -42,63 +42,15 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralRu
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModuliLawsCoefficientFieldChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NvalNonnegIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeterssonLevelCoverPullbackProbability
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.NonemptyModuliOfLevelDvd
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ObjMapIdCompCancel
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemSuppOnIffIdemMulOfNatural
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.NoCommonZeroIffOfSec
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
@@ -106,10 +58,8 @@ import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.EvNatPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ChartCoverFOfSectionBaseChange
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgClosedOfFixedPoints
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisStableLatticeRationalSpanInclusions, Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleFaithfullyFlatDescentGeometricPoints, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteEtaleGoodCoverLevelMap, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLiftFiniteEtaleSurjectionTestRing, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLiftGeometricPointOfFaithfullyFlatFiniteTy, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SectionConstantOnFibresDescends, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LinearIndependentRulBC, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCoverCuspFormPullbackInjectiveDescent
@@ -186,17 +136,6 @@ namespace GlobalTheory.EtaleGeomDescent
 
 open scoped TensorProduct
 
-theorem eq_of_geometric_points' {R : Type} [CommRing R] [_root_.IsReduced R] (a b : R)
-    (h : ∀ (k : Type) [Field k] [IsAlgClosed k] (χ : R →+* k), χ a = χ b) : a = b := by
-  rw [← sub_eq_zero]
-  apply IsNilpotent.eq_zero
-  rw [nilpotent_iff_mem_prime]
-  intro J hJ
-  have := h (AlgebraicClosure J.ResidueField)
-    ((algebraMap J.ResidueField _).comp (algebraMap R J.ResidueField))
-  rwa [← sub_eq_zero, ← map_sub, RingHom.comp_apply, map_eq_zero,
-    Ideal.algebraMap_residueField_eq_zero] at this
-
 theorem descent : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [IsReduced A] [IsJacobsonRing A],
     Module.FaithfullyFlat A B → Algebra.Etale A B → ∀ b : B,
     (∀ (k : Type) [Field k] [IsAlgClosed k] (φ ψ : B →+* k), φ.comp (algebraMap A B) = ψ.comp (algebraMap A B) →
@@ -206,7 +145,7 @@ theorem descent : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [IsRe
   have : Algebra.Smooth B (B ⊗[A] B) := inferInstance
   have hCr : _root_.IsReduced (B ⊗[A] B) := GlobalTheory.isReduced_algebra_of_smooth_of_isReduced B (B ⊗[A] B)
   have hC : (b ⊗ₜ[A] (1 : B)) = (1 : B) ⊗ₜ[A] b := by
-    refine eq_of_geometric_points' _ _ fun k _ _ χ => ?_
+    refine GlobalTheory.CoverDescent.eq_of_geometric_points _ _ fun k _ _ χ => ?_
     have key := hb k (χ.comp Algebra.TensorProduct.includeLeftRingHom)
       (χ.comp (Algebra.TensorProduct.includeRight (R := A) (A := B)).toRingHom) ?_
     · simpa using key
@@ -480,20 +419,13 @@ open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.GeomPointLift
 
-theorem nonempty_algHom_of_isAlgClosed (K C : Type) [Field K] [IsAlgClosed K] [CommRing C] [Nontrivial C]
-    [Algebra K C] [Algebra.FiniteType K C] : Nonempty (C →ₐ[K] K) := by
-  obtain ⟨M, hM⟩ := Ideal.exists_maximal C
-  letI := Ideal.Quotient.field M
-  haveI : Module.Finite K (C ⧸ M) := finite_of_finite_type_of_isJacobsonRing K (C ⧸ M)
-  exact ⟨(IsAlgClosed.lift : (C ⧸ M) →ₐ[K] K).comp (Ideal.Quotient.mkₐ K M)⟩
-
 theorem exists_lift (A B : Type) [CommRing A] [CommRing B] [Algebra A B] (hff : Module.FaithfullyFlat A B)
     (hft : Algebra.FiniteType A B) (k : Type) [Field k] [IsAlgClosed k] (φ : A →+* k) :
     ∃ φ' : B →+* k, φ'.comp (algebraMap A B) = φ := by
   letI : Algebra A k := φ.toAlgebra
   haveI : Nontrivial (k ⊗[A] B) := Module.FaithfullyFlat.rTensor_nontrivial A B k
   haveI : Algebra.FiniteType k (k ⊗[A] B) := inferInstance
-  obtain ⟨f⟩ := nonempty_algHom_of_isAlgClosed k (k ⊗[A] B)
+  obtain ⟨f⟩ := GlobalTheory.Ex.ThetaDescent.nonempty_algHom k (k ⊗[A] B)
   refine ⟨f.toRingHom.comp (Algebra.TensorProduct.includeRight : B →ₐ[A] k ⊗[A] B).toRingHom, ?_⟩
   ext a
   simp only [RingHom.coe_comp, Function.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, AlgHom.commutes]
@@ -528,7 +460,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.Chart
 theorem exists_lift_pt : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B], Module.FaithfullyFlat A B →
     Algebra.FiniteType A B → ∀ (k : Type) [Field k] [IsAlgClosed k] (φ : A →+* k),
     ∃ φ' : B →+* k, φ'.comp (algebraMap A B) = φ := _root_.GlobalTheory.GeomPointLift.exists_lift
-
 
 theorem exists_etale_lift : ∀ (Y Z : Scheme.{0}) (π : Z ⟶ Y), IsFinite π → Etale π → Surjective π →
     ∀ (K : Type) [Field K] (p : TRing K) (x : Sp p.R ⟶ Y), ∃ (q : TRing K) (ι : p.R →ₐ[K] q.R),
@@ -704,7 +635,6 @@ theorem lifts_of_isLev (d : DeltaDat Xo c 0) (hl : d.IsLev) : Lifts d := by
   obtain ⟨-, -, -, -, -, -, hlift, -, -⟩ := hl
   exact hlift
 
-
 open Classical in
 def ruleDown (d : DeltaDat Xo c 0) (g : Rul d.Xo₂ d.c₂) : Rul Xo c := fun p y =>
   if h : ∃ v, Val d g p y v then h.choose else 0
@@ -715,7 +645,7 @@ include hpq hl in
 theorem val_ruleDown {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {g : Rul d.Xo₂ d.c₂} (hg : g ∈ sec d.Xo₂ d.c₂ a n)
     (hF : GlobalTheory.LevPull.FibConst d g) (p : TRing c.F) (y : FrPt Xo c p.R) : Val d g p y (ruleDown d g p y) := by
   have h := val_exists d hpq hl hg hF p y
-  have e : ruleDown d g p y = h.choose := dif_pos h
+  have e : ruleDown d g p y = h.choose := dite_eq_left h
   rw [e]
   exact h.choose_spec
 
@@ -1001,7 +931,6 @@ namespace GlobalTheory.LevRingDesc
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} {Xo : Moduli Dw l}
 
-
 set_option maxHeartbeats 1000000 in
 theorem exists_pullMap {c c' : Coeff l} (hle : c.F ≤ c'.F) {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)
     (d : DeltaDat Xo c' 0) (U₂ : ∀ σ : d.c₂.F →+* ℂ, Unf d.Xo₂ d.c₂ σ r) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ)
@@ -1036,7 +965,6 @@ namespace GlobalTheory.LevRingDesc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} {Xo : Moduli Dw l}
-
 
 set_option maxHeartbeats 1000000 in
 theorem span_integral_descent {c c' : Coeff l} (hle : c.F ≤ c'.F) {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)
@@ -1126,7 +1054,6 @@ theorem span_integral_descent {c c' : Coeff l} (hle : c.F ≤ c'.F) {r : ℕ} (U
 end GlobalTheory.LevRingDesc
 
 namespace GlobalTheory.LevRingDesc
-
 
 set_option maxHeartbeats 2000000 in
 theorem levRing_descent : ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c c' : Coeff l) (hle : c.F ≤ c'.F) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U σ).X k).Ψ D.R.r) (d : DeltaDat Xo c' 0) (U₂ : ∀ σ : d.c₂.F →+* ℂ, Unf d.Xo₂ d.c₂ σ D.R.r) (dict₂ : ∀ σ : d.c₂.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U₂ σ).X k).Ψ D.R.r), Laws D j Xo c U dict → Laws D j d.Xo₂ d.c₂ U₂ dict₂ → d.IsLev → (letI : Algebra c.F d.c₂.F := ((d.eF : c'.F →+* d.c₂.F).comp (incF c c' hle)).toAlgebra; IsGalois c.F d.c₂.F) → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → Even n → ∃ π : cuspW Xo c U (wtZ a n) →ₛₗ[((d.eF : c'.F →+* d.c₂.F).comp (incF c c' hle))] cuspW d.Xo₂ d.c₂ U₂ (wtZ a n), (∀ f : cuspW Xo c U (wtZ a n), Pull d (rulBC hle (f : Rul Xo c)) (π f : Rul d.Xo₂ d.c₂)) ∧ (∀ (m : ℕ) (b : Fin m → cuspW Xo c U (wtZ a n)), LinearIndependent c.F b → LinearIndependent d.c₂.F (fun k => π (b k))) ∧ (∀ (σ₂ : d.c₂.F →+* ℂ) (f : cuspW Xo c U (wtZ a n)), normW U₂ (xiR D) (fun _ => D.sp.W j) dict₂ (wtZ a n) σ₂ (π f) = normW U (xiR D) (fun _ => D.sp.W j) dict (wtZ a n) (σ₂.comp ((d.eF : c'.F →+* d.c₂.F).comp (incF c c' hle))) f) ∧ (∀ f : cuspW Xo c U (wtZ a n), π f ∈ latW U₂ (wtZ a n) ↔ f ∈ latW U (wtZ a n)) ∧ (∀ g : cuspW d.Xo₂ d.c₂ U₂ (wtZ a n), g ∈ Submodule.span d.c₂.F (Set.range π) ↔ FibConst d (g : Rul d.Xo₂ d.c₂)) ∧ ∀ (C : Submodule c.F (cuspW Xo c U (wtZ a n))), ∀ δ ∈ differentIdeal ℤ (𝓞 d.c₂.F), ∀ g ∈ latW U₂ (wtZ a n), g ∈ Submodule.span d.c₂.F (π '' (C : Set (cuspW Xo c U (wtZ a n)))) → δ • g ∈ Submodule.span (𝓞 d.c₂.F) (π '' {f | f ∈ C ∧ f ∈ latW U (wtZ a n)}) := by

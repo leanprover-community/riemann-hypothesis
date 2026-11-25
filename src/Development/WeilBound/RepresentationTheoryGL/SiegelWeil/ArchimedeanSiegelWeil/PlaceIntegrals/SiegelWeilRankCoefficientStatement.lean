@@ -111,7 +111,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelWe
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.ThetaOrbits
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DetAdmA
 import GroundTheory.GlobalFields.Adele.Topology
@@ -273,9 +272,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
 
-
-theorem _root_.GlobalTheory.T.schwartz_bruhat_factorizable_decomposition : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 0 < n → 2 * n < M → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ), GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat Φ → ∃ (k : ℕ) (φ : Fin k → (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ) (A : Fin k → (∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Set (Fin n → Fin M → Fv F v ⊗[F] E))) (S : Finset (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F))), (∀ i, GlobalTheory.Published.SiegelOneVector.IsSchwartzArch (φ i)) ∧ (∀ i v, IsCompact (A i v) ∧ IsOpen (A i v)) ∧ (∀ i v, v ∉ S → A i v = latV b v) ∧ ∀ X, Φ X = ∑ i, pureN (φ i) (A i) X := by
-  first | exact @GlobalTheory.CompanionTheory.WhitFree.schwartzBruhat_eq_sum_pureN
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatFactorizableDecompositionStatement =====
@@ -291,9 +287,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
 
-
-theorem _root_.GlobalTheory.T.siegel_weil_orbital_integral_formula : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 0 < n → 2 * n < M → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ dx : Measure (Fin n → Fin M → AF F ⊗[F] E), SdW F E σ M J (AF F) ψ n dx → ∀ db : Measure (HermR (AF F) σ n), SdHerm F E σ (AF F) ψ n db → ∀ (T : Matrix (Fin n) (Fin n) E) (k : ℕ) (Φ : Fin k → (Fin n → Fin M → AF F ⊗[F] E) → ℂ), (∀ i, GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat (Φ i)) → coefN σ J ψ dx db (fun X => ∑ i, Φ i X) T = ∑ i, coefN σ J ψ dx db (Φ i) T := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.CoefSum.coefN_finset_sum
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelWeilOrbitalIntegralFormulaStatement =====
@@ -457,7 +450,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
-
 
 theorem _root_.GlobalTheory.T.siegel_weil_stabilizer_integrable : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 0 < n → 2 * n < M → ∀ (ψ : AddChar (AF F) ℂ), IsCharAF F ψ → ∀ (dx : Measure (Fin n → Fin M → AF F ⊗[F] E)) (db : Measure (HermR (AF F) σ n)) (d : ℕ) (b : Module.Basis (Fin d) F E) (Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ), Integrable (starN σ J ψ dx Φ) db → ∀ T : Matrix (Fin n) (Fin n) E, Filter.Tendsto (fun S => coefS σ J ψ dx db Φ T b S) Filter.atTop (nhds (coefN σ J ψ dx db Φ T)) := by
   first | exact @GlobalTheory.CompanionTheory.WhitFree.CoefLim.coefS_tendsto
@@ -695,7 +687,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
 
-
 theorem _root_.GlobalTheory.T.hermitian_euler_product_standard : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ n : ℕ, 0 < n → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ db : Measure (HermR (AF F) σ n), SdHerm F E σ (AF F) ψ n db → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (laminf : Measure (Ainf F)) (lam : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Measure (Fv F v)), GlobalTheory.CompanionTheory.SW.IsStdInf laminf → (∀ v, GlobalTheory.CompanionTheory.SW.IsStdV v (lam v)) → ∃ S₁ : Finset (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)), ∀ S, S₁ ⊆ S → ∃ (ρ : ℕ → HermR (Ainf F) σ n → ℝ) (U : ℕ → ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Set (HermR (Fv F v) σ n)), (∀ k, Continuous (ρ k) ∧ HasCompactSupport (ρ k) ∧ (∀ y, 0 ≤ ρ k y) ∧ 0 < ∫ y, ρ k y ∂(GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b laminf n)) ∧ Filter.Tendsto (fun k => tsupport (ρ k)) Filter.atTop (nhds (0 : HermR (Ainf F) σ n)).smallSets ∧ (∀ k v, IsCompact (U k v) ∧ IsOpen (U k v) ∧ (0 : HermR (Fv F v) σ n) ∈ U k v) ∧ (∀ v, Filter.Tendsto (fun k => U k v) Filter.atTop (nhds (0 : HermR (Fv F v) σ n)).smallSets) ∧ (∀ k v, 0 < (GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v) σ b (lam v) n (U k v)).toReal) ∧ (∀ k, Integrable (GlobalTheory.CompanionTheory.SiegelND.Coef.fouH σ ψ db (GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k))) db ∧ ∀ z, ∫ y, GlobalTheory.CompanionTheory.SiegelND.Coef.fouH σ ψ db (GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k)) y * ψ (pairHerm (AF F) σ n y z) ∂db = GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k) (-z)) ∧ (∀ k, ∫ y, GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k) y ∂db = ((∫ y, ρ k y ∂(GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b laminf n) : ℝ) : ℂ) * ∏ v ∈ S, ((GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v) σ b (lam v) n (U k v)).toReal : ℂ)) ∧ (∀ k y, ‖GlobalTheory.CompanionTheory.SiegelND.Coef.fouH σ ψ db (GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k)) y‖ ≤ ‖∫ y, GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k) y ∂db‖) ∧ ∀ y, Filter.Tendsto (fun k => GlobalTheory.CompanionTheory.SiegelND.Coef.fouH σ ψ db (GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k)) y / ∫ y, GlobalTheory.CompanionTheory.SiegelND.Coef.testH σ b (ρ k) S (U k) y ∂db) Filter.atTop (nhds ((GlobalTheory.CompanionTheory.SiegelND.Coef.intH σ b n S).indicator (fun _ => (1 : ℂ)) (GlobalTheory.CompanionTheory.SiegelND.Coef.hermFin σ y))) := by
   first | exact @GlobalTheory.CompanionTheory.SiegelND.Coef.TestDeg.exists_test_approx
 end -- clump:auto
@@ -782,7 +773,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
 
-
 theorem _root_.GlobalTheory.T.lattice_gram_integral_almost_all : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), ∀ (hCM : IsCMExt F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (hJ : IsHermND σ J) (n d : ℕ) (b : Module.Basis (Fin d) F E) (T : Matrix (Fin n) (Fin n) E) (hT : ∀ a c, σ (T c a) = T a c), ∀ᶠ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F) in Filter.cofinite, ∀ X ∈ (latV b v : Set (Fin n → Fin M → Fv F v ⊗[F] E)), hermOf (Fv F v) σ T hT - GlobalTheory.CompanionTheory.SiegelND.Coef.gramH hCM hJ (Fv F v) X ∈ GlobalTheory.CompanionTheory.SiegelND.Coef.latH σ b v n := by
   first | exact @GlobalTheory.CompanionTheory.SiegelND.Coef.Grams.sub_gramH_mem_latH
 end -- clump:auto
@@ -824,7 +814,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
-
 
 theorem _root_.GlobalTheory.T.schwartz_bruhat_integrable_any_haar : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M n : ℕ) (dx : Measure (Fin n → Fin M → AF F ⊗[F] E)), dx.IsAddHaarMeasure → ∀ Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ, GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat Φ → Integrable Φ dx := by
   first | exact @GlobalTheory.CompanionTheory.SiegelND.Coef.SBInt.integrable_isSchwartzBruhat_tuple
@@ -869,7 +858,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
 
-
 theorem _root_.GlobalTheory.T.siegel_weil_product_over_places : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 0 < n → 2 * n < M → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ dx : Measure (Fin n → Fin M → AF F ⊗[F] E), SdW F E σ M J (AF F) ψ n dx → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (laminf : Measure (Ainf F)) (lam : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Measure (Fv F v)), GlobalTheory.CompanionTheory.SW.IsStdInf laminf → (∀ v, GlobalTheory.CompanionTheory.SW.IsStdV v (lam v)) → GlobalTheory.CompanionTheory.SW.IsEulerProd b dx 1 (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b laminf n M) (fun v => GlobalTheory.CompanionTheory.SW.coordW (Fv F v) b (lam v) n M) ∧ ∀ v, GlobalTheory.CompanionTheory.SW.coordW (Fv F v) b (lam v) n M (latV b v) = 1 := by
   first | exact @GlobalTheory.CompanionTheory.SiegelND.DxN.selfDual_isEulerProd_n
 end -- clump:auto
@@ -877,12 +865,12 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelWeilProductOverPlacesStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceAdelicCmExtension =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceAdelicCmExtension", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoC\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceAdelicCmExtension", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts\n\n"}
 section -- clump:auto
 @[expose] public section
 
 open scoped TensorProduct Matrix
-open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.ThK.UnipDom
+open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 
 noncomputable section
 
@@ -1106,7 +1094,7 @@ theorem gramTest_eq {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
   have h : (c : Matrix (Fin n) (Fin n) (R ⊗[F] E)) - gramR R σ J X ∈ HermR R σ n :=
     (c - GlobalTheory.CompanionTheory.SiegelND.Coef.gramH hCM hJ R X).2
   unfold gramTest
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem hermMap_sub_gramH {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} (hCM : IsCMExt F E σ) {M : ℕ} {J : Matrix (Fin M) (Fin M) E} (hJ : IsHermND σ J) {R R' : Type} [CommRing R] [Algebra F R] [CommRing R'] [Algebra F R'] (f : R →ₐ[F] R') {n : ℕ} (c : HermR R σ n) (X : Fin n → Fin M → R ⊗[F] E) :
     GlobalTheory.CompanionTheory.SiegelND.Coef.hermMap f σ (c - GlobalTheory.CompanionTheory.SiegelND.Coef.gramH hCM hJ R X) =
@@ -1191,13 +1179,11 @@ theorem sfinite_herm {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
   haveI := Measure.IsAddHaarMeasure.sigmaFinite db
   infer_instance
 
-
-
 theorem coefS_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 0 < n → 2 * n < M → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ dx : Measure (Fin n → Fin M → AF F ⊗[F] E), SdW F E σ M J (AF F) ψ n dx → ∀ db : Measure (HermR (AF F) σ n), SdHerm F E σ (AF F) ψ n db → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (laminf : Measure (Ainf F)) (lam : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Measure (Fv F v)), GlobalTheory.CompanionTheory.SW.IsStdInf laminf → (∀ v, GlobalTheory.CompanionTheory.SW.IsStdV v (lam v)) → ∀ (minf : HermR (Ainf F) σ n → Measure (Fin n → Fin M → Ainf F ⊗[F] E)), IsGramFibFree (Ainf F) σ J n (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b laminf n M) (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b laminf n) minf → ∀ (m : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), HermR (Fv F v) σ n → Measure (Fin n → Fin M → Fv F v ⊗[F] E)), (∀ v, IsGramFibFree (Fv F v) σ J n (GlobalTheory.CompanionTheory.SW.coordW (Fv F v) b (lam v) n M) (GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v) σ b (lam v) n) (m v)) → ∀ (T : Matrix (Fin n) (Fin n) E) (hT : ∀ a c, σ (T c a) = T a c), ∃ S₁ : Finset (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)), ∀ S, S₁ ⊆ S → ∀ φ : (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ, GlobalTheory.Published.SiegelOneVector.IsSchwartzArch φ → ∀ A : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Set (Fin n → Fin M → Fv F v ⊗[F] E), (∀ v, IsCompact (A v) ∧ IsOpen (A v)) → (∀ v, v ∉ S → A v = latV b v) → coefS σ J ψ dx db (pureN φ A) T b S = (∫ X, φ X ∂(minf (hermOf (Ainf F) σ T hT))) * ∏ v ∈ S, ((m v (hermOf (Fv F v) σ T hT) (A v)).toReal : ℂ) := by
   intro F E _ _ _ _ _ σ hCM M J hJ n hn h2n ψ hψ dx hdx db hdb d b laminf lam hinf hlam minf hminf m hm T hT
   classical
   obtain ⟨hEu, hlat⟩ := GlobalTheory.T.siegel_weil_product_over_places F E σ hCM M J hJ n hn h2n ψ hψ dx hdx d b laminf lam hinf hlam
-  obtain ⟨S₀, hS₀⟩ := GlobalTheory.T.euler_product_almost_all_standard F E M n d b dx 1 _ _ hEu
+  obtain ⟨S₀, hS₀⟩ := GlobalTheory.CompanionTheory.WhitFree.Euler.integrable_integral_pureN F E M n d b dx 1 _ _ hEu
   obtain ⟨S₁, hS₁⟩ := GlobalTheory.T.hermitian_euler_product_standard F E σ hCM n hn ψ hψ db hdb d b laminf lam hinf hlam
   have hq := GlobalTheory.T.lattice_gram_integral_almost_all F E σ hCM M J hJ n d b T hT
   have hlc := GlobalTheory.T.hermitian_lattice_mem_iff_entries F E σ hCM n d b
@@ -1218,7 +1204,7 @@ theorem coefS_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     exact hv (hS (by simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_setOf_eq]; exact Or.inr hc))
   obtain ⟨ρ, U, hρ, hρs, hU, hUs, hUpos, hI, hc, hbd, hlim⟩ := hS₁ S hS1
   have hΦSB : GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat (pureN φ A) :=
-    GlobalTheory.T.factorizable_siegel_weil_finite_set F E σ hCM M J hJ n hn h2n d b S φ A hφ hA hAl
+    GlobalTheory.CompanionTheory.WhitFree.pureN_isSchwartzBruhat F E σ hCM M J hJ n hn h2n d b S φ A hφ hA hAl
   have hΦdx : Integrable (pureN φ A) dx := GlobalTheory.T.schwartz_bruhat_integrable_any_haar F E σ hCM M n dx hdx.1 _ hΦSB
   have hstar : Integrable (starN σ J ψ dx (pureN φ A)) db :=
     GlobalTheory.T.siegel_weil_convergent_range F E σ hCM M J hJ n h2n ψ hψ dx hdx db hdb _ hΦSB
@@ -1257,8 +1243,8 @@ theorem coefS_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     let A' : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), Set (Fin n → Fin M → Fv F v ⊗[F] E) := fun v =>
       if v ∈ S then A v ∩ gramNear (Fv F v) σ J (hermOf (Fv F v) σ T hT) (U k v) else A v
     have hA'S : ∀ v ∈ S, A' v = A v ∩ gramNear (Fv F v) σ J (hermOf (Fv F v) σ T hT) (U k v) :=
-      fun v hv => if_pos hv
-    have hA'n : ∀ v, v ∉ S → A' v = latV b v := fun v hv => (if_neg hv).trans (hAl v hv)
+      fun v hv => ite_eq_left hv
+    have hA'n : ∀ v, v ∉ S → A' v = latV b v := fun v hv => (ite_eq_right hv).trans (hAl v hv)
     have h3 : ∀ (x : Fin n → Fin M → AF F ⊗[F] E) v,
         GlobalTheory.CompanionTheory.SiegelND.Coef.hermV σ v (GlobalTheory.CompanionTheory.SiegelND.Coef.hermFin σ (hermOf (AF F) σ T hT - GlobalTheory.CompanionTheory.SiegelND.Coef.gramH hCM hJ (AF F) x)) =
           hermOf (Fv F v) σ T hT - GlobalTheory.CompanionTheory.SiegelND.Coef.gramH hCM hJ (Fv F v) (HeckeCharacterZeroLocus.SiegelWeilU.projV v (HeckeCharacterZeroLocus.SiegelWeilU.projFin x)) := by
@@ -1280,7 +1266,7 @@ theorem coefS_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
           refine ⟨h v, ?_⟩
           rw [mem_gramNear_iff hCM hJ, ← h3 x v]
           exact h'.1 v hv
-        · rw [show A' v = A v from if_neg hv]
+        · rw [show A' v = A v from ite_eq_right hv]
           exact h v
       · intro h
         refine ⟨fun v => ?_, fun v hv => ?_, fun v hv => ?_⟩
@@ -1289,7 +1275,7 @@ theorem coefS_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
             rw [hA'S v hv] at this
             exact this.1
           · have := h v
-            rwa [show A' v = A v from if_neg hv] at this
+            rwa [show A' v = A v from ite_eq_right hv] at this
         · have := h v
           rw [hA'S v hv] at this
           rw [h3 x v, ← mem_gramNear_iff hCM hJ]
@@ -1325,7 +1311,7 @@ theorem coefS_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
       intro v
       by_cases hv : v ∈ S
       · rw [hA'S v hv]; exact ((hV v).1 k).1
-      · rw [show A' v = A v from if_neg hv]; exact (hV0 v).1
+      · rw [show A' v = A v from ite_eq_right hv]; exact (hV0 v).1
     have hfinA' : ∀ v, GlobalTheory.CompanionTheory.SW.coordW (Fv F v) b (lam v) n M (A' v) ≠ ⊤ := by
       intro v
       by_cases hv : v ∈ S
@@ -1441,13 +1427,13 @@ theorem pure_identity {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
     (hA : ∀ v, IsCompact (A v) ∧ IsOpen (A v)) (hAl : ∀ v, v ∉ S₀ → A v = latV b v) :
     Integrable (pureN φ A) I ∧ coefN σ J ψ dx db (pureN φ A) T = ∫ X, pureN φ A X ∂I := by
   classical
-  obtain ⟨S₁, hS₁⟩ := GlobalTheory.T.euler_product_almost_all_standard F E M n d b I 1 _ _ hI
+  obtain ⟨S₁, hS₁⟩ := GlobalTheory.CompanionTheory.WhitFree.Euler.integrable_integral_pureN F E M n d b I 1 _ _ hI
   obtain ⟨S₂, hS₂⟩ := GlobalTheory.T.adelic_siegelWeil_coefficient_eq F E σ hCM M J hJ n hn hM ψ hψ dx hdx db hdb d b laminf lam hinf hlam minf hminf m hm T hT
   obtain ⟨hφm, hφi, -⟩ := GlobalTheory.T.archimedean_siegel_weil_measure F E σ hCM M J hJ n hn hM d b laminf hinf minf hminf (hermOf (Ainf F) σ T hT) φ hφ
   have hfin := fun v => GlobalTheory.T.local_siegel_weil_unramified_measure F E σ hCM M J hJ n hn hM d b v (lam v) (hlam v) (m v) (hm v)
     (hermOf (Fv F v) σ T hT) (A v) (hA v).1 (hA v).2
   have hΦSB : GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat (pureN φ A) :=
-    GlobalTheory.T.factorizable_siegel_weil_finite_set F E σ hCM M J hJ n hn hM d b S₀ φ A hφ hA hAl
+    GlobalTheory.CompanionTheory.WhitFree.pureN_isSchwartzBruhat F E σ hCM M J hJ n hn hM d b S₀ φ A hφ hA hAl
   have hstar : Integrable (starN σ J ψ dx (pureN φ A)) db :=
     GlobalTheory.T.siegel_weil_convergent_range F E σ hCM M J hJ n hM ψ hψ dx hdx db hdb _ hΦSB
   have hlimC := GlobalTheory.T.siegel_weil_stabilizer_integrable F E σ hCM M J hJ n hn hM ψ hψ dx db d b _ hstar T
@@ -1498,13 +1484,13 @@ theorem coefN_eq_integral {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     (hI : GlobalTheory.CompanionTheory.SW.IsEulerProd b I 1 (minf (hermOf (Ainf F) σ T hT)) (fun v => m v (hermOf (Fv F v) σ T hT)))
     (Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ) (hΦ : GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat Φ) :
     coefN σ J ψ dx db Φ T = ∫ X, Φ X ∂I := by
-  obtain ⟨k, φ, A, S, hφ, hA, hAl, hsum⟩ := GlobalTheory.T.schwartz_bruhat_factorizable_decomposition F E σ hCM M J hJ n hn hM d b Φ hΦ
+  obtain ⟨k, φ, A, S, hφ, hA, hAl, hsum⟩ := GlobalTheory.CompanionTheory.WhitFree.schwartzBruhat_eq_sum_pureN F E σ hCM M J hJ n hn hM d b Φ hΦ
   have hSB : ∀ i, GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat (pureN (φ i) (A i)) := fun i =>
-    GlobalTheory.T.factorizable_siegel_weil_finite_set F E σ hCM M J hJ n hn hM d b S (φ i) (A i) (hφ i) (hA i) (hAl i)
+    GlobalTheory.CompanionTheory.WhitFree.pureN_isSchwartzBruhat F E σ hCM M J hJ n hn hM d b S (φ i) (A i) (hφ i) (hA i) (hAl i)
   have hP := fun i => pure_identity σ hCM J hJ hn hM ψ hψ dx hdx db hdb d b laminf lam hinf hlam minf hminf m hm T hT I hI S
     (φ i) (hφ i) (A i) (hA i) (hAl i)
   have hΦe : Φ = fun X => ∑ i, pureN (φ i) (A i) X := funext hsum
-  rw [hΦe, GlobalTheory.T.siegel_weil_orbital_integral_formula F E σ hCM M J hJ n hn hM ψ hψ dx hdx db hdb T k _ hSB, integral_finsetSum _ fun i _ => (hP i).1]
+  rw [hΦe, GlobalTheory.CompanionTheory.SiegelND.CoefSum.coefN_finset_sum F E σ hCM M J hJ n hn hM ψ hψ dx hdx db hdb T k _ hSB, integral_finsetSum _ fun i _ => (hP i).1]
   exact Finset.sum_congr rfl fun i _ => (hP i).2
 
 end GlobalTheory.CompanionTheory.WhitFree

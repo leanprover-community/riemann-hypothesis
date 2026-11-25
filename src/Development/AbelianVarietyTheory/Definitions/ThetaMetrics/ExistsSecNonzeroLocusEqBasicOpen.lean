@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemNonze
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory
 
 open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite

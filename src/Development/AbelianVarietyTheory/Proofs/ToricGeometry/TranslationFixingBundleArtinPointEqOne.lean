@@ -5,51 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimag
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsConstOfCover
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsLinearOfMulPeriod
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -554,7 +511,7 @@ theorem first_order_transl (ρ : R →ₐ[ℂ] ℂ) (x : spO R ⟶ A) (κ : R �
       rw [valAt'_eq_evalPt _ _ hm, valAt'_eq_evalPt _ _ hm']
       exact evalPt_appLE _ T _ hy W _ le_rfl hm hm' f
     · have hm' : ¬ ⊤ ≤ (u.ex (y + z)).left ⁻¹ᵁ W := by rw [← hy]; exact hm
-      simp only [valAt', dif_neg hm, dif_neg hm']
+      simp only [valAt', dite_eq_right hm, dite_eq_right hm']
   have hsh := fderiv_comp_add_right (𝕜 := ℂ) (f := fun v => valAt' (u.ex v).left W f) (x := 0) z
   simp only [zero_add] at hsh
   obtain ⟨h1, h2⟩ := hκ (T ⁻¹ᵁ W) h' f'

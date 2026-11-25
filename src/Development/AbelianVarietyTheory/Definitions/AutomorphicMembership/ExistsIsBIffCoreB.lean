@@ -103,22 +103,12 @@ def IsB (K : Ctx) (D : D7) (O : Obj2 D) : Prop :=
   ∃ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (b : CoreB K w Z),
     (⟨D, O⟩ : Σ D : D7, Obj2 D) = ⟨w.D Z, b.obj⟩
 
-def ForVol (w : ColW B f T) (P : w.Lt → Prop) : Prop :=
-  ∀ (vol : HSpace B.host.E → ℝ) (cd : CDHaar), (∀ W, 0 < vol W) →
-    (∀ Z : w.Lt, Z.G.vol = vol → Z.G.cd = cd → Formalism.L2.Herm.VolumeCompatible (w.D Z)) → ∃ Z : w.Lt, Z.G.vol = vol ∧ Z.G.cd = cd ∧ P Z
-
 theorem IsB.ind {K : Ctx} {R : ∀ D : D7, Obj2 D → Prop}
     (h : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (b : CoreB K w Z), R (w.D Z) b.obj)
     {D : D7} {O : Obj2 D} (hD : IsB K D O) : R D O := by
   obtain ⟨B, f, T, w, Z, b, e⟩ := hD
   cases e
   exact h B f T w Z b
-
-section Layers
-
-variable {K : Ctx} {w : ColW B f T} {Z : w.Lt}
-
-end Layers
 
 end GlobalTheory.Mem.Db
 

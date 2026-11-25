@@ -24,56 +24,12 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolum
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MeasurableSetBorSat
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.NormBcharMulNfacRmul
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
 
@@ -412,15 +368,15 @@ theorem lowMat_leftM {r : ℕ} {N : Matrix (Fin r) (Fin r) ℂ} (hN : LowU N) (u
     lowMat (leftM N *ᵥ u) = N * lowMat u := by
   ext a c
   by_cases h : c < a
-  · simp only [lowMat, Matrix.of_apply, dif_pos h]
+  · simp only [lowMat, Matrix.of_apply, dite_eq_left h]
     exact leftM_mulVec N u ⟨(a, c), h⟩
   · rw [Matrix.mul_apply]
-    simp only [lowMat, Matrix.of_apply, dif_neg h]
+    simp only [lowMat, Matrix.of_apply, dite_eq_right h]
     symm
     refine Finset.sum_eq_zero fun k _ => ?_
     by_cases hk : c < k
     · rw [hN.1 a k (lt_of_le_of_lt (not_lt.mp h) hk), zero_mul]
-    · rw [dif_neg hk, mul_zero]
+    · rw [dite_eq_right hk, mul_zero]
 
 theorem differentiableAt_det {r : ℕ} (A : ℂ → Matrix (Fin r) (Fin r) ℂ) (t : ℂ)
     (h : ∀ i j, DifferentiableAt ℂ (fun s => A s i j) t) :
@@ -510,10 +466,10 @@ theorem hasDerivAt_nmat {r : ℕ} (X : Data E r) {w : ℂ → V (nd X)} {w' : V 
     HasDerivAt (fun s => mat (nmat X (w s)) τ i j) (lowMat (crd X w' τ) i j) t := by
   simp only [mat, nmat, lowMat, Matrix.of_apply]
   by_cases h : j < i
-  · simp only [dif_pos h, crd]
+  · simp only [dite_eq_left h, crd]
     exact (EuclideanSpace.proj (𝕜 := ℂ)
       ((Fintype.equivFin (Ent X)) ⟨τ, ⟨(i, j), h⟩⟩)).hasFDerivAt.comp_hasDerivAt t hw
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact hasDerivAt_const _ _
 
 theorem fderiv_rel {r : ℕ} (X : Data E r) (x0 x1 : Frame X.Ψ r) (γ : GL (Fin r) E) (U : Set (V (nd X)))
@@ -910,7 +866,7 @@ theorem frameSplit : (∀ (r : ℕ) (X : Data E r) (R : ℝ), ∃ K : ℝ≥0∞
   · intro z
     ext j
     have h := ((Fintype.equivFin (Ent X)).symm j).2.2
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     exact congrArg (fun k => z k) ((Fintype.equivFin (Ent X)).apply_symm_apply j)
   · apply IsClosed.measurableSet
     simp only [Set.setOf_forall]

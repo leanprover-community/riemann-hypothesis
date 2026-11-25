@@ -144,9 +144,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons Formalism.MainNotions.Gaps Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.RunJoin
 
-
-
-
 namespace GlobalTheory.RunJoin
 
 theorem lamwAt_absolute : ∃ CL : ℝ, 0 < CL ∧ ∀ (D : D7) (T : Top D) (h : LawsP T) (large₂ : SizeData₂ D) (CA : ℝ), ParA large₂ CA → ∀ (j : ℕ) (w : WeightFamilies.Wt D j), LAMwAt large₂ (recB h.toLawsCore) j w CL 2 := by
@@ -913,8 +910,6 @@ open Formalism.L2.Pj Formalism.L2.Pj.QAt Formalism.MainNotions Formalism.BasicNo
 
 namespace GlobalTheory.ArcCM.Room
 
-
-
 theorem room_four : ∃ C₀ : ℝ → ℝ → ℝ → ℝ, (∀ a b c, 0 ≤ C₀ a b c) ∧ ∀ (D : D7) (large₂ : SizeData₂ D) (j : ℕ) (ka : WeightFamilies.Wt D j) (CA CR Ck Tt cc : ℝ), WeightAlgebra.ParA large₂ CA → Real.log (Ideal.absNorm D.host.ccK) ≤ large₂.sc.L → InR D j → j < D.R.m → 3 ≤ D.R.r → 0 ≤ CR → ka.size ≤ Ck * (D.R.k : ℝ) * (D.R.f : ℝ) * large₂.sc.b → 0 < Tt → 0 < cc → Tt * cc ≤ 1 → 1 ≤ zBase large₂ ∧ RoomAt large₂ j ka CR Tt cc (C₀ CA CR Ck) 4 := by
   set C : ℝ := 200 with hCdef
   set A : ℝ := 4 with hAdef
@@ -1076,9 +1071,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.RunJoin
 
-
-
-
 theorem qAt_run : ∃ Cq : ℝ → ℝ → ℝ, ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CT : ℝ) (ka wL wF : WeightFamilies.Wt D j) (Tn nP nW : ℕ) (h0 : ℝ), PageOK large₂ (recPJ h j hj) H C2 A2 CT ka wL wF Tn nP nW h0 → j < D.R.m → LatAt (recB h.toLawsCore) j ka → QAt large₂ (recB h.toLawsCore) j ka 7 H.CK 1 4 (Cq H.CA H.CK) 4 Tn (cc D large₂ C2 A2 7 wL) := by
   obtain ⟨C₀, hC₀, hroom⟩ := _root_.GlobalTheory.ArcCM.Room.room_four
   refine ⟨fun a b => 1 + 3 * C₀ a 7 b + 1041, ?_⟩
@@ -1208,9 +1200,6 @@ theorem mem_MggK_of_rho_eq_zero {D : D7} (X : WeightFamilies.Prov D) (CR Tt cc :
   rintro cu χ ⟨xi, -, hne, -⟩
   exact absurd (funext fun i => absurd i.isLt (by omega)) hne
 
-
-
-
 theorem tieMaxCusp : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ), InR D j → ∀ (ka : WeightFamilies.Wt D j) (CR Tt cc : ℝ), TieMaxCuspSt h j CR Tt cc ka := by
   intro D T h j hj ka CR Tt cc F
   rcases lt_or_eq_of_le hj.2 with hlt | hjm
@@ -1302,15 +1291,11 @@ variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} 
 def ownNorm (B : WeightFamilies.Prov D) : RunIn.SecNorm B :=
   ⟨B.l2NormAlt, B.l2Norm_nonneg_bis, B.l2Norm_eq_zero_iff, B.l2Norm_smul_alt, B.l2Norm_add_le', B.l2Norm_le_supNorm_alt⟩
 
-
-
 theorem sharesAt_ownNorm {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData X ka wL wF) (S : Scal B) (Tn : ℕ) (c : ℝ)
     (Sh : Set (B.Cusp j wF)) :
     SharesAt (RunIn.globalFamilyDataBaseChange (ownNorm B) X E hM G) (scalarsWithNorm (ownNorm B).N (ownNorm B).h0 (ownNorm B).h1 (ownNorm B).h2
       (ownNorm B).h3 (ownNorm B).h4 S) Tn c Sh ↔ SharesAt (gd2Xplus G E hM) S Tn c Sh :=
   Iff.rfl
-
-
 
 /-- `gd2Xplus` does not change what `InBasis`, `InContainMR` and the rank bound of `ShareRhoR` see
 at a place `la`. The three facts are stated together so that the kernel unfolds the common
@@ -1334,8 +1319,6 @@ theorem sharesAt_of_xplus {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyDa
   exact ⟨fun la => (T la).1.1 (a la), b, fun la => ((T la).2.2 S Tn).symm.trans_le (c la), d,
     fun la => ((T la).2.1 _ _ _ _).1 (e la)⟩
 
-
-
 theorem shortG_xN (wL wF : WeightFamilies.Wt D j) (S : Scal B) (β : ℝ) :
     ShortG (RunIn.xN n X E hM) ((RunIn.xN n X E hM).wF0 wL wF)
       ((RunIn.xN n X E hM).Thc (scalarsWithNorm n.N n.h0 n.h1 n.h2 n.h3 n.h4 S).s0 ((RunIn.xN n X E hM).wF0 wL wF)) β ↔
@@ -1343,7 +1326,6 @@ theorem shortG_xN (wL wF : WeightFamilies.Wt D j) (S : Scal B) (β : ℝ) :
   Iff.rfl
 
 end General
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem sharesAt_of_lt : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CT : ℝ) (ka wL wF : WeightFamilies.Wt D j) (Tn nP nW : ℕ) (h0 : ℝ) (EX : ErrX D) (p : ℕ) (S : Scal (recB h.toLawsCore)) (nus : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO) → ℝ), ParOK T EX p j → PageOK large₂ (recPJ h j hj) H C2 A2 CT ka wL wF Tn nP nW h0 → HypC large₂ (recPJ h j hj) H C2 A2 7 0 CT S ka wL wF Tn nP nW h0 nus → LatAt (recB h.toLawsCore) j ka → j < D.R.m → ∀ G : GlobalFamilyData (recPJ h j hj) ka wL wF, GenOK h j hj large₂ G S (cc D large₂ C2 A2 7 wL) → EtaOK h j hj large₂ wL G.iet G.et → ∀ Sh : Set ((recB h.toLawsCore).Cusp j wF), Submodule.span (recB h.toLawsCore).KO Sh = ⊤ → SharesAt G S Tn (cc D large₂ C2 A2 7 wL) Sh := by
@@ -1381,8 +1363,6 @@ open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.hodgeTate_inclusion_chart_characters : ∀ (p : ℕ) [Fact p.Prime], HTFSt p := by
-  first | exact @GlobalTheory.ChF.hodgeTate_inclusion_chart
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.HodgeTateInclusionChartCharactersStatement =====
@@ -1476,7 +1456,7 @@ theorem inputsNet_recPlus : ∃ (CL : ℝ) (Cq Z₀ : ℝ → ℝ → ℝ), ∀ 
   have hTh' := hTh G (by subst hGdef; exact hth')
   have hdel : G.del = del := by subst hGdef; rfl
   rw [← hdel] at hRd
-  obtain ⟨hComb, hc⟩ := _root_.GlobalTheory.RunJoin.combBound_run GlobalTheory.T.hodgeTate_inclusion_chart_characters D T h hinj EX p j hj large₂ H C2 A2 CT ka wL wF Tn nP nW h0 hPar.orient hP G hE
+  obtain ⟨hComb, hc⟩ := _root_.GlobalTheory.RunJoin.combBound_run GlobalTheory.ChF.hodgeTate_inclusion_chart D T h hinj EX p j hj large₂ H C2 A2 CT ka wL wF Tn nP nW h0 hPar.orient hP G hE
   obtain ⟨Nt, σ₀, hMax, hSup, hPG, hInj, hCard, hSub, -, hlog⟩ :=
     GlobalTheory.RunJoin.net_at_run D T h j hj large₂ H C2 A2 CT ka wL wF Tn nP nW h0 hP
   have hLam' := hLam D T h large₂ H.CA hP.hyp.1 j

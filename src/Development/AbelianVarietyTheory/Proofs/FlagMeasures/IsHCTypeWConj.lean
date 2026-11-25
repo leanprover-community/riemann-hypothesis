@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LinMulti
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Formalism.MainNotions.S GlobalTheory.Ell
 open scoped InnerProductSpace
 
@@ -73,15 +71,5 @@ theorem lowK_neg_rev (u : Fin k → ℝ) :
   ring
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end GlobalTheory.ConjTypeW
-
-namespace GlobalTheory.ConjTypeW
-
-variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
-
-end GlobalTheory.ConjTypeW
-
-namespace GlobalTheory.ConjTypeW
 
 end GlobalTheory.ConjTypeW

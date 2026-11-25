@@ -45,19 +45,6 @@ private theorem cons_mem_ball {D : ℕ} {c : Fin (D + 1) → ℂ} {r : ℝ} (hr 
   simp only [ball_pi _ hr, Set.mem_pi, Set.mem_univ, true_implies, Fin.forall_fin_succ,
     Fin.cons_zero, Fin.cons_succ, Fin.tail]
 
-private theorem measurableSet_zero {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-    [MeasurableSpace E] [OpensMeasurableSpace E] {U : Set E} (hU : IsOpen U) {f : E → ℂ}
-    (hf : AnalyticOnNhd ℂ f U) : MeasurableSet {z | z ∈ U ∧ f z = 0} := by
-  have h1 : IsOpen (U ∩ f ⁻¹' {0}ᶜ) :=
-    hf.continuousOn.isOpen_inter_preimage hU isOpen_compl_singleton
-  have h2 : {z | z ∈ U ∧ f z = 0} = U \ (U ∩ f ⁻¹' {0}ᶜ) := by
-    ext z
-    simp only [Set.mem_ofPred_eq, Set.mem_sdiff, Set.mem_inter_iff, Set.mem_preimage,
-      Set.mem_compl_iff, Set.mem_singleton_iff]
-    tauto
-  rw [h2]
-  exact hU.measurableSet.diff h1.measurableSet
-
 private theorem nz_one {U : Set ℂ} (hc : IsPreconnected U) {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
     (hne : ∃ z ∈ U, g z ≠ 0) : volume {z | z ∈ U ∧ g z = 0} = 0 := by
   apply measure_null_of_locally_null
@@ -91,7 +78,10 @@ private theorem nz_ball : ∀ (D : ℕ) (c : Fin D → ℂ) (r : ℝ) (f : (Fin 
     intro c r f hf hne
     obtain ⟨z₀, hz₀b, hz₀⟩ := hne
     have hr : 0 < r := pos_of_mem_ball hz₀b
-    have hZm : MeasurableSet {z | z ∈ ball c r ∧ f z = 0} := measurableSet_zero isOpen_ball hf
+    have hZm : MeasurableSet {z | z ∈ ball c r ∧ f z = 0} := by
+      rw [show {z | z ∈ ball c r ∧ f z = 0} = ball c r \ (ball c r ∩ f ⁻¹' {0}ᶜ) by ext; simp]
+      exact isOpen_ball.measurableSet.diff
+        (hf.continuousOn.isOpen_inter_preimage isOpen_ball isOpen_compl_singleton).measurableSet
     let e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (D + 1) => ℂ) 0
     have he : MeasurePreserving e := volume_preserving_piFinSuccAbove (fun _ : Fin (D + 1) => ℂ) 0
     have h1 := (MeasurePreserving.symm e he).measure_preimage hZm.nullMeasurableSet

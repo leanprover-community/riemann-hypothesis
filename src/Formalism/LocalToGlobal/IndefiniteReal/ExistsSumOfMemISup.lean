@@ -22,20 +22,6 @@ section Spec
 variable {K : Type} [Field K]
 variable {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [FiniteDimensional ℂ E] {ι : Type} [Fintype ι]
 
-theorem exists_sum_of_mem_iSup {R M : Type} [Ring R] [AddCommGroup M] [Module R M] {ι : Type} [Fintype ι]
-    (Q : ι → Submodule R M) {y : M} (hy : y ∈ ⨆ p, Q p) : ∃ ys : ι → M, (∀ p, ys p ∈ Q p) ∧ ∑ p, ys p = y := by
-  classical
-  refine Submodule.iSup_induction Q (motive := fun y => ∃ ys : ι → M, (∀ p, ys p ∈ Q p) ∧ ∑ p, ys p = y) hy ?_ ?_ ?_
-  · intro i x hx
-    refine ⟨Pi.single i x, fun p => ?_, ?_⟩
-    · by_cases h : p = i
-      · subst h; simpa using hx
-      · simp [h]
-    · simp [Finset.sum_pi_single']
-  · exact ⟨0, fun _ => zero_mem _, by simp⟩
-  · rintro x y ⟨xs, hxs, rfl⟩ ⟨ys, hys, rfl⟩
-    exact ⟨xs + ys, fun p => add_mem (hxs p) (hys p), by simp [Finset.sum_add_distrib]⟩
-
 def specOp (U : ι → Submodule ℂ E) (a : ι → ℂ) : Module.End ℂ E :=
   ∑ p, a p • ((U p).starProjection : E →L[ℂ] E).toLinearMap
 
@@ -59,12 +45,6 @@ theorem proj_of_mem [DecidableEq ι] {p q : ι} {x : E} (hx : x ∈ U q) :
     rw [Submodule.starProjection_orthogonal_val] at h1
     exact sub_eq_self.1 h1
 
-theorem specOp_of_mem {a : ι → ℂ} {q : ι} {x : E} (hx : x ∈ U q) : specOp U a x = a q • x := by
-  classical
-  rw [specOp_apply]
-  simp only [proj_of_mem U hU hx, smul_ite, smul_zero]
-  simp
-
 theorem proj_specOp (a : ι → ℂ) (q : ι) (x : E) :
     (U q).starProjection (specOp U a x) = a q • (U q).starProjection x := by
   classical
@@ -72,20 +52,9 @@ theorem proj_specOp (a : ι → ℂ) (q : ι) (x : E) :
   rw [specOp_apply, map_sum, Finset.sum_eq_single q]
   · rw [map_smul, Submodule.starProjection_eq_self_iff.2 (proj_mem U q x)]
   · intro p _ hp
-    rw [map_smul, proj_of_mem U hU (proj_mem U p x), if_neg (Ne.symm hp), smul_zero]
+    rw [map_smul, proj_of_mem U hU (proj_mem U p x), ite_eq_right (Ne.symm hp), smul_zero]
   · intro h
     exact absurd (Finset.mem_univ q) h
-
-theorem sum_proj {x : E} (hx : x ∈ ⨆ p, U p) : ∑ p, (U p).starProjection x = x := by
-  classical
-  refine Submodule.iSup_induction U (motive := fun x => ∑ p, (U p).starProjection x = x) hx ?_ ?_ ?_
-  · intro q x hx
-    simp only [proj_of_mem U hU hx]
-    simp
-  · simp
-  · intro x y hx hy
-    simp only [map_add (f := _), Finset.sum_add_distrib, hx, hy]
-
 
 end Spec
 

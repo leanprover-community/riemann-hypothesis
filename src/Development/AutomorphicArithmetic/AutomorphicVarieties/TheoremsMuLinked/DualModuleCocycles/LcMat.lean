@@ -87,7 +87,7 @@ theorem UpperTheory.V.Th.Coc.lc :
     simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, bar, Matrix.map_apply, Matrix.smul_apply,
       Matrix.of_apply, smul_eq_mul, ite_and]
     simp only [apply_ite (algebraMap O X), map_zero, mul_ite, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Algebra.smul_def, mul_one]
+      Finset.mem_univ, ite_true, Algebra.smul_def, mul_one]
     rw [mul_comm]
   have e : (fun g => (c₀ • d (MonoidAlgebra.single g 1)) a b) =
       fun g => (d (MonoidAlgebra.single g 1) *

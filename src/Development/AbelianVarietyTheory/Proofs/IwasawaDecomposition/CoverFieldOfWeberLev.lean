@@ -80,11 +80,6 @@ theorem weberSet_congr {L L' : PeriodPair} (h : L.lattice = L'.lattice) (n : ℕ
 
 end GlobalTheory.FieldSize.SmallField
 
-namespace GlobalTheory.FieldSize
-
-open SmallField GlobalTheory.Mem.BaseExt
-
-end GlobalTheory.FieldSize
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRichSmall =====

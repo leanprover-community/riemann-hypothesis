@@ -374,7 +374,7 @@ theorem pos_pc_sub (hΨ : IsProductIso k Ψ) {N : ℕ} {π : Representation ℂ 
     omega
   · have hz : (Finsupp.single (IrrGL.of π hs hi) (1 : ℤ)) y = 0 := by
       classical
-      exact (Finsupp.single_apply).trans (if_neg hy)
+      exact (Finsupp.single_apply).trans (ite_eq_right hy)
     have hg : ∀ a b : ℤ, 0 ≤ a → b = 0 → 0 ≤ a - b := fun a b h e => by omega
     exact hg _ _ h0 hz
 

@@ -9,63 +9,19 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CompactUnitaryCoordFunMulEqSum
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormIntegralStarMulSqLeMul
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Calculus.Deriv.Star
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.Matrix
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Topology.Algebra.Group.Units
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
 import Formalism.LocalRingCardinality.DataTheta
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
@@ -244,11 +200,6 @@ lemma toMK_mem_unitary (k : Formalism.REAL.KG ε) : toMK k ∈ Matrix.unitaryGro
 
 lemma toMK_mul' (a b : Formalism.REAL.KG ε) : toMK (a * b) = toMK a * toMK b := rfl
 
-lemma toMK_inv'' (k : Formalism.REAL.KG ε) : toMK k⁻¹ = star (toMK k) := by
-  show ((((k : Formalism.REAL.UJ ε) : (Matrix (Fin n) (Fin n) ℂ)ˣ)⁻¹ : (Matrix (Fin n) (Fin n) ℂ)ˣ) :
-    Matrix (Fin n) (Fin n) ℂ) = _
-  exact Units.inv_eq_of_mul_eq_one_right (Unitary.mul_star_self_of_mem (toMK_mem_unitary k))
-
 lemma norm_entry_le_one (k : Formalism.REAL.KG ε) (i j : Fin n) : ‖toMK k i j‖ ≤ 1 :=
   entry_norm_bound_of_unitary (toMK_mem_unitary k) i j
 
@@ -257,7 +208,7 @@ lemma hs_translate_le (a b : Formalism.REAL.KG ε) (η : ℝ)
     Formalism.REAL.hs (toMK (a⁻¹ * b) - 1) ≤ (n : ℝ) * n * ((n : ℝ) * η) ^ 2 := by
   have hA : star (toMK a) * toMK a = 1 := Unitary.star_mul_self_of_mem (toMK_mem_unitary a)
   have heq : toMK (a⁻¹ * b) - 1 = star (toMK a) * (toMK b - toMK a) := by
-    rw [toMK_mul', toMK_inv'', Matrix.mul_sub, hA]
+    rw [toMK_mul', GlobalTheory.KFourier.toMK_inv, Matrix.mul_sub, hA]
   rw [heq]
   have hent : ∀ i j, ‖(star (toMK a) * (toMK b - toMK a)) i j‖ ≤ (n : ℝ) * η := by
     intro i j
@@ -485,16 +436,16 @@ theorem hs_toMK_sub_one {n : ℕ} (ε : Fin n → Bool) (k : KG ε) :
     intro i j
     by_cases hij : i = j
     · subst hij
-      rw [Matrix.sub_apply, Matrix.one_apply_eq, if_pos rfl, Complex.sq_norm, Complex.sq_norm,
+      rw [Matrix.sub_apply, Matrix.one_apply_eq, ite_eq_left rfl, Complex.sq_norm, Complex.sq_norm,
         Complex.normSq_sub]
       simp
       ring
-    · rw [Matrix.sub_apply, Matrix.one_apply_ne hij, if_neg hij, sub_zero, add_zero]
+    · rw [Matrix.sub_apply, Matrix.one_apply_ne hij, ite_eq_right hij, sub_zero, add_zero]
   unfold Formalism.REAL.hs
   simp_rw [hentry]
   rw [Finset.sum_comm]
   simp_rw [Finset.sum_add_distrib, hcol]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ,
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul, mul_one, Finset.sum_sub_distrib, ← Finset.mul_sum]
   rw [Matrix.trace, Complex.re_sum]
   simp [Matrix.diag]
@@ -539,7 +490,7 @@ theorem hs_toMK_sub_one_le {n : ℕ} (ε : Fin n → Bool) (k : KG ε) :
     have : ∀ i j : Fin n, ‖(1 : Matrix (Fin n) (Fin n) ℂ) i j‖ ^ 2 = if i = j then 1 else 0 := by
       intro i j
       by_cases h : i = j <;> simp [Matrix.one_apply, h]
-    simp only [this, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ,
+    simp only [this, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul, mul_one]
   have key : ∀ a b : ℂ, ‖a - b‖ ^ 2 ≤ 2 * ‖a‖ ^ 2 + 2 * ‖b‖ ^ 2 := by
     intro a b
@@ -582,7 +533,7 @@ theorem retr_mem {n : ℕ} (ε : Fin n → Bool) :
     rw [Complex.re_eq_add_conj]
     simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, coord]
 
-    simp only [if_true, Bool.false_eq_true, if_false, Matrix.trace, Matrix.diag, map_sum,
+    simp only [ite_true, Bool.false_eq_true, ite_false, Matrix.trace, Matrix.diag, map_sum,
     ← Finset.sum_add_distrib, Finset.sum_div, Complex.star_def]
     refine Finset.sum_congr rfl fun a _ => ?_
     ring
@@ -796,25 +747,15 @@ open GlobalTheory.KFourier MeasureTheory
 
 namespace GlobalTheory.KGap
 
-theorem entry_sq_le_hs {n : ℕ} (Y : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) : ‖Y i j‖ ^ 2 ≤ Formalism.REAL.hs Y := by
-  unfold Formalism.REAL.hs
-  calc ‖Y i j‖ ^ 2 ≤ ∑ j', ‖Y i j'‖ ^ 2 :=
-        Finset.single_le_sum (f := fun j' => ‖Y i j'‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ j)
-    _ ≤ ∑ i', ∑ j', ‖Y i' j'‖ ^ 2 :=
-        Finset.single_le_sum (f := fun i' => ∑ j', ‖Y i' j'‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ i)
-
-theorem hs_nonneg' {n : ℕ} (Y : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ Formalism.REAL.hs Y := by
-  unfold Formalism.REAL.hs; positivity
-
 theorem sup_norm_sq_le_hs {n : ℕ} (Y : Matrix (Fin n) (Fin n) ℂ) :
     ‖(Matrix.of.symm Y : Fin n → Fin n → ℂ)‖ ^ 2 ≤ Formalism.REAL.hs Y := by
   have h : ‖(Matrix.of.symm Y : Fin n → Fin n → ℂ)‖ ≤ Real.sqrt (Formalism.REAL.hs Y) := by
     refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun i => ?_
     refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun j => ?_
-    exact Real.le_sqrt_of_sq_le (entry_sq_le_hs Y i j)
+    exact Real.le_sqrt_of_sq_le (Formalism.REAL.f1auxiliary_entry_le Y i j)
   calc ‖(Matrix.of.symm Y : Fin n → Fin n → ℂ)‖ ^ 2 ≤ Real.sqrt (Formalism.REAL.hs Y) ^ 2 :=
         pow_le_pow_left₀ (norm_nonneg _) h 2
-    _ = Formalism.REAL.hs Y := Real.sq_sqrt (hs_nonneg' Y)
+    _ = Formalism.REAL.hs Y := Real.sq_sqrt (Formalism.REAL.frobenius_nonneg_matrix Y)
 
 theorem spanning_coef_bound : ∀ {n : ℕ} (ε : Fin n → Bool) {r : ℕ} (X : Fin r → Mx n), (∀ Y, inK ε Y → ∃ c : Fin r → ℝ, Y = ∑ j, (c j : ℂ) • X j) → ∃ C : ℝ, 0 ≤ C ∧ ∀ Y, inK ε Y → ∃ c : Fin r → ℝ, Y = ∑ j, (c j : ℂ) • X j ∧ ∑ j, c j ^ 2 ≤ C * Formalism.REAL.hs Y := by
   intro n ε r X hX
@@ -913,8 +854,6 @@ theorem norm_integral_star_mul_le_sqrtK {ε : Fin n → Bool} {f g : KG ε → �
   rw [← Real.sqrt_mul (integral_nonneg fun x => by positivity)]
   have := Real.abs_le_sqrt H
   rwa [abs_of_nonneg (norm_nonneg _)] at this
-
-
 
 theorem sqrt_integral_normSq_le_integral_kernel_mul_translate :
     ∀ {n : ℕ} (ε : Fin n → Bool) (p : KG ε → ℂ) (κ : KG ε → ℝ), Continuous p → Continuous κ →
@@ -1326,7 +1265,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 open GlobalTheory.KFourier MeasureTheory
-
 
 end -- clump:auto
 end -- clump:auto

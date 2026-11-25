@@ -30,7 +30,7 @@ def KillsMat : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] (bar : O → O) (g : ℕ) (ρ : O →+* Matrix (Fin g) (Fin g) ℂ) (a : 𝓞 F →+* O) (D : PLat O bar) (P₀ : D.La →+ (Fin g → ℂ)), IsPeriod D ρ P₀ → ∀ (ga : D.La →ₗ[O] D.La) (H : Matrix (Fin g) (Fin g) ℂ), (∀ x, P₀ (ga x) = H *ᵥ P₀ x) → ∀ q : (𝓞 F)[X], Kills a ga q ↔ (q.sum fun i b => ρ (a b) * H ^ i) = 0
 
 def HSep : Prop :=
-  ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] (bar : O → O) (g : ℕ) (ρ : O →+* Matrix (Fin g) (Fin g) ℂ) (a : 𝓞 F →+* O) (H : Matrix (Fin g) (Fin g) ℂ), (∀ c, ρ (a c) * H = H * ρ (a c)) → ∀ χ : F[X], χ.Monic → χ.Separable →
+  ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] (_ : O → O) (g : ℕ) (ρ : O →+* Matrix (Fin g) (Fin g) ℂ) (a : 𝓞 F →+* O) (H : Matrix (Fin g) (Fin g) ℂ), (∀ c, ρ (a c) * H = H * ρ (a c)) → ∀ χ : F[X], χ.Monic → χ.Separable →
     (∀ q : (𝓞 F)[X], χ ∣ q.map (algebraMap (𝓞 F) F) → (q.sum fun i b => ρ (a b) * H ^ i) = 0) →
     ∃ p : ℂ[X], p.Separable ∧ aeval H p = 0
 
@@ -83,7 +83,7 @@ def CspDim : Prop :=
     ∃ co : (Fin (n - 1) → ℂ) →ₗ[ℂ] Matrix (Fin g) (Fin g) ℂ, IsCoordC bar ρ M₀ co
 
 def FibDet : Prop :=
-  ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] (bar : O → O) (g : ℕ) (ρ : O →+* Matrix (Fin g) (Fin g) ℂ) (a : 𝓞 F →+* O) (H : Matrix (Fin g) (Fin g) ℂ), ∀ (Sb : Matrix (Fin g) (Fin g) ℂ) (ty : Fin g → (F →+* ℂ)) (ev : Fin g → ℂ), IsDiag a ρ H Sb ty ev → ∀ (k : ℕ) (α : Fin k → 𝓞 F) (y : ℂ),
+  ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] (_ : O → O) (g : ℕ) (ρ : O →+* Matrix (Fin g) (Fin g) ℂ) (a : 𝓞 F →+* O) (H : Matrix (Fin g) (Fin g) ℂ), ∀ (Sb : Matrix (Fin g) (Fin g) ℂ) (ty : Fin g → (F →+* ℂ)) (ev : Fin g → ℂ), IsDiag a ρ H Sb ty ev → ∀ (k : ℕ) (α : Fin k → 𝓞 F) (y : ℂ),
     LinearMap.det (1 - y • fibMap H (diagAct a ρ α)) = ∏ s, ∏ i, (1 - ty i (α s : F) * (y * ev i))
 
 def FibW : Prop :=

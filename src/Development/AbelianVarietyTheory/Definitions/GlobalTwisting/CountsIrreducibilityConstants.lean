@@ -31,9 +31,6 @@ abbrev D3 (C0 : ℝ) (𝒜 : FamClass) : FamClass := Des (WithChN 𝒜) C0
 
 theorem d3_a {C0 : ℝ} {𝒜 : FamClass} {eps : ℝ} {Fm : FamP eps} (h : D3 C0 𝒜 Fm) : 𝒜 Fm := h.1.1.1.1
 
-def TupUsedF {eps : ℝ} (Fm : FamP eps) : Prop :=
-  ∃ x0 : ℝ, ∀ x (_ : Fm.x1 < x), x0 ≤ x → ∀ (i : Fm.Ix x), ∀ μ : (Fm.D x i).what₂.Tup, Formalism.BasicNotions.DV.Used (Fm.D x i) μ
-
 def TwAllF {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
     Formalism.MainNotions.TwConjAt (Fm.D x i) (Fm.ex x hx i).nch ∧
@@ -41,7 +38,7 @@ def TwAllF {eps : ℝ} (Fm : FamP eps) : Prop :=
         Formalism.MainNotions.TwGoodAtAll (Fm.D x i) (Fm.ex x hx i).nch ⟨Formalism.MainNotions.twE Fm x hx i, N0, S⟩
 
 def Duty {eps : ℝ} (Fm : FamP eps) : Prop :=
-  PageFix Fm ∧ PageWin Fm ∧ Formalism.MainNotions.DIV.Align.SmallFirstModulusBelowScale Fm ∧ TameDistinctF Fm ∧ ChosenWall Fm ∧ TupUsedF Fm ∧ TwAllF Fm
+  PageFix Fm ∧ PageWin Fm ∧ Formalism.MainNotions.DIV.Align.SmallFirstModulusBelowScale Fm ∧ TameDistinctF Fm ∧ ChosenWall Fm ∧ GlobalTheory.EX.DQ.TupUsedF Fm ∧ TwAllF Fm
 
 end Cls
 
@@ -69,7 +66,6 @@ def DcPtG (P : RowSideFamily ex) : Prop :=
     ∀ (x : Fin (P.Dc.a (P.I.wU u)) → D.what₂.LL) (F : Fin ((P.A3.side3 P.Ps P.ψs P.Zs).nV t) → D.what₂.LL),
     D.what₂.embLL (P.Dc.Pt (P.I.wU u) t x F) =
       D.what₂.perCol u (P.I.tup t) (D.jN u (P.I.eNu u x)) (P.I.jA t ((rV0 D P.A3.A P.Ps P.ψs t).mulVec F))
-
 
 open Classical in
 structure NumTieG (P : RowSideFamily ex) : Prop where
@@ -117,32 +113,13 @@ structure RowsAt4 (Q : Formalism.IndefR.RealT Rc P Dcf Spf Zscf S Ks) (C CH : �
 
 end At
 
-section Serv
-
-open Formalism.MainNotions.Pk Formalism.L2
-
-end Serv
-
 end GlobalTheory.Cp
 
 namespace GlobalTheory.Fc.R1
 
 open GlobalTheory.Fc GlobalTheory.Cp
 
-def P_hRB : BdP Bundle := fun D O _ b =>
-  Formalism.IndefR.RowsB b.B
-
-def P_hPA : BdP Bundle := fun D O _ b =>
-  Formalism.IndefR.Links.PrimRows3 b.B.Q.Rl b.B.Q.F ∧ b.P.A3.fam3.TypesSep3
-
-def OneMap {D : D7} {O : Obj D} {c : ℝ} (b : Bundle D O c) : Prop :=
-  ∀ j, Formalism.IndefR.FWT.OneMapRowR b.B.T b.B.Q.Rl.toRealDat b.B.κ b.B.v₀ b.B.O (Formalism.IndefR.phEff b.B.Q.Rl) j
-
 abbrev DefT : Type 1 := ∀ (D : D7) (O : Obj D) (c : ℝ), Bundle D O c → ℝ → ℝ → Prop
-
-def H_rRows (DR : DefT) (𝒜 : FamClass) (σ : RawSel Bundle 𝒜) : Prop :=
-  Closed (D3 3 𝒜) fun Fm CH => ∀ hc : D3 3 𝒜 Fm, ∃ C : ℝ, 0 ≤ C ∧ EvSel (sel σ) Fm (d3_a hc) fun x hx _ i =>
-    RowsAt4 (σ Fm (d3_a hc) x hx i).B.Q C CH (DIVinN Fm) (OneMap (σ Fm (d3_a hc) x hx i)) ∧ DR _ _ _ (σ Fm (d3_a hc) x hx i) C CH
 
 def H_hTF (𝒜 : FamClass) : Prop :=
   Closed (D3 3 𝒜) fun Fm _ => Formalism.MainNotions.PX.TFrame Fm (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu 3

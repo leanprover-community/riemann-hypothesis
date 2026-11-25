@@ -99,16 +99,11 @@ theorem mem_maximalIdeal_pow_iff {m : ℕ} {y : 𝒪[F]} :
   simp only [map_pow]
   exact Iff.rfl
 
-theorem valuation_uniformizer_lt_one : valuation F (uniformizer F : F) < 1 := by
-  have h1 : valuation F (uniformizer F : F) ≤ 1 :=
-    (Valuation.mem_integer_iff _ _).mp (uniformizer F).2
-  refine lt_of_le_of_ne h1 fun h => (irreducible_uniformizer F).not_isUnit ?_
-  exact (Valuation.integer.integers (valuation F)).isUnit_iff_valuation_eq_one.mpr h
+theorem valuation_uniformizer_lt_one : valuation F (uniformizer F : F) < 1 :=
+  Valuation.integer.v_irreducible_lt_one (irreducible_uniformizer F)
 
-theorem valuation_uniformizer_ne_zero : valuation F (uniformizer F : F) ≠ 0 := by
-  rw [Valuation.ne_zero_iff]
-  intro h
-  exact (irreducible_uniformizer F).ne_zero (Subtype.ext h)
+theorem valuation_uniformizer_ne_zero : valuation F (uniformizer F : F) ≠ 0 :=
+  (Valuation.integer.v_irreducible_pos (irreducible_uniformizer F)).ne'
 
 theorem eq_zero_of_forall_valuation_le {x : F}
     (h : ∀ m : ℕ, valuation F x ≤ valuation F (uniformizer F : F) ^ m) : x = 0 := by

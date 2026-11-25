@@ -573,11 +573,11 @@ theorem exists_smallAt_subset (Q : Finset (HeightOneSpectrum (𝓞 E))) {V : Set
       · have h0 : Valued.v (adAt F w x) = 0 := eq_zero_of_le_pow (hbw w hw) fun m => by
           obtain ⟨y, hy, hxy⟩ := Set.mem_iInter.1 hx m
           rw [← hxy]
-          simp only [c, map_mul, map_pow, he, if_pos hw, one_mul]
+          simp only [c, map_mul, map_pow, he, ite_eq_left hw, one_mul]
           exact mul_le_of_le_one_right' (hint y hy w)
         exact (Valuation.zero_iff _).1 h0
       · obtain ⟨y, hy, rfl⟩ := Set.mem_iInter.1 hx 0
-        simp only [c, map_mul, he, if_neg hw, zero_mul]
+        simp only [c, map_mul, he, ite_eq_right hw, zero_mul]
     rw [this]
     exact hV
   obtain ⟨m, hm⟩ := exists_subset_nhds_of_isCompact hKa.directed_ge hKc (mem_nhdsSet_iff_forall.2 hK0)
@@ -596,7 +596,7 @@ theorem exists_smallAt_subset (Q : Finset (HeightOneSpectrum (𝓞 E))) {V : Set
   refine ⟨e * ι b⁻¹ ^ m * a, (mem_rInt_iff F E _).2 fun w => ?_, ?_⟩
   · show Valued.v (adAt F w _) ≤ 1
     by_cases hw : w ∈ Q
-    · simp only [map_mul, map_pow, he, hinv, if_pos hw, one_mul, map_inv₀, inv_pow]
+    · simp only [map_mul, map_pow, he, hinv, ite_eq_left hw, one_mul, map_inv₀, inv_pow]
       have hv : 0 < Valued.v (adAt F w (ι b)) ^ m :=
         pow_pos (zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 (hbne w))) m
       rw [inv_mul_le_one₀ hv]
@@ -613,7 +613,7 @@ theorem exists_smallAt_subset (Q : Finset (HeightOneSpectrum (𝓞 E))) {V : Set
   · refine PtExist.ad_ext fun w => ?_
     simp only [c, map_mul, map_pow, he, hinv]
     by_cases hw : w ∈ Q
-    · rw [if_pos hw, one_mul, one_mul, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ (hbne w), one_pow, one_mul]
+    · rw [ite_eq_left hw, one_mul, one_mul, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ (hbne w), one_pow, one_mul]
     · rw [ha.1 w hw, mul_zero, mul_zero]
 
 end GlobalTheory.LevelApprox
@@ -736,13 +736,13 @@ theorem exists_K1_element_local_support : ∀ (F E : Type) [Field F] [NumberFiel
       have ho := hoff P.1 (Or.inl P.2)
       rw [c3 _ ho.1 ho.2, ← hp.deco]
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hv), e]
+      rw [ite_eq_left (le_locP _ _ hv), e]
       exact PtExist.hasRes_redA _ ((mem_globLat g v).1 hv i)
     · rw [← hN] at hv
       have ho := hoff P.1 (Or.inr P.2)
       rw [c3 _ ho.1 ho.2, ← hp.deco]
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hv)]
+      rw [ite_eq_left (le_locP _ _ hv)]
       exact PtExist.hasRes_redA _ ((mem_globLat g v).1 hv i)
     · rw [c2 _ P.2, ptFr_of_mem p (hQ P.1 P.2).2.1 P.2]
       rfl
@@ -781,7 +781,7 @@ theorem conj_small {F E : Type} [Field F] [NumberField F] [Field E] [NumberField
     rw [Matrix.one_apply, Matrix.one_apply]
     by_cases hij : i = j
     · subst hij; simp
-    · rw [if_neg hij, if_neg (Ne.symm hij), map_zero]
+    · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), map_zero]
   have key : (locM (conjPrime₂ P) z - 1) i j = adAt F (conjPrime₂ P) (Formalism.UG.sigR (CMData.sig hc) (FiniteAdeleRing (𝓞 F) F)
       (((z⁻¹ : GL (Fin n) (AfE F E)) : Matrix (Fin n) (Fin n) (AfE F E)) j i - (1 : Matrix (Fin n) (Fin n) (AfE F E)) j i)) := by
     rw [map_sub, ← e, ← e1, map_sub, Matrix.sub_apply]
@@ -1455,7 +1455,7 @@ theorem chartZero_colOf_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre}
       exact Finset.prod_eq_one fun i _ => (hone i).2 _
     have he : (J t).eps 0 α₀ = Finsupp.single 1 1 := by
       unfold _root_.GlobalTheory.Fam.QuadraticExtensionData.eps
-      rw [if_pos (Or.inr rfl), hw1, one_smul]
+      rw [ite_eq_left (Or.inr rfl), hw1, one_smul]
       apply conv_single_one_of_forall
       intro x hx
       rw [List.mem_ofFn] at hx

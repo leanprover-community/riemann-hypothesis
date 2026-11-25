@@ -111,7 +111,7 @@ def eta (μ : ℕ → kˣ →* ℂˣ) (m : ℕ) (δ : kˣ →* ℂˣ) (j : ℕ) 
 
 theorem eta_mul (μ : ℕ → kˣ →* ℂˣ) (m : ℕ) (δ : kˣ →* ℂˣ) {i : ℕ} (hi : i < m) :
     eta μ m δ (i + 1) * δ = μ (i + 1) := by
-  rw [eta, if_pos ⟨by omega, by omega⟩, inv_mul_cancel_right]
+  rw [eta, ite_eq_left ⟨by omega, by omega⟩, inv_mul_cancel_right]
 
 theorem eta_unram (μ : ℕ → kˣ →* ℂˣ) (m : ℕ) (δ : kˣ →* ℂˣ)
     (h : ∀ i, i < m → ∀ x : kˣ, valuation k (x : k) = 1 → μ (i + 1) x = δ x) (j : ℕ) : IsUnram (eta μ m δ j) := by
@@ -454,7 +454,6 @@ def wtT (j : ℕ) (α : ChT G δ hδ η A M j) : ℂ :=
       (Nat.card {yb | SameOrb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (box _ (G.ϖ ^ M)) (cosT G δ hδ η A M α) yb} : ℂ))
   else (idxT G δ hδ η (G.s + 1 + 1) : ℂ)
 
-
 open Classical in
 def epsT (j : ℕ) (α : ChT G δ hδ η A M j) : GA D (c.V j) →₀ ℂ :=
   if j = 0 then Finsupp.single 1 1 else
@@ -502,8 +501,6 @@ theorem repT_mem {D : D7} {c : Comm D} {v : VCom c} {B : GlobalTheory.Fam.Base c
   rcases α with x | o
   · exact x.1.2 d h
   · exact absurd o.2 (by omega)
-
-
 
 theorem exists_qExt_full : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheory.Fam.Base c) (PP : Formalism.L2.DIV.Pl D.host.E) (G : QGeo v B PP) (χ : ℕ → (AE D)ˣ →* Circle), c.Is → ∀ (δ : G.kˣ →* ℂˣ) (hδ : IsTame δ) (η : ℕ → G.kˣ →* ℂˣ), (∀ j, IsUnram (η j)) → (∀ j, j ≤ G.s + 1 → (ofSplit G.q).IsComp (χ j)⁻¹ (η (j + 1) * δ)) → ∀ A, (G.T δ hδ η).IsRepSystem A G.ψk G.ν → ∀ M : ℕ, (G.T δ hδ η).Adapted A (box _ (G.ϖ ^ M)⁻¹) (box _ (G.ϖ ^ M)) → ∃ E : QExt G χ, E.δ = δ ∧ E.η = η ∧ E.A = A ∧ E.M = M ∧ ∀ y, ∃ z ∈ box (XIx (Fin D.R.k) (Fin D.R.t) (G.s + 1)) (G.ϖ ^ E.M)⁻¹, Submodule.Quotient.mk z = E.cos y := by
   intro D c v B PP G χ hc δ hδ η hη hcomp A hA M hM
@@ -608,7 +605,7 @@ theorem exists_qExt_full : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalThe
         obtain ⟨hJ, hl⟩ := twist_lev_zero (s := G.s) (κ := Fin D.R.k) (t := Fin D.R.t) δ hδ η (G.s - 0 + 1) (by omega)
         exact (GlobalTheory.QPl.SphOne.isOneComb_sph_level G.k _ _ (ρ + 1) (by omega) (by omega) G.ψk G.cond.continuous G.cond G.ν G.unitVol _ hJ hl).1
       · unfold epsT
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         simp
     · have hP : (D.R.m - j) / 2 = ρ + 1 := by omega
       have H : ∃ e, IsOneComb G.ψk G.ν ((D.R.m - j) / 2) ((G.T δ hδ η).lev j (G.s - j + 1) (by omega))
@@ -623,11 +620,11 @@ theorem exists_qExt_full : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalThe
         rw [hP]
         exact id
       unfold epsT
-      rw [if_neg hj0, dite_eq_left (by omega), dite_eq_left H]
+      rw [ite_eq_right hj0, dite_eq_left (by omega), dite_eq_left H]
   ·
     intro α
     unfold epsT
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   ·
     intro j d h
     obtain rfl : d = G.s + 1 - j := by omega
@@ -703,10 +700,6 @@ theorem corner_one : (1 : GL (n ⊕ Fin 0) k).val.toBlocks₁₁ = 1 :=
 theorem mulVec_mem_box {A : Matrix n n k} (hA : IntM A) {c : kˣ} {y : n → k} (hy : y ∈ box n c) :
     A *ᵥ y ∈ box n c :=
   _root_.GlobalTheory.QExtEx.mulVec_mem_box hA hy
-
-theorem sameOrb_equivalence (J : Subgroup (GL (n ⊕ Fin 0) k)) (hJ : J ≤ KO k _) (c : kˣ) :
-    Equivalence (SameOrb J (box n c)) :=
-  _root_.GlobalTheory.QExtEx.sameOrb_equivalence J hJ c
 
 def orbSetoid (J : Subgroup (GL (n ⊕ Fin 0) k)) (hJ : J ≤ KO k _) (c : kˣ) : Setoid ((n → k) ⧸ box n c) :=
   _root_.GlobalTheory.QExtEx.orbSetoid J hJ c
@@ -813,18 +806,16 @@ open scoped TensorProduct
 
 namespace GlobalTheory.QTw.CosExt
 
-
-
 theorem exists_qExt_cos : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheory.Fam.Base c) (PP : Formalism.L2.DIV.Pl D.host.E) (G : QGeo v B PP) (χ : ℕ → (AE D)ˣ →* Circle), c.Is → ∀ (δ : G.kˣ →* ℂˣ) (hδ : IsTame δ) (η : ℕ → G.kˣ →* ℂˣ), (∀ j, IsUnram (η j)) → (∀ j, j ≤ G.s + 1 → (ofSplit G.q).IsComp (χ j)⁻¹ (η (j + 1) * δ)) → ∀ A, (G.T δ hδ η).IsRepSystem A G.ψk G.ν → ∀ M : ℕ, (G.T δ hδ η).Adapted A (box _ (G.ϖ ^ M)⁻¹) (box _ (G.ϖ ^ M)) → ∀ (C : Type) [Fintype C] (cs : C → XIx (Fin D.R.k) (Fin D.R.t) (G.s + 1) → G.k), (∀ y y', SameOrb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (box _ (G.ϖ ^ M)) (Submodule.Quotient.mk (cs y)) (Submodule.Quotient.mk (cs y')) → y = y') → (∀ z ∈ box (XIx (Fin D.R.k) (Fin D.R.t) (G.s + 1)) (G.ϖ ^ M)⁻¹, ∃ y, SameOrb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (box _ (G.ϖ ^ M)) (Submodule.Quotient.mk (cs y)) (Submodule.Quotient.mk z)) → ∃ E : QExt G χ, E.δ = δ ∧ E.η = η ∧ E.A = A ∧ E.M = M ∧ (∃ e : C ≃ E.Ch (G.s + 1), ∀ y, E.cos (e y) = Submodule.Quotient.mk (cs y)) ∧ ∀ j, G.s + 1 + 1 < j → Nonempty (Unique (E.Ch j)) := by
   intro D c v B PP G χ hc δ hδ η hη hμ A hA M hM C _ cs hinj hall
   obtain ⟨E, rfl, rfl, rfl, rfl, -⟩ := GlobalTheory.QTw.Inh.exists_ext_of_reps D c v B PP G χ hc δ hδ η hη hμ A hA M hM
   classical
   let Ch' : ℕ → Type := fun j => if j = G.s + 1 then C else if G.s + 1 + 1 < j then Unit else E.Ch j
-  have eC : Ch' (G.s + 1) = C := if_pos rfl
+  have eC : Ch' (G.s + 1) = C := ite_eq_left rfl
   have eE : ∀ j, j ≤ G.s + 1 + 1 → j ≠ G.s + 1 → Ch' j = E.Ch j := fun j h1 h2 => by
-    simp only [Ch', if_neg h2, if_neg (not_lt.2 h1)]
+    simp only [Ch', ite_eq_right h2, ite_eq_right (not_lt.2 h1)]
   have eU : ∀ j, G.s + 1 + 1 < j → Ch' j = Unit := fun j h1 => by
-    simp only [Ch', if_neg (show j ≠ G.s + 1 by omega), if_pos h1]
+    simp only [Ch', ite_eq_right (show j ≠ G.s + 1 by omega), ite_eq_left h1]
   let fC : ∀ j, Fintype (Ch' j) := fun j => by
     simp only [Ch']; split_ifs <;> infer_instance
   let rep' : ∀ j d, j + d = G.s → Ch' j → GL (XIx (Fin D.R.k) (Fin D.R.t) j ⊕ Fin (d + 1)) G.k :=
@@ -960,7 +951,7 @@ theorem map_muAt (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hg : ∀ k, Pr.
       map_inv₀, map_inv₀, ht.muVal j P.1 hg', ← locK_unif (m0 j) P.1 ((ht.mu0 j).unr _ hg') q
         (hq' ▸ GlobalTheory.CharVal.val_natCast_of_notMem_sq (Ideal.absNorm_mem _) hlp.1.2), mul_inv]
     rfl
-  · rw [hm, if_neg hP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val, map_inv₀, res_eq hX hPr hsel hg ht h j P hP x y c hx hc]
+  · rw [hm, ite_eq_right hP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val, map_inv₀, res_eq hX hPr hsel hg ht h j P hP x y c hx hc]
 
 end General
 
@@ -1005,7 +996,6 @@ open NumberField IsDedekindDomain MeasureTheory ValuativeRel Matrix Formalism.Ba
 noncomputable section
 namespace GlobalTheory.TwBridge
 
-
 open Classical in
 theorem twNext_rep_eq_of_sameDC {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
     (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S₀ : Set ℕ} (mu : Tup X.F X.E X.K S₀)
@@ -1027,23 +1017,23 @@ theorem twNext_rep_eq_of_sameDC {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : C
           have hQP : Q = P := Subtype.ext hQP1
           rw [hQP]
           have e1 : (twNext Ch sel mu cst st).h d'' P = (twNext Ch sel mu cst st).h d' P := by
-            simp only [twNext, dif_pos hP, d'']
+            simp only [twNext, dite_eq_left hP, d'']
             rw [Function.update_self]
           rw [e1]; exact hs
         · have e1 : (twNext Ch sel mu cst st).h d'' Q = (twNext Ch sel mu cst st).h d Q := by
-            simp only [twNext, dif_pos hQ, d'']
+            simp only [twNext, dite_eq_left hQ, d'']
             rw [Function.update_of_ne e]
           rw [e1]; exact twDC_refl _ _ _ _
       · have e1 : (twNext Ch sel mu cst st).h d'' Q = (twNext Ch sel mu cst st).h d Q := by
-          simp only [twNext, dif_neg hQ]
+          simp only [twNext, dite_eq_right hQ]
         rw [e1]; exact twDC_refl _ _ _ _
     have hdd := hinj d d'' hall
     have hc : d.1 P₀ = d'.1 P₀ := by
       have := congrArg (fun x : (twNext Ch sel mu cst st).β => x.1 P₀) hdd
       simpa [d''] using this
-    simp only [twNext, dif_pos hP]
+    simp only [twNext, dite_eq_left hP]
     exact congrArg (fun D => twRep Ch sel mu cst st P₀ D.1) hc
-  · simp only [twNext, dif_neg hP]
+  · simp only [twNext, dite_eq_right hP]
 
 theorem idxProd_twIdx : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S₀ : Set ℕ) (mu : Tup X.F X.E X.K S₀) (cst : LocCst X (rowSG Pr sel mu)) (m2 : ℕ) (G : ChGlob X R.m), (twIdx Ch sel mu cst m2).Ok Ch sel mu cst G m2 → IdxProd sel mu cst (twIdx Ch sel mu cst m2) := by
   intro X Pr R Ch sel S₀ mu cst m2 G hok j b b' P hs
@@ -1056,16 +1046,16 @@ theorem idxProd_twIdx : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars
           SameDC (Pr := Pr) cst.sharp (i + 1) P.1 (st'.h b P) (st'.h b' P) → st'.h b P = st'.h b' P := by
         rintro st' rfl b b' hinj hs
         exact twNext_rep_eq_of_sameDC Ch sel mu cst _ hinj b b' P hs
-      exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, if_pos hi]) b b' (hok.inj i (by omega)) hs
+      exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, ite_eq_left hi]) b b' (hok.inj i (by omega)) hs
     · by_cases hi2 : i + 1 = m2 + 1
       · have key : ∀ st' : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) (i + 1), st' = twUnitSt _ (i + 1) →
             ∀ b b' : st'.β, st'.h b P = st'.h b' P := by
           rintro st' rfl b b'; rfl
-        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, if_neg hi, if_pos hi2]) b b'
+        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, ite_eq_right hi, ite_eq_left hi2]) b b'
       · have key : ∀ st' : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) (i + 1), st' = twEmptySt _ (i + 1) →
             ∀ b b' : st'.β, st'.h b P = st'.h b' P := by
           rintro st' rfl b; exact b.elim
-        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, if_neg hi, if_neg hi2]) b b'
+        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, ite_eq_right hi, ite_eq_right hi2]) b b'
 
 end GlobalTheory.TwBridge
 end -- clump:auto
@@ -1365,8 +1355,6 @@ structure Good (P : BadPr I a) (G : QGeo v Bs PP) {χ : ℕ → (AE (I.rec7 l Z)
     ∃ γ : Formalism.L2.Col.AutY B.fields B.R (j + 1), Bdd (B.primes X) (j + 1) P.1 γ ∧
       ∃ al, Formalism.L2.Col.FiniteSumNonzeroLargeDepth I.Ch I.sel (I.tup a) (I.cst a) j P ((I.idx a).h j al P) γ
 
-
-
 theorem exists_good (hI : I.Ok) (hT : I.IsTw) (P : BadPr I a) (hP : P.1 ∉ (B.primes X).vGs) (G : QGeo v Bs PP) (heq : PP = P.1) (hc : c.Is)
     (hstd : IsStdChar (I.rec7 l Z) c.ψ (-1)) (χ : ℕ → (AE (I.rec7 l Z))ˣ →* Circle)
     (hχ : ∀ j (hj : j < B.R.m), ChrEq (D := I.rec7 l Z) (χ j) (I.C.mu0 ⟨j, hj⟩ * I.xi a)) :
@@ -1421,10 +1409,9 @@ theorem res_of_tw (hI : I.Ok) {hP : PP ∈ Formalism.L2.Col.rowSG (B.primes X) I
     (hr.symm.trans h1.symm)
   refine Units.ext ((h.del _ x h3 h2 hx).trans ?_)
   rw [hξ z (Units.mk0 _ h0) r rfl hr, Units.val_inv_eq_inv_val]
-  exact congrArg _ ((congrArg _ (dif_pos h2)).trans h4)
+  exact congrArg _ ((congrArg _ (dite_eq_left h2)).trans h4)
 
 end Place
-
 
 end GlobalTheory.LowJoin
 

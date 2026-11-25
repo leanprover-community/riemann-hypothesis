@@ -44,20 +44,6 @@ namespace Formalism.L2.Indef.Examples₂
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling
 
-section Std
-
-variable (K : Type) [Field K] [NumberField K] [StarRing K]
-
-variable {K}
-
-end Std
-
-section Amb
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end Amb
-
 namespace one
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] (v0 : InfinitePlace K)
@@ -352,10 +338,6 @@ open Formalism.LatticeIndexTer (ph)
 
 namespace UniformCovolumeTail
 
-end UniformCovolumeTail
-
-namespace UniformCovolumeTail
-
 
 
 theorem stepDiSharp (J Pl Emb : Type) [Fintype J] [Fintype Pl] [Fintype Emb] [Nonempty Emb] (r : ℕ)
@@ -554,8 +536,8 @@ theorem height_bound_at_set : HeightS := by
     have hNl : 0 ≤ (N - 1) * Real.log (2 * a) := mul_nonneg (by linarith) hℓ0
     have hNl' : (N - 1) * Real.log (2 * a) ≤ N * (2 * La) := mul_le_mul (by linarith) hℓ hℓ0 hN0
     by_cases hτT : τ ∈ TT
-    · rw [if_pos hτT] at r6
-      rw [if_pos hτT]
+    · rw [ite_eq_left hτT] at r6
+      rw [ite_eq_left hτT]
       have r8 := hlam τ hτT
       have r9 := hbT τ hτT
       have s1 : D1 τ ≤ 4 * S + 4 * m * η + 6 * b' := by linarith
@@ -568,8 +550,8 @@ theorem height_bound_at_set : HeightS := by
         mul_le_mul u1 hTN hT0 (by linarith)
       rw [r7, r8]
       linarith
-    · rw [if_neg hτT] at r6
-      rw [if_neg hτT]
+    · rw [ite_eq_right hτT] at r6
+      rw [ite_eq_right hτT]
       have r8 := hlam' τ hτT
       have s1 : D1 τ ≤ 4 * S + 4 * m * η := by linarith
       have s2 : (N - 1) * Real.log (2 * a) * D1 τ ≤
@@ -847,12 +829,12 @@ theorem error_absorption : AbsorbE := by
           C0 * (w j ρ + k * (N + S) + m * (t + 1) * η + (if ρ ∈ TT then k * b' else 0)) * La :=
         mul_le_mul h1 hOm (abs_nonneg _) ((abs_nonneg _).trans h1)
       by_cases hρ : ρ ∈ TT
-      · rw [if_pos hρ] at h2 ⊢
+      · rw [ite_eq_left hρ] at h2 ⊢
         have h3 : w j ρ + k * (N + S) + m * (t + 1) * η + k * b' ≤ 5 * b + k * b' := by
           linarith [hwj.2]
         have h4 := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h3 hC0) hLa0
         linarith
-      · rw [if_neg hρ] at h2 ⊢
+      · rw [ite_eq_right hρ] at h2 ⊢
         have h3 : w j ρ + k * (N + S) + m * (t + 1) * η + 0 ≤ 5 * b := by linarith [hwj.2]
         have h4 := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h3 hC0) hLa0
         linarith
@@ -1020,10 +1002,6 @@ namespace Formalism.DivisionValues
 
 namespace DivisorInequalityBounds
 
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
 theorem eKaux (C0 f N La m L e : ℝ) (hC0 : 1 ≤ C0) (hf : 1 ≤ f) (hN : 1 ≤ N)
     (h : e ≤ C0 * (f * N ^ 2 * La + f * m ^ 3 * N ^ 2 * L)) :
     e ≤ C0 * (f * N ^ 2 * (La + 1) + f * m ^ 3 * N ^ 2 * L) := by
@@ -1078,46 +1056,6 @@ end DivisorInequalityBounds
 
 theorem divisor_inequality_explicit : DivIneqRecord := DivisorInequalityBounds.divIneqRecord_of divisor_inequality
 
-section Rho
-
-open Formalism.DivisionValues.RationalHermitianForm Formalism.DivisionValues.StepBAux Formalism.DivisionValues.ConjugateWeightGram
-
-namespace DivisorInequalityBounds
-
-section LocalW
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end LocalW
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-end Rho
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
 
 end Formalism.DivisionValues
 end -- clump:auto
@@ -1335,14 +1273,6 @@ theorem chain_coupled_bound : ChainCB := by
       Real.log_le_log (pow_pos (hjpos j v) 2) (pow_le_pow_left₀ (hjpos j v).le (hop j v) 2))
     rw [← Real.log_prod (fun j _ => pow_ne_zero 2 (hjpos j v).ne'), Finset.prod_pow]
     exact Real.log_le_log (pow_pos (hpos v) 2) (pow_le_pow_left₀ (hpos v).le (key v) 2)
-
-namespace CB
-
-end CB
-
-namespace CB
-
-end CB
 
 end Formalism.DimensionVariation
 end -- clump:auto

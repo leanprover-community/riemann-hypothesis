@@ -68,7 +68,7 @@ theorem latAdm_unit (l : Level H) (bad n : ℕ) : LatAdm l bad (unitLat E n) := 
       by_cases hi : i = j
       · subst hi; simpa using Submodule.one_le.1 le_rfl
       · simp [Pi.single_eq_of_ne hi])
-    simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     obtain ⟨a, ha⟩ := h
     refine Submodule.mem_one.2 ⟨H.bar a, ?_⟩
     have := H.bar_eq a

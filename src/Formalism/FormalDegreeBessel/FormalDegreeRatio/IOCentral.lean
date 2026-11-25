@@ -73,22 +73,6 @@ lemma io_smooth_smul {f : Matrix (Fin n) (Fin n) ℂ → E} (c : ℂ) (hf : Smoo
 
 private alias Jm_mul_self_eq_oneFormalDegreeRatio := _root_.Formalism.REAL.Jm_mul_self
 
-private lemma inUJ_exp_of_inG_formal_degree_ratio {n : ℕ} {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ} (hY : inG ε Y) :
-    inUJ ε (NormedSpace.exp Y) := by
-  unfold inG at hY
-  unfold inUJ
-  have hYH : Yᴴ = Jm ε * -Y * (Jm ε)⁻¹ := by
-    have hJi : (Jm ε)⁻¹ = Jm ε := Matrix.inv_eq_left_inv (Jm_mul_self_eq_oneFormalDegreeRatio ε)
-    have h1 : Yᴴ * Jm ε * Jm ε = -(Jm ε * Y) * Jm ε := by rw [eq_neg_of_add_eq_zero_left hY]
-    rw [Matrix.mul_assoc, Jm_mul_self_eq_oneFormalDegreeRatio, Matrix.mul_one] at h1
-    rw [h1, hJi, Matrix.mul_neg, Matrix.neg_mul]
-  have hJu : IsUnit (Jm ε) := ⟨⟨Jm ε, Jm ε, Jm_mul_self_eq_oneFormalDegreeRatio ε, Jm_mul_self_eq_oneFormalDegreeRatio ε⟩, rfl⟩
-  have hJi : (Jm ε)⁻¹ = Jm ε := Matrix.inv_eq_left_inv (Jm_mul_self_eq_oneFormalDegreeRatio ε)
-  rw [← Matrix.exp_conjTranspose, hYH, Matrix.exp_conj _ _ hJu, hJi,
-    Matrix.mul_assoc (Jm ε * NormedSpace.exp (-Y)) (Jm ε) (Jm ε), Jm_mul_self_eq_oneFormalDegreeRatio, Matrix.mul_one,
-    Matrix.mul_assoc, ← Matrix.exp_add_of_commute _ _ (Commute.refl Y).neg_left, neg_add_cancel,
-    NormedSpace.exp_zero, Matrix.mul_one]
-
 private lemma inG_real_smul_of_inG {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X)
     (t : ℝ) : inG ε ((t : ℂ) • X) := by
   unfold inG at hX ⊢
@@ -100,7 +84,7 @@ lemma io_rd_congr {f f' : Matrix (Fin n) (Fin n) ℂ → E} (h : ∀ g, inUJ ε 
   unfold RdV
   congr 1
   funext t
-  exact h _ (io_inUJ_mul hg (inUJ_exp_of_inG_formal_degree_ratio (inG_real_smul_of_inG hX t)))
+  exact h _ (io_inUJ_mul hg (f1alg_exp_inUJ ε _ (inG_real_smul_of_inG hX t)))
 
 private lemma inG_cpart1_formal_degree_ratio {n : ℕ} (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n) ℂ) :
     inG ε (cpart1 ε Z) := by

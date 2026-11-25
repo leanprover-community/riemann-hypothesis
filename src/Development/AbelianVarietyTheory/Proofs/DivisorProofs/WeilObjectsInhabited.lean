@@ -78,14 +78,6 @@ theorem invariant_comp_mulVec [Fintype κ] [DecidableEq κ] (m : ((κ → F) →
 
 variable [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ] [Invertible (2 : F)]
 
-section Pair
-
-variable {R : Type} [CommRing R]
-
-
-
-end Pair
-
 end GlobalTheory.WeilM
 
 end

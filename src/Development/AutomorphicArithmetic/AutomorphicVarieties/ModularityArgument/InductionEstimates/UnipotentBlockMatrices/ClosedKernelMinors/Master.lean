@@ -57,7 +57,6 @@ open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 private theorem cont_pt {K : Type} [Field K] [NumberField K] : Continuous (pt (K := K)) := by
   apply _root_.pt_cont <;> assumption
 
-set_option synthInstance.maxHeartbeats 200000 in
 private theorem meas_pt {K : Type} [Field K] [NumberField K] : Measurable (pt (K := K)) := by
   apply _root_.pt_meas <;> assumption
 

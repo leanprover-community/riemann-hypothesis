@@ -36,18 +36,13 @@ theorem det_mul_last {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (v : F
   have hv : A *ᵥ v = fun i => if i = Fin.last r then c else 0 := funext h
   rw [hv] at k2
   simp only [Matrix.mulVec, dotProduct, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true, Pi.smul_apply, smul_eq_mul] at k2
+    ite_true, Pi.smul_apply, smul_eq_mul] at k2
   rw [← k2, Matrix.adjugate_fin_succ_eq_det_submatrix, Fin.succAbove_last, Fin.val_last,
     Even.neg_one_pow ⟨r, rfl⟩, one_mul]
 
 theorem eq_zero_of_mulVec {n : Type} [Fintype n] [DecidableEq n] (A : Matrix n n E) (v : n → E)
-    (hA : A.det ≠ 0) (h : A *ᵥ v = 0) : v = 0 := by
-  have key : A.adjugate *ᵥ (A *ᵥ v) = A.det • v := by
-    rw [Matrix.mulVec_mulVec, Matrix.adjugate_mul]
-    ext i
-    simp [Matrix.mulVec, dotProduct, Matrix.smul_apply, Matrix.one_apply]
-  rw [h, Matrix.mulVec_zero] at key
-  exact (smul_eq_zero.1 key.symm).resolve_left hA
+    (hA : A.det ≠ 0) (h : A *ᵥ v = 0) : v = 0 :=
+  Matrix.eq_zero_of_mulVec_eq_zero hA h
 
 theorem Dl_top {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' (r + 1) = (Zhat F F').det := by
@@ -55,7 +50,7 @@ theorem Dl_top {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG
 
 theorem Dl_r {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' r = ((Zhat F F').submatrix Fin.castSucc Fin.castSucc).det := by
-  simp only [Dl, leadMinorE, dif_pos (Nat.le_succ r)]
+  simp only [Dl, leadMinorE, dite_eq_left (Nat.le_succ r)]
   rfl
 
 theorem linIndep {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T')
@@ -85,9 +80,9 @@ theorem linIndep {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : Fla
       exact Finset.sum_congr rfl fun j _ => mul_comm _ _
     rw [e1, e2] at h0
     by_cases hc : c = Fin.last r
-    · simp only [hc, if_true] at h0 ⊢
+    · simp only [hc, ite_true] at h0 ⊢
       linear_combination h0
-    · simp only [hc, if_false] at h0 ⊢
+    · simp only [hc, ite_false] at h0 ⊢
       linear_combination h0
 
   have hZa : ∀ d, (Z.conjTranspose *ᵥ a) d = if d = Fin.last r then T' * b (Fin.last r) else 0 := by
@@ -107,9 +102,9 @@ theorem linIndep {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : Fla
       rw [hT_swap S (F.fvec i) (F'.fvec d), mul_comm]
     rw [e1, e2] at h0
     by_cases hd : d = Fin.last r
-    · simp only [hd, if_true] at h0 ⊢
+    · simp only [hd, ite_true] at h0 ⊢
       linear_combination h0
-    · simp only [hd, if_false] at h0 ⊢
+    · simp only [hd, ite_false] at h0 ⊢
       linear_combination h0
   set D := Z.det with hD
   set Dr := (Z.submatrix Fin.castSucc Fin.castSucc).det with hDr

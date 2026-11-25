@@ -249,8 +249,8 @@ theorem shear_mem (κ : K ≃+* (W → ℂ)) (w : W) (a : Fin n) (s t : Fin n �
               rw [norm_mul]
               have h3 : ‖(if c = b then 0 else t c - s c : ℂ)‖ ≤ 2 / L := by
                 by_cases hc : c = b
-                · simp only [hc, if_true, norm_zero]; positivity
-                · simp only [hc, if_false]; rw [norm_sub_rev]; exact hst c
+                · simp only [hc, ite_true, norm_zero]; positivity
+                · simp only [hc, ite_false]; rw [norm_sub_rev]; exact hst c
               exact mul_le_mul h3 (hX c i v) (norm_nonneg _) (by positivity)
           _ = n * (2 / L * R) := by simp
           _ ≤ ε := by
@@ -450,7 +450,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 end -- clump:auto

@@ -177,10 +177,10 @@ theorem UpperTheory.V.Kum.cardSel :
         | mem x hx =>
           obtain ⟨w, hw, rfl⟩ := hx
           refine ⟨fun v => if v = w then 1 else 0, (Set.finite_singleton w).subset ?_,
-            fun v hv => if_neg fun (h : v = w) => hv (h ▸ hw), ?_⟩
+            fun v hv => ite_eq_right fun (h : v = w) => hv (h ▸ hw), ?_⟩
           · intro v hv
             by_contra h
-            exact hv (if_neg h)
+            exact hv (ite_eq_right h)
           · rw [finprod_eq_single _ w fun v hv => by simp [hv]]
             simp
         | one => exact ⟨fun _ => 0, by simp, by simp, by simp⟩

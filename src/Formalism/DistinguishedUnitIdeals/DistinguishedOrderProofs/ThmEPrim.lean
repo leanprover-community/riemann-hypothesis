@@ -44,13 +44,10 @@ section Helpers
 
 variable {O : Type} [CommRing O]
 
-theorem algHom_C (φ : PowerSeries O →ₐ[O] PowerSeries O) (a : O) : φ (C a) = C a := by
-  simpa [PowerSeries.algebraMap_apply] using φ.commutes a
-
 theorem algHom_eq_const_add (φ : PowerSeries O →ₐ[O] PowerSeries O) (h : PowerSeries O) :
     φ h = C (constantCoeff h) + φ X * φ (mk fun p => coeff (p + 1) h) := by
   conv_lhs => rw [PowerSeries.eq_shift_mul_X_add_const h]
-  rw [map_add (f := _), map_mul, algHom_C]
+  rw [map_add (f := _), map_mul, Formalism.ExponentWindows.E.IdempotentNormalFormsRhoFacts.alg_C]
   ring
 
 theorem order_map_toNat_of_isDistinguishedAt {I : Ideal O} (hI : I ≠ ⊤) {E : Polynomial O}
@@ -100,7 +97,7 @@ theorem coe_eq_sum_fin {d : ℕ} {r : Polynomial O} (hr : r.degree < d) :
     · rw [Finset.sum_eq_single ⟨j, hj⟩]
       · simp
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact hb (Fin.ext h.symm)
       · intro h
@@ -109,7 +106,7 @@ theorem coe_eq_sum_fin {d : ℕ} {r : Polynomial O} (hr : r.degree < d) :
         (lt_of_lt_of_le hr (by exact_mod_cast not_lt.mp hj))]
       symm
       refine Finset.sum_eq_zero fun i _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hj (h ▸ i.2)
   rw [← coe_sum_fin]
@@ -313,7 +310,7 @@ theorem gaussValC : GaussC := by
   refine le_antisymm ((iInf_le _ 0).trans (by simp)) (le_iInf fun n => ?_)
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
-  · rw [PowerSeries.coeff_C, if_neg hn.ne', addVal_zero]
+  · rw [PowerSeries.coeff_C, ite_eq_right hn.ne', addVal_zero]
     simp
 
 open IsDiscreteValuationRing in
@@ -323,7 +320,6 @@ theorem gaussValUnit : GaussUnit := by
   refine le_antisymm ((iInf_le _ 0).trans ?_) (by simp)
   rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, ← hw, addVal_eq_zero_of_unit]
   simp
-
 
 end Formalism.NOK
 end -- clump:auto
@@ -1214,12 +1210,12 @@ theorem shape_ext {O : Type} [CommRing O] [Nontrivial O] (B : Base O) (ell : ℕ
         Polynomial.monic_X_pow_add_C _ hpos, Polynomial.natDegree_X_pow_add_C, ?_, ?_, isUnit_one,
         fun h => absurd h hs⟩
       · intro i hi
-        rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, if_neg (by omega), zero_add,
+        rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, ite_eq_right (by omega), zero_add,
           Polynomial.coeff_C]
         split_ifs
         · exact dvd_rfl
         · exact dvd_zero _
-      · rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, if_neg (fun h => hpos h.symm), zero_add,
+      · rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, ite_eq_right (fun h => hpos h.symm), zero_add,
           Polynomial.coeff_C_zero]
   choose E u h1 h2 h3 h4 h5 h6 using hall
   exact ⟨E, u, h1, h2, h3, h4, h5, h6⟩
@@ -1419,7 +1415,7 @@ theorem prep [IsLocalRing O] {l : O} (hl : ¬ IsUnit l) [IsAdicComplete (Ideal.s
       rwa [hnd] at this
     have h3 := congrArg (coeff d) hE
     rw [Polynomial.coeff_coe, hcd, hg, add_mul, map_add (f := _),
-      coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self, mul_assoc, coeff_C_mul,
+      coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self, mul_assoc, coeff_C_mul,
       coeff_zero_eq_constantCoeff_apply] at h3
     have h4 : constantCoeff q = 1 + l * (-(coeff d (vi * a * q))) := by
       rw [h3]; ring
@@ -1628,11 +1624,11 @@ theorem latGood {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ} (hB : PrimBase B ϖ e)
     (completion_holds O B n V L hB.complete hL.free) (X_regular_on_lattice O B n V L hL.free) hL.ltors
   · by_cases h : ∃ c ∈ Cu.cuts, ∃ k : ℕ, 1 ≤ k ∧ k ≤ j ∧ i = c + (k : ZMod n)
     · simp only [Mi]
-      rw [if_pos h]
+      rw [ite_eq_left h]
       obtain ⟨c, hc, k, hk1, hk2, rfl⟩ := h
       exact hL.frobeniusBounded_after c hc k hk1 hk2
     · simp only [Mi]
-      rw [if_neg h]
+      rw [ite_eq_right h]
       exact hL.p5M i
   · have hGh : G ≤ hh := le_trans hN.G_le_g hN.g_le_h
     have hle : Mi i ≤ hh := by
@@ -1642,7 +1638,7 @@ theorem latGood {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ} (hB : PrimBase B ϖ e)
   · have h : ∃ c' ∈ Cu.cuts, ∃ k' : ℕ, 1 ≤ k' ∧ k' ≤ j ∧ c + (k : ZMod n) = c' + (k' : ZMod n) :=
       ⟨c, hc, k, hk1, hk2, rfl⟩
     simp only [Mi]
-    rw [if_pos h]
+    rw [ite_eq_left h]
 
 theorem unit_phiIt {V₀ : Type} [AddCommGroup V₀] [Module (PowerSeries O) V₀] {L₀ : Lat B n V₀}
     {e₀ : V₀} (h : ∀ i, L₀.φ i e₀ = e₀) (i : ZMod n) (k : ℕ) (a : PowerSeries O) :
@@ -1768,19 +1764,6 @@ theorem theorem_E_primitive_form : ThmEPrim := by
   · exact Prim.arcHyp hϖ hB (hN.ell_le c hc) (hA c hc)
 
 end Formalism.ExponentWindows.E
-
-namespace Formalism.ExponentWindows.E.Prim
-
-open PowerSeries IdempotentNormalFormsRhoFacts GoodPlacesAlt
-
-section p4
-variable {O : Type} [CommRing O] {B : Base O}
-
-variable {n : ℕ} [NeZero n] {V : Type} [AddCommGroup V] [Module (PowerSeries O) V]
-
-end p4
-
-end Formalism.ExponentWindows.E.Prim
 
 namespace Formalism.ExponentWindows.E
 

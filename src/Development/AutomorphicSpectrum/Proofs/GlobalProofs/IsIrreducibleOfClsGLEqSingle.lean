@@ -169,7 +169,7 @@ theorem msum_eq_of_coeff_ne (hG : GeometricLemma) (hBZ : BernsteinZelevinskyFini
         intro h2
         apply hu
         have e := congrArg (fun f => f u) hsum
-        simp only [Finsupp.add_apply, h2, add_zero, Finsupp.single_apply, if_neg (Ne.symm huw)] at e
+        simp only [Finsupp.add_apply, h2, add_zero, Finsupp.single_apply, ite_eq_right (Ne.symm huw)] at e
         exact e
       obtain ⟨n', hn'S, hn'⟩ := exists_hasSupport_of_symm_sum_ne_zero hS hΨ hX _ (fun n => AddMonoidAlgebra.coeff P n) u h2
       have h3 := (Finset.mem_filter.mp hn'S).2
@@ -181,7 +181,7 @@ theorem msum_eq_of_coeff_ne (hG : GeometricLemma) (hBZ : BernsteinZelevinskyFini
   have hc : AddMonoidAlgebra.coeff P1 m = AddMonoidAlgebra.coeff P m := by
     rw [hP1def, coeff_sum]
     simp only [coeff_monomial]
-    rw [Finset.sum_ite_eq' S m (fun n => AddMonoidAlgebra.coeff P n), if_pos hmS]
+    rw [Finset.sum_ite_eq' S m (fun n => AddMonoidAlgebra.coeff P n), ite_eq_left hmS]
   rw [hP1] at hc
   have hc0 : AddMonoidAlgebra.coeff (0 : MvPolynomial (Segment k) ℤ) m = 0 := by rfl
   rw [hc0] at hc
@@ -193,13 +193,9 @@ section Monomials
 
 open MvPolynomial GlobalTheory.SmGL.Segment
 
-theorem ms_le_msum {m : Segment k →₀ ℕ} {Δ : Segment k} (h : Δ ∈ m.support) : Δ.ms ≤ msum m := by
-  have h1 : m Δ • Δ.ms ≤ msum m :=
-    Finset.single_le_sum (f := fun Γ => m Γ • Γ.ms) (fun _ _ => Multiset.zero_le _) h
-  obtain ⟨n, hn⟩ := Nat.exists_eq_succ_of_ne_zero (Finsupp.mem_support_iff.mp h)
-  refine le_trans ?_ h1
-  rw [hn, succ_nsmul]
-  exact le_add_self
+theorem ms_le_msum {m : Segment k →₀ ℕ} {Δ : Segment k} (h : Δ ∈ m.support) : Δ.ms ≤ msum m :=
+  (le_self_nsmul (Multiset.zero_le _) (Finsupp.mem_support_iff.mp h)).trans
+    (Finset.single_le_sum (f := fun Γ => m Γ • Γ.ms) (fun _ _ => Multiset.zero_le _) h)
 
 theorem eq_single_of_len {Δ : Segment k} (h : Δ.len = 1) : Δ = single Δ.first Δ.isCusp_first :=
   ext_first rfl h
@@ -346,7 +342,7 @@ theorem bas_eq_X (hS : IsSegmentClass k Z) (hΨ : IsProductIso k Ψ)
     intro u hu
     refine le_antisymm ?_ (hpos u)
     have e := hle u
-    rwa [Finsupp.single_apply, if_neg (Ne.symm hu)] at e
+    rwa [Finsupp.single_apply, ite_eq_right (Ne.symm hu)] at e
   have hz1 : Q z = 1 := by
     have a := hle z
     have b := hpos z
@@ -365,7 +361,7 @@ theorem bas_eq_X (hS : IsSegmentClass k Z) (hΨ : IsProductIso k Ψ)
     by_cases hu : u = z
     · subst hu
       simpa using hz1
-    · rw [hoff u hu, Finsupp.single_apply, if_neg (Ne.symm hu)]
+    · rw [hoff u hu, Finsupp.single_apply, ite_eq_right (Ne.symm hu)]
   apply Ψ.symm.injective
   rw [hb, ← hQ1]
 

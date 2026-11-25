@@ -28,8 +28,8 @@ def resRep (ρ : Representation O G M) (D : Subgroup G) : Representation O D M :
 
 def restrictCocycles1 (ρ : Representation O G M) (D : Subgroup G) : coZ1s ρ →ₗ[O] coZ1s (resRep ρ D) where
   toFun c := ⟨fun g => (c : G → M) g, fun g h => c.2 g h⟩
-  map_add' a b := rfl
-  map_smul' r a := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 abbrev H1z (ρ : Representation O G M) : Type _ := coZ1s ρ ⧸ (coB1 ρ).comap (coZ1s ρ).subtype
 

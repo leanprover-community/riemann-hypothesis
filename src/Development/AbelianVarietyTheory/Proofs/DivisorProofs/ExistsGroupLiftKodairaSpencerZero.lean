@@ -12,42 +12,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpenc
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerRowDualEigenvectorMemSpanField
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerUniqueValueAbelianSchemeField
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationCrystalFormAdjointConjActionStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeG
 
@@ -63,8 +29,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRes
 open AlgebraicGeometry CategoryTheory MonObj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.tangent_group_pullback_epsilon_lift : GlobalTheory.CovTop.Hypotheses₂ → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (K : Type) [Field K] (x : Sp K ⟶ Xo.X) (x' : Sp (DualNumber K) ⟶ Xo.X) (A : Over (Sp K)) [GrpObj A] (A' : Over (Sp (DualNumber K))) [GrpObj A'] (π : A.left ⟶ Xo.univ.t.G.left) (π' : A'.left ⟶ Xo.univ.t.G.left) (i : A.left ⟶ A'.left) (h : IsGrpPullback A A' (GlobalTheory.DeRham.epsRed K) i) (ψ : LinearMap.BilinForm K (GlobalTheory.DeRham.HdR A)), IsGrpPullback A Xo.univ.t.G x π → IsGrpPullback A' Xo.univ.t.G x' π' → i ≫ π' = π → GlobalTheory.DeRham.IsPolForm (GlobalTheory.Cris.dp0 K) (𝟙 _) A (Xo.univ.t.PP.L.pull π) ψ → ∀ f g k k' : GlobalTheory.DeRham.HdR A, GlobalTheory.DeRham.IsFilLift h f k → GlobalTheory.DeRham.IsFilLift h g k' → ψ f k' + ψ k g = 0 := by
-  first | exact @GlobalTheory.KSSym.ks_symm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentGroupPullbackEpsilonLiftStatement =====
@@ -73,7 +37,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGroupLiftKodairaSpencerZero", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.P22\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLieCombIffIsCombAt\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFrameTangentVectorsOfIsGrpPullbackStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizationCrystalFormPerfectSelfAnnihilaStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRingActionOfIsGrpPullbackStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameLiftsBasisDeRhamHomologyModHodgeFiltrationStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsKodairaSpencerValueEndomorphismLiftStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixUnique\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerRowDualEigenvectorMemSpanField\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerUniqueValueAbelianSchemeField\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationCrystalFormAdjointConjActionStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentGroupPullbackEpsilonLiftStatement\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeG\nimport Mathlib.CategoryTheory.Monoidal.Opposite.Mon\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 noncomputable section
 
@@ -149,8 +112,8 @@ theorem isKSValue_one_of_rows {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A] 
     refine (sub_eq_zero.1 (zero _ (sub_mem hg (sum_mem fun k _ => Submodule.smul_mem _ _ (hF k))) fun k' => ?_))
     have e : ∑ k, (ψ (ψ g (hb k) • F k)) (hb k') = ψ g (hb k') := by
       rw [Finset.sum_eq_single k' (fun b _ hb' => by
-        rw [map_smul, LinearMap.smul_apply, hδ, if_neg (Ne.symm hb'), smul_zero]) (by simp)]
-      rw [map_smul, LinearMap.smul_apply, hδ, if_pos rfl, smul_eq_mul, _root_.mul_one]
+        rw [map_smul, LinearMap.smul_apply, hδ, ite_eq_right (Ne.symm hb'), smul_zero]) (by simp)]
+      rw [map_smul, LinearMap.smul_apply, hδ, ite_eq_left rfl, smul_eq_mul, _root_.mul_one]
 
     rw [map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply, e, sub_self]
 
@@ -164,7 +127,7 @@ theorem isKSValue_one_of_rows {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A] 
         rw [e1, map_sum, LinearMap.sum_apply]
         refine Finset.sum_eq_zero fun b _ => ?_
         have hne : (⟨cj k.1, b⟩ : Σ σ, Fin (m σ)) ≠ k' := fun e => hcj _ hk (by subst e; exact hk')
-        rw [map_smul, LinearMap.smul_apply, ← LinearMap.IsAlt.neg halt (F k') _, hδ, if_neg hne, neg_zero,
+        rw [map_smul, LinearMap.smul_apply, ← LinearMap.IsAlt.neg halt (F k') _, hδ, ite_eq_right hne, neg_zero,
           smul_zero]
       · have e1 := hsym _ _ _ _ (hkf k) (hkf k')
         rw [hiso _ (hF k) _ (hk0 k' hk'), zero_add] at e1
@@ -228,7 +191,7 @@ theorem ksFull : GlobalTheory.CovTop.Hypotheses₂ → ∀ (E : Type) [Field E] 
     have h1 := (hl' k).push (a.act z)
     rw [he₀] at h1
     exact h1.sub_mem ((hl' k).smul _)
-  have hsym := GlobalTheory.T.tangent_group_pullback_epsilon_lift PP E H Dw l Xo K y.x x' A A' π π' i h ψ hπ hπ' e hpol
+  have hsym := GlobalTheory.KSSym.ks_symm PP E H Dw l Xo K y.x x' A A' π π' i h ψ hπ hπ' e hpol
   refine isKSValue_one_of_rows h ψ hiso hlag hperf hpol.isAlt hsym ub hb hl' hspan
     (fun σ => σ ∈ GlobalTheory.FlagTan.psiSet H) conjEmb
     (fun σ hσ => ((GlobalTheory.FlagTan.isHalf_psiSet H) σ).1 hσ) ?_ ?_

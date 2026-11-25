@@ -46,7 +46,6 @@ theorem exists_eigen_of_sep {Y V : Type} [AddCommGroup Y] [AddCommGroup V] [Modu
       have e2 : Quotient.out a = -y + (Quotient.out b + q) := by rw [← e1]; abel
       rw [← hρ, e1, hρ, hQ q hq, smul_smul, e2, hmul χ hχ, hmul χ hχ, hQχ χ hχ q hq, mul_one]
     calc χ y • ρ y (wf χ) = χ y • ∑ a : Y ⧸ Q, χ (Quotient.out a) • ρ y (ρ (Quotient.out a) v) := by
-          set_option synthInstance.maxHeartbeats 100000 in
             simp only [wf, map_sum, map_smul]
       _ = χ y • ∑ a : Y ⧸ Q, χ (-y) • (χ (Quotient.out ((y : Y ⧸ Q) + a)) • ρ (Quotient.out ((y : Y ⧸ Q) + a)) v) := by
           simp only [hterm]

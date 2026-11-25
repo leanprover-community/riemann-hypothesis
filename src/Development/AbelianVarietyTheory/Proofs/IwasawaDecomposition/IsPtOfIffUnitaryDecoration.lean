@@ -85,13 +85,13 @@ theorem isPtOf_iff_decoRaw : ∀ (F E : Type) [Field F] [NumberField F] [Field E
     · have hx' : x ∈ Formalism.UG.CS.globLat g (stdLat E n) := hN ▸ hx
       refine HasRes.unique (h.f P x hx (lastIdx n) (by simp [lastIdx]; have := NeZero.pos n; omega)) ?_
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hx')]
+      rw [ite_eq_left (le_locP _ _ hx')]
       exact PtExist.hasRes_redA _ ((mem_globLat g x).1 hx' _)
     · have hx' : x ∈ Formalism.UG.CS.globLat g (stdLat E n) := hN ▸ hx
       funext i
       refine HasRes.unique (h.be w x hx i) ?_
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hx')]
+      rw [ite_eq_left (le_locP _ _ hx')]
       exact PtExist.hasRes_redA _ ((mem_globLat g x).1 hx' i)
   · rintro ⟨hg, hd⟩
     have hN : p.deco.1.N = Formalism.UG.CS.globLat g (stdLat E n) := by rw [hd]; rfl
@@ -100,12 +100,12 @@ theorem isPtOf_iff_decoRaw : ∀ (F E : Type) [Field F] [NumberField F] [Field E
     · rw [hN] at hx
       rw [hd]
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hx), hlast i hi]
+      rw [ite_eq_left (le_locP _ _ hx), hlast i hi]
       exact PtExist.hasRes_redA _ ((mem_globLat g x).1 hx i)
     · rw [hN] at hx
       rw [hd]
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hx)]
+      rw [ite_eq_left (le_locP _ _ hx)]
       exact PtExist.hasRes_redA _ ((mem_globLat g x).1 hx i)
 
 end GlobalTheory.Mem.Col2.PtDeco

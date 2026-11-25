@@ -432,8 +432,6 @@ namespace GlobalTheory.InertConvMul
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
   {v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))} {w : HeightOneSpectrum (𝓞 L)}
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem conv_of (Dv : InertDatum L n v w) (U : Subgroup (GAf L n))
     (hU : ∀ κ, TrivOutside {v} κ → (κ ∈ U ↔ κ ∈ Umax L n))
     (hA : ∀ x : GAf L n, Dv.loc x ∈ GU Dv.σw n)
@@ -452,7 +450,7 @@ theorem conv_of (Dv : InertDatum L n v w) (U : Subgroup (GAf L n))
 theorem heckeFunI_conv_mul : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w) (U : Subgroup (GAf L n)), (∀ κ, TrivOutside {v} κ → (κ ∈ U ↔ κ ∈ Umax L n)) → ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (h₁ h₂ : Formalism.UG.GU Dv.σw n → ℂ), h₁ ∈ Formalism.UG.Hecke ℂ (Formalism.UG.KU Dv.σw n) → h₂ ∈ Formalism.UG.Hecke ℂ (Formalism.UG.KU Dv.σw n) → ∀ f : GAf L n → W, (∀ κ ∈ U, NG.rt L n κ f = f) → heckeFunI L n U Dv (Formalism.UG.conv (Formalism.UG.KU Dv.σw n) h₁ h₂) f = heckeFunI L n U Dv h₁ (heckeFunI L n U Dv h₂ f) := by
   intro L _ _ _ n v w Dv U hU W _ _ h₁ h₂ hh₁ hh₂ f hf
   exact conv_of Dv U hU (GlobalTheory.T.inertLocal_mem_unitaryGroup_antidiagonalForm L n v w Dv)
-    (fun u hu => GlobalTheory.T.inertLocal_mem_integralPoints_of_latticeStabilizer L n v w Dv u hu _) (GlobalTheory.T.inertLocal_surjective_from_trivOutside L n v w Dv) W h₁ hh₁ h₂ hh₂ f hf
+    (fun u hu => GlobalTheory.InertKU.loc_mem_KU L n v w Dv u hu _) (GlobalTheory.T.inertLocal_surjective_from_trivOutside L n v w Dv) W h₁ hh₁ h₂ hh₂ f hf
 
 end GlobalTheory.InertConvMul
 end -- clump:auto
@@ -560,18 +558,18 @@ theorem exists_satAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n
     · rw [Finset.sum_apply]
       refine Finset.sum_congr rfl fun c _ => ?_
       by_cases hc : ∃ x : GAf L n, (x : GAf L n ⧸ U) = c ∧ TrivOutside {v} x
-      · simp only [dif_pos hc]
+      · simp only [dite_eq_left hc]
         rfl
-      · simp only [dif_neg hc, zero_smul]
+      · simp only [dite_eq_right hc, zero_smul]
         rfl
     · intro c hc0
       rw [Function.mem_support] at hc0
       by_cases hc : ∃ x : GAf L n, (x : GAf L n ⧸ U) = c ∧ TrivOutside {v} x
-      · rw [dif_pos hc] at hc0
+      · rw [dite_eq_left hc] at hc0
         rw [Set.Finite.coe_toFinset]
         refine ⟨hc.choose, hc.choose_spec.1, hc.choose_spec.2, fun h0 => hc0 ?_⟩
         rw [h0, zero_smul]
-      · exact absurd (dif_neg hc) hc0
+      · exact absurd (dite_eq_right hc) hc0
   have hmemV : ∀ h ∈ Formalism.UG.Hecke ℂ (Formalism.UG.KU Dv.σw n), ∀ f ∈ V, heckeFunI L n U Dv h f ∈ V := by
     intro h hh f hf
     refine ⟨?_, _root_.GlobalTheory.InertSatInv.heckeFunI_rt_invariant_prod L n v w Dv U hU hdec' π.W h hh f hf.2⟩
@@ -591,7 +589,7 @@ theorem exists_satAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n
     else 0
   have hT : ∀ h (hh : h ∈ Formalism.UG.Hecke ℂ (Formalism.UG.KU Dv.σw n)) (f : V),
       ((T h f : V) : GAf L n → π.W) = heckeFunI L n U Dv h f := fun h hh f => by
-    simp only [T, dif_pos hh]
+    simp only [T, dite_eq_left hh]
     rfl
   have hK := Formalism.UG.P.isCommensurated_integral_unitary_of_unramified Dv.unram n
   obtain ⟨α, x, hx0, hx⟩ := _root_.GlobalTheory.HeckeSatakeEigen.exists_satU_eigenvector Dv.ϖ Dv.σw _ n Dv.unram V T

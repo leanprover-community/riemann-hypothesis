@@ -30,10 +30,10 @@ private theorem eU_zero_zero_add_eU_one_one (a : S) : (eU a 0 0 : SlopeTestRemai
   simp only [eU, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply]
   by_cases hxy : x = y
   · subst hxy
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     generalize x a = v
     fin_cases v <;> simp
-  · rw [if_neg hxy]
+  · rw [ite_eq_right hxy]
     have h : ∀ i : Fin 2, ¬ (x a = i ∧ y a = i ∧ ∀ b, b ≠ a → x b = y b) := by
       rintro i ⟨h1, h2, h3⟩
       apply hxy
@@ -41,7 +41,7 @@ private theorem eU_zero_zero_add_eU_one_one (a : S) : (eU a 0 0 : SlopeTestRemai
       by_cases hb : b = a
       · subst hb; rw [h1, h2]
       · exact h3 b hb
-    rw [if_neg (h 0), if_neg (h 1), add_zero]
+    rw [ite_eq_right (h 0), ite_eq_right (h 1), add_zero]
 
 private theorem commute_io_eU (g : A) (a : S) (i j : Fin 2) : Commute (io g : SlopeTestRemainingChoices S A) (eU a i j) := by
   show (io g : SlopeTestRemainingChoices S A) * eU a i j = eU a i j * io g
@@ -88,8 +88,8 @@ private theorem star_eU_apply_swap (a : S) (i j : Fin 2) : star (eU a i j : Slop
     · rintro ⟨h1, h2, h3⟩; exact ⟨h2, h1, fun b hb => (h3 b hb).symm⟩
     · rintro ⟨h1, h2, h3⟩; exact ⟨h2, h1, fun b hb => (h3 b hb).symm⟩
   by_cases h : x a = j ∧ y a = i ∧ ∀ b, b ≠ a → x b = y b
-  · rw [if_pos (hiff.2 h), if_pos h, star_one]
-  · rw [if_neg (mt hiff.1 h), if_neg h, star_zero]
+  · rw [ite_eq_left (hiff.2 h), ite_eq_left h, star_one]
+  · rw [ite_eq_right (mt hiff.1 h), ite_eq_right h, star_zero]
 
 theorem ins_combine (a : S) (p k : SlopeTestRemainingChoices S A) (hk : FreeOf a k) (M : M2 (SlopeTestRemainingChoices S A)) :
     p + k * ins a M = ins a !![p + k * M 0 0, k * M 0 1; k * M 1 0, p + k * M 1 1] := by

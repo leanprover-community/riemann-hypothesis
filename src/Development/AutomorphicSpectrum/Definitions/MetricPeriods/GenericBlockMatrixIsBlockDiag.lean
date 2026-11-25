@@ -169,41 +169,41 @@ theorem IsBlockDiag.exists_upper {G : Matrix (Fin N) (Fin N) R} (hG : IsBlockDia
   have key : ∀ a b, (G * B) a b = ∑ c : {c // P b c}, G a c * v b c := fun a b => by
     rw [Matrix.mul_apply, ← Finset.sum_filter_add_sum_filter_not Finset.univ (P b),
       Finset.sum_eq_zero (s := Finset.univ.filter fun c => ¬ P b c) (fun c hc => by
-        rw [show B c b = 0 from dif_neg (Finset.mem_filter.1 hc).2, mul_zero]), add_zero,
+        rw [show B c b = 0 from dite_eq_right (Finset.mem_filter.1 hc).2, mul_zero]), add_zero,
       Finset.sum_subtype (p := P b) _ (by simp)]
-    exact Finset.sum_congr rfl fun c _ => by rw [show B c b = v b c from dif_pos c.2]
+    exact Finset.sum_congr rfl fun c _ => by rw [show B c b = v b c from dite_eq_left c.2]
   have key2 : ∀ a b (h : P b a), (G * B) a b = if a = b then 1 else 0 := fun a b h => by
     have := congrFun (congrFun (Matrix.mul_nonsing_inv _ (hu b)) ⟨a, h⟩) ⟨b, le_rfl, Iff.rfl⟩
     rw [Matrix.mul_apply, Matrix.one_apply] at this
     rw [key]
     refine this.trans ?_
     simp [Subtype.ext_iff]
-  refine ⟨B, fun a b h => dif_neg fun e => h e.2, fun a b h => dif_neg fun e => absurd e.1 (not_le.2 h),
-    fun a => by rw [key2 a a ⟨le_rfl, Iff.rfl⟩, if_pos rfl], fun a b h => ?_⟩
+  refine ⟨B, fun a b h => dite_eq_right fun e => h e.2, fun a b h => dite_eq_right fun e => absurd e.1 (not_le.2 h),
+    fun a => by rw [key2 a a ⟨le_rfl, Iff.rfl⟩, ite_eq_left rfl], fun a b h => ?_⟩
   by_cases e : ((a : ℕ) < N - j ↔ (b : ℕ) < N - j)
-  · rw [key2 a b ⟨h.le, e⟩, if_neg h.ne]
+  · rw [key2 a b ⟨h.le, e⟩, ite_eq_right h.ne]
   · rw [key]
     exact Finset.sum_eq_zero fun c _ => by rw [hG a c fun e' => e (e'.trans c.2.2), zero_mul]
 
-theorem generic_block_matrix_isBlockDiag (τ : Ψ) : IsBlockDiag j (genericBlockMatrix R N j τ) := fun _ _ h => dif_neg h
+theorem generic_block_matrix_isBlockDiag (τ : Ψ) : IsBlockDiag j (genericBlockMatrix R N j τ) := fun _ _ h => dite_eq_right h
 
 theorem genLow_blockDiag (τ : Ψ) : IsBlockDiag j (genLow R N j τ) := fun a b h =>
-  (dif_neg fun e => h e.2).trans (if_neg fun e => h (by rw [e]))
+  (dite_eq_right fun e => h e.2).trans (ite_eq_right fun e => h (by rw [e]))
 
 theorem genLow_lowerUni (τ : Ψ) : IsLowerUni (genLow R N j τ) :=
-  ⟨fun _ => (dif_neg fun e => lt_irrefl _ e.1).trans (if_pos rfl),
-    fun _ _ h => (dif_neg fun e => lt_asymm h e.1).trans (if_neg h.ne)⟩
+  ⟨fun _ => (dite_eq_right fun e => lt_irrefl _ e.1).trans (ite_eq_left rfl),
+    fun _ _ h => (dite_eq_right fun e => lt_asymm h e.1).trans (ite_eq_right h.ne)⟩
 
-theorem genLow_apply (q : LowIdx Ψ N j) : genLow R N j q.1.1 q.1.2.1 q.1.2.2 = X q := dif_pos q.2
+theorem genLow_apply (q : LowIdx Ψ N j) : genLow R N j q.1.1 q.1.2.1 q.1.2.2 = X q := dite_eq_left q.2
 
-theorem generic_block_matrix_apply (q : inertBlockIndex Ψ N j) : genericBlockMatrix R N j q.1.1 q.1.2.1 q.1.2.2 = X q := dif_pos q.2
+theorem generic_block_matrix_apply (q : inertBlockIndex Ψ N j) : genericBlockMatrix R N j q.1.1 q.1.2.1 q.1.2.2 = X q := dite_eq_left q.2
 
-theorem genUp_apply (q : UpIdx Ψ N j) : genUp R N j q.1.1 q.1.2.1 q.1.2.2 = X q := dif_pos q.2
+theorem genUp_apply (q : UpIdx Ψ N j) : genUp R N j q.1.1 q.1.2.1 q.1.2.2 = X q := dite_eq_left q.2
 
-theorem genUp_blockDiag (τ : Ψ) : IsBlockDiag j (genUp R N j τ) := fun _ _ h => dif_neg fun e => h e.2
+theorem genUp_blockDiag (τ : Ψ) : IsBlockDiag j (genUp R N j τ) := fun _ _ h => dite_eq_right fun e => h e.2
 
 theorem genUp_upper (τ : Ψ) : (genUp R N j τ).BlockTriangular id := fun _ _ h =>
-  dif_neg fun e => absurd e.1 (not_le.2 h)
+  dite_eq_right fun e => absurd e.1 (not_le.2 h)
 
 theorem generic_block_matrix_map (f : MvPolynomial (inertBlockIndex Ψ N j) R →+* S) {H : Ψ → Matrix (Fin N) (Fin N) S}
     (hH : ∀ τ, IsBlockDiag j (H τ)) (hf : ∀ q, f (X q) = H q.1.1 q.1.2.1 q.1.2.2) (τ : Ψ) :
@@ -541,7 +541,7 @@ def gH : Unit → Matrix (Fin 2) (Fin 2) (ΦH Ω) := fun τ =>
 theorem minor_single {R : Type} [CommRing R] (h : Matrix (Fin 2) (Fin 2) R) (a b : Fin 2) :
     minorIJ h {a} {b} = h a b := by
   unfold minorIJ
-  rw [dif_pos (by simp)]
+  rw [dite_eq_left (by simp)]
   haveI : Unique (Fin ({b} : Finset (Fin 2)).card) := inferInstanceAs (Unique (Fin 1))
   rw [det_unique]
   show h _ _ = _

@@ -47,7 +47,7 @@ theorem setTies_deg_eta (LL : Letters N) (T : TieData) (hT : StrictMono T.pos) (
     (h : T.pos i + 1 < N) : (LL.setTies T n).deg ⟨T.pos i + 1, h⟩ = n i := by
   unfold Letters.setTies
   have hex : ∃ j, T.pos j + 1 = ((⟨T.pos i + 1, h⟩ : Fin N) : ℕ) := ⟨i, rfl⟩
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   congr 1
   have := Classical.choose_spec hex
   exact hT.injective (by simpa using this)
@@ -76,7 +76,7 @@ theorem takeD_total_eq (LL : Letters N) (T : TieData) (i : Fin T.t) (h : T.pos i
     rw [← Fin.sum_univ_eq_sum_range g N]
     apply Finset.sum_congr rfl
     intro a _
-    simp only [g, dif_pos a.isLt]
+    simp only [g, dite_eq_left a.isLt]
   rw [e1, e2, ← Finset.sum_range_add_sum_Ico g (by omega : T.pos i + 1 ≤ N)]
   have : ∑ a ∈ Ico (T.pos i + 1) N, g a = 0 := by
     apply Finset.sum_eq_zero
@@ -585,11 +585,6 @@ theorem existsAdaptedBasis : AdaptedBasisExists := by
   exact Finset.single_le_sum (f := fun c => m (Fin.last K, c)) (fun _ _ => Nat.zero_le _) (mem_univ ρ)
 end S4
 
-section S5
-open M MvPolynomial Finset
-
-end S5
-
 section S6
 open M MvPolynomial Finset
 
@@ -627,7 +622,3 @@ theorem fockBil_apply {N r : ℕ} (LL : Letters N)
 end S6
 
 end Formalism.GM.TM
-
-namespace Formalism.GM
-
-end Formalism.GM

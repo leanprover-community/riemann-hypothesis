@@ -73,7 +73,7 @@ private theorem appendObjIso_hom_of_le {X : Scheme.{u}} (s : BlowupSequenceData 
     (appendSchemeAtIso s t₁ t₂ e i hi).hom =
       eqToHom ((append_schemeAt_of_le_length s t₁ h).trans (append_schemeAt_of_le_length s t₂ h).symm) := by
   unfold appendSchemeAtIso
-  simp only [dif_pos h, eqToIso.hom]
+  simp only [dite_eq_left h, eqToIso.hom]
 
 private theorem appendObjIso_eq_right_of_pos {X : Scheme.{u}} (s : BlowupSequenceData X)
     (t₁ t₂ : BlowupSequenceData (s.obj s.length))
@@ -261,35 +261,15 @@ theorem orderAtLeastLocus_inter_support_eq_empty_of_mem_take_zero (S : MarkedIde
   intro D hD
   simp at hD
 
-private theorem exists_index_of_mem_take {α : Type*} :
-    ∀ (L : List α) (n : ℕ) (D : α), D ∈ L.take n →
-      ∃ i, ∃ hi : i < L.length, i < n ∧ L.get ⟨i, hi⟩ = D := by
-  intro L
-  induction L with
-  | nil =>
-    intro n D hD
-    simp at hD
-  | cons a t ih =>
-    intro n D hD
-    cases n with
-    | zero => simp at hD
-    | succ m =>
-      have hD' : D ∈ a :: t.take m := hD
-      rcases List.mem_cons.mp hD' with rfl | hD''
-      · exact ⟨0, by simp, Nat.succ_pos m, rfl⟩
-      · obtain ⟨i, hi, hin, hget⟩ := ih m D hD''
-        exact ⟨i + 1, Nat.succ_lt_succ hi, Nat.succ_lt_succ hin, hget⟩
-
 theorem orderAtLeastLocus_inter_support_eq_empty_of_boundarySeparated (S : MarkedIdealWithBoundary.{u})
     (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary) (n : ℕ)
     (h : BoundarySeparationByMaxContact.BoundarySeparated S s n) :
     ∀ D ∈ (s.boundary s.length).take n,
       orderAtLeastLocus (s.ideal s.length) S.mult ∩ (D.support : Set ↥(s.obj s.length)) = ∅ := by
   intro D hD
-  obtain ⟨i, hi, hin, hget⟩ := exists_index_of_mem_take (s.boundary s.length) n D hD
-  have key := h i hin hi
-  rw [hget] at key
-  exact key
+  obtain ⟨i, hi, rfl⟩ := List.mem_take_iff_getElem.mp hD
+  simpa using h i (lt_of_lt_of_le hi (Nat.min_le_left _ _))
+    (lt_of_lt_of_le hi (Nat.min_le_right _ _))
 
 theorem lt_length_nil_append_boundary_drop_zero (S : MarkedIdealWithBoundary.{u})
     (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary) (j : ℕ)

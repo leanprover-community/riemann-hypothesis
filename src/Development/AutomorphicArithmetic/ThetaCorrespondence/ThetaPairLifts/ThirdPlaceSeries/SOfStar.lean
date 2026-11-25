@@ -160,12 +160,12 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
 theorem star_guard {y : WD h} (k : NcW y) : (IsQpBig w y.lpDim ∧ TmW y ∧ UpperTheory.GalStar.Sqf y) ∨ Tor y := by
   by_cases hs : ∃ p : ℕ, p.Prime ∧ w ∈ placesOver E p ∧ (placesOver E p).ncard = Module.finrank ℚ E ∧
       (y.lpDim = 1 ∨ 16 * y.lpDim ^ 2 < p)
-  · have ht : thr w y.lpDim = 2 := if_pos hs
+  · have ht : thr w y.lpDim = 2 := ite_eq_left hs
     obtain ⟨p, hp, hw, hc, hb⟩ := hs
     haveI : Fact p.Prime := ⟨hp⟩
     obtain ⟨i, hi⟩ := UpperTheory.exists_continuous_ringEquiv_padic_of_totally_split E w p hw hc
     exact Or.inl ⟨⟨p, inferInstance, i, hi, hb⟩, k.1, fun γ hγ hg z hz => k.2.2 γ hγ hg z (by rwa [ht])⟩
-  · exact Or.inr (tor_of_ncW (if_neg hs) k)
+  · exact Or.inr (tor_of_ncW (ite_eq_right hs) k)
 
 theorem tor_of_unr {y : WD h} (u : y.unr) : Tor y := fun s t => by
   have hd : deg ⁅s, t⁆ = 0 := by simp [commutatorElement_def]
@@ -206,10 +206,6 @@ open GlobalTheory GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst
 open UpperTheory.GalStar
 open scoped commutatorElement
 namespace UpperTheory.GalS
-section
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-  {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-end
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] {l : ℕ} [Fact l.Prime] {a : ℕ}
   [IsAlgClosure E Ω] [IsCMField E]
 omit [IsCMField E] [Fact l.Prime] in

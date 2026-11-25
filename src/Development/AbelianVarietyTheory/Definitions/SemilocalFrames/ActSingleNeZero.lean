@@ -26,9 +26,4 @@ def at1 {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (G : Arr V n 1) (a 
   arrOf V n 1 G (fun _ => (a, b))
 
 
-namespace StdDer
-
-
-end StdDer
-
 end GlobalTheory.Jet

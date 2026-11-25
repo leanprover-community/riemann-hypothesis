@@ -73,7 +73,7 @@ def toGeo (A : Heights.HermLine n) : Geo.HermLine (blockIdx n) where
   h w := if BlockNonzero (unflatCone w) then A.metric (unflatCone w) else 0
   pos w hw := by
     have hw' : BlockNonzero (unflatCone w) := (blockNonzero_unflatCone_iff w).mpr hw
-    rw [if_pos hw']
+    rw [ite_eq_left hw']
     exact A.metric_pos _ hw'
   smul c w hc := by
     have e : unflatCone (fun p : Coord n ↦ c p.1 * w p) = fun k i ↦ c k * unflatCone w k i := rfl
@@ -85,7 +85,7 @@ def toGeo (A : Heights.HermLine n) : Geo.HermLine (blockIdx n) where
         have := congrFun hk i
         rw [e] at this
         exact (mul_eq_zero.mp this).resolve_left (hc k)
-      rw [if_pos hw, if_pos hcw, e, A.metric_smul c _ hc hw]
+      rw [ite_eq_left hw, ite_eq_left hcw, e, A.metric_smul c _ hc hw]
     · have hcw : ¬ BlockNonzero (unflatCone (fun p : Coord n ↦ c p.1 * w p)) := by
         intro h
         apply hw
@@ -94,13 +94,13 @@ def toGeo (A : Heights.HermLine n) : Geo.HermLine (blockIdx n) where
         funext i
         rw [e]
         simp [congrFun hk i]
-      rw [if_neg hw, if_neg hcw, mul_zero]
+      rw [ite_eq_right hw, ite_eq_right hcw, mul_zero]
 
 theorem toGeo_a (A : Heights.HermLine n) : A.toGeo.a = A.deg := rfl
 
 theorem toGeo_h_of_blockNonzero (A : Heights.HermLine n) {w : Coord n → ℂ}
     (hw : BlockNonzero (unflatCone w)) : A.toGeo.h w = A.metric (unflatCone w) := by
-  simp only [toGeo, if_pos hw]
+  simp only [toGeo, ite_eq_left hw]
 
 theorem isSmoothHerm_toGeo (A : Heights.HermLine n) : Geo.IsSmoothHerm A.toGeo := by
   have hu : ContDiff ℝ ∞ (fun w : Coord n → ℂ ↦ unflatCone w) :=
@@ -112,12 +112,6 @@ theorem isSmoothHerm_toGeo (A : Heights.HermLine n) : Geo.IsSmoothHerm A.toGeo :
   exact A.toGeo_h_of_blockNonzero ((blockNonzero_unflatCone_iff w).mpr hw)
 
 end HermLine
-
-namespace IntegralSection
-
-variable {P : ArithVariety n} {a : ι → ℤ}
-
-end IntegralSection
 
 theorem aeval_div_chart_mem {Ω : Type*} [Field Ω] (y : Coord n → Ω) (c : (k : ι) → Fin (n k + 1))
     (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (e : MvPolynomial (Coord n) ℤ) (δ : ι → ℕ)

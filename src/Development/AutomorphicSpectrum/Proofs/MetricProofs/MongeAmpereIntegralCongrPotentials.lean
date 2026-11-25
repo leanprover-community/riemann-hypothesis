@@ -116,13 +116,13 @@ theorem mInt_congr_samePot : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] [Comp
     exact ⟨hy.1, hy.2⟩
   constructor
   · by_cases h : Nonempty (ChartPartition A)
-    · simp only [mInt, dif_pos h, integralWith]
+    · simp only [mInt, dite_eq_left h, integralWith]
       refine Finset.sum_congr rfl fun j _ => ?_
       refine MeasureTheory.setIntegral_congr_ae (A.chart j).open_target.measurableSet ?_
       filter_upwards [hae j] with y hy hyt
       obtain ⟨h1, h2⟩ := hpt j y hyt (hy hyt)
       simp only [h1, h2]
-    · simp only [mInt, dif_neg h]
+    · simp only [mInt, dite_eq_right h]
   · unfold MIntegrable
     refine forall_congr' fun j => forall_congr' fun K => forall_congr' fun hK =>
       forall_congr' fun hKc => ?_

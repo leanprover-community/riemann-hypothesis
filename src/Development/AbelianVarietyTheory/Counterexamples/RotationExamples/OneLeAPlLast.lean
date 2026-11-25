@@ -78,7 +78,7 @@ theorem lab_fixed (ρ : D.what₂.Tau) : lab D.what₂.embLL ρ = ρ := by
 theorem parAt_fixed (W : HSp D) (ρ : D.what₂.Tau) :
     parAt W D.what₂.embLL ρ = Formalism.L2.NTheta.holPar _ _ (Formalism.L2.NTheta.wtOf D W ρ) := by
   unfold parAt kapAt
-  rw [lab_fixed, if_pos (labE_fixed ρ)]
+  rw [lab_fixed, ite_eq_left (labE_fixed ρ)]
   rfl
 
 end GlobalTheory.ThetaFiresProbe

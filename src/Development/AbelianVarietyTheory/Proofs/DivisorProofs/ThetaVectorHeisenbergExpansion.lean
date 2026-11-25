@@ -76,7 +76,7 @@ theorem thetaVector_eq_sum_heisenberg_of_theta_data :
   by_cases hw : w ∈ latO (Vc D i) (Wc D i) (R.ΛV i : Set (Fin (Vc D i).rank → D.host.E))
       (R.ΛW i : Set (Fin (Wc D i).rank → D.host.E)) (fun _ => True) ∧ IsHalf (cA D e) w
   swap
-  · rw [halfInd, if_neg hw, zero_mul, if_neg]
+  · rw [halfInd, ite_eq_right hw, zero_mul, ite_eq_right]
     rintro ⟨h1, h2⟩
     have hN : ∀ PP ∈ R.Pg ∪ R.Q t, ((Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal := fun PP hPP h =>
       (hP PP (Finset.mem_union.1 hPP)).2 (by rw [Nat.cast_mul]; exact Ideal.mul_mem_left _ _ h)
@@ -97,7 +97,7 @@ theorem thetaVector_eq_sum_heisenberg_of_theta_data :
     rw [hfr]
     have : Ideal.span {(l.M : 𝓞 D.host.E)} ≤ l.Mb := l.prod ▸ Ideal.mul_le_left
     exact GlobalTheory.PlaceVec.redM_add_nsmul PP ((hP PP hPP).1 (this (Ideal.subset_span rfl))) (hφ x).1 (hint u hu)
-  rw [halfInd, if_pos hw, one_mul, if_pos ⟨hw.2, hw' ▸ hint w hw.1⟩,
+  rw [halfInd, ite_eq_left hw, one_mul, ite_eq_left ⟨hw.2, hw' ▸ hint w hw.1⟩,
     GlobalTheory.PlaceVec.omegaK_congr _ fun PP h => hred PP (Or.inl h),
     GlobalTheory.PlaceVec.omegaQ_congr _ _ _ _ fun PP h => hred PP (Or.inr h), ← (hφ x).2, RingHom.id_apply, ← inversion l φ x]
   refine Finset.sum_congr rfl fun q _ => congrArg _ ?_

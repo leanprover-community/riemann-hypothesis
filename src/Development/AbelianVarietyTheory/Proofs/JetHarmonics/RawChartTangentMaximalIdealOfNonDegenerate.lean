@@ -19,46 +19,8 @@ public import Mathlib.RingTheory.MvPowerSeries.Expand
 public import Mathlib.Algebra.CharP.Algebra
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AdjointEndPairMemGaugedCurveLogarithms
 public import Formalism.LocalToGlobal.CharacterGerms.Interface
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -68,11 +30,6 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
 import Formalism.LocalToGlobal.Divisibility.Numbers
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
@@ -120,11 +77,11 @@ theorem exp_coeff_split (G : PowerSeries R) (n : ℕ) :
         PowerSeries.coeff n G := by
   rw [Finset.sum_range_succ', Finset.sum_range_succ']
   simp only [pow_zero, zero_add, pow_one, Nat.factorial_one, Nat.cast_one, inv_one, one_smul,
-    PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_one, Nat.succ_ne_zero, if_false, smul_zero, add_zero]
+    PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_one, Nat.succ_ne_zero, ite_false, smul_zero, add_zero]
   congr 1
   refine Finset.sum_congr rfl fun k hk => ?_
   have hk' := Finset.mem_range.1 hk
-  rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_pos (by omega)]
+  rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left (by omega)]
   congr 3
   omega
 
@@ -291,7 +248,7 @@ theorem jet_subst {ρ κ β τ : Type} [Finite ρ] [Finite κ] [Finite β] [Fini
         rfl
       · have : row j0 j1 μ (monomial (ν0.mapDomain j0 + μ0.mapDomain j1) c) = 0 := by
           ext ν
-          rw [coeff_row, coeff_monomial, if_neg, map_zero]
+          rw [coeff_row, coeff_monomial, ite_eq_right, map_zero]
           exact fun h => hμ (congrArg Prod.snd ((split_bij hj).1 (a₁ := (ν, μ)) (a₂ := (ν0, μ0)) h))
         rw [this, ← coe_substAlgHom Hγ, map_zero, map_zero, coeff_monomial_ne hμ]
     simp only
@@ -379,7 +336,7 @@ theorem jet_hAt {τ : Type} [Finite τ] {γ : κ → PowerSeries C} (hγ : ∀ i
     rfl
   rw [e]
   unfold hAt
-  refine jet_subst bij_two hγ ha (fun p => ?_) (fun _ => if_pos rfl) (fun _ => if_neg (by simp)) n X.h
+  refine jet_subst bij_two hγ ha (fun p => ?_) (fun _ => ite_eq_left rfl) (fun _ => ite_eq_right (by simp)) n X.h
   split_ifs
   · exact CurveJet.constantCoeff_inT τ (hγ _)
   · rw [constantCoeff_rename, ha]
@@ -584,7 +541,7 @@ theorem intS_coeff_of_exp {V : VF C} {σ : Type} {G : MvPowerSeries (Option σ) 
     have hQ : ∀ k, k ≠ 1 → IntS V (PowerSeries.coeff n (g ^ k)) := by
       intro k hk
       rcases k with _ | _ | k
-      · rw [pow_zero, PowerSeries.coeff_one, if_neg (by omega)]; exact hz
+      · rw [pow_zero, PowerSeries.coeff_one, ite_eq_right (by omega)]; exact hz
       · exact absurd rfl hk
       · rw [pow_succ, PowerSeries.coeff_mul]
         refine intS_sum fun p hp => ?_
@@ -685,20 +642,20 @@ theorem coeff_hCv (X : RawChart C d I κ) {γ : κ → PowerSeries C} (hγ : ∀
       rfl
     rw [← coeff_coeff_optionEquivLeft, Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_prod_type,
       Fin.prod_univ_two]
-    simp only [if_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, if_false, map_mul, map_prod, map_pow,
+    simp only [ite_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, ite_false, map_mul, map_prod, map_pow,
       optionEquivLeft_inT, optionEquivLeft_X_some]
     simp only [← map_pow, ← map_prod]
     rw [PowerSeries.coeff_mul_C, PowerSeries.coeff_map, hm, coeff_C_mul, coeff_monomial]
     by_cases h : ∀ x, e (1, x) = μ x
-    · rw [if_pos h, if_pos (by ext x; exact (h x).symm), mul_one]
-    · rw [if_neg h, if_neg (fun h' => h fun x => by rw [h']; rfl), mul_zero]
+    · rw [ite_eq_left h, ite_eq_left (by ext x; exact (h x).symm), mul_one]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h fun x => by rw [h']; rfl), mul_zero]
   rw [coeff_coeff_optionEquivLeft]
   unfold hCv hAt
   refine Eq.trans ?_ (coeff_subst (τ := Unit) (a := γ) (hasSubst_of_constantCoeff_zero hγ)
     (fun ν : κ →₀ ℕ => coeff (g ν) X.h) (Finsupp.single () n)).symm
   rw [coeff_subst (hasSubst_of_constantCoeff_zero hP), ← finsum_mem_univ, finsum_mem_inter_support_eq _ Set.univ (Set.range g), finsum_mem_range gi]
   · refine finsum_congr fun ν => ?_
-    rw [term, if_pos (g1 ν), Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
+    rw [term, ite_eq_left (g1 ν), Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
     simp only [g0]
     rfl
   · ext e
@@ -707,7 +664,7 @@ theorem coeff_hCv (X : RawChart C d I κ) {γ : κ → PowerSeries C} (hγ : ∀
     rw [term] at he
     have h : ∀ x, e (1, x) = μ x := by
       by_contra h
-      rw [if_neg h, smul_zero] at he
+      rw [ite_eq_right h, smul_zero] at he
       exact he rfl
     refine ⟨Finsupp.equivFunOnFinite.symm fun x => e (0, x), ?_⟩
     ext ⟨j, x⟩
@@ -921,7 +878,7 @@ theorem isLowerSet_avoid {τ : Type} (T : Set τ) : IsLowerSet {ν : τ →₀ �
 theorem van_gp_two (x : κ) : Van {p : Fin 3 × κ | p.1 = 2} (gp C κ 2 x) := by
   intro ν hν
   unfold gp
-  rw [coeff_X, if_neg]
+  rw [coeff_X, ite_eq_right]
   intro e
   exact hν (2, x) (by rw [e]; simp) rfl
 
@@ -933,7 +890,7 @@ theorem van_defect {X : RawChart C d I κ} {V : VF C} (h : RLaw X V) :
     refine Van.subst {s : Fin 2 × κ | s.1 = 1} (pair_const (gp_const 0) (gp_const 2)) ?_ (h.axes 1)
     rintro ⟨g, x⟩ (hg : g = 1)
     subst hg
-    rw [if_neg (by simp)]
+    rw [ite_eq_right (by simp)]
     exact van_gp_two x
   have h2 : ∀ x, ∀ ν ∈ {ν : Fin 3 × κ →₀ ℕ | ∀ w ∈ ν.support, w ∉ {p : Fin 3 × κ | p.1 = 2}},
       coeff ν (addP X (gp C κ (1 : Fin 3)) (gp C κ 2) x) = coeff ν (gp C κ (1 : Fin 3) x) := by
@@ -969,7 +926,7 @@ theorem const_pderiv_lg {X : RawChart C d I κ} {V : VF C} (h : RLaw X V) (k j :
   rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv, zero_add, h.lin k _ (by rw [Finsupp.degree_single]), coeff_X]
   by_cases e : k = j
   · simp [e]
-  · rw [if_neg e, if_neg (fun h' => e (Finsupp.single_left_injective one_ne_zero h').symm), zero_mul]
+  · rw [ite_eq_right e, ite_eq_right (fun h' => e (Finsupp.single_left_injective one_ne_zero h').symm), zero_mul]
 
 theorem const_invM {X : RawChart C d I κ} {V : VF C} (h : RLaw X V) (j i : κ) :
     constantCoeff (invM X j i) = if j = i then 1 else 0 := by
@@ -981,7 +938,7 @@ theorem const_invM {X : RawChart C d I κ} {V : VF C} (h : RLaw X V) (j i : κ) 
   FormalCalc.pderiv_subst (hasSubst_of_constantCoeff_zero hA),
   FormalCalc.pderiv_subst (hasSubst_of_constantCoeff_zero (gp_const 1)), map_sum, map_sum] at e
   simp only [map_mul, GlobalTheory.RowVal.cc_subst hA, GlobalTheory.RowVal.cc_subst (gp_const (C := C) (κ := κ) (1 : Fin 2)),
-    const_pderiv_lg h, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at e
+    const_pderiv_lg h, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at e
   unfold invM
   rw [GlobalTheory.RowVal.cc_subst axis_const, e]
   unfold gp
@@ -999,7 +956,7 @@ theorem pderiv_hCv (X : RawChart C d I κ) {γ : κ → PowerSeries C} (hγ : �
   rw [FormalCalc.pderiv_subst (hasSubst_of_constantCoeff_zero hP), Fintype.sum_prod_type, Fin.sum_univ_two]
   have h0 : ∀ x, pderiv (R := C) (some j) (inT κ (γ x)) = 0 := fun x =>
     pderiv_subst_eq_zero (fun _ => constantCoeff_X _) (fun _ => pderiv_X_of_ne (by simp)) _
-  simp only [if_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, if_false, h0, mul_zero, Finset.sum_const_zero, zero_add]
+  simp only [ite_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, ite_false, h0, mul_zero, Finset.sum_const_zero, zero_add]
   rw [Finset.sum_eq_single j, pderiv_X_self, mul_one]
   · intro x _ hx
     rw [pderiv_X_of_ne (by simpa using hx), mul_zero]
@@ -1045,10 +1002,10 @@ theorem intS_invDeriv {X : RawChart C d I κ} {V : VF C} (h : RLaw X V) {γ : κ
     have e1 : addP X (gp C κ (1 : Fin 3)) (gp C κ 2) j = subst e (addP X (gp C κ (0 : Fin 2)) (gp C κ 1) j) := by
       rw [subst_addP h (gp_const 0) (gp_const 1) he]
       congr 1 <;> funext y
-      · exact ((subst_X hE ((0 : Fin 2), y)).trans (if_pos rfl)).symm
-      · exact ((subst_X hE ((1 : Fin 2), y)).trans (if_neg (by simp))).symm
+      · exact ((subst_X hE ((0 : Fin 2), y)).trans (ite_eq_left rfl)).symm
+      · exact ((subst_X hE ((1 : Fin 2), y)).trans (ite_eq_right (by simp))).symm
     rw [e1, FormalCalc.pderiv_subst hE, Fintype.sum_prod_type, Fin.sum_univ_two]
-    simp only [e, if_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, if_false, d1, mul_zero, Finset.sum_const_zero,
+    simp only [e, ite_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, ite_false, d1, mul_zero, Finset.sum_const_zero,
       zero_add]
     rw [Finset.sum_eq_single i]
     · rw [show pderiv (R := C) ((2 : Fin 3), i) (gp C κ (2 : Fin 3) i) = 1 from pderiv_X_self, mul_one,
@@ -1078,7 +1035,7 @@ theorem intS_invDeriv {X : RawChart C d I κ} {V : VF C} (h : RLaw X V) {γ : κ
       ∑ j, pderiv (R := C) (some j) (hCv X γ) * rename some (invM X j i) := by
     unfold hAt
     rw [FormalCalc.pderiv_subst hP, Fintype.sum_prod_type, Fin.sum_univ_two]
-    simp only [if_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, if_false, d0, mul_zero, Finset.sum_const_zero,
+    simp only [ite_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, ite_false, d0, mul_zero, Finset.sum_const_zero,
       zero_add]
     rw [FormalCalc.subst_sum' hS]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -1414,7 +1371,7 @@ theorem cvAt_lin {N : ℕ} {s : MvPowerSeries (Fin 2) C} (hs : MvPowerSeries.con
     · have : e () = 0 := by omega
       rw [this, PowerSeries.coeff_zero_eq_constantCoeff_apply, hf]; simp
     · rw [h3]; simp
-    · rw [h _ h3 he, if_neg (by omega)]; simp
+    · rw [h _ h3 he, ite_eq_right (by omega)]; simp
   have := ordGe_subst hS (fun _ => ordGe_one_of_const hs) h1
   rw [MvPowerSeries.subst_sub hS, MvPowerSeries.subst_smul hS] at this
   rwa [show MvPowerSeries.subst (fun _ : Unit => s) (PowerSeries.X : PowerSeries C) = s from

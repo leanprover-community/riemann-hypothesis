@@ -116,7 +116,7 @@ theorem res_aeval (k : Type) [Field k] (F : Type) [Field F] [Algebra k F] (d : �
     · subst hn
       simp [hρ.1]
     · obtain ⟨j0, hj0⟩ : ∃ j, n j ≠ 0 := by
-        by_contra h; push_neg at h; exact hn (Finsupp.ext h)
+        by_contra h; push Not at h; exact hn (Finsupp.ext h)
       have h0 : ∏ j : Fin d, (0 : k) ^ n j = 0 := Finset.prod_eq_zero (Finset.mem_univ j0) (zero_pow hj0)
       rw [h0, smul_zero]
       let m : Fin (d + 1) → ℤ := Fin.cons (-(∑ j, (n j : ℤ))) (fun j ↦ (n j : ℤ))
@@ -230,7 +230,6 @@ noncomputable section
 namespace GlobalTheory.PD.TraceOrigin
 
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem ev_eq_trace_quot : ∀ (k : Type) [Field k] [CharZero k] (F K : Type) [Field F] [Field K] [Algebra k F] [Algebra k K] [Algebra F K] [IsScalarTower k F K] (d : ℕ) (x : Fin (d + 1) → F), IsFinCover k K x → ∀ ev : rA k x {0} →ₐ[k] k, RingHom.ker ev = Ideal.span (Set.range fun j : Fin d => (⟨x j.succ / x 0, Algebra.subset_adjoin ⟨0, Finset.mem_singleton_self 0, j.succ, rfl⟩⟩ : rA k x {0})) → ∀ (h : rB k K x {0}) (a : rA k x {0}), (a : F) = Algebra.trace F K (h : K) → ev a = Algebra.trace k ((rB k K x {0}) ⧸ (Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem k K x j⟩ : (rB k K x {0}))))) (Ideal.Quotient.mk _ h) := by
   intro k _ _ F K _ _ _ _ _ _ d x hc ev hker h a ha
@@ -357,7 +356,7 @@ namespace GlobalTheory.PD
 
 theorem trF_locCoch_eq_finsum_fib : ∀ (k : Type) [Field k] [CharZero k] (F K : Type) [Field F] [Field K] [Algebra k F] [Algebra k K] [Algebra F K] [IsScalarTower k F K] (d : ℕ) (x : Fin (d + 1) → F), IsFinCover k K x → ∀ (τ : DR k K →ₗ[K] K), IsTop k K x τ → ∀ (ρ : F →ₗ[k] k), IsRes k x ρ → IsAlgClosed k → IsReduced ((rB k K x {0}) ⧸ (Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem k K x j⟩ : (rB k K x {0}))))) → ∀ h : (rB k K x {0}), trF k τ ρ (locCoch k K x h Finset.univ) = ∑ᶠ e : fib k K x, e.1 h := by
   intro k _ _ F K _ _ _ _ _ _ d x hc τ hτ ρ hρ hac hred h
-  have hloc : locCoch k K x (h : K) Finset.univ = (h : K) • vol0 k K x := if_pos rfl
+  have hloc : locCoch k K x (h : K) Finset.univ = (h : K) • vol0 k K x := ite_eq_left rfl
   have h1 : trF k τ ρ (locCoch k K x (h : K) Finset.univ) = ρ (Algebra.trace F K (h : K)) := by
     simp only [trF, LinearMap.comp_apply, LinearMap.restrictScalars_apply, hloc, map_smul, hτ.1, smul_eq_mul, mul_one]
   rw [h1]
@@ -389,7 +388,7 @@ theorem UpperTheory.Gal.productCup_of_system.deRham_restriction_trace_degree_one
     ResidueOfTraceIsFiberSum := by
   intro F L _ _ _ _ _ _ d x hc hred ρ hρ h
   obtain ⟨⟨τ, hτ⟩, -⟩ := _root_.GlobalTheory.PD.isTop_exists_and_eq ℂ F L d (xv x) hc
-  have hloc : locCoch ℂ L (xv x) (h : L) Finset.univ = (h : L) • vol0 ℂ L (xv x) := if_pos rfl
+  have hloc : locCoch ℂ L (xv x) (h : L) Finset.univ = (h : L) • vol0 ℂ L (xv x) := ite_eq_left rfl
   have h1 : trF ℂ τ ρ (locCoch ℂ L (xv x) (h : L) Finset.univ) = ρ (Algebra.trace F L (h : L)) := by
     simp only [trF, LinearMap.comp_apply, LinearMap.restrictScalars_apply, hloc, map_smul, hτ.1, smul_eq_mul, mul_one]
   rw [← h1]

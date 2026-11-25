@@ -80,7 +80,7 @@ theorem load_trunc (x : ZMod d → ℕ → ℝ) (s : ZMod d) :
 
 theorem flowVal_trunc (x : ZMod d → ℕ → ℝ) : flowVal d (trunc d x) = flowVal d x := by
   simp only [Formalism.IncomingBounds.flowVal, trunc]
-  exact Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun i hi => if_pos hi
+  exact Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun i hi => ite_eq_left hi
 
 theorem trunc_nonneg {x : ZMod d → ℕ → ℝ} (hx : ∀ s i, 0 ≤ x s i) : ∀ s i, 0 ≤ trunc d x s i := by
   intro s i
@@ -270,7 +270,7 @@ theorem exists_dual_lt (hl : 1 ≤ l) (D : ZMod d → ℝ) (hD : 0 ≤ D) {v : �
     exact lt_irrefl _ h1
   have hc : c < 0 := by
     by_contra hc'
-    push_neg at hc'
+    push Not at hc'
     have h1 := key' (D, v + ε)
     dsimp only at h1
     have h2 : 0 ≤ ∑ t, D t * a t := Finset.sum_nonneg fun t _ => mul_nonneg (hD t) (ha t)

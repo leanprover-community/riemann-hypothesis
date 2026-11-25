@@ -155,7 +155,7 @@ lemma nEich_col {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (ξ : Fin
   rw [← e, nEich_apply]
   have hjx : herm (Hpk k r) (bvec j) (C2.xiV k r ξ) = 0 :=
     herm_X_right (C2.xiV k r ξ) (bvec j) (xiV_X ξ) (fun p hp => by
-      simp only [bvec, Pi.single_apply]; rw [if_neg (fun e => by rw [e] at hp; omega)])
+      simp only [bvec, Pi.single_apply]; rw [ite_eq_right (fun e => by rw [e] at hp; omega)])
   rw [hjx]
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, bvec, Pi.single_apply, zero_mul, mul_zero,
     add_zero]
@@ -164,7 +164,7 @@ lemma nEich_col {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (ξ : Fin
   · have hjr : j.val < r := by omega
     have hjz : herm (Hpk k r) (Pi.single j 1) z = 0 :=
       herm_X_left (Pi.single j 1) z (fun p hp => by
-        simp only [Pi.single_apply]; rw [if_neg (fun e => by rw [e] at hp; omega)])
+        simp only [Pi.single_apply]; rw [ite_eq_right (fun e => by rw [e] at hp; omega)])
         (fun p hp => hz.1 p (Or.inr hp))
     rw [hjz]; simp
 

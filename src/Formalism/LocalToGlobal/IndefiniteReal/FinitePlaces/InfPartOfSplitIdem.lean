@@ -827,7 +827,7 @@ theorem heisO_fix_of_latVac (ψ : AddChar (AF D.host.F) ℂ) {f₀ : WO S T → 
       · simp only [Matrix.smul_apply, smul_eq_mul]
         rw [← mul_assoc, hsc.1]
 
-theorem gram_herm_E (V : HSp D) : V.gramᴴ = V.gram := Matrix.ext fun i j => V.herm.eq _ _
+theorem gram_herm_E (V : HSp D) : V.gramᴴ = V.gram := Matrix.ext fun _ _ => V.herm.eq _ _
 
 theorem sR_sR (z : EAf D) : sR D (sR D z) = z := by
   induction z using TensorProduct.inductionOn with

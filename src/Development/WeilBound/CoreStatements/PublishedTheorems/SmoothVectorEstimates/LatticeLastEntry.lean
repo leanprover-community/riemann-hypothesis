@@ -46,7 +46,7 @@ theorem lastE_eq (hk : m + 1 < a) (y : UnipotentBlockColumnIndex a (m + 1) (m + 
   rw [Finset.sum_eq_single (t0 hk)]
   · simp [t0]
   · intro t _ ht
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     apply ht
     have hc : t.1.2 = ⟨m + 1, hk⟩ := Fin.ext (le_antisymm t.2.2.2 t.2.2.1)
@@ -157,7 +157,7 @@ theorem sM_e (hk : m + 1 < a) : sM hk (Pi.single (t0 hk) (1 : F)) = 1 := by
       congr 1
       simp only [t0, Subtype.ext_iff, Prod.ext_iff, Fin.ext_iff, and_true, eq_iff_iff]
       omega
-    · rw [dite_eq_right hj, if_neg]
+    · rw [dite_eq_right hj, ite_eq_right]
       intro e
       rw [← e] at hj
       simp at hj
@@ -457,12 +457,12 @@ theorem lattice_open_last_entry : MirabolicColumnBlock → S9 := by
   have hc1 : ∀ y, c (blkU y) = χ (-(y (t0 hk))) := by
     intro y; simp only [c]; rw [blkU_apply]
   refine ⟨T, c, η, r, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · simp only [η, if_pos (And.intro hblk1 hP1one)]; exact_mod_cast hN
-  · simp only [r, if_pos (And.intro hblk1 hP1one)]; rw [hrow1, he1]; simp
+  · simp only [η, ite_eq_left (And.intro hblk1 hP1one)]; exact_mod_cast hN
+  · simp only [r, ite_eq_left (And.intro hblk1 hP1one)]; rw [hrow1, he1]; simp
   · intro h hh hη
     have hc : GlobalTheory (m + 1) h ∧ P1 (rowOf hk h) := by
       by_contra hc; exact hη (by simp [η, hc])
-    simp only [r, if_pos hc]
+    simp only [r, ite_eq_left hc]
     exact mir_mul hk h hh (hP1 _ hc.2).1
   · intro h
     refine ⟨if GlobalTheory (m + 1) h ∧ P1 (rowOf hk h) then N else 0, ?_, rfl⟩
@@ -482,15 +482,14 @@ theorem lattice_open_last_entry : MirabolicColumnBlock → S9 := by
       refine ⟨sM hk (rowOf hk h), ⟨rowOf hk h - e, (hP1 _ hc.2).2.2, ?_⟩, ?_⟩
       · show sM hk (e + (rowOf hk h - e)) = _
         congr 1; abel
-      · simp only [r, if_pos hc]
+      · simp only [r, ite_eq_left hc]
         exact (inv_mul_cancel_right _ _).symm
   · intro v hv Y hY hvY Λ hΛ h hh
     have hsum : Λ (ρ h (∑ t ∈ T, c t • ρ t v)) =
         (∑ q : L ⧸ L0.addSubgroupOf L,
           χ (dotp (rowOf hk h - e) ((Quotient.out q : L) : UnipotentBlockColumnIndex a (m + 1) (m + 1) → F))) * Λ (ρ h v) := by
       rw [Finset.sum_image]
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_sum, Finset.sum_mul]
+      · rw [map_sum, map_sum, Finset.sum_mul]
         refine Finset.sum_congr rfl fun q _ => ?_
         rw [map_smul, map_smul, smul_eq_mul, key hS hk χ ρ Y hY Λ hΛ h hh v hvY, hc1, dotp_sub_left, hdot,
           sub_eq_neg_add, AddChar.map_add_eq_mul, mul_assoc]
@@ -504,7 +503,7 @@ theorem lattice_open_last_entry : MirabolicColumnBlock → S9 := by
         conv_lhs => rw [show h = h * (sM hk (rowOf hk h))⁻¹ * sM hk (rowOf hk h) from (inv_mul_cancel_right _ _).symm]
         rw [map_mul, Module.End.mul_apply, hv _ (hP1 _ hc.2).2.1]
       rw [hsum]
-      simp only [hall, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one, η, r, if_pos hc, N]
+      simp only [hall, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one, η, r, ite_eq_left hc, N]
       rw [hfix]
       push_cast
       rfl

@@ -63,17 +63,4 @@ def ThetaDomination (D : Data E) : Prop :=
 
 end axioms
 
-section estimates
-variable {E : Type} [Field E] [DecidableEq E] {H : Type} [NormedAddCommGroup H]
-  [InnerProductSpace ℂ H] {W : Type} [Fintype W]
-
-end estimates
-
-section levels
-variable {E : Type} [Field E] [DecidableEq E] {H : Type} [NormedAddCommGroup H]
-  [InnerProductSpace ℂ H] {W : Type} [Fintype W]
-
-
-end levels
-
 end Formalism.FourierDecayAlt.TA

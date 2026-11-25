@@ -45,8 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.IndefR.Links NumberField
 
-noncomputable section
-
 namespace GlobalTheory.HeckeRational
 
 open Formalism.DivisionValues Formalism.IndefR Formalism.IndefR.Bridge Formalism.L2.Theta
@@ -172,5 +170,3 @@ theorem lifts_dcOp_mem_cmMax (R : RealDat D A Ks) (h : R.fam_tie) (j : Fin D.R.m
     (fun g i k => (coefAction_repr_mem_subfield (labLL D) _ _ labLL_mem_cmMax g i k).2) B U hU).2 a b
 
 end GlobalTheory.HeckeRational
-
-end

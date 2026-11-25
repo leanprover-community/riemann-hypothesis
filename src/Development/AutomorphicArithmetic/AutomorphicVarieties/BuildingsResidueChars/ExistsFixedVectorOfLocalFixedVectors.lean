@@ -82,7 +82,7 @@ theorem UpperTheory.exists_fixed_vector_in_locally_stable_subspace :
   let K' : Subgroup (locU n w) := K.comap (locU n w).subtype
   have hfix : ∃ v : τ.V, v ≠ 0 ∧ ∀ k ∈ K', τ.ρ k v = v := by
     by_contra hn
-    have key := GlobalTheory.InertHeckeEigen.mem_of_mem_iSup ρ τ.ρ hirr
+    have key := GlobalTheory.InvariantSupremum.fixed_mem_of_mem_iSup_range ρ τ.ρ hirr
       (fun i : Representation.IntertwiningMap τ.ρ ρ => i.toLinearMap) hfi (K' : Set (locU n w)) ⊥
       (fun i v hv => by
         have hv' : v = 0 := by

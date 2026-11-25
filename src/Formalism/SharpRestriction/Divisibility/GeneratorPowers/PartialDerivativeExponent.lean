@@ -19,12 +19,6 @@ variable {k : Type} [CommRing k]
 
 variable [Algebra ℚ k]
 
-private lemma coeff_XX_pow_lemma (d : ℕ) (e : Fin 2 →₀ ℕ) :
-    coeff e ((X 0 + X 1 : MvPowerSeries (Fin 2) k) ^ d) =
-      if e 0 + e 1 = d then ((d.choose (e 0) : ℕ) : k) else 0 := by
-  intros
-  apply _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.coeff_X_add_X_pow <;> assumption
-
 theorem exp_biv :
     PowerSeries.subst (X (0 : Fin 2) + X 1 : MvPowerSeries (Fin 2) k) (PowerSeries.exp k) =
       PowerSeries.subst (X (0 : Fin 2) : MvPowerSeries (Fin 2) k) (PowerSeries.exp k) *

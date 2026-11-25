@@ -97,7 +97,7 @@ theorem valIntAt_of (hcore : WeylLatticeDescent) (hfrac : IsFractionRing G.O G.K
   have hQ := valC_spec hex x i L hL
   have hval := hQ.2 g hg c γ hγ κ hpt
   have hcmp : cmpC S emb embLL G e A pos embV yc x i L = MvPolynomial.map e (valC S emb embLL G A pos embV yc x i L) := by
-    unfold cmpC; rw [if_pos hL]
+    unfold cmpC; rw [ite_eq_left hL]
   rw [hcmp]
   obtain ⟨r, hr, hr', hrχ⟩ := hchi κ
   have hr0 : embLL r ≠ 0 := by rw [hrχ]; exact (S.chi κ).ne_zero
@@ -137,8 +137,6 @@ theorem valIntAt_of (hcore : WeylLatticeDescent) (hfrac : IsFractionRing G.O G.K
       smul_eq_mul]
 
 end Gen2
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : Formalism.L2.Herm.Herm0 D}
 
@@ -282,13 +280,13 @@ theorem latO_of (tE : Tau → E →+* LL)
   rw [hX]
   unfold nAt
   by_cases hs : Even s.val
-  · rw [if_pos hs]
+  · rw [ite_eq_left hs]
     congr 1
     ext a b
     have := hpos v s (N.1 (finCongr A.rk a) (finCongr A.rk b))
-    rw [if_pos hs] at this
+    rw [ite_eq_left hs] at this
     exact this.symm
-  · rw [if_neg hs]
+  · rw [ite_eq_right hs]
     set Gm := cT (σ : E →+* E) B'.1 * J * B'.1 with hGm
     have hJ : J = cT (σ : E →+* E) (A.B⁻¹).1 * (A.B⁻¹).1 := by
       have h0 : cT (σ : E →+* E) (A.B⁻¹).1 * (cT (σ : E →+* E) A.B.1 * J * A.B.1) * (A.B⁻¹).1 = J := by
@@ -324,7 +322,7 @@ theorem latO_of (tE : Tau → E →+* LL)
       rw [← map_inv, ← h3]
       ext a b
       have h4 := hpos v s ((cT (σ : E →+* E) (N⁻¹).1) (finCongr A.rk a) (finCongr A.rk b))
-      rw [if_neg hs] at h4
+      rw [ite_eq_right hs] at h4
       have h5 : σ ((cT (σ : E →+* E) (N⁻¹).1) (finCongr A.rk a) (finCongr A.rk b)) =
           (N⁻¹).1 (finCongr A.rk b) (finCongr A.rk a) := hσσ _
       rw [h5] at h4
@@ -338,8 +336,6 @@ theorem latO_of (tE : Tau → E →+* LL)
       Matrix.map_one _ (map_zero _) (map_one _), Matrix.submatrix_one_equiv]
 
 end Gen
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : Formalism.L2.Herm.Herm0 D}
 

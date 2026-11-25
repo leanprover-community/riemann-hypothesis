@@ -24,13 +24,6 @@ section gen
 
 variable {K : Type} [CommRing K] (σ : K →+* K) {M : ℕ} (J : Matrix (Fin M) (Fin M) K)
 
-private theorem eq_or_exists_succAbove {n : ℕ} (p i : Fin (n + 1)) :
-    i = p ∨ ∃ j, i = p.succAbove j := by
-  by_cases h : i = p
-  · exact Or.inl h
-  · right
-    exact (Fin.eq_self_or_eq_succAbove p i).resolve_left h
-
 theorem gram_split (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J j i) = J i j) {a' : ℕ}
     (T : Matrix (Fin (a' + 1)) (Fin (a' + 1)) K) (i₀ : Fin (a' + 1)) (hr : ∀ j, T i₀ j = 0)
     (hc : ∀ j, T j i₀ = 0) (t : K) (X : Fin (a' + 1) → Fin M → K) :
@@ -56,8 +49,8 @@ theorem gram_split (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J j i) = J i 
   · rintro ⟨h1, h2, h3⟩
     ext i j
     show PI.VolStabS.ffH σ J (X i) (X j) = T i j + Matrix.single i₀ i₀ t i j
-    rcases eq_or_exists_succAbove i₀ i with hi | ⟨i', hi⟩ <;>
-      rcases eq_or_exists_succAbove i₀ j with hj | ⟨j', hj⟩ <;> rw [hi, hj]
+    rcases Fin.eq_self_or_eq_succAbove i₀ i with hi | ⟨i', hi⟩ <;>
+      rcases Fin.eq_self_or_eq_succAbove i₀ j with hj | ⟨j', hj⟩ <;> rw [hi, hj]
     · rw [h3, hr]
       simp
     · have hne : i₀.succAbove j' ≠ i₀ := Fin.succAbove_ne i₀ j'
@@ -93,7 +86,7 @@ theorem card_split [Finite K] (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J 
   · intro X
     apply Subtype.ext
     funext i
-    rcases eq_or_exists_succAbove i₀ i with hi | ⟨j, hi⟩ <;> rw [hi]
+    rcases Fin.eq_self_or_eq_succAbove i₀ i with hi | ⟨j, hi⟩ <;> rw [hi]
     · simp [Fin.insertNth_apply_same]
     · simp [Fin.insertNth_apply_succAbove]
   · rintro ⟨⟨Y, hY⟩, ⟨x, hx⟩⟩

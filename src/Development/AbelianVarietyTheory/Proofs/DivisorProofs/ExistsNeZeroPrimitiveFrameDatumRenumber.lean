@@ -98,8 +98,6 @@ theorem fFun_renumber (μ : Measure (GL A' k)) [μ.IsHaarMeasure] (σ σ' : A �
   set Q : GL C k := permGL (σ.symm.trans σ') with hQ
   by_cases hX : ∃ h : GL C k, X = X0 k σ' * (invT h).val
   · obtain ⟨h, rfl⟩ := hX
-    have hc : (ν (gdet Q) : ℂ) * apow (gdet Q) ((Fintype.card C : ℂ) / 2) ≠ 0 :=
-      mul_ne_zero (Units.ne_zero _) (apow_ne_zero _ _)
     rw [splitTheta_fFun_frameFirstBlock_mul μ σ', frameMatrixFirstColumnBlock_renumber σ σ' h, splitTheta_fFun_frameFirstBlock_mul μ σ, ← hQ, frameMatrixSecondColumnBlock_renumber, gdet_mul, map_mul, apow_mul,
       Units.val_mul]
     have ha := apow_ne_zero (gdet Q) ((Fintype.card C : ℂ) / 2)

@@ -269,13 +269,13 @@ theorem jumps_of_split [Algebra.IsSeparable Qp K] [FiniteDimensional Qp LL] (hF 
   push_cast
   congr 1
   split_ifs with h
-  · rw [Finset.sum_eq_single (⟨a.toNat, by omega⟩ : Fin t), if_pos (by simp only; omega)]
+  · rw [Finset.sum_eq_single (⟨a.toNat, by omega⟩ : Fin t), ite_eq_left (by simp only; omega)]
     · intro c _ hc
-      refine if_neg fun h' => hc (Fin.ext ?_)
+      refine ite_eq_right fun h' => hc (Fin.ext ?_)
       simp only
       omega
     · exact fun h' => absurd (Finset.mem_univ _) h'
-  · refine Finset.sum_eq_zero fun c _ => if_neg fun h' => h ?_
+  · refine Finset.sum_eq_zero fun c _ => ite_eq_right fun h' => h ?_
     have := c.2
     omega
 

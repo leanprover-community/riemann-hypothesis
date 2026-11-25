@@ -280,11 +280,11 @@ theorem mcF_one : mcF f 1 = fockF f f := by
 theorem isUU_E (l j : Fin n) (hlj : l < j) (c : ℂ) : IsUU (Formalism.UG.P.wlocal_E l j c) := by
   refine ⟨fun i j' h => ?_, fun i => ?_⟩
   · simp only [Formalism.UG.P.wlocal_E]
-    rw [if_neg (by intro e; subst e; exact lt_irrefl _ h), if_neg]
+    rw [ite_eq_right (by intro e; subst e; exact lt_irrefl _ h), ite_eq_right]
     · simp
     · rintro ⟨rfl, rfl⟩; exact lt_asymm h hlj
-  · simp only [Formalism.UG.P.wlocal_E, if_true]
-    rw [if_neg]
+  · simp only [Formalism.UG.P.wlocal_E, ite_true]
+    rw [ite_eq_right]
     · simp
     · rintro ⟨rfl, rfl⟩; exact lt_irrefl _ hlj
 
@@ -292,11 +292,11 @@ theorem isUU_E_conj (a b : Fin n) (hab : a < b) (c : ℂ) :
     IsUU (Formalism.UG.P.wlocal_E b a c).conjTranspose := by
   refine ⟨fun i j' h => ?_, fun i => ?_⟩
   · simp only [Matrix.conjTranspose_apply, Formalism.UG.P.wlocal_E]
-    rw [if_neg (by intro e; subst e; exact lt_irrefl _ h), if_neg]
+    rw [ite_eq_right (by intro e; subst e; exact lt_irrefl _ h), ite_eq_right]
     · simp
     · rintro ⟨rfl, rfl⟩; exact lt_asymm h hab
-  · simp only [Matrix.conjTranspose_apply, Formalism.UG.P.wlocal_E, if_true]
-    rw [if_neg]
+  · simp only [Matrix.conjTranspose_apply, Formalism.UG.P.wlocal_E, ite_true]
+    rw [ite_eq_right]
     · simp
     · rintro ⟨rfl, h2⟩; exact lt_irrefl _ (h2 ▸ hab)
 
@@ -309,7 +309,7 @@ theorem colAdd_matrixCoeffPoly (hU : ∀ u, IsUU u → rowAct ℂ (iotaC ℂ n k
       fun v => (matOf x * Formalism.UG.P.wlocal_E l j c) v.1 v.2 := by
     funext v
     simp only [matOf, Matrix.mul_apply, Matrix.of_apply, Formalism.UG.P.wlocal_E, mul_add,
-      Finset.sum_add_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_add_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     by_cases h : v.2 = j
     · simp [h, mul_comm] <;> rw [← h]
     · simp [h]
@@ -335,7 +335,7 @@ theorem rowDiv_matrixCoeffPoly_eq_zero (hU : ∀ u, IsUU u → rowAct ℂ (iotaC
   have hq0 : q = 0 := Polynomial.eq_zero_of_infinite_isRoot q
     (Set.infinite_of_injective_forall_mem (MvPolynomial.C_injective (Fin n × Fin n) ℂ) hroot)
   have : rowGen ℂ a b (mcP f) = Polynomial.C (mcP f) := sub_eq_zero.mp hq0
-  rw [rowDiv, this, Polynomial.coeff_C, if_neg (by omega)]
+  rw [rowDiv, this, Polynomial.coeff_C, ite_eq_right (by omega)]
 
 theorem aeval_scale_monomial (t : Fin n → ℂ) (m : Fin n × Fin n →₀ ℕ) (a : ℂ) :
     aeval (fun v : Fin n × Fin n => C (t v.2) * X v) (monomial m a) =
@@ -372,7 +372,7 @@ theorem isWH_of_scale (κ : Fin n → ℕ) (P : MvPolynomial (Fin n × Fin n) �
     intro i; simp only [t]; split_ifs <;> simp
   simp only [ht, Finsupp.prod, ite_pow, one_pow] at h2
   rw [Finset.prod_ite, Finset.prod_const_one, mul_one, Finset.prod_pow_eq_pow_sum,
-    Finset.prod_ite_eq' Finset.univ s, if_pos (Finset.mem_univ _)] at h2
+    Finset.prod_ite_eq' Finset.univ s, ite_eq_left (Finset.mem_univ _)] at h2
   have h3 : ∑ v ∈ m.support with v.2 = s, m v = κ s := by
     have h4 : ((2 ^ (∑ v ∈ m.support with v.2 = s, m v) : ℕ) : ℂ) = ((2 ^ κ s : ℕ) : ℂ) := by
       push_cast; exact h2

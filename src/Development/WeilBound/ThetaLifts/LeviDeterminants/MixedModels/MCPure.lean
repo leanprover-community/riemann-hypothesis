@@ -63,7 +63,7 @@ theorem psi_fin (hψ : IsStd ψ) (a : AF F) : ψ ((0 : Ainf F), a.2) = ∏ᶠ v,
     · exact Finset.sum_eq_zero fun v hv => evalV_singleFin_ne (fun e : u = v => h (e ▸ hv)) _
   have h1 : ψ ((0 : Ainf F), a.2 - s) = 1 := hT _ (fun v hv => by
       have : v ∈ U := by by_contra e; exact (hU v e).1 hv
-      rw [map_sub, hs, if_pos this]; exact sub_self _) fun v => by
+      rw [map_sub, hs, ite_eq_left this]; exact sub_self _) fun v => by
     rw [map_sub, hs]
     split_ifs with h
     · exact (sub_self (evFin F v a)).symm ▸ zero_mem _

@@ -375,7 +375,7 @@ private lemma prod_scaleOff {R : Type} [CommRing R] {n : ℕ} (y : R) (i : Fin n
     Finset.prod_congr rfl (fun k hk => by simp [scaleOff, (mem_erase.1 hk).1])
   rw [h, prod_mul_distrib, prod_const, card_erase_of_mem (mem_univ i), card_univ,
     Fintype.card_fin]
-  simp only [scaleOff, if_true]
+  simp only [scaleOff, ite_true]
   ring
 
 theorem fibre_of : SchurY → SchurHomog → SchurDet → Fibre := by
@@ -397,7 +397,7 @@ theorem fibre_of : SchurY → SchurHomog → SchurDet → Fibre := by
     intro t ht
     have ht1 : t ≠ t₁ := (mem_erase.mp ht).1
     have ht0 : t ≠ t₀ := (mem_erase.mp (mem_erase.mp ht).2).1
-    simp only [twist, if_neg ht0, if_neg ht1]
+    simp only [twist, ite_eq_right ht0, ite_eq_right ht1]
     rw [hH R n (lam t) (g t) (y ^ ε t), ← pow_mul]
   have hi : ∀ i, ∏ t, sch (lam t) (twist t₀ t₁ ε y i g t) =
       sch (lam t₀) (scaleAt y i (g t₀)) *
@@ -469,7 +469,7 @@ theorem UpperTheory.Gal.Schur.fibreOff_of :
       intro t ht
       have ht1 : t ≠ t₁ := ne_of_mem_erase ht
       have ht0 : t ≠ t₀ := ne_of_mem_erase (mem_of_mem_erase ht)
-      simp only [twist, if_neg ht0, if_neg ht1]
+      simp only [twist, ite_eq_right ht0, ite_eq_right ht1]
       rw [hH, ← pow_mul]
     rw [Finset.prod_congr rfl hc, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
   have tw0 : ∀ i, twist t₀ t₁ ε y i g t₀ = scaleAt y i (g t₀) := by
@@ -725,10 +725,10 @@ open Finset MvPolynomial UpperTheory.Gal.Schur
 
 private theorem prod_ite_eq_mul_prod_erase {R : Type} [CommRing R] {n : ℕ} (d d' : Fin n → R) (a : Fin n) :
     ∏ b, (if b = a then d b else d' b) = d a * ∏ b ∈ univ.erase a, d' b := by
-  rw [← Finset.mul_prod_erase univ _ (mem_univ a), if_pos rfl]
+  rw [← Finset.mul_prod_erase univ _ (mem_univ a), ite_eq_left rfl]
   congr 1
   refine Finset.prod_congr rfl fun b hb => ?_
-  rw [if_neg (Finset.ne_of_mem_erase hb)]
+  rw [ite_eq_right (Finset.ne_of_mem_erase hb)]
 
 theorem UpperTheory.Gal.Schur.mixDet :
     MixDet := by
@@ -814,10 +814,6 @@ section -- clump:auto
 @[expose] public section
 
 open Finset MvPolynomial UpperTheory.Gal.Schur
-
-namespace UpperTheory.Gal.Schur
-
-end UpperTheory.Gal.Schur
 
 theorem UpperTheory.Gal.Schur.offClrRed_of :
     OffClrPow → OffClrRed := by

@@ -455,7 +455,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsZarhinData =====
@@ -587,13 +586,12 @@ theorem blk_jlMap (h : ℕ) (l : Fin 8) (a : Fin h ⊕ Fin h → ℤ) :
 theorem kap_jlMap (h d : ℕ) (k : Fin 8) (a : Fin h ⊕ Fin h → ℤ) :
     kap h d k (jlMap h a) = if k = 0 then a else 0 := by
   rw [kap_apply]
-  simp only [blk_jlMap, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [blk_jlMap, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   fin_cases k <;> simp [vMat, sig]
 
 end GlobalTheory.ZarhinFam.KappaEx
 
 namespace GlobalTheory.ZarhinFam
-
 
 open KappaEx in
 theorem exists_kappaOK : ∀ (h M d : ℕ), 1 ≤ h → 3 ≤ M → Odd M → 0 < d → M.Coprime d →
@@ -601,8 +599,8 @@ theorem exists_kappaOK : ∀ (h M d : ℕ), 1 ≤ h → 3 ≤ M → Odd M → 0 
   intro h M d _ _ _ hd _
   refine ⟨kap h d, fun a b => ?_, fun a => ?_, fun k hk a => ?_⟩
   · rw [formZ_kap hd]
-  · rw [kap_jlMap, if_pos rfl]
-  · rw [kap_jlMap, if_neg hk]
+  · rw [kap_jlMap, ite_eq_left rfl]
+  · rw [kap_jlMap, ite_eq_right hk]
 
 end GlobalTheory.ZarhinFam
 end -- clump:auto
@@ -617,7 +615,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
-
 
 end -- clump:auto
 end -- clump:auto
@@ -637,23 +634,8 @@ noncomputable section
 
 namespace GlobalTheory.ZarhinFam
 
-section
-variable {S : Scheme.{0}} (A B : Over S) [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
-
-theorem incZ_pa (i : Fin 4) : incZ A B ≫ pa A B i = if i = 0 then 𝟙 A else 1 := by
-  unfold incZ pa mkZ
-  rw [lift_fst_assoc]
-  exact (Out.powIsLimit A 4).fac (Fan.mk A _) ⟨i⟩
-
-theorem incZ_pb (j : Fin 4) : incZ A B ≫ pb A B j = 1 := by
-  unfold incZ pb mkZ
-  rw [lift_snd_assoc]
-  exact (Out.powIsLimit B 4).fac (Fan.mk A _) ⟨j⟩
-end
-
 theorem zarhinBundle_pullback_inclusion : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp (cycAway M)) (c : SiegPre h M (zetaAway M) t) (B : Over S) [GrpObj B] [IsCommMonObj B] (Q : LB (c.A ⊗ B).left) (la : c.A ⟶ B) (mu : B ⟶ c.A) (hZ : GlobalTheory.ZarhinFam.ZData c d B Q la mu), 1 ≤ h → 3 ≤ M → Odd M → 0 < d → M.Coprime d → IsUnit ((d : ℕ) : Γ(S, ⊤)) → SiegKerBy c d → LBIso c.P ((GlobalTheory.ZarhinFam.zP c.A B c.isLB hZ.2.1.isLB d mu).pull (GlobalTheory.ZarhinFam.incZ c.A B ⊗ₘ GlobalTheory.ZarhinFam.incZ c.A B).left) := by
   intro h M d S t c B _ _ Q la mu hZ _ _ _ _ _ _ _
-  have hQ : Q.IsLB := hZ.2.1.isLB
   have hq0 : ∀ {Y : Over S} (a : Y ⟶ c.A), CechPic.pull (lift a (1 : Y ⟶ B)).left (cls Q hZ.2.1.isLB) = 0 :=
     fun a => evc_one_right hZ.2.1.isLB hZ.2.1.zero a
   have hp0 : ∀ {Y : Over S}, CechPic.pull (lift (1 : Y ⟶ c.A) (1 : Y ⟶ c.A)).left (cls c.P c.isLB) = 0 :=
@@ -665,7 +647,7 @@ theorem zarhinBundle_pullback_inclusion : ∀ (h M d : ℕ) (S : Scheme.{0}) (t 
   unfold zCls
 
   simp only [map_add (f := _), map_zsmul, ← pull_comp, ← Over.comp_left, comp_lift, tensorHom_fst_assoc,
-  tensorHom_snd_assoc, incZ_pa, incZ_pb, Fin.sum_univ_four]
+  tensorHom_snd_assoc, GlobalTheory.ZarhinFam.LevCoord.incZ_pa, GlobalTheory.ZarhinFam.LevCoord.incZ_pb, Fin.sum_univ_four]
   simp only [MonObj.comp_one, Category.comp_id, ↓reduceIte, Fin.isValue, Fin.reduceEq, one_ne_zero, hq0, hp0, hp1, smul_zero, add_zero]
 
 end GlobalTheory.ZarhinFam
@@ -681,7 +663,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
-
 
 end -- clump:auto
 end -- clump:auto
@@ -702,24 +683,6 @@ namespace GlobalTheory.ZarhinFam
 namespace AffZphi
 
 variable {S : Scheme.{0}} (A B : Over S) [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
-
-theorem mkZ_pa {T : Over S} (u : Fin 4 → (T ⟶ A)) (v : Fin 4 → (T ⟶ B)) (i : Fin 4) :
-    mkZ A B u v ≫ pa A B i = u i := by
-  unfold mkZ pa
-  rw [lift_fst_assoc]
-  exact (Out.powIsLimit A 4).fac _ ⟨i⟩
-
-theorem mkZ_pb {T : Over S} (u : Fin 4 → (T ⟶ A)) (v : Fin 4 → (T ⟶ B)) (j : Fin 4) :
-    mkZ A B u v ≫ pb A B j = v j := by
-  unfold mkZ pb
-  rw [lift_snd_assoc]
-  exact (Out.powIsLimit B 4).fac _ ⟨j⟩
-
-theorem zob_ext {T : Over S} (f g : T ⟶ Zob A B) (ha : ∀ i, f ≫ pa A B i = g ≫ pa A B i)
-    (hb : ∀ j, f ≫ pb A B j = g ≫ pb A B j) : f = g := by
-  apply CartesianMonoidalCategory.hom_ext
-  · exact (Out.powIsLimit A 4).hom_ext fun ⟨i⟩ => by simpa [pa] using ha i
-  · exact (Out.powIsLimit B 4).hom_ext fun ⟨j⟩ => by simpa [pb] using hb j
 
 instance pa_isMonHom (i : Fin 4) : IsMonHom (pa A B i) := by unfold pa; infer_instance
 
@@ -752,10 +715,10 @@ theorem isAffineHom_zphi : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp (cyc
   let ν : Out.powObj c.A 8 ⟶ Zob c.A B :=
     mkZ c.A B (fun i => Out.powPr c.A (Fin.castAdd 4 i) ^ d) (fun j => Out.powPr c.A (Fin.natAdd 4 j) ≫ la)
   have key : zphi c.A B mu ≫ ν = (𝟙 (Zob c.A B)) ^ d := by
-    refine zob_ext c.A B _ _ (fun i => ?_) (fun j => ?_)
-    · rw [Category.assoc, mkZ_pa, MonObj.comp_pow, zphi_powPr, MonObj.pow_comp, Category.id_comp]
+    refine GlobalTheory.ZarhinFam.LevAlg.zob_ext c.A B _ _ (fun i => ?_) (fun j => ?_)
+    · rw [Category.assoc, GlobalTheory.ZarhinKerB.mkZ_pa', MonObj.comp_pow, zphi_powPr, MonObj.pow_comp, Category.id_comp]
       simp [zpr, sig_castAdd]
-    · rw [Category.assoc, mkZ_pb, ← Category.assoc, zphi_powPr, MonObj.pow_comp, Category.id_comp]
+    · rw [Category.assoc, GlobalTheory.ZarhinKerB.mkZ_pb', ← Category.assoc, zphi_powPr, MonObj.pow_comp, Category.id_comp]
       simp only [zpr, sig_natAdd, Sum.elim_inr, Category.assoc, hlm, MonObj.comp_pow, Category.comp_id]
   have hsep : IsSeparated ν.left := by
     have : IsSeparated (ν.left ≫ (Zob c.A B).hom) := by rw [Over.w ν]; infer_instance
@@ -846,7 +809,7 @@ theorem nsmul_pull_diag_zCls : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp 
       z • pull (lift a (b ≫ mu)).left (cls c.P c.isLB) := fun z a b => by rw [smul_comm, hk]
   simp only [smul_add, Finset.smul_sum, hk, hk', Matrix.smul_apply, Matrix.one_apply, Matrix.transpose_apply,
     zero_add, smul_eq_mul, mul_ite, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true, one_smul, Finset.sum_add_distrib, mul_smul, two_smul, natCast_zsmul]
+    ite_true, one_smul, Finset.sum_add_distrib, mul_smul, two_smul, natCast_zsmul]
   abel
 
 end GlobalTheory.ZarhinFam
@@ -933,15 +896,15 @@ theorem zarhinBundle_kernel : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp (
   have z3 : ∀ {Y : Over S} (b : Y ⟶ B), evc hQ (1 : Y ⟶ c.A) b = 0 := fun b => hQd.additive.evc_one hQ b
   have s1 : (∑ k, evc hP ((snd c.A T ≫ x) ≫ pa c.A B k) ((fst c.A T ≫ inc) ≫ pa c.A B k)) =
       evc hP ((snd c.A T ≫ x) ≫ pa c.A B i) (fst c.A T) := by
-    rw [Finset.sum_eq_single i (fun k _ hk => by rw [hpa, if_neg hk, z1]) (fun hi => absurd (Finset.mem_univ i) hi),
-      hpa, if_pos rfl]
+    rw [Finset.sum_eq_single i (fun k _ hk => by rw [hpa, ite_eq_right hk, z1]) (fun hi => absurd (Finset.mem_univ i) hi),
+      hpa, ite_eq_left rfl]
   have s2 : (∑ k, ∑ j, quat d j k • evc hQ ((snd c.A T ≫ x) ≫ pa c.A B k) ((fst c.A T ≫ inc) ≫ pb c.A B j)) = 0 := by
     simp only [hpb, z2, smul_zero, Finset.sum_const_zero]
   have s3 : (∑ k, ∑ j, quat d j k • evc hQ ((fst c.A T ≫ inc) ≫ pa c.A B k) ((snd c.A T ≫ x) ≫ pb c.A B j)) =
       ∑ j, quat d j i • evc hQ (fst c.A T) ((snd c.A T ≫ x) ≫ pb c.A B j) := by
-    rw [Finset.sum_eq_single i (fun k _ hk => by simp only [hpa, if_neg hk, z3, smul_zero, Finset.sum_const_zero])
+    rw [Finset.sum_eq_single i (fun k _ hk => by simp only [hpa, ite_eq_right hk, z3, smul_zero, Finset.sum_const_zero])
       (fun hi => absurd (Finset.mem_univ i) hi)]
-    rw [hpa, if_pos rfl]
+    rw [hpa, ite_eq_left rfl]
   have s4 : (∑ j, evc hQ ((fst c.A T ≫ inc) ≫ pb c.A B j ≫ mu) ((snd c.A T ≫ x) ≫ pb c.A B j)) = 0 := by
     simp only [← Category.assoc _ (pb c.A B _) mu, hpb, MonObj.one_comp, z3, Finset.sum_const_zero]
   rw [s1, s2, s3, s4, add_zero, add_zero] at h1
@@ -1027,7 +990,7 @@ theorem ker_zarhinPolarization_of_pullback : ∀ (h M d : ℕ) (S : Scheme.{0}) 
   simp only [AdjPf.zf, Category.assoc, AdjPf.mkZ_pa, AdjPf.mkZ_pb, hv, MonObj.comp_one, MonObj.one_comp,
     evc_one_right hQ hD1.zero, smul_zero, Finset.sum_const_zero, zero_add, add_zero] at h1
   simp only [apply_ite (evc hQ _), evc_one_right hQ hD1.zero, smul_ite, smul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at h1
+    Finset.mem_univ, ite_true] at h1
   refine (hD1.isPerfect hD2).ker_left T _ ((triv_ev_iff hQ _ _).2 ?_)
   let F : (T ⊗ B ⟶ c.A) →* Multiplicative (Pic (T ⊗ B).left) :=
     MonoidHom.mk' (fun a => Multiplicative.ofAdd (evc hQ a (snd T B))) fun a a' => by
@@ -1171,8 +1134,6 @@ theorem zarhin_block_posDef {d : ℕ} (hd : 0 < d) :
       (Int.cast : ℤ → ℝ) |>.PosDef := by
   set x : Matrix (Fin 4) (Fin 4) ℝ := (quat d).map (Int.cast : ℤ → ℝ) with hx
   have hxx : xᵀ * x = ((d : ℝ) - 1) • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
-    have h1 : (((d - 1 : ℕ) : ℤ) : ℝ) = (d : ℝ) - 1 := by
-      rw [Int.cast_natCast, Nat.cast_sub (by omega)]; simp
     ext i j
     have h0 := congrArg (Int.cast : ℤ → ℝ) (congrFun (congrFun (quat_transpose_mul d) i) j)
     simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul,
@@ -1309,7 +1270,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZarhinBundlePrincipalStatement =====
@@ -1329,7 +1289,6 @@ open ReciprocityTheory.ChartRestriction.G.Out
 
 theorem flat_surjective_mulA (S : Scheme.{0}) (B : Over S) [GrpObj B] (hB : IsAbelianScheme B)
     (d : ℕ) (hd : 1 ≤ d) : Flat (mulA B d).left ∧ Surjective (mulA B d).left := by
-  have hc := hB.comm
   obtain ⟨hf, hfl⟩ := GlobalTheory.AbTorsionAnyBase.isFinite_and_flat_mulA S B hB d hd
   refine ⟨hfl, GlobalTheory.AbLaw.MulN.surjective_of_geomFibres _ fun K _ _ t => ?_⟩
   have hfin : IsFinite ((Over.pullback t).map (mulA B d)).left :=
@@ -1359,7 +1318,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1514,7 +1472,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZarhinBundleRigidifiedSymmetricStatement =====
@@ -1526,7 +1483,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1540,7 +1496,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZarhinOrderActionRosatiAdjointStatement =====
@@ -1553,7 +1508,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZarhinOrderIsRingActionOnProductStatement =====
@@ -1565,7 +1519,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
-
 
 end -- clump:auto
 end -- clump:auto

@@ -15,7 +15,6 @@ public import Mathlib.Geometry.Manifold.PartitionOfUnity
 public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 public import Mathlib.Geometry.Manifold.ContMDiffMap
-public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeak
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MollifyEqConvolution
 public import Mathlib.Analysis.Calculus.FDeriv.Measurable
 public import Mathlib.MeasureTheory.Integral.Bochner.Set
@@ -27,6 +26,81 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Geometry.Manifold.Sheaf.Basic
+public import Lemmata.MiscLemmasF.Imports
+
+section
+@[expose] public section
+
+namespace ReciprocityTheory.L2DbarEstimates.C
+
+open MeasureTheory Metric Set Filter Topology Complex
+open scoped ENNReal
+
+theorem holoWeak : HoloWeakStatement := by
+  intro n Ω u hΩ hu
+  refine ⟨hu.continuousOn.locallyIntegrableOn hΩ.measurableSet, ?_⟩
+  intro g hg v
+  obtain ⟨hgs, hgc, hgΩ⟩ := hg
+  have hK : IsCompact (tsupport g) := hgc
+  have huK : ContinuousOn u (tsupport g) := hu.continuousOn.mono hgΩ
+  have hg1 : ContDiff ℝ 1 g := hgs.of_le (by exact_mod_cast le_top)
+  have hgd : Differentiable ℝ g := hg1.differentiable one_ne_zero
+  have hg'c : ∀ w : V n, Continuous fun x => fderiv ℝ g x w := fun w =>
+    (hg1.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hzero : ∀ x, x ∉ tsupport g → g x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
+  have hzero' : ∀ w x, x ∉ tsupport g → fderiv ℝ g x w = 0 := fun w x hx => by
+    rw [fderiv_of_notMem_tsupport ℝ hx]; rfl
+  have hint : ∀ h : V n → ℂ, Continuous h → (∀ x, x ∉ tsupport g → h x = 0) →
+      Integrable (fun x => u x * h x) := by
+    intro h hh hh0
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport g) ?_ ?_
+    · exact (huK.mul hh.continuousOn).integrableOn_compact hK
+    · intro x hx; simp [hh0 x hx]
+  have hgi : Integrable g := hgs.continuous.integrable_of_hasCompactSupport hgc
+  have hibp : ∀ w : V n, ∫ x, u x * fderiv ℝ g x w = - ∫ x, fderiv ℝ u x w * g x := by
+    intro w
+    obtain ⟨C, hC⟩ := _root_.Bl.SecondBlockLemmaG.goal1 hΩ hu hK hgΩ w
+    apply integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
+    · refine Integrable.mono' (hgi.norm.const_mul C) ?_ (Eventually.of_forall fun x => ?_)
+      · exact (measurable_fderiv_apply_const ℝ u w).aestronglyMeasurable.mul
+          hgs.continuous.aestronglyMeasurable
+      · by_cases hx : x ∈ tsupport g
+        · rw [norm_mul]
+          exact mul_le_mul_of_nonneg_right (hC x hx) (norm_nonneg _)
+        · simp [hzero x hx]
+    · exact hint _ (hg'c w) (hzero' w)
+    · exact hint _ hgs.continuous hzero
+    · intro x hx
+      exact ((hu x (hgΩ hx)).differentiableAt (hΩ.mem_nhds (hgΩ hx))).restrictScalars ℝ
+    · intro x _
+      exact hgd x
+  have hlin : ∀ x, fderiv ℝ u x (I • v) * g x = I * (fderiv ℝ u x v * g x) := by
+    intro x
+    by_cases hx : x ∈ tsupport g
+    · have hux : DifferentiableAt ℂ u x :=
+        (hu x (hgΩ hx)).differentiableAt (hΩ.mem_nhds (hgΩ hx))
+      rw [hux.fderiv_restrictScalars (𝕜 := ℝ)]
+      simp only [ContinuousLinearMap.coe_restrictScalars', map_smul, smul_eq_mul]
+      ring
+    · simp [hzero x hx]
+  have hΩ0 : ∀ x, x ∉ Ω → u x * dbarDir g x v = 0 := by
+    intro x hx
+    have hx' : x ∉ tsupport g := fun h => hx (hgΩ h)
+    simp [dbarDir, fderiv_of_notMem_tsupport ℝ hx']
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hΩ0]
+  have e1 : (fun x => u x * dbarDir g x v) =
+      fun x => u x * fderiv ℝ g x (I • v) - I * (u x * fderiv ℝ g x v) := by
+    funext x; simp only [dbarDir]; ring
+  rw [e1, integral_sub (hint _ (hg'c _) (hzero' _)) ((hint _ (hg'c _) (hzero' _)).const_mul I),
+    integral_const_mul, hibp (I • v), hibp v]
+  simp only [hlin]
+  rw [integral_const_mul]
+  ring
+
+end ReciprocityTheory.L2DbarEstimates.C
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExtWeakA, ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExtCutB, ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExtCut, ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExtWeak
@@ -103,7 +177,7 @@ theorem logCutoff_le_one (F : V n → ℂ) (k : ℝ) (z : V n) : extCut F k z �
 
 theorem logCutoff_eq_one {F : V n → ℂ} {k : ℝ} (hk : 0 < k) {z : V n} (hz : F z ≠ 0)
     (h : -Real.log (‖F z‖ ^ 2) ≤ k) : extCut F k z = 1 := by
-  simp only [extCut, hz, if_false]
+  simp only [extCut, hz, ite_false]
   exact extCh_of_le_one ((div_le_one hk).2 h)
 
 theorem logCutoff_eventuallyEq_zero {F : V n → ℂ} {k : ℝ} (hk : 0 < k) {z : V n}
@@ -212,10 +286,10 @@ theorem fderiv_logCutoff_eq_zero {F : V n → ℂ} {k : ℝ} (hk : 0 < k) {z : V
   have hd : deriv extCh (a / k) = 0 := by
     by_cases h1 : k ≤ a
     · have h2 : 2 * k < a := by
-        push_neg at h
+        push Not at h
         exact h h1
       exact deriv_extCh_of_two_lt ((lt_div_iff₀ hk).2 (by linarith))
-    · push_neg at h1
+    · push Not at h1
       exact deriv_extCh_of_lt_one ((div_lt_one hk).2 h1)
   rw [hd, zero_smul]
 
@@ -825,7 +899,7 @@ theorem extErr_le {F g u : V n → ℂ} {k C0 Mg : ℝ} (hk : 0 < k) (hC0 : 0 �
   have hMg0 : 0 ≤ Mg := (norm_nonneg _).trans (hMg z)
   by_cases hmem : z ∈ tsupport g ∩ {z | F z ≠ 0 ∧ k ≤ -Real.log (‖F z‖ ^ 2) ∧
       -Real.log (‖F z‖ ^ 2) ≤ 2 * k}
-  · rw [Set.indicator_apply, if_pos hmem]
+  · rw [Set.indicator_apply, ite_eq_left hmem]
     have hD := norm_fderiv_logCutoff_le hk hC0b hFd hz
     have hE : ‖extErr F k v z‖ ≤ 2 * ‖v‖ * ‖fderiv ℝ (extCut F k) z‖ := by
       unfold extErr
@@ -851,7 +925,7 @@ theorem extErr_le {F g u : V n → ℂ} {k C0 Mg : ℝ} (hk : 0 < k) (hC0 : 0 �
           gcongr
           exact hMg z
       _ = _ := by ring
-  · rw [Set.indicator_apply, if_neg hmem, mul_zero, nonpos_iff_eq_zero, enorm_eq_zero]
+  · rw [Set.indicator_apply, ite_eq_right hmem, mul_zero, nonpos_iff_eq_zero, enorm_eq_zero]
     by_cases hzt : z ∈ tsupport g
     · have h2 : ¬ (k ≤ -Real.log (‖F z‖ ^ 2) ∧ -Real.log (‖F z‖ ^ 2) ≤ 2 * k) :=
         fun hb => hmem ⟨hzt, hz, hb⟩
@@ -919,7 +993,7 @@ private theorem bound_lemma_3 {Ω : Set (V n)} {F u g : V n → ℂ} {C0 Mg : �
     congr 1
     by_cases hzS : z ∈ S
     · rw [Set.indicator_of_mem hzS, Set.indicator_of_mem hzS, Set.indicator_of_mem hzS]
-    · rw [Set.indicator_apply, if_neg hzS, Set.indicator_apply, if_neg hzS, zero_mul]
+    · rw [Set.indicator_apply, ite_eq_right hzS, Set.indicator_apply, ite_eq_right hzS, zero_mul]
   have step3 := lintegral_const_mul' (μ := volume.restrict (Ω \ {z | F z = 0}))
     (ENNReal.ofReal (Mg * (2 * ‖v‖) * C0 * ((j : ℝ) + 1)⁻¹))
     (fun z => S.indicator (fun z => ‖u z‖ₑ) z *
@@ -939,7 +1013,7 @@ private theorem bound_lemma_3 {Ω : Set (V n)} {F u g : V n → ℂ} {C0 Mg : �
               rw [hT]
               exact ⟨⟨hgΩ hzS.1, hzS.2.1⟩, hzS.2.2.1⟩
             rw [Set.indicator_of_mem hzS, Set.indicator_of_mem hzT, ENNReal.rpow_two]
-          · rw [Set.indicator_apply, if_neg hzS, ENNReal.zero_rpow_of_pos (by norm_num)]
+          · rw [Set.indicator_apply, ite_eq_right hzS, ENNReal.zero_rpow_of_pos (by norm_num)]
             exact zero_le
       _ ≤ ∫⁻ z, T.indicator (fun z => ‖u z‖ₑ ^ 2) z := setLIntegral_le_lintegral _ _
       _ = ∫⁻ z in T, ‖u z‖ₑ ^ 2 := lintegral_indicator hTm' _
@@ -953,7 +1027,7 @@ private theorem bound_lemma_3 {Ω : Set (V n)} {F u g : V n → ℂ} {C0 Mg : �
           refine lintegral_mono (fun z => ?_)
           by_cases hzS : z ∈ S
           · rw [Set.indicator_of_mem hzS, Set.indicator_of_mem hzS, ENNReal.rpow_two]
-          · rw [Set.indicator_apply, if_neg hzS, Set.indicator_apply, if_neg hzS,
+          · rw [Set.indicator_apply, ite_eq_right hzS, Set.indicator_apply, ite_eq_right hzS,
               ENNReal.zero_rpow_of_pos (by norm_num)]
       _ ≤ ∫⁻ z, S.indicator (fun z => ‖fderiv ℝ (fun w => Real.log (‖F w‖ ^ 2)) z‖ₑ ^ 2) z :=
           setLIntegral_le_lintegral _ _
@@ -1147,7 +1221,7 @@ theorem extWeak_of_smooth {Ω : Set (V n)} {F u : V n → ℂ} (hΩ : IsOpen Ω)
       funext z
       by_cases hz : z ∈ Ω \ {z | F z = 0}
       · rw [Set.indicator_of_mem hz, Set.indicator_of_mem hz]
-      · rw [Set.indicator_apply, if_neg hz, Set.indicator_apply, if_neg hz, zero_mul]
+      · rw [Set.indicator_apply, ite_eq_right hz, Set.indicator_apply, ite_eq_right hz, zero_mul]
     rw [e, setIntegral_indicator hWm, Set.inter_eq_right.mpr Set.diff_subset]
   rw [hred]
   exact main_lemma_2 hΩ hF hsm hu hu2 hg v

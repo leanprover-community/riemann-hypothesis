@@ -146,9 +146,6 @@ section AnyBase
 variable {O : Type} [CommRing O] {β : O →+* c.F} (Z : Model Xo c β) (Ω : Type) [Field Ω]
 
 variable {Z Ω}
-def SameFlags (y y' : FlagPt Z Ω) (d : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Ωˣ) : Prop :=
-  y'.y = y.y ∧ y.frame.Tri (RingHom.id Ω) y'.frame d
-
 end AnyBase
 
 end Pts

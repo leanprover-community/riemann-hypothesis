@@ -67,8 +67,7 @@ theorem basis_fixed_bc {L k : Type} [CommRing L] [CommRing k] (ψ : L →+* k) {
     simp [Finset.sum_apply, Pi.single_apply]
   have hinv : ∀ i, (fun i' => ∑ j, e i j * M j i') = Pi.single i 1 := fun i => by
     refine (hb _ (he i)).unique ?_ ?_
-    · set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← he i, ← hs (e i), map_sum]
+    · conv_lhs => rw [← he i, ← hs (e i), map_sum]
       simp only [map_smul, hM, Finset.smul_sum, Finset.sum_smul, smul_smul]
       exact Finset.sum_comm
     · simp [Pi.single_apply]
@@ -126,7 +125,7 @@ theorem exists_proj_bc {L : Type} [CommRing L] [IsLocalRing L] (φ : c.F →+* L
           by_cases h : τ' = τ
           · subst h; rwa [Pi.single_eq_same]
           · rw [Pi.single_eq_of_ne h]; intro a; simp) τ
-        rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_same] at this
+        rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_same] at this
       refine ⟨fun m => e₂ _ (e₁ m), fun m => ?_⟩
       rw [ReciprocityTheory.ChartRestriction.G.Chart.mem_eigLat_iff]
       exact ⟨fun h => h ▸ e₁ m, fun h => e₂ m h⟩

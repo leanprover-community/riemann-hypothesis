@@ -106,12 +106,6 @@ def eps (K : Type) [CommRing K] (r : ℕ) : Matrix (Fin (r + 1)) (Fin (r + 1)) K
 
 end Rat
 
-namespace ModFam
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  {sig : E →ₐ[F] E} {g₁ g₂ : ℕ} (X : ModFam F E sig g₁ g₂)
-
-end ModFam
-
 end GlobalTheory.SgGlob
 end -- clump:auto
 end -- clump:auto
@@ -157,21 +151,6 @@ def Move (σ : E →+* E) {n r : ℕ} (J : Matrix (Fin n) (Fin n) E) (Λ : Submo
   ∃ s ∈ NO σ J Λ P, ∃ u ∈ UO E r, B = s * A * u
 
 end Defs
-
-section Field
-
-variable {σ : E →+* E} {n r : ℕ} {J s Y : Matrix (Fin n) (Fin n) E} {P P' : Matrix (Fin n) (Fin (r + 1)) E}
-  {u v A Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
-
-end Field
-
-section Lattice
-
-variable [NumberField E] {σ : E →+* E} {n r g : ℕ} {J s : Matrix (Fin n) (Fin n) E}
-  {P P' A B C : Matrix (Fin n) (Fin (r + 1)) E} {u v : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
-  {Λ Λ' Λ'' M : Submodule (𝓞 E) (Fin n → E)} {T T' : E}
-
-end Lattice
 
 end GlobalTheory.IntTerm
 end -- clump:auto
@@ -241,12 +220,6 @@ end Term
 
 end Basic
 
-section Examples
-
-variable {E : Type} [Field E] [NumberField E]
-
-end Examples
-
 section Spaces
 
 open Formalism.BasicNotions
@@ -264,18 +237,6 @@ theorem hT_eq_sum (V : HSpace E) (x y : V.V) :
   RingHom.id_apply, HSpace.gram, starRingEnd_apply, mul_comm]
 
 end Spaces
-
-section Record
-
-open Formalism.BasicNotions
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable (D : D7)
-
-variable {D} {u u' : D.what₂.Word}
-
-end Record
 
 end GlobalTheory.IntTerm
 end -- clump:auto

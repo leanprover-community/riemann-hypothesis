@@ -2,52 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 public import Mathlib.AlgebraicGeometry.ValuativeCriterion
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section
@@ -126,17 +84,6 @@ theorem apply_valCentre_base : p (valCentre p r y h) = r (closedPoint V) :=
 
 end Extension
 
-section Ring
-
-variable {O : Type u} [CommRing O] (V : Type u) {K : Type u} [CommRing V] [IsDomain V]
-  [ValuationRing V] [Field K] [Algebra V K] [IsFractionRing V K] [Algebra O V] [Algebra O K]
-  [IsScalarTower O V K] {X X' : Scheme.{u}}
-
-variable (p : X ⟶ Spec (.of O)) [UniversallyClosed p] [IsSeparated p]
-  (y : Spec (.of K) ⟶ X) (h : y ≫ p = specAlgebraMap O K)
-
-end Ring
-
 section Domination
 
 variable {V K K' : Type*} [CommRing V] [Field K] [Field K']
@@ -178,17 +125,6 @@ theorem exists_valuationSubring_comap_eq (T : ValuationSubring K) (χ : K →+* 
   exact a.2
 
 end Domination
-
-section Graph
-
-variable {V K : Type u} [CommRing V] [IsDomain V] [ValuationRing V] [Field K] [Algebra V K]
-  [IsFractionRing V K] {U Z Z₁ Z₂ S : Scheme.{u}}
-  (p₁ : Z₁ ⟶ S) [UniversallyClosed p₁] [IsSeparated p₁]
-  (p₂ : Z₂ ⟶ S) [UniversallyClosed p₂] [IsSeparated p₂]
-  (j₁ : U ⟶ Z₁) (j₂ : U ⟶ Z₂) (w : j₁ ≫ p₁ = j₂ ≫ p₂)
-  (r : Spec (.of V) ⟶ S) (y : Spec (.of K) ⟶ U) (h : y ≫ j₁ ≫ p₁ = specAlgebraMap V K ≫ r)
-
-end Graph
 
 section Centre
 

@@ -22,7 +22,6 @@ def Ser {X : Type} [AddCommGroup X] (q : QuadraticMap ℤ X ℝ) (N : ℕ) {J : 
     (∀ α i, t α i ≠ 0 → ∃ m, α = cls i + N • m) ∧
     ∀ α, (∀ i, ‖t α i‖ ≤ κ * Real.exp (-((q α - q (cls i)) / N + ν α))) ∧
       ∃ i, ‖t α i‖ = κ * Real.exp (-((q α - q (cls i)) / N + ν α))
-attribute [local instance] SplitExt.free SplitExt.finite
 
 structure Mod (p : ℕ) [Fact p.Prime] {V : Type} [CommRing V] (j : V →+* OO p) (G : Over (Sp V)) [GrpObj G]
     (g N : ℕ) {X : Type} [AddCommGroup X] (q : QuadraticMap ℤ X ℝ) (H : LB G.left) {J : Type} [Fintype J]

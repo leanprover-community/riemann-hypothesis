@@ -174,28 +174,28 @@ theorem three_part_frame_orthonormal (hk : 2 ≤ k) {v0 zz : Fin (2 * r + k + 1)
     by_cases ha0 : a.val = 0
     · rw [three_part_frame_zero ha0]
       by_cases hb0 : b.val = 0
-      · rw [three_part_frame_zero hb0, h00, if_pos (Fin.ext (by omega)), if_neg (by omega)]
-      · rw [if_neg (fun h => hb0 (by rw [← h]; exact ha0))]
+      · rw [three_part_frame_zero hb0, h00, ite_eq_left (Fin.ext (by omega)), ite_eq_right (by omega)]
+      · rw [ite_eq_right (fun h => hb0 (by rw [← h]; exact ha0))]
         by_cases hbl : b.val = k
         · rw [three_part_frame_last (by omega) hbl, h0z]
         · rw [three_part_frame_middle hb0 hbl, h0F]
     · by_cases hal : a.val = k
       · rw [three_part_frame_last (by omega) hal]
         by_cases hb0 : b.val = 0
-        · rw [three_part_frame_zero hb0, hz0, if_neg (fun h => ha0 (by rw [h]; exact hb0))]
+        · rw [three_part_frame_zero hb0, hz0, ite_eq_right (fun h => ha0 (by rw [h]; exact hb0))]
         · by_cases hbl : b.val = k
-          · rw [three_part_frame_last (by omega) hbl, hzz1, if_pos (Fin.ext (by omega)), if_pos hal]
-          · rw [three_part_frame_middle hb0 hbl, hzF, if_neg (fun h => hbl (by rw [← h]; exact hal))]
+          · rw [three_part_frame_last (by omega) hbl, hzz1, ite_eq_left (Fin.ext (by omega)), ite_eq_left hal]
+          · rw [three_part_frame_middle hb0 hbl, hzF, ite_eq_right (fun h => hbl (by rw [← h]; exact hal))]
       · rw [three_part_frame_middle ha0 hal]
         by_cases hb0 : b.val = 0
-        · rw [three_part_frame_zero hb0, hF0, if_neg (fun h => ha0 (by rw [h]; exact hb0))]
+        · rw [three_part_frame_zero hb0, hF0, ite_eq_right (fun h => ha0 (by rw [h]; exact hb0))]
         · by_cases hbl : b.val = k
-          · rw [three_part_frame_last (by omega) hbl, hFz, if_neg (fun h => hal (by rw [h]; exact hbl))]
+          · rw [three_part_frame_last (by omega) hbl, hFz, ite_eq_right (fun h => hal (by rw [h]; exact hbl))]
           · rw [three_part_frame_middle hb0 hbl, hFF]
             by_cases hab : a = b
-            · subst hab; rw [if_pos rfl, if_pos rfl, if_neg hal]
+            · subst hab; rw [ite_eq_left rfl, ite_eq_left rfl, ite_eq_right hal]
             · have hv : a.val ≠ b.val := fun h => hab (Fin.ext h)
-              rw [if_neg (fun h => hv (by have := congrArg Fin.val h; simp at this; omega)), if_neg hab]
+              rw [ite_eq_right (fun h => hv (by have := congrArg Fin.val h; simp at this; omega)), ite_eq_right hab]
 
 section pt
 
@@ -260,13 +260,13 @@ theorem mu_frame (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' 
       rcases mul_eq_zero.1 h1 with h | h
       · exact absurd ((map_eq_zero (starRingEnd ℂ)).1 h) ht0
       · exact h
-    rw [DU.prWv_of hyi, DU.hadd_r, DU.hsmul_r, hFz' j, mul_zero, add_zero] at h2
+    rw [DU.prWv_of hyi, Formalism.FourierDecayAlt.P.Qx8.herm_add_right', DU.hsmul_r, hFz' j, mul_zero, add_zero] at h2
     exact h2
   refine ⟨fun j => Qx8.inWb_mulVec hG (hFr.1 j), fun i j => by rw [Qx2.herm_uh hU]; exact hFr.2.1 i j, hz0, ?_⟩
   intro j
   set s : ℂ := (((Real.sqrt (herm (Hpk k r) (SSn.prWv k r z (μ *ᵥ z')) (SSn.prWv k r z (μ *ᵥ z'))).re)⁻¹ : ℝ) : ℂ)
   have hν : SSn.nu0 k r z z' μsec ζ = s • SSn.prWv k r z (μ *ᵥ z') := rfl
-  rw [hν, DU.hsmul_r, DU.prWv_of hy, DU.hadd_r, DU.hsmul_r, hz0 j, Qx2.herm_uh hU, hFz' j]
+  rw [hν, DU.hsmul_r, DU.prWv_of hy, Formalism.FourierDecayAlt.P.Qx8.herm_add_right', DU.hsmul_r, hz0 j, Qx2.herm_uh hU, hFz' j]
   simp
 
 theorem frame'_exists (hk : 2 ≤ k) (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z')
@@ -409,7 +409,7 @@ theorem blockProjection_basisVector_eq_zero {i : Fin (2 * r + k + 1)} (hi : i.va
   funext p
   unfold SSn.wbP bvec
   split_ifs with hp
-  · rw [Pi.single_apply, if_neg (by rintro rfl; omega)]; rfl
+  · rw [Pi.single_apply, ite_eq_right (by rintro rfl; omega)]; rfl
   · rfl
 
 theorem prWv_bvec_out (z' : Fin (2 * r + k + 1) → ℂ) {i : Fin (2 * r + k + 1)} (hi : i.val < r ∨ r + k < i.val) :
@@ -461,7 +461,7 @@ theorem cz_facts {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < T
     (((Real.sqrt (Tz k r z))⁻¹ : ℝ) : ℂ) ≠ 0 := by
   have hs : 0 < Real.sqrt (Tz k r z) := Real.sqrt_pos.2 hT
   refine ⟨Qx8.inWb_smul hz _, ?_, by exact_mod_cast (inv_pos.2 hs).ne'⟩
-  rw [DU.hsmul_l, DU.hsmul_r, FrameEntries.herm_self, Complex.conj_ofReal]
+  rw [Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', DU.hsmul_r, FrameEntries.herm_self, Complex.conj_ofReal]
   have hsq : Real.sqrt (Tz k r z) ^ 2 = Tz k r z := Real.sq_sqrt hT.le
   have hsq' : ((Real.sqrt (Tz k r z) : ℝ) : ℂ) ^ 2 = ((Tz k r z : ℝ) : ℂ) := by exact_mod_cast hsq
   have hne : ((Real.sqrt (Tz k r z) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
@@ -474,7 +474,6 @@ end
 end Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.MC.DT
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.MC
-
 
 noncomputable section
 
@@ -1139,7 +1138,7 @@ noncomputable section
 
 theorem sum_ite_smul {ι V : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup V] [Module ℂ V] (σ : ι) (Q : ι → V) :
     (∑ ρ, (if ρ = σ then (1 : ℂ) else 0) • Q ρ) = Q σ := by
-  simp only [ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem cross_section_at_point : AtCSec := by
   intro Wp Wq _ _ _ _ _ _ P Bs hk hcs X d hA l hl Pr hPr π ζ hζ X0 hX0
@@ -1214,13 +1213,13 @@ theorem cross_section_at_point : AtCSec := by
       have h2 := SSAdjH.kap_pt P Bs hpl hk e he d hkF (fun ρ => if ρ = σ then (1 : ℂ) else 0) (Ψ σ) ρ q
       rw [hraw, hrawΨ] at h2
       by_cases hρ : ρ = σ
-      · rw [if_pos hρ] at h2 ⊢
+      · rw [ite_eq_left hρ] at h2 ⊢
         apply mul_left_cancel₀ hw
         rw [h2]; ring
-      · rw [if_neg hρ] at h2 ⊢
+      · rw [ite_eq_right hρ] at h2 ⊢
         apply mul_left_cancel₀ hw
         rw [h2]; ring
-    simp only [hc, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hc, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
   set a : M.Ty P → ℂ := fun σ => inner ℂ (B.hsVec (e σ ζ)) (B.hsVec X0) with hadef
   let Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π' := ∑ σ, a σ • Ψ σ
@@ -1244,14 +1243,14 @@ theorem cross_section_at_point : AtCSec := by
     have h1 := hκpt (fun ρ => if ρ = π then (1 : ℂ) else 0) Φ
     rw [sum_ite_smul, hΦv, hXQ] at h1
     have h2 := SSAdjH.kap_pt P Bs hpl hk e he d hkF (fun ρ => if ρ = π then (1 : ℂ) else 0) Φ σ q
-    rw [hraw, h1, hrawΦ, if_neg hσ, zero_mul] at h2
+    rw [hraw, h1, hrawΦ, ite_eq_right hσ, zero_mul] at h2
     exact (mul_eq_zero.1 h2).resolve_left hw
 
   have hSSΨ : ∀ σ, rawR P Bs.μsec e ((((d.SS l).1 (Ψ π) : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')) :
       Q.Fn P.k P.r (Wq →L[ℂ] Wp)) σ q = s l σ π ζ * w := by
     intro σ
     rw [(SSAdjH.ss_pt P Bs hpl hk e he d s t hst hSL hl (Ψ π) σ q).1]
-    simp only [hrawΨ, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hrawΨ, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rfl
 
   have hK2 : ∀ ρ', ¬ M.Up P l π ρ' → s l ρ' π ζ = 0 := by
@@ -1262,9 +1261,9 @@ theorem cross_section_at_point : AtCSec := by
       dsimp only
       by_cases hρ : ρ = π
       · subst hρ
-        rw [if_pos hU, if_pos rfl]
+        rw [ite_eq_left hU, ite_eq_left rfl]
       · have hn2 : ¬ M.Up P l π ρ'' := fun h2 => hρ (up_relation_source_unique hU h2)
-        rw [if_neg hn2, if_neg hρ]
+        rw [ite_eq_right hn2, ite_eq_right hρ]
     have heq := hRel.2.2.2.1 l _ _ hcond
     have hz := congrArg (fun A : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') => A.1 (Ψ π)) heq
     simp only [hmulapply] at hz
@@ -1274,16 +1273,16 @@ theorem cross_section_at_point : AtCSec := by
     rw [SSAdjH.kap_pt P Bs hpl hk e he d hkF, hSSΨ,
       (SSAdjH.ss_pt P Bs hpl hk e he d s t hst hSL hl _ ρ' q).1] at h3
     try dsimp only at h3
-    rw [if_neg hn, zero_mul] at h3
+    rw [ite_eq_right hn, zero_mul] at h3
     rw [Finset.sum_eq_single π (fun b _ hb => by
         rw [SSAdjH.kap_pt P Bs hpl hk e he d hkF, hrawΨ]; try dsimp only
-        rw [if_neg hb]; ring)
+        rw [ite_eq_right hb]; ring)
       (fun h => absurd (Finset.mem_univ π) h)] at h3
     rw [SSAdjH.kap_pt P Bs hpl hk e he d hkF, hrawΨ] at h3
     try dsimp only at h3
     have h4 : s l ρ' π ζ * w = 0 := by
       have h5 : (0 : ℂ) = s l ρ' π ζ * ((if π = π then (1 : ℂ) else 0) * (w * if π = π then (1 : ℂ) else 0)) := h3
-      rw [if_pos rfl] at h5
+      rw [ite_eq_left rfl] at h5
       linear_combination -h5
     exact (mul_eq_zero.1 h4).resolve_right hw
 
@@ -1297,7 +1296,7 @@ theorem cross_section_at_point : AtCSec := by
     rw [(SSAdjH.ss_pt P Bs hpl hk e he d s t hst hSL hl _ π q).2, SSAdjH.kap_pt P Bs hpl hk e he d hkF,
       hrawΨ] at h3
     try dsimp only at h3
-    rw [if_pos rfl] at h3
+    rw [ite_eq_left rfl] at h3
     have h4 : ∀ σ, t l π σ q.1.2 * rawR P Bs.μsec e ((((d.SS l).1 (Ψ π) : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')) :
         Q.Fn P.k P.r (Wq →L[ℂ] Wp)) σ q = (star (s l σ π ζ) * s l σ π ζ) * w := by
       intro σ

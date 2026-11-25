@@ -2,46 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ReducedFiniteTypeIffTestRing
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -126,10 +88,10 @@ theorem exists_testRing_triRing :
   refine ⟨A, π, fun τ => Matrix.of fun i j => if h : j ≤ i then x (some ⟨τ, ⟨(i, j), h⟩⟩) else 0,
     (hx none trivial).unit, ?_, ?_, ?_⟩
   · intro τ i
-    simp only [Matrix.of_apply, le_refl, dif_pos]
+    simp only [Matrix.of_apply, le_refl, dite_eq_left]
     exact hx _ rfl
   · intro τ i j hij
-    exact dif_neg (not_le.2 hij)
+    exact dite_eq_right (not_le.2 hij)
   · intro T _ _ ψ g a hg1 hg2
     obtain ⟨k, ⟨hk1, hk2⟩, hk3⟩ := hu T ψ (fun o => o.elim (a : T) fun z => g z.1 z.2.1.1 z.2.1.2) (by
       rintro (_ | ⟨τ, ⟨i, j⟩, h⟩) hD
@@ -140,15 +102,15 @@ theorem exists_testRing_triRing :
     · ext i j
       simp only [Matrix.map_apply, Matrix.of_apply]
       by_cases h : j ≤ i
-      · rw [dif_pos h]
+      · rw [dite_eq_left h]
         exact hk2 _
-      · rw [dif_neg h, map_zero, hg2 τ i j (not_le.1 h)]
+      · rw [dite_eq_right h, map_zero, hg2 τ i j (not_le.1 h)]
     · rintro k' ⟨h1, h2, h3⟩
       refine hk3 k' ⟨h1, ?_⟩
       rintro (_ | ⟨τ, ⟨i, j⟩, h⟩)
       · exact h3
       · have := congrFun (congrFun (h2 τ) i) j
-        simp only [Matrix.map_apply, Matrix.of_apply, dif_pos h] at this
+        simp only [Matrix.map_apply, Matrix.of_apply, dite_eq_left h] at this
         exact this
 
 end GlobalTheory

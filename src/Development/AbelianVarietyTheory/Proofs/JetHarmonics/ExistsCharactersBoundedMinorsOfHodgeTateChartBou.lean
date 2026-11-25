@@ -11,47 +11,8 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NotIsUnitNatC
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TwistBaseChangeAndValuationStatements
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.EvSelfTwo
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.FormalGroupLawPointMaps
 import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
@@ -187,9 +148,9 @@ theorem exists_columns {C : Type} [Field C] (v : Valuation C NNReal) {O : Type} 
     if col σ.1 σ.2 = b then fun l => (if σ.1 = l.1 then 1 else 0) * f (g σ.1 σ.2) l else 0
   have hY : ∀ b σ, Has (Y b σ) := fun b σ => by
     by_cases hb : col σ.1 σ.2 = b
-    · simp only [Y, if_pos hb]
+    · simp only [Y, ite_eq_left hb]
       exact hf _ _
-    · simp only [Y, if_neg hb]
+    · simp only [Y, ite_eq_right hb]
       exact h0
   refine ⟨fun q => (∑ σ, Y q.2 σ) q.1, fun b => Finset.sum_induction _ Has hadd h0 fun σ _ => hY b σ, ?_⟩
   have key : ∀ t (a i : Fin (r t)), (∑ σ, Y (col t i) σ) ⟨t, a⟩ = u t i a := by

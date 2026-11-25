@@ -85,34 +85,17 @@ def cmpSl : ((D.fm u).lat 0).V →ₛₗ[c.embW u w h] (D.gat u w h).Fn where
 def cmpZero : ((Tw.fm u (D.what₂.muAt w)).lat 0).V →ₛₗ[c.embW u w h] (D.gat u w h).Fn :=
   (cmpSl c u w h).comp (Tw.e0 u (D.what₂.muAt w)).symm.toLinearMap
 
-private theorem semilinear_apply_mem_span_image_basis {K L V W κ : Type*} [Field K] [Field L] {σ : K →+* L} [AddCommGroup V]
-    [Module K V] [AddCommGroup W] [Module L W] (B : Module.Basis κ K V) (φ : V →ₛₗ[σ] W) (x : V) :
-    φ x ∈ Submodule.span L (Set.range (φ ∘ B)) := by
-  have hx : x ∈ Submodule.span K (Set.range B) := by
-    rw [B.span_eq]; trivial
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨i, rfl⟩ := hy
-    exact Submodule.subset_span ⟨i, rfl⟩
-  | zero => simp
-  | add y z _ _ hy hz =>
-    rw [map_add]; exact add_mem hy hz
-  | smul r y _ hy =>
-    rw [map_smulₛₗ]; exact Submodule.smul_mem _ _ hy
-
 private theorem linearIndependent_semilinear_basis_of_basis {K L V W κ κ' : Type*} [Field K] [Field L] {σ : K →+* L} [AddCommGroup V]
     [Module K V] [AddCommGroup W] [Module L W] [Fintype κ] [Fintype κ'] (B : Module.Basis κ K V)
     (B' : Module.Basis κ' K V) (φ : V →ₛₗ[σ] W) (hB : LinearIndependent L (φ ∘ B)) :
     LinearIndependent L (φ ∘ B') := by
   rw [linearIndependent_iff_card_eq_finrank_span] at hB ⊢
   have hs : Submodule.span L (Set.range (φ ∘ B')) = Submodule.span L (Set.range (φ ∘ B)) := by
-    apply le_antisymm
-    · rw [Submodule.span_le]
-      rintro _ ⟨a, rfl⟩
-      exact semilinear_apply_mem_span_image_basis B φ (B' a)
-    · rw [Submodule.span_le]
-      rintro _ ⟨a, rfl⟩
-      exact semilinear_apply_mem_span_image_basis B' φ (B a)
+    refine le_antisymm ?_ ?_ <;> rw [Submodule.span_le, Set.range_comp, Set.range_comp]
+    · exact (Set.image_mono fun x _ => by rw [SetLike.mem_coe, B.span_eq]; trivial).trans
+        (Submodule.image_span_subset_span φ _)
+    · exact (Set.image_mono fun x _ => by rw [SetLike.mem_coe, B'.span_eq]; trivial).trans
+        (Submodule.image_span_subset_span φ _)
   unfold Set.finrank at hB ⊢
   rw [hs, ← hB]
   exact Fintype.card_congr (B'.indexEquiv B)

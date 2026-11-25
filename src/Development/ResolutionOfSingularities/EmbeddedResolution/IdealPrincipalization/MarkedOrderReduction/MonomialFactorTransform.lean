@@ -753,8 +753,6 @@ private theorem isNoetherian_subscheme_of_smooth (T : MarkedIdealWithBoundary.{u
   have := hT.quasiCompact
   have : AlgebraicGeometry.IsNoetherian (Spec (CommRingCat.of T.base)) :=
     isNoetherian_spec_field T.base
-  have : AlgebraicGeometry.LocallyOfFiniteType (Z.subschemeι ≫ T.structMap) := inferInstance
-  have : AlgebraicGeometry.QuasiCompact (Z.subschemeι ≫ T.structMap) := inferInstance
   exact isNoetherian_of_locallyOfFiniteType (Z.subschemeι ≫ T.structMap)
 
 private theorem exists_opens_isIrreducible_support_inter (T : MarkedIdealWithBoundary.{u}) (hT : T.IsAdmissible)
@@ -766,7 +764,6 @@ private theorem exists_opens_isIrreducible_support_inter (T : MarkedIdealWithBou
   have := hT.charZero
   have := hT.smooth
   have : AlgebraicGeometry.IsNoetherian Z.subscheme := isNoetherian_subscheme_of_smooth T hT Z hsm
-  have : TopologicalSpace.NoetherianSpace ↥Z.subscheme := inferInstance
   have hemb : Topology.IsClosedEmbedding (⇑(Z.subschemeι).base) :=
     AlgebraicGeometry.IsClosedImmersion.isClosedEmbedding Z.subschemeι
   have hrange : Set.range (⇑(Z.subschemeι).base) = (↑Z.support : Set ↥T.scheme) := by

@@ -152,12 +152,7 @@ private theorem contDiff_det {n m : ℕ} (A : Matrix (Fin n) (Fin n) ℂ → Fin
 private theorem closed_sum {X E ι : Type*} [AddCommMonoid E] (P : (X → E) → Prop)
     (hadd : ∀ f₁ f₂, P f₁ → P f₂ → P fun x => f₁ x + f₂ x) (h0 : P fun _ => 0)
     (s : Finset ι) (F : ι → X → E) (hF : ∀ i, P (F i)) : P fun x => ∑ i ∈ s, F i x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using h0
-  | insert a s ha ih =>
-    simp only [Finset.sum_insert ha]
-    exact hadd _ _ (hF a) ih
+  simpa only [Finset.sum_fn] using Finset.sum_induction F P hadd h0 fun i _ => hF i
 
 private theorem closed_foldr {Y : Type*} (P : Y → Prop) (f : Y) (hf : P f) (L : List (Y → Y))
     (hL : ∀ T ∈ L, ∀ y, P y → P (T y)) : P (L.foldr (fun T h => T h) f) := by
@@ -182,8 +177,8 @@ theorem aa_closed.{u_1} {k r : ℕ} {E : Type u_1} [NormedAddCommGroup E] [Norme
     intro v a b f hf
     refine hadd (fun g => if a = b then v • f g else 0) _ ?_ (hE a b f hf)
     by_cases hab : a = b
-    · simp only [if_pos hab]; exact hc v f hf
-    · simp only [if_neg hab]; exact h0
+    · simp only [ite_eq_left hab]; exact hc v f hf
+    · simp only [ite_eq_right hab]; exact h0
   have hQ : ∀ (a b : Fin m → Fin (2 * r + k + 1)),
       P (qminorOp (EabH (Hpk k r)) a b u f) := by
     intro a b
@@ -196,9 +191,9 @@ theorem aa_closed.{u_1} {k r : ℕ} {E : Type u_1} [NormedAddCommGroup E] [Norme
   unfold AAop
   refine closed_sum P hadd h0 _ _ fun c => ?_
   by_cases hcm : StrictMono c
-  · simp only [if_pos hcm]
+  · simp only [ite_eq_left hcm]
     exact hmul _ (contDiff_det _ fun a l => contDiff_herm _ _ _) _ (hQ _ c)
-  · simp only [if_neg hcm]
+  · simp only [ite_eq_right hcm]
     exact h0
 
 end

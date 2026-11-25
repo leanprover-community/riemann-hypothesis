@@ -111,7 +111,6 @@ namespace GlobalTheory.Mem.LocalPack.Test
 
 attribute [local instance] Formalism.BasicNotions.factResChar
 
-
 section Reduction
 
 open Formalism.L2.G.Cmp Formalism.L2.G.RelativeIndexFlags
@@ -144,8 +143,6 @@ variable (D : D7) (sc : Scale)
     lamV (lam u w hg) (D.what₂.embLL z))
   (hPos : ∀ u w hg, (packC D Lc I ψ u w hg).posOK (iK u w hg) (lam u w hg))
 
-
-
 include hK hPos in
 theorem comparison_statements (hJ : ∀ u, Joint0 H0.lev0 u (T u))
     (h0 : ∀ u, LevelZeroCharacterRational (D := recC D sc 1 Lc I ψ hd) T u)
@@ -174,9 +171,7 @@ theorem comparison_statements (hJ : ∀ u, Joint0 H0.lev0 u (T u))
         (restChi_of (D := recC D sc 1 Lc I ψ hd) T h0) }
   exact N.toHyp0P hpos
 
-
 end Reduction
-
 
 end GlobalTheory.Mem.LocalPack.Test
 end -- clump:auto
@@ -326,8 +321,6 @@ theorem int_map_eq_zero_iff {F E L : Type} [Field F] [Field E] [Field L] (g : F 
   rw [map_eq_zero_iff f f.injective, map_eq_zero_iff g g.injective]
   exact RingOfIntegers.coe_eq_zero_iff
 
-
-
 theorem place_of_tie : ∀ (D : D7) (sc : Scale) (Ce : ℝ)
     (Lc : ∀ u, ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u))
     (I : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
@@ -431,8 +424,6 @@ def IsLocalFamily (sc : Scale) (D : D7) (L0 : LevelData D) (T : ∀ u : D.what�
         (embRec D w (nFr D (D.what₂.places.resChar w))) (ψ u w hg)) ∧
     g = gatOf D L0 I ψ sc
 
-
-
 theorem exists_isLocalFamily (sc : Scale) {D : D7} {L0 : LevelData D} (T : ∀ u : D.what₂.Word, Forms0 D u)
     (hS : Formalism.L2.Herm.StdTied D) (hC : Companion D L0) (hJ : ∀ u, Joint0 L0 u (T u)) (hψ : ∀ u, LevelZeroCharacterRational T u) :
     ∃ g, (∀ u w h, (g u w h).d = Module.finrank ℂ (D.mem u).A.Mu0) ∧ IsLocalFamily sc D L0 T g :=
@@ -446,8 +437,6 @@ theorem exists_isLocalFamily (sc : Scale) {D : D7} {L0 : LevelData D} (T : ∀ u
     ⟨I, ψ, stdBasis D hS, embK D L0, embAlg D L0, stdBasis_std D hS, fun _ _ _ _ _ => rfl,
       embK_embAlg D L0, posOK_placeId (D := D) (L0 := L0) hS hC ψ, hTied, rfl⟩
   ⟨g, hd, h⟩
-
-
 
 theorem isRecG_of_isLocalFamily {sc : Scale} {D : D7} {L0 : LevelData D} {T : ∀ u : D.what₂.Word, Forms0 D u}
     (hJ : ∀ u, Joint0 L0 u (T u)) (hψ : ∀ u, LevelZeroCharacterRational T u) {g} (hd : ∀ u w h, (g u w h).d = Module.finrank ℂ (D.mem u).A.Mu0)
@@ -530,22 +519,12 @@ theorem natCast_resField_eq_zero (F : Type) [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (p : ℕ) (h : (p : 𝓞 F) ∈ v.asIdeal) : (p : kv F v) = 0 := by
   apply _root_.GlobalTheory.Mem.Top.ColOwe.natCast_kv_eq_zero <;> assumption
 
-theorem range_of_pow_g (B : Base) (i : Fin 2) (z : ℂ) (hz : z ^ B.host.g i = 1) : ∃ r : B.LL, B.embLL r = z := by
-  have hp := B.host.g_prime i
-  obtain ⟨ζ, -, hζ⟩ := B.roots_Ks (B.host.g i * (B.host.g i - 1)) (by fin_cases i <;> simp)
-  have hne : B.host.g i * (B.host.g i - 1) ≠ 0 := mul_ne_zero hp.ne_zero (by have := hp.two_le; omega)
-  have hprim := Complex.isPrimitiveRoot_exp _ hne
-  have : NeZero (B.host.g i * (B.host.g i - 1)) := ⟨hne⟩
-  obtain ⟨k, -, hk⟩ := hprim.eq_pow_of_pow_eq_one (ξ := z) (by rw [pow_mul, hz, one_pow])
-  exact ⟨ζ ^ k, by rw [map_pow, hζ, hk]⟩
-
 end GlobalTheory.Mem.Col2.TC.PsiRat
-
 
 open GlobalTheory.Mem.Col2.TC.PsiRat in
 theorem GlobalTheory.Mem.Col2.TC.additiveCharacter_typePrimes_values_coefficientField : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (G : GLoc (I.rec7 l Z).host.F (I.rec7 l Z).host.E (sigD (I.rec7 l Z)) (I.rec7 l Z).host.g), I.IdG l Z G → ∀ j v h x, ∃ r : B.LL, B.embLL r = G.psi0 j v h x := by
   intro B X I _ _ l Z G _ j v h x
-  refine range_of_pow_g B j _ ?_
+  refine GlobalTheory.Mem.Top.ColOwe.mem_range_of_pow_g B j _ ?_
   rw [← AddChar.map_nsmul_eq_pow, nsmul_eq_mul]
   have h0 := natCast_resField_eq_zero _ v _ h
   erw [h0]
@@ -563,8 +542,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 
-theorem _root_.GlobalTheory.T.exists_psi0_eq_embLL : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (G : GLoc (I.rec7 l Z).host.F (I.rec7 l Z).host.E (sigD (I.rec7 l Z)) (I.rec7 l Z).host.g), I.IdG l Z G → ∀ j v h x, ∃ r : B.LL, B.embLL r = G.psi0 j v h x := by
-  first | exact @GlobalTheory.Mem.Col2.TC.additiveCharacter_typePrimes_values_coefficientField
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdditiveCharacterTypePrimesValuesCoefficientFielStatement =====
@@ -935,7 +912,6 @@ theorem isTheta0_lamConj {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t : ℂ} {M :
       Complex.conj_conj] at h2
     exact h2
 
-
 open Formalism.L2.GlobalTheoryTheory in
 theorem ties_of_data {D : D7} {δ : ℂ} (hF : FieldOK D.host D.what₂.embLL D.embE) (h : IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK δ)
     (h2 : g2 (lamOf D D.host.ccK δ) ∈ coefM D) (h3 : g3 (lamOf D D.host.ccK δ) ∈ coefM D) :
@@ -1032,8 +1008,6 @@ attribute [local instance] Formalism.BasicNotions.factResChar
 
 variable {B : Base} {C : Cols B}
 
-
-
 theorem isLocalFamily_stages (sc : Scale) (Z Z' : Later B C) (L0 : LevelData (recOf Z)) (T : ∀ u, Forms0 (recOf Z) u) (g)
     (h : IsLocalFamily sc (recOf Z) L0 T g) : IsLocalFamily sc (recOf Z') L0 (fun u => forms0Re Z' (T u)) g := by
   run_tac do
@@ -1090,26 +1064,22 @@ theorem columnLocalData_of_levelZero_concreteData (w : ColW B f T) (Z : w.Lt) (C
   exact ⟨⟨⟨C', hC', hL', Fu, h2, Gt, c, G, herm0_eq_to0 Fu.1 G.herm e (h1.trans hg), hf',
     gPlTiedS_of G.herm hpl _ _ e (h1.trans hg)⟩, hR, hO⟩⟩
 
-
-
 theorem nonempty_columnLocalData_of_standardConcreteFamily (w : ColW B f T) (Z : w.Lt) (C : ColsTiedSym (w.D Z)) (hC : TC.StdC w.I w.l Z C)
     (hL : ∀ u, TC.StdLvC w.I w.l Z u (C.forms u)) (g) (hd)
     (h : IsLocalFamily K.s (w.D Z) C.herm.base.lev0 (fun u => (C.forms u).to0) g)
     (hO : Formalism.L2.GlobalTheoryTheory.OmegaCompatible (w.D { Z with G := { Z.G with gat := g, gat_d := hd } }) w.I.J.δ) :
     Nonempty (ColumnDataSplitPrimes K w { Z with G := { Z.G with gat := g, gat_d := hd } }) := by
   obtain ⟨Gt, c, G, hR, hl, hf, hpl⟩ := isRecG_of_isLocalFamily C.joint0
-    (fun u => GlobalTheory.T.exists_psi0_eq_embLL w.I w.ok w.pins w.l Z (C.forms u).gl (hC u).gl) hd h
+    (fun u => GlobalTheory.Mem.Col2.TC.additiveCharacter_typePrimes_values_coefficientField w.I w.ok w.pins w.l Z (C.forms u).gl (hC u).gl) hd h
   exact columnLocalData_of_levelZero_concreteData w _ (colsRe _ C) (stdC_colsRe w.I w.l _ C hC) (fun u => stdLvC_colsRe w.I w.l _ C u (hL u)) hO Gt c G hR
     (funext hl) (funext fun u => (hf u).trans ((forms0Re_setGat g hd _).symm.trans (columnFormsAlongLaterStages_stageZero_eq _ C u).symm)) hpl
-
-
 
 theorem exists_trueVolume_stage_of_any_column_choice (p : WP) : StepW p fun K B f T w => ∃ G : GJStage B w.C, GIs2 K w G := by
   refine StepW.of_all fun K B f T w hO _ _ => ?_
   obtain ⟨Z₀⟩ := TrueColsTest.later w.l (JetEx.hasLetters_of_over hO)
   obtain ⟨C, hC, hL⟩ := GlobalTheory.T.exists_standardColumnComparisons_trueColumns w.I w.ok w.pins w.l Z₀
   obtain ⟨g, hd, h⟩ := exists_isLocalFamily K.s (D := w.D Z₀) (fun u => (C.forms u).to0) C.herm.std (companion_of_colsHermS C.herm)
-    C.joint0 fun u => GlobalTheory.T.exists_psi0_eq_embLL w.I w.ok w.pins w.l Z₀ (C.forms u).gl (hC u).gl
+    C.joint0 fun u => GlobalTheory.Mem.Col2.TC.additiveCharacter_typePrimes_values_coefficientField w.I w.ok w.pins w.l Z₀ (C.forms u).gl (hC u).gl
   refine ⟨{ Z₀.G.withTrue with gat := g, gat_d := hd }, (LayerTwoModel.gIs2_iff w _).2 fun W V S N => ?_⟩
   have hV : Formalism.L2.Theta.VolTieG (w.D ⟨W, V, S, N, { Z₀.G.withTrue with gat := g, gat_d := hd }⟩) :=
     _root_.GlobalTheory.Mem.Vol.volTieG_of_trueVol _ fun _ => rfl

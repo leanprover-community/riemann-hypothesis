@@ -110,14 +110,4 @@ theorem isHolTo_lift {G' G X' X : Scheme.{0}} {φ : G' ⟶ G} {h' : G' ⟶ X'} {
   refine Eq.trans ?_ (key (L.symm q)).symm
   simp only [L.apply_symm_apply]
 
-section Family
-
-open GlobalTheory.TrueCx.TorHolo
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r j : ℕ} {Tau : Type}
-  {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-  (Y : Model Xo c (RingHom.id c.F)) {σ : c.F →+* ℂ} {U : Unf Xo c σ r}
-
-end Family
-
 end GlobalTheory.TrueCx.TorFrHolo

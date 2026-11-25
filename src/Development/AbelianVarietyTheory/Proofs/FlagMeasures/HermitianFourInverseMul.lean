@@ -48,7 +48,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Compl
 
 @[expose] public section
 
-noncomputable section
 open ValuativeRel Formalism.MainNotions.S.Loc
 open scoped Pointwise ENNReal Classical
 
@@ -61,12 +60,6 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 theorem cj_int (L : LocE F E) {x : E} (hx : x ∈ L.O) : L.cj x ∈ L.O := by
   rw [L.O_def] at hx ⊢
   exact hx.map L.cj
-
-theorem hf_sum_right (L : LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) {ι : Type} (s : Finset ι)
-    (a : ι → Fin n → E) (y : Fin n → E) : hf L H y (∑ i ∈ s, a i) = ∑ i ∈ s, hf L H y (a i) := by
-  induction s using Finset.cons_induction with
-  | empty => simp [hf]
-  | cons i s hi ih => rw [Finset.sum_cons, Finset.sum_cons, hf_add_right, ih]
 
 section General
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)

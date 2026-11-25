@@ -9,7 +9,6 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DeltaIntegralE
 public import Lemmata.ClearingDenominators.UmonLeUzmon
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.HeisenbergDividedPowerExpansion
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.RaiseLowerPowCommutatorOnWeight
-public import Formalism.SharpRestriction.GrowthBounds.RootWeights.RestAOfHighestVectorIntegrality
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.InvariantDenominatorLinftyBound
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsIntegralWeightProjections
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
@@ -20,6 +19,30 @@ import Mathlib.RingTheory.PicardGroup
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightEntriesBetweenExtremeHighest
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.TraceProjectionIsInvProj
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Finset
+
+namespace Formalism.MainNotions.G.GLWeightTheory
+
+open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
+
+def HighestWeightVectorIntegrality : Prop :=
+  ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
+    AdmissibleDVR p n' O →
+    ∀ (n : ℕ) [NeZero n] (lam : Fin n → ℤ) (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
+      [IsScalarTower O (KK O) V] (E : GLOps n (KK O) V) (v : V), IsIrrHW E lam v →
+      v ∈ Nabla (O := O) E lam v
+
+end Formalism.MainNotions.G.GLWeightTheory
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.RootWeights.HighestWeightLatticeOfFirstPart, Formalism.SharpRestriction.GrowthBounds.RootWeights.GlOperatorMemIntegralEnveloping, Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsScalarMultipleMemDelta, Formalism.SharpRestriction.GrowthBounds.RootWeights.LoweringSpanLowerDividedPowerMem, Formalism.SharpRestriction.GrowthBounds.RootWeights.LoweringSpanHighestComponentIntegral, Formalism.SharpRestriction.GrowthBounds.RootWeights.LinfAdjointLeEllWtHighest
@@ -535,13 +558,13 @@ theorem raising_dividedPower_loweringSpan [CharZero (KK O)] {E : GLOps n (KK O) 
       · have hda : d ≠ a := fun e => hcase ⟨hbc.symm, e⟩
         subst hbc
         refine key (E a d) ?_ ?_ ?_ ?_
-        · rw [if_pos rfl, if_neg hda, sub_zero] at hr
+        · rw [ite_eq_left rfl, ite_eq_right hda, sub_zero] at hr
           rw [← hr]; abel
         · have := hE.1 a d b d
-          rw [if_neg (ne_of_lt hdc), if_neg hda, sub_zero] at this
+          rw [ite_eq_right (ne_of_lt hdc), ite_eq_right hda, sub_zero] at this
           exact sub_eq_zero.1 this
         · have := hE.1 a b a d
-          rw [if_neg (ne_of_gt hab), if_neg hda, sub_zero] at this
+          rw [ite_eq_right (ne_of_gt hab), ite_eq_right hda, sub_zero] at this
           exact sub_eq_zero.1 this
         · intro j y hy
           rw [dividedPower_eq_divPowE]
@@ -556,13 +579,13 @@ theorem raising_dividedPower_loweringSpan [CharZero (KK O)] {E : GLOps n (KK O) 
       · by_cases hda : d = a
         · subst hda
           refine key (-E c b) ?_ ?_ ?_ ?_
-          · rw [if_neg hbc, if_pos rfl, zero_sub] at hr
+          · rw [ite_eq_right hbc, ite_eq_left rfl, zero_sub] at hr
             rw [← hr]; abel
           · have := hE.1 c b c d
-            rw [if_neg hbc, if_neg (ne_of_lt hdc), sub_zero] at this
+            rw [ite_eq_right hbc, ite_eq_right (ne_of_lt hdc), sub_zero] at this
             rw [neg_mul, mul_neg, sub_eq_zero.1 this]
           · have := hE.1 d b c b
-            rw [if_neg hbc, if_neg (ne_of_gt hab), sub_zero] at this
+            rw [ite_eq_right hbc, ite_eq_right (ne_of_gt hab), sub_zero] at this
             rw [neg_mul, mul_neg, sub_eq_zero.1 this]
           · intro j y hy
             rw [dividedPower_neg_sign, LinearMap.smul_apply, dividedPower_eq_divPowE]
@@ -576,7 +599,7 @@ theorem raising_dividedPower_loweringSpan [CharZero (KK O)] {E : GLOps n (KK O) 
               have : (0 : ℤ) ≤ (j : ℤ) := by positivity
               nlinarith
         · refine key 0 ?_ (by simp) (by simp) ?_
-          · rw [if_neg hbc, if_neg hda, sub_zero] at hr
+          · rw [ite_eq_right hbc, ite_eq_right hda, sub_zero] at hr
             rw [add_zero]; exact sub_eq_zero.1 hr
           · intro j y hy
             rcases Nat.eq_zero_or_pos j with rfl | hj

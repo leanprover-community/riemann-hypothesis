@@ -141,7 +141,7 @@ theorem UpperTheory.Gal.W2.ballChar_of :
     have n1 : ComplexEmbedding.conjugate (ty i) ≠ t₀ := fun h => h2 (by rw [← h, hcc])
     have n2 : ComplexEmbedding.conjugate (ty i) ≠ ComplexEmbedding.conjugate t₀ := fun h =>
       h1 (by have := congrArg ComplexEmbedding.conjugate h; rwa [hcc, hcc] at this)
-    simp only [typeMult, h1, h2, n1, n2, if_false] at c1 c2
+    simp only [typeMult, h1, h2, n1, n2, ite_false] at c1 c2
     have a1 : ε (ty i) ≠ 0 := by
       intro h
       rw [h, mul_zero] at c1

@@ -857,7 +857,7 @@ private theorem pairEx_box (M : ℕ) (hM : 0 < M) (C τ Y X z z' : ℝ) (q d : �
 private theorem pairEx_g {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (h : χ ≠ 1) (y : ℝ) :
     Formalism.HC.An.gChi χ y = Gchi χ y := by
   unfold Formalism.HC.An.gChi
-  rw [if_neg h]
+  rw [ite_eq_right h]
   unfold Formalism.HC.An.sumLamChi Gchi
   congr 1
   apply Finset.sum_congr rfl

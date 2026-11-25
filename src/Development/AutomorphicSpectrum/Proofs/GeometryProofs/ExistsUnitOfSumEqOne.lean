@@ -169,7 +169,7 @@ theorem kMinor_lower_lastRow {F : Type} [CommRing F] {r : ℕ} (L : Matrix (Fin 
     have ha : (a : ℕ) ≠ k := by
       have : (a : ℕ) < b := hab'
       omega
-    simp only [Matrix.submatrix_apply, lastRow, dif_neg ha]
+    simp only [Matrix.submatrix_apply, lastRow, dite_eq_right ha]
     exact h0 _ _ (by rw [Fin.lt_def]; simpa using hab')
 
 theorem exists_normAt {F : Type} [Field F] (O : Subring F) [IsLocalRing O] {n r : ℕ}
@@ -244,7 +244,7 @@ theorem entries_mem {Ω K : Type} [Field Ω] [Field K] [Algebra Ω K] (Fd : Inte
 theorem genU_zero (Ω : Type) [Field Ω] {S : Type} (r : S → ℕ) (s : S) (l k : Fin (r s)) (h : l < k) :
     genU Ω r s l k = 0 := by
   unfold genU
-  rw [dif_neg (not_lt.2 h.le), if_neg h.ne]
+  rw [dite_eq_right (not_lt.2 h.le), ite_eq_right h.ne]
 
 theorem genU_one (Ω : Type) [Field Ω] {S : Type} (r : S → ℕ) (s : S) (l : Fin (r s)) :
     genU Ω r s l l = 1 := by

@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.TieTest
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest
@@ -92,5 +90,3 @@ theorem exists_tie {G : Grid p CF} {W : G.Weil} (hW : W.Over p.R.toRealDat) {n :
     fun t _ x i => mulVec_eq_of_basis a t (hS t) _ (fun i k => hv _ _ _) x i, hq⟩
 
 end GlobalTheory.BigTop.Fun.TieModel
-
-end

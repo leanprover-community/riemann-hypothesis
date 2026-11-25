@@ -253,7 +253,7 @@ theorem sum_unif (A : FinHolAtlas e X) {U : Set X} (hU : IsOpen U) {ι : Type} [
   choose V hV hev using fun i => member_unif A hU (hC2 i) hx hδ
   refine ⟨⋂ i, V i, mem_nhdsWithin_of_mem_nhds (Filter.iInter_mem.2 hV), ?_⟩
   filter_upwards [Filter.eventually_all.2 hev, Ioc_mem_nhdsGT ht₀] with t ht htt y hy
-  rw [if_pos ⟨htt.1, htt.2⟩, Real.dist_eq]
+  rw [ite_eq_left ⟨htt.1, htt.2⟩, Real.dist_eq]
   have hy' : ∀ i, y ∈ V i := Set.mem_iInter.1 hy
   have e1 : cst + ∑ i, c i * ph i y - (cst + ∑ i, c i * phT i t y) = ∑ i, c i * (ph i y - phT i t y) := by
     rw [add_sub_add_left_eq_sub, ← Finset.sum_sub_distrib]
@@ -321,11 +321,11 @@ theorem regular (hC : ConvergenceSignedStatement) {e : ℕ} {τ : Type} (S : AnS
       else cst + ∑ i, c i * S.ph (mm i) x) (bdry S.s)ᶜ := by
     intro t
     by_cases ht : 0 < t ∧ t ≤ S.t₀
-    · simp only [ht, and_self, if_true]
+    · simp only [ht, and_self, ite_true]
       refine continuousOn_const.add (continuousOn_finsetSum _ fun i _ => continuousOn_const.mul ?_)
       exact (continuousOn_of_smoothOn S.A isOpen_univ ((S.reg (mm i)).2.2 t ht.1 ht.2).1).mono
         (Set.subset_univ _)
-    · simp only [ht, if_false]
+    · simp only [ht, ite_false]
       exact continuousOn_const.add (continuousOn_finsetSum _ fun i _ => continuousOn_const.mul
         (continuousOn_of_smoothOn S.A hU (S.sing (mm i)).2.1))
   have hgb : ∀ t y, y ∉ bdry S.s → |(fun x => if 0 < t ∧ t ≤ S.t₀ then cst + ∑ i, c i * S.phT (mm i) t x
@@ -333,9 +333,9 @@ theorem regular (hC : ConvergenceSignedStatement) {e : ℕ} {τ : Type} (S : AnS
       (|cst| + ∑ i, |c i| * (|S.C| + |S.C₅|)) * Real.log (rW S.L S.s y) := by
     intro t y hy
     by_cases ht : 0 < t ∧ t ≤ S.t₀
-    · simp only [ht, and_self, if_true]
+    · simp only [ht, and_self, ite_true]
       exact abs_lin_le c cst _ (fun i => hphT (mm i) t ht.1 ht.2 y hy) (hl y hy)
-    · simp only [ht, if_false]
+    · simp only [ht, ite_false]
       exact abs_lin_le c cst _ (fun i => hph (mm i) y hy) (hl y hy)
   have hlim := sum_unif S.A hU (fun i => S.ph (mm i)) (fun i => S.phT (mm i)) c cst
     (fun i j K hK hKc => ((S.c2 (mm i)) j K hK hKc).1) S.t₀ ht₀
@@ -348,7 +348,7 @@ theorem regular (hC : ConvergenceSignedStatement) {e : ℕ} {τ : Type} (S : AnS
   have e1 : (fun x => if 0 < t ∧ t ≤ S.t₀ then cst + ∑ i, c i * S.phT (mm i) t x
       else cst + ∑ i, c i * S.ph (mm i) x) = fun x => cst + ∑ i, c i * S.phT (mm i) t x := by
     funext x
-    rw [if_pos ⟨ht.1, ht.2⟩]
+    rw [ite_eq_left ⟨ht.1, ht.2⟩]
   rw [e1]
   rfl
 

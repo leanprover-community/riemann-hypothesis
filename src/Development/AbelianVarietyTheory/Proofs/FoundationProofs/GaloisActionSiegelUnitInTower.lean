@@ -389,17 +389,12 @@ open GlobalTheory.KZ GlobalTheory.Sieg GlobalTheory.QFam Cardinal
 
 namespace GlobalTheory.KZ.GalUnits
 
-theorem exists_equiv_comp {R K L : Type} [Field R] [Field K] [Field L] [IsAlgClosed K]
-    [IsAlgClosed L] (f : R →+* K) (g : R →+* L) (hR : #R ≤ ℵ₀) (hK : ℵ₀ < #K) (hKL : #K = #L) :
-    ∃ σ : K ≃+* L, ∀ r : R, σ (f r) = g r := by
-  apply Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.extEmb_equiv_comp <;> assumption
-
 theorem exists_ext {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (s : Ω ≃ₐ[ℚ] Ω) :
     ∃ σ : ℂ ≃+* ℂ, ∀ x : Ω, σ (ε x) = ε (s x) := by
   haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
   have hR : #Ω ≤ ℵ₀ :=
     (Algebra.IsAlgebraic.cardinalMk_le_max ℚ Ω).trans (max_le Cardinal.mk_le_aleph0 le_rfl)
-  exact exists_equiv_comp ε (ε.comp (s : Ω →+* Ω)) hR
+  exact Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.extEmb_equiv_comp ε (ε.comp (s : Ω →+* Ω)) hR
     (by simp [Cardinal.mk_complex, Cardinal.aleph0_lt_continuum]) rfl
 
 theorem mem_range_of_pow_eq_one {Ω : Type} [Field Ω] [IsAlgClosed Ω] [CharZero Ω] (ε : Ω →+* ℂ) {n : ℕ}
@@ -428,7 +423,6 @@ theorem eps_eOm {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (�
   unfold eOm ee
   exact Function.invFun_eq hex
 
-
 open Classical in
 def lc {R : Type} [Zero R] (M : ℕ) (k : ℤ) (A : ℕ → R) (r : ℚ) : R :=
   if h : ∃ n : ℕ, r = ((k : ℚ) + n) / M then A h.choose else 0
@@ -448,7 +442,7 @@ theorem lc_zero {R : Type} [Zero R] {M : ℕ} {k : ℤ} (A : ℕ → R) {r : ℚ
     lc M k A r = 0 := by
   unfold lc
   rw [dite_eq_right]
-  push_neg
+  push Not
   exact h
 
 theorem lc_map {R S : Type} [Zero R] [Zero S] (M : ℕ) (k : ℤ) (A : ℕ → R) (g : R → S) (hg : g 0 = 0) (r : ℚ) :
@@ -463,7 +457,7 @@ theorem eq_lc {R : Type} [Zero R] {M : ℕ} (hM : 0 < M) {k : ℤ} {A : ℕ → 
   by_cases h : ∃ n : ℕ, r = ((k : ℚ) + n) / M
   · obtain ⟨n, rfl⟩ := h
     rw [h1, lc_eq hM]
-  · push_neg at h
+  · push Not at h
     rw [h2 r h, lc_zero A h]
 
 theorem lc_unique {M : ℕ} (hM : 0 < M) {f : ℍ → ℂ} {k k' : ℤ} {A A' : ℕ → ℂ}
@@ -492,7 +486,7 @@ theorem lc_unique {M : ℕ} (hM : 0 < M) {f : ℍ → ℂ} {k k' : ℤ} {A A' : 
     · rw [← hQ] at h2
       have e2 : (fun n => (if m ≤ n then A' (n - m) else 0) * Q ^ n) ∘ (· + m) = fun i => A' i * Q ^ i * Q ^ m := by
         funext n
-        simp only [Function.comp, le_add_iff_nonneg_left, zero_le, if_true, Nat.add_sub_cancel, pow_add]
+        simp only [Function.comp, le_add_iff_nonneg_left, zero_le, ite_true, Nat.add_sub_cancel, pow_add]
         ring
       rw [e2]; exact h2
   have hA := HasQ.coeff_unique hM h hs
@@ -503,18 +497,18 @@ theorem lc_unique {M : ℕ} (hM : 0 < M) {f : ℍ → ℂ} {k k' : ℤ} {A A' : 
   · obtain ⟨n, rfl⟩ := hr
     rw [lc_eq hM]
     by_cases hmn : m ≤ n
-    · rw [if_pos hmn]
+    · rw [ite_eq_left hmn]
       have : ((k : ℚ) + n) / M = (((k + m : ℤ) : ℚ) + ((n - m : ℕ) : ℚ)) / M := by
         push_cast [Nat.cast_sub hmn]; ring
       rw [this, lc_eq hM]
-    · rw [if_neg hmn, lc_zero]
+    · rw [ite_eq_right hmn, lc_zero]
       intro n' hn'
       rw [div_left_inj' hM'] at hn'
       push_cast at hn'
       have : (n : ℚ) = m + n' := by linarith
       have : n = m + n' := by exact_mod_cast this
       omega
-  · push_neg at hr
+  · push Not at hr
     rw [lc_zero _ hr, lc_zero]
     intro n' hn'
     apply hr (m + n')

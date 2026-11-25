@@ -4,6 +4,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.QuadraticAlgebra.Integral
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
@@ -53,33 +54,6 @@ noncomputable section
 namespace UpperTheory.V.Z.Sym.Glob
 
 open NumberField IsDedekindDomain Matrix Loc
-
-section Int
-
-variable {O K : Type} [CommRing O] [Field K] [Algebra O K]
-
-private theorem int_qa {p q : K} (hp : p ∈ (algebraMap O K).range) (hq : q ∈ (algebraMap O K).range)
-    {x : QuadraticAlgebra K p q} (h1 : x.re ∈ (algebraMap O K).range) (h2 : x.im ∈ (algebraMap O K).range) :
-    IsIntegral O x := by
-  obtain ⟨p0, rfl⟩ := hp
-  obtain ⟨q0, rfl⟩ := hq
-  obtain ⟨r0, hr⟩ := h1
-  obtain ⟨i0, hi⟩ := h2
-  have hw : IsIntegral O (QuadraticAlgebra.omega : QuadraticAlgebra K (algebraMap O K p0) (algebraMap O K q0)) := by
-    refine ⟨Polynomial.X ^ 2 - Polynomial.C q0 * Polynomial.X - Polynomial.C p0, ?_, ?_⟩
-    · monicity!
-    · rw [← Polynomial.aeval_def]
-      simp only [map_sub, map_mul, map_pow, Polynomial.aeval_X, Polynomial.aeval_C]
-      rw [pow_two, QuadraticAlgebra.omega_mul_omega_eq_algebraMap,
-        IsScalarTower.algebraMap_apply O K (QuadraticAlgebra K _ _) p0,
-        IsScalarTower.algebraMap_apply O K (QuadraticAlgebra K _ _) q0]
-      ring
-  have hx : x = algebraMap O _ r0 + algebraMap O _ i0 * QuadraticAlgebra.omega := by
-    ext <;> simp [IsScalarTower.algebraMap_apply O K (QuadraticAlgebra K _ _), hr, hi]
-  rw [hx]
-  exact (isIntegral_algebraMap).add ((isIntegral_algebraMap).mul hw)
-
-end Int
 
 section Closure
 
@@ -166,17 +140,23 @@ private theorem ae_int (x : F) : ∀ᶠ v : Pl F in Filter.cofinite, cv v x ∈ 
   filter_upwards [h] with v hv
   exact ⟨⟨_, hv⟩, rfl⟩
 
-private theorem ae_lsq (Δ : F) (x : Lsq F Δ) : ∀ᶠ v : Pl F in Filter.cofinite, IsIntegral (Ov v) (lmap (cv v) Δ x) := by
-  filter_upwards [ae_int Δ, ae_int x.re, ae_int x.im] with v h0 h1 h2
-  exact int_qa (x := lmap (cv v) Δ x) h0 (algebraMap (Ov v) (Kv v)).range.zero_mem h1 h2
+private theorem ae_lsq (Δ : F) (x : Lsq F Δ) :
+    ∀ᶠ v : Pl F in Filter.cofinite, IsIntegral (Ov v) (lmap (cv v) Δ x) := by
+  filter_upwards [ae_int Δ, ae_int x.re, ae_int x.im] with v h0 ⟨r0, hr⟩ ⟨i0, hi⟩
+  rw [← QuadraticAlgebra.re_smul_add_im_smul (lmap (cv v) Δ x)]
+  change IsIntegral (Ov v) ((cv v x.re) • 1 + (cv v x.im) • QuadraticAlgebra.omega)
+  rw [← hr, ← hi, algebraMap_smul, algebraMap_smul]
+  exact (isIntegral_one.smul r0).add
+    ((QuadraticAlgebra.isIntegral_omega h0 ⟨0, map_zero _⟩).smul i0)
 
-private theorem ae_et (τ : F) (x : Etau F τ) : ∀ᶠ v : Pl F in Filter.cofinite, IsIntegral (Ov v) (emap (cv v) τ x) := by
-  filter_upwards [ae_int τ, ae_int x.re, ae_int x.im] with v h0 h1 h2
-  have hm : cv v (-1 : F) ∈ (algebraMap (Ov v) (Kv v)).range := by
-    rw [map_neg, map_one]
-    exact (algebraMap (Ov v) (Kv v)).range.neg_mem (algebraMap (Ov v) (Kv v)).range.one_mem
-  have e : cv v (-1 : F) = -1 := by simp
-  exact int_qa (x := emap (cv v) τ x) (e ▸ hm) h0 h1 h2
+private theorem ae_et (τ : F) (x : Etau F τ) :
+    ∀ᶠ v : Pl F in Filter.cofinite, IsIntegral (Ov v) (emap (cv v) τ x) := by
+  filter_upwards [ae_int τ, ae_int x.re, ae_int x.im] with v h0 ⟨r0, hr⟩ ⟨i0, hi⟩
+  rw [← QuadraticAlgebra.re_smul_add_im_smul (emap (cv v) τ x)]
+  change IsIntegral (Ov v) ((cv v x.re) • 1 + (cv v x.im) • QuadraticAlgebra.omega)
+  rw [← hr, ← hi, algebraMap_smul, algebraMap_smul]
+  exact (isIntegral_one.smul r0).add
+    ((QuadraticAlgebra.isIntegral_omega ⟨-1, by simp⟩ h0).smul i0)
 
 private theorem ae_U (Δ : F) (g : U3 Δ) : ∀ᶠ v : Pl F in Filter.cofinite, mapU (cv v) Δ g ∈ KU (Ov v) (cv v Δ) := by
   have hall : ∀ᶠ v : Pl F in Filter.cofinite, ∀ i j : Fin 3,

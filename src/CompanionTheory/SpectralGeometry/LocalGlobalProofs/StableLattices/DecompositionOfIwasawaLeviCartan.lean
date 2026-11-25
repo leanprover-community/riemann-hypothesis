@@ -7,8 +7,6 @@ public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqu
 
 open Matrix Formalism.QuantumDeterminants CompanionTheory.Bmu
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BmuDecomp
 
 section general
@@ -140,18 +138,18 @@ theorem conj_mem_N {P Q m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) �
       by_cases hl : a.val ≤ l.val
       · rw [Matrix.sub_apply, hm1 a l hl, Matrix.one_apply]; simp
       · have : i ≠ l := by rintro rfl; exact hl hi
-        rw [(bP l (Or.inl (by omega)) i).1, if_neg this]; simp
-    · rw [(bQ (eI k r a) (Or.inl ha) p).1, if_neg hp]; simp
+        rw [(bP l (Or.inl (by omega)) i).1, ite_eq_right this]; simp
+    · rw [(bQ (eI k r a) (Or.inl ha) p).1, ite_eq_right hp]; simp
   · rw [key, Finset.sum_eq_zero, add_zero]
     intro p _
     refine Finset.sum_eq_zero fun l _ => ?_
     by_cases hp : p.val < r ∨ r + k < p.val
     · have : j ≠ p := by rintro rfl; omega
-      rw [(bQ p hp j).2, if_neg this]; simp
+      rw [(bQ p hp j).2, ite_eq_right this]; simp
     · by_cases hl : r ≤ l.val
       · rw [Matrix.sub_apply, hm2 l p (by omega) (by omega) hl, Matrix.one_apply]; simp
       · have : i ≠ l := by rintro rfl; exact hl hi
-        rw [(bP l (Or.inl (by omega)) i).1, if_neg this]; simp
+        rw [(bP l (Or.inl (by omega)) i).1, ite_eq_right this]; simp
 
 theorem dg_mem {d : Fin (2 * r + k + 1) → ℝ} (hd : IsTor k r d) : dg d ∈ UH (Hq k r) := by
   obtain ⟨-, h2, h3, -⟩ := hd

@@ -151,14 +151,6 @@ section -- clump:auto
 open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa UpperTheory.V.Pa.Core
 open scoped TensorProduct
 
-private theorem tupN_lam {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (D : GDet n A G) (φ : H →* G)
-    (i : ℕ) (g : H) : (D.comap φ).lam i (MonoidAlgebra.single g 1) = D.lam i (MonoidAlgebra.single (φ g) 1) := by
-  show (-1) ^ i * _root_.AddMonoidAlgebra.coeff (M := ℕ) (D.D (Polynomial A) (MonoidAlgebra.mapDomainRingHom (Polynomial A) φ
-      (MonoidAlgebra.single 1 Polynomial.X -
-        MonoidAlgebra.mapRingHom H Polynomial.C (MonoidAlgebra.single g 1)))) (n - i) = _
-  rw [map_sub]
-  simp [GDet.lam, GDet.chi, MonoidAlgebra.mapDomainRingHom_apply, MonoidAlgebra.mapDomain_single]
-
 private theorem tupN_ofRep {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H]
     (ρ : G →* Matrix (Fin n) (Fin n) A) (φ : H →* G) : (GDet.ofRep ρ).comap φ = GDet.ofRep (ρ.comp φ) := by
   apply _root_.UpperTheory.V.W.FramePullback.ofRep_comap <;> assumption
@@ -204,7 +196,7 @@ theorem UpperTheory.V.Pa.Core.tupN :
     have h2 := ((A.A N).p.cont i M).comp_continuous (Λ.π0_cont N)
     convert h2 using 1
     funext g
-    simp only [Function.comp_apply, tupN_lam]
+    simp only [Function.comp_apply, lam_comap]
     rfl
   · show ((A.A N).p.D.map (res O (A.A N).R : (A.A N).R →+* ResidueField O)).comap (πN0 Λ N) = _
     rw [(A.A N).p.red]

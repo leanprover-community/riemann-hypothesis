@@ -204,13 +204,13 @@ theorem kfin (hB : B1b) (k : InfinitePlace F → ℕ) (f : X (InfinitePlace F) �
   have hy : ∀ v, gv v (eS S * x) • iP = iP := by
     intro v
     have h1 : (gv v x).val 0 0 ^ 2 + (gv v x).val 0 1 ^ 2 = 1 := by
-      have := hr v 0 0; simp only [if_true] at this; linear_combination this
+      have := hr v 0 0; simp only [ite_true] at this; linear_combination this
     have h2 : (gv v x).val 1 0 ^ 2 + (gv v x).val 1 1 ^ 2 = 1 := by
-      have := hr v 1 1; simp only [if_true] at this; linear_combination this
+      have := hr v 1 1; simp only [ite_true] at this; linear_combination this
     have h3 : (gv v x).val 0 0 * (gv v x).val 1 0 + (gv v x).val 0 1 * (gv v x).val 1 1 = 0 := by simpa using hr v 0 1
     obtain ⟨e00, e01, e10, e11⟩ := gv_eS_mul S x v
     by_cases hv : v ∈ S
-    · have hs : sg S v = -1 := if_pos hv
+    · have hs : sg S v = -1 := ite_eq_left hv
       have hcase : (gv v x).val 1 0 = (gv v x).val 0 1 ∧ (gv v x).val 1 1 = -(gv v x).val 0 0 :=
         (orth_cases h1 h2 h3).resolve_left hv
       refine rot_fix _ (-(gv v x).val 0 0) (-(gv v x).val 0 1) ?_ ?_ ?_ ?_
@@ -218,7 +218,7 @@ theorem kfin (hB : B1b) (k : InfinitePlace F → ℕ) (f : X (InfinitePlace F) �
       · rw [e01, hs]; ring
       · rw [e10, hcase.1]; ring
       · rw [e11, hcase.2]
-    · have hs : sg S v = 1 := if_neg hv
+    · have hs : sg S v = 1 := ite_eq_right hv
       have hcase : (gv v x).val 1 0 = -(gv v x).val 0 1 ∧ (gv v x).val 1 1 = (gv v x).val 0 0 := not_not.1 hv
       refine rot_fix _ ((gv v x).val 0 0) ((gv v x).val 0 1) ?_ ?_ ?_ ?_
       · rw [e00, hs]; ring

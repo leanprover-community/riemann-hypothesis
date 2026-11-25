@@ -652,8 +652,8 @@ theorem UpperTheory.ConvolutionTheory.GM.locAll :
   · refine UpperTheory.ConvolutionTheory.L1.locHeckeSplit F E σ hσ hp n hn v hs (fun w => if w.1 ∈ κ then γ w.1 * p w.1 else 1)
       (fun w => h w.1) f (fun w => ?_) ?_
     · by_cases hw : w.1 ∈ κ
-      · simpa only [if_pos hw] using hh _ hw
-      · simp only [if_neg hw, hh' _ hw]
+      · simpa only [ite_eq_left hw] using hh _ hw
+      · simp only [ite_eq_right hw, hh' _ hw]
         exact (sphEx E n hn w.1).2.1
     · rw [finprod_eq_prod_of_fintype]
       convert hf using 2 with w
@@ -666,9 +666,9 @@ theorem UpperTheory.ConvolutionTheory.GM.locAll :
       exact finprod_eq_single _ w fun b hb => absurd (hw b) hb
     rw [e]
     by_cases hk : w.1 ∈ κ
-    · rw [if_pos hk, resDeg_inert v hv w hw] at hf
+    · rw [ite_eq_left hk, resDeg_inert v hv w hw] at hf
       exact hγ2 w.1 hk v w.2 hs (p w.1) (hpD _ hk) _ f (hh _ hk) hf
-    · rw [if_neg hk] at hf
+    · rw [ite_eq_right hk] at hf
       rw [(UpperTheory.ConvolutionTheory.L1.sphLaws.2 F n v).2.1 1 _ _ hf (sphEx F n hn v).2.1,
         hh' _ hk]
       have e2 : (fun g => (GLnLocal.integralGL (w.1.adicCompletion E) n : Set _).indicator

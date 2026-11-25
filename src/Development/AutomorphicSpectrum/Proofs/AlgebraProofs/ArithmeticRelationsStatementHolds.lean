@@ -379,7 +379,7 @@ theorem PositivityTheory.Xgn.t_fam_pull : ∀ (O : Type) [CommRing O] [IsDomain 
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a5 _ (fun _ => rfl),
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a6 _ (fun _ => rfl),
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a7 _ (fun _ => rfl)⟩
-  · exact (_root_.GlobalTheory.CompanionTheory.Ar.Num.lattice_base_change_larger_ring (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1) Ω _
+  · exact (_root_.PositivityTheory.Xgn.character_data_base_change (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1) Ω _
       (fun a ha => (hc c h).2 ha)).2
   · exact PositivityTheory.Xgn.test_facts_base_change (D (restrictChart c)) _ _ (hc c h).2 p _ _ φ (hD.test _ (hc c h).1)
   · exact ((PositivityTheory.Xgn.good_lattice_base_change (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1)
@@ -613,7 +613,7 @@ theorem injective {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
     {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have h1 : a ∈ (mcIdeal O x).comap (C : O →+* _) := by
     rw [Ideal.mem_comap, mcIdeal, RingHom.mem_ker]
@@ -783,7 +783,7 @@ theorem injective {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
     {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have h1 : a ∈ (mcIdeal O x).comap (C : O →+* _) := by
     rw [Ideal.mem_comap, mcIdeal, RingHom.mem_ker]
@@ -1372,7 +1372,6 @@ theorem isIntegrallyClosedIn (R R' : Subalgebra O Ω) {u : Ω} (hu0 : u ≠ 0) (
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-
 omit [∀ k, Fintype (ι k)] in
 theorem fam (x : (Σ k, ι k) → Ω) : IsLatFamily O x fun c => intGrp (chartRing O (mseg x) c) := by
   refine ⟨fun s _ a ha v hv => (isIntegral_of_mem ha).mul hv, fun s t hs _ v hv => ?_⟩
@@ -1529,7 +1528,7 @@ theorem inj_of_model {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [�
     {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   have hmem : c ∈ (mcIdeal O x).comap (MvPolynomial.C : O →+* MvPolynomial (Σ k, ι k) O) := by
     rw [Ideal.mem_comap]
@@ -1705,7 +1704,7 @@ theorem sum_allOne (q : ℕ) (F : (Fin q →₀ ℕ) → ℤ) :
     ∑ μ ∈ (monomial (allOne q) (1 : ℤ) : MvPolynomial (Fin q) ℤ).support,
       (monomial (allOne q) (1 : ℤ) : MvPolynomial (Fin q) ℤ).coeff μ * F μ = F (allOne q) := by
   classical
-  rw [support_monomial, if_neg one_ne_zero, Finset.sum_singleton, coeff_monomial, if_pos rfl, one_mul]
+  rw [support_monomial, ite_eq_right one_ne_zero, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl, one_mul]
 
 theorem classNum_perm {K : Type} [DecidableEq K] {ι : K → Type} {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] {σ : Type} (cls : σ → K → ℤ) (H : MvPolynomial σ ℤ)

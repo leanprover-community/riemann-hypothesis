@@ -174,8 +174,6 @@ def finLoc (v : HeightOneSpectrum (𝓞 D.host.F)) : GfC V →* Gv V v := (proj 
 def archInf (w : InfinitePlace D.host.F) : Gw V w →* GinfC V :=
   (embW V w).codRestrict _ fun x => mem_infPts.2 (projFin_embArch _ _ w x)
 
-def infArch (w : InfinitePlace D.host.F) : GinfC V →* Gw V w := (projArch D.sp.cm.sig V.gram w).comp (GinfC V).subtype
-
 def toFin : GA D V →* GfC V :=
   ((ofFin D.sp.cm.sig V.gram).comp (projFin _ _)).codRestrict _ fun _ => mem_finPts.2 (projInf_ofFin _ _ _)
 
@@ -234,10 +232,6 @@ theorem isIrrUnitary_dsRep (M : DSModel V S) (τ : D.what₂.Tau) : IsIrrUnitary
   ⟨(M.ds τ).1, Orb.isUnitaryRep_dsRep M τ, Orb.isTopIrreducible_dsRep M τ⟩
 
 def HasDSComp (M : DSModel V S) (π : GA D V →* (H →L[ℂ] H)) : Prop := ∀ τ, HasArchComp V (placeOf D τ) (dsRep M τ) π
-
-def IsDSTensor (M : DSModel V S) (δ : GinfC V →* (X →L[ℂ] X)) : Prop :=
-  ∃ B, IsRestrTensor (fun τ => infArch V (placeOf D τ)) (dsRep M) 0 δ B
-
 
 open Classical in
 def homDS (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :

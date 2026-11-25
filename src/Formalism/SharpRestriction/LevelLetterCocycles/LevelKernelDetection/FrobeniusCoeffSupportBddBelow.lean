@@ -28,7 +28,7 @@ theorem convolution_one {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] 
   rw [finsum_eq_single _ 0]
   · simp
   · intro j hj
-    rw [PowerSeries.coeff_one, if_neg hj, zero_smul]
+    rw [PowerSeries.coeff_one, ite_eq_right hj, zero_smul]
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -239,10 +239,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {O : Type} [CommRing O] [Algebra O LL] [TopologicalSpace LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} [NeZero n] {W : LocWach PD LL O v n}
 
-theorem Pf_LvExp_ιV_inj (T : LocLat G Qp LL O) : Function.Injective (ιV PD (LL := LL) (V := T.V)) :=
-  by apply _root_.Formalism.MainNotions.N.Ln03.Pf.crystalline_to_deRham_injective
-
-
 open Classical in
 def Pf_LvExp_Φ (W : LocWach PD LL O v n) (s : ℕ) (D : Type) [AddCommGroup D] [Module LL D] :
     KsW W s ⊗[LL] D ≃ₗ[LL] (Rs LL PD.p s → D) :=
@@ -292,7 +288,7 @@ theorem expSemi_holds (Lb : LevB W) (hR : Ring9 W) (T : LocLat G Qp LL O) (c : Z
   rw [map_sum, Finset.sum_apply]
   simp only [Pf_LvExp_Φ_smul]
   apply Subtype.ext
-  apply Pf_LvExp_ιV_inj (PD := PD) T
+  apply Formalism.MainNotions.N.Ln03.Pf.crystalline_to_deRham_injective (PD := PD) T
 
   simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, map_smul, Pf_LvExp_Φ_coefN]
   simp only [← levN_eq]

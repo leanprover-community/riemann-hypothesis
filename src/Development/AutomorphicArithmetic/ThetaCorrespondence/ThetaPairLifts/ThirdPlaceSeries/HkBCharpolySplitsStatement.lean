@@ -110,7 +110,7 @@ theorem charpoly_eq_prod_of_iSup_eigenspace {K V : Type} [Field K] [AddCommGroup
     rw [hy, hev, ← hy, map_smul, bb.repr_self, Matrix.diagonal_apply]
     by_cases hxy : x = y
     · subst hxy; simp
-    · rw [Finsupp.smul_apply, Finsupp.single_apply, if_neg (Ne.symm hxy), if_neg hxy, smul_zero]
+    · rw [Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hxy), ite_eq_right hxy, smul_zero]
   refine ⟨Finset.univ.val.map (fun x : (Σ r : s, Module.Free.ChooseBasisIndex K (E r)) => ((x.1 : s) : K)), ?_⟩
   rw [← LinearMap.charpoly_toMatrix f bb, hdiag, Matrix.charpoly_diagonal, Multiset.map_map,
     Finset.prod_eq_multiset_prod]
@@ -181,9 +181,6 @@ theorem charpoly_restrict_map_eq_prod {O V : Type} [CommRing O] [IsDomain O] [Ad
 
 end GlobalTheory.HeightCounting.FormsStep
 
-namespace GlobalTheory.HeightCounting.FormsStep
-
-end GlobalTheory.HeightCounting.FormsStep
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeBasisFreeModulePlace =====
@@ -518,8 +515,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX
   GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
-namespace GlobalTheory.HeightCounting.FormsStep
-end GlobalTheory.HeightCounting.FormsStep
 namespace GlobalTheory.HeightCounting.FormsStep
 theorem hkB_charpoly_splits_alt : ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE) (S : RatDat D.ntw)
     (In : RatIn D S) (b0 b1 : Big D) (Sx : Finset (PlE D.host)) (T : TwR D.LL0 D.nd) (Sp : RingSpec D cf b0 b1 Sx T),

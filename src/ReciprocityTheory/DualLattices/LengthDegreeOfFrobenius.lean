@@ -1,12 +1,9 @@
 module
 
-public import ReciprocityTheory.DualLattices.RestrictedHopfOrderApproximationStatement
-public import ReciprocityTheory.DualLattices.ExistsMatOfEquiv
 public import ReciprocityTheory.DualLattices.MemAugIdeal
 public import ReciprocityTheory.DualLattices.CokernelLengthComparisonOf
 public import ReciprocityTheory.DualLattices.SmallLevelClassSet
 public import ReciprocityTheory.DualLattices.InvolutionPermApplyZero
-public import ReciprocityTheory.DualLattices.EigenQuotientSmithStatement
 public import ReciprocityTheory.DualLattices.BlockOneMulMulBlockOne
 public import ReciprocityTheory.DualLattices.MatEquivApply
 public import ReciprocityTheory.DualLattices.PowMemCarrier
@@ -23,6 +20,226 @@ import ReciprocityTheory.DualLattices.ThmAUses
 import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.LinearAlgebra.Matrix.ToLin
+public import Mathlib.RingTheory.Valuation.Integers
+public import ReciprocityTheory.DualLattices.TensorSpan
+public import ReciprocityTheory.DualLattices.MapTensorSpan
+public import ReciprocityTheory.DualLattices.MemDualLat
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Matrix
+
+namespace ReciprocityTheory.PGsh.Up
+
+open ReciprocityTheory.PGsh.L2
+
+def psiW {p : ℕ} [Fact p.Prime] {g r : ℕ} (Bw : Matrix (Ix g) (Fin r) ℤ_[p]) :
+    (Fin r → ZMod p) →+ Nb p g :=
+  (Matrix.mulVecLin (Bw.map PadicInt.toZMod)).toAddMonoidHom
+
+def RestrictedHopfOrderStatement : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
+    (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C] [Algebra ℤ_[p] R]
+    (O : Type) [CommRing O] [Algebra ℤ_[p] O] (σ : O ≃ₐ[ℤ_[p]] O) (cp : R),
+    HodgeTateSetting p v R O σ cp → ∀ (H : HodgeTateDatum p g v R O σ cp) (a : O), a * a = a →
+    ∀ (r : ℕ) (Bw : Matrix (Ix g) (Fin r) ℤ_[p]),
+      LinearMap.range (Matrix.mulVecLin Bw) = LinearMap.range (Matrix.mulVecLin (H.ρ a)) →
+      LinearMap.ker (Matrix.mulVecLin Bw) = ⊥ →
+    ∀ d : ℕ, Nonempty (LinearMap.range (Matrix.mulVecLin (H.ρL a)) ≃ₗ[R] (Fin d → R)) →
+    ∃ AW : HopfOrder (C := C) R (Fin r → ZMod p),
+      AW.carrier = H.AA.carrier.map (LinearMap.funLeft R C (psiW Bw)) ∧
+      HasLen v R (OmAA AW.carrier) (v (algebraMap R C (p : R)) ^ d)
+
+def RestrictedHopfOrderApproximationStatement : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
+    (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C] [Algebra ℤ_[p] R]
+    (O : Type) [CommRing O] [Algebra ℤ_[p] O] (σ : O ≃ₐ[ℤ_[p]] O) (cp : R),
+    HodgeTateSetting p v R O σ cp → ∀ (H : HodgeTateDatum p g v R O σ cp) (m : ℕ) (e : Fin m → O)
+    (π : Equiv.Perm (Fin m)),
+    (∀ i j, e i * e j = if i = j then e i else 0) → (∀ i, σ (e i) = e (π i)) →
+    (∑ i, H.ρ (e i)) + H.P = 1 → (∀ i, H.ρ (e i) * H.P = 0) →
+    (∑ i, H.ρL (e i)) + H.PL = 1 → (∀ i, H.ρL (e i) * H.PL = 0) →
+    ∀ w, π w ≠ w → ∀ (r : ℕ) (Bw : Matrix (Ix g) (Fin r) ℤ_[p]),
+      LinearMap.range (Matrix.mulVecLin Bw) = LinearMap.range (Matrix.mulVecLin (H.ρ (e w))) →
+      LinearMap.ker (Matrix.mulVecLin Bw) = ⊥ →
+    ∀ (lam : Fin r → R) (dj : R),
+      dj • lam ∈ Submodule.span R (Set.range fun k : Fin g ⊕ Fin g =>
+        fun i : Fin r => (phiP H e * Bw.map (algebraMap ℤ_[p] R)) k i) →
+      v (algebraMap R C cp) ≤ v (algebraMap R C dj) →
+      ∃ f ∈ H.AA.carrier.map (LinearMap.funLeft R C (psiW Bw)), ∀ x : Fin r → ℤ_[p],
+        v (f (fun i => PadicInt.toZMod (x i)) -
+          algebraMap R C (dj * ∑ i, lam i * algebraMap ℤ_[p] R (x i))) < v (algebraMap R C dj)
+
+end ReciprocityTheory.PGsh.Up
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Matrix
+
+namespace ReciprocityTheory.PGsh.Up.PullbackHopfOrder
+
+open ReciprocityTheory.PGsh.L2
+
+section Hopf
+
+variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C]
+
+def pullHopf {N X : Type} [AddCommGroup N] [Fintype N] [DecidableEq N] [AddCommGroup X]
+    [Fintype X] [DecidableEq X] (ψ : X →+ N) (AA : HopfOrder (C := C) R N)
+    (hlat : IsLat R (AA.carrier.map (LinearMap.funLeft R C ψ))) : HopfOrder (C := C) R X where
+  carrier := AA.carrier.map (LinearMap.funLeft R C ψ)
+  lat := hlat
+  le_int := by
+    rintro _ ⟨f, hf, rfl⟩ x
+    exact AA.le_int hf (ψ x)
+  one_mem := ⟨1, AA.one_mem, rfl⟩
+  mul_mem := by
+    rintro _ _ ⟨f, hf, rfl⟩ ⟨g, hg, rfl⟩
+    exact ⟨f * g, AA.mul_mem f g hf hg, rfl⟩
+  comul := by
+    rintro _ ⟨f, hf, rfl⟩
+    rw [← SecondCohomologyLattice.map_tensorSpan (⇑ψ) AA.carrier]
+    refine ⟨addPull R N f, AA.comul f hf, ?_⟩
+    funext x
+    simp [addPull, LinearMap.funLeft_apply, map_add (f := _)]
+  antipode := by
+    rintro _ ⟨f, hf, rfl⟩
+    exact ⟨fun x => f (-x), AA.antipode f hf, funext fun x => by simp [LinearMap.funLeft_apply]⟩
+
+theorem pullHopf_carrier {N X : Type} [AddCommGroup N] [Fintype N] [DecidableEq N]
+    [AddCommGroup X] [Fintype X] [DecidableEq X] (ψ : X →+ N) (AA : HopfOrder (C := C) R N)
+    (hlat : IsLat R (AA.carrier.map (LinearMap.funLeft R C ψ))) :
+    (pullHopf ψ AA hlat).carrier = AA.carrier.map (LinearMap.funLeft R C ψ) := rfl
+
+theorem isLat_map_equiv {X K : Type} [Fintype X] [DecidableEq X] {_ : Fintype K} {_ : DecidableEq K}
+    (e : X ≃ K) {M : Submodule R (K → C)} (hM : IsLat R M) :
+    IsLat R (M.map (LinearMap.funLeft R C e)) := by
+  obtain ⟨B, hB, rfl⟩ := hM
+  refine ⟨B.submatrix e e, by rwa [Matrix.det_submatrix_equiv_self], ?_⟩
+  rw [Submodule.map_span, ← Set.range_comp]
+  have h1 : (fun j x => (B.submatrix e e) x j) =
+      (⇑(LinearMap.funLeft R C e) ∘ fun j x => B x j) ∘ e := by
+    funext j x
+    rfl
+  rw [h1, e.surjective.range_comp]
+
+theorem hopfLat {K : Type} {_ : AddCommGroup K} {_ : Fintype K} {_ : DecidableEq K}
+    (A : HopfOrder (C := C) R K) : IsLat R A.carrier := A.lat
+
+theorem isLat_pull (v : Valuation C NNReal) (hv : v.Integers R) {N X : Type} [AddCommGroup N]
+    [Fintype N] [DecidableEq N] [AddCommGroup X] [Fintype X] [DecidableEq X]
+    (ψ : X →+ N) (hψ : Function.Injective ψ) (AA : HopfOrder (C := C) R N) :
+    IsLat R (AA.carrier.map (LinearMap.funLeft R C ψ)) := by
+  classical
+  obtain ⟨⟨AK, hAK⟩, -⟩ := h2 C R v hv N ψ.range AA
+  let e := AddMonoidHom.ofInjective hψ
+  have hmap : (AA.carrier.map (resK ψ.range)).map (LinearMap.funLeft R C e.toEquiv) =
+      AA.carrier.map (LinearMap.funLeft R C ψ) := by
+    rw [← Submodule.map_comp]
+    congr 1
+  rw [← hmap, ← hAK]
+  exact isLat_map_equiv e.toEquiv (hopfLat AK)
+
+end Hopf
+
+section Split
+
+variable {S : Type} [CommRing S] {n k : Type} [Fintype n] [DecidableEq n] [Fintype k] [DecidableEq k]
+
+theorem exists_split (e : Matrix n n S) (he : e * e = e) (B : Matrix n k S)
+    (hr : LinearMap.range B.mulVecLin = LinearMap.range e.mulVecLin)
+    (hk : LinearMap.ker B.mulVecLin = ⊥) : ∃ L : Matrix k n S, L * B = 1 ∧ B * L = e := by
+  have hcol : ∀ j : n, ∃ c : k → S, B *ᵥ c = e *ᵥ Pi.single j 1 := by
+    intro j
+    have hmem : e *ᵥ Pi.single j 1 ∈ LinearMap.range B.mulVecLin := by
+      rw [hr]
+      exact ⟨_, rfl⟩
+    obtain ⟨c, hc⟩ := hmem
+    exact ⟨c, hc⟩
+  choose c hc using hcol
+  let L : Matrix k n S := Matrix.of fun i j => c j i
+  have hBL : B * L = e := by
+    ext i j
+    have h1 := congrFun (hc j) i
+    rw [Matrix.mulVec_single_one, Matrix.col_apply] at h1
+    rw [← h1]
+    simp [Matrix.mul_apply, Matrix.mulVec, dotProduct, L]
+  have heB : e * B = B := by
+    ext i j
+    have hmem : B *ᵥ Pi.single j 1 ∈ LinearMap.range e.mulVecLin := by
+      rw [← hr]
+      exact ⟨_, rfl⟩
+    obtain ⟨w, hw⟩ := hmem
+    have h2 : e *ᵥ (B *ᵥ Pi.single j 1) = B *ᵥ Pi.single j 1 := by
+      rw [← hw]
+      simp only [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, he]
+    rw [Matrix.mulVec_mulVec, Matrix.mulVec_single_one, Matrix.mulVec_single_one] at h2
+    simpa [Matrix.col_apply] using congrFun h2 i
+  have hinj : Function.Injective B.mulVecLin := LinearMap.ker_eq_bot.1 hk
+  refine ⟨L, ?_, hBL⟩
+  ext i j
+  have h3 : B *ᵥ ((L * B) *ᵥ Pi.single j 1) = B *ᵥ Pi.single j 1 := by
+    rw [Matrix.mulVec_mulVec, ← Matrix.mul_assoc, hBL, heB]
+  have h4 : (L * B) *ᵥ Pi.single j 1 = Pi.single j 1 := hinj h3
+  rw [Matrix.mulVec_single_one] at h4
+  have h5 := congrFun h4 i
+  simp only [Matrix.col_apply] at h5
+  rw [h5, Matrix.one_apply, Pi.single_apply]
+
+end Split
+
+end ReciprocityTheory.PGsh.Up.PullbackHopfOrder
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Matrix
+
+namespace ReciprocityTheory.PGsh.Up
+
+open ReciprocityTheory.PGsh.L2
+
+def EigenQuotientSmithStatement : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
+    (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C] [Algebra ℤ_[p] R]
+    (O : Type) [CommRing O] [Algebra ℤ_[p] O] (σ : O ≃ₐ[ℤ_[p]] O) (cp : R),
+    HodgeTateSetting p v R O σ cp → ∀ (H : HodgeTateDatum p g v R O σ cp) (m : ℕ) (e : Fin m → O)
+    (π : Equiv.Perm (Fin m)),
+    (∀ i j, e i * e j = if i = j then e i else 0) → (∀ i, σ (e i) = e (π i)) →
+    (∑ i, H.ρ (e i)) + H.P = 1 → (∀ i, H.ρ (e i) * H.P = 0) →
+    (∑ i, H.ρL (e i)) + H.PL = 1 → (∀ i, H.ρL (e i) * H.PL = 0) →
+    ∀ w, π w ≠ w → ∀ (r : ℕ) (Bw : Matrix (Ix g) (Fin r) ℤ_[p]),
+      LinearMap.range (Matrix.mulVecLin Bw) = LinearMap.range (Matrix.mulVecLin (H.ρ (e w))) →
+      LinearMap.ker (Matrix.mulVecLin Bw) = ⊥ →
+    ∀ X : NNReal, HasLen v R (xMod H e π w) X →
+    ∃ (Λ : Matrix (Fin r) (Fin r) R) (dj : Fin r → R), IsUnit Λ.det ∧
+      (∀ j, dj j • Λ j ∈ Submodule.span R (Set.range fun k : Fin g ⊕ Fin g =>
+        fun i : Fin r => (phiP H e * Bw.map (algebraMap ℤ_[p] R)) k i)) ∧
+      (∀ j, v (algebraMap R C cp) ≤ v (algebraMap R C (dj j))) ∧
+      X = ∏ j, v (algebraMap R C (dj j))
+
+end ReciprocityTheory.PGsh.Up
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.DualLattices.BasechangeProjectorIdempotentAction, ReciprocityTheory.DualLattices.RestrictHopfOrderLength, ReciprocityTheory.DualLattices.StdJForm4, ReciprocityTheory.DualLattices.SmithNormalFormStatement, ReciprocityTheory.DualLattices.WdetDegreeOfSmithRestrict, ReciprocityTheory.DualLattices.LengthDegreeOfFrobenius
@@ -132,7 +349,7 @@ private lemma basechangeProjector_idempotent_action (H : HodgeTateDatum p g v R 
     rw [← Matrix.mulVec_mulVec, map_algebraMap_mulVec_comp, projector_mul_idempotent_action H e hPT w s, h0, Matrix.mulVec_zero]
   unfold btP
   rw [Matrix.add_mulVec, Matrix.sum_mulVec, Finset.sum_congr rfl (fun i _ => hterm i), Finset.sum_ite_eq',
-    if_pos (Finset.mem_univ _), hP, add_zero]
+    ite_eq_left (Finset.mem_univ _), hP, add_zero]
 
 private lemma isHopfApproximable_row (H : HodgeTateDatum p g v R O σ cp) {m : ℕ} (e : Fin m → O)
     (horth : ∀ i j, e i * e j = if i = j then e i else 0) (hPT : ∀ i, H.ρ (e i) * H.P = 0)
@@ -150,7 +367,7 @@ private lemma isHopfApproximable_row (H : HodgeTateDatum p g v R O σ cp) {m : �
       rw [← hrange]
       exact ⟨x, rfl⟩
     obtain ⟨s, hs⟩ := hmem
-    rw [← hs, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, ← map_mul, horth, if_pos rfl]
+    rw [← hs, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, ← map_mul, horth, ite_eq_left rfl]
   rcases k with j | j
   · refine isHopfApproximable_congr H Bw (ℓ := fun x => (H.Ht *ᵥ (algebraMap ℤ_[p] R ∘ (Bw *ᵥ x))) j)
       (fun x => ?_) (isHopfApproximable_comp_mulVec H Bw (fun t => (H.Ht *ᵥ (algebraMap ℤ_[p] R ∘ t)) j) (H.h4 j).1)
@@ -272,7 +489,7 @@ theorem restrictedHopfOrderApproximation : RestrictedHopfOrderApproximationState
       norm_num
     have hvdj : v (algebraMap R C dj) = v (algebraMap R C (p : R)) :=
       le_antisymm hcase (by rw [hpc]; exact hdj)
-    have hQ : H.ρ (e w) * H.ρ (e w) = H.ρ (e w) := by rw [← map_mul, horth, if_pos rfl]
+    have hQ : H.ρ (e w) * H.ρ (e w) = H.ρ (e w) := by rw [← map_mul, horth, ite_eq_left rfl]
     obtain ⟨M, hM⟩ := exists_leftInverse_of_range_eq (H.ρ (e w)) hQ Bw hrange hker
     choose sv hsv using fun i => exists_padicPairing_eq_coord H.E H.isUnit_det_E M Bw hM i
     choose χ hχ hχv using fun i => H.h5 hp2 (sv i)
@@ -518,13 +735,13 @@ theorem btP_facts (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g 
   have h2 : ∀ i j, εT i * εT j = if i = j then εT i else 0 := by
     intro i j
     refine Fin.lastCases ?_ (fun i => ?_) i <;> refine Fin.lastCases ?_ (fun j => ?_) j
-    · rw [hTl, ← map_mul, H.projectors.1, if_pos rfl]
-    · rw [hTl, hTc, ← map_mul, hPρ, map_zero, if_neg (Fin.castSucc_lt_last j).ne']
-    · rw [hTl, hTc, ← map_mul, hPT, map_zero, if_neg (Fin.castSucc_lt_last i).ne]
+    · rw [hTl, ← map_mul, H.projectors.1, ite_eq_left rfl]
+    · rw [hTl, hTc, ← map_mul, hPρ, map_zero, ite_eq_right (Fin.castSucc_lt_last j).ne']
+    · rw [hTl, hTc, ← map_mul, hPT, map_zero, ite_eq_right (Fin.castSucc_lt_last i).ne]
     · rw [hTc, hTc, ← map_mul, ← map_mul, horth]
       by_cases hij : i = j
       · subst hij; simp
-      · rw [if_neg hij, if_neg (fun h => hij (Fin.castSucc_injective _ h)), map_zero, map_zero]
+      · rw [ite_eq_right hij, ite_eq_right (fun h => hij (Fin.castSucc_injective _ h)), map_zero, map_zero]
   have h3 : ∑ i, εT i = 1 := by
     rw [Fin.sum_univ_castSucc]
     simp only [hTc, hTl]
@@ -533,13 +750,13 @@ theorem btP_facts (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g 
   have h4 : ∀ i j, εL i * εL j = if i = j then εL i else 0 := by
     intro i j
     refine Fin.lastCases ?_ (fun i => ?_) i <;> refine Fin.lastCases ?_ (fun j => ?_) j
-    · rw [hLl, H.projectors.2.1, if_pos rfl]
-    · rw [hLl, hLc, hPLρ, if_neg (Fin.castSucc_lt_last j).ne']
-    · rw [hLl, hLc, hPL, if_neg (Fin.castSucc_lt_last i).ne]
+    · rw [hLl, H.projectors.2.1, ite_eq_left rfl]
+    · rw [hLl, hLc, hPLρ, ite_eq_right (Fin.castSucc_lt_last j).ne']
+    · rw [hLl, hLc, hPL, ite_eq_right (Fin.castSucc_lt_last i).ne]
     · rw [hLc, hLc, ← map_mul, horth]
       by_cases hij : i = j
       · subst hij; simp
-      · rw [if_neg hij, if_neg (fun h => hij (Fin.castSucc_injective _ h)), map_zero]
+      · rw [ite_eq_right hij, ite_eq_right (fun h => hij (Fin.castSucc_injective _ h)), map_zero]
   have h5 : ∑ i, εL i = 1 := by
     rw [Fin.sum_univ_castSucc]
     simp only [hLc, hLl]
@@ -620,7 +837,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
   have hv := hS.integers
   have hcp : cp ≠ 0 := htd_cp_ne hS
   set ι := algebraMap ℤ_[p] R with hι
-  have hidw : H.ρ (e w) * H.ρ (e w) = H.ρ (e w) := by rw [← map_mul, horth, if_pos rfl]
+  have hidw : H.ρ (e w) * H.ρ (e w) = H.ρ (e w) := by rw [← map_mul, horth, ite_eq_left rfl]
   obtain ⟨L, hLB, hBL⟩ := PullbackHopfOrder.exists_split (H.ρ (e w)) hidw Bw hrange hker
   set B := Bw.map ι with hB
   set εw := (H.ρ (e w)).map ι with hεw
@@ -671,8 +888,8 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
   set Pw : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) R :=
     fromBlocks (H.ρL (e (π w)))ᵀ 0 0 (H.ρL (e w)) with hPw
   have hidL : ∀ a : O, a * a = a → H.ρL a * H.ρL a = H.ρL a := fun a ha => by rw [← map_mul, ha]
-  have hidwL := hidL (e w) (by rw [horth, if_pos rfl])
-  have hidwbL := hidL (e (π w)) (by rw [horth, if_pos rfl])
+  have hidwL := hidL (e w) (by rw [horth, ite_eq_left rfl])
+  have hidwbL := hidL (e (π w)) (by rw [horth, ite_eq_left rfl])
   have hPwmv : ∀ q, Pw *ᵥ q = Sum.elim ((H.ρL (e (π w)))ᵀ *ᵥ (q ∘ Sum.inl))
       (H.ρL (e w) *ᵥ (q ∘ Sum.inr)) := by
     intro q
@@ -789,7 +1006,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
     by_cases hjk : (j : ℕ) = k
     · have hj : j = ⟨k, hrle k⟩ := Fin.ext hjk
       subst hj
-      rw [dif_pos k.isLt]
+      rw [dite_eq_left k.isLt]
       simp [hdj]
     · rw [Pi.smul_apply, Pi.single_eq_of_ne (fun h => hjk (by rw [h])), smul_zero]
       split_ifs with h
@@ -811,7 +1028,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
       rw [Finset.sum_eq_single k]
       · simp [hdj]
       · intro b _ hb
-        rw [if_neg (fun h => hb (Fin.ext h)), zero_mul]
+        rw [ite_eq_right (fun h => hb (Fin.ext h)), zero_mul]
       · intro h; exact absurd (Finset.mem_univ k) h
     rw [h1, hDQ]
     have h3 : (P * M') ⟨k, hrle k⟩ = ∑ l, P ⟨k, hrle k⟩ l • (fun i => M (e2.symm l) i) := by
@@ -838,7 +1055,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
       have : (cp • (u ∘ ⇑e2)) ∘ ⇑e2.symm = cp • u := by funext y; simp
       rw [this, mulVec_smul, hPP]
     have h4 := congrFun h3 j
-    rw [hDv, dif_pos k.isLt] at h4
+    rw [hDv, dite_eq_left k.isLt] at h4
     simp only [Pi.smul_apply, Pi.single_eq_same, smul_eq_mul, mul_one] at h4
     apply hv.le_of_dvd
     exact ⟨_, h4.symm⟩
@@ -866,7 +1083,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
             rw [← hM'D, hM'v, ht, ← mulVec_smul]
             rfl
           have h2 := congrFun h1 j
-          rw [hDv, dif_neg hj, Pi.smul_apply, smul_eq_mul] at h2
+          rw [hDv, dite_eq_right hj, Pi.smul_apply, smul_eq_mul] at h2
           exact (mul_eq_zero.1 h2.symm).resolve_left hcp
         have hPq : P *ᵥ ((q : Fin g ⊕ Fin g → R) ∘ e2.symm) = D *ᵥ s := by
           funext j
@@ -889,7 +1106,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
           rw [← hM'D, hM'v]
           congr 1
           exact congrArg (· ∘ e2.symm) ht.symm
-        rw [h1, hDv, dif_pos k.isLt]
+        rw [h1, hDv, dite_eq_left k.isLt]
         exact Ideal.mul_mem_right _ _ (Ideal.subset_span rfl)
     have hsurj : Function.Surjective F := by
       intro z
@@ -903,11 +1120,11 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
         funext j
         rw [hDv]
         split_ifs with h
-        · simp only [Pi.smul_apply, smul_eq_mul, yt, dif_pos h, s, α]
+        · simp only [Pi.smul_apply, smul_eq_mul, yt, dite_eq_left h, s, α]
           rw [← Finset.mul_prod_erase Finset.univ dj (Finset.mem_univ ⟨j, h⟩)]
           simp only [hdj]
           ring
-        · simp [yt, dif_neg h]
+        · simp [yt, dite_eq_right h]
       have hαu : M *ᵥ (Q *ᵥ s) = α • (u ∘ e2) := by
         funext x
         have h1 : M' *ᵥ (Q *ᵥ s) = α • u := by
@@ -922,7 +1139,7 @@ theorem smith_normal_form_statement : EigenQuotientSmithStatement := by
       have h1 : ((u ∘ ⇑e2) ∘ ⇑e2.symm) = u := by funext j; simp
       show Ideal.Quotient.mk _ ((P *ᵥ ((u ∘ ⇑e2) ∘ ⇑e2.symm)) ⟨k, hrle k⟩) = z k
       rw [h1, hPP]
-      simp only [yt, dif_pos k.isLt, Fin.eta, y]
+      simp only [yt, dite_eq_left k.isLt, Fin.eta, y]
       exact Ideal.Quotient.mk_out (z k)
     have heq : xMod H e π w ≃ₗ[R] ((k : Fin r) → R ⧸ Ideal.span {dj k}) :=
       (Submodule.quotEquivOfEq _ _ (by rw [hmapT, hker])).trans (F.quotKerEquivOfSurjective hsurj)
@@ -980,7 +1197,7 @@ theorem wdetDegree_of_smith_restrict (hS : EigenQuotientSmithStatement) (hR : Re
   intro p _ g C _ _ _ v R _ _ _ O _ _ σ cp hSet H m e π horth hσ hsT hPT hsL hPL w hw d X hd hX
   classical
   have hv := hSet.integers
-  have hidem : e w * e w = e w := by rw [horth, if_pos rfl]
+  have hidem : e w * e w = e w := by rw [horth, ite_eq_left rfl]
   have hρidem : H.ρ (e w) * H.ρ (e w) = H.ρ (e w) := by rw [← map_mul, hidem]
   obtain ⟨r, Bw, hrange, hker⟩ := idem_basis (H.ρ (e w)) hρidem
   obtain ⟨Λ, dj, hΛ, hdjspan, hdjv, hXeq⟩ :=

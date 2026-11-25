@@ -57,9 +57,6 @@ theorem locEl_eventually_mem (n : ℕ) (δ : GL (Fin n) E) :
 
 end GlobalTheory.BCT.FinFib
 
-namespace GlobalTheory.BCT.FinFib
-
-end GlobalTheory.BCT.FinFib
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocElEventuallyMem =====
@@ -99,14 +96,7 @@ theorem exists_over {F K : Type} [Field F] [NumberField F] [Field K] [NumberFiel
 
 theorem finite_over {F K : Type} [Field F] [NumberField F] [Field K] [NumberField K] [Algebra F K]
     (v : HeightOneSpectrum (𝓞 F)) : {u : HeightOneSpectrum (𝓞 K) | u.under (𝓞 F) = v}.Finite := by
-  have h := IsDedekindDomain.primesOver_finite v.asIdeal (𝓞 K)
-  refine (h.preimage (f := fun u : HeightOneSpectrum (𝓞 K) => u.asIdeal)
-    (fun a _ b _ hab => HeightOneSpectrum.ext hab)).subset ?_
-  intro u hu
-  change u.under (𝓞 F) = v at hu
-  refine ⟨u.isPrime, ⟨?_⟩⟩
-  rw [← hu]
-  rfl
+  exact GlobalTheory.QNorm.finite_places_over F K v
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -284,10 +274,6 @@ theorem param_main (h1 : SkewEx) (h2 : Struct) (h3 : QuadField) (h4 : LocDict) (
     rw [← mul_assoc, inv_mul_cancel₀ (show (tc ⟨_, hmem⟩ : ∀ j, K j) i ≠ 0 from (ev i (tc ⟨_, hmem⟩)).ne_zero), one_mul]
 
 end PositivityTheory.Rg.BcB.G3.ParamP
-
-namespace PositivityTheory.Rg.BcB.G3
-
-end PositivityTheory.Rg.BcB.G3
 
 end
 end -- clump:auto

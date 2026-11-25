@@ -233,7 +233,7 @@ theorem lieOr_lie (v : List (Mat k r)) : ∀ X ∈ lieOr v, inLie k r X := by
 
 theorem lieOr_eq {v : List (Mat k r)} (h : ∀ X ∈ v, inLie k r X) : lieOr v = v := by
   unfold lieOr
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 theorem lieOr_len (v : List (Mat k r)) : (lieOr v).length ≤ v.length := by
   unfold lieOr

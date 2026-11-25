@@ -129,9 +129,9 @@ lemma sum_r (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O 
     change Matrix.mulVecLin (U.εL i) (G y) = (y i : Fin g → R)
 
     rw [hG, map_sum, Finset.sum_eq_single i]
-    · rw [hproj i i _ (y i).2, if_pos rfl]
+    · rw [hproj i i _ (y i).2, ite_eq_left rfl]
     · intro b _ hb
-      rw [hproj i b _ (y b).2, if_neg (Ne.symm hb)]
+      rw [hproj i b _ (y b).2, ite_eq_right (Ne.symm hb)]
     · intro h; exact absurd (Finset.mem_univ _) h
   have hGF : G ∘ₗ F = LinearMap.id := by
     refine LinearMap.ext fun x => ?_

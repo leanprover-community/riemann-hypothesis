@@ -76,8 +76,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ConjugateSqrtNeg.conj_sqrt_neg :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
-    [inst_2 : NumberField.IsCMField E] (d : ℕ) (x : E),
+    ∀ {E : Type} [Field E] [NumberField E]
+    [NumberField.IsCMField E] (d : ℕ) (x : E),
     (0 : ℕ) < d → x ^ (2 : ℕ) = -(↑d : E) → (NumberField.IsCMField.complexConj E : E → E) x = -x := by
   intro E _ _ _ d x hd hx
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
@@ -261,7 +261,7 @@ theorem UpperTheory.Gal.G1.exists_auxiliary_prime_cmDatum :
   have hp2 : ¬ p ∣ 2 := fun h => by
     have := Nat.le_of_dvd (by norm_num) h
     omega
-  haveI : Fact p.Prime := ⟨hp⟩
+  have : Fact p.Prime := ⟨hp⟩
   refine ⟨p, inferInstance, hb, sq_of_dvd p d (d * c) ?_ ?_⟩
   · have : (d * c) ^ 2 + d = d * (d * c ^ 2 + 1) := by ring
     rw [this]

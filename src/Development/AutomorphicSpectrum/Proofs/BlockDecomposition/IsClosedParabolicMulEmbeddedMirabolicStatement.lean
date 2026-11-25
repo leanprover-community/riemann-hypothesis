@@ -174,7 +174,7 @@ theorem set_eq (m j : ℕ) :
         (Fin.castSucc (Fin.last (m + j))) (Fin.castSucc l) = 0
     rw [Matrix.mul_apply]
     simp only [embedding₂, MonoidHom.comp_apply, Subgroup.coe_subtype]
-    simp only [row_levi, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [row_levi, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact hi _ _ (by simp) (by simpa using hl)
   · intro hg
     obtain ⟨A, hA1, hA2⟩ := exists_GL_row (m + j) m (rowQ k (m + j) g⁻¹) hg (rowQ_ne_zero _ _)

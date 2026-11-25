@@ -14,50 +14,7 @@ public import Mathlib.Topology.Algebra.InfiniteSum.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoordinateLatticeUniqueTermAlmostAllPlaces
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalHermitianFramesTermsOrbitsLocal
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetMassLeAndFinite
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Basify
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermInvariantsIndependentOfWitnesses
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -68,7 +25,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 
@@ -105,14 +61,14 @@ theorem GlobalTheory.HL.Frames.amp_mass_eq_one_of_one_orbit : ∀ {F : Type} [Fi
   constructor
   · unfold GlobalTheory.HL.Frames.amp
     rw [tsum_eq_single o₀]
-    · rw [if_pos ⟨hout, hP⟩, hmu, hom]; simp
+    · rw [ite_eq_left ⟨hout, hP⟩, hmu, hom]; simp
     · intro o ho
-      exact if_neg fun hc => hother o ho hc.1
+      exact ite_eq_right fun hc => hother o ho hc.1
   · unfold GlobalTheory.HL.Frames.mass
     rw [tsum_eq_single o₀]
-    · rw [if_pos ⟨hout, hP⟩, hmu]; simp
+    · rw [ite_eq_left ⟨hout, hP⟩, hmu]; simp
     · intro o ho
-      exact if_neg fun hc => hother o ho hc.1
+      exact ite_eq_right fun hc => hother o ho hc.1
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.AmplitudeMassEqOneOfSingleOrbit =====
@@ -129,25 +85,6 @@ namespace GlobalTheory.FrameDual
 
 open GlobalTheory.HL.Eichler
 
-section
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
-variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
-variable (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-
-theorem hf_sum_l {ι : Type} (s : Finset ι) (a : ι → Fin n → E) (y : Fin n → E) :
-    hf L Hm (∑ i ∈ s, a i) y = ∑ i ∈ s, hf L Hm (a i) y := by
-  induction s using Finset.induction_on with
-  | empty => simp [hf]
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, hf_add_l, ih]
-
-theorem hf_sum_r {ι : Type} (s : Finset ι) (a : ι → Fin n → E) (y : Fin n → E) :
-    hf L Hm y (∑ i ∈ s, a i) = ∑ i ∈ s, hf L Hm y (a i) := by
-  induction s using Finset.induction_on with
-  | empty => simp [hf]
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, hf_add_r, ih]
-
-end
-
 theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k) (g : Fin (r + 1) → S.V) (t : E) (gs gs2 : Fin r → S.V), (∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0) → (∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0) → (∀ a j, hf L S.Hm (g a) (gs2 j) = if a = j.castSucc then 1 else 0) → (∀ i j, hf L S.Hm (gs i) (gs j) = 0) → (∀ i j, hf L S.Hm (gs2 i) (gs2 j) = 0) → ∃ m ∈ S.Nof g, (∀ a, m (g a) = g a) ∧ (∀ j, m (gs j) = gs2 j) ∧ ∀ A : Submodule L.O S.V, (∀ x ∈ S.spanTo g r, x ∈ A) → (∀ x ∈ A, x ∈ perp L S.Hm (S.spanTo g r)) → m • (A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O) = A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs2))).restrictScalars L.O := by
   intro F _ _ _ _ _ E _ _ _ L r k S g t gs gs2 hg hd hd2 hi hi2
   have hcj := hf_cj L S.herm.1
@@ -156,28 +93,28 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
   obtain ⟨u, hu⟩ : ∃ u : Fin r → S.V, ∀ j, u j = w j + ∑ i, hf L S.Hm (gs j) (w i) • G i :=
     ⟨_, fun _ => rfl⟩
   have hGa : ∀ i a, hf L S.Hm (G i) (g a) = 0 := fun i a => by
-    rw [hG, hg, if_neg]; rintro ⟨h, -⟩; exact Fin.castSucc_ne_last i h
+    rw [hG, hg, ite_eq_right]; rintro ⟨h, -⟩; exact Fin.castSucc_ne_last i h
   have haG : ∀ a i, hf L S.Hm (g a) (G i) = 0 := fun a i => by
-    rw [hG, hg, if_neg]; rintro ⟨-, h⟩; exact Fin.castSucc_ne_last i h
+    rw [hG, hg, ite_eq_right]; rintro ⟨-, h⟩; exact Fin.castSucc_ne_last i h
   have hGG : ∀ i j, hf L S.Hm (G i) (G j) = 0 := fun i j => by rw [hG j]; exact hGa i _
   have hgw : ∀ a i, hf L S.Hm (g a) (w i) = 0 := fun a i => by rw [hw, hf_sub_r, hd, hd2, sub_self]
   have hwg : ∀ i a, hf L S.Hm (w i) (g a) = 0 := fun i a => by rw [← hcj, hgw, map_zero]
   have hGw : ∀ i j, hf L S.Hm (G i) (w j) = 0 := fun i j => by rw [hG i]; exact hgw _ _
   have hwG : ∀ i j, hf L S.Hm (w i) (G j) = 0 := fun i j => by rw [hG j]; exact hwg _ _
   have hGu : ∀ i j, hf L S.Hm (G i) (u j) = 0 := fun i j => by
-    simp only [hu, hf_add_r, hf_sum_r, hf_smul_r, hGw, hGG, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hu, hf_add_r, GlobalTheory.HL.DualInter.sum_r, hf_smul_r, hGw, hGG, mul_zero, Finset.sum_const_zero, add_zero]
   have huG : ∀ j i, hf L S.Hm (u j) (G i) = 0 := fun j i => by
-    simp only [hu, hf_add_l, hf_sum_l, hf_smul_l, hwG, hGG, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hu, hf_add_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l, hwG, hGG, mul_zero, Finset.sum_const_zero, add_zero]
   have huw : ∀ j i, hf L S.Hm (u j) (w i) = hf L S.Hm (w j) (w i) := fun j i => by
-    simp only [hu, hf_add_l, hf_sum_l, hf_smul_l, hGw, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hu, hf_add_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l, hGw, mul_zero, Finset.sum_const_zero, add_zero]
   have huu : ∀ j l, hf L S.Hm (u j) (u l) = hf L S.Hm (w j) (w l) := fun j l => by
     conv_lhs => rw [hu l]
-    simp only [hf_add_r, hf_sum_r, hf_smul_r, huG, huw, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hf_add_r, GlobalTheory.HL.DualInter.sum_r, hf_smul_r, huG, huw, mul_zero, Finset.sum_const_zero, add_zero]
   have hgsG : ∀ j l, hf L S.Hm (gs j) (G l) = if l = j then 1 else 0 := fun j l => by
     rw [← hcj, hG, hd]
     by_cases h : l = j
     · subst h; simp
-    · rw [if_neg (fun e => h (Fin.castSucc_injective _ e)), if_neg h, map_zero]
+    · rw [ite_eq_right (fun e => h (Fin.castSucc_injective _ e)), ite_eq_right h, map_zero]
   have K : ∀ j i, hf L S.Hm (gs j) (w i) + hf L S.Hm (w j) (gs i) + hf L S.Hm (w j) (w i) = 0 := by
     intro j i
     have e : ∀ j, gs2 j = gs j + w j := fun j => by rw [hw]; abel
@@ -192,14 +129,14 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
     ⟨_, fun _ => rfl⟩
   have hff_l : ∀ v y, hf L S.Hm (ff v) y = hf L S.Hm v y + ∑ j, hf L S.Hm v (G j) * hf L S.Hm (u j) y -
       ∑ i, hf L S.Hm v (w i) * hf L S.Hm (G i) y := fun v y => by
-    rw [hff]; simp only [hf_add_l, hf_sub_l, hf_sum_l, hf_smul_l]
+    rw [hff]; simp only [hf_add_l, hf_sub_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l]
   have hff_r : ∀ y v, hf L S.Hm y (ff v) = hf L S.Hm y v + ∑ j, hf L S.Hm (G j) v * hf L S.Hm y (u j) -
       ∑ i, hf L S.Hm (w i) v * hf L S.Hm y (G i) := fun y v => by
-    rw [hff]; simp only [hf_add_r, hf_sub_r, hf_sum_r, hf_smul_r, hcj]
+    rw [hff]; simp only [hf_add_r, hf_sub_r, GlobalTheory.HL.DualInter.sum_r, hf_smul_r, hcj]
   have hfi_l : ∀ v y, hf L S.Hm (fi v) y = hf L S.Hm v y - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (u j) y +
       ∑ i, (hf L S.Hm v (w i) - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (w j) (w i)) * hf L S.Hm (G i) y :=
     fun v y => by
-    rw [hfi]; simp only [hf_add_l, hf_sub_l, hf_sum_l, hf_smul_l]
+    rw [hfi]; simp only [hf_add_l, hf_sub_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l]
   have h1 : ∀ v, ff (fi v) = v := fun v => by
     have eG : ∀ l, hf L S.Hm (fi v) (G l) = hf L S.Hm v (G l) := fun l => by
       simp only [hfi_l, huG, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
@@ -224,9 +161,9 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
     simp only [hff_r, huu, huG, hGu, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
 
     have hvu : ∀ j, hf L S.Hm v (u j) = hf L S.Hm v (w j) + ∑ i, hf L S.Hm (w i) (gs j) * hf L S.Hm v (G i) := by
-      intro j; rw [hu, hf_add_r, hf_sum_r]; simp only [hf_smul_r, hcj]
+      intro j; rw [hu, hf_add_r, GlobalTheory.HL.DualInter.sum_r]; simp only [hf_smul_r, hcj]
     have huv : ∀ j, hf L S.Hm (u j) v' = hf L S.Hm (w j) v' + ∑ i, hf L S.Hm (gs j) (w i) * hf L S.Hm (G i) v' := by
-      intro j; rw [hu, hf_add_l, hf_sum_l]; simp only [hf_smul_l]
+      intro j; rw [hu, hf_add_l, GlobalTheory.HL.DualInter.sum_l]; simp only [hf_smul_l]
     simp only [hvu, huv]
     have e1 : ∑ j, hf L S.Hm (G j) v' * (hf L S.Hm v (w j) + ∑ i, hf L S.Hm (w i) (gs j) * hf L S.Hm v (G i)) =
         ∑ j, hf L S.Hm v (w j) * hf L S.Hm (G j) v' +
@@ -261,7 +198,7 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
     rw [hm, hff]; simp only [haG, hgw, zero_smul, Finset.sum_const_zero, add_zero, sub_zero]
   have hmgs : ∀ j, m (gs j) = gs2 j := fun j => by
     rw [hm, hff]
-    simp only [hgsG, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hgsG, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [hu, hw]; abel
   have hX : ∀ i, G i ∈ S.spanTo g r := fun i => by
     rw [hG]; exact Submodule.subset_span ⟨i.castSucc, by simp, rfl⟩
@@ -530,7 +467,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchim
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-
 open GlobalTheory.FrameAct in
 theorem inner_transport (g : Fin (r + 1) → S.V) (gs : Fin r → S.V) (t : E)
     (hg : ∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0)
@@ -625,10 +561,9 @@ theorem psiOf_fix (g : Fin (r + 1) → S.V) (gs : Fin r → S.V)
     have := congrArg Fin.val e
     simp at this
   unfold Frames.psiOf Frames.coef
-  simp only [mfix, Frames.h, hd, ne, if_false, Finset.sum_const_zero, mul_zero, AddChar.map_zero_eq_one]
+  simp only [mfix, Frames.h, hd, ne, ite_false, Finset.sum_const_zero, mul_zero, AddChar.map_zero_eq_one]
 
 end GlobalTheory.HL.FixFrames
-
 
 open GlobalTheory.HL.FixFrames GlobalTheory.FrameAct in
 theorem GlobalTheory.HL.FixFrames.unitary_complement_acts : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ h ∈ S.H0, (∀ s ∈ S.St, h * s * h⁻¹ ∈ S.St) ∧ ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → S.IsTerm (h • d) (h • Λ) ∧ S.om (h • d) (h • Λ) = S.om d Λ ∧ S.mu (h • Λ) = S.mu Λ := by
@@ -695,10 +630,6 @@ section -- clump:auto
 open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL NumberField IsDedekindDomain
 open scoped Pointwise ENNReal Classical
 
-theorem _root_.GlobalTheory.T.hermitianLattice_mass_eq_finprod_local : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ Λ : G.Lt, Submodule.IsFullLattice E Λ → {p | (G.S p).St ⊓ MulAction.stabilizer (G.S p).GLV (A.lat p Λ) ≠ (G.S p).K0}.Finite ∧ G.mu Λ = ∏ᶠ p, (G.S p).mu (A.lat p Λ) := by
-  intro F E _ _ _ _ _ sig A r k G hk Λ hΛ
-  exact GlobalTheory.HL.MassProduct.mass_eq_finprod A r k G hk Λ
-    (by first | exact hΛ)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeMassEqFinprodLocalStatement =====
@@ -786,7 +717,7 @@ theorem prod_sum_of_local_choices {ι Q R : Type} {O : ι → Type} [CommSemirin
     rw [Finset.mem_pi] at hx
     let y : ∀ p, O p := fun p => if h : p ∈ s then x p h else Classical.arbitrary (O p)
     obtain ⟨c, hc, hcy⟩ := hsurj y (fun p hp => by
-      simp only [y, dif_pos hp]; exact (ht p hp _).1 (hx p hp))
+      simp only [y, dite_eq_left hp]; exact (ht p hp _).1 (hx p hp))
     refine ⟨c, (Set.Finite.mem_toFinset hT).2 hc, ?_⟩
     funext p hp
     rw [hcy p hp]; simp [y, hp]
@@ -930,7 +861,6 @@ theorem full_lattice_of_term {F E : Type} [Field F] [NumberField F] [Field E] [N
   rw [hψ] at hz
   exact (map_eq_zero_iff _ (A.loc p).ιE.injective).mp hz
 
-
 theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ d : G.Dat, (∃ Λ₀, G.IsTerm d Λ₀) → ∀ P : ∀ p, Submodule (A.L p).O (G.S p).V → Prop, (∀ p, ∀ h ∈ (G.S p).St, ∀ Λ, (G.S p).IsTerm (d p) Λ → P p Λ → P p (h • Λ)) → {p | ∃ Λ, (G.S p).IsTerm (d p) Λ ∧ ¬ P p Λ}.Finite → G.amp d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∏ᶠ p, (G.S p).amp (d p) (P p) ∧ G.mass d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∏ᶠ p, (G.S p).mass (d p) (P p) ∧ {p | (G.S p).amp (d p) (P p) ≠ 1 ∨ (G.S p).mass (d p) (P p) ≠ 1}.Finite ∧ {o : Quot G.LRel | G.IsTerm d o.out}.Finite := by
   intro F E _ _ _ _ _ sig A r k G hk d hex P hPinv hPfin
   obtain ⟨Λ₀, hΛ₀⟩ := id hex
@@ -956,7 +886,7 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
       (fun Λ h1 => ⟨(KF p hp Λ Λ h1 h1).2.2.2, (KF p hp Λ Λ h1 h1).2.1, (KF p hp Λ Λ h1 h1).2.2.1⟩)
   have hmuG : ∀ Γ, G.IsTerm d Γ → G.mu Γ = ∏ p ∈ s, (G.S p).mu (A.lat p Γ) := by
     intro Γ hΓ
-    rw [(GlobalTheory.T.hermitianLattice_mass_eq_finprod_local A r k G hk Γ (by first | exact full_lattice_of_term G hΓ)).2]
+    rw [(GlobalTheory.HL.MassProduct.mass_eq_finprod A r k G hk Γ (by first | exact full_lattice_of_term G hΓ)).2]
     apply finprod_eq_prod_of_mulSupport_subset
     intro p hp
     by_contra hps
@@ -1014,8 +944,8 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
     obtain ⟨Γ, hΓ, hloc⟩ := orb.1 (fun p => if p ∈ s then (x p).out else A.lat p Λ₀) (by
       intro p
       by_cases hp : p ∈ s
-      · simp only [hp, if_true]; exact hx p hp
-      · simp only [hp, if_false]; exact hΛ₀.2 p)
+      · simp only [hp, ite_true]; exact hx p hp
+      · simp only [hp, ite_false]; exact hΛ₀.2 p)
     have hr : G.LRel Γ (Quot.mk G.LRel Γ).out :=
       orb.2.2.1.symm ((Equivalence.eqvGen_iff orb.2.2.1).1 (Quot.eqvGen_exact (Quot.out_eq _)))
     have hct : G.IsTerm d (Quot.mk G.LRel Γ).out := term_of_LRel G hk hex hΓ hr
@@ -1023,7 +953,7 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
     refine ⟨Quot.mk G.LRel Γ, hct, fun p hp => ?_⟩
     obtain ⟨h1, hh1, e1⟩ := hloc2 p
     obtain ⟨h2, hh2, e2⟩ := hloc p
-    simp only [hp, if_true] at e2
+    simp only [hp, ite_true] at e2
     show (Quotient.mk'' (A.lat p (Quot.mk G.LRel Γ).out) : O p) = x p
     rw [e1, e2, ← mul_smul, (orb_eq_iff _ _ _).2 ⟨h1 * h2, (G.S p).St.mul_mem hh1 hh2, rfl⟩, Quotient.out_eq']
   haveI : ∀ p, Nonempty (O p) := fun p => ⟨Quotient.mk'' ⊥⟩
@@ -1037,21 +967,21 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
     intro c
     by_cases hc : c ∈ Tq
     · have hc' : G.IsTerm d c.out := hc
-      rw [if_pos hc, show (∏ p ∈ s, gC p (Φ c p)) = ∏ p ∈ s, (if P p (A.lat p c.out) then
+      rw [ite_eq_left hc, show (∏ p ∈ s, gC p (Φ c p)) = ∏ p ∈ s, (if P p (A.lat p c.out) then
           ((G.S p).mu (A.lat p c.out) : ℂ) * (G.S p).om (d p) (A.lat p c.out) else 0) from
           Finset.prod_congr rfl (fun p _ => (hcls c.out hc' p).2.1), Finset.prod_ite_zero]
       simp only [hc', true_and, hPs _ hc']
       split_ifs
       · rw [hmuG _ hc', homG _ hc', Complex.ofReal_prod, Finset.prod_mul_distrib]
       · rfl
-    · rw [if_neg hc, if_neg (fun h => hc h.1)]
+    · rw [ite_eq_right hc, ite_eq_right (fun h => hc h.1)]
   have hsumM : G.mass d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∑' c, if c ∈ Tq then ∏ p ∈ s, gM p (Φ c p) else 0 := by
     unfold GFrames.mass
     apply tsum_congr
     intro c
     by_cases hc : c ∈ Tq
     · have hc' : G.IsTerm d c.out := hc
-      rw [if_pos hc, show (∏ p ∈ s, gM p (Φ c p)) = ∏ p ∈ s, (if P p (A.lat p c.out) then
+      rw [ite_eq_left hc, show (∏ p ∈ s, gM p (Φ c p)) = ∏ p ∈ s, (if P p (A.lat p c.out) then
           ENNReal.ofReal ((G.S p).mu (A.lat p c.out)) else 0) from
           Finset.prod_congr rfl (fun p _ => (hcls c.out hc' p).2.2), Finset.prod_ite_zero]
       simp only [hc', true_and, hPs _ hc']
@@ -1061,7 +991,7 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
         unfold Frames.mu invVol
         positivity
       · rfl
-    · rw [if_neg hc, if_neg (fun h => hc h.1)]
+    · rw [ite_eq_right hc, ite_eq_right (fun h => hc h.1)]
   have hampC : ∀ p, (G.S p).amp (d p) (P p) = ∑' o : O p, if o ∈ U p then gC p o else 0 := by
     intro p
     unfold Frames.amp
@@ -1069,9 +999,9 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
     intro o
     by_cases ho : (G.S p).IsTerm (d p) o.out
     · have : o ∈ U p := ho
-      rw [if_pos this]
+      rw [ite_eq_left this]
     · have : o ∉ U p := ho
-      rw [if_neg this, if_neg (fun h => ho h.1)]
+      rw [ite_eq_right this, ite_eq_right (fun h => ho h.1)]
   have hampM : ∀ p, (G.S p).mass (d p) (P p) = ∑' o : O p, if o ∈ U p then gM p o else 0 := by
     intro p
     unfold Frames.mass
@@ -1079,9 +1009,9 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
     intro o
     by_cases ho : (G.S p).IsTerm (d p) o.out
     · have : o ∈ U p := ho
-      rw [if_pos this]
+      rw [ite_eq_left this]
     · have : o ∉ U p := ho
-      rw [if_neg this, if_neg (fun h => ho h.1)]
+      rw [ite_eq_right this, ite_eq_right (fun h => ho h.1)]
   refine ⟨?_, ?_, ?_, T5C.1⟩
   · rw [hsumC, T5C.2, finprod_eq_prod_of_mulSupport_subset _ (s := s) (fun p hp => by
       by_contra hps; exact hp (L1 p hps).1)]

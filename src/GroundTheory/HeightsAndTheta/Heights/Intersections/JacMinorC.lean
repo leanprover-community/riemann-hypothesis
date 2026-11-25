@@ -33,7 +33,7 @@ theorem pderiv_facts_charZero {F : Type*} [Field F] [CharZero F] {σ : Type*} (p
   refine ⟨?_, ?_, ?_⟩
   · have : ¬ degreeOf j p < 1 := by omega
     rw [degreeOf_lt_iff one_pos] at this
-    push_neg at this
+    push Not at this
     obtain ⟨m, hm, hmj⟩ := this
     have hle : Finsupp.single j 1 ≤ m := Finsupp.single_le_iff.mpr hmj
     intro h0
@@ -128,7 +128,7 @@ theorem exists_jacobian_minor_not_mem_charZero {F : Type} [Field F] [CharZero F]
       rw [AlgebraicIndependent.option_iff] at h
       exact h.2 (hub.isAlgebraic.isAlgebraic (xb j))
     rw [algebraicIndependent_iff] at hw
-    push_neg at hw
+    push Not at hw
     obtain ⟨p, hp0, hp⟩ := hw
     let h : Option u → σ := fun o => o.elim j g
     have hinj : Function.Injective h := by

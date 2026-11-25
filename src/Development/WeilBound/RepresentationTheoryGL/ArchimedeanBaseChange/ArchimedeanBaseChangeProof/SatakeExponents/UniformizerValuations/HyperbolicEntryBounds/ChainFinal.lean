@@ -98,7 +98,7 @@ theorem exists_int_charpoly_atPl_split : ∀ (E : Type) [Field E] [NumberField E
     rw [hdetN, ← map_mul, mul_inv_cancel₀ hdet, map_one]
   let g : GL (Fin n) (Ov E w) := ((Matrix.isUnit_iff_isUnit_det N).2 hu).unit
   have hmemU : bc (Ov E w).subtype g ∈ UL n w := by
-    simp only [UL, if_pos hs]; exact Subgroup.mem_top _
+    simp only [UL, ite_eq_left hs]; exact Subgroup.mem_top _
   refine ⟨⟨_, hmemU⟩, ?_, ?_⟩
   · rw [KL, Subgroup.mem_subgroupOf]
     exact ⟨g, rfl⟩
@@ -128,7 +128,7 @@ theorem exists_conj_of_isSplitAt : ∀ (E : Type) [Field E] [NumberField E] [IsC
   have hs : (atPl w P).Separable := hP.2.2.1.map
   obtain ⟨g, hg⟩ := GlobalTheory.BCT.ClsFin.conj_of_charpoly γ.1 γ'.1 (by rw [h]; exact hs) (h.trans h'.symm)
   have hmem : g ∈ UL n w := by
-    rw [UL, if_pos hw]
+    rw [UL, ite_eq_left hw]
     exact Subgroup.mem_top g
   exact ⟨⟨g, hmem⟩, Subtype.ext hg⟩
 
@@ -441,9 +441,6 @@ theorem ell_mul {n : ℕ} (p₁ p₂ : E[X]) (h1 : p₁ ∈ Ell E p₁.natDegree
 
 end GlobalTheory.UnitOrbCount
 
-namespace GlobalTheory.UnitOrbCount
-
-end GlobalTheory.UnitOrbCount
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.KapOrbUnitEqOne =====
@@ -523,17 +520,17 @@ theorem kapOrb_unit_pos (hU : Unr E) (n : ℕ) (hn : 1 ≤ n) (p₁ p₂ : E[X])
     have hex : ∃ g : UL n w, g⁻¹ * c₀.rep * g ∈ KL n w :=
       ⟨g, hg ▸ hγ₀K⟩
     obtain ⟨hT, -, hQ⟩ := hA _ hp
-    rw [if_pos hp, hT, if_pos hex, hQ (atPl w p₁) (dvd_mul_right _ _) hex, mul_one]
+    rw [ite_eq_left hp, hT, ite_eq_left hex, hQ (atPl w p₁) (dvd_mul_right _ _) hex, mul_one]
   · intro c hne
     have hc : (Quot.mk _ c.rep : TwCl (MonoidHom.id (UL n w))) = c := Quot.out_eq c
     by_cases hp : c.rep.1.val.charpoly = atPl w p₁ * atPl w p₂
     · obtain ⟨hT, -, -⟩ := hA c.rep hp
-      rw [if_pos hp, hT, if_neg, mul_zero]
+      rw [ite_eq_left hp, hT, ite_eq_right, mul_zero]
       intro hex
       apply hne
       rw [← hc]
       exact (key _ hp).1 hex
-    · rw [if_neg hp]
+    · rw [ite_eq_right hp]
 
 instance subsingleton_units_rank_zero (w : Pl E) : Subsingleton (UL 0 w) := by
   refine ⟨fun a b => Subtype.ext (Units.ext ?_)⟩
@@ -571,14 +568,14 @@ theorem kapOrb_unit_zero (w : Pl E) (Q₁ Q₂ : (w.adicCompletion E)[X]) (hQ : 
     rw [Subsingleton.elim γ 1]
     exact one_mem _
   have hT : twOrb (MonoidHom.id _) (KL 0 w) γ ((KL 0 w : Set (UL 0 w)).indicator 1) = 1 := by
-    rw [GlobalTheory.BCT.OrbUnit.twOrb_unit (KL 0 w) γ, if_pos ⟨1, by simpa using hγ⟩]
+    rw [GlobalTheory.BCT.OrbUnit.twOrb_unit (KL 0 w) γ, ite_eq_left ⟨1, by simpa using hγ⟩]
     · intro g₁ g₂ _ _
       exact ⟨1, one_mem _, 1, one_mem _, Subsingleton.elim _ _⟩
     · intro g _ x _
       rw [Subsingleton.elim x 1]
       exact one_mem _
   have hcp' : γ ∈ {γ : UL 0 w | γ.1.val.charpoly = Q₁ * Q₂} := hcp
-  rw [if_pos hcp', hT, mul_one]
+  rw [ite_eq_left hcp', hT, mul_one]
   exact kapSign_zero w Q₁ γ.1
 
 end GlobalTheory.CompanionTheory.KapOrbAE

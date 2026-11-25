@@ -22,58 +22,15 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.JordanSplittingExists
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MemSmulOfMemSmulLocF
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DivMulMemSPOfSub
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsLocalData
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsUnimodularAtIffVd
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.NeZeroOfNotMem
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
@@ -347,43 +304,7 @@ variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [Number
 local notation "jK" => algebraMap (𝓞 K) K
 local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
 
-section
-
-variable {h : V →ₗ⋆[K] V →ₗ[K] K} {X : Submodule K V} {L : Submodule (𝓞 K) V} {𝔭 : Ideal (𝓞 F)}
-  {n : ℕ} {b : Fin n → V} {a : Fin n → 𝓞 F}
-
-variable (hbX : ∀ i, b i ∈ X) (hloc : locF 𝔭 (Submodule.span (𝓞 K) (Set.range b)) = locF 𝔭 L)
-  (horth : ∀ i j, i ≠ j → h (b i) (b j) = 0)
-  (hdiag : ∀ i, h (b i) (b i) = algebraMap F K ((a i : 𝓞 F) : F)) (ha : ∀ i, a i ≠ 0)
-include hbX hloc horth hdiag ha
-
-theorem mem_B_iff (h𝔭 : 𝔭.IsPrime) (hL : IsLatIn X L) (x : V) :
-    x ∈ locF 𝔭 L ↔ x ∈ X ∧ ∀ i, h (b i) x / jK (ι (a i)) ∈ HU.SP K 𝔭 := by
-  apply Formalism.L2.SG.Pf.G2.mem_B_iff <;> assumption
-
-end
-
 theorem jK_ι (t : 𝓞 F) : jK (ι t) = algebraMap F K (t : F) := rfl
-
-theorem jK_ι_ne_zero {t : 𝓞 F} (ht : t ≠ 0) : jK (ι t) ≠ 0 := by
-  rw [jK_ι]
-  intro h
-  apply ht
-  have h1 : ((t : F)) = 0 := (map_eq_zero_iff _ (algebraMap F K).injective).1 h
-  exact_mod_cast h1
-
-theorem exists_inv_mod {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {t : 𝓞 F} (ht : t ∉ 𝔭) (e : ℕ) :
-    ∃ u : 𝓞 F, 1 - t * u ∈ 𝔭 ^ e :=
-  Formalism.L2.SG.Pf.G2.exists_inv_mod h𝔭 ht e
-
-theorem exists_mul_mem_span {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {a : 𝓞 F} (ha : a ≠ 0) :
-    ∃ t : 𝓞 F, t ∉ 𝔭 ∧ ∀ x ∈ 𝔭 ^ vF 𝔭 a, t * x ∈ Ideal.span {a} :=
-  Formalism.L2.SG.Pf.G2.exists_mul_mem_span h𝔭 ha
-
-theorem div_mem_SP_iff {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {a : 𝓞 F} (ha : a ≠ 0) (z : 𝓞 K) :
-    haveI := h𝔭.isPrime
-    jK z / jK (ι a) ∈ HU.SP K 𝔭 ↔ z ∈ extP K 𝔭 ^ vF 𝔭 a := by
-  apply _root_.Formalism.L2.SG.Pf.G2.div_mem_SP_iff <;> assumption
 
 end GlobalTheory.MaxLatExpo.LocalProofs
 
@@ -435,7 +356,7 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
   set p := P.comap (algebraMap (𝓞 F) (𝓞 K)) with hpdef
   set S := HU.SP K p with hSdef
   have hB : ∀ z, z ∈ locF p M ↔ ∀ i, h (b i) z / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := fun z => by
-    exact (LocalProofs.mem_B_iff hbX hspan horth hdiag ha hpp hL z).trans ⟨fun h => h.2, fun h => ⟨Submodule.mem_top, h⟩⟩
+    exact (Formalism.L2.SG.Pf.G2.mem_B_iff hbX hspan horth hdiag ha hpp hL z).trans ⟨fun h => h.2, fun h => ⟨Submodule.mem_top, h⟩⟩
   have hA : ∀ z, z ∈ locF p (dual h M) ↔ ∀ i, h (b i) z ∈ S := fun z => by
     rw [← hdI]; exact (Formalism.L2.SG.Pf.G2.mem_locF_dualIn_iff hbX hspan horth hdiag ha hF hp hL z).trans ⟨fun h => h.2, fun h => ⟨Submodule.mem_top, h⟩⟩
   have hR : ∀ c, c ∈ locR (K := K) P → c ∈ S := fun c hc => HU.mem_SP_iff_locF.2 (by rw [locF_eq_loc hK hF hP (1 : Submodule (𝓞 K) K)]; exact hc)
@@ -461,8 +382,8 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
       have := localizedQuotients.ι_mem_pow (K := K) (Ideal.pow_le_pow_right hge h1)
       rwa [hext, ha0'] at this
   have hd0 : h x x = algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) a0') := by rw [ha0', ← ha0x]
-  have hdne : h x x ≠ 0 := by rw [hd0]; exact LocalProofs.jK_ι_ne_zero ha0ne
-  have hα : ∀ i, algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ≠ 0 := fun i => LocalProofs.jK_ι_ne_zero (ha i)
+  have hdne : h x x ≠ 0 := by rw [hd0]; exact Formalism.HermitianLattices.Ext.L3.HU.jι_ne_zero ha0ne
+  have hα : ∀ i, algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ≠ 0 := fun i => Formalism.HermitianLattices.Ext.L3.HU.jι_ne_zero (ha i)
   have hy : ∀ k i, h (b k) ((algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)))⁻¹ • b i) = if k = i then 1 else 0 := by
     intro k i
     rw [LinearMap.map_smul, smul_eq_mul]
@@ -495,12 +416,12 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
     have h1 : h x x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
       have e : h x x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) =
           h x x * (((if i = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b i) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) + c i * (h (b i) x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) := by
-        rw [if_pos rfl]; field_simp; ring
+        rw [ite_eq_left rfl]; field_simp; ring
       rw [e]
       exact S.add_mem (S.mul_mem hdS (hE i i)) (S.mul_mem (hcS i) (hξ i))
     have h1' : algebraMap (𝓞 K) K a0 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
       rw [show algebraMap (𝓞 K) K a0 = h x x from ha0x]; exact h1
-    have h2 := (LocalProofs.div_mem_SP_iff hp (ha i) a0).1 h1'
+    have h2 := (Formalism.L2.SG.Pf.G2.div_mem_SP_iff hp (ha i) a0).1 h1'
     rw [hext] at h2
     exact ha0P2 (Ideal.pow_le_pow_right hgt h2)
   have huniq : ∀ i j, i ≠ j → vF p (a j) = 1 → 1 ≤ vF p (a i) → False := by
@@ -508,18 +429,18 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
     have hci : c i / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)) ∈ S := by
       have e : c i / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)) = c i * (((if j = j then (1 : K) else 0) - c j * (h x x)⁻¹ * h (b j) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)))
           - c j * (((if j = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b j) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j))) := by
-        rw [if_pos rfl, if_neg (fun e => hij e.symm)]; ring
+        rw [ite_eq_left rfl, ite_eq_right (fun e => hij e.symm)]; ring
       rw [e]
       exact S.sub_mem (S.mul_mem (hcS i) (hE j j)) (S.mul_mem (hcS j) (hE i j))
     obtain ⟨t, ht, w, hw⟩ := HU.mem_SP.1 (hcS i)
     have hw1 : algebraMap (𝓞 K) K w / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)) ∈ S := by
       rw [hw, mul_div_assoc]; exact S.mul_mem (HU.jK_mem_SP _) hci
     have hwP : w ∈ P := by
-      have := (LocalProofs.div_mem_SP_iff hp (ha j) w).1 hw1
+      have := (Formalism.L2.SG.Pf.G2.div_mem_SP_iff hp (ha j) w).1 hw1
       rwa [hj, pow_one, hext] at this
     have hw2 : algebraMap (𝓞 K) K w / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) a0') ∈ S :=
-      (LocalProofs.div_mem_SP_iff hp ha0ne w).2 (by rw [hv0, pow_one, hext]; exact hwP)
-    have htne : algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) ≠ 0 := LocalProofs.jK_ι_ne_zero (_root_.Formalism.HermitianLattices.Ext.L3.HU.ne_zero_of_notMem ht)
+      (Formalism.L2.SG.Pf.G2.div_mem_SP_iff hp ha0ne w).2 (by rw [hv0, pow_one, hext]; exact hwP)
+    have htne : algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) ≠ 0 := Formalism.HermitianLattices.Ext.L3.HU.jι_ne_zero (_root_.Formalism.HermitianLattices.Ext.L3.HU.ne_zero_of_notMem ht)
     have htinv : (algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t))⁻¹ ∈ S := HU.mem_SP.2 ⟨t, ht, 1, by rw [map_one, mul_inv_cancel₀ htne]⟩
     have hcd : c i * (h x x)⁻¹ ∈ S := by
       have e : c i * (h x x)⁻¹ = (algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t))⁻¹ * (algebraMap (𝓞 K) K w / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) a0')) := by
@@ -528,16 +449,16 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
     have h1 : algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
       have e : algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) = ((if i = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b i) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))
           + (c i * (h x x)⁻¹) * (h (b i) x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) := by
-        rw [if_pos rfl, map_one]; ring
+        rw [ite_eq_left rfl, map_one]; ring
       rw [e]; exact S.add_mem (hE i i) (S.mul_mem hcd (hξ i))
-    have h2 := (LocalProofs.div_mem_SP_iff hp (ha i) 1).1 h1
+    have h2 := (Formalism.L2.SG.Pf.G2.div_mem_SP_iff hp (ha i) 1).1 h1
     rw [hext] at h2
     exact hP.ne_top ((Ideal.eq_top_iff_one P).2 (Ideal.pow_le_self (by omega) h2))
   have hex : ∃ i, vF p (a i) ≠ 0 := by
     by_contra! hcon
     apply hPb.2
     have hinv : ∀ i, algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := fun i =>
-      (LocalProofs.div_mem_SP_iff hp (ha i) 1).2 (by rw [hcon i, pow_zero, Ideal.one_eq_top]; exact Submodule.mem_top)
+      (Formalism.L2.SG.Pf.G2.div_mem_SP_iff hp (ha i) 1).2 (by rw [hcon i, pow_zero, Ideal.one_eq_top]; exact Submodule.mem_top)
     have heq : loc (K := K) P (dual h M) = loc (K := K) P M := by
       rw [← hl, ← hl]
       ext z
@@ -627,7 +548,7 @@ theorem localMassFactor_eq_of_mem_badPrimes (hK : IsCMUnram K) (hF : IsFixF K F)
     have := absNorm_comap_inert hK hF hPm hc
     rw [hq] at this
     exact Nat.pow_left_injective two_ne_zero this
-  have hη : etaF K F 𝔭 = -1 := by rw [h𝔭def, etaF_comap hK hF hPm, if_pos hc]
+  have hη : etaF K F 𝔭 = -1 := by rw [h𝔭def, etaF_comap hK hF hPm, ite_eq_left hc]
   have hdisc : (discAut h ⊤ M 𝔭 : ℝ) = (qIn P : ℝ) + 1 := by
     have hq0 : (qIn P : ℝ) ≠ 0 := by exact_mod_cast (by omega : qIn P ≠ 0)
     rw [_root_.GlobalTheory.DiscAutLenOne.discAut_eq_normRepCount K F V hK hF h hs M hlat 𝔭 h𝔭 b a hJ i hi hj,

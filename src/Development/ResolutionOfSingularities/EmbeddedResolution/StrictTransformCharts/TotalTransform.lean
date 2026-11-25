@@ -22,8 +22,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem mem_support_restrictIdeal_iff {Y : Scheme.{u}} (K : Y.IdealSheafData) (V : Y.Opens)
@@ -205,5 +203,3 @@ theorem comap_eq_strictTransform_mul_exceptionalIdeal_pow : ∀ (T : MarkedIdeal
     exact absurd hy.1 hy.2
 
 end FunctorialResolution.EmbeddedResolution
-
-end

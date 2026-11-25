@@ -20,17 +20,5 @@ variable {R : Type} [CommRing R]
 end BorderedIndexCases
 
 
-namespace BorderedIndexCases
-
-variable {R : Type} [CommRing R]
-
-end BorderedIndexCases
-
-
-namespace BorderedIndexCases
-
-variable {R : Type} [CommRing R] [IsLocalRing R]
-
-end BorderedIndexCases
 
 end Formalism.GaloisIrreducibility

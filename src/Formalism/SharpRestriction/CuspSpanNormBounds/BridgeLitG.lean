@@ -52,14 +52,6 @@ def HCMultDSG : Prop :=
     Formalism.MainNotions.GapDS.thrDS ε < h → ∀ S : Submodule ℂ H, FiniteDimensional ℂ S → IsKStableOn ε σ S →
       FiniteDimensional ℂ (eqImg (fun k : KG ε => σ (toMK k)) S)
 
-section Final
-
-open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
-
-variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-
-end Final
-
 end Formalism.MainNotions.BridgeCPX
 
 namespace Formalism.MainNotions.DiscreteSeriesWeylDimension
@@ -153,12 +145,6 @@ theorem thrX_le {n : ℕ} (ε : Fin n → Bool) (hn : (900 : ℝ) ≤ n) : thrX 
 
 end Formalism.MainNotions.GapDS
 
-namespace Formalism.MainNotions.DiscreteSeriesWeylDimension
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
-
-end Formalism.MainNotions.DiscreteSeriesWeylDimension
-
 namespace Formalism.MainNotions.TheoremBConstants
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.PlaceDegreeData
@@ -171,9 +157,3 @@ open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions
 open Formalism.QuantumDeterminants.WeylGroupFacts
 
 end Formalism.MainNotions.DiscreteSeriesInnerProducts
-
-namespace Formalism.MainNotions.GapDS
-
-open Formalism.MainNotions.PlaceDegreeData
-
-end Formalism.MainNotions.GapDS

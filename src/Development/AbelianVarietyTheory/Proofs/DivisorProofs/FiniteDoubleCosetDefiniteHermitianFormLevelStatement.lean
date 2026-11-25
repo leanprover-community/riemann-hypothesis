@@ -135,7 +135,6 @@ theorem cover_KHT (P : CCF) (G : HTGroup p) (L : G.Level) (B : GlobalTheory.LKDe
   set x := B.trivAf.choose with hxdef
   set t := B.trivAf.choose_spec.choose with htdef
   have hx : Triv G (AfP p) B.β x t := B.trivAf.choose_spec.choose_spec
-  have hemb : ∀ y, B.emb y = (toAfF G B.β x t hx y, toP1 G B.β y) := fun y => rfl
   letI : TopologicalSpace (AfP p ⊗[ℚ] G.C) := moduleTopology (AfP p) (AfP p ⊗[ℚ] G.C)
   letI : TopologicalSpace (ℚ_[p] ⊗[ℚ] G.C) := moduleTopology ℚ_[p] (ℚ_[p] ⊗[ℚ] G.C)
   let U : Subgroup (((AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ) × ((ℚ_[p] ⊗[ℚ] G.C)ˣ × ℚ_[p]ˣ)) :=
@@ -175,7 +174,7 @@ theorem cover_KHT (P : CCF) (G : HTGroup p) (L : G.Level) (B : GlobalTheory.LKDe
   have key : ∃ δ : grp G B.β, ∃ s' ∈ S₂, (z₁, z₂) = dg G.C p (δ : G.Cˣ × ℚˣ) * s' * u := by
     rcases lt_or_gt_of_ne (Units.ne_zero γ.2) with hneg | hpos
     · have hN : Neg := ⟨γ, hγ, hneg⟩
-      have hgm : gm = hN.choose := dif_pos hN
+      have hgm : gm = hN.choose := dite_eq_left hN
       obtain ⟨hgmf, hgmn⟩ := hN.choose_spec
       rw [← hgm] at hgmf hgmn
       have hδ := form_mul_inv G.star (B.β : G.C) γ.1 gm.1 γ.2 gm.2 hγ hgmf

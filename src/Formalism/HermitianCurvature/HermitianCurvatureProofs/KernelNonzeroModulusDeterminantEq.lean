@@ -894,9 +894,9 @@ theorem kernel_nonzero_modulus_determinant_eq (hd : LocalDatum K R ψ) (w w' : P
   unfold pairTerm at hq
   by_cases hc : IsInt R (orbZ w (rep R q.1)) ∧ IsInt R (orbZ w' (rep R q.2))
   swap
-  · rw [if_neg hc, zero_mul, zero_mul] at hq
+  · rw [ite_eq_right hc, zero_mul, zero_mul] at hq
     exact absurd rfl hq
-  rw [if_pos hc] at hq
+  rw [ite_eq_left hc] at hq
   have hcard : Nat.card (isoZZ R (orbZ w (rep R q.1)) (orbZ w' (rep R q.2))) ≠ 0 := by
     intro h0
     apply hq

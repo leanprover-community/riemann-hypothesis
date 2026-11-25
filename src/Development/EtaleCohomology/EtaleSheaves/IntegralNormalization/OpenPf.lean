@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.IntegralNormalization
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.t_E2Cut
 
 namespace LateralTheory.E.NormPf.OpenPf
@@ -32,5 +31,3 @@ theorem openNbhdIC : OpenNbhdIC := by
   exact aic_of_equiv (U.ι.appIso V).commRingCatIsoToRingEquiv (hZ.2 _ hV' hne)
 
 end LateralTheory.E.NormPf.OpenPf
-
-end

@@ -112,12 +112,6 @@ theorem primes_sizes (X : PreX B.toPre) : Sizes (B.primes X) B.wts X.a := by
         rw [spread_shiftW]
         exact X.spread_le u j hj τ }
 
-theorem baseData_embedding_conj (X : PreX B.toPre) (Ch : Chars B.fields (B.primes X) B.R.m) (x : (B.dat X Ch).X.K) :
-    (B.dat X Ch).sig0 (star x) = starRingEnd ℂ ((B.dat X Ch).sig0 x) := B.starLL_cx x
-
-theorem dat_e_even (X : PreX B.toPre) (Ch : Chars B.fields (B.primes X) B.R.m) (j : Fin (B.dat X Ch).R.m) :
-    ∃ z : ℤ, ∑ τ, ((B.dat X Ch).W.row τ).e j = 2 * (z : ℚ) := (X.e_even j).even
-
 end Base
 
 end

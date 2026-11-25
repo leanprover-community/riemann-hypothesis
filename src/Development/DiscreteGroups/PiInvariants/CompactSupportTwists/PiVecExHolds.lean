@@ -9,8 +9,6 @@ public import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.Split
 
 set_option linter.all false
 
-noncomputable section
-
 open NumberField Matrix MeasureTheory Filter Set
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.Desc
 open scoped ENNReal
@@ -82,5 +80,3 @@ theorem piVecEx_holds : PiVecEx := by
       _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hS
 
 end DiscreteGroups.T1.G.Dcy
-
-end

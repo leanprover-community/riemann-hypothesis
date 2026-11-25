@@ -29,7 +29,7 @@ theorem basePart_flagPt (M : FlagModel y Ψ N j) (F : FrameData ι Ψ N M.Ω M.b
     (h : Ψ → Matrix (Fin N) (Fin N) ℂ) : basePart M.blk (flagPt M F b h) = b := by
   funext q
   obtain ⟨⟨k, hk⟩, m⟩ := q
-  exact dif_pos hk
+  exact dite_eq_left hk
 
 theorem flagPt_step (M : FlagModel y Ψ N j) (F : FrameData ι Ψ N M.Ω M.blk) (b : (Σ k, baseIdx ι M.blk k) → ℂ)
     (h : Ψ → Matrix (Fin N) (Fin N) ℂ) {p : Ψ × Fin N} {k : K} (hp : M.blk p = some k) (m : ι k) :

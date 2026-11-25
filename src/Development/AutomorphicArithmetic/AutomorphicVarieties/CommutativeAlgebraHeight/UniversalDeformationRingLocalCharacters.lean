@@ -26,11 +26,6 @@ private noncomputable def ofMat {G R : Type} [Group G] [CommRing R] (ρ : G →*
       map_one' := by simp
       map_mul' := fun g h => by simp [Matrix.mul_apply] }
 
-private theorem eq_one_of_pow {k : Type} [Field k] (l : ℕ) [Fact l.Prime] [CharP k l] (x : k) (m : ℕ)
-    (h : x ^ l ^ m = 1) : x = 1 := by
-  have h2 : (x - 1) ^ l ^ m = 0 := by rw [sub_pow_char_pow, h]; simp
-  exact sub_eq_zero.1 (pow_eq_zero_iff (pow_ne_zero m (Fact.out : l.Prime).ne_zero) |>.1 h2)
-
 private theorem psib_th {l : ℕ} [Fact l.Prime] {F : GFrame l} {O : Type} [CommRing O] [IsLocalRing O]
     [CharP (ResidueField O) l] [Algebra ℤ_[l] O] {n : ℕ} (r : Resid F O n) (v : F.Vl) (i : Fin n) (g : F.mu v) :
     ((r.psib v i g : (ResidueField O)ˣ) : ResidueField O) = residue O (r.th v i g) := by
@@ -44,10 +39,9 @@ private theorem psib_th {l : ℕ} [Fact l.Prime] {F : GFrame l} {O : Type} [Comm
       (Subgroup.isClosed_of_isOpen _ (r.psib_open v i))
   have h4 : r.psib v i g ^ l ^ m = 1 := by rw [← map_pow]; exact h3 h2
   have h5 : r.th v i g ^ l ^ m = 1 := by rw [← map_pow]; exact r.th_comm v i _ h2
-  rw [eq_one_of_pow l ((r.psib v i g : (ResidueField O)ˣ) : ResidueField O) m
-      (by rw [← Units.val_pow_eq_pow_val, h4, Units.val_one]),
-    eq_one_of_pow l (residue O (r.th v i g)) m
-      (by rw [← map_pow, ← Units.val_pow_eq_pow_val, h5, Units.val_one, map_one])]
+  apply iterateFrobenius_inj (ResidueField O) l m
+  rw [iterateFrobenius_def, iterateFrobenius_def, ← Units.val_pow_eq_pow_val, h4, Units.val_one,
+    ← map_pow, ← Units.val_pow_eq_pow_val, h5, Units.val_one, map_one]
 
 theorem UpperTheory.V.CA.universalDeformationRing_localCharacters :
     ∀ {l : ℕ} [Fact l.Prime] {F : GFrame l} {O : Type} [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] [Finite (ResidueField O)] [CharP (ResidueField O) l] [Algebra ℤ_[l] O] {n : ℕ} (r : Resid F O n) (v : F.Vl) (i : Fin n), PhiCond (F.Gv v) l → ∃ (R : Type) (_ : CommRing R) (_ : Algebra O R) (_ : IsCO O R) (ψ : F.Gv v →* Rˣ), r.IsPsi v i ψ ∧ ∀ (R' : Type) [CommRing R'] [Algebra O R'] [IsCO O R'] (ψ' : F.Gv v →* R'ˣ), r.IsPsi v i ψ' → ∃! f : R →ₐ[O] R', pushCh (f : R →+* R') ψ = ψ' := by

@@ -232,7 +232,7 @@ theorem etaK_eq_neg_one : ∀ (F E : Type) [NontriviallyNormedField F] [Nontrivi
     | add y z hy hz => exact add_mem (hy trivial) (hz trivial)
   have hodd := not_two_dvd_ord_norm F A.K A.L h2 _ hζ' htop' s s.ne_zero hs
   unfold Et.etaK eta
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro ⟨y, hy⟩
   apply hodd
   have hy0 : y ≠ 0 := by
@@ -1272,7 +1272,7 @@ theorem decomp {f : X × Y → ℂ} (hf : IsTest f) :
     by_contra hK
     apply hu
     show (if (fun v => f (u, v)) = φ then (1:ℂ) else 0) = 0
-    rw [hzero u hK, if_neg (Ne.symm hφ0)]
+    rw [hzero u hK, ite_eq_right (Ne.symm hφ0)]
   · intro φ hφ
     obtain ⟨u, rfl⟩ : φ ∈ Set.range (fun u => fun v => f (u, v)) :=
       (hfin.mem_toFinset).1 (Finset.mem_of_mem_erase hφ)
@@ -1661,7 +1661,7 @@ theorem weilAt_of_subsingleton (F E : Type) [NontriviallyNormedField F] [Nontriv
       have he : A.etaK (s : A.K) = 1 := by
         unfold Et.etaK eta
         rw [Subsingleton.elim (s : A.K) 1, map_one]
-        rw [if_pos ⟨1, by simp⟩]
+        rw [ite_eq_left ⟨1, by simp⟩]
       have ha : A.absK (s : A.K) = 1 := by
         unfold Et.absK
         rw [dite_eq_left s.isUnit]

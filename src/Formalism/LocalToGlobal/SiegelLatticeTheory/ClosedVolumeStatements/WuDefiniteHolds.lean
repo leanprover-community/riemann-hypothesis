@@ -891,10 +891,7 @@ open scoped TensorProduct
 namespace PI.UnitaryGroupMassFormula.InHHClassFin
 
 theorem one_mem_Kg (I : Formalism.MainNotions.S.AutInst) (g : ℕ) : (1 : I.Gf) ∈ I.Kg g := by
-  refine ⟨?_, fun y _ => ⟨0, Submodule.zero_mem _, ?_⟩⟩
-  · show ((1 : I.Gf) : GL (Fin I.n) _) ∈ Formalism.UG.stabGL I.Lf
-    simpa using (Formalism.UG.stabGL I.Lf).one_mem
-  · simp [Formalism.MainNotions.S.AutInst.fmat]
+  exact Formalism.L2.SG.Pf.one_mem_Kg I g
 
 theorem kgNhd : KgNhd := by
   intro I g x hg

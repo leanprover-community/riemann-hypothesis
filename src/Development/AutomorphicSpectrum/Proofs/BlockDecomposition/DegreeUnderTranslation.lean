@@ -29,9 +29,9 @@ theorem finsum_bound {α : Type} {f g s : α → ℝ} {c : ℝ} (hf : (Function.
     ∑ᶠ a, f a ≤ c * ∑ᶠ a, s a + ∑ᶠ a, g a := by
   classical
   let T : Finset α := hf.toFinset ∪ hg.toFinset ∪ hs.toFinset
-  rw [finsum_eq_sum_of_support_subset f (s := T) (fun a ha => by simp [T, Set.mem_toFinset] at ha ⊢; tauto),
-    finsum_eq_sum_of_support_subset g (s := T) (fun a ha => by simp [T, Set.mem_toFinset] at ha ⊢; tauto),
-    finsum_eq_sum_of_support_subset s (s := T) (fun a ha => by simp [T, Set.mem_toFinset] at ha ⊢; tauto),
+  rw [finsum_eq_sum_of_support_subset f (s := T) (fun a ha => by simp [T] at ha ⊢; tauto),
+    finsum_eq_sum_of_support_subset g (s := T) (fun a ha => by simp [T] at ha ⊢; tauto),
+    finsum_eq_sum_of_support_subset s (s := T) (fun a ha => by simp [T] at ha ⊢; tauto),
     Finset.mul_sum, ← Finset.sum_add_distrib]
   exact Finset.sum_le_sum fun a _ => h a
 

@@ -46,15 +46,8 @@ theorem isSat_mul (ϖ : O) (P Q : PowerSeries O) (hP : IsSat ϖ P) (hQ : IsSat �
     exact mul_dvd_mul_left P (hQ N z' hQ')
 
 theorem isSat_prod (ϖ : O) (S : Finset ℕ) (P : ℕ → PowerSeries O) (h : ∀ s ∈ S, IsSat ϖ (P s)) :
-    IsSat ϖ (∏ s ∈ S, P s) := by
-  classical
-  revert h
-  refine Finset.induction_on S ?_ ?_
-  · intro _; simpa using isSat_one ϖ
-  · intro a S ha ih h
-    rw [Finset.prod_insert ha]
-    exact isSat_mul ϖ _ _ (h a (Finset.mem_insert_self a S))
-      (ih fun s hs => h s (Finset.mem_insert_of_mem hs))
+    IsSat ϖ (∏ s ∈ S, P s) :=
+  Finset.prod_induction P (IsSat ϖ) (fun _ _ => isSat_mul ϖ _ _) (isSat_one ϖ) h
 
 theorem coprimeRat₂_symm (ϖ : O) (P Q : PowerSeries O) (h : CoprimeRat ϖ P Q) : CoprimeRat ϖ Q P := by
   obtain ⟨N, a, a', hN⟩ := h
@@ -71,15 +64,9 @@ theorem coprimeRat₂_mul_right (ϖ : O) (P Q Q' : PowerSeries O) (h : CoprimeRa
   ring
 
 theorem coprimeRat₂_prod_right (ϖ : O) (P : PowerSeries O) (S : Finset ℕ) (Q : ℕ → PowerSeries O)
-    (h : ∀ s ∈ S, CoprimeRat ϖ P (Q s)) : CoprimeRat ϖ P (∏ s ∈ S, Q s) := by
-  classical
-  revert h
-  refine Finset.induction_on S ?_ ?_
-  · intro _; simpa using coprimeRat₂_one_right ϖ P
-  · intro a S ha ih h
-    rw [Finset.prod_insert ha]
-    exact coprimeRat₂_mul_right ϖ P _ _ (h a (Finset.mem_insert_self a S))
-      (ih fun s hs => h s (Finset.mem_insert_of_mem hs))
+    (h : ∀ s ∈ S, CoprimeRat ϖ P (Q s)) : CoprimeRat ϖ P (∏ s ∈ S, Q s) :=
+  Finset.prod_induction Q (CoprimeRat ϖ P) (fun _ _ => coprimeRat₂_mul_right ϖ P _ _)
+    (coprimeRat₂_one_right ϖ P) h
 
 theorem coprimeRat₂_pow_right (ϖ : O) (P Q : PowerSeries O) (h : CoprimeRat ϖ P Q) (n : ℕ) :
     CoprimeRat ϖ P (Q ^ n) := by
@@ -390,10 +377,10 @@ theorem exists_const_decomp (ϖ : O) (hϖ : Irreducible ϖ) (F C : Submodule O (
         intro v hv
         obtain ⟨t, ht⟩ := hcoord v hv (snf.f i)
         rw [hΦ, ht, Finset.sum_eq_single i]
-        · rw [if_pos rfl, mul_one, hu]
+        · rw [ite_eq_left rfl, mul_one, hu]
           exact Ideal.mem_span_singleton'.mpr ⟨t i * u, by ring⟩
         · intro l _ hl
-          rw [if_neg (fun h => hl (snf.f.injective h)), mul_zero, mul_zero]
+          rw [ite_eq_right (fun h => hl (snf.f.injective h)), mul_zero, mul_zero]
         · intro h
           exact absurd (Finset.mem_univ i) h
       have key := hkey (Φ (snf.f i)) n (hΦF _) hC
@@ -415,7 +402,7 @@ theorem exists_const_decomp (ϖ : O) (hϖ : Irreducible ϖ) (F C : Submodule O (
         intro v hv
         obtain ⟨t, ht⟩ := hcoord v hv j
         have h0 : ∀ l, (if snf.f l = j then (1 : O) else 0) = 0 := fun l =>
-          if_neg (fun h => hjr ⟨l, h⟩)
+          ite_eq_right (fun h => hjr ⟨l, h⟩)
         rw [hΦ, ht]
         simp [h0]
       have key := hkey (Φ j) c (hΦF _) hC

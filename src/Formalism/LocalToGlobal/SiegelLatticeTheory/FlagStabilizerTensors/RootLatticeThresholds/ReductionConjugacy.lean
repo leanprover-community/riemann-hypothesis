@@ -350,7 +350,7 @@ theorem reduction_conjugacy : Formalism.L2.SG.Pf.RowDictPf.RedConj0 := by
     have h2 : (wLat0 I w).mkQ (b i) = ∑ l, (CM * DM) l i • (wLat0 I w).mkQ (b l) := by
       rw [hqD i]; simp only [hqC]; exact comb _ CM DM i
     simp only [Matrix.sub_apply, sub_smul, Finset.sum_sub_distrib, Matrix.one_apply, ite_smul, one_smul,
-      zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← h2, sub_self]
 
   have hTb : ∀ j, I.fmat x *ᵥ iv I (b j) ∈ I.Lf := T_mem I w hb.1 hMb

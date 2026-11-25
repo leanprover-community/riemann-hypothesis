@@ -5,7 +5,7 @@ public import Formalism.RealPlaceAnalysis.StatementA
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CasimirCommutation.casComm_casK_comm :
-    ∀ {A : Type} [inst : Ring A] {n : ℕ} (ε : Fin n → Bool) (E : Fin n → Fin n → A),
+    ∀ {A : Type} [Ring A] {n : ℕ} (ε : Fin n → Bool) (E : Fin n → Fin n → A),
       Formalism.REAL.GlRel E → ∀ (c d : Fin n), ε c = ε d → Formalism.REAL.CasK ε E * E c d = E c d * Formalism.REAL.CasK ε E := by
   intro A _ n ε E h c d hcd
   have key : ∀ a b, E a b * E b a * E c d - E c d * (E a b * E b a) =

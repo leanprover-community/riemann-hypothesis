@@ -174,7 +174,7 @@ theorem acyc_member (hCx : CxSt) (hHt : HtpySt) (hA : AffAcycSt) {L : Type} [Sem
     (he : ∀ a, (f.obj (op a)).unop.1 ≤ (f.obj (op (a ⊓ t))).unop.1) : Acyc s f W.1 hle :=
   acyc_of_cone s hCx hHt hA f W hle (op t) ht
     (Monotone.functor (f := fun a : L ↦ a ⊓ t) fun _ _ h ↦ inf_le_inf_right t h).op
-    (fun T ↦ (homOfLE inf_le_left).op) (fun T ↦ (homOfLE inf_le_right).op) (fun T ↦ he T.unop)
+    (fun _ ↦ (homOfLE inf_le_left).op) (fun _ ↦ (homOfLE inf_le_right).op) (fun T ↦ he T.unop)
 
 def pj (f : C ⥤ AffOp X) (w : C × D ⥤ AffOp X) (h : ∀ T, (w.obj T).unop.1 ≤ (f.obj T.1).unop.1) :
     Proj (f ⋙ OAff s) (w ⋙ OAff s) where
@@ -355,7 +355,7 @@ theorem isAffineOpen_inf (hs : IsSeparated s) (U V : X.affineOpens) : IsAffineOp
   exact U.2.inf V.2
 
 theorem descentSt : CxSt → HtpySt → QCalcSt → FubiniSt → AffAcycSt → DescentSt :=
-  fun hCx hHt hQ hFub hA R _ X s hs P _ S ↦
+  fun hCx hHt hQ hFub hA _ _ _ s hs _ _ S ↦
     resSys_qiso s (isAffineOpen_inf s hs) hCx hHt hQ hFub hA S
 
 end GlobalTheory.CompanionTheory.Descent

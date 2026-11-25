@@ -26,49 +26,10 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.BlattnerShiftsSignedParameters
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddHsConjLe
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.RingTheory.Finiteness.Lattice
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.Analysis.Normed.Algebra.MatrixExponential
@@ -230,7 +191,6 @@ open GlobalTheory.SmoothGlob GlobalTheory.LowTypeDetermined GlobalTheory.PointAt
 
 namespace GlobalTheory.TypeSum.GKCoef
 
-
 open CoefLow in
 theorem values_eq_coef : ∀ {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D)
     (τ : D.what₂.Tau), IsInfFam (D := D) θ → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach →
@@ -279,7 +239,7 @@ theorem values_eq_coef : ∀ {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗
     else 0
   have rt_apply {h : Mx V.rank} (hh : h ∈ UJset ε) (F : Bd (Unit × UJset ε)) (i : Unit × UJset ε) :
       rt h F i = (wt N (i.2.1 * h) : ℂ) / wt N i.2.1 * F (i.1, ⟨i.2.1 * h, mul_mem_UJ i.2.2 hh⟩) := by
-    simp only [rt, dif_pos hh]
+    simp only [rt, dite_eq_left hh]
     rfl
   have modRep_rt : ModRep ε rt := by
     refine ⟨?_, fun a ha b hb => ?_, 1, N, fun g hg => ?_⟩
@@ -291,7 +251,7 @@ theorem values_eq_coef : ∀ {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗
       simp only [mul_assoc]
       have := wt_ne N (i.2.1 * a)
       field_simp
-    · simp only [rt, dif_pos hg, one_mul]
+    · simp only [rt, dite_eq_left hg, one_mul]
       dsimp only [wcomp]
       exact LinearMap.mkContinuous_norm_le _ (wt_pos N g).le _
   have key : ∀ (w : H) (hw : IsKFin ε σ w), ∀ y ∈ UJset ε, ∀ i : Unit × UJset ε,
@@ -578,15 +538,6 @@ theorem sobCont_add_form {ℓ ℓ' : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet 
   calc ‖ℓ w + ℓ' w‖ ≤ ‖ℓ w‖ + ‖ℓ' w‖ := norm_add_le _ _
     _ ≤ _ := by nlinarith
 
-theorem sobCont_smul_form (c : ℂ) {ℓ : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet ε) σ ℓ) :
-    Sobolev₂ (lieSet ε) σ (c • ℓ) := by
-  obtain ⟨S, C, hS, hC⟩ := h
-  refine ⟨S, ‖c‖ * C, hS, fun w hw => ?_⟩
-  have b : ‖ℓ w‖ ≤ C * sobNorm σ S w := hC w hw
-  show ‖c • ℓ w‖ ≤ ‖c‖ * C * sobNorm σ S w
-  rw [norm_smul, mul_assoc]
-  exact mul_le_mul_of_nonneg_left b (norm_nonneg c)
-
 theorem sobCont_sum_form {ι : Type} (s : Finset ι) (f : ι → H →ₗ[ℂ] ℂ) (h : ∀ i, Sobolev₂ (lieSet ε) σ (f i)) :
     Sobolev₂ (lieSet ε) σ (∑ i ∈ s, f i) := by
   classical
@@ -617,7 +568,7 @@ theorem coefBound_two_finSum : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [N
   have h1 : ∀ b, Sm ε σ b → SobFun ε σ (γ b) := by
     intro b _
     have hL := sobCont_sum_form (ε := ε) (σ := σ) Finset.univ (fun j => ⟪b, x j⟫_ℂ • ℓ j)
-      (fun j => sobCont_smul_form _ (hℓ j))
+      (fun j => GlobalTheory.TypeSum.CoefLow.sob_smul _ (hℓ j))
     have e : γ b = ⇑(∑ j, ⟪b, x j⟫_ℂ • ℓ j) := by
       funext w
       simp [γ, LinearMap.sum_apply]
@@ -626,7 +577,7 @@ theorem coefBound_two_finSum : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [N
   have h2 : ∀ w, Sm ε σ w → SobFun ε σ (fun b => star (γ b w)) := by
     intro w _
     have hL := sobCont_sum_form (ε := ε) (σ := σ) Finset.univ
-      (fun j => star (ℓ j w) • (innerSL ℂ (x j) : H →ₗ[ℂ] ℂ)) (fun j => sobCont_smul_form _ (sobCont_inner _))
+      (fun j => star (ℓ j w) • (innerSL ℂ (x j) : H →ₗ[ℂ] ℂ)) (fun j => GlobalTheory.TypeSum.CoefLow.sob_smul _ (sobCont_inner _))
     have e : (fun b => star (γ b w)) = ⇑(∑ j, star (ℓ j w) • (innerSL ℂ (x j) : H →ₗ[ℂ] ℂ)) := by
       funext b
       simp only [γ, star_sum, LinearMap.sum_apply, LinearMap.smul_apply,
@@ -1022,10 +973,10 @@ def pad {α : Type} [Zero α] (q : ℕ → ℕ) (a : (i : ℕ) → Fin (q i) →
   fun p => if h : p.2 < q p.1 then a p.1 ⟨p.2, h⟩ else 0
 
 theorem pad_of_lt {α : Type} [Zero α] (q : ℕ → ℕ) (a : (i : ℕ) → Fin (q i) → α) {i r : ℕ} (h : r < q i) :
-    pad q a (i, r) = a i ⟨r, h⟩ := dif_pos h
+    pad q a (i, r) = a i ⟨r, h⟩ := dite_eq_left h
 
 theorem pad_of_ge {α : Type} [Zero α] (q : ℕ → ℕ) (a : (i : ℕ) → Fin (q i) → α) {i r : ℕ} (h : ¬ r < q i) :
-    pad q a (i, r) = 0 := dif_neg h
+    pad q a (i, r) = 0 := dite_eq_right h
 
 theorem pad_hasSum_fiber {α : Type} [AddCommMonoid α] [TopologicalSpace α] (q : ℕ → ℕ)
     (a : (i : ℕ) → Fin (q i) → α) (i : ℕ) : HasSum (fun r => pad q a (i, r)) (∑ r, a i r) := by
@@ -1057,7 +1008,6 @@ theorem pad_hasSum (q : ℕ → ℕ) (a : (i : ℕ) → Fin (q i) → ℂ) (hs :
 end GlobalTheory.TypeSum.KSeries
 
 namespace GlobalTheory.TypeSum.KSeries
-
 
 theorem hasTypeAll_of_kTypes : GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach →
     ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -1183,14 +1133,6 @@ theorem sobCont_add' {ℓ ℓ' : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet ε) 
   calc ‖ℓ w + ℓ' w‖ ≤ ‖ℓ w‖ + ‖ℓ' w‖ := norm_add_le _ _
     _ ≤ _ := by nlinarith
 
-theorem sobCont_smul' (c : ℂ) {ℓ : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet ε) σ ℓ) : Sobolev₂ (lieSet ε) σ (c • ℓ) := by
-  obtain ⟨S, C, hS, hC⟩ := h
-  refine ⟨S, ‖c‖ * C, hS, fun w hw => ?_⟩
-  have e1 := hC w hw
-  change ‖c * ℓ w‖ ≤ ‖c‖ * C * (S.map fun l => ‖l.foldr (dRep σ) w‖).sum
-  rw [norm_mul, mul_assoc]
-  exact mul_le_mul_of_nonneg_left e1 (norm_nonneg c)
-
 theorem sobCont_sum {ι : Type} (s : Finset ι) (ℓ : ι → (H →ₗ[ℂ] ℂ)) (h : ∀ i, Sobolev₂ (lieSet ε) σ (ℓ i)) :
     Sobolev₂ (lieSet ε) σ (∑ i ∈ s, ℓ i) :=
   Finset.sum_induction _ _ (fun _ _ => sobCont_add') sobCont_zero' fun i _ => h i
@@ -1223,7 +1165,7 @@ theorem kAvg_approx_coef : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [Norme
   have hC' : IsCompact ((fun p : Mx n × KG ε => p.1 * toMK p.2) '' (C ×ˢ Set.univ)) :=
     (hC.prod isCompact_univ).image (continuous_fst.mul ((continuous_toMK ε).comp continuous_snd))
   obtain ⟨m', ℓ, v, hℓ, hv, happ'⟩ := happ _ hC' (δ / (1 + I)) (by positivity)
-  refine ⟨fun j => ∑ i, ⟪c j, v i⟫_ℂ • ℓ i, fun j => sobCont_sum _ _ fun i => sobCont_smul' _ (hℓ i),
+  refine ⟨fun j => ∑ i, ⟪c j, v i⟫_ℂ • ℓ i, fun j => sobCont_sum _ _ fun i => GlobalTheory.TypeSum.CoefLow.sob_smul _ (hℓ i),
     fun y hy hyU => ?_⟩
   have hsm : ∀ w, Sm ε σ (kAvg ε σ e w) := fun w => h.2.2.1 _ (by
     rw [hsum]

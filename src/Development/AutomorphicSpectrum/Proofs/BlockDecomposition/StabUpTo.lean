@@ -52,19 +52,19 @@ theorem bd_mul {ι A : Type} [Fintype ι] [CommRing A] {b : ι → ℤ} {M N : M
   ext u v
   simp only [bd, Matrix.of_apply, Matrix.mul_apply]
   by_cases h : b u = b v
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     refine Finset.sum_congr rfl fun w _ => ?_
     by_cases h1 : b u = b w
-    · rw [if_pos h1, if_pos (h1.symm.trans h)]
-    · rw [if_neg h1]
+    · rw [ite_eq_left h1, ite_eq_left (h1.symm.trans h)]
+    · rw [ite_eq_right h1]
       rcases lt_or_gt_of_ne h1 with h2 | h2
       · rw [show N w v = 0 from hN (by omega), mul_zero, zero_mul]
       · rw [show M u w = 0 from hM h2, zero_mul, zero_mul]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine (Finset.sum_eq_zero fun w _ => ?_).symm
     by_cases h1 : b u = b w
-    · rw [if_neg (fun e => h (h1.trans e)), mul_zero]
-    · rw [if_neg h1, zero_mul]
+    · rw [ite_eq_right (fun e => h (h1.trans e)), mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
 
 end GlobalTheory.CompanionTheory.CFin
 

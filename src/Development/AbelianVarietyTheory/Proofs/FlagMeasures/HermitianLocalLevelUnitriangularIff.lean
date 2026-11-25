@@ -3,46 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfDualAt
 public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceLatticeComponents
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -179,11 +140,11 @@ theorem columns_iff (sp : A ≃+* K × K) (I : Subring A) (Λ : Submodule I (Fin
       simp only [Matrix.mulVec, dotProduct]
       refine Finset.sum_congr rfl fun b _ => ?_
       by_cases hb : b < i
-      · rw [if_pos hb, if_pos hb]
+      · rw [ite_eq_left hb, ite_eq_left hb]
         show φ ((sp.symm (M b i, 0) : A) * c b a) = _
         rw [map_mul, hφa, RingEquiv.apply_symm_apply, hfr0, mul_comm]
         rfl
-      · rw [if_neg hb, if_neg hb, mul_zero]
+      · rw [ite_eq_right hb, ite_eq_right hb, mul_zero]
     have hs2 : ∀ a, ψ (s a) = 0 := by
       intro a
 
@@ -235,7 +196,7 @@ theorem inJ_red_iff (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum 
       X a b - (if a = b then 1 else 0) = (g : v.adicCompletion F) * w) ↔
       redM F v X a b = if a = b then 1 else 0 := by
     intro a b
-    have hred : redM F v X a b = IsLocalRing.residue _ ⟨X a b, hX a b⟩ := dif_pos (hX a b)
+    have hred : redM F v X a b = IsLocalRing.residue _ ⟨X a b, hX a b⟩ := dite_eq_left (hX a b)
     obtain ⟨d, hd1, hd2⟩ : ∃ d : v.adicCompletionIntegers F,
         IsLocalRing.residue (v.adicCompletionIntegers F) d = (if a = b then 1 else 0) ∧
         (d : v.adicCompletion F) = if a = b then 1 else 0 := by
@@ -255,15 +216,15 @@ theorem inJ_red_iff (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum 
       have h := congrArg Subtype.val e
       have h' : (w : v.adicCompletion F) * (g : v.adicCompletion F) = X a b - d := h
       rw [← h', mul_comm]
-  have hblk : ∀ x : Fin n, blkOf n t x = x := fun x => if_pos x.2
+  have hblk : ∀ x : Fin n, blkOf n t x = x := fun x => ite_eq_left x.2
   constructor
   · rintro ⟨h1, h2, -, -⟩ a b hba
     rw [hiff]
     rcases eq_or_lt_of_le hba with e | e
     · subst e
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact h2 b b.2
-    · rw [if_neg e.ne']
+    · rw [ite_eq_right e.ne']
       exact h1 a b (by rw [hblk, hblk]; exact e)
   · intro h
     refine ⟨fun x y hxy => ?_, fun x _ => ?_, fun x y hy => absurd y.2 (by omega), fun h' => by cases h'⟩
@@ -271,9 +232,9 @@ theorem inJ_red_iff (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum 
         rw [hblk, hblk] at hxy
         exact hxy
       have h3 := (hiff x y).1 (h x y hlt.le)
-      rwa [if_neg hlt.ne'] at h3
+      rwa [ite_eq_right hlt.ne'] at h3
     · have h3 := (hiff x x).1 (h x x le_rfl)
-      rwa [if_pos rfl] at h3
+      rwa [ite_eq_left rfl] at h3
 
 end Residue
 

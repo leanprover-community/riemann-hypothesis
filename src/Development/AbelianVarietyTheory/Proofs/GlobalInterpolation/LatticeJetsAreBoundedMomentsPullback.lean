@@ -2,46 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.JetsAreBoundedMeasureMomentsPadicIntMatrixChange
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -76,14 +36,14 @@ theorem latInt_pull : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (V :
     · intro i j
       by_cases hij : i = j
       · subst hij
-        simp only [if_true, map_inv₀, map_natCast, zc_eq]
+        simp only [ite_true, map_inv₀, map_natCast, zc_eq]
         have e : zcRing q ((u i)⁻¹ : ℤ_[q]ˣ).1 * (s i : ℂ_[q]) = 1 := by
           have e1 : (s i : ℂ_[q]) = zcRing q (u i).1 := by rw [hu i, map_natCast]
           rw [e1, ← map_mul, Units.inv_mul, map_one]
         exact (eq_inv_of_mul_eq_one_left e).symm
       · simp [hij, zc_eq]
     · intro i
-      simp only [ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [← Nat.cast_smul_eq_nsmul ℂ, smul_comm (ι.symm ω) (s i : ℂ), smul_smul, inv_mul_cancel₀ (hs0 i), one_smul]
   obtain ⟨μ, hμ, hm⟩ := hP
   refine ⟨μ, hμ, fun k j f hf => ?_⟩

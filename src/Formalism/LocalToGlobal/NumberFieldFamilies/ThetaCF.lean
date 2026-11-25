@@ -86,9 +86,9 @@ theorem fixSig_ok (V : HSp D) : (fixSig V).SigOK := by
   unfold HSpace.SigOK
   intro τ
   by_cases h : V.SigOK
-  · simp only [fixSig, h, if_true]
+  · simp only [fixSig, h, ite_true]
     exact h τ
-  · simp only [fixSig, h, if_false]
+  · simp only [fixSig, h, ite_false]
     exact (sig_ex V τ).choose_spec
 
 

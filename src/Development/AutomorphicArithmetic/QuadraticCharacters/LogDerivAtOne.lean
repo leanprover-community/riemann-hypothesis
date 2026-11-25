@@ -22,8 +22,6 @@ abbrev Gal : Type := (ZMod E.N)ˣ ⧸ E.H
 
 def res : (ZMod E.N)ˣ →* E.Gal := QuotientGroup.mk' E.H
 
-def IsReal : Prop := (-1 : (ZMod E.N)ˣ) ∈ E.H
-
 def inertiaUnits (p : ℕ) : Subgroup (ZMod E.N)ˣ :=
   (ZMod.unitsMap (Nat.ordCompl_dvd E.N p)).ker
 

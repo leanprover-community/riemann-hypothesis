@@ -91,7 +91,7 @@ theorem flagMat_lower {z : Fin (2 * r + k + 1) → ℂ} {a : Matrix (Fin (2 * r 
     by_cases hij : i = j
     · subst hij
       simp
-    · rw [if_neg hij, if_neg]
+    · rw [ite_eq_right hij, ite_eq_right]
       intro h
       apply hij
       have h' := congrArg Fin.val h
@@ -102,11 +102,11 @@ theorem flagMat_upper {z : Fin (2 * r + k + 1) → ℂ} {a : Matrix (Fin (2 * r 
     (ha : a ∈ Nset k r) : (flagMat k r z a).BlockTriangular id := by
   intro i j hij
   have hij' : j < i := hij
-  rw [flagMat_lower ha i j (le_of_lt hij'), if_neg (ne_of_gt hij')]
+  rw [flagMat_lower ha i j (le_of_lt hij'), ite_eq_right (ne_of_gt hij')]
 
 theorem flagMat_diag {z : Fin (2 * r + k + 1) → ℂ} {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (ha : a ∈ Nset k r) (i : Fin (r + 1)) : flagMat k r z a i i = 1 := by
-  rw [flagMat_lower ha i i le_rfl, if_pos rfl]
+  rw [flagMat_lower ha i i le_rfl, ite_eq_left rfl]
 
 theorem mul_Fm {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
     {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r) :
@@ -157,7 +157,7 @@ theorem mul_Fm {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
     rw [hsum, zero_add]
     by_cases hb : Fin.last r = b
     · subst hb
-      rw [if_pos rfl, mul_one, hF2]
+      rw [ite_eq_left rfl, mul_one, hF2]
       have hterm : ∀ j, a i j * z j = if j = i then z i else 0 := by
         intro j
         by_cases hjW : r ≤ j.val ∧ j.val ≤ r + k
@@ -165,14 +165,14 @@ theorem mul_Fm {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
           by_cases hij : i = j
           · subst hij
             simp
-          · rw [if_neg hij, if_neg (Ne.symm hij), zero_mul]
+          · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), zero_mul]
         · rw [hz j (by omega), mul_zero]
           split_ifs with hij
           · subst hij
             exact (hz _ (by omega)).symm
           · rfl
       simp [Matrix.mulVec, dotProduct, hterm]
-    · rw [if_neg hb, mul_zero]
+    · rw [ite_eq_right hb, mul_zero]
       have hbr : b.val < r := by
         have := b.isLt
         have : b.val ≠ r := fun h => hb (Fin.ext h.symm)
@@ -184,7 +184,7 @@ theorem mul_Fm {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
       unfold bvec
       have hcol : (a *ᵥ Pi.single (eI k r ⟨b.val, hbr⟩) (1 : ℂ)) i = a i (eI k r ⟨b.val, hbr⟩) := by
         simp [Matrix.mulVec, dotProduct, Pi.single_apply]
-      rw [hcol, ha.2.1 ⟨b.val, hbr⟩ i (by show b.val ≤ i.val; omega), if_neg]
+      rw [hcol, ha.2.1 ⟨b.val, hbr⟩ i (by show b.val ≤ i.val; omega), ite_eq_right]
       intro h
       have h' := congrArg Fin.val h
       have hv : (eI k r ⟨b.val, hbr⟩).val = b.val := rfl

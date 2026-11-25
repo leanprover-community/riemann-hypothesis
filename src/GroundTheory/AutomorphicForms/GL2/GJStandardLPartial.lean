@@ -47,7 +47,6 @@ theorem continuous_globalMatrixCoeff (hn : 0 < n) (μ : Measure (Reduction.normO
     (h₂ : φ₂ ∈ AutomorphicForm.cuspForms K n)
     (hA : ∀ (t : {r : ℝ // 0 < r}) (x : AdelicGLn.AdelicGL K n), φ₁ (Reduction.centralSection K n t * x) = φ₁ x) :
     Continuous (GJGlobal.matrixCoeff μ φ₁ φ₂) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   haveI : FirstCountableTopology (AdelicGLn.AdelicGL K n) := inferInstance
   obtain ⟨C₁, hC₁⟩ := exists_norm_le_of_cusp hn h₁ hA
   obtain ⟨C₂, hC₂⟩ := CuspidalSpectrum.exists_norm_le_of_mem_cuspForms h₂
@@ -76,12 +75,6 @@ theorem hasProd_compl_of_hasProd {ι : Type*} {f : ι → ℂ} {a : ℂ} (h : Ha
   rw [Finset.prod_eq_one fun i hi ↦ Set.mulIndicator_of_notMem (by simpa using hi) f,
     ← div_eq_mul_one_div] at hg
   exact (hasProd_subtype_iff_mulIndicator (s := {i | i ∉ S})).2 hg
-
-section Partial
-
-variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
-
-end Partial
 
 section Main
 

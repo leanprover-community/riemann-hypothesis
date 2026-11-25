@@ -478,7 +478,7 @@ theorem UpperTheory.Gal.crystallineComparison.ptIdBC_of :
     intro x' e
     have hx : (x' ≫ h) ≫ f = β ≫ Spec.map (CommRingCat.ofHom σ) := by
       rw [Category.assoc, hp.w, ← Category.assoc, e]
-    simp only [Λ, dif_pos hx]
+    simp only [Λ, dite_eq_left hx]
     apply hp.hom_ext
     · exact hp.lift_fst _ _ _
     · rw [hp.lift_snd, e]
@@ -513,7 +513,7 @@ open CategoryTheory AlgebraicGeometry
 private lemma flat_of_dvr {O O' : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CommRing O'] [IsDomain O']
     (φ : O →+* O') (ϖ : O) (hϖ : Irreducible ϖ) (h0 : φ ϖ ≠ 0) : φ.Flat := by
   have hinj : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     by_contra hne
     obtain ⟨k, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hne hϖ
@@ -543,7 +543,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -939,7 +938,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1154,7 +1152,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1329,7 +1326,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory Limits AlgebraicGeometry UpperTheory.Gal.G3
 open UpperTheory.Gal.Int.Geo (FEt gen)
@@ -1411,7 +1407,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1434,7 +1429,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1851,7 +1845,7 @@ theorem UpperTheory.Ru.crystallineComparison.geoLoc :
   obtain ⟨Tk, hTk⟩ : ∃ Tk : ∀ i : Fin N, ℕ → End ℚ_[l] (Fin (d i) → ℚ_[l]), ∀ (i : Fin N) (k : Fin (n + 1)),
       Tk i k = (β i).equivFun.toLinearMap ∘ₗ A k i ∘ₗ (β i).equivFun.symm.toLinearMap :=
     ⟨fun i k => if h : k ≤ n then (β i).equivFun.toLinearMap ∘ₗ A ⟨k, Nat.lt_succ_of_le h⟩ i ∘ₗ (β i).equivFun.symm.toLinearMap else 0,
-      fun i k => dif_pos (Nat.le_of_lt_succ k.2)⟩
+      fun i k => dite_eq_left (Nat.le_of_lt_succ k.2)⟩
   have hTv : ∀ (i : Fin N) (k : Fin (n + 1)) v, Tk i k ((β i).equivFun v) = (β i).equivFun (A k i v) := fun i k v => by
     rw [hTk]
     simp

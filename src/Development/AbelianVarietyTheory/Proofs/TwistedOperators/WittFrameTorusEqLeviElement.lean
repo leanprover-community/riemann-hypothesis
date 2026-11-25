@@ -81,7 +81,7 @@ theorem exists_hypDec (S : HSp D) {r : ℕ} (e e' : Matrix (Fin S.rank) (Fin r) 
 
     rw [map_sum, map_zero] at h
     simp only [map_smul, hpair, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true] at h
+      ite_true] at h
     exact h
   have hiso : ∀ a b, S.hT (ev a) (ev b) = 0 := fun a b => by
     rw [← GlobalTheory.BesselCompare.cT_mul, hev]

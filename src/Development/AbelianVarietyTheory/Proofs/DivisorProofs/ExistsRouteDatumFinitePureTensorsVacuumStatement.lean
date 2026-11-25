@@ -637,7 +637,7 @@ theorem vacuum_unique : ∀ {D : D7} {a a' : ℕ} (Bs : GlobalTheory.IndefiniteR
     have h : ∃ γ ∈ Λ, GlobalTheory.LatVac.locCo co v γ = l := AddSubgroup.mem_map.mp hl
     obtain ⟨r, hr, x₀, hx₀⟩ := GlobalTheory.T.exists_nonzero_complementary_adelicSchwartz_function v f hf
     have key := GlobalTheory.T.heisenbergEigen_latticePointAtPlace_localIdentity v co Bs.ψ h.choose f _ (hAt _ h.choose_spec.1) (hA _ h.choose_spec.1) r hr x₀ hx₀ ξ
-    simp only [χ, dif_pos h]
+    simp only [χ, dite_eq_left h]
     rw [h.choose_spec.2] at key
     exact key
   obtain ⟨c, hc0, hcb⟩ := GlobalTheory.T.tensorLattice_localDarbouxCoords_bounded {Γ.V' with L := L₁} {Γ.W with L := L₂} v co hL₁ hL₂

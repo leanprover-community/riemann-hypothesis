@@ -272,7 +272,7 @@ private theorem lift_single {ι A : Type} [CommRing A] [Algebra ℂ A] (x : ι �
 private theorem shift_sum (g : ℕ → ℕ → ℂ) (s : ℕ → ℂ) (d : ℕ) (h0 : ∀ a, d < a → ∀ b, g a b = 0) (h : ∀ a, HasSum (g a) (s a)) :
     HasSum (fun k => ∑ b ∈ Finset.range (k + 1), g (k - b) b) (∑ a ∈ Finset.range (d + 1), s a) := by
   have h1 : ∀ a, HasSum (fun k => if a ≤ k then g a (k - a) else 0) (s a) := fun a => by
-    rw [← hasSum_nat_add_iff' a, Finset.sum_eq_zero fun i hi => if_neg (not_le.2 (Finset.mem_range.1 hi)), sub_zero]
+    rw [← hasSum_nat_add_iff' a, Finset.sum_eq_zero fun i hi => ite_eq_right (not_le.2 (Finset.mem_range.1 hi)), sub_zero]
     simpa using h a
   convert hasSum_sum (s := Finset.range (d + 1)) fun a _ => h1 a using 2 with k
   rw [← Finset.sum_range_reflect, ← Finset.sum_filter]
@@ -397,7 +397,7 @@ private theorem vars_pieceK {ι κ : Type} [Fintype ι] (k : ℕ) (F : KF ι κ)
   unfold pieceK
   rw [coeff_sum]
   refine Finset.sum_eq_zero fun β hβ => ?_
-  rw [coeff_monomial, if_neg]
+  rw [coeff_monomial, ite_eq_right]
   rintro rfl
   exact hn hβ
 
@@ -588,7 +588,7 @@ private theorem supp_good {F : KF ((E →+* ℂ) × Fin n) (Pl E × Fin n)}
   by_contra hn
   have h := congrArg (AddMonoidAlgebra.coeff · β) (hG k)
   rw [MvPolynomial.coeff_map, pieceK, MvPolynomial.coeff_sum, Finset.sum_eq_zero fun γ hγ => by
-    rw [MvPolynomial.coeff_monomial, if_neg fun e : γ = β => hn (e ▸ hγ)]] at h
+    rw [MvPolynomial.coeff_monomial, ite_eq_right fun e : γ = β => hn (e ▸ hγ)]] at h
   exact MvPolynomial.mem_support_iff.1 hβ (UpperTheory.ConvolutionTheory.FX.blockE_inj (E →+* ℂ) n (h.trans (map_zero _).symm))
 
 private theorem list_rel {M A ι : Type} [AddCommGroup M] [Module ℂ M] {V : Submodule ℂ M} [CommRing A] [Module A V]
@@ -677,13 +677,13 @@ private theorem exists_esymm (n : ℕ) (c : Fin n → ℂ) :
   rw [e1, hm.leadingCoeff, one_mul] at hcoef
   have e2 : p.coeff ((Fin.rev i : Fin n) : ℕ) = (-1) ^ ((i : ℕ) + 1) * c i := by
     have h3 : (Polynomial.X ^ n : Polynomial ℂ).coeff ((Fin.rev i : Fin n) : ℕ) = 0 := by
-      rw [Polynomial.coeff_X_pow, if_neg (by omega)]
+      rw [Polynomial.coeff_X_pow, ite_eq_right (by omega)]
     have h4 : q.coeff ((Fin.rev i : Fin n) : ℕ) = a (Fin.rev i) := by
       simp only [q, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
       rw [Finset.sum_eq_single (Fin.rev i)]
       · simp
       · intro b _ hb
-        rw [if_neg (fun h => hb (Fin.ext h.symm)), mul_zero]
+        rw [ite_eq_right (fun h => hb (Fin.ext h.symm)), mul_zero]
       · simp
     simp only [p, Polynomial.coeff_add, h3, zero_add, h4, a, Fin.rev_rev]
     congr 2
@@ -715,7 +715,7 @@ private theorem vars_of_gen {τ κ : Type} [Fintype τ] {n : ℕ} {F : KF (τ ×
   have h1 : (pieceK k F).coeff β = 0 := by
     rw [pieceK, MvPolynomial.coeff_sum]
     refine Finset.sum_eq_zero fun b hb => ?_
-    rw [MvPolynomial.coeff_monomial, if_neg (fun e : b = β => hF (e ▸ hb))]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right (fun e : b = β => hF (e ▸ hb))]
   rw [← h, MvPolynomial.coeff_map] at h1
   exact MvPolynomial.mem_support_iff.1 hβ ((injective_iff_map_eq_zero _).1 (aeval_blockE_injective τ n) _ h1)
 

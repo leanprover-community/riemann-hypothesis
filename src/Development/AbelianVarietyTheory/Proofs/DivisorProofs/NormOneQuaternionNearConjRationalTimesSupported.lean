@@ -12,64 +12,13 @@ public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceOpen
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquaringOpenAtOneOfCompleteTwoNeZeroStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveStrongApproximationAvoidingFinset
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsBasisOfIsQuadraticExtension
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualLatticesSingleOrbitTamePlace
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalPureQuaternionSqOfAdelic, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitIntertwinerAdelicQuaternion, Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyExistsQuaternionNormOneReEq, Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyExistsQuaternionNormOneReEqStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsQuaternionNormOneNearReSqNeOne, Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfinitePlaceCompletionNhdsNEZeroNeBot, Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuaternionNormOneReOpenNearOfIsUnit, Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuaternionNormOneTraceOpenFiniteAdeleRing, Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuaternionNormOneTraceOpenPi, Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuaternionNormOneTraceOpenProd, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquaringOpenAtOneAdicCompletionNumberField, Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuaternionNormOneTraceOpenAdeles, Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormOneQuaternionNearConjRationalTimesSupported
@@ -88,10 +37,6 @@ namespace GlobalTheory.QSA.PureSq
 theorem mul_self_of_re_eq_zero {R : Type*} [CommRing R] {a b : R} (p : ℍ[R, a, b]) (hp : p.re = 0) :
     p * p = algebraMap R ℍ[R, a, b] (a * p.imI ^ 2 + b * p.imJ ^ 2 - a * b * p.imK ^ 2) := by
   ext <;> simp [QuaternionAlgebra.algebraMap_eq, hp] <;> ring
-
-theorem exists_completion_hom_of_real {K : Type} [Field K] (σ : K →+* ℝ) :
-    ∃ (w : InfinitePlace K) (f : w.Completion →+* ℝ), ∀ x : K, f (algebraMap K w.Completion x) = σ x := by
-  apply _root_.GlobalTheory.QuadSymbol.exists_completion_hom_real
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -118,7 +63,7 @@ variable {F : Type} [Field F] [NumberField F]
 theorem isotropic_real {a b c : F} (q : DA F a b) (hq0 : q.re = 0)
     (hqq : q * q = algebraMap (AF F) (DA F a b) (algebraMap F (AF F) c)) (σ : F →+* ℝ) :
     ∃ x : Fin 4 → ℝ, x ≠ 0 ∧ ∑ i, σ (![a, b, -(a * b), -c] i) * x i ^ 2 = 0 := by
-  obtain ⟨w, f, hf⟩ := exists_completion_hom_of_real σ
+  obtain ⟨w, f, hf⟩ := GlobalTheory.QuadSymbol.exists_completion_hom_real σ
   refine isotropic_of_ringHom q hq0 hqq
     (f.comp ((Pi.evalRingHom (fun v : InfinitePlace F => v.Completion) w).comp (fstA F).toRingHom)) σ
     (fun x => ?_)
@@ -655,7 +600,6 @@ private lemma nrm_apply_eq_nrm_finAdele_loc {a b : F}
   simp only [_root_.GlobalTheory.QSA.nrm]
   rfl
 
-
 open NumberField IsDedekindDomain in
 open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
@@ -721,13 +665,13 @@ theorem _root_.GlobalTheory.QSA.FinAdele.traceOpen_finiteAdele : ∀ (F : Type) 
       ⟨fun v => if v ∈ J then (hOne v).some else 0, Filter.eventually_cofinite.2 (hJ.subset
         fun v hv => by
           by_contra hvJ
-          exact hv (by simp only [if_neg hvJ]; exact zero_mem _))⟩
+          exact hv (by simp only [ite_eq_right hvJ]; exact zero_mem _))⟩
     refine ⟨t₀, Set.mem_iInter₂.2 fun v hv => ?_, fun v hv => ?_⟩
     · show (if v ∈ J then (hOne v).some else 0) ∈ O v
-      rw [if_pos hv]
+      rw [ite_eq_left hv]
       exact (hOne v).some_mem
     · show (if v ∈ J then (hOne v).some else 0) ∈ v.adicCompletionIntegers F
-      rw [if_neg hv]
+      rw [ite_eq_right hv]
       exact zero_mem _
   · rintro t ⟨htJ, htA⟩
     rw [Set.mem_iInter₂] at htJ
@@ -839,7 +783,6 @@ theorem continuous_glue [∀ i, TopologicalSpace (R i)] :
 
 end TraceOpenPi
 
-
 open TraceOpenPi in
 theorem traceOpen_pi : ∀ (ι : Type) [Fintype ι] (R : ι → Type) [∀ i, CommRing (R i)]
     [∀ i, TopologicalSpace (R i)] (a b : ∀ i, R i),
@@ -928,7 +871,6 @@ end GlobalTheory.QSA.TraceOpenProd
 
 namespace GlobalTheory.QSA
 
-
 open TraceOpenProd in
 theorem traceOpen_prod : ∀ (R₁ R₂ : Type) [CommRing R₁] [TopologicalSpace R₁] [CommRing R₂] [TopologicalSpace R₂]
     (a₁ b₁ : R₁) (a₂ b₂ : R₂), TraceOpen R₁ a₁ b₁ → TraceOpen R₂ a₂ b₂ → TraceOpen (R₁ × R₂) (a₁, a₂) (b₁, b₂) := by
@@ -977,7 +919,7 @@ theorem sqOpen_and_nhdsNE_zero_neBot_adicCompletion :
     have h' : algebraMap F (v.adicCompletion F) 2 = algebraMap F (v.adicCompletion F) 0 := by
       rw [map_ofNat, map_zero]; exact h
     exact two_ne_zero ((algebraMap F (v.adicCompletion F)).injective h')
-  refine ⟨GlobalTheory.T.squaringOpenAtOne_of_complete_two_ne_zero (v.adicCompletion F) h2, ?_⟩
+  refine ⟨GlobalTheory.sqOpen_of_two_ne_zero (v.adicCompletion F) h2, ?_⟩
   infer_instance
 
 end GlobalTheory.QSA
@@ -1012,7 +954,7 @@ theorem traceOpen_inf (F : Type) [Field F] [NumberField F] (a b : F) (ha : a ≠
   have h2 : (2 : w.Completion) ≠ 0 := by
     have := (map_ne_zero (algebraMap F w.Completion)).2 (two_ne_zero : (2 : F) ≠ 0)
     rwa [map_ofNat] at this
-  exact traceOpen_field _ h2 (_root_.GlobalTheory.QSA.infinitePlace_completion_nhdsNE_neBot F w) (GlobalTheory.T.squaringOpenAtOne_of_complete_two_ne_zero _ h2) _ _ ((map_ne_zero (algebraMap F w.Completion)).2 ha)
+  exact traceOpen_field _ h2 (_root_.GlobalTheory.QSA.infinitePlace_completion_nhdsNE_neBot F w) (GlobalTheory.sqOpen_of_two_ne_zero _ h2) _ _ ((map_ne_zero (algebraMap F w.Completion)).2 ha)
 
 theorem traceOpen_fin (F : Type) [Field F] [NumberField F] (a b : F) (ha : a ≠ 0) (hb : b ≠ 0) :
     TraceOpen (FiniteAdeleRing (𝓞 F) F) (algebraMap F (FiniteAdeleRing (𝓞 F) F) a)

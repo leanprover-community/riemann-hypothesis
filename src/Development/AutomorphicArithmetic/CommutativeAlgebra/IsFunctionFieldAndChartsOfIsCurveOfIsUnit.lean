@@ -159,19 +159,13 @@ section -- clump:auto
 
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
-private lemma sec_map_comp {R : Type} [CommRing R] {F G H : Shv R} (a : F ⟶ G) (b : G ⟶ H)
-    {U : Scheme.{0}} (x : Sec F U) : Sec.map (a ≫ b) x = Sec.map b (Sec.map a x) := rfl
-
-private lemma sec_map_zero {R : Type} [CommRing R] {F G : Shv R} {U : Scheme.{0}} (x : Sec F U) :
-    Sec.map (0 : F ⟶ G) x = 0 := rfl
-
 private lemma res_univ_eq_zero {R : Type} [CommRing R] {A W : Scheme.{0}} (i : A ⟶ W) {Z : Shv R}
     (h : (free R).obj (yoneda.obj W) ⟶ Z) (h0 : (free R).map (yoneda.map i) ≫ h = 0) :
     Sec.res i (Sec.map h (freeGen R (yoneda.obj W) W (𝟙 W))) = 0 := by
   rw [_root_.GlobalTheory.EtC.CupSpec.map_res, CupSpec.freeGen_res]
   have e : (ConcreteCategory.hom ((yoneda.obj W).map i.op)) (𝟙 W) =
       (ConcreteCategory.hom ((yoneda.map i).app (op A))) (𝟙 A) := by simp
-  rw [e, ← CupSpec.freeGen_map, ← sec_map_comp, h0, sec_map_zero]
+  rw [e, ← CupSpec.freeGen_map, ← GlobalTheory.EtC.exactIff_map_comp, h0, GlobalTheory.EtC.KumCoker.sec_map_zero]
 
 theorem UpperTheory.etale_purity_free_cover :
     LateralTheory.CohomologicalPurity.Thom.LeafFreeCov := by
@@ -903,9 +897,6 @@ namespace UpperTheory.Kum1
 
 end UpperTheory.Kum1
 
-theorem UpperTheory.Cb.exists_unit_kummer_eq_of_picard_torsionFree :
-    ∀ (q : ℕ) [NeZero q] (A : Type) [CommRing A], IsUnit (q : A) → (∀ c : CommRing.Pic A, c ^ q = 1 → c = 1) → ∀ x : Ht q (sp A) 1 1, ∃ u : (Γ(Spec (CommRingCat.of A), ⊤))ˣ, kum q u = x :=
-  GlobalTheory.EtC.kum_surjective
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -987,7 +978,7 @@ private lemma main (hA : LateralTheory.KummerTheory.AlgExt) : Hyps → ∀ (q : 
     simpa using hqA.map (Scheme.ΓSpecIso C.functionField).inv.hom
   have hqT : IsUnit (q : Γ(Spec X.functionField, ⊤)) := by
     simpa using hqK.map (Scheme.ΓSpecIso X.functionField).inv.hom
-  obtain ⟨w, hw⟩ := UpperTheory.Cb.exists_unit_kummer_eq_of_picard_torsionFree q C.functionField hqA (fun c _ => Subsingleton.elim _ _) (pl q 1 gC 1 x₀)
+  obtain ⟨w, hw⟩ := GlobalTheory.EtC.kum_surjective q C.functionField hqA (fun c _ => Subsingleton.elim _ _) (pl q 1 gC 1 x₀)
   have K1 := (GlobalTheory.T.kummerClassOfUnit_cocycle_natural_additive q).2.1 (Spec.map (CommRingCat.ofHom φ)) w hqS
   have K2 : kum q (X := Spec X.functionField) (Units.map (Scheme.ΓSpecIso X.functionField).inv.hom.toMonoidHom F) =
       kum q (Units.map (Spec.map (CommRingCat.ofHom φ)).appTop.hom.toMonoidHom w) := by
@@ -1398,7 +1389,7 @@ private theorem core (k L : Type) [Field k] [Field L] [Algebra k L] {C X : Schem
     ext a
     simp [Algebra.TensorProduct.includeRight_apply, hθ]
   have hinj : Function.Injective θ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro t ht
     obtain ⟨hV0, e0, he0⟩ := chart ⟨0, hn⟩
     haveI := hne' ⟨0, hn⟩

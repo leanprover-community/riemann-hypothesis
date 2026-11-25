@@ -57,9 +57,6 @@ import Mathlib.Tactic.ReduceModChar
 
 section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi
-private theorem multiset_eq_of_sum {Γ : Type} [Monoid Γ] (s t : Multiset (Γ →* ℂ))
-    (h : ∀ g, (s.map fun f => f g).sum = (t.map fun f => f g).sum) : s = t := by
-  apply _root_.UpperTheory.Reformulated.B.Qf50.multiset_eq_of_sum <;> assumption
 section
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -100,7 +97,8 @@ private theorem hasSupport_of_charPol (hZ : GlobalTheory.Published.ZelevinskyPol
     Subtype.ext (MonoidHom.ext fun y => Units.ext (DFunLike.congr_fun e y))
   let t' : Multiset S := Finset.univ.val.map fun i => ⟨ω i, hω i⟩
   have htt : t = t' := by
-    refine Multiset.map_injective hc (multiset_eq_of_sum _ _ fun y => ?_)
+    refine Multiset.map_injective hc
+      (_root_.UpperTheory.Reformulated.B.Qf50.multiset_eq_of_sum _ _ fun y => ?_)
     obtain ⟨g, rfl⟩ := ha.surj y
     have h1 : (((t.map c).map fun f => f (a g)).map fun r => X - C r).prod =
         (((t'.map c).map fun f => f (a g)).map fun r => X - C r).prod := by
@@ -157,9 +155,7 @@ theorem UpperTheory.V.Z.Desc.W.pseudo_local_langlands_descent :
   have h2 := SupportRing.hasSupport_nu hs (((n : ℂ) - 1) / 2)
   have e2 : (algNorm σ).nu (((n : ℂ) - 1) / 2) = IrrGL.of σ.ρ σ.smooth σ.irred := by
     rw [algNorm, IrrGL.nu_nu, add_comm, e0, IrrGL.nu_zero]
-  have key : ∀ (x y : IrrGL (k := w.adicCompletion L)) s, x = y → HasSupport x.rep s → HasSupport y.rep s := by
-    rintro _ _ _ rfl h; exact h
-  have h3 := (key _ _ _ e2 h2).of_equiv (IrrGL.equivOf σ.ρ σ.smooth σ.irred).symm
+  have h3 := (e2 ▸ h2).of_equiv (IrrGL.equivOf σ.ρ σ.smooth σ.irred).symm
   simp only [Multiset.map_map, Function.comp_def, e1] at h3
   exact isSubquotient_of_hasSupport P.loc.zel τ _ hμ h3
 end

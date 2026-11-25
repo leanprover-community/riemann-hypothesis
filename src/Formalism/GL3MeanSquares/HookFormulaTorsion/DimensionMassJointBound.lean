@@ -156,14 +156,14 @@ theorem least_noncompact_gap : LeastNoncompactGap := by
     · have hodd : (j - (k - 1)) % 2 = 1 := by
         by_contra hc
         exact hsg ⟨fun _ => Or.inr (by omega), fun _ => Or.inl hi⟩
-      simp only [rowPar, hi, hj', if_true, if_false]
+      simp only [rowPar, hi, hj', ite_true, ite_false]
       have hst := increments_sum_lower_bound m b h₀ hb 0 (j - (k - 1)) (by omega)
       simp only [zero_add] at hst
       have h1 : (1 : ℝ) ≤ ((j - (k - 1) : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ j - (k - 1))
       have := hv i hi
       nlinarith [mul_le_mul_of_nonneg_right h1 hh]
   · have hj' : ¬ j < k - 1 := by omega
-    simp only [rowPar, hi, hj', if_false]
+    simp only [rowPar, hi, hj', ite_false]
     have hst := increments_sum_lower_bound m b h₀ hb (i - (k - 1)) (j - (k - 1) - (i - (k - 1))) (by omega)
     have e : i - (k - 1) + (j - (k - 1) - (i - (k - 1))) = j - (k - 1) := by omega
     rw [e] at hst

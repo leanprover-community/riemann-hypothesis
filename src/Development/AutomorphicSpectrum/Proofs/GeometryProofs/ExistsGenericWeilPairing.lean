@@ -104,11 +104,7 @@ theorem tors_finite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   refine Finite.of_surjective (fun q : D.La ⧸ N => (⟨Additive.toMul (ψ q), ?_⟩ : {x : Q // x ^ n = 1})) ?_
   · obtain ⟨a, rfl⟩ := QuotientAddGroup.mk_surjective q
     show ev a ^ n = 1
-    have : ∀ m : ℕ, ev (m • a) = ev a ^ m := by
-      intro m
-      induction m with
-      | zero => rw [zero_smul, pow_zero]; exact Additive.ofMul.injective (φ.map_zero)
-      | succ m ih => rw [succ_nsmul, hadd, ih, pow_succ]
+    have : ∀ m : ℕ, ev (m • a) = ev a ^ m := fun m => congrArg Additive.toMul (map_nsmul φ m a)
     rw [← this, hker]
   · rintro ⟨x, hx⟩
     obtain ⟨a, rfl⟩ := hon x hx

@@ -188,11 +188,6 @@ theorem hT_zero_symm {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpa
   rw [h] at this
   simpa using this.symm
 
-theorem ddS_ne_zero : ddS D ≠ 0 := by
-  rw [ddS, FractionalIdeal.coeIdeal_ne_zero, Ne,
-    Ideal.map_eq_bot_iff_of_injective (RingOfIntegers.algebraMap.injective _ _)]
-  exact differentIdeal_ne_bot
-
 theorem hyp_fe (a b : Fin D.R.rS) : (hS D).hT (D.sp.hypF a) (D.sp.hypE b) = if a = b then 1 else 0 := by
   have h1 := (D.sp.Y 0).herm.eq (D.sp.hypE b) (D.sp.hypF a)
   rw [D.sp.hyp_ef b a] at h1
@@ -334,7 +329,6 @@ theorem fun_reps {u u' : D.what₂.Word} {F0 : Fb D u} {Λ : LatV D} (hSt : Stan
     simp only [LinearMap.sub_apply, LinearMap.add_apply, LinearMap.comp_apply, LinearEquiv.coe_coe]
     ring
 
-
 variable (D) in
 abbrev coefI (a : Fin D.R.rS) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
   ddS D ^ (-((D.R.rS : ℤ) - (a : ℕ)))
@@ -425,7 +419,7 @@ theorem main : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D),
       neg_mem' := by
         rintro a ⟨v, hv, e⟩
         exact ⟨-v, Submodule.neg_mem _ hv, fun p => by simp [e]⟩ }
-  have hI := fun a => ideal_reps (coefI D a) (zpow_ne_zero _ (ddS_ne_zero D)) B S hS₀
+  have hI := fun a => ideal_reps (coefI D a) (zpow_ne_zero _ (GlobalTheory.LoopC.RowSplit.ddS_ne_zero D)) B S hS₀
   choose c hcI hgen using hI
   let j : Fin D.R.rS → ((P →ₗ[𝓞 D.host.E] D.host.E) →ₗ[𝓞 D.host.E] (P →ₗ[𝓞 D.host.E] (hS D).V)) := fun a =>
     LinearMap.llcomp (𝓞 D.host.E) P D.host.E (hS D).V
@@ -847,7 +841,7 @@ theorem exists_elem (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hΛ : Fo
   have hwX : w ∈ Xsp F := Xflag_le_X _ hw
   have hσb : ∀ x ∈ Xflag F b, S.hT σ x = 0 := by
     refine ext_Xflag (S.hT σ) 0 b fun a ha => ?_
-    rw [hσ, if_neg (fun h => by rw [h] at ha; exact lt_irrefl _ ha)]
+    rw [hσ, ite_eq_right (fun h => by rw [h] at ha; exact lt_irrefl _ ha)]
     rfl
   have hww : S.hT w w = 0 := iso_X S F hwX hwX
   have hwσ : S.hT w σ = 0 := by rw [herm S, hσb w hw, star_zero]
@@ -876,9 +870,9 @@ theorem exists_elem (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hΛ : Fo
   · intro x hx
     rw [hap x ((mem_orth S).1 hx w hwX), sub_sub_cancel_left]
     exact Submodule.neg_mem _ (Submodule.smul_mem _ _ hwX)
-  · rw [hap _ (X_orth_frame hwX b), hσ, if_pos rfl]
+  · rw [hap _ (X_orth_frame hwX b), hσ, ite_eq_left rfl]
   · intro j hj
-    rw [hap _ (X_orth_frame hwX j), hσ, if_neg hj]; simp
+    rw [hap _ (X_orth_frame hwX j), hσ, ite_eq_right hj]; simp
 
 theorem exists_col (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat : Submodule.IsLattice E Λ)
     (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hT : T ≠ 0)
@@ -925,16 +919,16 @@ theorem exists_cols (w : Fin (r + 1) → S.V) (hw : ∀ b : Fin (r + 1), w b ∈
         rcases lt_trichotomy b.val k with hb | hb | hb
         · have : m (w b) = w b := ext_Xflag (m : S.V →ₗ[E] S.V) LinearMap.id b
             (fun a ha => e2 a fun h => by rw [h] at ha; exact lt_asymm ha hb) _ (hw b)
-          rw [if_pos hb, if_pos (by omega), map_add (f := _), this, e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
+          rw [ite_eq_left hb, ite_eq_left (by omega), map_add (f := _), this, e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
         · have : b = ⟨k, hk⟩ := Fin.ext hb
-          rw [if_neg (by omega), if_pos (by omega), add_zero, this, e1]
-        · rw [if_neg (by omega), if_neg (by omega), add_zero,
+          rw [ite_eq_right (by omega), ite_eq_left (by omega), add_zero, this, e1]
+        · rw [ite_eq_right (by omega), ite_eq_right (by omega), add_zero,
             e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
       · refine ⟨n, hn, fun b => ?_⟩
         have := b.2
-        rw [h1, if_pos (by omega), if_pos (by omega)]
+        rw [h1, ite_eq_left (by omega), ite_eq_left (by omega)]
   obtain ⟨n, hn, h1⟩ := key (r + 1)
-  exact ⟨n, hn, fun b => by rw [h1, if_pos b.2]⟩
+  exact ⟨n, hn, fun b => by rw [h1, ite_eq_left b.2]⟩
 
 theorem exists_frame_op (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat : Submodule.IsLattice E Λ)
     (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hT : T ≠ 0)
@@ -1137,14 +1131,9 @@ theorem mem_Hp_iff {T' : E} {G : LFlag S r T'} (hF : F.zt = F.fl.z) (hG : G.zt =
 
 end Gen
 
-theorem ddS_ne_zero (D : D7) : ddS D ≠ 0 := by
-  unfold ddS
-  rw [FractionalIdeal.coeIdeal_ne_zero, Ne, Ideal.map_eq_bot_iff_of_injective (FaithfulSMul.algebraMap_injective _ _)]
-  exact differentIdeal_ne_bot
-
 theorem ddS_anti (D : D7) {m n : ℤ} (h : m ≤ n) : ddS D ^ n ≤ ddS D ^ m := by
   obtain ⟨k, rfl⟩ := Int.le.dest h
-  rw [zpow_add₀ (ddS_ne_zero D), zpow_natCast]
+  rw [zpow_add₀ (GlobalTheory.LoopC.RowSplit.ddS_ne_zero D), zpow_natCast]
   have : ddS D ^ k ≤ 1 := by
     unfold ddS
     rw [← FractionalIdeal.coeIdeal_pow]
@@ -1174,7 +1163,7 @@ theorem exists_exact_frame : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) 
   have hst0 : st 0 = 0 := RingOfIntegers.ext (by rw [hst]; simp)
   have hst1 : st 1 = 1 := RingOfIntegers.ext (by rw [hst]; simp)
   obtain ⟨m, hm, hmf⟩ := exists_frame_op (F := lf D F0) θ hθ' hlat hΛ hT
-    (fun j => ddS D ^ (-((D.R.rS : ℤ) - (j : ℕ)))) (fun j => zpow_ne_zero _ (ddS_ne_zero D))
+    (fun j => ddS D ^ (-((D.R.rS : ℤ) - (j : ℕ)))) (fun j => zpow_ne_zero _ (GlobalTheory.LoopC.RowSplit.ddS_ne_zero D))
     (fun a b hab => ddS_anti D (by have : a.val ≤ b.val := hab; omega))
     (coord_iff _ (by simp) hlift.1 hprim hX) (fun a b => st (A b a))
     (fun a b h => by rw [hA1 b a h, hst0]) (fun a => by rw [hA2, hst1])

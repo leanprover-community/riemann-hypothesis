@@ -183,7 +183,6 @@ theorem thetaField_iota (y : ACris K p) :
   exact congrArg Subtype.val (RingHom.congr_fun hF y)
 
 
-set_option maxHeartbeats 1600000 in
 theorem exists_theta_eq_sum_of_phi_iterate {y : ACris K p} {N : ℕ} (hN : 1 ≤ N)
     (hy : (phi (K := K) (p := p))^[N] y = y) {m : ℕ} (hm : 1 ≤ m) :
     ∃ c : ℕ → normInteger K, ∀ j : ℕ, ∃ e : normInteger K,

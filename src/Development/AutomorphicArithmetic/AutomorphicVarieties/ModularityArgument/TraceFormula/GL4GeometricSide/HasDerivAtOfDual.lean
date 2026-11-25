@@ -112,9 +112,9 @@ private theorem skew_of_curve (X : Matrix (Fin n) (Fin n) ℂ) (γ : ℝ → Un 
   rw [hconst] at hs
   have h := hs.unique (hasDerivAt_const _ _)
   simp only [h0, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_add_distrib,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
   have e : ∑ x, star (if x = i then (1 : ℂ) else 0) * X x j = X i j := by
-    simp only [apply_ite star, star_one, star_zero, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [apply_ite star, star_one, star_zero, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [e] at h
   show star (X j i) = -X i j
   exact eq_neg_of_add_eq_zero_left h
@@ -295,9 +295,9 @@ private theorem curve_deriv (X : Matrix (Fin n) (Fin n) ℂ) (γ : ℝ → Un n)
   rw [atEmb_apply]
   by_cases hv : v = w
   · subst hv
-    simp only [atW, InfinitePlace.mk_embedding, if_true]
+    simp only [atW, InfinitePlace.mk_embedding, ite_true]
     simpa only [hγ] using exp_entry X i j
-  · simp only [atW, InfinitePlace.mk_embedding, if_neg hv]
+  · simp only [atW, InfinitePlace.mk_embedding, ite_eq_right hv]
     exact hasDerivAt_const _ _
 
 private theorem deriv_σ (v : D.U) (X : Matrix (Fin n) (Fin n) ℂ) (γ : ℝ → Un n)

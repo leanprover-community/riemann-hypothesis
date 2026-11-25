@@ -138,8 +138,8 @@ theorem hyp_gram {n r : ℕ} (ε : Fin n → Bool) (x y : Fin r → Fin n → �
     intro a b
     rw [hJ_conj, hxy]
     by_cases h : b = a
-    · rw [if_pos h, if_pos h.symm]; simp
-    · rw [if_neg h, if_neg (Ne.symm h)]; simp
+    · rw [ite_eq_left h, ite_eq_left h.symm]; simp
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]; simp
   intro i j
   unfold hypG
   refine Fin.addCases (fun a => ?_) (fun a => ?_) i <;>

@@ -67,7 +67,7 @@ theorem asm : Asm := by
   unfold SrcTests
   refine ⟨E, nE, fun e => if h : e ∈ E then F e h else fun _ => 0, hE, ?_, ?_, ?_, hcard⟩
   · intro e he i
-    simp only [dif_pos he]
+    simp only [dite_eq_left he]
     unfold Nsrc
     refine Submodule.mem_inf.mpr ⟨scale_neg_mono w hw (htS e he) _ (hF1 e he i).1, ?_⟩
     refine (Submodule.mem_iInf _).mpr fun e' => (Submodule.mem_iInf _).mpr fun he' => ?_
@@ -76,7 +76,7 @@ theorem asm : Asm := by
       exact (hF1 e' he i).2
     · exact scale_pos_le w cStar _ (hF2 e he i e' he'.1 he'.2 hee)
   · intro e he i e' he' hsrc hne
-    simp only [dif_pos he]
+    simp only [dite_eq_left he]
     exact hF2 e he i e' he' hsrc hne
   · intro e he c hc
     obtain ⟨G, hG1, hG2, hG3, hG4⟩ := hF3 e he c hc
@@ -89,7 +89,7 @@ theorem asm : Asm := by
       · subst hee
         exact hG2
       · exact scale_pos_le w cStar _ (hG3 e' he'.1 (he'.2.trans (hE e he).2.symm) hee)
-    · simp only [dif_pos he]
+    · simp only [dite_eq_left he]
       exact ValLe.mono hG4 (hD1 e he)
     · intro e' he' hne
       exact hG3 e' (hE e' he').1 ((hE e' he').2.trans (hE e he).2.symm) hne

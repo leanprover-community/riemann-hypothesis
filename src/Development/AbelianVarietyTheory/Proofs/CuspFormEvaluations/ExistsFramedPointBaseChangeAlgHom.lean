@@ -9,48 +9,8 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsLoca
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaEmbeddingSectionsBaseChangeAffine
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsNonvanishing
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -75,70 +35,8 @@ open VVRank EmbPull TopologicalSpace
 variable {S : Scheme.{0}} (P : PolAV S) {T T' : Over S}
 
 theorem isGenSec_pullS (hS : SecBaseChangeSt) [IsLocallyNoetherian S] [IsAffine T.left] [IsAffine T'.left] (h : T' ⟶ T)
-    {th : LB.Sec (LPow P.A P.L 1 T)} (H : IsGenSec P.A P.L 1 th) : IsGenSec P.A P.L 1 (pullS P.A 1 h th) := by
-  intro s
-  let I : Ideal Γ(T'.left, ⊤) := (Submodule.span Γ(T'.left, ⊤)
-    {pullM P.A P.L 1 h (SecM.ofSec P.A th)}).comap (LinearMap.toSpanSingleton _ _ (SecM.ofSec P.A s))
-  have key : ∀ p : T'.left, ∃ f ∈ I, p ∈ T'.left.basicOpen f := fun p => by
-    obtain ⟨V, hV, b, hb⟩ := hS S P 1 le_rfl (T.hom (h.left p))
-    have hq : Unique (Fin (1 ^ P.g)) := by rw [one_pow]; infer_instance
-    obtain ⟨f, hf, hp⟩ := (isAffineOpen_top T.left).exists_basicOpen_le (V := T.hom ⁻¹ᵁ V) ⟨h.left p, hV⟩ trivial
-    let f' := h.left.appTop.hom f
-    have hf' : h.left ⁻¹ᵁ T.left.basicOpen f = T'.left.basicOpen f' := Scheme.preimage_basicOpen_top _ _
-    let W := T.left.basicOpen f
-    let W' := T'.left.basicOpen f'
-    let l : overRes W ⟶ overRes (T := baseOver S) V := Over.homMk
-      (IsOpenImmersion.lift V.ι (W.ι ≫ T.hom) (by
-        rw [Scheme.Opens.range_ι]
-        rintro _ ⟨y, rfl⟩
-        exact hf y.2)) ((congrArg (_ ≫ ·) (Category.comp_id _)).trans (IsOpenImmersion.lift_fac _ _ _))
-    let k₀ : W'.toScheme ⟶ W.toScheme := IsOpenImmersion.lift W.ι (W'.ι ≫ h.left) (by
-        rw [Scheme.Opens.range_ι]
-        rintro _ ⟨y, rfl⟩
-        exact hf'.ge y.2)
-    have hk₀ : k₀ ≫ W.ι = W'.ι ≫ h.left := IsOpenImmersion.lift_fac _ _ _
-    let k : overRes W' ⟶ overRes W := Over.homMk k₀ (by
-      change k₀ ≫ W.ι ≫ T.hom = W'.ι ≫ T'.hom
-      rw [← Category.assoc, hk₀, Category.assoc, Over.w])
-    have hk : k ≫ overResι W = overResι W' ≫ h := Over.OverMorphism.ext hk₀
-    have hW' : IsAffineOpen W' := (isAffineOpen_top _).basicOpen f'
-    have : IsAffine (overRes W').left := hW'
-    obtain ⟨c, hc⟩ := exists_basis P 1 b hb (overRes W') (k ≫ l)
-    obtain ⟨n, u, hu⟩ := exists_pow_extend_secM P 1 f (pullM P.A P.L 1 l (SecM.ofSec P.A (b hq.default)))
-    obtain ⟨r, hr⟩ := H (SecM.toSec P.A u)
-    have hr' : u = r • SecM.ofSec P.A th := Subtype.ext (funext hr)
-    have e₁ := congrArg (pullM P.A P.L 1 k) hu
-    rw [LinearMap.map_smulₛₗ, pullM_comp _ P.isLB, pullM_comp _ P.isLB, hk, ← pullM_comp _ P.isLB, hr',
-      LinearMap.map_smulₛₗ, LinearMap.map_smulₛₗ] at e₁
-    have e₂ : k.left.appTop.hom ((overResι W).left.appTop.hom (f ^ n)) = (overResι W').left.appTop.hom (f' ^ n) :=
-      (congrArg (fun q => q.left.appTop.hom (f ^ n)) hk).trans
-        (congrArg (overResι W').left.appTop.hom (map_pow h.left.appTop.hom f n))
-    rw [e₂] at e₁
-    obtain ⟨d, hd⟩ : ∃ d : Γ((overRes W').left, ⊤), pullM P.A P.L 1 (overResι W') (SecM.ofSec P.A s) =
-        d • pullM P.A P.L 1 (k ≫ l) (SecM.ofSec P.A (b hq.default)) := by
-      have := c.sum_repr (pullM P.A P.L 1 (overResι W') (SecM.ofSec P.A s))
-      rw [Fintype.sum_unique, hc] at this
-      exact ⟨_, this.symm⟩
-    obtain ⟨m, d₀, hd₀⟩ : ∃ (m : ℕ) (d₀ : Γ(T'.left, ⊤)), (overResι W').left.appTop.hom d₀ =
-        (overResι W').left.appTop.hom (f' ^ m) * d := exists_pow_mul_extend f' d
-    obtain ⟨N, hN⟩ := exists_pow_kill_secM P 1 f' ((f' ^ m * f' ^ n) • SecM.ofSec P.A s -
-      (d₀ * h.left.appTop.hom r) • pullM P.A P.L 1 h (SecM.ofSec P.A th))
-        (map_sub_eq_zero _ _ _ _ _ _ _ _ _ d e₁ hd hd₀)
-    refine ⟨f' ^ N * (f' ^ m * f' ^ n), Submodule.mem_span_singleton.2 ⟨f' ^ N * (d₀ * h.left.appTop.hom r), ?_⟩, ?_⟩
-    · rw [smul_sub, sub_eq_zero, ← mul_smul, ← mul_smul] at hN
-      exact hN.symm
-    · have hp' : p ∈ T'.left.basicOpen f' := hf'.le hp
-      rw [Scheme.mem_basicOpen_top] at hp' ⊢
-      simp only [map_mul, map_pow]
-      exact (hp'.pow _).mul ((hp'.pow _).mul (hp'.pow _))
-  have hI : Ideal.span (I : Set Γ(T'.left, ⊤)) = ⊤ :=
-    (isAffineOpen_top T'.left).self_le_iSup_basicOpen_iff.1 fun p _ => by
-      obtain ⟨f, hf, hp⟩ := key p
-      exact Opens.mem_iSup.2 ⟨⟨f, hf⟩, hp⟩
-  rw [Ideal.span_eq, Ideal.eq_top_iff_one] at hI
-  obtain ⟨r, hr⟩ := Submodule.mem_span_singleton.1 hI
-  rw [LinearMap.toSpanSingleton_apply, one_smul] at hr
-  exact ⟨r, fun j => (congrArg (fun q => q.1 j) hr).symm⟩
+    {th : LB.Sec (LPow P.A P.L 1 T)} (H : IsGenSec P.A P.L 1 th) : IsGenSec P.A P.L 1 (pullS P.A 1 h th) :=
+  EmbPull.isGenSec_pullS_of_baseChangeAt P (hS S P 1 le_rfl) h H
 
 theorem gs_eq_zero {Y : Scheme.{0}} (f a : Γ(Y, ⊤)) (n : ℕ) (h : (Y.basicOpen f).ι.appTop.hom (a * f ^ n) = 0)
     (p : Y) (hp : p ∈ Y.basicOpen f) : gs (𝟙 Y) p ⊤ a = 0 := by

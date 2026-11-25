@@ -24,7 +24,7 @@ private theorem one_le {a : ℕ} (lam : DomWeight a) :
     intro i
     have ha : 0 < a := i.pos
     have hd : lam.detShift = lam.w ⟨a - 1, by omega⟩ := by
-      simp only [DomWeight.detShift, dif_pos ha]
+      simp only [DomWeight.detShift, dite_eq_left ha]
     have hnat : lam.natW i = (lam.w i - lam.w ⟨a - 1, by omega⟩).toNat := by
       simp only [DomWeight.natW, hd]
     have hLle : (lam.w ⟨a - 1, by omega⟩).natAbs ≤ sz lam := by

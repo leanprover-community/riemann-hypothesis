@@ -187,7 +187,7 @@ theorem ccr_of_sign {κ A : Type} [DecidableEq κ] [Ring A] [Algebra ℂ A] (x y
     {a b : κ → A} (ha : ∀ k, a k = (s k)⁻¹ • if p k then x k else y k)
     (hb : ∀ k, b k = -(s k)⁻¹ • if p k then y k else x k) :
     (∀ k l, a k * a l = a l * a k) ∧ ∀ k l, b k * a l = a l * b k + (if k = l then (1 : ℂ) else 0) • 1 := by
-  have c4 : ∀ k l, k ≠ l → y k * x l = x l * y k := fun k l h => by rw [c3, if_neg h, zero_smul, add_zero]
+  have c4 : ∀ k l, k ≠ l → y k * x l = x l * y k := fun k l h => by rw [c3, ite_eq_right h, zero_smul, add_zero]
   refine ⟨fun k l => ?_, fun k l => ?_⟩
   · by_cases h : k = l
     · rw [h]
@@ -203,13 +203,13 @@ theorem ccr_of_sign {κ A : Type} [DecidableEq κ] [Ring A] [Algebra ℂ A] (x y
     · subst h
       have := hs k
       have e := c3 k k
-      simp only [eq_self, if_true] at e ⊢
+      simp only [eq_self, ite_true] at e ⊢
       split_ifs at e ⊢
       · rw [e]
         match_scalars <;> field_simp
       · rw [e]
         match_scalars <;> field_simp <;> ring
-    · rw [if_neg h, zero_smul, add_zero, smul_comm]
+    · rw [ite_eq_right h, zero_smul, add_zero, smul_comm]
       split_ifs
       · rw [c4 k l h]
       · rw [c2]

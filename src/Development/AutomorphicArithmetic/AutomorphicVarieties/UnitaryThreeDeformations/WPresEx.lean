@@ -495,7 +495,7 @@ theorem wcomp_eq_of_nilp {A : Type} [CommRing A] [Algebra O A] (J : Ideal A) {n 
     rw [aeval_weight w (fun i => PowerSeries.C (ψ (X i))) t k (Pk k), mvPolynomial_aeval_powerSeries_C]
     intro d hd
     simp only [Pk]
-    rw [MvPolynomial.coeff_weightedHomogeneousComponent, if_neg hd]
+    rw [MvPolynomial.coeff_weightedHomogeneousComponent, ite_eq_right hd]
   have hψG : ψ G = ∑ k ∈ K, c k := by
 
     rw [hψe G, ← hP, ← hsum, map_sum]

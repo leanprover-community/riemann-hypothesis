@@ -100,36 +100,36 @@ theorem tri (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (M : Matrix (Fin n
   refine ⟨Matrix.of fun c b => (if c = b then (1 : ℂ) else 0) + l b c, ?_, ?_, ?_⟩
   · intro i j hji
     have hji' : j < i := hji
-    rw [Matrix.of_apply, if_neg (ne_of_lt hji').symm, hz j i (not_lt.2 hji'.le), add_zero]
+    rw [Matrix.of_apply, ite_eq_right (ne_of_lt hji').symm, hz j i (not_lt.2 hji'.le), add_zero]
   · intro b
-    rw [Matrix.of_apply, if_pos rfl, hz b b (lt_irrefl b), add_zero]
+    rw [Matrix.of_apply, ite_eq_left rfl, hz b b (lt_irrefl b), add_zero]
   · intro b
     have e1 : M *ᵥ fam e z b = fam e z b + (M - 1) *ᵥ fam e z b := by
       rw [sub_mulVec, one_mulVec]; abel
     rw [e1, ← hlx b, Finsupp.linearCombination_apply,
       Finsupp.sum_fintype _ _ (fun i => zero_smul ℂ (fam e z i))]
     simp only [Matrix.of_apply, add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem col_last (Q : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hQ : Q.IsUpperTriangular) (hd : ∀ b, Q b b = 1) :
     Qᴴ *ᵥ Pi.single (Fin.last r) 1 = Pi.single (Fin.last r) 1 := by
   funext d
   simp only [mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, conjTranspose_apply]
+    Finset.mem_univ, ite_true, conjTranspose_apply]
   by_cases h : d = Fin.last r
-  · subst h; rw [hd, star_one, if_pos rfl]
+  · subst h; rw [hd, star_one, ite_eq_left rfl]
   · have h0 : Q (Fin.last r) d = 0 := hQ (lt_of_le_of_ne (Fin.le_last d) h)
-    rw [h0, star_zero, if_neg h]
+    rw [h0, star_zero, ite_eq_right h]
 
 theorem row_last (Q : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hQ : Q.IsUpperTriangular) (hd : ∀ b, Q b b = 1) :
     Pi.single (Fin.last r) 1 ᵥ* Q = Pi.single (Fin.last r) 1 := by
   funext c
   simp only [vecMul, dotProduct, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   by_cases h : c = Fin.last r
-  · subst h; rw [hd, if_pos rfl]
+  · subst h; rw [hd, ite_eq_left rfl]
   · have h0 : Q (Fin.last r) c = 0 := hQ (lt_of_le_of_ne (Fin.le_last c) h)
-    rw [h0, if_neg h]
+    rw [h0, ite_eq_right h]
 
 theorem tri_adj (Z Q Q' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hQt : Q.IsUpperTriangular) (hQd : ∀ b, Q b b = 1)
     (hQt' : Q'.IsUpperTriangular) (hQd' : ∀ b, Q' b b = 1) :
@@ -161,7 +161,7 @@ theorem xPr_move (Z₂ Z Q' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (G₂ G Nm
   have hc' : ∀ c, ∑ b, adjugate Z₂ b (Fin.last r) * Q' c b = adjugate Z c (Fin.last r) := fun c => by
     have h := congrFun hc c
     simp only [mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Matrix.mul_apply] at h
+      Finset.mem_univ, ite_true, Matrix.mul_apply] at h
     rw [← h]
     exact Finset.sum_congr rfl fun b _ => mul_comm _ _
   unfold xPr
@@ -178,7 +178,7 @@ theorem xUn_move (Z₂ Z Q : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (Ni Ai : Ma
     intro d
     have h := congrFun hr d
     simp only [vecMul, dotProduct, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Matrix.mul_apply, conjTranspose_apply] at h
+      Finset.mem_univ, ite_true, Matrix.mul_apply, conjTranspose_apply] at h
     rw [← h, star_sum]
     exact Finset.sum_congr rfl fun a _ => by rw [star_mul', star_star]
   unfold xUn
@@ -1328,10 +1328,6 @@ theorem finrank_VS (D : D7) : finrank D.host.E (VS D).V = D.R.k + 2 * D.R.rS + 1
   simp only [Formalism.BasicNotions.Ranks.rankY, Formalism.BasicNotions.Ranks.r, Formalism.BasicNotions.Ranks.rS, zero_mul, add_zero]
   omega
 
-theorem tu_ne_zero (D : D7) (u : D.what₂.Word) : ((Tu D u : ℕ) : D.host.E) ≠ 0 := by
-  rw [Ne, Nat.cast_eq_zero]
-  exact (D.mem u).A.T_prime.ne_zero
-
 end PI.UnitaryGroupMassFormula.ScalarEquivalenceHermitianSpace
 end -- clump:auto
 end -- clump:auto
@@ -1376,25 +1372,25 @@ variable (s : Formalism.L2.SG.TermOp.GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ 
 theorem firstNormal_e (h : (ZE X u u' (Mof X Y u u' s)).det ≠ 0) (a : Fin D.R.rS) :
     (VS D).hT ((X.Fu u).e a) (Formalism.L2.SG.Pf.Level.toV X (nu1E X u u' (Mof X Y u u' s))) = 0 := by
   have := firstNormal_pairing X Y u u' s h a.castSucc
-  rw [if_neg (Fin.castSucc_lt_last a).ne] at this
+  rw [ite_eq_right (Fin.castSucc_lt_last a).ne] at this
   simpa [FlagG.fvec] using this
 
 theorem firstNormal_z (h : (ZE X u u' (Mof X Y u u' s)).det ≠ 0) :
     (VS D).hT (X.Fu u).z (Formalism.L2.SG.Pf.Level.toV X (nu1E X u u' (Mof X Y u u' s))) = 1 := by
   have := firstNormal_pairing X Y u u' s h (Fin.last _)
-  rw [if_pos rfl] at this
+  rw [ite_eq_left rfl] at this
   simpa [FlagG.fvec] using this
 
 theorem secondNormal_e (h : (ZE X u u' (Mof X Y u u' s)).det ≠ 0) (b : Fin D.R.rS) :
     (VS D).hT (Formalism.L2.SG.Pf.Level.toV X (x2E X u u' (Mof X Y u u' s))) (s.frame.fl.e b) = 0 := by
   have := secondNormal_pairing X Y u u' s h b.castSucc
-  rw [if_neg (Fin.castSucc_lt_last b).ne] at this
+  rw [ite_eq_right (Fin.castSucc_lt_last b).ne] at this
   simpa [FlagG.fvec] using this
 
 theorem secondNormal_z (h : (ZE X u u' (Mof X Y u u' s)).det ≠ 0) :
     (VS D).hT (Formalism.L2.SG.Pf.Level.toV X (x2E X u u' (Mof X Y u u' s))) s.frame.fl.z = 1 := by
   have := secondNormal_pairing X Y u u' s h (Fin.last _)
-  rw [if_pos rfl] at this
+  rw [ite_eq_left rfl] at this
   simpa [FlagG.fvec] using this
 
 theorem agree_pair (s₁ s₂ : Formalism.L2.SG.TermOp.GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u'))
@@ -1421,8 +1417,8 @@ theorem agree_pair (s₁ s₂ : Formalism.L2.SG.TermOp.GTerm X u u' (X.Fu u) (X.
   have hTh'' := PI.UnitaryGroupMassFormula.ScalEquivGen.thEq''Q hlat hdim nd₁ nd₂ hs0
   have hz₁ := frame_zt X Y u u' s₁
   have hz₂ := frame_zt X Y u u' s₂
-  have hT0 := PI.UnitaryGroupMassFormula.ScalarEquivalenceHermitianSpace.tu_ne_zero D u
-  have hT0' := PI.UnitaryGroupMassFormula.ScalarEquivalenceHermitianSpace.tu_ne_zero D u'
+  have hT0 := PI.ScalarPairDr.W.Tu_ne_zero D u
+  have hT0' := PI.ScalarPairDr.W.Tu_ne_zero D u'
   have hi : s₂.lin * s₁.lin⁻¹ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT :=
     Subgroup.mul_mem _ (lin_iso X Y u u' s₂) (Subgroup.inv_mem _ (lin_iso X Y u u' s₁))
   have hβ : ∀ x, (s₂.lin * s₁.lin⁻¹) x = s₂.lin (s₁.lin.symm x) := fun x => rfl

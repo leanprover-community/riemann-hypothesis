@@ -260,7 +260,7 @@ theorem extra_order_le_maximal (St : Std C0 Cde CE1 CE2 1 X) (j : Fin (numSeg X.
         ≤ ∑ i : Fin (segS X.TT j), 2 * X.b' *
             (1 / (X.p : ℝ) ^ ((X.seg C0 CE1 CE2 j).G - (X.seg C0 CE1 CE2 j).d i)) := by
           refine Finset.sum_le_sum fun i _ => ?_
-          rw [if_pos i.2]
+          rw [ite_eq_left i.2]
           have a1 := coarseA_mul X.p (X.seg C0 CE1 CE2 j) b i
           have a2 := H.top_degree_le_two_b i
           have a3 : (0 : ℝ) < (X.p : ℝ) ^ ((X.seg C0 CE1 CE2 j).G - (X.seg C0 CE1 CE2 j).d i) := by positivity

@@ -33,7 +33,7 @@ lemma aDil_eq (k r : ℕ) (t : ℝ) : aDil k r t = Matrix.diagonal (dg k r t) :=
 lemma dg_mid (k r : ℕ) (t : ℝ) (i : Fin (2 * r + k + 1)) (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     dg k r t i = 1 := by
   unfold dg
-  rw [if_neg (by omega), if_pos h2]
+  rw [ite_eq_right (by omega), ite_eq_left h2]
 
 lemma dg_mul_inv (k r : ℕ) (t : ℝ) (ht : t ≠ 0) (i : Fin (2 * r + k + 1)) :
     dg k r t i * dg k r t⁻¹ i = 1 := by
@@ -58,7 +58,7 @@ private lemma dg_pair_lemma (k r : ℕ) (t : ℝ) (ht : t ≠ 0) (i j : Fin (2 *
   have hj2 : ¬ j.val ≤ r + k := by omega
   have e : j.val - (r + k) = r - i.val := by omega
   unfold dg
-  rw [if_pos hi, if_neg hj1, if_neg hj2, e, ← Complex.ofReal_mul,
+  rw [ite_eq_left hi, ite_eq_right hj1, ite_eq_right hj2, e, ← Complex.ofReal_mul,
     mul_inv_cancel₀ (pow_ne_zero _ ht), Complex.ofReal_one]
 
 theorem aDil_mem (k r : ℕ) (t : ℝ) (ht : t ≠ 0) : aDil k r t ∈ GV k r := by
@@ -72,9 +72,9 @@ theorem aDil_mem (k r : ℕ) (t : ℝ) (ht : t ≠ 0) : aDil k r t ∈ GV k r :=
     rw [Matrix.conjTranspose_apply, Matrix.diagonal_apply, Matrix.diagonal_apply]
     by_cases h : i = j
     · subst h
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact hs i
-    · rw [if_neg (Ne.symm h), if_neg h, star_zero]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h, star_zero]
   rw [aDil_eq, hD]
   ext i j
   rw [Matrix.mul_diagonal, Matrix.diagonal_mul]
@@ -132,9 +132,6 @@ lemma inLie_sub {X Y : Mat k r} (hX : inLie k r X) (hY : inLie k r Y) : inLie k 
 
 private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
   apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.InvCC.hpk_sq <;> assumption
-
-lemma hpk_inv : (Hpk k r)⁻¹ = Hpk k r := by
-  exact Matrix.inv_eq_left_inv hpk_sq_lemma
 
 lemma hpk_isUnit : IsUnit (Hpk k r) := by
   exact ⟨⟨Hpk k r, Hpk k r, hpk_sq_lemma, hpk_sq_lemma⟩, rfl⟩
@@ -1078,14 +1075,14 @@ lemma exp_Zm (s : ℝ) : NormedSpace.exp ((s : ℂ) • Zm k r) = aDil k r (Real
   rw [Pi.coe_exp, ← Complex.exp_eq_exp_ℂ]
   unfold zd dg
   by_cases c1 : i.val < r
-  · simp only [c1, if_true, Pi.smul_apply, smul_eq_mul]
+  · simp only [c1, ite_true, Pi.smul_apply, smul_eq_mul]
     push_cast
     rw [← Complex.exp_nat_mul]
     congr 1
     ring
   · by_cases c2 : i.val ≤ r + k
     · simp [c1, c2]
-    · simp only [c1, c2, if_false, Pi.smul_apply, smul_eq_mul]
+    · simp only [c1, c2, ite_false, Pi.smul_apply, smul_eq_mul]
       push_cast
       rw [← Complex.exp_nat_mul, ← Complex.exp_neg]
       congr 1
@@ -1097,13 +1094,13 @@ private lemma zd_pair_lemma (i j : Fin (2 * r + k + 1)) (hi : i.val < r)
   have hj2 : ¬ j.val ≤ r + k := by omega
   have e : j.val - (r + k) = r - i.val := by omega
   unfold zd
-  rw [if_pos hi, if_neg hj1, if_neg hj2, e]
+  rw [ite_eq_left hi, ite_eq_right hj1, ite_eq_right hj2, e]
   ring
 
 private lemma zd_mid_lemma_2 (i : Fin (2 * r + k + 1)) (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     zd k r i = 0 := by
   unfold zd
-  rw [if_neg (by omega), if_pos h2]
+  rw [ite_eq_right (by omega), ite_eq_left h2]
 
 lemma Zm_lie : inLie k r (Zm k r) := by
   unfold inLie
@@ -1113,9 +1110,9 @@ lemma Zm_lie : inLie k r (Zm k r) := by
     rw [Matrix.conjTranspose_apply, Matrix.diagonal_apply, Matrix.diagonal_apply]
     by_cases h : i = j
     · subst h
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       simp
-    · rw [if_neg (Ne.symm h), if_neg h, star_zero]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h, star_zero]
   rw [hD]
   ext i j
   rw [Matrix.add_apply, Matrix.zero_apply]
@@ -1501,9 +1498,9 @@ theorem dilation_unipotent_measure : Formalism.FourierDecayAlt.B.DilN := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     by_cases h : a.val + 1 < r
-    · simp only [h, dif_pos]
+    · simp only [h, dite_eq_left]
       rw [conj_apply k r t ht, mul_right_comm, dg_step k r t ht a h]
-    · simp only [h, dif_neg, not_false_eq_true]
+    · simp only [h, dite_eq_right, not_false_eq_true]
       simp only [Matrix.mulVec, dotProduct]
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_

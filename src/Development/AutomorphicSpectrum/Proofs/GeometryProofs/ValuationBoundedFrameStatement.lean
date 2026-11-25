@@ -45,7 +45,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
@@ -591,7 +590,7 @@ theorem freeAt_of_basis_lattice (K : Type) [Field K] (C : ACurve K) (V : Type) [
     rw [map_sum, LinearMap.sum_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
     dsimp only
-    rw [if_pos rfl, map_zsmul, Int.cast_smul_eq_zsmul]
+    rw [ite_eq_left rfl, map_zsmul, Int.cast_smul_eq_zsmul]
     rfl
   refine ⟨x, fun l s => ∑ j, algebraMap k K (l (1 ⊗ₜ[ℤ] b j)) • B.coord (s, j), ?_, ?_, ?_, ?_⟩
   · intro s
@@ -1049,7 +1048,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CompanionTheory.Ar.Flat.DegZ
 
 noncomputable section

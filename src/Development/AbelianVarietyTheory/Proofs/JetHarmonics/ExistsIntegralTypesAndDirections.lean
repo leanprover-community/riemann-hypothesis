@@ -1,6 +1,5 @@
 module
 
-
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCmTypeEmbeddingsIntoValuationRing
 public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.RingTheory.Finiteness.Defs
@@ -19,48 +18,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsDualFormsOfSeparatedTypes
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SaturationChartsHolds
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.RegularLocalRing.Defs
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsSeparatingModPrimePow, Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectorsStatement, Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowSubSelfMemSpanOfSplitsCompletely, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIntegralTypesAndDirections
@@ -161,8 +119,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotions.ModuliIntegralCharts.H1.BidegreeTwoJet GlobalTheory GlobalTheory.PowGerm
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 
-theorem _root_.GlobalTheory.T.integral_chart_directions_are_eigenvectors : EigDirSt := by
-  first | exact @GlobalTheory.PowGerm.eigDirSt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectorsStatement =====
@@ -329,7 +285,7 @@ theorem exists_integral_types_and_directions : ∀ (E : Type) [Field E] [NumberF
     intro a ℓ
     funext i
     apply hinj
-    have h := congrFun (GlobalTheory.T.integral_chart_directions_are_eigenvectors E H Dw l Xo c T io y C a ℓ) i
+    have h := congrFun (GlobalTheory.PowGerm.eigDirSt E H Dw l Xo c T io y C a ℓ) i
     simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul, hρK, huv, ← hσV'] at h
 
     simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul, map_sum, map_mul]
@@ -371,16 +327,16 @@ theorem exists_integral_types_and_directions : ∀ (E : Type) [Field E] [NumberF
     simp only [map_sum, map_mul] at h
     rw [h]
     by_cases hl : ℓ = ℓ'
-    · rw [if_pos hl, if_pos hl, map_one]
-    · rw [if_neg hl, if_neg hl, map_zero]
+    · rw [ite_eq_left hl, ite_eq_left hl, map_one]
+    · rw [ite_eq_right hl, ite_eq_right hl, map_zero]
   · obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.1 (hε τ τ')
     refine Ideal.mem_span_singleton'.2 ⟨f b, ?_⟩
     have h := congrArg f hb
     rw [pow_one, map_mul, map_natCast, map_sub] at h
     rw [h, RingHom.comp_apply]
     by_cases ht : τ = τ'
-    · rw [if_pos ht, if_pos ht.symm, map_one]
-    · rw [if_neg ht, if_neg (Ne.symm ht), map_zero]
+    · rw [ite_eq_left ht, ite_eq_left ht.symm, map_one]
+    · rw [ite_eq_right ht, ite_eq_right (Ne.symm ht), map_zero]
 
 end GlobalTheory.PowGerm
 end -- clump:auto

@@ -19,8 +19,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperFiniteness
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite CrystallineSemistableComparison CrystallineSemistableComparison.Pb
@@ -234,8 +232,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite CrystallineSemistableComparison CrystallineSemistableComparison.Pb
@@ -423,11 +419,11 @@ theorem coc_of_VB : Coc V.g := by
       (fun k' => if k = k' then 1 else 0) (fun w => by
         obtain ⟨x, rfl⟩ := exists_e V 0 0 (fun _ : Fin 1 => α) w
         have := V.e_chg 0 0 0 x (fun _ : Fin 1 => α) k
-        simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
         exact this.symm) v
     have e2 : ∀ k', rs hW (if k = k' then (1 : Γ(X, capO U (fun _ : Fin 1 => α))) else 0) =
         if k = k' then 1 else 0 := fun k' => by split_ifs <;> simp
-    simp only [rs_trans, e2, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at key
+    simp only [rs_trans, e2, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at key
     exact key
   · intro α β γ W h₁ h₂ h₃ v k
     refine coc3 V ![α, β, γ] W (le_iInf fun a => ?_) h₁ h₂ h₃ v k

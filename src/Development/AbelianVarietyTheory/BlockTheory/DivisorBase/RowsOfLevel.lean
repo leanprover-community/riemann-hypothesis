@@ -12,13 +12,6 @@ open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.TypeCharacterLevelRows
 
-section Abstract
-
-variable {G K V : Type} [Group G] [Fintype G] [Field K] [AddCommGroup V] [Module ℂ V]
-
-
-end Abstract
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 

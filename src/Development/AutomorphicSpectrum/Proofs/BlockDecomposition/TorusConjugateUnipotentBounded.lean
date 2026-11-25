@@ -288,7 +288,6 @@ theorem torus_contracts_unipRad : ∀ (F E : Type) [Field F] [NumberField F] [Fi
     rw [map_mul, map_mul, map_mul, map_mul, ← hAdef, ← hA'def, hM₁, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, hAA]
   have hP : ∑ α, P α = 1 := by
     have : ∑ α, P α = (τ.1.mapMatrix) (∑ α, frameIdem (σ : E →+* E) J X Y α) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         rw [map_sum]; rfl
     rw [this, sum_frameIdem, map_one]
   have hTor : ∀ β, A * P β = ((frameWt t β : ℝ) : ℂ) • P β := fun β =>

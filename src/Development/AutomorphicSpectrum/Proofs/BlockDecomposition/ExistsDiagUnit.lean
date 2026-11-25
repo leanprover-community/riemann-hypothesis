@@ -27,19 +27,11 @@ theorem ordL_of_eq {x : L} {u : Multiplicative ℤ}
   rw [WithZero.coe_unzero, h]
 
 theorem ordL_mul_of_ne {a b : L} (ha : a ≠ 0) (hb : b ≠ 0) :
-    ordL (a * b) = ordL a + ordL b := by
-  have ha' : Valued.v a ≠ 0 := (Valuation.ne_zero_iff _).2 ha
-  have hb' : Valued.v b ≠ 0 := (Valuation.ne_zero_iff _).2 hb
-  obtain ⟨u, hu⟩ := WithZero.ne_zero_iff_exists.1 ha'
-  obtain ⟨w, hw⟩ := WithZero.ne_zero_iff_exists.1 hb'
-  have hab : Valued.v (a * b) = ((u * w : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
-    rw [map_mul, ← hu, ← hw, WithZero.coe_mul]
-  rw [ordL_of_eq hab, ordL_of_eq hu.symm, ordL_of_eq hw.symm, toAdd_mul]
-  ring
+    ordL (a * b) = ordL a + ordL b :=
+  Formalism.UG.P.fSatake_ord_mul ha hb
 
-theorem ordL_congr {a b : L} (h : Valued.v a = Valued.v b) : ordL a = ordL b := by
-  unfold ordL
-  simp only [h]
+theorem ordL_congr {a b : L} (h : Valued.v a = Valued.v b) : ordL a = ordL b :=
+  Formalism.UG.P.fSatake_ord_of_v h
 
 theorem val_mul_entry_le {ι : Type} [Fintype ι] {A B : Matrix ι ι L}
     (hA : ∀ i j, Valued.v (A i j) ≤ 1) (hB : ∀ i j, Valued.v (B i j) ≤ 1) (i j : ι) :
@@ -58,12 +50,12 @@ variable {L : Type} [Field L]
 theorem antiJ_mul_self (n : ℕ) : antiJ L n * antiJ L n = 1 := by
   ext i j
   rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.rev i)]
-  · rw [_root_.Formalism.UG.P.fIwasawa_antiJ, _root_.Formalism.UG.P.fIwasawa_antiJ, if_pos rfl, one_mul, Matrix.one_apply, Fin.rev_rev]
+  · rw [_root_.Formalism.UG.P.fIwasawa_antiJ, _root_.Formalism.UG.P.fIwasawa_antiJ, ite_eq_left rfl, one_mul, Matrix.one_apply, Fin.rev_rev]
     by_cases h : i = j
     · simp [h]
     · simp [h, Ne.symm h]
   · intro k _ hk
-    rw [_root_.Formalism.UG.P.fIwasawa_antiJ, if_neg hk, zero_mul]
+    rw [_root_.Formalism.UG.P.fIwasawa_antiJ, ite_eq_right hk, zero_mul]
   · simp
 
 theorem cT_antiJ (σ : L →+* L) (n : ℕ) : cT σ (antiJ L n) = antiJ L n := by
@@ -153,7 +145,7 @@ theorem exists_diag_unit (σ : L →+* L) (hσσ : ∀ x, σ (σ x) = x)
         rw [Fin.rev_rev]; exact not_lt.2 h.le
       have h2 : Fin.rev (Fin.rev i) < Fin.rev i := by rw [Fin.rev_rev]; exact h
       dsimp only
-      rw [if_pos h, if_neg h1, if_pos h2, Fin.rev_rev, map_one, one_mul]
+      rw [ite_eq_left h, ite_eq_right h1, ite_eq_left h2, Fin.rev_rev, map_one, one_mul]
       exact mul_inv_cancel₀ (hne i)
     · have h1 : ¬ i < Fin.rev i := not_lt.2 h.ge
       have h2 : ¬ Fin.rev i < i := not_lt.2 h.le
@@ -161,14 +153,14 @@ theorem exists_diag_unit (σ : L →+* L) (hσσ : ∀ x, σ (σ x) = x)
       have a2 : ¬ Fin.rev (Fin.rev i) < Fin.rev i := by rw [Fin.rev_rev]; exact h1
       have a3 : r (Fin.rev i) = r i := congrArg r h.symm
       dsimp only
-      rw [if_neg h1, if_neg h2, if_neg a1, if_neg a2, a3]
+      rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right a1, ite_eq_right a2, a3]
       have := hr2 i h
       calc σ (r i) * H i (Fin.rev i) * r i = (σ (r i) * r i) * H i (Fin.rev i) := by ring
         _ = 1 := by rw [this]; exact inv_mul_cancel₀ (hne i)
     · have h1 : ¬ i < Fin.rev i := not_lt.2 h.le
       have h2 : Fin.rev i < Fin.rev (Fin.rev i) := by rw [Fin.rev_rev]; exact h
       dsimp only
-      rw [if_neg h1, if_pos h, if_pos h2, mul_one, map_inv₀, hherm i (Fin.rev i)]
+      rw [ite_eq_right h1, ite_eq_left h, ite_eq_left h2, mul_one, map_inv₀, hherm i (Fin.rev i)]
       exact inv_mul_cancel₀ (hne i)
 
 end Core
@@ -273,9 +265,9 @@ theorem main : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ)
   rw [cT_diag_conj, hJdef, _root_.Formalism.UG.P.fIwasawa_antiJ]
   by_cases hj : j = Fin.rev i
   · subst hj
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     exact hs2 i
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     have : H i j = 0 := by
       by_contra h
       exact hj (hsupp i j h)

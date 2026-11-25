@@ -130,7 +130,7 @@ theorem isWH_iff {σ M R : Type} [CommSemiring R] [AddCommMonoid M] [DecidableEq
   · intro h d hd
     rw [← h, MvPolynomial.coeff_weightedHomogeneousComponent] at hd
     by_contra hc
-    exact hd (if_neg hc)
+    exact hd (ite_eq_right hc)
 
 theorem colAddGen_map {r n : ℕ} (l j : Fin n) (Q : MvPolynomial (Fin r × Fin n) LL) :
     MvPolynomial.map e (Formalism.GradedWeylDivisibility.colAddGen LL l j Q) = Formalism.GradedWeylDivisibility.colAddGen Kf l j (MvPolynomial.map e Q) := by

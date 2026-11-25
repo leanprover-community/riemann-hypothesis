@@ -181,7 +181,7 @@ theorem compress_fin : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp 
     refine ⟨starRingEnd ℂ (ψ y), fun f g hf hg hvf hvg => ?_⟩
     rw [hy f hvf]
     exact ((GlobalTheory.T.theta_inner_product_hermitian D ψ S T μ 𝓕 hψ hμ g f hg hf).2.2.1 (ψ y)).2
-  · push_neg at hA
+  · push Not at hA
     obtain ⟨l, hl, hl1⟩ := hA
     have hιl : ι • (ι • l) = ι • l := by rw [smul_smul, hιι]
     obtain ⟨y, hy⟩ := exists_char_act (ψ := ψ) v (hloc' l hl) (by rw [← hι]; exact hιl)
@@ -328,7 +328,7 @@ theorem isPure_local (h : IsBase ψ θ S T sS sT ΛS ΛT f₀) (hμ : IsCovolOne
   · refine (Set.finite_singleton q).subset fun p hp => ?_
     by_contra hpq
     exact hp (hq p hpq)
-  · obtain ⟨P₀, hP₀⟩ := GlobalTheory.T.exists_eq_sum_weilComponents_add_two_smul_lattice D S T ΛS ΛT h.2.2.1 h.2.2.2.1 w
+  · obtain ⟨P₀, hP₀⟩ := GlobalTheory.PlaceTensor.CompDecomp.exists_eq_sum_wAt_add_two_smul D S T ΛS ΛT h.2.2.1 h.2.2.2.1 w
     obtain ⟨u, hu, hw⟩ := hP₀ (insert q P₀) (Finset.subset_insert q P₀)
     have hqP : q ∈ insert q P₀ := Finset.mem_insert_self q P₀
     generalize insert q P₀ = P at hw hqP
@@ -390,7 +390,7 @@ theorem isPure_base_and_local : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
   · unfold IsPure IsRestricted
     refine ⟨⟨fun p => isEmptyElim p, Set.toFinite _⟩, base_theta h, fun w => ⟨Set.toFinite _, ?_⟩⟩
     rw [finprod_of_isEmpty]
-    obtain ⟨P₀, hP₀⟩ := GlobalTheory.T.exists_eq_sum_weilComponents_add_two_smul_lattice D S T ΛS ΛT h.2.2.1 h.2.2.2.1 w
+    obtain ⟨P₀, hP₀⟩ := GlobalTheory.PlaceTensor.CompDecomp.exists_eq_sum_wAt_add_two_smul D S T ΛS ΛT h.2.2.1 h.2.2.2.1 w
     obtain ⟨u, hu, hw⟩ := hP₀ P₀ subset_rfl
     rw [Finset.eq_empty_of_isEmpty P₀, Finset.sum_empty, zero_add] at hw
     rw [hw, (isLatVac_of_isBase h).1 u hu, ip_base h hμ]

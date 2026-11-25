@@ -327,8 +327,8 @@ theorem tst_finGL_inv_mul {E : Type} [Field E] [NumberField E] [_root_.NumberFie
   unfold tst ker
   rw [hinv, hfin, hinf]
   by_cases hm : GeneralLinearGroup.map (pFin E) y⁻¹ ∈ U
-  · rw [if_pos (U.mul_mem hm hu), if_pos hm]
-  · rw [if_neg (fun h => hm (by simpa using U.mul_mem h (U.inv_mem hu))), if_neg hm]
+  · rw [ite_eq_left (U.mul_mem hm hu), ite_eq_left hm]
+  · rw [ite_eq_right (fun h => hm (by simpa using U.mul_mem h (U.inv_mem hu))), ite_eq_right hm]
 
 theorem convR_tst_mul_finGL (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ)
     (μ : Measure (GA E a)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
@@ -639,7 +639,7 @@ theorem convR_tst_mul_infGL (μ : Measure (GA E a)) [μ.IsMulLeftInvariant] (U :
   rw [wt_apply]
   by_cases h : GeneralLinearGroup.map (pFin E) v⁻¹ ∈ U
   · have h' : GeneralLinearGroup.map (pFin E) (infGL E a y * v)⁻¹ ∈ U := hf ▸ h
-    simp only [tst, ker, if_pos h, if_pos h', hb, psi, hi]
+    simp only [tst, ker, ite_eq_left h, ite_eq_left h', hb, psi, hi]
     have he : toL ((GeneralLinearGroup.map (pInf E) v⁻¹ * y⁻¹).val * y.val) =
         toL (GeneralLinearGroup.map (pInf E) v⁻¹).val := by
       rw [← Units.val_mul, inv_mul_cancel_right]
@@ -648,7 +648,7 @@ theorem convR_tst_mul_infGL (μ : Measure (GA E a)) [μ.IsMulLeftInvariant] (U :
       β (toL ((GeneralLinearGroup.map (pInf E) v⁻¹ * y⁻¹).val * y.val)) * Fl (g * (infGL E a y * v))
     rw [he]
   · have h' : GeneralLinearGroup.map (pFin E) (infGL E a y * v)⁻¹ ∉ U := hf ▸ h
-    simp only [tst, ker, if_neg h, if_neg h']
+    simp only [tst, ker, ite_eq_right h, ite_eq_right h']
     simp
 end GlobalTheory.CompanionTheory.SmoothRep.TstConv
 
@@ -682,7 +682,7 @@ theorem integrand_eq_zero {U : Subgroup (GL (Fin a) (Af E))} {β : Lie E a → �
   rw [wt_apply]
   by_cases h : GeneralLinearGroup.map (pFin E) v⁻¹ ∈ U
   · rw [hb, image_eq_zero_of_notMem_tsupport (hC v hv h x hx), zero_mul]
-  · rw [if_neg h, mul_zero]
+  · rw [ite_eq_right h, mul_zero]
 
 end GlobalTheory.CompanionTheory.SmoothRep.TstConv
 
@@ -730,8 +730,8 @@ theorem GlobalTheory.CompanionTheory.SmoothRep.convR_tst_mem_Sm : ∀ (E : Type)
       show dTest X β (psi v) * wt U Fl g v = tst U (dTest X β) v * Fl (g * v)
       rw [wt_apply]
       by_cases h : GeneralLinearGroup.map (pFin E) v⁻¹ ∈ U
-      · simp only [tst, ker, if_pos h, psi]
-      · simp only [tst, ker, if_neg h, mul_zero, zero_mul]
+      · simp only [tst, ker, ite_eq_left h, psi]
+      · simp only [tst, ker, ite_eq_right h, mul_zero, zero_mul]
     · intro v hv
       rw [wt_apply]
       by_cases h : GeneralLinearGroup.map (pFin E) v⁻¹ ∈ U
@@ -742,7 +742,7 @@ theorem GlobalTheory.CompanionTheory.SmoothRep.convR_tst_mem_Sm : ∀ (E : Type)
           by_contra h0
           exact hn (support_fderiv_subset ℝ h0)
         rw [dTest, h0, ContinuousLinearMap.zero_apply, zero_mul]
-      · rw [if_neg h, mul_zero]
+      · rw [ite_eq_right h, mul_zero]
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

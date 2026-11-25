@@ -710,7 +710,7 @@ theorem levSum_spec (t : P) (lev : P → ℤ) (hlev : ∀ z, lev (t * z) = lev z
   generalize lev (y 0) = a
   rcases le_or_gt 0 a with h | h
   · obtain ⟨m, rfl⟩ := Int.eq_ofNat_of_zero_le h
-    rw [if_pos (by omega), if_pos h]
+    rw [ite_eq_left (by omega), ite_eq_left h]
     rw [show ((m : ℤ) + 1).toNat = m + 1 by omega, Int.toNat_natCast, Finset.sum_range_succ']
     have ex : ∀ j : ℕ, -(((j + 1 : ℕ) : ℤ) + 1) + 1 = -((j : ℤ) + 1) := by
       intro j
@@ -720,9 +720,9 @@ theorem levSum_spec (t : P) (lev : P → ℤ) (hlev : ∀ z, lev (t * z) = lev z
     simp
   · obtain ⟨m, rfl⟩ := Int.eq_negSucc_of_lt_zero h
     rcases m with _ | k
-    · rw [if_pos (by omega), if_neg (by omega)]
+    · rw [ite_eq_left (by omega), ite_eq_right (by omega)]
       simp
-    · rw [if_neg (by omega), if_neg (by omega)]
+    · rw [ite_eq_right (by omega), ite_eq_right (by omega)]
       rw [show (-(Int.negSucc (k + 1) + 1)).toNat = k + 1 by omega,
         show (-Int.negSucc (k + 1)).toNat = k + 1 + 1 by omega, Finset.sum_range_succ' _ (k + 1)]
       have ex : ∀ j : ℕ, ((j : ℤ) + 1) = ((j + 1 : ℕ) : ℤ) := by
@@ -1197,7 +1197,7 @@ theorem spanFor_subsingleton (G : Type) [Group G] [Subsingleton G] : SpanFor G :
       exact ⟨r + 1, by ring⟩
     have hd1 := congrFun hd (fun _ => 1)
     simp only [dc, hv, Pi.zero_apply] at hd1
-    rw [← Finset.sum_mul, altsum, if_neg h3, one_mul] at hd1
+    rw [← Finset.sum_mul, altsum, ite_eq_right h3, one_mul] at hd1
     refine ⟨0, Fin.elim0, Fin.elim0, fun _ => 0, fun _ _ _ => rfl, ?_⟩
     funext y
     simp [dc, hv, hd1]
@@ -1208,7 +1208,7 @@ theorem spanFor_subsingleton (G : Type) [Group G] [Subsingleton G] : SpanFor G :
     refine ⟨0, Fin.elim0, Fin.elim0, fun _ => v, fun _ _ _ => rfl, ?_⟩
     funext y
     simp only [dc, hv, Finset.univ_eq_empty, Finset.sum_empty, Pi.add_apply, Pi.zero_apply, zero_add]
-    rw [← Finset.sum_mul, altsum, if_neg h2, one_mul]
+    rw [← Finset.sum_mul, altsum, ite_eq_right h2, one_mul]
 
 theorem spanFor_equiv {A B : Type} [Group A] [Group B] (e : A ≃* B) (hB : SpanFor B) : SpanFor A := by
   intro q c hc hd

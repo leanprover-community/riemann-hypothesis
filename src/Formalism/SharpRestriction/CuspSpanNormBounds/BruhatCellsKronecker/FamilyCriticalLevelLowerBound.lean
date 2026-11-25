@@ -177,7 +177,7 @@ variable {eps : ℝ}
 
 theorem family_critical_level_ratio (Fm : FamP eps) {C0 Cg cb Cu cT CT C1 : ℝ} (h40 : 40 ≤ sCl Fm)
     (hC1 : Real.exp (3 / 4) ≤ C1) : LocalBesselAndTopKernel.TheoremThreePassage Fm C0 Cg cb Cu cT CT C1 :=
-    ⟨0, fun x _ i hh => critical_level_ratio_le_exp h40 hC1 hh⟩
+    ⟨0, fun _ _ _ hh => critical_level_ratio_le_exp h40 hC1 hh⟩
 
 theorem family_critical_level_lower_bound (Fm : FamP eps) {C0 Cg cb Cu cT CT ep0 CV C3' : ℝ} (h40 : 40 ≤ sCl Fm)
     (hep : ep0 ≤ 1 / 2) (hC3 : 1 ≤ C3') (hg : LocalBesselAndTopKernel.FamilyTopBound Fm C0 Cg cb Cu cT CT ep0 CV) :

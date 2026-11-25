@@ -49,7 +49,7 @@ theorem UpperTheory.V.AlgebraTools.frob_form_trunc :
     by_contra hne
     have hnot : f ∉ I := fun h => hne (Ideal.Quotient.eq_zero_iff_mem.2 h)
     rw [hmem] at hnot
-    push_neg at hnot
+    push Not at hnot
     obtain ⟨j, hj, hfj⟩ := hnot
     have hnd := (traceForm_nondegenerate (ZMod l) k).1 (PowerSeries.coeff j f)
     have hex : ∃ b : k, Algebra.trace (ZMod l) k (PowerSeries.coeff j f * b) ≠ 0 := by
@@ -64,7 +64,7 @@ theorem UpperTheory.V.AlgebraTools.frob_form_trunc :
         PowerSeries.coeff j f * b := by
       rw [show f * (PowerSeries.C b * PowerSeries.X ^ (m - j)) =
           PowerSeries.C b * (PowerSeries.X ^ (m - j) * f) by ring]
-      rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', if_pos (Nat.sub_le m j),
+      rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', ite_eq_left (Nat.sub_le m j),
         Nat.sub_sub_self hjm, mul_comm]
     rw [hc] at this
     exact this

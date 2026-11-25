@@ -126,7 +126,7 @@ theorem eq_atP {R Pl : Type} [CommRing R] {ι : Pl → Type} [Fintype Pl] [Decid
     · obtain ⟨m, rfl⟩ := h
       rw [coeff_atP_single, coeff_resP, ← h2]
       exact hn.symm
-    · push_neg at h
+    · push Not at h
       exact (coeff_atP_eq_zero v _ n h).symm
   · have hsupp := (mem_SuppOn.mp hf) n hn
     have hn' : n = eqv.symm (Pi.single v (eqv n v)) := by
@@ -227,7 +227,7 @@ theorem en_logF_one : PowerSeries.coeff 1 (logF p) = 1 := by
   have h1 : (1 : ℕ) ≠ p ^ (2 * 1) := by
     have : 1 < p ^ (2 * 1) := Nat.one_lt_pow (by norm_num) hp
     omega
-  rw [if_neg h1]
+  rw [ite_eq_right h1]
   simp
 
 theorem en_L_zero : PowerSeries.constantCoeff (en_L p K1) = 0 := by

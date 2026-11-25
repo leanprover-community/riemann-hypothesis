@@ -14,12 +14,6 @@ noncomputable section
 
 namespace RightCosetSpace
 
-section Algebra
-
-variable {G : Type*} [Group G]
-
-end Algebra
-
 section Geometric
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]

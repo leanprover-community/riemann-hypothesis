@@ -526,7 +526,7 @@ theorem prW_sq {z ξ : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hX : �
   have e2 : herm (Hpk k r) ξ z = herm (Hpk k r) w z := by
     conv_lhs => rw [hξ]
     rw [PI.UnitaryGroupMassFormula.GsFr.hm_add_l, PI.UnitaryGroupMassFormula.GsFr.herm_X_gen hx (PI.UnitaryGroupMassFormula.GsFr.wb_hi hz.1), add_zero]
-  have hzw : herm (Hpk k r) z w = star (herm (Hpk k r) w z) := PI.UnitaryGroupMassFormula.GsFr.hm_symm _ _root_.Formalism.FourierDecayAlt.P.Ux1.hpk_herm w z
+  have hzw : herm (Hpk k r) z w = star (herm (Hpk k r) w z) := Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm _ _root_.Formalism.FourierDecayAlt.P.Ux1.hpk_herm w z
   have hpr : PI.UnitaryGroupMassFormula.GsFr.prW k r z ξ = w + (herm (Hpk k r) w z / (Tz k r z : ℂ)) • z := by
     rw [hwdef]; rfl
   have hzz : herm (Hpk k r) z z = -((Tz k r z : ℝ) : ℂ) := Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_self_eq z
@@ -884,7 +884,7 @@ lemma Pp_facts {z z' : Fin (2 * r + k + 1) → ℂ} (hz' : C2.StdZ k r z') (g : 
   have huν : herm (Hpk k r) u (nuG' z z' g) = 0 := by
     rw [hu, hm_sub_l, hm_smul_l, hνν, mul_one, sub_self]
   have hνu : herm (Hpk k r) (nuG' z z' g) u = 0 := by
-    rw [hm_symm _ hH, huν, star_zero]
+    rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm _ hH, huν, star_zero]
   refine ⟨(nz_orth ht u).1 huν, ?_⟩
   have hpu : p = u + c • nuG' z z' g := by rw [hu, sub_add_cancel]
   have e : herm (Hpk k r) p p = herm (Hpk k r) u u + c * star c := by
@@ -1028,7 +1028,7 @@ private lemma mem_xsp_of_apply_eq_zero_of_le {w : Fin (2 * r + k + 1) → ℂ} (
         by_cases ha : a = ⟨i.val, hi⟩
         · subst ha
           have : i = eI k r ⟨i.val, hi⟩ := Fin.ext rfl
-          rw [if_pos this, if_pos rfl, mul_one, ← this]
+          rw [ite_eq_left this, ite_eq_left rfl, mul_one, ← this]
         · have hne : i ≠ eI k r a := by
             intro h'
             apply ha
@@ -1037,7 +1037,7 @@ private lemma mem_xsp_of_apply_eq_zero_of_le {w : Fin (2 * r + k + 1) → ℂ} (
             simp only [eI] at this
             simp only
             omega
-          rw [if_neg hne, if_neg ha, mul_zero]
+          rw [ite_eq_right hne, ite_eq_right ha, mul_zero]
       rw [Finset.sum_congr rfl (fun a _ => hsum a), Finset.sum_ite_eq']
       simp
     · rw [h i (by omega)]
@@ -1049,7 +1049,7 @@ private lemma mem_xsp_of_apply_eq_zero_of_le {w : Fin (2 * r + k + 1) → ℂ} (
         have := congrArg Fin.val h'
         simp only [eI] at this
         omega
-      rw [if_neg hne, mul_zero]
+      rw [ite_eq_right hne, mul_zero]
   rw [hw]
   exact Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
 

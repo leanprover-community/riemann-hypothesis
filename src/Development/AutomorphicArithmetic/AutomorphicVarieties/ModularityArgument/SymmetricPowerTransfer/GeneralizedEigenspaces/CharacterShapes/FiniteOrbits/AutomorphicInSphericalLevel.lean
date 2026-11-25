@@ -13,44 +13,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.FiniteOrbits.FinOrbSub
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.FiniteOrbits.HomTrivialOnDetOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.FiniteOrbits.OutInvMulMem
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
@@ -392,7 +354,7 @@ theorem UpperTheory.V.Z.Sym.So.weakOne :
     apply mem_Uc w (c w)
     have hA := ha w (Finset.mem_union_left _ hw)
     have hB := ha (ub w) (Finset.mem_union_right _ (Finset.mem_image_of_mem ub hw))
-    simp only [hw, hnS, if_true, if_false, inv_one, Units.val_one, mul_one] at hA hB
+    simp only [hw, hnS, ite_true, ite_false, inv_one, Units.val_one, mul_one] at hA hB
     have hB' : Valued.v (algebraMap L (Kw w) (cj a) - 1) < WithZero.exp (-(E : ℤ)) := by
       have e1 : algebraMap L (Kw w) (cj a) - 1 = algebraMap L (Kw w) (cj ((a : L) - 1)) := by
         simp [map_sub]
@@ -785,7 +747,7 @@ private theorem off_on_comm {L : Type} [Field L] [NumberField L] [IsCMField L] (
   refine h5 _ _ (fun u => ?_) (fun τ => ?_)
   · by_cases h : ∀ w ∈ S, un u ≠ un w
     · rw [map_mul, map_mul, ha.2 u h, one_mul, mul_one]
-    · push_neg at h
+    · push Not at h
       obtain ⟨w, hw, hu⟩ := h
       rw [map_mul, map_mul, hoff w hw u hu, one_mul, mul_one]
   · rw [map_mul, map_mul, ((h6 x).1).1 hx τ, ((h6 a).1).1 ha.1 τ]
@@ -921,7 +883,7 @@ private theorem op0 {L : Type} [Field L] [NumberField L] [IsCMField L] {B : Brid
   classical
   have hfull : Full (Kall (L := L) 2) S := ⟨le_rfl, fun _ _ => inf_le_right⟩
   have hd : ∃ d : ∀ w : Plc L, Fin 2 → (Kw w)ˣ, ∀ w h, d w = fun i => iu T w h (SD.dS t (un w) i) :=
-    ⟨fun w => if h : IsSplitAt w then fun i => iu T w h (SD.dS t (un w) i) else 1, fun w h => dif_pos h⟩
+    ⟨fun w => if h : IsSplitAt w then fun i => iu T w h (SD.dS t (un w) i) else 1, fun w h => dite_eq_left h⟩
   refine hd.elim fun d hd => ?_
   have h3 : ∀ w ∈ S, cLoc w x = Sig.dg (d w) := fun w hw => (h2 w hw (hF.pl.split w hw)).trans (congrArg _ (hd w _).symm)
   have hp := prodEig L 2 _ S VL hF.pl hfull d x h1 h3

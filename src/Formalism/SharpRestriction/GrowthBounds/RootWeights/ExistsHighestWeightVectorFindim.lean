@@ -30,50 +30,6 @@ theorem raising_functional_add_root {n : ℕ} (mu : Fin n → ℤ) (a b : Fin n)
     Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
   ring
 
-theorem exists_highest_weight_vector_findim {n : ℕ} {K V : Type*} [Field K] [CharZero K] [AddCommGroup V] [Module K V]
-    [FiniteDimensional K V] [Nontrivial V] {E : GLOps n K V} (hE : IsGLRep E) :
-    ∃ mu v, IsHWV E mu v := by
-  classical
-  set H : Module.End K V := ∑ c : Fin n, ((c.val : ℤ) : K) • E c c with hH
-  have hwH : ∀ (mu : Fin n → ℤ) (x : V), x ∈ weightSp E mu → H x = (-((raisingFunctional mu : ℤ) : K)) • x := by
-    intro mu x hx
-    rw [mem_weightSpace_iff_diagonal_rep] at hx
-    simp only [hH, LinearMap.sum_apply, LinearMap.smul_apply, hx, smul_smul]
-    rw [← Finset.sum_smul]
-    congr 1
-    unfold raisingFunctional
-    push_cast
-    ring
-  let P : ℤ → Prop := fun z => ∃ mu : Fin n → ℤ, weightSp E mu ≠ ⊥ ∧ raisingFunctional mu = z
-  have hfin : {z | P z}.Finite := by
-    have hinj : Function.Injective (fun z : ℤ => (-(z : K))) := fun a b h => by simpa using h
-    refine ((Module.End.finite_hasEigenvalue H).preimage hinj.injOn).subset ?_
-    rintro z ⟨mu, hmu, rfl⟩
-    obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hmu
-    exact Module.End.hasEigenvalue_of_hasEigenvector ⟨Module.End.mem_eigenspace_iff.2 (hwH mu x hx), hx0⟩
-  have hne : ∃ z, P z := by
-    by_contra hcon
-    have hall : ∀ mu : Fin n → ℤ, weightSp E mu = ⊥ := fun mu => by
-      by_contra h
-      exact hcon ⟨_, mu, h, rfl⟩
-    have htop := hE.2.2
-    simp only [hall, iSup_bot] at htop
-    exact bot_ne_top htop
-  obtain ⟨bd, hbd⟩ := hfin.bddAbove
-  obtain ⟨z, ⟨mu, hmu, rfl⟩, hmax⟩ := Int.exists_greatest_of_bdd ⟨bd, fun z hz => hbd hz⟩ hne
-  obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hmu
-  refine ⟨mu, v, hv0, hv, fun a b hab => ?_⟩
-  have hs := gl_rep_weight_shift hE hv a b
-  by_contra hne0
-  have hP : P (raisingFunctional (mu + rootW a b)) := ⟨_, fun h => hne0 (by rw [h, Submodule.mem_bot] at hs; exact hs), rfl⟩
-  have h1 := hmax _ hP
-  rw [raising_functional_add_root] at h1
-  omega
-
-theorem isotypic_sum_stable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
-    (a b : Fin n) {x : V} (hx : x ∈ ⨆ mu : Fin n → ℤ, isoSub E mu) : E a b x ∈ ⨆ mu : Fin n → ℤ, isoSub E mu := by
-  apply _root_.Formalism.MainNotions.G.GLWeightTheory.isotypic_sum_stable_gl_operator <;> assumption
-
 theorem complete_reducibility_findim (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (n : ℕ) (E : GLOps n K V) (hE : IsGLRep E) :
     (⨆ mu : Fin n → ℤ, isoSub E mu) = ⊤ := by

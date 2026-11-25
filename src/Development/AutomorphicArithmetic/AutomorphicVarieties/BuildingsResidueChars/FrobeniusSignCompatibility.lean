@@ -52,10 +52,6 @@ private theorem frob_of_smul {E Ω : Type} [Field E] [NumberField E] [Field Ω] 
     IsFrob (F := E) A q (g⁻¹ * σ * g) := by
   apply _root_.GlobalTheory.WeilDeligne.MonodromyThm.isFrob_conj <;> assumption
 
-private theorem normV_under' {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
-    (w : HeightOneSpectrum (𝓞 K')) : normV w = normV (w.under (𝓞 K)) ^ w.asIdeal.inertiaDeg (𝓞 K) := by
-  apply _root_.GlobalTheory.DelEps.WeilRes.normV_eq_pow
-
 private theorem one_lt_normV' {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) : 1 < normV w := by
   simpa only [normV, ← Submodule.cardQuot_apply, ← Ideal.absNorm_apply] using
     NumberField.HeightOneSpectrum.one_lt_absNorm w
@@ -120,7 +116,7 @@ theorem UpperTheory.frobenius_sign_compatibility :
         simpa using h2
       refine hq (le_antisymm hle ?_)
       have h4 := one_lt_normV' w
-      rw [normV_under' (K := F) w] at h4 ⊢
+      rw [_root_.GlobalTheory.DelEps.WeilRes.normV_eq_pow (K := F) w] at h4 ⊢
       refine Nat.le_self_pow (fun h0 => ?_) _
       rw [h0] at h4
       simp at h4

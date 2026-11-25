@@ -267,11 +267,6 @@ theorem lmap_comp {R S T : Type} [CommRing R] [CommRing S] [CommRing T] (f : R �
   refine RingHom.ext fun p => lext fun n => ?_
   rw [RingHom.comp_apply, lmap_apply, lmap_apply, lmap_apply, RingHom.comp_apply]
 
-theorem spMap_comp' {R S T : Type} [CommRing R] [CommRing S] [CommRing T] (F : R →+* S) (G : S →+* T) :
-    spMap (G.comp F) = spMap G ≫ spMap F := by
-  show sch.map (Spec.map (CommRingCat.ofHom (G.comp F))) = sch.map (Spec.map (CommRingCat.ofHom G)) ≫ sch.map (Spec.map (CommRingCat.ofHom F))
-  rw [CommRingCat.ofHom_comp, Spec.map_comp, Functor.map_comp]
-
 attribute [local instance] Classical.propDecidable
 
 variable {A : Type} [CommRing A]
@@ -338,7 +333,6 @@ theorem sub_fg (u : A) (s : Finset A) : (sub u s).FG := ⟨insert u s, rfl⟩
 
 end GlobalTheory.EtC.LaurentNoeth
 
-
 open GlobalTheory.EtC.LaurentNoeth in
 theorem GlobalTheory.EtC.laurent_vanishing_of_noetherian : ∀ (q : ℕ) [NeZero q], (∀ (A : Type) [CommRing A] [IsNoetherianRing A], SH A → IsUnit (q : A) → ∀ n i : ℤ, 2 ≤ n → Subsingleton (Ht q (sp (LaurentPolynomial A)) n i)) → ∀ (A : Type) [CommRing A], SH A → IsUnit (q : A) → ∀ n i : ℤ, 2 ≤ n → Subsingleton (Ht q (sp (LaurentPolynomial A)) n i) := by
   classical
@@ -365,7 +359,7 @@ theorem GlobalTheory.EtC.laurent_vanishing_of_noetherian : ∀ (q : ℕ) [NeZero
     rw [← lmap_comp, hfg]; rfl
   rw [← hy, e]
   change pull _ (spMap ((lmap g).comp (lmap f))) _ _ y = 0
-  rw [spMap_comp']
+  rw [GlobalTheory.EtC.FracAway.spMap_comp]
   refine (pull_comp (ZMod q) (spMap (lmap g)) (spMap (lmap f)) (tw q i) n y).trans ?_
   have : pull _ (spMap (lmap f)) (tw q i) n y = 0 := Subsingleton.elim _ _
   rw [this, map_zero]
@@ -501,8 +495,6 @@ theorem gmPhi_bijective_prod (h6 : DivisorNaturality) (q : ℕ) [NeZero q] (T₁
     rw [this]
     rw [he] at hψpull
     exact hγ.comp hψpull
-  have hu₁ : IsUnit (q : T₁) := by simpa using hq.map f₁
-  have hu₂ : IsUnit (q : T₂) := by simpa using hq.map f₂
   have hcomm : β ∘ (gmPhi q (T₁ × T₂) i) =
       (Prod.map (gmPhi q T₁ i) (gmPhi q T₂ i)) ∘
         (fun x : Ht q (sp (T₁ × T₂)) 0 (i - 1) => (pull _ (spMap f₁) _ 0 x, pull _ (spMap f₂) _ 0 x)) := by
@@ -513,7 +505,6 @@ theorem gmPhi_bijective_prod (h6 : DivisorNaturality) (q : ℕ) [NeZero q] (T₁
   exact (h₁.prodMap h₂).comp hα
 
 end GlobalTheory.EtC.LaurentMapPullbackBijective
-
 
 open GlobalTheory.EtC.LaurentMapPullbackBijective in
 theorem GlobalTheory.EtC.GmStep.gmPhi_bijective_finite : ∀ (q : ℕ) [NeZero q] (A : Type) [CommRing A], SH A → IsUnit (q : A) →
@@ -793,7 +784,6 @@ theorem clear_step {K L : Cx R} {n : ℤ} (z : Cocycle K L n) (k : ℕ)
       rw [h2, sub_self]
 
 end GlobalTheory.EtC.RowVanish
-
 
 open GlobalTheory.EtC.RowVanish GlobalTheory.EtC.ClsBasic GlobalTheory.EtC.HCElements in
 theorem GlobalTheory.EtC.vanish_of_rowExact : ∀ (R : Type) [CommRing R] (F : Shv R) (E : Spc) (P : PSh) (g : disc.obj P ⟶ E),
@@ -1378,7 +1368,6 @@ theorem simplicialSpectralRowDifferential_degreeZeroClass (E : Spc) (p : ℕ) (s
     simp only [AddMonoidHom.smul_apply, etaleSpaceCohomologyPullback_degreeZeroClass]
 
 end GlobalTheory.EtC.GmStep.DegRow
-
 
 open GlobalTheory.EtC.GmStep.DegRow in
 theorem GlobalTheory.EtC.GmStep.rowExact_zero_of_acyclic : ∀ (R : Type) [CommRing R] (F : Shv R) (E : Spc),

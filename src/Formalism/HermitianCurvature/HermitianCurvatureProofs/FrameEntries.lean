@@ -215,14 +215,4 @@ theorem qr_detHat_of (hA : Formalism.FourierDecayAlt.Qr.AlgDet) (hC : Formalism.
   push_cast
   ring
 
-namespace FrameEntries
-
-section Reg
-
-variable {k r : ℕ}
-
-end Reg
-
-end FrameEntries
-
 end Formalism.FourierDecayAlt.P

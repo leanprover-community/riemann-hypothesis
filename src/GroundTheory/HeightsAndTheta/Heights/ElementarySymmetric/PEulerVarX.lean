@@ -169,8 +169,6 @@ theorem EulerVar.proof (hSq : KH.CechDSqStatement) (hE : EulerSES.Statement) : E
     (∑ k, (Fintype.card (ι k) - 1))
     (fun n y hy => KHCechDDeg.full F K ι _ (quotPart F W) (m - e) n y hy)
     (fun n y hy => KHCechDDeg.full F K ι _ (quotPart F V) m n y hy)
-    (fun n y hy => KHCechDDeg.full F K ι _ (quotPart F U) m n y hy)
-    (fun n y _ => LinearMap.congr_fun (hSq F K ι _ n) y) (fun n y _ => LinearMap.congr_fun (hSq F K ι _ n) y)
     (fun n y _ => LinearMap.congr_fun (hSq F K ι _ n) y)
     (fun n y hy => (KHCechMapDeg.full F K ι _ _ _ _ g m n hg).1 y (by rw [hCA]; exact hy))
     (fun n y hy => (KHCechMapDeg.full F K ι _ _ _ _ h m n hh).1 y hy)
@@ -301,10 +299,7 @@ structure IsSES (CA : ∀ n, Submodule F (A n)) (CB : ∀ n, Submodule F (B n)) 
     (f : ∀ n, A n →ₗ[F] B n) (g : ∀ n, B n →ₗ[F] C n) : Prop where
   dA_mem : ∀ n, ∀ x ∈ CA n, dA n x ∈ CA (n + 1)
   dB_mem : ∀ n, ∀ x ∈ CB n, dB n x ∈ CB (n + 1)
-  dC_mem : ∀ n, ∀ x ∈ CC n, dC n x ∈ CC (n + 1)
-  dA_dA : ∀ n, ∀ x ∈ CA n, dA (n + 1) (dA n x) = 0
   dB_dB : ∀ n, ∀ x ∈ CB n, dB (n + 1) (dB n x) = 0
-  dC_dC : ∀ n, ∀ x ∈ CC n, dC (n + 1) (dC n x) = 0
   f_mem : ∀ n, ∀ x ∈ CA n, f n x ∈ CB n
   g_mem : ∀ n, ∀ y ∈ CB n, g n y ∈ CC n
   f_d : ∀ n, ∀ x ∈ CA n, dB n (f n x) = f (n + 1) (dA n x)
@@ -568,9 +563,10 @@ end EulerSES
 open EulerSES
 
 theorem EulerSES.full : EulerSES.Statement := by
-  intro F _ A B C _ _ _ _ _ _ CA CB CC dA dB dC f g N h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13 h14
-    hfa hfb hfc hsub
-  have H : IsSES CA CB CC dA dB dC f g := ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14⟩
+  intro F _ A B C _ _ _ _ _ _ CA CB CC dA dB dC f g N hdA_mem hdB_mem hdB_sq hf_mem hg_mem
+    hf_d hg_d hf_inj hgf hexact hg_onto hfa hfb hfc hsub
+  have H : IsSES CA CB CC dA dB dC f g :=
+    ⟨hdA_mem, hdB_mem, hdB_sq, hf_mem, hg_mem, hf_d, hg_d, hf_inj, hgf, hexact, hg_onto⟩
   have key := alt_sum (fun n => (Module.finrank F (coh CA dA n) : ℤ))
     (fun n => (Module.finrank F (coh CB dB n) : ℤ)) (fun n => (Module.finrank F (coh CC dC n) : ℤ))
     (fun n => (Module.finrank F (LinearMap.range (H.iA n)) : ℤ))

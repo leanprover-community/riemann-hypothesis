@@ -25,7 +25,7 @@ variable {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ)
 
 lemma herm_sum (u v : Fin m → ℂ) : ∑ j, herm H (bvec j) v * u j = herm H u v := by
   simp only [herm, dotProduct, mulVec, bvec, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, Finset.sum_mul, Finset.mul_sum]
+    Finset.mem_univ, ite_true, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl; intro i _
   apply Finset.sum_congr rfl; intro j _
@@ -92,10 +92,10 @@ lemma hermitian_first_basis_right (k r' : ℕ) (u : Fin (2 * (1 + r') + k + 1) �
     herm (Hpk k (1 + r')) u (e0 k r') = u (lastI k r') := by
   rw [← herm_sum]
   rw [Finset.sum_eq_single (lastI k r')]
-  · rw [e0, herm_bvec, Hpk_zero_row, if_pos (show (lastI k r').val = 2 * (1 + r') + k from rfl), one_mul]
+  · rw [e0, herm_bvec, Hpk_zero_row, ite_eq_left (show (lastI k r').val = 2 * (1 + r') + k from rfl), one_mul]
   · intro j _ hj
     have : j.val ≠ 2 * (1 + r') + k := fun h => hj (Fin.ext h)
-    rw [e0, herm_bvec, Hpk_zero_row, if_neg this, zero_mul]
+    rw [e0, herm_bvec, Hpk_zero_row, ite_eq_right this, zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 lemma hermitian_form_base_vector_left (k r' : ℕ) (w : Fin (2 * (1 + r') + k + 1) → ℂ) :
@@ -159,10 +159,7 @@ lemma herm_lift (k r' : ℕ) (y y' : Fin (2 * r' + k + 1) → ℂ) :
 lemma hb_rel (k r' : ℕ) (y : Fin (2 * r' + k + 1) → ℂ) (s : ℝ) :
     hb k r' y s + star (hb k r' y s) + herm (Hpk k r') y y = 0 := by
   have h := herm_symm _ (Hpk_herm k r') y y
-  have him : (herm (Hpk k r') y y).im = 0 := by
-    have := congrArg Complex.im h
-    simp only [Complex.star_def, Complex.conj_im] at this
-    linarith
+  have him : (herm (Hpk k r') y y).im = 0 := Complex.conj_eq_iff_im.1 h
   apply Complex.ext
   · simp [hb]
   · simp [hb, him]
@@ -203,17 +200,17 @@ theorem heisMem : HeisMem := by
     have ha := a.isLt
     simp only [heis0]
     have hv : (eI k (1 + r') a).val = a.val := rfl
-    have hz : (if (eI k (1 + r') a).val = 2 * (1 + r') + k then (1 : ℂ) else 0) = 0 := if_neg (by omega)
+    have hz : (if (eI k (1 + r') a).val = 2 * (1 + r') + k then (1 : ℂ) else 0) = 0 := ite_eq_right (by omega)
     rw [heisG_apply, hz, mul_zero, add_zero, goodRowsProjector_apply_eq_sum]
     by_cases hi : i.val = 0
     · have : bvec (eI k (1 + r') a) = e0 k r' := by
         unfold e0; congr 1; apply Fin.ext; simp only [eI, a0]; omega
       rw [this, hermitian_form_base_vector_left, liftVec_last]; simp
-    · rw [if_neg hi]; simp
+    · rw [ite_eq_right hi]; simp
   · intro i j h1 h2 h3
     simp only [heis0]
-    have hz : (if j.val = 2 * (1 + r') + k then (1 : ℂ) else 0) = 0 := if_neg (by omega)
-    have hz2 : (if i.val = 0 then (1 : ℂ) else 0) = 0 := if_neg (by omega)
+    have hz : (if j.val = 2 * (1 + r') + k then (1 : ℂ) else 0) = 0 := ite_eq_right (by omega)
+    have hz2 : (if i.val = 0 then (1 : ℂ) else 0) = 0 := ite_eq_right (by omega)
     rw [heisG_apply, hz, mul_zero, add_zero, goodRowsProjector_apply_eq_sum, hz2]; simp
 
 end Formalism.FourierDecayAlt.P.B2x4

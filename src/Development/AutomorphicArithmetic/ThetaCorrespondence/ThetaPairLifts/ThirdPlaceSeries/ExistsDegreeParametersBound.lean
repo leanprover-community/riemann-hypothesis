@@ -183,10 +183,6 @@ theorem antitone_of_gap_nonneg {N : ℕ} {v : Fin N → ℤ} (h : ∀ k, k + 1 <
 
 end GlobalTheory.FrameBerg
 
-namespace GlobalTheory.FrameBerg
-
-
-end GlobalTheory.FrameBerg
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -274,8 +270,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 noncomputable section
-namespace GlobalTheory.FrameBerg
-end GlobalTheory.FrameBerg
 open scoped GlobalTheory.CompHt
 namespace GlobalTheory.FrameBerg
 
@@ -484,15 +478,15 @@ theorem gapGe_of_wtBig {P : WtPar Dw} (h : WtBig P) : GapGe 1 P.u₁ ∧ GapGe 1
   have h2 : ∀ τ k, k + 1 < Dw.p + Dw.q → 3 ≤ gap (P.u₂ τ) k := fun τ k hk => by
     have a := h3 τ k hk
     have b := (P.gap_rem τ k).1
-    simp only [gap, dif_pos hk, WtPar.u₂, Pi.add_apply] at a b ⊢
+    simp only [gap, dite_eq_left hk, WtPar.u₂, Pi.add_apply] at a b ⊢
     omega
   refine ⟨h3.mono (by norm_num), fun τ k hk => le_trans (by norm_num) (h2 τ k hk), fun j τ k hk => ?_⟩
   have a := h3 τ k hk
   have b := h2 τ k hk
   have c : -2 ≤ gap (FlagTan.kap Dw τ) k := by
-    simp only [gap, dif_pos hk, FlagTan.kap]
+    simp only [gap, dite_eq_left hk, FlagTan.kap]
     split_ifs <;> push_cast <;> omega
-  simp only [gap, dif_pos hk, WtPar.wt, WtPar.uc, Pi.add_apply, Pi.smul_apply] at a b c ⊢
+  simp only [gap, dite_eq_left hk, WtPar.wt, WtPar.uc, Pi.add_apply, Pi.smul_apply] at a b c ⊢
   simp only [nsmul_eq_mul]
   have e1 := mul_nonneg (Int.natCast_nonneg (FlagTan.dimFlag Dw)) (le_trans (by norm_num) a)
   have e2 := mul_nonneg (Int.natCast_nonneg j) (le_trans (by norm_num) a)
@@ -836,10 +830,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 noncomputable section
-namespace GlobalTheory.CovTop.DgLog
-end GlobalTheory.CovTop.DgLog
-namespace GlobalTheory.CovTop.DgLog
-end GlobalTheory.CovTop.DgLog
 namespace GlobalTheory.CovTop.DgLog
 theorem log_degree_le_of_covering_range_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ Z, Real.log (Y.dg (⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).u₁ Z) ≤ PP := by
   intro hX hP hG hQ hFan hSA hDG hSz hFD
@@ -1204,10 +1194,6 @@ theorem log_sum_le {S k fr L : ℝ} (hS0 : 0 ≤ S) (hSk : S ≤ (fr * L) ^ 2 * 
 
 end GlobalTheory.CovTop.ShortSpanUnitCover
 
-namespace GlobalTheory.CovTop.ShortSpanUnitCover
-
-
-end GlobalTheory.CovTop.ShortSpanUnitCover
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1233,10 +1219,6 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 
 noncomputable section
-namespace GlobalTheory.CovTop.ShortSpanUnitCover
-end GlobalTheory.CovTop.ShortSpanUnitCover
-namespace GlobalTheory.CovTop.ShortSpanUnitCover
-end GlobalTheory.CovTop.ShortSpanUnitCover
 open scoped GlobalTheory.CompHt
 namespace GlobalTheory.CovTop.ShortSpanUnitCover
 

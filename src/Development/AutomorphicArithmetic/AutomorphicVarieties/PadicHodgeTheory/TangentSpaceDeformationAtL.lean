@@ -118,7 +118,7 @@ private theorem finrank_Z1_chRep_eq_two_of_ne_one_ne_cyc (hP : LocalPublishedThe
       ring
   have eB := Submodule.comapSubtypeEquivOfLe hBZ
   rw [hD, finrank_bot] at e2
-  rw [hH0, finrank_bot, e2, if_pos rfl, hr, Subgroup.index_top, finrank_self] at e1
+  rw [hH0, finrank_bot, e2, ite_eq_left rfl, hr, Subgroup.index_top, finrank_self] at e1
   haveI : Module.Finite E ↥(ReciprocityTheory.Gal.B1 (chRep κ)) := finite_of_finrank_pos (by omega)
   haveI := Module.Finite.equiv eB.symm
   haveI : Module.Finite E ↥(ReciprocityTheory.Gal.Z1 (chRep κ)) :=
@@ -281,9 +281,9 @@ private theorem prj_diag {B : Type} [CommRing B] (c : Fin 4 → B) (i : Fin 4) :
     by_cases hai : a = i
     · subst hai
       simp
-    · rw [if_pos rfl, if_neg (fun h => hai h.1.symm)]
+    · rw [ite_eq_left rfl, ite_eq_right (fun h => hai h.1.symm)]
       exact Finset.prod_eq_zero (Finset.mem_erase.2 ⟨hai, Finset.mem_univ _⟩) (sub_self _)
-  · rw [if_neg hab, if_neg (fun h => hab (h.1.symm.trans h.2))]
+  · rw [ite_eq_right hab, ite_eq_right (fun h => hab (h.1.symm.trans h.2))]
 
 private theorem prj_mul_eq_zero {B : Type} [CommRing B] {h h' : M4 B} (e : h' * h = 1) (e' : h * h' = 1)
     {c : Fin 4 → B} (hc : ∀ i j, i ≠ j → IsUnit (c i - c j)) (M : M4 B) (i j : Fin 4) :
@@ -321,7 +321,7 @@ private theorem prj_mul_eq_zero {B : Type} [CommRing B] {h h' : M4 B} (e : h' * 
   constructor
   · intro hz
     have h1 := hent (h' * M * h) j i
-    rw [hz, if_pos ⟨rfl, rfl⟩] at h1
+    rw [hz, ite_eq_left ⟨rfl, rfl⟩] at h1
     have h2 : (ua : B) * (h' * M * h) j i * ub = 0 := h1.symm
     simpa using h2
   · intro hz
@@ -567,7 +567,7 @@ private theorem main {H : Type} [Group H] (I : Subgroup H) (s₀ : H) (hs : s₀
     set Y : M4 E := Matrix.of fun a b => if a = b then 0 else γ s₀ a b / (1 - p a s₀ / p b s₀) with hYdef
     have hY : ∀ a b, a ≠ b → γ s₀ a b = (1 - p a s₀ / p b s₀) * Y a b := by
       intro a b hab
-      simp only [hYdef, Matrix.of_apply, if_neg hab]
+      simp only [hYdef, Matrix.of_apply, ite_eq_right hab]
       rw [mul_div_assoc', eq_div_iff (hne a b hab), mul_comm]
     have hY' := (ord_iff I s₀ hs p hp hc γ r hr Y hY).1 hO
     refine ⟨hsp4, ⟨Y, ?_, hY'.1⟩, hY'.2⟩
@@ -579,7 +579,7 @@ private theorem main {H : Type} [Group H] (I : Subgroup H) (s₀ : H) (hs : s₀
     · subst hij
       simp
     · have hij' : j.rev ≠ i.rev := fun h => hij (Fin.rev_injective h).symm
-      rw [if_neg hij', if_neg hij, hrat s₀ i j, ← neg_div, ← hγ, smul_div_assoc]
+      rw [ite_eq_right hij', ite_eq_right hij, hrat s₀ i j, ← neg_div, ← hγ, smul_div_assoc]
   · rintro ⟨hsp4, ⟨X, hX, hlow⟩, hin⟩
     set Y : M4 E := Matrix.of fun a b => if b < a then X a b else γ s₀ a b / (1 - p a s₀ / p b s₀) with hYdef
     have hY : ∀ a b, a ≠ b → γ s₀ a b = (1 - p a s₀ / p b s₀) * Y a b := by
@@ -590,7 +590,7 @@ private theorem main {H : Type} [Group H] (I : Subgroup H) (s₀ : H) (hs : s₀
       · rw [mul_div_assoc', eq_div_iff (hne a b hab), mul_comm]
     refine ⟨hsp4, (ord_iff I s₀ hs p hp hc γ r hr Y hY).2 ⟨?_, hin⟩⟩
     intro g a b hba
-    simp only [hYdef, Matrix.of_apply, if_pos hba]
+    simp only [hYdef, Matrix.of_apply, ite_eq_left hba]
     exact hlow g a b hba
 
 end UpperTheory.V.Loc.SymplecticTangentProjection
@@ -690,7 +690,7 @@ theorem hom_iff (χ : Fin 4 → H →* Eˣ) (γ : H → M4 E) :
     have u2 := Units.ne_zero (χ b h)
     rw [TrivSqZeroExt.ext_iff, Matrix.mul_apply, TrivSqZeroExt.snd_sum, TrivSqZeroExt.fst_sum]
     simp only [DualNumber.snd_mul, TrivSqZeroExt.fst_mul, hf, hs, Finset.sum_add_distrib, ite_mul, mul_ite, zero_mul,
-      mul_zero, Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, if_true, map_mul, Units.val_mul]
+      mul_zero, Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_mul, Units.val_mul]
     rw [and_iff_right (by split_ifs with h <;> simp [h])]
     constructor
     · intro e
@@ -726,7 +726,7 @@ private theorem wt_cases : ∀ j ∈ wts, j = 0 ∨ (∃ a b : Fin 4, a < b ∧ 
 private theorem wt_pos_ne : ∀ a b a' b' : Fin 4, a < b → b' ≤ a' → wt a' b' ≠ wt a b := by decide
 
 private theorem dimsL_out (j : ℤ × ℤ) (h : j ∉ wts) : dimsL j = 0 := by
-  rw [dimsL, if_neg h, if_neg]
+  rw [dimsL, ite_eq_right h, ite_eq_right]
   rintro (rfl | rfl | rfl | rfl | rfl) <;> exact h (by decide)
 
 private theorem sgn_rev : ∀ a b : Fin 4, sgn b.rev * sgn a.rev = sgn a * sgn b := by decide

@@ -105,8 +105,6 @@ structure Free {ψ : AddChar (AF D.host.F) ℂ} (_Om : WeilC ψ) : Type 1 where
   adelicDataRowMeasureScale_trivialTuple : ∀ j, mY D.what₂.mu0 j = 1
   mY_zero : ∀ μ, mY μ 0 = 1
 
-attribute [instance] Free.fjAdd Free.fjMod
-
 variable {ψ : AddChar (AF D.host.F) ℂ}
 
 section Ties

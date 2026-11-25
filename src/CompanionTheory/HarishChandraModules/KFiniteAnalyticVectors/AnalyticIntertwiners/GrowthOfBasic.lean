@@ -12,8 +12,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExi
 open Matrix
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace CompanionTheory.D.gk.HC
 
 open ReciprocityTheory.ChartRestriction.DS

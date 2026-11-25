@@ -9,50 +9,9 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZe
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsHeisenbergDerivativeLinearOperators
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDerivativeCommutatorRelation
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectionalDerivFormulaAndSmooth
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -220,15 +179,18 @@ theorem pi_lineAt {S T : HSp D} {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what
   refine ((isLineAt_lineAt hθ τ z).2.2 1 τ').trans ?_
   rw [Pi.single_apply, Complex.ofReal_one, one_smul]
 
-theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (sV BV : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (s BW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (pV pW : D.what₂.Tau → ℕ), (∀ τ, IsCartanInv (gramAt D V τ) (sV τ)) → (∀ τ, IsCartanInv (gramAt D W τ) (s τ)) → (∀ τ, IsONBasis (gramAt D V τ) (sV τ) (BV τ) (pV τ)) → (∀ τ, IsONBasis (gramAt D W τ) (s τ) (BW τ) (pW τ)) → V.SigOK → W.SigOK → ∀ f, IsThetaFunO ψ V W f → (∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (sV τ) (s τ)) f) → f ≠ 0 → Function.Injective (pureTensorO ψ θ V W sV s BV BW f) := by
-  intro D ψ θ V W hψ hθ sV BV s BW pV pW _ _ hBV hBW _ _ f hf hvac hf0
+theorem pureTensorO_injective_of_on (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D)
+    (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (sV BV : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (s BW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (pV pW : D.what₂.Tau → ℕ)
+    (hBV : ∀ τ, IsONBasis (gramAt D V τ) (sV τ) (BV τ) (pV τ))
+    (hBW : ∀ τ, IsONBasis (gramAt D W τ) (s τ) (BW τ) (pW τ)) (f : WO V W → ℂ) (hf : IsThetaFunO ψ V W f)
+    (hvac : ∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (sV τ) (s τ)) f) (hf0 : f ≠ 0) :
+    Function.Injective (pureTensorO ψ θ V W sV s BV BW f) := by
   obtain ⟨σ, h⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
   choose ε hε hG hs using hBV
   choose ε' hε' hG' hs' using hBW
   have sq : ∀ τ a, (ε τ a : ℂ) * ε τ a = 1 := fun τ a => by
     rcases hε τ a with h | h <;> simp [h.1]
-  have sq' : ∀ τ a, (ε' τ a : ℂ) * ε' τ a = 1 := fun τ a => by
-    rcases hε' τ a with h | h <;> simp [h.1]
   have hdet : ∀ τ, IsUnit (BV τ).det := fun τ => by
     have e : (diagonal (fun a => (ε τ a : ℂ)) * ((BV τ)ᴴ * gramAt D V τ)) * BV τ = 1 := by
       rw [Matrix.mul_assoc, hG, Matrix.diagonal_mul_diagonal]
@@ -265,15 +227,15 @@ theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
     refine (omO_single V W τ τ' _ _).trans ?_
     by_cases hτ : τ = τ'
     · subst hτ
-      rw [if_pos rfl, Matrix.conjTranspose_smul, Matrix.mul_smul, Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_mul,
+      rw [ite_eq_left rfl, Matrix.conjTranspose_smul, Matrix.mul_smul, Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_mul,
         Matrix.trace_smul, Matrix.trace_smul, trace_unitMap (sq τ) (hG τ) (hG' τ)]
       by_cases hk : i = k ∧ j = l
-      · rw [if_pos hk, if_pos (by rw [hk.1, hk.2])]
+      · rw [ite_eq_left hk, ite_eq_left (by rw [hk.1, hk.2])]
         simp only [η, smul_eq_mul, Complex.ofReal_mul, mul_assoc]
         rfl
-      · rw [if_neg hk, if_neg (by simpa using hk)]
+      · rw [ite_eq_right hk, ite_eq_right (by simpa using hk)]
         simp
-    · rw [if_neg hτ, if_neg fun hh => hτ (congrArg Prod.fst hh)]
+    · rw [ite_eq_right hτ, ite_eq_right fun hh => hτ (congrArg Prod.fst hh)]
   have hJ : ∀ k : FVar D W.rank V.rank, cplxO (sV k.1) (s k.1) (unitMap (BV k.1) (BW k.1) k.2.1 k.2.2) =
       (I * η k) • unitMap (BV k.1) (BW k.1) k.2.1 k.2.2 := fun k => by
     rw [cplxO_unitMap (hdet _) (hs _) (hs' _)]
@@ -305,7 +267,7 @@ theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
     refine congrArg (fun c : ℂ => _ + c • g) ?_
     by_cases hh : k = l
     · subst hh
-      simp only [hom, if_true]
+      simp only [hom, ite_true]
       refine congrArg _ ?_
       rcases hη k with e | e <;> simp [e, hre] <;> ring_nf <;> simp only [I_sq] <;> ring1
     · simp [hom, hh]
@@ -317,6 +279,10 @@ theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
     simp only [LinearMap.smul_apply, LinearMap.add_apply, Submodule.coe_smul, Submodule.coe_add, hD1]
     rw [h1]
     exact this
+
+theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (sV BV : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (s BW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (pV pW : D.what₂.Tau → ℕ), (∀ τ, IsCartanInv (gramAt D V τ) (sV τ)) → (∀ τ, IsCartanInv (gramAt D W τ) (s τ)) → (∀ τ, IsONBasis (gramAt D V τ) (sV τ) (BV τ) (pV τ)) → (∀ τ, IsONBasis (gramAt D W τ) (s τ) (BW τ) (pW τ)) → V.SigOK → W.SigOK → ∀ f, IsThetaFunO ψ V W f → (∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (sV τ) (s τ)) f) → f ≠ 0 → Function.Injective (pureTensorO ψ θ V W sV s BV BW f) :=
+  fun _ ψ θ V W hψ hθ sV BV s BW pV pW _ _ hBV hBW _ _ f hf hvac hf0 =>
+    pureTensorO_injective_of_on ψ θ V W hψ hθ sV BV s BW pV pW hBV hBW f hf hvac hf0
 
 end GlobalTheory.FockVecInj
 

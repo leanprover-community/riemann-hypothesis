@@ -42,15 +42,10 @@ theorem vf_comm (c c' : τ → MvPowerSeries τ k) (G : MvPowerSeries τ k) :
   simp only [vf, sub_mul, Finset.sum_sub_distrib]
   ring
 
-private theorem vf_mul' {k : Type} [CommRing k] {τ : Type} [Fintype τ] (c : τ → MvPowerSeries τ k)
-    (a b : MvPowerSeries τ k) : vf c (a * b) = a * vf c b + b * vf c a := by
-  simp only [vf, Derivation.leibniz, smul_eq_mul, mul_add, Finset.sum_add_distrib, Finset.mul_sum]
-  congr 1 <;> exact Finset.sum_congr rfl fun _ _ => by ring
-
 theorem vfm_comm (c c' : τ → MvPowerSeries τ k) (f f' G : MvPowerSeries τ k) :
     (vf c (vf c' G - f' * G) - f * (vf c' G - f' * G)) - (vf c' (vf c G - f * G) - f' * (vf c G - f * G)) =
       vf (fun t => vf c (c' t) - vf c' (c t)) G - (vf c f' - vf c' f) * G := by
-  rw [_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.vf_sub, _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.vf_sub, vf_mul', vf_mul', ← vf_comm]
+  rw [vf_sub, vf_sub, vf_mul, vf_mul, ← vf_comm]
   ring
 
 theorem vf_Cmul (c : τ → MvPowerSeries τ k) (a : k) (g : MvPowerSeries τ k) : vf c (C a * g) = C a * vf c g := by
@@ -174,7 +169,7 @@ theorem T_eq (b i j : Fin d) :
 
   simp only [d_F, map_sum, Derivation.leibniz, smul_eq_mul, ev_sum cz1, ev_add cz1, ev_mul cz1, ezF, ez_dF, d_y,
   ez_y, ez_Ar, C_cc_jac, Finset.sum_add_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-  Finset.mem_univ, if_true] at h
+  Finset.mem_univ, ite_true] at h
   have e : ∑ c, Jac G c b * pderiv (R := k) ((0 : Fin 1), c) (Jac G j i) =
       ∑ c, pderiv (R := k) ((0 : Fin 1), c) (Jac G j i) * Jac G c b :=
     Finset.sum_congr rfl fun _ _ => mul_comm _ _

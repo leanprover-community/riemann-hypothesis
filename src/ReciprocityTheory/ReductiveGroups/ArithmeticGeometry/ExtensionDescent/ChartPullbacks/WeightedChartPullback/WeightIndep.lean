@@ -178,7 +178,7 @@ theorem weightIndep : WeightIndepSt := by
     if hβ : β ∈ S then Fv β hβ * Tv β hβ else 0
   have hd : ∀ β (hβ : β ∈ S), hfun β = Fv β hβ * Tv β hβ := fun β hβ => by
     show (if hβ' : β ∈ S then Fv β hβ' * Tv β hβ' else 0) = _
-    exact dif_pos hβ
+    exact dite_eq_left hβ
   have hZ : ∑ β ∈ S.attach, chi β.1 * sn (Fv β.1 β.2 * Tv β.1 β.2) = 0 := by
     refine (Finset.sum_congr rfl fun β _ => ?_).trans
       ((map_sum ((act g).left.appLE Vst W' ha).hom _ _).symm.trans ((congrArg _ hΦ).trans (map_zero _)))

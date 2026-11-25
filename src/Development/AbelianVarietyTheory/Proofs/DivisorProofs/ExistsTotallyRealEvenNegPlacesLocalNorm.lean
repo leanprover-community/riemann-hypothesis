@@ -180,11 +180,11 @@ theorem exists_signs_iff_even (K L : Type) [Field K] [NumberField K] [Field L] [
       · have key := mem_normGroup_iff_pos hL hw (infDiag K h w)
         rw [ringEquivReal_infDiag hw h] at key
         by_cases hS : (⟨w, hw⟩ : {w : InfinitePlace K // w.IsReal}) ∈ S
-        · rw [if_pos ⟨hw, hS⟩, eta_eq_neg_one_iff, key]
+        · rw [ite_eq_left ⟨hw, hS⟩, eta_eq_neg_one_iff, key]
           exact not_lt.2 ((hsgn ⟨w, hw⟩).1 hS).le
-        · rw [if_neg (by rintro ⟨hw', h'⟩; exact hS h'), eta_eq_one_iff, key]
+        · rw [ite_eq_right (by rintro ⟨hw', h'⟩; exact hS h'), eta_eq_one_iff, key]
           exact (hsgn ⟨w, hw⟩).2 hS
-      · rw [if_neg (by rintro ⟨hw', _⟩; exact hw hw'), eta_eq_one_iff]
+      · rw [ite_eq_right (by rintro ⟨hw', _⟩; exact hw hw'), eta_eq_one_iff]
         exact Converse.mem_normGroup_of_isComplex b h0 h1 (InfinitePlace.not_isReal_iff_isComplex.1 hw) _
   · intro hS
     let P : InfinitePlace K → Prop := fun w =>
@@ -193,9 +193,9 @@ theorem exists_signs_iff_even (K L : Type) [Field K] [NumberField K] [Field L] [
     have hy : ∀ w, eta K L w.Completion (y w) = if P w then -1 else 1 := by
       intro w
       by_cases hP : P w
-      · simp only [y, if_pos hP]
+      · simp only [y, ite_eq_left hP]
         exact eta_eq_neg_one_iff.2 (SignCount.neg_one_not_mem_normGroup hL hP.1)
-      · simp only [y, if_neg hP]
+      · simp only [y, ite_eq_right hP]
         exact eta_eq_one_iff.2 (one_mem _)
     have hx : AlmostNorm K L (1 : FinFam K) := by
       refine Set.Finite.subset Set.finite_empty fun v hv => hv ?_
@@ -214,14 +214,14 @@ theorem exists_signs_iff_even (K L : Type) [Field K] [NumberField K] [Field L] [
       have hP : P w.1 ↔ w ∈ S := ⟨by rintro ⟨_, h⟩; exact h, fun h => ⟨w.2, h⟩⟩
       constructor
       · intro hw
-        have hyw : y w.1 = -1 := if_pos (hP.2 hw)
+        have hyw : y w.1 = -1 := ite_eq_left (hP.2 hw)
         rw [hyw, Units.val_neg, Units.val_one, map_neg, map_one] at key
         have := (div_pos_iff.1 key)
         rcases this with ⟨h1, -⟩ | ⟨-, h2⟩
         · linarith
         · exact h2
       · intro hw
-        have hyw : y w.1 = 1 := if_neg (fun h => hw (hP.1 h))
+        have hyw : y w.1 = 1 := ite_eq_right (fun h => hw (hP.1 h))
         rw [hyw, Units.val_one, map_one] at key
         exact (one_div_pos).1 key
     · have := htf v
@@ -471,7 +471,6 @@ theorem local_integral : ∀ (K : Type) [Field K] [NumberField K] (v : HeightOne
     rw [h] at this
     exact_mod_cast this
   have hodd := FiniteField.odd_card_of_char_ne_two hchar
-  have hdk : residue O d ≠ 0 := (hdu.map (residue O)).ne_zero
   have hαk : residue O α ≠ 0 := (hαu.map (residue O)).ne_zero
   obtain ⟨s, t, hst⟩ := FiniteField.exists_root_sum_quadratic
     (f := (X ^ 2 : (ResidueField O)[X])) (g := C (-residue O d) * X ^ 2 + C (-residue O α))
@@ -552,7 +551,7 @@ theorem exists_finiteAdele_sq_sub_mul_sq : ∀ (K : Type) [Field K] [NumberField
   have hint : ∀ᶠ v : HeightOneSpectrum (𝓞 K) in Filter.cofinite,
       (sol v).1 ∈ v.adicCompletionIntegers K ∧ (sol v).2 ∈ v.adicCompletionIntegers K := by
     filter_upwards [hev] with v h
-    simp only [sol, dif_pos h]
+    simp only [sol, dite_eq_left h]
     exact ⟨(local_integral K v δ a h.1 h.2.1 h.2.2).choose_spec.choose_spec.1,
       (local_integral K v δ a h.1 h.2.1 h.2.2).choose_spec.choose_spec.2.1⟩
   refine ⟨⟨fun v => (sol v).1, hint.mono fun _ h => h.1⟩, ⟨fun v => (sol v).2, hint.mono fun _ h => h.2⟩, ?_⟩
@@ -668,7 +667,7 @@ theorem exists_neg_two_norm_away : ∀ (M : Type) [Field M] [NumberField M] (σ 
   have hσK : ∀ x : K, σ (algebraMap K M x) = algebraMap K M x := fun x => (hmem _).1 x.2
   obtain ⟨h, h0, hε, hε', hpos, hloc⟩ := _root_.GlobalTheory.QuadSigns.exists_signs K M hrank σ hσ hσK hconj ε ε' hεε' hεc
   obtain ⟨s, hs⟩ : ∃ s, σ s ≠ s := by
-    by_contra hc; push_neg at hc; exact hσ (RingHom.ext hc)
+    by_contra hc; push Not at hc; exact hσ (RingHom.ext hc)
   set t := s - σ s with ht
   have hσt : σ t = -t := by rw [ht, map_sub, hinv]; ring
   have ht0 : t ≠ 0 := sub_ne_zero.2 (Ne.symm hs)

@@ -32,10 +32,10 @@ theorem vecV_congr_gt (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1
     D.vecV Bs ν' m₀ H₁ q = D.vecV Bs ν' m₀ H₂ q := by
   unfold D.vecV
   by_cases hq' : D.IsLocPt q (r + 1) ∧ 0 < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q
-  · simp only [dif_pos hq']
+  · simp only [dite_eq_left hq']
     have hδ : δ < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q := hq.resolve_left (not_not.2 hq'.2)
     by_cases h' : ∃ γ ∈ B.GV k r, Zhat k r Bs.z Bs.z' γ = D.ptMatN q (r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-    · simp only [dif_pos h']
+    · simp only [dite_eq_left h']
       have hγ := h'.choose_spec.1
       have hGq := Formalism.FourierDecayAlt.P.ptG_spec k r Bs.z Bs.z' q h'.choose hq'.1 h'.choose_spec.2.1
       have hpos : δ < Gf k r Bs.z Bs.z' h'.choose := hGq ▸ hδ
@@ -45,8 +45,8 @@ theorem vecV_congr_gt (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1
         simp only [D.orbIntegrand, B.rho, one_smul]
         rw [h _ (Formalism.FourierDecayAlt.P.B7.sgs_mem Bs hp hγ) (by rw [Formalism.FourierDecayAlt.P.JCx1.needs.gf_sgs Bs hp]; exact hpos)])
       rw [e, one_smul]
-    · simp only [dif_neg h']
-  · simp only [dif_neg hq']
+    · simp only [dite_eq_right h']
+  · simp only [dite_eq_right hq']
 
 end vec
 
@@ -105,14 +105,14 @@ theorem rrTop_cutF_eq (p : KB.Pl P Wp Wq) {Cb : ℝ} (hCb : KB.InDDplus2 P p.l0 
     simp only [D.cutF, hχ.2.2 _ h1, Complex.ofReal_one, one_smul]
   unfold KB.Pl.RR D.RRplace
   by_cases h1 : D.IsLocPt γ (P.r + 1) ∧ D.IsLocPt γ (P.r + 1)
-  · rw [dif_pos h1, dif_pos h1, dif_neg (by omega), dif_neg (by omega), if_pos rfl, if_pos rfl]
+  · rw [dite_eq_left h1, dite_eq_left h1, dite_eq_right (by omega), dite_eq_right (by omega), ite_eq_left rfl, ite_eq_left rfl]
     by_cases h3 : w = []
-    · rw [if_pos h3, if_pos h3, hV _ _ hcut]
-    · rw [if_neg h3, if_neg h3]
+    · rw [ite_eq_left h3, ite_eq_left h3, hV _ _ hcut]
+    · rw [ite_eq_right h3, ite_eq_right h3]
       unfold Top.topOf
       refine Finset.sum_congr rfl fun e _ => Finset.sum_congr rfl fun ρ _ => ?_
       rw [hV _ _ (theta_cutF_gt p hCb hχ hF hε hw e)]
-  · rw [dif_neg h1, dif_neg h1]
+  · rw [dite_eq_right h1, dite_eq_right h1]
 
 theorem nFTopPtw_of (p : KB.Pl P Wp Wq) {Cb : ℝ} (hCb : KB.InDDplus2 P p.l0 p.T.base Cb p.Θ) {χ : ℝ → ℝ}
     (hχ : C6.IsCut0 χ) {F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)} (hF : B.CkOn ⊤ (B.GV P.k P.r) F)

@@ -66,11 +66,8 @@ theorem qdet_shift_coeff : ∀ (A : Type) [Ring A] [Algebra ℂ A] (n : ℕ) (X 
         ∑ m ∈ Finset.range (n + 1), u ^ m * (c ^ (j - m) * (Nat.choose j m : ℂ)) := by
       intro j hj
       rw [add_pow]
-      have hsub : Finset.range (j + 1) ⊆ Finset.range (n + 1) := by
-        have hj' := Finset.mem_range.mp hj
-        intro m hm
-        have hm' := Finset.mem_range.mp hm
-        exact Finset.mem_range.mpr (by omega)
+      have hsub : Finset.range (j + 1) ⊆ Finset.range (n + 1) :=
+        Finset.range_subset_range.2 (Finset.mem_range.mp hj)
       rw [← Finset.sum_subset hsub]
       · exact Finset.sum_congr rfl fun m _ => by ring
       · intro m _ hm

@@ -85,9 +85,9 @@ theorem hk_adj (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting D X Y) (
     intro c γ L L1
     simp only [φ]
     by_cases h : (X.Pj j).IsLatTup L1
-    · rw [if_pos h, if_pos ((latTup_smul _ _ γ L1).2 h), (Eqv_of_FQ X hF).2 c γ L,
+    · rw [ite_eq_left h, ite_eq_left ((latTup_smul _ _ γ L1).2 h), (Eqv_of_FQ X hF).2 c γ L,
         h5b j hj c L1 La' γ (F c L) (vt_FQ X hF c L) h hLa']
-    · rw [if_neg h, if_neg (fun h' => h ((latTup_smul _ _ γ L1).1 h'))]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h ((latTup_smul _ _ γ L1).1 h'))]
   have key := h6 j hj.le (X.vJ j v) k φ hφ
   have hs : ∀ (La : X.Lt j) (z : Y.Kc), ((X.stab j La : X.G.Kf))⁻¹ • z = ((X.stab j La : Y.Kc))⁻¹ * z := by
     intro La z
@@ -102,7 +102,7 @@ theorem hk_adj (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting D X Y) (
     refine Finset.sum_congr rfl fun A1 hA1 => ?_
     have hE := (mem_UP _).1 hA1
     simp only [φ]
-    rw [if_pos (hk_latTup_update _ hlat _ A1 hE.2.1)]
+    rw [ite_eq_left (hk_latTup_update _ hlat _ A1 hE.2.1)]
   · refine Finset.sum_congr rfl fun La hLa => ?_
     have hlat := Y.Rep_lat j La hLa
     rw [MvPolynomial.coeff_smul, hs]
@@ -113,7 +113,7 @@ theorem hk_adj (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting D X Y) (
     rw [e, ker_sum, MvPolynomial.coeff_sum]
     refine Finset.sum_congr rfl fun L0 _ => ?_
     simp only [φ]
-    rw [if_pos hlat]
+    rw [ite_eq_left hlat]
 
 def KAdj (Y : Pend X) (j : ℕ) (Cl Yb : Type) [Fintype Cl] [Fintype Yb] (wt : Cl → ℕ) (La : Cl → Yb → X.Lt j) : Prop :=
   ∀ (v : X.Pl) (k : ℕ), ∀ F ∈ X.FQ j, ∀ La' : X.Lt (j + 1), (X.Pj (j + 1)).IsLatTup La'.2 →

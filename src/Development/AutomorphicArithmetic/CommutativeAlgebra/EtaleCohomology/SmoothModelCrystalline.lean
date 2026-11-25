@@ -639,8 +639,8 @@ private theorem inj_conn (hF : R.Facts) (hS : EtSide G) (hL : D.Laws G) (e : EMa
     have h1 := (hC _).equi hF hL hM σ (g s) φ
     rw [hact, (hC _).smul, h0, map_zero] at h1
     exact (mul_ne_zero ((map_ne_zero _).mpr hz) hs₀) h1
-  haveI := (p.fin M hM j).1
-  haveI := (p.fin M hM j').1
+  have := (p.fin M hM j).1
+  have := (p.fin M hM j').1
   let bb := Module.finBasis K (HdR M.q j)
   let bb' := Module.finBasis K (HdR M.q j')
   have hf : f ∈ Submodule.span ℚ_[l] {f : Module.Dual ℚ_[l] (M.V j) | ∃ (s : Fin r) (y : M.T j'),
@@ -710,9 +710,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 200000
-set_option maxHeartbeats 1000000
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct
@@ -761,7 +758,6 @@ theorem UpperTheory.Ru.crystallineComparison.injOf :
     UpperTheory.Ru.crystallineComparison.InjOf := by
   intro l _ K B₀ ι hι hc hq G Amp hF hE hL e e' hB hP hcomp M hM j κ _ v c u hu
   refine (hL.ch M hM).elim fun a => ?_
-  set_option synthInstance.maxHeartbeats 2000000 in
   have h0 : (per l K).t ^ u • ∑ k, (show (per l K).A from c k) • e'.e a j (v k) = 0 :=
     UpperTheory.Ru.crystallineComparison.submodule_pi_smul_sum_eq_zero (S := (M.MS j).lim)
       (UpperTheory.Ru.crystallineComparison.tA l ^ u) c (fun k => e'.e a j (v k))
@@ -835,9 +831,9 @@ private theorem exists_lift {A C E : Type} [CommRing A] [CommRing C] [Field E] (
     (i : A →+* E) (hu : IsUnit (c t)) (loc : ∀ x : C, ∃ (r : ℕ) (a : A), c t ^ r * x = c a)
     (ker : ∀ a : A, c a = 0 → ∃ r : ℕ, t ^ r * a = 0) (hi : Function.Injective i) (ht : i t ≠ 0) :
     ∃ ι : C →+* E, Function.Injective ι ∧ ∀ a, ι (c a) = i a := by
-  letI : Algebra A C := c.toAlgebra
+  let : Algebra A C := c.toAlgebra
   have hc : ∀ a, algebraMap A C a = c a := fun _ => rfl
-  haveI : IsLocalization (Submonoid.powers t) C :=
+  have : IsLocalization (Submonoid.powers t) C :=
     { map_units := by
         rintro ⟨_, r, rfl⟩
         rw [hc, map_pow]
@@ -912,8 +908,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
-set_option maxHeartbeats 1600000
-set_option synthInstance.maxHeartbeats 400000
 
 noncomputable section
 
@@ -1294,7 +1288,7 @@ open UpperTheory.Gal.crystallineComparison
 theorem UpperTheory.Gal.crystallineComparison.affFin_of :
     AffFinProj := by
   intro R _ Y f hf s
-  haveI : GlobalTheory.FiniteSubsetsInAffineOpens Y := GlobalTheory.FiniteSubsetsInAffineOpens.of_isProjOver hf
+  have : GlobalTheory.FiniteSubsetsInAffineOpens Y := GlobalTheory.FiniteSubsetsInAffineOpens.of_isProjOver hf
   obtain ⟨U, hU, hsub⟩ :=
     GlobalTheory.FiniteSubsetsInAffineOpens.exists_isAffineOpen (X := Y) (s : Set Y) s.finite_toSet
   exact ⟨U, hU, fun x hx => hsub (Finset.mem_coe.mpr hx)⟩

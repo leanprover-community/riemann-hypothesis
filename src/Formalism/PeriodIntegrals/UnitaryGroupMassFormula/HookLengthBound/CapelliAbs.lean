@@ -46,15 +46,15 @@ theorem dx_key (x d : I → S → 𝒰) (hxx : ∀ a s b t, x a s * x b t = x b 
     have h1 : xw x (Function.update r 0 a) s =
         x a (s 0) * xw x (fun i => r i.succ) (fun i => s i.succ) := by
       have hf : (fun i : Fin k => Function.update r 0 a i.succ) = fun i => r i.succ :=
-        funext fun i => by rw [Function.update_apply, if_neg (Fin.succ_ne_zero i)]
-      rw [xw_succ, hf, Function.update_apply, if_pos rfl]
+        funext fun i => by rw [Function.update_apply, ite_eq_right (Fin.succ_ne_zero i)]
+      rw [xw_succ, hf, Function.update_apply, ite_eq_left rfl]
     have h2 : ∀ j : Fin k, xw x (Function.update r j.succ a) s =
         x (r 0) (s 0) * xw x (Function.update (fun i => r i.succ) j a) (fun i => s i.succ) := by
       intro j
       have hf : (fun i : Fin k => Function.update r j.succ a i.succ) =
           Function.update (fun i => r i.succ) j a :=
         Function.update_comp_eq_of_injective r (Fin.succ_injective k) j a
-      rw [xw_succ, hf, Function.update_apply, if_neg (Fin.succ_ne_zero j).symm]
+      rw [xw_succ, hf, Function.update_apply, ite_eq_right (Fin.succ_ne_zero j).symm]
     have key : x a t * (x (r 0) (s 0) * (d b t * xw x (fun i => r i.succ) (fun i => s i.succ))) =
         x (r 0) (s 0) * (x a t * xw x (fun i => r i.succ) (fun i => s i.succ) * d b t) +
         ∑ j : Fin k, if r j.succ = b ∧ s j.succ = t then

@@ -20,51 +20,8 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BilinPartEige
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MapDofIterate
 public import Mathlib.Data.Nat.Prime.Factorial
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GEWick
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.NabTrans
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -270,7 +227,6 @@ open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Reciprocity
 
 namespace GlobalTheory
 
-
 open CrudeValue SymbolCols in
 theorem sum_prod_nabVal_leading_minors_of_column_jets : ∀ (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k] (B : FB R d O) (h : PS k 2 d), constantCoeff h = 0 → ∀ (w0 : O) (q : ℕ) (T : Type) [Fintype T] [DecidableEq T] (r : T → ℕ) (n : ℕ) (col : ∀ τ, Fin (r τ) → Fin n) (m : ∀ τ, Fin (r τ) → ℕ), (∀ τ, Function.Injective (col τ)) → ∀ (P : MvPolynomial ((Σ τ : T, Fin (r τ)) × Fin n) k) (al : (Σ τ : T, Fin (r τ)) × Fin n →₀ ℕ), P = (∏ τ, ∏ s : Fin (r τ), (Matrix.of fun a i : Fin (s.val + 1) => (MvPolynomial.X ((⟨τ, Fin.castLE s.isLt a⟩ : Σ τ : T, Fin (r τ)), col τ (Fin.castLE s.isLt i)) : MvPolynomial ((Σ τ : T, Fin (r τ)) × Fin n) k)).det ^ m τ s) → al = ∑ τ, ∑ s : Fin (r τ), m τ s • ∑ a : Fin (s.val + 1), Finsupp.single ((⟨τ, Fin.castLE s.isLt a⟩ : Σ τ : T, Fin (r τ)), col τ (Fin.castLE s.isLt a)) 1 → ∀ (u : (Σ τ : T, Fin (r τ)) → Fin d → k) (lam : Fin n → (Σ τ : T, Fin (r τ)) → Fin d → k), (∀ b l l', (∃ i, col l.1 i = b) → (∃ i, col l'.1 i = b) → ∑ i, lam b l i * u l' i = if l = l' then 1 else 0) → ∀ (c : Fin n → k) (f : Fin n → PS k 1 d), (∀ b (mo : Fin 1 × Fin d →₀ ℕ), mo.degree ≤ (colM al b).degree → coeff mo (f b) = c b * coeff mo (∏ l, (∑ i, C (lam b l i) * (X ((0 : Fin 1), i) : PS k 1 d)) ^ al (l, b))) → ∑ mo ∈ P.support, P.coeff mo * ∏ b, B.nabVal k h w0 q (f b) u (MvPolynomial.monomial (colM mo b) 1) = (∏ b, c b) * ∏ p, ((al p).factorial : k) := by
   intro R _ d O _ _ k _ _ _ B h hh w0 q T _ _ r n col m hcol P al hP hal u lam hpair c f hf
@@ -303,11 +259,11 @@ theorem sum_prod_nabVal_leading_minors_of_column_jets : ∀ (R : Type) [CommRing
     rw [coeff_C_mul]
     exact hf b mo'' hm'
   rw [Finset.sum_eq_single al]
-  · rw [h1, one_mul, Finset.prod_congr rfl fun b _ => (hval al halP b le_rfl).trans (if_pos rfl),
+  · rw [h1, one_mul, Finset.prod_congr rfl fun b _ => (hval al halP b le_rfl).trans (ite_eq_left rfl),
       Finset.prod_mul_distrib, mul_comm, Fintype.prod_prod_type_right]
   · intro mo hmo hne
     obtain ⟨b, hb, hb'⟩ := exists_col mo al (hdeg mo hmo) hne
-    rw [Finset.prod_eq_zero (Finset.mem_univ b) (by rw [hval mo hmo b hb, if_neg hb']), mul_zero]
+    rw [Finset.prod_eq_zero (Finset.mem_univ b) (by rw [hval mo hmo b hb, ite_eq_right hb']), mul_zero]
   · intro hal'
     exact absurd halP hal'
 
@@ -329,29 +285,12 @@ namespace GlobalTheory.DirScale
 
 variable {R : Type} [CommRing R] {d : ℕ}
 
-theorem dof_smul_dir (F : Fin d → PS R 2 d) (c : R) (u : Fin d → R) (f : PS R 1 d) :
-    Dof F (c • u) f = C c * Dof F u f := by
-  unfold Dof
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [← mul_assoc, Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Pi.smul_apply, smul_eq_mul, map_mul, mul_assoc]
-
-theorem dof_iter_C_mul (F : Fin d → PS R 2 d) (u : Fin d → R) (n : ℕ) (r : R) (f : PS R 1 d) :
-    (Dof F u)^[n] (C r * f) = C r * (Dof F u)^[n] f := by
-  induction n generalizing f with
-  | zero => rfl
-  | succ n ih =>
-    rw [Function.iterate_succ_apply, Function.iterate_succ_apply, GE.dof_C_mul, ih]
-
 theorem dof_iter_smul_dir (F : Fin d → PS R 2 d) (c : R) (u : Fin d → R) (n : ℕ) (f : PS R 1 d) :
     (Dof F (c • u))^[n] f = C (c ^ n) * (Dof F u)^[n] f := by
   induction n generalizing f with
   | zero => simp
   | succ n ih =>
-    rw [Function.iterate_succ_apply, Function.iterate_succ_apply, ih, dof_smul_dir, dof_iter_C_mul,
+    rw [Function.iterate_succ_apply, Function.iterate_succ_apply, ih, GlobalTheory.DerivEndo.dof_smul_dir, GlobalTheory.DerivEndo.iterate_dof_C_mul,
       pow_succ, map_mul, mul_assoc]
 
 theorem foldr_smul_dir (F : Fin d → PS R 2 d) {ι : Type} (c : ι → R) (u : ι → Fin d → R)
@@ -362,7 +301,7 @@ theorem foldr_smul_dir (F : Fin d → PS R 2 d) {ι : Type} (c : ι → R) (u : 
   | nil => simp
   | cons l L ih =>
     simp only [List.foldr_cons, List.map_cons, List.prod_cons]
-    rw [ih, dof_iter_smul_dir, dof_iter_C_mul, map_mul, mul_assoc]
+    rw [ih, dof_iter_smul_dir, GlobalTheory.DerivEndo.iterate_dof_C_mul, map_mul, mul_assoc]
 
 theorem dmonOf_smul_dir : ∀ (R : Type) [CommRing R] (d : ℕ) (F : Fin d → PS R 2 d) (ι : Type)
     [Fintype ι] (c : ι → R) (u : ι → Fin d → R) (m : ι →₀ ℕ) (f : PS R 1 d),
@@ -578,19 +517,19 @@ theorem val_eigen_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing
     (Ideal.span {(p : TWO.Ov v)}) _ e₁ α
     (fun l => by
       by_cases hl : Z l.1
-      · simpa only [α, if_pos hl] using hZ _ hl
-      · simp only [α, if_neg hl]; exact Ideal.zero_mem _)
+      · simpa only [α, ite_eq_left hl] using hZ _ hl
+      · simp only [α, ite_eq_right hl]; exact Ideal.zero_mem _)
     (fun l => by
       rw [dAct_map B φ hφ]
       by_cases hl : Z l.1
-      · simp only [e₁, α, if_pos hl]; exact he a l
-      · simp only [e₁, α, if_neg hl, Pi.zero_apply, map_zero, zero_smul]
+      · simp only [e₁, α, ite_eq_left hl]; exact he a l
+      · simp only [e₁, α, ite_eq_right hl, Pi.zero_apply, map_zero, zero_smul]
         exact Matrix.mulVec_zero _)
     (fun l l' => by
       rw [dAct_map B φ hφ]
       by_cases hl : Z l.1
       · by_cases hl' : Z l'.1
-        · simp only [e₁, if_pos hl, if_pos hl']
+        · simp only [e₁, ite_eq_left hl, ite_eq_left hl']
           obtain ⟨u, u', huu⟩ := hcop
           have h1 : τ l'.1 (star a) ∉ IsLocalRing.maximalIdeal (TWO.Ov v) := fun hx => by
             have := congrArg (τ l'.1) huu
@@ -609,10 +548,10 @@ theorem val_eigen_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing
             algebraMap (TWO.Ov v) F (τ l'.1 w0) • fun i => algebraMap (TWO.Ov v) F (e l' i) at h4
           rw [h4, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
           exact Subring.mul_mem _ ⟨_, rfl⟩ h3
-        · simp only [e₁, if_neg hl', Pi.zero_apply, map_zero]
+        · simp only [e₁, ite_eq_right hl', Pi.zero_apply, map_zero]
           rw [show (fun _ : Fin d => (0 : F)) = 0 from rfl, Matrix.mulVec_zero, Matrix.mulVec_zero, dotProduct_zero]
           exact Subring.zero_mem _
-      · simp only [e₁, if_neg hl, Pi.zero_apply, map_zero]
+      · simp only [e₁, ite_eq_right hl, Pi.zero_apply, map_zero]
         rw [show (fun _ : Fin d => (0 : F)) = 0 from rfl, zero_dotProduct]
         exact Subring.zero_mem _)
     n f₁ y₁
@@ -622,7 +561,7 @@ theorem val_eigen_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing
         · refine mem_span_of_val_le v _ _ (by rw [hpF]; exact_mod_cast hp0) ?_
           rw [hpF]
           refine (hf b hb l hl mo).trans_eq (congrArg v ?_)
-          simp only [e₁, f₁, y₁, if_pos hl, if_pos hb, if_pos (And.intro hl hb)]
+          simp only [e₁, f₁, y₁, ite_eq_left hl, ite_eq_left hb, ite_eq_left (And.intro hl hb)]
           change _ = algebraMap (TWO.Ov v) F (coeff mo (Dof (FBMap.mapFB φ B).G.F (e l) (f b) - C (yy (l, b)) * f b))
           rw [← coeff_map]
           refine congrArg (coeff mo) (Eq.symm ?_)
@@ -646,14 +585,14 @@ theorem val_eigen_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing
         by_cases hl : Z l.1 <;> simp [e₁, hl]
       have e2 : ∏ l, (if Z l.1 then (1 : F) else 0) ^ colM mo b l = 1 := Finset.prod_eq_one fun l _ => by
         by_cases hl : Z l.1
-        · rw [if_pos hl, one_pow]
+        · rw [ite_eq_left hl, one_pow]
         · have : colM mo b l = 0 := by
             by_contra hx
             exact hl (minorMonomial_support col m Z hm hmo l b hx).1
           rw [this, pow_zero]
       rw [nabVal_map B h φ hφ, e1, nabVal_smul_dir, e2, one_mul, mul_comm p k, FB.toK, FB.toK, FB.toK, map_mul, map_pow,
         ← FB.toK, ← FB.toK, ← FB.toK, ← FB.toK, toK_map φ hφ]
-      simp only [f₁, if_pos hb])
+      simp only [f₁, ite_eq_left hb])
     (fun b hb => by
       rw [nabVal_zero _ h hB']
       simp [f₁, hb, hω1])]
@@ -673,7 +612,7 @@ theorem val_eigen_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing
             y₁ (⟨t, Fin.castLE s.isLt a⟩, col t (Fin.castLE s.isLt i))) = Matrix.of fun a i : Fin (s.val + 1) =>
             yy (⟨t, Fin.castLE s.isLt a⟩, col t (Fin.castLE s.isLt i)) := by
           ext1 a i
-          exact if_pos ⟨ht, hS _ _ ht⟩
+          exact ite_eq_left ⟨ht, hS _ _ ht⟩
         rw [e3]
         refine (nsmul_le_nsmul_right (hy t ht s) _).trans (le_of_eq ?_)
         rw [← WithTop.coe_nsmul]
@@ -684,7 +623,7 @@ theorem val_eigen_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing
     · by_cases hb : b ∈ S
       · have := hf0 b hb
         rw [constantCoeff_map] at this
-        simp only [f₁, if_pos hb, this]
+        simp only [f₁, ite_eq_left hb, this]
         rfl
       · simp [f₁, hb]
     · rw [← WithTop.coe_add]
@@ -768,8 +707,8 @@ theorem val_unit_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing 
     (fun _ => 1) f₂ (fun b mo hmo => by
       rw [one_mul]
       by_cases hb : b ∈ S
-      · simp only [f₂, if_pos hb]; exact hf b hb mo hmo
-      · simp only [f₂, if_neg hb]; rfl)
+      · simp only [f₂, ite_eq_left hb]; exact hf b hb mo hmo
+      · simp only [f₂, ite_eq_right hb]; rfl)
   rw [sum_prod_restrict S (minorsP F col m) hcols
     (fun b mo => B.nabVal F h w0 (k * p) (ev (n := 1) ![B.actK F a] (f b) * FB.toK F ω ^ k) (fun l i => (e l i : F))
       (MvPolynomial.monomial mo 1))
@@ -777,11 +716,11 @@ theorem val_unit_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing 
     (fun mo hmo b hb => by
       rw [mul_comm k p, nabVal_pullback_monomial R d O F B h hh w0 a p k ω hω _ _ (fun l => (τ l.1 a : F)) he,
         nabVal_smul_dir]
-      simp only [f₂, if_pos hb]
+      simp only [f₂, ite_eq_left hb]
       congr 1
       refine Finset.prod_congr rfl fun l _ => ?_
       by_cases hl : Z l.1
-      · simp only [sc, dif_pos hl, IsUnit.unit_spec]
+      · simp only [sc, dite_eq_left hl, IsUnit.unit_spec]
       · have : colM mo b l = 0 := by
           by_contra hx
           exact hl (minorMonomial_support col m Z hm hmo l b hx).1
@@ -791,7 +730,7 @@ theorem val_unit_columns {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing 
         by_contra hx
         exact hb (hcols al hsup l b hx)
       rw [nabVal_zero _ h hh]
-      simp only [f₂, if_neg hb, g, h0, pow_zero, Finset.prod_const_one, map_one]), key, Finset.prod_const_one, one_mul]
+      simp only [f₂, ite_eq_right hb, g, h0, pow_zero, Finset.prod_const_one, map_one]), key, Finset.prod_const_one, one_mul]
   refine Finset.prod_induction _ (fun x => v x = 0) (fun x x' hx hx' => by rw [v.map_mul, hx, hx', add_zero])
     v.map_one fun x _ => val_factorial v hp' hp (lt_of_le_of_lt (Finsupp.le_degree x al) (hdeg ▸ hD))
 

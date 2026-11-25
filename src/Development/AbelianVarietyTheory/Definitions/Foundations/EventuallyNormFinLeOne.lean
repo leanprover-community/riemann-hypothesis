@@ -418,8 +418,8 @@ theorem finite_mulSupport_htFin (g : GL n (AF F ⊗[F] E)) :
 def heightGL (g : GL n (AF F ⊗[F] E)) : ℝ≥0 :=
   (∏ w, htInf F w (bc (compInf F E w) g)) * ∏ᶠ v, htFin F v (bc (compFin F E v) g)
 
-theorem one_le_heightGL (g : GL n (AF F ⊗[F] E)) : 1 ≤ heightGL F g := one_le_mul_of_one_le_of_one_le (Finset.one_le_prod' fun w _ => one_le_htOf _ _)
-  (one_le_finprod' fun v => one_le_htOf _ _)
+theorem one_le_heightGL (g : GL n (AF F ⊗[F] E)) : 1 ≤ heightGL F g := one_le_mul_of_one_le_of_one_le (Finset.one_le_prod' fun _ _ => one_le_htOf _ _)
+  (one_le_finprod' fun _ => one_le_htOf _ _)
 
 theorem heightGL_inv (g : GL n (AF F ⊗[F] E)) : heightGL F g⁻¹ = heightGL F g := by
   simp only [heightGL, htInf, htFin, map_inv, htOf_inv]

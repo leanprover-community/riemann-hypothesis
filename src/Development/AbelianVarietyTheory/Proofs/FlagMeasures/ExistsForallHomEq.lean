@@ -1,54 +1,12 @@
 module
 
 public import Formalism.LocalRingCardinality.DataSpaces
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.GroupTheory.Nilpotent
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -175,7 +133,7 @@ private theorem card_solutions_mul_involution_eq_pow {H K : Type} [Finite H] [Fi
           · simp [ha]
           · have : ¬ ι a < ι (ι a) := hnlt a ha
             dsimp only [Sum.elim_inr]
-            rw [dif_neg this]
+            rw [dite_eq_right this]
             exact congrArg Sum.inr (Subtype.ext (hι a)) }
     rw [Nat.card_congr e, Nat.card_sum]; ring
   · let e : {f : H → K // ∀ h, f h * f (ι h) = c h} ≃ ({h : H // h < ι h} → {x : K // x ≠ 0}) :=
@@ -184,14 +142,14 @@ private theorem card_solutions_mul_involution_eq_pow {H K : Type} [Finite H] [Fi
             else c h / (g ⟨ι h, hlt h hh⟩).1, fun h => by
           by_cases hh : h < ι h
           · dsimp only
-            rw [dite_eq_left hh, dif_neg (hnlt h hh)]
+            rw [dite_eq_left hh, dite_eq_right (hnlt h hh)]
             have hg := (g ⟨h, hh⟩).2
             have hs : (⟨ι (ι h), hlt (ι h) (hnlt h hh)⟩ : {h : H // h < ι h}) = ⟨h, hh⟩ :=
               Subtype.ext (hι h)
             rw [hs, hcι]
             field_simp
           · dsimp only
-            rw [dif_neg hh, dite_eq_left (hlt h hh)]
+            rw [dite_eq_right hh, dite_eq_left (hlt h hh)]
             have hg := (g ⟨ι h, hlt h hh⟩).2
             field_simp⟩
         left_inv := fun f => by
@@ -199,7 +157,7 @@ private theorem card_solutions_mul_involution_eq_pow {H K : Type} [Finite H] [Fi
           funext h
           by_cases hh : h < ι h
           · simp [hh]
-          · simp only [dif_neg hh]
+          · simp only [dite_eq_right hh]
             have hf := f.2 h
             have hne : f.1 (ι h) ≠ 0 := fun h0 => hc0 h (by rw [← hf, h0, mul_zero])
             rw [div_eq_iff hne, hf]

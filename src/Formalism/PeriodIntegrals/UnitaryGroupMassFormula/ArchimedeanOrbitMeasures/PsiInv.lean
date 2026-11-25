@@ -52,7 +52,7 @@ theorem psiInv_of (hL : LieSkewU) (hS : SkewLieU) (hC : CaySkewU) (hI : CayIdU) 
   have hdet : ∀ᶠ p in 𝓝 (0 : EuclideanSpace ℝ ι × EuclideanSpace ℝ η), (Mf p + 1).det ≠ 0 := by
     have hc : Continuous fun p => (Mf p + 1).det := (hMc.add continuous_const).matrix_det
     have h0 : (Mf 0 + 1).det ≠ 0 := by
-      have : Mf 0 = 1 := by simp [hMf, unrealify_zero']
+      have : Mf 0 = 1 := by simp [hMf, Formalism.MainNotions.S.Gauge.unrealify_zero]
       rw [this]
       exact ((Matrix.isUnit_iff_isUnit_det _).1 (unit2 n).isUnit).ne_zero
     exact hc.continuousAt.eventually_ne h0
@@ -241,7 +241,7 @@ theorem lieSkew_holds : LieSkewU := by
     ?_ ?_ ?_ ?_ hx
   · rintro v ⟨X, hX, rfl⟩
     rw [_root_.Formalism.MainNotions.S.Gauge.unrealify_realify]; exact skew_of_lieOf ε X hX
-  · simp [unrealify_zero']
+  · simp [Formalism.MainNotions.S.Gauge.unrealify_zero]
   · intro a b _ _ ha hb
     have e : unrealify (a + b) = unrealify a + unrealify b := (unrLin n).map_add a b
     rw [e, conjTranspose_add, Matrix.add_mul, Matrix.mul_add]

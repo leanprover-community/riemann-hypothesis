@@ -8,7 +8,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianFor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTripleTrivialOverRealsOfGramCongruent
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenbasisPsiInfinitePlaceDistinctRoots
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalCongrOfSimilitudeDistinctEigenvaluStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEqStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairHermitianFormInvertibleSimilitudeStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZero
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DiagHermitianTrivialOfSumFourSquares
@@ -234,8 +234,8 @@ theorem diag_sign_of_pos_eigenvector : ∀ {n : ℕ} (A h g : Matrix (Fin n) (Fi
     have := congrFun this i
     simp at this
   have hneg := re_form_neg_of_orth_of_sigPosH_eq_one A hA hdet hsig (M *ᵥ Pi.single i₀ 1)
-    (M *ᵥ Pi.single i 1) (by rw [hval]; simpa using hd0) (by rw [hval, if_neg (Ne.symm hi)]) hne
-  rw [hval, if_pos rfl, Complex.ofReal_re] at hneg
+    (M *ᵥ Pi.single i 1) (by rw [hval]; simpa using hd0) (by rw [hval, ite_eq_right (Ne.symm hi)]) hne
+  rw [hval, ite_eq_left rfl, Complex.ofReal_re] at hneg
   exact hneg
 
 end GlobalTheory
@@ -340,7 +340,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenbasisPsiInfinitePlaceDistinctRootsStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MoveMarkOfIrreducible =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.MoveMarkOfIrreducible", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalCongrOfSimilitudeDistinctEigenvaluStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenbasisPsiInfinitePlaceDistinctRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEqStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairHermitianFormInvertibleSimilitudeStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.MoveMarkOfIrreducible", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalCongrOfSimilitudeDistinctEigenvaluStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenbasisPsiInfinitePlaceDistinctRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairHermitianFormInvertibleSimilitudeStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -410,9 +410,6 @@ end Field
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
-theorem sh_mul (x y : G.C) : sh G (x * y) = sh G y * sh G x := by
-  simp only [sh, map_mul, MulOpposite.unop_mul]
-
 theorem sh_add (x y : G.C) : sh G (x + y) = sh G x + sh G y := by
   simp only [sh, map_add (f := _), MulOpposite.unop_add]
 
@@ -437,7 +434,7 @@ theorem conj_law (P : Pair G) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) (h
     rw [map_add (f := _), sh_add, mul_add, hx, hy, map_add (f := _), map_add (f := _), add_mul]
   · intro x y hx hy
     show (P.β : G.C) * sh G (j (x * y)) = j (σ (x * y)) * P.β
-    rw [map_mul, sh_mul, ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
+    rw [map_mul, GlobalTheory.LKMid.Pair.sh_mul', ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
 
 omit [NumberField M] in
 theorem comm_law (γ : G.C) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) (hj : j pb.gen = γ) (y : G.C)
@@ -467,7 +464,6 @@ theorem triv_mul_inv (R : Type) [CommRing R] [Algebra ℚ R] (β β' : G.C) (x U
         (starT G.star R x).unop := by simp only [mul_assoc]
     _ = _ := by rw [h1, Units.inv_mul, mul_one, mul_one]
 
-
 omit [NumberField M] in
 theorem exists_basis (ha : G.a = 1) (P : Pair G) (μ : ℂ) (hm : P.Mark μ) (pb : PowerBasis G.F M)
     (hpol : P.pol = minpoly G.F pb.gen) (j : M →ₐ[G.F] G.C) (hj : j pb.gen = P.γ) (w : InfinitePlace G.F) :
@@ -478,7 +474,7 @@ theorem exists_basis (ha : G.a = 1) (P : Pair G) (μ : ℂ) (hm : P.Mark μ) (pb
         (Z : Matrix (Fin G.n) (Fin G.n) ℂ) * Matrix.diagonal (fun i => e i y)) ∧ (∀ i, d i ≠ 0) ∧
       (Z : Matrix (Fin G.n) (Fin G.n) ℂ)ᴴ * (G.gram w * G.psi w ((P.β⁻¹ : G.Cˣ) : G.C)) *
         (Z : Matrix (Fin G.n) (Fin G.n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) := by
-  obtain ⟨Z, lam, hinj, hroot, hZ⟩ := _root_.GlobalTheory.LKMid.psi_eigenbasis p G P w
+  obtain ⟨Z, lam, hinj, hroot, hZ⟩ := _root_.GlobalTheory.LKMid.psi_eigenbasis_of_regular G (P.γ : G.C) w P.reg
   have hr : ∀ i, P.pol.eval₂ w.embedding (lam i) = 0 := fun i => (hroot _).2 ⟨i, rfl⟩
   choose e he he' using fun i => exists_emb pb w.embedding (lam i) (hpol ▸ hr i)
   obtain ⟨h1, h2, h3⟩ := _root_.GlobalTheory.LKMid.pair_form_laws p G P w
@@ -509,9 +505,6 @@ theorem exists_basis (ha : G.a = 1) (P : Pair G) (μ : ℂ) (hm : P.Mark μ) (pb
 
 end GlobalTheory.LKMid.MoveMark
 
-namespace GlobalTheory.LKMid
-
-end GlobalTheory.LKMid
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -530,7 +523,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZeroStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolynomialMoveDefiniteSimilitudePairMarked =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolynomialMoveDefiniteSimilitudePairMarked", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DiagHermitianTrivialOfSumFourSquares\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardSubtypeEqOfMultiset\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmFieldConjExtendsOfAdjoinAbsSqStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalSignOfPositiveEigenvectorOnePositiveStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicUnitCarryingFormToNormMultipleStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalCongrOfSimilitudeDistinctEigenvaluStatement\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsCyclotomicExtensionQI\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTotallyRealEvenNegPlacesLocalNorm\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianCongrOfPositiveIndexEq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTripleTrivialOverRealsOfGramCongruentStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEqStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixDiagonalizableOfCharpolyEqProdDistinct\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MoveMarkOfIrreducible\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZeroStatement\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairGramInvCongruent\nimport GroundTheory.Brauer.TensorSimple\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.LinearAlgebra.Matrix.FiniteDimensional\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolynomialMoveDefiniteSimilitudePairMarked", "h": "module\n\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenbasisPsiInfinitePlaceDistinctRoots\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DiagHermitianTrivialOfSumFourSquares\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardSubtypeEqOfMultiset\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmFieldConjExtendsOfAdjoinAbsSqStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalSignOfPositiveEigenvectorOnePositiveStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicUnitCarryingFormToNormMultipleStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalCongrOfSimilitudeDistinctEigenvaluStatement\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsCyclotomicExtensionQI\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTotallyRealEvenNegPlacesLocalNorm\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianCongrOfPositiveIndexEq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTripleTrivialOverRealsOfGramCongruentStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixDiagonalizableOfCharpolyEqProdDistinct\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MoveMarkOfIrreducible\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZeroStatement\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairGramInvCongruent\nimport GroundTheory.Brauer.TensorSimple\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.LinearAlgebra.Matrix.FiniteDimensional\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -618,107 +611,6 @@ theorem norm_eig_of_def {n : ℕ} (h g : Matrix (Fin n) (Fin n) ℂ) (c : ℝ)
   exact_mod_cast e''
 
 open Polynomial in
-theorem dcharpoly (P : DPair G) (v : InfinitePlace G.F) :
-    (G.psi v (P.γ : G.C)).charpoly = P.pol.map v.embedding := by
-  letI : Algebra G.F ℂ := v.embedding.toAlgebra
-  have hg : ∀ a, G.psi v (algebraMap G.F G.C a) = algebraMap G.F (Matrix (Fin G.n) (Fin G.n) ℂ) a :=
-    fun a => by rw [G.psi_F, Matrix.algebraMap_eq_diagonal]; rfl
-  let g : G.C →ₐ[G.F] Matrix (Fin G.n) (Fin G.n) ℂ := { G.psi v with commutes' := hg }
-  let L : ℂ ⊗[G.F] G.C →ₐ[ℂ] Matrix (Fin G.n) (Fin G.n) ℂ :=
-    Algebra.TensorProduct.lift (Algebra.ofId ℂ _) g (fun r _ => Algebra.commute_algebraMap_left r _)
-  haveI : Nonempty (Fin G.n) := ⟨⟨0, G.n_pos⟩⟩
-  have hinj : Function.Injective L :=
-    (IsSimpleRing.injective_ringHom_or_subsingleton_codomain L.toRingHom).resolve_right (not_subsingleton _)
-  have hL : ∀ x : G.C, L ((1 : ℂ) ⊗ₜ x) = G.psi v x := fun x => by
-    show (Algebra.TensorProduct.lift _ g _) ((1 : ℂ) ⊗ₜ x) = _
-    erw [Algebra.TensorProduct.lift_tmul]
-    rw [map_one, one_mul]
-    rfl
-  set γ : G.C := (P.γ : G.C) with hγ
-  have hdeg : (minpoly G.F γ).natDegree = G.n := P.reg.1
-  have hli : LinearIndependent G.F (fun i : Fin G.n => γ ^ (i : ℕ)) := by
-    have := linearIndependent_pow (K := G.F) γ
-    rw [hdeg] at this
-    exact this
-  have hT : LinearIndependent ℂ (fun i : Fin G.n => (1 : ℂ) ⊗ₜ[G.F] (γ ^ (i : ℕ))) :=
-    Module.Flat.linearIndependent_one_tmul hli
-  have hM : LinearIndependent ℂ (fun i : Fin G.n => (G.psi v γ) ^ (i : ℕ)) := by
-    have := hT.map' L.toLinearMap (LinearMap.ker_eq_bot.2 hinj)
-    have e : (fun i : Fin G.n => (G.psi v γ) ^ (i : ℕ)) =
-        L.toLinearMap ∘ (fun i : Fin G.n => (1 : ℂ) ⊗ₜ[G.F] (γ ^ (i : ℕ))) := by
-      funext i
-      simp only [Function.comp_apply, AlgHom.toLinearMap_apply]
-      rw [hL, map_pow]
-    rw [e]
-    exact this
-  have hint : IsIntegral ℂ (G.psi v γ) := Algebra.IsIntegral.isIntegral _
-  set q := minpoly ℂ (G.psi v γ) with hq
-  have hqm : q.Monic := minpoly.monic hint
-  have hqdeg : G.n ≤ q.natDegree := by
-    by_contra! hlt
-    have h0 : aeval (G.psi v γ) q = 0 := minpoly.aeval _ _
-    rw [Polynomial.aeval_eq_sum_range' hlt, Finset.sum_range] at h0
-    have h1 := Fintype.linearIndependent_iff.1 hM (fun i => q.coeff i) h0 ⟨q.natDegree, hlt⟩
-    have h2 : q.coeff q.natDegree = 1 := hqm.coeff_natDegree
-    rw [h2] at h1
-    exact one_ne_zero h1
-  have hpol : aeval (G.psi v γ) (P.pol.map v.embedding) = 0 := by
-    have h : aeval (g γ) (minpoly G.F γ) = 0 := by rw [Polynomial.aeval_algHom_apply, minpoly.aeval, map_zero]
-    change aeval (G.psi v γ) ((minpoly G.F γ).map (algebraMap G.F ℂ)) = 0
-    rw [Polynomial.aeval_map_algebraMap]
-    exact h
-  have hFint : IsIntegral G.F γ := Algebra.IsIntegral.isIntegral _
-  have hm1 : (P.pol.map v.embedding).Monic := (minpoly.monic hFint).map _
-  have hn1 : (P.pol.map v.embedding).natDegree = G.n := by
-    rw [Polynomial.natDegree_map]; exact hdeg
-  have e1 := Polynomial.eq_of_monic_of_dvd_of_natDegree_le hqm hm1 (minpoly.dvd _ _ hpol)
-    (by rw [hn1]; exact hqdeg)
-  have e2 := Polynomial.eq_of_monic_of_dvd_of_natDegree_le hqm (Matrix.charpoly_monic _)
-    (Matrix.minpoly_dvd_charpoly _) (by rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin]; exact hqdeg)
-  rw [e2, e1]
-
-open Polynomial in
-theorem deigenbasis (P : DPair G) (v : InfinitePlace G.F) :
-    ∃ (Z : GL (Fin G.n) ℂ) (lam : Fin G.n → ℂ), Function.Injective lam ∧
-      (∀ z : ℂ, P.pol.eval₂ v.embedding z = 0 ↔ ∃ i, lam i = z) ∧
-      G.psi v (P.γ : G.C) * (Z : Matrix (Fin G.n) (Fin G.n) ℂ) =
-        (Z : Matrix (Fin G.n) (Fin G.n) ℂ) * Matrix.diagonal lam := by
-  set Q := P.pol.map v.embedding with hQ
-  have hmon : P.pol.Monic := minpoly.monic (Algebra.IsIntegral.isIntegral _)
-  have hcard : ((P.pol.map v.embedding).roots.toFinset).card = G.n := by
-    have hsep : (P.pol.map v.embedding).Separable := P.reg.2.map
-    have hdeg : (P.pol.map v.embedding).natDegree = G.n := by
-      rw [Polynomial.natDegree_map]; exact P.reg.1
-    rw [Multiset.toFinset_card_of_nodup (Polynomial.nodup_roots hsep), ← hdeg]
-    exact IsAlgClosed.card_roots_eq_natDegree
-  have hsep : Q.Separable := P.reg.2.map
-  have hnd : Q.roots.Nodup := Polynomial.nodup_roots hsep
-  have hQm : Q.Monic := hmon.map _
-  have hne : P.pol ≠ 0 := hmon.ne_zero
-  let e : Fin G.n ≃ {x // x ∈ Q.roots.toFinset} :=
-    (Fintype.equivFinOfCardEq (by rw [Fintype.card_coe]; exact hcard)).symm
-  let lam : Fin G.n → ℂ := fun i => (e i : ℂ)
-  have hlam : Function.Injective lam := fun i j h => e.injective (Subtype.ext h)
-  have hprod : Q = ∏ k, (X - C (lam k)) := by
-    have h1 : Q = (Q.roots.map (fun a => X - C a)).prod :=
-      (Polynomial.prod_multiset_X_sub_C_of_monic_of_roots_card_eq hQm
-        (IsAlgClosed.card_roots_eq_natDegree)).symm
-    rw [h1]
-    have h2 : (Q.roots.map (fun a => X - C a)).prod = ∏ a ∈ Q.roots.toFinset, (X - C a) := by
-      rw [Finset.prod_eq_multiset_prod, Multiset.toFinset_val, Multiset.dedup_eq_self.2 hnd]
-    rw [h2, ← Finset.prod_coe_sort]
-    exact (Fintype.prod_equiv e _ _ (fun _ => rfl)).symm
-  have hcp : (G.psi v (P.γ : G.C)).charpoly = ∏ k, (X - C (lam k)) := by
-    rw [dcharpoly, ← hQ, ← hprod]
-  obtain ⟨Z, hZ⟩ := GlobalTheory.matrix_diagonalizable_of_charpoly_eq_prod_distinct ℂ G.n _ lam hlam hcp
-  refine ⟨Z, lam, hlam, fun z => ?_, hZ⟩
-  rw [← Polynomial.mem_roots_map_of_injective v.embedding.injective hne, ← hQ, ← Multiset.mem_toFinset]
-  constructor
-  · intro hz
-    exact ⟨e.symm ⟨z, hz⟩, by simp [lam]⟩
-  · rintro ⟨i, rfl⟩
-    exact (e i).2
-
 theorem dform_laws (P : DPair G) (v : InfinitePlace G.F) :
     (G.gram v * G.psi v ((P.β⁻¹ : G.Cˣ) : G.C)).IsHermitian ∧
     (G.gram v * G.psi v ((P.β⁻¹ : G.Cˣ) : G.C)).det ≠ 0 ∧
@@ -798,7 +690,7 @@ theorem dconj_law (P : DPair G) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) 
     rw [map_add (f := _), sh_add, mul_add, hx, hy, map_add (f := _), map_add (f := _), add_mul]
   · intro x y hx hy
     show (P.β : G.C) * sh G (j (x * y)) = j (σ (x * y)) * P.β
-    rw [map_mul, sh_mul, ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
+    rw [map_mul, GlobalTheory.LKMid.Pair.sh_mul', ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
 
 end Fld
 
@@ -827,7 +719,7 @@ theorem eig_vec {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) (Z : GL (Fin n) ℂ) 
 
 theorem dell_at (Q : DPair G) (w : InfinitePlace G.F) (z : ℂ) (hz : Q.pol.eval₂ w.embedding z = 0) :
     ‖z‖ ^ 2 = ((Q.c : ℚ) : ℝ) := by
-  obtain ⟨Z, lam, _, hroot, hZ⟩ := deigenbasis Q w
+  obtain ⟨Z, lam, _, hroot, hZ⟩ := GlobalTheory.LKMid.psi_eigenbasis_of_regular G (Q.γ : G.C) w Q.reg
   obtain ⟨i, rfl⟩ := (hroot z).1 hz
   obtain ⟨h1, h2, h3⟩ := dform_laws Q w
   obtain ⟨hx0, hx⟩ := eig_vec _ Z lam hZ i
@@ -850,7 +742,6 @@ theorem dell (Q : DPair G) (φ : G.F →+* ℂ) (z : ℂ) (hz : Q.pol.eval₂ φ
 section Fld2
 variable {M : Type} [Field M] [NumberField M] [Algebra G.F M]
 
-
 omit [NumberField M] in
 theorem dexists_basis (Q : DPair G) (pb : PowerBasis G.F M) (hpol : Q.pol = minpoly G.F pb.gen)
     (j : M →ₐ[G.F] G.C) (hj : j pb.gen = Q.γ) (w : InfinitePlace G.F) :
@@ -862,7 +753,7 @@ theorem dexists_basis (Q : DPair G) (pb : PowerBasis G.F M) (hpol : Q.pol = minp
       (∀ i, sigPosH (G.gram_herm w) = 1 → 0 < d i) ∧ (∀ i, sigPosH (G.gram_herm w) ≠ 1 → d i < 0) ∧
       (Z : Matrix (Fin G.n) (Fin G.n) ℂ)ᴴ * (G.gram w * G.psi w ((Q.β⁻¹ : G.Cˣ) : G.C)) *
         (Z : Matrix (Fin G.n) (Fin G.n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) := by
-  obtain ⟨Z, lam, hinj, hroot, hZ⟩ := deigenbasis Q w
+  obtain ⟨Z, lam, hinj, hroot, hZ⟩ := GlobalTheory.LKMid.psi_eigenbasis_of_regular G (Q.γ : G.C) w Q.reg
   have hr : ∀ i, Q.pol.eval₂ w.embedding (lam i) = 0 := fun i => (hroot _).2 ⟨i, rfl⟩
   choose e he he' using fun i => exists_emb pb w.embedding (lam i) (hpol ▸ hr i)
   obtain ⟨h1, h2, h3⟩ := dform_laws Q w
@@ -957,7 +848,6 @@ theorem emb_index (pb : PowerBasis G.F M) (w : InfinitePlace G.F) (pol : Polynom
   obtain ⟨i, hi⟩ := hsurj _ h0
   exact ⟨i, emb_ext pb _ _ (fun x => (he i x).trans (hη x).symm) hi⟩
 
-
 omit [NumberField M] in
 theorem dreal_move (ha : G.a = 1) (Q : DPair G) (pb : PowerBasis G.F M) (hpol : Q.pol = minpoly G.F pb.gen)
     (j : M →ₐ[G.F] G.C) (hj : j pb.gen = Q.γ) (v : InfinitePlace G.F) (hv : sigPosH (G.gram_herm v) = 1)
@@ -1016,7 +906,6 @@ theorem dreal_move (ha : G.a = 1) (Q : DPair G) (pb : PowerBasis G.F M) (hpol : 
     refine ⟨_, by rw [hx, hi₀], ?_⟩
     rw [quad_conj, hD', quad_single]
     exact mul_pos (hdp i₀ hv) (hi₀ ▸ hb1)
-
 
 omit [NumberField M] in
 theorem real_back (ha : G.a = 1) (P : Pair G) (pb : PowerBasis G.F M) (hpol : P.pol = minpoly G.F pb.gen)
@@ -1211,7 +1100,7 @@ theorem core (ha : G.a = 1) (hn : Odd G.n) (pb : PowerBasis G.F M) (hdeg : (minp
       { β := β'
         γ := Q.γ
         c := Q.c
-        sym := by rw [hβ', sh_mul, Q.sym, hlaw, hσa]
+        sym := by rw [hβ', GlobalTheory.LKMid.Pair.sh_mul', Q.sym, hlaw, hσa]
         sim := by
           rw [hβ', ← mul_assoc, hcomm _ rfl, mul_assoc, mul_assoc, ← mul_assoc (Q.γ : G.C), Q.sim, ← mul_assoc,
             ← mul_assoc, Algebra.commutes]
@@ -1246,7 +1135,7 @@ theorem core (ha : G.a = 1) (hn : Odd G.n) (pb : PowerBasis G.F M) (hdeg : (minp
       { β := β'
         γ := P.γ
         c := P.c
-        sym := by rw [hβ', sh_mul, P.sym, hlawP, map_inv₀, hσa]
+        sym := by rw [hβ', GlobalTheory.LKMid.Pair.sh_mul', P.sym, hlawP, map_inv₀, hσa]
         sim := by
           rw [hβ', ← mul_assoc, hcomm _ rfl, mul_assoc, mul_assoc, ← mul_assoc (P.γ : G.C), P.sim, ← mul_assoc,
             ← mul_assoc, Algebra.commutes]
@@ -1270,7 +1159,7 @@ theorem move_definite : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 �
   intro p _ G ha hn P0 μ v hv hirr hμ
   by_cases hex : (∃ Q : DPair G, Q.pol = P0) ∨ (∃ P : Pair G, P.pol = P0 ∧ P.Mark μ)
   swap
-  · push_neg at hex
+  · push Not at hex
     exact ⟨1, fun Q hQ => absurd hQ (hex.1 Q), fun P hP hm => absurd hm (hex.2 P hP)⟩
   obtain ⟨c0, γ0, hγ0, hreg, hc0⟩ : ∃ (c0 : ℚˣ) (γ0 : G.C), minpoly G.F γ0 = P0 ∧
       ((minpoly G.F γ0).natDegree = G.n ∧ (minpoly G.F γ0).Separable) ∧

@@ -1367,7 +1367,7 @@ theorem pi_prod_rows_orthonormal {K : Type} [Fintype K] [DecidableEq K] {κ : K 
   rw [Finset.prod_congr rfl (fun k _ => hA k (T k) (T'' k)), Finset.prod_boole]
   by_cases hT : T = T''
   · subst hT; simp
-  · rw [if_neg hT, if_neg]
+  · rw [ite_eq_right hT, ite_eq_right]
     intro hall
     exact hT (funext fun k => hall k (Finset.mem_univ k))
 

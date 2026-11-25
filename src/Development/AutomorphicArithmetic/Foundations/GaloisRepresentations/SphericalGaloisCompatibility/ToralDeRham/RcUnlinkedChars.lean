@@ -94,7 +94,3 @@ theorem rc_unlinked_chars : UpperTheory.Gal.ToralGalois.Inq → ∀ (Ω : Type) 
     rfl
 
 end GlobalTheory.RoadU.UnlinkedChars
-
-section
-
-end

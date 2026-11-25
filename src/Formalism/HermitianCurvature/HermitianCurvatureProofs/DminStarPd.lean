@@ -49,7 +49,7 @@ lemma ubl_monoM (D : RealPlaceData k r Wp Wq) (L : Finset (Fin (r + 2))) (a b : 
           (fun g hg => by rw [Complex.star_def, Complex.normSq_conj]; exact hSD g hg l hl) (b l) n)
           le_rfl hl'
       exact ubl_mul hSG h1 h2
-    · push_neg at hl
+    · push Not at hl
       obtain ⟨ha, hb⟩ := hab l hl.1 hl.2
       have e : (fun g => (Dmin k r D.z D.z' g l)⁻¹ ^ a l * (star (Dmin k r D.z D.z' g l))⁻¹ ^ b l) =
           fun _ => (1 : ℂ) := by
@@ -77,11 +77,6 @@ private lemma rw_congr_on_open_of_eq_on_GV {F : Type*} [NormedAddCommGroup F] [N
     filter_upwards [crv_ev (x := (false, X)) hV hgV] with t ht
     exact ih' _ (crv_mem (x := (false, X)) (hw X (by simp)) hg t) ht
 
-private lemma dw_const_smul {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] (c : ℂ) (f : Mat k r → F) :
-    ∀ w : List (Bool × Mat k r), Dw w (fun g => c • f g) = fun g => c • Dw w f g := by
-  intros
-  apply _root_.Formalism.FourierDecayAlt.P.BetaSesquilinearity.Dw_smul <;> assumption
-
 lemma ubl_fib (D : RealPlaceData k r Wp Wq) (E : Mat k r → C6.EndH Wp Wq) (hE : C6.FibBound D E) {ε : ℝ} (hε : 0 < ε)
     {S : Set (Mat k r)} (hS : ∀ g ∈ S, g ∈ GV k r ∧ ε ≤ Gf k r D.z D.z' g) (v : List (Mat k r))
     (hv : ∀ X ∈ v, inLie k r X) (n : ℕ) :
@@ -97,7 +92,7 @@ lemma ubl_fib (D : RealPlaceData k r Wp Wq) (E : Mat k r → C6.EndH Wp Wq) (hE 
     have hX : 0 ≤ gN g := by
       first
       | (unfold gN; positivity)
-    rw [Rw_scale v E, dw_const_smul, norm_smul]
+    rw [Rw_scale v E, Dw_smul, norm_smul]
     have hsplit : Dw (wL u ++ wR v') (Rw (v.map nrm) E) g = dLR u (v' ++ v.map nrm) E g := by
       rw [dLR_eq, Dw_append, Dw_append, Dw_wR, Dw_wR]
       rw [show Rw (v' ++ v.map nrm) E = Rw v' (Rw (v.map nrm) E) by simp only [Rw, List.foldr_append]]

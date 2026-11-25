@@ -47,41 +47,6 @@ theorem greenLab_eq (Cv : LabelConv K) (hC : CuspParam K Cv) {d : ℕ} (hd : 1 �
     (hP : HasCuspLabel Cv τ P) : greenLab Cv d τ = P := by
   exact ((hC d hd).1 τ hs hc).1.unique (greenLab_spec Cv hC hd hs hc) hP
 
-theorem isCuspidal_fin_one (τ : FDRep ℂ (GL (Fin 1) K)) : IsCuspidal K τ := by
-  intro s b hb hs
-  exfalso
-  have h := Fintype.card_le_of_surjective b hb
-  simp only [Fintype.card_fin] at h
-  omega
-
-theorem charpoly_fin_one (A : Matrix (Fin 1) (Fin 1) K) :
-    A.charpoly = X - Polynomial.C (A 0 0) := by
-  rw [Matrix.charpoly, Matrix.det_unique, Fin.default_eq_zero, Matrix.charmatrix_apply_eq]
-
-theorem greenLab_one (Cv : LabelConv K) (hC : CuspParam K Cv) (τ : FDRep ℂ (GL (Fin 1) K))
-    (x : K) (hs : Simple τ) (hx : x ≠ 0)
-    (htr : ∀ (γ : GL (Fin 1) K) (m : ℕ),
-      Cv.gen 1 ^ m = algebraMap K (AlgebraicClosure K) (Matrix.det (γ : Matrix (Fin 1) (Fin 1) K)) →
-      LinearMap.trace ℂ τ (τ.ρ γ) = Cv.ι (algebraMap K (AlgebraicClosure K) x) ^ m) :
-    greenLab Cv 1 τ = X - Polynomial.C x := by
-  apply greenLab_eq Cv hC le_rfl hs (isCuspidal_fin_one τ)
-  have hxX : X - Polynomial.C x ≠ X := by
-    intro h
-    apply hx
-    have h' := congrArg (fun P : K[X] => P.coeff 0) h
-    simpa using h'
-  refine ⟨monic_X_sub_C x, irreducible_X_sub_C x, hxX, by simp, ?_⟩
-  intro x' hx' γ _ z hz m hm
-  have hx'' : x' = algebraMap K (AlgebraicClosure K) x := by
-    simpa [sub_eq_zero] using hx'
-  have hz' : z = algebraMap K (AlgebraicClosure K) (Matrix.det (γ : Matrix (Fin 1) (Fin 1) K)) := by
-    rw [charpoly_fin_one] at hz
-    have hz2 : z = algebraMap K (AlgebraicClosure K) ((γ : Matrix (Fin 1) (Fin 1) K) 0 0) := by
-      simpa [sub_eq_zero] using hz
-    rw [hz2, Matrix.det_unique, Fin.default_eq_zero]
-  simp only [Fintype.card_fin, Nat.sub_self, pow_zero, one_mul, Finset.sum_range_one, mul_one]
-  rw [hx'', htr γ m (hm.trans hz')]
-
 theorem gen_pow (Cv : LabelConv K) {d : ℕ} (hd : 1 ≤ d) :
     Cv.gen d ^ (Fintype.card K ^ d - 1) = 1 := by
   rw [← Cv.gen_order d hd]

@@ -405,9 +405,9 @@ theorem unimodular_to_coord_one : ∀ (R : Type) [CommRing R] (s : ℕ), StableR
     split_ifs with hk
     · rw [Finset.sum_eq_single ⟨k, hk⟩]
       · simp
-      · intro b _ hb; rw [if_neg]; intro e; apply hb; ext; exact e
+      · intro b _ hb; rw [ite_eq_right]; intro e; apply hb; ext; exact e
       · simp
-    · apply Finset.sum_eq_zero; intro b _; rw [if_neg]; intro e; apply hk; rw [← e]; exact b.2
+    · apply Finset.sum_eq_zero; intro b _; rw [ite_eq_right]; intro e; apply hk; rw [← e]; exact b.2
   have htlow : t ∈ low R n := fun k hk => by rw [htapp, dite_eq_right (by omega)]
   have htlow' : t ∈ low R (n + 1) := fun k hk => htlow k (by omega)
   have hht : h t = 0 := by
@@ -434,12 +434,12 @@ theorem unimodular_to_coord_one : ∀ (R : Type) [CommRing R] (s : ℕ), StableR
   have hh2 : ∀ x, h2 x = ∑ i : Fin n, c i * x i := by
     intro x; simp [h2]
   have ht2low : Finsupp.single n (1 : R) ∈ low R (n + 1) := fun k hk => by
-    rw [Finsupp.single_apply, if_neg (by omega)]
+    rw [Finsupp.single_apply, ite_eq_right (by omega)]
   have hht2 : h2 (Finsupp.single n 1) = 0 := by
     rw [hh2]
     refine Finset.sum_eq_zero fun i _ => ?_
     have := i.2
-    rw [Finsupp.single_apply, if_neg (by omega), mul_zero]
+    rw [Finsupp.single_apply, ite_eq_right (by omega), mul_zero]
   obtain ⟨ψ2, hψ2, hψ2l, hψ2a⟩ := _root_.GlobalTheory.ShearLow.main R (n + 1) h2 _ ht2low hht2
   refine ⟨ψ1.trans ψ2, fun x => ?_, fun j x => ?_, ?_⟩
   · rw [LinearEquiv.trans_apply, hψ2l, hψ1l]
@@ -511,8 +511,6 @@ theorem exactAt_of_links_cone : ∀ (V : Type) (F : Set (List V)) (S : Set V) (y
 
 end GlobalTheory
 
-section
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.ExactAtOfLinksOutsideExactAtOfConed =====
@@ -645,7 +643,7 @@ theorem unimodular_partner_aff : ∀ (R : Type) [CommRing R] (s : ℕ), StableRa
     rw [hφ, h1, Finset.sum_eq_single k
       (fun b _ hb => by simp [Finsupp.single_apply, Ne.symm hb])
       (fun h => absurd (Finset.mem_range.2 hk) h)]
-    simp only [Finsupp.single_eq_same, Finsupp.single_apply, if_neg (show k ≠ j by omega), mul_zero,
+    simp only [Finsupp.single_eq_same, Finsupp.single_apply, ite_eq_right (show k ≠ j by omega), mul_zero,
       sub_zero]
     ring
   have hφj : φ (Finsupp.single j 1) = 0 := by
@@ -699,7 +697,7 @@ theorem unimodular_partner_aff : ∀ (R : Type) [CommRing R] (s : ℕ), StableRa
   have hv'i : ∀ i : Fin n, v' i = v i + v j * (t i * a j) := by
     intro i
     simp only [v', x, Finsupp.sub_apply, Finsupp.smul_apply, smul_eq_mul, Finsupp.add_apply, hyi,
-      Finsupp.single_apply, if_neg (show j ≠ (i : ℕ) by have := i.isLt; omega)]
+      Finsupp.single_apply, ite_eq_right (show j ≠ (i : ℕ) by have := i.isLt; omega)]
     ring
   have hφv' : φ v' = φ v := by simp [v', hφx]
   have hspan : Ideal.span (Set.range fun i => v' i) = ⊤ := by
@@ -818,7 +816,7 @@ private theorem exactAt_zero_of_singleton_mem' {V : Type} (F : Set (List V)) (x 
       by_cases hl : l = []
       · subst hl
         simp
-      · rw [Finsupp.single_apply, if_neg (Ne.symm hl)]
+      · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hl)]
         by_contra hne
         have hmem := hc' (Finsupp.mem_support_iff.mpr hne)
         exact hl (List.length_eq_zero_iff.mp hmem.2)
@@ -863,8 +861,6 @@ theorem GlobalTheory.SeqCx.linkExact_of_stableRangeLe : ∀ (R : Type) [CommRing
           subst hy
           exact Or.inr hx, by simpa using hvx⟩
 
-section
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.LinksUnimodularSeqExactInStableRange =====

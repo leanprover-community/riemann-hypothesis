@@ -48,7 +48,7 @@ theorem glConj {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → Fin
   simp only [smulComm, hG, smul_sub, Finset.sum_sub_distrib, smul_ite, smul_zero]
   congr 1
   ·
-    simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Finset.sum_congr rfl (fun i _ => Finset.sum_comm)]
     simp only [← Finset.sum_smul]
     have hc : ∀ i l : Fin m, ∑ j, P i a * Q b j * (P j c * Q d l) = (if b = c then 1 else 0) * (P i a * Q d l) := by
@@ -59,7 +59,7 @@ theorem glConj {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → Fin
     simp only [hc]
     split_ifs <;> simp
   ·
-    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have e2 : ∀ i j k : Fin m, P i a * Q b j * (P k c * Q d i) = (P k c * Q b j) * (Q d i * P i a) := by
       intros; ring
     simp only [e2]
@@ -77,7 +77,7 @@ theorem leibVec {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → Fi
   simp only [Econj, vecC]
   simp_rw [commSumA]
   simp_rw [commSumB]
-  simp only [smulComm, hL, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [smulComm, hL, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_comm]
   have e : ∀ i j : Fin m, P i a * Q b j * Q c i = Q b j * (Q c i * P i a) := by intros; ring
   simp only [e, ← Finset.sum_smul, ← Finset.mul_sum, qpApply P Q hQP c a]
@@ -94,7 +94,7 @@ theorem leibCov {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → Fi
   simp only [Econj, covC]
   simp_rw [commSumA]
   simp_rw [commSumB]
-  simp only [smulComm, hL, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [smulComm, hL, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have e : ∀ i j : Fin m, P i a * Q b j * P j c = P i a * (Q b j * P j c) := by intros; ring
   simp only [e, ← Finset.sum_smul, ← Finset.mul_sum, qpApply P Q hQP b c]
   split_ifs <;> simp

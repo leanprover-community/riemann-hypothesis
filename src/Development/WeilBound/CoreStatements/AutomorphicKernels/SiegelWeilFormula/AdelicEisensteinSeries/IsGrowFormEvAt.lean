@@ -36,14 +36,6 @@ open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
 
-namespace PositivityTheory.SiegelWeilFormula.Aeis
-
-def evAt {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
-    {Y : Spc F E n} (x : G2 σ Y) : modFun σ Y →ₗ[ℂ] ℂ :=
-  (LinearMap.proj x).comp (modFun σ Y).subtype
-
-end PositivityTheory.SiegelWeilFormula.Aeis
-
 end
 end -- clump:auto
 end -- clump:auto

@@ -193,8 +193,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits GroundTheory.PAdicHodge CrystallineSemistableComparison
@@ -720,7 +718,7 @@ theorem wEx : WEx := by
     · intro x hx
       by_cases h : ∀ q, x ∉ O q
       · exact Or.inl ((memD x).2 ⟨hx, h⟩)
-      · push_neg at h
+      · push Not at h
         obtain ⟨q, hq⟩ := h
         exact Or.inr ((le_iSup O q) hq)
   have hDD' : D ⊓ D' = ⊥ := by
@@ -803,8 +801,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct UpperTheory.Gal.crystallineComparison UpperTheory.Ru.crystallineComparison
 
@@ -933,8 +929,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct UpperTheory.Gal.crystallineComparison UpperTheory.Ru.crystallineComparison
 
@@ -1083,8 +1077,6 @@ section -- clump:auto
 @[expose] public section
 
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct UpperTheory.Gal.crystallineComparison UpperTheory.Ru.crystallineComparison
 
 private theorem pow_mul_int (l : ℕ) [Fact l.Prime] (q : ℚ_[l]) :
@@ -1190,8 +1182,6 @@ section -- clump:auto
 @[expose] public section
 
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct UpperTheory.Gal.crystallineComparison UpperTheory.Ru.crystallineComparison
 
 theorem UpperTheory.linear_combination_transfer_of_projector_relations :
@@ -1242,8 +1232,6 @@ section -- clump:auto
 @[expose] public section
 
 
-set_option backward.isDefEq.respectTransparency false
-
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct UpperTheory.Gal.crystallineComparison UpperTheory.Ru.crystallineComparison
 
 private theorem norm_l_val {l : ℕ} [Fact l.Prime] : ‖(l : PadicAlgCl l)‖ = (l : ℝ)⁻¹ := by
@@ -1291,8 +1279,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

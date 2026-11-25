@@ -509,8 +509,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Mult Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR
 open scoped TensorProduct InnerProductSpace
 
-theorem _root_.GlobalTheory.T.multiplicitySpace_eq_zero_of_apply_nonzero_tensor_zero : ∀ {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S), ∀ J χ (μ : Measure (GA D V)) (𝓕 : Set (GA D V)), IsInfFam θ → μ.IsHaarMeasure → IsFundamentalDomain (GQ V) 𝓕 μ → SchurMult θ M J χ μ 𝓕 → ∀ u ∈ MultT θ M J χ, ∀ x : ⨂[ℂ] τ, M.sm τ, x ≠ 0 → u x = 0 → u = 0 := by
-  first | exact @GlobalTheory.multT_eq_zero_of_apply_eq_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicitySpaceEqZeroOfApplyNonzeroTensorZeroStatement =====
@@ -544,9 +542,9 @@ theorem exists_bound_half_lt : GlobalTheory.Published.CuspRapidDecay → ∀ (D 
   intro hP D θ hθ V S M J vol t ht ht0 w hw
   have hw' : PiTensorProduct.tprod ℂ w ≠ 0 :=
     tprod_ne_zero' fun τ h => hw τ (by simp [h])
-  have hS := GlobalTheory.T.schurMult_multiplicitySpaces_of_rapidDecay hP D θ hθ V S M J 1 vol.μ vol.𝓕 vol.haar vol.fund
+  have hS := GlobalTheory.SchurConst.schurMult_all hP D θ hθ V S M J 1 vol.μ vol.𝓕 vol.haar vol.fund
   set φ := t (PiTensorProduct.tprod ℂ w) with hφ
-  have hφ0 : φ ≠ 0 := fun h => ht0 (GlobalTheory.T.multiplicitySpace_eq_zero_of_apply_nonzero_tensor_zero θ M J 1 vol.μ vol.𝓕 hθ vol.haar vol.fund hS t ht _ hw' h)
+  have hφ0 : φ ≠ 0 := fun h => ht0 (GlobalTheory.multT_eq_zero_of_apply_eq_zero θ M J 1 vol.μ vol.𝓕 hθ vol.haar vol.fund hS t ht _ hw' h)
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, φ x₀ ≠ 0 := by
     by_contra! h
     exact hφ0 (funext h)
@@ -614,10 +612,6 @@ theorem apply_tprod_eq {ι : Type} [Fintype ι] {E : ι → Type} [∀ i, AddCom
   exact PiTensorProduct.lift.tprod _
 
 end GlobalTheory.SepPer.PerNe
-
-namespace GlobalTheory.SepPer
-
-end GlobalTheory.SepPer
 
 end
 end -- clump:auto
@@ -757,8 +751,6 @@ theorem qM_lat (d : HermitianOrthogonalExtensionData A B c ε) (Λ : Submodule (
 theorem frameMat_lat (d : HermitianOrthogonalExtensionData A B c ε) (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E))
     (𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) : ∀ y ∈ Λ, frameMat B A d.ι *ᵥ y ∈ d.lat Λ 𝔟 :=
   fun y hy => ⟨y, hy, 0, fun p => (𝔟 p).zero_mem, by simp⟩
-
-
 
 theorem finE_mem_congLev : ∀ {D : D7} {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B c ε)
     (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E)) (𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)
@@ -986,10 +978,6 @@ section Forms
 
 variable {A : Type} [CommRing A] {n : ℕ}
 
-theorem hform_dot (τ : A →+* A) (J : Matrix (Fin n) (Fin n) A) (x y : Fin n → A) :
-    Formalism.UG.hform τ J x y = (fun i => τ (x i)) ⬝ᵥ (J *ᵥ y) := by
-  simp only [Formalism.UG.hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
-
 theorem hform_sub_left (τ : A →+* A) (J : Matrix (Fin n) (Fin n) A) (x y z : Fin n → A) :
     Formalism.UG.hform τ J (x - y) z = Formalism.UG.hform τ J x z - Formalism.UG.hform τ J y z := by
   simp only [Formalism.UG.hform, Pi.sub_apply, map_sub, sub_mul, Finset.sum_sub_distrib]
@@ -1000,12 +988,12 @@ theorem hform_sub_right (τ : A →+* A) (J : Matrix (Fin n) (Fin n) A) (x y z :
 
 theorem hform_unitary (τ : A →+* A) (J B : Matrix (Fin n) (Fin n) A) (h : Formalism.UG.cT τ B * J * B = J)
     (x y : Fin n → A) : Formalism.UG.hform τ J (B *ᵥ x) (B *ᵥ y) = Formalism.UG.hform τ J x y := by
-  rw [GlobalTheory.DualCompletion.hform_mulVec_left, Matrix.mulVec_mulVec, h, hform_dot]
+  rw [GlobalTheory.DualCompletion.hform_mulVec_left, Matrix.mulVec_mulVec, h, GlobalTheory.CoverRadiiEq.hform_eq_dot]
   rfl
 
 theorem hform_mulVec_right (τ : A →+* A) (J B : Matrix (Fin n) (Fin n) A) (a c : Fin n → A) :
     Formalism.UG.hform τ J a (B *ᵥ c) = ∑ k, Formalism.UG.hform τ J a (fun i => B i k) * c k := by
-  simp only [hform_dot, Matrix.dotProduct_mulVec]
+  simp only [GlobalTheory.CoverRadiiEq.hform_eq_dot, Matrix.dotProduct_mulVec]
   rfl
 
 end Forms
@@ -1045,8 +1033,6 @@ theorem inId_hform {V : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D
   have hk := GlobalTheory.FrameIdeal.col_mem_hatL hfr k
   rw [Matrix.mulVec_single_one] at hk
   exact GlobalTheory.GramFrame.pair_hatL V.gram Λ (GlobalTheory.FrameIdeal.selfDual_pair hsd) _ _ ha hk
-
-
 
 theorem congLev_conj : ∀ {D : D7} (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)), IsSelfDualC V Λ → ∀ (𝔪 : Ideal (𝓞 D.host.E)) (g : GL (Fin V.rank) (Lev.EAf D)), g ∈ congLev D.sp.cm V.gram Λ 𝔪 → g ∈ congLev D.sp.cm V.gram Λ (𝔪 ⊓ D.host.conj • 𝔪) := by
   intro D V Λ hsd 𝔪 g hg
@@ -1242,8 +1228,6 @@ open scoped TensorProduct InnerProductSpace
 noncomputable section
 
 namespace UpperTheory.Lit.Cusp
-
-
 
 open GlobalTheory.SepPer.PerNe in
 theorem exists_cusp_form_theta_period_ne_zero : GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach →

@@ -97,17 +97,17 @@ theorem i2bdeg_single {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (
   obtain ⟨k₀, i₀⟩ := p
   by_cases h : k₀ = k
   · subst h
-    simp only [i2bdeg, if_true]
+    simp only [i2bdeg, ite_true]
     rw [Finset.sum_eq_single i₀]
     · simp
     · intro b _ hb
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro e
       exact hb (by simpa using e.symm)
     · simp
-  · simp only [i2bdeg, if_neg h]
+  · simp only [i2bdeg, ite_eq_right h]
     refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro e
     exact h (congrArg Sigma.fst e)
 
@@ -230,20 +230,20 @@ theorem coeff_graphLift_i2comp {g : (Σ k, ι₂ k) → MRing ι} {δ : K₂ →
     rw [i2comp_of_homog hm, em, coeff_monomial]
     by_cases hd : i2bdeg m = c
     · subst hd
-      rw [if_pos rfl, em, coeff_monomial]
+      rw [ite_eq_left rfl, em, coeff_monomial]
       by_cases hb : b = expDeg (i2bdeg m)
       · subst hb
         simp only [↓reduceIte, i2comp_self hnh]
       · simp [hb, Ne.symm hb]
-    · rw [if_neg hd, map_zero, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
+    · rw [ite_eq_right hd, map_zero, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
       by_cases hb : b = expDeg c
       · subst hb
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         by_cases he : expDeg (i2bdeg m) = expDeg c
-        · rw [if_pos he, i2comp_of_homog hnh, if_neg]
+        · rw [ite_eq_left he, i2comp_of_homog hnh, ite_eq_right]
           exact fun h' => hd (deg_injective he h')
-        · rw [if_neg he, i2comp_zero]
-      · rw [if_neg hb]
+        · rw [ite_eq_right he, i2comp_zero]
+      · rw [ite_eq_right hb]
 
 theorem i2comp_mem_graphIdeal {P : Ideal (MRing ι)} (hP : IsMultiHomogIdeal P)
     {g : (Σ k, ι₂ k) → MRing ι} {δ : K₂ → K → ℕ} (hg : ∀ q, IsMultiHomog (g q) (δ q.1))
@@ -566,14 +566,10 @@ theorem clear_denoms (G : GenFibre inlV (graphIdeal P g))
     rw [map_mul, ← e, hq]
     ring
 
-theorem graphMap_rename (u : MRing ι) :
-    graphMap P g (rename inlV u) = C (Ideal.Quotient.mk P u) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Giv.graphMap_rename_inlV <;> assumption
-
 theorem rel_graph (k : K₂) (j j' : ι₂ k) :
     rename inlV (g ⟨k, j⟩) * X ⟨Sum.inr k, j'⟩ - rename inlV (g ⟨k, j'⟩) * X ⟨Sum.inr k, j⟩ ∈
       graphIdeal P g := by
-  rw [graphIdeal, RingHom.mem_ker, map_sub, map_mul, map_mul, graphMap_rename, graphMap_rename]
+  rw [graphIdeal, RingHom.mem_ker, map_sub, map_mul, map_mul, GlobalTheory.CompanionTheory.Ar.Giv.graphMap_rename_inlV, GlobalTheory.CompanionTheory.Ar.Giv.graphMap_rename_inlV]
   have e : ∀ l : ι₂ k, graphMap P g (X ⟨Sum.inr k, l⟩) =
       C (Ideal.Quotient.mk P (g ⟨k, l⟩)) * X k := by
     intro l

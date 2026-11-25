@@ -234,23 +234,15 @@ namespace DeltaTermLin
 
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}
 
-theorem degFl_add (F G : RP Ψ N) : degFl (F + G) = degFl F + degFl G := by
-  simp only [degFl, MvPolynomial.coeff_add, mul_add, Finset.sum_add_distrib]
-
 theorem degFl_zero : degFl (0 : RP Ψ N) = 0 := by
   simp [degFl]
-
-theorem degFl_C_mul (a : ℝ) (F : RP Ψ N) : degFl (C a * F) = a * degFl F := by
-  simp only [degFl, coeff_C_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-  ring
 
 theorem degFl_sum {ι : Type} (s : Finset ι) (f : ι → RP Ψ N) :
     degFl (∑ i ∈ s, f i) = ∑ i ∈ s, degFl (f i) := by
   classical
   induction s using Finset.induction_on with
   | empty => simp [degFl_zero]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, degFl_add, ih]
+  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, GlobalTheory.CompanionTheory.Ar.Top.Model.degFl_add, ih]
 
 end DeltaTermLin
 
@@ -263,10 +255,10 @@ theorem log_mul_degFl_bracket_mul : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ
   have hb : degFl (bracket j φ p k τ * Q) =
       (k : ℝ) * ∑ σ, co φ p k (Sum.inl τ) σ * degFl (pLie (N := N) j (k - 1) σ * Q) := by
     unfold bracket
-    rw [mul_assoc, DeltaTermLin.degFl_C_mul, Finset.sum_mul, DeltaTermLin.degFl_sum]
+    rw [mul_assoc, GlobalTheory.CompanionTheory.Ar.Top.LinPow.degFl_C_mul, Finset.sum_mul, DeltaTermLin.degFl_sum]
     congr 1
     refine Finset.sum_congr rfl fun σ _ => ?_
-    rw [mul_assoc, DeltaTermLin.degFl_C_mul, hlie]
+    rw [mul_assoc, GlobalTheory.CompanionTheory.Ar.Top.LinPow.degFl_C_mul, hlie]
   rw [hb, hco]
   simp only [deltaTerm, pLie]
   ring
@@ -978,7 +970,6 @@ private theorem exists_cuspData_cuspWeight_eq_of_torus_invariant (K : Type) [Fin
     exact le_mul_of_one_le_left (Real.exp_pos _).le hr0R
   exact ⟨Cd, fun z => corrected_weight_regularization_lemma_5 Cd z (U z) (hU z) hfm n hn _ Q hQge (hprod z) (hA z) (hNz0 z)⟩
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.corrected_weight_regularization : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) [DecidableEq Ψ] [Nonempty Ψ] (M : XModel D) (U : ((Σ k, J k) → ℂ) → ℝ) (S : LogLogRegularisationSetting M D.Xo (muLine Hd)) (S' : BoundedRegularisationSetting M D.Xo Hd.aMu (corrW Hd U)) (rd Lval Ch Cu : ℝ), S.IsTied → S'.IsTied → (∀ z, 0 ≤ U z) → (∀ z ∈ D.Xo, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → U (torusSmul c z) = U z) → PosU S' → ConjU S' → HtU S' Ch rd Lval → MeanU Hd U Cu rd Lval → ∃ X : ComponentSetting D ℤ (Fin 2 → ℤ), X.H = Hd ∧ (∀ z ∈ D.Xo, X.Cd.cuspWeight z = U z) ∧ X.rd = rd ∧ X.Lval = Lval ∧ CuspBundlePos X ∧ MUConjInvariant X ∧ HtInterior Ch X ∧ HtBoundary Ch X ∧ CuspMean Cu X := by
   intro K _ J _ II Ψ _ Ω _ _ W _ _ D Hd _ _ M U S S' rd Lval Ch Cu hS hS' hU hT hPos hConj hHt hMean
   obtain ⟨Cd, hCd⟩ := exists_cuspData_cuspWeight_eq_of_torus_invariant K J II Ψ Ω W D U hU hT
@@ -1017,21 +1008,6 @@ open ReciprocityTheory.AnForm (levi)
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.TopBase
 
-theorem genPt_eq_of_factor {X : Scheme.{0}} {Ω Ω₁ Ω₂ : Type} [Field Ω] [Field Ω₁] [Field Ω₂]
-    {a : Spec (CommRingCat.of Ω) ⟶ X} {ξ₁ : Spec (CommRingCat.of Ω₁) ⟶ X} {ξ₂ : Spec (CommRingCat.of Ω₂) ⟶ X}
-    {g₁ : Ω₁ →+* Ω} {g₂ : Ω₂ →+* Ω}
-    (h₁ : a = Spec.map (CommRingCat.ofHom g₁) ≫ ξ₁) (h₂ : a = Spec.map (CommRingCat.ofHom g₂) ≫ ξ₂) :
-    genPt ξ₁ = genPt ξ₂ := by
-  have e₁ : ∀ w : Spec (CommRingCat.of Ω), genPt ξ₁ = a w := by
-    intro w
-    rw [h₁, Scheme.Hom.comp_apply]
-    exact congrArg ξ₁ (Subsingleton.elim (α := PrimeSpectrum Ω₁) _ _)
-  have e₂ : ∀ w : Spec (CommRingCat.of Ω), genPt ξ₂ = a w := by
-    intro w
-    rw [h₂, Scheme.Hom.comp_apply]
-    exact congrArg ξ₂ (Subsingleton.elim (α := PrimeSpectrum Ω₂) _ _)
-  exact (e₁ (IsLocalRing.closedPoint Ω)).trans (e₂ (IsLocalRing.closedPoint Ω)).symm
-
 theorem base_setting_of_good_origin : ∀ Ch Cu : ℝ, NineGeoU Ch Cu → Out.WeilSt → PB.AgreementPos → PB.Proportional → Cmp.CmpSt → Top.Given → PtsIntegrableStatement → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : Top.RootTower (CMType H) (D.p + D.q)) (o : Top.GoodOrigin Y T) (II : IntersectionSystem), Top.IsGlobal Xo l c Y → o.Extra → IsFullIntersectionSystem II → 1 ≤ D.p → 1 ≤ D.q → D.q ≤ D.p → T.bad.card ≤ 4 * Fintype.card (CMType H) * (D.p + D.q) ^ 2 → ∀ B : ℕ, 4 * Fintype.card (CMType H) * (D.p + D.q) ^ 2 ≤ B → ∀ a, T.HasBaseDegreeSettingStrict II Ch Cu (hostRd E) (hostLval H) B a := by
   intro Ch Cu hNine hWeil hAgr hProp hCmp hGiven hPts E _ _ _ _ H D Xo l c Y _ T o II hGlob hExtra hFull hp hq hqp
     hbad B hB a
@@ -1044,7 +1020,7 @@ theorem base_setting_of_good_origin : ∀ Ch Cu : ℝ, NineGeoU Ch Cu → Out.We
   have hB2 : 2 ≤ B := by omega
   have hB4 : 4 * Fintype.card (CMType H) + 2 ≤ B := by omega
   have hgen : genPt (o.Or B a).𝔐.ξ₀ = genPt (o.Fx a).ξf :=
-    genPt_eq_of_factor (o.Or B a).𝔐.fn_over (o.Or B a).g_over
+    GlobalTheory.CompanionTheory.Ar.TowerPropA.genPt_eq_of_factor (o.Or B a).𝔐.fn_over (o.Or B a).g_over
   obtain ⟨S₁, hS₁⟩ : ∃ S₁ : Finset ℕ, ∀ r, r ∈ S₁ ↔ r.Prime ∧ r ≤ B ∧ r ∉ T.bad :=
     ⟨(Finset.range (B + 1)).filter (fun r => r.Prime ∧ r ∉ T.bad), by
       intro r
@@ -1110,14 +1086,6 @@ open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm Recipro
 
 namespace PositivityTheory.Xgp.vert_deg
 
-theorem isC2At_of_isPotential {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) {Q : LocPot X}
-    (h : IsPotential A Q) (x : X) : IsTwiceDifferentiableAt A Q x := by
-  intro j hj
-  refine potSmoothAt A Q h x j ⟨(A.chart j).map_source hj, ?_⟩
-  show (A.chart j).symm (A.chart j x) ∈ Q.U x
-  rw [(A.chart j).left_inv hj]
-  exact Q.mem_U x
-
 theorem isNull_zeros {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {P J : Ideal (MRing ι)} {D : ℕ}
     (R : AnLogRes P J D) (hP : ReciprocityTheory.ChartRestriction.G.Geo.IsArithVar P (D + 1)) {s : MRing ι} {a : K → ℕ} (hs : IsMultiHomog s a)
     (hsP : s ∉ P) : IsNull R.A {x | eval (R.lift x x) (map (Int.castRingHom ℂ) s) = 0} := by
@@ -1182,7 +1150,7 @@ theorem PositivityTheory.Xgp.t_vert_deg : ResExistsStatement → ∀ (K : Type) 
   choose N hN hS using fun j => PositivityTheory.Xgp.vert_deg.exists_samePot R hP (hV j)
   rw [ptsIntegral_eq_mInt' hE resBridge R hP hL hAm hs, ptsIntegral_eq_mInt' hE resBridge R hP hL' hAm hs]
   refine (mInt_congr_samePot D R.X R.A (⋃ j, N j)ᶜ _ _ _ _ (fun j => ?_) (fun j x hx => hS j x ?_)
-    (fun j x _ => PositivityTheory.Xgp.vert_deg.isC2At_of_isPotential _ (isPotential_potOf R (hL' j)) x)
+    (fun j x _ => GlobalTheory.CompanionTheory.Ar.Cmp.isC2At_of_isPotential _ (isPotential_potOf R (hL' j)) x)
     (fun _ _ => rfl)).1
   · rw [compl_compl, Set.preimage_iUnion, Set.inter_iUnion]
     exact measure_iUnion_null fun i => hN i j
@@ -1304,8 +1272,8 @@ theorem abs_sub_le_telescope (II : IntersectionSystem) (hII : IsFullIntersection
         have hne' : ((τ i.castSucc : Fin (D + 1)) : ℕ) ≠ k := fun e => hne (Fin.ext e)
         simp only [Function.comp, Fin.snoc_castSucc, E, X]
         by_cases h1 : ((τ i.castSucc : Fin (D + 1)) : ℕ) < k
-        · rw [if_pos h1, if_pos (by omega)]
-        · rw [if_neg h1, if_neg (by omega)]
+        · rw [ite_eq_left h1, ite_eq_left (by omega)]
+        · rw [ite_eq_right h1, ite_eq_right (by omega)]
     rw [← hsym P _ (X k) τ hP (hX k), ← hsym P _ (X (k + 1)) τ hP (hX (k + 1)), e1, e2]
     refine h kk E fun i => ⟨τ i.castSucc, ?_⟩
     simp only [E, X]

@@ -109,23 +109,23 @@ theorem of_cls (h : H.cls p = .inertClass) : p ∉ H.small ∧ p ≠ H.q ∧ p �
     jacobiSym (-(H.d : ℤ)) p ≠ 1 ∧ H.psAt p ≠ 1 := by
   unfold Host.cls primeClass at h
   by_cases h1 : p ∈ H.small
-  · rw [if_pos h1] at h
+  · rw [ite_eq_left h1] at h
     cases h
-  rw [if_neg h1] at h
+  rw [ite_eq_right h1] at h
   by_cases h2 : p = H.q
-  · rw [if_pos h2] at h
+  · rw [ite_eq_left h2] at h
     cases h
-  rw [if_neg h2] at h
+  rw [ite_eq_right h2] at h
   by_cases h3 : p = H.d
-  · rw [if_pos h3] at h
+  · rw [ite_eq_left h3] at h
     cases h
-  rw [if_neg h3] at h
+  rw [ite_eq_right h3] at h
   by_cases h4 : jacobiSym (-(H.d : ℤ)) p = 1
-  · rw [if_pos h4] at h
+  · rw [ite_eq_left h4] at h
     cases h
-  rw [if_neg h4] at h
+  rw [ite_eq_right h4] at h
   by_cases h5 : H.psAt p = 1
-  · rw [if_pos h5] at h
+  · rw [ite_eq_left h5] at h
     cases h
   exact ⟨h1, h2, h3, h4, h5⟩
 

@@ -13,11 +13,6 @@ namespace Formalism.FX
 
 open Classical
 
-def Lerch : Prop :=
-  ∀ a : ℝ, 0 < a → a ≤ 1 →
-    HasDerivAt (fun s : ℂ => HurwitzZeta.hurwitzZeta (a : UnitAddCircle) s)
-      (((Real.log (Real.Gamma a) - Real.log (2 * Real.pi) / 2 : ℝ)) : ℂ) 0
-
 def LPartialSum : Prop :=
   ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∀ B : ℝ,
     (∀ M : ℕ, ‖∑ n ∈ Finset.Icc 1 M, χ (n : ZMod q)‖ ≤ B) →

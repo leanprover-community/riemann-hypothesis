@@ -260,7 +260,7 @@ theorem locQ (hE : Ev r π Dd) (hN : RepresentationBoundsCohomology.NormAt D.nd 
   have hdiag := fun x => ((hG5 (plOf i dc w) (Or.inr hq)).1 (Or.inl hq) x)
   refine ⟨?_, Subgroup.mem_subgroupOf.2 hγ, ?_, rfl, ?_, ?_, ?_⟩
   · unfold Fpos
-    rw [if_pos hw]
+    rw [ite_eq_left hw]
   · apply Subtype.ext
     funext x'
     simp only [MulMemClass.coe_mul, AddSubgroupClass.coe_sub, OneMemClass.coe_one, ZeroMemClass.coe_zero,
@@ -571,7 +571,7 @@ theorem Fpos_row (c : Fin (D.R.t + 1)) {w : ℕ} (hw : w ∈ rowsN i dc) :
     obtain ⟨v, hv, rfl⟩ := Finset.mem_image.1 hw
     exact idx_not_qs i dc (row_mem_pl i dc hv) ((dc.cover v).1 (Or.inl hv))
   unfold Fpos
-  simp only [if_neg hq, if_pos hw]
+  simp only [ite_eq_right hq, ite_eq_left hw]
 
 
 end Shape

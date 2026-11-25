@@ -170,7 +170,3 @@ theorem repSmooth_of (hLL : LocLog) : NFRadRedS.RepSmooth := by
             show Tc (Λ (h₀⁻¹ * h)) = dOp π (Λ (h₀⁻¹ * h)) from hT1 _ hlie]
 
 end Formalism.FourierDecayAlt.P.NFRadRedR
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

@@ -62,24 +62,4 @@ theorem map_jetMap {L : Type} [Field L] (σ : K →+* L) (J : (DVar ι a b →�
 
 end Alg
 
-section Scale
-
-variable {ι : Type} [Fintype ι] {a b : ℕ}
-
-end Scale
-
-section Lift
-
-end Lift
-
-section Base
-
-variable {X : Fields} (A : Amb X) {a b : ℕ} (Sall SB : Finset (HeightOneSpectrum (𝓞 X.E))) (D : ℕ)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ) (mI : SB → X.E → X.K)
-  (lam : X.Tau → DomWeight a) (lam' : X.Tau → DomWeight b) (n : X.Tau → ℕ)
-  (N : Submodule (𝓞 X.E) (Sp X.E a)) (fr : Frs X.E a SB) (N' : Submodule (𝓞 X.E) (Sp X.E b)) (fr' : Frs X.E b SB)
-  (c : ℕ) (x : HomE X.E a b)
-
-end Base
-
 end Formalism.L2.Ker.Shape

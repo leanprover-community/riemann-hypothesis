@@ -76,7 +76,7 @@ theorem gaugeF_eq (k r : ℕ) : gaugeF k r = fun x => ∏ a : Fin r, gam k r a x
   unfold gaugeF Formalism.FourierDecayAlt.Q.resG
   simp only [smul_eq_mul, mul_one, gam, Complex.ofReal_prod]
   refine Finset.prod_congr rfl fun a _ => ?_
-  rw [if_pos (by simp)]
+  rw [ite_eq_left (by simp)]
 
 theorem gam_smooth (a : Fin r) : ContDiffOn ℝ ∞ (gam k r a) (OmX r) := by
   intro x hx
@@ -141,17 +141,11 @@ theorem pbOp_gauge (i : Fin r) (f : (Fin r → ℂ) → X) (hf : f ∈ WSm r X) 
   show pbOp i (fun x => gaugeF k r x • f x) x =
     gaugeF k r x • pbOp i f x + (((Mdim k r i - 1 : ℕ) : ℂ) / 2) • (gaugeF k r x • f x)
   by_cases hx : x ∈ OmX r
-  · have hO : IsOpen (OmX r) := by
-      have e : OmX r = ⋂ l, {y : Fin r → ℂ | y l ≠ 0} := by
-        ext y
-        simp [OmX]
-      rw [e]
-      exact isOpen_iInter_of_finite fun l => isOpen_ne_fun (continuous_apply l) continuous_const
-    have hfd : DifferentiableAt ℝ f x :=
-      (hf.1.contDiffAt (hO.mem_nhds hx)).differentiableAt (by simp)
+  · have hfd : DifferentiableAt ℝ f x :=
+      (hf.1.contDiffAt ((P.Qx5.isOpen_OmX r).mem_nhds hx)).differentiableAt (by simp)
     have hgi : DifferentiableAt ℝ (gam k r i) x := Formalism.FourierDecayAlt.P.Qx6.diff_gamma i _ hx
     have hgO : DifferentiableAt ℝ (gamO k r i) x :=
-      ((gamO_smooth i).contDiffAt (hO.mem_nhds hx)).differentiableAt (by simp)
+      ((gamO_smooth i).contDiffAt ((P.Qx5.isOpen_OmX r).mem_nhds hx)).differentiableAt (by simp)
     have hsplit : (fun y => gaugeF k r y • f y) = fun y => gam k r i y • (gamO k r i y • f y) := by
       funext y
       rw [gauge_split, mul_smul]
@@ -162,31 +156,25 @@ theorem pbOp_gauge (i : Fin r) (f : (Fin r → ℂ) → X) (hf : f ∈ WSm r X) 
       simp
     have hpg := Formalism.FourierDecayAlt.P.Qx6.pbOp_gamma i hx (Mdim k r i - 1)
     unfold pbOp at hpg
-    rw [if_pos hx] at hpg
+    rw [ite_eq_left hx] at hpg
     have key : star (x i) * wirtBar i (gam k r i) x =
         ((Mdim k r i - 1 : ℕ) : ℂ) / 2 * gam k r i x := by
       rw [← smul_eq_mul]
       exact hpg
     unfold pbOp
-    rw [if_pos hx, if_pos hx, hsplit, wbar_smul_lemma i (gam k r i) (fun y => gamO k r i y • f y) x hgi (hgO.smul hfd),
+    rw [ite_eq_left hx, ite_eq_left hx, hsplit, wbar_smul_lemma i (gam k r i) (fun y => gamO k r i y • f y) x hgi (hgO.smul hfd),
       wbar_smul_lemma i _ _ x hgO hfd, hwO, gauge_split]
     simp only [smul_add, zero_smul, add_zero, smul_smul]
     rw [← mul_assoc (star (x i)) (wirtBar i (gam k r i) x), key]
     congr 1 <;> congr 1 <;> ring
   · unfold pbOp
-    rw [if_neg hx, if_neg hx, hf.2 x hx]
+    rw [ite_eq_right hx, ite_eq_right hx, hf.2 x hx]
     simp
 
 theorem loc (Φ : (Fin r → ℂ) → X) (U : Set (Fin r → ℂ)) (c : Fin r → ℂ) (hU : IsOpen U) (hUO : U ⊆ OmX r)
     (hc : c ∈ U) (hΨ : ContDiffOn ℝ ∞ (fun c' => gaugeF k r c' • Φ c') U) :
     ∃ φ : (Fin r → ℂ) → X, φ ∈ WSm r X ∧ Φ =ᶠ[𝓝 c] φ ∧
       (fun c' => gaugeF k r c' • Φ c') =ᶠ[𝓝 c] (fun c' => gaugeF k r c' • φ c') := by
-  have hO : IsOpen (OmX r) := by
-    have e : OmX r = ⋂ l, {y : Fin r → ℂ | y l ≠ 0} := by
-      ext y
-      simp [OmX]
-    rw [e]
-    exact isOpen_iInter_of_finite fun l => isOpen_ne_fun (continuous_apply l) continuous_const
   obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU c hc
 
   let χ : ContDiffBump c := ⟨ε / 4, ε / 2, by positivity, by linarith⟩
@@ -209,7 +197,7 @@ theorem loc (Φ : (Fin r → ℂ) → X) (U : Set (Fin r → ℂ)) (c : Fin r �
   have hsm : ∀ y ∈ OmX r, ContDiffAt ℝ ∞ φ y := by
     intro y hyO
     by_cases hyU : y ∈ U
-    · have hg := (gaugeF_smooth (k := k)).contDiffAt (hO.mem_nhds hyO)
+    · have hg := (gaugeF_smooth (k := k)).contDiffAt ((P.Qx5.isOpen_OmX r).mem_nhds hyO)
       have hgi := hg.inv (gaugeF_ne hyO)
       have hΨ' := hΨ.contDiffAt (hU.mem_nhds hyU)
       exact χ.contDiff.contDiffAt.smul (hgi.smul hΨ')

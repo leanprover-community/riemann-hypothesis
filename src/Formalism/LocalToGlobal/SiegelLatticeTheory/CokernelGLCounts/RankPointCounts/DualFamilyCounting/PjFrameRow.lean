@@ -29,16 +29,6 @@ section Gen
 
 variable {r k : ℕ}
 
-theorem Qm_mulVec_sum (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (wf : Fin k → Fin (2 * r + k + 1) → ℂ)
-    (z0 : Fin (2 * r + k + 1) → ℂ) (t : Fin (2 * r + k + 1) → ℂ) :
-    Qm e f wf z0 *ᵥ t = ∑ j, t j • colQ e f wf z0 j := by
-  ext i
-  rw [Finset.sum_apply]
-  simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul]
-  refine Finset.sum_congr rfl fun x _ => ?_
-  rw [mul_comm]
-  simp [Qm, colQ]
-
 theorem sgn_wI_last : GBasic.sgn k r (wI k r (Fin.last k)) = -1 := by
   simp [GBasic.sgn, wI]
 
@@ -48,7 +38,7 @@ theorem decomp0 {ε : Fin (2 * r + k + 1) → Bool} {e f : Fin r → Fin (2 * r 
     y = ∑ c, hJ ε (wf c) y • wf c - hJ ε z0 y • z0 := by
   have h1 : y = Qm e f wf z0 *ᵥ (Qi ε e f wf z0 *ᵥ y) := by
     rw [Matrix.mulVec_mulVec, Qm_mul_Qi hF, Matrix.one_mulVec]
-  rw [Qm_mulVec_sum] at h1
+  rw [Formalism.L2.SG.Pf.NcReal.JX.Qm_mulVec_eq_sum] at h1
   conv_lhs => rw [h1]
 
   have hzero : ∀ j, (∀ c : Fin (k + 1), j ≠ wI k r c) →
@@ -212,18 +202,18 @@ theorem gram_sv (u v) (c d : Fin (D.R.k + 1)) : hJ (X.B.I.ε v) (sv X u v c) (sv
   induction c using Fin.lastCases with
   | last =>
     induction d using Fin.lastCases with
-    | last => rw [sv_last, frame_real_z_z_eq_neg, if_pos rfl, Fin.snoc_last]
+    | last => rw [sv_last, frame_real_z_z_eq_neg, ite_eq_left rfl, Fin.snoc_last]
     | cast d =>
-      rw [sv_last, sv_cs, fX_zw, if_neg (fun h => Fin.castSucc_ne_last d h.symm)]
+      rw [sv_last, sv_cs, fX_zw, ite_eq_right (fun h => Fin.castSucc_ne_last d h.symm)]
   | cast c =>
     induction d using Fin.lastCases with
     | last =>
-      rw [sv_last, sv_cs, hJ_swap, fX_zw, star_zero, if_neg (Fin.castSucc_ne_last c)]
+      rw [sv_last, sv_cs, hJ_swap, fX_zw, star_zero, ite_eq_right (Fin.castSucc_ne_last c)]
     | cast d =>
       rw [sv_cs, sv_cs, fX_ww]
       by_cases h : c = d
       · subst h; simp
-      · rw [if_neg h, if_neg (fun h' => h (Fin.castSucc_injective _ h'))]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h (Fin.castSucc_injective _ h'))]
 
 theorem gram_M (u w v) : (Mco X u w v)ᴴ * Gu u * Mco X u w v = Gu w := by
   ext c d

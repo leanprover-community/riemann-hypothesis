@@ -2,51 +2,8 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 public import Mathlib.RingTheory.Derivation.Lie
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.MvPowerSeries.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
@@ -62,32 +19,15 @@ open MvPowerSeries in
 theorem _root_.GlobalTheory.minorHarm_pderiv_comm {σ k : Type*} [CommRing k] (i j : σ)
     (p : MvPolynomial σ k) :
     MvPolynomial.pderiv i (MvPolynomial.pderiv j p) =
-      MvPolynomial.pderiv j (MvPolynomial.pderiv i p) := by
-  classical
-  have h : ⁅MvPolynomial.pderiv (R := k) i, MvPolynomial.pderiv (R := k) j⁆ = 0 := by
-    apply MvPolynomial.derivation_ext
-    intro n
-    rw [Derivation.commutator_apply, MvPolynomial.pderiv_X, MvPolynomial.pderiv_X]
-    by_cases hj : j = n <;> by_cases hi : i = n <;>
-      simp [hj, hi]
-  have := DFunLike.congr_fun h p
-  rw [Derivation.commutator_apply] at this
-  simpa [sub_eq_zero] using this
+      MvPolynomial.pderiv j (MvPolynomial.pderiv i p) :=
+  MvPolynomial.pderiv_comm i j p
 
 
 open MvPowerSeries in
 theorem _root_.GlobalTheory.minorHarm_pderiv_eq_zero {σ k : Type*} [CommRing k] {S : Set σ}
     {p : MvPolynomial σ k} (hp : p ∈ MvPolynomial.supported k S) {v : σ} (hv : v ∉ S) :
-    MvPolynomial.pderiv v p = 0 := by
-  classical
-  rw [MvPolynomial.supported_eq_adjoin_X] at hp
-  induction hp using Algebra.adjoin_induction with
-  | mem x hx =>
-    obtain ⟨s, hs, rfl⟩ := hx
-    exact MvPolynomial.pderiv_X_of_ne (fun h => hv (h ▸ hs))
-  | algebraMap r => rw [MvPolynomial.algebraMap_eq, MvPolynomial.pderiv_C]
-  | add x y _ _ hx hy => rw [map_add (f := _), hx, hy, add_zero]
-  | mul x y _ _ hx hy => rw [MvPolynomial.pderiv_mul, hx, hy]; simp
+    MvPolynomial.pderiv v p = 0 :=
+  MvPolynomial.pderiv_eq_zero_of_notMem_vars fun h => hv (MvPolynomial.mem_supported.1 hp h)
 
 open MvPowerSeries in
 private theorem pderiv_mem_supported' {σ k : Type*} [CommRing k] {S : Set σ}

@@ -93,7 +93,7 @@ def zCoApp (Q : Cᵒᵖ ⥤ A) (X : C) : zObj ((Over.forget U).op ⋙ Q) X ⟶ Q
 @[reassoc (attr := simp)]
 lemma ι_zCoApp (Q : Cᵒᵖ ⥤ A) (X : C) (s : X ⟶ U) :
     Sigma.ι (fun s : X ⟶ U => ((Over.forget U).op ⋙ Q).obj (op (Over.mk s))) s ≫ zCoApp Q X = 𝟙 _ := by
-  unfold zCoApp; erw [colimit.ι_desc]; rfl
+  unfold zCoApp; rw [colimit.ι_desc]; rfl
 
 def zUnit (P : (Over U)ᵒᵖ ⥤ A) : P ⟶ (Over.forget U).op ⋙ zPre P where
   app V := Sigma.ι (fun s : V.unop.left ⟶ U => P.obj (op (Over.mk s))) V.unop.hom

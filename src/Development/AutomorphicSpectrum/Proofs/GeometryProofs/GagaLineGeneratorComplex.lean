@@ -284,7 +284,7 @@ theorem exists_chart : (∀ (A : Type) [CommRing A] [IsDomain A] [Algebra ℂ A]
     rintro rfl
     simp at haξ
   by_contra hc'
-  push_neg at hc'
+  push Not at hc'
   refine a0 (hring Γ(X, V) D O Ψ f a oO nO (fun b hb => a₁ b (sO hb).1) fun b hb => ?_)
   by_contra hne
   refine hc' b hb (haW ?_)
@@ -770,7 +770,7 @@ theorem gaga_rat_C : GagaSections → ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℂ) (�
   let h0 : Cpt ξ → (Sp ℂ ⟶ X) → ℂ := fun p x => if hh : ∃ c, Rel p x c then hh.choose else 0
   have h0s : ∀ p x c, Rel p x c → h0 p x = c := fun p x c hc => by
     have hh : ∃ c, Rel p x c := ⟨c, hc⟩
-    simp only [h0, dif_pos hh]
+    simp only [h0, dite_eq_left hh]
     exact relU p x _ _ hh.choose_spec hc
   let h : Option (Cpt ξ) → (Sp ℂ ⟶ X) → ℂ := fun o => o.elim (fun _ => 0) h0
   let LL : LB X := LB.mk (Option (Cpt ξ)) V g

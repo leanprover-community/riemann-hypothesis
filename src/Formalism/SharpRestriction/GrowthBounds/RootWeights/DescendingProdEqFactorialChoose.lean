@@ -26,48 +26,6 @@ def polarizationTarget (LL : Letters ι) (a b : Fin n) (l : ι) : ι × Fin n :=
 
 def polarizationLetterSign (R : Type*) [CommRing R] (LL : Letters ι) (l : ι) : R := if LL.vec l then 1 else -1
 
-theorem polarizationSource_injective (LL : Letters ι) (a b : Fin n) : Function.Injective (polarizationSource LL a b) := by
-  intro l l' h
-  have h1 : ∀ l₀, (polarizationSource LL a b l₀).1 = l₀ := fun l₀ => by
-    unfold polarizationSource; split_ifs <;> rfl
-  rw [← h1 l, h, h1 l']
-
-theorem polarizationTarget_ne_source (LL : Letters ι) (a b : Fin n) (hab : a ≠ b) (l l' : ι) :
-    polarizationTarget LL a b l' ≠ polarizationSource LL a b l := by
-  apply _root_.Formalism.MainNotions.LemmaBAlt.divided_power_target_ne_source <;> assumption
-
-open Classical in
-theorem glAct_eq_sum_polarizations (LL : Letters ι) (S : Set ι) (a b : Fin n) :
-    glAct R LL S a b = ∑ l ∈ Finset.univ.filter (· ∈ S),
-      polarizationDerivation (polarizationLetterSign R LL) (polarizationSource LL a b) (polarizationTarget LL a b) l := by
-  rw [glAct, Finset.sum_filter]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  split_ifs <;> simp_all [polarizationDerivation, polarizationLetterSign, polarizationSource, polarizationTarget]
-
-open Classical in
-theorem divPowMono_eq_monomialSum (LL : Letters ι) (S : Set ι) (a b : Fin n) (k : ℕ) (m : ι × Fin n →₀ ℕ) :
-    divPowMono R LL S a b k m =
-      dividedPowerMonomialSum (polarizationLetterSign R LL) (polarizationSource LL a b) (polarizationTarget LL a b) (Finset.univ.filter (· ∈ S)) k m := by
-  unfold divPowMono dividedPowerMonomialSum
-  refine Finset.sum_congr rfl fun f hf => ?_
-  have hsub : f.support ⊆ Finset.univ.filter (· ∈ S) := (Finset.mem_finsuppAntidiag.1 hf).2
-  unfold dividedPowerMonomialTerm dividedPowerExponent dividedPowerCoefficient
-  congr 1
-  rw [← Finset.prod_subset hsub (f := fun l => polarizationLetterSign R LL l ^ f l *
-    ((m (polarizationSource LL a b l)).choose (f l) : R)) ?_]
-  · refine Finset.prod_congr rfl fun l _ => ?_
-    by_cases hv : LL.vec l <;> simp [polarizationLetterSign, polarizationSource, hv]
-  · intro l _ hl
-    rw [Finsupp.notMem_support_iff.1 hl]
-    simp
-
-theorem glAct_comp_divPow (LL : Letters ι) (S : Set ι) (a b : Fin n) (hab : a ≠ b) (k : ℕ) :
-    glAct R LL S a b ∘ₗ divPow R LL S a b k = (k + 1) • divPow R LL S a b (k + 1) := by
-  apply _root_.Formalism.MainNotions.LemmaBAlt.gl_action_comp_divided_power <;> assumption
-
-theorem divPow_zero' (LL : Letters ι) (S : Set ι) (a b : Fin n) : divPow R LL S a b 0 = LinearMap.id := by
-  apply _root_.Formalism.MainNotions.LemmaBAlt.divided_power_zero <;> assumption
-
 theorem glAct_pow_eq_factorial_divPow (LL : Letters ι) (S : Set ι) (a b : Fin n) (hab : a ≠ b) (k : ℕ) :
     (glAct R LL S a b : Module.End R (MvPolynomial (ι × Fin n) R)) ^ k = k.factorial • divPow R LL S a b k := by
   apply _root_.Formalism.MainNotions.LemmaBAlt.gl_action_pow_eq_factorial_smul <;> assumption

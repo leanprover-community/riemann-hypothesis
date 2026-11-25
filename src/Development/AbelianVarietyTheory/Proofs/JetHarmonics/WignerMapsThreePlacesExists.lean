@@ -29,49 +29,9 @@ import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsFrameTwo
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.GroupGeneratedByExp
@@ -81,9 +41,6 @@ import Mathlib.Tactic.Linter.Style
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapComp
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapZeroOfContraction
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.ContractionMapsAtRepresentatives, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIsometryOfIntertwinerOfIrreducible, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLinearEquivOfIrreducibleCapelli, Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntertwinerExpOfIntertwiner, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIsometryOfIsTypeOfParamEq, Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormAdjointCompIsometryEquiv, Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryMeasureDatumProductMeasureEqOfSameVectors, Development.AbelianVarietyTheory.Proofs.JetHarmonics.WignerMapsThreePlacesExists
@@ -120,7 +77,7 @@ private lemma herm_smul_self_re_eq (H : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r
     (a : ℝ) (d : ℂ) (ν : Fin (2 * r + k + 1) → ℂ) :
     (_root_.Formalism.QuantumDeterminants.herm H (((a : ℂ) * (starRingEnd ℂ) d) • ν) (((a : ℂ) * (starRingEnd ℂ) d) • ν)).re =
       a ^ 2 * (Complex.normSq d * (_root_.Formalism.QuantumDeterminants.herm H ν ν).re) := by
-  rw [_root_.GlobalTheory.WigSh.OmgNorm.form_smul_left, _root_.GlobalTheory.WigSh.OmgNorm.form_smul_right, ← mul_assoc, Complex.star_def,
+  rw [_root_.Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, _root_.GlobalTheory.WigSh.OmgNorm.form_smul_right, ← mul_assoc, Complex.star_def,
     Complex.mul_conj, Complex.re_ofReal_mul, Complex.normSq_mul, Complex.normSq_ofReal,
     Complex.normSq_conj]
   ring
@@ -239,7 +196,6 @@ private lemma orbital_comp_lemma_2 {Wq' : Type} [NormedAddCommGroup Wq'] [InnerP
   · exact (h₁ ⟨θ, hθ', hint'⟩).elim
   · exact (h₁ ⟨θ, hθ', hint'⟩).elim
 
-
 open Matrix in
 theorem _root_.GlobalTheory.WigSh.contraction_maps_at_representatives :
     ∃ c₃ : ℝ, ∀ (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ
@@ -323,7 +279,7 @@ theorem _root_.GlobalTheory.WigSh.contraction_maps_at_representatives :
     have hex : ∃ g, Rep γ g := by
       obtain ⟨g, hg, hZ, hd⟩ := hexist k r Wp Wq D ν' m₀ γ hbase hγ hpos
       exact ⟨g, hg, hZ, hd⟩
-    simp only [rep, dif_pos hex]
+    simp only [rep, dite_eq_left hex]
     exact hex.choose_spec
   have rep_eq : ∀ γ, _root_.Formalism.FourierDecayAlt.D.IsLocPt γ (r + 1) →
       0 < _root_.Formalism.FourierDecayAlt.D.ptG (_root_.Formalism.QuantumDeterminants.Tz k r D.z * _root_.Formalism.QuantumDeterminants.Tz k r D.z') r γ → ∀ g, Rep γ g →

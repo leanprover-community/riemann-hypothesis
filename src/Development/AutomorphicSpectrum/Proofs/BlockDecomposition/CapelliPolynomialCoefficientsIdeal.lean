@@ -24,14 +24,8 @@ def preserving (I : Submodule ℂ V) : Subalgebra ℂ (Module.End ℂ V) where
     exact I.smul_mem r hF
 
 lemma pow_apply_mem (D : Module.End ℂ V) (Wn : Submodule ℂ V) (hD : ∀ F ∈ Wn, D F ∈ Wn) :
-    ∀ n : ℕ, ∀ F ∈ Wn, (D ^ n) F ∈ Wn := by
-  intro n
-  induction n with
-  | zero => intro F hF; simpa using hF
-  | succ n ih =>
-    intro F hF
-    rw [pow_succ', Module.End.mul_apply]
-    exact hD _ (ih F hF)
+    ∀ n : ℕ, ∀ F ∈ Wn, (D ^ n) F ∈ Wn :=
+  fun n => Module.End.pow_apply_mem_of_forall_mem n hD
 
 lemma pow_sub_pow_mem (β D : Module.End ℂ V) (Wn I : Submodule ℂ V)
     (hβ : ∀ F ∈ I, β F ∈ I) (hD : ∀ F ∈ Wn, D F ∈ Wn) (hDβ : ∀ F ∈ Wn, D F - β F ∈ I) :

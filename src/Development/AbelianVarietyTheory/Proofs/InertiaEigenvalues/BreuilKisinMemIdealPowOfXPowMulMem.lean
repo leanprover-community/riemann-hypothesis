@@ -15,9 +15,6 @@ namespace GlobalTheory.BSP.BK
 
 variable {l : ℕ} [Fact l.Prime] {K : FinExt l}
 
-theorem X_pow_natDegree_mem_lE (bk : BK K) : (X : bk.S) ^ bk.Ep.natDegree ∈ bk.J := by
-  apply GlobalTheory.BSP.BK.X_pow_natDegree_mem_J
-
 theorem E_mem_span_l_X (bk : BK K) : bk.E ∈ Ideal.span {(l : bk.S)} ⊔ Ideal.span {(X : bk.S)} := by
   obtain ⟨w, hw⟩ := bk.coeff_zero
   have hc : constantCoeff bk.E = (l : Wq l bk.a) * w := by
@@ -52,11 +49,11 @@ theorem GlobalTheory.BSP.BK.mem_J_pow_of_X_pow_mul_mem : ∀ (l : ℕ) [Fact l.P
   have ht' : t = C ((l : Wq l bk.a) ^ N) * PowerSeries.mk (fun k => coeff (k + m) h) := by
     ext k
     have := congrArg (coeff (k + m)) htm
-    rw [coeff_X_pow_mul', if_pos (Nat.le_add_left m k), Nat.add_sub_cancel, coeff_C_mul] at this
+    rw [coeff_X_pow_mul', ite_eq_left (Nat.le_add_left m k), Nat.add_sub_cancel, coeff_C_mul] at this
     rw [this, coeff_C_mul, coeff_mk]
   have hs2 : s = ((X : bk.S) ^ bk.Ep.natDegree) ^ N * g + (l : bk.S) ^ N * PowerSeries.mk (fun k => coeff (k + m) h) := by
     have : s = t + (X : bk.S) ^ (bk.Ep.natDegree * N) * g := by rw [ht]; ring
     rw [this, ht', map_pow, map_natCast, ← pow_mul]; ring
   rw [hs2]
-  exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (BK.X_pow_natDegree_mem_lE bk) N))
+  exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (GlobalTheory.BSP.BK.X_pow_natDegree_mem_J bk) N))
     (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (Ideal.mem_sup_left (Ideal.mem_span_singleton_self _)) N))

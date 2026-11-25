@@ -51,7 +51,7 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K 
 
 theorem cellD_apply_of_not (s : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι n → Ω) (I : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι (n + 1))
     (hI : ¬ CellMeets y I.1) : cellD S y n s I = 0 := by
-  simp only [cellD, LinearMap.pi_apply, if_neg hI, LinearMap.zero_apply]
+  simp only [cellD, LinearMap.pi_apply, ite_eq_right hI, LinearMap.zero_apply]
 
 open Classical in
 theorem cellD_apply_of (s : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι n → Ω) (I : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι (n + 1))
@@ -61,7 +61,7 @@ theorem cellD_apply_of (s : ReciprocityTheory.ChartRestriction.G.ArakelovGeometr
           ∑ l, ((Function.update I.1 k ((I.1 k).erase i) l).card - 1) = n then
         ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.faceSign I.1 k i • s ⟨Function.update I.1 k ((I.1 k).erase i), h⟩
       else 0 := by
-  simp only [cellD, LinearMap.pi_apply, if_pos hI, LinearMap.sum_apply]
+  simp only [cellD, LinearMap.pi_apply, ite_eq_left hI, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ => ?_
   split_ifs <;> rfl
 
@@ -324,7 +324,7 @@ theorem DoubleCech.aug_chain (hMJ : ∀ (J J' : Kleiman.Chart x) I, J.1 ⊆ J'.1
     DoubleCech.vert F K ι Ω x 0 p (fun J c => if CellMeets y c.1 then (t J : Ω) else 0) J c
   rw [DoubleCech.vert_apply, Kleiman.Cech.d_apply]
   by_cases h : CellMeets y c.1
-  · simp only [h, if_true, Submodule.coe_sum]
+  · simp only [h, ite_true, Submodule.coe_sum]
     rfl
   · simp [h]
 
@@ -345,7 +345,7 @@ theorem DoubleCech.aug_inj (T : Kleiman.SubSystem F x Ω) (hrow : ∀ J, CellAug
   refine LinearMap.ker_eq_bot'.2 fun t ht => funext fun J => Subtype.ext ?_
   have h := congrFun (congrFun (congrArg Subtype.val ht) J) c₀
   change (if CellMeets y c₀.1 then (t J : Ω) else 0) = 0 at h
-  rw [if_pos hc₀] at h
+  rw [ite_eq_left hc₀] at h
   exact h
 
 theorem DoubleCech.row_zero (hMI : ∀ J (I I' : ∀ k, Finset (ι k)), (∀ k, I k ⊆ I' k) → CellMeets y I' → M J I ≤ M J I')
@@ -366,7 +366,7 @@ theorem DoubleCech.row_zero (hMI : ∀ J (I I' : ∀ k, Finset (ι k)), (∀ k, 
       exact h0.symm
   · rintro _ ⟨t, rfl⟩
     rw [LinearMap.mem_ker]
-    exact Subtype.ext (funext fun J => cellD_const _ (t J : Ω) fun c hc => if_pos hc)
+    exact Subtype.ext (funext fun J => cellD_const _ (t J : Ω) fun c hc => ite_eq_left hc)
 
 theorem DoubleCech.row_succ [∀ k, Fintype (ι k)] (hSq : CellDSq.Statement)
     (hMI : ∀ J (I I' : ∀ k, Finset (ι k)), (∀ k, I k ⊆ I' k) → CellMeets y I' → M J I ≤ M J I')
@@ -482,7 +482,6 @@ section Ends
 variable {F : Type} [Field F] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, LinearOrder (ι k)]
   {Ω : Type} [Field Ω] [Algebra F Ω] {N : ℕ} {x : Fin (N + 1) → Ω} {y : (Σ k, ι k) → Ω}
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem DoubleCech.T_equiv (T : Kleiman.SubSystem F x Ω) (n : ℕ) :
     Nonempty (T.H n ≃ₗ[F] Staircase.H (fun p => Kleiman.Cech.d (fun J => ↥(T.sub J)) T.res p) n) := by
   cases n <;> exact ⟨LinearEquiv.refl F _⟩
@@ -523,7 +522,6 @@ theorem DoubleCech.B_equiv {B : (∀ k, Finset (ι k)) → Submodule F Ω}
 
 end Ends
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem DoubleCech.proof (hS : Staircase.Statement) (hSq : CellDSq.Statement) : DoubleCech.Statement := by
   intro F _ K _ _ ι _ _ Ω _ _ y N x T B M hy hx hB hM hMJ hMI hcol hrow n
   classical

@@ -39,17 +39,14 @@ section -- clump:auto
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
 
-private theorem open_fix {v : ℕ} [Fact v.Prime] (H : Subgroup (GQ v)) (hH : IsOpen (H : Set (GQ v))) :
-    (IntermediateField.fixedField H).fixingSubgroup = H :=
-  _root_.UpperTheory.Reformulated.B.Qi42.open_fix H hH
-
 private theorem open_index {v : ℕ} [Fact v.Prime] (H : Subgroup (GQ v)) (hH : IsOpen (H : Set (GQ v))) :
     H.index = finrank ℚ_[v] ↥(IntermediateField.fixedField H) := by
-  rw [IntermediateField.finrank_eq_fixingSubgroup_index, open_fix H hH]
+  rw [IntermediateField.finrank_eq_fixingSubgroup_index,
+    _root_.UpperTheory.Reformulated.B.Qi42.open_fix H hH]
 
 private theorem open_fin {v : ℕ} [Fact v.Prime] (H : Subgroup (GQ v)) (hH : IsOpen (H : Set (GQ v))) :
     FiniteDimensional ℚ_[v] ↥(IntermediateField.fixedField H) := by
-  rw [← InfiniteGalois.isOpen_iff_finite, open_fix H hH]
+  rw [← InfiniteGalois.isOpen_iff_finite, _root_.UpperTheory.Reformulated.B.Qi42.open_fix H hH]
   exact hH
 
 private theorem fixed_sup {v : ℕ} [Fact v.Prime] (H : Subgroup (GQ v)) :
@@ -69,7 +66,7 @@ theorem UpperTheory.V.Loc.openField :
   have hH : IsOpen (φ.range : Set (GQ v)) := by
     rw [MonoidHom.coe_range]; exact hφ.isOpen_range
   let K : FinExt v := ⟨IntermediateField.fixedField φ.range, open_fin _ hH⟩
-  have hK : φ.range = GK K := (open_fix _ hH).symm
+  have hK : φ.range = GK K := (_root_.UpperTheory.Reformulated.B.Qi42.open_fix _ hH).symm
   let e : G ≃* ↥(GK K) := (MonoidHom.ofInjective hφ.injective).trans (MulEquiv.subgroupCongr hK)
   have he : ∀ g, ((e g : ↥(GK K)) : GQ v) = φ g := fun g => rfl
   refine ⟨K, e, ?_, ?_, ?_, hK, open_index _ hH, ?_⟩

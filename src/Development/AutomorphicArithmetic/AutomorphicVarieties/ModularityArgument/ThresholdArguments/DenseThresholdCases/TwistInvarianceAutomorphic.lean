@@ -56,15 +56,6 @@ section Real
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 private noncomputable def diagR (E : Type) [Field E] [NumberField E] [IsTotallyReal E] : E →+* TR.Rinf E :=
   (TR.pInf E).comp (algebraMap E (Ad E))
-private theorem denseRange_diagR : DenseRange (diagR E) := by
-  have hc : Continuous (TR.infEq E).symm := continuous_pi fun w =>
-    (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal w)).continuous.comp
-      (continuous_apply w)
-  exact (TR.infEq E).symm.surjective.denseRange.comp (InfiniteAdeleRing.denseRange_algebraMap E) hc
-private theorem chiInf_pos {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgPos χ n) (u : (TR.Rinf E)ˣ)
-    (hu : ∀ v, 0 < u.val v) :
-    ((TR.chiInf χ u : ℂˣ) : ℂ) = ∏ φ : E →+* ℂ, ((u.val (InfinitePlace.mk φ) : ℝ) : ℂ) ^ n φ := by
-  apply _root_.chiInf_pos <;> assumption
 private theorem expo_intR {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgPos χ n) (v : InfinitePlace E) :
     ∃ k : ℤ, TR.expo χ v = k := by
   apply _root_.expo_intR <;> assumption

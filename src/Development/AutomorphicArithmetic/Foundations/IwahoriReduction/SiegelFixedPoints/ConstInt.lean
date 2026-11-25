@@ -141,7 +141,7 @@ theorem UpperTheory.exists_isLocallyConstant_lift_to_geometric_galois :
     rw [this]
     exact hη₀.comp_continuous hrc
   · intro g g' hg hgg'
-    simp only [hg, dif_pos]
+    simp only [hg, dite_eq_left]
     congr 1
     ext z
     rw [hr]
@@ -280,7 +280,7 @@ private theorem int_of_hol [IsAlgClosure ℚ Ω] (X : Tower Ω ε) (f : X.K)
     rintro _ ⟨γ, rfl⟩
     refine ⟨red γ, ?_⟩
     have h : ∃ γ', red γ' = red γ := ⟨γ, rfl⟩
-    simp only [g, dif_pos h]
+    simp only [g, dite_eq_left h]
     exact hfac _ _ h.choose_spec
   have hhol : ∀ h ∈ S, h ∈ JInt.holR X := by
     rintro _ ⟨γ, rfl⟩

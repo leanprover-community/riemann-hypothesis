@@ -117,8 +117,4 @@ def pullGram (φ : X.Fn →ₐ[F] Y.Fn) (f : Y.X ⟶ X.X) (hf : f ≫ X.str = Y.
 
 end Variety
 
-section Inhabitants
-
-end Inhabitants
-
 end GlobalTheory.ChernCalc

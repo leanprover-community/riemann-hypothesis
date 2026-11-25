@@ -97,7 +97,7 @@ theorem mem_of_coefQF_ne_zero {w : 𝓞 E} {u : XFF F E nS nT} {y : Matrix (Fin 
   have e : chiLatF σ JS JT ξ₀ B.ψ Λ w (ratWF y + (u : WOF F E nS nT)) = 0 := by
     unfold chiLatF
     rw [smul_add, _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_fin u.fin]
-    exact if_neg hn
+    exact ite_eq_right hn
   rw [coefQF, e, mul_zero, zero_mul, mul_zero]
 
 theorem coefQF_zero (w : 𝓞 E) {u : XFF F E nS nT} (hu : u ∈ latF F E nS nT Λ) :
@@ -105,7 +105,7 @@ theorem coefQF_zero (w : 𝓞 E) {u : XFF F E nS nT} (hu : u ∈ latF F E nS nT 
   have e : ratWF (F := F) (0 : Matrix (Fin nT) (Fin nS) E) = 0 := Matrix.map_zero _ (incAF F E).map_zero
   rw [coefQF, e, zero_add, map_zero, _root_.GlobalTheory.HeisThetaF.symplOHF_zero_left, AddChar.map_zero_eq_one, one_mul, map_zero,
     LinearMap.zero_apply, Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one, chiLatF,
-    _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_fin u.fin, if_pos (mem_latF.1 hu), phaseF, ← AddChar.map_add_eq_mul, neg_add_cancel,
+    _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_fin u.fin, ite_eq_left (mem_latF.1 hu), phaseF, ← AddChar.map_add_eq_mul, neg_add_cancel,
     AddChar.map_zero_eq_one]
 
 def sandF (b : Matrix (Fin nT) (Fin nT) E) (a : Matrix (Fin nS) (Fin nS) E) :

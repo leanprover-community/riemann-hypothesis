@@ -65,17 +65,6 @@ import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidStA
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.NonzeroScalarMultipleMembership
-
-theorem exists_ne_zero_smul_mem {K V : Type} [Field K] [NumberField K] [AddCommGroup V]
-    [Module K V] [Module (NumberField.RingOfIntegers K) V]
-    [IsScalarTower (NumberField.RingOfIntegers K) K V]
-    {L : Submodule (NumberField.RingOfIntegers K) V} {x : V}
-    (hx : x ∈ Submodule.span K (L : Set V)) :
-    ∃ a : NumberField.RingOfIntegers K, a ≠ 0 ∧ a • x ∈ L := by
-  apply Formalism.L2.SG.Pf.LatEx.exists_smul_mem_of_mem_span <;> assumption
-
-end GlobalTheory.NonzeroScalarMultipleMembership
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroSmulMem =====
@@ -212,7 +201,7 @@ theorem span_eq_top_of_injective [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V
   rw [eq_top_iff]
   intro f _
   have hf : φ f ∈ Submodule.span K (L : Set V) := hsp ▸ Submodule.mem_top
-  obtain ⟨a, ha, hm⟩ := _root_.GlobalTheory.NonzeroScalarMultipleMembership.exists_ne_zero_smul_mem hf
+  obtain ⟨a, ha, hm⟩ := _root_.Formalism.L2.SG.Pf.LatEx.exists_smul_mem_of_mem_span hf
   have h1 : a • f ∈ L' := hL _ (by rwa [LinearMap.map_smul_of_tower])
   have hA : algebraMap (𝓞 K) K a ≠ 0 := fun h => ha (IsFractionRing.injective (𝓞 K) K (h.trans (map_zero _).symm))
   have e : f = (algebraMap (𝓞 K) K a)⁻¹ • (a • f) := by
@@ -295,7 +284,7 @@ theorem goodOn_of_goodW (h : GoodW U x V dict G) : GoodOn U x V dict Z G := by
         have a2 := GlobalTheory.AllWt.petW_smul U x V dict G w.embedding 0 0
         simp only [zero_smul, map_zero, norm_zero, zero_mul] at a1 a2
         exact a1.trans a2.symm
-      · push_neg at h0
+      · push Not at h0
         refine hasGram_of_injective hg φ hφ (fun v => (((muQ1 (V (goodOf c v.embedding))
           (classesOver (V (goodOf c v.embedding)) (dict (goodOf c v.embedding)) (framesOn (U (goodOf c v.embedding)) Z)))⁻¹ ^
             (1 / (2 : ENNReal)).toReal).toReal)) (fun v => ?_) fun v f => ?_

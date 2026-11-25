@@ -26,5 +26,5 @@ theorem UpperTheory.V.AlgebraTools.Det.killsLam :
   rw [Finset.sum_ite_eq] at hc
   have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (by omega)
   have hi0 : i ≠ 0 := by omega
-  simp only [hmem, if_true, hi0, if_false] at hc
+  simp only [hmem, ite_true, hi0, ite_false] at hc
   exact hc.symm

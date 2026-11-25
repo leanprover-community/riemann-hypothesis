@@ -395,9 +395,9 @@ theorem exists_theta_ne_zero {M : ℕ} {B : Matrix ι ι F} {ρ : InfinitePlace 
           rw [thTerm, e1, indN_zero gf _ h0]
           simp only [e2]
           simp [gauss]
-        simp only [this, if_true]
+        simp only [this, ite_true]
         exact tendsto_const_nhds
-      · rw [if_neg hx]
+      · rw [ite_eq_right hx]
         refine tendsto_const_nhds.congr' ?_
         filter_upwards [indN_eventually_zero hu hx] with n hn
         rw [thTerm, hn, zero_mul]

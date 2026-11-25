@@ -9,51 +9,8 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsHighest
 public import Formalism.FormalDegreeBessel.FinalDS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 public import Formalism.HermitianCurvature.FrameExists2
@@ -196,7 +153,7 @@ theorem isFrameOf (hg : IsFrameW k r z g) : Q.IsFrameOf k r [z] (fun a => g *ᵥ
           Fin.ext (by rw [hp]; simp only [eI]; split_ifs <;> omega)
         rw [← e]; exact (hg.2.1 _).1
     have h2 := hf (bvec (bl k r a)) (bvec (piI k r i))
-    rw [hfix, herm_right_bvec, piI_piI, h1, if_neg] at h2
+    rw [hfix, herm_right_bvec, piI_piI, h1, ite_eq_right] at h2
     · refine (mul_eq_zero.1 h2).resolve_left fun h => ?_
       have := epsI_mul_self (k := k) (r := r) (piI k r i)
       rw [h] at this; simp at this
@@ -210,7 +167,7 @@ theorem isFrameOf (hg : IsFrameW k r z g) : Q.IsFrameOf k r [z] (fun a => g *ᵥ
     simp [blockIndex_injective.eq_iff, eq_comm]
   · rw [List.mem_singleton.1 hv, ← hg.2.2]
     refine (hf _ _).trans ?_
-    rw [herm_smul_right, h1, if_neg, mul_zero]
+    rw [herm_smul_right, h1, ite_eq_right, mul_zero]
     intro h
     have := congrArg Fin.val h
     have := a.isLt
@@ -346,10 +303,5 @@ theorem prod_eq {u : ℕ → ℝ} {u₀ : Fin k → ℝ} (hπ : Q.IsType k r z �
   ring
 
 end param
-
-section main
-open PI.BesselPeriodGGP
-
-end main
 
 end GlobalTheory.SupNonzero

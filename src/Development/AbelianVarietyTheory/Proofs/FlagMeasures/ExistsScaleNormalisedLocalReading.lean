@@ -4,51 +4,10 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.InFrameStabilizer
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FractionFieldToGenericStalkAlgebraMapEq
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
@@ -155,17 +114,17 @@ theorem ptEntry_row_zero {K : Type*} [Zero K] :
         subst hj0
         have hs : 0 < s := by omega
         simp only [Formalism.MainNotions.S.ptEntry]
-        rw [if_pos ⟨hs, hs⟩, if_neg (by omega)]
+        rw [ite_eq_left ⟨hs, hs⟩, ite_eq_right (by omega)]
       · exfalso
         simp [blkOf, ha, hbs] at hbl
     · have hbs : ¬ b < s := by omega
-      simp only [blkOf, ha, hbs, if_false] at hbl
+      simp only [blkOf, ha, hbs, ite_false] at hbl
       have hbl' : blkOf rest (a - s) = blkOf rest (b - s) := by omega
       have hb' : b - s < (rest.map Prod.snd).sum := by simp at hb; omega
       obtain ⟨c, hc, hz⟩ := ih (a - s) (b - s) (by omega) hb' hbl'
       refine ⟨c + s, by omega, fun j hj => ?_⟩
       simp only [Formalism.MainNotions.S.ptEntry]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
       split_ifs with h
       · have hcs : c + s - s = c := by omega
         rw [hcs]
@@ -185,7 +144,7 @@ theorem isEmpty_freeE_of_reg {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word
   have hle : c + 1 ≤ D.R.rS + 1 := by omega
   apply (hreg v).1 (c + 1) (by omega) (by omega)
   unfold Formalism.L2.SG.RealObj.Dl
-  rw [dif_pos hle]
+  rw [dite_eq_left hle]
   apply Matrix.det_eq_zero_of_row_eq_zero ⟨c, by omega⟩
   intro j
   simp only [Matrix.submatrix_apply]
@@ -232,10 +191,10 @@ theorem scale_pin : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word), �
     have hex0 : ∃ γ, IsPtRep X u u' w γ := ⟨γ0, hγ0⟩
     have hw : IsPtRep X u u' w (gamW X u u' w) := by
       unfold gamW
-      rw [dif_pos hex0]
+      rw [dite_eq_left hex0]
       exact hex0.choose_spec
     have hex : ∃ w', IsPtRep X u u' w' (gamW X u u' w) := ⟨w, hw⟩
-    simp only [sc, dif_pos hex]
+    simp only [sc, dite_eq_left hex]
     rw [ptRep_unique X u u' hex.choose_spec hw]
     push_cast
     rfl

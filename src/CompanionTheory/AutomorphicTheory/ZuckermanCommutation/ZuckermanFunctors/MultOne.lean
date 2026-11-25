@@ -59,7 +59,7 @@ theorem cM_mul {n : ℕ} {A B : Matrix (Fin n) (Fin n) ℂ} (h : Aᵀ * B = 1) :
   have := congrFun (congrFun h c) d
   simp only [Matrix.mul_apply, Matrix.one_apply, transpose_apply] at this
   simp only [Matrix.mul_apply, cM, Fintype.sum_prod_type, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, kroneckerMap_apply, this]
+    Finset.mem_univ, ite_true, kroneckerMap_apply, this]
 
 theorem cM_hom (hM : MatHom) (b : Bool) (B : URep k r) :
     IsHom ((vr k r b).tens (vr k r (!b)), B) (one B) (mAct (cM _)) := by
@@ -139,9 +139,7 @@ theorem multOne_of (hC : HomCat) (hM : MatHom) (hT : TensHom) (hL : HomLie) (hS 
       have e5 := hom_cas hL (o2 k r (!b)) (o1 k r) hp (fun d => Φ i v (c, d))
       rw [e4, hBt, map_smul, LinearMap.smul_apply, LinearMap.id_apply, ← sub_eq_zero, ← sub_smul] at e5
       exact (smul_eq_zero.1 e5).resolve_left (sub_ne_zero.2 (hne t).symm)
-    obtain ⟨v, hv⟩ : ∃ v, κ v ≠ 0 := by
-      by_contra hn
-      exact hκ0 (LinearMap.ext fun v => not_not.1 fun h => hn ⟨v, h⟩)
+    obtain ⟨v, hv⟩ : ∃ v, κ v ≠ 0 := DFunLike.exists_ne hκ0
     obtain ⟨d, hd⟩ := Function.ne_iff.1 hv
     refine hK k r T _ i hDS hi (fun _ => κ v d) (fun h => hd (congrFun h ())) (funext fun c => ?_)
     rw [← Φap]

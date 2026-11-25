@@ -1022,7 +1022,6 @@ theorem GlobalTheory.quaternion_isTopologicalRing_nrm_re_t2 : ∀ (R : Type) [Co
   have c0 := (continuous_coord_re (R := R) (a := a) (b := b))
   have c1 := (continuous_coord_imI (R := R) (a := a) (b := b))
   have c2 := (continuous_coord_imJ (R := R) (a := a) (b := b))
-  have c3 := (continuous_coord_imK (R := R) (a := a) (b := b))
   refine ⟨isTopologicalRing, ?_, c0, fun _ => ?_⟩
   · unfold nrm; fun_prop
   · have hinj : Function.Injective (coords : ℍ[R, a, b] → Fin 4 → R) := by

@@ -4,44 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWe
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.MeasurePreservingMulLeft
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -62,11 +25,7 @@ section Generic
 variable {k : ℕ} {G B s : Matrix (Fin k) (Fin k) ℂ}
 
 theorem isUnit_det (hs : s * s = 1) (h : Bᴴ * G * B = s) : IsUnit B.det := by
-  have hs0 : s.det ≠ 0 := by
-    intro h0
-    have h1 := congrArg Matrix.det hs
-    rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at h1
-    exact zero_ne_one h1
+  have hs0 : s.det ≠ 0 := Matrix.det_ne_zero_of_left_inverse hs
   rw [← h, Matrix.det_mul, Matrix.det_mul] at hs0
   exact isUnit_iff_ne_zero.mpr (right_ne_zero_of_mul hs0)
 
@@ -106,10 +65,8 @@ theorem isCartanInv (hs : s * s = 1) (hs' : sᴴ = s) (h : Bᴴ * G * B = s) : I
             simp only [Matrix.mul_assoc]
         _ = B⁻¹ᴴ * B⁻¹ := by
             rw [hBi, Matrix.mul_one, Matrix.mul_assoc B⁻¹ᴴ s s, hs, Matrix.mul_one]
-    have hinj : Function.Injective (B⁻¹).mulVec := by
-      intro x y hxy
-      have h4 := congrArg B.mulVec hxy
-      simpa [Matrix.mulVec_mulVec, hBr] using h4
+    have hinj : Function.Injective (B⁻¹).mulVec :=
+      Matrix.mulVec_injective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_nonsing_inv_det B hu))
     rw [hGM]
     exact Matrix.PosDef.conjTranspose_mul_self _ hinj
 
@@ -219,7 +176,7 @@ theorem zR_single {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (F
   dsimp only
   by_cases hσ : σ = C.m.e τ
   · subst hσ
-    rw [if_pos rfl, Pi.single_eq_same, mat_xB C B τ]
+    rw [ite_eq_left rfl, Pi.single_eq_same, mat_xB C B τ]
     split_ifs with hj
     · refine (hermC_conj C τ (fun a => B τ a j) (fun a => z a k)).trans ?_
       have h1 : star (fun a => B τ a j) ⬝ᵥ gramAt D T τ *ᵥ (fun a => z a k) =
@@ -234,7 +191,7 @@ theorem zR_single {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (F
     · rw [inv_map_conj hu]
 
       simp [Matrix.mulVec, dotProduct, Matrix.mul_apply, map_sum, map_mul]
-  · rw [if_neg hσ, Pi.single_eq_of_ne hσ]
+  · rw [ite_eq_right hσ, Pi.single_eq_of_ne hσ]
     split_ifs <;> simp [ReciprocityTheory.ChartRestriction.G.FD.hermC]
 
 theorem zR_cplxO {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) :

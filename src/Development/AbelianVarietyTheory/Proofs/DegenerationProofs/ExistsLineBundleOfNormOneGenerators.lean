@@ -5,49 +5,9 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscret
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.JacobsonClosedPointsToolsInt
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MemPadicAlgClValuationSubringIffNormLeOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueExtensionOfForallNormLeOne
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.RegularOfBoundedAtPadicAlgClPoints
 
@@ -60,85 +20,6 @@ open GlobalTheory.ZJ
 
 namespace GlobalTheory
 namespace NormGlue
-
--- The dependency's current stub build predates its bounded-regularity theorem.
--- Keep its proof under a separate namespace so this file can be checked against that build.
-namespace RegularSupport
-
-namespace BoundedRegular
-
-theorem valF_spMap_comp_eq {F F' : Type} [Field F] [Field F'] (f : F →+* F') {X : Scheme.{0}}
-    (t : Sp F ⟶ X) (U : X.Opens) (ht : ⊤ ≤ t ⁻¹ᵁ U) (φ : Γ(X, U)) :
-    valF (spMap f ≫ t) U φ =
-      f ((Scheme.ΓSpecIso (CommRingCat.of F)).hom (t.appLE U ⊤ ht φ)) := by
-  have h' : ⊤ ≤ (spMap f ≫ t) ⁻¹ᵁ U := fun q _ => ht (Set.mem_univ (spMap f q))
-  rw [valF, dite_eq_left h']
-  have e : (spMap f ≫ t).appLE U ⊤ h' ≫ (Scheme.ΓSpecIso (CommRingCat.of F')).hom =
-      t.appLE U ⊤ ht ≫ (Scheme.ΓSpecIso (CommRingCat.of F)).hom ≫ CommRingCat.ofHom f := by
-    rw [← Scheme.ΓSpecIso_naturality, ← Scheme.Hom.appLE_comp_appLE (spMap f) t U ⊤ ⊤ ht le_rfl,
-      Category.assoc]
-    rfl
-  exact congrArg (fun g => g.hom φ) e
-
-theorem valF_mul_valF_eq_one {F : Type} [Field F] {X : Scheme.{0}} (t : Sp F ⟶ X) (U : X.Opens)
-    (ht : Set.range t ⊆ U) {φ φ' : Γ(X, U)} (h : φ * φ' = 1) :
-    valF t U φ * valF t U φ' = 1 := by
-  have h' : ⊤ ≤ t ⁻¹ᵁ U := fun q _ => ht ⟨q, rfl⟩
-  rw [valF, valF, dite_eq_left h', dite_eq_left h', ← map_mul, ← map_mul, h, map_one, map_one]
-
-theorem exists_point_norm_valF_eq {X : Scheme.{0}} {p : ℕ} [Fact p.Prime]
-    (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] K]
-    (y : Spec (.of (integralClosure ℤ_[p] K)) ⟶ X) (U : X.Opens)
-    (hy : ⊤ ≤ (Spec.map (CommRingCat.ofHom (algebraMap (integralClosure ℤ_[p] K) K)) ≫ y) ⁻¹ᵁ U)
-    (φ : Γ(X, U)) :
-    ∃ y' : Sp (OO p) ⟶ X, y' (cPt p) = y (IsLocalRing.closedPoint (integralClosure ℤ_[p] K)) ∧
-      Set.range (gPt p ≫ y') ⊆ U ∧
-      valF (gPt p ≫ y') U φ = (((Scheme.ΓSpecIso (.of K)).hom
-        ((Spec.map (CommRingCat.ofHom (algebraMap (integralClosure ℤ_[p] K) K)) ≫ y).appLE
-          U ⊤ hy φ) : K) : PadicAlgCl p) := by
-  apply _root_.GlobalTheory.BoundedRegular.exists_point_norm_valF_eq
-
-theorem existsUnique_resG_eq {X : Scheme.{0}} [IsIntegral X] (π : X ⟶ Sp ℤ) [Flat π]
-    [LocallyOfFiniteType π] (hX : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X) {U W : X.Opens}
-    (h : U ≤ W) (φ : Γ(X, U)) (hU : (U : Set X).Nonempty)
-    (H : ∀ (p : ℕ) [Fact p.Prime] (y : Sp (OO p) ⟶ X), y (cPt p) ∈ W →
-      Set.range (gPt p ≫ y) ⊆ U → ‖valF (gPt p ≫ y) U φ‖ ≤ 1) :
-    ∃! ψ : Γ(X, W), resG X h ψ = φ := by
-  haveI : Nonempty U := hU.to_subtype
-  haveI : Nonempty W := (hU.mono h).to_subtype
-  obtain ⟨ψ, hψ⟩ := exists_germToFunctionField_eq_of_frequently_norm_le_one π U W
-    (fun x _ _ _ => (hX x).2) (φ := φ) fun p _ K hK => ⟨K, hK, le_rfl, fun y hy hW _ _ => by
-      obtain ⟨y', h1, h2, h3⟩ := exists_point_norm_valF_eq K y U hy φ
-      rw [← h3]
-      exact H p y' (h1 ▸ hW) h2⟩
-  have e : resG X h ψ = φ :=
-    X.germToFunctionField_injective U ((X.presheaf.germ_res_apply (homOfLE h) _ _ ψ).trans hψ)
-  exact ⟨ψ, e, fun ψ' h' => map_injective_of_isIntegral X (homOfLE h) (h'.trans e.symm)⟩
-
-end BoundedRegular
-
-
-open BoundedRegular in
-theorem regular_of_bounded_at_padicAlgCl_points :
-    (∀ (X : Scheme.{0}) [IsIntegral X] (π : X ⟶ Sp ℤ) [Flat π] [LocallyOfFiniteType π] (x : X),
-      IsClosed ({x} : Set X) → IsIntegrallyClosed (X.presheaf.stalk x) →
-      ∀ (U : X.Opens) (φ : Γ(X, U)), (U : Set X).Nonempty →
-      (∀ (p : ℕ) [Fact p.Prime] (y : Sp (OO p) ⟶ X), y (cPt p) = x →
-        Set.range (gPt p ≫ y) ⊆ U → ‖valF (gPt p ≫ y) U φ‖ ≤ 1) →
-      ∃ (W : X.Opens) (ψ : Γ(X, W)), x ∈ W ∧
-        resG X (inf_le_left : W ⊓ U ≤ W) ψ = resG X (inf_le_right : W ⊓ U ≤ U) φ) ∧
-    (∀ (X : Scheme.{0}) [IsIntegral X] (π : X ⟶ Sp ℤ) [Flat π] [LocallyOfFiniteType π],
-      ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X → ∀ (U W : X.Opens) (h : U ≤ W) (φ : Γ(X, U)),
-      (U : Set X).Nonempty →
-      ((∀ (p : ℕ) [Fact p.Prime] (y : Sp (OO p) ⟶ X), y (cPt p) ∈ W →
-        Set.range (gPt p ≫ y) ⊆ U → ‖valF (gPt p ≫ y) U φ‖ ≤ 1) →
-          ∃! ψ : Γ(X, W), resG X h ψ = φ) ∧
-      (IsUnit φ → (∀ (p : ℕ) [Fact p.Prime] (y : Sp (OO p) ⟶ X), y (cPt p) ∈ W →
-        Set.range (gPt p ≫ y) ⊆ U → ‖valF (gPt p ≫ y) U φ‖ = 1) →
-          ∃ ψ : Γ(X, W), IsUnit ψ ∧ resG X h ψ = φ)) := by
-  apply _root_.GlobalTheory.regular_of_bounded_at_padicAlgCl_points
-
-end RegularSupport
 
 theorem appLE_eq_appIso {X Y : Scheme.{0}} (f : Y ⟶ X) [IsOpenImmersion f] (W : X.Opens)
     (V : Y.Opens) (h : V ≤ f ⁻¹ᵁ W) (h' : f ''ᵁ V ≤ W) (ψ : Γ(X, W)) :
@@ -246,7 +127,7 @@ theorem exists_ext (X : Scheme.{0}) [IsIntegral X] (π : X ⟶ Sp ℤ) [Flat π]
   · obtain ⟨y, hy⟩ := hne hW
     have hex : ∃ ψ : Γ(X, W), IsUnit ψ ∧
         resG X (image_le f h) ψ = (f.appIso V).inv.hom u.val :=
-      (RegularSupport.regular_of_bounded_at_padicAlgCl_points.2 X π hX (f ''ᵁ V) W (image_le _ h)
+      (_root_.GlobalTheory.regular_of_bounded_at_padicAlgCl_points.2 X π hX (f ''ᵁ V) W (image_le _ h)
       ((f.appIso V).inv.hom u.val) ⟨f y, y, hy, rfl⟩).2 (u.isUnit.map _) (by
         intro p _ b hb hr
         have hr' : Set.range (gPt p ≫ b) ⊆ Set.range f := by

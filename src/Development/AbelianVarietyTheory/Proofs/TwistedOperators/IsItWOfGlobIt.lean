@@ -256,19 +256,19 @@ theorem term_mem (i : Fin b) (j k : Fin a) :
     raiO τ ε ε' i j * lowO τ ε ε' i k - LinearMap.mulLeft ℂ (quad τ ε ε' i j k) ∈ nonRaising (FVar D b a) := by
   unfold raiO lowO quad
   by_cases h1 : ε' i = ε j <;> by_cases h2 : ε' i = ε k
-  · rw [if_pos h1, if_pos h2, if_neg (fun h => h.2 h2), LinearMap.mulLeft_zero_eq_zero, sub_zero,
+  · rw [ite_eq_left h1, ite_eq_left h2, ite_eq_right (fun h => h.2 h2), LinearMap.mulLeft_zero_eq_zero, sub_zero,
       smul_mul_smul_comm]
     exact Submodule.smul_mem _ _ (mem_nonRaising.2 fun P => deg_X_pderiv _ _ P)
-  · rw [if_pos h1, if_neg h2, if_pos ⟨h1, h2⟩]
+  · rw [ite_eq_left h1, ite_eq_right h2, ite_eq_left ⟨h1, h2⟩]
     convert Submodule.zero_mem _
     rw [sub_eq_zero]
     refine LinearMap.ext fun P => ?_
     simp [smul_smul, mul_assoc, mul_comm (sgn (ε k))]
-  · rw [if_neg h1, if_pos h2, if_neg (fun h => h1 h.1), LinearMap.mulLeft_zero_eq_zero, sub_zero,
+  · rw [ite_eq_right h1, ite_eq_left h2, ite_eq_right (fun h => h1 h.1), LinearMap.mulLeft_zero_eq_zero, sub_zero,
       smul_mul_smul_comm, neg_mul]
     exact Submodule.smul_mem _ _ (Submodule.neg_mem _
       (mem_nonRaising.2 fun P => (deg_pderiv _ _).trans (deg_pderiv _ P)))
-  · rw [if_neg h1, if_neg h2, if_neg (fun h => h1 h.1), LinearMap.mulLeft_zero_eq_zero, sub_zero,
+  · rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right (fun h => h1 h.1), LinearMap.mulLeft_zero_eq_zero, sub_zero,
       smul_mul_smul_comm, neg_mul]
     exact Submodule.smul_mem _ _ (Submodule.neg_mem _
       (mem_nonRaising.2 fun P => deg_pderiv_X _ _ P))
@@ -313,7 +313,7 @@ theorem quadS_ne_zero (X : Matrix (Fin a) (Fin a) ℂ) (i : Fin b) (j k : Fin a)
     by_cases h : i' = i ∧ j' = j ∧ k' = k
     · obtain ⟨rfl, rfl, rfl⟩ := h
       simp [quad, hj, f, hj ▸ hk]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       unfold quad
       split_ifs with h'
       · simp only [map_smul, map_mul, MvPolynomial.aeval_X, f, Prod.mk.injEq, true_and]
@@ -451,14 +451,14 @@ theorem term_mem (i l : Fin b) (j : Fin a) :
   unfold raiO lowO quad
   rw [smul_mul_smul_comm, sgn_mul_self, one_smul]
   by_cases hi : ε' i = ε j <;> by_cases hl : ε' l = ε j
-  · simp only [hi, hl, if_true, ne_eq, not_true, and_false, if_false, LinearMap.mulLeft_zero_eq_zero, sub_zero]
+  · simp only [hi, hl, ite_true, ne_eq, not_true, and_false, ite_false, LinearMap.mulLeft_zero_eq_zero, sub_zero]
     exact mul_pderiv_mem _ _
-  · simp only [hi, hl, if_true, ne_eq, not_false_iff, and_self, if_false]
+  · simp only [hi, hl, ite_true, ne_eq, not_false_iff, and_self, ite_false]
     rw [LinearMap.mulLeft_mul, Module.End.mul_eq_comp, sub_self]
     exact Submodule.zero_mem _
-  · simp only [hi, hl, if_true, false_and, if_false, LinearMap.mulLeft_zero_eq_zero, sub_zero, neg_mul]
+  · simp only [hi, hl, ite_true, false_and, ite_false, LinearMap.mulLeft_zero_eq_zero, sub_zero, neg_mul]
     exact Submodule.neg_mem _ (mul_mem (pderiv_mem _) (pderiv_mem _))
-  · simp only [hi, hl, false_and, if_false, LinearMap.mulLeft_zero_eq_zero, sub_zero, neg_mul]
+  · simp only [hi, hl, false_and, ite_false, LinearMap.mulLeft_zero_eq_zero, sub_zero, neg_mul]
     exact Submodule.neg_mem _ (pderiv_mul_mem _ _)
 
 def quadAll (Y : Matrix (Fin b) (Fin b) ℂ) : PolF D b a :=
@@ -482,14 +482,14 @@ theorem fockQuadraticPart_ne_zero_of_offBlock_entry (Y : Matrix (Fin b) (Fin b) 
     intro i l j
     unfold quad
     by_cases hc : ε' i = ε j ∧ ε' l ≠ ε j
-    · rw [if_pos hc, map_mul, eval_X, eval_X]
+    · rw [ite_eq_left hc, map_mul, eval_X, eval_X]
       by_cases hj : j = j₀
       · subst hj
         have h1 : i ≠ l₀ := fun h => hl (h ▸ hc.1)
         have h2 : l ≠ i₀ := fun h => hc.2 (h ▸ hi)
         by_cases h3 : i = i₀ <;> by_cases h4 : l = l₀ <;> simp [pt, h1, h2, h3, h4]
       · simp [pt, hj]
-    · rw [if_neg hc, map_zero, if_neg]
+    · rw [ite_eq_right hc, map_zero, ite_eq_right]
       rintro ⟨rfl, rfl, rfl⟩
       exact hc ⟨hi, hl⟩
   have := congrArg (eval pt) h0
@@ -739,8 +739,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Matrix GlobalTheory.Chain GlobalTheory.Chain.RealIt
 open scoped TensorProduct InnerProductSpace
 
-theorem _root_.GlobalTheory.T.not_locallyFinite_quadraticMul_add_degreeNonraising : ∀ (σ : Type) [Finite σ] (Q : MvPolynomial σ ℂ) (L : Module.End ℂ (MvPolynomial σ ℂ)), Q ≠ 0 → Q.IsHomogeneous 2 → (∀ P, (L P).totalDegree ≤ P.totalDegree) → ∀ φ : MvPolynomial σ ℂ, φ ≠ 0 → ∀ F : Submodule ℂ (MvPolynomial σ ℂ), FiniteDimensional ℂ F → ¬ ∀ n : ℕ, ((LinearMap.mulLeft ℂ Q + L) ^ n) φ ∈ F := by
-  first | exact @GlobalTheory.Chain.RealIt.not_locallyFinite_mulLeft_add
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotLocallyFiniteQuadraticMulAddDegreeNonraisingStatement =====
@@ -827,7 +825,7 @@ theorem not_locFin {σ : Type} [Finite σ] {A : Module.End ℂ (MvPolynomial σ 
     ¬ ∀ m : ℕ, ((A + c • 1) ^ m) φ ∈ F := by
   obtain ⟨Q, L, hQ, hh, hL, rfl⟩ := h
   rw [add_assoc]
-  refine GlobalTheory.T.not_locallyFinite_quadraticMul_add_degreeNonraising σ Q (L + c • 1) hQ hh (fun P => ?_) φ hφ F hF
+  refine GlobalTheory.Chain.RealIt.not_locallyFinite_mulLeft_add σ Q (L + c • 1) hQ hh (fun P => ?_) φ hφ F hF
   exact (MvPolynomial.totalDegree_add _ _).trans (max_le (hL P) (MvPolynomial.totalDegree_smul_le c P))
 
 variable {D : D7}
@@ -1103,8 +1101,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Matrix GlobalTheory.Chain GlobalTheory.Chain.RealIt
 open scoped TensorProduct InnerProductSpace
 
-theorem _root_.GlobalTheory.T.exists_contraction_isometric_discreteSeries_fock : ∀ (p q r s : ℕ) (T₀ : GrpData (p * r + q * s) (p * s + q * r)) (T₁ : GrpData p q) (T₂ : GrpData r s) (F : FockData T₀ T₁ T₂) (R₁ : DSRep T₁) (R₂ : DSRep T₂) (Tm : R₁.U.H →L[ℂ] R₂.U.H →L[ℂ] F.H), (∀ x x' y y', inner ℂ (Tm x y) (Tm x' y') = inner ℂ x x' * inner ℂ y y') → (∀ g h x y, F.π (g, h) (Tm x y) = Tm (R₁.U.π g x) (R₂.U.π h y)) → ∃ B : Pol p q r s →ₗ[ℂ] R₂.U.H →ₛₗ[starRingEnd ℂ] R₁.U.H, IsCoverIt R₁ R₂ B := by
-  first | exact @GlobalTheory.Chain.CoverContr.exists_isCoverIt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContractionIsometricDiscreteSeriesFockStatement =====
@@ -1144,8 +1140,8 @@ theorem exists_locIt {X : ProvA} (hX : ChosenSeries X) (h1 : Formalism.MainNotio
   obtain ⟨U', hU'⟩ := hU' e' he'
   obtain ⟨Φ, hΦ⟩ := (h1.1 t al be ga de hd).1
   obtain ⟨Tm, hi, hq, -⟩ := h2.1 t al be ga de hd Φ hΦ
-  obtain ⟨B, hB⟩ := GlobalTheory.T.exists_contraction_isometric_discreteSeries_fock _ _ _ _ _ _ _ _ _ _ Tm hi hq
-  obtain ⟨κ, hκ⟩ := GlobalTheory.T.exists_fockPolynomialIso_unitaryPair _ _ _ _ _ _ _ _ e e' he he'
+  obtain ⟨B, hB⟩ := GlobalTheory.Chain.CoverContr.exists_isCoverIt _ _ _ _ _ _ _ _ _ _ Tm hi hq
+  obtain ⟨κ, hκ⟩ := GlobalTheory.Chain.RealIt.PolyIso.exists_isPolyIso _ _ _ _ _ _ _ _ e e' he he'
   obtain ⟨v, hv, -⟩ := (hX _ _ _ p2).1
   have c1 := Fintype.card_congr e
   have c2 := Fintype.card_congr e'

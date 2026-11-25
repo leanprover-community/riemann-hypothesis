@@ -639,21 +639,6 @@ theorem abPart_principal (C : Flat.BdryChart Xo σ₀ n a) {z : Fin n → ℂ} (
   show Spec.map (CommRingCat.ofHom (r.comp f)) = _
   rw [CommRingCat.ofHom_comp, Spec.map_comp]
 
-theorem periods_inj {g : ℕ} {Λ : Type} [AddCommGroup Λ] (L₀ : Flat.LogPeriods n a g Λ) {w : Fin n → ℂ}
-    (hw : w ∈ logCover L₀.a_le) : Function.Injective (L₀.P w) := by
-  intro x x' hxx
-  have h0 : L₀.P w (x - x') = 0 := by rw [map_sub, hxx, sub_self]
-  have hE : L₀.E (x - x') = 0 := by
-    refine LinearMap.ext fun y => ?_
-    have him := L₀.im w hw (x - x') y
-    rw [h0] at him
-    have h2 : ((L₀.E (x - x') y : ℤ) : ℝ) = 0 := by
-      rw [← him]
-      simp
-    rw [LinearMap.zero_apply]
-    exact_mod_cast h2
-  exact sub_eq_zero.1 (L₀.unimod.1 (hE.trans (map_zero L₀.E).symm))
-
 theorem centre_phi (C : Flat.BdryChart Xo σ₀ n a) {X : Scheme.{0}} {tt : SAB H X} {jj : Sp C.R ⟶ X}
     (m : SABMap C.t tt jj) {ρ : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ ≤ 1) (e : Flat.FamExp C.t.G C.M (Metric.ball 0 ρ) C.ψ)
     {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ] (L : ActPeriods E n a C.g Λ)
@@ -701,7 +686,7 @@ theorem centre_phi (C : Flat.BdryChart Xo σ₀ n a) {X : Scheme.{0}} {tt : SAB 
       simpa only [map_sub] using this
     filter_upwards [h1.eventually (per_small e hbρ (Metric.isOpen_ball.mem_nhds hbρ))] with j hj
     have h2 := hj (((hlink _ (hws j)).1 _).2 ⟨_, rfl⟩)
-    exact sub_eq_zero.1 (periods_inj L.toLogPeriods (hws j) (h2.trans (map_zero _).symm))
+    exact sub_eq_zero.1 (GlobalTheory.CompanionTheory.Ar.Flat.PeriodAction.P_injective L.toLogPeriods (hws j) (h2.trans (map_zero _).symm))
   obtain ⟨hA, hBp, hC⟩ := _root_.GlobalTheory.CompanionTheory.Ar.QuotLoc.limit_lattice E H C.R C.t C.g n a C.M C.ψ ρ e Λ L.toLogPeriods hρ0 hρ1 hol hlink 0
     (Metric.mem_ball_self one_pos) ws (W.restrictScalars ℤ) per hws hw0 hper hfour
   replace hA : ∀ x : W, per x ∈ e.per ((ρ : ℂ) • 0) := hA
@@ -821,170 +806,42 @@ theorem chart_centre (hG : Top.Given) (Or : CptOrigin Y S₀ Dc Hd) (a : Fin Dc.
           (L.riem w hw).logDet (fun τ i => b τ i (GroundTheory.Heights₂.Heights.Regular.expCover a₀ w)) -
             Real.log ((L.riem w hw).nz σ I) := by
   haveI : CharZero Ω := algebraRat.charZero Ω
-  have hpq : 1 ≤ D.p + D.q := by
-    have h1 := Or.N_eq
-    have h2 := Dc.two_le_N
-    omega
-  have hfr := (((_root_.GlobalTheory.CompanionTheory.Ar.Cusp.PhMuFree.phMu_small hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or z₀ _ hz₀).2 d).2 s hsm).1
-  have hval0 : ∀ i : CMType H × Fin (Dc.N - Dc.j), ∃ v : epsAt z₀ ⟶ Or.𝔐.t.G, Or.𝔐.M.ValAt z₀ (s i.1 i.2) v := fun i =>
-    _root_.GlobalTheory.CompanionTheory.Ar.HodgeVal.frame_valAt E H D l (Xo l) c Y S₀ Ω K J Dc.y Or.𝔐 z₀ (Or.sm i.1) _ (s i.1) (Or.𝔐.all _) (hfr i.1 _) i.2
-  obtain ⟨a₀, π, ρ₁, σ₀, C, jj, m, sc, hρ₁, hA⟩ := _root_.GlobalTheory.CompanionTheory.Ar.SncBdry.exists_bdryChart_at hG E H D l (Xo l) c Y S₀ Ω K J Dc.y Or.𝔐 _ Dc.Bd (Dc.chart a) t₀
-    d.c d.f (CMType H × Fin (Dc.N - Dc.j)) (fun i => s i.1 i.2) z₀ Or.bd ht₀ hz₀ d.inDom hval0
-  obtain ⟨ρ₂, Λ, _, L₀, e, hρ₂, hρ₂1, hper, hRiem⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.Conj.exists_logPeriods_famExp_isRiem E H D l (Xo l) σ₀ _ a₀ C hpq
-  obtain ⟨Bf, hBd, hBe⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.ActFam.exists_action_family E H C.R C.t C.g _ C.M ρ₂ C.ψ e hρ₂
-  have hnorm : ∀ u : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ, ‖(ρ₂ : ℂ) • u‖ = ρ₂ * ‖u‖ := fun u => by
-    rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg hρ₂.le]
-  have hsmρ : ∀ u ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1,
-      (ρ₂ : ℂ) • u ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) ρ₂ := fun u hu => by
-    rw [mem_ball_zero_iff] at hu ⊢
-    rw [hnorm]
-    nlinarith
-  have hsm1 : ∀ u ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1,
-      (ρ₂ : ℂ) • u ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1 := fun u hu =>
-    Metric.ball_subset_ball hρ₂1 (hsmρ u hu)
-  have hsmd : DifferentiableOn ℂ (fun u : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ => (ρ₂ : ℂ) • u)
-      (Metric.ball 0 1) := (differentiable_id.fun_const_smul _).differentiableOn
-  have hBhol : ∀ c x, DifferentiableOn ℂ (fun z => Bf ((ρ₂ : ℂ) • z) c x) (Metric.ball 0 1) := fun c x =>
-    (hBd c x).comp hsmd hsmρ
-  have hpb : ∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L₀.a_le,
-      GroundTheory.Heights₂.Heights.Regular.expCover a₀ w ∈ Flat.punct _ a₀ 1 := fun w hw => ChartFree.expCover_mem_punct L₀.a_le hw
-  have hclosed : ∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L₀.a_le, ∀ c x, ∃ y, L₀.P w y =
-      Bf ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w) c (L₀.P w x) := by
-    intro w hw c x
-    have hb := hsmρ _ (hpb w hw).1
-    have h1 : e.ex _ (L₀.P w x) = 1 := ((hper w hw _).2 ⟨x, rfl⟩ : _)
-    refine (hper w hw _).1 ?_
-    show e.ex _ _ = 1
-    rw [hBe _ hb, h1]
-    haveI := C.t.act.hom c
-    simp
-  obtain ⟨instM, hact⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.PeriodAction.exists_module_of_period_action E _ a₀ C.g Λ L₀ (fun z => Bf ((ρ₂ : ℂ) • z)) hBhol hclosed
-  have hInt : ∀ u ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1,
-      (Or.𝔐.Interior (spMap (C.ψ ((ρ₂ : ℂ) • u)) ≫ jj) ↔ u ∈ Flat.punct _ a₀ 1) := by
-    intro u hu
-    obtain ⟨-, -, h3, h4, -⟩ := hA _ (hsm1 u hu)
-    have h5 := Or.bd _ _ h3
-    have h6 : Or.𝔐.Interior (spMap (C.ψ ((ρ₂ : ℂ) • u)) ≫ jj) ↔ (ρ₂ : ℂ) • u ∈ Flat.punct _ a₀ 1 := by
-      rw [← h4, h5, not_not]
-    rw [h6]
-    have hne : (ρ₂ : ℂ) ≠ 0 := by exact_mod_cast hρ₂.ne'
-    constructor
-    · rintro ⟨-, h⟩
-      exact ⟨hu, fun i hi h0 => h i hi (by simp [h0])⟩
-    · rintro ⟨-, h⟩
-      exact ⟨hsm1 u hu, fun i hi => by simpa [hne] using h i hi⟩
-  have hF : ∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L₀.a_le, _ := fun w hw =>
-    _root_.GlobalTheory.CompanionTheory.Ar.Cusp.ChartUnif.exists_unif_of_interior hG E H D l (Xo l) c Y S₀ Ω K J Dc.y Or.𝔐 σ₀ _ a₀ C jj m (Metric.ball 0 ρ₂) e
-      ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w) (Bf ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w))
-      (L₀.H (GroundTheory.Heights₂.Heights.Regular.expCover a₀ w)) hpq (hsmρ _ (hpb w hw).1)
-      ((hInt _ (hpb w hw).1).2 (hpb w hw)) (hRiem _ (hpb w hw)) (hBe _ (hsmρ _ (hpb w hw).1))
-  have hinj : ∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L₀.a_le, Function.Injective (L₀.P w) := by
-    intro w hw
-    refine (injective_iff_map_eq_zero _).2 fun x hx => ?_
-    refine L₀.unimod.1 ?_
-    ext y
-    have h := L₀.im w hw x y
-    rw [hx] at h
-    simpa using h.symm
-  have hw₀ : ∃ w₀, w₀ ∈ GroundTheory.Heights₂.Heights.Regular.logCover L₀.a_le := by
-    refine ⟨fun k => if (k : ℕ) < a₀ then -1 else 0, fun i => ?_, fun k hk => ?_⟩
-    · simp
-    · simp [not_lt.2 hk]
-  obtain ⟨w₀, hw₀⟩ := hw₀
-  have hadj : ∀ c c' : 𝓞 E, (c' : E) = IsCMField.complexConj E (c : E) → ∀ x y, L₀.E (c • x) y = L₀.E x (c' • y) := by
-    intro c c' hc x y
-    obtain ⟨A, _, φ, u, χ', -, -, -, -, -, h⟩ := hF w₀ hw₀
-    have h1 := L₀.im w₀ hw₀ (c • x) y
-    have h2 := L₀.im w₀ hw₀ x (c' • y)
-    rw [hact w₀ hw₀] at h1
-    rw [hact w₀ hw₀] at h2
-    have h3 := h c c' hc (L₀.P w₀ x) (L₀.P w₀ y)
-    have h4 : ((L₀.E (c • x) y : ℤ) : ℝ) = ((L₀.E x (c' • y) : ℤ) : ℝ) := by
-      rw [← h1, ← h2]
-      exact congrArg Complex.im h3
-    exact_mod_cast h4
-  let L : ActPeriods E _ a₀ C.g Λ :=
-    { toLogPeriods := L₀
-      adj := hadj
-      B := fun z => Bf ((ρ₂ : ℂ) • z)
-      B_hol := hBhol
-      act := hact }
-  obtain ⟨σa, hσ, hinl, hinr⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.LabConst.labVal_const_of_isHolPts E H D l (Xo l) c Y S₀ Ω K J Dc.y Or.𝔐 C.R jj _ C.ψ C.hol
-  have hcm : IsCMFam (fun τ => σa (Or.sm τ)) := by
-    rcases Or.side with ⟨-, h, -⟩ | ⟨-, h, -⟩ <;> rw [h]
-    · exact hinr
-    · exact hinl
-  have hdiffb : ∀ (r : C.R), DifferentiableOn ℂ (fun u => C.ψ ((ρ₂ : ℂ) • u) r) (Metric.ball 0 1) := fun r =>
-    (C.hol.2 r).comp hsmd hsm1
-  have hframe : ∀ u ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1, ∀ τ
-      (h : genPt Or.𝔐.ξ ⤳ centre (spMap (C.ψ ((ρ₂ : ℂ) • u)) ≫ jj)),
-      (Or.𝔐.V (Or.sm τ)).IsFrameAt (s τ) ⟨centre (spMap (C.ψ ((ρ₂ : ℂ) • u)) ≫ jj), h⟩ := by
-    intro u hu τ h
-    obtain ⟨-, h2, h3, -, -⟩ := hA _ (hsm1 u hu)
-    have h4 := (_root_.GlobalTheory.CompanionTheory.Ar.Cusp.PhMuFree.phMu_small hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or _ _ h3).2 { d with inDom := h2 }
-    exact (h4.2 s hsm).1 τ h
-  have hEig : IsEigFrames (Metric.ball 0 1) L.B (fun τ => σa (Or.sm τ))
-      (fun τ k u i => C.ψ ((ρ₂ : ℂ) • u) (sc (τ, k) i)) := by
-    refine ⟨fun τ k => differentiableOn_pi.2 fun i => hdiffb _, fun t ht τ => ?_⟩
-    exact _root_.GlobalTheory.CompanionTheory.Ar.Cusp.ChartEig.values_eig E H D l (Xo l) c Y S₀ Ω K J Dc.y Or.𝔐 C.R C.t jj m C.g _ C.M (Metric.ball 0 ρ₂) C.ψ e ((ρ₂ : ℂ) • t)
-      (Bf ((ρ₂ : ℂ) • t)) (Or.sm τ) _ (s τ) (fun k => sc (τ, k)) σa (hsmρ t ht) (hBe _ (hsmρ t ht))
-      (hσ _ (hsm1 t ht)) (hframe t ht τ) (fun k => (hA _ (hsm1 t ht)).2.2.2.2 (τ, k))
-  refine ⟨a₀, C.g, Λ, inferInstance, instM, L, π, ρ₁ * ρ₂, fun τ => σa (Or.sm τ),
+  obtain ⟨a₀, π, ρ₁, ρ₂, σ₀, C, jj, m, sc, Λ, instA, instM, L, e, σa,
+    hρ₁, hρ₂, hρ₂1, hcm, hEig, hU, hV, hW, hBe0, hv0⟩ :=
+    ChartFree.exists_actPeriods_chart_data hG Or a t₀ ht₀ z₀ hz₀ d s hsm
+  refine ⟨a₀, C.g, Λ, instA, instM, L, π, ρ₁ * ρ₂, fun τ => σa (Or.sm τ),
     fun u => spMap (C.ψ ((ρ₂ : ℂ) • u)) ≫ jj, fun τ k u i => C.ψ ((ρ₂ : ℂ) • u) (sc (τ, k) i),
-    mul_pos hρ₁ hρ₂, hcm, hEig, fun u hu => ?_, fun w hw => ?_, ?_⟩
-  · have heq : t₀ + (((ρ₁ * ρ₂ : ℝ)) : ℂ) • (u ∘ π) = t₀ + (ρ₁ : ℂ) • (((ρ₂ : ℂ) • u) ∘ π) := by
-      funext i
-      simp only [Pi.add_apply, Pi.smul_apply, Function.comp_apply, smul_eq_mul]
-      push_cast
-      ring
-    rw [heq]
-    obtain ⟨h1, h2, h3, -, -⟩ := hA _ (hsm1 u hu)
-    exact ⟨h1, h2, h3, fun i a' => hσ _ (hsm1 u hu) (Or.sm i) a', hInt u hu⟩
-  · obtain ⟨A, instA, φ, u, χ', hgp, hAH, hex, hlat, hdv, -⟩ := hF w hw
-    have hbρ := hsmρ _ (hpb w hw).1
-    choose v hv1 hv2 using (hA _ (hsm1 _ (hpb w hw).1)).2.2.2.2
-    refine ⟨v, fun i => hv1 i, ?_⟩
-    refine ⟨A, instA, φ, u, χ', hgp, hAH, fun a' p => ?_, hinj w hw, fun p => ?_, fun i => ?_⟩
-    · show (u.ex (Bf _ a' p)).left ≫ φ = _
-      have e1 : (u.ex p).left ≫ φ ≫ (Or.𝔐.t.act.act a').left = ((e.ex ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w) p).left ≫ m.φ) ≫ (Or.𝔐.t.act.act a').left := by
-        rw [← hex p, Category.assoc]
-      rw [hex, e1, hBe _ hbρ, Over.comp_left, Category.assoc, Category.assoc, m.act]
-    · rw [hlat p]
-      exact hper w hw p
-    · obtain ⟨v', h1, h2⟩ := hdv _ _ (Flat.FrameDeriv.isDerivAt0_pt e hbρ (sc i))
-      exact ⟨v', by rw [h1, hv2 i, Category.assoc], h2⟩
-
-  · have h0 : (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) ∈ Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1 := Metric.mem_ball_self one_pos
-    obtain ⟨-, -, co0, -, hv0⟩ := hA _ (hsm1 0 h0)
-    have hT0 : t₀ + (ρ₁ : ℂ) • (((ρ₂ : ℂ) • (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ)) ∘ π) = t₀ := by
-      funext i; simp
-    rw [hT0] at co0
-    have hz : z₀ = spMap (C.ψ ((ρ₂ : ℂ) • 0)) ≫ jj :=
-      _root_.GlobalTheory.CompanionTheory.Ar.Cusp.FamEx.point_eq_of_coordsAt _ Ω Or.𝔐.ξ K J Dc.y Or.𝔐.tie Or.𝔐.normal Or.𝔐.all _ _ _ hz₀ co0
-    rw [hz] at hν
-    obtain ⟨P, V, _, _, MV, ρV, I₀, hf, σ', bz, g1, g2, g3, g4, g5, g6⟩ := hν
-    have hσ' : σ' = fun τ => σa (Or.sm τ) := funext fun τ => RingHom.ext fun a' =>
-      WeightSheet.valAt_eq Or.𝔐.tie.gen (Or.𝔐.all _) (g3 τ a') (hσ _ (hsm1 0 h0) (Or.sm τ) a')
-    rw [hσ'] at g6
-    refine centre_phi C m hρ₂ hρ₂1 e L (fun w hw => ⟨hper w hw, fun N ζ x x' hN hc => ?_⟩) (hBe _ (hsmρ 0 h0)) _ _
-      (fun τ k => sc (τ, k)) (fun _ _ => rfl) hcm hEig P MV ρV I₀ hf g1 g2 g4 bz (fun τ k => ?_) g6
-    · obtain ⟨A, instA, φ, u, χ', hgp, hAH, hex, hlat, -, -⟩ := hF w hw
-      have hpp : (ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w ∈ Flat.punct _ a₀ 1 := by
-        obtain ⟨-, -, h3, h4, -⟩ := hA _ (hsm1 _ (hpb w hw).1)
-        exact h4.1 fun hb => (Or.bd _ _ h3).1 hb ((hInt _ (hpb w hw).1).2 (hpb w hw))
-      obtain ⟨tB, mB, hP⟩ := exists_principal C m hpp
-      have hw' : ∀ p, ((e.ex ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w) p).left ≫ m.φ) ≫ Or.𝔐.t.G.hom =
-          spMap (C.ψ ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w)) ≫ jj := fun p => by
-        rw [Category.assoc, m.cart.1.w, ← Category.assoc, Over.w (e.ex _ p)]
-        rfl
-      have h1 := cubWeil_push m _ (x₀ := Over.homMk _ (hw' _)) (y₀ := Over.homMk _ (hw' _)) rfl rfl hc
-      have h2 := weil_fibre Or.𝔐.t _ A φ _ u _ χ' hgp hAH tB mB hP N ζ (L₀.P w x) (L₀.P w x') hN
-        ((hlat _).2 ((hper w hw _).2 ⟨x, rfl⟩)) ((hlat _).2 ((hper w hw _).2 ⟨x', rfl⟩)) _ _ (hex _).symm (hex _).symm h1
-      rw [L₀.im w hw] at h2
-      exact_mod_cast h2
-    · obtain ⟨v, hv1, hv2⟩ := g5 τ k
-      obtain ⟨v', hv1', hv2'⟩ := hv0 (τ, k)
-      rw [hv2, LieModel.ValAt.unique Or.𝔐.tie.gen hv1 hv1', hv2']
+    mul_pos hρ₁ hρ₂, hcm, hEig, hU, hV, ?_⟩
+  have h0 : (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) ∈
+      Metric.ball (0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) 1 := Metric.mem_ball_self one_pos
+  obtain ⟨-, -, co0, hlab0, -⟩ := hU 0 h0
+  have hT0 : t₀ + (((ρ₁ * ρ₂ : ℝ)) : ℂ) • ((0 : Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) ∘ π) = t₀ := by
+    funext i; simp
+  rw [hT0] at co0
+  have hz : z₀ = spMap (C.ψ ((ρ₂ : ℂ) • 0)) ≫ jj :=
+    _root_.GlobalTheory.CompanionTheory.Ar.Cusp.FamEx.point_eq_of_coordsAt _ Ω Or.𝔐.ξ K J Dc.y Or.𝔐.tie Or.𝔐.normal Or.𝔐.all _ _ _ hz₀ co0
+  rw [hz] at hν
+  obtain ⟨P, V, _, _, MV, ρV, I₀, hf, σ', bz, g1, g2, g3, g4, g5, g6⟩ := hν
+  have hσ' : σ' = fun τ => σa (Or.sm τ) := funext fun τ => RingHom.ext fun a' =>
+    WeightSheet.valAt_eq Or.𝔐.tie.gen (Or.𝔐.all _) (g3 τ a') (hlab0 τ a')
+  rw [hσ'] at g6
+  refine centre_phi C m hρ₂ hρ₂1 e L (fun w hw => ?_) hBe0 _ _
+    (fun τ k => sc (τ, k)) (fun _ _ => rfl) hcm hEig P MV ρV I₀ hf g1 g2 g4 bz (fun τ k => ?_) g6
+  · obtain ⟨hper, hpp, A, instA', φ, u, χ', hgp, hAH, hex, hlat⟩ := hW w hw
+    refine ⟨hper, fun N ζ x x' hN hc => ?_⟩
+    obtain ⟨tB, mB, hP⟩ := exists_principal C m hpp
+    have hw' : ∀ p, ((e.ex ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w) p).left ≫ m.φ) ≫ Or.𝔐.t.G.hom =
+        spMap (C.ψ ((ρ₂ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a₀ w)) ≫ jj := fun p => by
+      rw [Category.assoc, m.cart.1.w, ← Category.assoc, Over.w (e.ex _ p)]
+      rfl
+    have h1 := cubWeil_push m _ (x₀ := Over.homMk _ (hw' _)) (y₀ := Over.homMk _ (hw' _)) rfl rfl hc
+    have h2 := weil_fibre Or.𝔐.t _ A φ _ u _ χ' hgp hAH tB mB hP N ζ (L.P w x) (L.P w x') hN
+      ((hlat _).2 ((hper _).2 ⟨x, rfl⟩)) ((hlat _).2 ((hper _).2 ⟨x', rfl⟩)) _ _ (hex _).symm (hex _).symm h1
+    rw [L.im w hw] at h2
+    exact_mod_cast h2
+  · obtain ⟨v, hv1, hv2⟩ := g5 τ k
+    obtain ⟨v', hv1', hv2'⟩ := hv0 (τ, k)
+    rw [hv2, LieModel.ValAt.unique Or.𝔐.tie.gen hv1 hv1', hv2']
 
 end LevelTowerAlt.Val
 end -- clump:auto
@@ -1021,7 +878,6 @@ theorem aff_affInv {n : ℕ} (t₀ : Fin n → ℂ) {ρ : ℝ} (hρ : 0 < ρ) (�
   funext i
   simp [aff, affInv, Function.comp, h]
 
-
 open scoped ComplexOrder in
 theorem gram_det_pos {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] (R : RiemLat E g Λ) {m : ℕ} (u : Fin m → Fin g → ℂ) (hu : LinearIndependent ℂ u) :
@@ -1055,7 +911,6 @@ theorem fibreLat_of_vec {X : Scheme.{0}} {t : SAB H X} {z : Sp ℂ ⟶ X} {g : �
   exact ⟨A, i, φ, u, χ, h1, h2, h3, h4, h5, fun i => i.elim⟩
 
 end Pt
-
 
 namespace Val
 
@@ -1093,7 +948,7 @@ theorem factor_near {u : Ω} {w : (Σ k, J k) → ℂ} (hw : w ∈ mcPts (mCoord
         Real.log (‖valAt y u w'‖ * ∏ k, ‖w' ⟨k, cc k⟩‖ ^ a k) := by
   have hex : ∃ v, IsValueAt y u w v := by
     by_contra hn
-    exact hv (dif_neg hn)
+    exact hv (dite_eq_right hn)
   obtain ⟨v₀, dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩ := hex
   have e0 : GroundTheory.Heights₂.Heights.LowerBoundFree.valAt y u w = v₀ :=
     valAt_eq hw ⟨dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩
@@ -1120,14 +975,14 @@ theorem exists_lift {n a : ℕ} (h : a ≤ n) {u : Fin n → ℂ} (hu : u ∈ Fl
   have h1 : ∀ k, ‖u k‖ < 1 := (pi_norm_lt_iff one_pos).1 (mem_ball_zero_iff.1 hu.1)
   refine ⟨logLift a u, ⟨fun i => ?_, fun k hk => ?_⟩, funext fun k => ?_⟩
   · have hi : ((Fin.castLE h i : Fin n) : ℕ) < a := i.2
-    simp only [logLift, if_pos hi, Complex.log_re]
+    simp only [logLift, ite_eq_left hi, Complex.log_re]
     exact Real.log_neg (norm_pos_iff.2 (hu.2 _ hi)) (h1 _)
-  · simp only [logLift, if_neg (not_lt.2 hk)]
+  · simp only [logLift, ite_eq_right (not_lt.2 hk)]
     exact h1 k
   · by_cases hk : (k : ℕ) < a
-    · simp only [expCover, logLift, if_pos hk]
+    · simp only [expCover, logLift, ite_eq_left hk]
       exact Complex.exp_log (hu.2 k hk)
-    · simp only [expCover, logLift, if_neg hk]
+    · simp only [expCover, logLift, ite_eq_right hk]
 
 theorem neg_log_nz_le {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] {Ψ : Type} [Fintype Ψ] (R : RiemLat E g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) {m : ℕ} (hσ : IsCMFam σ)
@@ -1136,7 +991,7 @@ theorem neg_log_nz_le {E : Type} [Field E] [NumberField E] [IsCMField E] {g : �
   obtain ⟨-, -, h3, h4, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.cuspW_le E g Λ Ψ R σ m hσ hr hm
   by_cases hI : I = ⊥
   · have : R.nz σ I = 1 := by
-      refine dif_neg ?_
+      refine dite_eq_right ?_
       rintro ⟨r, v, hr1, hv, hli, -⟩
       have := hv ⟨0, hr1⟩
       rw [hI, Submodule.mem_bot] at this
@@ -1146,7 +1001,6 @@ theorem neg_log_nz_le {E : Type} [Field E] [NumberField E] [IsCMField E] {g : �
   · exact (h3 I ⟨hI, h1, h2⟩).1
 
 end Val
-
 
 open Val in
 theorem corrW_lower_near : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (U : ((Σ k, J k) → ℂ) → ℝ) (z : Sp ℂ ⟶ Or.𝔐.X) (w : (Σ k, J k) → ℂ) (x : ℝ), Or.𝔐.IsCuspWeight Or.sm U → CoordsAt Or.𝔐.ξ Dc.y z w → Or.PhiWeight z w x → ∀ ε > (0 : ℝ), ∃ δ > (0 : ℝ), ∀ w' ∈ Dc.Xo, ‖w' - w‖ < δ → x - ε ≤ corrW Hd U w' := by

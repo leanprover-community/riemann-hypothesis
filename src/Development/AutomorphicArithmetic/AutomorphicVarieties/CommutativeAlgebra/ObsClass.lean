@@ -55,9 +55,9 @@ private theorem inv_supp {O : Type} [CommRing O] {ι X : Type} [Fintype ι] [Dec
           rw [mul_assoc, mul_assoc, Matrix.mul_nonsing_inv _ hd, mul_one]
       _ = E * Φ.J⁻¹ := by rw [e, ← mul_assoc, Matrix.nonsing_inv_mul _ hd, one_mul]
   have e3 := congrFun (congrFun e2 a) c
-  simp only [E, E', diagonal_mul, mul_diagonal, and_self, if_true, one_mul] at e3
+  simp only [E, E', diagonal_mul, mul_diagonal, and_self, ite_true, one_mul] at e3
   by_contra n
-  rw [if_neg n, mul_zero] at e3
+  rw [ite_eq_right n, mul_zero] at e3
   exact h e3.symm
 
 section Good
@@ -115,9 +115,9 @@ theorem UpperTheory.V.Alg.hh_section :
   let h0 : S → Matrix ι ι A := fun s => Matrix.of fun a b => if Φ.blk a = Φ.blk b then y a b s else 0
   have g0 : ∀ a b, Good (maximalIdeal A) W (w a - w b) fun s => h0 s a b := fun a b => by
     by_cases e : Φ.blk a = Φ.blk b
-    · simp only [h0, of_apply, if_pos e]
+    · simp only [h0, of_apply, ite_eq_left e]
       exact ⟨y1 a b, y2 a b⟩
-    · simp only [h0, of_apply, if_neg e]
+    · simp only [h0, of_apply, ite_eq_right e]
       exact good_zero _
   have b1 : ∀ s, (h0 s).map p = h s := fun s => by
     ext a b
@@ -149,10 +149,10 @@ theorem UpperTheory.V.Alg.hh_section :
     simp only [Matrix.add_apply, of_apply]
     refine good_add (g0 a b) ?_
     by_cases e : Φ.blk a = Φ.blk b
-    · simp only [if_pos e, ← map_neg]
+    · simp only [ite_eq_left e, ← map_neg]
       simp only [Matrix.mul_apply (M := Φ.J⁻¹.map (algebraMap O A)), Matrix.smul_apply, smul_eq_mul]
       exact good_sum _ fun c => good_mul (gK a c) (good_mul (good_const (-u)) (gE c b) (zero_add _)) (by abel)
-    · simp only [if_neg e]
+    · simp only [ite_eq_right e]
       exact good_zero _
   exact ⟨_, fun s => (key s).1, fun a b => (g1 a b).1, fun s a b => (g1 a b).2 s, fun s => (key s).2⟩
 end -- clump:auto
@@ -173,11 +173,11 @@ private theorem wcomp_of_mem_ite {O : Type} [CommRing O] {σ X : Type} [AddCommG
   rw [coeff_wcomp]
   by_cases h : i = j
   · subst h
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     split_ifs with hn
     · rfl
     · exact (hf n hn).symm
-  · rw [if_neg h, map_zero]
+  · rw [ite_eq_right h, map_zero]
     split_ifs with hn
     · exact hf n (fun hi => h (hi.symm.trans hn))
     · rfl
@@ -239,7 +239,7 @@ theorem UpperTheory.V.Alg.ker_coef :
   have hh := W.homog _ hk (wf u)
   have hfw : ∀ v, wcomp O W.wt (wf u) (f v) = if wf v = wf u then f v else 0 :=
     fun v => wcomp_of_mem_ite W.wt (hf v)
-  rw [map_sub, map_sum, wcomp_of_mem_ite W.wt hg, if_neg hj] at hh
+  rw [map_sub, map_sum, wcomp_of_mem_ite W.wt hg, ite_eq_right hj] at hh
   simp only [map_smul, hfw] at hh
   have hrel0 : ∑ v, (if wf v = wf u then a v else 0) • ε v = 0 := by
     have h2 := RingHom.mem_ker.1 hh
@@ -368,7 +368,7 @@ private theorem square_zero_extension_ring (O R S X : Type) [CommRing O] [IsLoca
       have hcF : ∀ j ∈ F, c j • τ j = τ j * algebraMap R S (if h : j ∈ F then (x.snd ⟨j, h⟩ : R) else 0) := by
         intro j hj
         have hne : j ≠ x0 := fun h => hF (h ▸ hj)
-        simp only [c, if_neg hne, Algebra.smul_def]
+        simp only [c, ite_eq_right hne, Algebra.smul_def]
         ring
       rw [Finset.sum_congr rfl hcF, hc0, Algebra.smul_def, h0, mul_one]
       rw [← Finset.sum_coe_sort F]
@@ -380,7 +380,7 @@ private theorem square_zero_extension_ring (O R S X : Type) [CommRing O] [IsLoca
     · funext e
       have := hz e (Finset.mem_insert_of_mem e.2)
       have hne : (e : X) ≠ x0 := fun h => hF (h ▸ e.2)
-      simp only [c, if_neg hne, dif_pos e.2] at this
+      simp only [c, ite_eq_right hne, dite_eq_left e.2] at this
       exact Subtype.ext this
   · change g (TrivSqZeroExt.inl x) = algebraMap R S x
     simp [g]
@@ -518,8 +518,7 @@ private theorem split_data (O X R R' κ : Type) [CommRing O] [IsLocalRing O] [Is
       rw [map_add (f := _), hqi, map_sum]
       simp [hZ2]
     refine ⟨i v + ∑ l, Z l, ?_, by rw [hqz]; exact hv, ?_⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [v, map_add (f := _), hφi, map_sum]
+    · simp only [v, map_add (f := _), hφi, map_sum]
       rw [Finset.mul_sum, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l _ => ?_
       rw [hZ1, hc (cd l) _ (Submodule.smul_mem _ _ (hεp l)), MonoidHom.inv_apply,
@@ -1483,7 +1482,7 @@ theorem UpperTheory.V.Alg.obs_class :
     haveI : DiscreteTopology F.T := ⟨rfl⟩
     obtain ⟨β, b1, -, b3, b4⟩ := hh_section O ι X w Φ h2 A R p hp hs W hz F.T α hα
       (fun a b n => IsLocallyConstant.of_discrete _) hw3
-    refine ⟨fun v => if v = F.v0 then 1 else β v, fun v => ?_, fun v => ?_, fun v => ?_, if_pos rfl⟩
+    refine ⟨fun v => if v = F.v0 then 1 else β v, fun v => ?_, fun v => ?_, fun v => ?_, ite_eq_left rfl⟩
     · beta_reduce
       split_ifs
       · exact (hh_group O ι X w Φ A).1

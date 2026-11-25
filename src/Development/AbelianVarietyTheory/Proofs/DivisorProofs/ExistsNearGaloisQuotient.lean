@@ -111,7 +111,7 @@ theorem exists_basicOpen_between_finset_and_open : ∀ (X : Scheme.{0}) (W : X.O
     exact h
   let P : X → Ideal Γ(X, W) := fun x => if h : x ∈ W then (hW.primeIdealOf ⟨x, h⟩).asIdeal else ⊤
   have hPx : ∀ x (h : x ∈ W), P x = (hW.primeIdealOf ⟨x, h⟩).asIdeal := fun x h => by
-    simp only [P, dif_pos h]
+    simp only [P, dite_eq_left h]
   have hP : ∀ i ∈ s, i ≠ x₀ → i ≠ x₀ → (P i).IsPrime := by
     intro x hx _ _
     rw [hPx x (hVW (hs x hx))]
@@ -599,7 +599,6 @@ theorem isIrreducible_fibre_fst : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) 
   intro R _ G _ hG x
   let j := G.left.fromSpecResidueField x
   let p₁ : pullback G.hom G.hom ⟶ G.left := pullback.fst G.hom G.hom
-  have hp : (fst G G).left = p₁ := rfl
   have hirr0 := GlobalTheory.SemiAbFibre.irreducibleSpace_fibre _ G hG _ (j ≫ G.hom)
   haveI hirr : IrreducibleSpace (pullback G.hom (j ≫ G.hom) : Scheme.{0}) := hirr0
   let e : pullback G.hom (j ≫ G.hom) ≅ p₁.fiber x :=

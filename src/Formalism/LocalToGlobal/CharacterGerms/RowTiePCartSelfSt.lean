@@ -62,7 +62,7 @@ theorem coeff_subst_rename_out {σ τ : Type} [Finite σ] (φ : σ → τ) (F : 
   rw [coeff_subst (hasSubst_of_constantCoeff_zero fun s => constantCoeff_X _)]
   apply finsum_eq_zero_of_forall_eq_zero
   intro e'
-  rw [prod_X_rename, coeff_monomial, if_neg (fun h => he e' h.symm), smul_zero]
+  rw [prod_X_rename, coeff_monomial, ite_eq_right (fun h => he e' h.symm), smul_zero]
 
 theorem coeff_inCol_lin (col : Fin 2) (f f' : MvPowerSeries (Fin dd) C)
     (h : ∀ μ : Fin dd →₀ ℕ, μ.degree ≤ 1 → coeff μ f = coeff μ f') (μ : Fin 2 × Fin dd →₀ ℕ) (hμ : μ.degree ≤ 1) :
@@ -72,7 +72,7 @@ theorem coeff_inCol_lin (col : Fin 2) (f f' : MvPowerSeries (Fin dd) C)
   · obtain ⟨μ', rfl⟩ := hr
     rw [coeff_subst_rename_inj _ (col_inj col), coeff_subst_rename_inj _ (col_inj col)]
     exact h μ' (by rw [Finsupp.degree_mapDomain] at hμ; exact hμ)
-  · push_neg at hr
+  · push Not at hr
     rw [coeff_subst_rename_out _ _ _ hr, coeff_subst_rename_out _ _ _ hr]
 
 end Col
@@ -95,7 +95,7 @@ theorem FBChart.self_chart_exp_constantCoeff (x : Fin 2 × Fin dd) : constantCoe
 theorem FBChart.rawSelf_axis0 (e : Fin 2 × (Fin 2 × Fin dd) →₀ ℕ) (he : ∀ s ∈ e.support, s.1 ≠ 0) :
     coeff e (Y.rawSelf p).h = 0 := by
   show coeff e (∑ col, hCol col Y.h) = 0
-  exact van_sum Finset.univ _ (fun col _ => van_hCol col 0 Y.h (gauge_axes Y 0)) e he
+  exact van_sum Finset.univ _ (fun col _ => van_hCol col 0 Y.h (Formalism.L2.FormalSeriesBounds.FBChart.axisAll Y 0)) e he
 
 theorem FBChart.rawSelf_exlg (x : Fin 2 × Fin dd) :
     subst (Y.rawSelf p).lg ((Y.rawSelf p).ex x) = (X x : MvPowerSeries (Fin 2 × Fin dd) C) := by
@@ -145,7 +145,7 @@ theorem FBChart.rawSelf_u_integral (g : Fin 2) (c : I0) (x : Fin 2 × Fin dd) : 
 theorem SelfData.gm_pair (a : ZMod d) (g : Fin 2) :
     ∑ col, p.gm a col g * p.gm (a + p.hd) col (1 - g) = 1 := by
   have h := p.gm_hyp (a + p.hd) g (1 - g)
-  rw [add_assoc, p.hd_two, add_zero, if_neg (by fin_cases g <;> decide)] at h
+  rw [add_assoc, p.hd_two, add_zero, ite_eq_right (by fin_cases g <;> decide)] at h
   exact h
 
 theorem FBChart.exists_integral_right_inverse (g : Fin 2) :
@@ -162,7 +162,7 @@ theorem FBChart.exists_integral_right_inverse (g : Fin 2) :
   simp_rw [← Finset.mul_sum, huw c c']
   by_cases hc : c = c'
   · subst hc
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     simp only [mul_one]
     exact SelfData.gm_pair Y p _ g
   · simp [hc]

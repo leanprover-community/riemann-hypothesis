@@ -16,8 +16,6 @@ open CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 theorem resCmpChar0' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
     [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
     [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
@@ -98,26 +96,5 @@ theorem resCmpChar0' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
     exact he0 _ x (fun s => hx s)
   · show ev0 v (rv v z) = _
     exact hev0 v _ x (fun s => hx s)
-
-theorem resCmpChar1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
-    [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
-    [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
-    [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)] [∀ v, IsTopologicalGroup (Hv v)]
-    (lam : ∀ v, Lv v →* G) (hlam : ∀ v, Continuous (lam v)) (φ : ∀ v, Hv v →ₜ* H)
-    (ev : ∀ v, Hv v ≃* Lv v) (hev1 : ∀ v, Continuous (ev v)) (hev2 : ∀ v, Continuous (ev v).symm)
-    (hev : ∀ v σ, θ (lam v (ev v σ)) = φ v σ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    [TopologicalSpace M] [DiscreteTopology M] (rho : Representation R G M) (hc : ContAction rho)
-    (A : Rep.{0} (ULift.{0} ℤ) H) [IsDiscreteRep A] (eM : M ≃+ A.V)
-    (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
-    ∃ (E : H1 rho ≃+ cohomology A 1)
-      (Ev : ∀ v, H1 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 1),
-      (∀ v x, Ev v (resH1 rho (lam v) (hlam v) x) = ptRes φ A v 1 (E x)) ∧
-      (∀ (z : ↥(Z1 rho)) (x : cocycles A 1),
-        (∀ s : Fin 1 → H, cochainOf A (cocycleι A 1 x) s = eM (z.1 (θ.symm (s 0)))) →
-        E (Submodule.Quotient.mk z) = cohomologyπ A 1 x) ∧
-      (∀ v (z : ↥(Z1 (rho.comp (lam v)))) (x : cocycles (Rep.res (φ v).toMonoidHom A) 1),
-        (∀ s : Fin 1 → Hv v, cochainOf _ (cocycleι _ 1 x) s = eM (z.1 (ev v (s 0)))) →
-        Ev v (Submodule.Quotient.mk z) = cohomologyπ _ 1 x) :=
-  resCmp1_with_representatives θ lam hlam φ ev hev1 hev2 hev rho hc A eM hM
 
 end PositivityTheory.Lit1.PTN

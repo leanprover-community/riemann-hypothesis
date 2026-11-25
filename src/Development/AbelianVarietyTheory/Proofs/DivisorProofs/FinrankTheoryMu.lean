@@ -342,7 +342,6 @@ theorem linearMap_eq_of_liftSemi_surjective {R R' M N : Type} [CommRing R] [Comm
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
   | tmul r m => rw [liftSemi_tmul, map_smul, map_smul, h]
 
-
 theorem red_of_isTr (p : ℕ) [Fact p.Prime] (B : Base p (fun _ _ G => G.IsConn)) (k k' : Type)
     [Field k] [CharP k p] [PerfectRing k p] [Field k'] [CharP k' p] [PerfectRing k' p]
     (σ : k →+* k') (G' : PDivGroup p k') (G : PDivGroup p k) (h' : G'.IsEt) (h : G.IsEt)
@@ -636,10 +635,6 @@ section -- clump:auto
 
 open CategoryTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-theorem GlobalTheory.dieuBase_isEt_of_isConn :
-    ∀ (p : ℕ) [Fact p.Prime] (Bc : GlobalTheory.Dieu.Base p (fun _ _ G => G.IsConn)),
-      ∃ Be : GlobalTheory.Dieu.Base p (fun _ _ G => G.IsEt), Be.EtDual Bc :=
-  fun p _ Bc => GlobalTheory.Dieu.exists_etDual_of_conn p Bc
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEtaleDieudonneBaseByCartierDuality =====
@@ -685,7 +680,7 @@ theorem mvPowerSeries_algHom_isNilpotent_of_constantCoeff_zero :
   have hd : (X i : MvPowerSeries σ k) ∣ g i := by
     rw [X_dvd_iff]
     intro m hm
-    rw [hg, if_neg]
+    rw [hg, ite_eq_right]
     intro h
     rcases hc m with ⟨-, h1⟩ | ⟨j, h1, h2⟩
     · rw [h1] at h; cases h
@@ -1029,12 +1024,6 @@ theorem exists_katz_etDual : ∀ (p : ℕ) [Fact p.Prime] (Bc : GlobalTheory.Die
   choose G₀ G₁ i₀ q₀ i₁ q₁ hc he h₀ h₁ hs using
     fun (k : Type) [Field k] [CharP k p] [PerfectRing k p] (G : PDivGroup p k) =>
       GlobalTheory.PDivGroup.exists_isConn_isEt_splitting p k G
-  have rz : ∀ (k : Type) [Field k] [CharP k p] [PerfectRing k p] (X Y : PDivGroup p k),
-      rigExtMap (0 : X ⟶ Y) = 0 := by
-    intro k _ _ _ X Y
-    have h := (rigExtMap_add_and_natCast_smul_id p k (CharP.cast_eq_zero k p) X Y).1 0 0
-    rw [add_zero] at h
-    simpa using h
   let D : Base p (fun _ _ _ => True) :=
   { M := fun {k} _ _ _ G _ =>
       ModuleCat.of (WittVector p k) (Bc.M (G₀ k G) (hc k G) × Be.M (G₁ k G) (he k G))
@@ -1244,7 +1233,6 @@ theorem frobInv_app_pow (G : PDivGroup p k) (n : ℕ) (y : (frobTwist (p_eq_zero
     rw [map_add (f := _), map_add (f := _), ← hx, ← hy]
     simpa using map_add (frobRing h0) ((frobInv G).app n x) ((frobInv G).app n y)
 
-
 omit [CharP k p] [PerfectRing k p] in
 theorem Base.smap_ofHom_nsmul_id {P : ∀ (k : Type) [CommRing k], PDivGroup p k → Prop} (B : Base p P)
     [CharP k p] [PerfectRing k p] (G : PDivGroup p k) (h : P k G) (n : ℕ) (m : B.M G h) :
@@ -1324,8 +1312,8 @@ namespace GlobalTheory.Dieu
 
 def theory (p : ℕ) [Fact p.Prime] : Theory p :=
   let Bc := (GlobalTheory.T.exists_connected_dieudonne_functor_quasiLogarithms p).choose
-  let Be := (_root_.GlobalTheory.dieuBase_isEt_of_isConn p Bc).choose
-  let hB := _root_.GlobalTheory.Dieu.Glue.exists_katz_etDual p Bc Be (GlobalTheory.T.exists_connected_dieudonne_functor_quasiLogarithms p).choose_spec (_root_.GlobalTheory.dieuBase_isEt_of_isConn p Bc).choose_spec
+  let Be := (_root_.GlobalTheory.Dieu.exists_etDual_of_conn p Bc).choose
+  let hB := _root_.GlobalTheory.Dieu.Glue.exists_katz_etDual p Bc Be (GlobalTheory.T.exists_connected_dieudonne_functor_quasiLogarithms p).choose_spec (_root_.GlobalTheory.Dieu.exists_etDual_of_conn p Bc).choose_spec
   let hV := _root_.GlobalTheory.Dieu.exists_V_of_base p hB.choose
   { base := hB.choose, katz := hB.choose_spec.1, etDual := hB.choose_spec.2, V := hV.choose,
     F_V := hV.choose_spec.1, V_F := hV.choose_spec.2 }

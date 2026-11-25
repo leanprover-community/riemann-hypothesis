@@ -36,7 +36,7 @@ theorem tendsto_af {ι : Type} {l : Filter ι} (x : Af E) (z : ι → Af E)
     filter_upwards [h1 w] with t ht
     have h0 : z t w - x w ∈ w.adicCompletionIntegers E := by
       rw [ht, sub_self]; exact zero_mem _
-    simp only [u, dif_pos h0]
+    simp only [u, dite_eq_left h0]
     apply Subtype.ext
     change (0 : w.adicCompletion E) = z t w - x w
     rw [ht, sub_self]
@@ -51,7 +51,7 @@ theorem tendsto_af {ι : Type} {l : Filter ι} (x : Af E) (z : ι → Af E)
     apply Subtype.ext
     funext w
     change (u t w : w.adicCompletion E) = z t w - x w
-    simp only [u, dif_pos (ht w)]
+    simp only [u, dite_eq_left (ht w)]
   have := (tendsto_const_nhds (x := x)).add hv'
   simpa using this
 

@@ -260,10 +260,6 @@ end Formalism.HN
 
 namespace Formalism.HN
 
-private theorem place_lattice_structure_lemma {E : Type*} [NormedAddCommGroup E] {A B : Submodule ℤ E}
-    (h : A ≤ B) [Module.Finite ℤ B] : Module.finrank ℤ A ≤ Module.finrank ℤ B :=
-  LinearMap.finrank_le_finrank_of_injective (f := Submodule.inclusion h) (Submodule.inclusion_injective h)
-
 private theorem place_lattice_structure_lemma_2 {R : Type*} [Ring R] {V : Type*} [AddCommGroup V] [Module R V]
     {E : Type*} [NormedAddCommGroup E] (ρ : V →+ E) {N₁ N₂ : Submodule R V} (h : N₁ ≤ N₂) :
     zl ρ N₁ ≤ zl ρ N₂ := by
@@ -320,10 +316,10 @@ theorem place_lattice_structure : PlLat := by
       Module.Finite.of_injective (Submodule.inclusion (place_lattice_structure_lemma_2 ρ hzL))
         (Submodule.inclusion_injective _)
     have hA : Module.finrank ℤ (zl ρ (Submodule.span (𝓞 K) (Set.range ((↑) : t → V)))) ≤
-        Module.finrank ℤ (zl ρ L) := place_lattice_structure_lemma (place_lattice_structure_lemma_2 ρ hlow)
+        Module.finrank ℤ (zl ρ L) := Submodule.finrank_mono (place_lattice_structure_lemma_2 ρ hlow)
     have hB : Module.finrank ℤ (zl ρ L) ≤
         Module.finrank ℤ (zl ρ (Submodule.span (𝓞 K) (Set.range fun a : t => ((z : K))⁻¹ • (a : V)))) :=
-      place_lattice_structure_lemma (place_lattice_structure_lemma_2 ρ hzL)
+      Submodule.finrank_mono (place_lattice_structure_lemma_2 ρ hzL)
     rw [hcard]
     exact le_antisymm (hB.trans h2.le) (h1.symm.le.trans hA)
   · unfold ht

@@ -270,7 +270,7 @@ theorem recR_map [Nonempty K] (I : Ideal (MRing ι) → (n : ℕ) → (Fin n →
       rw [comap_C]
       exact h
     have h3 : charOf (V.map (ren e)) = charOf V := by simp only [charOf, comap_C]
-    rw [if_neg h1, if_neg h2, sup_map, multAt_map, h3, geoNum_map e V hV.2 _ _ (hc _ ⟨V, hV, rfl⟩)]
+    rw [ite_eq_right h1, ite_eq_right h2, sup_map, multAt_map, h3, geoNum_map e V hV.2 _ _ (hc _ ⟨V, hV, rfl⟩)]
   · have e0 : (fun j z => Real.log (((Fin.elim0 : Fin 0 → HermLine ι) j).h z)) =
         (Fin.elim0 : Fin 0 → ((Σ k, ι k) → ℂ) → ℝ) := funext fun j => j.elim0
     have e1 : (fun j z => Real.log (((Fin.elim0 : Fin 0 → HermLine ι') j).h z)) =

@@ -73,13 +73,6 @@ theorem kap_measurable : Measurable (kap X u) := by
       (continuous_star.measurable.comp (mMat_entry_measurable X v p.1.2 p.1.1))).div_const 2) t
   · exact Complex.measurable_im.comp (mMat_entry_measurable X v a a)
 
-private lemma isClosed_setOf_sub_one_mulVec_mem {n : ℕ} (w : Fin n → ℂ) (S : Submodule ℂ (Fin n → ℂ)) :
-    IsClosed {g : Matrix (Fin n) (Fin n) ℂ | (g - 1) *ᵥ w ∈ S} := by
-  have hc : Continuous fun g : Matrix (Fin n) (Fin n) ℂ => (g - 1) *ᵥ w := by
-    first
-      | exact (continuous_id.sub continuous_const).matrix_mulVec continuous_const
-  exact S.closed_of_finiteDimensional.preimage hc
-
 theorem ninfU_closed : IsClosed (X.NinfU u) := by
   have h : ∀ v : InfinitePlace X.B.I.F, IsClosed {s : X.B.I.Ginf | InN (X.B.I.ε v)
       (fun a => rv X.B.I v (X.eR a)) (rv X.B.I v (X.zR u)) (uMat (s v))} := fun v =>

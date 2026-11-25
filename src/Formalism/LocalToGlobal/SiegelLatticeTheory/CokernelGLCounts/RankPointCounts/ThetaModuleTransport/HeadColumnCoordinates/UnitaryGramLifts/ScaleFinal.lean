@@ -1,13 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.GSteps
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.HeadMapCj
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.SelfDualLatticesOneOrbit
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ThetaMbe0GOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.HatZSecondProjTranspose
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.StepSplitHolds
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.StepLiftG
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.ScaleB
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ZzMinusSecondProjTranspose
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.DetUpdateRowLastSingle
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ThetaGC
@@ -21,6 +17,540 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.FirstProjConjApply
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.Common
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.StepLiftG
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.SecondProjConjEqFirstProj
+
+section
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+variable {M : Model F E} {r : ℕ}
+
+theorem liftPQ (Z₁ Z₂ : M.Mat (r + 1)) (γ : IsoMbe Z₁.Z Z₂.Z) :
+    ∃ P Q : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R,
+      (∀ v, γ.1 (Submodule.Quotient.mk v) = Submodule.Quotient.mk (P.mulVec v)) ∧ P * Z₁.Z = Z₂.Z * Q ∧
+      (∀ i, P i (Fin.last r) = if i = Fin.last r then 1 else 0) ∧
+      (∀ j, Q (Fin.last r) j = if j = Fin.last r then 1 else 0) := by
+  classical
+  have hsurj : ∀ j : Fin (r + 1), ∃ w : Fin (r + 1) → M.R,
+      Submodule.Quotient.mk (p := headCols Z₂.Z) w = γ.1 (Submodule.Quotient.mk (Pi.single j 1)) ∧
+      (j = Fin.last r → w = Pi.single (Fin.last r) 1) := by
+    intro j
+    by_cases hj : j = Fin.last r
+    · subst hj
+      refine ⟨Pi.single (Fin.last r) 1, ?_, fun _ => rfl⟩
+      exact γ.2.2.symm
+    · obtain ⟨w, hw⟩ := Submodule.Quotient.mk_surjective _ (γ.1 (Submodule.Quotient.mk (Pi.single j 1)))
+      exact ⟨w, hw, fun h => absurd h hj⟩
+  choose p hp hpl using hsurj
+  let P : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R := Matrix.of fun i j => p j i
+  have hP : ∀ v, γ.1 (Submodule.Quotient.mk v) = Submodule.Quotient.mk (P.mulVec v) := by
+    have key : γ.1.toLinearMap ∘ₗ (headCols Z₁.Z).mkQ = (headCols Z₂.Z).mkQ ∘ₗ P.mulVecLin := by
+      apply LinearMap.pi_ext
+      intro j x
+      have h1 : (Pi.single j x : Fin (r + 1) → M.R) = x • Pi.single j 1 := by
+        ext k; by_cases hk : k = j <;> simp [hk]
+      have h2 : P.mulVec (Pi.single j x) = x • p j := by
+        ext i; simp [P, Matrix.mulVec_single, mul_comm]
+      simp only [LinearMap.comp_apply, Submodule.mkQ_apply, Matrix.mulVecLin_apply, LinearEquiv.coe_coe]
+      rw [h2, h1, Submodule.Quotient.mk_smul, map_smul, Submodule.Quotient.mk_smul, hp j]
+    intro v
+    exact LinearMap.congr_fun key v
+  have ht : ∀ j, P.mulVec (fun i => Z₁.Z i j) -
+      (if j = Fin.last r then (fun i => Z₂.Z i (Fin.last r)) else 0) ∈ headCols Z₂.Z := by
+    intro j
+    rw [← Submodule.Quotient.mk_eq_zero, Submodule.Quotient.mk_sub, ← hP]
+    induction j using Fin.lastCases with
+    | last =>
+      have h := γ.2.1
+      unfold bCls at h
+      rw [ite_eq_left rfl, h, sub_self]
+    | cast a =>
+      have hmem : (fun i => Z₁.Z i a.castSucc) ∈ headCols Z₁.Z := Submodule.subset_span ⟨a, rfl⟩
+      rw [(Submodule.Quotient.mk_eq_zero _).2 hmem, map_zero, ite_eq_right (Fin.castSucc_ne_last a),
+        Submodule.Quotient.mk_zero, sub_zero]
+  have hc : ∀ j, ∃ c : Fin r → M.R, ∑ a, c a • (fun i => Z₂.Z i a.castSucc) =
+      P.mulVec (fun i => Z₁.Z i j) - (if j = Fin.last r then (fun i => Z₂.Z i (Fin.last r)) else 0) :=
+    fun j => (Submodule.mem_span_range_iff_exists_fun _).1 (ht j)
+  choose c hc using hc
+  refine ⟨P, Matrix.of fun k j => Fin.lastCases (if j = Fin.last r then (1 : M.R) else 0) (fun b => c j b) k,
+    hP, ?_, ?_, ?_⟩
+  · refine Matrix.ext fun i j => ?_
+    have h := congrFun (hc j) i
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.sub_apply] at h
+    rw [Matrix.mul_apply, Matrix.mul_apply]
+    rw [show ∑ k, P i k * Z₁.Z k j = P.mulVec (fun i => Z₁.Z i j) i from rfl]
+    rw [Fin.sum_univ_castSucc]
+    simp only [Matrix.of_apply, Fin.lastCases_castSucc, Fin.lastCases_last]
+    have hcomm : ∑ x : Fin r, Z₂.Z i x.castSucc * c j x = ∑ x : Fin r, c j x * Z₂.Z i x.castSucc :=
+      Finset.sum_congr rfl (fun _ _ => mul_comm _ _)
+    rw [hcomm, h]
+    by_cases hj : j = Fin.last r
+    · subst hj
+      simp
+    · simp only [ite_eq_right hj, Pi.zero_apply]
+      ring
+  · intro i
+    simp [P, hpl _ rfl, Pi.single_apply]
+  · intro j
+    simp
+
+theorem liftPQ_inv (Z₁ Z₂ : M.Mat (r + 1)) (γ : IsoMbe Z₁.Z Z₂.Z) (P P' : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R)
+    (hP : ∀ v, γ.1 (Submodule.Quotient.mk v) = Submodule.Quotient.mk (P.mulVec v))
+    (hP' : ∀ v, γ.1.symm (Submodule.Quotient.mk v) = Submodule.Quotient.mk (P'.mulVec v))
+    (hPe : ∀ i, P i (Fin.last r) = if i = Fin.last r then 1 else 0)
+    (hP'e : ∀ i, P' i (Fin.last r) = if i = Fin.last r then 1 else 0) :
+    ∃ K : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R, (∀ j, K (Fin.last r) j = 0) ∧ (∀ i, K i (Fin.last r) = 0) ∧
+      P' * P = 1 + Z₁.Z * K := by
+  classical
+  have hid : ∀ w : Fin (r + 1) → M.R, (P' * P).mulVec w - w ∈ headCols Z₁.Z := by
+    intro w
+    rw [← Submodule.Quotient.mk_eq_zero, Submodule.Quotient.mk_sub, sub_eq_zero,
+      ← Matrix.mulVec_mulVec, ← hP', ← hP, LinearEquiv.symm_apply_apply]
+  have hc : ∀ j, ∃ c : Fin r → M.R, ∑ a, c a • (fun i => Z₁.Z i a.castSucc) =
+      (P' * P).mulVec (Pi.single j 1) - Pi.single j 1 :=
+    fun j => (Submodule.mem_span_range_iff_exists_fun _).1 (hid _)
+  choose c hc using hc
+  refine ⟨Matrix.of fun k j => Fin.lastCases 0 (fun b => if j = Fin.last r then 0 else c j b) k, ?_, ?_, ?_⟩
+  · intro j
+    simp
+  · intro i
+    induction i using Fin.lastCases with
+    | last => simp
+    | cast b => simp
+  · refine Matrix.ext fun i j => ?_
+    rw [Matrix.add_apply, Matrix.mul_apply (M := Z₁.Z), Fin.sum_univ_castSucc]
+    simp only [Matrix.of_apply, Fin.lastCases_castSucc, Fin.lastCases_last, mul_zero, add_zero]
+    by_cases hj : j = Fin.last r
+    · subst hj
+      simp only
+      rw [Matrix.mul_apply]
+      simp [hPe, hP'e, Matrix.one_apply]
+    · simp only [ite_eq_right hj]
+      have h := congrFun (hc j) i
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.sub_apply, Matrix.mulVec_single] at h
+      have hcomm : ∑ x : Fin r, Z₁.Z i x.castSucc * c j x = ∑ x : Fin r, c j x * Z₁.Z i x.castSucc :=
+        Finset.sum_congr rfl (fun _ _ => mul_comm _ _)
+      rw [hcomm, h, Matrix.one_apply, Pi.single_apply]
+      simp [Matrix.col_apply]
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.LiftPQInv =====
+
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+section LiftM
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+variable {M : Model F E} {g : SplitG M.L} {r : ℕ}
+
+theorem lift_cj_mem_R (hs : M.split = some g) (x : M.R) : M.L.cj (x : E) ∈ M.R := by
+  obtain ⟨h1, h2, c, hc⟩ := comp_of_mem_R hs x.2
+  refine mem_R_of hs _ ⟨_, h2⟩ ⟨_, h1⟩ (-c) ?_ ?_
+  · rw [g.e_cj]; rfl
+  · show (g.e (x : E)).2 - (g.e (x : E)).1 = (g.q : F) * ((-c : 𝒪[F]) : F)
+    push_cast; linear_combination -hc
+
+def sigR (hs : M.split = some g) : M.R →+* M.R where
+  toFun x := ⟨M.L.cj x, lift_cj_mem_R hs x⟩
+  map_one' := by apply Subtype.ext; simp
+  map_mul' a b := by apply Subtype.ext; simp
+  map_zero' := by apply Subtype.ext; simp
+  map_add' a b := by apply Subtype.ext; simp
+
+theorem sigR_coe (hs : M.split = some g) (x : M.R) : ((sigR hs x : M.R) : E) = M.L.cj (x : E) := rfl
+
+theorem lift_eps_mem {T T' : F} (h : ∃ c : 𝒪[F], T - T' = (g.q : F) ^ 2 * c) : (T - T') / (g.q : F) ∈ 𝒪[F] := by
+  obtain ⟨c, hc⟩ := h
+  rw [hc, pow_two, mul_assoc, mul_div_cancel_left₀ _ (q_ne g)]
+  exact mul_mem g.q.2 c.2
+
+def epsR (hs : M.split = some g) {T T' : F} (h : ∃ c : 𝒪[F], T - T' = (g.q : F) ^ 2 * c) : M.R :=
+  dgR hs ⟨_, lift_eps_mem h⟩
+
+theorem firstProj_zzPlus (hs : M.split = some g) (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : F)
+    (a b : Fin (r + 1)) :
+    ph1 g (HermSp.ZZplusOf M Zh T T' a b) = ph1 g (Zh a b) / (g.q : F) - cor r a b (-T / (g.q : F)) := by
+  unfold HermSp.ZZplusOf
+  rw [hs]
+  by_cases h : a = Fin.last r ∧ b = Fin.last r
+  · simp [firstProj_apply, cor, h]
+  · simp [firstProj_apply, cor, h]
+
+theorem secondProj_zzPlus (hs : M.split = some g) (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : F)
+    (a b : Fin (r + 1)) :
+    ph2 g (HermSp.ZZplusOf M Zh T T' a b) = -(ph2 g (Zh b a) / (g.q : F)) - cor r a b (T' / (g.q : F)) := by
+  unfold HermSp.ZZplusOf
+  rw [hs]
+  by_cases h : a = Fin.last r ∧ b = Fin.last r
+  · simp [secondProj_apply, cor, h]
+  · simp [secondProj_apply, cor, h]
+
+theorem lift_zsig (hs : M.split = some g) {T T' : F} {TT : M.R} {Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
+    {Z Zσ : M.Mat (r + 1)} (hG : GHyp M g T T' TT Zh Z Zσ) :
+    Zσ.Z = -lstar (sigR hs) Z.Z + epsR hs hG.2.1 • liftE r := by
+  have hZ : ∀ a b, ((Z.Z a b : M.R) : E) = HermSp.ZZplusOf M Zh T T' a b := fun a b => by
+    have := congrFun (congrFun hG.2.2.2.1 a) b; simpa using this
+  have hZσ : ∀ a b, ((Zσ.Z a b : M.R) : E) = HermSp.ZZplusOf M (Zh.map M.L.cj) T T' a b := fun a b => by
+    have := congrFun (congrFun hG.2.2.2.2.1 a) b; simpa using this
+  have hq := q_ne g
+  ext a b
+  rw [eq_iff_ph (g := g)]
+  simp only [Matrix.add_apply, Matrix.neg_apply, Matrix.smul_apply, smul_eq_mul, lstar_apply, Subring.coe_add,
+    Subring.coe_neg, Subring.coe_mul, sigR_coe, hZ, hZσ, liftE, Matrix.of_apply, epsR, dgR_coe, map_add, map_neg,
+    map_mul, firstProj_algebraMap, ph2_algebraMap_eq]
+  constructor
+  · rw [firstProj_zzPlus_conj hs, firstProj_conj_apply, secondProj_zzPlus hs]
+    by_cases ha : a = Fin.last r <;> by_cases hb : b = Fin.last r <;> simp [cor, ha, hb] <;> field_simp <;> ring
+  · rw [_root_.Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork.secondProj_zzPlus_conj hs, secondProj_conj_apply, firstProj_zzPlus hs]
+    by_cases ha : a = Fin.last r <;> by_cases hb : b = Fin.last r <;> simp [cor, ha, hb] <;> field_simp <;> ring
+
+theorem lift_cancel (Z : M.Mat (r + 1)) (A B : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R) (h : Z.Z * A = Z.Z * B) :
+    A = B := by
+  have h1 := congrArg (fun X => X.map M.R.subtype) h
+  simp only [Matrix.map_mul] at h1
+  have h2 : A.map M.R.subtype = B.map M.R.subtype := by
+    rw [← Matrix.one_mul (A.map M.R.subtype), ← Matrix.nonsing_inv_mul _ Z.unit, Matrix.mul_assoc, h1,
+      ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ Z.unit, Matrix.one_mul]
+  ext i j
+  exact congrFun (congrFun h2 i) j
+
+end LiftM
+
+def isoMbeSymm {R : Type} [CommRing R] {r : ℕ} {Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R} (γ : IsoMbe Z₁ Z₂) :
+    IsoMbe Z₂ Z₁ :=
+  ⟨γ.1.symm, by rw [LinearEquiv.symm_apply_eq]; exact γ.2.1.symm,
+    by rw [LinearEquiv.symm_apply_eq]; exact γ.2.2.symm⟩
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.SecondProjZzPlusConjEq =====
+
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+theorem stepLiftG : StepLiftG := by
+  intro F _ _ _ E _ _ _ _ M g hs r T T' TT Zh₁ Zh₂ Z₁ Z₂ Zσ₁ Zσ₂ h₁ h₂ γ
+  obtain ⟨P, Q, hP, hPQ, hPl, hQl⟩ := liftPQ Z₁ Z₂ γ
+  obtain ⟨P₂, Q₂, hP₂, hPQ₂, hP₂l, hQ₂l⟩ := liftPQ Z₂ Z₁ (isoMbeSymm γ)
+  obtain ⟨K, -, hKl, hK⟩ := liftPQ_inv Z₁ Z₂ γ P P₂ hP (fun v => hP₂ v) hPl hP₂l
+  obtain ⟨K', -, hK'l, hK'⟩ := liftPQ_inv Z₂ Z₁ (isoMbeSymm γ) P₂ P hP₂ (fun v => hP v) hP₂l hPl
+  obtain ⟨γ', hγ', hm⟩ := lift_partner (sigR hs) Z₁.Z Z₂.Z Zσ₁.Z Zσ₂.Z _ (lift_zsig hs h₁)
+    (lift_zsig hs h₂) (lift_cancel Z₁) (lift_cancel Z₂) P Q P₂ Q₂ K K' hPQ hPQ₂ hK hK'
+    hPl hP₂l hQl hQ₂l hKl hK'l
+  refine ⟨P, Q, lstar (sigR hs) Q₂, γ', hP, hγ', hPQ, hPl, hQl, fun w => ?_⟩
+  obtain ⟨m, hm0, hmw⟩ := hm w
+  refine ⟨m, hm0, fun i => ?_⟩
+  have hi := congrArg (fun x => ((x i : M.R) : E)) hmw
+  simp only [Matrix.mulVec, dotProduct, lstar, Matrix.transpose_apply, Matrix.map_apply,
+    Pi.add_apply] at hi ⊢
+  push_cast at hi ⊢
+  exact hi
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.StepLiftG =====
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+section ScaleIso
+
+variable {R : Type} [CommRing R] {r : ℕ}
+
+theorem isoMbeTransport_inv {Z₁ Z₂ Z₁' Z₂' : Matrix (Fin (r + 1)) (Fin (r + 1)) R}
+    (e₁ : MbMod Z₁ ≃ₗ[R] MbMod Z₁') (e₂ : MbMod Z₂ ≃ₗ[R] MbMod Z₂') (s t v : R) (hs : IsUnit s) (hv : IsUnit v)
+    (hb₁ : e₁ (s • bCls Z₁ + t • eCl Z₁) = bCls Z₁') (hb₂ : e₂ (s • bCls Z₂ + t • eCl Z₂) = bCls Z₂')
+    (he₁ : e₁ (v • eCl Z₁) = eCl Z₁') (he₂ : e₂ (v • eCl Z₂) = eCl Z₂') (φ : MbMod Z₁' ≃ₗ[R] MbMod Z₂')
+    (hφb : φ (bCls Z₁') = bCls Z₂') (hφe : φ (eCl Z₁') = eCl Z₂') :
+    φ (e₁ (bCls Z₁)) = e₂ (bCls Z₂) ∧ φ (e₁ (eCl Z₁)) = e₂ (eCl Z₂) := by
+  have he : φ (e₁ (eCl Z₁)) = e₂ (eCl Z₂) := by
+    obtain ⟨w, hw⟩ := hv.exists_left_inv
+    have k₁ : e₁ (eCl Z₁) = w • eCl Z₁' := by rw [← he₁, map_smul, smul_smul, hw, one_smul]
+    have k₂ : e₂ (eCl Z₂) = w • eCl Z₂' := by rw [← he₂, map_smul, smul_smul, hw, one_smul]
+    rw [k₁, map_smul, hφe, k₂]
+  refine ⟨?_, he⟩
+  obtain ⟨w, hw⟩ := hs.exists_left_inv
+  have k2 : ∀ x y : MbMod Z₂', s • x = s • y → x = y := fun x y h => by
+    rw [← one_smul R x, ← one_smul R y, ← hw, mul_smul, mul_smul, h]
+  apply k2
+  have h0 : φ (e₁ (s • bCls Z₁ + t • eCl Z₁)) = e₂ (s • bCls Z₂ + t • eCl Z₂) := by rw [hb₁, hb₂]; exact hφb
+  simp only [map_add (f := _), map_smul, he] at h0
+  exact add_right_cancel h0
+
+def isoMbeTransport {Z₁ Z₂ Z₁' Z₂' : Matrix (Fin (r + 1)) (Fin (r + 1)) R}
+    (e₁ : MbMod Z₁ ≃ₗ[R] MbMod Z₁') (e₂ : MbMod Z₂ ≃ₗ[R] MbMod Z₂') (s t v : R) (hs : IsUnit s) (hv : IsUnit v)
+    (hb₁ : e₁ (s • bCls Z₁ + t • eCl Z₁) = bCls Z₁') (hb₂ : e₂ (s • bCls Z₂ + t • eCl Z₂) = bCls Z₂')
+    (he₁ : e₁ (v • eCl Z₁) = eCl Z₁') (he₂ : e₂ (v • eCl Z₂) = eCl Z₂') : IsoMbe Z₁ Z₂ ≃ IsoMbe Z₁' Z₂' where
+  toFun γ := ⟨(e₁.symm.trans γ.1).trans e₂, by
+      have h1 : e₁.symm (bCls Z₁') = s • bCls Z₁ + t • eCl Z₁ := by rw [← hb₁, LinearEquiv.symm_apply_apply]
+      simp only [LinearEquiv.trans_apply, h1, map_add (f := _), map_smul, γ.2.1, γ.2.2]
+      simpa only [map_add, map_smul] using hb₂,
+    by
+      have h1 : e₁.symm (eCl Z₁') = v • eCl Z₁ := by rw [← he₁, LinearEquiv.symm_apply_apply]
+      simp only [LinearEquiv.trans_apply, h1, map_smul, γ.2.2, he₂]⟩
+  invFun γ := ⟨(e₁.trans γ.1).trans e₂.symm, by
+      simp only [LinearEquiv.trans_apply,
+        (isoMbeTransport_inv e₁ e₂ s t v hs hv hb₁ hb₂ he₁ he₂ γ.1 γ.2.1 γ.2.2).1, LinearEquiv.symm_apply_apply],
+    by
+      simp only [LinearEquiv.trans_apply,
+        (isoMbeTransport_inv e₁ e₂ s t v hs hv hb₁ hb₂ he₁ he₂ γ.1 γ.2.1 γ.2.2).2, LinearEquiv.symm_apply_apply]⟩
+  left_inv γ := by apply Subtype.ext; ext x; simp
+  right_inv γ := by apply Subtype.ext; ext x; simp
+
+theorem card_isoMbe_transport {Z₁ Z₂ Z₁' Z₂' : Matrix (Fin (r + 1)) (Fin (r + 1)) R}
+    (e₁ : MbMod Z₁ ≃ₗ[R] MbMod Z₁') (e₂ : MbMod Z₂ ≃ₗ[R] MbMod Z₂') (s t v : R) (hs : IsUnit s) (hv : IsUnit v)
+    (hb₁ : e₁ (s • bCls Z₁ + t • eCl Z₁) = bCls Z₁') (hb₂ : e₂ (s • bCls Z₂ + t • eCl Z₂) = bCls Z₂')
+    (he₁ : e₁ (v • eCl Z₁) = eCl Z₁') (he₂ : e₂ (v • eCl Z₂) = eCl Z₂') :
+    Nat.card (IsoMbe Z₁ Z₂) = Nat.card (IsoMbe Z₁' Z₂') :=
+  Nat.card_congr (isoMbeTransport e₁ e₂ s t v hs hv hb₁ hb₂ he₁ he₂)
+
+def dlast (r : ℕ) (δ : R) : Matrix (Fin (r + 1)) (Fin (r + 1)) R :=
+  Matrix.diagonal fun i => if i = Fin.last r then δ else 1
+
+theorem headCols_eq_of (Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) R)
+    (h : ∀ i (a : Fin r), Z' i a.castSucc = Z i a.castSucc) : headCols Z' = headCols Z := by
+  unfold headCols; congr 2; funext a; funext i; exact h i a
+
+def mbEqv (Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (h : ∀ i (a : Fin r), Z' i a.castSucc = Z i a.castSucc) :
+    MbMod Z ≃ₗ[R] MbMod Z' :=
+  Submodule.quotEquivOfEq _ _ (headCols_eq_of Z Z' h).symm
+
+theorem mbEqv_mk (Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (h) (v : Fin (r + 1) → R) :
+    mbEqv Z Z' h (Submodule.Quotient.mk v) = Submodule.Quotient.mk v := rfl
+
+theorem card_isoMbe_lastCol (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (δ c : R) (hδ : IsUnit δ) :
+    Nat.card (IsoMbe Z₁ Z₂) =
+      Nat.card (IsoMbe (Z₁ * dlast r δ + Matrix.of fun a b => if a = Fin.last r ∧ b = Fin.last r then c else 0)
+        (Z₂ * dlast r δ + Matrix.of fun a b => if a = Fin.last r ∧ b = Fin.last r then c else 0)) := by
+  have hcol : ∀ (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) i (a : Fin r),
+      (Z * dlast r δ + Matrix.of fun a b => if a = Fin.last r ∧ b = Fin.last r then c else 0) i a.castSucc =
+        Z i a.castSucc := by
+    intro Z i a
+    simp [dlast, Matrix.mul_diagonal, Fin.castSucc_ne_last]
+  refine card_isoMbe_transport (mbEqv _ _ (hcol Z₁)) (mbEqv _ _ (hcol Z₂)) δ c 1 hδ isUnit_one ?_ ?_ ?_ ?_
+  · simp only [bCls, eCl, ← Submodule.Quotient.mk_smul, ← Submodule.Quotient.mk_add, mbEqv_mk]
+    try (congr 1; funext i; by_cases hi : i = Fin.last r <;> simp [dlast, Matrix.mul_diagonal, hi, mul_comm])
+  · simp only [bCls, eCl, ← Submodule.Quotient.mk_smul, ← Submodule.Quotient.mk_add, mbEqv_mk]
+    try (congr 1; funext i; by_cases hi : i = Fin.last r <;> simp [dlast, Matrix.mul_diagonal, hi, mul_comm])
+  · simp [eCl, mbEqv_mk]
+  · simp [eCl, mbEqv_mk]
+
+def mbRowEqv (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (D Dinv : Matrix (Fin (r + 1)) (Fin (r + 1)) R)
+    (h1 : D * Dinv = 1) (h2 : Dinv * D = 1) : MbMod Z ≃ₗ[R] MbMod (D * Z) :=
+  Submodule.Quotient.equiv (headCols Z) (headCols (D * Z))
+    { toFun := D.mulVec, invFun := Dinv.mulVec,
+      map_add' := Matrix.mulVec_add D, map_smul' := fun c v => by simp [Matrix.mulVec_smul],
+      left_inv := fun v => by simp [Matrix.mulVec_mulVec, h2],
+      right_inv := fun v => by simp [Matrix.mulVec_mulVec, h1] }
+    (by
+      unfold headCols
+      rw [Submodule.map_span]
+      congr 1
+      ext x
+      simp only [Set.mem_image, Set.mem_range]
+      constructor
+      · rintro ⟨_, ⟨a, rfl⟩, rfl⟩
+        exact ⟨a, by funext i; simp [Matrix.mulVec, dotProduct, Matrix.mul_apply]⟩
+      · rintro ⟨a, rfl⟩
+        exact ⟨_, ⟨a, rfl⟩, by funext i; simp [Matrix.mulVec, dotProduct, Matrix.mul_apply]⟩)
+
+theorem mbRowEqv_mk (Z D Dinv : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (h1 h2) (v : Fin (r + 1) → R) :
+    mbRowEqv Z D Dinv h1 h2 (Submodule.Quotient.mk v) = Submodule.Quotient.mk (D.mulVec v) := rfl
+
+theorem card_isoMbe_lastRow (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (δ δi : R) (hδ : δ * δi = 1) :
+    Nat.card (IsoMbe Z₁ Z₂) = Nat.card (IsoMbe (dlast r δ * Z₁) (dlast r δ * Z₂)) := by
+  have h1 : dlast r δ * dlast r δi = 1 := by
+    rw [dlast, dlast, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+    try (congr 1; funext i; by_cases hi : i = Fin.last r <;> simp [hi, hδ])
+  have h2 : dlast r δi * dlast r δ = 1 := by
+    rw [dlast, dlast, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+    try (congr 1; funext i; by_cases hi : i = Fin.last r <;> simp [hi, hδ, mul_comm])
+  have hu : IsUnit δi := ⟨⟨δi, δ, by rw [mul_comm, hδ], hδ⟩, rfl⟩
+  refine card_isoMbe_transport (mbRowEqv Z₁ _ _ h1 h2) (mbRowEqv Z₂ _ _ h1 h2) 1 0 δi isUnit_one hu ?_ ?_ ?_ ?_
+  · simp only [bCls, one_smul, zero_smul, add_zero, mbRowEqv_mk]
+    rw [lift_col_mul]
+  · simp only [bCls, one_smul, zero_smul, add_zero, mbRowEqv_mk]
+    rw [lift_col_mul]
+  · simp only [eCl, ← Submodule.Quotient.mk_smul, mbRowEqv_mk]
+    congr 1; funext i; by_cases hi : i = Fin.last r <;> simp [dlast, Matrix.mulVec_diagonal, hi, mul_comm, hδ]
+  · simp only [eCl, ← Submodule.Quotient.mk_smul, mbRowEqv_mk]
+    congr 1; funext i; by_cases hi : i = Fin.last r <;> simp [dlast, Matrix.mulVec_diagonal, hi, mul_comm, hδ]
+
+end ScaleIso
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+variable {M : Model F E} {g : SplitG M.L} {r : ℕ}
+
+private theorem mem_R_of_split_coords_integral_congr (hs : M.split = some g) (x : E) (h1 : (g.e x).1 ∈ 𝒪[F])
+    (h2 : (g.e x).2 ∈ 𝒪[F]) (hd : ∃ c : 𝒪[F], (g.e x).1 - (g.e x).2 = (g.q : F) * c) : x ∈ M.R := by
+  obtain ⟨c, hc⟩ := hd
+  unfold Model.R
+  rw [hs]
+  refine Subring.mem_comap.2 (Subring.mem_map.2 ⟨(⟨(g.e x).1, h1⟩, ⟨(g.e x).2, h2⟩), ?_, ?_⟩)
+  · rw [RingHom.mem_eqLocus]
+    simp only [RingHom.comp_apply]
+    rw [Ideal.Quotient.eq, Ideal.mem_span_singleton']
+    refine ⟨c, Subtype.ext ?_⟩
+    simp [hc, mul_comm]
+  · rfl
+
+theorem zsig_mem (hs : M.split = some g) (T T' : F) (c : 𝒪[F]) (hc : T - T' = (g.q : F) ^ 2 * c)
+    (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R)
+    (hZ : Z.map M.R.subtype = HermSp.ZZplusOf M Zh T T') (a b : Fin (r + 1)) :
+    HermSp.ZZplusOf M (Zh.map M.L.cj) T T' a b ∈ M.R := by
+  have hq : (g.q : F) ≠ 0 := fun h => g.q_irr.ne_zero (Subtype.ext (by simpa using h))
+  have hmem : HermSp.ZZplusOf M Zh T T' b a ∈ M.R := by
+    have := congrFun (congrFun hZ b) a
+    simp only [Matrix.map_apply, Subring.coe_subtype] at this
+    rw [← this]
+    exact (Z b a).2
+  obtain ⟨u1, u2, d, hd⟩ := comp_of_mem_R hs hmem
+  rw [zz_comp hs] at u1 u2 hd
+  dsimp only at u1 u2 hd
+  have hT : T = T' + (g.q : F) ^ 2 * c := by linear_combination hc
+  by_cases hab : a = Fin.last r ∧ b = Fin.last r
+  · simp only [ite_eq_left hab.symm] at u1 u2 hd
+    refine mem_R_of_split_coords_integral_congr hs _ ?_ ?_ ⟨d, ?_⟩
+    all_goals rw [zz_comp hs]
+    all_goals simp only [Matrix.map_apply, g.e_cj, Prod.fst_swap, Prod.snd_swap, ite_eq_left hab]
+    · rw [show (g.e (Zh a b)).2 / (g.q : F) - -T / g.q =
+          -(-((g.e (Zh a b)).2 / g.q) - T' / g.q) + g.q * c by rw [hT]; field_simp; ring]
+      exact add_mem (neg_mem u2) (mul_mem g.q.2 c.2)
+    · rw [show -((g.e (Zh b a)).1 / (g.q : F)) - T' / g.q =
+          -((g.e (Zh b a)).1 / g.q - -T / g.q) + g.q * c by rw [hT]; field_simp; ring]
+      exact add_mem (neg_mem u1) (mul_mem g.q.2 c.2)
+    · rw [← hd]
+      ring
+  · have hba : ¬(b = Fin.last r ∧ a = Fin.last r) := fun h => hab (And.symm h)
+    simp only [ite_eq_right hba] at u1 u2 hd
+    refine mem_R_of_split_coords_integral_congr hs _ ?_ ?_ ⟨d, ?_⟩
+    all_goals rw [zz_comp hs]
+    all_goals simp only [Matrix.map_apply, g.e_cj, Prod.fst_swap, Prod.snd_swap, ite_eq_right hab]
+    · rw [show (g.e (Zh a b)).2 / (g.q : F) - 0 = -(-((g.e (Zh a b)).2 / g.q) - 0) by ring]
+      exact neg_mem u2
+    · rw [show -((g.e (Zh b a)).1 / (g.q : F)) - 0 = -((g.e (Zh b a)).1 / g.q - 0) by ring]
+      exact neg_mem u1
+    · rw [← hd]
+      ring
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+section Asm
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+variable {M : Model F E} {g : SplitG M.L} {r : ℕ}
+
+theorem ind_det (hs : M.split = some g) {Z₁ Z₂ : M.Mat (r + 1)} {TT : M.R} (γ : IsoMbe Z₁.Z Z₂.Z)
+    (θ θ' : DD1 hs Z₁ TT ≃+ DD1 hs Z₂ TT) (h : Ind hs γ θ) (h' : Ind hs γ θ') : θ = θ' := by
+  ext x
+  induction x using QuotientAddGroup.induction_on with
+  | H l =>
+    obtain ⟨l₂, hl₂⟩ := Submodule.Quotient.mk_surjective _ (γ.1 (Submodule.Quotient.mk l))
+    exact (h l l₂ hl₂.symm).trans (h' l l₂ hl₂.symm).symm
+
+theorem map_cj_cj (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) : (Zh.map M.L.cj).map M.L.cj = Zh := by
+  ext a b; simp [M.L.cj_cj]
+
+theorem det_map_cj {n : Type} [Fintype n] [DecidableEq n] (Zh : Matrix n n E) :
+    (Zh.map M.L.cj).det = M.L.cj Zh.det := by
+  have := RingHom.map_det (M.L.cj : E →+* E) Zh
+  simpa [RingHom.mapMatrix_apply] using this.symm
+
+theorem head_map_cj (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
+    ((Zh.map M.L.cj).submatrix Fin.castSucc Fin.castSucc).det =
+      M.L.cj (Zh.submatrix Fin.castSucc Fin.castSucc).det := by
+  rw [← det_map_cj]
+  rfl
+
+theorem gHyp_cj {T T' : F} {TT : M.R} {Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E} {Z Zσ : M.Mat (r + 1)}
+    (h : GHyp M g T T' TT Zh Z Zσ) : GHyp M g T T' TT (Zh.map M.L.cj) Zσ Z := by
+  obtain ⟨h1, h2, h3, h4, h5, h6, h7⟩ := h
+  refine ⟨h1, h2, h3, h5, by rw [map_cj_cj]; exact h4, by rw [det_map_cj]; exact h6.map _, ?_⟩
+  rw [det_map_cj, head_map_cj, M.L.cj_cj, M.L.cj_cj, mul_comm (M.L.cj Zh.det),
+    mul_comm (M.L.cj (Zh.submatrix Fin.castSucc Fin.castSucc).det)]
+  exact h7
+
+theorem kapEq_cj {Zh₁ Zh₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (h : KapEq Zh₁ Zh₂) :
+    KapEq (Zh₁.map M.L.cj) (Zh₂.map M.L.cj) := by
+  unfold KapEq at h ⊢
+  rw [det_map_cj, det_map_cj, head_map_cj, head_map_cj, ← map_mul, ← map_mul, h]
+
+end Asm
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.AlgGUNS, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.ScaleCh, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.ZzScale, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.SecondProjConjAlgebra, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.FGInvariant, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.ScCApplyInlInl, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.ScCMulInv, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.VecMulScCInr, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.ScPhiSymmApply, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.GamConIff, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.CardThetaGCScale, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.ScaleFinal
@@ -289,24 +819,24 @@ theorem zz_scale (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : F)
   apply g.e.injective
   by_cases ha : a = Fin.last r <;> by_cases hb : b = Fin.last r
   · subst ha; subst hb
-    simp only [and_self, if_true] at hZab ⊢
+    simp only [and_self, ite_true] at hZab ⊢
     push_cast
     rw [map_sub, map_mul, map_add (f := _), map_mul, hZab]
     simp only [map_sub, AlgEquiv.apply_symm_apply, he1, he2, hcc, hα, map_mul]
     ext <;> simp <;> field_simp <;> ring
-  · simp only [ha, hb, and_false, if_false, if_true] at hZab ⊢
+  · simp only [ha, hb, and_false, ite_false, ite_true] at hZab ⊢
     push_cast
     simp only [sub_zero, add_zero] at hZab ⊢
     rw [map_mul, map_mul, hZab]
     simp only [AlgEquiv.apply_symm_apply, he2, hα, map_mul]
     ext <;> simp <;> field_simp
-  · simp only [ha, hb, false_and, if_false, if_true] at hZab ⊢
+  · simp only [ha, hb, false_and, ite_false, ite_true] at hZab ⊢
     push_cast
     simp only [sub_zero, add_zero, one_mul] at hZab ⊢
     rw [map_mul, hZab]
     simp only [AlgEquiv.apply_symm_apply, he1, hα, map_mul]
     ext <;> simp <;> field_simp
-  · simp only [ha, hb, and_false, if_false] at hZab ⊢
+  · simp only [ha, hb, and_false, ite_false] at hZab ⊢
     push_cast
     simp only [sub_zero, add_zero, one_mul, mul_one] at hZab ⊢
     rw [hZab]
@@ -574,7 +1104,7 @@ theorem scC_apply_inr_inr (α β : E) (a b : Fin (r + 1)) :
 theorem scC_left_inl (α β : E) (G : Matrix (Ix r) (Ix r) E) (a : Fin (r + 1)) (j : Ix r) :
     ((scC r α β).transpose * G) (Sum.inl a) j = G (Sum.inl a) j := by
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Fintype.sum_sum_type, scC_apply_inl_inl, scC_apply_inr_inl,
-    zero_mul, Finset.sum_const_zero, add_zero, ite_mul, one_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    zero_mul, Finset.sum_const_zero, add_zero, ite_mul, one_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem scC_left_inr (α β : E) (G : Matrix (Ix r) (Ix r) E) (a : Fin (r + 1)) (j : Ix r) :
     ((scC r α β).transpose * G) (Sum.inr a) j =
@@ -590,7 +1120,7 @@ theorem scC_right_inl (α β : E) (X : Matrix (Ix r) (Ix r) E) (i : Ix r) (b : F
     (X * (scC r α β).map cj) i (Sum.inl b) = X i (Sum.inl b) := by
   simp only [Matrix.mul_apply, Matrix.map_apply, Fintype.sum_sum_type, scC_apply_inl_inl, scC_apply_inr_inl, map_zero,
     mul_zero, Finset.sum_const_zero, add_zero, apply_ite cj, map_one, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true]
+    ite_true]
 
 theorem scC_right_inr (α β : E) (X : Matrix (Ix r) (Ix r) E) (i : Ix r) (b : Fin (r + 1)) :
     (X * (scC r α β).map cj) i (Sum.inr b) =
@@ -876,7 +1406,7 @@ theorem lamStarC_scale (h : ScHyp O cj qi T T' α) (Zh : Matrix (Fin (r + 1)) (F
   rw [dlast, Matrix.diagonal_mul]
   by_cases hb : b = Fin.last r
   · subst hb
-    simp only [if_true, map_mul, h.cjcj]
+    simp only [ite_true, map_mul, h.cjcj]
     linear_combination (cj (Zh⁻¹ (Fin.last r) (Fin.last r)) * y (Fin.last r)) * h.αn
   · simp [hb]
 
@@ -918,7 +1448,7 @@ theorem phi_comb (h : ScHyp O cj qi T T' α) (q : E) (hq : q * qi = 1) (Y : Ix r
   rw [phi_inl, phi_inr]
   by_cases hb : b = Fin.last r
   · subst hb
-    simp only [if_true, map_mul, map_sub, map_one, h.qic]
+    simp only [ite_true, map_mul, map_sub, map_one, h.qic]
     linear_combination ((Y (Sum.inl (Fin.last r)) : E) * (cj α - 1)) * hq
   · simp [hb]
 
@@ -974,7 +1504,7 @@ theorem gamCon_iff (h : ScHyp O cj qi T T' α) (hqO : q ∈ O) (Y Y' Y'' : Ix r 
       apply Subtype.ext
       rw [← phi_inl h, hy]
   · refine forall_congr' fun a => ?_
-    rw [phi_inl, phi_inr, if_neg (hne a), if_neg (hne a), map_one, mul_one, add_zero]
+    rw [phi_inl, phi_inr, ite_eq_right (hne a), ite_eq_right (hne a), map_one, mul_one, add_zero]
   · rw [coe_sub_eq_mul_iff_sub_eq_smul q hqO, coe_sub_eq_mul_iff_sub_eq_smul q hqO, ← map_sub, ← map_smul, (scPhi h).injective.eq_iff]
 
 end ScaleA6
@@ -1016,7 +1546,7 @@ theorem gamTup_scale (h : ScHyp O cj qi T T' α) (hq : q * qi = 1) (Zh : Matrix 
     funext (phi_comb h q hq Y)
   have hl : (fun a => ((scPhi h Y' (Sum.inl a) : O) : E)) = fun a => (Y' (Sum.inl a) : E) := funext (phi_inl h Y')
   have hz := phi_comb h q hq Y' (Fin.last r)
-  simp only [if_true] at hz
+  simp only [ite_true] at hz
   simp only [scTr, scBar_mk, psiD, Prod.mk.injEq]
   refine ⟨trivial, trivial, ⟨phi_inl h Y _, ?_⟩, ?_, hz⟩
   · rw [hc, lamStarC_scale h Zh]

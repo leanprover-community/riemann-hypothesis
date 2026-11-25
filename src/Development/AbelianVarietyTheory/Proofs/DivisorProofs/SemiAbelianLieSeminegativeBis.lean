@@ -157,12 +157,12 @@ lemma exists_u (v : Place k F) {r : ℕ} (y : Fin (r+1) → F) (hy : y ≠ 0) :
       have := congrArg (Equiv.swap 0 i) h
       rw [Equiv.swap_apply_self, Equiv.swap_apply_right] at this
       exact Fin.succ_ne_zero a this
-    rw [hu0y]; simp only [hc, if_neg hne]; field_simp; ring
+    rw [hu0y]; simp only [hc, ite_eq_right hne]; field_simp; ring
 
 lemma exists_h {n : ℕ} (x : Fin (n+1) → F) (hx : x ≠ 0) :
     ∃ h : Matrix (Fin (n+1)) (Fin (n+1)) F, h.det ≠ 0 ∧ ∀ a, h a 0 = x a := by
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra hc; push_neg at hc; exact hx (funext hc)
+    by_contra hc; push Not at hc; exact hx (funext hc)
   refine ⟨(1 + Matrix.vecMulVec (x - Pi.single i 1) (Pi.single i 1)).submatrix id (Equiv.swap 0 i), ?_, ?_⟩
   · rw [Matrix.det_permute', det_one_add_vmv]
     simp [hi]
@@ -181,7 +181,7 @@ lemma unimod_ae [IsAlgClosed k] [CharZero k] (hF : IsFF k F) {n : ℕ} (h : Matr
   refine ((_root_.GlobalTheory.Nef.finite_support_and_sum_ord_eq_zero k F hF _ hd).1.union (Set.finite_iUnion fun p : Fin n × Fin n => fin1 (h p.1 p.2))).subset ?_
   intro v hv
   simp only [Set.mem_union, Set.mem_setOf_eq, Set.mem_iUnion]
-  by_contra hc; push_neg at hc
+  by_contra hc; push Not at hc
   exact hv ⟨fun i j => hc.2 (i, j), hc.1⟩
 
 lemma unimod_pull {E : Type} [Field E] [Algebra k E] [Algebra F E] (ρ : Place k E → Place k F) (hρ : IsRes ρ)
@@ -379,7 +379,6 @@ theorem deg_le_rank_mul_of_linesLE : ∀ (r : ℕ) (k F : Type) [Field k] [IsAlg
     have hfin : (deg g : ℝ) ≤ (r + 1) * a := by
       refine le_of_forall_pos_le_add fun ε hε => ?_
       have := key (ε / (r + 1)) (by positivity)
-      have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
       have : (r : ℝ) * (ε / (r + 1)) ≤ ε := by
         rw [mul_div_assoc']; rw [div_le_iff₀ (by positivity)]; nlinarith
       linarith
@@ -410,12 +409,12 @@ theorem centre_place : ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [
     ∀ c : C, c ≠ x (IsLocalRing.closedPoint K) → ∃ (v : Place k K) (b : Sp v.O ⟶ C), spMap v.O.subtype ≫ b = x ∧ b (IsLocalRing.closedPoint v.O) = c := by
   intro k K _ _ _ _ _ C _ x hx c hc
   obtain ⟨hC, hg, hstr⟩ := hx
-  haveI : IsIntegral C := GlobalTheory.LieSemineg.isIntegral_curve hC.1 hC.2.2
-  haveI := hC.1
-  haveI : Smooth (strHom k (X := C)) := SmoothOfRelativeDimension.smooth 1 _
-  haveI : GlobalTheory.IsNormalScheme C := isNormalScheme_of_smooth (strHom k C)
-  haveI : IsLocallyNoetherian C := LocallyOfFiniteType.isLocallyNoetherian (strHom k C)
-  haveI := hg.2
+  have : IsIntegral C := GlobalTheory.LieSemineg.isIntegral_curve hC.1 hC.2.2
+  have := hC.1
+  have : Smooth (strHom k (X := C)) := SmoothOfRelativeDimension.smooth 1 _
+  have : GlobalTheory.IsNormalScheme C := isNormalScheme_of_smooth (strHom k C)
+  have : IsLocallyNoetherian C := LocallyOfFiniteType.isLocallyNoetherian (strHom k C)
+  have := hg.2
   set p : Sp K := IsLocalRing.closedPoint K with hp
   have hη : x p = genericPoint C := by
     have hd : Dense (Set.range x) := hg.1.denseRange
@@ -433,7 +432,7 @@ theorem centre_place : ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [
       rw [hη]
       exact ((show c ⤳ genericPoint C from hm (show c ≤ genericPoint C from h3)).antisymm h3).eq
     have hle : (Order.coheight c : WithBot ℕ∞) ≤ 1 := by
-      haveI : Nonempty C := ⟨c⟩
+      have : Nonempty C := ⟨c⟩
       have hd := GlobalTheory.LieSemineg.dim_curve (k := k) (C := C) hC.1
       have h1 := (Order.coheight_le_krullDim c).trans (Order.krullDim_eq_of_orderIso (irreducibleSetEquivPoints (α := C))).ge
       rw [topologicalKrullDim] at hd
@@ -441,7 +440,7 @@ theorem centre_place : ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [
       exact h1
     have hle' : Order.coheight c ≤ 1 := by exact_mod_cast hle
     exact le_antisymm hle' (ENat.one_le_iff_ne_zero.2 hne)
-  haveI hdvr := GlobalTheory.IsNormalScheme.isDiscreteValuationRing_stalk hco
+  have hdvr := GlobalTheory.IsNormalScheme.isDiscreteValuationRing_stalk hco
 
   set A := C.presheaf.stalk c
   let P : IsDedekindDomain.HeightOneSpectrum A := IsDiscreteValuationRing.maximalIdeal A
@@ -501,7 +500,7 @@ theorem centre_place : ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [
     rw [hvφ]; exact P.intValuation_le_one a
   let ψO : A →+* v.O := φ.codRestrict v.O hle
   have hPm : P.asIdeal = IsLocalRing.maximalIdeal A := rfl
-  haveI : IsLocalHom ψO := ⟨fun a ha => by
+  have : IsLocalHom ψO := ⟨fun a ha => by
     by_contra hna
     have hm : a ∈ P.asIdeal := by rw [hPm]; exact hna
     have hlt : vK (φ a) < 1 := by rw [hvφ]; exact (P.intValuation_lt_one_iff_mem a).2 hm
@@ -636,7 +635,7 @@ open GlobalTheory.Nef.SecRat in
 theorem GlobalTheory.Nef.sec_detPow_rational : ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field K] [Algebra k K] (C : Scheme.{0}) [Algebra k Γ(C, ⊤)] (x : Sp K ⟶ C), IsGenOver k x →
   ∀ (W : C.Modules) (r : ℕ), IsVB W r → ∀ (V₀ : C.Opens) (s : Fin r → Γ(W, V₀)), (V₀ : Set C).Nonempty → IsFrame s → ∀ (m : ℕ) (σ : (lbPow (det W r) m).Sec), σ ≠ 0 → ∃ f : K, f ≠ 0 ∧ ∀ (v : Place k K) (g : Matrix (Fin r) (Fin r) K), LocFrame x s v g → v.1 (f * g.det ^ m) ≤ 1 ∧ ∀ b : Sp v.O ⟶ C, spMap v.O.subtype ≫ b = x → b (IsLocalRing.closedPoint v.O) ∉ Out.nonzeroLocus σ → v.1 (f * g.det ^ m) < 1 := by
   intro k K _ _ _ _ _ C _ x hx W r hW V₀ s hV₀ hs m σ hσ
-  haveI := isIntegral_of_isGenOver k K C x hx
+  have := isIntegral_of_isGenOver k K C x hx
   let c₀ : Chart W r := ⟨V₀, s, hs⟩
   have hUeq : ∀ c : Chart W r, (((lbPow (det W r) m).U (fun _ => c) : C.Opens) : Set C) = c.U := fun c =>
     Set.ext fun y => ⟨fun hy => Set.mem_iInter.1 hy PUnit.unit, fun hy => Set.mem_iInter.2 fun _ => hy⟩
@@ -733,7 +732,6 @@ theorem exists_sec_lbPow_vanishing_of_degree_pos : ∀ (k : Type) [Field k] (C :
     have hadd := interNum_one_of_cls_eq_add (k := k) hH hd (LB.isLB_triv C) hN hLm e
     rw [ArInt.interNum_one_lbPow_of_curve hH hd hL m, hdeg _ (LB.isLB_triv C), hdeg N hN, hc,
       cls_triv, neg_zero, neg_neg] at hadd
-    have hd' : interNum k (GlobalTheory.structureModule C) ![L] = d := rfl
     linarith
   set m : ℕ := (f 0).natAbs + 1 with hm
   have hm0 : 0 < m := Nat.succ_pos _
@@ -748,7 +746,6 @@ theorem exists_sec_lbPow_vanishing_of_degree_pos : ∀ (k : Type) [Field k] (C :
     rw [← chiPic_cls k O hLm, cls_lbPow hL m hLm, ← natCast_zsmul, ← hf, hchi m]
   have hχpos : 0 < chi k (twist O (lbPow L m)) := by
     rw [hχ]
-    have h1 : (1 : ℤ) ≤ d := hpos
     have h2 : -(f 0) ≤ ((f 0).natAbs : ℤ) := by
       rw [Int.natCast_natAbs]; exact neg_le_abs (f 0)
     have h3 : (m : ℤ) = (f 0).natAbs + 1 := by rw [hm]; push_cast; ring
@@ -915,7 +912,7 @@ theorem unimod_one' {k F : Type} [Field k] [Field F] [Algebra k F] {n : ℕ} (v 
 theorem exists_frame_locFrames : ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field K] [Algebra k K] (C : Scheme.{0}) [Algebra k Γ(C, ⊤)] (x : Sp K ⟶ C), IsGenOver k x →
   ∀ (W : C.Modules) (r : ℕ), IsVB W r → ∃ (V₀ : C.Opens) (s : Fin r → Γ(W, V₀)) (g : Place k K → Matrix (Fin r) (Fin r) K), (V₀ : Set C).Nonempty ∧ IsFrame s ∧ admitted g ∧ ∀ v, LocFrame x s v (g v) := by
   intro k K _ _ _ _ _ C _ x hx W r hW
-  haveI : IsDominant x := hx.2.1.1
+  have : IsDominant x := hx.2.1.1
   have hxx : spMap (algebraMap K K) ≫ x = x := by
     change spMap (RingHom.id K) ≫ x = x
     exact (congrArg (· ≫ x) (Spec.map_id _)).trans (Category.id_comp x)
@@ -1015,9 +1012,6 @@ def lieBaseIso {C C' : Scheme.{0}} [IsIntegral C] (π : C' ⟶ C) (G : Over C) [
 
 end GlobalTheory.NeronCurve.LieDescent
 
-namespace GlobalTheory.NeronCurve
-
-end GlobalTheory.NeronCurve
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1226,8 +1220,8 @@ theorem GlobalTheory.mono_pullback_map_of_flat : ∀ (X Y : Scheme.{0}) (f : X �
   let iso := adjA.leftAdjointUniq adjB
   have hn := iso.hom.naturality φ
   have hφ : Function.Injective (GlobalTheory.QCoh.stalkLinear φ (f x)) := GlobalTheory.QCoh.stalkLinear_injective φ (f x)
-  letI := (f.stalkMap x).hom.toAlgebra
-  haveI : Module.Flat (Y.presheaf.stalk (f x)) (X.presheaf.stalk x) := Flat.stalkMap f x
+  let := (f.stalkMap x).hom.toAlgebra
+  have : Module.Flat (Y.presheaf.stalk (f x)) (X.presheaf.stalk x) := Flat.stalkMap f x
   have hext : Function.Injective ((ModuleCat.extendScalars (f.stalkMap x).hom).map
       ((stalkFunctor (f x)).map φ)) := by
     change Function.Injective (LinearMap.baseChange _ (GlobalTheory.QCoh.stalkLinear φ (f x)))
@@ -1265,12 +1259,12 @@ theorem semiNeg_descends_baseChange : ∀ (k : Type) [Field k] (C : Scheme.{0}) 
   obtain ⟨h1, h2, h3⟩ := hC
   let t : Sp k' ⟶ Sp k := spMap (algebraMap k k')
   let f := strHom k C
-  letI A' : Algebra k' Γ(pullback f t, ⊤) := algebraΓOfHom (pullback.snd f t)
+  let A' : Algebra k' Γ(pullback f t, ⊤) := algebraΓOfHom (pullback.snd f t)
   have hs : strHom k' (pullback f t) = pullback.snd f t := strHom_eq fun _ => rfl
   refine ⟨pullback f t, A', pullback.fst f t, ⟨?_, ?_, ?_⟩, ?_⟩
   · rw [hs]; exact (smoothOfRelativeDimension_isStableUnderBaseChange 1).of_isPullback (IsPullback.of_hasPullback f t) h1
   · rw [hs]; exact GlobalTheory.ProjSpace.isProjOver_pullback_snd _ h2
-  · rw [hs]; haveI := h3; infer_instance
+  · rw [hs]; have := h3; infer_instance
   · intro F hF W r hW i hi
     have : IsProper f := by
       obtain ⟨N, j, hj, e⟩ := h2
@@ -1280,7 +1274,7 @@ theorem semiNeg_descends_baseChange : ∀ (k : Type) [Field k] (C : Scheme.{0}) 
       infer_instance
     have hinst : (‹Algebra k Γ(C, ⊤)›) = algebraΓOfHom f :=
       Algebra.algebra_ext _ _ (algebraMap_eq_strHom k C)
-    haveI : Flat (pullback.fst f t) := inferInstance
+    have : Flat (pullback.fst f t) := inferInstance
     have hm := _root_.GlobalTheory.mono_pullback_map_of_flat _ _ (pullback.fst f t) W F i
     have h := hF _ r (hW.pullback _) _ hm
     rw [← interNum_congr_lbIso k' _ (isLB_vecOne (LB.isLB_pull hW.isLB_det _)) (isLB_vecOne (hW.pullback _).isLB_det)

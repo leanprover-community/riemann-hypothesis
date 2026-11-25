@@ -418,7 +418,7 @@ private theorem exAt {E : Type} [Field E] [NumberField E] [_root_.NumberField.Is
   choose m hm using fun τ => ((Dp.parEx E n hn μ V hV).1 τ).exists
   refine ⟨m, fun w => if hw : ∃ B, SSat μ V w B then hw.choose else 0, hm, fun w hw => ?_⟩
   have hx := h w hw
-  simp only [dif_pos hx]
+  simp only [dite_eq_left hx]
   exact hx.choose_spec
 
 end SlopeTestRemainingChoices
@@ -560,12 +560,6 @@ open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.Invariant
 section Pow
 
 open Formalism.L2.Host Formalism.ConjugateSelfDual UpperTheory.ConvolutionTheory.T
-
-private theorem pow_loc {K : Type} [Field K] [NumberField K] {χ : HChar K} {s : ℂ} (h : IsPow χ s)
-    (v : HeightOneSpectrum (𝓞 K)) (x : (v.adicCompletion K)ˣ) :
-    ((χ.loc v x : ℂˣ) : ℂ) = ((‖(x : v.adicCompletion K)‖ : ℝ) : ℂ) ^ s := by
-  rw [← GroundTheory.Global.IdeleGroup.ideleModule_finiteEmbedding v x]
-  exact h _
 
 private theorem pow_val {K : Type} [Field K] [NumberField K] {χ : HChar K} {s : ℂ} (h : IsPow χ s)
     (v : HeightOneSpectrum (𝓞 K)) : χ.UnrAt v ∧ ((χ.val v : ℂˣ) : ℂ) = (normV v : ℂ) ^ (-s) := by
@@ -820,7 +814,6 @@ private theorem alg {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] 
 
 private theorem sfinite_of_finite {X : Type} [MeasurableSpace X] (ν : Measure X) [IsFiniteMeasure ν] : SFinite ν := inferInstance
 
-set_option maxHeartbeats 1000000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
     ForAllC fun K _ _ μ _ _ _ _ _ D _ _ A A' => ∀ (θ : Twist μ) (a g : CC K (2 + 2)) (P : L2 μ →L[ℂ] L2 μ), IsOrthogonalProjectionTwoLines A.J A'.J P → θ.U ∘L P = P ∘L θ.U →
       (∀ (T : ℝ) (Λ : L2 μ →L[ℂ] L2 μ), 0 ≤ T → IsTrunc A.J A'.J T Λ → θ.U ∘L Λ = Λ ∘L θ.U) →
@@ -830,7 +823,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
           trace (Λ ∘L (Rop μ f ∘L θ.U) ∘L P ∘L Λ) = ∫ y, w y ∂quotientMeasure (Gam K (2 + 2)) μ ∧
           (∀ y, Om T (Quotient.out y) → w y = ⟪P (kv μ a (Quotient.out y)), M (P (kv μ (CuspidalProjection.ccStar g) (θ.e (Quotient.out y))))⟫_ℂ) ∧
           ∀ y, ¬ Om T (Quotient.out y) → ‖w y‖ ≤ C * (qht (Quotient.out y : G1 K (2 + 2)) ^ N')⁻¹ * ‖M‖ := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro K _ _ _ μ _ μ₂ _ τ₁ τ₂ hp D d d' A A' θ a g P hP hUP hUΛ ha hDa hg hDg N'
     classical
     haveI := Reduction.isFiniteMeasure_quotientMeasure (K := K) (n := 2 + 2) μ
@@ -892,12 +884,12 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
     have k₂m : StronglyMeasurable k₂ := StronglyMeasurable.ite om m1 m2
     have k₂b : ∀ y, ‖k₂ y‖ ≤ max (‖P‖ * (C₄ * (C₃ * (C₅ * Real.exp (N₅ * T)) ^ c) ^ N₄)) B₂ := fun y => by
       by_cases hy : Om T (Quotient.out y : G1 K (2 + 2))
-      · simp only [k₂, if_pos hy]
+      · simp only [k₂, ite_eq_left hy]
         refine le_trans ?_ (le_max_left _ _)
         refine (P.le_opNorm _).trans (mul_le_mul_of_nonneg_left ((b₄ _).trans (mul_le_mul_of_nonneg_left
           (pow_le_pow_left₀ (q0 _).le ((hθ _).trans (mul_le_mul_of_nonneg_left
           (pow_le_pow_left₀ (q0 _).le ((hb T _ hT).1 hy) _) hC₃)) _) hC₄)) (norm_nonneg _))
-      · simp only [k₂, if_neg hy]
+      · simp only [k₂, ite_eq_right hy]
         exact (hB₂ _).trans (le_max_right _ _)
     have bae : ∀ φ, (ContinuousLinearMap.adjoint (P ∘L Rop μ g ∘L θ.U ∘L Λ) φ : RightCosetSpace (Gam K (2 + 2)) → ℂ)
         =ᵐ[quotientMeasure (Gam K (2 + 2)) μ] fun y => ⟪k₂ y, φ⟫_ℂ := fun φ => by
@@ -915,9 +907,9 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
         exact hx h
       filter_upwards [t1, t2, t3, t4, t5 (ContinuousLinearMap.adjoint θ.U (Rop μ s (P φ)))] with y u1 u2 u3 u4 u5
       by_cases hy : Om T (Quotient.out y : G1 K (2 + 2))
-      · simp only [k₂, if_pos hy]
+      · simp only [k₂, ite_eq_left hy]
         rw [e2, u5 hy, u3, u4, kvout, hsa]
-      · simp only [k₂, if_neg hy]
+      · simp only [k₂, ite_eq_right hy]
         rw [e3, ContinuousLinearMap.comp_apply, u1, u2, lout]
     refine ⟨isTraceClass_comp kHS (hBHS.comp_left M), fun y => ⟪k T (Quotient.out y), M (k₂ y)⟫_ℂ, ?_, ?_, fun y hy => ?_, fun y hy => ?_⟩
     · refine Integrable.of_bound (km.inner (M.continuous.comp_stronglyMeasurable k₂m)).aestronglyMeasurable
@@ -926,8 +918,8 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
         (mul_le_mul_of_nonneg_left (k₂b y) (norm_nonneg _))) (norm_nonneg _) ((norm_nonneg _).trans (hB₁ 1)))
     · exact traceKer _ _ M _ _ k₂ (MemLp.of_bound km.aestronglyMeasurable _ (Filter.Eventually.of_forall fun y => hB₁ _))
         (MemLp.of_bound k₂m.aestronglyMeasurable _ (Filter.Eventually.of_forall k₂b)) kHS hBHS kae bae
-    · simp only [k₂, if_pos hy, kO T _ hy]
-    · simp only [k₂, if_neg hy]
+    · simp only [k₂, ite_eq_left hy, kO T _ hy]
+    · simp only [k₂, ite_eq_right hy]
       have z0 := q0 (Quotient.out y)
       have z1 := kb T _ hT hy
       have z2 : ‖l T (θ.e (Quotient.out y))‖ ≤ C₂ * (C₃ * qht (Quotient.out y : G1 K (2 + 2)) ^ c) ^ N₂ :=
@@ -1049,7 +1041,6 @@ private theorem intEst' {X : Type} [MeasurableSpace X] (ν : Measure X) [IsFinit
     (fun x hx => h2 x ((hh x).1 hx))
   rwa [integral_add hc hw, ← sub_sub] at this
 
-set_option maxHeartbeats 800000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.kernX :
     KernX := by
   intro K _ _ _ μ _ μ₂ _ τ₁ τ₂ hp D d d' A A' θ a g P hP hθ hΛθ ha haD hg hgD
@@ -1072,7 +1063,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.kernX :
       ⟪UpperTheory.ConvolutionTheory.K.kv μ a (Quotient.out y), M (UpperTheory.ConvolutionTheory.K.kv μ (CuspidalProjection.ccStar g) (θ.e (Quotient.out y)))⟫_ℂ := by
     funext y
     rw [twKQ, twK, kerId K (2 + 2) μ f a g M hf]
-  set_option synthInstance.maxHeartbeats 400000 in
   have est := intEst' (quotientMeasure (Gam K (2 + 2)) μ) _ (twKQ θ f) _ w
     (C1 * C0 ^ N1 * Real.exp ((N0 * N1 : ℕ) * T) * ‖M ∘L (1 - Pc μ - P)‖) ((C2 + C3) * Real.exp (-(N' * T)) * ‖M‖)
     (omMeas (K := K) T).2.2 hi hw (by rw [hk]; exact (ker_cont μ θ a _ M).aestronglyMeasurable) (by positivity) (by positivity)

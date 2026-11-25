@@ -23,8 +23,6 @@ namespace PI.TripleFrameDeterminant.W
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem ddS_ne_zero (D : D7) : ddS D ≠ 0 := by
   unfold ddS
   rw [Ne, FractionalIdeal.coeIdeal_eq_zero]
@@ -48,8 +46,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem one_mem_ddS_zpow (D : Formalism.BasicNotions.D7) (k : ℕ) :
     (1 : D.host.E) ∈ ((ddS D) ^ (-(k : ℤ)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) := by

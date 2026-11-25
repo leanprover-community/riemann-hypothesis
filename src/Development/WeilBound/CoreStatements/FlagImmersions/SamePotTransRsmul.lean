@@ -249,16 +249,10 @@ end Pull
 
 theorem sum_padicValNat_log {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) {n : ℕ} (hn : 0 < n) :
     ∑ p ∈ S, (padicValNat p n : ℝ) * Real.log p ≤ Real.log n := by
-  have hdZ : ∏ p ∈ S, ((p : ℤ)) ^ padicValNat p n ∣ (n : ℤ) := by
-    apply Finset.prod_dvd_of_coprime
-    · intro p hp q hq hpq
-      exact IsCoprime.pow (Nat.isCoprime_iff_coprime.2 ((Nat.coprime_primes (hS p hp) (hS q hq)).2 hpq))
-    · intro p _
-      exact_mod_cast ((_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _)) : p ^ padicValNat p n ∣ n)
-  have hd : ∏ p ∈ S, p ^ padicValNat p n ∣ n := by
-    apply Int.natCast_dvd_natCast.1
-    push_cast
-    exact hdZ
+  have hd : ∏ p ∈ S, p ^ padicValNat p n ∣ n := Finset.prod_dvd_of_isRelPrime
+    (fun p hp q hq hpq =>
+      (Nat.coprime_iff_isRelPrime.1 ((Nat.coprime_primes (hS p hp) (hS q hq)).2 hpq)).pow)
+    fun p _ => _root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat p n)
   have hle : ((∏ p ∈ S, p ^ padicValNat p n : ℕ) : ℝ) ≤ n := by
     exact_mod_cast Nat.le_of_dvd hn hd
   have hpos : ∀ p ∈ S, ((p : ℝ) ^ padicValNat p n) ≠ 0 := fun p hp =>

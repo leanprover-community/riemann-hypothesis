@@ -417,12 +417,6 @@ theorem diagSub_psJet {d : ℕ} (m : ℕ) (φ : Pt V 1 d) (hφ : ∀ i, MvPowerS
   rw [e, ← toJet_eq, ← toJet_eq]
   exact hsub ε
 
-theorem homAt_comp' {A B C : Type} [CommRing A] [Algebra V A] [CommRing B] [Algebra V B] [CommRing C] [Algebra V C]
-    (f : A →ₐ[V] B) (g : B →ₐ[V] C) :
-    Formalism.L2.Pj.homAt (𝟙 (Sp V)) g ≫ Formalism.L2.Pj.homAt (𝟙 (Sp V)) f = Formalism.L2.Pj.homAt (𝟙 (Sp V)) (g.comp f) := by
-  apply Over.OverMorphism.ext
-  exact (Spec.map_comp _ _).symm
-
 theorem val_prim_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {S : Scheme.{0}} (t : SAB H S)
     (hp : Function.Surjective t.G.hom.appTop.hom) (wP : PrimTyG t) (hw : IsPrimG t wP)
     (ρ : LB.Gen (LB.LinComb t.PP.L (JetSer.primφ (t.act.act H.w0)) JetSer.primε)) (hρ : ρ.IsGen)
@@ -450,12 +444,12 @@ theorem linkSec : LinkSecSt := by
   obtain ⟨-, vS⟩ := gs_of_isSer1 xT x hM _ _ S hS m y
   let s := Formalism.L2.Pj.homAt (𝟙 (Sp V)) (diagSub m (BT.A.act H.w0))
   have h₀ : s ≫ jptG t (𝟙 (Sp V)) d xT m (0 : Fin 2) = xT m := by
-    rw [jptG, ← Category.assoc, homAt_comp', diagSub_zero]
+    rw [jptG, ← Category.assoc, GlobalTheory.PowGerm.UnivPow.homAt_comp, diagSub_zero]
     refine Eq.trans (congrArg (· ≫ xT m) ?_) (Category.id_comp _)
     apply Over.OverMorphism.ext
     exact Spec.map_id _
   have h₁ : s ≫ jptG t (𝟙 (Sp V)) d xT m (1 : Fin 2) = xT m ≫ t.act.act H.w0 := by
-    rw [jptG, ← Category.assoc, homAt_comp', diagSub_one]
+    rw [jptG, ← Category.assoc, GlobalTheory.PowGerm.UnivPow.homAt_comp, diagSub_one]
     exact (hC.act m H.w0).symm
   obtain ⟨hs, c, c₁, c₂⟩ := change_index (t.act.act H.w0) (xT m) s _ _ h₀ h₁ (eT m) (hF.gen m) ρ hρ q σ j y hj J hJ
   obtain ⟨J₂, hJ₂, e₂⟩ := exists_good t.PP.L t.PP.isLB (s.left y)
@@ -732,7 +726,7 @@ theorem dLin_id : dLin (pt R (n := 1) d 0) = 1 := by
   simp only [dLin, pt, coeff_X, Matrix.one_apply]
   by_cases h : i = j
   · simp [h]
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_right h, ite_eq_right]
     intro e
     exact h (congrArg Prod.snd (Finsupp.single_left_injective one_ne_zero e)).symm
 
@@ -825,8 +819,6 @@ open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotion
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 
 namespace GlobalTheory
-
-
 
 theorem transfer_columns : Laws → Laws2 → Laws4 → TwistBaseChangeStatement → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), letI := H.starRing; ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (C : IntegralChartA3 Xo c T io y), FrTrunc C.I.G (𝟙 (Sp T.V)) (chD C.ch) C.xT C.eT → ∀ (P : PELUnif (maximalIdeal T.V) C.I.G) (tors : P.TorsionIso) (ϖ : T.V) (hϖ : Irreducible ϖ) (Q : P.D.toPre.X → ℤ) (hQ : IsQ P.D.toPre ϖ Q) (F : Type) [Field F] [IsAlgClosed F] [CharZero F] [Algebra T.Fr F] [Algebra T.V F] [IsScalarTower T.V T.Fr F] (v : AddValuation F (WithTop ℚ)) (hv : ValOver ϖ F v), letI := io.toAlgebra; ∃ x hx j hj u hu B hB ρ hρ, B.G.F = C.FT ∧ B.A.act = C.actT ∧ ∀ (g g' : ℕ) (π : 𝓞 E), 1 ≤ g → 1 ≤ g' → π * star π = (g : 𝓞 E) → ∀ (n : ℕ) (D' : DegData T.V (maximalIdeal T.V)) (A' : PolAV (Spec (CommRingCat.of T.Fr))) (G' : Over (Sp T.V)) [GrpObj G'] [IsCommMonObj G'] (pD : IsPowDeg D'.toPre P.D.toPre n) (pA : IsPowPolAV A' P.A n) (pG : IsPowGrp G' C.I.G.G n) (U' : Unif (maximalIdeal T.V) D' A' G') (PU : UnifPowOf3 pD pA pG U' P.U) [Module (𝓞 E) D'.toPre.X] (oD' : D'.toPre.OAct (𝓞 E)), (∀ (a : 𝓞 E) (x : D'.toPre.X) (i : Fin n), pD.xe (a • x) i = a • pD.xe x i) → (∀ (a : 𝓞 E) (i : Fin n), oD'.onB.act a ≫ pD.pw.pr i = pD.pw.pr i ≫ P.oD.onB.act a) → ∀ (s : Fin n → Fam P.D.toPre F g') (s' t : Fin n → Fam P.D.toPre F (g' * g)) (f : Fin n → PS F 1 (chD C.ch)), (∀ b, NuGe P.D Q F v g' (s b) 0 ∧ PullAl P.D F P.oD (star π) g' g (s b) (s' b) ∧ (FamGerm.Pt1.mk ϖ hϖ T.cpl C.I.G P tors Q hQ v hv (chD C.ch) x hx j hj u hu B hB ρ hρ : FamGerm.Pt1 E H T.V F).Transl (g' * g) π (s' b) (t b) ∧ (FamGerm.Pt1.mk ϖ hϖ T.cpl C.I.G P tors Q hQ v hv (chD C.ch) x hx j hj u hu B hB ρ hρ : FamGerm.Pt1 E H T.V F).Germ (g' * g) (t b) (f b)) → ∃ (S : Fam D'.toPre F g') (S₂ : Fam D'.toPre F (g' * g)) (p' : QkPt D'.toPre F (g' * g)) (w' : LB.Gen (LB.LinComb D'.toPre.P.L (DegPre.lineφ D'.toPre F p'.g.b) (DegPre.lineε (g' * g)))) (ζ' : F) (x' : TFK (R := T.V) F ⟶ A'.A) (T₀ T₁ : Fam D'.toPre F (g' * g)) (σ' : U'.toUnifPre.SecGF F (g' * g)) (h : PS F n (chD C.ch)) (un : PS T.V 1 (chD C.ch)), BoxTup C P Q F v g g' π pG PU oD' S S₂ p' w' ζ' x' T₀ T₁ σ' h ∧ MvPowerSeries.constantCoeff un = 1 ∧ h = boxSer (fun b => f b * MvPowerSeries.map (algebraMap T.V F) un) ∧ ∀ h₀ : PS F 2 (chD C.ch), B.IsCanonGauge F h₀ → ∀ (rk : (E →+* ℂ) → ℕ) (hrk : ∀ τ, rk τ ≤ Dw.mult τ) (Pp : MvPolynomial ((Σ τ : E →+* ℂ, Fin (rk τ)) × Fin n) F), (∀ (τ : E →+* ℂ) (i : Fin (rk τ)) (i' : Fin (rk (ComplexEmbedding.conjugate τ))), ∑ b : Fin n, MvPolynomial.pderiv ((⟨τ, i⟩ : Σ τ : E →+* ℂ, Fin (rk τ)), b) (MvPolynomial.pderiv ((⟨ComplexEmbedding.conjugate τ, i'⟩ : Σ τ : E →+* ℂ, Fin (rk τ)), b) Pp) = 0) → nabValN C.ch.B F (MvPowerSeries.map (algebraMap T.Fr F) C.ch.h) H.w0 (g' * g) h (fun ℓ : LtN Dw n => ℓ.2.2) (fun (ℓ : LtN Dw n) i => algebraMap T.Fr F (C.ch.uvec ⟨ℓ.1, ℓ.2.1⟩ i)) (MvPolynomial.rename (fun p : (Σ τ : E →+* ℂ, Fin (rk τ)) × Fin n => (⟨p.1.1, (Fin.castLE (hrk p.1.1) p.1.2, p.2)⟩ : LtN Dw n)) Pp) = (FamGerm.Pt1.mk ϖ hϖ T.cpl C.I.G P tors Q hQ v hv (chD C.ch) x hx j hj u hu B hB ρ hρ : FamGerm.Pt1 E H T.V F).colVal h₀ (g' * g) (fun (l : Σ τ : E →+* ℂ, Fin (rk τ)) i => algebraMap T.V F (C.uvecT ⟨l.1, Fin.castLE (hrk l.1) l.2⟩ i)) Pp f := by
   intro L1 L2 L4 TW E _ _ _ H Dw l Xo c
@@ -1102,7 +1094,6 @@ theorem crP_mem_harmK_of_disjoint {T : Type} [Fintype T] [DecidableEq T] {r : T 
     simpa using congrArg (fun x => (1 : k) • x) key
   · simp [Matrix.one_apply_ne hb]
 
-
 open Classical in
 theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)
     (c : Coeff l) (typ : (E →+* ℂ) → Prop) (htyp : ∀ τ, typ τ ↔ ¬ typ (ComplexEmbedding.conjugate τ))
@@ -1116,9 +1107,9 @@ theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   have hdom : Crude.Dom Dw.mult a' := fun σ i j hij => ha σ hij
   let m : (E →+* ℂ) → ℕ → ℕ := fun τ s =>
     if h : 1 ≤ s ∧ s ≤ Dw.mult τ then Crude.crExp Dw.mult a' τ ⟨s - 1, by omega⟩ else 0
-  have hm0 : ∀ τ s, ¬ (1 ≤ s ∧ s ≤ Dw.mult τ) → m τ s = 0 := fun τ s h => dif_neg h
+  have hm0 : ∀ τ s, ¬ (1 ≤ s ∧ s ≤ Dw.mult τ) → m τ s = 0 := fun τ s h => dite_eq_right h
   have hm1 : ∀ τ (s : Fin (Dw.mult τ)), m τ (s.val + 1) = Crude.crExp Dw.mult a' τ s := fun τ s =>
-    dif_pos ⟨Nat.le_add_left _ _, s.isLt⟩
+    dite_eq_left ⟨Nat.le_add_left _ _, s.isLt⟩
   let β : (Σ σ : E →+* ℂ, Fin (Dw.mult σ)) → Fin (n₁ + n₂) := fun p =>
     if typ p.1 then Fin.castAdd n₂ (Fin.castLE (h1 p.1) p.2) else Fin.natAdd n₁ (Fin.castLE (h2 p.1) p.2)
   refine ⟨m, fun τ s h => by_contra fun h' => h (hm0 τ s h'), ?_,
@@ -1143,10 +1134,10 @@ theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     have hi := lt_of_lt_of_le i.isLt (h1 τ)
     have hi' := lt_of_lt_of_le i'.isLt (h1 _)
     by_cases ht : typ τ
-    · simp only [β, if_pos ht, if_neg ((htyp τ).1 ht), Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
+    · simp only [β, ite_eq_left ht, ite_eq_right ((htyp τ).1 ht), Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
       omega
     · have ht' : typ (ComplexEmbedding.conjugate τ) := by_contra fun h => ht ((htyp τ).2 h)
-      simp only [β, if_neg ht, if_pos ht', Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
+      simp only [β, ite_eq_right ht, ite_eq_left ht', Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
       omega
   · rw [MvPolynomial.coeff_map]
     exact intCast_mem _ _
@@ -1156,27 +1147,27 @@ theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     rw [← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun τ _ => ?_
     by_cases h : typ τ
-    · rw [if_pos h, if_neg (not_not.mpr h), _root_.mul_one,
+    · rw [ite_eq_left h, ite_eq_right (not_not.mpr h), _root_.mul_one,
         minorSt_prod_range le_rfl _ (fun s hs => by rw [hm0 τ s hs, pow_zero])]
       refine Finset.prod_congr rfl fun s _ => ?_
       have hs : s.val + 1 ≤ Dw.mult τ ∧ s.val + 1 ≤ n₁ :=
         ⟨Nat.succ_le_of_lt s.isLt, (Nat.succ_le_of_lt s.isLt).trans (h1 τ)⟩
-      rw [dif_pos hs, hm1]
+      rw [dite_eq_left hs, hm1]
       unfold GSt.leadMinor
       congr 2
       ext i j : 2
-      simp only [Crude.crMinor, β, if_pos h, Matrix.of_apply]
+      simp only [Crude.crMinor, β, ite_eq_left h, Matrix.of_apply]
       rfl
-    · rw [if_neg h, if_pos h, _root_.one_mul,
+    · rw [ite_eq_right h, ite_eq_left h, _root_.one_mul,
         minorSt_prod_range le_rfl _ (fun s hs => by rw [hm0 τ s hs, pow_zero])]
       refine Finset.prod_congr rfl fun s _ => ?_
       have hs : s.val + 1 ≤ Dw.mult τ ∧ s.val + 1 ≤ n₂ :=
         ⟨Nat.succ_le_of_lt s.isLt, (Nat.succ_le_of_lt s.isLt).trans (h2 τ)⟩
-      rw [dif_pos hs, hm1]
+      rw [dite_eq_left hs, hm1]
       unfold GSt.leadMinor
       congr 2
       ext i j : 2
-      simp only [Crude.crMinor, β, if_neg h, Matrix.of_apply]
+      simp only [Crude.crMinor, β, ite_eq_right h, Matrix.of_apply]
       rfl
 
 theorem val_eq_vV (T : CDVR) (ϖ : T.V) (hϖ : Irreducible ϖ) (F : Type) [Field F] [Algebra T.Fr F]

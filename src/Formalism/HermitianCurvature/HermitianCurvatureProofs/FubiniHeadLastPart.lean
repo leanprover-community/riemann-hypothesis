@@ -144,12 +144,12 @@ theorem permutationMatrix_sumCongr : U.wP (sigQ σh σb) = U.blk2 (U.wP σh) 0 0
     | left j => rw [_root_.Formalism.FourierDecayAlt.P.Ux2.block2_apply_upper_left]; simp [U.wP, sigQ_castAdd, Fin.castAdd_inj]
     | right j =>
       rw [Dx2.SL.b_cn]; simp only [U.wP, Matrix.of_apply, sigQ_castAdd, Matrix.zero_apply]
-      rw [if_neg]; intro h; have := congrArg Fin.val h; simp at this; omega
+      rw [ite_eq_right]; intro h; have := congrArg Fin.val h; simp at this; omega
   | right i =>
     induction b using Fin.addCases with
     | left j =>
       rw [_root_.Formalism.FourierDecayAlt.P.Ux2.block2_apply_lower_left]; simp only [U.wP, Matrix.of_apply, sigQ_natAdd, Matrix.zero_apply]
-      rw [if_neg]; intro h; have := congrArg Fin.val h; simp at this; omega
+      rw [ite_eq_right]; intro h; have := congrArg Fin.val h; simp at this; omega
     | right j => rw [_root_.Formalism.FourierDecayAlt.P.Ux2.block2_apply_lower_right]; simp [U.wP, sigQ_natAdd, Fin.natAdd_inj]
 
 theorem diag_dQ (dh : Fin p → ℂ) (db : Fin s → ℂ) :
@@ -699,13 +699,13 @@ theorem hMat_inj {m : ℕ} (σ σ' : Equiv.Perm (Fin m)) (d d' : Fin m → ℂ) 
   have hσ : σ = σ' := by
     ext a
     have := congrFun (congrFun h a) (σ' a)
-    rw [happ, happ, if_pos rfl] at this
+    rw [happ, happ, ite_eq_left rfl] at this
     by_contra hne
-    rw [if_neg (fun e => hne (congrArg Fin.val e))] at this
+    rw [ite_eq_right (fun e => hne (congrArg Fin.val e))] at this
     exact hd' _ this.symm
   subst hσ
   refine ⟨rfl, funext fun b => ?_⟩
-  simpa only [happ, Equiv.apply_symm_apply, if_true] using congrFun (congrFun h (σ.symm b)) b
+  simpa only [happ, Equiv.apply_symm_apply, ite_true] using congrFun (congrFun h (σ.symm b)) b
 
 end Formalism.FourierDecayAlt.P.PBJ.Fub
 

@@ -83,10 +83,6 @@ variable {σ : E →ₐ[F] E} {B : Base F E} {nS nT : ℕ} {JS : Matrix (Fin nS)
   E} {ξ₀ : E} {θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)} {ι : (InfinitePlace F → ℂ) →+ AEF F E} {Λ : Submodule (𝓞
   E) (Matrix (Fin nT) (Fin nS) E)} {hc : HeisClosedF σ JS JT ξ₀ B.ψ} {w : 𝓞 E} {lam : ℕ →* ℂ} {Om : GAF σ JS × GAF σ
   JT →* Module.End ℂ (thetaSubF σ JS JT ξ₀ B.ψ)}
-theorem sgsg_k (hB : GoodK σ B) (x : E) : σ (σ x) = x := by
-  let τ := (IsAlgClosed.lift (M := ℂ) (R := ℚ) (S := E)).toRingHom
-  apply τ.injective
-  rw [hB.cm.2.2.2 τ, hB.cm.2.2.2 τ, star_star]
 theorem mem_iff_k (C : Ctx_k σ B JS JT ξ₀ θ ι) (hR : RatSD σ JS JT ξ₀ Λ)
     (hA : SelfDual (gamFF σ JS JT ξ₀ B.ψ) (latF F E nS nT Λ)) (y : Matrix (Fin nT) (Fin nS) E) :
     finRatF F y ∈ latF F E nS nT Λ ↔ y ∈ Λ :=
@@ -110,7 +106,7 @@ theorem norm_emb_eq_k (hB : GoodK σ B) (φ : E →+* ℂ) (x : E) :
     · rw [h]; exact hρ
   have hτ := (B.emb (InfinitePlace.mk ρ)).2.trans he
   obtain ⟨c, hc⟩ := PI.OmLocU.Red.fix_range σ hcm (y := x * σ x) (by
-    rw [map_mul, sgsg_k hB, mul_comm])
+    rw [map_mul, PositivityTheory.ThKW.LatA.sig_sig_k hB, mul_comm])
   have key : ∀ τ : E →+* ℂ, τ.comp (algebraMap F E) = ρ → Complex.normSq (τ x) = ρ c := fun τ hτ => by
     rw [← hτ, RingHom.comp_apply, hc, map_mul, hcm.2.2.2 τ]
     exact (Complex.mul_conj (τ x)).symm
@@ -130,7 +126,7 @@ theorem finLat_k (hB : GoodK σ B) (hG : GoodLat Λ) (R : ℝ) : {y | y ∈ Λ �
 theorem isHeisQ_k (C : Ctx_k σ B JS JT ξ₀ θ ι) (hc : HeisClosedF σ JS JT ξ₀ B.ψ) (hw : w +
   sgOF σ w = 1) :
     IsHeis (sgOF σ) w (gamQF σ JS JT ξ₀ B.ψ) fun x => opFF hc w (finRatF F x) := by
-  have H := isHeis_opFF (sgsg_k C.good) C.hS C.hT C.hξ hc hw
+  have H := isHeis_opFF (PositivityTheory.ThKW.LatA.sig_sig_k C.good) C.hS C.hT C.hξ hc hw
   have e : ∀ x y, gamQF σ JS JT ξ₀ B.ψ x y = gamFF σ JS JT ξ₀ B.ψ (finRatF F x) (finRatF F y) := fun _ _ => rfl
   exact ⟨H.sg_sg, H.w_add, fun x y z => by rw [e, e, e, map_add (f := _), H.add_left],
     fun x y z => by rw [e, e, e, map_add (f := _), H.add_right], fun x => by rw [e, H.alt],

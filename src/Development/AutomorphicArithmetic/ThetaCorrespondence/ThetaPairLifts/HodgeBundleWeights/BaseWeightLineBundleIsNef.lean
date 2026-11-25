@@ -645,11 +645,11 @@ theorem val_dual_LL_stepEx {j : ℕ} (hj : j ≤ Dw.mult σ) (k k' : F.J) :
     · have : NefStep.stepEx σ j ix = 0 := by
         rcases ix with _ | ⟨σ', i⟩
         · rfl
-        · refine if_neg ?_
+        · refine ite_eq_right ?_
           rintro ⟨rfl, hi⟩
           exact h ⟨⟨i, hi⟩, Finset.mem_coe.2 (Finset.mem_univ _), rfl⟩
       rw [this, neg_zero, zpow_zero, inv_one]
-    · have : NefStep.stepEx σ j (some ⟨σ, Fin.castLE hj i⟩ : Ix Dw) = 1 := if_pos ⟨rfl, i.2⟩
+    · have : NefStep.stepEx σ j (some ⟨σ, Fin.castLE hj i⟩ : Ix Dw) = 1 := ite_eq_left ⟨rfl, i.2⟩
       rw [this, zpow_neg_one, inv_inv]
   rw [e, Units.coe_prod]
   rfl

@@ -5,7 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
 open LateralTheory.E.StandardEtaleChartsIdempotentGluing
 
 namespace LateralTheory.E.NoetherianChartOverlapFiniteComplement
@@ -93,7 +92,7 @@ theorem noetherian_local_chart_overlap_finite_complement : LateralTheory.E.LZIde
     have h := hLex g hg
     have hle : Lf g ≤ L := Finset.le_sup hg
     have hspec : t⁻¹ ^ Lf g * g ∈ C := by
-      simp only [Lf, dif_pos h]; exact Classical.choose_spec h
+      simp only [Lf, dite_eq_left h]; exact Classical.choose_spec h
     obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hle
     rw [hk, pow_add, mul_comm (t⁻¹ ^ Lf g), mul_assoc]
     exact C.mul_mem (C.pow_mem hc.tC _) hspec

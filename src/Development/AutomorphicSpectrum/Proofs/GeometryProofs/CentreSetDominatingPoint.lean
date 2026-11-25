@@ -41,12 +41,12 @@ theorem isUnit_regAt_iff {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (Com
 theorem exists_centre : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (X' : Scheme.{0}) (Ω' : Type) [Field Ω'] (ξ' : Spec (CommRingCat.of Ω') ⟶ X') (i : Ω →+* Ω') (p' : Cpt ξ'), p' ∈ ctrSet o x i ξ' → ∃ p₀ : Cpt M.ξ, ((∀ a ∈ regAt M.ξ p₀, i a ∈ regAt ξ' p') ∧ ∀ a ∈ regAt M.ξ p₀, unitAt ξ' p' (i a) → unitAt M.ξ p₀ a) ∧ (∀ p : Cpt M.ξ, (∀ a ∈ regAt M.ξ p, i a ∈ regAt ξ' p') → p₀.1 ⤳ p.1) ∧ ∀ c, x c ≠ 0 → (∀ j, i (x j / x c) ∈ regAt ξ' p') → InChart M.ξ x c p₀ := by
   intro o _ Ω _ _ κ _ x M X' Ω' _ ξ' i p' hp'
   obtain ⟨c, hc, hreg⟩ := hp'
-  haveI : IsLocalRing (regAt ξ' p') := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_local_mono_frac X' Ω' ξ').1 p'
+  haveI : IsLocalRing (regAt ξ' p') := (_root_.PositivityTheory.HtPt.Ma.reg_local X' Ω' ξ').1 p'
   let φ : chRing o x c →+* regAt ξ' p' :=
     (i.comp (chRing o x c).val.toRingHom).codRestrict (regAt ξ' p') (fun a => hreg a a.2)
   let P : Ideal (chRing o x c) := (IsLocalRing.maximalIdeal (regAt ξ' p')).comap φ
   haveI hPp : P.IsPrime := Ideal.comap_isPrime _ _
-  obtain ⟨p₀, ⟨hin, hP⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.chart_prime_point o Ω κ x M c hc P hPp
+  obtain ⟨p₀, ⟨hin, hP⟩, -⟩ := _root_.PositivityTheory.HtPt.Ma.prime_pt o Ω κ x M c hc P hPp
   have key : ∀ u : chRing o x c, unitAt M.ξ p₀ (u : Ω) ↔ unitAt ξ' p' (i u) := by
     intro u
     have h := hP u
@@ -56,7 +56,7 @@ theorem exists_centre : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Alge
       rfl
     tauto
   have hloc := fun (c₁ : κ) (p : Cpt M.ξ) (h : InChart M.ξ x c₁ p) =>
-    _root_.GlobalTheory.CompanionTheory.Ar.chart_regAt_localisation o Ω κ x M c₁ p h
+    _root_.PositivityTheory.HtPt.Ma.regat_loc o Ω κ x M c₁ p h
   have hch : ∀ a ∈ chRing o x c, a ∈ regAt M.ξ p₀ := (hloc c p₀ hin).1
   have hdom : ∀ a ∈ regAt M.ξ p₀, i a ∈ regAt ξ' p' := by
     intro a ha

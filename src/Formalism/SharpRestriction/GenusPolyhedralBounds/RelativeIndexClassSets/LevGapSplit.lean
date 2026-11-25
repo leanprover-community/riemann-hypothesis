@@ -45,33 +45,7 @@ section Gen
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem liesOver_of_natCast_mem {K : Type} [Field K] [NumberField K] (p : ℕ) (hp : p.Prime)
-    (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) :
-    v.asIdeal.LiesOver (Ideal.span {(p : ℤ)}) := by
-  have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.1 hp
-  have hpI : (Ideal.span {(p : ℤ)}).IsPrime := (Ideal.span_singleton_prime hpZ.ne_zero).2 hpZ
-  have hpM : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    hpI.isMaximal (by rw [Ne, Ideal.span_singleton_eq_bot]; exact hpZ.ne_zero)
-  refine ⟨?_⟩
-  have hle : Ideal.span {(p : ℤ)} ≤ v.asIdeal.under ℤ := by
-    rw [Ideal.span_le, Set.singleton_subset_iff]
-    change algebraMap ℤ (𝓞 K) p ∈ v.asIdeal
-    simpa using hv
-  have := v.isPrime
-  exact hpM.eq_of_le (Ideal.IsPrime.under ℤ v.asIdeal).ne_top hle
-
 end Gen
-
-section Fix
-
-variable {E : Type} [Field E] [NumberField E] (F : Subfield E) [NumberField F]
-
-variable {F} (c : E ≃ₐ[ℚ] E) (hF : ∀ x : E, x ∈ F ↔ c x = x) (hc : ∀ x : E, c (c x) = x)
-
-
-
-
-end Fix
 
 section HostInst
 
@@ -117,53 +91,15 @@ section Deg
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem ram_inertia_of_split (p : ℕ) (hp : p.Prime)
-    (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
-    (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) :
-    v.asIdeal.ramificationIdx ℤ = 1 ∧ v.asIdeal.inertiaDeg ℤ = 1 := by
-  apply Formalism.L2.SG.Pf.SatGramLoc.ram_inertia_split <;> assumption
-
-theorem intValuation_of_split (p : ℕ) (hp : p.Prime)
-    (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
-    (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) :
-    v.intValuation (p : 𝓞 K) = WithZero.exp (-1 : ℤ) := by
-  have := v.isPrime
-  have hr : ((p : ℕ) : 𝓞 K) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
-  have hmap : (Ideal.span {((p : ℕ) : ℤ)}).map (algebraMap ℤ (𝓞 K)) = Ideal.span {((p : ℕ) : 𝓞 K)} := by
-    rw [Ideal.map_span, Set.image_singleton]
-    simp
-  have hne : (Ideal.span {((p : ℕ) : ℤ)}).map (algebraMap ℤ (𝓞 K)) ≠ ⊥ := by
-    rw [hmap, Ne, Ideal.span_singleton_eq_bot]; exact hr
-  have := liesOver_of_natCast_mem p hp v hv
-  have he := Ideal.IsDedekindDomain.ramificationIdx_eq_multiplicity (Ideal.span {((p : ℕ) : ℤ)})
-    v.asIdeal hne
-  rw [hmap, (ram_inertia_of_split p hp hs v hv).1] at he
-  rw [v.intValuation_eq_exp_neg_multiplicity hr, ← he]
-  rfl
-
 theorem natCast_notMem_sq_of_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
     (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) : (p : 𝓞 K) ∉ v.asIdeal ^ 2 := by
   intro h
   have h1 := (v.intValuation_le_pow_iff_mem (p : 𝓞 K) 2).2 h
-  rw [intValuation_of_split p hp hs v hv, WithZero.exp_le_exp] at h1
+  rw [_root_.Formalism.L2.SG.Pf.SatGramLoc.intValuation_split p hp hs v hv, WithZero.exp_le_exp] at h1
   norm_num at h1
 
 end Deg
-
-section Two
-
-variable {E : Type} [Field E] [NumberField E] {F : Subfield E} [NumberField F]
-  (c : E ≃ₐ[ℚ] E) (hF : ∀ x : E, x ∈ F ↔ c x = x) (hc : ∀ x : E, c (c x) = x)
-
-
-end Two
-
-section HostDeg
-
-variable {R : Ranks} (H : Host R)
-
-end HostDeg
 
 end Formalism.MainNotions.Gaps.LevGap
 

@@ -506,7 +506,6 @@ theorem transport_back : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
           GlobalTheory.InertSph.latAt X v := by
   intro F E _ _ _ _ _ σ n X v O _ c ι P Q JL hAe he hc hPQ hQP heP heQ hJ hlat M G ZL hM hMG hZL hN
   have heι : ∀ x, ι 1 * ι x = ι x := fun x => by rw [← map_mul, one_mul]
-  have hιe : ∀ x, ι x * ι 1 = ι x := fun x => by rw [← map_mul, mul_one]
   have hee : ι 1 * ι 1 = ι 1 := heι 1
   have hce : cA σ (ι 1) = ι 1 := by rw [hc, map_one]
   have hmapE : ∀ {m k : Type} (Y : Matrix m k O), ι 1 • Y.map ι = Y.map ι := by
@@ -1733,9 +1732,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem matD_mul {σ : E →ₐ[F] E} {d : ℕ} {W : Spc F E d} (g h : UD σ W) : matD (g * h) = matD g * matD h := rfl
 
-theorem matD_inv_mul {σ : E →ₐ[F] E} {d : ℕ} {W : Spc F E d} (g : UD σ W) : matD g⁻¹ * matD g = 1 := by
-  rw [← matD_mul, inv_mul_cancel]; rfl
-
 alias KD_mul := _root_.GlobalTheory.DblVacFactor.KD_mul
 
 alias KD_inv := _root_.GlobalTheory.DblVacFactor.KD_inv
@@ -1750,7 +1746,7 @@ theorem PDiag_inv {σ : E →ₐ[F] E} {d : ℕ} {W : Spc F E d} {p : UD σ W} (
   have hTT : T * Ti = 1 := by rw [hT, hTi, ← Units.val_mul, mul_inv_cancel, Units.val_one]
   have ht' : matD p * D = D * T := ht
   have key : matD p⁻¹ * (D * T) = D := by
-    rw [← ht', ← Matrix.mul_assoc, matD_inv_mul, Matrix.one_mul]
+    rw [← ht', ← Matrix.mul_assoc, GlobalTheory.DblVacFlip.matD_inv_mul, Matrix.one_mul]
   show matD p⁻¹ * D = D * Ti
   calc matD p⁻¹ * D = matD p⁻¹ * (D * T) * Ti := by
         rw [Matrix.mul_assoc (matD p⁻¹), Matrix.mul_assoc D, hTT, Matrix.mul_one]

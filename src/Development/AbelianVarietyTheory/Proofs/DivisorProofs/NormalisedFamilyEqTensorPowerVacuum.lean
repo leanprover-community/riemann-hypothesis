@@ -17,52 +17,9 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Standa
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetRefinement
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ExistsPowPrincipalFractionalIdeal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsVacuumMovedThetaVacuum
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
@@ -216,13 +173,13 @@ theorem phi_embV_bas {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base 
   funext p
   rw [phi_apply, bas, blk_embV_putB]
   by_cases h : p.1 = (ixE D n n' j).1
-  · rw [if_pos h, gC_xv]
+  · rw [ite_eq_left h, gC_xv]
     by_cases h2 : p.2 = (ixE D n n' j).2
     · have : p = ixE D n n' j := Prod.ext h h2
       subst this; simp
     · have : p ≠ ixE D n n' j := fun e => h2 (by rw [e])
       simp [h2, this]
-  · rw [if_neg h, B.gC.map_zero]
+  · rw [ite_eq_right h, B.gC.map_zero]
     have : p ≠ ixE D n n' j := fun e => h (by rw [e])
     simp [this]
 
@@ -543,7 +500,6 @@ end GlobalTheory.BaseVacuum.ProductTheta
 
 namespace GlobalTheory.BaseVacuum
 
-
 open ProductTheta in
 theorem prod_blk_inter : ∀ (L : PeriodPair) (ω₀ : ℂ) (c : ℝ) (ι m : Type) [Fintype ι] [DecidableEq ι] [Fintype m] [DecidableEq m] (Λ : AddSubgroup (m → ℂ)), IsSemiChar (stdH L m) Λ (alphaQ c (stdH L m)) → F0 L ω₀ m ∈ fixedBy (stdH L m) (alphaQ c (stdH L m)) (stdLat L m) → relIdx (stdLat L m) Λ ≠ 0 → IsSemiChar (stdH L (ι × m)) (blkLat Λ) (alphaQ c (stdH L (ι × m))) ∧ F0 L ω₀ (ι × m) ∈ fixedBy (stdH L (ι × m)) (alphaQ c (stdH L (ι × m))) (stdLat L (ι × m)) ∧ relIdx (stdLat L (ι × m)) (blkLat Λ) ≠ 0 ∧ ∀ w, inter (stdH L (ι × m)) (alphaQ c (stdH L (ι × m))) (stdLat L (ι × m)) (blkLat Λ) (F0 L ω₀ (ι × m)) w = ∏ k, inter (stdH L m) (alphaQ c (stdH L m)) (stdLat L m) Λ (F0 L ω₀ m) (fun v => w (k, v)) := by
   intro L ω₀ c ι m _ _ _ _ Λ hα hF hn
@@ -629,7 +585,7 @@ theorem trace_xv (B : Base D cc δ) (w w' : Fin 4 × D.what₂.Tau) :
   by_cases hw : w = w'
   · subst hw
     simp
-  · rw [if_neg hw, map_zero]
+  · rw [ite_eq_right hw, map_zero]
     apply Finset.sum_eq_zero
     intro u _
     by_cases hu : u = w
@@ -642,7 +598,7 @@ theorem orthonormal_bas (B : Base D cc δ) (n n' : ℕ) : TaylorLogMetric.Orthon
   unfold bas
   rw [hYY_putB]
   by_cases hk : (ixE D n n' i).1 = (ixE D n n' j).1
-  · rw [if_pos hk, trace_xv]
+  · rw [ite_eq_left hk, trace_xv]
     congr 1
     apply propext
     constructor
@@ -650,11 +606,9 @@ theorem orthonormal_bas (B : Base D cc δ) (n n' : ℕ) : TaylorLogMetric.Orthon
       exact (ixE D n n').injective (Prod.ext hk h)
     · intro h
       rw [h]
-  · rw [if_neg hk, if_neg]
+  · rw [ite_eq_right hk, ite_eq_right]
     intro h
     exact hk (by rw [h])
-
-
 
 theorem sum_g_smul_xv (B : Base D cc δ) (y : Fin 4 → D.host.E) :
     ∑ w, B.γ₀.g y w • xv B w = y := by
@@ -676,7 +630,7 @@ theorem matrix_eq_sum_putB (B : Base D cc δ) (n n' : ℕ) (M : Matrix (Fin (n' 
   subst hi hj
   simp only [Matrix.sum_apply, Matrix.smul_apply, putB_posE, smul_ite, smul_zero]
   rw [Fintype.sum_eq_single p.1]
-  · simp only [if_true]
+  · simp only [ite_true]
     have := congrFun (sum_g_smul_xv B (fun a => M (posE n n' (p.1, a)).1 (posE n n' (p.1, a)).2)) p.2
     rw [Finset.sum_apply] at this
     simp only [Pi.smul_apply] at this
@@ -684,7 +638,7 @@ theorem matrix_eq_sum_putB (B : Base D cc δ) (n n' : ℕ) (M : Matrix (Fin (n' 
   · intro k hk
     apply Finset.sum_eq_zero
     intro w _
-    rw [if_neg (Ne.symm hk)]
+    rw [ite_eq_right (Ne.symm hk)]
 
 theorem onB_bas : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Base D cc δ) (n n' : ℕ),
     StandardLatticesGL3.OnB D (bas B n n') := by
@@ -755,7 +709,6 @@ theorem blockVacuum_coordinate_eq_coordinateEquiv_numbering (D : D7) (cc : Ideal
   rw [h1, ← hI, phi_apply]
   simp [Pi.single_apply]
   rfl
-
 
 end GlobalTheory.BaseVacuum
 end -- clump:auto
@@ -1004,15 +957,11 @@ theorem emb_conj (D : D7) (ρ : D.host.E →+* ℂ) (x : D.host.E) :
     ρ (D.host.conj x) = starRingEnd ℂ (ρ x) :=
   D.host.conjE_apply ρ x
 
-theorem conj_conj (D : D7) (x : D.host.E) : D.host.conj (D.host.conj x) = x := by
-  apply D.host.φ₀.injective
-  rw [emb_conj, emb_conj, Complex.conj_conj]
-
 theorem mod1All_of_isChi : ∀ (D : D7) (χ : TaylorLogMetric.IdE D → ℂ), TaylorLogMetric.IsChi D χ → ∀ 𝔞 : TaylorLogMetric.IdE D, TaylorLogMetric.N1 D 𝔞 →
     StandardLatticesGL3.Mod1All (χ 𝔞) := by
   intro D χ hχ 𝔞 h𝔞
   set σ := D.host.conj with hσdef
-  have hinv : ∀ x, σ (σ x) = x := conj_conj D
+  have hinv : ∀ x, σ (σ x) = x := GlobalTheory.HomDual.conj_conj D
   obtain ⟨𝔟, h𝔟, hab⟩ := h𝔞
   have hb : 𝔟 = cj σ 𝔞 := Submodule.ext h𝔟
   have hN1 : ∀ n : ℕ, TaylorLogMetric.N1 D (𝔞 ^ n) := fun n =>

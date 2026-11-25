@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 namespace GlobalTheory.Mem.Per.Model
@@ -117,6 +115,6 @@ theorem om_eq {emb : LL →+* ℂ} {embE : H.E →+* LL} (h : FieldOK H emb embE
     positivity
   show posOr1 _ = _
   unfold posOr1
-  rw [if_pos h3]; rfl
+  rw [ite_eq_left h3]; rfl
 
 end GlobalTheory.Mem.Per.Model

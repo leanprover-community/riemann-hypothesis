@@ -17,43 +17,7 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTen
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfDefinite
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignedUnitaryGroupCompat
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaKORatLeftAndEigenRight
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.TwistPlacesOffPrimeQZero
 import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 
@@ -131,12 +95,12 @@ theorem scalar_exists {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L s
     intro τ
     by_cases hτ : τ = τ₀
     · subst hτ
-      simp only [hζdef, if_pos rfl, h1]
-    · simp only [hζdef, if_neg hτ, h2 τ hτ, one_smul]
+      simp only [hζdef, ite_eq_left rfl, h1]
+    · simp only [hζdef, ite_eq_right hτ, h2 τ hτ, one_smul]
   have hζn : ∀ τ, ‖ζ τ‖ = 1 := fun τ => by
     by_cases hτ : τ = τ₀
-    · simp only [hζdef, if_pos hτ, he]
-    · simp only [hζdef, if_neg hτ, norm_one]
+    · simp only [hζdef, ite_eq_left hτ, he]
+    · simp only [hζdef, ite_eq_right hτ, norm_one]
   have hf : IsThetaFunO W.ψ (neg A) WW (X.f t) := (GlobalTheory.ConstRatio.theta_f hI t).1
   have ho := GlobalTheory.PlaceModelSum.isOrthSum_of_isIdemSum (hI.idem t)
   have hfock : ∀ τ, IsFockVacAt (heisO W.ψ (neg A) WW) W.θ τ (cplxO (-X.rA.s τ) (X.rW.s τ)) (X.f t) := fun τ =>
@@ -179,9 +143,9 @@ theorem scalar_exists {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L s
       smul_smul]
     congr 2
     rw [Finset.prod_eq_single τ₀]
-    · simp only [hζdef, if_pos rfl, hw]
+    · simp only [hζdef, ite_eq_left rfl, hw]
     · intro ρ _ hρ
-      simp only [hζdef, if_neg hρ, inv_one, ite_self, one_pow]
+      simp only [hζdef, ite_eq_right hρ, inv_one, ite_self, one_pow]
     · simp
   refine ⟨C, w, by rw [hw]; split_ifs; exacts [Or.inr rfl, Or.inl rfl], fun k h => ?_⟩
   set φ := pureTensorO W.ψ W.θ (neg A) WW (fun τ => -X.rA.s τ) X.rW.s X.rA.B X.rW.B (X.f t) (MvPolynomial.monomial k 1)

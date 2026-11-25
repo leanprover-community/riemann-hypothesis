@@ -23,11 +23,6 @@ def val (ψ : PChar) (a : ℕ) : ℂ := ψ.χ (a : ZMod ψ.N)
 
 def one : PChar := ⟨1, 1, DirichletCharacter.isPrimitive_one_level_one⟩
 
-def inv (ψ : PChar) : PChar :=
-  ⟨ψ.N, ψ.χ⁻¹, by
-    have h : ψ.χ.conductor = ψ.N := ψ.prim
-    exact (DirichletCharacter.conductor_inv ψ.χ).trans h⟩
-
 def of {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) : PChar :=
   @PChar.mk χ.conductor ⟨χ.conductor_ne_zero⟩ χ.primitiveCharacter χ.primitiveCharacter_isPrimitive
 
@@ -38,10 +33,8 @@ end PChar
 structure KSet where
   KEPT : Finset PChar
   one_mem : PChar.one ∈ KEPT
-  inv_mem : ∀ ψ ∈ KEPT, ψ.inv ∈ KEPT
 
   psK : Option PChar
-  psK_spec : ∀ ψ, psK = some ψ → ψ ∈ KEPT ∧ ψ.χ.Odd ∧ ψ.IsReal
 
 structure HType extends KSet where
   eps : ℝ
@@ -55,12 +48,6 @@ structure HType extends KSet where
   t : ℝ → ℕ
   Ct : ℝ
   t_le : ∀ x : ℝ, 1 ≤ x → (t x : ℝ) ≤ x ^ Ct
-
-namespace HType
-
-variable (T : HType)
-
-end HType
 
 namespace HostRaw
 

@@ -256,10 +256,6 @@ end Generic
 
 end GlobalTheory.DarbImage
 
-namespace GlobalTheory.DarbImage
-
-end GlobalTheory.DarbImage
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -655,7 +651,7 @@ theorem theta_pure_tensor_gaussian_mem_fockAlgebraic : GlobalTheory.Published.Ho
     (fun w => by
       obtain ⟨τ, h1, -, h3, h4⟩ := h.cart w
       exact ⟨τ, h1, by simpa using h3, h4⟩)
-    Γ.M' hM.triple.geo.hM' (crd W₁ X e) (fun u => by simp only [Bool.false_eq_true, if_false, one_smul]; rfl)
+    Γ.M' hM.triple.geo.hM' (crd W₁ X e) (fun u => by simp only [Bool.false_eq_true, ite_false, one_smul]; rfl)
     f₀ φ hg hφ hvac
   have e1 : GlobalTheory.TripleRead.thO Γ.M' ψ (sgn false W₁).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f₀ φ) = f := by
     funext x
@@ -1098,8 +1094,6 @@ open scoped TensorProduct ComplexConjugate
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 noncomputable section
-namespace GlobalTheory.DarbImage
-end GlobalTheory.DarbImage
 namespace GlobalTheory.DarbImage
 theorem theta_image_darboux_basis : GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs →
     ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ →

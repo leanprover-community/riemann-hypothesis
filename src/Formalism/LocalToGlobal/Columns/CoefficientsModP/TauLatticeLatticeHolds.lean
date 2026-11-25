@@ -312,11 +312,6 @@ section H
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
-theorem du_gLat_mul (g h : GL (Fin n) K) (M : Submodule (𝓞 K) (Fin n → K)) :
-    gLat g (gLat h M) = gLat (g * h) M := by
-  ext x
-  rw [_root_.Formalism.L2.DIV.lc_mem_gLat, _root_.Formalism.L2.DIV.lc_mem_gLat, _root_.Formalism.L2.DIV.lc_mem_gLat, Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_rev]
-
 theorem du_gLat_one (M : Submodule (𝓞 K) (Fin n → K)) : gLat 1 M = M := by
   ext x
   rw [_root_.Formalism.L2.DIV.lc_mem_gLat, inv_one, Units.val_one, Matrix.one_mulVec]
@@ -394,30 +389,6 @@ theorem dualFrHdual_of (hBA : BasisAtEx) : DualFrHdual := by
 section ES
 
 variable {E F K : Type} [Field E] [NumberField E] [Field F] [NumberField F] [Field K] [NumberField K] {n : ℕ}
-
-theorem du_tl_comp (ψ : F →+* K) (φ : E →+* F) (L : Submodule (𝓞 E) (Fin n → E)) :
-    du_tl ψ (du_tl φ L) = du_tl (ψ.comp φ) L := by
-  unfold du_tl
-  rw [← du_tl, du_tl_span, Set.image_image]
-  rfl
-
-theorem du_hform (cE : E →+* E) (J : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) :
-    Formalism.UG.hform cE J x y = (J *ᵥ y) ⬝ᵥ du_f cE x := by
-  simp only [Formalism.UG.hform, Matrix.mulVec, dotProduct, du_f, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
-
-theorem du_Lprime (cE : E →+* E) (Jg : GL (Fin n) E) (L L' : Submodule (𝓞 E) (Fin n → E))
-    (hL' : ∀ y, y ∈ L' ↔ ∀ x ∈ L, Formalism.UG.hform cE (Jg : Matrix (Fin n) (Fin n) E) x y ∈ (algebraMap (𝓞 E) E).range) :
-    L' = gLat Jg⁻¹ (dualFr (du_tl cE L)) := by
-  ext y
-  rw [hL', _root_.Formalism.L2.DIV.lc_mem_gLat, inv_inv, du_mem_dualFr_tl]
-  refine forall₂_congr fun x _ => ?_
-  rw [du_hform, Submodule.mem_one, RingHom.mem_range]
-
-theorem du_tl_gLat {ι : Type} (emb : ι → E →+* K) (τ : ι) (γ : GL (Fin n) E) (L : Submodule (𝓞 E) (Fin n → E)) :
-    du_tl (emb τ) (gLat γ L) = gLat (embGL emb γ τ) (du_tl (emb τ) L) :=
-  tauLatG E K ι n emb τ L γ
 
 end ES
 

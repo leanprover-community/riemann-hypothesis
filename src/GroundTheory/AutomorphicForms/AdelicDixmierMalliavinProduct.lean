@@ -68,16 +68,16 @@ open scoped Classical in
 theorem cosetInd_apply (b y : B) : cosetInd V b y = if b⁻¹ * y ∈ V then 1 else 0 := by
   unfold cosetInd
   by_cases h : b⁻¹ * y ∈ V
-  · rw [indicator_of_mem (mem_leftCoset_iff b |>.2 h), if_pos h]; rfl
-  · rw [indicator_of_notMem (fun h' => h ((mem_leftCoset_iff b).1 h')), if_neg h]
+  · rw [indicator_of_mem (mem_leftCoset_iff b |>.2 h), ite_eq_left h]; rfl
+  · rw [indicator_of_notMem (fun h' => h ((mem_leftCoset_iff b).1 h')), ite_eq_right h]
 
 theorem cosetInd_mul (b y : B) {v : B} (hv : v ∈ V) : cosetInd V b (y * v) = cosetInd V b y := by
   rw [cosetInd_apply, cosetInd_apply]
   have : b⁻¹ * (y * v) ∈ V ↔ b⁻¹ * y ∈ V := by
     rw [← mul_assoc]; exact Subgroup.mul_mem_cancel_right V hv
   by_cases h : b⁻¹ * y ∈ V
-  · rw [if_pos (this.2 h), if_pos h]
-  · rw [if_neg (mt this.1 h), if_neg h]
+  · rw [ite_eq_left (this.2 h), ite_eq_left h]
+  · rw [ite_eq_right (mt this.1 h), ite_eq_right h]
 
 theorem isClopen_coset (hVo : IsOpen (V : Set B)) (b : B) : IsClopen (b • (V : Set B)) :=
   ⟨(V.isClosed_of_isOpen hVo).smul b, hVo.smul b⟩
@@ -197,10 +197,10 @@ theorem integral_cosetInd_mul [MeasurableSpace B] [BorelSpace B] (μB : Measure 
       · have : b'⁻¹ * y ∈ V := by
           have := V.mul_mem (V.inv_mem hb') hy
           simpa [mul_assoc] using this
-        rw [if_pos this, mul_one]
-      · rw [cosetInd_apply V b, if_neg hb', zero_mul]
+        rw [ite_eq_left this, mul_one]
+      · rw [cosetInd_apply V b, ite_eq_right hb', zero_mul]
     simp_rw [h]
-    rw [cosetInd_apply V b, if_pos hy, mul_one, cosetInd,
+    rw [cosetInd_apply V b, ite_eq_left hy, mul_one, cosetInd,
       integral_indicator ((hVo.smul b).measurableSet)]
     simp only [Pi.one_apply]
     rw [setIntegral_const, Complex.real_smul, mul_one, measureReal_def, measureReal_def,
@@ -214,10 +214,10 @@ theorem integral_cosetInd_mul [MeasurableSpace B] [BorelSpace B] (μB : Measure 
           apply hy
           have := V.mul_mem hb' h'
           simpa [mul_assoc] using this
-        rw [if_neg this, mul_zero]
-      · rw [if_neg hb', zero_mul]
+        rw [ite_eq_right this, mul_zero]
+      · rw [ite_eq_right hb', zero_mul]
     simp_rw [h]
-    rw [integral_zero, cosetInd_apply V b, if_neg hy, mul_zero]
+    rw [integral_zero, cosetInd_apply V b, ite_eq_right hy, mul_zero]
 
 theorem conv_tensorCc_cosetInd (e : G ≃ₜ* A × B) (μ : Measure G) [μ.IsHaarMeasure]
     [MeasurableSpace A] [BorelSpace A] [MeasurableSpace B] [BorelSpace B]
@@ -343,12 +343,12 @@ theorem exists_sum_conv (h : IsExpLieAlgebra A 𝔤) (e : G ≃ₜ* A × B) (μ 
       intro q
       rw [tensorFun, cosetInd_apply]
       by_cases hq : ((e x).2 : B ⧸ V) = q
-      · rw [if_pos ((hr q _).2 hq), if_pos hq, mul_one]
-      · rw [if_neg (fun h' => hq ((hr q _).1 h')), if_neg hq, mul_zero]
+      · rw [ite_eq_left ((hr q _).2 hq), ite_eq_left hq, mul_one]
+      · rw [ite_eq_right (fun h' => hq ((hr q _).1 h')), ite_eq_right hq, mul_zero]
     simp_rw [h1]
     rw [Finset.sum_ite_eq]
     by_cases hT : ((e x).2 : B ⧸ V) ∈ T
-    · rw [if_pos hT]
+    · rw [ite_eq_left hT]
       set q : B ⧸ V := ((e x).2 : B ⧸ V)
       have hv : (r q)⁻¹ * (e x).2 ∈ V := (hr q _).2 rfl
       have hx : x = e.symm ((e x).1, r q) * e.symm (1, (r q)⁻¹ * (e x).2) := by
@@ -357,7 +357,7 @@ theorem exists_sum_conv (h : IsExpLieAlgebra A 𝔤) (e : G ≃ₜ* A × B) (μ 
       change f x = f (e.symm ((e x).1, r q))
       conv_lhs => rw [hx]
       exact hinv _ _ hv
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
       by_contra hfx
       have hxS : (e x).2 ∈ S := ⟨x, subset_tsupport _ hfx, rfl⟩
       obtain ⟨b, hbt, hb⟩ := mem_iUnion₂.1 (hcov hxS)

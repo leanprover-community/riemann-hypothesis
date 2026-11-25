@@ -111,7 +111,7 @@ theorem theta_constancy_assembly : ThConstOfCut := by
   intro ζ hζ π ρ hup Xf hXf hfix
   have hex : ∃ ρ, M.Up P l π ρ := ⟨ρ, hup⟩
   have hρ : hex.choose = ρ := tc_up_unique hex.choose_spec hup
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   have := (main π hex.choose hex.choose_spec).choose_spec ζ hζ Xf hXf hfix
   subst hρ
   exact this

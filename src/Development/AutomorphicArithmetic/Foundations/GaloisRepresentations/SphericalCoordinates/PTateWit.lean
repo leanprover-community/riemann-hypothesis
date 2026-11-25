@@ -35,12 +35,12 @@ theorem tateWit_of : TateWit := by
   let nu : ℕ → ℤ := fun n => if hn : 0 < n ∧ n.Coprime p then Classical.choose (hroot n hn.1 hn.2) else 0
   have hf : ∀ (n : ℕ) (hn : 0 < n) (hnp : n.Coprime p) a, I.ev n a = e ((n : ℂ)⁻¹ • P (f n a)) := by
     intro n hn hnp a
-    simp only [f, dif_pos (And.intro hn hnp)]
+    simp only [f, dite_eq_left (And.intro hn hnp)]
     exact Classical.choose_spec (hlift n hn hnp) a
   have hnu : ∀ (n : ℕ) (hn : 0 < n) (hnp : n.Coprime p), IsCoprime (nu n) n ∧
       ((I.ζ n : ℂˣ) : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * (nu n : ℂ) / n) := by
     intro n hn hnp
-    simp only [nu, dif_pos (And.intro hn hnp)]
+    simp only [nu, dite_eq_left (And.intro hn hnp)]
     exact Classical.choose_spec (hroot n hn hnp)
   have heq : ∀ {n : ℕ}, 0 < n → ∀ v v' : D'.La,
       e ((n : ℂ)⁻¹ • P v) = e ((n : ℂ)⁻¹ • P v') ↔ ∃ w, v = v' + n • w :=

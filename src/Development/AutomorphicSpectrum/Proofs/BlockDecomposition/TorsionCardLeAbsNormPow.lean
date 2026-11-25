@@ -32,7 +32,7 @@ theorem torsion_exact_bound {R A B C : Type*} [CommRing R] [AddCommGroup A] [Add
   have hs : ∀ b : TB, h (s (h b)) = h b := by
     intro b
     have hc : ∃ b', h b' = h b := ⟨b, rfl⟩
-    simp only [s, dif_pos hc]
+    simp only [s, dite_eq_left hc]
     exact hc.choose_spec
   have hk : ∀ b : TB, ∃ a, f a = b.1 - (s (h b)).1 := by
     intro b

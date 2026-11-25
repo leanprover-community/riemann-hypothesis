@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenFi
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 noncomputable section
 namespace GlobalTheory.CompanionTheory.GrVB

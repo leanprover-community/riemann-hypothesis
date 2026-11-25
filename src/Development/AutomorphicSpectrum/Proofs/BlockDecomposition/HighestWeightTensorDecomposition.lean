@@ -51,7 +51,7 @@ theorem graph_extend {n : ℕ} {ε : Fin n → Bool} {V V' : Type} [NormedAddCom
     ∃ T : V →ₗ[ℂ] V', (∀ g ∈ G, T g.1 = g.2) ∧ KMap ε D D' T := by
   let A : G →ₗ[ℂ] V := (LinearMap.fst ℂ V V').comp G.subtype
   have hA : Function.Injective A := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro g hg
     have h1 : g.1.1 = 0 := hg
     exact Subtype.ext (Prod.ext h1 (hG _ g.2 h1))
@@ -182,11 +182,11 @@ theorem kmap_extend : ∀ {n : ℕ} (H V : Type) [NormedAddCommGroup H] [InnerPr
   let ξ := stdOrthonormalBasis ℂ Hs
   have hself : ∀ i, ⟪(ξ i : H), (ξ i : H)⟫_ℂ = 1 := fun i => by
     have := (orthonormal_iff_ite.1 ξ.orthonormal) i i
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     exact this
   have hoff : ∀ i j, i ≠ j → ⟪(ξ i : H), (ξ j : H)⟫_ℂ = 0 := fun i j hij => by
     have := (orthonormal_iff_ite.1 ξ.orthonormal) i j
-    rw [if_neg hij] at this
+    rw [ite_eq_right hij] at this
     exact this
   have hne : ∀ i, (ξ i : H) ≠ 0 := fun i h0 => by
     have := hself i

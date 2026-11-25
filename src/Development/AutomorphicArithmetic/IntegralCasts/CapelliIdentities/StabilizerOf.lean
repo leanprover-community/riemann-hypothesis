@@ -8,8 +8,8 @@ import Mathlib.Tactic.Linter.Style
 
 noncomputable def UpperTheory.Reformulated.B.StabilizerOf.stabilizerOf.{u_1, u_2} :
     {G : Type u_1} →
-      [inst : Group G] →
-        {V : Type u_2} → [inst_1 : AddCommGroup V] → [inst_2 : _root_.Module ℂ V] → Representation ℂ G V → V → Subgroup G :=
+      [Group G] →
+        {V : Type u_2} → [AddCommGroup V] → [_root_.Module ℂ V] → Representation ℂ G V → V → Subgroup G :=
   fun {G} _ {_V} _ _ ρ v =>
     { carrier := {g : G | ρ g v = v}
       one_mem' := by

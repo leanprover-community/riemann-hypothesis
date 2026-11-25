@@ -40,7 +40,6 @@ section Sign
 
 open NumberField Formalism.BasicNotions ComplexConjugate Matrix Formalism.L2.Pj Formalism.L2.Pj.DatLin
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] Classical.propDecidable
 
 theorem sqrt_im_pos (D : D7) : 0 < (D.host.φ₀ D.host.sqrtMinusD).im := by
@@ -54,7 +53,6 @@ end Sign
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj
 open scoped TensorProduct Matrix Topology
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -184,7 +182,7 @@ def UnfFam.U (u : UnfFam Xo c N ξ) (σ : c.F →+* ℂ) : Formalism.L2.PjFree.U
   if h : Formalism.L2.PjFree.GoodEmb c σ then u.good σ h else noUnf Xo c σ N
 
 theorem UnfFam.U_eq (u : UnfFam Xo c N ξ) {σ : c.F →+* ℂ} (h : Formalism.L2.PjFree.GoodEmb c σ) : u.U σ = u.good σ h :=
-  dif_pos h
+  dite_eq_left h
 
 theorem UnfFam.isEmpty_comp (u : UnfFam Xo c N ξ) {σ : c.F →+* ℂ} (h : ¬ Formalism.L2.PjFree.GoodEmb c σ) :
     IsEmpty (u.U σ).Comp := by
@@ -239,7 +237,7 @@ theorem Amb.im_neg_xi_neg (A : Amb D) (τ : D.host.E →+* ℂ) (hτ : τ (A.H.r
     (τ (-D.host.xi0)).im < 0 := by
   rw [A.rt_eq, A.cmHost_rootComplex_eq_pm_sqrt] at hτ
   have h := xi0_embedding_im_pos D τ ((mem_cm_type_iff D τ).2 hτ)
-  rw [if_pos (GlobalTheory.Member.Inhab.sqrt_im_pos D), Int.cast_one, one_mul] at h
+  rw [ite_eq_left (GlobalTheory.Member.Inhab.sqrt_im_pos D), Int.cast_one, one_mul] at h
   simpa using h
 
 theorem norm_embedding_xi_zero (D : D7) (τ : D.host.E →+* ℂ) : ‖τ D.host.xi0‖ = xiR D := by

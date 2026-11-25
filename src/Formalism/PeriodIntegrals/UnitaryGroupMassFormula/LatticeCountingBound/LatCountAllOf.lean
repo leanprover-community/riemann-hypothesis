@@ -91,7 +91,7 @@ theorem latCountAll_of (hB : BoxBound) (hLM : LatMap) (hLS : LatSub) (hS : Sep) 
       · obtain ⟨v, hv⟩ := h0
         rw [Finset.prod_eq_zero (Finset.mem_univ v) hv]
         exact Finset.prod_pos fun _ _ => hρ
-      · push_neg at h0
+      · push Not at h0
         have hne' : (Finset.univ : Finset (InfinitePlace I.F)).Nonempty := by
           by_contra he
           rw [Finset.not_nonempty_iff_eq_empty, Finset.univ_eq_empty_iff] at he

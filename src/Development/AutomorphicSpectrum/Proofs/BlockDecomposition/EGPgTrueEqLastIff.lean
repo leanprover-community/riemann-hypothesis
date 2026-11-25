@@ -142,7 +142,7 @@ theorem exists_rowSec {N : ℕ} (a : Fin N) : ∃ b : (Fin N → k) → GL (Fin 
   let b : (Fin N → k) → GL (Fin N) k := fun y =>
     if h : y a ≠ 0 then Matrix.GeneralLinearGroup.mkOfDetNeZero (M y) (by rw [hdet]; exact h) else 1
   have hb : ∀ y : Fin N → k, y a ≠ 0 → (b y : Matrix (Fin N) (Fin N) k) = M y := fun y h => by
-    simp only [b, dif_pos h]
+    simp only [b, dite_eq_left h]
     rfl
   have h0 : (Pi.single a 1 : Fin N → k) a ≠ 0 := by simp
   have hne : ∀ᶠ y : Fin N → k in 𝓝 (Pi.single a 1), y a ≠ 0 :=

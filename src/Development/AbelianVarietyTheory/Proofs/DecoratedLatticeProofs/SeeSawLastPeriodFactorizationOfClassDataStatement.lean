@@ -129,12 +129,12 @@ theorem eq_blkMat_of_isBlock {N n : ℕ} (hN : N = n + 1) {kt : Matrix (Fin N) (
     have := (H.2.1 ⟨i.1, hi⟩).1
     rw [ej]
     simpa [Formalism.L2.Col.Br.iC] using this
-  · rw [dite_eq_right hi, if_pos hj]
+  · rw [dite_eq_right hi, ite_eq_left hj]
     have ei : i = Formalism.L2.Col.Br.iL hN := Fin.ext (by simp [Formalism.L2.Col.Br.iL]; omega)
     have := (H.2.1 ⟨j.1, hj⟩).2
     rw [ei]
     simpa [Formalism.L2.Col.Br.iC] using this
-  · rw [dite_eq_right hi, if_neg hj]
+  · rw [dite_eq_right hi, ite_eq_right hj]
     have ei : i = Formalism.L2.Col.Br.iL hN := Fin.ext (by simp [Formalism.L2.Col.Br.iL]; omega)
     have ej : j = Formalism.L2.Col.Br.iL hN := Fin.ext (by simp [Formalism.L2.Col.Br.iL]; omega)
     rw [ei, ej]
@@ -344,7 +344,7 @@ theorem fnOf_inj {n : ℕ} (G : ι → Matrix (Fin n) (Fin n) ℂ) (s : ι → �
         have := (mul_eq_zero.mp hy).resolve_left hp
         simpa [y] using this
       rw [he, mul_zero]
-    · push_neg at hx
+    · push Not at hx
       obtain ⟨τ, hτ⟩ := hx
       rw [Finset.prod_eq_zero (Finset.mem_univ τ) (by rw [eval_blockDet]; exact hτ), zero_mul]
   have hne : (∏ τ : ι, blockDet (n := n) τ) ≠ 0 := by
@@ -411,7 +411,7 @@ theorem span_map_mult_one {V W : ι → Type} [∀ τ, AddCommGroup (V τ)] [∀
       exact h0 (by rw [← hb, zero_smul])
     refine ⟨a / b, ?_⟩
     rw [← ha, ← hb, smul_smul, div_mul_cancel₀ _ hb0]
-  · push_neg at hex
+  · push Not at hex
     obtain ⟨τ, hτ⟩ := hex
     have hle : Submodule.span ℂ {T | ∃ t : ∀ τ, V τ →ₗ[ℂ] W τ, (∀ τ, t τ ∈ C τ) ∧ T = PiTensorProduct.map t} ≤ ⊥ := by
       rw [Submodule.span_le]

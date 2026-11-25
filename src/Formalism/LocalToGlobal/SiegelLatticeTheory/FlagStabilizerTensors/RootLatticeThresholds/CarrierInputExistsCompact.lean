@@ -374,7 +374,7 @@ theorem third_polynomial_prime_combination : LeadingBlockSeveralPlacesBound := b
       (s * abelian₂ v) ^ (2 * K) ≤ m v ^ 2 := by
     intro v s hs hso hlt
     have ho : 0 < oAbs t t' v := lt_of_le_of_lt (by linarith [hLam v]) hlt
-    have hmv : m v = (2 * abelian₂ v / oAbs t t' v) ^ K := by rw [hm]; dsimp only; rw [minFac, if_pos hlt]
+    have hmv : m v = (2 * abelian₂ v / oAbs t t' v) ^ K := by rw [hm]; dsimp only; rw [minFac, ite_eq_left hlt]
     rw [hmv, ← pow_mul, mul_comm K 2]
     apply pow_le_pow_left₀ (mul_nonneg hs (hLam v))
     rw [le_div_iff₀ ho]; nlinarith [mul_le_mul_of_nonneg_right hso (hLam v)]
@@ -425,7 +425,7 @@ theorem third_polynomial_prime_combination : LeadingBlockSeveralPlacesBound := b
       by_cases hle : ‖t v‖ ≤ ‖t' v‖
       · exact Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hlt, hle⟩)
       · exact Finset.mem_union_right _ (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hlt, hle⟩)
-    rw [hm]; dsimp only; rw [minFac, if_neg hnot, one_pow]
+    rw [hm]; dsimp only; rw [minFac, ite_eq_right hnot, one_pow]
   have hM0 : 0 ≤ ∏ v, m v := Finset.prod_nonneg fun v _ => hm0 v
   have hgoal : ∏ v, minFac (2 * abelian₂ v) (oAbs t t' v) K = ∏ v, m v := by rw [hm]
   rw [hgoal]
@@ -577,10 +577,6 @@ end
 
 end Formalism.FourierDecayAlt.P.RealInputsCompactSupport
 
-namespace Formalism.FourierDecayAlt.P
-
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.RealInputsClosedCompactSupportOf =====

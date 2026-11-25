@@ -353,23 +353,18 @@ def Stable (S : Γ →* Matrix (Fin m) (Fin m) K) (P : Submodule K (Fin m → K)
 
 theorem mul_mem_augSpan (S : Γ →* Matrix (Fin m) (Fin m) K) {A C : Matrix (Fin m) (Fin m) K}
     (hA : A ∈ augSpan S) (hC : C ∈ augSpan S) : A * C ∈ augSpan S := by
-  induction hA using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨g, rfl⟩ := hx
-    induction hC using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨h, rfl⟩ := hy
-      have e : (S g - 1) * (S h - 1) = (S (g * h) - 1) - (S g - 1) - (S h - 1) := by
-        rw [map_mul]; noncomm_ring
-      rw [e]
-      exact Submodule.sub_mem _ (Submodule.sub_mem _ (Submodule.subset_span ⟨_, rfl⟩)
-        (Submodule.subset_span ⟨_, rfl⟩)) (Submodule.subset_span ⟨_, rfl⟩)
-    | zero => simp
-    | add x y _ _ hx hy => rw [mul_add]; exact Submodule.add_mem _ hx hy
-    | smul a y _ hy => rw [Matrix.mul_smul]; exact Submodule.smul_mem _ a hy
-  | zero => simp
-  | add x y _ _ hx hy => rw [add_mul]; exact Submodule.add_mem _ hx hy
-  | smul a x _ hx => rw [Matrix.smul_mul]; exact Submodule.smul_mem _ a hx
+  let mul := LinearMap.mul K (Matrix (Fin m) (Fin m) K)
+  refine (show _ ≤ augSpan S from ?_) (Submodule.apply_mem_map₂ mul hA hC)
+  unfold augSpan
+  rw [Submodule.map₂_span_span, Submodule.span_le, Set.image2_subset_iff]
+  rintro _ ⟨g, rfl⟩ _ ⟨h, rfl⟩
+  change (S g - 1) * (S h - 1) ∈ _
+  have e : (S g - 1) * (S h - 1) = (S (g * h) - 1) - (S g - 1) - (S h - 1) := by
+    rw [map_mul]
+    noncomm_ring
+  rw [e]
+  exact Submodule.sub_mem _ (Submodule.sub_mem _ (Submodule.subset_span ⟨_, rfl⟩)
+    (Submodule.subset_span ⟨_, rfl⟩)) (Submodule.subset_span ⟨_, rfl⟩)
 
 theorem augSpan_preserves (S : Γ →* Matrix (Fin m) (Fin m) K) {P : Submodule K (Fin m → K)}
     (hP : Stable S P) {T : Matrix (Fin m) (Fin m) K} (hT : T ∈ augSpan S) :
@@ -491,7 +486,7 @@ theorem good_of_stable (S : Γ →* Matrix (Fin 3) (Fin 3) K) [IsAlgClosed K]
         intro v hv
         exact hfix v (fun g => hc g v hv)
       exact _root_.GlobalTheory.AugSpan.exists_mem_span_sub_one_eq_id_on S P hP hirr hnt
-  · push_neg at hirr
+  · push Not at hirr
     obtain ⟨Q, hQP, hQs, hQ0, hQne⟩ := hirr
     have hQo : Stable S (B.orthogonal Q) := stable_orthogonal S B hinv hQs
     set R := P ⊓ B.orthogonal Q with hR
@@ -1550,7 +1545,7 @@ theorem hom_padicInt_trivial : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (Γ : T
   have hρZ : ‖((l : ℕ) : ℤ_[l])‖ = ρ := by rw [PadicInt.norm_p, hρeq]
   by_contra hne
   obtain ⟨g, hg⟩ : ∃ g, lam g ≠ 1 := by
-    by_contra h; push_neg at h; exact hne (MonoidHom.ext fun x => by simpa using h x)
+    by_contra h; push Not at h; exact hne (MonoidHom.ext fun x => by simpa using h x)
   obtain ⟨k, hk0, hkdet, hksm⟩ := noab_congr_pow l c Γ r hr hint hdet g
   set h0 := g ^ k with hh0
   set v0 : ℤ_[l] := Multiplicative.toAdd (lam h0) with hv0def

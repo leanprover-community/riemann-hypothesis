@@ -17,57 +17,13 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeilActionTranslatesThetaByUnitScalar
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowHighestLeSpanColWordComplex
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaFormRationality
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorLaws
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaKernelOrthonormalFrameInDomainPeriodLinear
@@ -257,21 +213,21 @@ theorem colDerM_single (t : T) (k l : κ) :
   · rw [colDerM_X_xVar, colDer_X_xVar]
     by_cases ht : t' = t
     · by_cases hj : j = l
-      · subst hj; rw [if_pos ht, if_pos ⟨ht, rfl⟩, ← xForm_single]
+      · subst hj; rw [ite_eq_left ht, ite_eq_left ⟨ht, rfl⟩, ← xForm_single]
         congr 1; ext i; simp [single_apply, Pi.single_apply, eq_comm]
-      · rw [if_pos ht, if_neg (fun h => hj h.2)]
+      · rw [ite_eq_left ht, ite_eq_right (fun h => hj h.2)]
         have : (single l k (1 : R)) j = 0 := by ext i; simp [Ne.symm hj]
         rw [this, map_zero]
-    · rw [if_neg ht, if_neg (fun h => ht h.1)]
+    · rw [ite_eq_right ht, ite_eq_right (fun h => ht h.1)]
   · rw [colDerM_X_yVar, colDer_X_yVar]
     by_cases ht : t' = t
     · by_cases hj : j = k
-      · subst hj; rw [if_pos ht, if_pos ⟨ht, rfl⟩, ← yForm_single]
+      · subst hj; rw [ite_eq_left ht, ite_eq_left ⟨ht, rfl⟩, ← yForm_single]
         congr 2; ext i; simp [single_apply, Pi.single_apply, eq_comm]
-      · rw [if_pos ht, if_neg (fun h => hj h.2)]
+      · rw [ite_eq_left ht, ite_eq_right (fun h => hj h.2)]
         have : (fun r => single l k (1 : R) r j) = 0 := by ext i; simp [Ne.symm hj]
         rw [this, map_zero, neg_zero]
-    · rw [if_neg ht, if_neg (fun h => ht h.1)]
+    · rw [ite_eq_right ht, ite_eq_right (fun h => ht h.1)]
 
 end ColDerLin
 
@@ -738,7 +694,7 @@ theorem GlobalTheory.RenamedMinors.renamed_delta_mem_rowHighest : ∀ (D : D7) (
   · change phi C _ ∈ _
     rw [hκ, ← MvPolynomial.smul_eq_C_mul]
     refine Submodule.smul_mem _ κ (Harm.minorProd_mem_rowHighest _ _ fun t a b => ?_)
-    rw [single_dotProduct, one_mul, Pi.single_apply, if_neg]
+    rw [single_dotProduct, one_mul, Pi.single_apply, ite_eq_right]
     intro h
     have h' := congrArg Fin.val h
     simp only [Fin.coe_castLE] at h'
@@ -886,7 +842,7 @@ theorem revB_isB : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B₀ : C.Bas), C.Is
     show sgn C.X.p0 ((revPos C.X.p0 a : Fin T.rank) : ℕ) = _
     unfold revPos
     split_ifs with h
-    · simp only [sgn, if_pos h.1, if_pos (show C.X.p0 - 1 - (a : ℕ) < C.X.p0 by omega)]
+    · simp only [sgn, ite_eq_left h.1, ite_eq_left (show C.X.p0 - 1 - (a : ℕ) < C.X.p0 by omega)]
     · rfl
   have hD : (sgnM C.X).submatrix σ σ = sgnM C.X := by
     unfold sgnM

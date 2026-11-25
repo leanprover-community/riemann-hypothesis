@@ -50,7 +50,7 @@ theorem img_step {M : FlagModel y Ψ N j} {M' : FlagModel y' Ψ N j} (Cv : FlagC
   have hk : ¬ ∀ p', M.blk p' ≠ some k := fun h => h p hp
   have hex : ∃ p', M.blk p' = some k := ⟨p, hp⟩
   have hch : hex.choose = p := M.blk_inj _ _ k hex.choose_spec hp
-  simp only [img, dif_neg hk]
+  simp only [img, dite_eq_right hk]
   split
   · next h =>
     rw [hch, hp'] at h

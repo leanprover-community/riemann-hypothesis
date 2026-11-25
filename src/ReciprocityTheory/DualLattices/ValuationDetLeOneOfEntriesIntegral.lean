@@ -80,10 +80,8 @@ theorem exists_algebraMap_eq_inv_mulVec (AA : HopfOrder (C := C) R N) (K : AddSu
   | mem g hg =>
     obtain ⟨j, rfl⟩ := hg
     have e : β⁻¹ *ᵥ (fun k => β k j) = Pi.single j 1 := by
-      ext l'
-      have := congrFun (congrFun (Matrix.nonsing_inv_mul β hβ) l') j
-      simpa [Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.one_apply, Pi.single_apply,
-        eq_comm] using this
+      rw [show (fun k => β k j) = β *ᵥ Pi.single j 1 from (Matrix.mulVec_single_one β j).symm,
+        Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul β hβ, Matrix.one_mulVec]
     rw [e]
     by_cases hl : l = j
     · exact ⟨1, by simp [hl]⟩

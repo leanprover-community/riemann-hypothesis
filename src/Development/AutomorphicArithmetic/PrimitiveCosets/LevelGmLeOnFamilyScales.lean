@@ -83,9 +83,9 @@ lemma ounram (D : ArithData H) {S0 : Finset ℕ} (hD : HostFactsS D S0) (p i : �
   have := orthogonality_ramified D p i hp hi g
   rw [this, hD.unram p hp h2 hd]
   by_cases he : i • D.frob p = g
-  · rw [if_pos he, if_pos (by rw [he, sub_self]; exact AddSubgroup.zero_mem _), AddSubgroup.card_bot]
+  · rw [ite_eq_left he, ite_eq_left (by rw [he, sub_self]; exact AddSubgroup.zero_mem _), AddSubgroup.card_bot]
     norm_num
-  · rw [if_neg he, if_neg (by rw [AddSubgroup.mem_bot, sub_eq_zero]; exact fun e => he e.symm)]
+  · rw [ite_eq_right he, ite_eq_right (by rw [AddSubgroup.mem_bot, sub_eq_zero]; exact fun e => he e.symm)]
 
 lemma lunram (D : ArithData H) {S0 : Finset ℕ} (hD : HostFactsS D S0) (N : ℕ) (a : ℝ) (t : H) (w : E0 × H → ℝ)
     {p : ℕ} (hp : p.Prime) (h2 : p ∉ S0) (hd : p ≠ D.d) :
@@ -185,19 +185,19 @@ lemma askExp (D : ArithData H) {S0 : Finset ℕ} (hD : HostFactsS D S0) (a : ℝ
     have hp : p.Prime := (Finset.mem_filter.1 hpP).2
     by_cases hd : p = D.d
     · subst hd
-      rw [hS, ld D hD N a t w, if_neg (fun h => h.2.2.2.1 rfl), if_pos rfl, zero_add]
-    · rw [if_neg hd, add_zero]
+      rw [hS, ld D hD N a t w, ite_eq_right (fun h => h.2.2.2.1 rfl), ite_eq_left rfl, zero_add]
+    · rw [ite_eq_right hd, add_zero]
       by_cases h2 : p ∈ S0
       · rw [hS, lsplit D hD N a t w hp h2]
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨_, _, _, _, hc⟩
         exact hc (hD.split_frob p h2)
       · have h21 : p ≠ 2 := fun e => h2 (e ▸ hD.two_mem)
         have h22 : p ≠ D.q1 := fun e => h2 (e ▸ hD.q1_mem)
         rw [hS, lunram D hD N a t w hp h2 hd]
         by_cases hin : IsInert D p
-        · rw [if_pos hin]
-        · rw [if_neg hin]
+        · rw [ite_eq_left hin]
+        · rw [ite_eq_right hin]
           have hφ : InPhi (D.frob p) := by
             by_contra hc; exact hin ⟨hp, h21, h22, hd, hc⟩
           have : askP D N a t w p = 0 := by
@@ -215,8 +215,8 @@ lemma askExp (D : ArithData H) {S0 : Finset ℕ} (hD : HostFactsS D S0) (a : ℝ
   push_cast
   congr 1
   by_cases hdP : D.d ∈ P
-  · rw [if_pos hdP]
-  · rw [if_neg hdP]
+  · rw [ite_eq_left hdP]
+  · rw [ite_eq_right hdP]
     have hdN : N < D.d := by
       by_contra hc
       exact hdP (Finset.mem_filter.2 ⟨Finset.mem_range.2 (by omega), hD.d_prime⟩)
@@ -255,19 +255,19 @@ theorem ch_balance {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] (D : 
           - (1 + Real.eulerMascheroniConstant) * a : ℝ) : ℂ)
         + ∑ ψ ∈ univ.erase (0 : AddChar (E0 × H) ℂ), starRingEnd ℂ (ψ g) * (-(a : ℂ) * ell ψ) := by
     intro g
-    rw [← Finset.add_sum_erase _ _ (mem_univ (0 : AddChar (E0 × H) ℂ)), if_pos rfl, AddChar.zero_apply,
+    rw [← Finset.add_sum_erase _ _ (mem_univ (0 : AddChar (E0 × H) ℂ)), ite_eq_left rfl, AddChar.zero_apply,
       map_one, one_mul]
     congr 1
     refine Finset.sum_congr rfl (fun ψ hψ => ?_)
-    rw [if_neg (Finset.ne_of_mem_erase hψ)]
+    rw [ite_eq_right (Finset.ne_of_mem_erase hψ)]
   have hcol : (∑ g ∈ univ.filter (fun g : E0 × H => ¬ InPhi g),
         ∑ ψ ∈ univ.erase (0 : AddChar (E0 × H) ℂ), starRingEnd ℂ (ψ g) * (-(a : ℂ) * ell ψ))
       = ((PhiSet (H := H)).card : ℂ) * ((a : ℂ) * ell chC) := by
     rw [Finset.sum_comm]
     rw [Finset.sum_congr rfl (fun ψ hψ => by
-      rw [← Finset.sum_mul, colour_sum ψ, if_neg (Finset.ne_of_mem_erase hψ)])]
+      rw [← Finset.sum_mul, colour_sum ψ, ite_eq_right (Finset.ne_of_mem_erase hψ)])]
     simp only [ite_mul, zero_mul]
-    rw [Finset.sum_ite_eq', if_pos (Finset.mem_erase.2 ⟨PB.chC_ne_zero (H := H), mem_univ _⟩)]
+    rw [Finset.sum_ite_eq', ite_eq_left (Finset.mem_erase.2 ⟨PB.chC_ne_zero (H := H), mem_univ _⟩)]
     ring
   have hreal : (∑ g ∈ univ.filter (fun g : E0 × H => ¬ InPhi g),
         ((a * Real.log a - a * Real.log (w (partner t g))
@@ -409,7 +409,7 @@ lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset
       have p1 : 0 ≤ 3 * (x + 1) * (η + 1) := by positivity
       have p2 : 0 ≤ (x + 1) * b * θ := by positivity
       by_cases hth : IsThickAt T2 u0 (cconj + g + topPl t)
-      · simp only [if_pos hth]
+      · simp only [ite_eq_left hth]
         obtain ⟨k1, k2⟩ := hwthick _ hth
         have hl := hLip ψ A (w (cconj + g + topPl t)) b hA0 hw0 hb
         rw [min_eq_right k1, abs_of_nonneg (by linarith)] at hl
@@ -418,7 +418,7 @@ lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset
         have e2 : 3 * A / b * (w (cconj + g + topPl t) - b) ≤ 3 * (x + 1) * (η + 1) :=
           mul_le_mul e1 (by linarith) (by linarith) (by positivity)
         linarith
-      · simp only [if_neg hth, sub_zero]
+      · simp only [ite_eq_right hth, sub_zero]
         have hw2 := hwthin _ hρ hth
         have hy : X' / 3 ≤ A / w (cconj + g + topPl t) := by
           rw [le_div_iff₀ hw0]
@@ -467,7 +467,7 @@ lemma triv (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) {x Cd : ℝ} 
   have hd := hDer.1 ψ hψ0 x 1 (by linarith) le_rfl
   have h1 : GPsi D ell ψ 1 = ell ψ := by
     unfold GPsi
-    rw [if_neg hψ0]
+    rw [ite_eq_right hψ0]
     simp
   rw [h1, max_eq_left (by linarith), abs_of_nonneg (by linarith)] at hd
   have h2 : ‖GPsi D ell ψ x‖ ≤ ‖GPsi D ell ψ x - ell ψ‖ + ‖ell ψ‖ := by
@@ -512,9 +512,9 @@ lemma one_char (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (D : A
   · subst h0
     have hw : wtA c (0 : AddChar (E0 × H) ℂ) = 1 := by
       unfold wtA
-      rw [if_pos (fun _ => AddChar.zero_apply _)]
+      rw [ite_eq_left (fun _ => AddChar.zero_apply _)]
     unfold vv
-    rw [if_pos h0K, hw, one_mul, ← nsmul_eq_mul, ← Finset.sum_const]
+    rw [ite_eq_left h0K, hw, one_mul, ← nsmul_eq_mul, ← Finset.sum_const]
     refine Finset.sum_le_sum fun t ht => ?_
     obtain ⟨hy1, hy2⟩ := abs_le.1 (hy t ht)
     have hG := hDer.2 (y t) x (by linarith) (by linarith)
@@ -524,7 +524,7 @@ lemma one_char (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (D : A
     linarith
   by_cases hX : ψ ∈ Kp
   · unfold vv
-    rw [if_pos hX]
+    rw [ite_eq_left hX]
     have h2' : ‖(∑ t ∈ TT, ψ (0, t)) - ((wtA c ψ : ℝ) : ℂ) * (TT.card : ℂ)‖ ≤ ρ * (TT.card : ℝ) := by
       unfold wtA
       split_ifs with h
@@ -565,7 +565,7 @@ lemma one_char (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (D : A
     have n5 := mul_le_mul_of_nonneg_left r2 (Nat.cast_nonneg (α := ℝ) TT.card)
     nlinarith
   · unfold vv
-    rw [if_neg hX, ← nsmul_eq_mul, ← Finset.sum_const]
+    rw [ite_eq_right hX, ← nsmul_eq_mul, ← Finset.sum_const]
     refine Finset.sum_le_sum fun t ht => ?_
     have k2 := h3 ψ hψ hX
     have k3 := move D ell hx hCd (hy t ht) hDer ψ h0
@@ -892,10 +892,10 @@ private theorem sgn_val (s : ℤˣ) :
   rcases Int.units_eq_one_or s with rfl | rfl
   · have h0 : Multiplicative.toAdd (LFunctionChainParameters.LHost.sgn2 1) = 0 := by
       rw [map_one, toAdd_one]
-    rw [if_pos h0]
+    rw [ite_eq_left h0]
     simp
   · have h1 : Multiplicative.toAdd (LFunctionChainParameters.LHost.sgn2 (-1)) = 1 := by decide
-    rw [h1, if_neg (by decide)]
+    rw [h1, ite_eq_right (by decide)]
     simp
 
 theorem UpperTheory.Comparison₂.chr_bij :
@@ -1164,9 +1164,9 @@ theorem UpperTheory.Comparison₂.gmA_eq :
     obtain ⟨hps1, hps2⟩ := hE.ps
     unfold wtA
     by_cases hA : ∀ h : φ.A, ψ (0, h) = 1
-    · rw [if_pos hA]
+    · rw [ite_eq_left hA]
       rcases htriv.1 hA with h1 | h1
-      · rw [h1, hp1, if_pos rfl]
+      · rw [h1, hp1, ite_eq_left rfl]
       · have hK : H.toHostRaw.Kept Λ.KEPT φ.psC := by
           rw [HostRaw.kept_iff, ← h1]
           exact (hmem ψ).1 hψ
@@ -1179,12 +1179,12 @@ theorem UpperTheory.Comparison₂.gmA_eq :
             have e := hps1 p hk
             rw [HostRaw.isPrimOf_iff] at e
             simp [Level.wt, hk, e]
-    · rw [if_neg hA]
+    · rw [ite_eq_right hA]
       have hn1 : chr φ ψ ≠ 1 := fun h => hA (htriv.2 (Or.inl h))
       have hnps : chr φ ψ ≠ φ.psC := fun h => hA (htriv.2 (Or.inr h))
-      rw [if_neg (fun h => hn1 (hpinj (h.trans hp1.symm)))]
+      rw [ite_eq_right (fun h => hn1 (hpinj (h.trans hp1.symm)))]
       unfold Level.wt
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hk
       have e := hps1 _ hk
       rw [HostRaw.isPrimOf_iff] at e
@@ -1200,16 +1200,16 @@ theorem UpperTheory.Comparison₂.gmA_eq :
   have hone : (An.gChi PChar.one.χ y).re = An.G y := by
     have h1 : PChar.one.χ = 1 := rfl
     unfold An.gChi
-    rw [if_pos h1]
+    rw [ite_eq_left h1]
     simp
   unfold GmA Level.Gm Level.Nt
   rw [Finset.sum_congr rfl (fun ψ hψ => by rw [hw ψ hψ, hG ψ]), key,
     ← Finset.add_sum_erase _ _ Λ.one_mem]
   congr 1
-  · rw [if_pos rfl, one_mul, (Gz_eq y).1, hone]
+  · rw [ite_eq_left rfl, one_mul, (Gz_eq y).1, hone]
   · apply Finset.sum_congr rfl
     intro p hp
-    rw [if_neg (Finset.ne_of_mem_erase hp)]
+    rw [ite_eq_right (Finset.ne_of_mem_erase hp)]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.PrimitiveCosets.GmAEq =====

@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open WittVector Ideal Matrix
 
 namespace GlobalTheory.Sandwich.Model

@@ -4,43 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Layer
 public import Formalism.SatakeDualWeyl.DefsCS
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointMajorantFramesGiveMajorants
 
 @[expose] public section
@@ -249,9 +213,9 @@ theorem frm_mul (k : I.GA) (w : InfinitePlace I.E) :
   simp only [frm]
   by_cases h : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
   · left
-    rw [if_pos h, if_pos h, hm, Matrix.mul_assoc]
+    rw [ite_eq_left h, ite_eq_left h, hm, Matrix.mul_assoc]
   · right
-    rw [if_neg h, if_neg h, hm, ← Matrix.mul_assoc, Matrix.map_mul]
+    rw [ite_eq_right h, ite_eq_right h, hm, ← Matrix.mul_assoc, Matrix.map_mul]
 
 theorem frm_rat
     (h : ∀ v, uMat (a.1 v) = (I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v)
@@ -268,9 +232,9 @@ theorem frm_rat
     simp only [← Matrix.mul_assoc, hP, Matrix.one_mul]
   simp only [frm]
   by_cases h' : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
-  · rw [if_pos h', if_pos h', key, h']
+  · rw [ite_eq_left h', ite_eq_left h', key, h']
   · have he := (embedding_eq I w).resolve_left h'
-    rw [if_neg h', if_neg h', key, Matrix.map_mul, he, Matrix.map_map]
+    rw [ite_eq_right h', ite_eq_right h', key, Matrix.map_mul, he, Matrix.map_map]
     rfl
 
 theorem fcoord_rat

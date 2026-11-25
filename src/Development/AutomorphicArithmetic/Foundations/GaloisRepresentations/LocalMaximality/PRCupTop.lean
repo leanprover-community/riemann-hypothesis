@@ -133,23 +133,23 @@ theorem UpperTheory.Gal.productCup_of_system.rCupTop_of :
     have h := hs (uni I J)
     rw [e3] at h
     by_cases hcd : (((I.card + J.card : ℕ)) : ℤ) = (d : ℤ) + 2 - 1
-    · rw [if_pos hcd, mixF, e1, e2, if_neg (fun hh => hn ⟨hh.1, hh.2, by omega⟩)] at h
+    · rw [ite_eq_left hcd, mixF, e1, e2, ite_eq_right (fun hh => hn ⟨hh.1, hh.2, by omega⟩)] at h
       exact (Submodule.mem_bot ℂ).1 h
-    · rw [if_neg hcd] at h
+    · rw [ite_eq_right hcd] at h
       exact (Submodule.mem_bot ℂ).1 h
   have hy1 : ∀ I J : Finset (Fin (d + 1)), y (uni I J) ∈ MZ F K (xv x) a I J := by
     intro I J
     by_cases hn : I.Nonempty ∧ J.Nonempty ∧ I.card + J.card = d + 1
     · obtain ⟨e1, e2, e3, -⟩ := (hU I J).2
       have h := hs (uni I J)
-      rw [e3, if_pos (by omega), mixF, e1, e2, if_pos ⟨hn.1, hn.2.1⟩] at h
+      rw [e3, ite_eq_left (by omega), mixF, e1, e2, ite_eq_left ⟨hn.1, hn.2.1⟩] at h
       exact h
     · rw [hy0 I J hn]; exact Submodule.zero_mem _
   have hα0 : ∀ s : Finset (Fin (d + 1)), s.card ≠ p + 1 → α s = 0 := by
     intro s hsc
     have h : α s ∈ (if s.Nonempty ∧ (s.card : ℤ) = (p : ℤ) + 1 then omB ℂ K (rB ℂ K (xv x) s) a else ⊥ :
         Submodule ℂ (DR ℂ K)) := (Submodule.mem_pi.1 (Submodule.mem_inf.1 hα).1) s (Set.mem_univ _)
-    rw [if_neg (fun hh => hsc (by omega))] at h
+    rw [ite_eq_right (fun hh => hsc (by omega))] at h
     exact (Submodule.mem_bot ℂ).1 h
   refine Submodule.mem_map.2 ⟨fun J' => ∑ i, ((-1 : ℤ) ^ (Finset.univ.filter (· ≤ i)).card) •
     bil τ ρ (y (uni (Finset.univ.filter (· ≤ i)) J')) (α (Finset.univ.filter (i ≤ ·))), ?_, ?_⟩

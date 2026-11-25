@@ -73,11 +73,11 @@ theorem hs_ge (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (hA : A.OK) (c'
   unfold Formalism.MainNotions.ArcLiftingSetup.ArcP.Hs
   rw [hlet]
   by_cases h1 : A.ty (c' + (m : ZMod n)) = Formalism.MainNotions.LocalTheoryWindows.LT.thin
-  · rw [if_pos (Or.inl h1), h1]; simp [Mw]
+  · rw [ite_eq_left (Or.inl h1), h1]; simp [Mw]
   · by_cases h2 : e - (e - m) ≤ A.j
-    · rw [if_pos (Or.inr h2)]
+    · rw [ite_eq_left (Or.inr h2)]
       exact mw_le A hA c' hc' m hm1 (by omega)
-    · rw [if_neg (by tauto)]
+    · rw [ite_eq_right (by tauto)]
       have hth : (A.ty (c' + (m : ZMod n))).thick := by
         revert h1; cases A.ty (c' + (m : ZMod n)) <;> simp [Formalism.MainNotions.LocalTheoryWindows.LT.thick]
       have hsz := hA.2.2.2.2.2.2.2.1 _ hth
@@ -102,7 +102,7 @@ theorem hs_le_h (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (hA : A.OK) (
 
 theorem hs_top (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (a : ZMod n) (e s : ℕ) (h : e - s ≤ A.j) : A.Hs a e s = A.G₀ := by
   unfold Formalism.MainNotions.ArcLiftingSetup.ArcP.Hs
-  rw [if_pos (Or.inr h)]
+  rw [ite_eq_left (Or.inr h)]
 
 theorem two_h_lt (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (h5 : 5 ≤ PD.p) : 2 * A.h < (PD.p - 1) * A.M PD.p := by
   unfold Formalism.MainNotions.ArcLiftingSetup.ArcP.M
@@ -243,9 +243,9 @@ theorem hw_le_hs (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (hA : A.OK) 
   unfold Formalism.MainNotions.ArcLiftingSetup.ArcP.Hs
   rw [hlet]
   by_cases h1 : A.ty (c' + ((e - s : ℕ) : ZMod n)) = Formalism.MainNotions.LocalTheoryWindows.LT.thin
-  · rw [if_pos (Or.inl h1), h1]; simp [Hw]
+  · rw [ite_eq_left (Or.inl h1), h1]; simp [Hw]
   · by_cases h2 : e - s ≤ A.j
-    · rw [if_pos (Or.inr h2)]
+    · rw [ite_eq_left (Or.inr h2)]
       rcases hA.2.2.2.2.2.2.2.2 with h | ⟨hj, hth, hsz⟩
       · rw [h c' hc' (e - s) (by omega) h2]; simp [Hw]
       · have hk : e - s = 1 := by omega
@@ -259,7 +259,7 @@ theorem hw_le_hs (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (hA : A.OK) 
         | up b => intro hs hok; simp only [Formalism.MainNotions.LocalTheoryWindows.LT.size] at hs; simp only [Hw]; omega
         | down b => intro hs hok; simp only [Formalism.MainNotions.LocalTheoryWindows.LT.size] at hs
                     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok; simp only [Hw]; omega
-    · rw [if_neg (by tauto)]
+    · rw [ite_eq_right (by tauto)]
       have hth : (A.ty (c' + ((e - s : ℕ) : ZMod n))).thick := by
         revert h1; cases A.ty (c' + ((e - s : ℕ) : ZMod n)) <;> simp [Formalism.MainNotions.LocalTheoryWindows.LT.thick]
       have hsz := hA.2.2.2.2.2.2.2.1 _ hth

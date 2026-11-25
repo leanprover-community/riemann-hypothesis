@@ -47,10 +47,6 @@ theorem uh_inv {a : Mx k r} (ha : a ∈ UH (Hpk k r)) :
     _ = (a * a⁻¹)ᴴ * Hpk k r * (a * a⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = Hpk k r := by rw [h2]; simp
 
-theorem col_eq (g : Mx k r) (j : Fin (2 * r + k + 1)) : g *ᵥ bvec j = fun i => g i j := by
-  ext i
-  simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
-
 def lowS (k r a : ℕ) : Submodule ℂ (Fin (2 * r + k + 1) → ℂ) where
   carrier := {y | ∀ i : Fin (2 * r + k + 1), a ≤ i.val → y i = 0}
   add_mem' := by
@@ -81,49 +77,10 @@ theorem maps_low {n : Mx k r} (hn : ∀ (a : Fin r) (i : Fin (2 * r + k + 1)), a
     have h1 := hn ⟨l.val, hlr⟩ i (by show (l : ℕ) ≤ i; omega)
     have heq : eI k r ⟨l.val, hlr⟩ = l := Fin.ext (eI_val _)
     rw [heq] at h1
-    rw [h1, if_neg (fun h => by subst h; omega), zero_mul]
-
-theorem onto_low {g : Mx k r} (hg : g⁻¹ * g = 1) {a : ℕ} (hmaps : ∀ y ∈ lowS k r a, g *ᵥ y ∈ lowS k r a) :
-    ∀ y ∈ lowS k r a, ∃ x ∈ lowS k r a, g *ᵥ x = y := by
-  let f : lowS k r a →ₗ[ℂ] lowS k r a := (Matrix.mulVecLin g).restrict (fun y hy => hmaps y hy)
-  have hinj : Function.Injective f := by
-    intro x y hxy
-    apply Subtype.ext
-    have h1 : g *ᵥ (x : Fin (2 * r + k + 1) → ℂ) = g *ᵥ (y : Fin (2 * r + k + 1) → ℂ) :=
-      congrArg Subtype.val hxy
-    have h2 := congrArg (fun v => g⁻¹ *ᵥ v) h1
-    simp only [Matrix.mulVec_mulVec, hg, Matrix.one_mulVec] at h2
-    exact h2
-  have hsurj := LinearMap.injective_iff_surjective.mp hinj
-  intro y hy
-  obtain ⟨x, hx⟩ := hsurj ⟨y, hy⟩
-  exact ⟨x, x.2, congrArg Subtype.val hx⟩
+    rw [h1, ite_eq_right (fun h => by subst h; omega), zero_mul]
 
 theorem n_inv {n : Mx k r} (hn : n ∈ Nset k r) : n⁻¹ ∈ Nset k r := by
   apply _root_.PI.AmpOrbQuot.nset_inv <;> assumption
-
-theorem fix_low {g : Mx k r} (hfix : ∀ b : Fin r, g *ᵥ bvec (eI k r b) = bvec (eI k r b)) {a : ℕ}
-    (har : a ≤ r) : ∀ y ∈ lowS k r a, g *ᵥ y = y := by
-  intro y hy
-  have hy' : ∀ i : Fin (2 * r + k + 1), a ≤ i.val → y i = 0 := hy
-  have hdecomp : y = ∑ l, y l • bvec l := by
-    unfold bvec
-    ext i
-    simp [Finset.sum_apply, Pi.single_apply]
-  have hsum := map_sum (Matrix.mulVecLin g) (fun l => y l • bvec l) Finset.univ
-  simp only [Matrix.mulVecLin_apply] at hsum
-  conv_lhs => rw [hdecomp]
-  rw [hsum]
-  conv_rhs => rw [hdecomp]
-  apply Finset.sum_congr rfl
-  intro l _
-  rw [Matrix.mulVec_smul]
-  by_cases hl : a ≤ l.val
-  · rw [hy' l hl, zero_smul, zero_smul]
-  · have hlr : l.val < r := by omega
-    have h1 := hfix ⟨l.val, hlr⟩
-    rw [show eI k r ⟨l.val, hlr⟩ = l from Fin.ext (eI_val _)] at h1
-    rw [h1]
 
 theorem herm_inv {h : Mx k r} (hh : h ∈ UH (Hpk k r)) (x y : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (h *ᵥ x) (h *ᵥ y) = herm (Hpk k r) x y := by
@@ -138,13 +95,6 @@ theorem hpk_row_esI (b : Fin r) (l : Fin (2 * r + k + 1)) :
   simp only [Hpk, esI, eI, Fin.ext_iff, Fin.val_mk]
   split_ifs <;> first | (exfalso; omega) | norm_num
 
-theorem hpk_row_eI (b : Fin r) (l : Fin (2 * r + k + 1)) :
-    Hpk k r (eI k r b) l = if l = esI k r b then 1 else 0 := by
-  have hb := b.isLt
-  have hl := l.isLt
-  simp only [Hpk, esI, eI, Fin.ext_iff, Fin.val_mk]
-  split_ifs <;> first | (exfalso; omega) | norm_num
-
 theorem herm_esI (y : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
     herm (Hpk k r) y (bvec (esI k r b)) = y (eI k r b) := by
   have hs : star (bvec (esI k r b) : Fin (2 * r + k + 1) → ℂ) = bvec (esI k r b) := by
@@ -153,40 +103,6 @@ theorem herm_esI (y : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
   unfold herm
   rw [hs]
   simp [bvec, dotProduct, Matrix.mulVec, Pi.single_apply, hpk_row_esI]
-
-theorem herm_eI (y : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
-    herm (Hpk k r) y (bvec (eI k r b)) = y (esI k r b) := by
-  have hs : star (bvec (eI k r b) : Fin (2 * r + k + 1) → ℂ) = bvec (eI k r b) := by
-    ext l
-    by_cases h : l = eI k r b <;> simp [bvec, h, Pi.star_apply]
-  unfold herm
-  rw [hs]
-  simp [bvec, dotProduct, Matrix.mulVec, Pi.single_apply, hpk_row_eI]
-
-theorem uw_inWb {z : Fin (2 * r + k + 1) → ℂ} {h : Mx k r} (hh : h ∈ UWset k r z)
-    {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) : inWb k r (h *ᵥ v) := by
-  unfold UWset at hh
-  simp only [Set.mem_setOf_eq] at hh
-  obtain ⟨hU, hfix, -⟩ := hh
-  have hv' : ∀ i : Fin (2 * r + k + 1), ↑i < r ∨ r + k < ↑i → v i = 0 := hv
-  show ∀ i : Fin (2 * r + k + 1), ↑i < r ∨ r + k < ↑i → (h *ᵥ v) i = 0
-  intro i hi
-  rcases hi with hi | hi
-  · have e : i = eI k r ⟨i.val, hi⟩ := by
-      ext
-      rw [eI_val]
-    rw [e, ← herm_esI (h *ᵥ v) ⟨i.val, hi⟩, ← (hfix ⟨i.val, hi⟩).2, herm_inv hU, herm_esI, ← e]
-    exact hv' i (Or.inl hi)
-  · have hb : 2 * r + k - i.val < r := by
-      have := i.isLt
-      omega
-    have e : i = esI k r ⟨2 * r + k - i.val, hb⟩ := Fin.ext (by
-      have := i.isLt
-      simp only [esI, Fin.val_mk]
-      omega)
-    rw [e, ← herm_eI (h *ᵥ v) ⟨2 * r + k - i.val, hb⟩, ← (hfix ⟨2 * r + k - i.val, hb⟩).1,
-      herm_inv hU, herm_eI, ← e]
-    exact hv' i (Or.inr hi)
 
 theorem uw_inv {z : Fin (2 * r + k + 1) → ℂ} {h : Mx k r} (hh : h ∈ UWset k r z) : h⁻¹ ∈ UWset k r z := by
   unfold UWset at *
@@ -221,11 +137,11 @@ theorem n_on_Wb {n : Mx k r} (hn : n ∈ Nset k r) {u : Fin (2 * r + k + 1) → 
   simp only [Matrix.mulVec, dotProduct]
   rw [Finset.sum_eq_single i]
   · by_cases hm : i.val ≤ r + k
-    · rw [hmid i i hi hm hi, if_pos rfl, one_mul]
+    · rw [hmid i i hi hm hi, ite_eq_left rfl, one_mul]
     · rw [hu' i (Or.inr (by omega)), mul_zero]
   · intro l _ hl
     by_cases hlm : r ≤ l.val ∧ l.val ≤ r + k
-    · rw [hmid i l hlm.1 hlm.2 hi, if_neg (fun h => hl h.symm), zero_mul]
+    · rw [hmid i l hlm.1 hlm.2 hi, ite_eq_right (fun h => hl h.symm), zero_mul]
     · rw [hu' l (by omega), mul_zero]
   · intro h
     exact absurd (Finset.mem_univ _) h

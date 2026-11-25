@@ -825,8 +825,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory NumberField
@@ -1001,8 +999,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.WeilBound.CoreStatements.HodgeTatePoints.CiCurveIn", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFFCurve\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LocalComponentsSurjective\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueCentreLocalHom\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsUnitIffUnitAt\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization\npublic import Mathlib.RingTheory.Valuation.ValuationSubring\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuativeLiftExistsUnique\npublic import Development.WeilBound.CoreStatements.HodgeTatePoints.OfMem\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -1271,7 +1267,7 @@ theorem exists_homog_val {w : (Σ k, J k) → K} {c : ∀ k, J k} (hc : ∀ k, w
     refine ⟨0, C a, fun m hm k => ?_, rfl⟩
     have : m = 0 := by
       by_contra h
-      exact mem_support_iff.1 hm (by rw [coeff_C, if_neg (Ne.symm h)])
+      exact mem_support_iff.1 hm (by rw [coeff_C, ite_eq_right (Ne.symm h)])
     simp [this]
   | add f g hf hg =>
     obtain ⟨N, f', h1, h2⟩ := hf
@@ -1448,7 +1444,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Conj.GapThreshold
 theorem ent_of_lt {T : Type} [Fintype T] {N : ℕ} (mu : GlobalTheory.CompanionTheory.Ar.Top.Wt T N) (τ : T) {i : ℕ} (h : i < N) :
     GlobalTheory.CompanionTheory.Ar.Top.ent mu τ i = mu τ ⟨i, h⟩ := by
   unfold GlobalTheory.CompanionTheory.Ar.Top.ent
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 theorem abs_le_norm {T : Type} [Fintype T] {N : ℕ} (mu : GlobalTheory.CompanionTheory.Ar.Top.Wt T N) (τ : T) (i : Fin N) :
     |mu τ i| ≤ ‖mu‖ := by
@@ -1500,7 +1496,7 @@ theorem lmuNum_eq_sum {T : Type} [Fintype T] {N j : ℕ} (mu : GlobalTheory.Comp
     intro τ
     rw [← Fin.sum_univ_eq_sum_range (fun i => -GlobalTheory.CompanionTheory.Ar.Top.ent mu τ i * xx τ i) N]
     refine Finset.sum_congr rfl fun i _ => ?_
-    simp only [hxx, dif_pos i.isLt, ent_of_lt mu τ i.isLt]
+    simp only [hxx, dite_eq_left i.isLt, ent_of_lt mu τ i.isLt]
   rw [Fintype.sum_prod_type, ← Finset.sum_neg_distrib]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [hrow τ, ← Finset.sum_range_add_sum_Ico _ hjN.le, Finset.sum_Ico_eq_sum_range, neg_add]
@@ -1510,7 +1506,7 @@ theorem lmuNum_eq_sum {T : Type} [Fintype T] {N j : ℕ} (mu : GlobalTheory.Comp
     have hij : i < j := Finset.mem_range.1 hi
     have hiN : i < N := by omega
     have hx' := hx τ ⟨i, hiN⟩ hij
-    simp only [hxx, dif_pos hiN, Nat.add_sub_cancel, hx']
+    simp only [hxx, dite_eq_left hiN, Nat.add_sub_cancel, hx']
     ring
   · rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun m hm => ?_
@@ -1519,7 +1515,7 @@ theorem lmuNum_eq_sum {T : Type} [Fintype T] {N j : ℕ} (mu : GlobalTheory.Comp
     have hy' := hy τ ⟨j + m, hiN⟩ (by simp)
     have e1 : N - 1 - (j + m) + 1 = N - j - m := by omega
     have e2 : N - 1 - (j + m) = N - j - m - 1 := by omega
-    simp only [hxx, dif_pos hiN, Nat.add_sub_cancel, hy']
+    simp only [hxx, dite_eq_left hiN, Nat.add_sub_cancel, hy']
     rw [e1, e2]
     ring
 

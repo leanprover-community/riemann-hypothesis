@@ -129,12 +129,12 @@ theorem exists_ray {p q : ℕ} {u : Fin p → LinearMap.BilinForm ℤ X} {v : Fi
     simp only [hB']; split_ifs <;> [exact hB l k'; exact le_rfl]
   have hterm : ∀ l, A l • toReal (v l) = A l • ∑ k', B' l k' • toReal (u k') := fun l => by
     rcases (hA l).lt_or_eq with hl | hl
-    · simp only [hB', if_pos hl]; rw [hBe l hl]
+    · simp only [hB', ite_eq_left hl]; rw [hBe l hl]
     · simp [← hl]
   have hsum : ∑ k', (if k' = k then (1 : ℝ) else 0) • toReal (u k') =
       ∑ k', (∑ l, A l * B' l k') • toReal (u k') := by
     rw [Finset.sum_eq_single k (fun b _ hb => by simp [hb]) (by simp)]
-    rw [if_pos rfl, one_smul, hk]
+    rw [ite_eq_left rfl, one_smul, hk]
     simp only [hterm, Finset.smul_sum, smul_smul, Finset.sum_smul]
     exact Finset.sum_comm
   have hc := eq_of_toReal_sum_eq hu hsum
@@ -147,7 +147,7 @@ theorem exists_ray {p q : ℕ} {u : Fin p → LinearMap.BilinForm ℤ X} {v : Fi
   have hoff : ∀ k', k' ≠ k → B l k' = 0 := fun k' hk' => by
     have h0 : ∑ l, A l * B' l k' = 0 := by simpa [hk'] using (congrFun hc k').symm
     have := (Finset.sum_eq_zero_iff_of_nonneg (fun l _ => mul_nonneg (hA l) (hB'0 l k'))).1 h0 l (Finset.mem_univ _)
-    simpa [hB', if_pos hAl, hAl.ne'] using this
+    simpa [hB', ite_eq_left hAl, hAl.ne'] using this
   have hvl : toReal (v l) = B l k • toReal (u k) := by
     rw [hBe l hAl, Finset.sum_eq_single k (fun b _ hb => by rw [hoff b hb, zero_smul]) (by simp)]
   refine ⟨l, hAl, B l k, (hB l k).lt_of_ne fun h0 => hv l (eq_zero_of_toReal_eq_zero ?_), hvl⟩

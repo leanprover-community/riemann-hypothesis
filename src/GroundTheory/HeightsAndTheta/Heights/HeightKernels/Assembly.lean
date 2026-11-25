@@ -154,7 +154,6 @@ theorem ker_coneMapQ_eq {Ω : Type} [Field Ω] [CharZero Ω] (y : (Σ k, ι k) �
   simp only [hc, IndefiniteRowSideFullHecke.HeightsSet.CoordCurveDegree.comap_ker_coneMapQ] at h
   exact lt_irrefl _ h
 
-
 open IndefiniteRowSideFullHecke.HeightsSet.CoordCurveDegree in
 theorem aeval_ratio_eq_zero_of_le {Ω L : Type} [Field Ω] [CharZero Ω] [Field L] [CharZero L]
     {y : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → L} (hyz : mCoordIdeal y ≤ mCoordIdeal z) (d : ∀ k, ι k)
@@ -443,7 +442,6 @@ theorem isGoodProj (hOn : DualPtsOnPlane.Statement) {D : ℕ} {F : HermLattice K
 
 end DualGeometricDegreePositive
 
-
 open DualGeometricDegreePositive in
 theorem DualGeomDegPos.proof (hDeg : DegreeStatement) (hInd : PtsIndepStatement)
     (hArith : DualArithVar.Statement) (hSemi : DualLineSemipositive.Statement)
@@ -545,7 +543,6 @@ variable {K : Type} [Field K] [NumberField K] {i : ℕ} {F : HermLattice K i}
 def conjPerm (K : Type) [Field K] : Equiv.Perm (K →+* ℂ) :=
   Function.Involutive.toPerm _ (involutive_conjugate K)
 
-
 omit [Fintype T] [DecidableEq T] in
 theorem conj_mulVec (b : Module.Basis T ℤ (dualLattice F)) (w : (K →+* ℂ) × Fin i → ℂ) :
     (fun t => starRingEnd ℂ ((dualEmbMatrix b *ᵥ w) t)) =
@@ -635,7 +632,7 @@ theorem isMultiHomog_X {T : Type} [Fintype T] (t : T) :
   rw [Finset.sum_eq_single t]
   · simp
   · intro c _ hc
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     exact hc (sigma_mk_injective h).symm
   · simp
@@ -669,7 +666,6 @@ theorem dualNormSq_point (b : Module.Basis T ℤ (dualLattice F))
   · simp
 
 end DualPointLineDegreeAlt
-
 
 open DualPointLineDegreeAlt in
 theorem DualPointLineDegree.proof (hPt : DualCurvePoint.Statement) (hPos : PointDegCPos.Statement)
@@ -928,7 +924,6 @@ theorem degree_withStdMetric_sub (F : HermLattice K i) :
   ring
 
 end TopDualMetricChange
-
 
 open TopDualMetricChange in
 theorem DualTopMetricChange.proof (hTel : TelescopeStatement) (hEnergy : DualMetricEnergy.Statement) :
@@ -1242,7 +1237,6 @@ theorem sum_ringHom_restrict (κ : IntermediateField ℚ K') (H : (κ →ₐ[ℚ
 
 end PointArithIntersection
 
-
 open PointArithIntersection IndefiniteRowSideFullHecke.HeightsSet.CoordCurveDegree in
 theorem PointArInt.proof : PointArInt.Statement := by
   intro T _ K' _ _ y A s hP hs
@@ -1376,17 +1370,6 @@ noncomputable section
 
 namespace RootArithmeticVariety
 
-theorem isIntegral_of_pow_eq_one {x : ℂ} {k : ℕ} (hk : 0 < k) (h : x ^ k = 1) : IsIntegral ℤ x :=
-  ⟨Polynomial.X ^ k - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 hk.ne', by
-    simp [Polynomial.eval₂_sub, h]⟩
-
-theorem isIntegral_det {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (hM : ∀ a b, IsIntegral ℤ (M a b)) :
-    IsIntegral ℤ M.det := by
-  rw [Matrix.det_apply]
-  refine Subalgebra.sum_mem (integralClosure ℤ ℂ) fun σ _ => ?_
-  rw [Units.smul_def]
-  refine Subalgebra.zsmul_mem _ (Subalgebra.prod_mem _ fun i _ => hM (σ i) i) _
-
 theorem isIntegral_onePipe {j m : ℕ} (Z : Matrix (Fin j) (Fin m) ℂ) (hZ : ∀ a b, IsIntegral ℤ (Z a b))
     (a : Fin j) (b : Fin (j + m)) : IsIntegral ℤ (onePipe Z a b) := by
   simp only [onePipe, Matrix.of_apply]
@@ -1400,14 +1383,13 @@ theorem isIntegral_onePipe {j m : ℕ} (Z : Matrix (Fin j) (Fin m) ℂ) (hZ : �
 
 theorem isIntegral_rootCoord {f j m : ℕ} (ζ : Fin f → Matrix (Fin j) (Fin m) ℂ) (hζ : IsRootMatrix ζ)
     (p : Σ _ : Fin f, PlIdx j m) : IsIntegral ℤ (rootCoord ζ p) := by
-  refine isIntegral_det _ fun a b => ?_
+  refine GroundTheory.Heights₂.Heights.RootDivisorSupportEmpty.isIntegral_det _ fun a b => ?_
   simp only [colsOf, Matrix.submatrix_apply, id]
   refine isIntegral_onePipe _ (fun a b => ?_) _ _
   obtain ⟨k, hk, h⟩ := hζ p.1 a b
-  exact isIntegral_of_pow_eq_one hk h
+  exact GroundTheory.Heights₂.Heights.RootDivisorSupportEmpty.isIntegral_of_pow_eq_one hk h
 
 end RootArithmeticVariety
-
 
 open RootArithmeticVariety in
 theorem RootArithVar.proof (h : CoordConeArithVar.Statement) : RootArithVar.Statement := by
@@ -1552,7 +1534,6 @@ theorem log_block (h₃ : PlueckerKernel.Statement) (j m : ℕ) (Z : Matrix (Fin
   linarith
 
 end RootLogNormBoundAlt
-
 
 open RootLogNormBoundAlt in
 theorem RootLogNormBound.proof (h₁ : RootAnchorNonzero.Statement) (h₂ : RootPointConj.Statement)
@@ -1700,7 +1681,6 @@ theorem map_minor {R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S) {j m 
 
 end RootPointConjugation
 
-
 open RootPointConjugation in
 theorem RootPointConj.proof (h : RootAnchorNonzero.Statement) : RootPointConj.Statement := by
   intro f j m ζ hζ z hz τ
@@ -1791,15 +1771,11 @@ theorem homog_eval (z : (Σ k, ι k) → ℂ) (p a : Σ k, ι k) (hza : z a ≠ 
   conv_rhs => rw [← pow_mul_pow_sub (z a) hle, div_pow]
   field_simp
 
-theorem isIntegral_of_pow_eq_one {x : ℂ} {k : ℕ} (hk : 0 < k) (hx : x ^ k = 1) : IsIntegral ℤ x :=
-  ⟨Polynomial.X ^ k - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 hk.ne', by simp [hx]⟩
-
 theorem rootCoord_isIntegral {f j m : ℕ} (ζ : Fin f → Matrix (Fin j) (Fin m) ℂ) (hζ : IsRootMatrix ζ)
     (p : Σ _ : Fin f, PlIdx j m) : IsIntegral ℤ (rootCoord ζ p) :=
   by apply _root_.GroundTheory.Heights₂.Heights.RootDivisorSupportEmpty.isIntegral_rootCoord; assumption
 
 end RootPointsFiniteAlt
-
 
 open RootPointsFiniteAlt in
 theorem RootPointsFinite.proof (h : RootAnchorNonzero.Statement) : RootPointsFinite.Statement := by

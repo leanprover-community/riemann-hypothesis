@@ -54,7 +54,7 @@ theorem pderiv_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] {a : σ → Mv
     next p n hp =>
       simp only [MvPolynomial.coe_mul, MvPolynomial.coe_X, hm, subst_X ha, Derivation.leibniz, smul_eq_mul,
         hsa, pderiv_X, add_mul, Finset.sum_add_distrib, hp, Pi.single_apply, apply_ite (subst a), hz,
-        mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+        mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
         Finset.mul_sum, mul_assoc, mul_ite]
   letI : UniformSpace S := ⊥
   haveI : DiscreteUniformity S := by first | exact ⟨rfl⟩
@@ -173,13 +173,13 @@ theorem subst_sz_cpy (b : Fin 2) (g : MvPowerSeries (Fin 1 × Fin N) S) :
   · have hX : (fun r : Fin 1 × Fin N => if b = 0 then (X r : MvPowerSeries (Fin 1 × Fin N) S) else 0) = X := by
       funext r
       simp [hb]
-    rw [hX, if_pos hb, subst_self]
+    rw [hX, ite_eq_left hb, subst_self]
     rfl
   · have hZ : (fun r : Fin 1 × Fin N => if b = 0 then (X r : MvPowerSeries (Fin 1 × Fin N) S) else 0) =
         fun _ => 0 := by
       funext r
       simp [hb]
-    rw [hZ, if_neg hb, subst_zero_lemma_3]
+    rw [hZ, ite_eq_right hb, subst_zero_lemma_3]
 
 theorem pderiv_cpy (b : Fin 2) (q : Fin N) (g : MvPowerSeries (Fin 1 × Fin N) S) :
     pderiv (R := S) ((1 : Fin 2), q) (subst (cpy (S := S) b) g) =
@@ -219,8 +219,8 @@ theorem key (h0 : ∀ j, constantCoeff (φ j) = 0) (w : Fin N → Fin d → S)
       rw [map_add (f := _), pderiv_X_of_ne (by simp [Prod.ext_iff]), zero_add]
       by_cases h : r = q
       · subst h; simp
-      · rw [pderiv_X_of_ne (by simp [Prod.ext_iff, h]), if_neg (by simp [Prod.ext_iff, h])]
-    simp only [hdB, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      · rw [pderiv_X_of_ne (by simp [Prod.ext_iff, h]), ite_eq_right (by simp [Prod.ext_iff, h])]
+    simp only [hdB, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [subst_comp_subst_apply hBs hasSubst_sz]
     have : (fun s : Fin 1 × Fin N => subst (sz (S := S) (N := N))
         ((X ((0 : Fin 2), s.2) + X ((1 : Fin 2), s.2) : MvPowerSeries (Fin 2 × Fin N) S))) = (X : Fin 1 × Fin N → MvPowerSeries (Fin 1 × Fin N) S) := by
@@ -245,10 +245,10 @@ theorem key (h0 : ∀ j, constantCoeff (φ j) = 0) (w : Fin N → Fin d → S)
   rw [← eR, ← hE, pderiv_subst hAs, subst_sum' hasSubst_sz, Fintype.sum_prod_type, Fin.sum_univ_two]
   have h0s : subst (sz (S := S) (N := N)) (0 : MvPowerSeries (Fin 2 × Fin N) S) = 0 := by
     rw [← coe_substAlgHom hasSubst_sz, map_zero]
-  simp only [pderiv_cpy, Fin.isValue, zero_ne_one, if_false, if_true, mul_zero, h0s, Finset.sum_const_zero, zero_add]
+  simp only [pderiv_cpy, Fin.isValue, zero_ne_one, ite_false, ite_true, mul_zero, h0s, Finset.sum_const_zero, zero_add]
   apply Finset.sum_congr rfl
   intro i _
-  rw [subst_mul hasSubst_sz, hfam, subst_sz_cpy, if_neg (by decide)]
+  rw [subst_mul hasSubst_sz, hfam, subst_sz_cpy, ite_eq_right (by decide)]
   congr 2
   rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv]
   simp [hlin]
@@ -377,7 +377,7 @@ private theorem const_dpoly_lemma_3 {E : Type} [Field E] [NumberField E] [IsCMFi
   · haveI : Subsingleton S := subsingleton_of_zero_eq_one h1.symm
     exact Subsingleton.elim _ _
   unfold DpolyOf DmonOf
-  rw [MvPolynomial.support_monomial, if_neg h1, Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl,
+  rw [MvPolynomial.support_monomial, ite_eq_right h1, Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl,
     map_one, one_mul]
   simp only [hD]
   rw [← coeff_zero_eq_constantCoeff_apply, foldr_coeff_lemma_2 (fun l => ((0 : Fin 1), ltIdx Dw l)) ?_ α G _

@@ -20,7 +20,7 @@ theorem map_thAll {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (n' 
       map f (Formalism.L2.G.Model.Nv R m b c) = Formalism.L2.G.Model.Nv R' m b c := by
     intro b c
     cases b
-    · simp only [Formalism.L2.G.Model.Nv, Bool.false_eq_true, if_false]
+    · simp only [Formalism.L2.G.Model.Nv, Bool.false_eq_true, ite_false]
       have hg : Formalism.L2.G.Model.genM R' m =
           (map f : MvPolynomial (Fin (m + 1) × Fin (m + 1)) R →+* _).mapMatrix (Formalism.L2.G.Model.genM R m) := by
         ext a u
@@ -43,7 +43,7 @@ theorem restricted_weight_first_two_eq {n' m : ℕ} (hm : 1 ≤ m) (TT : Finset 
     rw [Ne, Fin.one_eq_zero_iff]
     omega
   have ht := Int.toNat_of_nonneg (sub_nonneg.mpr hle)
-  simp only [restW, flW, dT, flatDeg, hs, if_true, Pi.sub_apply, Pi.single_eq_same, Pi.single_eq_of_ne h10]
+  simp only [restW, flW, dT, flatDeg, hs, ite_true, Pi.sub_apply, Pi.single_eq_same, Pi.single_eq_of_ne h10]
   omega
 
 theorem nu_odd {n' m : ℕ} (hm : 1 ≤ m) (TT : Finset (Fin n')) (lam0 : Fin n' → Fin (m + 1) → ℤ) (hdom : IsDominant lam0)
@@ -61,7 +61,7 @@ theorem nu_odd {n' m : ℕ} (hm : 1 ≤ m) (TT : Finset (Fin n')) (lam0 : Fin n'
         apply Fin.ext
         rw [h, Fin.val_one', Nat.mod_eq_of_lt (by omega)]
       rw [e, restricted_weight_first_two_eq hm TT lam0 hdom s hs]
-  simp only [nuOf, lamAt, hodd, if_false, Fin.rev_last, hr]
+  simp only [nuOf, lamAt, hodd, ite_false, Fin.rev_last, hr]
   simp
 
 end Formalism.MainNotions.TestSideCounting

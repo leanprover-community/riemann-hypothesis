@@ -318,7 +318,7 @@ theorem lat_glue : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommR
   let L : Lat ξ E := fun q => if h : ∃ l ∈ S, InFibre ξ l q then Lp h.choose q else L₀ q
   have hL1 : ∀ q : Cpt ξ, (∀ l ∈ S, ¬ InFibre ξ l q) → L q = L₀ q := by
     intro q hq
-    exact dif_neg (by rintro ⟨l, hl, h⟩; exact hq l hl h)
+    exact dite_eq_right (by rintro ⟨l, hl, h⟩; exact hq l hl h)
   have hL2 : ∀ l ∈ S, ∀ q : Cpt ξ, InFibre ξ l q → L q = Lp l q := by
     intro l hl q hq
     have h : ∃ l ∈ S, InFibre ξ l q := ⟨l, hl, hq⟩

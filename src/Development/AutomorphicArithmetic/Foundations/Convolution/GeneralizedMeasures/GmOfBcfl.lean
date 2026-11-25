@@ -141,7 +141,7 @@ theorem UpperTheory.ConvolutionTheory.GM.htTot :
   have hC : (∏ᶠ (w : HeightOneSpectrum (𝓞 E)) (_ : AdeleBaseChange.below F w = q),
         locHeight (finAt w (g : AdelicGLn.AdelicGL E n))) ≤
       locHeight (Cartan.diagPow (w₀.1.adicCompletion E) n ν) ^ j := by
-    rw [finprod_eq_single _ w₀.1 ?_, finprod_eq_if, if_pos (hbelow _ w₀.2)]
+    rw [finprod_eq_single _ w₀.1 ?_, finprod_eq_if, ite_eq_left (hbelow _ w₀.2)]
     · obtain ⟨a, ha, b, hb, e⟩ := h2
       rw [e]
       refine (locHeight_mul_le_of_ultrametric _ _).trans ?_
@@ -192,16 +192,16 @@ private theorem finprod_split_at {α : Type*} (a : α → ℂ) (ha : (Function.m
   have hA : (Function.mulSupport fun v => if v = q then (1 : ℂ) else a v).Finite := by
     refine ha.subset fun v hv => ?_
     by_cases h : v = q
-    · exact absurd (if_pos h) hv
+    · exact absurd (ite_eq_left h) hv
     · intro h0
-      exact hv ((if_neg h).trans h0)
+      exact hv ((ite_eq_right h).trans h0)
   have hB : (Function.mulSupport fun v => if v = q then a q else (1 : ℂ)).Finite := by
     refine (Set.finite_singleton q).subset fun v hv => ?_
     by_contra h
-    exact hv (if_neg h)
+    exact hv (ite_eq_right h)
   have hq : (∏ᶠ v, if v = q then a q else (1 : ℂ)) = a q := by
-    rw [finprod_eq_single _ q fun v hv => if_neg hv]
-    exact if_pos rfl
+    rw [finprod_eq_single _ q fun v hv => ite_eq_right hv]
+    exact ite_eq_left rfl
   rw [← hq, ← finprod_mul_distrib hA hB]
   refine finprod_congr fun v => ?_
   by_cases h : v = q
@@ -523,11 +523,11 @@ theorem UpperTheory.ConvolutionTheory.GM.sideF : SideF := by
   have hrl : Free q r := fun y z => finprod_congr fun v => by
     by_cases hv : v = q
     · simp [hv]
-    · simp only [hv, if_false, cf_mul, cfl v hv, one_mul]
+    · simp only [hv, ite_false, cf_mul, cfl v hv, one_mul]
   have hrr : ∀ y z, r (z * AdelicGLn.localEmbedding q y) = r z := fun y z => finprod_congr fun v => by
     by_cases hv : v = q
     · simp [hv]
-    · simp only [hv, if_false, cf_mul, cfl v hv, mul_one]
+    · simp only [hv, ite_false, cf_mul, cfl v hv, mul_one]
   obtain ⟨W, hWo, hWi⟩ := UpperTheory.exists_open_subgroup_rightInvariant_finiteAdelicGL F n eg hegc
 
   let St : Subgroup (AdelicGLn.FiniteAdelicGL F n) :=
@@ -719,7 +719,6 @@ private theorem twKQ_int (θ : Twist μ) (f : TG K n) (Z : ℝ) (h : ∀ x, Z < 
   obtain ⟨C, hC, hcov⟩ := UpperTheory.exists_compact_fundamental_set_of_height_le K n Z
   obtain ⟨M, hM⟩ := hC.exists_bound_of_continuousOn (twK_cont θ f).continuousOn
   have hm : AEStronglyMeasurable (twKQ θ f) (quotientMeasure (Gam K n) μ) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact hc.aestronglyMeasurable
   refine Integrable.of_bound hm (max M 0) (Eventually.of_forall fun y => ?_)
   change ‖twK θ f (Quotient.out y)‖ ≤ _

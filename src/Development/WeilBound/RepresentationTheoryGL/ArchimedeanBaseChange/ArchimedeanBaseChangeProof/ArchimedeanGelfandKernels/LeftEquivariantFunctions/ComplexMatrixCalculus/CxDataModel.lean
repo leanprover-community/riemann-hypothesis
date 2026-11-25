@@ -898,14 +898,14 @@ theorem qP_eval_zero (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
     (qP lam a b i j).eval 0 = Cxc.extL lam i ((wb lam j : Formalism.BasicNotions.nablaSq ℂ n (dw lam)) : MvPolynomial (Fin n × Fin n) ℂ) := by
   rw [← Polynomial.coeff_zero_eq_eval_zero, qP, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq, if_pos (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).2]
+  rw [Finset.sum_ite_eq, ite_eq_left (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).2]
 
 theorem qP_deriv_zero (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
     (Polynomial.derivative (qP lam a b i j)).eval 0 =
       Cxc.extL lam i (GlobalTheory.Mem.Gelf.rowE ℂ n n a b ((wb lam j : Formalism.BasicNotions.nablaSq ℂ n (dw lam)) : MvPolynomial (Fin n × Fin n) ℂ)) := by
   rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_derivative, qP, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq, if_pos (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).1]
+  rw [Finset.sum_ite_eq, ite_eq_left (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).1]
   simp
 
 theorem det_one_add_single (a b : Fin n) (w : ℂ) : (1 + single a b w : Mat n).det = if a = b then 1 + w else 1 := by
@@ -937,7 +937,7 @@ theorem hasDerivAt_Fw (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
       ((if a = b then ((dw lam).detShift : ℂ) else 0) * (qP lam a b i j).eval 0 + (Polynomial.derivative (qP lam a b i j)).eval 0) 0 := by
   unfold Fw
   by_cases hab : a = b
-  · simp only [if_pos hab]
+  · simp only [ite_eq_left hab]
     have h1 : HasDerivAt (fun w : ℂ => (1 + w) ^ (dw lam).detShift) ((dw lam).detShift : ℂ) 0 := by
       have := (hasDerivAt_zpow (dw lam).detShift (1 + (0 : ℂ)) (Or.inl (by simp))).comp (0 : ℂ)
         ((hasDerivAt_id (0 : ℂ)).const_add 1)
@@ -946,7 +946,7 @@ theorem hasDerivAt_Fw (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
     have := h1.mul (Polynomial.hasDerivAt (qP lam a b i j) (0 : ℂ))
     simp only [add_zero, _root_.one_zpow, one_mul] at this
     exact this
-  · simp only [if_neg hab, _root_.one_zpow, one_mul, zero_mul, zero_add]
+  · simp only [ite_eq_right hab, _root_.one_zpow, one_mul, zero_mul, zero_add]
     exact Polynomial.hasDerivAt (qP lam a b i j) (0 : ℂ)
 
 theorem line_deriv (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) (z : ℂ) :
@@ -963,10 +963,10 @@ theorem line_deriv (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) (z : ℂ
   refine hR.congr_of_eventuallyEq ?_
   have hc : ∀ᶠ t : ℝ in nhds 0, (if a = b then 1 + (t : ℂ) * z else (1 : ℂ)) ≠ 0 := by
     by_cases hab : a = b
-    · simp only [if_pos hab]
+    · simp only [ite_eq_left hab]
       have hcont : ContinuousAt (fun t : ℝ => 1 + (t : ℂ) * z) 0 := by fun_prop
       exact hcont.eventually_ne (by simp)
-    · simp only [if_neg hab]
+    · simp only [ite_eq_right hab]
       exact Filter.Eventually.of_forall fun _ => one_ne_zero
   filter_upwards [hc] with t ht
   rw [Matrix.smul_single, Complex.real_smul, entry_eq lam a b i j _ ht]
@@ -1009,9 +1009,6 @@ theorem atDer' : AtDer := by
 
 end PositivityTheory.RgBcC.Cxd2.Der
 
-namespace PositivityTheory.RgBcC.Cxd2
-
-end PositivityTheory.RgBcC.Cxd2
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1052,15 +1049,6 @@ theorem adjugate_smooth : ContDiff ℝ ∞ (fun x : Mat n => x.adjugate) := by
   rw [e]
   exact Cxc.det_smooth.comp (updateRow_smooth j _)
 
-theorem inv_smooth : ContDiffOn ℝ ∞ (fun x : Mat n => x⁻¹) (GLs n) := by
-  have h : ContDiffOn ℝ ∞ (fun x : Mat n => Matrix.of fun i j => x.det ^ (-1 : ℤ) * x.adjugate i j) (GLs n) := by
-    refine contDiffOn_pi.2 fun i => contDiffOn_pi.2 fun j => ?_
-    exact (Cxc.detPow_smooth (-1)).mul ((contDiff_apply_apply ℝ i j).comp adjugate_smooth).contDiffOn
-  refine h.congr fun x hx => ?_
-  ext i j
-  rw [Matrix.inv_def, Ring.inverse_eq_inv]
-  simp
-
 def cTL : Mat n →L[ℝ] Mat n :=
   LinearMap.toContinuousLinearMap
     { toFun := fun A => Aᴴ
@@ -1078,7 +1066,7 @@ theorem mem_theta {x : Mat n} (hx : x ∈ GLs n) : (x⁻¹)ᴴ ∈ GLs n := by
   exact (star_ne_zero).2 (det_inv_ne hx)
 
 theorem theta_diff {x : Mat n} (hx : x ∈ GLs n) : DifferentiableAt ℝ (fun y : Mat n => (y⁻¹)ᴴ) x := by
-  have h := (inv_smooth.contDiffAt (isOpen_GLs.mem_nhds hx)).differentiableAt (by simp)
+  have h := (PositivityTheory.RgBcC.LfSt.Kchain.KcInv.inv_contDiffOn.contDiffAt (isOpen_GLs.mem_nhds hx)).differentiableAt (by simp)
   exact cTL.differentiableAt.comp x h
 
 theorem hasDerivAt_mat_mul {m : Type} [Fintype m] [DecidableEq m] {P Q : ℝ → Matrix m m ℂ} {P' Q' : Matrix m m ℂ}
@@ -1307,10 +1295,10 @@ theorem Et_hw (lam : Fin n → ℤ) (hlam : Antitone lam) :
     ∀ a b, a < b → Et lam a b (Formalism.GradedWeylDivisibility.hw ℂ le_rfl (dw lam).natW) = 0 := by
   refine ⟨fun a => ?_, fun a b hab => ?_⟩
   · rw [Et_eq]
-    simp only [Matrix.add_apply, Matrix.of_apply, LinearMap.add_apply, if_true, LinearMap.smul_apply, Module.End.one_apply]
+    simp only [Matrix.add_apply, Matrix.of_apply, LinearMap.add_apply, ite_true, LinearMap.smul_apply, Module.End.one_apply]
     rw [GlobalTheory.BrCompare.hw_weight (natW_anti lam) a, ← add_smul, natW_add lam hlam a]
   · rw [Et_eq]
-    simp only [Matrix.add_apply, Matrix.of_apply, if_neg hab.ne, add_zero]
+    simp only [Matrix.add_apply, Matrix.of_apply, ite_eq_right hab.ne, add_zero]
     exact GlobalTheory.BrCompare.hw_raise _ a b hab
 
 theorem trace_on_model (lam : Fin n → ℤ) (hlam : Antitone lam) (k : ℕ) {f : MvPolynomial (Fin n × Fin n) ℂ}
@@ -1623,20 +1611,11 @@ theorem clm_apply' (M : Matrix (Ix n lam) (Ix n lam) ℂ) (u : EV n lam) :
   rw [clm_entry]
   simp [Finset.sum_apply, Pi.single_apply]
 
-theorem mem_GLs_inv' {x : Mat n} (hx : x ∈ GLs n) : x⁻¹ ∈ GLs n := by
-  simp only [GLs, Set.mem_ofPred_eq] at hx ⊢
-  rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']
-  exact inv_ne_zero hx
-
 theorem mem_GLs_conjInv {x : Mat n} (hx : x ∈ GLs n) : (x⁻¹)ᴴ ∈ GLs n := by
   apply _root_.PositivityTheory.RgBcC.Cxd2.mem_theta <;> assumption
 
-theorem contDiff_conjT : ContDiff ℝ ∞ (fun y : Mat n => yᴴ) := by
-  refine contDiff_pi.2 fun i => contDiff_pi.2 fun j => ?_
-  exact Complex.conjCLE.contDiff.comp ((contDiff_apply ℝ (fun _ => ℂ) i).comp (contDiff_apply ℝ (fun _ => (Fin n → ℂ)) j))
-
 theorem contDiffOn_theta : ContDiffOn ℝ ∞ (fun y : Mat n => (y⁻¹)ᴴ) (GLs n) :=
-  contDiff_conjT.comp_contDiffOn GlobalTheory.CompanionTheory.MatInv.contDiffOn_inv
+  PositivityTheory.RgBcC.LfSt.Kchain.KcInv.star_contDiff.comp_contDiffOn GlobalTheory.CompanionTheory.MatInv.contDiffOn_inv
 
 theorem contDiffOn_entry {J : Type} [Fintype J] [DecidableEq J] {f : Mat n → Matrix J J ℂ} (hf : ContDiffOn ℝ ∞ f (GLs n))
     (a b : J) : ContDiffOn ℝ ∞ (fun x => (f x * (1 : Matrix J J ℂ) : Matrix J J ℂ) a b) (GLs n) := by
@@ -1651,7 +1630,6 @@ open Cxh
 open PositivityTheory.RgTw (Mat hb)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 
 theorem eigOf : EigOf := by
   intro hAvg hG hRm hHol hAnti hProd hLoc n lam hlam w
@@ -1673,7 +1651,7 @@ theorem eigOf : EigOf := by
   refine hLoc n (infOf lam) (EV n lam) _ _ ?_ hE
   intro x hx
   have hdx : IsUnit (det x) := isUnit_iff_ne_zero.2 hx
-  have hdx' : IsUnit (det x⁻¹) := isUnit_iff_ne_zero.2 (mem_GLs_inv' hx)
+  have hdx' : IsUnit (det x⁻¹) := isUnit_iff_ne_zero.2 (GlobalTheory.CompanionTheory.WaveMult.inv_mem_GLs hx)
   have hinv : (Rm lam x⁻¹)⁻¹ = Rm lam x := by
     apply Matrix.inv_eq_left_inv
     rw [← hRmul x x⁻¹ hdx hdx', Matrix.mul_nonsing_inv x hdx, hR1]
@@ -1744,7 +1722,6 @@ open Cxh
 open PositivityTheory.RgTw (Mat hb)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 
 theorem tdOf : TDOf := by
   intro hAvg hOr hSw hFr hWd n lam

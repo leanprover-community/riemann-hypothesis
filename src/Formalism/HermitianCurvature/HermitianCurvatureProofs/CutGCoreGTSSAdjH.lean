@@ -24,9 +24,7 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
 
 theorem hsVec_zero' : B.hsVec (0 : Wq →L[ℂ] Wp) = 0 := by
-  unfold B.hsVec
-  ext i
-  simp
+  apply Formalism.FourierDecayAlt.P.CutMP.Gauge.VLem.hsV_zero
 
 theorem rawR_smul (P : M.Par) (μsec : ℂ → Matrix (Fin (P.k + 1)) (Fin (P.k + 1)) ℂ) (e : M.Ty P → ℂ → (Wq →L[ℂ] Wp))
     (a : ℂ) (Z : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) (ρ : M.Ty P) (q : MA.Qp P.r P.TT) :

@@ -128,7 +128,7 @@ theorem realises_of_mreal : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK
     rw [hj, LinearEquiv.apply_symm_apply]
 
   have hbc : SemiBC j := by
-    letI := hU.unit.invertible
+    let := hU.unit.invertible
     let c := (Pi.basisFun (WCb l) (Fin d)).map ((Matrix.toLinearEquiv' U this).trans (b.baseChange (WCb l)).equivFun.symm)
     refine _root_.GlobalTheory.BSP.semiBC_of_basis _ _ _ _ _ j (Fin d) b₀ c fun i => ?_
     apply (b.baseChange (WCb l)).equivFun.injective
@@ -150,8 +150,8 @@ theorem realises_of_mreal : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK
       simp_rw [← hb₀]; exact (b₀.sum_equivFun x).symm
     rw [hx] at hfr
     obtain ⟨r, hr⟩ := _root_.GlobalTheory.BSP.frob_tr_basis l K bk d M e S.a S.A hF.Φ (ainfObj K) bk.ι d₀ (b₀.equivFun x) m k hfr
-    haveI : IsDomain (ainfObj K).A := (ainfId K).toMulEquiv.isDomain
-    haveI := Module.Free.of_basis b₀
+    have : IsDomain (ainfObj K).A := (ainfId K).toMulEquiv.isDomain
+    have := Module.Free.of_basis b₀
     have h1 := sub_eq_zero.1 ((smul_eq_zero.1 hr).resolve_left (pow_ne_zero _ hne))
     simp_rw [← hb₀] at h1
     rw [← b₀.equivFun_symm_apply] at h1
@@ -361,9 +361,6 @@ namespace GlobalTheory.BSP.StratCocycle
 
 variable {l : ℕ} {R : Type} [CommRing R]
 
-theorem comp_assoc {P P' P'' P''' : Obj l R} (h : Hom P'' P''') (g : Hom P' P'') (f : Hom P P') :
-    (h.comp g).comp f = h.comp (g.comp f) := Hom.ext' rfl
-
 theorem comp_id {P P' : Obj l R} (f : Hom P P') : f.comp (Hom.id P) = f := Hom.ext' rfl
 
 theorem map_comp {P P' P'' : Obj l R} {d : ℕ} (ε : Matrix (Fin d) (Fin d) P.A) (g : Hom P' P'') (f : Hom P P') :
@@ -378,8 +375,8 @@ theorem unit_of_codiag {P Q B : Obj l R} {d : ℕ} (inl inr : Hom P Q)
   obtain ⟨Δ, ⟨hΔl, hΔr⟩, -⟩ := univ P (Hom.id _) (Hom.id _)
   have hk' : k = (k.comp inl).comp Δ := by
     refine (univ B (k.comp inl) (k.comp inr)).unique ⟨rfl, rfl⟩ ⟨?_, ?_⟩
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔl).trans (comp_id _))
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔr).trans ((comp_id _).trans hk))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔl).trans (comp_id _))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔr).trans ((comp_id _).trans hk))
   calc ε.map k.f = ε.map ((k.comp inl).comp Δ).f := congrArg (fun k : Hom Q B => ε.map k.f) hk'
     _ = (ε.map Δ.f).map (k.comp inl).f := map_comp ε _ Δ
     _ = (1 : Matrix (Fin d) (Fin d) P.A).map (k.comp inl).f :=
@@ -401,14 +398,14 @@ theorem cocycle_of_triple {P Q Q₂ B : Obj l R} {d : ℕ} (inl inr : Hom P Q)
   obtain ⟨m, ⟨hml, hmr⟩, -⟩ := univ₂ B k₁ (k₂.comp inr)
   have e₂ : k₂ = m.comp k₂₃ := by
     refine (univ B (k₂.comp inl) (k₂.comp inr)).unique ⟨rfl, rfl⟩ ⟨?_, ?_⟩
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃l).trans
-        ((comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inr) hml).trans h12)))
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃r).trans hmr)
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃l).trans
+        ((GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inr) hml).trans h12)))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃r).trans hmr)
   have e₃ : k₃ = m.comp k₁₃ := by
     refine (univ B (k₃.comp inl) (k₃.comp inr)).unique ⟨rfl, rfl⟩ ⟨?_, ?_⟩
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃l).trans
-        ((comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inl) hml).trans h13)))
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃r).trans (hmr.trans h23))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃l).trans
+        ((GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inl) hml).trans h13)))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃r).trans (hmr.trans h23))
   subst e₂ e₃ hml
   rw [map_comp ε m i₁, map_comp ε m k₂₃, map_comp ε m k₁₃, ← Matrix.map_mul, hc']
 
@@ -421,7 +418,7 @@ theorem unit_cocycle : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (
         k₂.comp En.inr = k₃.comp En.inr → ε.map k₁.f * ε.map k₂.f = ε.map k₃.f := by
   intro l _ K bk d ρ τ s ht En ε hrel B
   have cocB := _root_.GlobalTheory.BSP.height_rel_unit_cocycle l K bk d ρ τ s ht En ε hrel
-  haveI : IsAdicComplete bk.J bk.S := bk.complete
+  have : IsAdicComplete bk.J bk.S := bk.complete
   refine ⟨unit_of_codiag En.inl En.inr En.univ ε
     (fun Δ h => (cocB bk.prism (Hom.id _) Unit (TopBasis.self bk.J)).1 Δ h), fun k₁ k₂ k₃ h12 h13 h23 => ?_⟩
   exact (_root_.GlobalTheory.BSP.nonempty_env l K bk En.Q _ _ (GlobalTheory.T.isOrientedPrismUniformizerFrame_breuilKisinHom l K bk En.Q En.inl)).elim fun En₂ =>
@@ -446,10 +443,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 open scoped Formalism.Per NNReal
 
 namespace GlobalTheory.BSP.RelEx
-
-theorem map_smul_ring {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {m n : Type} (a : R)
-    (M : Matrix m n R) : (a • M).map φ = φ a • M.map φ := by
-  ext i j; simp
 
 theorem alg {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n] (N : ℕ)
     (A Zf Zfi G Y Zg : Matrix n n R) (gE fE wi c lam : R) (hZ : Zf * Zfi = 1) (hAG : A * G = lam • Y)
@@ -522,7 +515,7 @@ theorem rel_exists_of {B : Obj l ↥(OL K)} (u : B.A) (f g : Hom bk.prism B)
       (toDisc l u bk.ρ₀ (BK.hf g bk.E)) (toDisc l u bk.ρ₀ (BK.hf f bk.E))
       (toDisc l u bk.ρ₀ (↑w⁻¹ : B.A)) (li ^ m) (toDisc l u bk.ρ₀ ((l : B.A) ^ m))
       (by rw [← Matrix.map_mul, hZ', Matrix.map_one _ (map_zero _) (map_one _)])
-      (by rw [← Matrix.map_mul, hAG, map_smul_ring])
+      (by rw [← Matrix.map_mul, hAG, GlobalTheory.BSP.LocalizedLatticeBasis.matMapSmul])
       (map_unit_eq _ _ _ w hw)
       (inv_pow_map _ _ li hli m)
     exact (congrArg (fun M => toDisc l u bk.ρ₀ (BK.hf g bk.E) ^ s.N • (M *
@@ -559,7 +552,7 @@ theorem rel_exists : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (d 
   obtain ⟨k, hk⟩ := s.nopole f g
   choose G hGc using hk
   have hXX : s.X.map (BK.hf f) * s.X'.map (BK.hf f) = ((l : B.A) ^ s.c₂ * BK.hf f bk.E ^ (2 * s.N)) • 1 := by
-    rw [← Matrix.map_mul, s.X_mul, map_smul_ring, Matrix.map_one _ (map_zero _) (map_one _)]
+    rw [← Matrix.map_mul, s.X_mul, GlobalTheory.BSP.LocalizedLatticeBasis.matMapSmul, Matrix.map_one _ (map_zero _) (map_one _)]
     simp
   have hGm : BK.hf f bk.E ^ (2 * s.N) • Matrix.of G = (l : B.A) ^ k • (s.X'.map (BK.hf f) * s.X.map (BK.hf g)) := by
     ext i j
@@ -775,18 +768,13 @@ section Alg
 
 variable {R R' : Type} [CommRing R] [CommRing R'] {n : Type} [Fintype n] [DecidableEq n]
 
-omit [Fintype n] [DecidableEq n] in
-theorem map_smul_hom (f : R →+* R') (c : R) (M : Matrix n n R) : (c • M).map f = f c • M.map f := by
-  ext i j
-  simp
-
 theorem frobenius_matrix_equation_inverse_scaling (F : R →+* R) (e t v : R) (hv : v * t = 1) (ht : F t = e * t) (a N : ℕ) (Y A : Matrix n n R)
     (h : e ^ a • Y.map F = Y * A) : e ^ (a + N) • (v ^ N • Y).map F = (v ^ N • Y) * A := by
   have h1 : F v * (e * t) = 1 := by rw [← ht, ← map_mul, hv, map_one]
   have h2 : e * F v = v := by linear_combination v * h1 - (e * F v) * hv
   have h3 : e ^ (a + N) * F v ^ N = v ^ N * e ^ a := by
     rw [pow_add, mul_assoc, ← mul_pow, h2, mul_comm]
-  rw [map_smul_hom, map_pow, smul_smul, h3, ← smul_smul, h, Matrix.smul_mul]
+  rw [GlobalTheory.CrisPeriods.map_smul_ring, map_pow, smul_smul, h3, ← smul_smul, h, Matrix.smul_mul]
 
 theorem galois_matrix_equation_inverse_scaling (G : R →+* R) (t v : R) (hv : v * t = 1) (N : ℕ) (P Y ε : Matrix n n R)
     (h : t ^ N • (P * Y.map G) = G t ^ N • (Y * ε)) : P * (v ^ N • Y).map G = (v ^ N • Y) * ε := by
@@ -797,17 +785,17 @@ theorem galois_matrix_equation_inverse_scaling (G : R →+* R) (t v : R) (hv : v
   have h4 : v ^ N * G v ^ N * G t ^ N = v ^ N := by
     rw [mul_assoc, ← mul_pow, h1, one_pow, mul_one]
   simp only [smul_smul, h3, h4] at h2
-  rw [map_smul_hom, map_pow, Matrix.mul_smul, h2, Matrix.smul_mul]
+  rw [GlobalTheory.CrisPeriods.map_smul_ring, map_pow, Matrix.mul_smul, h2, Matrix.smul_mul]
 
 theorem descend (f : R →+* R') (hf : Function.Injective f) (x y : R) (N : ℕ) (M Y ε : Matrix n n R)
     (h : f x ^ N • M.map f = f y ^ N • (Y.map f * ε.map f)) : x ^ N • M = y ^ N • (Y * ε) := by
   apply Matrix.map_injective hf
   simp only []
-  rw [map_smul_hom, map_smul_hom, map_pow, map_pow, Matrix.map_mul, h]
+  rw [GlobalTheory.CrisPeriods.map_smul_ring, GlobalTheory.CrisPeriods.map_smul_ring, map_pow, map_pow, Matrix.map_mul, h]
 
 theorem push (f : R →+* R') (x y : R) (N : ℕ) (P Q Y ε : Matrix n n R) (h : x ^ N • (P * Q) = y ^ N • (Y * ε)) :
     f x ^ N • (P.map f * Q.map f) = f y ^ N • (Y.map f * ε.map f) := by
-  rw [← Matrix.map_mul, ← Matrix.map_mul, ← map_pow, ← map_pow, ← map_smul_hom, ← map_smul_hom, h]
+  rw [← Matrix.map_mul, ← Matrix.map_mul, ← map_pow, ← map_pow, ← GlobalTheory.CrisPeriods.map_smul_ring, ← GlobalTheory.CrisPeriods.map_smul_ring, h]
 
 end Alg
 
@@ -826,7 +814,7 @@ theorem exists_mreal : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (
       rw [frobW_inclW, hτ.1, map_mul]
     · have h := congrArg (fun M => M.map (inclW l)) ht.φ
       try beta_reduce at h
-      rw [map_smul_hom, map_pow, Matrix.map_mul] at h
+      rw [GlobalTheory.CrisPeriods.map_smul_ring, map_pow, Matrix.map_mul] at h
       refine Eq.trans ?_ h
       congr 1
       ext1 i j
@@ -1017,8 +1005,8 @@ theorem isUnit_toMatrix_actT {l : ℕ} [Fact l.Prime] {K : FinExt l} {V : Type} 
 
 theorem clause1_perfectPrism : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P : LocPrime l) (AI : LocAinf l P), IsStd P AI → ∀ (V : Type) [AddCommGroup V] [Module ℚ_[l] V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] (ρ : Representation ℚ_[l] ↥(GK K) V) (L : Lattice (O := ℤ_[l]) ρ), (∀ x, Continuous fun g => ρ g x) → IsCrys (P.PD K) ρ → ∃ (M : FCrys l ↥(OL K)) (j : M.M (ainfObj K) →ₛₗ[(inclW l).comp (ainfId K).toRingHom] (WCb l ⊗[ℤ_[l]] ↥L.T)), Realises K M (ainfObj K) (ainfId K) ↥L.T (fun g => actT L g) j := by
   intro l _ K P AI hStd V _ _ _ _ _ _ _ ρ L hcont hcrys
-  haveI : Module.Free ℤ_[l] ↥L.T := L.free
-  haveI : Module.Finite ℤ_[l] ↥L.T := Module.Finite.iff_fg.mpr L.fg
+  have : Module.Free ℤ_[l] ↥L.T := L.free
+  have : Module.Finite ℤ_[l] ↥L.T := Module.Finite.iff_fg.mpr L.fg
   obtain ⟨bk⟩ := _root_.GlobalTheory.BSP.nonempty_bk_of_finExt l K
   obtain ⟨τ, hτ⟩ := _root_.GlobalTheory.BSP.exists_isPer l K bk
   let b := Module.finBasis ℤ_[l] ↥L.T
@@ -1167,7 +1155,6 @@ theorem realises_of {M : FCrys l ↥(OL K)} {P P' : Obj l ↥(OL K)} {e : P.A �
 
 end GlobalTheory.Prism.ModelChange
 
-
 open GlobalTheory.Prism.ModelChange in
 theorem GlobalTheory.Prism.realisation_indep_model : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P₀ : Obj l ↥(OL K)) (e₀ : P₀.A ≃+* Ainf l), IsAinf K P₀ e₀ → ∃ a : Hom P₀ (ainfObj K), ∀ (M : FCrys l ↥(OL K)), Function.Bijective (M.tr a) ∧ ∀ (T : Type) [AddCommGroup T] [Module ℤ_[l] T] (ρ : ↥(GK K) → (T →ₗ[ℤ_[l]] T)), (∀ j₀ : M.M (ainfObj K) →ₛₗ[(inclW l).comp (ainfId K).toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M (ainfObj K) (ainfId K) T ρ j₀ → ∃ j : M.M P₀ →ₛₗ[(inclW l).comp e₀.toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M P₀ e₀ T ρ j) ∧ (∀ j : M.M P₀ →ₛₗ[(inclW l).comp e₀.toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M P₀ e₀ T ρ j → ∃ j₀ : M.M (ainfObj K) →ₛₗ[(inclW l).comp (ainfId K).toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M (ainfObj K) (ainfId K) T ρ j₀ ∧ ∀ x, j₀ (M.tr a x) = j x) := by
   intro l _ K P₀ e₀ H
@@ -1240,8 +1227,8 @@ theorem FHom.eq_of_tr {M M' : FCrys l R} (u u' : FHom M M') {P Q : Obj l R} (g :
 
 theorem FHom.eq_of_inj {M M' : FCrys l R} (u u' : FHom M M') {B C : Obj l R} (h : Hom B C)
     (hinj : Function.Injective h.f) (hC : u.u C = u'.u C) : u.u B = u'.u B := by
-  haveI := M'.fin B
-  haveI := M'.proj B
+  have := M'.fin B
+  have := M'.proj B
   have hi : Function.Injective (M'.tr h) :=
     semiBC_injective_of_injective _ _ h.f hinj _ _ (M'.tr h) (M'.tr_bc h)
   ext x
@@ -1283,10 +1270,10 @@ theorem fHom_eq_of_realises : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (T' : 
   intro l _ K T' _ _ ρ' M M' j' H u u' h
   obtain ⟨bk⟩ := _root_.GlobalTheory.BSP.nonempty_bk_of_finExt l K
   apply _root_.GlobalTheory.BSP.fhom_ext_bk l K bk M M' u u'
-  haveI := M'.fin (ainfObj K)
-  haveI := M'.proj (ainfObj K)
-  haveI := M'.fin bk.prism
-  haveI := M'.proj bk.prism
+  have := M'.fin (ainfObj K)
+  have := M'.proj (ainfObj K)
+  have := M'.fin bk.prism
+  have := M'.proj bk.prism
   have hj : Function.Injective j' :=
     semiBC_injective_of_injective _ _ ((inclW l).comp (ainfId K).toRingHom)
       (GlobalTheory.Prism.inclW_injective.comp (ainfId K).injective) _ _ j' H.bc

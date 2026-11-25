@@ -199,7 +199,7 @@ theorem fock_minorPol_zero : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ :
       (v.prod fun _ e => (e.factorial : ℂ)) *
         Formalism.MainNotions.TaylorLogMetric.taylor D (fun Z : VC D S.rank T.rank => G fun τ i j => δ * embT D τ r * Z τ i j) v := by
     rw [Formalism.MainNotions.GL3Theta.applyAt0, Finset.sum_subset MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl, one_mul]
+      MvPolynomial.coeff_monomial, ite_eq_left rfl, one_mul]
     intro x _ hx
     rw [MvPolynomial.notMem_support_iff.1 hx, zero_mul, zero_mul]
   rw [happ, taylor_scale (fun τ => δ * embT D τ r) G hG v]

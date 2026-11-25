@@ -243,17 +243,11 @@ theorem spMap_comp_ring {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f
 
 theorem dualMap_alg {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) :
     (dualMap φ).comp (algebraMap S (DualNumber S)) = (algebraMap T (DualNumber T)).comp φ :=
-  by
-    apply RingHom.ext
-    intro a
-    apply TrivSqZeroExt.ext <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  GlobalTheory.Frames.ChgBC.dualMap_alg φ
 
 theorem dualMap_eps {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) (a : S) :
     (dualMap φ).comp (epsMul a) = (epsMul (φ a)).comp (dualMap φ) :=
-  by
-    apply RingHom.ext
-    intro x
-    apply TrivSqZeroExt.ext <;> simp [dualMap, epsMul, mul_comm]
+  GlobalTheory.Frames.ChgBC.dualMap_eps φ a
 
 theorem isCombAt_pull {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) {x : Sp S ⟶ Xo.X}
     {x' : Sp T ⟶ Xo.X} (hx : x' = spMap φ ≫ x) {m : ℕ} {v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)}

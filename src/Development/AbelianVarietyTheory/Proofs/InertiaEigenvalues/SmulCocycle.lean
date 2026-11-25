@@ -7,46 +7,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.HerrClassFieldOfNor
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineAndDecompletion
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemFixingSubgroupMaxUnramifiedOfMemLocalGalois
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.T2SpaceLocLatV
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlWcbInjective, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SmulCocycle
@@ -99,19 +60,13 @@ theorem gen {O R P : Type*} [CommRing O] [CommRing R] [Algebra O R] [AddCommGrou
 variable {l : ℕ} [Fact l.Prime]
 
 theorem zl_wcb_injective : Function.Injective (algebraMap ℤ_[l] (WCb l)) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   by_contra h0
   rw [PadicInt.unitCoeff_spec h0, map_mul, map_pow, map_natCast] at hx
   rcases mul_eq_zero.1 hx with h | h
   · exact ((PadicInt.unitCoeff h0).isUnit.map _).ne_zero h
   · exact WittVector.p_nonzero l (Cb l) (eq_zero_of_pow_eq_zero h)
-
-theorem ol_rw_injective (LL : FinExt l) : Function.Injective (algebraMap ↥(OL LL) (RW LL)) :=
-  by
-    haveI := GlobalTheory.Cyc.FontW.free_OL LL
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact Algebra.TensorProduct.includeLeft_injective (S := ↥(OL LL)) zl_wcb_injective
 
 theorem fixed_RW (LL : FinExt l) (b : RW LL) (hb : φRW LL b = b) :
     ∃ x : ↥(OL LL), b = algebraMap ↥(OL LL) (RW LL) x :=
@@ -170,7 +125,7 @@ end Gen
 
 theorem main : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; ∀ (e : W.DD W.one) (t : ↥W.one.L.T), W.N W.one = Submodule.span (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) {e} → W.φD W.one e = e → Submodule.span ↥(OL LL) {(t : W.one.V)} = W.one.L.T → ∃ u : (↥(OL LL))ˣ, E.jD W.one e = ((u : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (1 : WCb l) : RW LL) ⊗ₜ[↥(OL LL)] t := by
   intro D HW F l _ K s LL h W E e t hN hφ ht
-  exact of_tie E Subtype.val_injective (ol_rw_injective LL) (fixed_RW LL)
+  exact of_tie E Subtype.val_injective (GlobalTheory.Cyc.DictKs.algebraMap_RW_inj LL) (fixed_RW LL)
     (GlobalTheory.Cyc.FontW.as_TW LL W.one).2 e t hN hφ ht
 
 end GlobalTheory.Cyc.UnitGen

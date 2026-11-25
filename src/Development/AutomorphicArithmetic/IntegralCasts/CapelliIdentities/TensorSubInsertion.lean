@@ -419,8 +419,8 @@ private theorem sum_eq_finsum (x : Fin (N + 1) → Ω) (n : ℕ) (J : Ideal (Pol
   · have hm := hmin j h
     haveI : (P j).IsPrime := h.isPrime
     have hc := hcard (P j) hm
-    rw [if_pos h, dite_eq_left ⟨hm, h⟩, ← hc, ENat.toNat_coe, nsmul_eq_mul]
-  · rw [if_neg h, dite_eq_right (fun h' => h h'.2), smul_zero]
+    rw [ite_eq_left h, dite_eq_left ⟨hm, h⟩, ← hc, ENat.toNat_coe, nsmul_eq_mul]
+  · rw [ite_eq_right h, dite_eq_right (fun h' => h h'.2), smul_zero]
 
 private theorem main : CycleSplit.Filt.Statement.{u, w} → CutRestrLenExact.Statement.{u, w} →
     MixedTwistShift.Statement.{u, w} → InterNumCut.Statement.{u, w} := by

@@ -154,8 +154,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols Si
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
 
-theorem _root_.GlobalTheory.T.adelicPointRationalLattice_unitaryModelIso_eq : ∀ (D : D7) (V : HSp D) (fr : Formalism.IndefR.Eqv.UI.Frames D V) (x : (Formalism.IndefR.Eqv.UI.instV fr).GA), latAt fr.Λ (Formalism.IndefR.Eqv.UI.brg fr x) = GlobalTheory.Count.lamX (Formalism.IndefR.Eqv.UI.instV fr) x := by
-  first | exact @GlobalTheory.LatDict.latAt_brg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdelicPointRationalLatticeUnitaryModelIsoEqStatement =====
@@ -255,16 +253,13 @@ noncomputable section
 
 namespace GlobalTheory.DeepPoint
 
-
 open Formalism.L2.SG.Pf.unitaryCongruence in
 theorem kg_one (I : AutInst) (m : ℕ) : (1 : I.Gf) ∈ I.Kg m :=
   ⟨K_one I, fun y _ => ⟨0, zero_mem _, by rw [fmat_one, sub_self, Matrix.zero_mulVec, smul_zero]⟩⟩
 
-
 open Formalism.L2.SG.Pf.unitaryCongruence in
 theorem kg_mul (I : AutInst) (m : ℕ) {x y : I.Gf} (hx : x ∈ I.Kg m) (hy : y ∈ I.Kg m) : x * y ∈ I.Kg m := by
   apply _root_.Formalism.L2.SG.AllRowsOf.Kg_mul' <;> assumption
-
 
 open Formalism.L2.SG.Pf.unitaryCongruence in
 theorem kg_inv (I : AutInst) (m : ℕ) {k : I.Gf} (hk : k ∈ I.Kg m) : k⁻¹ ∈ I.Kg m := by
@@ -318,13 +313,13 @@ theorem exists_step (I : AutInst) (x : I.GA) (q : ℕ) (hn : 1 ≤ I.n)
     · norm_num
   have hτ'lt : ∀ i < a, τ' i < τ' (i + 1) := by
     intro i hi
-    simp only [hτ', dif_pos hi]
+    simp only [hτ', dite_eq_left hi]
     split_ifs with h
     · exact hτmono (Fin.mk_lt_mk.2 (Nat.lt_succ_self i))
     · exact (hτ ⟨i, hi⟩).2.1
   have hτ'a : τ' a = 1 / 2 := by simp [hτ']
   have hτ'0 : τ' 0 = least I x := by
-    simp only [hτ', dif_pos (show 0 < a by omega)]
+    simp only [hτ', dite_eq_left (show 0 < a by omega)]
     exact hτ0 (by omega)
   obtain ⟨b, hb, hratio, hsq⟩ := GlobalTheory.exists_consecutive_ratio_le_rpow a q τ' ha haq hτ'pos hτ'lt hτ'a
   rw [hτ'0] at hratio hsq
@@ -674,7 +669,7 @@ theorem prod_map_mulSingle_apply {ι : Type u_1} [DecidableEq ι] {M : ι → Ty
     rw [List.map_cons, List.prod_cons, Pi.mul_apply, ih hl']
     by_cases h : w = a
     · subst h
-      rw [if_neg ha, if_pos List.mem_cons_self, Pi.mulSingle_eq_same, mul_one]
+      rw [ite_eq_right ha, ite_eq_left List.mem_cons_self, Pi.mulSingle_eq_same, mul_one]
     · rw [Pi.mulSingle_eq_of_ne h, one_mul]
       simp only [List.mem_cons, h, false_or]
 
@@ -774,7 +769,6 @@ theorem isAtTau_unique (θ : InfFam D) (hθ : IsInfFam θ) {V : HSp D} (fr : UI.
     · rw [(brg_mem_GinfC fr _).1 (by rw [hx]; exact hh.1), (brg_mem_GinfC fr _).1 (by rw [hx']; exact hh'.1)]
   rw [← hx, ← hx', hxx]
 
-
 open Classical in
 theorem isAtTau_brg (θ : InfFam D) (hθ : IsInfFam θ) {V : HSp D} (fr : UI.Frames D V) (v : InfinitePlace D.host.F)
     (a : Formalism.REAL.UJ (fr.ε v)) :
@@ -800,7 +794,6 @@ theorem isAtTau_brg (θ : InfFam D) (hθ : IsInfFam θ) {V : HSp D} (fr : UI.Fra
     rw [e]
     have hd := (Matrix.isUnit_iff_isUnit_det _).1 (fr.unit (Formalism.L2.Host.tauPl D τ'))
     rw [Matrix.mul_one, Matrix.mul_nonsing_inv _ hd]
-
 
 open Classical in
 theorem oneP_eq_brg (θ : InfFam D) (hθ : IsInfFam θ) {V : HSp D} (fr : UI.Frames D V) (v : InfinitePlace D.host.F)
@@ -846,7 +839,6 @@ theorem conj_mem_lieAt {V : HSp D} (fr : UI.Frames D V) (v : InfinitePlace D.hos
     simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc, e2, e3, Matrix.mul_add, Matrix.add_mul]
   rw [key, show Mᴴ * Formalism.REAL.Jm (fr.ε v) + Formalism.REAL.Jm (fr.ε v) * M = 0 from hM, Matrix.mul_zero, Matrix.zero_mul]
 
-
 open Classical in
 theorem lip_move_real : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (A : Fr V) (fr : Formalism.IndefR.Eqv.UI.Frames D V), (∀ τ, fr.P (Formalism.L2.Host.tauPl D τ) = (A.fr τ)⁻¹) → ∀ (φ : GA D V → ℂ) (c : ℝ), 0 ≤ c → Lip θ A φ c → ∀ (u : (Formalism.IndefR.Eqv.UI.instV fr).Ginf) (Av Z : InfinitePlace D.host.F → Matrix (Fin V.rank) (Fin V.rank) ℂ), (∀ v, Formalism.REAL.inG (fr.ε v) (Av v) ∧ Formalism.REAL.inG (fr.ε v) (Z v)) → (∀ v, Formalism.MainNotions.S.uMat (u v) = NormedSpace.exp (Av v) * NormedSpace.exp (Z v)) → ∀ y : GA D V, ‖φ (y * Formalism.IndefR.Eqv.UI.brg fr (u, 1)) - φ y‖ ≤ c * ∑ v, (Real.sqrt (Formalism.REAL.hs (Av v)) + Real.sqrt (Formalism.REAL.hs (Z v))) := by
   intro D θ hθ V A fr hP φ c hc hL u Av Z hAZ hu y
@@ -869,7 +861,7 @@ theorem lip_move_real : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : H
     funext w
     refine Eq.trans ?_ (list_prod_mulSingle (M := fun w : InfinitePlace (UI.instV fr).F => Formalism.REAL.UJ ((UI.instV fr).ε w))
       (fun v => expUJ (hAZ v).1 * expUJ (hAZ v).2) _ (Finset.nodup_toList _) w).symm
-    refine Eq.trans ?_ (if_pos (Finset.mem_toList.2 (Finset.mem_univ _))).symm
+    refine Eq.trans ?_ (ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ _))).symm
     exact Subtype.ext (Units.ext (hu w))
   have hfac : UI.brg fr (u, 1) = ((Finset.univ : Finset (InfinitePlace D.host.F)).toList.map fun v =>
       oneP θ V ((Formalism.L2.Host.tauPl D).symm v) (fr.P v * Av v * (fr.P v)⁻¹) 1 *
@@ -1075,7 +1067,7 @@ theorem norm_le_of_not_long : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ 
     by_contra! hge
     apply hlong
     intro 𝔪 h𝔪 w hw hw0
-    have hL := GlobalTheory.T.adelicPointRationalLattice_unitaryModelIso_eq D V fr x0
+    have hL := GlobalTheory.LatDict.latAt_brg D V fr x0
     rw [hbx] at hL
     rw [hL] at hw
     have h1 := _root_.GlobalTheory.LineBound.least_pow_mul_sqrt_absNorm_le_prod (Formalism.IndefR.Eqv.UI.instV fr) x0 𝔪 h𝔪 w hw hw0

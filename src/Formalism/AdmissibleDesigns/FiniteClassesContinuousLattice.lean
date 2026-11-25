@@ -283,7 +283,7 @@ variable {n : ℕ} {V : Type} [AddCommGroup V] [Module (FractionRing (D.nd.O i))
 
 theorem fZ_pos (hn : K.plOf i dc n ∈ placesOver D.host.E (D.nd.l i)) :
     fZ i dc n ρ = finZ (eK (D.nbr i _ hn)) (Br.PD D.loc D.nbr i _ hn) ρ (Br.iota D.nbr i _ hn) :=
-  dif_pos hn
+  dite_eq_left hn
 
 
 variable (n) in

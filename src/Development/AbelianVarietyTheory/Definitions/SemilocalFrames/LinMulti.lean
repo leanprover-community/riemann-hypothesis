@@ -60,10 +60,4 @@ structure Mod (n k r : ℕ) where
 
 attribute [instance] Mod.nH Mod.iH Mod.nV Mod.iV
 
-namespace Mod
-
-variable {n k r : ℕ} (M : Mod n k r)
-
-end Mod
-
 end GlobalTheory.Ell

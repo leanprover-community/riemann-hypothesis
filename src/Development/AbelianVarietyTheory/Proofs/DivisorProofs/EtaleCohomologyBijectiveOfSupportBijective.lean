@@ -87,19 +87,10 @@ lemma smap_add' {F G : Shv R} (a : F ⟶ G) {U : Scheme.{0}} (x y : Sec F U) :
 lemma smap_neg' {F G : Shv R} (a : F ⟶ G) {U : Scheme.{0}} (x : Sec F U) :
     Sec.map a (-x) = -Sec.map a x := (a.hom.app (op U)).hom.map_neg x
 
-lemma sres_map {F G : Shv R} (a : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map a x) = Sec.map a (Sec.res g x) := by
-  have := a.hom.naturality g.op
-  exact congrArg (fun t => t.hom x) this.symm
-
-lemma smap_zero {F G : Shv R} (a : F ⟶ G) {U : Scheme.{0}} :
-    Sec.map a (0 : Sec F U) = 0 := (a.hom.app (op U)).hom.map_zero
-
 lemma sres_add {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (x y : Sec F U) :
     Sec.res g (x + y) = Sec.res g x + Sec.res g y := (F.obj.map g.op).hom.map_add x y
 
 end GlobalTheory.EtC.ConeSec
-
 
 open GlobalTheory.EtC.ConeSec in
 theorem GlobalTheory.EtC.cone_sec_exact : ∀ (R : Type) [CommRing R] {I J : Cx R} (f : I ⟶ J) (U : Scheme.{0}) (n : ℤ), (∀ (b₁ : Sec (I.X (n + 1)) U) (b₂ : Sec (J.X n) U), Sec.map (I.d (n + 1) (n + 2)) b₁ = 0 → Sec.map (f.f (n + 1)) b₁ + Sec.map (J.d n (n + 1)) b₂ = 0 → Loc U fun V g => ∃ (a₁ : Sec (I.X n) V) (a₂ : Sec (J.X (n - 1)) V), Sec.map (I.d n (n + 1)) a₁ = -Sec.res g b₁ ∧ Sec.map (f.f n) a₁ + Sec.map (J.d (n - 1) n) a₂ = Sec.res g b₂) → ∀ b : Sec ((mappingCone f).X n) U, Sec.map ((mappingCone f).d n (n + 1)) b = 0 → Loc U fun V g => ∃ a : Sec ((mappingCone f).X (n - 1)) V, Sec.map ((mappingCone f).d (n - 1) n) a = Sec.res g b := by
@@ -108,11 +99,11 @@ theorem GlobalTheory.EtC.cone_sec_exact : ∀ (R : Type) [CommRing R] {I J : Cx 
   obtain ⟨b₂, hb₂⟩ : ∃ x, Sec.map ((mappingCone.snd f).v n n (add_zero n)) b = x := ⟨_, rfl⟩
   have h1 : Sec.map (I.d (n + 1) (n + 2)) b₁ = 0 := by
     have e := congrArg (fun φ => Sec.map φ b) (mappingCone.d_fst_v f n (n + 1) (n + 2) rfl (by ring))
-    simp only [smap_comp, smap_neg, hb, smap_zero, hb₁] at e
+    simp only [smap_comp, smap_neg, hb, GlobalTheory.EtC.SuppAcyc.map_zero', hb₁] at e
     exact neg_eq_zero.mp e.symm
   have h2 : Sec.map (f.f (n + 1)) b₁ + Sec.map (J.d n (n + 1)) b₂ = 0 := by
     have e := congrArg (fun φ => Sec.map φ b) (mappingCone.d_snd_v f n (n + 1) rfl)
-    simp only [smap_comp, smap_add, hb, smap_zero, hb₁, hb₂] at e
+    simp only [smap_comp, smap_add, hb, GlobalTheory.EtC.SuppAcyc.map_zero', hb₁, hb₂] at e
     exact e.symm
   have hid := congrArg (fun φ => Sec.map φ b) (mappingCone.id_X f n (n + 1) rfl)
   simp only [smap_comp, smap_add, smap_id, hb₁, hb₂] at hid
@@ -129,7 +120,7 @@ theorem GlobalTheory.EtC.cone_sec_exact : ∀ (R : Type) [CommRing R] {I J : Cx 
     rw [← smap_comp, mappingCone.inr_f_d, smap_comp]
   have k3 : Sec.res g b = Sec.map ((mappingCone.inl f).v (n + 1) n (by ring)) (Sec.res g b₁) +
       Sec.map ((mappingCone.inr f).f n) (Sec.res g b₂) := by
-    rw [← hid, sres_add, sres_map, sres_map]
+    rw [← hid, sres_add, GlobalTheory.EtC.SuppSub.res_map, GlobalTheory.EtC.SuppSub.res_map]
   rw [smap_add', k1, k2, e1, k3, ← e2, smap_add', smap_neg']
   abel
 end -- clump:auto
@@ -165,9 +156,6 @@ theorem map_neg' {F G : Shv R} (a : F ⟶ G) {U : Scheme.{0}} (x : Sec F U) :
 theorem res_add {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (x y : Sec F U) :
     Sec.res g (x + y) = Sec.res g x + Sec.res g y := map_add _ _ _
 
-theorem res_zero {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) :
-    Sec.res g (0 : Sec F U) = 0 := map_zero _
-
 theorem res_comp {F : Shv R} {W V U : Scheme.{0}} (k : W ⟶ V) (g : V ⟶ U) (x : Sec F U) :
     Sec.res (k ≫ g) x = Sec.res k (Sec.res g x) := by
   have := congrArg (fun t => t.hom x) (F.obj.map_comp g.op k.op)
@@ -202,13 +190,13 @@ theorem mappingCone_resolution_localChase_of_succ (E : Spc) {F G : Shv R} (φ : 
         have h4 : s = 0 := (hφ U hU).1 (by rw [h3, _root_.GlobalTheory.EtC.SuppAcyc.map_zero'])
         rw [h4, _root_.GlobalTheory.EtC.SuppAcyc.map_zero']
     refine Lall _ _ fun V g => ⟨0, 0, ?_, ?_⟩
-    · rw [hb₁, _root_.GlobalTheory.EtC.SuppAcyc.map_zero', res_zero, neg_zero]
-    · rw [hb₂, _root_.GlobalTheory.EtC.SuppAcyc.map_zero', _root_.GlobalTheory.EtC.SuppAcyc.map_zero', res_zero, add_zero]
+    · rw [hb₁, _root_.GlobalTheory.EtC.SuppAcyc.map_zero', GlobalTheory.EtC.SuppAcyc.res_zero', neg_zero]
+    · rw [hb₂, _root_.GlobalTheory.EtC.SuppAcyc.map_zero', _root_.GlobalTheory.EtC.SuppAcyc.map_zero', GlobalTheory.EtC.SuppAcyc.res_zero', add_zero]
   · apply Ltrans
     refine Lmono _ _ _ ((_root_.GlobalTheory.EtC.resSec R F U).2.2.1 n k l (by omega) hk b₁ hl h₁) ?_
     rintro V g ⟨y, hy⟩
     have hc : Sec.map ((res R G).d n k) (Sec.res g b₂ + Sec.map ((resMap R φ).f n) y) = 0 := by
-      rw [map_add', comm', hy, ← _root_.GlobalTheory.EtC.CupSpec.map_res, ← _root_.GlobalTheory.EtC.CupSpec.map_res, ← res_add, add_comm, h₂, res_zero]
+      rw [map_add', comm', hy, ← _root_.GlobalTheory.EtC.CupSpec.map_res, ← _root_.GlobalTheory.EtC.CupSpec.map_res, ← res_add, add_comm, h₂, GlobalTheory.EtC.SuppAcyc.res_zero']
     rcases lt_or_eq_of_le hn with hn' | hn'
     · refine Lmono _ _ _ ((_root_.GlobalTheory.EtC.resSec R G V).2.2.1 m n k hn' hm _ hk hc) ?_
       rintro W j ⟨z, hz⟩
@@ -288,7 +276,7 @@ theorem GlobalTheory.EtC.a10 : GlobalTheory.EtC.A10 := by
   intro n
   constructor
   · obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by ring⟩
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨y, rfl⟩ := ((ex m).2.2 x).1 hx
     rw [Subsingleton.elim y 0, map_zero]

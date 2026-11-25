@@ -13,8 +13,6 @@ import Mathlib.Topology.Algebra.Group.Units
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.PiLocalization₂ NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.PiLocalization₂.Coord
 
 theorem schurM_mem {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]

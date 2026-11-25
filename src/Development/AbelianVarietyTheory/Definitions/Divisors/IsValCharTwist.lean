@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
 open Formalism.L2.Host (HChar embTau)
 open GlobalTheory.ChiGrid
@@ -132,13 +130,13 @@ theorem expAt_div (G : GridData L sc) {k : ℕ} (h1 : 1 ≤ k) (h2 : k ≤ D.R.m
   · by_cases e : P.under (𝓞 D.host.F) = G.pl.v0
     · have l := G.ch.lev0 k h1 h2 P e
       have u := hu P (e ▸ G.ch.basePlace_not_mem_chiGridBadPlaces)
-      rw [condExp, if_pos e]
+      rw [condExp, ite_eq_left e]
       refine ⟨fun hn => ?_, fun hn => levelLe_mono (fwd 1 (ht P) l.1) hn⟩
       by_contra c
       obtain rfl : n = 0 := by omega
       exact l.2 ((HChar.unrAt_iff _ _).2 (back 0 (u.levelLe 0) hn))
     · have l := G.ch.lev1 k h1 h2 P ((G.pl.mem_S0_of_sum_eq.1 h).resolve_left e)
-      rw [condExp, if_neg e]
+      rw [condExp, ite_eq_right e]
       refine ⟨fun hn => ?_, fun hn => levelLe_mono (fwd 2 (levelLe_mono (ht P) (by omega)) l.1) hn⟩
       by_contra c
       exact l.2 (back 1 (ht P) (levelLe_mono hn (by omega)))

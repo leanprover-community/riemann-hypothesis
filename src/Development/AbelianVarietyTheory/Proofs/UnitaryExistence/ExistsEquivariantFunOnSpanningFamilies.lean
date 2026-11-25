@@ -2,45 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HalvesFreeAndAdjoint
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 
 @[expose] public section
@@ -82,7 +43,7 @@ theorem exists_equivariant_fun_on_spanning_families {R M G F : Type} [CommRing R
     intro z g hz hg
     have : (h1 y z hy hz).exists.choose = g :=
       (h1 y z hy hz).unique (h1 y z hy hz).exists.choose_spec hg
-    simp only [f, dif_pos hz, this]
+    simp only [f, dite_eq_left hz, this]
   have hspan : ∀ (z : Fin r → M) (k : M ≃ₗ[R] M), Submodule.span R (Set.range z) = ⊤ →
       Submodule.span R (Set.range fun b => k (z b)) = ⊤ := by
     intro z k hz
@@ -101,7 +62,7 @@ theorem exists_equivariant_fun_on_spanning_families {R M G F : Type} [CommRing R
   · intro x hx
     rw [himg]
     by_contra hz
-    exact hx (by simp only [f, dif_neg hz])
+    exact hx (by simp only [f, dite_eq_right hz])
   · intro k x
     set z : Fin r → M := fun b => x (Fin.castLE hrn b) with hzdef
     change f (fun b => k (z b)) = _ * f z
@@ -114,7 +75,7 @@ theorem exists_equivariant_fun_on_spanning_families {R M G F : Type} [CommRing R
         have := hspan _ k.symm h
         simp only [LinearEquiv.symm_apply_apply] at this
         exact hz this
-      simp only [f, dif_neg hz, dif_neg hz', mul_zero]
+      simp only [f, dite_eq_right hz, dite_eq_right hz', mul_zero]
   · change f (fun b : Fin r => x₀ (Fin.castLE hrn b)) = 1
     rw [hx₀, hf y 1 hy (fun b => rfl), hadj1]
     simp

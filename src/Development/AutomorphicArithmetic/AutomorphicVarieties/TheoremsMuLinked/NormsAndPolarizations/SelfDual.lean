@@ -533,11 +533,6 @@ private theorem sd_eps {l : ℕ} [Fact l.Prime] (F : GFrame l) (c : Coef l) (g :
     exact (PadicAlgCl.norm_extends l _).trans (PadicInt.norm_units _)
   rw [Units.val_zpow_eq_zpow_val, norm_zpow, h1, _root_.one_zpow]
 
-private theorem sd_conj_conj {l : ℕ} [Fact l.Prime] (F : GFrame l) (g : F.G₀) : F.conj (F.conj g) = g := by
-  apply Subtype.ext
-  show F.c * (F.c * (g : F.Γ) * F.c⁻¹) * F.c⁻¹ = g
-  rw [inv_eq_of_mul_eq_one_right F.c_sq, mul_assoc, mul_assoc, mul_assoc, F.c_sq, mul_one, ← mul_assoc, F.c_sq, one_mul]
-
 private theorem sd_sgn {K : Type} [CommRing K] {n : ℕ} (P Q : Matrix (Fin n) (Fin n) K) (h : Pᵀ = P ∨ Pᵀ = -P) :
     (Qᵀ * P * Q)ᵀ = Qᵀ * P * Q ∨ (Qᵀ * P * Q)ᵀ = -(Qᵀ * P * Q) := by
   have e : (Qᵀ * P * Q)ᵀ = Qᵀ * Pᵀ * Q := by
@@ -613,7 +608,7 @@ theorem UpperTheory.V.Th.Nm.selfDual :
     rintro _ ⟨h, rfl⟩
     refine ⟨hint h, ?_⟩
     have := hconj (F.conj h)
-    rwa [sd_conj_conj] at this)
+    rwa [UpperTheory.V.Th.Nm.sg_conj_conj] at this)
   refine ⟨Q₀ * Q₂, P', ?_, ?_, hP'int, hP'inv, ?_⟩
   · rw [hP', hP₁]
     simp only [Units.val_mul, Matrix.transpose_mul, Matrix.mul_assoc]

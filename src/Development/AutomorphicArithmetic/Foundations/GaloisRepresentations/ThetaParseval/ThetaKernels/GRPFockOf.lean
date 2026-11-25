@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanPolynomialTensorWeight
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.JmConjTranspose
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExpFirst
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExpSecond
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExpSum
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.Frames
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.BlockDeterminants.ExponentialEntries.RightSub
@@ -14,10 +12,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalCompa
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKernelReal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AutRepDefiniteUnitarySpannedBySplitComponent
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.InnerProductIntegralFundamentalDomainOfCompact
 public import Development.AutomorphicArithmetic.AdelicQuotients.InvariantSesquilinearFormEqSmulOfIrreducible
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.IrreducibleHermitianFormUnique
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.MeasurableOfSeparatingFunctionals
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.RieszRepresentationSesquilinear
@@ -31,6 +26,411 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.ThetaBox
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ArchHeisOf
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ActsRhoFin
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.BlockDeterminants.ExponentialEntries.LinDer
+public import Mathlib.Algebra.Order.Floor.Extended
+public import Mathlib.Algebra.Order.Floor.Semifield
+public import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.Combinatorics.Enumerative.DyckWord
+public import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+public import Mathlib.Data.NNRat.Floor
+public import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.NumberTheory.Chebyshev
+public import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.NumberTheory.Height.Projectivization
+public import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.Tactic.Echelon.Zsqrtd
+public import Mathlib.Tactic.Inclusion.Extension.Core.Core
+public import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+public import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+public import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+public import Mathlib.Tactic.NormNum.Irrational
+public import Mathlib.Tactic.NormNum.IsCoprime
+public import Mathlib.Tactic.NormNum.IsSquare
+public import Mathlib.Tactic.NormNum.LegendreSymbol
+public import Mathlib.Tactic.NormNum.ModEq
+public import Mathlib.Tactic.NormNum.NatFib
+public import Mathlib.Tactic.NormNum.NatLog
+public import Mathlib.Tactic.NormNum.NatSqrt
+public import Mathlib.Tactic.NormNum.Ordinal
+public import Mathlib.Tactic.NormNum.Parity
+public import Mathlib.Tactic.NormNum.Prime
+public import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Sheaves.Init
+public import Formalism.PeriodIntegrals.JointBlockShapes.MinusPart
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExpDer
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.LoweringPartRightActionInlInr
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.Linter.Style
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.SpecialFunctions.Bernstein
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Linter.HaveILetI
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExistsOrthonormalBasisSesquilinear
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Lemma
+public import Mathlib.MeasureTheory.Group.Integral
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+
+/-! # MeasurableOfSeparatingFunctionals: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+theorem UpperTheory.Reformulated.B.Qk65.measurable_of_separating_functionals :
+    ∀ {G V ι : Type} [inst : MeasurableSpace G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V]
+    [FiniteDimensional ℂ V] (l : ι → V →ₗ[ℂ] ℂ),
+    (∀ (a : V), (∀ (y : ι), (l y : V → ℂ) a = (0 : ℂ)) → a = (0 : V)) →
+      ∀ (T : G → V),
+        (∀ (y : ι), Measurable fun (g : G) ↦ (l y : V → ℂ) (T g)) →
+          ∀ (L : V →ₗ[ℂ] ℂ), Measurable fun (g : G) ↦ (L : V → ℂ) (T g) := by
+  intro G V ι _ _ _ _ l hl T hT L
+  have hL : L ∈ Submodule.span ℂ (Set.range l) := by
+    apply FiniteDimensional.mem_span_of_iInf_ker_le_ker
+    intro a ha
+    have h0 : a = 0 := hl a fun y => LinearMap.mem_ker.mp ((Submodule.mem_iInf _).mp ha y)
+    rw [h0]
+    exact Submodule.zero_mem _
+  induction hL using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨y, rfl⟩ := hx
+    exact hT y
+  | zero => exact measurable_const
+  | add x y _ _ hx hy => exact hx.add hy
+  | smul c x _ hx => exact hx.const_mul c
+end
+
+
+section
+/-! # IrreducibleHermitianFormUnique: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+open MeasureTheory
+
+theorem UpperTheory.irreducible_hermitian_form_unique :
+    ∀ {G V : Type} [Group G] [MeasurableSpace G] [MeasurableMul G] (μ : Measure G) [IsFiniteMeasure μ] [μ.IsMulLeftInvariant] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [Nontrivial V] (ρ : G →* Module.End ℂ V)
+      (_hI : ∀ W : Submodule ℂ V, (∀ g, ∀ w ∈ W, ρ g w ∈ W) → W = ⊥ ∨ W = ⊤)
+      (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (_hh : ∀ a b, B b a = star (B a b)) (_hp : ∀ a, a ≠ 0 → 0 < (B a a).re)
+      (_hinv : ∀ g a b, B (ρ g a) (ρ g b) = B a b) (_hm : ∀ a b, Measurable fun g => B (ρ g a) b) (a b c d : V),
+      ∫ g, B (ρ g a) b * star (B (ρ g c) d) ∂μ = ((μ.real Set.univ / (Module.finrank ℂ V : ℝ) : ℝ) : ℂ) * B a c * star (B b d) := by
+  intro G V _ _ _ μ _ _ _ _ _ _ ρ hI B hh hp hinv hm a b c d
+  obtain ⟨e, he1, hpar, hcs⟩ := _root_.UpperTheory.Reformulated.B.Qh52.exists_orthonormal_basis_sesquilinear B hh hp
+  have hshift : ∀ (h g : G) (x y : V), B (ρ g x) (ρ h y) = B (ρ (h⁻¹ * g) x) y := by
+    intro h g x y
+    rw [← hinv h (ρ (h⁻¹ * g) x) y, ← Module.End.mul_apply, ← map_mul, mul_inv_cancel_left]
+  have hbd : ∀ (x y : V) (g : G), ‖B (ρ g x) y‖ ≤ Real.sqrt ((B x x).re * (B y y).re) := by
+    intro x y g
+    apply Real.le_sqrt_of_sq_le
+    have := hcs (ρ g x) y
+    rwa [hinv] at this
+  have hint : ∀ x y z w : V, Integrable (fun g => B (ρ g x) y * star (B (ρ g z) w)) μ := by
+    intro x y z w
+    refine Integrable.of_bound (C := Real.sqrt ((B x x).re * (B y y).re) * Real.sqrt ((B z z).re * (B w w).re)) ?_ ?_
+    · exact ((hm x y).mul (continuous_star.measurable.comp (hm z w))).aestronglyMeasurable
+    · filter_upwards with g
+      rw [norm_mul, norm_star]
+      exact mul_le_mul (hbd _ _ _) (hbd _ _ _) (norm_nonneg _) (Real.sqrt_nonneg _)
+  let S : V → V → ℂ := fun y w => ∫ g, B (ρ g a) y * star (B (ρ g c) w) ∂μ
+  have hS1 : ∀ w w' y, S y (w + w') = S y w + S y w' := by
+    intro w w' y
+    simp only [S, map_add (f := _), star_add, mul_add]
+    exact integral_add (hint _ _ _ _) (hint _ _ _ _)
+  have hS2 : ∀ (r : ℂ) w y, S y (r • w) = r * S y w := by
+    intro r w y
+    have : ∀ g, B (ρ g a) y * star (B (ρ g c) (r • w)) = r * (B (ρ g a) y * star (B (ρ g c) w)) := by
+      intro g
+      simp [map_smulₛₗ]
+      ring
+    simp only [S, this]
+    exact integral_const_mul _ _
+  have hS3 : ∀ w y y', S (y + y') w = S y w + S y' w := by
+    intro w y y'
+    simp only [S, map_add (f := _), add_mul]
+    exact integral_add (hint _ _ _ _) (hint _ _ _ _)
+  have hS4 : ∀ (r : ℂ) w y, S (r • y) w = star r * S y w := by
+    intro r w y
+    have : ∀ g, B (ρ g a) (r • y) * star (B (ρ g c) w) = star r * (B (ρ g a) y * star (B (ρ g c) w)) := by
+      intro g
+      simp [map_smulₛₗ]
+      ring
+    simp only [S, this]
+    exact integral_const_mul _ _
+  let B₁ : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ :=
+    LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun w y => S y w)
+      (fun w w' y => hS1 w w' y) (fun r w y => hS2 r w y)
+      (fun w y y' => hS3 w y y') (fun r w y => hS4 r w y)
+  have hB₁ : ∀ w y, B₁ w y = S y w := fun _ _ => rfl
+  have hB₁inv : ∀ h w y, B₁ (ρ h w) (ρ h y) = B₁ w y := by
+    intro h w y
+    simp only [hB₁, S, hshift]
+    exact integral_mul_left_eq_self (μ := μ) (fun g => B (ρ g a) y * star (B (ρ g c) w)) h⁻¹
+  obtain ⟨lam, hlam⟩ := UpperTheory.invariant_sesquilinearForm_eq_smul_of_irreducible ρ hI B hh hp hinv B₁ hB₁inv
+  have hsum : lam * (Module.finrank ℂ V : ℂ) = ((μ.real Set.univ : ℝ) : ℂ) * B a c := by
+    have h1 : ∑ i, S (e i) (e i) = lam * (Module.finrank ℂ V : ℂ) := by
+      have : ∀ i, S (e i) (e i) = lam := by
+        intro i
+        rw [← hB₁, hlam, he1, mul_one]
+      simp [this, mul_comm]
+    have h2 : ∑ i, S (e i) (e i) = ∫ _g : G, B a c ∂μ := by
+      simp only [S]
+      rw [← integral_finsetSum _ (fun i _ => hint _ _ _ _)]
+      congr 1
+      funext g
+      rw [← hinv g a c, hpar (ρ g a) (ρ g c)]
+      exact Finset.sum_congr rfl fun i _ => by rw [hh (ρ g c) (e i)]
+    rw [← h1, h2, integral_const]
+    simp
+  have hn : (Module.finrank ℂ V : ℂ) ≠ 0 := by
+    exact_mod_cast (Module.finrank_pos (R := ℂ) (M := V)).ne'
+  have hfin : (∫ g, B (ρ g a) b * star (B (ρ g c) d) ∂μ) = S b d := rfl
+  rw [hfin, ← hB₁, hlam, hh b d]
+  have hlam' : lam = ((μ.real Set.univ : ℝ) : ℂ) * B a c / (Module.finrank ℂ V : ℂ) := by
+    rw [eq_div_iff hn, hsum]
+  rw [hlam']
+  push_cast
+  ring
+end
+end
+
+
+section
+/-! # InnerProductIntegralFundamentalDomainOfCompact: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+open MeasureTheory
+
+theorem UpperTheory.innerProduct_integral_fundamentalDomain_of_compact :
+    ∀ {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [MeasurableSpace H] [BorelSpace H] (μ : Measure H) [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant] [μ.IsOpenPosMeasure] (Γ : Subgroup H) [Countable Γ] (𝓕 : Set H), IsFundamentalDomain Γ 𝓕 μ → μ 𝓕 < ⊤ → ∀ Ω : Set H, IsCompact Ω → (∀ g, ∃ γ ∈ Γ, γ * g ∈ Ω) → ∀ f g : H → ℂ, Continuous f → Continuous g → (∀ γ ∈ Γ, ∀ h, f (γ * h) = f h) → (∀ γ ∈ Γ, ∀ h, g (γ * h) = g h) → IntegrableOn (fun h => f h * starRingEnd ℂ (g h)) 𝓕 μ ∧ (∀ y, ∫ h in 𝓕, f (h * y) * starRingEnd ℂ (g (h * y)) ∂μ = ∫ h in 𝓕, f h * starRingEnd ℂ (g h) ∂μ) ∧ (f ≠ 0 → 0 < (∫ h in 𝓕, f h * starRingEnd ℂ (f h) ∂μ).re) := by
+  intro H _ _ _ _ _ μ _ _ _ Γ _ 𝓕 h𝓕 hfin Ω hΩ hcov f g hf hg hfi hgi
+  have : IsFiniteMeasure (μ.restrict 𝓕) := isFiniteMeasure_restrict.mpr hfin.ne
+  have intg : ∀ u : H → ℂ, Continuous u → (∀ γ ∈ Γ, ∀ h, u (γ * h) = u h) →
+      IntegrableOn u 𝓕 μ := by
+    intro u hu hinv
+    obtain ⟨C, hC⟩ := hΩ.exists_bound_of_continuousOn hu.continuousOn
+    refine Integrable.of_bound hu.aestronglyMeasurable C (Filter.Eventually.of_forall fun h => ?_)
+    obtain ⟨γ, hγ, hmem⟩ := hcov h
+    rw [← hinv γ hγ h]
+    exact hC _ hmem
+  set u : H → ℂ := fun h => f h * starRingEnd ℂ (g h) with hu_def
+  have hu : Continuous u := hf.mul (Complex.continuous_conj.comp hg)
+  have hui : ∀ γ ∈ Γ, ∀ h, u (γ * h) = u h := by
+    intro γ hγ h
+    simp [u, hfi γ hγ, hgi γ hγ]
+  refine ⟨intg u hu hui, ?_, ?_⟩
+  · intro y
+    let t := (fun h => h * y⁻¹) ⁻¹' 𝓕
+    have ht : IsFundamentalDomain Γ t μ :=
+      h𝓕.preimage_of_equiv (measurePreserving_mul_right μ y⁻¹).quasiMeasurePreserving
+        (e := id) Function.bijective_id (fun γ x => by simp [Subgroup.smul_def, mul_assoc])
+    have hset : 𝓕 = (fun h => h * y) ⁻¹' t := by
+      ext h
+      simp [t]
+    have h1 : ∫ h in 𝓕, u (h * y) ∂μ = ∫ h in t, u h ∂μ := by
+      rw [hset]
+      exact (measurePreserving_mul_right μ y).setIntegral_preimage_emb
+        (MeasurableEquiv.mulRight y).measurableEmbedding u t
+    have h2 : ∫ h in t, u h ∂μ = ∫ h in 𝓕, u h ∂μ :=
+      ht.setIntegral_eq h𝓕 (fun γ x => by
+        simp only [Subgroup.smul_def, smul_eq_mul]
+        exact hui γ γ.2 x)
+    exact h1.trans h2
+  · intro hne
+    have hff : ∀ h, f h * starRingEnd ℂ (f h) = ((Complex.normSq (f h) : ℝ) : ℂ) :=
+      fun h => Complex.mul_conj _
+    simp_rw [hff]
+    rw [integral_complex_ofReal, Complex.ofReal_re]
+    have hnn : 0 ≤ fun h => Complex.normSq (f h) := fun h => Complex.normSq_nonneg _
+    have hint : IntegrableOn (fun h => Complex.normSq (f h)) 𝓕 μ := by
+      have := (intg (fun h => f h * starRingEnd ℂ (f h)) (hf.mul (Complex.continuous_conj.comp hf))
+        (fun γ hγ h => by simp [hfi γ hγ])).re
+      simp only [hff] at this
+      exact this
+    refine lt_of_le_of_ne (integral_nonneg hnn) (fun h0 => hne ?_)
+    have hae := (integral_eq_zero_iff_of_nonneg hnn hint).mp h0.symm
+    have hae' : (fun h => ‖f h‖ₑ) =ᵐ[μ.restrict 𝓕] 0 := by
+      filter_upwards [hae] with h hh
+      simpa [Complex.normSq_eq_zero] using hh
+    have hl𝓕 : ∫⁻ h in 𝓕, ‖f h‖ₑ ∂μ = 0 := by
+      simpa using lintegral_congr_ae hae'
+    have hlall : ∫⁻ h, ‖f h‖ₑ ∂μ = 0 := by
+      rw [h𝓕.lintegral_eq_tsum'']
+      have : ∀ γ : Γ, ∫⁻ x in 𝓕, ‖f (γ • x)‖ₑ ∂μ = 0 := fun γ => by
+        simpa only [Subgroup.smul_def, smul_eq_mul, hfi γ γ.2] using hl𝓕
+      simp [this]
+    have hz := (lintegral_eq_zero_iff' hf.enorm.aemeasurable).mp hlall
+    have hz' : f =ᵐ[μ] fun _ => (0 : ℂ) := by
+      filter_upwards [hz] with h hh
+      simpa using hh
+    exact (Continuous.ae_eq_iff_eq μ hf continuous_const).mp hz'
+end
+end
+
+
+section
+/-! # ExpSecond: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+open scoped TensorProduct Matrix
+open Formalism.BasicNotions Formalism.BasicNotions.TH GlobalTheory.RealLift UpperTheory.TP.RP
+
+noncomputable section
+
+namespace UpperTheory.TP.RP.Der
+
+open MvPolynomial
+
+private def derR {n d : ℕ} (Y : Mat d 0) : Derivation ℂ (PP n d) (PP n d) :=
+  ∑ a : Ix n 0, ∑ c : Ix d 0, ∑ e : Ix d 0, Y c e • (X (a, c) : PP n d) • pderiv (a, e)
+
+private theorem derR_X {n d : ℕ} (Y : Mat d 0) (b : Ix n 0) (f : Ix d 0) :
+    derR (n := n) Y (X (b, f)) = ∑ c, Y c f • (X (b, c) : PP n d) := by
+  unfold derR
+  simp only [der_sum_apply, Derivation.smul_apply, pderiv_X, Pi.single_apply, Prod.mk.injEq]
+  simp [ite_and, Finset.sum_ite_eq]
+
+private theorem om_eq {n d : ℕ} (a : Ix n 0) (c e : Ix d 0) :
+    FockH1Action.omE (p := n) (q := 0) (r := d) (s := 0) (a, c) (a, e) =
+      LinearMap.mulLeft ℂ (X (a, c)) * (pderiv (a, e)).toLinearMap + (if (a, c) = (a, e) then (1 / 2 : ℂ) • 1 else 0) := by
+  rcases a with a | a
+  · rcases c with c | c
+    · rcases e with e | e
+      · simp [FockH1Action.omE, FockH1Action.raiB, FockH1Action.lowB, FockH1Action.linePos]
+      · exact e.elim0
+    · exact c.elim0
+  · exact a.elim0
+
+private theorem fock_second_action_eq_derivation {n d : ℕ} (Y : Mat d 0) :
+    fockAct2 n 0 d 0 Y = (derR Y).toLinearMap + (((n : ℂ) / 2) * Y.trace) • 1 := by
+  show FockH1Action.fockAct2 n 0 d 0 Y = _
+  rw [PI.WFJM.fockAct2_eq]
+  simp only [om_eq, smul_add, Finset.sum_add_distrib]
+  congr 1
+  · refine LinearMap.ext fun p => ?_
+    simp only [derR, Derivation.coeFn_coe, der_sum_apply, Derivation.smul_apply,
+      LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply,
+      LinearMap.mulLeft_apply, smul_eq_mul]
+  · simp only [Prod.mk.injEq, true_and, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ,
+      ite_true, Finset.sum_const, Finset.card_univ, smul_smul, ← Finset.sum_smul]
+    have hcard : Fintype.card (FockH1Action.Ix n 0) = n := by simp [FockH1Action.Ix]
+    rw [hcard, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, ← Finset.sum_mul, Matrix.trace]
+    simp only [Matrix.diag]
+    ring
+
+private theorem det_of_block {d : ℕ} (Y : Mat d 0) (g : GL (Fin d) ℂ)
+    (hg : ∀ a b, g.1 a b = NormedSpace.exp Y (Sum.inl a) (Sum.inl b)) (c : ℤ) :
+    detPow ℂ d g c = Complex.exp (c * Y.trace) := by
+  have hgm : (g : Matrix (Fin d) (Fin d) ℂ) =
+      (NormedSpace.exp Y).submatrix (Equiv.sumEmpty (Fin d) (Fin 0)).symm
+        (Equiv.sumEmpty (Fin d) (Fin 0)).symm := by
+    ext a b
+    simp [hg]
+  unfold detPow
+  rw [Units.val_zpow_eq_zpow_val, Matrix.GeneralLinearGroup.val_det_apply, hgm,
+    Matrix.det_submatrix_equiv_self, GlobalTheory.DetSqrtCover.det_exp, Complex.exp_int_mul]
+
+end UpperTheory.TP.RP.Der
+
+theorem UpperTheory.TP.RP.expSecond :
+    ∀ {n d : ℕ} (Y : Mat d 0) (g : GL (Fin d) ℂ) (c : ℤ) (κ : ℂ), (∀ a b, g.1 a b = NormedSpace.exp Y (Sum.inl a) (Sum.inl b)) →
+      2 * (c : ℂ) = n + 2 * κ → IsExp (fockAct2 n 0 d 0 Y + (κ * Y.trace) • 1) (act2 c g) := by
+  intro n d Y g c κ hg hc
+  have hF : fockAct2 n 0 d 0 Y + (κ * Y.trace) • 1 =
+      (UpperTheory.TP.RP.Der.derR (n := n) Y).toLinearMap + ((c : ℂ) * Y.trace) • 1 := by
+    rw [UpperTheory.TP.RP.Der.fock_second_action_eq_derivation, add_assoc, ← add_smul]
+    congr 2
+    linear_combination (-(Y.trace / 2)) * hc
+  have hA : (act2 c g : Module.End ℂ (PP n d)) = Complex.exp ((c : ℂ) * Y.trace) •
+      (rightSub (n := n) (g : Matrix (Fin d) (Fin d) ℂ)).toLinearMap := by
+    unfold act2
+    rw [UpperTheory.TP.RP.Der.det_of_block Y g hg c]
+  rw [hF, hA]
+  apply UpperTheory.TP.RP.Der.isExp_shift
+  apply UpperTheory.TP.RP.Der.isExp_of_gens
+  rintro ⟨b, f⟩
+  have key := UpperTheory.TP.RP.Der.good_lin (UpperTheory.TP.RP.Der.derR (n := n) Y) Y
+    (fun e => (MvPolynomial.X (b, e) : PP n d)) (fun e => UpperTheory.TP.RP.Der.derR_X Y b e) f
+  convert key using 1
+  rcases b with b | b
+  · rcases f with f | f
+    · simp [rightSub, xv, hg, Fintype.sum_sum_type, MvPolynomial.smul_eq_C_mul]
+    · exact f.elim0
+  · exact b.elim0
+end
+end
+end
+
+
+section
+/-! # ExpFirst: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+open scoped TensorProduct Matrix Kronecker
+open Formalism.BasicNotions Formalism.BasicNotions.TH GlobalTheory.RealLift UpperTheory.TP.RP
+
+theorem UpperTheory.TP.RP.expFirst :
+    ∀ {n d : ℕ} (Y : Mat n 0) (g : GL (Fin n) ℂ) (c : ℤ) (κ : ℂ), (∀ a b, g.1 a b = NormedSpace.exp Y (Sum.inl a) (Sum.inl b)) →
+      2 * (c : ℂ) = d + 2 * κ → IsExp (fockAct1 n 0 d 0 Y + (κ * Y.trace) • 1) (act1 c g) := by
+  intro n d Y g c κ hg hc
+  have hF : fockAct1 n 0 d 0 Y + (κ * Y.trace) • 1 =
+      ((linDer (Matrix.kroneckerMap (fun x1 x2 => x1 * x2) Y (1 : Matrix (Ix d 0) (Ix d 0) ℂ)) :
+        Module.End ℂ (Pol n 0 d 0))) + ((c : ℂ) * Y.trace) • 1 := by
+    unfold fockAct1
+    simp only [LinearMap.comp_apply, LinearMap.flip_apply, Matrix.kroneckerMapBilinear_apply_apply,
+      LinearMap.mul_apply']
+    rw [omAct_definite, add_assoc, ← add_smul]
+    congr 2
+    rw [Matrix.trace_kronecker, Matrix.trace_one]
+    simp only [Fintype.card_sum, Fintype.card_fin, add_zero]
+    linear_combination (-(Y.trace / 2)) * hc
+  have hgm : (g : Matrix (Fin n) (Fin n) ℂ) =
+      (NormedSpace.exp Y).submatrix (Equiv.sumEmpty (Fin n) (Fin 0)).symm
+        (Equiv.sumEmpty (Fin n) (Fin 0)).symm := by
+    ext a b
+    simp [hg]
+  have hA : (act1 c g : Module.End ℂ (PP n d)) = Complex.exp ((c : ℂ) * Y.trace) •
+      (linSub (Matrix.kroneckerMap (fun x1 x2 => x1 * x2) (NormedSpace.exp Y)
+        (1 : Matrix (Ix d 0) (Ix d 0) ℂ))).toLinearMap := by
+    unfold act1
+    congr 1
+    · unfold detPow
+      rw [Units.val_zpow_eq_zpow_val, Matrix.GeneralLinearGroup.val_det_apply, hgm,
+        Matrix.det_submatrix_equiv_self, GlobalTheory.DetSqrtCover.det_exp, Complex.exp_int_mul]
+    · congr 1
+      apply MvPolynomial.algHom_ext
+      rintro ⟨a | a, b | b⟩
+      · simp [leftSub, linSub, xv, hg, Matrix.kroneckerMap_apply, Fintype.sum_prod_type,
+          Fintype.sum_sum_type, Matrix.one_apply, MvPolynomial.smul_eq_C_mul]
+      · exact b.elim0
+      · exact a.elim0
+      · exact a.elim0
+  rw [hF, hA]
+  exact isExp_add_smul (linDer_kron_left_isExp Y) ((c : ℂ) * Y.trace)
+end
+end
+
 
 /-! # GRPFockOf: Consolidated global theta-kernel definitions and proofs (GRPFockOf). -/
 @[expose] public section

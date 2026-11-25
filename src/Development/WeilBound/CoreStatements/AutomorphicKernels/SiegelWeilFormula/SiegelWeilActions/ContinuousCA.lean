@@ -30,12 +30,10 @@ variable {d : SD σ} (R : RD d) (L : LD d)
 scoped instance afSC : SecondCountableTopology (AF F) := GlobalTheory.AdelicUnitaryTop.secondCountable_adele F
 scoped instance afBorel : BorelSpace (AF F) := ⟨rfl⟩
 
-
 variable (F) in
 def lamA : Measure (AF F) := Measure.addHaar
 
 instance lamA_haar : (lamA F).IsAddHaarMeasure := by unfold lamA; infer_instance
-
 
 variable (F) in
 def fA : AddSubgroup (AF F) := (algebraMap F (AF F)).range.toAddSubgroup
@@ -85,7 +83,7 @@ theorem isClosed_nA' {n : ℕ} {Y : Spc F E n} {b : GL (Fin n ⊕ Fin n) E} (hb 
     exact kunf.mem_nA_iff hε β
   rw [h]
   have hc : Continuous fun β : Matrix (Fin n) (Fin n) (AE F E) => β.map (cA σ) :=
-    continuous_id.matrix_map (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.Meas.continuous_cA' (σ := σ))
+    continuous_id.matrix_map (_root_.GlobalTheory.EisBL.DoubledGroupTopology.continuous_cA (σ := σ))
   exact isClosed_eq continuous_id.matrix_transpose (hc.const_smul (((ε : ℤ) : AE F E))).neg
 
 instance lcNA {n : ℕ} {Y : Spc F E n} {b : GL (Fin n ⊕ Fin n) E} [Fact (IsFrame2 σ Y b)] :
@@ -101,7 +99,6 @@ theorem shear_mp' {X Y : Type} [MeasurableSpace X] [MeasurableSpace Y] [AddGroup
     MeasurePreserving (fun p : X × Y => (p.1, p.2 + s p.1)) (μ.prod ν) (μ.prod ν) :=
   (MeasurePreserving.id μ).skew_product (g := fun x y => y + s x) (measurable_snd.add (hs.comp measurable_fst))
     (Filter.Eventually.of_forall fun x => map_add_right_eq_self ν (s x))
-
 
 open scoped Pointwise in
 theorem fd_prod {X Y : Type} [AddCommGroup X] [AddCommGroup Y] [MeasurableSpace X] [MeasurableSpace Y]

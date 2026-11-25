@@ -26,12 +26,6 @@ section -- clump:auto
 
 open MvPolynomial Filter Topology GlobalTheory.CompanionTheory.Ar.Top
 
-namespace GlobalTheory.CompanionTheory.Ar.Top
-
-theorem degFl_pk_mul_eq_zero : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (τ : Ψ) (k : ℕ) (G : RP Ψ N), 1 ≤ k → degFl (pk τ k * G) = 0 :=
-  fun Ψ _ _ N τ k G hk => Formalism.DegreeFormula.degreePowerSumMulEqZero Ψ N τ k G hk
-
-end GlobalTheory.CompanionTheory.Ar.Top
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreePowerSumMulZero =====
@@ -125,12 +119,12 @@ theorem pair_split {j k : ℕ} (x : Fin (j + k) → R) :
       rintro b ⟨_, h⟩
       have h' : j + (b : ℕ) < j := h.1 a.isLt
       omega
-    rw [Finset.prod_eq_one (s := Finset.univ) (fun b _ => if_neg (h2 b)), mul_one]
+    rw [Finset.prod_eq_one (s := Finset.univ) (fun b _ => ite_eq_right (h2 b)), mul_one]
     refine Finset.prod_congr rfl fun b _ => ?_
     by_cases h : a < b
-    · rw [if_pos h, if_pos]
+    · rw [ite_eq_left h, ite_eq_left]
       exact ⟨show (a : ℕ) < (b : ℕ) from h, iff_of_true a.isLt b.isLt⟩
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_right h, ite_eq_right]
       intro h'
       exact h (show (a : ℕ) < (b : ℕ) from h'.1)
   · refine Finset.prod_congr rfl fun a _ => ?_
@@ -140,14 +134,14 @@ theorem pair_split {j k : ℕ} (x : Fin (j + k) → R) :
       rintro b ⟨_, h⟩
       have h' : j + (a : ℕ) < j := h.2 b.isLt
       omega
-    rw [Finset.prod_eq_one (s := Finset.univ) (fun b _ => if_neg (h2 b)), one_mul]
+    rw [Finset.prod_eq_one (s := Finset.univ) (fun b _ => ite_eq_right (h2 b)), one_mul]
     refine Finset.prod_congr rfl fun b _ => ?_
     by_cases h : a < b
-    · rw [if_pos h, if_pos]
+    · rw [ite_eq_left h, ite_eq_left]
       have hab : (a : ℕ) < (b : ℕ) := h
       refine ⟨show j + (a : ℕ) < j + (b : ℕ) by omega, ?_⟩
       exact iff_of_false (show ¬ j + (a : ℕ) < j by omega) (show ¬ j + (b : ℕ) < j by omega)
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_right h, ite_eq_right]
       intro h'
       have hab : j + (a : ℕ) < j + (b : ℕ) := h'.1
       exact h (show (a : ℕ) < (b : ℕ) by omega)
@@ -165,8 +159,8 @@ theorem sum_high {M : Type*} [AddCommMonoid M] {j k : ℕ} (g : Fin (j + k) → 
       ∑ b : Fin k, g (Fin.natAdd j b) := by
   rw [Finset.sum_filter, Fin.sum_univ_add]
   have h1 : ∀ a : Fin j, ¬ j ≤ ((Fin.castAdd k a : Fin (j + k)) : ℕ) := fun a => not_le.2 a.isLt
-  rw [Finset.sum_eq_zero (fun a _ => if_neg (h1 a)), zero_add]
-  exact Finset.sum_congr rfl fun b _ => if_pos (show j ≤ j + (b : ℕ) by omega)
+  rw [Finset.sum_eq_zero (fun a _ => ite_eq_right (h1 a)), zero_add]
+  exact Finset.sum_congr rfl fun b _ => ite_eq_left (show j ≤ j + (b : ℕ) by omega)
 
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ]
 
@@ -195,7 +189,7 @@ theorem degFl_permExp (N : ℕ) :
   rw [Finset.sum_eq_single (fun _ => 1)]
   · simp
   · intro σ _ hσ
-    rw [coeff_monomial, if_neg, mul_zero]
+    rw [coeff_monomial, ite_eq_right, mul_zero]
     intro h
     apply hσ
     funext τ
@@ -236,7 +230,6 @@ theorem rl_X (e : Ψ ≃ Fin f) (τ : Ψ) (i : Fin (j + k)) :
     rl e j k (X (τ, i)) = X (e τ, i) := by
   simp [rl]
 
-
 def flagI (e : Ψ ≃ Fin f) (j k : ℕ) : RestTerms.Roots f j k →ₗ[ℝ] ℝ :=
   (degFlL (j + k)).comp (rli e j k).toLinearMap
 
@@ -257,7 +250,7 @@ theorem isFlag (e : Ψ ≃ Fin f) (hf : Fintype.card Ψ = f) : RestTerms.IsFlagI
   · intro m τ G h1 _ _
     obtain ⟨t, rfl⟩ := e.surjective τ
     rw [flagI_apply, psumAt_eq, map_mul, rli_rl]
-    exact _root_.GlobalTheory.CompanionTheory.Ar.Top.degFl_pk_mul_eq_zero Ψ (j + k) t m _ h1
+    exact _root_.RootFieldNumerics.degFl_power_sum_mul Ψ (j + k) t m _ h1
   · subst hf
     refine ⟨rl e j k (monomial (permExp fun _ => 1) 1), ?_, ?_⟩
     · have h := (isHomogeneous_monomial (R := ℝ) (1 : ℝ) (permExp_degree (Ψ := Ψ) (j + k))).rename_isHomogeneous
@@ -280,7 +273,7 @@ theorem lie_eq (e : Ψ ≃ Fin f) (m : ℕ) (s : Ψ ⊕ Ψ) :
     simp
   | inr t =>
 
-    simp only [conv, RestTerms.lieClass, pLie, sum_high, map_sum, map_pow, map_neg, rl_X, if_true]
+    simp only [conv, RestTerms.lieClass, pLie, sum_high, map_sum, map_pow, map_neg, rl_X, ite_true]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun b _ => (neg_pow _ m).symm
 
@@ -291,11 +284,11 @@ theorem mu_eq (e : Ψ ≃ Fin f) (bot : Bool) (hbot : bot = decide (k ≤ j)) :
   have hk : j + k - j = k := by omega
   by_cases h : k ≤ j
   · have hb : bot = true := by simp [hbot, h]
-    rw [if_pos (by rw [hk]; exact h), hb]
+    rw [ite_eq_left (by rw [hk]; exact h), hb]
 
-    simp only [RestTerms.smallPsum, if_true, sum_high, map_sum, rl_X, pow_one]
+    simp only [RestTerms.smallPsum, ite_true, sum_high, map_sum, rl_X, pow_one]
   · have hb : bot = false := by simp [hbot, h]
-    rw [if_neg (by rw [hk]; exact h), hb]
+    rw [ite_eq_right (by rw [hk]; exact h), hb]
 
     simp only [RestTerms.smallPsum, pkLow, sum_low, map_neg, map_sum, rl_X, pow_one]
     simp
@@ -315,11 +308,11 @@ theorem fib_sg (e : Ψ ≃ Fin f) (bot : Bool) :
   rw [h]
   cases bot with
   | true =>
-    simp only [if_true]
+    simp only [ite_true]
     rw [mul_comm (pairProd _)]
     exact (vandermonde_sg _).mul (vandermonde_sg _)
   | false =>
-    simp only [Bool.false_eq_true, if_false]
+    simp only [Bool.false_eq_true, ite_false]
     exact ((vandermonde_sg _).trans (pairProd_neg _)).mul (vandermonde_sg _)
 
 end GlobalTheory.CompanionTheory.Ar.Top.TestRest
@@ -405,12 +398,12 @@ theorem finite_bound [Nonempty Ψ] (hj : 1 ≤ j) (hk : 1 ≤ k) (frob : ℕ →
         (fun x hx hnx => by
           rw [Finset.mem_Icc] at hx hnx
           unfold restTerm
-          rw [if_neg (by omega)])
+          rw [ite_eq_right (by omega)])
       rw [← h]
       refine Finset.sum_congr rfl fun m hm => ?_
       rw [Finset.mem_Icc] at hm
       unfold restTerm
-      rw [if_pos hm.1, mul_assoc]
+      rw [ite_eq_left hm.1, mul_assoc]
     unfold RestTerms.restAt
     rw [(Equiv.sum_comp e _).symm]
     simp only [hin, hsub, Finset.mul_sum]

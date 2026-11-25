@@ -157,7 +157,7 @@ theorem coeffSup_coeff_mul [Add G] [UniqueSums G] (f g : AddMonoidAlgebra R G) :
     obtain ⟨hp, hne⟩ := Finset.mem_sdiff.mp hp
     obtain ⟨hp₁, hp₂⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_singleton] at hne
-    simp only [if_true, map_mul, ha₂, hb₂]
+    simp only [ite_true, map_mul, ha₂, hb₂]
     split_ifs with he
     · rw [map_mul]
       have h₁ := le_coeffSup v.map_zero f.coeff p.1
@@ -229,25 +229,6 @@ theorem gaussVal_supp_eq_bot_of_supp (hv : v.supp = ⊥) :
   rw [gaussVal_supp, hv, Ideal.map_bot]
 
 end Poly
-
-section Field
-
-open MvPolynomial
-
-variable {K Γ₀ σ τ : Type*} [Field K]
-
-section Monoid
-
-variable [LinearOrderedCommMonoidWithZero Γ₀] [Nontrivial Γ₀] (v : Valuation K Γ₀)
-
-end Monoid
-
-variable [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation K Γ₀)
-
-variable {F : Type*} [Field F] [Algebra (MvPolynomial σ K) F]
-  [IsFractionRing (MvPolynomial σ K) F]
-
-end Field
 
 section Additive
 
@@ -326,26 +307,6 @@ variable (b : Basis ι R M)
 
 end Content
 
-section Lattice
-
-open Module
-
-variable {R Γ₀ ι κ : Type*} [CommRing R] [LinearOrderedCommGroupWithZero Γ₀]
-  (v : Valuation R Γ₀) {M : Type*} [AddCommGroup M] [Module R M] (b : Basis ι R M)
-  {O : Type*} [CommRing O] [Algebra O R] [Module O M] [IsScalarTower O R M]
-
-end Lattice
-
-section Tensor
-
-open MvPolynomial Module
-
-variable {O R S Γ₀ ι κ σ : Type*} [CommRing O] [CommRing R] [Algebra O R] [CommRing S]
-  [Algebra O S] [LinearOrderedCommMonoidWithZero Γ₀] (v : Valuation R Γ₀)
-  {M : Type*} [AddCommGroup M] [Module O M] (b : Basis ι O M)
-
-end Tensor
-
 section AdditiveContent
 
 open MvPolynomial Module
@@ -362,18 +323,6 @@ end
 variable {O M : Type*} [CommRing O] [Algebra O R] [AddCommGroup M] [Module O M] (b : Basis ι O M)
 
 end AdditiveContent
-
-section More
-
-open MvPolynomial Module IsDedekindDomain
-
-end More
-
-section Examples
-
-open MvPolynomial
-
-end Examples
 
 end
 
@@ -426,7 +375,7 @@ theorem NullV.exists_trunc {X : Type} {A : X → F} (hA : NullV v A) (N : ℚ) :
     fun χ hχ => ?_⟩
   · rw [Set.Finite.mem_toFinset]
     by_contra hn
-    exact hχ (if_neg hn)
+    exact hχ (ite_eq_right hn)
   · simp only [Finsupp.onFinset_apply]
     split_ifs with hχ
     · simp
@@ -435,7 +384,7 @@ theorem NullV.exists_trunc {X : Type} {A : X → F} (hA : NullV v A) (N : ℚ) :
     split_ifs with hχ
     · exact le_rfl
     · simp
-  · simp only [Finsupp.onFinset_apply, if_pos hχ]
+  · simp only [Finsupp.onFinset_apply, ite_eq_left hχ]
 
 theorem coeff_mapDomain_mul {X : Type} [AddCommGroup X] (h : X →+ X) (a c : AddMonoidAlgebra F X)
     (T : Finset X) (hT : a.coeff.support ⊆ T) (α : X) :

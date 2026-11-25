@@ -818,12 +818,6 @@ open GlobalTheory.MumFam
 
 namespace GlobalTheory.MumFam
 
-open InhTate
-
-end GlobalTheory.MumFam
-
-namespace GlobalTheory.MumFam
-
 theorem monomial_eq_of_mul_unit {W : Type} [CommRing W] [Nontrivial W] {σ : Type} {P M : σ →₀ ℕ}
     {x x' : MvPowerSeries σ W} (hx : IsUnit x) (hx' : IsUnit x')
     (he : MvPowerSeries.monomial P (1 : W) * x = MvPowerSeries.monomial M 1 * x') : P = M := by
@@ -831,22 +825,15 @@ theorem monomial_eq_of_mul_unit {W : Type} [CommRing W] [Nontrivial W] {σ : Typ
       MvPowerSeries.monomial P (1 : W) * x = MvPowerSeries.monomial M 1 * x' → P ≤ M := by
     intro P M x x' hx' he
     have hc := congrArg (MvPowerSeries.coeff M) he
-    rw [MvPowerSeries.coeff_monomial_mul, MvPowerSeries.coeff_monomial_mul, if_pos le_rfl, tsub_self,
+    rw [MvPowerSeries.coeff_monomial_mul, MvPowerSeries.coeff_monomial_mul, ite_eq_left le_rfl, tsub_self,
       MvPowerSeries.coeff_zero_eq_constantCoeff_apply] at hc
     by_contra hPM
-    rw [if_neg hPM, _root_.one_mul] at hc
+    rw [ite_eq_right hPM, _root_.one_mul] at hc
     exact (hx'.map (MvPowerSeries.constantCoeff (σ := σ) (R := W))).ne_zero hc.symm
   exact le_antisymm (h1 _ _ _ _ hx' he) (h1 _ _ _ _ hx he.symm)
 
 end GlobalTheory.MumFam
 
-namespace GlobalTheory.MumFam
-
-end GlobalTheory.MumFam
-
-namespace GlobalTheory.MumFam
-
-end GlobalTheory.MumFam
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -944,7 +931,7 @@ theorem exps_eq {σ k : Type} [Field k] [IsDomain (MvPowerSeries σ k)] {m : ℕ
     rw [Finsupp.finsetSum_apply, Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       exact fun e => hj (hv e)
     · simp
   rw [hmon, hmon] at he''
@@ -1236,7 +1223,6 @@ theorem nonneg_shift {X : Type} [AddCommGroup X] (g : LinearMap.BilinForm ℤ X)
     simp [h0]
   · have h1 : -(g mu α) ≤ ((g mu α).natAbs : ℤ) := by rw [Int.natCast_natAbs]; exact neg_le_abs _
     have h2 : ((g mu α).natAbs : ℤ) ≤ e := by exact_mod_cast he
-    have h3 : (1 : ℤ) ≤ n := by exact_mod_cast hpos
     nlinarith
 
 theorem gs_zero' {Y Z : Scheme.{0}} (f : Z ⟶ Y) (z : Z) : gs f z ⊤ (0 : Γ(Y, ⊤)) = 0 := by

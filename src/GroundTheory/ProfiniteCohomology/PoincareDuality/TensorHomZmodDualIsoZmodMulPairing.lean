@@ -16,8 +16,6 @@ open CategoryTheory MonoidalCategory
 
 universe u
 
-attribute [local instance 2000] Rep.hV2
-
 abbrev zmodULiftModule (n : ℕ) : Module (ULift.{u} ℤ) (ULift.{u} (ZMod n)) :=
   (zmodRep.{u} PUnit.{u + 1} n).hV2
 

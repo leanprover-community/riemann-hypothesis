@@ -41,9 +41,6 @@ end Blocks
 
 end Formalism.FourierDecayAlt.P.S3x1
 
-
-
-
 namespace Formalism.FourierDecayAlt.P.S3x1
 
 open Matrix Finset
@@ -51,9 +48,6 @@ open Formalism.DoubleCosetMeasures (IsUpUni upUniG isUpUni_mul isUpUni_inv isUpU
 open Formalism.FourierDecayAlt.S3
 
 section Count
-
-theorem card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n * (n - 1) / 2 :=
-  by apply _root_.Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs
 
 variable {A : Type} [CommRing A]
 
@@ -81,7 +75,7 @@ def uniEquiv (n : ℕ) : {u : Matrix (Fin n) (Fin n) A // IsUpUni u} ≃ ({p : F
 
 theorem card_uni (K : Type) [Field K] [Fintype K] (n : ℕ) :
     Nat.card {u : Matrix (Fin n) (Fin n) K // IsUpUni u} = Fintype.card K ^ (n * (n - 1) / 2) := by
-  rw [Nat.card_congr (uniEquiv n), Nat.card_fun, card_lt_pairs, Nat.card_eq_fintype_card]
+  rw [Nat.card_congr (uniEquiv n), Nat.card_fun, Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs, Nat.card_eq_fintype_card]
 
 noncomputable def upUniGEquiv (n : ℕ) : upUniG A n ≃ {u : Matrix (Fin n) (Fin n) A // IsUpUni u} where
   toFun g := ⟨g.1.1, g.2⟩
@@ -90,11 +84,6 @@ noncomputable def upUniGEquiv (n : ℕ) : upUniG A n ≃ {u : Matrix (Fin n) (Fi
   right_inv u := rfl
 
 variable {r k : ℕ}
-
-def mk (a : Matrix (Fin r) (Fin r) A) (b : Matrix (Fin r) (Mid k) A) (c : Matrix (Fin r) (Fin r) A)
-    (m : Matrix (Mid k) (Mid k) A) (e : Matrix (Mid k) (Fin r) A) (f : Matrix (Fin r) (Fin r) A) :
-    Matrix (Idx r k) (Idx r k) A :=
-  Matrix.fromBlocks a (Matrix.fromCols b c) 0 (Matrix.fromBlocks m e 0 f)
 
 section mk
 variable (a : Matrix (Fin r) (Fin r) A) (b : Matrix (Fin r) (Mid k) A) (c : Matrix (Fin r) (Fin r) A)
@@ -137,10 +126,6 @@ theorem prod_gl (q k : ℕ) : ∏ i : Fin k, (q ^ k - q ^ (i : ℕ)) =
 end Count2
 
 end Formalism.FourierDecayAlt.P.S3x1
-
-
-
-
 
 open Formalism.FourierDecayAlt.P.S3x1 in
 theorem Formalism.FourierDecayAlt.P.gamma_factor_product : Formalism.FourierDecayAlt.S3.GammaProduct := by

@@ -96,7 +96,6 @@ private theorem smooth_and_inStrictNormalCrossingPosition_projectionToSpec (hcar
       have : AlgebraicGeometry.Smooth (s.projectionToSpec n) := hsm
       have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (n + 1)) :=
         MarkedSequenceOfBlowups.isNoetherian_schemeAt hcart hT s (n + 1) hn
-      have : TopologicalSpace.NoetherianSpace ↥(s.toSequenceOfBlowups.schemeAt (n + 1)) := inferInstance
       have hπ := s.toSequenceOfBlowups.isBlowupAlongIdealSheaf_blowupMorphism n hn'
       have hZE : HasStrictNormalCrossingsWith (s.projectionToSpec n) (s.toSequenceOfBlowups.center n) (s.boundary n) := by
         rw [MarkedSequenceOfBlowups.projectionToSpec_eq]
@@ -156,7 +155,6 @@ theorem IsAdmissible.transformAt (hcart : EffectiveCartierSupportContainsNoCompo
   have : AlgebraicGeometry.Smooth (s.projectionToSpec i) := hsm
   have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt i) :=
     MarkedSequenceOfBlowups.isNoetherian_schemeAt hcart hT s i hi
-  have : TopologicalSpace.NoetherianSpace ↥(s.toSequenceOfBlowups.schemeAt i) := inferInstance
   refine
     { charZero := hT.charZero
       locallyOfFiniteType := ?_

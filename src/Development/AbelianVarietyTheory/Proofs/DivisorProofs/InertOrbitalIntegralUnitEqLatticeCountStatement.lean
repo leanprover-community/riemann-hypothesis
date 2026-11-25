@@ -98,7 +98,7 @@ theorem cptPart_iff_intUnits_of_model : ∀ (E : Type) [Field E] [NumberField E]
   intro E _ _ _ hE w hw K e he hint n B ψ x γ hmod hsep τ hτ t
   have hcont := (GlobalTheory.ConjAtPlace.main E hE w).1
   have hcl : IsClosed ((UL n w : Subgroup (GLw n w)) : Set (GLw n w)) := by
-    unfold UL; rw [if_neg hw]
+    unfold UL; rw [ite_eq_right hw]
     have : ((UJ (cj w) (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) : Subgroup _) : Set (GLw n w)) =
         (fun g : GLw n w => cT (cj w) (g : Matrix (Fin n) (Fin n) (w.adicCompletion E)) * 1 *
           (g : Matrix (Fin n) (Fin n) (w.adicCompletion E))) ⁻¹' {1} := rfl
@@ -630,11 +630,6 @@ theorem norm_unit [IsAdicComplete (maximalIdeal O) O] [Finite (ResidueField O)] 
   rw [ResidueField.map_residue, ← map_mul] at hw'
   have hm : u - w * s w ∈ maximalIdeal O := by
     rw [← residue_eq_zero_iff, map_sub, hw', sub_self]
-  obtain ⟨v, hv⟩ := hu.exists_right_inv
-  have hsv : s v = v := by
-    have := congrArg s hv
-    rw [map_mul, hsu, map_one] at this
-    linear_combination v * this - s v * hv
   have hwu : IsUnit (w * s w) := by
     apply unit_of_not_mem
     intro h
@@ -698,7 +693,6 @@ theorem exists_unit_length (c : E →+* E) (s : O →+* O) (hs : ∀ x, s (s x) 
     (hdual : ∀ y ∈ W, (∀ z ∈ L, h y z ∈ (algebraMap O E).range) → y ∈ L) :
     ∃ e ∈ L, ∃ u : O, IsUnit u ∧ algebraMap O E u = h e e := by
   by_contra hcon
-  have inj := IsFractionRing.injective O E
   have h0 : ∀ e ∈ L, ∀ a : O, algebraMap O E a = h e e → a ∈ maximalIdeal O := by
     intro e he a hae
     by_contra hn
@@ -853,7 +847,7 @@ theorem exists_orthonormal {K : GlobalTheory.UnitLemma.UQ} (n : ℕ) (V : Type) 
       · refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
         · simpa using he1
         · simpa [(Fin.succ_ne_zero j).symm] using he0 j
-        · simp only [Fin.cons_succ, Fin.cons_zero, Fin.succ_ne_zero, if_false]
+        · simp only [Fin.cons_succ, Fin.cons_zero, Fin.succ_ne_zero, ite_false]
           rw [hc, he0, map_zero]
         · simpa using hon i j
   exact main n le_rfl
@@ -873,10 +867,6 @@ open scoped Classical TensorProduct
 open GlobalTheory.UnitLemma GlobalTheory.InertUnitOrb
 
 noncomputable section
-
-namespace GlobalTheory.InertUnitOrb.LatOnto
-
-end GlobalTheory.InertUnitOrb.LatOnto
 
 namespace GlobalTheory.InertUnitOrb.LatOnto
 
@@ -926,7 +916,7 @@ theorem exists_unitLat_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     exact (he _).symm
   have hqU : qG ∈ UL n w := by
     unfold UL
-    rw [if_neg hns]
+    rw [ite_eq_right hns]
     show Formalism.UG.cT (cj w) (P.map eh) * 1 * P.map eh = 1
     rw [hcT, Matrix.mul_one, hmul2]
   refine ⟨⟨qG, hqU⟩, ?_⟩
@@ -944,7 +934,7 @@ theorem exists_unitLat_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     intro y j
     conv_lhs => rw [← b.sum_repr y]
     rw [show B.herm x (∑ i, b.repr y i • b i) (v j) = ∑ i, b.repr y i * B.herm x (b i) (v j) from ?_]
-    · simp only [hb, hv, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    · simp only [hb, hv, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     · induction (Finset.univ : Finset (Fin n)) using Finset.induction_on with
       | empty =>
         simp only [Finset.sum_empty]
@@ -1054,7 +1044,7 @@ theorem mem_KGL_of_unitary {E : Type} [Field E] [NumberField E] [IsCMField E] (h
     (h1 : ∀ i j, Valued.v ((M : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j) ≤ 1) :
     M ∈ GlobalTheory.LFun.KGL w (n := n) := by
   have hcj := (GlobalTheory.ConjAtPlace.main E hU w).2.2.1
-  rw [UL, if_neg hw] at hM
+  rw [UL, ite_eq_right hw] at hM
   have hM' : Formalism.UG.cT (cj w) (M : Matrix (Fin n) (Fin n) (w.adicCompletion E)) * 1 *
       (M : Matrix (Fin n) (Fin n) (w.adicCompletion E)) = 1 := hM
   have hinv : ((M⁻¹ : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E)) =

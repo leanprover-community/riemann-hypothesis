@@ -2,49 +2,7 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.Rename
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -167,23 +125,23 @@ def linFormHom (u : J → R) (S : Set ι) (j₀ : J) :
 
 theorem linFormHom_X_of_mem (u : J → R) {S : Set ι} (j₀ : J) {i : ι} (hi : i ∈ S) :
     linFormHom u S j₀ (X (i, j₀)) = linForm u i := by
-  rw [linFormHom, aeval_X, if_pos (by exact ⟨hi, rfl⟩)]
+  rw [linFormHom, aeval_X, ite_eq_left (by exact ⟨hi, rfl⟩)]
 
 theorem linFormHom_X_of_notMem (u : J → R) {S : Set ι} {j₀ : J} {x : ι × J}
     (hx : x ∉ elimIndices S j₀) : linFormHom u S j₀ (X x) = X x := by
-  rw [linFormHom, aeval_X, if_neg hx]
+  rw [linFormHom, aeval_X, ite_eq_right hx]
 
 theorem linFormHom_linForm [DecidableEq J] (u v : J → R) {S : Set ι} (j₀ : J) {i : ι}
     (hi : i ∈ S) : linFormHom u S j₀ (linForm v i) =
       linForm (fun j => if j = j₀ then v j₀ * u j₀ else v j₀ * u j + v j) i := by
 
   rw [linForm_eq v i j₀, map_add (f := _), map_mul, linFormHom_X_of_mem u j₀ hi, map_sum,
-  linForm_eq u i j₀, linForm_eq _ i j₀, if_pos rfl, algHom_C, algebraMap_eq, mul_add,
+  linForm_eq u i j₀, linForm_eq _ i j₀, ite_eq_left rfl, algHom_C, algebraMap_eq, mul_add,
   Finset.mul_sum, add_assoc, ← Finset.sum_add_distrib, C_mul, mul_assoc]
   congr 1
   refine Finset.sum_congr rfl fun j hj => ?_
   have hj' := Finset.ne_of_mem_erase hj
-  rw [map_mul, linFormHom_X_of_notMem u (by simp [hj']), if_neg hj', algHom_C, algebraMap_eq,
+  rw [map_mul, linFormHom_X_of_notMem u (by simp [hj']), ite_eq_right hj', algHom_C, algebraMap_eq,
     C_add, C_mul]
   ring
 
@@ -196,11 +154,11 @@ theorem linFormHom_comp_eq_id {u v : J → R} (S : Set ι) {j₀ : J} (h₀ : v 
   · obtain ⟨i, j⟩ := x
     obtain ⟨hi, rfl⟩ : i ∈ S ∧ j = j₀ := hx
     rw [AlgHom.comp_apply, linFormHom_X_of_mem v j hi, linFormHom_linForm u v j hi,
-      linForm_eq _ i j, if_pos rfl, h₀, Finset.sum_eq_zero]
+      linForm_eq _ i j, ite_eq_left rfl, h₀, Finset.sum_eq_zero]
     · simp
     · intro k hk
       have hk' := Finset.ne_of_mem_erase hk
-      rw [if_neg hk', h k hk', C_0, zero_mul]
+      rw [ite_eq_right hk', h k hk', C_0, zero_mul]
   · simp [linFormHom_X_of_notMem _ hx]
 
 

@@ -27,15 +27,9 @@ theorem exists_isOpen_inter_subset_of_maximal {α : Type*} [TopologicalSpace α]
   obtain ⟨S, hirr, hsup⟩ :=
     TopologicalSpace.NoetherianSpace.exists_finset_irreducible
       (⟨A, hA⟩ : TopologicalSpace.Closeds α)
-  have hcoe : ∀ S' : Finset (TopologicalSpace.Closeds α),
-      ((S'.sup id : TopologicalSpace.Closeds α) : Set α) = ⋃ k ∈ S', (k : Set α) := by
-    intro S'
-    refine Finset.induction_on S' ?_ ?_
-    · simp
-    · intro a S'' _ ih
-      simp [Finset.sup_insert, ih]
   have hA' : A = ⋃ k ∈ S, (k : Set α) :=
-    (congrArg (fun s : TopologicalSpace.Closeds α => (s : Set α)) hsup).trans (hcoe S)
+    (congrArg (fun s : TopologicalSpace.Closeds α => (s : Set α)) hsup).trans
+      ((TopologicalSpace.Closeds.coe_finset_sup id S).trans (Finset.sup_set_eq_biUnion _ _))
   obtain ⟨T, hTdef⟩ : ∃ T : Finset (TopologicalSpace.Closeds α),
       T = S.filter (fun k : TopologicalSpace.Closeds α => ¬ ((k : Set α) ⊆ C)) := ⟨_, rfl⟩
   have hmemT : ∀ k : TopologicalSpace.Closeds α,

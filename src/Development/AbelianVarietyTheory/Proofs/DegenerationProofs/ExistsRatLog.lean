@@ -2,49 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.NormVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ValuationMultiplicationInvariance
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -107,7 +66,7 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
   obtain ⟨r, hexp⟩ : ∃ r : PadicAlgCl p → ℚ, ∀ x, x ≠ 0 → ‖x‖ = ‖π‖ ^ (r x : ℝ) := by
     refine ⟨fun x => if h : x = 0 then 0 else (exists_rat_norm_eq_rpow h).choose / s, ?_⟩
     intro x hx
-    simp only [dif_neg hx]
+    simp only [dite_eq_right hx]
     rw [hs, ← Real.rpow_mul (Nat.cast_nonneg _)]
     push_cast
     rw [mul_div_cancel₀ _ hs0]
@@ -125,18 +84,9 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
       min (r x) (r y) ≤ r (x + y) := by
     intro x y hx hy hxy
     have h := (PadicAlgCl.isNonarchimedean p) x y
-    rw [hexp x hx, hexp y hy, hexp _ hxy] at h
-    rcases le_total (r x) (r y) with hxy' | hxy'
-    · rw [min_eq_left hxy']
-      have hm : max (‖π‖ ^ (r x : ℝ)) (‖π‖ ^ (r y : ℝ)) = ‖π‖ ^ (r x : ℝ) :=
-        max_eq_left ((hle _ _).2 (by exact_mod_cast hxy'))
-      rw [hm, hle] at h
-      exact_mod_cast h
-    · rw [min_eq_right hxy']
-      have hm : max (‖π‖ ^ (r x : ℝ)) (‖π‖ ^ (r y : ℝ)) = ‖π‖ ^ (r y : ℝ) :=
-        max_eq_right ((hle _ _).2 (by exact_mod_cast hxy'))
-      rw [hm, hle] at h
-      exact_mod_cast h
+    rw [hexp x hx, hexp y hy, hexp _ hxy,
+      ← (Real.antitone_rpow_of_base_le_one hb0 hπlt.le).map_min, hle] at h
+    exact_mod_cast h
   set w : PadicAlgCl p → WithTop ℚ := fun x => if x = 0 then ⊤ else (r x : WithTop ℚ) with hw
   have hw0 : w 0 = ⊤ := by simp [hw]
   have hw1 : w 1 = 0 := by simp [hw, hr_one]
@@ -148,7 +98,7 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
     · simp [hw, hy]
     by_cases hxy : x + y = 0
     · simp [hw, hxy]
-    simp only [hw, if_neg hx, if_neg hy, if_neg hxy]
+    simp only [hw, ite_eq_right hx, ite_eq_right hy, ite_eq_right hxy]
     rw [← WithTop.coe_min, WithTop.coe_le_coe]
     exact hr_add x y hx hy hxy
   have hwmul : ∀ x y, w (x * y) = w x + w y := by
@@ -157,7 +107,7 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
     · simp [hw, hx]
     by_cases hy : y = 0
     · simp [hw, hy]
-    simp only [hw, if_neg hx, if_neg hy, if_neg (mul_ne_zero hx hy)]
+    simp only [hw, ite_eq_right hx, ite_eq_right hy, ite_eq_right (mul_ne_zero hx hy)]
     rw [hr_mul x y hx hy, WithTop.coe_add]
   let v : AddValuation (PadicAlgCl p) (WithTop ℚ) := AddValuation.of w hw0 hw1 hwadd hwmul
   have hv : ∀ x, v x = w x := fun x => rfl
@@ -187,7 +137,7 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
       rw [h, norm_zero] at this
       exact zero_ne_one this
     rw [hv]
-    simp only [hw, if_neg hne]
+    simp only [hw, ite_eq_right hne]
     have h2 : ‖algebraMap (FractionRing V) (PadicAlgCl p)
         ((algebraMap V (FractionRing V)) ϖ ^ n * (algebraMap V (FractionRing V)) u)‖ =
           ‖π‖ ^ (n : ℝ) := by
@@ -205,7 +155,7 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
       · intro h; exact absurd h WithTop.top_ne_coe
       · intro h; exact absurd h.symm (Real.rpow_pos_of_pos hb0 _).ne'
     rw [hv]
-    simp only [hw, if_neg hx, WithTop.coe_eq_coe]
+    simp only [hw, ite_eq_right hx, WithTop.coe_eq_coe]
     rw [hexp x hx]
     constructor
     · rintro rfl; rfl
@@ -215,7 +165,7 @@ theorem _root_.GlobalTheory.NormValuation.main : ∀ (p : ℕ) [Fact p.Prime] (V
     · subst hx
       simp [hv, hw0]
     rw [hv]
-    simp only [hw, if_neg hx]
+    simp only [hw, ite_eq_right hx]
     rw [hexp x hx]
     have h1 := hle (r x : ℝ) 0
     rw [Real.rpow_zero] at h1

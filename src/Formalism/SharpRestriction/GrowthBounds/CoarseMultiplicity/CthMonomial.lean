@@ -112,7 +112,7 @@ theorem cth_pow (v : σ) {E m : MvPolynomial σ K} (h1 : cth v 1 E = m) (h2 : �
       intro μ hμ
       have : μ = 0 := by
         by_contra hne
-        rw [mem_support_iff, coeff_one, if_neg (Ne.symm hne)] at hμ
+        rw [mem_support_iff, coeff_one, ite_eq_right (Ne.symm hne)] at hμ
         exact hμ rfl
       rw [this]; rfl
   | succ j ih =>

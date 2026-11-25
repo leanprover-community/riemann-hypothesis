@@ -174,7 +174,7 @@ def OrbitFamilyIdentityNonGeneric : Prop :=
       Ctx Cg cb Cw cT CT C0 C' Cl D large₂ X Y u u' →
       ∀ (νL νB : X.B.I.Ginf → Measure X.B.I.Ginf) (ng : PN.Pts D.host.E D.R.rS → ℝ)
         (γ : PN.Pts D.host.E D.R.rS), PN.IsPt (Y.tO u u') (NOf2 Y u u' νL νB ng) γ →
-      ∀ (S : Finset (Set (TauC Y u u') × NuC D)) (Fm : LocFam (zOf Y) (Set (TauC Y u u')) (NuC D)),
+      ∀ (_ : Finset (Set (TauC Y u u') × NuC D)) (Fm : LocFam (zOf Y) (Set (TauC Y u u')) (NuC D)),
         FamTie (Y.tO u u').ngSet (clsOf Y u u') (nmlOf Y u u') γ Fm → ∃ V0, OrbitFamilyIdentityAt Fm V0
 
 def WeightsNG : Prop :=
@@ -190,7 +190,7 @@ def WeightsNG : Prop :=
         MassDataAdmissible X Y u u' (bkU X hb Y u u' X0 ψ sd C Th vR Q i0 i0' νq) Irat Ire →
       ∀ (νL νB : X.B.I.Ginf → Measure X.B.I.Ginf) (ng : PN.Pts D.host.E D.R.rS → ℝ)
         (γ : PN.Pts D.host.E D.R.rS), PN.IsPt (Y.tO u u') (NOf2 Y u u' νL νB ng) γ →
-      ∀ (S : Finset (Set (TauC Y u u') × NuC D)) (Fm : LocFam (zOf Y) (Set (TauC Y u u')) (NuC D)),
+      ∀ (_ : Finset (Set (TauC Y u u') × NuC D)) (Fm : LocFam (zOf Y) (Set (TauC Y u u')) (NuC D)),
         FamTie (Y.tO u u').ngSet (clsOf Y u u') (nmlOf Y u u') γ Fm →
         (∀ p ∈ Fm.P, (Fm.FP p).RelG (LocNG.theta ((zOf Y).M p))) →
         (∀ p ∈ Fm.P, ∃ (d : Datum (Fm.FP p)) (t : Loc.Term (Vp D p) ((zOf Y).M p) D.R.rS), IsTermOver (Fm.FP p) d t) →
@@ -224,7 +224,7 @@ def ExistNG : Prop :=
       Ctx Cg cb Cw cT CT C0 C' Cl D large₂ X Y u u' →
       ∀ (νL νB : X.B.I.Ginf → Measure X.B.I.Ginf) (ng : PN.Pts D.host.E D.R.rS → ℝ)
         (γ : PN.Pts D.host.E D.R.rS), PN.IsPt (Y.tO u u') (NOf2 Y u u' νL νB ng) γ →
-      ∀ S : Finset (Set (TauC Y u u') × NuC D), ∃ Fm : LocFam (zOf Y) (Set (TauC Y u u')) (NuC D),
+      ∀ _ : Finset (Set (TauC Y u u') × NuC D), ∃ Fm : LocFam (zOf Y) (Set (TauC Y u u')) (NuC D),
         FamTie (Y.tO u u').ngSet (clsOf Y u u') (nmlOf Y u u') γ Fm ∧
         (∀ p ∈ Fm.P, (Fm.FP p).RelG (LocNG.theta ((zOf Y).M p))) ∧
         (∀ p ∈ Fm.P, ∃ (d : Datum (Fm.FP p)) (t : Loc.Term (Vp D p) ((zOf Y).M p) D.R.rS), IsTermOver (Fm.FP p) d t) ∧

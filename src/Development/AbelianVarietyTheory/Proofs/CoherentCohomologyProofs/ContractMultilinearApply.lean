@@ -2,48 +2,8 @@ module
 
 public import Mathlib.LinearAlgebra.DFinsupp
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,15 +16,6 @@ section
 variable {ι : Type*} [Fintype ι] [dι : DecidableEq ι] {R : Type*} [CommSemiring R]
   {X : ι → Type*} [∀ i, AddCommMonoid (X i)] [∀ i, Module R (X i)]
 
-omit [Fintype ι] dι in
-private theorem apply_update (φ : ∀ i, X i →ₗ[R] R) [inst : DecidableEq ι] (x : ∀ i, X i) (k : ι)
-    (y : X k) (i : ι) :
-    φ i (Function.update x k y i) = Function.update (fun i => φ i (x i)) k (φ k y) i := by
-  by_cases h : i = k
-  · subst h
-    simp
-  · simp [Function.update_of_ne h]
-
 def contractMultilinear (φ : ∀ i, X i →ₗ[R] R) (j : ι) : (Π i, X i) →ₘₗ[R] X j where
   toFun x := (∏ i ∈ Finset.univ.erase j, φ i (x i)) • x j
   map_update_add' := by
@@ -73,7 +24,7 @@ def contractMultilinear (φ : ∀ i, X i →ₗ[R] R) (j : ι) : (Π i, X i) →
     have h₂ : k ≠ j → k ∈ @Finset.erase ι dι Finset.univ j := fun h =>
       (@Finset.mem_erase ι dι _ _ _).2 ⟨h, Finset.mem_univ _⟩
     generalize @Finset.erase ι dι Finset.univ j = S at h₁ h₂ ⊢
-    simp only [apply_update]
+    simp only [Function.apply_update (fun i => φ i)]
     by_cases h : k = j
     · subst h
       simp only [Finset.prod_update_of_notMem h₁,
@@ -87,7 +38,7 @@ def contractMultilinear (φ : ∀ i, X i →ₗ[R] R) (j : ι) : (Π i, X i) →
     have h₂ : k ≠ j → k ∈ @Finset.erase ι dι Finset.univ j := fun h =>
       (@Finset.mem_erase ι dι _ _ _).2 ⟨h, Finset.mem_univ _⟩
     generalize @Finset.erase ι dι Finset.univ j = S at h₁ h₂ ⊢
-    simp only [apply_update]
+    simp only [Function.apply_update (fun i => φ i)]
     by_cases h : k = j
     · subst h
       simp only [Finset.prod_update_of_notMem h₁, Function.update_self, RingHom.id_apply]

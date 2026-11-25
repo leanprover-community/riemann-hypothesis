@@ -55,8 +55,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open GlobalTheory.Count Formalism.MainNotions.S Formalism.REAL Matrix NumberField
 open scoped Matrix.Norms.L2Operator
 
-noncomputable section
-
 namespace GlobalTheory.Count.Cartan
 
 variable {n : ℕ}
@@ -285,7 +283,7 @@ theorem exists_neg_eig {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (h
       ∑ i, (if -hX.eigenvalues i = -hX.eigenvalues j then (1 : ℝ) else 0) :=
     Finset.single_le_sum (f := fun i => if -hX.eigenvalues i = -hX.eigenvalues j then (1 : ℝ) else 0)
       (fun i _ => by split_ifs <;> norm_num) (Finset.mem_univ j)
-  rw [if_pos rfl] at h3
+  rw [ite_eq_left rfl] at h3
   linarith
 
 theorem dOp_polar (hn : 1 ≤ n) {k X : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matrix.unitaryGroup (Fin n) ℂ)

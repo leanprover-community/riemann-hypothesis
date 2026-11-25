@@ -36,10 +36,6 @@ open GlobalTheory.ThetaTrCont NumberField IsDedekindDomain Formalism.MainNotions
   Formalism.IndefR.DatumF
 noncomputable section
 namespace GlobalTheory.LagrThetaAdm
-end GlobalTheory.LagrThetaAdm
-namespace GlobalTheory.LagrThetaAdm
-end GlobalTheory.LagrThetaAdm
-namespace GlobalTheory.LagrThetaAdm
 open GlobalTheory.WeilSchrodinger
 theorem exists_admissible_eq_lagrangian_integral : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
   [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
@@ -236,7 +232,7 @@ theorem exists_lagrInt_ne_zero_k : ∀ (F E : Type) [Field F] [NumberField F] [F
     obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
     rcases i with i | i <;> by_cases h : i = j <;>
       simp only [hC, hC₀, incM, diagCols, Matrix.submatrix_apply, Matrix.map_apply, Equiv.symm_apply_apply, id,
-        Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.one_apply, h, ite_true, if_false, map_one,
+        Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.one_apply, h, ite_true, ite_false, map_one,
           map_zero]
   let mC : WOF F E nS nT →ₗ[AF F] Matrix (Fin (nT + nT)) (Fin nS) (AF F ⊗[F] E) :=
     { toFun := fun u => C * u

@@ -137,7 +137,7 @@ theorem pSum_indep {ι κ : T → Type} [∀ τ, Fintype (ι τ)] [∀ τ, Finty
           simp only [Finset.mem_univ, true_implies]
           by_cases h : g = g'
           · subst h; simp
-          · rw [if_neg h, if_neg]
+          · rw [ite_eq_right h, ite_eq_right]
             intro h'
             exact h (funext fun τ => (h' τ).symm)
   simp_rw [hχ φ, hχ ψ]
@@ -154,7 +154,7 @@ theorem pSum_indep {ι κ : T → Type} [∀ τ, Fintype (ι τ)] [∀ τ, Finty
         ring
     _ = ∑ g, starRingEnd ℂ (φ (t' g)) * ψ (t' g) := by
         refine Finset.sum_congr rfl fun g _ => ?_
-        simp only [horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 end Alg
 
@@ -357,8 +357,6 @@ namespace GlobalTheory.Mem.R3.BrgRead
 
 
 
-alias embLL_labLL_eq := _root_.GlobalTheory.CoefSpace.embLL_labLL
-
 theorem gram_V (X : Stages) (h : DiagSpaces X.toD7.sp) (i : Fin X.toD7.R.m) : (Vc X.toD7 i).gram = 1 := by
   obtain ⟨hs, -, -, -, -, hV⟩ := h
   have h1 := hV ((i : ℕ) + 1)
@@ -446,7 +444,7 @@ theorem exists_brgL : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B
       tie := ⟨gramR, c0R, c0L,
         { ranks := ⟨rfl, rfl, rfl⟩
           v0 := rfl
-          tauL_ok := fun τ => RingHom.ext fun x => embLL_labLL_eq τ x
+          tauL_ok := fun τ => RingHom.ext fun x => GlobalTheory.CoefSpace.embLL_labLL τ x
           pl_inj := fun a b h => Subtype.ext h
           q := fun P => rfl
           S_fin := Set.toFinite _

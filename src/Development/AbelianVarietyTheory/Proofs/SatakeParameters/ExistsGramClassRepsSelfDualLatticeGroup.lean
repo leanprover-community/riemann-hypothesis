@@ -9,59 +9,10 @@ public import Formalism.SatakeDualWeyl.Statement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalThetaPairExistence
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MulSelfEqOneIffOfLinearOrderedCommGroupWithZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeRes
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteRepresentativesModUniformizerPow, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFinsetRepresentativesMulInvIntegral, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSmithNormalFormGeneratorsExactOrders, Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteSkewHermitianValuationMaxQuotSum, Development.AbelianVarietyTheory.Proofs.SatakeParameters.GramClassEqOfSigmaHermitianFormBounds, Development.AbelianVarietyTheory.Proofs.SatakeParameters.GramDifferenceEntryMemUniformizerPowIntegers, Development.AbelianVarietyTheory.Proofs.SatakeParameters.GramHermitianSkewTraceSigmaFixed, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralGramCorrectionSkewHermitianMaximal, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralOfTraceCharPairingSkewHermitian, Development.AbelianVarietyTheory.Proofs.SatakeParameters.OneAddMaximalMatrixIntegralInverse, Development.AbelianVarietyTheory.Proofs.SatakeParameters.SelfDualOneAddSkewHermitianMulLattice, Development.AbelianVarietyTheory.Proofs.SatakeParameters.SkewConjGramSigmaConjTransposeTraceIdentity, Development.AbelianVarietyTheory.Proofs.SatakeParameters.TraceSkewHermitianGramIntegral, Development.AbelianVarietyTheory.Proofs.SatakeParameters.VacuumPhaseSubTraceMemIntegers, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsGramClassRepsSelfDualLatticeGroup
@@ -246,7 +197,7 @@ theorem GlobalTheory.Hk3.HoweDuality.exists_finset_reps_mul_inv :
     · have hr : rep (q t) = x := by simp [rep, hxt]
       rw [hr]; exact ⟨Finset.mem_insert_self _ _, hxt⟩
     · have h : ∃ t' ∈ T, q t' = q t := ⟨t, ht, rfl⟩
-      simp only [rep, hxt, if_false, h, dif_pos]
+      simp only [rep, hxt, ite_false, h, dite_eq_left]
       exact h.choose_spec
   refine ⟨T.image fun t => rep (q t), ?_, ?_, ?_, ?_⟩
   · refine Finset.mem_image.2 ⟨x, Finset.mem_insert_self _ _, ?_⟩
@@ -1271,12 +1222,6 @@ theorem cT_add' (σ : L →+* L) {a b : ℕ} (A B : Matrix (Fin a) (Fin b) L) :
     Formalism.UG.cT σ (A + B) = Formalism.UG.cT σ A + Formalism.UG.cT σ B := by
   ext i j; simp [Formalism.UG.cT]
 
-theorem cT_int (σ : L →+* L) (hσ : ∀ x, Valued.v (σ x) = Valued.v x) {a b : ℕ} {A : Matrix (Fin a) (Fin b) L}
-    (hA : ∀ i j, A i j ∈ Formalism.UG.intL L) (i : Fin b) (j : Fin a) : Formalism.UG.cT σ A i j ∈ Formalism.UG.intL L := by
-  have h := hA j i
-  change Valued.v (σ (A j i)) ≤ 1
-  rw [hσ]; exact h
-
 theorem locH_sub_trace_mem : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (δ : L), (∀ x, Valued.v (σ x) = Valued.v x) → δ ∈ Formalism.UG.intL L →
   ∀ (n n' : ℕ) (JS a k : GL (Fin n) L) (JT : GL (Fin n') L) (E : Matrix (Fin n) (Fin n) L) (y : Matrix (Fin n') (Fin n) L),
   (∀ i j, (JS : Matrix (Fin n) (Fin n) L) i j ∈ Formalism.UG.intL L) → (∀ i j, ((JS⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j ∈ Formalism.UG.intL L) →
@@ -1336,7 +1281,7 @@ theorem locH_sub_trace_mem : ∀ (L : Type) [Field L] [Valued L (WithZero (Multi
   rw [h3]
 
   have hRint : ∀ i j, R i j ∈ Formalism.UG.intL L :=
-    _root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int hP (cT_int σ hσ hKi)) hJ
+    _root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int hP (GlobalTheory.Hk3.GramSep.sigmaConjTranspose_integral_gramSeparation σ hσ hKi)) hJ
   have hy' : Formalism.UG.cT σ y = Formalism.UG.cT σ Ai * Formalism.UG.cT σ (y * A) := by
     rw [← cT_mul', Matrix.mul_assoc, hAAi, Matrix.mul_one]
   have hW : E * Z * E = ((E * A) * (Ai * P * Formalism.UG.cT σ Ai) * Formalism.UG.cT σ (y * A)) * T * ((y * A) * (Ai * E)) := by
@@ -1345,7 +1290,7 @@ theorem locH_sub_trace_mem : ∀ (L : Type) [Field L] [Valued L (WithZero (Multi
     rw [← Matrix.mul_assoc A Ai, hAAi, Matrix.one_mul, ← Matrix.mul_assoc A Ai E, hAAi, Matrix.one_mul]
   have hWint : ∀ i j, (E * Z * E) i j ∈ Formalism.UG.intL L := by
     rw [hW]
-    exact _root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int hEA hSD.2) (cT_int σ hσ hyA)) hT) (_root_.GlobalTheory.Hk3.matMul_int hyA hAiE)
+    exact _root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int (_root_.GlobalTheory.Hk3.matMul_int hEA hSD.2) (GlobalTheory.Hk3.GramSep.sigmaConjTranspose_integral_gramSeparation σ hσ hyA)) hT) (_root_.GlobalTheory.Hk3.matMul_int hyA hAiE)
   refine Subring.mul_mem _ hδ ?_
   exact Subring.sum_mem _ fun i _ => _root_.GlobalTheory.Hk3.matMul_int hRint hWint i i
 

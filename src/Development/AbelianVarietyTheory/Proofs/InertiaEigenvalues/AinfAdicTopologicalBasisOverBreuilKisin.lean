@@ -109,7 +109,7 @@ theorem Approx.eq_zero (hH : IsHausdorff I S)
     · rw [Finsupp.onFinset_sum _ (fun j => by simp)]
       have e : ∑ j ∈ F, s (if j ∈ F then h j else 0) * b j = -(0 - ∑ j ∈ F, s (h j) * b j) := by
         rw [zero_sub, neg_neg]
-        exact Finset.sum_congr rfl fun j hj => by rw [if_pos hj]
+        exact Finset.sum_congr rfl fun j hj => by rw [ite_eq_left hj]
       rw [e]
       exact neg_mem (Ideal.map_mono (Ideal.pow_le_pow_right (le_max_right n m)) hs)
   · exact Ideal.pow_le_pow_right (le_max_left n m) (hF i hi)

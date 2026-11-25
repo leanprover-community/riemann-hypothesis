@@ -140,7 +140,6 @@ theorem isRealLine_conj (h : IsCMExt F E σ) {γ : ℝ → GAd σ J} (hγ : IsRe
 
 end GlobalTheory.UAut.RightTranslate
 
-
 open GlobalTheory.UAut.RightTranslate in
 theorem GlobalTheory.UAut.isSm_mul_right_of_isCMExt : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E), IsCMExt F E σ → ∀ (f : GlobalTheory.AdelicU.GAd σ J → ℂ) (a : GlobalTheory.AdelicU.GAd σ J), GlobalTheory.UAut.IsSm σ J f → GlobalTheory.UAut.IsSm σ J (fun x => f (x * a)) := by
   intro F E _ _ _ _ _ σ n J h f a hf
@@ -326,8 +325,6 @@ open scoped TensorProduct
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
-theorem _root_.GlobalTheory.T.frame_family_right_translate : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ → ∀ (V : HSp D) (ε : D.what₂.Tau → Fin V.rank → Bool) (fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ), IsFrameFam V ε fr → ∀ b : GA D V, IsFrameFam V ε (fun τ => fr τ * (infMat D.sp.cm.sig V.gram (θ τ) b)⁻¹) := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.isFrameFam_mul_infMat_inv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.LanglandsDecompositionUnipotentLeviStatement =====
@@ -462,7 +459,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.JStable
 
-
 open Module in
 theorem exists_adapted_onb {ι : Type*} [Fintype ι] [DecidableEq ι]
     (W : Submodule ℂ (EuclideanSpace ℂ ι)) :
@@ -510,7 +506,7 @@ def res0 (s : Bool) (v : Fin n → ℂ) : EuclideanSpace ℂ {i : Fin n // ε i 
 
 lemma extendByZero_apply_of_ne {s : Bool} (x : EuclideanSpace ℂ {i : Fin n // ε i = s}) {a : Fin n}
     (h : ε a ≠ s) : ext0 ε s x a = 0 := by
-  simp only [ext0, LinearMap.coe_mk, AddHom.coe_mk, dif_neg h]
+  simp only [ext0, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_right h]
 
 lemma extendByZero_restrict_eigen_projection (s : Bool) (v : Fin n → ℂ) :
     ext0 ε s (res0 ε s v) =
@@ -538,7 +534,7 @@ lemma sum_extendByZero_fin_eq_sum_of_eq (s : Bool) (x y : EuclideanSpace ℂ {i 
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have hx : ∀ z : EuclideanSpace ℂ {i : Fin n // ε i = s}, ext0 ε s z i.1 = z i := by
     intro z
-    simp only [ext0, LinearMap.coe_mk, AddHom.coe_mk, dif_pos i.2]
+    simp only [ext0, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left i.2]
   rw [hx x, hx y]
   simp [mul_comm]
 
@@ -578,7 +574,7 @@ theorem exists_KG_coordinate (W : Submodule ℂ (Fin n → ℂ))
       rw [sum_extendByZero_fin_eq_sum_of_eq, orthonormal_iff_ite.1 (b (ε j)).orthonormal]
       simp only [Subtype.mk.injEq]
     · have hne : j ≠ l := fun h => hjl (h ▸ rfl)
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       refine Finset.sum_eq_zero (fun i _ => ?_)
       by_cases hi : ε i = ε j
       · rw [hM i l, extendByZero_apply_of_ne ε _ (fun h => hjl (hi.symm.trans h)), mul_zero]
@@ -1241,7 +1237,7 @@ theorem finite_slices_uPart : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.
         exact ⟨b₀⁻¹ * x * b₀, hx, by group⟩
     rw [e]
     exact hU.preimage (by fun_prop)
-  have hfr' := GlobalTheory.T.frame_family_right_translate D θ hθ V ε fr hfr b₀
+  have hfr' := GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.isFrameFam_mul_infMat_inv D θ hθ V ε fr hfr b₀
   have hfin := finite_slices_core D θ hθ V _ hU' ε _ hfr' W ρ hρ c m X Y hWF T hT had
   set H := uPart D.sp.cm.sig V.gram X Y T with hH
   set L := levi D.sp.cm.sig V.gram X Y T with hL

@@ -5,8 +5,6 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PJone
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
@@ -208,8 +206,8 @@ theorem lam_of {n : ℕ} (G : Grp k n) (g : GL (Fin n) k) (U : kˣ) (b : Fin G.s
     intro a
     unfold UpperTheory.TNZ.Grp.μnext
     by_cases h1 : (a : ℕ) + 1 < G.s
-    · simp only [dif_pos h1, ν]
-    · simp only [dif_neg h1, ν, MonoidHom.one_apply]
+    · simp only [dite_eq_left h1, ν]
+    · simp only [dite_eq_right h1, ν, MonoidHom.one_apply]
   have hterm : ∀ a : Fin G.s, UpperTheory.TNZ.Grp.chk (G.μ a / G.μnext a) (G.Δ a g) =
       ((hh a / hh (a + 1) : ℂˣ) : ℂ) := by
     intro a
@@ -218,22 +216,22 @@ theorem lam_of {n : ℕ} (G : Grp k n) (g : GL (Fin n) k) (U : kˣ) (b : Fin G.s
     by_cases hba : b ≤ a
     · have hba' : (b : ℕ) ≤ a := hba
       have hba'' : (b : ℕ) ≤ a + 1 := by omega
-      rw [if_pos hba, dif_neg U.ne_zero, Units.mk0_val, MonoidHom.div_apply, hnext]
-      simp only [hh, if_pos hba', if_pos hba'', ν, dif_pos a.2, Fin.eta]
+      rw [ite_eq_left hba, dite_eq_right U.ne_zero, Units.mk0_val, MonoidHom.div_apply, hnext]
+      simp only [hh, ite_eq_left hba', ite_eq_left hba'', ν, dite_eq_left a.2, Fin.eta]
     · have hba' : ¬ (b : ℕ) ≤ a := hba
-      rw [if_neg hba, dif_neg one_ne_zero]
+      rw [ite_eq_right hba, dite_eq_right one_ne_zero]
       have e1 : Units.mk0 (1 : k) one_ne_zero = 1 := Units.ext rfl
       rw [e1, map_one]
-      simp only [hh, if_neg hba']
+      simp only [hh, ite_eq_right hba']
       by_cases hb1 : (b : ℕ) ≤ a + 1
       · have e2 : (b : ℕ) = a + 1 := by omega
         simp [e2]
-      · simp only [if_neg hb1, div_self', Units.val_one]
+      · simp only [ite_eq_right hb1, div_self', Units.val_one]
   rw [Finset.prod_congr rfl (fun a _ => hterm a), ← Units.coe_prod]
   have e3 := Fin.prod_univ_eq_prod_range (fun i => hh i / hh (i + 1)) G.s
   rw [e3, Finset.prod_range_div']
   have hνb : ν b = G.μ b U := by
-    simp only [ν, dif_pos b.2, Fin.eta]
+    simp only [ν, dite_eq_left b.2, Fin.eta]
   have h0 : hh 0 = ν b := by
     simp only [hh]
     split_ifs with h1
@@ -241,7 +239,7 @@ theorem lam_of {n : ℕ} (G : Grp k n) (g : GL (Fin n) k) (U : kˣ) (b : Fin G.s
       rw [e4]
     · rfl
   have hs : hh G.s = 1 := by
-    simp only [hh, if_pos (le_of_lt b.2), ν, dif_neg (lt_irrefl _)]
+    simp only [hh, ite_eq_left (le_of_lt b.2), ν, dite_eq_right (lt_irrefl _)]
   rw [h0, hs, hνb, div_one]
 
 
@@ -336,7 +334,7 @@ theorem memJ_left {n : ℕ} (G : Grp k n) (g : GL (Fin n) k) (q : Fin n) (c : �
         exact mul_le_one' hz1 (hr j)
       · simp
   · have hne : i ≠ j := fun e => by subst e; exact lt_irrefl _ hij
-    rw [hentry, if_neg hne, zero_add]
+    rw [hentry, ite_eq_right hne, zero_add]
     split_ifs with hiq
     · subst hiq
       by_cases hrj : r j = 0
@@ -368,7 +366,7 @@ theorem memJ_right {n : ℕ} (G : Grp k n) (g : GL (Fin n) k) (p : Fin n) (c : �
         exact mul_le_one' hz1 (hs i)
       · simp
   · have hne : i ≠ j := fun e => by subst e; exact lt_irrefl _ hij
-    rw [hentry, if_neg hne, zero_add]
+    rw [hentry, ite_eq_right hne, zero_add]
     split_ifs with hjp
     · subst hjp
       by_cases hsi : s i = 0

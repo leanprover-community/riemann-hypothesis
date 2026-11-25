@@ -17,41 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitC
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MapFinNeg
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCartanInvolutionCommQuasiReflection
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HomSymplecticHalfFormAlgebraicLawsContinuous
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RationalPointsFinitePartSelfDualLatticeIff
@@ -66,15 +31,11 @@ import Development.AbelianVarietyTheory.Proofs.HeightProofs.SpanRealProjectionRa
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsThetaFunNeZero
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaTildeHeckeCharSplitMulSignOfNormFormulaStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteWeilRepEqLatticeIntertwinerMulCharacterStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralGaussianRealIsometryNoFixedStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussianPoincareSeriesThetaVacuumStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalIsometryVacuumScalarGaussSumIntegral, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalIsometryVacuumScalarGaussSumIntegralStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaDistributionInvariantRationalTarget
@@ -331,7 +292,7 @@ theorem chiLat_mul_exp (hψ : IsStdChar D ψ (-1)) (hσ : Chart θ σ) (LS : Set
   unfold chiLat gaussQ
   rw [← finRat_eq]
   by_cases hy : b * y * a - y ∈ latQ S T LS LT
-  · rw [if_pos hy, if_pos (mem_latQ.1 hy)]
+  · rw [ite_eq_left hy, ite_eq_left (mem_latQ.1 hy)]
     have e : finRat S T (b * y * a - y) + finRat S T y = finRat S T (b * y * a) := by
       rw [← map_add (f := _), sub_add_cancel]
     have h1 := phase_identity (W := intA D w) (by rw [cA_intA, ← RingHom.map_add (f := _), hw, RingHom.map_one])
@@ -342,7 +303,7 @@ theorem chiLat_mul_exp (hψ : IsStdChar D ψ (-1)) (hσ : Chart θ σ) (LS : Set
       rw [gamQ_eq, map_smul, cA_intA]
       rfl
     rw [h2, ← h1, e, AddChar.map_add_eq_mul, mul_assoc, beta_fin hψ hσ, mul_one]
-  · rw [if_neg hy, if_neg (fun h => hy (mem_latQ.2 h)), zero_mul]
+  · rw [ite_eq_right hy, ite_eq_right (fun h => hy (mem_latQ.2 h)), zero_mul]
 
 theorem left_side (hψ : IsStdChar D ψ (-1)) (hσ : Chart θ σ) (halt : ∀ x y, omO S T x y = -omO S T y x)
     (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ)
@@ -441,7 +402,7 @@ theorem summable_coefQ (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ)
       refine ((finite_latQ dS dT R).image (ratW T S)).subset ?_
       rintro _ ⟨⟨y, rfl⟩, h1, h2⟩
       exact ⟨y, ⟨mem_latQ.2 (by rw [finRat_eq]; exact h1), by rw [← piW_ratW hθ]; exact h2⟩, rfl⟩)
-    (fun x hx => if_neg hx)
+    (fun x hx => ite_eq_right hx)
     (fun x => by
       unfold chiLat
       split_ifs
@@ -463,7 +424,7 @@ theorem mem_of_coefQ_ne_zero {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.
   have e : chiLat ψ S T LS LT w (ratW T S y + u) = 0 := by
     unfold chiLat
     rw [smul_add, ← finRat_eq, fin_smul_XF]
-    exact if_neg hn
+    exact ite_eq_right hn
   rw [coefQ, e, mul_zero, zero_mul, mul_zero]
 
 theorem coefQ_zero (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ)
@@ -473,7 +434,7 @@ theorem coefQ_zero (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ)
   have e : ratW T S 0 = 0 := Matrix.map_zero _ (incA D).map_zero
   rw [coefQ, e, zero_add, map_zero, symplOH, symplO_zero_left, mul_zero, AddChar.map_zero_eq_one, one_mul, map_zero,
     LinearMap.zero_apply, Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one, chiLat, fin_smul_XF,
-    if_pos (mem_latF.1 hu), phase, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one]
+    ite_eq_left (mem_latF.1 hu), phase, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one]
 
 
 theorem gauss_mul_integral : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (θ : InfFam D), IsInfFam θ → ∀ (S T : HSp D) (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ), (∀ τ, IsCartanInv (gramAt D S τ) (sS τ)) → (∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) → ∀ (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ w : 𝓞 D.host.E, w + GlobalTheory.FinWeil.sgO D w = 1 → ∀ (g : GA D S) (h : GA D T) (a : Matrix (Fin S.rank) (Fin S.rank) D.host.E) (b : Matrix (Fin T.rank) (Fin T.rank) D.host.E), Formalism.L2.Theta.mt S g = a.map (incA D) → Formalism.L2.Theta.mt T h⁻¹ = b.map (incA D) → Function.Bijective (fun x : Matrix (Fin T.rank) (Fin S.rank) D.host.E => b * x * a - x) → Integrable (gaussR S T sS sT (fun τ => a.map (tauE D τ)) (fun τ => b.map (tauE D τ))) volume → ∀ κ : ℂ, (∀ f : thetaSub ψ S T, Fixes (opF hψ.1 S T w) (latF S T ΛS ΛT) f → (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) f) → ∀ x, (f : WO S T → ℂ) (actO S T g⁻¹ h⁻¹ x) = κ * ((sumOp (opF hψ.1 S T w) (latF S T ΛS ΛT) ((latF S T ΛS ΛT).map (rhoF S T (g, h))) f : thetaSub ψ S T) : WO S T → ℂ) x) → ∀ (n : ℕ) (t : Fin n → Matrix (Fin T.rank) (Fin S.rank) D.host.E), (∀ k, b * t k * a - t k ∈ latQ S T ΛS ΛT) → (∀ y, b * y * a - y ∈ latQ S T ΛS ΛT → ∃! k, y - t k ∈ latQ S T ΛS ΛT) → ∃ r : ℝ, 0 < r ∧ (∑ k, gamQ ψ S T (GlobalTheory.FinWeil.sgO D w • (b * t k * a - t k)) (t k)) * ∫ v, gaussR S T sS sT (fun τ => a.map (tauE D τ)) (fun τ => b.map (tauE D τ)) v = r * κ := by
@@ -493,8 +454,8 @@ theorem gauss_mul_integral : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ 
   have hC : ∀ x, x ∈ C ↔ x ∈ latQ S T ΛS ΛT ∧ b * x * a ∈ latQ S T ΛS ΛT := fun x => Iff.rfl
   have hX : ∀ x, x ∈ latQ S T ΛS ΛT ↔ finX S T x ∈ latF S T ΛS ΛT := fun x => Iff.rfl
   have hQ : ∀ y, b * y * a - y ∈ latQ S T ΛS ΛT →
-      gaussQ ψ S T ΛS ΛT w a b y = gamQ ψ S T (GlobalTheory.FinWeil.sgO D w • (b * y * a - y)) y := fun y hy => if_pos hy
-  have hQ0 : ∀ y, b * y * a - y ∉ latQ S T ΛS ΛT → gaussQ ψ S T ΛS ΛT w a b y = 0 := fun y hy => if_neg hy
+      gaussQ ψ S T ΛS ΛT w a b y = gamQ ψ S T (GlobalTheory.FinWeil.sgO D w • (b * y * a - y)) y := fun y hy => ite_eq_left hy
+  have hQ0 : ∀ y, b * y * a - y ∉ latQ S T ΛS ΛT → gaussQ ψ S T ΛS ΛT w a b y = 0 := fun y hy => ite_eq_right hy
   have h0 : κ * ∑ i, coefQ ψ S T sS sT ΛS ΛT w (u i) 0 = κ := by
     obtain ⟨i, hi, hi'⟩ := huT 0 (zero_mem _)
     rw [Finset.sum_eq_single i, coefQ_zero sS sT w (by simpa using hi), mul_one]

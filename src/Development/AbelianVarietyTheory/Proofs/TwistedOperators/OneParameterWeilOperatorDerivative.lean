@@ -97,7 +97,7 @@ theorem fst_eq_zero {a : AF F} (h : evI F a = 0) : a.1 = 0 :=
 theorem mul_eq_zero_of {a b : AF F} (ha : evI F a = 0) (hb : b.2 = 0) : a * b = 0 :=
   Prod.ext (by show a.1 * b.1 = 0; rw [fst_eq_zero ha, zero_mul]) (by show a.2 * b.2 = 0; rw [hb, mul_zero])
 
-theorem at_of_snd {a : AF F} (h : a.2 = 0) : At (evI F) a := fun u hu => mul_eq_zero_of hu h
+theorem at_of_snd {a : AF F} (h : a.2 = 0) : At (evI F) a := fun _ hu => mul_eq_zero_of hu h
 
 theorem snd_of_at {a : AF F} (h : At (evI F) a) : a.2 = 0 := by
   have h1 := h (((0 : InfiniteAdeleRing F), (1 : FiniteAdeleRing (𝓞 F) F)) : AF F)
@@ -107,10 +107,10 @@ theorem snd_of_at {a : AF F} (h : At (evI F) a) : a.2 = 0 := by
 
 theorem at_vec_iff {κ : Type} {z : κ → AF F} : At (evI F) z ↔ ∀ i, (z i).2 = 0 :=
   ⟨fun h i => snd_of_at (fun u hu => congrFun (h u hu) i),
-    fun h u hu => funext fun i => mul_eq_zero_of hu (h i)⟩
+    fun h _ hu => funext fun i => mul_eq_zero_of hu (h i)⟩
 
 theorem archPart_archLift {κ : Type} (x : κ → mixedEmbedding.mixedSpace F) : archPart (archLift x) = x :=
-  funext fun i => RingEquiv.apply_symm_apply _ _
+  funext fun _ => RingEquiv.apply_symm_apply _ _
 
 theorem archLift_archPart {κ : Type} {z : κ → AF F} (hz : At (evI F) z) : archLift (archPart z) = z := by
   funext i

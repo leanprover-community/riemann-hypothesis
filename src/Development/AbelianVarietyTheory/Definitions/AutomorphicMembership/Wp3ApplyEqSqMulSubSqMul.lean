@@ -209,7 +209,6 @@ theorem isScal_tr (h : R.IsScal F) : letI := alg b iK; (real3 b R).IsScal (face3
   case tup => exact h.tup
 
 theorem primRows3_tr (h : PrimRows3 R F) : letI := alg b iK; PrimRows3 (real3 b R) (face3 b F) := by
-  set_option maxHeartbeats 16000000 in
    let _ := alg b iK
    constructor
    case heckeR => exact h.heckeR

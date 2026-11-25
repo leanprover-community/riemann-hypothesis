@@ -182,30 +182,7 @@ def cechAbCubeToCube :
 
 variable (S : Type t) [CommRing S] [Algebra S Γ(X, ⊤)] [Algebra R S] [IsScalarTower R S Γ(X, ⊤)]
 
-def cechCubeScalars : Cube.SemiHom (algebraMap R S) (cechCube R F V U) (cechCube S F V U) where
-  app s :=
-    { toFun := fun x => x
-      map_add' := fun _ _ => rfl
-      map_smul' := fun r (x : sectionsOn F (cechOpen V U s)) => (algebraMap_smul S r x).symm }
-  app_res _ _ := rfl
-
-def cechCubeRestrictScalarsIso :
-    cechCube R F V U ≅ cechCube S F V U ⋙ ModuleCat.restrictScalars (algebraMap R S) :=
-  Cube.isoMk (fun s =>
-    { toFun := fun x => x
-      invFun := fun x => x
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      map_add' := fun _ _ => rfl
-      map_smul' := fun r (x : sectionsOn F (cechOpen V U s)) => (algebraMap_smul S r x).symm })
-    fun _ _ => rfl
-
 variable [LinearOrder ι]
-
-def cechHScalarsEquiv (n : ℕ) : cechH R F V U n ≃+ cechH S F V U n :=
-  AddEquiv.ofBijective ((cechCubeScalars R F V U S).homology n).toAddMonoidHom
-    ((cechCubeScalars R F V U S).homology_bijective (fun _ _ => Function.bijective_id) n)
-
 
 def cechAbHEquiv (n : ℕ) : cechAbH F.presheaf V U n ≃+ cechH R F V U n :=
   AddEquiv.ofBijective ((cechAbCubeToCube R F V U).homology n).toAddMonoidHom

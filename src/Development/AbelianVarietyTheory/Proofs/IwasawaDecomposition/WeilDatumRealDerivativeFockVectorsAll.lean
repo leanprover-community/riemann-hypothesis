@@ -142,29 +142,29 @@ theorem pair_eq (e : κ → σ) (he : Function.Injective e) (p : κ → Prop) [D
     rw [← C_add, add_halves]
   have h2' : ∀ c : ℂ, C (2 * c) = C c + (C c : MvPolynomial σ ℂ) := fun c => by
     rw [← C_add, two_mul]
-  have wp : ∀ a, p a → ∀ Q, wOp e p a Q = X (e a) * Q := fun a h Q => if_pos h
-  have wn : ∀ a, ¬ p a → ∀ Q, wOp e p a Q = -pderiv (e a) Q := fun a h Q => if_neg h
-  have vp : ∀ a, p a → ∀ Q, vOp e p a Q = pderiv (e a) Q := fun a h Q => if_pos h
-  have vn : ∀ a, ¬ p a → ∀ Q, vOp e p a Q = X (e a) * Q := fun a h Q => if_neg h
-  have fp : ∀ a, p a → ∀ c, fc p a c = c := fun a h c => if_pos h
-  have fn : ∀ a, ¬ p a → ∀ c, fc p a c = conj c := fun a h c => if_neg h
-  have ms : ∀ a b, (p a ↔ p b) → mA p A a b = fc p a (A a b) := fun a b h => if_pos h
-  have md : ∀ a b, ¬ (p a ↔ p b) → mA p A a b = 0 := fun a b h => if_neg h
-  have ns : ∀ a b, (p a ↔ p b) → nA p A a b = 0 := fun a b h => if_pos h
-  have nd : ∀ a b, ¬ (p a ↔ p b) → nA p A a b = fc p a (A a b) := fun a b h => if_neg h
+  have wp : ∀ a, p a → ∀ Q, wOp e p a Q = X (e a) * Q := fun a h Q => ite_eq_left h
+  have wn : ∀ a, ¬ p a → ∀ Q, wOp e p a Q = -pderiv (e a) Q := fun a h Q => ite_eq_right h
+  have vp : ∀ a, p a → ∀ Q, vOp e p a Q = pderiv (e a) Q := fun a h Q => ite_eq_left h
+  have vn : ∀ a, ¬ p a → ∀ Q, vOp e p a Q = X (e a) * Q := fun a h Q => ite_eq_right h
+  have fp : ∀ a, p a → ∀ c, fc p a c = c := fun a h c => ite_eq_left h
+  have fn : ∀ a, ¬ p a → ∀ c, fc p a c = conj c := fun a h c => ite_eq_right h
+  have ms : ∀ a b, (p a ↔ p b) → mA p A a b = fc p a (A a b) := fun a b h => ite_eq_left h
+  have md : ∀ a b, ¬ (p a ↔ p b) → mA p A a b = 0 := fun a b h => ite_eq_right h
+  have ns : ∀ a b, (p a ↔ p b) → nA p A a b = 0 := fun a b h => ite_eq_left h
+  have nd : ∀ a b, ¬ (p a ↔ p b) → nA p A a b = fc p a (A a b) := fun a b h => ite_eq_right h
   by_cases hk : p k <;> by_cases hl : p l
   · have hn : ¬ (k = l ∧ ¬ p k) := fun h => h.2 hk
     have e1 : (p k ↔ p l) := by simp [hk, hl]
-    rw [if_neg hn, wp k hk, wp l hl, vp k hk, vp l hl]
+    rw [ite_eq_right hn, wp k hk, wp l hl, vp k hk, vp l hl]
     simp only [gT, ms k l e1, ms l k e1.symm, ns k l e1, ns l k e1.symm, fp k hk, fp l hl, zero_div, map_zero]
     ring
   · have hne : k ≠ l := fun h => hl (h ▸ hk)
     have hn : ¬ (k = l ∧ ¬ p k) := fun h => hne h.1
     have e1 : ¬ (p k ↔ p l) := by simp [hk, hl]
     have e2 : ¬ (p l ↔ p k) := by simp [hk, hl]
-    rw [if_neg e1] at hkl
-    rw [if_neg e2] at hlk
-    rw [if_neg hn, wp k hk, wn l hl, vp k hk, vn l hl]
+    rw [ite_eq_right e1] at hkl
+    rw [ite_eq_right e2] at hlk
+    rw [ite_eq_right hn, wp k hk, wn l hl, vp k hk, vn l hl]
     simp only [gT, md k l e1, md l k e2, nd k l e1, nd l k e2, fp k hk, fn l hl, hlk, hkl, map_zero]
     rw [h2 (A k l), h2 (A l k), hd l k]
     ring
@@ -172,26 +172,26 @@ theorem pair_eq (e : κ → σ) (he : Function.Injective e) (p : κ → Prop) [D
     have hn : ¬ (k = l ∧ ¬ p k) := fun h => hne h.1
     have e1 : ¬ (p k ↔ p l) := by simp [hk, hl]
     have e2 : ¬ (p l ↔ p k) := by simp [hk, hl]
-    rw [if_neg e1] at hkl
-    rw [if_neg e2] at hlk
-    rw [if_neg hn, wn k hk, wp l hl, vn k hk, vp l hl]
+    rw [ite_eq_right e1] at hkl
+    rw [ite_eq_right e2] at hlk
+    rw [ite_eq_right hn, wn k hk, wp l hl, vn k hk, vp l hl]
     simp only [gT, md k l e1, md l k e2, nd k l e1, nd l k e2, fn k hk, fp l hl, hlk, hkl, map_zero]
     rw [h2 (A k l), h2 (A l k), hd l k]
     ring
   · have e1 : (p k ↔ p l) := by simp [hk, hl]
     have e2 : (p l ↔ p k) := by simp [hk, hl]
-    rw [if_pos e1] at hkl
-    rw [if_pos e2] at hlk
+    rw [ite_eq_left e1] at hkl
+    rw [ite_eq_left e2] at hlk
     rw [wn k hk, wn l hl, vn k hk, vn l hl, hx, hx]
     simp only [gT, ms k l e1, ms l k e2, ns k l e1, ns l k e2, fn k hk, fn l hl, hlk, hkl, map_zero, zero_div,
       map_neg]
     by_cases h : k = l
     · subst h
-      simp only [if_true, true_and, if_pos hk]
+      simp only [ite_true, true_and, ite_eq_left hk]
       rw [h2' (A k k)]
       ring
     · have h' : l ≠ k := Ne.symm h
-      rw [if_neg (fun hh : k = l ∧ ¬ p k => h hh.1), if_neg h, if_neg h']
+      rw [ite_eq_right (fun hh : k = l ∧ ¬ p k => h hh.1), ite_eq_right h, ite_eq_right h']
       ring
 
 theorem sum_eq (e : κ → σ) (he : Function.Injective e) (p : κ → Prop) [DecidablePred p] (A : Matrix κ κ ℂ)
@@ -213,7 +213,7 @@ theorem sum_eq (e : κ → σ) (he : Function.Injective e) (p : κ → Prop) [De
       refine Finset.sum_congr rfl fun k _ => ?_
       by_cases hk : p k
       · simp [hk]
-      · simp only [hk, if_false, not_false_eq_true, and_true, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      · simp only [hk, ite_false, not_false_eq_true, and_true, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
         rw [two_mul, C_add, add_mul]
     rw [e1, e2, e3, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -232,15 +232,13 @@ open Formalism.BasicNotions Formalism.IndefR.Datum Formalism.IndefR.Fock.Sk Glob
 
 def sgB {k : ℕ} (p : ℕ) (a : Fin k) : Bool := decide ((a : ℕ) < p)
 
-theorem Jm_eq' {k : ℕ} (ε : Fin k → Bool) : Formalism.REAL.Jm ε = diagonal fun a => sgn (ε a) := rfl
-
 theorem sgn_sq (e : Bool) : sgn e * sgn e = 1 := by cases e <;> simp [sgn]
 
 theorem onb_facts {k : ℕ} {G s B : Matrix (Fin k) (Fin k) ℂ} {p : ℕ} (h : IsONBasis G s B p) :
     IsUnit B.det ∧ Bᴴ * G * B = Formalism.REAL.Jm (sgB p) ∧ s * B = B * Formalism.REAL.Jm (sgB p) := by
   obtain ⟨ε, h1, h2, h3⟩ := h
   have e : (diagonal fun a => (ε a : ℂ)) = Formalism.REAL.Jm (sgB p) := by
-    rw [Jm_eq']
+    rw [GlobalTheory.LieFock.Jm_eq]
     congr 1
     funext a
     rcases h1 a with ⟨h, h'⟩ | ⟨h, h'⟩
@@ -249,7 +247,7 @@ theorem onb_facts {k : ℕ} {G s B : Matrix (Fin k) (Fin k) ℂ} {p : ℕ} (h : 
   rw [e] at h2 h3
   refine ⟨?_, h2, h3⟩
   have hJ : Formalism.REAL.Jm (sgB (k := k) p) * Formalism.REAL.Jm (sgB p) = 1 := by
-    simp only [Jm_eq', diagonal_mul_diagonal, sgn_sq, diagonal_one]
+    simp only [GlobalTheory.LieFock.Jm_eq, diagonal_mul_diagonal, sgn_sq, diagonal_one]
   refine Matrix.isUnit_det_of_left_inverse (B := Formalism.REAL.Jm (sgB p) * (Bᴴ * G)) ?_
   rw [Matrix.mul_assoc, h2, hJ]
 
@@ -301,16 +299,16 @@ theorem aK_conj {X : Matrix (Fin n) (Fin n) ℂ} {Y : Matrix (Fin m) (Fin m) ℂ
     have hb := fun j => sgn_sq (sgB pS (j : Fin n))
     by_cases h1 : j = j' <;> by_cases h2 : i = i'
     · subst h1 h2
-      simp only [if_true, hX, hY]
+      simp only [ite_true, hX, hY]
       linear_combination (-(X j j) * sgn (sgB pS j) * sgn (sgB pS j)) * ha i +
         (sgn (sgB pT i) * sgn (sgB pT i) * Y i i) * hb j
     · subst h1
       have h2' : i' ≠ i := Ne.symm h2
-      simp only [if_true, if_neg h2, if_neg h2', map_zero, sub_zero, hY]
+      simp only [ite_true, ite_eq_right h2, ite_eq_right h2', map_zero, sub_zero, hY]
       linear_combination (sgn (sgB pT i) * sgn (sgB pT i') * Y i' i) * hb j
     · subst h2
       have h1' : j' ≠ j := Ne.symm h1
-      simp only [if_true, if_neg h1, if_neg h1', map_zero, zero_sub, hX]
+      simp only [ite_true, ite_eq_right h1, ite_eq_right h1', map_zero, zero_sub, hX]
       linear_combination (-(sgn (sgB pS j) * sgn (sgB pS j') * X j j')) * ha i
     · have h1' : j' ≠ j := Ne.symm h1
       have h2' : i' ≠ i := Ne.symm h2
@@ -353,7 +351,7 @@ theorem fCoord_conj (hS : IsUnit BS.det) (hT : IsUnit BT.det) (W : Matrix (Fin m
 
 theorem Jm_entry {a b : ℕ} (ε : Fin a → Bool) (ε' : Fin b → Bool) (W : Matrix (Fin a) (Fin b) ℂ) (i : Fin a) (j : Fin b) :
     (Formalism.REAL.Jm ε * W * Formalism.REAL.Jm ε') i j = sgn (ε i) * W i j * sgn (ε' j) := by
-  rw [Jm_eq', Jm_eq', mul_diagonal, diagonal_mul]
+  rw [GlobalTheory.LieFock.Jm_eq, GlobalTheory.LieFock.Jm_eq, mul_diagonal, diagonal_mul]
 
 theorem part_entry (X : Matrix (Fin n) (Fin n) ℂ) (Y : Matrix (Fin m) (Fin m) ℂ) (c : ℂ) (k l : Fin m × Fin n) :
     ((1 / 2 : ℂ) • ((Y * Matrix.single l.1 l.2 (1 : ℂ) - Matrix.single l.1 l.2 (1 : ℂ) * X) + c •
@@ -404,10 +402,10 @@ theorem mCoef_eq (hS : IsUnit BS.det) (hT : IsUnit BT.det) (hsS : sS * BS = BS *
   simp only [mCoef, unitMap, cplxO_conj hS hsS hsT, adX_conj hS hT]
   rw [e, fCoord_conj hS hT, h]
   by_cases hp : pp pS pT k ↔ pp pS pT l
-  · rw [if_pos hp, mA, if_pos hp]
+  · rw [ite_eq_left hp, mA, ite_eq_left hp]
     congr 1
     ring
-  · rw [if_neg hp, mA, if_neg hp, show (1 / 2 : ℂ) * (1 - -1 * -1) = 0 by ring, zero_mul, fc_zero]
+  · rw [ite_eq_right hp, mA, ite_eq_right hp, show (1 / 2 : ℂ) * (1 - -1 * -1) = 0 by ring, zero_mul, fc_zero]
 
 theorem nCoef_eq (hS : IsUnit BS.det) (hT : IsUnit BT.det) (hsS : sS * BS = BS * Formalism.REAL.Jm (sgB pS))
     (hsT : sT * BT = BT * Formalism.REAL.Jm (sgB pT)) (k l : Fin m × Fin n) :
@@ -420,8 +418,8 @@ theorem nCoef_eq (hS : IsUnit BS.det) (hT : IsUnit BT.det) (hsS : sS * BS = BS *
   simp only [nCoef, unitMap, cplxO_conj hS hsS hsT, adX_conj hS hT]
   rw [e, fCoord_conj hS hT, h]
   by_cases hp : pp pS pT k ↔ pp pS pT l
-  · rw [if_pos hp, nA, if_pos hp, show (1 / 2 : ℂ) * (1 - 1 * 1) = 0 by ring, zero_mul, fc_zero]
-  · rw [if_neg hp, nA, if_neg hp]
+  · rw [ite_eq_left hp, nA, ite_eq_left hp, show (1 / 2 : ℂ) * (1 - 1 * 1) = 0 by ring, zero_mul, fc_zero]
+  · rw [ite_eq_right hp, nA, ite_eq_right hp]
     congr 1
     ring
 
@@ -448,18 +446,18 @@ theorem rai_eq (i : Fin m) (j : Fin n) (Q : MvPolynomial (FVar D m n) ℂ) :
     raiO τ (sgB pS) (sgB pT) i j Q = sgn (sgB pS j) • wOp (eV τ) (pp pS pT) (i, j) Q := by
   unfold raiO wOp
   by_cases h : pp pS pT (i, j)
-  · rw [if_pos ((sg_iff pS pT i j).2 h), if_pos h]
+  · rw [ite_eq_left ((sg_iff pS pT i j).2 h), ite_eq_left h]
     rfl
-  · rw [if_neg (fun e => h ((sg_iff pS pT i j).1 e)), if_neg h]
+  · rw [ite_eq_right (fun e => h ((sg_iff pS pT i j).1 e)), ite_eq_right h]
     rfl
 
 theorem low_eq (i : Fin m) (j : Fin n) (Q : MvPolynomial (FVar D m n) ℂ) :
     lowO τ (sgB pS) (sgB pT) i j Q = sgn (sgB pS j) • vOp (eV τ) (pp pS pT) (i, j) Q := by
   unfold lowO vOp
   by_cases h : pp pS pT (i, j)
-  · rw [if_pos ((sg_iff pS pT i j).2 h), if_pos h]
+  · rw [ite_eq_left ((sg_iff pS pT i j).2 h), ite_eq_left h]
     rfl
-  · rw [if_neg (fun e => h ((sg_iff pS pT i j).1 e)), if_neg h]
+  · rw [ite_eq_right (fun e => h ((sg_iff pS pT i j).1 e)), ite_eq_right h]
     rfl
 
 theorem fockT_apply (Y : Matrix (Fin m) (Fin m) ℂ) (P : MvPolynomial (FVar D m n) ℂ) :
@@ -505,7 +503,7 @@ theorem sum_aK {R : Type} [CommRing R] (c : ℂ →+* R) (X : Matrix (Fin n) (Fi
   · refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => ?_
-    simp only [apply_ite c, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [apply_ite c, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   · have e : ∀ i j, ∑ i', ∑ j', c (if (i, j).1 = (i', j').1 then X (i', j').2 (i, j).2 else 0) * T (i, j) (i', j') =
         ∑ k, c (X k j) * T (i, j) (i, k) := fun i j => by
       rw [Finset.sum_eq_single i (fun b _ hb => Finset.sum_eq_zero fun j' _ => by simp [Ne.symm hb]) (by simp)]
@@ -547,18 +545,18 @@ theorem fock_eq_quad (hS : IsONBasis GS sS BS pS) (hT : IsONBasis GT sT BT pT) (
     rw [sgn_sq]
     ring
   have tr2 : ∑ k : Fin m × Fin n, aK Xf Yf k k = (n : ℂ) * Yf.trace - (m : ℂ) * Xf.trace := by
-    simp only [Fintype.sum_prod_type, aK_apply, if_true, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
+    simp only [Fintype.sum_prod_type, aK_apply, ite_true, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul, Matrix.trace, Matrix.diag, Finset.mul_sum]
   have sc : halfTrJ sS BS XS sT BT XT pS pT = (1 / 2 : ℂ) * ∑ k, aK Xf Yf k k - ∑ k, (if pp pS pT k then 0 else aK Xf Yf k k) := by
     rw [halfTrJ, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [mCoef_eq uS uT cS cT, mA, if_pos Iff.rfl, fc]
+    rw [mCoef_eq uS uT cS cT, mA, ite_eq_left Iff.rfl, fc]
     by_cases h : pp pS pT k
-    · simp only [if_pos h]
+    · simp only [ite_eq_left h]
       ring
     · have e := hA k k
-      rw [if_pos Iff.rfl] at e
-      rw [if_neg h, if_neg h, e]
+      rw [ite_eq_left Iff.rfl] at e
+      rw [ite_eq_right h, ite_eq_right h, e]
       ring
   have hR : ∑ k, (if pp pS pT k then 0 else C (aK Xf Yf k k) * P) =
       (∑ k, (if pp pS pT k then 0 else aK Xf Yf k k)) • P := by

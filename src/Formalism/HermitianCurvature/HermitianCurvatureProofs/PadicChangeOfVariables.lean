@@ -726,7 +726,7 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
       ∑ᶠ z : Kˣ, (fun p : (K ⧸ R.toAddSubgroup) × Kˣ => if p ∈ S then f (p.2 : K) else 0) (x, z) := by
     intro x
     by_cases hc : (cr x : K) ∈ cutSet m Om t
-    · rw [if_pos hc]
+    · rw [ite_eq_left hc]
       refine finsum_congr fun z => ?_
       refine if_congr ?_ rfl rfl
       constructor
@@ -744,9 +744,9 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
         rw [← Units.val_mul, inv_mul_cancel_right] at h3
         exact h3
       · exact fun h => h.2
-    · rw [if_neg hc]
+    · rw [ite_eq_right hc]
       symm
-      refine finsum_eq_zero_of_forall_eq_zero fun z => if_neg ?_
+      refine finsum_eq_zero_of_forall_eq_zero fun z => ite_eq_right ?_
       rintro ⟨h1, h2⟩
       refine hc ⟨_, h1, ?_⟩
       rw [← Units.val_pow_eq_pow_val, h2, Units.val_mul, hTv]
@@ -756,7 +756,7 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
     intro p hp
     rw [Set.Finite.coe_toFinset]
     by_contra h
-    exact hp (if_neg h)
+    exact hp (ite_eq_right h)
   rw [finsum_congr step1, ← finsum_curry _ (hSfin.toFinset.finite_toSet.subset hsupp),
     finsum_eq_sum_of_support_subset _ hsupp,
     ← Finset.sum_fiberwise_of_maps_to (t := hW.toFinset)
@@ -777,12 +777,12 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
     intro y hy
     rw [Set.Finite.coe_toFinset]
     by_contra h
-    exact hy (if_neg h)
+    exact hy (ite_eq_right h)
   rw [finsum_eq_sum_of_support_subset _ hsupp2, Finset.mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun w hw => ?_
   rw [Set.Finite.mem_toFinset] at hw
   have hw : (Quotient.out w : K) ∈ Om := hw
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
   have hset : ((hSfin.toFinset.filter
       (fun p : (K ⧸ R.toAddSubgroup) × Kˣ => (((p.2 : Kˣ) : K) : K ⧸ B) = w) : Finset _) : Set _) =
       {p : (K ⧸ R.toAddSubgroup) × Kˣ | (p.2 : K) - (Quotient.out w : K) ∈ B ∧
@@ -795,7 +795,7 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
       (if p ∈ S then f (p.2 : K) else 0) = f (Quotient.out w : K) := by
     intro p hp
     rw [Finset.mem_filter, Set.Finite.mem_toFinset] at hp
-    rw [if_pos hp.1]
+    rw [ite_eq_left hp.1]
     have h1 := ((hfib w hw p).1 hp).1
     have h2 := hf _ hw _ (hBΛ h1)
     rwa [add_sub_cancel] at h2
@@ -826,7 +826,7 @@ theorem gram_equality_of_vectors : Formalism.FourierDecayAlt.A6.UGramEq := by
     intro x; simp [Ns, pt2]
   simp only [e1] at h2
   unfold uGram
-  simp only [Set.mem_univ, if_true]
+  simp only [Set.mem_univ, ite_true]
   rw [h2, hC K R ψ hD h m t, hC K R ψ hD h' m t']
   unfold Ns N0
   obtain ⟨ha, hab⟩ := hM K R ψ hD t t'

@@ -5,45 +5,7 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsRestric
 import Aesop.Main
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LintegralFintypeProdEqProd
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -232,8 +194,8 @@ theorem hasQuotInt_tensor (hX : IsRestrGroup pa pf K) (hμ : IsHaarProd pa pf K 
   choose fa a1 a2 a3 using fun w => (ha w).exists_lift (hTa w) (ia w)
   choose g b1 b2 b3 using fun v => (hf v).exists_lift (hTf v) (jf v)
   let ff : ∀ v, Yf v → ℂ := fun v => if v ∈ S then g v else (K v : Set (Yf v)).indicator 1
-  have e1 : ∀ v ∈ S, ff v = g v := fun v hv => if_pos hv
-  have e2 : ∀ v ∉ S, ff v = (K v : Set (Yf v)).indicator 1 := fun v hv => if_neg hv
+  have e1 : ∀ v ∈ S, ff v = g v := fun v hv => ite_eq_left hv
+  have e2 : ∀ v ∉ S, ff v = (K v : Set (Yf v)).indicator 1 := fun v hv => ite_eq_right hv
   obtain ⟨hI, hI'⟩ := hμ.integral_tensor_indicator (fun w => (hX.continuous_pa w).measurable)
     (fun v => (hX.continuous_pf v).measurable) (fun v => (hX.isOpen_K v).measurableSet) hX.eventually_mem
     (fun v hv => (hS v hv).2.1) e2 a1 fun v hv => e1 v hv ▸ b1 v

@@ -18,54 +18,10 @@ public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.NumberTheory.Harmonic.Bounds
 public import Mathlib.Analysis.SumIntegralComparisons
 import Formalism.LFunctionBounds.LFunctionBoundsProofs.RectResidue
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.NumberTheory.DirichletCharacter.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
@@ -657,7 +613,7 @@ lemma sum_w (N : ℕ) {B : ℝ} (hB : 0 ≤ B) :
     simp only [w, Finset.sum_add_distrib, mul_add, Finset.mul_sum]
   rw [hsplit, hz1, hz2]
   simp only [Finset.sum_ite_eq', Finset.mem_range, show N < N + 1 + (N + 1) by omega,
-    show N + 1 < N + 1 + (N + 1) by omega, if_true]
+    show N + 1 < N + 1 + (N + 1) by omega, ite_true]
   have h := harm N
   have h2 := mul_le_mul_of_nonneg_left
     (show ∑ k ∈ Finset.range (N + 1), 1 / (k : ℝ) + ∑ k ∈ Finset.range (N + 1), 1 / (k : ℝ)
@@ -801,11 +757,11 @@ lemma near_term {u T C E : ℝ} {n : ℕ} (hu : 2 ≤ u) (hT : 0 < T) (hC : 0 �
       rw [e1] at h1
       exact e2.trans (e3.trans (h1.trans (le_abs_self _)))
     · have hcast : ((N - n : ℕ) : ℝ) = (N : ℝ) - n := Nat.cast_sub hlt.le
-      rw [hwdef, hcast, if_neg hlt.ne, if_neg (by omega), mul_add]
+      rw [hwdef, hcast, ite_eq_right hlt.ne, ite_eq_right (by omega), mul_add]
       have : 0 ≤ B * (1 / ((n - (N + 1) : ℕ) : ℝ)) := mul_nonneg hB0 (by positivity)
       linarith
   · apply caseA
-    rw [hwdef, if_pos heq]
+    rw [hwdef, ite_eq_left heq]
     have : (0 : ℝ) ≤ if n = N + 1 then 1 else 0 := by split_ifs <;> norm_num
     linarith
   · rcases Nat.lt_or_ge (N + 1) n with hgt2 | hle
@@ -828,12 +784,12 @@ lemma near_term {u T C E : ℝ} {n : ℕ} (hu : 2 ≤ u) (hT : 0 < T) (hC : 0 �
           rw [Nat.cast_sub hgt2.le]
           push_cast
           ring
-        rw [hwdef, hcast, if_neg (by omega), if_neg (by omega), mul_add]
+        rw [hwdef, hcast, ite_eq_right (by omega), ite_eq_right (by omega), mul_add]
         have : 0 ≤ B * (1 / ((N - n : ℕ) : ℝ)) := mul_nonneg hB0 (by positivity)
         linarith
     · have heq1 : n = N + 1 := by omega
       apply caseA
-      rw [hwdef, if_neg (by omega), if_pos heq1]
+      rw [hwdef, ite_eq_right (by omega), ite_eq_left heq1]
       linarith
 
 /-- The Perron height may be chosen independently of the summation cutoff. -/
@@ -918,7 +874,7 @@ theorem truncated_perron_psi_of_one_le : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [N
         + C0 * (16 * L * ∑ n ∈ Finset.range (N + 1 + (N + 1)),
           (if n ∈ Finset.range (N + 1 + (N + 1)) then w N B n else 0))) := by
     refine HasSum.add ((hs1.hasSum.mul_left _).mul_left _) ((HasSum.mul_left _ ?_).mul_left _)
-    exact hasSum_sum_of_ne_finset_zero (fun n hn => if_neg hn)
+    exact hasSum_sum_of_ne_finset_zero (fun n hn => ite_eq_right hn)
   have hpt : ∀ n : ℕ, ‖a n * (if 1 ≤ u / n then (1 : ℂ) else 0)
       - (1 / (2 * Real.pi) : ℂ) * (a n * ∫ t in (-T)..T,
         ((u / n : ℝ) : ℂ) ^ ((σ : ℂ) + t * I) / ((σ : ℂ) + t * I))‖
@@ -966,7 +922,7 @@ theorem truncated_perron_psi_of_one_le : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [N
           linarith
         rw [Finset.mem_range]
         exact_mod_cast h3
-      rw [if_pos hmem]
+      rw [ite_eq_left hmem]
       linarith
   have key := hcomb.norm_le_of_bounded hg hpt
   have hZ : ∑' n : ℕ, 1 / (n : ℝ) ^ (1 + 1 / (2 * L)) ≤ 1 + 2 * L := by
@@ -975,7 +931,7 @@ theorem truncated_perron_psi_of_one_le : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [N
   have hWeq : ∑ n ∈ Finset.range (N + 1 + (N + 1)),
       (if n ∈ Finset.range (N + 1 + (N + 1)) then w N B n else 0)
       = ∑ n ∈ Finset.range (N + 1 + (N + 1)), w N B n :=
-    Finset.sum_congr rfl (fun n hn => if_pos hn)
+    Finset.sum_congr rfl (fun n hn => ite_eq_left hn)
   have hlogN : Real.log N ≤ L := by
     have h2 : (2 : ℕ) ≤ N := Nat.le_floor (by exact_mod_cast hu)
     have hNpos : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)

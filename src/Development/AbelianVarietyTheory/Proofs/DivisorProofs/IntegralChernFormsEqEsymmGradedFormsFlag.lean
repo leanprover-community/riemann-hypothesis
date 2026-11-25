@@ -27,47 +27,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramLowerTri
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHolomorphicUnitMatrixAtRationalMatrixValuesStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernFormFieldDbarCohomologousTwoConnections
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullFlagGradedLineChernFormsSmoothDbarClosed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.WithLp
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
@@ -175,7 +137,7 @@ theorem exists_smooth_bump [T2Space M] (x : M) :
       refine ((hβ.comp_contDiffOn (A.contDiffOn_real_transition k i)).mono inter_subset_right).congr
         fun v hv => ?_
       have hv1 : (A.e k).symm v ∈ e.source := hv.2.2
-      simp only [Function.comp, ψ, if_pos hv1]
+      simp only [Function.comp, ψ, ite_eq_left hv1]
       rfl
     · refine ⟨(A.e k).target ∩ (A.e k).symm ⁻¹' Cᶜ,
         (A.e k).isOpen_inter_preimage_symm hCc.isClosed.isOpen_compl,
@@ -188,7 +150,7 @@ theorem exists_smooth_bump [T2Space M] (x : M) :
   · have ho : IsOpen (e.source ∩ e ⁻¹' Metric.ball (e x) (ε / 4)) :=
       e.isOpen_inter_preimage Metric.isOpen_ball
     filter_upwards [ho.mem_nhds ⟨hxe, Set.mem_preimage.mpr (Metric.mem_ball_self (by linarith))⟩] with w hw
-    simp only [ψ, if_pos hw.1]
+    simp only [ψ, ite_eq_left hw.1]
     exact β.one_of_mem_closedBall (Metric.ball_subset_closedBall hw.2)
 
 end GlobalTheory.CxForm.HolAtlas
@@ -244,7 +206,7 @@ theorem del_finset_sum {M : Type} [TopologicalSpace M] {n : ℕ} (A : GlobalTheo
   have hloc : ∀ w, A.loc (∑ j, α j) x.1.1 w = ∑ j, A.loc (α j) x.1.1 w := by
     intro w
     by_cases hw : w ∈ (A.e x.1.1).target
-    · simp only [GlobalTheory.CxForm.HolAtlas.loc, hw, dif_pos]
+    · simp only [GlobalTheory.CxForm.HolAtlas.loc, hw, dite_eq_left]
       exact Finset.sum_apply _ _ _
     · simp [GlobalTheory.CxForm.HolAtlas.loc, hw]
   have hx : x.crd ∈ (A.e x.1.1).target := x.ch.map_source x.2
@@ -320,7 +282,7 @@ private theorem isForm_add' {α β : A.Fld}
     unfold _root_.GlobalTheory.CxForm.HolAtlas.loc at h1 h2
     refine (h1.add h2).congr ?_
     intro v hv
-    simp only [dif_pos hv]
+    simp only [dite_eq_left hv]
     erw [Pi.add_apply, map_add, Finsupp.add_apply]
   · intro x x' hx
     simp [ha.compat x x' hx, hb.compat x x' hx]
@@ -339,7 +301,7 @@ private theorem isForm_sub' {α β : A.Fld}
     unfold _root_.GlobalTheory.CxForm.HolAtlas.loc at h1 h2
     refine (h1.sub h2).congr ?_
     intro v hv
-    simp only [dif_pos hv]
+    simp only [dite_eq_left hv]
     erw [Pi.sub_apply, map_sub, Finsupp.sub_apply]
   · intro x x' hx
     simp [ha.compat x x' hx, hb.compat x x' hx]
@@ -378,7 +340,6 @@ private theorem isForm_and_integral_finset_sum {ι : Type} (s : Finset ι)
     rw [Finset.sum_insert ha, Finset.sum_insert ha]
     refine ⟨isForm_add' A hA hs.1, ?_⟩
     rw [integral_add_of_isForm A hA hs.1, hs.2]
-
 
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.CxForm.IntegralSum.integral_sum : ∀ {M : Type} [TopologicalSpace M] [CompactSpace M]
@@ -476,7 +437,7 @@ theorem integral_eq_integral_chart_of_support : ∀ {M : Type} [TopologicalSpace
       rwa [(A.e i).right_inv ht] at this
     · have hl : A.loc α i v = 0 := by
         unfold loc
-        exact dif_neg ht
+        exact dite_eq_right ht
       simp only [hr, hl, dens_zero, Complex.zero_re]
   have hcon : ContinuousOn (r i) (A.e i).target :=
     Complex.continuous_re.comp_continuousOn ((hα.smooth i Finset.univ).continuousOn.div_const _)
@@ -563,7 +524,7 @@ theorem integral_dbar_fn_mul_eq_zero : ∀ {M : Type} [TopologicalSpace M] [Comp
   have hP : A.IsForm (A.fn χ * γ) :=
     ((_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).2 0 _ _ (A.isForm_fn hχ) hγ).2.1
   have hω : A.IsForm (A.dbar (A.fn χ * γ)) :=
-    (GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A _ hP).2
+    (GlobalTheory.CxForm.isForm_del_dbar M n A _ hP).2
 
   have hnear : ∀ (j : A.ι) (w : V n), w ∈ (A.e j).target → (A.e j).symm w ∉ K →
       A.loc (A.fn χ * γ) j =ᶠ[𝓝 w] fun _ => 0 := by
@@ -1246,7 +1207,7 @@ theorem stokes : ∀ (M : Type) [TopologicalSpace M] [T2Space M] [SecondCountabl
   have hf : ∀ j, A.IsForm (A.fn (χ j) * η) := fun j =>
     FormMul.isForm_mul A _ _ (A.isForm_fn (hs j)) hη
   have hdiff : ∀ j, A.IsForm (A.del (A.fn (χ j) * η)) ∧ A.IsForm (A.dbar (A.fn (χ j) * η)) :=
-    fun j => GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A _ (hf j)
+    fun j => GlobalTheory.CxForm.isForm_del_dbar M n A _ (hf j)
   have hdec := eq_sum_fn_mul A χ hone η
   constructor
   · rw [hdec, _root_.GlobalTheory.CxForm.HolAtlas.del_finset_sum A _ hf,

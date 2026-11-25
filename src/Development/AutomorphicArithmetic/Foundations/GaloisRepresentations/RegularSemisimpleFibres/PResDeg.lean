@@ -62,14 +62,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.resDeg :
     Ideal.absNorm_pow_inertiaDeg v.asIdeal _
   have hK := hcard K v
   have hM := hcard M (w : HeightOneSpectrum (𝓞 M))
-  have hge : 2 ≤ v.asIdeal.absNorm := by
-    have h0 : v.asIdeal.absNorm ≠ 0 := by
-      rw [Ne, Ideal.absNorm_eq_zero_iff]
-      exact v.ne_bot
-    have h1 : v.asIdeal.absNorm ≠ 1 := by
-      rw [Ne, Ideal.absNorm_eq_one_iff]
-      exact v.isPrime.ne_top
-    omega
+  have hge : 2 ≤ v.asIdeal.absNorm := NumberField.HeightOneSpectrum.one_lt_absNorm v
   have hcardM : Nat.card 𝓀[HeightOneSpectrum.adicCompletion M (w : HeightOneSpectrum (𝓞 M))] =
       Nat.card 𝓀[HeightOneSpectrum.adicCompletion K v] ^ Module.finrank K M := by
     rw [hM, hK, hnormM, hnormK, ← hpow, hfn]

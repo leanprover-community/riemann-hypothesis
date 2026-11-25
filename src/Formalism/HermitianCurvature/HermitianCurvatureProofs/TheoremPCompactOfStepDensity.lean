@@ -31,13 +31,6 @@ def DecayData (n : ℕ) (C : ℝ) (D : ℂ → ℂ) : Prop :=
     (∀ s, ‖∫ t, fsv s t * D t‖ ≤ C * (1 + ‖s‖) ^ (-((n : ℝ) + 3))) ∧
     ∀ s, ‖∫ t, fsv s t * (((1 + ‖t‖ ^ 2) ^ 2 : ℝ) • D t)‖ ≤ C * (1 + ‖s‖) ^ (-((n : ℝ) + 3))
 
-section Gen
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
-
-end Gen
-
 end Formalism.FourierDecayAlt.P5.HerC
 end -- clump:auto
 end -- clump:auto
@@ -114,7 +107,7 @@ theorem ext_of_derivCombInt {f : ℂ → ℂ} {I : ℂ} (hf : DerivCombInt f I) 
           funext t; rw [iteratedFDeriv_apply_of_eq_zero (j i) (v i) (D' i) h0 t]
         have hInt : Integrable (D' i) :=
           (hdat i).1.congr (ae_ne_zero_C.mono fun t ht => (hD'e i t ht).symm)
-        rw [e, if_pos h0]
+        rw [e, ite_eq_left h0]
         exact ⟨hInt.const_mul _, by rw [integral_const_mul, hD'i i]⟩
       · have hj1 : 1 ≤ j i := Nat.one_le_iff_ne_zero.mpr h0
         obtain ⟨hIi, hzero⟩ := hder i (j i) hj1 (hjn i)
@@ -125,7 +118,7 @@ theorem ext_of_derivCombInt {f : ℂ → ℂ} {I : ℂ} (hf : DerivCombInt f I) 
           simp only [ContinuousMultilinearMap.apply_apply] at this
           rw [this, hzero]
           simp
-        rw [if_neg h0]
+        rw [ite_eq_right h0]
         exact ⟨hIv.const_mul _, by rw [integral_const_mul, hz, mul_zero]⟩
     rw [integral_finsetSum _ fun i _ => (hterm i).1]
     rw [← hI]

@@ -33,13 +33,6 @@ theorem oev_mul {x y : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) (hy : y ∈ 
     x * y ∈ OEv (E := E) v := by
   first | exact _root_.PI.OmLocU.oEv_mul | (apply _root_.PI.OmLocU.oEv_mul <;> assumption)
 
-theorem sigR_smul' (σ : E →ₐ[F] E) (c : Fv F v) (x : Fv F v ⊗[F] E) :
-    sigR (Fv F v) σ (c • x) = c • sigR (Fv F v) σ x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a e => simp [sigR, TensorProduct.smul_tmul']
-  | add x y h1 h2 => rw [smul_add, map_add (f := _), h1, h2, map_add (f := _), smul_add]
-
 theorem oev_sigR (σ : E →ₐ[F] E) {x : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) :
     sigR (Fv F v) σ x ∈ OEv (E := E) v := by
   intros

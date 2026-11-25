@@ -43,25 +43,25 @@ theorem domScaleTop : DomScaleTop := by
   · refine ⟨fun t ht => ?_, fun t ht t' ht' hl x hx y hy => ?_, fun S hS hSd => ?_⟩
     · refine psd_congr (k := fun h h' => (lam : ℂ) * (Th i s t h h' - TB.blk (D.Kr i) s t t h h'))
         (fun x _ y _ => ?_) (psd_smul lam hlam (h1 t ht))
-      simp only [TB.blk, hKr, if_pos hi]
+      simp only [TB.blk, hKr, ite_eq_left hi]
       ring
-    · simp only [if_pos hi]
+    · simp only [ite_eq_left hi]
       rw [h2 t ht t' ht' hl x hx y hy]
     · refine psd_congr
         (k := fun h h' => (lam : ℂ) * ((1 + (D.e i : ℂ)) * D.Kr (i - s) h h' - ∑ t ∈ S, Th i s t h h'))
         (fun x _ y _ => ?_) (psd_smul lam hlam (h3 S hS hSd))
       have he2 : D.e i = 0 := by rw [hi]; exact he
-      simp only [hKr, he', if_pos hi, if_neg hne]
+      simp only [hKr, he', ite_eq_left hi, ite_eq_right hne]
       rw [he2, ← Finset.mul_sum]
       push_cast
       ring
   · refine ⟨fun t ht => ?_, fun t ht t' ht' hl x hx y hy => ?_, fun S hS hSd => ?_⟩
     · refine psd_congr (fun x _ y _ => ?_) (h1 t ht)
-      simp only [TB.blk, hKr, if_neg hi]
-    · simp only [if_neg hi]
+      simp only [TB.blk, hKr, ite_eq_right hi]
+    · simp only [ite_eq_right hi]
       exact h2 t ht t' ht' hl x hx y hy
     · refine psd_congr (fun x _ y _ => ?_) (h3 S hS hSd)
-      simp only [hKr, he', if_neg hi, if_neg hne]
+      simp only [hKr, he', ite_eq_right hi, ite_eq_right hne]
 
 theorem recHypScaleTop : RecHypScaleTop := by
   intro hDS hSB E W _ D C₁ C₄ Θ jn H _ _ Vt c c' sd hsd he h hc1 hc2 hc3
@@ -84,12 +84,12 @@ theorem recHypScaleTop : RecHypScaleTop := by
     rw [h0]; simp
   · intro i h1 hi
     by_cases hit : i = D.r + 1
-    · simp only [scaleTop, hit, if_true]
+    · simp only [scaleTop, hit, ite_true]
       constructor
       · linarith
       · have : max sd 1 ≤ 2 := max_le hsd (by norm_num)
         linarith
-    · simp only [scaleTop, hit, if_false]
+    · simp only [scaleTop, hit, ite_false]
       exact a9 i h1 hi
   · intro T
     obtain ⟨Th, hTh⟩ := a10 T
@@ -241,9 +241,5 @@ theorem densChain : DensChain := by
   exact ⟨hmain, hmain.trans (hLe f _ (hSize k r f hk))⟩
 
 end Formalism.FourierDecayAlt.P.DensitySumsAndDomination
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 
 end

@@ -41,23 +41,23 @@ variable {p q r s : ℕ}
 
 lemma omE_apply_of_ne {l l' : Ln p q r s} (h : l ≠ l') (P : Pol p q r s) :
     omE l l' P = raiB l (lowB l' P) := by
-  rw [FockH1Action.omE, if_neg h, add_zero]; rfl
+  rw [FockH1Action.omE, ite_eq_right h, add_zero]; rfl
 
 private theorem raiB_apply_eq_X_mul_of_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = true)
     (P : FockH1Action.Pol p q r s) : FockH1Action.raiB m P = X m * P := by
-  rw [FockH1Action.raiB, if_pos h]; rfl
+  rw [FockH1Action.raiB, ite_eq_left h]; rfl
 
 private theorem raiB_apply_eq_neg_pderiv_of_not_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = false)
     (P : FockH1Action.Pol p q r s) : FockH1Action.raiB m P = -(pderiv m P) := by
-  rw [FockH1Action.raiB, if_neg (by simp [h])]; rfl
+  rw [FockH1Action.raiB, ite_eq_right (by simp [h])]; rfl
 
 private theorem lowB_apply_eq_pderiv_of_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = true)
     (P : FockH1Action.Pol p q r s) : FockH1Action.lowB m P = pderiv m P := by
-  rw [FockH1Action.lowB, if_pos h]; rfl
+  rw [FockH1Action.lowB, ite_eq_left h]; rfl
 
 private theorem lowB_apply_eq_X_mul_of_not_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = false)
     (P : FockH1Action.Pol p q r s) : FockH1Action.lowB m P = X m * P := by
-  rw [FockH1Action.lowB, if_neg (by simp [h])]; rfl
+  rw [FockH1Action.lowB, ite_eq_right (by simp [h])]; rfl
 
 lemma omE_adj {l l' : Ln p q r s} (h : linePos l ≠ linePos l') (P Q : Pol p q r s) :
     fockInner (omE l l' P) Q = - fockInner P (omE l' l Q) := by
@@ -135,20 +135,12 @@ lemma mixed2 {Z : Mat r s} (hZ : IsPC Z) :
 lemma conjTranspose_kronecker_one (Z : Mat p q) :
     (Matrix.kroneckerMap (fun a b => a * b) Z (1 : Mat r s))ᴴ =
       Matrix.kroneckerMap (fun a b => a * b) Zᴴ (1 : Mat r s) := by
-  ext ⟨a, c⟩ ⟨b, d⟩
-  simp only [Matrix.conjTranspose_apply, Matrix.kroneckerMap_apply]
-  by_cases hcd : c = d
-  · subst hcd; simp
-  · rw [Matrix.one_apply_ne hcd, Matrix.one_apply_ne (Ne.symm hcd)]; simp
+  simpa only [Matrix.conjTranspose_one] using Matrix.conjTranspose_kronecker Z (1 : Mat r s)
 
 lemma conjTranspose_one_kronecker (Z : Mat r s) :
     (Matrix.kroneckerMap (fun a b => a * b) (1 : Mat p q) Z)ᴴ =
       Matrix.kroneckerMap (fun a b => a * b) (1 : Mat p q) Zᴴ := by
-  ext ⟨a, c⟩ ⟨b, d⟩
-  simp only [Matrix.conjTranspose_apply, Matrix.kroneckerMap_apply]
-  by_cases hab : a = b
-  · subst hab; simp
-  · rw [Matrix.one_apply_ne hab, Matrix.one_apply_ne (Ne.symm hab)]; simp
+  simpa only [Matrix.conjTranspose_one] using Matrix.conjTranspose_kronecker (1 : Mat p q) Z
 
 theorem fockAct1_adj {Z : Mat p q} (hZ : IsPC Z) (P Q : Pol p q r s) :
     fockInner (fockAct1 p q r s Z P) Q = - fockInner P (fockAct1 p q r s Zᴴ Q) := by

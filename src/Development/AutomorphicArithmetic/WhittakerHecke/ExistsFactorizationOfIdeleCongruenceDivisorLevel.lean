@@ -35,10 +35,10 @@ private theorem cp_pin (n : ℕ) (v : H.P ℚ) :
   refine h.trans ((finprod_eq_single _ v fun w hw => ?_).trans ?_)
   · rw [map_pow]
     change H.cp v ((pv w : (A ℚ)ˣ) : A ℚ) ^ _ = 1
-    rw [cp_pv, if_neg hw, one_pow]
+    rw [cp_pv, ite_eq_right hw, one_pow]
   · rw [map_pow]
     change H.cp v ((pv v : (A ℚ)ˣ) : A ℚ) ^ _ = _
-    rw [cp_pv, if_pos rfl]
+    rw [cp_pv, ite_eq_left rfl]
 
 private theorem val_nat (v : H.P ℚ) (n : ℕ) : Valued.v (n : H.Kv v) = v.intValuation (n : 𝓞 ℚ) := by
   have h1 := HeightOneSpectrum.valuedAdicCompletion_eq_valuation (K := ℚ) v (n : 𝓞 ℚ)

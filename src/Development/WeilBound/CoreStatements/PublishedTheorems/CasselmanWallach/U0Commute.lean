@@ -16,7 +16,7 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.ParabolicUnipotentGL.IsGlRep.{u_1} :
     {n : ℕ} →
-      {M : Type u_1} → [inst : AddCommGroup M] → [inst_1 : _root_.Module ℂ M] → (Fin n → Fin n → Module.End ℂ M) → Prop :=
+      {M : Type u_1} → [AddCommGroup M] → [_root_.Module ℂ M] → (Fin n → Fin n → Module.End ℂ M) → Prop :=
     fun {n : ℕ} {M : Type u_1} [AddCommGroup M] [_root_.Module ℂ M] (E : Fin n → Fin n → Module.End ℂ M) ↦
       ∀ (a b c d : Fin n),
         E a b * E c d - E c d * E a b =
@@ -25,8 +25,8 @@ noncomputable def UpperTheory.Reformulated.B.ParabolicUnipotentGL.IsGlRep.{u_1} 
 noncomputable def UpperTheory.Reformulated.B.ParabolicUnipotentGL.U :
     {n : ℕ} →
       {V : Type} →
-        [inst : AddCommGroup V] →
-          [inst_1 : _root_.Module ℂ V] → (Fin n → Fin n → Module.End ℂ V) → ℕ → Submodule ℂ (Module.End ℂ V) :=
+        [AddCommGroup V] →
+          [_root_.Module ℂ V] → (Fin n → Fin n → Module.End ℂ V) → ℕ → Submodule ℂ (Module.End ℂ V) :=
     fun {n : ℕ} {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V) (k : ℕ) ↦
       Submodule.span ℂ
         {x : Module.End ℂ V |
@@ -119,7 +119,7 @@ end helpers
 end UpperTheory.Reformulated.B.ParabolicUnipotentGL
 
 theorem UpperTheory.Reformulated.B.ParabolicUnipotentGL.main :
-    ∀ {n : ℕ} {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V),
+    ∀ {n : ℕ} {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V),
       UpperTheory.Reformulated.B.ParabolicUnipotentGL.IsGlRep E →
         ∀ {j k : ℕ} {x y : Module.End ℂ V},
           x ∈ UpperTheory.Reformulated.B.ParabolicUnipotentGL.U E j →
@@ -164,15 +164,15 @@ section -- clump:auto
 noncomputable def UpperTheory.Reformulated.B.EndomorphismFiltrationMulMem.U :
     {n : ℕ} →
       {V : Type} →
-        [inst : AddCommGroup V] →
-          [inst_1 : _root_.Module ℂ V] → (Fin n → Fin n → Module.End ℂ V) → ℕ → Submodule ℂ (Module.End ℂ V) :=
+        [AddCommGroup V] →
+          [_root_.Module ℂ V] → (Fin n → Fin n → Module.End ℂ V) → ℕ → Submodule ℂ (Module.End ℂ V) :=
     fun {n : ℕ} {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V) (k : ℕ) ↦
       Submodule.span ℂ
         {x : Module.End ℂ V |
           ∃ (l : List (Fin n × Fin n)), l.length ≤ k ∧ x = (List.map (fun (p : Fin n × Fin n) ↦ E p.1 p.2) l).prod}
 
 theorem UpperTheory.Reformulated.B.EndomorphismFiltrationMulMem.main :
-    ∀ {n : ℕ} {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V) {j k : ℕ}
+    ∀ {n : ℕ} {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V) {j k : ℕ}
       {x y : Module.End ℂ V},
       x ∈ UpperTheory.Reformulated.B.EndomorphismFiltrationMulMem.U E j → y ∈ UpperTheory.Reformulated.B.EndomorphismFiltrationMulMem.U E k → x * y ∈ UpperTheory.Reformulated.B.EndomorphismFiltrationMulMem.U E (j + k) := by
   intro n V _ _ E j k x y hx hy

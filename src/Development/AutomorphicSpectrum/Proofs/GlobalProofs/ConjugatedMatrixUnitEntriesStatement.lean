@@ -174,39 +174,39 @@ theorem gramShape (hH : Hᴴ = H) (hxx : Xcᴴ * H * Xc = 0) (hyy : Ycᴴ * H * 
     · rw [conjTranspose_mul_mul_apply_eq_of_col_eq H P i ⟨i.val, hi⟩ (colX i ⟨i.val, hi⟩ rfl) b]
       by_cases hb1 : b.val < m
       · rw [col_lemma_2 (Xcᴴ * H) b ⟨b.val, hb1⟩ (colX b ⟨b.val, hb1⟩ rfl), hxx, Matrix.zero_apply,
-          if_neg (show ¬ (i.val + b.val + 1 = n) by omega)]
+          ite_eq_right (show ¬ (i.val + b.val + 1 = n) by omega)]
       · by_cases hb2 : n ≤ b.val + m
         · have hj : n - 1 - b.val < m := by omega
           rw [col_lemma_2 (Xcᴴ * H) b ⟨n - 1 - b.val, hj⟩
             (columnBlock b ⟨n - 1 - b.val, hj⟩ (show b.val + (n - 1 - b.val) + 1 = n by omega)), hxy, Matrix.one_apply]
           by_cases hc : i.val + b.val + 1 = n
-          · rw [if_pos hc, if_pos (Fin.ext (show i.val = n - 1 - b.val by omega))]
-          · rw [if_neg hc, if_neg (fun h => hc (by have h4 := Fin.mk.inj h; omega))]
-        · rw [conjTranspose_mul_mul_apply_eq_zero_of_mulVec b (perpX b (by omega) (by omega)), if_neg (show ¬ (i.val + b.val + 1 = n) by omega)]
+          · rw [ite_eq_left hc, ite_eq_left (Fin.ext (show i.val = n - 1 - b.val by omega))]
+          · rw [ite_eq_right hc, ite_eq_right (fun h => hc (by have h4 := Fin.mk.inj h; omega))]
+        · rw [conjTranspose_mul_mul_apply_eq_zero_of_mulVec b (perpX b (by omega) (by omega)), ite_eq_right (show ¬ (i.val + b.val + 1 = n) by omega)]
     · have hj : n - 1 - i.val < m := by omega
       rw [conjTranspose_mul_mul_apply_eq_of_col_eq H P i ⟨n - 1 - i.val, hj⟩
         (columnBlock i ⟨n - 1 - i.val, hj⟩ (show i.val + (n - 1 - i.val) + 1 = n by omega)) b]
       by_cases hb1 : b.val < m
       · rw [col_lemma_2 (Ycᴴ * H) b ⟨b.val, hb1⟩ (colX b ⟨b.val, hb1⟩ rfl), hyx, Matrix.one_apply]
         by_cases hc : i.val + b.val + 1 = n
-        · rw [if_pos hc, if_pos (Fin.ext (show n - 1 - i.val = b.val by omega))]
-        · rw [if_neg hc, if_neg (fun h => hc (by have h4 := Fin.mk.inj h; omega))]
+        · rw [ite_eq_left hc, ite_eq_left (Fin.ext (show n - 1 - i.val = b.val by omega))]
+        · rw [ite_eq_right hc, ite_eq_right (fun h => hc (by have h4 := Fin.mk.inj h; omega))]
       · by_cases hb2 : n ≤ b.val + m
         · have hj2 : n - 1 - b.val < m := by omega
           rw [col_lemma_2 (Ycᴴ * H) b ⟨n - 1 - b.val, hj2⟩
             (columnBlock b ⟨n - 1 - b.val, hj2⟩ (show b.val + (n - 1 - b.val) + 1 = n by omega)), hyy, Matrix.zero_apply,
-            if_neg (show ¬ (i.val + b.val + 1 = n) by omega)]
-        · rw [conjTranspose_mul_mul_apply_eq_zero_of_mulVec b (perpY b (by omega) (by omega)), if_neg (show ¬ (i.val + b.val + 1 = n) by omega)]
+            ite_eq_right (show ¬ (i.val + b.val + 1 = n) by omega)]
+        · rw [conjTranspose_mul_mul_apply_eq_zero_of_mulVec b (perpY b (by omega) (by omega)), ite_eq_right (show ¬ (i.val + b.val + 1 = n) by omega)]
   refine ⟨?_, ?_, ?_⟩
   · intro i b hi hne
     rw [hrow i b hi] at hne
     by_contra hc
-    exact hne (if_neg hc)
+    exact hne (ite_eq_right hc)
   · intro i b hi hne hb
     apply hne
-    rw [hGs i b, hrow b i hb, if_neg (show ¬ (b.val + i.val + 1 = n) by unfold Outer at hi hb; omega), star_zero]
+    rw [hGs i b, hrow b i hb, ite_eq_right (show ¬ (b.val + i.val + 1 = n) by unfold Outer at hi hb; omega), star_zero]
   · intro i b hi hc
-    rw [hrow i b hi, if_pos hc]
+    rw [hrow i b hi, ite_eq_left hc]
 
 private theorem valuation_single_one_le_one {u : ℕ} (A B : Matrix (Fin u) (Fin u) ℂ) (q p a b : Fin u) :
     (A * Matrix.single q p (1 : ℂ) * B : Matrix (Fin u) (Fin u) ℂ) a b = A a q * B p b := by

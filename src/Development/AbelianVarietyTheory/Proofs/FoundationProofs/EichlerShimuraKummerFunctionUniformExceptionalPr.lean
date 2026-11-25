@@ -31,62 +31,12 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntMatrix
 public import Development.AbelianVarietyTheory.Definitions.Foundations.OpLDOneSubMemTriv
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KroneckerCongruenceModularFunctionTowerLevel
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalPowerUnitsTowerClosureProperties
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.NormOrderPfA
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OverAffineJLineComapSlGal
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDomGauss, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaussExtensionUniqueOfGauss, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaussValuationUniqueOnLthRootLevelFields, Development.AbelianVarietyTheory.Proofs.FoundationProofs.RootFFiniteGaloisIsPGroup, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationSubringGaloisStableOfKummer, Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPowOfGaussValuationCongrOneAlmostAllPrimes, Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemGammaOfMul, Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerShimuraKummerFunctionUniformExceptionalPr
@@ -334,28 +284,16 @@ theorem exists_finite_field {F E : Type} [Field F] [Field E] [Algebra F E] (t : 
   haveI : IsScalarTower K₀ K' L := IsScalarTower.of_algebraMap_eq fun _ => rfl
   exact Module.Finite.of_restrictScalars_finite K₀ K' L
 
-theorem valuation_eq_one_iff' {K : Type} [Field K] (W : ValuationSubring K) (x : K) :
-    W.valuation x = 1 ↔ x ≠ 0 ∧ x ∈ W ∧ x⁻¹ ∈ W := by
-  rw [← W.valuation_le_one_iff, ← W.valuation_le_one_iff, map_inv₀]
-  constructor
-  · intro h
-    refine ⟨?_, h.le, by rw [h, inv_one]⟩
-    rintro rfl
-    simp at h
-  · rintro ⟨h0, h1, h2⟩
-    have hp : 0 < W.valuation x := zero_lt_iff.2 ((map_ne_zero _).2 h0)
-    exact le_antisymm h1 ((inv_le_one₀ hp).1 h2)
-
 theorem gauss_comap {F E : Type} [Field F] [Field E] [Algebra F E] {t : E} (L : IntermediateField F E) (ht : t ∈ L)
     {V : ValuationSubring F} {W : ValuationSubring E} (h : Gauss t V W) :
     Gauss (⟨t, ht⟩ : L) V (W.comap (algebraMap L E)) := by
   refine ⟨fun a => ?_, fun P hP hu => ?_⟩
   · rw [ValuationSubring.mem_comap, ← IsScalarTower.algebraMap_apply]
     exact h.1 a
-  · have h1 := (valuation_eq_one_iff' _ _).1 (h.2 P hP hu)
+  · have h1 := (GlobalTheory.KZ.UnRoot.val_eq_one_iff _ _).1 (h.2 P hP hu)
     have e : algebraMap L E (Polynomial.aeval (⟨t, ht⟩ : L) P) = Polynomial.aeval t P :=
       (Polynomial.aeval_algHom_apply L.val (⟨t, ht⟩ : L) P).symm
-    rw [valuation_eq_one_iff', ValuationSubring.mem_comap, ValuationSubring.mem_comap, map_inv₀, e]
+    rw [GlobalTheory.KZ.UnRoot.val_eq_one_iff, ValuationSubring.mem_comap, ValuationSubring.mem_comap, map_inv₀, e]
     refine ⟨fun h0 => h1.1 ?_, h1.2⟩
     rw [← e, h0, map_zero]
 
@@ -1059,15 +997,13 @@ def levK (X : Tower Ω ε) (M : ℕ) : IntermediateField Ω X.K where
   algebraMap_mem' c γ _ := AlgEquiv.commutes _ c
   inv_mem' x hx γ hγ := by rw [map_inv₀, hx γ hγ]
 
-alias mem_levF := _root_.GlobalTheory.KZ.ES.RootGal.mem_levF
-
 theorem normal_levF (X : Tower Ω ε) (M : ℕ) : Normal (levF X M) (AlgebraicClosure X.K) := by
   let A := IntermediateField.adjoin Ω {X.jK}
   have hA : A ≤ levK X M := IntermediateField.adjoin_le_iff.2 (Set.singleton_subset_iff.2 (lev_jK X M))
   haveI : Algebra.IsAlgebraic A X.K := ⟨X.alg_j⟩
   haveI : Algebra.IsAlgebraic A (AlgebraicClosure X.K) := Algebra.IsAlgebraic.trans A X.K _
   let φ : A →+* levF X M := (algebraMap A (AlgebraicClosure X.K)).codRestrict (levF X M)
-    fun a => (mem_levF X M _).2 ⟨a, hA a.2, rfl⟩
+    fun a => (GlobalTheory.KZ.ES.RootGal.mem_levF X M _).2 ⟨a, hA a.2, rfl⟩
   haveI : Algebra.IsAlgebraic (levF X M) (AlgebraicClosure X.K) := ⟨fun x =>
     (IsIntegral.map_of_comp_eq φ (RingHom.id _) rfl (Algebra.IsIntegral.isIntegral (R := A) x)).isAlgebraic⟩
   haveI : IsAlgClosure (levF X M) (AlgebraicClosure X.K) := ⟨inferInstance, inferInstance⟩
@@ -1096,7 +1032,7 @@ theorem rootF_le (X : Tower Ω ε) (hst : ∀ (g : GQ) (W : ValuationSubring X.K
     · exact IntermediateField.algebraMap_mem _ f
     · exact IntermediateField.subset_adjoin _ _ ⟨_, KmapA.un_map X _ (hst (ofSL γ)) m U hU, hγ⟩
   | algebraMap x =>
-    obtain ⟨f, _, hf⟩ := (mem_levF X M₀ _).1 x.2
+    obtain ⟨f, _, hf⟩ := (GlobalTheory.KZ.ES.RootGal.mem_levF X M₀ _).1 x.2
     have := IntermediateField.algebraMap_mem (IntermediateField.adjoin X.K {y : AlgebraicClosure X.K | ∃ U ∈ X.Un m,
       y ^ m = algebraMap X.K (AlgebraicClosure X.K) (U : X.K)}) f
     rw [hf] at this
@@ -1117,7 +1053,6 @@ theorem mem_of_fixed {F E : Type} [Field F] [Field E] [Algebra F E] (L : Interme
 
 end GlobalTheory.KZ.ES.Exact
 
-
 open GlobalTheory.KZ.ES.Exact in
 theorem GlobalTheory.KZ.ES.pow_of_gauss_congr_one : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → ∀ (l M₀ : ℕ), l.Prime → 0 < M₀ → l ∣ M₀ → ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ V : ValuationSubring Ω, ((q : ℕ) : Ω) ∈ V.nonunits → ∀ W : ValuationSubring X.K, Gauss X.jK V W → ∀ (n k : ℕ) (U : X.Kˣ), U ∈ X.Un (l ^ n) → Lev X (M₀ * l ^ k) U → W.valuation ((U : X.K) - 1) < 1 → ∃ g : X.Kˣ, U = g ^ (l ^ n) := by
   intro Ω _ _ _ ε X hhol l M₀ hl hM₀ hlM
@@ -1127,8 +1062,11 @@ theorem GlobalTheory.KZ.ES.pow_of_gauss_congr_one : ∀ {Ω : Type} [Field Ω] [
   haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
   haveI : CharZero Ω := algebraRat.charZero Ω
   have hroot : ∀ m : ℕ, 0 < m → ∃ ζ : levF X M₀, IsPrimitiveRoot ζ m := fun m hm => by
-    haveI : NeZero m := ⟨hm.ne'⟩
-    obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω m
+    haveI : NeZero (m : Ω) := ⟨Nat.cast_ne_zero.2 hm.ne'⟩
+    obtain ⟨ζ, hζ⟩ : ∃ ζ : Ω, IsPrimitiveRoot ζ m := by
+      obtain ⟨z, hz⟩ := IsAlgClosed.exists_root (Polynomial.cyclotomic m Ω)
+        (Polynomial.degree_cyclotomic_pos m Ω hm).ne'
+      exact ⟨z, Polynomial.isRoot_cyclotomic_iff.1 hz⟩
     exact ⟨_, hζ.map_of_injective (algebraMap Ω (levF X M₀)).injective⟩
   have hm : 0 < l ^ n := pow_pos hl.pos n
   obtain ⟨W', hW'⟩ := exists_ext (algebraMap X.K (AlgebraicClosure X.K)) W
@@ -1142,7 +1080,7 @@ theorem GlobalTheory.KZ.ES.pow_of_gauss_congr_one : ∀ {Ω : Type} [Field Ω] [
   have hstab : ∀ (τ : L ≃ₐ[levF X M₀] L) (x : L), τ x ∈ WL ↔ x ∈ WL := by
     refine _root_.GlobalTheory.valuationSubring_galois_stable_of_kummer l hl (levF X M₀) L h3 (hroot l hl.pos) WL ?_
     rintro θ hθ ⟨a, ha⟩ τ x hx
-    obtain ⟨f, hf, hfa⟩ := (mem_levF X M₀ _).1 a.2
+    obtain ⟨f, hf, hfa⟩ := (GlobalTheory.KZ.ES.RootGal.mem_levF X M₀ _).1 a.2
     have hθf : (θ : AlgebraicClosure X.K) ^ l = algebraMap X.K (AlgebraicClosure X.K) f := by
       rw [hfa]; exact (congrArg Subtype.val ha).symm
     have hf0 : f ≠ 0 := by
@@ -1154,7 +1092,7 @@ theorem GlobalTheory.KZ.ES.pow_of_gauss_congr_one : ∀ {Ω : Type} [Field Ω] [
     let τ' := τ.liftNormal (AlgebraicClosure X.K)
     let σ : AlgebraicClosure X.K →ₐ[Ω] AlgebraicClosure X.K := (τ'.restrictScalars Ω : _ ≃ₐ[Ω] _)
     have hj : σ (algebraMap X.K (AlgebraicClosure X.K) X.jK) = algebraMap X.K (AlgebraicClosure X.K) X.jK :=
-      τ'.commutes ⟨_, (mem_levF X M₀ _).2 ⟨_, lev_jK X M₀, rfl⟩⟩
+      τ'.commutes ⟨_, (GlobalTheory.KZ.ES.RootGal.mem_levF X M₀ _).2 ⟨_, lev_jK X M₀, rfl⟩⟩
     have hG2 : Gauss (algebraMap X.K (AlgebraicClosure X.K) X.jK) V (W'.comap σ.toRingHom) := by
       refine (gauss_map σ (W := W'.comap σ.toRingHom) (W' := W') (fun _ => ValuationSubring.mem_comap.symm) _ V).1 ?_
       rw [hj]; exact hG
@@ -1183,11 +1121,11 @@ theorem GlobalTheory.KZ.ES.pow_of_gauss_congr_one : ∀ {Ω : Type} [Field Ω] [
     exact this
   have hyT : y ∈ (levF X (M₀ * l ^ k)).toSubfield := by
     refine mem_of_fixed L _ (fun a => ?_) ⟨y, hyL⟩ fun τ hτ => ?_
-    · obtain ⟨f, hf, hfa⟩ := (mem_levF X M₀ _).1 a.2
-      exact (mem_levF X _ _).2 ⟨f, lev_mono X (Dvd.intro _ rfl) hf, hfa⟩
+    · obtain ⟨f, hf, hfa⟩ := (GlobalTheory.KZ.ES.RootGal.mem_levF X M₀ _).1 a.2
+      exact (GlobalTheory.KZ.ES.RootGal.mem_levF X _ _).2 ⟨f, lev_mono X (Dvd.intro _ rfl) hf, hfa⟩
     · refine fix_root WL τ (hstab τ) hm hζ hv hy1 (hτ _ ?_)
-      exact (mem_levF X _ _).2 ⟨U, hlev, hy.symm⟩
-  obtain ⟨g, -, hg⟩ := (mem_levF X _ _).1 hyT
+      exact (GlobalTheory.KZ.ES.RootGal.mem_levF X _ _).2 ⟨U, hlev, hy.symm⟩
+  obtain ⟨g, -, hg⟩ := (GlobalTheory.KZ.ES.RootGal.mem_levF X _ _).1 hyT
   have hgU : g ^ (l ^ n) = U := (algebraMap X.K (AlgebraicClosure X.K)).injective (by rw [map_pow, hg, hy])
   have hg0 : g ≠ 0 := by
     rintro rfl
@@ -1454,7 +1392,11 @@ theorem lev_gal [IsAlgClosure ℚ Ω] {X : Tower Ω ε} {M : ℕ} (hM : 0 < M) {
   haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
   haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
   haveI : NeZero M := ⟨hM.ne'⟩
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω M
+  haveI : NeZero (M : Ω) := ⟨Nat.cast_ne_zero.2 hM.ne'⟩
+  obtain ⟨ζ, hζ⟩ : ∃ ζ : Ω, IsPrimitiveRoot ζ M := by
+    obtain ⟨z, hz⟩ := IsAlgClosed.exists_root (Polynomial.cyclotomic M Ω)
+      (Polynomial.degree_cyclotomic_pos M Ω hM).ne'
+    exact ⟨z, Polynomial.isRoot_cyclotomic_iff.1 hz⟩
   intro δ hδ
   obtain ⟨i, -, hi⟩ := hζ.eq_pow_of_pow_eq_one (ξ := s ζ) (by rw [← map_pow, hζ.pow_eq_one, map_one])
   obtain ⟨h00, h01, h10, h11⟩ := CongruenceSubgroup.Gamma_mem.1 hδ
@@ -1480,7 +1422,6 @@ theorem const_mem_un (X : Tower Ω ε) (m : ℕ) {c : Ω} (hc : algebraMap Ω X.
   exact ⟨hW.1 c, by rw [← map_inv₀]; exact hW.1 _⟩
 
 end GlobalTheory.KZ.ES.Ues
-
 
 open GlobalTheory.KZ.ES.Ues in
 theorem GlobalTheory.KZ.ES.eichlerShimura_unit : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → ∀ (l M₀ : ℕ), l.Prime → 0 < M₀ → l ∣ M₀ → ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ (V : ValuationSubring Ω) (s : Ω ≃ₐ[ℚ] Ω), FrobV V q s → ∀ (n k : ℕ) (f : X.Kˣ), f ∈ X.Un (l ^ n) → Lev X (M₀ * l ^ k) f → ∀ γ : SL(2, ℤ), DiagMod (M₀ * l ^ k) q γ → ∃ g : X.Kˣ, Nq X (M₀ * l ^ k) q f * X.sl (toGQ ((γ : Matrix (Fin 2) (Fin 2) ℤ) * !![(q : ℤ), 0; 0, 1])) (f : X.K) = X.gal s (f : X.K) * (X.gal s.symm (X.sl (ofSL γ) (f : X.K))) ^ q * (g : X.K) ^ (l ^ n) := by

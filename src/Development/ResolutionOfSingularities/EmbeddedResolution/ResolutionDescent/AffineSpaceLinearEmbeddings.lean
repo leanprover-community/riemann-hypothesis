@@ -220,7 +220,6 @@ theorem IsStrictPullbackBlowupSeq.id {X : Scheme.{u}} (s : SequenceOfBlowups X) 
 theorem isomorphic_of_isPullbackSequenceOfBlowups_id {X : Scheme.{u}} (s t : SequenceOfBlowups X)
     (h : IsPullbackBlowupSequence (𝟙 X) s t) (hc : ∀ i : ℕ, i < t.length → t.center i ≠ ⊤) :
     s.Isomorphic t := by
-  have : AlgebraicGeometry.Surjective (𝟙 X) := inferInstance
   exact IsStrictPullbackBlowupSeq.isomorphic (h.isStrictPullback_of_surjective hc)
     (IsStrictPullbackBlowupSeq.id t)
 

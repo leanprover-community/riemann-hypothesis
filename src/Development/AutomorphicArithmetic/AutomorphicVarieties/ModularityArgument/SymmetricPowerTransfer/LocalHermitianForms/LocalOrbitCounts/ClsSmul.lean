@@ -15,54 +15,10 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.HsLaw
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.LeftMulMatrixEmbeddingDetEqNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.NonsqMul
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
@@ -1176,7 +1132,7 @@ theorem UpperTheory.V.Z.Sym.Loc.caseP :
   · rw [H, hq] at hm
     obtain ⟨p, q, hpq⟩ : ∃ p q : K, p ^ 2 - (τ ^ 2 - 4) * q ^ 2 = -2 * c * t := by
       by_contra hn
-      rw [hs, if_neg hn] at hm
+      rw [hs, ite_eq_right hn] at hm
       norm_num at hm
     let ε : Oˣ := -ε₀
     let s : K := s₀ / (algebraMap O K r * (2 - τ))
@@ -1224,22 +1180,22 @@ theorem UpperTheory.V.Z.Sym.Loc.caseP :
       exact ⟨_, lat_mul hΛ w, (tor_up _ w _).trans (by rw [unimodular_image_mul_unit]; rfl), cls_mul w Λ⟩
     · rintro _ _ ⟨Λ, hΛ, rfl, rfl⟩
       exact if_congr ((kT Λ hΛ).trans (kX Λ hΛ).symm) rfl rfl
-    · obtain ⟨S, a1, -, rfl⟩ := fix_down L hσ h1 h1' hr (by by_contra h; exact hT (if_neg h))
+    · obtain ⟨S, a1, -, rfl⟩ := fix_down L hσ h1 h1' hr (by by_contra h; exact hT (ite_eq_right h))
       obtain ⟨Λ, hΛ, rfl⟩ := exists_lat L hc' hβ a1
       refine ⟨_, ⟨Λ, hΛ, rfl, rfl⟩, ?_⟩
       rintro _ ⟨Λ', hΛ', e, rfl⟩
       obtain ⟨k, rfl⟩ := lattice_homothety_of_eq_unimodular L hD hs' hu hΛ hΛ' (up_inj hσ0 e)
       exact cls_smul k Λ
-    · obtain ⟨Λ, hΛ, -, rfl⟩ : ∃ S, IsLat O τ S ∧ (∀ y ∈ S, ω * y ∈ S) ∧ X = cls τ S := by by_contra h; exact hX (if_neg h)
+    · obtain ⟨Λ, hΛ, -, rfl⟩ : ∃ S, IsLat O τ S ∧ (∀ y ∈ S, ω * y ∈ S) ∧ X = cls τ S := by by_contra h; exact hX (ite_eq_right h)
       refine ⟨_, ⟨Λ, hΛ, rfl, rfl⟩, ?_⟩
       rintro _ ⟨Λ', hΛ', rfl, e⟩
       obtain ⟨k, rfl⟩ := of_cls e
       rw [unimodular_image_smul_eq]
-  · refine finsum_eq_zero_of_forall_eq_zero fun o => mul_eq_zero_of_right _ (if_neg fun h => H ?_)
+  · refine finsum_eq_zero_of_forall_eq_zero fun o => mul_eq_zero_of_right _ (ite_eq_right fun h => H ?_)
     obtain ⟨S, a1, -, -⟩ := fix_down L hσ h1 h1' hr h
     rcases a1.iso L t.ne_zero with h3 | h3
     · rw [(hsLaw O K Δ L).2.2.2 _ _ hD h3, (hsLaw O K Δ L).2.2.2 _ _ hD h3]
-    · rw [hs, if_pos h3] at hm
+    · rw [hs, ite_eq_left h3] at hm
       linear_combination (-hs (τ ^ 2 - 4) (-2 * c)) * hm - hs (τ ^ 2 - 4) (t : K) * hq (-2 * c)
 end -- clump:auto
 end -- clump:auto

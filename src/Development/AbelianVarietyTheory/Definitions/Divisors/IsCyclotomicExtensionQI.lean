@@ -123,12 +123,6 @@ def bc (R : Type) [CommRing R] [Algebra ℚ R] : GQpts F H →* Gpts F H R :=
 
 end Points
 
-section Topology
-
-variable {F : Type} [Field F] [NumberField F] [IsCMField F] {n : ℕ} {H : Matrix (Fin n) (Fin n) F}
-
-end Topology
-
 section Adeles
 
 def AwayP (p : ℕ) : Type := {v : HeightOneSpectrum ℤ // v.asIdeal ≠ Ideal.span {(p : ℤ)}}
@@ -384,11 +378,6 @@ structure HTGroup (p : ℕ) [Fact p.Prime] where
 
 attribute [instance] HTGroup.fieldF HTGroup.numF HTGroup.cmF HTGroup.ringC HTGroup.algC HTGroup.algQC
   HTGroup.towerC HTGroup.finC HTGroup.centralC HTGroup.simpleC
-section BcLemmas
-
-variable {F : Type} [Field F] [NumberField F] [IsCMField F] {n : ℕ} {H : Matrix (Fin n) (Fin n) F}
-
-end BcLemmas
 namespace HTGroup
 
 variable {p : ℕ} [Fact p.Prime] (G : HTGroup p)

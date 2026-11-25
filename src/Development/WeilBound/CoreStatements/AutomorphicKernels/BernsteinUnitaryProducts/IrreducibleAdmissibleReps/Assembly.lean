@@ -125,8 +125,4 @@ def AdmissibleProd : Prop :=
 
 end Props
 
-section Main
-
-end Main
-
 end PositivityTheory.PfBern.Assembly

@@ -23,7 +23,7 @@ theorem le_of_mem_ratCyc_support {O : Type} [CommRing O] [IsDomain O] [IsDiscret
     by_contra hPW
     apply hs
     simp only [ReciprocityTheory.ChartRestriction.G.Geo.divCycle, Finsupp.ofSupportFinite_coe]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨hmin, -⟩
     exact hPW (le_trans le_sup_left hmin.1.2)
   rw [Finsupp.mem_support_iff] at hW

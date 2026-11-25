@@ -42,50 +42,9 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHe
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaCompactSupport
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.VecVNonloc
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightProductGermIndep
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Lam1
@@ -122,7 +81,7 @@ theorem slv_congr_group {k r : ℕ} (T : D.LevTower k r Wp Wq) {F F' : B.Mat k r
   unfold KB.slv
   simp only [D.castF]
   unfold D.sliceAt
-  rw [dif_pos hp, dif_pos hp]
+  rw [dite_eq_left hp, dite_eq_left hp]
   unfold U.PhiFun
   congr 1
   funext ξ
@@ -189,7 +148,7 @@ theorem germ_diff_eq {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   congr 1
   · simp only [List.append_assoc, List.cons_append, List.nil_append]
   · refine Finset.sum_congr rfl fun z hz => ?_
-    simp only [GermFibreKernels.btOf, if_neg (root_ne_zero hs hD hz), smul_smul, neg_smul, inv_sqrt_pi_pow]
+    simp only [GermFibreKernels.btOf, ite_eq_right (root_ne_zero hs hD hz), smul_smul, neg_smul, inv_sqrt_pi_pow]
 
 theorem conj_psi_cStd (w : ℂ) : conj (G.psi cStd w) = G.psi U.betaU w := by
   rw [FormNormSumIdentities.psi_conj]
@@ -247,7 +206,7 @@ theorem nPt_append (k r : ℕ) (TT : ℝ) (h L : C.LPt) (hh : D.ptSize h ≤ r) 
       have hs : D.ptSize ((s, t) :: rest) = s + D.ptSize rest := by simp [D.ptSize]
       rw [hs] at hb
       have hc : ¬ (b + s - 1 = r + 1 ∧ s = 1) := by omega
-      simp only [C.nAux, if_neg hc]
+      simp only [C.nAux, ite_eq_right hc]
       rw [ih (b + s) (by omega)]
   rw [happ 1 h L, hind 1 h (by omega)]
 
@@ -256,7 +215,7 @@ theorem sqrt_nPt_long (k r : ℕ) (TT : ℝ) (h : C.LPt) (m e : ℕ) (z : ℂ) (
     √(TBB.nPt k r TT (h ++ [(m + 2, z)])) = √(nHead k r h) * ‖z‖ ^ ((m + 2) * e) := by
   rw [nPt_append k r TT h _ (by omega)]
   simp only [C.nAux]
-  rw [if_neg (by omega), show 1 + D.ptSize h + (m + 2) - 1 = D.ptSize h + (m + 2) by omega,
+  rw [ite_eq_right (by omega), show 1 + D.ptSize h + (m + 2) - 1 = D.ptSize h + (m + 2) by omega,
     show 2 * ((m + 2 : ℕ) : ℤ) * (C.Mlev k r (D.ptSize h + (m + 2)) + ((m + 2 : ℕ) : ℤ) - 3) =
       ((2 * ((m + 2) * e) : ℕ) : ℤ) by push_cast; rw [he]; ring, zpow_natCast, one_mul, mul_one,
     Real.sqrt_mul (nHead_nonneg k r h), GermRateSplit.sqrt_pow_two_mul _ (norm_nonneg _)]
@@ -267,7 +226,7 @@ theorem sqrt_nPt_pair_low (k r : ℕ) (TT : ℝ) (h : C.LPt) (m M : ℕ) (t c : 
       √(nHead k r h) * (‖t‖ ^ ((m + 1) * (M + m)) * ‖c‖ ^ (M - 2)) := by
   rw [nPt_append k r TT h _ (by omega)]
   simp only [C.nAux]
-  rw [if_neg (by omega), if_neg (by omega), show 1 + D.ptSize h + (m + 1) - 1 = D.ptSize h + (m + 1) by omega,
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), show 1 + D.ptSize h + (m + 1) - 1 = D.ptSize h + (m + 1) by omega,
     show 1 + D.ptSize h + (m + 1) + 1 - 1 = D.ptSize h + (m + 2) by omega,
     show 2 * ((m + 1 : ℕ) : ℤ) * (C.Mlev k r (D.ptSize h + (m + 1)) + ((m + 1 : ℕ) : ℤ) - 3) =
       ((2 * ((m + 1) * (M + m)) : ℕ) : ℤ) by push_cast; rw [hM]; unfold C.Mlev; push_cast; ring,
@@ -508,7 +467,7 @@ theorem sqrt_nPt_pair_top (k r : ℕ) (TT : ℝ) (h : C.LPt) (m j : ℕ) (t c : 
     simp
   rw [nPt_append k r TT h _ (by omega), hGG]
   simp only [C.nAux]
-  rw [if_neg (by omega), if_pos ⟨by omega, trivial⟩,
+  rw [ite_eq_right (by omega), ite_eq_left ⟨by omega, trivial⟩,
     show 1 + D.ptSize h + (m + 1) - 1 = r by omega,
     show 2 * ((m + 1 : ℕ) : ℤ) * (C.Mlev k r r + ((m + 1 : ℕ) : ℤ) - 3) =
       ((2 * ((m + 1) * (j + m + 2)) : ℕ) : ℤ) by unfold C.Mlev; rw [hk]; push_cast; ring,
@@ -607,7 +566,7 @@ theorem top_core (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (w : List C.Letter) {F' 
         Real.sqrt_one, Complex.ofReal_one, one_smul]
     · have h0 : p.V F' (H ++ [(m + 2, z)]) = 0 := by
         unfold KB.Pl.V D.vecV
-        rw [dif_neg]
+        rw [dite_eq_right]
         rintro ⟨-, hpos⟩
         exact hG hpos
       rw [hOL2] at h0
@@ -730,15 +689,15 @@ theorem np_psd (hA : P5.ThmPActualCpt) (p : KB.Pl P Wp Wq) {nn : ℝ → ℝ} (h
         rw [zero_add, z1 _ (hu a'), zero_add] at s1
         rw [zero_add, z2 _ c1, zero_add, Complex.conj_ofReal] at s2
         rw [PBL.rr_eq_form p F i hj w a a' ha ha']
-        simp only [u, dif_pos ha, dif_pos ha'] at s1 ⊢
+        simp only [u, dite_eq_left ha, dite_eq_left ha'] at s1 ⊢
         rw [s1, s2]
         push_cast
         ring
       · rw [PBL.rr_zero_of_not p F i w a a' (fun h => ha' h.2), mul_zero]
-        have : u a' = 0 := by simp only [u, dif_neg ha']
+        have : u a' = 0 := by simp only [u, dite_eq_right ha']
         rw [this, z2 _ (hu a)]
     · rw [PBL.rr_zero_of_not p F i w a a' (fun h => ha h.1), mul_zero]
-      have : u a = 0 := by simp only [u, dif_neg ha]
+      have : u a = 0 := by simp only [u, dite_eq_right ha]
       rw [this, z1 _ (hu a')]
   · have hi' : i = P.r + 1 := by omega
     subst hi'
@@ -835,14 +794,14 @@ theorem np_succ_eq (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (F : B.Mat P.k P.r →
       rw [hT, hT'] at hc2
       refine key ((Complex.normSq c - P.T * P.T') ^ (P.k - 1)) (pow_nonneg (by linarith) _) ?_ ?_
       · simp only [C.nAux]
-        rw [if_pos ⟨by omega, trivial⟩, hTT, mul_one]
+        rw [ite_eq_left ⟨by omega, trivial⟩, hTT, mul_one]
       · simp [KB.levW, B2.zWeight, hc2.le]
   · refine key (KB.levW P (j + 1) c) ?_ ?_ rfl
     · simp only [KB.levW]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
       exact zpow_nonneg (norm_nonneg _) _
     · simp only [C.nAux, KB.levW]
-      rw [if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
       have e : 1 + j + 1 - 1 = j + 1 := by omega
       rw [e]
       simp only [one_mul, mul_one, Nat.cast_one]
@@ -914,7 +873,7 @@ theorem mean_le_of_eventually {Λ : AddSubgroup (crystallineComparison.V 1)} {LI
     funext x; simp only [g1, g2, Pi.add_apply]; split_ifs <;> simp
   have hz : LIM g2 = 0 := hL.2 g2 h2 (tendsto_const_nhds.congr' (by
     filter_upwards [hev] with x hx
-    simp only [g2, if_pos hx]))
+    simp only [g2, ite_eq_left hx]))
   rw [hsum, hL.1.1 g1 g2 ⟨a, h1⟩ h2, hz, add_zero]
   exact mean_bound_estimate _ LIM g1 a hL.1 h1
 

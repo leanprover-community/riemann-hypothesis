@@ -72,11 +72,7 @@ theorem exists_infinite_fibre {k d : ℕ} {U : Set (Fin k → ℂ)} {f : (Fin k 
     omega
 
   let T : (Fin r → ℂ) →ₗ[ℂ] (Fin d → ℂ) := Fintype.linearCombination ℂ (fun j => fderiv ℂ f s (v j))
-  have hT : LinearMap.ker T = ⊥ := by
-    rw [LinearMap.ker_eq_bot']
-    intro c hc
-    funext j
-    exact Fintype.linearIndependent_iff.1 hv c (by simpa [T, Fintype.linearCombination_apply] using hc) j
+  have hT : LinearMap.ker T = ⊥ := LinearMap.ker_eq_bot.2 hv.fintypeLinearCombination_injective
   obtain ⟨Λ, hΛ⟩ := T.exists_leftInverse_of_injective hT
   have hΛv : ∀ j, Λ (fderiv ℂ f s (v j)) = Pi.single j 1 := by
     intro j

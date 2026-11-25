@@ -3,6 +3,7 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEuclideanSectionsPower
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSmallSectionsNonzero
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSublatticeDegree
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockVeronese
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
@@ -20,23 +21,6 @@ noncomputable section
 namespace EuclideanSections
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
-
-
-omit [∀ k, Fintype (ι k)] in
-theorem mul_mem_chartLat {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n j : ℕ} {s t : Ω} (hs : s ∈ chartLat y a n)
-    (ht : t ∈ chartLat y a j) : s * t ∈ chartLat y a (n + j) := by
-  intro c hc
-  have h : ∏ k, y ⟨k, c k⟩ ^ (-(((n + j : ℕ) : ℤ) * a k)) =
-      (∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k)) := by
-    rw [← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    rw [← zpow_add₀ (hc k)]
-    congr 1
-    push_cast
-    ring
-  rw [h, show s * t * ((∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) =
-      (s * ∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * (t * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) by ring]
-  exact mul_mem (hs c hc) (ht c hc)
 
 theorem isBoundedH_mono {P : Ideal (MRing ι)} {y : (Σ k, ι k) → Ω} {A : HermLine ι} {τ : ℕ} {s : Ω}
     {c c' : ℝ} (hs : IsBoundedH P y A τ c s) (hc : c ≤ c') : IsBoundedH P y A τ c' s := by
@@ -136,7 +120,7 @@ theorem EuclideanSections.proof (hP : EuclideanSectionsPower.Statement) (hS : Sm
   obtain ⟨t, ht, ht0, hts⟩ := hS K ι Ω y D A P0 har hb hA j
 
   let ψ : chartLat y A.a n →+ chartLat y A.a (n + j) :=
-    { toFun := fun s => ⟨(s : Ω) * t, mul_mem_chartLat s.2 ht⟩
+    { toFun := fun s => ⟨(s : Ω) * t, PowerBlockVeronese.chartLat_mul s.2 ht⟩
       map_zero' := by ext; simp
       map_add' := fun s s' => by ext; simp [add_mul] }
   have hψ : Function.Injective ψ := fun s s' h =>

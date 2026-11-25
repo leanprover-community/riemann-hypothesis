@@ -104,7 +104,7 @@ theorem perm_of (hR : GlobalTheory.Published.JacquetShalikaRigidity) {a₁ a₂ 
   let B : (Σ a, CG E a) → Multiset ℂˣ := fun p => if h : ∃ B, p.2.HasSat w B then h.choose else 0
   have hB : ∀ p (B' : Multiset ℂˣ), p.2.HasSat w B' → B p = B' := fun p B' h => by
     have hex : ∃ B, p.2.HasSat w B := ⟨B', h⟩
-    simp only [B, dif_pos hex]
+    simp only [B, dite_eq_left hex]
     exact hex.choose_spec.unique h
   have t₁ : ∀ u : ℂ, B ⟨a₁, (CG.mk π₁).twist (GlobalTheory.CuspRep.Model.absC E u)⟩ =
       B₁.map (· * (GlobalTheory.CuspRep.Model.absC E u).val w) :=

@@ -84,12 +84,12 @@ theorem zh_mul_UW (z : Fin (2 * (p + ρ) + k + 1) → ℂ) (g h : B.Mat k (p + �
     rw [← Formalism.FourierDecayAlt.P.PBM.mulVec_bvec_apply h ⟨b.val, by omega⟩ c, h1]
     unfold bvec
     by_cases hcb : c.val = b.val
-    · rw [if_pos hcb, Pi.single_apply, if_pos (Fin.ext hcb)]
-    · rw [if_neg hcb, Pi.single_apply, if_neg (fun h' => hcb (congrArg Fin.val h'))]
+    · rw [ite_eq_left hcb, Pi.single_apply, ite_eq_left (Fin.ext hcb)]
+    · rw [ite_eq_right hcb, Pi.single_apply, ite_eq_right (fun h' => hcb (congrArg Fin.val h'))]
   rw [Finset.sum_eq_single ⟨b.val, by omega⟩]
-  · rw [hcol, if_pos rfl, mul_one]
+  · rw [hcol, ite_eq_left rfl, mul_one]
   · intro c _ hc
-    rw [hcol, if_neg (fun h' => hc (Fin.ext h')), mul_zero]
+    rw [hcol, ite_eq_right (fun h' => hc (Fin.ext h')), mul_zero]
   · intro h'; exact absurd (Finset.mem_univ _) h'
 
 theorem nblk_upper (nn : B.Mat k (p + ρ)) (hn : nn ∈ Nset k (p + ρ)) :
@@ -98,9 +98,9 @@ theorem nblk_upper (nn : B.Mat k (p + ρ)) (hn : nn ∈ Nset k (p + ρ)) :
   ext c b
   simp only [Matrix.of_apply, G.upper, G.strictUpper, Matrix.add_apply, Matrix.one_apply]
   rcases lt_trichotomy c b with hcb | rfl | hcb
-  · rw [if_neg (ne_of_lt hcb), dite_eq_left hcb, zero_add]
-  · rw [LeftFubiniLemmas.n_col nn hn c _ le_rfl, if_pos rfl, if_pos rfl, dite_eq_right (lt_irrefl _), add_zero]
-  · rw [LeftFubiniLemmas.n_col nn hn b _ (le_of_lt hcb), if_neg (by simp only; omega), if_neg (ne_of_gt hcb),
+  · rw [ite_eq_right (ne_of_lt hcb), dite_eq_left hcb, zero_add]
+  · rw [LeftFubiniLemmas.n_col nn hn c _ le_rfl, ite_eq_left rfl, ite_eq_left rfl, dite_eq_right (lt_irrefl _), add_zero]
+  · rw [LeftFubiniLemmas.n_col nn hn b _ (le_of_lt hcb), ite_eq_right (by simp only; omega), ite_eq_right (ne_of_gt hcb),
       dite_eq_right (not_lt.mpr (le_of_lt hcb)), add_zero]
 
 end zh
@@ -167,7 +167,7 @@ theorem pb_head_support (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData 
     have hGV : sP Bj x * g * Matrix.of ξ.2 * Matrix.of ξ.1 ∈ B.GV k (p + ρ) := by
       have hs : sP Bj x ∈ B.GV k (p + ρ) := by
         unfold sP
-        rw [if_pos hx]
+        rw [ite_eq_left hx]
         refine Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (_root_.Formalism.FourierDecayAlt.P.Ux3.rn_nset _).1 ?_
         rw [← Formalism.FourierDecayAlt.P.Dx2.Tower.lev_eq_embG]
         exact Formalism.FourierDecayAlt.P.Dx2.Tower.lev_GV p ρ _

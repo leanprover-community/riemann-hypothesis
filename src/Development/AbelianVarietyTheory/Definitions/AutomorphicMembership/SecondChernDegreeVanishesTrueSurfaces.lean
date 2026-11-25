@@ -101,13 +101,6 @@ structure Surf : Type where
 
   A : PPCode C.X
 
-namespace Surf
-
-variable (s : Surf)
-
-
-end Surf
-
 structure SurfFp : Type where
 
   p : ℕ

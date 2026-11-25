@@ -54,7 +54,7 @@ theorem DF_wtA_le {D : D7} (T : Top D) (j : ℕ) (w : WeightFamilies.Wt D j) :
   rw [Finset.sum_congr rfl fun τ _ => hsw τ, Finset.sum_comm]
   refine Finset.sum_le_sum fun t _ => ?_
   rw [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.sum_ite_eq']
-  simp only [Finset.mem_univ, if_true]
+  simp only [Finset.mem_univ, ite_true]
   exact add_le_add (sum_extendByZero_le_sum _ _) (sum_extendByZero_le_sum _ _)
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

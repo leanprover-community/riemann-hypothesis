@@ -96,7 +96,7 @@ theorem UpperTheory.Gal.productCup_of_system.trTop_of :
     by_cases hne : (Finset.univ.erase i : Finset (Fin (d + 1))).Nonempty
     · have hc : (((Finset.univ.erase i : Finset (Fin (d + 1))).card : ℕ) : ℤ) = ((d : ℤ) - 1) + 1 := by
         simp
-      rw [if_pos ⟨hne, hc⟩] at hm
+      rw [ite_eq_left ⟨hne, hc⟩] at hm
       have hle : omB ℂ K' (rB ℂ K' (xv x) (Finset.univ.erase i)) d ≤ (⋀[K']^d Ω[K'⁄ℂ]).restrictScalars ℂ := by
         refine Submodule.span_le.2 ?_
         rintro _ ⟨b, -, v, -, rfl⟩
@@ -108,7 +108,7 @@ theorem UpperTheory.Gal.productCup_of_system.trTop_of :
         (one_mem _)
       rw [mul_one] at h1
       exact _root_.GlobalTheory.PD.ResVan.resvan ℂ F d (xv x) hY.covY.pd ρ hρ i _ hne (by simp) _ h1
-    · rw [if_neg (fun h => hne h.1)] at hm
+    · rw [ite_eq_right (fun h => hne h.1)] at hm
       rw [(Submodule.mem_bot ℂ).1 hm]
       simp
   change trF ℂ τ ρ (trDR ℂ K K' (∑ i ∈ Finset.univ, _ • y' (Finset.univ.erase i))) = 0

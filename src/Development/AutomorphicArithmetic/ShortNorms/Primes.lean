@@ -134,10 +134,10 @@ private lemma sum_range_neg_one_pow_eq_ite (n : ℕ) :
     rw [Finset.sum_range_succ, ih]
     by_cases h : Even n
     · have h' : ¬ Even (n + 1) := by rw [Nat.even_add_one]; exact not_not.2 h
-      rw [if_pos h, if_neg h', h.neg_one_pow]
+      rw [ite_eq_left h, ite_eq_right h', h.neg_one_pow]
       norm_num
     · have h' : Even (n + 1) := Nat.even_add_one.2 h
-      rw [if_neg h, if_pos h', (Nat.not_even_iff_odd.1 h).neg_one_pow]
+      rw [ite_eq_right h, ite_eq_left h', (Nat.not_even_iff_odd.1 h).neg_one_pow]
       norm_num
 
 lemma geom_bounds {x : ℝ} (hx : x = 0 ∨ x = 1 ∨ x = -1) (k : ℕ) :
@@ -152,7 +152,7 @@ lemma geom_bounds {x : ℝ} (hx : x = 0 ∨ x = 1 ∨ x = -1) (k : ℕ) :
     have h : ¬ Even (2 * k + 1) := by
       rw [Nat.even_add_one, not_not]
       exact even_two_mul k
-    rw [if_neg h]
+    rw [ite_eq_right h]
     refine ⟨?_, le_refl _⟩
     split_ifs <;> norm_num
 
@@ -326,11 +326,11 @@ lemma sum_aRay (ε : D.G → ℝ) (n : ℕ) : ∑ g, ε g * aRay D g n = ∑ I �
       then ε g else 0 := by
     intro I
     by_cases h : I ≠ ⊥ ∧ IsCoprime I (Ideal.span {(M : 𝓞 K)})
-    · rw [chi, if_pos h]
-      simp only [ite_and, if_pos h]
+    · rw [chi, ite_eq_left h]
+      simp only [ite_and, ite_eq_left h]
       simp
-    · rw [chi, if_neg h]
-      simp only [ite_and, if_neg h, Finset.sum_const_zero]
+    · rw [chi, ite_eq_right h]
+      simp only [ite_and, ite_eq_right h, Finset.sum_const_zero]
   rw [Finset.sum_congr rfl (fun I _ => hchi I), Finset.sum_comm]
   refine Finset.sum_congr rfl fun g _ => ?_
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, hcard g, mul_comm]
@@ -342,17 +342,17 @@ lemma chi_mul (ε : D.G → ℝ) (hε : ∀ g h, ε (g * h) = ε g * ε h) (I J 
     · have hIJ : I * J ≠ ⊥ ∧ IsCoprime (I * J) (Ideal.span {(M : 𝓞 K)}) :=
         ⟨mul_ne_zero hI.1 hJ.1, hI.2.mul_left hJ.2⟩
       simp only [chi]
-      rw [if_pos hIJ, if_pos hI, if_pos hJ, D.cls_mul I J hI.2 hJ.2 hI.1 hJ.1, hε]
+      rw [ite_eq_left hIJ, ite_eq_left hI, ite_eq_left hJ, D.cls_mul I J hI.2 hJ.2 hI.1 hJ.1, hε]
     · have hIJ : ¬ (I * J ≠ ⊥ ∧ IsCoprime (I * J) (Ideal.span {(M : 𝓞 K)})) := by
         rintro ⟨h1, h2⟩
         exact hJ ⟨fun h => h1 (by rw [h, Ideal.mul_bot]), h2.of_mul_left_right⟩
       simp only [chi]
-      rw [if_pos hI, if_neg hJ, if_neg hIJ, mul_zero]
+      rw [ite_eq_left hI, ite_eq_right hJ, ite_eq_right hIJ, mul_zero]
   · have hIJ : ¬ (I * J ≠ ⊥ ∧ IsCoprime (I * J) (Ideal.span {(M : 𝓞 K)})) := by
       rintro ⟨h1, h2⟩
       exact hI ⟨fun h => h1 (by rw [h, Ideal.bot_mul]), h2.of_mul_left_left⟩
     simp only [chi]
-    rw [if_neg hI, if_neg hIJ, zero_mul]
+    rw [ite_eq_right hI, ite_eq_right hIJ, zero_mul]
 
 lemma chi_one (ε : D.G → ℝ) (h1 : ε 1 = 1) : chi D ε 1 = 1 := by
   have hc : IsCoprime (1 : Ideal (𝓞 K)) (Ideal.span {(M : 𝓞 K)}) := isCoprime_one_left
@@ -363,7 +363,7 @@ lemma chi_one (ε : D.G → ℝ) (h1 : ε 1 = 1) : chi D ε 1 = 1 := by
     have e := D.cls_mul 1 1 hc hc hb hb
     rw [one_mul] at e
     exact mul_left_cancel (by rw [mul_one]; exact e.symm : D.cls 1 * D.cls 1 = D.cls 1 * 1)
-  rw [chi, if_pos ⟨hb, hc⟩, hcls, h1]
+  rw [chi, ite_eq_left ⟨hb, hc⟩, hcls, h1]
 
 lemma conv_aRay (ε : D.G → ℝ) {n : ℕ} (hn : n ≠ 0) :
     ∑ p ∈ n.divisorsAntidiagonal, (∑ g, aRay D g p.1) * ∑ g, ε g * aRay D g p.2 =
@@ -427,9 +427,9 @@ theorem conv_real_char : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 �
           by_cases h : I ≠ ⊥ ∧ IsCoprime I (Ideal.span {(M : 𝓞 K)})
           · have h2 : I ^ 2 ≠ ⊥ ∧ IsCoprime (I ^ 2) (Ideal.span {(M : 𝓞 K)}) :=
               ⟨pow_ne_zero 2 h.1, h.2.pow_left⟩
-            rw [h01, h01, if_pos h, if_pos h2, one_mul]
+            rw [h01, h01, ite_eq_left h, ite_eq_left h2, one_mul]
             exact (hr I h.1).2
-          · rw [h01 I, if_neg h]
+          · rw [h01 I, ite_eq_right h]
             exact hterm (I ^ 2)
       _ = ∑ C ∈ (normEq K n).image (· ^ 2), chi D (fun _ => 1) C * r (chi D ε) C := by
           rw [Finset.sum_image]
@@ -467,7 +467,7 @@ theorem lamIdeal_pow {P : Ideal (𝓞 K)} (hP : Prime P) (k : ℕ) :
     lamIdeal (P ^ (k + 1)) = Real.log (Ideal.absNorm P) := by
   have h1 : P.IsPrime := Ideal.isPrime_of_prime hP
   unfold lamIdeal
-  rw [if_pos ⟨P, k + 1, h1, hP.ne_zero, by omega, rfl⟩, Ideal.radical_pow _ (by omega), h1.radical]
+  rw [ite_eq_left ⟨P, k + 1, h1, hP.ne_zero, by omega, rfl⟩, Ideal.radical_pow _ (by omega), h1.radical]
 
 theorem finite_dvd {I : Ideal (𝓞 K)} (hI : I ≠ 0) : {J : Ideal (𝓞 K) | J ∣ I}.Finite := by
   refine (Ideal.finite_setOf_absNorm_le (S := 𝓞 K) (Ideal.absNorm I)).subset fun J hJ => ?_
@@ -484,7 +484,7 @@ theorem sum_lamIdeal (I : Ideal (𝓞 K)) : I ≠ 0 → ∀ T : Finset (Ideal (�
     rw [map_one, Nat.cast_one, Real.log_one]
     refine Finset.sum_eq_zero fun J hJ => ?_
     unfold lamIdeal
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨P, k, hP, hP0, hk, rfl⟩
     have := isUnit_of_dvd_one ((hT _).1 hJ)
     rw [isUnit_pow_iff (by omega), Ideal.isUnit_iff] at this
@@ -507,7 +507,7 @@ theorem sum_lamIdeal (I : Ideal (𝓞 K)) : I ≠ 0 → ∀ T : Finset (Ideal (�
     · intro J hJ hne
       rw [Finset.mem_sdiff, hT, hSm] at hJ
       unfold lamIdeal
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨Q, k, hQ, hQ0, hk, rfl⟩
       have hQp : Prime Q := Ideal.prime_of_isPrime hQ0 hQ
       by_cases hQP : Q = P
@@ -532,7 +532,6 @@ theorem finite_idealsIn (g : D.G) (n : ℕ) : (idealsIn D g n).Finite :=
 end GlobalTheory.Hk.RayConv
 
 namespace GlobalTheory.Hk
-
 
 open RayConv in
 theorem aRay_mul_log : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (g : D.G) (n : ℕ), aRay D g n * Real.log n = ∑ h : D.G, ∑ p ∈ n.divisorsAntidiagonal, lamRay D h p.1 * aRay D (g / h) p.2 := by
@@ -670,11 +669,10 @@ theorem sum_lamIdeal_le (hK : Module.finrank ℚ K = 2) (n : ℕ) (S : Finset (I
   have hpos : ∀ I ∈ T, (0 : ℝ) < Ideal.absNorm I.radical := fun I hI =>
     Nat.cast_pos.2 (lt_trans one_pos (key I hI).2.2.2.2.1)
   push_cast at h3
-  rw [← Real.log_prod (fun I hI => (hpos I hI).ne'), vonMangoldt_apply, if_pos hn]
+  rw [← Real.log_prod (fun I hI => (hpos I hI).ne'), vonMangoldt_apply, ite_eq_left hn]
   have h4 := Real.log_le_log (Finset.prod_pos hpos) h3
   rw [Real.log_pow] at h4
   exact_mod_cast h4
-
 
 open QuadraticZeta in
 theorem exists_gen {d : ℕ} (hp : d.Prime) (hd : d % 4 = 3) {r : K} (hr : r ^ 2 = -(d : K))
@@ -725,14 +723,11 @@ theorem normOne_span {d M : ℕ} {ω : 𝓞 K} (hgen : ∀ z : 𝓞 K, ∃ a b :
   rw [Ideal.absNorm_span_singleton, Int.natAbs_of_nonneg h0]
   linarith
 
-theorem finite_idealsIn {M : ℕ} (D : RayData K M) (g : D.G) (n : ℕ) : (idealsIn D g n).Finite :=
-  (Ideal.finite_setOf_absNorm_eq (S := 𝓞 K) n).subset fun _ h => h.2.2.1
-
 theorem lamRay_props : ∀ (K : Type) [Field K] [NumberField K] (d M : ℕ) (x : K), d.Prime → d % 4 = 3 → 100 ≤ d → x ^ 2 = -(d : K) → Module.finrank ℚ K = 2 → 3 ≤ M → ∀ D : RayData K M, (∀ g n, 0 ≤ lamRay D g n) ∧ (∀ n : ℕ, ∑ g : D.G, lamRay D g n ≤ 2 * Λ n) ∧ ∀ p : ℕ, p.Prime → lamRay D 1 p ≠ 0 → GlobalTheory.Mem.An.NormOne d M p := by
   intro K _ _ d M x hp hd _ hx hK _ D
   refine ⟨fun g n => ?_, fun n => ?_, fun p _ h => ?_⟩
   · exact finsum_nonneg fun I => finsum_nonneg fun _ => lamIdeal_nonneg I
-  · have e : ∀ g, lamRay D g n = ∑ I ∈ (finite_idealsIn D g n).toFinset, lamIdeal I := fun g =>
+  · have e : ∀ g, lamRay D g n = ∑ I ∈ (GlobalTheory.Hk.RayConv.finite_idealsIn D g n).toFinset, lamIdeal I := fun g =>
       finsum_mem_eq_finite_toFinset_sum _ _
     simp only [e]
     rw [← Finset.sum_biUnion]
@@ -810,14 +805,12 @@ theorem exists_field_sq_eq_neg (d : ℕ) (hd : 0 < d) :
     simp
 
 theorem exists_imagQuad_integers : ∀ d : ℕ, d.Prime → d % 4 = 3 →
-    ∃ (K : Type) (_ : Field K) (_ : NumberField K) (ω : 𝓞 K), IsTotallyComplex K ∧
-      Module.finrank ℚ K = 2 ∧ discr K = -(d : ℤ) ∧ (2 * ω - 1) ^ 2 = -(d : 𝓞 K) ∧
-      (∀ z : 𝓞 K, ∃ a b : ℤ, z = a + b * ω) ∧
-      ∀ a b : ℤ, Algebra.norm ℤ ((a : 𝓞 K) + b * ω) * 4 = (2 * a + b) ^ 2 + d * b ^ 2 := by
+    ∃ (K : Type) (_ : Field K) (_ : NumberField K) (ω : 𝓞 K),
+      Module.finrank ℚ K = 2 ∧ discr K = -(d : ℤ) ∧ (2 * ω - 1) ^ 2 = -(d : 𝓞 K) := by
   intro d hdp hd4
   obtain ⟨K, _, _, r, h2, hr⟩ := exists_field_sq_eq_neg d hdp.pos
   have hsq : Squarefree d := hdp.squarefree
-  obtain ⟨w, bar, hw, -, hspan, hemb, -⟩ :=
+  obtain ⟨w, -, hw, -, -, -, -⟩ :=
     GlobalTheory.ringOfIntegers_sqrt_neg_three_mod_four d hsq hd4 K h2 r hr
   have hwr : 2 * (w : K) - 1 = r := by rw [hw]; ring
   have hcoe : algebraMap (𝓞 K) K (2 * w - 1) = r := by
@@ -826,78 +819,7 @@ theorem exists_imagQuad_integers : ∀ d : ℕ, d.Prime → d % 4 = 3 →
   have hw2 : (2 * w - 1) ^ 2 = -(d : 𝓞 K) := by
     apply RingOfIntegers.coe_injective
     rw [map_pow, hcoe, hr, map_neg, map_natCast]
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, d + 1 = 4 * k := ⟨(d + 1) / 4, by omega⟩
-  have hwsq : w * w = w - (k : 𝓞 K) := by
-    have h4 : (4 : 𝓞 K) * (w * w - w + k) = 0 := by
-      have : ((d : ℕ) : 𝓞 K) + 1 = 4 * (k : 𝓞 K) := by exact_mod_cast hk
-      linear_combination hw2 - this
-    have h4ne : (4 : 𝓞 K) ≠ 0 := by
-      intro h
-      have : ((4 : 𝓞 K) : K) = 0 := by rw [h]; simp
-      norm_num at this
-    have := (mul_eq_zero.mp h4).resolve_left h4ne
-    linear_combination this
-  have hli : LinearIndependent ℤ ![(1 : 𝓞 K), w] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    have hK : (s : K) + t * (w : K) = 0 := by
-      have := congrArg (fun z : 𝓞 K => (z : K)) hst
-      simpa [zsmul_eq_mul] using this
-    have ht : t = 0 := by
-      by_contra ht
-      have htK : (t : K) ≠ 0 := by exact_mod_cast ht
-      set q : ℚ := -(2 * s + t) / t with hqdef
-      have hrq : r = algebraMap ℚ K q := by
-        simp only [hqdef, map_div₀, map_neg, map_add (f := _), map_mul, map_ofNat, map_intCast]
-        field_simp
-        linear_combination (2 : K) * hK + (-(t : K)) * hwr
-      have hq : q ^ 2 = -(d : ℚ) := by
-        apply (algebraMap ℚ K).injective
-        rw [map_pow, ← hrq, hr]
-        simp
-      have hdpos : (0 : ℚ) < d := by exact_mod_cast hdp.pos
-      nlinarith [sq_nonneg q]
-    subst ht
-    refine ⟨?_, rfl⟩
-    have : (s : K) = 0 := by simpa using hK
-    exact_mod_cast this
-  have hsp : ⊤ ≤ Submodule.span ℤ (Set.range ![(1 : 𝓞 K), w]) := by
-    intro z _
-    obtain ⟨a, b, rfl⟩ := hspan z
-    have hr' : Set.range ![(1 : 𝓞 K), w] = {1, w} := by
-      rw [Matrix.range_cons, Matrix.range_cons, Matrix.range_empty, Set.union_empty]; rfl
-    rw [hr', Submodule.mem_span_pair]
-    exact ⟨a, b, by simp [zsmul_eq_mul]⟩
-  let B := Basis.mk hli hsp
-  have hB0 : B 0 = 1 := by simp [B]
-  have hB1 : B 1 = w := by simp [B]
-  have hrepr : ∀ s t : ℤ, B.repr ((s : 𝓞 K) + t * w) = Finsupp.single 0 s + Finsupp.single 1 t := by
-    intro s t
-    have : (s : 𝓞 K) + t * w = s • B 0 + t • B 1 := by
-      rw [hB0, hB1]; simp [zsmul_eq_mul]
-    rw [this, map_add (f := _), map_zsmul, map_zsmul, B.repr_self, B.repr_self]
-    simp
-  refine ⟨K, inferInstance, inferInstance, w, ?_, h2, ?_, hw2, hspan, ?_⟩
-  · refine ⟨fun v => ?_⟩
-    rw [InfinitePlace.isComplex_iff]
-    exact (hemb v.embedding).1
-  · exact GlobalTheory.discr_eq_neg_of_sq_eq h2 hsq hd4 hr
-  · intro a b
-    rw [Algebra.norm_eq_matrix_det B, Matrix.det_fin_two]
-    have e00 : Algebra.leftMulMatrix B ((a : 𝓞 K) + b * w) 0 0 = a := by
-      rw [Algebra.leftMulMatrix_eq_repr_mul, hB0, mul_one, hrepr]; simp
-    have e10 : Algebra.leftMulMatrix B ((a : 𝓞 K) + b * w) 1 0 = b := by
-      rw [Algebra.leftMulMatrix_eq_repr_mul, hB0, mul_one, hrepr]; simp
-    have hx1 : ((a : 𝓞 K) + b * w) * w = ((-(b * k) : ℤ) : 𝓞 K) + ((a + b : ℤ) : 𝓞 K) * w := by
-      push_cast
-      linear_combination (b : 𝓞 K) * hwsq
-    have e01 : Algebra.leftMulMatrix B ((a : 𝓞 K) + b * w) 0 1 = -(b * k) := by
-      rw [Algebra.leftMulMatrix_eq_repr_mul, hB1, hx1, hrepr]; simp
-    have e11 : Algebra.leftMulMatrix B ((a : 𝓞 K) + b * w) 1 1 = a + b := by
-      rw [Algebra.leftMulMatrix_eq_repr_mul, hB1, hx1, hrepr]; simp
-    rw [e00, e10, e01, e11]
-    have hk' : (d : ℤ) + 1 = 4 * k := by exact_mod_cast hk
-    linear_combination (-(b ^ 2) : ℤ) * hk'
+  exact ⟨K, inferInstance, inferInstance, w, h2, GlobalTheory.discr_eq_neg_of_sq_eq h2 hsq hd4 hr, hw2⟩
 
 end GlobalTheory.Mem.ImagQuad
 end -- clump:auto
@@ -967,7 +889,7 @@ end
 theorem exists_lFam_ray : ∀ d M : ℕ, d.Prime → d % 4 = 3 → 100 ≤ d → 3 ≤ M → ∃ 𝓕 : LFam, 𝓕.B = (4 * (d : ℝ) * (M : ℝ) ^ 2) ∧
     ∀ p : ℕ, p.Prime → 𝓕.lam 0 p ≠ 0 → GlobalTheory.Mem.An.NormOne d M p := by
   intro d M hd hd4 hd100 hM
-  obtain ⟨K, _, _, ω, -, hK, hdisc, hω, -, -⟩ := GlobalTheory.Mem.ImagQuad.exists_imagQuad_integers d hd hd4
+  obtain ⟨K, _, _, ω, hK, hdisc, hω⟩ := GlobalTheory.Mem.ImagQuad.exists_imagQuad_integers d hd hd4
   have hx : (((2 * ω - 1 : 𝓞 K) : K)) ^ 2 = -(d : K) := by
     have := congrArg (algebraMap (𝓞 K) K) hω
     simpa using this

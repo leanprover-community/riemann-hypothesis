@@ -15,20 +15,6 @@ open PowerSeries IsLocalRing UpperTheory.V.abelian₂
 open IsDiscreteValuationRing (addVal)
 open scoped Pointwise TensorProduct Topology
 
-private theorem mem_smul_top_iff_repr {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M]
-    [Fintype ι] (b : Module.Basis ι R M) (I : Ideal R) (x : M) :
-    x ∈ I • (⊤ : Submodule R M) ↔ ∀ i, b.repr x i ∈ I := by
-  constructor
-  · intro hx i
-    refine Submodule.smul_induction_on hx (fun r hr m _ => ?_) (fun a c ha hc => ?_)
-    · rw [map_smul, Finsupp.smul_apply, smul_eq_mul]
-      exact I.mul_mem_right _ hr
-    · rw [map_add (f := _), Finsupp.add_apply]
-      exact I.add_mem ha hc
-  · intro h
-    rw [← b.sum_repr x]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem_smul (h i) trivial
-
 private theorem prec_free {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
     [Module.Free R M] [Module.Finite R M] (I : Ideal R) [IsPrecomplete I R] :
     IsPrecomplete I M := by

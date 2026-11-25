@@ -69,9 +69,6 @@ variable (S T : HSp D)
 def hAt (τ : D.what₂.Tau) (x y : Matrix (Fin T.rank) (Fin S.rank) ℂ) : ℂ :=
   Matrix.trace ((gramAt D S τ)⁻¹ * yᴴ * gramAt D T τ * x)
 
-def efR (x y : Fam D T.rank S.rank) : ℝ :=
-  -∑ τ, 2 * (tauE D τ D.host.xi0 * hAt S T τ (x τ) (y τ)).re
-
 end Forms
 
 section Canon

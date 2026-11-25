@@ -9,41 +9,6 @@ public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecCEApply
 public import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModulusOfNormEqAbs
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
@@ -54,10 +19,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarC
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongr
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddHaarLeftRightMulAdelicMatricesModule
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsOpenEmbeddingPairOfTuplesToTupleOfPairs
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Compactness.Paracompact
 import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactSpaceAxis
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSkewA
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
@@ -114,52 +75,6 @@ def IsHaarB {Y : Type} [AddGroup Y] [TopologicalSpace Y] (μ : @Measure Y (borel
   @Measure.IsAddHaarMeasure Y _ _ (borel Y) μ
 
 variable {Y V : Type} [TopologicalSpace Y] [AddCommGroup V] [Module ℂ V]
-
-def Conv (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) (v : V) : Prop :=
-  letI : MeasurableSpace Y := borel Y
-  Integrable (fun y => L₁ (T y v)) μ
-
-def convSub (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) : Submodule ℂ V where
-  carrier := {v | Conv μ L₁ T v}
-  zero_mem' := by
-    letI : MeasurableSpace Y := borel Y
-    show Integrable (fun y => L₁ (T y 0)) μ
-    simp only [map_zero]
-    exact integrable_zero _ _ _
-  add_mem' := by
-    letI : MeasurableSpace Y := borel Y
-    intro v w hv hw
-    show Integrable (fun y => L₁ (T y (v + w))) μ
-    simp only [map_add (f := _)]
-    exact Integrable.add hv hw
-  smul_mem' := by
-    letI : MeasurableSpace Y := borel Y
-    intro c v hv
-    show Integrable (fun y => L₁ (T y (c • v))) μ
-    simp only [map_smul, smul_eq_mul]
-    exact Integrable.const_mul hv c
-
-def avg0 (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) : convSub μ L₁ T →ₗ[ℂ] ℂ where
-  toFun v := letI : MeasurableSpace Y := borel Y; ∫ y, L₁ (T y (v : V)) ∂μ
-  map_add' v w := by
-    letI : MeasurableSpace Y := borel Y
-    show ∫ y, L₁ (T y ((v : V) + w)) ∂μ = ∫ y, L₁ (T y v) ∂μ + ∫ y, L₁ (T y w) ∂μ
-    simp only [map_add (f := _)]
-    exact integral_add v.2 w.2
-  map_smul' c v := by
-    letI : MeasurableSpace Y := borel Y
-    show ∫ y, L₁ (T y (c • (v : V))) ∂μ = c • ∫ y, L₁ (T y v) ∂μ
-    simp only [map_smul, smul_eq_mul]
-    exact integral_const_mul c _
-
-def avgForm (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) : V →ₗ[ℂ] ℂ :=
-  (LinearMap.exists_extend (avg0 μ L₁ T)).choose
-
-theorem avgForm_apply (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) {v : V}
-    (hv : Conv μ L₁ T v) :
-    avgForm μ L₁ T v = (letI : MeasurableSpace Y := borel Y; ∫ y, L₁ (T y v) ∂μ) :=
-  LinearMap.congr_fun (LinearMap.exists_extend (avg0 μ L₁ T)).choose_spec ⟨v, hv⟩
-
 def schrL {R : Type} [CommRing R] [Invertible (2 : R)] (ψ : AddChar R ℂ) {κ : Type} [Fintype κ]
     (w : (κ → R) × (κ → R)) : Module.End ℂ ((κ → R) → ℂ) where
   toFun := schr ψ w
@@ -171,11 +86,6 @@ def starFam {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Al
     (dd : Darboux Bf κ) (ψ : AddChar (AF F) ℂ) (u : Fin a → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (y : Fin b → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) :
     Module.End ℂ ((κ → AF F) → ℂ) :=
   schrL ψ (dd.e (Matrix.vecMulVec u (Sum.elim y y)))
-
-theorem starFam_apply {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {a b : ℕ}
-    {Bf : Matrix (Fin a) (Fin b ⊕ Fin b) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) → Matrix (Fin a) (Fin b ⊕ Fin b) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) → AF F} {κ : Type} [Fintype κ]
-    (dd : Darboux Bf κ) (ψ : AddChar (AF F) ℂ) (u : Fin a → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (y : Fin b → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (φ : (κ → AF F) → ℂ) :
-    starFam dd ψ u y φ = dd.rho ψ (Matrix.vecMulVec u (Sum.elim y y)) φ := rfl
 
 end GlobalTheory.SiegelAvg
 
@@ -201,12 +111,6 @@ namespace GlobalTheory.SiegelCov
 section Gen
 
 open MeasureTheory Topology Matrix NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx GlobalTheory.ModuLR
-
-theorem chi_adele (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ] [DecidableEq κ]
-    (M : Matrix κ κ (AF F)) (hM : IsUnit M.det) :
-    (addEquivAddHaarChar (mulVecCE M hM) : ℝ) =
-      (modu (Ainf F) (fstA F M.det) : ℝ) * ∏ᶠ v, ‖evalV F v (sndA F M.det)‖ := by
-  apply GlobalTheory.JacSubst.chi_AF_split
 
 theorem addEquivAddHaarChar_mulVecCE_adele (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ]
     [DecidableEq κ] (M : Matrix κ κ (AF F)) (hM : IsUnit M.det) :

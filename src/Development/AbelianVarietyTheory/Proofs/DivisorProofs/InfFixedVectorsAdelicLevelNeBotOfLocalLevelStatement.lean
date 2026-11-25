@@ -4,44 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwiste
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsContinuousRetractionOntoUnitaryLocalPoints
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemOpenNhdOneOfIntegralEqOneOnFinset
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteAdelicUnitaryPointCutToFibreUnion, Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfFixedVectorsAdelicLevelNeBotOfLocalLevel, Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfFixedVectorsAdelicLevelNeBotOfLocalLevelStatement
@@ -96,7 +58,7 @@ theorem pLoc_sIdem_of_mem (P : Set (Pl E)) {v : Pl E} (hv : v ∈ P) (x : Ad E) 
   change ((pLoc E v).comp (pFin E)) (idem P) * _ = _
   have : ((pLoc E v).comp (pFin E)) (idem P) = 1 := by
     change (idemF P).1 v = 1
-    simp only [idemF, if_pos hv]
+    simp only [idemF, ite_eq_left hv]
   rw [this, one_mul]
   rfl
 
@@ -105,7 +67,7 @@ theorem pLoc_sIdem_of_not_mem (P : Set (Pl E)) {v : Pl E} (hv : v ∉ P) (x : Ad
   change ((pLoc E v).comp (pFin E)) (idem P) * _ = _
   have : ((pLoc E v).comp (pFin E)) (idem P) = 0 := by
     change (idemF P).1 v = 0
-    simp only [idemF, if_neg hv]
+    simp only [idemF, ite_eq_right hv]
   rw [this, zero_mul]
 
 theorem conjAd_idem (P : Set (Pl E))
@@ -245,7 +207,7 @@ theorem local_fixed (S : Set (Pl E)) (hS : IsSection S) (K' : ∀ w : Pl E, Subg
     obtain ⟨x, hxfin, hx⟩ := _root_.GlobalTheory.FibreCut.exists_cut E n (fib {t}) (fib_closed {t}) h hfin
     have hxloc : x ∈ locU n wt := by
       refine Subgroup.mem_inf.2 ⟨hxfin, Subgroup.mem_iInf.2 fun u => Subgroup.mem_iInf.2 fun hu => ?_⟩
-      rw [MonoidHom.mem_ker, hx u, if_neg]
+      rw [MonoidHom.mem_ker, hx u, ite_eq_right]
       rintro ⟨t', ht', e⟩
       rw [Finset.mem_singleton] at ht'
       subst ht'
@@ -254,7 +216,7 @@ theorem local_fixed (S : Set (Pl E)) (hS : IsSection S) (K' : ∀ w : Pl E, Subg
     have hxS : x ∈ stabU φ := by
       obtain ⟨k, hk, hkx⟩ := hK wt hwtS
       refine hφ wt hwtS x hxloc ⟨k, hk, ?_⟩
-      rw [hx wt, if_pos hwtf, hkx]
+      rw [hx wt, ite_eq_left hwtf, hkx]
     have hrest : x⁻¹ * h ∈ stabU φ := by
       refine ih _ (mul_mem (inv_mem hxfin) hfin) ?_ ?_
       · intro w hw
@@ -302,7 +264,7 @@ theorem inf_fixed_globLev_ne_bot : ∀ (E : Type) [Field E] [NumberField E] [IsC
         · exact hgS w hw
         · exact ⟨1, one_mem _, rfl⟩
       · intro v hv
-        rw [hx v, if_neg hv]
+        rw [hx v, ite_eq_right hv]
     have hc : ∀ v, cLoc v (x⁻¹ * (g : UA E n)) = if v ∈ fib B then 1 else cLoc v (g : UA E n) := by
       intro v
       rw [map_mul, map_inv, hx v]
@@ -319,7 +281,7 @@ theorem inf_fixed_globLev_ne_bot : ∀ (E : Type) [Field E] [NumberField E] [IsC
       · exact this
       · intro v hv
         change cLoc v (x⁻¹ * (g : UA E n)) = 1
-        rw [hc v, if_pos ⟨v, Finset.mem_union_left _ hv, rfl⟩]
+        rw [hc v, ite_eq_left ⟨v, Finset.mem_union_left _ hv, rfl⟩]
       · intro v i j
         change (cLoc v (x⁻¹ * (g : UA E n))) i j ∈ _
         rw [hc v]

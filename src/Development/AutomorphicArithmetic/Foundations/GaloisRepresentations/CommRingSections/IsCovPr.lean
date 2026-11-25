@@ -83,9 +83,5 @@ structure Coc (X : Sch K) : Type 1 where
   U : ι → X.left.Opens
   cov : IsCov U
   g : ∀ i : Fin 2 → ι, (Sec X (cap U i))ˣ
-  coc : ∀ i : Fin 3 → ι,
-    secRes X (inter_le_comp (X := X.left.toTopCat) U i (Fin.succAbove 2)) (g (i ∘ Fin.succAbove 2)).val *
-      secRes X (inter_le_comp (X := X.left.toTopCat) U i (Fin.succAbove 0)) (g (i ∘ Fin.succAbove 0)).val =
-      secRes X (inter_le_comp (X := X.left.toTopCat) U i (Fin.succAbove 1)) (g (i ∘ Fin.succAbove 1)).val
 
 end UpperTheory.Gal.DifferentialFormSections

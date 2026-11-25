@@ -32,17 +32,4 @@ def TrSum (ρ : Γ →* GL (Fin a) k) (j : I → Γ) (κ : Fin a → I → k) : 
 
 end Abstract
 
-section Limit
-
-variable {k Γ I : Type} [NormedField k] [Group Γ] {a c : ℕ}
-
-end Limit
-
-section Weil
-
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-  {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-
-end Weil
-
 end UpperTheory.Gal.NearKilling

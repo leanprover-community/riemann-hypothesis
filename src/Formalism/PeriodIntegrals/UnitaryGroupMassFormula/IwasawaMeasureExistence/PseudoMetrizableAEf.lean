@@ -119,14 +119,6 @@ theorem char_pi {ι : Type} [Fintype ι] [DecidableEq ι] (φ : ι → A ≃ₜ+
 
 end Gen
 
-section AEf
-
-variable (I : AutInst)
-
-attribute [local instance] AfT.tAf Nrm.topRing Nrm.t2 Nrm.mAf Nrm.borel_mAf MFI.locallyCompact_AEf
-
-end AEf
-
 end PI.IwaMeasEx.MH
 
 end

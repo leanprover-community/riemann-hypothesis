@@ -187,7 +187,7 @@ theorem uEl_mem_HPG (i t : ℕ) (c : Fin (i + 1) → k) : uEl k i t c 0 ∈ HPG 
   by_cases hy : y = Fin.last (i + 1)
   · subst hy
     rw [ePG_false_last]
-    simp only [colMat, if_true, Fin.lastCases_castSucc, Fin.append_right, Pi.zero_apply]
+    simp only [colMat, ite_true, Fin.lastCases_castSucc, Fin.append_right, Pi.zero_apply]
   · obtain ⟨y', rfl⟩ := Fin.exists_castSucc_eq.2 hy
     rw [ePG_false_eq]
     simp [colMat, Fin.castSucc_ne_last]
@@ -233,7 +233,7 @@ theorem pgProj_uEl (i t : ℕ) (c : Fin (i + 1) → k) :
     have h0 : colMat k ((i + 1) + (t + 1)) (Fin.append c 0) (Fin.castSucc (Fin.natAdd (i + 1) a))
         (Fin.castSucc (Fin.natAdd (i + 1) b)) = 0 := by
       unfold colMat
-      exact if_neg (Fin.castSucc_ne_last _)
+      exact ite_eq_right (Fin.castSucc_ne_last _)
     rw [h0, add_zero]
     by_cases hab : a = b
     · subst hab; simp

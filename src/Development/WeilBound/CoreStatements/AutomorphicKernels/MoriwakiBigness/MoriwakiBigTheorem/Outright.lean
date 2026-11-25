@@ -354,12 +354,12 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.NefVolume
 theorem tendsto_pow_div_pow {i e : ℕ} (h : i ≤ e) :
     Tendsto (fun n : ℕ => (n : ℝ) ^ i / (n : ℝ) ^ e) atTop (𝓝 (if i = e then 1 else 0)) := by
   rcases h.eq_or_lt with rfl | hlt
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_gt_atTop 0] with n hn
     have : (n : ℝ) ≠ 0 := by positivity
     field_simp
-  · rw [if_neg hlt.ne]
+  · rw [ite_eq_right hlt.ne]
     have h0 : Tendsto (fun n : ℕ => (1 / (n : ℝ)) ^ (e - i)) atTop (𝓝 (0 ^ (e - i))) :=
       tendsto_one_div_atTop_nhds_zero_nat.pow _
     rw [zero_pow (by omega)] at h0
@@ -973,9 +973,6 @@ end Final
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.NefVolume
 
-namespace GlobalTheory.CompanionTheory.Hypotheses₂
-
-end GlobalTheory.CompanionTheory.Hypotheses₂
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.TendstoFinrankVeryAmple =====
@@ -1023,7 +1020,7 @@ theorem ShiftSectionsRankB.of_degreeGeneric (hDG : GroundTheory.Heights₂.Heigh
     have hNef : NefOnGenericDeg (mCoordIdeal y) N.a :=
       nefOnGenericDeg_of_semipos NefOnGenericOfSemipos.proof hDG hP0 hsN
     set a := N.a with ha
-    obtain ⟨hK, hS⟩ := (GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2
+    obtain ⟨hK, hS⟩ := (PositivityTheory.HtPt.Ktw.k_twins GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2
     have : Nonempty K := hV.1
     have hI : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.genIdeal y = mIdealOver ℚ y := LiftBirationalNef.genIdeal_eq y
     have hP := isProjVarF_map_of_isArithVar hV
@@ -1187,7 +1184,7 @@ open GroundTheory.Heights₂.Heights
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2 (IsNef IsGenerated KAt baseDeg)
 open GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization (segreJoin)
 
-theorem kAt_all (d : ℕ) : KAt d := (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 d
+theorem kAt_all (d : ℕ) : KAt d := (_root_.PositivityTheory.HtPt.Ktw.k_twins _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 d
 
 theorem genTwistVanish : HilbertSamuel.GenTwistVanish.Statement :=
   HilbertSamuel.GenTwistVanish.proof PositivityTheory.HtPt.Ktw.a11 HilbertSamuel.QuotPartGraded.full
@@ -1322,7 +1319,7 @@ theorem hsChain (hResK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   have s1 := GroundTheory.Heights₂.Heights.HilbertSamuel.NefOnGenericOfSemipos.proof
   have s2 := GroundTheory.Heights₂.Heights.HilbertSamuel.ChartDenominator.proof
   have s3 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionSupBound.proof
-  have s4 := GroundTheory.Heights₂.Heights.HilbertSamuel.KodairaSection.proof s1 (GlobalTheory.CompanionTheory.Ar.Giv.degreeGeneric_of_degree (GlobalTheory.CompanionTheory.Ar.Giv.degree_of_system hAIS)) (_root_.GlobalTheory.CompanionTheory.Relay.kodaira_generic_of_ample_section_count (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.2) s2 s3
+  have s4 := GroundTheory.Heights₂.Heights.HilbertSamuel.KodairaSection.proof s1 (GlobalTheory.CompanionTheory.Ar.Giv.degreeGeneric_of_degree (GlobalTheory.CompanionTheory.Ar.Giv.degree_of_system hAIS)) (_root_.PositivityTheory.HtPt.Siua.siu_kodaira (_root_.PositivityTheory.HtPt.Ktw.k_twins _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 (_root_.PositivityTheory.HtPt.Ktw.k_twins _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.2) s2 s3
   have s5 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionProduct.full
   have s6 := GroundTheory.Heights₂.Heights.HilbertSamuel.PerturbSemipos.proof
   have s7 := GroundTheory.Heights₂.Heights.HilbertSamuel.NefAmpleGeneric.proof (PositivityTheory.KAmp.kAmp) (GlobalTheory.CompanionTheory.Ar.Giv.degreeGeneric_of_degree (GlobalTheory.CompanionTheory.Ar.Giv.degree_of_system hAIS))
@@ -1473,7 +1470,7 @@ theorem hsChain (hResK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   have s152 := GroundTheory.Heights₂.Heights.HilbertSamuel.GenOnFibres.full
   have s153 := GroundTheory.Heights₂.Heights.HilbertSamuel.GeneratedRestrict.full
   have s154 := GroundTheory.Heights₂.Heights.HilbertSamuel.GeneratedNefGeneric.proof s152 s153 s75
-  have s155 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerHeightsirational.proof s154 (_root_.GlobalTheory.CompanionTheory.Relay.kodaira_generic_of_ample_section_count (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.2) s2
+  have s155 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerHeightsirational.proof s154 (_root_.PositivityTheory.HtPt.Siua.siu_kodaira (_root_.PositivityTheory.HtPt.Ktw.k_twins _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 (_root_.PositivityTheory.HtPt.Ktw.k_twins _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.2) s2
   have s156 := GroundTheory.Heights₂.Heights.HilbertSamuel.CoordArithOfFnField.proof
   have s157 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockArith.proof s156
   have s158 := GroundTheory.Heights₂.Heights.HilbertSamuel.LeviLogFlat.proof

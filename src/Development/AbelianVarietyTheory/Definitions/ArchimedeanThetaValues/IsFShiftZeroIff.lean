@@ -90,7 +90,7 @@ structure GenPts (A : AnArc (𝓞 E)) (t : SAB H S) (y : Sp ℂ⸨X⸩ ⟶ S) wh
   frm : ∀ v, IsFrm t.PP.L (x v).left (τ v)
   rig : ∀ j, ⊤ ≤ (x 0).left ⁻¹ᵁ t.PP.L.U j →
     τ 0 j = valR y ((t.PP.L.pull (eSec t.G)).U (fun _ => j)) (t.PP.rig.s (fun _ => j)).val
-  sig : ∀ (j : ℕ) (α : A.X), ((Fin A.gB → ℂ) → ℂ) → SecP t.PP.L (pullback.fst t.G.hom y) j
+  sig : ∀ (j : ℕ) (_ : A.X), ((Fin A.gB → ℂ) → ℂ) → SecP t.PP.L (pullback.fst t.G.hom y) j
   val : ∀ (j : ℕ) [NeZero j] (α : A.X), ∀ th ∈ A.Theta j α, ∀ v,
     HasVal (sig j α th) (fib (x v)) (τ v) (A.FSum j α th v)
   span : ∀ (j : ℕ) [NeZero j] (s : SecP t.PP.L (pullback.fst t.G.hom y) j), ∃ f : A.V → ℂ⸨X⸩,

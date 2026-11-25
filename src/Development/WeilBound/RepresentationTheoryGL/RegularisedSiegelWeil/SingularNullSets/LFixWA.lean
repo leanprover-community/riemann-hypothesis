@@ -192,9 +192,9 @@ namespace PositivityTheory.Rg.Rsw.L.LFixW
 
 variable {D : D7} {S : Finset (Pl D)} {e : AE D} {a b : ℕ}
 
-theorem idem_in (he : IsIdem S e) {v : Pl D} (hv : v ∈ S) : cv D v e = 1 := by rw [he.2 v, if_pos hv]
+theorem idem_in (he : IsIdem S e) {v : Pl D} (hv : v ∈ S) : cv D v e = 1 := by rw [he.2 v, ite_eq_left hv]
 
-theorem idem_out (he : IsIdem S e) {v : Pl D} (hv : v ∉ S) : cv D v e = 0 := by rw [he.2 v, if_neg hv]
+theorem idem_out (he : IsIdem S e) {v : Pl D} (hv : v ∉ S) : cv D v e = 0 := by rw [he.2 v, ite_eq_right hv]
 
 theorem idem_mul_offS (he : IsIdem S e) {z : AE D} (hz : OffS S z) : e * z = 0 := by
   refine LIdemEx.ae_ext _ _ (fun w => ?_) (fun v => ?_)
@@ -215,7 +215,7 @@ theorem offS_sub_idem (he : IsIdem S e) {x : AE D} (hx : IntS S x) : OffS S (x -
 def OffM (S : Finset (Pl D)) (z : Mx D a b) : Prop := ∀ i j, OffS S (z i j)
 
 theorem good_supp {Φ : Mx D a b → ℂ} (hΦ : Good S e Φ) {x : Mx D a b} (hx : ¬ IntOff S x) : Φ x = 0 := by
-  rw [hΦ x, if_neg hx]
+  rw [hΦ x, ite_eq_right hx]
 
 theorem good_shift (he : IsIdem S e) {Φ : Mx D a b → ℂ} (hΦ : Good S e Φ) (x : Mx D a b) {z : Mx D a b}
     (hz : OffM S z) : Φ (x + z) = Φ x := by

@@ -71,7 +71,7 @@ theorem span_charVec : Submodule.span ℂ (Set.range (charVec (E := E))) = ⊤ :
 def evalHom (E : Type) [Field E] [NumberField E] : ℂ ⊗[ℤ] 𝓞 E →ₐ[ℂ] ((E →+* ℂ) → ℂ) :=
   Algebra.TensorProduct.lift (Algebra.ofId ℂ _)
     (Pi.ringHom fun s : E →+* ℂ => s.comp (algebraMap (𝓞 E) E)).toIntAlgHom
-    fun x y => Algebra.commutes x _
+    fun x _ => Algebra.commutes x _
 
 theorem evalHom_tmul (z : ℂ) (a : 𝓞 E) (s : E →+* ℂ) :
     evalHom E (z ⊗ₜ a) s = z * s (algebraMap (𝓞 E) E a) := by

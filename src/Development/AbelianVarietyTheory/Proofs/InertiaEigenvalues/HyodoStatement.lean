@@ -181,8 +181,6 @@ theorem goodO_Zl (l : ℕ) [Fact l.Prime] : GoodO (Qp := ℚ_[l]) ℚ_[l] ℤ_[l
   refine ⟨⟨inferInstance, inferInstance, inferInstance⟩, inferInstance, inferInstance, inferInstance, ?_⟩
   exact (PadicInt.isOpenEmbedding_coe (p := l)).isOpen_range
 
-
-
 theorem orth_of_cont (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (hT : LocTied l P AI)
     (K : FinExt l) (V : Type) [AddCommGroup V] [Module ℚ_[l] V] [FiniteDimensional ℚ_[l] V]
     [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [ContinuousAdd V] [ContinuousConstSMul ℚ_[l] V]
@@ -336,7 +334,7 @@ theorem hyodo_orth : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf
       rw [e]
       exact (hm.comp ((hρ v).prodMk (hρ' v'))).mul continuous_const
     exact orth_of_cont l P AI hT K V ρ V' ρ' m hρ' hdR hD hχ c hc a ha
-  · push_neg at hV
+  · push Not at hV
     refine ⟨0, continuous_const, funext fun x => ?_⟩
     simp [cupL, hV (c x.1), ReciprocityTheory.Def.d1]
 
@@ -596,13 +594,9 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (ρ : Representation LL G V)
 
-theorem mem_Dcris_iff (x : V ⊗[Qp] B) : x ∈ Dcris PD ρ ↔ ∀ g, actVB PD ρ g x = x := by
-  simp only [Dcris, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
-    LinearMap.id_apply, sub_eq_zero]
-
 theorem φVB_mem_Dcris {x : V ⊗[Qp] B} (hx : x ∈ Dcris PD ρ) :
     φVB PD (LL := LL) (V := V) x ∈ Dcris PD ρ := by
-  rw [mem_Dcris_iff] at hx ⊢
+  rw [GlobalTheory.Per.CrisDR.mem_Dcris_iff] at hx ⊢
   intro g
   rw [← GlobalTheory.CobCrisLift.φVB_act, hx g]
 
@@ -651,7 +645,7 @@ theorem fst_mem_exponential_cocycles (p : pairs PD ρ) (hp : toDcris PD ρ p ∈
         = (p.1.2 - (e : V ⊗[Qp] B)) + (((e : V ⊗[Qp] B) - φVB PD (LL := LL) (V := V) e)
           - (p.1.2 - φVB PD (LL := LL) (V := V) p.1.2)) := by abel
       _ = p.1.2 - e := by rw [he', sub_self, add_zero]
-  · have hg := (mem_Dcris_iff PD ρ e).1 e.2 g
+  · have hg := (GlobalTheory.Per.CrisDR.mem_Dcris_iff PD ρ e).1 e.2 g
     rw [p.2.2 g, map_sub, hg]
     abel
 

@@ -203,7 +203,6 @@ def layCut (D : D7) (c : CutD D) : Lay0 D :=
     naut := nautCut D.naut c.keep c.Xs c.ne
     nbc := { D.nbc with
       embAV := fun i => D.nbc.embAV i.1
-      embAV_inj := fun i => D.nbc.embAV_inj i.1
       embAV_loc := fun i => D.nbc.embAV_loc i.1
       embAV_sat := fun i => D.nbc.embAV_sat i.1
       embAV_sph := fun i => D.nbc.embAV_sph i.1

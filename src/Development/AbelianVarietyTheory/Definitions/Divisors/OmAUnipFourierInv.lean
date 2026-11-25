@@ -9,7 +9,6 @@ open MeasureTheory ValuativeRel Matrix
 open scoped NNReal ENNReal Pointwise
 open scoped Classical
 
-noncomputable section
 namespace GlobalTheory.SplitFlip.Model
 open GlobalTheory.SplitWeil GlobalTheory.SplitWeil.Model GlobalTheory.SplitFlip
 
@@ -106,7 +105,7 @@ theorem sum_invFourierSum {ϖ : kˣ} (hϖ : IsUnif ϖ) {ψ : AddChar k Circle} (
     ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
   have h2 : ∀ T : A → P → Res (k := k) e, ∀ i, ∀ j ∈ P, setCols P X (liftRes T) i j ∈ 𝒪[k] := fun T i j h => by
     simpa [setCols, h] using liftRes_mem T i ⟨j, h⟩
-  simp only [GlobalTheory.SplitFlip.invFourierSum_apply, if_pos (h2 _), h1, Finset.sum_mul]
+  simp only [GlobalTheory.SplitFlip.invFourierSum_apply, ite_eq_left (h2 _), h1, Finset.sum_mul]
   rw [Finset.sum_comm]
   have h3 : ∀ S T : A → P → Res (k := k) e,
       (ψ (-pairCols P (setCols P X (liftRes T)) ((ϖ ^ e)⁻¹ • liftRes S)) : ℂ) *
@@ -144,7 +143,7 @@ theorem sum_invFourierSum {ϖ : kˣ} (hϖ : IsUnif ϖ) {ψ : AddChar k Circle} (
     · subst h; simp [← pow_mul, mul_comm]
     · obtain ⟨i, hi⟩ := Function.ne_iff.1 h
       obtain ⟨j, hj⟩ := Function.ne_iff.1 hi
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (Finset.prod_eq_zero (Finset.mem_univ j) (if_neg hj))
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (Finset.prod_eq_zero (Finset.mem_univ j) (ite_eq_right hj))
   simp only [mul_assoc, h3, ← Finset.mul_sum, h4]
   simp [mul_comm]
 

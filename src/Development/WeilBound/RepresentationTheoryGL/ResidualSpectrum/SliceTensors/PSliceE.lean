@@ -348,9 +348,9 @@ theorem E_cont_join {n : ℕ} {S : Finset ℕ} (q : ℕ) :
     Continuous fun b : {x : PPos n S // ¬ IsTop q x} → Ad E => (parGL (joinPos (r := q) 0 b) : GA E n) := by
   refine continuous_parGL.comp (continuous_pi fun x => ?_)
   by_cases hx : IsTop q x
-  · simp only [joinPos, dif_pos hx]
+  · simp only [joinPos, dite_eq_left hx]
     exact continuous_const
-  · simp only [joinPos, dif_neg hx]
+  · simp only [joinPos, dite_eq_right hx]
     exact continuous_apply _
 
 theorem E_pos_top {N p q : ℕ} (hpq : p < q) (x : PPos N {p, q}) (hx : ¬ IsTop q x) :

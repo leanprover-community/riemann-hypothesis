@@ -138,10 +138,10 @@ def extend (A : Cube.{v} ι R) (p : ℕ) : Term A p →ₗ[R] ∀ s, A.obj s whe
   map_smul' r x := by ext s; by_cases h : s.card = p <;> simp [h]
 
 theorem extend_apply_of_eq (A : Cube.{v} ι R) {p : ℕ} (x : Term A p) {s : Finset ι}
-    (h : s.card = p) : extend A p x s = x ⟨s, h⟩ := dif_pos h
+    (h : s.card = p) : extend A p x s = x ⟨s, h⟩ := dite_eq_left h
 
 theorem extend_apply_of_ne (A : Cube.{v} ι R) {p : ℕ} (x : Term A p) {s : Finset ι}
-    (h : s.card ≠ p) : extend A p x s = 0 := dif_neg h
+    (h : s.card ≠ p) : extend A p x s = 0 := dite_eq_right h
 
 def termMap {A B : Cube.{v} ι R} (φ : A ⟶ B) (p : ℕ) : Term A p →ₗ[R] Term B p where
   toFun x s := (φ.app s.1).hom (x s)
@@ -575,12 +575,6 @@ theorem cubeComplex_exactAt_of_bijective (A : Cube.{v} ι R) (i : ι)
 
 end Complex
 
-section Linear
-
-variable {ι : Type} [LinearOrder ι] {R : Type u} [CommRing R]
-
-end Linear
-
 section ChangeOfRings
 
 variable {ι : Type} {R : Type u} [Ring R] {S : Type u'} [Ring S]
@@ -714,16 +708,6 @@ instance Cube.extendScalars_additive {S : Type u'} [CommRing S] (f : R →+* S) 
   map_add {M N g h} := by
     letI := ((algebraMap S S).comp f).toAlgebra
     exact ModuleCat.hom_ext (LinearMap.baseChange_add g.hom h.hom)
-
-noncomputable def cubeExtendScalarsIso [LinearOrder ι] [Finite ι] {S : Type u'} [CommRing S]
-    (f : R →+* S) (A : Cube.{v} ι R) :
-    ((ModuleCat.extendScalars f).mapHomologicalComplex _).obj (cubeComplex A) ≅
-      cubeComplex (A ⋙ ModuleCat.extendScalars f) :=
-  haveI : ∀ p, IsIso ((cubeComparison (ModuleCat.extendScalars f) A).f p) :=
-    Cube.isIso_termComparison (ModuleCat.extendScalars f) A
-  haveI := HomologicalComplex.Hom.isIso_of_components
-    (cubeComparison (ModuleCat.extendScalars f) A)
-  asIso (cubeComparison _ A)
 
 noncomputable def cechExtendScalarsIso [LinearOrder ι] [Finite ι] {S : Type u'} [CommRing S]
     (f : R →+* S) (A : Cube.{v} ι R) :
@@ -862,7 +846,7 @@ theorem Cube.directSumIncl_proj (A : κ → Cube.{v} ι R) (k : κ) :
 theorem Cube.directSumIncl_proj_of_ne (A : κ → Cube.{v} ι R) {k j : κ} (h : k ≠ j) :
     Cube.directSumIncl A k ≫ Cube.directSumProj A j = 0 := by
   ext s x
-  exact (DirectSum.component.of (M := fun k => (A k).obj s) R j k x).trans (dif_neg h)
+  exact (DirectSum.component.of (M := fun k => (A k).obj s) R j k x).trans (dite_eq_right h)
 
 theorem Cube.exists_sum_directSum [Finite ι] (A : κ → Cube.{v} ι R) (p : ℕ)
     (z : Cube.Term (Cube.directSum A) p) : ∃ T : Finset κ,
@@ -908,9 +892,5 @@ section TwoDirections
 variable {R : Type u} [Ring R]
 
 end TwoDirections
-
-section Examples
-
-end Examples
 
 end GlobalTheory

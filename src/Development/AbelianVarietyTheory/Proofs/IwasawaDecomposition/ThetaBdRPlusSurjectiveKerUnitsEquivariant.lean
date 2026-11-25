@@ -56,11 +56,7 @@ variable {R : Type} [CommRing R] (I : Ideal R)
 
 theorem factorPow_evalₐ {m n : ℕ} (h : m ≤ n) (y : AdicCompletion I R) :
     Ideal.Quotient.factorPow I h (AdicCompletion.evalₐ I n y) = AdicCompletion.evalₐ I m y := by
-  induction y using AdicCompletion.induction_on with
-  | _ x =>
-    simp only [AdicCompletion.evalₐ_mk]
-    rw [← AdicCompletion.Ideal.mk_eq_mk I h x]
-    rfl
+  exact GlobalTheory.ValCompletion.factorPow_evalₐ h y
 
 theorem isUnit_evalₐ (y : AdicCompletion I R) (hy : IsUnit (AdicCompletion.evalₐ I 1 y)) (n : ℕ) :
     IsUnit (AdicCompletion.evalₐ I n y) := by

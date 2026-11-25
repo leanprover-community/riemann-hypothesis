@@ -112,7 +112,7 @@ theorem RR_nonneg {c : ℕ → ℝ} (hc : ∀ n, 0 ≤ c n) (m₀ N : ℕ) : 0 �
 
 theorem aW_self {c : ℕ → ℝ} {n : ℕ} (h : IsPrimePow n) : aW c n.minFac n = c n := by
   unfold aW
-  rw [if_pos ⟨h, rfl⟩]
+  rw [ite_eq_left ⟨h, rfl⟩]
 
 theorem gW_eq_of_tPart_eq_one {c : ℕ → ℝ} {m₀ n : ℕ} (h : IsPrimePow n) (ht : tPart m₀ n = 1) : gW c m₀ n = c n := by
   have hcond : Even (n.factorization n.minFac) ∨ n.minFac ∣ m₀ := by
@@ -121,7 +121,7 @@ theorem gW_eq_of_tPart_eq_one {c : ℕ → ℝ} {m₀ n : ℕ} (h : IsPrimePow n
     · exact h1
     · exact absurd ht (Nat.minFac_prime h.ne_one).one_lt.ne'
   unfold gW
-  rw [if_pos ⟨h, hcond⟩]
+  rw [ite_eq_left ⟨h, hcond⟩]
 
 theorem tPart_cases (m₀ n : ℕ) : tPart m₀ n = 1 ∨ tPart m₀ n = n.minFac := by
   unfold tPart
@@ -155,8 +155,8 @@ theorem pairs_r_prime (c : ℕ → ℝ) (hc : ∀ n, 0 ≤ c n) (hpp : ∀ n, c 
       · exact absurd (hs.symm.trans h1) hr.one_lt.ne'
       · have hnr : n.minFac = r := h1.symm.trans hs
         have hnr' : n'.minFac = r := he.symm.trans hnr
-        have e1 : aW c r n = c n := by unfold aW; rw [if_pos ⟨hn, hnr⟩]
-        have e2 : aW c r n' = c n' := by unfold aW; rw [if_pos ⟨hn', hnr'⟩]
+        have e1 : aW c r n = c n := by unfold aW; rw [ite_eq_left ⟨hn, hnr⟩]
+        have e2 : aW c r n' = c n' := by unfold aW; rw [ite_eq_left ⟨hn', hnr'⟩]
         rw [e1, e2]
         have := mul_nonneg (hc n) (gW_nonneg hc m₀ n')
         have := mul_nonneg (gW_nonneg hc m₀ n) (hc n')
@@ -170,12 +170,12 @@ theorem pairs_r_prime (c : ℕ → ℝ) (hc : ∀ n, 0 ≤ c n) (hpp : ∀ n, c 
       · exact absurd (hd.trans (one_mul 1)) hr.one_lt.ne'
       · have e1 : gW c m₀ n = c n := gW_eq_of_tPart_eq_one hn t1
         have e2 : aW c r n' = c n' := by
-          unfold aW; rw [if_pos ⟨hn', by rw [hd, one_mul]⟩]
+          unfold aW; rw [ite_eq_left ⟨hn', by rw [hd, one_mul]⟩]
         rw [e1, e2]
         have := mul_nonneg (aW_nonneg hc r n) (hc n')
         linarith
       · have e1 : aW c r n = c n := by
-          unfold aW; rw [if_pos ⟨hn, by rw [hd, mul_one]⟩]
+          unfold aW; rw [ite_eq_left ⟨hn, by rw [hd, mul_one]⟩]
         have e2 : gW c m₀ n' = c n' := gW_eq_of_tPart_eq_one hn' t2
         rw [e1, e2]
         have := mul_nonneg (hc n) (aW_nonneg hc r n')

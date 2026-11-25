@@ -166,7 +166,7 @@ theorem exists_op {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (Kw : Subg
     if h : IsAutRepU U then z (_root_.GlobalTheory.SplitComp.exists_comp_and_unique E a U h w hw).1.choose else 0
   have he : ∀ U, IsAutRepU U → ∀ φ ∈ U, (∀ x ∈ locU a w, cLoc w x ∈ Kw → RU E a x φ = φ) →
       opOf (RU E a) t φ = e U • φ := fun U hU φ hφ hx => by
-    simp only [e, dif_pos hU]
+    simp only [e, dite_eq_left hU]
     exact hact U hU _ (_root_.GlobalTheory.SplitComp.exists_comp_and_unique E a U hU w hw).1.choose_spec φ hφ hx
   refine ⟨t, e, ht, he, ?_⟩
   rintro U hU ⟨φ, hφ, h0, hx⟩ σ hσ
@@ -204,7 +204,7 @@ theorem exists_powOp {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (n : �
     if h : ∃ B, GlobalTheory.LFun.HasSatGL w σ.ρ B then ((UpperTheory.V.Af.algSat a (normV w) h.choose).map (· ^ n)).sum else 0
   have hz : ∀ σ B, GlobalTheory.LFun.HasSatGL w σ.ρ B → z σ = ((UpperTheory.V.Af.algSat a (normV w) B).map (· ^ n)).sum := fun σ B hB => by
     have h : ∃ B, GlobalTheory.LFun.HasSatGL w σ.ρ B := ⟨B, hB⟩
-    simp only [z, dif_pos h]
+    simp only [z, dite_eq_left h]
     rw [GlobalTheory.LFun.HasSatGL.unique h.choose_spec hB]
   obtain ⟨t, ht, hact⟩ := GlobalTheory.T.localOperator_acts_by_localComponentScalar E a w hw _ hc ho f z fun σ v hv => by
     by_cases h0 : v = 0
@@ -217,9 +217,8 @@ theorem exists_powOp {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (n : �
   · rw [h0, opOf_zero, smul_zero]
   · have h := exists_satU hU hw ⟨φ, hφ, h0, hx⟩
     obtain ⟨σ, hσ, hB⟩ := h.choose_spec
-    rw [PowSatU, dif_pos h, ← hz σ _ hB]
+    rw [PowSatU, dite_eq_left h, ← hz σ _ hB]
     exact hact U hU σ hσ φ hφ hx
-
 
 open UpperTheory.Gal.Gen in
 theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (hK : HypAt K w)
@@ -234,7 +233,7 @@ theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (
   classical
   obtain ⟨η, hη⟩ : ∃ η : Submodule ℂ (UA E a → ℂ) → ℂ,
       ∀ U (h : ∃ z, SatAt U w z), η U = evalAt h.choose p :=
-    ⟨fun U => if h : ∃ z, SatAt U w z then evalAt h.choose p else 0, fun U h => dif_pos h⟩
+    ⟨fun U => if h : ∃ z, SatAt U w z then evalAt h.choose p else 0, fun U h => dite_eq_left h⟩
   refine ⟨f, η, hloc, fun U hU => ⟨?_, ?_⟩⟩
   · intro φ hφ hfix
     by_cases h0 : φ = 0
@@ -267,7 +266,6 @@ theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (
         rw [hm]
         exact h2
       exact hgen _ hs
-
 
 open UpperTheory.Gal.Gen in
 theorem exists_scale {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (lam : (E →+* ℂ) → DomWeight a) (f : UA E a →₀ ℂ)
@@ -376,7 +374,7 @@ theorem fixed_intU_eventually : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
       ext k; simp
     rw [this]
     refine isClosed_biInter fun u _ => ?_
-    haveI : T2Space (GL (Fin a) (u.adicCompletion E)) := Units.isEmbedding_embedProduct.t2Space
+    have : T2Space (GL (Fin a) (u.adicCompletion E)) := Units.isEmbedding_embedProduct.t2Space
     exact isClosed_eq ((continuous_cLoc u).comp continuous_subtype_val) continuous_const
   have hst : K₀ ∩ ⋂ S, t S = ∅ := by
     refine Set.eq_empty_of_forall_notMem fun k hk => ?_
@@ -509,7 +507,6 @@ theorem avg_of_fixed {f : UA E a → ℂ} (hf : ∀ k ∈ K, RU E a k f = f) :
   rw [avg_apply, Finset.sum_congr rfl (fun q _ => hf _ (Quotient.out q).2), Finset.sum_const,
     Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ]
 
-set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
 theorem avg_fixed {f : UA E a → ℂ} (hf : ∀ k ∈ K', RU E a ((k : K) : UA E a) f = f) (k : UA E a) (hk : k ∈ K) :
     RU E a k (avg K K' f) = avg K K' f := by
@@ -572,7 +569,7 @@ theorem mend (U : Submodule ℂ (UA E a → ℂ)) (hU : IsAutRepU U) (w : Height
     rw [← rU_mul, (hd g (r g) (hr g)).eq, mul_inv_cancel_left]
 
   have hKf : K ≤ finU (E := E) (n := a) := hKw.trans (locU_le_finU w)
-  haveI : CompactSpace K := isCompact_iff_compactSpace.1 hKc
+  have : CompactSpace K := isCompact_iff_compactSpace.1 hKc
   let K' : Subgroup K :=
     { carrier := {k | ∀ g ∈ c.support, RU E a (k : UA E a) (RU E a (r g) φ) = RU E a (r g) φ}
       mul_mem' := fun {x y} hx hy g hg => by
@@ -598,8 +595,8 @@ theorem mend (U : Submodule ℂ (UA E a → ℂ)) (hU : IsAutRepU U) (w : Height
     have hcont : Continuous fun k : K => (⟨(k : UA E a), hKf k.2⟩ : finU (E := E) (n := a)) :=
       continuous_subtype_val.subtype_mk _
     exact ho.preimage hcont
-  haveI : Finite (K ⧸ K') := Subgroup.quotient_finite_of_isOpen K' hK'o
-  letI : Fintype (K ⧸ K') := Fintype.ofFinite _
+  have : Finite (K ⧸ K') := Subgroup.quotient_finite_of_isOpen K' hK'o
+  let : Fintype (K ⧸ K') := Fintype.ofFinite _
   have hA : avg K K' φw = c.sum fun g b => b • RU E a ((r g)⁻¹ * g) (avg K K' (RU E a (r g) φ)) := by
 
     rw [← hc, Finsupp.sum, Finsupp.sum, map_sum]
@@ -614,7 +611,7 @@ theorem mend (U : Submodule ℂ (UA E a → ℂ)) (hU : IsAutRepU U) (w : Height
     have hcard : (Fintype.card (K ⧸ K') : ℂ) ≠ 0 :=
       Nat.cast_ne_zero.2 (Fintype.card_pos_iff.2 ⟨(QuotientGroup.mk 1 : K ⧸ K')⟩).ne'
     exact hφw0 ((smul_eq_zero.1 hz).resolve_left hcard)
-  · push_neg at h0
+  · push Not at h0
     obtain ⟨g, hg, hne⟩ := h0
     refine ⟨avg K K' (RU E a (r g) φ), ?_, hne, ?_, ?_⟩
     · rw [avg_apply]
@@ -716,7 +713,6 @@ noncomputable section
 
 namespace GlobalTheory.Cong.AdaptLevFix
 
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
 
 theorem eq_one_of_forall_cLoc {x : UA E a} (hx : x ∈ finU (E := E) (n := a)) (h : ∀ u, cLoc u x = 1) : x = 1 := by
@@ -757,7 +753,7 @@ theorem isCompact_integral :
 theorem exists_finite_fix {φ : UA E a → ℂ} (hφ : IsAutFormU φ) :
     ∃ t : Finset (HeightOneSpectrum (𝓞 E)), ∀ k ∈ finU (E := E) (n := a), (∀ u, cLoc u k ∈ GlobalTheory.LFun.KGL u (n := a)) →
       (∀ u ∈ t, cLoc u k = 1) → RU E a k φ = φ := by
-  haveI : ∀ u : HeightOneSpectrum (𝓞 E), T2Space (GL (Fin a) (u.adicCompletion E)) := fun u =>
+  have : ∀ u : HeightOneSpectrum (𝓞 E), T2Space (GL (Fin a) (u.adicCompletion E)) := fun u =>
     Units.isEmbedding_embedProduct.t2Space
   have hc := (isCompact_integral (E := E) (a := a)).diff hφ.level
   have hcov : {k : finU (E := E) (n := a) | ∀ u, cLoc u k.1 ∈ GlobalTheory.LFun.KGL u (n := a)} \ {k : finU (E := E) (n := a) | RU E a k φ = φ} ⊆
@@ -823,7 +819,6 @@ theorem peel (φ : UA E a → ℂ) (S : Set (HeightOneSpectrum (𝓞 E)))
     rw [hxe, map_mul, Module.End.mul_apply, key, hyφ]
 
 end GlobalTheory.Cong.AdaptLevFix
-
 
 open GlobalTheory.Cong.AdaptLevFix in
 theorem GlobalTheory.Cong.AdaptLev.fixed_of_levelOf : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a : ℕ) (w₀ : HeightOneSpectrum (𝓞 E)) (H : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a)), (∀ w, H w ≤ locU a w) → (∀ w u, ¬ Apart w u → H w = H u) → (∀ w, IsCompact (H w : Set (UA E a))) → (∀ w, IsOpen (((H w).subgroupOf (locU a w)) : Set (locU a w))) → (∀ᶠ w in Filter.cofinite, H w = GlobalTheory.Cong.AdaptLev.intU a w) → ∀ φ : UA E a → ℂ, IsAutFormU φ → (∀ w, Apart w w₀ → ∀ x ∈ H w, RU E a x φ = φ) → ∀ x ∈ GlobalTheory.Cong.AdaptLev.levelOf a w₀ H, RU E a x φ = φ := by
@@ -939,7 +934,7 @@ theorem exists_loc (w : HeightOneSpectrum (𝓞 E)) : ∃ f : UA E a → UA E a,
     · rw [cLoc_finGL]; exact pLoc_locGL _ _
 
 theorem isClosed_finU : IsClosed ((finU (E := E) (n := a) : Subgroup (UA E a)) : Set (UA E a)) := by
-  haveI : T2Space (GL (Fin a) (Cinf E)) := Units.isEmbedding_embedProduct.t2Space
+  have : T2Space (GL (Fin a) (Cinf E)) := Units.isEmbedding_embedProduct.t2Space
   have hc : Continuous (cInf (E := E) (n := a)) :=
     (Continuous.units_map _ (continuous_id.matrix_map continuous_pInf_ad)).comp continuous_subtype_val
   exact isClosed_eq hc continuous_const
@@ -958,9 +953,9 @@ theorem isClosed_levelOf (w₀ : HeightOneSpectrum (𝓞 E)) (H : HeightOneSpect
   rw [e]
   refine isClosed_finU.inter (IsClosed.inter (isClosed_iInter fun u => isClosed_iInter fun _ => ?_)
     (isClosed_iInter fun w => isClosed_iInter fun _ => ?_))
-  · haveI := t2GL (E := E) (a := a) u
+  · have := t2GL (E := E) (a := a) u
     exact isClosed_eq (continuous_cLoc u) continuous_const
-  · haveI := t2GL (E := E) (a := a) w
+  · have := t2GL (E := E) (a := a) w
     exact ((hc w).image (continuous_cLoc w)).isClosed.preimage (continuous_cLoc w)
 
 theorem exists_compact_of_finset (H : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a)) (hle : ∀ w, H w ≤ locU a w)
@@ -996,7 +991,7 @@ theorem exists_compact_of_finset (H : HeightOneSpectrum (𝓞 E) → Subgroup (U
       · intro r' h
         obtain ⟨y', hy', e'⟩ := hH r' (Finset.mem_insert_of_mem h)
         exact ⟨y', hy', by rw [map_mul, map_inv, hy1 r' (hap r' h), inv_one, mul_one]; exact e'⟩
-    · push_neg at hap
+    · push Not at hap
       obtain ⟨r', hr', hnr⟩ := hap
       have hxC : x ∈ C := by
         refine hsub x hx (fun u hu => hi u fun r'' hr'' => ?_) (fun r'' h => hH r'' (Finset.mem_insert_of_mem h))
@@ -1106,7 +1101,7 @@ theorem exists_locLev {U : Submodule ℂ (UA E a → ℂ)} (hU : IsAutRepU U) (w
           _ = φ₀ := by rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
   let H : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a) := fun r =>
     if ∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ intU a r, RU E a x φ = φ then intU a r else intU a r ⊓ stab
-  have hint : ∀ w, (∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ intU a w, RU E a x φ = φ) → H w = intU a w := fun w h => if_pos h
+  have hint : ∀ w, (∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ intU a w, RU E a x φ = φ) → H w = intU a w := fun w h => ite_eq_left h
   refine ⟨H, fun r => ?_, fun r => ?_, fun w u h => ?_, fun r => ?_, hint, ?_⟩
   · simp only [H]
     split_ifs
@@ -1164,8 +1159,8 @@ theorem exists_level {T : Finset (HeightOneSpectrum (𝓞 E))} {U : Submodule �
     (hae.mono fun w hw x hx => by rw [hw] at hx; exact (mem_intU.1 hx).2 w (not_apart_self w)) hopen (fun w _ => hfix w)
   have hφ := _root_.GlobalTheory.Cong.AdaptLev.fixed_of_levelOf E a w₀ H hle hfib hcpt hopen hae φ (hU.1.aut φ hφU) hφH
   let H' : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a) := fun w => if Apart w v' then H w else intU a w
-  have h1 : ∀ w, Apart w v' → H' w = H w := fun w h => if_pos h
-  have h2 : ∀ w, ¬ Apart w v' → H' w = intU a w := fun w h => if_neg h
+  have h1 : ∀ w, Apart w v' → H' w = H w := fun w h => ite_eq_left h
+  have h2 : ∀ w, ¬ Apart w v' → H' w = intU a w := fun w h => ite_eq_right h
   have hleI' : ∀ w, H' w ≤ intU a w := fun w => by
     by_cases h : Apart w v'
     · rw [h1 w h]; exact hleI w
@@ -1299,7 +1294,6 @@ def EllSt : Prop :=
         ∀ (σ : SmIrr (GL (Fin a) (w₀.adicCompletion E))) (v : σ.V), v ≠ 0 →
           (∀ g : J, σ.ρ g v = ((χ (θ g) : ℂˣ) : ℂ) • v) → GlobalTheory.SmGL.IsCuspidal σ.ρ
 
-
 open UpperTheory.Gal.Gen in
 def StepSt : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ), 1 ≤ a →
@@ -1324,7 +1318,6 @@ theorem not_apart_of_overPair {E : Type} [Field E] [NumberField E] [IsCMField E]
     fun z hz => z.isMaximal.eq_of_le (PlaceEmb.smallIdeal_isPrime _).ne_top fun b hb => hz b hb
   obtain rfl : x = y := HeightOneSpectrum.ext ((key x hx).trans (key y hy).symm)
   exact GlobalTheory.Cong.AdaptLev.not_apart_trans (GlobalTheory.Cong.AdaptLev.not_apart_symm hxu) hyv
-
 
 open UpperTheory.Gal.Gen in
 theorem intL_congr {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a : ℕ}
@@ -1382,7 +1375,7 @@ theorem congUWG_of (H : StepSt) (hFin : FinU) (D : ∀ a : ℕ, MvPolynomial (Fi
   classical
   intro E _ _ _ l _ ι a ha T _ U hU w₀ v' hw₀ hs₀ hv' hsv hap
   obtain ⟨K, Kw, Kv, hK, hKvo, hfix, hKwv, hoc, hsph, hns, hKs⟩ := exists_level hU hs₀ hsv hap
-  obtain ⟨lam, hlam⟩ := GlobalTheory.T.exists_algebraicWeight_definiteUnitaryAutRep E a U hU.1
+  obtain ⟨lam, hlam⟩ := GlobalTheory.Cong.exists_weight_of_isAutRepU E a U hU.1
   set K' := K ⊓ Kv.comap (cLoc v') with hK'def
   have hK' : IsLevelAway w₀ K' := isLevelAway_inf hK v' hKvo
   have hOf : OfType lam K' U := ⟨hU.1, hlam, hfix⟩
@@ -1494,7 +1487,7 @@ theorem congUWG_of (H : StepSt) (hFin : FinU) (D : ∀ a : ℕ, MvPolynomial (Fi
     funext j
     rcases j with j | p
     · rfl
-    · simp only [Function.comp, η, Sum.elim_inl, Sum.elim_inr, dif_pos p.1.2]
+    · simp only [Function.comp, η, Sum.elim_inl, Sum.elim_inr, dite_eq_left p.1.2]
   rw [hval] at h3
   refine h3.mono ?_
   rintro _ ⟨_, ⟨⟨U', mu, g1, g2, g3, g4, rfl⟩, hq⟩, rfl⟩

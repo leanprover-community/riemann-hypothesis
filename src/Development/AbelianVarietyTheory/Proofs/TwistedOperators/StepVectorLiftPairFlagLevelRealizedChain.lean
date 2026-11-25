@@ -28,50 +28,11 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHomLat
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchrodingerIntertwinerSchwartzBruhatIsThetaStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TwistPlaceDatumParabolicMoveStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepThetaDatumHalfEqSmulStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.EigenOfLocalComponentsFiniteAdelicPairStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentComponentMemFrameStabilizerStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.PlaceIdempotentUnderEqOfLiesOverStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.TypePlaceDatumBlockTriangularMove, Development.AbelianVarietyTheory.Proofs.TwistedOperators.StepVectorLiftPairFlagLevelRealizedChain
@@ -372,8 +333,8 @@ theorem step_law (hW : IsWeilDatumO ψ S T χS χT om) (kS : S.SigOK) (kT : T.Si
   have sg := parLev_St hg.2.1
   have sh := parLev_St hh.2.1
   let a : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ := fun PP => if PP ∈ Pg then (χ (k + 1) PP)⁻¹ else ξ PP
-  have a1 : ∀ PP ∈ Pg, a PP = (χ (k + 1) PP)⁻¹ := fun PP hP => if_pos hP
-  have a2 : ∀ PP ∈ Q, a PP = ξ PP := fun PP hP => if_neg (Finset.disjoint_right.1 hd hP)
+  have a1 : ∀ PP ∈ Pg, a PP = (χ (k + 1) PP)⁻¹ := fun PP hP => ite_eq_left hP
+  have a2 : ∀ PP ∈ Q, a PP = ξ PP := fun PP hP => ite_eq_right (Finset.disjoint_right.1 hd hP)
   have hres : ∀ PP ∈ Pg ∪ Q, ResAt χS PP (a PP) ∧ ResAt χT PP (a PP) := fun PP hP => by
     rcases Finset.mem_union.1 hP with hP | hP
     · rw [a1 PP hP]; exact hG PP hP
@@ -393,10 +354,10 @@ theorem step_law (hW : IsWeilDatumO ψ S T χS χT om) (kS : S.SigOK) (kT : T.Si
           fun H => GlobalTheory.SplitHecke.isHalf_actO _ _ H⟩
       by_cases hx : IsHalf e x ∧ IsIntM (frMapO S T βS βT x)
       · beta_reduce
-        rw [if_pos hx, if_pos ⟨i0.2 hx.1, i1.2 hx.2⟩, funext (i2 hx.2)]
+        rw [ite_eq_left hx, ite_eq_left ⟨i0.2 hx.1, i1.2 hx.2⟩, funext (i2 hx.2)]
         exact (congrArg₂ (· * ·) (hoG _) (hoQ _)).trans (mul_mul_mul_comm _ _ _ _)
       · beta_reduce
-        rw [if_neg hx, if_neg fun H => hx ⟨i0.1 H.1, i1.1 H.2⟩, mul_zero])
+        rw [ite_eq_right hx, ite_eq_right fun H => hx ⟨i0.1 H.1, i1.1 H.2⟩, mul_zero])
   rw [h2, smul_smul]
   congr 1
   unfold levChi

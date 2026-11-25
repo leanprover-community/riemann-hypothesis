@@ -27,49 +27,6 @@ public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointE
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsReducedTorsionGeometricFibre
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CubWeilOneLeft
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FinRepExistsIsPullbackSpec
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -77,7 +34,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
@@ -253,7 +209,7 @@ theorem mvPowerSeries_X_syzygy {k : Type} [CommRing k] {g : ℕ}
       have e2 : (∀ l < j, (m - single j 1 : Fin g →₀ ℕ) l = 0) ↔ ∀ l < j, m l = 0 := by
         refine forall_congr' fun l => forall_congr' fun hl => ?_
         simp [hl.ne']
-      simp only [e, e2, hj, ne_eq, not_false_eq_true, if_true, true_and]
+      simp only [e, e2, hj, ne_eq, not_false_eq_true, ite_true, true_and]
   have h2 : ∀ j, coeff m (t j i * X j) =
       if (∀ l < i, m l = 0) ∧ j ≠ i then coeff (m + single i 1) (r j * X j) else 0 := by
     intro j
@@ -274,30 +230,30 @@ theorem mvPowerSeries_X_syzygy {k : Type} [CommRing k] {g : ℕ}
     · have e2 : (∀ l < i, (m - single j 1 : Fin g →₀ ℕ) l = 0) ↔ ∀ l < i, m l = 0 := by
         refine forall_congr' fun l => forall_congr' fun hl => ?_
         simp [(hl.trans h).ne']
-      simp only [e2, hj, h, hji, ne_eq, not_false_eq_true, if_true, true_and, and_true]
+      simp only [e2, hj, h, hji, ne_eq, not_false_eq_true, ite_true, true_and, and_true]
 
   simp only [Matrix.mulVec, dotProduct, Matrix.sub_apply, Matrix.transpose_apply, sub_mul,
   map_sum, map_sub, h1, h2, Finset.sum_sub_distrib]
   by_cases hi : ∀ l < i, m l = 0
-  · rw [Finset.sum_eq_zero (fun j _ => if_neg (fun H => H.1 (hi j H.2.1)))]
+  · rw [Finset.sum_eq_zero (fun j _ => ite_eq_right (fun H => H.1 (hi j H.2.1)))]
     have h3 := congrArg (coeff (m + single i 1)) hr
 
     rw [map_sum, map_zero, ← Finset.add_sum_erase _ _ (Finset.mem_univ i), coeff_mul_X_ite] at h3
     simp only [iff_true_intro hi, true_and]
     rw [← Finset.sum_filter, Finset.filter_ne']
     simp only [Finsupp.add_apply, single_eq_same, add_tsub_cancel_right] at h3
-    rw [if_pos (by omega)] at h3
+    rw [ite_eq_left (by omega)] at h3
     linear_combination h3
-  · simp only [hi, false_and, if_false, Finset.sum_const_zero, sub_zero]
-    push_neg at hi
+  · simp only [hi, false_and, ite_false, Finset.sum_const_zero, sub_zero]
+    push Not at hi
     obtain ⟨l, hl, hml⟩ := hi
     obtain ⟨j, hj, hmin⟩ := WellFounded.has_min (wellFounded_lt (α := Fin g)) {j | m j ≠ 0} ⟨l, hml⟩
     have hj0 : ∀ a < j, m a = 0 := fun a ha => by
       by_contra h; exact hmin a h ha
     rw [Finset.sum_eq_single j]
-    · rw [if_pos ⟨hj, lt_of_le_of_lt (not_lt.1 (hmin l hml)) hl, hj0⟩]
+    · rw [ite_eq_left ⟨hj, lt_of_le_of_lt (not_lt.1 (hmin l hml)) hl, hj0⟩]
     · intro b _ hb
-      refine if_neg fun H => ?_
+      refine ite_eq_right fun H => ?_
       rcases lt_or_gt_of_ne hb with h | h
       · exact H.1 (hj0 b h)
       · exact hj (H.2.2 j h)

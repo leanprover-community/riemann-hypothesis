@@ -124,14 +124,14 @@ theorem N_F {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
       rw [fvec_apply_lt z hz c i hi]
       simp [Fin.ext_iff]
     simp only [hF, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     simp [Uof, hi, eI]
   · have hF : ∀ c, Fm k r z i c = if c = Fin.last r then z i else 0 := fun c => by
       change fvec k r z c i = _
       rw [fvec_apply_ge z c i (by omega)]
       simp [Fin.ext_iff]
     simp only [hF, ite_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     have hU : Uof k r z m (Fin.last r) a = if Fin.last r = a then 1 else 0 := by simp [Uof]
     rw [hU]
     by_cases ha : a.val < r
@@ -149,7 +149,7 @@ theorem N_F {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
       simp [h1, h2]
     · have ha' : a = Fin.last r := Fin.ext (by have := a.isLt; simp; omega)
       subst ha'
-      simp only [if_true, mul_one]
+      simp only [ite_true, mul_one]
       change (m *ᵥ fvec k r z (Fin.last r)) i = z i
       have hf : fvec k r z (Fin.last r) = z := by simp [fvec]
       rw [hf]
@@ -158,10 +158,10 @@ theorem N_F {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
         by_cases hj : j.val < r ∨ r + k < j.val
         · rw [hz j hj]
           simp
-        · push_neg at hj
+        · push Not at hj
           rw [hm3 i j hj.1 hj.2 (by omega)]
           split_ifs <;> simp
-      simp only [Matrix.mulVec, dotProduct, hterm, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [Matrix.mulVec, dotProduct, hterm, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem Uof_lower_zero {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
     {m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hm : m ∈ Nset k r)
@@ -169,9 +169,9 @@ theorem Uof_lower_zero {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
   have hm2 := hm.2.1
   have hac' : a.val < c.val := hac
   by_cases hc : c.val < r
-  · simp only [Uof, hc, dif_pos]
+  · simp only [Uof, hc, dite_eq_left]
     rw [mF_col z m _ a (by omega), hm2 ⟨a.val, by omega⟩ _ (by show a.val ≤ c.val; omega)]
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     have := congrArg Fin.val h
     change c.val = a.val at this
@@ -184,8 +184,8 @@ theorem Uof_diag {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
     (c : Fin (r + 1)) : Uof k r z m c c = 1 := by
   have hm2 := hm.2.1
   by_cases hc : c.val < r
-  · simp only [Uof, hc, dif_pos]
-    rw [mF_col z m _ c hc, hm2 ⟨c.val, hc⟩ _ (le_refl _), if_pos rfl]
+  · simp only [Uof, hc, dite_eq_left]
+    rw [mF_col z m _ c hc, hm2 ⟨c.val, hc⟩ _ (le_refl _), ite_eq_left rfl]
   · simp [Uof, hc]
 
 theorem S_F {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)

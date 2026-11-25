@@ -93,8 +93,8 @@ private lemma core {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Al
 end UpperTheory.Reformulated.B.ApproximationIntegralOutsideFinset
 
 theorem UpperTheory.Reformulated.B.ApproximationIntegralOutsideFinset.approxF :
-    ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [inst_3 : NumberField E]
-      [inst_4 : Algebra F E] {sig : E →ₐ[F] E}
+    ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+      [Algebra F E] {sig : E →ₐ[F] E}
       (A : (p : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)) → Formalism.MainNotions.S.Loc.LocAt F E sig p)
       (S : Finset (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F))) (c : NumberField.RingOfIntegers F),
       c ≠ (0 : NumberField.RingOfIntegers F) →

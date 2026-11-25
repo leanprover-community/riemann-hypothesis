@@ -1,48 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormGroupToPadicPointsDegreeOneEqUnitaryPoints
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtC
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -81,16 +40,8 @@ theorem inclK_one_bijective (K : IntermediateField ℚ_[p] (PadicAlgCl p)) :
   rw [this]; exact E.bijective
 
 theorem glMap_bijective {R S : Type*} [CommRing R] [CommRing S] (n : ℕ) (f : R →+* S) (hf : Function.Bijective f) :
-    Function.Bijective (GeneralLinearGroup.map (n := Fin n) f) := by
-  let g : S ≃+* R := (RingEquiv.ofBijective f hf).symm
-  refine ⟨fun A B h => ?_, fun B => ⟨GeneralLinearGroup.map (g : S →+* R) B, ?_⟩⟩
-  · ext i j
-    have := congrArg (fun X : GL (Fin n) S => (X : Matrix (Fin n) (Fin n) S) i j) h
-    simp only [GeneralLinearGroup.map_apply] at this
-    exact hf.1 this
-  · ext i j
-    simp only [GeneralLinearGroup.map_apply, RingHom.coe_coe]
-    exact (RingEquiv.ofBijective f hf).apply_symm_apply _
+    Function.Bijective (GeneralLinearGroup.map (n := Fin n) f) :=
+  (Units.mapEquiv ((RingEquiv.ofBijective f hf).mapMatrix (m := Fin n)).toMulEquiv).bijective
 
 theorem scalar_one_bijective (R : Type*) [CommRing R] :
     Function.Bijective (GeneralLinearGroup.scalar (Fin 1) : Rˣ →* GL (Fin 1) R) := by
@@ -109,11 +60,9 @@ theorem scalar_one_bijective (R : Type*) [CommRing R] :
 
 theorem inclG_one_bijective (G : HTGroup p) : Function.Bijective (inclG G 1) := by
   have h1 : Function.Bijective ((GeneralLinearGroup.scalar (Fin 1)).comp
-      (Units.map (algebraMap ℚ_[p] (Qr p 1)).toMonoidHom)) := by
-    refine (scalar_one_bijective _).comp ⟨fun a b h => Units.ext (algebraMap_qr_one_bijective.1 (congrArg Units.val h)), fun b => ?_⟩
-    let f := RingEquiv.ofBijective (algebraMap ℚ_[p] (Qr p 1)) algebraMap_qr_one_bijective
-    refine ⟨Units.map (f.symm : Qr p 1 →+* ℚ_[p]).toMonoidHom b, Units.ext ?_⟩
-    exact f.apply_symm_apply (b : Qr p 1)
+      (Units.map (algebraMap ℚ_[p] (Qr p 1)).toMonoidHom)) :=
+    (scalar_one_bijective _).comp (Units.mapEquiv (RingEquiv.ofBijective (algebraMap ℚ_[p] (Qr p 1))
+      algebraMap_qr_one_bijective).toMulEquiv).bijective
   have h2 : ∀ w, Function.Bijective (GeneralLinearGroup.map (n := Fin G.n) (inclK p (G.Fw w) 1).toRingHom) :=
     fun w => glMap_bijective _ _ (inclK_one_bijective (G.Fw w))
   refine ⟨fun a b h => ?_, fun c => ?_⟩

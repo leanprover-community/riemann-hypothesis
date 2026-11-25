@@ -13,10 +13,10 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk2.map_surj :
-    ∀ {A E : Type} [inst : CommRing A] [inst_1 : Ring E]
-    [inst_2 : Algebra A E] {E' : Type} [inst_3 : Ring E'] [inst_4 : Algebra A E'] (f : E' →ₐ[A] E),
+    ∀ {A E : Type} [CommRing A] [Ring E]
+    [Algebra A E] {E' : Type} [Ring E'] [Algebra A E'] (f : E' →ₐ[A] E),
     Function.Surjective (⇑f : E' → E) →
-      ∀ (S : Type) [inst_5 : CommRing S] [inst_6 : Algebra A S],
+      ∀ (S : Type) [CommRing S] [Algebra A S],
         Function.Surjective
           (⇑(Algebra.TensorProduct.map (AlgHom.id S S) f) : TensorProduct A S E' → TensorProduct A S E) := by
   intro A E _ _ _ E' _ _ f hf S _ _ x

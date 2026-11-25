@@ -10,9 +10,9 @@ public import Mathlib.RingTheory.TensorProduct.Free
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ra9.exists_semi :
-    ∀ {A K : Type} [inst : CommRing A]
-    [inst_1 : Field K] (M : Type) [inst_2 : AddCommGroup M] [inst_3 : _root_.Module A M] [inst_4 : Algebra A K]
-    [Module.Free A M] {C W : Type} [inst_6 : Field C] [inst_7 : AddCommGroup W] [inst_8 : _root_.Module C W] (ι : K ≃+* C)
+    ∀ {A K : Type} [CommRing A]
+    [Field K] (M : Type) [AddCommGroup M] [_root_.Module A M] [Algebra A K]
+    [Module.Free A M] {C W : Type} [Field C] [AddCommGroup W] [_root_.Module C W] (ι : K ≃+* C)
     (sp : M →+ W),
     (∀ (a : A) (m : M), (sp : M → W) (a • m) = (ι : K → C) ((Algebra.algebraMap A K : A → K) a) • (sp : M → W) m) →
       (∀ (κ : Type) (b : Module.Basis κ A M), LinearIndependent C fun (i : κ) ↦ (sp : M → W) ((b : κ → M) i)) →

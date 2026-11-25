@@ -112,7 +112,7 @@ theorem exists_isSphSec (σ : L →+* L) {q : ℕ} (hq : q ≠ 0) (n : ℕ) {χ 
       exact e.symm
     rw [this]
     exact mul_mem hk (inv_mem hk')
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   rw [← mul_inv_cancel_left p h.choose, map_mul, secVal_mul hq, secVal_unit q hχ _ (v_aD_eq _ hm), mul_one]
 
 theorem isZonal_of_isSatVecU {ϖ : L} {σ : L →+* L} {q n : ℕ} (hU : IsUnramInv ϖ σ q) {V : Type} [AddCommGroup V]

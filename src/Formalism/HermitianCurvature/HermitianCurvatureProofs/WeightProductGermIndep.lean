@@ -51,56 +51,20 @@ theorem std_Qz (S : C.HidaSetting E Wp Wq) (s : ℕ) (hs : 2 ≤ s) (h : C.LPt) 
 
 section copied
 
-theorem weight_product_append (k r : ℕ) (GG : ℝ) (fr : ℕ → ℕ → ℝ) :
-    ∀ (b : ℕ) (P Q : C.LPt), C.nAux k r GG fr b (P ++ Q) = C.nAux k r GG fr b P * C.nAux k r GG fr (b + D.ptSize P) Q
-  | b, [], Q => by simp [C.nAux, D.ptSize]
-  | b, (s, t) :: rest, Q => by
-    simp only [List.cons_append, C.nAux]
-    rw [weight_product_append k r GG fr (b + s) rest Q, ← mul_assoc]
-    simp only [D.ptSize, List.map_cons, List.sum_cons, Nat.add_assoc]
-
-theorem weight_product_germ_indep (k r : ℕ) (GG GG' : ℝ) (fr : ℕ → ℕ → ℝ) :
-    ∀ (b : ℕ) (P : C.LPt), b + D.ptSize P ≤ r + 1 → C.nAux k r GG fr b P = C.nAux k r GG' fr b P
-  | b, [], _ => by simp [C.nAux]
-  | b, (s, t) :: rest, h => by
-    simp only [C.nAux]
-    have hrest : b + s + D.ptSize rest ≤ r + 1 := by
-      simpa only [D.ptSize, List.map_cons, List.sum_cons, Nat.add_assoc] using h
-    have hc : ¬ (b + s - 1 = r + 1 ∧ s = 1) := by omega
-    simp only [ite_eq_right hc, weight_product_germ_indep k r GG GG' fr (b + s) rest hrest]
-
-theorem bSt_append (κ : ℝ) (P Q : C.LPt) : D.bSt κ (P ++ Q) = D.bSt κ P * D.bSt κ Q := by
-  simp [D.bSt, List.map_append, List.prod_append]
-
 def betaZ (κ : ℝ) (N : ℤ) : ℝ := ∏ x ∈ Finset.Ico 1 N, (κ ^ (1 - 2 * x) / Real.pi) ^ (N - x)
 
 theorem bSt_cons (κ : ℝ) (n : ℕ) (t : ℂ) (P : C.LPt) : D.bSt κ ((n, t) :: P) = betaZ κ n * D.bSt κ P := by
   simp [D.bSt, betaZ]
 
-theorem bSt_nil (κ : ℝ) : D.bSt κ [] = 1 := by simp [D.bSt]
-
 theorem betaZ_one (κ : ℝ) : betaZ κ 1 = 1 := by simp [betaZ]
-
-theorem prod_Ico_int_succ (f : ℤ → ℝ) (a b : ℤ) (h : a ≤ b) :
-    ∏ x ∈ Finset.Ico a (b + 1), f x = (∏ x ∈ Finset.Ico a b, f x) * f b := by
-  rw [Finset.Ico_add_one_right_eq_Icc, ← Finset.Ico_insert_right h, Finset.prod_insert (by simp), mul_comm]
 
 theorem betaZ_succ (κ : ℝ) (hκ : κ ≠ 0) (n : ℕ) :
     betaZ κ ((n : ℤ) + 1) = betaZ κ n * ∏ x ∈ Finset.Ico 1 ((n : ℤ) + 1), (κ ^ (1 - 2 * x) / Real.pi) := by
   apply _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.betaZ_succ <;> assumption
 
-theorem prod_c (κ : ℝ) (hκ : κ ≠ 0) : ∀ n : ℕ,
-    ∏ x ∈ Finset.Ico 1 ((n : ℤ) + 1), (κ ^ (1 - 2 * x) / Real.pi) = κ ^ (-((n : ℤ) ^ 2)) / Real.pi ^ n
-  | 0 => by simp
-  | n + 1 => by
-    rw [show ((n + 1 : ℕ) : ℤ) + 1 = ((n : ℤ) + 1) + 1 by push_cast; ring, prod_Ico_int_succ _ _ _ (by omega),
-      prod_c κ hκ n, div_mul_div_comm, ← zpow_add₀ hκ, pow_succ]
-    congr 2
-    push_cast; ring
-
 theorem betaZ_succ' (κ : ℝ) (hκ : κ ≠ 0) (n : ℕ) :
     betaZ κ ((n : ℤ) + 1) = betaZ κ n * (κ ^ (-((n : ℤ) ^ 2)) / Real.pi ^ n) := by
-  rw [betaZ_succ κ hκ, prod_c κ hκ]
+  rw [betaZ_succ κ hκ, _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.prod_c κ hκ]
 
 theorem weight_product_nonneg (k r : ℕ) (fr : ℕ → ℕ → ℝ) (hfr : ∀ b s, 0 ≤ fr b s) :
     ∀ (b : ℕ) (P : C.LPt), 0 ≤ C.nAux k r 0 fr b P
@@ -225,13 +189,13 @@ theorem const_match (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (b s : ℕ) (hb :
         nh * (((R ^ (n + 1))⁻¹ * ‖x⁻¹‖) ^ (2 * (n * ((j + 1) + n))) *
           ((Complex.normSq (x ^ n * Dd) - S.T * S.T') ^ j * 1)) := by
       unfold PBL.nnS C.nLoc
-      rw [hGG, weight_product_append, weight_product_germ_indep S.G.k S.G.r _ 0 S.fr 1 h (by omega)]
+      rw [hGG, _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.weight_product_append, _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.weight_product_germ_indep S.G.k S.G.r _ 0 S.fr 1 h (by omega)]
       simp only [C.nAux]
       split_ifs with H1 H2 <;> first | (exfalso; omega) | (exfalso; simp only [and_true] at *; omega) | skip
       rw [hfrA, hexp, zpow_natCast, show S.G.k - 1 = j by omega]
     have hbA : PBL.bS S (h ++ [(n, x⁻¹), (1, x ^ n * Dd)]) = bh * βn := by
       unfold PBL.bS
-      rw [bSt_append, bSt_cons, bSt_cons, bSt_nil, Nat.cast_one, betaZ_one, mul_one, mul_one]
+      rw [_root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.bSt_append, bSt_cons, bSt_cons, _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.bSt_nil, Nat.cast_one, betaZ_one, mul_one, mul_one]
     have hsq : √(PBL.nnS S (h ++ [(n, x⁻¹), (1, x ^ n * Dd)])) =
         √nh * ((R ^ (n + 1))⁻¹ * ‖x‖⁻¹) ^ (n * ((j + 1) + n)) * √((Complex.normSq (x ^ n * Dd) - S.T * S.T') ^ j) := by
       rw [hnnA, mul_one, ← mul_assoc, Real.sqrt_mul (mul_nonneg hnh0 (pow_nonneg (by positivity) _)),
@@ -267,7 +231,7 @@ theorem const_match (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (b s : ℕ) (hb :
       rw [hMB, hj, show j + 1 + n - 1 = j + n by omega]; push_cast; ring
     have hnnB : PBL.nnS S (h ++ [(n + 1, z)]) = nh * (((R ^ n)⁻¹ * ‖z‖) ^ (2 * ((n + 1) * ((j + 1) + n - 1))) * 1) := by
       unfold PBL.nnS C.nLoc
-      rw [weight_product_append, weight_product_germ_indep S.G.k S.G.r _ 0 S.fr 1 h (by omega)]
+      rw [_root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.weight_product_append, _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.weight_product_germ_indep S.G.k S.G.r _ 0 S.fr 1 h (by omega)]
       simp only [C.nAux]
       split_ifs with H1 <;> first | (exfalso; omega) | skip
       rw [hfrB, hexpB, zpow_natCast]
@@ -275,7 +239,7 @@ theorem const_match (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (b s : ℕ) (hb :
       rw [hnnB, mul_one, Real.sqrt_mul hnh0, sqrt_pow_two_mul _ (by positivity)]
     have hbB : PBL.bS S (h ++ [(n + 1, z)]) = bh * (βn * (κ ^ (n ^ 2))⁻¹ / Real.pi ^ n) := by
       unfold PBL.bS
-      rw [bSt_append, bSt_cons, bSt_nil, mul_one, Nat.cast_add, Nat.cast_one, betaZ_succ' κ hκ0.ne' n,
+      rw [_root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.bSt_append, bSt_cons, _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.bSt_nil, mul_one, Nat.cast_add, Nat.cast_one, betaZ_succ' κ hκ0.ne' n,
         show (-((n : ℤ) ^ 2)) = -((n ^ 2 : ℕ) : ℤ) by push_cast; ring, zpow_neg, zpow_natCast]
       ring
     have hl2 : ‖lam2 S (n + 1) * z‖ = Gm ^ n * ‖z‖ := by
@@ -326,7 +290,7 @@ theorem ptMatN_drop_last (H : C.LPt) (n : ℕ) (t c : ℂ) (r : ℕ) (hr : D.ptS
   ext a b
   have e : H ++ [(n, t), (1, c)] = (H ++ [(n, t)]) ++ [(1, c)] := by simp
   simp only [D.ptMatN]
-  rw [e, PBJ.Asm.ptEntry_append, if_pos]
+  rw [e, PBJ.Asm.ptEntry_append, ite_eq_left]
   rw [PBJ.Asm.ptSize_append, PBJ.Asm.ptSize_single]
   exact ⟨by omega, by omega⟩
 

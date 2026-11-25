@@ -40,9 +40,6 @@ open GlobalTheory.RegSch (ikS projS Lvl)
 
 namespace PositivityTheory.Rg.Rsw.L.LFixTh
 
-
-
-
 open PositivityTheory.Rg.Rsw.L
 
 variable {D : D7} {ρ p n : ℕ}
@@ -67,7 +64,7 @@ theorem eventually_unr {χ : (AE D)ˣ →* Circle} (hχ : IsHeckeChar D χ) :
   filter_upwards [GlobalTheory.ThK.ConeEulerChr.eventually_chr_eq_one (ν := χ) hχ.1 m (Eventually.of_forall hm)] with v hv u hu
   by_contra hne
   have h : ∃ u ∈ GlobalTheory.ThK.unitsAt D.host.E v, χ u ≠ 1 := ⟨u, hu, hne⟩
-  have e : m v = h.choose := dif_pos h
+  have e : m v = h.choose := dite_eq_left h
   exact h.choose_spec.2 (e ▸ hv)
 
 theorem eventually_goodPl {χ : (AE D)ˣ →* Circle} (hχ : IsHeckeChar D χ) (b₀ : HermE D ρ) :
@@ -155,9 +152,6 @@ open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 
 namespace PositivityTheory.Rg.Rsw.L.LFixTh
-
-
-
 
 open PositivityTheory.Rg.Rsw.L
 
@@ -310,12 +304,6 @@ theorem mat_inv_levi {g : G D p} {a : GL (Fin p) (AE D)} (ha : mat g = blk4 a.1 
     mat g⁻¹ = blk4 (a⁻¹).1 0 0 (adj a.1) := by
   apply _root_.GlobalTheory.CompanionTheory.EisCovar.mat_inv_levi <;> assumption
 
-private theorem matHom_proj_fst_eq_mat_map_cv (g : G D p) (v : Pl D) :
-    (GlobalTheory.AdelicU.matHom _ D.sp.cm.sig (GlobalTheory.StdUnn.Jst D p)
-      (GlobalTheory.AdelicU.proj D.sp.cm.sig (GlobalTheory.StdUnn.Jst D p) v g)).1 = (mat g).map (cv D v) := by
-  delta GlobalTheory.AdelicU.proj GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.mapH
-  rfl
-
 private theorem exists_mat_apply_eq_one_at_S_and_int_off_S {S : Finset (Pl D)} {h : G D p} (hh : h ∈ KOff D p S) :
     (∀ (w : NumberField.InfinitePlace D.host.F) (i j : Fin (p + p)),
       compInf D.host.F D.host.E w (mat h i j) = (1 : Matrix (Fin (p + p)) (Fin (p + p)) _) i j) ∧
@@ -343,13 +331,13 @@ private theorem exists_mat_apply_eq_one_at_S_and_int_off_S {S : Finset (Pl D)} {
     · rw [Matrix.one_apply_ne hij, Matrix.one_apply_ne hij, map_zero]
   · delta GlobalTheory.AdelicU.awayPts at haway
     have hker := MonoidHom.mem_ker.mp (Subgroup.mem_iInf.mp (Subgroup.mem_iInf.mp haway v) hv)
-    have h3 := matHom_proj_fst_eq_mat_map_cv h v
+    have h3 := PositivityTheory.Rg.Rsw.L.LFixTh.mat_proj h v
     rw [hker, map_one] at h3
     have h4 := congrArg (fun M : Matrix (Fin (p + p)) (Fin (p + p)) _ => M i j) h3
     exact h4.symm
   · have hs := (GlobalTheory.AdelicU.mem_stabLoc_stdLattice_iff.mp
       (Subgroup.mem_comap.mp (Subgroup.mem_iInf.mp (Subgroup.mem_iInf.mp hoff v) hv))).1 i j
-    rw [matHom_proj_fst_eq_mat_map_cv] at hs
+    rw [PositivityTheory.Rg.Rsw.L.LFixTh.mat_proj] at hs
     exact hs
 
 theorem levi_blocks {S : Finset (Pl D)} {g : G D p} (hg : g ∈ KOff D p S) {a : GL (Fin p) (AE D)}
@@ -398,7 +386,7 @@ theorem levi_good {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) {g : G D p} (
       rw [map_mul, map_mul, map_one_apply]
       by_cases hv : v ∈ S
       · rw [((hb k j).2.1 v hv).1]
-      · rw [he.2 v, if_neg hv, zero_mul, zero_mul]
+      · rw [he.2 v, ite_eq_right hv, zero_mul, zero_mul]
   have hsmul : e • (y * a.1) = e • y := by
     ext i j
     rw [Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, smul_eq_mul]
@@ -427,8 +415,8 @@ theorem levi_good {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) {g : G D p} (
       exact hint _ a.1 h fun v hv k j => ((hb k j).2.2 v hv).1
   rw [hf (y * a.1), hf y, hsmul]
   by_cases h : IntOff S y
-  · rw [if_pos (hyI.mpr h), if_pos h]
-  · rw [if_neg (fun h' => h (hyI.mp h')), if_neg h]
+  · rw [ite_eq_left (hyI.mpr h), ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h (hyI.mp h')), ite_eq_right h]
 
 end PositivityTheory.Rg.Rsw.L.LFixTh
 
@@ -459,7 +447,6 @@ open LFixTh
 
 open Classical in
 
-
 theorem fixTh : IdemEx → GenG → GenK → FixTh := by
   intro _ hG hK D ρ p m ψ hψ χ hχ θ _ b₀ hb₀
   obtain ⟨S₁, hS₁⟩ := hK D p
@@ -488,7 +475,7 @@ theorem fixTh : IdemEx → GenG → GenK → FixTh := by
       rw [hΩ.unip g b hb x y, hx]
       by_cases hy : IntOff S y
       · rw [unip_one hSg hSI hg hb hy, one_mul]
-      · rw [hgoodΩ y, if_neg hy, mul_zero]
+      · rw [hgoodΩ y, ite_eq_right hy, mul_zero]
     · have hbl := levi_blocks hg ha
       obtain ⟨h1, h2⟩ := levi_chr hχ hSg a (fun i j w => ((hbl i j).1 w).1) (fun i j v hv => ((hbl i j).2.1 v hv).1)
         (fun i j v hv => (hbl i j).2.2 v hv)

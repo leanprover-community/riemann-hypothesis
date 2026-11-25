@@ -44,46 +44,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransportedW
 import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FrameTransport.InstIsModTopTens
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
 import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
@@ -146,7 +108,6 @@ theorem transpose_transport (D : D7) (S T : HSp D) (ν : Measure (Formalism.Inde
   have hcs : Continuous e.symm := Continuous.matrix_transpose continuous_id
   let E' : Formalism.IndefR.Datum.WO T S ≃ᵐ Formalism.IndefR.DatumF.WOF D.host.F D.host.E S.rank T.rank :=
     (Homeomorph.mk e.toEquiv hc hcs).toMeasurableEquiv
-  have hE' : ∀ w, E' w = wᵀ := fun _ => rfl
   let eG : Formalism.IndefR.DatumF.ratLF D.host.F D.host.E S.rank T.rank ≃ ratL S T :=
     { toFun := fun g => ⟨(g : Matrix (Fin T.rank) (Fin S.rank) _)ᵀ, by
         obtain ⟨γ, hγ⟩ := g.2
@@ -363,7 +324,7 @@ theorem keepsDiag_of_diagCols {A : Type} [CommRing A] {n : ℕ} {M : Matrix (Fin
     rcases s with s | s <;>
       simpa only [Matrix.submatrix_apply, id, Equiv.symm_apply_apply, Matrix.fromRows_apply_inl,
         Matrix.fromRows_apply_inr, Matrix.one_apply, mul_ite, ite_mul, mul_one, one_mul, mul_zero, zero_mul,
-        Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, Sum.elim_inl, Sum.elim_inr] using h1
+        Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Sum.elim_inl, Sum.elim_inr] using h1
   refine ⟨(keepsDiag_iff _).2 fun i j => (key (.inr i) j).trans (key (.inl i) j).symm, ?_⟩
   ext i j
   exact key (.inl i) j
@@ -427,7 +388,6 @@ theorem mixT_law (hP : GlobalTheory.Published.WeilRepresentationUnitaryPair) (ψ
 end GlobalTheory.DblTargetTheta
 
 end
-
 
 open GlobalTheory.DblTargetTheta in
 theorem GlobalTheory.DblTargetTheta.thetaDiag_rule : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
@@ -504,7 +464,6 @@ theorem mul_diagCols_transpose {X : Type} [CommRing X] {m n : ℕ} (z : Matrix (
   rcases j with j | j <;> simp [GlobalTheory.WeilM.diagCols, Matrix.one_apply]
 
 end GlobalTheory.DblTargetSiegel
-
 
 theorem GlobalTheory.DblTargetSiegel.siegelRule_dblTarget : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS : (AE D)ˣ →* Circle), IsHeckeChar D χS → ResEta D χS S.rank →
@@ -605,8 +564,6 @@ namespace GlobalTheory.DblRestrictChar
 
 open Formalism.IndefR.Datum
 
-
-
 theorem dbl_diag_box : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS χT : (AE D)ˣ →* Circle)
       (ω : GA D S × GA D T →* Module.End ℂ (Formalism.IndefR.Datum.WO S T → ℂ)),
@@ -660,7 +617,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.doubledWeilDatum_diag_acts_on_externalProduct : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS χT : (AE D)ˣ →* Circle)
@@ -794,7 +750,6 @@ theorem join_mem {u v : WO S T} (hu : u ∈ ratL T S) (hv : v ∈ ratL T S) : jo
 
 end GlobalTheory.DblBoxHaar
 
-
 open MeasureTheory in
 theorem GlobalTheory.DblBoxHaar.box_integral : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D),
     ∃ (μ : MeasureTheory.Measure (Formalism.IndefR.Datum.WO S (GlobalTheory.Doubling.dblSp T))) (𝓕 : Set (Formalism.IndefR.Datum.WO S (GlobalTheory.Doubling.dblSp T)))
@@ -847,7 +802,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open Formalism.IndefR.Datum
 
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
-
 
 end -- clump:auto
 end -- clump:auto
@@ -932,7 +886,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open Formalism.IndefR.Datum
 
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1038,7 +991,7 @@ theorem two_families_scalar : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsS
     refine ⟨star (Y j y) / star (X j y), fun i => ?_⟩
     funext x
     rw [Pi.smul_apply, smul_eq_mul, div_mul_eq_mul_div, eq_div_iff hs, h2 i j x y, mul_comm]
-  · push_neg at h0
+  · push Not at h0
     refine ⟨0, fun i => ?_⟩
     funext x
     have e1 := h2 i i x x
@@ -1063,7 +1016,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open Formalism.IndefR.Datum
 
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1197,7 +1149,6 @@ theorem thetaSum_schr_negY (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) (hu : ∀ a
 
 end GlobalTheory.WeilSchrodinger.DblTarget.ThetaBox
 
-
 open GlobalTheory.WeilSchrodinger.DblTarget.ThetaBox in
 theorem GlobalTheory.WeilSchrodinger.DblTarget.thetaTr_coDbl_boxFun : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E)
@@ -1263,8 +1214,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 noncomputable section
 
 namespace GlobalTheory.WeilSchrodinger.DblRestrict
-
-
 
 theorem omp_diag_boxFun : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS χT : (AE D)ˣ →* Circle), IsHeckeChar D χS → IsHeckeChar D χT →
@@ -1339,8 +1288,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 
 namespace GlobalTheory.WeilSchrodinger.DblTarget
 
-
-
 theorem exists_dbl_target : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS χT : (AE D)ˣ →* Circle), IsHeckeChar D χS → IsHeckeChar D χT →
       ResEta D χS S.rank → ResEta D χT T.rank →
@@ -1374,7 +1321,7 @@ theorem exists_dbl_target : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStd
   have r1 := _root_.GlobalTheory.Core.Rk.IP.FockModel.resEta_one_dbl T rT
   obtain ⟨ωd, hωd⟩ := GlobalTheory.weilRepresentationUnitaryPair D ψ S (GlobalTheory.Doubling.dblSp T) χS 1 hψ hS h1S rS r1
   have hrat' := coDbl_rat hA co hrat
-  obtain ⟨omp, hmp⟩ := GlobalTheory.T.exists_weilDatum_transport_adelicSchwartz_thetaTransform D ψ hψ S (GlobalTheory.Doubling.dblSp T) χS 1 hS h1S rS r1 _ JB ξ rfl hB (κ ⊕ κ)
+  obtain ⟨omp, hmp⟩ := GlobalTheory.ThetaTransform.exists_isTransport D ψ hψ S (GlobalTheory.Doubling.dblSp T) χS 1 hS h1S rS r1 _ JB ξ rfl hB (κ ⊕ κ)
     (coDbl hA co) hrat' ωd hωd
   have h2 := GlobalTheory.T.transportedWeil_preserves_schwartz_heisenberg_equivariant D ψ hψ S (GlobalTheory.Doubling.dblSp T) χS 1 hS h1S rS r1 _ JB ξ rfl hB (κ ⊕ κ)
     (coDbl hA co) hrat' ωd hωd omp hmp
@@ -1421,7 +1368,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto

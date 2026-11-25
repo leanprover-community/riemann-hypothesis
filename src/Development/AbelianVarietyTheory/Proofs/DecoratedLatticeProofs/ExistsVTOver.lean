@@ -163,22 +163,6 @@ theorem mem_latV_int {S : HSp D} {L : Lat S} (hL : ∀ z, z ∈ L ↔ z ∈ intV
 
 end Gen
 
-section Loc
-
-open GlobalTheory.LatPair IsLocalRing
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Loc
-
-section Level
-
-open GlobalTheory.FinPl
-
-variable {D : D7} {u : D.what₂.Word} {a : XPart D u} {ζ₀ : Fin a.Lz.rank → D.host.E}
-
-end Level
-
 end GlobalTheory.SeeSaw.StdOff
 
 end

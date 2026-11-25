@@ -400,7 +400,7 @@ theorem isInteger_of_maximalIdeal_smul_isInteger (S : Type) [CommRing S] [IsRegu
       rw [hy', Algebra.smul_def, mul_comm]
     exact (IsIntegrallyClosed.isIntegral_iff).1 hint
   · exfalso
-    push_neg at hA
+    push Not at hA
     obtain ⟨a, ha, hy⟩ := hA
     obtain ⟨y, hy'⟩ := hc a ha
     have hyu : y ∉ maximalIdeal S := fun h => hy y h hy'
@@ -1255,7 +1255,7 @@ theorem injective_and_saturated_of_injective_mod_regular :
       rw [Ideal.span_le, Set.singleton_subset_iff]
       exact hf
     have hK0 : K = ⊥ := Submodule.eq_bot_of_le_smul_of_le_jacobson_bot _ K hFG hle hjac
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have : a ∈ K := ha
     rw [hK0] at this

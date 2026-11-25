@@ -42,7 +42,7 @@ theorem mix_push {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : Inf
   rw [Finset.sum_eq_single_of_mem _ hmem]
   · simp
   · intro b _ hb
-    rw [if_neg (Ne.symm hb)]
+    rw [ite_eq_right (Ne.symm hb)]
     simp
 
 section sizes

@@ -142,7 +142,6 @@ open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.BigTop GlobalTheory.BigOn
 namespace GlobalTheory.BigOn
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem pageSt_alt : _root_.GlobalTheory.BigOn.PageStatement := by
   refine (_root_.GlobalTheory.OntoSizeRows.sizeRows_along.and _root_.GlobalTheory.BigOn.levelSq_yBound_atRec_alt).imp fun Fm CH _ H => ?_
   obtain ⟨⟨xs, hxs⟩, ⟨c1, hc1⟩⟩ := H

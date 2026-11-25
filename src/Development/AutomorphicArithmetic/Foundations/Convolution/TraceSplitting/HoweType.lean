@@ -604,7 +604,7 @@ private theorem Js_pow (k : ℕ) (i j : Fin n) : (Js E n ^ k) i j = if (i : ℕ)
     · rw [Finset.sum_eq_single ⟨j + k, by omega⟩]
       · simp; omega
       · intro b _ hb
-        rw [if_neg (c := (b : ℕ) = j + k) fun e => hb (Fin.ext e), mul_zero]
+        rw [ite_eq_right (c := (b : ℕ) = j + k) fun e => hb (Fin.ext e), mul_zero]
       · simp
     · refine Finset.sum_eq_zero fun b _ => ?_
       split_ifs <;> first | omega | simp
@@ -1003,17 +1003,8 @@ namespace UpperTheory.ConvolutionTheory.Loc
 variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
 
 private theorem cont_coeff {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (l : V →ₗ[ℂ] ℂ) (w : V) :
-    Continuous fun g : G => l (ρ g w) := by
-  have h : IsLocallyConstant fun g : G => ρ g w := by
-    rw [IsLocallyConstant.iff_exists_open]
-    intro x
-    refine ⟨(fun g => x⁻¹ * g) ⁻¹' {g | ρ g w = w}, (hρ w).preimage (continuous_const.mul continuous_id), by simp, ?_⟩
-    intro y hy
-    have hy' : ρ (x⁻¹ * y) w = w := hy
-    calc ρ y w = ρ x (ρ (x⁻¹ * y) w) := by
-          rw [← mul_apply_eq_comp, ← map_mul, mul_inv_cancel_left]
-      _ = ρ x w := by rw [hy']
-  exact (h.comp l).continuous
+    Continuous fun g : G => l (ρ g w) :=
+  GroundTheory.Automorphic.continuous_dual_orbit (hρ w) l
 
 open Classical in
 private theorem avg {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (C : Subgroup G) (hC : IsCompact (C : Set G))
@@ -1186,14 +1177,14 @@ theorem exists_scale (X : Finset k) :
     intro x
     by_cases h : valuation k x ≤ 1
     · simp [f, h]
-    · simp only [f, dif_neg h, Units.val_inv_eq_inv_val, Units.val_mk0, map_inv₀]
+    · simp only [f, dite_eq_right h, Units.val_inv_eq_inv_val, Units.val_mk0, map_inv₀]
       push Not at h
       exact inv_le_one_of_one_le₀ h.le
   have hf2 : ∀ x, valuation k ((f x : kˣ) * x) ≤ 1 := by
     intro x
     by_cases h : valuation k x ≤ 1
     · simpa [f, h] using h
-    · simp only [f, dif_neg h, Units.val_inv_eq_inv_val, Units.val_mk0]
+    · simp only [f, dite_eq_right h, Units.val_inv_eq_inv_val, Units.val_mk0]
       rw [inv_mul_cancel₀ (hne x h), map_one]
   refine ⟨∏ x ∈ X, f x, ?_, fun y hy => ?_⟩
   · rw [Units.coe_prod, map_prod]

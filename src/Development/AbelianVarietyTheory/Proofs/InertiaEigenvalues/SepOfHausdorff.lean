@@ -287,7 +287,7 @@ theorem io_mem (hO : Function.Injective (algebraMap O LL)) (hd : Descends E') (h
     rw [← e, ← ioE_γE E hO, hg, map_one]
     rfl
   · intro i
-    rw [Finset.sum_eq_single (i - 1) (fun j _ hj => by simp [hj]) (by simp), if_pos rfl, map_one, one_mul,
+    rw [Finset.sum_eq_single (i - 1) (fun j _ hj => by simp [hj]) (by simp), ite_eq_left rfl, map_one, one_mul,
       ← ioE_φE E hO, W.φE_ext]
     exact congrArg _ (congrArg _ (φA_letE W i).symm)
 
@@ -479,8 +479,6 @@ namespace GlobalTheory.WachTensor
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.UnitDualParts GlobalTheory.EtaleExact
 open GlobalTheory.IndefiniteRowSideFullHecke.CrystallineSubrepresentation (LocQuotCrys LocTensorCrys LocDualCrys)
-
-set_option synthInstance.maxHeartbeats 400000
 
 variable {l : ℕ} [Fact l.Prime]
 

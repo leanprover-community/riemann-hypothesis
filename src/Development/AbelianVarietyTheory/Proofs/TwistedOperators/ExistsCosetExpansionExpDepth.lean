@@ -3,45 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MemHalfCosetSelf
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddNsmulResidueAssoc
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PadOneMemSecondBlockTriangular
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -163,7 +124,7 @@ theorem cosetDatum_fn {t : T} {p : Pair T} (d : FinDatum G t p) {K : ℕ} {r} {e
     (cosetDatum d K r).fn = (halfCoset e (pairLat G p) K r).indicator 1 := by
   subst he
   unfold cosetDatum
-  rw [dif_pos ⟨hK, h1, h2⟩]
+  rw [dite_eq_left ⟨hK, h1, h2⟩]
 
 theorem isCosetDatum_cosetDatum {t : T} {p : Pair T} (d : FinDatum G t p) {K : ℕ} {r} (hK : 0 < K) (h1 : IsHalf d.e r)
     (h2 : K • r ∈ pairLat G p) : IsCosetDatum K (cosetDatum d K r) :=
@@ -195,7 +156,7 @@ theorem exists_halfCoset_reps {Λ : AddSubgroup (Mx D m n)} (e : AE D) {K : ℕ}
   let C : Mx D m n → Set (Mx D m n) := fun f => {x | IsHalf e x ∧ K • x ∈ Λ ∧ ∃ v ∈ Λ, K • x = f + (K * K) • v}
   let rep : Mx D m n → Mx D m n := fun f => if h : (C f).Nonempty then h.some else 0
   have hrep : ∀ f, (C f).Nonempty → rep f ∈ C f := fun f h => by
-    simp only [rep, dif_pos h]
+    simp only [rep, dite_eq_left h]
     exact h.some_mem
   have hhalf : ∀ {x r w : Mx D m n}, IsHalf e x → IsHalf e r → K • x = K • r + (K * K) • w → IsHalf e w := by
     intro x r w hx hr h i j

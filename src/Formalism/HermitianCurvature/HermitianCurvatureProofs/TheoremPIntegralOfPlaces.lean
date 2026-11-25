@@ -14,10 +14,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.FourierDecayAlt
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 namespace Formalism.FourierDecayAlt.P.JCx1
 
 open NumberField
@@ -31,10 +27,6 @@ theorem norm_σ {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : Infi
 
 end Formalism.FourierDecayAlt.P.JCx1
 
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 
 section cutf
 
@@ -160,7 +152,7 @@ theorem sum_mult {Z X : Type} [DecidableEq Z] (P : Finset Z) (F : Z → ℂ) (Y 
   rw [Finset.sum_eq_single (⟨g h, hg h hh⟩ : P)]
   · simp
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     exact hb (Subtype.ext e.symm)
   · intro hn
@@ -497,7 +489,7 @@ theorem gram_proposition_of_places : Formalism.FourierDecayAlt.JC.PropGramOfPlac
   filter_upwards [Filter.eventually_all.mpr hv] with ε hε
   intro p hp q hq
   rw [hT p q (hY p hp) (hY q hq)]
-  simp only [C.HidaSetting.gram, le_refl, if_true, C.HidaSetting.gramLoc, C.Word.emp]
+  simp only [C.HidaSetting.gram, le_refl, ite_true, C.HidaSetting.gramLoc, C.Word.emp]
   refine Finset.prod_congr rfl fun v _ => ?_
   rw [hε v _ (Finset.mem_image_of_mem _ hp) _ (Finset.mem_image_of_mem _ hq)]
 end Formalism.FourierDecayAlt.P
@@ -602,7 +594,7 @@ theorem vecV_cutF_eventually (hGS : D.PtGSpec) (Bs : RealPlaceData k r Wp Wq) (�
 theorem vecV_of_not {Bs : RealPlaceData k r Wp Wq} {ν' : Fin (2 * r + k + 1) → ℂ} {m₀ : Mat k r}
     {F : Mat k r → (Wq →L[ℂ] Wp)} {p : C.LPt} (h : ¬ D.IsLocPt p (r + 1)) : D.vecV Bs ν' m₀ F p = 0 := by
   unfold D.vecV
-  rw [dif_neg (fun h' => h h'.1)]
+  rw [dite_eq_right (fun h' => h h'.1)]
 
 theorem hsVec_zero [FiniteDimensional ℂ Wq] : hsVec (0 : Wq →L[ℂ] Wp) = 0 := by
   ext i
@@ -634,13 +626,13 @@ theorem gram_at_built_place : Formalism.FourierDecayAlt.JC.GramPlaceBuilt := by
   simp only [D.componentFamilySetting_ofSetting, D.RRplace, JC.vecPlace]
   by_cases hpq : D.IsLocPt (D.toStd S.G.r (S.g : ℝ) 1 p) (S.G.r + 1) ∧
       D.IsLocPt (D.toStd S.G.r (S.g : ℝ) 1 q) (S.G.r + 1)
-  · simp only [dif_pos hpq, dif_neg (show ¬ (S.G.r + 1 ≤ S.G.r) by omega), ↓reduceIte]
+  · simp only [dite_eq_left hpq, dite_eq_right (show ¬ (S.G.r + 1 ≤ S.G.r) by omega), ↓reduceIte]
     rw [hε p hp, hε q hq]
     simp only [D.GamLev, Finset.Ioc_self, Finset.prod_empty, one_pow, hsInner, inner_smul_left,
       inner_smul_right, Complex.conj_ofReal]
     push_cast
     ring
-  · rw [dif_neg hpq]
+  · rw [dite_eq_right hpq]
     rcases not_and_or.mp hpq with h | h
     · rw [Formalism.FourierDecayAlt.P.JCx1.needs.vecV_of_not h]
       simp [Formalism.FourierDecayAlt.P.JCx1.needs.hsVec_zero]
@@ -801,7 +793,7 @@ theorem thmPInt_of_covolume_prod (E : Type) [Field E] [NumberField E] [IsCMField
       refine Finset.sum_congr rfl fun h' _ => ?_
       rw [integral_const_mul, integral_fintype_prod_volume_eq_prod]
       congr 1
-      simp only [hφi, Finset.prod_mul_distrib, C.HidaSetting.gram, if_pos (show i - 1 ≤ S.G.r + 1 by omega)]
+      simp only [hφi, Finset.prod_mul_distrib, C.HidaSetting.gram, ite_eq_left (show i - 1 ≤ S.G.r + 1 by omega)]
       rw [← Complex.ofReal_prod, hprod i hi1 hi2]
 
     have hκH : ∀ h ∈ Y, ∀ h' ∈ Y, conj (κ h h') = κ h' h := by
@@ -809,7 +801,7 @@ theorem thmPInt_of_covolume_prod (E : Type) [Field E] [NumberField E] [IsCMField
       exact hκ.1.apply (⟨h', hh'⟩ : Y) (⟨h, hh⟩ : Y)
     have hgH : ∀ h h' : TB.Pt E, conj (S.gram ε (i - 1) w.1 h h') = S.gram ε (i - 1) w.1 h' h := by
       intro h h'
-      simp only [C.HidaSetting.gram, if_pos (show i - 1 ≤ S.G.r + 1 by omega), map_prod]
+      simp only [C.HidaSetting.gram, ite_eq_left (show i - 1 ≤ S.G.r + 1 by omega), map_prod]
       refine Finset.prod_congr rfl fun v _ => ?_
       have hP := hpos v ε hε (i - 1) (by omega) w {C.loc (S.σ v) h, C.loc (S.σ v) h'}
       exact hP.1.apply (⟨C.loc (S.σ v) h', by simp⟩ : ({C.loc (S.σ v) h, C.loc (S.σ v) h'} : Finset C.LPt))

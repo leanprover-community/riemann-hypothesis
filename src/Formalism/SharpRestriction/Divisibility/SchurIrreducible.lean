@@ -476,10 +476,4 @@ structure Prov (D : Formalism.BasicNotions.D7) extends ProvA where
   rf : letI := D.host.cmStar
     ∀ A B : Formalism.BasicNotions.HSpace D.host.E, RFObj D.host.F D.host.E A B
 
-section Packet
-
-variable (D : Formalism.BasicNotions.D7) (X : Prov D)
-
-end Packet
-
 end Formalism.MainNotions.SchurIrreducible

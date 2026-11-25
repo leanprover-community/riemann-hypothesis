@@ -451,7 +451,7 @@ theorem representative_s0_eq (q : RP Y u u') :
   have hT := Th_move hn₁ hn₂ hm₁ hm₂ hf₁ hz₁ hf₂ hz₂ (lift_F q.l1) (lift_frame q.l1) hL₂ hsF (hs_frame q.l1) hβ
     (beta_Xsp q.l1 q.l2) (τ := 1) (fun x hx => hx) (fun x _ => by simp)
   unfold s0T
-  rw [if_pos ⟨hl, hl'⟩, E1, hB]
+  rw [ite_eq_left ⟨hl, hl'⟩, E1, hB]
   unfold Lat.s0
   exact congrArg (fun q : ℕ => D.R.k - q) ((congrArg (fun M : Submodule D.host.E (VS D).V => Module.finrank D.host.E M)
     hT).trans (LinearEquiv.finrank_map_eq n₁ _))

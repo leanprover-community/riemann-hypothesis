@@ -186,7 +186,7 @@ theorem frob_rowv (k : κ) (i : ι) :
   change frobOW l O (crd b k (I.j _)) = _
   rw [← h]
   simp only [Matrix.vecMul, dotProduct, Matrix.mulVec, apply_ite (frobOW l O), map_one, map_zero,
-    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   exact Finset.sum_congr rfl fun m _ => mul_comm _ _
 
 end Coord

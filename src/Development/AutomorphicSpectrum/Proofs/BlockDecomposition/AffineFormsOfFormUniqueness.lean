@@ -488,13 +488,13 @@ theorem exists_lifts {V : Z.Opens} {s d : ℕ} (hle : SS q 1 s V ≤ inU q V) (E
   let v : ∀ T : (inU q V).FullSubcategory, Sec q V → T.obj.B := fun T g =>
     if hT : SS q 1 s V T.obj then ((sP (SS q 1 s V)).A.map (σ ⟨T.obj, hT⟩)).hom (θ g) else lft V T.obj g
   have hvP : ∀ (T : (SS q 1 s V).FullSubcategory) (g : Sec q V),
-      v ⟨T.obj, hle _ T.property⟩ g = ((sP (SS q 1 s V)).A.map (σ T)).hom (θ g) := fun T g => dif_pos T.property
+      v ⟨T.obj, hle _ T.property⟩ g = ((sP (SS q 1 s V)).A.map (σ T)).hom (θ g) := fun T g => dite_eq_left T.property
   refine ⟨⟨v, fun T g => ?_⟩, fun {a} g₀ g x => ?_⟩
   · by_cases hT : SS q 1 s V T.obj
-    · have e : v T g = ((sP (SS q 1 s V)).A.map (σ ⟨T.obj, hT⟩)).hom (θ g) := dif_pos hT
+    · have e : v T g = ((sP (SS q 1 s V)).A.map (σ ⟨T.obj, hT⟩)).hom (θ g) := dite_eq_left hT
       rw [e]
       exact hpt ⟨T.obj, hT⟩ T.property g
-    · have e : v T g = lft V T.obj g := dif_neg hT
+    · have e : v T g = lft V T.obj g := dite_eq_right hT
       rw [e]
       exact lft_spec _ T.property g
   · unfold Lifts.form liftF

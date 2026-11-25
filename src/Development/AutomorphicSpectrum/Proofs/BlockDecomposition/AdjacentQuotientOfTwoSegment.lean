@@ -56,18 +56,5 @@ theorem nontrivial_prodIrr {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ 
   haveI := nontrivial_piTensorProduct (X := fun a => (x a).2.rep.V)
   exact nontrivial_indSp _ (isSmooth_piTensor fun a => (x a).2.rep.smooth)
 
-section Two
-
-variable {V U W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module ℂ U] [AddCommGroup W] [Module ℂ W]
-  {r t N : ℕ}
-
-end Two
-
-section Concat
-
-
-
-end Concat
-
 end GlobalTheory.CompanionTheory.AdjQuot
 end

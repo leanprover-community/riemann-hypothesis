@@ -13,8 +13,6 @@ public import Mathlib.Analysis.Calculus.ContDiff.Operations
 open Matrix Topology Set Filter
 open scoped ContDiff
 
-noncomputable section
-
 namespace CompanionTheory.D.gk.admitted.Gard
 
 open PI.UpqRep

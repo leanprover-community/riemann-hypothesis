@@ -18,18 +18,6 @@ namespace DU
 
 variable {k r : ℕ}
 
-theorem hadd_l {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (x y w : Fin m → ℂ) :
-    herm H (x + y) w = herm H x w + herm H y w := by
-  simp [herm, Matrix.mulVec_add]
-
-theorem hadd_r {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (x w w' : Fin m → ℂ) :
-    herm H x (w + w') = herm H x w + herm H x w' := by
-  simp [herm, add_dotProduct]
-
-theorem hsmul_l {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (c : ℂ) (x w : Fin m → ℂ) :
-    herm H (c • x) w = c * herm H x w := by
-  simp [herm, Matrix.mulVec_smul]
-
 theorem hsmul_r {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (c : ℂ) (x w : Fin m → ℂ) :
     herm H x (c • w) = conj c * herm H x w := by
   simp [herm, smul_dotProduct]
@@ -68,20 +56,10 @@ theorem prWv_fix {z x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (h0 : her
   rw [prWv_of hx, h0]
   simp
 
-private theorem herm_Hpk_self_eq_neg_Tz (z : Fin (2 * r + k + 1) → ℂ) :
-    herm (Hpk k r) z z = -((Tz k r z : ℝ) : ℂ) := by
-  have h := hswap (k := k) (r := r) z z
-  apply Complex.ext
-  · simp [Tz]
-  · have h2 := congrArg Complex.im h
-    simp only [Complex.conj_im] at h2
-    simp
-    linarith
-
 theorem prWv_perp {z y : Fin (2 * r + k + 1) → ℂ} (hT : 0 < Tz k r z) (hy : inWb k r y) :
     herm (Hpk k r) (SSn.prWv k r z y) z = 0 := by
   have hT0 : (Tz k r z : ℂ) ≠ 0 := by exact_mod_cast hT.ne'
-  rw [prWv_of hy, hadd_l, hsmul_l, herm_Hpk_self_eq_neg_Tz]
+  rw [prWv_of hy, Formalism.FourierDecayAlt.P.Qx8.herm_add_left', Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_self_eq]
   have h1 : herm (Hpk k r) y z / (Tz k r z : ℂ) * -(Tz k r z : ℂ) = -herm (Hpk k r) y z := by
     rw [div_mul_eq_mul_div, mul_neg, neg_div, mul_div_assoc, div_self hT0, mul_one]
   rw [h1]
@@ -92,7 +70,7 @@ theorem prWv_inWb {z y : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hy : in
   intro i hi
   have h1 : SSn.wbP k r y i = 0 := by
     simp only [SSn.wbP]
-    rw [if_neg]
+    rw [ite_eq_right]
     omega
   simp only [SSn.prWv, Pi.add_apply, Pi.smul_apply, smul_eq_mul, hz i hi, h1, mul_zero, add_zero]
 
@@ -102,7 +80,7 @@ theorem prWv_norm {z y : Fin (2 * r + k + 1) → ℂ} (hT : 0 < Tz k r z) (hy : 
       ((Complex.normSq ζ / Tz k r z - T' : ℝ) : ℂ) := by
   have hT0 : (Tz k r z : ℂ) ≠ 0 := by exact_mod_cast hT.ne'
   rw [prWv_of hy]
-  simp only [hadd_l, hadd_r, hsmul_l, hsmul_r, _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.DU.herm_Hpk_self_eq_neg_Tz, hyy, hyz]
+  simp only [Formalism.FourierDecayAlt.P.Qx8.herm_add_left', Formalism.FourierDecayAlt.P.Qx8.herm_add_right', Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', hsmul_r, _root_.Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_self_eq, hyy, hyz]
   rw [hswap y z, hyz, map_div₀, Complex.conj_ofReal]
   push_cast
   rw [← Complex.mul_conj]
@@ -119,8 +97,8 @@ theorem unitH_facts {z x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (h0 : 
     rw [hu]
     simp [hx i hi]
   refine ⟨prWv_fix hin ?_, ?_⟩
-  · rw [hu, hsmul_l, h0, mul_zero]
-  · rw [hu, hsmul_l, hsmul_r, hxx, Complex.conj_ofReal]
+  · rw [hu, Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', h0, mul_zero]
+  · rw [hu, Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', hsmul_r, hxx, Complex.conj_ofReal]
     have key : (Real.sqrt s)⁻¹ * ((Real.sqrt s)⁻¹ * s) = 1 := by
       rw [← mul_assoc, ← mul_inv, ← sq, Real.sq_sqrt hs.le, inv_mul_cancel₀ hs.ne']
     exact_mod_cast key

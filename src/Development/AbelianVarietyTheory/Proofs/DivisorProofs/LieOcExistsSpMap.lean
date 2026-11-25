@@ -1084,7 +1084,6 @@ theorem exists_ideal_rank_iff : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : 
   refine ⟨Ideal.span {x'}, fun T _ f hf => ?_⟩
   have hfa : ∀ a ∈ J, f a = 0 := fun a ha => RingHom.mem_ker.1 (hf ha)
   let fb : B ⧸ J →+* T := Ideal.Quotient.lift J f hfa
-  have hfb : fb.comp (Ideal.Quotient.mk J) = f := Ideal.Quotient.lift_comp_mk _ _ _
   rw [Ideal.span_singleton_le_iff_mem, RingHom.mem_ker]
   have hx' := hx T fb
   rw [show fb (Ideal.Quotient.mk J x') = f x' from Ideal.Quotient.lift_mk _ _ _] at hx'
@@ -1123,12 +1122,6 @@ section
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {S : Scheme.{0}}
   {A : Over S} [GrpObj A] [IsCommMonObj A] {R' : Type} [CommRing R'] (x : Sp R' ⟶ S)
 
-theorem spMap_comp_spMap_lieAt {R₁ R₂ R₃ : Type} [CommRing R₁] [CommRing R₂] [CommRing R₃] (f : R₂ →+* R₃)
-    (g : R₁ →+* R₂) : spMap f ≫ spMap g = spMap (f.comp g) := by
-  unfold spMap
-  rw [← Spec.map_comp]
-  rfl
-
 theorem tanScal_iff_lieAt (act : OActN D.O A) (c : 𝓞 D.F) (r : R') (v : epsPtR x ⟶ A) :
     IsTanScal act x (algebraMap (𝓞 D.F) D.O c) r v ↔
       (smT x 0 v = 1 ∧ v ≫ (act.toF D).act c = smT x r v) := by
@@ -1137,7 +1130,7 @@ theorem tanScal_iff_lieAt (act : OActN D.O A) (c : 𝓞 D.F) (r : R') (v : epsPt
   have e1 : ((1 : epsPtR x ⟶ A).left) = spMap (algebraMap R' (DualNumber R')) ≫ (1 : Over.mk x ⟶ A).left := by
     rw [Hom.one_def, Hom.one_def]; rfl
   have e2 : spMap (TrivSqZeroExt.fstHom R' R' R').toRingHom ≫ spMap (algebraMap R' (DualNumber R')) = 𝟙 _ := by
-    rw [spMap_comp_spMap_lieAt]
+    rw [ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap]
     have : (TrivSqZeroExt.fstHom R' R' R').toRingHom.comp (algebraMap R' (DualNumber R')) = RingHom.id R' := by
       ext r; simp
     rw [this]
@@ -1147,10 +1140,10 @@ theorem tanScal_iff_lieAt (act : OActN D.O A) (c : 𝓞 D.F) (r : R') (v : epsPt
     constructor
     · intro hp
       apply Over.OverMorphism.ext
-      rw [smT_left, e1, e0, ← spMap_comp_spMap_lieAt, Category.assoc, hp]
+      rw [smT_left, e1, e0, ← ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap, Category.assoc, hp]
     · intro hp
       have := congrArg (fun V => spMap (TrivSqZeroExt.fstHom R' R' R').toRingHom ≫ V.left) hp
-      rw [e1, ← Category.assoc, e2, Category.id_comp, smT_left, e0, ← spMap_comp_spMap_lieAt,
+      rw [e1, ← Category.assoc, e2, Category.id_comp, smT_left, e0, ← ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap,
         ← Category.assoc, ← Category.assoc, e2, Category.id_comp] at this
       exact this
   have t2 : (v ≫ act.act (algebraMap (𝓞 D.F) D.O c)).left = spMap (epsScaleR r) ≫ v.left ↔

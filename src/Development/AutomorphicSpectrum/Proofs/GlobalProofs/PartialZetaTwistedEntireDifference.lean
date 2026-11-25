@@ -186,8 +186,8 @@ theorem classTwist_entire : AbelContinuation → ∀ (F : Type) [Field F] [Numbe
       have hI : (e p).1 ≤ 𝔠 ↔ conePt (y p.1) (v p.1) p.2 ∈ 𝔠 * 𝔟 := le_iff_mem_mul_of_span hb (he p)
       simp only [classWeight, coneWeight]
       by_cases h : (e p).1 ≤ 𝔠
-      · rw [if_pos h, if_pos (hI.1 h)]
-      · rw [if_neg h, if_neg fun h' => h (hI.2 h')]
+      · rw [ite_eq_left h, ite_eq_left (hI.1 h)]
+      · rw [ite_eq_right h, ite_eq_right fun h' => h (hI.2 h')]
     have h2 := he p
     have h3 : Ideal.absNorm (Ideal.span {conePt (y p.1) (v p.1) p.2}) = Ideal.absNorm (e p).1 * Ideal.absNorm 𝔟 := by
       rw [← map_mul, h2, conePt]

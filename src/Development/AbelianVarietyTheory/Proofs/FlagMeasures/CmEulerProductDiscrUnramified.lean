@@ -8,57 +8,15 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFiel
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotIsFieldAdicCompletionTensorOfSplit
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadraticUnramifiedIffInertOrSplit
 import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 public import Mathlib.Analysis.PSeries
 public import Mathlib.Analysis.SpecialFunctions.Log.Summable
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Finiteness.Quotient
 import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.Ideal.Int
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
@@ -190,7 +148,7 @@ theorem hasProd_fibre (hc : Formalism.BasicNotions.CMData F E) (M : ℕ) (hM : 1
   rcases (GlobalTheory.quadratic_unramified_iff_inert_or_split F E hc.deg2 v).1 (unramifiedPlace hc v)
     with h | h
   · have heta : GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.eta F E v = -1 :=
-      if_pos (GlobalTheory.InertField.isField_of_inert F E hc.deg2 v h)
+      ite_eq_left (GlobalTheory.InertField.isField_of_inert F E hc.deg2 v h)
     have hm := h.isMaximal (Ideal.map_ne_bot_of_ne_bot v.ne_bot)
     have heq : ∀ Q : v.asIdeal.primesOver (𝓞 E),
         v.asIdeal.map (algebraMap (𝓞 F) (𝓞 E)) = Q.1 := fun Q =>
@@ -206,10 +164,10 @@ theorem hasProd_fibre (hc : Formalism.BasicNotions.CMData F E) (M : ℕ) (hM : 1
       rw [← heq P, Ideal.absNorm_algebraMap, ← IsFractionRing.finrank_eq (𝓞 F) F (𝓞 E) E, hc.deg2,
         Nat.cast_pow]
       rfl
-    rw [Fintype.prod_subsingleton _ P, Formalism.HermitianLatticesTheory.eulerFac, if_pos hfix, hN,
+    rw [Fintype.prod_subsingleton _ P, Formalism.HermitianLatticesTheory.eulerFac, ite_eq_left hfix, hN,
       Real.sqrt_sq (by linarith), heta, zpow_neg, zpow_natCast]
   · have heta : GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.eta F E v = 1 :=
-      if_neg (GlobalTheory.SplitPlace.not_isField_of_split F E hc.deg2 v h)
+      ite_eq_right (GlobalTheory.SplitPlace.not_isField_of_split F E hc.deg2 v h)
     have hcard : Fintype.card (v.asIdeal.primesOver (𝓞 E)) = 2 := by
       rw [← h, ← Nat.card_eq_fintype_card, Nat.card_coe_set_eq]
     have hone : ∀ P : v.asIdeal.primesOver (𝓞 E),
@@ -233,7 +191,7 @@ theorem hasProd_fibre (hc : Formalism.BasicNotions.CMData F E) (M : ℕ) (hM : 1
         have := P.2.2
         rw [← Ideal.absNorm_pow_inertiaDeg v.asIdeal P.1, hf, pow_one]
         rfl
-      rw [Formalism.HermitianLatticesTheory.eulerFac, if_neg hne, hN, zpow_neg, zpow_natCast]
+      rw [Formalism.HermitianLatticesTheory.eulerFac, ite_eq_right hne, hN, zpow_neg, zpow_natCast]
     rw [Finset.prod_congr rfl (fun P _ => hfac P), Finset.prod_const, Finset.card_univ, hcard,
       ← Real.rpow_natCast, ← Real.rpow_mul hpos.le,
       show (-(1 : ℝ) / 2 * ((2 : ℕ) : ℝ)) = -1 by norm_num, Real.rpow_neg_one]

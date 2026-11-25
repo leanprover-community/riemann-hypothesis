@@ -369,7 +369,7 @@ theorem _root_.PositivityTheory.Rg.Rsw.L.thCoef : LatBound → ThCoef := by
       exact tsum_co_ne_top hvol hΨc hC
   refine ⟨fun hno => ?_, fun x₀ hr hg => ?_⟩
   · rw [hcoef]
-    exact (tsum_congr fun y => if_neg fun h => hno ⟨y.1, y.2, congrArg Subtype.val h⟩).trans tsum_zero
+    exact (tsum_congr fun y => ite_eq_right fun h => hno ⟨y.1, y.2, congrArg Subtype.val h⟩).trans tsum_zero
   rw [hcoef]
   obtain ⟨-, -, -, hB, hTG, -, hcount⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D W
   have : MeasurableConstSMul (GQ W) (GA D W) := ⟨fun γ => measurable_const_mul (γ : GA D W)⟩

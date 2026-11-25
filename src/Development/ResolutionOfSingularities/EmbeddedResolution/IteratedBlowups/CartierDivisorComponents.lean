@@ -8,8 +8,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem mem_closure_singleton_iff_fromSpec {X : Scheme.{u}} {U : X.Opens} (hU : IsAffineOpen U)

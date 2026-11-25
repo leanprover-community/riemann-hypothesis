@@ -75,21 +75,10 @@ public import Formalism.SharedLemmas.CocycleFiniteIndex
 section
 section Local
 open NumberField Matrix IsLocalRing Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.Aut UpperTheory.V.UnitaryThreeInertia
-private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
-    [TotallyDisconnectedSpace G] (N : Subgroup G) [N.Normal] (hN : IsClosed (N : Set G)) :
-    TotallyDisconnectedSpace (G ⧸ N) := by
-  first
-  | exact _root_.Formalism.SharedLemmas.totDisc_quot
-  | (apply _root_.Formalism.SharedLemmas.totDisc_quot <;> assumption)
-private theorem cocycle_coboundary_of_finite_index {k G W : Type} [Field k] [CharZero k] [Group G] [AddCommGroup W] [Module k W]
-    (a : G → W →ₗ[k] W) (hmul : ∀ g h w, a (g * h) w = a g (a h w)) (f : G → W)
-    (hf : ∀ g h, f (g * h) = f g + a g (f h)) (H : Subgroup G) [H.FiniteIndex] (x : W)
-    (hx : ∀ h ∈ H, f h = a h x - x) : ∃ y, ∀ g, f g = a g y - y := by
-  exact Formalism.SharedLemmas.cocycle_coboundary_of_finiteIndex_sub a hmul f hf H x hx
 private theorem rig_avg {K D V : Type} [Field K] [CharZero K] [Group D] [AddCommGroup V] [Module K V]
     (ρ : Representation K D V) (y : D → V) (hy : ∀ g h, y (g * h) = y g + ρ g (y h)) (I N : Subgroup D) [N.FiniteIndex]
     (h : ∀ s ∈ I, s ∈ N → y s = 0) : ∃ x, ∀ s ∈ I, y s = ρ s x - x := by
-  obtain ⟨x, hx⟩ := cocycle_coboundary_of_finite_index (k := K) (G := I) (fun g => ρ g) (fun g h w => by simp) (fun g => y g)
+  obtain ⟨x, hx⟩ := Formalism.SharedLemmas.cocycle_coboundary_of_finiteIndex_sub (k := K) (G := I) (fun g => ρ g) (fun g h w => by simp) (fun g => y g)
     (fun g h => hy g h) (N.subgroupOf I) 0 (fun s hs => by simp [h s s.2 hs])
   exact ⟨x, fun s hs => hx ⟨s, hs⟩⟩
 private theorem rig_away {O K G' Γ ι : Type} [CommRing O] [IsLocalRing O] [Finite (ResidueField O)] [Field K] [CharZero K]
@@ -250,7 +239,7 @@ private theorem h1f_vanishing_conj_invariant {Ω : Type} [Field Ω] [CharZero Ω
   · have : ⇑(GG.ad (m := 3) _ (GG.ofGL h)) = fun X => (GG.ofGL h).mat * X *
         (((GG.ofGL h).left⁻¹ : GL (Fin 3) (PadicAlgCl l)) : Matrix (Fin 3) (Fin 3) (PadicAlgCl l)) := by
       funext X
-      rw [GG.ad_apply, GG.adFun, if_pos (SemidirectProduct.right_inl _)]
+      rw [GG.ad_apply, GG.adFun, ite_eq_left (SemidirectProduct.right_inl _)]
     rw [this]
     exact (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
   · rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
@@ -383,7 +372,7 @@ theorem UpperTheory.V.Z.J.hostRigidUE_alt :
   have ok := hostFrame_ok Ω c e ψ o₁ hD S A F hF
   haveI : IsGalois ℚ Ω := IsAlgClosure.isGalois ℚ Ω
   haveI hcl := isClosed_NS Ω (S : Set Pl)
-  haveI : TotallyDisconnectedSpace (Gam Ω S) := totDisc_quot _ hcl
+  haveI : TotallyDisconnectedSpace (Gam Ω S) := Formalism.SharedLemmas.totDisc_quot _ hcl
   obtain ⟨hm, -, hc, -⟩ := isCharZeroPt_basic F ok g₁ hg r hr
   have hz := selmer_h1_vanishes_at_rigid_point hH hL hU K hK Ω l c N e ψ o₁ hD S A F hF ι g₁ hg r hr hm hc hB
   have hZ : (fun s => y (F.π s)) ∈ Z1 (adRep (r.comp F.π)) := ⟨hyc.comp ok.π_cont, fun g k => by

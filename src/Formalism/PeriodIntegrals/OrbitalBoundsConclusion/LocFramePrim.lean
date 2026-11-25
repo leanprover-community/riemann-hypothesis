@@ -136,7 +136,7 @@ theorem primitiveOfDualFunctionals : Assemble := by
         rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply, map_smul, p1,
           smul_eq_mul]
         by_cases hab : a = b
-        · subst hab; rw [if_pos rfl, mul_one]; exact hx
+        · subst hab; rw [ite_eq_left rfl, mul_one]; exact hx
         · simp [hab]
       · intro l hl
         rw [Submodule.mem_comap, LinearMap.restrictScalars_apply, p3 a l hl]
@@ -219,7 +219,7 @@ theorem primitiveOfDualFunctionals : Assemble := by
       have h := Assemble_bc_span v (φ a) (Λ : Set (Fin n → E)) _ (hφΛ a) _ hc
       rw [hsum] at h
       simp only [p1, p3 a z hz, map_zero, mul_zero, add_zero, apply_ite (inclR (F := F) (Fv F v)),
-        map_one, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
+        map_one, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h
       rw [Assemble_exp] at h
       obtain ⟨p, hp, hcp⟩ := (hD (r - (a : ℕ)) _).1 h
       rw [mul_comm] at hcp

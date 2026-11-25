@@ -343,12 +343,12 @@ theorem piInv_of (hC : PiClosureInv) : PiInv := by
           · subst hl
             rw [Pi.single_eq_same]
             filter_upwards [hw.coeFn_toLp] with x hx
-            simp only [if_pos rfl]
+            simp only [ite_eq_left rfl]
             exact (show (w : H E n 0 → ℂ) x = Ft j (x * z) from hx)
           · rw [Pi.single_eq_of_ne hl]
             filter_upwards [Lp.coeFn_zero (E := ℂ) (p := 2) (μ := D.ν)] with x hx
             rw [hx]
-            simp only [if_neg hl, Submodule.coe_zero, ZeroMemClass.coe_zero, Pi.zero_apply, zero_mul]
+            simp only [ite_eq_right hl, Submodule.coe_zero, ZeroMemClass.coe_zero, Pi.zero_apply, zero_mul]
       have h0 : ⟪h, v⟫_ℂ = 0 := Submodule.inner_left_of_mem_orthogonal hv hh
       rw [PiLp.inner_apply, Finset.sum_eq_single i (fun l _ hl => by rw [hvl, Pi.single_eq_of_ne hl, inner_zero_right])
         (fun hi => absurd (Finset.mem_univ i) hi), hvl, Pi.single_eq_same, MeasureTheory.L2.inner_def] at h0

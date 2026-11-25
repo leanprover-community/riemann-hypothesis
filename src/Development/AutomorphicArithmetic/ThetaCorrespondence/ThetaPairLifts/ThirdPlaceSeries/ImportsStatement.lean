@@ -406,7 +406,7 @@ theorem liftS_pt_eq_cI_smul_io : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies 
     unfold GlobalTheory.Fam.volLev; split_ifs <;> exact ENNReal.toReal_nonneg
   have hc0 : 0 ≤ f.g.κ (j + 1) * GlobalTheory.Fam.volLev (_root_.GlobalTheory.Fam.pk_z W) f.g t j := mul_nonneg hκ.le hv0
   rw [ENNReal.toReal_ofReal hc0]
-  erw [hk2]
+  rw [hk2]
   show _ = (cIOf (_root_.GlobalTheory.Fam.pk_z W) (_root_.GlobalTheory.Fam.complexLevelStructure W) f.g t j • ((f.row t).io j G).1 ((_root_.GlobalTheory.Fam.pk_z W).ItY j P v)) g
   rw [hio]
   simp only [Pi.smul_apply, cIOf, Complex.real_smul, smul_eq_mul]

@@ -441,8 +441,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-theorem _root_.GlobalTheory.T.rational_flagUnipotent_isotropicBlock_unitriangular : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (γ : GA D V), γ ∈ GQ V → γ ∈ flagN d → ∃ u u' : Matrix (Fin ρ) (Fin ρ) D.host.E, (rat u : Mx D ρ ρ) = blockX d γ ∧ u * u' = 1 ∧ u' * u = 1 ∧ (∀ i, u i i = 1) ∧ (∀ i k, k < i → u i k = 0) ∧ ∀ j : Fin ρ, γ ∈ Nfix d j → ∀ i k, k ≤ j → u i k = if i = k then 1 else 0 := by
-  exact GlobalTheory.Unf.ratBlock_unitri
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RationalFlagUnipotentIsotropicBlockUnitriangularStatement =====
@@ -928,7 +926,7 @@ theorem dep_frames_mean_zero : ∀ (D : D7), Descent D → ∀ (ψ : AddChar (AF
       exact Subtype.ext (Subtype.ext e2)
   · intro γ hγ n
     have hγ' : γ.1 ∈ GQ V := Subgroup.mem_subgroupOf.1 hγ
-    obtain ⟨u, u', hu, huu', hu'u, hdiag, htri, -⟩ := GlobalTheory.T.rational_flagUnipotent_isotropicBlock_unitriangular D V V₀ ρ d γ.1 hγ' γ.2
+    obtain ⟨u, u', hu, huu', hu'u, hdiag, htri, -⟩ := GlobalTheory.Unf.ratBlock_unitri D V V₀ ρ d γ.1 hγ' γ.2
     let e : {x // Pj x} ≃ {x // Pj x} :=
       { toFun := fun x => ⟨x.1 * u, (hPu u u' huu' hu'u hdiag htri x.1).1 x.2⟩
         invFun := fun x => ⟨x.1 * u', (hPu u u' huu' hu'u hdiag htri (x.1 * u')).2
@@ -941,7 +939,7 @@ theorem dep_frames_mean_zero : ∀ (D : D7), Descent D → ∀ (ψ : AddChar (AF
     exact tsum_congr fun i => key γ hγ' u hu n i.1
   · intro c γ hγ hγM n
     have hγ' : γ.1 ∈ GQ V := Subgroup.mem_subgroupOf.1 hγ
-    obtain ⟨u, u', hu, huu', hu'u, hdiag, htri, hfix⟩ := GlobalTheory.T.rational_flagUnipotent_isotropicBlock_unitriangular D V V₀ ρ d γ.1 hγ' γ.2
+    obtain ⟨u, u', hu, huu', hu'u, hdiag, htri, hfix⟩ := GlobalTheory.Unf.ratBlock_unitri D V V₀ ρ d γ.1 hγ' γ.2
     have hfu := hfixv u (hfix j (Subgroup.mem_subgroupOf.1 hγM))
     let e : {x // Pj x} ≃ {x // Pj x} :=
       { toFun := fun x => ⟨x.1 * u, (hPu u u' huu' hu'u hdiag htri x.1).1 x.2⟩
@@ -978,7 +976,7 @@ theorem dep_frames_mean_zero : ∀ (D : D7), Descent D → ∀ (ψ : AddChar (AF
         a * (Th (m.1 * n.1) * term ψ d W vS (om (m.1 * n.1, 1) Ψ) y.1)
       rw [hTu m.1 m.2 n.1 n.2, GlobalTheory.T.transvection_trivial_after_flagUnipotentFixing D hDesc ψ V V₀ W ρ d χV χW om hw vS Ψ hΨ j c s0.2.1 v u hform htr y.1 sy.2.2
         m.1 hm' n.1, mul_assoc]
-    · push_neg at hc
+    · push Not at hc
       exact ⟨1, one_mem _, 0, zero_ne_one, fun x hx => absurd hx (hc x)⟩
 
 end GlobalTheory.Unf.DepFrames
@@ -1107,10 +1105,6 @@ theorem det_eq_one {ρ : ℕ} (u : UX D ρ) (u₀ : Matrix (Fin ρ) (Fin ρ) D.h
   rw [Matrix.det_of_upperTriangular (fun i j (hij : j < i) => h0 i j hij)]
   simp [h1]
 
-theorem gramQ_mul (W : HSp D) {ρ : ℕ} (x : Matrix (Fin W.rank) (Fin ρ) D.host.E) (u₀ : Matrix (Fin ρ) (Fin ρ) D.host.E) :
-    gramQ W (x * u₀) = u₀ᴴ * gramQ W x * u₀ := by
-  simp only [gramQ, Matrix.conjTranspose_mul, Matrix.mul_assoc]
-
 end GlobalTheory.Unf.Reindex
 
 
@@ -1128,7 +1122,7 @@ theorem GlobalTheory.Unf.tsum_offBase_invariant : ∀ (D : D7) (ψ : AddChar (AF
     rw [Matrix.mul_assoc]; exact this
   have key : ∀ x : Matrix (Fin W.rank) (Fin ρ) D.host.E, gramQ W (x * u₀) = G₀ ↔ gramQ W x = G₀ := by
     intro x
-    rw [gramQ_mul]
+    rw [GlobalTheory.Unf.DepFrames.gramQ_mul]
     constructor
     · intro h
       have h2 : u₀ᴴ * gramQ W x * u₀ = u₀ᴴ * G₀ * u₀ := h.trans hG.symm

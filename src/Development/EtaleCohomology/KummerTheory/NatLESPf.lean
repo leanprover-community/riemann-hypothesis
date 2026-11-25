@@ -6,7 +6,6 @@ import Mathlib.CategoryTheory.Triangulated.Yoneda
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex Pretriangulated GlobalTheory.EtC
 
 namespace LateralTheory.KummerTheory.NatLESPf

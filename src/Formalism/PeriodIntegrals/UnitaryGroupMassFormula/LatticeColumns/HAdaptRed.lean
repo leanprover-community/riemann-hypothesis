@@ -223,7 +223,7 @@ theorem hAdaptQ_of_in (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (u : D.what�
     by_cases ht : IsW t
     · rw [hccW i t ht]
       exact zero_mem _
-    · simp only [cc, if_neg ht]
+    · simp only [cc, ite_eq_right ht]
       exact mul_mem (neg_mem (h5 _ _)) (h4 _ (_root_.PIW.MassDataColumns.dlH_frame t ht))
   have hgO : ((gOf p : ℕ) : FpX X p) ∈ p.1.adicCompletionIntegers X.B.I.F := natCast_mem _ _
   obtain ⟨A, hA⟩ : ∃ A : Matrix (Idx D.R.rS D.R.k) (Idx D.R.rS D.R.k) (FpX X p),
@@ -341,14 +341,14 @@ theorem hAdaptQ_of_in (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (u : D.what�
       rw [hww]
       change _ + z i ⬝ᵥ _ = _
       rw [dotProduct_eq_sum_mul, Finset.sum_eq_single (dlH s)]
-      · rw [hwn _ hdn, if_pos rfl]
-        simp only [z, cc, if_neg hdn, _root_.PIW.MassDataColumns.dlH_dlH, Pi.smul_apply, Pi.single_apply, if_neg hne,
+      · rw [hwn _ hdn, ite_eq_left rfl]
+        simp only [z, cc, ite_eq_right hdn, _root_.PIW.MassDataColumns.dlH_dlH, Pi.smul_apply, Pi.single_apply, ite_eq_right hne,
           smul_eq_mul, mul_zero]
         linear_combination (-(((gOf p : ℕ) : FpX X p) * o s i)) * mul_inv_cancel₀ (h3 s hs)
       · intro j _ hj
         by_cases hjW : IsW j
         · rw [hz i j hjW, zero_mul]
-        · rw [hwn j hjW, if_neg hj, mul_zero]
+        · rw [hwn j hjW, ite_eq_right hj, mul_zero]
       · intro hmem
         exact absurd (Finset.mem_univ _) hmem
     · rw [colv_apply_of_not_isW _ _ t ht, dotProduct_eq_sum_mul, hwn t ht]

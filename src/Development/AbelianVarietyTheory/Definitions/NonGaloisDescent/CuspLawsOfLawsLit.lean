@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Nonempt
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne
@@ -31,5 +29,3 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
   {e : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ} {r rc : IrrGL (k := w.adicCompletion E) → WD h}
 
 end GlobalTheory.LocLanglands.CuspModel
-
-end

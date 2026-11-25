@@ -230,26 +230,13 @@ section Assoc
 
 variable {K K' K₁ : Type} (ι : K → Type) (ι' : K' → Type) (ι₁ : K₁ → Type)
 
-def assocEquiv : (Σ k : (K ⊕ K') ⊕ K₁, Sum.elim (Sum.elim ι ι') ι₁ k) ≃
-    (Σ k : K ⊕ (K' ⊕ K₁), Sum.elim ι (Sum.elim ι' ι₁) k) where
-  toFun
-    | ⟨.inl (.inl k), i⟩ => ⟨.inl k, i⟩
-    | ⟨.inl (.inr k), i⟩ => ⟨.inr (.inl k), i⟩
-    | ⟨.inr k, i⟩ => ⟨.inr (.inr k), i⟩
-  invFun
-    | ⟨.inl k, i⟩ => ⟨.inl (.inl k), i⟩
-    | ⟨.inr (.inl k), i⟩ => ⟨.inl (.inr k), i⟩
-    | ⟨.inr (.inr k), i⟩ => ⟨.inr k, i⟩
-  left_inv := by rintro ⟨(k | k) | k, i⟩ <;> rfl
-  right_inv := by rintro ⟨k | k | k, i⟩ <;> rfl
-
-theorem assocEquiv_fst (v) : (assocEquiv ι ι' ι₁ v).1 = Equiv.sumAssoc K K' K₁ v.1 := by
+theorem assocEquiv_fst (v) : (GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.assocSigma ι ι' ι₁ v).1 = Equiv.sumAssoc K K' K₁ v.1 := by
   obtain ⟨(k | k) | k, i⟩ := v <;> rfl
 
 variable {ι ι' ι₁}
 
 theorem join_assoc {Ω : Type} (x : (Σ k, ι k) → Ω) (z : (Σ k, ι' k) → Ω) (z₁ : (Σ k, ι₁ k) → Ω) :
-    joinCoord x (joinCoord z z₁) ∘ assocEquiv ι ι' ι₁ = joinCoord (joinCoord x z) z₁ := by
+    joinCoord x (joinCoord z z₁) ∘ GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.assocSigma ι ι' ι₁ = joinCoord (joinCoord x z) z₁ := by
   funext v
   obtain ⟨(k | k) | k, i⟩ := v <;> rfl
 
@@ -266,7 +253,7 @@ def assocChart (s : ∀ k : K ⊕ (K' ⊕ K₁), Sum.elim ι (Sum.elim ι' ι₁
   | .inr k => s (.inr (.inr k))
 
 theorem assocChart_spec (s : ∀ k : K ⊕ (K' ⊕ K₁), Sum.elim ι (Sum.elim ι' ι₁) k) (k) :
-    assocEquiv ι ι' ι₁ ⟨k, assocChart s k⟩ =
+    GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.assocSigma ι ι' ι₁ ⟨k, assocChart s k⟩ =
       ⟨Equiv.sumAssoc K K' K₁ k, s (Equiv.sumAssoc K K' K₁ k)⟩ := by
   obtain (k | k) | k := k <;> rfl
 
@@ -353,7 +340,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
     ϖ hϖ d hM₁ N V (F 0) (F 1) hs₁ w w _ _ (hF 0).2 (hF 1).2 (fun i j hij => by
       simp [Finsupp.single_apply, hij.ne])
   have hσ := assocEquiv_fst ι ι' ι₁
-  obtain ⟨hI, hK, hc, hE⟩ := relabel (O := O) (Equiv.sumAssoc K K' K₁) (assocEquiv ι ι' ι₁) hσ
+  obtain ⟨hI, hK, hc, hE⟩ := relabel (O := O) (Equiv.sumAssoc K K' K₁) (GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.assocSigma ι ι' ι₁) hσ
     (joinCoord x (joinCoord z z₁)) _ (join_assoc x z z₁)
   obtain ⟨G, hG, hGf⟩ := hE N V (F 0)
   obtain ⟨G', hG', hGf'⟩ := hE N V (F 1)
@@ -368,7 +355,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
       (mcIdeal O (joinCoord x (joinCoord z z₁))) d :=
     (BundleExamples.isModelOver_iff O _ d).mpr ⟨hW.1.map Sum.inl, hM₂⟩
   have hfp₂ : IsFlagPair ϖ (joinCoord x (joinCoord z z₁)) G G' w w (b₂ 0) (b₂ 1)
-      (fun i => rename (assocEquiv ι ι' ι₁) (f i)) (fun i => rename (assocEquiv ι ι' ι₁) (g i)) := by
+      (fun i => rename (GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.assocSigma ι ι' ι₁) (f i)) (fun i => rename (GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.assocSigma ι ι' ι₁) (g i)) := by
     refine ⟨hGf w _ hfp.flag, hGf' w _ hfp.flag', hfp.sameFlag, fun i => ?_, fun i => ?_⟩
     · rw [hI]
       exact PairNumberRelabel.isVerticalDivisor_map _ _ hσ _ ϖ _ _ _ (hfp.vertical i)

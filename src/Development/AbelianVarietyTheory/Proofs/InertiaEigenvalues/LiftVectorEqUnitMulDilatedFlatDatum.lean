@@ -89,9 +89,6 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
-
-
 namespace GlobalTheory.HalfFrameLift
 
 theorem exists_half_redM_frMapO : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin T.rank) (EAf D)) (Q : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e Q → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → ∀ y : ∀ PP : Pl D.host.E, Matrix (Fin T.rank) (Fin S.rank) (kP PP), ∃ u : WO S T, IsHalf e u ∧ IsIntM (frMapO S T βS βT (u.map fun w => incA D (ϖ : D.host.E) * w)) ∧ ∀ PP ∈ Q, redM PP (frMapO S T βS βT (u.map fun w => incA D (ϖ : D.host.E) * w)) = y PP := by
@@ -132,7 +129,7 @@ theorem exists_half_redM_frMapO : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.ra
   · rw [key]; exact fun i j => hN i j
   · rw [key]
     funext i j
-    exact (dif_pos (hN i j)).trans (hNr i j PP hPP)
+    exact (dite_eq_left (hN i j)).trans (hNr i j PP hPP)
 
 end GlobalTheory.HalfFrameLift
 end -- clump:auto
@@ -148,9 +145,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
-
-
-
 
 namespace GlobalTheory.FlatLift
 
@@ -210,9 +204,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
-
-
-
 
 namespace GlobalTheory.HalfUniInt
 
@@ -485,11 +476,7 @@ open scoped TensorProduct
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
-
-
 namespace GlobalTheory.ScalarSelfDual
-
-alias eq_of_parts := _root_.GlobalTheory.SplitDualElt.eq_of_toEAf
 
 theorem mul_hO_of_half {D : D7} {S T : HSp D} {e : AE D} {l : WO S T} (hl : IsHalf e l) (u : WO S T) :
     e * hO S T l u = hO S T l u := by
@@ -498,8 +485,6 @@ theorem mul_hO_of_half {D : D7} {S T : HSp D} {e : AE D} {l : WO S T} (hl : IsHa
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun c _ =>
     Finset.sum_congr rfl fun d _ => ?_
   rw [mul_left_comm, hl d a]
-
-
 
 theorem exists_half_frMapO {D : D7} (S T : HSp D) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin T.rank) (EAf D))
     {e : AE D} (hee : e * e = e) (z : Matrix (Fin T.rank) (Fin S.rank) (EAf D))
@@ -536,8 +521,6 @@ theorem trace_single_mul' {R : Type} [CommRing R] {m n : ℕ} (i : Fin m) (j : F
     (M : Matrix (Fin n) (Fin m) R) : Matrix.trace (Matrix.single i j a * M) = a * M j i := by
   rw [Matrix.trace_single_mul, smul_eq_mul]
 
-
-
 theorem int_iff_dual : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin T.rank) (EAf D)), IsStdChar D ψ (-1) → IsSelfDualC S ΛS → IsSelfDualC T ΛT → Formalism.L2.DIV.IsFrame βS ΛS → Formalism.L2.DIV.IsFrame βT ΛT → 0 < S.rank → 0 < T.rank → ∀ (Q : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e Q → (∀ PP ∈ Q, ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal) → ∀ Z : AE D, e * Z = Z → (toEAf D Z ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ↔ ∀ Z' : AE D, e * Z' = Z' → toEAf D Z' ∈ Formalism.L2.Herm.intAf D.host.F D.host.E → ψ (Algebra.trace (AF D.host.F) (AE D) (incA D D.host.xi0 * (Z * Z'))) = 1) := by
   intro D ψ S T ΛS ΛT βS βT hψ hS hT hfS hfT hs ht Q e he hQ Z hZ
   have hee : e * e = e := GlobalTheory.PlaceDatum.idemSum_mul_self he
@@ -571,7 +554,7 @@ theorem int_iff_dual : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp 
       symplO S T l u = Algebra.trace (AF D.host.F) (AE D) (incA D D.host.xi0 * (Z * Z')) := by
     intro l Z' hl hZ' h
     have : hO S T l u = Z * Z' := by
-      refine eq_of_parts (hsupp _ (mul_hO_of_half hl u)) (by rw [map_mul, hsupp Z hZ, zero_mul]) ?_
+      refine GlobalTheory.SplitDualElt.eq_of_toEAf (hsupp _ (mul_hO_of_half hl u)) (by rw [map_mul, hsupp Z hZ, zero_mul]) ?_
       rw [GlobalTheory.TraceFrames.toEAf_hO_eq_trace_frames S T βS βT u l, huZ, trace_single_mul', map_mul, h]
     unfold symplO
     rw [this]
@@ -579,16 +562,16 @@ theorem int_iff_dual : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp 
     rw [← hint i₀ j₀, ← huZ]
     exact ⟨GlobalTheory.HalfAdjLattice.mem_latO_of_adj_int D S T ΛS ΛT βS βT hS hT hfS hfT Q e he hQ u hu,
       fun h => GlobalTheory.HalfAdjInt.frMapAdj_int_of_half D S T ΛS ΛT βS βT hS hT hfS hfT Q e he hQ u h hu⟩
-  rw [h1, GlobalTheory.T.mem_completedLattice_conjugateHalf_iff_dual D ψ S T ΛS ΛT hψ hS hT e hee he.2 hinf hfin u hu]
+  rw [h1, GlobalTheory.ConjHalfDual.mem_latO_iff_of_conjHalf D ψ S T ΛS ΛT hψ hS hT e hee he.2 hinf hfin u hu]
   constructor
   · intro h Z' hZ' hZi
     obtain ⟨l, hl, hlZ⟩ := exists_half_frMapO S T βS βT hee (Matrix.single j₀ i₀ (toEAf D Z')) (hsingle j₀ i₀ Z' hZ')
     rw [← hval l Z' hl hZ' (by rw [hlZ, Matrix.single_apply_same])]
-    refine h l ((GlobalTheory.T.mem_completedLattice_half_iff_frameMatrix_integral D S T ΛS ΛT βS βT hS hT hfS hfT Q e he hQ l hl).2 ?_) hl
+    refine h l ((GlobalTheory.HalfOInt.mem_latO_iff_frMapO_int D S T ΛS ΛT βS βT hS hT hfS hfT Q e he hQ l hl).2 ?_) hl
     rw [hlZ, hint]
     exact hZi
   · intro h l hlm hl
-    have hI := (GlobalTheory.T.mem_completedLattice_half_iff_frameMatrix_integral D S T ΛS ΛT βS βT hS hT hfS hfT Q e he hQ l hl).1 hlm
+    have hI := (GlobalTheory.HalfOInt.mem_latO_iff_frMapO_int D S T ΛS ΛT βS βT hS hT hfS hfT Q e he hQ l hl).1 hlm
     obtain ⟨Y, -, hY⟩ := GlobalTheory.HalfDuality.exists_lift (D := D) (frMapO S T βS βT l j₀ i₀)
     have hZ' : e * (e * Y) = e * Y := by rw [← mul_assoc, hee]
     have hE : toEAf D (e * Y) = frMapO S T βS βT l j₀ i₀ := by
@@ -613,15 +596,11 @@ open Classical
 
 namespace GlobalTheory.FlatPairing
 
-
-
 theorem trace_mul_int {D : D7} {a b : ℕ} (A : Matrix (Fin a) (Fin b) (EAf D)) (B : Matrix (Fin b) (Fin a) (EAf D))
     (hA : IsIntM A) (hB : IsIntM B) :
     Matrix.trace (A * B) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by
   simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply]
   exact Subring.sum_mem _ fun i _ => Subring.sum_mem _ fun j _ => Subring.mul_mem _ (hA i j) (hB j i)
-
-
 
 theorem resS_trace_mul {D : D7} (PP : Pl D.host.E) {a b : ℕ} (A : Matrix (Fin a) (Fin b) (EAf D))
     (B : Matrix (Fin b) (Fin a) (EAf D)) (hA : IsIntM A) (hB : IsIntM B)
@@ -636,7 +615,7 @@ theorem resS_trace_mul {D : D7} (PP : Pl D.host.E) {a b : ℕ} (A : Matrix (Fin 
 
   simp only [map_sum, map_mul, Matrix.trace, Matrix.diag_apply, Matrix.mul_apply]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  simp only [redM, dif_pos (hA i j), dif_pos (hB j i)]
+  simp only [redM, dite_eq_left (hA i j), dite_eq_left (hB j i)]
 
 theorem inv_isPrimitive {R : Type} [CommRing R] (χ : AddChar R ℂ) (h : χ.IsPrimitive) : (χ⁻¹).IsPrimitive := by
   intro a ha h1
@@ -652,9 +631,6 @@ theorem exists_primitive {E : Type} [Field E] [NumberField E] (PP : Pl E) :
   letI : Field (𝓞 E ⧸ PP.asIdeal) := Ideal.Quotient.field _
   letI : Fintype (𝓞 E ⧸ PP.asIdeal) := Fintype.ofFinite _
   exact ⟨_, AddChar.FiniteField.primitiveChar_to_Complex_isPrimitive (𝓞 E ⧸ PP.asIdeal)⟩
-
-
-
 
 theorem pairing_eq_prod : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin T.rank) (EAf D)), IsStdChar D ψ (-1) → IsSelfDualC S ΛS → IsSelfDualC T ΛT → Formalism.L2.DIV.IsFrame βS ΛS → Formalism.L2.DIV.IsFrame βT ΛT → ∀ (Q : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e Q → (∀ PP ∈ Q, ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal) → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ Q, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∃ ψP : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ, (∀ PP ∈ Q, (ψP PP).IsPrimitive) ∧ ∀ x : WO S T, IsHalf (cA D e) x → IsIntM (frMapAdj S T βS βT x) → ∀ u : WO S T, IsHalf e u → IsIntM (frMapO S T βS βT (u.map fun w => incA D (ϖ : D.host.E) * w)) → ψ (symplO S T x u) = ∏ PP ∈ Q.attach, ψP PP.1 (Matrix.trace (redM PP.1 (frMapO S T βS βT (u.map fun w => incA D (ϖ : D.host.E) * w)) * redM PP.1 (frMapAdj S T βS βT x))) := by
   intro D ψ S T ΛS ΛT βS βT hψ hS hT hβS hβT Q e he hQ ϖ hϖ hϖQ
@@ -878,8 +854,6 @@ end GlobalTheory.LiftFlatModel
 
 namespace GlobalTheory.LiftFlatModel
 
-
-
 theorem exists_reps_pairing : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m) (t : T0), VStd D i → ∀ (eQ : AE D), IsIdemSum eQ (R.Q t) → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ R.Q t, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∃ (ψP : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ) (Rs : Finset (WO (Vc D i) (Wc D i))), (∀ PP ∈ R.Q t, (ψP PP).IsPrimitive) ∧ (∀ u ∈ Rs, IsHalf eQ u ∧ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (u.map fun w => incA D (ϖ : D.host.E) * w))) ∧ (∃ k : ℕ, 0 < k ∧ ∀ u ∈ Rs, k • u ∈ latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) ∧ (∀ y : ∀ PP : ↥(R.Q t), Matrix (Fin (Wc D i).rank) (Fin (Vc D i).rank) (kP PP.1), ∃! u, u ∈ Rs ∧ ∀ PP : ↥(R.Q t), redM PP.1 (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (u.map fun w => incA D (ϖ : D.host.E) * w)) = y PP) ∧ (∀ x, IsHalf eQ x → ∀ u ∈ Rs, (x + u ∈ latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (fun _ => True) ↔ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) ∧ ∀ PP ∈ R.Q t, redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) = -redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (u.map fun w => incA D (ϖ : D.host.E) * w)))) ∧ (∀ x, IsHalf (cA D eQ) x → (x ∈ latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (fun _ => True) ↔ IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x))) ∧ (∀ x, IsHalf (cA D eQ) x → IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x) → ∀ u ∈ Rs, R.ψ (symplO (Vc D i) (Wc D i) x u) = ∏ PP ∈ (R.Q t).attach, ψP PP.1 (Matrix.trace (redM PP.1 (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (u.map fun w => incA D (ϖ : D.host.E) * w)) * redM PP.1 (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x)))) := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R F hC hQG i t hV eQ heQ ϖ hϖ0 hϖ
   obtain ⟨cV, hcV⟩ := hC.lev.βV i
@@ -890,7 +864,7 @@ theorem exists_reps_pairing : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0
     GlobalTheory.AdTh.RecPair.selfDual_of_coe (GlobalTheory.AdTh.RecPair.coe_eq_of_frame (hC.lev.βW i))
   have hψ : IsStdChar D R.ψ (-1) := (hC.thP.ωP i t).std
   have hP := hQG.2 t
-  have hfr := GlobalTheory.T.mem_completedLattice_half_iff_frameMatrix_integral D (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (R.βV i) (R.βW i) sV sW hcV.1 hcW.1 (R.Q t) eQ heQ hP
+  have hfr := GlobalTheory.HalfOInt.mem_latO_iff_frMapO_int D (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (R.βV i) (R.βW i) sV sW hcV.1 hcW.1 (R.Q t) eQ heQ hP
   have hker := GlobalTheory.T.frameMatrix_integral_iff_uniformiser_multiple_on_half D (Vc D i) (Wc D i) (R.βV i) (R.βW i) (R.Q t) eQ heQ ϖ hϖ0 hϖ
   obtain ⟨k, hk0, hk⟩ := GlobalTheory.T.exists_nat_integral_frame_of_uniformizer_mul D (Vc D i) (Wc D i) (R.βV i) (R.βW i) ϖ hϖ0
   obtain ⟨ψP, hprim, hpair⟩ := GlobalTheory.T.symplectic_pairing_half_lattices_eq_prod_primitive D R.ψ (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (R.βV i) (R.βW i) hψ sV sW hcV.1 hcW.1
@@ -938,8 +912,6 @@ end GlobalTheory.LiftFlatModel
 
 namespace GlobalTheory.LiftFlatModel
 
-
-
 theorem lift_eq_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → QGuard R → ∀ (i : Fin D.R.m) (t : T0), VStd D i → ∀ (eg eQ : AE D) (fg : WO (Vc D i) (Wc D i) → ℂ), IsIdemSum eg R.Pg → IsIdemSum eQ (R.Q t) → IsThetaAt R.ψ (symplO (Vc D i) (Wc D i)) (heisO R.ψ (Vc D i) (Wc D i)) (cA D eg) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) 1 (R.vacP i) (fun x => if IsHalf (cA D eg) x ∧ IsIntM (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x) then omegaK R.Pg (fun PP => redM PP (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x)) else 0) fg → ∀ ϖ : 𝓞 D.host.E, ϖ ≠ 0 → (∀ PP ∈ R.Q t, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) → ∃ Gc : ℂ, UnitOff (GlobalTheory.TwistField.tupPrime R t) Gc ∧ IsSBHalf eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (fun x => Gc * (if IsHalf eQ (x.map fun w => incA D (ϖ : D.host.E) * w) ∧ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) then omegaFlat (R.Q t) (Wc D i).rank (R.xiR t) (fun PP => redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w))) else 0)) ∧ ∀ (Tm : (WO (Vc D i) (Wc D i) → ℂ) →ₗ[ℂ] (WO (Vc D i) (Wc D i) → ℂ)), IsPlaceModel R.ψ (symplO (Vc D i) (Wc D i)) (heisO R.ψ (Vc D i) (Wc D i)) eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) 1 fg Tm → R.vP i t = Tm (fun x => Gc * (if IsHalf eQ (x.map fun w => incA D (ϖ : D.host.E) * w) ∧ IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) then omegaFlat (R.Q t) (Wc D i).rank (R.xiR t) (fun PP => redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w))) else 0)) := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R F hC hQG i t hV eg eQ fg heg heQ hfg ϖ hϖ0 hϖ
   obtain ⟨ψP, Rs, hprim, hRs, hk, hbij, hiii, hiv, hv⟩ := exists_reps_pairing D G Pl0 T0 A Ks R F hC hQG i t hV eQ heQ ϖ hϖ0 hϖ
@@ -984,7 +956,7 @@ theorem lift_eq_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
     have hi : IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) ((-u).map fun w => incA D (ϖ : D.host.E) * w)) := by
       rw [F2, LiftFlatModel.frMapO_neg]
       exact LiftFlatModel.isIntM_neg (hRs u hu').2
-    rw [if_pos ⟨hh, hi⟩]
+    rw [ite_eq_left ⟨hh, hi⟩]
     apply LiftFlatModel.omegaFlat_congr
     intro PP hPP
     rw [dite_eq_left hPP, F2, LiftFlatModel.frMapO_neg, redM_neg _ (hRs u hu').2]
@@ -1010,14 +982,14 @@ theorem lift_eq_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
           (hiii x hxh u huR).2 ⟨hx.2, fun PP hPP => by rw [hured ⟨PP, hPP⟩, neg_neg]⟩
         have hhalf : IsHalf eQ (x + u) := (LiftFlatModel.isHalf_add_iff (hRs u huR).1).2 hxh
         rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u) = 1 from
-          if_pos ⟨hmem, hhalf⟩, mul_one, hPsiNeg u huR, if_pos hx]
+          ite_eq_left ⟨hmem, hhalf⟩, mul_one, hPsiNeg u huR, ite_eq_left hx]
         apply LiftFlatModel.omegaFlat_congr
         intro PP hPP
         rw [dite_eq_left hPP]
         show _ = -(redM PP (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (u.map fun w => incA D (ϖ : D.host.E) * w)))
         rw [hured ⟨PP, hPP⟩, neg_neg]
       · intro u' hu' hne
-        rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u') = 0 from if_neg ?_,
+        rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u') = 0 from ite_eq_right ?_,
           mul_zero]
         rintro ⟨hmem, -⟩
         obtain ⟨-, hred⟩ := (hiii x hxh u' hu').1 hmem
@@ -1026,10 +998,10 @@ theorem lift_eq_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
           rw [hred PP.1 PP.2, neg_neg]⟩)
       · intro h
         exact absurd huR h
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       symm
       refine Finset.sum_eq_zero fun u hu' => ?_
-      rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u) = 0 from if_neg ?_,
+      rw [show halfInd eQ (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) (x + u) = 0 from ite_eq_right ?_,
         mul_zero]
       rintro ⟨hmem, hhalf⟩
       have hxh : IsHalf eQ x := (LiftFlatModel.isHalf_add_iff (hRs u hu').1).1 hhalf
@@ -1046,8 +1018,8 @@ theorem lift_eq_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
     intro x
     by_cases hx : x ∈ latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) (fun _ => True) ∧ IsHalf (cA D eQ) x
     · have hint := (hiv x hx.2).1 hx.1
-      rw [if_pos ⟨hx.2, hint⟩, show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 1 from
-        if_pos hx, one_mul, hfin, Finset.mul_sum]
+      rw [ite_eq_left ⟨hx.2, hint⟩, show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 1 from
+        ite_eq_left hx, one_mul, hfin, Finset.mul_sum]
       symm
       refine Finset.sum_bij (fun u _ => fun PP : ↥(R.Q t) => redM PP.1 (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i)
           (u.map fun w => incA D (ϖ : D.host.E) * w))) (fun _ _ => Finset.mem_univ _) ?_ ?_ ?_
@@ -1059,11 +1031,11 @@ theorem lift_eq_model_flat : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
       · intro u hu'
         rw [hPsiNeg u hu', hv x hx.2 hint u hu', ← Finset.univ_eq_attach]
         ring
-    · rw [show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 0 from if_neg hx,
-        zero_mul, if_neg]
+    · rw [show halfInd (cA D eQ) (latO (Vc D i) (Wc D i) (R.ΛV i) (R.ΛW i) fun _ => True) x = 0 from ite_eq_right hx,
+        zero_mul, ite_eq_right]
       rintro ⟨hh, hint⟩
       exact hx ⟨(hiv x hh).2 hint, hh⟩
-  have hθ := GlobalTheory.T.thetaLiftVector_isThetaFunction_twoStepModel D G Pl0 T0 A Ks R F hC hQG i t eg eQ fg heg heQ hfg
+  have hθ := GlobalTheory.ConjTwist.isThetaAt_vP_twoStep D G Pl0 T0 A Ks R F hC hQG i t eg eQ fg heg heQ hfg
   have hvP := LiftFlatModel.thetaAt_sum hθ (fun u hu' => by rw [LiftFlatModel.cA_cA]; exact (hRs u hu').1) hB
   have hΨ : ∀ x : WO (Vc D i) (Wc D i), Gc * (if IsHalf eQ (x.map fun w => incA D (ϖ : D.host.E) * w) ∧
         IsIntM (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (x.map fun w => incA D (ϖ : D.host.E) * w)) then

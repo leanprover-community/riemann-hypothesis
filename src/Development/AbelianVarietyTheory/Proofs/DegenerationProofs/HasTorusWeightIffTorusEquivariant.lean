@@ -55,7 +55,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH
 
-noncomputable section
 namespace GlobalTheory.ZH.PureWt
 
 theorem cf_diag {A R X : Type} [CommRing A] [CommRing R] [AddCommGroup X]
@@ -199,4 +198,3 @@ theorem hasWt_iff_weight : ∀ (k : Type) [Field k] [IsAlgClosed k] (E : SplitEx
     exact hasWt_mono D j V h _ α
 
 end GlobalTheory.ZH.PureWt
-end

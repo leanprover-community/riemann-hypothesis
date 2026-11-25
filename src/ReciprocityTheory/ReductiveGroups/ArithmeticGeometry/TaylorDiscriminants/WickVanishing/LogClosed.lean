@@ -156,13 +156,8 @@ theorem om_P (i a : Fin d) :
   exact h
 
 theorem d_evF (h : PS k 1 d) (v : Fin 2 × Fin d) :
-    pderiv (R := k) v (ev (n := 2) ![G.F] h) = ∑ c, ev (n := 2) ![G.F] (pderiv (R := k) ((0 : Fin 1), c) h) * pderiv (R := k) v (G.F c) := by
-  have hF : CZ (![G.F] : Fin 1 → Pt k 2 d) := by
-    intro j i
-    fin_cases j
-    simpa using G.const i
-  rw [pderiv_ev hF, Fintype.sum_prod_type]
-  simp
+    pderiv (R := k) v (ev (n := 2) ![G.F] h) = ∑ c, ev (n := 2) ![G.F] (pderiv (R := k) ((0 : Fin 1), c) h) * pderiv (R := k) v (G.F c) :=
+  _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.d_F G h v
 
 private alias CZ_pt_vector := _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.cz1
 
@@ -215,7 +210,7 @@ theorem om_key (i a b : Fin d) :
   simp only [hsE, hz0, ev_mul hE, ev_add hE, ez_F, ez_dx, ez_dy,
     _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.pderiv_comm ((1 : Fin 2), b) ((0 : Fin 2), a), ← hdJ] at hP2
   rw [Finset.sum_add_distrib] at hP2
-  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at hP2
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at hP2
   have hM := congrFun (congrFun (om_mul G) i) b
   rw [Matrix.mul_apply] at hM
   simp only [JM, Matrix.of_apply] at hM

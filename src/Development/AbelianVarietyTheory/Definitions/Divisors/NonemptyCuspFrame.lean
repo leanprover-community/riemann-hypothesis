@@ -205,7 +205,4 @@ end Data
 
 def be (N : OT.Num) : ℝ := Real.exp N.lbe
 
-def Consts.ofTable (N : OT.Num) (h : 0 ≤ N.lbe) (lam lamD lamT J : ℝ) (hD : 0 ≤ lamD) (hT : 0 ≤ lamT) : Consts :=
-  ⟨Real.exp lam, be N, Real.exp lamD, Real.exp lamT, J, Real.one_le_exp h, Real.one_le_exp hD, Real.one_le_exp hT⟩
-
 end GlobalTheory.CompHS

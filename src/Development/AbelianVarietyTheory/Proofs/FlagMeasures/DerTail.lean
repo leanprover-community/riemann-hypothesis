@@ -4,44 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMir
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BernsteinZelevinskyDerivativeGLnEqTwistedSum
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -153,25 +115,25 @@ theorem der_tail : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (i m
       congr 1
       refine Finset.sum_congr rfl fun x _ => ?_
       by_cases hx : tl m (x : Mt g n) = (p : Mt g m)
-      · rw [if_pos hx]
+      · rw [ite_eq_left hx]
         rw [← hx] at hp
         rw [tl_tl him.le] at hp
         rw [inR_split him.le hmn (x : Mt g n), supFrom_split him hmn (x : Mt g n), AddChar.map_add_eq_mul, mul_inv,
           ← hx]
         by_cases hR : InR m (x : Mt g n)
-        · rw [if_pos ⟨hR, rfl⟩, if_pos ⟨⟨hR, hp.1⟩, hp.2⟩, mul_assoc]
-        · rw [if_neg (fun hh => hR hh.1), if_neg (fun hh => hR hh.1.1), zero_mul]
-      · rw [if_neg hx, if_neg (fun hh => hx hh.2), zero_mul]
+        · rw [ite_eq_left ⟨hR, rfl⟩, ite_eq_left ⟨⟨hR, hp.1⟩, hp.2⟩, mul_assoc]
+        · rw [ite_eq_right (fun hh => hR hh.1), ite_eq_right (fun hh => hR hh.1.1), zero_mul]
+      · rw [ite_eq_right hx, ite_eq_right (fun hh => hx hh.2), zero_mul]
     · symm
       apply mul_eq_zero_of_right
       refine Finset.sum_eq_zero fun x _ => ?_
       by_cases hx : tl m (x : Mt g n) = (p : Mt g m)
-      · rw [if_pos hx, if_neg]
+      · rw [ite_eq_left hx, ite_eq_right]
         rintro ⟨ha, hb⟩
         apply hp
         rw [← hx, tl_tl him.le]
         exact ⟨((inR_split him.le hmn _).1 ha).2, hb⟩
-      · rw [if_neg hx]
+      · rw [ite_eq_right hx]
   rw [Finset.sum_congr rfl fun p _ => h1 p, ← Finset.mul_sum, Finset.sum_comm]
   congr 1
   refine Finset.sum_congr rfl fun x _ => ?_
@@ -180,9 +142,9 @@ theorem der_tail : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (i m
       ((_root_.GlobalTheory.GLm.ParBasic.par_basic g m (n - m) n (by omega)).2.2.1 x ((inR_split him.le hmn _).1 hx.1).1.1).1
     obtain ⟨p, hp⟩ := hu
     rw [Finset.sum_eq_single p]
-    · rw [if_pos hp.symm]
+    · rw [ite_eq_left hp.symm]
     · intro q _ hq
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hh
       exact hq (Units.ext (hp.trans hh).symm)
     · intro hh

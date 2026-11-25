@@ -61,7 +61,7 @@ theorem exists_unip_mul_lev {R : Type} [CommRing R] (r s : ℕ) (P : GL (Fin (r 
     · simp [nilM, he]
     · have h : (((e (Sum.inl i) : Fin (r + s)) : ℕ) < r ∧ r ≤ ((e (Sum.inr j) : Fin (r + s)) : ℕ)) := by
         simp [he]
-      simp only [submatrix_apply, nilM, of_apply, dif_pos h, fromBlocks_apply₁₂, x]
+      simp only [submatrix_apply, nilM, of_apply, dite_eq_left h, fromBlocks_apply₁₂, x]
       congr 1
       exact Fin.ext (by simp [he])
     · simp [nilM, he]

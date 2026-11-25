@@ -199,10 +199,10 @@ theorem projU_mem [NumberField E] [IsCMField E] (X : Data E r) (W : Frame X.Ψ r
   have ha := sgn_mul_self X.p0 a
   have hb := sgn_mul_self X.p0 b
   rcases lt_trichotomy a b with h | h | h
-  · simp only [h, h.not_gt, if_true, if_false, RCLike.star_def]
+  · simp only [h, h.not_gt, ite_true, ite_false, RCLike.star_def]
     linear_combination (-(sgn X.p0 b : ℂ) * (starRingEnd ℂ) (W τ b a)) * ha
   · subst h; simp
-  · simp only [h, h.not_gt, if_true, if_false, RCLike.star_def, map_mul, map_neg, Complex.conj_ofReal,
+  · simp only [h, h.not_gt, ite_true, ite_false, RCLike.star_def, map_mul, map_neg, Complex.conj_ofReal,
       Complex.conj_conj]
     linear_combination (-(sgn X.p0 a : ℂ) * W τ a b) * hb
 
@@ -235,10 +235,10 @@ theorem ell_projU_I [NumberField E] [IsCMField E] (X : Data E r) (ℓ : Frame X.
           simp only [Pi.add_apply, Pi.smul_apply, projU_apply, unitFr, smul_eq_mul, Complex.real_smul, map_mul,
             Complex.conj_I]
           rcases lt_trichotomy c d with hcd | hcd | hcd
-          · simp only [hcd, hcd.not_gt, if_true, if_false]
+          · simp only [hcd, hcd.not_gt, ite_true, ite_false]
             by_cases hc : τ' = τ ∧ c = b ∧ d = a
             · obtain ⟨rfl, rfl, rfl⟩ := hc
-              simp only [and_self, if_true, map_one, ht]
+              simp only [and_self, ite_true, map_one, ht]
               push_cast
               linear_combination (-((sgn X.p0 c : ℂ) ^ 2 * (sgn X.p0 d : ℂ) ^ 2) / 2) * Complex.I_mul_I +
                 ((sgn X.p0 c : ℂ) * (sgn X.p0 c : ℂ)) * ha + hb
@@ -250,7 +250,7 @@ theorem ell_projU_I [NumberField E] [IsCMField E] (X : Data E r) (ℓ : Frame X.
           · have hc : ¬ (τ' = τ ∧ c = b ∧ d = a) := fun h' => by
               obtain ⟨-, rfl, rfl⟩ := h'
               exact hab.not_gt hcd
-            simp only [hcd, if_true, hc, if_false]
+            simp only [hcd, ite_true, hc, ite_false]
             linear_combination ((t : ℂ) * if τ' = τ ∧ c = a ∧ d = b then 1 else 0) * Complex.I_mul_I)
       rw [map_smul, map_smul, Complex.real_smul, Complex.real_smul] at h1
       have htt : (t : ℂ) * (-2 * ((sgn X.p0 a : ℂ) * (sgn X.p0 b : ℂ))) = 1 := by
@@ -522,7 +522,7 @@ theorem torProd_spec : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C.Bas), C.I
     obtain ⟨h1, h2⟩ := H (Finset.univ : Finset D.what₂.Tau).toList (Finset.nodup_toList _)
     refine ⟨h1, fun ρ => ?_⟩
     have := h2 ρ
-    rw [if_pos (Finset.mem_toList.2 (Finset.mem_univ _))] at this
+    rw [ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ _))] at this
     exact this
   intro l hl
   induction l with
@@ -537,7 +537,7 @@ theorem torProd_spec : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C.Bas), C.I
     rw [R.2.2.2.1, i2 ρ]
     by_cases c : ρ = τ
     · subst c
-      rw [(hu ρ).2.1, if_neg hl.1, if_pos List.mem_cons_self, Matrix.mul_one]
+      rw [(hu ρ).2.1, ite_eq_right hl.1, ite_eq_left List.mem_cons_self, Matrix.mul_one]
     · rw [(hu τ).2.2 ρ c, Matrix.one_mul]
       simp only [List.mem_cons, c, false_or]
 
@@ -753,14 +753,14 @@ theorem fderiv_toLieC_eq_zero : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (R : Gl
       (-(sgn C.X.p0 (c : ℕ) * sgn C.X.p0 (d : ℕ)) : ℝ) •
         (toLie R B (fun ρ => C.m.e ρ) (GlobalTheory.HolRead.unitFr (C.m.e ρ) c d) ρ).1 := by
     rw [toLie_val]
-    simp only [mat_unitFr, if_true]
+    simp only [mat_unitFr, ite_true]
     rw [conjAt_single C R hB ρ c d, conjAt_single C R hB ρ d c]
     rcases hs c with h1 | h1 <;> rcases hs d with h2 | h2 <;> rw [h1, h2] <;> module
   have hBm : (1 / (2 * I) : ℂ) • (B ρ * single d c 1 * (B ρ)⁻¹ - conjAt T ρ (B ρ * single d c 1 * (B ρ)⁻¹)) =
       (-(sgn C.X.p0 (c : ℕ) * sgn C.X.p0 (d : ℕ)) : ℝ) •
         (toLie R B (fun ρ => C.m.e ρ) (I • GlobalTheory.HolRead.unitFr (C.m.e ρ) c d) ρ).1 := by
     rw [toLie_I]
-    simp only [mat_unitFr, if_true]
+    simp only [mat_unitFr, ite_true]
     rw [conjAt_single C R hB ρ c d, conjAt_single C R hB ρ d c, hI]
     rcases hs c with h1 | h1 <;> rcases hs d with h2 | h2 <;> rw [h1, h2] <;> module
   have memA : (1 / 2 : ℂ) • (B ρ * single d c 1 * (B ρ)⁻¹ + conjAt T ρ (B ρ * single d c 1 * (B ρ)⁻¹)) ∈
@@ -873,17 +873,17 @@ theorem detPow_mul_torAt (D : D7) (S T : HSp D) (C : Ctx S T) (B : C.Bas) (hB : 
     congr 1
     by_cases c : ρ' = ρ
     · subst c
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have h1 : compAt C.θ ρ' (Formalism.L2.Theta.mt T (torAt C.θ T B ρ' t)) =
           B ρ' * diagonal (fun a => cexp ((t a : ℂ) * I)) * (B ρ')⁻¹ := hk.2.1
       rw [h1]
       exact det_conj_diag_exp (GlobalTheory.AdSpan.ConjHol.isUnit_det_B C hB ρ') t (m ρ')
-    · rw [if_neg c]
+    · rw [ite_eq_right c]
       have h1 : compAt C.θ ρ' (Formalism.L2.Theta.mt T (torAt C.θ T B ρ t)) = 1 := hk.2.2 ρ' c
       rw [h1, det_one, _root_.one_zpow]
   unfold detPow
   rw [Finset.prod_congr rfl fun ρ' _ => key ρ', Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ ρ,
-    if_pos (Finset.mem_univ _)]
+    ite_eq_left (Finset.mem_univ _)]
 
 end GlobalTheory.AdSpan.DetTor
 
@@ -1015,7 +1015,6 @@ theorem trLin_toLieC_of_trace {D : D7} {S T : HSp D} (C : Ctx S T) (R : GlobalTh
   rw [GlobalTheory.HolRead.AdExt.toLie_val, mat_conjL]
   have hN : trace ((mat W (C.m.e ρ)).map (starRingEnd ℂ)) = 0 := by
     have : trace ((mat W (C.m.e ρ)).map (starRingEnd ℂ)) = starRingEnd ℂ (trace (mat W (C.m.e ρ))) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp [Matrix.trace, map_sum]
     rw [this, hW, map_zero]
   set N := (mat W (C.m.e ρ)).map (starRingEnd ℂ)
@@ -1066,7 +1065,7 @@ theorem holUpTo_of_lowKilled : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C.B
   have hF : ∀ a ∈ GinfC T, F (C.xB (C.mvB a B)) = φ (g * a) / detPow C.θ T m a := by
     intro a ha
     have hy := U1 a
-    simp only [F, dif_pos hy]
+    simp only [F, dite_eq_left hy]
     rw [U3 _ (U2 _ hy).choose_spec.1 a ha (U2 _ hy).choose_spec.2]
   obtain ⟨Q, Q1, Q2⟩ := GlobalTheory.T.exists_extension_torusEquivariant_orthonormalFrames _ _ C.X la F (by
     intro y hy t

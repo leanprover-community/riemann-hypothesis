@@ -150,7 +150,3 @@ theorem inAf_mem (D : Datum p) (z : D.La) : inAf D z ∈ LaHat D :=
   AddSubgroup.subset_closure ⟨1, z, isIntAf_one, rfl⟩
 
 end GlobalTheory.LKGeo.MultScale
-
-namespace GlobalTheory.LKGeo
-
-end GlobalTheory.LKGeo

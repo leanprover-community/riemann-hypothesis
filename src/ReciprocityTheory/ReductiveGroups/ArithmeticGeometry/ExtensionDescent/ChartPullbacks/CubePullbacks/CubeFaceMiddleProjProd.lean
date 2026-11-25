@@ -37,8 +37,8 @@ theorem sameSum_of_factor_loc {Y X : Scheme.{0}} {K K' J : Type} [Fintype K] [Fi
       _ = ∑ j, if P j = ψ then (∑ k, if g k = j then δ k else 0) else 0 := by
           refine Finset.sum_congr rfl fun j _ => ?_
           by_cases hj : P j = ψ
-          · simp only [hj, if_true]
-          · simp only [hj, if_false, ite_self, Finset.sum_const_zero]
+          · simp only [hj, ite_true]
+          · simp only [hj, ite_false, ite_self, Finset.sum_const_zero]
   have e1 := key f ε
   have e2 := key f' ε'
   convert e1.trans ((Finset.sum_congr rfl fun j _ => by rw [h j]).trans e2.symm) using 2

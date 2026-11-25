@@ -14,19 +14,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.CechPic
 
 private alias Scheme_ord_one := _root_.GlobalTheory.Cartier.MultEff.ord_one
 
-private theorem Scheme_ord_units_zpow {X : Scheme.{0}} [IsIntegral X] [IsLocallyNoetherian X]
-    (g : (X.functionField)ˣ) (n : ℤ) (v : X) :
-    Scheme.ord ((g ^ n : (X.functionField)ˣ) : X.functionField) v =
-      n * Scheme.ord (g : X.functionField) v := by
-  let φ : (X.functionField)ˣ →* Multiplicative ℤ :=
-    { toFun := fun a => Multiplicative.ofAdd (Scheme.ord (a : X.functionField) v)
-      map_one' := by simp [Scheme_ord_one]
-      map_mul' := fun a b => by
-        rw [Units.val_mul, Scheme.ord_mul a.ne_zero b.ne_zero, ofAdd_add] }
-  have h := map_zpow φ g n
-  have h2 := congrArg Multiplicative.toAdd h
-  simpa [φ, toAdd_zpow, smul_eq_mul] using h2
-
 private alias Scheme_ord_units_inv := _root_.GlobalTheory.Cartier.MultEff.ord_inv
 
 private theorem exists_local_unit_ord_eq_finite_sum {X : Scheme.{0}} [IsIntegral X] [IsLocallyNoetherian X]
@@ -42,7 +29,7 @@ private theorem exists_local_unit_ord_eq_finite_sum {X : Scheme.{0}} [IsIntegral
       (hS z (Finset.mem_insert_self z S)) x
     refine ⟨U1 ⊓ U2, ⟨hx1, hx2⟩, f1 * π ^ (c z), fun v hv => ?_⟩
     rw [Finset.sum_insert hzS, Units.val_mul, Scheme.ord_mul f1.ne_zero (π ^ c z).ne_zero,
-      Scheme_ord_units_zpow, hf1 v hv.1, hπ v hv.2]
+      Units.val_zpow_eq_zpow_val, Scheme.ord_zpow, hf1 v hv.1, hπ v hv.2]
     split_ifs <;> simp [add_comm]
 
 theorem _root_.GlobalTheory.Cartier.CartierDiv.exists_mult_eq_of_locallyFactorial :

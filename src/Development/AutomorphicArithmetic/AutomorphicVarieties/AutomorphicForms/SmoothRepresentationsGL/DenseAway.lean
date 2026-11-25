@@ -130,6 +130,6 @@ theorem UpperTheory.V.Af.Smo.denseAway :
     · refine (congrFun (congrArg Prod.snd (h i j)) ⟨w, Finset.mem_univ w⟩).trans ?_
       change _ = (((1 : Matrix (Fin n) (Fin n) (Ad E)) i j).1 - 0 + 0) w
       rw [add_zero, sub_zero]
-      by_cases e : i = j <;> simp only [Matrix.one_apply, e, if_true, if_false] <;> rfl
+      by_cases e : i = j <;> simp only [Matrix.one_apply, e, ite_true, ite_false] <;> rfl
     · exact (congrArg (fun x : GL (Fin n) (Af E) => x i j)
         (GlobalTheory.CuspRep.pFin_finGL (GeneralLinearGroup.map (pFin E) k))).symm

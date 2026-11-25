@@ -51,17 +51,17 @@ def ub (c : Mx k r) : Matrix (Fin k) (Fin k) ℂ := fun m m' => c (eB k r m) (eB
 theorem blockW_in {h : Matrix (Fin k) (Fin k) ℂ} {i j : Fin (2 * r + k + 1)} (hi : inB k r i) (hj : inB k r j) :
     blockW k r h i j = h ⟨i.val - r, by unfold inB at hi; omega⟩ ⟨j.val - r, by unfold inB at hj; omega⟩ := by
   unfold inB at hi hj
-  simp only [blockW, dif_pos hi, dif_pos hj]
+  simp only [blockW, dite_eq_left hi, dite_eq_left hj]
 
 theorem blockW_in_out {h : Matrix (Fin k) (Fin k) ℂ} {i j : Fin (2 * r + k + 1)} (hi : inB k r i) (hj : ¬ inB k r j) :
     blockW k r h i j = 0 := by
   unfold inB at hi hj
-  simp only [blockW, dif_pos hi, dif_neg hj]
+  simp only [blockW, dite_eq_left hi, dite_eq_right hj]
 
 theorem blockW_out {h : Matrix (Fin k) (Fin k) ℂ} {i j : Fin (2 * r + k + 1)} (hi : ¬ inB k r i) :
     blockW k r h i j = if i = j then 1 else 0 := by
   unfold inB at hi
-  simp only [blockW, dif_neg hi]
+  simp only [blockW, dite_eq_right hi]
 
 theorem sum_block (F : Fin (2 * r + k + 1) → ℂ) (hF : ∀ l, ¬ inB k r l → F l = 0) :
     ∑ l, F l = ∑ m : Fin k, F (eB k r m) := by
@@ -81,20 +81,6 @@ theorem hpk_in_col {i m : Fin (2 * r + k + 1)} (hm : inB k r m) : Hpk k r i m = 
   unfold inB at hm
   simp only [Hpk, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
-
-private theorem Hpk_apply_wp_eq_ite {i : Fin (2 * r + k + 1)} (hi : ¬ inB k r i) :
-    ∃ l : Fin (2 * r + k + 1), ¬ inB k r l ∧ ∃ s : ℂ, s ≠ 0 ∧ ∀ b, Hpk k r l b = if b = i then s else 0 := by
-  unfold inB at hi
-  have hil := i.isLt
-  by_cases h : i.val = r + k
-  · refine ⟨i, by unfold inB; omega, -1, by norm_num, fun b => ?_⟩
-    have hbl := b.isLt
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  · refine ⟨⟨2 * r + k - i.val, by omega⟩, by unfold inB; simp only; omega, 1, one_ne_zero, fun b => ?_⟩
-    have hbl := b.isLt
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem eq_blockW {c : Mx k r} (hc : c ∈ UH (Hpk k r))
     (hfix : ∀ l, ¬ inB k r l → c *ᵥ bvec l = bvec l) : c = blockW k r (ub c) := by
@@ -171,7 +157,7 @@ theorem piAll : PiAll := by
         unfold inB at hi hj
         simp only [Fin.ext_iff]
         split_ifs <;> first | rfl | (exfalso; omega)
-      · rw [blockW_in_out hi hj, if_neg (by rintro rfl; exact hj hi)]
+      · rw [blockW_in_out hi hj, ite_eq_right (by rintro rfl; exact hj hi)]
     · rw [blockW_out hi]
   refine ⟨?_, ?_, ?_⟩
   · have e := h1

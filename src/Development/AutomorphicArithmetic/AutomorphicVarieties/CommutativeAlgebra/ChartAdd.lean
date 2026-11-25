@@ -3,51 +3,8 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.OrbitVanishingLocal
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ChartSum
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -79,19 +36,19 @@ private theorem exists_intertwiner_decomp_of_kernel_intertwines {σ O : Type} [F
     simp only [coeff_monomial_mul, one_mul]
     by_cases hn : n.support.Nonempty
     · have hi0 : hn.choose ∈ n.support := hn.choose_spec
-      have hsel : sel n = some hn.choose := dif_pos hn
+      have hsel : sel n = some hn.choose := dite_eq_left hn
       have hle0 : Finsupp.single hn.choose 1 ≤ n := by
         rw [Finsupp.single_le_iff]
         exact Nat.one_le_iff_ne_zero.2 (Finsupp.mem_support_iff.1 hi0)
       rw [Finset.sum_eq_single hn.choose]
-      · rw [if_pos hle0, hc, tsub_add_cancel_of_le hle0, if_pos hsel]
+      · rw [ite_eq_left hle0, hc, tsub_add_cancel_of_le hle0, ite_eq_left hsel]
       · intro i _ hi
         by_cases hle : Finsupp.single i 1 ≤ n
-        · rw [if_pos hle, hc, tsub_add_cancel_of_le hle, if_neg]
+        · rw [ite_eq_left hle, hc, tsub_add_cancel_of_le hle, ite_eq_right]
           rw [hsel]
           intro heq
           exact hi (Option.some_injective _ heq).symm
-        · rw [if_neg hle]
+        · rw [ite_eq_right hle]
       · intro hnot
         exact absurd (Finset.mem_univ _) hnot
     · have hn0 : n = 0 := by
@@ -102,15 +59,15 @@ private theorem exists_intertwiner_decomp_of_kernel_intertwines {σ O : Type} [F
       · rw [coeff_zero_eq_constantCoeff_apply]
         exact hg
       · intro i _
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hle
         have h1 := Finsupp.single_le_iff.1 hle
         simp at h1
   · intro i
-    rw [← coeff_zero_eq_constantCoeff_apply, hc, zero_add, if_pos]
+    rw [← coeff_zero_eq_constantCoeff_apply, hc, zero_add, ite_eq_left]
     have hn : (Finsupp.single i 1 : σ →₀ ℕ).support.Nonempty := ⟨i, by simp⟩
     show (if hn : (Finsupp.single i 1 : σ →₀ ℕ).support.Nonempty then some hn.choose else none) = some i
-    rw [dif_pos hn]
+    rw [dite_eq_left hn]
     have hs : hn.choose ∈ ({i} : Finset σ) := by
       rw [← Finsupp.support_single_ne_zero i (one_ne_zero : (1 : ℕ) ≠ 0)]
       exact hn.choose_spec
@@ -127,7 +84,7 @@ private lemma π_mem_sq {O X R : Type} [CommRing O] [AddCommGroup X] [CommRing R
     intro i
     rw [RingHom.mem_ker]
     erw [WPres.origin_π]
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, if_neg]
+    rw [← coeff_zero_eq_constantCoeff_apply, coeff_monomial, ite_eq_right]
     exact (Finsupp.single_ne_zero.2 one_ne_zero).symm
 
   rw [hf, map_sum]
@@ -168,10 +125,10 @@ theorem UpperTheory.V.Alg.chart_free :
       ← coeff_zero_eq_constantCoeff_apply, MvPowerSeries.coeff_map]
   · intro i
     refine ⟨W.π (MvPowerSeries.X i), ?_, ?_⟩
-    · rw [hφ, MvPowerSeries.map_X, MvPowerSeries.coeff_X, if_pos rfl]
+    · rw [hφ, MvPowerSeries.map_X, MvPowerSeries.coeff_X, ite_eq_left rfl]
       exact one_ne_zero
     · intro i' hi'
-      rw [hφ, MvPowerSeries.map_X, MvPowerSeries.coeff_X, if_neg]
+      rw [hφ, MvPowerSeries.map_X, MvPowerSeries.coeff_X, ite_eq_right]
       intro heq
       exact hi' (Finsupp.single_left_injective one_ne_zero heq)
   · intro f hf0 hlin
@@ -209,13 +166,6 @@ private theorem chart_add_coeff {K τ τ' : Type} [CommRing K] (ε : τ ≃ τ')
   rw [h2, Finsupp.mapDomain_id] at h
   exact h
 
-private theorem chart_add_weight {τ τ' X : Type} [AddCommGroup X] (g : τ' → τ) (wt : τ → X) (n : τ' →₀ ℕ) :
-    Finsupp.weight wt (Finsupp.mapDomain g n) = Finsupp.weight (fun s => wt (g s)) n := by
-  induction n using Finsupp.induction_linear with
-  | zero => simp
-  | add a b ha hb => rw [Finsupp.mapDomain_add, map_add (f := _), map_add (f := _), ha, hb]
-  | single a b => simp [Finsupp.weight_single]
-
 private theorem chart_add_rename {O A X τ τ' : Type} [CommRing O] [IsDomain O] [CommRing A] [Algebra O A]
     [AddCommGroup X] {𝒜 : X → Submodule O A} {x : A →ₐ[O] O} {wt : τ → X}
     {φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)} (h : IsChart 𝒜 x wt φ) (ε : τ ≃ τ') (wt' : τ' → X)
@@ -226,7 +176,7 @@ private theorem chart_add_rename {O A X τ τ' : Type} [CommRing O] [IsDomain O]
     show coeff n (rename ε (φ f)) = 0
     rw [chart_add_coeff]
     refine h.graded j f hf _ ?_
-    rwa [chart_add_weight, ← funext hw]
+    simpa [Finsupp.weight, Function.comp_def, funext hw] using hn
   · intro f
     show constantCoeff (rename ε (φ f)) = _
     rw [constantCoeff_rename, h.const]

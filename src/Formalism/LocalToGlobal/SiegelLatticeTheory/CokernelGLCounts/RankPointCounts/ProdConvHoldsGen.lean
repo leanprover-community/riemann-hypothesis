@@ -273,7 +273,7 @@ theorem local_factors_pos_typical_general {D : D7} (X : HidaSetting D) (hb : AdB
       (mul_pos (sv_pos X u p (kg_sub_kv X p) subset_rfl) (sv_pos X u' p (kg_sub_kv X p) subset_rfl))
   have hR : 0 < MX X u u' ψ v / localVolumeUnit X ψ v := by
     unfold MX localVolumeUnit OmX
-    rw [if_pos hv, if_pos hv]
+    rw [ite_eq_left hv, ite_eq_left hv]
     exact lt_of_lt_of_eq hpos h.symm
   have hU0 : 0 ≤ localVolumeUnit X ψ v := ENNReal.toReal_nonneg
   rcases div_pos_iff.1 hR with ⟨h1, h2⟩ | ⟨-, h2⟩
@@ -328,7 +328,7 @@ theorem zz_one (hN : SdNormDV X ψ) {v : PlX X} (hv : ¬ TypAt X v) (h1 : absV v
     ext z
     simp [ZZOrd, locZ, Set.mem_pi, Prod.forall]
   unfold ZZX volS
-  rw [if_neg hv, hsetZ, SdW.boxScaleL_holds v (Fin (D.R.rS + 1) × Fin (D.R.rS + 1)) hfin
+  rw [ite_eq_right hv, hsetZ, SdW.boxScaleL_holds v (Fin (D.R.rS + 1) × Fin (D.R.rS + 1)) hfin
     (sdE (E := X.B.I.E) ψ v (Fin (D.R.rS + 1) × Fin (D.R.rS + 1)))
     (fun p : Fin (D.R.rS + 1) × Fin (D.R.rS + 1) => alp v D.R.rS p.1 * alp v D.R.rS p.2)
     (fun p => mul_ne_zero (alp_ne_zero v D.R.rS p.1) (alp_ne_zero v D.R.rS p.2)), hO1, h1, one_pow, one_mul]
@@ -359,7 +359,7 @@ theorem unramified_factor_eq_one (hN : SdNormDV X ψ) {v : PlX X} (hv : ¬ TypAt
   have := hH2
   have := hS2
   unfold localVolumeUnit volU
-  rw [if_neg hv, localVolumeOrdinary, Measure.prod_prod, ENNReal.toReal_mul, uo_one hN hv h1, one_mul]
+  rw [ite_eq_right hv, localVolumeOrdinary, Measure.prod_prod, ENNReal.toReal_mul, uo_one hN hv h1, one_mul]
 
 theorem pp_one (hN : SdNormDV X ψ) {v : PlX X} (hv : ¬ TypAt X v) (h1 : absV v (dV v) = 1) (l : Fin (D.R.rS + 1)) :
     PPX X u u' ψ l v = 1 := by
@@ -372,7 +372,7 @@ theorem pp_one (hN : SdNormDV X ψ) {v : PlX X} (hv : ¬ TypAt X v) (h1 : absV v
     simp [PPOrd, Set.mem_pi]
     exact ⟨fun h i => h, fun h => h ()⟩
   unfold PPX volC
-  rw [if_neg hv, hset, SdW.boxScaleL_holds v Unit hfin (sdE (E := X.B.I.E) ψ v Unit)
+  rw [ite_eq_right hv, hset, SdW.boxScaleL_holds v Unit hfin (sdE (E := X.B.I.E) ψ v Unit)
     (fun _ : Unit => alp v D.R.rS l ^ 2) (fun _ => pow_ne_zero _ (alp_ne_zero v D.R.rS l)), hO, h1, one_pow, one_mul]
   refine Finset.prod_eq_one fun q _ => ?_
   rw [absV_pow, absV_alp_one v h1]
@@ -381,7 +381,7 @@ theorem pp_one (hN : SdNormDV X ψ) {v : PlX X} (hv : ¬ TypAt X v) (h1 : absV v
 theorem jac_one {v : PlX X} (hv : ¬ TypAt X v) (h1 : absV v (dV v) = 1) : jacX X v = 1 := by
   unfold jacX jacS
   refine Finset.prod_eq_one fun l _ => ?_
-  rw [if_neg hv, mul_one, absV_prod]
+  rw [ite_eq_right hv, mul_one, absV_prod]
   rw [Finset.prod_eq_one fun i _ => by rw [absV_pow, absV_alp_one v h1, one_pow]]
   norm_num
 
@@ -420,16 +420,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.SG.HidaSet
 
 variable {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (ψ : AddChar (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF X.B.I.F) ℂ)
 
-def ProdConvNew : Prop :=
-  (∀ v, (TypAt X v → 0 < MX X u u' ψ v) ∧ 0 < localVolumeUnit X ψ v ∧ 0 < ZZX X u u' ψ v ∧ (∀ l, 0 < PPX X u u' ψ l v) ∧
-    0 < alX X u u' v) ∧
-  True ∧ True ∧
-  Multipliable (fun v : OrdX X => localVolumeUnit X ψ v.1) ∧ 0 < ∏' v : OrdX X, localVolumeUnit X ψ v.1 ∧
-  Multipliable (ZZX X u u' ψ) ∧ 0 < ∏' v : PlX X, ZZX X u u' ψ v ∧
-  (∀ l, Multipliable (PPX X u u' ψ l) ∧ 0 < ∏' v : PlX X, PPX X u u' ψ l v) ∧
-  Multipliable (fun v : OrdX X => alX X u u' v.1) ∧ 0 < ∏' v : OrdX X, alX X u u' v.1 ∧
-  Multipliable (jacX X) ∧ 0 < ∏' v : PlX X, jacX X v
-
 private theorem multipliable_and_tprod_pos_of_finite_mulSupport {ι : Type*} (f : ι → ℝ) (hpos : ∀ i, 0 < f i) (hfin : (Function.mulSupport f).Finite) :
     Multipliable f ∧ 0 < ∏' i, f i := by
   refine ⟨multipliable_of_hasFiniteMulSupport hfin, ?_⟩
@@ -439,7 +429,7 @@ private theorem multipliable_and_tprod_pos_of_finite_mulSupport {ι : Type*} (f 
 theorem prodConvNew_of (h1 : VolOneAEC X u u' ψ)
     (hpos : ∀ v, 0 < localVolumeUnit X ψ v ∧ 0 < ZZX X u u' ψ v ∧ (∀ l, 0 < PPX X u u' ψ l v) ∧ 0 < jacX X v)
     (hM : ∀ v, TypAt X v → 0 < MX X u u' ψ v) (hal : ∀ v, 0 < alX X u u' v) (h3 : AlConvC X u u') :
-    ProdConvNew X u u' ψ := by
+    Formalism.L2.SG.LocVol.ProdConv X u u' ψ := by
   have hS : ∀ g : PlX X → ℝ, (∀ v, g v ≠ 1 → ¬ (localVolumeUnit X ψ v = 1 ∧ ZZX X u u' ψ v = 1 ∧
       (∀ l, PPX X u u' ψ l v = 1) ∧ jacX X v = 1)) → (Function.mulSupport g).Finite :=
     fun g hg => h1.subset fun v hv => hg v hv
@@ -460,7 +450,7 @@ theorem prodConvNew_gen (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (hψ :
     (hs : IsStdChar ψ) (hloc : ∀ w : D.what₂.Word, LocCompatX X ψ w)
     (hpos : ∀ v, (¬ TypAt X v → 0 < localVolumeUnit X ψ v) ∧ 0 < ZZX X u u' ψ v ∧ (∀ l, 0 < PPX X u u' ψ l v) ∧
       0 < jacX X v) :
-    ProdConvNew X u u' ψ := by
+    Formalism.L2.SG.LocVol.ProdConv X u u' ψ := by
   have hk : 1 ≤ D.R.k := Formalism.MainNotions.S.k_pos (D := D)
   refine prodConvNew_of X u u' ψ (VolOneAEC_holds (X := X) (u := u) (u' := u') (ψ := ψ) hψ hs) (fun v => ⟨?_, (hpos v).2.1,
     (hpos v).2.2.1, (hpos v).2.2.2⟩) (fun v h => (local_factors_pos_typical_general X hb ψ hψ hs hloc u u' v h).1)
@@ -520,7 +510,7 @@ theorem pp_pos_ord (hψ : IsCharAF X.B.I.F ψ) (hs : IsStdChar ψ) {v : PlX X} (
     simp [PPOrd, Set.mem_pi]
     exact ⟨fun h i => h, fun h => h ()⟩
   unfold PPX volC
-  rw [if_neg hv, hset, SdW.boxScaleL_holds v Unit hfin (sdE (E := X.B.I.E) ψ v Unit)
+  rw [ite_eq_right hv, hset, SdW.boxScaleL_holds v Unit hfin (sdE (E := X.B.I.E) ψ v Unit)
     (fun _ : Unit => alp v D.R.rS l ^ 2) (fun _ => pow_ne_zero _ (alp_ne_zero v D.R.rS l)), hO]
   refine mul_pos (pow_pos (absV_pos v (dV_ne_zero v)) _) (Finset.prod_pos fun q _ => ?_)
   exact inv_pos.2 (pow_pos (absV_pos v (pow_ne_zero _ (alp_ne_zero v D.R.rS l))) 2)
@@ -1008,7 +998,7 @@ theorem parabolic_volume : VolPP σ v := by
             OEv (E := E) v}) := by
       ext c
       simp only [Set.mem_preimage, Set.mem_pi, Set.mem_univ, true_implies, Set.mem_ofPred_eq, PPTyp,
-        if_pos hl, unit_forall]
+        ite_eq_left hl, unit_forall]
       rw [D.mem_sc_mul, D.mem_sc_mul, D.mem_pt_mul, D.shear_first_coordinate, D.shear_second_coordinate]
       simp only [map_add (f := _), (D.p_sig _).1, (D.p_sig _).2, id]
       constructor
@@ -1031,7 +1021,7 @@ theorem parabolic_volume : VolPP σ v := by
     have hA := absV_pos v (alp_ne_zero v r l)
     have hG := absV_pos v hg0
     field_simp
-  · have hlr : alp v r l = 1 := by unfold alp; rw [if_neg hl]
+  · have hlr : alp v r l = 1 := by unfold alp; rw [ite_eq_right hl]
     obtain ⟨k, hk⟩ := hT
     have hk' : ((T : Fv F v) - (T' : Fv F v)) = (g : Fv F v) * (k : Fv F v) := by
       have := congrArg (Int.cast : ℤ → Fv F v) hk
@@ -1043,7 +1033,7 @@ theorem parabolic_volume : VolPP σ v := by
             {c | D.pt (((g : Fv F v)⁻¹) ^ 2) (g : Fv F v)⁻¹ * c ∈ OEv (E := E) v})) := by
       ext c
       simp only [Set.mem_preimage, Set.mem_pi, Set.mem_univ, true_implies, Set.mem_ofPred_eq, PPTyp,
-        if_neg hl, unit_forall, Pi.add_apply]
+        ite_eq_right hl, unit_forall, Pi.add_apply]
       rw [D.mem_sc_mul, D.mem_sc_mul, D.mem_pt_mul]
       simp only [map_add (f := _), D.shear_first_coordinate, D.shear_second_coordinate, hp0, hp1, map_natCast, (D.p_sig _).1, (D.p_sig _).2, id]
       constructor
@@ -1124,7 +1114,7 @@ theorem pp_pos_typ_gen {D : D7} (X : HidaSetting D) (hb : Formalism.L2.SG.AdBrid
     by_contra h
     have he := hTF.2.2.1
     unfold etaV at he
-    rw [if_neg h] at he
+    rw [ite_eq_right h] at he
     exact absurd he (by decide)
   have hS : PI.UnitaryGroupMassFormula.LocJacTyp.SplitHyp X.B.I.cm.sig v := ⟨X.B.I.cm.deg2, hnt, hid⟩
   have hg : 0 < gAt X v := hTF.1.pos
@@ -1138,7 +1128,7 @@ theorem pp_pos_typ_gen {D : D7} (X : HidaSetting D) (hb : Formalism.L2.SG.AdBrid
       absV v (dV v) ^ Fintype.card Unit * PI.LocJacTyp.absV v (gAt X v : Fv X.B.I.F v) ^ 3 *
         (PI.LocJacTyp.absV v (PI.LocJacTyp.alp v D.R.rS l) ^ 4)⁻¹ := hP
   unfold PPX volC
-  rw [if_pos hv, hP']
+  rw [ite_eq_left hv, hP']
   have hd : 0 < absV v (dV v) := absV_pos v (dV_ne_zero v)
   have hgv : (gAt X v : Fv X.B.I.F v) ≠ 0 := by exact_mod_cast hg.ne'
   have h1 : 0 < PI.LocJacTyp.absV v (gAt X v : Fv X.B.I.F v) := PI.UnitaryGroupMassFormula.LocJacTyp.absV_pos v hgv
@@ -1172,7 +1162,7 @@ theorem level_congr_mod_sq (D : D7) (u u' : D.what₂.Word) :
 
 theorem prodConvNew_holds_gen {D : D7} (X : HidaSetting D) (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I)
     (ψ : AddChar (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF X.B.I.F) ℂ) (hψ : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCharAF X.B.I.F ψ) (hs : IsStdChar ψ)
-    (hloc : ∀ w : D.what₂.Word, LocCompatX X ψ w) (u u' : D.what₂.Word) : ProdConvNew X u u' ψ := by
+    (hloc : ∀ w : D.what₂.Word, LocCompatX X ψ w) (u u' : D.what₂.Word) : Formalism.L2.SG.LocVol.ProdConv X u u' ψ := by
   have hg : ∀ v, TypAt X v → 0 < gAt X v := fun v hv =>
     (Formalism.L2.SG.Pf.typFacts_holds X hb u u' ⟨v, hv⟩).1.pos
   have hUZ := Formalism.L2.SG.Pf.LocalPositivity.localVolumeUnit_pos_and_ZZX_pos X u u' ψ hψ hs (level_congr_mod_sq D u u') hg

@@ -131,7 +131,7 @@ theorem UpperTheory.exists_pos_const_prod_localHeckeOperators :
           exact one_mem _
         · exact this
       · have := H (w i)
-        rw [if_pos (by simp)] at this
+        rw [ite_eq_left (by simp)] at this
         exact Subgroup.mem_bot.1 this
     · rintro ⟨H1, H2⟩ v
       split_ifs with hv
@@ -176,7 +176,7 @@ theorem UpperTheory.finiteDimensional_eigenspace_inf_fixed_compactOpen :
       intro j e
       obtain rfl := hw e
       rfl
-    simp only [U', dif_pos h]
+    simp only [U', dite_eq_left h]
     exact key _ _
   have hCO' : ∀ v ∈ Finset.univ.image w, CO (U' v) := by
     intro v hv

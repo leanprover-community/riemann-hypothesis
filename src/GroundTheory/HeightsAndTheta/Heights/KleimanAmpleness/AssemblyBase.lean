@@ -409,7 +409,6 @@ variable {M : Type w} [AddCommGroup M] [Module (Poly S N) M] [Module S M]
   [IsScalarTower S (Poly S N) M]
 variable {𝓕 : GradedPMod S N F} {𝓜 : GradedPMod S N M}
 
-
 omit [IsScalarTower S (Poly S N) F] [IsScalarTower S (Poly S N) M] in
 theorem component_map (g : GradedHom 𝓕 𝓜) (y : DirectSum ℤ fun c => 𝓕.piece c) (c : ℤ) :
     (((LinearEquiv.ofBijective (DirectSum.coeLinearMap 𝓜.piece) 𝓜.isInternal).symm
@@ -425,40 +424,6 @@ theorem component_map (g : GradedHom 𝓕 𝓜) (y : DirectSum ℤ fun c => 𝓕
       simp [DirectSum.of_apply, h]
   | add a b ha hb =>
     simp only [map_add (f := _), DirectSum.add_apply, Submodule.coe_add, ha, hb]
-
-def kerGraded (g : GradedHom 𝓕 𝓜) : GradedPMod S N (LinearMap.ker g.toLin) where
-  piece c := (𝓕.piece c).comap ((LinearMap.ker g.toLin).subtype.restrictScalars S)
-  isInternal := by
-    classical
-    refine DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top ?_ ?_
-    · exact iSupIndep_of_coords 𝓕.isInternal.submodule_iSupIndep
-        (fun _ : Unit => (LinearMap.ker g.toLin).subtype.restrictScalars S) (fun _ => id)
-        (fun _ => Function.injective_id) (fun _ _ _ hx => hx) (fun x hx => Subtype.ext (hx ()))
-    · rw [eq_top_iff]
-      rintro ⟨x, hx⟩ -
-      set y := (LinearEquiv.ofBijective (DirectSum.coeLinearMap 𝓕.piece) 𝓕.isInternal).symm x
-      have hxy : DirectSum.coeLinearMap 𝓕.piece y = x :=
-        (LinearEquiv.ofBijective (DirectSum.coeLinearMap 𝓕.piece) 𝓕.isInternal).apply_symm_apply x
-      have hy : ∀ c, g.toLin (y c) = 0 := by
-        intro c
-        rw [← component_map g y c, hxy, LinearMap.mem_ker.mp hx, map_zero]
-        rfl
-      have hsum : (⟨x, hx⟩ : LinearMap.ker g.toLin) =
-          ∑ c ∈ y.support,
-            (⟨(y c : F), LinearMap.mem_ker.mpr (hy c)⟩ : LinearMap.ker g.toLin) := by
-        apply Subtype.ext
-        rw [Submodule.coe_sum]
-        show x = ∑ c ∈ y.support, (y c : F)
-        conv_lhs => rw [← hxy]
-        rw [DirectSum.coeLinearMap_eq_dfinsuppSum]
-        rfl
-      rw [hsum]
-      exact Submodule.sum_mem _ fun c _ => Submodule.mem_iSup_of_mem c (y c).2
-  smul_mem n c p k hp hk := 𝓕.smul_mem n c p k hp hk
-
-def kerIncl (g : GradedHom 𝓕 𝓜) : GradedHom (kerGraded g) 𝓕 where
-  toLin := (LinearMap.ker g.toLin).subtype
-  map_piece _ _ hk := hk
 
 end Ker
 
@@ -504,8 +469,8 @@ theorem GradedPres.proof : GradedPres.Statement.{u, v} := by
     Module.Finite.equiv (ULift.moduleEquiv (R := Poly S N)).symm
   refine ⟨ULift.{max u v} (Fin r → Poly S N), inferInstance, inferInstance, inferInstance,
     inferInstance, LinearMap.ker g.toLin, inferInstance, inferInstance, inferInstance, inferInstance,
-    GradedPres.freeGraded N d, GradedPres.kerGraded g, r, GradedPres.freeBasis S N r, d,
-    GradedPres.kerIncl g, g, GradedPres.freeBasis_mem d, inferInstance, ?_, ?_,
+    GradedPres.freeGraded N d, GroundTheory.Heights₂.Heights.Kleiman.GradedHom.kerGraded g, r, GradedPres.freeBasis S N r, d,
+    GroundTheory.Heights₂.Heights.Kleiman.GradedHom.kerIncl g, g, GradedPres.freeBasis_mem d, inferInstance, ?_, ?_,
     LinearMap.exact_subtype_ker_map _⟩
   · exact Subtype.val_injective
   · rw [← LinearMap.range_eq_top, eq_top_iff, ← hspan, Submodule.span_le]
@@ -734,7 +699,6 @@ theorem interNum_fin_congr {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [A
 
 end SectionCount.Drop
 
-
 open Classical in
 theorem SectionCount.Drop.proof (hF : SectionCount.Drop.Filt.Statement.{u, w})
     (hT : SectionCount.Drop.Term.Statement.{u, w}) (hH : SectionCount.Drop.HilbW.Statement.{u, w})
@@ -792,7 +756,7 @@ theorem SectionCount.Drop.proof (hF : SectionCount.Drop.Filt.Statement.{u, w})
     · rw [Finset.sum_comm]
       refine Finset.sum_congr rfl (fun j _ => ?_)
       by_cases hd : e j = d
-      · simp only [hd, true_and, if_true]
+      · simp only [hd, true_and, ite_true]
         rw [Finset.sum_ite_eq]
         simp
       · simp [hd]
@@ -998,7 +962,6 @@ def negSet (a : Fin (N + 1) → ℤ) : Finset (Fin (N + 1)) := Finset.univ.filte
 theorem mem_negSet {a : Fin (N + 1) → ℤ} {j : Fin (N + 1)} : j ∈ negSet a ↔ a j < 0 := by
   simp [negSet]
 
-
 variable (S) in
 def part (J : Finset (Fin (N + 1))) : Laurent S N →ₗ[S] Laurent S N where
   toFun f := f.filter fun a => negSet a = J
@@ -1015,7 +978,6 @@ theorem sum_part (f : Laurent S N) : ∑ J, part S J f = f := by
   simp only [part_apply]
   rw [Finset.sum_ite_eq]
   simp
-
 
 variable (S N) in
 def wPart (c : ℤ) (J : Finset (Fin (N + 1))) : Submodule S (Laurent S N) :=
@@ -1064,14 +1026,11 @@ theorem part_mem_deg {c : ℤ} {J : Finset (Fin (N + 1))} {I : StdCell N} {f : L
     (hf : f ∈ laurentDeg S N c I) : part S J f ∈ laurentDeg S N c I :=
   mem_deg_of_w (part_mem_w hf) (part_eq_zero hf)
 
-
 variable (S N) in
 abbrev G : StdCell N → Type u := fun _ => Laurent S N
 
-
 variable (S N) in
 abbrev ρ := Cech.idRes S (Laurent S N) (Finset.univ : Finset (Fin (N + 1)))
-
 
 variable (S) in
 def partC (J : Finset (Fin (N + 1))) (i : ℕ) : Cech.Cochain (G S N) i →ₗ[S] Cech.Cochain (G S N) i :=
@@ -1194,7 +1153,6 @@ theorem mk_eq {c : ℤ} {i : ℕ} {z w : Cech.Cochain (G S N) i}
   (Submodule.Quotient.eq _).mpr h
 
 end LaurentCohomProof
-
 
 open LaurentCohomProof in
 theorem SerrePoly.LaurentCohom.proof (hC : Cech.Cone.Statement.{u, u}) :

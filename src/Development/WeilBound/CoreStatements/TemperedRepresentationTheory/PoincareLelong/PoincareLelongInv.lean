@@ -257,7 +257,6 @@ section -- clump:auto
 
 namespace GlobalTheory.CompanionTheory.ComplexSets
 
-
 open GroundTheory.Heights₂.Heights in
 theorem divisorGeneralPointBranches : GroundTheory.Heights₂.Heights.DivisorGeneralPointBranches.Statement :=
   DivisorGeneralPointBranches.proof DivisorOneComponent.proof
@@ -403,7 +402,7 @@ theorem maDens_log_all {e : ℕ} (p : (Fin (e + 1) → ℂ) → ℝ) (y : Fin (e
   have key := MaDensLogPow.mdisc_expand (a : ℂ) (b : ℂ) H G hG Finset.univ (fun _ => H) (fun _ _ => rfl)
   rw [Finset.sum_congr rfl fun i _ => mdisc_update_const G H i, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, Nat.add_sub_cancel, nsmul_eq_mul] at key
-  simp only [Finset.mem_univ, if_true] at key
+  simp only [Finset.mem_univ, ite_true] at key
   have hfam3 : (fun i => hessC ((fun _ : Fin e => p) i) y) = fun _ : Fin e => H := rfl
   unfold maDens gradDens
   simp only [hlog]
@@ -576,7 +575,6 @@ theorem varRadialWeight {d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Ma
         congr 1
         funext y
         exact (hpt y).symm
-
 
 open RegLelongAnnulus in
 theorem varLelongAnnulus : VarLelongAnnulus.Statement := by
@@ -1199,14 +1197,6 @@ namespace PositivityTheory.Tls2.Pl
 
 open GroundTheory.Heights₂.Heights
 
-theorem stokesOnVariety : GroundTheory.Heights₂.Heights.StokesOnVariety.Statement := by
-  have hDeep : TubeDeepMass.Statement :=
-    TubeDeepMass.proof TubeDeepRankOne.proof
-      (TubeDeepAreaCount.proof AutoClose.IsolatedPointsCount)
-      HilbertSamuel.Closed.TubeDeepWeightMass
-  exact StokesOnVariety.of_open HilbertSamuel.Closed.SheetImageAreaSet
-    (TubeEuclMass.proof HilbertSamuel.Closed.TubeCollarMass hDeep)
-
 theorem lelongLimit (hBr : GroundTheory.Heights₂.Heights.DivisorGeneralPointBranches.Statement)
     (hLim : GroundTheory.Heights₂.Heights.LelongLimitAtBranches.Statement)
     (hOrd : GroundTheory.Heights₂.Heights.LocalOrder.Statement)
@@ -1222,7 +1212,7 @@ theorem lelongLimit (hBr : GroundTheory.Heights₂.Heights.DivisorGeneralPointBr
 theorem lelongPolyLimit (hL : GroundTheory.Heights₂.Heights.LelongLimit.Statement) :
     GroundTheory.Heights₂.Heights.Targets.LelongPolyLimit.Statement :=
   GroundTheory.Heights₂.Heights.Targets.LelongPolyLimit.of_mult_weight GroundTheory.Heights₂.Heights.Targets.LocalMultComap.proof
-    (GroundTheory.Heights₂.Heights.Targets.LelongWeightLimit.proof hL stokesOnVariety
+    (GroundTheory.Heights₂.Heights.Targets.LelongWeightLimit.proof hL GroundTheory.Heights₂.Heights.AutoClose.StokesOnVariety
       GroundTheory.Heights₂.Heights.AutoClose.Targets_LelongWeightDiff)
 
 theorem ptsAbsMeasurable (hAbs : GroundTheory.Heights₂.Heights.Inter.PtsAbsIntegrable.Statement) :
@@ -1238,7 +1228,7 @@ theorem poincareLelong_of (hAbs : GroundTheory.Heights₂.Heights.Inter.PtsAbsIn
   have hStk : ReciprocityTheory.ChartRestriction.G.Geo.StokesStatement :=
     StokesStatement.of_found (PtsBilinear.proof hAbs HilbertSamuel.Closed.PtsSumMeasurable)
       HilbertSamuel.Closed.SegrePartition
-      (SegreChart.proof HilbertSamuel.Closed.SegreChartDim hSCI) stokesOnVariety
+      (SegreChart.proof HilbertSamuel.Closed.SegreChartDim hSCI) GroundTheory.Heights₂.Heights.AutoClose.StokesOnVariety
   have hChart : Targets.LelongChartLimit.Statement :=
     Targets.LelongChartLimit.proof hSCI HilbertSamuel.Closed.SegreChartDim
       Targets.ChartSectionNotMem.proof hLPL hCDC

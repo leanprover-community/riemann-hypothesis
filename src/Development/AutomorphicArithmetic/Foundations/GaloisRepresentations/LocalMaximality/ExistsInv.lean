@@ -8,15 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-namespace UpperTheory.Gal.productCup_of_system
-
-section
-variable {A : Type} [Field A] [Algebra ℂ A]
-
-end
-
-end UpperTheory.Gal.productCup_of_system
-
 private theorem stab_lemma {L : Type} [Field L] [Algebra ℂ L] (B : Subalgebra ℂ L) (q : ℕ) :
     Stab (Algebra.lsmul ℂ ℂ (DR ℂ L)) B (omB ℂ L B q) := by
   intro b hb m hm

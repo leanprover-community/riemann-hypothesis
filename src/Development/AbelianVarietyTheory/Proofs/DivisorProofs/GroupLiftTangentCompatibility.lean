@@ -6,40 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WedgeOrdVpBaseChang
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
 import Development.AbelianVarietyTheory.Statements.PrincipalLattices.LogHermFormOfUnitDiscriminant
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.TypeStar
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
@@ -233,7 +199,7 @@ theorem exists_retraction_of_isKSValue_one (P : AbelianDeRham) (GD : Grothendiec
     refine eq_of_le_of_le_add_eps ?_ (fun x hx => ?_) (fun x hx => ?_)
     · obtain ⟨N, hN⟩ := (GM.1 g A A' i h hA' hg).2.1
       have c := GM.1.crysToDR_bijective h hA' hg
-      exact ⟨_, (Submodule.orderIsoMapComap (LinearEquiv.ofBijective _ c)).symm.isCompl hN⟩
+      exact ⟨_, (Submodule.orderIsoMapComapOfBijective (crysToDR (epsDP R) h) c).symm.isCompl hN⟩
     ·
       have H := (mem_liftFil_const_iff P hA gA hφ hic e1).1 hx
       have hlo : crysLo x ∈ Fil A := (Submodule.mem_dualAnnihilator _).2 fun c hc => by
@@ -250,8 +216,9 @@ theorem exists_retraction_of_isKSValue_one (P : AbelianDeRham) (GD : Grothendiec
         ext <;> simp only [smul_eq_mul, TrivSqZeroExt.fst_add, TrivSqZeroExt.snd_add, TrivSqZeroExt.fst_mul,
           TrivSqZeroExt.snd_mul, TrivSqZeroExt.fst_inl, TrivSqZeroExt.snd_inl, TrivSqZeroExt.fst_inr,
           TrivSqZeroExt.snd_inr, DualNumber.fst_eps, DualNumber.snd_eps, LinearMap.sub_apply] <;> simp
+      have hm := add_mem hd₁ (Submodule.smul_mem _ (DualNumber.eps : DualNumber R) hd₂)
       rw [ex]
-      exact add_mem hd₁ (Submodule.smul_mem _ _ hd₂)
+      assumption
     ·
       have hlo := crysLo_mem_Fil P hA' hg h hx
       obtain ⟨y₀, hy₀⟩ := hBC.exists (crysLo x)

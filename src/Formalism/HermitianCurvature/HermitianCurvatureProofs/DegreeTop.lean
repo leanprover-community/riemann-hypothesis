@@ -104,14 +104,14 @@ theorem minor_cell_of_parts : PBN.MinorCellOfParts := by
         intro f₁ f₂ h c hc
         have hih := ih f₁ f₂ h
         by_cases hi : i < r
-        · simp only [Q.vAB, dif_pos hi]
+        · simp only [Q.vAB, dite_eq_left hi]
           refine ⟨?_, ?_⟩
           · simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, cOp]
             have hev : (Q.vAB r y i).1 f₁ =ᶠ[nhds c] (Q.vAB r y i).1 f₂ := by
               filter_upwards [(Formalism.FourierDecayAlt.P.Qx3.isOpen_OmX r).mem_nhds hc] with c' hc' using (hih c' hc').1
-            simp only [pOp, wirt, if_pos hc, hev.fderiv_eq, (hih c hc).1, (hih c hc).2]
+            simp only [pOp, wirt, ite_eq_left hc, hev.fderiv_eq, (hih c hc).1, (hih c hc).2]
           · simp only [ciOp, (hih c hc).1]
-        · simp only [Q.vAB, dif_neg hi]
+        · simp only [Q.vAB, dite_eq_right hi]
           exact hih c hc
     refine (hloc r _ _ (fun c' hc' => ?_) x.1 hx.1).1
     rw [resG_last, resG_last]
@@ -166,8 +166,8 @@ theorem liftM_star (M : SlopeTestRemainingChoices (Fin n) A) : liftM (star M) = 
   ext z z'
   simp only [Matrix.star_apply, liftM_apply]
   by_cases h : z 0 = z' 0
-  · rw [if_pos h, if_pos h.symm]
-  · rw [if_neg h, if_neg (Ne.symm h), star_zero]
+  · rw [ite_eq_left h, ite_eq_left h.symm]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), star_zero]
 
 theorem liftM_neg (M : SlopeTestRemainingChoices (Fin n) A) : liftM (-M) = -liftM M := by
   rw [← liftRingHom_apply_eq_liftM, map_neg, liftRingHom_apply_eq_liftM]
@@ -405,11 +405,6 @@ end main
 
 end Formalism.FourierDecayAlt.P.PBN
 
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.PBN
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

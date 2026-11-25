@@ -127,12 +127,6 @@ theorem continuous_artinCoord (H : openFiniteIndex Kˣ) : Continuous (artinCoord
 
 end Coord
 
-section Completion
-
-
-
-end Completion
-
 end GroundTheory.LocalField
 end -- clump:auto
 end -- clump:auto

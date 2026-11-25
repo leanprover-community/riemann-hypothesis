@@ -157,7 +157,7 @@ theorem exists_open_fix_vac_source : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc
     obtain ⟨n, hn⟩ := (h2.eventually (Metric.ball_mem_nhds _ hpos)).exists
     rw [hmc n, Pi.smul_apply, smul_eq_mul, dist_eq_norm, ← sub_one_mul, norm_mul] at hn
     have := hc n
-    push_neg at this
+    push Not at this
     nlinarith [norm_nonneg (X.vac' w₀)]
   obtain ⟨n, hn⟩ := key
   exact ⟨GlobalTheory.VacFixTarget.congGroup A' (n₁.factorial * n.factorial),

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmQuadraticCharacterEqProdRealSigns
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtCharSeriesCoefZero
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCongruenceKernelIdeleCharacterTrivialAtInfStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalFiniteDimensionalFinitePartsWeilTrans
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSummableMajorantAdelicSchwartzLocallyUnifo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryHeckeCharacterExtendingBaseCharacte
@@ -141,8 +140,8 @@ theorem exists_extend_hecke_k : ∀ (F E : Type) [Field F] [NumberField F] [Fiel
     filter_upwards [hVo.mem_nhds (one_mem V)] with z hz
     exact (hV1 z hz).symm
   · have hN' := hN
-    refine ⟨GlobalTheory.T.mem_tensorCongruence_of_supported_at_infinity F E _ hN' _ hz,
-      GlobalTheory.T.mem_tensorCongruence_of_supported_at_infinity F E _ hN' _ ?_⟩
+    refine ⟨GlobalTheory.HeckeExtend.AtInf.mem_CE_of_atInf F E _ hN' _ hz,
+      GlobalTheory.HeckeExtend.AtInf.mem_CE_of_atInf F E _ hN' _ ?_⟩
     intro u hu
     have e : ((z⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) - 1 = -(((z⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) * ((z : AF F ⊗[F] E)
       - 1)) := by
@@ -514,7 +513,7 @@ theorem continuous_transportF_apply_k : ∀ (F E : Type) [Field F] [NumberField 
   let f : _ → Fin m → SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ :=
     fun p => if h : p ∈ N then Classical.choose (hf p h) else 0
   have hfe : ∀ p ∈ N, om p Φ = ∑ i, pureA F (f p i) (g i) := fun p hp => by
-    simp only [f, dif_pos hp]
+    simp only [f, dite_eq_left hp]
     exact Classical.choose_spec (hf p hp)
   have hslice : ∀ p ∈ N, ∀ i v, f p i v = om p Φ (GlobalTheory.WeilCont.adeleJoin F v (y i)) := by
     intro p hp i v

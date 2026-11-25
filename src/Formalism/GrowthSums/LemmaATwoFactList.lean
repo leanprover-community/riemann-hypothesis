@@ -213,7 +213,7 @@ theorem segment_bound_holds : SegmentBound := by
   have hGE : M₀ * E + 5 * E ≤ G' := by rw [← add_mul]; exact hG
   have hDG : D < G' ∧ (a + D) % n = b := by
     by_cases hss : s < s'
-    · rw [if_pos hss] at hgap hD
+    · rw [ite_eq_left hss] at hgap hD
       have hg : s' * E = s * E + (s' - s) * E := by rw [← add_mul]; congr 1; omega
       have hgE : (s' - s) * E ≤ M₀ * E + E := by
         rw [← add_one_mul]; exact Nat.mul_le_mul_right _ hgap
@@ -221,7 +221,7 @@ theorem segment_bound_holds : SegmentBound := by
       refine ⟨by omega, ?_⟩
       rw [hD, show a + (b - a) = b by omega]
       exact Nat.mod_eq_of_lt (by omega)
-    · rw [if_neg hss] at hgap hD
+    · rw [ite_eq_right hss] at hgap hD
       have hg : s' * E + t * E = s * E + (s' + t - s) * E := by
         rw [← add_mul, ← add_mul]; congr 1; omega
       have hgE : (s' + t - s) * E ≤ M₀ * E + E := by

@@ -103,7 +103,7 @@ theorem exists_stepLine : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
     · exact ⟨⟨k, Or.inl h⟩, rfl⟩
     · by_cases h' : M.blk p = some k
       · exact ⟨⟨k, Or.inr h'⟩, rfl⟩
-      · exact absurd (show M.dy p k = 0 by unfold FlagModel.dy; rw [dite_eq_right h, if_neg h']) hk
+      · exact absurd (show M.dy p k = 0 by unfold FlagModel.dy; rw [dite_eq_right h, ite_eq_right h']) hk
   refine ⟨(fsHerm ι (M.dy p)).tensor (pullHerm (isBlockMap_stepV M p) B), ?_, ?_, ?_, ?_⟩
   · show M.dy p + pullDeg _ B.a = M.dy p
     rw [hB, pullDeg_zero, add_zero]
@@ -143,23 +143,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.FA.StepMap
 
-theorem orbit_symm {K : Type} {ι : K → Type} {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
-    SameOrbit z' z := by
-  obtain ⟨c, hc, rfl⟩ := h
-  refine ⟨fun k => (c k)⁻¹, fun k => inv_ne_zero (hc k), ?_⟩
-  funext q
-  show z' q = (c q.1)⁻¹ * (c q.1 * z' q)
-  rw [← mul_assoc, inv_mul_cancel₀ (hc q.1), one_mul]
-
-theorem orbit_trans {K : Type} {ι : K → Type} {z z' z'' : (Σ k, ι k) → ℂ} (h : SameOrbit z z')
-    (h' : SameOrbit z' z'') : SameOrbit z z'' := by
-  obtain ⟨c, hc, rfl⟩ := h
-  obtain ⟨c', hc', rfl⟩ := h'
-  refine ⟨fun k => c k * c' k, fun k => mul_ne_zero (hc k) (hc' k), ?_⟩
-  funext q
-  show c q.1 * (c' q.1 * z'' q) = c q.1 * c' q.1 * z'' q
-  rw [mul_assoc]
-
 theorem not_mem_mcPts_top {K : Type} {ι : K → Type} [∀ k, Fintype (ι k)] (z : (Σ k, ι k) → ℂ) :
     z ∉ mcPts (⊤ : Ideal (MRing ι)) := by
   intro hz
@@ -190,12 +173,12 @@ theorem factor : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (�
       rw [hz1]
       exact H3 x
     exact Rb.inj _ _ (not_mem_mcPts_top _)
-      (orbit_trans (orbit_trans (orbit_symm hz2) (hb _ _ o1)) (H1 x))
+      (GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_trans (GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_trans (GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_symm hz2) (hb _ _ o1)) (H1 x))
   · apply Rp.inj _ _ (not_mem_mcPts_top _)
-    refine orbit_trans (H3 x) (orbit_trans ?_ (orbit_symm (H3 x')))
+    refine GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_trans (H3 x) (GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_trans ?_ (GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_symm (H3 x')))
     have h1' := H1 x'
     rw [← hpr] at h1'
-    obtain ⟨cb, hcb, hbeq⟩ := orbit_trans (H1 x) (orbit_symm h1')
+    obtain ⟨cb, hcb, hbeq⟩ := GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_trans (H1 x) (GlobalTheory.CompanionTheory.Ar.PB.FA.Flat.sameOrbit_symm h1')
     refine ⟨fun k => if hk : (∀ p', M.blk p' ≠ some k.1) then cb ⟨k.1, hk⟩
       else (hsc k.1 (k.2.resolve_left hk)).choose, fun k => ?_, ?_⟩
     · dsimp only
@@ -637,8 +620,8 @@ theorem ite_term {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (c : Prop
     DifferentiableAt ℝ (fun y => if c then t y else 0) u ∧
       ‖fderiv ℝ (fun y => if c then t y else 0) u‖ ≤ T := by
   by_cases hc : c
-  · simpa only [if_pos hc] using h hc
-  · simp only [if_neg hc]
+  · simpa only [ite_eq_left hc] using h hc
+  · simp only [ite_eq_right hc]
     exact ⟨differentiableAt_const _, by simpa using hT⟩
 
 theorem stepPh_grad_local : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)) (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X) (hp : HoloMap R.A BM.Rb.A pr), HasStepCharts M BM p κ v R pr → IsPotential R.A (potOf R (fsHerm ιk fun k => M.dy p (κ k))) → ∀ x, ∃ (ψ : OpenPartialHomeomorph R.X (Fin e → ℂ)) (V : Set R.X) (c : ℝ), IsCompatChart R.A ψ ∧ IsOpen V ∧ x ∈ V ∧ V ⊆ ψ.source ∧ ∀ x' ∈ V, x' ∉ bdry (fun x y => BM.s (pr x) (pr y)) → ‖fderiv ℝ (stepPh M BM p v R pr ∘ ψ.symm) (ψ x')‖ ≤ c * rW (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) x' ^ c * Real.exp (rW (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) x' / 2) := by
@@ -923,7 +906,7 @@ theorem gram_one_pos {h : Matrix (Fin N) (Fin N) ℂ} (hd : h.det ≠ 0) (S : Fi
 
 theorem continuous_gram (S : Finset (Fin N)) :
     Continuous fun h : Matrix (Fin N) (Fin N) ℂ => (minorIJ (hᴴ * 1 * h) S S).re := by
-  simp only [minorIJ, dif_pos]
+  simp only [minorIJ, dite_eq_left]
   refine Complex.continuous_re.comp (Continuous.matrix_det ?_)
   refine Continuous.matrix_submatrix ?_ _ _
   fun_prop
@@ -1097,12 +1080,12 @@ theorem stepGap_eq {M : FlagModel y Ψ N j} [Fintype Ψ] [DecidableEq Ψ] {BM : 
   rw [← h1]
   refine _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.stepGap_eq_of_base_block K ι Φ y Ψ N j M n BM p (pr x) z _ hb hzm (hT.2 hz'm).1 so ?_ ?_
   · funext q
-    have : c q.1.1 = cb q.1 := dif_pos q.1.2
+    have : c q.1.1 = cb q.1 := dite_eq_left q.1.2
     show basePart M.blk z q = c q.1.1 * z' ⟨q.1.1, q.2⟩
     rw [this, hcbq]
     rfl
   · intro k hk m
-    have : c k = a := (dif_neg fun h => h p hk).trans (if_pos hk)
+    have : c k = a := (dite_eq_right fun h => h p hk).trans (ite_eq_left hk)
     show z ⟨k, m⟩ = c k * z' ⟨k, m⟩
     rw [this, ha k hk]
 
@@ -1110,13 +1093,13 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   intro K _ ι _ Φ _ y Ψ _ _ N j M n BM p Kk _ ιk _ κ v e R pr hS x x' hpr hblk
   by_cases hb : pr x ∈ bdry BM.s
   · have hb' : pr x' ∈ bdry BM.s := hpr ▸ hb
-    rw [stepPh, stepPh, dif_neg fun h => h.1 hb, dif_neg fun h => h.1 hb']
+    rw [stepPh, stepPh, dite_eq_right fun h => h.1 hb, dite_eq_right fun h => h.1 hb']
   · have hb' : pr x' ∉ bdry BM.s := hpr ▸ hb
     obtain ⟨z₁, hz₁, hv₁, -⟩ := hS.2.2.2 x
     obtain ⟨z₂, hz₂, hv₂, -⟩ := hS.2.2.2 x'
     have h1 : pr x ∉ bdry BM.s ∧ ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x := ⟨hb, z₁, hz₁, hv₁⟩
     have h2 : pr x' ∉ bdry BM.s ∧ ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x' x' := ⟨hb', z₂, hz₂, hv₂⟩
-    rw [stepPh, stepPh, dif_pos h1, dif_pos h2]
+    rw [stepPh, stepPh, dite_eq_left h1, dite_eq_left h2]
     exact stepGap_eq hS hpr hb hblk h1.2.choose_spec.1 h2.2.choose_spec.1 h1.2.choose_spec.2 h2.2.choose_spec.2
 
 end GlobalTheory.CompanionTheory.Ar.PB.StepW.WeightProp
@@ -1149,7 +1132,7 @@ theorem stepWeight_exists : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k,
   have hgr := _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.GradLoc.stepPh_grad_local K ι Φ y Ψ N j M n BM p Kk ιk κ v e R pr hp hc hfs
   obtain ⟨C₂, hC₂⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.isSingWeight_of_logGrowth e R.X R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) BM.nb BM.m
     (fun k => pr ⁻¹' BM.W k) hpot hsec hsnc hnorm _ (stepPh M BM p v R pr) C₁ hfs hsm hps hC₁
-  obtain ⟨C₃, hC₃⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.gradBound_of_local_bounds e R.X R.A B (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) BM.nb BM.m
+  obtain ⟨C₃, hC₃⟩ := _root_.PositivityTheory.Xgp.t_c_grad_atlas e R.X R.A B (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) BM.nb BM.m
     (fun k => pr ⁻¹' BM.W k) hpot hsec hsnc hnorm had (stepPh M BM p v R pr) hsm hgr
   refine ⟨stepPh M BM p v R pr, max C₂ C₃, ?_, ?_, ?_, hC₃ _ (le_max_right _ _)⟩
   · intro x hx z hz hzv
@@ -1432,9 +1415,9 @@ theorem weight_descends_of_sameOrbit : ∀ (K : Type) [Fintype K] (ι : K → Ty
   have hc'0 : ∀ k, c' k ≠ 0 := by
     intro k
     by_cases hk : ((∀ p' : Ψ × Fin N, M.blk p' ≠ Option.some k) ∨ M.blk p = Option.some k)
-    · simp only [c', dif_pos hk]
+    · simp only [c', dite_eq_left hk]
       exact hc0 _
-    · simp only [c', dif_neg hk]
+    · simp only [c', dite_eq_right hk]
       exact one_ne_zero
   let z : (Σ k, ι k) → ℂ := fun r => c' r.1 * R.lift x x r
   have hzstep : z ∘ stepV M p = Rp.lift (h x) (h x) := by
@@ -1443,7 +1426,7 @@ theorem weight_descends_of_sameOrbit : ∀ (K : Type) [Fintype K] (ι : K → Ty
     have hq : (∀ p' : Ψ × Fin N, M.blk p' ≠ Option.some q.1.1) ∨ M.blk p = Option.some q.1.1 := q.1.2
     show c' q.1.1 * R.lift x x ⟨q.1.1, q.2⟩ = c q.1 * R.lift x x ⟨q.1.1, q.2⟩
     congr 1
-    simp only [c', dif_pos hq]
+    simp only [c', dite_eq_left hq]
   have hzmem : z ∈ mcPts (mCoordIdeal y) := by
     refine ⟨fun k => ?_, fun f hf => ?_⟩
     · obtain ⟨i, hi⟩ := hwmem.1 k
@@ -1521,7 +1504,7 @@ theorem dy_eq_zero (M : FlagModel y Ψ N j) (p : Ψ × Fin N) (k : K)
   have h1 : ¬ ∀ p', M.blk p' ≠ some k := fun h => hk ⟨⟨k, Or.inl h⟩, rfl⟩
   have h2 : M.blk p ≠ some k := fun h => hk ⟨⟨k, Or.inr h⟩, rfl⟩
   unfold FlagModel.dy
-  rw [dite_eq_right h1, if_neg h2]
+  rw [dite_eq_right h1, ite_eq_right h2]
 
 theorem step_member (hR : RegGlobalStatement) (hP : PullbackStatement) [Fintype Ψ] [DecidableEq Ψ]
     (M : FlagModel y Ψ N j) {n e : ℕ} (BM : BaseMetric M n) (R : AnLogRes (mCoordIdeal y) ⊤ e)
@@ -1794,7 +1777,7 @@ theorem flagAn_exists : Inputs → ∀ (K : Type) [Fintype K] (ι : K → Type) 
     isBlockMap_id (fun k => ⟨fun _ => by
       by_cases h : ∀ p', M.blk p' ≠ some k
       · exact Or.inl h
-      · push_neg at h
+      · push Not at h
         obtain ⟨p, hp⟩ := h
         exact Or.inr ⟨p, trivial, hp⟩, fun _ => ⟨k, rfl⟩⟩)
   obtain rfl := he fun _ => trivial

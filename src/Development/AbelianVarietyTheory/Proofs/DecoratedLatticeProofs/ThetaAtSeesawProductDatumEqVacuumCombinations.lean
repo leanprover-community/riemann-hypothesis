@@ -28,44 +28,8 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HzUnit
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationDisjointPlacesCommuteVacua
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticeAtPlacesCongrLocalLatticesStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegralIndicatorGivesLocalVacuumSplitPlace
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
 import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
@@ -76,8 +40,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsUnitaryS
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -210,11 +172,11 @@ theorem tensorAt_halfInd (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) {e : A
   unfold halfInd
   by_cases hR : t ∈ Λ ∧ IsHalf (e + p.e) t
   · obtain ⟨⟨h1, h2⟩, h3⟩ := key.2 hR
-    rw [if_pos hR, if_pos ⟨h1, h2⟩, if_pos h3, mul_one]
-  · rw [if_neg hR]
+    rw [ite_eq_left hR, ite_eq_left ⟨h1, h2⟩, ite_eq_left h3, mul_one]
+  · rw [ite_eq_right hR]
     by_cases h3 : M ∈ Λv
-    · rw [if_pos h3, mul_one, if_neg fun h => hR (key.1 ⟨h, h3⟩)]
-    · rw [if_neg h3, mul_zero]
+    · rw [ite_eq_left h3, mul_one, ite_eq_right fun h => hR (key.1 ⟨h, h3⟩)]
+    · rw [ite_eq_right h3, mul_zero]
 
 end GlobalTheory.LatIdemVac
 
@@ -519,9 +481,9 @@ theorem prodDat_zero (L : Fin 0 → LocPl ψ S T M M') (Λ : AddSubgroup (WO S T
   by_cases hx : x = 0
   · subst hx
     have h1 : IsHalf (∑ i, (L i).q.e) (0 : WO S T) := by rw [hs]; exact (isHalf_zero_iff _).2 rfl
-    rw [if_pos h1, if_pos ⟨Λ.zero_mem, (isHalf_zero_iff _).2 rfl⟩, Fin.prod_univ_zero]
+    rw [ite_eq_left h1, ite_eq_left ⟨Λ.zero_mem, (isHalf_zero_iff _).2 rfl⟩, Fin.prod_univ_zero]
   · have h1 : ¬ IsHalf (∑ i, (L i).q.e) x := by rw [hs]; exact fun h => hx ((isHalf_zero_iff _).1 h)
-    rw [if_neg h1, if_neg (fun h => hx ((isHalf_zero_iff _).1 h.2))]
+    rw [ite_eq_right h1, ite_eq_right (fun h => hx ((isHalf_zero_iff _).1 h.2))]
 
 theorem prodDat_succ {n : ℕ} (L : Fin (n+1) → LocPl ψ S T M M') (hinj : Function.Injective fun i => (L i).q.v) :
     prodDat L = (ofSplit (L 0).q).tensorAt (L 0).FS (L 0).FT (prodDat fun i : Fin n => L i.succ) (L 0).Φ.1 := by
@@ -537,9 +499,9 @@ theorem prodDat_succ {n : ℕ} (L : Fin (n+1) → LocPl ψ S T M M') (hinj : Fun
   rw [Fin.sum_univ_succ, Fin.prod_univ_succ]
   have hiff := isHalf_add_iff (a := (L 0).q.e) (b := ∑ i : Fin n, (L i.succ).q.e) (orth_sum L hinj) t
   by_cases h : IsHalf ((L 0).q.e + ∑ i : Fin n, (L i.succ).q.e) t
-  · rw [if_pos h, if_pos (hiff.1 h)]
+  · rw [ite_eq_left h, ite_eq_left (hiff.1 h)]
     ring
-  · rw [if_neg h, if_neg (fun h' => h (hiff.2 h')), zero_mul]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hiff.2 h')), zero_mul]
 
 theorem halfInd_zero_isSBHalf (Λ : AddSubgroup (WO S T)) : IsSBHalf (0 : AE D) Λ (halfInd 0 Λ) := by
   refine ⟨fun t h => ?_, 1, one_pos, fun u _ hh t => ?_, fun t h => ?_⟩

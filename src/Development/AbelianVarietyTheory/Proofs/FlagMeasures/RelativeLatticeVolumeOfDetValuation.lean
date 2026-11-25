@@ -6,56 +6,12 @@ public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermLat
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -151,7 +107,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Yzb5.resQ :
-    {F : Type} → [inst : Field F] → [inst_1 : ValuativeRel F] → ↥(ValuativeRel.valuation F).integer → ℕ :=
+    {F : Type} → [Field F] → [ValuativeRel F] → ↥(ValuativeRel.valuation F).integer → ℕ :=
     fun {F : Type} [Field F] [ValuativeRel F] (ϖ : ↥(ValuativeRel.valuation F).integer) ↦
       Nat.card (↥(ValuativeRel.valuation F).integer ⧸ Ideal.span {ϖ})
 
@@ -251,10 +207,10 @@ private lemma UpperTheory.Reformulated.B.Yzb5.card_coker {R : Type*} [CommRing R
   rw [hs, UpperTheory.Reformulated.B.Yzb5.card_quot_pow p hp.ne_zero]
 
 theorem UpperTheory.Reformulated.B.Yzb5.relIndex_map :
-    ∀ {F : Type} [inst : Field F] [inst_1 : ValuativeRel F] [inst_2 : TopologicalSpace F] [IsNonarchimedeanLocalField F]
+    ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
       {ϖ : ↥(ValuativeRel.valuation F).integer},
       Irreducible ϖ →
-        ∀ {W : Type} [inst_4 : AddCommGroup W] [inst_5 : _root_.Module F W] {ι : Type} [Fintype ι] (b : Module.Basis ι F W)
+        ∀ {W : Type} [AddCommGroup W] [_root_.Module F W] {ι : Type} [Fintype ι] (b : Module.Basis ι F W)
           (ψ : W →ₗ[F] W) (a : ℤ) (u : (↥(ValuativeRel.valuation F).integer)ˣ),
           (LinearMap.det : (W →ₗ[F] W) → F) ψ = (↑ϖ : F) ^ a * (↑(↑u : ↥(ValuativeRel.valuation F).integer) : F) →
             ∀ (W0 : AddSubgroup W),

@@ -129,9 +129,6 @@ theorem exists_support_of_stTw2_ne_zero (a b : ℕ) (w : Pl E) (Q₁ Q₂ : (w.a
 
 end GlobalTheory.BCT.GeoFin
 
-namespace GlobalTheory.BCT.GeoFin
-
-end GlobalTheory.BCT.GeoFin
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -261,7 +258,7 @@ theorem absHalf_prodFormula : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
       congr 1
       funext v
       rw [InfinitePlace.norm_embedding_eq, InfinitePlace.mult,
-        if_neg (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex v))]
+        ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex v))]
     have hprod := prod_abs_eq_one (K := E) hx
     have hsq : ((∏ᶠ w : Pl E, Real.sqrt (FinitePlace.mk w x)) * ∏ v : InfinitePlace E, ‖v.embedding x‖) ^ 2 = 1 := by
       rw [mul_pow, hA, hP, hF, mul_comm]
@@ -303,9 +300,6 @@ theorem resMap : ∀ (K L : Type) [Field K] [Field L] (f : K →+* L) (P Q : K[X
   exact Polynomial.resultant_map_map P Q _ _ f
 end GlobalTheory.ProdForm
 
-namespace GlobalTheory.ProdForm
-
-end GlobalTheory.ProdForm
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -851,7 +845,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
         unfold delta
         rw [hres]
         simp only [hn₁, hn₂, hdl]
-        rw [if_pos ⟨u, hu, huw⟩]
+        rw [ite_eq_left ⟨u, hu, huw⟩]
       have hne : (-1) ^ (a * b) * algebraMap E (w.adicCompletion E) d ≠ 0 :=
         mul_ne_zero (pow_ne_zero _ (neg_ne_zero.2 one_ne_zero)) (hA0 d hd0)
       rw [hdelta, dite_eq_left hne]
@@ -899,7 +893,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
       unfold delta
       rw [hres]
       simp only [hn₁, hn₂, hdl]
-      rw [if_neg hsp]
+      rw [ite_eq_right hsp]
       simp only [f]
       rw [GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k]
       rfl
@@ -968,7 +962,7 @@ theorem delta_eventually_one {E : Type} [Field E] [NumberField E] [IsCMField E] 
       unfold GlobalTheory.BCT.delta
       rw [hres]
       simp only [hn₁, hn₂, hdl]
-      rw [if_pos hsp]
+      rw [ite_eq_left hsp]
     rw [hdelta, dite_eq_left hne]
     have hunit : (Units.mk0 _ hne : (w.adicCompletion E)ˣ) = atFin w u := by
       apply Units.ext
@@ -981,7 +975,7 @@ theorem delta_eventually_one {E : Type} [Field E] [NumberField E] [IsCMField E] 
   · unfold GlobalTheory.BCT.delta
     rw [hres]
     simp only [hn₁, hn₂, hdl]
-    rw [if_neg hsp, h3, mul_one]
+    rw [ite_eq_right hsp, h3, mul_one]
     have := GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k
     rw [h1] at this
     simpa [k] using this.symm

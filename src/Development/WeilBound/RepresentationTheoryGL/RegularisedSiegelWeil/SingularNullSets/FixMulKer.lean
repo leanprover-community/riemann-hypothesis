@@ -56,14 +56,14 @@ theorem ker_snd {S : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (hε : IsI
   classical
   have h : (ε * y).2 v = 0 := by rw [hy]; rfl
   change ε.2 v * y.2 v = 0 at h
-  rwa [idF_snd hε v, if_pos hv, one_mul] at h
+  rwa [idF_snd hε v, ite_eq_left hv, one_mul] at h
 
 theorem fix_snd {S : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (hε : IsIdF S ε) {h : AF F} (hh : ε * h = h)
     {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) : h.2 v = 0 := by
   classical
   have h' : (ε * h).2 v = h.2 v := by rw [hh]
   change ε.2 v * h.2 v = h.2 v at h'
-  rw [idF_snd hε v, if_neg hv, zero_mul] at h'
+  rw [idF_snd hε v, ite_eq_right hv, zero_mul] at h'
   exact h'.symm
 
 theorem fix_mul_ker {ε h y : AF F} (hε : ε * ε = ε) (hh : ε * h = h) (hy : ε * y = 0) : h * y = 0 := by

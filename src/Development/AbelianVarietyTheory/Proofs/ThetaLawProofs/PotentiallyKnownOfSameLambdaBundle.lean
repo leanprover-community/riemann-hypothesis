@@ -28,59 +28,12 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SiegelStructu
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsTwoTorsionTranslateSameLambdaBundleStatement
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LbIsoDescendsToSubfieldContainingFinset
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SqOfCalculus
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EntireApplyEqOfPeriodicOfSpanReal
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.LevelThreeSeparatesTangentVectors
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ThetaQuasiPeriods.Transl
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleIdentityIso
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
@@ -500,7 +453,7 @@ end Frame
 
 
 open FrameValue in
-theorem normalForm_translate : Out.Laws → ThetaUnifAV → ∀ (x x' : KeyIn ℂ) (g : ℕ) (h : x.P.g = g) (u : HolUnif x.P.A x.P.L g) (τ : Matrix (Fin g) (Fin g) ℂ) (a b a' b' : Fin g → ℂ) (m n : Fin g → ℤ) (ν : ℂˣ), charHalf g a b → charHalf g a' b' → Wit x h u τ a b → (∀ i, ∃ k : ℤ, a' i = a i + n i / 2 + k) → (∀ i, ∃ k : ℤ, b' i = b i + m i / 2 + k) → IsTrl x' x (u.ex (frac τ 2 m n)) ν → ∃ (h' : x'.P.g = g) (u' : HolUnif x'.P.A x'.P.L g) (φ : x'.P.A ≅ x.P.A) (c : ℂ), IsMonHom φ.hom ∧ (∀ z, u'.ex z ≫ φ.hom = u.ex z) ∧ c ^ 8 * (ν : ℂ) ^ 2 = 1 ∧ (∀ z, z ∈ u'.Λ ↔ z ∈ u.Λ) ∧ u'.IsRig x'.rig ∧ u'.IsFn x'.th (fun z => c * thetaChar τ a' b' z) ∧ ∀ i : Fin g, u'.IsDiff (Pi.single i (2 * Real.pi * Complex.I)⁻¹) (x'.v (i.cast h'.symm)) := by
+theorem normalForm_translate : Out.Laws → ThetaUnifAV → ∀ (x x' : KeyIn ℂ) (g : ℕ) (h : x.P.g = g) (u : HolUnif x.P.A x.P.L g) (τ : Matrix (Fin g) (Fin g) ℂ) (a b a' b' : Fin g → ℂ) (m n : Fin g → ℤ) (ν : ℂˣ), charHalf g a b → charHalf g a' b' → Wit x h u τ a b → (∀ i, ∃ k : ℤ, a' i = a i + n i / 2 + k) → (∀ i, ∃ k : ℤ, b' i = b i + m i / 2 + k) → IsTrl x' x (u.ex (frac τ 2 m n)) ν → ∃ (h' : x'.P.g = g) (u' : HolUnif x'.P.A x'.P.L g) (c : ℂ), c ^ 8 * (ν : ℂ) ^ 2 = 1 ∧ (∀ z, z ∈ u'.Λ ↔ z ∈ u.Λ) ∧ u'.IsRig x'.rig ∧ u'.IsFn x'.th (fun z => c * thetaChar τ a' b' z) ∧ ∀ i : Fin g, u'.IsDiff (Pi.single i (2 * Real.pi * Complex.I)⁻¹) (x'.v (i.cast h'.symm)) := by
   intro _ _ x x' g h u τ a b a' b' m n ν hab hab' ⟨hs, hp, hΛ, hrig, hth, hv⟩ ha hb hT
   have hL := x.P.isLB
   have hL' := x'.P.isLB
@@ -584,7 +537,7 @@ theorem normalForm_translate : Out.Laws → ThetaUnifAV → ∀ (x x' : KeyIn �
     (fun z => mul_ne_zero hlam (Complex.exp_ne_zero _))
   have hF' : ∀ z, (u'.ex z).left ≫ (φ.hom ≫ trl x.P.A (u.ex z₀)).left = (u.ex (z + z₀)).left := fun z => by
     rw [hex, hF]
-  refine ⟨hg.trans h, u', φ, d / lam, hφ, fun z => by simp [hex], ?_, fun z => by rw [hΛ'], ?_, ?_, fun i => ?_⟩
+  refine ⟨hg.trans h, u', d / lam, ?_, fun z => by rw [hΛ'], ?_, ?_, fun i => ?_⟩
   · rw [div_pow, e6]
     have : d ^ 8 ≠ 0 := hd8 ▸ Complex.exp_ne_zero _
     rw [div_mul_eq_mul_div, mul_comm, div_self (mul_ne_zero (pow_ne_zero _ ν.ne_zero) this)]
@@ -749,7 +702,7 @@ theorem val_of_isTrl : Out.Laws → ThetaUnifAV → ∀ (x x' : KeyIn ℂ) (p : 
   subst hz'
   choose a' ha' ka using fun i => exists_half (a i) (hab.1 i) (n i)
   choose b' hb' kb using fun i => exists_half (b i) (hab.2 i) (m i)
-  obtain ⟨h', u', -, c', -, -, hc', hΛ, q₄, q₅, q₆⟩ := _root_.GlobalTheory.HalfTranslate.normalForm_translate hL hU
+  obtain ⟨h', u', c', hc', hΛ, q₄, q₅, q₆⟩ := _root_.GlobalTheory.HalfTranslate.normalForm_translate hL hU
     ⟨x.P, x.g_pos, x.rig, x.rig_gen, th₀, hth₀, v₀, hb₀⟩
     ⟨x'.P, x'.g_pos, x'.rig, x'.rig_gen, th₀', hth₀', _, hb₀'⟩ x.P.g rfl u τ a b a' b' m n ν hab ⟨ha', hb'⟩ hu ka kb
     ⟨φ, hg, w, mu, rp, hp, hφ, hw, hmu, hrp, fun i => by simp, fun z j k hj hk => by

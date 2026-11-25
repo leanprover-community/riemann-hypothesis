@@ -112,11 +112,8 @@ open GlobalTheory.LocFlat.CFac
 section SlopeTestRemainingChoices
 variable {D : D7}
 
-theorem isThetaFunO_zero' (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) : IsThetaFunO ψ S T 0 := {
-  quasi γ w := by simp
-  level := ⟨⊤, isOpen_univ, fun u _ _ => by funext w; simp [heisO]⟩
-  cont := continuous_const
-  smooth _ _ _ _ _ := contDiff_const }
+theorem isThetaFunO_zero' (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) : IsThetaFunO ψ S T 0 :=
+  GlobalTheory.OrientedHeis.theta_zero
 
 def heisL (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (u : WO S T) : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ) where
   toFun := heisO ψ S T u

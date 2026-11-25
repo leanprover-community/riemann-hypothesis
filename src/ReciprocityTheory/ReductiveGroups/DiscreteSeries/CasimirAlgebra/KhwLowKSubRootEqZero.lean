@@ -48,7 +48,7 @@ theorem casimir_split {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E
   have comm : ∀ a b, E a b * E b a + E b a * E a b = E a a - E b b + 2 • (E b a * E a b) := by
     intro a b
     have h := hE a b b a
-    rw [if_pos rfl, if_pos rfl, sub_eq_iff_eq_add] at h
+    rw [ite_eq_left rfl, ite_eq_left rfl, sub_eq_iff_eq_add] at h
     rw [h]
     abel
   have h3 : ∑ a, ∑ b, (if P b a then E a b * E b a else 0) =
@@ -206,8 +206,8 @@ theorem wd_term (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ M}
   rcases hab with ⟨h, he⟩ | ⟨h, he⟩
   · simp [hv.2 a b h he, lt_asymm h]
   · have h1 := hU a b v (E a b v)
-    rw [adjSign, if_neg he, wd_inner_self] at h1
-    rw [if_pos ⟨h, Ne.symm he⟩]
+    rw [adjSign, ite_eq_right he, wd_inner_self] at h1
+    rw [ite_eq_left ⟨h, Ne.symm he⟩]
     push_cast
     linear_combination h1
 

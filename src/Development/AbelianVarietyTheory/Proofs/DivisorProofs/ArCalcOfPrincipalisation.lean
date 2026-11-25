@@ -44,56 +44,15 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedArchRes
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDegreeOfIsClosedImmersion
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArithIntersectionCalculusCycleHeightsOfAnalytic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverMorphismRestrictOfRelAmple
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 import Development.AbelianVarietyTheory.Definitions.Divisors.DetJacMatCoordsEqTransitionJacobianDet
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormSignedPartMeasureComplOpenGenericP
-import Mathlib.AlgebraicGeometry.QuasiAffine
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReducedClosureOfPointProperties
 import Mathlib.Tactic.Linter.Style
@@ -425,13 +384,6 @@ noncomputable section
 
 namespace GlobalTheory.DefectAdd
 
-theorem compactSpace_of_projOver {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
-    (h : IsProjOver f) : CompactSpace X := by
-  obtain ⟨m, i, hi, rfl⟩ := h
-  have := isProper_str R m
-  have : IsProper (i ≫ PSpace.str R m) := inferInstance
-  exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R m)
-
 theorem int_eq_add_of_ae {k : Type} [CommRing k] {Y : Scheme.{0}} {q : Y ⟶ Sp k} {σ : k →+* ℂ} {D : ℕ}
     (L : Fin D → MLine q σ) {f g h : CxPts q σ → ℝ} (hf : Intg L f) (hg : Intg L g)
     (hh : ∀ ε : ℤˣ, ∀ᵐ y ∂part L ε, h y = f y + g y) :
@@ -445,7 +397,7 @@ theorem defect_add : GlobalTheory.Published.Principalisation → ∀ (F : Type) 
   obtain ⟨s₁, h₁, hloc, hmult, hlog⟩ := _root_.GlobalTheory.Mix.exists_sec_tens F X p σ M A s hs a ha
   refine ⟨s₁, h₁, hloc, ?_⟩
   have hσ : Function.Injective σ := σ.injective
-  haveI : CompactSpace X := compactSpace_of_projOver hproj
+  haveI : CompactSpace X := GlobalTheory.MetricIndep.compactSpace_of_projOver hproj
   have iM := _root_.GlobalTheory.Mix.logSec_intg_proj hP F X p σ (e + 1) hproj hdim (Fin.cons N L) M s hs
   have iA := _root_.GlobalTheory.Mix.logSec_intg_proj hP F X p σ (e + 1) hproj hdim (Fin.cons N L) A a ha
   have iMh := _root_.GlobalTheory.Mix.logSec_intg_proj hP F X p σ (e + 1) hproj hdim (Fin.cons M L) N t ht
@@ -679,8 +631,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.R
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ChartGlue GlobalTheory.Mix
 
-
-
 theorem GlobalTheory.Mix.cycInt_genericFibre : ∀ (k K : Type) [CommRing k] [Field K] [Algebra k K] [IsFractionRing k K] (X G : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (q : G ⟶ Sp K) (j : G ⟶ X) (hp : IsPullback j q p (spMap (algebraMap k K))) (τ : K →+* ℂ) (e : ℕ), IsArithVar p (e + 1) → ∀ (L : Fin e → MLine p (τ.comp (algebraMap k K))) (f : CxPts p (τ.comp (algebraMap k K)) → ℝ) (x : G), Order.coheight x = 1 → cycInt (fun i => (L i).bc hp.w τ) (fun y => f (bcPt hp.w τ y)) x = cycInt L f (j x) := by
   intro k K _ _ _ _ X G _ p q j hp τ e hX L f x hx
   obtain ⟨hGi, hGn, hGproj, hGdim, hgen, hinj, hstalk, hcoh, hempty⟩ :=
@@ -808,15 +758,11 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points Gl
 
 namespace GlobalTheory.MixRec
 
-theorem injective_of_finite_int {k : Type} [CommRing k] [IsDomain k] [Module.Finite ℤ k]
-    (σ : k →+* ℂ) : Function.Injective σ := by
-  apply _root_.GlobalTheory.IndexNormEmb.injective_of_ringHom <;> assumption
-
 theorem exists_extension {k : Type} [CommRing k] [IsDomain k] [Module.Finite ℤ k]
     (K : Type) [Field K] [Algebra k K] [IsFractionRing k K] (σ : k →+* ℂ) :
     ∃ τ : K →+* ℂ, σ = τ.comp (algebraMap k K) :=
-  ⟨IsFractionRing.lift (A := k) (K := K) (injective_of_finite_int σ),
-    RingHom.ext fun x => (IsFractionRing.lift_algebraMap (K := K) (injective_of_finite_int σ) x).symm⟩
+  ⟨IsFractionRing.lift (A := k) (K := K) (GlobalTheory.MixPolar.injective_emb σ),
+    RingHom.ext fun x => (IsFractionRing.lift_algebraMap (K := K) (GlobalTheory.MixPolar.injective_emb σ) x).symm⟩
 
 theorem side_symm : GlobalTheory.Published.Principalisation → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp k) (e : ℕ), IsArithVar p (e + 1) → ∀ (σ : k →+* ℂ) (L : Fin e → MLine p σ) (M N : MLine p σ) (s : M.B.Sec) (hs : genericPoint X ∈ nonzeroLocus s) (t : N.B.Sec) (ht : genericPoint X ∈ nonzeroLocus t), (∀ z : X, Order.coheight z = 1 → z ∈ nonzeroLocus s ∨ z ∈ nonzeroLocus t) → side N L (M.logSec s) (N.logSec t) (divOfSec M.φ.isLB s hs) = side M L (N.logSec t) (M.logSec s) (divOfSec N.φ.isLB t ht) := by
   intro hP k _ X _ _ p e h σ
@@ -883,7 +829,7 @@ theorem resArch_eq_finsum_cycInt : GlobalTheory.Published.Principalisation → �
   have hc (σ : k →+* ℂ) := (_root_.GlobalTheory.Mix.cycInt_of_closedImmersion k X (clo z) p (cloι z ≫ p) σ hX.isProjOver (cloι z) rfl e
     (fun i => MLine.ofHerm (L i) σ) ((MLine.ofHerm N σ).logSec t)).2
   simp only [cloι_genericPoint] at hc
-  refine (dif_pos hgen).trans ?_
+  refine (dite_eq_left hgen).trans ?_
   rcases isArithVar_or_isEmpty hamb' hd with hv | hE
   · refine (_root_.GlobalTheory.MixPolar.mixArch_eq_sum hP k (clo z) (cloι z ≫ p) e hv (fun a => (L a).restr (cloι z)) (N.restr (cloι z))
       (Cartier.secPull t (cloι z)) hgen).trans (finsum_congr fun σ => ?_)

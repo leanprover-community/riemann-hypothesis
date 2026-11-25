@@ -13,8 +13,6 @@ import Mathlib.Tactic.TypeStar
 
 open CrystallineSemistableComparison.Pb.Kap
 
-set_option backward.isDefEq.respectTransparency false
-
 namespace GlobalTheory.CompanionTheory.KapRhoHom
 
 private theorem dual_expand {K B : Type} {V : Type*} [Field K] [CommRing B] [AddCommGroup V] [Module K V]

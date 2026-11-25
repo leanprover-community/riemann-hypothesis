@@ -31,12 +31,8 @@ section Alg
 
 variable {K : Type} [Field K]
 
-private theorem lgF_zero_lemma (l : ℕ) : PowerSeries.constantCoeff (lgF K l) = 0 := by
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, lgF, PowerSeries.coeff_mk]
-  simp
-
 theorem logPair {l : ℕ} (hl : 2 ≤ l) : C.IsLogPair (lgF K l) (expF K l) := by
-  have h0 := lgF_zero_lemma (K := K) l
+  have h0 := Pair.cc_lgF (K := K) hl
   have h1 := _root_.Formalism.InvariantFactorPaths.G7.LemTwo.coeff_one_lgF (K := K) hl
   have hu : IsUnit (PowerSeries.coeff 1 (lgF K l)) := by rw [h1]; exact isUnit_one
   have he : expF K l = (lgF K l).substInvOfIsUnit hu := by rw [expF, dite_eq_left hu]
@@ -134,7 +130,8 @@ theorem of_closed_int {l : ℕ} {σ : K →+* K} (hU : UnrOK K l σ) {P : K → 
 
 theorem lawLog {l : ℕ} (hl : 2 ≤ l) {F : MvPowerSeries (Fin 2) K} (hF : IsLawOfLog l F) :
     Formalism.L2.Th1.B.LawLog F (lgF K l) := by
-  exact ⟨hF.1, hF.2.1, lgF_zero_lemma l, _root_.Formalism.InvariantFactorPaths.G7.LemTwo.coeff_one_lgF hl, hF.2.2⟩
+  exact ⟨hF.1, hF.2.1, Pair.cc_lgF hl,
+    _root_.Formalism.InvariantFactorPaths.G7.LemTwo.coeff_one_lgF hl, hF.2.2⟩
 
 theorem endInt {l : ℕ} {σ : K →+* K} (hU : UnrOK K l σ) {α : K} (hα : ‖α‖ ≤ 1)
     (hs : σ (σ α) = α) : C.EndInt (Formalism.G.unitBall K) (lgF K l) (expF K l) α := by

@@ -67,10 +67,10 @@ theorem omComm {R : Type*} [Ring R] {n : ℕ} (L e : Fin n → Fin n → R) (hL 
     simp only [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_sub_distrib]
   rw [hx]
   simp_rw [hterm, Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [Finset.sum_comm (f := fun a b => if d = a then L c b * e b a else 0)]
   rw [Finset.sum_comm (f := fun a b => if a = c then L a b * e b d else 0)]
-  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   abel
 
 variable {n : ℕ} {M : Type} [AddCommGroup M] [Module ℂ M] {P : Type} [DecidableEq P]
@@ -106,8 +106,8 @@ theorem tensorGl_holds : TensorGl := by
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact glSum S _ _ (glLift E hE) (fun p a b c d => lift_comm_eAt _ _ _ _) fun p q a b c d => by
       by_cases hpq : p = q
-      · subst hpq; rw [if_pos rfl, eAt_mul, eAt_mul]
-      · rw [if_neg hpq, (eAt_comm hpq _ _ _ _).eq, sub_self]
+      · subst hpq; rw [ite_eq_left rfl, eAt_mul, eAt_mul]
+      · rw [ite_eq_right hpq, (eAt_comm hpq _ _ _ _).eq, sub_self]
   · intro p hp a b
     have hsplit : tE S E a b = (lift (E a b) + eAt p a b) + ∑ q ∈ S.erase p, eAt q a b := by
       rw [tE, add_assoc]; congr 1; exact (Finset.add_sum_erase S (fun q => eAt q a b) hp).symm

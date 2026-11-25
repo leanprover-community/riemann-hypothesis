@@ -66,19 +66,12 @@ theorem φVB_pow_Dcris (s : ℕ) {z : V ⊗[Qp] B} (hz : z ∈ Dcris PD ρ) :
     rw [pow_succ']
     exact φVB_Dcris PD ih
 
-theorem act_mulVB (g : G) (c : K₀) (z : V ⊗[Qp] B) :
-    actVB PD ρ g (mulVB (LL := LL) (V := V) (B := B) c z) = mulVB (LL := LL) (V := V) (B := B) c (actVB PD ρ g z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v w => simp [actVB, mulVB]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 theorem mulVB_Dcris (c : K₀) {z : V ⊗[Qp] B} (hz : z ∈ Dcris PD ρ) :
     mulVB (LL := LL) (V := V) (B := B) c z ∈ Dcris PD ρ := by
   simp only [Dcris, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply,
     sub_eq_zero] at hz ⊢
   intro g
-  rw [act_mulVB, hz g]
+  rw [Formalism.MainNotions.LiftingTheory.lext_act_mul, hz g]
 
 theorem coord_ιV {ι₀ : Type} (b : Module.Basis ι₀ Qp V) (i : ι₀) (z : V ⊗[Qp] B) :
     Formalism.MainNotions.LiftingTheory.lone_coord b i BdR (ιV PD (LL := LL) (V := V) z) = PD.ι (Formalism.MainNotions.LiftingTheory.lone_coord b i B z) := by

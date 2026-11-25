@@ -3,51 +3,9 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.PolyImgSuccAbove, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsDvdOfAlgebraic
@@ -202,7 +160,7 @@ theorem polyImg_freeVar (j0 : Fin (N + 1)) (x : Fin N → Ω) (s : SVar D N) :
     polyImg j0 x (freeVar j0 s) = X s := by
   rcases s with ⟨⟨⟩⟩ | ⟨i, k⟩
   · show polyImg j0 x (0, j0) = _
-    rw [polyImg_same, if_pos rfl]
+    rw [polyImg_same, ite_eq_left rfl]
   · exact polyImg_succAbove j0 x i k
 
 theorem sum_polyImg (j0 : Fin (N + 1)) (v : Fin (N + 1) → Ω) (x : Fin N → Ω) (hv : v j0 ≠ 0)
@@ -217,12 +175,12 @@ theorem sum_polyImg (j0 : Fin (N + 1)) (v : Fin (N + 1) → Ω) (x : Fin N → �
 theorem sum_polyImg_succ (j0 : Fin (N + 1)) (v : Fin (N + 1) → Ω) (x : Fin N → Ω) (hv : v j0 ≠ 0)
     (hx : ∀ k, x k = v (j0.succAbove k) / v j0) (i : Fin D) :
     ∑ j, polyImg j0 x (i.succ, j) * C (v j) = 0 := by
-  rw [sum_polyImg j0 v x hv hx, polyImg_same, if_neg (Fin.succ_ne_zero i), neg_add_cancel, mul_zero]
+  rw [sum_polyImg j0 v x hv hx, polyImg_same, ite_eq_right (Fin.succ_ne_zero i), neg_add_cancel, mul_zero]
 
 theorem sum_polyImg_zero (j0 : Fin (N + 1)) (v : Fin (N + 1) → Ω) (x : Fin N → Ω) (hv : v j0 ≠ 0)
     (hx : ∀ k, x k = v (j0.succAbove k) / v j0) :
     ∑ j, polyImg (D := D) j0 x (0, j) * C (v j) ≠ 0 := by
-  rw [sum_polyImg j0 v x hv hx, polyImg_same, if_pos rfl]
+  rw [sum_polyImg j0 v x hv hx, polyImg_same, ite_eq_left rfl]
   intro h
   have := congrArg (eval (Sum.elim (fun _ => (1 : Ω)) (fun _ => 0))) h
   simp [hv] at this
@@ -276,7 +234,7 @@ theorem exists_maps (j0 : Fin (N + 1)) (v : Fin (N + 1) → Ω) (x : Fin N → �
     rintro ⟨i, j⟩
     rcases Fin.eq_self_or_eq_succAbove j0 j with rfl | ⟨k, rfl⟩
     · refine Fin.cases ?_ (fun i => ?_) i
-      · rw [polyImg_same, if_pos rfl, hX]; rfl
+      · rw [polyImg_same, ite_eq_left rfl, hX]; rfl
       · have h1 := congrArg β₀ (sum_polyImg_succ j v x hv hx i)
         have h2 := hrel i
 

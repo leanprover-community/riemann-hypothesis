@@ -33,7 +33,3 @@ lemma algF_ne_zero {u : 𝓞 F} (hu : u ∉ v.asIdeal) : algebraMap F E (u : F) 
   exact (map_ne_zero_iff _ (algebraMap F E).injective).2 hu0
 
 end PI.SelfDualLoc.W.LB
-
-namespace PI.SelfDualLoc.W
-
-end PI.SelfDualLoc.W

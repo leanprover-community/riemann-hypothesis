@@ -334,9 +334,6 @@ theorem exists_hom {σ : E →ₐ[F] E} (hCM : IsCMExt F E σ) (τ : E →+* ℂ
 
 end GlobalTheory.CompanionTheory.SW.Plane
 
-namespace GlobalTheory.CompanionTheory.SW
-
-end GlobalTheory.CompanionTheory.SW
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

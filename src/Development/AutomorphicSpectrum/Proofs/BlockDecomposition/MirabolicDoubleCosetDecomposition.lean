@@ -44,7 +44,7 @@ theorem exists_row {ι : Type} [Fintype ι] [DecidableEq ι] (s : ι → Prop) (
         intro e
         exact hrj (by simpa using congrArg (Equiv.swap c j) e)
       simp only [T, Matrix.updateRow_ne hne, Matrix.one_apply]
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       by_cases hrc : r = c
       · subst hrc
@@ -245,7 +245,7 @@ theorem cells :
     exact ⟨h, hh, d, m, by simpa using e⟩
   · intro p hp
     have hp' : ¬ _ := fun h => hp ((Cl_iff i t p).2 h)
-    push_neg at hp'
+    push Not at hp'
     obtain ⟨c, hcs, hc⟩ := hp'
     have hj : (piPerm i t (Fin.last ((i + 1) + t))).val < i + 1 := by rw [piPerm_last_val]; omega
     obtain ⟨B, hBj, hB⟩ := exists_row (fun x : Fin ((i + 1) + t + 1) => x.val < i + 1) _ c (piPerm i t (Fin.last ((i + 1) + t))) hc

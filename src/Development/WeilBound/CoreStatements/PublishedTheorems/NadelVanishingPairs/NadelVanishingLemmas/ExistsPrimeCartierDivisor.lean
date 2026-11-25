@@ -310,7 +310,7 @@ theorem exists_local_eqn (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
   · refine ⟨⟨(closure {z})ᶜ, isClosed_closure.isOpen_compl⟩, ?_, 1, fun v hv => ?_⟩
     · exact fun h => hzx (specializes_iff_mem_closure.2 h)
     · have hvz : v ≠ z := fun e => hv (e ▸ subset_closure rfl)
-      rw [if_neg hvz, Units.val_one]
+      rw [ite_eq_right hvz, Units.val_one]
       exact (unitAt_one v).ord_eq_zero
 
 end GlobalTheory.PrimeDivCartier
@@ -339,8 +339,8 @@ theorem GlobalTheory.primeDivisor_isCartier : ∀ (X : Scheme.{0}) [IsIntegral X
     ⟨fun y => germOf y (π y), fun x => ⟨U x, hxU x, π x, fun y hy => germOf_eq_iff.2 (hunit x y hy)⟩⟩
   have hD : ∀ y, D.IsEqn y (π y) := fun y => rfl
   refine ⟨D, ?_, fun v hv => ?_⟩
-  · rw [(hD z).mult_eq, hπ z z (hxU z), if_pos rfl]
-  · rw [(hD v).mult_eq, hπ v v (hxU v), if_neg hv]
+  · rw [(hD z).mult_eq, hπ z z (hxU z), ite_eq_left rfl]
+  · rw [(hD v).mult_eq, hπ v v (hxU v), ite_eq_right hv]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.ExistsPrimeCartierDivisor =====

@@ -104,14 +104,4 @@ def principalCongruence (v : Valuation k Γ) (r : Γ) (hr : r < 1) :
         ≤ 1 * r := mul_le_mul' (hint i l) (hg' l j)
       _ = r := one_mul r
 
-theorem exists_principalCongruence :
-    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-      (N : ℕ) (t : k), t ≠ 0 → ValuativeRel.valuation k (t) < 1 →
-      ∃ H : Subgroup (GL (Fin N) k), (H : Set (GL (Fin N) k)) =
-        {g : GL (Fin N) k | ∀ i j, ValuativeRel.valuation k
-          ((g : Matrix (Fin N) (Fin N) k) i j - (1 : Matrix (Fin N) (Fin N) k) i j) ≤
-            ValuativeRel.valuation k (t)} := by
-  intro k _ _ _ _ N t _ ht
-  exact ⟨principalCongruence (ValuativeRel.valuation k) _ ht, rfl⟩
-
 end GlobalTheory.CompanionTheory.PrincipalCongruence

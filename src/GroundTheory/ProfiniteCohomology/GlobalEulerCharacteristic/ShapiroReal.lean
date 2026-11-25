@@ -121,7 +121,7 @@ theorem sum_index_eq_card_top_add :
         (gsRealFamily S ιr p.1).toMonoidHom p.2.out = ⊤},
       (mackeySubgroup (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
         (gsRealFamily S ιr p.1.1).toMonoidHom p.1.2.out).index = 1 := fun p =>
-    (index_mackeySubgroup_realFamily S hL ιr p.1.1 p.1.2).trans (if_pos p.2)
+    (index_mackeySubgroup_realFamily S hL ιr p.1.1 p.1.2).trans (ite_eq_left p.2)
   have hlow : ∀ p : {p : Σ v : {v : InfinitePlace K.1 // v.IsReal},
         MackeyDoubleCoset (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
           (gsRealFamily S ιr v).toMonoidHom //
@@ -129,7 +129,7 @@ theorem sum_index_eq_card_top_add :
         (gsRealFamily S ιr p.1).toMonoidHom p.2.out = ⊤},
       (mackeySubgroup (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
         (gsRealFamily S ιr p.1.1).toMonoidHom p.1.2.out).index = 2 := fun p =>
-    (index_mackeySubgroup_realFamily S hL ιr p.1.1 p.1.2).trans (if_neg p.2)
+    (index_mackeySubgroup_realFamily S hL ιr p.1.1 p.1.2).trans (ite_eq_right p.2)
   have h := Fintype.sum_subtype_add_sum_subtype (fun p : Σ v : {v : InfinitePlace K.1 // v.IsReal},
     MackeyDoubleCoset (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
       (gsRealFamily S ιr v).toMonoidHom =>
@@ -175,7 +175,6 @@ theorem card_infinitePlace_add_card :
     Nat.card_eq_of_bijective (realMemberPlace S ιr hL)
       ⟨realMemberPlace_injective S ιr hL, realMemberPlace_surjective S ιr hL⟩
   have hsum := (finrank_mul_card_real_eq_sum_index S hL ιr).trans (sum_index_eq_card_top_add S hL ιr)
-  set_option synthInstance.maxHeartbeats 200000 in
   exact count_places_arith (card_infinitePlace_eq_real_add_complex K).1
     (card_infinitePlace_eq_real_add_complex L).1 htop hsum (card_infinitePlace_eq_real_add_complex K).2
     (card_infinitePlace_eq_real_add_complex L).2 (Module.finrank_mul_finrank ℚ K.1 L.1)

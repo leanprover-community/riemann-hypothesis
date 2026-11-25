@@ -246,13 +246,13 @@ theorem std_nc_idx (D : D7) (a b : Fin (2 * D.R.rS + D.R.k + 1)) (hab : a < b)
   have ea : epsSH D.R a = true := by
     unfold epsSH epsS
     simp only [Fin.val_cast]
-    rw [if_pos ha]
+    rw [ite_eq_left ha]
   have eb : epsSH D.R b = true := by
     unfold epsSH epsS
     simp only [Fin.val_cast]
     by_cases hb : b.val < D.R.k - 1
-    · rw [if_pos hb]
-    · rw [if_neg hb]
+    · rw [ite_eq_left hb]
+    · rw [ite_eq_right hb]
       have : b.val - (D.R.k - 1) = 0 := by omega
       exact decide_eq_true (by rw [this])
   rw [ea, eb]

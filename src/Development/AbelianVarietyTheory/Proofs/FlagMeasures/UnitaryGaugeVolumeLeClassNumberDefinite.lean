@@ -95,7 +95,6 @@ theorem pos_at (v : InfinitePlace I.F) (hv : I.ε v = allPos I.n) (y : Fin I.n �
     rw [I.P_spec v, hv, GlobalTheory.UnitaryVolume.Jm_allPos]
   have hmap : I.φ v (star y ⬝ᵥ (I.J *ᵥ y)) =
       star (fun i => I.φ v (y i)) ⬝ᵥ (I.J.map (I.φ v) *ᵥ fun i => I.φ v (y i)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [dotProduct, mulVec, map_sum, map_mul, Pi.star_apply, hconj, Matrix.map_apply,
       starRingEnd_apply]
   have hne : (fun i => I.φ v (y i)) ≠ 0 := by
@@ -220,7 +219,7 @@ theorem covol_le {r : ℕ} (h : HasSig I r 0) (μf : Measure I.Gf) [SigmaFinite 
     intro z _
     have hq : ∃ x, Quot.mk (Isom I.E I.n) (latOf I h x) = Quot.mk (Isom I.E I.n) (latOf I h z) :=
       ⟨z, rfl⟩
-    have hpt : pt (Quot.mk (Isom I.E I.n) (latOf I h z)) = hq.choose := dif_pos hq
+    have hpt : pt (Quot.mk (Isom I.E I.n) (latOf I h z)) = hq.choose := dite_eq_left hq
     have e : Isom I.E I.n (latOf I h z) (latOf I h hq.choose) :=
       (isom_equivalence I.E I.n).symm
         ((Equivalence.eqvGen_iff (isom_equivalence I.E I.n)).1 (Quot.eqvGen_exact hq.choose_spec))

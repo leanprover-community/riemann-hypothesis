@@ -197,10 +197,10 @@ theorem e_ueq (η : M.R) (l : Fin (r + 1) → M.R) (b : Fin (r + 1)) :
     by_cases hb : b = Fin.last r
     · subst hb
       rw [show (((eV r : Fin (r + 1) → M.R) (Fin.last r) : M.R) : E) = 1 by simp [eV], map_one]
-      simp only [dl, if_true]
+      simp only [dl, ite_true]
       rfl
     · rw [show (((eV r : Fin (r + 1) → M.R) b : M.R) : E) = 0 by simp [eV, hb], map_zero]
-      simp only [dl, if_neg hb]
+      simp only [dl, ite_eq_right hb]
       rfl
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, AddMemClass.coe_add, MulMemClass.coe_mul, map_add (f := _),
     map_mul, he, embedding_uniformizer]
@@ -325,8 +325,8 @@ theorem vals :
   simp only [pdat]
   refine Prod.ext (Prod.ext ?_ ?_) (Prod.ext ?_ ?_) <;> simp only <;> apply g.e.injective <;>
     rw [AlgEquiv.apply_symm_apply] <;> refine Prod.ext ?_ ?_ <;> simp only [← adeleInfiniteComponent_apply, ← adele_ext_components]
-  · rw [(fY _).1, dl, if_pos rfl, mul_one]
-  · rw [(gY _).1, dl, if_pos rfl, mul_one]
+  · rw [(fY _).1, dl, ite_eq_left rfl, mul_one]
+  · rw [(gY _).1, dl, ite_eq_left rfl, mul_one]
   · rw [lambdaStar_firstProj hs hZh, lastCoordinate_secondProj hs hZh, corner_inverse_secondProj hs hZh]
     have e : ∀ b, (Zh.map (p2 g))⁻¹ b (Fin.last r) *
         p1 g ((Y (Sum.inl b) : E) + algebraMap F E (g.q : F) * Y (Sum.inr b)) =

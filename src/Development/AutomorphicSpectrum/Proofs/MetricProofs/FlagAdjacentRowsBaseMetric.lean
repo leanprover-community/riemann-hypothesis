@@ -17,7 +17,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTw
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CompatibleChartProductProjection
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedChartTransitionAnalytic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FubiniStudyMetricSmooth
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFsInvPow
@@ -31,6 +30,53 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsIntDim
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
+
+section
+@[expose] public section
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec
+
+theorem locSec_norm_eq : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n e : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (τ : Ψ) (a : Fin N) (k₀ : K) (ca cb : Fin N) (RW : AnLogRes (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) ⊤ e) (pr : RW.X → Rb.X) (x x' : RW.X) (ψ ψ' : OpenPartialHomeomorph RW.X (Fin e → ℂ)) (kb kb' : Fin Rb.A.n) (σ σ' : Fin n ↪ Fin e) (i₀ i₀' : Fin e) (V V' : Set RW.X) (u u' : RW.X → ℂ), M.blk (τ, a) = some k₀ → IsWAtlas M Rb τ a k₀ ca cb RW pr → IsLocSec M Rb τ a k₀ ca cb RW pr x ψ kb σ i₀ V u → IsLocSec M Rb τ a k₀ ca cb RW pr x' ψ' kb' σ' i₀' V' u' → ∀ w ∈ V ∩ V', ‖u w * ψ w i₀‖ / (potA M τ a k₀).h (RW.lift x w) = ‖u' w * ψ' w i₀'‖ / (potA M τ a k₀).h (RW.lift x' w) := by
+  intro K _ ι _ Φ _ y Ψ _ _ N j M n e Rb τ a k₀ ca cb RW pr x x' ψ ψ' kb kb' σ σ' i₀ i₀' V V' u u' _ _ hs hs' w hw
+  obtain ⟨⟨F, H, hc⟩, -, -, hVs, hVU, -, hu, hd, hn⟩ := hs
+  obtain ⟨-, -, -, -, hVU', -, hu', hd', hn'⟩ := hs'
+  by_cases h0 : ψ w i₀ = 0
+  · have h0' : ψ' w i₀' = 0 := (hd' w hw.2).2 ((hd w hw.1).1 h0)
+    simp [h0, h0']
+  have h0' : ψ' w i₀' ≠ 0 := fun h => h0 ((hd w hw.1).2 ((hd' w hw.2).1 h))
+  obtain ⟨-, hF, -, -, -, hp⟩ := hc
+  obtain ⟨hH, hG, z₀, z₁, hz₀, hz₁, hex⟩ := hp w (hVs hw.1)
+  have hG' : M.GoodAt F (mCoordIdeal (basePart M.blk z₀)) := by
+    obtain ⟨c, hc0, hzc⟩ := hz₀
+    have e₀ : basePart M.blk z₀ = fun q : Σ k, baseIdx ι M.blk k =>
+        (fun k : NonPluckerBlocks M.blk => c k.1) q.1 * basePart M.blk (fstPt k₀ (RW.lift w w)) q := by
+      rw [hzc]; rfl
+    rw [e₀, GlobalTheory.CompanionTheory.Ar.PB.StepW.TorusAct.mCoordIdeal_torus (K := NonPluckerBlocks M.blk) (ι := baseIdx ι M.blk)
+      (fun k : NonPluckerBlocks M.blk => c k.1) (fun k => hc0 k.1) (basePart M.blk (fstPt k₀ (RW.lift w w)))]
+    exact hG
+  have hD : IsPtData M τ a k₀ ca cb RW w z₀ z₁ F (H τ (ψ w)) (ψ w i₀) :=
+    ⟨hF, hG', hz₀, hz₁, (hH τ).1, (hH τ).2, h0, fun i => (hex τ i).1, fun i => by
+      simpa using (hex τ i).2⟩
+  have e₁ := hn w hw.1 h0 z₀ z₁ F _ _ hD
+  have e₂ := hn' w hw.2 h0' z₀ z₁ F _ _ hD
+  have hA : 0 < (potA M τ a k₀).h (RW.lift x w) := (potA M τ a k₀).pos _ (RW.mem x w (hVU hw.1)).1
+  have hA' : 0 < (potA M τ a k₀).h (RW.lift x' w) := (potA M τ a k₀).pos _ (RW.mem x' w (hVU' hw.2)).1
+  have hN : 0 < ‖u w * ψ w i₀‖ := norm_pos_iff.2 (mul_ne_zero (hu w hw.1) h0)
+  have hN' : 0 < ‖u' w * ψ' w i₀'‖ := norm_pos_iff.2 (mul_ne_zero (hu' w hw.2) h0')
+  refine Real.log_injOn_pos (Set.mem_Ioi.2 (div_pos hN hA)) (Set.mem_Ioi.2 (div_pos hN' hA')) ?_
+  rw [Real.log_div hN.ne' hA.ne', Real.log_div hN'.ne' hA'.ne', e₁, e₂]
+
+end GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.EqOfOrbitNormal, Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicFrameMetricNearPoint, Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedMetricLogFormula, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTwistedMeasure, Development.AutomorphicSpectrum.Proofs.MetricProofs.CompatibleChartProductProjectionTwisted, Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedChartContinuousProjection, Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedChartCoordinatesRegular, Development.AutomorphicSpectrum.Proofs.MetricProofs.IsSectionDiagSec, Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedChartHolomorphic, Development.AutomorphicSpectrum.Proofs.MetricProofs.IsNormFnLogNormSecDiagSec, Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedChartLocalCoordinates, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentRowsBaseMetric
@@ -82,9 +128,9 @@ theorem holoOn_minor' {N : ℕ} {V : Set X} {m : X → Matrix (Fin N) (Fin N) �
     A.HoloOn V fun y => minorIJ (m y) I J := by
   unfold minorIJ
   by_cases e : I.card = J.card
-  · simp only [dif_pos e, Matrix.det_apply']
+  · simp only [dite_eq_left e, Matrix.det_apply']
     exact holoOn_sum' _ fun s => holoOn_mul' (holoOn_const' _ _) (holoOn_prod' _ fun a => h _ _)
-  · simp only [dif_neg e]
+  · simp only [dite_eq_right e]
     exact holoOn_const' _ _
 
 theorem holoOn_of_chart {ψ : OpenPartialHomeomorph X (Fin e → ℂ)} (hψ : IsCompatChart A ψ)
@@ -99,8 +145,8 @@ theorem holoOn_transv {N : ℕ} {V : Set X} {h : X → Matrix (Fin N) (Fin N) �
   simp only [Matrix.add_apply, Matrix.single_apply]
   refine holoOn_add' (holoOn_const' _ _) ?_
   by_cases e : cb = c ∧ ca = b
-  · simpa only [if_pos e] using ht
-  · simpa only [if_neg e] using holoOn_const' V 0
+  · simpa only [ite_eq_left e] using ht
+  · simpa only [ite_eq_right e] using holoOn_const' V 0
 
 end Holo
 
@@ -228,7 +274,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   have hzH : ∀ q, RW.A.HoloOn V₁ fun w => z₀ w q := fun q => by
     by_cases hq : ∀ p, M.blk p ≠ some q.1
     · exact holoOn_mono' (hbase ⟨q.1, hq⟩ q.2) hV₁W
-    · push_neg at hq
+    · push Not at hq
       obtain ⟨⟨τ', i⟩, hp⟩ := hq
       exact holoOn_step hV₁o (v := fun I w => valAt M.x (F.u q I) (basePart M.blk (z₀ w)))
         (h := fun w => H τ' (ψ w)) (S := stepCols N j i) (fun I => hvV q I)
@@ -241,7 +287,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
       (fun r s => holoOn_transv (fun r s => holoOn_mono' (hHH τ r s) hV₁S) (holoOn_mono' hti hV₁S) cb ca r s)
       fun w hwV => ?_
     have h1 := ((hz w (hV₁S hwV)).2.2 τ a).2.2 k₀ hk m
-    rw [if_pos rfl, hbeq w (hV₁S hwV)] at h1
+    rw [ite_eq_left rfl, hbeq w (hV₁S hwV)] at h1
     exact h1
   choose mk hmk using (hpb x hx).2.2.1
   obtain ⟨m₁, hm₁⟩ := (hpb x hx).2.2.2 k₀
@@ -294,7 +340,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     refine ⟨(hz w hwS).1, (hz w hwS).2.1, (hz w hwS).2.2, fun q hq₀ => ?_, fun q => ?_, fun m => ?_⟩
     · by_cases hq : ∀ p, M.blk p ≠ some q.1
       · exact congrFun (hbeq w hwS) ⟨⟨q.1, hq⟩, q.2⟩
-      · push_neg at hq
+      · push Not at hq
         obtain ⟨⟨τ', i⟩, hp⟩ := hq
         have e₀ := ((hz w hwS).2.2 τ' i).1.2 q.1 hp q.2
         have e₁ := ((hz w hwS).2.2 τ' i).2.2 q.1 hp q.2
@@ -304,12 +350,12 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
         congr 1
         by_cases ht : τ' = τ
         · subst ht
-          rw [if_pos rfl]
+          rw [ite_eq_left rfl]
           have hia : i ≠ a := fun hia => hq₀ (by
             subst hia
             exact Option.some_injective _ (hp.symm.trans hk))
           exact _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.TransvOther.minorIJ_other_step N j a b ca cb M.j_le hb hab hca hcb _ _ i hia I
-        · rw [if_neg ht]
+        · rw [ite_eq_right ht]
     · obtain ⟨d, hd, hq'⟩ := hb₀ w (hVW hwV)
       rw [hcs' w hwV d hq' q.1]
       exact hq' q
@@ -387,13 +433,13 @@ end Holo
 theorem minor_w_ne {N j : ℕ} (hj : j ≤ N) (i : Fin N) (hi : (i : ℕ) + 1 = j) {T : Matrix (Fin N) (Fin N) ℂ}
     (hT : IsBlockDiag j T) (hd : T.det ≠ 0) : minorIJ T (wIdx N j) (wIdx N j) ≠ 0 := by
   have h := FrameChange.detFac_ne_zero hj i hT hd
-  rw [detFac, if_pos hi.ge] at h
+  rw [detFac, ite_eq_left hi.ge] at h
   exact left_ne_zero_of_mul h
 
 theorem minor_om_ne {N j : ℕ} (hj : j ≤ N) (i : Fin N) (hi : (i : ℕ) + 1 = N) {T : Matrix (Fin N) (Fin N) ℂ}
     (hT : IsBlockDiag j T) (hd : T.det ≠ 0) : minorIJ T (omIdx N j) (omIdx N j) ≠ 0 := by
   have h := FrameChange.detFac_ne_zero hj i hT hd
-  rw [detFac, if_pos hi] at h
+  rw [detFac, ite_eq_left hi] at h
   exact right_ne_zero_of_mul h
 
 theorem val_ne {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -411,9 +457,9 @@ theorem improper_factor : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
       else minorIJ (Hm w) (omIdx N j) (omIdx N j))) (fun i => xiCoef τ a (τ, i)) fun i => ?_
   by_cases hp : IsProperStep N j i
   · refine ⟨V, hV, hy, subset_rfl, ?_, fun w _ => ?_⟩
-    · simp only [if_pos hp]
+    · simp only [ite_eq_left hp]
       exact holoOn_const A V 1
-    · simp only [if_pos hp]
+    · simp only [ite_eq_left hp]
       exact one_ne_zero
   · have hnone : M.blk (τ, i) = none := (M.blk_none (τ, i)).2 hp
     obtain ⟨W, hW, hyW, hWV, hval⟩ := StepW.ValHolo.holoOn_valAt _ _ M.Ω M.x (F.υ (τ, i)) e X A V zb y₀ hV hy hzb hpt
@@ -423,16 +469,16 @@ theorem improper_factor : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
       have hH : ∀ r s, A.HoloOn W fun w => Hm w r s := fun r s => holoOn_mono A (hHm r s) hWV
       by_cases h1 : (i : ℕ) + 1 = j
       · by_cases h2 : (a : ℕ) < j
-        · simp only [if_pos h1, if_pos h2]
+        · simp only [ite_eq_left h1, ite_eq_left h2]
           exact holoOn_minor A hH _ _
-        · simp only [if_pos h1, if_neg h2]
+        · simp only [ite_eq_left h1, ite_eq_right h2]
           exact holoOn_const A W 1
-      · simp only [if_neg h1]
+      · simp only [ite_eq_right h1]
         exact holoOn_minor A hH _ _
     refine ⟨W, hW, hyW, hWV, ?_, fun w hw => ?_⟩
-    · simp only [if_neg hp]
+    · simp only [ite_eq_right hp]
       exact holoOn_mul A hval hm
-    · simp only [if_neg hp]
+    · simp only [ite_eq_right hp]
       have hwV := hWV hw
       have hv : valAt M.x (F.υ (τ, i)) (zb w) ≠ 0 :=
         val_ne (hpt w hwV) ((hgood w hwV).2.2 _ hnone).1 ((hgood w hwV).2.2 _ hnone).2.1
@@ -440,11 +486,11 @@ theorem improper_factor : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
       refine mul_ne_zero hv ?_
       by_cases h1 : (i : ℕ) + 1 = j
       · by_cases h2 : (a : ℕ) < j
-        · simp only [if_pos h1, if_pos h2]
+        · simp only [ite_eq_left h1, ite_eq_left h2]
           exact minor_w_ne M.j_le i h1 (hdiag w hwV).1 (hdiag w hwV).2
-        · simp only [if_pos h1, if_neg h2]
+        · simp only [ite_eq_left h1, ite_eq_right h2]
           exact one_ne_zero
-      · simp only [if_neg h1]
+      · simp only [ite_eq_right h1]
         have h3 : (i : ℕ) + 1 = N := by
           by_contra h3
           exact hp ⟨h1, h3⟩
@@ -490,10 +536,10 @@ theorem xiDeg_self (M : FlagModel y Ψ N j) {τ : Ψ} {a : Fin N} {k₀ : K} (hk
     unfold FlagModel.dy
     rw [dite_eq_right hn]
     by_cases hp : p = (τ, a)
-    · rw [if_pos (hp ▸ hk), if_pos hp]
-    · rw [if_neg fun e => hp (M.blk_inj _ _ k₀ e hk), if_neg hp]
+    · rw [ite_eq_left (hp ▸ hk), ite_eq_left hp]
+    · rw [ite_eq_right fun e => hp (M.blk_inj _ _ k₀ e hk), ite_eq_right hp]
   unfold xiDeg
-  simp only [hd, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hd, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp [xiCoef]
 
 theorem log_potA : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (τ : Ψ) (a : Fin N) (k₀ : K), M.blk (τ, a) = some k₀ → ∀ zz : (Σ o : Option K, ι (o.getD k₀)) → ℂ, (∀ o, ∃ i, zz ⟨o, i⟩ ≠ 0) → Real.log ((potA M τ a k₀).h zz) = -(1 / 2) * ∑ p, (xiCoef τ a p : ℝ) * (Real.log ((fsHerm ι (M.dy p)).h (fstPt k₀ zz)) + Real.log ((fsHerm ι (M.dy p)).h (sndPt k₀ zz))) := by
@@ -542,16 +588,16 @@ theorem log_potA : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype 
       if k = k₀ then -(1 / 2) * Ln else 0 := fun k => by
     by_cases e : k = k₀
     · subst e
-      rw [if_pos rfl, hB₀, xiDeg_self M hk]
-      simp only [aDeg, if_true]
+      rw [ite_eq_left rfl, hB₀, xiDeg_self M hk]
+      simp only [aDeg, ite_true]
       push_cast
       ring
-    · rw [if_neg e, hBne k e]
-      simp only [aDeg, if_neg e]
+    · rw [ite_eq_right e, hBne k e]
+      simp only [aDeg, ite_eq_right e]
       push_cast
       ring
   have hsum := Finset.sum_congr (rfl : (Finset.univ : Finset K) = _) fun k _ => hterm k
-  rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_ite_eq' Finset.univ k₀, if_pos (Finset.mem_univ _)] at hsum
+  rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_ite_eq' Finset.univ k₀, ite_eq_left (Finset.mem_univ _)] at hsum
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec
@@ -703,7 +749,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
         · subst e'
           have h1 := (hex τ a).1.2 k hk m
           have h2 := (hex τ a).2.2 k hk m
-          rw [if_pos rfl, h0, Matrix.single_zero, add_zero, mul_one, hbase] at h2
+          rw [ite_eq_left rfl, h0, Matrix.single_zero, add_zero, mul_one, hbase] at h2
           exact h2.trans h1.symm
         · exact hoff ⟨k, m⟩ e'
       rw [hz] at ho₁

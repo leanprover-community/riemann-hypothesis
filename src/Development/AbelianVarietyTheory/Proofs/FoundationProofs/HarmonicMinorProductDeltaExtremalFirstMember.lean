@@ -4,45 +4,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.HeckeCh
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivationProdPow
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FockSingularValues
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PderivEqZeroOfColOp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -71,7 +32,7 @@ theorem der_minor {a b : Fin l} (hab : a ≤ b) (hD : ∀ c k, D (y c k) = if k 
   by_cases hb : b.1 < m
   · rw [Finset.sum_eq_single (⟨b.1, hb⟩ : Fin m)]
     · have e : Fin.castLE h ⟨b.1, hb⟩ = b := rfl
-      simp only [e, if_true]
+      simp only [e, ite_true]
       split_ifs with h1 h2
       · subst h1
         rw [one_smul]
@@ -87,7 +48,7 @@ theorem der_minor {a b : Fin l} (hab : a ≤ b) (hD : ∀ c k, D (y c k) = if k 
         rfl
     · intro i _ hi
       refine Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
-      rw [Matrix.updateRow_self, if_neg fun e : Fin.castLE h i = b => hi (Fin.ext (congrArg Fin.val e :))]
+      rw [Matrix.updateRow_self, ite_eq_right fun e : Fin.castLE h i = b => hi (Fin.ext (congrArg Fin.val e :))]
     · simp
   · have h0 : (if a = b then (if a.1 < m then (1 : ℂ) else 0) else 0) = 0 := by
       split_ifs with h1 h2
@@ -96,10 +57,10 @@ theorem der_minor {a b : Fin l} (hab : a ≤ b) (hD : ∀ c k, D (y c k) = if k 
       · rfl
     rw [h0, zero_smul]
     refine Finset.sum_eq_zero fun i _ => Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
-    rw [Matrix.updateRow_self, if_neg fun e : Fin.castLE h i = b => hb (e ▸ i.2)]
+    rw [Matrix.updateRow_self, ite_eq_right fun e : Fin.castLE h i = b => hb (e ▸ i.2)]
 
 theorem sum_rows (α : Fin l → ℕ) (hα : Antitone α) (a : Fin l) :
-    ∑ i : Fin l, ((α i - nextRow α i : ℕ) : ℂ) * (if a.1 < i.1 + 1 then 1 else 0) = α a := by
+    ∑ i : Fin l, ((α i - Formalism.GradedWeylDivisibility.nuNext α i : ℕ) : ℂ) * (if a.1 < i.1 + 1 then 1 else 0) = α a := by
   let f : ℕ → ℕ := fun i => if h : i < l then α ⟨i, h⟩ else 0
   have hf : Antitone f := by
     refine antitone_nat_of_succ_le fun i => ?_
@@ -111,10 +72,10 @@ theorem sum_rows (α : Fin l → ℕ) (hα : Antitone α) (a : Fin l) :
     · exact le_rfl
   have h := telescope f hf a l
   have hl : f l = 0 := by simp [f]
-  rw [if_pos a.2.le, hl, ← Fin.sum_univ_eq_sum_range
+  rw [ite_eq_left a.2.le, hl, ← Fin.sum_univ_eq_sum_range
     (fun i => ((f i - f (i + 1) : ℕ) : ℂ) * (if a.1 < i + 1 then 1 else 0))] at h
   have e1 : ∀ i : Fin l, f i = α i := fun i => by simp [f, i.2]
-  have e2 : ∀ i : Fin l, f (i + 1) = nextRow α i := fun i => rfl
+  have e2 : ∀ i : Fin l, f (i + 1) = Formalism.GradedWeylDivisibility.nuNext α i := fun i => rfl
   simpa only [e1, e2, Nat.cast_zero, sub_zero] using h
 
 theorem der_minorProd (α : Fin l → ℕ) (hα : Antitone α) (row : ∀ i : Fin l, Fin (i.1 + 1) → Fin n)

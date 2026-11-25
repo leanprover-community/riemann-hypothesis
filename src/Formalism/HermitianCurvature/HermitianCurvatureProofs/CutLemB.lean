@@ -84,13 +84,13 @@ theorem nPt_bigPt (k r : ℕ) (T T' : ℝ) (c : Fin (r + 1) → ℂ) (hζ : T * 
   simp only [TBB.nPt, TBB.bigPt]
   rw [level_product_of_constant_weights, Fin.prod_univ_castSucc]
   simp only [bcWeight]
-  rw [if_pos hζ]
+  rw [ite_eq_left hζ]
   congr 1
   · apply Finset.prod_congr rfl
     intro a _
     have ha := a.isLt
-    rw [if_neg (by simp only [Fin.coe_castSucc]; omega), e a, zpow_natCast]
-  · rw [if_pos (by simp only [Fin.val_last]; omega)]
+    rw [ite_eq_right (by simp only [Fin.coe_castSucc]; omega), e a, zpow_natCast]
+  · rw [ite_eq_left (by simp only [Fin.val_last]; omega)]
     simp only [D.ptGG, hl]
 
 end wt

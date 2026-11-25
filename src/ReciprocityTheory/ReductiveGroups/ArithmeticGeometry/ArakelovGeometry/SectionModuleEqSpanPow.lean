@@ -88,13 +88,13 @@ private theorem exists_pow_mem (x : κ → Ω) (e : Fin (D + 1) → κ) (i : κ)
     intro a j hj
     obtain ⟨q, hq⟩ := a.2
     show ((a : Polynomial Ω) * (C (x i) * X) ^ j).coeff N ∈ _
-    rw [mul_pow, ← C_pow, ← mul_assoc, coeff_mul_X_pow', if_pos hj.le, coeff_mul_C, ← hq]
+    rw [mul_pow, ← C_pow, ← mul_assoc, coeff_mul_X_pow', ite_eq_left hj.le, coeff_mul_C, ← hq]
     exact Submodule.mul_mem_mul (coeff_coneMap_mem _ q _) (pow_mem_sec x i j)
   have h1 : (eval₂ (algebraMap (coneRing ℤ (x ∘ e)) (Polynomial Ω)) (C (x i) * X) p).coeff N = 0 := by
     rw [hp]; simp
   rw [hpm.as_sum, eval₂_add, eval₂_X_pow, eval₂_finsetSum, coeff_add, finsetSum_coeff] at h1
   simp only [eval₂_mul, eval₂_C, eval₂_X_pow] at h1
-  rw [mul_pow, ← C_pow, coeff_C_mul_X_pow, if_pos rfl] at h1
+  rw [mul_pow, ← C_pow, coeff_C_mul_X_pow, ite_eq_left rfl] at h1
   rw [eq_neg_of_add_eq_zero_left h1]
   refine neg_mem (Submodule.sum_mem _ fun j hj => ?_)
   have hj' : j < N := Finset.mem_range.mp hj
@@ -123,12 +123,9 @@ private theorem sec_le_of_monomial (x : κ → Ω) (n : ℕ) (P : Submodule ℤ 
 
 private theorem exists_le_of_sum_lt (N : κ → ℕ) (d : κ →₀ ℕ) (hd : ∑ i, (N i - 1) < d.degree) :
     ∃ i, N i ≤ d i := by
-  by_contra hc
-  push Not at hc
-  have : d.degree ≤ ∑ i, (N i - 1) := by
-    rw [Finsupp.degree_eq_sum]
-    exact Finset.sum_le_sum fun i _ => by have := hc i; omega
-  omega
+  rw [Finsupp.degree_eq_sum] at hd
+  obtain ⟨i, -, hi⟩ := Finset.exists_lt_of_sum_lt hd
+  exact ⟨i, by omega⟩
 
 private theorem mul_iSup_sec_le (x : κ → Ω) (e : Fin (D + 1) → κ) (K a b n : ℕ) (hab : a + b = n) :
     sec ℤ (x ∘ e) a * (⨆ (j : ℕ) (_ : j ≤ b ∧ j ≤ K), sec ℤ (x ∘ e) (b - j) * sec ℤ x j) ≤

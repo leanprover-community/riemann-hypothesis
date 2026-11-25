@@ -473,8 +473,8 @@ theorem descLift (T₁ T₂ : LocLat G Qp LL O) (F : LatHom T₁.L T₂.L) (e : 
   have h1 := h _ (jp_mem PD hc hO' T₂ c hc2)
   have hs : (∑ i, bO i • jp (O' := O') hc hO' T₂ (if i = k then ((PD.p : O) ^ e) • c else 0)) =
       bO k • (((PD.p : O') ^ e) • jp (O' := O') hc hO' T₂ c) := by
-    rw [Finset.sum_eq_single k (fun i _ hik => by rw [if_neg hik, jp_zero, smul_zero])
-      (fun hk => absurd (Finset.mem_univ k) hk), if_pos rfl, jp_smul, map_pow, map_natCast]
+    rw [Finset.sum_eq_single k (fun i _ hik => by rw [ite_eq_right hik, jp_zero, smul_zero])
+      (fun hk => absurd (Finset.mem_univ k) hk), ite_eq_left rfl, jp_smul, map_pow, map_natCast]
   have h2 := core PD hc hO' bO bL hb hlin T₁ T₂ F
     (fun i => if i = k then ((PD.p : O) ^ e) • c else 0) (by rw [hs]; exact Submodule.smul_mem _ _ h1) k
   simpa using h2

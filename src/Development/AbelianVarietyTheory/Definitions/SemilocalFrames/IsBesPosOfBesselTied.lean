@@ -167,14 +167,6 @@ def theta (ψ : AddChar (AF D.host.F) ℂ) (Om : GA D A → WA L A → ℂ) (n :
 
 end FJDat
 
-section Comparison₂
-
-variable {X : ThetaX D} {T : ThetaTied D X}
-
-variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
-
-end Comparison₂
-
 namespace FJDat
 
 variable {L A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : FJDat L A B ι)
@@ -205,20 +197,12 @@ theorem isAniso_of_posDef {V : HSp D} (hs : V.SigOK) (hp : V.IsPosDef) : IsAniso
   simp only [map_sum, map_mul, h3, map_zero, Complex.zero_re] at h4
   exact h2.ne' h4
 
-section Realises
-
-open GlobalTheory.Mem.Th (Realises WeilFun Tow RecFun InfF)
-
-variable {θ : InfF D} {Bt : BesselTied D X T Wl} {Wf : WeilFun D Wl.ψ} {Tw : Tow D} {Rc : RecFun D θ Wl.ψ}
-
-end Realises
-
 end Comparison₂
 
 def negLine (D : D7) : HSp D := Examples₂.stdSpace Examples₂.star_isIntegral 1 (fun _ => true) 0 1
 
 theorem negLine_gram (D : D7) (i j) : (negLine D).gram i j = -1 :=
-  (Examples₂.stdSpace_gram_apply Examples₂.star_isIntegral 1 (fun _ => true) 0 1 i j).trans (if_pos (Subsingleton.elim _ _))
+  (Examples₂.stdSpace_gram_apply Examples₂.star_isIntegral 1 (fun _ => true) 0 1 i j).trans (ite_eq_left (Subsingleton.elim _ _))
 
 theorem isNegLine_negLine (D : D7) : IsNegLine (negLine D) := by
   refine ⟨rfl, fun τ => ?_, fun _ => rfl⟩

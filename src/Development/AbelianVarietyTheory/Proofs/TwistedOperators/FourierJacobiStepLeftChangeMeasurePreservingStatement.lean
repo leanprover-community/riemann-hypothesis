@@ -69,15 +69,13 @@ namespace GlobalTheory.StepLeft
 section Shape
 variable {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
 
-
 omit [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] in
 theorem basePt_eq_zero_of_stepVar (y : Matrix n n' k) {r : n ⊕ Fin c} {s : n' ⊕ Fin (c + 1)}
     (h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s)) : basePt c y r s = 0 := by
   rcases r with r | r <;> rcases s with s | s <;> simp only [Free, Kept, or_false] at h <;>
     simp only [basePt, fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
       Matrix.zero_apply, of_apply]
-  rw [if_neg (by omega)]
-
+  rw [ite_eq_right (by omega)]
 
 omit [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] in
 theorem stepVar_fixed_of_ordL_lt (y : Matrix n n' k) {r t : n ⊕ Fin c} {s : n' ⊕ Fin (c + 1)}
@@ -87,13 +85,12 @@ theorem stepVar_fixed_of_ordL_lt (y : Matrix n n' k) {r t : n ⊕ Fin c} {s : n'
     simp only [Free, Kept, GlobalTheory.DiagVol.ordL, Sum.elim_inl, Sum.elim_inr, basePt, fromBlocks_apply₁₁,
       fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂, Matrix.zero_apply, of_apply, not_or,
       Nat.even_iff, Nat.odd_iff, not_and, true_and, and_true, not_false_eq_true] at hv hlt ⊢
-  all_goals first | omega | (refine ⟨by omega, ?_⟩; rw [if_neg (by omega)])
+  all_goals first | omega | (refine ⟨by omega, ?_⟩; rw [ite_eq_right (by omega)])
 
 end Shape
 
 section Shape2
 variable {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
-
 
 omit [Fintype n'] [DecidableEq n'] in
 theorem unipSub_mul_fixed {u : GL (n ⊕ Fin c) k} (hu : u ∈ GlobalTheory.DiagVol.unipSub (GlobalTheory.DiagVol.ordL c))
@@ -111,7 +108,6 @@ theorem unipSub_mul_fixed {u : GL (n ⊕ Fin c) k} (hu : u ∈ GlobalTheory.Diag
     · obtain ⟨h1, h2⟩ := stepVar_fixed_of_ordL_lt y hv (not_le.1 h)
       rw [hM t s h1, h2, mul_zero]
   · simp
-
 
 omit [Fintype n'] [DecidableEq n'] in
 theorem embX_mul_fixed (κ : GL n k) (y : Matrix n n' k) (M : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)
@@ -140,15 +136,15 @@ theorem inv_mul_stepPt_shape : ∀ {k : Type} [Field k] {n n' : Type} [Fintype n
     rw [_root_.mul_inv_rev, map_inv, Units.val_mul]
   have hu : v⁻¹ ∈ GlobalTheory.DiagVol.unipSub (GlobalTheory.DiagVol.ordL c) := GlobalTheory.DiagVol.symN_le_unipSub (inv_mem hv)
   have hM : ∀ r s, ¬ (Free (c / 2 + 1) (r, s) ∨ Kept (r, s)) → stepPt x₀ e r s = basePt c x₀ r s :=
-    fun r s h => by rw [stepPt, Matrix.add_apply, of_apply, dif_neg h, add_zero]
+    fun r s h => by rw [stepPt, Matrix.add_apply, of_apply, dite_eq_right h, add_zero]
   have hA := embX_mul_fixed κ⁻¹ x₀ _ (unipSub_mul_fixed hu x₀ _ hM)
   have hR : ∀ (y : Matrix n n' k) (e' : StepVar n c n' → k) r s, stepPt y e' r s =
       basePt c y r s + (if h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s) then e' ⟨(r, s), h⟩ else 0) :=
     fun _ _ _ _ => rfl
   ext r s
   by_cases h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s)
-  · conv_rhs => rw [hR, dif_pos h, basePt_eq_zero_of_stepVar _ h, zero_add]
-  · conv_rhs => rw [hR, dif_neg h, add_zero]
+  · conv_rhs => rw [hR, dite_eq_left h, basePt_eq_zero_of_stepVar _ h, zero_add]
+  · conv_rhs => rw [hR, dite_eq_right h, add_zero]
     rw [hg, Matrix.mul_assoc, hA r s h]
 
 end GlobalTheory.StepLeft
@@ -220,8 +216,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix ValuativeRel GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.ExpansionInvariance GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx
 open GlobalTheory.TopLevelInv GlobalTheory.StepLeft Classical
 
-theorem _root_.GlobalTheory.T.valuation_det_stageVariables_embedGL_eq_one : ∀ {k : Type} [Field k] [ValuativeRel k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} (κ : GL n k), valuation k (gdet κ : k) = 1 → valuation k (stepLin n' (embX c κ).val).det = 1 := by
-  first | exact @GlobalTheory.StepLeft.valuation_det_stepLin_embX
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ValuationDetStageVariablesEmbedGLEqOneStatement =====
@@ -366,7 +360,7 @@ theorem left_change : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
     exact (congrArg (·⁻¹) hκ).trans inv_one
   have hdet : valuation k M.det = 1 := by
     rw [hMdef, hg, mul_embX, det_mul, map_mul, det_unip _ (inv_mem hv), map_one, mul_one]
-    exact GlobalTheory.T.valuation_det_stageVariables_embedGL_eq_one (n' := n') (c := c) κ⁻¹ hκ'
+    exact GlobalTheory.StepLeft.valuation_det_stepLin_embX (n' := n') (c := c) κ⁻¹ hκ'
   have hM0 : IsUnit M.det := isUnit_iff_ne_zero.2 fun h => by rw [h, map_zero] at hdet; exact zero_ne_one hdet
   have hcont : ∀ (A : Matrix (StepVar n c n') (StepVar n c n') k) (w : StepVar n c n' → k),
       Continuous fun e : StepVar n c n' → k => A.mulVec e + w := fun A w =>

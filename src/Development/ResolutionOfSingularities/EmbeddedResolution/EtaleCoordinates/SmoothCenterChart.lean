@@ -635,8 +635,8 @@ theorem exists_away_ideal_eq_span_and_isUnit_det
       (∀ x : {j : ι // ¬ (j ∈ Jst)}, w (x : ι) = s (e x)) := by
     refine ⟨fun j => if hj : j ∈ Jst then coord k ι S j else s (e ⟨j, hj⟩),
       fun j hj => ?_, fun x => ?_⟩
-    · exact dif_pos hj
-    · exact dif_neg x.2
+    · exact dite_eq_left hj
+    · exact dite_eq_right x.2
   have hbasisApply : ∀ x : Fin (Fintype.card bset) ⊕ {j : ι // j ∈ Jst},
       B x = (1 : IsLocalRing.ResidueField A) ⊗ₜ[A]
         KaehlerDifferential.D k A (algebraMap S A (w (τ x))) := by
@@ -748,15 +748,6 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem algebraMap_quotient_map_mk {R : Type u} [CommRing R] {A : Type u} [CommRing A] [Algebra R A]
-    (I : Ideal R) (r : R) :
-    algebraMap (R ⧸ I) (A ⧸ Ideal.map (algebraMap R A) I) (Ideal.Quotient.mk I r)
-      = Ideal.Quotient.mk (Ideal.map (algebraMap R A) I) (algebraMap R A r) := rfl
-
-private theorem algebraMap_quotient_apply {k R : Type u} [CommRing k] [CommRing R] [Algebra k R]
-    (I : Ideal R) (a : k) :
-    algebraMap k (R ⧸ I) a = Ideal.Quotient.mk I (algebraMap k R a) := rfl
-
 private theorem formallySmooth_quotient_map_of_isLocalization (k : Type u) [CommRing k] {R : Type u} [CommRing R]
     [Algebra k R] (M : Submonoid R) (A : Type u) [CommRing A] [Algebra R A] [IsLocalization M A]
     [Algebra k A] [IsScalarTower k R A] (I : Ideal R)
@@ -769,17 +760,8 @@ private theorem formallySmooth_quotient_map_of_isLocalization (k : Type u) [Comm
     Algebra.FormallyEtale.of_isLocalization (Algebra.algebraMapSubmonoid (R ⧸ I) M)
   have : IsScalarTower k (R ⧸ I) (A ⧸ Ideal.map (algebraMap R A) I) := by
     refine IsScalarTower.of_algebraMap_eq (fun a => ?_)
-    rw [algebraMap_quotient_apply I a, algebraMap_quotient_map_mk I (algebraMap k R a),
-      algebraMap_quotient_apply (Ideal.map (algebraMap R A) I) a, IsScalarTower.algebraMap_apply k R A]
+    exact congrArg (Ideal.Quotient.mk _) (IsScalarTower.algebraMap_apply k R A a)
   exact Algebra.FormallySmooth.comp k (R ⧸ I) (A ⧸ Ideal.map (algebraMap R A) I)
-
-private theorem map_algebraMap_eq_map_map_of_algEquiv {R L M : Type u} [CommRing R] [CommRing L]
-    [CommRing M] [Algebra R L] [Algebra R M] (e : L ≃ₐ[R] M) (J : Ideal R) :
-    Ideal.map (algebraMap R M) J
-      = Ideal.map e.toAlgHom.toRingHom (Ideal.map (algebraMap R L) J) := by
-  rw [Ideal.map_map]
-  refine congrArg (fun φ : R →+* M => Ideal.map φ J) ?_
-  exact RingHom.ext fun r => (e.commutes r).symm
 
 private theorem ι_appLE_eq_topIso_inv {X : Scheme.{u}} (U : X.Opens)
     (e : (⊤ : U.toScheme.Opens) ≤ U.ι ⁻¹ᵁ U) : U.ι.appLE U ⊤ e = U.topIso.inv := by
@@ -853,24 +835,17 @@ theorem sectionsAlgebraMap_apply_eq (k : Type u) [CommRing k] {X : Scheme.{u}}
   rw [sectionsAlgebraMap_eq]
   rfl
 
-private theorem appLE_top_comp_app (k : Type u) [CommRing k] {X W : Scheme.{u}}
-    (f : W ⟶ X) (p : X ⟶ Spec (CommRingCat.of k)) (U : X.Opens) :
-    p.appLE ⊤ U (le_preimage_top k p U) ≫ f.app U
-      = (f ≫ p).appLE ⊤ (f ⁻¹ᵁ U) (le_preimage_top k (f ≫ p) (f ⁻¹ᵁ U)) := by
-  have hn := f.c.naturality (homOfLE (le_preimage_top k p U)).op
-  show (p.app ⊤ ≫ X.presheaf.map (homOfLE (le_preimage_top k p U)).op) ≫ f.app U
-      = (f ≫ p).app ⊤ ≫ W.presheaf.map (homOfLE (le_preimage_top k (f ≫ p) (f ⁻¹ᵁ U))).op
-  rw [Category.assoc]
-  exact congrArg (fun t => p.app ⊤ ≫ t) hn
-
 private theorem app_sectionsAlgebraMap (k : Type u) [CommRing k] {X W : Scheme.{u}}
     (f : W ⟶ X) (p : X ⟶ Spec (CommRingCat.of k)) (U : X.Opens) (a : k) :
     (f.app U).hom (sectionsAlgebraMap k p U a)
       = sectionsAlgebraMap k (f ≫ p) (f ⁻¹ᵁ U) a := by
   rw [sectionsAlgebraMap_apply_eq, sectionsAlgebraMap_apply_eq]
+  have h : p.appLE ⊤ U (le_preimage_top k p U) ≫ f.app U =
+      (f ≫ p).appLE ⊤ (f ⁻¹ᵁ U) (le_preimage_top k (f ≫ p) (f ⁻¹ᵁ U)) := by
+    rw [Scheme.Hom.app_eq_appLE f, Scheme.Hom.appLE_comp_appLE]
   exact congrArg
     (fun φ : Γ(Spec (CommRingCat.of k), ⊤) ⟶ Γ(W, f ⁻¹ᵁ U) =>
-      φ.hom ((Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom a)) (appLE_top_comp_app k f p U)
+      φ.hom ((Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom a)) h
 
 theorem mem_basicOpen_of_notMem_primeIdealOf {X : Scheme.{u}} {U : X.Opens}
     (hU : IsAffineOpen U) {x : X} (hx : x ∈ U) (g : Γ(X, U))
@@ -1118,7 +1093,7 @@ theorem exists_chart_ideal_eq_span_coord {X : Scheme.{u}} {k : Type u} [Field k]
   have htrans : Ideal.map (algebraMap Γ(X, U₀) Γ(X, X.basicOpen g))
         (Ideal.span (w '' (↑T : Set (ULift.{u} (Fin m)))))
       = Ideal.map (algebraMap Γ(X, U₀) Γ(X, X.basicOpen g)) (Z.ideal ⟨U₀, hU₀⟩) := by
-    rw [map_algebraMap_eq_map_map_of_algEquiv e, map_algebraMap_eq_map_map_of_algEquiv e, hspanmap]
+    rw [← e.toAlgHom.comp_algebraMap, ← Ideal.map_map, ← Ideal.map_map, hspanmap]
   have hSset : ((T.image ULift.down : Finset (Fin m)) : Set (Fin m))
       = ULift.down '' (↑T : Set (ULift.{u} (Fin m))) := Finset.coe_image
   have himg : (fun i : ULift.{u} (Fin m) => algebraMap Γ(X, U₀) Γ(X, X.basicOpen g) (w i))

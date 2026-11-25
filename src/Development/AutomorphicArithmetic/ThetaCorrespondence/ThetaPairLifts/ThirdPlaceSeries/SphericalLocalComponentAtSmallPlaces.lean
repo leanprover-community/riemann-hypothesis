@@ -137,12 +137,6 @@ theorem reciprocity_unramified_and_norm_frobenius_eigenvalue_le (hL : _root_.Upp
   apply h2.norm_le
   simpa [Multiset.map_map, Function.comp_def] using hb
 end GlobalTheory.RowSphSmall
-section FormSec
-namespace GlobalTheory.RowSphSmall
-end GlobalTheory.RowSphSmall
-end FormSec
-namespace GlobalTheory.RowSphSmall
-end GlobalTheory.RowSphSmall
 end
 end -- clump:auto
 end -- clump:auto
@@ -717,14 +711,11 @@ theorem exists_isLocS_rows (hH : GlobalTheory.Published.HarishChandraFinite) (hC
       {f | f ∈ π.S ∧ ∀ κ, NG.Cong D.host.E D.R.r N κ → NG.rt D.host.E D.R.r κ f = f}) := fun N hN =>
     GlobalTheory.RowLocalRows.fixed_fd_of_conjT π N (GlobalTheory.RowLocalRows.fixed_fd_of_isotIn _ _ hadm _ hne N hN)
   obtain ⟨W, hWS, hW0, hst, hirr⟩ := GlobalTheory.T.exists_irreducible_subspace_trivialOutside_splitPlace D.host.E D.R.r π B k1 k2 k3 k4 hfix s
-  exact GlobalTheory.RowLocal.isLocS_of_irr π s W hWS hW0 hst hirr
+  exact GlobalTheory.blockFieldPairProjections.exists_local_component π s W hWS hW0 hst hirr
 
 end GlobalTheory.RowSphOff
 end SphOffSec
 
-namespace GlobalTheory.RowSphOff
-
-end GlobalTheory.RowSphOff
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SphericalAwayFromTypes =====
@@ -741,8 +732,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 attribute [local instance] GlobalTheory.TypeRec.factG
 
-namespace GlobalTheory.RowSphOff
-end GlobalTheory.RowSphOff
 namespace GlobalTheory.RowSphOff
 theorem spherical_localComponent_away_from_level_alt : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → OverRows fun _ _ _ _ w Z _ _ z _ Y => ∀ (σ : (w.st Z).toD7.what₂.FT) (s : ReciprocityTheory.Aut.SplitPlace (w.st Z).toD7.host.E), (∀ k : Fin 2, s.w ∉ placesOver (w.st Z).toD7.host.E ((w.st Z).toD7.host.g k)) → ∃ τ, IsLocS (repOf Y σ).S s τ ∧ GlobalTheory.SmGL.IsSpherical τ.ρ := by
   intro hPr

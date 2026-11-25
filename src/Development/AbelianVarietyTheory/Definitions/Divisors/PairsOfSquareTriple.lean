@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUni
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ThK.Inhab
 
 open scoped TensorProduct NNReal Matrix
@@ -73,15 +71,4 @@ theorem conj_conj (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
 
 end General
 
-section Grid
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil
-  GlobalTheory.StdFrames Formalism.L2.DIV GlobalTheory.FunObj
-
-variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
-
-end Grid
-
 end GlobalTheory.ThK.Inhab
-
-end

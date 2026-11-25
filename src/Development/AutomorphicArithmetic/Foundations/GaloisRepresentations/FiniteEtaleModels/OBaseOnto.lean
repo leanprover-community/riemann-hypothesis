@@ -111,7 +111,7 @@ theorem exists_levGrp {l₁ l₂ : D.La → (𝟙_ (Over (Sp k)) ⟶ o.A)} (h₁
   let F := (wSub D w0 r).liftQ ψ hker
   have hF : ∀ y, F (Submodule.Quotient.mk y) = Submodule.Quotient.mk (z y) := fun y => rfl
   have inj : Function.Injective F := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro q hq
     obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ q
     rw [hF, Submodule.Quotient.mk_eq_zero] at hq
@@ -703,12 +703,6 @@ private theorem cg_of_dvd {a b : ℕ} (h : a ∣ b) {x y : M} (k : Cg b x y) : C
   obtain ⟨z, hz⟩ := k
   exact ⟨d • z, by rw [hz, hd, mul_smul]⟩
 
-private theorem bezout {a b : ℕ} (hc : a.Coprime b) : (a : ℤ) * Nat.gcdA a b + b * Nat.gcdB a b = 1 := by
-  have h := Nat.gcd_eq_gcd_ab a b
-  rw [Nat.Coprime.gcd_eq_one hc] at h
-  push_cast at h
-  exact h.symm
-
 private theorem cg_mul {a b : ℕ} (hc : a.Coprime b) {x y : M} (h₁ : Cg a x y) (h₂ : Cg b x y) :
     Cg (a * b) x y := by
   obtain ⟨z₁, h1⟩ := h₁
@@ -721,13 +715,13 @@ private theorem cg_mul {a b : ℕ} (hc : a.Coprime b) {x y : M} (h₁ : Cg a x y
   have key : ((a : ℤ) * b) • (Nat.gcdA a b • z₂ + Nat.gcdB a b • z₁) =
       ((a : ℤ) * Nat.gcdA a b) • ((b : ℤ) • z₂) + ((b : ℤ) * Nat.gcdB a b) • ((a : ℤ) • z₁) := by
     module
-  rw [key, e1, e2, ← add_smul, bezout hc, one_smul]
+  rw [key, e1, e2, ← add_smul, GlobalTheory.TateGlue.bezout hc, one_smul]
   abel
 
 private theorem crt_elt {a b : ℕ} (hc : a.Coprime b) (x₁ x₂ : M) :
     Cg a (((b : ℤ) * Nat.gcdB a b) • x₁ + ((a : ℤ) * Nat.gcdA a b) • x₂) x₁ ∧
       Cg b (((b : ℤ) * Nat.gcdB a b) • x₁ + ((a : ℤ) * Nat.gcdA a b) • x₂) x₂ := by
-  have hb := bezout hc
+  have hb := GlobalTheory.TateGlue.bezout hc
   have h' : (b : ℤ) * Nat.gcdB a b = 1 - a * Nat.gcdA a b := by linarith
   refine ⟨⟨Nat.gcdA a b • (x₂ - x₁), ?_⟩, ⟨Nat.gcdB a b • (x₁ - x₂), ?_⟩⟩
   · rw [← natCast_zsmul, h']
@@ -861,7 +855,7 @@ private theorem sys_of {O M : Type} [Ring O] [AddCommGroup M] [Module O M] (B : 
 private theorem pow_mem_of {A : Type} [CommRing A] (I : Ideal A) {q a c f : ℕ} (hc : c.Coprime q)
     (hn : ((q ^ a * c : ℕ) : A) ∈ I) (hf : (q : A) ^ f ∈ I) : (q : A) ^ a ∈ I := by
   have hcop : c.Coprime (q ^ f) := Nat.Coprime.pow_right f hc
-  have hz := bezout hcop
+  have hz := GlobalTheory.TateGlue.bezout hcop
   have hA : (c : A) * (Nat.gcdA c (q ^ f) : A) + (q : A) ^ f * (Nat.gcdB c (q ^ f) : A) = 1 := by
     have h := congrArg (Int.cast : ℤ → A) hz
     push_cast at h
@@ -946,16 +940,16 @@ theorem tResim : TResim := by
             isom := ?_ }, ?_⟩
   · intro n x y
     by_cases h0 : 0 < n
-    · simp only [if_pos h0, map_add (f := _), I.add]
-    · simp only [if_neg h0, I.add]
+    · simp only [ite_eq_left h0, map_add (f := _), I.add]
+    · simp only [ite_eq_right h0, I.add]
   · intro n b x
     by_cases h0 : 0 < n
-    · simp only [if_pos h0]
+    · simp only [ite_eq_left h0]
       obtain ⟨z, hz⟩ := hg.lin n h0 b x
       rw [hz, hadd n h0, I.lin]
-    · simp only [if_neg h0, I.lin]
+    · simp only [ite_eq_right h0, I.lin]
   · intro n h0 x
-    simp only [if_pos h0]
+    simp only [ite_eq_left h0]
     rw [I.ker n h0]
     constructor
     · rintro ⟨y, hy⟩
@@ -963,7 +957,7 @@ theorem tResim : TResim := by
     · rintro ⟨v, rfl⟩
       exact ⟨g n v, map_nsmul (g n) n v⟩
   · intro n h0 q
-    simp only [if_pos h0]
+    simp only [ite_eq_left h0]
     rw [I.onto n h0]
     constructor
     · rintro ⟨x, rfl⟩
@@ -973,12 +967,12 @@ theorem tResim : TResim := by
       exact ⟨g n x, hx⟩
   · intro n m hn0 hm0 x
     have h0 : 0 < n * m := Nat.mul_pos hn0 hm0
-    simp only [if_pos h0, if_pos hn0]
+    simp only [ite_eq_left h0, ite_eq_left hn0]
     rw [I.tower n m hn0 hm0]
     obtain ⟨z, hz⟩ := hg.tow n m hn0 hm0 x
     rw [hz, hadd n hn0]
   · intro n h0 x y
-    simp only [if_pos h0]
+    simp only [ite_eq_left h0]
     have h := I.isom n h0 (g n x) (g n y)
     obtain ⟨c, hc⟩ := hg.iso n h0 x y
     have hz : I.ζ n ^ (n : ℤ) = 1 := by
@@ -991,7 +985,7 @@ theorem tResim : TResim := by
     rw [hE] at h
     exact h
   · intro n h0 x
-    simp only [if_pos h0]
+    simp only [ite_eq_left h0]
 
 end UpperTheory.Gal.FiniteEtaleModels.O
 end -- clump:auto

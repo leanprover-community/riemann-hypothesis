@@ -136,9 +136,9 @@ private lemma herm_hpk_bvec_eq_of_outer (v : Fin (2 * r + k + 1) → ℂ) (p q :
   rw [single_dotProduct, one_mul]
   simp only [Matrix.mulVec, dotProduct]
   rw [Finset.sum_eq_single q]
-  · rw [hpk_apply_of_outer hp, if_pos hpq, one_mul]
+  · rw [hpk_apply_of_outer hp, ite_eq_left hpq, one_mul]
   · intro l _ hl
-    rw [hpk_apply_of_outer hp, if_neg, zero_mul]
+    rw [hpk_apply_of_outer hp, ite_eq_right, zero_mul]
     intro e
     exact hl (Fin.ext (by omega))
   · intro h

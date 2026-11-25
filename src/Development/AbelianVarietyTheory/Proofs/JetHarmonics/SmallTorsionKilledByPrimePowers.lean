@@ -4,48 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommuta
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ImagQuadraticMaximalOrderArithmeticAtSplitPrime
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MultiplicativeCoordAddAndComplexMul
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SmallPointMultiplicativeCoordinateExistsUnique
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,11 +15,9 @@ namespace GlobalTheory.MomOne.SmallTors
 
 variable {q : ℕ} [hq : Fact q.Prime]
 
-alias norm_zc' := _root_.GlobalTheory.MomOne.ShiftComp.norm_zc
-
 lemma norm_nat_coprime {m : ℕ} (hm : Nat.Coprime m q) : ‖(m : ℂ_[q])‖ = 1 := by
   have h0 : (m : ℂ_[q]) = zc (m : ℤ_[q]) := by simp [zc]
-  rw [h0, norm_zc']
+  rw [h0, GlobalTheory.MomOne.MulSeries.norm_zc]
   have h1 : ¬ ‖((m : ℤ) : ℤ_[q])‖ < 1 := by
     rw [PadicInt.norm_int_lt_one_iff_dvd]
     have := (Nat.Prime.coprime_iff_not_dvd hq.out).1 hm.symm
@@ -70,14 +27,12 @@ lemma norm_nat_coprime {m : ℕ} (hm : Nat.Coprime m q) : ‖(m : ℂ_[q])‖ = 
 
 lemma norm_q_pow (n : ℕ) : ‖((q : ℂ_[q])) ^ n‖ = (q : ℝ) ^ (-(n : ℤ)) := by
   have h0 : (q : ℂ_[q]) ^ n = zc ((q : ℤ_[q]) ^ n) := by simp [zc]
-  rw [h0, norm_zc', PadicInt.norm_p_pow]
+  rw [h0, GlobalTheory.MomOne.MulSeries.norm_zc, PadicInt.norm_p_pow]
 
 lemma norm_eq_one {ξ : ℂ_[q]} (h : ‖ξ - 1‖ < 1) : ‖ξ‖ = 1 := by
   have : ξ = (ξ - 1) + 1 := by ring
   rw [this, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm (by rw [norm_one]; exact h.ne), norm_one]
   exact max_eq_right h.le
-
-alias norm_pow_sub_one := _root_.GlobalTheory.MomOne.ShiftComp.norm_pow_sub_one
 
 lemma norm_geom_sub {ξ : ℂ_[q]} (h : ‖ξ - 1‖ < 1) (n : ℕ) :
     ‖∑ i ∈ Finset.range n, ξ ^ i - n‖ < 1 := by
@@ -88,7 +43,7 @@ lemma norm_geom_sub {ξ : ℂ_[q]} (h : ‖ξ - 1‖ < 1) (n : ℕ) :
         = (∑ i ∈ Finset.range n, ξ ^ i - n) + (ξ ^ n - 1) := by
       rw [Finset.sum_range_succ]; push_cast; ring
     rw [this]
-    exact (IsUltrametricDist.norm_add_le_max _ _).trans_lt (max_lt ih (norm_pow_sub_one h n))
+    exact (IsUltrametricDist.norm_add_le_max _ _).trans_lt (max_lt ih (GlobalTheory.MomOne.ShiftComp.norm_pow_sub_one h n))
 
 lemma eq_one_of_pow {ξ : ℂ_[q]} (h : ‖ξ - 1‖ < 1) {m : ℕ} (hm : Nat.Coprime m q) (h1 : ξ ^ m = 1) :
     ξ = 1 := by
@@ -137,12 +92,12 @@ theorem smallTors : ∀ (d q : ℕ) [Fact q.Prime] (M : Mdl q) (ω : ℂ_[q]), d
     obtain ⟨n, m, hm, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hN.ne' q hq.out.ne_one
     have hm' : Nat.Coprime m q := ((Nat.Prime.coprime_iff_not_dvd hq.out).2 hm).symm
     have hz : ζ ^ (q ^ n) = 1 := by
-      refine eq_one_of_pow (norm_pow_sub_one hζ.2.1 _) hm' ?_
+      refine eq_one_of_pow (GlobalTheory.MomOne.ShiftComp.norm_pow_sub_one hζ.2.1 _) hm' ?_
       rw [← pow_mul]; exact htors _ _ _ hζ hNp
     refine ⟨n, ζ, hz, hζ, fun α hα hn => ?_⟩
     obtain ⟨⟨a, ha⟩, -⟩ := halg α hα
     have := hcm α a n 0 ζ p (fun l hl => (hL _).2 (imul hα ((hL _).1 hl))) ha
-      (by rw [ha, norm_zc'] at hn; simpa using hn) hz hζ
+      (by rw [ha, GlobalTheory.MomOne.MulSeries.norm_zc] at hn; simpa using hn) hz hζ
     rw [pow_zero] at this
     exact (one_iff _).1 this
   refine ⟨?_, h2, ?_, ?_⟩

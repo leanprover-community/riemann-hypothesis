@@ -104,7 +104,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-
 noncomputable section
 
 namespace GlobalTheory.Mem.R3.RowAd.Inert
@@ -189,13 +188,6 @@ theorem chi_eq_one {D : D7} (V : HSp D) (β : GL (Fin V.rank) (Formalism.IndefR.
     refine Finset.prod_eq_one fun c _ => ?_
     rw [hred PP (Or.inl hPP), Formalism.L2.DIV.dBlk, Formalism.L2.DIV.blockDiagonalExtendByOnePrimeField_one, map_one]
 
-theorem gram_eq_one (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) (hI : I.Ok) : X.toD7.sp.X'.gram = 1 := by
-  obtain ⟨hs, -, h2, -⟩ := hI.spaces
-  change X.B.sp.X'.gram = 1
-  rw [h2]
-  refine Matrix.ext fun i i' => (Formalism.BasicNotions.Examples₂.stdSpace_gram_apply hs _ _ _ _ i i').trans ?_
-  simp [Matrix.one_apply, Formalism.BasicNotions.Examples₂.sgn]
-
 theorem off_level (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) {U : Set I.ι}
     {L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)} (hL : LevOf X I U L) (t : TupU I U) (Q : PlI X.B px) :
     ∀ PP, PP ∈ (L.datXt t).Pg ∨ PP ∈ (L.datXt t).Q → PP ≠ Q.1 := by
@@ -221,7 +213,7 @@ theorem inert_neighbours (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) {
   have key := GlobalTheory.InertNbr.exists_hecke X.toD7.sp.X' (n := X.B.R.N X.B.R.m - 1) (rank_X' X).symm L.ΛX (L.datXt t) hm Q.1 Q.2.1
     (off_level X I hL t Q) hQ 1 1 (one_mem _)
     (fun x => by
-      rw [gram_eq_one X I hI, one_mul, inv_one, mul_one]
+      rw [GlobalTheory.Mem.R3.RowDeco.gram_X'_eq_one X I hI, one_mul, inv_one, mul_one]
       exact (LiftBrg.castGL_mem_UA_one X.toD7.sp.cm (rank_X' X).symm x).symm)
     (one_mem _) (one_mem _) s hs
   simp only [inv_one, one_mul, mul_one] at key
@@ -246,18 +238,18 @@ theorem exists_inertTie : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn
     hx := fun q => if hq : Formalism.L2.Col.InertTypeOk X.toD7.sp.X'.rank q.2 then (hN q hq).choose else 1
     hA := fun q => if hq : Formalism.L2.Col.InertTypeOk X.toD7.sp.X'.rank q.2 then (hN q hq).choose_spec.choose else ∅
     hx_ok := fun q hq => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact (hN q hq).choose_spec.choose_spec.1
     hA_loc := fun q hq => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact (hN q hq).choose_spec.choose_spec.2.1
     chi_loc := fun q _ j hj => chi_eq_one X.toD7.sp.X' L.βX (L.datXt t) (q.1.1 : PlI X.B px).1 (q.1.1 : PlI X.B px).2.1
       (off_level X I hL t (q.1.1 : PlI X.B px)) j hj
     hDC := fun q hq => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact (hN q hq).choose_spec.choose_spec.2.2.1
     op_eq := fun q hq f => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact opEq X I hX U Xg tr t cX P hP q _ (hN q hq).choose_spec.choose_spec.2.2.2 f }⟩
 
 end GlobalTheory.Mem.R3.RowAd.Inert
@@ -462,7 +454,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowFormsFiniteGroupActionEqFlagLevelRightTranslaStatement =====
@@ -476,7 +467,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 open GlobalTheory.Mem.R3.LiftBrg GlobalTheory.Mem.R3.LiftBrg.SplitLoc
-
 
 noncomputable section
 
@@ -617,7 +607,6 @@ theorem loc_iff_std (v : HeightOneSpectrum (𝓞 D.host.F)) (hv : Formalism.L2.C
     exact under_ne V L' SG hsub pl ok x hoffP
   rw [mem_levJ_iff V 1 L' g v hL1 hU hoff, mem_mhlKv_iff_St u hu1, ← castGL_mem_St h.symm, hg]
 
-
 omit hsub hoffP in
 theorem eta_isT_std (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (hβ : IsSDFrame V 1 Λ 1)
     (v : HeightOneSpectrum (𝓞 D.host.F)) (Pb : Pl D.host.E) (hPb : Formalism.L2.Col.conjPrime₂ Pb = pl x.1) (hv : Formalism.L2.Col.IsOver v Pb)
@@ -728,9 +717,6 @@ theorem loc_data (hG : V.gram = 1) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank �
 
 end Gen
 
-theorem gramX'_one (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px) (hI : I.Ok) : X.toD7.sp.X'.gram = 1 := by
-  apply _root_.GlobalTheory.Mem.R3.RowAd.Inert.gram_eq_one <;> assumption
-
 theorem datX_sub (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (hL : LevOf X I U L) (t : TupU I U) :
     ∀ PP, PP ∈ (L.datXt t).Pg ∨ PP ∈ (L.datXt t).Q → PP ∈ sgL X I U t := by
@@ -808,7 +794,7 @@ theorem hecke_tie : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B p
     intro x hx
     obtain ⟨hx', hA, h1, h2, h3, h4⟩ := loc_data X.toD7.sp.X' (X.B.R.N X.B.R.m - 1) (RowAd.rank_X' X).symm (L.datXt t) (sgL X I U t)
       (datX_sub X I U L hL t) (fun P : PlS X.B px => (P.1 : Pl X.toD7.host.E)) ((famR X I hX U Xg tr).A.ok t) x x.1.2
-      (gramX'_one X I hI) L.ΛX hβ hx.2
+      (GlobalTheory.Mem.R3.RowDeco.gram_X'_eq_one X I hI) L.ΛX hβ hx.2
     refine ⟨hx', hA, h1, h2, ?_, fun f => op_eq_of_bij X I hX U Xg tr cX t x hA h4 P hR f⟩
     rw [hL.beta.2]
     exact h3
@@ -830,7 +816,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
-
 
 end -- clump:auto
 end -- clump:auto
@@ -871,8 +856,6 @@ theorem exists_matEq_ptE (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B 
   obtain rfl : j = Fin.cast (GlobalTheory.Mem.R3.RowAd.rank_X' X).symm j' := Fin.ext hj
   rw [hβ, matIn, mul_one]
   rfl
-
-
 
 theorem exists_rowSide : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → ∀ (cX : CoefA X.toD7.sp.X') (gramR : Matrix (Fin X.toD7.sp.X'.rank) (Fin X.toD7.sp.X'.rank) X.toD7.host.E)
     (c0R : VV X.toD7.what₂.LL (fun τ => Bridge.lamRdef (Ptw X.toD7) τ) →ₛₗ[X.toD7.what₂.embLL] cX.W),

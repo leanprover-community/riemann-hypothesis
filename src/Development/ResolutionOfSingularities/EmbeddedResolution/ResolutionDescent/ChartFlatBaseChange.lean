@@ -33,9 +33,7 @@ variable {X : Scheme.{u}}
 
 theorem pullbackTransitionMap_self_eq_id (s : SequenceOfBlowups X) {X' : Scheme.{u}} (φ : X' ⟶ X) {i : ℕ} (h : i ≤ i) :
     s.pullbackTransitionMap φ h = 𝟙 (pullback φ (s.projectionToBase i)) := by
-  refine pullback.hom_ext ?_ ?_
-  · rw [s.pullbackTransitionMap_fst, Category.id_comp]
-  · rw [s.pullbackTransitionMap_snd, s.transitionMap_self_eq_id, Category.comp_id, Category.id_comp]
+  exact FunctorialResolution.EmbeddedResolution.SequenceOfBlowups.pullbackTransitionMap_refl s φ h
 
 theorem pullbackTransitionMap_trans (s : SequenceOfBlowups X) {X' : Scheme.{u}} (φ : X' ⟶ X) {i j l : ℕ}
     (hij : i ≤ j) (hjl : j ≤ l) :

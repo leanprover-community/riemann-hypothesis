@@ -101,7 +101,7 @@ theorem subY_eq_subD (hab : a ≤ b) (y' : ι → Matrix (Fin b) (Fin b) ℂ) (F
     rintro ⟨τ, p, q⟩
     have hq : (q : ℕ) < b := lt_of_lt_of_le q.2 hab
     rw [AlgHom.comp_apply]
-    simp [subY, subD, dif_pos hq, Fin.castLE]
+    simp [subY, subD, dite_eq_left hq, Fin.castLE]
   exact AlgHom.congr_fun key F
 
 theorem jetL_monomial (c : ι → ℂ) (G : VCx ι a b → ℂ) (m : ι × Fin b × Fin a →₀ ℕ) :

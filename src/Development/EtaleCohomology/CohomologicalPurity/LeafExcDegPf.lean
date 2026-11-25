@@ -100,7 +100,7 @@ theorem cokNat {C E : Type*} [Category C] [Abelian C] [Category E] (Φ Ψ : E �
       (cokernel.map (Φ.map g') (Ψ.map g') (α.hom.app X') (α.hom.app Y') (α.hom.naturality g').symm ≫
         cokernel.map (Ψ.map g') (Ψ.map g) (Ψ.map a) (Ψ.map b) (by simp only [← Functor.map_comp, w])) ≫
       inv (cokernel.map (Φ.map g) (Ψ.map g) (α.hom.app X) (α.hom.app Y) (α.hom.naturality g).symm) := by
-    rw [IsIso.eq_comp_inv]; ext; simp [Category.assoc, ← Functor.map_comp]
+    rw [IsIso.eq_comp_inv]; ext; simp [Category.assoc]
   rw [e]; infer_instance
 
 end Gen2

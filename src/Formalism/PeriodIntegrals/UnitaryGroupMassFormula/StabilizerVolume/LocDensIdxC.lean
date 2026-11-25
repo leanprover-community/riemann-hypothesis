@@ -179,14 +179,14 @@ def psi (k0 : Fin 2) : hermO b v σ a →+ (Fin a × Fin a → v.adicCompletionI
     funext q
     simp only [Pi.add_apply]
     by_cases h1 : q.1 < q.2
-    · simp only [if_pos h1]
+    · simp only [ite_eq_left h1]
       ext
       simp [crdS_add]
     · by_cases h2 : q.2 < q.1
-      · simp only [if_neg h1, if_pos h2]
+      · simp only [ite_eq_right h1, ite_eq_left h2]
         ext
         simp [crdS_add]
-      · simp only [if_neg h1, if_neg h2]
+      · simp only [ite_eq_right h1, ite_eq_right h2]
         ext
         simp [crdS_add]
 

@@ -45,7 +45,7 @@ theorem mh_C (r : ℤ) : IsMultiHomog (MvPolynomial.C r : MRing ι) 0 := by
   have hm0 : m = 0 := by
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_C] at hm
     by_contra hne
-    exact hm (if_neg (Ne.symm hne))
+    exact hm (ite_eq_right (Ne.symm hne))
   subst hm0
   simp
 

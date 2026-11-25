@@ -125,11 +125,6 @@ private theorem false_of_pullback_point_mem_preimage_of_not_univ_le {S X A T : S
   rw [Scheme.Hom.mem_preimage, h3, ← h2]
   exact h1
 
-private theorem resG_resG_divisor {Y : Scheme.{0}} {O O₁ O₂ : Y.Opens} (h₁ : O₁ ≤ O) (h₂ : O₂ ≤ O₁)
-    (s : Γ(Y, O)) : resG Y h₂ (resG Y h₁ s) = resG Y (h₂.trans h₁) s := by
-  rw [resG, resG, resG, ← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
-
 private theorem rsT_eq_resG_of_le {Y : Scheme.{0}} {O₀ : Y.Opens} (s : Γ(Y, O₀)) {O : Y.Opens} (h : O ≤ O₀) :
     rsT s O = resG Y h s := by
   rw [rsT, dite_eq_left h]
@@ -221,7 +216,7 @@ theorem existsUnique_coeff {A₀ : Over (Sp K)} [GrpObj A₀] {g : ℕ} {v : Fin
         rw [hi]
         erw [hrs _ _ hh (hle W₁ hW₁)]
         rw [rsT_eq_resG_of_le _ ((y ≫ m' ≫ q).preimage_mono hh), rsT_eq_resG_of_le _ ((y ≫ m').preimage_mono h₂),
-          resG_resG_divisor, resG_resG_divisor]
+          GlobalTheory.FlagMod.resG_resG, GlobalTheory.FlagMod.resG_resG]
       · simp only [d']
         rw [K2 W' r ((hle W' hW').trans hW₀), hbase _ (hle W' hW'), map_zero]
         simp only [constFn, map_zero]
@@ -233,7 +228,7 @@ theorem existsUnique_coeff {A₀ : Over (Sp K)} [GrpObj A₀] {g : ℕ} {v : Fin
         rw [Scheme.Hom.image_preimage_eq_opensRange_inf]; exact inf_le_right
       have h1 := appIso_inv_app_eq_resG_of_isOpenImmersion q W hWr f
       simp only [d']
-      rw [h1, hrs W _ hWr hW, rsT_eq_resG_of_le _ ((y ≫ m' ≫ q).preimage_mono hWr), resG_resG_divisor]
+      rw [h1, hrs W _ hWr hW, rsT_eq_resG_of_le _ ((y ≫ m' ≫ q).preimage_mono hWr), GlobalTheory.FlagMod.resG_resG]
       exact resG_self_eq _ _
     refine ⟨c, fun W hW f => ?_, fun c' hc' => hu c' fun W' hW' f' => ?_⟩
     · rw [← K3 W hW f, hc _ (q.preimage_mono hW)]
@@ -250,7 +245,7 @@ theorem existsUnique_coeff {A₀ : Over (Sp K)} [GrpObj A₀] {g : ℕ} {v : Fin
             ((X'.presheaf.map (eqToHom (q.preimage_image_eq W')).op).hom f') := by
         rw [← Scheme.Hom.appIso_inv_app]
         rfl
-      rw [map_mul, rsT_eq_resG_of_le (c' a) hA, resG_resG_divisor, resG_pbT_eq_pbT_of_le y (O₀ := (m' ≫ q) ⁻¹ᵁ (q ''ᵁ W')) _
+      rw [map_mul, rsT_eq_resG_of_le (c' a) hA, GlobalTheory.FlagMod.resG_resG, resG_pbT_eq_pbT_of_le y (O₀ := (m' ≫ q) ⁻¹ᵁ (q ''ᵁ W')) _
         (hO W') le_rfl]
       congr 1
       · exact (rsT_eq_resG_of_le (c' a) _).symm

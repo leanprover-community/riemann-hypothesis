@@ -160,7 +160,7 @@ theorem exists_comb_of_independent {F : Type} [Field F] {Y : Scheme.{0}} {M : LB
     Finset.mul_sum, Finset.sum_mul, Matrix.of_apply, _root_.mul_assoc]
     exact Finset.sum_comm
   have inj : Function.Injective (Matrix.vecMulLinear (Matrix.of m)) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro c hc
     refine ind c fun j => ?_
     have hc' : Matrix.vecMul c (Matrix.of m) = 0 := hc
@@ -563,9 +563,9 @@ theorem valF_pullOn {σ : ∀ j, Γ(X, V ⊓ (powAlong L k (𝟙 X)).U j)} (hσ 
   · exact Points.valR_appLE g F _ h _
   · have h' : ¬ ⊤ ≤ (g ≫ F) ⁻¹ᵁ (V ⊓ (powAlong L k (𝟙 X)).U j) := fun h' =>
       h fun y hy => Set.mem_iInter.2 fun a => Set.mem_iInter.1 (h' hy).2 a
-    have e : valF (g ≫ F) _ (σ j) = 0 := dif_neg h'
+    have e : valF (g ≫ F) _ (σ j) = 0 := dite_eq_right h'
     rw [e]
-    exact dif_neg h
+    exact dite_eq_right h
 
 end Sections
 

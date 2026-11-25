@@ -92,20 +92,6 @@ theorem symplO_dualPt (x : Mx D T.rank ρ) (b : Mx D ρ T.rank) :
 
 end Source
 
-section Target
-
-variable {S T T₀ : HSp D} {σ : ℕ} (d : HypDec T T₀ σ) (v : VolM D σ S.rank)
-
-end Target
-
-section Double
-
-variable {S S₀ T T₀ : HSp D} {ρ σ : ℕ} (d : HypDec S S₀ ρ) (d' : HypDec T T₀ σ) (v : VolM D T.rank ρ)
-  (v' : VolM D σ S₀.rank)
-
-
-end Double
-
 end GlobalTheory.Unf.DoubleSum
 
 end

@@ -2,50 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExtXCastAdd
 import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -79,7 +35,7 @@ theorem eN_val (v : Fin (M + c)) : Loc.eN E (M + c) v.1 = Pi.single v 1 := by
   ext l; simp [Loc.eN, Pi.single_apply, Fin.ext_iff]
 
 theorem eN_out {j : ℕ} (h : ¬ j < M + c) : Loc.eN E (M + c) j = 0 := by
-  ext l; simp only [Loc.eN, Pi.zero_apply]; rw [if_neg]; omega
+  ext l; simp only [Loc.eN, Pi.zero_apply]; rw [ite_eq_right]; omega
 
 theorem inX_apply (y : Fin M → E) (l : Fin (M + c)) :
     Loc.inX E M c y l = if h : l.1 < M then y ⟨l.1, h⟩ else 0 := by
@@ -101,7 +57,7 @@ theorem r1cond_of_unip {x : (Fin (M + c) → E) ≃ₗ[E] (Fin (M + c) → E)} (
     refine Finset.sum_eq_zero fun v _ => ?_
     by_cases hv : v.1 < M + i
     · have hl' : ¬ l.1 < M + i := hl
-      rw [hU l v (by unfold lv; split_ifs <;> omega), if_neg (by intro h; subst h; exact hl' hv), mul_zero]
+      rw [hU l v (by unfold lv; split_ifs <;> omega), ite_eq_right (by intro h; subst h; exact hl' hv), mul_zero]
     · rw [hw v hv, zero_mul]
   · ext l
     exact col hU M l (by have := one_le_lv M l.1; unfold lv at this ⊢; simp; omega)
@@ -114,11 +70,11 @@ theorem fixX_of_unip {x : (Fin (M + c) → E) ≃ₗ[E] (Fin (M + c) → E)} (hU
   ext l
   rw [apply_eq_sum, Finset.sum_eq_single l]
   · by_cases hl : l.1 < M
-    · rw [hU l l (le_refl _), if_pos rfl, mul_one]
+    · rw [hU l l (le_refl _), ite_eq_left rfl, mul_one]
     · simp [inX_apply, hl]
   · intro v _ hvl
     by_cases hv : v.1 < M
-    · rw [hU l v (by have := one_le_lv M l.1; unfold lv; rw [if_pos hv]; exact this), if_neg (Ne.symm hvl), mul_zero]
+    · rw [hU l v (by have := one_le_lv M l.1; unfold lv; rw [ite_eq_left hv]; exact this), ite_eq_right (Ne.symm hvl), mul_zero]
     · rw [inX_apply, dite_eq_right hv, zero_mul]
   · intro h; exact absurd (Finset.mem_univ l) h
 

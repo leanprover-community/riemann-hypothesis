@@ -129,7 +129,7 @@ theorem stepOne : StepOne := by
     exact hb.trans (mul_le_mul_of_nonneg_left (hmax w' hw') (mn_nonneg hΛ K (norm_nonneg _)))
   have hM : 0 ≤ M := by
     have h0 := hbd 0
-    simp only [norm_zero, mn, if_true, one_mul] at h0
+    simp only [norm_zero, mn, ite_true, one_mul] at h0
     exact (norm_nonneg _).trans h0
   have key : ∀ x : ℝ, 0 < x → Λ ≤ x → ‖φ c‖ ≤ 3 / π * x ^ 2 * M := by
     intro x hx hΛx

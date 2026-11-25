@@ -31,11 +31,8 @@ theorem tcoef_map_left {M' : Type*} [AddCommGroup M'] [Module ℂ M'] (φ : Modu
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
 theorem tcoef_lTensor (φ : Module.Dual ℂ (Fock n)) (S : Module.End ℂ (Fock n))
-    (y : TensorProduct ℂ M (Fock n)) : tcoef φ (LinearMap.lTensor M S y) = tcoef (φ ∘ₗ S) y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul m f => simp [tcoef_tmul]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    (y : TensorProduct ℂ M (Fock n)) : tcoef φ (LinearMap.lTensor M S y) = tcoef (φ ∘ₗ S) y :=
+  congrArg (TensorProduct.rid ℂ M) (LinearMap.map_lTensor (f := LinearMap.id) (g := φ) (g' := S) (x := y))
 
 theorem tcoef_smul (c : ℂ) (φ : Module.Dual ℂ (Fock n)) (y : TensorProduct ℂ M (Fock n)) :
     tcoef (c • φ) y = c • tcoef φ y := by

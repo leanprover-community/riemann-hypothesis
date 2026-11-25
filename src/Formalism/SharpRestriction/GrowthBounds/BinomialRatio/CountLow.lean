@@ -407,8 +407,8 @@ theorem cl_prod_le {α τ : Type*} (P : α → Prop) [DecidablePred P] (w : α �
       intro a
       rw [← Finset.mem_coe, hSe, Function.mem_support]
       constructor
-      · intro h; by_contra hp; exact h (if_neg hp)
-      · intro hp; rw [if_pos hp]; exact (hw a hp).ne'
+      · intro h; by_contra hp; exact h (ite_eq_right hp)
+      · intro hp; rw [ite_eq_left hp]; exact (hw a hp).ne'
     have mem : ∀ x : α × ℕ, x ∈ S ×ˢ range (J + 1) → P x.1 ∧ x.2 ≤ J := by
       intro x hx
       rw [Finset.mem_product, Finset.mem_range] at hx
@@ -424,7 +424,7 @@ theorem cl_prod_le {α τ : Type*} (P : α → Prop) [DecidablePred P] (w : α �
       refine Finset.sum_congr rfl (fun a ha => Finset.sum_congr rfl (fun jj hj => ?_))
       have hp := (hmemS a).mp ha
       have hjj : jj ≤ J := by have := Finset.mem_range.mp hj; omega
-      rw [if_pos hp, hval (a, jj) hp hjj]
+      rw [ite_eq_left hp, hval (a, jj) hp hjj]
     rw [← himg]
     apply Finset.sum_le_sum_of_subset_of_nonneg
     · intro t ht
@@ -460,7 +460,7 @@ theorem cl_Fs_finite {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
     by_contra hn
     apply hz
     unfold Fs
-    rw [if_neg hn]
+    rw [ite_eq_right hn]
   exact (finsum_le_of_inj (Fs C0 CE1 CE2 X j m rz ry)
     (Gt (r := X.m) (mmLetters C0 CE1 CE2 X j rz ry) (X.seg C0 CE1 CE2 j).bPlus) Φ
     (Gt_nonneg _ _) (Gt_support_finite hCD _ _) (hinj.mono (fun _ hz => hsupp _ hz)) (by
@@ -469,7 +469,7 @@ theorem cl_Fs_finite {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
       obtain ⟨h1, h2, h3, h4⟩ := hΦ z hz'
       have hjp : z.2.1.2 ≤ (X.seg C0 CE1 CE2 j).bPlus := le_trans hz'.2.1.2 (min_le_right _ _)
       unfold Fs Gt
-      rw [if_pos hz', if_pos ⟨h1, h2, by rw [h4]; exact hjp⟩, h3, h4])).1
+      rw [ite_eq_left hz', ite_eq_left ⟨h1, h2, by rw [h4]; exact hjp⟩, h3, h4])).1
 
 theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
     (hMU : MatchUpAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc) (hML : MatchLowAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc) :
@@ -478,7 +478,7 @@ theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
   intro X _ hD hI hc j m hm hmA rz ry hdig
   obtain ⟨Ψ, hinj, hΨ⟩ := hML X hD hI hc j m hm hmA rz ry hdig
   have hfin := cl_Fs_finite hCD hMU X hD hI hc j m hm rz ry hdig
-  rw [chainCount_eq, ← finsum_curry3 (Fs C0 CE1 CE2 X j m rz ry) hfin]
+  rw [chainCount_eq, ← finsum_curry₃ (Fs C0 CE1 CE2 X j m rz ry) hfin]
   have key := cl_prod_le (fun x : (Fin (2 * segS X.TT j + 1 + 1) → Fin (X.m + 1) → ℤ) × (Fin X.m → ℤ) =>
       IsPair (((X.seg C0 CE1 CE2 j).A0 X.p - (⌈m⌉₊ : ℤ)).toNat) (clA C0 CE1 CE2 X j rz ry)
           (clC C0 CE1 CE2 X j rz ry) x.1 x.2 ∧
@@ -507,7 +507,7 @@ theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
         unfold TgtOK; exact ⟨hp, hj⟩
       obtain ⟨hs, hl, hjp⟩ := hΨ (t.1.1, t.1.2, t.2) hok
       unfold Fs
-      rw [if_pos hs, hl, hjp])
+      rw [ite_eq_left hs, hl, hjp])
   unfold keptPairSum
   convert key
 

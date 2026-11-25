@@ -11,55 +11,9 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MvPol
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexLevelSelfDualStabilizerEqProdLocal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjFormsRescale
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StarMulSelfOfPair
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.RingTheory.PicardGroup
 import Formalism.LocalToGlobal.Columns.CoefModAt
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
 import Mathlib.Tactic.Linter.HaveILetI
@@ -273,7 +227,7 @@ theorem eq_zero_of_vanish_skew (F E : Type) [Field F] [NumberField F] [Field E] 
     have hw : ∀ τ i j, ∑ G, z G * ψ τ (A G i j) = w τ i j := by
       intro τ i j
       have k2 := key ((ψ τ).comp c) j i
-      simp only [RingHom.comp_apply, hne, if_false, mul_zero, Finset.sum_const_zero] at k2
+      simp only [RingHom.comp_apply, hne, ite_false, mul_zero, Finset.sum_const_zero] at k2
       rw [sum_gen, key, k2]
       simp [hinj]
     refine ⟨z, ?_⟩
@@ -524,7 +478,7 @@ theorem ratDense (D : D7) (V : Formalism.BasicNotions.TH.HSp D)
     simp only [evDet']
     by_cases hx : ∀ τ, (1 + x τ).det ≠ 0
     · rw [hX x hx, zero_mul]
-    · push_neg at hx
+    · push Not at hx
       obtain ⟨τ, hτ⟩ := hx
       rw [Finset.prod_eq_zero (Finset.mem_univ τ) hτ, mul_zero]
   exact (mul_eq_zero.1 hz).resolve_right hprod2
@@ -633,14 +587,6 @@ section -- clump:auto
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR
 
-
-theorem _root_.GlobalTheory.T.commutes_all_of_commutes_rationalUnitaryPoints : ∀ (D : D7) (V : Formalism.BasicNotions.TH.HSp D) (tauL : D.what₂.Tau → (D.host.E →+* D.what₂.LL)),
-    (∀ τ, D.what₂.embLL.comp (tauL τ) = Formalism.BasicNotions.TH.tauE D τ) →
-    ∀ (lam : D.what₂.Tau → DomWeight V.rank) (g : Module.End D.what₂.LL (VV D.what₂.LL lam)),
-    (∀ (γ : GQ V) (γE : GL (Fin V.rank) D.host.E), Bridge.IsRatMat V γ γE →
-      ∀ v, g (rhoVr tauL lam γE v) = rhoVr tauL lam γE (g v)) →
-    ∀ (h : D.what₂.Tau → GL (Fin V.rank) D.what₂.LL) v, g (rhoK lam h v) = rhoK lam h (g v) := by
-  first | exact @GlobalTheory.RatDenseEnd.comm_all
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -657,7 +603,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
-
 
 namespace GlobalTheory.CoefRoot
 
@@ -690,7 +635,7 @@ theorem coef_root : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type}
     intro γ γE hγ v
     apply hinj
     rw [← hcg, (h'.mapL i).1 γ γE hγ, hcg, (h.mapL i).1 γ γE hγ]
-  obtain ⟨a, ha⟩ := _root_.GlobalTheory.CoefSchur.endo_scalar D.what₂.LL (lamL i) g (GlobalTheory.T.commutes_all_of_commutes_rationalUnitaryPoints D _ tauL h.tauL_ok (lamL i) g hcomm)
+  obtain ⟨a, ha⟩ := _root_.GlobalTheory.CoefSchur.endo_scalar D.what₂.LL (lamL i) g (GlobalTheory.RatDenseEnd.comm_all D _ tauL h.tauL_ok (lamL i) g hcomm)
   have hea : ∀ x, e x = a • e₂ x := fun x => by
     have h1 := ha (e₂ x)
     simpa [g] using h1

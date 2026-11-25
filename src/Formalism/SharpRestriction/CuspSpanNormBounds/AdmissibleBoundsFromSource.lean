@@ -41,16 +41,8 @@ def hyp (C0 C' Cl Cg cb Cu cT CT : ℝ) : Prop :=
 def DiagonalKernelBoundParameters (Cl Cg CT : ℝ) : Prop :=
   UnitaryVolumeMass.KTwoParameterConditions D large₂ Cl Cg CT
 
-def WordPairStandingData (u u' : D.what₂.Word) : Prop :=
-  1 ≤ D.R.rS ∧
-  (Lat.Tu D u).Prime ∧ (Lat.Tu D u').Prime ∧ 3 ≤ Lat.Tu D u ∧ 3 ≤ Lat.Tu D u' ∧
-  Lat.SplitsCompletely (E := D.host.E) (Lat.Tu D u) ∧ Lat.SplitsCompletely (E := D.host.E) (Lat.Tu D u') ∧
-  (D.host.g 0).Prime ∧ (D.host.g 1).Prime ∧ D.host.g 0 ≠ D.host.g 1 ∧
-  (∀ i, Lat.SplitsCompletely (E := D.host.E) (D.host.g i)) ∧
-  Nat.Coprime (Lat.gS D) (Lat.Tu D u * Lat.Tu D u') ∧ Lat.Tu D u ≡ Lat.Tu D u' [MOD Lat.gS D]
-
 def WordPairParameters (u u' : D.what₂.Word) (Cl A : ℝ) : Prop :=
-  WordPairStandingData D u u' ∧
+  Formalism.MainNotions.S.Cnt.Stand D u u' ∧
   Tr D u' / Tr D u ≤ A ∧ Tr D u / Tr D u' ≤ A ∧
   Cl * ((D.R.m : ℝ) ^ 6 * large₂.sc.L) ≤ (D.R.k : ℝ) * Real.log D.R.k ∧
   Real.log (D.R.f : ℝ) ^ 2 ≤ A * ((D.R.m : ℝ) ^ 2 * large₂.sc.L) ∧
@@ -213,11 +205,5 @@ structure GivC where
   Cu : ℝ
   cT : ℝ
   CT : ℝ
-
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Family
 
 end Formalism.MainNotions.AdmissibleBoundsFromSource

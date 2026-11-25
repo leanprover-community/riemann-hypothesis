@@ -86,7 +86,7 @@ theorem adj_sum : ∀ (n : ℕ) (l : Fin n → ℂ), ∑ a, ∑ b, (Matrix.adjug
     · exact Finset.prod_congr rfl fun s _ => by rw [he]; simp
     · intro i j hij
       have hij' : j < i := hij
-      rw [he, if_neg (ne_of_gt hij'), if_neg (not_lt_of_gt hij')]
+      rw [he, ite_eq_right (ne_of_gt hij'), ite_eq_right (not_lt_of_gt hij')]
   have hdet1 : (M + Matrix.of fun _ _ => (1 : Polynomial ℂ)).det =
       ∏ s, (Polynomial.X + Polynomial.C (l s) + 1) := by
     rw [Matrix.det_of_lowerTriangular]
@@ -239,7 +239,7 @@ theorem det_shift (m : ℕ) (χ : Fin (m + 1) → ℂ) :
       push_cast
       ring
     simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply_eq, Matrix.map_apply,
-      Formalism.REAL.Amat, Matrix.of_apply, if_true, smul_eq_mul, mul_one]
+      Formalism.REAL.Amat, Matrix.of_apply, ite_true, smul_eq_mul, mul_one]
     rw [hc]
     ring
   · intro i j hij

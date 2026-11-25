@@ -25,51 +25,26 @@ universe u
 
 variable {R : Type u} [CommRing R]
 
-private theorem algebraMap_degreeZero_apply (I : Ideal R) (x : ↥(reesGrading I 0)) :
-    algebraMap ↥(reesGrading I 0) ↥(reesAlgebra I) x = (x : ↥(reesAlgebra I)) := rfl
-
-private theorem algebraMap_reesAlgebra_eq_algebraMap_degreeZero (I : Ideal R) (r : R) :
-    algebraMap R ↥(reesAlgebra I) r =
-      algebraMap ↥(reesGrading I 0) ↥(reesAlgebra I) (reesDegreeZeroEquiv I r) := by
-  apply Subtype.ext
-  rw [algebraMap_degreeZero_apply, reesDegreeZeroEquiv_coe_coe]
-  rfl
-
-private noncomputable def adjoinOverDegreeZero (I : Ideal R) (s : Set ↥(reesAlgebra I)) :
-    Subalgebra R ↥(reesAlgebra I) where
-  toSubsemiring := (Algebra.adjoin ↥(reesGrading I 0) s).toSubsemiring
-  algebraMap_mem' := fun r => by
-    rw [algebraMap_reesAlgebra_eq_algebraMap_degreeZero]
-    exact Subalgebra.algebraMap_mem (Algebra.adjoin ↥(reesGrading I 0) s) _
-
-private theorem mem_adjoin_degreeZero_of_mem_restrictScalars (I : Ideal R) (s : Set ↥(reesAlgebra I))
-    (x : ↥(reesAlgebra I)) (hx : x ∈ adjoinOverDegreeZero I s) :
-    x ∈ Algebra.adjoin ↥(reesGrading I 0) s := hx
-
-private theorem mem_restrictScalars_of_mem_adjoin_degreeZero (I : Ideal R) (s : Set ↥(reesAlgebra I))
-    (x : ↥(reesAlgebra I)) (hx : x ∈ Algebra.adjoin ↥(reesGrading I 0) s) :
-    x ∈ adjoinOverDegreeZero I s := hx
-
-private theorem adjoin_le_adjoin_degreeZero (I : Ideal R) (s : Set ↥(reesAlgebra I)) :
-    Algebra.adjoin R s ≤ adjoinOverDegreeZero I s := by
-  refine Algebra.adjoin_le ?_
-  intro y hy
-  rw [SetLike.mem_coe]
-  exact mem_restrictScalars_of_mem_adjoin_degreeZero I s y (Algebra.subset_adjoin hy)
-
-private theorem adjoin_degreeZero_eq_top_of_adjoin_eq_top (I : Ideal R) (s : Set ↥(reesAlgebra I))
-    (hs : Algebra.adjoin R s = ⊤) : Algebra.adjoin ↥(reesGrading I 0) s = ⊤ := by
-  rw [eq_top_iff]
-  intro x _
-  have hx : x ∈ Algebra.adjoin R s := by
-    rw [hs]
-    exact Algebra.mem_top
-  exact mem_adjoin_degreeZero_of_mem_restrictScalars I s x (adjoin_le_adjoin_degreeZero I s hx)
-
 theorem finiteType_reesAlgebra_degreeZero (I : Ideal R) [IsNoetherianRing R] :
     Algebra.FiniteType ↥(reesGrading I 0) ↥(reesAlgebra I) := by
   obtain ⟨s, hs⟩ := (inferInstance : Algebra.FiniteType R ↥(reesAlgebra I)).out
-  exact ⟨⟨s, adjoin_degreeZero_eq_top_of_adjoin_eq_top I (↑s : Set ↥(reesAlgebra I)) hs⟩⟩
+  refine ⟨⟨s, eq_top_iff.2 fun x hxTop => ?_⟩⟩
+  clear hxTop
+  have hx : x ∈ Algebra.adjoin R (s : Set ↥(reesAlgebra I)) := hs ▸ Algebra.mem_top
+  induction hx using Algebra.adjoin_induction with
+  | mem y hy => exact Algebra.subset_adjoin hy
+  | algebraMap r =>
+    have hr : algebraMap R ↥(reesAlgebra I) r =
+        algebraMap ↥(reesGrading I 0) ↥(reesAlgebra I) (reesDegreeZeroEquiv I r) := by
+      apply Subtype.ext
+      rw [show (algebraMap ↥(reesGrading I 0) ↥(reesAlgebra I) (reesDegreeZeroEquiv I r) :
+            ↥(reesAlgebra I)) = (reesDegreeZeroEquiv I r : ↥(reesAlgebra I)) from rfl,
+        reesDegreeZeroEquiv_coe_coe]
+      rfl
+    rw [hr]
+    exact Subalgebra.algebraMap_mem _ _
+  | add _ _ _ _ ha hb => exact Subalgebra.add_mem _ ha hb
+  | mul _ _ _ _ ha hb => exact Subalgebra.mul_mem _ ha hb
 
 private theorem isProper_comp_of_isIso {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z)
     (hf : AlgebraicGeometry.IsProper f) (hg : IsIso g) :

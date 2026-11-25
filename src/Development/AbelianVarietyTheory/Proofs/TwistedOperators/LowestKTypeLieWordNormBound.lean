@@ -82,12 +82,7 @@ theorem oneProd_succ {d : ℕ} (Y : Fin (d + 1) → Matrix (Fin n) (Fin n) ℂ) 
   simp [oneProd, List.ofFn_succ]
 
 theorem mul_mem_UH {G a b : Matrix (Fin n) (Fin n) ℂ} (ha : a ∈ Formalism.QuantumDeterminants.UH G) (hb : b ∈ Formalism.QuantumDeterminants.UH G) :
-    a * b ∈ Formalism.QuantumDeterminants.UH G := by
-  have ha' : aᴴ * G * a = G := ha
-  have hb' : bᴴ * G * b = G := hb
-  show (a * b)ᴴ * G * (a * b) = G
-  calc (a * b)ᴴ * G * (a * b) = bᴴ * (aᴴ * G * a) * b := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = G := by rw [ha', hb']
+    a * b ∈ Formalism.QuantumDeterminants.UH G := CCRuleCW.UH_mul G a b ha hb
 
 theorem exp_mem {G X : Matrix (Fin n) (Fin n) ℂ} (hG : IsUnit G) (hX : X ∈ lieOf G) (t : ℝ) :
     NormedSpace.exp (t • X) ∈ Formalism.QuantumDeterminants.UH G := by

@@ -617,7 +617,7 @@ theorem UpperTheory.V.Win.partB :
   intro CK hCK hK l R _ hl2 A hA L₀ _ _ hL₀ hAB J Ct eps A1 hJ hCt heps
   have hmu0 : HasMuQ l L₀ := by
     obtain ⟨ζ, hζ⟩ := exists_isPrimitiveRoot_of_hasMu_of_isAbField A l hA L₀ hL₀
-    exact ⟨ζ, by rw [if_neg hl2]; exact hζ⟩
+    exact ⟨ζ, by rw [ite_eq_right hl2]; exact hζ⟩
   obtain ⟨c, -, hc⟩ := exc l R L₀ hAB
   obtain ⟨L₂, i1, i2, i3, hL₂⟩ := layerex l (jZero l R) Fact.out L₀ hmu0
   have hc0 : 0 ≤ Real.log (2 * ((NumberField.discr L₂).natAbs : ℝ)) := by
@@ -700,7 +700,7 @@ theorem UpperTheory.V.Win.window1 :
           have : U / (2 * B) < u := lt_of_lt_of_le h1 hau
           linarith
         · exact hy3 a (Finset.mem_erase.mpr ⟨hae, ha⟩) u hu1 hu2 hau
-    · push_neg at h
+    · push Not at h
       refine ⟨U / 2, ?_, by linarith, ?_⟩
       · apply div_le_div_of_nonneg_left hU.le (by norm_num)
         have h2 : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)

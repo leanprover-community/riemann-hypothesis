@@ -1077,12 +1077,6 @@ theorem automorphism_induces_lattice_map (u : D.what₂.Word) (F0 : FlagG (VS D)
 
 end D7
 
-section D7
-
-variable {D : D7}
-
-end D7
-
 section Int
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
@@ -1194,11 +1188,5 @@ theorem eq_of_locP {A B : Submodule (𝓞 E) S.V}
   exact le_antisymm (key A B h) (key B A fun P => (h P).symm)
 
 end Int
-
-section D7
-
-variable (D : D7)
-
-end D7
 
 end Formalism.L2.SG.Pf

@@ -100,14 +100,14 @@ theorem chartMonomial_homog (j : ∀ k, J k) (d : K → ℕ) : IsMultiHomog (cha
   · rw [Finset.sum_eq_single (j k)]
     · simp
     · intro i _ hi
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       exact hi (eq_of_heq (Sigma.mk.inj h).2).symm
     · intro h
       exact absurd (Finset.mem_univ _) h
   · intro k' _ hk
     refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     exact hk (congrArg Sigma.fst h)
   · intro h

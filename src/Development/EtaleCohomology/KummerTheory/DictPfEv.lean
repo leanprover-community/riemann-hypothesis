@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.KummerTheory.DictPf
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace LateralTheory.KummerTheory
@@ -72,7 +71,7 @@ theorem ev_pre (R : Type) [CommRing R] {E : Spc} {I : Cx R} {n : ℤ} {E' : Spc}
   rw [Cochain.zero_cochain_comp_v, Cochain.ofHom_v, ← Category.assoc, chainsXIso_nat, Category.assoc]
   exact congrArg (fun y => (((chainsXIso R E p).inv ≫ α.v _ _ h).hom.app (op U)).hom y) (free_gen_map R _ U x)
 
-theorem evLin : EvLin := fun R _ E I n =>
+theorem evLin : EvLin := fun R _ _ _ _ =>
   ⟨fun α β p s h U x => ⟨ev_add R α β p s h U x, ev_neg R α p s h U x⟩,
    fun α p s h V U g x => ev_res R α p s h V U g x,
    fun f α p s h U x => ev_pre R f α p s h U x⟩

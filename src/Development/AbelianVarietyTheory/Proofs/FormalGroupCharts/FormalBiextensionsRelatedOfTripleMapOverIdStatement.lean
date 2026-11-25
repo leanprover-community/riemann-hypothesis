@@ -304,15 +304,12 @@ theorem uniq {G : Over (Sp V)} [GrpObj G] {κ : Type} {x : GlobalTheory.PowGerm.
 theorem jetSubstP_trunc {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) (φ : κ → MvPowerSeries κ' V) :
     jetSubstP m (fun p => psTrunc m (φ p)) = jetSubstPS (m := m) φ := rfl
 
-theorem aug_X {κ : Type} (m : ℕ) (j : κ) :
-    (jetAug : Jet V κ m →ₐ[V] V) (Ideal.Quotient.mk _ (MvPolynomial.X j)) = 0 := ExpUniqJet.augmentation_jet_variable m j
-
 theorem aug_comp_subst {κ κ' : Type} [Fintype κ] [DecidableEq κ] [Fintype κ'] [DecidableEq κ'] (m : ℕ)
     (φ : κ → MvPowerSeries κ' V) (hφ : ∀ i, MvPowerSeries.constantCoeff (φ i) = 0) :
     (jetAug : Jet V κ' m →ₐ[V] V).comp (jetSubstPS (m := m) φ) = jetAug := by
   apply GermD.jet_hom_ext
   intro i
-  rw [AlgHom.comp_apply, ExpChartJet.jetSubstPS_mk m φ hφ, GaugeR.jetAug_psJet, hφ, aug_X]
+  rw [AlgHom.comp_apply, ExpChartJet.jetSubstPS_mk m φ hφ, GaugeR.jetAug_psJet, hφ, Formalism.MainNotions.ModuliIntegralCharts.H1.GermB.jetAug_X]
 
 theorem exists_coord {G : Over (Sp V)} [GrpObj G] {κ κ' : Type} [Fintype κ] [DecidableEq κ] [Fintype κ'] [DecidableEq κ']
     {x : GlobalTheory.PowGerm.JetPts G κ} (hx : GlobalTheory.PowGerm.IsUnivJ G κ x) {x' : GlobalTheory.PowGerm.JetPts G κ'}
@@ -333,7 +330,7 @@ theorem exists_coord {G : Over (Sp V)} [GrpObj G] {κ κ' : Type} [Fintype κ] [
   choose φ hφ using hs
   have h0 : ∀ i, MvPowerSeries.constantCoeff (φ i) = 0 := by
     intro i
-    rw [← GaugeR.jetAug_psJet 0, hφ, ← AlgHom.comp_apply, hψa, aug_X]
+    rw [← GaugeR.jetAug_psJet 0, hφ, ← AlgHom.comp_apply, hψa, Formalism.MainNotions.ModuliIntegralCharts.H1.GermB.jetAug_X]
   refine ⟨φ, h0, fun m => ?_⟩
   have : jetSubstPS (m := m) φ = ψ m := by
     apply GermD.jet_hom_ext
@@ -736,7 +733,7 @@ theorem comb_eq (hx : IsChartG t (𝟙 (Sp V)) d G.F act tg uv x) {u : Fin d →
     funext q
     rw [Finset.sum_apply]
     simp only [Pi.smul_apply, smul_eq_mul, hq, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true]
+      ite_true]
   rw [← hs, tanPt_sum hx, ← hprod, hw']
 
 theorem tanPt_rel {x x' : ∀ m, jOG (𝟙 (Sp V)) d m 1 ⟶ t.G} {φ : Pt V 1 d}

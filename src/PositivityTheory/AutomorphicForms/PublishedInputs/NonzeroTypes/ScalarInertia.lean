@@ -6,8 +6,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain ValuativeRel Polynomial Module
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.WeilDeligne

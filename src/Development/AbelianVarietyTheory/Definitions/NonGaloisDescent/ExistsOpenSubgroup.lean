@@ -345,14 +345,6 @@ theorem labGen_of_tie {γ} (hγ : GenFam D γ) (h : LabAll T γ) : LabGen D := b
 
 end Ties
 
-section Forms
-
-open TensorProduct
-
-variable {D : D7}
-
-end Forms
-
 end GlobalTheory.PendOf.Model
 
 end

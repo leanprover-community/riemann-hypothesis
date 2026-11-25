@@ -31,11 +31,11 @@ def LevFam.glue (A : LevFam E K n SG) (B : LevFam E K n Q) : LevFam E K n (uSG S
 
 open Classical in
 theorem LevFam.glue_of_mem (A : LevFam E K n SG) (B : LevFam E K n Q) (w : uSG SG Q) (h : w.1 ∈ SG) :
-    A.glue B w = A ⟨w.1, h⟩ := dif_pos h
+    A.glue B w = A ⟨w.1, h⟩ := dite_eq_left h
 
 open Classical in
 theorem LevFam.glue_of_not (A : LevFam E K n SG) (B : LevFam E K n Q) (w : uSG SG Q) (h : w.1 ∉ SG) :
-    A.glue B w = B ⟨w.1, (Finset.mem_union.mp w.2).resolve_left h⟩ := dif_neg h
+    A.glue B w = B ⟨w.1, (Finset.mem_union.mp w.2).resolve_left h⟩ := dite_eq_right h
 
 
 variable (Q) in
@@ -49,9 +49,9 @@ def extGLG : GLG (E := E) (n := n) (SG := SG) →* GLG (E := E) (n := n) (SG := 
     funext w
     by_cases h : w.1 ∈ SG <;> simp [h]
 
-theorem extGLG_of_mem (g : GLG (E := E) (n := n) (SG := SG)) (w : uSG SG Q) (h : w.1 ∈ SG) : extGLG Q g w = g ⟨w.1, h⟩ := dif_pos h
+theorem extGLG_of_mem (g : GLG (E := E) (n := n) (SG := SG)) (w : uSG SG Q) (h : w.1 ∈ SG) : extGLG Q g w = g ⟨w.1, h⟩ := dite_eq_left h
 
-theorem extGLG_of_not (g : GLG (E := E) (n := n) (SG := SG)) (w : uSG SG Q) (h : w.1 ∉ SG) : extGLG Q g w = 1 := dif_neg h
+theorem extGLG_of_not (g : GLG (E := E) (n := n) (SG := SG)) (w : uSG SG Q) (h : w.1 ∉ SG) : extGLG Q g w = 1 := dite_eq_right h
 
 end Glue
 

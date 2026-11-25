@@ -497,7 +497,7 @@ theorem UpperTheory.V.Ws.Gys.ccEx :
         exact j.commutes a
       rw [hj, InfinitePlace.mk_embedding]
   refine ⟨fun w => if hw : w.IsReal then (key w hw).choose else 1, fun w hw => ?_⟩
-  simp only [dif_pos hw]
+  simp only [dite_eq_left hw]
   exact (key w hw).choose_spec
 end -- clump:auto
 end -- clump:auto
@@ -752,9 +752,9 @@ theorem UpperTheory.V.Ws.Gys.selBig :
   have hloc : ∀ v : S, (if v.1 ∈ S₀ then 1 else 2 * Nat.card M) ≤ Nat.card (gysL S₀ S ρ Av m0 v) := by
     intro v
     by_cases hv : v.1 ∈ S₀
-    · rw [if_pos hv, show gysL S₀ S ρ Av m0 v = ⊥ from if_pos hv]
+    · rw [ite_eq_left hv, show gysL S₀ S ρ Av m0 v = ⊥ from ite_eq_left hv]
       exact Nat.card_pos
-    · rw [if_neg hv, show gysL S₀ S ρ Av m0 v = _ from if_neg hv]
+    · rw [ite_eq_right hv, show gysL S₀ S ρ Av m0 v = _ from ite_eq_right hv]
       have ht := htr v.1 v.2 hv (Av v) (hA v)
       obtain ⟨φ₁, h1, φ₂, h2, a1, a2, g, a3, a4⟩ := locHoms P.loc.lt P.loc.le P.uo F Ω l (Av v) v.1 (hA v)
         (fun h => hv (hS₀ _ h)) (fun g hg => (ht g hg).2)
@@ -812,13 +812,13 @@ theorem UpperTheory.V.Ws.Gys.selMem :
     show f.1 (toGS Ω _ g) = 0
     rw [h2, h1]
   · have h := hloc ⟨v, hS hv⟩
-    rw [show gysL S₀ S ρ Av m0 ⟨v, hS hv⟩ = ⊥ from if_pos hv, Submodule.mem_bot] at h
+    rw [show gysL S₀ S ρ Av m0 ⟨v, hS hv⟩ = ⊥ from ite_eq_left hv, Submodule.mem_bot] at h
     obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 h)
     exact (UpperTheory.V.Ws.Gys.cocConj F Ω R M (ρ.comp (toGS Ω _)) _ hZ v (Av ⟨v, hS hv⟩) A (hA ⟨v, hS hv⟩) hAv).1
       ⟨m, fun g hg => hm ⟨g, hg⟩⟩
   · have h := hloc v
     rw [show gysL S₀ S ρ Av m0 v = ramLine (ρ.comp (locFam S Av v)) ((Ine (F := F) (Av v)).subgroupOf (Dec (F := F) (Av v))) m0
-      from if_neg hv, mem_ramLine] at h
+      from ite_eq_right hv, mem_ramLine] at h
     obtain ⟨f', h1, h2⟩ := h
     obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.eq _).1 h2)
     have hd : g ∈ Dec (F := F) (Av v) := Ine_le_Dec _ hg
@@ -1126,7 +1126,7 @@ theorem UpperTheory.V.Ws.Gys.placesQ :
   let f : ℕ → HeightOneSpectrum (𝓞 T.F) := fun w => if hw : w.Prime then (ex_place T.F hw).choose else v0
   have hf : ∀ w (hw : w.Prime), (w : 𝓞 T.F) ∈ (f w).asIdeal := by
     intro w hw
-    simp only [f, dif_pos hw]
+    simp only [f, dite_eq_left hw]
     exact (ex_place T.F hw).choose_spec
   have himg := hinf.image (f := f) (by
     intro a ha b hb hab

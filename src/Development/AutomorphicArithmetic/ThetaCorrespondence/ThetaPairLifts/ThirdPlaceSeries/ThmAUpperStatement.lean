@@ -569,10 +569,10 @@ theorem cond0_eq {D : D7} {T : Type} {Lc : Formalism.IndefR.Links.LevCh D T} {sc
     rw [hw0] at h1 h0
     refine Eq.trans ?_ (FieldDatPf.expIn_condF' G.pl (below w)).symm
     by_cases e : below w = G.pl.v0
-    · rw [(h1 e).2, if_pos (G.pl.mem_S0_of_sum_eq.2 (Or.inl e)), condExp, if_pos e]
+    · rw [(h1 e).2, ite_eq_left (G.pl.mem_S0_of_sum_eq.2 (Or.inl e)), condExp, ite_eq_left e]
     · by_cases e' : below w ∈ S1 D
-      · rw [h2 (h4.2 e'), if_pos (G.pl.mem_S0_of_sum_eq.2 (Or.inr e')), condExp, if_neg e]
-      · rw [h0 (fun h => e' (h4.1 h)) e, if_neg fun h => (G.pl.mem_S0_of_sum_eq.1 h).elim e e']
+      · rw [h2 (h4.2 e'), ite_eq_left (G.pl.mem_S0_of_sum_eq.2 (Or.inr e')), condExp, ite_eq_right e]
+      · rw [h0 (fun h => e' (h4.1 h)) e, ite_eq_right fun h => (G.pl.mem_S0_of_sum_eq.1 h).elim e e']
   have hne : GlobalTheory.LamTie.cond0 D.host (G.pl.w G.pl.v0) ≠ ⊥ := by
     refine mul_ne_zero (pow_ne_zero _ ?_) (below _).ne_bot
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot, Nat.cast_eq_zero]
@@ -685,10 +685,6 @@ theorem exists_pow_char {D : D7} {C : Formalism.L2.Host.CharFrame D} {nch : NCho
 
 end GlobalTheory.ThmAUpper.Read
 
-namespace GlobalTheory.ThmAUpper
-
-
-end GlobalTheory.ThmAUpper
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -706,13 +702,6 @@ open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.BigTop GlobalTheo
 open GlobalTheory.FunObj.SqNum (nuH halfRank IsTor)
 open GlobalTheory.CMVal GlobalTheory.HeckeGal
 noncomputable section
-namespace GlobalTheory.ThmAUpper.Read
-section Record
-open GlobalTheory.ToricDenom GlobalTheory.IndefiniteRowSideFullHecke.ToricSymbols
-variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N} {i : X.Tw}
-  {Q : Finset (HeightOneSpectrum (𝓞 D.host.E))}
-end Record
-end GlobalTheory.ThmAUpper.Read
 namespace GlobalTheory.ThmAUpper
 open Read GlobalTheory.ToricDenom GlobalTheory.FunObj.SqNum in
 theorem read_twisted_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz) (CF : ℝ) (d : FunIn p CF), p.PointConditions' → Fitted (@Comparison₂) p CF d → GlobalTheory.IndefiniteRowSideFullHecke.ToricSymbols.ToricRatioConjugates → (∃ (_ : IsCMField D.host.E) (_ : IsAbelianGalois ℚ D.host.E), GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsFieldData D.host.d (GlobalTheory.FunObj.SqNum.cmPhi D) ∧
@@ -791,11 +780,11 @@ theorem read_twisted_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi
   cases b
   · have : BlochKatoReduction.Gen.psiAt false (ex.nch.psi' w ^ a) = ex.nch.psi' w ^ (-a) := by simp [BlochKatoReduction.Gen.psiAt]
     rw [this, key]
-    simp only [Bool.false_eq_true, if_false, mul_neg, neg_mul]
+    simp only [Bool.false_eq_true, ite_false, mul_neg, neg_mul]
     ring
   · have : BlochKatoReduction.Gen.psiAt true (ex.nch.psi' w ^ a) = ex.nch.psi' w ^ a := rfl
     rw [this, key]
-    simp only [if_true]
+    simp only [ite_true]
     ring
 end GlobalTheory.ThmAUpper
 end
@@ -1448,9 +1437,6 @@ open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.BigTop GlobalTheo
 open GlobalTheory.FunObj.SqNum (nuH halfRank IsTor)
 open GlobalTheory.CMVal GlobalTheory.HeckeGal
 noncomputable section
-namespace GlobalTheory.ThmARatio
-open GlobalTheory.ToricDenom GlobalTheory.IndefiniteRowSideFullHecke.ToricSymbols Formalism.L2.Host
-end GlobalTheory.ThmARatio
 theorem GlobalTheory.ThmARatio.values_as_toric_sums_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz) (CF : ℝ) (d : FunIn p CF), p.PointConditions' → Fitted (@Comparison₂) p CF d → GlobalTheory.IndefiniteRowSideFullHecke.ToricSymbols.ToricRatioConjugates → (∃ (_ : IsCMField D.host.E) (_ : IsAbelianGalois ℚ D.host.E), GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsFieldData D.host.d (GlobalTheory.FunObj.SqNum.cmPhi D) ∧
     GlobalTheory.CMVal.IsBaseCond (GlobalTheory.FunObj.SqNum.condF d.G.pl) ∧ ∃ Λ, GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsIntLattice D.host.d Λ) → (∀ (i j : Fin D.R.m) (s : ℕ), 1 ≤ s → s ≤ halfRank D i j → ∀ c : Option Bool,
     ∃ x, IsTor d.G i j s (fam d.G p.P.A3.A.μ0 i j c) x ∧ x ≠ 0 ∧ (∀ Λ, GlobalTheory.CMVal.IsHeckeL (fam d.G p.P.A3.A.μ0 i j c) Λ → x = Λ s) ∧
@@ -1466,8 +1452,8 @@ theorem GlobalTheory.ThmARatio.values_as_toric_sums_alt : ∀ {D : D7} {L : Size
       nuH d.G p.P.A3.A.μ0 i j * p.R.C.delAt (D.what₂.places.resChar w) := by
     unfold fam GlobalTheory.FunObj.SqNum.delOf Formalism.L2.Host.CharFrame.delAt
     by_cases h : D.what₂.places.resChar w = D.host.pde
-    · simp only [h, decide_true, cond_true, if_true]
-    · simp only [h, decide_false, cond_false, if_false]
+    · simp only [h, decide_true, cond_true, ite_true]
+    · simp only [h, decide_false, cond_false, ite_false]
   obtain ⟨T₀, ⟨hv, h0⟩, hne, hL, -⟩ := hTor i j s hs1 hs2 (some (decide (D.what₂.places.resChar w = D.host.pde)))
   rw [hχ] at hv h0 hL
   have hP := p.Tp.psi_is w hw

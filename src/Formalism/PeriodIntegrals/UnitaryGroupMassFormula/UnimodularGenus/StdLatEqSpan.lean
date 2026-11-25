@@ -34,7 +34,7 @@ theorem hStd_eStd (E : Type) [Field E] [StarRing E] (n : ℕ) (i j : Fin n) :
   · subst h
     rw [Finset.sum_eq_single i (fun k _ hk => by simp [eStd, hk]) (by simp)]
     simp [eStd]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun k _ => ?_
     by_cases hk : k = i
     · subst hk

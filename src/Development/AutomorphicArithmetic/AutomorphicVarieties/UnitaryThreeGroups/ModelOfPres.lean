@@ -209,21 +209,6 @@ open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV Uppe
 
 section SlopeTestRemainingChoices
 
-open Polynomial in
-private theorem md_intIff {l : ℕ} [Fact l.Prime] (x : PadicAlgCl l) : IsIntegral ℤ_[l] x ↔ ‖x‖ ≤ 1 := by
-  have hi : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-  have h0 : ‖x‖ = spectralValue (minpoly ℚ_[l] x) := rfl
-  rw [h0, spectralValue_le_one_iff (minpoly.monic hi)]
-  constructor
-  · intro h n
-    rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] h, coeff_map]
-    exact PadicInt.norm_le_one _
-  · intro h
-    have hl' : minpoly ℚ_[l] x ∈ lifts (algebraMap ℤ_[l] ℚ_[l]) :=
-      (lifts_iff_coeff_lifts _).mpr fun n => ⟨⟨_, h n⟩, rfl⟩
-    obtain ⟨q, hq, -, hqm⟩ := lifts_and_degree_eq_and_monic hl' (minpoly.monic hi)
-    exact ⟨q, hqm, by rw [← aeval_def, ← aeval_map_algebraMap ℚ_[l], hq, minpoly.aeval]⟩
-
 private theorem md_uniq {O σ K : Type} [CommRing O] [Fintype σ] [NormedField K] [IsUltrametricDist K] [Algebra O K]
     (φ ψ : MvPowerSeries σ O →ₐ[O] K) (h1 : ∀ F, ‖φ F‖ ≤ 1) (h2 : ∀ F, ‖ψ F‖ ≤ 1)
     (hz : ∀ s, ‖φ (MvPowerSeries.X s)‖ < 1) (h : ∀ s, φ (MvPowerSeries.X s) = ψ (MvPowerSeries.X s)) : φ = ψ := by
@@ -357,8 +342,8 @@ theorem UpperTheory.exists_dualNumber_point_of_pointDerivation_vanishing :
   haveI : IsLocalRing c.O := c.dvr.toIsLocalRing
   haveI : IsAdicComplete (maximalIdeal c.O) c.O := (UpperTheory.V.Base.dvrFacts l c.O).2.2.2.1
   haveI : Algebra.IsIntegral ℤ_[l] c.O := Algebra.IsIntegral.of_finite _ _
-  exact md_main Subtype.val_injective (fun x => ⟨fun hx => (md_intIff x).1 (isIntegral_trans (A := c.O) x hx),
-    fun hx => ((md_intIff x).2 hx).tower_top⟩) W h qh hq g hker hM f hf D hD hDI
+  exact md_main Subtype.val_injective (fun x => ⟨fun hx => (GlobalTheory.isIntegral_padicInt_iff_norm_le_one x).1 (isIntegral_trans (A := c.O) x hx),
+    fun hx => ((GlobalTheory.isIntegral_padicInt_iff_norm_le_one x).2 hx).tower_top⟩) W h qh hq g hker hM f hf D hD hDI
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.ExistsDualNumberPointOfPointDerivationVanishing =====
@@ -424,14 +409,14 @@ private theorem lc_wcomp_mul (O : Type) [CommRing O] {σ X : Type} [AddCommGroup
   · refine Finset.sum_congr rfl fun p hp => ?_
     have hp' := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
     by_cases h2 : Finsupp.weight wt p.2 = w
-    · rw [coeff_wcomp, if_pos]
+    · rw [coeff_wcomp, ite_eq_left]
       rw [← h, ← hp', map_add (f := _), h2, add_sub_cancel_right]
     · rw [he _ h2, mul_zero, mul_zero]
   · symm
     refine Finset.sum_eq_zero fun p hp => ?_
     have hp' := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
     by_cases h2 : Finsupp.weight wt p.2 = w
-    · rw [coeff_wcomp, if_neg, zero_mul]
+    · rw [coeff_wcomp, ite_eq_right, zero_mul]
       intro h1
       apply h
       rw [← hp', map_add (f := _), h1, h2, sub_add_cancel]
@@ -593,7 +578,7 @@ private theorem theta_entry {R : Type} [CommRing R] (g : GL (Fin 3) R) (i j : Fi
   rw [Finset.sum_eq_single j.rev]
   · simp
   · intro k _ hk
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hk
     rw [h, Fin.rev_rev]
@@ -634,7 +619,7 @@ private theorem der_inv {O R Q : Type} [CommRing O] [CommRing R] [Algebra O R] [
 
   simp only [Units.val_mul, Units.val_one, h1, Matrix.mul_apply, map_sum, hDm, hx, hxi, htor, htori,
   Finset.sum_add_distrib, diagonal_apply, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.sum_ite_eq',
-  Finset.mem_univ, if_true] at key
+  Finset.mem_univ, ite_true] at key
   have e : ((t ^ wt1 p : Oˣ) : O) • D (((g⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) p q) =
       -((((t ^ wt1 q)⁻¹ : Oˣ) : O) • D ((g : Matrix (Fin 3) (Fin 3) R) p q)) :=
     eq_neg_of_add_eq_zero_left key
@@ -669,23 +654,23 @@ theorem UpperTheory.exists_pointDerivation_emb_entry_eq_smul_mat_entry :
     · refine ⟨1, i, j, by simp [wt6, wt], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨_, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_pos (hr.trans hs)]
+      rw [emb_apply, ite_eq_left (hr.trans hs)]
       simp [GG.mat]
     · refine ⟨0, i, j, by simp [wt6, wt], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨_, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_pos (hr.trans hs)]
+      rw [emb_apply, ite_eq_left (hr.trans hs)]
       simp
     · refine ⟨0, i, j, by simp [wt6, wt], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨_, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_pos (hr.trans hs)]
+      rw [emb_apply, ite_eq_left (hr.trans hs)]
       simp
     · refine ⟨-((((t ^ wt1 i.rev)⁻¹ : Oˣ) : O) * (((t ^ wt1 j.rev)⁻¹ : Oˣ) : O)), j.rev, i.rev,
         by simp [wt6, wt_rev_rev_eq_wt1_sub_wt1], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨hl, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_pos (hr.trans hs)]
+      rw [emb_apply, ite_eq_left (hr.trans hs)]
       simp only [fromBlocks_apply₂₂]
       rw [theta_entry]
       exact der_inv x D hD t y.left hl j.rev i.rev
@@ -693,25 +678,25 @@ theorem UpperTheory.exists_pointDerivation_emb_entry_eq_smul_mat_entry :
     · refine ⟨0, i, j, by simp [wt6, wt], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨_, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_neg (by rw [hr]; exact hs)]
+      rw [emb_apply, ite_eq_right (by rw [hr]; exact hs)]
       simp
     · refine ⟨1, i, j, by simp [wt6, wt], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨_, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_neg (by rw [hr]; exact hs)]
+      rw [emb_apply, ite_eq_right (by rw [hr]; exact hs)]
       simp [GG.mat]
     · refine ⟨-((((t ^ wt1 i.rev)⁻¹ : Oˣ) : O) * (((t ^ wt1 j.rev)⁻¹ : Oˣ) : O)), j.rev, i.rev,
         by simp [wt6, wt_rev_rev_eq_wt1_sub_wt1], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨hl, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_neg (by rw [hr]; exact hs)]
+      rw [emb_apply, ite_eq_right (by rw [hr]; exact hs)]
       simp only [fromBlocks_apply₂₁]
       rw [theta_entry]
       exact der_inv x D hD t y.left hl j.rev i.rev
     · refine ⟨0, i, j, by simp [wt6, wt], ?_⟩
       intro R Q _ _ _ _ x D hD y hy
       obtain ⟨_, hr⟩ := map_left_eq_tor_and_right_eq_of_map_eq s t x y hy
-      rw [emb_apply, if_neg (by rw [hr]; exact hs)]
+      rw [emb_apply, ite_eq_right (by rw [hr]; exact hs)]
       simp
 end -- clump:auto
 end -- clump:auto
@@ -991,7 +976,7 @@ private theorem pts_loc {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRi
     rw [hz, norm_zero] at hge
     linarith
   have hint : IsIntegral ℤ_[l] (f x)⁻¹ :=
-    (md_intIff _).mpr (by rw [norm_inv]; exact inv_le_one_of_one_le₀ hge)
+    (GlobalTheory.isIntegral_padicInt_iff_norm_le_one _).mpr (by rw [norm_inv]; exact inv_le_one_of_one_le₀ hge)
   exact hx (pts_sur f x h0 hint.tower_top)
 
 private theorem fg_lemma {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {K : Type} [Field K]
@@ -1004,7 +989,6 @@ private theorem fg_lemma {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {K
     rfl
   rw [he, Submodule.map_comp]
   exact h.map _
-
 
 theorem UpperTheory.exists_torus_twist_eq_localPoint_of_weightedPres :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {R S : Type} [CommRing R] [Algebra c.O R] [IsCO c.O R] [CommRing S] [Algebra c.O S] [IsCO c.O S]
@@ -1267,7 +1251,7 @@ private theorem mop_main {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O] [I
     rintro (k | k)
     · by_contra hj
       have h1 := hcnt (wf k)
-      have h2 : boxDef (wf k) = 0 := if_neg fun h3 => hj (by
+      have h2 : boxDef (wf k) = 0 := ite_eq_right fun h3 => hj (by
         have := abs_le.1 h3
         exact ⟨by show -2 ≤ wf k; omega, by show wf k ≤ 2; omega⟩)
       rw [ha0 (wf k) hj, h2] at h1

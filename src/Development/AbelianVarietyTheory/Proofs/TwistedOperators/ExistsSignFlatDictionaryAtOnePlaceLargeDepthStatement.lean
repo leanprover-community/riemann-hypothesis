@@ -121,7 +121,6 @@ noncomputable section
 
 namespace GlobalTheory.FlatPlace
 
-
 section Entries
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
@@ -133,7 +132,7 @@ theorem epsV_even (t : T) (w : Pl D.host.E) {j : ℕ} (hj : Even j) : epsV G t w
     rw [sgnAt, GlobalTheory.SplitFlip.diagGL_val, Units.val_one, ← diagonal_one]
     congr 1
     funext x
-    rw [if_neg (fun h => (Nat.not_odd_iff_even.2 hj) h.1)]
+    rw [ite_eq_right (fun h => (Nat.not_odd_iff_even.2 hj) h.1)]
     rfl
   · rfl
 
@@ -305,13 +304,13 @@ theorem BesP₂ (ch : Choice R) : BesP ch := by
       congr 2
       show (ch.G.rowDec j hjm).a r (Fin.castLE (by omega) i) = _
       exact congrArg _ (Fin.ext (by simp [hiq]))
-    rw [hd, hpr, hxi, map_mul, map_pow, frameSign, if_neg (by first | omega | (simp only; omega))]
+    rw [hd, hpr, hxi, map_mul, map_pow, frameSign, ite_eq_right (by first | omega | (simp only; omega))]
     exact alg_e _ _ hx0 σ i.val (by omega)
   · refine ((E r).2 q ⟨σ, by omega⟩ hq.symm).trans ?_
     have hv : (besAt ch.G hM j σ hj vN).d.i₀ *ᵥ vecB (besAt ch.G hM j σ hj vN).o (besAt ch.G hM j σ hj vN).ζ =
         fun k => D.host.xi0 ^ σ * (ch.G.rowDec j hjm).a k ⟨σ, by omega⟩ :=
       coreMat_vecB_bes (ch.G.rowDec j hjm) hc2 (D.host.xi0 ^ σ)
-    rw [hv, hpr, hxi, map_mul, map_pow, frameSign, if_neg (by first | omega | (simp only; omega))]
+    rw [hv, hpr, hxi, map_mul, map_pow, frameSign, ite_eq_right (by first | omega | (simp only; omega))]
     exact scalar_inv_pow_mul_cancel _ _ hx0 σ
   · refine ((E r).2 q ⟨q.val, by omega⟩ rfl).trans ?_
     have hd : (besAt ch.G hM j σ hj vN).d.e' r i =
@@ -329,7 +328,7 @@ theorem BesP₂ (ch : Choice R) : BesP ch := by
       exact congrArg _ (nLine_norm _)
     have hs : ∀ n : ℕ, star (D.host.xi0 ^ n) = (-D.host.xi0) ^ n := fun n => by
       rw [star_pow, GlobalTheory.DualPairCheck.star_purely_imaginary_eq_neg]
-    rw [hd, hz, hpr, hxi, hs, hs, frameSign, if_pos (by first | omega | (simp only; omega))]
+    rw [hd, hz, hpr, hxi, hs, hs, frameSign, ite_eq_left (by first | omega | (simp only; omega))]
     simp only [map_mul, map_neg, map_pow, map_inv₀]
     exact alg_e' _ _ hx0 σ i.val i.2
 
@@ -352,14 +351,11 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
 noncomputable section
 
 namespace GlobalTheory.FlatPlaceLoc
-
 
 variable {D : D7}
 
@@ -375,17 +371,6 @@ theorem map_eq_one_of_off {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k)
   {Y : Type} [Fintype Y] [DecidableEq Y]
-
-theorem isLoc_mul' {S : HSp D} {F : Frame k S.rank Y} {a b : GA D S} {x y : GL Y k} (ha : p.IsLoc F a x)
-    (hb : p.IsLoc F b y) : p.IsLoc F (a * b) (x * y) := by
-  refine ⟨_root_.GlobalTheory.SplitPlace.suppAt_mul ha.1 hb.1, ?_⟩
-  rw [_root_.GlobalTheory.BesselCompare.mt_mul, Matrix.map_mul, ha.2, hb.2, Units.val_mul]
-  simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc F.γ, F.γβ, Matrix.one_mul]
-
-theorem isLoc_inv' {S : HSp D} {F : Frame k S.rank Y} {a : GA D S} {x : GL Y k} (ha : p.IsLoc F a x) :
-    p.IsLoc F a⁻¹ x⁻¹ := by
-  apply _root_.GlobalTheory.LocGrp.isLoc_inv <;> assumption
 
 omit p in
 theorem frOf_conj {n N : ℕ} (h : N = n) (β : GL (Fin n) (Lev.EAf D)) (w : Pl D.host.E) (x : GL (Fin n) (Lev.EAf D)) :
@@ -406,7 +391,6 @@ end GlobalTheory.FlatPlaceLoc
 
 namespace GlobalTheory.FlatPlaceLoc
 
-
 variable {D : D7}
 
 theorem loc_finE {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p) {V : HSp D} (g : GA D V) :
@@ -425,7 +409,6 @@ theorem elt_zero {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (t
     (repsAt G t w).elt β (D.R.m, 0) = stair (locGrid G t w) (unifAt w) (cosExp G w) 0 :=
   (onColumn_apply (G := locGrid G t w) _ 0).trans rfl
 
-
 open Classical in
 theorem localization₂ : Big fun ch => LocP ch := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch _ => ?_⟩⟩
@@ -434,18 +417,18 @@ theorem localization₂ : Big fun ch => LocP ch := by
   have L1 : p.IsLoc (frRow ch.S.B t w j hj) (r j) _ := isLoc_of_inBasis hp _ _ _ _ (hr j hj).1 (hr j hj).2
   have L0 : p.IsLoc (frRow ch.S.B t w j hj) (r₀ j) _ := isLoc_of_inBasis hp _ _ _ _ (hr₀ j hj).1 (hr₀ j hj).2
   refine ⟨?_, fun he => ?_, fun ho => ?_⟩
-  · convert isLoc_mul' p (isLoc_inv' p L0) L1 using 1
+  · convert GlobalTheory.LocGrp.isLoc_mul p (GlobalTheory.LocGrp.isLoc_inv p L0) L1 using 1
     beta_reduce
     rw [Pi.mul_apply]
     by_cases h0 : j = 0
     · subst h0
       have hn : (0 : ℕ) ∉ idx D := by rw [mem_idx]; omega
-      rw [if_pos rfl, if_neg hn, epsV_apply, if_neg hn, one_mul, elt_zero]
+      rw [ite_eq_left rfl, ite_eq_right hn, epsV_apply, ite_eq_right hn, one_mul, elt_zero]
       exact (inv_inv _).symm.trans (mul_one _).symm
     · by_cases hi : j ∈ idx D
-      · rw [if_neg h0, if_pos hi, inv_one, one_mul, epsV_apply, if_pos hi]
+      · rw [ite_eq_right h0, ite_eq_left hi, inv_one, one_mul, epsV_apply, ite_eq_left hi]
       · have hm : D.R.m ≤ j + 1 := by rw [mem_idx] at hi; omega
-        rw [if_neg h0, if_neg hi, inv_one, mul_one, epsV_eq_one t w hm, elt_eq_one t w β hm, mul_one]
+        rw [ite_eq_right h0, ite_eq_right hi, inv_one, mul_one, epsV_eq_one t w hm, elt_eq_one t w β hm, mul_one]
   · obtain ⟨δ, hδ, hoff⟩ := hh j hj
     rw [hδ.2.1 he, inv_one, one_mul] at hoff
     rw [_root_.GlobalTheory.BesselCompare.mt_mul, Matrix.map_mul, map_eq_one_of_off hp hoff, Matrix.one_mul, L0.2, Matrix.mul_assoc,
@@ -456,7 +439,7 @@ theorem localization₂ : Big fun ch => LocP ch := by
     have h0 : j ≠ 0 := by rintro rfl; simp at ho
     have hr0 : (Formalism.L2.Theta.mt _ (r₀ j)).map p.π = 1 := by
       rw [L0.2]
-      simp only [if_neg h0, Units.val_one, Matrix.mul_one, (frRow ch.S.B t w j hj).βγ]
+      simp only [ite_eq_right h0, Units.val_one, Matrix.mul_one, (frRow ch.S.B t w j hj).βγ]
     rw [_root_.GlobalTheory.BesselCompare.mt_mul, Matrix.map_mul, hr0, Matrix.mul_one, ← mul_inv_cancel_left δ (h j), _root_.GlobalTheory.BesselCompare.mt_mul, Matrix.map_mul,
       map_eq_one_of_off hp hoff, Matrix.mul_one]
 
@@ -474,7 +457,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.DblStepLoc
@@ -516,7 +498,7 @@ theorem contr_flat_expand : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [
   have hP₁ : P₁.1 = Set.indicator {x : Matrix n₁ (n₀ ⊕ Unit) k | ∀ r q, x r q ∈ (ValuativeRel.valuation k).integer}
       fun _ => 1 := by
     simp only [P₁]
-    rw [hO₁, (hun n₁ n₀ n₀ (c + 1 + 1) (σ + 1 + 1)).1, if_neg (by omega)]
+    rw [hO₁, (hun n₁ n₀ n₀ (c + 1 + 1) (σ + 1 + 1)).1, ite_eq_right (by omega)]
   have hP₂ : P₂.1 = Set.indicator {x : Matrix (n₂ ⊕ Unit) n₁ k | ∀ r q, x r q ∈ (ValuativeRel.valuation k).integer}
       fun _ => 1 := by
     simp only [P₂]
@@ -557,7 +539,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.splitPlace_doubleStep_flatContraction_expand : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k), GlobalTheory.SplitWeil.IsUnitVol ν → ∀ (p : GlobalTheory.LocMod.Place D k) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (ψk : AddChar k Circle), p.IsChar ψ ψk → GlobalTheory.SplitWeil.HasConductor ψk 1 → ∀ (σ : ℕ) (B : GlobalTheory.Unf.BesLev D (σ + 1)) (J : GlobalTheory.Unf.JacLev D (σ + 1)) (B' : GlobalTheory.Unf.BesLev D σ) (n₀ : Type) [Fintype n₀] [DecidableEq n₀] (n₁ : Type) [Fintype n₁] [DecidableEq n₁] (n₂ : Type) [Fintype n₂] [DecidableEq n₂] (c : ℕ) (F : GlobalTheory.LocMod.Dbl p B J B' n₀ n₁ n₂ c) (s₁ : GlobalTheory.Unf.StepBF ψ B J) (s₂ : GlobalTheory.Unf.StepFB ψ J B') (l : GlobalTheory.Unf.Link B B'.L B'.ζ) (vL : GlobalTheory.Unf.VolM D B'.L.rank J.W₀.rank) T₁ T₂, p.IsModel ψ F.G₀ F.G₁ T₁ → p.IsModel ψ F.G₁ F.G₂ T₂ → ∀ Φ₁ Φ₂ O₁ O₂, GlobalTheory.LocMod.IsOne O₁ → GlobalTheory.LocMod.IsOne O₂ → ∀ (I : Type) (S : Finset I) (x : I → ℂ) (Ξ₁ : I → GlobalTheory.SplitWeil.SB (Matrix n₁ n₀ k)) (Ξ₂ : I → GlobalTheory.SplitWeil.SB (Matrix n₂ n₁ k)) (c₁ : I → WO B.A J.W₀ →₀ ℂ) (c₂ : I → WO J.W₀ B'.A →₀ ℂ), (∀ i ∈ S, p.IsCombAt ψ F.F₀ F.F₁ (c₁ i) (Ξ₁ i).1 ∧ p.IsCombAt ψ F.F₁ F.F₂ (c₂ i) (Ξ₂ i).1) → (∀ q, GlobalTheory.LocFlat.contr ψk ν (GlobalTheory.LocFlat.flCol ψk ν (σ + 1 + 1) Φ₁.1) (GlobalTheory.LocFlat.flRow ψk ν (σ + 1) Φ₂.1) q = ∑ i ∈ S, x i * ((Ξ₁ i).1 q.1 * (Ξ₂ i).1 q.2)) → GlobalTheory.Unf.contr l J.W₀ vL (GlobalTheory.Unf.flatBF s₁ (T₁ Φ₁)) (GlobalTheory.Unf.flatFB s₂ (T₂ Φ₂)) = ∑ i ∈ S, x i • biComb ψ B.A J.W₀ B'.A (c₁ i) (c₂ i) (GlobalTheory.Unf.contr l J.W₀ vL (GlobalTheory.Unf.flatBF s₁ (T₁ O₁)) (GlobalTheory.Unf.flatFB s₂ (T₂ O₂))) := by
   first | exact @GlobalTheory.DblStepLoc.contr_flat_expand
@@ -573,8 +554,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
 namespace GlobalTheory.FlatPlace
@@ -668,7 +647,7 @@ theorem dblP_big : Big fun ch => ChrP ch → ArrP ch → LocP ch → BesP ch →
     intro Φ g
     unfold conAt
     rw [dite_eq_right h0]
-    exact dif_pos hj'
+    exact dite_eq_left hj'
   rw [E v (h * r₀), E f (h * r)]
   rw [hv1, hv2, hf1, hf2]
   have hz : ∀ (S' : Finset I), (∀ q₁ q₂, ∑ i ∈ S', x i * ((Ξ₁ i).1 q₁ * (Ξ₂ i).1 q₂) = 0) → ∀ q,
@@ -694,7 +673,7 @@ theorem dblP_big : Big fun ch => ChrP ch → ArrP ch → LocP ch → BesP ch →
       rw [← hq q, show Φ₁.1 = _ from funext hΦ₁, show Φ₂.1 = _ from funext hΦ₂]
       unfold facAt locA
       rw [dite_eq_right (show ¬ j + 2 * 0 + 2 = (locGrid ch.G t w).m from h0),
-        dif_pos (show j + 2 * (((locGrid ch.G t w).m - 4 - j) / 2 + 1) + 2 = (locGrid ch.G t w).m from hj')]
+        dite_eq_left (show j + 2 * (((locGrid ch.G t w).m - 4 - j) / 2 + 1) + 2 = (locGrid ch.G t w).m from hj')]
       rfl
     exact GlobalTheory.T.splitPlace_doubleStep_flatContraction_expand D (Kw w) (unitVol w) (isUnitVol_unitVol w) p ch.W.ψ hstd (psiAt ch.W w) hψ hcond ((D.R.m - 4 - j) / 2)
       _ _ _ _ _ _ _ Fd _ _ _ _ T₁ T₂ hT₁ hT₂ Φ₁ Φ₂ O₁ O₂ hOne₁ hOne₂ I S x Ξ₁ Ξ₂ c₁ c₂ hc hloc
@@ -792,7 +771,6 @@ section Grid0
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
-
 variable (G : GridData L sc) in
 def grid0 (w : Pl D.host.E) : Grid (Kw w) where
   m := D.R.m
@@ -803,13 +781,11 @@ def grid0 (w : Pl D.host.E) : Grid (Kw w) where
   chi i := (G.ch.chiH i).loc w
   eta := L.C.eta.loc w
 
-
 open Classical in
 def eps0 (G : GridData L sc) (w : Pl D.host.E) : (grid0 G w).VertexGroup :=
   onColumn (G := grid0 G w) fun j => if j ∈ idx D then GlobalTheory.SplitFlip.diagGL fun a =>
     if Odd j ∧ topRank (grid0 G w) j + (D.R.m - 1 - j) / 2 ≤ a.1 then Units.map (Int.castRingHom (Kw w)).toMonoidHom (-1) else 1
     else 1
-
 
 variable (G : GridData L sc) in
 def stair0 (w : Pl D.host.E) : (grid0 G w).VertexGroup :=
@@ -838,7 +814,6 @@ theorem elt_stair (G : GridData L sc) (t : T) (w : Pl D.host.E)
 
 end Grid0
 
-
 open Classical in
 theorem scal : Big fun ch => ScalP ch := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch _ => ?_⟩⟩
@@ -847,7 +822,7 @@ theorem scal : Big fun ch => ScalP ch := by
       ((charFactor (grid0 ch.G w) (eps0 ch.G w) * charFactor (grid0 ch.G w) (stair0 ch.G w) : ℂˣ) : ℂ) else 1,
     fun t w => (xiPart (locGrid ch.G t w) ((R.toLevCh.xiH t).loc w) (epsV ch.G t w) *
       if w ∈ ch.G.pl.W0 then xiPart (locGrid ch.G t w) ((R.toLevCh.xiH t).loc w) (stair0 ch.G w) else 1)⁻¹,
-    fun t w => ?_, fun w hw => if_neg hw, fun t w hw β hβ => ?_⟩
+    fun t w => ?_, fun w hw => ite_eq_right hw, fun t w hw β hβ => ?_⟩
   · have hH : ∀ x, (R.toLevCh.xiH t).loc w x ∈ xiVals R.toLevCh t := fun x => Subgroup.subset_closure ⟨w, x, rfl⟩
     refine inv_mem (mul_mem (xiPart_mem _ _ _ _ hH) ?_)
     split_ifs
@@ -861,18 +836,18 @@ theorem scal : Big fun ch => ScalP ch := by
     rw [prod_edgeFactor _ _ (epsV_mem t w)]
     by_cases h0 : w ∈ ch.G.pl.W0
     · have hk : keepAt ch.G w = false := by simp [keepAt, h0]
-      rw [hk, if_pos h0, if_pos h0, elt_stair ch.G t w β (hβ h0)]
+      rw [hk, ite_eq_left h0, ite_eq_left h0, elt_stair ch.G t w β (hβ h0)]
       have key : charFactor (locGrid ch.G t w) (epsV ch.G t w) * charFactor (locGrid ch.G t w) (stair0 ch.G w) =
           (charFactor (grid0 ch.G w) (eps0 ch.G w) * charFactor (grid0 ch.G w) (stair0 ch.G w)) *
           ((xiPart (locGrid ch.G t w) ((R.toLevCh.xiH t).loc w) (epsV ch.G t w) *
             xiPart (locGrid ch.G t w) ((R.toLevCh.xiH t).loc w) (stair0 ch.G w))⁻¹)⁻¹ := by
         rw [inv_inv, hsplit (epsV ch.G t w), hsplit (stair0 ch.G w)]
         exact mul_mul_mul_comm _ _ _ _
-      simp only [Bool.false_eq_true, if_false]
+      simp only [Bool.false_eq_true, ite_false]
       rw [← Units.val_inv_eq_inv_val, ← Units.val_mul, ← Units.val_mul]
       exact congrArg Units.val key
     · have hk : keepAt ch.G w = true := by simp [keepAt, h0]
-      rw [hk, if_neg h0, if_neg h0, if_pos rfl]
+      rw [hk, ite_eq_right h0, ite_eq_right h0, ite_eq_left rfl]
       have ha : w.under (𝓞 D.host.F) ∉ ch.G.pl.S0 := by
         rcases GlobalTheory.FunObj.Good.locPl_cases hw with ⟨a, b⟩ | ⟨a, -, -⟩
         · exact absurd (by rw [b]; exact Finset.mem_image_of_mem ch.G.pl.w a) h0
@@ -927,7 +902,6 @@ variable {D : D7}
 
 theorem isIdemSum_of_isPlc {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p) : IsIdemSum p.e {w} :=
   ⟨⟨fun _ => p.e, fun PP h => by rw [Finset.mem_singleton] at h; subst h; exact hp.1, by simp⟩, p.split.2.1⟩
-
 
 open Classical in
 theorem cpt_up {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p) {S T : HSp D} {Y Y' : Type} [Fintype Y] [DecidableEq Y]
@@ -1023,7 +997,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.frameLattice_points_eq_integralMatrices_largeDepth : Big fun ch => LatP ch := by
   first | exact @GlobalTheory.FlatPlace.big_latP
 end -- clump:auto
@@ -1075,7 +1048,6 @@ theorem neg_mul_neg_one_eq_of_eq {K : Type} [Field K] (y a S : K) (h : S = a) : 
 
 end NormalJac
 
-
 open NormalJac in
 
 theorem big_jacP : Big fun ch => JacP ch := by
@@ -1097,11 +1069,11 @@ theorem big_jacP : Big fun ch => JacP ch := by
     · subst hσ
       rw [epsV_eq_one _ _ (by omega), Units.val_one]
       ext q q'
-      rw [Matrix.one_apply, diagonal_apply, if_neg (show ¬ (topRank (locGrid ch.G t w) (j + 1) + 0 ≤ q.val) by have := q.2; omega)]
+      rw [Matrix.one_apply, diagonal_apply, ite_eq_right (show ¬ (topRank (locGrid ch.G t w) (j + 1) + 0 ≤ q.val) by have := q.2; omega)]
     · have hodd : Odd (j + 1) := by
         obtain ⟨b, hb⟩ := D.R.m_even
         exact ⟨j / 2, by omega⟩
-      rw [epsV_apply, if_pos (mem_idx.2 ⟨by omega, by omega⟩), sgnAt, GlobalTheory.SplitFlip.diagGL_val]
+      rw [epsV_apply, ite_eq_left (mem_idx.2 ⟨by omega, by omega⟩), sgnAt, GlobalTheory.SplitFlip.diagGL_val]
       congr 1
       funext q
       have e : (D.R.m - 1 - (j + 1)) / 2 = σ := by omega
@@ -1136,7 +1108,7 @@ theorem big_jacP : Big fun ch => JacP ch := by
   refine ⟨rfl, ?_, ?_, ?_⟩
   · intro r x
     simp only [mvFr, frRow, frOf, frTop, submatrix_apply, id, hE, mul_diagonal]
-    rw [if_neg (by rw [hfl]; omega), mul_one]
+    rw [ite_eq_right (by rw [hfl]; omega), mul_one]
     refine (mul_col_eq _ _ ((rowJac ch.G (j + 1) h₁ σ h₂).i₀.map p.pr *
       (loc w (ch.S.βp (j + 1))).val.submatrix id (Fin.cast (topRank_eq ch.G t w h₁.le))) _ x (fun l => ?_) r).trans
       (congrFun (congrFun (T0' _) r) x)
@@ -1147,7 +1119,7 @@ theorem big_jacP : Big fun ch => JacP ch := by
     simp [frame]
   · intro i jj hij r
     simp only [mvFr, frRow, frOf, submatrix_apply, id, hE, mul_diagonal]
-    rw [if_neg (by rw [hfr]; omega), mul_one]
+    rw [ite_eq_right (by rw [hfr]; omega), mul_one]
     refine (mul_col_eq _ _ ((rowJac ch.G (j + 1) h₁ σ h₂).e.map p.pr) _ i (fun l => ?_) r).trans ?_
     rotate_left
     · rw [T1]
@@ -1160,7 +1132,7 @@ theorem big_jacP : Big fun ch => JacP ch := by
       field_simp
     · have e1 := congrFun (congrFun h1 l) (Sum.inr (Fin.cast h₂.symm jj))
       simp only [submatrix_apply, id, fromCols_apply_inr, mul_diagonal, Matrix.map_apply] at e1
-      rw [if_neg (Nat.succ_ne_zero j), pow_zero, mul_one, frameSign, if_neg (by simp only [Fin.val_cast]; omega), mul_one] at e1
+      rw [ite_eq_right (Nat.succ_ne_zero j), pow_zero, mul_one, frameSign, ite_eq_right (by simp only [Fin.val_cast]; omega), mul_one] at e1
       simp only [submatrix_apply, id, Matrix.map_apply, hpr]
       refine (congrArg _ (Fin.ext ?_)).trans (e1.trans ?_)
       · simp [frame, topRank_eq ch.G t w h₁.le]
@@ -1169,7 +1141,7 @@ theorem big_jacP : Big fun ch => JacP ch := by
         exact congrArg _ (congrArg _ (Fin.ext (by simp; omega)))
   · intro i jj hij r
     simp only [mvFr, frRow, frOf, submatrix_apply, id, hE, mul_diagonal]
-    rw [if_pos (by rw [hfr]; omega)]
+    rw [ite_eq_left (by rw [hfr]; omega)]
     refine (congrArg (· * (-1)) (mul_col_eq _ _ (-((rowJac ch.G (j + 1) h₁ σ h₂).e'.map p.pr)) _ i (fun l => ?_) r)).trans ?_
     rotate_left
     · rw [Matrix.mul_neg, Matrix.neg_apply, T2, hz_besAt]
@@ -1179,7 +1151,7 @@ theorem big_jacP : Big fun ch => JacP ch := by
       exact neg_mul_neg_one_eq_of_eq _ _ _ key
     · have e1 := congrFun (congrFun h1 l) (Sum.inr (Fin.cast h₂.symm jj))
       simp only [submatrix_apply, id, fromCols_apply_inr, mul_diagonal, Matrix.map_apply] at e1
-      rw [if_neg (Nat.succ_ne_zero j), pow_zero, mul_one, frameSign, if_pos (by simp only [Fin.val_cast]; omega), mul_neg_one] at e1
+      rw [ite_eq_right (Nat.succ_ne_zero j), pow_zero, mul_one, frameSign, ite_eq_left (by simp only [Fin.val_cast]; omega), mul_neg_one] at e1
       simp only [submatrix_apply, id, Matrix.neg_apply, Matrix.map_apply, hpr]
       refine (congrArg _ (Fin.ext ?_)).trans (e1.trans ?_)
       · simp [frame, topRank_eq ch.G t w h₁.le]
@@ -1419,7 +1391,7 @@ theorem chrP_big : Big fun ch => ChrP ch := by
   refine ⟨fun x => ?_, (((Good.locGrid_isGood hL ch.G ch.W t hde hc).1 w hw).square 0 hm 0 hm).cond, fun j hj => ?_⟩
   · rw [hp.2.2 x] <;> rfl
   have hE : ChrEq (R.toLevCh.mu t (j + 1)) (muBase R.toLevCh (j + 1) * R.toLevCh.xiH t) := by
-    have h1 : muBase R.toLevCh (j + 1) = R.toLevCh.C.mu0 ⟨j, hj⟩ := dif_pos hj
+    have h1 : muBase R.toLevCh (j + 1) = R.toLevCh.C.mu0 ⟨j, hj⟩ := dite_eq_left hj
     rw [h1]
     exact GlobalTheory.TowerCharRead.chrEq_mul (hL.mu0 ⟨j, hj⟩) (hL.xi t)
   have hmu : ∀ y, ((R.toLevCh.mu t (j + 1) (GlobalTheory.LFun.locIdele D.host.F w y) : Circle) : ℂ) =
@@ -1457,7 +1429,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory
-
 
 open Finset in
 theorem prod_eq_sum_of_factorwise_expansion : ∀ (K : Type) [Fintype K] (X : K → Type) (I : Type) (S : Finset I) (x : I → ℂ) (a : ∀ n, I → X n → ℂ) (b : K → I → ℂ) (A : ∀ n, X n → ℂ) (B : K → ℂ), (∀ n (y : I → ℂ), (∀ q, ∑ i ∈ S, y i * a n i q = 0) → ∑ i ∈ S, y i * b n i = 0) → (∀ n (y : I → ℂ), (∀ q, A n q = ∑ i ∈ S, y i * a n i q) → B n = ∑ i ∈ S, y i * b n i) → (∀ q : ∀ n, X n, ∏ n, A n (q n) = ∑ i ∈ S, x i * ∏ n, a n i (q n)) → (∀ n, Nonempty (X n)) → ∏ n, B n = ∑ i ∈ S, x i * ∏ n, b n i := by
@@ -1579,12 +1550,12 @@ theorem prod_fin_pairs {m : ℕ} (hm : Even m) (g : Fin m → ℂ) :
   let g' : ℕ → ℂ := fun j => if h : j < m then g ⟨j, h⟩ else 1
   have e1 : ∏ j, g j = ∏ j ∈ Finset.range m, g' j := by
     rw [Finset.prod_range]
-    exact Finset.prod_congr rfl fun j _ => by simp only [g', dif_pos j.2]
+    exact Finset.prod_congr rfl fun j _ => by simp only [g', dite_eq_left j.2]
   rw [e1, congrArg Finset.range h2, prod_range_pairs, Finset.prod_range]
   refine Finset.prod_congr rfl fun l _ => ?_
   have := l.2
   simp only [g']
-  rw [dif_pos (by omega), dif_pos (by omega)]
+  rw [dite_eq_left (by omega), dite_eq_left (by omega)]
 
 theorem exists_unpair {Y : ℕ → Type} [∀ j, Nonempty (Y j)] {n : ℕ} (q : ∀ l : Fin n, Y (2 * l) × Y (2 * l + 1)) :
     ∃ x : ∀ j, Y j, ∀ l : Fin n, (x (2 * l), x (2 * l + 1)) = q l := by
@@ -1621,8 +1592,8 @@ theorem pureTensor_phiM (keep : Bool) (ε g : Γ.VertexGroup)
     rfl
   rw [h2, zetaLoc, moved]
   cases keep
-  · simp only [Bool.false_eq_true, if_false, mul_assoc, Units.mul_inv_cancel_left]
-  · simp only [if_true, mul_one, one_mul]
+  · simp only [Bool.false_eq_true, ite_false, mul_assoc, Units.mul_inv_cancel_left]
+  · simp only [ite_true, mul_one, one_mul]
 
 theorem flatTensor_phiM [MeasurableSpace k] [BorelSpace k] (hs : 1 ≤ Γ.s) (ψ : AddChar k Circle) (ν : Measure k) (keep : Bool)
     (ε g : Γ.VertexGroup) (φ : ∀ b : Edge, Matrix (Fin (Γ.rank b.tgt)) (Fin (Γ.rank b.src)) k → ℂ) (x : ColArgs Γ) (y : RowArgs Γ) :
@@ -1641,14 +1612,14 @@ theorem gv_row (t : T) (w : Pl D.host.E) (β : Cosets (G := locGrid ch.G t w) on
   by_cases hi : i = D.R.m
   · subst hi
     rw [epsV_eq_one t w (by omega), elt_eq_one t w β (by omega), mul_one]
-  · have e1 : epsV ch.G t w (i, D.R.m) = 1 := dif_neg hi
-    have e2 : (repsAt ch.G t w).elt β (i, D.R.m) = 1 := dif_neg hi
+  · have e1 : epsV ch.G t w (i, D.R.m) = 1 := dite_eq_right hi
+    have e2 : (repsAt ch.G t w).elt β (i, D.R.m) = 1 := dite_eq_right hi
     rw [e1, e2, mul_one]
 
 theorem colAt_up {t : T} {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p) (x : ColArgs (locGrid ch.G t w)) (j : ℕ)
     (hj : j < D.R.m) : ch.S.toGridChoice.colAt t w (fun j => p.up (frTop ch.S.toGridChoice t w j j.2.le)
       (frTop ch.S.toGridChoice t w (j + 1) j.2) (x j)) j = x j := by
-  rw [GridChoice.colAt, dif_pos hj]
+  rw [GridChoice.colAt, dite_eq_left hj]
   refine Eq.trans ?_ (Witness.down_up p (frTop ch.S.toGridChoice t w j hj.le) (frTop ch.S.toGridChoice t w (j + 1) hj) (x j))
   have e : p.π = (cpt w).comp (toEAf D) := RingHom.ext hp.2.1
   rw [Place.down, e]

@@ -292,15 +292,6 @@ theorem card_sup_eq_top [Finite k] (r t : ℕ) (R : Submodule k (Fin (r + t) →
 
 end Field
 
-section Local
-
-variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-variable {F : Type} [Field F] [Algebra O F] [IsFractionRing O F]
-
-variable [Finite (ResidueField O)]
-
-end Local
-
 end GlobalTheory.AdaptedLocalData
 end -- clump:auto
 end -- clump:auto
@@ -348,9 +339,9 @@ theorem sum_univCoef_eq_prim : ∀ (k C : Type) [Field k] [Finite k] [AddCommGro
     intro U
     unfold univTerm
     by_cases h : Compl U.1 y
-    · rw [dite_eq_left h, if_pos h]
+    · rw [dite_eq_left h, ite_eq_left h]
       simp [AddMonoidAlgebra.coeff_single, Finsupp.single_apply]
-    · rw [dite_eq_right h, if_neg h]
+    · rw [dite_eq_right h, ite_eq_right h]
       simp
   have hsum : ∑ c, univCoef β κ c y = ((Nat.card k : ℚ) ^ (r * (n - r)))⁻¹ *
       (Nat.card {U : Planes k r n // Compl U.1 y} : ℚ) := by
@@ -382,10 +373,10 @@ theorem sum_univCoef_eq_prim : ∀ (k C : Type) [Field k] [Finite k] [AddCommGro
     rw [linearIndependent_iff_card_eq_finrank_span, Fintype.card_fin, Set.finrank, eq_comm]
   unfold prim
   by_cases h : Module.finrank k R = r
-  · rw [if_pos h, if_pos (hli.2 h)]
+  · rw [ite_eq_left h, ite_eq_left (hli.2 h)]
     push_cast
     exact inv_mul_cancel₀ hq
-  · rw [if_neg h, if_neg (fun h' => h (hli.1 h'))]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hli.1 h'))]
     simp
 
 end GlobalTheory.ExportSeries
@@ -401,7 +392,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 noncomputable section
 
@@ -528,8 +518,8 @@ theorem sum_ext_prod {ι C : Type} [Fintype ι] [Fintype C] (i₀ : ι) (b : ι 
   rw [← hs, h]
   refine Finset.prod_congr rfl fun i _ => ?_
   by_cases hi : i = i₀
-  · rw [if_pos hi, if_pos hi]
-  · rw [if_neg hi, if_neg hi, Finset.sum_singleton]
+  · rw [ite_eq_left hi, ite_eq_left hi]
+  · rw [ite_eq_right hi, ite_eq_right hi, Finset.sum_singleton]
 
 theorem vecAt_sum (B : Base S T) {Q : Finset (Pl D.host.E)} {P : Pl D.host.E} (hP : P ∈ Q) {C : Type} [Fintype C]
     (Φ : ∀ PP : Pl D.host.E, C → Matrix (Fin T.rank) (Fin S.rank) (kP PP) → ℂ) (b : ↥Q → C) :
@@ -557,8 +547,8 @@ theorem vecAt_sum (B : Base S T) {Q : Finset (Pl D.host.E)} {P : Pl D.host.E} (h
   refine Finset.prod_congr rfl fun v _ => ?_
   dsimp only
   by_cases h : v.1 = P
-  · rw [if_pos (Subtype.ext h), if_pos h]
-  · rw [if_neg fun e => h (congrArg Subtype.val e), if_neg h]
+  · rw [ite_eq_left (Subtype.ext h), ite_eq_left h]
+  · rw [ite_eq_right fun e => h (congrArg Subtype.val e), ite_eq_right h]
 
 end GlobalTheory.DistRel
 
@@ -615,12 +605,12 @@ theorem xi_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.F
       · intro hc v hv
         have hv' := (hQQ v.1 v.2).2 hv
         have := hc ⟨v.1, hv'⟩
-        simp only [hb0, dif_pos hv']
+        simp only [hb0, dite_eq_left hv']
         rw [← this, ← hres ⟨v.1, hv'⟩]
       · intro hc w
         have hw : w.1 ≠ P := (hQQ w.1 (hQ' w.2)).1 w.2
         have := hc ⟨w.1, hQ' w.2⟩ hw
-        simp only [hb0, dif_pos w.2, hres] at this
+        simp only [hb0, dite_eq_left w.2, hres] at this
         rw [sub_left_inj] at this
         exact this
     · rw [Base.xiCoef_apply]
@@ -635,11 +625,11 @@ theorem xi_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.F
     congr 1
     funext PP y
     by_cases hPP : PP.1 = P
-    · rw [if_pos hPP, if_pos hPP]
+    · rw [ite_eq_left hPP, ite_eq_left hPP]
       simp only [hΦ, Base.univFam]
       rw [← Rat.cast_sum, _root_.GlobalTheory.ExportSeries.sum_univCoef_eq_prim (kP PP.1) C T.rank S.rank B.hr (β PP.1) (u.kap PP.1) y]
-    · rw [if_neg hPP, if_neg hPP, hφ]
-      simp only [dif_pos PP.2]
+    · rw [ite_eq_right hPP, ite_eq_right hPP, hφ]
+      simp only [dite_eq_left PP.2]
   rw [hv1, vec_rel B hB hbT hω hQ hP φ hϖ1 hϖ2 x hx α R hα]
 
   set f1 := B.vecAt Q fun PP y => if PP.1 = P then 1 else φ PP.1 y with hf1
@@ -650,12 +640,12 @@ theorem xi_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.F
     convert this using 2
     · funext PP y
       by_cases hPP : PP.1 = P
-      · rw [if_pos hPP, if_neg (fun h => ((hQQ PP.1 PP.2).1 h) hPP)]
+      · rw [ite_eq_left hPP, ite_eq_right (fun h => ((hQQ PP.1 PP.2).1 h) hPP)]
       · have hm := (hQQ PP.1 PP.2).2 hPP
-        rw [if_neg hPP, if_pos hm, dif_pos hm, hφ]
-        simp only [dif_pos PP.2, hb0, dif_pos hm, hΦ, Base.univFam, hkap PP.1 hm, Pi.sub_apply]
+        rw [ite_eq_right hPP, ite_eq_left hm, dite_eq_left hm, hφ]
+        simp only [dite_eq_left PP.2, hb0, dite_eq_left hm, hΦ, Base.univFam, hkap PP.1 hm, Pi.sub_apply]
     · funext PP y
-      rw [dif_pos PP.2]
+      rw [dite_eq_left PP.2]
   have hth1 : IsThetaFunO B.F.ψ S T f1 := theta_vecAt hB hQ _
   have hom : ∀ γ : GA D T, IsThetaFunO B.F.ψ S T (ω (1, γ) f1) := fun γ => hω.om_pres _ _ hth1
 
@@ -683,7 +673,7 @@ theorem xi_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.F
 
   have hsupp := (hα k hk).2.1 γ hγ
   obtain ⟨-, k₁, hk₁, k₂, hk₂, hγe⟩ := (hα k hk).2.2.1 γ hγ
-  have hH := (GlobalTheory.T.modulus_unramifiedChar_det_heckeDoubleCoset_split D T P (idemAt P) he ϖ hϖ1 hϖ2 x hx k (α k) (hα k hk).1 k₁ hk₁ k₂ hk₂
+  have hH := (GlobalTheory.SplitDetValue.det_modulus_chi D T P (idemAt P) he ϖ hϖ1 hϖ2 x hx k (α k) (hα k hk).1 k₁ hk₁ k₂ hk₂
     (GlobalTheory.VecInv.detAt (idemAt P) he.1.1 T γ) (by rw [← hγe]; exact GlobalTheory.VecInv.isDetAt_detAt _ he.1.1 T γ)).2
     (Multiplicative (↥Q' → C)) (u'.delQ Q') (fun y h1 h2 h3 => by
       ext v
@@ -715,7 +705,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.SeriesTie
-
 
 noncomputable section
 
@@ -837,8 +826,6 @@ open Classical
 open Formalism.IndefR.Links (PolF)
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
-
-
 theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what₂ D.LL0 N X} (rd : Rds Y ρ) (T : Comparison₂ hρ rd)
     (hU : GlobalTheory.UnivChar.IsUnivChar Y) (hH : ∀ i j b, HeckeRead (rd i j b))
     (hR : ∀ i, X.NonzeroIndexPlace i → ∀ j b, RatUniv (rd i j b)) :
@@ -945,7 +932,7 @@ theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what
     have hk : Formalism.MainNotions.IntegralHeckeForms.HkIdx i n P :=
       ⟨(Finset.mem_Icc.1 hn).1, (Finset.mem_Icc.1 hn).2, hsplitP, fun h => Finset.disjoint_left.1 hS0 hP h⟩
     obtain ⟨hdc, h1⟩ := isDC_of_rep hρ J b hk he (hα n hn').1.2.1 (hα n hn').2.1 (hα n hn').2.2
-    have hmu := (GlobalTheory.T.modulus_unramifiedChar_det_heckeDoubleCoset_split D (Links.Wc D J) P (idemAt P) he ϖ hϖ1 hϖ2 x hx n (α n) (hα n hn').1 1 h1 1 h1
+    have hmu := (GlobalTheory.SplitDetValue.det_modulus_chi D (Links.Wc D J) P (idemAt P) he ϖ hϖ1 hϖ2 x hx n (α n) (hα n hn').1 1 h1 1 h1
       (GlobalTheory.VecInv.detAt (idemAt P) hee (Links.Wc D J) (α n)) (by
         rw [one_mul, mul_one]; exact GlobalTheory.VecInv.isDetAt_detAt _ hee _ _)).2 Circle ((ρ.B i J b).mu)
       (fun y h1 h2 h3 => mu_unram (ρ.B i J b) (hρ.base i J b) hadm hPH y h1 h2 h3)
@@ -1007,7 +994,7 @@ theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what
     congr 1
     refine Finset.sum_congr rfl fun n hn => ?_
     rw [hHk n hn, hx2]
-    simp only [map_mul, map_pow, map_neg, map_one, map_natCast, Formalism.MainNotions.BlochKatoReduction.Gen.psiAt, if_true, hyv, hq, hE', hΞ']
+    simp only [map_mul, map_pow, map_neg, map_one, map_natCast, Formalism.MainNotions.BlochKatoReduction.Gen.psiAt, ite_true, hyv, hq, hE', hΞ']
   rw [eL, eR]
 
   have hfib : ∑ c, E c * Ξ c g = ∑ c' : ↥H' → ZMod (X.l i ^ M), E' c' * ∑ c ∈ Finset.univ.filter

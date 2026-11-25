@@ -33,10 +33,10 @@ theorem UpperTheory.Reformulated.B.MemSpanVariable.mem_span_X :
     by_cases h : n i = 0
     · have h' : ¬ Finsupp.single i 1 ≤ n := by
         rw [Finsupp.single_le_iff]; omega
-      rw [if_neg h', if_neg (fun hh => hh.1 h)]
+      rw [ite_eq_right h', ite_eq_right (fun hh => hh.1 h)]
     · have h' : Finsupp.single i 1 ≤ n := by
         rw [Finsupp.single_le_iff]; omega
-      rw [if_pos h', one_mul, hg, tsub_add_cancel_of_le h']
+      rw [ite_eq_left h', one_mul, hg, tsub_add_cancel_of_le h']
       simp [h]
   have hsum : f = ∑ i, MvPowerSeries.X i * g i := by
     ext n
@@ -48,9 +48,9 @@ theorem UpperTheory.Reformulated.B.MemSpanVariable.mem_span_X :
       simpa using hf
     · obtain ⟨i, hi, hn⟩ := hc n h
       rw [Finset.sum_eq_single i]
-      · rw [if_pos ⟨hn, hi⟩]
+      · rw [ite_eq_left ⟨hn, hi⟩]
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨_, h2⟩
         exact hj (Option.some.inj (h2.symm.trans hi))
       · intro h2

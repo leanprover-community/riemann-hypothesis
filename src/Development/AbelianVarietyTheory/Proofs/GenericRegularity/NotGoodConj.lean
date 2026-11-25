@@ -10,43 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFra
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriIsUnitDet
 import Mathlib.Algebra.Order.Star.Real
@@ -62,8 +25,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FrameNorm GlobalTheory.Reg
 
-theorem _root_.GlobalTheory.T.unitFrames_generatorRatio_modulus_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), ∀ (σ : c.F →+* ℂ) (r : ℕ) (U : Formalism.L2.PjFree.Unf Xo c σ r), Formalism.L2.PjFree.GoodEmb c σ → Formalism.L2.PjFree.IsUnf U → ∀ k k' (x : (U.X k).dom) (x' : (U.X k').dom) (t : Ix Dw → (CAt σ)ˣ), IsUnitFr (U.X k) x.1 → IsUnitFr (U.X k') x'.1 → FrBor t (U.un k x) (U.un k' x') → cabs (t none : CAt σ) = 1 := by
-  first | exact @GlobalTheory.UnitFrameGen.cabs_gen_eq_one
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.GenericRegularity.UnitFramesGeneratorRatioModulusOneStatement =====
@@ -98,7 +59,7 @@ theorem good_conj (σ : c.F →+* ℂ) (h : ¬ Formalism.L2.PjFree.GoodEmb c σ)
     Formalism.L2.PjFree.GoodEmb c ((starRingEnd ℂ).comp σ) := by
   have := Formalism.L2.PjFree.goodEmb_goodOf c σ
   unfold Formalism.L2.PjFree.goodOf at this
-  rwa [if_neg h] at this
+  rwa [ite_eq_right h] at this
 
 theorem cabs_mul {K : Type} [Field K] {σ : K →+* ℂ} (a b : CAt σ) : cabs (a * b) = cabs a * cabs b :=
   norm_mul (show ℂ from a) (show ℂ from b)
@@ -130,8 +91,8 @@ theorem cabs_eq {σ : c.F →+* ℂ} {r : ℕ} (U : Formalism.L2.PjFree.Unf Xo c
     (GlobalTheory.Frames.frBor_calculus E H Dw l Xo c (CAt σ) (U.un k x) y (U.un k' x')).2.2.1 t t'⁻¹ h hi
   have h1 : cabs ((t'⁻¹ * t) i : CAt σ) = 1 := by
     cases i with
-    | none => exact GlobalTheory.T.unitFrames_generatorRatio_modulus_one E H Dw l Xo c σ r U hσ hU k k' x x' _ hx hx' hc
-    | some j => exact GlobalTheory.T.cabs_frBor_eq_one_of_unitFr E H Dw l Xo c σ r U hσ hU k k' x x' _ hx hx' hc j
+    | none => exact GlobalTheory.UnitFrameGen.cabs_gen_eq_one E H Dw l Xo c σ r U hσ hU k k' x x' _ hx hx' hc
+    | some j => exact GlobalTheory.FrameNormLie.cabs_diag_eq_one E H Dw l Xo c σ r U hσ hU k k' x x' _ hx hx' hc j
   have e : (t i : CAt σ) = (t' i : CAt σ) * ((t'⁻¹ * t) i : CAt σ) := by
     rw [← Units.val_mul, Pi.mul_apply, Pi.inv_apply, mul_inv_cancel_left]
   rw [e, cabs_mul, h1, mul_one]
@@ -167,26 +128,26 @@ theorem exists_pinned : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     GlobalTheory.Frames.FramedBaseChange.exists_frMap GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c _ _ (conjAlg σ) y
   refine ⟨fun σ y => if h : Formalism.L2.PjFree.GoodEmb c σ then G σ h y else G _ (good_conj σ h) (bc σ y), ⟨?_, ?_⟩, ?_⟩
   · intro σ hσ k z hz t y hy i
-    simp only [dif_pos hσ]
+    simp only [dite_eq_left hσ]
     rw [abs_of_pos (hpos σ hσ y i)]
     exact hpin σ hσ k z hz t y hy i
   · intro σ y y' hy i
     by_cases hσ : Formalism.L2.PjFree.GoodEmb c σ
     · have hn := not_good_conj σ hσ
-      simp only [dif_pos hσ, dif_neg hn]
+      simp only [dite_eq_left hσ, dite_eq_right hn]
       have hm : FrMap ((conjAlg ((starRingEnd ℂ).comp σ)).comp (conjAlg σ)) y (bc _ y') :=
         frMap_trans (Xo := Xo) (c := c) _ _ _ _ _ y y' _ hy (hbc _ y')
       have e : (starRingEnd ℂ).comp ((starRingEnd ℂ).comp σ) = σ :=
         RingHom.ext fun a => Complex.conj_conj (σ a)
       rw [transport G e hσ (good_conj _ hn) _ (fun z => Complex.conj_conj (show ℂ from z)) y _ hm]
     · have hg := good_conj σ hσ
-      simp only [dif_pos hg, dif_neg hσ]
+      simp only [dite_eq_left hg, dite_eq_right hσ]
       rw [(GlobalTheory.Frames.frMap_unique_refl_iff E H Dw l Xo c _ _ (conjAlg σ) y).1 _ _ hy (hbc σ y)]
   · intro σ y i
     by_cases hσ : Formalism.L2.PjFree.GoodEmb c σ
-    · simp only [dif_pos hσ]
+    · simp only [dite_eq_left hσ]
       exact (hpos σ hσ y i).ne'
-    · simp only [dif_neg hσ]
+    · simp only [dite_eq_right hσ]
       exact (hpos _ _ _ i).ne'
 
 end GlobalTheory.FrameNorm.Existence

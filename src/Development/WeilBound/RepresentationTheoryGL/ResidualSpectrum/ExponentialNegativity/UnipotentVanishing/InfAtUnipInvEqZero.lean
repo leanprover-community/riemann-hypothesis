@@ -125,7 +125,7 @@ theorem prod_indicator (n r : ℕ) (hr : r ≤ n) (E : ℝ) :
       = if (i : ℕ) < r then E ^ (n - r) else 1 := by
     intro i
     by_cases hi : (i : ℕ) < r
-    · simp only [hi, true_and, if_true]
+    · simp only [hi, true_and, ite_true]
       rw [Finset.prod_ite, Finset.prod_const, Finset.prod_const_one, mul_one, card_ge n r hr]
     · simp [hi]
   simp only [inner]
@@ -393,10 +393,10 @@ theorem exists_inf_bound (r : ℕ) {D : Set (UPos n r → 𝔸[K])} {Q : Set (Ad
       exact hm (infAt_unip_inv_eq_zero w r Y m j h)
     rw [← Real.exp_sub, hLdef]
     by_cases hij : (i : ℕ) < r ∧ r ≤ (j : ℕ)
-    · rw [if_pos hij]
+    · rw [ite_eq_left hij]
       refine Real.exp_le_exp.2 ?_
       split_ifs <;> linarith
-    · rw [if_neg hij]
+    · rw [ite_eq_right hij]
       refine Real.exp_le_one_iff.2 ?_
       rcases hl' with rfl | ⟨h1, h2⟩ <;> rcases hm' with rfl | ⟨h3, h4⟩ <;> split_ifs <;>
         first | linarith | (exfalso; omega)

@@ -141,7 +141,3 @@ theorem t_BoxSumLattice : BoxSumLattice := by
   apply Formalism.FourierDecayAlt.P.Jx2.t_BoxSumLattice
 
 end Formalism.FourierDecayAlt.P.Jx1
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

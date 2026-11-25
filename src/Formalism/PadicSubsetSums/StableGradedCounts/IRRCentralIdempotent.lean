@@ -145,7 +145,7 @@ theorem central_idempotent_holds : CentralIdempotent := by
     have : Invertible (Nat.card G : ℂ) :=
       invertibleOfNonzero (by rw [Nat.card_eq_fintype_card]; exact hc0)
     have horth := Representation.char_orthonormal ρ ρ
-    rw [if_pos ⟨Representation.Equiv.refl ρ⟩, Nat.card_eq_fintype_card] at horth
+    rw [ite_eq_left ⟨Representation.Equiv.refl ρ⟩, Nat.card_eq_fintype_card] at horth
     have h3 : ∑ g, ρ.character g⁻¹ * ρ.character g = (Fintype.card G : ℂ) := by
       have : ∑ g, ρ.character g⁻¹ * ρ.character g = ∑ g, ρ.character g * ρ.character g⁻¹ :=
         Finset.sum_congr rfl fun g _ => mul_comm _ _

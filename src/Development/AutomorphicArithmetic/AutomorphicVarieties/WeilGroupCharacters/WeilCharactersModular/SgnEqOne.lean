@@ -98,7 +98,7 @@ theorem UpperTheory.V.W.levEx :
   · rw [← (QuotientGroup.isQuotientMap_mk (NS Ω S')).isOpen_preimage, hpre]
     exact Subgroup.isOpen_of_isClosed_of_finiteIndex _ hclosed
   · rw [hηg]
-    simp only [sgn, MonoidHom.mk'_apply, if_neg hc]
+    simp only [sgn, MonoidHom.mk'_apply, ite_eq_right hc]
   · exact MonoidHom.ext fun g => QuotientGroup.lift_mk _ hNS2 g
   · exact (QuotientGroup.isQuotientMap_mk (NS Ω S')).continuous_iff.mpr
       (by exact continuous_cycZ (Lp L) Ω l)

@@ -48,8 +48,6 @@ namespace GlobalTheory.LocMod.TensorModel
 
 variable {D : D7}
 
-alias symplO_add_left' := _root_.GlobalTheory.LatVac.symplO_add_left
-
 theorem half_sum {m n : ℕ} {e e' : AE D} (he : e * e' = 0) {u : Mx D m n} (hu : IsHalf e' u) : IsHalf (e + e') u :=
   fun i j => by
     have h0 : e * u i j = 0 := by
@@ -98,7 +96,7 @@ theorem isModel_tensor : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Top
       · rw [h0]; ring
       · have e1 : symplO S T t y = symplO S T (t - p.up FS FT (p.down FS FT t)) y +
             symplO S T (p.up FS FT (p.down FS FT t)) y := by
-          rw [← symplO_add_left', sub_add_cancel]
+          rw [← GlobalTheory.LatVac.symplO_add_left, sub_add_cancel]
         rw [e1, symplO_half_zero he (hΦ _ h0) hy, zero_add]
         ring
     simp only [LinearMap.comp_apply, Place.tensorL_apply]

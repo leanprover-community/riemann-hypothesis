@@ -131,17 +131,17 @@ theorem mem_move {P : SPar} {c c' y : ℚ} {s : Bool} (hc : ∀ x ∈ P, x.1 ≠
     have e1 : x - c + c' - c' + c = x := by ring
     rw [e1]
     by_cases h : x < c
-    · right; simp only [h, if_true, Bool.not_not]; exact ⟨by linarith, hx⟩
+    · right; simp only [h, ite_true, Bool.not_not]; exact ⟨by linarith, hx⟩
     · left
       have : c < x := lt_of_le_of_ne (not_lt.1 h) (fun e => hc _ hx e.symm)
-      simp only [h, if_false]; exact ⟨by linarith, hx⟩
+      simp only [h, ite_false]; exact ⟨by linarith, hx⟩
   · rintro (⟨h, hx⟩ | ⟨h, hx⟩)
     · refine ⟨_, hx, ?_⟩
       have : ¬ (y - c' + c < c) := by linarith
-      simp only [this, if_false, Prod.mk.injEq, and_true]; ring
+      simp only [this, ite_false, Prod.mk.injEq, and_true]; ring
     · refine ⟨_, hx, ?_⟩
       have : y - c' + c < c := by linarith
-      simp only [this, if_true, Bool.not_not, Prod.mk.injEq, and_true]; ring
+      simp only [this, ite_true, Bool.not_not, Prod.mk.injEq, and_true]; ring
 
 theorem signed_zero_shift {l₁ l₂ : List ℚ} {c : ℚ} {x : ℚ × Bool} (h : x ∈ signed l₁ l₂ 0) :
     (x.1 + c, x.2) ∈ signed l₁ l₂ c := by

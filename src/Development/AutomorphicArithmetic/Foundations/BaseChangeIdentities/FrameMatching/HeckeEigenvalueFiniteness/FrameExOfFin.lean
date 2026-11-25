@@ -60,8 +60,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2 PositivityTheory.Rg.BcB.F.FX
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.HeckeLevelFrameExistence
@@ -73,17 +71,17 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : Rd.R
   {S : Finset (Pl E)} (F₀ : Frame0 hR π S) (T' : Finset (Pl E)) (c : Pl E → (Fin n → ℤ) →₀ ℂ) (e : ∀ w : Pl E, GLw n w → ℂ)
   (b : ∀ w : Pl E, GLw n w)
 
-theorem loc_KU_eq_iwU_of_mem {w : Pl E} (hw : w ∈ T') : (F₀.loc T' c e b).KU w = iwU n w (b w) := if_pos hw
+theorem loc_KU_eq_iwU_of_mem {w : Pl E} (hw : w ∈ T') : (F₀.loc T' c e b).KU w = iwU n w (b w) := ite_eq_left hw
 
 theorem KU_off {w : Pl E} (hw : w ∉ T') : (F₀.loc T' c e b).KU w = F₀.d₀.KU w := by
   have h0 : w ∉ F₀.d₀.T := by rw [F₀.T₀]; exact Finset.notMem_empty w
   unfold LocData.KU
-  rw [if_neg hw, if_neg h0]
+  rw [ite_eq_right hw, ite_eq_right h0]
 
 theorem KU_eq_KL_of_not_mem_bad {w : Pl E} (h1 : w ∉ F₀.d₀.S₀) (h2 : w ∉ F₀.d₀.Bad) : F₀.d₀.KU w = KL n w := by
   have h0 : w ∉ F₀.d₀.T := by rw [F₀.T₀]; exact Finset.notMem_empty w
   unfold LocData.KU
-  rw [if_neg h0, if_neg h1, if_neg h2]
+  rw [ite_eq_right h0, ite_eq_right h1, ite_eq_right h2]
 
 theorem levOff (hT : ∀ w ∈ T', w ∈ F₀.Sec ∧ IsWitt n w (b w)) :
     U.LevelOff F₀.Sec (F₀.loc T' c e b).B (F₀.loc T' c e b).KU := by
@@ -144,9 +142,9 @@ theorem eig_B (hG : GcHecke) (hP : PowEig) (hA : LocAlg) (hdis : ∀ w ∈ T', �
     rintro K' g rfl rfl hH ⟨y, hy0, hy⟩
     exact ⟨y, hy0, hP E n w (σ w) _ (hlev w) _ hH y hy m⟩
   by_cases h1 : w ∈ T'
-  · exact key _ _ (if_pos h1) (if_pos h1) (hG E n w (hdis w h1).1 _ _ _) (hT w h1)
+  · exact key _ _ (ite_eq_left h1) (ite_eq_left h1) (hG E n w (hdis w h1).1 _ _ _) (hT w h1)
   by_cases h2 : w ∈ F₀.d₀.S₀
-  · exact key _ _ ((if_neg h1).trans (if_pos h2)) ((if_neg h1).trans (if_pos h2)) (hS w h2).1 (hS w h2).2
+  · exact key _ _ ((ite_eq_right h1).trans (ite_eq_left h2)) ((ite_eq_right h1).trans (ite_eq_left h2)) (hS w h2).1 (hS w h2).2
   have h3 : w ∈ F₀.d₀.Bad := by
     rcases Finset.mem_union.1 hw with h | h
     · exact absurd (Finset.mem_union.1 h) (not_or.2 ⟨h1, h2⟩)
@@ -154,14 +152,13 @@ theorem eig_B (hG : GcHecke) (hP : PowEig) (hA : LocAlg) (hdis : ∀ w ∈ T', �
   have h0 : IsHecke ((F₀.loc T' c e b).KU w) (0 : UL n w → ℂ) := ⟨HasCompactSupport.zero, fun _ _ _ => ⟨rfl, rfl⟩⟩
   have hL := (hA E n w (σ w) _ (hlev w) 0 0 h0 h0).2.2.2.2.2.2
   obtain ⟨y, hy, hy0⟩ := (Submodule.ne_bot_iff _).1 (hne w h3)
-  refine key _ (U.lone ((F₀.loc T' c e b).KU w)) rfl ((if_neg h1).trans (if_neg h2)) hL.1
+  refine key _ (U.lone ((F₀.loc T' c e b).KU w)) rfl ((ite_eq_right h1).trans (ite_eq_right h2)) hL.1
     ⟨⟨y, hy⟩, fun h => hy0 (congrArg Subtype.val h), ?_⟩
   exact (LinearMap.congr_fun hL.2 _).trans rfl
 
 end UpperTheory.HeckeLevelFrameExistence
 
 namespace UpperTheory.HeckeLevelFrameExistence
-
 
 theorem frameEx_of (hUS : USide) (hSph : SphOne) (hSpec : SpecTrace) (hA : LocAlg) (hTb : ExTb) (hSat : Inert.SatEx)
     (hUnif : Inert.UnifOf) (hCE : ConeEig) (hSC : SatCompAt) (hCI : CandIndep) (hCF : CandFin) (hM0 : FrameBoundModuleCondition)
@@ -224,7 +221,7 @@ theorem frameEx_of (hUS : USide) (hSph : SphOne) (hSpec : SpecTrace) (hA : LocAl
     · exact ⟨0, 0, fun h => absurd h hw⟩
     obtain ⟨k, Dl, hDl⟩ := hD w hw
     have hwT : w ∉ T' := fun h => (hT' w h).2.2.2.2.1 hw
-    have hK : (F₀.loc T' 0 0 b).KU w = (F₀.d₀.K' w).subgroupOf (UL n w) := (if_neg hwT).trans (if_pos hw)
+    have hK : (F₀.loc T' 0 0 b).KU w = (F₀.d₀.K' w).subgroupOf (UL n w) := (ite_eq_right hwT).trans (ite_eq_left hw)
     have hfix := ((fam.comp i₀).2.2.2 w (F₀.S₀ w hw).1).2.1
     rw [hK] at hfix
     obtain ⟨ew, P, h1, h2, h3, h4, h5⟩ := hLE E n w (F₀.S₀ w hw).2 _ (F₀.ok₀.K' w hw).1 (F₀.ok₀.K' w hw).2.1 (F₀.K'_lev w hw)
@@ -442,8 +439,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem exists_ex (hE : ShufEx) (n a : ℕ) (s : Finset (Fin (n / 2))) (h : LocData.admitted n a s) :
@@ -564,8 +559,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.HeckeLevelFrameExistence
@@ -576,20 +569,20 @@ theorem mok0 {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : 
   have hlev : ∀ w ∈ F₀.d₀.Bad, GlobalTheory.BCT.IsLevel (MonoidHom.id _) (KL n w) (F₀.d₀.KB w) := fun w hw => by
     have h := F₀.levFam.1 w
     have e : F₀.d₀.KU w = F₀.d₀.KB w :=
-      (if_neg (h0 w)).trans ((if_neg fun h' => Finset.disjoint_left.1 F₀.ok₀.disj.2.2 h' hw).trans (if_pos hw))
+      (ite_eq_right (h0 w)).trans ((ite_eq_right fun h' => Finset.disjoint_left.1 F₀.ok₀.disj.2.2 h' hw).trans (ite_eq_left hw))
     rwa [e] at h
   refine ⟨fun w hw => absurd hw (h0 w), fun w hw => ⟨(F₀.S₀ w hw).2, fun g => ?_, F₀.K'_lev w hw⟩,
     fun w hw hs => ⟨hlev w hw, fun a ha => ?_⟩, fun w hw hs => ⟨F₀.kB w, F₀.kB_pos w hw hs, hlev w hw, fun γ => ?_, fun a ha => ?_⟩⟩
   · unfold UL
-    rw [if_pos (F₀.S₀ w hw).2]
+    rw [ite_eq_left (F₀.S₀ w hw).2]
     exact Subgroup.mem_top g
-  · rw [F₀.fix_def a ha w, if_pos hw, if_pos hs]
+  · rw [F₀.fix_def a ha w, ite_eq_left hw, ite_eq_left hs]
   · have e : {γ : UL n w | γ.1 ∈ MB.congK n w (F₀.kB w)} =
         (((GlobalTheory.PrincCong.congSub w n (F₀.kB w)).subgroupOf (UL n w) : Subgroup (UL n w)) : Set (UL n w)) :=
       Set.ext fun x => (GlobalTheory.PrincCong.mem_congSub_iff w n (F₀.kB w) x.1).symm
-    rw [F₀.KB_def w, if_pos hw, if_neg hs, e, Subgroup.closure_eq]
+    rw [F₀.KB_def w, ite_eq_left hw, ite_eq_right hs, e, Subgroup.closure_eq]
     exact GlobalTheory.PrincCong.mem_congSub_iff w n (F₀.kB w) γ.1
-  · rw [F₀.fix_def a ha w, if_pos hw, if_neg hs]
+  · rw [F₀.fix_def a ha w, ite_eq_left hw, ite_eq_right hs]
 
 end UpperTheory.HeckeLevelFrameExistence
 
@@ -607,8 +600,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.Bc.ArchbcB.B
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2
 open scoped Classical
-
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -645,8 +636,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.SpecModel
 
@@ -949,7 +938,7 @@ theorem uModel : UModel := by
     refine h3 i₀ v ?_ ?_ ?_
     · intro h0
       have h1 := congrFun h0 ⟨i₀, x⟩
-      simp only [v, if_true, Pi.zero_apply] at h1
+      simp only [v, ite_true, Pi.zero_apply] at h1
       exact (Finset.prod_ne_zero_iff.mpr fun w _ => hx w) h1
     · funext ⟨i, α⟩
       simp only [A]
@@ -989,7 +978,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.Choice
 open scoped Classical
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -1063,8 +1051,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.FX
@@ -1096,8 +1082,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.Bc.ArchbcB.B
 open scoped Classical
-
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -1487,8 +1471,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.LemB
 
 section Conj
@@ -1541,14 +1523,6 @@ theorem conjU_val (b : GL (Fin n) L) (hb : cT s b.val * b.val = antiJ L n) (H : 
 
 end Conj
 
-theorem irred_comp_surj {H H' X : Type} [Group H] [Group H'] [AddCommGroup X] [Module ℂ X]
-    (ρ : Representation ℂ H X) (φ : H' →* H) (hφ : Function.Surjective φ) (h : ρ.IsIrreducible) :
-    Representation.IsIrreducible (ρ.comp φ) := by
-  obtain ⟨h0, h1⟩ := (GlobalTheory.CuspRep.isIrreducible_iff _).1 h
-  refine (GlobalTheory.CuspRep.isIrreducible_iff _).2 ⟨h0, fun W hW => h1 W fun g v hv => ?_⟩
-  obtain ⟨g', rfl⟩ := hφ g
-  exact hW g' v hv
-
 end PositivityTheory.Rg.BcB.F.LemB
 
 end
@@ -1566,8 +1540,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.FX
 
@@ -1592,7 +1564,7 @@ theorem satCompAt : SatCompAt := by
     exact hex.choose_spec.2 x
   have hUL : ∀ g, g ∈ UL n w ↔ g ∈ UJ (cj w) (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) := by
     intro g
-    rw [UL, if_neg hw]
+    rw [UL, ite_eq_right hw]
   obtain ⟨e, he⟩ := GlobalTheory.DefU.Inert.locU_equiv E n w (cj w) hcj hI.2.1
   let f := conjU (cj w) b hb (UL n w) hUL
   let u : locU n w → UL n w := fun x => ⟨(e x).1, (hUL _).2 (e x).2⟩
@@ -1615,8 +1587,8 @@ theorem satCompAt : SatCompAt := by
   have hG0 : F ≠ 0 := fun h => hF0 (LinearMap.ext fun v => congrArg Subtype.val (DFunLike.congr_fun h v))
   have hG1 : F' ≠ 0 := fun h => hF1 (LinearMap.ext fun v => congrArg Subtype.val (DFunLike.congr_fun h v))
   obtain ⟨-, h2⟩ := GlobalTheory.CuspRep.CompUniq.isotypic (UA E n) (locU n w) Ψ.V σ.V σ1.V Ψ.rep (locU n w).subtype
-    (σ.ρ.comp p0) (σ1.ρ.comp p) Ψ.isIrreducible_rep (irred_comp_surj σ.ρ p0 hps0 σ.irred)
-    (irred_comp_surj σ1.ρ p hps σ1.irred) (fun g => ⟨r g, fun y => hr g y⟩) F hG0
+    (σ.ρ.comp p0) (σ1.ρ.comp p) Ψ.isIrreducible_rep (GlobalTheory.BCT.LocCompU.isIrreducible_comp_of_surjective σ.ρ p0 hps0 σ.irred)
+    (GlobalTheory.BCT.LocCompU.isIrreducible_comp_of_surjective σ1.ρ p hps σ1.irred) (fun g => ⟨r g, fun y => hr g y⟩) F hG0
   obtain ⟨T⟩ := h2 F' hG1
 
   have hs1 : SatUL b (ϖ : w.adicCompletion E) q σ α := by
@@ -1658,8 +1630,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.Bc.ArchbcB.B
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2 PositivityTheory.Rg.BcB.F.FX
 open scoped Classical
-
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

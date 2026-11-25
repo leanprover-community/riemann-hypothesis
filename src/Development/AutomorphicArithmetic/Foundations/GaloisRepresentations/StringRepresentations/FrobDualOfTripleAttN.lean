@@ -110,10 +110,6 @@ theorem charpolyRev_smul_inv {n : ℕ} (M A : Matrix (Fin n) (Fin n) ℂ) (h : M
   field_simp
   ring
 
-theorem rd_injective {D : D7} (i : D.ntw.Tw) (ι : FractionRing (D.ntw.O0 i) →+* ℂ) :
-    Function.Injective (rd i ι) :=
-  ι.injective.comp (IsFractionRing.injective (D.ntw.O0 i) (FractionRing (D.ntw.O0 i)))
-
 end GlobalTheory.TripleGal.HkFrobProof
 end -- clump:auto
 end -- clump:auto
@@ -218,7 +214,6 @@ namespace GlobalTheory.TripleGal
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
-
 
 open Classical in
 structure AttN (A : NAut N) (bkP : BKPh X) (i : X.Tw) (ι : FractionRing (X.O0 i) →+* ℂ)
@@ -434,7 +429,7 @@ theorem hkFrob_of_tripleAtt_n : ∀ (D : D7) (bkP : BlochKatoReduction.BK D) (i 
   rw [Complex.ofReal_natCast, ← hq, ← hrd] at hes
   have hmain : (-1 : D.ntw.O0 i) ^ k * ((normV P : ℕ) : D.ntw.O0 i) ^ (k * (k - 1) / 2) * h =
       (((((eps0 D.ntw i σ : (D.ntw.O0 i)ˣ) : D.ntw.O0 i) ^ D.R.t) • Tmat i s σ).charpolyRev).coeff k := by
-    apply rd_injective i ι
+    apply GlobalTheory.TripleFrobDual.rd_injective i ι
     rw [coeff_charpolyRev_map, Matrix.map_smul' _ _ _ (map_mul _), map_pow (rd i ι) _ D.R.t, heps, key, map_mul,
       map_mul, map_pow, map_pow, map_neg, map_one, map_natCast, ← hq, hes, Multiset.map_map, Multiset.map_map]
     congr 2

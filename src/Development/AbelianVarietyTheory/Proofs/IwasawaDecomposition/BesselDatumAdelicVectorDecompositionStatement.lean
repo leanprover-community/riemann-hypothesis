@@ -73,7 +73,7 @@ theorem hD_basis_dual (d : BesselDatum A B ι) (i l) : B.hD (d.aux l) (dual d i)
   · simp [HSpace.hD, starRingEnd_apply, hz, zz]
   · have : B.hT d.z (d.e k) = 0 := d.ez k
     simp [HSpace.hD, this, Fin.castSucc_ne_last]
-  · rw [Fin.snoc_last, Fin.snoc_castSucc, hD_swap_zero (d.fz j), if_neg (Fin.castSucc_ne_last j).symm]
+  · rw [Fin.snoc_last, Fin.snoc_castSucc, hD_swap_zero (d.fz j), ite_eq_right (Fin.castSucc_ne_last j).symm]
   · rw [Fin.snoc_castSucc, Fin.snoc_castSucc, d.ef]
     simp
 

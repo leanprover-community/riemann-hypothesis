@@ -47,12 +47,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.BasicNotions
 
 namespace Formalism.L2
 
-section Rfl
-
-variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W]
-
-end Rfl
-
 theorem heckeStdPlain_of_statement (h : ReciprocityTheory.ChartRestriction.L3H.HeckeStdStatement) : HeckeStdPlain := by
   intro L _ _ _ n a J χ B hJo hB s ϖ k hs hu hk1 hk2
   exact h L n a.W a.ρ a.alg J χ B hJo hB s ϖ k hs hu hk1 hk2

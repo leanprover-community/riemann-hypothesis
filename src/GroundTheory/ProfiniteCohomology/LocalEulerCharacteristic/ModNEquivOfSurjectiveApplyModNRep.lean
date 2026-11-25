@@ -325,7 +325,7 @@ theorem coeffToRegular_perm [Group Γ] (τ : Γ) (c : Γ → O) :
   rw [Finset.sum_eq_single (τ⁻¹ * ρ)]
   · simp
   · intro σ _ hσ
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hσ
     rw [← h]

@@ -204,7 +204,7 @@ theorem existsUnique_of_retraction {R N : Type} [CommRing R] [AddCommGroup N] [M
     simp only [← Finset.sum_smul]
     have : ∀ j, (∑ i, C k i * A i j) = (1 : Matrix (Fin m) (Fin m) R) k j := fun j => by
       rw [← hCA, Matrix.mul_apply]; rfl
-    simp only [this, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [this, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   obtain ⟨b, hb, -⟩ := he w hw
   have hex : w = ∑ i, (∑ k, b k * C k i) • v i := by
     rw [hb]

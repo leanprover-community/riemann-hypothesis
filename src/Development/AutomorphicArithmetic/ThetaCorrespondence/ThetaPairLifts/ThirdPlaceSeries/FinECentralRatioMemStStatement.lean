@@ -733,7 +733,7 @@ theorem line_moved (q : SplitPt D k) {PP : Formalism.L2.DIV.Pl D.host.E} (hq : F
       refine Finset.sum_comm.trans (Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun r _ => ?_)
       ring
     rw [h1]
-    simp only [hp, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hp, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     ring
   rw [csec_mem_iff hΛ]
   constructor
@@ -794,15 +794,15 @@ theorem line_bes (q : SplitPt D k) {PP : Formalism.L2.DIV.Pl D.host.E} (hq : For
       simp only [h1, Matrix.mul_apply, Matrix.map_apply, hπ, Finset.sum_mul, Finset.mul_sum]
       refine Finset.sum_comm.trans (Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun r _ => ?_)
       ring
-    rw [h6, if_neg (by simp)]
+    rw [h6, ite_eq_right (by simp)]
     simp only [h5, mul_zero, Finset.sum_const_zero, zero_mul]
   have hj := j.2
   rcases lt_trichotomy j.val ρ with h | h | h
-  · rw [if_neg (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega)]
+  · rw [ite_eq_right (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega)]
     simp only [h2 ⟨j.val, h⟩ j rfl, hπ, mul_assoc, ← Finset.mul_sum, key]
     rw [B.d.ee, Matrix.zero_apply, star_zero, map_zero]
     simp
-  · rw [if_neg (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega)]
+  · rw [ite_eq_right (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega)]
     have h5 := key (B.d.i₀ * replicateCol Unit (vecB B.o B.ζ)) ()
     rw [Matrix.conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc B.d.i₀ᴴ, B.d.i₀e, Matrix.mul_zero,
         Matrix.zero_apply, star_zero, map_zero] at h5
@@ -820,9 +820,9 @@ theorem line_bes (q : SplitPt D k) {PP : Formalism.L2.DIV.Pl D.host.E} (hq : For
       rfl
     rw [h6, key, B.d.e'e]
     by_cases e : j.val = 2 * ρ
-    · rw [if_pos (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega), Matrix.one_apply, if_pos (by simp only [Fin.ext_iff]; omega)]
+    · rw [ite_eq_left (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega), Matrix.one_apply, ite_eq_left (by simp only [Fin.ext_iff]; omega)]
       simp [e]
-    · rw [if_neg (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega), Matrix.one_apply, if_neg (by simp only [Fin.ext_iff]; omega)]
+    · rw [ite_eq_right (by simp only [Sum.inr.injEq, Fin.ext_iff]; omega), Matrix.one_apply, ite_eq_right (by simp only [Fin.ext_iff]; omega)]
       simp
 
 theorem val_nat (q : SplitPt D k) {PP : Formalism.L2.DIV.Pl D.host.E} (hq : Formalism.L2.NTheta.IsIdemAt q.e PP) (T : ℕ)

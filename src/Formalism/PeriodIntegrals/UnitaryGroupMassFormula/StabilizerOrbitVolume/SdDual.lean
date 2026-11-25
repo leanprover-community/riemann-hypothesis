@@ -211,39 +211,17 @@ include b in
 theorem dualAt_alt
     (hN : ∀ Y : Fin a → Fin M → Fv F v ⊗[F] E, (∀ X, BR (Fv F v) σ J X Y = 0) → Y = 0) :
     DualAt v (BR (Fv F v) σ J (n := a)) := by
-  classical
-  have hker : LinearMap.ker (phiL (a := a) v b σ J) = ⊥ := by
-    rw [LinearMap.ker_eq_bot']
-    intro Y hY
-    apply hN Y
-    intro X
-    rw [BR_expand v b σ J X Y]
-    refine Finset.sum_eq_zero fun q _ => ?_
-    have : BR (Fv F v) σ J (eT v b q) Y = 0 := congrFun hY q
-    rw [this, mul_zero]
-  obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective (phiL (a := a) v b σ J) hker
-  have hgc : Continuous g := IsModuleTopology.continuous_of_linearMap g
-  refine ⟨latSub v b a M, isCompact_latV b v a M, (isClopen_latV b v a M).isOpen, ?_, ?_⟩
-  · intro s hs x hx
-    refine ⟨s • x, ?_, fun y => BR_smul_left v σ J s x y⟩
-    show ∀ p i l, (Algebra.TensorProduct.basis (Fv F v) b).repr ((s • x) p i) l ∈
-      v.adicCompletionIntegers F
-    intro p i l
-    have := crd_smul v b s (x p i) l
-    simp only [crd] at this
-    rw [Pi.smul_apply, Pi.smul_apply, this]
-    exact mul_mem hs (hx p i l)
-  · intro c
-    let box : Set (Fin a × Fin M × Fin d → Fv F v) :=
-      Set.pi Set.univ fun _ => (fun s => c * s) '' (v.adicCompletionIntegers F : Set (Fv F v))
-    have hbox : IsCompact box := isCompact_univ_pi fun _ =>
-      (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers v).image (continuous_const.mul continuous_id)
-    refine ⟨g '' box, hbox.image hgc, ?_⟩
-    intro y hy
-    refine ⟨phiL (a := a) v b σ J y, ?_, ?_⟩
-    · intro q _
-      exact hy _ (eT_mem v b q)
-    · exact LinearMap.congr_fun hg y
+  refine ⟨latSub v b a M, isCompact_latV b v a M, (isClopen_latV b v a M).isOpen, ?_,
+    fun c => bound_alt v b σ J hN c⟩
+  intro s hs x hx
+  refine ⟨s • x, ?_, fun y => BR_smul_left v σ J s x y⟩
+  show ∀ p i l, (Algebra.TensorProduct.basis (Fv F v) b).repr ((s • x) p i) l ∈
+    v.adicCompletionIntegers F
+  intro p i l
+  have := crd_smul v b s (x p i) l
+  simp only [crd] at this
+  rw [Pi.smul_apply, Pi.smul_apply, this]
+  exact mul_mem hs (hx p i l)
 
 end Dual
 
@@ -421,7 +399,7 @@ theorem pairHerm_iota (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {a : ℕ
 
     simp only [BR, hR, Formalism.UG.hform, JR, Matrix.map_apply, Matrix.one_apply, apply_ite,
     map_one, map_zero, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, map_sum]
+    Finset.mem_univ, ite_true, map_sum]
   rw [hBR]
   simp only [pairHerm, iota, add_mul, Finset.sum_add_distrib, map_add (f := _)]
   simp only [← hTm]

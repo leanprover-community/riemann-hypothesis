@@ -81,14 +81,8 @@ def mdir (α : Fin n → ℕ) : Fin (mabs α) → EuclideanSpace ℝ (Fin n) :=
 def mpow (α : Fin n → ℕ) (ξ : EuclideanSpace ℝ (Fin n)) : ℝ := ∏ i, ξ i ^ α i
 
 theorem prod_get_eq {M : Type*} [CommMonoid M] {X : Type*} (f : X → M) (L : List X) :
-    ∏ k : Fin L.length, f (L.get k) = (L.map f).prod := by
-  induction L with
-  | nil => simp
-  | cons x L ih =>
-    rw [List.map_cons, List.prod_cons, ← ih]
-    show ∏ k : Fin (L.length + 1), f ((x :: L).get k) = _
-    rw [Fin.prod_univ_succ]
-    rfl
+    ∏ k : Fin L.length, f (L.get k) = (L.map f).prod :=
+  Fin.prod_univ_fun_getElem L f
 
 theorem prod_flatMap_eq {M : Type*} [CommMonoid M] {X Y : Type*} (L : List X) (g : X → List Y)
     (f : Y → M) : ((L.flatMap g).map f).prod = (L.map fun x ↦ ((g x).map f).prod).prod := by
@@ -295,7 +289,7 @@ theorem exists_schwartz_coeff {Ω : Set (EuclideanSpace ℝ (Fin n))} (hΩ : IsO
       (tsupport_bump x₀ hr)
   refine ⟨ε / 4, hr, hsub, fun α ↦ if h : α ∈ A then cutMul hΩ (ha α h) (bump x₀ hr) hχc hχΩ else 0,
     fun α hα y hy ↦ ?_⟩
-  simp only [dif_pos hα]
+  simp only [dite_eq_left hα]
   rw [cutMul_apply, bump_eq_one x₀ hr hy, one_mul]
 
 theorem sum_smulLeft_apply_eq_diffOp (A : Finset (Fin n → ℕ))

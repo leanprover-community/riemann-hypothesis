@@ -342,7 +342,7 @@ private theorem evP_kills (D : DetFr F G n) (z : G → Matrix (Fin n) (Fin n) F)
   · have hE : Matrix.single j i (1 : F) ∈ Ev F F n D.a := by
       rw [evP_iff]
       intro p q h
-      rw [Matrix.single_apply, if_neg]
+      rw [Matrix.single_apply, ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact h hij.symm
     have := key _ hE
@@ -374,8 +374,8 @@ private theorem evP_even (D : DetFr F G n) (Y : Matrix (Fin n) (Fin n) F) :
     rw [Matrix.add_apply, hS, mul_diagonal, diagonal_mul]
     by_cases hi : (i : ℕ) < D.a <;> by_cases hj : (j : ℕ) < D.a
     · exact absurd (iff_of_true hi hj) hij
-    · rw [if_pos hi, if_neg hj]; ring
-    · rw [if_neg hi, if_pos hj]; ring
+    · rw [ite_eq_left hi, ite_eq_right hj]; ring
+    · rw [ite_eq_right hi, ite_eq_left hj]; ring
     · exact absurd (iff_of_false hi hj) hij
   · have h1 : dTw χ D.r (S * Y * S) g = dTw χ D.r Y g := by
       have h2 : S * dTw χ D.r Y g * S = dTw χ D.r Y g := by
@@ -597,7 +597,7 @@ private theorem od_of_sgnM (two : (2 : F) ≠ 0) (a : ℕ) {X : Matrix (Fin n) (
   intro i j
   refine ⟨fun h => ?_, fun _ => Submodule.mem_top⟩
   have e := congrFun (congrFun hX i) j
-  rw [sgnM_conj_apply, if_pos h, Matrix.neg_apply] at e
+  rw [sgnM_conj_apply, ite_eq_left h, Matrix.neg_apply] at e
   have h2 : (2 : F) * X i j = 0 := by rw [two_mul]; nth_rewrite 1 [e]; ring
   rw [Submodule.mem_bot]
   exact (mul_eq_zero.mp h2).resolve_left two
@@ -885,11 +885,11 @@ private theorem cut_mul {F : Type} [Field F] {n : ℕ} (p q : Fin n → Prop) [�
   split_ifs with h
   · refine Finset.sum_congr rfl fun k _ => ?_
     by_cases hk : q k ↔ q j
-    · rw [if_pos ⟨h.1, hk.2 h.2⟩]
+    · rw [ite_eq_left ⟨h.1, hk.2 h.2⟩]
     · rw [hB k j hk, mul_zero, mul_zero]
   · refine Finset.sum_eq_zero fun k _ => ?_
     by_cases hk : q k ↔ q j
-    · rw [if_neg (fun h' => h ⟨h'.1, hk.1 h'.2⟩), zero_mul]
+    · rw [ite_eq_right (fun h' => h ⟨h'.1, hk.1 h'.2⟩), zero_mul]
     · rw [hB k j hk, mul_zero]
 
 private theorem kills_cut {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F G n)
@@ -1278,11 +1278,6 @@ section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] {n : ℕ}
 
-private theorem dA_ev {a : ℕ} (N : Matrix (Fin n) (Fin n) F) :
-    N ∈ Ev F F n a ↔ ∀ i j : Fin n, ¬ (((i : ℕ) < a) ↔ ((j : ℕ) < a)) → N i j = 0 := by
-  change (∀ i j : Fin n, _) ↔ _
-  simp
-
 private theorem dA_od {a : ℕ} (N : Matrix (Fin n) (Fin n) F) :
     N ∈ Od F F n a ↔ ∀ i j : Fin n, (((i : ℕ) < a) ↔ ((j : ℕ) < a)) → N i j = 0 := by
   change (∀ i j : Fin n, _) ↔ _
@@ -1291,7 +1286,7 @@ private theorem dA_od {a : ℕ} (N : Matrix (Fin n) (Fin n) F) :
 private theorem dA_oo {a : ℕ} {N N' : Matrix (Fin n) (Fin n) F} (h : N ∈ Od F F n a)
     (h' : N' ∈ Od F F n a) : N * N' ∈ Ev F F n a := by
   rw [dA_od] at h h'
-  rw [dA_ev]
+  rw [evP_iff]
   intro i j e
   rw [Matrix.mul_apply]
   refine Finset.sum_eq_zero fun k _ => ?_
@@ -1302,7 +1297,7 @@ private theorem dA_oo {a : ℕ} {N N' : Matrix (Fin n) (Fin n) F} (h : N ∈ Od 
 private theorem dA_eo {a : ℕ} {N N' : Matrix (Fin n) (Fin n) F} (h : N ∈ Ev F F n a)
     (h' : N' ∈ Od F F n a) : N * N' ∈ Od F F n a := by
   rw [dA_od] at h' ⊢
-  rw [dA_ev] at h
+  rw [evP_iff] at h
   intro i j e
   rw [Matrix.mul_apply]
   refine Finset.sum_eq_zero fun k _ => ?_
@@ -1313,7 +1308,7 @@ private theorem dA_eo {a : ℕ} {N N' : Matrix (Fin n) (Fin n) F} (h : N ∈ Ev 
 private theorem dA_oe {a : ℕ} {N N' : Matrix (Fin n) (Fin n) F} (h : N ∈ Od F F n a)
     (h' : N' ∈ Ev F F n a) : N * N' ∈ Od F F n a := by
   rw [dA_od] at h ⊢
-  rw [dA_ev] at h'
+  rw [evP_iff] at h'
   intro i j e
   rw [Matrix.mul_apply]
   refine Finset.sum_eq_zero fun k _ => ?_
@@ -1473,7 +1468,7 @@ theorem UpperTheory.V.Pa.Det.detFr :
     have hZ : Matrix.single i j (1 : x.A) ∈ Ev x.A x.A n x.a := by
       rw [mem_ev_iff_apply_eq_zero_off_diagonal_blocks]
       intro k m hkm
-      rw [Matrix.single_apply, if_neg]
+      rw [Matrix.single_apply, ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact hkm hij
     obtain ⟨s, hs⟩ := x.span _ hZ
@@ -1641,28 +1636,8 @@ private theorem ep_C (j) : ep'M j ((DD.C c : DD A g) • P) = c • ep'M j P := 
   simp [ep'M, ha]
 private theorem ep_smul (j) : ep'M j (c • P) = c • ep'M j P := ep_C P c j
 
-private theorem constant_smul_mem_symmetric_deformation (h : P ∈ pairedDualFirstOrderDualMatrixSpace n A A g a) : (DD.C c : DD A g) • P ∈ pairedDualFirstOrderDualMatrixSpace n A A g a := by
-  have ha : (DD.C c : DD A g).a = c := rfl
-  have hp : (DD.C c : DD A g).ep = 0 := rfl
-  have hq : (DD.C c : DD A g).ep' = 0 := rfl
-  simp [pairedDualFirstOrderDualMatrixSpace, blkMat, ddPart] at h ⊢
-  intro i j
-  constructor
-  · intro hij
-    obtain ⟨h1, h2, h3⟩ := (h i j).1 hij
-    refine ⟨by simp [h1], ?_, ?_⟩
-    · funext k
-      have e : (P i j).ep k = 0 := congrFun h2 k
-      simp [ha, h1, e]
-    · funext k
-      have e : (P i j).ep' k = 0 := congrFun h3 k
-      simp [ha, h1, e]
-  · intro hij
-    obtain ⟨h1, h2, h3⟩ := (h i j).2 hij
-    refine ⟨by simp [h1], ?_, by simp [h3]⟩
-    funext k
-    have e : (P i j).ep k = 0 := congrFun h2 k
-    simp [ha, h1, e]
+private theorem constant_smul_mem_symmetric_deformation (h : P ∈ pairedDualFirstOrderDualMatrixSpace n A A g a) : (DD.C c : DD A g) • P ∈ pairedDualFirstOrderDualMatrixSpace n A A g a :=
+  Submodule.smul_mem (pairedDualFirstOrderDualMatrixSpace n A A g a) c h
 
 private theorem transpose_mem_symmetric_deformation (h : P ∈ pairedDualFirstOrderDualMatrixSpace n A A g a) : Pᵀ ∈ pairedDualFirstOrderDualMatrixSpace n A A g a := by
   simp [pairedDualFirstOrderDualMatrixSpace, blkMat, ddPart] at h ⊢

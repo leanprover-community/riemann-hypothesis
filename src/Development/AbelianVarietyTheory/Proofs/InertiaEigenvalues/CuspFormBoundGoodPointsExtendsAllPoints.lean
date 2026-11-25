@@ -60,43 +60,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NonemptyU
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.FiniteExtensionRamificationEmbedding
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ArcClauseClosed
 public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CmTypeLetterFrameColumnDictionary
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.EqOfImHermFormEq
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExponentialDerivativeAtZeroIsTangent
@@ -104,12 +67,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FamilyUnifExpUni
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtIffIsDerivAt0
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0CompLinear
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 import Mathlib.Tactic.Linter.HaveILetI
@@ -119,13 +76,9 @@ import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TorusExtExponent
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.DvrAdmissibleBaseAndPowerSeriesEvalUniformiser
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ValuationExtension
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.AlgebraInstances
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-import Mathlib.Algebra.Azumaya.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ArcGeneratorRatioBoundedUnitFrame, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormDiagTangentUnitFrameHolomorphicArcLe, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormValuesBoundedOnHolomorphicArc, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsRefinedFlagChartIntegralPointsInOpen, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegralFramedPointGoodReductionDefiniteSignatur, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormBoundGoodPointsExtendsAllPoints
@@ -194,7 +147,6 @@ theorem det_im_lower_bound {g : ℕ} (τ : ℂ → Matrix (Fin g) (Fin g) ℂ) (
   rwa [add_sub_cancel] at this
 
 end GlobalTheory.ArcGenBound
-
 
 open GlobalTheory.ArcGenBound in
 theorem GlobalTheory.ArcGenBound.gen_ratio_bounded : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (σ : c.F →+* ℂ) (U : Formalism.L2.PjFree.Unf Xo c σ r) (Uw : UnfWit U) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (a : ArcIn Dw l β ℂ (σ.comp β)) (χ : Sp (PowerSeries ℂ) ⟶ Y.X) (W : Wit Y a χ) (Ha : HolArc Y σ a χ W Uw.F) (th : a.D₀.P.L.Sec) (Θ : ThetaDat Ha th) (z : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → (Fin Uw.g → ℂ)), Formalism.L2.PjFree.GoodEmb c σ → Formalism.L2.PjFree.IsUnf U → (∀ τ, LinearIndependent ℂ (z τ) ∧ ∀ i jj, z τ i jj ≠ 0 → (Uw.e jj).1 = τ) → ∃ T B : ℝ, ∀ w : ℂ, T < w.im → ∀ yw, AnFr Ha Θ z w yw → ∀ (k : U.Comp) (x : (U.X k).dom) (t : Ix Dw → (CAt σ)ˣ), GlobalTheory.FrameNorm.IsUnitFr (U.X k) x.1 → FrBor t (U.un k x) yw → ‖Formalism.L2.PjFree.toC (t none : CAt σ)‖ ≤ B := by
@@ -294,7 +246,7 @@ theorem diag_le {g : ℕ} (d : Fin g → ℝ) (M : Matrix (Fin g) (Fin g) ℂ)
     rw [Matrix.mulVec_diagonal, Pi.star_apply, RCLike.star_def, mul_left_comm, Complex.mul_conj,
       ← Complex.ofReal_mul, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
   have hinj : Function.Injective (Matrix.toLin' M) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro v hv
     by_contra h0
     have := hpos v h0
@@ -376,7 +328,6 @@ theorem im_tau_mono {w₀ w : ℂ} (hw : w₀.im ≤ w.im) (x : Fin g → ℝ) :
   have := mul_le_mul_of_nonneg_right hw hN
   linarith
 
-
 omit [IsScalarTower ℂ (FractionRing ℂ) ℂ] in
 theorem exists_riem_inv {w : ℂ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hR : IsRiem Fu Ha.i (Ha.Pw w) Hm) :
     ∃ G : Matrix (Fin g) (Fin g) ℝ, G * (Θ.τ w).map Complex.im = 1 ∧ ∀ v, (hermForm Hm v v).re =
@@ -391,7 +342,6 @@ theorem exists_riem_inv {w : ℂ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hR : IsRiem
       by_cases hij : i = j <;> simp [Pi.single_apply, hij, eq_comm]), fun v => ?_⟩
   rw [← re_hermForm_sum Hm p h1, ← eq_sum Θ.h p (fun i => (Θ.per w i).1)]
 
-
 include Θ in
 theorem riem_anti {w₀ w : ℂ} (h₀ : Ha.T < w₀.im) (hw : w₀.im ≤ w.im) {H₀ Hm : Matrix (Fin g) (Fin g) ℂ}
     (hR₀ : IsRiem Fu Ha.i (Ha.Pw w₀) H₀) (hR : IsRiem Fu Ha.i (Ha.Pw w) Hm) (v : Fin g → ℂ) :
@@ -403,7 +353,6 @@ theorem riem_anti {w₀ w : ℂ} (h₀ : Ha.T < w₀.im) (hw : w₀.im ≤ w.im)
     (inv_form_le (Θ.pos w₀ h₀).2 a₀ a₁ (im_tau_mono Θ hw) _)
 
 end ThetaShiftProofs
-
 
 open GlobalTheory.FrameNormLie GlobalTheory.FrameNorm in
 
@@ -433,8 +382,8 @@ theorem point_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reci
     ComplexEmbedding.involutive_conjugate E τ
   obtain ⟨f, hf⟩ := FrameUnif.exists_letter_equiv (U.X k).Ψ (U.X k).cmType Dw.p Dw.q r hr
     (Formalism.L2.PjFree.relab c σ) hbij Dw.mult
-    (fun τ h => by unfold Datum.mult; rw [if_pos ((hrt τ).1 ((hty _).1 h))])
-    (fun τ h => by unfold Datum.mult; rw [if_neg (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_left ((hrt τ).1 ((hty _).1 h))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_right (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
   obtain ⟨idx, hi⟩ : ∃ idx : Fin g ≃ (U.X k).Ψ × Fin r, ∀ j,
       (Formalism.L2.PjFree.relab c σ (e j).1 ∈ (U.X k).Ψ ∧ (idx j).1.1 = Formalism.L2.PjFree.relab c σ (e j).1 ∧
         ((idx j).2 : ℕ) = Dw.q + (e j).2) ∨
@@ -451,10 +400,10 @@ theorem point_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reci
     obtain ⟨⟨τ, hτ⟩, ⟨n, hn⟩⟩ := t
     dsimp only at h ⊢
     rcases h with ⟨a, rfl, rfl⟩ | ⟨a, rfl, rfl, d⟩
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       unfold Formalism.L2.PjFree.perFr
       rw [dite_eq_left a, dite_eq_left hn]
-    · rw [if_pos (by omega)]
+    · rw [ite_eq_left (by omega)]
       unfold Formalism.L2.PjFree.perFr
       rw [dite_eq_right a, dite_eq_left (show conjEmb (Formalism.L2.PjFree.relab c σ (e j).1) ∈ (U.X k).Ψ from hτ), dite_eq_left hn]
       rfl
@@ -467,13 +416,13 @@ theorem point_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reci
     intro b hb j j' hne
     obtain ⟨h1, h2⟩ := PerBor.moveMat_support _ idx hb j j' hne
     rcases hi j with ⟨a1, b1, c1⟩ | ⟨a1, b1, c1, d1⟩ <;> rcases hi j' with ⟨a2, b2, c2⟩ | ⟨a2, b2, c2, d2⟩
-    · rw [if_neg (by omega)] at h2
+    · rw [ite_eq_right (by omega)] at h2
       exact ⟨hbij.1 (by rw [← b1, ← b2, h1]), by simp only; omega⟩
-    · rw [if_neg (by omega)] at h2
+    · rw [ite_eq_right (by omega)] at h2
       omega
-    · rw [if_pos (by omega)] at h2
+    · rw [ite_eq_left (by omega)] at h2
       omega
-    · rw [if_pos (by omega)] at h2
+    · rw [ite_eq_left (by omega)] at h2
       exact ⟨hbij.1 (by rw [← hcc (Formalism.L2.PjFree.relab c σ (e j).1), ← b1, ← h1, b2, hcc]), by simp only; omega⟩
   obtain ⟨T, hT, hT1, hTf⟩ := exists_tri_unit (U.X k) idx hinj hs x.1 x.2 hx
   have hPv : ∀ a, P a = perVec (U.X k) idx x.1 (φ k a : Fin r → E) := fun a => funext fun j =>
@@ -658,9 +607,6 @@ namespace GlobalTheory.GoodRefine
 
 alias sp_comp := _root_.GlobalTheory.TanMod.spMap_comp'
 
-theorem sp_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g :=
-  congrArg CommRingCat.Hom.hom (Spec.map_injective h)
-
 theorem exists_lift {X : Scheme.{0}} {C A : Type} [CommRing C] [CommRing A] (ι : Sp C ⟶ X) [IsOpenImmersion ι]
     (f : Sp A ⟶ X) (h : Set.range f ⊆ Set.range ι) : ∃ φ : C →+* A, spMap φ ≫ ι = f := by
   refine ⟨(Spec.preimage (IsOpenImmersion.lift ι f h)).hom, ?_⟩
@@ -710,12 +656,12 @@ theorem exists_gens {O : Type} [CommRing O] {X : Scheme.{0}} (s : X ⟶ Sp O) [L
     exact (show PrimeSpectrum R' from p).isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ hm hu)
   obtain ⟨φ, hφ⟩ := exists_lift ι _ hri
   have hφβ : φ.comp β = i.comp b := by
-    apply sp_inj
+    apply GlobalTheory.FullPoint.spMap_inj
     rw [← sp_comp, ← sp_comp, hβ, ← hb, ← Category.assoc, hφ, Category.assoc]
   refine ⟨t.image φ, fun ψ' hψ x hx => ?_, fun V₁ F₁ _ _ a₁ ha ψ₁ h1 h2 => ?_⟩
   · obtain ⟨u, -, rfl⟩ := Finset.mem_image.1 hx
     have : ψ'.comp φ = a.comp γ := by
-      apply sp_inj
+      apply GlobalTheory.FullPoint.spMap_inj
       rw [← cancel_mono ι, ← sp_comp, ← sp_comp, Category.assoc, Category.assoc, hφ, hγ, ← hy, ← hψ, ← sp_comp,
         Category.assoc]
     exact ⟨γ u, (DFunLike.congr_fun this u).symm⟩
@@ -774,7 +720,6 @@ theorem exists_invert {K Ω L V : Type} [Field K] [Field Ω] [Field L] [Algebra 
         congr 1
         exact Subtype.ext (inv_mul_cancel₀ hg0)
       rw [e2]; exact hi
-
 
 set_option maxHeartbeats 800000 in
 theorem exists_refine_extIn : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] [IsDomain O] [Algebra O c.F] [IsFractionRing O c.F] (Y : Model Xo c (algebraMap O c.F)) (S : Set Y.X) (P : PChart Xo c (algebraMap O c.F)) (T : CDVR) (io : c.F →+* T.Fr), IsOpen S → letI := io.toAlgebra; ∀ (e : P.Ω) (he : e ∈ P.es) (ψ : P.R e →ₐ[c.F] T.Fr) (z : FrPt Xo c T.Fr), (∀ g : P.R e, (g : P.Ω) ∈ P.gens → InV T (ψ g)) → FrMap ψ (P.y e he) z → ExtIn Y S T io z.x → ∃ (P' : PChart Xo c (algebraMap O c.F)) (e' : P'.Ω) (he' : e' ∈ P'.es) (ψ' : P'.R e' →ₐ[c.F] T.Fr), (∀ g : P'.R e', (g : P'.Ω) ∈ P'.gens → InV T (ψ' g)) ∧ FrMap ψ' (P'.y e' he') z ∧ ∀ (T₁ : CDVR) (io₁ : c.F →+* T₁.Fr), (∀ a : O, InV T₁ (io₁ (algebraMap O c.F a))) → letI := io₁.toAlgebra; ∀ (ψ₁ : P'.R e' →ₐ[c.F] T₁.Fr) (z₁ : FrPt Xo c T₁.Fr), (∀ g : P'.R e', (g : P'.Ω) ∈ P'.gens → InV T₁ (ψ₁ g)) → FrMap ψ₁ (P'.y e' he') z₁ → ExtIn Y S T₁ io₁ z₁.x := by

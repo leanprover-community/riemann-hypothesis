@@ -259,8 +259,8 @@ namespace GlobalTheory.NL.SandJumps
 
 
 
-theorem main : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (loc l)) (locT : ∀ (l : ℕ) [Fact l.Prime], Formalism.BasicNotions.LocTied l (loc l) (locA l)) (HW : HWOf loc) (F : FonOf loc locA HW)
-    (Cm : CmpOf loc locA HW F), p5eL loc locA HW F := by
+theorem main : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (loc l)) (_ : ∀ (l : ℕ) [Fact l.Prime], Formalism.BasicNotions.LocTied l (loc l) (locA l)) (HW : HWOf loc) (F : FonOf loc locA HW)
+    (_ : CmpOf loc locA HW F), p5eL loc locA HW F := by
   intro loc locA locT HW F Cm l _ K s LL h T M hh hT hJ
   haveI := ((loc l).PD K).finK₀
   haveI : NeZero (Module.finrank ℚ_[l] ↥(K0 K)) := ⟨Module.finrank_pos.ne'⟩

@@ -925,7 +925,7 @@ lemma dE_tendsto (hB : NWtUpper) (g : GN k r) : Tendsto (fun n => dE k r n g) at
     · subst h
       simp only [sub_self, zpow_zero, Complex.ofReal_one, mul_one, Matrix.one_apply_eq]
       exact tendsto_const_nhds
-    · simp only [if_neg h, zero_mul, Matrix.one_apply_ne h]
+    · simp only [ite_eq_right h, zero_mul, Matrix.one_apply_ne h]
       exact tendsto_const_nhds
   · have h : i ≠ j := by
       intro e; subst e; exact hw le_rfl

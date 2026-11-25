@@ -28,10 +28,8 @@ theorem ind_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGrou
   have : Module.Finite R A := hA.finite
   have : Module.Projective R A := hA.projective
   obtain ⟨κ, hκ⟩ := exists_coset_coord ι
-  have hmk : ∀ t h, (QuotientGroup.mk (t * ι h) : T ⧸ ι.range) = QuotientGroup.mk t := by
-    intro t h
-    rw [QuotientGroup.eq]
-    exact MonoidHom.mem_range.mpr ⟨h⁻¹, by rw [map_inv, mul_inv_rev, inv_mul_cancel_right]⟩
+  have hmk : ∀ t h, (QuotientGroup.mk (t * ι h) : T ⧸ ι.range) = QuotientGroup.mk t := fun t h =>
+    QuotientGroup.mk_mul_of_mem t (MonoidHom.mem_range.mpr ⟨h, rfl⟩)
   have hκmul : ∀ t h, κ (t * ι h) = κ t * h := by
     intro t h
     apply hι
@@ -63,7 +61,7 @@ theorem ind_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGrou
     · simp only [ext, ↓reduceIte, hκ]
     · intro c _ hc
       simp only [ext]
-      rw [if_neg (fun h => hc h.symm)]
+      rw [ite_eq_right (fun h => hc h.symm)]
     · intro h
       exact absurd (Finset.mem_univ _) h
   let extL : T ⧸ ι.range → (H → R) →ₗ[R] (T → R) := fun c =>
@@ -160,14 +158,14 @@ theorem ind_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGrou
                 ((QuotientGroup.mk z.2 : T ⧸ ι.range).out * ι (κ z.2))) := by rw [hκ, hκ]
             _ = _ := by rw [map_mul, mul_mul_mul_comm]
         · intro c' _ hc'
-          rw [if_neg (fun h => hc' h.2.symm)]
+          rw [ite_eq_right (fun h => hc' h.2.symm)]
         · intro h
           exact absurd (Finset.mem_univ _) h
       · intro c _ hc
         rw [Finset.sum_apply]
         apply Finset.sum_eq_zero
         intro c' _
-        rw [if_neg (fun h => hc h.1.symm)]
+        rw [ite_eq_right (fun h => hc h.1.symm)]
       · intro h
         exact absurd (Finset.mem_univ _) h
     rw [hsum]

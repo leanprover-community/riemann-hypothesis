@@ -5,8 +5,6 @@ public import Mathlib.NumberTheory.NumberField.CMField
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.CMVal.Model
@@ -34,32 +32,5 @@ theorem IsCMType.bijective {I : Type} {φ : I → E →+* ℂ} (h : IsCMType φ)
       exact this.symm
 
 end General
-
-section Integrality
-
-end Integrality
-
-section Symmetry
-
-variable {E : Type} [Field E] [NumberField E]
-
-end Symmetry
-
-section Twist
-
-variable {E : Type} [Field E] [NumberField E]
-
-end Twist
-
-section CM
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-end CM
-
-section Cyclotomic
-
-
-end Cyclotomic
 
 end GlobalTheory.CMVal.Model

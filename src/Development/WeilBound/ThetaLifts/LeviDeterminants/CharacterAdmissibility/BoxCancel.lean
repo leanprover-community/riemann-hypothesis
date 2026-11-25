@@ -223,9 +223,9 @@ theorem Ax.exists_avg (h : Ax C ψ) (hI : AxInt C) (hS : IsSp S) (hj : Function.
       · by_cases hk : ∃ a, i a = k
         · have := (hij k).1 hk
           obtain ⟨a, rfl⟩ := hk
-          simp only [Sum.elim_inr, if_neg this, hi.extend_apply, Function.comp_apply]
-        · simp only [Sum.elim_inr, if_pos (not_not.1 (mt (hij k).2 hk)), Function.extend_apply' _ _ _ hk, sub_self, Pi.zero_apply]
-    · simp only [Function.comp_apply, Sum.elim_inr, if_neg ((hij _).1 ⟨a, rfl⟩), sub_self, Pi.zero_apply]
+          simp only [Sum.elim_inr, ite_eq_right this, hi.extend_apply, Function.comp_apply]
+        · simp only [Sum.elim_inr, ite_eq_left (not_not.1 (mt (hij k).2 hk)), Function.extend_apply' _ _ _ hk, sub_self, Pi.zero_apply]
+    · simp only [Function.comp_apply, Sum.elim_inr, ite_eq_right ((hij _).1 ⟨a, rfl⟩), sub_self, Pi.zero_apply]
   obtain ⟨c, hc'⟩ := h.line hKs hT (hE.adm l hl) fun w hw φ hφ => by
     obtain ⟨a, b, rfl⟩ := exists_dv w
     rw [hKd, kE_dv] at hw
@@ -238,7 +238,7 @@ theorem Ax.exists_avg (h : Ax C ψ) (hI : AxInt C) (hS : IsSp S) (hj : Function.
         simpa [hk] using congrFun hw (.inr k)
     have h3 : (S a).2 ∘ j = (S b).2 ∘ j := funext fun k => by
       have := congrFun hw (.inr (j k))
-      simp only [Sum.elim_inr, if_pos (⟨k, rfl⟩ : ∃ a, j a = j k), Pi.zero_apply] at this
+      simp only [Sum.elim_inr, ite_eq_left (⟨k, rfl⟩ : ∃ a, j a = j k), Pi.zero_apply] at this
       exact sub_eq_zero.1 this
     show l (E _) = l (E φ)
     rw [hE.law _ _ ((rel_dv hj (w₁ := ((S b).1 ∘ j, (S b).2 ∘ j)) (w₁' := ((S b).1 ∘ j, (S b).2 ∘ j))).2

@@ -40,15 +40,6 @@ theorem mono_toBidual_of_mono (i : G ⟶ F) [Mono i] [Mono (cartierDualToBidual 
 def IsRegularFn (D : Γ(X, ⊤)) : Prop :=
   ∀ (V : X.Opens) (a : Γ(X, V)), resG X (le_top : V ≤ ⊤) D * a = 0 → a = 0
 
-theorem isRegularFn_of_ne_zero [IsIntegral X] {D : Γ(X, ⊤)} (h : D ≠ 0) : IsRegularFn D := by
-  intro V a e
-  rcases eq_or_ne V ⊥ with rfl | hV
-  · exact Subsingleton.elim _ _
-  · obtain ⟨x, hx⟩ := (Opens.ne_bot_iff_nonempty _).1 hV
-    have : Nonempty V := ⟨⟨x, hx⟩⟩
-    refine (mul_eq_zero.1 e).resolve_left fun h0 => h ?_
-    exact map_injective_of_isIntegral X (homOfLE le_top) (h0.trans (map_zero _).symm)
-
 section Im
 
 variable (ρ : O →+* End F) (σ : O →+* Γ(X, ⊤))
@@ -428,12 +419,6 @@ theorem isVB_omega_of_isGrpPullback (h : IsGrpPullback G' G f φ) {g : ℕ} (hg 
 
 end Base
 
-section DualIm
-
-variable {O : Type} [CommRing O] {F : S.Modules} (ρ : O →+* End F) (σ : O →+* Γ(S, ⊤)) {g r : ℕ}
-
-end DualIm
-
 section Act
 
 variable {O : Type} [CommRing O] {G H : Over S} [GrpObj G] [GrpObj H] [QuasiSeparated G.hom]
@@ -611,12 +596,6 @@ variable (S) (X Y : Type) [AddCommGroup X] [AddCommGroup Y]
 variable {X} {κ : Type} [Fintype κ] (b : Module.Basis κ ℤ X)
 
 end Torus
-
-section Examples
-
-variable {G : Over S} [GrpObj G] [QuasiSeparated G.hom]
-
-end Examples
 
 end GlobalTheory.LieVB
 end -- clump:auto

@@ -274,8 +274,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Stan
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastKer InDual)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.extendByZero_target_tensor_row_product : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (S A L T : HSp D) (o : OrthDec S A L) (ζ : Fin L.rank → D.host.E), IsLineVec L ζ → ∀ (α : Frame p A n') (α₀ : Frame p S (n' ⊕ Fin 1)) (β : Frame p T n), IsSumFrame o ζ α α₀ → ∀ (Ψ : Matrix n' n k → ℂ) (b : (n → k) → ℂ), extFun β α₀ (tensRow Ψ b) = o.boxT T (extFun β α Ψ) (GlobalTheory.FinPl.ExtZero.rowFun β ζ b) := by
-  exact @GlobalTheory.FinPl.ExtZero.extFun_tensRow
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExtendByZeroTargetTensorRowProductStatement =====
@@ -344,7 +342,7 @@ theorem GlobalTheory.FinPl.ExtZero.extZero_mem_latO_target : ∀ (D : D7) (k : T
     rw [h2] at h1
     unfold halfInd at h1
     by_contra hn
-    rw [if_neg fun h => hn h.1] at h1
+    rw [ite_eq_right fun h => hn h.1] at h1
     exact zero_ne_one h1
 
   have hres : ∀ t ∈ ΛS, IsHalf p.e t → o.pA ⬝ t ∈ ΛA := by
@@ -354,7 +352,7 @@ theorem GlobalTheory.FinPl.ExtZero.extZero_mem_latO_target : ∀ (D : D7) (k : T
     rw [h2, OrthDec.boxT] at h1
     by_contra hn
     have : halfInd p.e ΛA ((o.resT T) t).1 = 0 := by
-      unfold halfInd; rw [if_neg fun h => hn h.1]
+      unfold halfInd; rw [ite_eq_right fun h => hn h.1]
     rw [this, zero_mul] at h1
     exact one_ne_zero h1
   have huM : MxAt (· = p.v) u := GlobalTheory.FinPl.LatMem.latO_mxAt hu
@@ -678,17 +676,17 @@ theorem rowFun_dualInd_ne_zero {T L : HSp D} (β : Frame p T n) (ζ : Fin L.rank
     IsHalf p.e y ∧ InDual ΛT (zrow β ζ y) := by
   unfold rowFun dualInd at h
   by_cases hy : IsHalf p.e y
-  · rw [if_pos hy] at h
+  · rw [ite_eq_left hy] at h
     by_cases hd : InDual ΛT (zrow β ζ y)
     · exact ⟨hy, hd⟩
-    · rw [if_neg hd] at h; exact absurd rfl h
-  · rw [if_neg hy] at h; exact absurd rfl h
+    · rw [ite_eq_right hd] at h; exact absurd rfl h
+  · rw [ite_eq_right hy] at h; exact absurd rfl h
 
 theorem rowFun_dualInd_eq_one {T L : HSp D} (β : Frame p T n) (ζ : Fin L.rank → D.host.E)
     (ΛT : Submodule 𝒪[k] (n → k)) {y : WO T L} (hy : IsHalf p.e y) (hd : InDual ΛT (zrow β ζ y)) :
     rowFun β ζ (dualInd ΛT) y = 1 := by
   unfold rowFun dualInd
-  rw [if_pos hy, if_pos hd]
+  rw [ite_eq_left hy, ite_eq_left hd]
 
 theorem rowFun_dualInd_add_nsmul {T L : HSp D} (β : Frame p T n) (ζ : Fin L.rank → D.host.E)
     (ΛT : Submodule 𝒪[k] (n → k)) {y : WO T L} (hy : IsHalf p.e y) (hd : InDual ΛT (zrow β ζ y)) (m : ℕ)
@@ -698,13 +696,13 @@ theorem rowFun_dualInd_add_nsmul {T L : HSp D} (β : Frame p T n) (ζ : Fin L.ra
   have hm := inDual_nsmul' hd m
   unfold rowFun dualInd
   by_cases hx : IsHalf p.e x
-  · rw [if_pos (GlobalTheory.FinPl.ExtZero.isHalf_add_of hx (isHalf_nsmul_of hy m)), if_pos hx, hz]
+  · rw [ite_eq_left (GlobalTheory.FinPl.ExtZero.isHalf_add_of hx (isHalf_nsmul_of hy m)), ite_eq_left hx, hz]
     have hiff : InDual ΛT (zrow β ζ x + m • zrow β ζ y) ↔ InDual ΛT (zrow β ζ x) :=
       ⟨fun h => by simpa using inDual_sub' h hm, fun h => inDual_add' h hm⟩
     by_cases hd' : InDual ΛT (zrow β ζ x)
-    · rw [if_pos hd', if_pos (hiff.2 hd')]
-    · rw [if_neg hd', if_neg (fun h => hd' (hiff.1 h))]
-  · rw [if_neg hx, if_neg (fun h => hx (isHalf_of_add h (isHalf_nsmul_of hy m)))]
+    · rw [ite_eq_left hd', ite_eq_left (hiff.2 hd')]
+    · rw [ite_eq_right hd', ite_eq_right (fun h => hd' (hiff.1 h))]
+  · rw [ite_eq_right hx, ite_eq_right (fun h => hx (isHalf_of_add h (isHalf_nsmul_of hy m)))]
 
 theorem halfInd_eq_one_iff' {e : AE D} {a b : ℕ} (Λ : AddSubgroup (Mx D a b)) (t : Mx D a b) :
     halfInd e Λ t = 1 ↔ t ∈ Λ ∧ IsHalf e t := by
@@ -846,7 +844,7 @@ theorem ext_zero : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologic
       o.boxT T (halfInd p.e (latO T A (LT : Set _) (LA : Set _) (· = p.v))) (rowFun β ζ (dualInd ΛT)) := by
     rw [← GlobalTheory.T.homLatticeIndicator_on_split_half_eq_half_indicator D k p (n' ⊕ Fin 1) n T S β α₀ LT LS hT hS hU _ _ hβ hα₀,
       ← GlobalTheory.T.homLatticeIndicator_on_split_half_eq_half_indicator D k p n' n T A β α LT LA hT hA hU _ _ hβ hαA, latInd_lastKer_row,
-      GlobalTheory.T.extendByZero_target_tensor_row_product D k p n n' S A L T o ζ hζ α α₀ β hsum]
+      GlobalTheory.FinPl.ExtZero.extFun_tensRow D k p n n' S A L T o ζ hζ α α₀ β hsum]
   have latS := GlobalTheory.T.extendByZero_mem_completed_lattice_source D k p n ψ S A L T o ζ β LA LS LT ΛT sdA sdS facS
   have latT := GlobalTheory.T.extension_by_zero_maps_completed_hom_lattice D k p n ψ S A L T o ζ β LA LS LT ΛT sdA' sdS' facT
   have vacS : ∀ f₀, Vac ψ S T LS LT (· = p.v) f₀ → ∀ y,
@@ -900,7 +898,7 @@ theorem ext_zero : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologic
       (GlobalTheory.T.isSchwartzBruhatHalf_target_box_dualIndicator D k p n S A L T o ζ β LA LS LT ΛT facT) facT y
     have key := congrFun ((hyp _ (vacT f₀ hf₀ y)).2.2.2.2.2 _ hmod) w
     rw [GlobalTheory.T.heisenbergCombination_extendByZero_target_slice] at key
-    rw [key, restrModel_apply, GlobalTheory.T.extendByZero_target_tensor_row_product D k p n n' S A L T o ζ hζ α α₀ β hsum]
+    rw [key, restrModel_apply, GlobalTheory.FinPl.ExtZero.extFun_tensRow D k p n n' S A L T o ζ hζ α α₀ β hsum]
     rfl
 
 end GlobalTheory.FinPl.ExtZero

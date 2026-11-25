@@ -315,11 +315,11 @@ theorem Dm_uThird [IsDomain R] (i : Fin 2) : Dm W i (uThird W) = -(fw W).subst (
     · simp [h, Finsupp.single_left_inj one_ne_zero]
   have hne31 : uThird W ≠ MvPowerSeries.X i := fun h => by
     have h1 := hThird j
-    rw [h, hcoef, if_neg hji] at h1
+    rw [h, hcoef, ite_eq_right hji] at h1
     exact one_ne_zero (neg_eq_zero.mp h1.symm)
   have hne32 : uThird W ≠ MvPowerSeries.X j := fun h => by
     have h1 := hThird i
-    rw [h, hcoef, if_neg (Ne.symm hji)] at h1
+    rw [h, hcoef, ite_eq_right (Ne.symm hji)] at h1
     exact one_ne_zero (neg_eq_zero.mp h1.symm)
   have hC3 : (1 + (curveM W).a₂ * lam W + (curveM W).a₄ * lam W ^ 2 + (curveM W).a₆ * lam W ^ 3) ≠ 0 := by
     have hLam : MvPowerSeries.constantCoeff (lam W) = 0 := by

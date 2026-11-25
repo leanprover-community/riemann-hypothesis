@@ -87,8 +87,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum GlobalTheory.Mem.AutSpace GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies GlobalTheory.CuspDecay GlobalTheory.Mem.Lift
 open scoped TensorProduct ContDiff Topology
 
-theorem _root_.GlobalTheory.T.adelicHeight_growth_of_cosetGrowth_unitaryPair : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V W : HSp D) (N : ℕ), ∃ N' : ℕ, ∀ K : GA D V → GA D W → ℂ, (∀ γ ∈ GQ V, ∀ δ ∈ GQ W, ∀ g h, K (γ * g) (δ * h) = K g h) → (∃ (U : Subgroup (GA D V)) (U' : Subgroup (GA D W)), IsOpen (U : Set (GA D V)) ∧ IsOpen (U' : Set (GA D W)) ∧ ∀ k ∈ U, k ∈ GfC V → ∀ k' ∈ U', k' ∈ GfC W → ∀ g h, K (g * k) (h * k') = K g h) → (∀ x y, ∃ C : ℝ, ∀ a ∈ GinfC V, ∀ b ∈ GinfC W, ‖K (x * a) (y * b)‖ ≤ C * ((1 + normInf θ V a) * (1 + normInf θ W b)) ^ N) → ∃ C : ℝ, ∀ g h, ‖K g h‖ ≤ C * ((height θ V g : ℝ) * (height θ W h : ℝ)) ^ N' := by
-  first | exact @GlobalTheory.Mem.LiftGrow.growth_pair
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicHeightGrowthOfCosetGrowthUnitaryPairStatement =====
@@ -282,8 +280,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum GlobalTheory.Mem.AutSpace GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies GlobalTheory.CuspDecay GlobalTheory.Mem.Lift
 open scoped TensorProduct ContDiff Topology
 
-theorem _root_.GlobalTheory.T.exists_open_level_fixing_theta_function : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), GlobalTheory.Ker.IsWeak ψ S T om → OmCont ψ S T om → ∀ f, IsThetaFunO ψ S T f → ∃ (U : Subgroup (GA D S)) (U' : Subgroup (GA D T)), IsOpen (U : Set (GA D S)) ∧ IsOpen (U' : Set (GA D T)) ∧ ∀ k ∈ U, k ∈ GfC S → ∀ k' ∈ U', k' ∈ GfC T → om (k, k') f = f := by
-  first | exact @GlobalTheory.Mem.ThetaLevel.exists_level
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOpenLevelFixingThetaFunctionStatement =====
@@ -296,8 +292,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.Mem.Th GlobalTheory.WeilParts MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
 
-theorem _root_.GlobalTheory.T.exists_orientedWeilDatum_of_adelicWeilRep_theta : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (V W : HSp D) (χ χ' : IdC D) (om : GA D V × GA D W →* Module.End ℂ (ThS ψ V W)), admitted V W χ χ' → V.rank < W.rank → IsWeilOn ψ V W χ χ' om → ∃ omO : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ), IsWeilDatumO ψ V W χ χ' omO ∧ ∀ (p : GA D V × GA D W) (Φ : ThS ψ V W), omO p (fun x => Φ.1 (toTWsmall V W x)) = fun x => (om p Φ).1 (toTWsmall V W x) := by
-  first | exact @GlobalTheory.Mem.WeilOriented.exists_isWeilDatumO
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOrientedWeilDatumOfAdelicWeilRepThetaStatement =====
@@ -348,10 +342,10 @@ theorem exists_shift (A : Fin n → Fin n → Module.End ℂ S) (B : Fin n → F
   by_cases c : i = j
   · subst c
     have := key i 0 0 i
-    simp only [if_true] at this
+    simp only [ite_true] at this
     simp [this]
   · have := key i i i j
-    simp only [if_true, if_neg (Ne.symm c)] at this
+    simp only [ite_true, ite_eq_right (Ne.symm c)] at this
     simp [this, c]
 
 theorem prod_intertwine (L : M →ₗ[ℂ] S) : ∀ (k : ℕ) (a : Fin k → Module.End ℂ S) (b : Fin k → Module.End ℂ M),
@@ -475,8 +469,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum GlobalTheory.Mem.AutSpace GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies GlobalTheory.CuspDecay GlobalTheory.Mem.Lift
 open scoped TensorProduct ContDiff Topology
 
-theorem _root_.GlobalTheory.T.integration_by_parts_rightDerivative_adelicQuotient : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp D), ∀ μ 𝓕, IsQuot V μ 𝓕 → ∀ τ, ∀ X ∈ lieAt V τ, ∀ φ F, IsMod θ V φ → F ∈ Decay θ V → IntegrableOn (fun g => φ g * F g) 𝓕 μ ∧ ∫ g in 𝓕, Rder θ V τ X φ g * F g ∂μ = -∫ g in 𝓕, φ g * Rder θ V τ X F g ∂μ := by
-  first | exact @GlobalTheory.Mem.IntByParts.integral_Rder_mul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegrationByPartsRightDerivativeAdelicQuotientStatement =====
@@ -502,7 +494,6 @@ variable {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ}
 
 theorem map_gelfA {B : Type} [Ring B] (f : A →+* B) (E : Fin n → Fin n → A) (k : ℕ) :
     f (gelfA E k) = gelfA (fun a b => f (E a b)) k := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [gelfA, map_sum, map_list_prod, List.map_ofFn, Function.comp_def]
 
 theorem gelfA_mem {S : Type} [SetLike S A] [SubsemiringClass S A] (s : S) {E : Fin n → Fin n → A}
@@ -647,7 +638,7 @@ theorem gelf_by_parts : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp
   intro D θ hθ V μ 𝓕 hq τ Z hZ k F hF
   have h0 : (0 : Matrix (Fin V.rank) (Fin V.rank) ℂ) ∈ lieAt V τ := by simp [lieAt]
   have hint : ∀ φ F, IsMod θ V φ → F ∈ Decay θ V → IntegrableOn (fun g => φ g * F g) 𝓕 μ :=
-    fun φ F hφ hF => (GlobalTheory.T.integration_by_parts_rightDerivative_adelicQuotient D θ hθ V μ 𝓕 hq τ 0 h0 φ F hφ hF).1
+    fun φ F hφ hF => (GlobalTheory.Mem.IntByParts.integral_Rder_mul D θ hθ V μ 𝓕 hq τ 0 h0 φ F hφ hF).1
   have hRC : ∀ (W : Submodule ℂ (GA D V → ℂ)) (Y : Matrix (Fin V.rank) (Fin V.rank) ℂ) (φ : GA D V → ℂ),
       (∀ X ∈ lieAt V τ, Rder θ V τ X φ ∈ W) → RderC θ V τ Y φ ∈ W := by
     intro W Y φ hW
@@ -686,8 +677,8 @@ theorem gelf_by_parts : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp
     have hx' : IsMod θ V x.1 := hx
     have hy' : y.1 ∈ Decay θ V := hy
     obtain ⟨m1, m2⟩ := GlobalTheory.SmoothAutCheck.parts_mem V τ (Matrix.single a b 1)
-    have r1 := (GlobalTheory.T.integration_by_parts_rightDerivative_adelicQuotient D θ hθ V μ 𝓕 hq τ _ m1 x.1 y.1 hx' hy').2
-    have r2 := (GlobalTheory.T.integration_by_parts_rightDerivative_adelicQuotient D θ hθ V μ 𝓕 hq τ _ m2 x.1 y.1 hx' hy').2
+    have r1 := (GlobalTheory.Mem.IntByParts.integral_Rder_mul D θ hθ V μ 𝓕 hq τ _ m1 x.1 y.1 hx' hy').2
+    have r2 := (GlobalTheory.Mem.IntByParts.integral_Rder_mul D θ hθ V μ 𝓕 hq τ _ m2 x.1 y.1 hx' hy').2
     have i1 := hint _ _ (hx'.rder m1) hy'
     have i2 := hint _ _ (hx'.rder m2) hy'
     have j1 := hint _ _ hx' (Rder_mem_Decay hy' m1)
@@ -780,7 +771,7 @@ theorem word_ker (hκ : IsKerSys θ V W κ) (l : List (D.what₂.Tau × Matrix (
 
 theorem isMod_ker (hθ : IsInfFam θ) (hκ : IsKerSys θ V W κ) (f : M) (h : GA D W) : IsMod θ V fun g => κ f g h := by
   have hc : ∀ f, Continuous fun g => κ f g h := fun f => (hκ.cont f).comp (Continuous.prodMk_left h)
-  refine ⟨GlobalTheory.T.mem_smoothFunctions_of_closed_rightDerivatives D θ hθ V (Set.range fun f g => κ f g h) ?_ ?_ _ ⟨f, rfl⟩, fun γ hγ g => ?_, fun l hl => ?_⟩
+  refine ⟨GlobalTheory.Mem.DerClosed.mem_smFun_of_closed D θ hθ V (Set.range fun f g => κ f g h) ?_ ?_ _ ⟨f, rfl⟩, fun γ hγ g => ?_, fun l hl => ?_⟩
   · rintro _ ⟨f, rfl⟩
     exact hc f
   · rintro _ ⟨f, rfl⟩ τ X hX
@@ -793,7 +784,6 @@ theorem isMod_ker (hθ : IsInfFam θ) (hκ : IsKerSys θ V W κ) (f : M) (h : GA
     rw [e h]
     refine ⟨hc f', N, C * (height θ W h : ℝ) ^ N, fun g => (hC g h).trans_eq ?_⟩
     ring
-
 
 variable (κ) in
 def lift (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (f : M) (F : GA D V → ℂ) : GA D W → ℂ :=
@@ -825,7 +815,6 @@ theorem lift_smul_right (c : ℂ) (F : GA D V → ℂ) (f : M) : lift κ μ 𝓕
   funext h
   simp only [lift, Pi.smul_apply, smul_eq_mul, mul_left_comm _ c]
   exact integral_const_mul _ _
-
 
 variable (θ κ μ 𝓕) in
 def Compat (T : (GA D W → ℂ) → (GA D W → ℂ)) : Prop :=
@@ -1030,8 +1019,6 @@ open Formalism.IndefR.Datum GlobalTheory.Mem.AutSpace GlobalTheory.IndefiniteRow
 open scoped TensorProduct ContDiff Topology
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.thetaKernel_lieAction_through_weylAlgebra : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), GlobalTheory.Ker.IsWeak ψ S T om → OmCont ψ S T om → ∀ θ : InfF D, IsInfFam θ → ∃ x d : D.what₂.Tau → Fin T.rank × Fin S.rank → Module.End ℂ (GlobalTheory.RealWeil.thetaSub ψ S T), ∀ τ, IsCCR (x τ) (d τ) ∧ (∀ X ∈ lieAt T τ, ∃ lam : ℂ, ∀ f g h, HasDerivAt (fun t : ℝ => thKer ψ S T om f g (h * oneP θ T τ X t)) (thKer ψ S T om ((∑ i, ∑ j, X i j • ∑ a, x τ (i, a) * d τ (j, a)) f + lam • f) g h) 0) ∧ ∀ Y ∈ lieAt S τ, ∃ lam : ℂ, ∀ f g h, HasDerivAt (fun t : ℝ => thKer ψ S T om f (g * oneP θ S τ Y t) h) (thKer ψ S T om ((∑ a, ∑ b, Y a b • -∑ i, x τ (i, b) * d τ (i, a)) f + lam • f) g h) 0 := by
-  first | exact @GlobalTheory.Mem.Lift.WeylAction.weyl_action
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKernelLieActionThroughWeylAlgebraStatement =====
@@ -1046,8 +1033,6 @@ open Formalism.IndefR.Datum GlobalTheory.Mem.AutSpace GlobalTheory.IndefiniteRow
 open scoped TensorProduct ContDiff Topology
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.weilRep_thetaFunction_polynomialGrowth_realPoints : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), GlobalTheory.Ker.IsWeak ψ S T om → ∀ θ : InfF D, IsInfFam θ → ∃ N : ℕ, ∀ f, IsThetaFunO ψ S T f → ∀ x y, ∃ C : ℝ, ∀ a ∈ GinfC S, ∀ b ∈ GinfC T, ∀ w, ‖om (x * a, y * b) f w‖ ≤ C * ((1 + normInf θ S a) * (1 + normInf θ T b)) ^ N := by
-  first | exact @GlobalTheory.Mem.LiftBound.om_growth
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeilRepThetaFunctionPolynomialGrowthRealPointsStatement =====
@@ -1086,7 +1071,7 @@ theorem IsKerSys.lift (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfF
     have := fun g => e 1 (one_mem _) (one_mem _) k a b g h
     simp only [mul_one] at this
     simp only [this]
-  · refine GlobalTheory.T.mem_smoothFunctions_of_closed_rightDerivatives D θ hθ W (Set.range L) ?_ ?_ _ ⟨f, rfl⟩
+  · refine GlobalTheory.Mem.DerClosed.mem_smFun_of_closed D θ hθ W (Set.range L) ?_ ?_ _ ⟨f, rfl⟩
     · rintro _ ⟨f, rfl⟩
       exact h2 f
     · rintro _ ⟨f, rfl⟩ τ X hX
@@ -1134,12 +1119,12 @@ theorem isKerSys_thKer (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F) ℂ} (hψ
       IsOpen (U' : Set (GA D T)) ∧ ∀ k ∈ U, k ∈ GfC S → ∀ k' ∈ U', k' ∈ GfC T → ∀ g h,
         thKer ψ S T om f (g * k) (h * k') = thKer ψ S T om f g h := by
     intro f
-    obtain ⟨U, U', a, b, e⟩ := GlobalTheory.T.exists_open_level_fixing_theta_function D ψ hψ S T om hw hc f.1 f.2
+    obtain ⟨U, U', a, b, e⟩ := GlobalTheory.Mem.ThetaLevel.exists_level D ψ hψ S T om hw hc f.1 f.2
     refine ⟨U, U', a, b, fun k h1 h2 k' h3 h4 g h => ?_⟩
     have e' : om (g * k, h * k') = om (g, h) * om (k, k') := by rw [← map_mul]; rfl
     change om (g * k, h * k') f.1 0 = om (g, h) f.1 0
     rw [e', mul_apply_eq_comp, e k h1 h2 k' h3 h4]
-  obtain ⟨x, d, hx⟩ := GlobalTheory.T.thetaKernel_lieAction_through_weylAlgebra D ψ hψ S T om hw hc θ hθ
+  obtain ⟨x, d, hx⟩ := GlobalTheory.Mem.Lift.WeylAction.weyl_action D ψ hψ S T om hw hc θ hθ
   have derV : ∀ τ, ∀ X ∈ lieAt S τ, ∀ f, ∃ f', ∀ g h,
       HasDerivAt (fun t : ℝ => thKer ψ S T om f (g * oneP θ S τ X t) h) (thKer ψ S T om f' g h) 0 :=
     fun τ X hX f => ((hx τ).2.2 X hX).elim fun _ e => ⟨_, e f⟩
@@ -1147,19 +1132,19 @@ theorem isKerSys_thKer (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F) ℂ} (hψ
       HasDerivAt (fun t : ℝ => thKer ψ S T om f g (h * oneP θ T τ X t)) (thKer ψ S T om f' g h) 0 :=
     fun τ X hX f => ((hx τ).2.1 X hX).elim fun _ e => ⟨_, e f⟩
   refine ⟨cont, left, level, ?_, derV, derW, fun τ => ?_⟩
-  · obtain ⟨N, hN⟩ := GlobalTheory.T.weilRep_thetaFunction_polynomialGrowth_realPoints D ψ hψ S T om hw θ hθ
-    obtain ⟨N', hN'⟩ := GlobalTheory.T.adelicHeight_growth_of_cosetGrowth_unitaryPair D θ hθ S T N
+  · obtain ⟨N, hN⟩ := GlobalTheory.Mem.LiftBound.om_growth D ψ hψ S T om hw θ hθ
+    obtain ⟨N', hN'⟩ := GlobalTheory.Mem.LiftGrow.growth_pair D θ hθ S T N
     exact ⟨N', fun f => hN' _ (left f) (level f) fun x y =>
       (hN f.1 f.2 x y).imp fun C e a ha b hb => e a ha b hb 0⟩
   · have sT : ∀ f g, thKer ψ S T om f g ∈ SmFun θ T := fun f g => by
-      refine GlobalTheory.T.mem_smoothFunctions_of_closed_rightDerivatives D θ hθ T (Set.range fun f => thKer ψ S T om f g) ?_ ?_ _ ⟨f, rfl⟩
+      refine GlobalTheory.Mem.DerClosed.mem_smFun_of_closed D θ hθ T (Set.range fun f => thKer ψ S T om f g) ?_ ?_ _ ⟨f, rfl⟩
       · rintro _ ⟨f, rfl⟩
         exact (cont f).comp (Continuous.prodMk_right g)
       · rintro _ ⟨f, rfl⟩ τ X hX
         obtain ⟨f', e⟩ := derW τ X hX f
         exact ⟨_, ⟨f', rfl⟩, e g⟩
     have sS : ∀ f h, swapKer (thKer ψ S T om) f h ∈ SmFun θ S := fun f h => by
-      refine GlobalTheory.T.mem_smoothFunctions_of_closed_rightDerivatives D θ hθ S (Set.range fun f => swapKer (thKer ψ S T om) f h) ?_ ?_ _ ⟨f, rfl⟩
+      refine GlobalTheory.Mem.DerClosed.mem_smFun_of_closed D θ hθ S (Set.range fun f => swapKer (thKer ψ S T om) f h) ?_ ?_ _ ⟨f, rfl⟩
       · rintro _ ⟨f, rfl⟩
         exact (cont f).comp (Continuous.prodMk_left h)
       · rintro _ ⟨f, rfl⟩ τ X hX
@@ -1182,7 +1167,7 @@ theorem exists_thKer {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)
     {χ χ' : IdC D} (ha : admitted V W χ χ') (hr : V.rank < W.rank) :
     ∃ om, GlobalTheory.Ker.IsWeak ψ V W om ∧ OmCont ψ V W om ∧
       ∀ Φ, ∃ f, ∀ g h, Wf.ker V W χ χ' Φ g h = thKer ψ V W om f g h := by
-  obtain ⟨om, H, e⟩ := GlobalTheory.T.exists_orientedWeilDatum_of_adelicWeilRep_theta D ψ hψ V W χ χ' _ ha hr (Wf.core.weil V W χ χ' ha)
+  obtain ⟨om, H, e⟩ := GlobalTheory.Mem.WeilOriented.exists_isWeilDatumO D ψ hψ V W χ χ' _ ha hr (Wf.core.weil V W χ χ' ha)
   obtain ⟨E, -, -, hE, -, -, -, h7, -⟩ := GlobalTheory.OrientedCoord.exists_coord D V W hr.le
   refine ⟨om, GlobalTheory.Ker.isWeak_of_datum H, H.om_cont, fun Φ => ⟨⟨fun x => Φ.1 (toTWsmall V W x), ?_⟩, fun g h => ?_⟩⟩
   · have := (h7 ψ Φ.1).2 (mem_ThS.1 Φ.2)

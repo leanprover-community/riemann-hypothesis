@@ -22,11 +22,3 @@ theorem psi_one {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (c : ℂ) : 
   apply _root_.Formalism.FourierDecayAlt.P.Qx8.psi_one <;> assumption
 
 end Formalism.FourierDecayAlt.P.BesselCapelliCommutation
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-open scoped Matrix.Norms.Elementwise
-
-end Formalism.FourierDecayAlt.P

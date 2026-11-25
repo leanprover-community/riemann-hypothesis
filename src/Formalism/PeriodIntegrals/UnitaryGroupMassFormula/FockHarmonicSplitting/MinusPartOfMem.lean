@@ -22,17 +22,17 @@ lemma plusPart_of_mem {A : Module.End ℂ (MvPolynomial σ ℂ)} {d : ℕ} {P : 
     (hP : P ∈ homog σ d) : plusPart A P = homogeneousComponent (d + 2) (A P) := by
   unfold plusPart
   rw [finsum_eq_single _ d]
-  · rw [homogeneousComponent_of_mem hP, if_pos rfl]
+  · rw [homogeneousComponent_of_mem hP, ite_eq_left rfl]
   · intro e he
-    rw [homogeneousComponent_of_mem hP, if_neg he, map_zero, map_zero]
+    rw [homogeneousComponent_of_mem hP, ite_eq_right he, map_zero, map_zero]
 
 lemma minusPart_of_mem {A : Module.End ℂ (MvPolynomial σ ℂ)} {d : ℕ} {Q : MvPolynomial σ ℂ}
     (hQ : Q ∈ homog σ (d + 2)) : minusPart A Q = homogeneousComponent d (A Q) := by
   unfold minusPart
   rw [finsum_eq_single _ d]
-  · rw [homogeneousComponent_of_mem hQ, if_pos rfl]
+  · rw [homogeneousComponent_of_mem hQ, ite_eq_left rfl]
   · intro e he
-    rw [homogeneousComponent_of_mem hQ, if_neg (by omega), map_zero, map_zero]
+    rw [homogeneousComponent_of_mem hQ, ite_eq_right (by omega), map_zero, map_zero]
 
 end Parts
 

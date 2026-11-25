@@ -90,12 +90,12 @@ private theorem pU_coe (b : A F) (a : (A F)ˣ) (c : A F) :
   fin_cases i <;> fin_cases j <;> simp <;> ring
 
 private theorem fstR_a {h : G1 F} (hu : ∀ v, (h 1 1).1 v ≠ 0) : fstR (aU h : A F) = eI h := by
-  simp only [aU, dif_pos hu]
+  simp only [aU, dite_eq_left hu]
   rfl
 
 private theorem fstR_ai {h : G1 F} (hu : ∀ v, (h 1 1).1 v ≠ 0) :
     fstR (((aU h)⁻¹ : (A F)ˣ) : A F) = (h 1 1).1 := by
-  simp only [aU, dif_pos hu]
+  simp only [aU, dite_eq_left hu]
   rfl
 
 private theorem fstR_b (h : G1 F) : fstR (bU h) = (h 0 1).1 * eI h := rfl
@@ -142,18 +142,6 @@ private theorem infOne_kU {h : G1 F} (hu : ∀ v, (h 1 1).1 v ≠ 0) : InfOne (k
   rw [map_one] at h2
   exact h3.trans h2.symm
 
-private theorem cont_nU : Continuous (nU : A F → G1 F) := by
-  refine Continuous.subtype_mk (continuous_matrix fun i j => ?_) _
-  fin_cases i <;> fin_cases j <;> simp <;> fun_prop
-
-private theorem cont_mD : Continuous (mD : (A F)ˣ → G1 F) := by
-  refine Continuous.subtype_mk (continuous_matrix fun i j => ?_) _
-  fin_cases i <;> fin_cases j <;> simp
-  · exact Units.continuous_val
-  · exact continuous_const
-  · exact continuous_const
-  · exact Units.continuous_val.comp continuous_inv
-
 private theorem bU_cont : ContinuousAt (bU : G1 F → A F) 1 :=
   (cont_pair 0).continuousAt.comp
     (((cont_fst.comp (UpperTheory.ConvolutionTheory.R2.continuous_entry 0 1)).continuousAt).mul eI_cont)
@@ -170,7 +158,7 @@ private theorem aU_cont : ContinuousAt (aU : G1 F → (A F)ˣ) 1 := by
     exact (MulOpposite.continuous_op.comp ((cont_pair 1).comp (cont_fst.comp (UpperTheory.ConvolutionTheory.R2.continuous_entry 1 1)))).continuousAt
   refine hf.congr ?_
   filter_upwards [ev_ne] with h hu
-  simp only [Function.comp, aU, dif_pos hu]
+  simp only [Function.comp, aU, dite_eq_left hu]
   rfl
 
 private theorem bU_one : bU (1 : G1 F) = 0 := by
@@ -185,7 +173,7 @@ private theorem cU_one : cU (1 : G1 F) = 0 := by
 
 private theorem aU_one : aU (1 : G1 F) = 1 := by
   refine Units.ext ?_
-  simp only [aU, dif_pos (ne_one (F := F))]
+  simp only [aU, dite_eq_left (ne_one (F := F))]
   exact Prod.ext eI_one rfl
 
 private theorem pU_one : pU (bU (1 : G1 F)) (aU 1) (cU 1) = 1 := by
@@ -195,9 +183,9 @@ private theorem pU_one : pU (bU (1 : G1 F)) (aU 1) (cU 1) = 1 := by
   fin_cases i <;> fin_cases j <;> simp
 
 private theorem kU_tendsto : Tendsto (kU : G1 F → G1 F) (𝓝 1) (𝓝 1) := by
-  have hb : ContinuousAt (fun h : G1 F => nU (bU h)) 1 := cont_nU.continuousAt.comp bU_cont
-  have hc : ContinuousAt (fun h : G1 F => nU (cU h)) 1 := cont_nU.continuousAt.comp cU_cont
-  have ha : ContinuousAt (fun h : G1 F => mD (aU h)) 1 := cont_mD.continuousAt.comp aU_cont
+  have hb : ContinuousAt (fun h : G1 F => nU (bU h)) 1 := UpperTheory.ConvolutionTheory.R2.continuous_nU.continuousAt.comp bU_cont
+  have hc : ContinuousAt (fun h : G1 F => nU (cU h)) 1 := UpperTheory.ConvolutionTheory.R2.continuous_nU.continuousAt.comp cU_cont
+  have ha : ContinuousAt (fun h : G1 F => mD (aU h)) 1 := UpperTheory.ConvolutionTheory.R2.continuous_mD.continuousAt.comp aU_cont
   have hp : ContinuousAt (fun h : G1 F => pU (bU h) (aU h) (cU h)) 1 :=
     (((hb.mul ha).mul continuousAt_const).mul hc).mul continuousAt_const
   have hk : ContinuousAt (kU : G1 F → G1 F) 1 := hp.inv.mul continuousAt_id

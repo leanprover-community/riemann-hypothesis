@@ -192,7 +192,6 @@ theorem etale_summandIso_inv_comp_map (D : FiniteOpenCoverWithIdeals T) (i : D.i
     (c : EtaleChart T.structMap (D.opens i) n) :
     Etale ((D.summandIso i).inv ≫ c.map) := by
   have h1 : Etale c.map := c.isEtale
-  have h4 : Etale ((D.summandIso i).inv) := inferInstance
   infer_instance
 
 def summandEtaleChart (D : FiniteOpenCoverWithIdeals T) (i : D.idx) {n : ℕ}
@@ -337,7 +336,6 @@ instance instSmoothTotalMap (D : FiniteOpenCoverWithIdeals T) : Smooth D.disjoin
 
 theorem flat_disjointUnionMap (D : FiniteOpenCoverWithIdeals T) : Flat D.disjointUnionMap := by
   have he : Etale D.disjointUnionMap := etale_disjointUnionMap D
-  have hs : Smooth D.disjointUnionMap := inferInstance
   infer_instance
 
 theorem locallyOfFiniteType_disjointUnionMap (D : FiniteOpenCoverWithIdeals T) : LocallyOfFiniteType D.disjointUnionMap :=
@@ -362,7 +360,6 @@ theorem quasiCompact_disjointUnionMap_comp (D : FiniteOpenCoverWithIdeals T)
     (h : ∀ i : D.idx, IsAffineOpen (D.opens i)) :
     QuasiCompact (D.disjointUnionMap ≫ T.structMap) := by
   have haff : IsAffine D.disjointUnion := isAffine_disjointUnion D h
-  have hcs : CompactSpace ↥D.disjointUnion := inferInstance
   have hsub : Subsingleton ↥(Spec (CommRingCat.of T.base)) := subsingleton_spec T.base
   exact AlgebraicGeometry.quasiCompact_of_compactSpace_of_subsingleton
     (D.disjointUnionMap ≫ T.structMap)

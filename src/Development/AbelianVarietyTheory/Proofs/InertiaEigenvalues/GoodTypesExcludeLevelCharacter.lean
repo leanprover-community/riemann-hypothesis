@@ -137,9 +137,9 @@ theorem avg_mul_self (P : G → Prop) [DecidablePred P] (χ : G →* ℂ)
     by_cases hq : P q
     · have hiff : P (q⁻¹ * x) ↔ P x := ⟨fun h => by simpa using hm _ _ hq h, fun h => hm _ _ (hi _ hq) h⟩
       by_cases hx : P x
-      · rw [if_pos hq, if_pos (hiff.2 hx), if_pos hq, if_pos hx, ← map_mul, mul_inv_cancel_left]
-      · rw [if_pos hq, if_neg (fun h => hx (hiff.1 h)), if_pos hq, if_neg hx, mul_zero]
-    · rw [if_neg hq, if_neg hq, zero_mul]
+      · rw [ite_eq_left hq, ite_eq_left (hiff.2 hx), ite_eq_left hq, ite_eq_left hx, ← map_mul, mul_inv_cancel_left]
+      · rw [ite_eq_left hq, ite_eq_right (fun h => hx (hiff.1 h)), ite_eq_left hq, ite_eq_right hx, mul_zero]
+    · rw [ite_eq_right hq, ite_eq_right hq, zero_mul]
   simp only [key]
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
 
@@ -155,7 +155,7 @@ theorem zOf_mul_avg_eq_zero (ψ : G → ℂ) (hψ : IsIrr ψ) (P : G → Prop) [
     (hm : ∀ x y, P x → P y → P (x * y)) (hi : ∀ x, P x → P x⁻¹) (htr : tr (avg P χ) ψ = 0) :
     zOf ψ * avg P χ = 0 := by
   obtain ⟨hid, hcen, -⟩ := GlobalTheory.GLq.ZOrth.zorth G ψ ψ hψ hψ
-  rw [if_pos rfl] at hid
+  rw [ite_eq_left rfl] at hid
   set m := avg P χ with hmdef
   set n : ℂ := ((Finset.univ.filter P).card : ℂ) with hn
   have hn0 : n ≠ 0 := by
@@ -189,10 +189,10 @@ theorem mirSet_mul {g : ℕ} [Fact g.Prime] {r : ℕ} (a : Fin r → ZMod g) (b 
     (hh : mirSet a b h) (hh' : mirSet a b h') : mirSet a b (h * h') := by
   cases b
   · intro x hx
-    simp only [mirSet, Bool.false_eq_true, if_false] at hh hh'
+    simp only [mirSet, Bool.false_eq_true, ite_false] at hh hh'
     rw [Units.val_mul, ← Matrix.mulVec_mulVec, hh' x hx, hh x hx]
   · intro x
-    simp only [mirSet, if_true] at hh hh'
+    simp only [mirSet, ite_true] at hh hh'
     obtain ⟨c₂, hc₂⟩ := hh' x
     obtain ⟨c₁, hc₁⟩ := hh ((h' : Mt g r).mulVec x)
     refine ⟨c₁ + c₂, ?_⟩
@@ -209,17 +209,16 @@ theorem mirSet_inv {g : ℕ} [Fact g.Prime] {r : ℕ} (a : Fin r → ZMod g) (b 
     rw [Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec]
   cases b
   · intro x hx
-    simp only [mirSet, Bool.false_eq_true, if_false] at hh
+    simp only [mirSet, Bool.false_eq_true, ite_false] at hh
     conv_lhs => rw [← hh x hx]
     exact hih x
   · intro x
-    simp only [mirSet, if_true] at hh
+    simp only [mirSet, ite_true] at hh
     obtain ⟨c, hc⟩ := hh (((h⁻¹ : Gn g r) : Mt g r).mulVec x)
     refine ⟨-c, ?_⟩
     rw [hhi x] at hc
     rw [neg_smul, ← hc]
     abel
-
 
 open Classical in
 theorem zOf_mul_mirEl_eq_zero : ∀ (g : ℕ) [Fact g.Prime] (r : ℕ) (ψ : Gn g r → ℂ), IsIrr ψ →
@@ -353,7 +352,7 @@ theorem conv_single_prod_eq_zero {ι : Type} [Fintype ι] {Γ : ι → Type} [�
     rw [hM, Finsupp.sum_fintype _ _ (by simp)] at h
     rw [← h]; simp
   · intro y hy
-    rw [if_neg, zero_mul]
+    rw [ite_eq_right, zero_mul]
     intro h
     apply hy
     refine ⟨eR y i0, ?_⟩
@@ -364,7 +363,7 @@ theorem conv_single_prod_eq_zero {ι : Type} [Fintype ι] {Γ : ι → Type} [�
     · subst hi; simp
     · rw [Pi.mulSingle_eq_of_ne hi, h i hi]
   · intro z
-    rw [if_pos, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i0), mul_assoc]
+    rw [ite_eq_left, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i0), mul_assoc]
     · congr 1
       · simp
       · congr 1
@@ -569,7 +568,7 @@ theorem mirSet_iff_bc {g : ℕ} [Fact g.Prime] {r : ℕ} {K' : Type} [CommRing K
     fun x => ⟨fun j => e.symm (x j), by funext j; simp⟩
   cases b with
   | true =>
-    simp only [mirSet, if_true]
+    simp only [mirSet, ite_true]
     rw [hs.forall]
     refine forall_congr' fun x => ?_
     rw [bc_ringEquiv_mulVec, e.surjective.exists]
@@ -578,7 +577,7 @@ theorem mirSet_iff_bc {g : ℕ} [Fact g.Prime] {r : ℕ} {K' : Type} [CommRing K
     refine forall_congr' fun j => ?_
     rw [← e.injective.eq_iff (a := _ - _), map_sub, map_mul, e.apply_symm_apply]
   | false =>
-    simp only [mirSet, Bool.false_eq_true, if_false]
+    simp only [mirSet, Bool.false_eq_true, ite_false]
     rw [hs.forall]
     refine forall_congr' fun x => ?_
     rw [bc_ringEquiv_mulVec]
@@ -611,12 +610,12 @@ theorem mirC_eq_coeff_mirEl : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0
   rw [mirEl_coeff]
   unfold GlobalTheory.DownLift.mirC
   by_cases hA : ∀ kv, kv ≠ kv0 → eR y kv = 1
-  · rw [if_pos hA]
+  · rw [ite_eq_left hA]
     by_cases hB : mirSet (fun j => (iso kv0).symm (a j)) b (eR y kv0)
-    · rw [if_pos hB, if_pos ⟨h1.2 hA, h2.2 hB⟩, h3]
+    · rw [ite_eq_left hB, ite_eq_left ⟨h1.2 hA, h2.2 hB⟩, h3]
       rfl
-    · rw [if_neg hB, if_neg fun H => hB (h2.1 H.2)]
-  · rw [if_neg hA, if_neg fun H => hA (h1.1 H.1)]
+    · rw [ite_eq_right hB, ite_eq_right fun H => hB (h2.1 H.2)]
+  · rw [ite_eq_right hA, ite_eq_right fun H => hA (h1.1 H.1)]
 
 end GlobalTheory.MirAvg
 
@@ -737,12 +736,6 @@ namespace GlobalTheory.ResTr
 variable {g : ℕ} [Fact g.Prime]
 open Formalism.MainNotions.ArithmeticCylinders
 
-open Classical in
-theorem coeff_mirEl {r : ℕ} (θ : (ZMod g)ˣ →* ℂˣ) (a : Fin r → ZMod g) (b : Bool) (h : Gn g r) :
-    (mirEl θ a b).coeff h = if mirSet a b h then ((θ (Matrix.GeneralLinearGroup.det h) : ℂˣ) : ℂ) else 0 := by
-  unfold mirEl
-  simp [MonoidAlgebra.coeff_single, Finsupp.single_apply]
-
 theorem sum_gl1 (M : Mt g 1) (d : (ZMod g)ˣ) (hM : M.det = d) (F : (ZMod g)ˣ → ℂ) :
     (∑ x : Gn g 1, if M = (x : Mt g 1) then F (Matrix.GeneralLinearGroup.det x) else 0) = F d := by
   have hU : IsUnit M := (Matrix.isUnit_iff_isUnit_det M).2 (by rw [hM]; exact d.isUnit)
@@ -751,7 +744,7 @@ theorem sum_gl1 (M : Mt g 1) (d : (ZMod g)ˣ) (hM : M.det = d) (F : (ZMod g)ˣ �
     rw [Units.ext_iff, IsUnit.unit_spec]
     exact eq_comm
   simp_rw [key]
-  rw [Finset.sum_ite_eq' Finset.univ hU.unit, if_pos (Finset.mem_univ _)]
+  rw [Finset.sum_ite_eq' Finset.univ hU.unit, ite_eq_left (Finset.mem_univ _)]
   congr 1
   ext
   rw [Matrix.GeneralLinearGroup.val_det_apply, IsUnit.unit_spec, hM]
@@ -788,17 +781,17 @@ theorem mulVec_of_id {N : ℕ} (M : Mt g N) (x : Fin N → ZMod g) (i : Fin N)
   rw [Finset.sum_eq_single i]
   · by_cases hx : x i = 0
     · rw [hx, mul_zero]
-    · rw [h i hx, if_pos rfl, one_mul]
+    · rw [h i hx, ite_eq_left rfl, one_mul]
   · intro j _ hji
     by_cases hx : x j = 0
     · rw [hx, mul_zero]
-    · rw [h j hx, if_neg (Ne.symm hji), zero_mul]
+    · rw [h j hx, ite_eq_right (Ne.symm hji), zero_mul]
   · intro hi; exact absurd (Finset.mem_univ i) hi
 
 theorem mirSet_last_iff {n : ℕ} (h : Gn g (n + 1)) :
     mirSet (Pi.single (Fin.last n) 1) false h ↔ ColsId (h : Mt g (n + 1)) := by
   unfold mirSet
-  simp only [Bool.false_eq_true, if_false]
+  simp only [Bool.false_eq_true, ite_false]
   constructor
   · intro H i j hj
     have := congrFun (H (Pi.single j 1) (by simp [single_dotProduct, Pi.single_apply, Ne.symm hj])) i
@@ -814,7 +807,7 @@ theorem mirSet_last_iff {n : ℕ} (h : Gn g (n + 1)) :
 theorem mirSet_zero_iff {n : ℕ} (h : Gn g (n + 1)) :
     mirSet (Pi.single 0 1) true h ↔ RowsId (h : Mt g (n + 1)) := by
   unfold mirSet
-  simp only [if_true]
+  simp only [ite_true]
   constructor
   · intro H i j hi
     obtain ⟨c, hc⟩ := H (Pi.single j 1)
@@ -837,7 +830,7 @@ theorem parTl_iff {n : ℕ} (M : Mt g (n + 1)) : (InPar n M ∧ tl n M = 1) ↔ 
     obtain ⟨j, rfl⟩ := Fin.exists_castSucc_eq.2 hj
     induction i using Fin.lastCases with
     | last =>
-      rw [if_neg (Fin.castSucc_ne_last j).symm]
+      rw [ite_eq_right (Fin.castSucc_ne_last j).symm]
       exact hP _ _ (by simp) (by simp)
     | cast i =>
       have := congrFun (congrFun hT i) j
@@ -847,7 +840,7 @@ theorem parTl_iff {n : ℕ} (M : Mt g (n + 1)) : (InPar n M ∧ tl n M = 1) ↔ 
   · intro H
     refine ⟨fun i j hj hi => ?_, ?_⟩
     · have hne : j ≠ Fin.last n := fun e => by rw [e] at hj; simp at hj
-      rw [H i j hne, if_neg]
+      rw [H i j hne, ite_eq_right]
       intro e; rw [e] at hi; omega
     · ext i j
       rw [tl_last, H _ _ (Fin.castSucc_ne_last j), Matrix.one_apply]
@@ -859,7 +852,7 @@ theorem parBr_iff {n : ℕ} (M : Mt g (n + 1)) : (InPar 1 M ∧ br 1 n M = 1) �
     obtain ⟨i, rfl⟩ := Fin.exists_succ_eq.2 hi
     induction j using Fin.cases with
     | zero =>
-      rw [if_neg (Fin.succ_ne_zero i)]
+      rw [ite_eq_right (Fin.succ_ne_zero i)]
       exact hP _ _ (by simp) (by simp)
     | succ j =>
       have := congrFun (congrFun hB i) j
@@ -869,7 +862,7 @@ theorem parBr_iff {n : ℕ} (M : Mt g (n + 1)) : (InPar 1 M ∧ br 1 n M = 1) �
   · intro H
     refine ⟨fun i j hj hi => ?_, ?_⟩
     · have hne : i ≠ 0 := fun e => by rw [e] at hi; simp at hi
-      rw [H i j hne, if_neg]
+      rw [H i j hne, ite_eq_right]
       intro e; rw [e] at hi; omega
     · ext i j
       rw [br_succ, H _ _ (Fin.succ_ne_zero i), Matrix.one_apply]
@@ -881,11 +874,11 @@ theorem det_colsId {n : ℕ} (M : Mt g (n + 1)) (H : ColsId M) : M.det = M (Fin.
     have hj : j ≠ Fin.last n := fun e => by
       rw [e] at hij; exact absurd hij (not_lt.2 (Fin.le_last i))
     simp only [id] at hij
-    rw [H i j hj, if_neg (ne_of_gt hij)]
+    rw [H i j hj, ite_eq_right (ne_of_gt hij)]
   rw [Matrix.det_of_upperTriangular hT, Fin.prod_univ_castSucc]
   rw [Finset.prod_eq_one, one_mul]
   intro i _
-  rw [H _ _ (Fin.castSucc_ne_last i), if_pos rfl]
+  rw [H _ _ (Fin.castSucc_ne_last i), ite_eq_left rfl]
 
 theorem det_rowsId {n : ℕ} (M : Mt g (n + 1)) (H : RowsId M) : M.det = M 0 0 := by
   have hT : M.BlockTriangular id := by
@@ -893,11 +886,11 @@ theorem det_rowsId {n : ℕ} (M : Mt g (n + 1)) (H : RowsId M) : M.det = M 0 0 :
     have hi : i ≠ 0 := fun e => by
       rw [e] at hij; exact absurd hij (not_lt.2 (Fin.zero_le j))
     simp only [id] at hij
-    rw [H i j hi, if_neg (ne_of_gt hij)]
+    rw [H i j hi, ite_eq_right (ne_of_gt hij)]
   rw [Matrix.det_of_upperTriangular hT, Fin.prod_univ_succ]
   rw [Finset.prod_eq_one, mul_one]
   intro i _
-  rw [H _ _ (Fin.succ_ne_zero i), if_pos rfl]
+  rw [H _ _ (Fin.succ_ne_zero i), ite_eq_left rfl]
 
 theorem det_br_last {n : ℕ} (h : Gn g (n + 1)) (H : ColsId (h : Mt g (n + 1))) :
     (br n 1 (h : Mt g (n + 1))).det = ((Matrix.GeneralLinearGroup.det h : (ZMod g)ˣ) : ZMod g) := by
@@ -906,7 +899,6 @@ theorem det_br_last {n : ℕ} (h : Gn g (n + 1)) (H : ColsId (h : Mt g (n + 1)))
 theorem det_tl_zero {n : ℕ} (h : Gn g (n + 1)) (H : RowsId (h : Mt g (n + 1))) :
     (tl 1 (h : Mt g (n + 1))).det = ((Matrix.GeneralLinearGroup.det h : (ZMod g)ˣ) : ZMod g) := by
   rw [Matrix.det_unique, tl_zero, Matrix.GeneralLinearGroup.val_det_apply, det_rowsId _ H]
-
 
 open Classical in
 theorem trace_mir (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ) (θ : (ZMod g)ˣ →* ℂˣ) :
@@ -919,29 +911,29 @@ theorem trace_mir (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ)
     rw [mul_left_comm, mul_inv_cancel_left₀ hg]
   constructor
   · unfold tr res
-    simp_rw [coeff_mirEl, mul_one, Finset.mul_sum, hc]
+    simp_rw [GlobalTheory.MirAvg.mirEl_coeff, mul_one, Finset.mul_sum, hc]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun h _ => ?_)
     by_cases H : ColsId (h : Mt g (n + 1))
     · obtain ⟨hP, hT⟩ := (parTl_iff _).2 H
-      rw [if_pos ((mirSet_last_iff h).2 H)]
+      rw [ite_eq_left ((mirSet_last_iff h).2 H)]
       simp only [Units.val_one, hP, hT, true_and, mul_ite, mul_zero]
       rw [sum_gl1 _ _ (det_br_last h H) (fun d => ((θ d : ℂˣ) : ℂ) * ψ h)]
-    · rw [if_neg (fun e => H ((mirSet_last_iff h).1 e)), zero_mul]
+    · rw [ite_eq_right (fun e => H ((mirSet_last_iff h).1 e)), zero_mul]
       refine (Finset.sum_eq_zero (fun x _ => ?_)).symm
-      rw [if_neg (fun e => H ((parTl_iff _).1 ⟨e.1, by simpa using e.2.1⟩)), mul_zero]
+      rw [ite_eq_right (fun e => H ((parTl_iff _).1 ⟨e.1, by simpa using e.2.1⟩)), mul_zero]
   · unfold tr res
-    simp_rw [coeff_mirEl, one_mul, Finset.mul_sum, hc]
+    simp_rw [GlobalTheory.MirAvg.mirEl_coeff, one_mul, Finset.mul_sum, hc]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun h _ => ?_)
     by_cases H : RowsId (h : Mt g (n + 1))
     · obtain ⟨hP, hB⟩ := (parBr_iff _).2 H
-      rw [if_pos ((mirSet_zero_iff h).2 H)]
+      rw [ite_eq_left ((mirSet_zero_iff h).2 H)]
       simp only [Units.val_one, hP, hB, true_and, and_true, mul_ite, mul_zero]
       rw [sum_gl1 _ _ (det_tl_zero h H) (fun d => ((θ d : ℂˣ) : ℂ) * ψ h)]
-    · rw [if_neg (fun e => H ((mirSet_zero_iff h).1 e)), zero_mul]
+    · rw [ite_eq_right (fun e => H ((mirSet_zero_iff h).1 e)), zero_mul]
       refine (Finset.sum_eq_zero (fun x _ => ?_)).symm
-      rw [if_neg (fun e => H ((parBr_iff _).1 ⟨e.1, by simpa using e.2.2⟩)), mul_zero]
+      rw [ite_eq_right (fun e => H ((parBr_iff _).1 ⟨e.1, by simpa using e.2.2⟩)), mul_zero]
 end GlobalTheory.ResTr
 end -- clump:auto
 end -- clump:auto
@@ -1031,12 +1023,12 @@ theorem seriesKillsAvg : SeriesKillsAvg := by
   rw [_root_.GlobalTheory.MirAvg.tr_mirEl_indep g n ψ (GlobalTheory.GLq.ResCuspProd.isClass_of_isIrr hirr) θ a ha b]
   have hinv := charLab_inv hc
   cases b
-  · simp only [Bool.false_eq_true, if_false]
+  · simp only [Bool.false_eq_true, ite_false]
     rw [(_root_.GlobalTheory.ResTr.trace_mir g n ψ θ).1]
     by_contra hne
     obtain ⟨σ, hσ, hip⟩ := (_root_.GlobalTheory.GLq.HCFrobWeight.exists_irr_hc_thetaInv g n ψ hirr θ).1 (right_ne_zero_of_mul hne)
     exact hf' ((_root_.GlobalTheory.GLq.DetRoot.root_of_hc_det g L n ψ f hirr hlab σ hσ θ⁻¹ c⁻¹ hinv).1 hip)
-  · simp only [if_true]
+  · simp only [ite_true]
     rw [(_root_.GlobalTheory.ResTr.trace_mir g n ψ θ).2]
     by_contra hne
     obtain ⟨σ, hσ, hip⟩ := (_root_.GlobalTheory.GLq.HCFrobWeight.exists_irr_hc_thetaInv g n ψ hirr θ).2 (right_ne_zero_of_mul hne)

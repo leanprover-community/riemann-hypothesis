@@ -87,7 +87,7 @@ def ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) : ℤ × Fin (r + K)
       rw [Finset.mem_product]
       refine ⟨?_, Finset.mem_univ _⟩
       by_contra h
-      exact hv (if_neg h))
+      exact hv (ite_eq_right h))
 
 open Classical in
 theorem ellExp_apply (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) (v : ℤ × Fin (r + K)) :
@@ -135,12 +135,8 @@ private theorem eq_of_posOf_eq_of_dist_lt {n' : ℕ} [NeZero n'] {x y : ℤ} (hx
     generalize y % (n' : ℤ) = b at *
     rw [Nat.mod_eq_of_lt (by omega), Nat.mod_eq_of_lt (by omega)] at h
     omega
-  obtain ⟨q, hq⟩ := (show x ≡ y [ZMOD n'] from hm).dvd
-  rcases lt_trichotomy q 0 with hq0 | hq0 | hq0
-  · nlinarith
-  · rw [hq0, mul_zero] at hq
-    linarith
-  · nlinarith
+  exact (sub_eq_zero.1 (Int.eq_zero_of_abs_lt_dvd (show x ≡ y [ZMOD n'] from hm).dvd
+    (abs_sub_lt_iff.2 ⟨h2, h1⟩))).symm
 
 private theorem eq_of_posOf_eq_of_mem_letters_not_isW {n' r : ℕ} [NeZero n'] [NeZero r] {F : Frames n' r} {L₁ N₁ : ℕ}
     (hV : F.Valid L₁ N₁) {j1 j2 : ℕ} (hj1 : j1 < F.J) (hj2 : j2 < F.J) {x1 x2 : ℤ}
@@ -191,9 +187,9 @@ theorem coarse_label_factorisation : CoarseLabelFactorisation := by
   have hS1 : ∀ t c (j0 : ℕ) (x0 : ℤ), j0 < D.F.J → x0 ∈ D.toLate (j0 : ℤ) → posOf n' x0 = t →
       S (t, c) = p ^ D.F.dist (j0 : ℤ) x0 * (l (t, c) / p ^ D.F.dist (j0 : ℤ) x0) := by
     intro t c j0 x0 hj0 hx0 ht
-    rw [hSval, Finset.sum_eq_single j0, Finset.sum_eq_single x0, if_pos ht]
+    rw [hSval, Finset.sum_eq_single j0, Finset.sum_eq_single x0, ite_eq_left ht]
     · intro x hx hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hxt
       rw [hmem] at hx hx0
       exact hne (eq_of_posOf_eq_of_mem_letters_not_isW hV hj0 hj0 hx.1 hx.2 hx0.1 hx0.2 (hxt.trans ht.symm)).2
@@ -201,7 +197,7 @@ theorem coarse_label_factorisation : CoarseLabelFactorisation := by
       exact absurd hx0 h
     · intro b hb hne
       refine Finset.sum_eq_zero (fun x hx => ?_)
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hxt
       rw [hmem] at hx hx0
       exact hne (eq_of_posOf_eq_of_mem_letters_not_isW hV (Finset.mem_range.1 hb) hj0 hx.1 hx.2 hx0.1 hx0.2
@@ -213,14 +209,14 @@ theorem coarse_label_factorisation : CoarseLabelFactorisation := by
     intro t c h
     rw [hSval]
     refine Finset.sum_eq_zero (fun j hj => Finset.sum_eq_zero (fun x hx => ?_))
-    rw [if_neg (h j (Finset.mem_range.1 hj) x hx)]
+    rw [ite_eq_right (h j (Finset.mem_range.1 hj) x hx)]
   have hle : ∀ t c, S (t, c) ≤ l (t, c) := by
     intro t c
     by_cases h : ∃ j0 : ℕ, j0 < D.F.J ∧ ∃ x0 ∈ D.toLate (j0 : ℤ), posOf n' x0 = t
     · obtain ⟨j0, hj0, x0, hx0, ht⟩ := h
       rw [hS1 t c j0 x0 hj0 hx0 ht]
       exact Nat.mul_div_le _ _
-    · push_neg at h
+    · push Not at h
       rw [hS0 t c h]
       exact Nat.zero_le _
   have hsum : l - S + S = l := by
@@ -243,7 +239,7 @@ theorem coarse_label_factorisation : CoarseLabelFactorisation := by
     refine ⟨fun v hv => ?_, fun v => ?_⟩
     · simp only [ellExp_apply] at hv
       by_contra h
-      exact hv (if_neg h)
+      exact hv (ite_eq_right h)
     · simp only [ellExp_apply]
       split_ifs with h
       · rw [hmem] at h

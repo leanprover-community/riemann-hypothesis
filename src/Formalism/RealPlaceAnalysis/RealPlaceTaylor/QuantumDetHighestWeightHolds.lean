@@ -57,7 +57,7 @@ theorem quantumDetHighestWeight_holds : QDetHW := by
   obtain ⟨hdiag, hup⟩ := hv
   have hdiag' : ∀ k : Fin n, Tm E (u - (k : ℂ)) k k v = (u - (k : ℂ) + ν k) • v := by
     intro k
-    rw [Tm, if_pos rfl, LinearMap.add_apply, Module.algebraMap_end_apply, hdiag k, add_smul]
+    rw [Tm, ite_eq_left rfl, LinearMap.add_apply, Module.algebraMap_end_apply, hdiag k, add_smul]
   have hoff : ∀ j k : Fin n, j < k → Tm E (u - (k : ℂ)) j k v = 0 := by
     intro j k hjk
     simp [Tm, ne_of_lt hjk, hup j k hjk]

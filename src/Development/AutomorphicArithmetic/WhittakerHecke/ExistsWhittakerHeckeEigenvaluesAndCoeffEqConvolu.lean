@@ -7,6 +7,8 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.SgLaws
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.RingTheory.PowerSeries.WellKnown
+import Development.AutomorphicArithmetic.WhittakerHecke.FiniteNatIdeleArchValuationSupport
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.ExistsCombComb
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.LcLaws
 public import Development.AutomorphicArithmetic.WhittakerHecke.EigAtCmDatumOperatorOfEigAt
@@ -79,12 +81,12 @@ private theorem sqN_mul (N : ℕ) {m n : ℕ} (h : m.Coprime n) :
   rw [sqN_eq, sqN_eq, sqN_eq]
   by_cases h1 : IsSquare m ∧ m.Coprime N
   · by_cases h2 : IsSquare n ∧ n.Coprime N
-    · rw [if_pos h1, if_pos h2, if_pos (e.2 ⟨h1, h2⟩), mul_one]
-    · rw [if_neg h2, if_neg (fun x => h2 (e.1 x).2), mul_zero]
-  · rw [if_neg h1, if_neg (fun x => h1 (e.1 x).1), zero_mul]
+    · rw [ite_eq_left h1, ite_eq_left h2, ite_eq_left (e.2 ⟨h1, h2⟩), mul_one]
+    · rw [ite_eq_right h2, ite_eq_right (fun x => h2 (e.1 x).2), mul_zero]
+  · rw [ite_eq_right h1, ite_eq_right (fun x => h1 (e.1 x).1), zero_mul]
 
 private theorem sqN_one (N : ℕ) : sqN N 1 = 1 := by
-  rw [sqN_eq, if_pos ⟨⟨1, rfl⟩, Nat.coprime_one_left N⟩]
+  rw [sqN_eq, ite_eq_left ⟨⟨1, rfl⟩, Nat.coprime_one_left N⟩]
 
 private theorem isSquare_pow_iff {p : ℕ} (hp : p.Prime) (j : ℕ) : IsSquare (p ^ j) ↔ Even j := by
   constructor
@@ -124,21 +126,21 @@ private theorem sq_series (N : ℕ) {p : ℕ} (hp : p.Prime) (h : ¬ p ∣ N) :
   · have e : Even (k + 1 + 1) ↔ Even k := by
       rw [Nat.even_add_one, Nat.even_add_one, not_not]
     have e2 : k + 1 + 1 - 2 = k := by omega
-    rw [if_pos (show 2 ≤ k + 1 + 1 by omega), e2, if_neg (show ¬ (k + 1 + 1 = 0) by omega)]
+    rw [ite_eq_left (show 2 ≤ k + 1 + 1 by omega), e2, ite_eq_right (show ¬ (k + 1 + 1 = 0) by omega)]
     simp only [e, sub_self]
 
 private theorem isMul_of (f : ℕ → ℂ) (h1 : f 1 = 1)
     (h : ∀ m n, 0 < m → 0 < n → m.Coprime n → f (m * n) = f m * f n) :
     (toArithmeticFunction f).IsMultiplicative := by
   have key : ∀ n, toArithmeticFunction f n = if n = 0 then 0 else f n := fun _ => rfl
-  refine ⟨by rw [key, if_neg one_ne_zero, h1], ?_⟩
+  refine ⟨by rw [key, ite_eq_right one_ne_zero, h1], ?_⟩
   intro m n hmn
   rw [key, key, key]
   by_cases hm : m = 0
   · simp [hm]
   by_cases hn : n = 0
   · simp [hn]
-  rw [if_neg hm, if_neg hn, if_neg (mul_ne_zero hm hn),
+  rw [ite_eq_right hm, ite_eq_right hn, ite_eq_right (mul_ne_zero hm hn),
     h m n (Nat.pos_of_ne_zero hm) (Nat.pos_of_ne_zero hn) hmn]
 
 theorem UpperTheory.eq_convolution_squareIndicator_of_euler_factors :
@@ -154,7 +156,7 @@ theorem UpperTheory.eq_convolution_squareIndicator_of_euler_factors :
   have hE : toArithmeticFunction a = toArithmeticFunction b * toArithmeticFunction (sqN N) := by
     rw [ArithmeticFunction.IsMultiplicative.eq_iff_eq_on_prime_powers _ hA _ (hB.mul hS)]
     intro p i hp
-    have e1 : toArithmeticFunction a (p ^ i) = a (p ^ i) := if_neg (pow_ne_zero i hp.ne_zero)
+    have e1 : toArithmeticFunction a (p ^ i) = a (p ^ i) := ite_eq_right (pow_ne_zero i hp.ne_zero)
     rw [e1]
     change a (p ^ i) = LSeries.convolution b (sqN N) (p ^ i)
     rw [conv_pow _ _ hp]
@@ -167,13 +169,13 @@ theorem UpperTheory.eq_convolution_squareIndicator_of_euler_factors :
         rcases j with _ | j
         · simp [hb1]
         · rw [PowerSeries.coeff_mk, hb0 _ (hnc j), PowerSeries.coeff_one,
-            if_neg (Nat.succ_ne_zero j)]
+            ite_eq_right (Nat.succ_ne_zero j)]
       rw [eb, one_mul, PowerSeries.coeff_mk]
       rcases i with _ | i
       · rw [pow_zero, ha1, sqN_one]
-      · rw [hap p i hp hd, sqN_eq, if_neg (fun x => hnc i x.2)]
+      · rw [hap p i hp hd, sqN_eq, ite_eq_right (fun x => hnc i x.2)]
     · rw [← hps p hp hd, mul_assoc, sq_series N hp hd, mul_one, PowerSeries.coeff_mk]
-  have e1 : toArithmeticFunction a n = a n := if_neg hn
+  have e1 : toArithmeticFunction a n = a n := ite_eq_right hn
   rw [← e1, hE]
   rfl
 end -- clump:auto
@@ -300,25 +302,20 @@ open UpperTheory.ConvolutionTheory.R2.G (FS2 Rw nE row)
 open UpperTheory.V.Af.Smo (EigAt)
 open scoped ComplexOrder
 
-private theorem UpperTheory.geometric_power_series_inverse (x : ℂ) :
-    (PowerSeries.mk fun k : ℕ => x ^ k) * (1 - PowerSeries.C x * PowerSeries.X) = 1 := by
-  ext n
-  rw [mul_sub, mul_one, ← mul_assoc, map_sub]
-  cases n with
-  | zero => simp
-  | succ n =>
-    rw [PowerSeries.coeff_succ_mul_X, PowerSeries.coeff_mul_C]
-    simp [PowerSeries.coeff_one, pow_succ]
-
 theorem UpperTheory.powerSeries_completeHomogeneous_two_mul_eq_one :
     ∀ x y : ℂ, (PowerSeries.mk fun k : ℕ => (∑ i ∈ Finset.range (k + 1), (x) ^ i * (y) ^ (k - i))) * ((1 - PowerSeries.C x * PowerSeries.X) * (1 - PowerSeries.C y * PowerSeries.X)) = 1 := by
   intro x y
+  have inv : ∀ z : ℂ,
+      (PowerSeries.mk fun k : ℕ => z ^ k) * (1 - PowerSeries.C z * PowerSeries.X) = 1 :=
+    fun z => by
+      simpa [PowerSeries.rescale_mk, PowerSeries.rescale_X] using
+        congrArg (PowerSeries.rescale z) (PowerSeries.mk_one_mul_one_sub_eq_one ℂ)
   have h : (PowerSeries.mk fun k : ℕ => (∑ i ∈ Finset.range (k + 1), (x) ^ i * (y) ^ (k - i)))
       = (PowerSeries.mk fun k : ℕ => x ^ k) * (PowerSeries.mk fun k : ℕ => y ^ k) := by
     ext n
     rw [PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
     simp
-  rw [h, mul_mul_mul_comm, UpperTheory.geometric_power_series_inverse, UpperTheory.geometric_power_series_inverse, mul_one]
+  rw [h, mul_mul_mul_comm, inv x, inv y, mul_one]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.WhittakerHecke.PowerSeriesCompleteHomogeneousTwoMulEqOne =====
@@ -815,22 +812,6 @@ private theorem cp_iy (v : H.P ℚ) (r : ℝ) : H.cp v ((iy r : (A ℚ)ˣ) : A �
   · change pLoc ℚ v ((1 : Af ℚ) - 0 + 0) = 1
     rw [sub_zero, add_zero, map_one]
 
-private theorem cp_pin (v : H.P ℚ) (n : ℕ) (h : ¬ normV v ∣ n) :
-    H.cp v ((pin n : (A ℚ)ˣ) : A ℚ) = 1 := by
-  unfold pin
-  refine finprod_induction (fun x : (A ℚ)ˣ => H.cp v (x : A ℚ) = 1) (by simp) ?_ ?_
-  · intro x y hx hy
-    rw [Units.val_mul, map_mul, hx, hy, one_mul]
-  · intro v'
-    by_cases hv : v = v'
-    · subst hv
-      rw [Nat.factorization_eq_zero_of_not_dvd h]
-      simp
-    · have : H.cp v ((pv v' : (A ℚ)ˣ) : A ℚ) = 1 := by
-        classical
-        exact Pi.mulSingle_eq_of_ne hv _
-      rw [Units.val_pow_eq_pow_val, map_pow, this, one_pow]
-
 private theorem cp_rot (v : H.P ℚ) (t : ℝ) :
     Matrix.GeneralLinearGroup.map (H.cp v) (rot t) = 1 := by
   refine Matrix.GeneralLinearGroup.ext fun i j => ?_
@@ -849,9 +830,12 @@ private theorem cp_aE (v : H.P ℚ) (a : (A ℚ)ˣ) (h : H.cp v (a : A ℚ) = 1)
 theorem UpperTheory.kAt_diag_ideleOfNat_mul_rotation_of_not_dvd :
     ∀ (E : Type) [Field E] [NumberField E] (v : H.P ℚ) (n : ℕ) (r t : ℝ), 0 < n → ¬ normV v ∣ n → ∀ w : H.P E, w.under (𝓞 ℚ) = v →
           H.KAt w (em E (aE (iy r * pin n) * rot t)) := by
-  intro E _ _ v n r t _ h w hw
+  intro E _ _ v n r t hn h w hw
+  have hpin := (UpperTheory.finiteNatIdele_arch_valuation_support n hn).2.2 v
+    (fun hb => h ((GlobalTheory.TwAtt.mem_iff v _).1 hb))
   have hx : Matrix.GeneralLinearGroup.map (H.cp v) (aE (iy r * pin n) * rot t) = 1 := by
-    rw [map_mul, cp_rot, cp_aE v _ (by rw [Units.val_mul, map_mul, cp_iy, cp_pin v n h, one_mul]), one_mul]
+    rw [map_mul, cp_rot,
+      cp_aE v _ (by rw [Units.val_mul, map_mul, cp_iy, hpin, one_mul]), one_mul]
   generalize aE (iy r * pin n) * rot t = x at hx
   subst hw
   have : Matrix.GeneralLinearGroup.map (H.cp w) (em E x) = 1 := by
@@ -953,14 +937,14 @@ theorem UpperTheory.exists_whittaker_hecke_eigenvalues_and_coeff_eq_convolution 
       simp only [bN, Nat.coprime_mul_iff_left]
       by_cases h1 : x.Coprime N
       · by_cases h2 : y.Coprime N
-        · rw [if_pos ⟨h1, h2⟩, if_pos h1, if_pos h2, pmul x y hx hy, hμm x y hx hy hxy, map_mul, Units.val_mul]
+        · rw [ite_eq_left ⟨h1, h2⟩, ite_eq_left h1, ite_eq_left h2, pmul x y hx hy, hμm x y hx hy hxy, map_mul, Units.val_mul]
           push_cast
           ring
-        · rw [if_neg fun h => h2 h.2, if_neg h2, mul_zero]
-      · rw [if_neg fun h => h1 h.1, if_neg h1, zero_mul]
+        · rw [ite_eq_right fun h => h2 h.2, ite_eq_right h2, mul_zero]
+      · rw [ite_eq_right fun h => h1 h.1, ite_eq_right h1, zero_mul]
     · intro x hx
       simp only [bN]
-      rw [if_neg hx]
+      rw [ite_eq_right hx]
     · intro p hp hpn
       obtain ⟨v, rfl⟩ := hex p hp
       have hvb := hpN v hpn
@@ -968,7 +952,7 @@ theorem UpperTheory.exists_whittaker_hecke_eigenvalues_and_coeff_eq_convolution 
       congr 1
       funext k
       have hc : (normV v ^ k).Coprime N := Nat.Coprime.pow_left k ((Nat.Prime.coprime_iff_not_dvd hp).2 hpn)
-      simp only [bN, if_pos hc]
+      simp only [bN, ite_eq_left hc]
       rw [ppow, map_pow, Units.val_pow_eq_pow_val, hμv v k hvb]
       rfl
 end -- clump:auto

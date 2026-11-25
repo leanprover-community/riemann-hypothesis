@@ -117,7 +117,7 @@ lemma rsm_tail (N : ℕ) (hN : 1 ≤ N) :
           rw [← hk, pow_add]
           ring
     · have h0 : Set.indicator (Ioi (Real.sqrt (2 * N))) (fun y => Real.exp (-y ^ 2)) y = 0 := by
-        simp only [Set.indicator_apply, h, if_false]
+        simp only [Set.indicator_apply, h, ite_false]
       rw [h0, mul_zero]
       exact mul_nonneg (by positivity) (mul_nonneg (pow_nonneg hy'.le _) (Real.exp_pos _).le)
 
@@ -167,14 +167,14 @@ lemma rsm_ball_mass (N : ℕ) :
         have hz1 : z ∉ (closedBall (0 : EuclideanSpace ℂ (Fin N)) (Real.sqrt (2 * N)))ᶜ := fun hc =>
           (Set.mem_compl_iff _ _).mp hc (mem_closedBall.mpr (by rwa [dist_zero_right]))
         simp only [Set.indicator_apply, Set.mem_Ioi,
-          h', if_false]
+          h', ite_false]
         first
           | exact Set.indicator_of_notMem hz1 _
       · have h' : Real.sqrt (2 * N) < ‖z‖ := not_le.mp h
         have hz1 : z ∈ (closedBall (0 : EuclideanSpace ℂ (Fin N)) (Real.sqrt (2 * N)))ᶜ :=
           (Set.mem_compl_iff _ _).mpr (fun hb => h (by rwa [mem_closedBall, dist_zero_right] at hb))
         simp only [Set.indicator_apply, Set.mem_Ioi,
-          h', if_true]
+          h', ite_true]
         exact Set.indicator_of_mem hz1 _
     rw [← rsm_gauss_total N]
     exact half_le_of_tail_le_half _ _ _ _ _ _ _ (by positivity)
@@ -628,8 +628,8 @@ lemma lemS_cover (Y : GT ι) (q : ℕ) {F : EuclideanSpace ℂ ι → ℂ} (hF :
       rw [Finset.natCast_card_filter]
       refine Finset.sum_congr rfl fun γ _ => ?_
       by_cases h : γ +ᵥ x ∈ closedBall v0 ρ
-      · rw [Set.indicator_of_mem h, if_pos h]
-      · rw [Set.indicator_of_notMem h, if_neg h]
+      · rw [Set.indicator_of_mem h, ite_eq_left h]
+      · rw [Set.indicator_of_notMem h, ite_eq_right h]
     rw [h1]
     have hinj : Function.Injective (fun γ : lat Y.b => (γ +ᵥ x) - v0) := by
       intro a b h

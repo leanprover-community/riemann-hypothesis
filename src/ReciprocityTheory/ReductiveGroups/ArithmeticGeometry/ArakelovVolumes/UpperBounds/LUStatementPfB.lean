@@ -44,7 +44,7 @@ theorem Lm_lowU {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) : LowU (Lm M) := by
   refine ⟨fun i k hik => ?_, fun i => by simp [Lm]⟩
   have h1 : ¬ ((k : ℕ) < i) := by rw [Fin.lt_iff_val_lt_val] at hik; omega
   simp only [Lm, Matrix.of_apply]
-  rw [dite_eq_right h1, if_neg (ne_of_gt hik)]
+  rw [dite_eq_right h1, ite_eq_right (ne_of_gt hik)]
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r) (x0 : Frame X.Ψ r)
 
@@ -79,7 +79,7 @@ theorem nmat_lowU (z : V (nd X)) (τ : X.Ψ) : LowU (mat (nmat X z) τ) := by
   unfold nmat
   refine ⟨fun i k hik => ?_, fun i => ?_⟩
   · simp only [mat, Matrix.of_apply]
-    rw [dite_eq_right (not_lt.mpr hik.le), if_neg (ne_of_lt hik)]
+    rw [dite_eq_right (not_lt.mpr hik.le), ite_eq_right (ne_of_lt hik)]
   · simp [mat]
 
 theorem nmat_eq_of (z : V (nd X)) (n : Frame X.Ψ r) (hn : ∀ τ, LowU (mat n τ))
@@ -112,7 +112,7 @@ theorem lminors_ne {x : Frame X.Ψ r} (hΔ : DeltaF X x0 x ≠ 0) (τ : X.Ψ) (k
   rw [Finset.prod_ne_zero_iff] at h1
   exact h1 k (Finset.mem_univ _)
 
-theorem bF_mem {x : Frame X.Ψ r} (_hx : x ∈ X.dom) (hΔ : DeltaF X x0 x ≠ 0) : bF X x0 x ∈ Bor X.Ψ r := by
+theorem bF_mem {x : Frame X.Ψ r} (hΔ : DeltaF X x0 x ≠ 0) : bF X x0 x ∈ Bor X.Ψ r := by
   show ∀ τ : X.Ψ, (mat (bF X x0 x) τ).det ≠ 0 ∧ ∀ a c : Fin r, c < a → bF X x0 x τ a c = 0
   intro τ
   have hM := lminors_ne hΔ τ
@@ -142,7 +142,7 @@ theorem split_eq (hx0 : IsOrth X x0) (x : Frame X.Ψ r) :
 
 theorem zF_mem (hx0 : IsOrth X x0) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (hΔ : DeltaF X x0 x ≠ 0) :
     zF X x0 x ∈ OmF X x0 := by
-  have hb := bF_mem hx hΔ
+  have hb := bF_mem hΔ
   have hsplit := split_eq hx0 x
   show cpt X x0 (zF X x0 x) ∈ X.dom
   have h1 : cpt X x0 (zF X x0 x) = rmul x (ExtFPf.invF X (bF X x0 x)) := by
@@ -195,7 +195,7 @@ theorem uniq_all (hx0 : IsOrth X x0) {z : V (nd X)} {b : Frame X.Ψ r} (hb : b �
         (Fintype.equivFin (Ent X)).symm k := rfl
     have h3 := congrFun (congrFun (congrFun h2 ((Fintype.equivFin (Ent X)).symm k).1)
       ((Fintype.equivFin (Ent X)).symm k).2.1.1) ((Fintype.equivFin (Ent X)).symm k).2.1.2
-    simp only [nmat, dif_pos ((Fintype.equivFin (Ent X)).symm k).2.2, heta] at h3
+    simp only [nmat, dite_eq_left ((Fintype.equivFin (Ent X)).symm k).2.2, heta] at h3
     have h4 : (Fintype.equivFin (Ent X)) ((Fintype.equivFin (Ent X)).symm k) = k :=
       Equiv.apply_symm_apply _ _
     rwa [h4] at h3

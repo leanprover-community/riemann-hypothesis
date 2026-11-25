@@ -39,7 +39,7 @@ structure PBData {T W : Scheme.{0}} (r : T ⟶ W) (d : ℕ) where
 
 def PBEx : Prop := ∀ (K : Type) [CommRing K] {W Z Y T : Scheme.{0}} (q : Z ⟶ Spec (CommRingCat.of K)) (i : W ⟶ Z) (π : Y ⟶ Z)
   (D : E.LineData Y) (d : ℕ), Nonempty (Blow q i π D d) → ∀ (j : T ⟶ Y) (r : T ⟶ W), IsPullback j r π i →
-  ∃ (P : PBData r d) (τ : P.T' ⟶ D.Y) (hτ : τ ≫ D.f = P.e ≫ j), ∀ {V : Scheme.{0}} (a b : V ⟶ P.T') (h : a ≫ P.e = b ≫ P.e)
+  ∃ (P : PBData r d) (τ : P.T' ⟶ D.Y) (_ : τ ≫ D.f = P.e ≫ j), ∀ {V : Scheme.{0}} (a b : V ⟶ P.T') (h : a ≫ P.e = b ≫ P.e)
     (h' : (a ≫ τ) ≫ D.f = (b ≫ τ) ≫ D.f), P.w a b h = (D.u _ _ h')⁻¹
 
 def PBOf : Prop := In → ∀ (q : ℕ) [NeZero q] {T W : Scheme.{0}} (r : T ⟶ W) (d : ℕ) (P : PBData r d), IsUnit (q : Γ(W, ⊤)) →

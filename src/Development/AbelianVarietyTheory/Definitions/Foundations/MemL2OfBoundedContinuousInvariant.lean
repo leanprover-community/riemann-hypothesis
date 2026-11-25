@@ -379,12 +379,6 @@ theorem isWittLower_minusHyp {i : ℕ} (h : i ≤ wittIndex V) : IsWittLower V (
 
 end Witt
 
-section Examples
-
-open CuspDecay.Model
-
-end Examples
-
 end GlobalTheory.Cusp
 
 end

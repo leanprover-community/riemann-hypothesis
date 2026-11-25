@@ -78,14 +78,14 @@ theorem tendsto_af {α : Type} {l : Filter α} (g : α → Af E) (c : Af E)
     intro v
     apply tendsto_const_nhds.congr'
     filter_upwards [h2, h3 v] with a ha hav
-    simp only [g', dif_pos ha]
+    simp only [g', dite_eq_left ha]
     exact Subtype.ext hav.symm
   have hmap := (tendsto_map (f := RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 E) => v.adicCompletion E)
       (fun v => (v.adicCompletionIntegers E : Set (v.adicCompletion E))) cofinite)).comp hg'
   rw [← RestrictedProduct.nhds_eq_map_structureMap (fun v => isOpen_intAt v), hcc] at hmap
   apply hmap.congr'
   filter_upwards [h2] with a ha
-  simp only [Function.comp_apply, g', dif_pos ha]
+  simp only [Function.comp_apply, g', dite_eq_left ha]
   apply RestrictedProduct.ext
   intro v
   rfl

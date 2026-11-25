@@ -33,11 +33,11 @@ def tuningExponent (m : ℕ) : ℕ := if m ≤ 1 then 1 else (m - 1) * lcmUpTo m
 
 theorem tuningExponent_of_le_one {m : ℕ} (h : m ≤ 1) : tuningExponent m = 1 := by
   unfold tuningExponent
-  exact if_pos h
+  exact ite_eq_left h
 
 theorem tuningExponent_of_two_le {m : ℕ} (h : 2 ≤ m) : tuningExponent m = (m - 1) * lcmUpTo m := by
   unfold tuningExponent
-  exact if_neg (by omega)
+  exact ite_eq_right (by omega)
 
 theorem tuningExponent_one : tuningExponent 1 = 1 := tuningExponent_of_le_one le_rfl
 

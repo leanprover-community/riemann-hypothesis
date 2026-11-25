@@ -357,7 +357,7 @@ theorem genCoord_law (ψ : ↥(GK K) →* (↥LL.1)ˣ) {σ₀ : ↥LL.1 →ₐ[�
       rintro ⟨g', h⟩
       refine hσ ⟨g⁻¹ * g', ?_⟩
       rw [gc_mul, h, ← gc_mul, inv_mul_cancel, gc_one]
-    rw [genCoord, dif_neg h2, genCoord, dif_neg hσ, map_zero, mul_zero]
+    rw [genCoord, dite_eq_right h2, genCoord, dite_eq_right hσ, map_zero, mul_zero]
 
 
 
@@ -390,7 +390,7 @@ theorem component_line {AI : LocAinf l P} (T : LocTied6 l P AI) (ψ : ↥(GK K) 
   set z : (Fin 1 → ↥LL.1) ⊗[ℚ_[l]] P.R.BdR := coordInv (Om := Om l) f with hzdef
   have hz : ∀ σ : ↥LL.1 →ₐ[ℚ_[l]] Om l, ev σ z = f σ := fun σ => ev_coordInv f σ
   have hoff : ∀ σ : ↥LL.1 →ₐ[ℚ_[l]] Om l, (¬ ∃ g : ↥(GK K), gc g σ₀ = σ) → f σ = 0 :=
-    fun σ h => dif_neg h
+    fun σ h => dite_eq_right h
   have hinv : ∀ g, actVdR (P.PD K) (lineRep ψ) g z = z := fun g => ev_injective (Om := Om l) fun σ => by
     obtain ⟨σ', rfl⟩ : ∃ σ', gc g σ' = σ := ⟨gc g⁻¹ σ, by rw [← gc_mul, mul_inv_cancel, gc_one]⟩
     rw [ev_act, hz, hz, hf, genCoord_law P ψ hlaw]
@@ -474,8 +474,6 @@ theorem component_line {AI : LocAinf l P} (T : LocTied6 l P AI) (ψ : ↥(GK K) 
 end Line
 
 
-set_option maxHeartbeats 1600000 in
-set_option synthInstance.maxHeartbeats 200000 in
 theorem jumps_of_periods : ∀ {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied6 l P AI) →
     ∀ (K LL : FinExt l), (∀ (μ : ↥K.1 →ₐ[ℚ_[l]] Om l) (x : ↥K.1), μ x ∈ LL.1) →
     ∀ (χ : ↥(GK K) →* (↥K.1)ˣ), HasPeriods P K χ → ∀ τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1,
@@ -503,7 +501,7 @@ theorem jumps_of_periods : ∀ {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : L
         rw [AlgHom.comp_apply, ← hτ]
         exact h₀ x
       obtain ⟨m1, m2⟩ := h1 hμ
-      rw [if_pos hτ]
+      rw [ite_eq_left hτ]
       have m2' : y ∉ (P.PD K).Fil (1 + 1) := by
         rw [show (1 + 1 : ℤ) = 2 by norm_num]
         exact m2
@@ -511,7 +509,7 @@ theorem jumps_of_periods : ∀ {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : L
     · have hμ : σ₀.comp τ ≠ K.1.val := fun h => hτ (AlgHom.ext fun x =>
         σ₀.toRingHom.injective ((h₀ x).trans (DFunLike.congr_fun h x).symm))
       obtain ⟨m1, m2⟩ := h2 hμ
-      rw [if_neg hτ]
+      rw [ite_eq_right hτ]
       have m2' : y ∉ (P.PD K).Fil (0 + 1) := by
         rw [zero_add]
         exact m2

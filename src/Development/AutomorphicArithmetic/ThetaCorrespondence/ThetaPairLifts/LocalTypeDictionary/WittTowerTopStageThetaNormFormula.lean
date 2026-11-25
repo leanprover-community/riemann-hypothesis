@@ -535,18 +535,6 @@ theorem I_eq_zero (hT : IsTriple B G X om om')
 
 end Generic
 
-section Nonzero
-
-open GlobalTheory.BigNZ GlobalTheory.AdelicU
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ spV₁ blkU conjU UB)
-
-theorem blkU_mul {D : D7} (A B : HSp D) {d : ℕ} (e : Fin A.rank ⊕ Fin B.rank ≃ Fin d) {J : Matrix (Fin d) (Fin d) D.host.E}
-    (h : J = GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.skewGram A B e) (x y : GA D A × GA D B) : blkU A B e h x * blkU A B e h y = blkU A B e h (x * y) := by
-  refine Subtype.ext (Units.ext ?_)
-  exact GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk_mul e _ _ _ _
-
-end Nonzero
-
 section Read
 
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree GlobalTheory.Grid GlobalTheory.TripleRead GlobalTheory.SquareIdent
@@ -661,7 +649,7 @@ theorem thetaInt_eq_zero (hSA : GlobalTheory.Published.StrongApproxSU) (hK : Glo
   obtain ⟨R, Rf, hm⟩ := hLM _ _ _ Bs _ _ Γ X om om' hT
   obtain ⟨dec, hk⟩ := hK.1 _ _ _ Bs _ _ Γ X om om' hT
   obtain ⟨hc, hco⟩ := hk R Rf hm
-  obtain ⟨l, hla, hl⟩ := GlobalTheory.T.exists_adm_eq_thetaIntegral_of_conv Γ.M Bs.ψ _ _ om hT.weil dec.1
+  obtain ⟨l, hla, hl⟩ := GlobalTheory.ThetaIntAdm.exists_admissible_form_convergent_thetaIntegral Γ.M Bs.ψ _ _ om hT.weil dec.1
   obtain ⟨f₀, f₀', ⟨f1, f2⟩, -, f3⟩ := GlobalTheory.FlipMatch.finite_match hL W B ρ t i j M hst h hm htb
   obtain ⟨φ₀, -, p₀, -, d₀, -⟩ := f3 n₀ Φ₀ τ₀ τ₀' hn₀ hF₀
   obtain ⟨f, hf, hPf⟩ := hFock f₀ f2 P
@@ -702,9 +690,9 @@ theorem thetaInt_eq_zero (hSA : GlobalTheory.Published.StrongApproxSU) (hK : Glo
     have e : ((D.host.QS * D.host.q * D.host.d * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) =
         (D.host.d : 𝓞 D.host.E) * ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) := by push_cast; ring
     rw [e]; exact Ideal.mul_mem_left _ _ hmem)) n Φ hnat
-  obtain ⟨f', h1, h2, h3⟩ := GlobalTheory.T.exists_gaussianDatum_flippedFiniteTensor_bigRoute hL W B ρ t i j M hst e Bs Γ X om om' h hT hti n Φ τ τ' hnat hF φ hφ
+  obtain ⟨f', h1, h2, h3⟩ := GlobalTheory.BigDat.exists_gauss_datum hL W B ρ t i j M hst e Bs Γ X om om' h hT hti n Φ τ τ' hnat hF φ hφ
     fun w hw => (H w hw).2.2
-  obtain ⟨s, rfl⟩ := GlobalTheory.T.fockVacua_triple_proportional_to_nonzero Bs Γ X om om' hT f₀ f1 f2 f' h2
+  obtain ⟨s, rfl⟩ := GlobalTheory.GaussLine.gauss_eq_smul Bs Γ X om om' hT f₀ f1 f2 f' h2
   have hs : s ≠ 0 := by rintro rfl; exact h1 (zero_smul _ _)
   have k := hI _ _ (hPf s φ hs hφ _ (isDatum_of_isDatumA h3)) (blk _ _ g)
   rw [toUX_blk _ _ e h.JWW, GlobalTheory.RegCompare.thetaInt_smul, ← hP n Φ τ τ' hF] at k
@@ -712,7 +700,7 @@ theorem thetaInt_eq_zero (hSA : GlobalTheory.Published.StrongApproxSU) (hK : Glo
   obtain ⟨b, rfl⟩ := toTens_surjective b'
   have hΘ : IsMatched B t ρ i j (tensT W a τ) (tensT W b τ') := ⟨a, b, τ, τ', n, Φ, hb', hnat, hF, rfl, rfl⟩
   have z := h0 M hM a rfl n Φ τ τ' hnat hF g.1 g.2
-  simp only [GlobalTheory.T.thetaGridRouteKernel_eq_detCharacters_mul_thetaKernel hL W t i j ωA hωA B ρ _ _ hΘ] at z
+  simp only [GlobalTheory.SquareDict.ExactBig.kerBig_eq hL W t i j ωA hωA B ρ _ _ hΘ] at z
   rw [integral_const_mul, mul_eq_zero, mul_eq_zero] at z
   rcases z with (z | z) | z
   · exact Circle.coe_ne_zero _ z
@@ -1255,21 +1243,21 @@ theorem exists_tied_pair_of_standing_hypotheses (hP : _root_.GlobalTheory.FunPr.
   let rel' : ∀ i j : ℕ, Submodule ℂ (PolRoute G (.grid i (j + 1)) (.grid (i + 1) (j + 1)) (.grid (i + 1) j) ×
       PolRoute G (.grid i (j + 1)) (.grid i j) (.grid (i + 1) j)) := fun i j =>
     if h : i < D.R.m ∧ j < D.R.m then r ⟨i, h.1⟩ ⟨j, h.2⟩ else rm.rel i j
-  have e : ∀ i j : Fin D.R.m, rel' i j = r i j := fun i j => dif_pos ⟨i.2, j.2⟩
+  have e : ∀ i j : Fin D.R.m, rel' i j = r i j := fun i j => dite_eq_left ⟨i.2, j.2⟩
   let ρ : RealMatch W := { rm with
     rel := rel'
     onto_big := fun i j a => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr1 ⟨i, h.1⟩ ⟨j, h.2⟩ a
-      · simp only [rel', dif_neg h]; exact rm.onto_big i j a
+      · simp only [rel', dite_eq_left h]; exact hr1 ⟨i, h.1⟩ ⟨j, h.2⟩ a
+      · simp only [rel', dite_eq_right h]; exact rm.onto_big i j a
     onto_small := fun i j b => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr2 ⟨i, h.1⟩ ⟨j, h.2⟩ b
-      · simp only [rel', dif_neg h]; exact rm.onto_small i j b
+      · simp only [rel', dite_eq_left h]; exact hr2 ⟨i, h.1⟩ ⟨j, h.2⟩ b
+      · simp only [rel', dite_eq_right h]; exact rm.onto_small i j b
     proper := fun i j => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr3 ⟨i, h.1⟩ ⟨j, h.2⟩
-      · simp only [rel', dif_neg h]; exact rm.proper i j }
+      · simp only [rel', dite_eq_left h]; exact hr3 ⟨i, h.1⟩ ⟨j, h.2⟩
+      · simp only [rel', dite_eq_right h]; exact rm.proper i j }
   refine ⟨ρ, rfl, rfl, fun i j A A₁ AV AV₁ hA hA₁ hV hV₁ t ωA ωB Pi rf rl p p' hm B n Φ τ τ' hn hF => ?_, fun B i j t => ?_⟩
   · obtain ⟨c, hc⟩ := hr4 i j ρ A A₁ AV AV₁ hA hA₁ hV hV₁ t ωA ωB Pi rf rl p p' hm B
     exact ⟨c, fun a b hab => hc n Φ τ τ' hn hF a b (e i j ▸ hab)⟩

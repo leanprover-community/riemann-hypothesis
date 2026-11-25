@@ -19,17 +19,9 @@ section
 
 variable {O G : Type} [CommRing O] [Group G]
 
-private def Cond (Ψ : G →* Oˣ) (I : Subgroup G) {C : Type} [CommRing C] [Algebra O C] (r : G →* GG (m := 3) (R := C)) : Prop :=
-  (∀ s ∈ I, (r s).mat.charpoly = ∏ a, (X - Polynomial.C (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ a s)))) ∧
-    ∀ s : Fin 3 → G, (∀ a, s a ∈ I) →
-      ((r (s 0)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 0 (s 0)))) *
-        ((r (s 1)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 1 (s 1)))) *
-        ((r (s 2)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 2 (s 2)))) = 0
-
-
 private theorem cond_eqs (Ψ : G →* Oˣ) (I : Subgroup G) {R : Type} [CommRing R] [Algebra O R] (r : G →* GG (m := 3) (R := R)) :
     ∃ S : Set R, ∀ (C : Type) [CommRing C] [Algebra O C] (f : R →ₐ[O] C),
-      Cond Ψ I (push f r) ↔ ∀ a ∈ S, f a = 0 := by
+      GlobalTheory.OrdLoc.DcrOrd.Cond Ψ I (push f r) ↔ ∀ a ∈ S, f a = 0 := by
   let P : G → R[X] := fun s =>
     (r s).mat.charpoly - ∏ a, (X - Polynomial.C (algebraMap O R (UpperTheory.V.UnitaryThreeInertia.psi Ψ a s)))
   let M : (Fin 3 → G) → Matrix (Fin 3) (Fin 3) R := fun s =>
@@ -69,7 +61,7 @@ private theorem cond_eqs (Ψ : G →* Oˣ) (I : Subgroup G) {R : Type} [CommRing
 
 private theorem cond_tri (Ψ : G →* Oˣ) (I : Subgroup G) {C : Type} [CommRing C] [Algebra O C] (u : G →* GG (m := 3) (R := C))
     (ht : ∀ g a b, wt a b < 0 → (u g).mat a b = 0)
-    (hd : ∀ s ∈ I, ∀ a, (u s).mat a a = algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ a s)) : Cond Ψ I u := by
+    (hd : ∀ s ∈ I, ∀ a, (u s).mat a a = algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ a s)) : GlobalTheory.OrdLoc.DcrOrd.Cond Ψ I u := by
   refine ⟨fun s hs => ?_, fun s hs => ?_⟩
   · rw [Matrix.charpoly_of_upperTriangular]
     · simp only [hd s hs]
@@ -87,31 +79,6 @@ private theorem cond_tri (Ψ : G →* Oˣ) (I : Subgroup G) {C : Type} [CommRing
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [Matrix.mul_apply, Fin.sum_univ_three, h10, h20, h21, e0, e1, e2]
-
-private theorem cond_conj (Ψ : G →* Oˣ) (I : Subgroup G) {C : Type} [CommRing C] [Algebra O C] (u : G →* GG (m := 3) (R := C))
-    (hu : ∀ s ∈ I, (u s).right = 1) (n : GL (Fin 3) C) (h : Cond Ψ I u) : Cond Ψ I (conjBy n u) := by
-  have hm : ∀ s ∈ I, (conjBy n u s).mat =
-      (n : Matrix (Fin 3) (Fin 3) C) * (u s).mat * ((n⁻¹ : GL (Fin 3) C) : Matrix (Fin 3) (Fin 3) C) := by
-    intro s hs
-    have : (conjBy n u s).left = n * (u s).left * n⁻¹ := by
-      simp [conjBy, hu s hs]
-    simp only [GG.mat, this, Units.val_mul]
-  have hc : ∀ (A : Matrix (Fin 3) (Fin 3) C) (c : C),
-      (n : Matrix (Fin 3) (Fin 3) C) * A * ((n⁻¹ : GL (Fin 3) C) : Matrix (Fin 3) (Fin 3) C) - Matrix.scalar _ c =
-      (n : Matrix (Fin 3) (Fin 3) C) * (A - Matrix.scalar _ c) *
-        ((n⁻¹ : GL (Fin 3) C) : Matrix (Fin 3) (Fin 3) C) := by
-    intro A c
-    rw [mul_sub, sub_mul, ← (Matrix.scalar_commute c (fun _ => Commute.all _ _) _).eq, mul_assoc (Matrix.scalar _ c),
-      Units.mul_inv, mul_one]
-  refine ⟨fun s hs => ?_, fun s hs => ?_⟩
-  · rw [hm s hs, ← h.1 s hs, Matrix.coe_units_inv, Matrix.charpoly_units_conj]
-  · rw [hm _ (hs 0), hm _ (hs 1), hm _ (hs 2), hc, hc, hc]
-    have := h.2 s hs
-    generalize (u (s 0)).mat - _ = A at *
-    generalize (u (s 1)).mat - _ = B at *
-    generalize (u (s 2)).mat - _ = D at *
-    simp only [mul_assoc, Units.inv_mul_cancel_left]
-    rw [← mul_assoc B, ← mul_assoc A, ← mul_assoc A, this, zero_mul, mul_zero]
 
 end
 
@@ -162,7 +129,7 @@ theorem UpperTheory.V.Loc.lemma2a :
     LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : _root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition O D.η D.Ψ)) (C : Type) [CommRing C] [Algebra O C] (r : GQ l →* GG (m := 3) (R := C)), D.On U r → (∀ s ∈ Iq l, (r s).mat.charpoly = ∏ a, (X - Polynomial.C (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi D.Ψ a s)))) ∧ ∀ s : Fin 3 → GQ l, (∀ a, s a ∈ Iq l) → ((r (s 0)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi D.Ψ 0 (s 0)))) * ((r (s 1)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi D.Ψ 1 (s 1)))) * ((r (s 2)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi D.Ψ 2 (s 2)))) = 0 := by
   intro hL l _ O _ _ _ _ _ _ _ D U C _ _ r hr
   obtain ⟨f, rfl, hf⟩ := hr
-  show Cond D.Ψ (Iq l) (push f U.r.hom)
+  show GlobalTheory.OrdLoc.DcrOrd.Cond D.Ψ (Iq l) (push f U.r.hom)
   obtain ⟨S, hS⟩ := cond_eqs D.Ψ (Iq l) U.r.hom
   obtain ⟨_, _, _⟩ := frac_alg l O
   obtain ⟨x, hx, -⟩ := univEx D U
@@ -190,8 +157,8 @@ theorem UpperTheory.V.Loc.lemma2a :
     refine MonoidHom.ext fun s => ?_
     simp only [push, MonoidHom.comp_apply, GG.map_map, e]
   obtain ⟨u, m, hu, -, -, hum⟩ := (ordEq hL D (FractionRing O) B π hn _).1 ⟨U.r.hasMult, hred, hc, hcr⟩
-  have hcond : Cond D.Ψ (Iq l) (push g U.r.hom) := by
+  have hcond : GlobalTheory.OrdLoc.DcrOrd.Cond D.Ψ (Iq l) (push g U.r.hom) := by
     rw [hum]
-    exact cond_conj _ _ u (fun s hs => (hu.mult s).trans (D.η_unr s hs)) m
+    exact GlobalTheory.OrdLoc.DcrOrd.cond_conj _ _ u (fun s hs => (hu.mult s).trans (D.η_unr s hs)) m
       (cond_tri _ _ u hu.tri (triDiag D (FractionRing O) B π hn u hu))
   exact Ideal.Quotient.eq_zero_iff_mem.1 ((hS B g).1 hcond a ha)

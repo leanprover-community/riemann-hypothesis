@@ -183,7 +183,7 @@ theorem reduction_of (hI : InnerFacts) (hKc : KHc) (hKh : KHarm) (hHc : HcHarm) 
       rw [map_sub, FockRaiseLowGrade.hc_hc]
       by_cases h : e' = e
       · subst h; simp
-      · rw [if_neg h, hother e' h, sub_zero]
+      · rw [ite_eq_right h, hother e' h, sub_zero]
     exact sub_eq_zero.mp this
   rw [hPe]
   exact (mem_homogeneousSubmodule _ _).mpr (homogeneousComponent_isHomogeneous e P)

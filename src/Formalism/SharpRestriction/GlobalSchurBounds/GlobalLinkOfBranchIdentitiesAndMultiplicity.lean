@@ -315,7 +315,7 @@ theorem den_of_isLocBasis {L : Submodule (𝓞 K) (Fin n → K)} (hfg : L.FG) {Y
   let t : (Fin n → K) → ℕ := fun g => if h : g ∈ S then (ht g h).choose else 1
   have htS : ∀ g ∈ S, ¬ l ∣ t g ∧ ∀ a, (t g : K) * ((((Y⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) *ᵥ g) a) ∈
       (algebraMap (𝓞 K) K).range := fun g hg => by
-    simp only [t, dif_pos hg]; exact (ht g hg).choose_spec
+    simp only [t, dite_eq_left hg]; exact (ht g hg).choose_spec
   refine ⟨∏ g ∈ S, t g, ?_, fun x hx => ?_⟩
   · rw [Prime.dvd_finsetProd_iff hl.out.prime]
     rintro ⟨g, hg, hdvd⟩

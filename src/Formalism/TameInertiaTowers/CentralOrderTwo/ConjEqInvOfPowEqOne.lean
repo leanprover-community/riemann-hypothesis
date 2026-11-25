@@ -126,52 +126,8 @@ end UnitConjugation
 
 open UnitConjugation
 
-theorem layerConj_of (_hG : LayerGalois) : LayerConj := by
+theorem layerConj_of : LayerConj := by
   intro n q d _ hqd L _ _ ζ a b h φ σ
   exact conj_iff hqd.1.pos hqd.2.1.pos h φ σ
-
-theorem layerReal_of (hG : LayerGalois) (hC : LayerConj) : LayerReal := by
-  intro n q d hn hqd L _ _ ζ a b h
-  obtain ⟨hGal, hfin, _hmul, hbij⟩ := hG n q d hn hqd L ζ a b h
-  have h1 : ∀ (φ : L →+* ℂ) (σ : Gal(L/ℚ)),
-      (∀ x, φ (σ x) = starRingEnd ℂ (φ x)) ↔ galMap h.1 a b σ = JJ n :=
-    fun φ σ => hC n q d hn hqd L ζ a b h φ σ
-  have hq : 0 < q := hqd.1.pos
-  obtain ⟨σc, hσc⟩ := hbij.2 (JJ n)
-  have hTC : IsTotallyComplex L := by
-    refine ⟨fun w => ?_⟩
-    rw [InfinitePlace.isComplex_iff, ComplexEmbedding.isReal_iff]
-    intro hw
-    have h2 := RingHom.congr_fun hw a
-    rw [ComplexEmbedding.conjugate_coe_eq, phi_conj hq h.2.1] at h2
-    have h3 : (2 : ℂ) * w.embedding a = 0 := by linear_combination -h2
-    rcases mul_eq_zero.1 h3 with h4 | h4
-    · exact two_ne_zero h4
-    · exact (map_ne_zero _).2 (ne_zero_of_sq hq h.2.1) h4
-  have hCM : IsCMField L := by
-    refine IsCMField.of_forall_isConj L (σ := σc) (fun φ => ?_)
-    ext x
-    rw [ComplexEmbedding.conjugate_coe_eq]
-    exact ((h1 φ σc).2 hσc x).symm
-  have h5 : ∀ x : L, x ∈ maximalRealSubfield L ↔
-      ∀ σ : Gal(L/ℚ), galMap h.1 a b σ = JJ n → σ x = x := by
-    intro x
-    rw [mem_maximalRealSubfield_iff]
-    constructor
-    · intro hx σ hσ
-      let φ : L →+* ℂ := Classical.choice (inferInstance : Nonempty _)
-      apply φ.injective
-      rw [(h1 φ σ).2 hσ x]
-      exact hx φ
-    · intro hx φ
-      have := (h1 φ σc).2 hσc x
-      rw [hx σc hσc] at this
-      exact this.symm
-  have h4 : Module.finrank ℚ (maximalRealSubfield L) = 2 ^ n := by
-    have h := (letI : Module.Free (maximalRealSubfield L) L := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank ℚ (maximalRealSubfield L) L)
-    rw [Algebra.IsQuadraticExtension.finrank_eq_two (maximalRealSubfield L) L, hfin,
-      pow_succ] at h
-    omega
-  exact ⟨hCM, h5, h4⟩
 
 end Formalism.TwoAdicCyclotomicDecomposition

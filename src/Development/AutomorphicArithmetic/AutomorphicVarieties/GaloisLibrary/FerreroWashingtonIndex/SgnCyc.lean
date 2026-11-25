@@ -118,7 +118,7 @@ theorem UpperTheory.V.FW.classGroup_div_mem_of_mul_conj_eq :
       map_mul' := Ideal.map_mul (RingOfIntegers.mapRingEquiv τ) }
   let f : Ideal (𝓞 K) → ClassGroup (𝓞 K) := fun a =>
     if h : a ∈ (Ideal (𝓞 K))⁰ then ClassGroup.mk0 ⟨a, h⟩ else 1
-  have hfv : ∀ a (h : a ∈ (Ideal (𝓞 K))⁰), f a = ClassGroup.mk0 ⟨a, h⟩ := fun a h => dif_pos h
+  have hfv : ∀ a (h : a ∈ (Ideal (𝓞 K))⁰), f a = ClassGroup.mk0 ⟨a, h⟩ := fun a h => dite_eq_left h
   have hf : ∀ a b, a ≠ 0 → b ≠ 0 → f (a * b) = f a * f b := by
     intro a b ha hb
     have ha' := mem_nonZeroDivisors_of_ne_zero ha
@@ -316,15 +316,11 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qh29.cE :
-    (E : Type) → [inst : Field E] → [inst_1 : NumberField E] → [NumberField.IsCMField E] → E ≃+* E :=
-    fun (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] ↦ (NumberField.IsCMField.complexConj E).toRingEquiv
-
 theorem UpperTheory.Reformulated.B.Qh29.norm_eq_mul_cE :
     ∀ (K : Type) [inst : Field K] [inst_1 : NumberField K] [inst_2 : NumberField.IsCMField K] (y : K),
       (Algebra.algebraMap (↥(NumberField.maximalRealSubfield K)) K : ↥(NumberField.maximalRealSubfield K) → K)
           ((Algebra.norm ↥(NumberField.maximalRealSubfield K) : K → ↥(NumberField.maximalRealSubfield K)) y) =
-        y * (UpperTheory.Reformulated.B.Qh29.cE K : K → K) y := by
+        y * (UpperTheory.V.cE K : K → K) y := by
   intro K _ _ _ y
   classical
   have hne := NumberField.IsCMField.complexConj_ne_one K
@@ -523,13 +519,13 @@ private theorem hMinus_mul (e : ι → K →+* ℂ) {a b : K} (ha : cE K a = a) 
   have h1 := hMinus_re (e i) ha ha0
   have h2 := hMinus_re (e i) hb hb0
   rcases h1.lt_or_gt with p | p <;> rcases h2.lt_or_gt with q | q
-  · rw [if_neg (not_lt.mpr (mul_pos_of_neg_of_neg p q).le), if_pos p, if_pos q]
+  · rw [ite_eq_right (not_lt.mpr (mul_pos_of_neg_of_neg p q).le), ite_eq_left p, ite_eq_left q]
     decide
-  · rw [if_pos (mul_neg_of_neg_of_pos p q), if_pos p, if_neg (not_lt.mpr q.le)]
+  · rw [ite_eq_left (mul_neg_of_neg_of_pos p q), ite_eq_left p, ite_eq_right (not_lt.mpr q.le)]
     decide
-  · rw [if_pos (mul_neg_of_pos_of_neg p q), if_neg (not_lt.mpr p.le), if_pos q]
+  · rw [ite_eq_left (mul_neg_of_pos_of_neg p q), ite_eq_right (not_lt.mpr p.le), ite_eq_left q]
     decide
-  · rw [if_neg (not_lt.mpr (mul_pos p q).le), if_neg (not_lt.mpr p.le), if_neg (not_lt.mpr q.le)]
+  · rw [ite_eq_right (not_lt.mpr (mul_pos p q).le), ite_eq_right (not_lt.mpr p.le), ite_eq_right (not_lt.mpr q.le)]
     decide
 
 private theorem hMinus_neg (f : ι → ZMod 2) : -f = f := by
@@ -1085,7 +1081,7 @@ private theorem exists_finset_adjoin_laurent_preimage (M : ℕ) [NeZero M] (L : 
     apply Subgroup.eq_top_of_card_eq
     rw [Nat.card_zpowers, ← hgp.eq_orderOf]
     have ht := IsCyclotomicExtension.Rat.torsionOrder_eq (n := M) (K := L)
-    rw [if_pos ⟨2 * k, by omega⟩] at ht
+    rw [ite_eq_left ⟨2 * k, by omega⟩] at ht
     exact ht.symm
   intro y
   obtain ⟨j, hj⟩ := Subgroup.mem_zpowers_iff.mp (htop ▸ Subgroup.mem_top y)

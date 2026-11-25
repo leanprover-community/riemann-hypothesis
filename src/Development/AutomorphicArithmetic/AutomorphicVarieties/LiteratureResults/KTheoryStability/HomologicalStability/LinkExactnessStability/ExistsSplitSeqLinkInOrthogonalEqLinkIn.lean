@@ -64,7 +64,7 @@ theorem form_dot_corr (γ : List ((Fin N → R) × (Fin N → R))) (hγ : γ ∈
     intro i _
     rw [dotProduct_smul, h k i, smul_eq_mul]
     split_ifs <;> simp
-  rw [Finset.sum_congr rfl hs, Finset.sum_ite_eq Finset.univ k, if_pos (Finset.mem_univ _),
+  rw [Finset.sum_congr rfl hs, Finset.sum_ite_eq Finset.univ k, ite_eq_left (Finset.mem_univ _),
     sub_self]
 
 end GlobalTheory.SeqCx.RowLink

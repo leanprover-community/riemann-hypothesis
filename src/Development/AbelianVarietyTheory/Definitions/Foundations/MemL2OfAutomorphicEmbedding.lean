@@ -27,13 +27,6 @@ variable {Y Z : Type} [AddCommGroup Y] [Module ℂ Y] [AddCommGroup Z] [Module �
 
 variable {V}
 
-def LocContains (τ : Representation ℂ (Kv V v) Z) (σv : Representation ℂ (Gv V v) Y) : Prop :=
-  Contains τ (σv.comp (Kv V v).subtype)
-
-def ContainsAt (τ : Representation ℂ (Kv V v) Z) (σ : Representation ℂ (GfC V) W) : Prop :=
-  LocContains τ (σ.comp (locFin V v))
-
-
 variable {σ : Representation ℂ (GfC V) W} {σv : Representation ℂ (Gv V v) Y} {τ : Representation ℂ (Kv V v) Z}
 
 end Types
@@ -41,8 +34,6 @@ end Types
 section Mult
 
 variable (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
-
-def mDisc (π : GA D V →* (H →L[ℂ] H)) : Cardinal := multIn π (RG V μ) (L2discG V μ)
 
 def mCusp (π : GA D V →* (H →L[ℂ] H)) : Cardinal := multIn π (RG V μ) (L2cusp V μ)
 
@@ -107,12 +98,6 @@ variable {ι ι' : finVec V θ A π →ₗ[ℂ] (GA D V → ℂ)}
 
 
 end Forms
-
-section Examples
-
-variable (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
-
-end Examples
 
 end GlobalTheory.AutMult
 

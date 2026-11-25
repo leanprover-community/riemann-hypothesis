@@ -3,43 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.ExistsArBaseAway
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DualRestrictSurjectiveOfIsTorsionFreeQuotient
 import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -101,18 +65,18 @@ theorem exists_equiv_stdSymp {M : Type} [AddCommGroup M] [Module.Free ℤ M] [Mo
     rw [Module.Basis.equivFun_symm_apply]; simp [Pi.single_apply]
   rw [hs, hs, Out.stdSymp]
   rcases i with i | i <;> rcases j with j | j <;> have := i.2 <;> have := j.2
-  · rw [hb.left_left, hl, hl, if_neg (by omega), if_neg (by omega)]
+  · rw [hb.left_left, hl, hl, ite_eq_right (by omega), ite_eq_right (by omega)]
   · rw [hb.left_right, hl, hr]
     by_cases h : i = j
-    · subst h; rw [if_pos rfl, if_pos (by omega)]
+    · subst h; rw [ite_eq_left rfl, ite_eq_left (by omega)]
     · have : (i : ℕ) ≠ j := fun a => h (Fin.ext a)
-      rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
   · rw [hb.right_left hB, hl, hr]
     by_cases h : i = j
-    · subst h; rw [if_pos rfl, if_neg (by omega), if_pos (by omega)]
+    · subst h; rw [ite_eq_left rfl, ite_eq_right (by omega), ite_eq_left (by omega)]
     · have : (i : ℕ) ≠ j := fun a => h (Fin.ext a)
-      rw [if_neg h, if_neg (by omega), if_neg (by omega)]
-  · rw [hb.right_right, hr, hr, if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
+  · rw [hb.right_right, hr, hr, ite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem exists_isSympBasis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H),
     ∃ bas : (Fin (2 * (Module.finrank ℚ E / 2 * (D.p + D.q))) → ℤ) ≃ₗ[ℤ] D.La, IsSympBasis D bas := by

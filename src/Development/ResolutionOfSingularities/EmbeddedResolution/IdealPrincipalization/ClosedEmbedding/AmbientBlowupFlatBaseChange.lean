@@ -185,8 +185,6 @@ theorem strictTransform_isIso_comp {A B C : Scheme.{u}} [IsLocallyNoetherian B]
     [IsLocallyNoetherian C] (e : C ⟶ B) [IsIso e] (π : B ⟶ A) (Z D : A.IdealSheafData)
     (_hπ : Blowup.IsBlowupAlongIdealSheaf π Z) :
     Blowup.strictTransform (e ≫ π) Z D = (Blowup.strictTransform π Z D).comap e := by
-  have : QuasiCompact (strictTransformι (e ≫ π) Z D) := inferInstance
-  have : QuasiCompact (strictTransformι (e ≫ π) Z D ≫ e) := inferInstance
   obtain ⟨φ, hφiso, hφfac⟩ := exists_isIso_strictTransformOpens_of_isIso e π Z D
   have := hφiso
   have hker : (strictTransformι (e ≫ π) Z D ≫ e).ker
@@ -215,7 +213,6 @@ namespace FunctorialResolution.EmbeddedResolution
 
 private theorem imageIdealSheaf_top {S X : Scheme.{u}} (σ : S ⟶ X) :
     _root_.FunctorialResolution.Blowup.schemeImageIdeal σ (⊤ : S.IdealSheafData) = ⊤ := by
-  have hemp : IsEmpty ↥(⊤ : S.IdealSheafData).subscheme := inferInstance
   have hqc : QuasiCompact ((⊤ : S.IdealSheafData).subschemeι ≫ σ) := by
     constructor
     intro U _ _

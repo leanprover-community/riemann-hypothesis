@@ -45,6 +45,3 @@ open scoped TensorProduct
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
-
-theorem _root_.GlobalTheory.T.isFiniteAdelicMatrixLattice_depthLatticeOfPair : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (p : Pair T), IsSelfDualC (G.pS p) (G.latS p) → IsSelfDualC (G.pT p) (G.latT p) → FinLat (depLat G p) := by
-  first | exact @GlobalTheory.AscFin.DepLat.finLat_depLat

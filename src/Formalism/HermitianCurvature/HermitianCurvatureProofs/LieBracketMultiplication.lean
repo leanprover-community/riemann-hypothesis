@@ -50,26 +50,13 @@ theorem uw_inv {h : Mx k r} (hh : h ∈ UWset k r z) : h⁻¹ ∈ UWset k r z :=
   calc h⁻¹ *ᵥ z = h⁻¹ *ᵥ (h *ᵥ z) := by rw [hh.2.2]
     _ = z := by rw [Matrix.mulVec_mulVec, LeftDerivativeCurves.uh_inv_mul hh.1, Matrix.one_mulVec]
 
-theorem lie_zero : InLieW k r z (0 : Mx k r) := by
-  unfold InLieW inLieLev
-  refine ⟨?_, by simp⟩
-  simp
+theorem lie_zero : InLieW k r z (0 : Mx k r) := Formalism.FourierDecayAlt.P.LieListProducts.lie_zero
 
 theorem lie_add {X Y : Mx k r} (hX : InLieW k r z X) (hY : InLieW k r z Y) : InLieW k r z (X + Y) := by
   apply _root_.Formalism.FourierDecayAlt.P.LieListProducts.lie_add <;> assumption
 
 theorem lie_smul {X : Mx k r} (hX : InLieW k r z X) (s : ℝ) : InLieW k r z ((s : ℂ) • X) := by
-  unfold InLieW inLieLev at *
-  obtain ⟨⟨h1, h1'⟩, h2⟩ := hX
-  have hs : star (s : ℂ) = (s : ℂ) := Complex.conj_ofReal s
-  refine ⟨⟨?_, fun a ha => ⟨?_, ?_⟩⟩, ?_⟩
-  · rw [Matrix.conjTranspose_smul, hs, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, h1, smul_zero]
-  · first
-    | rw [Matrix.smul_mulVec, (h1' a ha).1, smul_zero]
-  · first
-    | rw [Matrix.smul_mulVec, (h1' a ha).2, smul_zero]
-  · first
-    | rw [Matrix.smul_mulVec, h2, smul_zero]
+  exact Formalism.FourierDecayAlt.P.LieListProducts.lie_smul hX s
 
 theorem lie_bracket {X Y : Mx k r} (hX : InLieW k r z X) (hY : InLieW k r z Y) :
     InLieW k r z (X * Y - Y * X) := by

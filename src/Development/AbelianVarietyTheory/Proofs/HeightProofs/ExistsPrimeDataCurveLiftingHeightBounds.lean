@@ -81,43 +81,7 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeightInequal
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
 import Formalism.LocalToGlobal.ProjectiveLattices.LiftSec
 import Formalism.LocalToGlobal.ProjectiveLattices.SecPtRed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.LowerBoundConstAtLargeMultipleNumericalBounds
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupBoundPageRows
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
@@ -135,11 +99,9 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FiniteReducedSection
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FinrankHostDivTwo
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.UpperBounds.PhRec
 import Formalism.LocalToGlobal.ProjectiveLattices.CompTieA
 import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsRealisationPrimeDataCurveLiftingStatement, Development.AbelianVarietyTheory.Proofs.HeightProofs.AuxiliaryCuspFormConstantMonotone, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsUnitOfVVEqZero, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConjCmHostRootNeSelf, Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FrameNormRestrictedDensity, Development.AbelianVarietyTheory.Proofs.HeightProofs.NotRestrDensityRescale, Development.AbelianVarietyTheory.Proofs.HeightProofs.SupCLeISupGeneric, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ChosenFormsRestrictBasisFunctionField, Development.AbelianVarietyTheory.Proofs.HeightProofs.HeightInequalitiesIndefiniteLiftIndex, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPrimeDataCurveLiftingHeightBounds
@@ -150,7 +112,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
 
 noncomputable section
 
@@ -182,7 +143,6 @@ private theorem secQ_data_of_real_local (G : GlobalFamilyData (xplus X E hM) ka 
 end General
 
 end GlobalTheory.PrimeData
-
 
 theorem _root_.GlobalTheory.T.exists_realisationPrimeData_curve_lifting : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (hT : GenFromTest (T.Q.Xo j) T.Q.c hG) (ka wL wF : WeightFamilies.Wt D j) (G : GlobalFamilyData (recPlus h j hj) ka wL wF) (S : Scal (recB h.toLawsCore)) (g0 : (recB h.toLawsCore).Cusp j wF), CurveHyp h j hj hG ka wL wF G S g0 → GenValInjSt h j hG → CompSplitSt h j hG → BIRSt h j hj hG G → (∀ (ka wL wF : WeightFamilies.Wt D j) (G : GlobalFamilyData (recPlus h j hj) ka wL wF), BigAt h j hj hG G → BIRSt h j hj hG G) → 0 < wL.n → (j < D.R.m → (recPlus h j hj).NonZeroComp _ G.et) → ∀ (Gc Prw : ℝ) (Tn : ℕ), ∃ (y : ∀ la, PtsG G la → (extAll h j hj).Pt' la) (hw : ∀ la ζ, FromW (E := extAll h j hj) (hM := intAtExt_extAll h j hj) ζ (y la ζ)), (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InCurve) ∧ (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InTie S) ∧ (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InLiftC S Gc Prw Tn) := by
   intro D T h j hj hG hT ka wL wF G S g0 hH hV hC hB hB' hn het Gc Prw Tn
@@ -277,9 +237,6 @@ theorem auxiliaryCuspFormConstant_monotone (D : D7) (j : ℕ) {a a' b b' : ℝ} 
     div_le_div_of_nonneg_right (by linarith) (Nat.cast_nonneg _)
   linarith
 
-
-
-
 end GlobalTheory.RunPrimeData
 end -- clump:auto
 end -- clump:auto
@@ -292,57 +249,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj GlobalTheory.Reg
 
-namespace GlobalTheory.HeightTop.Ties
-
-section
-
-open ReciprocityTheory.ChartRestriction.G.T0 GlobalTheory.Height.OrderTieGuards
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-
-end
-
-theorem exists_frameShift_ordTies : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → (∀ p : ℕ, p.Prime → l.GoodAt p) → l.A = 1 → ∀ [Fintype (Comp Xo c)] (h : GenFrEx Xo c), ∃ δ : ∀ Z : Comp Xo c, AddValuation (Om Z) (WithTop ℤ) → Ix Dw → ℤ, OrdTieQ h δ ∧ OrdTieQZ h δ ∧ (∀ (PY : HeightOneSpectrum (𝓞 c.F) → Type) (lies : ∀ la (T' : CDVR) (ι : c.F →+* T'.Fr), IntFr Xo c T' ι → PY la → Prop), LiesTotal Xo c (trivialClassCondition Xo c) PY lies → OrdTieOn h δ (trivialClassCondition Xo c) PY lies ∧ OrdTie h δ (trivialClassCondition Xo c) PY lies) ∧ ∀ d : ReciprocityTheory.ChartRestriction.G.T0.Data c.F (Comp Xo c) (fun Z => Om Z) (WTZ E) (fun Z => AC Z), DivFin d → FrShFin d δ := by
-  intro E _ _ _ H Dw l Xo c hpq hgood hA _ h
-  obtain ⟨δ, hv, hfin⟩ := exists_frameShift_frShFin E H Dw l Xo c hpq hgood hA h
-  have hQZ : OrdTieQZ h δ := by
-    intro Z v hd ht
-    obtain ⟨T, ψ, y, hψ, hy⟩ := hv Z v hd (Or.inr ht)
-    have htriv : trivCls Xo c T _ y := by
-      intro a ha
-      have ha' : algebraMap c.F (Om Z) a ≠ 0 := (map_ne_zero _).2 ha
-      refine GlobalTheory.HeightDefinite.Ties.exists_unit_of_vV_eq_zero T ((map_ne_zero _).2 ha) ?_
-      have := (hψ _ ha').trans (ht a ha)
-      exact_mod_cast this
-    refine ⟨⟨T, _, y, htriv⟩, fun a n f hf h0 => ?_, fun a n f hf h0 => ?_⟩
-    · change _ = nval T.V 1 (evI y f)
-      rw [nval_of_ne (fun hz => h0 ((hy a n f hf).1.1 hz)), (hy a n f hf).2 h0]
-      simp
-    · change nval T.V 1 (evI y f) = ⊤
-      rw [(hy a n f hf).1.2 h0, nval_zero]
-  refine ⟨δ, fun Z v hd ht => ?_, hQZ, fun PY lies hl => ?_, fun d hD => hfin d hD⟩
-  · obtain ⟨q, hq, -⟩ := hQZ Z v hd ht
-    exact ⟨q, hq⟩
-  · have hOn := GlobalTheory.HeightDefinite.Ties.ordTieOn_of_valued hl hv
-    exact ⟨hOn, hOn.ordTie⟩
-
-theorem ordTies_of_pins : ∀ (D : D7) (Q : Par D), Q.Pins → ∀ j, InR D j → ∀ [Fintype (Comp (Q.Xo j) Q.c)] (h : GenFrEx (Q.Xo j) Q.c), KapFG (Q.Xo j) Q.c ∧ (∃ d, KapTrdeg (Q.Xo j) Q.c d ∧ d + Nat.card (FlagVar (Q.Dw j)) = WeightFamilies.dimY D j) ∧ FnTrdeg (Q.Xo j) Q.c (WeightFamilies.dimY D j) ∧ CompNe (Q.Xo j) Q.c ∧ ∃ δ : ∀ Z : Comp (Q.Xo j) Q.c, AddValuation (Om Z) (WithTop ℤ) → Ix (Q.Dw j) → ℤ, OrdTieQ h δ ∧ OrdTieQZ h δ ∧ OrdTieOn h δ (trivialClassCondition (Q.Xo j) Q.c) (fun _ => Unit) (fun _ _ _ _ _ => True) ∧ OrdTie h δ (trivialClassCondition (Q.Xo j) Q.c) (fun _ => Unit) (fun _ _ _ _ _ => True) ∧ ∀ d : ReciprocityTheory.ChartRestriction.G.T0.Data Q.c.F (Comp (Q.Xo j) Q.c) (fun Z => Om Z) (WTZ D.host.E) (fun Z => AC Z), DivFin d → FrShFin d δ := by
-  intro D Q hP j hj _ h
-  obtain ⟨hgood, hA, -, -, -, -, hrk⟩ := GlobalTheory.PinNum.numerics_of_pins D Q hP
-  obtain ⟨hr, hr1, hdim⟩ := hrk j hj
-  have h1 : 1 ≤ (Q.Dw j).p + (Q.Dw j).q := hr ▸ hr1
-  obtain ⟨hfg, htr⟩ := kap_fg_trdeg _ _ (Q.Dw j) Q.l (Q.Xo j) Q.c
-  obtain ⟨δ, hq, hqz, hon, hfin⟩ := exists_frameShift_ordTies _ _ (Q.Dw j) Q.l (Q.Xo j) Q.c h1 hgood hA h
-  have hl : LiesTotal (Q.Xo j) Q.c (trivialClassCondition (Q.Xo j) Q.c) (fun _ => Unit) (fun _ _ _ _ _ => True) := by
-    unfold LiesTotal
-    intros
-    exact ⟨(), trivial⟩
-  obtain ⟨ho, ht⟩ := hon _ _ hl
-  exact ⟨hfg, ⟨_, htr, hdim⟩, hdim ▸ fnTrdeg_of _ _ _ htr,
-    (GlobalTheory.GeomIrr.compNe_and_exists_fnAlgClosed _ _ (Q.Dw j) Q.l (Q.Xo j) Q.c h1).1, δ, hq, hqz, ho, ht, hfin⟩
-
-end GlobalTheory.HeightTop.Ties
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsUnitOfVVEqZero =====
@@ -507,19 +413,6 @@ theorem eq_wsmul_iff (h : LawsCore T) {j : ℕ} (ka wL : WeightFamilies.Wt D j) 
       push_cast
       rfl
 
-section Density
-
-variable (h : LawsCore T) (j : ℕ) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (fn : FrameNorms T j) (yP : GenericFrames T j)
-  (ka : WeightFamilies.Wt D j)
-
-end Density
-
-section Separate
-
-variable {j : ℕ}
-
-end Separate
-
 end GlobalTheory.LowerBoundCompare
 end -- clump:auto
 end -- clump:auto
@@ -553,7 +446,6 @@ namespace GlobalTheory.HeightTop.Generic
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-alias supPTGe_of_fnPin := GlobalTheory.HeightDefinite.Generic.supPTGe_of_fnPin
 alias exists_frame := GlobalTheory.HeightDefinite.Generic.exists_frame
 
 theorem nrmTieU_of_fnPin (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (hj : InR D j)
@@ -584,7 +476,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.SectionBasis
 
-
 end GlobalTheory.SectionBasis
 end -- clump:auto
 end -- clump:auto
@@ -595,19 +486,12 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.T0 (meanK PT)
 
 namespace GlobalTheory.HeightTop
-
-theorem nonempty_place (K : Type) [Field K] [NumberField K] : Nonempty (HeightOneSpectrum (𝓞 K)) := by
-  obtain ⟨m, hm⟩ := Ideal.exists_maximal (𝓞 K)
-  exact ⟨⟨m, hm.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField K)⟩⟩
 
 theorem meanK_le_const {K : Type} [Field K] [NumberField K] {F : (K →+* ℂ) → ℝ} {b : ℝ} (h : ∀ sg, F sg ≤ b) :
     meanK F ≤ b := by
@@ -658,16 +542,6 @@ theorem weightSumVector_firstGeneratorWeight {wL w1 : WeightFamilies.Wt D j} (h 
   · have := h.1
     show (w1.n : ℤ) = (2 : ℕ) • ((wL.n : ℤ) - ((1 : ℕ) : ℤ))
     rw [nsmul_eq_mul]; push_cast; omega
-
-theorem weightSumVector_secondGeneratorWeight_definite {wL wF w2 : WeightFamilies.Wt D j} (h : IsG2 wL wF w2) :
-    wtZ (wtA w2) w2.n = (WeightFamilies.dimY D j + 4 : ℕ) • wtZ (wtA wL) wL.n - wtZ (wtA wF) wF.n := by
-  refine Prod.ext (funext fun x => ?_) ?_
-  · have := wtA_add_eq h.2.1 h.2.2 x
-    show (wtA w2 x : ℤ) = (WeightFamilies.dimY D j + 4 : ℕ) • (wtA wL x : ℤ) - (wtA wF x : ℤ)
-    rw [nsmul_eq_mul, eq_sub_iff_add_eq]; exact_mod_cast this
-  · have := h.1
-    show (w2.n : ℤ) = (WeightFamilies.dimY D j + 4 : ℕ) • (wL.n : ℤ) - (wF.n : ℤ)
-    rw [nsmul_eq_mul, eq_sub_iff_add_eq]; exact_mod_cast this
 
 end Weights
 
@@ -762,12 +636,12 @@ theorem heights_indefinite :
     ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) [Fintype (Comp (T.Q.Xo j) T.Q.c)] (ka wL wF : WeightFamilies.Wt D j) (G : GlobalFamilyData (recPlus h j hj) ka wL wF) (S : Scal (recB h.toLawsCore)) (g0 : (recB h.toLawsCore).Cusp j wF), CurveHyp h j hj hG ka wL wF G S g0 → GenValInjSt h j hG → CompSplitSt h j hG → BIRSt h j hj hG G → ∀ (y : ∀ la, PtsG G la → (extAll h j hj).Pt' la) (hw : ∀ la ζ, FromW (E := extAll h j hj) (hM := intAtExt_extAll h j hj) ζ (y la ζ)), (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InCurve) → (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InTie S) → j < D.R.m → FnAlgClosed (Xo := (T.Q.Xo j)) (c := T.Q.c) → 3 ≤ WeightFamilies.dimY D j → 0 < wL.n → (∀ la, InBasis G la) → ∀ (large₂ : SizeData₂ D) (Gc PH Prw Pet PN' PP0' PI4' tableLineDegreeFive tableLineDegreeTwo POb CL AL : ℝ) (nus : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO) → ℝ) (w2 : WeightFamilies.Wt D j) (t2 : (recB h.toLawsCore).Cusp j w2), G.TiedW S Gc Prw → G.TiedTh S Gc → (∀ i, G.th' i ∈ (recB h.toLawsCore).Mlat j wF) → IsG2 wL wF w2 → t2 ∈ (recB h.toLawsCore).Mlat j w2 → (recPlus h j hj).NonZeroComp w2 t2 → (∀ σ, Real.log ((recB h.toLawsCore).supN j w2 σ t2) ≤ PI4' * (WeightFamilies.dimY D j : ℝ) * wL.size) → WeightedPrimeSumBoundAlt large₂ (recPJ h j hj) wL nus → WeightAlgebra.PN D large₂ ≤ PN' → LAMwAt large₂ (recB h.toLawsCore) j (wsmul (8 * ((WeightFamilies.dimY D j + 2) * G.N) ^ 2 * (WeightFamilies.dimY D j + 1) * G.del * (1 + ⌈POb⌉₊)) wL) CL AL → LamConst j large₂ CL AL (wsmul (8 * ((WeightFamilies.dimY D j + 2) * G.N) ^ 2 * (WeightFamilies.dimY D j + 1) * G.del * (1 + ⌈POb⌉₊)) wL) PP0' (8 * ((WeightFamilies.dimY D j + 2) * G.N) ^ 2 * (WeightFamilies.dimY D j + 1) * G.del * (1 + ⌈POb⌉₊)) wL.size → 1 ≤ wL.size → (WeightAlgebra.DF wL : ℝ) ≤ wL.size → Real.log G.N + 1 / 2 ≤ Prw * (wL.size - 1) → Real.log (Module.finrank ℚ T.Q.c.F) ≤ POb → Real.log (|(NumberField.discr T.Q.c.F : ℝ)| ^ (1 / (Module.finrank ℚ T.Q.c.F : ℝ))) ≤ POb → 1 ≤ PN' → 1 ≤ PP0' → 1 ≤ Gc → 1 ≤ PI4' → 1 ≤ Pet → 1 ≤ tableLineDegreeFive → 1 ≤ tableLineDegreeTwo → 1 ≤ Prw → 1 ≤ POb → PH = 2 * (PP0' + PN' + tableLineDegreeFive + tableLineDegreeTwo + PI4' + Prw) + Gc → ∀ (c th : ℝ) (w1 : WeightFamilies.Wt D j) (t1 : (recB h.toLawsCore).Cusp j w1), IsDoubledWeightWithShift wL w1 wL.n → t1 ∈ (recB h.toLawsCore).Mlat j w1 → (recPlus h j hj).NonZeroComp w1 t1 → (∀ σ, Real.log ((recB h.toLawsCore).supN j w1 σ t1) ≤ 2 * PI4' * (WeightFamilies.dimY D j : ℝ) * wL.size) → 0 < G.iet → G.et ∈ (recB h.toLawsCore).Mlat j _ → (recPlus h j hj).NonZeroComp _ G.et → (∀ σ, Real.log ((recB h.toLawsCore).supN j _ σ G.et) / G.iet ≤ Pet) → 0 ≤ c → c * (WeightAlgebra.g0 D : ℝ) ≤ 1 / 2 → CombAlg (T.Q.Xo j) T.Q.c (fun k => (G.w k).1) G.et.1 nus (c / (2 * (G.iet : ℝ))) → (∀ σ, GoodEmb T.Q.c σ → ∀ (k : (T.U j σ).Comp) (x : ReciprocityTheory.ChartRestriction.G.FD.Frame ((T.U j σ).X k).Ψ D.R.r), x ∈ ((T.U j σ).X k).dom → -Real.log (Real.sqrt (∑ k', recNrm (T.U j σ) (xiR D) (wtA wL) wL.n (G.w k').1 k x ^ 2)) ≤ tableLineDegreeFive * (WeightAlgebra.DF wL : ℝ) + c * ReciprocityTheory.ChartRestriction.G.I2.phiFD ((T.U j σ).X k) th x) → EtArch h th tableLineDegreeTwo j G.iet G.et → Heights (fun la => (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0)) Gc PH Prw Pet := by
   intro D T h j hj hG _ ka wL wF G S g0 hH hV hC hB y hw hcur htie hjm hac hD3 hn0 hIB large₂ Gc PH Prw Pet PN' PP0' PI4' tableLineDegreeFive tableLineDegreeTwo POb CL AL nus w2 t2 hTW hTT hthM hG2 ht2M ht2N ht2S hH1 hPN hLAM hLC hsz hDF hrw hnK hrd p1 p2 p3 p4 p5 p6 p7 p8 p9 hPH c th w1 t1 hG1 ht1M ht1N ht1S hi hetM hetN hetS hc0 hcg hcomb hI2 harch
   classical
-  haveI : Nonempty (HeightOneSpectrum (𝓞 T.Q.c.F)) := nonempty_place _
+  haveI : Nonempty (HeightOneSpectrum (𝓞 T.Q.c.F)) := Formalism.MainNotions.Gaps.EtaleWeightGaps.exists_prime _
   have hgt : GenFromTest (T.Q.Xo j) T.Q.c hG := fun Z => h.allTest j hj (Om Z) (genFr hG Z)
   have hx : 0 < xiR D := (GlobalTheory.PinNum.xiR_pos_le_one D T.Q h.pins.1).1
   have hU : ∀ σ, Formalism.L2.PjFree.GoodEmb T.Q.c σ →
       Formalism.L2.PjFree.IsUnf (Formalism.L2.PjFree.Unf.ofPj (T.U j σ)) := fun σ hσ => h.unf j hj σ hσ
-  obtain ⟨hkfg, ⟨d0, hd0, hd0'⟩, htr, hne, δ, hTQ, hTQZ, hTOn, hT, hFr⟩ := Ties.ordTies_of_pins D T.Q h.pins j hj hG
+  obtain ⟨hkfg, ⟨d0, hd0, hd0'⟩, htr, hne, δ, hTQ, hTQZ, hTOn, hT, hFr⟩ := GlobalTheory.HeightDefinite.Ties.ordTies_of_pins D T.Q h.pins j hj hG
   have hreg := h.reg j hj
   obtain ⟨fn, hpin, hfn⟩ := GlobalTheory.FrameNorm.Existence.exists_pinned _ _ _ _ (T.Q.Xo j) T.Q.c D.R.r _ hU (xiR D) hx
   obtain ⟨yP, hyP, hcx, -⟩ := GlobalTheory.Reg.exists_cBase_valAtCx _ _ _ _ (T.Q.Xo j) T.Q.c
@@ -790,7 +664,7 @@ theorem heights_indefinite :
   let wR : Fin (N + 1) → T.R j := fun k => (G.w (eN k)).1
   let jc : Comp (T.Q.Xo j) T.Q.c → Fin (N + 1) := fun Z => eN.symm (k0 Z)
   let wsize : WTZ D.host.E → ℝ := fun g => if g = wtZ (wtA wL) wL.n then wL.size else wF.size
-  have hsL : wsize (wtZ (wtA wL) wL.n) = wL.size := if_pos rfl
+  have hsL : wsize (wtZ (wtA wL) wL.n) = wL.size := ite_eq_left rfl
   have hsF : wsize (wtZ (wtA wF) wF.n) = wF.size := by
     by_cases e : wtZ (wtA wF) wF.n = wtZ (wtA wL) wL.n
     · have e1 : wF = wL := by
@@ -800,7 +674,7 @@ theorem heights_indefinite :
         · have : (wF.n : ℤ) = wL.n := congrArg Prod.snd e
           exact_mod_cast this
       rw [e, hsL, e1]
-    · exact if_neg e
+    · exact ite_eq_right e
   have hwb : ∀ Z, evC hG Z (wR (jc Z)) ≠ 0 := fun Z => by
     simp only [wR, jc, Equiv.apply_symm_apply]
     exact hk0 Z
@@ -815,7 +689,7 @@ theorem heights_indefinite :
   have h2Z := nzAt_of_nonZeroComp h j hj hG hV hC G hH.2.1 _ ht2N
   have huet := wtZ_wEt (D := D) (j := j) G.iet
   have hu1 := weightSumVector_firstGeneratorWeight hG1
-  have hu2 := weightSumVector_secondGeneratorWeight_definite hG2
+  have hu2 := GlobalTheory.HeightDefinite.weightSumVector_secondGeneratorWeight_definite hG2
   have hnz : NoCommonZero (T.Q.Xo j) T.Q.c wR := by
     intro k _ _ _ z
     obtain ⟨i, hi⟩ := hH.2.1.1 k z
@@ -911,7 +785,7 @@ theorem heights_indefinite :
   have iLAM : d.HtLAM := htLAM_of h.toLawsCore j hG δ fn yP (WeightFamilies.dimY D j) N 0 G.iet (WeightAlgebra.g0 D) c (wtA wL, wL.n) (wtA wF, wF.n) (wtA wL, wL.n) (0, 1) (wtA (wEt D j G.iet), (wEt D j G.iet).n) (wtA w1, w1.n) (wtA w2, w2.n) wR jc G.del (fun i => (G.th' i).1) 0 Fin.elim0 (wtA wL, wL.n) 0 Fin.elim0 ∅ G.et.1 t1.1 t2.1 (nuOf T.Q.c fun la => nus la / (ramOverZ la : ℝ)) (fun _ _ _ => 0) wsize (WeightAlgebra.DF wL : ℝ) PN' 1 1 PP0' 1 Gc PI4' Pet tableLineDegreeFive tableLineDegreeTwo Prw POb 0 0
     large₂ CL AL (wsmul d.n96 wL) hgt hkaZ hLAM
     (prodInLat_of_wtZ h.toLawsCore j hj wR wL _ _ (fun k => ⟨G.w (eN k), hTW.2.1 _, rfl⟩) hn1 hkaZ)
-    (Generic.supPTGe_of_fnPin D T.toCore h.toLawsCore j hj fn hpin hG yP hyP _) (by
+    (GlobalTheory.HeightDefinite.Generic.supPTGe_of_fnPin D T.toCore h.toLawsCore j hj fn hpin hG yP hyP _) (by
       show LamConst j large₂ CL AL _ PP0' d.n96 (wsize (wtZ (wtA wL) wL.n))
       rw [hsL]; exact hLC)
   have hlog := fun (w : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j w) (σ : T.Q.c.F →+* ℂ) =>
@@ -989,9 +863,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.RunPrimeData
 
-
-
-
 theorem exists_primeData_heights : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CT : ℝ) (ka wL wF : WeightFamilies.Wt D j) (Tn nP nW : ℕ) (h0 : ℝ) (S : Scal (recB h.toLawsCore)) (nus : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO) → ℝ) (CL : ℝ), FnAlgClosed (Xo := (T.Q.Xo j)) (c := T.Q.c) → PageOK large₂ (recPJ h j hj) H C2 A2 CT ka wL wF Tn nP nW h0 → HypC large₂ (recPJ h j hj) H C2 A2 7 0 CT S ka wL wF Tn nP nW h0 nus → 0 < CL → (∀ w : WeightFamilies.Wt D j, LAMwAt large₂ (recB h.toLawsCore) j w CL 2) → ∀ G : GlobalFamilyData (recPJ h j hj) ka wL wF, GenOK h j hj large₂ G S (cc D large₂ C2 A2 7 wL) → (j < D.R.m → EtaOK h j hj large₂ wL G.iet G.et) → G.TiedTh S (gcR large₂ (recB h.toLawsCore)) → (∀ la, InBasis G la) → Real.log G.del ≤ 1041 * Zb D large₂ ^ 3 → CombBound G S (cc D large₂ C2 A2 7 wL) nus → ∃ Qf : ∀ la, LocalPointData (gd2Xplus G (extAll h j hj) (intAtExt_extAll h j hj)) la, (∀ la, (Qf la).InCurve) ∧ (∀ la, (Qf la).InTie S) ∧ (∀ la, (Qf la).InLiftC S (gcR large₂ (recB h.toLawsCore)) (prwR large₂) Tn) ∧ Heights Qf (gcR large₂ (recB h.toLawsCore)) (phR large₂ (recB h.toLawsCore) CL wL) (prwR large₂) (WeightFamilies.PPv D large₂ 200000 2) := by
   intro D T h j hj large₂ H C2 A2 CT ka wL wF Tn nP nW h0 S nus CL hAlg hP hC hCL hLam G hGen hEta hTh hBas hdel hComb
   obtain ⟨hG, hT⟩ := GlobalTheory.Reg.genFrEx_and_genFromTest _ _ _ _ (T.Q.Xo j) T.Q.c
@@ -1056,7 +927,6 @@ theorem exists_primeData_heights : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : �
       GlobalTheory.phiFD_eq_zero_at_last_index D T h j hj hjm _ _ _ (runOK_of_pageOK hP) σ hσ k x hx
     rw [h2, mul_zero, add_zero] at h1
     exact h1
-
 
 end GlobalTheory.RunPrimeData
 end -- clump:auto

@@ -9,8 +9,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem inStrictNormalCrossingPositionAt_nil {X : Scheme.{u}} {k : Type u} [Field k]

@@ -170,10 +170,10 @@ theorem head_top_of_correspondence : PBI.HeadTopOfCorr := by
     have hm := Formalism.FourierDecayAlt.P.Topx1.act_mul ((Fr.ofWord L st (D.positionted w)).d L) (Fr.ofWord L st (D.positionted w)).F Φ
     rw [hm, ← hy, hd h hh y e, Formalism.FourierDecayAlt.P.Topx1.hsInner_sum_smul_left]
   unfold KB.Pl.RR D.RRplace
-  rw [dite_eq_left ⟨hp, hq⟩, dite_eq_right (by omega), if_pos rfl, hLHS]
+  rw [dite_eq_left ⟨hp, hq⟩, dite_eq_right (by omega), ite_eq_left rfl, hLHS]
   by_cases hw : w = []
   · subst hw
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     haveI : Subsingleton (Wd.Ix (Fin ([] : List C.Letter).length)) := ⟨fun a b => funext fun i => Fin.elim0 i⟩
     set e0 : Wd.Ix (Fin ([] : List C.Letter).length) := fun i => Fin.elim0 i
     rw [Finset.sum_eq_single e0 (fun b _ hb => absurd (Subsingleton.elim b e0) hb) (fun h => absurd (Finset.mem_univ e0) h)]
@@ -187,7 +187,7 @@ theorem head_top_of_correspondence : PBI.HeadTopOfCorr := by
       ((y' e0 : Q.Fn (JC.parLev P P.r).k (JC.parLev P P.r).r (Wq →L[ℂ] Wp)) x.1 x.2)
     simp only [one_smul, one_mul] at hs1
     rw [← hs1, hex y e0]
-  · rw [if_neg hw]
+  · rw [ite_eq_right hw]
     unfold Top.topOf
     refine Finset.sum_congr rfl fun e _ => Finset.sum_congr rfl fun ρ _ => ?_
     rw [hVp e, hVq e, hint, hint, hτ,

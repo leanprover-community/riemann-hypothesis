@@ -334,7 +334,7 @@ def iv (ε : S.V) (x : S.V) : 𝓞 E := by
 theorem iv_spec (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) {ε x : S.V} (hε : ε ∈ Λ) (hx : x ∈ Λ) :
     algebraMap (𝓞 E) E (iv ε x) = S.hT ε x := by
   have h := int_of_unimod Λ hU hε hx
-  simp only [iv, h, dif_pos]
+  simp only [iv, h, dite_eq_left]
   exact h.choose_spec
 
 theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (P : HeightOneSpectrum (𝓞 E))
@@ -401,8 +401,7 @@ theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT
         intro a _
         show mk (c a) * mk (iv (ε a) l) = mk (iv (ε a) l) * f (ef a)
         rw [hc a]; ring
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         apply Finset.sum_congr rfl
         intro a _
         rw [map_mul, iv_spec hU (hε a) hl])

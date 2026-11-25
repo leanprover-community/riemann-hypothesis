@@ -20,7 +20,7 @@ variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] [Decidabl
 
 private noncomputable def infEquiv (g : GL ι (A K)) :
     (ι → mixedSpace K) ≃L[ℝ] (ι → mixedSpace K) :=
-  let u := Matrix.GeneralLinearGroup.map adeleInfHom g
+  let u := Matrix.GeneralLinearGroup.map GroundTheory.Automorphic.Adele2.infRingHom g
   LinearEquiv.toContinuousLinearEquiv ((Matrix.toLin'OfInv u.inv_mul u.mul_inv).restrictScalars ℝ)
 
 private noncomputable def finHomeo (g : GL ι (A K)) :

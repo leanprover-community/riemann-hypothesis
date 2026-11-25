@@ -317,14 +317,14 @@ theorem stdSnd_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.ho
   unfold stdSnd
   by_cases hcnd : IsHalf (cA D e) t ∧ IsIntM (dualCoord A' WW βA' βW t) ∧
       ∀ i j, j.1 < a → InId I (dualCoord A' WW βA' βW t i j)
-  · rw [if_pos hcnd, if_pos ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
+  · rw [ite_eq_left hcnd, ite_eq_left ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
     refine (unitChar_congr he hl hc (isIntM_rightBlock a hcnd.2.1)
       (Z := rightBlock a fun i j => (n₀ : EAf D) * Z i j)
       (isIntM_rightBlock a fun i j => mul_mem (natCast_mem _ _) (hZ i j))
       (rightBlock_shift a (c := ((n * c : ℕ) : EAf D)) fun i j => ?_)).symm
     rw [h, Nat.cast_mul n₀]
     ring
-  · rw [if_neg hcnd, if_neg fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
+  · rw [ite_eq_right hcnd, ite_eq_right fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
 
 
 

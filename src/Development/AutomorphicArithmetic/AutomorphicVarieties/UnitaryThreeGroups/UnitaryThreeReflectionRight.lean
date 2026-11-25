@@ -111,14 +111,14 @@ def thetaAut : MulAut (GL (Fin m) R) where
 variable (m R) in
 def sgnAct : ℤˣ →* MulAut (GL (Fin m) R) where
   toFun s := if s = 1 then 1 else thetaAut (m := m) (R := R)
-  map_one' := if_pos rfl
+  map_one' := ite_eq_left rfl
   map_mul' s t := by
     rcases Int.units_eq_one_or s with rfl | rfl <;> rcases Int.units_eq_one_or t with rfl | rfl
     · simp
     · simp
     · simp
     · have h : ((-1 : ℤˣ) = 1) = False := by decide
-      simp only [neg_mul_neg, mul_one, if_true, h, if_false]
+      simp only [neg_mul_neg, mul_one, ite_true, h, ite_false]
       ext1 g
       exact (theta_theta (R := R) g).symm
 
@@ -127,7 +127,7 @@ def sgnAct : ℤˣ →* MulAut (GL (Fin m) R) where
 @[simp] theorem sgnAct_neg_one (g : GL (Fin m) R) : sgnAct (m := m) (R := R) (-1) g = theta g := by
   have h : ((-1 : ℤˣ) = 1) = False := by decide
   show (if (-1 : ℤˣ) = 1 then 1 else thetaAut (m := m) (R := R)) g = theta g
-  simp only [h, if_false]
+  simp only [h, ite_false]
   rfl
 
 
@@ -189,7 +189,7 @@ theorem GG.adFun_mul (x y : GG (m := m) (R := R)) (X : Matrix (Fin m) (Fin m) R)
   have hn : ((-1 : ℤˣ) = 1) = False := by decide
   rcases Int.units_eq_one_or s with rfl | rfl <;> rcases Int.units_eq_one_or t with rfl | rfl <;>
     simp only [GG.adFun, GG.mat, SemidirectProduct.mul_left, SemidirectProduct.mul_right,
-      sgnAct_one, sgnAct_neg_one, hn, if_true, if_false, mul_one, one_mul, neg_mul_neg,
+      sgnAct_one, sgnAct_neg_one, hn, ite_true, ite_false, mul_one, one_mul, neg_mul_neg,
       Units.val_mul, _root_.mul_inv_rev, Matrix.mul_assoc]
   · rw [← theta_conj_thetaLie_eq_thetaLie_conj]
     simp only [Matrix.mul_assoc]

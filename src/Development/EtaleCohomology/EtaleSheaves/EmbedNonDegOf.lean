@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.EmbedNonDeg
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.t_E2Cut LateralTheory.E.StandardEtaleChartsIdempotentGluing LateralTheory.E.ChartsGeom_vpaPf
   LateralTheory.E.GeometricData
 

@@ -217,7 +217,7 @@ theorem sumOver_eq (D : D7) {l : ℕ} (hl : l.Prime) (f : HeightOneSpectrum (�
 theorem split_or_inert (D : D7) {l : ℕ} (h2 : l ∉ D.host.small) (hq : l ≠ D.host.q) (hd : l ≠ D.host.d) :
     SplitK D l ∨ InertK D l := by
   unfold SplitK InertK Host.cls primeClass
-  simp only [h2, hq, hd, if_false]
+  simp only [h2, hq, hd, ite_false]
   split_ifs <;> simp
 
 end Formalism.MainNotions.TwistedPlaces
@@ -372,9 +372,9 @@ theorem flatCD_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hBand : BandPlaceW
   by_cases hb : tb.band i lam
   · have hI : bandI L C l = 1 := by
       unfold bandI
-      rw [if_pos (hBand i lam hti hb l hlam hl)]
-    rw [if_pos hb, hI]
-  · rw [if_neg hb]
+      rw [ite_eq_left (hBand i lam hti hb l hlam hl)]
+    rw [ite_eq_left hb, hI]
+  · rw [ite_eq_right hb]
     have := bandI_nonneg L C l
     have : 0 ≤ eta₃ L * bandI L C l := mul_nonneg he this
     linarith
@@ -398,22 +398,22 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
   have hr0 : (0 : ℝ) ≤ D.R.r := by positivity
   unfold lamB
   by_cases h23 : l ∈ D.host.small ∨ l = 3
-  · rw [if_pos h23]
+  · rw [ite_eq_left h23]
     exact hF i hti h23
   have hsm : l ∉ D.host.small := fun h => h23 (Or.inl h)
   have h2 : l ≠ 2 := fun h => hsm (by rw [h]; exact two_mem_small D)
   have h3 : l ≠ 3 := fun h => h23 (Or.inr h)
-  rw [if_neg h23]
+  rw [ite_eq_right h23]
   by_cases hqd : l = D.host.q ∨ l = D.host.d
-  · rw [if_pos hqd]
+  · rw [ite_eq_left hqd]
     exact (hG.1 i hti hqd).trans (hG.2 l hqd)
-  rw [if_neg hqd]
+  rw [ite_eq_right hqd]
   by_cases he : lStar L < l ∧ l ∉ tb.exc
-  · rw [if_pos he]
+  · rw [ite_eq_left he]
     obtain ⟨hlen, hBB⟩ := hE.1 i hti ⟨he.1, hlg, he.2⟩
     rw [hBB, hS, Finset.sum_eq_zero (fun lam hlam => hlen lam (hmemT lam hlam))]
     norm_num
-  rw [if_neg he]
+  rw [ite_eq_right he]
   · have hq : l ≠ D.host.q := fun h => hqd (Or.inl h)
     have hd : l ≠ D.host.d := fun h => hqd (Or.inr h)
     have h5l := Nat.Prime.five_le_of_ne_two_of_ne_three hp h2 h3
@@ -427,7 +427,7 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
     have he' := eP_nonneg L hC.le l
     unfold lenB
     by_cases hsp : SplitK D l
-    · rw [if_pos hsp]
+    · rw [ite_eq_left hsp]
       have ha : 2 * sumOver D l (tb.len i) ≤
           sumOver D l (fun lam => (2 * (nLam D lam : ℝ) * D.R.m + 1) * eP L C l) :=
         hA i hti ⟨h5l, hsp, hle, hlg⟩
@@ -443,10 +443,10 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
           (2 * (D.R.m : ℝ) + 1) * eP L C l * (2 * D.R.f) :=
         mul_le_mul_of_nonneg_left hn (by positivity)
       nlinarith
-    rw [if_neg hsp]
+    rw [ite_eq_right hsp]
     have hin : InertK D l := (split_or_inert D hsm hq hd).resolve_left hsp
     by_cases hb : (l : ℝ) < lA L ∧ 4 * D.host.Lw < ordH D l
-    · rw [if_pos hb]
+    · rw [ite_eq_left hb]
       have hb' := hRowB i hti ⟨hin, hb.1, hb.2, hlg⟩
       have hbr := rowBr_nonneg L (show 2 ≤ l by omega)
       calc ∑ lam ∈ T, tb.len i lam
@@ -459,7 +459,7 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
         _ = (C * D.R.r * rowBr L l) * ∑ lam ∈ T, ((nLam D lam : ℝ) + 1) := by rw [Finset.mul_sum]
         _ ≤ (C * D.R.r * rowBr L l) * (4 * D.R.f) := mul_le_mul_of_nonneg_left hn1 (by positivity)
         _ = 4 * (D.R.f : ℝ) * (C * D.R.r * rowBr L l) := by ring
-    · rw [if_neg hb]
+    · rw [ite_eq_right hb]
       have hX : ∀ lam ∈ T, tb.len i lam ≤
           (C * D.R.r * (hB L / (l : ℝ) ^ 2 + flatB L C l)) * ((nLam D lam : ℝ) + 1) +
             (C * D.R.m * eP L C l) * (nLam D lam : ℝ) := by
@@ -472,7 +472,7 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
               C * ((nLam D lam : ℝ) + 1) * D.R.r * (hB L / (l : ℝ) ^ 2 + flatB L C l) :=
             mul_le_mul_of_nonneg_left (by linarith) hCr
           nlinarith
-        · push_neg at hc
+        · push Not at hc
           have hord : ordH D l ≤ 4 * D.host.Lw := by
             by_contra! ho
             exact hb ⟨hc, ho⟩
@@ -582,11 +582,11 @@ theorem etaSum_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (P : ParameterChoic
     · refine (etaAt_le_g L tb C hRh h6 hj hlg).trans ?_
       apply mul_le_mul_of_nonneg_left _ (Real.log_natCast_nonneg l)
       apply mul_le_mul_of_nonneg_left _ hd0
-      simp only [U, sig, VVo, lamG, if_pos hlg]
+      simp only [U, sig, VVo, lamG, ite_eq_left hlg]
       have : 0 ≤ nuL D l := nuL_nonneg D l
       linarith
     · have hlam0 : 0 ≤ lamG L tb C l := by
-        simp only [lamG, if_neg hlg]; exact lamB_nonneg L tb hC hp.two_le
+        simp only [lamG, ite_eq_right hlg]; exact lamB_nonneg L tb hC hp.two_le
       have hU0 : 0 ≤ U l := by simp only [U]; linarith
       refine etaAt_le L hj hlg hU0 h1 h2 h3 ?_
       intro i hti hli π hπ
@@ -595,7 +595,7 @@ theorem etaSum_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (P : ParameterChoic
       have h4' := h4 i hti hl' π hπ
       have h6' := h6.1 i hti π hπ
       rw [hli] at hloc h4' h6'
-      simp only [U, sig, VVo, vG, lamG, if_neg hlg]
+      simp only [U, sig, VVo, vG, lamG, ite_eq_right hlg]
       linarith
 
   have hsum : etaSum L j ≤ (L.dZ0 j : ℝ) * ∑ l ∈ S, Real.log l * U l := by
@@ -622,7 +622,7 @@ theorem etaSum_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (P : ParameterChoic
       have hp := hSp l hl
       simp only [VVo]
       unfold vvTerm VVr Rows.Data.VV
-      rw [if_pos hp]
+      rw [ite_eq_left hp]
       ring
     rw [heq]
     exact Summable.sum_le_tsum S (fun l _ => vvTerm_nonneg D l) hsumm

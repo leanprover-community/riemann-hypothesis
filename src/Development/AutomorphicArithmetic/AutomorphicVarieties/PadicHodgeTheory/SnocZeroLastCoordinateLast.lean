@@ -34,9 +34,9 @@ private theorem ch_step {ρ : Representation E G V} {S : Set (G →* Eˣ)} {U : 
   rcases Nat.lt_succ_iff_lt_or_eq.1 hi with h | rfl
   · have h1 : i ≤ n := h.le
     have h2 : i + 1 ≤ n := h
-    simp only [h1, h2, if_true]
+    simp only [h1, h2, ite_true]
     exact hF i h
-  · simp only [le_refl, if_true, Nat.add_one_le_iff, lt_irrefl, if_false, hn]
+  · simp only [le_refl, ite_true, Nat.add_one_le_iff, lt_irrefl, ite_false, hn]
     exact ⟨le_sup_left, κ, hκ, x, rfl, hx⟩
 
 private theorem ch_step2 [FiniteDimensional E V] {ρ : Representation E G V} {S : Set (G →* Eˣ)}

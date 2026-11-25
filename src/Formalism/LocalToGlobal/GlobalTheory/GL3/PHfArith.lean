@@ -185,31 +185,19 @@ abbrev ph (c : 𝓞 D.host.K) : ℂ := phH D.host c
 def OKc (z : ℂ) : Prop := OKcH D.host z
 theorem d_pos : (0 : ℝ) < D.host.d := d_pos_host D.host
 alias sqrt_pos := _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO.sqrt_d_pos
-theorem sq_sqrtC : ((Real.sqrt D.host.d : ℝ) : ℂ) ^ 2 = (D.host.d : ℂ) := sq_sqrtC_host D.host
-theorem be_sq : be D ^ 2 = -(D.host.d : ℂ) := be_sq_host D.host
-theorem conj_be : starRingEnd ℂ (be D) = -be D := conj_be_host D.host
 theorem d_mod : ∃ k : ℤ, (D.host.d : ℤ) = 4 * k + 3 := d_mod_host D.host
 theorem phi_b : D.host.φ₀ (bb D) = be D := D.host.φ₀_mem
 theorem b_sq : bb D ^ 2 = -(D.host.d : D.host.E) := b_sq_host D.host
-theorem bK_mem : bb D ∈ D.host.K := FL.bE_mem D
 def bK : D.host.K := bK_host D.host
 theorem okc_of (u : 𝓞 D.host.K) : OKc D (D.host.φ₀ ((u : D.host.K) : D.host.E)) :=
   by apply _root_.UpperTheory.Reformulated.B.IntegralClosureCriterionSecond.okc_of
 theorem okc_mul {z w : ℂ} (hz : OKc D z) (hw : OKc D w) : OKc D (z * w) := okc_mul_host D.host hz hw
-theorem okc_conj {z : ℂ} (hz : OKc D z) : OKc D (starRingEnd ℂ z) := okc_conj_host D.host hz
 theorem coord_eq (x y : ℤ) : ((x : ℂ) + (y : ℂ) * be D) / 2 =
     (((x : ℝ) / 2 : ℝ) : ℂ) + (((y : ℝ) * Real.sqrt D.host.d / 2 : ℝ) : ℂ) * Complex.I := coord_eq_host D.host x y
-theorem im_coord (x y : ℤ) : (((x : ℂ) + (y : ℂ) * be D) / 2).im = (y : ℝ) * Real.sqrt D.host.d / 2 :=
-  im_coord_host D.host x y
 theorem good_of_okc {u : ℂ} (hu : OKc D u) : Good D (2 * u / (Real.sqrt D.host.d : ℂ)) := good_of_okc_host D.host hu
 theorem bK_sq : bK D ^ 2 = -(D.host.d : D.host.K) := bK_sq_host D.host
 def om : 𝓞 D.host.K := om_host D.host
 theorem ph_om : ph D (om D) = (1 + be D) / 2 := ph_om_host D.host
-theorem Bf_lat (δ : ℂ) (c₁ c₂ : 𝓞 D.host.K) :
-    Bf (δ * ph D c₁) (δ * ph D c₂) = Complex.normSq δ * (starRingEnd ℂ (ph D c₁) * ph D c₂).im :=
-  Bf_lat_host D.host δ c₁ c₂
-theorem okc_pair (c₁ c₂ : 𝓞 D.host.K) : OKc D (starRingEnd ℂ (ph D c₁) * ph D c₂) :=
-  okc_mul D (okc_conj D (okc_of D c₁)) (okc_of D c₂)
 theorem div_okc (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) (δ : ℂ) (hδ : δ ≠ 0) :
     ∃ m : ℕ, 0 < m ∧ area (lamOf D cc δ) = Complex.normSq δ * (Real.sqrt D.host.d / 2) * m ∧
       ∀ c ∈ cc, ∀ c' ∈ cc, OKc D (starRingEnd ℂ (ph D c') * ph D c / m) :=

@@ -82,7 +82,7 @@ private theorem cont_sub {Γ S C : Type} [TopologicalSpace Γ] [CommRing S] [IsN
   have hf : f = (fun x => if hx : ∃ g, φ g = x then f hx.choose else 0) ∘ φ := by
     funext g
     have hx : ∃ g', φ g' = φ g := ⟨g, rfl⟩
-    simp only [Function.comp_apply, dif_pos hx]
+    simp only [Function.comp_apply, dite_eq_left hx]
     exact key _ _ hx.choose_spec.symm
   change IsLocallyConstant f
   rw [hf]
@@ -268,7 +268,7 @@ private theorem cyc_mem {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l
       simp only [Function.comp_apply]
       rw [← hr]
       exact ht _ _ _ hlt
-    · push_neg at hex
+    · push Not at hex
       exfalso
       obtain ⟨s, hs, hne⟩ := h1
       exact hne (wsum hn L hex h0 s hs)
@@ -278,7 +278,7 @@ private theorem cyc_mem {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l
       simp only [Function.comp_apply]
       rw [← hr]
       exact ht _ _ _ hlt
-    · push_neg at hex
+    · push Not at hex
       exfalso
       obtain ⟨s, hs, hne⟩ := h1
       have hL' : ∀ t ∈ L.map (fun s => (s.1, s.2.2, s.2.1)), t.2.1 ≤ t.2.2 := by

@@ -1083,7 +1083,7 @@ theorem UpperTheory.Gal.crystallineComparison.normPt_of :
     intro F
     funext k
     have hP : ∃ F', ptOf hV (IsLocalRing.ResidueField W) F' = ptOf hV (IsLocalRing.ResidueField W) F := ⟨F, rfl⟩
-    simp only [G, dif_pos hP]
+    simp only [G, dite_eq_left hP]
     rw [(hPtC Y V hV (IsLocalRing.ResidueField W)).1 (Classical.choose_spec hP)]
   have alt2 := congrArg (Multiset.map G) alt
   rw [pts_map, pts_map] at alt2
@@ -1655,7 +1655,6 @@ private theorem wzSum {P : Type} (q n : ℕ) {I : Fin (n + 1) → Type} [∀ j, 
     rw [Multiset.map_map]
     rfl
   have key : ∀ a : Fin (n + 1) → ℕ, Φ (pts a v) = ∑ j, a j • G j := fun a => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [pts, map_sum, map_nsmul, hG]
   have h0 : ∑ j, wEv q j • G j = ∑ j, wOd q j • G j := by rw [← key, ← key, h]
   rw [Fintype.sum_sigma]

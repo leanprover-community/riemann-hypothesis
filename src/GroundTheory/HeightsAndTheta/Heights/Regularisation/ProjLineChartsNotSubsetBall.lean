@@ -78,14 +78,6 @@ variable [CompactSpace X] (P : PotentialCharts A) (om : LocPot X) (om_pot : IsPo
 
 end RegCharts
 
-namespace RegCharts
-
-variable (R : RegCharts A)
-
-variable [T2Space X] (hW : ∀ j, R.W j ⊆ ball 0 1)
-
-end RegCharts
-
 section RoundTrip
 
 variable [CompactSpace X] [T2Space X]

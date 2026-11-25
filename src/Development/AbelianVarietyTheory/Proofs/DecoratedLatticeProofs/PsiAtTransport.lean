@@ -6,41 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfP
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LastTwoStepsGuarded
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmulCompSmul
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MidChart
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
@@ -296,11 +261,11 @@ theorem psiAt_cosetIn (hL : L.Ok Ch sel mu cst G m2) (al : L.β m2) (P : rowSG P
   have h1 : (frsF sel mu p.1.1 P).symm (repY p.1.2) ∈ cosetIn p P := ⟨_, p.repY_mem hm, by simp⟩
   rw [← h] at h1
   obtain ⟨z, hz, h2⟩ := h1
-  rw [if_pos hP, pow_zero, inv_one, one_smul] at h2
+  rw [ite_eq_left hP, pow_zero, inv_one, one_smul] at h2
   have h3 := add_mem h2 ((GlobalTheory.TopLaw.coset_sub q.1.1 (q.mem_ybSet hm) hz (q.repY_mem hm) P).1 hP)
   rw [sub_add_sub_cancel] at h3
   have h4 := hL.psiInv al P x ((frsF sel mu q.1.1 P).symm (repY q.1.2)) _ fun i => by
-    rw [if_pos hP, pow_zero, inv_one, one_mul]
+    rw [ite_eq_left hP, pow_zero, inv_one, one_mul]
     exact mem_stdAt.1 h3 i
   rwa [add_sub_cancel] at h4
 

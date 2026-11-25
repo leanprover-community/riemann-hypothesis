@@ -45,7 +45,6 @@ theorem isOpenImmersion_specMap_algebraMap_graphAlgebraAway
     (f : τ → MvPolynomial σ R) (v : τ → σ) :
     IsOpenImmersion
       (Spec.map (CommRingCat.ofHom (algebraMap (GraphAlgebra f) (GraphAlgebraAway f v)))) := by
-  have : IsLocalization.Away (graphJacobianMinorDet f v) (GraphAlgebraAway f v) := inferInstance
   exact IsOpenImmersion.of_isLocalization (graphJacobianMinorDet f v) ..
 
 instance instIsOpenImmersionSpecMapGraphAway

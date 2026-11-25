@@ -193,16 +193,6 @@ def TopLev (j : ℕ) (P : rowSG Pr sel mu) (g : Sp X.E (R.N j) ≃ₗ[X.E] Sp X.
 
 end Levels
 
-section Moved
-
-open Formalism.L2.Forms
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
-  {S : StepLevel F E σ J T f bad} (k : basePts S) (κ : S.U)
-
-end Moved
-
 section Charts
 
 open Formalism.L2.Forms Formalism.MainNotions.G Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp
@@ -241,23 +231,6 @@ def ofStepIn {A : ColumnsAtT D.R C} {P : PeriodMap D.R C}
   chOf := S.chOf
   lat := S.lat
   K := S.K
-
-def ofOne {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} (eY : C.Y i ≃ Fr D i hi)
-    {lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)} (K : LevelChart D T bad i hi (C.stab i) lat) : StepCharts C i hi where
-  T := T
-  bad := bad
-  eY := eY
-  Ch := Unit
-  chOf := fun _ => ()
-  lat := lat
-  K := fun _ =>
-    { lev := K.lev
-      y := fun c => K.y c.1
-      y_bij := K.y_bij.comp ⟨Subtype.val_injective, fun c => ⟨⟨c, rfl⟩, rfl⟩⟩
-      y_lat := fun c => K.y_lat c.1
-      stabI := fun c => K.stabI c.1
-      stabI_inj := fun c => K.stabI_inj c.1
-      stabI_range := fun c => K.stabI_range c.1 }
 
 variable (St : StepCharts C i hi)
 

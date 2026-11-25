@@ -214,8 +214,8 @@ theorem XX_pow_mem_of_QQ_pow_mul_mem_map_phi : ∀ (l : ℕ) [Fact l.Prime] (O :
         (phi_mem_span l O ϖ (hdvd _ hlu) (m + 1) (Nat.le_add_left 1 m) (ih _ (hz j)))
   obtain ⟨a, b, hab⟩ := Ideal.mem_span_pair.1 (main c _ (Ideal.mul_mem_left _ _ (hc _)))
   have h := congrArg (PowerSeries.coeff c) hab
-  rw [map_add (f := _), PowerSeries.coeff_mul_C, PowerSeries.coeff_mul_X_pow', if_neg (by omega),
-    PowerSeries.coeff_X_pow, if_pos rfl, add_zero] at h
+  rw [map_add (f := _), PowerSeries.coeff_mul_C, PowerSeries.coeff_mul_X_pow', ite_eq_right (by omega),
+    PowerSeries.coeff_X_pow, ite_eq_left rfl, add_zero] at h
   exact hϖ.not_isUnit (IsUnit.of_mul_eq_one_right _ h)
 
 end GlobalTheory.Cyc
@@ -266,7 +266,7 @@ theorem indep_of_commensurable {κ : Type} [Fintype κ] (q : A) (hq : ∀ a, a *
     ext k i
     have e : ∑ i, ((M' * M) k i - ((q ^ (m + m')) • (1 : Matrix κ κ A)) k i) • b i = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul,
-        mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [sub_eq_zero, pow_add, mul_smul, hM', Finset.smul_sum]
       simp only [Matrix.mul_apply, Finset.sum_smul]
       rw [Finset.sum_comm]
@@ -620,7 +620,6 @@ theorem exists_kernel_padic {l : ℕ} [Fact l.Prime] (K LL : FinExt l) (T₁ T�
 
 end GlobalTheory.NL.CokerKill
 
-
 open GlobalTheory.NL.CokerKill in
 theorem GlobalTheory.NL.CokerKill.X_pow_kills_coker : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), lem3 D HW F := by
   intro D HW F Cm l _ K s LL hG T₁ T₂ π M h c1 c2
@@ -689,19 +688,12 @@ theorem single_mul_letE (i : ZMod n) (a : PowerSeries O) :
   · subst h; simp [letE]
   · simp [letE, h]
 
-theorem letE_mul_self (i : ZMod n) : (letE i : LetA O n) * letE i = letE i :=
-  single_mul_letE i 1
-
 theorem letE_mul_ne {i j : ZMod n} (h : i ≠ j) : (letE i : LetA O n) * letE j = 0 := by
   rw [letE_mul]
   simp [letE, h]
 
-theorem sum_letE [NeZero n] : ∑ i : ZMod n, (letE i : LetA O n) = 1 := by
-  funext j
-  simp [letE, Finset.sum_apply, Pi.single_apply]
-
 theorem sum_letE_smul [NeZero n] (x : W.DD T) : ∑ i : ZMod n, (letE i : LetA O n) • x = x := by
-  rw [← Finset.sum_smul, sum_letE, one_smul]
+  rw [← Finset.sum_smul, GlobalTheory.NL.NygaardFrobeniusPower.sum_letE, one_smul]
 
 theorem mem_Nl_iff (i : ZMod n) (x : W.DD T) :
     x ∈ W.Nl T i ↔ x ∈ W.N T ∧ (letE i : LetA O n) • x = x := by
@@ -709,7 +701,7 @@ theorem mem_Nl_iff (i : ZMod n) (x : W.DD T) :
   · rintro ⟨y, hy, rfl⟩
     refine ⟨(W.N T).smul_mem _ hy, ?_⟩
     change (letE i : LetA O n) • (letE i : LetA O n) • y = (letE i : LetA O n) • y
-    rw [smul_smul, letE_mul_self]
+    rw [smul_smul, GlobalTheory.NL.Heights.letE_mul_self]
   · rintro ⟨hx, he⟩
     exact ⟨x, hx, he⟩
 
@@ -882,22 +874,12 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (ρ : Representation LL G V)
 
-theorem actVB_tmul (g : G) (x : V) (b : B) :
-    actVB PD ρ g (x ⊗ₜ[Qp] b) = ρ g x ⊗ₜ[Qp] PD.actB g b := rfl
-
-theorem actVB_mul (g h : G) (x : V ⊗[Qp] B) :
-    actVB PD ρ (g * h) x = actVB PD ρ g (actVB PD ρ h x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul x b => simp only [actVB_tmul, map_mul]; rfl
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 theorem crisCob_of_finiteIndex [CharZero LL] (H : Subgroup G) [H.FiniteIndex] (c : G → V)
     (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) (b : V ⊗[Qp] B)
     (hb : ∀ h ∈ H, c h ⊗ₜ[Qp] (1 : B) = actVB PD ρ h b - b) :
     ∃ x : V ⊗[Qp] B, ∀ g, c g ⊗ₜ[Qp] (1 : B) = actVB PD ρ g x - x :=
-  coboundary_of_finiteIndex (actVB PD ρ) (actVB_mul PD ρ) H (fun g => c g ⊗ₜ[Qp] (1 : B))
-    (fun g h => by simp only [hc, add_tmul, actVB_tmul, map_one]) b hb
+  coboundary_of_finiteIndex (actVB PD ρ) (GlobalTheory.FundDel.actVB_mul' PD ρ) H (fun g => c g ⊗ₜ[Qp] (1 : B))
+    (fun g h => by simp only [hc, add_tmul, GlobalTheory.FundDel.actVB_tmul', map_one]) b hb
 
 end Generic
 
@@ -928,7 +910,7 @@ theorem mem_H1fT_iff_res [CharZero LL] (H : Subgroup G) [H.FiniteIndex] (κ : La
     refine crisCob_of_finiteIndex PD T.ρ H z z.2.1.2 (x - y ⊗ₜ[Qp] (1 : B)) fun h hh => ?_
     have h1 : T.ρ h y - y = (c : ↥H → T.V) ⟨h, hh⟩ - (z : G → T.V) h := congrFun hy ⟨h, hh⟩
     have h2 : (z : G → T.V) h = (c : ↥H → T.V) ⟨h, hh⟩ - (T.ρ h y - y) := by rw [h1]; abel
-    rw [h2, sub_tmul, sub_tmul, hx ⟨h, hh⟩, map_sub, actVB_tmul, map_one]
+    rw [h2, sub_tmul, sub_tmul, hx ⟨h, hh⟩, map_sub, GlobalTheory.FundDel.actVB_tmul', map_one]
     abel
 
 end Classes
@@ -1043,12 +1025,9 @@ theorem conv_zero_coeff (e : PowerSeries LL) (f : ℤ → M) (hf : ∀ k < (0 : 
   · intro j hj
     rw [hf _ (by omega), smul_zero]
 
-theorem mem_latSpan {ι : Type} (ex : ι → ℤ → M) (x : ι) : ex x ∈ latSpan (LL := LL) ex :=
-  Submodule.subset_span ⟨1, x, (GlobalTheory.NL.LowLevel.conv_one _).symm⟩
-
 theorem neg_eq_zero_of_std {ι : Type} {D : Submodule LL M} {ex : ι → ℤ → M}
     (h : Std D (latSpan (LL := LL) ex)) (x : ι) : ∀ k < (0 : ℤ), ex x k = 0 :=
-  ((h _).1 (mem_latSpan ex x)).2
+  ((h _).1 (GlobalTheory.NL.Model.mem_latSpan ex x)).2
 
 theorem full_of_std {D : Submodule LL M} {Λ : Submodule LL (ℤ → M)} (h : Std D Λ) : Full D Λ :=
   ⟨0, fun f h1 h2 => (h f).2 ⟨h1, by simpa using h2⟩⟩
@@ -1059,7 +1038,7 @@ theorem span_const_of_std {ι : Type} {D : Submodule LL M} {ex : ι → ℤ → 
   apply le_antisymm
   · rw [Submodule.span_le]
     rintro _ ⟨x, rfl⟩
-    exact ((h _).1 (mem_latSpan ex x)).1 0
+    exact ((h _).1 (GlobalTheory.NL.Model.mem_latSpan ex x)).1 0
   · intro d hd
     have h1 : (Pi.single (0 : ℤ) d : ℤ → M) ∈ latSpan (LL := LL) ex := by
       refine (h _).2 ⟨fun k => ?_, fun k hk => Pi.single_eq_of_ne hk.ne _⟩
@@ -1099,10 +1078,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem prim_one (p : ℕ) : ∃ j : ℕ, IsPrimitiveRoot (1 : LL) (p ^ j) :=
   ⟨0, by simpa using IsPrimitiveRoot.one⟩
-
-theorem sum_letE [NeZero n] : ∑ i : ZMod n, (letE i : LetA O n) = 1 := by
-  funext j
-  simp [letE, Finset.sum_apply, Pi.single_apply]
 
 theorem const_lev_π (i : ZMod n) : PowerSeries.constantCoeff (W.lev i 1 letπ) = 0 := by
   obtain ⟨E, hE0, -, hE⟩ := W.lev_π i 1 (prim_one _)
@@ -1145,7 +1120,7 @@ theorem π_dvd_of_van (hinj : Function.Injective (algebraMap O LL)) (a : LetA O 
 theorem cmp_eq_sum [NeZero n] (T : LocLat G Qp LL O) (x : ↥(W.N T)) :
     W.cmp T x = ∑ i : ZMod n, W.cmp T ((letE i : LetA O n) • x) := by
 
-  rw [← map_sum, ← Finset.sum_smul, sum_letE, one_smul]
+  rw [← map_sum, ← Finset.sum_smul, GlobalTheory.NL.NygaardFrobeniusPower.sum_letE, one_smul]
 
 theorem cmp_iso_of_expansions [NeZero n] (hinj : Function.Injective (algebraMap O LL))
     (T : LocLat G Qp LL O) (ex : ZMod n → ↥(W.N T) → ℤ → T.V ⊗[Qp] B)
@@ -1178,7 +1153,7 @@ theorem cmp_iso_of_expansions [NeZero n] (hinj : Function.Injective (algebraMap 
         (Finset.mem_univ _)
     have hv : ∀ j, (letπ : LetA O n) ∣ nb.repr x j := fun j =>
       π_dvd_of_van W hinj _ fun i =>
-        hvan i x (exists_shift_of_std (hstd i) _ (mem_latSpan _ x) (h0 i)) j
+        hvan i x (exists_shift_of_std (hstd i) _ (GlobalTheory.NL.Model.mem_latSpan _ x) (h0 i)) j
     choose b hb using hv
     refine ⟨∑ j, b j • nb j, ?_⟩
     rw [Finset.smul_sum]
@@ -1212,8 +1187,6 @@ theorem cmp_iso_of_expansions [NeZero n] (hinj : Function.Injective (algebraMap 
         smul_zero]
 
 end Generic
-
-
 
 theorem cmp_iso (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
@@ -1320,20 +1293,6 @@ theorem finite_of_pi_pow {O : Type} [CommRing O] {n : ℕ} [NeZero n] {M : Type}
   exact Submodule.subset_span (Finset.mem_coe.2 (Finset.mem_image.2
     ⟨(i, k, m), Finset.mem_product.2 ⟨Finset.mem_univ _, Finset.mem_product.2 ⟨hk, hm⟩⟩, rfl⟩))
 
-theorem finiteLength_of_killed {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    {M : Type} [AddCommGroup M] [Module O M] [Module.Finite O M] {c : O}
-    (hc : c ≠ 0) (h : ∀ x : M, c • x = 0) : IsFiniteLength O M := by
-  have hfl := isFiniteLength_quotient_span_singleton O (mem_nonZeroDivisors_of_ne_zero hc)
-  rw [isFiniteLength_iff_isNoetherian_isArtinian] at hfl ⊢
-  refine ⟨inferInstance, ?_⟩
-  have ht : Module.IsTorsionBySet O M (Ideal.span {c}) :=
-    (Module.isTorsionBySet_span_singleton_iff c).mpr (fun x => h x)
-  letI := ht.module
-  haveI : IsScalarTower O (O ⧸ Ideal.span {c}) M := ht.isScalarTower
-  haveI : IsArtinianRing (O ⧸ Ideal.span {c}) := isArtinian_of_tower O hfl.2
-  haveI : Module.Finite (O ⧸ Ideal.span {c}) M := Module.Finite.of_restrictScalars_finite O _ _
-  exact isArtinian_of_surjective_algebraMap (R := O ⧸ Ideal.span {c}) Ideal.Quotient.mk_surjective
-
 section Generic
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
@@ -1366,11 +1325,9 @@ theorem length_cokN_lt_top [NeZero n] [IsDomain O] [IsDiscreteValuationRing O]
     refine ⟨y, hy, ?_⟩
     change W.map π y = ((p : ℕ) : O) ^ c • z
     rw [e, ← algebraMap_smul (LetA O n) (((p : ℕ) : O) ^ c) z, map_pow, map_natCast]
-  exact lt_top_iff_ne_top.2 (Module.length_ne_top_iff.2 (finiteLength_of_killed (pow_ne_zero c hp0) hl'))
+  exact lt_top_iff_ne_top.2 (Module.length_ne_top_iff.2 (GlobalTheory.AdmLoc.finiteLength_of_smul_eq_zero (pow_ne_zero c hp0) hl'))
 
 end Generic
-
-
 
 theorem exactness_of_N : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F), P6 D HW F := by

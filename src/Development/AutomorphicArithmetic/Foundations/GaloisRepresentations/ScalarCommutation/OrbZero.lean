@@ -251,7 +251,7 @@ theorem finsum_comp_eq_ncard {X Z : Type} (A : Set X) (φ : X → Z) (F : Z → 
       rw [← hset, Set.ncard_coe_finset, Finset.sum_congr rfl (g := fun _ => F z), Finset.sum_const, nsmul_eq_mul]
       intro x hx
       have hx' : x ∈ {x | x ∈ A ∧ φ x = z} := hset ▸ (Finset.mem_coe.2 hx)
-      rw [if_pos hx'.1, hx'.2]
+      rw [ite_eq_left hx'.1, hx'.2]
     · intro x hx
       rw [hsub] at hx
       rw [Finset.mem_coe, hmem, Set.Finite.mem_toFinset, hsz]
@@ -493,7 +493,7 @@ theorem exists_conj_cent_le_blockLevi : ∀ (K : Type) [Field K] (ι : Type) [Fi
     by_contra! hc
     exact hirr (irreducible_iff.mpr ⟨hχu, fun p q h => by
       by_contra h'
-      push_neg at h'
+      push Not at h'
       exact h'.2 (hc p q h h'.1)⟩)
   have hcop : IsCoprime p q := (hpq ▸ hsep).isCoprime
   have hp0 : p ≠ 0 := by rintro rfl; rw [zero_mul] at hpq; exact hχ0 hpq
@@ -693,17 +693,8 @@ theorem lam_open_compact (e : ι ≃ Fin a ⊕ Fin b) (K' : Subgroup (GL ι K)) 
   intro X hX
   exact ⟨uGL e X, hX, coord_uGL e X⟩
 
-theorem continuous_of_linear (f : (Fin a → Fin b → K) →ₗ[K] (Fin a → Fin b → K)) : Continuous f := by
-  have h : ∀ X : Fin a → Fin b → K, f X = ∑ i, ∑ j, X i j • f (Pi.single i (Pi.single j 1)) := by
-    intro X
-    have hX : X = ∑ i, ∑ j, X i j • (Pi.single i (Pi.single j (1 : K)) : Fin a → Fin b → K) := by
-      ext k l
-      simp [Finset.sum_apply, Pi.single_apply, ite_apply]
-    conv_lhs => rw [hX]
-
-    simp only [map_sum, map_smul]
-  rw [show (f : _ → _) = fun X => ∑ i, ∑ j, X i j • f (Pi.single i (Pi.single j 1)) from funext h]
-  fun_prop
+theorem continuous_of_linear (f : (Fin a → Fin b → K) →ₗ[K] (Fin a → Fin b → K)) : Continuous f :=
+  IsModuleTopology.continuous_of_linearMap f
 
 end Unip
 
@@ -851,7 +842,7 @@ theorem exists_conj (e : ι ≃ Fin a ⊕ Fin b) (γ : GL ι K) (hγ : γ ∈ bl
     change A * (X - A⁻¹ * X * B) = _
     rw [Matrix.mul_sub, ← Matrix.mul_assoc, ← Matrix.mul_assoc, mul_nonsing_inv A hA, Matrix.one_mul]
   have hinj : Function.Injective L := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro X hX
     have := hL X
     rw [hX, Matrix.mul_zero] at this
@@ -906,7 +897,7 @@ theorem finsum_conj_eq_zero : ∀ (K : Type) [Field K] [TopologicalSpace K] [IsT
     have h0 : s (QuotientGroup.mk (uGL e X)) = f (γ * uGL e (Φ X)) := by
       obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul H (uGL e X)
       have hU : uGL e X * h ∈ blockUni e := (blockUni e).mul_mem (uGL_mem e X) h.2.1
-      simp only [hs, hh, hU, if_true]
+      simp only [hs, hh, hU, ite_true]
       rw [← hΦ, ← hbi _ (K'.inv_mem h.2.2.2) _ h.2.2.2 ((uGL e X)⁻¹ * γ * uGL e X)]
       congr 1
       group
@@ -915,7 +906,7 @@ theorem finsum_conj_eq_zero : ∀ (K : Type) [Field K] [TopologicalSpace K] [IsT
       intro q hq
       have hq' : Quotient.out q ∈ blockUni e := by
         by_contra hn
-        exact (hfin.mem_toFinset.1 hq) (if_neg hn)
+        exact (hfin.mem_toFinset.1 hq) (ite_eq_right hn)
       have e1 : (Quotient.out q)⁻¹ * uGL e X = uGL e (-coord e (Quotient.out q) + X) := by
         rw [uGL_add, uGL_neg, ← eq_uGL_coord e hq']
       rw [hM, ← map_neg, ← map_add (f := _), Φ.symm_apply_apply]
@@ -1004,14 +995,14 @@ theorem dsum_eq_zero_of_par (H : Type) [Group H] (T P L U : Subgroup H) (Ψ : H 
     have hn' : Quotient.out q ∉ P := hn
     apply hq
     show wt T Ly U (fun x => if x ∈ P then Ψ (x * y) else 0) (Quotient.out q) = 0
-    simp only [wt, if_neg hn', mul_zero]
+    simp only [wt, ite_eq_right hn', mul_zero]
   have hGF : ∀ q ∈ A, G q = F (φ q) := by
     intro q hq
     have hq' : Quotient.out q ∈ P := hq
     show wt T Ly U (fun x => if x ∈ P then Ψ (x * y) else 0) (Quotient.out q) =
       wt T L U Ψ (Quotient.out (DoubleCoset.mk T L (Quotient.out q * y)))
     rw [wt_out U hT hΨl hΨr]
-    simp only [wt, if_pos hq', hLy, locPart_inf_conj hTP hq' y]
+    simp only [wt, ite_eq_left hq', hLy, locPart_inf_conj hTP hq' y]
   have hinj : Set.InjOn φ A := by
     intro q₁ h₁ q₂ h₂ h
     obtain ⟨t, ht, l, hl, e⟩ := (@DoubleCoset.eq _ _ T L _ _).1 h
@@ -1085,16 +1076,16 @@ theorem bdiag_mul (e : ι ≃ Fin a ⊕ Fin b) {A B : Matrix ι ι K}
   split_ifs with hij
   · refine Finset.sum_congr rfl fun k _ => ?_
     by_cases hik : side e i = side e k
-    · rw [if_pos hik, if_pos (hik.symm.trans hij)]
-    · rw [if_neg hik, zero_mul]
+    · rw [ite_eq_left hik, ite_eq_left (hik.symm.trans hij)]
+    · rw [ite_eq_right hik, zero_mul]
       rcases lt_or_gt_of_ne (Ne.symm hik) with h | h
       · rw [hA h, zero_mul]
       · rw [hB (hij ▸ h), mul_zero]
   · symm
     refine Finset.sum_eq_zero fun k _ => ?_
     by_cases hik : side e i = side e k
-    · rw [if_neg (fun h => hij (hik.trans h)), mul_zero]
-    · rw [if_neg hik, zero_mul]
+    · rw [ite_eq_right (fun h => hij (hik.trans h)), mul_zero]
+    · rw [ite_eq_right hik, zero_mul]
 
 theorem bdiag_one (e : ι ≃ Fin a ⊕ Fin b) : bdiag e (1 : Matrix ι ι K) = 1 := by
   ext i j
@@ -1156,9 +1147,9 @@ def bdiagHom (e : ι ≃ Fin a ⊕ Fin b) : blockPar (K := K) e →* GL ι K whe
 theorem continuous_bdiag (e : ι ≃ Fin a ⊕ Fin b) : Continuous (bdiag (K := K) e) :=
   continuous_matrix fun i j => by
     by_cases h : side e i = side e j
-    · simp only [bdiag, Matrix.of_apply, if_pos h]
+    · simp only [bdiag, Matrix.of_apply, ite_eq_left h]
       exact continuous_id.matrix_elem i j
-    · simp only [bdiag, Matrix.of_apply, if_neg h]
+    · simp only [bdiag, Matrix.of_apply, ite_eq_right h]
       exact continuous_const
 
 theorem continuous_bdiagHom (e : ι ≃ Fin a ⊕ Fin b) : Continuous (bdiagHom (K := K) e) := by
@@ -1478,7 +1469,7 @@ theorem twOrbU_eq_zero_of_cusp : ∀ (K : Type) [Field K] [TopologicalSpace K] [
       rw [this, hright' k hk]
     · rfl
   · intro x hx
-    simp only [if_neg hx]
+    simp only [ite_eq_right hx]
   · exact _root_.GlobalTheory.OrbDesc.StabIndex.relIndex_twCent_inf_ne_zero K ι a b e γ' hT _ hK'.1 hK'.2
   · intro m hm
     set d := c * y⁻¹
@@ -1498,11 +1489,11 @@ theorem twOrbU_eq_zero_of_cusp : ∀ (K : Type) [Field K] [TopologicalSpace K] [
     refine Eq.trans (finsum_congr fun q => ?_) hC2
     by_cases h1 : Quotient.out q ∈ N
     · have h2 : m * Quotient.out q ∈ P := P.mul_mem hm (hNP h1)
-      rw [if_pos h1, if_pos h1]
+      rw [ite_eq_left h1, ite_eq_left h1]
       change (if m * Quotient.out q ∈ P then Ψ (m * Quotient.out q * y) else 0) = _
-      rw [if_pos h2, hΨ]
+      rw [ite_eq_left h2, hΨ]
       exact congrArg f (by simp only [d]; group)
-    · rw [if_neg h1, if_neg h1]
+    · rw [ite_eq_right h1, ite_eq_right h1]
 
 end GlobalTheory.OrbDesc
 end -- clump:auto

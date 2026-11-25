@@ -1,44 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -69,7 +31,7 @@ theorem conj_val (p : Gn g m) (x : Gn g (m + k)) :
 
 theorem tl_apply (X : Mt g (m + k)) (i j : Fin m) : tl m X i j = X (Fin.castAdd k i) (Fin.castAdd k j) := by
   have h : (i : ℕ) < m + k ∧ (j : ℕ) < m + k := ⟨by omega, by omega⟩
-  rw [tl, entN, dif_pos h]; rfl
+  rw [tl, entN, dite_eq_left h]; rfl
 
 theorem upperLeftBlock_blockDiagExtendByIdentity_conj (A B : Mt g m) (X : Mt g (m + k)) : tl m (dM k A * X * dM k B) = A * tl m X * B := by
   ext i j
@@ -119,7 +81,7 @@ theorem supFrom_conj (hm : 1 ≤ m) (A B : Mt g m) (hA : InMir A) (X : Mt g (m +
   · have h' : j < m + k ∧ j + 1 < m + k := ⟨by omega, by omega⟩
     have e1 : (⟨j, h'.1⟩ : Fin (m + k)) = Fin.castAdd k ⟨j, by omega⟩ := by ext; simp
     have e2 : (⟨j + 1, h'.2⟩ : Fin (m + k)) = Fin.natAdd m ⟨0, by omega⟩ := by ext; simp; omega
-    rw [entN, entN, dif_pos h', dif_pos h', e1, e2, blockDiagExtendByIdentity_conj_upperRight_apply]
+    rw [entN, entN, dite_eq_left h', dite_eq_left h', e1, e2, blockDiagExtendByIdentity_conj_upperRight_apply]
     have : ∀ l, A ⟨j, by omega⟩ l = (1 : Mt g m) ⟨j, by omega⟩ l := fun l => hA _ _ (by simp; omega)
     simp [this, Matrix.one_apply]
 
@@ -140,7 +102,7 @@ theorem inMir_of (X : Mt g (m + k)) (h : InR m X) (h0 : InMir (tl m X)) : InMir 
       have h' : m + (i - m) < m + k ∧ m + (j - m) < m + k := ⟨by omega, by omega⟩
       have e1 : (⟨m + (i - m), h'.1⟩ : Fin (m + k)) = i := by ext; simp; omega
       have e2 : (⟨m + (j - m), h'.2⟩ : Fin (m + k)) = j := by ext; simp; omega
-      simp only [br, entN, dif_pos h', e1, e2] at h2
+      simp only [br, entN, dite_eq_left h', e1, e2] at h2
       by_cases e : i = j
       · subst e
         rw [h2.2 rfl, Matrix.one_apply_eq]
@@ -156,10 +118,10 @@ theorem inMir_dM (A : Mt g m) (hA : InMir A) : InMir (dM k A) := by
   have h1 : InR m (1 : Mt g (m + k)) := by
     refine ⟨fun i j hj hi => Matrix.one_apply_ne (by intro e; subst e; omega), fun a b => ?_⟩
     have h' : m + a < m + k ∧ m + b < m + k := ⟨by omega, by omega⟩
-    simp only [br, entN, dif_pos h', Matrix.one_apply, Fin.ext_iff, Fin.lt_def]
+    simp only [br, entN, dite_eq_left h', Matrix.one_apply, Fin.ext_iff, Fin.lt_def]
     constructor
-    · intro h; rw [if_neg (by omega)]
-    · intro h; rw [if_pos (by omega)]
+    · intro h; rw [ite_eq_right (by omega)]
+    · intro h; rw [ite_eq_left (by omega)]
   have h2 : tl m (1 : Mt g (m + k)) = 1 := by
     ext i j
     simp [tl_apply, Matrix.one_apply, Fin.ext_iff]
@@ -186,8 +148,8 @@ theorem isMirClass_tail (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (m 
     rwa [← mul_assoc, ← mul_assoc, mul_assoc _ (dM k _) (dM k _), dM_mul, Units.inv_mul, dM_one,
       one_mul, mul_one] at this
   by_cases h : InR m (x : Mt g (m + k)) ∧ tl m (x : Mt g (m + k)) = (x₀ : Mt g m)
-  · rw [if_pos h, if_pos (hiff.1 h), hF _ _ (inMir_dM _ hp) (inMir_of _ h.1 (h.2 ▸ hx₀)), conj_val,
+  · rw [ite_eq_left h, ite_eq_left (hiff.1 h), hF _ _ (inMir_dM _ hp) (inMir_of _ h.1 (h.2 ▸ hx₀)), conj_val,
       supFrom_conj hm _ _ hp]
-  · rw [if_neg h, if_neg (fun h' => h (hiff.2 h'))]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hiff.2 h'))]
 
 end GlobalTheory.GLm.TailClass

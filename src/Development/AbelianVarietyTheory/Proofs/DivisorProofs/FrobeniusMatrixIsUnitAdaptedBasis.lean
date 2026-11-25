@@ -174,7 +174,7 @@ theorem GlobalTheory.QLog.small_first_of_frob : ∀ (p : ℕ) [Fact p.Prime] (C 
         rw [key, map_mul, map_sub, map_natCast, ← hteq]; ring
       have h4 := F.frame.inj h3
       have hne : (Sum.inr j : Fin d ⊕ Fin k) ≠ Sum.inl i := Sum.inr_ne_inl
-      rw [if_neg hne, sub_zero, h4]
+      rw [ite_eq_right hne, sub_zero, h4]
       exact J.mul_mem_right _ hpJ
 
   have hW : ∑ m, F.σ (w m) * ∑ l, U l m * cc l ∈ J := by
@@ -191,7 +191,7 @@ theorem GlobalTheory.QLog.small_first_of_frob : ∀ (p : ℕ) [Fact p.Prime] (C 
     have : F.σ (w (Sum.inl i)) = (∑ m, F.σ (w m) * ∑ l, U l m * cc l) -
         ∑ m, F.σ (w m) * ((∑ l, U l m * cc l) - (if m = Sum.inl i then 1 else 0)) := by
       simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       ring
     rw [this]
     exact J.sub_mem hW hD
@@ -395,9 +395,9 @@ theorem coeff_smul_pow_char {σ k : Type} [DecidableEq σ] [Field k] (p : ℕ) [
   classical
   have hp0 : p ≠ 0 := (Fact.out : p.Prime).ne_zero
   rw [coeff_pow_char_sum, Finset.sum_eq_single β]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hα
     exact hb (smul_right_injective _ hp0 hα).symm
   · intro hn
@@ -408,7 +408,7 @@ theorem coeff_pow_char_of_not {σ k : Type} [DecidableEq σ] [Field k] (p : ℕ)
   classical
   rw [coeff_pow_char_sum]
   refine Finset.sum_eq_zero fun b _ => ?_
-  rw [if_neg]
+  rw [ite_eq_right]
   intro hα; exact h ⟨b, hα.symm⟩
 
 end GlobalTheory.SmallSecondRoot
@@ -790,7 +790,7 @@ theorem linear_coeff_law (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ
     simp only [Fintype.sum_sum_type, yZero,
     Sum.elim_inl, Sum.elim_inr, map_zero, mul_zero, Finset.sum_const_zero, add_zero, pderiv_X] at h2
     simp only [Pi.single_apply, apply_ite, map_one, map_zero, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
     split_ifs at h2 ⊢ <;> exact h2
   have hsw : ∀ k : Fin d ⊕ Fin d, constantCoeff ((Sum.elim (fun i => (X (Sum.inr i) : MvPowerSeries (Fin d ⊕ Fin d) O))
       (fun i => X (Sum.inl i))) k) = 0 := by
@@ -802,7 +802,7 @@ theorem linear_coeff_law (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ
   rw [ReciprocityTheory.ChartRestriction.G.TB.ChartChgPfTP.pderiv_subst _ hsw, map_sum] at h2
   simp only [map_mul, constantCoeff_subst_of hsw] at h2
   simp only [Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, pderiv_X, Pi.single_apply, Sum.inr.injEq,
-    reduceCtorEq, if_false, map_zero, mul_zero, Finset.sum_const_zero, add_zero, apply_ite, map_one, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+    reduceCtorEq, ite_false, map_zero, mul_zero, Finset.sum_const_zero, add_zero, apply_ite, map_one, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
   rw [← h2, hx]
 
 end GlobalTheory.Katz.SmallDeriv
@@ -878,7 +878,7 @@ theorem GlobalTheory.Katz.not_isUnit_coeff_of_coboundary_small : ∀ (p : ℕ) [
     simp only [Matrix.vecMul_vecMul, Matrix.mul_adjugate, Matrix.zero_vecMul] at h1
     have h2 := congrFun h1 i
     simp only [Matrix.vecMul, dotProduct, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, Pi.zero_apply] at h2
+      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Pi.zero_apply] at h2
     exact (hdet.mul_right_eq_zero).1 (by rw [mul_comm]; exact h2)
   have hαi : 1 ≤ α i := Nat.pos_of_ne_zero (fun h => hi (h ▸ dvd_zero p))
   have hsub : α - Finsupp.single i 1 + Finsupp.single i 1 = α :=

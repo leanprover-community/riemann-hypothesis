@@ -222,83 +222,11 @@ def HasLocalCoordsOnSmoothHypersurface (p : P ⟶ Spec (CommRingCat.of k)) (H : 
             (H.subschemeι.appLE U (H.subschemeι ⁻¹ᵁ U) le_rfl).hom (c.coord j)) ''
               (S : Set (Fin n)))
 
-private theorem comp_presheaf_map_comp_map {X₁ : Scheme.{u}} {R : CommRingCat.{u}}
-    {A B C : (X₁.Opens)ᵒᵖ} (h : R ⟶ X₁.presheaf.obj A) (g₁ : A ⟶ B) (g₂ : B ⟶ C) (g₃ : A ⟶ C) :
-    (h ≫ X₁.presheaf.map g₁) ≫ X₁.presheaf.map g₂ = h ≫ X₁.presheaf.map g₃ := by
-  rw [Category.assoc, ← Functor.map_comp, X₁.presheaf_map_eq_of_parallel (g₁ ≫ g₂) g₃]
-
-private theorem appLE_eq_appLE_comp_presheaf_map {X₁ Y₁ : Scheme.{u}} (f : X₁ ⟶ Y₁) (U : Y₁.Opens)
-    {A B : X₁.Opens} (e : A ≤ f ⁻¹ᵁ U) (e' : B ≤ f ⁻¹ᵁ U) (hAB : A ≤ B) :
-    f.appLE U A e = f.appLE U B e' ≫ X₁.presheaf.map (homOfLE hAB).op := by
-  have h1 : f.appLE U A e = f.app U ≫ X₁.presheaf.map (homOfLE e).op := rfl
-  have h2 : f.appLE U B e' = f.app U ≫ X₁.presheaf.map (homOfLE e').op := rfl
-  rw [h1, h2]
-  exact (comp_presheaf_map_comp_map (f.app U) (homOfLE e').op (homOfLE hAB).op (homOfLE e).op).symm
-
 private theorem ι_appLE_self_top_eq_topIso_inv {X₁ : Scheme.{u}} (V : X₁.Opens)
     (e : (⊤ : (V.toScheme).Opens) ≤ V.ι ⁻¹ᵁ V) :
     V.ι.appLE V ⊤ e = V.topIso.inv := by
   simp
   exact X₁.presheaf_map_eq_of_parallel _ _
-
-private theorem ι_appLE_apply_topIso_hom {X₁ Y₁ : Scheme.{u}} (V : X₁.Opens)
-    (g : V.toScheme ⟶ Y₁) {W : V.toScheme.Opens} (e1 : W ≤ V.ι ⁻¹ᵁ V)
-    (e2 : W ≤ g ⁻¹ᵁ (⊤ : Y₁.Opens)) (x : Γ(Y₁, ⊤)) :
-    (V.ι.appLE V W e1).hom (V.topIso.hom.hom (g.appTop.hom x))
-      = (g.appLE ⊤ W e2).hom x := by
-  have htop : (⊤ : V.toScheme.Opens) ≤ V.ι ⁻¹ᵁ V := by
-    intro y _
-    exact y.2
-  have ha : V.ι.appLE V W e1
-      = V.topIso.inv ≫ V.toScheme.presheaf.map (homOfLE (le_top : W ≤ ⊤)).op := by
-    rw [appLE_eq_appLE_comp_presheaf_map V.ι V e1 htop le_top, ι_appLE_self_top_eq_topIso_inv V htop]
-  have hb : g.appLE (⊤ : Y₁.Opens) W e2
-      = g.appTop ≫ V.toScheme.presheaf.map (homOfLE (le_top : W ≤ ⊤)).op := by
-    have h1 : g.appLE (⊤ : Y₁.Opens) W e2
-        = g.appTop ≫ V.toScheme.presheaf.map (homOfLE e2).op := rfl
-    rw [h1]
-    exact congrArg (fun z => g.appTop ≫ z) (V.toScheme.presheaf_map_eq_of_parallel _ _)
-  rw [ha, hb]
-  simp only [CommRingCat.hom_comp, RingHom.comp_apply]
-  rw [Iso.hom_inv_id_apply]
-
-private theorem ι_appLE_coord {X₁ : Scheme.{u}} {K : Type u} [Field K]
-    {q : X₁ ⟶ Spec (CommRingCat.of K)} {U : X₁.Opens} {m : ℕ} (c : EtaleChart q U m)
-    {W : U.toScheme.Opens} (e1 : W ≤ U.ι ⁻¹ᵁ U)
-    (e2 : W ≤ c.map ⁻¹ᵁ (⊤ : (affineSpaceFin K m).Opens)) (j : Fin m) :
-    (U.ι.appLE U W e1).hom (c.coord j)
-      = (c.map.appLE ⊤ W e2).hom
-          (AffineSpace.coord (Spec (CommRingCat.of K)) (ULift.up j : ULift.{u} (Fin m))) := by
-  rw [EtaleChart.coord_def]
-  exact ι_appLE_apply_topIso_hom U c.map e1 e2 _
-
-private theorem restrictIdeal_eq_coordIdeal_of_isAffineOpen_ideal_eq_span {X₁ : Scheme.{u}} {K : Type u}
-    [Field K] {q : X₁ ⟶ Spec (CommRingCat.of K)} {U : X₁.Opens} {m : ℕ}
-    (c : EtaleChart q U m) (hU : IsAffineOpen U) (I : X₁.IdealSheafData) (S : Finset (Fin m))
-    (h : I.ideal ⟨U, hU⟩ = Ideal.span (c.coord '' (S : Set (Fin m)))) :
-    restrictIdeal I U = c.coordIdeal S := by
-  have hAaff : IsAffine (affineSpaceFin K m) := inferInstance
-  have hcoord : (coordSubspaceIdeal K m S).ideal ⟨⊤, isAffineOpen_top (affineSpaceFin K m)⟩
-      = Ideal.span ((fun i : Fin m =>
-          AffineSpace.coord (Spec (CommRingCat.of K)) (ULift.up i)) '' (S : Set (Fin m))) := by
-    rw [coordSubspaceIdeal_eq_ofIdealTop_span_coord]
-    exact _root_.AlgebraicGeometry.Scheme.IdealSheafData.ofIdealTop_ideal_top _
-  refine Scheme.IdealSheafData.ext (funext ?_)
-  intro W
-  have htop : (⊤ : U.toScheme.Opens) ≤ U.ι ⁻¹ᵁ U := by
-    intro y _
-    exact y.2
-  have eW : (W.1 : U.toScheme.Opens) ≤ U.ι ⁻¹ᵁ U := le_trans le_top htop
-  have eW' : (W.1 : U.toScheme.Opens) ≤ c.map ⁻¹ᵁ (⊤ : (affineSpaceFin K m).Opens) := by
-    intro y _
-    trivial
-  show (I.comap U.ι).ideal W = ((coordSubspaceIdeal K m S).comap c.map).ideal W
-  rw [I.comap_ideal_eq_map_appLE U.ι ⟨U, hU⟩ W eW,
-    (coordSubspaceIdeal K m S).comap_ideal_eq_map_appLE c.map
-      ⟨⊤, isAffineOpen_top (affineSpaceFin K m)⟩ W eW',
-    h, hcoord, Ideal.map_span, Ideal.map_span, ← Set.image_comp, ← Set.image_comp]
-  refine congrArg Ideal.span (Set.image_congr fun j _ => ?_)
-  exact ι_appLE_coord c eW eW' j
 
 private theorem ideal_ne_top_of_mem_support {Y : Scheme.{u}} (I : Y.IdealSheafData) {V : Y.Opens}
     (hV : IsAffineOpen V) {x : Y} (hxV : x ∈ V) (hx : x ∈ I.support) :
@@ -350,26 +278,6 @@ private theorem ideal_eq_top_of_restrictIdeal_eq_top {Y : Scheme.{u}} (I : Y.Ide
     (Ideal.mem_map_iff_of_surjective _ hsurj).mp hone
   have ha1 : a = 1 := hinj (by rw [hfa, map_one])
   exact ha1 ▸ haI
-
-private theorem restrictIdeal_eq_top_of_le_of_eq_top {Y : Scheme.{u}} (I : Y.IdealSheafData) {U V : Y.Opens}
-    (hVU : V ≤ U) (h : restrictIdeal I U = ⊤) : restrictIdeal I V = ⊤ := by
-  have e1 : I.comap V.ι = (I.comap U.ι).comap (Y.homOfLE hVU) := by
-    rw [← Scheme.IdealSheafData.comap_comp, Scheme.homOfLE_ι]
-  have h' : I.comap U.ι = ⊤ := h
-  show I.comap V.ι = ⊤
-  rw [e1, h']
-  simp
-
-private theorem restrictIdeal_eq_coordIdeal_restrict {X₁ : Scheme.{u}} {K : Type u} [Field K]
-    {q : X₁ ⟶ Spec (CommRingCat.of K)} {U V : X₁.Opens} (hVU : V ≤ U) {m : ℕ}
-    (c : EtaleChart q U m) (I : X₁.IdealSheafData) (S : Finset (Fin m))
-    (h : restrictIdeal I U = c.coordIdeal S) :
-    restrictIdeal I V = (c.restrict hVU).coordIdeal S := by
-  have h' : I.comap U.ι = (coordSubspaceIdeal K m S).comap c.map := by
-    rw [← restrictIdeal_eq_comap_ι, h, EtaleChart.coordIdeal_eq_comap_coordSubspaceIdeal]
-  rw [restrictIdeal_eq_comap_ι, EtaleChart.coordIdeal_eq_comap_coordSubspaceIdeal, EtaleChart.restrict_map,
-    Scheme.IdealSheafData.comap_comp, ← h', ← Scheme.IdealSheafData.comap_comp,
-    Scheme.homOfLE_ι]
 
 private theorem mem_span_X_of_mul_X_mem {σ : Type u} {K : Type u} [Field K]
     {j s : σ} (hjs : j ≠ s) (r : MvPolynomial σ K)
@@ -519,13 +427,13 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurf
     | none =>
       have hHtop : restrictIdeal H U' = ⊤ := by simpa using hnone' 0 hlen0 hop
       exact hproper (ideal_eq_top_of_restrictIdeal_eq_top H hV
-        (restrictIdeal_eq_top_of_le_of_eq_top H hVU' hHtop))
+        (restrictIdeal_eq_top_of_le H hVU' hHtop))
     | some t₀ =>
       cases hop1 : a' (i + 1) with
       | none =>
         have hNtop : restrictIdeal (N[i]'hi) U' = ⊤ := by
           simpa using hnone' (i + 1) hleni hop1
-        have hVtop : restrictIdeal (N[i]'hi) V = ⊤ := restrictIdeal_eq_top_of_le_of_eq_top _ hVU' hNtop
+        have hVtop : restrictIdeal (N[i]'hi) V = ⊤ := restrictIdeal_eq_top_of_le _ hVU' hNtop
         rw [hEqV] at hVtop
         exact hproper (ideal_eq_top_of_restrictIdeal_eq_top H hV hVtop)
       | some t₁ =>
@@ -538,10 +446,10 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurf
         have hNU' : restrictIdeal (N[i]'hi) U' = c'.coordIdeal {t₁} := by
           simpa using hsome' (i + 1) hleni t₁ hop1
         have hHV1 : restrictIdeal H V = (c'.restrict hVU').coordIdeal {t₀} :=
-          restrictIdeal_eq_coordIdeal_restrict hVU' c' H {t₀} hHU'
+          restrictIdeal_eq_restrict_coordIdeal_of_le hVU' c' H {t₀} hHU'
         have hHV2 : restrictIdeal H V = (c'.restrict hVU').coordIdeal {t₁} := by
           rw [← hEqV]
-          exact restrictIdeal_eq_coordIdeal_restrict hVU' c' (N[i]'hi) {t₁} hNU'
+          exact restrictIdeal_eq_restrict_coordIdeal_of_le hVU' c' (N[i]'hi) {t₁} hNU'
         have hA : H.ideal ⟨V, hV⟩ = Ideal.span {(c'.restrict hVU').coord t₀} := by
           simpa using (c'.restrict hVU').ideal_eq_span_coord hV H {t₀} hHV1
         have hB : H.ideal ⟨V, hV⟩ = Ideal.span {(c'.restrict hVU').coord t₁} := by
@@ -552,9 +460,9 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurf
           exact Ideal.mem_span_singleton_self _
         exact hproper (hA.trans (span_coord_eq_top_of_mem_span hV (c'.restrict hVU') hne hmem))
   obtain ⟨a, ha0, has⟩ : ∃ a : ℕ → Option (Fin n), a 0 = some j₀ ∧ ∀ i, a (i + 1) = lab i :=
-    ⟨fun i => if i = 0 then some j₀ else lab (i - 1), if_pos rfl, fun i => by
+    ⟨fun i => if i = 0 then some j₀ else lab (i - 1), ite_eq_left rfl, fun i => by
       show (if i + 1 = 0 then some j₀ else lab (i + 1 - 1)) = lab i
-      rw [if_neg (by omega : ¬ (i + 1 = 0)), Nat.add_sub_cancel]⟩
+      rw [ite_eq_right (by omega : ¬ (i + 1 = 0)), Nat.add_sub_cancel]⟩
   refine ⟨U, hxU, n, c, a, insert j₀ S, ?_, ?_, ?_, ?_⟩
   · intro i hi j hj t hti htj
     cases i with
@@ -603,7 +511,7 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurf
       rw [has i'] at ht
       have hi' : i' < N.length := by simpa using hi
       simpa using h3 i' hi' t ht
-  · exact restrictIdeal_eq_coordIdeal_of_isAffineOpen_ideal_eq_span c hU _ (insert j₀ S)
+  · exact restrictIdeal_eq_coordIdeal_of_ideal_eq_span hU c _ (insert j₀ S)
       (ker_comp_subschemeι_ideal_eq_span_coord p H Z hU c j₀ S h1 h5)
 
 end
@@ -754,7 +662,7 @@ theorem det_eq_det_submatrix_of_row_eq_single (e : ι ≃ Fin (n + 1)) (M : Matr
     by_cases hb : b = 0
     · simp [hb]
     · have hne : ¬ (e.symm b = e.symm 0) := fun hc => hb (e.symm.injective hc)
-      rw [if_neg hne, if_neg hb]
+      rw [ite_eq_right hne, ite_eq_right hb]
   have h2 := det_eq_det_submatrix_succ (M.submatrix e.symm e.symm) hN
   rw [Matrix.det_submatrix_equiv_self] at h2
   rw [h2, Matrix.submatrix_submatrix]
@@ -1171,7 +1079,7 @@ private theorem appLE_subschemeι_chartPartialDeriv_complOrderEmb {p : X ⟶ Spe
       have h2 : ¬ (b = ULift.up i) := by
         intro hcon
         exact hb (congrArg ULift.down hcon)
-      rw [h1, if_neg h2]
+      rw [h1, ite_eq_right h2]
       simp
   have hδ'eq : δ' = EtaleCoordinates.partialDeriv k
       (ULift.{u} (Fin (n - ({j₀} : Finset (Fin n)).card)))

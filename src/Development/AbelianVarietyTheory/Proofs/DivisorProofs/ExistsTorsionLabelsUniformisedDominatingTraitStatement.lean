@@ -69,13 +69,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
-section Act
-
-variable {O : Type} [CommRing O] [StarRing O] {D : DegPre R} [Module O D.X]
-variable {F : Type} [Field F] [Algebra (FractionRing R) F]
-
-end Act
-
 section Ext
 
 variable {D : DegPre R} {F F' : Type} [Field F] [Algebra (FractionRing R) F] [Field F']
@@ -94,18 +87,6 @@ theorem qkExt_unique {f : F →+* F'} {p : QkPt D F k} {q q' : QkPt D F' k} (h :
   rfl
 
 end Ext
-
-section Through
-
-variable {O : Type} [CommRing O] [StarRing O] {D : DegPre R} [Module O D.X]
-
-end Through
-
-section Unit
-
-variable (D : DegPre R) (χ : D.X)
-
-end Unit
 
 end GlobalTheory.DegActCompare
 end -- clump:auto

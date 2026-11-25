@@ -604,9 +604,9 @@ theorem d_entries {m : ℕ} (t σ ρ₁ : ℂ) (ρ' : Fin m → ℂ) (x : UT (m 
   have h3 : ‖B‖ ≤ T := ((norm_snd_le _).trans (norm_snd_le _)).trans hco
   refine ⟨fun i j => ?_, fun i => (norm_le_pi_norm B i).trans h3, ?_, fun k => ?_, ?_⟩
   · by_cases hij : i < j
-    · simp only [strictUpper, Matrix.of_apply, hij, dif_pos]
+    · simp only [strictUpper, Matrix.of_apply, hij, dite_eq_left]
       exact (norm_le_pi_norm x _).trans h2
-    · simp only [strictUpper, Matrix.of_apply, hij, dif_neg, not_false_iff, norm_zero]
+    · simp only [strictUpper, Matrix.of_apply, hij, dite_eq_right, not_false_iff, norm_zero]
       exact hT
   · simpa using (norm_le_pi_norm (Fin.cons ρ₁ ρ' : Fin (m + 1) → ℂ) 0).trans h1
   · simpa using (norm_le_pi_norm (Fin.cons ρ₁ ρ' : Fin (m + 1) → ℂ) k.succ).trans h1

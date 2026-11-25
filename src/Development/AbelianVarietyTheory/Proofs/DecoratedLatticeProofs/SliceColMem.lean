@@ -6,45 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Fla
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsPreserveSchwartzBruhatAndSurjective
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationTwoVariableModelAndLineExte
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -220,7 +181,7 @@ theorem gval : ∀ (D : D7), FlatBF D → FlatFB D → ContrLoc D → GlobalTheo
       have hC'0 : (C' : ℂ) ≠ 0 := by exact_mod_cast hC'.ne'
       simp only [toCols₁_fromCols, fromCols_apply_inr, Matrix.zero_apply]
       have hz : (fun _ => (0 : k)) ∈ box (XIx (Fin κ) t (j + 1)) (S.ϖ ^ (σ + 1))⁻¹ := (box _ _).zero_mem
-      simp only [hz, if_true, mul_one]
+      simp only [hz, ite_true, mul_one]
       rw [← mul_assoc, inv_mul_cancel₀ hC'0, one_mul]
     rw [e]; exact (SB _).smul_mem _ hs
   have hE₂ : (S.T t).entry S.ψ ν (j + 1) c H 1 1 ∈ SB _ := by
@@ -233,7 +194,7 @@ theorem gval : ∀ (D : D7), FlatBF D → FlatFB D → ContrLoc D → GlobalTheo
       have hC'0 : (C' : ℂ) ≠ 0 := by exact_mod_cast hC'.ne'
       simp only [toRows₁_fromRows]
       have hz : a.fromRows (0 : Matrix Unit (XIx (Fin κ) t (j + 1)) k) (Sum.inr ()) ∈ box (XIx (Fin κ) t (j + 1)) (S.ϖ ^ (σ + 1)) := (box _ _).zero_mem
-      simp only [hz, if_true, mul_one]
+      simp only [hz, ite_true, mul_one]
       rw [← mul_assoc, inv_mul_cancel₀ hC'0, one_mul]
     rw [e]; exact (SB _).smul_mem _ hs
   let E₁ : SB _ := ⟨_, hE₁⟩
@@ -252,7 +213,7 @@ theorem gval : ∀ (D : D7), FlatBF D → FlatFB D → ContrLoc D → GlobalTheo
   let Q₂ : SB (Matrix (XIx (Fin κ) t (j + 1 + 1)) (XIx (Fin κ) t (j + 1)) k) := ⟨_, one_mem_SB _ _⟩
   have hP₁ : P₁.1 = Set.indicator {x : Matrix (XIx (Fin κ) t (j + 1)) (XIx (Fin κ) t j ⊕ Unit) k | ∀ r q, x r q ∈ 𝒪[k]} fun _ => 1 := by
     simp only [P₁]
-    rw [hO₁, (hun (XIx (Fin κ) t (j + 1)) (XIx (Fin κ) t j) (XIx (Fin κ) t j) (c + 1 + 1) (σ + 1 + 1)).1, if_neg (by omega)]
+    rw [hO₁, (hun (XIx (Fin κ) t (j + 1)) (XIx (Fin κ) t j) (XIx (Fin κ) t j) (c + 1 + 1) (σ + 1 + 1)).1, ite_eq_right (by omega)]
   have hP₂ : P₂.1 = Set.indicator {x : Matrix (XIx (Fin κ) t (j + 1 + 1) ⊕ Unit) (XIx (Fin κ) t (j + 1)) k | ∀ r q, x r q ∈ 𝒪[k]} fun _ => 1 := by
     simp only [P₂]
     rw [hO₂, (hun (XIx (Fin κ) t (j + 1 + 1)) (XIx (Fin κ) t (j + 1)) (XIx (Fin κ) t j) (c + 1) (σ + 1)).2.1 (by omega) (by omega)]

@@ -2,45 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -131,8 +92,8 @@ theorem snd_val_eq_zero (y : Sp (DualNumber R) ⟶ X)
     (hy : y ≫ s = spMap (algebraMap R (DualNumber R))) (f : Form s)
     (h0 : ∀ U : X.affineOpens, connForm f.1 (affPt s U) (affPt_w s U) = 0) :
     TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1) = 0 := by
-  have loc : ∀ m : Ideal R, m.IsMaximal →
-      ∃ t ∉ m, t * TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1) = 0 := by
+  have loc : ∀ (m : Ideal R) [m.IsMaximal], Algebra.linearMap R (Localization.AtPrime m)
+      (TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1)) = 0 := by
     intro m hm
     haveI := hm.isPrime
     let R' := Localization.AtPrime m
@@ -178,17 +139,9 @@ theorem snd_val_eq_zero (y : Sp (DualNumber R) ⟶ X)
     rw [hv] at h1
     have h2 : algebraMap R R' (TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1)) = 0 := by
       simpa [φ, Algebra.smul_def, TrivSqZeroExt.algebraMap_eq_inl'] using h1
-    obtain ⟨⟨t, ht⟩, ht'⟩ := (IsLocalization.map_eq_zero_iff m.primeCompl R' _).1 h2
-    exact ⟨t, ht, ht'⟩
-  by_contra hx
-  let J : Ideal R := LinearMap.ker (LinearMap.toSpanSingleton R R
-    (TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1)))
-  have hJ : J ≠ ⊤ := fun h ↦ hx (by
-    have : (1 : R) ∈ J := h ▸ Submodule.mem_top
-    simpa [J] using this)
-  obtain ⟨m, hm, hJm⟩ := Ideal.exists_le_maximal J hJ
-  obtain ⟨t, ht, ht'⟩ := loc m hm
-  exact ht (hJm (by simpa [J] using ht'))
+    exact h2
+  exact Module.eq_zero_of_localization_maximal _
+    (fun P _ ↦ Algebra.linearMap R (Localization.AtPrime P)) _ loc
 
 theorem tanVal_eq_zero_of_cmpForm_eq_zero : ∀ (R : Type) [CommRing R] (A : Over (Sp R))
     (v : epsR R ⟶ A) (f : Form (A.hom ≫ 𝟙 (Sp R))),

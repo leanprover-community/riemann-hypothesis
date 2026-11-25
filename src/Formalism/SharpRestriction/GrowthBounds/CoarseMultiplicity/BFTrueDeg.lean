@@ -34,10 +34,12 @@ theorem tdeg_eq (b : SegBlock (segS X.TT j) X.m) (hk : Kept X.p X.m (X.seg C0 CE
     (monomial (mu0 C0 CE1 CE2 X j b) 1)
     (fun ω' ωL h1 h2 h3 => leading_exponent_weighted_homog C0 CE1 CE2 X j b ω' ωL ⟨h1, h2, h3⟩)
   rw [ioBlock_monomial] at hwh
-  have h1 := hwh (by rw [coeff_monomial, if_pos rfl]; exact one_ne_zero)
+  have h1 := hwh (by rw [coeff_monomial, ite_eq_left rfl]; exact one_ne_zero)
   rw [weight_wLet] at h1
   unfold tdeg
-  rw [h1, TD_wLet C0 CE1 CE2 X j x b hk ho]
+  rw [h1, TD_wLet_of_bounds C0 CE1 CE2 X j x b hk.1
+      (fun i h => (hk.2.2.1 i h).2.1) (fun i h => (hk.2.2.1 i h).2.2.1)
+      (fun i h => (hk.2.1 i h).1) ho]
 
 theorem segPos_inj : Function.Injective (segPos X.TT j) := by
   intro i i' h
@@ -67,7 +69,7 @@ theorem prod_tdeg {M : Type} [CommMonoid M] (g : ℕ → M) (hg : g 0 = 1) (b : 
   rw [← Finset.prod_subset hS (fun t _ ht => by
     have h1 : segNext X.TT j ≠ t := fun h => ht (h ▸ Finset.mem_insert_self _ _)
     have h2 : ∀ i, segPos X.TT j i ≠ t := fun i h => ht (Finset.mem_insert_of_mem (Finset.mem_image.2 ⟨i, Finset.mem_univ _, h⟩))
-    simp only [hT, if_neg h1, if_neg (h2 _), Finset.sum_const_zero, add_zero, hg, mul_one])]
+    simp only [hT, ite_eq_right h1, ite_eq_right (h2 _), Finset.sum_const_zero, add_zero, hg, mul_one])]
   rw [Finset.prod_insert (fun h => by
     obtain ⟨i, _, hi⟩ := Finset.mem_image.1 h
     exact hnp i hi), Finset.prod_image (fun i _ i' _ h => segPos_inj X j h)]
@@ -75,18 +77,18 @@ theorem prod_tdeg {M : Type} [CommMonoid M] (g : ℕ → M) (hg : g 0 = 1) (b : 
     intro β
     show (if segNext X.TT j = segNext X.TT j then hhDeg X.aT X.bT (segNext X.TT j) β else 0) +
       ∑ i, (if segPos X.TT j i = segNext X.TT j then hhDeg X.aT X.bT (segNext X.TT j) β else 0) = _
-    rw [if_pos rfl, Finset.sum_eq_zero (fun i _ => if_neg (hnp i)), add_zero]
+    rw [ite_eq_left rfl, Finset.sum_eq_zero (fun i _ => ite_eq_right (hnp i)), add_zero]
   have hpos : ∀ i β, T (segPos X.TT j i) β = hhDeg X.aT X.bT (segPos X.TT j i) β := by
     intro i β
     show (if segNext X.TT j = segPos X.TT j i then hhDeg X.aT X.bT (segPos X.TT j i) β else 0) +
       ∑ i', (if segPos X.TT j i' = segPos X.TT j i then hhDeg X.aT X.bT (segPos X.TT j i) β else 0) = _
-    rw [if_neg (fun h : segNext X.TT j = segPos X.TT j i => hnp i h.symm), zero_add]
-    rw [Finset.sum_eq_single i (fun i' _ hi' => if_neg (fun h => hi' (segPos_inj X j h))) (fun h => absurd (Finset.mem_univ _) h),
-      if_pos rfl]
+    rw [ite_eq_right (fun h : segNext X.TT j = segPos X.TT j i => hnp i h.symm), zero_add]
+    rw [Finset.sum_eq_single i (fun i' _ hi' => ite_eq_right (fun h => hi' (segPos_inj X j h))) (fun h => absurd (Finset.mem_univ _) h),
+      ite_eq_left rfl]
   have hev := (next_mem X.TT j).2
-  simp only [hnext, hpos, hhDeg, if_true, Bool.false_eq_true, if_false, if_pos hev]
+  simp only [hnext, hpos, hhDeg, ite_true, Bool.false_eq_true, ite_false, ite_eq_left hev]
   have hodd : ∀ i, ¬ Even (segPos X.TT j i).val := fun i => (pos_mem X.TT j i).2
-  simp only [hodd, if_false]
+  simp only [hodd, ite_false]
   rw [mul_comm (g (X.aT (segNext X.TT j)) * g (X.bT (segNext X.TT j))), mul_assoc]
 
 end

@@ -5,53 +5,13 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Matri
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
 import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -93,9 +53,9 @@ theorem ptEntry_row : ∀ (bs : List (ℂ × ℕ)), (∀ b ∈ bs, b.1 ≠ 0 ∧
     by_cases his : i < s
     · refine ⟨s - 1 - i, by omega, ?_, ?_, ?_⟩
       · simp only [blockIdx]
-        rw [if_pos (by omega), if_pos his]
+        rw [ite_eq_left (by omega), ite_eq_left his]
       · simp only [ptEntry]
-        rw [if_pos (by omega), if_pos (by omega)]
+        rw [ite_eq_left (by omega), ite_eq_left (by omega)]
         exact ht
       · intro j' hj'
         simp only [ptEntry]
@@ -106,13 +66,13 @@ theorem ptEntry_row : ∀ (bs : List (ℂ × ℕ)), (∀ b ∈ bs, b.1 ≠ 0 ∧
       obtain ⟨j, h1, h2, h3, h4⟩ := ih hbs (i - s) hi'
       refine ⟨j + s, by omega, ?_, ?_, ?_⟩
       · simp only [blockIdx]
-        rw [if_neg (by omega), if_neg his, Nat.add_sub_cancel, h2]
+        rw [ite_eq_right (by omega), ite_eq_right his, Nat.add_sub_cancel, h2]
       · simp only [ptEntry]
-        rw [if_neg (by omega), if_pos (by omega), Nat.add_sub_cancel]
+        rw [ite_eq_right (by omega), ite_eq_left (by omega), Nat.add_sub_cancel]
         exact h3
       · intro j' hj'
         simp only [ptEntry]
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
         split_ifs with hh
         · exact h4 _ (by omega)
         · rfl
@@ -136,21 +96,21 @@ theorem ptEntry_inj : ∀ (bs bs' : List (ℂ × ℕ)), (∀ b ∈ bs, b.1 ≠ 0
     simp only [List.map_cons, List.sum_cons] at e H
     have h0 := H 0 (s - 1) (by omega) (by omega)
     simp only [ptEntry] at h0
-    rw [if_pos (by omega), if_pos (by omega)] at h0
+    rw [ite_eq_left (by omega), ite_eq_left (by omega)] at h0
     have hss : s = s' := by
       by_contra hne
       apply ht
       rw [h0]
       split_ifs <;> first | rfl | omega
     subst hss
-    rw [if_pos (by omega), if_pos (by omega)] at h0
+    rw [ite_eq_left (by omega), ite_eq_left (by omega)] at h0
     subst h0
     congr 1
     refine ptEntry_inj bs bs' (fun b hb => h b (by simp [hb])) (fun b hb => h' b (by simp [hb])) (by omega) ?_
     intro i j hi hj
     have h1 := H (i + s) (j + s) (by omega) (by omega)
     simp only [ptEntry] at h1
-    rw [if_neg (by omega), if_pos (by omega), if_neg (by omega), if_pos (by omega)] at h1
+    rw [ite_eq_right (by omega), ite_eq_left (by omega), ite_eq_right (by omega), ite_eq_left (by omega)] at h1
     simpa using h1
 
 theorem ptMat_inj {m : ℕ} {p p' : Point ℂ m} (h : ptMat p = ptMat p') : p = p' := by
@@ -307,10 +267,10 @@ theorem F_row {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {ι : Type} (U
     (i : Fin (2 * r + k + 1)) (hi : i.val < r) (j : ι) : (Fm k r z * U) i j = U ⟨i.val, by omega⟩ j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (⟨i.val, by omega⟩ : Fin (r + 1))]
   · simp only [Fm, Matrix.of_apply]
-    rw [fvec_apply_lt z hz _ i hi, if_pos rfl, one_mul]
+    rw [fvec_apply_lt z hz _ i hi, ite_eq_left rfl, one_mul]
   · intro c _ hc
     simp only [Fm, Matrix.of_apply]
-    rw [fvec_apply_lt z hz _ i hi, if_neg (fun h => hc (Fin.ext h)), zero_mul]
+    rw [fvec_apply_lt z hz _ i hi, ite_eq_right (fun h => hc (Fin.ext h)), zero_mul]
   · simp
 
 theorem besselUnipotent_matrix_mul_three {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {a x b : Mat k r} (ha : a ∈ Nset k r)
@@ -322,7 +282,7 @@ theorem besselUnipotent_matrix_mul_three {z : Fin (2 * r + k + 1) → ℂ} (hz :
       N_F hz ha]
     simp only [Matrix.mul_assoc]
   conv_lhs => unfold Uof
-  rw [dif_pos hc', e, F_row hz _ _ hc']
+  rw [dite_eq_left hc', e, F_row hz _ _ hc']
   rfl
 
 theorem continuous_rootCoords (z : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1)) :
@@ -463,7 +423,7 @@ theorem eq_one_of_fix {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz
     ext i j
     by_cases hi : i.val < r
     · rw [F_row hz _ _ hi]
-      simp only [T, Matrix.of_apply, dif_pos hi]
+      simp only [T, Matrix.of_apply, dite_eq_left hi]
       rfl
     · rw [h7 i j (by omega), Matrix.mul_apply]
       refine (Finset.sum_eq_zero fun l _ => ?_).symm

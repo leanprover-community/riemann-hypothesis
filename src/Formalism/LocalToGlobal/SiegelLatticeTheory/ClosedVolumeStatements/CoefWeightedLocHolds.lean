@@ -631,11 +631,11 @@ theorem tensU_basis (p : Idx Vl) : tensU (fun i => bas Vl i (p i)) = EuclideanSp
   rw [tensU_apply, PiLp.single_apply]
   by_cases hqp : q = p
   · subst hqp
-    simp only [if_true]
+    simp only [ite_true]
     refine Finset.prod_eq_one fun i _ => ?_
     rw [inner_self_eq_norm_sq_to_K, (bas Vl i).orthonormal.1 (q i)]
     simp
-  · rw [if_neg hqp]
+  · rw [ite_eq_right hqp]
     obtain ⟨i, hi⟩ : ∃ i, q i ≠ p i := by
       by_contra hne
       push Not at hne
@@ -936,7 +936,7 @@ private theorem pos_of_vanish_lemma_2 (ε : Fin n → Bool) {r : ℕ} (σ : Fin 
       exact (hi (by rw [← hk]; exact hw0 k)).elim
     · rfl
   calc (0 : ℝ) < (if ε i then (1 : ℝ) else -1) * Complex.normSq (w i) := by
-        rw [if_pos hεi, one_mul]
+        rw [ite_eq_left hεi, one_mul]
         exact Complex.normSq_pos.mpr hi
     _ ≤ ∑ j, (if ε j then (1 : ℝ) else -1) * Complex.normSq (w j) :=
         Finset.single_le_sum (fun j _ => nonneg_term_lemma ε σ hσ w hw0 j) (Finset.mem_univ i)
@@ -985,7 +985,7 @@ theorem pos_of_perp (ε : Fin n → Bool) {r : ℕ} (σ : Fin (r + 1) → Fin n)
     rw [hv, hJ_sum_smul_left, Complex.re_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hJ_sum_smul_right]
-    simp only [hG, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hG, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact re_star_mul_mul _ _
   have hterm : ∀ k, Complex.normSq (g k) * (D k).re ≤ 0 := by
     intro k
@@ -1082,14 +1082,14 @@ theorem gs_step (ε : Fin n → Bool) {r k : ℕ} (hn : n = 2 * r + k + 1) (σ :
   refine ⟨Fin.cons ((((Real.sqrt s)⁻¹ : ℝ) : ℂ) • y) w, ?_, ?_⟩
   · intro a b
     refine Fin.cases ?_ (fun a' => ?_) a <;> refine Fin.cases ?_ (fun b' => ?_) b
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
       simp only [Fin.cons_zero, hJ_smul_left, hJ_smul_right]
       rw [mul_left_comm]
       exact hμ
-    · rw [if_neg (Fin.succ_ne_zero b').symm]
+    · rw [ite_eq_right (Fin.succ_ne_zero b').symm]
       simp only [Fin.cons_zero, Fin.cons_succ, hJ_smul_left, hJ_conj ε (w b') y, hwy, star_zero,
         mul_zero]
-    · rw [if_neg (Fin.succ_ne_zero a')]
+    · rw [ite_eq_right (Fin.succ_ne_zero a')]
       simp only [Fin.cons_zero, Fin.cons_succ, hJ_smul_right, hwy, mul_zero]
     · simp only [Fin.cons_succ, Fin.succ_inj]
       exact hwo a' b'
@@ -1228,10 +1228,6 @@ theorem chkScPsiExists (h : PI.ScPsiExists.Target) (D : Formalism.BasicNotions.D
 
 end Formalism.L2.SG.Closed.ScPsi
 
-namespace Formalism.L2.SG.Closed.ScGap
-
-end Formalism.L2.SG.Closed.ScGap
-
 namespace Formalism.L2.SG.Closed.ScMu
 
 noncomputable section
@@ -1294,8 +1290,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ChkScRef
 
@@ -1365,8 +1359,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ChkScXu
 

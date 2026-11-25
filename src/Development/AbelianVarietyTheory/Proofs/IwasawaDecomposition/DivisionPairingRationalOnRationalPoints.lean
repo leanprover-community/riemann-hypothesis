@@ -135,7 +135,7 @@ theorem exists_rational_orthogonal_projection_of_finrank_le (K : Type) [Field K]
         rw [map_sub, map_smulₛₗ]; abel
       rw [hsplit, inner_add_left, inner_smul_left, hv0, mul_zero, zero_add]
       exact hy' _ hm'
-    · push_neg at h
+    · push Not at h
       refine ⟨0, N.zero_mem, ?_⟩
       intro m hm
       rw [h m hm, inner_zero_left]

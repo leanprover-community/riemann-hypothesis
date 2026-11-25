@@ -139,16 +139,6 @@ theorem isSelfDualC_of_base {V : HSp D} {β : GL (Fin V.rank) (EAf D)} {Λ : Sub
   · rw [Formalism.IndefR.Eqv.dual_of_dualL hdual y]
     simp only [Formalism.UG.hform, starRingEnd_apply, RingHom.mem_range]
 
-section R
-
-open Formalism.IndefR.Links Formalism.IndefR.Links.RealDat
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
-variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
-
-
-end R
-
 end Formalism.IndefR.Eqv.KerDiag
 
 end

@@ -31,7 +31,7 @@ def WordConditionAt (C CLa : ℝ) : Prop :=
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (j : W →+* O) (w : O)
     (n' m r : ℕ) [Fact p.Prime] [NeZero n'] (TT : Finset (Fin n')) (L₁ L₂ : ℕ) (de h x : ℝ)
     (lam0 : Fin n' → Fin (m + 1) → ℤ) (aT bT : Fin n' → ℤ) (a Y : ℝ) (cpp c0 Dp cStar : ℕ)
-    (K : ℕ) [NeZero r] [NeZero K] (hk : m + 1 = r + K) (hrk : r ≤ m + 1) (F : Frames n' r) (nb : ℕ)
+    (K : ℕ) [NeZero r] [NeZero K] (hk : m + 1 = r + K) (_ : r ≤ m + 1) (F : Frames n' r) (nb : ℕ)
     (B : Fin nb → RRing O n' (r + K)),
     DataII C CLa p W Qq O Kf ι σ j w n' m r TT L₁ L₂ de h x lam0 aT bT a Y cpp c0 Dp cStar K F nb B →
     ∀ Fp : MvPolynomial (TV n' (m + 1)) (KK O),

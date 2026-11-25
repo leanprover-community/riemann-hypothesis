@@ -142,9 +142,6 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-end Formalism.FourierDecayAlt.P.MAx2.R2
-
-namespace Formalism.FourierDecayAlt.P.MAx2.R2
 open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.YangianSpanCharacter.T Matrix
@@ -457,7 +454,7 @@ theorem phi_mem {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (n : ℕ) :
 
 theorem ev_Phi {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (n : ℕ) (x : Qp P.r P.TT) :
     evQ P (Phi P φ n) x = ((LE.ld n φ (Gq P x) : ℝ) : ℂ) := by
-  unfold Phi toSm; rw [dif_pos (phi_mem P hφ n)]; rfl
+  unfold Phi toSm; rw [dite_eq_left (phi_mem P hφ n)]; rfl
 
 theorem G_mem : (fun x : Qp P.r P.TT => ((Gq P x : ℝ) : ℂ)) ∈ smSub P.r P.TT := by
   have h2 : ContDiffOn ℝ sm (fun x => ((Gr P x : ℝ) : ℂ)) (Qset P.r P.TT) :=
@@ -804,7 +801,7 @@ def JF (N : ℕ) (X : (ℝ → ℝ) → Qp P.r P.TT → Iota P N → ℂ) : Prop
   ∀ i, ∃ F : (ℝ → ℝ) → SmQ P.r P.TT, IsJ P F ∧ ∀ φ, LE.SmoothLog φ → ∀ x, X φ x i = evQ P (F φ) x
 
 theorem toSm_ev (f : SmQ P.r P.TT) : toSm P (evQ P f) = f := by
-  unfold toSm; rw [dif_pos (show evQ P f ∈ smSub P.r P.TT from f.2)]; rfl
+  unfold toSm; rw [dite_eq_left (show evQ P f ∈ smSub P.r P.TT from f.2)]; rfl
 
 theorem evQ_sum {ι : Type} (s : Finset ι) (f : ι → SmQ P.r P.TT) (x : Qp P.r P.TT) :
     evQ P (∑ i ∈ s, f i) x = ∑ i ∈ s, evQ P (f i) x := by
@@ -1026,10 +1023,6 @@ end
 
 end Formalism.FourierDecayAlt.P.MAx2.J0
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
@@ -1208,13 +1201,13 @@ theorem inv_val (u : SmQ r TT) (hu : ∀ q, (u : Qp r TT → ℂ) q ≠ 0) (q : 
 theorem coordE_vc (l : Fin r) (x : E r) : coordE (M.vc l) x = x.1 l := by
   have h : ((ofLex (M.vc l : M.Var r)).1 : ℕ) < r := by simp [M.vc]
   unfold coordE zE
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   simp [M.vc]
 
 theorem coordE_vcb (l : Fin r) (x : E r) : coordE (M.vcb l) x = conj (x.1 l) := by
   have h : ((ofLex (M.vcb l : M.Var r)).1 : ℕ) < r := by simp [M.vcb]
   unfold coordE zE
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   simp [M.vcb]
 
 theorem coordE_vc_ne (l : Fin r) (q : Qp r TT) : coordE (M.vc l) q.1 ≠ 0 := by
@@ -1469,14 +1462,14 @@ theorem ev_d0Q_alt (hTT : 0 ≤ TT) : eulerQ M.vz (d0Q : SmQ r TT) = 0 := by
   rw [ev_d0Q hTT]
   have h : ∀ m : Fin r, ((if (M.vz : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vz : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = 0 := fun m => by
-    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vz m).symm, if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vz m).symm, add_zero]
+    rw [ite_eq_right (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vz m).symm, ite_eq_right (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vz m).symm, add_zero]
   simp [h]
 
 theorem ev_d0Q_zb (hTT : 0 ≤ TT) : eulerQ M.vzb (d0Q : SmQ r TT) = 0 := by
   rw [ev_d0Q hTT]
   have h : ∀ m : Fin r, ((if (M.vzb : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vzb : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = 0 := fun m => by
-    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vzb m).symm, if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vzb m).symm, add_zero]
+    rw [ite_eq_right (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vzb m).symm, ite_eq_right (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vzb m).symm, add_zero]
   simp [h]
 
 theorem ev_d0Q_c (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (d0Q : SmQ r TT) = (-1 : ℂ) • d0Q := by
@@ -1484,10 +1477,10 @@ theorem ev_d0Q_c (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (d0Q : SmQ r TT)
   congr 1
   have h : ∀ m : Fin r, ((if (M.vc l : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vc l : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = if l = m then (-1 : ℂ) else 0 := fun m => by
-    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb l m), add_zero]
+    rw [ite_eq_right (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb l m), add_zero]
     by_cases hlm : l = m
-    · rw [if_pos hlm, if_pos ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).2 hlm)]
-    · rw [if_neg hlm, if_neg (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).1 h))]
+    · rw [ite_eq_left hlm, ite_eq_left ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).2 hlm)]
+    · rw [ite_eq_right hlm, ite_eq_right (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).1 h))]
   simp [h]
 
 theorem ev_d0Q_cb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (d0Q : SmQ r TT) = (-1 : ℂ) • d0Q := by
@@ -1495,18 +1488,18 @@ theorem ev_d0Q_cb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (d0Q : SmQ r T
   congr 1
   have h : ∀ m : Fin r, ((if (M.vcb l : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vcb l : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = if l = m then (-1 : ℂ) else 0 := fun m => by
-    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb m l).symm, zero_add]
+    rw [ite_eq_right (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb m l).symm, zero_add]
     by_cases hlm : l = m
-    · rw [if_pos hlm, if_pos ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).2 hlm)]
-    · rw [if_neg hlm, if_neg (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).1 h))]
+    · rw [ite_eq_left hlm, ite_eq_left ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).2 hlm)]
+    · rw [ite_eq_right hlm, ite_eq_right (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).1 h))]
   simp [h]
 
 theorem ev_kc (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (coordQ (M.vc l) * d0Q : SmQ r TT) = 0 := by
-  rw [Formalism.FourierDecayAlt.P.analytic_leibniz r TT, ev_d0Q_c hTT, Formalism.FourierDecayAlt.P.analytic_coordinates r TT, if_pos rfl]
+  rw [Formalism.FourierDecayAlt.P.analytic_leibniz r TT, ev_d0Q_c hTT, Formalism.FourierDecayAlt.P.analytic_coordinates r TT, ite_eq_left rfl]
   simp
 
 theorem ev_kcb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (coordQ (M.vcb l) * d0Q : SmQ r TT) = 0 := by
-  rw [Formalism.FourierDecayAlt.P.analytic_leibniz r TT, ev_d0Q_cb hTT, Formalism.FourierDecayAlt.P.analytic_coordinates r TT, if_pos rfl]
+  rw [Formalism.FourierDecayAlt.P.analytic_leibniz r TT, ev_d0Q_cb hTT, Formalism.FourierDecayAlt.P.analytic_coordinates r TT, ite_eq_left rfl]
   simp
 
 theorem adj_fn (h hb : SmQ r TT) (hc : cj hb = h) : IsAdj ((anQ r TT).fnP h hb) := by

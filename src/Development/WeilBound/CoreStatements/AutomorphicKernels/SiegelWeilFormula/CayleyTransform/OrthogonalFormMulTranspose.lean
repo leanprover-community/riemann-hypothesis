@@ -57,7 +57,7 @@ theorem inU_iff (ε : ℤˣ) (h : M2 n) : InU (Qc n ε)ᵀ h ↔ hᵀ * Qc n ε 
 theorem J_herm (ε : ℤˣ) : ((Qc n ε)ᵀ)ᴴ = ((ε : ℤ) : ℂ) • (Qc n ε)ᵀ := by
   ext i j
   rcases i with i | i <;> rcases j with j | j <;> rcases eq_or_ne i j with rfl | hij <;>
-    simp [Qc, Matrix.conjTranspose_apply, Matrix.one_apply, ← mul_assoc, eps_sq, *] <;>
+    simp [Qc, Matrix.conjTranspose_apply, Matrix.one_apply, eps_sq, *] <;>
     exact fun h => absurd h.symm hij
 
 theorem J_sq (ε : ℤˣ) : (Qc n ε)ᵀ * (Qc n ε)ᵀ = ((ε : ℤ) : ℂ) • 1 := by

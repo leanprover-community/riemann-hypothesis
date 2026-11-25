@@ -49,44 +49,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyFamOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DegreeDualDetLieEqNegFlatSectionDegree
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInjectiveDualWeylTensorCuspFormsRationalPo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyDefiniteRationalPointDataComponent
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
@@ -100,20 +62,11 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlge
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriIsUnitDet
 import Formalism.LocalToGlobal.ProjectiveLattices.AxHSupA
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ProdCastLESucc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.SupAtUnit
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.WittVector.IsPoly
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
@@ -135,8 +88,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LieBasisIffTange
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ScaledBaseChangeFibreSectionCalculus
 import Development.AbelianVarietyTheory.Statements.PrincipalLattices.PrimeSpectrumDualEq
 import Formalism.LocalToGlobal.ProjectiveLattices.FrameProofs
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.PiTensorProduct
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAA
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LogSupSumLeOfNonvanishingDetLimit
 
@@ -281,10 +232,6 @@ open GlobalTheory.Frames GlobalTheory.LamT
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
 
-theorem exists_bc {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T] (φ : S →ₐ[c.F] T)
-    (y : FrPt Xo c S) : ∃ z, FrMap φ y z :=
-  GlobalTheory.Frames.FramedBaseChange.exists_frMap GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c S T φ y
-
 theorem metric_of_archFr {y₀ : FrPt Xo c c.F} {σ : c.F →+* ℂ} {N : ℝ} {X : Mats Dw ℂ} (h : ArchFr y₀ σ N X)
     {z y : FrPt Xo c (CAt σ)} (hz : FrMap (Algebra.ofId c.F (CAt σ)) y₀ z) {Y Gr : Mats Dw ℂ} {s : ℂ} {M : ℝ}
     (hy : FrChg (S := CAt σ) (fun τ => (Y τ)ᵀ) s z y) (hm : IsMetric y M Gr) :
@@ -317,13 +264,13 @@ theorem isMetric_conj_one {σ : c.F →+* ℂ} {y : FrPt Xo c (CAt σ)} {y' : Fr
 theorem archFr_conj (hpq : 1 ≤ Dw.p + Dw.q) {y₀ : FrPt Xo c c.F} {σ : c.F →+* ℂ} {N N' : ℝ} {X X' : Mats Dw ℂ}
     (h : ArchFr y₀ σ N X) (h' : ArchFr y₀ ((starRingEnd ℂ).comp σ) N' X') :
     N' = N ∧ ∀ τ, ‖(X' τ).det‖ = ‖(X τ).det‖ := by
-  obtain ⟨z, hz⟩ := exists_bc (Algebra.ofId c.F (CAt σ)) y₀
+  obtain ⟨z, hz⟩ := GlobalTheory.FlagMod.exists_frMap (Algebra.ofId c.F (CAt σ)) y₀
   obtain ⟨y, hy, -⟩ := existsUnique_frChg E H Dw l Xo c (CAt σ) z (fun τ => (X τ)ᵀ) 1 fun τ => by
     have : IsUnit ((X τ)ᵀ).det := by rw [Matrix.det_transpose]; exact (h.2.1 τ).isUnit
     exact this
   have hm := h.2.2 z y hz hy
-  obtain ⟨z', hz'⟩ := exists_bc (GlobalTheory.FrameNorm.conjAlg σ) z
-  obtain ⟨y', hy'⟩ := exists_bc (GlobalTheory.FrameNorm.conjAlg σ) y
+  obtain ⟨z', hz'⟩ := GlobalTheory.FlagMod.exists_frMap (GlobalTheory.FrameNorm.conjAlg σ) z
+  obtain ⟨y', hy'⟩ := GlobalTheory.FlagMod.exists_frMap (GlobalTheory.FrameNorm.conjAlg σ) y
   have h0 := ReciprocityTheory.ChartRestriction.G.PullbackSections.frMap_trans _ _ hz hz'
   rw [Subsingleton.elim ((GlobalTheory.FrameNorm.conjAlg σ).comp _) (Algebra.ofId _ _)] at h0
   have hc := (ChgBC.frChg_baseChange E H Dw l Xo c _ _ (GlobalTheory.FrameNorm.conjAlg σ) z y z' y' _ _ hy hz').1 hy'
@@ -354,11 +301,6 @@ theorem mem_range_of_le_one {w : HeightOneSpectrum (𝓞 c.F)} {T : CDVR} {io : 
   simp only [vLa]
   omega
 
-theorem map_tval {T : Type} [Fintype T] [DecidableEq T] {N : T → ℕ} (la : ∀ t, Fin (N t) → ℕ) {S S' : Type} [CommRing S]
-    [CommRing S'] (φ : S →+* S') (x : TIdx la → S) (y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) S) :
-    φ (tval la x y) = tval la (fun I => φ (x I)) fun t => (y t).map φ := by
-  apply _root_.GlobalTheory.DefPt.ReadsPt.tval_map <;> assumption
-
 theorem val_nonneg {Z : Comp Xo c} (P : PtData Z) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {x : TIdx (part Dw a) → c.F} {f : Rul Xo c}
     (hr : Reads Z P.y₀ a n x f) (hx : x ∈ locLat (P.matA a n)) (w : HeightOneSpectrum (𝓞 c.F)) :
     ∀ v ∈ valSet Xo c (algCls Xo c) w, 0 ≤ v f := by
@@ -369,7 +311,7 @@ theorem val_nonneg {Z : Comp Xo c} (P : PtData Z) {a : (E →+* ℂ) × ℕ → 
   obtain ⟨⟨q, T, io, e, ho, y, hy, η, hη, rfl⟩, rfl⟩ := h
   letI := io.toAlgebra
   show 0 ≤ nval T.V e (evR Xo c f y.1)
-  obtain ⟨z, hz⟩ := exists_bc (Algebra.ofId c.F T.Fr) P.y₀
+  obtain ⟨z, hz⟩ := GlobalTheory.FlagMod.exists_frMap (Algebra.ofId c.F T.Fr) P.y₀
   obtain ⟨ha, hB, hl⟩ := P.loc w
   obtain ⟨Y, u, hY, hc⟩ := hl T io e ho y.1 z y.2.2 hz ((P.only _ y.1 hy.2).trans hz.1.symm)
   have hev := hr.2 T.Fr z y.1 (fun τ => (P.B w τ).map io * (Y τ).map (algebraMap T.V T.Fr)) _ (fun τ => by
@@ -379,7 +321,7 @@ theorem val_nonneg {Z : Comp Xo c} (P : PtData Z) {a : (E →+* ℂ) × ℕ → 
   have hmv := GlobalTheory.DefPt.tval_translate _ _ (part Dw a) c.F T.Fr io x (P.B w) fun τ => (Y τ).map (algebraMap T.V T.Fr)
   choose x' hx' using fun I => mem_range_of_le_one ho (hx w I)
   refine ReciprocityTheory.ChartRestriction.G.PullbackSections.nval_nonneg_of_int e ⟨(u : T.V) ^ n * tval (part Dw a) x' Y, ?_⟩
-  rw [hev, map_mul, map_tval, map_pow]
+  rw [hev, map_mul, GlobalTheory.DefPt.ReadsPt.tval_map, map_pow]
   erw [hmv]
   simp only [hx', PtData.matA, fibA, Matrix.smul_mulVec, Pi.smul_apply, smul_eq_mul, map_mul, map_pow, tval,
     Finset.mul_sum]
@@ -389,7 +331,7 @@ theorem cabs_le_matNorm {Z : Comp Xo c} (P : PtData Z) {a : (E →+* ℂ) × ℕ
     {x : TIdx (part Dw a) → c.F} {f : Rul Xo c} (hr : Reads Z P.y₀ a n x f) {σ : c.F →+* ℂ} {y : FrPt Xo c (CAt σ)}
     (hy : y.x = spMap (algebraMap c.F (CAt σ)) ≫ P.y₀.x) (hm : IsMetric y 1 fun _ => 1) :
     cabs (evR Xo c f y) ≤ matNorm (P.matY a n) σ x := by
-  obtain ⟨z, hz⟩ := exists_bc (Algebra.ofId c.F (CAt σ)) P.y₀
+  obtain ⟨z, hz⟩ := GlobalTheory.FlagMod.exists_frMap (Algebra.ofId c.F (CAt σ)) P.y₀
   obtain ⟨g, s, hg, hc⟩ := (frChg_exists_unique E H Dw l Xo c (CAt σ) z y).1 (hy.trans hz.1.symm)
   have hev := hr.2 (CAt σ) z y (fun τ => (g τ)ᵀ) s (fun τ => by rw [Matrix.det_transpose]; exact hg τ) s.isUnit hz hc
   obtain ⟨hN, hW⟩ := metric_of_archFr (P.arch σ) hz
@@ -415,7 +357,7 @@ theorem cabs_le_matNorm_conj (hpq : 1 ≤ Dw.p + Dw.q) {Z : Comp Xo c} (P : PtDa
     cabs (evR Xo c f y) ≤ matNorm (P.matY a n) σ' x := by
   subst hσ
   have hB : ReciprocityTheory.ChartRestriction.G.Out.SecBaseChangeSt := GlobalTheory.lawsFieldsSeparately.2.1
-  obtain ⟨y', hy'⟩ := exists_bc (GlobalTheory.FrameNorm.conjAlg σ) y
+  obtain ⟨y', hy'⟩ := GlobalTheory.FlagMod.exists_frMap (GlobalTheory.FrameNorm.conjAlg σ) y
   have hx : y'.x = spMap (algebraMap c.F (CAt ((starRingEnd ℂ).comp σ))) ≫ P.y₀.x := by
     rw [hy'.1, hy, ← Category.assoc, ← ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp]
     rfl
@@ -500,7 +442,7 @@ theorem exists_ortho {σ : c.F →+* ℂ} {r : ℕ} {U : Unf Xo c σ r} {ξ : �
     rw [h2]
     rfl
   have hrd : ‖rdU U f k z‖ = cabs (evR Xo c f (U.un k ⟨z, hz⟩)) := by
-    have e : rdU U f k z = toC (evR Xo c f (U.un k ⟨z, hz⟩)) := dif_pos hz
+    have e : rdU U f k z = toC (evR Xo c f (U.un k ⟨z, hz⟩)) := dite_eq_left hz
     rw [e]; rfl
   rw [ReciprocityTheory.ChartRestriction.G.PullbackSections.PfSupAtUnit.pnorm_unit _ _ _ (ReciprocityTheory.ChartRestriction.G.PullbackSections.PfSupAtUnit.dmin_ortho _ ho), hrd] at hp
   rw [hev, GlobalTheory.FrameNorm.Comparison₂.cabs_mul, hw, homN, lieFacZ_wtZ, modelWt_wtZ, hp]
@@ -517,10 +459,10 @@ theorem integral_and_norm_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   refine le_trans (le_of_eq hn) ?_
   clear hn hy hZ
   by_cases hσ : GoodEmb c σ
-  · have e : goodOf c σ = σ := if_pos hσ
+  · have e : goodOf c σ = σ := ite_eq_left hσ
     have := cabs_le_matNorm P hd hr hx hm
     exact this.trans (le_of_eq (by rw [e]))
-  · have e : goodOf c σ = (starRingEnd ℂ).comp σ := if_neg hσ
+  · have e : goodOf c σ = (starRingEnd ℂ).comp σ := ite_eq_right hσ
     exact cabs_le_matNorm_conj hpq P hd hf hr (by rw [e]; ext b; simp) hx hm
 
 end GlobalTheory.DefPt.IntNorm
@@ -956,7 +898,6 @@ theorem log_relIndex {n : ℕ} (A : HeightOneSpectrum (𝓞 K) → Matrix (Fin n
 
 end GlobalTheory.LocMatSlope
 
-
 open GlobalTheory.LocMatSlope in
 theorem GlobalTheory.LocMatSlope.slope_sq_locLat : ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (ι : Type)
     [Fintype ι] [DecidableEq ι] [Nonempty ι] (A : HeightOneSpectrum (𝓞 K) → Matrix ι ι K)
@@ -1152,7 +1093,7 @@ theorem matChar_transvection [CharZero K] {i j : Fin n} (hij : i ≠ j) (c : K) 
       simp only [and_self, ite_true]
       ring
     · have h' : ¬(i = a ∧ j = b) := fun h' => h ⟨h'.1.symm, h'.2.symm⟩
-      rw [if_neg h', if_neg h']
+      rw [ite_eq_right h', ite_eq_right h']
       simp only [add_zero]
       by_cases hab : a = b
       · subst hab; ring
@@ -1797,11 +1738,11 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Recip
   have hsub : ∀ f : (E →+* ℂ) → ℝ, (∀ τ, Dw.mult τ = 0 → f τ = 0) → ∑ τ, f τ = ∑ τ : Psi H, f τ.1 := fun f hf => by
     rw [← Fintype.sum_subtype_add_sum_subtype (fun τ : E →+* ℂ => τ (H.rt : E) = H.rt0) f,
       Finset.sum_eq_zero (s := Finset.univ) (f := fun τ : {τ : E →+* ℂ // ¬ τ (H.rt : E) = H.rt0} => f τ.1)
-        fun τ _ => hf _ (by rw [Datum.mult, if_neg τ.2, h.q]), add_zero]
+        fun τ _ => hf _ (by rw [Datum.mult, ite_eq_right τ.2, h.q]), add_zero]
     convert rfl
   have h1 : ∑ τ, (Dw.mult τ : ℝ) = (Fintype.card (Psi H) : ℝ) * Dw.p := by
     rw [hsub _ fun τ h => by rw [h, Nat.cast_zero],
-      Finset.sum_congr rfl fun (τ : Psi H) _ => show (Dw.mult τ.1 : ℝ) = Dw.p by rw [Datum.mult, if_pos τ.2]]
+      Finset.sum_congr rfl fun (τ : Psi H) _ => show (Dw.mult τ.1 : ℝ) = Dw.p by rw [Datum.mult, ite_eq_left τ.2]]
     simp
   have h2 : (Fintype.card (Σ τ : E →+* ℂ, Fin (Dw.mult τ)) : ℝ) = (Fintype.card (Psi H) : ℝ) * Dw.p := by
     rw [← h1]; simp [Fintype.card_sigma]
@@ -1893,7 +1834,6 @@ theorem fibreAt_defCase : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
 
   have hline : lineDeg (fun σ => (Real.sqrt (P.N σ))⁻¹ ^ n) (fun w => (vAdd w (P.a w ^ n) : ℝ)) = n * P.degTh := by
     simp only [PtData.degTh, lineDeg, _root_.Formalism.MainNotions.Gaps.SizeBoundsAlt.vAdd_pow', Int.cast_mul, Int.cast_natCast, Real.log_pow]
-    have hf := fin_mul (ρ := fun w => (vAdd w (P.a w) : ℝ)) (hsupp1.subset fun w hw => by simpa [Function.mem_support] using hw) (lw c.F)
     simp only [mul_assoc]
     rw [← mul_finsum, ← Finset.mul_sum]
     ring

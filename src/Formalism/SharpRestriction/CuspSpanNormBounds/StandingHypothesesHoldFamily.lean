@@ -32,8 +32,6 @@ namespace Formalism.MainNotions.FrobeniusProjectedBounds
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField
 open scoped InnerProductSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Letters
 
 variable (D : D7)
@@ -58,18 +56,6 @@ def Gam : ℝ := (D.mem D.u₀).A.GamP
 
 end Letters
 
-section Flags
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
-
-end Flags
-
-section Parts
-
-variable (D : D7)
-
-end Parts
-
 def Hyp (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop :=
   StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT ∧ StandingNumericalData D C0 ∧ 1 ≤ C0
 
@@ -89,20 +75,6 @@ def adm7 (c : ℝ) : Prop := Hyp D large₂ C' Cl Cg cb Cu cT CT C0 →
 def eF (D : D7) (C0 : ℝ) : ℝ := 2 * C0 / Gam D + 2 * Real.exp (-(kR D * fR D * Real.log (kR D)))
 
 end Statements
-
-section LinAlg
-
-variable {H G : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [FiniteDimensional ℂ H]
-  [NormedAddCommGroup G] [InnerProductSpace ℂ G] [FiniteDimensional ℂ G]
-
-end LinAlg
-
-section Family
-
-variable {eps : ℝ} (Fm : FamP eps) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
-  (Cg cb Cu cT CT C0 : ℝ)
-
-end Family
 
 end Formalism.MainNotions.FrobeniusProjectedBounds
 end -- clump:auto
@@ -422,7 +394,7 @@ variable {D : D7}
 theorem lamS_lo (τ : D.what₂.Tau) (i : Fin D.R.r) (h : i.val < D.R.k - 1) :
     lamS D.R (D.hc τ) i = vOne D τ (i.val + 1) := by
   have h2 : 1 ≤ i.val + 1 ∧ i.val + 1 ≤ D.R.k - 1 := ⟨by omega, by omega⟩
-  simp only [lamS, vOne, dif_pos h, dif_pos h2]
+  simp only [lamS, vOne, dite_eq_left h, dite_eq_left h2]
   rfl
 
 theorem lamS_hi (τ : D.what₂.Tau) (i : Fin D.R.r) (h : ¬ i.val < D.R.k - 1) :
@@ -432,7 +404,7 @@ theorem lamS_hi (τ : D.what₂.Tau) (i : Fin D.R.r) (h : ¬ i.val < D.R.k - 1) 
   have hk := D.R.m_add_three_le_k
   have h' : i.val - (D.R.k - 1) < D.R.m := by omega
   have h2 : 1 ≤ i.val - (D.R.k - 1) + 1 ∧ i.val - (D.R.k - 1) + 1 ≤ D.R.m := ⟨by omega, by omega⟩
-  simp only [lamS, bOne, dif_neg h, dif_pos h', dif_pos h2]
+  simp only [lamS, bOne, dite_eq_right h, dite_eq_left h', dite_eq_left h2]
   rfl
 
 theorem bOne_gap (τ : D.what₂.Tau) (G : ℝ) (hG : 0 ≤ G)
@@ -706,19 +678,19 @@ variable {D : D7}
 theorem vOne_succ (τ : D.what₂.Tau) (l : ℕ) (h : l < D.R.k - 1) :
     vOne D τ (l + 1) = (((D.hc τ).v ⟨l, h⟩ : ℚ) : ℝ) := by
   have h2 : 1 ≤ l + 1 ∧ l + 1 ≤ D.R.k - 1 := ⟨by omega, by omega⟩
-  simp only [vOne, dif_pos h2]
+  simp only [vOne, dite_eq_left h2]
   rfl
 
 theorem bOne_succ (τ : D.what₂.Tau) (j : ℕ) (h : j < D.R.m) :
     bOne D τ (j + 1) = (((D.hc τ).b ⟨j, h⟩ : ℚ) : ℝ) := by
   have h2 : 1 ≤ j + 1 ∧ j + 1 ≤ D.R.m := ⟨by omega, by omega⟩
-  simp only [bOne, dif_pos h2]
+  simp only [bOne, dite_eq_left h2]
   rfl
 
 theorem uOne_succ (u : D.what₂.Word) (τ : D.what₂.Tau) (i : ℕ) (h : i < D.R.k) :
     uOne D u τ (i + 1) = (((D.hcW u τ).u ⟨i, h⟩ : ℚ) : ℝ) := by
   have h2 : 1 ≤ i + 1 ∧ i + 1 ≤ D.R.k := ⟨by omega, by omega⟩
-  simp only [uOne, uS, dif_pos h2]
+  simp only [uOne, uS, dite_eq_left h2]
   rfl
 
 theorem k_pos : 0 < D.R.k := by
@@ -1008,7 +980,7 @@ theorem bOne_ge (hx2 : 2 ≤ L.sc.x) (τ : D.what₂.Tau) (j : ℕ) (h1 : 1 ≤ 
   have a := wj_ge L τ (j + 1) h1 h2
   have e : wj D (j + 1) τ = (((D.hc τ).e ⟨j, hj⟩ : ℚ) : ℝ) := by
     have : j + 1 - 1 < D.R.m := by omega
-    simp only [wj, dif_pos this]
+    simp only [wj, dite_eq_left this]
     rfl
   have b := abs_le.1 (L.be_close τ ⟨j, hj⟩ ⟨j, hj⟩)
   have c := P.teta
@@ -1669,10 +1641,6 @@ section All
 variable {eps : ℝ} (Fm : FamP eps)
 
 end All
-
-section AllClosed
-
-end AllClosed
 
 section FromGL
 

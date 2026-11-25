@@ -94,7 +94,6 @@ open Polynomial
 
 namespace GlobalTheory
 
-
 open Polynomial in
 theorem _root_.GlobalTheory.exists_integral_norm_natDegree_mod_eq_one :
     ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field K] [Algebra k[X] K] [Algebra (RatFunc k) K]
@@ -190,71 +189,6 @@ section -- clump:auto
 
 open Polynomial
 
-namespace GlobalTheory.FormalDeform
-
-theorem constantCoeff_subst_eq {k : Type} [Field k] (a φ : PowerSeries k)
-    (ha : PowerSeries.constantCoeff a = 0) :
-    PowerSeries.constantCoeff (φ.subst a : PowerSeries k) = PowerSeries.constantCoeff φ := by
-  have hs := PowerSeries.HasSubst.of_constantCoeff_zero' ha
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_subst' hs,
-    finsum_eq_single _ 0]
-  · simp
-  · intro d hd
-    rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, ha, zero_pow hd, smul_zero]
-
-theorem not_mem_pow_succ {A : Type} [CommRing A] [IsDedekindDomain A] {N : ℕ} {I : Type}
-    [Fintype I] {D P₀ : Ideal A} {Q : I → Ideal A} {f₀ : A} (hP₀ : P₀.IsMaximal)
-    (hQmax : ∀ i, (Q i).IsMaximal) (hQinj : Function.Injective Q) (hQP : ∀ i, Q i ≠ P₀)
-    (hDQ : ∀ i, ¬ D ≤ Q i) (hf₀ : f₀ ≠ 0)
-    (hspan : Ideal.span {f₀} = P₀ * D * ∏ i, Q i ^ N) (i : I) : f₀ ∉ Q i ^ (N + 1) := by
-  apply GlobalTheory.PicDiv.FormalDeformHasse.not_mem_pow_succ <;> assumption
-
-theorem coeff_map_sum {k A : Type} [Field k] [CommRing A] [Algebra k A] {m : ℕ}
-    (σ : A →ₐ[k] PowerSeries k) (v : Fin m → A) (c : Fin m → k) (l : ℕ) :
-    ∑ j, c j * PowerSeries.coeff l (σ (v j)) = PowerSeries.coeff l (σ (∑ j, c j • v j)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, map_smul]
-
-theorem formal_deformation : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CharZero k] [CommRing A] [IsDedekindDomain A] [Algebra k A] [Algebra.FiniteType k A] (N : ℕ) (I : Type) [Fintype I] (V : Submodule k A) (D P₀ : Ideal A) (Q : I → Ideal A) (f₀ : A), 2 ≤ N → P₀.IsMaximal → (FiniteDimensional k V ∧ (∀ v ∈ V, v ∈ D) ∧ (∀ i, (Q i).IsMaximal) ∧ Function.Injective Q ∧ (∀ i, Q i ≠ P₀) ∧ (∀ i, ¬ D ≤ Q i) ∧ ¬ D ≤ P₀ ∧ f₀ ∈ V ∧ f₀ ≠ 0 ∧ Ideal.span {f₀} = P₀ * D * ∏ i, Q i ^ N ∧ (∀ u : A, ∃ v ∈ V, u - v ∈ P₀ * ∏ i, Q i ^ (N - 1))) → ∃ (ξ : A →ₐ[k] PowerSeries k) (Δ : I → ℕ → A →ₗ[k] PowerSeries k) (m : ℕ) (v : Fin m → A) (y : Fin m → PowerSeries k),
-  Function.Injective ξ ∧ (∀ i, Δ i 0 1 = 1) ∧ (∀ i, (∀ l, ∀ u w : A, Δ i l (u * w) = ∑ p ∈ Finset.range (l + 1), l.choose p • (Δ i p u * Δ i (l - p) w))) ∧ (∀ i, ∃ π : A, Δ i 1 π = 1) ∧
-  (∀ j, v j ∈ V) ∧ LinearIndependent k v ∧ (∃ j, IsUnit (y j)) ∧ ∑ j, y j * ξ (v j) = 0 ∧ (∀ i, ∀ l < N, ∑ j, y j * Δ i l (v j) = 0) ∧
-  (∀ i i', i ≠ i' → ∃ u : A, IsUnit (Δ i 0 u - Δ i' 0 u)) ∧ (∀ i, ∃ u : A, IsUnit (Δ i 0 u - ξ u)) ∧ (∀ i, ∃ u ∈ D, IsUnit (Δ i 0 u)) ∧ (∃ u ∈ D, IsUnit (ξ u)) := by
-  intro k A _ _ _ _ _ _ _ N I _ V D P₀ Q f₀ hN hP₀ hyp
-  have hNk : (N : k) ≠ 0 := by
-    exact_mod_cast (show N ≠ 0 by omega)
-  obtain ⟨ξ, Δ, m, v, y, hinj, hone, hmul, hπ, hv, hind, hy, hξ, hvanish, hsep, hsepξ, hD, hDξ⟩ :=
-    GlobalTheory.PicDiv.FormalDeformHasse.formal_deformation
-      k A N I V D P₀ Q f₀ hN hNk hP₀ hyp
-  let Δ' (i : I) (l : ℕ) : A →ₗ[k] PowerSeries k := l.factorial • Δ i l
-  have hzero (i : I) : Δ' i 0 = Δ i 0 := by simp [Δ']
-  refine ⟨ξ, Δ', m, v, y, hinj, ?_, ?_, ?_, hv, hind, hy, hξ, ?_, ?_, ?_, ?_, hDξ⟩
-  · simpa only [hzero] using hone
-  · intro i l u w
-    simp only [Δ', LinearMap.smul_apply]
-    rw [hmul i l u w, nsmul_eq_mul, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun p hp => ?_
-    have hp' : p ≤ l := Nat.le_of_lt_succ (Finset.mem_range.mp hp)
-    have hc : (l.choose p : PowerSeries k) * p.factorial * (l - p).factorial = l.factorial := by
-      simpa only [Nat.cast_mul] using
-        congrArg (fun n : ℕ => (n : PowerSeries k)) (Nat.choose_mul_factorial_mul_factorial hp')
-    simp only [nsmul_eq_mul]
-    rw [← hc]
-    ac_rfl
-  · simpa only [Δ', Nat.factorial_one, one_smul] using hπ
-  · intro i l hl
-    change ∑ j, y j * (l.factorial • Δ i l (v j)) = 0
-    calc
-      _ = l.factorial • ∑ j, y j * Δ i l (v j) := by
-        rw [Finset.smul_sum]
-        refine Finset.sum_congr rfl fun j _ => ?_
-        simp only [nsmul_eq_mul]
-        ac_rfl
-      _ = 0 := by rw [hvanish i l hl, smul_zero]
-  · simpa only [hzero] using hsep
-  · simpa only [hzero] using hsepξ
-  · simpa only [hzero] using hD
-
-end GlobalTheory.FormalDeform
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFormalDeformationPowerSeriesSolution =====

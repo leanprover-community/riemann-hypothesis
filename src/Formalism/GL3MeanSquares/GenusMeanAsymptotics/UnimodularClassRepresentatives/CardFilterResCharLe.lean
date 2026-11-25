@@ -105,7 +105,7 @@ theorem card_filter_resChar_le (s : Finset {P : Ideal (𝓞 K) // P.IsMaximal}) 
             rw [← hPn]
             exact span_resChar P.1) (fun a _ b _ h => Subtype.ext h)
       _ ≤ finrank ℚ K := Ideal.card_primesOverFinset_le_finrank (𝓞 K) ℚ K hJne
-  · push_neg at hn
+  · push Not at hn
     rw [Finset.filter_false_of_mem (fun P hP => hn P hP)]
     simp
 

@@ -112,7 +112,7 @@ theorem factors_ne_zero {S : Set (Pl E)} {φ₁ φ₂ : Fam E a b} (h₁ : IsTes
     exact Finset.prod_eq_zero (hfin.mem_toFinset.2 ⟨hw, by simp [Function.mem_mulSupport, h0]⟩) h0
   refine ⟨left_ne_zero_of_mul hz, fun hs => ?_⟩
   have hz' := right_ne_zero_of_mul hz
-  rwa [if_pos hs] at hz'
+  rwa [ite_eq_left hs] at hz'
 
 end GlobalTheory.CompanionTheory.FinTestTw
 

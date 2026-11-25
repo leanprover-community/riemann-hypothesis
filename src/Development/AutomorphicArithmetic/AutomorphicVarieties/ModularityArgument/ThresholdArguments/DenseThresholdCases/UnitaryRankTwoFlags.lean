@@ -368,7 +368,6 @@ private theorem coef_inj {l : ℕ} [Fact l.Prime] (c : Coef l) : Function.Inject
   Subtype.val_injective
 
 theorem endJ : End := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro Ω _ _ _ l _ c η Ψ σ g₁ B M L _ _ _ _ _ Φ k c₁ _ f ka R φ hφ hs J ξ w hJ hTI har hirr hann D hD D' hD' h1 h2
     have key : ∀ E ∈ PtDer ξ (↥c₁.O),
         (∀ (v : (Φ.ext f).V) (i : Fin 3), ∀ g ∈ (Φ.ext f).Iv v, E ((R.S.ρ.ψ v i) g : R.S.R) = 0) →
@@ -691,15 +690,6 @@ section -- clump:auto
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr
 
-private theorem xa_norm {l : ℕ} [Fact l.Prime] (c : Coef l) (y : c.O) : ‖(y.1 : PadicAlgCl l)‖ ≤ 1 := by
-  have hz : IsIntegral ℤ_[l] y.1 := (Algebra.IsIntegral.isIntegral (R := ℤ_[l]) y).map c.O.val
-  have hq : IsIntegral ℚ_[l] y.1 := Algebra.IsIntegral.isIntegral _
-  have h0 : ‖(y.1 : PadicAlgCl l)‖ = spectralValue (minpoly ℚ_[l] y.1) := rfl
-  rw [h0, spectralValue_le_one_iff (minpoly.monic hq), ]
-  intro n
-  rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hz, Polynomial.coeff_map]
-  exact PadicInt.norm_le_one _
-
 private theorem xa_pow {l : ℕ} [Fact l.Prime] (c : Coef l) [Fr.IsCoef l c.O] :
     ∃ e : ℕ, maximalIdeal c.O ^ e ≤ Ideal.span {(l : c.O)} := by
   have hl0 : (l : c.O) ≠ 0 := fun h => by
@@ -723,7 +713,7 @@ private theorem xa_key {l : ℕ} [Fact l.Prime] (c : Coef l) {e : ℕ} (he : max
   have h2 : (((l : c.O) ^ N * y : c.O).1 : PadicAlgCl l) = ((l : ℕ) : PadicAlgCl l) ^ N * y.1 := by
     rw [Subalgebra.coe_mul, Subalgebra.coe_pow, show (((l : c.O)).1 : PadicAlgCl l) = ((l : ℕ) : PadicAlgCl l) from map_natCast c.O.val l]
   rw [h2, norm_mul, norm_pow]
-  exact mul_le_of_le_one_right (by positivity) (xa_norm c y)
+  exact mul_le_of_le_one_right (by positivity) (GlobalTheory.CoefCoord.norm_le_one c y)
 
 private theorem xa_top {l : ℕ} [Fact l.Prime] {Γ : Type} [TopologicalSpace Γ] (u : Γ → PadicAlgCl l)
     (H : ∀ (g₀ : Γ) (ε : ℝ), 0 < ε → ∀ᶠ g in nhds g₀, ‖u g - u g₀‖ < ε) : Continuous u := by
@@ -898,9 +888,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af
 namespace UpperTheory.V.J
@@ -934,8 +921,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
 
 section
 noncomputable section

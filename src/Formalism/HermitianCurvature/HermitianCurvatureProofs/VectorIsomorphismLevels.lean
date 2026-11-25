@@ -21,7 +21,3 @@ theorem radSp_ext {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type
   apply _root_.Formalism.FourierDecayAlt.P.Qx8.rad_ext <;> assumption
 
 end Formalism.FourierDecayAlt.P.PBFV
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

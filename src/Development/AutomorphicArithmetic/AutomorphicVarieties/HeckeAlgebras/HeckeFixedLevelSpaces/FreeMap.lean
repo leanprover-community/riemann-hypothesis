@@ -462,8 +462,8 @@ private theorem wtRep_inv_mulVec_zero_eq_chi_inv {O Ω : Type} [Field Ω] [CommR
     rw [← map_inv, _root_.mul_inv_rev, map_mul]; rfl
   rw [h1, Units.val_mul, ← Matrix.mulVec_mulVec]
   simp only [Matrix.mulVec, dotProduct]
-  simp only [W.torusAction, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  simp only [W.row_N _ (X.I.Nf.inv_mem hx), ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [W.torusAction, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  simp only [W.row_N _ (X.I.Nf.inv_mem hx), ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp [map_inv]
 
 private theorem ctrl_UF_eq_U_ctrl {O Ω : Type} [Field Ω] [CommRing O] [IsLocalRing O] [Algebra O Ω]
@@ -502,43 +502,12 @@ private theorem mapFn_of_mem_P {A B : Type} [CommRing A] [CommRing B] [Algebra A
   exact uOpNat Gp X.I A (X.Fn A m) (X.rp A m) B (X.Fn B m) (X.rp B m) (X.mapFn (B := B)).toAddMonoidHom a ha f
     (fun u _ => by funext g i; simp [Frame.mapFn, Frame.rp, rtr])
 
-private theorem UF_comm_on_N_fixed {O Ω : Type} [Field Ω] [CommRing O] [IsLocalRing O] [Algebra O Ω]
-    (W : WtRep X.I O Ω) {m : ℕ} (a b : X.I.P) (F : Fin m → X.Fn Ω (W.d + 1))
-    (hF : F ∈ fixd (X.rpF Ω (W.d + 1) m) X.I.N) :
-    X.UF m W a (X.UF m W b F) = X.UF m W b (X.UF m W a F) := by
-  have h1 := (uOpMul Gp X.I Ω _ (X.rpF Ω (W.d + 1) m) a b a.2 b.2 F hF).2.1
-  have h2 := (uOpMul Gp X.I Ω _ (X.rpF Ω (W.d + 1) m) b a b.2 a.2 F hF).2.1
-  have hc : (a : Gp) * b = b * a := X.I.comm _ (X.I.P_le a a.2) _ (X.I.P_le b b.2)
-  simp only [Frame.UF, LinearMap.smul_apply, map_smul, smul_smul]
-  rw [h1, h2, hc, mul_comm]
-
 private theorem UF_maps_clOrd_of_maps_cl {O Ω : Type} [Field Ω] [CommRing O] [IsLocalRing O] [Algebra O Ω]
     (W : WtRep X.I O Ω) {m : ℕ} (τ : X.Ub →* GL (Fin m) Ω) (U : Subgroup X.Ub) (e : ℕ) (φ : X.I.T →* Ωˣ)
     (hCl : ∀ a : X.I.P, ∀ F ∈ X.Cl τ W.ξ U e φ, X.UF m W a F ∈ X.Cl τ W.ξ U e φ) (a : X.I.P) :
     ∀ F ∈ X.ClOrd W τ U e φ, X.UF m W a F ∈ X.ClOrd W τ U e φ := by
   intros
   apply _root_.UpperTheory.V.Hi.Sp.uf_clOrd <;> assumption
-
-private theorem sum_raF_rpF_comm {Ω : Type} [Field Ω] (d : ℕ) {m : ℕ} (τ : X.Ub →* GL (Fin m) Ω)
-    (κ : Type) [Fintype κ] (u : κ → X.Ub) (b : Gp) (F : Fin m → X.Fn Ω d) :
-    (∑ q, X.raF d τ (u q)) (X.rpF Ω d m b F) = X.rpF Ω d m b ((∑ q, X.raF d τ (u q)) F) := by
-
-  simp only [LinearMap.sum_apply, map_sum, raF_rpF_comm]
-
-private theorem raF_mem_pi_AF {Ω : Type} [Field Ω] {d m : ℕ} (τ : X.Ub →* GL (Fin m) Ω)
-    (ξ : Gp →* GL (Fin d) Ω) (u : X.Ub) (F : Fin m → X.Fn Ω d)
-    (hF : F ∈ Submodule.pi Set.univ fun _ => X.AF ξ) :
-    X.raF d τ u F ∈ Submodule.pi Set.univ fun _ => X.AF ξ := by
-  intro i _ γ g
-  have h := fun j => hF j (Set.mem_univ j) γ (g * ((u : Ga), (1 : Gp)))
-  funext k
-  simp only [Frame.raF, Frame.ra, LinearMap.coe_mk, AddHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk] at h ⊢
-  simp only [Matrix.mulVec, dotProduct, mul_assoc] at h ⊢
-  simp only [h]
-  simp only [Matrix.mulVec, dotProduct, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
-  ring
 
 private theorem sum_raF_maps_clOrd_of_maps_fixd {O Ω : Type} [Field Ω] [CommRing O] [IsLocalRing O] [Algebra O Ω]
     (W : WtRep X.I O Ω) {m : ℕ} (τ : X.Ub →* GL (Fin m) Ω) (U U' : Subgroup X.Ub) (e : ℕ) (φ : X.I.T →* Ωˣ)
@@ -632,7 +601,7 @@ theorem absSpec {A O Ω : Type} [CommRing A] [IsCNL A] [CommRing O] [IsDomain O]
   have hsp : ∀ F f, Good F f → sp f = F := by
     intro F f hG
     have h : ∃ F, Good F f := ⟨F, hG⟩
-    simp only [sp, dif_pos h]
+    simp only [sp, dite_eq_left h]
     exact huniq _ _ _ h.choose_spec hG
   have hspec : ∀ K e, c ≤ e → ∀ f ∈ X.Ord τ θ (U K),
       sp f ∈ X.ClOrd W τ' (U K) e φ' ∧ X.ctrl m W (sp f) = X.mapFn (B := Ω) f := by

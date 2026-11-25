@@ -173,14 +173,14 @@ theorem cfg_lam (D : D7) (τ : D.what₂.Tau) (a : Fin D.R.r) :
   · have h1 : a.1 + 1 < (cfgOf D τ).k := by
       show a.1 + 1 < D.R.k
       omega
-    rw [if_pos h1, dite_eq_left h, cfg_v D τ (a.1 + 1) (by omega) (by omega), vOne_succ D τ a.1 h]
+    rw [ite_eq_left h1, dite_eq_left h, cfg_v D τ (a.1 + 1) (by omega) (by omega), vOne_succ D τ a.1 h]
   · have h1 : ¬ (a.1 + 1 < (cfgOf D τ).k) := by
       show ¬ (a.1 + 1 < D.R.k)
       omega
     have h2 : a.1 - (D.R.k - 1) < D.R.m := by
       have ha' : a.1 < D.R.k + D.R.m - 1 := ha
       omega
-    rw [if_neg h1, dite_eq_right h, dite_eq_left h2]
+    rw [ite_eq_right h1, dite_eq_right h, dite_eq_left h2]
     show -bOne D τ (a.1 + 1 + 1 - D.R.k) = _
     rw [show a.1 + 1 + 1 - D.R.k = (a.1 - (D.R.k - 1)) + 1 by omega, bOne_succ D τ _ h2]
 

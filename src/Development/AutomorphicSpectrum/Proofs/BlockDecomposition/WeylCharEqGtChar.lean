@@ -66,8 +66,8 @@ theorem rmChar : RmChar := by
     rw [Matrix.det_diagonal]
     exact isUnit_iff_ne_zero.2 (Finset.prod_ne_zero_iff.2 fun a _ => h0 a)
   have hw : (dw lam).w = lam := by
-    simp only [dw, dif_pos hlam]
-  rw [Rm, dif_pos hu, ← LinearMap.trace_eq_matrix_trace, weylChar_eq_gtChar lam hlam t h0 ht,
+    simp only [dw, dite_eq_left hlam]
+  rw [Rm, dite_eq_left hu, ← LinearMap.trace_eq_matrix_trace, weylChar_eq_gtChar lam hlam t h0 ht,
     GlobalTheory.ContraChar.trace_sqRep_diag (dw lam) _ t rfl, hw]
 
 end GlobalTheory.CompanionTheory.RmCharacter

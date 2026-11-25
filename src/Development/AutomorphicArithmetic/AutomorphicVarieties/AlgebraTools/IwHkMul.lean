@@ -8,11 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
-private theorem hkMul_out {G : Type} [Group G] (I : Subgroup G) (g : G) :
-    ∃ i ∈ I, (g : G ⧸ I).out = g * i := by
-  obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul I g
-  exact ⟨h, h.2, hh⟩
-
 private theorem hkMul_mem {G : Type} [Group G] (I : Subgroup G) (x : G) (p : G ⧸ I) :
     p ∈ MulAction.orbit I (x : G ⧸ I) ↔ ∃ a ∈ I, p = ((a * x : G) : G ⧸ I) := by
   constructor
@@ -33,8 +28,8 @@ theorem UpperTheory.V.AlgebraTools.hkMul :
     rintro ⟨p, hp⟩ ⟨q, hq⟩
     obtain ⟨a, ha, rfl⟩ := (hkMul_mem I x p).1 hp
     obtain ⟨b, hb', rfl⟩ := (hkMul_mem I y q).1 hq
-    obtain ⟨i, hi, e1⟩ := hkMul_out I (a * x)
-    obtain ⟨j, hj, e2⟩ := hkMul_out I (b * y)
+    obtain ⟨⟨i, hi⟩, e1⟩ := QuotientGroup.mk_out_eq_mul I (a * x)
+    obtain ⟨⟨j, hj⟩, e2⟩ := QuotientGroup.mk_out_eq_mul I (b * y)
     obtain ⟨a', ha', c, hc', e3⟩ := hb (i * b) (mul_mem hi hb')
     refine (hkMul_mem I _ _).2 ⟨a * a', mul_mem ha ha', ?_⟩
     simp only [e1, e2]
@@ -48,8 +43,8 @@ theorem UpperTheory.V.AlgebraTools.hkMul :
   have hsurj : Function.Surjective f := by
     rintro ⟨r, hr⟩
     obtain ⟨a, ha, rfl⟩ := (hkMul_mem I _ r).1 hr
-    obtain ⟨i, hi, e1⟩ := hkMul_out I (a * x)
-    obtain ⟨j, hj, e2⟩ := hkMul_out I (i⁻¹ * y)
+    obtain ⟨⟨i, hi⟩, e1⟩ := QuotientGroup.mk_out_eq_mul I (a * x)
+    obtain ⟨⟨j, hj⟩, e2⟩ := QuotientGroup.mk_out_eq_mul I (i⁻¹ * y)
     refine ⟨(⟨_, (hkMul_mem I _ _).2 ⟨a, ha, rfl⟩⟩, ⟨_, (hkMul_mem I _ _).2 ⟨i⁻¹, inv_mem hi, rfl⟩⟩), Subtype.ext ?_⟩
     simp only [f, e1, e2]
     have : a * x * i * (i⁻¹ * y * j) = a * (x * y) * j := by group
@@ -70,6 +65,6 @@ theorem UpperTheory.V.AlgebraTools.hkMul :
   simp only [dc, finsum_eq_sum_of_fintype, LinearMap.sum_apply, map_sum]
   rw [← hbij.sum_comp, Fintype.sum_prod_type, Finset.sum_comm]
   refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
-  obtain ⟨i, hi, e⟩ := hkMul_out I ((p : G ⧸ I).out * (q : G ⧸ I).out)
+  obtain ⟨⟨i, hi⟩, e⟩ := QuotientGroup.mk_out_eq_mul I ((p : G ⧸ I).out * (q : G ⧸ I).out)
   simp only [f, e, map_mul, Module.End.mul_apply]
   rw [v.2 i hi]

@@ -60,11 +60,11 @@ theorem divCycle_eq_of_local {P : Ideal (MRing κ)} {f g : MRing κ}
   by_cases hf : W ∈ divSupp P f
   · obtain ⟨u, v, hu, hv, huv⟩ := h W hf.1.1.1 (le_sup_left.trans hf.1.1.2) hf.2
     obtain ⟨hg, e⟩ := mem_divSupp_and_multAt_eq hf hu hv huv
-    rw [if_pos hf, if_pos hg, e]
+    rw [ite_eq_left hf, ite_eq_left hg, e]
   · by_cases hg : W ∈ divSupp P g
     · obtain ⟨u, v, hu, hv, huv⟩ := h W hg.1.1.1 (le_sup_left.trans hg.1.1.2) hg.2
       exact absurd (mem_divSupp_and_multAt_eq hg hv hu (by rw [← neg_sub]; exact P.neg_mem huv)).1 hf
-    · rw [if_neg hf, if_neg hg]
+    · rw [ite_eq_right hf, ite_eq_right hg]
 
 end Divisor
 
@@ -238,7 +238,7 @@ theorem of_forms {P : Ideal (MRing ι)} (hPp : P.IsPrime) {g : (Σ k, ι₂ k) �
     rcases x with k | k
     · rw [pullDeg, pullDeg, extend_inl_inl, extend_inr_inl, ha k]
       simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, extend_inl_inl, Pi.single_apply,
-        reduceCtorEq, if_false, mul_zero, add_zero, zero_add]
+        reduceCtorEq, ite_false, mul_zero, add_zero, zero_add]
       push_cast
       rw [← Finset.sum_sub_distrib, sub_zero]
       refine Finset.sum_congr rfl fun k₂ _ => ?_

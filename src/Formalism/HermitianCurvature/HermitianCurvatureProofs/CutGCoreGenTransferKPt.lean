@@ -66,8 +66,8 @@ theorem herm_proj {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
       rw [Finset.sum_insert ha, Finset.sum_insert ha, Formalism.FourierDecayAlt.P.SettingConstruction.herm_add_left,
         Formalism.FourierDecayAlt.P.SettingConstruction.herm_smul_left, ih]
   rw [hsum, Finset.sum_eq_single c]
-  · rw [hon, if_pos rfl, mul_one]
-  · intro b _ hb; rw [hon, if_neg hb, mul_zero]
+  · rw [hon, ite_eq_left rfl, mul_one]
+  · intro b _ hb; rw [hon, ite_eq_right hb, mul_zero]
   · intro h; exact absurd (Finset.mem_univ c) h
 
 theorem reflB_unitary {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
@@ -319,7 +319,7 @@ theorem gauge_kappa_pointwise_holds : GTKPt := by
   have htype : ∀ ρ, typeOf (M.xC P ρ (Y₀ : ℂ)) = ρ := by
     intro ρ
     have h : ∃ ρ', M.xC P ρ' (Y₀ : ℂ) = M.xC P ρ (Y₀ : ℂ) := ⟨ρ, rfl⟩
-    simp only [typeOf, dif_pos h]
+    simp only [typeOf, dite_eq_left h]
     exact hY₀ h.choose_spec
   let QQ : M.Ty P → (Wq →L[ℂ] Wq) := fun ρ => ∑ i ∈ Finset.univ.filter (fun i => typeOf (lam i) = ρ), rk1 (b i)
   have hQapply : ∀ ρ v, QQ ρ v = ∑ i ∈ Finset.univ.filter (fun i => typeOf (lam i) = ρ), ⟪b i, v⟫_ℂ • b i := by
@@ -343,11 +343,11 @@ theorem gauge_kappa_pointwise_holds : GTKPt := by
       rw [hQapply]
       refine Finset.sum_congr rfl fun i hi => ?_
       rw [Finset.mem_filter] at hi
-      rw [if_pos hi.2]
+      rw [ite_eq_left hi.2]
     · simp only [ContinuousLinearMap.zero_apply]
       refine Finset.sum_eq_zero fun i hi => ?_
       rw [Finset.mem_filter] at hi
-      rw [if_neg (fun h => hρσ (hi.2.symm.trans h)), zero_smul]
+      rw [ite_eq_right (fun h => hρσ (hi.2.symm.trans h)), zero_smul]
   ·
     ext v
     rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.one_apply]

@@ -157,10 +157,10 @@ theorem substS_eq_twistSub {L : Type} [DecidableEq L] {r : ℕ} [NeZero r] (sg :
   funext x
   by_cases hx : x.1 ∈ S
   · have hx' : x.1 ∈ (↑S : Set L) := hx
-    rw [if_pos hx, if_pos hx']
+    rw [ite_eq_left hx, ite_eq_left hx']
     rfl
   · have hx' : x.1 ∉ (↑S : Set L) := hx
-    rw [if_neg hx, if_neg hx']
+    rw [ite_eq_right hx, ite_eq_right hx']
 
 theorem valS_eq {L : Type} [DecidableEq L] {r : ℕ} [NeZero r] (sg : L → Bool) (S : Finset L)
     (F : MvPolynomial (L × Fin r) K) :

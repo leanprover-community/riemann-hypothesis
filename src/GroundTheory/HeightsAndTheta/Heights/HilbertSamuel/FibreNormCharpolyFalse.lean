@@ -41,12 +41,6 @@ open ProjLine
 
 end ProjLine
 
-namespace FibreNormCharpoly
-
-open ProjLine
-
-end FibreNormCharpoly
-
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

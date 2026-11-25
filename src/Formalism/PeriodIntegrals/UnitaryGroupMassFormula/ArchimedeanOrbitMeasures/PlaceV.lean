@@ -111,10 +111,10 @@ theorem blk_lie (ε : Fin n → Bool) (S : Finset (Fin n)) (X : Matrix (Fin n) (
   rw [lie_entry] at h ⊢
   by_cases hij : i ∈ S ∧ j ∈ S
   · have hji : j ∈ S ∧ i ∈ S := ⟨hij.2, hij.1⟩
-    simp only [blk, if_pos hij, if_pos hji]
+    simp only [blk, ite_eq_left hij, ite_eq_left hji]
     simpa using h
   · have hji : ¬ (j ∈ S ∧ i ∈ S) := fun h' => hij ⟨h'.2, h'.1⟩
-    simp [blk, if_neg hij, if_neg hji]
+    simp [blk, ite_eq_right hij, ite_eq_right hji]
 
 end Coords
 
@@ -177,18 +177,6 @@ theorem exp_blk_mul_proj (S : Finset (Fin n)) (M : Matrix (Fin n) (Fin n) ℂ)
   · simp [hb]
   · simp [hb, hM a b (Or.inr hb)]
 
-set_option backward.isDefEq.respectTransparency false in
-theorem exp_neg_mul_exp {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) :
-    NormedSpace.exp M * NormedSpace.exp (-M) = 1 := by
-  rw [← Matrix.exp_add_of_commute M (-M) (Commute.neg_right (Commute.refl M)), add_neg_cancel,
-    NormedSpace.exp_zero]
-
-set_option backward.isDefEq.respectTransparency false in
-theorem exp_neg_mul_exp' {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) :
-    NormedSpace.exp (-M) * NormedSpace.exp M = 1 := by
-  rw [← Matrix.exp_add_of_commute (-M) M (Commute.neg_left (Commute.refl M)), neg_add_cancel,
-    NormedSpace.exp_zero]
-
 theorem chart_injOn {α β : Type} [Fintype α] [Fintype β] (ε : Fin n → Bool) (S : Finset (Fin n))
     (L₀ : EuclideanSpace ℝ α →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ) (L₁ : EuclideanSpace ℝ β →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ)
     (h3 : ∀ z, InCompl ε S (L₀ z)) (h4 : ∀ z, frob (L₀ z) = ‖z‖ ^ 2)
@@ -229,7 +217,7 @@ theorem chart_injOn {α β : Type} [Fintype α] [Fintype β] (ε : Fin n → Boo
     show NormedSpace.exp (L₀ z.1) * P = NormedSpace.exp (L₀ z'.1) * P
     have e1 : NormedSpace.exp (L₀ z.1) =
         NormedSpace.exp (L₀ z'.1) * NormedSpace.exp (L₁ z'.2) * NormedSpace.exp (-L₁ z.2) := by
-      rw [← hm, Matrix.mul_assoc, exp_neg_mul_exp, Matrix.mul_one]
+      rw [← hm, Matrix.mul_assoc, Formalism.REAL.matrix_exp_mul_exp_neg, Matrix.mul_one]
     rw [e1, Matrix.mul_assoc, Matrix.mul_assoc, exp_blk_mul_proj S _ (hblk z.2), exp_blk_mul_proj S _ (h7 z'.2).2]
   have hy : z.2 = z'.2 := by
     apply hi2 (hb1 z hz').2 (hb1 z' hz'').2
@@ -237,7 +225,7 @@ theorem chart_injOn {α β : Type} [Fintype α] [Fintype β] (ε : Fin n → Boo
     show NormedSpace.exp (L₁ z.2) * 1 = NormedSpace.exp (L₁ z'.2) * 1
     rw [hx] at hm
     have := congrArg (fun A => NormedSpace.exp (-L₀ z'.1) * A) hm
-    simp only [← Matrix.mul_assoc, exp_neg_mul_exp', Matrix.one_mul] at this
+    simp only [← Matrix.mul_assoc, Formalism.REAL.matrix_exp_neg_mul_exp, Matrix.one_mul] at this
     rw [this]
   exact Prod.ext hx hy
 

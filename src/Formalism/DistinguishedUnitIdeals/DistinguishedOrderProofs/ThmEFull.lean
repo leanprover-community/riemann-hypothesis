@@ -260,7 +260,7 @@ theorem extF_mem_of_levelCond {ϖ : O} (hϖ : Irreducible ϖ) {r : ℕ} (φ : (F
     obtain ⟨N, z, hz⟩ := h
     have e := congrArg (extF φ) hz
     simp only [map_smul, map_sub, extF_cst, smul_eq_mul] at e
-    rw [if_neg (by decide)]
+    rw [ite_eq_right (by decide)]
     apply mem_span_pow_of_uniformizer_mul O ϖ hϖ dd q hq _ (N + k)
     rw [Ideal.mem_span_singleton]
     exact ⟨extF φ z + PowerSeries.C (ϖ ^ N) * R * PowerSeries.C (φ d), by
@@ -269,7 +269,7 @@ theorem extF_mem_of_levelCond {ϖ : O} (hϖ : Irreducible ϖ) {r : ℕ} (φ : (F
     obtain ⟨N, c, z, hc, hz⟩ := h
     have e := congrArg (extF φ) hz
     simp only [map_smul, map_sub, map_add (f := _), extF_cst, smul_eq_mul] at e
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have hH : q ^ H = q ^ (H - bb) * q ^ bb := by rw [← pow_add, Nat.sub_add_cancel (hkb rfl)]
     apply mem_span_pow_of_uniformizer_mul O ϖ hϖ dd q hq _ (N + k)
     rw [Ideal.mem_span_singleton]
@@ -280,7 +280,7 @@ theorem extF_mem_of_levelCond {ϖ : O} (hϖ : Irreducible ϖ) {r : ℕ} (φ : (F
     obtain ⟨N, c, z, hc, hz⟩ := h
     have e := congrArg (extF φ) hz
     simp only [map_smul, map_sub, map_add (f := _), extF_cst, smul_eq_mul] at e
-    rw [if_neg (by decide)]
+    rw [ite_eq_right (by decide)]
     apply mem_span_pow_of_uniformizer_mul O ϖ hϖ dd q hq _ (N + k)
     rw [Ideal.mem_span_singleton]
     exact ⟨extF φ c + q ^ bb * extF φ z + PowerSeries.C (ϖ ^ N) * R * PowerSeries.C (φ d), by
@@ -468,7 +468,7 @@ theorem descent_estimate_down : MD := by
         by_cases h : s = s₁
         · subst h; rw [hk₁]; decide
         · rw [hthin s (Finset.mem_range.1 hs) h]; decide
-      rw [if_neg this, pow_zero]
+      rw [ite_eq_right this, pow_zero]
     rw [hB, one_mul] at hw
     have hw1 : PowerSeries.C (ϖ ^ k) * w - PowerSeries.C (φ d) ∈ Ideal.span {p s₁} :=
       Ideal.span_singleton_le_span_singleton.mpr (dvd_pow_self _ hb) hw
@@ -497,12 +497,12 @@ theorem descent_estimate_down_up : MDU := by
     have hB : ∏ s ∈ Finset.range ell, p s ^ (if kind s = Kind.up then b s else 0) =
         p s₀ ^ b s₀ := by
       rw [Finset.prod_eq_single_of_mem s₀ (Finset.mem_range.2 hs₀) (fun s hs hne => ?_)]
-      · rw [if_pos hk₀]
+      · rw [ite_eq_left hk₀]
       · have : kind s ≠ Kind.up := by
           by_cases h : s = s₁
           · subst h; rw [hk₁]; decide
           · rw [hthin s (Finset.mem_range.1 hs) hne h]; decide
-        rw [if_neg this, pow_zero]
+        rw [ite_eq_right this, pow_zero]
     rw [hB] at hw
     exact dvd_of_down_up hϖ h01 hb (hP.1 s₀ hs₀) (hP.1 s₁ hs₁) (φ d) k w hw
   · rintro ⟨lam, ν, hν, rfl⟩
@@ -576,10 +576,6 @@ theorem cob_sum (L : Lat B n V) {ι : Type} (s : Finset ι) (y z : ι → ZMod n
   exact cob_add L (h c (Finset.mem_insert_self c s))
     (ih fun c' hc' => h c' (Finset.mem_insert_of_mem hc'))
 
-theorem lc_pow (B : Base O) (k : ℕ) : B.lc ^ k = C ((B.ℓ : O) ^ k) := by
-  unfold Base.lc
-  rw [map_pow]
-
 end
 
 theorem combine {O : Type} [CommRing O] {n : ℕ} {V₁ V₂ : Type} [AddCommGroup V₁]
@@ -637,7 +633,7 @@ theorem thmE_of (h1 : RhoExists) (h2 : RhoLin) (h3 : RhoFun) (h4 : Step1) : ThmE
       hZsmul (ac c) (Y1 c, Z1 c) (hZrho c hc (W1 c) (hW1 c hc) (Y1 c) (Z1 c) (hR c hc))
   · have e : 2 * rr + 4 * sig + 2 * a₀ + 2 * kap =
         (rr + 2 * sig + 2 * a₀ + 2 * kap) + (rr + 2 * sig) := by ring
-    simp only [lc_pow] at hcob ⊢
+    simp only [Formalism.ExponentWindows.E.IteratedPhiHomomorphisms.lc_pow] at hcob ⊢
     simp only [Prod.fst_sum, Prod.snd_sum]
     rw [e, combine h.f Cu.cuts (B.ℓ : O) _ (rr + 2 * sig) (rr + 2 * sig + 2 * a₀ + 2 * kap) rfl
         ac mc ham κ.1 yc Y1,

@@ -267,11 +267,6 @@ theorem a_mul_par_k {q : d.G} {t : d.Gn} (hq : IsPar q t) (y : d.G) :
   obtain ⟨p, t', hp, k, hk, rfl⟩ := d.ok.hgt.iwa y
   rw [← mul_assoc, d.ok.hgt.val _ _ (KSplitP.isPar_mul hq hp) k hk, d.ok.hgt.val p t' hp k hk, map_mul, map_mul,
     NNReal.coe_mul]
-theorem T_zero_k : d.T 0 = 0 := by
-  funext X
-  simp only [SD_k.T, Pi.zero_apply]
-  have : d.dd.rho d.B.ψ (X * (incM F d.b.1.toCols₂)ᵀ) 0 = 0 := funext fun z => mul_zero _
-  rw [this, map_zero]
 end
 section
 variable {d : SD_k σ}

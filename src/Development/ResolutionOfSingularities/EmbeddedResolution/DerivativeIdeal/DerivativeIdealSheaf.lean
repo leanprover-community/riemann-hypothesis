@@ -104,7 +104,6 @@ theorem finitePresentation_kaehlerDifferential_sections (k : Type u) [CommRing k
     Module.FinitePresentation Γ(X, U.1) (KaehlerDifferential k Γ(X, U.1)) := by
   have : Algebra.FiniteType k Γ(X, U.1) := finiteType_sections k p U h
   have : IsNoetherianRing Γ(X, U.1) := isNoetherianRing_sections k p U h
-  have : Module.Finite Γ(X, U.1) (KaehlerDifferential k Γ(X, U.1)) := inferInstance
   exact Module.finitePresentation_of_finite ..
 
 private theorem derivIdealSheaf_map_ideal_basicOpen (k : Type u) [CommRing k] [IsNoetherianRing k]

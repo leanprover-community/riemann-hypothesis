@@ -17,8 +17,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Out
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Serre
 
 variable {S : Scheme.{0}}
@@ -1086,14 +1084,6 @@ instance tensorObj.isAbelianScheme {O : Type} [CommRing O] {G : Over S} [GrpObj 
   (isTensor M a).isAbelianScheme hG
 
 end Properties
-
-section Ideals
-
-open NumberField nonZeroDivisors
-
-variable (K : Type) {E : Type} [Field K] [Field E] [NumberField K] [NumberField E] [Algebra K E]
-
-end Ideals
 
 section Examples
 

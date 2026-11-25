@@ -34,63 +34,13 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsUnit
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemStabGLAdeleIff
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RelIndexConjLevelVL
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OverLatticeIffSelfDualOverBase
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.TjcosetsFF
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Lemma
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -759,15 +709,6 @@ theorem sw_sigR (hc : CMData (maximalRealSubfield E) E)
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
   | tmul a e => rfl
 
-theorem unramified (hc : CMData (maximalRealSubfield E) E) :
-    Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E) :=
-  Formalism.L2.Pj.unramBridge_holds E fun P hP => by
-    obtain ⟨θ, t, e1, e2⟩ := hc.cmUnram.2.2 P hP
-    refine ⟨θ, ?_⟩
-    have : RingOfIntegers.mapRingEquiv (IsCMField.complexConj E : E ≃+* E) θ = t :=
-      RingOfIntegers.ext e1.symm
-    rwa [this]
-
 theorem exists_frame_cm (hc : CMData (maximalRealSubfield E) E) {r : ℕ}
     (J : Matrix (Fin r) (Fin r) E) (hJ : IsHerm (hc.sig : E →+* E) J) (hd : IsUnit J.det)
     (N : Submodule (𝓞 E) (Fin r → E))
@@ -778,7 +719,7 @@ theorem exists_frame_cm (hc : CMData (maximalRealSubfield E) E) {r : ℕ}
           b.1 = 1 ∧
       ∀ x, x ∈ latS (F := maximalRealSubfield E) (v.adicCompletion (maximalRealSubfield E))
         (intV E v) N ↔ ∀ i, ((b⁻¹).1 *ᵥ x) i ∈ intV E v := by
-  have := unramified hc
+  have := GlobalTheory.PlaceComp.unramified hc
   have hG : ∀ a b, ReciprocityTheory.ChartRestriction.G.FD.cc (Jᵀ a b) = Jᵀ b a :=
     fun a b => congrFun (congrFun hJ a) b
   have hd' : Jᵀ.det ≠ 0 := by
@@ -1636,7 +1577,6 @@ theorem relIndex_level (hp : ∀ i, (gp i).Prime) (hne : gp 0 ≠ gp 1) {f : ℕ
     · exact not_mem_both hT' (hp 1) (hTg 1) v (by simpa using h1) (by simpa using h)
 
 end Record
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.SelfDualStabiliserIndex GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection in
 theorem indexKU_of_selfDualOverBase (H : SelfDualOverBase) : IndexKU := by

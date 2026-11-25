@@ -8,8 +8,6 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOne
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Matrix
 
 namespace CompanionTheory.RgDs.Hilb

@@ -46,12 +46,6 @@ theorem a3uvec_int (C3 : IntChart T io y) {ι : T.Fr →+* C} (hι : EmbOK T V �
   rw [show chartUnitVectors C3 ℓ i = algebraMap T.V T.Fr (C3.uvecT ℓ i) from C3.gen.1.2.2.2.2.2.2 ℓ i]
   exact embIntSt_holds T C V ι hι _
 
-section Core
-
-variable {Orb : Type} {d : ℕ} [NeZero d]
-
-end Core
-
 variable (Xo c)
 
 end Formalism.L2.FormalSeriesBounds

@@ -85,7 +85,7 @@ theorem hensOnto_of (a : ℕ) (Y : TupV (E := E) v n a) (hGI : GramInvO σ J v �
     rcases lt_trichotomy i j with h | rfl | h
     · simp [hAdef, h, not_lt.2 h.le, h.ne']
     · simp [hAdef, hxs]
-    · simp only [hAdef, h, not_lt.2 h.le, h.ne, h.ne', if_false, if_true, zero_add]
+    · simp only [hAdef, h, not_lt.2 h.le, h.ne, h.ne', ite_false, ite_true, zero_add]
       exact S.2 i j
   set C := Ginv * A with hCdef
   have hC : ∀ i j, C i j ∈ OEv (E := E) v := fun i j => by

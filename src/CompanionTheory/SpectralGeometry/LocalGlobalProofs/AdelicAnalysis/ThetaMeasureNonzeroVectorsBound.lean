@@ -328,7 +328,7 @@ theorem small_length : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
     rw [hc, gramR_smul, h1, hsq, hc]
     rfl
   have hle := hcount (-(2 * x))
-  rw [if_pos hx] at hle
+  rw [ite_eq_left hx] at hle
   have h1 := (ENNReal.le_tsum X₀).trans hle
   rw [Set.indicator_of_mem hmem] at h1
   simp at h1
@@ -437,7 +437,7 @@ theorem mean_count_box : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
           · rw [Set.indicator_of_notMem (show X ∉ {X : Fin 1 → Fin M → E | X ≠ 0} from hX),
               Set.indicator_of_notMem
                 (show X ∉ {X : Fin 1 → Fin M → E | X ≠ 0 ∧ gramE σ J X = 0} from fun h' => hX h'.1)]
-        · simp only [Set.indicator, hB, if_false, ite_self]
+        · simp only [Set.indicator, hB, ite_false, ite_self]
       rw [heq]
       refine (hC₁ r hr).trans (ENNReal.ofReal_le_ofReal ?_)
       have hexp : Module.finrank ℚ F * M ≤ 2 * Module.finrank ℚ F * (M - 1) := by

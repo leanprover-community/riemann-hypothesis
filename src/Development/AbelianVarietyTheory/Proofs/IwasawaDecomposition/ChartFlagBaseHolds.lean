@@ -61,8 +61,6 @@ open Formalism.MainNotions.DIV.Cons (SCF intO)
 open GlobalTheory.LocM
 open MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LocM.Cht.FlagBase
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}

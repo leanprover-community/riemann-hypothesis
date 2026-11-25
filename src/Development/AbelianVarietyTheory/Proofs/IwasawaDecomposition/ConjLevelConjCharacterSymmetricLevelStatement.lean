@@ -84,8 +84,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.AutomorphicEvaluation Formalism.L2.DIV Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ConcreteSettingExists MeasureTheory NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.SRe
 open scoped TensorProduct Matrix
 
-theorem _root_.GlobalTheory.T.matrixModPlace_basisChange_eq_conj : ∀ (D : D7) (X : HidaSetting D) (red : X.B.I.Gf → G0g D.nd) (b : (Σ k : Fin 2, D.nd.PlG k) → Fin D.R.r → Fin X.B.I.n → X.B.I.E), FixRed X red b → ∀ kv : (Σ k : Fin 2, D.nd.PlG k), ((D.host.g kv.1 : ℕ) : 𝓞 D.host.E) ∈ (D.naut.plGw kv.1 kv.2).asIdeal → ∀ (P : GL (Fin D.R.r) (ZMod (D.host.g kv.1))) (u : Fin D.R.r → VA X.B.I), (∀ j, u j - ∑ i, ((((((P : GL (Fin D.R.r) (ZMod (D.host.g kv.1))) : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1)))) i j).val : ℕ) : X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F) • incl X.B.I (b kv i) ∈ wLf X (D.naut.plGw kv.1 kv.2)) → ∀ k ∈ X.B.I.Kset, GlobalTheory.Mem.SymFrame.IsMatIn X (D.naut.plGw kv.1 kv.2) u k ((((P⁻¹ * red k kv * P) : GL (Fin D.R.r) (ZMod (D.host.g kv.1))) : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1)))) := by
-  first | exact @GlobalTheory.Mem.SymFrame.isMatIn_basisChange
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MatrixModPlaceBasisChangeEqConjStatement =====
@@ -436,7 +434,6 @@ end GlobalTheory.Mem.GroupLoc.Coords
 
 namespace GlobalTheory.Mem.GroupLoc
 
-
 open Formalism.L2.SG.Pf.RowDictPf in
 theorem mem_unipSym_iff_colCond : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D), (∀ x : X.B.I.E, HEq (X.ιE x) x) → (∀ kv : (Σ k : Fin 2, D.nd.PlG k), ((D.host.g kv.1 : ℕ) : 𝓞 D.host.E) ∈ (D.naut.plGw kv.1 kv.2).asIdeal) → ∀ k ∈ X.B.I.Kset, ∀ (kv : Σ k : Fin 2, D.nd.PlG k) (N : GL (Fin D.R.r) (ZMod (D.host.g kv.1))), GlobalTheory.Mem.SymFrame.IsMatIn X (D.naut.plGw kv.1 kv.2) (GlobalTheory.Mem.SymFrame.symVec X (D.naut.plGw kv.1 kv.2)) k (N : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1))) → (N ∈ unipSym (ZMod (D.host.g kv.1)) D.R.r D.R.rS D.R.k ↔ GlobalTheory.Mem.GroupLoc.ColCond X (D.naut.plGw kv.1 kv.2) k) := by
   intro D X h hι hg k _ kv N hN
@@ -769,11 +766,6 @@ theorem condAt_inv (w : HeightOneSpectrum (𝓞 D.host.E)) {x : X.B.I.Gf} (hx : 
   rintro _ ⟨b, rfl⟩
   exact modW_mono X (Set.image_subset_range _ _) (e1 _ b (Nat.lt_succ_self _))
 
-theorem rank_eq (D : D7) : D.R.r = 2 * D.R.rS + D.R.k + 1 := by
-  have := D.R.rS_two
-  unfold Ranks.r
-  omega
-
 theorem span_frame (w : HeightOneSpectrum (𝓞 D.host.E)) (k : Fin 2)
     (hg : ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ w.asIdeal) (u : Fin D.R.r → VA X.B.I)
     (he : ∀ a, GroupLoc.ModW X w (Set.range u) (X.e0 a)) (hf : ∀ a, GroupLoc.ModW X w (Set.range u) (X.f0 a))
@@ -808,7 +800,6 @@ theorem one_sub_ew (w : HeightOneSpectrum (𝓞 D.host.E)) (k : Fin 2)
   have h3 := sub_mem h2 h1
   rwa [mul_add, add_sub_cancel_left, mul_one] at h3
 
-
 open Classical in
 def epsD (w : HeightOneSpectrum (𝓞 D.host.E)) : Fin D.R.k → VA X.B.I :=
   if EwAt X w then X.bwd else fun i => X.bw (Fin.rev i)
@@ -830,7 +821,7 @@ theorem hA_adj (x : X.B.I.Gf) (a b : VA X.B.I) :
 theorem colCond_iff_condAt : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D), (∀ x : X.B.I.E, HEq (X.ιE x) x) → (∀ kv : (Σ k : Fin 2, D.nd.PlG k), ((D.host.g kv.1 : ℕ) : 𝓞 D.host.E) ∈ (D.naut.plGw kv.1 kv.2).asIdeal) → ∀ k ∈ X.B.I.Kset, ∀ kv : (Σ k : Fin 2, D.nd.PlG k), (GlobalTheory.Mem.GroupLoc.ColCond X (D.naut.plGw kv.1 kv.2) k ↔ GlobalTheory.Mem.GroupLoc.CondAt X (D.naut.plGw kv.1 kv.2) k ∧ GlobalTheory.Mem.GroupLoc.CondAt X (GlobalTheory.DimPartsCompare.cPl (D.naut.plGw kv.1 kv.2)) k) := by
   intro D X hI hι hgs x hx kv
   have hg := hgs kv
-  have hn := rank_eq D
+  have hn := GlobalTheory.Mem.SymChar.ResBar.r_eq D
   have hA_e0 := hA_e0_symVec D X kv hg
   have hA_z0 := ZPair.hA_z0_symVec D X kv hg
   have hA_bw := Resid.hA_bw_symVec_not_ewAt D X kv hg
@@ -1066,7 +1057,7 @@ theorem GlobalTheory.Mem.SymFrame.conj_symLevel : ∀ (D : D7) (G' : Type) [Grou
       (GlobalTheory.Mem.SymFrame.symVec X (D.naut.plGw kv.1 kv.2)) k (((Ns kv : GL (Fin D.R.r) (ZMod (D.host.g kv.1))) : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1)))) := by
     intro kv
     rw [hNs kv]
-    exact GlobalTheory.Mem.SymFrame.isMatIn_perm _ k _ π (GlobalTheory.T.matrixModPlace_basisChange_eq_conj D X red b hfix kv (hw kv) (P kv) _ (hP kv) k hk)
+    exact GlobalTheory.Mem.SymFrame.isMatIn_perm _ k _ π (GlobalTheory.Mem.SymFrame.isMatIn_basisChange D X red b hfix kv (hw kv) (P kv) _ (hP kv) k hk)
   have hval : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), reord π (R.eG (eR.symm (c⁻¹ * red k * c))) (plg kv) =
       Formalism.UG.bc ((iso kv : ZMod (D.host.g kv.1) ≃+* kP (plg kv).1) : ZMod (D.host.g kv.1) →+* kP (plg kv).1)
         ((GlobalTheory.SeeConjRead.diagGL (d kv))⁻¹ * Ns kv * GlobalTheory.SeeConjRead.diagGL (d kv)) := by
@@ -1136,7 +1127,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.AutomorphicEvaluation Formalism.L2.DIV Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ConcreteSettingExists MeasureTheory NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.SRe
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

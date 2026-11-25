@@ -122,8 +122,8 @@ private theorem coset_sum {G : Type*} [Group G] (J : Subgroup G) (h : G → ℂ)
       rw [SetLike.mem_coe, ← QuotientGroup.eq, QuotientGroup.out_eq']
       exact eq_comm
     by_cases hh : (QuotientGroup.mk y : G ⧸ J) = c
-    · rw [if_pos hh, Set.indicator_of_mem (this.2 hh)]; rfl
-    · rw [if_neg hh, Set.indicator_of_notMem (fun q => hh (this.1 q))]
+    · rw [ite_eq_left hh, Set.indicator_of_mem (this.2 hh)]; rfl
+    · rw [ite_eq_right hh, Set.indicator_of_notMem (fun q => hh (this.1 q))]
   have hout : h (QuotientGroup.mk y : G ⧸ J).out = h y := by
     have hk : (QuotientGroup.mk y : G ⧸ J).out⁻¹ * y ∈ J := by
       rw [← QuotientGroup.eq, QuotientGroup.out_eq']

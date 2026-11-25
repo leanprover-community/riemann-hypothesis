@@ -2,50 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DerivationMemPowOfMemPowSucc
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofDApply
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeBilinearTermEqNegDoubleSum
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -161,9 +118,9 @@ theorem word_value (π : A →ₐ[k] k) (D : ι → Derivation k A A) (lam : ι 
   | nil =>
     simp only [List.foldl_nil, map_mul, map_prod, map_pow, hlam]
     by_cases h : ∀ l, ([] : List ι).count l = a l
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       simp [← h]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       simp only [List.count_nil] at h
       push Not at h
       obtain ⟨l, hl⟩ := h
@@ -181,7 +138,7 @@ theorem word_value (π : A →ₐ[k] k) (D : ι → Derivation k A A) (lam : ι 
       ((∏ l, lam l ^ Function.update a l₀ (a l₀ - 1) l) * E)), word_add, map_add, key2, zero_add,
       word_smul, map_smul]
     by_cases h0 : a l₀ = 0
-    · rw [if_neg]
+    · rw [ite_eq_right]
       · simp [h0]
       · intro h
         have := h l₀
@@ -249,7 +206,7 @@ theorem coeff_law {R : Type} [CommRing R] {d : ℕ} (G : FGLaw R d) (i j : Fin d
   rw [← h]
   by_cases hij : j = i
   · simp [hij]
-  · rw [if_neg hij, if_neg]
+  · rw [ite_eq_right hij, ite_eq_right]
     intro h'
     rw [Finsupp.single_left_inj one_ne_zero] at h'
     exact hij (congrArg Prod.snd h').symm

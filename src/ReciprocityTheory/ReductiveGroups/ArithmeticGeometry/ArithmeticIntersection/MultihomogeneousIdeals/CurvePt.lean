@@ -100,7 +100,7 @@ theorem exists_homog_chart (V : Ideal (MRingOver F ι)) (j : ∀ k, ι k) (b : M
       funext k
       have := hd m hm k
       simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, mw, smul_eq_mul, Pi.single_apply,
-        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       omega
     rwa [hsum] at h3
   ·
@@ -241,7 +241,7 @@ theorem isUnit_mk_chartIdeal_form {V : Ideal (MRingOver F ι)} (hV : IsProjVarF 
     intro S k hk h
     have h' : φ S (X ⟨k, j k⟩) = 0 := RingHom.mem_ker.mp h
     rw [hφX, hθ, mk_chartIdeal_X_self, map_one, map_one, mul_one] at h'
-    simp only [c, if_neg hk] at h'
+    simp only [c, ite_eq_right hk] at h'
     exact MvPolynomial.X_ne_zero k h'
   have hbase : a ∈ Q ∅ := by
     show φ ∅ a = 0

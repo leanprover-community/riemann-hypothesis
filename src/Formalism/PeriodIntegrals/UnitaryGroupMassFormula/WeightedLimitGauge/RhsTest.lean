@@ -40,7 +40,7 @@ theorem tau_wI (j : Fin (k + 1)) : HU.tau k r (wI k r j) = wI k r j := by
   have hj := j.isLt
   apply Fin.ext
   show (if r + j.val < r ∨ r + k < r + j.val then 2 * r + k - (r + j.val) else r + j.val) = r + j.val
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem hpk_mulVec_apply (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ v) i = HU.sgn k r i * v (HU.tau k r i) := by
@@ -152,7 +152,7 @@ theorem rhsTest : RhsTest := by
       fun hle => hreg (lt_of_le_of_ne hle (Ne.symm hζ))
     have h0 : PI.RhsWLim.zWeight k (PI.RhsWLim.Tz k r z) (PI.RhsWLim.Tz k r z') ζ = 0 := by
       unfold PI.RhsWLim.zWeight
-      exact if_neg hle
+      exact ite_eq_right hle
     simp [h0]
 
 end PI.RhsWLim.W

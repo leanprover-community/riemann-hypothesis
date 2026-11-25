@@ -91,7 +91,7 @@ theorem Nlev_last {k r : ℕ} {n : Mx k r} (hn : n ∈ Nlev k r (Fin.last r)) : 
     have sg : GBasic.sgn k r (esI k r ⟨i.val, hi'⟩) = 1 := by
       have hv : (esI k r ⟨i.val, hi'⟩).val = 2 * r + k - i.val := rfl
       unfold GBasic.sgn
-      rw [if_neg (by rw [hv]; omega)]
+      rw [ite_eq_right (by rw [hv]; omega)]
     rw [es, sg, one_mul, one_mul, mulVec_bvec] at h1
     rw [h1, Matrix.one_apply, bvec, Pi.single_apply]
 
@@ -428,10 +428,6 @@ end Eigen
 
 end Formalism.FourierDecayAlt.P.Qx8
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
@@ -458,7 +454,7 @@ theorem nf_low_sum (d : NFData P 𝒜) (hR : d.Rel) (Y : ℂ) (hY : ∀ π, xC P
     unfold xEx
     refine Finset.prod_congr rfl fun i hi => ?_
     rw [Finset.mem_sdiff, Finset.mem_singleton] at hi
-    rw [rho_raise P j π π' hU i hi.1, if_neg hi.2, add_zero]
+    rw [rho_raise P j π π' hU i hi.1, ite_eq_right hi.2, add_zero]
   show xC P π' Y * (Y + (rho P π' j : ℂ))⁻¹ = xEx P {j} π Y
   rw [h1, mul_assoc, mul_inv_cancel₀ h2, mul_one, h3]
 
@@ -650,7 +646,7 @@ theorem hpart_skew {n : ℕ} (H Z : Matrix (Fin n) (Fin n) ℂ) (hsq : H * H = 1
 theorem herm_sum {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u v : Fin m → ℂ) :
     ∑ j, herm H (bvec j) v * u j = herm H u v := by
   simp only [herm, dotProduct, mulVec, bvec, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, Finset.sum_mul, Finset.mul_sum]
+    Finset.mem_univ, ite_true, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl; intro i _
   apply Finset.sum_congr rfl; intro j _
@@ -784,13 +780,13 @@ theorem sgn_eI (c : Fin r) : GBasic.sgn k r (eI k r c) = 1 := by
   have hv : (eI k r c).val = c.val := rfl
   have := c.isLt
   unfold GBasic.sgn
-  rw [if_neg (by rw [hv]; omega)]
+  rw [ite_eq_right (by rw [hv]; omega)]
 
 theorem sgn_esI (c : Fin r) : GBasic.sgn k r (esI k r c) = 1 := by
   have hv : (esI k r c).val = 2 * r + k - c.val := rfl
   have := c.isLt
   unfold GBasic.sgn
-  rw [if_neg (by rw [hv]; omega)]
+  rw [ite_eq_right (by rw [hv]; omega)]
 
 theorem coord_e (v : Fin (2 * r + k + 1) → ℂ) (c : Fin r) : herm (Hpk k r) v (bvec (esI k r c)) = v (eI k r c) := by
   rw [herm_bvec_right, Hpk_mulVec, sig_esI, sgn_esI, one_mul]
@@ -818,7 +814,7 @@ theorem inWb_mulVec {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r)) {v : Fin (2 
 theorem inWb_bvec_wI (j : Fin (k + 1)) : inWb k r (bvec (wI k r j)) := by
   intro i hi
   have hj := j.isLt
-  rw [bvec, Pi.single_apply, if_neg]
+  rw [bvec, Pi.single_apply, ite_eq_right]
   intro e
   have := congrArg Fin.val e
   simp only [wI] at this
@@ -831,7 +827,7 @@ theorem herm_wI (a b : Fin (k + 1)) :
   rw [Matrix.diagonal_apply]
   by_cases h : a = b
   · subst h; simp
-  · rw [if_neg (fun e => h e.symm), if_neg h]
+  · rw [ite_eq_right (fun e => h e.symm), ite_eq_right h]
 
 theorem herm_smul_left' {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (c : ℂ) (x w : Fin m → ℂ) :
     herm H (c • x) w = c * herm H x w := by
@@ -853,7 +849,7 @@ theorem frame_exists {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0
     intro i hi
     rw [ha, Pi.smul_apply, inWb_bvec_wI _ i hi, smul_zero]
   have haa : herm (Hpk k r) a a = ((-(Tz k r z) : ℝ) : ℂ) := by
-    rw [ha, herm_smul_left', herm_smul_right', herm_wI, if_pos rfl, if_pos rfl]
+    rw [ha, herm_smul_left', herm_smul_right', herm_wI, ite_eq_left rfl, ite_eq_left rfl]
     have : star (s : ℂ) = s := Complex.conj_ofReal s
     rw [this]
     push_cast
@@ -875,10 +871,10 @@ theorem frame_exists {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0
     rw [herm_UH hgU, herm_wI]
     have h1 : (i.castSucc = j.castSucc) ↔ i = j := Fin.castSucc_inj
     have h2 : i.castSucc ≠ Fin.last k := Fin.castSucc_ne_last i
-    simp only [h1, if_neg h2]
+    simp only [h1, ite_eq_right h2]
   · intro j v hv
     rw [List.mem_singleton] at hv
-    rw [hv, ← hga, herm_UH hgU, ha, herm_smul_right', herm_wI, if_neg (Fin.castSucc_ne_last j), mul_zero]
+    rw [hv, ← hga, herm_UH hgU, ha, herm_smul_right', herm_wI, ite_eq_right (Fin.castSucc_ne_last j), mul_zero]
 
 end Frames
 
@@ -1481,10 +1477,10 @@ theorem cd_Top (hU₀ : IsOpen U₀) (u : ℂ) (a b : Fin (mdim k r i)) :
   by_cases hab : posL k r i a = posL k r i b
   · have := (CD.id (E := E) (i := i) (U₀ := U₀)).csmul u |>.add (cd_EH hU₀ a b)
     unfold QuantumDeterminants.Top
-    simpa only [if_pos hab] using this
+    simpa only [ite_eq_left hab] using this
   · have := (CD.zero (E := E) (i := i) (U₀ := U₀)).add (cd_EH hU₀ a b)
     unfold QuantumDeterminants.Top
-    simpa only [if_neg hab] using this
+    simpa only [ite_eq_right hab] using this
 
 theorem cd_qminor (hU₀ : IsOpen U₀) {t : ℕ} (a b : Fin t → Fin (mdim k r i)) (u : ℂ) :
     CD (E := E) i U₀ (qminorOp (EH k r) (posL k r i ∘ a) (posL k r i ∘ b) u) := by
@@ -1515,11 +1511,11 @@ theorem cd_chat2L (hU₀ : IsOpen U₀) (u : ℂ) (a a' β β' : Mx k r → Fin 
   unfold chat2L
   refine CD.sum _ fun i₁ _ => CD.sum _ fun i₂ _ => CD.sum _ fun j₁ _ => CD.sum _ fun j₂ _ => ?_
   by_cases hc : i₁ < i₂ ∧ j₁ < j₂
-  · simp only [if_pos hc]
+  · simp only [ite_eq_left hc]
     exact (cd_qminor hU₀ _ _ _).coef _
       (sf_mul (sf_mul (sf_const _) (sf_sub' (sf_mul (hβ i₁) (hβ' i₂)) (sf_mul (hβ i₂) (hβ' i₁))))
       (sf_sub' (sf_mul (ha j₁) (ha' j₂)) (sf_mul (ha j₂) (ha' j₁))))
-  · simp only [if_neg hc]
+  · simp only [ite_eq_right hc]
     exact CD.zero
 
 theorem cd_tL (hU₀ : IsOpen U₀) (z z' : Fin (2 * r + k + 1) → ℂ) (Y : ℂ) (p q : Fin 2) :
@@ -1615,10 +1611,6 @@ theorem nlev_inv {i : Fin (r + 1)} {n : Mx k r} (hn : n ∈ Nlev k r i) : n⁻¹
 end Final
 
 end Formalism.FourierDecayAlt.P.Qx8
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
 
@@ -1944,7 +1936,7 @@ theorem frame2_exists (hk : 1 ≤ k) {z e : Fin (2 * r + k + 1) → ℂ} (hz : i
   set a : Fin (2 * r + k + 1) → ℂ := (s : ℂ) • bvec (wI k r (Fin.last k)) with ha
   have haW : inWb k r a := inWb_smul (inWb_bvec_wI _) _
   have haa : herm (Hpk k r) a a = ((-(Tz k r z) : ℝ) : ℂ) := by
-    rw [ha, herm_smul_left', herm_smul_right', herm_wI, if_pos rfl, if_pos rfl]
+    rw [ha, herm_smul_left', herm_smul_right', herm_wI, ite_eq_left rfl, ite_eq_left rfl]
     have : star (s : ℂ) = s := Complex.conj_ofReal s
     rw [this]
     push_cast
@@ -1961,9 +1953,9 @@ theorem frame2_exists (hk : 1 ≤ k) {z e : Fin (2 * r + k + 1) → ℂ} (hz : i
   set b : Fin (2 * r + k + 1) → ℂ := g₁ *ᵥ bvec (wI k r p) with hb
   have hbW : inWb k r b := inWb_mulVec hg₁ (inWb_bvec_wI _)
   have hbb : herm (Hpk k r) b b = ((1 : ℝ) : ℂ) := by
-    rw [hb, herm_UH hg₁.1, herm_wI, if_pos rfl, if_neg hpl]; simp
+    rw [hb, herm_UH hg₁.1, herm_wI, ite_eq_left rfl, ite_eq_right hpl]; simp
   have hzb : herm (Hpk k r) z b = 0 := by
-    rw [← hg₁a, hb, herm_UH hg₁.1, ha, herm_smul_left', herm_wI, if_neg (Ne.symm hpl), mul_zero]
+    rw [← hg₁a, hb, herm_UH hg₁.1, ha, herm_smul_left', herm_wI, ite_eq_right (Ne.symm hpl), mul_zero]
   have hze : herm (Hpk k r) z e = 0 := by rw [← herm_conj, hez, star_zero]
   obtain ⟨g₂, hg₂, hg₂b, hfix⟩ := move hbW he 1 one_ne_zero hbb (by rw [hee]; simp)
   have hg₂z : g₂ *ᵥ z = z := hfix z hzb hze
@@ -1983,7 +1975,7 @@ theorem frame2_exists (hk : 1 ≤ k) {z e : Fin (2 * r + k + 1) → ℂ} (hz : i
   refine ⟨fun j => g₂ *ᵥ (g₁ *ᵥ bvec (wI k r (ι j))),
     fun j => inWb_mulVec hg₂ (inWb_mulVec hg₁ (inWb_bvec_wI _)), ?_, ?_⟩
   · intro i j
-    rw [herm_UH hg₂.1, herm_UH hg₁.1, herm_wI, if_neg (hι1 i)]
+    rw [herm_UH hg₂.1, herm_UH hg₁.1, herm_wI, ite_eq_right (hι1 i)]
     have : (ι i = ι j) ↔ i = j := by
       constructor
       · intro h; exact Fin.ext (by simpa [ι] using congrArg Fin.val h)
@@ -1993,8 +1985,8 @@ theorem frame2_exists (hk : 1 ≤ k) {z e : Fin (2 * r + k + 1) → ℂ} (hz : i
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
     rcases hv with rfl | rfl
     · conv_lhs => rw [← hg₂z, ← hg₁a]
-      rw [herm_UH hg₂.1, herm_UH hg₁.1, ha, herm_smul_right', herm_wI, if_neg (hι1 j), mul_zero]
-    · rw [← hg₂b, hb, herm_UH hg₂.1, herm_UH hg₁.1, herm_wI, if_neg (hι2 j)]
+      rw [herm_UH hg₂.1, herm_UH hg₁.1, ha, herm_smul_right', herm_wI, ite_eq_right (hι1 j), mul_zero]
+    · rw [← hg₂b, hb, herm_UH hg₂.1, herm_UH hg₁.1, herm_wI, ite_eq_right (hι2 j)]
 
 theorem orth_unit {a b : Fin (2 * r + k + 1) → ℂ} (ha : inWb k r a) (hb : inWb k r b) {A B : ℝ} (hB : 0 < B)
     (haa : herm (Hpk k r) a a = -(A : ℂ)) (hbb : herm (Hpk k r) b b = -(B : ℂ))
@@ -2245,7 +2237,3 @@ theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {B
 end Spectral
 
 end Formalism.FourierDecayAlt.P.Qx8
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

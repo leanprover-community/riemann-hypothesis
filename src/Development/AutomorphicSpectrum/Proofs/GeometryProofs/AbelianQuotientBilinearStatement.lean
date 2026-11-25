@@ -97,7 +97,7 @@ theorem tanPt_add (F : Germ.FGLaw S d)
     rw [Finset.sum_eq_single (i, p.2)]
     · simp
     · intro b _ hb
-      rw [MvPolynomial.coeff_X, if_neg (fun h => hb (Finsupp.single_left_injective one_ne_zero h).symm), zero_mul]
+      rw [MvPolynomial.coeff_X, ite_eq_right (fun h => hb (Finsupp.single_left_injective one_ne_zero h).symm), zero_mul]
     · intro h; exact absurd (Finset.mem_univ _) h
   have hL : (tanV ψv : Jet S (Fin 2 × Fin d) (0 + 1) →ₐ[S] DualNumber S).comp
       (jetSubstP 1 fun p : Fin 1 × Fin d => psTrunc 1 (F.F p.2)) =
@@ -110,7 +110,7 @@ theorem tanPt_add (F : Germ.FGLaw S d)
         (Finsupp.single s 1) =
         if s.2 = p.2 then 1 else 0 := by
       intro s
-      rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_neg (Finsupp.single_ne_zero.2 one_ne_zero).symm,
+      rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, ite_eq_right (Finsupp.single_ne_zero.2 one_ne_zero).symm,
         sub_zero, coeff_psTrunc' 1 _ _ (by simp), law_coeff]
     simp only [hco, ite_mul, _root_.one_mul, zero_mul, Fintype.sum_prod_type, Fin.sum_univ_two]
     simp [ψv, Finset.sum_ite_eq']
@@ -295,7 +295,7 @@ theorem linQ_eq_diff (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Hos
     congr 1
     funext q
     rw [Finset.sum_eq_single ((0 : Fin 1), l)]
-    · rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_neg (Finsupp.single_ne_zero.2 one_ne_zero).symm,
+    · rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, ite_eq_right (Finsupp.single_ne_zero.2 one_ne_zero).symm,
         sub_zero, coeff_psTrunc' 1 _ _ (by simp)]
       simp [linQ]
     · rintro ⟨a, b⟩ _ hb
@@ -394,14 +394,6 @@ theorem bind_fst (P : MvPolynomial (Fin 1 × Fin d) R) :
   change MvPolynomial.aeval (MvPolynomial.X : Fin 1 × Fin d → MvPolynomial (Fin 1 × Fin d) R) P = P
   rw [MvPolynomial.aeval_X_left_apply]
 
-theorem double_substitution_jet_inclusion (Qs : Fin d' → PS R 1 d) (m : ℕ) (i : Fin 2) :
-    (sub2 Qs m).comp (jetCopy d' m i) = (jetCopy d m i).comp (sub1 Qs m) := by
-  apply jet_hom_ext
-  rintro ⟨l, j⟩
-  simp only [AlgHom.comp_apply, jetCopy, sub1, sub2, jetSubstP, jetMap_mk, MvPolynomial.aeval_X]
-  congr 1
-  rw [cc_psIn, map_sub, psIn_eq_aeval, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc]
-
 theorem double_substitution_truncation (Qs : Fin d' → PS R 1 d) (m : ℕ) :
     (jetTrunc : Jet R (Fin 2 × Fin d) (m + 1) →ₐ[R] Jet R (Fin 2 × Fin d) m).comp (sub2 Qs (m + 1)) =
       (sub2 Qs m).comp (jetTrunc : Jet R (Fin 2 × Fin d') (m + 1) →ₐ[R] Jet R (Fin 2 × Fin d') m) := by
@@ -487,10 +479,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Sc
 
 def pushId (A : Type) [CommRing A] [Algebra k A] : Over.mk ((overAt (𝟙 (Sp k)) A).hom ≫ x) ⟶ overAt x A :=
   Over.homMk (𝟙 _) (by simp)
-
-theorem fibPt_fst {A : Type} [CommRing A] [Algebra k A] (y : overAt x A ⟶ t.G) :
-    (fibPt t x y).left ≫ pullback.fst t.G.hom x = y.left :=
-  pullback.lift_fst _ _ _
 
 theorem psum_fib {A : Type} [CommRing A] [Algebra k A] {n : ℕ} (xs : Fin n → (overAt x A ⟶ t.G)) (I : Finset (Fin n)) :
     psum (GF t x) (fun i => fibPt t x (xs i)) I = fibPt t x (psum t.G xs I) := by
@@ -617,7 +605,7 @@ variable {g gB Qs}
 
 theorem jpt_q (hq : ∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) (m : ℕ) (i : Fin 2) :
     fibPt t x (jptG t x d g.x m i) ≫ Q.q = homAt (𝟙 (Sp k)) (sub2 Qs m) ≫ jptG Q.tB (𝟙 (Sp k)) d' gB.x m i := by
-  rw [jptG, jptG, fibPt_pre, Category.assoc, hq, ← Category.assoc, ← Category.assoc, Formalism.L2.Pj.homAt_comp, Formalism.L2.Pj.homAt_comp, double_substitution_jet_inclusion]
+  rw [jptG, jptG, fibPt_pre, Category.assoc, hq, ← Category.assoc, ← Category.assoc, Formalism.L2.Pj.homAt_comp, Formalism.L2.Pj.homAt_comp, GlobalTheory.CompanionTheory.Ar.Flat.FrGauge.AdRelPf.double_substitution_jet_inclusion]
 
 theorem cube_eq (hq : ∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) (m : ℕ)
     (I : ULift (Finset (Fin 2))) :
@@ -798,25 +786,6 @@ section Fibre
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} (t : SAB H X)
   {k : Type} [Field k] (x : Sp k ⟶ X)
 
-theorem fibPt_fst {A : Type} [CommRing A] [Algebra k A] (y : overAt x A ⟶ t.G) :
-    (fibPt t x y).left ≫ pullback.fst t.G.hom x = y.left :=
-  pullback.lift_fst _ _ _
-
-theorem fibPt_snd {A : Type} [CommRing A] [Algebra k A] (y : overAt x A ⟶ t.G) :
-    (fibPt t x y).left ≫ pullback.snd t.G.hom x = spMap (algebraMap k A) :=
-  (pullback.lift_snd _ _ _).trans (by simp)
-
-theorem homAt_fibPt {A B : Type} [CommRing A] [Algebra k A] [CommRing B] [Algebra k B] (f : A →ₐ[k] B)
-    (y : overAt x A ⟶ t.G) : homAt (𝟙 (Sp k)) f ≫ fibPt t x y = fibPt t x (homAt x f ≫ y) := by
-  apply Over.OverMorphism.ext
-  apply pullback.hom_ext
-  · rw [Over.comp_left, Category.assoc]
-    erw [fibPt_fst, fibPt_fst]
-    rfl
-  · rw [Over.comp_left, Category.assoc]
-    erw [fibPt_snd, fibPt_snd]
-    exact spMap_comp_alg f
-
 theorem one_left_fst {T : Over (Sp k)} :
     (1 : T ⟶ GF t x).left ≫ pullback.fst t.G.hom x = T.hom ≫ x ≫ η[t.G].left := by
   rw [Hom.one_def, Over.comp_left, Category.assoc]
@@ -994,11 +963,11 @@ theorem coeff_xz_rename (P Q : PS R 1 d) (a b : Fin d) :
         apply hne'
         have hv1 := DFunLike.congr_fun huv ((1 : Fin 2), b)
         have hu0 := DFunLike.congr_fun huv ((0 : Fin 2), a)
-        simp only [Finsupp.add_apply, Finsupp.single_apply, hne, hne.symm, if_true, if_false, hu, hv] at hv1 hu0
+        simp only [Finsupp.add_apply, Finsupp.single_apply, hne, hne.symm, ite_true, ite_false, hu, hv] at hv1 hu0
         have hrest : ∀ t, t ≠ ((0 : Fin 2), a) → t ≠ ((1 : Fin 2), b) → u t = 0 ∧ v t = 0 := by
           intro t h0 h1
           have ht := DFunLike.congr_fun huv t
-          simp only [Finsupp.add_apply, Finsupp.single_apply, Ne.symm h0, Ne.symm h1, if_false] at ht
+          simp only [Finsupp.add_apply, Finsupp.single_apply, Ne.symm h0, Ne.symm h1, ite_false] at ht
           omega
         refine Prod.ext (Finsupp.ext fun t => ?_) (Finsupp.ext fun t => ?_)
         · by_cases h0 : t = ((0 : Fin 2), a)
@@ -1150,7 +1119,7 @@ theorem bil_subQ {Qs : Fin d' → PS R 1 d} (hQ : ∀ i, MvPowerSeries.constantC
     rw [e] at hdeg
     simp at hdeg
   have key := ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.coeff_subst_xz (f - 1) h0 h1 _ (const_side hQ) _ hdeg
-  rw [MvPowerSeries.subst_sub hσ, subst_one' hσ, map_sub, MvPowerSeries.coeff_one, if_neg hn, sub_zero] at key
+  rw [MvPowerSeries.subst_sub hσ, subst_one' hσ, map_sub, MvPowerSeries.coeff_one, ite_eq_right hn, sub_zero] at key
   show MvPowerSeries.coeff _ (subQ Qs f) = _
   refine key.trans ?_
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
@@ -1165,7 +1134,7 @@ theorem bil_subQ {Qs : Fin d' → PS R 1 d} (hQ : ∀ i, MvPowerSeries.constantC
     eval_first_point_eq_rename _
   have e1 : ev (n := 2) ![pt R d ((1 : Fin 2), m).1] (Qs ((1 : Fin 2), m).2) = MvPowerSeries.rename (eZ d) (Qs m) :=
     eval_second_point_eq_rename _
-  rw [map_sub, MvPowerSeries.coeff_one, if_neg hl, sub_zero, e0, e1, coeff_xz_rename]
+  rw [map_sub, MvPowerSeries.coeff_one, ite_eq_right hl, sub_zero, e0, e1, coeff_xz_rename]
   show _ = linQ Qs l a * bil f 1 1 l m * linQ Qs m b
   simp only [linQ, bil]
   ring

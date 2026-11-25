@@ -10,52 +10,15 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsC
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTateOperatorLevelComplement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormUnitPowSubOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDecompositionCompletedCyclotomicIntegers
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.RingTheory.RootsOfUnity.Lemmas
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Algebra.Nonarchimedean.Completion
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -66,16 +29,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.Loc
 namespace GlobalTheory.Cyc.LogClass
 
 variable {l : ℕ} [Fact l.Prime]
-
-theorem ks_le_kinf (K : FinExt l) (s : ℕ) : Ks K s ≤ Kinf K :=
-  by
-    apply sup_le_sup_left _ _
-    apply IntermediateField.adjoin.mono
-    intro x hx
-    exact ⟨s, hx⟩
-
-theorem hinf_le_gj (K : FinExt l) (s : ℕ) : Hinf K ≤ Gj K s :=
-  IntermediateField.fixingSubgroup_antitone (ks_le_kinf K s)
 
 theorem act_inC {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} (ha : IsActC act)
     {F : IntermediateField ℚ_[l] (Om l)} {g : GQ l} (hg : g ∈ F.fixingSubgroup)
@@ -366,7 +319,7 @@ theorem coeff_eq_zero {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} {�
   obtain ⟨n, hn⟩ := exists_scale b
   have hO : (l : PadicComplex l) ^ n * b ∈ Ohat K := by
     refine (_root_.GlobalTheory.CycInvariants.fixed_iff_mem_Ohat l act ha K _ hn).1 fun h hh => ?_
-    have := hb h (hinf_le_gj K s hh)
+    have := hb h (GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K s hh)
     rw [logC_hinf hχ K hh, zero_mul, eq_comm, sub_eq_zero] at this
     rw [map_mul, map_pow, map_natCast, this]
   obtain ⟨y, hy, x, hx, hyx⟩ := T1a _ hO

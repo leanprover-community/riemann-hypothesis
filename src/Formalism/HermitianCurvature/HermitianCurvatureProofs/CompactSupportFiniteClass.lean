@@ -63,8 +63,7 @@ def Phi (F' : Mat k r → E) : (j : ℕ) → (Fin j → Bool) → (Fin j → Mat
       (vf (bs 0) (q.1 0) q.2)
 
 theorem top_add_one_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by
-  first
-  | (rw [← WithTop.coe_one, ← WithTop.coe_add, top_add])
+  exact Formalism.REAL.withTop_enat_infty_add_one_le_infty
 
 theorem phi_contDiffAt (F' : Mat k r → E) {U : Set (Mat k r)} (hU : IsOpen U) (hF : ContDiffOn ℝ ∞ F' U) :
     ∀ (j : ℕ) (bs : Fin j → Bool) (q : (Fin j → Mat k r) × Mat k r), q.2 ∈ U → ContDiffAt ℝ ∞ (Phi F' j bs) q := by

@@ -4,41 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCombA
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalBlockDetBlockTriangular
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdeleCharRestrictLocalUnitsResidueChar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -209,14 +174,14 @@ theorem omegaG_eq_prod {a b r t j : ℕ} (hr : r ≤ a) (Pg Q : Finset (Pl D.hos
       have := (h3 w).2.choose_spec.2.2
       rw [h4] at this
       exact this
-    simp only [locF, dif_pos (h3 _), Finset.prod_mul_distrib]
+    simp only [locF, dite_eq_left (h3 _), Finset.prod_mul_distrib]
     simp only [h4]
     rw [← Units.coe_prod, ← h5]
     rfl
   · refine (Finset.prod_eq_zero_iff.2 (by_contra fun h => H ?_)).symm
     have h3 : ∀ w : Pg, LowZero a (y w.1) ∧ ∃ gx : GL (Fin a) (kP w.1) × X w, gx.1.val = topL a (y w.1) ∧
         gx.1 ∈ blockTri (blkOf r t) ∧ Rd w gx.2 (upperLeftBlock hr gx.1) := fun w =>
-      by_contra fun h' => h ⟨w, Finset.mem_univ _, dif_neg h'⟩
+      by_contra fun h' => h ⟨w, Finset.mem_univ _, dite_eq_right h'⟩
     choose h2 g hg' using h3
     exact ⟨fun w hw => h2 ⟨w, hw⟩, fun w => (g w).1, fun w => (hg' w).1, fun w => (hg' w).2.1,
       (hg _).2 fun w => ⟨_, (hg' w).2.2⟩⟩
@@ -244,8 +209,8 @@ theorem redM_eq {a b : ℕ} {w : Pl D.host.E} {c : EAf D} {N N' : Matrix (Fin b)
       (hz' : c * z ∈ Formalism.L2.Herm.intAf D.host.F D.host.E), resS D.host.F w ⟨c * z, hz'⟩ = resS D.host.F w ⟨z, hz⟩) :
     redM w N = redM w N' := by
   funext i j
-  have e : redM w N i j = resS D.host.F w ⟨N i j, hN i j⟩ := dif_pos (hN i j)
-  have e' : redM w N' i j = resS D.host.F w ⟨N' i j, hN' i j⟩ := dif_pos (hN' i j)
+  have e : redM w N i j = resS D.host.F w ⟨N i j, hN i j⟩ := dite_eq_left (hN i j)
+  have e' : redM w N' i j = resS D.host.F w ⟨N' i j, hN' i j⟩ := dite_eq_left (hN' i j)
   have h1 : c * N i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by rw [← h]; exact hN' i j
   exact (e.trans (hc _ (hN i j) h1).symm).trans
     (e'.trans (congrArg (resS D.host.F w) (Subtype.ext (h i j) : (⟨N' i j, hN' i j⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) =
@@ -260,12 +225,12 @@ theorem ite_and_eq_ite_mul_ite_of_implications {A B B' : Prop} {u v w w' : ℂ} 
     (if A ∧ B then u else 0) = if A then v * (if A' ∧ B' then w' else 0) else 0 := by
   by_cases hA : A
   · by_cases hB : B
-    · rw [if_pos ⟨hA, hB⟩, if_pos hA, if_pos ⟨h5 hA, h1 hB⟩, h2 hB, h3 hB]
-    · rw [if_neg fun h => hB h.2, if_pos hA]
+    · rw [ite_eq_left ⟨hA, hB⟩, ite_eq_left hA, ite_eq_left ⟨h5 hA, h1 hB⟩, h2 hB, h3 hB]
+    · rw [ite_eq_right fun h => hB h.2, ite_eq_left hA]
       by_cases hv : v = 0
       · rw [hv, zero_mul]
-      · rw [if_neg fun h => hB (h4 hv h.2), mul_zero]
-  · rw [if_neg fun h => hA h.1, if_neg hA]
+      · rw [ite_eq_right fun h => hB (h4 hv h.2), mul_zero]
+  · rw [ite_eq_right fun h => hA h.1, ite_eq_right hA]
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {Y Y' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y'] {S T : HSp D}
@@ -281,7 +246,7 @@ variable {Y Y' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y']
 
 theorem redM_eq_map {a b : ℕ} (w : Pl D.host.E) {N : Matrix (Fin b) (Fin a) (EAf D)} (hN : IsIntM N) :
     redM w N = (Matrix.of fun i j => (⟨N i j, hN i j⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E)).map (resS D.host.F w) :=
-  Matrix.ext fun i j => dif_pos (hN i j)
+  Matrix.ext fun i j => dite_eq_left (hN i j)
 
 end Step
 
@@ -322,11 +287,5 @@ theorem isIx_of_isOrd {κ l r t j a : ℕ} (h : κ + l = r) (ha : a = r + j * t)
 end Main
 
 end GlobalTheory.LocMod.StepVec
-
-namespace GlobalTheory.LocMod
-
-open StepVec
-
-end GlobalTheory.LocMod
 
 end

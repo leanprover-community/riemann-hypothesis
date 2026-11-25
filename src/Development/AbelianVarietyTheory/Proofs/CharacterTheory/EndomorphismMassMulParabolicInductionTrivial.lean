@@ -12,58 +12,15 @@ public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyBlockAndInvariantUnderStabilizerNilradic
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EndomorphismMassEqOfLinearEquivInvariant
 public import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardSubspacesMulGeneralLinearGroupCard, Development.AbelianVarietyTheory.Proofs.CharacterTheory.FinsumSubspaceStabilizerMulBlockFunctions, Development.AbelianVarietyTheory.Proofs.CharacterTheory.EndomorphismMassMulParabolicInductionTrivial
@@ -228,7 +185,7 @@ theorem finsum_subtype_dite {α : Type} [Fintype α] (p : α → Prop) (f : {x /
     ∑ᶠ x, f x = ∑ x, if h : p x then f ⟨x, h⟩ else 0 := by
   rw [finsum_eq_sum_of_fintype, ← Fintype.sum_subtype_add_sum_subtype p]
   have h1 : ∑ i : {x // ¬ p x}, (if h : p i.1 then f ⟨i.1, h⟩ else 0) = 0 :=
-    Finset.sum_eq_zero fun i _ => dif_neg i.2
+    Finset.sum_eq_zero fun i _ => dite_eq_right i.2
   rw [h1, add_zero]
   exact Finset.sum_congr rfl fun i _ => by rw [dite_eq_left i.2]
 
@@ -258,7 +215,7 @@ theorem finite_end (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [
 theorem mass_eq_zero {F : Type} [Field F] {V : Type} [AddCommGroup V] [Module F V] [FiniteDimensional F V]
     (φ : Module.End F V → ℂ) (P : F[X]) (h : Module.finrank F V ≠ P.natDegree) : mass φ P = 0 := by
   rw [mass_eq]
-  refine finsum_eq_zero_of_forall_eq_zero fun g => if_neg ?_
+  refine finsum_eq_zero_of_forall_eq_zero fun g => ite_eq_right ?_
   rintro rfl
   exact h (LinearMap.charpoly_natDegree g).symm
 
@@ -270,17 +227,17 @@ theorem indicator_split {F : Type} [Field F] (P : F[X])
     (if c = P then z else 0) =
       ∑ x ∈ T, (if a = x.1 then z else 0) * (if b = x.2 then (1 : ℂ) else 0) := by
   by_cases hg : c = P
-  · rw [if_pos hg, Finset.sum_eq_single (a, b)]
-    · rw [if_pos rfl, if_pos rfl, mul_one]
+  · rw [ite_eq_left hg, Finset.sum_eq_single (a, b)]
+    · rw [ite_eq_left rfl, ite_eq_left rfl, mul_one]
     · rintro ⟨b1, b2⟩ _ hb
       by_cases h1 : a = b1
       · by_cases h2 : b = b2
         · exact absurd (by rw [h1, h2]) hb
-        · rw [if_neg h2, mul_zero]
-      · rw [if_neg h1, zero_mul]
+        · rw [ite_eq_right h2, mul_zero]
+      · rw [ite_eq_right h1, zero_mul]
     · intro hn
       exact (hn ((hT (a, b)).2 ⟨ha, hb, hc.symm.trans hg⟩)).elim
-  · rw [if_neg hg]
+  · rw [ite_eq_right hg]
     refine (Finset.sum_eq_zero ?_).symm
     rintro ⟨b1, b2⟩ hb
     by_cases h1 : a = b1
@@ -288,8 +245,8 @@ theorem indicator_split {F : Type} [Field F] (P : F[X])
       · refine absurd ?_ hg
         rw [hc, h1, h2]
         exact ((hT (b1, b2)).1 hb).2.2
-      · rw [if_neg h2, mul_zero]
-    · rw [if_neg h1, zero_mul]
+      · rw [ite_eq_right h2, mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
 
 
 open Classical in
@@ -338,8 +295,8 @@ theorem mass_mult : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun g _ => ?_
     by_cases hg : LinearMap.charpoly g = P
-    · simp only [if_pos hg]
-    · simp only [if_neg hg, dite_eq_ite, ite_self, Finset.sum_const_zero]
+    · simp only [ite_eq_left hg]
+    · simp only [ite_eq_right hg, dite_eq_ite, ite_self, Finset.sum_const_zero]
   rw [h1, conv, finsum_mem_eq_finite_toFinset_sum _ hfin]
   simp only [fun W : Submodule F V => stab_sum F V W (Φ W) P _ hT]
   rw [Finset.sum_comm, Finset.sum_div]
@@ -359,10 +316,10 @@ theorem mass_mult : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup
     · have hq : Module.finrank F (V ⧸ W) = E.natDegree := by
         have := Submodule.finrank_quotient_add_finrank W
         omega
-      rw [if_pos hW, _root_.GlobalTheory.CuspGL.mass_eq_mass_pi_of_invariant F W Φ hΦ D hW.symm,
+      rw [ite_eq_left hW, _root_.GlobalTheory.CuspGL.mass_eq_mass_pi_of_invariant F W Φ hΦ D hW.symm,
         _root_.GlobalTheory.CuspGL.mass_eq_mass_pi_of_invariant F (V ⧸ W) (fun _ _ _ _ _ => (1 : ℂ)) (fun _ _ _ _ _ _ _ _ _ _ => rfl) E hq.symm,
         hW, hq]
-    · rw [if_neg hW, mass_eq_zero _ _ hW, zero_mul, mul_zero]
+    · rw [ite_eq_right hW, mass_eq_zero _ _ hW, zero_mul, mul_zero]
   have h3 := _root_.GlobalTheory.CuspGL.card_subspaces_mul_glCard F V D.natDegree (by omega)
   have h4 : Module.finrank F V - D.natDegree = E.natDegree := by omega
   rw [h4, Nat.card_eq_fintype_card (α := {W : Submodule F V // Module.finrank F W = D.natDegree}),

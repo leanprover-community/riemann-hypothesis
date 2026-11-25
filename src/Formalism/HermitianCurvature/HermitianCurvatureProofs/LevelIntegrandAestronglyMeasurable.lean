@@ -66,14 +66,14 @@ theorem glue_coordinate_split (l : Fin r) (c : Fin r → ℂ) (a : Cf r l.castSu
   · have h1 : ¬ (l.castSucc.val ≤ j.val) := by simp only [Fin.val_castSucc]; omega
     have h2 : ¬ (l.succ.val ≤ j.val) := by simp only [Fin.val_succ]; omega
     have h3 : j ≠ l := fun e => by rw [e] at h; omega
-    rw [dif_neg h1, dif_neg h2, Function.update_of_ne h3]
+    rw [dite_eq_right h1, dite_eq_right h2, Function.update_of_ne h3]
   · have hj : j = l := Fin.ext h
     subst hj
     have h2 : ¬ (j.succ.val ≤ j.val) := by simp
-    rw [dif_pos (by simp), dif_neg h2, Function.update_self]
+    rw [dite_eq_left (by simp), dite_eq_right h2, Function.update_self]
   · have h1 : l.castSucc.val ≤ j.val := by simp only [Fin.val_castSucc]; omega
     have h2 : l.succ.val ≤ j.val := by simp only [Fin.val_succ]; omega
-    rw [dif_pos h1, dif_pos h2, coordinate_split_snd]
+    rw [dite_eq_left h1, dite_eq_left h2, coordinate_split_snd]
 
 theorem weight_coordinate_split (l : Fin r) (a : Cf r l.castSucc) :
     (∏ j, ‖a j‖ ^ (-2 : ℤ)) = ‖(coordinateSplit l a).1‖ ^ (-2 : ℤ) * ∏ j, ‖(coordinateSplit l a).2 j‖ ^ (-2 : ℤ) := by
@@ -93,8 +93,8 @@ theorem coordinate_extension_glue (i : Fin (r + 1)) (c : Fin r → ℂ) (a : Cf 
 theorem coordinate_extension_measurable (i : Fin (r + 1)) (c : Fin r → ℂ) : Measurable (coordinateExtension i c) := by
   refine Measurable.of_eval fun j => ?_
   by_cases h : i.val ≤ j.1.val
-  · simp only [coordinateExtension, glue, dif_pos h]; exact measurable_pi_apply _
-  · simp only [coordinateExtension, glue, dif_neg h]; exact measurable_const
+  · simp only [coordinateExtension, glue, dite_eq_left h]; exact measurable_pi_apply _
+  · simp only [coordinateExtension, glue, dite_eq_right h]; exact measurable_const
 
 theorem level_weight_measurable {β : Type} [MeasurableSpace β] (i : Fin (r + 1)) :
     Measurable (fun q : Cf r i × β => ((∏ l, ‖q.1 l‖ ^ (-2 : ℤ) : ℝ) : ℂ)) := by
@@ -122,7 +122,7 @@ theorem integral_top_level_point {β E : Type} [MeasurableSpace β] [NormedAddCo
     (measurableEmbedding_prodMk_left _).integral_map _⟩
 
 theorem glue_last_level (c : Fin r → ℂ) (a : Cf r (Fin.last r)) : glue (Fin.last r) c a = c := by
-  funext j; have := j.isLt; simp only [glue, Fin.val_last]; rw [dif_neg (by omega)]
+  funext j; have := j.isLt; simp only [glue, Fin.val_last]; rw [dite_eq_right (by omega)]
 
 end Top
 
@@ -173,7 +173,7 @@ theorem act_one_hermitian_curvature (x : Ix S → RadSp k r z z' π π') : act (
   simp only [act, Matrix.one_apply]
   rw [Finset.sum_eq_single a]
   · simp; rfl
-  · intro b _ hb; rw [if_neg (Ne.symm hb)]; rfl
+  · intro b _ hb; rw [ite_eq_right (Ne.symm hb)]; rfl
   · simp
 
 end Dens

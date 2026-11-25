@@ -2,50 +2,8 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtDataPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtDataPfA
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -150,7 +108,7 @@ open NumberField in
 open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.lt_pos (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {σ : E →+* ℂ} (h : σ ∈ X.Ψ) (a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X σ)) : a.1 < r := by
-  have ha : a.1 < X.p0 := lt_of_lt_of_eq a.2 (if_pos h)
+  have ha : a.1 < X.p0 := lt_of_lt_of_eq a.2 (ite_eq_left h)
   have := X.p0_le
   omega
 
@@ -159,7 +117,7 @@ open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.lt_neg (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {σ : E →+* ℂ} (h : σ ∉ X.Ψ) (a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X σ)) :
     X.p0 + a.1 < r := by
-  have ha : a.1 < r - X.p0 := lt_of_lt_of_eq a.2 (if_neg h)
+  have ha : a.1 < r - X.p0 := lt_of_lt_of_eq a.2 (ite_eq_right h)
   have := X.p0_le
   omega
 
@@ -243,8 +201,8 @@ private theorem torusCoordinates_pair_im_lemma_4 (X : _root_.ReciprocityTheory.C
   set g : Fin r → ℝ := fun b => (_root_.GlobalTheory.TorusCoord.pr X e y τ b *
     conj (_root_.GlobalTheory.TorusCoord.pr X e y' τ b)).im with hg
   have hnot : ComplexEmbedding.conjugate τ.1 ∉ X.Ψ := (X.cmType τ.1).mp τ.2
-  have hpos : _root_.GlobalTheory.TorusCoord.dimOf X τ.1 = X.p0 := if_pos τ.2
-  have hneg : _root_.GlobalTheory.TorusCoord.dimOf X (ComplexEmbedding.conjugate τ.1) = r - X.p0 := if_neg hnot
+  have hpos : _root_.GlobalTheory.TorusCoord.dimOf X τ.1 = X.p0 := ite_eq_left τ.2
+  have hneg : _root_.GlobalTheory.TorusCoord.dimOf X (ComplexEmbedding.conjugate τ.1) = r - X.p0 := ite_eq_right hnot
   have hle : _root_.GlobalTheory.TorusCoord.dimOf X τ.1 ≤ r := hpos ▸ X.p0_le
   have e1 : ∑ a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X τ.1),
       (_root_.GlobalTheory.TorusCoord.coord X e y ⟨τ.1, a⟩ *
@@ -299,18 +257,18 @@ open NumberField in
 open scoped ComplexConjugate in
 theorem _root_.GlobalTheory.exists_torus_coordinates : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)), (∀ τ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (e τ a) (e τ b) = if a = b then ((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 a : ℝ) : ℂ) else 0) → ∃ (dim : (E →+* ℂ) → ℕ) (hp : ∀ τ : X.Ψ, dim τ.1 = X.p0) (hn : ∀ τ : X.Ψ, dim (ComplexEmbedding.conjugate τ.1) = r - X.p0) (Φ : (X.Ψ → Fin r → ℂ) ≃ₗ[ℝ] _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp dim), Fintype.card (_root_.ReciprocityTheory.ChartRestriction.G.I2.Idx dim) = X.Ψ.card * r ∧ (∀ τ, dim τ + dim (ComplexEmbedding.conjugate τ) = r) ∧ (∀ y (τ : X.Ψ) (a : Fin (dim τ.1)), (Φ y) ⟨τ.1, a⟩ = (Real.sqrt (X.c τ) : ℂ) * _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (e τ (Fin.castLE (by rw [hp τ]; exact X.p0_le) a))) ∧ (∀ y (τ : X.Ψ) (a : Fin (dim (ComplexEmbedding.conjugate τ.1))), (Φ y) ⟨ComplexEmbedding.conjugate τ.1, a⟩ = (Real.sqrt (X.c τ) : ℂ) * (starRingEnd ℂ) (-_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (e τ ⟨X.p0 + a.1, by have h1 : a.1 < r - X.p0 := lt_of_lt_of_eq a.2 (hn τ); have := X.p0_le; omega⟩))) ∧ (∀ (α : 𝓞 E) y, Φ (fun τ => τ.1 (α : E) • y τ) = _root_.ReciprocityTheory.ChartRestriction.G.I2.act α (Φ y)) ∧ ∀ y y', (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf (Φ y) (Φ y')).im = ∑ τ : X.Ψ, X.c τ * (_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (y' τ)).im := by
   intro E _ _ _ r X e he
-  have hp : ∀ τ : X.Ψ, _root_.GlobalTheory.TorusCoord.dimOf X τ.1 = X.p0 := fun τ => if_pos τ.2
+  have hp : ∀ τ : X.Ψ, _root_.GlobalTheory.TorusCoord.dimOf X τ.1 = X.p0 := fun τ => ite_eq_left τ.2
   have hn : ∀ τ : X.Ψ, _root_.GlobalTheory.TorusCoord.dimOf X (ComplexEmbedding.conjugate τ.1) = r - X.p0 :=
-    fun τ => if_neg ((X.cmType τ.1).mp τ.2)
+    fun τ => ite_eq_right ((X.cmType τ.1).mp τ.2)
   have hsum : ∀ σ, _root_.GlobalTheory.TorusCoord.dimOf X σ +
       _root_.GlobalTheory.TorusCoord.dimOf X (ComplexEmbedding.conjugate σ) = r := by
     intro σ
     have := X.p0_le
     by_cases hσ : σ ∈ X.Ψ
-    · rw [_root_.GlobalTheory.TorusCoord.dimOf, _root_.GlobalTheory.TorusCoord.dimOf, if_pos hσ, if_neg ((X.cmType σ).mp hσ)]
+    · rw [_root_.GlobalTheory.TorusCoord.dimOf, _root_.GlobalTheory.TorusCoord.dimOf, ite_eq_left hσ, ite_eq_right ((X.cmType σ).mp hσ)]
       omega
-    · rw [_root_.GlobalTheory.TorusCoord.dimOf, _root_.GlobalTheory.TorusCoord.dimOf, if_neg hσ,
-        if_pos (_root_.GlobalTheory.TorusCoord.conj_mem X hσ)]
+    · rw [_root_.GlobalTheory.TorusCoord.dimOf, _root_.GlobalTheory.TorusCoord.dimOf, ite_eq_right hσ,
+        ite_eq_left (_root_.GlobalTheory.TorusCoord.conj_mem X hσ)]
       omega
   have hcard : Fintype.card (_root_.ReciprocityTheory.ChartRestriction.G.I2.Idx (_root_.GlobalTheory.TorusCoord.dimOf X)) = X.Ψ.card * r := by
     rw [Fintype.card_sigma]

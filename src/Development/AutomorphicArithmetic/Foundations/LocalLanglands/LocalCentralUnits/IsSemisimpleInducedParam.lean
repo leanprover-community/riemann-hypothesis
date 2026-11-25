@@ -142,13 +142,13 @@ private theorem det_shift {n : ℕ} (hn : 0 < n) {b : ℂ} (hb : b ≠ 0) (S : M
       have h4 : (e.symm g).1 0 = g 0 := by
         simpa using perEquiv_symm (hn := hn) (hb := hb) g 0
       rw [hl, finRotate_last]
-      simp only [wt, if_true]
+      simp only [wt, ite_true]
       rw [← h4, ← h3]
       simp
     · have hlt : (i : ℕ) < m := by omega
       have h5 : finRotate (m + 1) i = ⟨(i : ℕ) + 1, by omega⟩ := finRotate_of_lt hlt
       have h6 : ((i : ℕ) : ℤ) + 1 = (((⟨(i : ℕ) + 1, by omega⟩ : Fin (m + 1)) : ℕ) : ℤ) := by simp
-      have h7 : wt ⟨(i : ℕ) + 1, by omega⟩ = 1 := if_neg fun h0 => by
+      have h7 : wt ⟨(i : ℕ) + 1, by omega⟩ = 1 := ite_eq_right fun h0 => by
         have := congrArg Fin.val h0
         simp at this
       rw [h5, h6, perEquiv_symm, h7, one_mul]

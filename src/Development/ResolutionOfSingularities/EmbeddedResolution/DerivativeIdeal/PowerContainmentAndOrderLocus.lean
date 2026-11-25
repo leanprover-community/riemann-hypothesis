@@ -229,8 +229,8 @@ theorem ideal_le_pow_of_restrictIdeal_eq_coordIdeal {X : Scheme.{u}} {k : Type u
       · intro hh
         rw [hh]
     by_cases hij : i = j
-    · rw [if_pos (hiff.mpr hij).symm, if_pos hij]
-    · rw [if_neg (fun hh => hij (hiff.mp hh.symm)), if_neg hij]
+    · rw [ite_eq_left (hiff.mpr hij).symm, ite_eq_left hij]
+    · rw [ite_eq_right (fun hh => hij (hiff.mp hh.symm)), ite_eq_right hij]
   have hrange : Set.range xs = c.coord '' (S : Set (Fin n)) := by
     ext y
     constructor

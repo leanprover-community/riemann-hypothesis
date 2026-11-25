@@ -274,39 +274,6 @@ private theorem open_ker (θ : Ideles E →* (Qbar l)ˣ) (hθ : Continuous θ) (
     show θ x = 1
     rw [e, map_mul, h3, mul_one]
     exact h _ ⟨_, h1, rfl⟩
-private theorem pos_conn (k : Eˣ) (hk : ∀ φ : E →+* ℝ, 0 < φ (k : E)) : infDiag k ∈ infConn E := by
-  rw [infDiag, MonoidHom.finsetProd_apply]
-  refine prod_mem fun w _ => ?_
-  let s : (w.Completion)ˣ →* (InfiniteAdeleRing E)ˣ := by
-    classical
-    exact Units.map (MonoidHom.mulSingle (fun w : InfinitePlace E => w.Completion) w)
-  have hs : Continuous s := by
-    classical
-    exact Continuous.units_map _ (continuous_mulSingle w)
-  suffices H : atInf w k ∈ connectedComponent (1 : (w.Completion)ˣ) by
-    have := hs.image_connectedComponent_subset 1 ⟨_, H, rfl⟩
-    rw [map_one] at this
-    exact ⟨_, this, rfl⟩
-  have key : ∀ S : Set w.Completion, IsPreconnected S → 0 ∉ S → 1 ∈ S → algebraMap E w.Completion (k : E) ∈ S →
-      atInf w k ∈ connectedComponent (1 : (w.Completion)ˣ) := fun S hS h0 h1 h2 => by
-    refine IsPreconnected.subset_connectedComponent (s := Units.val ⁻¹' S) ?_ h1 h2
-    rw [← Units.isEmbedding_val₀.isInducing.isPreconnected_image, Set.image_preimage_eq_of_subset]
-    · exact hS
-    · exact fun y hy => ⟨Units.mk0 y fun e => h0 (e ▸ hy), rfl⟩
-  rcases w.isReal_or_isComplex with hw | hw
-  · let e := InfinitePlace.Completion.ringEquivRealOfIsReal hw
-    have he : e (algebraMap E w.Completion (k : E)) = InfinitePlace.embedding_of_isReal hw (k : E) := by
-      rw [AbsoluteValue.Completion.algebraMap_def, WithAbs.algebraMap_right_apply,
-        Algebra.algebraMap_self_apply]
-      simpa [e] using InfinitePlace.Completion.extensionEmbeddingOfIsReal_coe hw ((WithAbs.equiv w.1).symm (k : E))
-    refine key (e ⁻¹' Set.Ioi 0) ((InfinitePlace.Completion.isometryEquivRealOfIsReal hw).toHomeomorph.isPreconnected_preimage.2
-      isPreconnected_Ioi) (by simp) (by simp) ?_
-    rw [Set.mem_preimage, he]
-    exact hk _
-  · let e := InfinitePlace.Completion.ringEquivComplexOfIsComplex hw
-    refine key (e ⁻¹' {0}ᶜ) ((InfinitePlace.Completion.isometryEquivComplexOfIsComplex hw).toHomeomorph.isPreconnected_preimage.2
-      (isConnected_compl_singleton_of_one_lt_rank (by simp) 0).isPreconnected) (by simp) (by simp) ?_
-    exact (map_ne_zero e).2 ((map_ne_zero _).2 k.ne_zero)
 end Lem
 section
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] {l : ℕ} [Fact l.Prime]
@@ -334,7 +301,7 @@ private theorem exists_type (ι : Qbar l ≃+* ℂ) (a : HeightOneSpectrum (𝓞
   obtain ⟨j', hj', e⟩ := h.choose_spec
   have h1 : v = h.choose := place_eq_of_contEmb_comp_eq E l v _ j.1 j' j.2 hj'
     (RingHom.ext fun b => ι.injective (DFunLike.congr_fun e b))
-  simp only [dif_pos h, zpow_one, ← h1]
+  simp only [dite_eq_left h, zpow_one, ← h1]
 private theorem alg_of_open {art : Ideles E →* Gab E Ω} [IsAlgClosure E Ω] (ha : IsGlobalArtin art) (ι : Qbar l ≃+* ℂ)
     (κ : G E Ω →* (Qbar l)ˣ) (hκ : Continuous κ) (n : (E →+* ℂ) → ℤ)
     (h : ∀ v : HeightOneSpectrum (𝓞 E), ((l : ℕ) : 𝓞 E) ∈ v.asIdeal → ∀ x : (v.adicCompletion E)ˣ, IsUnitAt v x →
@@ -369,7 +336,8 @@ private theorem alg_of_open {art : Ideles E →* Gab E Ω} [IsAlgClosure E Ω] (
     simp only [map_zpow₀, RingEquiv.apply_symm_apply]
     exact inv_mul_cancel₀ (Finset.prod_ne_zero_iff.mpr fun φ _ => zpow_ne_zero _ (by simp))
   · show (((θ' * f) (infDiag k) : ℂˣ) : ℂ) = _
-    rw [hχ, h1 _ (pos_conn k hk), Units.val_one, map_one, one_mul, ← infPow_diagUnits E n k, infDiag_eq]
+    rw [hχ, h1 _ (infDiag_eq k ▸ Subgroup.mem_map_of_mem _
+      (GlobalTheory.RayFromArtin.mem_connectedComponentOfOne_of_pos k hk)), Units.val_one, map_one, one_mul, ← infPow_diagUnits E n k, infDiag_eq]
     rfl
   · show _ = ι.symm ((((θ' * f) x : ℂˣ) : ℂ) * _) * _
     have hf0 : infPow n x ≠ 0 := hfe x ▸ Units.ne_zero _

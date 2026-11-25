@@ -1051,7 +1051,7 @@ private theorem markedDataOfSeq_ne_none_of_isMarked {k : Type u} [Field k] {X : 
   have he : markedDataOfSeq s J μ σ = some ((MarkedBlowupSequenceData.ofMarkedSequence σ).toMarkedBlowupSequenceData
       (s.proj s.length ≫ p) (s.ideal s.length) m (s.boundary s.length) hm) := by
     unfold markedDataOfSeq
-    exact dif_pos hm
+    exact dite_eq_left hm
   rw [he]
   exact Option.some_ne_none _
 

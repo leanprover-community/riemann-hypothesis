@@ -746,9 +746,9 @@ theorem sum_E (c : L →₀ B) (hc : (c.sum fun f a => a • φ fun _ => f) = 1)
   rw [← Finset.smul_sum, Finset.sum_comm]
   simp_rw [← Finset.sum_smul]
   rw [Finset.sum_eq_single 0]
-  · rw [sum_tw_pow ζ hζ hk 0 (Nat.succ_pos n), if_pos rfl, T_zero φ c hc, smul_smul, hs, one_smul]
+  · rw [sum_tw_pow ζ hζ hk 0 (Nat.succ_pos n), ite_eq_left rfl, T_zero φ c hc, smul_smul, hs, one_smul]
   · intro j hj hj0
-    rw [sum_tw_pow ζ hζ hk j (Finset.mem_range.1 hj), if_neg hj0, zero_smul]
+    rw [sum_tw_pow ζ hζ hk j (Finset.mem_range.1 hj), ite_eq_right hj0, zero_smul]
   · intro h; exact absurd (Finset.mem_range.2 (Nat.succ_pos n)) h
 
 theorem ev_E (c : L →₀ B) (hc : (c.sum fun f a => a • φ fun _ => f) = 1) (s : B)
@@ -835,7 +835,7 @@ theorem bijective_succ (hq : IsUnit ((n + 1 : ℕ) : B))
 
     simp only [ψ, map_sum, map_mul, ev_tmul, map_one, mul_one, hEh,
     ev_E φ c hc s hs ζ hζ hk, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true]
+    ite_true]
 
 end
 

@@ -3,52 +3,8 @@ module
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.Algebra.Order.Antidiag.Finsupp
 public import Mathlib.RingTheory.MvPolynomial.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -123,10 +79,10 @@ theorem coeff_dividedDeriv (β m : σ →₀ ℕ) (P : MvPolynomial σ R) :
     rw [dividedDeriv_monomial, AddMonoidAlgebra.coeff_smul_apply, coeff_monomial, coeff_monomial]
     by_cases h : n = m + β
     · subst h; simp
-    · rw [if_neg h, smul_zero]
+    · rw [ite_eq_right h, smul_zero]
       by_cases h0 : multiChoose n β = 0
       · rw [h0, zero_smul]
-      · rw [if_neg, smul_zero]
+      · rw [ite_eq_right, smul_zero]
         rintro rfl
         exact h (tsub_add_cancel_of_le (le_of_multiChoose_ne_zero h0)).symm
   | add P Q hP hQ =>
@@ -156,34 +112,5 @@ variable [Fintype ι]
 
 
 end Contraction
-
-section Integrality
-
-variable {R : Type*} [CommSemiring R] {ι κ : Type*}
-
-variable [Fintype ι] [Fintype κ]
-
-variable {A : Type*} [CommSemiring A] [Algebra A R]
-
-end Integrality
-
-section Fractional
-
-open scoped nonZeroDivisors
-
-variable {A K : Type*} [CommRing A] [CommRing K] [Algebra A K] {ι κ : Type*} [Fintype ι] [Fintype κ]
-
-end Fractional
-
-section Formula
-
-variable {k A M : Type*} [CommRing k] [Ring A] [Algebra k A] [AddCommGroup M] [Module A M]
-  {ι κ : Type*}
-
-variable [Fintype κ]
-
-variable [Fintype ι] {a b : ι → A} {a' b' : κ → A} {γ : ι → κ → k} {v : M}
-
-end Formula
 
 end GlobalTheory.Wick

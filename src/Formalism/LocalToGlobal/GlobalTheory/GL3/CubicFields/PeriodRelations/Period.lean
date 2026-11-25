@@ -91,7 +91,7 @@ theorem sum_emb_dualBasis_complex (K E : Type) [Field K] [Field E] [NumberField 
   have h := hLI (fun i' => (∑ j, emb i' (e j) * emb k (((Algebra.traceForm K E).dualBasis (traceForm_nondegenerate K E) e) j)) - if i' = k then 1 else 0) (by
     funext x
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, sub_mul,
-      Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [sub_eq_zero, hexp x]
     exact Finset.sum_congr rfl fun _ _ => mul_comm _ _) i
   rwa [sub_eq_zero] at h

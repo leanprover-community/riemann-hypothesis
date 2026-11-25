@@ -29,9 +29,6 @@ theorem pderiv_mem_supported {S : Set (Fin m × Fin n × Bool)} {g : PX m n} (hg
 
 theorem mem_F1_iff_supported (ε : Fin m → Bool) (f : PX m n) : f ∈ F1 ε ↔ f ∈ supported ℂ {k | inF1 ε k} := Iff.rfl
 
-theorem variable_mem_first_family (ε : Fin m → Bool) {k : Fin m × Fin n × Bool} (hk : inF1 ε k) : (X k : PX m n) ∈ F1 ε :=
-  (mem_F1_iff_supported ε _).2 (X_mem_supported.2 hk)
-
 theorem compact_operator_mul_second_family (ε : Fin m → Bool) (i j : Fin n) (f g : PX m n) (hg : g ∈ F2 ε) :
     KopL ε i j (f * g) = KopL ε i j f * g := by
   have h0 : ∀ k : Fin m × Fin n × Bool, inF1 ε k → pderiv k g = 0 := fun k hk =>

@@ -308,11 +308,11 @@ theorem kappa_bound : GlobalTheory.GapIn.Hyp → ∀ (k r : ℕ) (Wp : Type) [No
     (fun J => by
       by_cases hJ : NzOn (R (ν + eZ J.1)) (lb (ν + eZ J.1))
       · exact Or.inl ((hmass _ (hνJ0 J)).2 hJ).1
-      · exact Or.inr (if_neg hJ))
+      · exact Or.inr (ite_eq_right hJ))
     (fun J y hy => by
       rw [hκd J y hy]
       by_cases hJ : NzOn (R (ν + eZ J.1)) (lb (ν + eZ J.1))
-      · rw [if_pos hJ, smul_smul, smul_smul]
+      · rw [ite_eq_left hJ, smul_smul, smul_smul]
         congr 1
         have : ((Real.sqrt (dg (ν + eZ J.1)) : ℝ) : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.2 (Real.sqrt_pos.2 (hdJ J)).ne'
@@ -320,11 +320,11 @@ theorem kappa_bound : GlobalTheory.GapIn.Hyp → ∀ (k r : ℕ) (Wp : Type) [No
       · have : lb (ν + eZ J.1) y = 0 := by
           by_contra hne
           exact hJ ⟨y, hy, hne⟩
-        rw [if_neg hJ, this]
+        rw [ite_eq_right hJ, this]
         simp)
     I ((hmass _ (hνJ0 I)).2 hnzI).1 w hw
   have hae := (Gp91.GlobalTheory.T.quotientMeasure_ae_mem_and_measurable_besselModel hyp.1.2.2.1 k r _ _ (R ν) Wp z π u μW μN μG νq hDS hG).1
-  rw [if_pos hnzI, hκI I rfl, hw1] at h8
+  rw [ite_eq_left hnzI, hκI I rfl, hw1] at h8
   have h9 := h8.trans (le_trans (le_of_eq (lintegral_congr_ae ?_)) hint)
   · have hHs : 0 ≤ Hsq r (Formalism.QuantumDeterminants.Tz k r z) b ^ l := by
       apply pow_nonneg
@@ -630,12 +630,6 @@ theorem lOneNorm_add_single_unit_le {n : ℕ} (x : Fin n → ℤ) (a : Fin n) (z
         Finset.sum_le_sum fun i _ => h1 i
     _ = ∑ i, (x i).natAbs + 1 := by rw [Finset.sum_add_distrib, h2]
 
-theorem lOneNorm_sub_single_one_le {n : ℕ} (x : Fin n → ℤ) (a : Fin n) : n1 (x - Pi.single a 1) ≤ n1 x + 1 := by
-  have e : x - Pi.single a 1 = x + Pi.single a (-1) := by
-    rw [sub_eq_add_neg, Pi.single_neg]
-  rw [e]
-  exact lOneNorm_add_single_unit_le x a (-1) rfl
-
 end GlobalTheory.TrivWedge
 
 namespace GlobalTheory.TrivWedge
@@ -648,7 +642,7 @@ theorem tensH_trivial : BranchingSupport.HypsG → ∀ (k r : ℕ) (lam : Fin (2
     have := lOneNorm_add_single_unit_le ν a 1 rfl
     omega
   have hμs : ∀ s, n1 (ν + Pi.single a 1 - Pi.single s 1) ≤ q0 := fun s => by
-    have := lOneNorm_sub_single_one_le (ν + Pi.single a 1) s
+    have := Gp91.GlobalTheory.DualStepBound.lOneNorm_sub_single_one_le (ν + Pi.single a 1) s
     omega
   have hG2 : IsFamG lam q0 (Function.update F ν (F' ν)) := by
     intro x hx
@@ -826,15 +820,15 @@ theorem line_of_tens (hH : GlobalTheory.GapIn.Hyp) (hKF : GlobalTheory.GapIn.Amp
     rw [← norm_pos_iff, (hηI I hI).1]
     exact mul_pos (hdI0 I) hN
   refine ⟨fun I => if gd I then (Real.sqrt (d / dI I) : ℂ) * (η / d * ((ep I : ℂ) * κ₁ I * star (κ₀ I) * dI I) / ηI I)
-    else 0, fun I hI => if_neg hI, fun I => ?_, ?_⟩
+    else 0, fun I hI => ite_eq_right hI, fun I => ?_, ?_⟩
   · by_cases hI : gd I
     · have he : ‖(ep I : ℂ)‖ = 1 := by rcases hTH.ep_sq I with h | h <;> simp [h]
       have := hdI0 I
-      simp only [if_pos hI, norm_mul, norm_div, he, norm_star, hη, (hηI I hI).1, Complex.norm_real, Real.norm_eq_abs,
+      simp only [ite_eq_left hI, norm_mul, norm_div, he, norm_star, hη, (hηI I hI).1, Complex.norm_real, Real.norm_eq_abs,
         abs_of_pos hd0, abs_of_pos this, abs_of_nonneg (Real.sqrt_nonneg _)]
       refine le_of_eq ?_
       field_simp
-    · simp only [if_neg hI, norm_zero]
+    · simp only [ite_eq_right hI, norm_zero]
       positivity
   intro μsec K hK hM hMI γ p hγ θ' hθ' νR hν
   obtain ⟨g₀, μR, ν₀, ν, s, hcell, hν₀, hD, hs⟩ :=
@@ -852,7 +846,7 @@ theorem line_of_tens (hH : GlobalTheory.GapIn.Hyp) (hKF : GlobalTheory.GapIn.Amp
   rw [GlobalTheory.PrincipalMinorExterior.pairing_eq_leading_minor, hd _ (ne_zero_of_low hw0)] at key
   have hDm : DminN W.z W.z' g₀ l =
       ((Zhat D.R.k D.R.rS W.z W.z' g₀).submatrix (Fin.castLE hl) (Fin.castLE hl)).det := by
-    rw [DminN, dif_pos (by omega)]; rfl
+    rw [DminN, dite_eq_left (by omega)]; rfl
   have hdc : (d : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 hd0.ne'
   rw [hD, jhUnit, hs _ _ hA₀, hJ _ _ hcell.1 hν₀, hM,
     deg_eq hR (fun v hv => hdeg _ _ hA₀ ⟨h, hg, hok⟩ v hv) hd (ne_zero_of_low hw0)]
@@ -872,7 +866,7 @@ theorem line_of_tens (hH : GlobalTheory.GapIn.Hyp) (hKF : GlobalTheory.GapIn.Amp
   rw [hdI I _ (ne_zero_of_low (hwI I))]
   beta_reduce
   by_cases hI : gd I
-  · rw [if_pos hI, jhUnit, hs _ _ (hAI I hI), (hηI I hI).2 _ _ hcell.1 hν₀, hMI I hI,
+  · rw [ite_eq_left hI, jhUnit, hs _ _ (hAI I hI), (hηI I hI).2 _ _ hcell.1 hν₀, hMI I hI,
       deg_eq (hRI I hI) (fun v hv => hdeg _ _ (hAI I hI) ⟨h, (hDI I).2, hok⟩ v hv) (hdI I)
         (ne_zero_of_low (hwI I)), hMd,
       rpow_ratio hK hc hd0 (hdI0 I)]
@@ -882,7 +876,7 @@ theorem line_of_tens (hH : GlobalTheory.GapIn.Hyp) (hKF : GlobalTheory.GapIn.Amp
     push_cast
     calc _ = _ * (ηI I / ηI I) := by rw [div_self hηI0, mul_one]
       _ = _ := by ring
-  · rw [if_neg hI]
+  · rw [ite_eq_right hI]
     rcases hz I hI with h0 | h0 <;> simp only [h0, mul_zero, zero_mul, star_zero, zero_smul, smul_zero]
 
 section side
@@ -1167,7 +1161,7 @@ theorem minor_line : GlobalTheory.GapIn.Hyp → GlobalTheory.GapIn.AmpKF0 → Ce
       ∑ I ∈ univ.filter (fun I => I.card = l), f I = ∑ I : Sub _ l, f I.1 := fun f =>
     Finset.sum_subtype _ (by simp) f
   have haI : ∀ I : Sub (2 * D.R.rS + D.R.k + 1) l, (if h : I.1.card = l then a ⟨I.1, h⟩ else 0) = a I :=
-    fun I => dif_pos I.2
+    fun I => dite_eq_left I.2
   refine ⟨fun I => if h : I.card = l then a ⟨I, h⟩ else 0, fun I hI hn => (haI ⟨I, hI⟩).trans (ha0 _ hn), ?_, ?_⟩
   · rw [hsum]
     simp only [haI]

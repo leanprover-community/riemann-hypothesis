@@ -155,7 +155,7 @@ theorem exists_coeff_of_mem_colSpan {F E : Type} [Field F] [NumberField F] [Fiel
     obtain ⟨i, hi, rfl⟩ := hx
     obtain ⟨j, rfl, hj⟩ := hI i hi
     refine ⟨Pi.single j 1, fun j' hj' => ?_, ?_⟩
-    · rw [Pi.single_apply, if_neg]
+    · rw [Pi.single_apply, ite_eq_right]
       rintro rfl
       exact hj' hj
     · rw [Matrix.mulVec_single_one]
@@ -287,14 +287,13 @@ theorem flag_mat {R : Type} [CommRing R] {n r : ℕ} (A : Matrix (Fin n) (Fin r)
       rw [Finset.sum_map]; rfl]
     refine Finset.sum_subset (Finset.subset_univ _) fun l _ hl => ?_
     have : s ≤ l.val := by
-      by_contra h; push_neg at h
+      by_contra h; push Not at h
       exact hl (Finset.mem_map.2 ⟨⟨l.val, h⟩, Finset.mem_univ _, Fin.ext rfl⟩)
     rw [hsmall _ hj l this, mul_zero]
 
 end GlobalTheory.TieStd
 
 namespace GlobalTheory.TieStd
-
 
 open GlobalTheory.StdPar in
 theorem levi_le_leviFlag : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -400,12 +399,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.TieStd
 
-def leftStab {G : Type} [Group G] (φ : G → ℂ) : Subgroup G where
-  carrier := {γ | ∀ g, φ (γ * g) = φ g}
-  one_mem' := fun g => by simp
-  mul_mem' := fun {a b} ha hb g => by rw [mul_assoc, ha, hb]
-  inv_mem' := fun {a} ha g => by rw [← ha (a⁻¹ * g), mul_inv_cancel_left]
-
 theorem stdPar_eq_flag : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), IsWittFrame σ J X Y → ∀ (S : Finset (Fin r)) (s : ℕ) (hs : s ≤ r), (∀ i : Fin r, i.val < s ↔ ∃ k ∈ S, i ≤ k) → ∀ d : Fin s → ℕ, (∀ i, d i = (S.filter (· < Fin.castLE hs i)).card) → GlobalTheory.StdPar.unip σ J X S = GlobalTheory.UAut.unipFlag σ J (X.submatrix id (Fin.castLE hs)) d ∧ GlobalTheory.StdPar.levi σ J X Y S = GlobalTheory.UAut.leviFlag σ J (X.submatrix id (Fin.castLE hs)) (Y.submatrix id (Fin.castLE hs)) d ∧ ∀ (K : Subgroup (GAd σ J)) (φ : GAd σ J → ℂ), GlobalTheory.StdPar.IsAutOn σ J X Y S K φ ↔ GlobalTheory.UAut.IsAutOn σ J (GlobalTheory.UAut.leftGrp σ J (X.submatrix id (Fin.castLE hs)) d) K φ := by
   intro F E _ _ _ _ _ σ h n J hJ r X Y hW S s hs hS d hd
   have hu := le_antisymm (_root_.GlobalTheory.TieStd.unip_le_unipFlag F E σ h n J hJ r X Y hW S s hs hS d hd) (_root_.GlobalTheory.TieStd.unipFlag_castLE_le_unip F E σ h n J hJ r X Y hW S s hs hS d hd)
@@ -418,7 +411,7 @@ theorem stdPar_eq_flag : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
     fun hφ => ⟨fun u hu' g => hφ.left u ?_ g, fun γ hγ hγ' g => hφ.left γ ?_ g, hφ.level, hφ.cont, hφ.smooth, hφ.growth,
       GlobalTheory.UAut.kfin_iff.2 hφ.kfin⟩⟩⟩
   · rw [hg]
-    have : GlobalTheory.UAut.unipFlag σ J (X.submatrix id (Fin.castLE hs)) d ⊔ (ratPts σ J ⊓ GlobalTheory.UAut.leviFlag σ J (X.submatrix id (Fin.castLE hs)) (Y.submatrix id (Fin.castLE hs)) d) ≤ leftStab φ :=
+    have : GlobalTheory.UAut.unipFlag σ J (X.submatrix id (Fin.castLE hs)) d ⊔ (ratPts σ J ⊓ GlobalTheory.UAut.leviFlag σ J (X.submatrix id (Fin.castLE hs)) (Y.submatrix id (Fin.castLE hs)) d) ≤ GlobalTheory.OpTrace.leftStabilizer φ :=
       sup_le (fun u hu' => hφ.leftN u (hu ▸ hu')) (fun γ hγ => hφ.leftM γ hγ.1 (hl ▸ hγ.2))
     exact fun γ hγ => this hγ
   · rw [hg]; exact Subgroup.mem_sup_left (hu ▸ hu')

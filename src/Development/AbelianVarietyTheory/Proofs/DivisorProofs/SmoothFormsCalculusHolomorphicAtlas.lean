@@ -10,45 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarAddit
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIsFormDelDbarSmoothStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormOneAddMulSmul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelOperatorAtDbarOperatorAtLinearLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 
@@ -205,7 +167,7 @@ theorem formCalculus : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtl
   refine ⟨(_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).1, fun c α β hα hβ => ?_, fun w β hw hβ => _root_.GlobalTheory.CxForm.HolAtlas.del_dbar_even_mul M n A w β hw hβ, fun ι w P hw => ?_,
     fun M' _ n' A' f hf => ?_⟩
   · obtain ⟨h1, h2, h3⟩ := (_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).2 c α β hα hβ
-    obtain ⟨d1, d2⟩ := GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A α hα
+    obtain ⟨d1, d2⟩ := GlobalTheory.CxForm.isForm_del_dbar M n A α hα
     obtain ⟨e1, e2, e3, e4⟩ := (_root_.GlobalTheory.CxForm.HolAtlas.del_dbar_linear M n A).2 c α β hα hβ
     exact ⟨h1, h2, h3, d1, d2, e1, e2, e3, e4⟩
   · induction P using MvPolynomial.induction_on with
@@ -249,7 +211,7 @@ theorem formCalculus : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtl
         rw [hp3 h, h i, zero_mul, mul_zero, add_zero]
   · refine ⟨funext fun x => map_one _, fun c α β => ⟨funext fun x => map_add _ _ _, funext fun x => map_mul _ _ _,
       funext fun x => map_smul (pull _) c _, fun hα => ?_⟩⟩
-    obtain ⟨d1, d2⟩ := GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A α hα
+    obtain ⟨d1, d2⟩ := GlobalTheory.CxForm.isForm_del_dbar M n A α hα
     exact ⟨_root_.GlobalTheory.PullbackForm.isForm_pullback M M' n n' A A' f α hf hα, _root_.GlobalTheory.CxForm.HolAtlas.del_dbar_comm_pullback M M' n n' A A' f α hf hα d1 d2⟩
 
 end GlobalTheory

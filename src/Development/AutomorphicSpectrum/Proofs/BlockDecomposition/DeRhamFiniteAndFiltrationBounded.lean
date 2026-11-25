@@ -31,7 +31,7 @@ theorem cx_H_subsingleton (K : Cx.{1} R) (n : ℕ) (h : Subsingleton (K.X n)) : 
 
 theorem H_subsingleton (F : C ⥤ ModuleCat.{0} R) (h : ∀ T, Subsingleton (F.obj T)) (n : ℕ) :
     Subsingleton (CH.H F n) :=
-  cx_H_subsingleton (CH.cx F) n ⟨fun a b => funext fun s => (h _).elim _ _⟩
+  cx_H_subsingleton (CH.cx F) n ⟨fun _ _ => funext fun _ => (h _).elim _ _⟩
 
 theorem sqM_rep (a b : IdF A) (T : C) (x : sqM a b T) :
     ∃ (y : A.obj T) (hy : y ∈ a.S T), x = sqMk a b y hy := by

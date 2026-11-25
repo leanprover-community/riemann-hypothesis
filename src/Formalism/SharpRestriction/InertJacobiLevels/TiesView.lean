@@ -26,26 +26,12 @@ def viewX {D : D7} {L : SizeData₂ D} (X : G.Inst D L) : GC.Inst (viewD D) (vie
   kapI := X.kapI
   ep := X.ep
 
-section View
-
-variable {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (a b : G.HH D → ℤ)
-
-end View
-
 structure GAll where
   D : GC.GD
   L : GC.GParameters D
   X : GC.Inst D L
   a : GC.HH D → ℤ
   b : GC.HH D → ℤ
-
-namespace GAll
-
-variable (A : GAll) (K : G.Consts)
-
-
-
-end GAll
 
 def allOf {D : D7} {L : SizeData₂ D} (X : G.Inst D L) : GAll := ⟨viewD D, viewL L, viewX X, G.aL L, G.bL L⟩
 
@@ -75,16 +61,6 @@ theorem host_cls_eq {R R' : Ranks} {H : Host R} {H' : Host R'} (hq : H.q = H'.q)
   rw [hps p]
   simp only [Formalism.HC.HostRaw.small, hq, hd, hQS]
   split_ifs <;> simp_all
-
-section Tied
-
-variable {D : D7} (L0 : SizeData₂ D) (X0 : G.Inst D L0) (K : G.Consts) (dr : Set ℕ)
-  (len : D.what₂.Word → D.what₂.places.Pl → ℚ) (hw : 1 ≤ L0.sc.w'' D.R.n)
-  (hg : ∀ i, ¬ (G.IsResidueClassZero D (D.host.g i) ∨ G.IsSg D (D.host.g i)))
-  (hu : ∀ w, D.what₂.muAt w = D.what₂.mu0 → ∀ j, 1 ≤ j → j ≤ D.R.m → Fval L0 j w = 0)
-
-
-end Tied
 
 end Formalism.MainNotions.Inhab
 

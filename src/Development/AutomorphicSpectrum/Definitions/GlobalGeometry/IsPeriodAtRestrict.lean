@@ -100,14 +100,4 @@ end Plane
 
 end Origin
 
-section Comparison₂
-
-variable {Y : Model Xo c β} {S₀ : Finset ℕ} {Dc : ComponentData II (CMType H) K J Ω W} {Hd : HodgeData Dc}
-  (Or : CptOrigin Y S₀ Dc Hd) {T T' : Set ((Σ k, J k) → ℂ)} {O' Lt : Type} [CommRing O'] [AddCommGroup Lt]
-  [Module O' Lt]
-
-variable {Or}
-
-end Comparison₂
-
 end GlobalTheory.CompanionTheory.Ar

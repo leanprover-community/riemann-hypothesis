@@ -4,22 +4,11 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HzUnit
 
 @[expose] public section
 
-noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.LocMod ValuativeRel
 open scoped TensorProduct
 namespace GlobalTheory.SeeSaw.GModel
 variable {D : D7} {c : Comm D} {v : VCom c}
-
-section Rel
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Rel
-
-section Mu
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Mu
 
 
 open MeasureTheory IsDedekindDomain NumberField Matrix ValuativeRel in
@@ -36,4 +25,3 @@ theorem _root_.GlobalTheory.SeeSaw.GModel.phi_sb (G : _root_.GlobalTheory.SeeSaw
   exact ⟨hstep, htop⟩
 
 end GlobalTheory.SeeSaw.GModel
-end

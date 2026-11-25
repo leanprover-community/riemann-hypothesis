@@ -23,53 +23,10 @@ public import Mathlib.GroupTheory.Schreier
 public import Mathlib.LinearAlgebra.Matrix.FixedDetMatrices
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerCompletionNoPrimeTorsion
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BinaryMonomialDegreeSubstExpansion
 import Mathlib.Tactic.Linter.Style
 
@@ -88,23 +45,6 @@ open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
 
 namespace GlobalTheory.KZ.BettiB.Add
 
-theorem mem_gamma_of_dvd {M N : ℕ} (h : M ∣ N) {δ : SL(2, ℤ)} (hδ : δ ∈ CongruenceSubgroup.Gamma N) :
-    δ ∈ CongruenceSubgroup.Gamma M := by
-  rw [CongruenceSubgroup.Gamma_mem] at hδ ⊢
-  obtain ⟨h1, h2, h3, h4⟩ := hδ
-  have e : ∀ x : ℤ, ZMod.castHom h (ZMod M) (x : ZMod N) = (x : ZMod M) := fun x => map_intCast _ x
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [← e, h1, map_one]
-  · rw [← e, h2, map_zero]
-  · rw [← e, h3, map_zero]
-  · rw [← e, h4, map_one]
-
-theorem exp_val_add (l n : ℕ) [Fact l.Prime] (x y : ZMod (l ^ n)) :
-    Complex.exp (2 * Real.pi * Complex.I * (((x + y).val : ℕ) : ℂ) / ((l : ℂ) ^ n)) =
-      Complex.exp (2 * Real.pi * Complex.I * ((x.val : ℕ) : ℂ) / ((l : ℂ) ^ n)) *
-        Complex.exp (2 * Real.pi * Complex.I * ((y.val : ℕ) : ℂ) / ((l : ℂ) ^ n)) :=
-  _root_.GlobalTheory.KZ.H3.KumAdd.exp_val_add_pow l n x y
-
 theorem eventually_ne_zero {b : ℂ → ℂ} (hb : DifferentiableOn ℂ b Hs) (h : (b : Mero) ≠ 0) :
     ∀ᶠ z in Filter.codiscreteWithin Hs, b z ≠ 0 := by
   have hopen : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
@@ -114,10 +54,6 @@ theorem eventually_ne_zero {b : ℂ → ℂ} (hb : DifferentiableOn ℂ b Hs) (h
     rw [← Filter.Germ.coe_zero, Filter.Germ.coe_eq]
     filter_upwards [Filter.self_mem_codiscreteWithin Hs] with z hz using h0 hz
   · exact h0
-
-theorem germ_mul_ne_zero {b b' : ℂ → ℂ} (hb : DifferentiableOn ℂ b Hs) (hb' : DifferentiableOn ℂ b' Hs)
-    (h : (b : Mero) ≠ 0) (h' : (b' : Mero) ≠ 0) : ((b * b' : ℂ → ℂ) : Mero) ≠ 0 :=
-  _root_.GlobalTheory.KZ.H3.KumAdd.germ_mul_ne_zero hb hb' h h'
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
@@ -131,15 +67,15 @@ theorem kum_add (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) {x x' : X.K
   obtain ⟨f, a, b, M, hM, hx, ⟨ha, hb, hb0, hr⟩, hδ⟩ := h
   obtain ⟨f', a', b', M', hM', hx', ⟨ha', hb', hb0', hr'⟩, hδ'⟩ := h'
   refine ⟨f * f', a * a', b * b', M * M', Nat.mul_pos hM hM', ?_,
-    ⟨ha.mul ha', hb.mul hb', germ_mul_ne_zero hb hb' hb0 hb0', ?_⟩, ?_⟩
+    ⟨ha.mul ha', hb.mul hb', GlobalTheory.KZ.H3.KumAdd.germ_mul_ne_zero hb hb' hb0 hb0', ?_⟩, ?_⟩
   · rw [map_add (f := _), hx, hx', cls_mul]
   · rw [Units.val_mul, map_mul, Filter.Germ.coe_mul, Filter.Germ.coe_mul, mul_pow, mul_pow, ← hr, ← hr']
     ring
   · intro δ hδM z hz
-    have e1 := hδ δ (mem_gamma_of_dvd (dvd_mul_right M M') hδM) z hz
-    have e2 := hδ' δ (mem_gamma_of_dvd (dvd_mul_left M' M) hδM) z hz
+    have e1 := hδ δ (GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd (dvd_mul_right M M') hδM) z hz
+    have e2 := hδ' δ (GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd (dvd_mul_left M' M) hδM) z hz
     simp only [Pi.mul_apply, Pi.add_apply]
-    rw [exp_val_add]
+    rw [GlobalTheory.KZ.H3.KumAdd.exp_val_add_pow]
     linear_combination (a' (mob (ofSL δ) z) * b' z) * e1 +
       (Complex.exp (2 * Real.pi * Complex.I * (((χ δ).val : ℕ) : ℂ) / ((l : ℂ) ^ n)) *
         (a z * b (mob (ofSL δ) z))) * e2
@@ -151,8 +87,8 @@ theorem btZ_add : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ
   obtain ⟨χ, hχ, M, hM, hδ⟩ := h n u
   obtain ⟨χ', hχ', M', hM', hδ'⟩ := h' n u
   refine ⟨χ + χ', kum_add X l n hχ hχ', M * M', Nat.mul_pos hM hM', fun δ hδM => ?_⟩
-  have e1 := hδ δ (mem_gamma_of_dvd (dvd_mul_right M M') hδM)
-  have e2 := hδ' δ (mem_gamma_of_dvd (dvd_mul_left M' M) hδM)
+  have e1 := hδ δ (GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd (dvd_mul_right M M') hδM)
+  have e2 := hδ' δ (GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd (dvd_mul_left M' M) hδM)
   simp only [Pi.add_apply, map_add (f := _)]
   rw [e1, e2]
 
@@ -246,16 +182,6 @@ open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
 
 namespace GlobalTheory.KZ.BettiB
 
-theorem gamma_le_gamma_of_dvd {K M : ℕ} (h : K ∣ M) {δ : SL(2, ℤ)} (hδ : δ ∈ CongruenceSubgroup.Gamma M) :
-    δ ∈ CongruenceSubgroup.Gamma K := by
-  rw [CongruenceSubgroup.Gamma_mem] at hδ ⊢
-  obtain ⟨h1, h2, h3, h4⟩ := hδ
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · simpa only [map_intCast, map_one] using congrArg (ZMod.castHom h (ZMod K)) h1
-  · simpa using congrArg (ZMod.castHom h (ZMod K)) h2
-  · simpa using congrArg (ZMod.castHom h (ZMod K)) h3
-  · simpa only [map_intCast, map_one] using congrArg (ZMod.castHom h (ZMod K)) h4
-
 theorem mem_gam_of_mem_gamma {N l : ℕ} {δ : SL(2, ℤ)} (hN : δ ∈ CongruenceSubgroup.Gamma N)
     (hl : δ ∈ CongruenceSubgroup.Gamma l) : δ ∈ Gam N l := by
   rw [CongruenceSubgroup.Gamma_mem] at hN hl
@@ -283,10 +209,10 @@ theorem eq_zero_of_btZ_zero : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlg
   obtain ⟨g, hg⟩ := kummer_root_mem ε X hε hj (l ^ n) (pow_pos hlpos n) f a c (M₁ * M₂ * N * l)
     (by positivity) ha hc hc0 hroot (by
       intro γ hγ
-      have h1 : γ ∈ CongruenceSubgroup.Gamma M₁ := gamma_le_gamma_of_dvd ⟨M₂ * N * l, by ring⟩ hγ
-      have h2 : γ ∈ CongruenceSubgroup.Gamma M₂ := gamma_le_gamma_of_dvd ⟨M₁ * N * l, by ring⟩ hγ
-      have h3 : γ ∈ CongruenceSubgroup.Gamma N := gamma_le_gamma_of_dvd ⟨M₁ * M₂ * l, by ring⟩ hγ
-      have h4 : γ ∈ CongruenceSubgroup.Gamma l := gamma_le_gamma_of_dvd ⟨M₁ * M₂ * N, by ring⟩ hγ
+      have h1 : γ ∈ CongruenceSubgroup.Gamma M₁ := GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₂ * N * l, by ring⟩ hγ
+      have h2 : γ ∈ CongruenceSubgroup.Gamma M₂ := GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₁ * N * l, by ring⟩ hγ
+      have h3 : γ ∈ CongruenceSubgroup.Gamma N := GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₁ * M₂ * l, by ring⟩ hγ
+      have h4 : γ ∈ CongruenceSubgroup.Gamma l := GlobalTheory.KZ.H3.KumAdd.gamma_of_dvd ⟨M₁ * M₂ * N, by ring⟩ hγ
       have h0 : χ γ = 0 := by
         have := hχ ⟨γ, mem_gam_of_mem_gamma h3 h4⟩ h2
         simpa using this.symm

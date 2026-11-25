@@ -5,42 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Reads
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StepZeroTwistReferenceTupleEqId
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryFiniteAdelicPointAsMatrixMemFlagIwahori
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsOfStarEq
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
 import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 
@@ -206,14 +171,14 @@ theorem prod_uSG {E : Type} [Field E] [NumberField E] {M : Type} [CommMonoid M] 
   have h1 : ∏ w, f w = ∏ w : Formalism.L2.Col.uSG A B, (fun P => if P ∈ A then a P else b P) w.1 := by
     refine Finset.prod_congr rfl fun w _ => ?_
     by_cases h : w.1 ∈ A
-    · simp only [h, if_true]; exact ha w h
-    · simp only [h, if_false]; exact hb w h ((Finset.mem_union.mp w.2).resolve_left h)
+    · simp only [h, ite_true]; exact ha w h
+    · simp only [h, ite_false]; exact hb w h ((Finset.mem_union.mp w.2).resolve_left h)
   rw [h1, Finset.prod_coe_sort (Formalism.L2.Col.uSG A B) (fun P => if P ∈ A then a P else b P)]
   have h2 : Disjoint A B := Finset.disjoint_right.2 fun P hP => hd P hP
   rw [Finset.prod_union h2]
   congr 1
-  · exact Finset.prod_congr rfl fun P hP => if_pos hP
-  · exact Finset.prod_congr rfl fun P hP => if_neg (hd P hP)
+  · exact Finset.prod_congr rfl fun P hP => ite_eq_left hP
+  · exact Finset.prod_congr rfl fun P hP => ite_eq_right (hd P hP)
 
 theorem lam_congr {κ K : Type} [CommRing κ] [Field K] {n : ℕ} {l l' : Formalism.L2.Col.Lev κ K n} (e : l = l') (u : GL (Fin n) κ)
     (h : u ∈ l.inv.H) : l.inv.lam ⟨u, h⟩ = l'.lam⁻¹ ⟨u, e ▸ h⟩ := by

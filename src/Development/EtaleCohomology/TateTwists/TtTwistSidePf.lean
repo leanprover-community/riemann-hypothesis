@@ -39,7 +39,7 @@ open ZeroObject in
 theorem flat_sgl {F : Shv R} (hF : FlatS F) (t : ℤ) : FlatS ((sgl F).X t) := by
   by_cases ht : t = 0
   · subst ht
-    exact (show FlatS (if (0:ℤ) = 0 then F else 0) by rw [if_pos rfl]; exact hF)
+    exact (show FlatS (if (0:ℤ) = 0 then F else 0) by rw [ite_eq_left rfl]; exact hF)
   · exact flat_zero (HomologicalComplex.isZero_single_obj_X _ _ _ _ ht)
 
 theorem sgl_sub (F : Shv R) {t : ℤ} (ht : t ≠ 0) (U : Scheme.{0}) : Subsingleton (Sec ((sgl F).X t) U) :=

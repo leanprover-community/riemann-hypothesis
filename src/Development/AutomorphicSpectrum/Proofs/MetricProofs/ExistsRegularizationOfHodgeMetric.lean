@@ -747,16 +747,16 @@ theorem piece {F : (Fin n → ℂ) → ℝ} (hO : IsOpen {t | t ∈ ball (0 : Fi
       · by_cases h1 : t₀ i = 0
         · have hiS := (hS i).2 ⟨hi, h1⟩
           have hti : ‖t i‖ ≠ 0 := norm_ne_zero_iff.2 fun h => ht.2 ⟨i, hiS, h⟩
-          rw [if_pos hi, if_pos hiS, hs, Pi.add_apply, h1, zero_add, hTi,
+          rw [ite_eq_left hi, ite_eq_left hiS, hs, Pi.add_apply, h1, zero_add, hTi,
             ← Real.log_mul (by positivity) (by positivity)]
           refine le_of_eq (congrArg _ ?_)
           field_simp
-        · rw [if_pos hi, if_neg fun h => h1 ((hS i).1 h).2, add_zero]
+        · rw [ite_eq_left hi, ite_eq_right fun h => h1 ((hS i).1 h).2, add_zero]
           have h2 := hlow t ht1 i h1
           have h3 : 0 < ‖s i‖ := hε.trans_le h2
           exact Real.log_le_log (by positivity)
             (one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ hε.le h2 2))
-      · rw [if_neg hi, if_neg fun h => hi ((hS i).1 h).1, add_zero]
+      · rw [ite_eq_right hi, ite_eq_right fun h => hi ((hS i).1 h).1, add_zero]
         exact hl0
     rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
       Finset.sum_ite_mem, Finset.univ_inter] at this

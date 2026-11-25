@@ -4,12 +4,41 @@ public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Order.CompletePartialOrder
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.ThetaSetupAlgebraMaps
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.ConnAbs
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.FilRZero
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.RedAbs
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AbsProps
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HarishChandraFormulaStatement
+
+section
+@[expose] public section
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry
+
+namespace CrystallineSemistableComparison.Inj
+
+theorem filR_anti {K : Type} [CommRing K] {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of K)) (n : ℕ) :
+    Antitone (FilR p n) :=
+  fun _ _ h => GlobalTheory.LogCris.fil_anti _ n h
+
+theorem filR_zero {K : Type} [CommRing K] {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of K)) (n : ℕ) :
+    FilR p n 0 = Set.univ :=
+  GlobalTheory.LogCris.fil_zero _ n
+
+theorem filR_pull {K : Type} [CommRing K] {X Y : Scheme.{0}} {p : X ⟶ Spec (CommRingCat.of K)}
+    {q : Y ⟶ Spec (CommRingCat.of K)} (u : X ⟶ Y) (hu : u ≫ q = p) (n r : ℕ) :
+    ∀ x ∈ FilR q n r, pullR n u hu x ∈ FilR p n r := by
+  rintro x ⟨z, rfl, hz⟩
+  exact ⟨_, rfl, fun s => hz (s ⋙ (smMor u hu).functor)⟩
+
+end CrystallineSemistableComparison.Inj
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.ExistsWeightBasisFiltration, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.MemOfMulIsU, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.RedSum, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AdmissibleMinors.Imports
@@ -45,9 +74,9 @@ theorem exists_weight_basis_filtration {K H : Type*} [Field K] [AddCommGroup H] 
     refine ⟨b, fun v => if v ∈ s then w v else N - (i + 1), hlib, ?_, ?_⟩
     · intro v hv
       by_cases h : v ∈ s
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         exact ⟨(hs v h).1, by have := (hs v h).2; omega⟩
-      · simp only [h, if_false]
+      · simp only [h, ite_false]
         refine ⟨?_, le_rfl⟩
         rcases hbt hv with h' | h'
         · exact absurd h' h
@@ -62,7 +91,7 @@ theorem exists_weight_basis_filtration {K H : Type*} [Field K] [AddCommGroup H] 
         intro v hv
         refine ⟨hv, ?_⟩
         by_cases h : v ∈ s
-        · simp only [h, if_true]
+        · simp only [h, ite_true]
           have := (hs v h).2
           omega
         · simp [h]

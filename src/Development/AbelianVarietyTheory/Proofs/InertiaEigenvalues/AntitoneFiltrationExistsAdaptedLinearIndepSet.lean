@@ -59,7 +59,7 @@ theorem antitone_filtration_exists_adapted_linearIndep_set {L M : Type} [Field L
       simp only [Set.mem_ofPred_eq]
       constructor
       · rintro ⟨hx, hkx⟩
-        exact ⟨hst hx, by rw [if_pos hx]; exact hkx⟩
+        exact ⟨hst hx, by rw [ite_eq_left hx]; exact hkx⟩
       · rintro ⟨hx, hkx⟩
         split_ifs at hkx with hxs
         · exact ⟨hxs, hkx⟩

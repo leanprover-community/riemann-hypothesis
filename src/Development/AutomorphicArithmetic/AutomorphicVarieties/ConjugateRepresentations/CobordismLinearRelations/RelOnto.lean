@@ -715,8 +715,8 @@ theorem UpperTheory.V.Lit.Geo.Cs.geoCut :
           ((hη s).mono (fun x (hx : x ∈ G.Y ∩ (G.Y ∩ Φ s ⁻¹' Set.Ioi R)) => ⟨hx.2.1, hx.2.2⟩))
       refine hsm.congr (fun x hx => ?_)
       have hx' : x ∈ G.Y ∧ R < Φ s x := ⟨hx.2.1, hx.2.2⟩
-      simp only [f, if_pos hx']
-    · push_neg at hR
+      simp only [f, ite_eq_left hx']
+    · push Not at hR
       refine ⟨G.Y ∩ Φ s ⁻¹' Set.Iio (R + 1 / 2),
         (hΦ.1 s).continuousOn.isOpen_inter_preimage G.isOpen isOpen_Iio,
         ⟨hp, show Φ s p < R + 1 / 2 by linarith⟩, ?_⟩
@@ -741,21 +741,21 @@ theorem UpperTheory.V.Lit.Geo.Cs.geoCut :
       by_cases hR : R < Φ s p
       · have h1 : G.ρ γ⁻¹ p ∈ G.Y ∧ R < Φ (G.σ γ⁻¹ s) (G.ρ γ⁻¹ p) := ⟨hp', by rw [hΦ']; exact hR⟩
         have h2 : p ∈ G.Y ∧ R < Φ s p := ⟨hp, hR⟩
-        simp only [f, if_pos h1, if_pos h2]
+        simp only [f, ite_eq_left h1, ite_eq_left h2]
         rw [hΦ', map_smul, hinv γ s p hp hR]
       · have h1 : ¬ (G.ρ γ⁻¹ p ∈ G.Y ∧ R < Φ (G.σ γ⁻¹ s) (G.ρ γ⁻¹ p)) := by
           rw [hΦ']
           exact fun h => hR h.2
         have h2 : ¬ (p ∈ G.Y ∧ R < Φ s p) := fun h => hR h.2
-        simp only [f, if_neg h1, if_neg h2, map_zero]
+        simp only [f, ite_eq_right h1, ite_eq_right h2, map_zero]
     · have hp' : G.ρ γ⁻¹ p ∉ G.Y := fun h => hp (by simpa [hρ] using G.maps γ _ h)
       have h1 : ¬ (G.ρ γ⁻¹ p ∈ G.Y ∧ R < Φ (G.σ γ⁻¹ s) (G.ρ γ⁻¹ p)) := fun h => hp' h.1
       have h2 : ¬ (p ∈ G.Y ∧ R < Φ s p) := fun h => hp h.1
-      simp only [f, if_neg h1, if_neg h2, map_zero]
+      simp only [f, ite_eq_right h1, ite_eq_right h2, map_zero]
   · intro s p hp h1
     have h2 : p ∈ G.Y ∧ R < Φ s p := ⟨hp, by linarith⟩
     show f s p = η s p
-    simp only [f, if_pos h2, hχ1 _ h1, one_smul]
+    simp only [f, ite_eq_left h2, hχ1 _ h1, one_smul]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.CsGeoCut =====
@@ -1003,21 +1003,12 @@ private theorem cmp_prod (Ξ : AlgRep E a) (j : Fin Ξ.d) (m : Sm E a ⊗[ℂ] (
     rw [List.map_cons, List.prod_cons, Module.End.mul_apply, smA_apply, cmp_rTensor, ih, List.map_cons, List.prod_cons,
       Module.End.mul_apply]
 
-private theorem ev_eq {d : ℕ} (m : Sm E a ⊗[ℂ] (Fin d → ℂ)) (j : Fin d) (g : GA E a) : ev m g j = (Bor.cmp j m).1 g := by
-  induction m using TensorProduct.induction_on with
-  | zero =>
-    rw [map_zero, map_zero]
-    rfl
-  | tmul φ v => simp [mul_comm]
-  | add x y hx hy =>
-    rw [map_add (f := _), map_add (f := _), Pi.add_apply, Pi.add_apply, Submodule.coe_add, Pi.add_apply, hx, hy]
-
 end
 
 theorem UpperTheory.V.Lit.Geo.Cs.rapidEig :
     RapidEig := by
   intro E _ _ _ a U Ξ r hr q α hα X j l
-  refine ⟨eig_prod _ _ ?_ l, fun g => by rw [ev_eq, cmp_prod]⟩
+  refine ⟨eig_prod _ _ ?_ l, fun g => by rw [ev_eq_cmp, cmp_prod]⟩
   have h : Bor.cmp j (α X) ∈ LinearMap.eqLocus (lie E a (oneL E a)) (-(r : ℂ) • LinearMap.id) :=
     mem_tens.1 (span_le_tens (fun φ hφ => hφ.2.2 _ hr) (hα.val X)) j
   exact h
@@ -1179,7 +1170,6 @@ private theorem half (D c : ℝ) (hD : 0 ≤ D) (hc : 0 < c) : D * Real.exp (-(2
   rw [div_mul_cancel₀ _ hc.ne', Real.exp_neg, ← div_eq_mul_inv, div_le_iff₀ (Real.exp_pos _)]
   have := Real.add_one_le_exp (2 * D)
   linarith
-
 
 theorem UpperTheory.V.Lit.Geo.Cs.galois_twist_preserves_siegel_bound (h1 : LamEx) (h2 : DescEx) (h3 : DescFun) (h4 : RapidAll) (h5 : CorrSz) (h6 : DecP)
     (h7 : DecK) (h8 : Loc) (h9 : GeoSum) (h10 : GeoRet) (h11 : Supp) : G2 := by

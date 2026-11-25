@@ -382,18 +382,18 @@ private theorem combo_lemma_5 {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E]
     rw [h]
     apply Finset.sum_eq_zero
     intro b _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro heq
     rw [← heq, Fin.lt_iff_val_lt_val] at hj
     simp only [Fin.coe_castLE] at hj
     have := b.2
     omega
   · rw [h, Finset.sum_eq_single (Fin.last _)]
-    · rw [if_pos]
+    · rw [ite_eq_left]
       ext
       simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro heq
       apply hb
       ext
@@ -500,42 +500,6 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 namespace PositivityTheory.Xgn.A_plucker_frame
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (restrictChart)
 open ReciprocityTheory.ChartRestriction.G.Geo (div_mem_chartRing)
-
-private theorem unit_lemma' {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Subalgebra o Ω)
-    {k : ℕ} (f c : Fin k → Ω) (hf : ∀ l, f l ∈ R) (hc : ∀ l, c l ∈ R) (hs : ∑ l, c l * f l = 1)
-    (n : ℕ) : ∃ d : Fin k → Ω, (∀ l, d l ∈ R) ∧ ∑ l, d l * f l ^ n = 1 := by
-  let fR : Fin k → R := fun l => ⟨f l, hf l⟩
-  have htop : Ideal.span (Set.range fR) = ⊤ := by
-    rw [Ideal.eq_top_iff_one, Ideal.mem_span_range_iff_exists_fun]
-    refine ⟨fun l => ⟨c l, hc l⟩, ?_⟩
-    apply Subtype.ext
-    simp [fR, hs]
-  have h2 := Ideal.span_pow_eq_top _ htop n
-  rw [← Set.range_comp] at h2
-  have h3 : (1 : R) ∈ Ideal.span (Set.range ((fun x : R => x ^ n) ∘ fR)) := by
-    rw [h2]
-    trivial
-  rw [Ideal.mem_span_range_iff_exists_fun] at h3
-  obtain ⟨d, hd⟩ := h3
-  refine ⟨fun l => (d l : Ω), fun l => (d l).2, ?_⟩
-  have := congrArg (fun x : R => (x : Ω)) hd
-  simpa [fR] using this
-
-private theorem mem_of_loc_lemma_2 {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Subalgebra o Ω)
-    {k : ℕ} (f c : Fin k → Ω) (hf : ∀ l, f l ∈ R) (hc : ∀ l, c l ∈ R) (hs : ∑ l, c l * f l = 1)
-    (t : Ω) (ht : ∀ l, ∃ n, f l ^ n * t ∈ R) : t ∈ R := by
-  choose n hn using ht
-  obtain ⟨d, hd, hsum⟩ := unit_lemma' R f c hf hc hs (Finset.univ.sup n)
-  have key : t = ∑ l, d l * f l ^ (Finset.univ.sup n - n l) * (f l ^ n l * t) := by
-    calc t = (∑ l, d l * f l ^ (Finset.univ.sup n)) * t := by rw [hsum, one_mul]
-    _ = _ := by
-      rw [Finset.sum_mul]
-      refine Finset.sum_congr rfl fun l _ => ?_
-      rw [← pow_sub_mul_pow (f l) (Finset.le_sup (Finset.mem_univ l))]
-      ring
-  rw [key]
-  exact Subalgebra.sum_mem _ fun l _ =>
-    Subalgebra.mul_mem _ (Subalgebra.mul_mem _ (hd l) (Subalgebra.pow_mem _ (hf l) _)) (hn l)
 
 private theorem exists_pow_mul_basis_repr_mem {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Subalgebra o Ω)
     {E : Type} [AddCommGroup E] [Module Ω E] (N : ℕ) (L : AddSubgroup E)

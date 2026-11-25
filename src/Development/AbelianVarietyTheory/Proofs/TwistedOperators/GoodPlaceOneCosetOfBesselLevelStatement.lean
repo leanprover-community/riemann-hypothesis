@@ -204,16 +204,16 @@ theorem upSum_single {ρ : ℕ} {i j : Fin ρ} (hj : j.1 = i.1 + 1) (c : AE D) :
     upSum (Matrix.single i j c : Mx D ρ ρ) = c := by
   unfold upSum
   rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-  · rw [if_pos hj, Matrix.single_apply, if_pos ⟨rfl, rfl⟩]
+  · rw [ite_eq_left hj, Matrix.single_apply, ite_eq_left ⟨rfl, rfl⟩]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hb (Fin.ext (by omega))
   · intro h; exact absurd (Finset.mem_univ _) h
   · intro b _ hb
     refine Finset.sum_eq_zero fun k _ => ?_
     split_ifs with h
-    · rw [Matrix.single_apply, if_neg]
+    · rw [Matrix.single_apply, ite_eq_right]
       rintro ⟨rfl, -⟩
       exact hb rfl
     · rfl
@@ -281,7 +281,7 @@ theorem shift_int : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D �
   have h3 := hsh (Matrix.single i j (r * t.1 i i * o))
     (mxAt_single i j (Ideal.mul_mem_right _ _ (Ideal.mul_mem_right _ _ hr)))
     (fun a b hab => by
-      rw [Matrix.single_apply, if_neg]
+      rw [Matrix.single_apply, ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact absurd hlt (not_lt.2 hab))
     (by rw [hmove]; exact hA)
@@ -377,9 +377,9 @@ theorem ell_mul {ρ : ℕ} (u : GL (Fin ρ) (AE D)) (hu : u ∈ UX D ρ) (j : Fi
   have hm : m.1 + 1 = ρ := by rw [hmdef]; simp only; omega
   have hne : ∀ b : Fin ρ, b ≠ m → ¬ (b.1 + 1 = ρ) := fun b hb h => hb (Fin.ext (by rw [hmdef]; simp only; omega))
   rw [Finset.sum_eq_single m]
-  · rw [show ell D ρ m = 1 from if_pos hm, one_mul]
+  · rw [show ell D ρ m = 1 from ite_eq_left hm, one_mul]
     by_cases hj : j = m
-    · rw [hj, (hu' m m).2, show ell D ρ m = 1 from if_pos hm]
+    · rw [hj, (hu' m m).2, show ell D ρ m = 1 from ite_eq_left hm]
     · have hlt : j < m := by
         rw [Fin.lt_iff_val_lt_val]
         have h1 := j.2
@@ -387,9 +387,9 @@ theorem ell_mul {ρ : ℕ} (u : GL (Fin ρ) (AE D)) (hu : u ∈ UX D ρ) (j : Fi
         rw [hmdef] at h2 ⊢
         simp only at h2 ⊢
         omega
-      rw [(hu' m j).1 hlt, show ell D ρ j = 0 from if_neg (hne j hj)]
+      rw [(hu' m j).1 hlt, show ell D ρ j = 0 from ite_eq_right (hne j hj)]
   · intro b _ hb
-    rw [show ell D ρ b = 0 from if_neg (hne b hb), zero_mul]
+    rw [show ell D ρ b = 0 from ite_eq_right (hne b hb), zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem yZero_mul {V₀ : HSp D} {ρ : ℕ} (z : Fin V₀.rank → D.host.E) (u : GL (Fin ρ) (AE D)) (hu : u ∈ UX D ρ) :

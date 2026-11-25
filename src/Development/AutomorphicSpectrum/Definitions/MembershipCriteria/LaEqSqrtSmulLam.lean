@@ -41,8 +41,6 @@ def Law (al : X → ℂ) (Γ : AddSubgroup X) (φ : M) : Prop := ∀ γ ∈ Γ, 
 
 def Cyclic (φ : M) : Prop := Submodule.span ℂ (Set.range fun x => S.rho x φ) = ⊤
 
-def UnitVac (al : X → ℂ) (Γ : AddSubgroup X) (φ : M) : Prop := Law S al Γ φ ∧ S.B φ φ = 1
-
 def ip : M →ₗ[ℂ] M →ₗ⋆[ℂ] ℂ := S.B.flip
 
 @[simp] theorem ip_apply (u v : M) : ip S u v = S.B v u := rfl

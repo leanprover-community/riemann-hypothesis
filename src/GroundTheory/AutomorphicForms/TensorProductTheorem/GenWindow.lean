@@ -1,6 +1,7 @@
 module
 
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Operators
+public import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RepresentationTheory.Irreducible
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
@@ -24,121 +25,6 @@ open Module Set
 variable {M : Type*} [Monoid M] {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
   [Module ℂ W]
 
-section Orbit
-
-def mOrbitSpan (ρ : Representation ℂ M V) (v : V) : Subrepresentation ρ where
-  toSubmodule := Submodule.span ℂ (range fun m => ρ m v)
-  apply_mem_toSubmodule g x hx := by
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨h, rfl⟩ := hx
-      exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
-    | zero => simp
-    | add x y _ _ hx hy => simpa using Submodule.add_mem _ hx hy
-    | smul c x _ hx => simpa using Submodule.smul_mem _ c hx
-
-theorem mem_mOrbitSpan_self (ρ : Representation ℂ M V) (v : V) :
-    v ∈ (mOrbitSpan ρ v).toSubmodule :=
-  Submodule.subset_span ⟨1, by simp⟩
-
-theorem mem_span_mOrbit {ρ : Representation ℂ M V} [ρ.IsIrreducible] {v : V} (hv : v ≠ 0)
-    (x : V) : x ∈ Submodule.span ℂ (range fun m => ρ m v) := by
-  rcases IsSimpleOrder.eq_bot_or_eq_top (mOrbitSpan ρ v) with h | h
-  · exfalso
-    apply hv
-    have := mem_mOrbitSpan_self ρ v
-    rw [h] at this
-    exact this
-  · have hx : x ∈ (⊤ : Subrepresentation ρ).toSubmodule := trivial
-    rw [← h] at hx
-    exact hx
-
-theorem eq_zero_of_forall_apply' {ρ : Representation ℂ M V} [ρ.IsIrreducible] {v : V} (hv : v ≠ 0)
-    {l : Dual ℂ V} (h : ∀ m, l (ρ m v) = 0) : l = 0 := by
-  ext x
-  have hx := mem_span_mOrbit (ρ := ρ) hv x
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨m, rfl⟩ := hx
-    exact h m
-  | zero => simp
-  | add x y _ _ hx hy => simp [hx, hy]
-  | smul c x _ hx => simp [hx]
-
-def mOrbitMap (ρ : Representation ℂ M V) (v : V) : (M →₀ ℂ) →ₗ[ℂ] V :=
-  Finsupp.linearCombination ℂ fun m => ρ m v
-
-theorem mOrbitMap_single (ρ : Representation ℂ M V) (v : V) (m : M) (a : ℂ) :
-    mOrbitMap ρ v (Finsupp.single m a) = a • ρ m v := by
-  rw [mOrbitMap, Finsupp.linearCombination_single]
-
-theorem mOrbitMap_mapDomain (ρ : Representation ℂ M V) (v : V) (h : M) (c : M →₀ ℂ) :
-    mOrbitMap ρ v (Finsupp.mapDomain (h * ·) c) = ρ h (mOrbitMap ρ v c) := by
-  induction c using Finsupp.induction_linear with
-  | zero => simp [mOrbitMap]
-  | add c d hc hd => rw [Finsupp.mapDomain_add, map_add (f := _), hc, hd, map_add (f := _), map_add (f := _)]
-  | single g a => simp [Finsupp.mapDomain_single, mOrbitMap_single, map_mul]
-
-theorem linearForm_mOrbitMap (ρ : Representation ℂ M V) (v : V) (l : Dual ℂ V) (h : M)
-    (c : M →₀ ℂ) : l (ρ h (mOrbitMap ρ v c)) = c.sum fun g a => a * l (ρ (h * g) v) := by
-  rw [mOrbitMap, Finsupp.linearCombination_apply, map_finsuppSum, map_finsuppSum]
-  refine Finsupp.sum_congr fun g _ => ?_
-  rw [map_smul, map_smul, smul_eq_mul, map_mul, Module.End.mul_apply]
-
-theorem nonempty_equiv_of_matrixCoeff_eq' {ρ : Representation ℂ M V} {σ : Representation ℂ M W}
-    [ρ.IsIrreducible] [σ.IsIrreducible] {v : V} {l : Dual ℂ V} {w : W} {m : Dual ℂ W}
-    (h : ∀ g, l (ρ g v) = m (σ g w)) (hne : ∃ g, l (ρ g v) ≠ 0) : Nonempty (ρ.Equiv σ) := by
-  obtain ⟨g₀, hg₀⟩ := hne
-  have hv : v ≠ 0 := by rintro rfl; simp at hg₀
-  have hm : m ≠ 0 := by rintro rfl; exact hg₀ (by rw [h]; rfl)
-  have hker : LinearMap.ker (mOrbitMap ρ v) ≤ LinearMap.ker (mOrbitMap σ w) := by
-    intro c hc
-    rw [LinearMap.mem_ker] at hc ⊢
-    by_contra hne
-    apply hm
-    refine eq_zero_of_forall_apply' (ρ := σ) hne fun k => ?_
-    rw [linearForm_mOrbitMap]
-    have := linearForm_mOrbitMap ρ v l k c
-    rw [hc, map_zero, map_zero] at this
-    rw [this]
-    exact Finsupp.sum_congr fun g _ => by rw [h]
-  have hsurj : Function.Surjective (mOrbitMap ρ v) := by
-    intro x
-    have hx := mem_span_mOrbit (ρ := ρ) hv x
-    rw [← Finsupp.range_linearCombination] at hx
-    exact hx
-  let e := LinearMap.quotKerEquivOfSurjective (mOrbitMap ρ v) hsurj
-  let F : V →ₗ[ℂ] W := ((LinearMap.ker (mOrbitMap ρ v)).liftQ (mOrbitMap σ w) hker).comp
-    e.symm.toLinearMap
-  have hF : ∀ c, F (mOrbitMap ρ v c) = mOrbitMap σ w c := by
-    intro c
-    have : e.symm (mOrbitMap ρ v c) = Submodule.Quotient.mk c := by
-      rw [LinearEquiv.symm_apply_eq]
-      rfl
-    simp only [F, LinearMap.comp_apply, LinearEquiv.coe_coe, this, Submodule.liftQ_apply]
-  have hFint : ∀ g x, F (ρ g x) = σ g (F x) := by
-    intro g x
-    obtain ⟨c, rfl⟩ := hsurj x
-    rw [← mOrbitMap_mapDomain, hF, hF, mOrbitMap_mapDomain]
-  let Fi : Representation.IntertwiningMap ρ σ := ⟨F, fun g => LinearMap.ext fun x => hFint g x⟩
-  have hFi0 : Fi ≠ 0 := by
-    intro h0
-    have h1 : F v = w := by
-      have := hF (Finsupp.single 1 1)
-      rwa [mOrbitMap_single, mOrbitMap_single, one_smul, one_smul, map_one,
-        Module.End.one_apply, map_one, Module.End.one_apply] at this
-    have h2 : F v = 0 := by
-      have : Fi v = 0 := by rw [h0]; rfl
-      exact this
-    apply hg₀
-    rw [h, ← h1, h2, map_zero, map_zero]
-  rcases Representation.IsIrreducible.bijective_or_eq_zero Fi with hb | h0
-  · exact ⟨Representation.Equiv.mk (LinearEquiv.ofBijective F hb)
-      fun g => LinearMap.ext fun x => hFint g x⟩
-  · exact absurd h0 hFi0
-
-end Orbit
-
 section Window
 
 variable (ρ : Representation ℂ M V)
@@ -158,7 +44,7 @@ theorem IsWinProj.apply_of_mem (he : IsWinProj ρ e) {v : V} (hv : v ∈ LinearM
 variable (ρ e) in
 def winOp (m : M) : End ℂ (LinearMap.range e) :=
   LinearMap.codRestrict (LinearMap.range e) (e ∘ₗ ρ m ∘ₗ (LinearMap.range e).subtype)
-    fun x => ⟨_, rfl⟩
+    fun _ => ⟨_, rfl⟩
 
 
 variable (ρ e) in
@@ -179,7 +65,7 @@ theorem isSimpleUnder_winOps [ρ.IsIrreducible] (he : IsWinProj ρ e)
     rw [Submodule.span_le]
     rintro _ ⟨m, rfl⟩
     exact ⟨winOp ρ e m x, hp _ ⟨m, rfl⟩ x hx, rfl⟩
-  have := hle (mem_span_mOrbit (ρ := ρ) hx0' (y : V))
+  have := hle (mem_span_orbit (ρ := ρ) hx0' (y : V))
   obtain ⟨z, hz, hzy⟩ := this
   have : z = y := Subtype.ext (hzy.trans (he.apply_of_mem y.2))
   rwa [← this]

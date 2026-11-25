@@ -47,7 +47,7 @@ theorem list_single_apply (γ : σ → ℕ) (l : List σ) (k : σ) (hk : k ∉ l
   | cons k' l' ih =>
     rw [List.mem_cons, not_or] at hk
     simp only [List.map_cons, List.sum_cons, Finsupp.coe_add, Pi.add_apply, Finsupp.single_apply,
-      if_neg (Ne.symm hk.1), zero_add]
+      ite_eq_right (Ne.symm hk.1), zero_add]
     exact ih hk.2
 
 theorem list_pderiv (γ : σ → ℕ) (l : List σ) (hl : l.Nodup) (s : σ →₀ ℕ) (a : ℂ) :
@@ -106,15 +106,12 @@ theorem op_zero (f : PX m n) : op (0 : Sym m n) f = 0 := by
   simp [op]
 
 theorem op_sum {ι : Type*} (S : Finset ι) (g : ι → Sym m n) (f : PX m n) :
-    op (∑ i ∈ S, g i) f = ∑ i ∈ S, op (g i) f := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simp [op_zero]
-  | insert a S ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, op_add, ih]
+    op (∑ i ∈ S, g i) f = ∑ i ∈ S, op (g i) f :=
+  map_sum (AddMonoidHom.mk' (fun s : Sym m n => op s f) fun a b => op_add a b f) g S
 
 theorem op_monomial (t : σ ⊕ σ →₀ ℕ) (c : ℂ) (f : PX m n) : op (monomial t c) f = c • opMono t f := by
   classical
-  rw [op_eq_sum (monomial t c) {t} (support_monomial_subset), Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  rw [op_eq_sum (monomial t c) {t} (support_monomial_subset), Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem op_f_add (s : Sym m n) (f g : PX m n) : op s (f + g) = op s f + op s g := by
   unfold op; rw [← Finset.sum_add_distrib]
@@ -205,13 +202,8 @@ theorem sf_smul {s : Sym m n} (c : ℂ) (h : SymbolInFirstFamily ε s) : SymbolI
 theorem sf_sub {s₁ s₂ : Sym m n} (h₁ : SymbolInFirstFamily ε s₁) (h₂ : SymbolInFirstFamily ε s₂) : SymbolInFirstFamily ε (s₁ - s₂) := by
   rw [sub_eq_add_neg, ← neg_one_smul ℂ s₂]; exact sf_add ε h₁ (sf_smul ε _ h₂)
 
-theorem sf_sum {ι : Type*} (S : Finset ι) (g : ι → Sym m n) (h : ∀ i ∈ S, SymbolInFirstFamily ε (g i)) : SymbolInFirstFamily ε (∑ i ∈ S, g i) := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simpa using sf_zero ε
-  | insert a S ha ih =>
-    rw [Finset.sum_insert ha]
-    exact sf_add ε (h a (Finset.mem_insert_self _ _)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
+theorem sf_sum {ι : Type*} (S : Finset ι) (g : ι → Sym m n) (h : ∀ i ∈ S, SymbolInFirstFamily ε (g i)) : SymbolInFirstFamily ε (∑ i ∈ S, g i) :=
+  Finset.sum_induction g (SymbolInFirstFamily ε) (fun _ _ => sf_add ε) (sf_zero ε) h
 
 theorem goodT_add_inl (t : σ ⊕ σ →₀ ℕ) (μ : σ →₀ ℕ) (ht : GoodT ε t) (hμ : ∀ k ∈ μ.support, inF1 ε k) :
     GoodT ε (Finsupp.mapDomain Sum.inl μ + t) := by
@@ -301,17 +293,17 @@ where
         rw [one_smul, smul_monomial, smul_monomial, smul_eq_mul, smul_eq_mul, mul_one]
       rw [hmain]
       by_cases hlt : γ < δ'
-      · rw [if_pos hlt, if_neg (ne_of_gt hlt)]; simp
-      · rw [if_neg hlt]
+      · rw [ite_eq_left hlt, ite_eq_right (ne_of_gt hlt)]; simp
+      · rw [ite_eq_right hlt]
         by_cases he : δ' = γ
         · subst he
-          rw [if_pos rfl]
+          rw [ite_eq_left rfl]
           have hD : D δ' = 1 := by
             simp only [D, g, Nat.descFactorial_self]
             rw [inv_mul_cancel₀]
             exact Finset.prod_ne_zero_iff.mpr fun k _ => by exact_mod_cast Nat.factorial_ne_zero _
           rw [hD, one_smul, tsub_self, ← C_apply, C_1]; simp
-        · rw [if_neg he]
+        · rw [ite_eq_right he]
           have hnle : ¬ γ ≤ δ' := fun hle => hlt (lt_of_le_of_ne hle (Ne.symm he))
           obtain ⟨k, hk⟩ : ∃ k, δ' k < γ k := by
             by_contra! hcon
@@ -366,7 +358,7 @@ theorem dens : Dens := by
     simp only [op_renameL]
     rw [Finset.sum_congr rfl fun γ hγ => by rw [(hP γ hγ).2 δ hδ]]
     simp only [mul_ite, mul_one, mul_zero]
-    rw [Finset.sum_ite_eq, if_pos hδ]
+    rw [Finset.sum_ite_eq, ite_eq_left hδ]
   | zero => rw [op_f_zero, map_zero]
   | add x y _ _ hx hy => rw [op_f_add, map_add (f := _), hx, hy]
   | smul a x _ hx => rw [op_f_smul, map_smul, hx]

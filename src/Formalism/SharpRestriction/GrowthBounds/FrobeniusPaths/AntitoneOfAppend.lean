@@ -139,9 +139,9 @@ theorem prvB1_of_D7 (D : Formalism.BasicNotions.D7) : RotatedSumBound D := by
       rw [hP] at this
       unfold CondC
       by_cases hv : LL.vec i
-      · simp only [hv, if_true] at this ⊢
+      · simp only [hv, ite_true] at this ⊢
         exact (hstrip_append _ _ _ _ _).1 this
-      · simp only [hv, if_false, Bool.false_eq_true] at this ⊢
+      · simp only [hv, ite_false, Bool.false_eq_true] at this ⊢
         exact (hstrip_append _ _ _ _ _).1 this
     choose b' b'' h1 h2 h3 h4 using hstep
     have hdom : ∀ i, Antitone (nu i) ∧ Antitone (ka i) := fun i => by
@@ -167,9 +167,9 @@ theorem prvB1_of_D7 (D : Formalism.BasicNotions.D7) : RotatedSumBound D := by
         have s2 := P2.step j
         unfold CondC at c
         by_cases hv : LL.vec j
-        · simp only [hv, if_true] at c s1 s2
+        · simp only [hv, ite_true] at c s1 s2
           exact c.trans (s1.1 _)
-        · simp only [hv, if_false, Bool.false_eq_true] at c s1 s2
+        · simp only [hv, ite_false, Bool.false_eq_true] at c s1 s2
           exact (s2.1 _).trans c
     refine ⟨⟨joinPT P1.mu P2.mu, ?_, ?_, ?_⟩, rfl⟩
     · funext x
@@ -185,9 +185,9 @@ theorem prvB1_of_D7 (D : Formalism.BasicNotions.D7) : RotatedSumBound D := by
       have s2 := P2.step i
       unfold CondC at c
       by_cases hv : LL.vec i
-      · simp only [hv, if_true] at c s1 s2 ⊢
+      · simp only [hv, ite_true] at c s1 s2 ⊢
         exact (hstrip_append _ _ _ _ _).2 ⟨_, _, hb i, s1, s2, c⟩
-      · simp only [hv, if_false, Bool.false_eq_true] at c s1 s2 ⊢
+      · simp only [hv, ite_false, Bool.false_eq_true] at c s1 s2 ⊢
         exact (hstrip_append _ _ _ _ _).2 ⟨_, _, hb i, s1, s2, c⟩
 
 end Formalism.MainNotions.LemmaBAlt

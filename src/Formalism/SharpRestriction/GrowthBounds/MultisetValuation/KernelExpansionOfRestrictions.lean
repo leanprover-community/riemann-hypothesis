@@ -31,7 +31,7 @@ theorem sSer_const {n' r0 r1 : ℕ} (K' : Type) [Field K'] (e : Fin n') (a : Fin
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   show (∑ l ∈ range ((0 : Zidx n' r0 r1 →₀ ℕ).degree + 1),
     if (0 : Zidx n' r0 r1 →₀ ℕ) = Finsupp.single (posSub e (2 * l), a, b) (p ^ (2 * l)) then ((-1 : K') ^ l) else 0) = 0
-  refine Finset.sum_eq_zero fun l _ => if_neg fun h => ?_
+  refine Finset.sum_eq_zero fun l _ => ite_eq_right fun h => ?_
   exact pow_ne_zero (2 * l) hp.out.ne_zero (Finsupp.single_eq_zero.1 h.symm)
 
 theorem hhS_const {n' r0 r1 : ℕ} (K' : Type) [Field K'] (u : Fin n' → K') :

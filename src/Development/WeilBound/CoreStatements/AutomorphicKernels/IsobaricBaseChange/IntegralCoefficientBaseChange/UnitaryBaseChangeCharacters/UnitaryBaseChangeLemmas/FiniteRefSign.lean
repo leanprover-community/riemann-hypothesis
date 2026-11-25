@@ -139,7 +139,6 @@ theorem eval₂_root_map : eval₂ ((AdjoinRoot.of (Q.1.map (algebraMap E K))).c
   have h := AdjoinRoot.eval₂_root (Q.1.map (algebraMap E K))
   rwa [eval₂_map] at h
 
-
 omit hj1 in
 def psiB : Fld Q →+* AdjoinRoot (Q.1.map (algebraMap E K)) :=
   AdjoinRoot.lift ((AdjoinRoot.of (Q.1.map (algebraMap E K))).comp (algebraMap E K))
@@ -203,7 +202,6 @@ theorem dvd_of_phi_eq_zero {g : K[X]} (h : phi j Q g = 0) : Q.1.map (algebraMap 
   have := psi_phi j Q hj1 g
   rw [h, map_zero] at this
   exact AdjoinRoot.mk_eq_zero.1 this.symm
-
 
 omit hj1 in
 theorem involBase_phi (cK : K →+* K)
@@ -526,7 +524,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
       (gramOn (IsCMField.complexConj E).toRingEquiv.toRingHom H₀
         (LinearMap.ker (Matrix.toLin' (aeval γ₀.val P₁)))).det) = 1 :=
     (w.valuedAdicCompletion_eq_valuation' _).trans h1
-  rw [aeval_map_mat, GlobalTheory.T.gramKernelSign_nonsplit_baseChange_eq E hU w hw n H₀ (aeval γ₀.val P₁), ordL_eq_zero_of_v_eq_one hv]
+  rw [aeval_map_mat, GlobalTheory.UnitaryClasses.BaseChangeSign.main E hU w hw n H₀ (aeval γ₀.val P₁), ordL_eq_zero_of_v_eq_one hv]
   simp
 
 end GlobalTheory.CompanionTheory.FinSign
@@ -840,7 +838,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (Q : SelfR
   (hc : ∀ a : maximalRealSubfield E, cm (algebraMap _ k a) = φ (algebraMap _ E a))
   {n : ℕ} (ψ : Fld Q →ₗ[E] (Fin n → E))
 
-
 include hc in
 def vecT : k ⊗[maximalRealSubfield E] Fld Q →+ (Fin n → K) :=
   TensorProduct.liftAddHom
@@ -900,7 +897,6 @@ theorem vecT_alpha (t : k ⊗[maximalRealSubfield E] Fld Q) :
     congr 1
     ext i
     exact RingHom.map_mulVec φ A₀ (ψ y) i
-
 
 include hj hψ in
 theorem vecT_eval (m : K[X]) : ∀ t : k ⊗[maximalRealSubfield E] Fld Q,

@@ -170,9 +170,9 @@ theorem hkLin : HkLin := by
   refine ⟨?_, ?_, fun hs => ⟨?_, ?_⟩, fun hs => ?_⟩ <;> funext u v h
   · simp only [Matrix.add_apply, Pi.add_apply, key, fn2, ex_add]; ring
   · simp only [Matrix.smul_apply, Pi.smul_apply, smul_eq_mul, key, fn2, ex_smul]; ring
-  · simp only [Matrix.add_apply, Pi.add_apply, key, fn2, ex_add, if_pos hs]; ring
-  · simp only [Matrix.smul_apply, Pi.smul_apply, smul_eq_mul, key, fn2, ex_smul, if_pos hs]; ring
-  · simp only [key, if_neg hs]
+  · simp only [Matrix.add_apply, Pi.add_apply, key, fn2, ex_add, ite_eq_left hs]; ring
+  · simp only [Matrix.smul_apply, Pi.smul_apply, smul_eq_mul, key, fn2, ex_smul, ite_eq_left hs]; ring
+  · simp only [key, ite_eq_right hs]
 
 end UpperTheory.Zero.ConvolutionTheory.EB
 end -- clump:auto
@@ -712,12 +712,12 @@ theorem UpperTheory.Zero.ConvolutionTheory.EB.readOne :
     if h : w ∈ S ∧ w ∉ Z then s (.inr (.inr (.inl (⟨w, h⟩, p, true)))) / s (.inl ()) else 0
   have ht₁ : ∀ w, w ∈ S → w ∉ Z → ∀ p, convF A.ν (A.hk1 S L w p false) f = t₁ w p • f := by
     intro w hw hwZ p
-    have h : t₁ w p = s (.inr (.inr (.inl (⟨w, hw, hwZ⟩, p, false)))) / s (.inl ()) := dif_pos ⟨hw, hwZ⟩
+    have h : t₁ w p = s (.inr (.inr (.inl (⟨w, hw, hwZ⟩, p, false)))) / s (.inl ()) := dite_eq_left ⟨hw, hwZ⟩
     rw [h]
     exact hv (.inl (⟨w, hw, hwZ⟩, p, false))
   have ht₂ : ∀ w, w ∈ S → w ∉ Z → ∀ p, convF A.ν (A.hk1 S L w p true) f = t₂ w p • f := by
     intro w hw hwZ p
-    have h : t₂ w p = s (.inr (.inr (.inl (⟨w, hw, hwZ⟩, p, true)))) / s (.inl ()) := dif_pos ⟨hw, hwZ⟩
+    have h : t₂ w p = s (.inr (.inr (.inl (⟨w, hw, hwZ⟩, p, true)))) / s (.inl ()) := dite_eq_left ⟨hw, hwZ⟩
     rw [h]
     exact hv (.inl (⟨w, hw, hwZ⟩, p, true))
 

@@ -23,7 +23,7 @@ theorem coefX_add (F : FlagG S r T) {v w : S.V} (hv : v ∈ F.X) (hw : w ∈ F.X
   have hv' : v ∈ Submodule.span E (Set.range F.e) := hv
   have hw' : w ∈ Submodule.span E (Set.range F.e) := hw
   have hvw' : v + w ∈ Submodule.span E (Set.range F.e) := Submodule.add_mem _ hv' hw'
-  simp only [Formalism.MainNotions.S.FlagG.coefX, dif_pos hv', dif_pos hw', dif_pos hvw']
+  simp only [Formalism.MainNotions.S.FlagG.coefX, dite_eq_left hv', dite_eq_left hw', dite_eq_left hvw']
   rw [show (⟨v + w, hvw'⟩ : Submodule.span E (Set.range F.e)) = ⟨v, hv'⟩ + ⟨w, hw'⟩ from rfl, map_add (f := _),
     Finsupp.add_apply]
 
@@ -31,7 +31,7 @@ theorem coefX_smul (F : FlagG S r T) {v : S.V} (hv : v ∈ F.X) (c : E) (a : Fin
     F.coefX (c • v) a = c * F.coefX v a := by
   have hv' : v ∈ Submodule.span E (Set.range F.e) := hv
   have hcv' : c • v ∈ Submodule.span E (Set.range F.e) := Submodule.smul_mem _ c hv'
-  simp only [Formalism.MainNotions.S.FlagG.coefX, dif_pos hv', dif_pos hcv']
+  simp only [Formalism.MainNotions.S.FlagG.coefX, dite_eq_left hv', dite_eq_left hcv']
   rw [show (⟨c • v, hcv'⟩ : Submodule.span E (Set.range F.e)) = c • ⟨v, hv'⟩ from rfl, map_smul,
     Finsupp.smul_apply, smul_eq_mul]
 
@@ -39,7 +39,7 @@ theorem coefX_smul_e (F : FlagG S r T) (c : E) (a' a : Fin r) :
     F.coefX (c • F.e a') a = if a' = a then c else 0 := by
   have he : F.e a' ∈ Submodule.span E (Set.range F.e) := Submodule.subset_span ⟨a', rfl⟩
   have hce : c • F.e a' ∈ Submodule.span E (Set.range F.e) := Submodule.smul_mem _ c he
-  simp only [Formalism.MainNotions.S.FlagG.coefX, dif_pos hce]
+  simp only [Formalism.MainNotions.S.FlagG.coefX, dite_eq_left hce]
   rw [show (⟨c • F.e a', hce⟩ : Submodule.span E (Set.range F.e)) = c • ⟨F.e a', he⟩ from rfl, map_smul,
     F.e_indep.repr_eq_single a' ⟨F.e a', he⟩ rfl, Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul]
   split_ifs <;> simp
@@ -49,7 +49,7 @@ theorem coefX_e (F : FlagG S r T) (a' a : Fin r) : F.coefX (F.e a') a = if a' = 
 
 theorem coefX_zero (F : FlagG S r T) (a : Fin r) : F.coefX 0 a = 0 := by
   have h0 : (0 : S.V) ∈ Submodule.span E (Set.range F.e) := Submodule.zero_mem _
-  simp only [Formalism.MainNotions.S.FlagG.coefX, dif_pos h0]
+  simp only [Formalism.MainNotions.S.FlagG.coefX, dite_eq_left h0]
   rw [show (⟨0, h0⟩ : Submodule.span E (Set.range F.e)) = 0 from rfl, map_zero, Finsupp.zero_apply]
 
 theorem e_mem_X (F : FlagG S r T) (a : Fin r) : F.e a ∈ F.X := by

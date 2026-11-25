@@ -127,7 +127,7 @@ theorem leftIdealMulAlgHom_injective (e : Λ)
     (h : ∃ (N : ℕ) (a b : Fin N → Λ), ∑ i, a i * e * b i = 1) :
     Function.Injective (leftIdealMulAlgHom A e) := by
   obtain ⟨N, a, b, hab⟩ := h
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro l hl
   have h0 : ∀ y : Λ, l * (y * e) = 0 := by
     intro y
@@ -988,7 +988,7 @@ theorem basisLoc : ∀ (F B : Type) [Field F] [NumberField F] [Ring B] [Algebra 
     have h' := congrArg π h
 
     rw [hsum, map_sum, hπ1] at h'
-    simp only [hπ2, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h'
+    simp only [hπ2, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h'
     exact h'
   have hli : LinearIndependent (cenOrder ℓ F) v := by
     rw [Fintype.linearIndependent_iff]

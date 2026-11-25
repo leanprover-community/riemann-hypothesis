@@ -90,14 +90,9 @@ theorem isMultiHomog_add {f g : MRingOver F ι} {a : K → ℕ} (hf : IsMultiHom
   · exact hg m h k
 
 theorem isMultiHomog_sum {β : Type*} (s : Finset β) (f : β → MRingOver F ι) {a : K → ℕ}
-    (h : ∀ b ∈ s, IsMultiHomog (f b) a) : IsMultiHomog (∑ b ∈ s, f b) a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using isMultiHomog_zero (F := F) (ι := ι) a
-  | insert b s hb ih =>
-    rw [Finset.sum_insert hb]
-    exact isMultiHomog_add (h b (Finset.mem_insert_self b s))
-      (ih fun b' hb' => h b' (Finset.mem_insert_of_mem hb'))
+    (h : ∀ b ∈ s, IsMultiHomog (f b) a) : IsMultiHomog (∑ b ∈ s, f b) a :=
+  Finset.sum_induction f (IsMultiHomog · a) (fun _ _ => isMultiHomog_add)
+    (isMultiHomog_zero a) h
 
 theorem isMultiHomog_prod {β : Type*} (s : Finset β) (f : β → MRingOver F ι) (a : β → K → ℕ)
     (h : ∀ b ∈ s, IsMultiHomog (f b) (a b)) : IsMultiHomog (∏ b ∈ s, f b) (∑ b ∈ s, a b) := by
@@ -160,11 +155,11 @@ theorem exists_form_avoid (S : Set (Ideal (MRingOver F ι))) (hS : S.Finite)
     with hm
   have hmH : ∀ W ∈ T, IsMultiHomog (m W) (d - δ W) := by
     intro W hW
-    simp only [hm, dif_pos (hrel W hW)]
+    simp only [hm, dite_eq_left (hrel W hW)]
     exact isMultiHomog_coordProd _ _
   have hmNot : ∀ W ∈ T, m W ∉ W := by
     intro W hW
-    simp only [hm, dif_pos (hrel W hW)]
+    simp only [hm, dite_eq_left (hrel W hW)]
     exact coordProd_not_mem (hS' W (hTS W hW)).1 _ (fun k => ((hrel W hW) k).choose_spec) _
   refine ⟨∑ W ∈ T, a W * m W, ?_, ?_⟩
   · apply isMultiHomog_sum

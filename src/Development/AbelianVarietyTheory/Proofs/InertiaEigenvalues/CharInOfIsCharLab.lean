@@ -23,12 +23,12 @@ theorem blk_eq_par {a b : ℕ} (x : Gn g a) (y : Gn g b) : blk a b (a + b) x y =
   rw [ParInd.blk_val, entN, dite_eq_left ⟨hi, hj⟩, ParInd.dg]
   dsimp only
   by_cases h1 : i < a <;> by_cases h2 : j < a
-  · rw [(Supp.entN_par _ _ _ i j).1 h1 h2, if_pos ⟨h1, h2⟩]
-  · rw [(Supp.entN_par _ _ _ i j).2.2.2 rfl h1 (by omega), if_neg (by omega), if_neg (by omega)]
-  · rw [(Supp.entN_par _ _ _ i j).2.1 (by omega) h2, if_neg (by omega), if_neg (by omega)]
+  · rw [(Supp.entN_par _ _ _ i j).1 h1 h2, ite_eq_left ⟨h1, h2⟩]
+  · rw [(Supp.entN_par _ _ _ i j).2.2.2 rfl h1 (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
+  · rw [(Supp.entN_par _ _ _ i j).2.1 (by omega) h2, ite_eq_right (by omega), ite_eq_right (by omega)]
   · obtain ⟨i, rfl⟩ := Nat.exists_eq_add_of_le (not_lt.1 h1)
     obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le (not_lt.1 h2)
-    rw [(Supp.entN_par _ _ _ i j).2.2.1, if_neg (by omega), if_pos (by omega)]
+    rw [(Supp.entN_par _ _ _ i j).2.2.1, ite_eq_right (by omega), ite_eq_left (by omega)]
     simp
 
 def ofLabel (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) : Sys g where
@@ -58,7 +58,6 @@ def ofLabel (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) : Sys g where
       have := congrArg (fun z => ρ.asAlgebraHom z v) hv
       simpa only [map_mul, Module.End.mul_apply, hN, hA, hB, map_zero, LinearMap.zero_apply] using this
     have e : v = ∑ F ∈ S, ρ.asAlgebraHom (eSerC L (a + b) F) v := by
-      set_option synthInstance.maxHeartbeats 100000 in
         rw [← LinearMap.sum_apply, ← map_sum, hS, map_one, Module.End.one_apply]
     by_cases hm : f * f' ∈ S
     · rw [Finset.sum_eq_single_of_mem _ hm fun F _ hF => hz F hF] at e; exact e.symm

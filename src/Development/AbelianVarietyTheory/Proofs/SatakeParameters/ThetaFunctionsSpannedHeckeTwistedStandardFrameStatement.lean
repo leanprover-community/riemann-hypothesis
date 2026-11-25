@@ -732,7 +732,7 @@ theorem mem_span_translates_of_fixed {G V : Type} [AddCommGroup G] [AddCommGroup
       have := L'.sub_mem t.2 (hLL' htr)
       simpa using this
     refine ⟨⟨r, hr⟩, ?_⟩
-    simp only [φ, dif_pos hrL']
+    simp only [φ, dite_eq_left hrL']
     rw [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf, AddSubgroup.coe_add, AddSubgroup.coe_neg]
     convert htr using 1
     simp only

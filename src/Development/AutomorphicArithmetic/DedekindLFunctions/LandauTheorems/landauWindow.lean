@@ -245,7 +245,7 @@ theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ 
     · left
       exact ⟨dist ρs (σ : ℂ), hdle, hball, hex⟩
     · right
-      push_neg at hex
+      push Not at hex
       set d := dist ρs (σ : ℂ) with hd
       have hreal : ∀ w ∈ F, dist w (σ : ℂ) = d → w = ((σ - d : ℝ) : ℂ) :=
         fun w hw he => eq_ofReal_sub_of_dist_le_of_le_sub_re (le_of_eq he) (hex w hw.1)
@@ -478,7 +478,7 @@ theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : �
     by_cases hsρ : s = ρ
     · rw [hsρ]
       simp [G]
-    · simp only [G, if_neg hsρ]
+    · simp only [G, ite_eq_right hsρ]
       rw [hs (Set.mem_compl_singleton_iff.mpr hsρ)]
       ring
   have hGd : DifferentiableOn ℂ G (Metric.ball z r) := by
@@ -491,7 +491,7 @@ theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : �
       have hloc : G =ᶠ[𝓝 s] fun t => Φ t - c / (t - ρ) := by
         filter_upwards [hopen.mem_nhds hmem] with t ht
         have htρ : t ≠ ρ := ht.2
-        simp only [G, if_neg htρ]
+        simp only [G, ite_eq_right htρ]
       have hd' : DifferentiableAt ℂ (fun t => Φ t - c / (t - ρ)) s :=
         hΦ.sub ((differentiableAt_const c).div
           (differentiableAt_id.sub (differentiableAt_const ρ)) (sub_ne_zero.mpr hsρ))
@@ -504,7 +504,7 @@ theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : �
   have hloc : Φ =ᶠ[𝓝 z] G + fun s => c * (s - ρ)⁻¹ := by
     filter_upwards [hopen.mem_nhds hmemz] with t ht
     have htρ : t ≠ ρ := ht.2
-    simp only [Pi.add_apply, G, if_neg htρ, div_eq_mul_inv]
+    simp only [Pi.add_apply, G, ite_eq_right htρ, div_eq_mul_inv]
     ring
   have hGc : ContDiffAt ℂ k G z :=
     (hGd.contDiffOn Metric.isOpen_ball).contDiffAt

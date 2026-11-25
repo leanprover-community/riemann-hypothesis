@@ -156,7 +156,7 @@ theorem abs_range_constants_first : ∀ Cg cb Cu cT CT C1 CMo : ℝ, ∃ C₀ : 
     ⟨hS1.1, hS2.1, hS1.2.1, hS2.2.1, hp.1, hp.2.2, by rw [hDr']; exact norm_ne_zero_iff.2 hDr⟩
   obtain ⟨hends, -, -, -, hD0, -⟩ := _root_.GlobalTheory.Amp.PtMinor.blockEnds_minors D W.z W.z' γ p hS1.1 hS2.1 hS1.2.1 hS2.2.1 hp
   set De : ℝ := ((ptBlockEnds p).map fun l => max 1 ‖DminN W.z W.z' γ l‖⁻¹).foldr max 1 with hDe
-  have hDe1 : 1 ≤ De := one_le_foldr_max _
+  have hDe1 : 1 ≤ De := GlobalTheory.Amp.PtMinor.one_le_foldr _
   have hOK : DeOK D.R.k D.R.rS W.z W.z' γ De := by
     refine ⟨hDe1, fun l _ hl => ?_⟩
     have e : Dmin D.R.k D.R.rS W.z W.z' γ l = DminN W.z W.z' γ l.val := by
@@ -208,7 +208,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S GlobalTheory.Core.Deg
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.BridgeLemma
 
 namespace GlobalTheory.AbsRecGap
@@ -245,7 +244,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma GlobalTheory.Core.Deg
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Core.Deg
 
@@ -401,7 +399,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S GlobalTheory.Core.Deg
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CoreDlGap
 

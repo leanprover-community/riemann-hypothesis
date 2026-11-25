@@ -621,9 +621,9 @@ theorem upper_half_growth : ∀ (n a : ℕ) (F : (Fin n → ℂ) → ℂ), Diffe
     simp only [logDom, Set.mem_setOf_eq]
     intro k
     by_cases hk : (k : ℕ) < j
-    · have e : P j k = s k := if_pos hk
+    · have e : P j k = s k := ite_eq_left hk
       rw [e]; exact hs' k
-    · have e : P j k = s₀ k := if_neg hk
+    · have e : P j k = s₀ k := ite_eq_right hk
       rw [e]; exact hs₀' k
   have hco : ∀ k : Fin n, ‖logExp a s k‖ ≤ 1 / 2 := fun k => (norm_le_pi_norm (logExp a s) k).trans hse
   have hsk : ∀ k : Fin n, ‖s k‖ ≤ ‖s‖ := fun k => norm_le_pi_norm s k
@@ -639,7 +639,7 @@ theorem upper_half_growth : ∀ (n a : ℕ) (F : (Fin n → ℂ) → ℂ), Diffe
         funext k
         by_cases hk : k = i
         · rw [hk, Function.update_self]
-          exact if_pos (show (i : ℕ) < j + 1 by simp [hi])
+          exact ite_eq_left (show (i : ℕ) < j + 1 by simp [hi])
         · rw [Function.update_of_ne hk]
           have hkj : (k : ℕ) ≠ j := fun h => hk (Fin.ext h)
           have e : ((k : ℕ) < j + 1 ↔ (k : ℕ) < j) := by omega
@@ -647,7 +647,7 @@ theorem upper_half_growth : ∀ (n a : ℕ) (F : (Fin n → ℂ) → ℂ), Diffe
       have hPj : Function.update (P j) i (s₀ i) = P j := by
         rw [Function.update_eq_self_iff]
         have hn : ¬ ((i : ℕ) < j) := by simp [hi]
-        exact (if_neg hn).symm
+        exact (ite_eq_right hn).symm
       by_cases ha : j < a
       · have hai : (i : ℕ) < a := ha
         have hre : (s i).re ≤ -1 / 2 := by
@@ -1068,8 +1068,6 @@ theorem dvd_of_exp_eq_one (k : ℤ) (N : ℕ) (hN : 0 < N)
   have h5 : k + m * N = 0 := by exact_mod_cast h4
   exact ⟨-m, by linarith⟩
 
-alias eq_of_exp_eq := _root_.GlobalTheory.ExpUniqFamily.int_eq_of_exp
-
 theorem hermForm_im_sum (g r : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ) (lam : Fin r → Fin g → ℂ) (x y : Fin r → ℤ) :
     (hermForm Hm (∑ j, x j • lam j) (∑ j, y j • lam j)).im =
       ∑ i, ∑ j, (x i : ℝ) * (y j : ℝ) * (hermForm Hm (lam i) (lam j)).im := by
@@ -1135,7 +1133,7 @@ theorem core : ∀ (n a g r₀ : ℕ) (K : (Fin n → ℂ) → Set (Fin g → �
     intro s hs Hm hint hpair i j
     obtain ⟨m', hm'⟩ := hint _ (hmem s hs i) _ (hmem s hs j)
     have key : m' = M i j := by
-      apply eq_of_exp_eq
+      apply GlobalTheory.ExpUniqFamily.int_eq_of_exp
       intro N hN
       have h1 := hpair₀ N _ _ hN (hmem s₀ hs₀ i) (hmem s₀ hs₀ j)
       have h2 := hprop n N (logDom n a) (logExp a) (fun s => lam s i) (fun s => lam s j) _ s₀ s hN hDo hDp

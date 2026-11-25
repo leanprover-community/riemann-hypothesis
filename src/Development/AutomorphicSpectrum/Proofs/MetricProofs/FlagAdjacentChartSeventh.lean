@@ -97,8 +97,8 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   have h₂ : ∀ k (m : ι k), sndPt k₀ z' ⟨k, m⟩ = c₂ k * sndPt k₀ z ⟨k, m⟩ := fun k m => by
     by_cases hk : k = k₀
     · subst hk
-      simp only [sndPt, Function.comp, v₁_self, c₂, if_true, hz'def]
-    · simp only [sndPt, Function.comp, v₁_ne (p := ⟨k, m⟩) hk, c₂, if_neg hk, hz'def]
+      simp only [sndPt, Function.comp, v₁_self, c₂, ite_true, hz'def]
+    · simp only [sndPt, Function.comp, v₁_ne (p := ⟨k, m⟩) hk, c₂, ite_eq_right hk, hz'def]
   refine ⟨?_, ?_⟩
   · show z' ∈ mcPts _ ∧ _
     refine ⟨hz', ?_, ?_, fun p k hp => ?_, ?_⟩

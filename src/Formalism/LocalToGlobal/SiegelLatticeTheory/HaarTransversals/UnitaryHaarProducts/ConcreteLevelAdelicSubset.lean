@@ -755,7 +755,7 @@ theorem trC_nondeg (u : I.E ⊗[I.F] Af I.F) (h : ∀ x : 𝓞 I.E, trC I x u = 
       have := LinearMap.BilinForm.apply_dualBasis_left hB b j i
       rw [Algebra.traceForm_apply, mul_comm] at this
       exact this
-    simp only [e, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h1
+    simp only [e, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h1
     exact h1
   simp [ha]
 

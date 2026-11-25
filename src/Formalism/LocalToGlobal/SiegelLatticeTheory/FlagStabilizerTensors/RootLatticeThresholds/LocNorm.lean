@@ -67,7 +67,7 @@ theorem thetaWinP_of_K (h : JFactPK Y u u' ν C hB large₂ C1) : ThetaWinP Y u 
   have hP : 0 < localAmplitudeProduct u u' hB w := by rw [← e]; exact mul_pos hJ hK
   have e2 : thetaP u u' hB (J2of Y u u' ν (toPts w)) w = K ^ ((1 : ℝ) / (2 * Fintype.card D.what₂.Tau)) := by
     unfold thetaP
-    rw [if_pos ⟨hJ, hP⟩, ← e, mul_div_cancel_left₀ _ hJ.ne']
+    rw [ite_eq_left ⟨hJ, hP⟩, ← e, mul_div_cancel_left₀ _ hJ.ne']
   rw [e2]
   exact hW
 

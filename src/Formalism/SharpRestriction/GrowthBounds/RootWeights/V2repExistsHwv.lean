@@ -57,7 +57,7 @@ theorem v2rep_comp_mem [CharZero K] (E : GLOps n K V) (Z : Submodule K V) (hZ : 
     have := Z.smul_mem (((μ a - ν a : ℤ) : K))⁻¹ hIH
     simp only [g'] at this
     rwa [smul_smul, inv_mul_cancel₀ hc, one_smul] at this
-  · push_neg at hs
+  · push Not at hs
     have : ∑ ν ∈ s, g ν = g μ :=
       Finset.sum_eq_single_of_mem μ hμ (fun ν hν hne => absurd (hs ν hν) hne)
     rw [this] at hsum
@@ -77,7 +77,7 @@ theorem v2rep_ht_root (ν : Fin n → ℤ) (a b : Fin n) (h : a < b) : weightHei
   have hab : ((a : ℕ) : ℤ) < ((b : ℕ) : ℤ) := by exact_mod_cast h
   simp only [weightHeight', rootW, Pi.add_apply, Pi.sub_apply, mul_add, mul_sub, Finset.sum_add_distrib,
     Finset.sum_sub_distrib, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   linarith
 
 def heightOperator' (E : GLOps n K V) : Module.End K V := -∑ a : Fin n, ((a.val : ℤ) : K) • E a a

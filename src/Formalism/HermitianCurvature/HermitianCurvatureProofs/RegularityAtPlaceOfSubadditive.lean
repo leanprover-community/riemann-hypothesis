@@ -72,13 +72,13 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
 lemma ew_not_loc (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) {γ : C.LPt}
     (hγ : ¬ D.IsLocPt γ (P.r + 1)) : Ew p (fun _ => 1) F (P.r + 1) [] γ = 0 := by
   unfold Ew NP KB.Pl.RR D.RRplace
-  rw [dif_neg (fun h => hγ h.1)]
+  rw [dite_eq_right (fun h => hγ h.1)]
   simp
 
 lemma V_zero (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) {γ : C.LPt}
     (hγ : ¬ (D.IsLocPt γ (P.r + 1) ∧ 0 < Gp p γ)) : p.V F γ = 0 := by
   unfold KB.Pl.V D.vecV
-  exact dif_neg hγ
+  exact dite_eq_right hγ
 
 lemma ew_zero_of (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) {γ : C.LPt}
     (hγ : ¬ (D.IsLocPt γ (P.r + 1) ∧ 0 < Gp p γ)) : Ew p (fun _ => 1) F (P.r + 1) [] γ = 0 := by
@@ -327,7 +327,3 @@ end reg
 end
 
 end Formalism.FourierDecayAlt.P.TBBx4
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

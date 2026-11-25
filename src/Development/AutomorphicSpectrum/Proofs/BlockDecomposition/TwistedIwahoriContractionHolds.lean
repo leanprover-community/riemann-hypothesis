@@ -185,13 +185,13 @@ theorem step (U : Subgroup (GL (Fin n) F)) (hU : (U : Set (GL (Fin n) F)) = iwah
     · rw [hs, h', pow_one]; exact hunif _ (hI.2 i l h)
   let T : Matrix (Fin n) (Fin n) F := fun i l =>
     if l < i then - τ.symm (C i l / d i) else if i < l then (e i / e l) * (C i l / d l) else 0
-  have hTlo : ∀ i l, l < i → T i l = - τ.symm (C i l / d i) := fun i l h => if_pos h
+  have hTlo : ∀ i l, l < i → T i l = - τ.symm (C i l / d i) := fun i l h => ite_eq_left h
   have hTup : ∀ i l, i < l → T i l = (e i / e l) * (C i l / d l) := fun i l h => by
     show (if l < i then _ else _) = _
-    rw [if_neg (not_lt.2 h.le), if_pos h]
+    rw [ite_eq_right (not_lt.2 h.le), ite_eq_left h]
   have hTd : ∀ i, T i i = 0 := fun i => by
     show (if i < i then _ else _) = _
-    rw [if_neg (lt_irrefl i), if_neg (lt_irrefl i)]
+    rw [ite_eq_right (lt_irrefl i), ite_eq_right (lt_irrefl i)]
   have hTlov : ∀ i l, l < i → valuation F (T i l) ≤ ρ ^ s := fun i l h => by
     rw [hTlo i l h, Valuation.map_neg, hτs, map_div₀, hd, div_one]
     exact hlow i l h

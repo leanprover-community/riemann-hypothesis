@@ -482,10 +482,10 @@ theorem wtAt_big : Big fun ch => ∀ s, WtAt ch s := by
     exact hf.1
   have hfac : ∀ j ∈ idx D, (if h : b j ∈ GfC _ then cellWt (ρ j) (μ j) ((latGrp ch.G j).subgroupOf _) ⟨b j, h⟩ else 0) *
       ((x (.top j) : ℝ) : ℂ) = cf j * (colCoef ch t β j : ℂ) := fun j hj => by
-    rw [dif_pos (hgf j hj)]
+    rw [dite_eq_left (hgf j hj)]
     have hs := hx (.top j) (show j ≤ D.R.m by have := hlt j hj; omega) (by simp only [ne_eq, Node.top.injEq]; have := hlt j hj; omega)
     have e := (hc j hj).choose_spec t Φ β b hb M M' hM hM' (x (.top j)) hs (hgf j hj)
-    simp only [cf, dif_pos hj]
+    simp only [cf, dite_eq_left hj]
     exact e
   have hsP : sProd D x = ((idx D).map fun j => ((x (.top j) : ℝ) : ℂ)).prod := by
     have h2 : ∏ i ∈ Finset.range (D.R.m + 1), ((x (.grid i D.R.m) : ℝ) : ℂ) = 1 := by
@@ -921,7 +921,7 @@ theorem flatBF_source {ρ : ℕ} {B : BesLev D ρ} {J : JacLev D ρ} (s : StepBF
   have hmul : ∀ v : UX D ρ, psiUni ψ (v * u').1 = psiUni ψ v.1 * psiUni ψ u := fun v => by
     rw [← ThLaws.psiFlag_levi ψ J.d, ← ThLaws.psiFlag_levi ψ J.d, ← ThLaws.psiFlag_levi ψ J.d, Subgroup.coe_mul, map_mul,
       psiFlag_mul J.d ψ (J.d.levi_mem_NFlag v.2) (J.d.levi_mem_NFlag hu)]
-  have hu1 : psiUni ψ u * star (psiUni ψ u) = 1 := mul_star_psi hψ _
+  have hu1 : psiUni ψ u * star (psiUni ψ u) = 1 := GlobalTheory.ThetaSchur.mul_star_psi hψ _
   refine ⟨psiUni ψ u * k, mul_ne_zero (left_ne_zero_of_mul_eq_one hu1) (GlobalTheory.FlatRInv.addChar_ne_zero ψ _), ?_⟩
   funext w
   simp only [Pi.smul_apply, smul_eq_mul]
@@ -1078,7 +1078,7 @@ theorem suppAt_of_grpAt (he : IsIdemSum e Z) (hP : ∀ v, P v ↔ ∀ w ∈ Z, w
   have h2 : (1 - (e + cA D e)) * y ∈ idOff D fun v => ¬ P v := by
     refine Ideal.mul_mem_right _ _ ((GlobalTheory.FinPl.SetCut.mem_idOff_iff _ _).2 fun w hw => ?_)
     rw [hP] at hw
-    push_neg at hw
+    push Not at hw
     obtain ⟨PP, hPP, rfl⟩ := hw
     rw [RingHom.map_sub, RingHom.map_one, ← GlobalTheory.FinPl.LatMem.compFin_eq_compAt, GlobalTheory.CompFinIdemSum.compFin_add_cA_eq_one Z e he PP hPP, sub_self]
   have h3 := ((hAt _).1 h1).symm.trans ((hOff _).1 h2)
@@ -1130,12 +1130,12 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)
 theorem rowGrp_bes (j σ : ℕ) (hj : j + 2 * σ + 2 = D.R.m) :
     rowGrp G j = besGrp (besDecAt G j σ hj) (GlobalTheory.OrthSumExists.orthDecHsum D _ _) := by
   obtain rfl : σ = (D.R.m - 2 - j) / 2 := by omega
-  exact (dif_neg (by omega)).trans (dif_pos hj)
+  exact (dite_eq_right (by omega)).trans (dite_eq_left hj)
 
 theorem rowGrp_jac (j σ : ℕ) (hj : j + 2 * σ + 1 = D.R.m) :
     rowGrp G j = jacGrp (rowJac G j (by omega) σ (by omega)) := by
   obtain rfl : σ = (D.R.m - 1 - j) / 2 := by omega
-  exact dif_pos hj
+  exact dite_eq_left hj
 
 theorem contr_ne_zero {ρ σ : ℕ} {B : GlobalTheory.Unf.BesLev D ρ} {B' : GlobalTheory.Unf.BesLev D σ} {l : GlobalTheory.Unf.Link B B'.L B'.ζ} {S : HSp D}
     {vL : GlobalTheory.Unf.VolM D B'.L.rank S.rank} {Ξ₁ : WO B.V₀ S → ℂ} {Ξ₂ : WO S B'.V₀ → ℂ}
@@ -1219,7 +1219,7 @@ theorem offAt_of_shape (hS : ShapeAt ch) (hB : ∀ t, ∃ b, IsBase t ch.S.B b) 
       omega
     have hc := hne j hje (by omega)
     have hj0 : ¬ j + 2 * 0 + 2 = D.R.m := by omega
-    rw [show conAt ch.W hM (fockD ch.W t d.2 P) h j = _ from (dif_neg hj0).trans (dif_pos hj')] at hc
+    rw [show conAt ch.W hM (fockD ch.W t d.2 P) h j = _ from (dite_eq_right hj0).trans (dite_eq_left hj')] at hc
     obtain ⟨c1, c2⟩ := contr_ne_zero hc
     rw [move] at c1 c2
     rw [hInv, rowGrp_bes ch.G j _ hj'] at hI

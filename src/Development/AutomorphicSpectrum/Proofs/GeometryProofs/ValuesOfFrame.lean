@@ -287,8 +287,7 @@ theorem values_core (𝔐 : HodgeCpt Y S y) {L : Type} [Field L] (z : Sp L ⟶ �
     refine ⟨g, fun j => ?_, hinj ?_⟩
     · rw [hg]
       exact (hf j).2
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, ← e]
+    · rw [map_sum, ← e]
       exact (Finset.sum_congr rfl fun j _ => hg j).symm
   have hβW : ∀ j t, i t ∈ eigSp 𝔐.ρ (𝔐.emb j) → β t ∈ eigSp ρ (σ j) := by
     intro j t ht

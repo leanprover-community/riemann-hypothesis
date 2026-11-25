@@ -44,9 +44,9 @@ theorem abs_gap_le (lam : Wt Ψ N) (τ : Ψ) (i : Fin N) :
     |PB.gap (fun x : Ψ × Fin N => lam x.1 x.2) (τ, i)| ≤
       |lam τ i| + (if h : (i : ℕ) + 1 < N then |lam τ ⟨(i : ℕ) + 1, h⟩| else 0) := by
   by_cases h : (i : ℕ) + 1 < N
-  · simp only [PB.gap, PB.gapX, dif_pos h, map_sub, eval_X]
+  · simp only [PB.gap, PB.gapX, dite_eq_left h, map_sub, eval_X]
     exact abs_sub _ _
-  · simp [PB.gap, PB.gapX, dif_neg h]
+  · simp [PB.gap, PB.gapX, dite_eq_right h]
 
 theorem sum_abs_gapS_le (lam : Wt Ψ N) (u : ℝ) :
     ∑ o, |PB.gapS (fun x : Ψ × Fin N => lam x.1 x.2) u o| ≤ 2 * l1 lam + |u| := by

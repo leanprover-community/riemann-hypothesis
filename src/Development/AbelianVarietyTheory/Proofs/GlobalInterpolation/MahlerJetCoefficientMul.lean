@@ -1,52 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -179,7 +137,7 @@ def lin {σ : Type} (c : (σ →₀ ℕ) → ℂ) : MvPolynomial σ ℂ →+ ℂ
 theorem lin_monomial {σ : Type} (c : (σ →₀ ℕ) → ℂ) (m : σ →₀ ℕ) (a : ℂ) : lin c (monomial m a) = a * c m := by
   classical
   show ∑ k ∈ (monomial m a).support, (monomial m a).coeff k * c k = _
-  rw [sum_support_eq c _ {m} MvPolynomial.support_monomial_subset, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  rw [sum_support_eq c _ {m} MvPolynomial.support_monomial_subset, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 def LJ (v : κ → V) (f : V → ℂ) : MvPolynomial κ ℂ →+ ℂ := lin (monoJet v f)
 
@@ -277,12 +235,8 @@ theorem vdm {σ : Type} (x y : MvPolynomial σ ℂ) (n : ℕ) :
   refine Finset.sum_congr rfl fun a ha => ?_
   have ha' : a ≤ n := Nat.lt_succ_iff.1 (Finset.mem_range.1 ha)
   have hc : ((n.factorial : ℂ))⁻¹ * (n.choose a : ℂ) = (a.factorial : ℂ)⁻¹ * ((n - a).factorial : ℂ)⁻¹ := by
-    rw [← Nat.choose_mul_factorial_mul_factorial ha']
-    push_cast
-    have h1 : (a.factorial : ℂ) ≠ 0 := by exact_mod_cast a.factorial_ne_zero
-    have h2 : ((n - a).factorial : ℂ) ≠ 0 := by exact_mod_cast (n - a).factorial_ne_zero
-    have h3 : (n.choose a : ℂ) ≠ 0 := by exact_mod_cast (Nat.choose_pos ha').ne'
-    field_simp
+    rw [Nat.cast_choose ℂ ha', div_eq_mul_inv, inv_mul_cancel_left₀ (Nat.cast_ne_zero.2 n.factorial_ne_zero),
+      mul_inv]
   calc C ((n.factorial : ℂ)⁻¹) * (((n.choose a : ℕ) : MvPolynomial σ ℂ) *
         ((descPochhammer ℤ a).smeval x * (descPochhammer ℤ (n - a)).smeval y))
       = C ((n.factorial : ℂ)⁻¹ * (n.choose a : ℂ)) *

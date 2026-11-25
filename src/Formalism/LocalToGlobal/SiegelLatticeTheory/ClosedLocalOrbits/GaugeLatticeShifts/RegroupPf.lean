@@ -349,7 +349,7 @@ theorem psiFinU_one : X.psiFinU u 1 = 1 := by
     rw [hf, Matrix.one_mulVec]
     unfold Formalism.L2.SG.HidaSetting.nxt
     split_ifs with h
-    · rw [hA_f_e X, if_neg]
+    · rw [hA_f_e X, ite_eq_right]
       intro hc
       have := congrArg Fin.val hc
       simp at this
@@ -393,7 +393,7 @@ theorem ph_col (hK : X.LevelSubgroupCharacter) (hWD : PhWellDef X u hK) (T : Cu 
   have hdec : IsDec X u ((h : X.B.I.Gf) * X.xu u * k) 1 h k := ⟨h1, hk, by rw [one_mul]⟩
   have hex : ∃ n h' k', IsDec X u ((x, (h : X.B.I.Gf) * X.xu u * k) : X.B.I.GA).2 n h' k' := ⟨1, h, k, hdec⟩
   have hPh : Ph X u hK T (x, (h : X.B.I.Gf) * X.xu u * k) =
-      phVal X u hK T x hex.choose hex.choose_spec.choose hex.choose_spec.choose_spec.choose := dif_pos hex
+      phVal X u hK T x hex.choose hex.choose_spec.choose hex.choose_spec.choose_spec.choose := dite_eq_left hex
   rw [hPh, hWD T x _ _ _ _ _ _ _ hex.choose_spec.choose_spec.choose_spec hdec]
   simp only [phVal, psiFinU_one, one_mul]
 
@@ -433,7 +433,7 @@ theorem termVal_of (hK : X.LevelSubgroupCharacter) (hWD : PhWellDef X u hK) (hWD
   rw [integral_const_mul]
   have hb : blk cs cs' FdN FdN' t ρ ρ' =
       ((scl FdN FdN' (X := X) (u := u) (u' := u') * X.volK2 : ℝ) : ℂ) • (X.chi2 k • OOt t) := by
-    unfold blk; exact if_pos ht
+    unfold blk; exact ite_eq_left ht
   rw [hb, _root_.smul_apply, _root_.smul_apply, inner_smul_left, inner_smul_left,
     Complex.conj_ofReal]
   congr 2
@@ -688,7 +688,7 @@ theorem orbitUnfold_of (hK : X.LevelSubgroupCharacter) (hWD : PhWellDef X u hK) 
     intro t
     have h := hFE t.1
     unfold FundOf
-    rw [dif_pos h]
+    rw [dite_eq_left h]
     exact h.choose_spec
   have hstabJ : ∀ (t : J) (n : N), act n (r t) = r t ↔ (n : X.B.I.Ginf) ∈ ROinf t.1 := by
     intro t n
@@ -782,9 +782,9 @@ theorem inner_tsum_blk (hK : X.LevelSubgroupCharacter) (hA : AbsConvT F0 F0' TR 
   funext t
   rw [← e]
   by_cases ht : TermOn cs cs' t ρ ρ'
-  · rw [if_pos ht, hTV T T' t ρ ρ' ht]
-  · rw [if_neg ht, mul_zero]
-    have : blk cs cs' FdN FdN' t ρ ρ' = 0 := by unfold blk; exact if_neg ht
+  · rw [ite_eq_left ht, hTV T T' t ρ ρ' ht]
+  · rw [ite_eq_right ht, mul_zero]
+    have : blk cs cs' FdN FdN' t ρ ρ' = 0 := by unfold blk; exact ite_eq_right ht
     rw [this]; simp
 
 theorem regroup_of (hK : X.LevelSubgroupCharacter) (Dt' : Set X.B.I.GA) (hA : AbsConvT F0 F0' TR cs cs' FdN FdN')

@@ -64,7 +64,7 @@ private theorem isoPart_map (F : Fin n → Fin n → Module.End ℂ V) (T : Set 
 
 private theorem isoPart_stb (F : Fin n → Fin n → Module.End ℂ V) (T : Set (Wt n)) (S : Submodule ℂ V) :
     Stb F (Formalism.REAL.isoPart (fun _ => true) F T S) := fun a b =>
-  isoPart_map F T S (F a b) _ fun y hy μ hμ hk z hz =>
+  isoPart_map F T S (F a b) _ fun y hy _ hμ hk _ hz =>
     le_isoPart F hy hμ hk (kSpan_stb F y a b hz)
 
 private theorem isoPart_cm (F : Fin n → Fin n → Module.End ℂ V) (T : Set (Wt n)) (S : Submodule ℂ V)

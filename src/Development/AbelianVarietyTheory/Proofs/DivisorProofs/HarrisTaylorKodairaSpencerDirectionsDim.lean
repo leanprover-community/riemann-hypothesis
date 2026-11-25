@@ -237,15 +237,15 @@ theorem GlobalTheory.HTRho.finrank_homO_eq_sum_quot : ∀ {k O C Idx W V : Type*
         simpa [Φ, Submodule.Quotient.mk_eq_zero] using this
       rw [hsum v]
       exact Finset.sum_eq_zero fun i _ =>
-        actC_mSub_eq_zero τ χ hJ i (e i) (fun l hl => by rw [he, if_neg hl]) v (hv' i)
+        actC_mSub_eq_zero τ χ hJ i (e i) (fun l hl => by rw [he, ite_eq_right hl]) v (hv' i)
     · intro q
       choose w hw using fun i => Submodule.Quotient.mk_surjective (mSub τ (χ i) ⊤) (q i)
       refine ⟨∑ j, actC τ (e j) (w j), funext fun i => ?_⟩
       simp only [Φ, LinearMap.pi_apply, Submodule.mkQ_apply]
       rw [← hw i, Submodule.Quotient.eq, ← Finset.add_sum_erase _ _ (Finset.mem_univ i), add_sub_right_comm]
       refine add_mem ?_ (Submodule.sum_mem _ fun j hj => actC_mem_mSub τ (χ i) _
-        (by rw [he, if_neg (Finset.ne_of_mem_erase hj).symm]) (w j))
-      have h3 := actC_mem_mSub τ (χ i) (e i - 1) (by rw [map_sub, he, if_pos rfl, map_one, sub_self]) (w i)
+        (by rw [he, ite_eq_right (Finset.ne_of_mem_erase hj).symm]) (w j))
+      have h3 := actC_mem_mSub τ (χ i) (e i - 1) (by rw [map_sub, he, ite_eq_left rfl, map_one, sub_self]) (w i)
       simpa [map_sub] using h3
   let Φe := LinearEquiv.ofBijective Φ hΦ
   let Ψ : homO σW τ →ₗ[k] ((i : Idx) → homO σW (qAct τ (mSub τ (χ i) ⊤)
@@ -1244,7 +1244,7 @@ theorem inf_le_sup {Idx : Type*} [Fintype Idx] (σ : O →+* Module.End k H) (χ
     have : p - E p = -∑ d ∈ S, lam d • (σ (algebraMap C O d) p - χ i d • p) := by
       rw [hEapp]
       simp only [smul_sub, Finset.sum_sub_distrib, smul_smul]
-      rw [← Finset.sum_smul, hδ i, if_pos rfl, one_smul]
+      rw [← Finset.sum_smul, hδ i, ite_eq_left rfl, one_smul]
       abel
     rw [this]
     exact neg_mem (Submodule.sum_mem _ fun d _ => Submodule.smul_mem _ _ (mSub_gen σ (χ i) d hpG))
@@ -1463,18 +1463,7 @@ theorem rhoCount : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum 
     simpa using (b.unit n hn).map β
   set σ := GlobalTheory.HTCount.crysAct o₀ with hσ
   set χ : Fin D.a → (𝓞 D.F →+* k) := fun i => β.comp (b.t i) with hχdef
-  have hχ : Function.Injective χ := by
-    intro i j hij
-    by_contra hne
-    have h1 := b.comax i j hne
-    have hle : Ideal.span (Set.range fun x => b.t i x - b.t j x) ≤ RingHom.ker β := by
-      rw [Ideal.span_le]
-      rintro _ ⟨x, rfl⟩
-      have := congrArg (fun f : 𝓞 D.F →+* k => f x) hij
-      simp only [χ, RingHom.comp_apply] at this
-      simp [RingHom.mem_ker, this]
-    have h1' : (1 : R) ∈ RingHom.ker β := hle (by rw [h1]; trivial)
-    simp at h1'
+  have hχ : Function.Injective χ := b.injective_char_comp β
   have hFil : ∀ a, ∀ x ∈ Fil o₀.A, σ a x ∈ Fil o₀.A := fun a x hx => by
     haveI := o₀.act.hom a
     rw [hσ, GlobalTheory.HTCount.crysAct_apply]

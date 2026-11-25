@@ -31,19 +31,8 @@ theorem pf_facts : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A], Pf p A 
       map_mul' := fun x y => mul_pow x y p
       map_zero' := zero_pow hp.ne_zero
       map_add' := hadd }
-  have hk : ∀ k : ℕ, Function.Bijective fun x : A => x ^ p ^ k := by
-    intro k
-    induction k with
-    | zero =>
-      simp only [pow_zero, pow_one]
-      exact Function.bijective_id
-    | succ k ih =>
-      have : (fun x : A => x ^ p ^ (k + 1)) = (fun x : A => x ^ p) ∘ (fun x : A => x ^ p ^ k) := by
-        funext x
-        simp only [Function.comp_apply]
-        rw [pow_succ, pow_mul]
-      rw [this]
-      exact h.bij.comp ih
+  have hk : ∀ k : ℕ, Function.Bijective fun x : A => x ^ p ^ k := fun k => by
+    simpa only [pow_iterate] using h.bij.iterate k
   have hinj : ∀ (k : ℕ) (x y : A), x ^ p ^ k = y ^ p ^ k → x = y := fun k x y e => (hk k).1 e
   have hred : ∀ (x : A) (n : ℕ), x ^ n = 0 → x = 0 := by
     intro x n e

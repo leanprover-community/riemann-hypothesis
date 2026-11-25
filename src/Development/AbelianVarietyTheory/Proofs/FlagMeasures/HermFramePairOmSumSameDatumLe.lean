@@ -228,7 +228,6 @@ theorem line_cyclic (I : FractionalIdeal (𝓞 K)⁰ K) (v : V) (n : Ideal (𝓞
   refine sup_le_sup_left ?_ _
   rw [← Ideal.submodule_span_eq, Submodule.map_span, Set.image_singleton]
 
-
 omit [Module K V] [IsScalarTower (𝓞 K) K V] in
 theorem count_between (P : Submodule (𝓞 K) V) (n : Ideal (𝓞 K)) (hn : n ≠ ⊥) (e : ℕ) (v : Fin e → V)
     (hv : ∀ i, v i ∈ P) (hP : P ≤ n • P ⊔ Submodule.span (𝓞 K) (Set.range v)) :
@@ -320,12 +319,12 @@ theorem exists_gens [StarRing K] {H : HermSpace K V} {r : ℕ} (N : NF H r) (n :
     · refine sup_le (sup_le (sup_le (iSup_le fun a => ?_) (iSup₂_le fun a h => ?_)) ?_) (iSup₂_le fun a h => ?_)
       · exact le_iSup_of_le (some (Sum.inl a)) le_rfl
       · refine le_iSup_of_le (some (Sum.inr a)) (le_of_eq ?_)
-        simp only [I, x, Option.elim, Sum.elim_inr, if_pos h]
+        simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_left h]
         rfl
       · refine le_iSup_of_le none (le_of_eq ?_)
         simp only [I, x, Option.elim, FractionalIdeal.coe_one]
       · refine le_iSup_of_le (some (Sum.inr a)) (le_of_eq ?_)
-        simp only [I, x, Option.elim, Sum.elim_inr, if_neg (not_lt.2 h)]
+        simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_right (not_lt.2 h)]
         rfl
     · refine iSup_le ?_
       rintro (_ | a | a)
@@ -334,10 +333,10 @@ theorem exists_gens [StarRing K] {H : HermSpace K V} {r : ℕ} (N : NF H r) (n :
       · refine le_sup_of_le_left (le_sup_of_le_left (le_sup_of_le_left ?_))
         exact le_iSup_of_le a le_rfl
       · by_cases h : a.val < N.j
-        · simp only [I, x, Option.elim, Sum.elim_inr, if_pos h]
+        · simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_left h]
           refine le_sup_of_le_left (le_sup_of_le_left (le_sup_of_le_right ?_))
           exact le_iSup₂_of_le a h le_rfl
-        · simp only [I, x, Option.elim, Sum.elim_inr, if_neg h]
+        · simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_right h]
           refine le_sup_of_le_right ?_
           exact le_iSup₂_of_le a (not_lt.1 h) le_rfl
   have hle : ∀ o, line (I o : Submodule (𝓞 K) K) (x o) ≤ N.P0 := fun o => by
@@ -467,7 +466,6 @@ theorem integral {y x : V} (hy : y ∈ L) (hx : x ∈ L) : H.B y x ∈ (1 : Subm
   rw [← hU.2, mem_dual_iff] at hy
   exact hy.2 x hx
 
-
 omit [FiniteDimensional K V] in
 include hU hp hq in
 theorem proj_mem_dual {v : V} (hv : v ∈ L) : p v ∈ dual H (L ⊓ rs (𝓞 K) U) := by
@@ -477,7 +475,6 @@ theorem proj_mem_dual {v : V} (hv : v ∈ L) : p v ∈ dual H (L ⊓ rs (𝓞 K)
   rw [map_sub, LinearMap.sub_apply, sub_eq_zero] at h0
   rw [← h0]
   exact integral H hU hv ha.1
-
 
 include hc hU hp hq in
 theorem mem_dual_iff_proj (d : V) : d ∈ dual H (L ⊓ rs (𝓞 K) (perp H U)) ↔ ∃ v ∈ L, v - p v = d := by
@@ -521,7 +518,6 @@ theorem mem_dual_iff_proj (d : V) : d ∈ dual H (L ⊓ rs (𝓞 K) (perp H U)) 
     have : H.B (p v) b = 0 := by rw [← H.herm, h0 v b hb.2, star_zero]
     rw [map_sub, LinearMap.sub_apply, this, sub_zero]
     exact integral H hU hv hb.1
-
 
 include hc hU in
 theorem idx_ne_zero (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) :
@@ -731,9 +727,6 @@ theorem mem_wSp_iff (F F' : FlagD H r) (w : V) : w ∈ wSp F F' ↔ ∀ y ∈ V0
 
 theorem hermFlagPair_isotropic_sup_le_commonSpace (F F' : FlagD H r) : F.X ⊔ F'.X ≤ V0 F F' := le_sup_left
 
-theorem isotropicMeet_le_jointSpan (F F' : FlagD H r) : II F F' ≤ V0 F F' :=
-  (inf_le_left.trans le_sup_left).trans (hermFlagPair_isotropic_sup_le_commonSpace F F')
-
 theorem flag_vector_mem_base_lattice (F F' : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F F' := by
   induction a using Fin.lastCases with
   | last => exact Submodule.mem_sup_right (Submodule.subset_span (Or.inl rfl))
@@ -769,7 +762,7 @@ theorem latTh_eq (F F' : FlagD H r) (hI : II F F' ≤ wSp F F') (Λ : Submodule 
   have hu : ∀ y ∈ wSp F F', y ∈ uPerp F F' := fun y hy =>
     (mem_perp_iff H _ y).2 fun x hx => (mem_perp_iff H _ y).1 hy x (hermFlagPair_isotropic_sup_le_commonSpace F F' hx)
   have hp : ∀ y ∈ wSp F F', y ∈ perp H (II F F') := fun y hy =>
-    (mem_perp_iff H _ y).2 fun x hx => (mem_perp_iff H _ y).1 hy x (isotropicMeet_le_jointSpan F F' hx)
+    (mem_perp_iff H _ y).2 fun x hx => (mem_perp_iff H _ y).1 hy x (GlobalTheory.DegCnt.MidLayer.isotropicMeet_le_jointSpan F F' hx)
   apply le_antisymm
   · rintro y ⟨⟨hy1, -⟩, hy3⟩
     obtain ⟨l, ⟨hl, -⟩, x, hx, rfl⟩ := Submodule.mem_sup.1 hy1
@@ -818,7 +811,7 @@ theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommG
       rw [← hmap]
       exact ⟨w, hw2, rfl⟩
     · show f w + (l - w) = f l
-      rw [← hfix _ (isotropicMeet_le_jointSpan _ _ hw3), map_sub]
+      rw [← hfix _ (GlobalTheory.DegCnt.MidLayer.isotropicMeet_le_jointSpan _ _ hw3), map_sub]
       abel
   · exact sup_le_sup_right (inf_le_inf_left _ fun x hx => hWt hx) _
 
@@ -840,7 +833,6 @@ namespace GlobalTheory.DegCnt.PosIso
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
 
 omit [StarRing K] in
 theorem exists_section (M : Submodule (𝓞 K) V) (hM : M.FG) (φ : V →ₗ[K] K) (h0 : ∃ y ∈ M, φ y ≠ 0) :
@@ -872,7 +864,6 @@ theorem exists_section (M : Submodule (𝓞 K) V) (hM : M.FG) (φ : V →ₗ[K] 
     · rintro _ _ ⟨v, hv, rfl, h⟩ ⟨v', hv', rfl, h'⟩
       exact ⟨v + v', add_mem hv hv', by simp, fun y hy => by rw [smul_add]; exact add_mem (h y hy) (h' y hy)⟩
   exact key 1 h1
-
 
 omit [NumberField K] in
 theorem det_smul_mem (H : HermSpace K V) (Λ : Submodule (𝓞 K) V) {j : ℕ} (x x' : Fin j → V)
@@ -908,14 +899,10 @@ theorem ipow_add (𝔡 : Ideal (𝓞 K)) (h : 𝔡 ≠ ⊥) (m n : ℤ) : ipow �
   rw [zpow_add₀ (by simpa using h), FractionalIdeal.coe_mul]
 
 omit [StarRing K] in
-theorem ipow_zero (𝔡 : Ideal (𝓞 K)) : ipow 𝔡 0 = 1 := by
-  unfold ipow; simp
-
-omit [StarRing K] in
 theorem ipow_sum (𝔡 : Ideal (𝓞 K)) (h : 𝔡 ≠ ⊥) {ι : Type} (s : Finset ι) (f : ι → ℤ) :
     ipow 𝔡 (∑ i ∈ s, f i) = ∏ i ∈ s, ipow 𝔡 (f i) := by
   induction s using Finset.induction_on with
-  | empty => simp [ipow_zero]
+  | empty => simp [GlobalTheory.DegCnt.IdealPow.ipow_zero]
   | insert a s ha ih => rw [Finset.sum_insert ha, Finset.prod_insert ha, ipow_add _ h, ih]
 
 theorem star_mem_one {x : K} (hx : x ∈ (1 : Submodule (𝓞 K) K)) : star x ∈ (1 : Submodule (𝓞 K) K) := by
@@ -1041,16 +1028,6 @@ theorem prod_smul_mem (F F' : FlagD H r) (Λ : Submodule (𝓞 K) V) (aa : Fin r
   first
     | (refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => by ring)
 
-omit [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
-theorem Dl_ne (N : NF H r) : Dl N.F N.F' N.j (N.j_le.trans (Nat.le_succ r)) ≠ 0 := by
-  have : (Zhat N.F N.F').submatrix (Fin.castLE (N.j_le.trans (Nat.le_succ r)))
-      (Fin.castLE (N.j_le.trans (Nat.le_succ r))) = N.w.mat * Matrix.diagonal fun b => ((N.sgn b : ℤ) : K) := by
-    ext a b
-    simp [Zhat, N.pair, Matrix.mul_diagonal]
-  rw [Dl, this, Matrix.det_mul, Matrix.det_diagonal]
-  refine mul_ne_zero (GlobalTheory.SgLoc.PtAlg.isUnit_det N.w).ne_zero (Finset.prod_ne_zero_iff.2 fun b _ => ?_)
-  exact_mod_cast (N.sgn b).ne_zero
-
 theorem smul_mem_of_pairing (N : NF H r) (Λ : Submodule (𝓞 K) V) (hΛ : IsFramed N.F N.F' Λ N.aa) (γ : K)
     (hγ : ∀ y ∈ ipow N.𝔡 (2 * ∑ a ∈ Finset.range N.j, ((r : ℤ) - a)),
       γ * y / Dl N.F N.F' N.j (N.j_le.trans (Nat.le_succ r)) ∈ (1 : Submodule (𝓞 K) K))
@@ -1060,7 +1037,7 @@ theorem smul_mem_of_pairing (N : NF H r) (Λ : Submodule (𝓞 K) V) (hΛ : IsFr
     intro x hx
     rw [← hΛ.1.2, mem_dual_iff] at hx
     exact hx.2
-  have hD := Dl_ne N
+  have hD := GlobalTheory.DegCnt.Kill.Dj_ne N
   set D := Dl N.F N.F' N.j (N.j_le.trans (Nat.le_succ r)) with hDdef
   set m : ℤ := 2 * ∑ a ∈ Finset.range N.j, ((r : ℤ) - a) with hm
   let J : Submodule (𝓞 K) K := Λ.comap ((LinearMap.toSpanSingleton K V (D • ξ)).restrictScalars (𝓞 K))
@@ -1094,7 +1071,7 @@ theorem smul_mem_of_pairing (N : NF H r) (Λ : Submodule (𝓞 K) V) (hΛ : IsFr
       have : γ / D * (y * y') = o • y' := by rw [Algebra.smul_def, ho]; ring
       rw [this]; exact Submodule.smul_mem _ _ hy'
     · intro a b ha hb; rw [mul_add]; exact add_mem ha hb
-  have h3 := h1 (h2 1 (by rw [← ipow_add _ N.𝔡_ne, add_neg_cancel, ipow_zero]; exact Submodule.mem_one.2 ⟨1, map_one _⟩))
+  have h3 := h1 (h2 1 (by rw [← ipow_add _ N.𝔡_ne, add_neg_cancel, GlobalTheory.DegCnt.IdealPow.ipow_zero]; exact Submodule.mem_one.2 ⟨1, map_one _⟩))
   have h4 : (γ / D * 1) • (D • ξ) ∈ Λ := h3
   rwa [smul_smul, mul_one, div_mul_cancel₀ _ hD] at h4
 
@@ -1133,7 +1110,7 @@ theorem Xa_le_sup (N : NF H r) (n : ℕ) : N.F.Xa n ≤ N.F.Xa N.j ⊔ Ia N n :=
   · exact Submodule.mem_sup_right (e_mem_Ia N b (not_lt.1 h) hb)
 
 theorem Xa_ist (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) : ∀ y ∈ N.F.Xa b.val, H.B y (N.ist b) = 0 :=
-  perp_Xa N.F fun a ha => by rw [N.ist_e a b hb, if_neg (by rintro rfl; omega)]
+  perp_Xa N.F fun a ha => by rw [N.ist_e a b hb, ite_eq_right (by rintro rfl; omega)]
 
 theorem Ia_step (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) {y : V} (hy : y ∈ Ia N (b.val + 1)) :
     y - H.B y (N.ist b) • N.F.e b.castSucc ∈ Ia N b.val := by
@@ -1167,7 +1144,7 @@ theorem II_le (N : NF H r) : II N.F N.F' ≤ Ia N r := by
   have hξ' : ξ ∈ N.F'.X := by simpa using sub_mem hx.2 (Ia_X' N hi)
   obtain ⟨p, -, rfl⟩ := Xa_coords N.F (N.j_le.trans (Nat.le_succ r)) le_rfl hξ
   have : p = 0 := by
-    refine Matrix.eq_zero_of_vecMul_eq_zero (Dl_ne N) ?_
+    refine Matrix.eq_zero_of_vecMul_eq_zero (GlobalTheory.DegCnt.Kill.Dj_ne N) ?_
     funext b
     have := X_iso N.F' hξ' (e_mem_X N.F' (Fin.castLE N.j_le b))
 
@@ -1243,7 +1220,7 @@ theorem exists_shear (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) {x : V} (hx :
       split_ifs with h
       · subst h; simpa using hx
       · simp)
-    (fun a ha => by rw [N.ist_e a b hb, if_neg (by rintro rfl; omega)])
+    (fun a ha => by rw [N.ist_e a b hb, ite_eq_right (by rintro rfl; omega)])
     (fun a ha => N.ist_e' a b ha hb)
     (Submodule.mem_sup_right (Submodule.subset_span ⟨b, hb, rfl⟩))
   refine ⟨s, hs, ?_, fun y hy => h y (X_iso N.F hy (Ia_X N hx))⟩
@@ -1273,7 +1250,7 @@ theorem exists_unitri (N : NF H r) (v : Fin r → V)
       u (v b) = if r ≤ b.val + m then N.F.e b.castSucc else v b := by
     intro m
     induction m with
-    | zero => exact ⟨1, one_mem _, rfl, fun b _ => by rw [if_neg (by have := b.isLt; omega)]; rfl⟩
+    | zero => exact ⟨1, one_mem _, rfl, fun b _ => by rw [ite_eq_right (by have := b.isLt; omega)]; rfl⟩
     | succ m ih =>
       obtain ⟨u, hu, huz, h⟩ := ih
       by_cases hm : N.j + m + 1 ≤ r
@@ -1287,22 +1264,22 @@ theorem exists_unitri (N : NF H r) (v : Fin r → V)
           simpa using this
         rw [LinearEquiv.mul_apply, h b hb]
         by_cases h1 : r ≤ b.val + m
-        · rw [if_pos h1, if_pos (by omega), hs' _ (e_mem_X _ _), N.ist_e b b0 hb0,
-            if_neg (by rintro rfl; omega)]
+        · rw [ite_eq_left h1, ite_eq_left (by omega), hs' _ (e_mem_X _ _), N.ist_e b b0 hb0,
+            ite_eq_right (by rintro rfl; omega)]
           simp
-        · rw [if_neg h1, hs' _ (Xa_le_X _ _ hvX)]
+        · rw [ite_eq_right h1, hs' _ (Xa_le_X _ _ hvX)]
           by_cases h2 : b = b0
           · subst h2
             have h3 := Xa_ist N b0 hb0 _ (Ia_le N _ (hv b0 hb0))
-            rw [map_sub, LinearMap.sub_apply, N.ist_e b0 b0 hb0, if_pos rfl, sub_eq_zero] at h3
-            rw [if_pos (by omega), h3]; simp
+            rw [map_sub, LinearMap.sub_apply, N.ist_e b0 b0 hb0, ite_eq_left rfl, sub_eq_zero] at h3
+            rw [ite_eq_left (by omega), h3]; simp
           · have h3 : b.val ≠ b0.val := fun h' => h2 (Fin.ext h')
-            rw [if_neg (by omega), Xa_ist N b0 hb0 _ (Xa_mono N.F (by omega) hvX)]
+            rw [ite_eq_right (by omega), Xa_ist N b0 hb0 _ (Xa_mono N.F (by omega) hvX)]
             simp
       · refine ⟨u, hu, huz, fun b hb => ?_⟩
-        rw [h b hb, if_pos (by omega), if_pos (by omega)]
+        rw [h b hb, ite_eq_left (by omega), ite_eq_left (by omega)]
   obtain ⟨u, hu, huz, h⟩ := key r
-  exact ⟨u, hu, huz, fun b hb => by rw [h b hb, if_pos (by omega)]⟩
+  exact ⟨u, hu, huz, fun b hb => by rw [h b hb, ite_eq_left (by omega)]⟩
 
 end Geometry
 
@@ -1324,10 +1301,6 @@ theorem level_ind (N : NF H r) (M Q : Submodule (𝓞 K) V) (w : Fin r → V)
         module
       simpa using add_mem (ih (by omega) _ (sub_mem hyM h1) h3) h2
     · rw [Ia_bot N (by omega) hy]; exact zero_mem _
-
-theorem smul_flag_vector_mem_reference_lattice (N : NF H r) (b : Fin r) {t : K} (ht : t ∈ N.aa b) : t • N.F.e b.castSucc ∈ N.P0 :=
-  Submodule.mem_sup_left (Submodule.mem_sup_left (Submodule.mem_sup_left
-    (Submodule.mem_iSup_of_mem b ⟨t, ht, rfl⟩)))
 
 theorem hermForm_ist_mem_coeffIdeal_of_mem_reference (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) {y : V} (hy : y ∈ N.P0) :
     H.B y (N.ist b) ∈ N.aa b := by
@@ -1355,7 +1328,7 @@ theorem exists_adapted (N : NF H r) (Λ : Submodule (𝓞 K) V) (hΛ : Λ.FG) (b
     refine ⟨v, ?_, fun y hy hy' => (h y ⟨hy, hy'⟩).1⟩
     have := Ia_step N b hb hv'
     rwa [show H.B v (N.ist b) = 1 from h1, one_smul] at this
-  · push_neg at h0
+  · push Not at h0
     refine ⟨N.F.e b.castSucc, by simp, fun y hy hy' => ?_⟩
     rw [show H.B y (N.ist b) = 0 from h0 y ⟨hy, hy'⟩]; simp
 
@@ -1378,7 +1351,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
   have hΛ := hT.1
   have hγ : ∀ γ ∈ 𝔠, ∀ y ∈ ipow N.𝔡 (2 * ∑ a ∈ Finset.range N.j, ((r : ℤ) - a)),
       (γ : K) * y / Dl N.F N.F' N.j (N.j_le.trans (Nat.le_succ r)) ∈ (1 : Submodule (𝓞 K) K) :=
-    fun γ h y hy => (h𝔠 N.j _ le_rfl (Dl_ne N) γ h y hy).1
+    fun γ h y hy => (h𝔠 N.j _ le_rfl (GlobalTheory.DegCnt.Kill.Dj_ne N) γ h y hy).1
   have hfg : Λ.FG := ((isUnimod_iff H Λ).1 hΛ.1).1.1
   choose! v hv hvΛ using exists_adapted N Λ hfg
   obtain ⟨u, hu, huz, huv⟩ := exists_unitri N v hv
@@ -1402,7 +1375,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
     refine level_ind N N.P0 (((u * E) • Λ).comap (γ • LinearMap.id)) (fun b => N.F.e b.castSucc)
       (fun b _ => by simp) (fun b hb y hy _ => ?_) r le_rfl y hy.1 (II_le N hy.2)
     have ht := hermForm_ist_mem_coeffIdeal_of_mem_reference N b hb hy
-    refine ⟨smul_flag_vector_mem_reference_lattice N b ht, ?_⟩
+    refine ⟨GlobalTheory.DegCnt.LiftS.hermFramePairNormalForm_smul_frame_mem_referenceLattice N b ht, ?_⟩
     generalize H.B y (N.ist b) = t at ht
     rw [← hΛ.2.1.1] at ht
     obtain ⟨l, hl, ξ, hξ, he⟩ := Submodule.mem_sup.1 ht
@@ -1417,7 +1390,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
     show γ • (t • N.F.e b.castSucc) ∈ (u * E) • Λ
     refine (hmem _).2 ⟨_, h2, ?_⟩
     rw [hsv b hb, ← algebraMap_smul K γ (t • _), smul_smul, map_smul, map_sub, map_smul, LinearMap.smul_apply,
-      LinearMap.sub_apply, LinearMap.smul_apply, N.ist_e b b hb, Xa_ist N b hb _ (Ia_le N _ hη₂), if_pos rfl,
+      LinearMap.sub_apply, LinearMap.smul_apply, N.ist_e b b hb, Xa_ist N b hb _ (Ia_le N _ hη₂), ite_eq_left rfl,
       smul_eq_mul, smul_eq_mul, mul_one, sub_zero]
   · rintro y ⟨hy, hyI⟩
     obtain ⟨x, hx, rfl⟩ := (hmem y).1 hy
@@ -1432,7 +1405,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
       (fun b hb y hy hy' => ⟨hvΛ b hb y hy hy', ?_⟩) r le_rfl x hx hxI
     show (u * E) (_ • v b) ∈ N.P0
     rw [hsv b hb]
-    refine smul_flag_vector_mem_reference_lattice N b ?_
+    refine GlobalTheory.DegCnt.LiftS.hermFramePairNormalForm_smul_frame_mem_referenceLattice N b ?_
     rw [← hΛ.2.1.1]
     show H.B y (N.ist b) • N.F.e b.castSucc ∈ Λ ⊔ rs (𝓞 K) (N.F.Xa b.val)
     have := sub_mem (Submodule.mem_sup_left hy) (Submodule.mem_sup_right (S := Λ)
@@ -1654,9 +1627,9 @@ theorem tsum_orbits_le {G α : Type*} [Group G] [MulAction G α] (Q : α → Pro
     rw [tsum_subtype T (fun _ => B)]
     refine ENNReal.tsum_le_tsum fun o => ?_
     by_cases ho : Q o.out
-    · rw [if_pos ho, Set.indicator_of_mem (show o ∈ T from ho)]
+    · rw [ite_eq_left ho, Set.indicator_of_mem (show o ∈ T from ho)]
       exact (h _ ho).1
-    · rw [if_neg ho]; exact zero_le
+    · rw [ite_eq_right ho]; exact zero_le
   refine h1.trans ?_
   rw [ENNReal.tsum_set_const]
   gcongr
