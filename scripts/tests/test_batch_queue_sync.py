@@ -348,7 +348,7 @@ def queue(gh, *numbers):
     for number in numbers:
         if number not in gh.pulls:
             gh.add_pull(number, f"head{number}")
-        gh.say(number, f"<!-- batch-queue-approved {gh.pulls[number]['sha']} -->\nQueued at this commit.")
+        gh.say(number, f"<!-- batch-queue-approved {gh.pulls[number]['sha']} -->\nApproved for batching at this commit.")
         gh.label(number, add=QUEUED)
         gh.label(number, add=FROZEN)
 
