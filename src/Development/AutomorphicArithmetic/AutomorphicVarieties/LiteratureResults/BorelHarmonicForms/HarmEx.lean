@@ -120,7 +120,7 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
   have hinv : ∀ (N : Subgroup K) [N.Normal] [N.FiniteIndex] (v : V), (∀ n ∈ N, ρ n v = v) →
       ∀ u : K, ρ u (avg N v) = avg N v := by
     intro N _ _ v hv u
-    letI : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
+    let : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
 
     rw [hform N v, map_smul, map_sum]
     congr 1
@@ -134,14 +134,14 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
     exact Equiv.sum_comp (MulAction.toPerm u) (fun q : K ⧸ N => ρ q.out v)
   have hfixed : ∀ (N : Subgroup K) [N.FiniteIndex] (v : V), (∀ u, ρ u v = v) → avg N v = v := by
     intro N _ v hv
-    letI : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
+    let : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
     rw [hform N v]
     simp only [hv, Finset.sum_const, Finset.card_univ]
     rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, (hcard N).1, inv_mul_cancel₀ (hcard N).2, one_smul]
   have hshift : ∀ (N : Subgroup K) [N.Normal] [N.FiniteIndex] (v : V), (∀ n ∈ N, ρ n v = v) →
       ∀ k : K, avg N (ρ k v) = avg N v := by
     intro N _ _ v hv k
-    letI : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
+    let : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
     rw [hform N (ρ k v), hform N v]
     congr 1
     have hq : ∀ q : K ⧸ N, ρ q.out (ρ k v) = ρ ((q * (k : K ⧸ N)).out) v := by
@@ -155,7 +155,7 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
   let A : Submodule ℂ V := Submodule.span ℂ {x | ∃ k u, ρ k u - u = x}
   have hdiff : ∀ (N : Subgroup K) [N.FiniteIndex] (v : V), v - avg N v ∈ A := by
     intro N _ v
-    letI : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
+    let : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
     have e : v - avg N v = (N.index : ℂ)⁻¹ • ∑ q : K ⧸ N, (v - ρ q.out v) := by
       rw [hform N v, Finset.sum_sub_distrib, smul_sub, Finset.sum_const, Finset.card_univ,
         ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, (hcard N).1, inv_mul_cancel₀ (hcard N).2, one_smul]
@@ -166,7 +166,7 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
   have hcomm : ∀ (N : Subgroup K) [N.FiniteIndex] (T : Module.End ℂ V),
       (∀ u, Commute T (ρ u)) → ∀ v, T (avg N v) = avg N (T v) := by
     intro N _ T hT v
-    letI : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
+    let : Fintype (K ⧸ N) := Subgroup.fintypeQuotientOfFiniteIndex
 
     rw [hform N v, hform N (T v), map_smul, map_sum]
     congr 1
@@ -213,8 +213,8 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
   have hagree : ∀ (N : Subgroup K) [N.Normal] [N.FiniteIndex] (v : V), (∀ n ∈ N, ρ n v = v) →
       avg N v = pf v := by
     intro N _ _ v hv
-    haveI := hNv v
-    haveI := hNvf v
+    have := hNv v
+    have := hNvf v
     rw [← sub_eq_zero]
     apply hzero
     · have e : avg N v - pf v = (v - pf v) - (v - avg N v) := by abel
@@ -225,24 +225,24 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
   let p : Module.End ℂ V :=
     { toFun := pf
       map_add' := fun v w => by
-        haveI := hNv v; haveI := hNvf v; haveI := hNv w; haveI := hNvf w
+        have := hNv v; have := hNvf v; have := hNv w; have := hNvf w
         have hv : ∀ n ∈ Nv v ⊓ Nv w, ρ n v = v := fun n hn => hNvfix v n hn.1
         have hw : ∀ n ∈ Nv v ⊓ Nv w, ρ n w = w := fun n hn => hNvfix w n hn.2
         have hvw : ∀ n ∈ Nv v ⊓ Nv w, ρ n (v + w) = v + w := fun n hn => by
           rw [map_add (f := _), hv n hn, hw n hn]
         rw [← hagree _ _ hvw, ← hagree _ _ hv, ← hagree _ _ hw, map_add (f := _)]
       map_smul' := fun c v => by
-        haveI := hNv v; haveI := hNvf v
+        have := hNv v; have := hNvf v
         have hcv : ∀ n ∈ Nv v, ρ n (c • v) = c • v := fun n hn => by
           rw [map_smul, hNvfix v n hn]
         rw [RingHom.id_apply, ← hagree _ _ hcv, map_smul] }
   refine ⟨p, fun v u => ?_, fun v hv => ?_, fun T hT => ?_⟩
-  · haveI := hNv v; haveI := hNvf v
+  · have := hNv v; have := hNvf v
     exact hinv (Nv v) v (hNvfix v) u
-  · haveI := hNvf v
+  · have := hNvf v
     exact hfixed (Nv v) v hv
   · refine LinearMap.ext fun v => ?_
-    haveI := hNv v; haveI := hNvf v
+    have := hNv v; have := hNvf v
     have hTv : ∀ n ∈ Nv v, ρ n (T v) = T v := fun n hn => by
       rw [← Module.End.mul_apply, ← (hT n).eq, Module.End.mul_apply, hNvfix v n hn]
     show T (pf v) = pf (T v)
@@ -252,7 +252,7 @@ private theorem avg_abs {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (
 theorem UpperTheory.V.Lit.Bor.avgProj :
     UpperTheory.V.Lit.Bor.AvgProj := by
   intro G V _ _ _ _ _ ρ U hU hopen
-  haveI : CompactSpace U := isCompact_iff_compactSpace.mp hU
+  have : CompactSpace U := isCompact_iff_compactSpace.mp hU
   let ρU : Representation ℂ U V := ρ.comp U.subtype
   have h : ∀ v, ∃ N : Subgroup U, N.Normal ∧ N.FiniteIndex ∧ ∀ n ∈ N, ρU n v = v := by
     intro v
@@ -267,8 +267,8 @@ theorem UpperTheory.V.Lit.Bor.avgProj :
           conv_lhs => rw [← ha]
           rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
     have hS : IsOpen (S : Set U) := (hopen v).preimage continuous_subtype_val
-    haveI : Finite (U ⧸ S) := Subgroup.quotient_finite_of_isOpen S hS
-    haveI : S.FiniteIndex := Subgroup.finiteIndex_of_finite_quotient
+    have : Finite (U ⧸ S) := Subgroup.quotient_finite_of_isOpen S hS
+    have : S.FiniteIndex := Subgroup.finiteIndex_of_finite_quotient
     exact ⟨S.normalCore, inferInstance, inferInstance, fun n hn => S.normalCore_le hn⟩
   obtain ⟨p, h1, h2, h3⟩ := avg_abs ρU h
   exact ⟨p, fun v u hu => h1 v ⟨u, hu⟩, fun v hv => h2 v (fun u => hv u u.2),
