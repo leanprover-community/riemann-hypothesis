@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 public import Mathlib.Order.Filter.Germ.Basic
@@ -17,7 +18,7 @@ open scoped MatrixGroups
 
 namespace GlobalTheory.KZ
 
-def Hs : Set ℂ := {z | 0 < z.im}
+abbrev Hs : Set ℂ := UpperHalfPlane.upperHalfPlaneSet
 
 abbrev Mero : Type := Filter.Germ (Filter.codiscreteWithin Hs) ℂ
 

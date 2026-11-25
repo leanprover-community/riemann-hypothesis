@@ -320,7 +320,7 @@ theorem GlobalTheory.KZ.H3.exists_pot_of_isCoc : ∀ (R : Type) [CommRing R] (w 
   refine ⟨potOf Γ z, ⟨fun τ => ?_, fun γ hγ => ⟨z γ, key γ hγ⟩⟩, key⟩
   by_cases hτ : τ ∈ Hs
   · exact polySlash_isHomogeneous _ (hz.1 _ (gel_spec Γ hτ).1)
-  · have : gel Γ τ = 1 := by simp [gel, dite_eq_right hτ]
+  · have : gel Γ τ = 1 := dite_eq_right hτ
     unfold potOf
     rw [this]
     exact polySlash_isHomogeneous _ (hz.1 _ Γ.one_mem)
@@ -506,7 +506,7 @@ theorem exists_pot_of_mem_VB : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] (ε :
     | mem b hb =>
       obtain ⟨F, hF, hR⟩ := hB b hb
       exact ⟨_, map_mem_pot hF, Submodule.subset_span ⟨b, F, hR, rfl⟩⟩
-    | zero => simpa using S.zero_mem
+    | zero => simp
     | add b b' _ _ h h' => simpa [TensorProduct.tmul_add] using S.add_mem h h'
     | smul r b _ h =>
       rw [TensorProduct.tmul_smul, ← algebraMap_smul E r]
@@ -515,7 +515,7 @@ theorem exists_pot_of_mem_VB : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] (ε :
   obtain ⟨y, rfl⟩ := hx
   show _ ∈ S
   induction y using TensorProduct.induction_on with
-  | zero => simpa using S.zero_mem
+  | zero => simp
   | tmul c b =>
     rw [LinearMap.baseChange_tmul, Submodule.subtype_apply]
     have : c ⊗ₜ[ℤ_[l]] (b : X.Fn l) = c • ((1 : E) ⊗ₜ[ℤ_[l]] (b : X.Fn l)) := by
@@ -602,19 +602,18 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups TensorProduct
 
 namespace GlobalTheory.KZ.H3.KZero
-
-theorem isOpen_Hs : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
 
 theorem isPreconnected_Hs : IsPreconnected Hs :=
   (convex_halfSpace_gt Complex.imLm.isLinear (0 : ℝ)).isPreconnected
 
 theorem eventually_ne_zero {b : ℂ → ℂ} (hb : DifferentiableOn ℂ b Hs) (hb0 : (b : Mero) ≠ 0) :
     ∀ᶠ z in Filter.codiscreteWithin Hs, b z ≠ 0 := by
-  have hA : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_Hs
+  have hA : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_upperHalfPlaneSet
   obtain ⟨z0, hz0, hbz0⟩ : ∃ z0 ∈ Hs, b z0 ≠ 0 := by
     by_contra! h
     exact hb0 (Filter.Germ.coe_eq.2 (Filter.eventually_of_mem (Filter.self_mem_codiscreteWithin Hs) h))

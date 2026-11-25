@@ -9,14 +9,13 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOfInR
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.KZ GlobalTheory.FN
 open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF)
 open ModularForm (E₄ E₆)
 
 namespace GlobalTheory.FN
-
-theorem isOpen_Hs_mobt : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
 
 theorem tendsto_mob_codiscreteWithin :
     ∀ g : GQ, Filter.Tendsto (mob g) (Filter.codiscreteWithin Hs) (Filter.codiscreteWithin Hs) := by
@@ -32,7 +31,7 @@ theorem tendsto_mob_codiscreteWithin :
   rw [mem_codiscreteWithin] at hS
   intro z hz
   have hw := hS (mob g z) (hmaps g z hz)
-  have hHs : Hs ∈ nhds z := isOpen_Hs_mobt.mem_nhds hz
+  have hHs : Hs ∈ nhds z := isOpen_upperHalfPlaneSet.mem_nhds hz
   have hcont : ContinuousAt (mob g) z := (hdiff g).continuousOn.continuousAt hHs
   have htend : Filter.Tendsto (mob g) (nhdsWithin z {z}ᶜ) (nhdsWithin (mob g z) {mob g z}ᶜ) := by
     rw [tendsto_nhdsWithin_iff]

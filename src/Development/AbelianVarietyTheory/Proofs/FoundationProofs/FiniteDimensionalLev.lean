@@ -166,6 +166,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable section
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped MatrixGroups
 open GlobalTheory.KZ
 
@@ -427,7 +428,7 @@ theorem hol_of_isIntegral (X : Tower Ω ε) (y : X.K) (hy : IsIntegral (Algebra.
   have hFz : ∀ z ∈ Hs, a z ^ n + ∑ i : Fin n, r i z * a z ^ (i : ℕ) * b z ^ (n - i) = 0 := by
     intro z hz
     exact hid _ (fun _ => (0 : ℂ)) hFd (differentiableOn_const 0) (by rw [hF]; rfl) z hz
-  obtain ⟨h0, hh0, hah0, -⟩ := GlobalTheory.quotient_integral_holomorphic Hs n a b r GlobalTheory.FN.isOpen_Hs
+  obtain ⟨h0, hh0, hah0, -⟩ := GlobalTheory.quotient_integral_holomorphic Hs n a b r isOpen_upperHalfPlaneSet
     GlobalTheory.FN.isPreconnected_Hs ha hb hrd hbz hFz
   have hbu : IsUnit (b : Mero) := (hunit b hb hb0).2
   refine ⟨h0, hh0, ?_⟩

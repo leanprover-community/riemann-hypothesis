@@ -15,6 +15,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ GlobalTheory.KZ.ES
 
@@ -258,7 +259,7 @@ private lemma exists_differentiableOn_eventuallyEq_div_of_monic_root {U : Set �
       · subst h
         simp [hφ]
       · rw [Function.update_of_ne h, heq z ⟨hz, h⟩]
-    · filter_upwards [diff_mem_nhdsWithin_compl hs {z₀}] with z hz
+    · filter_upwards [sdiff_mem_nhdsWithin_compl hs {z₀}] with z hz
       exact (heq z hz).symm
   refine ⟨φ, fun z hz => (key z hz).1.differentiableWithinAt, ?_⟩
   refine mem_codiscreteWithin_iff_forall_mem_nhdsNE.2 fun z₀ hz₀ => ?_
@@ -302,7 +303,7 @@ private lemma exists_differentiableOn_eq_of_monic_root_Mero {y : _root_.GlobalTh
     exact congrArg _ (Finset.sum_congr rfl fun i _ => rfl)
   have hev := Filter.Germ.coe_eq.1 hsum
   obtain ⟨φ, hφ, hφe⟩ := exists_differentiableOn_eventuallyEq_div_of_monic_root
-    _root_.GlobalTheory.KZ.SiegelModel.isOpen_Hs ha hb hc (by
+    isOpen_upperHalfPlaneSet ha hb hc (by
       filter_upwards [hbev, hev] with z hz1 hz2
       exact ⟨hz1, hz2⟩)
   exact ⟨φ, hφ, hyq.trans (Filter.Germ.coe_eq.2 hφe)⟩
@@ -315,7 +316,7 @@ private lemma sl_aeval_jK (X : _root_.GlobalTheory.KZ.Tower Ω ε) (γ : SL(2, �
     X.sl (_root_.GlobalTheory.KZ.ofSL γ) (Polynomial.aeval X.jK q) = Polynomial.aeval X.jK q := by
   have e := Polynomial.aeval_algHom_apply
     ((X.sl (_root_.GlobalTheory.KZ.ofSL γ) : X.K ≃ₐ[Ω] X.K) : X.K →ₐ[Ω] X.K) X.jK q
-  simp only [AlgEquiv.coe_algHom, X.j_inv] at e
+  simp only [AlgEquiv.coe_toAlgHom, X.j_inv] at e
   exact e.symm
 
 open scoped MatrixGroups TensorProduct in

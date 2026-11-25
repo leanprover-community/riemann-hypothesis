@@ -8,14 +8,13 @@ public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups TensorProduct
 
 namespace GlobalTheory.KZ.H3
 
 open Filter Topology
-
-theorem isOpen_Hs_place : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
 
 theorem isConnected_Hs_place : IsConnected Hs :=
   ⟨⟨Complex.I, by simp [Hs]⟩, (convex_halfSpace_im_gt (0 : ℝ)).isPreconnected⟩
@@ -25,8 +24,8 @@ theorem exists_analyticAt_of_order_nonneg {Ω : Type} [Field Ω] [Algebra ℚ Ω
     (hb0 : (b : Mero) ≠ 0) (hab : X.an f * (b : Mero) = (a : Mero))
     (hord : 0 ≤ meromorphicOrderAt (a / b) τ) :
     ∃ φ : ℂ → ℂ, X.an f = (φ : Mero) ∧ AnalyticAt ℂ φ τ := by
-  have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_Hs_place
-  have hB : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_Hs_place
+  have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_upperHalfPlaneSet
+  have hB : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_upperHalfPlaneSet
   have hx : ∃ x ∈ Hs, b x ≠ 0 := by
     by_contra! h
     apply hb0
@@ -108,6 +107,6 @@ theorem exists_place_at_point : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε 
           exact exists_analyticAt_of_order_nonneg X hτ f⁻¹ b a hb ha ha0 hba hord' }
   refine ⟨W, ⟨fun c => ⟨fun _ => ε c, X.an_c c, analyticAt_const⟩, ?_⟩, fun f => Iff.rfl⟩
   obtain ⟨φ, h1, h2⟩ := hj
-  exact ⟨φ, h1, h2.analyticAt (isOpen_Hs_place.mem_nhds hτ)⟩
+  exact ⟨φ, h1, h2.analyticAt (isOpen_upperHalfPlaneSet.mem_nhds hτ)⟩
 
 end GlobalTheory.KZ.H3

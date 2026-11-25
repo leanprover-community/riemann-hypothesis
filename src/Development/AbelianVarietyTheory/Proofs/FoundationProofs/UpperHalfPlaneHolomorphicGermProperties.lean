@@ -14,13 +14,12 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.IsRootOne
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups TensorProduct
 open Filter Topology
 
 namespace GlobalTheory.KZ.Germ
-
-theorem isOpen_Hs : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
 
 theorem isPreconnected_Hs : IsPreconnected Hs := (convex_halfSpace_im_gt 0).isPreconnected
 
@@ -28,7 +27,7 @@ theorem eventually_of_germ_eq {φ ψ : ℂ → ℂ} (h : (φ : Mero) = (ψ : Mer
     ∀ τ ∈ Hs, ∀ᶠ z in 𝓝[≠] τ, φ z = ψ z := by
   intro τ hτ
   have h1 := (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 (Filter.Germ.coe_eq.mp h)) τ hτ
-  have h2 : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hτ)
+  have h2 : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)
   filter_upwards [h1, h2] with z hz1 hz2
   rcases hz1 with hz | hz
   · exact hz
@@ -41,14 +40,15 @@ theorem eq_zero_or_eq_zero {a b : ℂ → ℂ} (ha : DifferentiableOn ℂ a Hs) 
   · right
     push Not at hA
     obtain ⟨z₀, hz₀, hne⟩ := hA
-    have hcont : ContinuousAt a z₀ := (ha.continuousOn).continuousAt (isOpen_Hs.mem_nhds hz₀)
+    have hcont : ContinuousAt a z₀ :=
+      (ha.continuousOn).continuousAt (isOpen_upperHalfPlaneSet.mem_nhds hz₀)
     have hev : ∀ᶠ z in 𝓝 z₀, a z ≠ 0 := hcont.eventually_ne hne
     have hb0 : b =ᶠ[𝓝 z₀] 0 := by
-      filter_upwards [hev, isOpen_Hs.mem_nhds hz₀] with z hz1 hz2
+      filter_upwards [hev, isOpen_upperHalfPlaneSet.mem_nhds hz₀] with z hz1 hz2
       have := h z hz2
       simpa [hz1] using this
     intro z hz
-    exact (hb.analyticOnNhd isOpen_Hs).eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_Hs hz₀ hb0 hz
+    exact (hb.analyticOnNhd isOpen_upperHalfPlaneSet).eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_Hs hz₀ hb0 hz
 
 theorem exists_eq_zero_of_prod {ι : Type} [DecidableEq ι] (s : Finset ι) (f : ι → ℂ → ℂ)
     (hf : ∀ i ∈ s, DifferentiableOn ℂ (f i) Hs) (h : ∀ z ∈ Hs, ∏ i ∈ s, f i z = 0) :
@@ -71,8 +71,8 @@ theorem tendsto_mob (g : GQ) {x : ℂ} (hx : x ∈ Hs) : Tendsto (mob g) (𝓝[�
   obtain ⟨hH, hmul, hone, hdiff, -, -⟩ := _root_.GlobalTheory.KZ.mob_laws
   rw [tendsto_nhdsWithin_iff]
   refine ⟨?_, ?_⟩
-  · exact ((hdiff g).continuousOn.continuousAt (isOpen_Hs.mem_nhds hx)).tendsto.mono_left nhdsWithin_le_nhds
-  · filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hx)] with z hz1 hz2
+  · exact ((hdiff g).continuousOn.continuousAt (isOpen_upperHalfPlaneSet.mem_nhds hx)).tendsto.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hx)] with z hz1 hz2
     intro heq
     apply hz1
     show z = x
@@ -97,7 +97,7 @@ theorem main : (∀ a b : ℂ → ℂ, DifferentiableOn ℂ a Hs → Differentia
     constructor
     · intro hab z hz
       have hI : Complex.I ∈ Hs := by show (0 : ℝ) < Complex.I.im; simp
-      exact (ha.analyticOnNhd isOpen_Hs).eqOn_of_preconnected_of_frequently_eq (hb.analyticOnNhd isOpen_Hs)
+      exact (ha.analyticOnNhd isOpen_upperHalfPlaneSet).eqOn_of_preconnected_of_frequently_eq (hb.analyticOnNhd isOpen_upperHalfPlaneSet)
         isPreconnected_Hs hI (eventually_of_germ_eq hab _ hI).frequently hz
     · intro h
       apply Filter.Germ.coe_eq.mpr
@@ -114,7 +114,7 @@ theorem main : (∀ a b : ℂ → ℂ, DifferentiableOn ℂ a Hs → Differentia
     obtain ⟨k, -, hk⟩ := hζ.eq_pow_of_pow_eq_one hξm
     refine ⟨k, fun z hz => ?_⟩
     have e : Complex.exp (2 * Real.pi * Complex.I * (k : ℂ) / (m : ℂ)) = ξ := by
-      rw [← hk, ← Complex.exp_nat_mul]; congr 1; ring
+      rw [← hk, ← Complex.exp_natCast_mul]; congr 1; ring
     rw [e]
     exact sub_eq_zero.mp (hξ' z hz)
 

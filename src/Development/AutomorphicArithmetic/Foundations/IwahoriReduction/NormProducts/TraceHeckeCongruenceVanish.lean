@@ -263,7 +263,7 @@ theorem UpperTheory.Kd.K4.h90 :
     { carrier := {x | ∀ c ∈ CongruenceSubgroup.Gamma W, X.sl (ofSL c) x = x}
       mul_mem' := by
         intro x y hx hy c hc
-        simp only [Set.mem_setOf_eq] at hx hy ⊢
+        simp only [Set.mem_ofPred_eq] at hx hy ⊢
         rw [map_mul, hx c hc, hy c hc]
       one_mem' := by
         intro c _
@@ -361,6 +361,7 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open GlobalTheory.KZ GlobalTheory.K4 UpperTheory.Kd.K4 Polynomial
 open scoped Matrix MatrixGroups
 
@@ -415,7 +416,7 @@ private theorem near_one {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* 
   have hzH : z ∈ Hs := lt_trans (lt_max_of_lt_right one_pos) hz
   have hev : φ =ᶠ[codiscreteWithin Hs] φ' := Filter.Germ.coe_eq.mp (hφ.symm.trans hφ')
   have h1 := mem_codiscreteWithin_iff_forall_mem_nhdsNE.mp hev z hzH
-  have hHs : Hs ∈ 𝓝 z := SiegelModel.isOpen_Hs.mem_nhds hzH
+  have hHs : Hs ∈ 𝓝 z := isOpen_upperHalfPlaneSet.mem_nhds hzH
   have h2 : Hs ∈ 𝓝[≠] z := mem_nhdsWithin_of_mem_nhds hHs
   have h3 : {w : ℂ | max (max s t) 1 < w.im} ∈ 𝓝[≠] z :=
     mem_nhdsWithin_of_mem_nhds ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz)
@@ -447,7 +448,7 @@ private theorem deriv_ne (φ : ℂ → ℂ) (hd : DifferentiableOn ℂ φ Hs) (t
     (hG.diffContOnCl_ball (fun w hw => lt_trans ht (hsub w hw)))
     (fun w hw => h w (hsub w (Metric.sphere_subset_closedBall hw)))
   have hzH : z ∈ Hs := show 0 < z.im by linarith
-  have hφ : HasDerivAt φ 0 z := h0 ▸ (hd.differentiableAt (SiegelModel.isOpen_Hs.mem_nhds hzH)).hasDerivAt
+  have hφ : HasDerivAt φ 0 z := h0 ▸ (hd.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds hzH)).hasDerivAt
   have he : HasDerivAt (fun w : ℂ => Complex.exp (2 * Real.pi * Complex.I * w))
       (Complex.exp (2 * Real.pi * Complex.I * z) * (2 * Real.pi * Complex.I)) z := by
     simpa using ((hasDerivAt_id z).const_mul (2 * Real.pi * Complex.I : ℂ)).cexp
@@ -488,7 +489,7 @@ private theorem onto (φ : ℂ → ℂ) (hd : DifferentiableOn ℂ φ Hs)
   have hzH : ((t + 2 : ℝ) : ℂ) * Complex.I ∈ Hs := by simp [Hs]; linarith
   refine deriv_ne φ hd t ht h (((t + 2 : ℝ) : ℂ) * Complex.I) (by simp) ?_
   have hev : φ =ᶠ[𝓝 (((t + 2 : ℝ) : ℂ) * Complex.I)] fun _ => c⁻¹ + a := by
-    filter_upwards [SiegelModel.isOpen_Hs.mem_nhds hzH] with w hw
+    filter_upwards [isOpen_upperHalfPlaneSet.mem_nhds hzH] with w hw
     rw [← hcc w hw]
     simp
   rw [hev.deriv_eq, deriv_const]
@@ -542,7 +543,7 @@ private theorem order_inv (φ : ℂ → ℂ)
     ring
   rw [← analyticOrderAt_comp_of_deriv_ne_zero han hD0]
   apply analyticOrderAt_congr
-  filter_upwards [SiegelModel.isOpen_Hs.mem_nhds hτ] with w hw
+  filter_upwards [isOpen_upperHalfPlaneSet.mem_nhds hτ] with w hw
   simp only [Function.comp_apply, hinv γ w hw, hinv γ τ hτ]
 
 end UpperTheory.Kd.K4.BoundedOrderUnits
@@ -556,7 +557,7 @@ theorem UpperTheory.Kd.K4.jan :
   have hinv := _root_.GlobalTheory.KZ.InvFun.fun_inv X X.jK φ hd.continuousOn hφ X.j_inv
   obtain ⟨t, ht, h⟩ := near_one X φ hφ hd.continuousOn
   have hne := deriv_ne φ hd t ht h
-  have han := hd.analyticOnNhd SiegelModel.isOpen_Hs
+  have han := hd.analyticOnNhd isOpen_upperHalfPlaneSet
   obtain ⟨E, hE⟩ := bdd_order (deriv φ) han.deriv (((t + 2 : ℝ) : ℂ) * Complex.I) (by simp [Hs]; linarith)
     (hne _ (by simp)) (Set.Icc (-1) 1 ×ℂ Set.Icc (1 / 2) (t + 1)) (isCompact_Icc.reProdIm isCompact_Icc)
     (fun z hz => lt_of_lt_of_le (by norm_num) hz.2.1)
@@ -588,6 +589,7 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open GlobalTheory.KZ GlobalTheory.K4 UpperTheory.Kd.K4 Polynomial
 open scoped Matrix MatrixGroups
 
@@ -667,7 +669,8 @@ private theorem eventually_eq_of_mero_coe_eq {τ : ℂ} (hτ : τ ∈ Hs) {f g :
     ∀ᶠ y in nhdsWithin τ {τ}ᶜ, f y = g y := by
   rw [Filter.Germ.coe_eq] at h
   have h1 := (mem_codiscreteWithin.1 h) τ hτ
-  have h2 : Hs ∈ nhdsWithin τ {τ}ᶜ := mem_nhdsWithin_of_mem_nhds (H3.isOpen_Hs_place.mem_nhds hτ)
+  have h2 : Hs ∈ nhdsWithin τ {τ}ᶜ :=
+    mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)
   filter_upwards [h2, Filter.disjoint_principal_right.1 h1] with y hy1 hy2
   by_contra hne
   exact hy2 ⟨hy1, hne⟩
@@ -676,8 +679,9 @@ private theorem analyticOrderAt_finite_of_mero_ne_zero {τ : ℂ} (hτ : τ ∈ 
     (hb : (b : Mero) ≠ 0) : analyticOrderAt b τ ≠ ⊤ := by
   intro htop
   apply hb
-  have hE := (hd.analyticOnNhd H3.isOpen_Hs_place).eqOn_zero_of_preconnected_of_eventuallyEq_zero
-    H3.isConnected_Hs_place.isPreconnected hτ (analyticOrderAt_eq_top.1 htop)
+  have hE :=
+    (hd.analyticOnNhd isOpen_upperHalfPlaneSet).eqOn_zero_of_preconnected_of_eventuallyEq_zero
+      H3.isConnected_Hs_place.isPreconnected hτ (analyticOrderAt_eq_top.1 htop)
   rw [← Filter.Germ.coe_zero, Filter.Germ.coe_eq]
   have hmem : Hs ∈ Filter.codiscreteWithin Hs := by
     rw [mem_codiscreteWithin]
@@ -691,7 +695,7 @@ private theorem mero_coe_ne_zero_of_analyticOrderAt_finite {τ : ℂ} (hτ : τ 
   intro h
   rw [← Filter.Germ.coe_zero] at h
   have h1 := eventually_eq_of_mero_coe_eq hτ h
-  have ha : AnalyticAt ℂ b τ := (hd.analyticOnNhd H3.isOpen_Hs_place) τ hτ
+  have ha : AnalyticAt ℂ b τ := (hd.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
   rcases ha.eventually_eq_zero_or_eventually_ne_zero with h2 | h2
   · exact hb (analyticOrderAt_eq_top.2 h2)
   · obtain ⟨y, hy1, hy2⟩ := (h1.and h2).exists
@@ -852,8 +856,8 @@ private theorem mem_and_inv_mem_of_analyticOrderAt_eq {Ω : Type} [Field Ω] [Al
     intro w a b ha hb hab hord hfin
     rw [hW]
     refine H3.exists_analyticAt_of_order_nonneg X hτ w a b ha hb (mero_coe_ne_zero_of_analyticOrderAt_finite hτ hb hfin) hab ?_
-    have ha' : AnalyticAt ℂ a τ := (ha.analyticOnNhd H3.isOpen_Hs_place) τ hτ
-    have hb' : AnalyticAt ℂ b τ := (hb.analyticOnNhd H3.isOpen_Hs_place) τ hτ
+    have ha' : AnalyticAt ℂ a τ := (ha.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
+    have hb' : AnalyticAt ℂ b τ := (hb.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
     rw [div_eq_mul_inv, meromorphicOrderAt_mul ha'.meromorphicAt hb'.meromorphicAt.inv,
       meromorphicOrderAt_inv, ha'.meromorphicOrderAt_eq, hb'.meromorphicOrderAt_eq, hord]
     obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.1 hfin
@@ -872,9 +876,9 @@ private theorem mem_and_inv_mem_of_pow_div_pow_of_orders {Ω : Type} [Field Ω] 
     (E m1 m2 nA nB ne : ℕ) (hA : analyticOrderAt a1 τ = nA) (hB : analyticOrderAt b1 τ = nB)
     (he : analyticOrderAt g τ = ne) (hm : E * nA + m2 * ne = E * nB + m1 * ne) :
     xs ^ E / (t ^ m1 / t ^ m2) ∈ W ∧ (xs ^ E / (t ^ m1 / t ^ m2))⁻¹ ∈ W := by
-  have ha1' : AnalyticAt ℂ a1 τ := (ha1.analyticOnNhd H3.isOpen_Hs_place) τ hτ
-  have hb1' : AnalyticAt ℂ b1 τ := (hb1.analyticOnNhd H3.isOpen_Hs_place) τ hτ
-  have hg' : AnalyticAt ℂ g τ := (hg.analyticOnNhd H3.isOpen_Hs_place) τ hτ
+  have ha1' : AnalyticAt ℂ a1 τ := (ha1.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
+  have hb1' : AnalyticAt ℂ b1 τ := (hb1.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
+  have hg' : AnalyticAt ℂ g τ := (hg.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
   have hz : xs ^ E / (t ^ m1 / t ^ m2) * t ^ m1 = xs ^ E * t ^ m2 := by
     field_simp
   have hne : xs ^ E / (t ^ m1 / t ^ m2) ≠ 0 :=
@@ -894,7 +898,7 @@ private theorem mem_and_inv_mem_of_pow_div_pow_of_orders {Ω : Type} [Field Ω] 
   · rw [analyticOrderAt_mul (hb1'.pow E) (hg'.pow m1), analyticOrderAt_pow hb1', analyticOrderAt_pow hg',
       hB, he]
     simp only [nsmul_eq_mul]
-    exact_mod_cast ENat.coe_ne_top (E * nB + m1 * ne)
+    exact_mod_cast ENat.natCast_ne_top (E * nB + m1 * ne)
 
 open UpperTheory.Kd.K4.EisensteinBasis in
 theorem UpperTheory.Kd.K4.eb :
@@ -948,7 +952,7 @@ theorem UpperTheory.Kd.K4.eb :
     have hgd : DifferentiableOn ℂ g Hs := by
       rw [hg]
       exact hφd.sub (differentiableOn_const _)
-    have hg' : AnalyticAt ℂ g τ := (hgd.analyticOnNhd H3.isOpen_Hs_place) τ hτ
+    have hg' : AnalyticAt ℂ g τ := (hgd.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ
     have htg : X.an (X.jK - algebraMap Ω X.K c) = (g : Mero) := by
       rw [map_sub, hφ, X.an_c, hg, Filter.Germ.coe_sub]
     have hgτ : g τ = 0 := by
@@ -1003,7 +1007,7 @@ theorem UpperTheory.Kd.K4.eb :
         funext s
         simp [hτc]
       rwa [h'] at h
-    obtain ⟨ne, he⟩ := ENat.ne_top_iff_exists.1 (ne_top_of_le_ne_top (ENat.coe_ne_top E0) hgle)
+    obtain ⟨ne, he⟩ := ENat.ne_top_iff_exists.1 (ne_top_of_le_ne_top (ENat.natCast_ne_top E0) hgle)
     have hne0 : ne ≠ 0 := by
       intro h0
       apply (hg'.analyticOrderAt_eq_zero).1 (by rw [← he, h0, Nat.cast_zero])

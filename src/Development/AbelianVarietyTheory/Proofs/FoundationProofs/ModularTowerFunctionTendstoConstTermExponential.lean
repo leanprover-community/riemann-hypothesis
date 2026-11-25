@@ -9,6 +9,7 @@ public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped MatrixGroups
 open GlobalTheory.KZ
 
@@ -52,7 +53,7 @@ theorem series_bound (a : ℕ → ℂ) (ψ : ℂ → ℂ) (C : ℝ)
     rw [hnorm]
     have e : Real.exp (-(2 * Real.pi * ((n + 1 : ℕ) : ℝ) * w.im)) =
         Real.exp (-(2 * Real.pi * ((n + 1 : ℕ) : ℝ) * t0)) * ρ ^ (n + 1) := by
-      rw [hρ, ← Real.exp_nat_mul, ← Real.exp_add]
+      rw [hρ, ← Real.exp_natCast_mul, ← Real.exp_add]
       congr 1
       ring
     rw [e, ← mul_assoc, mul_assoc B0, ← pow_succ']
@@ -88,7 +89,7 @@ theorem bound_at_infinity : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω
   refine ⟨B, t, fun z hz htz => ?_⟩
   have hev : φ =ᶠ[Filter.codiscreteWithin Hs] φ' := Filter.Germ.coe_eq.mp (hφ.symm.trans hφ')
   have h1 := mem_codiscreteWithin_iff_forall_mem_nhdsNE.mp hev z hz
-  have hHs : Hs ∈ nhds z := SiegelModel.isOpen_Hs.mem_nhds hz
+  have hHs : Hs ∈ nhds z := isOpen_upperHalfPlaneSet.mem_nhds hz
   have h2 : Hs ∈ nhdsWithin z {z}ᶜ := mem_nhdsWithin_of_mem_nhds hHs
   have h3 : {w : ℂ | t < w.im} ∈ nhdsWithin z {z}ᶜ :=
     mem_nhdsWithin_of_mem_nhds ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds htz)

@@ -194,7 +194,7 @@ theorem GlobalTheory.KZ.H3.uhp_root : ∀ (h : ℂ → ℂ) (m : ℕ), 0 < m →
   have hc0 : cen 0 ∈ Hs := closedBall_sub 0 (Metric.mem_closedBall_self (rad_pos 0).le)
   obtain ⟨k0, hk0⟩ := hord (cen 0) hc0
   have hnt : ¬ ∀ᶠ z in nhds (cen 0), h z = 0 := by
-    rw [← analyticOrderAt_eq_top, hk0]; exact ENat.coe_ne_top _
+    rw [← analyticOrderAt_eq_top, hk0]; exact ENat.natCast_ne_top _
   obtain ⟨z0, hz0h, hz0D⟩ := ((Filter.not_eventually.1 hnt).and_eventually
     (Metric.ball_mem_nhds (cen 0) (rad_pos 0))).exists
   obtain ⟨w0, hw0⟩ := IsAlgClosed.exists_pow_nat_eq (h z0) hm
@@ -248,6 +248,7 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups TensorProduct
 open Filter Topology
@@ -255,8 +256,6 @@ open Filter Topology
 noncomputable section
 
 namespace GlobalTheory.KZ.H3.UnRoot
-
-alias isOpen_Hs := _root_.GlobalTheory.KZ.H3.isOpen_Hs_place
 
 lemma isPreconnected_Hs : IsPreconnected Hs :=
   (convex_halfSpace_gt Complex.imLm.isLinear (0:ℝ)).isPreconnected
@@ -266,7 +265,7 @@ lemma eventually_of_germ_eq {φ ψ : ℂ → ℂ} (h : (φ : Mero) = (ψ : Mero)
   have h' : ∀ᶠ z in codiscreteWithin Hs, φ z = ψ z := Filter.Germ.coe_eq.mp h
   rw [Filter.eventually_iff, mem_codiscreteWithin] at h'
   have hd := Filter.disjoint_principal_right.mp (h' τ hτ)
-  have hH : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hτ)
+  have hH : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)
   filter_upwards [hH, hd] with z hz1 hz2
   by_contra hne
   exact hz2 ⟨hz1, hne⟩
@@ -286,7 +285,7 @@ lemma order_ne_top {a : ℂ → ℂ} (ha : DifferentiableOn ℂ a Hs) (h0 : (a :
     analyticOrderAt a τ ≠ ⊤ := by
   intro htop
   apply h0
-  have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_Hs
+  have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_upperHalfPlaneSet
   have hz := hA.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_Hs hτ
     (analyticOrderAt_eq_top.mp htop)
   have : ∀ᶠ z in codiscreteWithin Hs, a z = (0 : ℂ → ℂ) z :=
@@ -319,7 +318,7 @@ theorem exists_isRoot_of_mem_Un : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (�
   have ha0ne : (a0 : Mero) ≠ 0 := num_ne_zero X f hb0ne hf0
   obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
   have hA : ∀ {c : ℂ → ℂ}, DifferentiableOn ℂ c Hs → ∀ τ ∈ Hs, AnalyticAt ℂ c τ :=
-    fun hc τ hτ => hc.analyticOnNhd isOpen_Hs τ hτ
+    fun hc τ hτ => hc.analyticOnNhd isOpen_upperHalfPlaneSet τ hτ
   have hord : ∀ τ ∈ Hs, ∃ k : ℕ, analyticOrderAt (a0 * b0 ^ m') τ = (((m' + 1) * k : ℕ) : ℕ∞) := by
     intro τ hτ
     obtain ⟨W, hW, hWmem⟩ := _root_.GlobalTheory.KZ.H3.exists_place_at_point Ω ε X hj τ hτ
@@ -507,7 +506,7 @@ namespace GlobalTheory.KZ.H3
 theorem exp_pow_reduce (l n v : ℕ) (hl : l ≠ 0) :
     Complex.exp (2 * Real.pi * Complex.I * (v : ℂ) / ((l : ℂ) ^ (n + 1))) ^ l =
       Complex.exp (2 * Real.pi * Complex.I * ((v % l ^ n : ℕ) : ℂ) / ((l : ℂ) ^ n)) := by
-  rw [← Complex.exp_nat_mul]
+  rw [← Complex.exp_natCast_mul]
   have hl' : (l : ℂ) ≠ 0 := by exact_mod_cast hl
   have hv : (v : ℂ) = ((v % l ^ n : ℕ) : ℂ) + (l : ℂ) ^ n * ((v / l ^ n : ℕ) : ℂ) := by
     exact_mod_cast (Nat.mod_add_div v (l ^ n)).symm
@@ -822,7 +821,7 @@ theorem kum_near : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* �
   have ex : ∀ v : ℕ, Complex.exp (2 * Real.pi * Complex.I * (v : ℂ) / ((l : ℂ) ^ n)) =
       (Complex.exp (2 * Real.pi * Complex.I / ((l ^ n : ℕ) : ℂ))) ^ v := by
     intro v
-    rw [← Complex.exp_nat_mul]
+    rw [← Complex.exp_natCast_mul]
     congr 1
     push_cast
     ring

@@ -18,6 +18,7 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped MatrixGroups
 open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
 
@@ -27,8 +28,6 @@ namespace GlobalTheory.KZ.LevelOneFrac
 
 open Filter Topology Polynomial
 
-alias isOpen_Hs' := _root_.GlobalTheory.KZ.SiegelModel.isOpen_Hs
-
 theorem isConnected_Hs' : IsConnected Hs :=
   ⟨⟨Complex.I, by simp [Hs]⟩, (convex_halfSpace_im_gt (0 : ℝ)).isPreconnected⟩
 
@@ -36,7 +35,7 @@ theorem eventually_nhdsNE {P : ℂ → Prop} (h : ∀ᶠ w in codiscreteWithin H
     ∀ᶠ w in 𝓝[≠] z, P w := by
   rw [Filter.Eventually, mem_codiscreteWithin] at h
   have h1 := Filter.disjoint_principal_right.1 (h z hz)
-  have h2 : ∀ᶠ w in 𝓝[≠] z, w ∈ Hs := nhdsWithin_le_nhds (isOpen_Hs'.mem_nhds hz)
+  have h2 : ∀ᶠ w in 𝓝[≠] z, w ∈ Hs := nhdsWithin_le_nhds (isOpen_upperHalfPlaneSet.mem_nhds hz)
   filter_upwards [h1, h2] with w hw1 hw2
   by_contra hP
   exact hw1 ⟨hw2, hP⟩
@@ -87,7 +86,7 @@ theorem exists_differentiableOn {h : ℂ → ℂ} (hm : MeromorphicOn h Hs) (n :
   · exact ha.differentiableAt.differentiableWithinAt
   · rw [meromorphicOrderAt_toMeromorphicNFOn hm hz] at hneg
     exact absurd hneg (not_order_neg n c
-      (fun i => (hc i).continuousOn.continuousAt (isOpen_Hs'.mem_nhds hz)) (eventually_nhdsNE hrel hz))
+      (fun i => (hc i).continuousOn.continuousAt (isOpen_upperHalfPlaneSet.mem_nhds hz)) (eventually_nhdsNE hrel hz))
 
 end GlobalTheory.KZ.LevelOneFrac
 
@@ -99,8 +98,8 @@ theorem germ_differentiableOn (G : Mero) (a b : ℂ → ℂ) (ha : Differentiabl
     (hb0 : (b : Mero) ≠ 0) (hab : G * (b : Mero) = (a : Mero)) (p : Mero[X]) (hp : p.Monic)
     (hc : ∀ i, ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ p.coeff i = (φ : Mero)) (he : p.eval G = 0) :
     ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ G = (φ : Mero) := by
-  have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_Hs'
-  have hB : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_Hs'
+  have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_upperHalfPlaneSet
+  have hB : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_upperHalfPlaneSet
   have hx : ∃ x ∈ Hs, b x ≠ 0 := by
     by_contra h
     push Not at h

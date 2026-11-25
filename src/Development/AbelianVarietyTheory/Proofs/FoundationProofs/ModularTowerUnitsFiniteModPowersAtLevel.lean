@@ -34,12 +34,11 @@ import Mathlib.Tactic.Linter.HaveILetI
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open Matrix GlobalTheory.KZ
 open Filter Topology
 
 namespace GlobalTheory.KZ
-
-theorem hs_isOpen : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
 
 theorem mero_eq_zero_of_eventually {a : ℂ → ℂ} (ha : AnalyticOnNhd ℂ a Hs) {τ : ℂ} (hτ : τ ∈ Hs)
     (h : a =ᶠ[𝓝 τ] 0) : (a : Mero) = 0 := by
@@ -50,14 +49,14 @@ theorem Tower.an_meromorphicAt {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω 
     (φ : ℂ → ℂ) (hφ : X.an x = (φ : Mero)) (τ : ℂ) (hτ : τ ∈ Hs) :
     MeromorphicAt φ τ ∧ (x ≠ 0 → meromorphicOrderAt φ τ ≠ ⊤) := by
   obtain ⟨a, b, ha, hb, hb0, hab⟩ := X.an_mero x
-  have ha' : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd hs_isOpen
-  have hb' : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd hs_isOpen
+  have ha' : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_upperHalfPlaneSet
+  have hb' : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_upperHalfPlaneSet
 
   rw [hφ] at hab
   have hrel : ∀ᶠ z in codiscreteWithin Hs, φ z * b z = a z := Filter.Germ.coe_eq.1 hab
   have hrel' : ∀ᶠ z in 𝓝[≠] τ, φ z * b z = a z := by
     have h1 := (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 hrel) τ hτ
-    have h2 : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (hs_isOpen.mem_nhds hτ)
+    have h2 : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)
     filter_upwards [h1, h2] with z hz1 hz2
     rcases hz1 with hz1 | hz1
     · exact hz1
@@ -265,6 +264,7 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open Matrix GlobalTheory.KZ
 open Filter Topology
 
@@ -272,13 +272,11 @@ noncomputable section
 
 namespace GlobalTheory.KZ.ValAt
 
-theorem isOpen_Hs : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
-
 theorem nhdsNE_of_germ_eq {τ : ℂ} (hτ : τ ∈ Hs) {φ ψ : ℂ → ℂ} (h : (φ : Mero) = (ψ : Mero)) :
     φ =ᶠ[𝓝[≠] τ] ψ := by
   rw [Filter.Germ.coe_eq] at h
   have h1 := (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 h) τ hτ
-  have h2 : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hτ)
+  have h2 : Hs ∈ 𝓝[≠] τ := mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)
   filter_upwards [h1, h2] with z hz hz'
   rcases hz with hz | hz
   · exact hz
@@ -307,11 +305,6 @@ theorem ord_eq (X : Tower Ω ε) {τ : ℂ} (hτ : τ ∈ Hs) {x : X.K} {φ : �
 open Matrix in
 open Filter Topology in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
-private alias isOpen_upperHalfPlaneSet' := _root_.GlobalTheory.KZ.ValAt.isOpen_Hs
-
-open Matrix in
-open Filter Topology in
-variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private theorem eventuallyEq_nhdsNE_of_mero_coe_eq {φ ψ : ℂ → ℂ}
     (h : (φ : _root_.GlobalTheory.KZ.Mero) = ψ) {τ : ℂ} (hτ : τ ∈ _root_.GlobalTheory.KZ.Hs) :
     φ =ᶠ[𝓝[≠] τ] ψ := by
@@ -319,7 +312,7 @@ private theorem eventuallyEq_nhdsNE_of_mero_coe_eq {φ ψ : ℂ → ℂ}
   rw [Filter.EventuallyEq, Filter.Eventually, mem_codiscreteWithin] at h'
   have hd := h' τ hτ
   rw [Filter.disjoint_principal_right] at hd
-  filter_upwards [hd, nhdsWithin_le_nhds (isOpen_upperHalfPlaneSet'.mem_nhds hτ)] with z h1 h2
+  filter_upwards [hd, nhdsWithin_le_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)] with z h1 h2
   by_contra hne
   exact h1 ⟨h2, hne⟩
 
@@ -341,7 +334,7 @@ private theorem eventually_ne_zero_nhdsNE_of_mero_coe_ne_zero {b : ℂ → ℂ}
     (hb : DifferentiableOn ℂ b _root_.GlobalTheory.KZ.Hs)
     (hb0 : (b : _root_.GlobalTheory.KZ.Mero) ≠ 0) {τ : ℂ}
     (hτ : τ ∈ _root_.GlobalTheory.KZ.Hs) : ∀ᶠ z in 𝓝[≠] τ, b z ≠ 0 := by
-  have ha := hb.analyticOnNhd isOpen_upperHalfPlaneSet'
+  have ha := hb.analyticOnNhd isOpen_upperHalfPlaneSet
   rcases (ha τ hτ).eventually_eq_zero_or_eventually_ne_zero with h | h
   · exfalso
     apply hb0
@@ -374,8 +367,8 @@ private theorem meromorphicAt_rep_of_mem_upperHalfPlaneSet (X : _root_.GlobalThe
     (x : X.K) {τ : ℂ} (hτ : τ ∈ _root_.GlobalTheory.KZ.Hs) :
     MeromorphicAt (_root_.GlobalTheory.KZ.ValAt.rep X x) τ := by
   obtain ⟨a, b, ha, hb, h⟩ := exists_differentiableOn_rep_eventuallyEq_div X x hτ
-  have ha' := (ha.analyticOnNhd isOpen_upperHalfPlaneSet' τ hτ).meromorphicAt
-  have hb' := (hb.analyticOnNhd isOpen_upperHalfPlaneSet' τ hτ).meromorphicAt
+  have ha' := (ha.analyticOnNhd isOpen_upperHalfPlaneSet τ hτ).meromorphicAt
+  have hb' := (hb.analyticOnNhd isOpen_upperHalfPlaneSet τ hτ).meromorphicAt
   exact (ha'.div hb').congr h.symm
 
 open Matrix in
@@ -472,7 +465,7 @@ theorem exists_place {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
   refine ⟨place X hτ, ⟨fun c => ord_const X hτ c, ?_⟩, fun x hx φ hφ => ?_⟩
   · obtain ⟨φ, h, hφ⟩ := X.j_hol
     rw [mem_place, ord_eq X hτ h]
-    exact (hφ.analyticOnNhd isOpen_Hs τ hτ).meromorphicOrderAt_nonneg
+    exact (hφ.analyticOnNhd isOpen_upperHalfPlaneSet τ hτ).meromorphicOrderAt_nonneg
   · have h0 : x ≠ 0 := by
       rintro rfl
       simp at hx
@@ -497,6 +490,7 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
 open Filter Topology
@@ -511,12 +505,10 @@ end GlobalTheory.KZ.MeroRoot
 
 namespace GlobalTheory.KZ.MeroRoot
 
-alias isOpen_Hs := _root_.GlobalTheory.KZ.ValAt.isOpen_Hs
-
 theorem nhdsNE_of_codisc {F G : ℂ → ℂ} (hFG : F =ᶠ[codiscreteWithin Hs] G) {τ : ℂ} (hτ : τ ∈ Hs) :
     F =ᶠ[𝓝[≠] τ] G := by
   have h1 := (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 hFG) τ hτ
-  have h2 : Hs ∈ 𝓝[≠] τ := nhdsWithin_le_nhds (isOpen_Hs.mem_nhds hτ)
+  have h2 : Hs ∈ 𝓝[≠] τ := nhdsWithin_le_nhds (isOpen_upperHalfPlaneSet.mem_nhds hτ)
   filter_upwards [h1, h2] with z hz1 hz2
   rcases hz1 with hz | hz
   · exact hz
@@ -549,7 +541,7 @@ theorem orders_dvd {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (
   have hgm := (_root_.GlobalTheory.KZ.Tower.an_meromorphicAt X _ φg hφg τ hτ).1
   have hψm := (_root_.GlobalTheory.KZ.Tower.an_meromorphicAt X _ ψ hψ τ hτ).1
   have hbm : MeromorphicAt b τ :=
-    ((hb.analyticOnNhd isOpen_Hs) τ hτ).meromorphicAt
+    ((hb.analyticOnNhd isOpen_upperHalfPlaneSet) τ hτ).meromorphicAt
 
   have e1 : (φf : Mero) = ((fun z => ψ z * φg z ^ m : ℂ → ℂ) : Mero) := by
     have : (f : X.K) = ((f : X.K) / (g : X.K) ^ m) * (g : X.K) ^ m := by
@@ -603,14 +595,14 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
+
 noncomputable section
 
 open scoped MatrixGroups
 open Matrix GlobalTheory.KZ Filter Topology
 
 namespace GlobalTheory.KZ.FinLev
-
-alias isOpen_Hs := _root_.GlobalTheory.KZ.ValAt.isOpen_Hs
 
 theorem germ_eq_of_eqOn {φ ψ : ℂ → ℂ} (h : ∀ z ∈ Hs, φ z = ψ z) : (φ : Mero) = (ψ : Mero) := by
   rw [Filter.Germ.coe_eq]
@@ -675,7 +667,7 @@ theorem const_of_pow_eq {u v : ℂ → ℂ} (hu : DifferentiableOn ℂ u Hs) (hv
   set ζ := u z₀ / v z₀ with hζdef
   have hζ : ζ ^ m = 1 := by rw [hζdef, div_pow, h z₀ hz₀, div_self (pow_ne_zero _ hv0)]
   refine ⟨ζ, hζ, ?_⟩
-  have hn : Hs ∈ 𝓝 z₀ := isOpen_Hs.mem_nhds hz₀
+  have hn : Hs ∈ 𝓝 z₀ := isOpen_upperHalfPlaneSet.mem_nhds hz₀
   have hvc : ContinuousAt v z₀ := hv.continuousOn.continuousAt hn
   have hcont : ContinuousAt (fun z => u z / v z) z₀ := (hu.continuousOn.continuousAt hn).div hvc hv0
   let T : Finset ℂ := (Polynomial.nthRootsFinset m (1 : ℂ)).erase ζ
@@ -691,8 +683,9 @@ theorem const_of_pow_eq {u v : ℂ → ℂ} (hu : DifferentiableOn ℂ u Hs) (hv
       by_contra hne
       exact h1 (Finset.mem_erase.2 ⟨hne, hmem⟩)
     rw [← he, div_mul_cancel₀ _ h2]
-  have hua : AnalyticOnNhd ℂ u Hs := hu.analyticOnNhd isOpen_Hs
-  have hva : AnalyticOnNhd ℂ (fun z => ζ * v z) Hs := (hv.const_mul ζ).analyticOnNhd isOpen_Hs
+  have hua : AnalyticOnNhd ℂ u Hs := hu.analyticOnNhd isOpen_upperHalfPlaneSet
+  have hva : AnalyticOnNhd ℂ (fun z => ζ * v z) Hs :=
+    (hv.const_mul ζ).analyticOnNhd isOpen_upperHalfPlaneSet
   exact fun z hz => hua.eqOn_of_preconnected_of_eventuallyEq hva _root_.GlobalTheory.FN.isPreconnected_Hs hz₀ hloc hz
 
 end GlobalTheory.KZ.FinLev

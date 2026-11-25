@@ -6,20 +6,20 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.MultipliableAndS
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
+
 open scoped UpperHalfPlane MatrixGroups
 
 namespace GlobalTheory.KZ.SiegelModel
 
 open GlobalTheory.Sieg GlobalTheory.Sieg.Model
 
-theorem isOpen_Hs : IsOpen Hs :=
-  isOpen_lt continuous_const Complex.continuous_im
-
 theorem neBot_Hs : (Filter.codiscreteWithin Hs).NeBot := by
   have hI : Complex.I ∈ Hs := by simp [Hs]
   have hloc : nhdsWithin Complex.I (Hs \ {Complex.I}) = nhdsWithin Complex.I {Complex.I}ᶜ := by
     rw [Set.sdiff_eq]
-    exact nhdsWithin_inter_of_mem (mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hI))
+    exact nhdsWithin_inter_of_mem
+      (mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hI))
   have hne : (nhdsWithin Complex.I (Hs \ {Complex.I})).NeBot := by
     rw [hloc]
     infer_instance

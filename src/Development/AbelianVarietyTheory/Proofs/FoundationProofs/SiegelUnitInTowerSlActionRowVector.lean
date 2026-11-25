@@ -14,6 +14,8 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
+
 noncomputable section
 
 open scoped UpperHalfPlane MatrixGroups
@@ -32,7 +34,7 @@ theorem neBot_Hs : (Filter.codiscreteWithin Hs).NeBot := by
   have h1 := hmem Complex.I hI
   rw [Set.sdiff_empty, Filter.disjoint_principal_right] at h1
   have h2 : Hs ∈ nhdsWithin Complex.I {Complex.I}ᶜ :=
-    mem_nhdsWithin_of_mem_nhds (GlobalTheory.KZ.SiegelModel.isOpen_Hs.mem_nhds hI)
+    mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hI)
   have h3 := Filter.inter_mem h1 h2
   rw [Set.compl_inter_self] at h3
   simpa using Filter.nonempty_of_mem h3

@@ -6,6 +6,7 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
+open UpperHalfPlane (isOpen_upperHalfPlaneSet)
 open scoped MatrixGroups
 open GlobalTheory.KZ
 
@@ -53,16 +54,16 @@ theorem fun_inv {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X :
   have e := X.an_sl (ofSL γ) h φ han
   rw [hinv γ, han, Filter.Germ.coe_eq] at e
   have h1 := (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 e) z hz
-  have h2 : Hs ∈ 𝓝[≠] z := mem_nhdsWithin_of_mem_nhds (SiegelModel.isOpen_Hs.mem_nhds hz)
+  have h2 : Hs ∈ 𝓝[≠] z := mem_nhdsWithin_of_mem_nhds (isOpen_upperHalfPlaneSet.mem_nhds hz)
   have hev : (fun w => φ (mob (ofSL γ) w)) =ᶠ[𝓝[≠] z] φ := by
     filter_upwards [h1, h2] with w hw1 hw2
     rcases hw1 with hw | hw
     · exact hw.symm
     · exact absurd hw2 hw
-  have hc1 : ContinuousAt φ z := hφ.continuousAt (SiegelModel.isOpen_Hs.mem_nhds hz)
+  have hc1 : ContinuousAt φ z := hφ.continuousAt (isOpen_upperHalfPlaneSet.mem_nhds hz)
   have hc2 : ContinuousAt (fun w => φ (mob (ofSL γ) w)) z :=
     ContinuousAt.comp (f := mob (ofSL γ)) (g := φ)
-      (hφ.continuousAt (SiegelModel.isOpen_Hs.mem_nhds (mob_ofSL_mem γ hz))) (continuousAt_mob_ofSL γ hz)
+      (hφ.continuousAt (isOpen_upperHalfPlaneSet.mem_nhds (mob_ofSL_mem γ hz))) (continuousAt_mob_ofSL γ hz)
   have t1 : Tendsto (fun w => φ (mob (ofSL γ) w)) (𝓝[≠] z) (𝓝 (φ (mob (ofSL γ) z))) :=
     hc2.tendsto.mono_left nhdsWithin_le_nhds
   have t2 : Tendsto (fun w => φ (mob (ofSL γ) w)) (𝓝[≠] z) (𝓝 (φ z)) :=
