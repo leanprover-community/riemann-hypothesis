@@ -1754,9 +1754,9 @@ class DescriptionCheck(unittest.TestCase):
         gh = self.built()
         gh.push(12, "head12-later")  # after it was merged in, before the workflow first looks
         sync(gh)
-        # Queued, then pushed to before the batch was looked through: still queued at the old commit.
-        # (`changed after frozen` comes with the push, from `pushed`, not from a sync.)
-        self.assertEqual(gh.pulls[12]["labels"], QF)
+        # Queued, then pushed to before the batch was looked through: still queued at the old commit,
+        # which the sync, too, now says.
+        self.assertEqual(gh.pulls[12]["labels"], QF | {CHANGED})
         [check] = self.checks(gh)
         self.assertIn("head commit is not in this branch: #12.", check)
         self.assertIn("pushed to after it was merged in but before the workflow first looked through the batch", check)
