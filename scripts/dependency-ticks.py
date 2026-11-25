@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Tick the `depends on` boxes in open pull requests' descriptions once the dependency has landed.
+"""Tick the `depends on` boxes in open pull requests' descriptions once the dependency is on main or
+in a batch being built.
 
 The dependencies workflow runs this from its trusted checkout: for the open pull requests whose
 description names a pull request that was just closed, merged or not; for one pull request when
@@ -8,37 +9,63 @@ already; and for every open pull request every hour. Nothing from a pull request
 or run. `pr-dependencies.py` says which lines declare a dependency, such as
 `- [ ] depends on: #123`.
 
-A pull request has landed when it was merged, or when it was closed and its head commit is in
-main. The second covers one whose commits landed through a batch, or through the pull request
-that depends on it, and that was closed rather than marked merged. One compare request answers
-that: main is `ahead_by` nothing on the head when the head is in main.
+A pull request is on main when its head commit is in main, or when it was merged into main. Being
+marked merged is not enough: one merged into a batch's branch, or into any other branch, is marked
+merged long before its changes reach main. A pull request is in a batch being built when its head
+commit is in the head of an open pull request labelled `building` that holds a batch (see
+`holds_batch` in `batch-labels.py`): any batch of a stack, not only the outermost, so that a lower
+batch being repaired counts before the batch on top of it has merged its new head. One compare
+request answers each question: the branch is `ahead_by` nothing on the head when the head is in
+it. Each pull request is compared with main, unless it is open, and then with the head of each
+batch being built, the outermost of a stack first, until one holds it; each comparison is made
+once a run.
 
-A line's box is ticked, `[ ]` becoming `[x]`, once every pull request it names has landed. Only
-that one character changes: the rest of the description stays as it was, byte for byte, line
-endings included. Nothing is ever unticked, and lines without a box, lines in code or comments
-and pull requests of other repositories are left alone. The description is read again just
-before it is written, the ticks are made on that fresh copy, and nothing is written if they
-change nothing, so an author's edit made at the same time is lost only if it falls in those
+GitHub's task boxes have only two states, so a line the workflow ticks says why, in an annotation
+before the pull requests it names, where GitHub shows them as their titles:
+
+- `- [x] depends on: (batched) #123`: every pull request on the line is on main or in a batch being
+  built, and at least one is not on main yet;
+- `- [x] depends on: (main) #123`: every one of them is on main.
+
+An empty box is ticked and annotated as soon as one of these holds, and `(batched)` becomes
+`(main)` once the second does. A line marked `(batched)` whose pull requests no longer all are on
+main or in a batch being built, because one left every batch before it reached main, is unticked
+again and loses its annotation. A line marked `(main)` stays as it is, and so does a box ticked by
+hand without an annotation.
+
+A line that names a pull request holding a batch, and every line in the description of a pull
+request that holds a batch, such as the line that stacks one batch on another, gets no annotation.
+It is ticked, plainly, once every pull request it names is on main, and never unticked: a batch
+that reached main stays there. A batch's changes are only on main once it has landed, so it never
+counts as being in a batch.
+
+Only the box's character and the annotation change: the rest of the description stays as it
+was, byte for byte, line endings included. Lines without a box or with `[]`, lines in code or
+comments and pull requests of other repositories are left alone. The description is read again
+just before it is written, the changes are made on that fresh copy, and nothing is written if
+they change nothing, so an author's edit made at the same time is lost only if it falls in those
 few seconds.
 
-A pull request named on a line that is not ticked may have been closed without landing. Its box
-then stays empty, and the pull request that depends on it is labelled `awaiting-author` and sent
-a comment: its branch probably still carries the closed pull request's changes, so its author
-should merge main and take them out, or take over the work, then edit the description and
-comment `ready`. A hidden marker in the comment names the closed pull request, so it is sent
-once for each. Nothing is said about a dependency that is still open.
+A pull request named on a line whose box is empty may have been closed without landing: neither
+merged nor on main, nor in a batch being built. The pull request that depends on it is then
+labelled `awaiting-author` and sent a comment: its branch probably still carries the closed pull
+request's changes, so its author should merge main and take them out, or take over the work, then
+edit the description and comment `ready`. A hidden marker in the comment names the closed pull
+request, so it is sent once for each. Nothing is said about a dependency that is still open, or
+that was merged into a branch other than main.
 
 Pull requests and their descriptions are read through GitHub's GraphQL API, whose allowance is
 separate from the 1,000 REST requests an hour that the workflow's token shares with every other
-workflow here. What each named pull request is, merged, closed or open and with which head, is
-read once a run. REST is used for the compare, once a run for each closed pull request that was
-not merged, and to write. Writes are spaced a second apart, the run stops when few REST requests
-are left this hour, and the next run carries on. A write counts as done only once GitHub has
-accepted it.
+workflow here. What each named pull request is, which batches are being built and the comments of
+a pull request about to be told something are each read once a run. REST is used for the
+compares and to write. Writes are spaced a second apart, the run stops when few REST requests are
+left this hour, and the next run carries on. A write counts as done only once GitHub has accepted
+it.
 """
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import importlib.util
 from pathlib import Path
 import re
@@ -51,7 +78,7 @@ _REST_SPEC.loader.exec_module(_rest)
 _labels = _rest.load("batch-labels.py")
 _dependencies = _rest.load("pr-dependencies.py")
 quoted = _rest.quoted
-WAITING = _labels.WAITING
+WAITING, BUILDING, LATEST = _labels.WAITING, _labels.BUILDING, _labels.LATEST
 # How GraphQL names the workflow's own account, which REST calls github-actions[bot].
 BOT = _rest.GRAPHQL_BOT
 # Stop when fewer REST requests than this are left for the hour (see `github-rest.py`).
@@ -59,11 +86,17 @@ RESERVE = _rest.RESERVE
 # Hidden at the start of the comment sent about a dependency closed without landing.
 MARKER = "<!-- dependency-ticks-closed {number} -->"
 TOLD = re.compile(r"<!-- dependency-ticks-closed (\d+) -->")
+# The annotations of a ticked line (see `pr-dependencies.py`).
+BATCHED, MAIN = "batched", "main"
 
-# What becomes of a pull request named on a line, and how the log says it.
-LANDED, OPEN, DROPPED, UNKNOWN, MISSING = "landed", "open", "dropped", "unknown", "missing"
+# What becomes of a pull request named on a line, and how the log says it: on main, in a batch being
+# built, open, merged into another branch and in no batch being built, closed without landing, not
+# known, or not a pull request.
+LANDED, IN_BATCH, OPEN, ELSEWHERE, DROPPED, UNKNOWN, MISSING = (
+    "landed", "in a batch", "open", "elsewhere", "dropped", "unknown", "missing")
 
-FIELDS = "number state body labels(first: 100) { nodes { name } }"
+HEAD = "headRefName headRefOid headRepository { nameWithOwner }"
+FIELDS = f"number state body {HEAD} labels(first: 100) {{ nodes {{ name }} }}"
 EVERY = """query($owner: String!, $name: String!, $after: String) {
   rateLimit { cost remaining }
   repository(owner: $owner, name: $name) {
@@ -81,13 +114,20 @@ ONE = """query($owner: String!, $name: String!, $number: Int!) {
     pullRequest(number: $number) { %s }
   }
 }""" % FIELDS
+# The open pull requests labelled `building`, of which those that hold a batch are being built.
+BUILT = """query($owner: String!, $name: String!) {
+  rateLimit { cost remaining }
+  repository(owner: $owner, name: $name) {
+    pullRequests(states: OPEN, labels: ["%s"], first: 100) { nodes { number %s labels(first: 100) { nodes { name } } } }
+  }
+}""" % (BUILDING, HEAD)
 # Issues and pull requests by number. `%s` is a list of `p123: issueOrPullRequest(number: 123)
 # { ... }`, so that a number that is an issue is not an error.
 STATES = """query($owner: String!, $name: String!) {
   rateLimit { cost remaining }
   repository(owner: $owner, name: $name) { %s }
 }"""
-STATE = "__typename ... on PullRequest { number state headRefOid }"
+STATE = f"__typename ... on PullRequest {{ number state baseRefName {HEAD} }}"
 COMMENTS = _rest.COMMENTS
 
 
@@ -98,9 +138,20 @@ class Stopped(Exception):
     """Few REST requests are left this hour: the run stops, and the next one carries on."""
 
 
+@dataclass(frozen=True)
+class Fate:
+    """What became of a pull request named on a line: one of LANDED, IN_BATCH, OPEN, ELSEWHERE,
+    DROPPED, UNKNOWN and MISSING, why, for the log, and whether it holds a batch."""
+
+    kind: str
+    why: str
+    batch: bool = False
+
+
 class GitHub(_rest.GitHub):
     """GitHub's API through `gh` (see `github-rest.py`), with the queries this script reads pull
-    requests with."""
+    requests with. What it compares, and the batches being built, are kept for the run in `_compares`
+    and `_built`."""
 
     def check(self):
         """Stop if the hour's allowance is nearly used up."""
@@ -118,7 +169,7 @@ class GitHub(_rest.GitHub):
             data = self.graphql(EVERY, owner=self.owner, name=self.name, after=after)["repository"]
             page = data["pullRequests"]
             for node in page["nodes"]:
-                found[node["number"]] = pull(node)
+                found[node["number"]] = pull(node, self.repo)
             if not page["pageInfo"]["hasNextPage"]:
                 return data["defaultBranchRef"]["name"], found
             after = page["pageInfo"]["endCursor"]
@@ -127,12 +178,12 @@ class GitHub(_rest.GitHub):
         """The default branch, and pull request `number`, open or not, or None if there is none."""
         data = self.graphql(ONE, missing=True, owner=self.owner, name=self.name, number=number)["repository"]
         node = data["pullRequest"]
-        return data["defaultBranchRef"]["name"], (pull(node) if node else None)
+        return data["defaultBranchRef"]["name"], (pull(node, self.repo) if node else None)
 
     def states(self, numbers):
-        """What each of these numbers is, a hundred to a query, as {number: (state, head commit)}.
-        The state is GraphQL's `OPEN`, `CLOSED` or `MERGED`, or None for an issue or a number
-        that names nothing."""
+        """What each of these numbers is, a hundred to a query, as {number: {"state", "base",
+        "head", "batch"}}, or None for an issue or a number that names nothing. The state is
+        GraphQL's `OPEN`, `CLOSED` or `MERGED`."""
         found = {}
         for start in range(0, len(numbers), 100):
             chunk = numbers[start:start + 100]
@@ -141,19 +192,38 @@ class GitHub(_rest.GitHub):
             for number in chunk:
                 node = data.get(f"p{number}") or {}
                 if node.get("__typename") == "PullRequest":
-                    found[number] = (node["state"], node.get("headRefOid") or "")
+                    found[number] = {"state": node["state"], "base": node.get("baseRefName") or "",
+                                     "head": node.get("headRefOid") or "", "batch": is_batch(node, self.repo)}
                 else:
-                    found[number] = (None, "")
+                    found[number] = None
         return found
 
-    def in_main(self, main, head):
-        """Whether commit `head` is in branch `main`, or None if GitHub does not know the commit."""
-        status, found = self.call("GET", f"compare/{quoted(main)}...{head}?per_page=1")
-        if status == 404:
-            return None
-        if status != 200 or not isinstance(found, dict) or "ahead_by" not in found:
-            raise RuntimeError(f"GET compare/{main}...{head} answered {status}")
-        return found["ahead_by"] == 0
+    def batches(self):
+        """The batches being built, as [(number, head commit)], read once a run: the outermost of
+        each stack (`latest batch`) first, then by number."""
+        if getattr(self, "_built", None) is None:
+            nodes = self.graphql(BUILT, owner=self.owner, name=self.name)["repository"]["pullRequests"]["nodes"]
+            found = [node for node in nodes if is_batch(node, self.repo) and node.get("headRefOid")]
+            found.sort(key=lambda node: (LATEST not in {label["name"] for label in node["labels"]["nodes"]},
+                                         node["number"]))
+            self._built = [(node["number"], node["headRefOid"]) for node in found]
+        return self._built
+
+    def contains(self, base, head):
+        """Whether commit `head` is in `base`, a branch or a commit, or None if GitHub does not know
+        one of them. Asked once a run for each pair. Raises Stopped when few REST requests are
+        left this hour."""
+        cache = self.__dict__.setdefault("_compares", {})
+        if (base, head) not in cache:
+            self.check()
+            status, found = self.call("GET", f"compare/{quoted(base)}...{head}?per_page=1")
+            if status == 404:
+                cache[base, head] = None
+            elif status != 200 or not isinstance(found, dict) or "ahead_by" not in found:
+                raise RuntimeError(f"GET compare/{base}...{head} answered {status}")
+            else:
+                cache[base, head] = found["ahead_by"] == 0
+        return cache[base, head]
 
     def told(self, number):
         """The pull requests that pull request `number` has been sent this script's comment about."""
@@ -165,9 +235,16 @@ class GitHub(_rest.GitHub):
             raise RuntimeError(f"could not edit the description of #{number}: {status}")
 
 
-def pull(node):
+def is_batch(node, repo):
+    """Whether a pull request, as GraphQL gives it, holds a batch (see `batch-labels.py`)."""
+    home = (node.get("headRepository") or {}).get("nameWithOwner")
+    return _labels.holds_batch(repo, home, node.get("headRefName") or "")
+
+
+def pull(node, repo):
     """What this script needs to know about a pull request, from GraphQL's answer."""
     return {"number": node["number"], "open": node.get("state", "OPEN") == "OPEN", "body": node.get("body") or "",
+            "batch": is_batch(node, repo),
             "labels": {label["name"] for label in (node.get("labels") or {}).get("nodes", [])}}
 
 
@@ -175,55 +252,109 @@ def pull(node):
 # Deciding.
 
 
+def settled(line):
+    """Whether nothing can change on a line, whatever becomes of its pull requests: it names none,
+    its box is missing or `[]`, it is marked `(main)`, or it was ticked by hand."""
+    return (not line.numbers or line.box not in (" ", "x", "X") or line.note == MAIN
+            or (line.ticked and line.note is None))
+
+
 def wanted(pr, repo):
-    """The pull requests whose fate decides what happens to `pr`: those named on its lines that
-    are not ticked yet, as a sorted list."""
-    return sorted({number for line in _dependencies.declarations(pr["body"], repo) if not line.ticked
-                   for number in line.numbers})
+    """The pull requests whose fate decides what happens to `pr`, as a sorted list: those named on
+    its lines that are not ticked, which it may be told about, and on those marked `(batched)`,
+    which may be marked `(main)` or unticked."""
+    return sorted({number for line in _dependencies.declarations(pr["body"], repo)
+                   if not line.ticked or line.note == BATCHED for number in line.numbers})
 
 
 def resolve(gh, main, numbers, known):
     """Find out what became of each of `numbers` that is not in `known` yet, and record it there as
-    {number: (fate, why)}, where fate is LANDED, OPEN, DROPPED, UNKNOWN or MISSING.
+    {number: Fate}.
 
-    Each pull request that was closed without being merged is compared with `main`, which takes a
-    REST request. Raises Stopped when few of those are left this hour.
+    One merged into main is on it. Any other with a head commit, unless it is open, is compared
+    with main; then, unless it holds a batch, with the head of each batch being built in turn,
+    until one holds it. Raises Stopped when few REST requests are left this hour.
     """
     new = sorted(set(numbers) - set(known))
     if not new:
         return
-    closed = []
-    for number, (state, head) in sorted(gh.states(new).items()):
-        if state is None:
-            known[number] = (MISSING, f"#{number} is not a pull request")
-        elif state == "MERGED":
-            known[number] = (LANDED, f"#{number} was merged")
-        elif state == "OPEN":
-            known[number] = (OPEN, f"#{number} is open")
-        elif not head:
-            known[number] = (UNKNOWN, f"#{number} was closed, and GitHub names no head commit for it")
+    rest = []
+    for number, info in sorted(gh.states(new).items()):
+        if info is None:
+            known[number] = Fate(MISSING, f"#{number} is not a pull request")
+        elif info["state"] == "MERGED" and info["base"] == main:
+            known[number] = Fate(LANDED, f"#{number} was merged into `{main}`", info["batch"])
+        elif not info["head"]:
+            known[number] = Fate(UNKNOWN, f"#{number} was closed, and GitHub names no head commit for it",
+                                 info["batch"])
         else:
-            closed.append((number, head))
-    for number, head in closed:
-        gh.check()
-        found = gh.in_main(main, head)
-        if found is None:
-            known[number] = (UNKNOWN, f"#{number} was closed, and GitHub no longer has its head commit")
-        elif found:
-            known[number] = (LANDED, f"#{number} was closed, and its head is in `{main}`")
+            rest.append((number, info))
+    for number, info in rest:
+        if info["state"] != "OPEN":
+            found = gh.contains(main, info["head"])
+            if found is None:
+                known[number] = Fate(UNKNOWN, f"#{number} was closed, and GitHub no longer has its head commit",
+                                     info["batch"])
+                continue
+            if found:
+                known[number] = Fate(LANDED, f"#{number} was closed, and its head is in `{main}`", info["batch"])
+                continue
+        holder = None if info["batch"] else next(
+            (batch for batch, head in gh.batches() if gh.contains(head, info["head"])), None)
+        if holder is not None:
+            known[number] = Fate(IN_BATCH, f"#{number} is in the batch #{holder}, which is being built")
+        elif info["state"] == "OPEN":
+            known[number] = Fate(OPEN, f"#{number} is open", info["batch"])
+        elif info["state"] == "MERGED":
+            known[number] = Fate(ELSEWHERE, f"#{number} was merged into `{info['base']}`, which is neither in "
+                                            f"`{main}` nor in a batch being built", info["batch"])
         else:
-            known[number] = (DROPPED, f"#{number} was closed without landing")
+            known[number] = Fate(DROPPED, f"#{number} was closed without landing", info["batch"])
+
+
+def target(pr, line, known):
+    """What the box and annotation of a line should be, as (box, note), given `known` (see
+    `resolve`), or None to leave the line as it is."""
+    if settled(line) or any(number not in known for number in line.numbers):
+        return None
+    fates = [known[number] for number in line.numbers]
+    on_main = all(fate.kind == LANDED for fate in fates)
+    if pr["batch"] or any(fate.batch for fate in fates):
+        # A line about batches: ticked plainly once they are on main, and never unticked.
+        return ("x", line.note) if on_main and line.tickable else None
+    if on_main:
+        return "x", MAIN
+    if all(fate.kind in (LANDED, IN_BATCH) for fate in fates):
+        return "x", BATCHED
+    if any(fate.kind == UNKNOWN for fate in fates):
+        return None
+    return " ", None
 
 
 def plan(pr, repo, known):
-    """What to change on an open pull request, given `known` (see `resolve`): (the description with
-    every line ticked whose pull requests have all landed, the Declarations ticked, and the pull
-    requests named on lines not ticked that were closed without landing)."""
-    landed = {number for number, (fate, _) in known.items() if fate == LANDED}
-    body, ticked = _dependencies.tick(pr["body"], repo, landed)
-    dropped = sorted({number for line in _dependencies.declarations(pr["body"], repo) if not line.ticked
-                      for number in line.numbers if known.get(number, (None,))[0] == DROPPED})
-    return body, ticked, dropped
+    """What to change on an open pull request, given `known` (see `resolve`): (the new description,
+    the changes made to it as [(Declaration, box, note)], and the pull requests named on lines whose
+    box is empty afterwards that were closed without landing)."""
+    lines = _dependencies.declarations(pr["body"], repo)
+    changes = []
+    for line in lines:
+        wish = target(pr, line, known)
+        if wish is not None and wish != ("x" if line.ticked else " ", line.note):
+            changes.append((line, *wish))
+    boxes = {line.index: box for line, box, _ in changes}
+    dropped = sorted({number for line in lines if boxes.get(line.index, "x" if line.ticked else " ") != "x"
+                      for number in line.numbers if number in known and known[number].kind == DROPPED})
+    return _dependencies.mark(pr["body"], changes), changes, dropped
+
+
+def describe_change(line, box, note, known):
+    """How the log says what was done to a line."""
+    why = ", ".join(known[number].why for number in line.numbers)
+    if box == " ":
+        return f"untick line {line.index + 1}, because {why}"
+    if line.ticked:
+        return f"mark line {line.index + 1} `({note})`, because {why}"
+    return f"tick line {line.index + 1}" + (f" as `({note})`" if note else "") + f", because {why}"
 
 
 def idle(pr, repo, known):
@@ -231,10 +362,10 @@ def idle(pr, repo, known):
     lines = _dependencies.declarations(pr["body"], repo)
     if not any(line.numbers for line in lines):
         return "its description declares no dependency"
-    why = sorted({known[number][1] for line in lines if not line.ticked for number in line.numbers
-                  if number in known and known[number][0] != LANDED})
-    if not any(line.tickable for line in lines if line.numbers):
-        why.insert(0, "no line that names a pull request has an empty box")
+    why = sorted({known[number].why for line in lines if not settled(line) for number in line.numbers
+                  if number in known and known[number].kind not in (LANDED, IN_BATCH)})
+    if all(settled(line) for line in lines if line.numbers):
+        why.insert(0, "every line that names a pull request is ticked by hand, marked `(main)`, or has no box")
     return "; ".join(why) or "it was told about every dependency closed without landing"
 
 
@@ -263,33 +394,32 @@ def message(number):
 
 
 def handle(gh, main, pr, known):
-    """Tick what can be ticked in one open pull request's description, and tell it about the pull
-    requests it depends on that were closed without landing. Returns what was done, as a list of
-    phrases for the log, empty if nothing was."""
+    """Tick, mark and untick what is due in one open pull request's description, and tell it about
+    the pull requests it depends on that were closed without landing. Returns what was done, as a
+    list of phrases for the log, empty if nothing was."""
     number, repo = pr["number"], gh.repo
     resolve(gh, main, wanted(pr, repo), known)
-    _, ticked, dropped = plan(pr, repo, known)
-    if not (ticked or dropped):
+    _, changes, dropped = plan(pr, repo, known)
+    if not (changes or dropped):
         return []
     # The description may have been edited since it was read, perhaps minutes ago in a sweep. The
-    # ticks are made on the copy read now, so that an edit made meanwhile is kept.
+    # changes are made on the copy read now, so that an edit made meanwhile is kept.
     _, fresh = gh.one(number)
     if fresh is None or not fresh["open"]:
         return ["skipped, because it was closed meanwhile"]
     resolve(gh, main, wanted(fresh, repo), known)
-    body, ticked, dropped = plan(fresh, repo, known)
+    body, changes, dropped = plan(fresh, repo, known)
     told = gh.told(number) if dropped else set()
     notes = [other for other in dropped if other not in told]
-    if not (ticked or notes):
+    if not (changes or notes):
         return []
     gh.check()
     verb, said = "would " if gh.dry_run else "", []
-    if ticked:
-        where = ", ".join(str(line.index + 1) for line in ticked)
-        gh.describe(number, body, f"(tick line {where} of the description)")
-        for line in ticked:
-            why = ", ".join(known[other][1] for other in line.numbers)
-            said.append(f"{verb}tick line {line.index + 1}, because {why}")
+    if changes:
+        where = ", ".join(str(line.index + 1) for line, _, _ in sorted(changes, key=lambda change: change[0].index))
+        gh.describe(number, body, f"(change line {where} of the description)")
+        for line, box, note in sorted(changes, key=lambda change: change[0].index):
+            said.append(verb + describe_change(line, box, note, known))
     if notes:
         # Asked once a run (see `github-rest.py`).
         if not gh.label_exists(WAITING):
@@ -302,14 +432,16 @@ def handle(gh, main, pr, known):
             said.append(f"{verb}add `{WAITING}`")
         for other in notes:
             gh.comment(number, message(other))
-            said.append(f"{verb}tell it that {known[other][1]}")
+            said.append(f"{verb}tell it that {known[other].why}")
     return said
 
 
 def sync(gh, number=None, closed=None):
     """Tick and tell on one pull request (`number`), on the open pull requests whose description
     names one that was just closed (`closed`), or on every open pull request. Returns a log."""
-    log, known, counts = [], {}, {"ticked": 0, "told": 0}
+    log, known, counts = [], {}, {"changed": 0, "told": 0}
+    # Compares and the batches being built are read at most once a run.
+    gh._compares, gh._built = {}, None
     if number is not None:
         main, found = gh.one(number)
         if found is None:
@@ -339,7 +471,9 @@ def sync(gh, number=None, closed=None):
                 continue
             if said:
                 log.append(f"#{pr['number']}: " + "; ".join(said))
-                counts["ticked"] += sum(phrase.startswith(("tick", "would tick")) for phrase in said)
+                counts["changed"] += sum(phrase.startswith(prefix) for phrase in said
+                                         for prefix in ("tick", "untick", "mark", "would tick", "would untick",
+                                                        "would mark"))
                 counts["told"] += any(phrase.startswith(("tell", "would tell")) for phrase in said)
             elif number is not None:
                 log.append(f"#{pr['number']}: nothing to change, because {idle(pr, gh.repo, known)}")
@@ -351,9 +485,9 @@ def sync(gh, number=None, closed=None):
     if everyone is not None:
         would = "would be " if gh.dry_run else ""
         which = f"depend on #{closed}" if closed is not None else "declare dependencies"
-        log.append(f"{len(targets)} of {len(everyone)} open pull requests {which}; {counts['ticked']} lines "
-                   f"{would}ticked; {counts['told']} pull requests {would}told about a dependency closed "
-                   "without landing")
+        log.append(f"{len(targets)} of {len(everyone)} open pull requests {which}; {counts['changed']} lines "
+                   f"{would}ticked, marked or unticked; {counts['told']} pull requests {would}told about a "
+                   "dependency closed without landing")
     return log
 
 
@@ -387,5 +521,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

@@ -244,8 +244,23 @@ A line counts as a dependency when it starts with `depends on`, `depend on`, `de
 `blocked by`, `requires` or `needs`, optionally after a list marker or `>` and a task box such as
 `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its address
 (`scripts/pr-dependencies.py` has the exact rules). Once the batch has landed, the dependencies
-workflow (`.github/workflows/dependencies.yml`) ticks the box. Leave the line there: ticked, it
-still declares the dependency.
+workflow (`.github/workflows/dependencies.yml`) ticks the box: `- [x] depends on: #123`. Leave the
+line there: ticked, it still declares the dependency.
+
+The workflow ticks the box of a line that names other pull requests, not batches, as soon as they
+are on `main` or in a batch being built, and says which before the pull requests it names, where
+GitHub shows their titles:
+
+- `- [x] depends on: (batched) #123`: each of them is on `main` or in a batch being built, at any
+  position in a stack, and at least one is not on `main` yet;
+- `- [x] depends on: (main) #123`: each of them is on `main`.
+
+A pull request is on `main` once its head commit is, or once it was merged into `main`; one merged
+into a batch's branch is not. A line marked `(batched)` becomes `(main)` once the batch lands, and
+is unticked again, losing the mark, if one of its pull requests leaves every batch before
+reaching `main`. A line marked `(main)`, and a box ticked by hand, are left as they are. A line
+that names a batch, like every line in a batch's own description, gets no mark: it is ticked once
+the batches it names are on `main`, and never unticked.
 
 ### If the batch you build on is rebuilt
 

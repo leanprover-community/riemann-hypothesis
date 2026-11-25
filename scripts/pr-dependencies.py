@@ -10,6 +10,11 @@ it is not read. For example:
 
     - [ ] depends on: #123, #124
     > blocked by https://github.com/owner/name/pull/125
+    - [x] depends on: (batched) #126
+
+An annotation, `(batched)` or `(main)`, may stand between the words and the pull requests: the
+dependencies workflow puts it there when it ticks a box, to say why (see `dependency-ticks.py`).
+It names no pull request, so it changes nothing about what the line declares.
 
 These are the forms that descriptions of dependent pull requests commonly use, beyond the
 `depends on` line that AGENTS.md asks for. Text that GitHub does not show as text is not read:
@@ -25,6 +30,9 @@ import re
 # Group 1 is the character in the task box, if there is a box: ` `, `x`, `X` or nothing.
 DECLARES = re.compile(r"[ \t>*+-]*(?:\[([ xX]?)\][ \t]*)?"
                       r"(?:depends?[ \t]+(?:up)?on|blocked[ \t]+by|requires|needs)\b[ \t]*:?", re.IGNORECASE)
+# The annotation that `dependency-ticks.py` puts before the pull requests of a line it ticks, and
+# the space or tab after it, if any.
+NOTE = re.compile(r"\((batched|main)\)[ \t]?")
 # A full stop or semicolon straight after a number, followed by a space or the end of the line.
 SENTENCE = re.compile(r"(?<=\d)[.;](?:\s|$)")
 # A pull request named on such a line: `owner/name#123`, `#123` or the pull request's address.
@@ -45,7 +53,9 @@ class Declaration:
     in the description, without its line ending. `box` is the character in the line's task box
     (` `, `x`, `X`, or `""` for `[]`), or None when the line has no box, and `box_at` where that
     character is, or would be for `[]`. `numbers` are the pull requests of the repository that
-    the line names, in order and once each.
+    the line names, in order and once each. `note` is the line's annotation, `batched` or `main`,
+    or None, and it runs from `note_at` to `note_end`, the space after it included; without one,
+    both are where one would go, before the first thing after the words and their `:`.
     """
 
     index: int
@@ -54,6 +64,9 @@ class Declaration:
     box: str | None
     box_at: int | None
     numbers: tuple[int, ...]
+    note: str | None = None
+    note_at: int | None = None
+    note_end: int | None = None
 
     @property
     def ticked(self):
@@ -151,7 +164,11 @@ def declarations(body, repo):
         match = DECLARES.match(shown, start, end)
         if not match:
             continue
-        rest = shown[match.end():end]
+        at = match.end()
+        while at < end and shown[at] in " \t":
+            at += 1
+        note = NOTE.match(shown, at, end)
+        rest = shown[note.end() if note else at:end]
         stop = SENTENCE.search(rest)
         if stop:
             rest = rest[:stop.start()]
@@ -164,7 +181,8 @@ def declarations(body, repo):
                     numbers.append(value)
         box = match.group(1)
         found.append(Declaration(index, start, end, box, match.start(1) if box is not None else None,
-                                 tuple(numbers)))
+                                 tuple(numbers), note.group(1) if note else None, at,
+                                 note.end() if note else at))
     return found
 
 
@@ -174,16 +192,13 @@ def dependencies(body, repo):
     return {number for line in declarations(body, repo) for number in line.numbers}
 
 
-def tick(body, repo, landed):
-    """Tick each `[ ]` line all of whose pull requests are in `landed`, a set of numbers.
-
-    Returns the new description and the Declarations that were ticked. Only the space in each such
-    box changes, to `x`; every other character stays as it was, line endings included. A line that
-    names no pull request, has no box or is ticked already is left alone, and nothing is unticked.
-    """
-    out, ticked = list(body), []
-    for line in declarations(body, repo):
-        if line.tickable and line.numbers and all(number in landed for number in line.numbers):
-            out[line.box_at] = "x"
-            ticked.append(line)
-    return "".join(out), ticked
+def mark(body, changes):
+    """`body` with each of `changes`, a list of (Declaration, box, note), made: the character in
+    the line's box becomes `box`, and its annotation becomes `(note) `, or goes when `note` is
+    None. Every other character stays as it was, line endings included. The lines must have a box
+    with a character in it, `[ ]` or `[x]`."""
+    out = body
+    for line, box, note in sorted(changes, key=lambda change: change[0].start, reverse=True):
+        out = out[:line.note_at] + (f"({note}) " if note else "") + out[line.note_end:]
+        out = out[:line.box_at] + box + out[line.box_at + 1:]
+    return out

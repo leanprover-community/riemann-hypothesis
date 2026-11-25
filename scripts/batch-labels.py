@@ -2,7 +2,7 @@
 and which pull requests hold a batch, in one place.
 
 `batch-queue-sync.py`, `batch-queue-conflicts.py`, `conflict-labels.py`, `dependency-ticks.py` and
-`inbox-sync.py` read the names from here, and all but `dependency-ticks.py` use `holds_batch`.
+`inbox-sync.py` read the names from here, and use `holds_batch`.
 A workflow's `if:` cannot read this file, so the workflows in `.github/workflows` name some of them
 too, in `if:` and `env:`: rename a label there as well, and on GitHub before either change lands.
 `tests/test_label_names.py` checks that every label name a workflow writes is one of these or

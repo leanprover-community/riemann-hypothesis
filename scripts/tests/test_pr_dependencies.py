@@ -118,33 +118,41 @@ class Declarations(unittest.TestCase):
         self.assertEqual(body[line.box_at - 1:line.box_at + 2], "[ ]")
 
 
-class Tick(unittest.TestCase):
-    def test_only_lines_whose_pull_requests_have_all_landed(self):
-        body = "- [ ] depends on: #1, #2\n- [ ] depends on: #1\n- [ ] depends on: #3\n"
-        new, ticked = deps.tick(body, REPO, {1, 3})
-        self.assertEqual(new, "- [ ] depends on: #1, #2\n- [x] depends on: #1\n- [x] depends on: #3\n")
-        self.assertEqual([line.index for line in ticked], [1, 2])
-        self.assertEqual(deps.tick(body, REPO, {1, 2, 3})[0].count("[x]"), 3)
+class Annotations(unittest.TestCase):
+    def test_an_annotation_is_read_and_names_no_pull_request(self):
+        body = "- [x] depends on: (batched) #1, #2\n- [x] Depends on (main) #3\n- [ ] needs: (main)\n- [ ] needs #4 (main)\n"
+        found = deps.declarations(body, REPO)
+        self.assertEqual([(line.note, line.numbers) for line in found],
+                         [("batched", (1, 2)), ("main", (3,)), ("main", ()), (None, (4,))])
+        self.assertEqual([body[line.note_at:line.note_end] for line in found], ["(batched) ", "(main) ", "(main)", ""])
+        self.assertEqual(body[found[3].note_at:found[3].note_at + 2], "#4")
 
-    def test_byte_for_byte_with_windows_line_ends(self):
+    def test_in_code_it_is_not_an_annotation(self):
+        line, = deps.declarations("- [x] depends on: `(main)` #1\n", REPO)
+        self.assertEqual((line.note, line.numbers), (None, (1,)))
+
+
+class Mark(unittest.TestCase):
+    def test_ticking_and_annotating_change_nothing_else(self):
         body = ("Intro with é and 🤖 and trailing spaces   \r\n\r\n---\r\n\r\n- [ ] depends on: #12\r\n"
-                "- [ ] depends on: #13\r\n<!-- - [ ] depends on: #12 -->\r\n```\r\n- [ ] depends on: #12\r\n```\r\nend")
-        new, ticked = deps.tick(body, REPO, {12})
-        at = body.index("- [ ] depends on: #12") + 3
-        self.assertEqual(new, body[:at] + "x" + body[at + 1:])
-        self.assertEqual(len(ticked), 1)
+                "- [ ] depends on #13\r\n<!-- - [ ] depends on: #12 -->\r\n```\r\n- [ ] depends on: #12\r\n```\r\nend")
+        first, second = deps.declarations(body, REPO)
+        new = deps.mark(body, [(first, "x", "batched"), (second, "x", None)])
+        self.assertEqual(new, body.replace("- [ ] depends on: #12\r\n- [ ] depends on #13",
+                                           "- [x] depends on: (batched) #12\r\n- [x] depends on #13"))
         self.assertEqual(new.encode().count(b"\r\n"), body.encode().count(b"\r\n"))
 
-    def test_nothing_else_is_touched(self):
-        body = ("- [x] depends on: #1\n- [X] depends on: #1\n- depends on: #1\n[] depends on #1\n"
-                "- [ ] depends on: other/r#1\n- [ ] depends on: `#1`\n- [ ] requires Lean 4\n"
-                "<!--\n- [ ] depends on: #1\n-->\n~~~\n- [ ] depends on: #1\n~~~\n")
-        new, ticked = deps.tick(body, REPO, {1})
-        self.assertEqual((new, ticked), (body, []))
+    def test_an_annotation_is_replaced_or_taken_off_exactly(self):
+        body = "- [x] depends on: (batched) #1\n- [X] depends on: (batched) #2\n"
+        first, second = deps.declarations(body, REPO)
+        self.assertEqual(deps.mark(body, [(first, "x", "main")]),
+                         "- [x] depends on: (main) #1\n- [X] depends on: (batched) #2\n")
+        self.assertEqual(deps.mark(body, [(first, " ", None), (second, " ", None)]),
+                         "- [ ] depends on: #1\n- [ ] depends on: #2\n")
 
-    def test_never_unticks(self):
-        body = "- [x] depends on: #1\n"
-        self.assertEqual(deps.tick(body, REPO, set()), (body, []))
+    def test_nothing_to_change_is_nothing_changed(self):
+        body = "- [ ] depends on: #1\n"
+        self.assertEqual(deps.mark(body, []), body)
 
 
 if __name__ == "__main__":
