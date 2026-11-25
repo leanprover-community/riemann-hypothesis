@@ -652,7 +652,7 @@ class Inbox(unittest.TestCase):
     def test_batch_conflict_keeps_a_pull_request_out_of_the_inbox_and_main_conflict_does_not(self):
         self.assertIn(BATCH_CONFLICT, inbox.DECIDED)
         self.assertNotIn(MAIN_CONFLICT, inbox.DECIDED)
-        base = {"draft": False, "ref": "topic"}
+        base = {"draft": False, "ref": "topic", "batch": False}
         self.assertEqual(inbox.unavailable({**base, "labels": {BATCH_CONFLICT}}), f"it is labelled `{BATCH_CONFLICT}`")
         self.assertIsNone(inbox.unavailable({**base, "labels": {MAIN_CONFLICT}}))
 
