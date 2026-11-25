@@ -100,8 +100,6 @@ instance commB' : IsCommMonObj ((Over.pullback f).obj E.B) := Functor.isCommMonO
 
 def mB : CubeMap ((Over.pullback f).obj E.B) E.B := cubeMapOf (isGrpPullback_pullback E.B f)
 
-theorem mB_F : (mB f E).F = pullback.fst E.B.hom f := rfl
-
 def O' (χ : E.X) : RigLB ((Over.pullback f).obj E.B) :=
   (mB f E).rigLB (E.O χ) (LB.isLB_pull (E.O χ).isLB _)
     (LBxP.isGen_pullAlong (E.O χ).L (mB f E).F (mB f E).e (fun _ : PUnit => eSec E.B) (fun _ => 1)

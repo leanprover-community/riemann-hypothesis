@@ -186,21 +186,11 @@ def sHom (hinj : Function.Injective (algebraMap W Qq)) : W →+* WittVector p W 
 theorem sHom_apply (hinj : Function.Injective (algebraMap W Qq)) (x : W) :
     sHom p Qq F hF hinj x = sFun p Qq F hF hinj x := rfl
 
-private theorem map_frobenius' (f : W →+* Qq) (w : WittVector p W) :
-    WittVector.map f (frobenius w) = frobenius (WittVector.map f w) := by
-  have key : ∀ P : MvPolynomial ℕ ℤ,
-      f (MvPolynomial.aeval w.coeff P) = MvPolynomial.aeval (fun i => f (w.coeff i)) P := by
-    intro P
-    first
-      | exact DFunLike.congr_fun (MvPolynomial.comp_aeval (f := w.coeff) f.toIntAlgHom) P
-  ext n
-  rw [WittVector.map_coeff, WittVector.coeff_frobenius, WittVector.coeff_frobenius, key]
-  congr 1
-
 theorem sHom_frob (hinj : Function.Injective (algebraMap W Qq)) (x : W) :
     sHom p Qq F hF hinj (F x) = frobenius (sHom p Qq F hF hinj x) := by
   apply WittVector.map_injective _ hinj
-  rw [sHom_apply, map_sFun, G_frob, map_frobenius' p Qq F hF (algebraMap W Qq), sHom_apply, map_sFun]
+  rw [sHom_apply, map_sFun, G_frob, (WittVector.frobenius_isPoly p).map (algebraMap W Qq),
+    sHom_apply, map_sFun]
 
 theorem sHom_coeff_zero (hinj : Function.Injective (algebraMap W Qq)) (x : W) :
     (sHom p Qq F hF hinj x).coeff 0 = x := by

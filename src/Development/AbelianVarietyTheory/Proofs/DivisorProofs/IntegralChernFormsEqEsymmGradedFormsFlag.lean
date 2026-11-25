@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarChainRuleHolomorphicPullback
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsMetricFrOfIsMetricOn
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernFormTriangularEqEsymmFirstChernForms
@@ -788,18 +789,7 @@ theorem delAt_ι {u : V n → (Fin n ⊕ Fin n → ℂ)} {v : V n}
 
 theorem sum_symm_dz_mul (s : Fin n → Fin n → ℂ) (hs : ∀ a b, s a b = s b a) :
     ∑ a, ∑ b, s a b • (dz a * dz b) = 0 := by
-  set X := ∑ a, ∑ b, s a b • (dz a * dz b) with hX
-  have h : X = -X := by
-    conv_lhs => rw [hX, Finset.sum_comm]
-    simp only [hX, ← Finset.sum_neg_distrib, ← smul_neg]
-    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-    rw [hs, dz, dz]
-    congr 1
-    apply eq_neg_of_add_eq_zero_left
-    exact ExteriorAlgebra.ι_add_mul_swap _ _
-  have h2 : (2 : ℂ) • X = 0 := by
-    rw [two_smul]; nth_rewrite 2 [h]; exact add_neg_cancel X
-  exact (smul_eq_zero.1 h2).resolve_left two_ne_zero
+  apply _root_.GlobalTheory.CxForm.PullDelClosed.sum_symm_dz <;> assumption
 
 theorem delAt_pull_fderiv_ι {φ : V n → V n} {v : V n} (hφ : ContDiffAt ℂ 2 φ v) (m : Fin n ⊕ Fin n → ℂ) :
     delAt (fun w => pull (fderiv ℂ φ w) (ExteriorAlgebra.ι ℂ m)) v = 0 := by

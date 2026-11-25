@@ -181,11 +181,6 @@ def RankBoundMonotoneInDimension : Prop :=
   ∀ (a q η : ℝ) (D Dall : ℕ), 0 < D → D ≤ Dall → 0 ≤ η →
     a ≤ (1 + η) * q ^ 2 / (Dall : ℝ) → a ≤ (1 + η) * q ^ 2 / (D : ℝ)
 
-def FactHHcc : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] (Words : Type)
-    [Fintype Words] (D : DivData K Words), D.RR.Good → 0 < D.RR.rank →
-    D.s - D.RR.muMinDual ≤ D.HH
-
 def bSize (x ε : ℝ) : ℝ := Real.exp (x ^ ε)
 
 def sizeBudget (R : Ranks) (x ε : ℝ) : ℝ := (R.f : ℝ) * R.m * bSize x ε * x ^ ε

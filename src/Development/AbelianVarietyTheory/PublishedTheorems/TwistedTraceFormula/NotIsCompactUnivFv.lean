@@ -75,9 +75,7 @@ end Defs
 
 /-- Strong approximation for special unitary groups `SU(J)` associated to a non-degenerate
 Hermitian form `J` of rank `M ≥ 2` over a CM extension `E / F`: if `S` is a finite set of places
-of `F` at which `SU(J)_S` is non-compact, then `SU(J)(F) · SU(J)_S` is dense in `SU(J)(𝔸_F)`.
-
-See [Platonov and Rapinchuk, *Algebraic Groups and Number Theory*, Theorem 7.12][platonovRapinchuk1994]. -/
+of `F` at which `SU(J)_S` is non-compact, then `SU(J)(F) · SU(J)_S` is dense in `SU(J)(𝔸_F)`. -/
 def StrongApproxSU : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),
     IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), 2 ≤ M → IsHermND σ J →

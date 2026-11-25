@@ -1530,7 +1530,7 @@ private theorem etGood : EtGood := pEtGood etnGood
 
 private theorem bcGood : BcGood.{1} := pBcGood bcSplits (pBcGal bcSplits)
 
-private theorem galClosD : GalClosD := pGalClosD (pSplitsPts pIsoPts) (pOrdEx pOrdStep)
+private theorem galClosD : GalClosD := pGalClosD (pSplitsPts pIsoPts) pOrdEx
 
 private theorem hopSpec : HopSpec :=
   pHopSpec etGood bcGood (pGalClos galClosD) (pOpEx pOpTr) pOpTr pOpEt (pOpBc bcSplits (pBcGal bcSplits)) bcSplits

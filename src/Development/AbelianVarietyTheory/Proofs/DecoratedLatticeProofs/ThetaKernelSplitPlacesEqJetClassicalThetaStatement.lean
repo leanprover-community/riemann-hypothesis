@@ -956,20 +956,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {W : Type} [AddCommGr
 
 theorem natsmul_mem_twO' (L : Submodule (𝓞 E) W) (c : ℕ) (e e' : HeightOneSpectrum (𝓞 E) → ℤ) (he : ∀ Q, e' Q ≤ e Q + 1)
     {x : W} (hx : x ∈ Formalism.L2.Ker.twist₂ L c e) : (c : 𝓞 E) • x ∈ Formalism.L2.Ker.twist₂ L c e' := by
-  rcases Nat.eq_zero_or_pos c with rfl | hc
-  · rw [Nat.cast_zero, zero_smul]; exact Submodule.zero_mem _
-  have hcE : (c : E) ≠ 0 := by exact_mod_cast hc.ne'
-  rw [Formalism.L2.Ker.mem_twO] at hx ⊢
-  intro Q
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, (n : ℤ) = e Q + 1 - e' Q := ⟨(e Q + 1 - e' Q).toNat, Int.toNat_of_nonneg (by linarith [he Q])⟩
-  have key : ((c : E) ^ e' Q)⁻¹ • ((c : 𝓞 E) • x) = ((c : 𝓞 E) ^ n) • (((c : E) ^ e Q)⁻¹ • x) := by
-    rw [← IsScalarTower.algebraMap_smul E ((c : 𝓞 E) ^ n), ← IsScalarTower.algebraMap_smul E (c : 𝓞 E) x, smul_smul, smul_smul]
-    congr 1
-    simp only [map_pow, map_natCast]
-    rw [← _root_.zpow_neg, ← _root_.zpow_neg, ← zpow_natCast, hn, ← zpow_add_one₀ hcE, ← zpow_add₀ hcE]
-    congr 1; ring
-  rw [key]
-  exact Submodule.smul_mem _ _ (hx Q)
+  first | exact _root_.GlobalTheory.CommonReps.natsmul_mem_twO | exact @_root_.GlobalTheory.CommonReps.natsmul_mem_twO | apply _root_.GlobalTheory.CommonReps.natsmul_mem_twO <;> assumption
 
 theorem mem_twO_zero' (M : Submodule (𝓞 E) W) (c : ℕ) (x : W) : x ∈ Formalism.L2.Ker.twist₂ M c (fun _ => 0) ↔ x ∈ M := by
   rw [Formalism.L2.Ker.mem_twO]

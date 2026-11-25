@@ -110,7 +110,7 @@ theorem dofN_transF (G : FGLaw k d) (φ φi : Pt k 1 d) (hinv : IsInvPair φ φi
     rfl
   rw [dofN_ev _ _ _ _ hΦ, dofN_eq_sum G.F, ev_sum _ hΦ, Finset.sum_eq_single b]
   · refine Finset.sum_congr rfl fun l _ => ?_
-    rw [gt_ev_mul _ hΦ, hcol, ← dof_transF G.F G.const (_root_.GlobalTheory.FormalLog.formalGroupLaw_ev_x_zero G) φ φi hinv, gt_ev_X _ (single_point_zero_constant hφ), hc,
+    rw [gt_ev_mul _ hΦ, hcol, ← dof_transF G.F G.const (LogPf.formalGroupLaw_ev_x_zero G) φ φi hinv, gt_ev_X _ (single_point_zero_constant hφ), hc,
       dofN_inCol, mul_comm]
     rfl
   · intro c _ hcb

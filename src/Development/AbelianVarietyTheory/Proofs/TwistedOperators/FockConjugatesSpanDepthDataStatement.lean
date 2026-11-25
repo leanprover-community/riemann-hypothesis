@@ -334,10 +334,6 @@ theorem cosInd_add {e : AE D} {z : Mx D m n} (hz : IsHalf e z) (x₁ : homLat Λ
 
 end GlobalTheory.CosShift
 
-private theorem GlobalTheory.CosShift.selfDual_full {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice (D := D)
-
 
 theorem GlobalTheory.CosShift.mem_hatMx_of_latO {D : D7} (hq : OffQ D) {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}
     (hL : L.Is μ₀) (G : GridData L sc) {i : ℕ} (hi : i < D.R.m) {e : AE D} (he : IsIdemSum e G.pl.W0)
@@ -345,8 +341,8 @@ theorem GlobalTheory.CosShift.mem_hatMx_of_latO {D : D7} (hq : OffQ D) {T : Type
     (hm : z ∈ latO (G.pS (.chi i 0)) (G.pT (.chi i 0)) (G.latS (.chi i 0) : Set _) (G.latT (.chi i 0) : Set _) fun _ => True) :
     z ∈ hatMx (homLat (G.Λ (.grid (i + 1) 0)) (G.Λ (.grid i 0))) := by
   have hSD := GlobalTheory.CosetRow.selfDual_chi hL G i hi
-  obtain ⟨βS, hβS⟩ := Formalism.L2.DIV.frame_exists_alt D.host.F D.host.E _ (G.latS (.chi i 0)) (GlobalTheory.CosShift.selfDual_full _ _ hSD.1)
-  obtain ⟨βT, hβT⟩ := Formalism.L2.DIV.frame_exists_alt D.host.F D.host.E _ (G.latT (.chi i 0)) (GlobalTheory.CosShift.selfDual_full _ _ hSD.2)
+  obtain ⟨βS, hβS⟩ := Formalism.L2.DIV.frame_exists_alt D.host.F D.host.E _ (G.latS (.chi i 0)) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice _ _ hSD.1)
+  obtain ⟨βT, hβT⟩ := Formalism.L2.DIV.frame_exists_alt D.host.F D.host.E _ (G.latT (.chi i 0)) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice _ _ hSD.2)
   exact GlobalTheory.RowLatChi.mem_hatMx_of_int hβS hβT he hz fun w hw a b =>
     GlobalTheory.RowLatChi.int_of_mem_latO hSD.1 hβS hβT w (GlobalTheory.DepthFix.aa_int hL hq G hw) hm a b
 
@@ -366,8 +362,8 @@ theorem GlobalTheory.CosShift.epart : All fun {D} _ _ _ {G} W _ => ∀ i, i < D.
         hatMx (G.modul • homLat (G.Λ (.grid (i + 1) 0)) (G.Λ (.grid i 0))) :=
     (by
       apply GlobalTheory.T.exists_rational_hom_approx_half_mod_ideal (G.pl.modul_ne_bot sc)
-      · with_unfolding_all exact selfDual_full (G.pS (.chi i 0)) (G.latS (.chi i 0)) hSD.1
-      · with_unfolding_all exact selfDual_full (G.pT (.chi i 0)) (G.latT (.chi i 0)) hSD.2
+      · with_unfolding_all exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice (G.pS (.chi i 0)) (G.latS (.chi i 0)) hSD.1
+      · with_unfolding_all exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice (G.pT (.chi i 0)) (G.latT (.chi i 0)) hSD.2
       · exact he
       · exact hz
       · exact mem_hatMx_of_latO hq hL G hi he hz (GlobalTheory.T.commutantPart_chosenPlaces_mem_completedLattice hL G W.ψ W.ψ_std i hi e he w hw hwinf))

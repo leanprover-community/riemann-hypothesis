@@ -64,17 +64,4 @@ structure CuspSpectrum (F : Type*) [Field F] [NumberField F] (n : ℕ) where
 
 abbrev SpectrumFamily := ∀ (F : Type) [Field F] [NumberField F] (n : ℕ), CuspSpectrum F n
 
-def IsNormEigenform {N : ℕ} {k : ℤ} (f : CuspForm (CongruenceSubgroup.Gamma1 N) k)
-    (χ : DirichletCharacter ℂ N) : Prop :=
-  (∀ γ ∈ CongruenceSubgroup.Gamma0 N, (⇑f ∣[k] (Matrix.SpecialLinearGroup.mapGL ℝ γ)) =
-      χ (((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1 : ℤ) : ZMod N) • ⇑f) ∧
-  (UpperHalfPlane.qExpansion 1 f).coeff 1 = 1 ∧
-  (∀ a b : ℕ, Nat.Coprime a b → (UpperHalfPlane.qExpansion 1 f).coeff (a * b) =
-      (UpperHalfPlane.qExpansion 1 f).coeff a * (UpperHalfPlane.qExpansion 1 f).coeff b) ∧
-  (∀ p r : ℕ, p.Prime → ¬ p ∣ N → (UpperHalfPlane.qExpansion 1 f).coeff (p ^ (r + 2)) =
-      (UpperHalfPlane.qExpansion 1 f).coeff p * (UpperHalfPlane.qExpansion 1 f).coeff (p ^ (r + 1)) -
-        χ (p : ZMod N) * (p : ℂ) ^ (k - 1) * (UpperHalfPlane.qExpansion 1 f).coeff (p ^ r)) ∧
-  (∀ p r : ℕ, p.Prime → p ∣ N → (UpperHalfPlane.qExpansion 1 f).coeff (p ^ r) =
-      (UpperHalfPlane.qExpansion 1 f).coeff p ^ r)
-
 end Formalism.ConjugateSelfDual

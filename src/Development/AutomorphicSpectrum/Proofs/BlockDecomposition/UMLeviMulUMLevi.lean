@@ -68,9 +68,6 @@ theorem uM_levi_mul_uM_levi (n : ℕ) (y y' : Fin n → k) (b b' : GL (Fin n) k)
     GlobalTheory.CompanionTheory.BZPsiPG.uM_add, map_mul]
   simp only [mul_assoc]
 
-theorem mirProj_levi_eq (n : ℕ) (g : GL (Fin n) k) : mirabolicProjection k n (levi k n g) = g :=
-  GlobalTheory.CompanionTheory.MirLevi.mirProj_levi n g
-
 theorem mirProj_uM (n : ℕ) (y : Fin n → k) : mirabolicProjection k n (uM k n y) = 1 :=
   GlobalTheory.CompanionTheory.MirLevi.mirProj_uv n y
 

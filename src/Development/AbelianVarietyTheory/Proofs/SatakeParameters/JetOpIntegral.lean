@@ -157,12 +157,6 @@ def JetOpIntegral : Prop :=
       ∀ (c : K) (J : (DVar ι a b →₀ ℕ) → K), (∀ m, InDeg lam s' m → w.valuation K (c * J m) ≤ 1) →
         ∀ F ∈ HAt w lam M, c • jetOp lam lam' J n F ∈ HAt w lam' MW
 
-def NabLeDel : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (ι : Type) [Fintype ι] (n : ℕ) (lam : ι → DomWeight n)
-    (M : ι → Submodule (𝓞 K) (Fin n → K)), (∀ τ, Submodule.IsFullLattice K (M τ)) →
-    ∀ (p : ℕ) (w : HeightOneSpectrum (𝓞 K)), p.Prime → (p : 𝓞 K) ∈ w.asIdeal → (∀ τ, (lam τ).spread < p) →
-      localization₂ w.asIdeal (nabK lam M) ≤ localization₂ w.asIdeal (delK lam M)
-
 open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.ColPeriod.N_lt_succ (R : _root_.Formalism.BasicNotions.Ranks) (j : ℕ) : R.N j < R.N (j + 1) := by
   unfold _root_.Formalism.BasicNotions.Ranks.N

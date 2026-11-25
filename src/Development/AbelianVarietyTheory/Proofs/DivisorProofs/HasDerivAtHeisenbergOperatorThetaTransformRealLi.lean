@@ -144,20 +144,7 @@ namespace GlobalTheory.CompanionTheory.SchrLine
 variable {F : Type} [Field F] [NumberField F] {N : ℕ}
 
 theorem continuous_toMixed : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-  have h : ⇑(InfiniteAdeleRing.ringEquiv_mixedSpace F) = fun x : InfiniteAdeleRing F =>
-      ((fun v : {w : InfinitePlace F // w.IsReal} =>
-          InfinitePlace.Completion.extensionEmbeddingOfIsReal v.2 (x v)),
-        (fun v : {w : InfinitePlace F // w.IsComplex} =>
-          InfinitePlace.Completion.extensionEmbedding v.1 (x v))) :=
-    funext fun x => InfiniteAdeleRing.ringEquiv_mixedSpace_apply F x
-  rw [h]
-  exact Continuous.prodMk
-    (continuous_pi fun v =>
-      (InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal v.2).continuous.comp
-        (continuous_apply v.1))
-    (continuous_pi fun v =>
-      (InfinitePlace.Completion.isometry_extensionEmbedding v.1).continuous.comp
-        (continuous_apply v.1))
+  apply _root_.GlobalTheory.SchwartzDecay.continuous_mixed <;> assumption
 
 def arch : AF F →+* mixedEmbedding.mixedSpace F :=
   (InfiniteAdeleRing.ringEquiv_mixedSpace F).toRingHom.comp (fstA F).toRingHom

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvariantFieldCoefficientsOfLinearVectorFi
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianPartConst
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
@@ -402,26 +403,7 @@ theorem evalPt_lieExp_comb {m : ℕ} (u : Fin m → TanM (𝟙 (Sp R)) G) (dd : 
     (h : ⊤ ≤ z.left ⁻¹ᵁ O) :
     ∃ h' : ⊤ ≤ (GlobalTheory.SqZero.lieExp (fun i => GlobalTheory.VertCoeffRing.tvE (u i)) e (fun i => he i i) * z).left ⁻¹ᵁ O, ∀ f,
       evalPt _ O h' f = evalPt z.left O h f + ∑ i, e i * evalPt z.left O h (dd i O f) := by
-  induction m with
-  | zero =>
-    have : GlobalTheory.SqZero.lieExp (fun i => GlobalTheory.VertCoeffRing.tvE (u i)) e (fun i => he i i) * z = z := by
-      simp [GlobalTheory.SqZero.lieExp]
-    rw [this]
-    exact ⟨h, fun f => by simp⟩
-  | succ m ih =>
-    obtain ⟨h₁, H₁⟩ := ih (fun i => u i.succ) (fun i => dd i.succ) (fun i => hd i.succ) (fun i => e i.succ)
-      (fun i j => he _ _)
-    obtain ⟨h₂, H₂⟩ := GlobalTheory.VertCoeffRing.evalPt_tvE_mul (hd 0) (e 0) (he 0 0) _ O h₁
-    have : GlobalTheory.SqZero.lieExp (fun i => GlobalTheory.VertCoeffRing.tvE (u i)) e (fun i => he i i) * z =
-        (ReciprocityTheory.ChartRestriction.G.Chart.spMap (GlobalTheory.SqZero.epsTo R (e 0) (he 0 0)) ≫ GlobalTheory.VertCoeffRing.tvE (u 0)) *
-          (GlobalTheory.SqZero.lieExp (fun i => GlobalTheory.VertCoeffRing.tvE (u i.succ)) (fun i => e i.succ)
-            (fun i => he i.succ i.succ) * z) := by
-      rw [GlobalTheory.SqZero.lieExp, GlobalTheory.SqZero.lieExp, Fin.prod_univ_succ, _root_.mul_assoc]
-    rw [this]
-    refine ⟨h₂, fun f => ?_⟩
-    rw [H₂, H₁, H₁, Fin.sum_univ_succ, mul_add, Finset.mul_sum]
-    simp only [← _root_.mul_assoc, he, zero_mul, Finset.sum_const_zero]
-    ring
+  apply _root_.GlobalTheory.VertCoeffRing.evalPt_lieExp <;> assumption
 
 theorem coeff_eq_zero [Smooth G.hom] {n : ℕ} (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) G))
     (dd : Fin n → Fld G.left) (hd : ∀ a, IsInv G (v a) (dd a)) (W : G.left.Opens) (c : Fin n → Γ(G.left, W))

@@ -114,9 +114,6 @@ lemma image_inf {Y : Scheme.{0}} (f : Y ⟶ X) [IsOpenImmersion f] (A B : Y.Open
     have : f ⁻¹ᵁ (f ''ᵁ A ⊓ f ''ᵁ B) = f ⁻¹ᵁ (f ''ᵁ A) ⊓ f ⁻¹ᵁ (f ''ᵁ B) := rfl
     rw [this, f.preimage_image_eq, f.preimage_image_eq]
 
-lemma image_le (W : X.Opens) (A : W.toScheme.Opens) : W.ι ''ᵁ A ≤ W :=
-  (image_le_range W.ι A).trans (Scheme.Opens.opensRange_ι W).le
-
 lemma affine_preimage (W : X.Opens) {B : X.Opens} (h : B ≤ W) (hB : IsAffineOpen B) :
     IsAffineOpen (W.ι ⁻¹ᵁ B) := by
   apply (Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion W.ι).mp
@@ -134,7 +131,7 @@ lemma good_of (W : X.Opens)
   intro A B hA hB
   apply (Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion W.ι).mp
   rw [image_inf]
-  exact h _ _ (image_le W A) (image_le W B) (hA.image_of_isOpenImmersion _) (hB.image_of_isOpenImmersion _)
+  exact h _ _ (AlgebraicGeometry.Scheme.Opens.ι_image_le W A) (AlgebraicGeometry.Scheme.Opens.ι_image_le W B) (hA.image_of_isOpenImmersion _) (hB.image_of_isOpenImmersion _)
 
 lemma good_open (hX : Good X) (W : X.Opens) : Good W.toScheme :=
   good_of W (fun C D _ _ hC hD => hX C D hC hD)

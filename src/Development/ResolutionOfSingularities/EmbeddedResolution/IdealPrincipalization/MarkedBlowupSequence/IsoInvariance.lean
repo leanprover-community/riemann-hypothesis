@@ -71,20 +71,12 @@ private theorem exists_isIso_subschemeι_eq_comp_of_eq_ker {A X : Scheme.{u}} (g
   · rw [← cancel_mono (Scheme.Hom.ker g).subschemeι, Category.assoc, hψ, hφ, Category.id_comp]
   · rw [← cancel_mono g, Category.assoc, hφ, hψ, Category.id_comp]
 
-private theorem iso_inv_base_hom_base_apply {X Y : Scheme.{u}} (e : X ≅ Y) (x : X) :
-    e.inv.base (e.hom.base x) = x := by
-  simp
-
-private theorem iso_hom_base_inv_base_apply {X Y : Scheme.{u}} (e : X ≅ Y) (y : Y) :
-    e.hom.base (e.inv.base y) = y := by
-  simp
-
 private theorem isIso_resLE_iso_hom {X Y : Scheme.{u}} (e : X ≅ Y) (U : Y.Opens) :
     IsIso (e.hom.resLE U ((Opens.map e.hom.base).obj U) le_rfl) := by
   have h1 : U ≤ (Opens.map e.inv.base).obj ((Opens.map e.hom.base).obj U) := by
     intro y hy
     show e.hom.base (e.inv.base y) ∈ U
-    rw [iso_hom_base_inv_base_apply e y]
+    rw [AlgebraicGeometry.Scheme.inv_hom_apply e y]
     exact hy
   refine ⟨e.inv.resLE ((Opens.map e.hom.base).obj U) U h1, ?_, ?_⟩
   · rw [← cancel_mono (Scheme.Opens.ι ((Opens.map e.hom.base).obj U)), Category.assoc,
@@ -101,7 +93,7 @@ theorem orderAtLeastLocus_comap_iso_hom_eq_preimage {X Y : Scheme.{u}} (e : X �
   ext x
   have h1 := orderAt_le_orderAt_comap e.hom J x
   have h2 := orderAt_le_orderAt_comap e.inv (J.comap e.hom) (e.hom.base x)
-  rw [iso_inv_base_hom_base_apply e x, hJ] at h2
+  rw [AlgebraicGeometry.Scheme.hom_inv_apply e x, hJ] at h2
   simp only [Set.mem_preimage, mem_orderAtLeastLocus_iff]
   exact ⟨fun hm => le_trans hm h2, fun hm => le_trans hm h1⟩
 

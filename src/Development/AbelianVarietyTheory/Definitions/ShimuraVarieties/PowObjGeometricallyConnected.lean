@@ -1138,28 +1138,6 @@ end Ideals
 
 section Examples
 
-abbrev gmRat : Over (Spec (CommRingCat.of ℚ)) := splitTorusAff (CommRingCat.of ℚ) ℤ
-
-theorem gmRat_id_ne_one : (𝟙 gmRat : gmRat ⟶ gmRat) ≠ 1 := by
-  intro e
-  let φ : AddMonoidAlgebra ℚ ℤ →ₐ[ℚ] AddMonoidAlgebra ℚ ℤ := AddMonoidAlgebra.lift ℚ _ ℤ 1
-  let x : gmRat ⟶ gmRat := Over.homMk (Spec.map (CommRingCat.ofHom φ.toRingHom)) (by
-    change Spec.map _ ≫ Spec.map _ = Spec.map _
-    rw [← Spec.map_comp]
-    congr 1
-    exact CommRingCat.hom_ext φ.comp_algebraMap)
-  have hx : x = 𝟙 gmRat := by rw [← Category.comp_id x, e, MonObj.comp_one]
-  have h₁ : Spec.map (CommRingCat.ofHom φ.toRingHom) = Spec.map (𝟙 _) :=
-    (congrArg (fun y ↦ y.left) hx).trans (Spec.map_id _).symm
-  have h₂ := congrArg (fun g ↦ g.hom (AddMonoidAlgebra.single (1 : ℤ) (1 : ℚ)))
-    (Spec.map_injective h₁)
-  have h₃ : (1 : AddMonoidAlgebra ℚ ℤ) = AddMonoidAlgebra.single (1 : ℤ) (1 : ℚ) := by
-    refine Eq.trans ?_ h₂
-    change _ = φ (AddMonoidAlgebra.single (1 : ℤ) (1 : ℚ))
-    rw [AddMonoidAlgebra.lift_single, MonoidHom.one_apply, one_smul]
-  rw [AddMonoidAlgebra.one_def] at h₃
-  exact zero_ne_one (AddMonoidAlgebra.single_left_injective one_ne_zero h₃)
-
 end Examples
 
 end GlobalTheory.Serre

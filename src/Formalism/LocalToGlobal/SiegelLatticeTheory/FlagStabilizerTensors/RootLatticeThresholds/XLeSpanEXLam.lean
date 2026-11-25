@@ -73,12 +73,8 @@ theorem stabF_of_fix {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (c : (VS D).V �
 theorem fix_X {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (c : (VS D).V ≃ₗ[D.host.E] (VS D).V)
     (he : ∀ a, c (F0.e a) = F0.e a) : ∀ x ∈ F0.X, c x = x := by
   intro x hx
-  unfold FlagG.X at hx
-  induction hx using Submodule.span_induction with
-  | mem y hy => obtain ⟨a, rfl⟩ := hy; exact he a
-  | zero => simp
-  | add y w _ _ hy hw => rw [map_add (f := _), hy, hw]
-  | smul k y _ hy => rw [map_smul, hy]
+  exact (Submodule.span_le (p := LinearMap.eqLocus c.toLinearMap LinearMap.id)).2
+    (by rintro _ ⟨a, rfl⟩; exact he a) hx
 
 end Reps
 
@@ -457,12 +453,10 @@ theorem xplus_nlam {Λ : Submodule (𝓞 E) S.V} {G : LFlag S r T'} {n : S.V ≃
 
 theorem map_X_of_e {G K : LFlag S r T'} {φ : S.V ≃ₗ[E] S.V} (he : ∀ a, φ (G.fl.e a) = K.fl.e a) {x : S.V}
     (hx : x ∈ G.fl.X) : φ x ∈ K.fl.X := by
-  unfold FlagG.X at hx ⊢
-  induction hx using Submodule.span_induction with
-  | mem y hy => obtain ⟨a, rfl⟩ := hy; rw [he]; exact Submodule.subset_span ⟨a, rfl⟩
-  | zero => simp
-  | add y w _ _ hy hw => rw [map_add (f := _)]; exact add_mem hy hw
-  | smul k y _ hy => rw [map_smul]; exact Submodule.smul_mem _ k hy
+  refine (Submodule.span_le (p := K.fl.X.comap φ.toLinearMap)).2 ?_ hx
+  rintro _ ⟨a, rfl⟩
+  rw [SetLike.mem_coe, Submodule.mem_comap, LinearEquiv.coe_coe, he]
+  exact Submodule.subset_span ⟨a, rfl⟩
 
 theorem xplus_frame {G K : LFlag S r T'} {φ : S.V ≃ₗ[E] S.V} (hf : ∀ a, frame K a = φ (frame G a))
     {w : S.V} (hw : w ∈ Xplus G) : φ w ∈ Xplus K := by

@@ -73,10 +73,6 @@ def cuspVal (ω : Fbar g →*₀ ℂ) (x : Fbar g) {ι : Type} [Fintype ι] [Dec
           (1 - (g : ℂ) ^ ((rootsBar M.charpoly).toFinset.card * i))
   else 0
 
-def IsTameLabel (ω : Fbar g →*₀ ℂ) (η : (ZMod g)ˣ → ℂ) (c : (ZMod g)ˣ) : Prop :=
-  ∀ z : (ZMod g)ˣ, η z =
-    labelChar ω 1 (algebraMap (ZMod g) (Fbar g) (c : ZMod g)) (algebraMap (ZMod g) (Fbar g) (z : ZMod g))
-
 end OnePrime
 
 section BothPrimes

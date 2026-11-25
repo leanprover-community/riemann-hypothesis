@@ -317,35 +317,15 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
   rw [div_le_div_iff₀ (mul_pos ha (mul_pos hp hs)) hp]
   nlinarith [mul_le_mul_of_nonneg_right hkey (le_of_lt (mul_pos hs hp))]
 
-private theorem exists_two_pow_mul_odd_of_le_of_ne_zero (k : ℕ) :
-    ∀ n : ℕ, n ≤ k → n ≠ 0 → ∃ v M : ℕ, ¬ 2 ∣ M ∧ n = 2 ^ v * M := by
-  induction k with
-  | zero => intro n h1 h2; exact absurd (Nat.le_zero.mp h1) h2
-  | succ k ih =>
-    intro n h1 h2
-    by_cases h : 2 ∣ n
-    · obtain ⟨j, rfl⟩ := h
-      obtain ⟨v, M, hM, hj⟩ := ih j (by omega) (by omega)
-      exact ⟨v + 1, M, hM, by rw [hj, pow_succ]; ring⟩
-    · exact ⟨0, n, h, by simp⟩
-
-private theorem sum_range_ite_lt_two_eq_two (e : ℕ) :
-    ∑ i ∈ range (e + 2), (if i < 2 then (1 : ℝ) else 0) = 2 := by
-  induction e with
-  | zero =>
-    show ∑ i ∈ range 2, (if i < 2 then (1 : ℝ) else 0) = 2
-    rw [Finset.sum_range_succ, Finset.sum_range_one]
-    norm_num
-  | succ k ih =>
-    rw [show k + 1 + 2 = k + 2 + 1 from rfl, Finset.sum_range_succ, ih, if_neg (by omega), add_zero]
-
 theorem le_SS {e d : ℕ} (h2 : 2 ^ (e + 2) ∣ N) (hd : d.Prime) (hdN : d ∣ N) (hd2 : ¬ 2 ∣ d)
     (hU : ∀ u ∈ U, ZMod.unitsMap h2 u = 1 ∨ ZMod.unitsMap h2 u = -1) (rd : 1 / 2 ≤ rho U (N / d)) :
     ((e : ℝ) + 1 - 1 / 2 ^ e) * Real.log 2 + Real.log d / 2 ≤ SS U := by
   classical
   have hN0 : N ≠ 0 := NeZero.ne N
-  obtain ⟨v, M, hModd, hNvM⟩ := exists_two_pow_mul_odd_of_le_of_ne_zero N N le_rfl hN0
-  have hM : Nat.Coprime 2 M := (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr hModd
+  set v := N.factorization 2
+  set M := N / 2 ^ v
+  have hM : Nat.Coprime 2 M := Nat.coprime_ordCompl Nat.prime_two hN0
+  have hNvM : N = 2 ^ v * M := (Nat.ordProj_mul_ordCompl_eq_self N 2).symm
   have hv : e + 2 ≤ v := by
     have h1 : 2 ^ (e + 2) ∣ 2 ^ v * M := by rw [← hNvM]; exact h2
     have h3 : 2 ^ (e + 2) ∣ 2 ^ v := (Nat.Coprime.pow_left (e + 2) hM).dvd_of_dvd_mul_right h1
@@ -408,8 +388,12 @@ theorem le_SS {e d : ℕ} (h2 : 2 ^ (e + 2) ∣ N) (hd : d.Prime) (hdN : d ∣ N
     exact_mod_cast h
   have hsum : ∑ i ∈ range (e + 2), Real.log 2 * (1 - (((2 ^ i).totient : ℝ) + if i < 2 then 1 else 0) / 2 ^ (e + 1))
       = ((e : ℝ) + 1 - 1 / 2 ^ e) * Real.log 2 := by
+    have hite : ∑ i ∈ range (e + 2), (if i < 2 then (1 : ℝ) else 0) = 2 := by
+      rw [add_comm e 2, Finset.sum_range_add, Finset.sum_range_succ, Finset.sum_range_one,
+        Finset.sum_eq_zero fun i _ => if_neg (by omega)]
+      norm_num
     rw [← Finset.mul_sum, Finset.sum_sub_distrib, ← Finset.sum_div, Finset.sum_add_distrib,
-      sum_range_ite_lt_two_eq_two e, hφ]
+      hite, hφ]
     simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
     push_cast
     field_simp

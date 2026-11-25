@@ -66,7 +66,7 @@ theorem bound {A s : ℝ} (hA : A ≠ 0) (hs : 1 ≤ s) {k : ℕ} (hk : 4 ≤ k)
   calc (‖D A s x‖ ^ k)⁻¹ ≤ ((m * (1 + x ^ 2)) ^ 2)⁻¹ := inv_anti₀ (by positivity) h3
     _ = (m ^ 2)⁻¹ / (1 + x ^ 2) ^ 2 := by rw [mul_pow, mul_inv, div_eq_mul_inv]
 
-theorem integrable_of_bound {f : ℝ → ℂ} (hf : Continuous f) {K : ℝ} (_hK : 0 ≤ K)
+theorem integrable_of_bound {f : ℝ → ℂ} (hf : Continuous f) {K : ℝ}
     (h : ∀ x, ‖f x‖ ≤ K / (1 + x ^ 2)) : Integrable f := by
   refine Integrable.mono' (integrable_inv_one_add_sq.const_mul K) hf.aestronglyMeasurable
     (ae_of_all _ fun x => ?_)
@@ -79,7 +79,7 @@ theorem le_one_add_sq (x : ℝ) (K : ℝ) (hK : 0 ≤ K) : K / (1 + x ^ 2) ^ 2 �
 theorem integrable_D {A s : ℝ} (hA : A ≠ 0) (hs : 1 ≤ s) {k : ℕ} (hk : 4 ≤ k) :
     Integrable fun x => (D A s x ^ k)⁻¹ := by
   obtain ⟨K, hK, h⟩ := bound hA hs hk
-  refine integrable_of_bound (((cont_D A s).pow k).inv₀ fun x => pow_ne_zero _ (D_ne (by linarith) x)) hK
+  refine integrable_of_bound (((cont_D A s).pow k).inv₀ fun x => pow_ne_zero _ (D_ne (by linarith) x))
     fun x => (h x).trans (le_one_add_sq x K hK)
 
 theorem tendsto_norm_D {A s : ℝ} (hA : A ≠ 0) {l : Filter ℝ} (hl : Tendsto (fun x : ℝ => |x|) l atTop) :
@@ -199,16 +199,16 @@ theorem UpperTheory.Esk.diagonal_integrand_vanishes_proof : UpperTheory.Esk.Diag
       rw [hratio, div_pow, hE, hcdef]
       ring
     · obtain ⟨K, hK, h⟩ := bound hr1 hs hk
-      refine integrable_of_bound (continuous_const.mul (((cont_D _ _).pow k).inv₀
-        fun x => pow_ne_zero _ (D_ne hs0 x))) (mul_nonneg (norm_nonneg E) hK) fun x => ?_
+      refine integrable_of_bound (K := ‖E‖ * K) (continuous_const.mul (((cont_D _ _).pow k).inv₀
+        fun x => pow_ne_zero _ (D_ne hs0 x))) fun x => ?_
       rw [norm_mul, mul_div_assoc]
       exact mul_le_mul_of_nonneg_left ((h x).trans (le_one_add_sq x K hK)) (norm_nonneg E)
     · obtain ⟨K, hK, h⟩ := bound hr1 hs hk
       have hcont : Continuous fun x : ℝ => Real.log (1 + x ^ 2) :=
         (continuous_const.add (continuous_pow 2)).log fun x => (by positivity : (0:ℝ) < 1 + x ^ 2).ne'
-      refine integrable_of_bound ((Complex.continuous_ofReal.comp hcont).mul (continuous_const.mul
+      refine integrable_of_bound (K := ‖E‖ * K) ((Complex.continuous_ofReal.comp hcont).mul (continuous_const.mul
         (((cont_D _ _).pow k).inv₀ fun x => pow_ne_zero _ (D_ne hs0 x))))
-        (mul_nonneg (norm_nonneg E) hK) fun x => ?_
+        fun x => ?_
       have hl0 : 0 ≤ Real.log (1 + x ^ 2) := Real.log_nonneg (by nlinarith [sq_nonneg x])
       have hl1 : Real.log (1 + x ^ 2) ≤ 1 + x ^ 2 := by
         have := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < 1 + x ^ 2)

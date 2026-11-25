@@ -376,7 +376,6 @@ end Mul
 
 section NF
 
-open NumberField
 
 variable (E : Type) [Field E] [NumberField E]
 

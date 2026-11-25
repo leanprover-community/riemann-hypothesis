@@ -54,7 +54,6 @@ noncomputable section
 
 namespace GlobalTheory.OppConv
 
-open GlobalTheory.FlipRun GlobalTheory.RowClaim
 
 variable {D : D7} {T : Type}
 

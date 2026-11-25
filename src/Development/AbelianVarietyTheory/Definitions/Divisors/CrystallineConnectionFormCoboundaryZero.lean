@@ -220,45 +220,6 @@ theorem firstDeRham_base_eq_zero (s : X ⟶ Sp R) [IsIso s] (c : FirstDeRham s) 
 
 open Polynomial
 
-abbrev lineStr (R : Type) [CommRing R] : Sp R[X] ⟶ Sp R := spMap (algebraMap R R[X])
-
-def coordLift (T : Thick (dp0 R) (lineStr R)) : T.B := (T.surj ((Spec.preimage T.x).hom Polynomial.X)).choose
-
-theorem π_coordLift (T : Thick (dp0 R) (lineStr R)) :
-    T.π (coordLift T) = (Spec.preimage T.x).hom Polynomial.X := (T.surj _).choose_spec
-
-theorem coordLift_sub_mem {T T' : Thick (dp0 R) (lineStr R)} (φ : T ⟶ T') :
-    coordLift T' - φ.φ (coordLift T) ∈ T'.J := by
-  rw [← T'.ker, map_sub, ← φ.comm, π_coordLift, π_coordLift, ← φ.pt, sub_eq_zero]
-  have : Spec.preimage (spMap φ.φ₀ ≫ T.x) = Spec.preimage T.x ≫ CommRingCat.ofHom φ.φ₀ := by
-    apply Spec.map_injective
-    simp
-  rw [this]; rfl
-
-theorem dpow_two_add {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {a b : B} (ha : a ∈ J)
-    (hb : b ∈ J) : δ.dpow 2 (a + b) = δ.dpow 2 a + a * b + δ.dpow 2 b := by
-  rw [δ.dpow_add ha hb]
-  simp [Finset.Nat.antidiagonal_succ, δ.dpow_zero ha, δ.dpow_zero hb, δ.dpow_one ha, δ.dpow_one hb]
-  ring
-
-def tdt (R : Type) [CommRing R] : Form (lineStr R) :=
-  ⟨⟨fun T T' φ ↦ φ.φ (coordLift T) * (coordLift T' - φ.φ (coordLift T)) +
-      T'.δ.dpow 2 (coordLift T' - φ.φ (coordLift T)), fun T T' T'' φ ψ ↦ by
-    have e : coordLift T'' - (φ ≫ ψ).φ (coordLift T) =
-        ψ.φ (coordLift T' - φ.φ (coordLift T)) + (coordLift T'' - ψ.φ (coordLift T')) := by simp
-    have h1 := ψ.mem (coordLift_sub_mem φ)
-    have h2 := coordLift_sub_mem ψ
-    have h3 : ψ.φ (T'.δ.dpow 2 (coordLift T' - φ.φ (coordLift T))) =
-      T''.δ.dpow 2 (ψ.φ (coordLift T' - φ.φ (coordLift T))) := ψ.dp.map_dpow (coordLift_sub_mem φ)
-    change (_ * _ + T''.δ.dpow 2 (_ - _) : T''.B) = ψ.φ (_ + _) + (_ * _ + _)
-    rw [e, dpow_two_add _ h1 h2, map_add (f := _), h3]
-    simp only [map_mul, map_sub, Thick.comp_φ]
-    ring⟩, fun T T' φ _ h ↦ by
-    have := coordLift_sub_mem φ
-    rw [h, Ideal.mem_bot] at this
-    change (_ * _ + _ : T'.B) = 0
-    rw [this, mul_zero, zero_add, dpow_eval_zero _ two_ne_zero]⟩
-
 end Examples
 
 end GlobalTheory.Cris

@@ -147,11 +147,6 @@ theorem gval_of_normRep (t : TT Y u u') (w : Point D.host.E (D.R.rS + 1))
   rw [e] at hG
   exact hG
 
-private theorem relIndex_map_of_injective' {G G' : Type*} [Group G] [Group G'] (f : G →* G')
-    (hf : Function.Injective f) (H K : Subgroup G) : (H.map f).relIndex (K.map f) = H.relIndex K := by
-  first
-  | exact Subgroup.relIndex_map_map_of_injective H K hf
-
 private theorem H_affine_combination_eq_of_quadratic_relation (t : TT Y u u') (w : Point D.host.E (D.R.rS + 1))
     (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (L : Formalism.L2.SG.PairVal.MatR D)
     (γw s c : X.B.I.Ginf) (Φ : StG w →* X.B.I.Ginf) (hDict : DictProps t w F' L γw s c Φ)
@@ -218,10 +213,12 @@ private theorem H_affine_combination_eq_of_quadratic_relation (t : TT Y u u') (w
       rw [hr1e, hr1s]
   have hBA : B.relIndex A = (Formalism.L2.SG.PairVal.stabAut D u u' (X.Fu u) (Y.what₂ u) t.toTerm F' L).relIndex
       (Formalism.L2.SG.PairVal.stabInt D u u' Y.δ Y.M w) := by
-    rw [hA, hB, relIndex_map_of_injective' Φ hDict.1, Subgroup.relIndex_subgroupOf hInt]
+    rw [hA, hB, Subgroup.relIndex_map_map_of_injective _ _ hDict.1,
+      Subgroup.relIndex_subgroupOf hInt]
   have hAB : A.relIndex B = (Formalism.L2.SG.PairVal.stabInt D u u' Y.δ Y.M w).relIndex
       (Formalism.L2.SG.PairVal.stabAut D u u' (X.Fu u) (Y.what₂ u) t.toTerm F' L) := by
-    rw [hA, hB, relIndex_map_of_injective' Φ hDict.1, Subgroup.relIndex_subgroupOf hAut]
+    rw [hA, hB, Subgroup.relIndex_map_map_of_injective _ _ hDict.1,
+      Subgroup.relIndex_subgroupOf hAut]
   have hcomm := Formalism.L2.SG.Pf.CovolIdx.covol_commens (μR.map (fun y => c * y * c⁻¹)) R' hc0 A B
     (fun s hs => hinv s (hAsub s hs)) (fun s hs => hinv s (hBsub s hs))
     (fun s hs r hr => hmulR s (hAsub s hs) r hr) (fun s hs r hr => hmulR s (hBsub s hs) r hr)

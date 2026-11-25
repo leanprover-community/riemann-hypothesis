@@ -118,17 +118,7 @@ theorem selfDual_complex_eq {ι : Type} [Fintype ι] {n : ℕ} (d : ι → Fin n
     (h : SelfDual μ (fun x y => Complex.exp (2 * Real.pi * Complex.I *
       ((∑ v, ∑ i, d v i * ((x v i).re * (y v i).re + (x v i).im * (y v i).im) : ℝ) : ℂ)))) :
     μ = ENNReal.ofReal (∏ v, ∏ i, |d v i|) • (volume : Measure (ι → Fin n → ℂ)) := by
-  obtain ⟨T, hT, hT'⟩ := GlobalTheory.ReImVolume.exists_reIm_measurePreserving ι n
-  have h1 := GlobalTheory.SelfDualDiagReal.eq_of_selfDual_diag (ι × Fin n × Bool) (fun k => d k.1 k.2.1) (fun k => hd _ _) _
-    (selfDual_map T h fun x y => by
-      congr 3
-      simp only [Fintype.sum_prod_type, Fintype.sum_bool, (hT' _ _ _).1, (hT' _ _ _).2, mul_add])
-  have he : MeasurableEmbedding T := T.toHomeomorph.measurableEmbedding
-  refine he.map_injective ?_
-  rw [h1, Measure.map_smul, hT.map_eq]
-  congr 2
-  simp only [Fintype.prod_prod_type, Fintype.prod_bool, Real.mul_self_sqrt (abs_nonneg _)]
-  exact hT.measurable.aemeasurable
+  first | exact _root_.GlobalTheory.GaussMean.RealDensity.selfDual_complex | exact @_root_.GlobalTheory.GaussMean.RealDensity.selfDual_complex | apply _root_.GlobalTheory.GaussMean.RealDensity.selfDual_complex <;> assumption
 
 theorem eq_zero_of_cubes {ι : Type} [Fintype ι] {K : (ι → ℝ) → ℂ} {U : Set (ι → ℝ)} (hK : ContinuousOn K U)
     {b : ι → ℝ} (hU : U ∈ 𝓝 b)

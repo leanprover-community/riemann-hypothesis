@@ -158,10 +158,6 @@ theorem coeff_blockSum_eq_zero {ι : PowerSeries O →ₐ[O] PowerSeries O} {m :
     omega
   · rfl
 
-private theorem div_eq_and_mod_eq_of_mul_add_eq {m j r n : ℕ} (hm : 0 < m) (hr : r < m) (h : m * j + r = n) :
-    n / m = j ∧ n % m = r :=
-  (Nat.div_mod_unique hm).mpr ⟨by omega, hr⟩
-
 theorem coeff_blockSum_single {ι : PowerSeries O →ₐ[O] PowerSeries O} {m : ℕ} {w : PowerSeries O}
     (hX : ι X = w * X ^ m) (hm : 0 < m) (n : ℕ) (x : O) :
     coeff n (powerSeriesBlockSum ι m (powerSeriesBlockSplit m fun n' => if n' = n then x else 0)) =
@@ -171,7 +167,7 @@ theorem coeff_blockSum_single {ι : PowerSeries O →ₐ[O] PowerSeries O} {m : 
     intro i j
     constructor
     · intro h
-      obtain ⟨h1, h2⟩ := div_eq_and_mod_eq_of_mul_add_eq hm i.isLt h
+      obtain ⟨h1, h2⟩ := (Nat.div_mod_unique hm).mpr ⟨(Nat.add_comm _ _).trans h, i.isLt⟩
       exact ⟨Fin.ext (by omega), by omega⟩
     · rintro ⟨h1, h2⟩
       have h3 := Nat.div_add_mod n m
@@ -273,7 +269,7 @@ theorem blockSplit_coeff {m : ℕ} (hm : 0 < m) (b : Fin m → PowerSeries O) :
   funext i
   ext j
   simp only [powerSeriesBlockSplit, coeff_mk]
-  obtain ⟨h1, h2⟩ := div_eq_and_mod_eq_of_mul_add_eq hm i.isLt (rfl : m * j + (i : ℕ) = m * j + i)
+  obtain ⟨h1, h2⟩ := (Nat.div_mod_unique hm).mpr ⟨Nat.add_comm _ _, i.isLt⟩
   have hfin : (⟨(m * j + (i : ℕ)) % m, Nat.mod_lt _ hm⟩ : Fin m) = i := Fin.ext h2
   rw [hfin, h1]
 
@@ -443,15 +439,6 @@ theorem cyclotomic_comp_dvd {LL : Type} [Field LL] (n : ℕ) (hn : 0 < n) (ζ₀
     simp
   rw [← hback, hc, Polynomial.mul_comp]
 
-private theorem derivative_exp_eq_exp' (A : Type) [Field A] [CharZero A] :
-    derivative (PowerSeries.exp A) = PowerSeries.exp A :=
-  PowerSeries.derivative_exp A
-
-private theorem constantCoeff_exp_eq_one (A : Type) [Field A] [CharZero A] :
-    constantCoeff (PowerSeries.exp A) = 1 := by
-  first
-    | simp
-
 private theorem cyclotomic_comp_pow_dvd_of_X_pow_dvd {O LL : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [Field LL] [CharZero LL]
     [Algebra O LL] [IsFractionRing O LL] (n : ℕ) (hn : 0 < n) (ζ₀ : LL)
@@ -463,7 +450,7 @@ private theorem cyclotomic_comp_pow_dvd_of_X_pow_dvd {O LL : Type} [CommRing O] 
     (hk : ∀ ζ, IsPrimitiveRoot ζ n → (X : PowerSeries LL) ^ k ∣ ρ ζ a) :
     (((Polynomial.cyclotomic n O).comp (Polynomial.X + 1) : Polynomial O) : PowerSeries O) ^ k ∣ a := by
   classical
-  have hexp0 := constantCoeff_exp_eq_one LL
+  have hexp0 : constantCoeff (PowerSeries.exp LL) = 1 := PowerSeries.constantCoeff_exp
   have hcyc : ∀ z : PowerSeries LL, Polynomial.aeval z (Polynomial.cyclotomic n O) =
       Polynomial.aeval z (Polynomial.cyclotomic n LL) := by
     intro z
@@ -479,7 +466,7 @@ private theorem cyclotomic_comp_pow_dvd_of_X_pow_dvd {O LL : Type} [CommRing O] 
       first
         | exact Polynomial.isRoot_cyclotomic_iff.mpr hζ
     obtain ⟨w, hw⟩ := cycloSimple LL LL n hn ζ (PowerSeries.exp LL) hroot hexp0
-      (derivative_exp_eq_exp' LL)
+      (PowerSeries.derivative_exp LL)
     refine ⟨w, ?_⟩
     rw [algHom_coe_eq_aeval, Polynomial.aeval_comp]
     have h1 : Polynomial.aeval (ρ ζ X) (Polynomial.X + 1 : Polynomial O) =
@@ -614,29 +601,18 @@ namespace LevelStatements.Lv
 
 open PowerSeries IsLocalRing
 
-private theorem constantCoeff_algHom_C_eq_algebraMap {O S : Type} [CommRing O] [CommRing S] [Algebra O S]
-    (ρ : PowerSeries O →ₐ[O] PowerSeries S) (c : O) :
-    constantCoeff (ρ (C c)) = algebraMap O S c := by
-  first
-  | (have e : (C c : PowerSeries O) = c • (1 : PowerSeries O) := by
-       rw [PowerSeries.smul_eq_C_mul, mul_one]
-     rw [e, map_smul, map_one, ← algebraMap_smul S c (1 : PowerSeries S),
-       PowerSeries.smul_eq_C_mul, mul_one, PowerSeries.constantCoeff_C])
-
-private theorem isUnit_of_isUnit_constantCoeff {S : Type} [CommRing S] {f : PowerSeries S}
-    (h : IsUnit (constantCoeff f)) : IsUnit f := by
-  first
-  | exact PowerSeries.isUnit_iff_constantCoeff.mpr h
-
 theorem rhoUnit : RhoUnitStatement := by
   unfold RhoUnitStatement
   intro O S _ _ _ ρ p a c hp hc hmem
   obtain ⟨u, v, huv⟩ := Ideal.mem_span_pair.mp hmem
+  have hcc : constantCoeff (ρ (C c)) = algebraMap O S c := by
+    rw [PowerSeries.C_eq_algebraMap, AlgHom.commutes, PowerSeries.algebraMap_apply,
+      constantCoeff_C]
   have h2 : constantCoeff (ρ v) * constantCoeff (ρ a) = algebraMap O S c := by
-    rw [← constantCoeff_algHom_C_eq_algebraMap ρ c, ← huv]
+    rw [← hcc, ← huv]
     simp only [map_add (f := _), map_mul, hp, mul_zero, zero_add]
   rw [← h2] at hc
-  exact isUnit_of_isUnit_constantCoeff (IsUnit.mul_iff.mp hc).2
+  exact PowerSeries.isUnit_iff_constantCoeff.mpr (IsUnit.mul_iff.mp hc).2
 
 end LevelStatements.Lv
 end -- clump:auto

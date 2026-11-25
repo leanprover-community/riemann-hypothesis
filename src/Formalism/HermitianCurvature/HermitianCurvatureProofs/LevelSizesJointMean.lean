@@ -329,8 +329,6 @@ end Formalism.FourierDecayAlt.P.Jx2
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem block_lattices : Formalism.FourierDecayAlt.J.BlockLattices := Jx2.t_BlockLattices
-
 theorem euclidean_frame : Formalism.FourierDecayAlt.J.EuclidFrame := Jx2.t_EuclidFrame
 
 end Formalism.FourierDecayAlt.P

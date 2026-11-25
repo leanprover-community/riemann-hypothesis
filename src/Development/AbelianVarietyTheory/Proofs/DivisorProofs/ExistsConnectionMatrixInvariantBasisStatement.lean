@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RaynaudTorusWeightZeroInvariantFieldCoeffs
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
@@ -673,33 +674,7 @@ theorem isWt_of_local (α : Q.X) (V : Y.H.left.Opens) (f : Γ(Y.H.left, V))
       (∀ χ y J, Good Q.P.L y J → val ((Y.Φ _ x').s χ) (𝟙 _) y J =
         gm (𝟙 (Over.mk (spMap φ)).left) y ⊤ (unitOn (c χ)) * val ((Y.Φ _ x).s χ) (𝟙 _) y J) →
       valR (A := S) x'.left V f = c α * valR (A := S) x.left V f) : IsWt Y α V f := by
-  intro S _ φ x x' c a a' ha ha' hV hV' hq hc
-  subst ha ha'
-  refine sub_eq_zero.1 (eq_zero_of_localization _ fun P hP => (map_sub _ _ _).trans (sub_eq_zero.2 ?_))
-  let l := algebraMap S (Localization.AtPrime P)
-  let k : Over.mk (spMap (l.comp φ)) ⟶ Over.mk (spMap φ) := Over.homMk (spMap l)
-    (Spec.map_comp (CommRingCat.ofHom φ) (CommRingCat.ofHom l)).symm
-  obtain ⟨a₁, a₂⟩ := valR_spMap l x.left V hV
-  obtain ⟨b₁, b₂⟩ := valR_spMap l x'.left V hV'
-  have := h _ (l.comp φ) (k ≫ x) (k ≫ x') (fun χ => Units.map l.toMonoidHom (c χ)) a₁ b₁
-    (by rw [Category.assoc, Category.assoc, hq]) fun χ y J hJ => by
-      have hJ' : Good Q.P.L (k.left y) fun ψ => J (k.left ≫ ψ) := fun ψ => hJ (k.left ≫ ψ)
-      have key : ∀ u : Over.mk (spMap φ) ⟶ Y.H, val ((Y.Φ _ (k ≫ u)).s χ) (𝟙 _) y J =
-          Units.map (k.left.stalkMap y).hom.toMonoidHom
-            (val ((Y.Φ _ u).s χ) (𝟙 _) (k.left y) fun ψ => J (k.left ≫ ψ)) := fun u => by
-        refine (((isPull_iff _ _ _).1 (Y.rep.1 _ _ k u)).2 χ y J hJ).trans ?_
-        rw [val_of _ (𝟙 _) _ _ (fun i => J (k.left ≫ DegPre.gtφT Q _ (Y.Φ _ u).b χ i)) (fun i => by rw [Category.id_comp])]
-        refine Eq.trans ?_ (_root_.GlobalTheory.ConstFam.gm_comp_stalkMap k.left (𝟙 _) y _ (hJ.mem _ k.left) _)
-        rw [Category.comp_id]
-        rfl
-      rw [key, key, hc χ _ _ hJ', map_mul, ← _root_.GlobalTheory.ConstFam.gm_comp_stalkMap k.left (𝟙 _) y ⊤ trivial]
-      congr 1
-      refine Units.ext ?_
-      rw [gm_val _ _ ⊤ trivial, gm_val _ _ ⊤ trivial]
-      refine congrArg ((Sp (Localization.AtPrime P)).presheaf.germ ⊤ y trivial).hom ?_
-      exact (congrArg (fun q => q.hom (c χ : S)) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom l))).symm
-  rw [map_mul]
-  exact (b₂ f).symm.trans (this.trans (congrArg (_ * ·) (a₂ f)))
+  apply _root_.GlobalTheory.Heat.CoeffWt.isWt_of_local <;> assumption
 
 end GlobalTheory.Heat.WtLocal
 

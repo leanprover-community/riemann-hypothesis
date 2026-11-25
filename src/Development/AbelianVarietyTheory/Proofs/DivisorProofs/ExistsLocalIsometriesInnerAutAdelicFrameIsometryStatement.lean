@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsometryMatchingLatticesMatchesSphericalOps
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IsometryCarriesCharacter
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteAdelicUnitaryGroupIso
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
@@ -873,17 +874,7 @@ structure Link (V V' : HSp D) (M : ℕ) (φ : GfC V ≃* GfC V')
 
 theorem suppF_iff (f : Formalism.L2.Theta.AE D) {V : HSp D} {α : GA D V} (hα : α ∈ GfC V) :
     SuppF V f α ↔ finPart D f • (finMat D.sp.cm.sig V.gram α - 1) = finMat D.sp.cm.sig V.gram α - 1 := by
-  rw [GlobalTheory.HeckeTrans.finMat_eq, GlobalTheory.HeckeTrans.supp_map_iff]
-  refine ⟨fun hs i j => by rw [hs i j], fun hs i j => ?_⟩
-  refine GlobalTheory.FinIsoGrp.proj_inj D _ _ ?_ (congrArg (swapAE D) ?_)
-  · show infPart D _ = infPart D _
-    have hij := congrFun (congrFun (GlobalTheory.HeckeTrans.inf_eq hα) i) j
-    rw [Matrix.map_apply] at hij
-    have h0 : infPart D ((mt V α - 1) i j) = 0 := by
-      rw [Matrix.sub_apply, map_sub, hij]
-      by_cases hh : i = j <;> simp [Matrix.one_apply, hh]
-    rw [map_mul, h0, mul_zero]
-  · exact hs i j
+  first | exact _root_.GlobalTheory.SphTrans.suppF_iff | exact @_root_.GlobalTheory.SphTrans.suppF_iff | apply _root_.GlobalTheory.SphTrans.suppF_iff <;> assumption
 
 namespace Link
 

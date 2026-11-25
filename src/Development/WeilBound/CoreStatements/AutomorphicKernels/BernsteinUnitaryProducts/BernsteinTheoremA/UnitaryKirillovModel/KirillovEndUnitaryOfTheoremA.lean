@@ -128,26 +128,12 @@ private theorem eigen_lemma (W : Submodule ℂ V) [FiniteDimensional ℂ W] [Non
     (hpos : ∀ v, v ≠ 0 → 0 < (B₀ v v).re) :
     ∃ c : ℂ, ∃ x : V, x ∈ W ∧ x ≠ 0 ∧ ∀ y ∈ W, B x y = c * B₀ x y := by
   let b := Module.finBasis ℂ W
-  let L0 : W →ₗ[ℂ] (Fin (Module.finrank ℂ W) → ℂ) :=
-    { toFun := fun x j => B₀ (x : V) (b j : V)
-      map_add' := by
-        intro x y
-        ext j
-        simp
-      map_smul' := by
-        intro c x
-        ext j
-        simp }
-  let L : W →ₗ[ℂ] (Fin (Module.finrank ℂ W) → ℂ) :=
-    { toFun := fun x j => B (x : V) (b j : V)
-      map_add' := by
-        intro x y
-        ext j
-        simp
-      map_smul' := by
-        intro c x
-        ext j
-        simp }
+  let mkL (C : Sesq V) : W →ₗ[ℂ] (Fin (Module.finrank ℂ W) → ℂ) :=
+    { toFun := fun x j => C (x : V) (b j : V)
+      map_add' := fun x y => funext fun j => by simp
+      map_smul' := fun c x => funext fun j => by simp }
+  let L0 := mkL B₀
+  let L := mkL B
   have hext : ∀ (C : Sesq V) (c : ℂ) (x : V), (∀ j, C x (b j : V) = c * B₀ x (b j : V)) →
       ∀ y ∈ W, C x y = c * B₀ x y := by
     intro C c x h y hy
@@ -163,7 +149,7 @@ private theorem eigen_lemma (W : Submodule ℂ V) [FiniteDimensional ℂ W] [Non
     have h0 : ∀ j, B₀ (x : V) (b j : V) = 0 * B₀ (x : V) (b j : V) := by
       intro j
       have := congrFun hx j
-      simpa [L0] using this
+      simpa [L0, mkL] using this
     have hxx := hext B₀ 0 x h0 x x.2
     by_contra hne
     have hx0 : (x : V) ≠ 0 := by simpa using hne
@@ -182,7 +168,7 @@ private theorem eigen_lemma (W : Submodule ℂ V) [FiniteDimensional ℂ W] [Non
       rw [← h1]
       simp
     have h3 := congrFun h2 j
-    simpa [E, L, L0, LinearMap.linearEquivOfInjective_apply] using h3
+    simpa [E, L, L0, mkL, LinearMap.linearEquivOfInjective_apply] using h3
 
 theorem invFormScalar_of_admissible [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G]
     [TotallyDisconnectedSpace G] (ρ : Representation ℂ G V) (hadm : GroundTheory.Automorphic.IsAdmissible ρ) [ρ.IsIrreducible]

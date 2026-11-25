@@ -62,12 +62,6 @@ theorem pow_mul_residualByPow {Y : Scheme.{u}} (A F : Y.IdealSheafData) (m : ℕ
   rw [hx]
   exact h.choose_spec
 
-private theorem map_comap_id_list_idealSheafData {X : Scheme.{u}} (E : List X.IdealSheafData) :
-    E.map (fun D => D.comap (𝟙 X)) = E := by
-  induction E with
-  | nil => rfl
-  | cons a t ih => simp [Scheme.IdealSheafData.comap_id]
-
 @[simp]
 theorem exceptionalIdeal_id {X : Scheme.{u}} (Z : X.IdealSheafData) :
     Blowup.exceptionalIdeal (𝟙 X) Z = Z := by
@@ -155,7 +149,8 @@ private theorem hasStrictNormalCrossingsWith_singleBlowupCenter {k : Type u} [Fi
   intro i hi
   obtain rfl : i = 0 := Nat.lt_one_iff.mp hi
   show HasStrictNormalCrossingsWith (𝟙 X ≫ p) Z (E.map (fun D => D.comap (𝟙 X)))
-  rw [map_comap_id_list_idealSheafData E, Category.id_comp]
+  rw [show E.map (fun D => D.comap (𝟙 X)) = E by simp [Scheme.IdealSheafData.comap_id],
+    Category.id_comp]
   exact hsnc
 
 private theorem exceptionalIdeal_pow_mul_singleBlowupResidualIdeal_succ {X : Scheme.{u}} (I Z : X.IdealSheafData) (m : ℕ)
@@ -183,7 +178,7 @@ private theorem singleBlowupBoundary_succ {X : Scheme.{u}} (Z : X.IdealSheafData
   show E.map (Blowup.strictTransform (Blowup.blowup.proj Z) Z) ++ [Blowup.exceptionalIdeal (Blowup.blowup.proj Z) Z] =
       (E.map (fun D => D.comap (𝟙 X))).map (Blowup.strictTransform (Blowup.blowup.proj Z) Z) ++
         [Blowup.exceptionalIdeal (Blowup.blowup.proj Z) Z]
-  rw [map_comap_id_list_idealSheafData E]
+  simp [Scheme.IdealSheafData.comap_id]
 
 namespace MarkedBlowupSequenceData
 

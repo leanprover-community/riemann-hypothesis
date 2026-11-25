@@ -114,6 +114,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalizedBesselMaps
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NumericalFamilyShapeGaps
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerSmoothStability.ExistsFinStableOfMemSSup
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantLengthMomentsAmplitudesLargeGap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantLengthTailBoundOfMoments, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantLengthTailBoundPrimedOfUnprimed, Development.AbelianVarietyTheory.Proofs.FlagMeasures.InvMomentOfBessel, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LastMajorantLengthSqGeAndPos, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralProdPowLeOfMomentsMassLeOne, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassLowTypesSecond, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassLowTypesFirst, Development.AbelianVarietyTheory.Proofs.FlagMeasures.WeightedMassHighestToLowestKTypeLargeGap, Development.AbelianVarietyTheory.Proofs.FlagMeasures.InverseMajorantLengthMomentLargeGap, Development.AbelianVarietyTheory.Proofs.FlagMeasures.InverseMajorantLengthMomentLargeGapStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantLengthTwoSidedMomentsLargeGap, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalDataTailBoundClosedFormLargeGaps
@@ -1081,64 +1082,7 @@ theorem moment_of_bessel_gap (hH : GlobalTheory.GapIn.Hyp) {k r : ℕ} {Wp : Typ
     (h0 : l2SG νq (fun g => B (R0.σ g v)) ≠ 0) (ht : l2SG νq (fun g => B (R0.σ g v)) ≠ ⊤) (a : Fin (r + 1)) :
     ∫⁻ x, ENNReal.ofReal (lenA k r z (Matrix.of x) a ^ (2 * q)) * (‖B (R0.σ (Matrix.of x) v)‖₊ : ℝ≥0∞) ^ 2 ∂νq ≤
       ENNReal.ofReal (Hsq r (Tz k r z) b ^ q) * l2SG νq (fun g => B (R0.σ g v)) := by
-  subst hR
-  have hν : n1 ν ≤ q0 := le_trans (Nat.le_add_right _ _) h1
-  have hSG := ((GlobalTheory.GapSetup.families_gap.2 k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg).1 hS)
-  obtain ⟨hNum, hFam, hSide, hSF⟩ := id hS
-  obtain ⟨⟨-, -, -, -, hOK⟩, hfam⟩ := GlobalTheory.NumFam.num_fam k r lam u b bv ga h q0 hNum
-  obtain ⟨-, -, hgap, -⟩ := hfam ν hν
-  have hDS := hFam ν hν
-  have hDG := hSG.2.1 ν hν
-  obtain ⟨hBe, hpos, -⟩ := hSF ν hν
-  obtain ⟨-, -, -, hsm, hTK, -, hKT, -⟩ := GlobalTheory.rep_basic_of_isDS hH.1.1.2.2.1 k r _ _ (R ν) hDS
-  have hn : 0 < ‖v‖ := norm_pos_iff.2 hv
-  set w : (R ν).H := ((‖v‖⁻¹ : ℝ) : ℂ) • v with hw
-  have hw1 : ‖w‖ = 1 := by
-    rw [hw, norm_smul, Complex.norm_real, norm_inv, norm_norm]
-    exact inv_mul_cancel₀ hn.ne'
-  have hvw : v = ((‖v‖ : ℝ) : ℂ) • w := by
-    rw [hw, smul_smul, ← Complex.ofReal_mul, mul_inv_cancel₀ hn.ne', Complex.ofReal_one, one_smul]
-  have hwl : PI.UpqRep.IsLowUnitH k r (PI.BesselPeriodGGP.eps48 k r) (fun a => lam a + (ν a : ℝ)) (R ν).σ w := by
-    obtain ⟨P, hP, hvP⟩ := hlow
-    exact ⟨P, hP, hw1, Submodule.smul_mem _ _ hvP⟩
-  have hwK : (R ν).KFin w := PI.UnitaryGroupMassFormula.LowSmooth.isKFinHpk_of_lowUnit hwl
-  have hvK : (R ν).KFin v := by
-    obtain ⟨S, hS1, hS2, hS3⟩ := hwK
-    exact ⟨S, hS1, by rw [hvw]; exact S.smul_mem _ hS2, hS3⟩
-  have hws : w ∈ (R ν).sm := hTK _ (hKT _ hwK)
-  obtain ⟨v₁, hv₁, hl⟩ := _root_.GlobalTheory.BesselPeriodNonzeroGap.exists_kFin_period_ne_zero hH k r _ _ (h / 2) (R ν) Wp z π u μW μN μG νq B (l ν) v hDS hgap hOK hSide hB
-    hvK h0 ht hBe
-  have hnz : NzOn (R ν) (l ν) := ⟨v₁, hTK _ (hKT _ hv₁), hl⟩
-  obtain ⟨c, hc⟩ := GlobalTheory.GapLine.bessel_line_gap hH k r _ _ (R ν) Wp z π u μW μN μG νq (l ν) B hDG hSide hBe.1 hnz hB
-  have hmass := ((_root_.Gp91.GlobalTheory.MomMass.mom_mass hH.1 k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg hSG ν hν).2 hnz).2 w hws
-  have hmom := GlobalTheory.T.oneMajorantLength_moment_lowestKType hH k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg hS ν q h1 h2 w hwl a
-  obtain ⟨-, -, -, -, hW, hN, hG, hq⟩ := hSide
-  obtain ⟨m0, m1⟩ := Formalism.FourierDecayAlt.P.DDSmoothness.muSof_facts hW hN
-  have hae := Formalism.FourierDecayAlt.P.DDSmoothness.ae_UH_of_quot hG.2.2.1 m0 m1 hq
-  set K : ℝ := (‖v‖ * ‖c‖) ^ 2 / dg ν with hK
-  have hK0 : 0 ≤ K := by positivity
-  have hpt : ∀ᵐ x ∂νq, ‖B ((R ν).σ (Matrix.of x) v)‖ ^ 2 = K * (dg ν * ‖l ν ((R ν).σ (Matrix.of x) w)‖ ^ 2) := by
-    filter_upwards [hae] with x hx
-    have hxs := hsm _ hx w hws
-    have : B ((R ν).σ (Matrix.of x) v) = ((‖v‖ : ℝ) : ℂ) • c • l ν ((R ν).σ (Matrix.of x) w) := by
-      conv_lhs => rw [hvw, map_smul]
-      rw [hB.2.1 _ _ hxs, hc _ hxs]
-    rw [this, norm_smul, norm_smul, Complex.norm_real, norm_norm, hK]
-    field_simp
-  have e1 : l2SG νq (fun g => B ((R ν).σ g v)) = ENNReal.ofReal K := by
-    rw [hw1, one_pow, ENNReal.ofReal_one] at hmass
-    rw [← mul_one (ENNReal.ofReal K), ← hmass, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-    refine lintegral_congr_ae ?_
-    filter_upwards [hpt] with x hx
-    rw [sq_nnnorm, hx, one_mul, ENNReal.ofReal_mul hK0]
-  rw [e1, mul_comm (ENNReal.ofReal _) (ENNReal.ofReal K)]
-  refine le_trans (le_of_eq ?_) (mul_le_mul_right hmom _)
-  rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  refine lintegral_congr_ae ?_
-  filter_upwards [hpt] with x hx
-  have hl0 : 0 ≤ lenA k r z (Matrix.of x) a ^ (2 * q) := pow_nonneg Metric.infDist_nonneg _
-  rw [sq_nnnorm, hx, ← ENNReal.ofReal_mul hl0, ← ENNReal.ofReal_mul hK0]
-  congr 1; ring
+  apply _root_.GlobalTheory.AmpMomentsGap.moment_of_bessel <;> assumption
 
 theorem inv_moment_of_bessel_gap (hH : GlobalTheory.GapIn.Hyp) {k r : ℕ} {Wp : Type} [NormedAddCommGroup Wp]
     [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp] {lam : Fin (2 * r + k + 1) → ℝ}

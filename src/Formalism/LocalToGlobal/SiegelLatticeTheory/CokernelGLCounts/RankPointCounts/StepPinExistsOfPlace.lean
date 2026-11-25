@@ -603,21 +603,6 @@ theorem muStab_eq (w : Point D.host.E (D.R.rS + 1)) :
   simp_rw [hin]
   exact pi_smul _ _
 
-private theorem pi_map_lemma_3 {ι : Type*} [Fintype ι] {α β : ι → Type*} [∀ i, MeasurableSpace (α i)]
-    [∀ i, MeasurableSpace (β i)] (μ : ∀ i, Measure (α i)) [∀ i, SigmaFinite (μ i)] (ν : ∀ i, Measure (β i))
-    [∀ i, SigmaFinite (ν i)] (f : ∀ i, α i → β i) (hf : ∀ i, AEMeasurable (f i) (μ i))
-    (h : ∀ i, (μ i).map (f i) = ν i) : (Measure.pi μ).map (fun x i => f i (x i)) = Measure.pi ν := by
-  have hF : AEMeasurable (fun x : ∀ i, α i => fun i => f i (x i)) (Measure.pi μ) :=
-    AEMeasurable.of_eval fun i => (hf i).comp_quasiMeasurePreserving (Measure.quasiMeasurePreserving_eval μ i)
-  symm
-  refine Measure.pi_eq fun s hs => ?_
-  rw [Measure.map_apply_of_aemeasurable hF (MeasurableSet.univ_pi hs)]
-  have e : (fun x : ∀ i, α i => fun i => f i (x i)) ⁻¹' Set.univ.pi s = Set.univ.pi (fun i => f i ⁻¹' s i) := by
-    ext x; simp [Set.mem_pi]
-  rw [e, Measure.pi_pi]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  rw [← h i, Measure.map_apply_of_aemeasurable (hf i) (hs i)]
-
 theorem pinHaarEx_of_place (hP : PlaceHaar) : PinHaarEx := by
   intro D X u u' w hw
   set γ := gamW X u u' w with hγ
@@ -630,8 +615,11 @@ theorem pinHaarEx_of_place (hP : PlaceHaar) : PinHaarEx := by
   have hsf2 : ∀ v, SigmaFinite (cv v • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) :=
     fun v => sf_smul _ (hct v)
   have e1 : (Measure.pi μv).map (stCoord X u' w γ) =
-      Measure.pi (fun v => cv v • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) :=
-    pi_map_lemma_3 μv _ (fun v => stCoordV X u' w γ v) hae hmap
+      Measure.pi (fun v => cv v • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) := by
+    have : ∀ v, SigmaFinite ((μv v).map (stCoordV X u' w γ v)) :=
+      fun v => (hmap v).symm ▸ hsf2 v
+    rw [stCoord_eq]
+    exact (Measure.pi_map_pi hae).trans (by simp_rw [hmap])
   refine ⟨Measure.pi μv, (∏ v, cv v) * K⁻¹, ⟨inferInstance, ?_, ?_, ?_⟩, ?_, ?_, ?_⟩
   · rw [← Measure.measure_univ_ne_zero, Measure.pi_univ]
     exact Finset.prod_ne_zero_iff.2 fun v _ => Measure.measure_univ_ne_zero.2 (hH v).2.1
@@ -642,8 +630,11 @@ theorem pinHaarEx_of_place (hP : PlaceHaar) : PinHaarEx := by
     exact measure_iUnion_null fun v => Measure.pi_eval_preimage_null (μ := μv) (hH v).2.2.1
   · intro s hs
     rw [stInf_eq_pi X u u' γ] at hs
-    exact pi_map_lemma_3 μv μv (fun v x => s v * x) (fun v => (measurable_const_mul (s v)).aemeasurable)
-      (fun v => (hH v).2.2.2 (s v) (hs v (Set.mem_univ v)))
+    have hinv : ∀ v, (μv v).map (fun x => s v * x) = μv v :=
+      fun v => (hH v).2.2.2 (s v) (hs v (Set.mem_univ v))
+    have : ∀ v, SigmaFinite ((μv v).map (fun x => s v * x)) := fun v => (hinv v).symm ▸ hsf v
+    exact (Measure.pi_map_pi fun v => (measurable_const_mul (s v)).aemeasurable).trans
+      (by simp_rw [hinv])
   · exact mul_ne_zero (Finset.prod_ne_zero_iff.2 fun v _ => hc0 v) (ENNReal.inv_ne_zero.2 hKt)
   · exact ENNReal.mul_ne_top (ENNReal.prod_ne_top fun v _ => hct v) (ENNReal.inv_ne_top.2 hK0)
   · rw [e1, pi_smul, hK, smul_smul, mul_assoc, ENNReal.inv_mul_cancel hK0 hKt, mul_one]

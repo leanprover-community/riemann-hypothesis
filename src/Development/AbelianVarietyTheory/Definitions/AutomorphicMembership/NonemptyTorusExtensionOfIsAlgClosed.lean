@@ -82,10 +82,6 @@ variable [IsCommMonObj G] [IsCommMonObj H] [IsCommMonObj K]
 
 instance : AddCommGroup (Cochar G) := inferInstanceAs (AddCommGroup (Additive (cocharSubgroup G)))
 
-def map (u : G ⟶ H) [IsMonHom u] : Cochar G →+ Cochar H :=
-  AddMonoidHom.mk' (fun l => ⟨l.1 ≫ u, inferInstance⟩) fun l m =>
-    Subtype.ext (MonObj.mul_comp l.1 m.1 u)
-
 end Basic
 
 end Cochar
@@ -113,15 +109,6 @@ theorem eq_pullTorus_iff (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G
 instance isMonHom_pullTorus (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G) [IsMonHom i] :
     IsMonHom (pullTorus h i) :=
   Out.PullGtPf.isMonHom_of_grpPullback (SplitTorus.isGrpPullback_bcMap f X) h i _ (pullTorus_left h i)
-
-theorem pullTorus_mul (h : IsGrpPullback G' G f φ) (i j : splitTorus S X ⟶ G) :
-    pullTorus h (i * j) = pullTorus h i * pullTorus h j := by
-  let b : Over.mk ((splitTorus S' X).hom ≫ f) ⟶ splitTorus S X :=
-    Over.homMk (bcMap f X) (SplitTorus.bcMap_hom f X)
-  have k := h.2 _ (pullTorus h i) (pullTorus h j) (b ≫ i) (b ≫ j) (pullTorus_left h i).symm
-    (pullTorus_left h j).symm
-  rw [← MonObj.comp_mul] at k
-  exact ((eq_pullTorus_iff h _ _).2 k.symm).symm
 
 theorem pullTorus_pullTorus {g : S'' ⟶ S'} {φ' : G''.left ⟶ G'.left} {f'' : S'' ⟶ S}
     {φ'' : G''.left ⟶ G.left} (h' : IsGrpPullback G'' G' g φ') (h : IsGrpPullback G' G f φ)
@@ -162,14 +149,6 @@ theorem exists_isKernel_pullTorus (h : IsGrpPullback G' G f φ) (i : splitTorus 
 
 variable [IsCommMonObj G] [IsCommMonObj G'] [IsCommMonObj G'']
 
-namespace Cochar
-
-def pull (h : IsGrpPullback G' G f φ) : Cochar G →+ Cochar G' :=
-  AddMonoidHom.mk' (fun l => ⟨pullTorus h l.1, inferInstance⟩) fun l m =>
-    Subtype.ext (pullTorus_mul h l.1 m.1)
-
-end Cochar
-
 end Pull
 
 abbrev Char (G : Over S) [GrpObj G] [IsCommMonObj G] : Type := Cochar G →+ ℤ
@@ -181,10 +160,6 @@ end Char
 section Triple
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-def CocharOf (t : SAB H S) : Type := Cochar t.G
-
-def CharOf (t : SAB H S) : Type := Char t.G
 
 namespace CocharOf
 

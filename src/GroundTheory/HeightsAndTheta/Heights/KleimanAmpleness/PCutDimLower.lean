@@ -180,23 +180,15 @@ theorem CutDimLower.proof : CutDimLower.Statement.{u, w} := by
   have key := GroundTheory.Arith.Abelian.Jacobian.height_add_ringKrullDim_quotient k
     (qq.map (Ideal.Quotient.mk pp))
   rw [ringKrullDim_eq_of_ringEquiv (DoubleQuot.quotQuotEquivQuotOfLE hppq), hW.dim] at key
-  have hnn : (0 : WithBot ℕ∞) ≤ ringKrullDim (Poly k N ⧸ qq) := ringKrullDim_nonneg_of_nontrivial
-  generalize ringKrullDim (Poly k N ⧸ qq) = D at key hnn ⊢
-  generalize (qq.map (Ideal.Quotient.mk pp)).height = H at key hQ
-  induction D using WithBot.recBotCoe with
-  | bot => exact absurd hnn (by simp)
-  | coe d =>
-    have key' : H + d = ((n + 1 + 1 : ℕ) : ℕ∞) := by exact_mod_cast key
-    suffices ((n + 1 : ℕ) : ℕ∞) ≤ d by exact_mod_cast this
-    induction d using ENat.recTopCoe with
-    | top => exact le_top
-    | coe m =>
-      induction H using ENat.recTopCoe with
-      | top => simp at hQ
-      | coe h =>
-        have h1 : h ≤ 1 := by exact_mod_cast hQ
-        have h2 : h + m = n + 1 + 1 := by exact_mod_cast key'
-        exact_mod_cast (by omega : n + 1 ≤ m)
+  by_contra! hlt
+  have h1 : ((n + 1 + 1 : ℕ) : WithBot ℕ∞) ≤ ((n + 1 : ℕ) : WithBot ℕ∞) := calc
+    ((n + 1 + 1 : ℕ) : WithBot ℕ∞)
+      = (qq.map (Ideal.Quotient.mk pp)).height + ringKrullDim (Poly k N ⧸ qq) := key.symm
+    _ ≤ 1 + ringKrullDim (Poly k N ⧸ qq) := by gcongr; exact_mod_cast hQ
+    _ = ringKrullDim (Poly k N ⧸ qq) + 1 := add_comm _ _
+    _ ≤ ((n + 1 : ℕ) : WithBot ℕ∞) := ENat.WithBot.add_one_le_natCast_iff.mpr hlt
+  have h2 : n + 1 + 1 ≤ n + 1 := by exact_mod_cast h1
+  omega
 
 end
 

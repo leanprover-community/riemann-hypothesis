@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentCoordsNonunit
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfFormalGroupLawCoboundaryOneEqZero
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ToBaseChangePtsBijective
@@ -262,15 +263,7 @@ variable {R : Type} [CommRing R] {d : ℕ}
 
 theorem nmul_const {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
     (hμ : ∀ i, constantCoeff (μ i) = 0) (n : ℕ) : ∀ i, constantCoeff (nmul μ n i) = 0 := by
-  induction n with
-  | zero => intro i; simp [nmul]
-  | succ n ih =>
-    intro i
-    rw [nmul, Function.iterate_succ_apply', ← nmul, op, at2]
-    have hs : ∀ j, constantCoeff (Sum.elim (nmul μ n)
-        (fun i => (X i : MvPowerSeries (Fin d) R)) j) = 0 := by
-      rintro (j | j) <;> simp [ih]
-    exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero hs) hs (hμ i)
+  apply _root_.GlobalTheory.EvP.constantCoeff_nmul <;> assumption
 
 theorem powerSeriesPullbackTwoGroups_add_smul {φ : Fin d → MvPowerSeries (Fin d) R} (hφ : ∀ i, constantCoeff (φ i) = 0)
     (a : R) (κ h : MvPowerSeries (Fin d ⊕ Fin d) R) :
@@ -1444,18 +1437,8 @@ theorem ql_zero (h : ∀ i, constantCoeff (μ i) = 0) : QL μ (⊤ : Ideal O) (0
 
 theorem ql_add_smul (h : ∀ i, constantCoeff (μ i) = 0) {f g : MvPowerSeries (Fin d) E}
     (hf : QL μ ⊤ f) (hg : QL μ ⊤ g) (a : O) : QL μ ⊤ (f + algebraMap O E a • g) := by
-  refine ⟨?_, fun i => ?_, ?_⟩
-  · have h1 := hf.1
-    have h2 := hg.1
-    rw [← coeff_zero_eq_constantCoeff_apply] at h1 h2 ⊢
-    rw [map_add (f := _), map_smul, h1, h2, smul_zero, add_zero]
-  · obtain ⟨a1, -, h1⟩ := hf.2.1 i
-    obtain ⟨a2, -, h2⟩ := hg.2.1 i
-    refine ⟨a1 + a * a2, trivial, ?_⟩
-    simp only [lin] at h1 h2 ⊢
-    rw [map_add (f := _), map_smul, h1, h2, smul_eq_mul, map_add (f := _), map_mul]
-  · rw [← cobL_apply μ h, map_add (f := _), map_smul, cobL_apply, cobL_apply]
-    exact in_top_add hf.2.2 (in_top_smul a hg.2.2)
+  intros
+  apply _root_.GlobalTheory.TangentIndep.QL_comb <;> assumption
 
 theorem comb_sub {ι : Type} [Fintype ι] (e : ι → MvPowerSeries (Fin d) E) (b b' : ι → O) :
     comb (b - b') e = comb b e - comb b' e := by

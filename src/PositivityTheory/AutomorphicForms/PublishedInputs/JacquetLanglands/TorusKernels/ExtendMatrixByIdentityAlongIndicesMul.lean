@@ -9,6 +9,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Calculus.Deriv.Pow
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.AutomorphyFactorScalarMatrix
 
 @[expose] public section
 
@@ -23,9 +24,6 @@ open UpperTheory.Esk
 
 def mkP (t : ℂ) (h : t.im ≠ 0) : P := ⟨t, h⟩
 
-theorem extendHalfPlane_coe_point (f : P → ℂ) (z : P) : ext1 f z.1 = f z := by
-  unfold ext1; rw [dite_eq_left z.2]; rfl
-
 theorem extendHalfPlane_of_im_ne_zero (f : P → ℂ) {t : ℂ} (h : t.im ≠ 0) : ext1 f t = f (mkP t h) := by
   unfold ext1; rw [dite_eq_left h]; rfl
 
@@ -38,7 +36,7 @@ theorem cont_of_hol {f : P → ℂ} (hf : Hol1 f) : Continuous f := by
     hf.continuousOn.comp_continuous continuous_subtype_val (fun z => z.2)
   convert h1 using 1
   funext z
-  exact (extendHalfPlane_coe_point f z).symm
+  exact (KernelLevelTransform.extendHalfPlane_coe_point f z).symm
 
 theorem integ (B1b' : B1b) (B1c' : B1c) (B6' : B6) {k : ℕ} (hk : 4 ≤ k) {f : P → ℂ}
     (hc : Continuous f) {C : ℝ} (hC : ∀ z : P, ‖f z‖ * |z.1.im| ^ ((k : ℝ) / 2) ≤ C) (z : P) :
@@ -99,7 +97,7 @@ theorem hol_comp (g : GL (Fin 2) ℝ) (k : ℕ) {f : P → ℂ} (hf : Hol1 f) :
   intro t ht
   rw [extendHalfPlane_of_im_ne_zero _ ht]
   show f (g • mkP t ht) / j1 k g (mkP t ht) = _
-  rw [← extendHalfPlane_coe_point f (g • mkP t ht), coe_smul]
+  rw [← KernelLevelTransform.extendHalfPlane_coe_point f (g • mkP t ht), coe_smul]
   rfl
 
 theorem memb (B1a' : B1a) (g : GL (Fin 2) ℝ) : MeasurableEmbedding (fun z : P => g • z) := by
@@ -256,7 +254,7 @@ theorem at_i (B1b' : B1b) (B1c' : B1c) (B2' : B2) (B6' : B6) {k : ℕ} (hk : 4 �
       exact pow_ne_zero _ (disc s hs).1
   have hG0 : (fun s : ℂ => ext1 f (Complex.I * (1 + s) / (1 - s)) / (1 - s) ^ (m + 2)) 0 = f iP := by
     simp only [add_zero, sub_zero, mul_one, div_one, one_pow]
-    exact extendHalfPlane_coe_point f iP
+    exact KernelLevelTransform.extendHalfPlane_coe_point f iP
   have hin : ∀ r ∈ Set.Ioo (0 : ℝ) 1, ∫ θ in Set.Ioo (-π) π,
       ((((m : ℝ) + 1) / π * r * (1 - r ^ 2) ^ m : ℝ) : ℂ) *
         (ext1 f (Complex.I * (1 + circleMap 0 r θ) / (1 - circleMap 0 r θ)) /

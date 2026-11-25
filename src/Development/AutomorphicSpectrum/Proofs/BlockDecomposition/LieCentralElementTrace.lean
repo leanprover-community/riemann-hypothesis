@@ -96,17 +96,7 @@ theorem lie_oneL_eq_sum_Eop (E : Type) [Field E] [NumberField E] [_root_.NumberF
   simp only [lieS_apply]
 
   rw [← map_sum]
-  have hm : ∑ i : Fin a, Matrix.single i i (1 : Cinf E) = 1 := by
-    refine Matrix.ext fun p q => ?_
-    rw [Matrix.sum_apply, Matrix.one_apply]
-    by_cases h : p = q
-    · subst h
-      simp [Matrix.single_apply]
-    · rw [if_neg h]
-      refine Finset.sum_eq_zero fun c _ => ?_
-      rw [Matrix.single_apply, if_neg]
-      rintro ⟨rfl, rfl⟩
-      exact h rfl
+  have hm : ∑ i : Fin a, Matrix.single i i (1 : Cinf E) = 1 := Matrix.sum_single_one
   congr 1
   exact (congrArg Matrix.of.symm hm).symm
 

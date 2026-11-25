@@ -1705,6 +1705,7 @@ theorem T2 {O M : Type} [CommRing O] [AddCommGroup M] [Module O M] {S S' : Submo
 theorem main : StepLocDual := by
   intro D hLOC hBK hFont hPot i r hr Xs w hw hdeg n e hPF hLF k M hSub
   unfold LocBoundP
+  set_option synthInstance.maxHeartbeats 200000 in
   apply _root_.GlobalTheory.Pass.LocDual.lenMod_span_le_of_finset
   intro F hF
   obtain ⟨X, hX, hle⟩ := _root_.GlobalTheory.Pass.LocDual.OneX.main D hFont i r hr Xs w hw n hPF k M hSub F hF

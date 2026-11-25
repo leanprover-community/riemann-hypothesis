@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptySmoothLiftAffineThickenings
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualMapCompDualMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrystallineClassMemHodgeFiltrationOfCechRepZero
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
@@ -714,18 +715,8 @@ namespace GlobalTheory.CechKS.LiftDiff
 private theorem thickHom_ext {R : Type} [CommRing R] {I : Ideal R}
     {powers : DividedPowers I} {X : Scheme.{0}} {s : X ⟶ Sp R}
     {T T' : Thick powers s} {f g : T ⟶ T'} (h : ∀ b, f.φ b = g.φ b) : f = g := by
-  change Thick.Hom T T' at f g
-  cases f with
-  | mk φ φ₀ comm dp pt =>
-    cases g with
-    | mk ψ ψ₀ comm' dp' pt' =>
-      have e : φ = ψ := AlgHom.ext h
-      subst ψ
-      have e₀ : φ₀ = ψ₀ := RingHom.ext fun c ↦ by
-        obtain ⟨b, rfl⟩ := T.surj c
-        rw [comm, comm']
-      subst ψ₀
-      rfl
+  intros
+  apply _root_.GlobalTheory.SmoothLift.LiftEx.thick_hom_ext <;> assumption
 
 theorem spMap_fst_surjective {B : Type} [CommRing B] (f : DualNumber B →+* B) (hf : ∀ c, f c = c.fst) :
     Function.Surjective (spMap f) := by

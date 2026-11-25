@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentVectorSectionValueEqExpansionSumStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftsAlong
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SameIdIff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotIsIsoSpMapDnFst
@@ -1635,18 +1636,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.DualOpen
 
 theorem subsingleton_spectrum_dualNumber (K : Type) [Field K] : Subsingleton (PrimeSpectrum (DualNumber K)) := by
-  have key : ∀ (p : PrimeSpectrum (DualNumber K)) (x : DualNumber K), x ∈ p.asIdeal ↔ x.fst = 0 := by
-    intro p x
-    constructor
-    · intro hx
-      by_contra h
-      have hu : IsUnit x := TrivSqZeroExt.isUnit_iff_isUnit_fst.2 (isUnit_iff_ne_zero.2 h)
-      exact p.isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ hx hu)
-    · intro h
-      have hsq : x * x = 0 := by
-        refine TrivSqZeroExt.ext ?_ ?_ <;> simp [h]
-      exact p.isPrime.mem_of_pow_mem 2 (by rw [pow_two, hsq]; exact p.asIdeal.zero_mem)
-  exact ⟨fun p q => PrimeSpectrum.ext (Ideal.ext fun x => by rw [key p x, key q x])⟩
+  apply _root_.GlobalTheory.MBLow.TanVal.subsingleton_dual <;> assumption
 
 private theorem spMap_comp_of_eq {R₁ R₂ R₂' R₃ : Type} [CommRing R₁] [CommRing R₂] [CommRing R₂'] [CommRing R₃]
     {f : R₁ →+* R₂} {g : R₂ →+* R₃} {f' : R₁ →+* R₂'} {g' : R₂' →+* R₃} (h : g.comp f = g'.comp f') :

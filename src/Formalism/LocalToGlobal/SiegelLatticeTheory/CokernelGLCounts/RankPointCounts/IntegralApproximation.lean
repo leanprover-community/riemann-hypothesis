@@ -112,15 +112,9 @@ theorem card_res_le (L : Formalism.MainNotions.S.Loc.LocAt F E sig p) :
     intro w
     obtain ⟨y, rfl⟩ := IsLocalRing.residue_surjective w
     have hU : IsOpen {z : L.Fp | valuation L.Fp (z - (y : L.Fp)) < 1} := by
-      rw [isOpen_iff_mem_nhds]
-      intro z0 hz0
-      rw [IsValuativeTopology.mem_nhds_iff]
-      refine ⟨1, ?_⟩
-      rintro _ ⟨z, hz, rfl⟩
-      simp only [Set.mem_setOf_eq, Units.val_one] at hz hz0 ⊢
-      have : z0 + z - (y : L.Fp) = (z0 - y) + z := by ring
-      rw [this]
-      exact Valuation.map_add_lt _ hz0 hz
+      have hB : IsOpen {x : L.Fp | valuation L.Fp x < 1} := by
+        simpa only [Valuation.restrict_lt_one_iff] using (valuation L.Fp).isOpen_ball 1
+      exact hB.preimage (continuous_sub_right _)
     obtain ⟨x, hx⟩ := L.dense.exists_mem_open hU ⟨(y : L.Fp), by simp⟩
     simp only [Set.mem_setOf_eq] at hx
     have hxI : valuation L.Fp (L.ιF x) ≤ 1 := by

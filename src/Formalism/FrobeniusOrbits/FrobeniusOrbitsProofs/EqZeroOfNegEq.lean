@@ -113,10 +113,6 @@ theorem sqrt_exists {p : ℕ} [Fact p.Prime] (hp4 : p % 4 = 3) {N : ℕ} [NeZero
     ∃ g : Cyc N, g ^ 2 = -(p : Cyc N) := by
   exact ⟨_, gs_sq hp4 (prim_pow hp)⟩
 
-theorem top_adjoin (m : ℕ) [NeZero m] : IntermediateField.adjoin ℚ ({z m} : Set (Cyc m)) = ⊤ := by
-  exact IntermediateField.adjoin_eq_top_of_algebra ℚ _
-   (IsCyclotomicExtension.adjoin_primitive_root_eq_top (z_spec m))
-
 theorem aut (N : ℕ) [NeZero N] (v : ℕ) (hv : v.Coprime N) :
     ∃ σ : Cyc N ≃ₐ[ℚ] Cyc N, ∀ w : Cyc N, w ^ N = 1 → σ w = w ^ v := by
   have hpos : 0 < N := NeZero.pos N

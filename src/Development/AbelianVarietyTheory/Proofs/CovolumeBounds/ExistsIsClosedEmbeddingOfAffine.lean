@@ -136,15 +136,6 @@ theorem PtsOver.secondCountableTopology [T1Space C] [SecondCountableTopology C] 
   exact (PtsOver.baseChangeHomeomorph (IsPullback.of_hasPullback p s)).symm.secondCountableTopology
 
 
-open scoped MonObj in
-theorem continuousMul_over (A : Over (Sp C)) [MonObj A] : ContinuousMul (𝟙_ (Over (Sp C)) ⟶ A) where
-  continuous_mul := (continuous_over_comp (μ[A])).comp (tensorHomeomorph A A).symm.continuous
-
-
-open scoped MonObj in
-theorem isTopologicalGroup_over (A : Over (Sp C)) [GrpObj A] : IsTopologicalGroup (𝟙_ (Over (Sp C)) ⟶ A) := {
-  toContinuousMul := continuousMul_over A
-  continuous_inv := continuous_over_comp (GrpObj.inv (X := A)) }
 
 variable {R : Type} [CommRing R] {N : ℕ}
 
@@ -194,11 +185,6 @@ omit [TopologicalSpace C] [IsTopologicalRing C] [IsOpenUnits C] in
 theorem projPt_surjective (c : R →+* C) : Function.Surjective (projPt (N := N) c) := fun x =>
   (exists_eq_pt c x.1 x.2).elim fun v h => h.elim fun hv e => ⟨⟨v, hv⟩, Subtype.ext e.symm⟩
 
-
-omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
-theorem projPt_eq_iff (c : R →+* C) (v w : Unimodular C N) :
-    projPt c v = projPt c w ↔ ∃ u : Cˣ, w.1 = u • v.1 :=
-  Subtype.ext_iff.trans (pt_eq_pt_iff c v.2 w.2)
 
 theorem continuous_projPt (c : R →+* C) : Continuous (projPt (N := N) c) := by
   have hs : ∀ i, Subring.closure (Set.range (constFn (PSpace.str R N) (chart R N i)) ∪

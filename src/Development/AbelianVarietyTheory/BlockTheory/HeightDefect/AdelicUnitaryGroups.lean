@@ -278,8 +278,6 @@ def ratPts : Subgroup (GA hc V) := (ratA hc V).range
 
 def finPts : Subgroup (GA hc V) := (projInf hc V).ker
 
-def realPts : Subgroup (GA hc V) := (projFin hc V).ker
-
 
 def coordR (R : Type) [CommRing R] [Algebra F R] (x : V.V) : Fin V.rank → R ⊗[F] E :=
   fun i => inclR R (V.frame.repr x i)

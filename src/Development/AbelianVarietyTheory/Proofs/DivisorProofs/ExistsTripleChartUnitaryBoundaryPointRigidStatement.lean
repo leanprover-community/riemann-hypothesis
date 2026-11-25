@@ -1438,21 +1438,7 @@ theorem bdParam_ne_zero (k : Type) [Field k] (m e : ℕ) (i : Fin m) : bdParam k
 
 theorem exists_fractionRing_map {A B : Type} [CommRing A] [IsDomain A] [CommRing B] [IsDomain B] (ψ : A →+* B)
     (hψ : Function.Injective ψ) : ∃ fK : FractionRing A →+* FractionRing B, spMap fK ≫ jK A = jK B ≫ spMap ψ := by
-  have hg : Function.Injective ((algebraMap B (FractionRing B)).comp ψ) :=
-    (IsFractionRing.injective B (FractionRing B)).comp hψ
-  let fK : FractionRing A →+* FractionRing B :=
-    IsFractionRing.lift (K := FractionRing A) (L := FractionRing B) (g := (algebraMap B (FractionRing B)).comp ψ) hg
-  have e0 : fK.comp (algebraMap A (FractionRing A)) = (algebraMap B (FractionRing B)).comp ψ := by
-    ext x
-    rw [RingHom.comp_apply]
-    exact IsFractionRing.lift_algebraMap (K := FractionRing A) (L := FractionRing B) hg x
-  refine ⟨fK, ?_⟩
-  have e1 : CommRingCat.ofHom (algebraMap A (FractionRing A)) ≫ CommRingCat.ofHom fK =
-      CommRingCat.ofHom ψ ≫ CommRingCat.ofHom (algebraMap B (FractionRing B)) := by
-    rw [← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, e0]
-  have e2 := congrArg Spec.map e1
-  rw [Spec.map_comp, Spec.map_comp] at e2
-  exact e2
+  apply _root_.GlobalTheory.TautEtaleB.exists_fracMap <;> assumption
 
 theorem exists_lift_normBl {X Z S : Scheme.{0}} (i : X ⟶ Z) (π : S ⟶ Z) (j : X ⟶ S) (J : Z.IdealSheafData)
     (hN : GlobalTheory.Poinc.IsNormBl π J) (hji : j ≫ π = i) (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]

@@ -57,16 +57,6 @@ section Poly
 
 variable {A : Type u} [CommRing A]
 
-theorem eq_C_of_derivative_eq_zero (h : ∀ n : ℕ, IsUnit ((n : A) + 1)) {f : Polynomial A}
-    (hf : Polynomial.derivative f = 0) : f = Polynomial.C (f.coeff 0) := by
-  ext n
-  rcases n with _ | n
-  · simp
-  · have h1 := Polynomial.coeff_derivative f n
-    rw [hf, Polynomial.coeff_zero] at h1
-    rw [Polynomial.coeff_C_succ]
-    exact (h n).mul_left_eq_zero.1 h1.symm
-
 end Poly
 
 variable {p : ℕ} [Fact p.Prime]

@@ -170,9 +170,6 @@ theorem actE_sum_right {κ : Type*} (s : Finset κ) (α : E) (v : κ → Vsp dim
 
   simp only [← actL_apply, map_sum]
 
-theorem actE_neg_left (α : E) (v : Vsp dim) : actE (-α) v = -actE α v := by
-  ext i; simp
-
 theorem actE_comm (α β : E) (v : Vsp dim) : actE α (actE β v) = actE β (actE α v) := by
   rw [← actE_mul, ← actE_mul, mul_comm]
 

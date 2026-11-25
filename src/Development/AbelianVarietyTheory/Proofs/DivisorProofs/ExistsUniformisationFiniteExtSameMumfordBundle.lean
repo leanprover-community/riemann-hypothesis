@@ -1019,7 +1019,6 @@ theorem genPoint_fst (G : Over (Sp R)) (a : Over.mk (jK R) ⟶ G) :
     (genPoint G a).left ≫ pullback.fst G.hom (jK R) = a.left :=
   pullback.lift_fst _ _ _
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem one_left_fst (G : Over (Sp R)) [GrpObj G] (T : Over (Sp (FractionRing R))) :
     (1 : T ⟶ (Over.pullback (jK R)).obj G).left ≫ pullback.fst G.hom (jK R) =
       (1 : Over.mk (T.hom ≫ jK R) ⟶ G).left := by
@@ -1036,7 +1035,6 @@ theorem one_left_fst (G : Over (Sp R)) [GrpObj G] (T : Over (Sp (FractionRing R)
   have : c = 1 := mul_eq_left.mp hc
   exact congrArg (fun q => q.left) this
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem genPoint_mul_self (G : Over (Sp R)) [GrpObj G] (a : Over.mk (jK R) ⟶ G) (ha : a * a = 1) :
     genPoint G a * genPoint G a = 1 := by
   have H := isGrpPullback_pullback G (jK R)
@@ -1223,7 +1221,6 @@ noncomputable section
 
 namespace GlobalTheory.TwoTorsPull
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem twoTorsRat_of_pullback :∀ (R : Type) [CommRing R] [IsDomain R] (G : Over (Sp R)) [GrpObj G] (A : PolAV (Sp (FractionRing R))) (gen : ((Over.pullback (jK R)).obj G) ≅ A.A), IsMonHom gen.hom → ∃ (K' : Type) (_ : Field K') (_ : Algebra (FractionRing R) K'), Module.Finite (FractionRing R) K' ∧ ∀ (R₂ : Type) [CommRing R₂] [IsDomain R₂] (ρ : R →+* R₂) (i : K' →+* FractionRing R₂), (∀ r : R, i (algebraMap (FractionRing R) K' (algebraMap R (FractionRing R) r)) = algebraMap R₂ (FractionRing R₂) (ρ r)) → ∀ (G₁ : Over (Sp R₂)) [GrpObj G₁] (β : G₁.left ⟶ G.left), IsGrpPullback G₁ G (spMap ρ) β → TwoTorsRat G₁ := by
   intro R _ _ G _ A gen hgen
   obtain ⟨K', _, _, hfin, H⟩ := TorsRational.exists_ext_points (FractionRing R) (torsion A.A 2)

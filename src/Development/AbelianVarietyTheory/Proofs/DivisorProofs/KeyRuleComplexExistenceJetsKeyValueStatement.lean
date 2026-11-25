@@ -1495,18 +1495,10 @@ theorem fj_eq_tsum (S : Matrix (Fin r) (Fin r) ℂ) (χ : N.X) (Z : Fin g → �
   rw [thT_full, h1, h2, hcv]
 
 theorem half_aF : Half (d.aF σ) := by
-  intro j
-  simp only [CD.aF]
-  rcases σ j with i | l
-  · exact d.ha i
-  · simp
+  apply _root_.GlobalTheory.MBLow.Cl.Ev.half_aF <;> assumption
 
 theorem half_bF : Half (d.bF σ) := by
-  intro j
-  simp only [CD.bF]
-  rcases σ j with i | l
-  · exact d.hb i
-  · exact d.hb2 l
+  apply _root_.GlobalTheory.MBLow.Cl.Ev.half_bF <;> assumption
 
 theorem full_isSymm {S : Matrix (Fin r) (Fin r) ℂ} (hS : S.IsSymm) : (d.full σ S).IsSymm :=
   (Matrix.IsSymm.fromBlocks d.symm rfl (d.toricPeriodBlock_isSymm.add hS)).submatrix σ
@@ -1632,19 +1624,11 @@ theorem termsum_full_isSymm {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fi
 
 theorem termsum_half_aF {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fin r) ℤ N.X} (d : CD N g' r bX)
     (σ : Fin g ≃ Fin g' ⊕ Fin r) : Half (d.aF σ) := by
-  intro j
-  unfold CD.aF
-  rcases σ j with i | l
-  · exact d.ha i
-  · exact Or.inl rfl
+  apply _root_.GlobalTheory.MBLow.Cl.Ev.half_aF <;> assumption
 
 theorem termsum_half_bF {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fin r) ℤ N.X} (d : CD N g' r bX)
     (σ : Fin g ≃ Fin g' ⊕ Fin r) : Half (d.bF σ) := by
-  intro j
-  unfold CD.bF
-  rcases σ j with i | l
-  · exact d.hb i
-  · exact d.hb2 l
+  apply _root_.GlobalTheory.MBLow.Cl.Ev.half_bF <;> assumption
 
 theorem term_sum_and_fderiv : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ (m : ℕ) (M Nn : Fin g → ℤ) (W : Fin g → ℂ), (Summable fun χ => ‖d.term σ S m M Nn χ 0‖) ∧ (Summable fun χ => ‖fderiv ℂ (d.term σ S m M Nn χ) 0 W‖) ∧ ∑' χ, d.term σ S m M Nn χ 0 = trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn 0 ∧ ∑' χ, fderiv ℂ (d.term σ S m M Nn χ) 0 W = fderiv ℂ (trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn) 0 W := by
   intro N g' r g bX d σ S hS hpos m M Nn W

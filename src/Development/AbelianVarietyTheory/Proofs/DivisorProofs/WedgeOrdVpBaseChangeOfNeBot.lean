@@ -177,7 +177,7 @@ theorem IsKSValue.baseChange (P : AbelianDeRham) {A' : Over (Sp (DualNumber R))}
     rw [GrpMor.pull_pull (liftMor (epsDP R) h) m n (fun _ => rfl) rfl c,
       ← GrpMor.pull_pull (bcMor hφ') (liftMor (epsDP R') h') n (fun _ => rfl) sq c]
     exact ex c
-  refine ⟨k', ⟨d', mem_Fil_of_corr (hφ := hφ') hF₁ ex hd, fun c => ?_⟩,
+  refine ⟨k', ⟨d', (mem_Fil_of_corr (hφ := hφ') hF₁ ex hd :), fun c => ?_⟩,
     hk.baseChange (hφ := hφ) hF₀ (PH R' B g b₀.1 b₀.2).1 ek ev⟩
   obtain ⟨z, rfl⟩ := bc₀.2 c
   induction z using TensorProduct.induction_on with

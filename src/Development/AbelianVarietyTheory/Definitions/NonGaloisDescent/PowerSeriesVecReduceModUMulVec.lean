@@ -393,30 +393,6 @@ theorem app_mem_ext (F : Hom P Q) {B : Subalgebra O K⟦X⟧} (hB : A O K ≤ B)
   exact Q.mem_extc.2 ⟨_, fun i => Subalgebra.sum_mem _ fun j _ =>
     mul_mem (hB (frob_mem_A l (F.mem _ i j))) (hm j), rfl⟩
 
-
-variable (P) in
-def scalar (c : O) : Hom P P where
-  mat _ := algebraMap O K⟦X⟧ c • (1 : Matrix ι ι K⟦X⟧)
-  mem τ i j := by
-    rw [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
-    split_ifs
-    · simp
-    · simp
-  comm τ := by
-    have : (algebraMap O K⟦X⟧ c • (1 : Matrix ι ι K⟦X⟧)).map (frob K l) =
-        algebraMap O K⟦X⟧ c • (1 : Matrix ι ι K⟦X⟧) := by
-      ext1 i j
-      rw [Matrix.map_apply, Matrix.smul_apply, Matrix.one_apply, algebraMap_eq_C]
-      split_ifs <;> simp
-    rw [this]
-    simp
-
-def comp (G : Hom Q T) (F : Hom P Q) : Hom P T where
-  mat τ := G.mat τ * F.mat τ
-  mem τ i j := Subalgebra.sum_mem _ fun k _ => mul_mem (G.mem τ i k) (F.mem τ k j)
-  comm τ := by
-    rw [Matrix.mul_assoc, F.comm, ← Matrix.mul_assoc, G.comm, Matrix.mul_assoc, Matrix.map_mul]
-
 end Hom
 
 end Hom
@@ -526,10 +502,6 @@ def rankOne (j : ZMod a → ℤ) : PhiMod O K l e a Unit where
   mat τ := Units.map (Matrix.scalar Unit).toMonoidHom (Eunit O K l e ^ j τ)
 
 variable {O K l e a}
-
-theorem mx_rankOne {j : ZMod a → ℤ} {τ : ZMod a} {n : ℕ} (h : j τ = n) :
-    (rankOne O K l e j).mx τ () () = E K l e ^ n := by
-  simp [PhiMod.mx, rankOne, h, Matrix.diagonal_pow, Eunit]
 
 end RankOne
 

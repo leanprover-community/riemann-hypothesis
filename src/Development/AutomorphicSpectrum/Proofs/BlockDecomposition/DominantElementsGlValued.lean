@@ -63,38 +63,13 @@ theorem integ_of_stable {g : GL (Fin n) L}
     simpa using this
 
 theorem mem_IwGL_iff (g : GL (Fin n) L) : g ∈ IwGL L n ↔ Integ g ∧ Integ g⁻¹ := by
-  have key : ∀ (h : GL (Fin n) L) (y : Fin n → L),
-      (Matrix.GeneralLinearGroup.toLin h) • y = (h : Matrix (Fin n) (Fin n) L).mulVec y := by
-    intro h y
+  have key2 (h : GL (Fin n) L) (S : Set (Fin n → L)) :
+      (Matrix.GeneralLinearGroup.toLin h) • S = S ↔
+        (∀ x ∈ S, (h : Matrix (Fin n) (Fin n) L).mulVec x ∈ S) ∧
+          ∀ x ∈ S, ((h⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).mulVec x ∈ S := by
+    rw [Set.Subset.antisymm_iff, Set.subset_smul_set_iff, Set.smul_set_subset_iff,
+      Set.smul_set_subset_iff, ← map_inv]
     rfl
-  have key2 : ∀ (h : GL (Fin n) L) (S : Set (Fin n → L)), (Matrix.GeneralLinearGroup.toLin h) • S = S ↔
-      ((∀ x ∈ S, (h : Matrix (Fin n) (Fin n) L).mulVec x ∈ S) ∧
-        ∀ x ∈ S, ((h⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).mulVec x ∈ S) := by
-    intro h S
-    have inv1 : ∀ y : Fin n → L, (h : Matrix (Fin n) (Fin n) L).mulVec
-        (((h⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).mulVec y) = y := fun y => by
-      rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]
-    have inv2 : ∀ y : Fin n → L, ((h⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).mulVec
-        ((h : Matrix (Fin n) (Fin n) L).mulVec y) = y := fun y => by
-      rw [Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec]
-    constructor
-    · intro hS
-      refine ⟨fun x hx => ?_, fun x hx => ?_⟩
-      · rw [← hS]
-        exact Set.mem_smul_set.2 ⟨x, hx, key h x⟩
-      · rw [← hS] at hx
-        obtain ⟨y, hy, rfl⟩ := Set.mem_smul_set.1 hx
-        rw [key, inv2]
-        exact hy
-    · rintro ⟨h1, h2⟩
-      ext y
-      constructor
-      · intro hy
-        obtain ⟨x, hx, rfl⟩ := Set.mem_smul_set.1 hy
-        rw [key]
-        exact h1 x hx
-      · intro hy
-        exact Set.mem_smul_set.2 ⟨_, h2 y hy, by rw [key, inv1]⟩
   simp only [IwGL, Subgroup.mem_iInf, Subgroup.mem_comap, MulAction.mem_stabilizer_iff]
   constructor
   · intro h

@@ -327,7 +327,7 @@ theorem integral_inner_left {f : α → E} (hf : Integrable f μ) (η : E) :
     funext x; rw [inner_conj_symm]
   rw [h1, integral_conj, integral_inner hf, inner_conj_symm]
 
-theorem integral_rankOne_prod [SFinite μ] [SFinite ν] {a : α → F} {b : β → E} (ha : Integrable a μ)
+theorem integral_rankOne_prod [SFinite μ] [SFinite ν] {a : α → F} {b : β → E}
     (hb : Integrable b ν) (hI : Integrable (fun q : α × β => (innerSL ℂ (b q.2)).smulRight (a q.1)) (μ.prod ν)) :
     ∫ q, (innerSL ℂ (b q.2)).smulRight (a q.1) ∂(μ.prod ν) = (innerSL ℂ (∫ y, b y ∂ν)).smulRight (∫ x, a x ∂μ) := by
   ext η
@@ -456,7 +456,7 @@ theorem pair_split (L : LocBessel k r) [SFinite L.μW] [SFinite L.μW'] [SFinite
     · exact absurd h hB0
   have haI : Integrable a (L.μW.prod L.μN) := ⟨haS, hlt.1⟩
   have hbI : Integrable b (L.μW'.prod L.μN) := ⟨hbS, hlt.2⟩
-  rw [integral_rankOne_prod haI hbI hI, ha_eq (Or.inl haI), hb_eq (Or.inl hbI)]
+  rw [integral_rankOne_prod hbI hI, ha_eq (Or.inl haI), hb_eq (Or.inl hbI)]
 
 end Formalism.MainNotions.S.Pv.AmpDDPf
 end -- clump:auto

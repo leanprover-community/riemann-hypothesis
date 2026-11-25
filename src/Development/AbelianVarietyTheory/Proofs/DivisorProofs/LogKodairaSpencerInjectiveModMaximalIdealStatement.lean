@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidBoundaryChartsForFanOfUnitarySeparationStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
@@ -1145,31 +1146,8 @@ section Algebra
 open IsLocalRing GlobalTheory.LogDerProj GlobalTheory.LogBasis
 
 theorem prime_X {σ k : Type} [CommRing k] [IsDomain k] (s : σ) : Prime (MvPowerSeries.X s : MvPowerSeries σ k) := by
-  classical
-  let ρ := MvPowerSeries.rescale (σ := σ) (R := k) (fun i => if i = s then 0 else 1)
-  have key : ∀ g, MvPowerSeries.X s ∣ g ↔ ρ g = 0 := by
-    intro g
-    rw [MvPowerSeries.X_dvd_iff, MvPowerSeries.ext_iff]
-    refine forall_congr' fun n => ?_
-    rw [MvPowerSeries.coeff_rescale, map_zero]
-    by_cases hn : n s = 0
-    · have : (n.prod fun i m => (if i = s then (0 : k) else 1) ^ m) = 1 := by
-        refine Finset.prod_eq_one fun i hi => ?_
-        have : i ≠ s := fun h => (Finsupp.mem_support_iff.1 hi) (h ▸ hn)
-        simp [this]
-      simp [hn]
-    · have : (n.prod fun i m => (if i = s then (0 : k) else 1) ^ m) = 0 :=
-        Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hn) (by simp [hn])
-      simp [hn]
-  refine ⟨?_, ?_, fun a b h => ?_⟩
-  · intro h
-    have := congrArg (MvPowerSeries.coeff (Finsupp.single s 1)) h
-    simp [MvPowerSeries.coeff_X] at this
-  · intro h
-    have := h.map (MvPowerSeries.constantCoeff (σ := σ) (R := k))
-    simp at this
-  · rw [key, map_mul, mul_eq_zero, ← key, ← key] at h
-    exact h
+  intros
+  apply _root_.GlobalTheory.BranchSep.prime_mvX <;> assumption
 
 theorem exists_log_of_dvd {R ι : Type} [CommRing R] [IsDomain R] [Algebra ℤ R] [Fintype ι] (I : Ideal R) (δ : Derivation ℤ R R)
     (h0 : ∀ r, δ r ∈ I) (T a : ι → R) (hT : ∀ i, Prime (T i)) (ha : ∀ i, a i ∈ I) (hδ : ∀ i, δ (T i) = a i * T i)

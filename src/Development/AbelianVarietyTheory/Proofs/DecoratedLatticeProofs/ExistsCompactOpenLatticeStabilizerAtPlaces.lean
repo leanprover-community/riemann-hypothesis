@@ -265,14 +265,10 @@ theorem isClosed_grpAt (S : HSp D) (P : Pl D → Prop) : IsClosed (grpAt S P : S
   rw [e]
   exact (GlobalTheory.AdelicU.isClosed_finPts _ _).inter (isClosed_iInter fun v => GlobalTheory.AdelicU.isClosed_awayPts _ _ _)
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice (D := D)
-
 
 theorem exists_compact_open : ∀ (D : D7) (V : HSp D) (L : Lat V), IsSelfDualC V L → ∀ P : Pl D → Prop, ∃ K : Subgroup (GA D V), (∀ g, g ∈ K ↔ InK V L P g) ∧ IsCompact (K : Set (GA D V)) ∧ IsOpen ((K.subgroupOf (grpAt V P) : Subgroup _) : Set (grpAt V P)) := by
   intro D V L hL P
-  haveI : Submodule.IsFullLattice D.host.E L := selfDual_isFullLattice V L hL
+  haveI : Submodule.IsFullLattice D.host.E L := Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V L hL
   have hfg : L.FG := Submodule.IsLattice.fg (A := D.host.E) L
   let U : Subgroup (GA D V) := GlobalTheory.AdelicU.levelOpen D.sp.cm.sig V.gram L
   have hU : IsOpen (U : Set (GA D V)) := GlobalTheory.AdelicU.isOpen_levelOpen D.sp.cm.sig V.gram L

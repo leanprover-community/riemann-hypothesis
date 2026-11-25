@@ -54,6 +54,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConeDegreeGrowthChowFormIntegrality
 
 @[expose] public section
 
@@ -123,21 +124,7 @@ theorem exists_eq_coneIdeal {P : Ideal (MvPolynomial (Fin N) K)} [hp : P.IsPrime
     (hP : ∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P) {δ : ℕ}
     {f : MvPolynomial (Fin (0 + 1) × Fin N) K} (h : IsChowFormInt P 0 δ f) :
     ∃ (y : Fin N → AlgebraicClosure K) (j : Fin N), y j = 1 ∧ P = coneIdeal K y := by
-  obtain ⟨y, hy, hyI⟩ := h.exists_point
-  obtain ⟨j, hj⟩ := Function.ne_iff.1 hy
-  have hj' : y j ≠ 0 := hj
-  refine ⟨(y j)⁻¹ • y, j, by simp [hj'], ?_⟩
-  rw [coneIdeal_smul (inv_ne_zero hj')]
-  have hle : P ≤ coneIdeal K y := fun g hg => (mem_coneIdeal_iff y g).2 fun d => hyI _ (hP g hg d)
-  by_contra hne
-  have := isPrime_coneIdeal (K := K) y
-  have hX : (X j : MvPolynomial (Fin N) K) ∉ coneIdeal K y := fun hX =>
-    hj' (by simpa using aeval_eq_zero_of_mem_coneIdeal hX)
-  obtain ⟨e, he⟩ := exists_ringKrullDim_quotient_eq_succ (isHomogeneous_coneIdeal y) hX
-  have := ringKrullDim_quotient_add_one_le_of_lt (lt_of_le_of_ne hle hne)
-  rw [he, ringKrullDim_of_isChowFormInt hP h] at this
-  have h2 : (e + 1 + 1 : ℕ) ≤ (0 + 1 : ℕ) := by exact_mod_cast this
-  omega
+  apply _root_.GlobalTheory.ConeDeg.exists_eq_coneIdeal <;> assumption
 
 theorem coeff_sub_comp {H : Polynomial ℚ} {D : ℕ} (h : H.natDegree ≤ D + 1) :
     (H - H.comp (Polynomial.X - Polynomial.C ((1 : ℕ) : ℚ))).coeff D = (D + 1) * H.coeff (D + 1) := by
@@ -152,43 +139,7 @@ theorem degree_eq_coeff (D : ℕ) : ∀ (K : Type) [Field K] [CharZero K] (P : I
     [P.IsPrime], (∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P) → ∀ (δ : ℕ)
     (f : MvPolynomial (Fin (D + 1) × Fin N) K), IsChowFormInt P D δ f →
     (δ : ℚ) = (D.factorial : ℚ) * (idealHilbertPoly P).coeff D := by
-  induction D with
-  | zero =>
-    intro K _ _ P _ hP δ f h
-    obtain ⟨y, j, hy, rfl⟩ := exists_eq_coneIdeal hP h
-    rw [GlobalTheory.CompHt.idealHilbertPoly_coneIdeal_eq_C_finrank_adjoin K N y j hy, le_antisymm (GlobalTheory.CompHt.PointUp.le_finrank_of_isChowFormInt K N δ y j f hy h) (GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt K N δ y j f hy h)]
-    simp
-  | succ D ih =>
-    intro K _ _ P hp hP δ f h
-    let L := FractionRing (MvPolynomial (Fin N) K)
-    have : CharZero L := charZero_of_injective_algebraMap (algebraMap K L).injective
-    obtain ⟨hE, hEH⟩ := GlobalTheory.HilbBaseChange.idealHilbertPoly_map K L N P hP
-    obtain ⟨hEp, hl⟩ := GlobalTheory.ExtPrime.isPrime_map_and_generic_form_notMem K L N P hp
-    obtain ⟨Q, hQ, hIQ, hsat⟩ := GlobalTheory.Chow.exists_prime_saturation_generic_section K L N P hp fun u => by
-      obtain ⟨y, hy, h1, h2⟩ := (h.zero_iff _).1 (aeval_eq_zero_of_block h
-        (fun v => if v.1 = 0 then u v.2 else 0) (Fin.last _) (fun j => if_neg (by simp)))
-      exact ⟨y, hy, h1, by simpa using h2 0⟩
-    obtain ⟨f', hf'⟩ := GlobalTheory.ChowSpec.exists_isChowFormInt_generic_section K L N P D δ f hP h
-    have hlin : (∑ j : Fin N, C (algebraMap (MvPolynomial (Fin N) K) L (X j)) * X j :
-        MvPolynomial (Fin N) L).IsHomogeneous 1 :=
-      IsHomogeneous.sum _ _ _ fun j _ => (isHomogeneous_X L j).C_mul _
-    have hI := isHomogeneous_sup_span_singleton (isHomogeneous_of_component hE) hlin
-    obtain ⟨hQh, hQH⟩ := GlobalTheory.prime_saturation_homogeneous_and_hilbertPoly_eq L N _ Q (fun g hg n => homogeneousComponent_mem_of_mem hI hg n) hQ hIQ hsat
-    have hf'' : IsChowFormInt Q D δ f' := ⟨hf'.homog, hf'.irred, fun u => (hf'.zero_iff u).trans
-      (exists_congr fun y => and_congr_right fun hy => and_congr_left fun _ =>
-        ⟨fun h1 g hg => by
-          obtain ⟨j, hj⟩ := Function.ne_iff.1 hy
-          obtain ⟨m, hm⟩ := hsat g hg j
-          have := h1 _ hm
-          rw [map_mul, map_pow, aeval_X] at this
-          exact (mul_eq_zero.1 this).resolve_left (pow_ne_zero _ hj), fun h1 g hg => h1 g (hIQ hg)⟩)⟩
-    have hdeg := degree_idealHilbertPoly_eq_of_isPrime (isHomogeneous_of_component hP)
-      (ringKrullDim_of_isChowFormInt hP h)
-    rw [ih L Q hQh δ f' hf'', hQH,
-      idealHilbertPoly_sup_of_isPrime (isHomogeneous_of_component hE) hlin (hl (exists_X_notMem h)), hEH,
-      coeff_sub_comp (Polynomial.natDegree_le_of_degree_le hdeg.le), Nat.factorial_succ]
-    push_cast
-    ring
+  apply _root_.GlobalTheory.ConeDeg.degree_eq_coeff <;> assumption
 
 theorem degree_eq_hilbertDegree [CharZero K] {P : Ideal (MvPolynomial (Fin N) K)} [P.IsPrime]
     (hP : P.IsHomogeneous (homogeneousSubmodule (Fin N) K)) {D δ : ℕ}

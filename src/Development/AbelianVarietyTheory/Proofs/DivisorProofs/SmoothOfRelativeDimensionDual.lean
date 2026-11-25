@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulPullOfRigOfSym
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsAdditiveOfUniversal
 public import Mathlib.RingTheory.DividedPowers.Basic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TorsionTowersOfDivisibleGroup
@@ -329,16 +330,7 @@ variable {S : Scheme.{0}}
 
 theorem triv_theta (hC : GlobalTheory.Published.CubeTheorem) {A : Over S} [GrpObj A] (hA : IsAbelianScheme A) {L : LB A.left}
     (hL : L.IsLB) : ∃ t : LB.Gen (Theta A L), t.IsGen := by
-  have := hA.comm
-  obtain ⟨t, ht⟩ := hC S A hA L hL _ (x3 A 0) (x3 A 1) (x3 A 2)
-  obtain ⟨t', ht', -⟩ := exists_gen hL (φ' := thφ A (x3 A)) (ε' := thε) (fun U _ h => by
-    have e := prod_cub (x3 A 0) (x3 A 1) (x3 A 2) h
-    have i : lift (x3 A 0) (lift (x3 A 1) (x3 A 2)) = 𝟙 _ := by ext <;> simp [x3]
-    rw [i] at e
-    simp only [Over.id_left, Category.id_comp] at e
-    rw [e, Fin.prod_univ_eight]
-    simp only [Matrix.cons_val, zpow_one, zpow_neg]) t ht
-  exact ⟨t', ht'⟩
+  apply _root_.GlobalTheory.SymMulPull.hasGen_theta <;> assumption
 
 theorem cubWeil_level {A : Over S} [GrpObj A] [IsCommMonObj A] (hA : IsAbelianScheme A) {L : RigLB A}
     {c : CubicalStr A L} {k l : ℕ} {T : Over S} {x z : T ⟶ A} {ζ ζ' : Γ(T.left, ⊤)ˣ}

@@ -1526,11 +1526,7 @@ namespace GlobalTheory.ChartEx
 theorem isEval_comp {p : ℕ} {O A A' σ : Type} [CommRing O] [CommRing A] [CommRing A'] [Algebra O A]
     [Algebra O A'] {x : σ → A} {E : MvPowerSeries σ O →ₐ[O] A} (φ : A →ₐ[O] A')
     (h : IsEval p x E) : IsEval p (fun i => φ (x i)) (φ.comp E) := by
-  refine ⟨fun i => by simp [h.1 i], fun m => ?_⟩
-  obtain ⟨N, hN⟩ := h.2 m
-  refine ⟨N, fun f hf => ?_⟩
-  obtain ⟨a, ha⟩ := hN f hf
-  exact ⟨φ a, by rw [AlgHom.comp_apply, ha, map_mul, map_pow, map_natCast]⟩
+  apply _root_.GlobalTheory.Chart.Assoc.isEval_comp <;> assumption
 
 theorem nil_map {p : ℕ} {A A' : Type} [CommRing A] [CommRing A'] (φ : A →+* A') {a : A}
     (h : ∃ N : ℕ, (p : A) ∣ a ^ N) : ∃ N : ℕ, (p : A') ∣ φ a ^ N := by

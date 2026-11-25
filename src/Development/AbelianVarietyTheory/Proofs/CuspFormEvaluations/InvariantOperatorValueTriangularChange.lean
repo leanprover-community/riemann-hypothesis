@@ -3,7 +3,7 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
 public import Mathlib.RingTheory.PiTensorProduct
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofDApply
-public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.InvariantDerivationsCommuteFormalConnection
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofComm
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -313,7 +313,7 @@ theorem nabVal_triangular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
       refine LinearMap.ext fun g => ?_
       simp only [Module.End.mul_apply, dEnd_apply]
       rw [t4]
-      exact FormalConnection.dof_comm_law B.G u v g
+      exact WickVanishing.Nab.dof_comm_law B.G u v g
     let s : Set (Module.End S (PS S 1 d)) := Set.range fun e : Fin d => dEnd (B.FK S) (Pi.single e 1)
     have hs : ∀ x ∈ s, ∀ y ∈ s, x * y = y * x := by
       rintro _ ⟨e, rfl⟩ _ ⟨e', rfl⟩

@@ -81,17 +81,12 @@ private theorem sorted_list_sign_split (d : List ℤ) (h : d.Pairwise (fun a b =
       rw [List.filter_cons_of_neg (by simp [h1]), List.filter_cons_of_neg (by simp [h2]),
         List.filter_cons_of_pos (by simp [hneg]), e1, e2, List.nil_append, List.nil_append, ← ih]
 
-private theorem flatMap_singleton_natCast (l : List ℕ) : List.flatMap (fun a : ℕ => [(a : ℤ)]) l = l.map (fun a : ℕ => (a : ℤ)) := by
-  induction l with
-  | nil => rfl
-  | cons a l ih => rw [List.flatMap_cons, List.map_cons, ih]; rfl
-
 private theorem label_list_eq_signed (n : ℕ) (s : List ℕ) : labIn n s =
     s.map (fun a : ℕ => (a : ℤ)) ++ List.replicate (n - 2 * s.length) 0 ++ (s.reverse.map fun a : ℕ => -(a : ℤ)) := by
   unfold labIn
   show List.map _ (List.flatMap (fun a : ℕ => [(a : ℤ)]) s) ++ _ ++
       List.map _ (List.flatMap (fun a : ℕ => [(a : ℤ)]) s.reverse) = _
-  rw [flatMap_singleton_natCast, flatMap_singleton_natCast]
+  simp_rw [← List.map_eq_flatMap (f := fun a : ℕ => (a : ℤ))]
   simp [List.map_map, Function.comp_def]
 
 theorem labIn_selfDual_iff : ∀ (n : ℕ) (d : List ℤ), (d.length = n ∧ d.Pairwise (fun a b => b ≤ a) ∧ dualLab d = d) ↔

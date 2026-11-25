@@ -408,20 +408,11 @@ private theorem gaussV_zero (x : ℝ) : gaussV x (0 : PowerSeries O) = ⊤ := by
   refine le_antisymm le_top (le_iInf fun n => ?_)
   exact le_of_eq (by rw [map_zero, (addVal O).map_zero, ENat.toENNReal_top, top_add])
 
-private theorem exists_coeff_ne_zero {f : PowerSeries O} (hf : f ≠ 0) : ∃ m, PowerSeries.coeff m f ≠ 0 := by
-  by_contra h
-  push Not at h
-  exact hf (PowerSeries.ext fun n => by rw [h n, map_zero])
-
-private theorem enat_toENNReal_ne_top_of_ne_top {a : ℕ∞} (h : a ≠ ⊤) : (a : ℝ≥0∞) ≠ ⊤ := by
-  lift a to ℕ using h
-  simp
-
 private theorem gaussTerm_ne_top {x : ℝ} {f : PowerSeries O} {n : ℕ} (h : PowerSeries.coeff n f ≠ 0) :
     gaussTerm x f n ≠ ⊤ := by
   have h1 : addVal O (PowerSeries.coeff n f) ≠ ⊤ := fun h' => h (addVal_eq_top_iff.mp h')
   unfold gaussTerm
-  exact ENNReal.add_ne_top.mpr ⟨enat_toENNReal_ne_top_of_ne_top h1, ENNReal.ofReal_ne_top⟩
+  exact ENNReal.add_ne_top.mpr ⟨ENat.toENNReal_ne_top.mpr h1, ENNReal.ofReal_ne_top⟩
 
 private theorem addVal_ne_top_of_term {x : ℝ} {f : PowerSeries O} {n : ℕ} (h : gaussTerm x f n ≠ ⊤) :
     addVal O (PowerSeries.coeff n f) ≠ ⊤ := by
@@ -431,7 +422,7 @@ private theorem addVal_ne_top_of_term {x : ℝ} {f : PowerSeries O} {n : ℕ} (h
   rw [h', ENat.toENNReal_top, top_add]
 
 private theorem gaussV_ne_top {x : ℝ} {f : PowerSeries O} (hf : f ≠ 0) : gaussV x f ≠ ⊤ := by
-  obtain ⟨m, hm⟩ := exists_coeff_ne_zero hf
+  obtain ⟨m, hm⟩ := PowerSeries.exists_coeff_ne_zero_iff_ne_zero.mpr hf
   exact ne_top_of_le_ne_top (gaussTerm_ne_top (x := x) hm) (gaussV_le_term x f m)
 
 private theorem gaussTerm_add_gaussTerm_eq_addVal_coeff_mul {x : ℝ} (hx : 0 ≤ x) (f g : PowerSeries O) (i j : ℕ) :
@@ -468,7 +459,7 @@ private theorem gaussV_add_le_mul {x : ℝ} (hx : 0 ≤ x) (f g : PowerSeries O)
 
 private theorem gaussV_exists_eq {x : ℝ} (hx : 0 < x) {f : PowerSeries O} (hf : f ≠ 0) :
     ∃ i, gaussTerm x f i = gaussV x f := by
-  obtain ⟨m, hm⟩ := exists_coeff_ne_zero hf
+  obtain ⟨m, hm⟩ := PowerSeries.exists_coeff_ne_zero_iff_ne_zero.mpr hf
   have hTtop : gaussTerm x f m ≠ ⊤ := gaussTerm_ne_top hm
   obtain ⟨N', hN'⟩ := exists_nat_gt ((gaussTerm x f m).toReal / x)
   obtain ⟨N, hmN, hN'N⟩ : ∃ N, m ≤ N ∧ N' ≤ N := ⟨max m N', le_max_left _ _, le_max_right _ _⟩

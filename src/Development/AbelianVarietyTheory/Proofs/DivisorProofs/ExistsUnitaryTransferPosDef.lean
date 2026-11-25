@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalIsometriesInnerAutAdelicFrameIsometryStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStableComplBot
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
@@ -112,19 +113,8 @@ theorem map_one_apply {A B n : Type} [CommRing A] [CommRing B] [DecidableEq n] (
 
 theorem suppF_iff_fin (V : HSp D) (f : Formalism.L2.Theta.AE D) {g : Formalism.L2.Theta.GA D V} (hg : g ∈ GfC V) :
     SuppF V f g ↔ finPart D f • (finMat D.sp.cm.sig V.gram g - 1) = finMat D.sp.cm.sig V.gram g - 1 := by
-  rw [← Matrix.ext_iff]
-  refine forall_congr' fun i => forall_congr' fun j => ?_
-  have e2 : finPart D ((Formalism.L2.Theta.mt V g - 1) i j) = (finMat D.sp.cm.sig V.gram g - 1) i j := by
-    rw [Matrix.sub_apply, Matrix.sub_apply, RingHom.map_sub, map_one_apply]
-    rfl
-  have e1 : infPart D ((Formalism.L2.Theta.mt V g - 1) i j) = 0 := by
-    rw [Matrix.sub_apply, RingHom.map_sub, map_one_apply, sub_eq_zero]
-    have : infHom V g = 1 := hg
-    exact congrArg (fun m : GL (Fin V.rank) _ => m.1 i j) this
-  rw [Matrix.smul_apply, smul_eq_mul, ← e2]
-  refine ⟨fun h => by rw [← RingHom.map_mul, h], fun h => parts_ext ?_ ?_⟩
-  · rw [RingHom.map_mul, e1, mul_zero]
-  · rw [RingHom.map_mul, h]
+  intros
+  apply _root_.GlobalTheory.FinAdIdent.suppF_iff <;> assumption
 
 theorem comp_of_isPrimeIdem {P : HeightOneSpectrum (𝓞 D.host.E)} {e f : Formalism.L2.Theta.AE D} (h : IsPrimeIdem P e f)
     (Q : HeightOneSpectrum (𝓞 D.host.E)) :

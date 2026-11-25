@@ -719,19 +719,10 @@ theorem preservesFiniteColimits_twistFunctor (hL : L.IsLB) :
   haveI := isEquivalence_twistFunctor hL
   inferInstance
 
-theorem exact_map_iff (hL : L.IsLB) (S : ShortComplex X.Modules) :
-    (S.map (twistFunctor L)).Exact ↔ S.Exact :=
-  haveI := isEquivalence_twistFunctor hL
-  S.exact_map_iff_of_faithful (twistFunctor L)
-
 theorem shortExact_map (hL : L.IsLB) {S : ShortComplex X.Modules} (hS : S.ShortExact) :
     (S.map (twistFunctor L)).ShortExact :=
   haveI := isEquivalence_twistFunctor hL
   hS.map_of_exact (twistFunctor L)
-
-theorem mono_map_iff (hL : L.IsLB) (φ : F ⟶ G) : Mono (map L φ) ↔ Mono φ :=
-  haveI := isEquivalence_twistFunctor hL
-  (twistFunctor L).mono_map_iff_mono φ
 
 theorem epi_map_iff (hL : L.IsLB) (φ : F ⟶ G) : Epi (map L φ) ↔ Epi φ :=
   haveI := isEquivalence_twistFunctor hL

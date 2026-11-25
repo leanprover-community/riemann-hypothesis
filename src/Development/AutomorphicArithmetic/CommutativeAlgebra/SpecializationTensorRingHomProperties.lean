@@ -60,18 +60,8 @@ variable {k L A : Type} [Field k] [Field L] [Algebra k L] [CommRing A] [Algebra 
 private lemma map_val_injective (R : Subalgebra k L) :
     Function.Injective
       (Algebra.TensorProduct.map R.val (AlgHom.id k A) : R ⊗[k] A →ₐ[k] L ⊗[k] A) := by
-  have h := Module.Flat.rTensor_preserves_injective_linearMap (M := A)
-    (R.val.toLinearMap) Subtype.val_injective
-  have e : ∀ z : R ⊗[k] A, LinearMap.rTensor A R.val.toLinearMap z =
-      Algebra.TensorProduct.map R.val (AlgHom.id k A) z := by
-    intro z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r a => simp
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  intro x y hxy
-  apply h
-  rw [e, e, hxy]
+  exact Module.Flat.rTensor_preserves_injective_linearMap (M := A)
+    R.val.toLinearMap Subtype.val_injective
 
 private lemma spz_add {R : Subalgebra k L} {φ : R →ₐ[k] k} {y y' : L ⊗[k] A} {a a' : A}
     (h : Spz R φ y a) (h' : Spz R φ y' a') : Spz R φ (y + y') (a + a') := by
@@ -125,10 +115,8 @@ theorem UpperTheory.specialization_tensor_ring_hom_properties :
       exact ⟨u - v, by rw [map_sub, hu, hv], by simp only [map_sub]⟩
   · rintro A' _ _ g y a ⟨u, rfl, rfl⟩
     refine ⟨Algebra.TensorProduct.map (AlgHom.id k R) g u, ?_, ?_⟩
-    · induction u using TensorProduct.induction_on with
-      | zero => simp
-      | tmul r b => simp
-      | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    · simp only [← AlgHom.comp_apply, ← Algebra.TensorProduct.map_comp,
+        AlgHom.comp_id, AlgHom.id_comp]
     · induction u using TensorProduct.induction_on with
       | zero => simp
       | tmul r b => simp

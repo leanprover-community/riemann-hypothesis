@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.RealPlaceImaginaryGeneratorReEqZero
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EisValueAtIffEisPoleLE
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjWeilDatumViaAdjointExchangedPair
@@ -102,17 +103,7 @@ theorem theta_refl {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {f : WO S T �
 
 theorem theta_smul {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (c : ℂ) :
     IsThetaFunO ψ S T (c • f) := by
-  refine ⟨fun γ w => ?_, ?_, hf.cont.const_smul c, fun k L hL hL0 w => ?_⟩
-  · simp only [Pi.smul_apply, smul_eq_mul, hf.quasi γ w]
-    ring
-  · obtain ⟨U, hU, h⟩ := hf.level
-    refine ⟨U, hU, fun u hu hu0 => ?_⟩
-    funext w
-    have := congrFun (h u hu hu0) w
-    simp only [heisO, Pi.smul_apply, smul_eq_mul] at this ⊢
-    rw [← this]
-    ring
-  · exact (hf.smooth k L hL hL0 w).const_smul c
+  first | exact _root_.Formalism.IndefR.Fock.CCR.theta_smul | exact @_root_.Formalism.IndefR.Fock.CCR.theta_smul | apply _root_.Formalism.IndefR.Fock.CCR.theta_smul <;> assumption
 
 noncomputable def reflEnd (X : Type) [AddGroup X] : Module.End ℂ (X → ℂ) →* Module.End ℂ (X → ℂ) where
   toFun L :=

@@ -142,22 +142,13 @@ theorem evc_lam_key {Y : Over S} (a a' : Y ⟶ A) (b b' : Y ⟶ B) :
     IsAdditive.evc_one hD.isLB hD.additive]
   abel
 
-private theorem pull_pull_phiP_eq_evc (ij : Fin 4 × Fin 4) (v : T ⟶ (Over.pullback s).obj (G4 (A ⊗ B))) :
-    pull v.left (pull (phiP s ij) (cls P hD.isLB)) =
-      evc hD.isLB (toBase _ s v ≫ prj _ ij.1 ≫ fst A B) (toBase _ s v ≫ prj _ ij.2 ≫ snd A B) := by
-  have hv := toBase_comp s (G4 (A ⊗ B)) v (𝟙 _)
-  rw [Category.comp_id] at hv
-  rw [evc, ← pull_comp, hv]
-  congr 2
-  simp only [phiP, ← comp_lift, Over.comp_left]
-  rfl
-
 include hD' in
 theorem lam_phiP (ij : Fin 4 × Fin 4) :
     lam (pull (phiP s ij) (cls P hD.isLB)) u u' =
       evc hD.isLB (toBase _ s u ≫ prj _ ij.1 ≫ fst A B) (toBase _ s u' ≫ prj _ ij.2 ≫ snd A B) +
         evc hD.isLB (toBase _ s u' ≫ prj _ ij.1 ≫ fst A B) (toBase _ s u ≫ prj _ ij.2 ≫ snd A B) := by
-  simp only [GlobalTheory.CechPic.lam, pull_pull_phiP_eq_evc hD, toBase_mul, toBase_one, MonObj.mul_comp, MonObj.one_comp]
+  simp only [GlobalTheory.CechPic.lam, pull_phiP s hD.isLB, toBase_mul, toBase_one,
+    MonObj.mul_comp, MonObj.one_comp]
   exact evc_lam_key hD hD' _ _ _ _
 
 end Pieces

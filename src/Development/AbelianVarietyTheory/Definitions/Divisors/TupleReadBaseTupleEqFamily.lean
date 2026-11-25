@@ -432,9 +432,6 @@ def Covol : Prop := Closed FamHyp fun Fm CH =>
 def Onto : Prop := Closed FamHyp fun Fm CH => DIVinN Fm →
   ∃ C0 : ℝ, 0 ≤ C0 ∧ EvPt Fm fun _ _ _ p => ∀ C, C0 ≤ C → (p.S false).ON (p.N C CH)
 
-def Fun0 : Prop := Closed FamHyp fun Fm CH => DIVinN Fm →
-  EvPt Fm fun _ _ _ p => ∀ C, (p.S false).FUN (p.N C CH)
-
 end GlobalTheory.BigTop
 
 end

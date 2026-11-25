@@ -50,6 +50,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevelPlacesDatumMulRightSourceLevelStatement
 
 @[expose] public section
 
@@ -67,14 +68,7 @@ variable {κ : Type} [CommRing κ] {a b : ℕ}
 
 theorem topL_mul_right (y : Matrix (Fin b) (Fin a) κ) (s : Matrix (Fin a) (Fin a) κ) :
     topL a (y * s) = topL a y * s := by
-  ext p q
-  rw [Matrix.mul_apply]
-  unfold topL
-  by_cases hp : p.val < b
-  · rw [dite_eq_left ⟨hp, q.2⟩, Matrix.mul_apply]
-    exact Finset.sum_congr rfl fun l _ => by rw [dite_eq_left ⟨hp, l.2⟩]
-  · rw [dif_neg fun h => hp h.1]
-    exact (Finset.sum_eq_zero fun l _ => by rw [dif_neg fun h => hp h.1, zero_mul]).symm
+  apply _root_.GlobalTheory.ChainOnto.RightMove.topL_mul <;> assumption
 
 theorem lowZero_mul_right {y : Matrix (Fin b) (Fin a) κ} (hy : LowZero a y) (s : Matrix (Fin a) (Fin a) κ) :
     LowZero a (y * s) := by

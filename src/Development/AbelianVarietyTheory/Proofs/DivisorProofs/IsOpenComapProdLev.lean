@@ -41,6 +41,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemGLintOfEntries
 
 @[expose] public section
 
@@ -74,23 +75,7 @@ theorem inBasis_apply {n n' : ℕ} (h : n' = n) (β x : GL (Fin n) (Lev.EAf D)) 
 
 theorem inBasis_mem_KO {n : ℕ} (β x : GL (Fin n) (Lev.EAf D)) (hx : x ∈ St β) (w : Pl D.host.E) :
     inBasis rfl β w x ∈ KO (Kw w) (Fin n) := by
-  obtain ⟨y, rfl⟩ := hx
-  rw [GlobalTheory.SmGL.SphCompletion.KO_completion w n]
-  have hm : ∀ z : GL (Fin n) (Lev.EAf D), z ∈ ({Formalism.L2.DIV.intGL _ _ n y, (Formalism.L2.DIV.intGL _ _ n y)⁻¹} : Set _) →
-      ∀ a b, cpt w (z.1 a b) ∈ Formalism.UG.Ov D.host.E w := by
-    intro z hz a b
-    refine (mem_OA_iff _).1 ?_ w
-    rcases hz with rfl | rfl
-    · exact (y.1 a b).2
-    · rw [← map_inv]; exact ((y⁻¹).1 a b).2
-  have e1 : β⁻¹ * Formalism.L2.DIV.frGL β y * β = Formalism.L2.DIV.intGL _ _ n y := by
-    simp only [Formalism.L2.DIV.frGL, MonoidHom.coe_comp, MulEquiv.coe_toMonoidHom, Function.comp_apply, MulAut.conj_apply]
-    group
-  have e2 : β⁻¹ * (Formalism.L2.DIV.frGL β y)⁻¹ * β = (Formalism.L2.DIV.intGL _ _ n y)⁻¹ := by
-    rw [← e1]; group
-  refine mem_GLint_of_entries _ _ (fun i j => ?_) (fun i j => ?_)
-  · rw [inBasis_apply, e1]; exact hm _ (Or.inl rfl) _ _
-  · rw [← map_inv, inBasis_apply, e2]; exact hm _ (Or.inr rfl) _ _
+  apply _root_.GlobalTheory.FunObj.inBasis_mem_KO <;> assumption
 
 theorem tendsto_inBasis_val (V : HSp D) {n' : ℕ} (h : n' = V.rank) (β : GL (Fin V.rank) (Lev.EAf D)) (w : Pl D.host.E) :
     Tendsto (fun κ : GA D V => ((inBasis h β w (Lev.finE V κ)).1 : Matrix (Fin n') (Fin n') (Kw w))) (𝓝 1) (𝓝 1) := by

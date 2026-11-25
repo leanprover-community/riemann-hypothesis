@@ -225,7 +225,6 @@ end Coord
 
 section Free
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn)
 open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 

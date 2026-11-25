@@ -171,29 +171,7 @@ theorem haar_chain (hY : R.models_νY) (hY' : R.models_νY') (t : T) (j : ℕ) (
   · obtain rfl : j = D.R.m - 1 := by omega
     exact ⟨(hY' t).1.1, (hY' t).2⟩
 
-
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure HChain (m : ℕ) (E B : Type) [NormedAddCommGroup E] [InnerProductSpace ℂ E] [NormedAddCommGroup B]
-    [InnerProductSpace ℂ B] where
-
-  Sp : ℕ → Type
-  [nSp : ∀ j, NormedAddCommGroup (Sp j)]
-  [iSp : ∀ j, InnerProductSpace ℂ (Sp j)]
-  [fSp : ∀ j, FiniteDimensional ℂ (Sp j)]
-
-  bot : Sp 0 ≃ₗᵢ[ℂ] E
-
-  top : Sp m ≃ₗᵢ[ℂ] B
-
-  io : ∀ j, Sp (j + 1) →ₗ[ℂ] Sp j
-
-attribute [instance] HChain.nSp HChain.iSp HChain.fSp
-
-
 end Inhabitant
-
-def MultTied {X0 : BaseLevelRowSide D} (Y : RowsTie R F X0) : Prop := Function.Surjective Y.tup ∧ Nonempty (MultTie Y.sharp)
 
 theorem isMultiplicityInner_mul_inner {V : HSp D} {Sp : D.what₂.Tau → SPar} {M : DSModel V Sp} {μ : Measure (GA D V)} {𝓕 : Set (GA D V)}
     {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (e : H →ₗ[ℂ] MMap M) {d : ℂ} (hd : d ≠ 0)

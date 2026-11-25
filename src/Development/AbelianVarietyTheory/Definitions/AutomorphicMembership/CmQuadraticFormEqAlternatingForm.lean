@@ -150,8 +150,6 @@ def LgOn {Δ : Pre → Type} (Sm : ∀ B : Pre, Fr B → Δ B → IntermediateFi
       Has₂ B (S₁ B.toPre f δ B.KsC) (S₂ B.toPre f δ B.KsC B.fixedCoefficientFieldInComplex (T.set f)) → P₁ B.toPre f δ B.KsC B.fixedCoefficientFieldInComplex ⊆ T.pl →
       T.Avoids (A B.toPre f δ B.KsC B.fixedCoefficientFieldInComplex) → p B f δ T
 
-def RecFld (B : Pre) (f : Fr B) (D : Fld.FieldDat B) (F : IntermediateField ℚ ℂ) : Prop := Fld.listField D f ≤ F ∧ F ≤ D.Om
-
 def EvLg (p : Ctx → ∀ B : Base, Fr B.toPre → TwDat B → Prop) : Prop := Ev fun K => large₂ K (p K)
 
 def EvLgG (p : Ctx → ∀ B : Base, Fr B.toPre → TwDat B → Prop) : Prop := EvG fun K => large₂ K (p K)
@@ -166,15 +164,9 @@ structure MuIs (X : Stages) (f : Fr X.B.toPre) (T : TwDat X.B) (xi : X.C.Tup →
   on : ∀ w, X.B.places.resChar w ∈ T.pl → X.W.muAt w = X.W.muTw w
   off : ∀ w, X.B.places.resChar w ∉ T.pl → X.W.muAt w = X.C.mu0
 
-abbrev LayProp : Type 1 :=
-  ∀ (_ : Scale) (_ : FC) (_ _ : ℝ) (P : PreCh) (_ _ : P.R.A → ℤ) (D : D7), Lay D → Prop
-
 def RecAtG (QL : ∀ (_ : Ctx) (D : D7), Lay D → Prop) : Prop :=
   EvG fun K => ∃ (D : D7) (Y : Lay D), Over D K.P K.Lv ∧ RecOK K.s K.C K.cD D ∧ LedOK K.s K.C K.cD K.ch Y K.a K.b ∧
     LocalQuadraticParts.TWAt D Y.nch Y.xd ∧ QL K D Y
-
-def AtLed (QO : ∀ D : D7, Obj D → Prop) : LayProp := fun s C cD ch _ a b _ Y =>
-  ∀ p : LedPart C Y, p.L.sc = s → WtEq p.L a b → Val C cD ch p.L → CanonInst p.ta.Gx → QO p.pt.D (Obj.ofPt p.pt)
 
 theorem Enl.KsC_eq {B B' : Base} (h : Enl B B') : B'.KsC = B.KsC := SetLike.coe_injective h.2.1
 

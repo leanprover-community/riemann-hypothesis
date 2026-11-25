@@ -70,32 +70,6 @@ open Polynomial
 
 noncomputable def rev {ι : Type} (s : Finset ι) (f : ι → ℂ) : ℂ[X] := ∏ l ∈ s, (1 + C (f l) * X)
 
-theorem rev_coeff {ι : Type} (s : Finset ι) (f : ι → ℂ) :
-    (rev s f).coeff 0 = 1 ∧ (rev s f).coeff 1 = ∑ l ∈ s, f l ∧
-      2 * (rev s f).coeff 2 = (∑ l ∈ s, f l) ^ 2 - ∑ l ∈ s, f l ^ 2 := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [rev, coeff_one]
-  | insert a s ha ih =>
-    obtain ⟨h0, h1, h2⟩ := ih
-    have c1 : ∀ p : ℂ[X], (X * p).coeff 1 = p.coeff 0 := fun p => coeff_X_mul p 0
-    have c2 : ∀ p : ℂ[X], (X * p).coeff 2 = p.coeff 1 := fun p => coeff_X_mul p 1
-    have : rev (insert a s) f = rev s f + C (f a) * (X * rev s f) := by
-      simp only [rev, prod_insert ha]; ring
-    rw [this, sum_insert ha, sum_insert ha]
-    simp only [coeff_add, coeff_C_mul]
-    refine ⟨?_, ?_, ?_⟩
-    · simp [h0]
-    · rw [c1, h0, h1]; ring
-    · rw [c2, h1]
-      linear_combination h2
-
-theorem rev_eval {ι : Type} (s : Finset ι) (f : ι → ℂ) (t : ℂ) (ht : t ≠ 0) :
-    (rev s f).eval t = t ^ s.card * ∏ l ∈ s, (t⁻¹ + f l) := by
-  rw [rev, eval_prod, ← prod_const, ← prod_mul_distrib]
-  refine prod_congr rfl fun l _ => ?_
-  simp; field_simp
-
 theorem scalar_core (n : ℕ) (hn : 2 ≤ n) (ρ μ a : Fin n → ℂ) (b : Fin n → Fin n → ℂ) (r : ℕ → ℂ)
     (e c : ℂ)
     (h : ∀ Y : ℂ, (∏ l, (Y + ρ l)) * e + ∑ i, (∏ l ∈ univ.erase i, (Y + ρ l)) * a i

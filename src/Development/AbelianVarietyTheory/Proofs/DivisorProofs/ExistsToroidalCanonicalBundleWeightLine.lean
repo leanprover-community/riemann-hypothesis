@@ -1112,51 +1112,9 @@ theorem GlobalTheory.LogKSDiv.exists_spread_eigFrame : ∀ (E : Type) [Field E] 
         {xc' : ∀ m : ℕ, sp (R₀ := k) (ReciprocityTheory.ChartRestriction.G.Chart.JetR k (Fin n) m) ⟶ (Over.pullback x').obj TF.Y.t.G}
         (hx' : IsUnivChart _ n xc'), (∀ cc : Fin n → L, vec TF.Y.t x' xc' (ψ ∘ cc) = spMap (dualMap ψ) ≫ vec TF.Y.t x xc cc) → ∀ τ v, Matrix.mulVec ((P τ).map ψ) v ∈ eig c (ψ.comp φ) hx' τ ∧
           (v ∈ eig c (ψ.comp φ) hx' τ → Matrix.mulVec ((P τ).map ψ) v = v) := by
-    classical
-    have : CharZero c.F := RingHom.charZero c.F.val.toRingHom
-    obtain ⟨α, hinj, ⟨f, hf, hfs⟩, hN⟩ :=
-      exists_sepElt (E := E) (F := c.F) c.F.val.toRingHom (embK c) (fun τ a => embK_coe c τ a)
-    letI : Algebra c.F L := φ.toAlgebra
-    refine ⟨fun τ => LinearMap.toMatrix' (proj (rho hx) (embK c) α τ), fun {k} _ ψ {x' xc'} hx' hv τ => ?_⟩
-    letI : Algebra c.F k := (ψ.comp φ).toAlgebra
-    have e₁ : ∀ m, ReciprocityTheory.ChartRestriction.G.PullbackSections.IsEigV (rho hx') (embK c τ) (proj (rho hx') (embK c) α τ m) := fun m =>
-      eig_of_alpha _ _ α hN τ (proj_eig_alpha _ _ α hinj f hf hfs τ m)
-    have e₂ : ∀ m, ReciprocityTheory.ChartRestriction.G.PullbackSections.IsEigV (rho hx') (embK c τ) m → proj (rho hx') (embK c) α τ m = m := fun m hm => by
-      have := proj_sum_eig (rho hx') (embK c) α hinj (Pi.single τ m) (fun τ' => by
-        by_cases h : τ' = τ
-        · subst h; rwa [Pi.single_eq_same]
-        · rw [Pi.single_eq_of_ne h]; intro a; simp) τ
-      rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_same] at this
-    have htm : ∀ (a : 𝓞 E) (cc : Fin n → L), rho hx' a (ψ ∘ cc) = ψ ∘ rho hx a cc :=
-      fun a cc => vec_inj hx' (by
-        show vec TF.Y.t _ xc' (tmap hx' _ _) = vec TF.Y.t _ xc' (_ ∘ tmap hx _ _)
-        rw [vec_tmap hx', hv, hv, vec_tmap hx, Category.assoc])
-    have pw : ∀ (j : ℕ) cc, (rho hx' α ^ j) (ψ ∘ cc) = ψ ∘ (rho hx α ^ j) cc := fun j => by
-      induction j with
-      | zero => exact fun _ => rfl
-      | succ j ih => intro cc; rw [pow_succ', pow_succ', Module.End.mul_apply, Module.End.mul_apply, ih]; exact htm α _
-    have pr : ∀ (Q : Polynomial c.F) cc, Polynomial.aeval (rho hx' α) (Q.map (algebraMap c.F k)) (ψ ∘ cc) =
-        ψ ∘ Polynomial.aeval (rho hx α) (Q.map (algebraMap c.F L)) cc := fun Q cc => by
-      induction Q using Polynomial.induction_on' with
-      | add p q hp hq =>
-        rw [Polynomial.map_add (f := _), Polynomial.map_add (f := _), map_add (f := _), map_add (f := _), LinearMap.add_apply, LinearMap.add_apply, hp, hq]
-        funext j; simp
-      | monomial j a =>
-        rw [Polynomial.map_monomial, Polynomial.map_monomial, Polynomial.aeval_monomial, Polynomial.aeval_monomial,
-          Module.End.mul_apply, Module.End.mul_apply, pw, Module.algebraMap_end_apply, Module.algebraMap_end_apply]
-        funext i
-        exact (map_mul ψ _ _).symm
-    have hP : (LinearMap.toMatrix' (proj (rho hx) (embK c) α τ)).map ψ =
-        LinearMap.toMatrix' (proj (rho hx') (embK c) α τ) := by
-      ext i j
-      have s : (Pi.single j 1 : Fin n → k) = ψ ∘ Pi.single j 1 := funext fun r => by
-        by_cases hj : r = j <;> simp [hj]
-      rw [Matrix.map_apply, LinearMap.toMatrix'_apply, LinearMap.toMatrix'_apply, s]
-      exact (congrFun (pr _ _) i).symm
-    intro v
-    rw [hP, ← Matrix.toLin'_apply, Matrix.toLin'_toMatrix', ReciprocityTheory.ChartRestriction.G.Chart.mem_eigLat_iff,
-      ReciprocityTheory.ChartRestriction.G.Chart.mem_eigLat_iff]
-    exact ⟨e₁ v, e₂ v⟩
+    first
+    | exact _root_.GlobalTheory.ShFam.EigSpread.exists_projectors
+    | apply _root_.GlobalTheory.ShFam.EigSpread.exists_projectors <;> assumption
   obtain ⟨P, hP⟩ := exists_projectors φ₀ hxc
   have hPL := hP lam hxL hvL
   have hBe : ∀ τ i, B τ i ∈ eig c (lam.comp φ₀) hxL τ := fun τ i =>

@@ -577,27 +577,8 @@ theorem traceIsDiagonal_Rop {G : Type} [Group G] [TopologicalSpace G] [IsTopolog
     refine integral_congr_ae (.of_forall fun q => ?_)
     simp only
     rw [hkq]
-  have hsec : MeasurableEmbedding (sec Γ) := by
-    refine ⟨?_, ?_, ?_⟩
-    · exact Function.LeftInverse.injective mk_sec
-    · intro s hs
-      have : mk Γ ⁻¹' (sec Γ ⁻¹' s) = ⋃ γ : Γ, (fun x => (γ : G) * x) ⁻¹' (s ∩ stdDom Γ) := by
-        ext x
-        simp only [Set.mem_preimage, Set.mem_iUnion, Set.mem_inter_iff]
-        refine ⟨fun h => ?_, fun ⟨γ, h1, h2⟩ => by rwa [sec_eq h2 (mk_mul γ x)]⟩
-        obtain ⟨γ, e⟩ := mk_eq_iff.1 (mk_sec (mk Γ x)).symm
-        exact ⟨γ, e ▸ h, e ▸ sec_mem _⟩
-      change MeasurableSet (mk Γ ⁻¹' (sec Γ ⁻¹' s))
-      rw [this]
-      exact .iUnion fun γ => measurable_const_mul _ (hs.inter (measurableSet_stdDom Γ))
-    · intro s hs
-      have : sec Γ '' s = mk Γ ⁻¹' s ∩ stdDom Γ := by
-        ext x
-        exact ⟨by rintro ⟨q, h, rfl⟩; exact ⟨by simpa using h, sec_mem q⟩, fun h => ⟨_, h.1, sec_eq h.2 rfl⟩⟩
-      rw [this]
-      exact (measurable_mk hs).inter (measurableSet_stdDom Γ)
-  obtain ⟨hI, htrace⟩ := trace_eq_integral_diagonal (ν := quotMeasure Γ μ) hsec htr
-    (GlobalTheory.AutomorphicL2KernelContinuous.continuous_kernel hf hc) hT
+  obtain ⟨hI, htrace⟩ := trace_eq_integral_diagonal (ν := quotMeasure Γ μ) measurableEmbedding_sec
+    htr (GlobalTheory.AutomorphicL2KernelContinuous.continuous_kernel hf hc) hT
   have hfun : (fun x => kernelQ Γ f x x) = fun x => kernel Γ f (sec Γ x) (sec Γ x) := funext fun x => hkq x x
   unfold TraceIsDiagonal
   refine ⟨htr, ?_, ?_⟩

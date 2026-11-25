@@ -171,16 +171,6 @@ theorem pdA_inK_cpart {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (hZ
   · simp only [Formalism.REAL.cpart2, hJr, Matrix.smul_mul, Matrix.mul_smul, add_mul, mul_add, Matrix.mul_assoc,
       hJJ', hZ, hZH]
 
-theorem pdA_inK_smul {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) (t : ℝ) :
-    inK ε ((t : ℂ) • X) := by
-  obtain ⟨h1, h2⟩ := hX
-  refine ⟨?_, ?_⟩
-  · unfold inG at h1 ⊢
-    simp only [Matrix.conjTranspose_smul, Complex.star_def, Complex.conj_ofReal, Matrix.smul_mul,
-      Matrix.mul_smul]
-    rw [← smul_add, h1, smul_zero]
-  · rw [Matrix.smul_mul, Matrix.mul_smul, h2]
-
 theorem pdA_op_one {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : S7.KType ε Λ) : T.op 1 = 1 := by
   simp [S7.KType.op]
 

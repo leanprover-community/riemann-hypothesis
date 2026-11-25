@@ -17,13 +17,6 @@ open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Topology
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
-theorem isOpen_lt_one (x : v.adicCompletion F) :
-    IsOpen {y : v.adicCompletion F | Valued.v (y - x) < 1} := by
-  have h1 : IsOpen {z : v.adicCompletion F | Valued.v z < 1} := by
-    have := Valued.isOpen_ball (v.adicCompletion F) 1
-    simpa only [Valuation.restrict_lt_one_iff] using this
-  exact h1.preimage (continuous_id.sub continuous_const)
-
 theorem valued_algebraMap (k : F) :
     Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k :=
   IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k

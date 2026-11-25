@@ -44,6 +44,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.WeightFloorInequalities
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastPosOfKapIs
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastPosWtAOfPins
 
 @[expose] public section
 
@@ -58,39 +60,11 @@ namespace GlobalTheory.AdTh
 
 theorem lastPos_of_kapIs {D : D7} {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} (h : KapIs κ) (i : Fin D.R.m) :
     (κ i).LastPos := by
-  intro τ a ha
-  rw [(h i τ).1 a, show (Wc D i).sig (tauE D τ) = D.R.sigW ((i : ℕ) + 1) from D.sp.W_sigval _ (inR i).1 (inR i).2 _]
-  have hk := D.R.m_add_three_le_k
-  have hi := i.2
-  have hs : (D.R.sigW ((i : ℕ) + 1)).1 = D.R.k + ((i : ℕ) + 1) - 1 := rfl
-  have h1 : ¬ (a : ℕ) < D.R.k - 1 := by omega
-  have h2 : (a : ℕ) - (D.R.k - 1) < D.R.m := by omega
-  have h3 : (⟨(a : ℕ) - (D.R.k - 1), h2⟩ : Fin D.R.m) = i := Fin.ext (by show (a : ℕ) - (D.R.k - 1) = i; omega)
-  have h4 : (((D.R.sigW ((i : ℕ) + 1)).1 : ℕ) : ℚ) = (a : ℕ) + 1 := by exact_mod_cast ha.symm
-  have h5 := (D.hc τ).gap_be i
-  simp only [aPl, if_pos a.2, Formalism.L2.NTheta.lamAt, dif_neg h1, dif_pos h2, h3, h4]
-  rw [Int.le_toNat (Int.floor_nonneg.2 (by linarith)), Int.le_floor]
-  push_cast
-  linarith
+  apply _root_.GlobalTheory.HolDict.lastPos_of_kapIs <;> assumption
 
 theorem lastPos_wtA_of_pins {D : D7} (Q : Par D) (h : Q.Pins) {j : ℕ} (hj : InR D j) (w : WeightFamilies.Wt D j) (hw : w.LastPos) :
     Formalism.L2.Pj.LastPos (Q.Dw j) (wtA w) := by
-  intro τ hτ hm
-  obtain ⟨t, rfl⟩ := ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.exists_tau_of_inPsi Q h.1 τ hτ
-  have hmult : (Q.Dw j).mult (DV.tauEmb D t) = (D.R.sigW j).1 := by
-    unfold Datum.mult
-    have hτ' : (DV.tauEmb D t) (Q.H.rt : D.host.E) = Q.H.rt0 := hτ
-    rw [if_pos hτ']
-    exact (h.2.2.2 j hj).1
-  rw [hmult] at hm ⊢
-  have h1 : 1 ≤ w.aP t ⟨(D.R.sigW j).1 - 1, by omega⟩ := hw t _ (by show (D.R.sigW j).1 - 1 + 1 = _; omega)
-  have h2 : ext0 (w.aP t) ((D.R.sigW j).1 - 1) = w.aP t ⟨(D.R.sigW j).1 - 1, by omega⟩ := by
-    unfold ext0
-    rw [dif_pos (by omega)]
-  unfold wtA
-  refine lt_of_lt_of_le ?_ (Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ t))
-  simp only [if_true]
-  omega
+  apply _root_.GlobalTheory.lastPos_wtA_of_pins <;> assumption
 
 section Frame
 

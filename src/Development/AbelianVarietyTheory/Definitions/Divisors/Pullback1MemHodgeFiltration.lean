@@ -98,14 +98,6 @@ theorem isDPNilpotent_bot (B : Type) [CommRing B] : IsNilDP (dividedPowersBot B)
       classical
       rw [dividedPowersBot_dpow_eq, if_neg fun h' ↦ absurd h'.2 (by omega)])
 
-theorem IsNilDP.exists_dpow_eq_zero {δ : DividedPowers J} (h : IsNilDP δ) :
-    ∃ N : ℕ, ∀ n, N ≤ n → ∀ a, δ.dpow n a = 0 := by
-  obtain ⟨N, hN⟩ := h
-  refine ⟨N, fun n hn a ↦ ?_⟩
-  by_cases ha : a ∈ J
-  · simpa using hN [(n, a)] (by simpa using ha) (by simpa using hn)
-  · exact δ.dpow_null ha
-
 theorem isDPMorphism_of_eq_bot (δ : DividedPowers J) (hJ : J = ⊥) (δ' : DividedPowers J')
     (f : B →+* B') : IsDPMorphism δ δ' f := by
   subst hJ

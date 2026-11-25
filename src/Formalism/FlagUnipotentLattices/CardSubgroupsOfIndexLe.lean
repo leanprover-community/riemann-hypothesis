@@ -84,7 +84,6 @@ lemma one_le_abs_norm_mul_abs_discr {E : Type} [Field E] [NumberField E] (z : E)
     1 ≤ |(Algebra.norm ℚ z : ℚ)| * |(NumberField.discr E : ℚ)| := by
   apply ReciprocityTheory.ChartRestriction.G.I2.so_norm_ge <;> assumption
 
-open NumberField
 
 section Cov
 
@@ -157,7 +156,6 @@ lemma s5bLat_mem (hc : ∀ w : InfinitePlace E, w.IsComplex) (x : s5bV E) :
 
 end Cov
 
-open NumberField
 
 section Cov2
 

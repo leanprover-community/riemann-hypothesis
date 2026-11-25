@@ -1081,15 +1081,7 @@ open GlobalTheory.Desc
 namespace GlobalTheory.Desc.GaussBC
 
 theorem cst_regAt_zeroAt : ∀ (R : Type) [CommRing R] [IsLocalRing R] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp R) (x : X), p x = closedPoint R → ∀ r : R, GlobalTheory.Cartier.RegAt x (GlobalTheory.Desc.cst p r) ∧ (r ∈ maximalIdeal R → GlobalTheory.Cartier.ZeroAt x (GlobalTheory.Desc.cst p r)) := by
-  intro R _ _ X _ p x hx r
-  have hreg : GlobalTheory.Cartier.RegAt x (GlobalTheory.Desc.cst p r) := regAt_fnOf (U := ⊤) trivial trivial _
-  refine ⟨hreg, fun hr => zeroAt_iff.2 ⟨hreg, fun hu => ?_⟩⟩
-  have h1 := (unitAt_fnOf_iff (U := ⊤) trivial trivial _).1 hu
-  have h2 : x ∈ p ⁻¹ᵁ (Sp R).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of R)).inv r) := by
-    rw [Scheme.Hom.preimage_basicOpen]; exact h1
-  have h3 : p x ∈ (Sp R).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of R)).inv r) := h2
-  rw [basicOpen_eq_of_affine, hx] at h3
-  exact (PrimeSpectrum.mem_basicOpen _ _).1 h3 hr
+  apply _root_.GlobalTheory.Desc.ModPi.cst_reg_zero <;> assumption
 
 end GlobalTheory.Desc.GaussBC
 

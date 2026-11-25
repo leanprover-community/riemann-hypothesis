@@ -119,11 +119,6 @@ theorem infRat_injective (S T : HSp D) : Function.Injective (infRat S T) := by
   funext i j
   exact (tauE D τ).injective (congrFun (congrFun (congrFun e τ) i) j)
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ := by
-  intro V Λ hΛ
-  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 
 theorem vacUniqueO : ∀ D : D7, VacUniqueO D := by
   classical
@@ -131,7 +126,7 @@ theorem vacUniqueO : ∀ D : D7, VacUniqueO D := by
   obtain ⟨σ, h⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
   obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.self_dual_lattice_pairing_dual D ψ S T ΛS ΛT hψ hΛS hΛT
   have hden := GlobalTheory.T.scaled_finite_matrix_mem_lattice D S T ΛS ΛT
-    (selfDual_isFullLattice S ΛS hΛS) (selfDual_isFullLattice T ΛT hΛT)
+    (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hΛS) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hΛT)
   have hlat := hf.2.lat
   have hlat' := hf'.2.lat
   have hinf := fun u => latO_inf (u := u) S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E))

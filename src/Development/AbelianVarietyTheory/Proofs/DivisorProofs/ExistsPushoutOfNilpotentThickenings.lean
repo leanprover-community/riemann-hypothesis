@@ -441,11 +441,7 @@ variable {Y₀ Y₁ Y₂ : Scheme.{0}}
 
 theorem upOpen_basicOpen (i : Y₀ ⟶ Y₁) [IsClosedImmersion i] [Surjective i] (U : Y₀.Opens)
     (s : Γ(Y₁, upOpen i U)) : upOpen i (Y₀.basicOpen ((res i U).hom s)) = Y₁.basicOpen s := by
-  have h1 : Y₀.basicOpen ((res i U).hom s) = U ⊓ i ⁻¹ᵁ Y₁.basicOpen s :=
-    Scheme.basicOpen_appLE i U (upOpen i U) (preimage_upOpen i U).ge s
-  have h2 : i ⁻¹ᵁ Y₁.basicOpen s ≤ U :=
-    le_trans ((Scheme.Hom.preimage_mono i) (Y₁.basicOpen_le s)) (preimage_upOpen i U).le
-  rw [h1, inf_eq_right.mpr h2, upOpen_preimage]
+  apply _root_.GlobalTheory.FerrandPush.upOpen_basicOpen_res <;> assumption
 
 variable (i₁ : Y₀ ⟶ Y₁) (i₂ : Y₀ ⟶ Y₂) [IsClosedImmersion i₁] [Surjective i₁]
   [IsClosedImmersion i₂] [Surjective i₂]

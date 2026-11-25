@@ -667,16 +667,7 @@ theorem whisker_eq_twistLB {S : Scheme.{0}} (A : Over S) [GrpObj A] (L : LB A.le
     {T T' : Over S} (ρ : T' ⟶ T) (c : T ⟶ A) :
     LB.LinComb L (K := Fin 2) (fun k => (ρ ▷ A).left ≫ ![(snd T A).left, (translPt A c).left] k)
       ![(q : ℤ) - 1, 1] = twistLB A L q (ρ ≫ c) := by
-  unfold twistLB
-  congr 1
-  funext k
-  fin_cases k
-  · show (ρ ▷ A).left ≫ (snd T A).left = (snd T' A).left
-    rw [← Over.comp_left, whiskerRight_snd]
-  · show (ρ ▷ A).left ≫ (translPt A c).left = (translPt A (ρ ≫ c)).left
-    rw [← Over.comp_left]
-    congr 1
-    simp [translPt, comp_lift_assoc]
+  apply _root_.GlobalTheory.TwistDescent.linComb_whisker <;> assumption
 
 theorem mem_of_isPullSecLC {X Y Y' : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
     (h : Y' ⟶ Y) (s : LB.Sec (LB.LinComb L φ ε)) (s' : LB.Sec (LB.LinComb L (fun k => h ≫ φ k) ε))

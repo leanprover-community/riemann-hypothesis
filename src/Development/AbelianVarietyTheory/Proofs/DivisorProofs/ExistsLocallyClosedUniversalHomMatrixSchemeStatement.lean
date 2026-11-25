@@ -1600,10 +1600,7 @@ noncomputable section
 namespace GlobalTheory.HomFixUniv
 
 theorem topS_hom_ext {Rg : Type} [CommRing Rg] {Y : Over (Sp Rg)} (u v : Y ⟶ topS Rg) : u = v := by
-  have hm : Mono (topS Rg).hom := by
-    change Mono ((⊤ : (Sp Rg).Opens).ι ≫ 𝟙 _); infer_instance
-  ext1
-  rw [← cancel_mono (topS Rg).hom, Over.w u, Over.w v]
+  apply _root_.GlobalTheory.HomFixUniv.hom_to_topS_eq <;> assumption
 
 instance isIso_snd_left {Rg : Type} [CommRing Rg] (A : Over (Sp Rg)) :
     IsIso (snd (topS Rg) A).left := by

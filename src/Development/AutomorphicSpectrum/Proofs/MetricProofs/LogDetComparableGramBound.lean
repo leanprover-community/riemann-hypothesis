@@ -56,14 +56,6 @@ namespace GlobalTheory.CompanionTheory.Ar.PB
 open Matrix
 open scoped ComplexOrder
 
-private theorem sum_eq_sum_comp_of_eq_zero_of_forall_ne {ι κ M : Type*} [Fintype ι] [Fintype κ]
-    [DecidableEq ι] [AddCommMonoid M] (v : κ → ι) (hv : Function.Injective v) (f : ι → M)
-    (hf : ∀ i, (∀ a, i ≠ v a) → f i = 0) :
-    ∑ i, f i = ∑ a, f (v a) := by
-  rw [← Finset.sum_image (f := f) (s := Finset.univ) (g := v) (fun a _ b _ h => hv h)]
-  exact (Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => hf i (fun a hia =>
-    hi (Finset.mem_image.mpr ⟨a, Finset.mem_univ a, hia.symm⟩)))).symm
-
 theorem gramOf_mul {N : ℕ} (hd : Fin N → ℝ) (u g : Matrix (Fin N) (Fin N) ℂ) :
     gramOf hd (u * g) = gᴴ * gramOf hd u * g := by
   simp only [GlobalTheory.CompanionTheory.Ar.PB.gramOf, Matrix.conjTranspose_mul, Matrix.mul_assoc]
@@ -74,14 +66,11 @@ theorem head_conj_mul {N : ℕ} {P : Type*} [Fintype P] (v : P → Fin N)
     (bᴴ * G * b).submatrix v v = (b.submatrix v v)ᴴ * G.submatrix v v * b.submatrix v v := by
   ext p q
   simp only [Matrix.submatrix_apply, Matrix.mul_apply, Matrix.conjTranspose_apply]
-  rw [sum_eq_sum_comp_of_eq_zero_of_forall_ne v hv]
-  · refine Finset.sum_congr rfl (fun a _ => ?_)
-    congr 1
-    rw [sum_eq_sum_comp_of_eq_zero_of_forall_ne v hv]
-    intro i hi
-    rw [hb (hdown i p hi), star_zero, zero_mul]
-  · intro j hj
-    rw [hb (hdown j q hj), mul_zero]
+  refine (Fintype.sum_of_injective v hv _ _ (fun j hj => ?_) fun a => ?_).symm
+  · rw [hb (hdown j q fun a h => hj ⟨a, h.symm⟩), mul_zero]
+  · congr 1
+    refine Fintype.sum_of_injective v hv _ _ (fun i hi => ?_) fun _ => rfl
+    rw [hb (hdown i p fun a h => hi ⟨a, h.symm⟩), star_zero, zero_mul]
 
 theorem gramLog_inv (N : ℕ) (hd : Fin N → ℝ) (k : ℕ) (g u b : Matrix (Fin N) (Fin N) ℂ) :
     (gramOf hd u = diagonal (fun i => ((hd i : ℝ) : ℂ)) → gramLog hd k (u * g) = gramLog hd k g) ∧

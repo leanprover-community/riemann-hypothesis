@@ -52,25 +52,6 @@ namespace Formalism.MainNotions.N.Pv.LocalLengthBound.OLC
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-theorem isAdicComplete_of_le {R : Type} [CommRing R] (I J : Ideal R) (a : ℕ) (ha : 1 ≤ a)
-    (h1 : I ^ a ≤ J) (h2 : J ≤ I) [hJ : IsAdicComplete J R] : IsAdicComplete I R := by
-  have hpow : ∀ n, I ^ (a * n) ≤ J ^ n := fun n => by
-    rw [pow_mul]; exact Ideal.pow_right_mono h1 n
-  have hJI : ∀ n, J ^ n ≤ I ^ n := fun n => Ideal.pow_right_mono h2 n
-  have hsm : ∀ (K L : Ideal R), K ≤ L → K • (⊤ : Submodule R R) ≤ L • ⊤ := fun K L h =>
-    Submodule.smul_mono_left h
-  have hH : IsHausdorff I R := ⟨fun x hx => by
-    apply IsHausdorff.haus hJ.toIsHausdorff x
-    intro n
-    exact (hx (a * n)).mono (hsm _ _ (hpow n))⟩
-  have hP : IsPrecomplete I R := ⟨fun f hf => by
-    obtain ⟨L, hL⟩ := IsPrecomplete.prec hJ.toIsPrecomplete (f := fun k => f (a * k)) (fun {m n} hmn =>
-      (hf (Nat.mul_le_mul_left a hmn)).mono (hsm _ _ (hpow m)))
-    refine ⟨L, fun n => ?_⟩
-    have h3 : f n ≡ f (a * n) [SMOD I ^ n • (⊤ : Submodule R R)] := hf (by nlinarith)
-    exact h3.trans ((hL n).mono (hsm _ _ (hJI n)))⟩
-  exact ⟨⟩
-
 theorem complete_max {l : ℕ} [Fact l.Prime] (LL : FinExt l) :
     IsAdicComplete (IsLocalRing.maximalIdeal ↥(OL LL)) ↥(OL LL) := by
   apply Formalism.MainNotions.N.Ln17.isAdicComplete_integers_local

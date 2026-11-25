@@ -354,19 +354,7 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 omit [TopologicalSpace E] in
 theorem uni_mul {N : ℕ} {A B : Matrix (Fin N) (Fin N) E} (hA : IsUni A) (hB : IsUni B) :
     IsUni (A * B) := by
-  refine ⟨fun i j hij => ?_, fun i => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    rcases lt_or_ge l i with h | h
-    · rw [hA.1 i l h, zero_mul]
-    · rw [hB.1 l j (lt_of_lt_of_le hij h), mul_zero]
-  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · rw [hA.2, hB.2, one_mul]
-    · intro l _ hl
-      rcases lt_or_gt_of_ne hl with h | h
-      · rw [hA.1 i l h, zero_mul]
-      · rw [hB.1 l i h, mul_zero]
-    · simp
+  first | exact _root_.GlobalTheory.HL.UniCount.isUni_mul | exact @_root_.GlobalTheory.HL.UniCount.isUni_mul | apply _root_.GlobalTheory.HL.UniCount.isUni_mul <;> assumption
 
 theorem int_mul (L : LocE F E) {N : ℕ} {A B : Matrix (Fin N) (Fin N) E} (hA : IsIntM L A)
     (hB : IsIntM L B) : IsIntM L (A * B) := fun i j => by

@@ -350,28 +350,12 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 theorem isVerticalDivisor_swap {P : Ideal (MRing ι O)} {ϖ : O} {b : K → ℤ} {f g : MRing ι O}
     (hD : IsVerticalDivisor P ϖ b f g) : IsVerticalDivisor P ϖ (-b) g f := by
-  refine {
-    degrees := ?_
-    num_not_mem := hD.den_not_mem
-    den_not_mem := hD.num_not_mem
-    vertical := ?_
-    unit_off_special := ?_ }
+  refine IsVerticalDivisor.of_unit_off_special ?_ hD.den_not_mem hD.num_not_mem
+      fun W hW hPW hrel hϖ => ?_
   · obtain ⟨bf, bg, hf, hg, hb⟩ := hD.degrees
-    refine ⟨bg, bf, hg, hf, ?_⟩
-    rw [← hb]
-    funext k
-    simp
-  · intro W hW
-    apply hD.vertical W
-    intro h
-    apply hW
-    unfold ratDiv at h ⊢
-    linarith
-  · intro W hW hPW hrel hϖ
-    obtain ⟨u, v, hu, hv, h⟩ := hD.unit_off_special W hW hPW hrel hϖ
-    refine ⟨v, u, hv, hu, ?_⟩
-    rw [← neg_sub]
-    exact P.neg_mem h
+    exact ⟨bg, bf, hg, hf, funext fun k => by rw [← hb]; simp⟩
+  · obtain ⟨u, v, hu, hv, h⟩ := hD.unit_off_special W hW hPW hrel hϖ
+    exact ⟨v, u, hv, hu, by rw [← neg_sub]; exact P.neg_mem h⟩
 
 theorem exists_zpow {Ω : Type} [Field Ω] (φ : MRing ι O →+* Ω) {P : Ideal (MRing ι O)} [P.IsPrime]
     {ϖ : O} {b : K → ℤ} {f g : MRing ι O} (hD : IsVerticalDivisor P ϖ b f g) {u : Ω} (hu : u ≠ 0)

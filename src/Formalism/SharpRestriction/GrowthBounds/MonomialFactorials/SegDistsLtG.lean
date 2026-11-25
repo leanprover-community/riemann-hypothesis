@@ -13,20 +13,9 @@ open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.flipOneTh
 
 variable {C0 CE1 CE2 : ℝ} {X : flipOneThree.Inst}
 
-private theorem sort_get_lt_of_lt (s : Finset ℕ) (l u : Fin (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).length)
-    (h : l < u) : (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).get l < (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).get u := by
-  have hp := Finset.pairwise_sort s (fun x1 x2 : ℕ => x1 ≤ x2)
-  have hn := Finset.sort_nodup s (fun x1 x2 : ℕ => x1 ≤ x2)
-  have hle : (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).get l ≤ (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).get u :=
-    hp.rel_get_of_lt h
-  have hne : (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).get l ≠ (s.sort (fun x1 x2 : ℕ => x1 ≤ x2)).get u := by
-    intro he
-    have := (List.nodup_iff_injective_get.mp hn) he
-    exact absurd this (ne_of_lt h)
-  omega
-
 theorem segDists_lt {n' : ℕ} (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (l u : Fin (segS TT j)) (h : l < u) :
-    (segDists TT j).get l < (segDists TT j).get u := sort_get_lt_of_lt _ l u h
+    (segDists TT j).get l < (segDists TT j).get u :=
+  (Finset.sortedLT_sort _).strictMono_get h
 
 theorem segDists_lt_G {n' : ℕ} (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (u : Fin (segS TT j)) :
     (segDists TT j).get u < segG TT j := by

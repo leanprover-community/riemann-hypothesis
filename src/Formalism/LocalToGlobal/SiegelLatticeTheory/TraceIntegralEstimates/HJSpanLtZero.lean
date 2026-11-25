@@ -21,9 +21,6 @@ section Loc
 
 variable {n r : ℕ} (ε : Fin n → Bool) {e f : Fin r → Fin n → ℂ} {z : Fin n → ℂ}
 
-private theorem hJ_smul_lemma_2 (x a : Fin n → ℂ) (c : ℂ) : hJ ε x (c • a) = c * hJ ε x a := by
-  simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
-
 private theorem hJ_zero_lemma_3 (x : Fin n → ℂ) : hJ ε x 0 = 0 := by
   simp only [hJ, Matrix.mulVec_zero, dotProduct_zero]
 
@@ -44,7 +41,8 @@ theorem hJ_spanLt_zero (hfe : ∀ a b, hJ ε (f a) (e b) = if a = b then 1 else 
     simp only [Set.mem_setOf_eq, lt_self_iff_false] at hb
   | zero => exact hJ_zero_lemma_3 ε _
   | add x y _ _ hx hy => rw [_root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.hJ_add_r, hx, hy, add_zero]
-  | smul c x _ hx => rw [hJ_smul_lemma_2, hx, mul_zero]
+  | smul c x _ hx =>
+    rw [_root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.hJ_smul_r, hx, mul_zero]
 
 theorem sub_one_spanLt {g : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (k : ℕ) :
     ∀ u ∈ spanLt e (k + 1), (g - 1) *ᵥ u ∈ spanLt e k := by
@@ -128,14 +126,10 @@ section Glob
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-private theorem hJ_swap_lemma_5 {m : ℕ} (ε : Fin m → Bool) (x y : Fin m → ℂ) : hJ ε y x = star (hJ ε x y) := by
-  simp only [hJ, Formalism.REAL.Jm, Matrix.mulVec_diagonal, dotProduct, star_sum, star_mul', star_star, Pi.star_apply]
-  refine Finset.sum_congr rfl (fun i _ => ?_)
-  by_cases h : ε i <;> simp [h] <;> ring
-
 theorem hfe_X (v : InfinitePlace X.B.I.F) (a b : Fin D.R.rS) :
     hJ (X.B.I.ε v) (rv X.B.I v (X.fR a)) (rv X.B.I v (X.eR b)) = if a = b then 1 else 0 := by
-  rw [hJ_swap_lemma_5, ← Formalism.L2.SG.PoincareInHH.Cut.phi_hform]
+  rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj,
+    ← Formalism.L2.SG.PoincareInHH.Cut.phi_hform]
   have h1 := Formalism.L2.SG.PoincareInHH.Cut.hform_crd (X := X) (X.eX b) (X.fY a)
   rw [X.ef b a] at h1
   have h0 : Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.eR b) (X.fR a) = if a = b then 1 else 0 := by

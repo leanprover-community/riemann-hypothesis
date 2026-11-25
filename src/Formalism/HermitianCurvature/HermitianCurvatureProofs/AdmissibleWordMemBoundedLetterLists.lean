@@ -515,7 +515,6 @@ end Formalism.FourierDecayAlt.P.PBB
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 theorem plane_wave_bound : Formalism.FourierDecayAlt.KB.WaveV :=
   fun _ _ _ _ _ _ _ _ _ _ S X hW ε hε i hi1 hi2 w _ hcnt => PBB.waveV_core S X hW ε hε i hi1 hi2 w hcnt

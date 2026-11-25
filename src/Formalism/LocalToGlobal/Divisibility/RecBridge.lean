@@ -85,42 +85,6 @@ open scoped Matrix ComplexOrder
 
 noncomputable section
 
-namespace Formalism.L2.DIV
-
-open Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.Indef
-
-section Face
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-theorem linkDIV_L2R_face [_root_.NumberField.IsTotallyComplex K] {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} {cf : ConvFace Bs} {C CH : ℝ}
-    (Pk : IndefPkgR A fc cf C CH) (wf0 : (fc Pk.Zs).Df0.WF) (wf1 : (fc Pk.Zs).Df1.WF)
-    {Pl : Type} [Fintype Pl] [DecidableEq Pl] (R : RecNums Bs.J Pl) (u : (fc Pk.Zs).Dc.Mem)
-    (Nu : Submodule (𝓞 K) (Fin ((fc Pk.Zs).Dc.a u) → K)) (sg : HeightOneSpectrum (𝓞 K) → ℝ)
-    (I : DivInputsR Pk.core R u Nu sg) : DivClausesR Pk.core R u Nu sg :=
-  divClausesR_of wf0 wf1 Pk.core R u Nu sg I
-
-
-end Face
-
-section Fam3
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
-
-end Fam3
-
-section Col3
-
-variable {X : Col.Fields} {Pr : Col.Primes X} {R : Ranks} (W : Col.Wts X Pr.Word R) (Ch : Col.Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (hX : X.Ok)
-  (v0 : InfinitePlace X.K) (TU : Finset (Tup X.F X.E X.K S))
-  (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
-  (xiVal : Tup X.F X.E X.K S → HeightOneSpectrum (𝓞 X.E) → X.Kˣ)
-  (trIv : Fin R.m → (Col.LevOffI ∅ Pr.vGs S0 × List ℕ → X.K) → Col.LevOffI ∅ Pr.vGs S0 × List ℕ → X.K)
-
-end Col3
-
-end Formalism.L2.DIV
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -608,28 +572,6 @@ theorem wordFacts_of_core_clauses (L : SizeData₂ D) (C Cabs : ℝ) (u : D.what
   · rw [hNs]; exact hcl.1
   · exact fun hne => htMap_le_of_bound _ _ _ _ _ hcl.2.1 (hPos hne)
 
-/-- Compatibility wrapper for the full four-clause output. -/
-theorem wordFacts_of_clauses (L : SizeData₂ D) (C Cabs : ℝ) (u : D.what₂.Word) (P : IndefCoreR Df0 Df1 Dc Sp Nn)
-    (wU : D.what₂.Word → Dc.Mem) (NuC : ∀ w, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a w) → D.what₂.LL))
-    (eNu : (Fin (Dc.a (wU u)) → D.what₂.LL) ≃ₗ[D.what₂.LL] (D.div.Nu u).V)
-    (eRR : (Fin P.cols.D → D.what₂.LL) ≃ₗ[D.what₂.LL] D.div.RR.V)
-    (hNu : HLatTie (D.div.Nu u) (NuC (wU u)) (Dc.Xc (wU u)) eNu) (hRR : HLatTie D.div.RR P.cols.RR P.cols.XE eRR)
-    (hBk : ∀ x y, D.div.Bk u (eNu x) (eRR y) = P.cols.col.B (wU u) x y)
-    {Pl : Type} [Fintype Pl] [DecidableEq Pl] (R : RecNums Bs.J Pl)
-    (Nu : Submodule (𝓞 D.what₂.LL) (Fin (Dc.a (wU u)) → D.what₂.LL)) (sg : HeightOneSpectrum (𝓞 D.what₂.LL) → ℝ)
-    (hcl : DivClausesR P R (wU u) Nu sg)
-    (hNs : NuC (wU u) = shiftLat Nu sg)
-    (hPos : P.cols.col.B (wU u) ≠ 0 → ∀ v, 0 < Formalism.HN.opNormAt (Pi.basisFun D.what₂.LL (Fin (Dc.a (wU u))))
-      (Dc.Xc (wU u)) (Pi.basisFun D.what₂.LL (Fin P.cols.D)).dualBasis (Formalism.HN.dualFrame P.cols.XE) v
-      (P.cols.col.B (wU u)))
-    (tHt : Formalism.HN.htMap (D.div.Nu u).b (D.div.Nu u).X D.div.RR.dualB D.div.RR.dualX (D.div.Bk u) = htLink P (wU u))
-    (tMu : P.cols.muCC = D.div.RR.muDual) (tH : R.hu - meanLog P.cols.κ = D.div.h u) (tFo : 2 * FoOfR P = L.Fo)
-    (tR : R.rhs ≤ L.MAIN u + C * (D.host.TT.card : ℝ) * L.sc.a * L.La +
-      C * (D.R.m : ℝ) * (L.B0 + L.Nc) * L.sc.x ^ (Cabs * L.sc.eps)) :
-    WordFacts L C Cabs u :=
-  wordFacts_of_core_clauses L C Cabs u P wU NuC eNu eRR hNu hRR hBk R Nu sg
-    ⟨hcl.1, hcl.2.1, hcl.2.2.1⟩ hNs hPos tHt tMu tH tFo tR
-
 theorem wordFacts_of_core_face (L : SizeData₂ D) (C Cabs : ℝ) (u : D.what₂.Word) (P : IndefCoreR Df0 Df1 Dc Sp Nn)
     (wU : D.what₂.Word → Dc.Mem) (NuC : ∀ w, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a w) → D.what₂.LL))
     (eNu : (Fin (Dc.a (wU u)) → D.what₂.LL) ≃ₗ[D.what₂.LL] (D.div.Nu u).V)
@@ -652,23 +594,6 @@ theorem wordFacts_of_core_face (L : SizeData₂ D) (C Cabs : ℝ) (u : D.what₂
     (Formalism.MainNotions.DIV.HookProducts.RBTie.htMap_tie (D.div.Nu u).b (D.div.Nu u).X D.div.RR.b D.div.RR.X (Dc.Xc (wU u)) P.cols.XE eNu eRR
       hNu.metric hRR.metric (D.div_good.2 u) D.div_good.1 hXc hXE (D.div.Bk u) (P.cols.col.B (wU u)) hBk)
     (Formalism.MainNotions.DIV.HookProducts.RBTie.muDual_tie D.div.RR P.cols.RR P.cols.XE eRR hRR.lat hRR.metric D.div_good.1 hXE) tH tFo tR
-
-/-- Compatibility wrapper for the full four-clause output. -/
-theorem wordFacts_of_face (L : SizeData₂ D) (C Cabs : ℝ) (u : D.what₂.Word) (P : IndefCoreR Df0 Df1 Dc Sp Nn)
-    (wU : D.what₂.Word → Dc.Mem) (NuC : ∀ w, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a w) → D.what₂.LL))
-    (eNu : (Fin (Dc.a (wU u)) → D.what₂.LL) ≃ₗ[D.what₂.LL] (D.div.Nu u).V)
-    (eRR : (Fin P.cols.D → D.what₂.LL) ≃ₗ[D.what₂.LL] D.div.RR.V)
-    (hNu : HLatTie (D.div.Nu u) (NuC (wU u)) (Dc.Xc (wU u)) eNu) (hRR : HLatTie D.div.RR P.cols.RR P.cols.XE eRR)
-    (hBk : ∀ x y, D.div.Bk u (eNu x) (eRR y) = P.cols.col.B (wU u) x y)
-    {Pl : Type} [Fintype Pl] [DecidableEq Pl] (R : RecNums Bs.J Pl)
-    (Nu : Submodule (𝓞 D.what₂.LL) (Fin (Dc.a (wU u)) → D.what₂.LL)) (sg : HeightOneSpectrum (𝓞 D.what₂.LL) → ℝ)
-    (hcl : DivClausesR P R (wU u) Nu sg) (hNs : NuC (wU u) = shiftLat Nu sg)
-    (tH : R.hu - meanLog P.cols.κ = D.div.h u) (tFo : 2 * FoOfR P = L.Fo)
-    (tR : R.rhs ≤ L.MAIN u + C * (D.host.TT.card : ℝ) * L.sc.a * L.La +
-      C * (D.R.m : ℝ) * (L.B0 + L.Nc) * L.sc.x ^ (Cabs * L.sc.eps)) :
-    WordFacts L C Cabs u :=
-  wordFacts_of_core_face L C Cabs u P wU NuC eNu eRR hNu hRR hBk R Nu sg
-    ⟨hcl.1, hcl.2.1, hcl.2.2.1⟩ hNs tH tFo tR
 
 end Clauses
 

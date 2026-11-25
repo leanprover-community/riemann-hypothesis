@@ -904,26 +904,8 @@ noncomputable section
 namespace GlobalTheory.KSBaseChange
 
 theorem isTranslate_baseChange : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (R S S' : Type) [CommRing R] [CommRing S] [CommRing S'] (φ : R →+* S) (ψ : S →+* S') (g₀ : Sp S ⟶ t.G.left) (v : Sp (DualNumber R) ⟶ t.G.left) (w : Sp (DualNumber S) ⟶ t.G.left), IsTranslate t φ g₀ v w → IsTranslate t (ψ.comp φ) (spMap ψ ≫ g₀) v (spMap (dualMap ψ) ≫ w) := by
-  intro E _ _ _ H X t R S S' _ _ _ φ ψ g₀ v w ⟨g', v', h₁, h₂, h₃⟩
-  have e1 : spMap (dualMap ψ) ≫ spMap (algebraMap S (DualNumber S)) =
-      spMap (algebraMap S' (DualNumber S')) ≫ spMap ψ := by
-    rw [GlobalTheory.LogKSLoc.spMap_comp', GlobalTheory.LogKSLoc.spMap_comp']
-    congr 1
-    refine RingHom.ext fun a => ?_
-    ext <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-  let h : tEpsG ((spMap ψ ≫ g₀) ≫ t.G.hom) ⟶ tEpsG (g₀ ≫ t.G.hom) := Over.homMk (spMap (dualMap ψ)) (by
-    show spMap (dualMap ψ) ≫ spMap (algebraMap S (DualNumber S)) ≫ g₀ ≫ t.G.hom =
-      spMap (algebraMap S' (DualNumber S')) ≫ (spMap ψ ≫ g₀) ≫ t.G.hom
-    rw [← Category.assoc, e1]; simp only [Category.assoc])
-  refine ⟨h ≫ g', h ≫ v', ?_, ?_, ?_⟩
-  · rw [Over.comp_left, h₁]
-    show spMap (dualMap ψ) ≫ spMap (algebraMap S (DualNumber S)) ≫ g₀ = _
-    rw [← Category.assoc, e1, Category.assoc]
-  · rw [Over.comp_left, h₂]
-    show spMap (dualMap ψ) ≫ spMap (dualMap φ) ≫ v = _
-    rw [← Category.assoc, GlobalTheory.LogKSLoc.spMap_comp', GlobalTheory.LogKSLoc.dualMap_comp']
-  · rw [← MonObj.comp_mul, Over.comp_left, h₃]
-    rfl
+  intros
+  apply _root_.GlobalTheory.LogKSLin.translate_map <;> assumption
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 

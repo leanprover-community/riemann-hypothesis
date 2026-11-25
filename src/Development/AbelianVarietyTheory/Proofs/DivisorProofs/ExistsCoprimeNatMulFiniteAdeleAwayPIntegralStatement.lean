@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCoprimeNsmulEndomorphismPreservesCompletio
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDivPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HopfOrderPullbackAlongHom
 import Mathlib.Algebra.Order.Floor.Extended
@@ -64,19 +65,7 @@ namespace GlobalTheory.DenAway
 open IsDedekindDomain
 
 theorem isIntAf_algebraMap_inv_prime (p : ℕ) [Fact p.Prime] : IsIntAf (algebraMap ℚ (AfP p) (p : ℚ)⁻¹) := by
-  intro v
-  rw [AlgHom.commutes, HeightOneSpectrum.mem_adicCompletionIntegers]
-  have h1 : v.1.valuation ℚ (algebraMap ℤ ℚ (p : ℤ)) = 1 := by
-    refine le_antisymm (v.1.valuation_le_one _) (not_lt.1 fun h => v.2 ?_)
-    rw [HeightOneSpectrum.valuation_lt_one_iff_mem] at h
-    have hm : (Ideal.span {(p : ℤ)}).IsMaximal :=
-      PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp Fact.out).irreducible
-    exact (hm.eq_of_le v.1.isPrime.ne_top ((Ideal.span_singleton_le_iff_mem _).2 h)).symm
-  have h2 : Valued.v (algebraMap ℚ (v.1.adicCompletion ℚ) (p : ℚ)⁻¹) = v.1.valuation ℚ (p : ℚ)⁻¹ :=
-    HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v.1 _
-  rw [h2, map_inv₀]
-  simp only [eq_intCast, Int.cast_natCast] at h1
-  rw [h1, inv_one]
+  apply _root_.GlobalTheory.LKGeo.DenEnd.isIntAf_inv <;> assumption
 
 theorem exists_coprime_nat_adele : ∀ (p : ℕ) [Fact p.Prime] (a : AfP p),
     ∃ j : ℕ, 0 < j ∧ j.Coprime p ∧ IsIntAf ((j : AfP p) * a) := by

@@ -45,7 +45,6 @@ open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFa
 open scoped CategoryTheory.Obj
 open GlobalTheory.UPoinc
 open GlobalTheory.Points
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.UPoinc.ChartAt
 
 theorem spec_ext_of_isFractionRing {A K T : Type} [CommRing A] [IsDomain A] [Field K] [Algebra A K] [IsFractionRing A K]

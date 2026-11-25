@@ -153,7 +153,6 @@ theorem taylor2 (f D : PowerSeries O) (hD : constantCoeff D = 0) :
 
 end Taylor
 
-open PowerSeries
 
 variable {O : Type} [CommRing O] {R : Type} [CommRing R] [BinomialRing R] [Algebra R O]
 

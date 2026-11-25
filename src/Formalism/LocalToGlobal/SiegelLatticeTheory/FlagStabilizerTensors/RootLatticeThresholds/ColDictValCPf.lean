@@ -632,15 +632,12 @@ theorem sl_tenV (τ₀ : ι) (x : ι × Fin n × Fin n → ℂ) (f : ι → MvPo
 theorem sl_mem (lam : ι → DomWeight n) (τ₀ : ι) (x : ι × Fin n × Fin n → ℂ)
     {Q : MvPolynomial (ι × Fin n × Fin n) ℂ} (hQ : Q ∈ CSpanV lam) :
     sl τ₀ x Q ∈ delSq ℂ n (lam τ₀) := by
-  simp only [CSpanV, delSq] at hQ ⊢
-  induction hQ using Submodule.span_induction with
-  | mem P hP =>
-    obtain ⟨f, hf, rfl⟩ := hP
-    rw [sl_tenV, MvPolynomial.C_mul']
-    exact Submodule.smul_mem _ _ (hf τ₀)
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add P R _ _ hP hR => rw [map_add (f := _)]; exact Submodule.add_mem _ hP hR
-  | smul c P _ hP => rw [map_smul]; exact Submodule.smul_mem _ c hP
+  simp only [CSpanV] at hQ
+  refine (Submodule.span_le (p := (delSq ℂ n (lam τ₀)).comap (sl τ₀ x).toLinearMap)).2 ?_ hQ
+  rintro _ ⟨f, hf, rfl⟩
+  rw [SetLike.mem_coe, Submodule.mem_comap, AlgHom.toLinearMap_apply,
+    sl_tenV, MvPolynomial.C_mul']
+  exact Submodule.smul_mem _ _ (hf τ₀)
 
 theorem rowGen_sl (τ₀ : ι) (x : ι × Fin n × Fin n → ℂ) (a b : Fin n) :
     (rowGen ℂ a b).comp (sl τ₀ x) = (Polynomial.mapAlgHom (sl τ₀ x)).comp (bigGen τ₀ a b) := by
@@ -799,22 +796,13 @@ theorem generation_holds : Gen := by
       have hspan : f τ₀ ∈ Submodule.span ℂ
           (Set.range fun wd : List (Fin n × Fin n × ℕ) => applyWord ℂ wd (hw ℂ le_rfl (lam τ₀).natW)) :=
         h1 τ₀ (Finset.mem_insert_self _ _)
-      have hmem : tenV (Function.update f τ₀ (f τ₀)) ∈ M := by
-        refine Submodule.span_induction (p := fun p _ => tenV (Function.update f τ₀ p) ∈ M)
-          ?_ ?_ ?_ ?_ hspan
-        · rintro _ ⟨wd, rfl⟩
-          exact hword wd
-        · rw [tenV_update, map_zero, zero_mul]
-          exact M.zero_mem
-        · intro p q _ _ hp hq
-          rw [tenV_update] at hp hq ⊢
-          rw [map_add (f := _), add_mul]
-          exact M.add_mem hp hq
-        · intro c p _ hp
-          rw [tenV_update] at hp ⊢
-          rw [map_smul, smul_mul_assoc]
-          exact M.smul_mem c hp
-      rwa [Function.update_eq_self] at hmem
+      let L := (LinearMap.mulRight ℂ
+        (∏ σ ∈ Finset.univ.erase τ₀, rename (Prod.mk σ) (f σ))).comp
+        (rename (R := ℂ) (Prod.mk τ₀)).toLinearMap
+      have hL : ∀ p, L p = tenV (Function.update f τ₀ p) := fun p => (tenV_update f τ₀ p).symm
+      have hm : L (f τ₀) ∈ M := (Submodule.span_le (p := M.comap L)).2
+        (by rintro _ ⟨wd, rfl⟩; show L _ ∈ M; rw [hL]; exact hword wd) hspan
+      rwa [hL, Function.update_eq_self] at hm
   exact key Finset.univ f (fun τ _ => hf τ) (fun τ h => absurd (Finset.mem_univ τ) h)
 
 end GenPf

@@ -60,42 +60,6 @@ variable {D : D7}
 local instance relAt (v : Pl D) : ValuativeRel (Fv D.host.F v) := GlobalTheory.LocalData.complRel v
 local instance locAt (v : Pl D) : IsNonarchimedeanLocalField (Fv D.host.F v) := GlobalTheory.LocalData.isLocalField v
 
-def secAt {v : Pl D} (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) : Fv D.host.F v →+ AE D :=
-  AddMonoidHom.mk' (fun a => singleTens D.host.E v (a ⊗ₜ[D.host.F] (1 : D.host.E)) * splitIdemAd (isCMExt_host D) τ)
-    fun a b => by rw [TensorProduct.add_tmul, map_add (f := _), add_mul]
-
-def prAt {v : Pl D} (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) : AE D →+* Fv D.host.F v :=
-  (splitProj τ).toRingHom.comp (GlobalTheory.AdelicU.compFin D.host.F D.host.E v)
-
-theorem mem_int_iff {v : Pl D} (a : Fv D.host.F v) : a ∈ 𝒪[Fv D.host.F v] ↔ Valued.v a ≤ 1 := by
-  have : (Valued.v : Valuation (Fv D.host.F v) (WithZero (Multiplicative ℤ))).Compatible :=
-    Valuation.Compatible.ofValuation _
-  rw [Valuation.mem_integer_iff,
-    (isEquiv (valuation (Fv D.host.F v)) (Valued.v : Valuation (Fv D.host.F v) (WithZero (Multiplicative ℤ)))).le_one_iff_le_one]
-
-def splitPt {v : Pl D} (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) : SplitPt D (Fv D.host.F v) where
-  v := v
-  e := splitIdemAd (isCMExt_host D) τ
-  split := isSplitIdem_iff_exists.2 ⟨v, τ, rfl⟩
-  above := ⟨_, isPlaceIdem_placeIdem D v, (splitAt_splitIdemAd τ).2.2⟩
-  pr := prAt τ
-  sec := secAt τ
-  pr_sec a := by
-    change splitProj τ (GlobalTheory.AdelicU.compFin _ _ v (singleTens _ v _ * singleTens _ v _)) = a
-    rw [map_mul, compFin_singleTens_self, compFin_singleTens_self, map_mul, splitProj_tmul, splitProj_splitIdem, map_one,
-      mul_one, mul_one]
-  sec_pr x := (splitIdemAd_mul (isCMExt_host D) τ x).symm
-  cont_pr := (continuous_splitProj τ).comp
-    (GlobalTheory.AutFunCompare.continuous_tensNU (E := D.host.E) (evFin D.host.F v).toLinearMap (map_mul (evFin D.host.F v)) (by
-      exact (RestrictedProduct.continuous_eval v).comp continuous_snd))
-  cont_sec := by
-    have h1 : Continuous fun a : AF D.host.F => (a ⊗ₜ[D.host.F] (1 : D.host.E) : AE D) :=
-      (continuous_id.smul (continuous_const (y := (1 : AE D)))).congr fun a => by
-        change a • ((1 : AF D.host.F) ⊗ₜ[D.host.F] (1 : D.host.E)) = _
-        rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
-    exact (h1.comp (Continuous.prodMk continuous_const (continuous_singleFin v))).mul continuous_const
-  int_iff a := (mem_int_iff a).trans (GlobalTheory.IdemPrime.mem_iff (splitAt_splitIdemAd τ) a).symm
-
 theorem eq_single {v : Pl D} {a : AE D} (ha : a ∈ idAt D (· = v)) : a = singleTens D.host.E v (compAt D v a) := by
   have hc : ∀ u (z : AE D), GlobalTheory.AdelicU.compFin D.host.F D.host.E u z = compAt D u z := fun u z =>
     (tens_map_map (sndA D.host.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV D.host.F u) z).symm

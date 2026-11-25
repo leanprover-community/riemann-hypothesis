@@ -1110,11 +1110,7 @@ namespace GlobalTheory.SelfDualDetNorm
 
 theorem star_eq_conj (D : D7) (x : D.host.E) :
     (letI := D.host.cmStar; star x) = D.host.conj x := by
-  letI := D.host.cmStar
-  apply D.host.φ₀.injective
-  letI := D.host.isCMField_hostE
-  show D.host.φ₀ (IsCMField.complexConj D.host.E x) = _
-  rw [NumberField.IsCMField.complexEmbedding_complexConj, Formalism.HC.HostAx.conjE_apply]
+  apply _root_.GlobalTheory.CharModOne.star_eq_conj <;> assumption
 
 theorem isSdLat_of_isSDLat {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
     (L : Submodule (𝓞 E) (Fin n → E)) (hL : IsSDLat E n L) : Formalism.L2.Col.IsSdLat (E := E) L := by

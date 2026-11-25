@@ -572,13 +572,6 @@ theorem kerFin {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ} (Sa
     (fun x hx j hj => homAt_div Sall N N' (cA * cB) (Nat.mul_pos hA hB) x hx j hj)
   exact finite_div_quot _ cA cB hA F hF hFM
 
-theorem jetLin_smul {K : Type} [Field K] {ι : Type} [Fintype ι] {a b : ℕ} (c : K) (J : (DVar ι a b →₀ ℕ) → K) :
-    jetLin (fun m => c * J m) = c • jetLin J := by
-  apply (basisMonomials ((ι × Fin b × Fin b) ⊕ DVar ι a b) K).ext
-  intro m
-  rw [LinearMap.smul_apply]
-  simp only [coe_basisMonomials, jetLin_monomial, one_mul, smul_monomial, smul_eq_mul]
-
 variable {X : Fields} (A : Amb X) {a b : ℕ} (Sall SB : Finset (HeightOneSpectrum (𝓞 X.E)))
 
 end Tab
@@ -810,14 +803,6 @@ end Unram
 section Red
 
 variable {E : Type} [Field E] [NumberField E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
-
-theorem xqIntAt_zero : IntAt P (0 : E) := by
-  have := IntAt.coe P 0
-  rwa [map_zero] at this
-
-theorem xqIntAt_one : IntAt P (1 : E) := by
-  have := IntAt.coe P 1
-  rwa [map_one] at this
 
 theorem reduction_zero₂ : redP P (0 : E) = 0 := by
   have := reduction_coe P 0

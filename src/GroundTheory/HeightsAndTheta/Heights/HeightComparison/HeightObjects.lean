@@ -110,16 +110,6 @@ theorem geoMultiHomog_iff (f : MvPolynomial (Coord n) ℤ) (a : ι → ℕ) :
   · intro h m hm k
     rw [← weight_coordDeg_apply, h (mem_support_iff.mp hm)]
 
-theorem ArithVariety.isMultiProjPrime (P : ArithVariety n) :
-    Geo.IsMultiProjPrime (ι := blockIdx n) P.ideal := by
-  classical
-  refine ⟨P.isPrime, ⟨{f | f ∈ P.ideal ∧ ∃ a, Geo.IsMultiHomog (ι := blockIdx n) f a},
-    fun f hf ↦ hf.2, le_antisymm (fun f hf ↦ ?_) (Ideal.span_le.mpr fun f hf ↦ hf.1)⟩, P.relevant⟩
-  rw [← sum_weightedHomogeneousComponent (w := coordDeg n) f,
-    finsum_eq_sum _ (weightedHomogeneousComponent_finsupp f)]
-  refine Ideal.sum_mem _ fun m _ ↦ Ideal.subset_span ⟨P.homogeneous f hf m, m, ?_⟩
-  exact (geoMultiHomog_iff _ m).mpr (weightedHomogeneousComponent_isWeightedHomogeneous m f)
-
 namespace HermLine
 
 
@@ -254,11 +244,6 @@ theorem exists_chart {F : Type*} [Zero F] {x : Cone n F} (hx : BlockNonzero x) :
   ⟨fun k ↦ (Function.ne_iff.mp (hx k)).choose, fun k ↦ (Function.ne_iff.mp (hx k)).choose_spec⟩
 
 def samplePoint : Cone (fun _ : Unit ↦ 1) (AlgebraicClosure ℚ) := fun _ ↦ ![1, 2]
-
-theorem samplePoint_blockNonzero : BlockNonzero samplePoint := by
-  intro _ h
-  have := congrFun h 0
-  simp [samplePoint] at this
 
 end
 

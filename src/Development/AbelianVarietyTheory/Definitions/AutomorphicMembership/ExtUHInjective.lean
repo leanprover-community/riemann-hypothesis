@@ -190,36 +190,6 @@ theorem stepY_fin_orb (hX : X.Ok) (hI : ∀ b P, (Θ b P).H.FiniteIndex)
     rw [hg, smul_smul, Prod.mk_mul_mk, inv_mul_cancel, one_mul]
     exact one_smul _ d0
 
-theorem stepY_ok (hX : X.Ok) (hI : ∀ b P, (Θ b P).H.FiniteIndex)
-    (hr : ∀ b P g, ∃ m : ℕ, 0 < m ∧ (Θ b P).lam g ^ m = 1)
-    (hy : ∀ N, Submodule.IsLattice X.E N → (y.ys N).Finite) : (stepY ST y β Λ Θ pref).Ok := by
-  exact {
-    fin_orb := stepY_fin_orb y β Λ Θ pref hX hI hy
-    fin_stab b p :=
-      haveI := autO_finite (posStar_of_ok hX) p.1.1.deco.full_lattice
-      Finite.of_injective _ (stabAut_inj y β Λ Θ pref b p)
-    unit b g := by
-      have h : Formalism.UG.cT (starRingEnd X.E) (toGLm X.E n g.1.1 : Matrix (Fin n) (Fin n) X.E) * (1 : Matrix (Fin n) (Fin n) X.E) *
-        (toGLm X.E n g.1.1 : Matrix (Fin n) (Fin n) X.E) = 1 := toGLm_mem_UJ g.1
-      rw [Matrix.mul_one] at h
-      exact h
-    root b g := by
-      have h1 : IsOfFinOrder ((Λ b).chr g.2.1) := MonoidHom.isOfFinOrder _ (isOfFinOrder_of_finite _)
-      have h2 : IsOfFinOrder ((Θ b).chr g.2.2) := by
-        rw [show (Θ b).chr g.2.2 = ∏ P, (Θ b P).lam (piProj (fun P => (Θ b P).H) P g.2.2) from
-          piChar_apply (fun P => (Θ b P).H) (fun P => (Θ b P).lam) g.2.2]
-        exact Finset.prod_induction _ IsOfFinOrder (fun _ _ => IsOfFinOrder.mul) IsOfFinOrder.one
-          fun P _ => isOfFinOrder_iff_pow_eq_one.2 (hr b P _)
-      exact isOfFinOrder_iff_pow_eq_one.1 (h1.mul h2)
-    lsh_smul b g p x := by
-      rw [stepY_gam]
-      show _ ∈ (p.1.1.deco.1.act g.1.1 g.2.1.1).Lsh ↔ _
-      rw [Deco.Lsh_act _ g.1.2, mem_gmap, LinearEquiv.symm_apply_apply]
-    lsh_full_lat b p := p.1.1.deco.2.Lsh_full_lattice
-    stab_inj b g p h h1 := stepY_eq_one y β Λ Θ pref b g p h
-      (Subtype.ext ((toGLm X.E n).injective (h1.trans (map_one _).symm)))
-  }
-
 end StepOk
 
 section TOk

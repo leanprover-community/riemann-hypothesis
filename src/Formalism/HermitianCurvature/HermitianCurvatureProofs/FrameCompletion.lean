@@ -54,10 +54,6 @@ theorem herm_comb {m : ℕ} {vs : List (Fin (2 * r + k + 1) → ℂ)} {C : Fin m
   rw [herm_lsum]
   simp only [herm_rsum, hC.2.1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
-theorem sum_mdim {X : Type*} [AddCommMonoid X] (F : ℕ → X) :
-    ∑ j : Fin (mdim k r (Fin.last r)), F j.val = ∑ a : Fin k, F a.val + F k := by
-  rw [Fin.sum_univ_eq_sum_range, AnisotropicColumnSums.mdim_last, Finset.sum_range_succ, Fin.sum_univ_eq_sum_range]
-
 theorem complete {x : Fin (2 * r + k + 1) → ℂ} {Bs : Fin k → Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x)
     (hxx : herm (Hpk k r) x x ≠ 0) (hB : IsFrameOf k r [x] Bs) {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) :
     v = ∑ a, herm (Hpk k r) v (Bs a) • Bs a + (herm (Hpk k r) v x * (herm (Hpk k r) x x)⁻¹) • x := by

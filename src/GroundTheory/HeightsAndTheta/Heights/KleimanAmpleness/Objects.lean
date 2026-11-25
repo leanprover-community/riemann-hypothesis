@@ -933,8 +933,6 @@ section Line
 
 variable (k : Type u) [Field k]
 
-def lineX : Fin (1 + 1) → RatFunc k := ![1, RatFunc.X]
-
 end Line
 
 section Generic

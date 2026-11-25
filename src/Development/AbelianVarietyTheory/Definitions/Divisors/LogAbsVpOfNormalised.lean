@@ -166,24 +166,11 @@ def grLat (La : Submodule O U) (F' F : Submodule C U) : Submodule O (U ⧸ F') :
 def scaleLat (a : C) (La : Submodule O U) : Submodule O U :=
   La.map ((a • LinearMap.id : U →ₗ[C] U).restrictScalars O)
 
-theorem mem_scaleLat {a : C} {La : Submodule O U} {x : U} :
-    x ∈ scaleLat a La ↔ ∃ y ∈ La, a • y = x := Iff.rfl
-
 variable (v : Valuation C ℝ≥0)
 
 def latNorm (La : Submodule O U) (x : U) : ℝ≥0 := sInf {r | ∃ a : C, x ∈ scaleLat a La ∧ v a = r}
 
 variable {v}
-
-theorem latNorm_span_singleton (hv : v.Integers O) {g : U} (hg : g ≠ 0) (c : C) :
-    latNorm v (Submodule.span O {g}) (c • g) = v c := by
-  refine IsLeast.csInf_eq ⟨⟨c, ⟨g, Submodule.mem_span_singleton_self g, rfl⟩, rfl⟩, ?_⟩
-  rintro _ ⟨a, ⟨y, hy, hay⟩, rfl⟩
-  obtain ⟨b, rfl⟩ := Submodule.mem_span_singleton.1 hy
-  have h1 : (a * algebraMap O C b) • g = c • g := by
-    rw [mul_smul, algebraMap_smul]; exact hay
-  rw [← smul_left_injective C hg h1, map_mul]
-  exact mul_le_of_le_one_right' (hv.map_le_one b)
 
 set_option autoImplicit false in
 open scoped TensorProduct NNReal NumberField Pointwise in
@@ -392,15 +379,6 @@ theorem _root_.GlobalTheory.HTLat.exists_grAt_eq {v : Valuation C ℝ≥0} (hv :
     show (v (coef q₀))⁻¹ ≤ v b
     rw [← map_inv₀, ← h4, map_mul]
     exact mul_le_of_le_one_right (by positivity) (hv.map_le_one o)
-
-def logAbs_vp (p : ℕ) (v : Valuation C ℝ≥0) (r : ℝ≥0) : ℝ :=
-  -(Real.log p * (Real.log r / Real.log (v (p : C))))
-
-theorem logAbs_vp_self (p : ℕ) (v : Valuation C ℝ≥0) (h0 : v (p : C) ≠ 0) (h1 : v (p : C) < 1) :
-    logAbs_vp p v (v (p : C)) = -Real.log p := by
-  have : Real.log (v (p : C)) ≠ 0 :=
-    (Real.log_neg (NNReal.coe_pos.2 (pos_iff_ne_zero.2 h0)) (by exact_mod_cast h1)).ne
-  rw [logAbs_vp, div_self this, mul_one]
 
 variable {U' : Type} [AddCommGroup U'] [Module C U'] [Module O U'] [IsScalarTower O C U']
 

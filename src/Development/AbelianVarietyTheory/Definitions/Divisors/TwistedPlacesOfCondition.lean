@@ -63,23 +63,6 @@ def SerClause (D : D7) : Prop :=
     ∃ (C : Formalism.IrreducibleCountingLemmas.TYPES.LabelConv (ZMod (D.host.g k))) (O : Formalism.IrreducibleCountingLemmas.TYPES.LabelMap (ZMod (D.host.g k)) C),
       ∀ f, D.ntypes.eSer k f = Formalism.L2.NT.eSerO O D.R.r f
 
-structure TiesA {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) : Prop where
-  ok : A3.fam3.Ok3 1
-  char : R.WeakCharacterisation F
-  ex : R.toRealDat.ExAt
-  host : Formalism.IndefR.Links.HostHyp D
-  params : ∃ L : SizeData₂ D, Nonempty (ParameterChoice' D L)
-  ccK : D.host.ccK = ⊤
-  guard : QGuard R.toRealDat
-  types : GlobalTheory.IndefiniteRowSideFullHecke.CommutingLevelOperators.GoodTypes R.toRealDat
-  ser : SerClause D
-  junk : GlobalTheory.Hk3.InertJunk A3
-  trSem : (∃ tr, R.TrISem F tr ∧ GlobalTheory.Hk3.TrISepWith A3 tr) → R.TrISem F A3.trI ∧ A3.fam3.TrISep
-  std : IsStdChar D R.ψ (-1)
-  phs : ∀ i, R.phs i = 1
-  w1 : ∀ w, (R.toCx3 F).W1 F.cr (R.num F 0 0) w → w ∈ R.twPl
-  nV : 8 * D.R.f * D.R.r + 4 ≤ D.R.nV
-
 structure TiesG (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat3 D A3 T.Q.c.F)
     (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.toRealDat.MW i σ).Vec)
     (O : ∀ i, OMDat T.toCore R.toRealDat i Unit (fun _ => A3.A.μ0)) : Prop where

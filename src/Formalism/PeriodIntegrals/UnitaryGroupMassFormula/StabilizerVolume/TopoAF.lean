@@ -1,5 +1,6 @@
 module
 
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -20,12 +21,7 @@ instance countable_field : Countable F := Finsupp.Countable.of_moduleFinite (R :
 
 instance countable_ringOfIntegers : Countable (𝓞 F) := Finsupp.Countable.of_moduleFinite (R := ℤ)
 
-theorem countable_ideal : Countable (Ideal (𝓞 F)) := by
-  have hs : Function.Surjective (fun s : Finset (𝓞 F) => Ideal.span (s : Set (𝓞 F))) := by
-    intro I
-    obtain ⟨s, hs⟩ := (IsNoetherian.noetherian I)
-    exact ⟨s, hs⟩
-  exact hs.countable
+export PI.VolStabSW.TopoAF (countable_ideal)
 
 instance countable_spectrum : Countable (HeightOneSpectrum (𝓞 F)) := by
   have := countable_ideal F
@@ -46,9 +42,7 @@ instance secondCountable_adicCompletion (v : HeightOneSpectrum (𝓞 F)) :
     SecondCountableTopology (v.adicCompletion F) :=
   UniformSpace.secondCountable_of_separable _
 
-theorem isOpen_integers (v : HeightOneSpectrum (𝓞 F)) :
-    IsOpen (v.adicCompletionIntegers F : Set (v.adicCompletion F)) :=
-  Valued.isOpen_valuationSubring _
+export PI.VolStabSW.TopoAF (isOpen_integers)
 
 instance secondCountable_finiteAdeleRing : SecondCountableTopology (FiniteAdeleRing (𝓞 F) F) := by
   let R := fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F
@@ -85,18 +79,7 @@ variable {F} {E : Type} [Field E] [Algebra F E] [FiniteDimensional F E]
 
 instance secondCountable_tensAF : SecondCountableTopology (AF F ⊗[F] E) := inferInstance
 
-theorem secondCountable_HA_of (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R]
-    [IsTopologicalRing R] [SecondCountableTopology R] (σ : E →ₐ[F] E) {M : ℕ}
-    (J : Matrix (Fin M) (Fin M) E) : SecondCountableTopology (HA R σ J) := by
-  have : SecondCountableTopology (Matrix (Fin M) (Fin M) (R ⊗[F] E)) :=
-    inferInstanceAs (SecondCountableTopology (Fin M → Fin M → R ⊗[F] E))
-  have : SecondCountableTopology (Matrix (Fin M) (Fin M) (R ⊗[F] E))ᵐᵒᵖ :=
-    MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
-  have : SecondCountableTopology (GL (Fin M) (R ⊗[F] E)) :=
-    Units.isEmbedding_embedProduct.secondCountableTopology
-  have h1 : SecondCountableTopology (HR R σ J) :=
-    Topology.IsEmbedding.subtypeVal.secondCountableTopology
-  exact inferInstanceAs (SecondCountableTopology (HR R σ J))
+export PI.VolStabSW.TopoAF (secondCountable_HA_of)
 
 instance secondCountable_HA (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) :
     SecondCountableTopology (HA (AF F) σ J) :=

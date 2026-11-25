@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTorusInvariantHeatOperatorOfSymmetricRelat
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentVectorSectionValueEqExpansionSumStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResV
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
@@ -451,15 +453,7 @@ namespace GlobalTheory.FracPt
 theorem stalkIso_gs {K : Type} [CommRing K] [IsLocalRing K] {X : Scheme.{0}} (f : Sp K ⟶ X) (U : X.Opens)
     (h : ⊤ ≤ f ⁻¹ᵁ U) (a : Γ(X, U)) :
     (stalkClosedPointIso (CommRingCat.of K)).hom.hom (gs f (closedPoint K) U a) = valR f U a := by
-  have e1 : gs f (closedPoint K) U a = (Sp K).presheaf.germ ⊤ (closedPoint K) trivial ((f.appLE U ⊤ h).hom a) := by
-    erw [gs_eq f _ U (h trivial)]
-    rw [← TopCat.Presheaf.germ_res_apply (Sp K).presheaf (homOfLE h) (closedPoint K) trivial]
-    rfl
-  erw [e1]
-  rw [valR, dite_eq_left h]
-  rw [← ΓSpecIso_hom_stalkClosedPointIso_inv (CommRingCat.of K)]
-  simp only [CommRingCat.comp_apply]
-  rw [← CommRingCat.comp_apply, Iso.inv_hom_id, CommRingCat.id_apply]
+  apply _root_.GlobalTheory.MBLow.TanVal.gs_to_valR <;> assumption
 
 end GlobalTheory.FracPt
 
@@ -467,15 +461,8 @@ namespace GlobalTheory.FracPt
 
 theorem valR_spMap_const {Ω K : Type} [CommRing Ω] [CommRing K] (f : Ω →+* K) (ω : Ω) :
     valR (spMap f) ⊤ ((Scheme.ΓSpecIso (CommRingCat.of Ω)).inv.hom ω) = f ω := by
-  have h : ⊤ ≤ spMap f ⁻¹ᵁ ⊤ := le_rfl
-  rw [valR, dite_eq_left h]
-  calc _ = ((Scheme.ΓSpecIso (CommRingCat.of Ω)).hom ≫ CommRingCat.ofHom f).hom
-        ((Scheme.ΓSpecIso (CommRingCat.of Ω)).inv.hom ω) := by
-          rw [← Scheme.ΓSpecIso_naturality]; rfl
-    _ = f ω := by
-          have e : (Scheme.ΓSpecIso (CommRingCat.of Ω)).hom.hom ((Scheme.ΓSpecIso (CommRingCat.of Ω)).inv.hom ω) = ω := by
-            rw [← CommRingCat.comp_apply, Iso.inv_hom_id, CommRingCat.id_apply]
-          rw [CommRingCat.hom_comp, RingHom.comp_apply, e, CommRingCat.hom_ofHom]
+  intros
+  apply _root_.GlobalTheory.HeatGlue.valR_spMap <;> assumption
 
 theorem chart_eq_value_mul_pow : ∀ (X : Scheme.{0}) (L : LB X), L.IsLB → ∀ (Ω : Type) [CommRing Ω] [IsDomain Ω]
     (x : Sp Ω ⟶ X) (g : GlobalTheory.RayEv.Transport.Frame L (x ≫ 𝟙 X)) (j : L.ι) (O : X.Opens), O ≤ L.U j →

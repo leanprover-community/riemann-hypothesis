@@ -48,7 +48,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.Inde
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar
-open Formalism.L2.DIV (kP Pl LevelP)
 open Classical
 
 namespace GlobalTheory.FrameAdjAdd

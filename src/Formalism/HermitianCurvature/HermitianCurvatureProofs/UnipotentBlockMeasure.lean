@@ -61,7 +61,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 section
 
 open Finset
-open Formalism.FourierDecayAlt
 
 theorem book_constants_pos_of_pos {P : Type} [Fintype P] (B : S3.MassData P) (h : B.Pos) :
     0 < B.Gam1 ∧ 0 < B.μK ∧ 0 < B.μKpp ∧ 0 < B.μSpp ∧ 0 < B.μSpp' ∧ 0 < B.MM ∧ 0 < B.unitLevelVolume ∧
@@ -454,16 +453,6 @@ open Finset
 
 section
 variable {ι V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V]
-
-theorem summable_pairs (a : ι → V) (ha : Summable (fun i => ‖a i‖)) :
-    Summable (fun p : ι × ι => (inner ℂ (a p.1) (a p.2) : ℂ)) := by
-  have hprod : Summable (fun p : ι × ι => ‖a p.1‖ * ‖a p.2‖) :=
-    Summable.mul_of_nonneg (f := fun i => ‖a i‖) (g := fun i => ‖a i‖) ha ha
-      (fun i => norm_nonneg (a i)) (fun i => norm_nonneg (a i))
-  have hb : Summable (fun p : ι × ι => ‖(inner ℂ (a p.1) (a p.2) : ℂ)‖) :=
-    Summable.of_nonneg_of_le (fun p => norm_nonneg _)
-      (fun p => norm_inner_le_norm (𝕜 := ℂ) (a p.1) (a p.2)) hprod
-  exact hb.of_norm
 
 theorem normsq_tsum (a : ι → V) (ha : Summable (fun i => ‖a i‖)) :
     ‖∑' i, a i‖ ^ 2 = ∑' p : ι × ι, (inner ℂ (a p.1) (a p.2) : ℂ).re := by
@@ -957,7 +946,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 section
 
 open Finset NumberField
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 lemma pos_facts {P : Type} [Fintype P] (B : S3.MassData P) (h : B.Pos) :
     0 < B.AA ∧ 0 < B.d * B.d' / B.Dstar := by

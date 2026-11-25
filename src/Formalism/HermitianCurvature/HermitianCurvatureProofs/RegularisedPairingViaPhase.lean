@@ -459,40 +459,6 @@ section calculus
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-private theorem hpk_apply_of_mid_index {k r : ℕ} (i b : Fin (2 * r + k + 1)) (hi : r ≤ i.val ∧ i.val ≤ r + k) :
-    Hpk k r i b = if b = i then (if i.val = r + k then -1 else 1) else 0 := by
-  have e1 : ¬ (i.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-  have e2 : ¬ (b.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-  simp only [Hpk, if_neg e1, if_neg e2]
-  by_cases hb : b = i
-  · subst hb
-    simp [hi.1, hi.2]
-  · have e3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = b) := fun h => hb h.2.2.symm
-    rw [if_neg e3, if_neg hb]
-
-private theorem hpk_apply_of_not_mid_index {k r : ℕ} (i b : Fin (2 * r + k + 1)) (hi : ¬(r ≤ i.val ∧ i.val ≤ r + k)) :
-    Hpk k r i b = if b.val = 2 * r + k - i.val then 1 else 0 := by
-  have hi1 := i.isLt
-  have hb1 := b.isLt
-  have e3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = b) := fun h => hi ⟨h.1, h.2.1⟩
-  by_cases hb : b.val = 2 * r + k - i.val
-  · rw [if_pos hb]
-    by_cases h1 : i.val < r
-    · have e1 : i.val < r ∧ i.val + b.val = 2 * r + k := ⟨h1, by omega⟩
-      simp only [Hpk, if_pos e1]
-    · have e1 : ¬ (i.val < r ∧ i.val + b.val = 2 * r + k) := fun h => h1 h.1
-      have e2 : b.val < r ∧ i.val + b.val = 2 * r + k := by omega
-      simp only [Hpk, if_neg e1, if_pos e2]
-  · rw [if_neg hb]
-    have e1 : ¬ (i.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-    have e2 : ¬ (b.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-    simp only [Hpk, if_neg e1, if_neg e2, if_neg e3]
-
-private theorem hpk_mul_self' {k r : ℕ} : Hpk k r * Hpk k r = 1 := by
-  first
-  | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self
-  | (apply _root_.Formalism.SharedLemmas.upq_hpk_mul_self <;> assumption)
-
 theorem exp_mem {X : Mat k r} (hX : inLie k r X) (t : ℝ) : NormedSpace.exp ((t : ℂ) • X) ∈ GV k r := by
   apply PI.ComplexConjugateDerivative.exp_mem_GV <;> assumption
 

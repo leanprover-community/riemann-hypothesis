@@ -1552,6 +1552,8 @@ theorem main_alt_alt : Hypotheses₂ → ∀ (D : D7) (L : SizeData₂ D) (P : P
   haveI : IsFractionRing ↥(OL C.LL) ↥C.LL.1 := Formalism.BasicNotions.Examples₂.LB.OL_frac C.LL
   refine EmbeddingTypes.len_le_of_kill (Br.PD D.loc D.nbr i w hw) L2.T hstd _ (X.c0 i u) ?_
   intro x hx
+  -- Searching for this module structure times out, so it is supplied directly.
+  letI : Module ↥(OL C.LL) ((Fin D.R.r → ↥C.LL.1) ⧸ L2.T) := Submodule.Quotient.module L2.T
   exact pow_smul_eq_zero_of_le _ hc0 (hkill x fun g => hx g)
 end GlobalTheory.NLink.PowerSmulVanishing
 end

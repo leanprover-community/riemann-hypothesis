@@ -77,7 +77,7 @@ theorem r15 (Yb N La La' k : ℝ) (hYb : 0 ≤ Yb) (hN : 0 ≤ N) (h2 : La' ≤ 
     _ = 2 * Yb * N * La := by ring
     _ < k := h
 
-theorem r16 (k Y Yb N La La' l l' ar a' b' : ℝ) (hk : 0 ≤ k) (hY : 0 ≤ Y) (hYb : 0 ≤ Yb) (hN : 0 ≤ N) (hb : 0 < b')
+theorem r16 (k Y Yb N La La' l l' ar a' b' : ℝ) (hk : 0 ≤ k) (hYb : 0 ≤ Yb) (hN : 0 ≤ N) (hb : 0 < b')
     (ha : ar ≤ a') (h2 : La' * l' ≤ 2 * (La * l)) (h : k * Y ^ 2 * Yb * N * La * l ≤ ar / b') :
     k * Y ^ 2 * (Yb / 2) * N * La' * l' ≤ a' / b' := by
   have hc : 0 ≤ k * Y ^ 2 * Yb * N / 2 := by positivity
@@ -180,7 +180,7 @@ theorem hyp_round {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.TM ≤ CH) {X : Dat
     ?_, ?_, ?_, hcs, ?_⟩
   · exact r12 _ _ _ _ _ _ _ hYb0 hN0 hb.le hk0 l2 hIb1
   · exact r15 _ _ _ _ _ hYb0 hN0 l2 hk2
-  · exact r16 _ _ _ _ _ _ _ _ _ _ _ hk0.le hY0 hYb0 hN0 hb B.haa l3 hab
+  · exact r16 _ _ _ _ _ _ _ _ _ _ _ hk0.le hYb0 hN0 hb B.haa l3 hab
   · exact lt_of_lt_of_le hpab (div_le_div_of_nonneg_right B.haa hb.le)
   · exact r19 CH _ _ _ _ _ hCH1.le (by linarith) hN0 hLa'0 l2 hkLa
   · intro d hd hc

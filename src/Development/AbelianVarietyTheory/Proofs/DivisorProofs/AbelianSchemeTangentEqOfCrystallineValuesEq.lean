@@ -65,24 +65,8 @@ theorem cmpForm_surjective (hP : GlobalTheory.Published.CrystallineSmoothLift) (
     (A : Over (Sp R)) [GrpObj A] (g : ℕ) (hab : IsAbelianScheme A)
     (hdim : SmoothOfRelativeDimension g A.hom) :
     Function.Surjective (cmpForm (A.hom ≫ 𝟙 (Sp R))) := by
-  intro ω
-  obtain ⟨-, hinj, -⟩ := (hH R A g hab hdim).2.2.2.2.1
-  haveI := hab.smooth
-  haveI := hab.proper
-  have hb := (cechDeRham_comparison_bijective_cup_smooth hP R A.left (A.hom ≫ 𝟙 (Sp R)) inferInstance inferInstance
-    inferInstance).1
-  obtain ⟨c, hc⟩ := hb.2 (clForm _ ω)
-  have hmem : clForm (A.hom ≫ 𝟙 (Sp R)) ω ∈ CechHodgeFiltration (A.hom ≫ 𝟙 (Sp R)) := by
-    rw [cechHodgeFiltration_eq_range]; exact ⟨ω, rfl⟩
-  have h0 : toHO1 _ (cmp1 (A.hom ≫ 𝟙 (Sp R)) c) = 0 := by rw [hc]; exact hmem
-  rw [structureSheaf_comparison_comm] at h0
-  have h1 : toH1O _ c = 0 := GlobalTheory.CechDR.cmpO_injective R A.left _ (h0.trans (map_zero _).symm)
-  have h2 : c ∈ F1 (A.hom ≫ 𝟙 (Sp R)) := h1
-  rw [hodgeFiltration_eq_range] at h2
-  obtain ⟨f, rfl⟩ := h2
-  refine ⟨f, hinj ?_⟩
-  change clForm (A.hom ≫ 𝟙 (Sp R)) (cmpForm _ f) = clForm (A.hom ≫ 𝟙 (Sp R)) ω
-  rw [← comparison_formClass, hc]
+  intros
+  apply _root_.GlobalTheory.LieInjField.cmpForm_surjective <;> assumption
 
 section Lie
 

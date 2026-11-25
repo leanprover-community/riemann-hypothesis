@@ -1,5 +1,7 @@
 module
 
+
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsDatumOfTwoCongruentFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameDualUnipotentGroupActsUnitriangularOnto
@@ -48,7 +50,6 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsInnerLatticeVectorAnisotropic, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnipotentAddIsotropicToAnisotropic, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitriangularChangeFrameUnipotent, Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFrameWitnessIntegralChange
 
@@ -683,17 +684,7 @@ lemma img_mul (g k : V ≃ₗ[E] V) (Λ : Submodule M.L.O V) : img (g * k) Λ = 
   · rintro ⟨w, ⟨u, hu, rfl⟩, rfl⟩; exact ⟨u, hu, rfl⟩
 
 lemma prF_e (Fr : FrameD H r) (a : Fin r) : Fr.prF (Fr.f a.castSucc) = 0 := by
-  unfold FrameD.prF
-  have h1 : ∑ c, H.h (Fr.f a.castSucc) (Fr.es c) • Fr.e c = Fr.f a.castSucc := by
-    rw [Finset.sum_eq_single a]
-    · rw [Fr.h_es, if_pos rfl, one_smul]; rfl
-    · intro c _ hc; rw [Fr.h_es, if_neg (Ne.symm hc), zero_smul]
-    · intro h; exact absurd (Finset.mem_univ a) h
-  have h2 : ∑ c, H.h (Fr.f a.castSucc) (Fr.e c) • Fr.es c = 0 :=
-    Finset.sum_eq_zero (fun c _ => by
-      show H.h (Fr.f a.castSucc) (Fr.f c.castSucc) • Fr.es c = _
-      rw [Fr.h_iso _ _ (Or.inl (Fin.castSucc_lt_last a).ne), zero_smul])
-  rw [h1, h2]; simp
+  first | exact _root_.GlobalTheory.UnipFrame.prF_e | exact @_root_.GlobalTheory.UnipFrame.prF_e | apply _root_.GlobalTheory.UnipFrame.prF_e <;> assumption
 
 lemma frame_projection_last_eq_self (Fr : FrameD H r) : Fr.prF (Fr.f (Fin.last r)) = Fr.f (Fin.last r) := by
   unfold FrameD.prF

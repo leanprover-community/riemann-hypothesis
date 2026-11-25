@@ -303,27 +303,6 @@ theorem homW_phiW (F : BK.Hom P Q) (v : ι → OW l O) :
   ext1 i
   exact (RingHom.map_mulVec (frobOW l O).toRingHom _ _ i).symm
 
-theorem homW_injective : Function.Injective (homW t ϖ : BK.Hom P Q → _) := by
-  rintro ⟨F, hF, _⟩ ⟨G, hG, _⟩ h
-  have h1 := Matrix.toLin'.injective h
-  obtain rfl : F = G := funext fun τ => Matrix.ext fun i j => congrArg Subtype.val
-    (congrFun (ϖ.iTot_injective t K (inclO_injective (congrFun₂ h1 i j))) τ)
-  rfl
-
-theorem homW_scalar (c : O) (v : ι → OW l O) : homW t ϖ (BK.Hom.scalar P c) v = c • v := by
-  have : (homMat t ϖ (BK.Hom.scalar P c)).map (inclO l O) = c • (1 : Matrix ι ι (OW l O)) := by
-    ext1 i j
-    have h : (fun τ => (⟨(BK.Hom.scalar P c).mat τ i j, (BK.Hom.scalar P c).mem τ i j⟩ : A O K)) =
-        c • (1 : Matrix ι ι (ZMod a → A O K)) i j := funext fun τ => Subtype.ext (by
-      change algebraMap O K⟦X⟧ c * (1 : Matrix ι ι K⟦X⟧) i j =
-        c • (((1 : Matrix ι ι (ZMod a → A O K)) i j τ : A O K) : K⟦X⟧)
-      rw [← Algebra.smul_def]
-      by_cases hij : i = j <;> simp [Matrix.one_apply, hij])
-    change inclO l O (ϖ.iTot t K _) = _
-    rw [h, map_smul, map_smul]
-    by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
-  rw [homW_apply, this, Matrix.smul_mulVec, Matrix.one_mulVec]
-
 end Hom
 
 section Lat
@@ -462,11 +441,6 @@ def IsMapOf {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T T' : LocLat G
     (F : BK.Hom P Q) : Prop :=
   ∀ v, I'.j (homW t ϖ F v) = latW f (I.j v)
 
-theorem IsMapOf.unique {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T T' : LocLat G ℚ_[l] K O}
-    {t : Wq l a →ₐ[ℤ_[l]] O} {ϖ : PiSys l e} {I : Ident t ϖ P T} {I' : Ident t ϖ Q T'} {f : LatHom T.L T'.L}
-    {F F' : BK.Hom P Q} (h : IsMapOf I I' f F) (h' : IsMapOf I I' f F') : F = F' :=
-  homW_injective t ϖ (LinearMap.ext fun v => I'.j.injective ((h v).trans (h' v).symm))
-
 theorem IsMapOf.homW_ofT {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T T' : LocLat G ℚ_[l] K O}
     {t : Wq l a →ₐ[ℤ_[l]] O} {ϖ : PiSys l e} {I : Ident t ϖ P T} {I' : Ident t ϖ Q T'} {f : LatHom T.L T'.L}
     {F : BK.Hom P Q} (h : IsMapOf I I' f F) (x : ↥T.L.T) :
@@ -566,23 +540,6 @@ def BKFunctor.ofExists {C : Lat a O K ϖ → Prop} (h₁ : ∀ T, C T → Nonemp
 variable (K) in
 abbrev CrysBKFunctor (Pl : LocPrime l) : Type 1 :=
   BKFunctor t ϖ fun T : Lat a O K ϖ => IsCrys (Pl.PD (ϖ.field a)) T.ρ
-
-namespace BKFunctor
-
-variable {t ϖ} {C : Lat a O K ϖ → Prop} (F : BKFunctor t ϖ C)
-
-theorem map_smul {T : Lat a O K ϖ} (hT : C T) (c : O) :
-    F.map hT hT (latSmul T c) = BK.Hom.scalar _ c := by
-  refine (F.isMapOf hT hT _).unique fun v => ?_
-  rw [homW_scalar, LinearMapClass.map_smul_of_tower]
-  induction (F.obj T hT).I.j v using TensorProduct.induction_on with
-  | zero => simp only [smul_zero, map_zero]
-  | tmul w x =>
-    rw [← tmul_smul]
-    exact congrArg (fun y : ↥T.L.T => w ⊗ₜ[O] y) (Subtype.ext (algebraMap_smul K c (x : T.V)).symm)
-  | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
-
-end BKFunctor
 
 section Conn
 

@@ -23,16 +23,11 @@ theorem sz_div_le_fact {p : ℕ} (hp : p.Prime) (n : ℕ) : n / p ≤ (n.factori
   simp only [pow_one] at h2
   exact h2
 
-private theorem primesLE_eq_filter_prime_range (n : ℕ) :
-    Nat.primesLE n = Finset.filter Nat.Prime (Finset.range (n + 1)) := by
-  ext p
-  simp [Nat.primesLE, Nat.mem_primesBelow]
-
 theorem sz_sum_div_log (n : ℕ) :
     ∑ p ∈ Nat.primesLE n, ((n / p : ℕ) : ℝ) * Real.log p ≤ Real.log (n.factorial : ℕ) := by
   have hsub : Nat.primesLE n ⊆ (n.factorial).factorization.support := by
     intro p hp
-    rw [primesLE_eq_filter_prime_range, Finset.mem_filter, Finset.mem_range] at hp
+    rw [Nat.primesLE_eq_filter_range, Finset.mem_filter, Finset.mem_range] at hp
     rw [Finsupp.mem_support_iff]
     exact (hp.2.factorization_pos_of_dvd (Nat.factorial_ne_zero n) (hp.2.dvd_factorial.mpr (by omega))).ne'
   rw [Real.log_nat_eq_sum_factorization, Finsupp.sum]
@@ -40,7 +35,7 @@ theorem sz_sum_div_log (n : ℕ) :
       ≤ ∑ p ∈ Nat.primesLE n, ((n.factorial.factorization p : ℕ) : ℝ) * Real.log p := by
         apply Finset.sum_le_sum
         intro p hp
-        rw [primesLE_eq_filter_prime_range, Finset.mem_filter] at hp
+        rw [Nat.primesLE_eq_filter_range, Finset.mem_filter] at hp
         apply mul_le_mul_of_nonneg_right _ (Real.log_natCast_nonneg _)
         exact_mod_cast sz_div_le_fact hp.2 n
     _ ≤ ∑ p ∈ (n.factorial).factorization.support, ((n.factorial.factorization p : ℕ) : ℝ) * Real.log p := by
@@ -61,11 +56,11 @@ theorem sz_mertens (n : ℕ) (hn : 1 ≤ n) :
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hprime : ∀ p ∈ Nat.primesLE n, p.Prime := by
     intro p hp
-    rw [primesLE_eq_filter_prime_range, Finset.mem_filter] at hp
+    rw [Nat.primesLE_eq_filter_range, Finset.mem_filter] at hp
     exact hp.2
   have htheta : ∑ p ∈ Nat.primesLE n, Real.log p ≤ n * Real.log 4 := by
     have h1 : Real.log ((primorial n : ℕ) : ℝ) = ∑ p ∈ Nat.primesLE n, Real.log p := by
-      rw [primesLE_eq_filter_prime_range, primorial, Nat.cast_prod, Real.log_prod]
+      rw [Nat.primesLE_eq_filter_range, primorial, Nat.cast_prod, Real.log_prod]
       intro p hp
       exact_mod_cast (Finset.mem_filter.mp hp).2.ne_zero
     rw [← h1, ← Real.log_pow]

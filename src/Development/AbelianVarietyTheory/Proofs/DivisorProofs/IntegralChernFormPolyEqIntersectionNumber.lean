@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarChainRuleHolomorphicPullback
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DbarPullbackHolomorphicZero
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.EventuallyDifferentiableAtOfContDiffAtTwo
@@ -282,20 +284,8 @@ theorem dbar_dbar_comm {u : V n → ℂ} {z : V n} (hu : ContDiffAt ℝ 2 u z) (
 theorem dbarAt_sum_smul {ι : Type} [Fintype ι] {v : V n} {g : ι → V n → ℂ} (hg : ∀ p, DifferentiableAt ℝ (g p) v)
     (c : ι → Alt n) : dbarAt (fun x => ∑ p, g p x • c p) v =
       ∑ a, ∑ p, dbar (g p) v (coordVec a) • (dzb a * c p) := by
-  refine Finset.sum_congr rfl fun a _ => ?_
-  have : coefwise (fun f => dbar f v (coordVec a)) (fun x => ∑ p, g p x • c p) =
-      ∑ p, dbar (g p) v (coordVec a) • c p := by
-    refine (bas n).ext_elem fun S => ?_
-    rw [FormMul.repr_coefwise]
-
-    simp only [map_sum, map_smul, Finsupp.finsetSum_apply, Finsupp.smul_apply, smul_eq_mul]
-    rw [dbar_sum (A := fun p x => g p x * (bas n).repr (c p) S) (fun p _ => (hg p).mul (differentiableAt_const _)),
-      ContinuousLinearMap.sum_apply]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    rw [dbar_mul (hg p) (differentiableAt_const _)]
-    simp
-  rw [this, Finset.mul_sum]
-  simp only [mul_smul_comm]
+  intros
+  apply _root_.GlobalTheory.CxForm.PullClosed.dbarAt_sum_smul <;> assumption
 
 theorem differentiableAt_sum_smul {ι : Type} [Fintype ι] {v : V n} {g : ι → V n → ℂ}
     (hg : ∀ p, DifferentiableAt ℝ (g p) v) (c : ι → Alt n) (S : Finset (Fin (n + n))) :
@@ -618,19 +608,8 @@ theorem delAt_congr {α β : V n → Alt n} {v : V n} (h : α =ᶠ[𝓝 v] β) :
 theorem delAt_sum_smul {ι : Type} [Fintype ι] {v : V n} {u : ι → V n → ℂ} (hu : ∀ i, DifferentiableAt ℝ (u i) v)
     (α : ι → Alt n) :
     delAt (fun x => ∑ i, u i x • α i) v = ∑ c, ∑ i, del (u i) v (coordVec c) • (dz c * α i) := by
-  refine Finset.sum_congr rfl fun c _ => ?_
-  have : coefwise (fun f => del f v (coordVec c)) (fun x => ∑ i, u i x • α i) =
-      ∑ i, del (u i) v (coordVec c) • α i := by
-    refine (bas n).ext_elem fun S => ?_
-    rw [FormMul.repr_coefwise]
-
-    simp only [map_sum, map_smul, Finsupp.finsetSum_apply, Finsupp.smul_apply, smul_eq_mul]
-    rw [del_sum fun i _ => (hu i).mul_const _, ContinuousLinearMap.sum_apply]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [del_mul (hu i) (differentiableAt_const _), del_const]
-    simp
-  rw [this, Finset.mul_sum]
-  simp only [mul_smul_comm]
+  intros
+  apply _root_.GlobalTheory.CxForm.PullDelClosed.delAt_sum_smul <;> assumption
 
 theorem delAt_add {v : V n} {F G : V n → Alt n} (hF : ∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (F x) S) v)
     (hG : ∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (G x) S) v) :

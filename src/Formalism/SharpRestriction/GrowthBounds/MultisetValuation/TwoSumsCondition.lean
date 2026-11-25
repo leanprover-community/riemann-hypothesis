@@ -250,43 +250,6 @@ theorem th_mu_int (K' : Type) [Field K'] [Algebra (K0 p) K'] (vp : K') (hvp : vp
   rw [hμ]
   exact Subring.sub_mem _ hXn hrest
 
-private theorem pow_mul_inv_factorial_mem_Rp (K' : Type) [Field K'] [Algebra (K0 p) K'] (vp : K')
-    (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (k : ℕ) :
-    (vp ^ (p + 1)) ^ k * ((k.factorial : ℕ) : K')⁻¹ ∈ Rp p K' vp := by
-  haveI := charZero_K' p K'
-  have hpK : (p : K') ≠ 0 := Nat.cast_ne_zero.mpr hp.out.ne_zero
-  have hvR : vp ∈ Rp p K' vp := Subring.subset_closure (Or.inr rfl)
-  have hv : (p - 1) * padicValNat p k.factorial ≤ k := by
-    rw [Nat.padicValNat_def]
-    rw [hp.out.sub_one_mul_multiplicity_factorial]
-    exact Nat.sub_le _ _
-  have hdec : k.factorial = p ^ padicValNat p k.factorial * ordCompl[p] k.factorial := by
-    simpa [Nat.padicValNat_def, Nat.factorization_def _ hp.out] using
-      (Nat.ordProj_mul_ordCompl_eq_self k.factorial p).symm
-  have hnd : ¬ p ∣ ordCompl[p] k.factorial := Nat.not_dvd_ordCompl hp.out (Nat.factorial_ne_zero k)
-  have hm0 : ((ordCompl[p] k.factorial : ℕ) : K') ≠ 0 :=
-    Nat.cast_ne_zero.mpr (Nat.ordCompl_pos p (Nat.factorial_ne_zero k)).ne'
-  have h2 : p ^ 2 - 1 = (p + 1) * (p - 1) := by
-    have h1 := hp.out.one_le
-    have h3 : 1 ≤ p ^ 2 := Nat.one_le_pow 2 p (by omega)
-    zify [h1, h3]
-    ring
-  set v := padicValNat p k.factorial with hvdef
-  set m := ordCompl[p] k.factorial with hmdef
-  have hle : (p ^ 2 - 1) * v ≤ (p + 1) * k := by
-    rw [h2, mul_assoc]
-    exact Nat.mul_le_mul_left _ hv
-  have hsplit : (vp ^ (p + 1)) ^ k = (vp ^ (p ^ 2 - 1)) ^ v * vp ^ ((p + 1) * k - (p ^ 2 - 1) * v) := by
-    rw [← pow_mul, ← pow_mul, ← pow_add]
-    congr 1
-    omega
-  rw [hsplit, hvp, hdec, Nat.cast_mul, Nat.cast_pow]
-  have hre : (p : K') ^ v * vp ^ ((p + 1) * k - (p ^ 2 - 1) * v) * ((p : K') ^ v * (m : K'))⁻¹ =
-      vp ^ ((p + 1) * k - (p ^ 2 - 1) * v) * (m : K')⁻¹ := by
-    field_simp
-  rw [hre]
-  exact Subring.mul_mem _ (Subring.pow_mem _ hvR _) (natCast_inv_mem_Rp p K' vp _ hnd)
-
 private theorem atPi_C_mul_X_mul_X_pow {K : Type} [Field K] (vp k : K) (x y : Fin 2) (q : ℕ) :
     atPi vp (MvPowerSeries.C k * (MvPowerSeries.X x * MvPowerSeries.X y ^ q)) =
       MvPowerSeries.C (k * vp ^ (q + 1)) * (MvPowerSeries.X x * MvPowerSeries.X y ^ q) := by
@@ -419,7 +382,7 @@ theorem gcCondition_of_twoSums (hT : TwoSumsCondition p) : RestGc p := by
     exact Finset.sum_eq_zero fun e _ => MvPowerSeries.constantCoeff_subst_eq_zero (hPs e) (hP0 e) hRr0
   have hWI : IntR (Rp p K' vp) W := IntR_sum _ _ fun e _ => IntR_subst (P e) (hP0 e) (hPI e) hRrI
   rw [hexp, expK_add]
-  · exact ⟨u, hu, _, IntR_expK (pow_mul_inv_factorial_mem_Rp K' vp hvp) (IntR_neg (IntR_add hY hWI)), rfl⟩
+  · exact ⟨u, hu, _, IntR_expK (piFact p K' vp hvp) (IntR_neg (IntR_add hY hWI)), rfl⟩
   · rw [map_neg, map_mul, hhS_const, mul_zero, neg_zero]
   · rw [map_mul, map_neg, map_add (f := _), hY0, hW0, add_zero, neg_zero, mul_zero]
 

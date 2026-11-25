@@ -11,7 +11,7 @@ namespace Formalism.MainNotions.flipOneThree.Pf
 open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree
 
 theorem dle_abs (CA CH N ns N1 k Y L lg la u0 k1 Dp : ℝ) (hCA : 0 < CA) (hCH : 8 * CA + 93 ≤ CH) (hN : 2 ≤ N)
-    (hns0 : 0 ≤ ns) (hns : ns ≤ N) (hN1 : 1 ≤ N1) (sq_level_le_degree : N1 ^ 2 ≤ k) (hNk : N ≤ k) (hk : 5 ≤ k) (hY : 1 ≤ Y)
+    (hns : ns ≤ N) (hN1 : 1 ≤ N1) (sq_level_le_degree : N1 ^ 2 ≤ k) (hNk : N ≤ k) (hk : 5 ≤ k) (hY : 1 ≤ Y)
     (hL : 1 ≤ L) (hlg0 : 0 ≤ lg) (hlg : lg ≤ 3 * L) (hla0 : 0 ≤ la) (hla : la ≤ 2 * L)
     (hu0 : u0 ≤ (k + 1) * lg + 1) (hk1 : k1 ≤ (k - 1) ^ 2 * lg + 1)
     (hD : CH * N * Y ^ 2 * (N1 ^ 5 + k ^ 3) * L ≤ Dp) :
@@ -170,7 +170,7 @@ theorem dle_of {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.TLP ≤ CH) {X : Dat} 
     exact h5
   have := dle_abs K.CA CH X.N (numSeg X.TT) X.N₁ X.k X.Y (Real.logb X.p X.ar) (lgA X.p X.a X.m)
     (Real.logb X.p X.a) X.u0c X.kap1c X.Dp hK.2.2.1
-    (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hCH) B.hN2 (by positivity) B.hns B.hN1 B.sq_level_le_degree B.hNk
+    (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hCH) B.hN2 B.hns B.hN1 B.sq_level_le_degree B.hNk
     B.hk5 B.hY B.hL1 hlg0 h2 h3 h4 hu hk1 hD
   unfold Dat.D1
   rw [D0_eq_numSeg_mul_add]

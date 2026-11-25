@@ -17,6 +17,7 @@ import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import Mathlib.Algebra.Order.Star.Int
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.FiniteSystemProof
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.RealArchimedeanBounds.DRepsP, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ValNatCastLe, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ValuationDetCongruenceSubgroupEqOne, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.PfGTerm, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MixSeedOf
@@ -387,13 +388,6 @@ theorem prod_reAt {c : Pl F → ℕ} {W : List (Pl F)} {n : ℕ} {a : Fin n → 
     rw [h4, inv_mul_cancel₀ hN]
   nlinarith [h5]
 
-theorem val_nat_le (ν : Valuation ℂ ℝ≥0) (m : ℕ) : ν (m : ℂ) ≤ 1 := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    push_cast
-    exact (Valuation.map_add ν _ _).trans (max_le ih (by simp))
-
 theorem tr_conj {R : Type*} [CommRing R] (g y : GL (Fin 2) R) :
     ((g * y * g⁻¹ : GL (Fin 2) R) : Matrix (Fin 2) (Fin 2) R).trace = (y : Matrix (Fin 2) (Fin 2) R).trace := by
   rw [Units.val_mul, Units.val_mul, Matrix.trace_mul_comm, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
@@ -526,7 +520,7 @@ theorem loc (hU : GUnit) {c : Pl F → ℕ} (hc : ∀ v, c (D.pl v) = 1) {W : Li
     have := congrArg (nu ι) hδU
     rw [map_mul, hU1, mul_one, map_pow] at this
     exact this
-  have hνl : nu ι (l : ℂ) ≤ 1 := val_nat_le _ l
+  have hνl : nu ι (l : ℂ) ≤ 1 := Fin0Aux.nat_le_one _ l
   have hδr : nu ι M.det ≤ nu ι (l : ℂ) ^ r := by
     rw [hνδ]; exact pow_le_pow_of_le_one zero_le hνl (hW v)
   have hδ1 : nu ι M.det ≤ 1 := hδr.trans (pow_le_one₀ zero_le hνl)
@@ -645,7 +639,7 @@ theorem UpperTheory.Esk.pf_GTerm : UpperTheory.Esk.GCh → UpperTheory.Esk.GUnit
   have hcong := fun v => local_cong (nu ι) hG (τ v) (δ v) (U v) (max (nu ι l ^ N) (nu ι l ^ r)) k₀ (t v) hk₀ (hτ1 v) (hδ1 v)
     ((hδr v).trans (le_max_right _ _)) ((hpow v (t v) (ht v)).1.trans (le_max_left _ _)) (hU1 v)
     ((hpow v (t v) (ht v)).2.trans (le_max_left _ _))
-  obtain ⟨p1, p2, p3⟩ := val_prod_sub (nu ι) Finset.univ (fun v => -(ch (τ v) (δ v) (k₀ - 1)))
+  obtain ⟨p1, p2, p3⟩ := UpperTheory.Reformulated.B.ProdSubProdLeOfFactorsClose.main (nu ι) Finset.univ (fun v => -(ch (τ v) (δ v) (k₀ - 1)))
     (fun v => -(ch (τ v) (δ v) (k₀ + 2 * t v - 1) * U v ^ t v)) (max (nu ι l ^ N) (nu ι l ^ r))
     (fun v _ => by rw [Valuation.map_neg]; exact (hcong v).1) (fun v _ => by rw [Valuation.map_neg]; exact (hcong v).2.1)
     (fun v _ => by rw [neg_sub_neg, Valuation.map_sub_swap]; exact (hcong v).2.2)

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSelfDualOrthAt
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PeriodIdealZpowCompletionAdeleConjIff
@@ -67,20 +68,7 @@ variable {D : D7}
 theorem rat_mulVec_mem {S T : HSp D} (m : Matrix (Fin T.rank) (Fin S.rank) D.host.E) {L : Lat S} {L' : Lat T}
     (h : ∀ x ∈ L, m *ᵥ x ∈ L') {P : Pl D → Prop} {y : Fin S.rank → AE D} (hy : y ∈ latV S L P) :
     (rat m : Mx D T.rank S.rank) *ᵥ y ∈ latV T L' P := by
-  induction hy using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨α, hα, hα', c, hc, x, hx, rfl⟩ := hy
-    rw [Set.mem_singleton_iff] at hc
-    subst hc
-    refine AddSubgroup.subset_closure ⟨α, hα, hα', 1, rfl, m *ᵥ x, h x hx, ?_⟩
-    funext i
-    simp only [mulVec, dotProduct, one_mul, TensorProduct.tmul_sum]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    change ((1 : AF D.host.F) ⊗ₜ[D.host.F] m i j) * _ = _
-    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-  | zero => rw [mulVec_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [mulVec_add]; exact add_mem hx hy
-  | neg x _ hx => rw [mulVec_neg]; exact neg_mem hx
+  first | exact _root_.GlobalTheory.OrthSumLat.rat_mulVec_mem_latV | exact @_root_.GlobalTheory.OrthSumLat.rat_mulVec_mem_latV | apply _root_.GlobalTheory.OrthSumLat.rat_mulVec_mem_latV <;> assumption
 
 theorem dsum_eq {S : HSp D} (x y : Fin S.rank → D.host.E) :
     ∑ i, ∑ j, star (x i) * S.gram i j * y j = star x ⬝ᵥ S.gram *ᵥ y := by

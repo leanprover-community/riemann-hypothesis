@@ -450,37 +450,10 @@ theorem ideal_ext_stalk {I I' : Y.IdealSheafData} (h : ∀ y, stalkId I y = stal
 
 def baseIdeal (W : Submodule k (H0 p B ⊤)) : Y.IdealSheafData := cutIdeal hB fun s : W => toSec s.1
 
-theorem stalkId_baseIdeal (W : Submodule k (H0 p B ⊤)) (i : B.ι) (y : Y) (hi : y ∈ B.U i) :
-    stalkId (baseIdeal hB W) y = Ideal.span (Set.range fun s : W => germ i y (memTop y) hi s.1) := by
-  rw [baseIdeal, stalkId_cutIdeal hB _ i y hi]
-  congr 2
-  funext s
-  exact ger_toSec s.1 i y hi
-
 theorem mem_support_baseIdeal (W : Submodule k (H0 p B ⊤)) (y : Y) :
     y ∈ (baseIdeal hB W).support ↔ ∀ s ∈ W, y ∉ nonzeroLocus (toSec s) := by
   rw [baseIdeal, mem_support_cutIdeal]
   exact ⟨fun h s hs => h ⟨s, hs⟩, fun h s => h s.1 s.2⟩
-
-theorem baseIdeal_span {ι : Type} (v : ι → B.Sec) :
-    baseIdeal hB (Submodule.span k (Set.range fun i => ofSec p ⊤ (v i))) = cutIdeal hB v := by
-  refine ideal_ext_stalk fun y => ?_
-  obtain ⟨j, hj⟩ := exists_chart hB y
-  rw [stalkId_baseIdeal hB _ j y hj, stalkId_cutIdeal hB v j y hj]
-  apply le_antisymm
-  · rw [Ideal.span_le]
-    rintro _ ⟨⟨s, hs⟩, rfl⟩
-    show germ j y (memTop y) hj s ∈ _
-    induction hs using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨i, rfl⟩ := hx
-      exact Ideal.subset_span ⟨i, (germ_ofSec j y (memTop y) hj (v i)).symm⟩
-    | zero => rw [map_zero]; exact Ideal.zero_mem _
-    | add a b _ _ ha hb => rw [map_add (f := _)]; exact Ideal.add_mem _ ha hb
-    | smul c a _ ha => rw [germ_smul]; exact Ideal.mul_mem_left _ _ ha
-  · rw [Ideal.span_le]
-    rintro _ ⟨i, rfl⟩
-    exact Ideal.subset_span ⟨⟨ofSec p ⊤ (v i), Submodule.subset_span ⟨i, rfl⟩⟩, germ_ofSec j y (memTop y) hj (v i)⟩
 
 theorem stalkId_comap_baseIdeal (W : Submodule k (H0 p B ⊤)) (r : T ⟶ Y) (j : (B.pull r).ι) (z : T)
     (hj : z ∈ (B.pull r).U j) : stalkId ((baseIdeal hB W).comap r) z =

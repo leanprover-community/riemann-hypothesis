@@ -71,39 +71,11 @@ theorem beO_bal (c c' : 𝓞 D.host.E) (h : (c' : D.host.E) = D.host.conj (c : D
   rw [e1, e2, map_mul, map_mul, map_mul, hc, Complex.conj_conj]
   ring
 
-theorem beO_self (a : 𝓞 D.host.E) : beO D a a = ∑ σ : D.host.E →ₐ[ℚ] ℂ, Complex.normSq (σ (a : D.host.E)) := by
-  apply Complex.ofReal_injective
-  rw [beO_eq, Complex.ofReal_sum]
-  simp only [Complex.mul_conj]
-
-theorem beO_nonneg (a : 𝓞 D.host.E) : 0 ≤ beO D a a := by
-  rw [beO_self]
-  exact Finset.sum_nonneg fun σ _ => Complex.normSq_nonneg _
-
-theorem beO_pos (a : 𝓞 D.host.E) (h : a ≠ 0) : 0 < beO D a a := by
-  rw [beO_self]
-  let σ0 : D.host.E →ₐ[ℚ] ℂ := D.host.φ₀.toRatAlgHom
-  have ha : (a : D.host.E) ≠ 0 := by exact_mod_cast h
-  have hs : σ0 (a : D.host.E) ≠ 0 := (map_ne_zero σ0).mpr ha
-  exact lt_of_lt_of_le (Complex.normSq_pos.mpr hs)
-    (Finset.single_le_sum (f := fun σ : D.host.E →ₐ[ℚ] ℂ => Complex.normSq (σ (a : D.host.E)))
-      (fun σ _ => Complex.normSq_nonneg _) (Finset.mem_univ σ0))
-
 def beK (k : ℕ) : (Fin k → 𝓞 D.host.E) →ₗ[ℤ] (Fin k → 𝓞 D.host.E) →ₗ[ℤ] ℝ :=
   ∑ i, (beO D).compl₁₂ (LinearMap.proj i) (LinearMap.proj i)
 
 theorem beK_apply (k : ℕ) (a b : Fin k → 𝓞 D.host.E) : beK D k a b = ∑ i, beO D (a i) (b i) := by
   simp [beK, LinearMap.sum_apply, LinearMap.compl₁₂_apply]
-
-theorem beK_int (k : ℕ) (a b : Fin k → 𝓞 D.host.E) : ∃ z : ℤ, beK D k a b = z := by
-  refine ⟨∑ i, Algebra.trace ℤ (𝓞 D.host.E) (a i * cjO D (b i)), ?_⟩
-  rw [beK_apply, Int.cast_sum]
-  rfl
-
-theorem beK_pos (k : ℕ) (a : Fin k → 𝓞 D.host.E) (h : a ≠ 0) : 0 < beK D k a a := by
-  rw [beK_apply]
-  obtain ⟨i, hi⟩ := Function.ne_iff.mp h
-  exact Finset.sum_pos' (fun j _ => beO_nonneg D _) ⟨i, Finset.mem_univ _, beO_pos D _ hi⟩
 
 theorem beO_sum {ι : Type} [Fintype ι] (a : ι → 𝓞 D.host.E) (c : ι → ℝ) :
     ∑ i, ∑ j, c i * c j * beO D (a i) (a j) =

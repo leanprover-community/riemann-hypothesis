@@ -945,7 +945,7 @@ theorem exists_vandermonde_solution (n i : ℕ) : ∃ x : Fin (n + 1) → ℝ, �
   exact congrFun h b
 
 theorem exists_pure_power_trace {ι : Type} [Fintype ι] (m : ι → ℕ) (n : ℕ) (S : Type) [CommRing S]
-    [Algebra ℝ S] (τ : ι) (i : ℕ) (_hi : 1 ≤ i) :
+    [Algebra ℝ S] (τ : ι) (i : ℕ) :
     ∃ (J : Type) (_ : Fintype J) (ρ : J → PolyRep m) (c : J → ℝ), ∀ (A : Mat m S) (b : ℕ), b ≤ n →
       ∑ j, c j • (ρ j).ptr b A = if b = i then ((A τ) ^ i).trace else 0 := by
   obtain ⟨x, hx⟩ := exists_vandermonde_solution n i
@@ -1236,23 +1236,22 @@ theorem ptr_tensor (ρ σ : PolyRep m) (N : ℕ) {S : Type} [CommRing S] (A : Ma
   exact congrArg (fun L => (L ^ N).trace) (_root_.GlobalTheory.GoodMetric.PolyRep.lie_tensor ρ σ A)
 
 theorem ptr_mul_trProd_mem_reach (n : ℕ) (S : Type) [CommRing S] [Algebra ℝ S] (l : List (ι × ℕ)) :
-    (∀ x ∈ l, 1 ≤ x.2) → ∀ r : ℕ, r + (l.map Prod.snd).sum = n → ∀ ρ : PolyRep m,
+    ∀ r : ℕ, r + (l.map Prod.snd).sum = n → ∀ ρ : PolyRep m,
       (fun A : Mat m S => ρ.ptr r A * trProd l A) ∈ Reach m n S := by
   induction l with
   | nil =>
-    intro _ r hr ρ
+    intro r hr ρ
     have hr' : r = n := by simpa using hr
     subst hr'
     simpa [trProd] using ptr_mem_reach r S ρ
   | cons x l ih =>
     obtain ⟨τ, i⟩ := x
-    intro hl r hr ρ
-    have hi : 1 ≤ i := hl (τ, i) (by simp)
+    intro r hr ρ
     have hr' : (r + i) + (l.map Prod.snd).sum = n := by
       simp only [List.map_cons, List.sum_cons] at hr
       omega
-    obtain ⟨J, _, σ, c, hσ⟩ := _root_.GlobalTheory.GoodMetric.PureVirt.exists_pure_power_trace m n S τ i hi
-    have ih' := ih (fun x hx => hl x (List.mem_cons_of_mem _ hx)) (r + i) hr'
+    obtain ⟨J, _, σ, c, hσ⟩ := _root_.GlobalTheory.GoodMetric.PureVirt.exists_pure_power_trace m n S τ i
+    have ih' := ih (r + i) hr'
     have h := (Reach m n S).smul_mem (((r + i).choose r : ℝ)⁻¹)
       ((Reach m n S).sum_mem (t := Finset.univ)
         (fun j _ => (Reach m n S).smul_mem (c j) (ih' (ρ.tensor (σ j)))))
@@ -1287,9 +1286,9 @@ theorem ptr_mul_trProd_mem_reach (n : ℕ) (S : Type) [CommRing S] [Algebra ℝ 
     simp only [trProd, List.map_cons, List.prod_cons, mul_assoc]
 
 theorem trProd_mem_reach {ι : Type} [Fintype ι] (m : ι → ℕ) (n : ℕ) (S : Type) [CommRing S] [Algebra ℝ S]
-    (l : List (ι × ℕ)) (hl : ∀ x ∈ l, 1 ≤ x.2) (hs : (l.map Prod.snd).sum = n) :
+    (l : List (ι × ℕ)) (hs : (l.map Prod.snd).sum = n) :
     (fun A : Mat m S => trProd l A) ∈ Reach m n S := by
-  have h := ptr_mul_trProd_mem_reach n S l hl 0 (by simpa using hs) (PolyRep.triv m)
+  have h := ptr_mul_trProd_mem_reach n S l 0 (by simpa using hs) (PolyRep.triv m)
   convert h using 2 with A
   have : (PolyRep.triv m).ptr 0 A = 1 := by
     rw [PolyRep.ptr, pow_zero, Matrix.trace_one, Fintype.card_fin]
@@ -1381,8 +1380,8 @@ theorem trSpan_le_reach {ι : Type} [Fintype ι] (m : ι → ℕ) (n : ℕ) (S :
     TrSpan m n S ≤ Reach m n S := by
   unfold TrSpan
   rw [Submodule.span_le]
-  rintro f ⟨l, hl, hs, rfl⟩
-  exact _root_.GlobalTheory.GoodMetric.ChernSpan.trProd_mem_reach m n S l hl hs
+  rintro f ⟨l, -, hs, rfl⟩
+  exact _root_.GlobalTheory.GoodMetric.ChernSpan.trProd_mem_reach m n S l hs
 
 theorem aeval_chern_mem_reach {ι : Type} [Fintype ι] (m : ι → ℕ) (n : ℕ) (S : Type) [CommRing S] [Algebra ℝ S]
     (R : MvPolynomial (ι × ℕ) ℝ) (hR : R.IsWeightedHomogeneous (Prod.snd : ι × ℕ → ℕ) n) :

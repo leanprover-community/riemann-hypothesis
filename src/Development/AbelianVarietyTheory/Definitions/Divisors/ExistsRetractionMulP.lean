@@ -80,23 +80,6 @@ structure QuotTower {p : ℕ} {O : Type} [CommRing O] (G : _root_.GlobalTheory.P
 attribute [instance] QuotTower.commRing QuotTower.hopf QuotTower.cocomm QuotTower.finite
   QuotTower.projective
 
-def QuotTower.trivial {p : ℕ} {O : Type} [CommRing O] (G : _root_.GlobalTheory.PDivGroup p O) : QuotTower G where
-  B m := G.A (m + 1)
-  j _ := BialgHom.id O _
-  ρ _ := LinearMap.id
-  r m := G.res (m + 1)
-  s m := G.mulP m
-  ρ_j _ _ := rfl
-  r_surjective m := G.res_surjective (m + 1)
-  j_r _ _ := rfl
-  j_s _ _ := rfl
-  tors_le m := by
-    rw [kerIdeal_of_surjective (f := BialgHom.id O (G.A (m + 1))) Function.surjective_id]
-    refine Ideal.map_le_iff_le_comap.2 fun a ha => ?_
-    have ha' : counit (R := O) a = 0 := ha
-    change counit (R := O) (mulBy (R := O) (A := G.A (m + 1)) p a) = 0
-    rw [CoalgHomClass.counit_comp_apply, ha']
-
 theorem exists_retraction_mulP {p : ℕ} {O : Type} [CommRing O] (G : _root_.GlobalTheory.PDivGroup p O) (m : ℕ) :
     ∃ ρ : G.A (m + 1) →ₗ[O] G.A m, ∀ a, ρ (G.mulP m a) = a := by
   let f : G.A m →ₗ[O] G.A (m + 1) := (G.mulP m : G.A m →ₐ[O] G.A (m + 1)).toLinearMap

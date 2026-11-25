@@ -154,8 +154,6 @@ open MvPolynomial
 
 variable {R σ Λ : Type*} [CommRing R]
 
-def multiFactorial (α : σ →₀ ℕ) : ℕ := α.prod fun _ n => n.factorial
-
 end Constant
 
 section Series

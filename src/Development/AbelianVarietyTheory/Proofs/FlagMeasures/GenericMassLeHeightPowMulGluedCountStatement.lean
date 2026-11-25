@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.GenusMassPosOfMassLowerBound
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GlobSet
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PatternUnitriangularStrongApproximation
@@ -592,17 +593,8 @@ theorem mem_dual (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V) (
 theorem dual_gmap (h : V →ₗ⋆[K] V →ₗ[K] K) (n : V ≃ₗ[K] V) (hn : n ∈ Formalism.HermitianLatticesTheory.isom h)
     (L : Submodule (𝓞 K) V) :
     Formalism.HermitianLatticesTheory.dual h (Formalism.HermitianLatticesTheory.gmap n L) = Formalism.HermitianLatticesTheory.gmap n (Formalism.HermitianLatticesTheory.dual h L) := by
-  have hiso : ∀ x y, h (n x) (n y) = h x y := hn
-  ext x
-  rw [_root_.Formalism.HermitianLattices.Ext.L3.RankOne.mem_gmap, mem_dual, mem_dual]
-  constructor
-  · intro hx y hy
-    have := hx (n y) (by rw [_root_.Formalism.HermitianLattices.Ext.L3.RankOne.mem_gmap, LinearEquiv.symm_apply_apply]; exact hy)
-    rwa [← n.apply_symm_apply x, hiso] at this
-  · intro hx y hy
-    rw [_root_.Formalism.HermitianLattices.Ext.L3.RankOne.mem_gmap] at hy
-    have := hx _ hy
-    rwa [← hiso, LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply] at this
+  intros
+  apply _root_.Formalism.MainNotions.BridgeLemma₂.c3sub_dual_gmap <;> assumption
 
 theorem isLattice_gmap (n : V ≃ₗ[K] V) (L : Submodule (𝓞 K) V) (hL : Submodule.IsLattice K L) :
     Submodule.IsLattice K (Formalism.HermitianLatticesTheory.gmap n L) := by

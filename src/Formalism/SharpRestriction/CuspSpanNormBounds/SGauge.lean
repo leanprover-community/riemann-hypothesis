@@ -89,7 +89,6 @@ def gaugeU : ℝ := ∏ v : NumberField.InfinitePlace I.F, Gauge.gaugeU (I.ε v)
 
 end Formalism.MainNotions.S.AutInst
 
-open MeasureTheory Filter Topology
 open scoped ENNReal Kronecker Matrix
 
 noncomputable section

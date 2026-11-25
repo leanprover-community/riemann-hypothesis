@@ -1010,11 +1010,7 @@ theorem schA_le {N : Submodule ℂ ((κ → AF F) → ℂ)} (h : ∀ f φ, IsFam
 
 theorem IsFam.finite {φ : ∀ v : Pl F, (κ → Fv F v) → ℂ} (hφ : IsFam φ) (x : κ → AF F) :
     (Function.mulSupport fun v => φ v fun i => evFin F v (x i)).Finite := by
-  have h : ∀ᶠ v in cofinite, ∀ i, evFin F v (x i) ∈ v.adicCompletionIntegers F := eventually_all.2 fun i => (x i).2.2
-  refine (eventually_cofinite.1 ?_)
-  filter_upwards [h, hφ.2] with v h1 h2
-  rw [h2, ind, Set.indicator_of_mem (show _ ∈ {x : κ → Fv F v | ∀ i, x i ∈ v.adicCompletionIntegers F} from h1)]
-  rfl
+  apply _root_.GlobalTheory.RatWeilUnip.finite_mulSupport <;> assumption
 
 def schrL {R : Type} [CommRing R] [Invertible (2 : R)] (ψ : AddChar R ℂ) (w : (κ → R) × (κ → R)) :
     ((κ → R) → ℂ) →ₗ[ℂ] (κ → R) → ℂ where

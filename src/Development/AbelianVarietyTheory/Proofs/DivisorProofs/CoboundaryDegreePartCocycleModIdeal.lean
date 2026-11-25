@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupLawLinearCoeffAdditive
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
@@ -102,26 +103,7 @@ variable {R : Type} [CommRing R]
 
 theorem degree_eq_one {σ : Type} [Fintype σ] {D : σ →₀ ℕ} (h : D.degree = 1) :
     ∃ s, D = Finsupp.single s 1 := by
-  classical
-  have hsum := h
-  rw [Finsupp.degree_eq_sum] at hsum
-  obtain ⟨s, hs⟩ : ∃ s, D s ≠ 0 := by
-    by_contra hc
-    push_neg at hc
-    simp [hc] at hsum
-  refine ⟨s, ?_⟩
-  have hle : ∀ t, t ≠ s → D s + D t ≤ 1 := fun t ht => by
-    rw [← hsum, ← Finset.sum_pair (Ne.symm ht)]
-    exact Finset.sum_le_sum_of_subset (Finset.subset_univ _)
-  ext t
-  by_cases ht : t = s
-  · subst ht
-    have : D t ≤ 1 := h ▸ Finsupp.le_degree t D
-    simp only [Finsupp.single_eq_same]
-    omega
-  · have := hle t ht
-    simp only [Finsupp.single_apply, if_neg (Ne.symm ht)]
-    omega
+  apply _root_.GlobalTheory.Katz.LowLaw.eq_single_of_degree_eq_one <;> assumption
 
 theorem le_order_prod_pow {σ τ : Type} {a : σ → MvPowerSeries τ R}
     (ha : ∀ s, constantCoeff (a s) = 0) (D : σ →₀ ℕ) :

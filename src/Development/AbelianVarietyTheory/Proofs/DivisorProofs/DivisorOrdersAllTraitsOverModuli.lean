@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealSheafDescendingDivisorPower
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRatPointOfFiniteType
@@ -1069,19 +1070,7 @@ theorem finite_lat (T : UTrait Xo c) : Module.Finite (𝓞 E) T.P.D.toPre.X :=
   Module.Finite.of_restrictScalars_finite ℤ _ _
 
 theorem projective_lat (T : UTrait Xo c) : Module.Projective (𝓞 E) T.P.D.toPre.X := by
-  have : Module.Finite (𝓞 E) T.P.D.toPre.X := finite_lat T
-  have : Module.Flat (𝓞 E) T.P.D.toPre.X := by
-    rw [IsDedekindDomain.flat_iff_torsion_eq_bot, eq_bot_iff]
-    rintro x ⟨a, hx⟩
-    by_contra hx0
-    obtain ⟨n, hn, b, hb⟩ := (Algebra.IsAlgebraic.isAlgebraic (R := ℤ) (a : 𝓞 E)).exists_nonzero_dvd
-      (mem_nonZeroDivisors_of_ne_zero (nonZeroDivisors.coe_ne_zero a))
-    have h : n • x = 0 := by
-      have hx' : (a : 𝓞 E) • x = 0 := hx
-      rw [← algebraMap_smul (𝓞 E) n x, hb, mul_comm, mul_smul, hx', smul_zero]
-    exact hx0 ((smul_eq_zero.1 h).resolve_left hn)
-  have : Module.FinitePresentation (𝓞 E) T.P.D.toPre.X := Module.finitePresentation_of_finite _ _
-  exact Module.Flat.projective_of_finitePresentation
+  apply _root_.GlobalTheory.UPoinc.PreSys.projective_X <;> assumption
 
 theorem be_nonneg (T : UTrait Xo c) (x : T.P.D.toPre.X) : 0 ≤ T.be x x := by
   by_cases hx : x = 0

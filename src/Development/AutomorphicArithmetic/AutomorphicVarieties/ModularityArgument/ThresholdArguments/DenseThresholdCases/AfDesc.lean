@@ -51,7 +51,6 @@ structure HypothesesH' : Prop extends toClassicalTheorems : _root_.UpperTheory.V
   descU : Z.Desc.DescWeak
   cyc : Z.Bc.CycC
   cyc2 : Z.Bc.Desc2
-  quat : DefQuatExists
   ssR : CuspSemisimpleReal
 def AutBridgeAlt : Prop :=
   ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (n : ℕ)

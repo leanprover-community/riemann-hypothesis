@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PairValPf
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PairingOmegaPrimeZ
@@ -246,24 +247,7 @@ theorem exists_unip (F F₁ : FlagG S r T) (hT : T ≠ 0) {A : Matrix (Fin (r + 
 
 theorem Xa_coords (F : FlagG S r T) {j : ℕ} {x : S.V} (hx : x ∈ F.Xa j) :
     ∃ c : Fin r → E, (∀ i : Fin r, j ≤ i.1 → c i = 0) ∧ x = ∑ i, c i • F.e i := by
-  induction hx using Submodule.span_induction with
-  | mem x h =>
-    obtain ⟨a, ha, rfl⟩ := h
-    have ha' : a.1 < j := ha
-    refine ⟨Pi.single a 1, fun i hi => ?_, ?_⟩
-    · have : i ≠ a := fun e => by subst e; omega
-      simp [this]
-    · simp [Pi.single_apply]
-  | zero => exact ⟨0, fun _ _ => rfl, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨c, hc, rfl⟩ := hx
-    obtain ⟨d, hd, rfl⟩ := hy
-    refine ⟨c + d, fun i hi => by simp [hc i hi, hd i hi], ?_⟩
-    simp [add_smul, Finset.sum_add_distrib]
-  | smul t x _ hx =>
-    obtain ⟨c, hc, rfl⟩ := hx
-    refine ⟨t • c, fun i hi => by simp [hc i hi], ?_⟩
-    simp [Finset.smul_sum, smul_smul]
+  first | exact _root_.Formalism.L2.SG.Pf.mem_Xa_coef | exact @_root_.Formalism.L2.SG.Pf.mem_Xa_coef | apply _root_.Formalism.L2.SG.Pf.mem_Xa_coef <;> assumption
 
 theorem tri_of_unip (F F₁ : FlagG S r T) (n : S.V ≃ₗ[E] S.V)
     (hf : ∀ j, ∀ x ∈ F.Xa (j + 1), n x - x ∈ F.Xa j) (hp : ∀ x ∈ orth S F.X, n x - x ∈ F.X)

@@ -220,10 +220,6 @@ theorem zsym_differentiable_gammaFactor_inv (χ : DirichletCharacter ℂ q) :
 
 variable [NeZero q]
 
-theorem zsym_rootNumber_ne_zero {χ : DirichletCharacter ℂ q} (hχ : χ.IsPrimitive) :
-    χ.rootNumber ≠ 0 := by
-  exact DirichletCharacter.rootNumber_ne_zero hχ
-
 noncomputable def zsymFactor (χ : DirichletCharacter ℂ q) (s : ℂ) : ℂ :=
   (q : ℂ) ^ ((1 - s) - 1 / 2) * χ.rootNumber * (χ.gammaFactor s)⁻¹ / (χ⁻¹.gammaFactor (1 - s))⁻¹
 
@@ -244,7 +240,7 @@ theorem zsymFactor_ne_zero {χ : DirichletCharacter ℂ q} (hχ : χ.IsPrimitive
     (h0 : 0 < s.re) (h1 : s.re < 1) : zsymFactor χ s ≠ 0 := by
   have g1 := zsym_gammaFactor_ne_zero χ h0
   have g2 := zsym_gammaFactor_ne_zero χ⁻¹ (s := 1 - s) (by simp; linarith)
-  have g3 := zsym_rootNumber_ne_zero hχ
+  have g3 := DirichletCharacter.rootNumber_ne_zero hχ
   have g4 : (q : ℂ) ^ ((1 - s) - 1 / 2) ≠ 0 := by
     simp [cpow_eq_zero_iff, NeZero.ne q]
   unfold zsymFactor

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviMaxCompactClosedSubgroups
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SigmaFiniteOfRealSmul
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Mathlib.Analysis.Matrix.Order
@@ -1297,17 +1298,8 @@ namespace GlobalTheory.LeviIso
 
 theorem isClosed_flagM {n a : ℕ} (ε : Fin n → Bool) (W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)) :
     IsClosed (flagM ε W) := by
-  have hc : Continuous fun g : Formalism.REAL.UJ ε => uMat g := Units.continuous_val.comp continuous_subtype_val
-  have hc' : Continuous fun g : Formalism.REAL.UJ ε => (uMat g)ᴴ := hc.matrix_conjTranspose
-  have hset : flagM ε W = ⋂ i, ⋂ y ∈ W i,
-      ((fun g : Formalism.REAL.UJ ε => uMat g *ᵥ y) ⁻¹' (W i : Set (Fin n → ℂ)) ∩
-        (fun g : Formalism.REAL.UJ ε => (uMat g)ᴴ *ᵥ y) ⁻¹' (W i : Set (Fin n → ℂ))) := by
-    ext g
-    simp [flagM]
-  rw [hset]
-  refine isClosed_iInter fun i => isClosed_biInter fun y _ => ?_
-  have hW : IsClosed (W i : Set (Fin n → ℂ)) := (W i).closed_of_finiteDimensional
-  exact (hW.preimage (hc.matrix_mulVec continuous_const)).inter (hW.preimage (hc'.matrix_mulVec continuous_const))
+  intros
+  apply _root_.GlobalTheory.FlagLeviGroup.isClosed_flagM <;> assumption
 
 theorem ae_det_ne_zero {a : ℕ} (j : Fin a → ℕ) (d : Fin a → ℝ) {Y : Type} [MeasurableSpace Y] (ν : Measure Y)
     [SFinite ν] :

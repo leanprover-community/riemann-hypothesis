@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyCoeffVectorsLieInFiniteDimensionalSmooth
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DatumEquiv
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.IsPhysSet
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdMatConjTranspose
@@ -985,13 +986,7 @@ lemma ev_OmP (ε : Fin n → Bool) (k : Mat n) (x y : Mode ε) :
 
 lemma K_block {ε : Fin n → Bool} {k : Mat n} (hk : k ∈ Formalism.REAL.Kset ε) {i j : Fin n} (h : ε i ≠ ε j) :
     k i j = 0 := by
-  have := congrFun (congrFun hk.2 i) j
-  simp only [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul] at this
-  cases hi : ε i <;> cases hj : ε j <;> simp only [hi, hj, ↓reduceIte, Bool.false_eq_true] at this h
-  · exact absurd rfl h
-  · linear_combination (1 / 2 : ℂ) * this
-  · linear_combination (-1 / 2 : ℂ) * this
-  · exact absurd rfl h
+  apply _root_.GlobalTheory.PsCo.PcEF.BlockEvaluationOffDiagonal.offdiag <;> assumption
 
 lemma K_unit {ε : Fin n → Bool} {k : Mat n} (hk : k ∈ Formalism.REAL.Kset ε) (i l : Fin n) :
     ∑ j, k i j * star (k l j) = if i = l then 1 else 0 := by
@@ -1829,29 +1824,8 @@ namespace GlobalTheory.PsCo.PcEF
 open GlobalTheory.PsCo.PcEF.MatrixRepresentation
 
 theorem unitaryRep_upq_matrixFunction : MatRep := by
-  intro n ε U _ _ π hπ hi
-  refine ⟨rep ε π, ⟨⟨?_, fun a ha b hb => ?_⟩, fun a ha v => ?_, fun v => ?_⟩, fun S hS hinv => ?_, fun g => rep_mat ε π g⟩
-  · have h1 : mat ε 1 = 1 := rfl
-    rw [← h1, rep_mat, map_one]
-  · obtain ⟨g, rfl⟩ := exists_mat ε ha
-    obtain ⟨h, rfl⟩ := exists_mat ε hb
-    have hm : mat ε g * mat ε h = mat ε (g * h) := rfl
-    rw [hm, rep_mat, rep_mat, rep_mat, map_mul]
-    rfl
-  · obtain ⟨g, rfl⟩ := exists_mat ε ha
-    rw [rep_mat]
-    exact hπ.norm_apply g v
-  · have hr : Formalism.MainNotions.S.UJset ε = Set.range (mat ε) := (range_mat ε).symm
-    show ContinuousOn (fun g => rep ε π g v) (Formalism.MainNotions.S.UJset ε)
-    rw [hr, continuousOn_iff_continuous_domRestrict]
-    let E := (isEmbedding_mat ε).toHomeomorph
-    have hE : ∀ y, (fun g => π g v) (E.symm y) = rep ε π (y : Matrix (Fin n) (Fin n) ℂ) v := by
-      intro y
-      obtain ⟨g, rfl⟩ := E.surjective y
-      show π (E.symm (E g)) v = rep ε π (mat ε g) v
-      rw [E.symm_apply_apply, rep_mat]
-    exact ((hπ.continuous_apply v).comp E.symm.continuous).congr hE
-  · exact hi.2 S ⟨hS, fun g v hv => by simpa [rep_mat] using hinv _ (mat_mem ε g) v hv⟩
+  intros
+  apply _root_.GlobalTheory.PsCo.PcEF.UF.unitaryRep_upq_matrixFunction <;> assumption
 
 end GlobalTheory.PsCo.PcEF
 

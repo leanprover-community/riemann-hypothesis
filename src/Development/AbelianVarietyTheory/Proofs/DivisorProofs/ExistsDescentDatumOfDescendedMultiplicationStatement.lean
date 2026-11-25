@@ -671,17 +671,7 @@ variable {R : Type} [CommRing R] [IsLocalRing R] {S : Scheme.{0}} {π : S ⟶ Sp
 
 theorem isOpenImmersion_emb (N : Near π G) (p : pullback π π ⟶ S) (hp : p ≫ π = pullback.fst π π ≫ π) :
     IsOpenImmersion (Desc.emb N p hp).left := by
-  have h₁ : IsPullback (Desc.toS N p hp) (pullback.snd N.U.hom (pullback.fst π π ≫ π)) (pullback.snd N.U.hom π) p := by
-    refine IsPullback.of_right (h₁₂ := pullback.fst N.U.hom π) (h₂₂ := π) (v₁₃ := N.U.hom) ?_ (pullback.lift_snd _ _ _)
-      (IsPullback.of_hasPullback _ _)
-    rw [hp, Desc.toS, pullback.lift_fst]
-    exact IsPullback.of_hasPullback _ _
-  have h₂ : IsPullback (Desc.toS N p hp) (Desc.embL N p hp) N.u (pullback.fst G.hom p) := by
-    refine IsPullback.of_bot (v₂₁ := pullback.snd G.hom p) (v₂₂ := G.hom) (h₃₁ := p) ?_ (pullback.lift_fst _ _ _).symm
-      (IsPullback.of_hasPullback _ _)
-    rw [N.u_over, Desc.embL, pullback.lift_snd]
-    exact h₁
-  exact MorphismProperty.of_isPullback (P := @IsOpenImmersion) h₂ N.isOpen
+  apply _root_.GlobalTheory.Mum.DescHom.isOpenImmersion_emb <;> assumption
 
 theorem surjective_of_closedFibre [GrpObj G] [Surjective π] (N : Near π G) (V : (N.U ⊗ N.U).left.Opens)
     (hV : ∀ z : (N.U ⊗ N.U).left, (N.U ⊗ N.U).hom z = closedPoint R → z ∈ V) :
@@ -902,19 +892,8 @@ namespace GlobalTheory.Mum.Desc
 
 theorem surjective_U_hom {R : Type} [CommRing R] [IsLocalRing R] {S : Scheme.{0}} {π : S ⟶ Sp R} (hπ : Surjective π)
     {G' : Over S} [GrpObj G'] (N : Near π G') : Surjective N.U.hom := by
-  have := N.smooth
-  obtain ⟨s, hs⟩ := π.surjective (closedPoint R)
-  let e : S ⟶ G'.left := (1 : Over.mk (𝟙 S) ⟶ G').left
-  have he : e ≫ G'.hom = 𝟙 S := Over.w (1 : Over.mk (𝟙 S) ⟶ G')
-  have hes : G'.hom (e s) = s := by
-    rw [← Scheme.Hom.comp_apply, he]; rfl
-  obtain ⟨z, hz⟩ : e s ∈ Set.range N.u := N.all _ (by rw [hes]; exact hs)
-  have hzs : pullback.snd N.U.hom π z = s := by
-    rw [← N.u_over, Scheme.Hom.comp_apply, hz, hes]
-  have hc : closedPoint R ∈ Set.range N.U.hom := ⟨pullback.fst N.U.hom π z, by
-    rw [← Scheme.Hom.comp_apply, pullback.condition, Scheme.Hom.comp_apply, hzs, hs]⟩
-  exact ⟨fun x => (Flat.generalizingMap N.U.hom).stableUnderGeneralization_range
-    (IsLocalRing.specializes_closedPoint x) hc⟩
+  intros
+  apply _root_.GlobalTheory.Mum.DescHom.surjective_near <;> assumption
 
 theorem surjective_UT_hom : ∀ (R : Type) [CommRing R] [IsLocalRing R] (S : Scheme.{0}) (π : S ⟶ Sp R), Surjective π →
     ∀ (G' : Over S) [GrpObj G'] (N : Near π G'), Surjective (Desc.UT N).hom := by

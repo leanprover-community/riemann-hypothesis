@@ -31,12 +31,6 @@ theorem normal_degree_zero_one (r : ℕ) : (1 : MvPolynomial (TV n' k) R) ∈ ND
   subst hm0
   simp [normDeg]
 
-private lemma normDeg_add' {r : ℕ} (a b : TV n' k →₀ ℕ) : normDeg r (a + b) = normDeg r a + normDeg r b := by
-  classical
-  unfold normDeg
-  exact Finsupp.sum_add_index' (h := fun v c => if IsNormal r v then c else 0) (fun v => by simp)
-    (fun v c₁ c₂ => by split_ifs <;> simp)
-
 theorem normal_degree_zero_mul {r : ℕ} {P Q : MvPolynomial (TV n' k) R} (hP : P ∈ NDsub R n' k r 0) (hQ : Q ∈ NDsub R n' k r 0) :
     P * Q ∈ NDsub R n' k r 0 := by
   rw [NDsub, MvPolynomial.mem_restrictSupport_iff] at hP hQ ⊢
@@ -45,7 +39,7 @@ theorem normal_degree_zero_mul {r : ℕ} {P Q : MvPolynomial (TV n' k) R} (hP : 
   have h1 := hP ha
   have h2 := hQ hb
   simp only [Set.mem_setOf_eq, nonpos_iff_eq_zero] at h1 h2 ⊢
-  simp [normDeg_add', h1, h2]
+  simp [bx_normDeg_add, h1, h2]
 
 theorem normal_degree_zero_pow {r : ℕ} {P : MvPolynomial (TV n' k) R} (hP : P ∈ NDsub R n' k r 0) (n : ℕ) :
     P ^ n ∈ NDsub R n' k r 0 := by

@@ -66,6 +66,7 @@ import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZer
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapBesselToFourierJacobiLocalModel
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatFourierJacobiToBesselColumnMulLaws, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FourierJacobiBesselFlatMapFactorIsLocalModel, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FourierJacobiBesselFlatMapRowMultiplication, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FourierJacobiBesselFlatMapUnipotentLaw, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LocalFlatMapTranslationLawsJacobiToBesselFree, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapFourierJacobiToBesselLocalModel
@@ -809,18 +810,7 @@ theorem incA_mul_ι (x : k) (b : D.host.E) : incA D b * p.ι x = p.ι (p.pr b * 
   rw [mul_comm, ι_mul_incA, mul_comm]
 
 theorem infPart_e : infPart D p.e = 0 := by
-  obtain ⟨h1, h2, v, ε, ⟨α, hα, -⟩, h3⟩ := p.split
-  have h4 : p.e = p.e * (algebraMap (AF D.host.F) (AE D) ε) := by
-    rw [← h3, mul_add, h1, h2, add_zero]
-  have h5 : infPart D (algebraMap (AF D.host.F) (AE D) ε) = 0 := by
-    subst hα
-    change infPart D ((pairA D.host.F 0 α) ⊗ₜ[D.host.F] (1 : D.host.E)) = 0
-    show (Algebra.TensorProduct.map (fstA D.host.F) (AlgHom.id D.host.F D.host.E))
-      ((pairA D.host.F 0 α) ⊗ₜ[D.host.F] (1 : D.host.E)) = 0
-    rw [Algebra.TensorProduct.map_tmul]
-    have h0 : fstA D.host.F (pairA D.host.F 0 α) = 0 := rfl
-    rw [h0, TensorProduct.zero_tmul]
-  rw [h4, map_mul, h5, mul_zero]
+  apply _root_.GlobalTheory.FlatTransLaw.infPart_e <;> assumption
 
 theorem infPart_ι (x : k) : infPart D (p.ι x) = 0 := by
   rw [← _root_.GlobalTheory.LocMod.Witness.e_ι, map_mul, infPart_e, zero_mul]
@@ -917,10 +907,7 @@ theorem qY_e' : d.qY * d.e' = 1 := (gram_swap' S d.e'e).trans conjTranspose_one
 theorem wittDecomposition_coreProj_mul_e_eq_zero : d.q0 * d.e = 0 := by rw [HypDec.q0, Matrix.mul_assoc, d.i₀e, Matrix.mul_zero]
 theorem wittZeroProjection_mul_dualBasis_eq_zero : d.q0 * d.e' = 0 := by rw [HypDec.q0, Matrix.mul_assoc, d.i₀e', Matrix.mul_zero]
 theorem wittDecomposition_coreProj_mul_core_eq_one : d.q0.map p.pr * d.i₀.map p.pr = 1 := by
-  have h := congrArg (fun M : Mx D S₀.rank S₀.rank => M.map p.π) d.p0_j0
-  simp only [Matrix.map_one p.π (map_zero _) (map_one _)] at h
-  rw [← h]
-  exact (Matrix.map_mul (f := p.π)).symm
+  apply _root_.GlobalTheory.LocFlatFB.projection_q_zero_i_zero_eq_one <;> assumption
 
 end Dec
 

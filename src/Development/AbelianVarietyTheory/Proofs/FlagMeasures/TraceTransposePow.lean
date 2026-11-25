@@ -51,6 +51,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.LieOperatorConjHolds
 
 @[expose] public section
 
@@ -286,14 +287,7 @@ lemma Rd_conj (X : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fin n) ℂ �
 
 lemma Jm_single (ε : Fin n → Bool) (a b : Fin n) :
     Jm ε * (Matrix.single a b (1 : ℂ))ᴴ * Jm ε = ((Formalism.REAL.sgn ε a b : ℝ) : ℂ) • Matrix.single b a (1 : ℂ) := by
-  ext i j
-  simp only [Formalism.REAL.Jm, Matrix.diagonal_mul, Matrix.mul_diagonal, Matrix.conjTranspose_apply,
-    Matrix.smul_apply, Matrix.single_apply, Formalism.REAL.sgn, smul_eq_mul]
-  by_cases h : b = i ∧ a = j
-  · obtain ⟨rfl, rfl⟩ := h
-    by_cases ha : ε a <;> by_cases hb : ε b <;> simp [ha, hb]
-  · have h' : ¬ (a = j ∧ b = i) := fun h'' => h ⟨h''.2, h''.1⟩
-    simp [h, h']
+  apply _root_.Formalism.REAL.p0auxiliary_theta_single <;> assumption
 
 private lemma rd_smul_sign_eq_mul (Y : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fin n) ℂ → ℂ)
     (g : Matrix (Fin n) (Fin n) ℂ) (r : ℝ) (hr : r = 1 ∨ r = -1) :

@@ -224,10 +224,6 @@ structure WeilCore.Rules {ψ : AddChar (AF D.host.F) ℂ} (Wc : WeilCore D ψ) :
     ∀ g h (Φ : ThS ψ V W) (Φ' : ThS ψ W V), (∀ x : WA V W, Φ'.1 x.transpose = Φ.1 x) →
       ∀ x : WA V W, (Wc.om W V χ' χ (h, g) Φ').1 x.transpose = (Wc.om V W χ χ' (g, h) Φ).1 x
 
-  om_unr : ∀ (V W : HSp D) χ χ', admitted V W χ χ' → ∀ S, UnramOutside D χ S → UnramOutside D χ' S →
-    ∀ k ∈ KsphC V S, ∀ k' ∈ KsphC W S, ∀ Φ : ThS ψ V W,
-      (∀ u ∈ latVWS V W S, Heisenberg₂ ψ V W u Φ.1 = Φ.1) → Wc.om V W χ χ' (k, k') Φ = Φ
-
 structure WeilFun (D : D7) (ψ : AddChar (AF D.host.F) ℂ) where
   om : ∀ V W : HSp D, IdC D → IdC D → (GA D V × GA D W →* Module.End ℂ (ThS ψ V W))
   om_heis : ∀ (V W : HSp D) χ χ', admitted V W χ χ' → ∀ g h w₀ (Φ Φ' : ThS ψ V W), Φ'.1 = Heisenberg₂ ψ V W w₀ Φ.1 →
@@ -253,9 +249,6 @@ structure WeilFun (D : D7) (ψ : AddChar (AF D.host.F) ℂ) where
   om_swap : ∀ (V W : HSp D) χ χ', admitted V W χ χ' →
     ∀ g h (Φ : ThS ψ V W) (Φ' : ThS ψ W V), (∀ x : WA V W, Φ'.1 x.transpose = Φ.1 x) →
       ∀ x : WA V W, (om W V χ' χ (h, g) Φ').1 x.transpose = (om V W χ χ' (g, h) Φ).1 x
-  om_unr : ∀ (V W : HSp D) χ χ', admitted V W χ χ' → ∀ S, UnramOutside D χ S → UnramOutside D χ' S →
-    ∀ k ∈ KsphC V S, ∀ k' ∈ KsphC W S, ∀ Φ : ThS ψ V W,
-      (∀ u ∈ latVWS V W S, Heisenberg₂ ψ V W u Φ.1 = Φ.1) → om V W χ χ' (k, k') Φ = Φ
 
 def WeilCore.toFun {ψ : AddChar (AF D.host.F) ℂ} (Wc : WeilCore D ψ) (h : Wc.Rules) : WeilFun D ψ where
   om := Wc.om
@@ -267,7 +260,6 @@ def WeilCore.toFun {ψ : AddChar (AF D.host.F) ℂ} (Wc : WeilCore D ψ) (h : Wc
   twW := h.twW
   twV := h.twV
   om_swap := h.om_swap
-  om_unr := h.om_unr
 
 namespace WeilFun
 

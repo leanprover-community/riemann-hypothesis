@@ -13,7 +13,7 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCha
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PlainTorExistsChars
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.LocIsotypic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.ExistsContRep
-public import Development.WeilBound.CoreStatements.PublishedTheorems.FiniteGLInvariants.AffineLieInvariants.Imports
+public import Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.LieInvariants.InvariantOfLieOneLEqZero
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -324,7 +324,7 @@ theorem UpperTheory.V.Z.Win.splitTr :
     obtain ⟨σ, hσ⟩ := exists_comp
     exact ⟨σ, hσ, isotypic π v σ hσ⟩
   obtain ⟨σ, hσ, hIso⟩ := hReal
-  obtain ⟨σ', hσ', -⟩ := GlobalTheory.CuspRep.LocEx.exists_isLocComp CuspFormAutomorphicBounds.automorphicFormsFiniteGL E n P w
+  obtain ⟨σ', hσ', -⟩ := GlobalTheory.CuspRep.LocEx.exists_isLocComp PositivityTheory.Rg.HF.GL.automorphicFormsFiniteGL E n P w
   have hi' : Continuous i.symm := GlobalTheory.LocalFieldIso.continuous_symm i hi.1
   have hsplit := hBC.split v w i hi.1 hi.2
   refine ⟨⟨fun h τ' hτ' => ?_, fun h τ hτ => ?_⟩, fun ⟨B, hB⟩ => ?_⟩

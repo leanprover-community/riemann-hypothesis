@@ -99,9 +99,6 @@ def eigenLift (φ : G ⟶ F) (h : ∀ a, φ ≫ act ρ a = σ a • φ) : G ⟶ 
 
 
 
-variable (F) in
-def scalarAct : O →+* End F := (smulEnd F).comp σ
-
 def eigenQuot : X.Modules :=
   cokernel (Sigma.desc fun a : O => act ρ a - smulHom F (σ a) : ∐ (fun _ : O => F) ⟶ F)
 
@@ -205,18 +202,6 @@ def IsSplitBy (σ : ι → (O →+* k)) : Prop := Function.Bijective (splitMap �
 
 variable {σ : ι → (O →+* k)}
 
-theorem isSplitBy_of_injective [Fintype ι] [Module.Free ℤ O] [Module.Finite ℤ O]
-    (hσ : Function.Injective σ) (hn : Module.finrank ℤ O = Fintype.card ι) : IsSplitBy σ := by
-  have hs : Function.Surjective (splitMap σ).toLinearMap := by
-    have hl : LinearIndependent k fun j => (σ j : O → k) :=
-      (linearIndependent_monoidHom O k).comp (fun j => (σ j : O →* k))
-        fun i j e => hσ (RingHom.ext fun a => DFunLike.congr_fun (F := O →* k) e a)
-    rw [← LinearMap.range_eq_top, eq_top_iff, ← span_flip_eq_top_iff_linearIndependent.2 hl,
-      Submodule.span_le]
-    rintro _ ⟨a, rfl⟩
-    exact ⟨1 ⊗ₜ a, funext fun j => one_mul _⟩
-  exact ⟨(LinearMap.injective_iff_surjective_of_finrank_eq_finrank (by simp [hn])).2 hs, hs⟩
-
 variable [Algebra k Γ(X, ⊤)] (ρ : O →+* End F)
 
 
@@ -245,31 +230,11 @@ variable (h : (p : Γ(X, ⊤)) = 0)
 theorem frob_app (U : X.Opens) (a : Γ(X, U)) : (frob X p h).app U a = (a ^ p : Γ(X, U)) :=
   congrArg (a ^ ·) (pow_one p)
 
-theorem frob_appTop (a : Γ(X, ⊤)) : (frob X p h).appTop a = a ^ p := frob_app p h ⊤ a
-
 @[reassoc] theorem frob_naturality (f : Y ⟶ X) (hY : (p : Γ(Y, ⊤)) = 0) :
     frob Y p hY ≫ f = f ≫ frob X p h := SS.FrobField.absFrob_nat f p 1 Fact.out hY h
 
 
-omit [Fact p.Prime] in
-variable (X) in
-theorem natCast_eq_zero (k : Type) [CommRing k] [CharP k p] [Algebra k Γ(X, ⊤)] :
-    (p : Γ(X, ⊤)) = 0 := by
-  rw [← map_natCast (algebraMap k Γ(X, ⊤)), CharP.cast_eq_zero, map_zero]
-
-abbrev frobPull : X.Modules ⥤ X.Modules := Scheme.Modules.pullback (frob X p h)
-
-theorem IsVB.frobPull {r : ℕ} (hF : IsVB F r) : IsVB ((frobPull p h).obj F) r := hF.pullback _
-
 variable {O : Type} [CommRing O] {k : Type} [Field k] [CharP k p] [Algebra k Γ(X, ⊤)]
-
-theorem frob_comp_scal (σ : O →+* k) :
-    (frob X p h).appTop.hom.comp (scal X σ) = scal X ((frobenius k p).comp σ) :=
-  RingHom.ext fun a => (frob_appTop p h _).trans (map_pow (algebraMap k Γ(X, ⊤)) (σ a) p).symm
-
-theorem ActsThrough.frobPull {ρ : O →+* End F} {σ : O →+* k} (hρ : ActsThrough ρ (scal X σ)) :
-    ActsThrough (pullAct ρ (frob X p h)) (scal X ((frobenius k p).comp σ)) :=
-  frob_comp_scal p h σ ▸ hρ.pullback _
 
 end Frobenius
 

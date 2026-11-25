@@ -169,25 +169,11 @@ theorem MMS.pderiv {f : MvPowerSeries σ C} (hf : MMS V f) (i : σ) : MMS V (MvP
   first
     | exact VF.Ge.add (ge_natCast _) VF.Ge.one
 
-private theorem hasSubst_lemma_2 [Finite σ] {a : σ → MvPowerSeries τ C}
-    (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) : MvPowerSeries.HasSubst a := by
-  first
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha0
-
 private theorem mm_finsum_lemma_3 {ι : Type} {g : ι → C} (h : ∀ i, V.MM (g i)) : V.MM (∑ᶠ i, g i) := by
   rw [finsum_def]
   split_ifs
   · exact mm_sum _ _ (fun i _ => h i)
   · exact mm_zero
-
-private theorem ge_finsum_lemma_8 {ι : Type} {g : ι → C} (h : ∀ i, V.Ge 0 (g i)) : V.Ge 0 (∑ᶠ i, g i) := by
-  rw [finsum_def]
-  split_ifs
-  · exact Finset.sum_induction _ (V.Ge 0) (fun _ _ ha hb => VF.Ge.add ha hb)
-      (by unfold VF.Ge; rw [AddValuation.map_zero]; exact le_top) (fun i _ => h i)
-  · unfold VF.Ge
-    rw [AddValuation.map_zero]
-    exact le_top
 
 private theorem intS_fprod_lemma_4 {a : σ → MvPowerSeries τ C} (ha : ∀ s, IntS V (a s)) (d : σ →₀ ℕ) :
     IntS V (d.prod fun s e => a s ^ e) := by
@@ -197,7 +183,7 @@ private theorem intS_fprod_lemma_4 {a : σ → MvPowerSeries τ C} (ha : ∀ s, 
 
 theorem MMS.subst [Finite σ] {a : σ → MvPowerSeries τ C} (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0)
     (ha : ∀ s, IntS V (a s)) {f : MvPowerSeries σ C} (hf : MMS V f) : MMS V (MvPowerSeries.subst a f) := by
-  have hs := hasSubst_lemma_2 ha0
+  have hs := MvPowerSeries.hasSubst_of_constantCoeff_zero ha0
   intro μ
   rw [MvPowerSeries.coeff_subst hs]
   apply mm_finsum_lemma_3
@@ -324,12 +310,6 @@ theorem mms_of_frobTw {e : MvPowerSeries σ C} (h : MMS V (frobTw V.l e)) : MMS 
   rw [coeff_frobTw, if_pos hd, divl_smul V.l_prime.pos] at h1
   exact mm_of_pow h1
 
-private theorem monomial_pow_lemma_9 (ν : σ →₀ ℕ) (c : C) (k : ℕ) :
-    (MvPowerSeries.monomial ν c) ^ k = MvPowerSeries.monomial (k • ν) (c ^ k) := by
-  induction k with
-  | zero => simp [MvPowerSeries.monomial_zero_one]
-  | succ k ih => rw [pow_succ, ih, MvPowerSeries.monomial_mul_monomial, succ_nsmul, pow_succ]
-
 private theorem intS_monomial_lemma_10 {ν : σ →₀ ℕ} {c : C} (hc : V.Ge 0 c) :
     IntS V (MvPowerSeries.monomial ν c) := by
   intro μ
@@ -375,7 +355,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
     ext μ'
     rw [coeff_frobTw]
 
-    simp only [hP, map_sum, monomial_pow_lemma_9, MvPowerSeries.coeff_monomial]
+    simp only [hP, map_sum, MvPowerSeries.monomial_pow, MvPowerSeries.coeff_monomial]
     split_ifs with hd
     · rw [Finset.sum_ite_eq]
       have e : ∀ ν : σ →₀ ℕ, (μ' = V.l • ν) ↔ (ν = μ'.mapRange (fun n => n / V.l) (Nat.zero_div V.l)) := by
@@ -404,37 +384,19 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
   rw [h1, h3, h4]
   exact h6
 
-private theorem intS_subst_lemma_7 [Finite σ] {a : σ → MvPowerSeries τ C}
-    (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) (ha : ∀ s, IntS V (a s)) {f : MvPowerSeries σ C}
-    (hf : IntS V f) : IntS V (MvPowerSeries.subst a f) := by
-  have hs := hasSubst_lemma_2 ha0
-  intro μ
-  rw [MvPowerSeries.coeff_subst hs]
-  apply ge_finsum_lemma_8
-  intro d
-  rw [smul_eq_mul]
-  exact VF.Ge.mul_int (hf d) (intS_fprod_lemma_4 ha d μ)
-
 theorem mms_subst_frobTw [Finite σ] [Finite τ] {a : σ → MvPowerSeries τ C}
     (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) (ha : ∀ s, IntS V (a s)) {f : MvPowerSeries σ C}
     (hf : IntS V f) :
     MMS V (MvPowerSeries.subst a (frobTw V.l f) - frobTw V.l (MvPowerSeries.subst a f)) := by
-  have hs := hasSubst_lemma_2 ha0
-  have hpow : MvPowerSeries.subst a (f ^ V.l) = (MvPowerSeries.subst a f) ^ V.l := by
-    first
-      | exact MvPowerSeries.subst_pow hs _ _
-  have hsub : MvPowerSeries.subst a (f ^ V.l - frobTw V.l f) =
-      MvPowerSeries.subst a (f ^ V.l) - MvPowerSeries.subst a (frobTw V.l f) := by
-    first
-      | exact MvPowerSeries.subst_sub hs _ _
+  have hs := MvPowerSeries.hasSubst_of_constantCoeff_zero ha0
   have e : MvPowerSeries.subst a (frobTw V.l f) - frobTw V.l (MvPowerSeries.subst a f) =
       -(MvPowerSeries.subst a (f ^ V.l - frobTw V.l f)) +
         ((MvPowerSeries.subst a f) ^ V.l - frobTw V.l (MvPowerSeries.subst a f)) := by
-    rw [hsub, hpow]
+    rw [MvPowerSeries.subst_sub hs, MvPowerSeries.subst_pow hs]
     ring
   rw [e]
   exact MMS.add (MMS.neg (MMS.subst ha0 ha (mms_pow_frobTw hf)))
-    (mms_pow_frobTw (intS_subst_lemma_7 ha0 ha hf))
+    (mms_pow_frobTw (intS_subst ha0 ha hf))
 
 end MaximalIdealCongruence
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorRhoPartLieDeRhamQuotient
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCoords
 public import Development.AbelianVarietyTheory.Definitions.Divisors.InfUniv
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrystallinePull2SumCup
@@ -377,40 +378,12 @@ theorem exists_idem (β : R →+* k) (hx : ∀ i j : Fin D.a, i ≠ j → ∃ x,
     rw [hq, sub_self, mul_zero]
 
 theorem chars_ne (β : R →+* k) : ∀ i j : Fin D.a, i ≠ j → ∃ x, β (b.t i x) ≠ β (b.t j x) := by
-  intro i j hij
-  by_contra h
-  simp only [not_exists, not_not] at h
-  have h1 := congrArg (Ideal.map β) (b.comax i j hij)
-  rw [Ideal.map_span, Ideal.map_top] at h1
-  have h2 : Ideal.span (β '' Set.range fun x => b.t i x - b.t j x) = ⊥ := by
-    rw [Ideal.span_eq_bot]
-    rintro _ ⟨_, ⟨x, rfl⟩, rfl⟩
-    simp [map_sub, h x]
-  rw [h2] at h1
-  exact bot_ne_top h1
+  intros
+  apply _root_.GlobalTheory.HTLieRho.exists_sep <;> assumption
 
 theorem delta_ne (β : R →+* k) : β b.ρ - ((D.tr : k) - β b.ρ) ≠ 0 := by
-  have hρ := congrArg β b.ρ_root
-  simp only [map_add (f := _), map_sub, map_pow, map_mul, map_intCast, map_zero] at hρ
-  set n : ℕ := (4 * D.nm - D.tr ^ 2).toNat
-  have hpos : 0 < 4 * D.nm - D.tr ^ 2 := by linarith [D.disc_neg]
-  have hn : (n : ℤ) = 4 * D.nm - D.tr ^ 2 := Int.toNat_of_nonneg hpos.le
-  have hcop : n.Coprime p := by
-    refine Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd (Fact.out)).2 fun hd => D.disc_p ?_)
-    have : (p : ℤ) ∣ (n : ℤ) := Int.natCast_dvd_natCast.2 hd
-    rw [hn] at this
-    have h' : D.tr ^ 2 - 4 * D.nm = -(4 * D.nm - D.tr ^ 2) := by ring
-    rw [h']; exact (dvd_neg).2 this
-  have hu : IsUnit (n : k) := by
-    have := (b.unit n hcop).map β
-    simpa using this
-  intro h0
-  apply hu.ne_zero
-  have hnk : (n : k) = ((4 * D.nm - D.tr ^ 2 : ℤ) : k) := by rw [← hn]; simp
-  rw [hnk]
-  push_cast
-  have : (β b.ρ - ((D.tr : k) - β b.ρ)) ^ 2 = 0 := by rw [h0]; ring
-  linear_combination -this + 4 * hρ
+  intros
+  apply _root_.GlobalTheory.HTLieRho.two_rho_sub_ne_zero <;> assumption
 
 end GlobalTheory.HTRealise.LieCond
 

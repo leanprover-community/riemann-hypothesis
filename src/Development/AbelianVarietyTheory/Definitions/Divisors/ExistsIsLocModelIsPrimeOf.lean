@@ -153,10 +153,6 @@ theorem toRat_ne_zero {ω : Forms E.const n} (hω : IsFreeGen E.ring ω) : E.toR
 
 variable {E}
 
-theorem IsFormOrd.ne_zero {η : Forms c n} {a : ℤ} (h : E.IsFormOrd η a) : η ≠ 0 := by
-  obtain ⟨ω, hω, f, rfl, -⟩ := h
-  exact smul_ne_zero f.ne_zero (E.toRat_ne_zero hω)
-
 theorem IsFormOrd.unique {η : Forms c n} {a b : ℤ} (h : E.IsFormOrd η a)
     (h' : E.IsFormOrd η b) : a = b := by
   obtain ⟨ω, hω, f, rfl, rfl⟩ := h

@@ -416,25 +416,12 @@ def minusHyp (i : ℕ) (h : i ≤ wittIndex V) : HSp D := (exists_isWittLower_if
 theorem isWittLower_minusHyp {i : ℕ} (h : i ≤ wittIndex V) : IsWittLower V (minusHyp V i h) i :=
   (exists_isWittLower_iff.2 h).choose_spec.1
 
-theorem rank_minusHyp {i : ℕ} (h : i ≤ wittIndex V) : (minusHyp V i h).rank + 2 * i = V.rank :=
-  (isWittLower_minusHyp h).1
-
-
-variable (V) in
-theorem two_mul_wittIndex_le : 2 * wittIndex V ≤ V.rank := Nat.le_add_left _ _ |>.trans (rank_minusHyp le_rfl).le
 
 end Witt
 
 section Examples
 
 open CuspDecay.Model
-
-def planeFlag (D : D7) : IsoFlag (plane D) := frameFlag (isIsoFrame_plane D)
-
-theorem wittIndex_plane (D : D7) : wittIndex (plane D) = 1 := by
-  have h1 : 2 * wittIndex (plane D) ≤ 2 := two_mul_wittIndex_le (plane D)
-  have h2 : 1 ≤ wittIndex (plane D) := (planeFlag D).k_le_wittIndex
-  omega
 
 end Examples
 

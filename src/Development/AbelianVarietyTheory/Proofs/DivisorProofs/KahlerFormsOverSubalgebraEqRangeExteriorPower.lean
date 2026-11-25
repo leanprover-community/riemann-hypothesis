@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KahlerFormsOverSubalgebraClosureProperties
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DlogRatioVolumeFormNeZero
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
@@ -60,15 +61,7 @@ namespace GlobalTheory.PD
 
 theorem smul_mem_omB_regForms {k K : Type} [Field k] [Field K] [Algebra k K] (B : Subalgebra k K) (q : ℕ)
     {b : K} (hb : b ∈ B) {y : DR k K} (hy : y ∈ omB k K B q) : b • y ∈ omB k K B q := by
-  induction hy using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨c, hc, v, hv, rfl⟩ := hy
-    apply Submodule.subset_span
-    refine ⟨b * c, B.mul_mem hb hc, v, hv, ?_⟩
-    rw [smul_smul]
-  | zero => rw [smul_zero]; exact Submodule.zero_mem _
-  | add _ _ _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2
-  | smul r y _ h => rw [smul_comm]; exact Submodule.smul_mem _ r h
+  apply _root_.GlobalTheory.PD.smul_mem_omB <;> assumption
 
 theorem ιMulti_D_mem_omB_regForms {k K : Type} [Field k] [Field K] [Algebra k K] (B : Subalgebra k K) (q : ℕ)
     (w : Fin q → B) : (ExteriorAlgebra.ιMulti K q fun j => D k K (w j : K)) ∈ omB k K B q := by

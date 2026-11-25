@@ -99,16 +99,7 @@ variable {L : LocE F E} {r k : ℕ}
 
 omit [IsNonarchimedeanLocalField F] [CharZero F] in
 theorem pair_mem_cls (S : Frames L r k) (g g' : Fin (r + 1) → S.V) : (g, g') ∈ S.frameCls g g' := by
-  have h1 : IsIntM L (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) E) := fun i j => by
-    rw [Matrix.one_apply]
-    split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  refine ⟨1, 1, h1, h1, fun i j h => ?_, fun i => by simp, fun i j => ⟨0, zero_mem _, by simp⟩,
-    fun j => ?_, fun j => ?_⟩
-  · simp [Matrix.one_apply_ne h.ne']
-  · simp [Matrix.one_apply]
-  · simp [Matrix.one_apply]
+  apply _root_.GlobalTheory.HL.FrameClass.refl_mem <;> assumption
 
 
 omit [IsNonarchimedeanLocalField F] [CharZero F] in

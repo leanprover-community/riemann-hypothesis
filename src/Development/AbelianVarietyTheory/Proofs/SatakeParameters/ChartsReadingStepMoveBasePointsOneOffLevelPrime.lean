@@ -163,7 +163,6 @@ namespace GlobalTheory.TwU.AtTrue
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2
   GlobalTheory.Mem.Col2.TC Matrix GlobalTheory.TwU
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 theorem mem_UPts_one {F E : Type} [Field F] [CommRing E] [Algebra F E] {n : ℕ} {σ : E →ₐ[F] E} {J : Matrix (Fin n) (Fin n) E}
     (hJ : J = 1) {R : Type} [CommRing R] [Algebra F R] {g : GL (Fin n) (TensorProduct F E R)} (h : g ∈ UPts σ J R) : g ∈ UPts σ 1 R := by
@@ -244,7 +243,6 @@ namespace GlobalTheory.TwU.AtTrue
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2
   GlobalTheory.Mem.Col2.TC Matrix GlobalTheory.TwU
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 
 

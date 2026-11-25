@@ -845,12 +845,7 @@ namespace GlobalTheory.LatOrb
 theorem herm_mulVec_eq_adj {K : Type} [Field K] (σ : K →+* K)
     {n : ℕ} (x : Matrix (Fin n) (Fin n) K) (y m : Fin n → K) :
     herm σ y (x *ᵥ m) = herm σ ((x.map σ)ᵀ *ᵥ y) m := by
-
-  simp only [herm, Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.transpose_apply,
-  Matrix.map_apply, Finset.sum_mul, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-  ring
+  apply _root_.GlobalTheory.LatOrb.herm_mulVec_right <;> assumption
 
 theorem matLat_adj_mul_eq_of_selfDual : ∀ {O K : Type} [CommRing O] [Field K] [Algebra O K] (σ : K →+* K),
     (∀ x, σ (σ x) = x) → ∀ (n : ℕ) (x : Matrix (Fin n) (Fin n) K), IsUnit x →

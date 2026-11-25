@@ -54,13 +54,8 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.PB.WMan.Mem
 
 theorem blockDiag_transvection {N j : ℕ} {ca cb : Fin N} (hc : (ca : ℕ) < N - j ↔ (cb : ℕ) < N - j) (t : ℂ) :
-    IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) := fun x y hxy => by
-  have h1 : (1 : Matrix (Fin N) (Fin N) ℂ) x y = 0 := Matrix.one_apply_ne fun e => hxy (by rw [e])
-  have h2 : Matrix.single cb ca t x y = 0 := by
-    rw [Matrix.single_apply, if_neg]
-    rintro ⟨rfl, rfl⟩
-    exact hxy hc.symm
-  rw [Matrix.add_apply, h1, h2, add_zero]
+    IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) :=
+  Pts.transv_block hc t
 
 theorem det_transvection' {N : ℕ} {ca cb : Fin N} (hc : ca ≠ cb) (t : ℂ) :
     (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ).det = 1 :=

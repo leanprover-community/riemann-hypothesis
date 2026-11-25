@@ -62,9 +62,6 @@ private theorem cls_smul (L : ℕ) (m n : ℕ) (x : Fin 2 → ℤ) :
   push_cast
   ring
 
-private theorem norm_char_le {L : ℕ} [NeZero L] (ψ : DirichletCharacter ℂ L) (a : ZMod L) : ‖ψ a‖ ≤ 1 :=
-  ψ.norm_le_one a
-
 end UpperTheory.V.Af.Rs
 
 theorem UpperTheory.V.Af.Rs.clsProp :
@@ -96,7 +93,7 @@ theorem UpperTheory.V.Af.Rs.clsProp :
       have h0 : 0 ≤ ‖F (γ • z)‖ * z.im ^ 3 := by
         have : 0 < z.im := z.im_pos
         positivity
-      exact (mul_le_of_le_one_left h0 (norm_char_le ψ _)).trans h1
+      exact (mul_le_of_le_one_left h0 (ψ.norm_le_one _)).trans h1
   · intro hψ z
     obtain ⟨u, hu⟩ := MulChar.ne_one_iff.mp hψ
     let e : (Fin 2 → ZMod L) ≃ (Fin 2 → ZMod L) :=

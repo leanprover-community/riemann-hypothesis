@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergInvariantFormVanishesLagrangianTest
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchroedingerIrreducibleFinitePlaceCompletion
@@ -126,18 +127,7 @@ theorem exists_at_locCo {F : Type} [Field F] [NumberField F] {W : Type} [AddComm
     {B : W → W → AF F} {κ : Type} [Fintype κ] (co : GlobalTheory.WeilM.Darboux B κ) (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F))
     (p : (κ → Fv F v) × (κ → Fv F v)) :
     ∃ u : W, At (evFin F v) u ∧ GlobalTheory.LatVac.locCo co v u = p := by
-  refine ⟨co.e.symm (fun k => GlobalTheory.LatVac.liftV v (p.1 k), fun k => GlobalTheory.LatVac.liftV v (p.2 k)), ?_, ?_⟩
-  · intro r hr
-    rw [← LinearEquiv.map_smul]
-    have h0 : r • ((fun k => GlobalTheory.LatVac.liftV v (p.1 k), fun k => GlobalTheory.LatVac.liftV v (p.2 k)) :
-        (κ → AF F) × (κ → AF F)) = 0 := by
-      refine Prod.ext (funext fun k => ?_) (funext fun k => ?_)
-      · exact GlobalTheory.LatVac.at_liftV v (p.1 k) r hr
-      · exact GlobalTheory.LatVac.at_liftV v (p.2 k) r hr
-    rw [h0, map_zero]
-  · show ((fun k => evFin F v ((co.e _).1 k)), fun k => evFin F v ((co.e _).2 k)) = p
-    rw [LinearEquiv.apply_symm_apply]
-    exact Prod.ext (funext fun k => GlobalTheory.LatVac.evFin_liftV v _) (funext fun k => GlobalTheory.LatVac.evFin_liftV v _)
+  apply _root_.GlobalTheory.InertLagUniq.exists_at_locCo <;> assumption
 
 end GlobalTheory.InductLagr
 

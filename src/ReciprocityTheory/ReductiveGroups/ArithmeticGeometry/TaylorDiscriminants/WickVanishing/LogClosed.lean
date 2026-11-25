@@ -59,30 +59,10 @@ namespace ReciprocityTheory.ChartRestriction.G.TB.LogPf
 
 variable {k : Type} [CommRing k] {d : ℕ}
 
-private theorem cc_subst_lemma {σ τ : Type} [Fintype σ] {L : σ → MvPowerSeries τ k}
-    (hL0 : ∀ p, constantCoeff (L p) = 0) (F : MvPowerSeries σ k) :
-    constantCoeff (MvPowerSeries.subst L F) = constantCoeff F := by
-  classical
-  have hL : MvPowerSeries.HasSubst L := by
-    first
-      | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hL0
-  rw [MvPowerSeries.constantCoeff_subst hL, finsum_eq_single _ 0]
-  · simp [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
-  · intro e he
-    obtain ⟨p, hp⟩ : ∃ p, e p ≠ 0 := by
-      by_contra hn
-      push_neg at hn
-      exact he (Finsupp.ext hn)
-    have hz : constantCoeff (e.prod fun s n => L s ^ n) = 0 := by
-      rw [Finsupp.prod, map_prod]
-      apply Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hp)
-      rw [map_pow, hL0, zero_pow hp]
-    rw [hz, smul_zero]
-
 theorem cc_ev {m n : ℕ} {a : Fin m → Pt k n d} (ha : CZ a) (f : PS k m d) :
     constantCoeff (ev a f) = constantCoeff f := by
-  unfold ev
-  exact cc_subst_lemma (σ := Fin m × Fin d) (τ := Fin n × Fin d) (L := fun p => a p.1 p.2) (fun p => ha p.1 p.2) f
+  have h0 : constantCoeff (ev a (f - C (constantCoeff f))) = 0 := constantCoeff_ev ha (by simp)
+  rwa [ev_sub ha, ev_C ha, map_sub, constantCoeff_C, sub_eq_zero] at h0
 
 variable (G : FGLaw k d)
 

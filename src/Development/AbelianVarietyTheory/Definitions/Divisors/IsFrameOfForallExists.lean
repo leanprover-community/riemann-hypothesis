@@ -353,10 +353,6 @@ theorem isVB_freeModule (ι : Type) [Fintype ι] : IsVB (freeModule X ι) (Finty
   (isFrame_freeFrame X ι).isVB
 
 
-variable (X) in
-theorem isVB_freeModule_fin (r : ℕ) : IsVB (freeModule X (Fin r)) r := by
-  simpa using isVB_freeModule X (Fin r)
-
 
 variable (X) in
 theorem isVB_structureModule : IsVB (structureModule X) 1 :=

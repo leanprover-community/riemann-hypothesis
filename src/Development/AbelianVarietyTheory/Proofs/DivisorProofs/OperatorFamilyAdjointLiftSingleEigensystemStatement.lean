@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InertValuesIffInertLabelsCarriedEigensystems
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
@@ -77,24 +78,7 @@ theorem labIn_eq (n : ℕ) (s : List ℕ) : Formalism.IndefR.Links.labIn n s =
 
 theorem labIn_pairwise {n : ℕ} {s : List ℕ} (h : Formalism.L2.Col.InertTypeOk n s) :
     (Formalism.IndefR.Links.labIn n s).Pairwise (fun a b : ℤ => b ≤ a) := by
-  obtain ⟨h1, -, -⟩ := h
-  rw [labIn_eq]
-  refine List.pairwise_append.2 ⟨List.pairwise_append.2 ⟨?_, ?_, ?_⟩, ?_, ?_⟩
-  · exact List.pairwise_map.2 (h1.imp fun h => by exact_mod_cast h)
-  · exact List.pairwise_replicate.2 (Or.inr le_rfl)
-  · intro a ha b hb
-    obtain ⟨x, -, rfl⟩ := List.mem_map.1 ha
-    rw [List.eq_of_mem_replicate hb]
-    exact Int.natCast_nonneg x
-  · rw [List.pairwise_map, List.pairwise_reverse]
-    exact h1.imp fun h => by omega
-  · intro a ha b hb
-    obtain ⟨x, -, rfl⟩ := List.mem_map.1 hb
-    rcases List.mem_append.1 ha with ha | ha
-    · obtain ⟨y, -, rfl⟩ := List.mem_map.1 ha
-      omega
-    · rw [List.eq_of_mem_replicate ha]
-      omega
+  apply _root_.GlobalTheory.InertValLab.labIn_pw <;> assumption
 
 end GlobalTheory.UpSystem
 

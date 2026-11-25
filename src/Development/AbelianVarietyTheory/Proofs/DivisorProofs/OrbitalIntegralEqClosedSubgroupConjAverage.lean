@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralSummandGoodPlaceIndicator
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ParP
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralTwistedConjInvariant
 import Mathlib.Algebra.Order.Floor.Extended
@@ -54,15 +55,7 @@ namespace GlobalTheory.IwRed
 open GlobalTheory.LeviDesc GlobalTheory.TwOrbConj
 
 theorem avg_const {H : Type} [Group H] (c : ℂ) : avg (fun _ : H => c) = c := by
-  have hR : rStab (fun _ : H => c) = ⊤ := by
-    ext k; simp [mem_rStab]
-  unfold avg
-  simp only
-  rw [hR, Subgroup.index_top]
-  haveI : Unique (H ⧸ (⊤ : Subgroup H)) :=
-    ⟨⟨QuotientGroup.mk 1⟩, fun a => QuotientGroup.induction_on a fun x => QuotientGroup.eq.2 (Subgroup.mem_top _)⟩
-  rw [finsum_unique]
-  simp
+  apply _root_.GlobalTheory.TwOrbGood.avg_const <;> assumption
 
 variable {G : Type} [Group G]
 

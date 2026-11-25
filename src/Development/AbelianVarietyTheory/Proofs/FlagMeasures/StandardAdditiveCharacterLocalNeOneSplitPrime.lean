@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeUnimodular
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceFirstFactorLocalFrame
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfDualAt
 public import Mathlib.Algebra.AffineMonoid.Basic
@@ -61,47 +62,7 @@ namespace GlobalTheory.St.G.PsiLoc
 
 theorem not_dvd_different {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime) (h : SplitsIn E p)
     (P : Ideal (𝓞 E)) [hP : P.IsPrime] (hm : (p : 𝓞 E) ∈ P) : ¬ P ∣ differentIdeal ℤ (𝓞 E) := by
-  intro hdvd
-  have hp0 : (p : ℤ) ≠ 0 := by exact_mod_cast hp.ne_zero
-  have hmax : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    ((Ideal.span_singleton_prime hp0).2 (Nat.prime_iff_prime_int.1 hp)).isMaximal
-      (by simpa using hp0)
-  have hlies : ∀ Q : Ideal (𝓞 E), Q.IsPrime → (p : 𝓞 E) ∈ Q →
-      Q.LiesOver (Ideal.span {(p : ℤ)}) := by
-    intro Q hQ hpQ
-    constructor
-    refine hmax.eq_of_le (Ideal.comap_ne_top _ hQ.ne_top) ?_
-    rw [Ideal.span_le, Set.singleton_subset_iff]
-    show algebraMap ℤ (𝓞 E) (p : ℤ) ∈ Q
-    simpa using hpQ
-  haveI := hlies P hP hm
-  have hnorm := Ideal.absNorm_eq_pow_inertiaDeg' P hp
-  have hne1 : Ideal.absNorm P ≠ 1 := by
-    rw [Ne, Ideal.absNorm_eq_one_iff]; exact hP.ne_top
-  have hf : (Ideal.span {(p : ℤ)}).inertiaDeg' P ≠ 0 := by
-    intro h0; rw [h0, pow_zero] at hnorm; exact hne1 hnorm
-  have h1 : p ∣ Ideal.absNorm P := by rw [hnorm]; exact dvd_pow_self p hf
-  have h2 : Ideal.absNorm P ∣ (discr E).natAbs := by
-    rw [← NumberField.absNorm_differentIdeal E (𝓞 E)]; exact map_dvd Ideal.absNorm hdvd
-  have h3 : (p : ℤ) ∣ discr E := Int.natCast_dvd.2 (h1.trans h2)
-  refine GlobalTheory.SplitEmbSep.not_dvd_discr_of_split hp E ?_ h3
-  have hset : Ideal.primesOver (Ideal.span {(p : ℤ)}) (𝓞 E) =
-      (fun w : HeightOneSpectrum (𝓞 E) => w.asIdeal) '' placesOver E p := by
-    ext Q
-    constructor
-    · rintro ⟨hQ, hQl⟩
-      have hpQ : (p : 𝓞 E) ∈ Q := by
-        have : (p : ℤ) ∈ Q.under ℤ := hQl.over ▸ Ideal.mem_span_singleton_self _
-        simpa [Ideal.under] using this
-      have hQbot : Q ≠ ⊥ := by
-        rintro rfl
-        rw [Ideal.mem_bot] at hpQ
-        exact hp.ne_zero (by exact_mod_cast hpQ)
-      exact ⟨⟨Q, hQ, hQbot⟩, hpQ, rfl⟩
-    · rintro ⟨w, hw, rfl⟩
-      exact ⟨w.isPrime, hlies _ w.isPrime hw⟩
-  unfold SplitsIn at h
-  rw [hset, Set.ncard_image_of_injective _ (fun a b hab => HeightOneSpectrum.ext hab), h]
+  apply _root_.GlobalTheory.IntTerm.Conv.not_dvd_different <;> assumption
 
 theorem exists_eq_mul {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime) (h : SplitsIn E p)
     (x : 𝓞 E) (hx : ∀ y : 𝓞 E, ∃ n : ℤ, (n : ℚ) = Algebra.trace ℚ E ((p : E)⁻¹ * x * y)) :

@@ -99,18 +99,6 @@ namespace PfN
 section
 open Ideal UniqueFactorizationMonoid
 
-theorem nf_map {S : Type*} [CommRing S] [IsDedekindDomain S] (I : Ideal S) (hI : I ≠ ⊥)
-    (f : Ideal S ≃* Ideal S) : normalizedFactors (f I) = (normalizedFactors I).map f := by
-  have h1 : ∀ P ∈ (normalizedFactors I).map f, Prime P := by
-    intro P hP
-    obtain ⟨P', hP', rfl⟩ := Multiset.mem_map.mp hP
-    exact (MulEquiv.prime_iff f).mpr (prime_of_normalized_factor P' hP')
-  have h2 : ((normalizedFactors I).map f).prod = f I := by
-    rw [← map_multiset_prod, Ideal.prod_normalizedFactors_eq_self hI]
-  have h3 := normalizedFactors_prod_of_prime h1
-  rw [h2] at h3
-  exact h3
-
 theorem idealConjugateFactorizationUnique {S : Type*} [CommRing S] [IsDedekindDomain S] (D : Ideal S) (hD0 : D ≠ ⊥)
     (f : Ideal S ≃* Ideal S) (hfD : f D = D) (p : Ideal S → Prop)
     (hp : ∀ P ∈ normalizedFactors D, (p (f P) ↔ ¬ p P)) :

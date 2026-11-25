@@ -312,7 +312,6 @@ theorem integral_quotient_holds : IntegralQuotient := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -675,7 +674,6 @@ theorem AAComm_of (h1 : SymCommAbstract) (h2 : JMCommAbstract) : AAComm := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1233,7 +1231,6 @@ theorem one_step_invariance_holds : OneStepInv := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1428,7 +1425,6 @@ theorem Iteration_of (h1 : OneStepInv) (h2 : AAComm) (h3 : MuEquivariant) : Iter
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1635,7 +1631,6 @@ end Fld
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1806,7 +1801,6 @@ theorem coefficient_operators_hold : CoeffOps := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1970,7 +1964,6 @@ theorem ActLattice_of (h3 : MuEquivariant) (h4 : WordSpec) : ActLattice := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -2025,7 +2018,6 @@ theorem casimir_content_holds : CasimirContent := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -2118,7 +2110,6 @@ theorem LemmaDSkeleton_of (hCo : CoeffOps) (hXL : XLattice) (hXW : XWeight) (hIW
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 

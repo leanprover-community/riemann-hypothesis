@@ -124,15 +124,6 @@ theorem IsSubrep.isIrredSubrep_iff (hW : IsSubrep π W) : IsIrredSubrep π W ↔
     exact (h2 _ (hW.isSubrep_rep_iff.2 (e.symm ▸ hU'))).imp
       (fun h => by rw [← e, h, Submodule.map_bot]) fun h => by rw [← e, h, Submodule.map_subtype_top]
 
-theorem isIrredSubrep_span_singleton {v : H} (hv : v ≠ 0) (h : ∀ g, ∃ c : ℂ, π g v = c • v) :
-    IsIrredSubrep π (ℂ ∙ v) := by
-  refine ⟨⟨Submodule.closed_of_finiteDimensional _, fun g w hw => ?_⟩, by simpa using hv, fun U hU _ => ?_⟩
-  · obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 hw
-    obtain ⟨c, hc⟩ := h g
-    rw [map_smul, hc]
-    exact Submodule.smul_mem _ _ (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self v))
-  · exact ((nonzero_span_atom v hv).le_iff).1 hU
-
 variable [CompleteSpace H] [TopologicalSpace G]
 
 

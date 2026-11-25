@@ -958,16 +958,7 @@ end
 namespace GlobalTheory.FiniteKilled
 
 theorem isUnit_of_basicOpen_eq_top' (X : Scheme.{0}) (r : Γ(X, ⊤)) (h : X.basicOpen r = ⊤) : IsUnit r := by
-  have hu := X.toRingedSpace.isUnit_res_basicOpen r
-  have := hu.map (X.presheaf.map (homOfLE h.ge).op).hom
-  have e : ∀ y, (X.presheaf.map (homOfLE h.ge).op).hom
-      ((X.presheaf.map (homOfLE (X.basicOpen_le r)).op).hom y) = y := by
-    intro y
-    rw [← CommRingCat.comp_apply, ← Functor.map_comp]
-    rw [show (homOfLE (X.basicOpen_le r)).op ≫ (homOfLE h.ge).op = 𝟙 (Opposite.op (⊤ : X.Opens)) from
-      Quiver.Hom.unop_inj (Subsingleton.elim _ _), CategoryTheory.Functor.map_id]
-    rfl
-  exact (e r) ▸ this
+  apply _root_.GlobalTheory.UnitLocus.isUnit_of_basicOpen_eq_top' <;> assumption
 
 theorem spec_inv_appTop {B : CommRingCat.{0}} (t : B ⟶ B) :
     (Scheme.ΓSpecIso B).inv ≫ (Spec.map t).appTop = t ≫ (Scheme.ΓSpecIso B).inv := by

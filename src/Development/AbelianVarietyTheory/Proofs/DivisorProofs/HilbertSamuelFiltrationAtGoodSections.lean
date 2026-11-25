@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalizedPointHeightLatticeAlgebraMap
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IntegralBound
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFinrankLineBundleSectionsFiniteEtale
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryOfFrameNormConj
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HermSysHypOneLeLambdaZero
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsWeaklyRegularIffIsQuasiRegularSeqOfIsLocalRing
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictedSectionChartCoords
@@ -286,58 +285,6 @@ def val (j : ℕ) : G.SecOn s j →ₗ[K] K where
   map_add' f g := map_add _ f g
   map_smul' c g := valOn_smul x.1 x.2 _ _ c g
 
-theorem c₁_pos (τ : K →+* ℂ) : 0 < x.c₁ τ := archSize_pos (G.herm τ) fun h =>
-  G.geom.alg.bpf.coords_ne_zero x.pt.1 (funext fun k => (map_eq_zero τ).1 (congrFun h k))
-
-theorem c₂_pos (τ : K →+* ℂ) : 0 < x.c₂ τ := archSize_pos (G.herm₂ τ) fun h =>
-  G.alg₂.bpf.coords_ne_zero x.pt.1 (funext fun k => (map_eq_zero τ).1 (congrFun h k))
-
-theorem c₂_conj (τ : K →+* ℂ) : x.c₂ ((starRingEnd ℂ).comp τ) = x.c₂ τ := by
-  let w (σ : K →+* ℂ) : CxPts G.str σ := Points.PtsOver.map (G.ideal s).subschemeι rfl (spMap σ) (x.along σ)
-  have e (σ : K →+* ℂ) : (G.φ₂ σ).φ (G.second.chartAt (ptOf x.pt.1)) (w σ) = Real.log (x.c₂ σ ^ 2) := by
-    refine (G.second.weight_φ _ _ σ _ (w σ)).trans (congrArg (fun y => Real.log (archSize _ y ^ 2)) (funext fun k => ?_))
-    exact Points.valR_spMap_comp σ x.pt.1 _ (G.second.le_chartAt x.pt.1) _
-  have h := G.isConj_φ₂ τ (G.second.chartAt (ptOf x.pt.1)) (w τ) (w _) (by
-    change (spMap _ ≫ x.1) ≫ _ = spMap _ ≫ (spMap τ ≫ x.1) ≫ _
-    rw [← Category.assoc (spMap (starRingEnd ℂ)), ← Category.assoc (spMap (starRingEnd ℂ)), ← Spec.map_comp]
-    rfl) fun _ _ => G.second.le_chartAt x.pt.1 (Set.mem_univ _)
-  have p := x.c₂_pos τ
-  have p' := x.c₂_pos ((starRingEnd ℂ).comp τ)
-  exact (pow_left_inj₀ p'.le p.le two_ne_zero).1
-    (Real.log_injOn_pos (pow_pos p' 2) (pow_pos p 2) ((e _).symm.trans (h.trans (e τ))))
-
-theorem exp_neg_weight (j : ℕ) (τ : K →+* ℂ) :
-    Real.exp (-(Geo.weightOn s j τ).φ (fun _ => twIdx j (G.second.chartAt (ptOf x.pt.1)) (G.chartAt (ptOf x.pt.1)))
-      (x.along τ)) = ((x.c₂ τ * x.c₁ τ ^ j) ^ 2)⁻¹ := by
-  have e : (Geo.weightOn s j τ).φ (fun _ => twIdx j (G.second.chartAt (ptOf x.pt.1)) (G.chartAt (ptOf x.pt.1)))
-      (x.along τ) = Real.log (x.c₂ τ ^ 2) + j * Real.log (x.c₁ τ ^ 2) := by
-    simp only [Geo.weightOn, Weight.pull, Weight.linComb, Geo.φTw, Weight.tens, Weight.zpow, Geo.φ, Geo.φ₂,
-      HermSys.weight_φ]
-    have a₁ : ∀ k, secVal G.str τ (G.b k) (G.chartAt (ptOf x.pt.1))
-        (Points.PtsOver.map (G.ideal s).subschemeι rfl (spMap τ) (x.along τ)) = τ (G.coords x.pt.1 k) :=
-      fun k => Points.valR_spMap_comp τ x.pt.1 _ (G.le_chartAt x.pt.1) _
-    have a₂ : ∀ k, secVal G.str τ (G.b₂ k) (G.second.chartAt (ptOf x.pt.1))
-        (Points.PtsOver.map (G.ideal s).subschemeι rfl (spMap τ) (x.along τ)) = τ (G.second.coords x.pt.1 k) :=
-      fun k => Points.valR_spMap_comp τ x.pt.1 _ (G.second.le_chartAt x.pt.1) _
-    simp only [id, a₁, a₂, Finset.univ_unique, Finset.sum_singleton, Int.cast_one, one_mul, Int.cast_natCast, c₁, c₂]
-  have p₁ := x.c₁_pos τ
-  have p₂ := x.c₂_pos τ
-  rw [e, Real.exp_neg, Real.exp_add, ← Real.log_pow, Real.exp_log (by positivity), Real.exp_log (by positivity), mul_pow,
-    ← pow_mul, ← pow_mul, mul_comm 2 j]
-
-theorem nsq_eq (j : ℕ) (τ : K →+* ℂ) {ι : Type} [Fintype ι] (c : ι → ℂ) (g : ι → G.SecOn s j) :
-    (Geo.weightOn s j τ).nsq (∑ i, c i • cval τ (g i)) (x.along τ) =
-      ‖∑ i, c i * τ (x.val j (g i))‖ ^ 2 / (x.c₂ τ * x.c₁ τ ^ j) ^ 2 := by
-  have hw : x.along τ ∈ ptsIn ((G.ideal s).subschemeι ≫ G.str) τ (((tw G.L₂ G.L j).pull (G.ideal s).subschemeι).U
-      fun _ => twIdx j (G.second.chartAt (ptOf x.pt.1)) (G.chartAt (ptOf x.pt.1))) :=
-    fun _ _ => mem_pull.2 (x.le_chart j (Set.mem_univ _))
-  rw [Weight.nsq_eq _ (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (cval_mem τ (g i))) hw, exp_neg_weight,
-    div_eq_mul_inv]
-  refine congrArg (fun r => ‖r‖ ^ 2 * _) ?_
-  refine ((congrFun (Finset.sum_apply _ _ _) _).trans (Finset.sum_apply _ _ _)).trans ?_
-  exact Finset.sum_congr rfl fun i _ => congrArg (c i * ·)
-    ((cval_eq_val τ _ _ _ mem_ptsIn_top hw).trans (evalPt_spMap_comp τ x.1 _ _ _ _))
-
 theorem val_mulSecOn (j : ℕ) (u : Fin G.N → K) (g : G.SecOn s j) :
     x.val (j + 1) (mulSecOn G.isLB₂ G.isLB (G.comb u) (Nat.cast_succ j).symm g) =
       (∑ k, u k * G.coords x.pt.1 k) * x.val j g := by
@@ -362,18 +309,6 @@ variable {G : Geo K} {s : Fin G.D → Fin G.N → K}
 
 def Coord.AtPoints {hs : G.IsGood s} {δ : ℕ} (Co : Coord G hs δ) (x : Fin δ ≃ RatPt G s) : Prop :=
   ∀ p, (∀ j g, Co.ev j g p = (x p).val j g) ∧ Co.y p = G.coords (x p).pt.1 ∧ ∀ τ, Co.c₂ τ p = (x p).c₂ τ
-
-theorem RatPt.along_bijective (hs : G.IsGood s)
-    (h : Function.Surjective fun x : RatPt G s => x.along (algebraMap K (AlgebraicClosure K)))
-    {Ω : Type} [Field Ω] [IsAlgClosed Ω] (φ : K →+* Ω) : Function.Bijective fun x : RatPt G s => x.along φ := by
-  have := hs.finite
-  have := hs.etale
-  letI := φ.toAlgebra
-  have hB := isLB_tw G.isLB₂ G.isLB 0
-  have : Finite (Points.PtsOver ((G.ideal s).subschemeι ≫ G.str) (spMap φ)) := finite_ptsOver _ Ω
-  refine (RatPt.along_injective hs φ).bijective_of_nat_card_le (le_of_eq ?_)
-  exact (finrank_H0On (p := G.str) (I := G.ideal s) hB Ω).symm.trans
-    ((finrank_H0On hB (AlgebraicClosure K)).trans (Nat.card_eq_of_bijective _ ⟨RatPt.along_injective hs _, h⟩).symm)
 
 theorem exists_coord_atPoints (hs : G.IsGood s)
     (h : Function.Surjective fun x : RatPt G s => x.along (algebraMap K (AlgebraicClosure K)))
@@ -401,12 +336,9 @@ theorem exists_coord_atPoints (hs : G.IsGood s)
     refine ⟨inj, (LinearMap.injective_iff_surjective_of_finrank_eq_finrank ?_).1 inj⟩
     rw [finrank_H0On hB (AlgebraicClosure K), Module.finrank_fin_fun, ← Nat.card_fin δ, Nat.card_congr x]
     exact (Nat.card_eq_of_bijective _ ⟨RatPt.along_injective hs _, fun w => ⟨r w, hr w⟩⟩).symm
-  refine ⟨⟨fun j => LinearEquiv.ofBijective (φ j) (bij j), fun p => G.coords (x p).pt.1, fun σ p => (x p).c₂ σ,
-    fun _ => G.geom.alg.bpf.coords_ne_zero _, fun σ p => (x p).c₂_pos σ, fun σ p => (x p).c₂_conj σ,
-    fun j u g => funext fun p => (x p).val_mulSecOn j u g, fun j σ m c g => ?_⟩, fun p => ⟨fun _ _ => rfl, rfl, fun _ => rfl⟩⟩
-  refine (csq_pointHerm _ _ _ σ c g).trans ?_
-  rw [← finsum_comp_equiv (x.trans (Equiv.ofBijective _ (RatPt.along_bijective hs h σ))), finsum_eq_sum_of_fintype]
-  exact Finset.sum_congr rfl fun p _ => (x p).nsq_eq j σ c g
+  exact ⟨⟨fun j => LinearEquiv.ofBijective (φ j) (bij j), fun p => G.coords (x p).pt.1, fun σ p => (x p).c₂ σ,
+    fun _ => G.geom.alg.bpf.coords_ne_zero _, fun j u g => funext fun p => (x p).val_mulSecOn j u g⟩,
+    fun p => ⟨fun _ _ => rfl, rfl, fun _ => rfl⟩⟩
 
 section Split
 

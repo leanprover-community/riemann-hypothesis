@@ -1461,17 +1461,14 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] 
   (b : Module.Basis (Fin d) F E)
 
 theorem cK_tmul_mul (r : R) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k := by
-  have e : (r ⊗ₜ[F] (1 : E)) * y = r • y := by
-    rw [Algebra.smul_def]
-    rfl
-  simp [cK, e]
+    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k :=
+  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.cK_tmul_mul
+    b r y k
 
 theorem cK_nat_mul (N : ℕ) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((N : R ⊗[F] E) * y) k = (N : R) * cK R b y k := by
-  have e : (N : R ⊗[F] E) = (N : R) ⊗ₜ[F] (1 : E) := by
-    exact (map_natCast (algebraMap R (R ⊗[F] E)) N).symm
-  rw [e, cK_tmul_mul]
+    cK R b ((N : R ⊗[F] E) * y) k = (N : R) * cK R b y k :=
+  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.cK_nat_mul
+    b N y k
 
 end Coord
 
@@ -1490,10 +1487,9 @@ theorem scale_lat [NumberField E] (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d
 
 theorem nat_mul_latV {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (N : ℕ)
     {Y : Fin 1 → Fin 1 → Fv F v ⊗[F] E} (hY : Y ∈ latV b v) :
-    (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v := fun a i k => by
-  change cK (Fv F v) b ((N : Fv F v ⊗[F] E) * Y a i) k ∈ _
-  rw [cK_nat_mul]
-  exact mul_mem (natCast_mem _ N) (hY a i k)
+    (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v :=
+  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.nat_mul_latV
+    b v N hY
 
 end Scale
 

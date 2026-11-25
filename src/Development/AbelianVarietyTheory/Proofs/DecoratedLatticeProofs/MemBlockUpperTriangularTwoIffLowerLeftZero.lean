@@ -49,6 +49,7 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsLevMeas
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.T2SpaceIsNonarchimedeanLocalFieldSingleBlock
 
 @[expose] public section
 
@@ -64,14 +65,7 @@ namespace GlobalTheory.ParabIndex
 theorem card_GL_real (κ : Type) [Field κ] [Finite κ] (m : ℕ) :
     (Nat.card (GL (Fin m) κ) : ℝ)
       = (Nat.card κ : ℝ) ^ (m * m) * ∏ i ∈ Finset.Ioc 0 m, (1 - ((Nat.card κ : ℝ) ^ i)⁻¹) := by
-  letI := Fintype.ofFinite κ
-  rw [GlobalTheory.Mem.card_GL_eq_pow_mul_qE κ m, Nat.card_eq_fintype_card, Formalism.MainNotions.ZetaProductPairs.qE]
-  congr 1
-  have h : Finset.Icc 1 m = Finset.Ioc 0 m := by
-    ext i; simp only [Finset.mem_Icc, Finset.mem_Ioc]; omega
-  rw [h]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  rw [_root_.zpow_neg, zpow_natCast]
+  apply _root_.GlobalTheory.SingleBlock.card_GL_real <;> assumption
 
 variable {κ : Type} [Field κ]
 

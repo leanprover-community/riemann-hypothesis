@@ -256,60 +256,37 @@ def x0 (Z : ReadL R F X0 Y) (hP : Pins R F cG) (hH : Holds R F) : DivX D where
   Lev := Empty
   levPr := fun κ => κ.elim
   shv := fun _ κ => κ.elim
-  shv_N := fun _ κ => κ.elim
-  shv_lev := fun _ κ => κ.elim
   PlP := fun p _ => Formalism.L2.Geo.PlL D p
   plpFin := fun p _ => Formalism.L2.Geo.finPl D p
-  plpNe := fun p _ => Formalism.L2.Geo.plL_ne D p
   wtP := fun p _ => Formalism.L2.Geo.wtL D p
-  divisorWeight_nonneg := fun p _ => Formalism.L2.Geo.wtL_nonneg D p
-  divisorWeight_sum := fun p _ => Formalism.L2.Geo.wtL_sum D p
   plP := fun p _ => Formalism.BasicNotions.Examples₂.PlOver.plLEquiv D p
-  divisorWeight_def := fun p _ la => Formalism.BasicNotions.Examples₂.PlOver.wtLog_eq D p la
   jC := fun p _ _ => (Formalism.BasicNotions.Examples₂.teich_Om_equiv p).some.toRingHom.comp (algebraMap (DV.KW p) (Formalism.BasicNotions.Examples₂.TeichOm p))
   Mp := fun _ κ => κ.elim
   vdd := fun _ _ => 0
-  vdd_unram := fun _ _ _ => rfl
-  phiFr_unram := fun _ κ => κ.elim
-  vdd_nonneg := fun _ _ => le_rfl
   CurveM := fun _ κ => κ.elim
   degM := fun _ κ => κ.elim
   htMdl := fun _ κ => κ.elim
   htCurve := fun _ κ => κ.elim
-  htCurve_deg := fun _ κ => κ.elim
   MjH := mjH Z
   MjH_good := mjH_good Z hH
   jM := jM Z
   jM_basis := jM_basis Z hH
   jM_lat := jM_lat Z hP hH
   MjLat_sub := mjLat_sub Z hP hH
-  jM_metric := jM_metric Z hH
   Qp := fun _ => ∅
   degreeZero_partial_set_empty := rfl
   Qp_muAt := fun _ => Finset.notMem_empty _
-  Qp_g := fun _ _ _ => Finset.notMem_empty _
   QPl := fun _ => Empty
   qv := fun _ v => v.elim
-  qv_gt := fun _ v => v.elim
-  qv_char := fun _ _ v => v.elim
-  nu := fun _ v => v.elim
   Comp := fun _ => Empty
-  degHH := fun _ c => c.elim
   Yv := fun _ c => c.elim
-  Ybd := fun _ c => c.elim
   Lw := fun _ c => c.elim
   iMj := fun _ c => c.elim
-  iMj_mem := fun _ c => c.elim
   logLam := logLamOf Z hH
   logLam_base := fun _ _ => if_pos rfl
   kapR := fun _ => kapSharp D
-  kapR_pos := fun _ => RowSide.kapOf_pos _ _
-  kapR_conj := fun _ => rfl
   Surf := Empty
-  surfCh2 := fun _ => 0
-  surfDegOm := fun _ => 0
   SurfFp := Empty
-  surfFpCh2 := fun _ => 0
 
 end GlobalTheory.Mem.Top.DivRec
 

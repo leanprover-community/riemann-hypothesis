@@ -54,7 +54,6 @@ open GlobalTheory.AscFin
 
 namespace GlobalTheory.ModulUnit
 
-open GlobalTheory.ChiGrid
 
 theorem exists_int_mem_modul {D : D7} {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) (v : GlobalTheory.FinPl.Pl D)
     (hv : v ∉ P.S0) : ∃ t : 𝓞 D.host.F, t ∉ v.asIdeal ∧ algebraMap (𝓞 D.host.F) (𝓞 D.host.E) t ∈ P.modul sc := by

@@ -75,7 +75,6 @@ theorem norm_σ {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : Infi
 
 end Formalism.FourierDecayAlt.P.JCx1
 
-open Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P
 
@@ -83,7 +82,6 @@ end Formalism.FourierDecayAlt.P
 
 section cutf
 
-open Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.JCx1
 

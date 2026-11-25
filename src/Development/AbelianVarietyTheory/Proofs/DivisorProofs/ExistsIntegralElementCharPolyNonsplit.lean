@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyIntegralConjugateMemCentralizerMulInte
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
@@ -59,16 +60,7 @@ theorem eventually_mem_integers (a : E) :
 theorem mem_KGL_of_entries (w : Pl E) (g : GLw n w)
     (h1 : ∀ a b, g.val a b ∈ w.adicCompletionIntegers E)
     (h2 : ∀ a b, (g⁻¹).val a b ∈ w.adicCompletionIntegers E) : g ∈ GlobalTheory.LFun.KGL w (n := n) := by
-  let O : Subring (w.adicCompletion E) := Ov E w
-  have inj : Function.Injective (O.subtype.mapMatrix (m := Fin n)) :=
-    fun A B h => funext fun i => funext fun j => Subtype.ext (congrFun (congrFun h i) j)
-  let A : Matrix (Fin n) (Fin n) O := fun i j => ⟨g.val i j, h1 i j⟩
-  let B : Matrix (Fin n) (Fin n) O := fun i j => ⟨(g⁻¹).val i j, h2 i j⟩
-  have hA : O.subtype.mapMatrix A = g.val := rfl
-  have hB : O.subtype.mapMatrix B = (g⁻¹).val := rfl
-  refine ⟨⟨A, B, inj ?_, inj ?_⟩, Units.ext rfl⟩
-  · rw [map_mul, hA, hB, map_one, Units.mul_inv]
-  · rw [map_mul, hA, hB, map_one, Units.inv_mul]
+  apply _root_.GlobalTheory.BCT.GoodConj.mem_KGL_of_entries <;> assumption
 
 theorem entries_of_mem_KGL {w : Pl E} {k : GLw n w} (hk : k ∈ GlobalTheory.LFun.KGL w (n := n)) (i j : Fin n) :
     k.val i j ∈ w.adicCompletionIntegers E := by

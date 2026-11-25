@@ -279,7 +279,6 @@ theorem card_field (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [GrpOb
     have hx₁ : i t ^ 2 = 1 := hx
     exact ⟨⟨t, hi (by rw [map_pow, hx₁, map_one])⟩, rfl⟩
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem card_point {S : Scheme.{0}} (G : Over S) [GrpObj G] (hG : IsSemiAbelian G) (g : ℕ)
     (dG : SmoothOfRelativeDimension g G.hom) (k : Type) [Field k] [IsAlgClosed k] (h2 : ((2 : ℕ) : k) ≠ 0)
     (t : Sp k ⟶ S) (E : TorusExtension ((Over.pullback t).obj G)) :
@@ -837,7 +836,6 @@ theorem bound_algClosed (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [
 
 end PositivityTheory.Xgn.ToricTorsionRankBounds
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem PositivityTheory.Xgn.two_torsion_rank_bound : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G], IsSemiAbelian G → ∀ g : ℕ, SmoothOfRelativeDimension g G.hom → ∀ (k : Type) [Field k], ((2 : ℕ) : k) ≠ 0 → ∀ (x : Sp k ⟶ S) (Gk : Over (Sp k)) [GrpObj Gk] (ψ : Gk.left ⟶ G.left), IsGrpPullback Gk G x ψ → ∀ (τ : TorusExtension Gk) (m : ℕ) (Q : Fin m → (Over.mk x ⟶ G)), Function.Injective Q → (∀ i, Q i ^ 2 = 1) → (letI := τ.addCommGroup; m * 2 ^ Module.finrank ℤ τ.X ≤ 2 ^ (2 * g)) := by
   intro S G _ hG g hg k _ h2 x Gk _ ψ hψ τ m Q hQ hQ2
   let Ω := AlgebraicClosure k

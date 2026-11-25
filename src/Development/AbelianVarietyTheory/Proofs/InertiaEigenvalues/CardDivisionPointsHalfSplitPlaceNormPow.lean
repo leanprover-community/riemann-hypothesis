@@ -354,10 +354,6 @@ open GlobalTheory.Core.Rk.SWQ
 
 variable {D : D7} {q : GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift.FinPl D} {w : HeightOneSpectrum (𝓞 D.host.E)}
 
-private lemma selfDual_isFullLattice (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (hΛ : IsSelfDualC V Λ) : Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 def phi (h : w.under (𝓞 D.host.F) = q) {m n : ℕ} (B : Matrix (Fin m) (Fin m) (w.adicCompletion D.host.E))
     (A : Matrix (Fin n) (Fin n) (w.adicCompletion D.host.E)) :
     Matrix (Fin m) (Fin n) (AE D) →+ Matrix (Fin m) (Fin n) (w.adicCompletion D.host.E) :=
@@ -391,7 +387,7 @@ open GlobalTheory.Core.Rk.SWQ in
 theorem GlobalTheory.DivPtLocalCard.card_DQ_eq : ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ (P : Formalism.L2.DIV.Pl D.host.E), Formalism.MainNotions.SchurIrreducible.IsSplit (E := D.host.E) (P.under (𝓞 D.host.F)) → ∀ ι : P.adicCompletion D.host.E →+ AE D, GlobalTheory.DivPtLocal.IsIotaAt (rfl : P.under (𝓞 D.host.F) = P.under (𝓞 D.host.F)) ι → ∀ N : ℕ, 0 < N → Nat.card (GlobalTheory.DivPtFourier.DQ (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun v => v = P.under (𝓞 D.host.F)) (ι 1) N) = Nat.card (GlobalTheory.DivPtLocal.LocQ P N T.rank S.rank) := by
   intro D S T ΛS ΛT hS hT P hs ι hι N hN
   obtain ⟨e, ⟨⟨a, ha, -⟩, -⟩, -, -⟩ := GlobalTheory.LFun.SplitChart.exists_isSplitChart (GlobalTheory.AdelicU.isCMExt_host D)
-    (GlobalTheory.Doubling.isHermND_gram S) hS.1.fg (Submodule.IsFullLattice.span_eq_top (self := GlobalTheory.DivPtLocalCard.selfDual_isFullLattice S ΛS hS)) (rfl : P.under (𝓞 D.host.F) = _) hs
+    (GlobalTheory.Doubling.isHermND_gram S) hS.1.fg (Submodule.IsFullLattice.span_eq_top (self := Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS)) (rfl : P.under (𝓞 D.host.F) = _) hs
     (GlobalTheory.Core.Rk.IwSplit.isSelfDualAt_of_isSelfDualC hS _)
   obtain ⟨b, hb⟩ := GlobalTheory.Core.Rk.SWQ.LatHalf.mem_latO_iff_intM D _ P rfl hs S T ΛS ΛT hS hT a ha
   have hP : P.under (𝓞 D.host.F) = P.under (𝓞 D.host.F) := rfl

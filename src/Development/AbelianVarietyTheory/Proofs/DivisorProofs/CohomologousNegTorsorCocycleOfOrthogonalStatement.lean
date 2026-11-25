@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogChernCocycleContractionInvariantFieldTriviali
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCocCocOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTangentVectorContractionTwoCochainProduct
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PreimageEqTopOfSurjective
@@ -95,15 +96,7 @@ variable {R : Type} [CommRing R] {D D' : Type} [CommRing D] [CommRing D']
 
 theorem dl_mul (u u' : DualNumber D) (hu : IsUnit u.fst) (hu' : IsUnit u'.fst) :
     dl (u * u') = dl u + dl u' := by
-  obtain ⟨a, ha⟩ := hu
-  obtain ⟨b, hb⟩ := hu'
-  have e1 : (↑a : D) * ↑a⁻¹ = 1 := Units.mul_inv a
-  have e2 : (↑b : D) * ↑b⁻¹ = 1 := Units.mul_inv b
-  have e3 : Ring.inverse ((↑a : D) * ↑b) = ↑b⁻¹ * ↑a⁻¹ := by
-    rw [← Units.val_mul, Ring.inverse_unit, mul_inv_rev, Units.val_mul]
-  simp only [dl, TrivSqZeroExt.fst_mul, DualNumber.snd_mul, ← ha, ← hb, e3,
-    Ring.inverse_unit]
-  linear_combination (u'.snd * ↑b⁻¹) * e1 + (u.snd * ↑a⁻¹) * e2
+  apply _root_.GlobalTheory.CechKS.PrismDlog.dl_mul <;> assumption
 
 theorem dl_one_add (l : DualNumber D) (h : l.fst = 0) : dl (1 + l) = l.snd := by
   simp [dl, h]

@@ -235,15 +235,7 @@ variable {C : Type} [Field C] (v : AddValuation C (WithTop ℝ))
 
 theorem isInt_mul {τ : Type} {f g : MvPowerSeries τ C} (hf : MvIsInt v f) (hg : MvIsInt v g) :
     MvIsInt v (f * g) := by
-  classical
-  intro α
-  unfold IsIntV
-  rw [coeff_mul]
-  refine Finset.sum_induction _ (fun x => 0 ≤ v x)
-    (fun a b ha hb => le_trans (le_min ha hb) (v.map_add a b)) (by simp) ?_
-  intro p _
-  rw [v.map_mul]
-  exact add_nonneg (hf _) (hg _)
+  apply _root_.GlobalTheory.DepthNonneg.mvIsInt_mul <;> assumption
 
 
 open Classical in

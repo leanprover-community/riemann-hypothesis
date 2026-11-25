@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitLatticeUnimodularAndPrimitive
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HbApply
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -263,19 +264,7 @@ theorem hnd (x : (VS D).V) (H : ∀ y, (VS D).hT x y = 0) : x = 0 := (VS D).nond
 
 theorem fixedFrameOfWord_isotropicSpan_eq (X : HidaSetting D) (u : D.what₂.Word) :
     (GlobalTheory.TypeAsm.F0 X u).X = Submodule.span D.host.E (Set.range X.eX) := by
-  unfold Formalism.HermitianLatticeCounting.S6.FlagD.X Formalism.HermitianLatticeCounting.S6.FlagD.Xa
-  congr 1
-  ext v
-  simp only [Set.mem_image, Set.mem_setOf_eq, Set.mem_range]
-  constructor
-  · rintro ⟨b, hb, rfl⟩
-    refine ⟨b, ?_⟩
-    show X.eX b = (X.Fu u).fvec b.castSucc
-    rw [GlobalTheory.TypeAsm.fv_cast, HidaSetting.Fu_e]
-  · rintro ⟨b, rfl⟩
-    refine ⟨b, b.2, ?_⟩
-    show (X.Fu u).fvec b.castSucc = X.eX b
-    rw [GlobalTheory.TypeAsm.fv_cast, HidaSetting.Fu_e]
+  apply _root_.GlobalTheory.RowsOrb.Basic.fixed_frame_span <;> assumption
 
 theorem orth_span {x : (VS D).V} {r : ℕ} {v : Fin r → (VS D).V} (H : ∀ b, (VS D).hT x (v b) = 0)
     {y : (VS D).V} (hy : y ∈ Submodule.span D.host.E (Set.range v)) : (VS D).hT x y = 0 := by

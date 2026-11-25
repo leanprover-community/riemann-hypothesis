@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.KirillovVanishingOfLimit
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 public import Formalism.HermitianLattices.StatementMass
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsTraceOne
@@ -1639,15 +1640,7 @@ namespace GlobalTheory.FlagUnfold
 
 theorem tsum_pi_prod_le {ι : Type} [Fintype ι] {α : ι → Type} (f : ∀ i, α i → ENNReal) :
     ∑' t : ∀ i, α i, ∏ i, f i (t i) ≤ ∏ i, ∑' x, f i x := by
-  classical
-  rw [ENNReal.tsum_eq_iSup_sum]
-  refine iSup_le fun s => ?_
-  calc ∑ t ∈ s, ∏ i, f i (t i)
-      ≤ ∑ t ∈ Fintype.piFinset (fun i => s.image (fun t => t i)), ∏ i, f i (t i) := by
-        refine Finset.sum_le_sum_of_subset fun t ht => ?_
-        exact Fintype.mem_piFinset.2 fun i => Finset.mem_image_of_mem _ ht
-    _ = ∏ i, ∑ x ∈ s.image (fun t => t i), f i x := (Finset.prod_univ_sum _ _).symm
-    _ ≤ _ := Finset.prod_le_prod' fun i _ => ENNReal.sum_le_tsum _
+  apply _root_.GlobalTheory.JR.HeightSquareIntegrable.tsum_pi_prod_le' <;> assumption
 
 abbrev latRel (E : Type) [Field E] [NumberField E] (j : ℕ) :
     {Λ : Submodule (𝓞 E) (Fin j → E) // Submodule.IsFullLattice E Λ} →

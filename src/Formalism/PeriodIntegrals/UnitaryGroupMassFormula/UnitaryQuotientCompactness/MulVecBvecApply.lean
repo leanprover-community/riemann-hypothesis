@@ -150,26 +150,6 @@ lemma mul_mem_UW {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
   · rw [← Matrix.mulVec_mulVec, (hb2 i).2, (ha2 i).2]
   · rw [← Matrix.mulVec_mulVec, hb3, ha3]
 
-private lemma sign_mul_sign_piI_eq_one (i : Fin (2 * r + k + 1)) :
-    (if i.val = r + k then (-1 : ℂ) else 1) *
-      (if (piI k r i).val = r + k then (-1 : ℂ) else 1) = 1 := by
-  by_cases hW : r ≤ i.val ∧ i.val ≤ r + k
-  · have hp : piI k r i = i := by
-      unfold piI
-      exact if_pos hW
-    rw [hp]
-    split_ifs <;> norm_num
-  · have hi := i.isLt
-    have hp : piI k r i = ⟨2 * r + k - i.val, by omega⟩ := by
-      unfold piI
-      exact if_neg hW
-    rw [hp]
-    have h1 : ¬ (i.val = r + k) := by omega
-    have h2 : ¬ ((⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val = r + k) := by
-      show ¬ (2 * r + k - i.val = r + k)
-      omega
-    rw [if_neg h1, if_neg h2, one_mul]
-
 lemma inv_fix {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hU : a ∈ UH (Hpk k r))
     {v : Fin (2 * r + k + 1) → ℂ} (hv : a *ᵥ v = v) : a⁻¹ *ᵥ v = v := by
   have hU' : aᴴ * Hpk k r * a = Hpk k r := hU

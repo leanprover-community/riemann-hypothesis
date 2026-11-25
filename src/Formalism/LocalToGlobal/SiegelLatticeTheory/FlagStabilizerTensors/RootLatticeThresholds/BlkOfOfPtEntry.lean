@@ -299,16 +299,6 @@ theorem nr_units {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : �
   rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at this
   exact zero_ne_one this
 
-private theorem isUpUni_inv' {N : ℕ} {K : Type} [Field K] {U : Matrix (Fin N) (Fin N) K}
-    (h : IsUpUni U) : IsUpUni U⁻¹ := by
-  have h' : Formalism.DoubleCosetMeasures.IsUpUni U := by
-    refine ⟨?_, fun a => (h a a).2 rfl⟩
-    intro i j hij
-    exact (h i j).1 hij
-  have h2 := Formalism.DoubleCosetMeasures.isUpUni_inv K h'
-  intro i j
-  exact ⟨fun hij => h2.1 hij, fun hij => hij ▸ h2.2 i⟩
-
 private theorem conj_lemma_2 {N : ℕ} {K : Type} [Field K] (Z L B W U b S : Matrix (Fin N) (Fin N) K)
     (hZ : IsUnit Z.det) (hL : IsUnit L.det) (hU : IsUnit U.det) (hB : IsUnit B.det)
     (hS2 : S * S = 1) (hZ1 : Z * S = L * W * U) (hBW : B * W * b = W) :
@@ -340,43 +330,19 @@ private theorem conj_lemma_2 {N : ℕ} {K : Type} [Field K] (Z L B W U b S : Mat
     _ = Z⁻¹ * (Z * (S * (U⁻¹ * b * U) * S)) := by rw [hmain]
     _ = S * (U⁻¹ * b * U) * S := by rw [← Matrix.mul_assoc, hZinv, Matrix.one_mul]
 
-private theorem isUpUni_sgnM_conj {r : ℕ} {K : Type} [Field K] {B : Matrix (Fin (r + 1)) (Fin (r + 1)) K}
-    (hB : IsUpUni B) : IsUpUni ((sgnM r : Matrix (Fin (r + 1)) (Fin (r + 1)) K) * B * sgnM r) := by
-  intro i j
-  unfold sgnM
-  simp only [Matrix.diagonal_mul, Matrix.mul_diagonal]
-  refine ⟨fun hij => ?_, fun hij => ?_⟩
-  · rw [(hB i j).1 hij, mul_zero, zero_mul]
-  · subst hij
-    rw [(hB i i).2 rfl, mul_one, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow]
-
 theorem P'm_up_st {u' : D.what₂.Word} {u : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
     {F'' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)} {w : Point D.host.E (D.R.rS + 1)} {L U : MatR D}
     (hL : IsLoUni L) (hU : IsUpUni U) (hZu : IsUnit (Zhat F0 F'').det)
     (hZ1 : Zhat F0 F'' * sgnM D.R.rS = L * ptMat w * U) {β : GLR D} (hβ : β ∈ StSet (ptMat w)) :
     IsUpUni (P'm F0 F'' L (β : MatR D)) := by
   obtain ⟨_, b, hb, hβW⟩ := hβ
-  have hLd : IsUnit L.det := by
-    have h : L.det = 1 := by
-      rw [Matrix.det_of_lowerTriangular L (fun i j hij => (hL i j).1 (OrderDual.toDual_lt_toDual.mp hij))]
-      exact Finset.prod_eq_one fun i _ => (hL i i).2 rfl
-    rw [h]
-    exact isUnit_one
-  have hUd : IsUnit U.det := by
-    have h : U.det = 1 := by
-      rw [Matrix.det_of_upperTriangular (fun i j hij => (hU i j).1 hij)]
-      exact Finset.prod_eq_one fun i _ => (hU i i).2 rfl
-    rw [h]
-    exact isUnit_one
-  have hS2 : (sgnM D.R.rS : MatR D) * sgnM D.R.rS = 1 := by
-    unfold sgnM
-    rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1
-    funext i
-    rw [← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow]
+  have hLd : IsUnit L.det := by rw [lo_det hL]; exact isUnit_one
+  have hUd : IsUnit U.det := by rw [up_det hU]; exact isUnit_one
+  have hS2 : (sgnM D.R.rS : MatR D) * sgnM D.R.rS = 1 := sgnM_sq
   unfold P'm
   rw [conj_lemma_2 _ _ _ _ _ _ _ hZu hLd hUd (Matrix.isUnits_det_units β) hS2 hZ1 hβW]
-  exact isUpUni_sgnM_conj (Formalism.L2.SG.Pf.isUpUni_mul (Formalism.L2.SG.Pf.isUpUni_mul (isUpUni_inv' hU) hb) hU)
+  exact up_sgn
+    (Formalism.L2.SG.Pf.isUpUni_mul (Formalism.L2.SG.Pf.isUpUni_mul (up_inv hU) hb) hU)
 
 end Main
 
@@ -385,11 +351,7 @@ section Phi
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {u u' : D.what₂.Word}
 
 theorem hLu_of {L : MatR D} (hL : IsLoUni L) : IsUnit L.det := by
-  have h : L.det = 1 := by
-    rw [Matrix.det_of_lowerTriangular L (fun i j hij => (hL i j).1 (OrderDual.toDual_lt_toDual.mp hij))]
-    exact Finset.prod_eq_one fun i _ => (hL i i).2 rfl
-  rw [h]
-  exact isUnit_one
+  rw [lo_det hL]; exact isUnit_one
 
 theorem tw_isom_st (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
     (F'' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) {w : Point D.host.E (D.R.rS + 1)} {L U : MatR D}
@@ -821,37 +783,6 @@ section Rat
 
 variable {D : D7}
 
-private theorem sgnM_mul_self' {r : ℕ} {K : Type*} [Field K] :
-    (sgnM r : Matrix (Fin (r + 1)) (Fin (r + 1)) K) * sgnM r = 1 := by
-  unfold sgnM
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext b
-  rw [← mul_pow]
-  simp
-
-private theorem isUpUni_inv_and_isUnit_det_of_isUpUni {n : ℕ} {K : Type*} [Field K] {N : Matrix (Fin n) (Fin n) K} (hN : IsUpUni N) :
-    IsUpUni N⁻¹ ∧ IsUnit N.det := by
-  have hbt : N.BlockTriangular id := by
-    intro i j hij
-    exact (hN i j).1 hij
-  have hdet : N.det = 1 := by
-    rw [Matrix.det_of_upperTriangular hbt]
-    exact Finset.prod_eq_one fun i _ => (hN i i).2 rfl
-  have hu : IsUnit N.det := by rw [hdet]; exact isUnit_one
-  haveI : Invertible N := Matrix.invertibleOfIsUnitDet N hu
-  have hbt' : N⁻¹.BlockTriangular id := Matrix.blockTriangular_inv_of_blockTriangular hbt
-  refine ⟨fun i j => ⟨fun hji => hbt' hji, fun hij => ?_⟩, hu⟩
-  subst hij
-  have h1 : (N⁻¹ * N) i i = 1 := by rw [Matrix.nonsing_inv_mul N hu, Matrix.one_apply_eq]
-  rw [Matrix.mul_apply, Finset.sum_eq_single i] at h1
-  · rwa [(hN i i).2 rfl, mul_one] at h1
-  · intro c _ hc
-    rcases lt_or_gt_of_ne hc with h | h
-    · rw [hbt' h, zero_mul]
-    · rw [(hN c i).1 h, mul_zero]
-  · intro h; exact absurd (Finset.mem_univ i) h
-
 theorem P'm_eq {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
     {F'' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)} {w : Point D.host.E (D.R.rS + 1)} {L U : MatR D}
     (hL : IsLoUni L) (hU : IsUpUni U) (hZu : IsUnit (Zhat F0 F'').det)
@@ -859,14 +790,8 @@ theorem P'm_eq {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ)
     (hab : B * ptMat w * b = ptMat w) :
     P'm F0 F'' L B = sgnM D.R.rS * (U⁻¹ * b * U) * sgnM D.R.rS := by
   have hWu : IsUnit (ptMat w).det := isUnit_iff_ne_zero.mpr (Formalism.L2.SG.Pf.StabilizerIndexVolumes.ptMat_det w)
-  have hLu : IsUnit L.det := by
-    have hbt : Lᵀ.BlockTriangular id := by
-      intro i j h
-      exact (hL j i).1 h
-    rw [← Matrix.det_transpose, Matrix.det_of_upperTriangular hbt]
-    rw [Finset.prod_eq_one (fun i _ => (show Lᵀ i i = 1 from (hL i i).2 rfl))]
-    exact isUnit_one
-  have hs : (sgnM D.R.rS : MatR D) * sgnM D.R.rS = 1 := sgnM_mul_self'
+  have hLu : IsUnit L.det := by rw [lo_det hL]; exact isUnit_one
+  have hs : (sgnM D.R.rS : MatR D) * sgnM D.R.rS = 1 := sgnM_sq
   have hb2 : (ptMat w)⁻¹ * B⁻¹ * ptMat w = b := by
     have e : B⁻¹ * ptMat w = ptMat w * b := by
       calc B⁻¹ * ptMat w = B⁻¹ * (B * ptMat w * b) := by rw [hab]
@@ -888,7 +813,8 @@ theorem conjW_up {w : Point D.host.E (D.R.rS + 1)} {β : GLR D} (hβ : β ∈ St
       (β : MatR D)⁻¹ * ptMat w * ((ptMat w)⁻¹ * (β : MatR D) * ptMat w) = ptMat w := by
   obtain ⟨-, b, hb, hbW⟩ := hβ
   have hWu : IsUnit (ptMat w).det := isUnit_iff_ne_zero.mpr (Formalism.L2.SG.Pf.StabilizerIndexVolumes.ptMat_det w)
-  obtain ⟨hbi, hbu⟩ := isUpUni_inv_and_isUnit_det_of_isUpUni hb
+  have hbi := up_inv hb
+  have hbu : IsUnit b.det := by rw [up_det hb]; exact isUnit_one
   have hβu : IsUnit (β : MatR D).det := (Matrix.isUnit_iff_isUnit_det _).mp β.isUnit
   have h1 : (β : MatR D) * ptMat w = ptMat w * b⁻¹ := by
     conv_rhs => rw [← hbW]
@@ -1086,7 +1012,7 @@ theorem conj_shear {r : ℕ} {N : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hN : 
     {Y Y' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (a b : Fin (r + 1))
     (h : ∀ c d, a ≤ c → d ≤ b → (c, d) ≠ (a, b) → Y c d = Y' c d) :
     (N⁻¹ * Y * N) a b - Y a b = (N⁻¹ * Y' * N) a b - Y' a b := by
-  obtain ⟨hNi, -⟩ := isUpUni_inv_and_isUnit_det_of_isUpUni hN
+  have hNi := up_inv hN
   have key : ∀ Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ,
       (∀ c d, a ≤ c → d ≤ b → (c, d) ≠ (a, b) → Z c d = 0) → (N⁻¹ * Z * N) a b = Z a b := by
     intro Z hZ
@@ -1308,7 +1234,7 @@ theorem conj_key {n : ℕ} {K : Type*} [Field K] {L : Type*} [Field L] (φ : K �
         (S⁻¹ * (Mm.map φ * (sgnM n * ((U⁻¹).map φ * X.map φ * U.map φ) * sgnM n) * (Mm⁻¹).map φ) * S) =
       (sgnM n * X.map φ * sgnM n) * (sgnM n * U.map φ * sgnM n * (Mm⁻¹).map φ * S) := by
   have hs : ∀ Z : Matrix (Fin (n + 1)) (Fin (n + 1)) L, sgnM n * (sgnM n * Z) = Z := by
-    intro Z; rw [← mul_assoc, sgnM_mul_self', one_mul]
+    intro Z; rw [← mul_assoc, sgnM_sq, one_mul]
   have hm : ∀ Z : Matrix (Fin (n + 1)) (Fin (n + 1)) L, (Mm⁻¹).map φ * (Mm.map φ * Z) = Z := by
     intro Z; rw [← mul_assoc, map_inv_mul φ hMm, one_mul]
   have hu : ∀ Z : Matrix (Fin (n + 1)) (Fin (n + 1)) L, U.map φ * ((U⁻¹).map φ * Z) = Z := by

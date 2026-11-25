@@ -102,16 +102,7 @@ theorem pairResO_bijective (φ : X' ⟶ X) (s' : X' ⟶ Sp R') :
 
 theorem triResO_injective (ψ : X'' ⟶ X') (φ : X' ⟶ X) (s'' : X'' ⟶ Sp R'') :
     Function.Injective (cechTripleRestrictComposite ψ φ s'').pull1 := by
-  have key : ∀ c : HO1 s'', (cechTripleRestrictComposite ψ φ s'').pull1 ((pairRes (ψ ≫ φ) s'').pull1 c) =
-      (CoefMap.restrict (OAff s'') (cechTripleProjFirstThird ψ φ ⋙ pairFst (ψ ≫ φ))).pull1 c := fun c ↦ by
-    rw [← CoefMap.pullCohomologyOne_comp]
-    exact CoefMap.pullCohomologyOne_eq_of_natTrans _ _ { app U := 𝟙 _ } (fun U b ↦ mp_id (OAff s'') _ b) c
-  intro x y e
-  obtain ⟨x0, rfl⟩ := (pairResO_bijective (ψ ≫ φ) s'').1.2 x
-  obtain ⟨y0, rfl⟩ := (pairResO_bijective (ψ ≫ φ) s'').1.2 y
-  rw [key, key] at e
-  rw [(restrictO_bijective_of_basis s'' _ (triple_cover_affine ψ φ s'')
-    (exists_triple_below_two ψ φ s'')).1.1 e]
+  apply _root_.GlobalTheory.CompanionTheory.Axis.PullO.triple_restriction_injective <;> assumption
 
 variable {s : X ⟶ Sp R} {s' : X' ⟶ Sp R'} {s'' : X'' ⟶ Sp R''} {σ : R →+* R'} {τ : R' →+* R''}
   {φ : X' ⟶ X} {ψ : X'' ⟶ X'}

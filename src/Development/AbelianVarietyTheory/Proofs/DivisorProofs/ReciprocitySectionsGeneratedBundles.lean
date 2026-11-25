@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolomorphicMorseSectionsMLAddAUniform
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictPosOfExists
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConjFsBasisOfUnitary
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsClosedImmersionGenericPoint
@@ -984,29 +985,7 @@ open scoped ComplexOrder ComplexConjugate
 theorem cHess_posSemidef_of_levi {n : ℕ} {f : ReciprocityTheory.L2DbarEstimates.V n → ℝ} {x : ReciprocityTheory.L2DbarEstimates.V n} (hf : ContDiffAt ℝ 2 f x)
     (hL : ∀ ξ : Fin n → ℂ, 0 ≤ (leviV n (fun v => ((f v : ℝ) : ℂ)) x ξ).re) :
     (cHess n (fun v => ((f v : ℝ) : ℂ)) x).PosSemidef := by
-  classical
-  set g : ReciprocityTheory.L2DbarEstimates.V n → ℂ := fun v => ((f v : ℝ) : ℂ) with hg
-  have hg2 : ContDiffAt ℝ 2 g x := Complex.ofRealCLM.contDiff.contDiffAt.comp x hf
-  have hgc : (fun w => conj (g w)) = g := funext fun w => by simp [g]
-  have hH : (cHess n g x).IsHermitian := by
-    ext j k
-    simp only [Matrix.conjTranspose_apply, cHess, Matrix.of_apply]
-    show conj (wd n k (wdb n j g) x) = wd n j (wdb n k g) x
-    have h1 : (fun w => conj (wdb n j g w)) = wd n j g := by
-      funext w
-      rw [← ChartWirtingerDerivatives.wd_conj' n j g w, hgc]
-    rw [← ChartWirtingerDerivatives.wdb_conj' n k (wdb n j g) x, h1, comm_wd_wdb g x hg2 j k]
-  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hH fun y => ?_
-  have hre : dotProduct (star y) (Matrix.mulVec (cHess n g x) y) = leviV n g x (fun k => conj (y k)) := by
-    simp only [dotProduct, Matrix.mulVec, leviV, cHess, Matrix.of_apply, Finset.mul_sum,
-      Pi.star_apply, Complex.conj_conj]
-    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-    simp only [Complex.star_def]
-    ring
-  have him := hH.im_star_dotProduct_mulVec_self y
-  refine Complex.le_def.2 ⟨?_, ?_⟩
-  · rw [hre]; exact hL _
-  · simpa using him.symm
+  apply _root_.GlobalTheory.cHess_posSemidef_of_levi_nonneg <;> assumption
 
 theorem re_sum_perm_det_nonneg {D : ℕ} (A : Fin D → Matrix (Fin D) (Fin D) ℂ) (hA : ∀ i, (A i).PosSemidef) :
     0 ≤ (∑ τ : Equiv.Perm (Fin D), (Matrix.of fun j l => A (τ l) j l).det).re := by

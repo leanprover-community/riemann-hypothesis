@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeLowerBoundTopLatticeOffHypersurface
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LeadingCoeffNonnegOfEventuallyEvalNat
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChowFormIntExistsAndChowFormExists
@@ -1260,18 +1261,7 @@ theorem line_eq_lineSubst {F K : Type} [Field F] [Field K] [Algebra F K] {D N : 
 theorem eval_spec {F K : Type} [Field F] [Field K] [Algebra F K] {D N : ℕ}
     (s : Fin D → Fin N → K) (b : Fin N → K) (f : MvPolynomial (Fin (D + 1) × Fin N) F) :
     eval (fun p : Fin 1 × Fin N => b p.2) (spec s f) = aeval (join s b) f := by
-  simp only [spec]
-  induction f using MvPolynomial.induction_on with
-  | C c =>
-    simp only [aeval_C]
-    rw [IsScalarTower.algebraMap_apply F K (MvPolynomial (Fin 1 × Fin N) K)]
-    simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p n ih =>
-    simp only [map_mul, ih, aeval_X]
-    congr 1
-    obtain ⟨i, j⟩ := n
-    induction i using Fin.lastCases <;> simp [join]
+  apply _root_.GlobalTheory.HSShort.SlopeTop.eval_spec <;> assumption
 
 theorem lineSubst_lin {K : Type} [Field K] {N : ℕ} (a b y : Fin N → K) :
     lineSubst a b (lin y) = Polynomial.C (∑ j, a j * y j) + Polynomial.C (∑ j, b j * y j) * Polynomial.X := by

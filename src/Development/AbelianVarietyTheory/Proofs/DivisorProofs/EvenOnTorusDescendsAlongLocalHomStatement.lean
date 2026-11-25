@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniformisationFiniteExtSameMumfordBundle
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueTorusCompat
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsAddEquivOfSplitTorusIso
@@ -93,33 +94,7 @@ theorem exists_char_of_cub [ConnectedSpace S] [Module.Free ℤ X] (u : Γ((split
     (h₁ : ∀ (Z : Over S) (z : Z.left), gm (1 : Z ⟶ splitTorus S X).left z ⊤ u = 1) :
     ∃ χ : X, ∀ (Z : Over S) (t : Z ⟶ splitTorus S X) (z : Z.left),
       gm t.left z ⊤ u = gm (𝟙 Z.left) z ⊤ (chV t χ) := by
-  have := connectedSpace_torus (S := S) (X := X)
-  let pb : ∀ {W : Over S}, (W ⟶ splitTorus S X) → Γ(W.left, ⊤)ˣ := fun p => Units.map p.left.appTop.hom.toMonoidHom u
-  have hpb : ∀ {W Z : Over S} (p : W ⟶ splitTorus S X) (r : Z ⟶ W) (z : Z.left),
-      gm r.left z ⊤ (pb p) = gm (r ≫ p).left z ⊤ u := fun p r z => gm_pull r.left p.left z ⊤ trivial u
-  have hmul : ∀ (Z : Over S) (x y : Z ⟶ splitTorus S X) (z : Z.left),
-      gm (x * y).left z ⊤ u = gm x.left z ⊤ u * gm y.left z ⊤ u := by
-    intro Z x y z
-    let d : Γ((splitTorus S X ⊗ splitTorus S X).left, ⊤)ˣ :=
-      pb (fst _ _ * snd _ _) * (pb (fst _ _))⁻¹ * (pb (snd _ _))⁻¹
-    have hd : ∀ (Z : Over S) (x y : Z ⟶ splitTorus S X) (z : Z.left), gm (lift x y).left z ⊤ d =
-        gm (x * y).left z ⊤ u * (gm x.left z ⊤ u)⁻¹ * (gm y.left z ⊤ u)⁻¹ := fun Z x y z => by
-      simp only [d, map_mul, map_inv, hpb, MonObj.comp_mul, lift_fst, lift_snd]
-    have e := eq_one_of_mul d (fun Z t t' y z => by
-      have e' := congrArg Additive.ofMul (h₃ Z t t' y z)
-      rw [hd, hd, hd]
-      apply Additive.ofMul.injective
-      simp only [ofMul_mul, ofMul_inv] at e' ⊢
-      linear_combination (norm := abel) e') (fun Z t z => by
-        rw [hd, _root_.mul_one, h₁, mul_inv_cancel, inv_one, _root_.one_mul]) Z x y z
-    rw [hd, _root_.mul_assoc, ← mul_inv, mul_inv_eq_one] at e
-    exact e
-  have : ConnectedSpace (𝟙_ (Over S)).left := ‹ConnectedSpace S›
-  let ρ : Γ((splitTorus S X ⊗ 𝟙_ (Over S)).left, ⊤)ˣ := pb (fst _ _)
-  have hρ : ∀ (Z : Over S) (t : Z ⟶ splitTorus S X) (y : Z ⟶ 𝟙_ (Over S)) (z : Z.left),
-      gm (lift t y).left z ⊤ ρ = gm t.left z ⊤ u := fun Z t y z => by rw [hpb, lift_fst]
-  obtain ⟨χ, hχ, -⟩ := existsUnique_char ρ fun Z t t' y z => by rw [hρ, hρ, hρ, hmul]
-  exact ⟨χ, fun Z t z => (hρ Z t (toUnit _) z).symm.trans (hχ Z t _ z)⟩
+  apply _root_.GlobalTheory.EvenTransl.exists_char <;> assumption
 
 end GlobalTheory.TwistCompare
 
@@ -169,25 +144,8 @@ theorem exists_char_odd {S : Scheme.{0}} [ConnectedSpace S] {X : Type} [AddCommG
     {G : Over S} [GrpObj G] [IsCommMonObj G] {i : splitTorus S X ⟶ G} [IsMonHom i] (P : CP G) (σ : CubTriv P.c i) :
     ∃ κ : X, ∀ (T : Over S) (x : T ⟶ splitTorus S X) (z : T.left) (J), Good P.L.L z J →
       val σ.s (x⁻¹).left z J = gm (𝟙 T.left) z ⊤ (chV x κ) * (val P.sym (x ≫ i).left z J * val σ.s x.left z J) := by
-  obtain ⟨E, hE⟩ := exists_odd P σ.s σ.gen
-  obtain ⟨κ, hκ⟩ := exists_char_of_cub E (fun T x y u z => by
-      obtain ⟨C, hC⟩ := exists_good_pt P.L.isLB z
-      have a := σ.cub T x⁻¹ y⁻¹ u⁻¹ z C hC
-      have b := P.sym_cub T (x ≫ i) (y ≫ i) (u ≫ i) z C hC
-      simp only [← MonObj.mul_comp, ← GrpObj.inv_comp] at b
-      have o := odd_alg (σ := fun a : T ⟶ splitTorus S X => val σ.s a.left z C)
-        (s := fun a => val P.sym (a ≫ i).left z C) (E := fun a => gm a.left z ⊤ E) (fun a => hE T a z C hC)
-        (σ.cub T x y u z C hC) a b
-      have o' := congrArg Additive.ofMul o
-      apply Additive.ofMul.injective
-      simp only [ofMul_mul, ofMul_div, ofMul_one] at o' ⊢
-      linear_combination (norm := abel) o')
-    (fun T z => by
-      obtain ⟨C, hC⟩ := exists_good_pt P.L.isLB z
-      have e := hE T 1 z C hC
-      rw [inv_one, σ.val_one hC, MonObj.one_comp, P.val_sym_one hC, _root_.mul_one, _root_.mul_one] at e
-      exact e.symm)
-  exact ⟨κ, fun T x z J hJ => (hE T x z J hJ).trans (by rw [hκ])⟩
+  intros
+  apply _root_.GlobalTheory.EvenTransl.exists_shift <;> assumption
 
 end GlobalTheory.TwistCompare
 

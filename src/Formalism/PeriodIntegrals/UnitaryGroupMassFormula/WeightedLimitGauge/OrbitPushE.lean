@@ -86,14 +86,7 @@ theorem hypPar_mem (k : ℕ) (T' : ℝ) (hT' : 0 < T') (q : EuclideanSpace ℂ (
 
 theorem hypLF : HypLF := by
   intro k T' hT'
-  have hcont : Continuous (hypPar k T') := by
-    unfold hypPar
-    refine (continuous_pi (fun i => ?_)).prodMk ?_
-    · exact (EuclideanSpace.proj i).continuous.comp continuous_fst
-    · refine (Complex.continuous_ofReal.comp ?_).mul ?_
-      · exact Real.continuous_sqrt.comp (((continuous_norm.comp continuous_fst).pow 2).add continuous_const)
-      · exact Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const)
-  have hmeas : Measurable (hypPar k T') := hcont.measurable
+  have hmeas : Measurable (hypPar k T') := (continuous_hypPar k T').measurable
   have hSc : IsClosed (hypS k T') := by
     have h1 : Continuous (fun p : (Fin k → ℂ) × ℂ => ∑ i, Complex.normSq (p.1 i) - Complex.normSq p.2) :=
       (continuous_finsetSum _ (fun i _ => Complex.continuous_normSq.comp ((continuous_apply i).comp continuous_fst))).sub

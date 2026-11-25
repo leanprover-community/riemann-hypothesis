@@ -148,7 +148,6 @@ theorem valLatF_isFullLattice {K : Type} [Field K] [NumberField K] [StarRing K]
 
 end ValuationLatticeField
 
-open ValuationLatticeField
 
 theorem bounds_class_field_fixed : BoundsIClassF := by
   intro K _ _ _ n' n H' hH hdet E Pr hO Cl _ V _ _ _ _ _ pair hs hn Gam _ _ ρ hiso I hinj hI hCS

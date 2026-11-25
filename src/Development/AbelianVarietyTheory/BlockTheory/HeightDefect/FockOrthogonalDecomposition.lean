@@ -54,9 +54,6 @@ structure IsOrthDec (V : HSp D) (τ : D.what₂.Tau) (P N : Submodule D.host.E V
   pos : ∀ x ∈ P, x ≠ 0 → 0 < (tauE D τ (V.hT x x)).re
   neg : ∀ x ∈ N, x ≠ 0 → (tauE D τ (V.hT x x)).re < 0
 
-def IsSignInv (V : HSp D) (τ : D.what₂.Tau) (s : Module.End D.host.E V.V) : Prop :=
-  ∃ P N : Submodule D.host.E V.V, IsOrthDec V τ P N ∧ (∀ x ∈ P, s x = x) ∧ ∀ x ∈ N, s x = -x
-
 abbrev InvFam (V : HSp D) : Type := D.what₂.Tau → Module.End D.host.E V.V
 
 def thAt (V : HSp D) (τ : D.what₂.Tau) (s : Module.End D.host.E V.V) : Matrix (Fin V.rank) (Fin V.rank) ℂ :=

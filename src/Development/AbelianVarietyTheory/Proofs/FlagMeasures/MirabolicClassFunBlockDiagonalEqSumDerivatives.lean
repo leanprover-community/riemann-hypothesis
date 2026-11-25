@@ -743,10 +743,7 @@ def mir (g n : ℕ) [Fact g.Prime] : Subgroup (Gn g n) where
 theorem mem_mir {n : ℕ} (p : Gn g n) : p ∈ mir g n ↔ InMir (p : Mt g n) := Iff.rfl
 
 theorem tl_apply {m : ℕ} (A : Mt g (m + 1)) (i j : Fin m) : tl m A i j = A i.castSucc j.castSucc := by
-  have h1 : (i : ℕ) < m + 1 := by omega
-  have h2 : (j : ℕ) < m + 1 := by omega
-  simp only [tl, entN, h1, h2, and_self, dif_pos]
-  rfl
+  apply _root_.GlobalTheory.GLm.MirStep.tl_apply <;> assumption
 
 theorem tl_mul {m : ℕ} (A : Mt g (m + 1)) {B : Mt g (m + 1)} (hB : InMir B) : tl m (A * B) = tl m A * tl m B := by
   ext i j
@@ -1542,17 +1539,7 @@ theorem inR_iff_ent {i n : ℕ} (M : Mt g n) :
       exact (hB (i + a) (i + a) (by omega) (by omega)).2 rfl
 
 theorem inMir_of_inR {i n : ℕ} (hi : i < n) {M : Mt g n} (h : InR i M) : InMir M := by
-  rw [inR_iff_ent] at h
-  intro r c hr
-  have hM : M r c = entN M r c := by rw [entN, dif_pos ⟨r.2, c.2⟩]
-  rw [hM]
-  rcases lt_or_ge (c : ℕ) i with hc | hc
-  · rw [h.1 r c hc (by omega), Matrix.one_apply_ne (Fin.ne_of_val_ne (by omega))]
-  · rcases lt_or_eq_of_le (show (c : ℕ) ≤ r by omega) with hcr | hcr
-    · rw [(h.2 r c hc r.2).1 hcr, Matrix.one_apply_ne (Fin.ne_of_val_ne (by omega))]
-    · have e : c = r := Fin.ext hcr
-      rw [e, Matrix.one_apply_eq]
-      exact (h.2 r r (by omega) r.2).2 rfl
+  apply _root_.GlobalTheory.GLm.Stages.inMir_of_inR <;> assumption
 
 private theorem entN_tl' {k n : ℕ} (M : Mt g n) (a b : ℕ) :
     entN (tl k M) a b = if a < k ∧ b < k then entN M a b else 0 := by

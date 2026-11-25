@@ -798,10 +798,6 @@ namespace PI.ScPiBuildW.Rv
 
 open PI.ScPiExists
 
-lemma phi_star (I : Formalism.MainNotions.S.AutInst) (v : InfinitePlace I.F) (a : I.E) :
-    I.φ v (star a) = star (I.φ v a) := by
-  exact I.cm.cmUnram.2.1 (I.φ v) a
-
 lemma hJ_rv (I : Formalism.MainNotions.S.AutInst) (v : InfinitePlace I.F) (x y : Fin I.n → I.E) :
     hJ (I.ε v) (rv I v x) (rv I v y) = I.φ v (Formalism.UG.hform (starRingEnd I.E) I.J x y) := by
   apply PI.ScPiFrameW.hJ_rv
@@ -1642,8 +1638,6 @@ theorem BunExists_holds (D : D7) : BunExists D :=
 
 theorem CoefWeightedLoc_holds [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] : CoefWeightedLoc := Fact.out
 
-
-theorem WlocExists_holds : WlocExists := scWlocExists Formalism.L2.SG.HCReprodM.hcReprodDSm
 
 end Formalism.L2.SG.Closed
 end -- clump:auto

@@ -28,30 +28,15 @@ def deuring {K : Type u} [CommRing K] (a : K) : WeierstrassCurve K :=
 def IntegralModel {K : Type u} [NormedField K] (W : WeierstrassCurve K) : Prop :=
   ‖W.a₁‖ ≤ 1 ∧ ‖W.a₂‖ ≤ 1 ∧ ‖W.a₃‖ ≤ 1 ∧ ‖W.a₄‖ ≤ 1 ∧ ‖W.a₆‖ ≤ 1
 
-def LegendreInv : Prop :=
-  ∀ (K : Type u) [CommRing K] (l : K),
-    (legendre l).Δ = 16 * l ^ 2 * (l - 1) ^ 2 ∧ (legendre l).c₄ = 16 * (l ^ 2 - l + 1)
-
 def DeuringInv : Prop :=
   ∀ (K : Type u) [CommRing K] (a : K),
     (deuring a).Δ = a ^ 3 - 27 ∧ (deuring a).c₄ = a * (a ^ 3 - 24)
-
-def ModelLegendre : Prop :=
-  ∀ (K : Type u) [NormedField K] [IsUltrametricDist K] [IsAlgClosed K],
-    ‖(2 : K)‖ = 1 → ∀ j : K, ‖j‖ ≤ 1 →
-      ∃ l : K, ‖l‖ = 1 ∧ ‖l - 1‖ = 1 ∧
-        (legendre l).c₄ ^ 3 = j * (legendre l).Δ ∧ ‖(legendre l).Δ‖ = 1
 
 def ModelDeuring : Prop :=
   ∀ (K : Type u) [NormedField K] [IsUltrametricDist K] [IsAlgClosed K],
     ‖(3 : K)‖ = 1 → ∀ j : K, ‖j‖ ≤ 1 →
       ∃ a : K, ‖a‖ ≤ 1 ∧
         (deuring a).c₄ ^ 3 = j * (deuring a).Δ ∧ ‖(deuring a).Δ‖ = 1
-
-def ModelUnit : Prop :=
-  ∀ (K : Type u) [NormedField K] [IsUltrametricDist K] [IsAlgClosed K] (j : K), ‖j‖ ≤ 1 →
-    ∃ (W : WeierstrassCurve K) (_ : W.IsElliptic),
-      IntegralModel W ∧ ‖W.Δ‖ = 1 ∧ W.j = j
 
 def IntValuedZp : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (K : Type u) [NormedField K] [NormedAlgebra ℚ_[p] K]

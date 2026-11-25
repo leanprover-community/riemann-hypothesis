@@ -74,9 +74,6 @@ structure IsPd : Prop where
 
 def rA (I : Finset (Fin (d + 1))) : Subalgebra k F := Algebra.adjoin k {y | ∃ i ∈ I, ∃ j, y = x j / x i}
 
-def tw (m : ℤ) (I : Finset (Fin (d + 1))) : Submodule k F :=
-  ⨅ i ∈ I, (Subalgebra.toSubmodule (rA k x I)).comap (LinearMap.mulLeft k ((x 0 / x i) ^ m))
-
 def omA (I : Finset (Fin (d + 1))) : Submodule k F :=
   ⨅ i ∈ I, (Subalgebra.toSubmodule (rA k x I)).comap (LinearMap.mulLeft k (∏ j, x i / x j))
 
@@ -90,8 +87,6 @@ structure IsBundle (L : Finset (Fin (d + 1)) → Submodule k W) : Prop where
   proj : ∀ i, Module.Projective (rA k x {i}) (Submodule.span (rA k x {i}) (L {i} : Set W))
   loc : ∀ I, ∀ i ∈ I, L I = (Submodule.span (rA k x I) (L {i} : Set W)).restrictScalars k
 
-def kpair (ρ : F →ₗ[k] k) (β : W →ₗ[F] W' →ₗ[F] F) : W →ₗ[k] W' →ₗ[k] k := (β.restrictScalars₁₂ k k).compr₂ ρ
-
 end Proj
 
 section Forms
@@ -101,15 +96,9 @@ variable (k : Type) [Field k] (K : Type) [Field K] [Algebra k K]
 def omB (B : Subalgebra k K) (q : ℕ) : Submodule k (DR k K) :=
   Submodule.span k {y | ∃ b ∈ B, ∃ v : Fin q → K, (∀ j, v j ∈ B) ∧ y = b • ExteriorAlgebra.ιMulti K q fun j => D k K (v j)}
 
-def trunc (b : ℕ) : DR k K →ₗ[k] DR k K :=
-  ∑ q ∈ Finset.range b, (GradedAlgebra.proj (fun i : ℕ => ⋀[K]^i Ω[K⁄k]) q).restrictScalars k
-
 def sg : DR k K →ₐ[k] DR k K := (sgn (R := k) (B := K)).restrictScalars k
 
 variable {K} {ι : Type} [LinearOrder ι]
-
-def tot (B : Finset ι → Subalgebra k K) (a b : ℕ) : Cx k (Finset ι → DR k K) :=
-  ⟨totC (fun q s => omB k K (B s) q) a b, totD (trunc k K b ∘ₗ dDR k K)⟩
 
 variable (K) {F : Type} [Field F] [Algebra k F] [Algebra F K] [IsScalarTower k F K] {d : ℕ} (x : Fin (d + 1) → F)
 
@@ -131,9 +120,6 @@ def IsTop (τ : DR k K →ₗ[K] K) : Prop := τ (vol0 k K x) = 1 ∧ ∀ q, q �
 variable {K} in
 def trF (τ : DR k K →ₗ[K] K) (ρ : F →ₗ[k] k) : DR k K →ₗ[k] k :=
   ρ ∘ₗ (Algebra.trace F K).restrictScalars k ∘ₗ τ.restrictScalars k
-
-def hyp : Finset (Fin (d + 1)) → DR k K := fun s =>
-  ∑ i ∈ s, ∑ j ∈ s, if s.card = 2 ∧ i < j then (algebraMap F K (x j / x i))⁻¹ • ι1 (D k K (algebraMap F K (x j / x i))) else 0
 
 end Forms
 

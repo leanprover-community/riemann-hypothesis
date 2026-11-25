@@ -54,14 +54,6 @@ section General
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
-theorem smInd_equiv_of_eq [TopologicalSpace G] [IsTopologicalGroup G] {H H' : Subgroup G} (h : H = H')
-    (σ : Representation ℂ H V) (σ' : Representation ℂ H' V)
-    (hσ : ∀ g (hg : g ∈ H) (hg' : g ∈ H'), σ ⟨g, hg⟩ = σ' ⟨g, hg'⟩) :
-    Nonempty ((smInd H σ).Equiv (smInd H' σ')) := by
-  subst h
-  obtain rfl : σ = σ' := MonoidHom.ext fun g => hσ g.1 g.2 g.2
-  exact ⟨Representation.Equiv.refl _⟩
-
 end General
 
 section Blocks

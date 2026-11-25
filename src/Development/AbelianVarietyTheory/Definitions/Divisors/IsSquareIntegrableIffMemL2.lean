@@ -118,10 +118,6 @@ theorem kfin_iff : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : 
 
 
 
-omit [NumberField E] in
-theorem isMaxCpt_infPts (h : IsCompact (infPts σ J : Set (GAd σ J))) : IsMaxCpt σ J (infPts σ J) :=
-  ⟨⟨le_rfl, h⟩, fun _ hK _ => hK.1⟩
-
 theorem le_one_of_pow_mul_le {t a M : ℝ} (ha : 0 < a) (h : ∀ k : ℕ, t ^ k * a ≤ M) : t ≤ 1 := by
   by_contra ht
   obtain ⟨k, hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt (not_le.1 ht)).atTop_mul_const ha).eventually_gt_atTop M |>.exists
@@ -243,13 +239,6 @@ theorem isMaxCpt_majCpt (h : IsCMExt F E σ) {c : ∀ w : InfinitePlace F, GL (F
 omit [NumberField E] in
 theorem isConstTerm_iff : IsConstTerm σ J C φ c ↔ IsConstTermOn σ J (unipRad σ J C) φ c := Iff.rfl
 
-theorem isConstTerm_iff_unipFlag : IsConstTerm σ J C φ c ↔ IsConstTermOn σ J (unipFlag σ J C fun _ => 0) φ c := by
-  rw [unipFlag_const]; rfl
-
-
-omit [NumberField E] in
-theorem isConstTermOn_const (N : Subgroup (GAd σ J)) (a : ℂ) : IsConstTermOn σ J N (fun _ => a) fun _ => a :=
-  fun μ 𝓕 _ _ h _ => by simp [Measure.real, h]
 
 theorem isConstTermOn_constTermOn [LocallyCompactSpace N] (hφ : LeftInv (ratPts σ J ⊓ N) φ) :
     IsConstTermOn σ J N φ (constTermOn (ratPts σ J) N φ) := fun μ 𝓕 _ h h1 g => by

@@ -294,29 +294,21 @@ theorem conj_mem_lieOf (X : Mx k r) (hX : X ∈ lieOf (Nset k r)) : tT k r * X *
 
 theorem uE_mem : ∀ x ∈ lieE (Nset k r), uE k r x ∈ lieE (Nset k r) := by
   intro x hx
-  unfold lieE at hx ⊢
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨X, hX, rfl⟩ := hy
-    show uE k r ((WithLp.equiv 2 _).symm (realifyFun X)) ∈ _
-    rw [uE_realify]
-    exact Submodule.subset_span ⟨_, conjI_mem_lieOf X hX, rfl⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add y z _ _ hy hz => rw [map_add (f := _)]; exact Submodule.add_mem _ hy hz
-  | smul c y _ hy => rw [map_smul]; exact Submodule.smul_mem _ c hy
+  unfold lieE at hx
+  refine (Submodule.span_le.2 ?_ : _ ≤ (lieE (Nset k r)).comap (uE k r)) hx
+  rintro _ ⟨X, hX, rfl⟩
+  show uE k r ((WithLp.equiv 2 _).symm (realifyFun X)) ∈ lieE (Nset k r)
+  rw [uE_realify]
+  exact Submodule.subset_span ⟨_, conjI_mem_lieOf X hX, rfl⟩
 
 theorem uEI_mem : ∀ x ∈ lieE (Nset k r), uEI k r x ∈ lieE (Nset k r) := by
   intro x hx
-  unfold lieE at hx ⊢
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨X, hX, rfl⟩ := hy
-    show uEI k r ((WithLp.equiv 2 _).symm (realifyFun X)) ∈ _
-    rw [uEI_realify]
-    exact Submodule.subset_span ⟨_, conj_mem_lieOf X hX, rfl⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add y z _ _ hy hz => rw [map_add (f := _)]; exact Submodule.add_mem _ hy hz
-  | smul c y _ hy => rw [map_smul]; exact Submodule.smul_mem _ c hy
+  unfold lieE at hx
+  refine (Submodule.span_le.2 ?_ : _ ≤ (lieE (Nset k r)).comap (uEI k r)) hx
+  rintro _ ⟨X, hX, rfl⟩
+  show uEI k r ((WithLp.equiv 2 _).symm (realifyFun X)) ∈ lieE (Nset k r)
+  rw [uEI_realify]
+  exact Submodule.subset_span ⟨_, conj_mem_lieOf X hX, rfl⟩
 
 def uL (k r : ℕ) : lieE (Nset k r) ≃ₗᵢ[ℝ] lieE (Nset k r) where
   toLinearEquiv := LinearEquiv.ofLinear ((uE k r).restrict uE_mem) ((uEI k r).restrict uEI_mem)

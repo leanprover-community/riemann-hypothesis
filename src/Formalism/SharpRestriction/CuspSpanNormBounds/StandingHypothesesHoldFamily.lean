@@ -1482,7 +1482,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField
 
 section TMod
 
-open NumberField
 
 theorem int_dvd_of_dvd_ringOfIntegers (E : Type) [Field E] [NumberField E] (a b : ℤ)
     (h : (b : 𝓞 E) ∣ (a : 𝓞 E)) : b ∣ a := by

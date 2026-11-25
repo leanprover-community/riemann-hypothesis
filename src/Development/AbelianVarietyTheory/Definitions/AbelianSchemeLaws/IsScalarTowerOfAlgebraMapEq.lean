@@ -48,7 +48,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
-attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 namespace GlobalTheory.AbLaw
 variable {X X' : Scheme.{0}} {R R' : Type} [CommRing R] [CommRing R']
@@ -76,9 +75,6 @@ def restrict (h : W ≤ V) : SecOn M V →ₛₗ[rs X h] SecOn M W where
   toFun s := (toMod M).presheaf.map (homOfLE h).op s
   map_add' s t := sec_ext fun i => by simp only [coord_map, coord_add, map_add (f := _)]
   map_smul' a s := sec_ext fun i => by simp only [coord_map, coord_smul, map_mul, rs_rs]
-
-theorem restrict_eq_map (h : W ≤ V) (s : SecOn M V) :
-    restrict M h s = (toMod M).presheaf.map (homOfLE h).op s := rfl
 
 @[simp] theorem coord_restrict (h : W ≤ V) (s : SecOn M V) (i : M.ι) :
     coord (restrict M h s) i = rs X (inf_le_inf_right _ h) (coord s i) := rfl
@@ -641,17 +637,5 @@ end Cech
 
 def secOnTrivEquiv (V : X.Opens) : SecOn (Inh.trivLB X) V ≃ₗ[Γ(X, V)] Γ(X, V) :=
   SecOn.chart (Inh.trivLB_isLB X) PUnit.unit le_top
-
-def secOnRTrivEquiv (f : X ⟶ Spec (CommRingCat.of R)) [IsIso f] {V : X.Opens} (hV : V = ⊤) :
-    R ≃ₗ[R] SecOnR f (Inh.trivLB X) V :=
-  LinearEquiv.ofBijective
-    (LinearMap.toSpanSingleton R _ (SecOnR.of f _ V ((secOnTrivEquiv V).symm 1)))
-    (by
-      have e : ⇑(LinearMap.toSpanSingleton R _ (SecOnR.of f _ V ((secOnTrivEquiv V).symm 1))) =
-          (secOnTrivEquiv V).symm ∘ cst f V := funext fun r =>
-        (((secOnTrivEquiv V).symm.map_smul (cst f V r) 1).symm).trans
-          (congrArg (secOnTrivEquiv V).symm (_root_.mul_one _))
-      rw [e]
-      exact (secOnTrivEquiv V).symm.bijective.comp (cst_bijective f hV))
 
 end GlobalTheory.AbLaw

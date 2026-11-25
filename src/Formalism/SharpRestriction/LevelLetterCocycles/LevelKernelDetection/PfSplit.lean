@@ -30,23 +30,12 @@ namespace Formalism.MainNotions.N.Ln03.Pf
 
 open Module
 
-private theorem exists_linear_rightInverse_of_surjective {R : Type} [CommRing R] {m₁ m₂ : ℕ}
-    (f : (Fin m₁ → R) →ₗ[R] (Fin m₂ → R)) (hf : Function.Surjective f) :
-    ∃ s : (Fin m₂ → R) →ₗ[R] (Fin m₁ → R), ∀ y, f (s y) = y := by
-  refine ⟨(Pi.basisFun R (Fin m₂)).constr R (fun j => (hf (Pi.single j 1)).choose), ?_⟩
-  have h : f ∘ₗ (Pi.basisFun R (Fin m₂)).constr R (fun j => (hf (Pi.single j 1)).choose)
-      = LinearMap.id := by
-    refine (Pi.basisFun R (Fin m₂)).ext fun j => ?_
-    rw [LinearMap.comp_apply, Basis.constr_basis, LinearMap.id_apply, Pi.basisFun_apply]
-    exact (hf (Pi.single j 1)).choose_spec
-  intro y
-  exact LinearMap.congr_fun h y
-
 theorem exists_basis_of_surjective {R : Type} [CommRing R] [IsLocalRing R] {m₁ m₂ : ℕ}
     (f : (Fin m₁ → R) →ₗ[R] (Fin m₂ → R)) (hf : Function.Surjective f) :
     ∃ B : Module.Basis (Fin m₂ ⊕ Fin (m₁ - m₂)) R (Fin m₁ → R),
       (∀ j, f (B (Sum.inl j)) = Pi.single j 1) ∧ ∀ j, f (B (Sum.inr j)) = 0 := by
-  obtain ⟨s, hs⟩ := exists_linear_rightInverse_of_surjective f hf
+  obtain ⟨s, hs⟩ := Module.projective_lifting_property f LinearMap.id hf
+  replace hs : ∀ y, f (s y) = y := LinearMap.congr_fun hs
   have hfk : ∀ k : LinearMap.ker f, f (k : Fin m₁ → R) = 0 := fun k => LinearMap.mem_ker.mp k.2
   let q : (Fin m₁ → R) →ₗ[R] (Fin m₁ → R) := LinearMap.id - s ∘ₗ f
   have hq : ∀ x, q x = x - s (f x) := fun x => by

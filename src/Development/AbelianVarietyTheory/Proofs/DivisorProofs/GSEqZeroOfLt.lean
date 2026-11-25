@@ -73,18 +73,7 @@ theorem val_pow_lt_one {ϖ : kˣ} (hϖ : IsUnif ϖ) {c : ℕ} (hc : 1 ≤ c) : v
 
 theorem val_rep_unit {ϖ : kˣ} (hϖ : IsUnif ϖ) {c : ℕ} (hc : 1 ≤ c) (y : (Res k c)ˣ) :
     valuation k (rep (y : Res k c)) = 1 := by
-  have h1 : valuation k (rep (y : Res k c) * rep ((y⁻¹ : (Res k c)ˣ) : Res k c) - 1) ≤
-      valuation k (ϖ : k) ^ c := by
-    have := (mk_eq_mk_iff hϖ c (Quotient.out (y : Res k c) * Quotient.out ((y⁻¹ : (Res k c)ˣ) : Res k c)) 1).1
-      (by rw [map_mul, Ideal.Quotient.mk_out, Ideal.Quotient.mk_out, Units.mul_inv, map_one])
-    simpa [rep] using this
-  have h2 : valuation k (rep (y : Res k c) * rep ((y⁻¹ : (Res k c)ˣ) : Res k c)) = 1 := by
-    have := (valuation k).map_one_add_of_lt (h1.trans_lt (val_pow_lt_one hϖ hc))
-    simpa using this
-  rw [map_mul] at h2
-  refine le_antisymm (rep_le_one _) ?_
-  calc (1 : ValueGroupWithZero k) = _ := h2.symm
-    _ ≤ _ := mul_le_of_le_one_right' (rep_le_one _)
+  apply _root_.PositivityTheory.ThK.GaussNe.val_rep_unit <;> assumption
 
 theorem rep_ne_zero {ϖ : kˣ} (hϖ : IsUnif ϖ) {c : ℕ} (hc : 1 ≤ c) (y : (Res k c)ˣ) : rep (y : Res k c) ≠ 0 := by
   intro h
@@ -100,18 +89,7 @@ theorem psi_congr {ψl : k → ℂ} (hadd : ∀ x y, ψl (x + y) = ψl x * ψl y
 
 theorem nu_congr {ϖ : kˣ} (hϖ : IsUnif ϖ) {c : ℕ} (hc1 : 1 ≤ c) {ν : kˣ →* ℂˣ} (hc : CondLE ϖ c ν) {a b : kˣ}
     (hb : valuation k (b : k) = 1) (h : valuation k ((a : k) - b) ≤ valuation k (ϖ : k) ^ c) : ν a = ν b := by
-  have hlt : valuation k ((a : k) - b) < valuation k (b : k) := by
-    rw [hb]; exact h.trans_lt (val_pow_lt_one hϖ hc1)
-  have ha : valuation k (a : k) = 1 := ((valuation k).map_eq_of_sub_lt hlt).trans hb
-  have hw : a * b⁻¹ ∈ unitCong (ϖ ^ c) := by
-    refine ⟨by simp [ha, hb], ?_⟩
-    have e : ((a * b⁻¹ : kˣ) : k) - 1 = ((a : k) - b) * (b : k)⁻¹ := by
-      rw [Units.val_mul, Units.val_inv_eq_inv_val, sub_mul, mul_inv_cancel₀ b.ne_zero]
-    rw [e, map_mul, map_inv₀, hb, inv_one, mul_one, Units.val_pow_eq_pow_val, map_pow]
-    exact h
-  have := hc _ hw
-  rw [map_mul, map_inv, mul_inv_eq_one] at this
-  exact this
+  apply _root_.PositivityTheory.ThK.GaussNe.nu_congr <;> assumption
 
 end Generic
 end GlobalTheory.GaussNonvanish

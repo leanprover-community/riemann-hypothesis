@@ -451,61 +451,13 @@ theorem cl_prod_le {α τ : Type*} (P : α → Prop) [DecidablePred P] (w : α �
   · rw [finsum_of_infinite_support hS, zero_mul]
     exact finsum_nonneg hG0
 
-private theorem antitone_of_succ_le' {r : ℕ} (f : Fin r → ℤ) (h : ∀ i j : Fin r, i.val + 1 = j.val → f j ≤ f i) :
-    ∀ i j : Fin r, i ≤ j → f j ≤ f i := by
-  intro ⟨i, hi⟩ ⟨j, hj⟩ hij
-  simp only [Fin.mk_le_mk] at hij
-  induction j with
-  | zero =>
-    have : i = 0 := by omega
-    subst this; exact le_rfl
-  | succ j ih =>
-    rcases Nat.lt_or_ge i (j + 1) with hlt | hge
-    · exact le_trans (h ⟨j, by omega⟩ ⟨j + 1, hj⟩ rfl) (ih (by omega) (by omega))
-    · have : i = j + 1 := by omega
-      subst this; exact le_rfl
-
-private theorem antitone_pair_of_strip {r : ℕ} {nu mu : Fin r → ℤ} {g : ℕ} (h : Strip nu mu g) :
-    (∀ i j : Fin r, i ≤ j → nu j ≤ nu i) ∧ (∀ i j : Fin r, i ≤ j → mu j ≤ mu i) := by
-  obtain ⟨h1, h2, -⟩ := h
-  exact ⟨antitone_of_succ_le' nu (fun i j hij => le_trans (h2 i j hij) (h1 i)),
-    antitone_of_succ_le' mu (fun i j hij => le_trans (h1 j) (h2 i j hij))⟩
-
-private theorem antitone_last_of_isChain {N r : ℕ} {LL : ChainLetters N} {ka : Fin (N + 1) → Fin r → ℤ}
-    (h : IsChain LL ka) : ∀ i j : Fin r, i ≤ j → ka (Fin.last N) j ≤ ka (Fin.last N) i := by
-  obtain ⟨h0, hs⟩ := h
-  cases N with
-  | zero =>
-    intro i j _
-    have e : Fin.last 0 = 0 := by ext; simp
-    rw [e, h0]; simp
-  | succ N =>
-    intro i j hij
-    have := hs (Fin.last N)
-    rw [Fin.succ_last] at this
-    split_ifs at this
-    · exact (antitone_pair_of_strip this).1 i j hij
-    · exact (antitone_pair_of_strip this).2 i j hij
-
-private theorem wdim_pos_of_antitone {r : ℕ} (lam : Fin r → ℤ) (h : ∀ i j : Fin r, i ≤ j → lam j ≤ lam i) :
-    0 < wdim lam := by
-  unfold wdim
-  apply Finset.prod_pos; intro i _
-  apply Finset.prod_pos; intro j _
-  split_ifs with hij
-  · have hl : (lam j : ℚ) ≤ (lam i : ℚ) := by exact_mod_cast h i j hij.le
-    have hij' : ((i : ℕ) : ℚ) < ((j : ℕ) : ℚ) := by exact_mod_cast (show (i : ℕ) < (j : ℕ) from hij)
-    apply div_pos <;> linarith
-  · exact one_pos
-
 theorem cl_Fs_nonneg (C0 CE1 CE2 : ℝ) (X : Loc) [NeZero X.m] (j : Fin (numSeg X.TT)) (m : ℝ)
     (rz ry : Fin (segS X.TT j) → Fin (X.m + 1) → ℕ) (z : FinalTheorems (segS X.TT j) X.m (X.seg C0 CE1 CE2 j).t) :
     0 ≤ Fs C0 CE1 CE2 X j m rz ry z := by
   unfold Fs
   split_ifs with hok
-  · refine mul_nonneg (wdim_pos_of_antitone _ ?_).le (Nat.cast_nonneg _)
-    obtain ⟨-, -, hch, -⟩ := hok
-    exact antitone_last_of_isChain hch
+  · obtain ⟨-, -, hch, -⟩ := hok
+    exact mul_nonneg (wdim_pos (IsChain.anti_last hch)).le (Nat.cast_nonneg _)
   · exact le_refl 0
 
 theorem cl_Fs_finite {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
@@ -532,14 +484,6 @@ theorem cl_Fs_finite {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
       unfold Fs Gt
       rw [if_pos hz', if_pos ⟨h1, h2, by rw [h4]; exact hjp⟩, h3, h4])).1
 
-private theorem antitone_lam_of_inter {r : ℕ} {mu : Fin (r + 1) → ℤ} {lam : Fin r → ℤ} (h : Inter mu lam) :
-    ∀ i j : Fin r, i ≤ j → lam j ≤ lam i :=
-  antitone_of_succ_le' lam (fun i j hij => by
-    have e : j.castSucc = i.succ := Fin.ext (by simp only [Fin.coe_castSucc, Fin.val_succ]; omega)
-    have h1 := (h j).2
-    rw [e] at h1
-    exact le_trans h1 (h i).1)
-
 theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
     (hMU : MatchUpAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc) (hML : MatchLowAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc) :
     MatchAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
@@ -547,12 +491,7 @@ theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
   intro X _ hD hI hc j m hm hmA rz ry hdig
   obtain ⟨Ψ, hinj, hΨ⟩ := hML X hD hI hc j m hm hmA rz ry hdig
   have hfin := cl_Fs_finite hCD hMU X hD hI hc j m hm rz ry hdig
-  have e : (∑ᶠ z, Fs C0 CE1 CE2 X j m rz ry z) =
-      ∑ᶠ b, ∑ᶠ x, ∑ᶠ ka, Fs C0 CE1 CE2 X j m rz ry (b, x, ka) := by
-    rw [finsum_curry _ hfin]
-    refine finsum_congr (fun b => ?_)
-    exact finsum_curry _ (hfin.preimage (fun y1 _ y2 _ h => (Prod.mk.inj h).2))
-  rw [chainCount_eq, ← e]
+  rw [chainCount_eq, ← finsum_curry3 (Fs C0 CE1 CE2 X j m rz ry) hfin]
   have key := cl_prod_le (fun x : (Fin (2 * segS X.TT j + 1 + 1) → Fin (X.m + 1) → ℤ) × (Fin X.m → ℤ) =>
       IsPair (((X.seg C0 CE1 CE2 j).A0 X.p - (⌈m⌉₊ : ℤ)).toNat) (clA C0 CE1 CE2 X j rz ry)
           (clC C0 CE1 CE2 X j rz ry) x.1 x.2 ∧
@@ -561,7 +500,7 @@ theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
     (by
       intro a ha
       obtain ⟨⟨-, hint⟩, -⟩ := ha
-      exact wdim_pos_of_antitone _ (antitone_lam_of_inter hint))
+      exact wdim_pos (inter_anti hint))
     ⌊X.La C0 * ((X.seg C0 CE1 CE2 j).bPlus : ℝ) / X.k⌋₊
     (fun jp => (sdXi X.m ((X.seg C0 CE1 CE2 j).bPlus - jp) : ℚ))
     (by intro n; unfold sdXi; exact_mod_cast Nat.choose_pos (by omega))

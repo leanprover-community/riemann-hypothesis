@@ -19,18 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel.AnResBridge
 open ReciprocityTheory.ChartRestriction.G.Geo
 open MvPolynomial MeasureTheory ReciprocityTheory.AnForm.M Topology Filter
 
-private theorem prod_norm_update_zpow {K : Type} [Fintype K] [DecidableEq K] (k0 : K) (v : ℂ) (a : K → ℤ) :
-    ∏ k, ‖Function.update (fun _ => (1 : ℂ)) k0 v k‖ ^ a k = ‖v‖ ^ a k0 := by
-  rw [Finset.prod_eq_single k0]
-  · simp
-  · intro k _ hk
-    simp [hk]
-  · intro h
-    exact absurd (Finset.mem_univ k0) h
-
-private theorem maDensity_eq_maDens {D : ℕ} (φ : Fin D → (Fin D → ℂ) → ℝ)
-    (z : Fin D → ℂ) : maDensity φ z = ReciprocityTheory.AnForm.maDens φ z := rfl
-
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
   {P J : Ideal (MRing ι)} {e : ℕ}
   (R : AnRes P J e) (Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ))
@@ -154,7 +142,10 @@ theorem exists_sheet_of_resolution (L : Fin e → HermLine ι) (A : HermLine ι)
         have hn0 : ‖(ψ0 y')⁻¹‖ ^ (L i).a k0 ≠ 0 :=
           zpow_ne_zero _ (norm_ne_zero_iff.mpr (inv_ne_zero h0))
         simp only [pot, hγdef]
-        rw [show bsmul (c y') (γ₀ y') = fun p => c y' p.1 * γ₀ y' p from rfl, (L i).smul _ _ (hc_ne y' h0), prod_norm_update_zpow, Real.log_mul hn0 hpos.ne',
+        rw [show bsmul (c y') (γ₀ y') = fun p => c y' p.1 * γ₀ y' p from rfl,
+          (L i).smul _ _ (hc_ne y' h0),
+          Finset.prod_eq_single_of_mem k0 (Finset.mem_univ k0) fun k _ hk => by simp [hcdef, hk],
+          show c y' k0 = (ψ0 y')⁻¹ from Function.update_self .., Real.log_mul hn0 hpos.ne',
           hG, hC, Complex.re_ofReal_mul, Complex.log_re, norm_div,
           Real.log_div (norm_ne_zero_iff.mpr h0) (norm_ne_zero_iff.mpr hψ0u), Real.log_zpow,
           norm_inv, Real.log_inv]
@@ -164,7 +155,8 @@ theorem exists_sheet_of_resolution (L : Fin e → HermLine ι) (A : HermLine ι)
     have hmd : maDensity (fun i y' => pot L i (γ y')) (Q u) =
         maDensity (fun i y' => pot L i (γ₀ y')) (Q u) := by
       simp only [maDensity, hH]
-    rw [hmd, maDensity_eq_maDens]
+    rw [hmd]
+    change ReciprocityTheory.AnForm.maDens _ _ = _
     have hcd : ∀ i, ContDiffAt ℝ 2 (fun v => pot L i (R.lift x ((R.A.chart j).symm v)))
         (F.symm (Q u)) := by
       intro i

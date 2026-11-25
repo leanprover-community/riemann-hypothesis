@@ -67,19 +67,6 @@ def FinExt (V W : Type) [CommRing V] [IsLocalRing V] [CommRing W] [IsLocalRing W
   Module.Finite V W ∧ Module.Free V W ∧ IsDomain W ∧ IsLocalHom (algebraMap V W) ∧
     IsAdicComplete ((IsLocalRing.maximalIdeal V).map (algebraMap V W)) W
 
-theorem finExt_self (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V]
-    (h : IsAdicComplete (IsLocalRing.maximalIdeal V) V) : FinExt V V := by
-  have hmap : (IsLocalRing.maximalIdeal V).map (algebraMap V V) = IsLocalRing.maximalIdeal V := by
-    rw [show algebraMap V V = RingHom.id V from rfl, Ideal.map_id]
-  refine ⟨inferInstance, inferInstance, inferInstance, ?_, ?_⟩
-  · rw [show algebraMap V V = RingHom.id V from rfl]
-    infer_instance
-  · rw [hmap]
-    exact h
-
-theorem cdvr_padicInt (p : ℕ) [Fact p.Prime] : CDVR ℤ_[p] := by
-  refine ⟨inferInstance, inferInstance, inferInstance⟩
-
 section
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegPre R}
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
@@ -116,8 +103,6 @@ def PreU.Acts (U : PreU I D A G) (F : Type) [Field F] [Algebra (FractionRing R) 
 
 def GtTors (D : DegPre R) {F : Type} [Field F] [Algebra (FractionRing R) F] (k : ℕ) (g : GtPtF D F) : Prop :=
   ∃ h, GtPtF.IsNsmul k g h ∧ h.IsZero
-
-def addε : Fin 10 → ℤ := ![1, 1, -1, 1, 1, -1, -1, 1, -1, 1]
 
 end
 end GlobalTheory.UU

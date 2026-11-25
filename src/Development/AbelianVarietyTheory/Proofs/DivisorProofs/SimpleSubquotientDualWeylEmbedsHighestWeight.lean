@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylLatticeExactExponentBlockCut
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDualWeylWeightProjector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
@@ -422,13 +423,7 @@ theorem proj_rowAct (a b : Fin N) (hab : a ≠ b) (k : ℕ) (w : Fin N → ℕ) 
 
 theorem rowW_le_total (d : Fin N × Fin N →₀ ℕ) (c : Fin N) :
     Finsupp.weight (rowW N N) d c ≤ ∑ s, Finsupp.weight (colW N N) d s := by
-  classical
-  simp only [Finsupp.weight_apply, Finsupp.sum, Finset.sum_apply, Pi.smul_apply, rowW, colW, smul_eq_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_le_sum fun v _ => ?_
-  rw [← Finset.mul_sum]
-  simp [Pi.single_apply]
-  split_ifs <;> simp
+  apply _root_.GlobalTheory.HighWt.rowWeight_le_colSum <;> assumption
 
 def box (ν : Fin N → ℕ) : Finset (Fin N → ℕ) :=
   Fintype.piFinset fun _ : Fin N => Finset.range (∑ s, ν s + 1)
@@ -1274,16 +1269,7 @@ namespace GlobalTheory.DualWeylDeg
 
 theorem weight_colW_apply {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (t : Fin N) :
     (Finsupp.weight (colW N N) m) t = ∑ a : Fin N, m (a, t) := by
-  classical
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp)]
-  simp only [Finset.sum_apply, Pi.smul_apply, colW, smul_eq_mul]
-  rw [Fintype.sum_prod_type]
-  simp only [Pi.single_apply]
-  rw [Finset.sum_comm]
-  rw [Finset.sum_eq_single t]
-  · simp
-  · intro b _ hb; simp; intro h; exact absurd h.symm hb
-  · simp
+  apply _root_.GlobalTheory.LeviCut.weight_colW_apply <;> assumption
 
 theorem totalDegree_le_of_mem_dualWeyl : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ)
     (f : MvPolynomial (Fin N × Fin N) O), f ∈ dualWeyl O N N ν → f.totalDegree ≤ ∑ a, ν a := by

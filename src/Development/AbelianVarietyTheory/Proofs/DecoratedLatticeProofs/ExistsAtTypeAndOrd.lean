@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MaxVSpanSingleton
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PhiTopAgree
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,18 +54,7 @@ section Compl
 variable {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E))
 
 theorem intAt_iff (a : E) : IntAt P a ↔ P.valuation E a ≤ 1 := by
-  constructor
-  · rintro ⟨r, s, hs, e⟩
-    have h1 : P.valuation E (algebraMap (𝓞 E) E s) = 1 := by
-      rw [HeightOneSpectrum.valuation_of_algebraMap]
-      exact (HeightOneSpectrum.intValuation_eq_one_iff).2 hs
-    have h2 := congrArg (P.valuation E) e
-    rw [map_mul, h1, one_mul] at h2
-    rw [h2]
-    exact HeightOneSpectrum.valuation_le_one P r
-  · intro h
-    obtain ⟨r, s, e⟩ := HeightOneSpectrum.exists_primeCompl_mul_eq_of_integer P a h
-    exact ⟨r, s.1, s.2, by rw [mul_comm]; exact e⟩
+  first | exact _root_.GlobalTheory.CharVal.intAt_iff | exact @_root_.GlobalTheory.CharVal.intAt_iff | apply _root_.GlobalTheory.CharVal.intAt_iff <;> assumption
 
 theorem valuation_norm (h : ((qOf P : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) :
     P.valuation E ((qOf P : ℕ) : E) = WithZero.exp (-1 : ℤ) := by

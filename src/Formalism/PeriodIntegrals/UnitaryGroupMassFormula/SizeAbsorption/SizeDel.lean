@@ -12,10 +12,6 @@ namespace PI.SzEatI.W
 
 open Formalism.BasicNotions Formalism.MainNotions.G
 
-private lemma one_le_rpow_of_one_le_of_nonneg (x z : ℝ) (hx : 1 ≤ x) (hz : 0 ≤ z) : 1 ≤ x ^ z := by
-  have h := Real.rpow_le_rpow zero_le_one hx hz
-  rwa [Real.one_rpow] at h
-
 private lemma exists_log_le_rpow_and_mul_exp_le_exp_rpow (ε C : ℝ) (hε : 0 < ε) (hC : 0 < C) :
     ∃ x0 : ℝ, ∀ x : ℝ, 1 < x → x0 ≤ x →
       Real.log x ≤ x ^ (ε / 3) ∧
@@ -146,7 +142,7 @@ theorem stepA : StepA := by
   unfold Formalism.MainNotions.SizeDel at hDel
   obtain ⟨hDel1, -, hDel3, -⟩ := hDel
 
-  have hn1 : (1:ℝ) ≤ D.R.n := le_trans (one_le_rpow_of_one_le_of_nonneg _ _ hx1.le (by linarith)) hn_lo
+  have hn1 : (1:ℝ) ≤ D.R.n := le_trans (Real.one_le_rpow hx1.le (by linarith)) hn_lo
   have hnpos : (0:ℝ) < D.R.n := by linarith
   have hn3 : (D.R.n : ℝ) ≤ L.sc.x ^ 3 := by
     have h := Real.rpow_le_rpow_of_exponent_le hx1.le
@@ -176,9 +172,9 @@ theorem stepA : StepA := by
           _ = Real.exp (Real.log (D.s.Del : ℝ)) := (Real.exp_log h).symm
           _ ≤ Real.exp (L.sc.x ^ (L.sc.eps / 4) / 2) := Real.exp_le_exp.mpr hDel3
 
-  have hu1 : 1 ≤ L.sc.x ^ L.sc.eps := one_le_rpow_of_one_le_of_nonneg _ _ hx1.le he0.le
+  have hu1 : 1 ≤ L.sc.x ^ L.sc.eps := Real.one_le_rpow hx1.le he0.le
   have hup : 0 < L.sc.x ^ L.sc.eps := by linarith
-  have ht1 : 1 ≤ L.sc.x ^ (L.sc.eps / 3) := one_le_rpow_of_one_le_of_nonneg _ _ hx1.le (by linarith)
+  have ht1 : 1 ≤ L.sc.x ^ (L.sc.eps / 3) := Real.one_le_rpow hx1.le (by linarith)
   have hqt : L.sc.x ^ (L.sc.eps / 4) ≤ L.sc.x ^ (L.sc.eps / 3) :=
     Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith)
   have htu : L.sc.x ^ (L.sc.eps / 3) ≤ L.sc.x ^ L.sc.eps :=

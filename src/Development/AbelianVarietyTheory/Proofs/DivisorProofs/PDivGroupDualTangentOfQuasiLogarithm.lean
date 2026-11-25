@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NmulSucc
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentCoordsNonunit
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantCoeffNmul
 public import Development.AbelianVarietyTheory.Definitions.Divisors.KerIdealCompOfSurjective
@@ -380,19 +382,7 @@ namespace GlobalTheory.EvTor
 theorem constantCoeff_nmul {R : Type} [CommRing R] {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (hμ : ∀ i, constantCoeff (μ i) = 0) (k : ℕ)
     (i : Fin d) : constantCoeff (nmul μ k i) = 0 := by
-  induction k generalizing i with
-  | zero => simp [nmul]
-  | succ k ih =>
-    have e : nmul μ (k + 1) = op μ (nmul μ k) (fun i => X i) := by
-      simp only [nmul]
-      rw [Function.iterate_succ_apply']
-    rw [e]
-    have h0 : ∀ s : Fin d ⊕ Fin d,
-        constantCoeff (Sum.elim (nmul μ k) (fun i => (X i : MvPowerSeries (Fin d) R)) s) = 0 := by
-      rintro (s | s)
-      · exact ih s
-      · simp
-    exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero h0) h0 (hμ i)
+  apply _root_.GlobalTheory.EvMul.constantCoeff_nmul <;> assumption
 
 theorem constantCoeff_subst_var {R : Type} [CommRing R] {σ τ : Type} [Finite σ] (e : σ → τ)
     (f : MvPowerSeries σ R) (hf : constantCoeff f = 0) :
@@ -661,20 +651,7 @@ namespace GlobalTheory.EvP
 theorem constantCoeff_nmul {O : Type} [CommRing O] {d : ℕ}
     (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ : ∀ j, constantCoeff (μ j) = 0) :
     ∀ (k : ℕ) (j : Fin d), constantCoeff (nmul μ k j) = 0 := by
-  intro k
-  induction k with
-  | zero => intro j; rfl
-  | succ k ihk =>
-    intro j
-    have hsucc : nmul μ (k + 1) j =
-        subst (Sum.elim (nmul μ k) fun i => (X i : MvPowerSeries (Fin d) O)) (μ j) := by
-      simp only [nmul, Function.iterate_succ_apply']
-      rfl
-    rw [hsucc]
-    refine constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero ?_) ?_ (hμ j) <;>
-    · rintro (l | l)
-      · simpa using ihk l
-      · simp
+  apply _root_.GlobalTheory.MapNMul.cc_nmul <;> assumption
 
 theorem ev_subst_nmul_p : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (G : PDivGroup p O) (d : ℕ) (c : QLog.Chart G d), ∀ (n : ℕ) (s : MvPowerSeries (Fin d) O), c.ev (n + 1) (subst (nmul c.μ p) s) = G.mulP n (c.ev n s) := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv G d c n s

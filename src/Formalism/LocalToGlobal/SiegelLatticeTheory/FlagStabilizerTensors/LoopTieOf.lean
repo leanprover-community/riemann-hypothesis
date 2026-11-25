@@ -445,7 +445,6 @@ end Fam
 
 section Parts
 
-open MeasureTheory
 
 structure LoopRowsDat (D : D7) (T : TermTie D) (u u' : D.what₂.Word) where
   F0 : FlagG (VS D) D.R.rS (Tu D u : D.host.E)

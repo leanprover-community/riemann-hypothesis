@@ -563,7 +563,6 @@ theorem class_number_upper_bound : ClassNumberBound := by
     _ ≤ x ^ (1 + Real.logb 2 d) := hcount
     _ = D ^ ((1 + Real.logb 2 d) / 2) := hxD
 
-open NumberField Formalism.SLP.P.CountO
 
 lemma index_ideal_smul_top_le_norm_pow {E : Type} [Field E] [NumberField E] (p : Ideal (𝓞 E)) [hp : p.IsMaximal] (hp0 : p ≠ ⊥)
     (X : Type) [AddCommGroup X] [Module (𝓞 E) X] [Module.Finite (𝓞 E) X] (k : ℕ) (htf : TF E X)

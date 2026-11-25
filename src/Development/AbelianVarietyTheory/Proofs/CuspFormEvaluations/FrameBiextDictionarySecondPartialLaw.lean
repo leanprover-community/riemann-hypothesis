@@ -68,6 +68,7 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.DVR
 open ReciprocityTheory.ChartRestriction.G.H1 Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt FGLaw)
+open ReciprocityTheory.ChartRestriction.G.TB
 
 variable {S : Type} [CommRing S] {d n n' k : ℕ} (m : ℕ)
 
@@ -361,7 +362,7 @@ theorem opa (u v w : Q S d n) : op (FQ G) (op (FQ G) u v) w = op (FQ G) u (op (F
   simp only [sq_op, sq_gen] at this; exact this
 
 theorem ac0 (a : 𝓞 E) : ac (AQ A a) (0 : Q S d n) = 0 := Subtype.ext (funext fun i => by
-  have e := GlobalTheory.FormalLog.ev_zeroFam (n := n) (A.act a i)
+  have e := LogPf.ev_zeroFam (n := n) (A.act a i)
   rw [A.const a i, map_zero] at e
   exact ((sb_apply _ _).trans (congrArg (ev · (A.act a i)) (funext fun j => by fin_cases j; rfl))).trans e)
 
@@ -441,7 +442,7 @@ theorem fbId : FBIdSt := by
     fun {n m y J} hJ a => by
       have k := dA hJ a 0 0
       have z : E2 (ad a) (0 : Q S d n) 0 = 1 := by
-        have e := GlobalTheory.FormalLog.ev_zeroFam (n := n) (ad a)
+        have e := LogPf.ev_zeroFam (n := n) (ad a)
         rw [had, map_one] at e
         exact ((sb_apply _ _).trans (congrArg (ev · (ad a)) (funext fun j => by fin_cases j <;> rfl))).trans e
       rw [z, VV_one, ac0, ac0, mul_inv_cancel_right, PP_zero hc] at k

@@ -731,24 +731,6 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 
 local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
 
-private theorem mem_pow_vF_not_mem_pow_vF_succ {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {x : 𝓞 F} (hx : x ≠ 0) :
-    x ∈ 𝔭 ^ vF 𝔭 x ∧ x ∉ 𝔭 ^ (vF 𝔭 x + 1) := by
-  have hbdd : BddAbove {e : ℕ | x ∈ 𝔭 ^ e} := by
-    have h0 : x ∉ ⨅ n : ℕ, 𝔭 ^ n := by
-      rw [Ideal.iInf_pow_eq_bot_of_isDomain 𝔭 h𝔭.ne_top]
-      simpa using hx
-    simp only [Submodule.mem_iInf, not_forall] at h0
-    obtain ⟨n, hn⟩ := h0
-    refine ⟨n, fun e he => ?_⟩
-    by_contra hlt
-    push_neg at hlt
-    exact hn (Ideal.pow_le_pow_right hlt.le he)
-  refine ⟨?_, fun h => ?_⟩
-  · have h1 := Nat.sSup_mem (s := {e : ℕ | x ∈ 𝔭 ^ e}) ⟨0, by simp⟩ hbdd
-    exact h1
-  · have h2 : vF 𝔭 x + 1 ≤ vF 𝔭 x := le_csSup hbdd h
-    omega
-
 private theorem mem_extP_pow_sub_of_mul_mem {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {a : 𝓞 F} {e k : ℕ}
     (ha : a ∈ 𝔭 ^ e) (ha' : a ∉ 𝔭 ^ (e + 1)) (hek : e ≤ k) {w : 𝓞 K}
     (hw : w * ι a ∈ extP K 𝔭 ^ k) : w ∈ extP K 𝔭 ^ (k - e) := by
@@ -812,7 +794,8 @@ private theorem mem_extP_pow_sub_sum_vF_of_mul_prod_mem {𝔭 : Ideal (𝓞 F)} 
     intro k hk
     rw [Finset.prod_insert hi] at hk
     rw [Finset.sum_insert hi]
-    obtain ⟨h1, h2⟩ := mem_pow_vF_not_mem_pow_vF_succ h𝔭 (ha i)
+    have h1 := mem_pow_vF h𝔭 (ha i)
+    have h2 := notMem_pow_vF h𝔭 (ha i)
     by_cases hle : vF 𝔭 (a i) ≤ k
     · have h3 : (w * ∏ j ∈ s, ι (a j)) * ι (a i) ∈ extP K 𝔭 ^ k := by
         convert hk using 1

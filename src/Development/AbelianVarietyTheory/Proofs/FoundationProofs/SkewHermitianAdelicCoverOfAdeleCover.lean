@@ -41,6 +41,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LinIndepOneDelta
 
 @[expose] public section
 
@@ -73,18 +74,8 @@ theorem exists_delta (F E : Type) [Field F] [NumberField F] [Field E] [NumberFie
     rw [← hσ, ← sub_eq_zero.mp h0]
   refine ⟨x - σ x, hδ, ?_⟩
   generalize x - σ x = δ at hδ h0
-  have hli : LinearIndependent F ![(1 : E), δ] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    have h1 := congrArg σ hst
-    have hsm : ∀ (a : F) (z : E), σ (a • z) = a • σ z := fun a z => σ.toLinearMap.map_smul a z
-    rw [map_add (f := _), hsm, hsm, map_one, hδ, map_zero, smul_neg] at h1
-    have hs : (2 * s) • (1 : E) = 0 := by
-      rw [two_mul, add_smul]; linear_combination hst + h1
-    have hs0 : s = 0 := by simpa using hs
-    refine ⟨hs0, ?_⟩
-    rw [hs0, zero_smul, zero_add] at hst
-    exact (smul_eq_zero.mp hst).resolve_right h0
+  have hli : LinearIndependent F ![(1 : E), δ] :=
+    Formalism.IndefR.Fin.U1.linIndep_one_delta σ δ hδ h0
   intro z
   have hsp := hli.span_eq_top_of_card_eq_finrank' (by simp [h2])
   have hz : z ∈ Submodule.span F (Set.range ![(1 : E), δ]) := by rw [hsp]; trivial

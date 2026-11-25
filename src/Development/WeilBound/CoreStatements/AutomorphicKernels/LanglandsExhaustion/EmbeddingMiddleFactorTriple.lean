@@ -98,27 +98,6 @@ theorem codSub_injective {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V
     (h : ∀ v, f v ∈ S.toSubmodule) (hf : Function.Injective f) : Function.Injective (codSub f S h) :=
   fun a b hab => hf (congrArg Subtype.val hab)
 
-include hT in
-theorem mid_gen {V : Type} [AddCommGroup V] [Module ℂ V] {P : Representation ℂ (GL (Fin m) k) V}
-    (hP : HasFiniteLength P) (hs : IsSmooth P) (x : IrrCl (GL (Fin N) k))
-    (f : x.rep.ρ.IntertwiningMap (T P).ρ) (hf : Function.Injective f) :
-    ∃ c : IrrCl (GL (Fin m) k), IsSubquotient c.rep.ρ P ∧
-      ∃ f : x.rep.ρ.IntertwiningMap (T c.rep.ρ).ρ, Function.Injective f := by
-  have hInj : ∀ {A B : Type} [AddCommGroup A] [Module ℂ A] [AddCommGroup B] [Module ℂ B]
-      {σ₁ : Representation ℂ (GL (Fin m) k) A} {σ₂ : Representation ℂ (GL (Fin m) k) B}
-      (f : σ₁.IntertwiningMap σ₂), Function.Injective f → Function.Injective (Tm f) := by
-    intro A B _ _ _ _ σ₁ σ₂ f hf
-    refine (hT f (quotMk (Representation.IntertwiningMap.range σ₁ σ₂ f)) hf ?_).1
-    intro y
-    show (Representation.IntertwiningMap.range σ₁ σ₂ f).toSubmodule.mkQ y = 0 ↔ _
-    rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-    exact Representation.IntertwiningMap.mem_range σ₁ σ₂ f y
-  let j : P.IntertwiningMap (⊤ : Subrepresentation P).toRepresentation :=
-    ⟨LinearMap.codRestrict (⊤ : Subrepresentation P).toSubmodule LinearMap.id (fun v => Submodule.mem_top),
-      fun g => LinearMap.ext fun v => Subtype.ext rfl⟩
-  have hj : Function.Injective j := fun a b h => congrArg Subtype.val h
-  exact CompanionTheory.Exh.mid_sub T Tm hT hP hs x ⊤ ⟨(Tm j).comp f, fun a b h => hf (hInj j hj h)⟩
-
 end General
 
 end PositivityTheory.Exh
@@ -170,7 +149,7 @@ theorem mid_br {nA nB m m' : ℕ} (x : IrrGL (k := k)) (h2 : m + nB = m') (h1 : 
     (hM : FL M) (hs : Sm M) (h : Emb (one x) (two h1 A (two h2 M B))) :
     ∃ c : IrrCl (GL (Fin m) k), Sq (one ⟨m, c⟩) M ∧ Emb (one x) (two h1 A (two h2 (one ⟨m, c⟩) B)) :=
   let ⟨f, hf⟩ := h
-  mid_gen (fun τ => ⟨_, T3 h2 h1 A.ρ B.ρ τ⟩) (fun f => tripleProductMap h2 h1 A.ρ B.ρ f) (fun f g => tripleProductMap_injective h2 h1 A.ρ B.ρ f g) hM hs x.2 f hf
+  CompanionTheory.Exh.mid_gen (fun τ => ⟨_, T3 h2 h1 A.ρ B.ρ τ⟩) (fun f => tripleProductMap h2 h1 A.ρ B.ρ f) (fun f g => tripleProductMap_injective h2 h1 A.ρ B.ρ f g) hM hs x.2 f hf
 
 unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
 theorem emb_pr_iff (x : IrrGL (k := k)) {a : ℕ} (z : Fin a → IrrGL (k := k)) (hd : ∑ i, (z i).1 = x.1) :
@@ -184,61 +163,18 @@ unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.Pr
 theorem fl_pr (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {a N : ℕ} (z : Fin a → IrrGL (k := k)) (hd : ∑ i, (z i).1 = N) : FL (pr z hd) :=
   _root_.GlobalTheory.CompanionTheory.ProdFL.main hA z hd
 
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem iso_one_pr (x : IrrGL (k := k)) (hd : ∑ _ : Fin 1, x.1 = x.1) : Iso (one x) (pr (fun _ : Fin 1 => x) hd) :=
-  nonempty_equiv_prodIrr_one x hd
-
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem iso_pr_of {a b N : ℕ} (z : Fin a → IrrGL (k := k)) (w : Fin b → IrrGL (k := k)) (hz : ∑ i, (z i).1 = N) (hw : ∑ i, (w i).1 = N)
-    (h : Nonempty ((prodIrr z hz).Equiv (prodIrr w hw))) : Iso (pr z hz) (pr w hw) := h
-
 attribute [irreducible] Emb Sq FL
 
 theorem embL_iff (x : IrrGL (k := k)) (l : List (IrrGL (k := k))) : EmbL x l ↔ ∃ hd, Emb (one x) (pr l.get hd) :=
   exists_congr fun hd => (emb_pr_iff x l.get hd).symm
 
-theorem deg3 (A M B : List (IrrGL (k := k))) :
-    ∑ a, ((A ++ M ++ B).get a).1 = ∑ a, (A.get a).1 + (∑ a, (M.get a).1 + ∑ a, (B.get a).1) := by
-  simp only [sum_get_eq', List.map_append, List.sum_append, add_assoc]
-
-theorem iso_single (σ : IrrGL (k := k)) (h : ∑ a, ([σ].get a).1 = σ.1) : Iso (one σ) (pr [σ].get h) :=
-  iso_trans (iso_one_pr σ (by simp)) (pr_congr (by simp) _ h)
-
 theorem embL_block {x : IrrGL (k := k)} {A M M' B : List (IrrGL (k := k))} {m : ℕ} (hM : ∑ a, (M.get a).1 = m) (hM' : ∑ a, (M'.get a).1 = m)
     (h : Emb (pr M.get hM) (pr M'.get hM')) (hx : EmbL x (A ++ M ++ B)) : EmbL x (A ++ M' ++ B) := by
   obtain ⟨hd, e⟩ := (embL_iff _ _).1 hx
-  have h1 : ∑ a, (A.get a).1 + (m + ∑ a, (B.get a).1) = x.1 := by rw [← hM, ← deg3, hd]
-  have hd' : ∑ a, ((A ++ M' ++ B).get a).1 = x.1 := by rw [deg3, hM', h1]
+  have h1 : ∑ a, (A.get a).1 + (m + ∑ a, (B.get a).1) = x.1 := by rw [← hM, ← CompanionTheory.Exh.deg3, hd]
+  have hd' : ∑ a, ((A ++ M' ++ B).get a).1 = x.1 := by rw [CompanionTheory.Exh.deg3, hM', h1]
   exact (embL_iff _ _).2 ⟨hd', emb_trans (emb_trans (emb_trans e (emb_of_iso (stage3_iso A M B hd rfl hM rfl rfl h1)))
     (embedding_middle_factor_triple rfl h1 _ _ h)) (emb_of_iso (iso_symm (stage3_iso A M' B hd' rfl hM' rfl rfl h1)))⟩
-
-variable (k) in
-theorem refineP' : RefineP k := fun x σ A M B hσ hx => by
-  obtain ⟨hd, e⟩ := (embL_iff _ _).1 hσ
-  have h : ∑ a, ([σ].get a).1 = σ.1 := by simp
-  exact embL_block h hd (emb_trans (emb_of_iso (iso_symm (iso_single σ h))) e) hx
-
-variable (k) in
-theorem swapP' (h : GlobalTheory.BZSeg.LUnlinkedComm k) : SwapP k := fun x a b A B Δ Γ ha hb hl hx => by
-  have hd : ∑ i, (![a, b] i).1 = a.1 + b.1 := by simp [Fin.sum_univ_two]
-  have hd' : ∑ i, (![b, a] i).1 = a.1 + b.1 := by simp [Fin.sum_univ_two, add_comm]
-  have h1 : ∑ i, ([a, b].get i).1 = a.1 + b.1 := by simp
-  have h2 : ∑ i, ([b, a].get i).1 = a.1 + b.1 := by simp [add_comm]
-  exact embL_block h1 h2 (emb_of_iso (iso_trans (pr_congr (by simp [List.ofFn_succ]) h1 hd)
-    (iso_trans (iso_pr_of _ _ hd hd' (h Δ Γ a b _ hd hd' hl ha hb)) (pr_congr (by simp [List.ofFn_succ]) hd' h2)))) hx
-
-variable (k) in
-theorem midP' (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) : MidP k := fun x A M B hx => by
-  obtain ⟨hd, e⟩ := (embL_iff _ _).1 hx
-  obtain ⟨m, hM⟩ : ∃ m, ∑ a, (M.get a).1 = m := ⟨_, rfl⟩
-  have h1 : ∑ a, (A.get a).1 + (m + ∑ a, (B.get a).1) = x.1 := by rw [← hM, ← deg3, hd]
-  obtain ⟨c, hc, e'⟩ := mid_br x rfl h1 _ _ _ (fl_pr hA M.get hM) (sm_pr M.get hM)
-    (emb_trans e (emb_of_iso (stage3_iso A M B hd rfl hM rfl rfl h1)))
-  have hs : ∑ a, ([(⟨m, c⟩ : IrrGL (k := k))].get a).1 = m := by simp
-  have hd' : ∑ a, ((A ++ [(⟨m, c⟩ : IrrGL (k := k))] ++ B).get a).1 = x.1 := by rw [deg3, hs, h1]
-  refine ⟨⟨m, c⟩, ⟨hM, (sq_pr_iff ⟨m, c⟩ M.get hM).1 hc⟩, (embL_iff _ _).2 ⟨hd', ?_⟩⟩
-  exact emb_trans (emb_trans e' (embedding_middle_factor_triple rfl h1 _ _ (emb_of_iso (iso_single ⟨m, c⟩ hs))))
-    (emb_of_iso (iso_symm (stage3_iso A [⟨m, c⟩] B hd' rfl hs rfl rfl h1)))
 
 end PositivityTheory.Exh
 

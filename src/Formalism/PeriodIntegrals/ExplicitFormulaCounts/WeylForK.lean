@@ -765,10 +765,6 @@ theorem eps_ePl (ε : Fin N → Bool) (i : Fin (nPl ε)) : ε (ePl ε i) = true 
 theorem eps_eMi (ε : Fin N → Bool) (j : Fin (nMi ε)) : ε (eMi ε j) = false := by
   exact Bool.eq_false_iff.2 (Subtype.prop (p := fun a => ¬ ε a = true) _)
 
-theorem ePl_eq (ε : Fin N → Bool) (i : Fin (nPl ε)) : ePl ε i = (sPlus ε).orderEmbOfFin rfl i := rfl
-
-theorem eMi_eq (ε : Fin N → Bool) (j : Fin (nMi ε)) : eMi ε j = (sMinus ε).orderEmbOfFin rfl j := rfl
-
 theorem ePl_lt_iff (ε : Fin N → Bool) (i j : Fin (nPl ε)) : ePl ε i < ePl ε j ↔ i < j := by
   exact ((sPlus ε).orderEmbOfFin rfl).lt_iff_lt
 

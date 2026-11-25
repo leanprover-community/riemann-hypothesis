@@ -291,13 +291,4 @@ lemma inX_eN {j : ℕ} (hj : j < N) : Loc.inX E N c (Loc.eN E N j) = Loc.eN E (N
 
 variable {K : Type} [Field K]
 
-lemma unitV_mul (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {a b d : E} (ha : IsUnit (redP P a)) (hb : IsUnit (redP P b))
-    (hd : redP P d = redP P a * redP P b) :
-    LocE.unitV (P := P) ξ d = LocE.unitV (P := P) ξ a * LocE.unitV (P := P) ξ b := by
-  have hd' : IsUnit (redP P d) := hd ▸ ha.mul hb
-  unfold LocE.unitV
-  rw [dite_eq_left hd', dite_eq_left ha, dite_eq_left hb]
-  have hu : hd'.unit = ha.unit * hb.unit := Units.ext (by simp [hd])
-  rw [hu, map_mul, Units.val_mul]
-
 end PI.TwChrOne.Pf

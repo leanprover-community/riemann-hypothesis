@@ -298,12 +298,4 @@ theorem pStd_of_cpt (hP : P5.ThmPActualCpt) (hRH : KB.RadHead) (hHT : KB.HeadTop
     subst e
     exact pStd_top hP hHT hOne hZN hTC P p F w h h' hh hh' Cb hθ hF hw
 
-theorem pStd_of (hRH : KB.RadHead) (hHT : KB.HeadTop) (hOne : FormOne) (hZN : ZetaNormExists)
-    (hTC : TopContOn) : KB.PStd := by
-  intro hP
-  refine pStd_of_cpt ?_ hRH hHT hOne hZN hTC
-  intro Wp Wq _ _ _ _ _ _ S _ _ P z z' π π' X μ L st l0 D A mm hD hl1 hl2 hz hz' hπ hπ' hA hmm
-  obtain ⟨K, h1, h2, h3, h4⟩ := hP Wp Wq S P z z' π π' X μ L st l0 D A mm hD hl1 hl2 hz hz' hπ hπ' hA hmm
-  exact ⟨K, h1, h2, h3, fun F ε hε hF _ hG => h4 F ε hε hF hG⟩
-
 end Formalism.FourierDecayAlt.P.PBO

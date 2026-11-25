@@ -309,21 +309,6 @@ theorem colEmb_inj {n d : ℕ} (b : Fin n) : Function.Injective (fun p : Fin 1 �
 def colPart {n d : ℕ} (b : Fin n) (M : Fin n × Fin d →₀ ℕ) : Fin 1 × Fin d →₀ ℕ :=
   Finsupp.comapDomain (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) M (colEmb_inj b).injOn
 
-private theorem coeff_rename_mapDomain_lemma {σ τ R : Type} (f : σ → τ) [Filter.TendstoCofinite f]
-    [CommSemiring R] (hf : Function.Injective f) (p : MvPowerSeries σ R) (x : σ →₀ ℕ) :
-    coeff (Finsupp.mapDomain f x) (rename f p) = coeff x p := by
-  classical
-  rw [MvPowerSeries.coeff_rename]
-  rw [Finset.sum_eq_single x]
-  · intro y hy hne
-    exfalso
-    simp only [Set.Finite.mem_toFinset] at hy
-    exact hne (Finsupp.mapDomain_injective hf hy)
-  · intro h
-    exfalso
-    apply h
-    simp
-
 theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPowerSeries (Fin 1 × Fin d) S)
     (M : Fin n × Fin d →₀ ℕ) :
     coeff M (∏ b, rename (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) (g b)) =
@@ -349,7 +334,9 @@ theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPow
   rw [Finset.sum_eq_single (Finsupp.equivFunOnFinite.symm Mb)]
   · refine Finset.prod_congr rfl fun b _ => ?_
     rw [Finsupp.coe_equivFunOnFinite_symm]
-    exact coeff_rename_mapDomain_lemma _ (colEmb_inj b) _ _
+    dsimp only [Mb, ι]
+    simpa only [Finsupp.embDomain_eq_mapDomain, Function.Embedding.coeFn_mk] using
+      MvPowerSeries.coeff_embDomain_rename ⟨fun p => (b, p.2), colEmb_inj b⟩ (g b) (colPart b M)
   · intro l hl hne
     by_contra hprod
     apply hne

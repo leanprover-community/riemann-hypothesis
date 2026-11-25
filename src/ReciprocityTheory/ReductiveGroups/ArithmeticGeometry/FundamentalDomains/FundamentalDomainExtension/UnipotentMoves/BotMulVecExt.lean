@@ -208,17 +208,11 @@ lemma bot_mulVec_ext (K : Matrix (Fin r) (Fin r) ℂ) (d : Fin X.p0 → ℂ) :
 
 lemma blkA_low (Z : X.Coord) (τ : X.Ψ) : blkA X (X.lowBlock Z τ) = 1 := by
   ext a b
-  have ha := a.isLt
-  have hb := b.isLt
-  simp only [blkA, Data.lowBlock, Matrix.of_apply, Matrix.one_apply, Fin.ext_iff, Fin.coe_castLE]
-  split_ifs <;> first | omega | rfl | simp
+  rw [blkA, Matrix.of_apply, Matrix.one_apply, L_pp X]
 
 lemma blkB_low (Z : X.Coord) (τ : X.Ψ) : blkB X (X.lowBlock Z τ) = Matrix.of (Z τ) := by
   ext m b
-  have hb := b.isLt
-  have hne : X.p0 + (m : ℕ) ≠ (b : ℕ) := by omega
-  first
-    | simp [blkB, Data.lowBlock, nI, Fin.ext_iff, hne]
+  exact L_np X Z τ m b
 
 end Blocks
 
@@ -294,12 +288,6 @@ private lemma hermC_mulVec_mulVec_eq_sum_gram' (τ : E →+* ℂ) (G : Matrix (F
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ =>
     Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
-private lemma col_eq_mulVec_single (M : Matrix (Fin r) (Fin r) ℂ) (j : Fin r) :
-    col M j = M *ᵥ Pi.single j 1 := by
-  funext k
-  first
-    | simp [col, Matrix.mulVec, dotProduct, Pi.single_apply]
-
 private lemma hermC_mat_mulVec_eq_sum_sgn_of_isOrtho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c d : Fin r → ℂ) :
     hermC τ.1 X.Gm (mat x τ *ᵥ c) (mat x τ *ᵥ d) =
       ∑ j, c j * ((sgn X.p0 j : ℝ) : ℂ) * conj (d j) := by
@@ -316,7 +304,8 @@ lemma maj_ortho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c : Fin r →
   have hcol : ∀ j, hermC τ.1 X.Gm (mat x τ *ᵥ c) (col (mat x τ) j) =
       c j * ((sgn X.p0 j : ℝ) : ℂ) := by
     intro j
-    rw [col_eq_mulVec_single, hermC_mat_mulVec_eq_sum_sgn_of_isOrtho X ho]
+    rw [show col (mat x τ) j = mat x τ *ᵥ Pi.single j 1 from (Matrix.mulVec_single_one _ _).symm,
+      hermC_mat_mulVec_eq_sum_sgn_of_isOrtho X ho]
     simp [Pi.single_apply]
   have hpos : X.posPart x τ (mat x τ *ᵥ c) = ∑ a : Fin X.p0, ‖c (Fin.castLE X.p0_le a)‖ ^ 2 := by
     unfold Data.posPart
@@ -340,43 +329,8 @@ lemma maj_ortho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c : Fin r →
   rw [hpos, hh, sum_splitR X (fun j => sgn X.p0 j * ‖c j‖ ^ 2)]
   unfold nsq
   rw [sum_splitR X (fun j => ‖c j‖ ^ 2)]
-  have h1 : ∀ a : Fin X.p0, sgn X.p0 (Fin.castLE X.p0_le a : ℕ) = 1 := fun a => by simp [sgn]
-  have h2 : ∀ m : Fin (r - X.p0), sgn X.p0 (nI X m : ℕ) = -1 := fun m => by
-    unfold sgn
-    rw [if_neg]
-    show ¬ (X.p0 + (m : ℕ) < X.p0)
-    omega
-  simp only [h1, h2, one_mul, neg_one_mul, Finset.sum_neg_distrib]
+  simp only [sgn_p X, sgn_n X, one_mul, neg_one_mul, Finset.sum_neg_distrib]
   ring
-
-private lemma en_mulVec_le_opN_mul_en {m n : ℕ} (W : Matrix (Fin m) (Fin n) ℂ) (v : Fin n → ℂ) :
-    en (W *ᵥ v) ≤ Data.opN W * en v := by
-  by_cases hv : v = 0
-  · subst hv
-    simp [en_eq_sqrt, nsq, Matrix.mulVec_zero]
-  · have hpos := en_pos hv
-    have hF : 0 ≤ ∑ i, ∑ j, ‖W i j‖ ^ 2 :=
-      Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => sq_nonneg _
-    have hC : ∀ u, en (W *ᵥ u) ≤ Real.sqrt (∑ i, ∑ j, ‖W i j‖ ^ 2) * en u := fun u =>
-      en_le_of_nsq _ _ (Real.sqrt_nonneg _) (by rw [Real.sq_sqrt hF]; exact _root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.nsq_mulVec_le W u)
-    have hmem : en (W *ᵥ v) / en v ∈ {t | ∃ v : Fin n → ℂ, v ≠ 0 ∧
-        t = Real.sqrt (∑ i, ‖Matrix.mulVec W v i‖ ^ 2) / Real.sqrt (∑ j, ‖v j‖ ^ 2)} :=
-      ⟨v, hv, by rw [en_eq_sqrt, en_eq_sqrt]; rfl⟩
-    have hbdd : BddAbove {t | ∃ v : Fin n → ℂ, v ≠ 0 ∧
-        t = Real.sqrt (∑ i, ‖Matrix.mulVec W v i‖ ^ 2) / Real.sqrt (∑ j, ‖v j‖ ^ 2)} := by
-      refine ⟨Real.sqrt (∑ i, ∑ j, ‖W i j‖ ^ 2), ?_⟩
-      rintro t ⟨u, hu, rfl⟩
-      have h1 := hC u
-      have hup := en_pos hu
-      rw [en_eq_sqrt, en_eq_sqrt] at h1
-      rw [en_eq_sqrt] at hup
-      change Real.sqrt (nsq (W *ᵥ u)) / Real.sqrt (nsq u) ≤ _
-      rw [div_le_iff₀ hup]
-      exact h1
-    have h2 := le_csSup hbdd hmem
-    rw [div_le_iff₀ hpos] at h2
-    unfold Data.opN
-    exact h2
 
 lemma graph_tau {x0 : Frame X.Ψ r} (hx0 : x0 ∈ X.dom) (ho : X.IsOrtho x0) (τ : X.Ψ)
     (nτ : Matrix (Fin r) (Fin r) ℂ) (Z1 : X.Coord) {η z : ℝ} (hη : 0 ≤ η) (hz : 0 ≤ z)
@@ -412,10 +366,7 @@ lemma graph_tau {x0 : Frame X.Ψ r} (hx0 : x0 ∈ X.dom) (ho : X.IsOrtho x0) (τ
     rw [← maj_ortho X ho τ ((N' - 1) *ᵥ c), ← maj_ortho X ho τ c, Matrix.mulVec_mulVec, hMN1,
       ← Matrix.mulVec_mulVec]
     exact hn (mat x0 τ *ᵥ c)
-  have hZτ : Data.opN (Matrix.of (Z1 τ)) ≤ z := by
-    have hb : BddAbove (Set.range fun τ' : X.Ψ => Data.opN (Matrix.of (Z1 τ'))) :=
-      (Set.finite_range _).bddAbove
-    exact (le_ciSup hb τ).trans hZ1
+  have hZτ : Data.opN (Matrix.of (Z1 τ)) ≤ z := (opN_le_zN X Z1 τ).trans hZ1
   have hsplit : ∀ w : Fin r → ℂ, en w ≤ en (top X w) + en (bot X w) := by
     intro w
     rw [en_eq_sqrt w]
@@ -432,7 +383,7 @@ lemma graph_tau {x0 : Frame X.Ψ r} (hx0 : x0 ∈ X.dom) (ho : X.IsOrtho x0) (τ
   have hyen : ∀ d, en (X.lowBlock Z1 τ *ᵥ ext X d) ≤ (1 + z) * en d := fun d => by
     have h1 := hsplit (X.lowBlock Z1 τ *ᵥ ext X d)
     rw [hyt, hyb] at h1
-    have h2 := en_mulVec_le_opN_mul_en (Matrix.of (Z1 τ)) d
+    have h2 := en_le_of_nsq _ _ (opN_nonneg _) (nsq_mulVec_le_opN (Matrix.of (Z1 τ)) d)
     have h3 := mul_le_mul_of_nonneg_right hZτ (en_nonneg d)
     linarith
   have hKd : ∀ d, K *ᵥ ext X d = X.lowBlock Z1 τ *ᵥ ext X d +
@@ -465,7 +416,7 @@ lemma graph_tau {x0 : Frame X.Ψ r} (hx0 : x0 ∈ X.dom) (ho : X.IsOrtho x0) (τ
     rw [hBe d]
     have h1 := en_add_le (Matrix.of (Z1 τ) *ᵥ d)
       (bot X ((N' - 1) *ᵥ (X.lowBlock Z1 τ *ᵥ ext X d)))
-    have h2 := en_mulVec_le_opN_mul_en (Matrix.of (Z1 τ)) d
+    have h2 := en_le_of_nsq _ _ (opN_nonneg _) (nsq_mulVec_le_opN (Matrix.of (Z1 τ)) d)
     have h3 := mul_le_mul_of_nonneg_right hZτ (en_nonneg d)
     have h4 := en_bot_le X ((N' - 1) *ᵥ (X.lowBlock Z1 τ *ᵥ ext X d))
     have h5 := hed d

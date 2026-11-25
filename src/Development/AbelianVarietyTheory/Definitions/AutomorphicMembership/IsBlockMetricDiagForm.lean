@@ -275,16 +275,4 @@ def IsLieMetric (t : SAB H X) (f : Z ⟶ X) (R : AnRead p σ D)
       R.SmoothOn (ptsIn p σ V.1) (fun y => (g y).im) ∧
       ∀ y (hy : y ∈ ptsIn p σ V.1), g y = h y (valAt f v hy) (valAt f w hy)
 
-theorem smoothOn_dim_zero (hD : D = 0) (R : AnRead p σ D) (T : Set (CxPts p σ)) (g : CxPts p σ → ℝ) :
-    R.SmoothOn T g := fun i => by
-  subst hD
-  exact contDiffOn_const.congr fun v _ => congrArg (g ∘ (R.chart i).e.symm) (Subsingleton.elim v 0)
-
-theorem isLieMetric_dim_zero (hD : D = 0) (f : Z ⟶ X) (R : AnRead p σ D)
-    {h : ∀ y : CxPts p σ, TanM (y.1 ≫ f) t.G →ₗ[ℂ] TanM (y.1 ≫ f) t.G →ₗ⋆[ℂ] ℂ} (hh : ∀ y, IsBlockMetric (h y)) :
-    IsLieMetric t f R h := by
-  classical
-  exact ⟨hh, fun V v w => ⟨fun y => if hy : y ∈ ptsIn p σ V.1 then h y (valAt f v hy) (valAt f w hy) else 0,
-    smoothOn_dim_zero hD R _ _, smoothOn_dim_zero hD R _ _, fun y hy => dif_pos hy⟩⟩
-
 end GlobalTheory.LieMet

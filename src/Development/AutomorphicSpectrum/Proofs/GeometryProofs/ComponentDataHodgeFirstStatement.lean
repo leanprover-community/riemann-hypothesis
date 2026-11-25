@@ -63,25 +63,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.MuFrame
 
-private theorem isMultiHomog_mul_geometry {K : Type} {Jt : K → Type} [∀ k, Fintype (Jt k)]
-    {p q : MvPolynomial ((k : K) × Jt k) ℤ} {a b : K → ℕ}
-    (hp : IsMultiHomog p a) (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) := by
-  classical
-  unfold IsMultiHomog at *
-  intro m hm k
-  obtain ⟨m1, h1, m2, h2, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul p q hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, hp m1 h1 k, hq m2 h2 k, Pi.add_apply]
-
-private theorem isMultiHomog_add_geometry {K : Type} {Jt : K → Type} [∀ k, Fintype (Jt k)]
-    {p q : MvPolynomial ((k : K) × Jt k) ℤ} {a : K → ℕ}
-    (hp : IsMultiHomog p a) (hq : IsMultiHomog q a) : IsMultiHomog (p + q) a := by
-  classical
-  unfold IsMultiHomog at *
-  intro m hm k
-  rcases Finset.mem_union.mp (MvPolynomial.support_add hm) with h | h
-  · exact hp m h k
-  · exact hq m h k
-
 private theorem isMultiHomog_X_geometry {K : Type} {Jt : K → Type} [∀ k, Fintype (Jt k)] [DecidableEq K]
     (k : K) (i : Jt k) :
     IsMultiHomog (MvPolynomial.X ⟨k, i⟩ : MvPolynomial ((k : K) × Jt k) ℤ) (Pi.single k 1) := by
@@ -114,7 +95,7 @@ private theorem isMultiHomog_prod_X_one {K : Type} [Fintype K] {Jt : K → Type}
       simpa using h1
     · intro a s ha ih
       rw [Finset.prod_insert ha, Finset.sum_insert ha]
-      exact isMultiHomog_mul_geometry (isMultiHomog_X_geometry a (ch a)) ih
+      exact isMultiHomog_mul (isMultiHomog_X_geometry a (ch a)) ih
   have h := key Finset.univ
   convert h using 1
   funext k
@@ -126,25 +107,13 @@ private theorem isValueAt_add' {K : Type} {Jt : K → Type} [∀ k, Fintype (Jt 
   unfold IsValueAt at *
   obtain ⟨d, g, h, hg, hh, hy, hgs, hw, rfl⟩ := h1
   obtain ⟨d', g', h', hg', hh', hy', hgs', hw', rfl⟩ := h2
-  refine ⟨d + d', g * h' + g' * h, h * h', isMultiHomog_add_geometry (isMultiHomog_mul_geometry hg hh') ?_,
-    isMultiHomog_mul_geometry hh hh', ?_, ?_, ?_, ?_⟩
-  · rw [add_comm d d']; exact isMultiHomog_mul_geometry hg' hh
+  refine ⟨d + d', g * h' + g' * h, h * h', isMultiHomog_add (isMultiHomog_mul hg hh') ?_,
+    isMultiHomog_mul hh hh', ?_, ?_, ?_, ?_⟩
+  · rw [add_comm d d']; exact isMultiHomog_mul hg' hh
   · rw [map_mul]; exact mul_ne_zero hy hy'
   · simp only [map_mul, map_add (f := _), hgs, hgs']; ring
   · simp only [map_mul]; exact mul_ne_zero hw hw'
   · simp only [map_mul, map_add (f := _)]; rw [div_add_div _ _ hw hw']; ring
-
-private theorem isValueAt_mul' {K : Type} {Jt : K → Type} [∀ k, Fintype (Jt k)] {Ω : Type} [Field Ω]
-    {y : (k : K) × Jt k → Ω} {w : (k : K) × Jt k → ℂ} {s s' : Ω} {v v' : ℂ}
-    (h1 : IsValueAt y s w v) (h2 : IsValueAt y s' w v') : IsValueAt y (s * s') w (v * v') := by
-  unfold IsValueAt at *
-  obtain ⟨d, g, h, hg, hh, hy, hgs, hw, rfl⟩ := h1
-  obtain ⟨d', g', h', hg', hh', hy', hgs', hw', rfl⟩ := h2
-  refine ⟨d + d', g * g', h * h', isMultiHomog_mul_geometry hg hg', isMultiHomog_mul_geometry hh hh', ?_, ?_, ?_, ?_⟩
-  · rw [map_mul]; exact mul_ne_zero hy hy'
-  · simp only [map_mul, hgs, hgs']; ring
-  · simp only [map_mul]; exact mul_ne_zero hw hw'
-  · simp only [map_mul]; rw [div_mul_div_comm]
 
 private theorem isValueAt_aeval_segreCoord_div {K : Type} [Fintype K] {Jt : K → Type} [∀ k, Fintype (Jt k)]
     {Ω : Type} [Field Ω] (y : (k : K) × Jt k → Ω) (w : (k : K) × Jt k → ℂ) (ch : (k : K) → Jt k)
@@ -165,7 +134,7 @@ private theorem isValueAt_aeval_segreCoord_div {K : Type} [Fintype K] {Jt : K �
   | add p q hp hq => simpa only [map_add (f := _)] using isValueAt_add' hp hq
   | mul_X p i hp =>
     rw [map_mul, map_mul]
-    refine isValueAt_mul' hp ?_
+    refine isValueAt_mul hp ?_
     unfold IsValueAt
     refine ⟨fun _ => 1, ∏ k, MvPolynomial.X ⟨k, i k⟩, ∏ k, MvPolynomial.X ⟨k, ch k⟩,
       isMultiHomog_prod_X_one i, isMultiHomog_prod_X_one ch, ?_, ?_, ?_, ?_⟩

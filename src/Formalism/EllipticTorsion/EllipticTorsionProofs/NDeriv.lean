@@ -37,30 +37,6 @@ private theorem coeff_subst_congr_lemma {R : Type*} [CommRing R] {σ : Type*}
       have h1 : x.1.degree < n := by omega
       rw [ih x.1 h1, zero_mul]
 
-theorem coeff_subst_congr {g h : PowerSeries R} {a : MvPowerSeries σ R}
-    (ha : MvPowerSeries.constantCoeff a = 0) (e : σ →₀ ℕ)
-    (hgh : ∀ k ≤ e.degree, coeff k g = coeff k h) :
-    MvPowerSeries.coeff e (g.subst a) = MvPowerSeries.coeff e (h.subst a) := by
-  classical
-  have hs : PowerSeries.HasSubst a := PowerSeries.HasSubst.of_constantCoeff_zero ha
-  rw [PowerSeries.coeff_subst hs, PowerSeries.coeff_subst hs]
-  refine finsum_congr fun k => ?_
-  by_cases hk : k ≤ e.degree
-  · rw [hgh k hk]
-  · rw [coeff_subst_congr_lemma ha k e (by omega), smul_zero, smul_zero]
-
-theorem pderiv_subst_coe (p : Polynomial R) {a : MvPowerSeries σ R}
-    (ha : MvPowerSeries.constantCoeff a = 0) (i : σ) :
-    MvPowerSeries.pderiv (R := R) i ((p : PowerSeries R).subst a) =
-      (derivative (p : PowerSeries R)).subst a * MvPowerSeries.pderiv (R := R) i a := by
-  apply Formalism.L2.Th1.C.IntegralMvPolynomialLemmas.pderiv_subst_coe <;> assumption
-
-theorem degree_le_of_mem_antidiagonal [DecidableEq σ] {d : σ →₀ ℕ} {x : (σ →₀ ℕ) × (σ →₀ ℕ)}
-    (hx : x ∈ Finset.HasAntidiagonal.antidiagonal d) : x.1.degree ≤ d.degree := by
-  rw [Finset.HasAntidiagonal.mem_antidiagonal] at hx
-  rw [← hx, map_add (f := _)]
-  exact Nat.le_add_right _ _
-
 theorem pderiv_subst (g : PowerSeries R) {a : MvPowerSeries σ R}
     (ha : MvPowerSeries.constantCoeff a = 0) (i : σ) :
     MvPowerSeries.pderiv (R := R) i (g.subst a) =

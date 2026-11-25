@@ -816,26 +816,7 @@ theorem frMove_mul_fin {D : D7} (θ : InfFam D) (W : HSp D) (X : Data D.host.E W
 theorem isONFr_frMove {D : D7} {θ : InfFam D} (hθ : IsInfFam θ) (W : HSp D) (X : Data D.host.E W.rank)
     (hX : IsMod W rfl X) (u : GA D W) {x : Frame X.Ψ W.rank} (hx : IsONFr X x) :
     IsONFr X (frMove θ W rfl X u x) := by
-  intro τ
-  have hτ : ∃ ρ, τ.1 = tauE D ρ := (hX.psi τ.1).1 τ.2
-  have hG : X.Gm = -(W.gram)ᵀ := by rw [hX.model.1]; simp
-  have e : mat (frMove θ W rfl X u x) τ = compAt θ hτ.choose (Formalism.L2.Theta.mt W u) * mat x τ := by
-    show (Matrix.reindex (finCongr rfl) (finCongr rfl) (realM θ (Formalism.L2.Theta.mt W u) τ.1) * mat x τ :
-      Matrix (Fin W.rank) (Fin W.rank) ℂ) = _
-    unfold realM
-    rw [dite_eq_left hτ]
-    simp
-  have hu : (compAt θ hτ.choose (Formalism.L2.Theta.mt W u))ᴴ * gramAt D W hτ.choose *
-      compAt θ hτ.choose (Formalism.L2.Theta.mt W u) = gramAt D W hτ.choose :=
-    GlobalTheory.FockCompare.RealAction.infMat_mem_UH hθ W u _
-  have hg : gramAt D W hτ.choose = W.gram.map τ.1 := by
-    conv_rhs => rw [hτ.choose_spec]
-    rfl
-  rw [hg] at hu
-  rw [← hx τ, e, hG, GlobalTheory.FrameCplx.gram_eq, GlobalTheory.FrameCplx.gram_eq, Matrix.conjTranspose_mul]
-  congr 2
-  conv_rhs => rw [← hu]
-  simp only [Matrix.mul_assoc]
+  apply _root_.GlobalTheory.AdTh.RealCompact.isONFr_frMove <;> assumption
 
 abbrev twist {D : D7} {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) :
     Submodule (𝓞 D.host.E) (Fin n → D.host.E) :=

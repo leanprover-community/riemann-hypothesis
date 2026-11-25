@@ -295,7 +295,6 @@ end struct
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
@@ -637,7 +636,6 @@ lemma rho_cd (g0 : Mat k r) : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
@@ -899,11 +897,9 @@ end ck
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants
 
 section cont
 
@@ -1112,7 +1108,6 @@ end cd
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
@@ -1214,7 +1209,6 @@ theorem slice_bound (hM : SliceMem) (hR : RadicalParam) (hZh : ZhSlice) (hC : De
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
@@ -1362,7 +1356,6 @@ end Formalism.FourierDecayAlt.P.Ux10
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.U
 
 theorem Ux10.phi_bound_parts_of_radical_parametrisation (hR : RadicalParam) : PointwiseIntegralBoundFromComponents :=
   Ux10.phi_bound_parts_of_radical_and_slice hR _root_.Formalism.FourierDecayAlt.P.Ux3.zhSlice

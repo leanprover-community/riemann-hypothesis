@@ -1085,21 +1085,6 @@ def nzc (L : List (ℕ × Fin N1)) : ℕ := (L.map fun c => if c.1 = 0 then 0 el
 
 def z0c (L : List (ℕ × Fin N1)) : ℕ := (L.map fun c => if c.1 = 0 then 1 else 0).sum
 
-lemma nzc_cons (c : ℕ × Fin N1) (L : List (ℕ × Fin N1)) :
-    nzc (c :: L) = (if c.1 = 0 then 0 else 1) + nzc L := by
-  simp [nzc]
-
-lemma zeroCount_cons (c : ℕ × Fin N1) (L : List (ℕ × Fin N1)) :
-    z0c (c :: L) = (if c.1 = 0 then 1 else 0) + z0c L := by
-  simp [z0c]
-
-lemma nonzeroCount_add_zeroCount (L : List (ℕ × Fin N1)) : nzc L + z0c L = L.length := by
-  induction L with
-  | nil => simp [nzc, z0c]
-  | cons c L ih =>
-    rw [nzc_cons, zeroCount_cons, List.length_cons]
-    split_ifs <;> omega
-
 lemma dRow_apply (t : H) (r : ℕ) (b : Fin N1) (P : PolyXZ H N0 N1) :
     dRow (N0 := N0) t r b P =
       ∑ a : Fin N0, X (Sum.inl ((false, t), r, a)) * pderiv (Sum.inr ((true, t), a, b)) P := by
@@ -1231,92 +1216,10 @@ def RelL (L' : List (ℕ × Fin N1)) (k' : ℕ) (L : List (ℕ × Fin N1)) (k : 
   (nzc L' + 1 ≤ nzc L ∧ z0c L' ≤ z0c L ∧ k' ≤ k) ∨
     (nzc L' ≤ nzc L ∧ z0c L' + 1 ≤ z0c L ∧ k' + 1 ≤ k)
 
-lemma relL_lt {L' : List (ℕ × Fin N1)} {k' : ℕ} {L : List (ℕ × Fin N1)} {k : ℕ} (h : RelL L' k' L k) :
-    nzc L' + min (z0c L') k' < nzc L + min (z0c L) k := by
-  unfold RelL at h
-  omega
-
 def GS (t : H) (L : List (ℕ × Fin N1)) (k : ℕ) : Set (PolyXZ H N0 N1) :=
   {Q | ∃ (L' : List (ℕ × Fin N1)) (h' : PolyXZ H N0 N1) (k' : ℕ), Q = tmL t L' h' ∧
     (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h' = 0) ∧
     SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) k' h' ∧ RelL L' k' L k}
-
-lemma gf_mem (t : H) (L : List (ℕ × Fin N1)) :
-    ∀ (h : PolyXZ H N0 N1) (k : ℕ), (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h = 0) →
-      SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) k h →
-      Gf t (L.map (lfo (N0 := N0) t)).prod h ∈ Submodule.span ℤ (GS t L k) := by
-  induction L with
-  | nil =>
-    intro h k _ _
-    simp [Gf]
-  | cons c L ih =>
-    intro h k hh hk
-    rw [List.map_cons, List.prod_cons, Gf_cons]
-    apply add_mem
-    · by_cases hc : c.1 = 0
-      · cases k with
-        | zero =>
-          have e : dRow (N0 := N0) t c.1 c.2 h = 0 := by
-            rw [hc]
-            simp only [SDegD] at hk
-            exact hk c.2
-          rw [e, mul_zero]
-          exact zero_mem _
-        | succ k =>
-          apply Submodule.subset_span
-          refine ⟨L, dRow (N0 := N0) t c.1 c.2 h, k, rfl, zf_dRow t _ _ h hh, ?_, ?_⟩
-          · rw [hc]
-            simp only [SDegD] at hk
-            exact hk c.2
-          · unfold RelL
-            rw [nzc_cons, zeroCount_cons, if_pos hc, if_pos hc]
-            omega
-      · apply Submodule.subset_span
-        refine ⟨L, dRow (N0 := N0) t c.1 c.2 h, k, rfl, zf_dRow t _ _ h hh,
-          sdeg_comm _ (dRow (N0 := N0) t c.1 c.2) (fun j x => dRow_comm t 0 j c.1 c.2 x) (map_zero _) k h hk, ?_⟩
-        unfold RelL
-        rw [nzc_cons, zeroCount_cons, if_neg hc, if_neg hc]
-        omega
-    · have key : ∀ x ∈ Submodule.span ℤ (GS (N0 := N0) t L k),
-          lfo t c * x ∈ Submodule.span ℤ (GS (N0 := N0) t (c :: L) k) := by
-        intro x hx
-        induction hx using Submodule.span_induction with
-        | mem x hx =>
-          obtain ⟨L', h', k', rfl, h1, h2, h3⟩ := hx
-          apply Submodule.subset_span
-          refine ⟨c :: L', h', k', ?_, h1, h2, ?_⟩
-          · simp only [tmL, List.map_cons, List.prod_cons, mul_assoc]
-          · unfold RelL at h3 ⊢
-            rw [nzc_cons, nzc_cons, zeroCount_cons, zeroCount_cons]
-            split_ifs <;> omega
-        | zero => rw [mul_zero]; exact zero_mem _
-        | add x y _ _ hx hy => rw [mul_add]; exact add_mem hx hy
-        | smul a x _ hx => rw [mul_smul_comm]; exact Submodule.smul_mem _ a hx
-      exact key _ (ih h k hh hk)
-
-lemma lap_tm_zero (t : H) (n : ℕ) :
-    ∀ (L : List (ℕ × Fin N1)) (h : PolyXZ H N0 N1) (k : ℕ),
-      (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h = 0) →
-      SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) k h →
-      nzc L + min (z0c L) k < n → (lapT N0 N1 t ^ n) (tmL t L h) = 0 := by
-  induction n with
-  | zero => intro L h k _ _ hb; omega
-  | succ n ih =>
-    intro L h k hh hk hb
-    rw [pow_succ, Module.End.mul_apply]
-    have e : lapT N0 N1 t (tmL t L h) = Gf t (L.map (lfo (N0 := N0) t)).prod h :=
-      lap_mul t _ h (pw_prod t L) hh
-    rw [e]
-    have key : ∀ x ∈ Submodule.span ℤ (GS (N0 := N0) t L k), (lapT N0 N1 t ^ n) x = 0 := by
-      intro x hx
-      induction hx using Submodule.span_induction with
-      | mem x hx =>
-        obtain ⟨L', h', k', rfl, h1, h2, h3⟩ := hx
-        exact ih L' h' k' h1 h2 (by have := relL_lt h3; omega)
-      | zero => exact map_zero _
-      | add x y _ _ hx hy => rw [map_add (f := _), hx, hy, add_zero]
-      | smul a x _ hx => rw [map_smul, hx, smul_zero]
-    exact key _ (gf_mem t L h k hh hk)
 
 private def rowCount (L : List (ℕ × Fin N1)) (r : ℕ) : ℕ :=
   (L.map Prod.fst).count r
@@ -1445,104 +1348,6 @@ private theorem lap_tm_rows_zero (t : H) (rows : Finset ℕ) (n : ℕ) :
 
 def MS (t : H) (a b : ℕ) : Submodule ℤ (PolyXZ H N0 N1) :=
   Submodule.span ℤ {Q | ∃ L : List (ℕ × Fin N1), Q = tmL t L 1 ∧ nzc L = a ∧ z0c L = b}
-
-lemma ms_mul (t : H) {a b a' b' : ℕ} {P Q : PolyXZ H N0 N1} (hP : P ∈ MS t a b) (hQ : Q ∈ MS t a' b') :
-    P * Q ∈ MS t (a + a') (b + b') := by
-  first | (apply UpperTheory.Reformulated.B.Qj21.ms_mul <;> assumption)
-
-lemma ms_prod (t : H) {ι : Type} (s : Finset ι) (f : ι → PolyXZ H N0 N1) (a b : ι → ℕ)
-    (h : ∀ i ∈ s, f i ∈ MS t (a i) (b i)) :
-    ∏ i ∈ s, f i ∈ MS t (∑ i ∈ s, a i) (∑ i ∈ s, b i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    exact Submodule.subset_span ⟨[], by simp [tmL, nzc, z0c]⟩
-  | insert i s hi ih =>
-    rw [Finset.prod_insert hi, Finset.sum_insert hi, Finset.sum_insert hi]
-    exact ms_mul t (h i (Finset.mem_insert_self i s)) (ih (fun j hj => h j (Finset.mem_insert_of_mem hj)))
-
-lemma zeroCount_ofFn {p : ℕ} (g : Fin p → ℕ × Fin N1) :
-    z0c (List.ofFn g) = ∑ i : Fin p, (if (g i).1 = 0 then 1 else 0) := by
-  simp [z0c, List.map_ofFn, List.sum_ofFn]
-
-lemma minor_mem (t : H) (p : ℕ) (hp : 0 < p) (I : Fin p ↪o Fin N1) :
-    minorXZ (Lt := Bool × H) N0 N1 (false, t) p I ∈ MS t (p - 1) 1 := by
-  unfold minorXZ
-  rw [Matrix.det_apply]
-  apply Submodule.sum_mem
-  intro σ _
-  rw [Units.smul_def]
-  apply Submodule.smul_mem
-  apply Submodule.subset_span
-  have hz : z0c (List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i)) = 1 := by
-    rw [zeroCount_ofFn]
-    rw [Equiv.sum_comp σ (fun j : Fin p => if (j : ℕ) = 0 then 1 else 0)]
-    rw [Finset.sum_eq_single ⟨0, hp⟩]
-    · simp
-    · intro j _ hj
-      have : (j : ℕ) ≠ 0 := fun h => hj (Fin.ext h)
-      simp [this]
-    · simp
-  refine ⟨List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i), ?_, ?_, hz⟩
-  · simp only [tmL, List.map_ofFn, List.prod_ofFn, mul_one, Matrix.of_apply]
-    rfl
-  · have := nonzeroCount_add_zeroCount (List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i))
-    rw [List.length_ofFn, hz] at this
-    omega
-
-lemma colLen_pos (α : YoungDiagram) (c : Fin (α.rowLen 0)) : 0 < α.colLen c := by
-  exact YoungDiagram.mem_iff_lt_colLen.mp (YoungDiagram.mem_iff_lt_rowLen.mpr c.2)
-
-lemma sum_colLen_le (α : YoungDiagram) : ∑ c : Fin (α.rowLen 0), α.colLen c ≤ α.cells.card := by
-  have e : ∑ c : Fin (α.rowLen 0), α.colLen c =
-      (Finset.univ.sigma fun c : Fin (α.rowLen 0) => Finset.range (α.colLen c)).card := by
-    rw [Finset.card_sigma]
-    simp
-  rw [e]
-  apply Finset.card_le_card_of_injOn (fun x => (x.2, (x.1 : ℕ)))
-  · intro x hx
-    simp only [Finset.coe_sigma, Set.mem_sigma_iff, Finset.coe_univ, Set.mem_univ, Finset.coe_range,
-      Set.mem_Iio, true_and, Finset.mem_coe] at hx ⊢
-    rw [YoungDiagram.mem_cells, YoungDiagram.mem_iff_lt_colLen]
-    exact hx
-  · rintro ⟨c, i⟩ _ ⟨c', i'⟩ _ hxy
-    simp only [Prod.mk.injEq] at hxy
-    obtain ⟨rfl, h2⟩ := hxy
-    have : c = c' := Fin.ext h2
-    subst this
-    rfl
-
-theorem pLapForms : PLapForms := by
-  intro H _ _ N0 N1 α I t g d n hg hd hn
-  have hF := ms_prod (N0 := N0) t (Finset.univ : Finset (Fin (α.rowLen 0)))
-    (fun c => minorXZ (Lt := Bool × H) N0 N1 (false, t) (α.colLen c) (I c))
-    (fun c => α.colLen c - 1) (fun _ => 1)
-    (fun c _ => minor_mem t _ (colLen_pos α c) (I c))
-  have hsum : ∑ c : Fin (α.rowLen 0), (α.colLen c - 1) + α.rowLen 0 ≤ α.cells.card := by
-    calc ∑ c : Fin (α.rowLen 0), (α.colLen c - 1) + α.rowLen 0
-        = ∑ c : Fin (α.rowLen 0), (α.colLen c - 1) + ∑ _c : Fin (α.rowLen 0), 1 := by simp
-      _ = ∑ c : Fin (α.rowLen 0), (α.colLen c - 1 + 1) := (Finset.sum_add_distrib).symm
-      _ = ∑ c : Fin (α.rowLen 0), α.colLen c := by
-          apply Finset.sum_congr rfl
-          intro c _
-          have := colLen_pos α c
-          omega
-      _ ≤ α.cells.card := sum_colLen_le α
-  have h1 : ∑ _c : Fin (α.rowLen 0), 1 = α.rowLen 0 := by simp
-  rw [h1] at hF
-  have key : ∀ x ∈ MS (N0 := N0) t (∑ c : Fin (α.rowLen 0), (α.colLen c - 1)) (α.rowLen 0),
-      (lapT N0 N1 t ^ n) (x * g) = 0 := by
-    intro x hx
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨L, rfl, e1, e2⟩ := hx
-      have e : tmL t L 1 * g = tmL t L g := by simp [tmL]
-      rw [e]
-      exact lap_tm_zero t n L g d (fun a b => hg a b) hd (by rw [e1, e2]; omega)
-    | zero => rw [zero_mul, map_zero]
-    | add x y _ _ hx hy => rw [add_mul, map_add (f := _), hx, hy, add_zero]
-    | smul r x _ hx => rw [smul_mul_assoc, map_smul, hx, smul_zero]
-  exact key _ hF
 
 private def RowSpan (t : H) (rows : Finset ℕ) (counts : ℕ → ℕ) :
     Submodule ℤ (PolyXZ H N0 N1) :=
@@ -1792,10 +1597,6 @@ theorem dRow_dRow_minorXZ_eq_zero (H : Type) (N0 N1 : ℕ) (t : H) (row k : ℕ)
     convert map_zero (dRow (N0 := N0) t row b)
     exact Matrix.det_eq_zero_of_column_eq_zero c fun r => Matrix.updateCol_self
 
-theorem pMinorAff : PMinorAff := by
-  intro H N0 N1 t k I b b'
-  exact dRow_dRow_minorXZ_eq_zero H N0 N1 t 0 k I b b'
-
 end PI.EntAtD.W
 end -- clump:auto
 end -- clump:auto
@@ -1983,27 +1784,6 @@ private theorem factor_for_lapT (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : 
       smul_zero, smul_zero, add_zero]
   exact ⟨R, hG, h1, fun a b => hnoR (true, t) (Or.inr rfl) a b⟩
 
-theorem lapZero_of (hM : PMinorAff) (hS : PSDegMul) (hF : PLapForms) : PLapZero := by
-  intro H _ _ N0 N1 nu I t n hn
-  obtain ⟨R, hG, h1, hR⟩ := factor_for_lapT H N0 N1 nu I t
-  let P : Bool × H → PolyXZ H N0 N1 := fun s => ∏ c : Fin ((nu s).rowLen 0),
-    minorXZ N0 N1 s ((nu s).colLen c) (I s c)
-  have hR0 : SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) 0 R := by
-    intro b
-    exact heart_dRow_zero t 0 b R (fun a => hR a b)
-  have hmin : ∀ c : Fin ((nu (true, t)).rowLen 0), SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) 1
-      (minorXZ (Lt := Bool × H) N0 N1 (true, t) ((nu (true, t)).colLen c) (I (true, t) c)) := by
-    intro c j j'
-    exact hM H N0 N1 t _ _ j' j
-  have hPT0 := heart_sdeg_prod hS (fun b : Fin N1 => dRow (N0 := N0) t 0 b) Finset.univ _ (fun _ => 1)
-    (fun c _ => hmin c)
-  rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one] at hPT0
-  have hPT : SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) ((nu (true, t)).rowLen 0) (P (true, t)) :=
-    hPT0
-  have h2 := hS _ _ _ _ _ _ 0 hPT hR0
-  rw [hG]
-  exact hF H N0 N1 (nu (false, t)) (I (false, t)) t (P (true, t) * R) ((nu (true, t)).rowLen 0) n h1 h2 hn
-
 /-- Above the row-by-row contraction bound, the local Laplacian kills the product of minors. -/
 theorem lapT_pow_Gxz_eq_zero_of_rowContractionBound
     (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : ℕ) (nu : Bool × H → YoungDiagram)
@@ -2084,10 +1864,6 @@ private theorem acon_eq_zero_of_lapT_pow (hB : PBridge) (hC : PLapComm)
   rcases mul_eq_zero.1 h with h | h
   · exact absurd h (Finset.prod_ne_zero_iff.2 fun t' _ => by exact_mod_cast (Nat.factorial_ne_zero (n t')))
   · exact h
-
-theorem vanish_of (hB : PBridge) (hC : PLapComm) (hZ : PLapZero) : PVanish := by
-  intro H _ _ N0 N1 nu I m κ2 n t ht
-  exact acon_eq_zero_of_lapT_pow hB hC H N0 N1 nu I m κ2 n t (hZ H N0 N1 nu I t (n t) ht)
 
 /-- Terms beyond the row-by-row contraction bound vanish in the kernel expansion. -/
 theorem acon_eq_zero_of_rowContractionBound (hB : PBridge) (hC : PLapComm)
@@ -2178,10 +1954,6 @@ private theorem core_of_cutoff (hE : PExpand)
   · simp only [not_exists, not_lt] at hn
     exact coreTerm_le p S ut hS hut _ (hsg κ2) _ n (fun t => cutoff (nu (false, t)) (nu (true, t))) hn
 
-theorem core_of (hE : PExpand) (hV : PVanish) : CoreBound := by
-  intro H _ _ N0 N1 p _ nu Th hTh
-  exact core_of_cutoff hE cPr hV H N0 N1 p nu Th hTh
-
 /-- The discriminant-place kernel bound using all rows of the diagrams. -/
 theorem core_of_rowContractionBound (hE : PExpand) (hB : PBridge) (hC : PLapComm)
     (H : Type) [Fintype H] [DecidableEq H] (N0 N1 p : ℕ) [Fact p.Prime]
@@ -2210,10 +1982,6 @@ open Classical
 namespace PI.EntAtD.W
 
 open PI.EntAtD
-
-theorem entAtD_of (hX : PExpCoeff) (hB : PBridge) (hC : PLapComm) (hM : PMinorAff) (hS : PSDegMul)
-    (hF : PLapForms) : PI.EntAtD.EntAtD :=
-  entAtD_of_core (core_of (expand_of hX) (vanish_of hB hC (lapZero_of hM hS hF)))
 
 theorem entAtD_of_all_rows (hX : PExpCoeff) (hB : PBridge) (hC : PLapComm) : PI.EntAtD.EntAtD := by
   apply entAtD_of_core

@@ -179,13 +179,6 @@ def abs : AbsoluteValue F.T.Fr ℝ where
 
 theorem abs_apply (a : F.T.Fr) : F.abs a = nrmOf v.maximalIdeal (nval F.T.V F.e a) := rfl
 
-theorem abs_φ (a : K) : F.abs (F.φ a) = v a := by
-  by_cases ha : a = 0
-  · simp [ha]
-  have h := nrmOf_smul v.maximalIdeal ha (nval_ne_bot (V := F.T.V) F.e (1 : F.T.Fr))
-  rw [← nval_smul F.lies ha, mul_one, FinitePlace.mk_maximalIdeal, ← abs_apply, ← abs_apply, map_one, mul_one] at h
-  exact h
-
 theorem ofReal_abs (a : F.T.Fr) :
     ENNReal.ofReal (F.abs a) = normOfOrd (Ideal.absNorm v.maximalIdeal.asIdeal) (nval F.T.V F.e a) := by
   have h1 := one_lt_absNorm_real v.maximalIdeal
@@ -199,18 +192,6 @@ theorem ofReal_abs (a : F.T.Fr) :
   ring
 
 def nrm (f : Rul Xo c) : ℝ := F.abs (evI F.pt f)
-
-def fac (e : Ix Dw → ℤ) : ℝ := F.abs ((∏ i, F.t i ^ e i : F.T.Frˣ) : F.T.Fr)
-
-theorem fac_pos (e : Ix Dw → ℤ) : 0 < F.fac e := F.abs.pos (Units.ne_zero _)
-
-theorem fac_add (e e' : Ix Dw → ℤ) : F.fac (e + e') = F.fac e * F.fac e' := by
-  simp only [fac, Pi.add_apply, zpow_add, Finset.prod_mul_distrib, Units.val_mul, map_mul]
-
-theorem nrm_eq {e : Ix Dw → ℤ} {f : Rul Xo c} (hf : f ∈ secZ Xo c e) : F.nrm f = F.fac e * v (evR Xo c f y) := by
-  let _ := F.io.toAlgebra
-  rw [← F.abs_φ, fac, ← map_mul, ← F.tri.evR_eq hf]
-  rfl
 
 def latMax (C : Submodule c.F (Rul Xo c)) : ℝ := ⨆ w : supLat C, F.nrm w.1
 

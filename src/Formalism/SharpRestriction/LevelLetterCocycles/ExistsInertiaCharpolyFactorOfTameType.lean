@@ -1739,15 +1739,6 @@ theorem automorphic_hypotheses_iff_reduced : JacquetShalikaStrongMultOne N A ↔
   ⟨fun h => ⟨h.1, h.2.1, h.2.2.1⟩,
     fun h => ⟨h.1, h.2.1, h.2.2, fun _ _ _ ρ ρ' hs hs' hc => brauerNesbitt_matrix ρ ρ' hs hs' hc⟩⟩
 
-def G3a (i : N.Loc) (r : N.X i → (G H.E N.Om →* GL (Fin R.nV) (N.O i))) : Prop :=
-  ∃ (K' : Type) (_ : Field K') (_ : Algebra (Kf N i) K') (_ : FiniteDimensional (Kf N i) K'),
-    ∀ x, (∀ W, IsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W →
-        AbsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W) ∧
-      ∀ W₁ W₂, IsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W₁ →
-        IsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W₂ →
-        W₁ ⊓ W₂ = ⊥ →
-        ¬ IsoSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W₁ W₂
-
 def ReducedGaloisClause (i : N.Loc) : Prop :=
   HG N A i → ∀ r, GoodR N i r → ∀ w : PlE H, (w ∈ N.S i ∨ w ∈ N.Q i) →
     w ∉ placesOver H.E (N.l i) →

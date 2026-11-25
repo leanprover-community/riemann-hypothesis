@@ -57,6 +57,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.IsOpenAddSubgroup
 
 @[expose] public section
 
@@ -284,33 +285,7 @@ theorem R_le_O (M : Model F E) : M.R ≤ M.L.O := by
 
 theorem isOpen_R [IsNonarchimedeanLocalField F] [CharZero F] (M : Model F E) :
     IsOpen (M.R : Set E) := by
-  have := locE_topRing M.L
-  cases hs : M.split with
-  | none =>
-    have hR : (M.R : Set E) = M.L.O := by simp only [Model.R, hs]
-    rw [hR]
-    exact (locE_integers M.L).2
-  | some g =>
-    have := M.L.top
-    have := IsModuleTopology.toContinuousAdd F E
-    have hec : Continuous (g.e : E → F × F) :=
-      IsModuleTopology.continuous_of_linearMap g.e.toLinearEquiv.toLinearMap
-    have hq : (g.q : F) ≠ 0 := fun h => g.q_irr.ne_zero (Subtype.ext h)
-    have hU : IsOpen (((fun x => (g.q : F) * x) '' (𝒪[F] : Set F)) ×ˢ ((fun x => (g.q : F) * x) '' (𝒪[F] : Set F))) :=
-      (isOpen_mul_integer hq).prod (isOpen_mul_integer hq)
-    have hsub : (g.e : E → F × F) ⁻¹' (((fun x => (g.q : F) * x) '' (𝒪[F] : Set F)) ×ˢ
-        ((fun x => (g.q : F) * x) '' (𝒪[F] : Set F))) ⊆ (M.R : Set E) := by
-      rintro x ⟨⟨a, ha, h1⟩, ⟨b, hb, h2⟩⟩
-      rw [SetLike.mem_coe, mem_R_split M g hs]
-      refine ⟨⟨g.q * a, mul_mem g.q.2 ha⟩, ⟨g.q * b, mul_mem g.q.2 hb⟩, ⟨⟨a, ha⟩ - ⟨b, hb⟩, ?_⟩, ?_⟩
-      · exact Subtype.ext (by simp [mul_sub])
-      · exact Prod.ext h1.symm h2.symm
-    have h0 : (0 : E) ∈ (g.e : E → F × F) ⁻¹' (((fun x => (g.q : F) * x) '' (𝒪[F] : Set F)) ×ˢ
-        ((fun x => (g.q : F) * x) '' (𝒪[F] : Set F))) := by
-      rw [Set.mem_preimage, map_zero]
-      exact ⟨⟨0, zero_mem _, mul_zero _⟩, ⟨0, zero_mem _, mul_zero _⟩⟩
-    exact AddSubgroup.isOpen_of_mem_nhds M.R.toAddSubgroup (g := 0)
-      (Filter.mem_of_superset ((hU.preimage hec).mem_nhds h0) hsub)
+  apply _root_.PI.ProdFormulaE.ROpen.isOpen_R <;> assumption
 
 theorem model_topology : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type}
     [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK →

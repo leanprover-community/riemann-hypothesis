@@ -472,10 +472,6 @@ theorem exists_iso_pullback_coprod_desc_left {X A F : Scheme.{u}} (f : A ⟶ X) 
   · rw [Iso.symm_inv]
     exact hpb.isoPullback_hom_fst
 
-private theorem range_opens_ι {X : Scheme.{u}} (U : X.Opens) :
-    Set.range ⇑U.ι.base = (U : Set ↥X) := by
-  simp
-
 private theorem notMem_of_isCompl {X : Scheme.{u}} {U V : X.Opens} (h : IsCompl U V)
     (x : ↥X) (hU : x ∈ (U : Set ↥X)) (hV : x ∈ (V : Set ↥X)) : False := by
   have h1 : U ⊓ V = ⊥ := h.inf_eq_bot
@@ -505,9 +501,9 @@ private theorem range_fst_subset_range_inr_of_isCompl {X A F : Scheme.{u}} (f : 
   have hfa : f.base a = V.ι.base ((PullbackCone.snd s).base t) := by
     rw [← e2, ha, e1]
   refine notMem_of_isCompl h (f.base a) ?_ ?_
-  · rw [← range_opens_ι U]
+  · rw [← AlgebraicGeometry.Scheme.Opens.range_ι U]
     exact hf (Set.mem_range_self a)
-  · rw [hfa, ← range_opens_ι V]
+  · rw [hfa, ← AlgebraicGeometry.Scheme.Opens.range_ι V]
     exact Set.mem_range_self _
 
 private theorem isPullback_inr_coprod_desc {X A F : Scheme.{u}} (f : A ⟶ X) (g : F ⟶ X)

@@ -6,6 +6,7 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.AutomorphyFactorKernelAlgebraProof
 
 @[expose] public section
 
@@ -37,9 +38,6 @@ theorem vecMul_ne {s : Fin 2 → F} (hs : s ≠ 0) (γ : GL (Fin 2) F) : s ᵥ* 
   simp only [Matrix.vecMul_vecMul, Matrix.zero_vecMul] at this
   rwa [← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.vecMul_one] at this
 
-theorem im_smul (g : GL (Fin 2) ℝ) (z : P) : (g • z).1.im = g.val.det * z.1.im / Complex.normSq (den g z.1) := by
-  rw [coe_smul, im_div]
-
 theorem fac (g : GL (Fin 2) ℝ) (z : P) (a b : ℝ) :
     |(g • z).1.im| / ‖(a : ℂ) * (g • z).1 + b‖ ^ 2 =
       |g.val.det| * (|z.1.im| / ‖((a * g 0 0 + b * g 1 0 : ℝ) : ℂ) * z.1 + ((a * g 0 1 + b * g 1 1 : ℝ) : ℂ)‖ ^ 2) := by
@@ -51,7 +49,7 @@ theorem fac (g : GL (Fin 2) ℝ) (z : P) (a b : ℝ) :
     push_cast
     ring
   have hn : 0 < ‖den g z.1‖ ^ 2 := by positivity
-  rw [e, im_smul, norm_div, div_pow, abs_div, abs_mul, Complex.normSq_eq_norm_sq,
+  rw [e, AutomorphyFactorLemmas.im_smul, norm_div, div_pow, abs_div, abs_mul, Complex.normSq_eq_norm_sq,
     abs_of_nonneg (sq_nonneg ‖den g z.1‖), div_div_div_cancel_right₀ hn.ne', mul_div_assoc]
 
 theorem r_apply (v : I) (γ : GL (Fin 2) F) (i j : Fin 2) : (D.r v γ) i j = D.σ v (γ i j) := rfl

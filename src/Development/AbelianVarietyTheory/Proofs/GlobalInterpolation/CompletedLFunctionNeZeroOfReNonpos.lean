@@ -102,42 +102,15 @@ theorem deriv_inv_Gammaℝ_ne_zero (n : ℕ) :
     (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n)))
     (mul_ne_zero two_ne_zero (pow_ne_zero _ (ofReal_ne_zero.mpr Real.pi_ne_zero)))
 
-theorem rootNumber_ne_zero_of_isPrimitive {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
-    (hχ : χ.IsPrimitive) : rootNumber χ ≠ 0 := by
-  have hG : gaussSum χ ZMod.stdAddChar ≠ 0 := by
-    intro h
-    have h1 : ZMod.dft (χ : ZMod q → ℂ) = 0 := by
-      funext k
-      rw [hχ.fourierTransform_eq_inv_mul_gaussSum k, h, mul_zero]
-      rfl
-    have h2 := congr_fun (ZMod.dft_dft (χ : ZMod q → ℂ)) (-1)
-    rw [h1, _root_.map_zero] at h2
-    simp only [Pi.zero_apply, neg_neg, map_one, smul_eq_mul, mul_one] at h2
-    exact NeZero.ne q (by exact_mod_cast h2.symm)
-  unfold rootNumber
-  refine div_ne_zero (div_ne_zero hG (pow_ne_zero _ I_ne_zero)) ?_
-  rw [Ne, cpow_eq_zero_iff]
-  exact fun h => NeZero.ne q (Nat.cast_eq_zero.mp h.1)
-
 theorem completedLFunction_ne_zero_of_re_nonpos {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
     (hχ : χ.IsPrimitive) {s : ℂ} (hs : s.re ≤ 0) (h0 : s ≠ 0 ∨ χ ≠ 1) :
     completedLFunction χ s ≠ 0 := by
-  have hFE := hχ.completedLFunction_one_sub (1 - s)
-  rw [sub_sub_cancel] at hFE
-  rw [hFE]
   have hw : 1 ≤ (1 - s).re := by rw [sub_re, one_re]; linarith
-  refine mul_ne_zero (mul_ne_zero ?_ (rootNumber_ne_zero_of_isPrimitive hχ)) ?_
-  · rw [Ne, cpow_eq_zero_iff]
-    exact fun h => NeZero.ne q (Nat.cast_eq_zero.mp h.1)
-  · intro hC
-    have hne : χ⁻¹ ≠ 1 ∨ 1 - s ≠ 1 := by
-      rcases h0 with h | h
-      · exact Or.inr (by intro h'; apply h; linear_combination -h')
-      · exact Or.inl (inv_ne_one.mpr h)
-    apply LFunction_ne_zero_of_one_le_re χ⁻¹ hne hw
-    have h1s : 1 - s ≠ 0 := by
-      intro h'; rw [h'] at hw; norm_num at hw
-    rw [LFunction_eq_completed_div_gammaFactor χ⁻¹ (1 - s) (Or.inl h1s), hC, zero_div]
+  have hne : χ⁻¹ ≠ 1 ∨ 1 - s ≠ 1 := by simpa using h0.symm
+  rw [← sub_sub_cancel 1 s, hχ.completedLFunction_one_sub (1 - s)]
+  refine mul_ne_zero (mul_ne_zero ?_ (DirichletCharacter.rootNumber_ne_zero hχ))
+    (completedLFunction_ne_zero_of_one_le_re χ⁻¹ hne hw)
+  simp [cpow_eq_zero_iff, NeZero.ne q]
 
 theorem LFunction_zero_of_re_nonpos : ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ.IsPrimitive → ∀ s : ℂ, s.re ≤ 0 → LFunction χ s = 0 → (∃ n : ℕ, s = -n) ∧ analyticOrderNatAt (LFunction χ) s = 1 ∧ (s = 0 → χ.Even ∧ χ ≠ 1) ∧ (s = -1 → χ.Odd) := by
   intro q _ χ hχ s hs hL

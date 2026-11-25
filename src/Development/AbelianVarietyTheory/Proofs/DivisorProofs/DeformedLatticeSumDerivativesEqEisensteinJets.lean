@@ -142,15 +142,7 @@ namespace GlobalTheory.HilbFam.BrVal
 
 theorem card_realEmb (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
     Fintype.card (Emb F) = Module.finrank ℚ F := by
-  rw [← NumberField.Embeddings.card F ℂ]
-  refine Fintype.card_of_bijective (f := fun τ : F →+* ℝ ↦ (Complex.ofRealHom.comp τ : F →+* ℂ)) ⟨?_, ?_⟩
-  · intro τ τ' hτ
-    ext y
-    have := DFunLike.congr_fun hτ y
-    simpa using this
-  · intro φ
-    have hr : NumberField.ComplexEmbedding.IsReal φ := IsTotallyReal.complexEmbedding_isReal φ
-    exact ⟨hr.embedding, by ext y; simp⟩
+  apply _root_.GlobalTheory.HilbFam.EisCmp.card_realEmb <;> assumption
 
 theorem prod_cpow_ofReal {J : Type} (s : Finset J) (f : J → ℝ) (hf : ∀ i, 0 ≤ f i) (r : ℂ) :
     ∏ i ∈ s, ((f i : ℝ) : ℂ) ^ r = (((∏ i ∈ s, f i : ℝ)) : ℂ) ^ r := by

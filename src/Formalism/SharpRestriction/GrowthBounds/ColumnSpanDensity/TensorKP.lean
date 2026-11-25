@@ -57,19 +57,16 @@ theorem tensorMap {K : Type} [Field K] {S α B : Type} [Fintype S] [DecidableEq 
 
 end Formalism.MainNotions.flipOneThree.Pf.KP
 
-open MvPolynomial
 
 namespace Formalism.MainNotions.flipOneThree.Pf.KP
 
 end Formalism.MainNotions.flipOneThree.Pf.KP
 
-open MvPolynomial
 
 namespace Formalism.MainNotions.flipOneThree.Pf.KP
 
 end Formalism.MainNotions.flipOneThree.Pf.KP
 
-open MvPolynomial
 
 namespace Formalism.MainNotions.flipOneThree.Pf.KP
 

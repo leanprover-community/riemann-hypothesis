@@ -327,10 +327,6 @@ theorem pic_mapAlgebra_groupAlgebra_bijective :
 variable {X} (N : Type*) [AddCommGroup N] [Module (AddMonoidAlgebra A X) N]
   [Module.Invertible (AddMonoidAlgebra A X) N]
 
-theorem subsingleton_pic_groupAlgebra (X : Type*) [AddCommGroup X] [Module.Free ℤ X]
-    [Subsingleton (Pic A)] : Subsingleton (Pic (AddMonoidAlgebra A X)) :=
-  (pic_mapAlgebra_groupAlgebra_bijective A X).2.subsingleton
-
 end Picard
 
 end GlobalTheory

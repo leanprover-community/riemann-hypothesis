@@ -353,19 +353,8 @@ namespace GlobalTheory.CompanionTheory.Ar.RootHt.ArchB
 
 theorem tan_of_lieVal {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {G : Over X} [GrpObj G]
     {Li : Type} [AddCommGroup Li] [Module Ω Li] {M : LieModel G ξ Li} {z : Sp ℂ ⟶ X} {e : Li}
-    {w : epsAt z ⟶ G} (h : M.ValAt z e w) : IsTanAt G z w := by
-  obtain ⟨hz, v, ⟨hv, -⟩, hw⟩ := h
-  unfold IsTanAt at hv ⊢
-  let t : Over.mk z ⟶ Over.mk (X.fromSpecStalk (centre z)) :=
-    Over.homMk (Spec.map (Scheme.stalkClosedPointTo z)) (Scheme.Spec_stalkClosedPointTo_fromSpecStalk z)
-  have h1 : t ≫ (1 : Over.mk (X.fromSpecStalk (centre z)) ⟶ G) = 1 := MonObj.comp_one t
-  have h2 := congrArg CommaMorphism.left h1
-  rw [hw]
-  refine Eq.trans ?_ h2
-  change _ = Spec.map (Scheme.stalkClosedPointTo z) ≫ (1 : Over.mk (X.fromSpecStalk (centre z)) ⟶ G).left
-  refine Eq.trans ?_ (congrArg (fun k => Spec.map (Scheme.stalkClosedPointTo z) ≫ k) hv)
-  have key := _root_.GlobalTheory.CompanionTheory.Ar.LieTangent.spec_fst_dual (Scheme.stalkClosedPointTo z).hom
-  exact (Category.assoc _ _ _).symm.trans ((congrArg (fun k => k ≫ v.left) key).trans (Category.assoc _ _ _))
+    {w : epsAt z ⟶ G} (h : M.ValAt z e w) : IsTanAt G z w :=
+  isTanAt_of_valAt h
 
 theorem eq_sum_of_mem_flagStep {Ω : Type} [Field Ω] {Li : Type} [AddCommGroup Li] [Module Ω Li] {r n : ℕ}
     (hn : n ≤ r) (b : Fin r → Li) (π : Fin r → Module.Dual Ω Li) (hd : ∀ j l, π j (b l) = if j = l then 1 else 0)

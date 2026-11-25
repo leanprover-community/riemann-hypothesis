@@ -423,15 +423,7 @@ theorem pO1_toUnit_comp {R : Type} [CommRing R] {Y A : Over (Sp R)} (f : 𝟙_ (
   rw [← pO1_comp, _root_.GlobalTheory.AbCoh.PrimLift.pO1_unit_eq_zero (pO1 f x), map_zero]
 
 theorem primO1_of_axesO1 {R : Type} [CommRing R] (A : Over (Sp R)) [GrpObj A] (h : AxesVanishingStructureSheafDegOne A) : StructureSheafH1Primitive A := by
-  intro x
-  rw [← sub_eq_zero, sub_add_eq_sub_sub]
-  apply h
-  · rw [map_sub, map_sub, pO1_comp, pO1_comp, pO1_comp, lift_comp_one_right, lift_fst, lift_snd,
-      pO1_toUnit_comp, _root_.GlobalTheory.AbCoh.PrimLift.pO1_id]
-    simp
-  · rw [map_sub, map_sub, pO1_comp, pO1_comp, pO1_comp, lift_comp_one_left, lift_fst, lift_snd,
-      pO1_toUnit_comp, _root_.GlobalTheory.AbCoh.PrimLift.pO1_id]
-    simp
+  apply _root_.GlobalTheory.AbCoh.PrimLift.primO1_of_axesO1 <;> assumption
 
 theorem cup_add_cup_swap {R : Type} [CommRing R] {C : Type*} [Category C] (F : C ⥤ CommAlgCat.{0} R)
     (a b : CatCoh.H1 F) : cup F a b + cup F b a = 0 := by

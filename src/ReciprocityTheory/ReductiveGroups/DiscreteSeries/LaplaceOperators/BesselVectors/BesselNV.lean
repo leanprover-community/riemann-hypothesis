@@ -220,22 +220,6 @@ section hpk
 
 variable (k r : ℕ)
 
-theorem hpk_out {i : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val) (j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j.val = 2 * r + k - i.val then 1 else 0 := by
-  have hi := i.isLt
-  have hj := j.isLt
-  unfold Hpk
-  simp only [Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
-theorem hpk_mid {i : Fin (2 * r + k + 1)} (h : ¬(i.val < r ∨ r + k < i.val)) (j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j.val = i.val then (if i.val = r + k then -1 else 1) else 0 := by
-  have hi := i.isLt
-  have hj := j.isLt
-  unfold Hpk
-  simp only [Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
 theorem hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ v) i = if i.val < r ∨ r + k < i.val then v ⟨2 * r + k - i.val, by omega⟩
       else if i.val = r + k then -v i else v i := by

@@ -80,20 +80,6 @@ theorem poly_pad {A : Type} [Ring A] [Algebra ℂ A] (m n : ℕ) (hmn : m < n) (
   congr 1
   exact Finset.sum_congr rfl fun j hj => by rw [if_pos (mem_range.mp hj)]
 
-theorem thmSOfSteps : ThmSOfSteps := by
-  intro h1 h2 h3 h4 h5 h6 hB hC hN hR P A _ _ _ L0 QQ κ hP hS
-  obtain ⟨b, SS, hF, hRa, hCo⟩ := hB h1 h2 h3 P A L0 QQ κ hP hS
-  obtain ⟨L, hE, hn, hns, hst, hcore, hent⟩ := hC P A L0 QQ κ b SS hP hS hF hRa hCo
-  obtain ⟨hnorm, h11⟩ := hN h1 h2 h3 h4 h5 h6 P A L0 QQ κ b SS L hP hS hF hRa hCo hE hn hns hst hcore
-    (fun Y => ⟨(hent Y).1, (hent Y).2.1⟩)
-  refine ⟨⟨L, κ, SS⟩, hE, rfl, hst, (hR P A _).2 ⟨hcore, hnorm⟩, fun Y => ?_⟩
-  ext a b
-  fin_cases a <;> fin_cases b
-  · exact h11 Y
-  · exact (hent Y).2.1
-  · exact (hent Y).1
-  · exact (hent Y).2.2
-
 theorem normalFormOfS : NormalFormOfS := by
   intro hT hPre hH Wp Wq _ _ _ _ _ _ P z z' π π' hpl X
   obtain ⟨L0, hL0⟩ := hPre Wp Wq P z z' π π' hpl X
@@ -394,7 +380,6 @@ end Main
 
 end Formalism.FourierDecayAlt.P.NFx3
 
-open Matrix Finset
 
 namespace Formalism.FourierDecayAlt.P.NFx3
 

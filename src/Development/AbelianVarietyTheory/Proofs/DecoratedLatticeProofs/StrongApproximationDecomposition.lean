@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SplitChar
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
@@ -78,20 +79,7 @@ theorem map_mix_one {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {f :
 variable {D : D7}
 
 theorem exists_splitIdem (D : D7) : ∃ e : AE D, IsSplitIdem D e := by
-  have h2 : ¬ IsUnit (2 : 𝓞 D.host.F) := by
-    intro hu
-    have hn := hu.map (Algebra.norm ℤ (S := 𝓞 D.host.F))
-    rw [show (2 : 𝓞 D.host.F) = algebraMap ℤ (𝓞 D.host.F) 2 by simp, Algebra.norm_algebraMap,
-      isUnit_pow_iff Module.finrank_pos.ne'] at hn
-    rcases Int.isUnit_iff.mp hn with h | h <;> omega
-  obtain ⟨M, hM, h2M⟩ := Ideal.exists_le_maximal (Ideal.span {(2 : 𝓞 D.host.F)})
-    (by rwa [Ne, Ideal.span_singleton_eq_top])
-  have hm : (2 : 𝓞 D.host.F) ∈ M := h2M (Ideal.mem_span_singleton_self 2)
-  have hM0 : M ≠ ⊥ := by
-    rintro rfl
-    exact two_ne_zero ((Submodule.mem_bot _).mp hm)
-  obtain ⟨e, a, b, c, -⟩ := GlobalTheory.SplitIdem.exists_split_idempotent D ⟨M, hM.isPrime, hM0⟩ hm
-  exact ⟨e, (GlobalTheory.IdemModTwo.isSplitIdem_iff e).2 ⟨_, a, b, c⟩⟩
+  first | exact _root_.Formalism.IndefR.Fin.SplitChar.exists_splitIdem_D | exact @_root_.Formalism.IndefR.Fin.SplitChar.exists_splitIdem_D | apply _root_.Formalism.IndefR.Fin.SplitChar.exists_splitIdem_D <;> assumption
 
 theorem exists_mt (V : HSp D) (M : Matrix (Fin V.rank) (Fin V.rank) (AE D))
     (hM : (M.map (cA D))ᵀ * V.gram.map (incA D) * M = V.gram.map (incA D)) (hd : IsUnit M.det) :

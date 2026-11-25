@@ -130,32 +130,32 @@ open GlobalTheory.GermDerivativeLinearMaps GlobalTheory.IndefiniteRowSideFullHec
 
 variable {C : Type} [Field C] [CharZero C] {d : ℕ}
 
-theorem logOf_spec (G : FGLaw C d) : GP (GlobalTheory.FormalLog.logOf G) ∧ dLin (GlobalTheory.FormalLog.logOf G) = 1 ∧
-    comp1 (GlobalTheory.FormalLog.logOf G) (addOf G.F (pt C (n := 2) d 0) (pt C (n := 2) d 1)) =
-      comp1 (GlobalTheory.FormalLog.logOf G) (pt C (n := 2) d 0) + comp1 (GlobalTheory.FormalLog.logOf G) (pt C (n := 2) d 1) := by
-  refine ⟨fun i => GlobalTheory.FormalLog.constantCoeff_prim _, ?_, ?_⟩
+theorem logOf_spec (G : FGLaw C d) : GP (LogPf.logOf G) ∧ dLin (LogPf.logOf G) = 1 ∧
+    comp1 (LogPf.logOf G) (addOf G.F (pt C (n := 2) d 0) (pt C (n := 2) d 1)) =
+      comp1 (LogPf.logOf G) (pt C (n := 2) d 0) + comp1 (LogPf.logOf G) (pt C (n := 2) d 1) := by
+  refine ⟨fun i => LogPf.constantCoeff_prim _, ?_, ?_⟩
   · refine Matrix.ext fun i j => ?_
-    show coeff (Finsupp.single ((0 : Fin 1), j) 1) (GlobalTheory.FormalLog.logOf G i) = (1 : Matrix (Fin d) (Fin d) C) i j
-    have h := congrArg constantCoeff (GlobalTheory.FormalLog.pderiv_logOf G i j)
+    show coeff (Finsupp.single ((0 : Fin 1), j) 1) (LogPf.logOf G i) = (1 : Matrix (Fin d) (Fin d) C) i j
+    have h := congrArg constantCoeff (LogPf.pderiv_logOf G i j)
     rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv, zero_add] at h
-    have h2 := congrFun (congrFun (GlobalTheory.FormalLog.cc_om G) i) j
+    have h2 := congrFun (congrFun (LogPf.cc_om G) i) j
     simp only [Matrix.map_apply] at h2
     simpa [h2] using h
   · have e : addOf G.F (pt C (n := 2) d 0) (pt C (n := 2) d 1) = G.F := add_pt G
     rw [e]
     funext i
-    exact GlobalTheory.FormalLog.logOf_add G i
+    exact LogPf.logOf_add G i
 
 theorem logOf_comp_hom (G G' : FGLaw C d) (φ : Pt C 1 d) (hφ : GP φ)
     (hhom : comp1 φ G'.F = addOf G.F (comp1 φ (pt C (n := 2) d 0)) (comp1 φ (pt C (n := 2) d 1))) :
-    comp1 (GlobalTheory.FormalLog.logOf G) φ = fun i => ∑ j : Fin d, dLin φ i j • GlobalTheory.FormalLog.logOf G' j := by
+    comp1 (LogPf.logOf G) φ = fun i => ∑ j : Fin d, dLin φ i j • LogPf.logOf G' j := by
   obtain ⟨a0, a1, a2⟩ := logOf_spec G
   obtain ⟨b0, b1, b2⟩ := logOf_spec G'
   obtain ⟨ε, hi⟩ := ChartInv.exists_isInvPair C d _ b0 (by rw [b1, Matrix.det_one]; exact isUnit_one)
   have p0 : GP (pt C (n := 2) d 0) := gp_pt 0
   have p1 : GP (pt C (n := 2) d 1) := gp_pt 1
   have e : addOf G'.F (pt C (n := 2) d 0) (pt C (n := 2) d 1) = G'.F := add_pt G'
-  have e1 := additive_eq_lin _ G'.const _ ε (comp1 (GlobalTheory.FormalLog.logOf G) φ) b1 b2 hi
+  have e1 := additive_eq_lin _ G'.const _ ε (comp1 (LogPf.logOf G) φ) b1 b2 hi
     (gp_comp1 _ _ a0 hφ) (by
     rw [e, gt_comp1_comp1 _ _ hφ _ G'.const, hhom,
       additive_at _ G.const _ a2 _ _ (gp_comp1 _ _ hφ p0) (gp_comp1 _ _ hφ p1),
@@ -200,8 +200,8 @@ theorem detDepth_le_of_transF {R : Type} [CommRing R] (v : AddValuation C (WithT
       simp [oneVar]
     rw [e, coeff_map]
     exact hj _
-  · show subst _ (subst (oneVar C d) (GlobalTheory.FormalLog.logOf L a)) =
-      ∑ f, _ • subst (oneVar C d) (GlobalTheory.FormalLog.logOf L' f)
+  · show subst _ (subst (oneVar C d) (LogPf.logOf L a)) =
+      ∑ f, _ • subst (oneVar C d) (LogPf.logOf L' f)
     rw [subst_oneVar _ cc_oneVar _ hψ]
     refine (congrArg (subst (oneVar C d)) (congrFun e3 a)).trans ?_
 

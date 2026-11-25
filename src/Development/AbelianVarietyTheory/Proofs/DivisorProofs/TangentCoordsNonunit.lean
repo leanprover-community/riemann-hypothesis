@@ -181,17 +181,7 @@ theorem coeff_subst_eq_zero_of_degree {R : Type} [CommRing R] {σ τ : Type} [Fi
 theorem constantCoeff_nmul {R : Type} [CommRing R] {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (hμ : ∀ i, constantCoeff (μ i) = 0) (k : ℕ) (i : Fin d) :
     constantCoeff (nmul μ k i) = 0 := by
-  induction k generalizing i with
-  | zero => simp [nmul]
-  | succ k ih =>
-    have h : ∀ j, constantCoeff (Sum.elim (nmul μ k) (fun l => (X l : MvPowerSeries (Fin d) R)) j) = 0 := by
-      rintro (j | j)
-      · exact ih j
-      · exact constantCoeff_X _
-    have e : nmul μ (k + 1) i = at2 (μ i) (nmul μ k) (fun l => X l) := by
-      unfold nmul; rw [Function.iterate_succ_apply']; rfl
-    rw [e, at2]
-    exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero h) h (hμ i)
+  apply _root_.GlobalTheory.QLog.constantCoeff_nmul_zero <;> assumption
 
 end GlobalTheory.EvMul
 
@@ -415,12 +405,7 @@ namespace GlobalTheory.TangentIndep
 
 theorem nmul_const (R : Type) [CommRing R] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R)
     (hμ : ∀ i, constantCoeff (μ i) = 0) (k : ℕ) (i : Fin d) : constantCoeff (nmul μ k i) = 0 := by
-  induction k generalizing i with
-  | zero => simp [nmul]
-  | succ k ih =>
-    have h : nmul μ (k + 1) = op μ (nmul μ k) (fun i => X i) := by
-      simp only [nmul]; rw [Function.iterate_succ_apply']
-    rw [h, op, at2, _root_.GlobalTheory.constantCoeff_subst_of_constantCoeff_zero R _ _ _ (fun x => by cases x with | inl a => exact ih a | inr a => simp), hμ]
+  apply _root_.GlobalTheory.EvMul.constantCoeff_nmul <;> assumption
 
 theorem powerSeriesEvalTwoGroups_add (R : Type) [CommRing R] (d : ℕ) (τ : Type) (a b : MvPowerSeries (Fin d ⊕ Fin d) R)
     (u v : Fin d → MvPowerSeries τ R)

@@ -173,14 +173,6 @@ variable {ρ : RingAct A O} {𝔴 : Ideal O} {d n : ℕ} (C : Chain ρ 𝔴 d n)
 
 end Chain
 
-structure ChainMap {A' : Over S'} [GrpObj A'] [IsCommMonObj A'] {ρ' : RingAct A' O} {ρ : RingAct A O}
-    {𝔴 : Ideal O} {d n : ℕ} (C' : Chain ρ' 𝔴 d n) (C : Chain ρ 𝔴 d n) (f : S' ⟶ S) (u : A'.left ⟶ A.left) where
-
-  ψ : ∀ i, (C'.B i).left ⟶ (C.B i).left
-  cart : ∀ i, IsGrpPullback (C'.B i) (C.B i) f (ψ i)
-  act : ∀ i a, ((C'.act i).act a).left ≫ ψ i = ψ i ≫ ((C.act i).act a).left
-  π_comm : ∀ i, (C'.π i).left ≫ ψ i = u ≫ (C.π i).left
-
 namespace ChainMap
 
 variable {A' : Over S'} [GrpObj A'] [IsCommMonObj A'] {ρ' : RingAct A' O} {ρ : RingAct A O}

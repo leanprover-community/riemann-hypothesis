@@ -11,15 +11,6 @@ open Formalism.FourierDecayAlt.Sz Finset
 
 namespace Sz6
 
-theorem sqrt_prod_nonneg {α : Type} (s : Finset α) (f : α → ℝ) (h : ∀ i ∈ s, 0 ≤ f i) :
-    Real.sqrt (∏ i ∈ s, f i) = ∏ i ∈ s, Real.sqrt (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [prod_insert ha, prod_insert ha, Real.sqrt_mul (h a (mem_insert_self a s)),
-      ih (fun i hi => h i (mem_insert_of_mem hi))]
-
 theorem Icc_one_eq (n : ℕ) : Icc 1 n = Ico 1 (n + 1) := by
   ext x; simp only [mem_Icc, mem_Ico]; omega
 
@@ -225,9 +216,9 @@ theorem betaFactorisation : Factorisation := by
     rw [habs, hrho, hNd, hU,
       Real.sqrt_div (mul_nonneg hNpos (prod_nonneg (fun i _ => abs_nonneg _))),
       Real.sqrt_mul hNpos, Real.sqrt_mul hTT.le, Real.sqrt_mul (sq_nonneg (Y + 1 / 2 + c.a)),
-      Real.sqrt_sq ha.le, Sz6.sqrt_prod_nonneg _ _ (fun j hj => (hN j hj).le),
-      Sz6.sqrt_prod_nonneg _ _ (fun i _ => abs_nonneg _),
-      Sz6.sqrt_prod_nonneg _ _ (fun i _ => abs_nonneg _)]
+      Real.sqrt_sq ha.le, Real.sqrt_prod _ (fun j hj => (hN j hj).le),
+      Real.sqrt_prod _ (fun i _ => abs_nonneg _),
+      Real.sqrt_prod _ (fun i _ => abs_nonneg _)]
     generalize Y + 1 / 2 + c.a = W
     ring
 

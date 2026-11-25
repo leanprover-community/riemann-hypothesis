@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteOpenImmersionNbhdIsolatedFibrePointsStatement
 public import Mathlib.AlgebraicGeometry.AffineSpace
 public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 public import Mathlib.RingTheory.Extension.Cotangent.BaseChange
@@ -509,18 +510,7 @@ theorem exists_etale_point {Y : Scheme.{0}} {L : Type} [Field L] (y : Spec (.of 
 
 theorem quasiFiniteAt_of_isolated {H X : Scheme.{0}} (φ : H ⟶ X) [LocallyOfFiniteType φ]
     (z : H) (O : H.Opens) (hzO : z ∈ O) (hO : ∀ w ∈ O, φ w = φ z → w = z) : φ.QuasiFiniteAt z := by
-  rw [Scheme.Hom.quasiFiniteAt_iff_isOpen_singleton_asFiber, ← (φ.fiberHomeo (φ z)).isOpen_image]
-  simp only [Set.image_singleton, Scheme.Hom.asFiber, Homeomorph.apply_symm_apply]
-  rw [isOpen_induced_iff]
-  refine ⟨O, O.isOpen, ?_⟩
-  ext ⟨w, hw⟩
-  simp only [Set.mem_preimage, Set.mem_singleton_iff]
-  constructor
-  · intro h
-    exact Subtype.ext (hO w h hw)
-  · intro h
-    have : w = z := congrArg Subtype.val h
-    exact this ▸ hzO
+  apply _root_.GlobalTheory.ZmtNbhd.quasiFiniteAt_of_isolated <;> assumption
 
 private def isFiniteProp : MorphismProperty Scheme.{0} := fun _ _ h => IsFinite h
 

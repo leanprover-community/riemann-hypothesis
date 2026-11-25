@@ -263,17 +263,6 @@ theorem eq_ofReal_sub_of_dist_le_of_le_sub_re {w : ℂ} {σ D : ℝ} (h1 : dist 
   · rw [Complex.ofReal_re]; exact hre
   · rw [Complex.ofReal_im]; exact him
 
-/-- Include the cap among the candidate radii, so the minimum exists even with no competing poles. -/
-private theorem exists_capped_radius {α : Type*} {S : Set α} (hS : S.Finite) (f : α → ℝ)
-    {d cap : ℝ} (hcap : d < cap) (h : ∀ w ∈ S, d < f w) :
-    ∃ r, d < r ∧ r ≤ cap ∧ ∀ w ∈ S, r ≤ f w := by
-  obtain ⟨r, hr, hmin⟩ := Set.exists_min_image (insert cap (f '' S)) id
-    ((hS.image f).insert cap) ⟨cap, by simp⟩
-  refine ⟨r, ?_, hmin cap (by simp), fun w hw => hmin (f w) (Set.mem_insert_of_mem _ ⟨w, hw, rfl⟩)⟩
-  rcases Set.mem_insert_iff.mp hr with rfl | ⟨w, hw, rfl⟩
-  · exact hcap
-  · exact h w hw
-
 theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w in 𝓝[≠] z, w ∉ Z) {σ θ : ℝ}
     (hle : ∀ ρ ∈ Z, ρ.re < σ) (hθ : 0 < θ) (hθσ : θ < σ) {ρ₀ : ℂ} (h₀ : ρ₀ ∈ Z) (hρ₀ : θ < ρ₀.re) :
     (∃ D : ℝ, D ≤ σ - θ ∧ (∀ w ∈ Z, w ∉ Metric.ball (σ : ℂ) D) ∧ ∃ ρ₁ ∈ Z, σ - ρ₁.re < D) ∨
@@ -1160,13 +1149,7 @@ private theorem WindowHypU.mono {g : ℝ → ℝ} {θ θ' δ : ℝ} (hW : Window
   · simpa only [hweight] using hRbound
 
 /-- A criterion of Landau type on windows: under the pole data `hP : PoleData g Φ Z` and the window
-hypothesis `hW`, every `ρ ∈ Z` has real part at most `θ`.
-
-The classical theorem behind it is
-[E. Landau, *Über einen Satz von Tschebyschef* (§2, Satz)][landau1905]: a Dirichlet series whose
-coefficients are eventually positive has a singularity at the real point of its line of
-convergence. Landau's theorem does not state this lemma, which asks for an upper bound on windows
-only. This reference is a reader's proposal and has not been checked by a mathematician. -/
+hypothesis `hW`, every `ρ ∈ Z` has real part at most `θ`. -/
 theorem landau_window {g : ℝ → ℝ} {Φ : ℂ → ℂ} {Z : Set ℂ}
     (hP : PoleData g Φ Z) {θ δ : ℝ} (hδ : 0 < δ) (hW : WindowHypU g θ δ) :
     ∀ ρ ∈ Z, ρ.re ≤ θ := by

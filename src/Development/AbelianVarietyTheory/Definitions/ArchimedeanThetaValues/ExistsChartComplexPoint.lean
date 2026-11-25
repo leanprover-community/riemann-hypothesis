@@ -387,27 +387,6 @@ theorem mem_Theta (j : ℕ) (α : A.X) (θ : (Fin A.gB → ℂ) → ℂ) : θ �
     rw [show θ = fun _ => θ 0 from funext fun z => congrArg θ (Subsingleton.elim _ _)]
     exact differentiable_const _, fun l z => by simp [lam_eq_zero A l, AnArc.ah]⟩
 
-def secFn : (dict A q hq h).SecFn where
-  fn j _ α := Equiv.ofBijective
-    (fun s => ⟨fun _ => valAt' (𝟙 (Sp ℂ)) _ (s.f fun _ => PUnit.unit), mem_Theta A j α _⟩) (by
-      constructor
-      · rintro ⟨f, _⟩ ⟨f', _⟩ e
-        have e' := congrFun (congrArg Subtype.val e) 0
-        congr 1
-        funext i
-        refine ComplexPoints.eq_of_valAt'_eq (𝟙 (Sp ℂ)) _ _ _ fun x hx _ => ?_
-        obtain rfl : x = 𝟙 _ := (Category.comp_id _).symm.trans hx
-        exact e'
-      · intro θ
-        refine ⟨⟨fun i => constFn (𝟙 (Sp ℂ)) _ (θ.1 0), fun i i' => ?_⟩, Subtype.ext (funext fun z => ?_)⟩
-        · obtain rfl : i = i' := funext fun _ => rfl
-          erw [linComb_triv_g]
-          exact (_root_.one_mul _).symm
-        · exact (valAt'_constFn _ _ (Category.comp_id _) _ _ (wchart_triv _ _).ge).trans
-            (congrArg θ.1 (Subsingleton.elim (α := Fin A.gB → ℂ) _ _)))
-  fn_val j _ α s z i _ :=
-    (_root_.mul_one _).symm.trans (congrArg _ (frameProd_zeroUnif A _ _ _).symm)
-
 def psiFrac (x : A.X) : (FractionRing ℂ)ˣ := Units.map (algebraMap ℂ (FractionRing ℂ)).toMonoidHom (A.psi x)
 
 

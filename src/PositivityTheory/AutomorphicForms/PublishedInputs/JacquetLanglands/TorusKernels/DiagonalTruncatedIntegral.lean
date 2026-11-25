@@ -52,6 +52,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.DiagonalTermsContributionProof
 
 @[expose] public section
 
@@ -84,11 +85,7 @@ theorem lower_right_ne_zero_of_upper_right_zero {g : GL (Fin 2) ℝ} (h01 : g 0 
   intro h; apply g.det_ne_zero; rw [det_eq, h, h01]; ring
 
 theorem diag_smul {g : GL (Fin 2) ℝ} (h01 : g 0 1 = 0) (h10 : g 1 0 = 0) (z : P) :
-    (g • z).1 = ((g 0 0 / g 1 1 : ℝ) : ℂ) * z.1 := by
-  have h11 := lower_right_ne_zero_of_upper_right_zero h01
-  rw [coe_smul]; simp only [num, den, h01, h10]; push_cast
-  field_simp
-  ring
+    (g • z).1 = ((g 0 0 / g 1 1 : ℝ) : ℂ) * z.1 := @DiagonalTermsContribution.diag_smul g h01 h10 z
 
 theorem diag_im {g : GL (Fin 2) ℝ} (h01 : g 0 1 = 0) (h10 : g 1 0 = 0) (z : P) :
     (g • z).1.im = g 0 0 / g 1 1 * z.1.im := by

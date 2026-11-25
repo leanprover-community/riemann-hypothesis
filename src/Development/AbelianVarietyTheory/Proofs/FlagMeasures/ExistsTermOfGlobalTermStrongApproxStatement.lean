@@ -89,6 +89,7 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnipotentGroupsLatticesGlobalCoordinatesStatement
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianAmplitudeMassProductStructure
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralRowFrameMapIsometryStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedFrameMemRowLatticesOfWord, Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedFrameMemRowLatticesOfWordStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalScalarEqOneAtPlaceOverTypePrimes, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalScalarEqOneAtPlaceOverTypePrimesStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UpperUnitriangularMul, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovesToGivesIntegralMatrices, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovesToGivesIntegralMatricesStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermFramesCongrModThetaUnitriangular, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ThetaSmulCompletedLatticeIffTypePrimeMul, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ThetaSmulCompletedLatticeIffTypePrimeMulStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedReferenceFrameCongruentUnitriangular, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedReferenceFrameCongruentUnitriangularStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAdmissibleIntegralFrameOfLocalTerms, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAdmissibleIntegralFrameOfLocalTermsStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalHermitianFramesRationalWitnessesPhase, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsTermOfGlobalTermStrongApprox, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsTermOfGlobalTermStrongApproxStatement
@@ -1156,41 +1157,7 @@ theorem ext_symm (A : Places F E sig) {n : ℕ} (p : HeightOneSpectrum (𝓞 F))
 
 private theorem full_lattice_of_term {A : Places F E sig} {r k : ℕ} (G : GFrames A r k)
     {d : G.Dat} {Λ : G.Lt} (hΛ : G.IsTerm d Λ) : Submodule.IsFullLattice E Λ := by
-  refine { toIsLattice := hΛ.1, span_eq_top := ?_ }
-  by_contra hne
-  obtain ⟨φ, hφ, hzero⟩ :=
-    Submodule.exists_dual_map_eq_bot_of_lt_top (lt_top_iff_ne_top.mpr hne) inferInstance
-  obtain ⟨P, hP⟩ := Ideal.exists_maximal (𝓞 F)
-  let p : IsDedekindDomain.HeightOneSpectrum (𝓞 F) :=
-    ⟨P, hP.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField F)⟩
-  have := (A.loc p).lf
-  have := (A.loc p).char0
-  have := PlacesInt.nontrivial_Ep (A.loc p)
-  have hspan := (TermBasic.term_basic (A.L p) r k (G.S p) (d p) (A.lat p Λ) (hΛ.2 p)).1.1.2
-  let ψ : (Fin (k + 2 * r + 1) → (A.loc p).Ep) →ₗ[(A.loc p).Ep] (A.loc p).Ep :=
-    ∑ i : Fin (k + 2 * r + 1), (A.loc p).ιE (φ fun j => if i = j then 1 else 0) • LinearMap.proj i
-  have hψ (z : G.V) : ψ (A.bc p z) = (A.loc p).ιE (φ z) := by
-    rw [φ.pi_apply_eq_sum_univ z, map_sum]
-    simp only [ψ, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.proj_apply,
-      smul_eq_mul, map_mul, Places.bc]
-    exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
-  have hlat : A.lat p Λ ≤ (LinearMap.ker ψ).restrictScalars (A.L p).O := by
-    apply Submodule.span_le.mpr
-    rintro _ ⟨z, hz, rfl⟩
-    have hz' : φ z ∈ (⊥ : Submodule E E) := by
-      rw [← hzero]
-      exact Submodule.mem_map_of_mem (Submodule.subset_span hz)
-    change ψ (A.bc p z) = 0
-    rw [hψ, (Submodule.mem_bot E).mp hz', map_zero]
-  have hker : Submodule.span (A.loc p).Ep (A.lat p Λ : Set _) ≤ LinearMap.ker ψ :=
-    Submodule.span_le.mpr hlat
-  rw [hspan] at hker
-  apply hφ
-  apply LinearMap.ext
-  intro z
-  have hz := LinearMap.mem_ker.mp (hker (Submodule.mem_top (x := A.bc p z)))
-  rw [hψ] at hz
-  exact (map_eq_zero_iff _ (A.loc p).ιE.injective).mp hz
+  apply _root_.GlobalTheory.HL.ProdStruct.full_lattice_of_term <;> assumption
 
 
 theorem good_places (A : Places F E sig) (r k : ℕ) (G : GFrames A r k) (hk : 4 * r + 7 ≤ k)
@@ -1353,41 +1320,7 @@ theorem eq_map_of_local (A : Places F E sig) {n : ℕ} {Λ Γ : Submodule (𝓞 
 
 private theorem full_lattice_of_term {A : Places F E sig} {r k : ℕ} (G : GFrames A r k)
     {d : G.Dat} {Λ : G.Lt} (hΛ : G.IsTerm d Λ) : Submodule.IsFullLattice E Λ := by
-  refine { toIsLattice := hΛ.1, span_eq_top := ?_ }
-  by_contra hne
-  obtain ⟨φ, hφ, hzero⟩ :=
-    Submodule.exists_dual_map_eq_bot_of_lt_top (lt_top_iff_ne_top.mpr hne) inferInstance
-  obtain ⟨P, hP⟩ := Ideal.exists_maximal (𝓞 F)
-  let p : IsDedekindDomain.HeightOneSpectrum (𝓞 F) :=
-    ⟨P, hP.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField F)⟩
-  have := (A.loc p).lf
-  have := (A.loc p).char0
-  have := PlacesInt.nontrivial_Ep (A.loc p)
-  have hspan := (TermBasic.term_basic (A.L p) r k (G.S p) (d p) (A.lat p Λ) (hΛ.2 p)).1.1.2
-  let ψ : (Fin (k + 2 * r + 1) → (A.loc p).Ep) →ₗ[(A.loc p).Ep] (A.loc p).Ep :=
-    ∑ i : Fin (k + 2 * r + 1), (A.loc p).ιE (φ fun j => if i = j then 1 else 0) • LinearMap.proj i
-  have hψ (z : G.V) : ψ (A.bc p z) = (A.loc p).ιE (φ z) := by
-    rw [φ.pi_apply_eq_sum_univ z, map_sum]
-    simp only [ψ, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.proj_apply,
-      smul_eq_mul, map_mul, Places.bc]
-    exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
-  have hlat : A.lat p Λ ≤ (LinearMap.ker ψ).restrictScalars (A.L p).O := by
-    apply Submodule.span_le.mpr
-    rintro _ ⟨z, hz, rfl⟩
-    have hz' : φ z ∈ (⊥ : Submodule E E) := by
-      rw [← hzero]
-      exact Submodule.mem_map_of_mem (Submodule.subset_span hz)
-    change ψ (A.bc p z) = 0
-    rw [hψ, (Submodule.mem_bot E).mp hz', map_zero]
-  have hker : Submodule.span (A.loc p).Ep (A.lat p Λ : Set _) ≤ LinearMap.ker ψ :=
-    Submodule.span_le.mpr hlat
-  rw [hspan] at hker
-  apply hφ
-  apply LinearMap.ext
-  intro z
-  have hz := LinearMap.mem_ker.mp (hker (Submodule.mem_top (x := A.bc p z)))
-  rw [hψ] at hz
-  exact (map_eq_zero_iff _ (A.loc p).ιE.injective).mp hz
+  apply _root_.GlobalTheory.HL.ProdStruct.full_lattice_of_term <;> assumption
 
 theorem term_eq_map {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) (hk : 4 * r + 7 ≤ k) {d : G.Dat}
     {Λ Γ : G.Lt} (hΛ : G.IsTerm d Λ) (hΓ : G.IsTerm d Γ) :

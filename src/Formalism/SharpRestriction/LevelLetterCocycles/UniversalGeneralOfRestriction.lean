@@ -563,7 +563,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -780,7 +779,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1037,7 +1035,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1230,7 +1227,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1404,7 +1400,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1498,7 +1493,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1602,7 +1596,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1753,7 +1746,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1857,7 +1849,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2013,7 +2004,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2105,7 +2095,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2203,7 +2192,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2270,7 +2258,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2337,7 +2324,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2474,7 +2460,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -2558,7 +2543,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 

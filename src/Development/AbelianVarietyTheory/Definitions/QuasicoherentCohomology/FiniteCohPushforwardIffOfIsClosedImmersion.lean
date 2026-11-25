@@ -1280,22 +1280,7 @@ section FiniteAlgebra
 variable (k : Type v) [Field k] (A : CommRingCat.{0}) [Algebra k A] [Algebra k Γ(Spec A, ⊤)]
   [IsScalarTower k A Γ(Spec A, ⊤)]
 
-theorem chi_structureModule_Spec : chi k (structureModule (Spec A)) = Module.finrank k A := by
-  rw [chi_eq_hdim_zero k fun _ hn ↦ coh.subsingleton_of_isAffine _ hn, hdim_def,
-    ((coh.zeroUnitSpecEquiv A).restrictScalars k).finrank_eq]
 
-
-omit [Algebra k Γ(Spec A, ⊤)] [IsScalarTower k A Γ(Spec A, ⊤)] in
-abbrev algebraΓSpecOf : Algebra k Γ(Spec A, ⊤) :=
-  ((algebraMap A Γ(Spec A, ⊤)).comp (algebraMap k A)).toAlgebra
-
-
-omit [Algebra k Γ(Spec A, ⊤)] [IsScalarTower k A Γ(Spec A, ⊤)] in
-theorem isScalarTower_algebraΓSpecOf :
-    letI := algebraΓSpecOf k A
-    IsScalarTower k A Γ(Spec A, ⊤) :=
-  letI := algebraΓSpecOf k A
-  .of_algebraMap_eq fun _ ↦ rfl
 
 end FiniteAlgebra
 

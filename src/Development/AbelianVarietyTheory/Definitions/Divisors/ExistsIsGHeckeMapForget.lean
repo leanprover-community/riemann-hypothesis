@@ -64,16 +64,6 @@ def IsGGPull {gb₁ : GBase G R₁} {gb₂ : GBase G R₂} {N : ℕ} {s' : S' �
 def GBase.IsMap (β : R₁ →+* R₂) (gb₁ : GBase G R₁) (gb₂ : GBase G R₂) : Prop :=
   gb₂.ρ = β gb₁.ρ ∧ ∀ i, gb₂.t i = β.comp (gb₁.t i)
 
-def GBase.map (β : R₁ →+* R₂) (gb : GBase G R₁) : GBase G R₂ where
-  ρ := β gb.ρ
-  ρ_root := by simpa using congrArg β gb.ρ_root
-  t i := β.comp (gb.t i)
-  t_ω i := by rw [RingHom.comp_apply, gb.t_ω]
-  comax i j hij := by
-    have h := congrArg (Ideal.map β) (gb.comax i j hij)
-    rw [Ideal.map_span, Ideal.map_top, ← Set.range_comp] at h
-    simpa [Function.comp_def] using h
-
 theorem GBase.IsMap.id (gb : GBase G R₁) : GBase.IsMap (RingHom.id R₁) gb gb :=
   ⟨rfl, fun _ => rfl⟩
 

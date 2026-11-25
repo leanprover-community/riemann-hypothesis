@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartFPlaceIdem
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ActOMemFinSub
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddNsmulResidueAssoc
@@ -73,17 +74,7 @@ theorem relIndex_ne_zero_of_finite {G Y : Type} [AddCommGroup G] (H K : AddSubgr
 
 theorem exists_extend {Γ V : Type} [Monoid Γ] [AddCommGroup V] [Module ℂ V] (M : Submodule ℂ V)
     (Om : Γ →* Module.End ℂ M) : ∃ om : Γ →* Module.End ℂ V, ∀ p (m : M), om p m = Om p m := by
-  obtain ⟨C, hC⟩ := M.exists_isCompl
-  let e := M.prodEquivOfIsCompl C hC
-  refine ⟨{ toFun := fun p => e.conj ((Om p).prodMap LinearMap.id), map_one' := ?_, map_mul' := fun p q => ?_ }, ?_⟩
-  · rw [map_one]
-    exact (congrArg e.conj LinearMap.prodMap_id).trans e.conj_id
-  · rw [map_mul, Module.End.mul_eq_comp, Module.End.mul_eq_comp, ← e.conj_comp, LinearMap.prodMap_comp,
-      LinearMap.id_comp]
-  · intro p m
-    show e (((Om p).prodMap LinearMap.id) (e.symm m)) = _
-    rw [Submodule.prodEquivOfIsCompl_symm_apply_left]
-    simp [e]
+  apply _root_.GlobalTheory.WeilPartsF.exists_extend <;> assumption
 
 section Abstract
 

@@ -810,16 +810,7 @@ namespace GlobalTheory.MixRec
 
 theorem injective_of_finite_int {k : Type} [CommRing k] [IsDomain k] [Module.Finite ℤ k]
     (σ : k →+* ℂ) : Function.Injective σ := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  have hker : RingHom.ker σ = ⊥ := by
-    apply Ideal.eq_bot_of_comap_eq_bot (R := ℤ)
-    rw [eq_bot_iff]
-    intro n hn
-    rw [Ideal.mem_comap, RingHom.mem_ker, eq_intCast, map_intCast, Int.cast_eq_zero] at hn
-    simp [hn]
-  intro a ha
-  have : a ∈ RingHom.ker σ := ha
-  rwa [hker, Ideal.mem_bot] at this
+  apply _root_.GlobalTheory.IndexNormEmb.injective_of_ringHom <;> assumption
 
 theorem exists_extension {k : Type} [CommRing k] [IsDomain k] [Module.Finite ℤ k]
     (K : Type) [Field K] [Algebra k K] [IsFractionRing k K] (σ : k →+* ℂ) :

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryTransferPosDef
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OscillatorModelValuesThird
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodModModT
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardLatticeDoubleCosetClassesStabilisers
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBaseChangeFiniteAdeleRingEquiv
@@ -113,57 +115,13 @@ theorem mem_intAE_iff_swap (z : Af D.host.F ⊗[D.host.F] D.host.E) :
 theorem preserves_iff {R : Type} [CommRing R] (S : Subring R) {n : ℕ} (M M' : Matrix (Fin n) (Fin n) R)
     (h1 : M * M' = 1) (h2 : M' * M = 1) :
     (∀ y : Fin n → R, (∀ i, y i ∈ S) ↔ ∀ i, (M *ᵥ y) i ∈ S) ↔ (∀ i j, M i j ∈ S) ∧ ∀ i j, M' i j ∈ S := by
-  have hmv : ∀ (A : Matrix (Fin n) (Fin n) R) (y : Fin n → R), (∀ i j, A i j ∈ S) → (∀ i, y i ∈ S) →
-      ∀ i, (A *ᵥ y) i ∈ S :=
-    fun A y hA hy i => show (∑ j, A i j * y j) ∈ S from Subring.sum_mem _ fun j _ => mul_mem (hA i j) (hy j)
-  have hs : ∀ j k : Fin n, (Pi.single j (1 : R) : Fin n → R) k ∈ S := fun j k => by
-    rw [Pi.single_apply]; split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  constructor
-  · intro h
-    refine ⟨fun i j => ?_, fun i j => ?_⟩
-    · have := (h (Pi.single j 1)).1 (hs j) i
-      simpa [Matrix.mulVec_single_one] using this
-    · have hy := (h (M' *ᵥ Pi.single j 1)).2 (by rw [Matrix.mulVec_mulVec, h1, Matrix.one_mulVec]; exact hs j) i
-      simpa [Matrix.mulVec_single_one] using hy
-  · rintro ⟨hM, hM'⟩ y
-    refine ⟨hmv M y hM, fun hy => ?_⟩
-    have := hmv M' _ hM' hy
-    rwa [Matrix.mulVec_mulVec, h2, Matrix.one_mulVec] at this
+  intros
+  apply _root_.GlobalTheory.TransferHyp.stab_iff_entries <;> assumption
 
 theorem mem_latHat_stdLat (V : HSp D) (z : Fin V.rank → Af D.host.F ⊗[D.host.F] D.host.E) :
     z ∈ Formalism.MainNotions.StandardLattice.latHat D.host.F D.host.E ((stdLat V : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) :
       Set (Fin V.rank → D.host.E)) ↔ ∀ i, z i ∈ intAE D := by
-  classical
-  constructor
-  · intro hz i
-    induction hz using AddSubgroup.closure_induction with
-    | mem y hy =>
-      obtain ⟨a, ha, x, hx, rfl⟩ := hy
-      obtain ⟨o, ho⟩ := Submodule.mem_one.1 (hx i trivial)
-      exact AddSubgroup.subset_closure ⟨a, ha, o, congrArg (fun w => a ⊗ₜ[D.host.F] w) ho.symm⟩
-    | zero => exact zero_mem _
-    | add y z _ _ hy hz => exact add_mem hy hz
-    | neg y _ hy => exact neg_mem hy
-  · intro hz
-    rw [← Finset.univ_sum_single z]
-    refine sum_mem fun i _ => ?_
-    have := hz i
-    generalize z i = w at this
-    induction this using AddSubgroup.closure_induction with
-    | mem y hy =>
-      obtain ⟨a, ha, x, rfl⟩ := hy
-      refine AddSubgroup.subset_closure ⟨a, ha, Pi.single i (x : D.host.E), fun j _ => ?_, funext fun j => ?_⟩
-      · by_cases hj : j = i
-        · subst hj; rw [Pi.single_eq_same]; exact Submodule.mem_one.2 ⟨x, rfl⟩
-        · rw [Pi.single_eq_of_ne hj]; exact zero_mem _
-      · by_cases hj : j = i
-        · subst hj; rw [Pi.single_eq_same, Pi.single_eq_same]
-        · rw [Pi.single_eq_of_ne hj, Pi.single_eq_of_ne hj, TensorProduct.tmul_zero]
-    | zero => rw [Pi.single_zero]; exact zero_mem _
-    | add y z _ _ hy hz => rw [Pi.single_add]; exact add_mem hy hz
-    | neg y _ hy => rw [Pi.single_neg]; exact neg_mem hy
+  apply _root_.GlobalTheory.ClassScalarValue.mem_latHat_std <;> assumption
 
 theorem stdLat_eq (V : HSp D) : stdLat V = GlobalTheory.SW.stdL D.host.E V.rank := by
   ext x
