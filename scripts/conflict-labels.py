@@ -38,6 +38,24 @@ Both labels come off as soon as their reason has gone, whoever put them on: the 
 fixed or closed, it joined the batch, or the batch was merged or closed. `awaiting-author` never
 comes off here. Its author takes it off by commenting `ready`, or a maintainer does.
 
+A pull request that merged a batch's branch carries the batch's commits. When the batch is then
+rebuilt without one of its pull requests, which is how a pull request is taken out of a batch,
+the dependent pull request still carries that one's commits: landing it would land them too, and
+GitHub would mark the pull request that was taken out merged. A sweep looks for this in each pull
+request that depends on an open batch, or shares commits beyond main with a batch it is compared
+with (see `stale_in`). When its branch holds commits of another open pull request that neither
+main, nor any batch being built, nor a pull request it says it depends on holds, it is labelled
+`awaiting-author` and told in a comment to make a new branch from the batch's current branch and
+copy only its own commits onto it. A hidden marker in the comment names the batch and its head,
+so it is sent once for each head of the batch.
+
+Which batches a pull request was told about is read from its comments, once a run at most, and
+only when it is about to be told something it may not have been told. What was read is kept from
+one sweep to the next (`--state`, which the workflow keeps in the Actions cache), so that a sweep
+in which nothing has changed reads no comments, however many batches are compared with. Without
+it, a pull request already labelled `batch-conflict` that is compared with more than one batch
+has its comments read on every sweep.
+
 The workflow's token may make 1,000 REST requests an hour, shared with every other workflow
 here, and the batch-queue workflow can use several hundred of them. So everything is read
 through GraphQL, whose allowance is separate, and REST is used only to write, and only for a
@@ -48,6 +66,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 from pathlib import Path
 import re
 import sys
@@ -77,6 +96,10 @@ RETRIES, WAIT = 3, 15.0
 # Hidden at the start of the comment sent to a pull request that conflicts with a batch.
 MARKER = "<!-- conflict-labels-batch {number} -->"
 TOLD = re.compile(r"<!-- conflict-labels-batch (\d+) -->")
+# Hidden at the start of the comment sent to a pull request whose branch carries commits that the
+# batch it builds on no longer has, once for each head of the batch.
+STALE = "<!-- conflict-labels-stale {number} {sha} -->"
+STALE_TOLD = re.compile(r"<!-- conflict-labels-stale (\d+) ([0-9a-f]{40}) -->")
 
 FIELDS = """
   number state isDraft headRefName headRefOid baseRefName mergeable body
@@ -169,9 +192,31 @@ class GitHub(_rest.GitHub):
         """Whether GitHub can merge each of these pull requests into its base, as {number: state}."""
         return {number: pr["mergeable"] for number, pr in self.some(sorted(numbers), "number mergeable").items()}
 
-    def told(self, number):
-        """The batches that pull request `number` has been sent this script's comment about."""
-        return self.marked(number, TOLD)
+    def notices(self, number):
+        """What this script has told pull request `number`, read from its comments once a run:
+        {"told": the batches it was told it conflicts with, "stale": (batch, head) for each head of
+        a batch it was told its branch carries commits that batch no longer has}."""
+        cache = self.__dict__.setdefault("_notices", {})  # emptied by `sync` at the start of a run
+        if number not in cache:
+            found, after = {"told": set(), "stale": set()}, None
+            while True:
+                data = self.graphql(COMMENTS, owner=self.owner, name=self.name, number=number, after=after)
+                page = data["repository"]["pullRequest"]["comments"]
+                for comment in page["nodes"]:
+                    author, body = comment.get("author") or {}, comment.get("body") or ""
+                    if author.get("__typename") != "Bot" or author.get("login") != BOT:
+                        continue
+                    match = TOLD.match(body)
+                    if match:
+                        found["told"].add(int(match.group(1)))
+                    match = STALE_TOLD.match(body)
+                    if match:
+                        found["stale"].add((int(match.group(1)), match.group(2)))
+                if not page["pageInfo"]["hasNextPage"]:
+                    break
+                after = page["pageInfo"]["endCursor"]
+            cache[number] = found
+        return {key: set(value) for key, value in cache[number].items()}
 
     def closed_with_labels(self):
         """Closed pull requests that still carry one of the labels, as {label: [numbers]}."""
@@ -235,20 +280,26 @@ def found_conflict(result):
     return result is not None and (result.kind == "conflict" or bool(result.stale))
 
 
-def decide(pr, main, batches, results):
+def decide(pr, main, batches, results, carried=None):
     """What the labels of a pull request should be.
 
     `pr["depends"]` holds the pull requests its description says it depends on (see
     `pr-dependencies.py`). `batches` is every open batch as {number: pull request}, and `results`
     the pull request's comparison with each one it is compared with (see `compared`), as {batch
-    number: Comparison, or None when it could not be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch
-    number: Comparison}, "why": {label: reason}}, where wanted is True or False, or None to leave
-    the label as it is.
+    number: Comparison, or None when it could not be made}. `carried` is what `stale_in` found
+    in its branch, if anything. Returns {"main": wanted, "batch": wanted, "conflicts": {batch
+    number: Comparison}, "stale": {batch number: {"head": its head, "prs": [numbers]}}, "why":
+    {label: reason}}, where wanted is True or False, or None to leave the label as it is.
     """
     why = {}
     gone = unavailable(pr, main)
     if gone:
-        return {"main": False, "batch": False, "conflicts": {}, "why": {MAIN_CONFLICT: gone, BATCH_CONFLICT: gone}}
+        return {"main": False, "batch": False, "conflicts": {}, "stale": {},
+                "why": {MAIN_CONFLICT: gone, BATCH_CONFLICT: gone}}
+    stale = {}
+    if carried and carried.get("prs"):
+        stale = {number: {"head": batches[number]["sha"], "prs": sorted(carried["prs"])}
+                 for number in sorted(carried["on"]) if number in batches}
     on = sorted(pr["depends"] & set(batches))
     if on:
         wanted_main, why[MAIN_CONFLICT] = False, f"it depends on the batch #{on[0]}"
@@ -275,23 +326,31 @@ def decide(pr, main, batches, results):
         why[BATCH_CONFLICT] = "it could not be compared with " + ", ".join(f"#{number}" for number in unknown)
     else:
         wanted_batch, why[BATCH_CONFLICT] = False, "it merges with " + ", ".join(f"#{number}" for number in building)
-    return {"main": wanted_main, "batch": wanted_batch, "conflicts": conflicts, "why": why}
+    return {"main": wanted_main, "batch": wanted_batch, "conflicts": conflicts, "stale": stale, "why": why}
 
 
-def needs_told(pr, decision, batches):
-    """Whether to read a pull request's comments to see which batches it was told about.
+def needs_told(pr, decision, batches, known=None):
+    """Whether to read a pull request's comments to see what it was told.
 
-    That is only needed when it is about to be told something: it conflicts with a batch, and
-    either does not carry the label yet or it is compared with more than one batch.
+    That is only needed when it is about to be told something it may not have been told: it
+    conflicts with a batch, and either does not carry the label yet or it is compared with more
+    than one batch; or its branch carries commits that a batch it builds on no longer has. `known`
+    is what an earlier run read or said, as `GitHub.notices` gives it, or None: what it shows the
+    pull request was told is not read again.
     """
-    return bool(decision["conflicts"]) and (BATCH_CONFLICT not in pr["labels"] or len(compared(batches)) > 1)
+    known = known or {"told": set(), "stale": set()}
+    new = set(decision["conflicts"]) - known["told"]
+    if new and (BATCH_CONFLICT not in pr["labels"] or len(compared(batches)) > 1):
+        return True
+    return any((number, item["head"]) not in known["stale"] for number, item in decision.get("stale", {}).items())
 
 
-def plan(pr, decision, told, batches):
+def plan(pr, decision, told, batches, stale_told=None):
     """The changes to make: (labels to add, labels to take off, [(batch number, comment)]).
 
-    `told` is the set of batches the pull request was already sent a comment about, or None when
-    it was not read because nothing new is to be said (see `needs_told`).
+    `told` is the set of batches the pull request was already sent a comment about, and
+    `stale_told` the (batch, head) it was told it carries commits of that the batch no longer
+    has, both None when they were not read because nothing new is to be said (see `needs_told`).
     """
     add, remove, notes = set(), set(), []
     for label, wanted in ((MAIN_CONFLICT, decision["main"]), (BATCH_CONFLICT, decision["batch"])):
@@ -303,8 +362,12 @@ def plan(pr, decision, told, batches):
         for number, result in sorted(decision["conflicts"].items()):
             if number not in told:
                 notes.append((number, message(batches[number], result)))
-        if notes and WAITING not in pr["labels"]:
-            add.add(WAITING)
+    if stale_told is not None:
+        for number, item in sorted(decision.get("stale", {}).items()):
+            if (number, item["head"]) not in stale_told:
+                notes.append((number, stale_message(batches[number], item["prs"])))
+    if notes and WAITING not in pr["labels"]:
+        add.add(WAITING)
     return add, remove, notes
 
 
@@ -363,11 +426,38 @@ def message(batch, result):
     return "\n".join(lines) + "\n"
 
 
+def stale_message(batch, prs):
+    """What a pull request is told when its branch carries commits of the pull requests `prs` that
+    `batch`, which it builds on, no longer has."""
+    branch = _conflicts.show(batch["ref"].encode())
+    names = ", ".join(f"#{number}" for number in prs)
+    lines = [
+        STALE.format(number=batch["number"], sha=batch["sha"]),
+        f"This pull request's branch carries commits of {names} that #{batch['number']}, the batch it builds on, "
+        f"no longer has: the batch's branch {branch} was rebuilt without them. If this pull request lands as it "
+        f"is, they land with it, and GitHub marks {names} merged.",
+        "",
+        "To fix that:",
+        "",
+        f"1. Make a new branch from the batch's current branch {branch}.",
+        "2. Copy only your own commits onto it with `git cherry-pick`, leaving out the merges and the commits "
+        f"of {names}.",
+        "3. Push that branch to this pull request, and comment `ready`.",
+        "",
+        f"From then on, bring this pull request up to date by merging {branch} into it, never by rebasing onto "
+        "it.",
+        "",
+        f"This pull request is labelled `{WAITING}` meanwhile. It is told this once for each head of "
+        f"#{batch['number']}.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
 # ---------------------------------------------------------------------------------------------
 # Comparing pull requests with the batches being built, in a clone without file contents.
 
 
-def compare_all(repo, main, building, candidates, log, *, origin=None):
+def compare_all(repo, main, building, candidates, log, *, origin=None, watch=None, carried=None):
     """Compare each of `candidates` with each batch in `building` (both {number: pull request}).
 
     Returns {pull request number: {batch number: Comparison, or None if it could not be made}}.
@@ -377,7 +467,13 @@ def compare_all(repo, main, building, candidates, log, *, origin=None):
     since it did, and only pull requests that change a file the batch changes too are merged on
     trial. Before that, one more fetch brings the file contents that the check for deleted
     imports reads.
+
+    `watch`, {pull request number: {"on": [batch numbers], "exclude": [numbers]}}, asks for the
+    candidates that may carry commits a batch no longer has to be looked at, and `carried` is
+    filled in with what was found (see `stale_in`). The heads of the pull requests in "on" and
+    "exclude" are fetched as well.
     """
+    watch = watch or {}
     git, merge_base = _conflicts.git, _conflicts.merge_base
     origin = origin or f"https://github.com/{repo}.git"
     results = {number: {} for number in candidates}
@@ -386,7 +482,8 @@ def compare_all(repo, main, building, candidates, log, *, origin=None):
         git(work, "init", "--quiet")
         git(work, "remote", "add", "origin", origin)
         trunk = f"refs/remotes/origin/{main}"
-        numbers = sorted(set(building) | set(candidates))
+        numbers = sorted(set(building) | set(candidates)
+                         | {other for item in watch.values() for other in [*item["on"], *item["exclude"]]})
         # The `refs/pull/` refs stay there when a pull request is pushed to or closed while this
         # runs, so one fetch cannot fail for one pull request.
         git(work, "fetch", "--quiet", "--filter=blob:none", "--no-tags", "origin",
@@ -412,7 +509,7 @@ def compare_all(repo, main, building, candidates, log, *, origin=None):
         # commits of the batch that are not on main yet (it merged an earlier head of the batch,
         # say) is measured from where the two parted, so that the batch's own changes are not
         # counted as its.
-        pairs = {}
+        pairs, sharing = {}, {}
         for number in sorted(candidates):
             head = heads.get(number)
             fork = merge_base(work, trunk, head) if head else None
@@ -428,10 +525,14 @@ def compare_all(repo, main, building, candidates, log, *, origin=None):
                     results[number][batch] = _conflicts.Comparison("clean", note="the batch holds its head")
                 elif base == sides[batch][1]:
                     results[number][batch] = _conflicts.Comparison("clean", note="it holds the batch's head")
+                    sharing.setdefault(number, set()).add(batch)
                 elif git(work, "merge-base", "--is-ancestor", base, trunk, ok=(0, 1))[0] == 0:
                     pairs[number, batch] = (base, (fork, head), sides[batch])
                 else:
                     pairs[number, batch] = (base, (base, head), (base, sides[batch][1]))
+                    sharing.setdefault(number, set()).add(batch)
+        if carried is not None:
+            stale_in(work, trunk, heads, candidates, watch, sharing, carried, log)
 
         # The deleted-import check reads the import lines of the Lean files a pull request adds or
         # edits, when the other side deletes a Lean file. One request fetches all of them.
@@ -461,13 +562,64 @@ def compare_all(repo, main, building, candidates, log, *, origin=None):
     return results
 
 
+def stale_in(work, trunk, heads, candidates, watch, sharing, carried, log):
+    """Find the candidates whose branch carries commits of another open pull request that a batch
+    they build on no longer has, and fill in `carried` with {number: {"on": [batch numbers],
+    "prs": [numbers]}} for each.
+
+    A candidate builds on the batches `watch` names for it (those its description says it depends
+    on) and, failing those, on the batches it shares commits beyond main with (`sharing`). Its
+    commits that neither main, nor any head in its "exclude" (every batch being built, and every
+    pull request it says it depends on), holds are what it carries of its own or from elsewhere.
+    Those that are also among another candidate's own commits belong to that pull request: the
+    batch was rebuilt without it, and the candidate still carries it. A pull request's own commits
+    are those on its first-parent line beyond main that are not merges: what it carries from a
+    batch, or from another pull request, came in through a merge. A candidate's own commits, and
+    those of a pull request it says it depends on, are never counted.
+    """
+    git, theirs = _conflicts.git, {}
+
+    def beyond(head, *options):
+        code, out = git(work, "rev-list", *options, head, f"^{trunk}", ok=(0, 128))
+        return set(out.decode().split()) if code == 0 else None
+
+    for number in sorted(candidates):
+        on = sorted(set((watch.get(number) or {}).get("on") or ()) or sharing.get(number) or ())
+        head = heads.get(number)
+        if not on or not head:
+            continue
+        exclude = {other for other in (watch.get(number) or {}).get("exclude") or ()} | set(on) | {number}
+        own = beyond(head, *(f"^{heads[other]}" for other in sorted(exclude - {number}) if other in heads))
+        if not own:
+            continue
+        prs = []
+        for other in sorted(candidates):
+            if other in exclude or other not in heads:
+                continue
+            if other not in theirs:
+                theirs[other] = beyond(heads[other], "--first-parent", "--no-merges") or set()
+            if theirs[other] & own:
+                prs.append(other)
+        if prs:
+            carried[number] = {"on": on, "prs": prs}
+            log.append(f"#{number} carries commits of " + ", ".join(f"#{other}" for other in prs) + " that "
+                       + ", ".join(f"#{batch}" for batch in on) + " no longer has")
+
+
 # ---------------------------------------------------------------------------------------------
 # Putting it together.
 
 
-def sync(gh, number=None, compare=compare_all):
-    """Bring both labels up to date on one pull request, or on every open one. Returns a log."""
+def sync(gh, number=None, compare=compare_all, known=None):
+    """Bring both labels up to date on one pull request, or on every open one. Returns a log.
+
+    `known` is what earlier runs read from pull requests' comments or said in them, as
+    {number: notices} (see `GitHub.notices`), and is brought up to date. A sweep keeps it to the
+    open pull requests."""
     log = []
+    known = {} if known is None else known
+    # Comments are read at most once a run (see `GitHub.notices`).
+    gh._notices = {}
     if number is None:
         main, pulls = gh.everything()
         targets = sorted(pulls)
@@ -485,10 +637,19 @@ def sync(gh, number=None, compare=compare_all):
                    + ", ".join(f"#{key} (`{pr['ref']}`)" for key, pr in sorted(building.items()))
                    + ("; not with " + ", ".join(f"#{key}" for key in under) + " on its own: a batch stacked on it "
                       "holds its changes" if under else ""))
-    results = {}
+    results, carried = {}, {}
+    # Those that may carry commits a batch they build on no longer has. Only a sweep reads every
+    # open pull request, and so knows whose commits they are.
+    watch = {}
+    if number is None:
+        being_built = sorted(key for key, pr in batches.items() if BUILDING in pr["labels"])
+        for key in candidates:
+            on = sorted(pulls[key]["depends"] & set(batches))
+            watch[key] = {"on": on, "exclude": sorted(set(being_built) | (pulls[key]["depends"] & set(pulls)))}
     if building and candidates:
         try:
-            results = compare(gh.repo, main, building, candidates, log)
+            results = compare(gh.repo, main, building, candidates, log, watch=watch,
+                              carried=carried if number is None else None)
         except RuntimeError as error:
             # `batch-conflict` then stays as it is everywhere, and `main-conflict` is still kept.
             gh.failed = True
@@ -506,13 +667,16 @@ def sync(gh, number=None, compare=compare_all):
         for key, state in gh.mergeable(unknown).items():
             pulls[key]["mergeable"] = state
 
-    decisions = {key: decide(pulls[key], main, batches, results.get(key, {})) for key in targets}
+    decisions = {key: decide(pulls[key], main, batches, results.get(key, {}), carried.get(key)) for key in targets}
     stopped = False
     for key in targets:
         pr, decision = pulls[key], decisions[key]
         try:
-            told = gh.told(key) if needs_told(pr, decision, batches) else None
-            add, remove, notes = plan(pr, decision, told, batches)
+            told = stale_told = None
+            if needs_told(pr, decision, batches, known.get(key)):
+                known[key] = gh.notices(key)
+                told, stale_told = known[key]["told"], known[key]["stale"]
+            add, remove, notes = plan(pr, decision, told, batches, stale_told)
             if not (add or remove or notes):
                 if number is not None:
                     log.append(f"#{key}: nothing to change ({'; '.join(decision['why'].values())})")
@@ -539,6 +703,11 @@ def sync(gh, number=None, compare=compare_all):
                     log.append(f"there is no `{label}` label yet, so a real run would stop here")
             for batch, text in notes:
                 gh.comment(key, text)
+                record = known.setdefault(key, {"told": set(), "stale": set()})
+                if text.startswith(STALE.split("{", 1)[0]):
+                    record["stale"].add((batch, batches[batch]["sha"]))
+                else:
+                    record["told"].add(batch)
             if add:
                 gh.add_labels(key, add)
             for label in sorted(remove):
@@ -548,7 +717,9 @@ def sync(gh, number=None, compare=compare_all):
             said = [f"{verb}add `{label}`, because {decision['why'].get(label, 'it is told about a batch')}"
                     for label in sorted(add)]
             said += [f"{verb}take `{label}` off, because {decision['why'][label]}" for label in sorted(remove)]
-            said += [f"{verb}tell it about the batch #{batch}" for batch, _ in notes]
+            said += [f"{verb}tell it that its branch carries commits #{batch} no longer has"
+                     if text.startswith(STALE.split("{", 1)[0]) else f"{verb}tell it about the batch #{batch}"
+                     for batch, text in notes]
             log.append(f"#{key}: " + "; ".join(said))
         except RuntimeError as error:
             # One pull request that cannot be read or labelled should not hold up the rest.
@@ -570,6 +741,8 @@ def sync(gh, number=None, compare=compare_all):
             gh.failed = True
             log.append(f"closed pull requests: skipped, because {error}")
     if number is None:
+        for key in [key for key in known if key not in pulls]:
+            del known[key]
         for label in OURS:
             having = [key for key in targets if label in pulls[key]["labels"]]
             log.append(f"{len(having)} of {len(targets)} open pull requests "
@@ -578,12 +751,39 @@ def sync(gh, number=None, compare=compare_all):
     return log
 
 
+def load_state(path):
+    """What earlier runs read from pull requests' comments, as `sync` takes it, from the file
+    `path`. A missing or unreadable file reads as nothing known."""
+    try:
+        kept = json.loads(path.read_text()) if path else {}
+    except (OSError, ValueError):
+        return {}
+    known = {}
+    for key, item in (kept.get("pulls") or {}).items() if isinstance(kept, dict) else ():
+        try:
+            known[int(key)] = {"told": {int(number) for number in item.get("told") or ()},
+                               "stale": {(int(number), str(sha)) for number, sha in item.get("stale") or ()}}
+        except (AttributeError, TypeError, ValueError):
+            continue
+    return known
+
+
+def save_state(path, known):
+    """Write what `load_state` reads."""
+    pulls = {str(key): {"told": sorted(item["told"]), "stale": sorted([number, sha] for number, sha in item["stale"])}
+             for key, item in sorted(known.items())}
+    path.write_text(json.dumps({"pulls": pulls}, sort_keys=True) + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--repo", required=True, help="owner/name")
     parser.add_argument("--pr", type=int, help="look at this pull request only")
     parser.add_argument("--dry-run", action="store_true", help="read everything, change nothing")
     parser.add_argument("--summary", type=Path, help="append what was done to this file")
+    parser.add_argument("--state", type=Path,
+                        help="what earlier runs read from pull requests' comments: read from this file if it is "
+                             "there, and written back to it")
     args = parser.parse_args()
 
     gh = GitHub(args.repo, args.dry_run)
@@ -593,9 +793,12 @@ def main():
         sys.stdout.write("- the conflict labels are switched off (`CONFLICT_LABELS_ON` in `batch-labels.py`): "
                          "nothing to do\n")
         return
+    known = load_state(args.state)
     try:
-        log = sync(gh, args.pr)
+        log = sync(gh, args.pr, known=known)
         failure = 1 if gh.failed else None
+        if args.state and not args.dry_run:
+            save_state(args.state, known)
     except (Refused, RuntimeError) as error:
         log, failure = [str(error)], 1
     left = f"; {gh.remaining} left this hour" if gh.remaining is not None else ""

@@ -195,6 +195,18 @@ heading about conflicts.
 Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
 there and comment `ready`.
 
+### If the batch you build on is rebuilt
+
+A pull request that merged a batch's branch carries the batch's commits. If the batch is then
+rebuilt without one of its pull requests, your branch still carries that one's commits: when
+your pull request lands, they land too, and GitHub marks the pull request that was taken out
+merged. Every sweep of the workflow looks for this in the pull requests that depend on an open
+batch, or share commits with a batch's branch. Your pull request is then labelled
+`awaiting-author` and told, once for each head of the batch, which pull requests it carries. Make a
+new branch from the batch's current branch, copy only your own commits onto it with
+`git cherry-pick`, push that to your pull request and comment `ready`. From then on, merge the
+batch's branch into yours; never rebase onto it.
+
 A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
 optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
 address.
