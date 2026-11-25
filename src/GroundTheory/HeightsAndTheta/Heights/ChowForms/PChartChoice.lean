@@ -91,13 +91,10 @@ theorem eval_map_splitFirst (J : Ideal (MvPolynomial (Fin e × Fin n) F)) (t : F
       induction i using Fin.cases <;> simp [splitFirst, specFirstVar, bind₁_X_right]
   exact RingHom.congr_fun h f
 
-end ChartChoice
-
-
-open ChartChoice in
-theorem ChartChoice.proof (h₁ : IncIdealPrime.Statement) (h₂ : ChowFormMultiHomog.Statement) :
-    ChartChoice.Statement := by
-  intro F _ _ n e I f q hI hf hq
+theorem exists_not_dvd [Infinite F] (h₁ : IncIdealPrime.Statement) (h₂ : ChowFormMultiHomog.Statement)
+    (I : Ideal (MvPolynomial (Fin n) F)) (f : MvPolynomial (Fin (e + 1) × Fin n) F)
+    (q : MvPolynomial (Fin e × Fin n) F) (hI : IsProjPrime I) (hf : IsChowForm I (e + 1) f)
+    (hq : Prime q) : ∃ t : Fin n → F, ¬ q ∣ specFirst f t := by
   classical
   obtain ⟨hf0, hspan⟩ := isChowForm_iff.mp hf
   have hfp : Prime f := by
@@ -105,7 +102,6 @@ theorem ChartChoice.proof (h₁ : IncIdealPrime.Statement) (h₂ : ChowFormMulti
     rw [hspan] at this
     exact (Ideal.span_singleton_prime hf0).mp this
   obtain ⟨δ, hδ, hhom⟩ := h₂ F n (e + 1) I f hI hf
-
   have hndvd : ¬ rename (shiftVar e n) q ∣ f := by
     rintro ⟨g, hg⟩
     rcases hfp.2.2 (rename (shiftVar e n) q) g (hg ▸ dvd_refl f) with ⟨h, hh⟩ | ⟨h, hh⟩
@@ -139,23 +135,29 @@ theorem ChartChoice.proof (h₁ : IncIdealPrime.Statement) (h₂ : ChowFormMulti
     apply hndvd
     have := map_dvd (joinFirst F e n) hmem
     rwa [joinFirst_splitFirst, joinFirst_C] at this
-  have : CharZero (MvPolynomial (Fin e × Fin n) F ⧸ J) :=
-    charZero_of_injective_algebraMap (algebraMap F _).injective
+  let g : ℕ ↪ F := Infinite.natEmbedding F
+  have hinj : Function.Injective fun k : ℕ => Ideal.Quotient.mk J (C (g k)) := fun a b hab =>
+    g.injective ((algebraMap F (MvPolynomial (Fin e × Fin n) F ⧸ J)).injective hab)
   by_contra hall
   push Not at hall
   apply hP0
   refine eq_zero_of_eval_zero_at_prod_finset P
-    (fun _ => (Finset.range (P.totalDegree + 1)).image (fun k : ℕ => (k : MvPolynomial (Fin e × Fin n) F ⧸ J)))
+    (fun _ => (Finset.range (P.totalDegree + 1)).image fun k : ℕ => Ideal.Quotient.mk J (C (g k)))
     (fun i => ?_) (fun x hx => ?_)
-  · rw [Finset.card_image_of_injective _ Nat.cast_injective, Finset.card_range]
+  · rw [Finset.card_image_of_injective _ hinj, Finset.card_range]
     exact Nat.lt_succ_of_le (degreeOf_le_totalDegree P i)
   · choose k _ hk using fun i => Finset.mem_image.mp (hx i)
-    have hx' : x = fun m => Ideal.Quotient.mk J (C ((k m : ℕ) : F)) := by
-      funext m
-      rw [← hk m]
-      simp
+    have hx' : x = fun m => Ideal.Quotient.mk J (C (g (k m))) := funext fun m => (hk m).symm
     rw [hx', hP, eval_map_splitFirst]
     exact Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr (hall _))
+
+end ChartChoice
+
+
+open ChartChoice in
+theorem ChartChoice.proof (h₁ : IncIdealPrime.Statement) (h₂ : ChowFormMultiHomog.Statement) :
+    ChartChoice.Statement :=
+  fun _ _ _ _ _ I f q hI hf hq => exists_not_dvd h₁ h₂ I f q hI hf hq
 
 end
 
