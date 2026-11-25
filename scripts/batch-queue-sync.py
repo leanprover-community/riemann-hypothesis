@@ -1145,7 +1145,7 @@ def keep_in_step(gh, batch, pulls, held, main, log):
         labelled.sort(key=int)
         done = tell_members(gh, batch, pulls, main, log) and tell_left_out(gh, batch, pulls, held, main, log)
         tell_reverted(gh, batch, pulls, main, log)
-        check_description(gh, batch, pulls, log)
+        check_description(gh, batch, pulls, held, log)
         if done:
             # The round is over: the note shows everything it said.
             note.pop("telling", None)
@@ -1365,9 +1365,10 @@ def tell_reverted(gh, batch, pulls, main, log):
             log.append(f"told #{key} that the batch #{number} reverts it")
 
 
-def check_description(gh, batch, pulls, log):
+def check_description(gh, batch, pulls, held, log):
     """Compare the description of a batch assembled by hand with its branch, in a comment of its
-    own on the batch's pull request (see `description_check`).
+    own on the batch's pull request (see `description_check`). `held` says which batches contain
+    each pull request, so that what the batches under this one contain counts as in its branch.
 
     The comment is posted once there is something to say, and edited in place after that, also
     to say that all is well again. The note's `check` remembers a digest of what it says, so a
@@ -1375,7 +1376,9 @@ def check_description(gh, batch, pulls, log):
     that all is well.
     """
     note, number = batch["note"], batch["number"]
-    text, clear = description_check(number, pulls[number]["body"], gh.repo, note, pulls)
+    under = set(batch.get("below", ()))
+    below = {int(key) for key, owners in held.items() if owners & under}
+    text, clear = description_check(number, pulls[number]["body"], gh.repo, note, pulls, below)
     digest = hashlib.sha256(text.encode()).hexdigest()[:16]
     comment = batch.get("check")
     if note["check"] == digest:

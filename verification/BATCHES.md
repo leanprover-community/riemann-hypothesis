@@ -133,7 +133,9 @@ comment of its own on the batch's pull request. It names:
   (rule 5).
 
 What is in the branch is what the workflow found there, at the commit it found, so a pull request
-pushed to after it was merged in is not named. The comment is posted once there is something to
+pushed to after it was merged in is not named. In a stack, the description of a batch need list
+only its own pull requests: what a batch under it contains is never named as not listed, and is
+in the branch if the description lists it as well. The comment is posted once there is something to
 say. After that it is edited in place, also to say that all is well again, and only when what it
 says changes.
 

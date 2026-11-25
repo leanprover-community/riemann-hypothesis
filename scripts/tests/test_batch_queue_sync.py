@@ -1801,6 +1801,28 @@ class DescriptionCheck(unittest.TestCase):
         first, second = self.reverted(gh, 13)
         self.assertTrue(second.startswith(f"<!-- batch-queue-reverted 1018 {third} -->"))
 
+    def stacked(self, upper):
+        """#1018 holds #11 and #12 and lists them, and #1050 is stacked on it, adds #13 and has the
+        description `upper`."""
+        gh = Fake()
+        queue(gh, 11, 12, 13)
+        by_hand(gh, 11, 12, body="Included:\n\n- #11 Reuse\n- #12 Prune\n")
+        by_hand(gh, 1018, 13, number=1050, ref="batch/b5-on-1018", name="b5", body=upper)
+        sync(gh)
+        return [body for body in gh.said(1050) if body.startswith(batch.CHECK)]
+
+    def test_a_stacked_batch_lists_only_its_own(self):
+        # Its record lists only its own members, so those of the batch under it are not unlisted.
+        self.assertEqual(self.stacked("Stacked on #1018.\n\nIncluded:\n\n- #13 Shorten\n"), [])
+
+    def test_a_stacked_batch_may_list_what_the_batch_under_it_holds(self):
+        self.assertEqual(self.stacked("Included:\n\n- #11 Reuse\n- #12 Prune\n- #13 Shorten\n"), [])
+
+    def test_a_stacked_batch_still_names_what_it_lists_and_nobody_holds(self):
+        [check] = self.stacked("Included:\n\n- #11 Reuse\n- #13 Shorten\n- #14 Missing\n")
+        self.assertIn("Listed as included, but closed: #14.", check)
+        self.assertNotIn("#11", check)
+
     def test_a_note_from_before_reverts_were_recorded_lists_the_branch_once_more(self):
         gh = self.built()
         merge_and_revert(gh, 13)

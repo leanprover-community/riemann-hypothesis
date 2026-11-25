@@ -140,10 +140,12 @@ def reverts(commits, found):
     return result
 
 
-def description_check(number, body, repo, note, pulls):
+def description_check(number, body, repo, note, pulls, below=()):
     """What the comment comparing the description of the batch #`number` with its branch says, and
     whether all is well. `note` is the batch's note, and `pulls` the open pull requests, as
-    `batch-queue-sync.py` reads them.
+    `batch-queue-sync.py` reads them. `below` is what the batches this one is stacked on contain,
+    as numbers: the branch holds them too, but the note records only what the batch contains of
+    its own.
 
     It names what the description lists as included, under any heading but one that leaves pull
     requests out, that is closed, saying which of those are still in the branch and so land with
@@ -152,7 +154,9 @@ def description_check(number, body, repo, note, pulls):
     the description lists nothing as included or it holds a batch itself; what is in the branch that
     it lists as left out; and what the branch reverts, which is named for that alone. What is in
     the branch is what the note records, at the commit it was found at, so a pull request pushed
-    to since it was merged in is still in it.
+    to since it was merged in is still in it. A pull request that a batch under this one contains
+    is in the branch when the description lists it as included, and is not named when it does not
+    list it: the description of a stacked batch need list only its own.
     """
     entries = list_entries(body, repo)
     found = {int(key) for key in note["members"]}
@@ -161,8 +165,8 @@ def description_check(number, body, repo, note, pulls):
     out = {entry for entry, heading, _ in entries if leaves_out(heading)}
     # A closed pull request stays in the note while its commit is in the branch.
     closed = sorted(entry for entry in included if entry not in pulls)
-    landing = [entry for entry in closed if entry in found]
-    missing = sorted(entry for entry in included - found if entry in pulls)
+    landing = [entry for entry in closed if entry in found | set(below)]
+    missing = sorted(entry for entry in included - found - set(below) if entry in pulls)
     undone = sorted((int(key), undo) for key, undo in note["reverted"].items() if int(key) in pulls)
     found -= {entry for entry, _ in undone}
     unlisted = sorted(entry for entry in found - anywhere if included and entry in pulls and not pulls[entry]["batch"])
