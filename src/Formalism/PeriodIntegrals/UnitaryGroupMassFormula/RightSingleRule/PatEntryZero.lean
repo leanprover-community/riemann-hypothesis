@@ -195,17 +195,14 @@ lemma dag_dag (A : Mx k r) : dag k r (dag k r A) = A := by
 lemma star_half : star (1 / 2 : ℂ) = 1 / 2 := by
   first | simp
 
-lemma star_inv2I : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by
-  rw [Complex.star_def, map_div₀, map_one, map_mul, Complex.conj_I, map_ofNat]
-  ring
-
 lemma skew_hpart1 (Z : Mx k r) : dag k r (hpart1 (Hpk k r) Z) = -hpart1 (Hpk k r) Z := by
   have e : hpart1 (Hpk k r) Z = (1 / 2 : ℂ) • (Z - dag k r Z) := rfl
   rw [e, dag_smul, dag_sub, dag_dag, star_half, ← smul_neg, neg_sub]
 
 lemma skew_hpart2 (Z : Mx k r) : dag k r (hpart2 (Hpk k r) Z) = -hpart2 (Hpk k r) Z := by
   have e : hpart2 (Hpk k r) Z = (1 / (2 * Complex.I) : ℂ) • (Z + dag k r Z) := rfl
-  rw [e, dag_smul, dag_add, dag_dag, star_inv2I, neg_smul, add_comm (dag k r Z) Z]
+  rw [e, dag_smul, dag_add, dag_dag, Formalism.REAL.star_one_div_two_I, neg_smul, add_comm (dag k r
+      Z) Z]
 
 lemma pat_hpart1 {l : Fin r} {Z : Mx k r} (hZ : Pat k r l Z) : Pat k r l (hpart1 (Hpk k r) Z) :=
   pat_smul (1 / 2 : ℂ) (pat_sub hZ (pat_dag hZ))

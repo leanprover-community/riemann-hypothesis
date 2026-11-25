@@ -34,7 +34,7 @@ theorem isOpen_units_tens {D : D7} (X : HidaSetting D) :
       obtain ⟨y, hy⟩ := ((Module.End.isUnit_iff _).1 h).2 1
       exact isUnit_iff_exists_inv.2 ⟨y, hy⟩
   rw [key]
-  refine (PI.AprimeInfW.isOpen_units_Ainf X.B.I.F).preimage (Continuous.matrix_det ?_)
+  refine (PI.VolStabSW.isOpen_units_Ainf X.B.I.F).preimage (Continuous.matrix_det ?_)
   refine continuous_matrix fun i j => ?_
   simp only [LinearMap.toMatrix_apply]
   change Continuous fun x : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E => B.coord i (x * B j)

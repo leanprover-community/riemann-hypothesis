@@ -13,18 +13,9 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
-theorem mem_gmap {γ : S.V ≃ₗ[E] S.V} {L : Submodule (𝓞 E) S.V} {x : S.V} :
-    x ∈ Formalism.HermitianLatticesTheory.gmap γ L ↔ γ.symm x ∈ L := by
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map, LinearMap.restrictScalars_apply, LinearEquiv.coe_coe]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    simpa using hy
-  · intro h
-    exact ⟨γ.symm x, h, by simp⟩
-
 theorem ap_mem_gmap {γ : S.V ≃ₗ[E] S.V} {L : Submodule (𝓞 E) S.V} {x : S.V} :
     γ x ∈ Formalism.HermitianLatticesTheory.gmap γ L ↔ x ∈ L := by
-  rw [mem_gmap, LinearEquiv.symm_apply_apply]
+  rw [Formalism.L2.SG.Saturated.mem_gmap_iff, LinearEquiv.symm_apply_apply]
 
 theorem smul_symm (γ : S.V ≃ₗ[E] S.V) (s : 𝓞 E) (x : S.V) : γ.symm (s • x) = s • γ.symm x := by
   rw [← algebraMap_smul E s x, map_smul, algebraMap_smul]
@@ -32,12 +23,12 @@ theorem smul_symm (γ : S.V ≃ₗ[E] S.V) (s : 𝓞 E) (x : S.V) : γ.symm (s �
 theorem gmap_symm_gmap (γ : S.V ≃ₗ[E] S.V) (L : Submodule (𝓞 E) S.V) :
     Formalism.HermitianLatticesTheory.gmap γ.symm (Formalism.HermitianLatticesTheory.gmap γ L) = L := by
   ext x
-  rw [mem_gmap, LinearEquiv.symm_symm, ap_mem_gmap]
+  rw [Formalism.L2.SG.Saturated.mem_gmap_iff, LinearEquiv.symm_symm, ap_mem_gmap]
 
 theorem gmap_inf (γ : S.V ≃ₗ[E] S.V) (A B : Submodule (𝓞 E) S.V) :
     Formalism.HermitianLatticesTheory.gmap γ (A ⊓ B) = Formalism.HermitianLatticesTheory.gmap γ A ⊓ Formalism.HermitianLatticesTheory.gmap γ B := by
   ext x
-  simp only [mem_gmap, Submodule.mem_inf]
+  simp only [Formalism.L2.SG.Saturated.mem_gmap_iff, Submodule.mem_inf]
 
 theorem gmap_sup (γ : S.V ≃ₗ[E] S.V) (A B : Submodule (𝓞 E) S.V) :
     Formalism.HermitianLatticesTheory.gmap γ (A ⊔ B) = Formalism.HermitianLatticesTheory.gmap γ A ⊔ Formalism.HermitianLatticesTheory.gmap γ B := by
@@ -56,7 +47,7 @@ theorem coe_gmap (γ : S.V ≃ₗ[E] S.V) (L : Submodule (𝓞 E) S.V) :
 theorem gmap_toO (γ : S.V ≃ₗ[E] S.V) (U : Submodule E S.V) :
     Formalism.HermitianLatticesTheory.gmap γ (toO S U) = toO S (U.map (γ : S.V →ₗ[E] S.V)) := by
   ext x
-  rw [mem_gmap]
+  rw [Formalism.L2.SG.Saturated.mem_gmap_iff]
   simp only [toO, Submodule.restrictScalars_mem]
   rw [Submodule.mem_map_equiv]
 
@@ -68,9 +59,9 @@ theorem gmap_smul (γ : S.V ≃ₗ[E] S.V) (I : Ideal (𝓞 E)) (L : Submodule (
 theorem gmap_locS (γ : S.V ≃ₗ[E] S.V) (M : Submonoid (𝓞 E)) (L : Submodule (𝓞 E) S.V) :
     Formalism.HermitianLatticesTheory.gmap γ (Formalism.HermitianLatticesTheory.locS M L) = Formalism.HermitianLatticesTheory.locS M (Formalism.HermitianLatticesTheory.gmap γ L) := by
   ext x
-  rw [mem_gmap]
+  rw [Formalism.L2.SG.Saturated.mem_gmap_iff]
   show (∃ s ∈ M, s • γ.symm x ∈ L) ↔ ∃ s ∈ M, s • x ∈ Formalism.HermitianLatticesTheory.gmap γ L
-  simp only [mem_gmap, smul_symm]
+  simp only [Formalism.L2.SG.Saturated.mem_gmap_iff, smul_symm]
 
 theorem gmap_locP (γ : S.V ≃ₗ[E] S.V) (p : Ideal (𝓞 E)) [p.IsPrime] (L : Submodule (𝓞 E) S.V) :
     Formalism.HermitianLatticesTheory.gmap γ (Formalism.HermitianLatticesTheory.localization₂ p L) = Formalism.HermitianLatticesTheory.localization₂ p (Formalism.HermitianLatticesTheory.gmap γ L) :=

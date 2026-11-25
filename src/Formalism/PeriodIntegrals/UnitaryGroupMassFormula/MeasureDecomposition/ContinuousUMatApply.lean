@@ -49,11 +49,6 @@ theorem mul_sub_one_mulVec (g g' : Matrix (Fin n) (Fin n) ℂ) (x : Fin n → �
     (g * g' - 1) *ᵥ x = g *ᵥ ((g' - 1) *ᵥ x) + (g - 1) *ᵥ x := by
   simp only [Matrix.sub_mulVec, Matrix.mulVec_sub, Matrix.mulVec_mulVec, Matrix.one_mulVec] <;> abel
 
-theorem inv_sub_one_mulVec {g g' : Matrix (Fin n) (Fin n) ℂ} (h1 : g' * g = 1) (x : Fin n → ℂ) :
-    (g' - 1) *ᵥ x = -(g' *ᵥ ((g - 1) *ᵥ x)) := by
-  simp only [Matrix.sub_mulVec, Matrix.mulVec_sub, Matrix.mulVec_mulVec, h1, Matrix.one_mulVec,
-    neg_sub]
-
 theorem inS_one (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) : InS e z 1 := by
   unfold InS
   refine ⟨fun a => ?_, ?_⟩ <;> simp
@@ -71,9 +66,9 @@ theorem inS_inv {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} {g g' : Matrix
   have hp : ∀ (a : ℕ), ∀ x ∈ spanLt e a, g' *ᵥ x ∈ spanLt e a := fun a =>
     inv_preserves h1 (fun x hx => mem_spanLt_of_inS hg a hx)
   refine ⟨fun a => ?_, ?_⟩
-  · rw [inv_sub_one_mulVec h1]
+  · rw [Formalism.L2.SG.Pf.WFL.HNL.inv_sub_one_mulVec h1]
     exact Submodule.neg_mem _ (hp _ _ (hg.1 a))
-  · rw [inv_sub_one_mulVec h1]
+  · rw [Formalism.L2.SG.Pf.WFL.HNL.inv_sub_one_mulVec h1]
     exact Submodule.neg_mem _ (hp _ _ hg.2)
 
 theorem inN_one (ε : Fin n → Bool) (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) : InN ε e z 1 := by
@@ -89,7 +84,7 @@ theorem inN_mul {ε : Fin n → Bool} {e : Fin r → Fin n → ℂ} {z : Fin n �
 theorem inN_inv {ε : Fin n → Bool} {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} {g g' : Matrix (Fin n) (Fin n) ℂ}
     (hg : InN ε e z g) (h1 : g' * g = 1) : InN ε e z g' := by
   refine ⟨inS_inv hg.1 h1, fun y hy => ?_⟩
-  rw [inv_sub_one_mulVec h1]
+  rw [Formalism.L2.SG.Pf.WFL.HNL.inv_sub_one_mulVec h1]
   exact Submodule.neg_mem _
     (inv_preserves h1 (fun x hx => mem_spanLt_of_inS hg.1 r hx) _ (hg.2 y hy))
 

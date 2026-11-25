@@ -88,20 +88,6 @@ theorem hermOC_holds (σ : E →ₐ[F] E) (a : ℕ) : HermOC σ v a := by
 
 variable {n : ℕ} (Λ : Set (Fin n → E))
 
-theorem ratV_add (x y : Fin n → E) :
-    ratV (F := F) (Fv F v) (x + y) = ratV (F := F) (Fv F v) x + ratV (F := F) (Fv F v) y := by
-  funext i
-  simp [ratV, map_add (f := _)]
-
-theorem ratV_zsmul (c : ℤ) (x : Fin n → E) :
-    ratV (F := F) (Fv F v) (c • x) = c • ratV (F := F) (Fv F v) x := by
-  funext i
-  simp [ratV]
-
-theorem ratV_zero : ratV (F := F) (Fv F v) (0 : Fin n → E) = 0 := by
-  funext i
-  simp [ratV]
-
 theorem isCompact_latLoc
     (hL : ∃ L : Submodule (𝓞 E) (Fin n → E), Submodule.IsLattice E L ∧ (L : Set (Fin n → E)) = Λ) :
     IsCompact (latLoc (E := E) v Λ : Set (Fin n → Fv F v ⊗[F] E)) := by

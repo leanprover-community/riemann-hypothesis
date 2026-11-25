@@ -1048,10 +1048,6 @@ namespace PI.UnitaryGroupMassFormula.LCG
 
 open PI.LatCountG
 
-theorem hsN_nonneg' {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ hsN A := by
-  unfold hsN
-  exact Real.sqrt_nonneg _
-
 theorem lattice_is_discrete_group : LatIsG := by
   intro I x
   obtain ⟨Λ, h1, h2, h3⟩ := PI.UnitaryGroupMassFormula.LSC.lattice_isometry I x
@@ -1157,7 +1153,8 @@ theorem separation_of_points : SepOf := by
   have hNP' := hNP I (pairM I b' u).det
   have hi1' : (0 : ℝ) < idx I (imSub I Λ δ) (fun c => δ *ᵥ u c) := by exact_mod_cast Nat.pos_of_ne_zero hi1
   have hi2' : (0 : ℝ) < idx I (perpSub I Λ δ) b' := by exact_mod_cast Nat.pos_of_ne_zero hi2
-  have hHp : 0 ≤ ∏ v, hsN (amat I x y v δ) := Finset.prod_nonneg fun v _ => hsN_nonneg' _
+  have hHp : 0 ≤ ∏ v, hsN (amat I x y v δ) := Finset.prod_nonneg fun v _ =>
+      PI.UnitaryGroupMassFormula.LCG.hsN_nonneg _
   have key : ((tau1 I x * tau1 I y) ^ I.f) ^ (2 * k) ≤ (∏ v, hsN (amat I x y v δ)) ^ (2 * k) := by
     rw [← pow_mul, mul_pow, show I.f * (2 * k) = 2 * I.f * k by ring]
     calc tau1 I x ^ (2 * I.f * k) * tau1 I y ^ (2 * I.f * k)

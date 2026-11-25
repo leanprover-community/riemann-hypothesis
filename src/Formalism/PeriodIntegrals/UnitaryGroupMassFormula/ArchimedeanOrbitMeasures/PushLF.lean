@@ -20,19 +20,9 @@ export PI.VolStabSW.TensAllW (LIP lip_field lip_pi inj_of_isUnit wMat wMat_mulVe
 export PI.VolStabS.PositiveNearLattice (crd continuous_crd)
 export PI.VolStabSW (lip_ainf)
 
-theorem isOpen_units_Ainf (F : Type) [Field F] [NumberField F] : IsOpen {x : InfiniteAdeleRing F | IsUnit x} := by
-  show IsOpen {y : (v : InfinitePlace F) → v.Completion | IsUnit y}
-  have : {y : (v : InfinitePlace F) → v.Completion | IsUnit y} =
-      ⋂ v, (fun y : (v : InfinitePlace F) → v.Completion => y v) ⁻¹' {z | z ≠ 0} := by
-    ext y
-    simp only [Set.mem_iInter, Set.mem_preimage]
-    show IsUnit y ↔ ∀ v, y v ≠ 0
-    rw [Pi.isUnit_iff]; simp only [isUnit_iff_ne_zero]
-  rw [this]; exact isOpen_iInter_of_finite fun v => isOpen_ne.preimage (continuous_apply v)
-
 theorem isOpen_IndI {D : D7} (X : HidaSetting D) : IsOpen (IndI X) := by
   haveI : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
-  exact isOpen_linIndep (Module.finBasis X.B.I.F X.B.I.E) (Ainf X.B.I.F) (isOpen_units_Ainf _) (lip_ainf _)
+  exact isOpen_linIndep (Module.finBasis X.B.I.F X.B.I.E) (Ainf X.B.I.F) (PI.VolStabSW.isOpen_units_Ainf _) (lip_ainf _)
 
 section LC
 
