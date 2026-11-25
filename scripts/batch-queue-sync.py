@@ -272,6 +272,11 @@ class GitHub(_rest.GitHub):
     """The repository's REST API through `gh` (see `github-rest.py`), with a clock that the tests
     can set."""
 
+    def __init__(self, repo, dry_run=False):
+        super().__init__(repo, dry_run)
+        # Lines saying which label changes GitHub refused (see `relabel`).
+        self.refused = []
+
     def now(self):
         return datetime.datetime.now(datetime.timezone.utc)
 
@@ -321,7 +326,9 @@ def relabel(gh, pr_or_number, add=None, remove=None):
     `add` and `remove` are a label each or several. With our own copy, only the labels it is
     missing are added and only those it carries are removed. Without one, `remove` is sent as
     it is, and should name only labels the pull request carries. Returns whether GitHub took
-    every change.
+    every change. A change it refused, other than for the rate limit, which stops the run, is
+    added to `gh.refused`: the run's log ends with those lines, since a line its caller logs may
+    say the label changed.
     """
     number = pr_or_number["number"] if isinstance(pr_or_number, dict) else pr_or_number
     add, remove = names(add), [name for name in names(remove) if name not in names(add)]
@@ -335,12 +342,22 @@ def relabel(gh, pr_or_number, add=None, remove=None):
         if not gh.label_exists(name):
             raise Refused(f"There is no `{name}` label in {gh.repo}. Was it renamed? See `batch-labels.py`.")
     if add:
-        done = gh.write("POST", f"issues/{number}/labels", {"labels": add})[0] in (0, 200)
+        status = gh.write("POST", f"issues/{number}/labels", {"labels": add})[0]
+        if status not in (0, 200):
+            gh.refused.append(f"#{number}: GitHub answered {status} to adding "
+                              f"{', '.join(f'`{name}`' for name in add)}, so it was not added")
+            done, add = False, []
+    taken = []
     for name in remove:
         # A label that is not there any more answers 404, which is what was wanted.
-        done = gh.write("DELETE", f"issues/{number}/labels/{quoted(name)}")[0] in (0, 200, 404) and done
+        status = gh.write("DELETE", f"issues/{number}/labels/{quoted(name)}")[0]
+        if status in (0, 200, 404):
+            taken.append(name)
+        else:
+            gh.refused.append(f"#{number}: GitHub answered {status} to removing `{name}`, so it is still on")
+            done = False
     if isinstance(pr_or_number, dict):
-        pr_or_number["labels"] = (pr_or_number["labels"] | set(add)) - set(remove)
+        pr_or_number["labels"] = (pr_or_number["labels"] | set(add)) - set(taken)
     return done
 
 
@@ -352,9 +369,15 @@ def unlabel(gh, number, have, gone):
     for each pull request a batch lands is worth it."""
     gone = sorted(set(gone) & set(have))
     if len(gone) > 1:
-        gh.write("PUT", f"issues/{number}/labels", {"labels": sorted(set(have) - set(gone))})
+        status = gh.write("PUT", f"issues/{number}/labels", {"labels": sorted(set(have) - set(gone))})[0]
     elif gone:
-        gh.write("DELETE", f"issues/{number}/labels/{quoted(gone[0])}")
+        status = gh.write("DELETE", f"issues/{number}/labels/{quoted(gone[0])}")[0]
+    else:
+        return
+    # As in `relabel`: a label that is not there any more answers 404.
+    if status not in (0, 200, 404):
+        gh.refused.append(f"#{number}: GitHub answered {status} to removing "
+                          f"{', '.join(f'`{name}`' for name in gone)}, so it is still on")
 
 
 def unfrozen(back):
@@ -2135,6 +2158,8 @@ def main():
             log = sync(gh)
     except Refused as error:
         log, failure = [str(error)], 1
+    log += gh.refused
+    failure = failure or (1 if gh.refused else None)
     left = f"; {gh.remaining} left this hour" if gh.remaining is not None else ""
     log.append(f"{gh.calls} requests to GitHub{left}")
     text = "".join(f"- {line}\n" for line in log)
