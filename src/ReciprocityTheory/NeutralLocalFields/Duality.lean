@@ -104,7 +104,7 @@ theorem mem_contCoboundaries2 (f : G × G → M) :
 
 abbrev H2 := Z2 rho ⧸ (Bd2 rho).comap (Z2 rho).subtype
 
-def Cn (n : ℕ) : Submodule R ((Fin n → G) → M) := contMaps R M (Fin n → G)
+def Cn (rho : Representation R G M) (n : ℕ) : Submodule R ((Fin n → G) → M) := contMaps R M (Fin n → G)
 
 def dn (n : ℕ) : ((Fin n → G) → M) →ₗ[R] ((Fin (n + 1) → G) → M) where
   toFun f g := rho (g 0) (f fun i => g i.succ) + Finset.univ.sum fun j : Fin (n + 1) =>
@@ -116,11 +116,11 @@ def dn (n : ℕ) : ((Fin n → G) → M) →ₗ[R] ((Fin (n + 1) → G) → M) w
     funext g
     simp [Finset.smul_sum, ← smul_assoc, mul_comm r]
 
-def Zn (n : ℕ) : Submodule R ((Fin n → G) → M) := Cn n ⊓ LinearMap.ker (dn rho n)
+def Zn (n : ℕ) : Submodule R ((Fin n → G) → M) := Cn rho n ⊓ LinearMap.ker (dn rho n)
 
 def Bn : (n : ℕ) → Submodule R ((Fin n → G) → M)
   | 0 => ⊥
-  | n + 1 => (Cn n).map (dn rho n)
+  | n + 1 => (Cn rho n).map (dn rho n)
 
 abbrev Hn (n : ℕ) := Zn rho n ⧸ (Bn rho n).comap (Zn rho n).subtype
 

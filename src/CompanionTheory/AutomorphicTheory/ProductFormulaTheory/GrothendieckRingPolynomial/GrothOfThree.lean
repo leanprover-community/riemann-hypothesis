@@ -1507,7 +1507,7 @@ theorem vWord_ne (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Seg
     (hS : S ∈ vSets Δ) (hne : S ≠ ∅) : vWord Δ S ≠ List.ofFn Δ.term := by
   intro H
   rw [vWord, List.ofFn_eq_map] at H
-  have H2 := (List.map_injective_iff.2 (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ)) H
+  have H2 := (List.map_injective_iff.2 (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ)) H
   obtain ⟨s, hs⟩ := Finset.nonempty_iff_ne_empty.2 hne
   have hL1 : ((List.finRange Δ.len).filter fun a => a ∈ S) ≠ [] :=
     List.ne_nil_of_mem (List.mem_filter.2 ⟨List.mem_finRange s, by simpa using hs⟩)

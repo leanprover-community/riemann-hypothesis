@@ -106,20 +106,12 @@ theorem val_eq_one_of_sub_one {x : k} (hx : valuation k (x - 1) < 1) : valuation
 
 def delta (μ₁ : kˣ →* ℂˣ) (ϖ : kˣ) : kˣ →* ℂˣ := μ₁ * GlobalTheory.SmGL.unrChar k (μ₁ ϖ)⁻¹
 
-theorem delta_unit (μ₁ : kˣ →* ℂˣ) (ϖ : kˣ) {x : kˣ} (hx : valuation k (x : k) = 1) : delta μ₁ ϖ x = μ₁ x := by
-  simp [delta, GlobalTheory.SmGL.isUnram_unrChar k _ x hx]
-
-theorem delta_tame {μ₁ : kˣ →* ℂˣ} (h : IsTame μ₁) (ϖ : kˣ) : IsTame (delta μ₁ ϖ) := by
-  intro x hx
-  rw [delta_unit μ₁ ϖ (val_eq_one_of_sub_one hx)]
-  exact h x hx
-
 def eta (μ : ℕ → kˣ →* ℂˣ) (m : ℕ) (δ : kˣ →* ℂˣ) (j : ℕ) : kˣ →* ℂˣ :=
   if 1 ≤ j ∧ j ≤ m then μ j * δ⁻¹ else 1
 
 theorem eta_mul (μ : ℕ → kˣ →* ℂˣ) (m : ℕ) (δ : kˣ →* ℂˣ) {i : ℕ} (hi : i < m) :
     eta μ m δ (i + 1) * δ = μ (i + 1) := by
-  rw [eta, ite_eq_left ⟨by omega, by omega⟩, inv_mul_cancel_right]
+  rw [eta, if_pos ⟨by omega, by omega⟩, inv_mul_cancel_right]
 
 theorem eta_unram (μ : ℕ → kˣ →* ℂˣ) (m : ℕ) (δ : kˣ →* ℂˣ)
     (h : ∀ i, i < m → ∀ x : kˣ, valuation k (x : k) = 1 → μ (i + 1) x = δ x) (j : ℕ) : IsUnram (eta μ m δ j) := by
@@ -153,11 +145,6 @@ end Loc
 
 section Arith
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K]
-
-theorem unitV_inv {P : HeightOneSpectrum (𝓞 E)} (χ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (a : E) :
-    LocE.unitV χ⁻¹ a = (LocE.unitV χ a)⁻¹ := by
-  unfold LocE.unitV
-  split_ifs <;> simp
 
 theorem valuation_self (P : HeightOneSpectrum (𝓞 E)) (q : ℕ) (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (h0 : 0 < q) :
     LocE.vP P q (q : E) = 1 := by
@@ -198,20 +185,6 @@ theorem valuation_self (P : HeightOneSpectrum (𝓞 E)) (q : ℕ) (hq : ((q : �
   rw [h4]
   exact Classical.epsilon_spec (p := fun z : ℤ => z = 1) ⟨1, rfl⟩
 
-theorem locChar_q {P : HeightOneSpectrum (𝓞 E)} (q : ℕ) (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (h0 : 0 < q) (cq : K)
-    (χ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) : LocE.locChar q cq χ (q : E) = cq := by
-  have hqE : (q : E) ≠ 0 := by exact_mod_cast h0.ne'
-  have h1 : redP P (1 : E) = 1 := by
-    have h3 : (1 : E) = algebraMap (𝓞 E) E 1 := (map_one _).symm
-    rw [h3, reduction_coe, map_one]
-  have hu : IsUnit (redP P (1 : E)) := by rw [h1]; exact isUnit_one
-  unfold LocE.locChar
-  rw [valuation_self P q hq h0, zpow_one, zpow_one, div_self hqE]
-  unfold LocE.unitV
-  rw [dite_eq_left hu]
-  have h2 : hu.unit = 1 := Units.ext (by rw [IsUnit.unit_spec, h1]; rfl)
-  rw [h2, map_one, Units.val_one, mul_one]
-
 end Arith
 
 section Chain
@@ -219,90 +192,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S₀ : Set ℕ}
   (mu : Tup X.F X.E X.K S₀) (cst : LocCst X (rowSG Pr sel mu)) (P : rowSG Pr sel mu)
 
-theorem muAt_unit (hP : P.1 ∉ Pr.vGs) (i : ℕ) {a : X.E} (ha : IsUnit (redP P.1 a)) :
-    muAt Ch sel mu cst i P a = LocE.unitV (resChar (mu : Chr X.F X.E X.K) P.1)⁻¹ a := by
-  unfold muAt
-  rw [ite_eq_right hP]
-  exact GlobalTheory.LastSteps.locChar_unit _ _ ha
-
-theorem muAt_q (hP : P.1 ∉ Pr.vGs) (i : ℕ) (hq : ((qOf P.1 : ℕ) : 𝓞 X.E) ∈ P.1.asIdeal) (h0 : 0 < qOf P.1) :
-    muAt Ch sel mu cst i P ((qOf P.1 : ℕ) : X.E) = cst.muq (i + 1) P := by
-  unfold muAt
-  rw [ite_eq_right hP]
-  exact locChar_q _ hq h0 _ _
-
 end Chain
-
-theorem exists_twData : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S₀ : Set ℕ) (mu : Tup X.F X.E X.K S₀) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (G : ChGlob X R.m) (s : ℕ), L.Ok Ch sel mu cst G s → ∀ (P : rowSG Pr sel mu), P.1 ∉ Pr.vGs → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : X.E →+* k) (ϖ : kˣ), GlobalTheory.SymBridge.IsCompl P.1 (qOf P.1) ι ϖ → GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsUnif ϖ → ∀ ψ : AddChar k Circle, Continuous ψ → HasConductor ψ 1 → (∀ (a : X.E) (b : ℤ) (n : ℕ), IntAt P.1 (G.xi0 * a - (b : X.E) / (qOf P.1 : X.E) ^ n) → (ψ (ι a) : ℂ) = Complex.exp (2 * Real.pi * Complex.I * b / (qOf P.1 : ℂ) ^ n)) → ∀ μ : ℕ → kˣ →* ℂˣ, (∀ i, i < R.m → (∀ (a : X.E) (u : kˣ), (u : k) = ι a → (μ (i + 1) u : ℂ) = G.σ₀ (muAt Ch sel mu cst i P a)) ∧ IsTame (μ (i + 1))) → ∃ W : TwData k, AtTwist (R := R) sel mu cst G.σ₀ P ι s W ∧ W.ϖ = ϖ ∧ W.ψ = ψ ∧ (∀ i, i < R.m → W.η (i + 1) * W.δ = μ (i + 1)) ∧ (W.sg = 1 ∨ W.sg = -1) := by
-  intro X Pr R Ch sel S₀ mu cst L G s hL P hP k _ _ _ _ ι ϖ hc hϖ ψ hψc hψ1 hψt μ hμ
-  have hm : R.m = s + 2 := hL.hm
-  have hm0 : 0 < R.m := by omega
-  have hq0 : (qOf P.1 : X.E) ≠ 0 := GlobalTheory.SymBridge.ComplRes.q_ne_zero hc
-  have hqpos : 0 < qOf P.1 := Nat.pos_of_ne_zero fun h => hq0 (by rw [h, Nat.cast_zero])
-  have hqmem : ((qOf P.1 : ℕ) : 𝓞 X.E) ∈ P.1.asIdeal := GlobalTheory.SymBridge.ComplRes.q_mem hc
-  have hμ1 : ∀ (a : X.E) (u : kˣ), (u : k) = ι a → (μ 1 u : ℂ) = G.σ₀ (muAt Ch sel mu cst 0 P a) :=
-    fun a u h => (hμ 0 hm0).1 a u h
-  have ht1 : IsTame (μ 1) := (hμ 0 hm0).2
-
-  have hunit : ∀ i, i < R.m → ∀ x : kˣ, valuation k (x : k) = 1 → μ (i + 1) x = μ 1 x := by
-    intro i hi x hx
-    obtain ⟨a, ha⟩ := exists_near hc.dense (x : k)
-    have hva : valuation k (ι a) = 1 := by
-      have e : ι a = (ι a - x) + x := by ring
-      rw [e, Valuation.map_add_eq_of_lt_right _ (by rw [hx]; exact ha), hx]
-    have ha0 : ι a ≠ 0 := by
-      intro h0; rw [h0, map_zero] at hva; exact zero_ne_one hva
-    have hint : IntAt P.1 a := GlobalTheory.SymBridge.ComplRes.intAt_of_v hc (le_of_eq hva)
-    have hred : IsUnit (redP P.1 a) := (GlobalTheory.SymBridge.ComplRes.v_eq_one_iff_red hc hϖ hint).mp hva
-    have hn : valuation k (((Units.mk0 (ι a) ha0 : kˣ) : k) - x) < 1 := ha
-    rw [← tame_near (hμ i hi).2 hx hn, ← tame_near ht1 hx hn]
-    apply Units.ext
-    rw [(hμ i hi).1 a _ rfl, hμ1 a _ rfl, muAt_unit Ch sel mu cst P hP i hred, muAt_unit Ch sel mu cst P hP 0 hred]
-  have hδ : ∀ i, i < R.m → ∀ x : kˣ, valuation k (x : k) = 1 → μ (i + 1) x = delta (μ 1) ϖ x := by
-    intro i hi x hx
-    rw [delta_unit _ _ hx]; exact hunit i hi x hx
-
-  have hsq : G.σ₀ (cst.sq P) ^ 2 = ((Real.sqrt (qOf P.1) : ℝ) : ℂ) ^ 2 := by
-    rw [← map_pow, hL.cst_ok.sq_sq P, map_natCast, ← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg _),
-      Complex.ofReal_natCast]
-  obtain ⟨sg, hsg1, hsg2⟩ : ∃ sg : ℂ, (sg = 1 ∨ sg = -1) ∧ G.σ₀ (cst.sq P) = sg * (Real.sqrt (qOf P.1) : ℂ) := by
-    rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with h | h
-    · exact ⟨1, Or.inl rfl, by rw [h, one_mul]⟩
-    · exact ⟨-1, Or.inr rfl, by rw [h, neg_one_mul]⟩
-  refine ⟨⟨ϖ, hϖ, ψ, hψc, hψ1, delta (μ 1) ϖ, delta_tame ht1 ϖ, eta μ R.m (delta (μ 1) ϖ),
-    eta_unram μ R.m _ hδ, sg⟩, ⟨hP, hm, hc, ?_, ?_, ?_, hsg2⟩, rfl, rfl, fun i hi => eta_mul μ R.m _ hi, hsg1⟩
-  ·
-    intro a ha
-    show (ψ (ι a) : ℂ) = G.σ₀ (cst.psi P a)
-    have hxi : IntAt P.1 G.xi0 := (hL.xiUnitAtPrime P).1
-    have hx : valuation k (ι (G.xi0 * ((qOf P.1 : X.E) ^ cst.D P * a))) ≤ 1 :=
-      GlobalTheory.SymBridge.ComplRes.v_le_one hc (hxi.mul ha)
-    obtain ⟨i, -, hi⟩ := GlobalTheory.SymBridge.ComplRes.exists_rep hc hϖ (cst.D P) _ hx
-    have hqk : ((qOf P.1 : ℕ) : k) ≠ 0 := by
-      rw [← GlobalTheory.SymBridge.ComplRes.unif_eq_cast hc]; exact ϖ.ne_zero
-    have hint : IntAt P.1 (G.xi0 * a - ((i : ℤ) : X.E) / (qOf P.1 : X.E) ^ cst.D P) := by
-      apply GlobalTheory.SymBridge.ComplRes.intAt_of_v hc
-      have e : ι (G.xi0 * ((qOf P.1 : X.E) ^ cst.D P * a)) - (i : k) =
-          ι (G.xi0 * a - ((i : ℤ) : X.E) / (qOf P.1 : X.E) ^ cst.D P) * (ϖ : k) ^ cst.D P := by
-        rw [GlobalTheory.SymBridge.ComplRes.unif_eq_cast hc]
-        simp only [map_mul, map_sub, map_div₀, map_pow, map_intCast, map_natCast]
-        push_cast
-        field_simp
-      rw [e, map_mul, map_pow] at hi
-      have h0 : (0 : ValueGroupWithZero k) < valuation k (ϖ : k) ^ cst.D P :=
-        pow_pos (zero_lt_iff.mpr (by simp)) _
-      exact le_of_mul_le_mul_right (by rwa [one_mul]) h0
-    rw [hψt a (i : ℤ) (cst.D P) hint, hL.weil P a (i : ℤ) ha hint]
-  ·
-    intro a u ha hr hu
-    show ((delta (μ 1) ϖ u : ℂˣ) : ℂ) = _
-    have hva : valuation k (u : k) = 1 := by
-      rw [hu]; exact (GlobalTheory.SymBridge.ComplRes.v_eq_one_iff_red hc hϖ ha).mpr hr
-    rw [delta_unit _ _ hva, hμ1 a u hu, muAt_unit Ch sel mu cst P hP 0 hr, unitV_inv, map_inv₀]
-  ·
-    intro i hi
-    show ((eta μ R.m (delta (μ 1) ϖ) (i + 1) * delta (μ 1) ϖ) ϖ : ℂ) = _
-    rw [eta_mul μ R.m _ hi, (hμ i hi).1 ((qOf P.1 : ℕ) : X.E) ϖ hc.unif, muAt_q Ch sel mu cst P hP i hqmem hqpos]
 
 end GlobalTheory.TwBridgeInhab
 end -- clump:auto
@@ -719,7 +609,7 @@ theorem exists_qExt : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheory.F
         obtain ⟨hJ, hl⟩ := twist_lev_zero (s := G.s) (κ := Fin D.R.k) (t := Fin D.R.t) δ hδ η (G.s - 0 + 1) (by omega)
         exact (GlobalTheory.QPl.SphOne.isOneComb_sph_level G.k _ _ (ρ + 1) (by omega) (by omega) G.ψk G.cond.continuous G.cond G.ν G.unitVol _ hJ hl).1
       · unfold epsT
-        rw [ite_eq_left rfl]
+        rw [if_pos rfl]
         simp
     · have hP : (D.R.m - j) / 2 = ρ + 1 := by omega
       have H : ∃ e, IsOneComb G.ψk G.ν ((D.R.m - j) / 2) ((G.T δ hδ η).lev j (G.s - j + 1) (by omega))
@@ -734,11 +624,11 @@ theorem exists_qExt : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheory.F
         rw [hP]
         exact id
       unfold epsT
-      rw [ite_eq_right hj0, dite_eq_left (by omega), dite_eq_left H]
+      rw [if_neg hj0, dite_eq_left (by omega), dite_eq_left H]
   ·
     intro α
     unfold epsT
-    rw [ite_eq_left rfl]
+    rw [if_pos rfl]
   ·
     intro j d h
     obtain rfl : d = G.s + 1 - j := by omega
@@ -1161,11 +1051,11 @@ theorem exists_qExt_cos : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheo
   obtain ⟨E, rfl, rfl, rfl, rfl, -⟩ := GlobalTheory.QTw.Inh.exists_ext_of_reps D c v B PP G χ hc δ hδ η hη hμ A hA M hM
   classical
   let Ch' : ℕ → Type := fun j => if j = G.s + 1 then C else if G.s + 1 + 1 < j then Unit else E.Ch j
-  have eC : Ch' (G.s + 1) = C := ite_eq_left rfl
+  have eC : Ch' (G.s + 1) = C := if_pos rfl
   have eE : ∀ j, j ≤ G.s + 1 + 1 → j ≠ G.s + 1 → Ch' j = E.Ch j := fun j h1 h2 => by
-    simp only [Ch', ite_eq_right h2, ite_eq_right (not_lt.2 h1)]
+    simp only [Ch', if_neg h2, if_neg (not_lt.2 h1)]
   have eU : ∀ j, G.s + 1 + 1 < j → Ch' j = Unit := fun j h1 => by
-    simp only [Ch', ite_eq_right (show j ≠ G.s + 1 by omega), ite_eq_left h1]
+    simp only [Ch', if_neg (show j ≠ G.s + 1 by omega), if_pos h1]
   let fC : ∀ j, Fintype (Ch' j) := fun j => by
     simp only [Ch']; split_ifs <;> infer_instance
   let rep' : ∀ j d, j + d = G.s → Ch' j → GL (XIx (Fin D.R.k) (Fin D.R.t) j ⊕ Fin (d + 1)) G.k :=
@@ -1318,7 +1208,7 @@ theorem map_muAt (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hg : ∀ k, Pr.
       map_inv₀, map_inv₀, ht.muVal j P.1 hg', ← locK_unif (m0 j) P.1 ((ht.mu0 j).unr _ hg') q
         (hq' ▸ GlobalTheory.CharVal.val_natCast_of_notMem_sq (Ideal.absNorm_mem _) hlp.1.2), mul_inv]
     rfl
-  · rw [hm, ite_eq_right hP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val, map_inv₀, res_eq hX hPr hsel hg ht h j P hP x y c hx hc]
+  · rw [hm, if_neg hP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val, map_inv₀, res_eq hX hPr hsel hg ht h j P hP x y c hx hc]
 
 end General
 
@@ -1401,23 +1291,23 @@ theorem twNext_rep_eq_of_sameDC {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : C
           have hQP : Q = P := Subtype.ext hQP1
           rw [hQP]
           have e1 : (twNext Ch sel mu cst st).h d'' P = (twNext Ch sel mu cst st).h d' P := by
-            simp only [twNext, dite_eq_left hP, d'']
+            simp only [twNext, dif_pos hP, d'']
             rw [Function.update_self]
           rw [e1]; exact hs
         · have e1 : (twNext Ch sel mu cst st).h d'' Q = (twNext Ch sel mu cst st).h d Q := by
-            simp only [twNext, dite_eq_left hQ, d'']
+            simp only [twNext, dif_pos hQ, d'']
             rw [Function.update_of_ne e]
           rw [e1]; exact twDC_refl _ _ _ _
       · have e1 : (twNext Ch sel mu cst st).h d'' Q = (twNext Ch sel mu cst st).h d Q := by
-          simp only [twNext, dite_eq_right hQ]
+          simp only [twNext, dif_neg hQ]
         rw [e1]; exact twDC_refl _ _ _ _
     have hdd := hinj d d'' hall
     have hc : d.1 P₀ = d'.1 P₀ := by
       have := congrArg (fun x : (twNext Ch sel mu cst st).β => x.1 P₀) hdd
       simpa [d''] using this
-    simp only [twNext, dite_eq_left hP]
+    simp only [twNext, dif_pos hP]
     exact congrArg (fun D => twRep Ch sel mu cst st P₀ D.1) hc
-  · simp only [twNext, dite_eq_right hP]
+  · simp only [twNext, dif_neg hP]
 
 theorem idxProd_twIdx : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S₀ : Set ℕ) (mu : Tup X.F X.E X.K S₀) (cst : LocCst X (rowSG Pr sel mu)) (m2 : ℕ) (G : ChGlob X R.m), (twIdx Ch sel mu cst m2).Ok Ch sel mu cst G m2 → IdxProd sel mu cst (twIdx Ch sel mu cst m2) := by
   intro X Pr R Ch sel S₀ mu cst m2 G hok j b b' P hs
@@ -1430,16 +1320,16 @@ theorem idxProd_twIdx : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars
           SameDC (Pr := Pr) cst.sharp (i + 1) P.1 (st'.h b P) (st'.h b' P) → st'.h b P = st'.h b' P := by
         rintro st' rfl b b' hinj hs
         exact twNext_rep_eq_of_sameDC Ch sel mu cst _ hinj b b' P hs
-      exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, ite_eq_left hi]) b b' (hok.inj i (by omega)) hs
+      exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, if_pos hi]) b b' (hok.inj i (by omega)) hs
     · by_cases hi2 : i + 1 = m2 + 1
       · have key : ∀ st' : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) (i + 1), st' = twUnitSt _ (i + 1) →
             ∀ b b' : st'.β, st'.h b P = st'.h b' P := by
           rintro st' rfl b b'; rfl
-        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, ite_eq_right hi, ite_eq_left hi2]) b b'
+        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, if_neg hi, if_pos hi2]) b b'
       · have key : ∀ st' : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) (i + 1), st' = twEmptySt _ (i + 1) →
             ∀ b b' : st'.β, st'.h b P = st'.h b' P := by
           rintro st' rfl b; exact b.elim
-        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, ite_eq_right hi, ite_eq_right hi2]) b b'
+        exact key (twSt Ch sel mu cst m2 (i + 1)) (by rw [twSt, if_neg hi, if_neg hi2]) b b'
 
 end GlobalTheory.TwBridge
 end -- clump:auto
@@ -1813,7 +1703,7 @@ theorem res_of_tw (hI : I.Ok) {hP : PP ∈ Formalism.L2.Col.rowSG (B.primes X) I
     (hr.symm.trans h1.symm)
   refine Units.ext ((h.del _ x h3 h2 hx).trans ?_)
   rw [hξ z (Units.mk0 _ h0) r rfl hr, Units.val_inv_eq_inv_val]
-  exact congrArg _ ((congrArg _ (dite_eq_left h2)).trans h4)
+  exact congrArg _ ((congrArg _ (dif_pos h2)).trans h4)
 
 end Place
 

@@ -63,7 +63,7 @@ theorem swA_model {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam : S7.IsHCPar
         exact (S7.psiM_integrable T m hm hlam hh hq ν).2.1 h8⟩
   have hv₀ : T.w ≠ 0 := fun h0 => by simpa [h0] using T.w_norm
   refine ⟨S7.PsiM T m, hgap, hP, psi_exp_isPositive T (S7.PsiM T m) m (fun X hX => S7.psiM_exp_formula T m hX),
-    weighted_datum hgap hP hv₀ (fun ν hν => ?_), hasGelfandChar_sigLam hP (fun k g hg => S7.psiM_gelfand T m hm k hg)⟩
+    weighted_datum hgap hP hv₀ (fun ν hν => ?_), hasGelfandChar_sigLam hgap hP hv₀ (fun k g hg => S7.psiM_gelfand T m hm k hg)⟩
   have := hν
   exact (S7.psiM_integrable T m hm hlam hh hq ν).2.2 2 (by norm_num) hs2
 

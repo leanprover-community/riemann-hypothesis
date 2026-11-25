@@ -64,7 +64,7 @@ def HTLawAt (A : ValuationSubring Ω) (c : Coef l) (Z : ∀ r : ℕ, G ℚ Ω �
     ∀ ψ : DirichletCharacter (Qbar l) (l ^ m), ψ.IsPrimitive →
       Cg (m - c₀) (∑ b : (ZMod (l ^ m))ˣ, ψ b * htv j ζ P o (b : ZMod (l ^ m)).val) (Rhs m ψ (j ζ))
 
-def Pin (e : ℕ) (A : ValuationSubring Ω) (c : Coef l) (ν : G ℚ Ω →* (Qbar l)ˣ)
+def Pin (e : ℕ) (A : ValuationSubring Ω) (W : R2 Ω l) (c : Coef l) (ν : G ℚ Ω →* (Qbar l)ˣ)
     (Z : ∀ r : ℕ, G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) : Prop :=
   ∃ (a a' κ : Qbar l) (v : ℕ → Qbar l) (j : Ω →+* Qbar l) (Rhs : ∀ m : ℕ, DirichletCharacter (Qbar l) (l ^ m) → Qbar l → Qbar l)
     (L : PowerSeries (Qbar l)) (φ : DirichletCharacter (Qbar l) l) (m₀ c₀ n₀ : ℕ),

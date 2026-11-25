@@ -28,29 +28,26 @@ theorem zero_ne_last (hk : 1 ≤ k) : (0 : Fin (k + 1)) ≠ Fin.last k := by
   simp only [Fin.val_zero, Fin.val_last] at h'
   omega
 
-private theorem col_lemma_2 {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} {i : Fin (k + 1)}
-    (hi : h *ᵥ Pi.single i 1 = Pi.single i 1) (l : Fin (k + 1)) : h l i = if l = i then 1 else 0 := by
-  simpa [Matrix.mulVec, dotProduct, Pi.single_apply] using congrFun hi l
-
-private theorem row_lemma_3 {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hh : h ∈ UH (Hb k)) {i : Fin (k + 1)}
-    (hi : h *ᵥ Pi.single i 1 = Pi.single i 1) (j : Fin (k + 1)) : h i j = if i = j then 1 else 0 := by
-  have hU : hᴴ * Hb k * h = Hb k := hh
-  have e := congrFun (congrFun hU i) j
+private theorem row_lemma_3 {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hh : h ∈ UH (Hb k))
+    {i : Fin (k + 1)} (hi : h *ᵥ Pi.single i 1 = Pi.single i 1) (j : Fin (k + 1)) :
+    h i j = if i = j then 1 else 0 := by
+  have hc : h.col i = Pi.single i 1 := (Matrix.mulVec_single_one h i).symm.trans hi
+  have hcol : ∀ l, h l i = if l = i then 1 else 0 := fun l => by
+    simpa [Pi.single_apply] using congrFun hc l
+  have e := congrFun (congrFun hh i) j
   rw [Matrix.mul_apply] at e
-  simp only [Hb, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
-    col_lemma_2 hi] at e
+  simp only [Hb, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply, hcol] at e
   rw [Fintype.sum_eq_single i (by intro x hx; simp [hx])] at e
   by_cases hil : i = Fin.last k <;> by_cases hij : i = j <;> simp_all
 
 private theorem vec_lemma_4 {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hh : h ∈ UH (Hb k))
-    {i : Fin (k + 1)} (hi : h *ᵥ Pi.single i 1 = Pi.single i 1) : Pi.single i 1 ᵥ* h = Pi.single i 1 := by
+    {i : Fin (k + 1)} (hi : h *ᵥ Pi.single i 1 = Pi.single i 1) :
+    Pi.single i 1 ᵥ* h = Pi.single i 1 := by
+  rw [Matrix.single_one_vecMul]
   funext j
-  have e : (Pi.single i 1 ᵥ* h) j = h i j := by
-    simp [Matrix.vecMul, dotProduct, Pi.single_apply]
-  rw [e, row_lemma_3 hh hi j]
+  rw [Matrix.row_apply, row_lemma_3 hh hi j]
   by_cases hij : i = j
-  · subst hij
-    simp
+  · simp [hij]
   · simp [hij, Ne.symm hij]
 
 theorem commute_nu {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hh : h ∈ UH (Hb k))
@@ -76,11 +73,7 @@ private theorem nu_apply_lemma (hk : 1 ≤ k) (w s : ℂ) (l m : Fin (k + 1)) :
       if m = 0 then (if l = 0 then star w else if l = Fin.last k then s else 0)
       else if m = Fin.last k then (if l = 0 then s else if l = Fin.last k then w else 0)
       else (if l = m then 1 else 0) := by
-  have h0L : (0 : Fin (k + 1)) ≠ Fin.last k := by
-    intro h
-    have h' := congrArg Fin.val h
-    simp only [Fin.val_zero, Fin.val_last] at h'
-    omega
+  have h0L := zero_ne_last hk
   unfold nu
   simp only [Matrix.add_apply, Matrix.one_apply, Matrix.vecMulVec_apply, Pi.add_apply,
     Pi.smul_apply, Pi.single_apply, smul_eq_mul]
@@ -108,9 +101,7 @@ theorem nu_last_vec (hk : 1 ≤ k) (w s : ℂ) :
     nu k w s *ᵥ Pi.single (Fin.last k) 1 = s • Pi.single 0 1 + w • Pi.single (Fin.last k) 1 := by
   have h0L := zero_ne_last hk
   funext l
-  have e : (nu k w s *ᵥ Pi.single (Fin.last k) 1) l = nu k w s l (Fin.last k) := by
-    simp [Matrix.mulVec, dotProduct, Pi.single_apply]
-  rw [e, nu_apply_lemma hk]
+  rw [Matrix.mulVec_single_one, Matrix.col_apply, nu_apply_lemma hk]
   by_cases hl0 : l = 0
   · subst hl0
     simp [h0L.symm, h0L]
@@ -121,43 +112,50 @@ theorem nu_last_vec (hk : 1 ≤ k) (w s : ℂ) :
 
 private theorem nu_unit_lemma_5 (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s)
     (hws : star w * w - s * s = 1) : (nu k w s)ᴴ * Hb k * nu k w s = Hb k := by
-  have h0L : (0 : Fin (k + 1)) ≠ Fin.last k := by
-    simp [Fin.ext_iff]
-    omega
+  have h0L := zero_ne_last hk
   ext i j
   rw [Matrix.mul_apply]
   simp only [Hb, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
     nu_apply_lemma hk]
-  rcases eq_or_ne i 0 with rfl | hi0
-  · rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
-    · rcases eq_or_ne j 0 with rfl | hj0
-      · simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
+  by_cases hi0 : i = 0
+  · subst hi0
+    rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
+    · by_cases hj0 : j = 0
+      · subst hj0
+        simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
         linear_combination hws
-      · rcases eq_or_ne j (Fin.last k) with rfl | hjL
-        · simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
+      · by_cases hjL : j = Fin.last k
+        · subst hjL
+          simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
           ring
         · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
     · intro x hx
       simp [hx.1, hx.2]
-  · rcases eq_or_ne i (Fin.last k) with rfl | hiL
-    · rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
-      · rcases eq_or_ne j 0 with rfl | hj0
-        · simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
+  · by_cases hiL : i = Fin.last k
+    · subst hiL
+      rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
+      · by_cases hj0 : j = 0
+        · subst hj0
+          simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
           ring
-        · rcases eq_or_ne j (Fin.last k) with rfl | hjL
-          · simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
+        · by_cases hjL : j = Fin.last k
+          · subst hjL
+            simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
             linear_combination (-1 : ℂ) * hws
           · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
       · intro x hx
         simp [hx.1, hx.2]
     · rw [Fintype.sum_eq_single i]
       · simp only [hi0, hiL, ↓reduceIte, star_one, one_mul]
-        rcases eq_or_ne j 0 with rfl | hj0
-        · simp [hi0]
-        · rcases eq_or_ne j (Fin.last k) with rfl | hjL
-          · simp [hiL]
-          · rcases eq_or_ne i j with rfl | hij
-            · simp [hi0, hiL]
+        by_cases hj0 : j = 0
+        · subst hj0
+          simp [hi0]
+        · by_cases hjL : j = Fin.last k
+          · subst hjL
+            simp [hiL]
+          · by_cases hij : i = j
+            · subst hij
+              simp [hi0, hiL]
             · simp [hj0, hjL, hij]
       · intro x hx
         simp [hi0, hiL, hx]
@@ -171,7 +169,8 @@ theorem nu_mem (hk : 1 ≤ k) {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ
   have hkey : star (wZ T T' ζ) * wZ T T' ζ - sZ T T' ζ * sZ T T' ζ = 1 := by
     have hx : 0 ≤ Complex.normSq ζ / (T * T') - 1 := by
       have h1 : 1 < Complex.normSq ζ / (T * T') := by
-        rwa [lt_div_iff₀ hTT, one_mul]
+        rw [lt_div_iff₀ hTT, one_mul]
+        exact hζ
       linarith
     have h1 : Complex.normSq (wZ T T' ζ) = Complex.normSq ζ / (T * T') := by
       unfold wZ
@@ -192,7 +191,8 @@ theorem nu_mem (hk : 1 ≤ k) {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ
 theorem sZ_ne {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ} (hζ : T * T' < Complex.normSq ζ) : sZ T T' ζ ≠ 0 := by
   have hTT : 0 < T * T' := mul_pos hT hT'
   have h1 : 1 < Complex.normSq ζ / (T * T') := by
-    rwa [lt_div_iff₀ hTT, one_mul]
+    rw [lt_div_iff₀ hTT, one_mul]
+    exact hζ
   unfold sZ
   have hp : 0 < Real.sqrt (Complex.normSq ζ / (T * T') - 1) := Real.sqrt_pos.2 (by linarith)
   exact_mod_cast hp.ne'
@@ -263,7 +263,8 @@ theorem block_iff (hk : 1 ≤ k) {a b : Fin (k + 1) → ℂ} {T T' : ℝ} (hT : 
 
     have h1 : ĥ *ᵥ (ν *ᵥ e) = ν *ᵥ e := by
       have := congrArg (fun M => M *ᵥ e) h
-      simpa only [← Matrix.mulVec_mulVec, hĥ'e] using this
+      simp only [← Matrix.mulVec_mulVec, hĥ'e] at this
+      exact this
     rw [hνdef, nu_last_vec hk, Matrix.mulVec_add, Matrix.mulVec_smul, Matrix.mulVec_smul, hĥe] at h1
     have h0 : ĥ *ᵥ e0 = e0 := by
       have h2 : sZ T T' ζ • (ĥ *ᵥ e0) = sZ T T' ζ • e0 := add_right_cancel h1
@@ -274,7 +275,8 @@ theorem block_iff (hk : 1 ≤ k) {a b : Fin (k + 1) → ℂ} {T T' : ℝ} (hT : 
       rw [Matrix.mul_one, ← Matrix.mul_assoc, ← hc, h]
     have h4 : ĥ * ĥ' = 1 := by
       have := congrArg (fun M => ν⁻¹ * M) h3
-      simpa only [Matrix.nonsing_inv_mul_cancel_left _ _ uν] using this
+      simp only [Matrix.nonsing_inv_mul_cancel_left _ _ uν] at this
+      exact this
     exact (Matrix.inv_eq_right_inv h4).symm
   · rintro ⟨h0, h1⟩
     have hc := commute_nu hĥu h0 hĥe (wZ T T' ζ) (sZ T T' ζ)
@@ -299,7 +301,8 @@ theorem emb_inj {μ μ' : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (h : embWb k r
   ext a b
   have ha : a.val ≤ k := Nat.lt_succ_iff.mp a.isLt
   have hb : b.val ≤ k := Nat.lt_succ_iff.mp b.isLt
-  simpa [embWb, ha, hb] using congrFun (congrFun h ⟨r + a.val, by omega⟩) ⟨r + b.val, by omega⟩
+  have e := congrFun (congrFun h ⟨r + a.val, by omega⟩) ⟨r + b.val, by omega⟩
+  simpa [embWb, ha, hb] using e
 
 theorem stab_sub (hk : 1 ≤ k) {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : inWb k r z')
     (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z') {ζ ζ' : ℂ} (hζ : Tz k r z * Tz k r z' < Complex.normSq ζ)
@@ -314,7 +317,8 @@ theorem stab_sub (hk : 1 ≤ k) {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb 
   have hblock : μ * theSecB k (wbPart k r z) (wbPart k r z') (Tz k r z) (Tz k r z') ζ * μ' =
       theSecB k (wbPart k r z) (wbPart k r z') (Tz k r z) (Tz k r z') ζ := by
     apply emb_inj (r := r)
-    rwa [emb_mul, emb_mul, ← hp1, ← hp2]
+    rw [emb_mul, emb_mul, ← hp1, ← hp2]
+    exact heq
   have hc := (block_iff hk hT hT' ha hb hζ hμ hμa hμb).1 hblock
   have hblock' := (block_iff hk hT hT' ha hb hζ' hμ hμa hμb).2 hc
   show p.1 * embWb k r (theSection k r z z' ζ') * p.2 = embWb k r (theSection k r z z' ζ')

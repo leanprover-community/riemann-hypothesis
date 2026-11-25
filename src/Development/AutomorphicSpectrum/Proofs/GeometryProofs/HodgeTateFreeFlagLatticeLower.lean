@@ -235,7 +235,7 @@ theorem exists_chart (h876 : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.BT
     rintro _ ⟨w₀, rfl⟩
     exact (hom q hq _).2 fun b => by rw [hjj]; exact hsub q hq _
   · obtain ⟨χ, w₀, hχ, hh, hHT⟩ := hDc.2.2 z
-    refine isHTAt_iff h876 hξ t.PP.L hn hfull M x κ hx' Γ i htor M₀ j₀ (by rw [hκ']; exact hj₀) _ χ w₀ _
+    refine isHTAt_iff lie_proj h876 hξ t.PP.L hn hfull M x κ hx' Γ i htor M₀ j₀ (by rw [hκ']; exact hj₀) _ χ w₀ _
       (fun s k _ _ a xk gk c h1 h2 => by
         obtain ⟨z', rfl⟩ := hsurj s
         have hz' : z' = Multiplicative.ofAdd (Multiplicative.toAdd z') := rfl

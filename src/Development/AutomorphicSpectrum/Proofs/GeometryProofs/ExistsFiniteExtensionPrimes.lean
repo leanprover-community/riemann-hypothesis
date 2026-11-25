@@ -16,7 +16,6 @@ public import Mathlib.GroupTheory.FiniteAbelian.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoPullbackEquiv
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliFiniteSurjectiveOverGenericFamily
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.LevelCoverSt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericPointNormalCoords
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -70,6 +69,27 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Henselian
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveOverRestrictInt
+
+section
+@[expose] public section
+
+namespace GlobalTheory.CompanionTheory.Ar.XR
+
+open AlgebraicGeometry CategoryTheory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+
+def LevelCoverSt : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H)
+    (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (e : Y.X), e ∈ genericPoints Y.X →
+    ∀ N : ℕ, 1 ≤ N → ∃ (Ω : Type) (_ : Field Ω) (_ : CharZero Ω) (n : ℕ) (x : Fin n → Ω) (M : PModel ℤ x)
+      (f : M.X ⟶ Y.X) (y : Sp Ω ⟶ Xo.XF c) (t : SAB H M.X) (_ : SABMap t Y.t f) (z : Ωˣ)
+      (ev : D.La → (Over.mk M.ξ ⟶ t.G)),
+      Flat.NormalCpt M.ξ ∧ IsFinite f ∧ f (GlobalTheory.CompanionTheory.Ar.genPt M.ξ) = e ∧ M.ξ ≫ f = y ≫ Y.j ∧ IsFullLevelAt D t M.ξ N z ev ∧
+      FullTorsion t.G M.ξ N ∧ ∀ q : Cpt M.ξ, unitAt M.ξ q (z : Ω)
+
+end GlobalTheory.CompanionTheory.Ar.XR
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsPrimitiveRootOfLevel, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFiniteNormalModelOfResidueFinite, Development.WeilBound.CoreStatements.HodgeTatePoints.MgTate, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoBaseChange, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFullLevelFiniteExtension, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FullLevelStructureProperties, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FullLevelStructurePullback, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FullLevelGenericCover, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LevelCoverStHolds, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFiniteExtensionPrimes
@@ -181,7 +201,8 @@ private theorem surjective_appTop_of_iso' {X Y : Scheme.{0}} (f : X ≅ Y) : Fun
     simp
   intro x
   refine ⟨f.inv.appTop.hom x, ?_⟩
-  simpa using congrArg (fun g => g.hom x) h
+  have hx := congrArg (fun g => g.hom x) h
+  simpa using hx
 
 theorem surj_fst_of_proper (hA : IsSemiAbelian A) (T : Over S) (hT : IsProper (pullback.snd A.hom T.hom)) :
     Function.Surjective (fst T A).left.appTop.hom := by
@@ -327,7 +348,8 @@ theorem torsion_desc {X : Scheme.{0}} (G : Over X) [GrpObj G] [LocallyOfFiniteTy
       q = pullback.lift a (toUnit Y) (hmk a ha) := by
     intro Y a ha q hq
     apply pullback.hom_ext
-    · rwa [pullback.lift_fst]
+    · rw [pullback.lift_fst]
+      exact hq
     · exact Subsingleton.elim _ _
   haveI h1lft : LocallyOfFiniteType (1 : 𝟙_ (Over X) ⟶ G).left := by
     have hc : (1 : 𝟙_ (Over X) ⟶ G).left ≫ G.hom = 𝟙 _ := Over.w _
@@ -405,7 +427,8 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.tate_iso_base_change : ∀ (E 
   have hone : ∀ g : Over.mk x ⟶ t.G, e ≫ g = 1 ↔ g = 1 := by
     intro g
     constructor
-    · exact fun h => PositivityTheory.HtPt.Mg.extPt_inj i x (h.trans (MonObj.comp_one e).symm)
+    · intro h
+      exact PositivityTheory.HtPt.Mg.extPt_inj i x (h.trans (MonObj.comp_one e).symm)
     · intro h
       rw [h, MonObj.comp_one]
   have hfinT : ∀ n, 0 < n → Finite {y : Over.mk x ⟶ t.G // y ^ n = 1} := by
@@ -461,7 +484,8 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.tate_iso_base_change : ∀ (E 
               rw [hm]
               convert h using 1
               exact (PositivityTheory.HtPt.Mg.unitOn_map i _).symm }, ?_⟩
-  exact fun n hn => ⟨rfl, fun a => rfl⟩
+  intro n hn
+  exact ⟨rfl, fun a => rfl⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoBaseChange =====
@@ -610,7 +634,8 @@ theorem exists_of_tateIso {D : Datum H} {l : Geo.Tor.Level H} {Xo : Moduli D l} 
   have hevw : ∀ τ, (eΩ τ ≫ pullback.fst _ _ ≫ Y.m.φ) ≫ Y.t.G.hom = spMap (algebraMap K Ω) ≫ y ≫ Y.j := fun τ => by
     have h := congrArg (· ≫ Y.j) (hpull τ)
     simp only [Category.assoc] at h ⊢
-    rwa [hφ]
+    rw [hφ]
+    exact h
   let ev : D.La → (Over.mk (spMap (algebraMap K Ω) ≫ y ≫ Y.j) ⟶ Y.t.G) := fun a =>
     Over.homMk (eΩ (r a) ≫ pullback.fst _ _ ≫ Y.m.φ) (hevw (r a))
   refine ⟨Ω, inferInstance, inferInstance, z, ev, hΩfin, ?_⟩
@@ -631,7 +656,8 @@ theorem exists_of_tateIso {D : Datum H} {l : Geo.Tor.Level H} {Xo : Moduli D l} 
     rfl
   obtain ⟨I'', hζ, hev⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.XR.tateIsoAt_move E H D Y.X (Xo.XF c) Y.t Y.oF.t _ Y.m k _ _ hx).2 I'
   refine ⟨I'', ?_, fun a => ?_⟩
-  · rw [← hζ, (hI' N hN0).1]
+  · rw [← hζ]
+    rw [(hI' N hN0).1]
     exact hi' z
   · obtain ⟨b, hb⟩ := hru a
     have hev1 : I.ev N a = I.ev N (u (r a)) := by
@@ -823,7 +849,8 @@ theorem finite_descResidueField_spMap_comp {X : Scheme.{0}} {K Ω : Type} [Field
     first
     | exact e2 ▸ h3
   refine RingHom.Finite.of_comp_finite (f := (X.residue _).hom) ?_
-  rwa [← CommRingCat.hom_comp, Scheme.residue_descResidueField]
+  rw [← CommRingCat.hom_comp, Scheme.residue_descResidueField]
+  exact hC
 
 theorem levelCover : LevelCoverSt := by
   intro E _ _ _ H D l Xo c Y e he N hN

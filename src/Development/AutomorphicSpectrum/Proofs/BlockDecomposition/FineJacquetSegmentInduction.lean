@@ -413,7 +413,7 @@ theorem fineJac_step (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ :
       rfl
     have hinj : ∀ a b, a < Δ.len → b < Δ.len →
         Δ.first.nu ((a : ℕ) : ℂ) = Δ.first.nu ((b : ℕ) : ℂ) → a = b := fun a b ha hb hab =>
-      congrArg Fin.val (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ (a₁ := ⟨a, ha⟩) (a₂ := ⟨b, hb⟩) hab)
+      congrArg Fin.val (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ (a₁ := ⟨a, ha⟩) (a₂ := ⟨b, hb⟩) hab)
     have z₁ : 0 < (segLow Δ 1 one_pos).len := one_pos
     have z₂ : 0 < (segHigh Δ (Δ.len - 1) hl2).len := by
       show 0 < Δ.len - (Δ.len - 1)
@@ -447,7 +447,7 @@ theorem fineJac_step (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ :
       show _ = Δ.first.nu (((Fin.rev (Fin.cast rfl a) : Fin Δ.len) : ℕ) : ℂ)
       rw [e₂]
   refine ⟨fun hd => ?_, shape⟩
-  have hinj := _root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ
+  have hinj := _root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ
   have hset : {e : Fin Δ.len ≃ Fin Δ.len | ∀ a, dec Δ a = Δ.term (e a)} = {Fin.revPerm} := by
     ext e
     simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]

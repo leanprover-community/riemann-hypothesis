@@ -107,7 +107,7 @@ theorem sigLam_irred (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ :
     rw [h, Submodule.map_subtype_top]
     rfl
 
-theorem Hlam_nontrivial (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
+theorem Hlam_nontrivial (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
   by_contra h
   rw [not_nontrivial_iff_subsingleton] at h
   apply ReciprocityTheory.ChartRestriction.DS.datumV_ne_bot hP hv₀

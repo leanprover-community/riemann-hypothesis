@@ -54,7 +54,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GlobalTheory.CompanionTheory.Ar.BT hiding genPt
 open GlobalTheory.CompanionTheory.Ar.HTTie
 
-theorem isHTAt_iff
+theorem isHTAt_iff (_h455 : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.LieProj.lie_finite_projective_baseChange)
     (h876 : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.BT.section_eq_zero_of_val_generic)
     {X : Scheme.{0}} {Ω : Type} [Field Ω] [CharZero Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (hξ : IsCptGen ξ)
     {G : Over X} [GrpObj G] [IsCommMonObj G] [Smooth G.hom] [IsSeparated G.hom] (L : LB G.left) {n : ℕ} (hn : n ≠ 0)

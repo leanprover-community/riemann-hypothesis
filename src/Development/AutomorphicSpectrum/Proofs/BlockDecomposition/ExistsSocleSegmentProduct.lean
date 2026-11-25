@@ -55,7 +55,7 @@ namespace GlobalTheory.CompanionTheory.SegSocle
 theorem dec_injective {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) :
     Function.Injective (dec Δ) :=
-  (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ).comp Fin.rev_injective
+  (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ).comp Fin.rev_injective
 
 theorem ncard_perm_dec_le_one {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) :

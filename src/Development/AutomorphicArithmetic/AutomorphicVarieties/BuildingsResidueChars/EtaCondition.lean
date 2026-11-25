@@ -1,4 +1,0 @@
-module
-
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.GuDefs
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.QuadraticTwists.ExtReal

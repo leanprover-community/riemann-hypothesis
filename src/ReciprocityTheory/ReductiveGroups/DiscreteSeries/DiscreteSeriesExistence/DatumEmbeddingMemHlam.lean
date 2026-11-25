@@ -185,7 +185,7 @@ theorem sigLam_irred (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ :
     rw [h, Submodule.map_top, Submodule.range_subtype]
     rfl
 
-theorem Hlam_nontrivial (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
+theorem Hlam_nontrivial (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
   obtain ⟨-, -, -, w, hw, hw0, -⟩ := datumV_isKIrrHW hP hv₀
   have hm : ((w : smD ε (rreg ε)) : L2 ε) ∈ Hlam ε Ψ v₀ := by
     unfold Hlam closGen

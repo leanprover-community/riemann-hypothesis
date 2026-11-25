@@ -72,15 +72,6 @@ section Signed
 variable {D : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] [MeasurableSpace X]
   [BorelSpace X]
 
-omit [CompactSpace X] [T2Space X] [MeasurableSpace X] [BorelSpace X] in
-theorem chart_weight_continuousOn (A : FinHolAtlas D X) (P : ChartPartition A)
-    (Φ : Fin D → LocPot X) (hΦ : ∀ i, IsPotential A (Φ i)) (s : ℝ) (j : Fin A.n) :
-    ContinuousOn (fun y => s * (P.χ j ((A.chart j).symm y) * locDens A Φ j y))
-      (A.chart j).target := by
-  have h := (P.smooth j j).continuousOn
-  rw [Set.preimage_univ, Set.inter_univ] at h
-  exact continuousOn_const.mul (h.mul (locDensCont A Φ hΦ j))
-
 
 end Signed
 

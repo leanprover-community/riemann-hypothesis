@@ -58,7 +58,7 @@ theorem cns_data {ε : Fin n → Bool} (hq : 1 ≤ S7.q0 ε) {lam : Fin n → �
     rw [h0, norm_zero] at this
     exact zero_ne_one this
   obtain ⟨m, hm⟩ := S7.exists_mu hlam
-  refine ⟨T, Ψ, hgap, hP, hv₀, psi_exp_isPositive T Ψ m (h8 m hm), ?_, hasGelfandChar_sigLam hP h7⟩
+  refine ⟨T, Ψ, hgap, hP, hv₀, psi_exp_isPositive T Ψ m (h8 m hm), ?_, hasGelfandChar_sigLam hgap hP hv₀ h7⟩
   exact weighted_datum hgap hP hv₀ (fun μ hμ => (h6 μ hμ).2.2 2 (by norm_num) hw2)
 
 end ReciprocityTheory.ChartRestriction.DS
@@ -145,8 +145,8 @@ theorem cns_term (dual : Bool) {lam lam' : Fin n → ℝ} {T : S7.KType ε (lowK
       ∀ g ∈ UJset ε, ∑ c, inner ℂ ((η c : smD ε (rreg ε)) : L2 ε)
           (tensGrp dual (rreg ε) g (fun d => ((f d : smD ε (rreg ε)) : L2 ε)) c) =
         inner ℂ z (sigLam ε Ψ' v₀' g x) := by
-  haveI := Hlam_nontrivial hP hv₀
-  haveI := Hlam_nontrivial hP' hv₀'
+  haveI := Hlam_nontrivial hgap hP hv₀
+  haveI := Hlam_nontrivial hgap' hP' hv₀'
   obtain ⟨w, hw⟩ := exists_ne (0 : Hlam ε Ψ v₀)
   obtain ⟨w', hw'⟩ := exists_ne (0 : Hlam ε Ψ' v₀')
   obtain ⟨⟨ι, hι, -, hsurj⟩, -⟩ := cc_gk dual hgap hP hv₀ hgap' hP' hv₀' hh hth hh' hth' hpos hpos' hW hW' hG hG'
@@ -154,9 +154,9 @@ theorem cns_term (dual : Bool) {lam lam' : Fin n → ℝ} {T : S7.KType ε (lowK
   obtain ⟨x', hx', rfl⟩ := hsurj f hf he
   have hσ := rreg_isURepOn ε
   have hD := isDerivedOn_smE hσ
-  obtain ⟨z, hz, hzeq⟩ := (coef_of_emb dual hσ hD (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
-    hgap' (datumV_isKIrrHW hP' hv₀') (datumV_casimir hP' v₀')
-    hι).1 η hη x' hx'
+  obtain ⟨z, hz, hzeq⟩ := (coef_of_emb dual hσ hD hgap (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
+    (datumV_kStable hP v₀) hgap' (datumV_isKIrrHW hP' hv₀') (datumV_casimir hP' v₀')
+    (datumV_kStable hP' v₀') hι).1 η hη x' hx'
   refine ⟨⟨(x' : L2 ε), cns_gen_mem_Hlam hx'⟩, ⟨(z : L2 ε), cns_gen_mem_Hlam hz⟩,
     cns_kfin hgap' hP' hv₀' hx' _ rfl, cns_kfin hgap' hP' hv₀' hz _ rfl, fun g hg => ?_⟩
   rw [hzeq g hg, Submodule.coe_inner, sigLam_coe hgap' hP' hv₀' hg]

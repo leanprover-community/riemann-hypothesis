@@ -69,35 +69,22 @@ end SlopeTestRemainingChoices
 
 end UpperTheory.V.Cj.S
 
-private theorem tensor_exists_finBasis_expansion {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-    [FiniteDimensional ℂ V] (t : V ⊗[ℂ] W) :
-    ∃ m : Fin (Module.finrank ℂ V) → W, t = ∑ a, Module.finBasis ℂ V a ⊗ₜ[ℂ] m a := by
-  induction t using TensorProduct.induction_on with
-  | zero => exact ⟨0, by simp⟩
-  | tmul v w =>
-    refine ⟨fun a => (Module.finBasis ℂ V).repr v a • w, ?_⟩
-    conv_lhs => rw [← (Module.finBasis ℂ V).sum_repr v]
-    rw [TensorProduct.sum_tmul]
-    exact Finset.sum_congr rfl (fun a _ => (TensorProduct.smul_tmul _ _ _))
-  | add t1 t2 h1 h2 =>
-    obtain ⟨m1, rfl⟩ := h1
-    obtain ⟨m2, rfl⟩ := h2
-    exact ⟨m1 + m2, by simp [TensorProduct.tmul_add, Finset.sum_add_distrib]⟩
-
 private theorem tensor_eq_zero_of_sl1_vanishing {V W Y : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     [FiniteDimensional ℂ V] (jW : W →ₗ[ℂ] (Y → ℂ)) (hjW : Function.Injective jW) (t : V ⊗[ℂ] W)
     (ht : ∀ y, UpperTheory.V.Cj.S.sl1 jW y t = 0) : t = 0 := by
-  obtain ⟨m, rfl⟩ := tensor_exists_finBasis_expansion (V := V) (W := W) t
+  obtain ⟨m, rfl⟩ := TensorProduct.eq_repr_basis_left (Module.finBasis ℂ V) t
   have hm : ∀ a, m a = 0 := by
     intro a
     apply hjW
     rw [map_zero]
     funext y
     have hy := ht y
+    rw [Finsupp.sum_fintype _ _ (by simp)] at hy
 
     simp only [map_sum, UpperTheory.V.Cj.S.slice_first_tmul] at hy
     have := (Fintype.linearIndependent_iff.mp (Module.finBasis ℂ V).linearIndependent) (fun a => jW (m a) y) hy a
     simpa using this
+  rw [Finsupp.sum_fintype _ _ (by simp)]
   simp [hm]
 
 private theorem exists_vec_of_dual_apply_col {X Y V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
@@ -172,13 +159,17 @@ theorem UpperTheory.V.Cj.S.twoVar :
   have hA' : ∀ i (v : V), ((A' i v : V) : M) = A i v := fun i v => rfl
   have hB' : ∀ k (w : W), ((B' k w : W) : N) = B k w := fun k w => rfl
   have cA : ∀ i i', Commute (A' i) (A' i') := by
-    exact fun i i' => LinearMap.ext fun v => Subtype.ext (hAc i i' v v.2)
+    intro i i'
+    exact LinearMap.ext fun v => Subtype.ext (hAc i i' v v.2)
   have cB : ∀ k k', Commute (B' k) (B' k') := by
-    exact fun k k' => LinearMap.ext fun w => Subtype.ext (hBc k k' w w.2)
+    intro k k'
+    exact LinearMap.ext fun w => Subtype.ext (hBc k k' w w.2)
   obtain ⟨v, w', l, m, hv, hw', hAv, hBw, hprop⟩ := hT V W ι κ A' B' cA cB z hz0
   refine ⟨v, v.2, w', w'.2, l, m, ?_, ?_, ?_, ?_, ?_⟩
-  · exact fun h => hv (Subtype.ext h)
-  · exact fun h => hw' (Subtype.ext h)
+  · intro h
+    exact hv (Subtype.ext h)
+  · intro h
+    exact hw' (Subtype.ext h)
   · intro i
     have := congrArg Subtype.val (hAv i)
     simpa [hA'] using this

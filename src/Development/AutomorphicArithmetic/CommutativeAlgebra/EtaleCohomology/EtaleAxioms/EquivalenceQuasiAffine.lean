@@ -736,8 +736,6 @@ theorem glue : LateralTheory.E.FinEtSectionPf.Glue := by
     MonoidHom.coe_coe, RingHom.coe_comp, Function.comp_apply, hΦ]
   simp
 
-theorem Glue_of : LateralTheory.E.FinEtSectionPf.Glue := glue
-
 end LateralTheory.E.Gluing₂
 end -- clump:auto
 end -- clump:auto

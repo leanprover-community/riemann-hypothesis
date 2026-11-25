@@ -176,12 +176,6 @@ open Matrix
 
 namespace GlobalTheory.CompanionTheory.Ar.GR
 
-theorem val_one_sub_pow_le {K : Type} [Field K] (v : Valuation K NNReal) {x : K} (hx : v x = 1)
-    (i : ℕ) : v (1 - x ^ i) ≤ v (1 - x) := by
-  have h : 1 - x ^ i = (1 - x) * ∑ j ∈ Finset.range i, x ^ j := (mul_neg_geom_sum x i).symm
-  rw [h, map_mul]
-  exact mul_le_of_le_one_right' (v.map_sum_le (fun j _ => by rw [map_pow, hx, one_pow]))
-
 theorem val_eq_one_of_pow_eq_one {K : Type} [Field K] (v : Valuation K NNReal) {x : K} {n : ℕ}
     (hn : n ≠ 0) (hx : x ^ n = 1) : v x = 1 := by
   have h : v x ^ n = 1 := by rw [← map_pow, hx, map_one]
@@ -385,7 +379,8 @@ theorem rank_one_sum : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgC
       set G : C := ∑ a, algebraMap R C (χ⁻¹ a) * ψ a with hG
       have hW : ∀ h : F, ∑ a, algebraMap R C (χ⁻¹ a) * ψ (a * h) = algebraMap R C (χ h) * G := by
         intro h
-        simpa [wsum, G] using wsum_eq χ (fun a => ψ a) (wsum_zero_of_ne hv hχ _) h
+        have e := wsum_eq χ (fun a => ψ a) (wsum_zero_of_ne hv hχ _) h
+        simpa [wsum, G] using e
       have hFt : ∀ t : C, fourier (R := R) (fun h a : F => ψ (h * a)) (fun a => t * algebraMap R C (χ⁻¹ a)) = fun h => t * G * algebraMap R C (χ h) := by
         intro t
         funext h
@@ -421,7 +416,8 @@ theorem rank_one_sum : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgC
         obtain ⟨s', hs'⟩ : ∃ s' : R, algebraMap R C s' = t * G * algebraMap R C (χ 1) := AD.le_int hm 1
         rw [map_one, map_one, mul_one] at hs'
         have hx : s' ∈ xIdeal AD.carrier χ := by
-          rwa [mem_xIdeal, hs']
+          rw [mem_xIdeal, hs']
+          exact hm
         rw [hcD] at hx
         obtain ⟨k, rfl⟩ := Ideal.mem_span_singleton'.mp hx
         rw [← map_mul, ← hs', map_mul, map_mul]
@@ -564,9 +560,11 @@ theorem rank_one_sum : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgC
           obtain ⟨i, rfl⟩ := indices.surjective j
           fin_cases i
           · change (fun x => B x (indices 0)) ∈ A.carrier
-            rwa [col_zero]
+            rw [col_zero]
+            exact one_mem
           · change (fun x => B x (indices 1)) ∈ A.carrier
-            rwa [col_one]
+            rw [col_one]
+            exact vec_mem
         · rw [show B = _ from rfl, Matrix.det_submatrix_equiv_self]
           simp [M, Matrix.det_fin_two]
       have hN := hasColen_of_span AA c hc
@@ -729,7 +727,8 @@ lemma mono_mem (AA : HopfOrder (C := C) R F) (σ : MulChar F R) {p f : ℕ} (hp 
     rw [Pi.pow_apply, MulChar.pow_apply' _ (pow_ne_zero _ hp), ← map_pow (algebraMap R C), mul_pow,
       ← pow_mul,
       mul_comm (e n)]
-  rwa [hfun]
+  rw [hfun]
+  exact hmem
 
 end
 
@@ -746,8 +745,8 @@ lemma prod_digits {p f : ℕ} (hp : p ≠ 0) (w : ℕ → NNReal) :
     simp only [Finset.mem_range, Finset.mem_insert, Finset.mem_Icc]
     omega
   rw [h1, Fin.prod_univ_eq_prod_range (fun i => if i = 0 then 1 else w i), h2,
-    Finset.prod_insert (by simp), ite_eq_left rfl, one_mul]
-  refine Finset.prod_congr rfl fun m hm => ite_eq_right ?_
+    Finset.prod_insert (by simp), if_pos rfl, one_mul]
+  refine Finset.prod_congr rfl fun m hm => if_neg ?_
   have := (Finset.mem_Icc.1 hm).1
   omega
 
@@ -793,7 +792,7 @@ theorem r_mono : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed 
       intro h
       exact mul_ne_zero hn (pow_ne_zero _ hp0)
         (Finset.sum_eq_zero_iff.1 h n (Finset.mem_univ n))
-    rw [ite_eq_right hne] at key
+    rw [if_neg hne] at key
     rw [hg]
     have hval : v (algebraMap R C (∏ n : Fin f, c n ^ (d n : ℕ))) =
         v (algebraMap R C (g (∑ n : Fin f, (d n : ℕ) * p ^ (n : ℕ)))) := by

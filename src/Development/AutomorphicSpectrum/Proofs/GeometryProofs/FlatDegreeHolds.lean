@@ -35,7 +35,6 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormLe
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.DTrans
-public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.ExistsExtensionEmbeddingAlgClosed
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsTransitionMatrixGram
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDetNeZeroLocalBasisCofinite
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDeterminantLogDifferent
@@ -120,6 +119,31 @@ import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorsBaseChange
+
+section
+@[expose] public section
+
+open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+
+namespace GlobalTheory.CompanionTheory.Ar.Fl
+
+theorem exists_comp_eq_of_numberField (k k' A : Type) [Field k] [NumberField k] [Field k']
+    [NumberField k'] [Field A] [CharZero A] [IsAlgClosed A] (f : k →+* k') (j : k →+* A) :
+    ∃ j' : k' →+* A, j'.comp f = j := by
+  let _ : Algebra k k' := f.toAlgebra
+  let _ : Algebra k A := j.toAlgebra
+  have : IsScalarTower ℚ k k' := IsScalarTower.of_algebraMap_eq fun q => by
+    rw [RingHom.algebraMap_toAlgebra, eq_ratCast (algebraMap ℚ k') q, eq_ratCast (algebraMap ℚ k) q,
+      map_ratCast]
+  have : Module.Finite k k' := Module.Finite.of_restrictScalars_finite ℚ k k'
+  have : Algebra.IsAlgebraic k k' := Algebra.IsAlgebraic.of_finite k k'
+  refine ⟨(IsAlgClosed.lift : k' →ₐ[k] A).toRingHom, ?_⟩
+  ext x
+  exact (IsAlgClosed.lift : k' →ₐ[k] A).commutes x
+
+end GlobalTheory.CompanionTheory.Ar.Fl
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HermitianLogNormLocalSum, Development.AutomorphicSpectrum.Proofs.AdelicProofs.HermitianMetricLogNormFormula, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChowlaSelbergPeriod, Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.PointShiftStOfPlaceShiftSt, Development.WeilBound.CoreStatements.SesquilinearFractions.DTransUnit, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicNormTransitionDetOne, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmHeight, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsAlt, Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualBasisHermitianSum, Development.WeilBound.CoreStatements.SesquilinearFractions.GGramPush, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeGramInvariantPullback, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieNormSqBaseChange, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmPackPeriodProduct, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmNumberField, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmValue, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatDegreeHolds
@@ -805,7 +829,7 @@ theorem sigma_component : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   rw [hexp, Finset.sum_eq_single σ.toRatAlgHom]
   · have h1 : S σ.toRatAlgHom = 1 := by
       rw [hS]
-      exact ite_eq_left (RingHom.ext fun _ => rfl)
+      exact if_pos (RingHom.ext fun _ => rfl)
     have h2 : σ (H.rt : E) = 2 * σ (H.w0 : E) - 1 := by
       have h3 := congrArg (fun a : 𝓞 E => σ (algebraMap (𝓞 E) E a)) H.two_weight_eq_one_add_root
       simp only [map_mul, map_add (f := _), map_one, map_ofNat] at h3
@@ -818,7 +842,7 @@ theorem sigma_component : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   · intro τ _ hτ
     have h0 : S τ = 0 := by
       rw [hS]
-      refine ite_eq_right fun hc => hτ (AlgHom.ext fun z => ?_)
+      refine if_neg fun hc => hτ (AlgHom.ext fun z => ?_)
       exact congrArg (fun f : E →+* ℂ => f z) hc
     rw [h0]
     simp
@@ -1009,11 +1033,11 @@ theorem isComb_pad {G : Over S} [GrpObj G] [IsCommMonObj G] {x : Sp R ⟶ S} {m 
   let U : Fin M → (epsAt x ⟶ G) := fun q => if hq : ∃ j, jj j = q then u hq.choose else 1
   have hU : ∀ j, U (jj j) = u j := fun j => by
     have hq : ∃ j', jj j' = jj j := ⟨j, rfl⟩
-    simp only [U, dite_eq_left hq]
+    simp only [U, dif_pos hq]
     rw [hj hq.choose_spec]
   have hU1 : ∀ q, q ∉ Set.range jj → U q = 1 := fun q hq => by
     simp only [U]
-    exact dite_eq_right hq
+    exact dif_neg hq
   refine ⟨U, fun q => ?_, ?_⟩
   · by_cases hq : q ∈ Set.range jj
     · obtain ⟨j, rfl⟩ := hq

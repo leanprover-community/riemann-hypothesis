@@ -116,7 +116,7 @@ theorem first_block_column_condition (l : Col i dc) :
     exact Finset.disjoint_left.mp dc.disj hw hwc
   simp only [FS, QS.Fall, Fin.cases_zero]
   unfold FirstBlockLocalConditions
-  simp only [KHf.Fρ, ite_eq_right hnot]
+  simp only [KHf.Fρ, if_neg hnot]
 
 
 
@@ -266,7 +266,8 @@ theorem toKOG_surjective : Function.Surjective (H0.toKOG (D := D) i Dd) := by
   intro y
   refine ⟨fun b => (H0.kogEq _ y) (H0.e0.symm b), ?_⟩
   show (H0.kogEq _).symm (fun a => (H0.kogEq _ y) (H0.e0.symm (H0.e0 a))) = y
-  simpa only [Equiv.symm_apply_apply] using (H0.kogEq _).symm_apply_apply y
+  simp only [Equiv.symm_apply_apply]
+  exact (H0.kogEq _).symm_apply_apply y
 
 def phi0 : blockRestrictedRepresentationType (RepresentationBoundsCohomology.blk D.R) Dd.ρk 0 ≃ₗ[D.nd.O i] KOG (D.nd.O i) D.R.r :=
   LinearEquiv.ofBijective (H0.toKOG i Dd) ⟨H0.toKOG_injective i Dd, toKOG_surjective i Dd⟩
@@ -290,7 +291,8 @@ theorem tieSel1_rec
       (decs D.host.E (Aw i dc) w))))
     (hBk : BkAt i dc ρ π (blockRestrictedRepresentationType (RepresentationBoundsCohomology.blk D.R) Dd.ρk 0) Dd.r Dd.χ (phi0 i Dd) (invariants_map_equivariant hD hN) F) :
     TieSel1 i ρ π (blockRestrictedRepresentationType (RepresentationBoundsCohomology.blk D.R) Dd.ρk 0) Dd.r Dd.χ (colIdx i dc) (decs D.host.E (Aw i dc)) (rowsN i dc) F
-      (K.QS.Io i) := tieSel1_of (hBk := hBk)
+      (K.QS.Io i) := by
+  exact tieSel1_of (hBk := hBk)
 
 
 variable {i r ρ π g0 eB e₁ s Dd} in
@@ -302,7 +304,8 @@ theorem tieSel1_rec_loc
       (decs D.host.E (Aw i dc) w))))
     (hBk : BkLoc i dc ρ π (blockRestrictedRepresentationType (RepresentationBoundsCohomology.blk D.R) Dd.ρk 0) Dd.r Dd.χ (phi0 i Dd) (invariants_map_equivariant hD hN) F) :
     TieSel1 i ρ π (blockRestrictedRepresentationType (RepresentationBoundsCohomology.blk D.R) Dd.ρk 0) Dd.r Dd.χ (colIdx i dc) (decs D.host.E (Aw i dc)) (rowsN i dc) F
-      (K.QS.Io i) := tieSel1_rec (hD := hD) (hN := hN) (F := F) (hBk := bkAt_of_loc (h := hBk))
+      (K.QS.Io i) := by
+  exact tieSel1_rec (hD := hD) (hN := hN) (F := F) (hBk := bkAt_of_loc (h := hBk))
 
 end Phi
 
@@ -330,24 +333,6 @@ section Phi
 
 variable (D : D7) (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
 
-
-set_option synthInstance.maxHeartbeats 400000 in
-theorem phi_injective (k : ℕ) : Function.Injective (Br.phi (D.nbr i w hw) k) := by
-  rw [← LinearMap.ker_eq_bot (τ₁₂ := (D.nbr i w hw).eO.toRingHom), eq_bot_iff]
-  intro x hx
-  obtain ⟨u, rfl⟩ := Submodule.mkQ_surjective _ x
-  rw [LinearMap.mem_ker] at hx
-  rw [Submodule.mem_bot, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-  have h1 : Br.vecS (D.nbr i w hw) k u ∈ stdG (Br.Ow (D.nbr i w hw)) (Br.LLw (D.nbr i w hw)) k := by
-    rwa [← Submodule.Quotient.mk_eq_zero]
-  obtain ⟨c, hc⟩ := h1
-  refine ⟨fun j => (D.nbr i w hw).eO.symm (c j), ?_⟩
-  funext j
-  apply (Br.toLLK (D.nbr i w hw)).injective
-  have := congrFun hc j
-  simp only [LinearMap.compLeft_apply, Function.comp_apply, Algebra.linearMap_apply] at this
-  show Br.toLLK (D.nbr i w hw) (algebraMap _ _ ((D.nbr i w hw).eO.symm (c j))) = Br.toLLK (D.nbr i w hw) (u j)
-  rwa [Br.toLLK_alg, RingEquiv.apply_symm_apply]
 
 
 
