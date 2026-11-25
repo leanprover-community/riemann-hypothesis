@@ -1,9 +1,5 @@
 name: conflict labels
 
-# Switched off until the description check can say which pull requests a batch includes:
-# `CONFLICT_LABELS_ON` in `scripts/batch-labels.py`. While it is off, the script does nothing
-# outside a dry run.
-#
 # Keeps two labels on the open pull requests into main that are not drafts and not batches:
 # `main-conflict` on those that GitHub says conflict with main, and `batch-conflict` on those that
 # conflict with a batch being built, that is a `batch/...` branch of this repository whose pull
