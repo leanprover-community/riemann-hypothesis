@@ -357,7 +357,7 @@ variable {F M : Type} [Field F] [Field M] [Algebra F M]
 
 theorem exists_emb (pb : PowerBasis F M) (τ : F →+* ℂ) (z : ℂ) (hz : (minpoly F pb.gen).eval₂ τ z = 0) :
     ∃ e : M →+* ℂ, (∀ x, e (algebraMap F M x) = τ x) ∧ e pb.gen = z := by
-  letI : Algebra F ℂ := τ.toAlgebra
+  let : Algebra F ℂ := τ.toAlgebra
   have h : Polynomial.aeval z (minpoly F pb.gen) = 0 := hz
   exact ⟨(pb.lift z h : M →ₐ[F] ℂ), fun x => (pb.lift z h).commutes x, pb.lift_gen z h⟩
 
@@ -1178,10 +1178,10 @@ theorem move_definite : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 �
     · exact ⟨Q.c, Q.γ, hQ, Q.reg, fun φ z hz => DMove.dell Q φ z (by rw [hQ]; exact hz)⟩
     · exact ⟨P.c, P.γ, hP, P.reg, fun φ z hz => _root_.GlobalTheory.LKMid.MarkEll.mark_ell p G P μ ha hm φ z (by rw [hP]; exact hz)⟩
   have hmon : P0.Monic := hγ0 ▸ minpoly.monic (Algebra.IsIntegral.isIntegral _)
-  haveI : Fact (Irreducible P0) := ⟨hirr⟩
+  have : Fact (Irreducible P0) := ⟨hirr⟩
   let pb := AdjoinRoot.powerBasis hmon.ne_zero
-  haveI : Module.Finite G.F (AdjoinRoot P0) := pb.finite
-  haveI : NumberField (AdjoinRoot P0) := NumberField.of_module_finite G.F _
+  have : Module.Finite G.F (AdjoinRoot P0) := pb.finite
+  have : NumberField (AdjoinRoot P0) := NumberField.of_module_finite G.F _
   have hmin : minpoly G.F pb.gen = P0 := AdjoinRoot.minpoly_powerBasis_gen_of_monic hmon
   have hcore := DMove.core ha hn pb (by rw [hmin, ← hγ0]; exact hreg.1) (by rw [hmin, ← hγ0]; exact hreg.2) c0 μ v hv
     (by rw [hmin]; exact hμ) (fun φ => hc0 _ _ (by have h := emb_root pb φ; rw [hmin] at h; exact h))

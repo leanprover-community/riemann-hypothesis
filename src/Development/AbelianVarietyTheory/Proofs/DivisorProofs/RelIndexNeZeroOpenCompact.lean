@@ -225,9 +225,9 @@ theorem _root_.GlobalTheory.finsum_fold_intermediate : ∀ {G : Type} [Group G] 
   rw [finsum_congr hterm]
   by_cases hFy : F y = 0
   · simp [hFy]
-  haveI : Finite {q : DoubleCoset.Quotient (Γ' : Set G) (K : Set G) | F (Quotient.out q) ≠ 0} :=
+  have : Finite {q : DoubleCoset.Quotient (Γ' : Set G) (K : Set G) | F (Quotient.out q) ≠ 0} :=
     hfin.to_subtype
-  haveI : Finite (DoubleCoset.Quotient ((Γ'.subgroupOf T : Subgroup T) : Set T)
+  have : Finite (DoubleCoset.Quotient ((Γ'.subgroupOf T : Subgroup T) : Set T)
       (((T ⊓ K.map (MulAut.conj y).toMonoidHom).subgroupOf T : Subgroup T) : Set T)) :=
     Finite.of_injective
       (β := {q : DoubleCoset.Quotient (Γ' : Set G) (K : Set G) | F (Quotient.out q) ≠ 0})
@@ -238,7 +238,7 @@ theorem _root_.GlobalTheory.finsum_fold_intermediate : ∀ {G : Type} [Group G] 
       (fun p p' h => by
         have h' := congrArg Subtype.val h
         exact he.1 (Subtype.ext h'))
-  letI := Fintype.ofFinite (DoubleCoset.Quotient ((Γ'.subgroupOf T : Subgroup T) : Set T)
+  let := Fintype.ofFinite (DoubleCoset.Quotient ((Γ'.subgroupOf T : Subgroup T) : Set T)
       (((T ⊓ K.map (MulAut.conj y).toMonoidHom).subgroupOf T : Subgroup T) : Set T))
   unfold _root_.GlobalTheory.LKCount.massC
   rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, ← Finset.sum_mul, Rat.cast_sum]
@@ -308,8 +308,8 @@ theorem massC_ne_zero_of_support {G : Type} [Group G] (Γ' T K : Subgroup G) (F 
     · apply Subtype.ext
       simp only [Subgroup.coe_mul]
       rw [hs]; group
-  haveI : Finite {q : DoubleCoset.Quotient (Γ' : Set G) (K : Set G) | F (Quotient.out q) ≠ 0} := hsupp.to_subtype
-  haveI hQ : Finite (DoubleCoset.Quotient (A : Set T) (B : Set T)) :=
+  have : Finite {q : DoubleCoset.Quotient (Γ' : Set G) (K : Set G) | F (Quotient.out q) ≠ 0} := hsupp.to_subtype
+  have hQ : Finite (DoubleCoset.Quotient (A : Set T) (B : Set T)) :=
     Finite.of_injective (fun q => (⟨φ q, hφS q⟩ : {q : DoubleCoset.Quotient (Γ' : Set G) (K : Set G) | F (Quotient.out q) ≠ 0}))
       (fun a b h => hφinj (congrArg Subtype.val h))
 
@@ -317,7 +317,7 @@ theorem massC_ne_zero_of_support {G : Type} [Group G] (Γ' T K : Subgroup G) (F 
       0 < ((Nat.card (A ⊓ B.map (MulAut.conj (Quotient.out q)).toMonoidHom : Subgroup T) : ℕ) : ℚ)⁻¹ := by
     intro q
     set t : T := Quotient.out q
-    haveI : Finite ↥(Γ' ⊓ K.map (MulAut.conj ((t : G) * y)).toMonoidHom) := (hfin ((t : G) * y)).to_subtype
+    have : Finite ↥(Γ' ⊓ K.map (MulAut.conj ((t : G) * y)).toMonoidHom) := (hfin ((t : G) * y)).to_subtype
     have hmem : ∀ x : ↥(A ⊓ B.map (MulAut.conj t).toMonoidHom),
         ((x : T) : G) ∈ Γ' ⊓ K.map (MulAut.conj ((t : G) * y)).toMonoidHom := by
       intro x
@@ -329,11 +329,11 @@ theorem massC_ne_zero_of_support {G : Type} [Group G] (Γ' T K : Subgroup G) (F 
       refine ⟨hxA, (memconj K _ _).2 ?_⟩
       have := (memconj K y _).1 hxC.2
       simpa [mul_assoc] using this
-    haveI : Finite ↥(A ⊓ B.map (MulAut.conj t).toMonoidHom) :=
+    have : Finite ↥(A ⊓ B.map (MulAut.conj t).toMonoidHom) :=
       Finite.of_injective (fun x => (⟨((x : T) : G), hmem x⟩ : ↥(Γ' ⊓ K.map (MulAut.conj ((t : G) * y)).toMonoidHom)))
         (by intro a b h; apply Subtype.ext; apply Subtype.ext; have h' := congrArg Subtype.val h; exact h')
     exact inv_pos.mpr (Nat.cast_pos.mpr Nat.card_pos)
-  haveI := Fintype.ofFinite (DoubleCoset.Quotient (A : Set T) (B : Set T))
+  have := Fintype.ofFinite (DoubleCoset.Quotient (A : Set T) (B : Set T))
   unfold massC
   rw [finsum_eq_sum_of_fintype]
   exact ne_of_gt (Finset.sum_pos (fun q _ => hpos q) Finset.univ_nonempty)

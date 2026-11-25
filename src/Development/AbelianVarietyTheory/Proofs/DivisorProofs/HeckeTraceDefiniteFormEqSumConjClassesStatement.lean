@@ -105,7 +105,7 @@ theorem cosetSet_finite {Γ K : Subgroup G} (hloc : ∀ x : G, Finite (GlobalThe
     (cosetSet Γ K x g).Finite := by
   rcases (cosetSet Γ K x g).eq_empty_or_nonempty with h | ⟨γ₀, h₀⟩
   · rw [h]; exact Set.finite_empty
-  · haveI := hloc x
+  · have := hloc x
     exact Set.finite_coe_iff.1 (Finite.of_equiv _ (cosetEquiv Γ K x g γ₀ h₀))
 
 theorem card_cosetSet (Γ K : Subgroup G) (x : G) (γ₀ : Γ) (k : G) (hk : k ∈ K) :
@@ -186,7 +186,7 @@ theorem lift_ev {Γ K : Subgroup G} (ξ : Representation ℂ Γ W)
     have hc := card_cosetSet Γ K (Quotient.out (DoubleCoset.mk Γ K g)) ⟨γ₀, hγ₀⟩ k hk
     rw [← he] at hc
     rw [hc, smul_smul]
-    haveI := hloc (Quotient.out (DoubleCoset.mk Γ K g))
+    have := hloc (Quotient.out (DoubleCoset.mk Γ K g))
     have hpos : (Nat.card (GlobalTheory.LKLoc.locPart Γ K (Quotient.out (DoubleCoset.mk Γ K g))) : ℂ) ≠ 0 :=
       Nat.cast_ne_zero.2 Nat.card_pos.ne'
     rw [inv_mul_cancel₀ hpos, one_smul]
@@ -298,7 +298,7 @@ theorem finite_trace_formula : ∀ (G : Type) [Group G] (Γ K : Subgroup G) (W :
     (1 / (Nat.card (GlobalTheory.LKLoc.locPart Γ K q.out) : ℂ)) * ∑ᶠ γ : Γ, f (q.out⁻¹ * γ * q.out) * LinearMap.trace ℂ W (ξ γ) := by
   intro G _ Γ K W _ _ _ ξ hQ hloc f hf hfs M hM T hT
   classical
-  letI : Fintype (DoubleCoset.Quotient (Γ : Set G) (K : Set G)) := Fintype.ofFinite _
+  let : Fintype (DoubleCoset.Quotient (Γ : Set G) (K : Set G)) := Fintype.ofFinite _
   have hfr : ∀ g, ∀ k ∈ K, f (g * k) = f g := fun g k hk => by simpa using hf 1 K.one_mem k hk g
   have hliftM : ∀ v, lift Γ K ξ v ∈ M := fun v =>
     (hM _).2 ⟨fun γ g => lift_mul_left ξ hQ hloc v γ g, fun k hk g => lift_mul_right Γ K ξ v g k hk⟩
@@ -322,7 +322,7 @@ theorem finite_trace_formula : ∀ (G : Type) [Group G] (Γ K : Subgroup G) (W :
     calc a = E (ev a) := ha.symm
       _ = E (ev b) := by rw [hab]
       _ = b := hb
-  haveI : FiniteDimensional ℂ M := FiniteDimensional.of_injective ev hinj
+  have : FiniteDimensional ℂ M := FiniteDimensional.of_injective ev hinj
   have h1 : LinearMap.trace ℂ M T =
       LinearMap.trace ℂ (DoubleCoset.Quotient (Γ : Set G) (K : Set G) → W) (ev ∘ₗ T ∘ₗ E) := by
     calc LinearMap.trace ℂ M T = LinearMap.trace ℂ M ((T ∘ₗ E) ∘ₗ ev) := by
@@ -449,7 +449,7 @@ theorem ptFib_mass (H : Type) [Group H] (X : Type) [MulAction H X] (f : H → X 
         (1 / (Nat.card (MulAction.stabilizer H (Quotient.out O.1)) : ℂ)) *
           f (Quotient.out O.1).elt (Quotient.out O.1).pt =
       (1 / (Nat.card (MulAction.stabilizer H x) : ℂ)) * ∑ᶠ γ : H, f γ x := by
-  haveI := hfin x
+  have := hfin x
   let K := stabilizer H x
   let F : ConjTgt H K → ℂ := fun γ => f γ x
   have hF : ∀ (k : K) (γ : ConjTgt H K), F (k • γ) = F γ := by
@@ -915,7 +915,7 @@ theorem unfolded_eq_orbital : ∀ (G : Type) [Group G] (Γ K : Subgroup G) (W : 
     obtain ⟨e⟩ := GlobalTheory.FinTrace.stabilizer_equiv_locPart G H K x.out
     rw [QuotientGroup.out_eq'] at e
     have hle : GlobalTheory.LKLoc.locPart H K x.out ≤ GlobalTheory.LKLoc.locPart Γ K x.out := inf_le_inf_right _ hH
-    haveI : Finite (GlobalTheory.LKLoc.locPart H K x.out) :=
+    have : Finite (GlobalTheory.LKLoc.locPart H K x.out) :=
       Finite.of_injective (Subgroup.inclusion hle) (Subgroup.inclusion_injective hle)
     exact Finite.of_equiv _ e.symm
   have hsuppΦ : ∀ χ (x : G ⧸ K), (Function.support fun γ : Γ => Φ χ γ x).Finite := by
@@ -1325,7 +1325,7 @@ namespace GlobalTheory.HeckeTrace
 variable {p : ℕ} [Fact p.Prime]
 
 theorem emb_injective {G : HTGroup p} (B : GlobalTheory.LKDef.DForm G) : Function.Injective B.emb := by
-  haveI : Nontrivial (AfP p) := GlobalTheory.LKMid.finiteAdeleRingAway_nontrivial p
+  have : Nontrivial (AfP p) := GlobalTheory.LKMid.finiteAdeleRingAway_nontrivial p
   have hinj : Function.Injective (inC G (AfP p)) :=
     Algebra.TensorProduct.includeRight_injective (algebraMap ℚ (AfP p)).injective
   have hq : Function.Injective (algebraMap ℚ (AfP p)) := (algebraMap ℚ (AfP p)).injective
