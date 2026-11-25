@@ -76,29 +76,6 @@ def congSet (w : Pl E) (n k : ℕ) : Set (GLw n w) :=
   {g | g ∈ GlobalTheory.LFun.KGL w (n := n) ∧ ∀ i j, Valued.v (g.val i j - (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j) ≤
     WithZero.exp (-(k : ℤ))}
 
-theorem clRel_equiv {K : GlobalTheory.UnitLemma.UQ} (B : GlobalTheory.UnitLemma.InvAlg K) :
-    Equivalence (fun x y : {x : B.Aˣ // B.σ (x : B.A) = x} =>
-      ∃ u : B.Aˣ, (y.1 : B.A) = x.1 * (u * B.σ (u : B.A))) := by
-  refine ⟨fun x => ⟨1, by simp⟩, ?_, ?_⟩
-  · rintro x y ⟨u, hu⟩
-    refine ⟨u⁻¹, ?_⟩
-    have h1 : ((u : B.A) * ((u⁻¹ : B.Aˣ) : B.A)) * (B.σ (u : B.A) * B.σ ((u⁻¹ : B.Aˣ) : B.A)) = 1 := by
-      rw [← map_mul, Units.mul_inv, map_one, one_mul]
-    rw [hu]
-    calc (x.1 : B.A) = x.1 * (((u : B.A) * ((u⁻¹ : B.Aˣ) : B.A)) * (B.σ (u : B.A) * B.σ ((u⁻¹ : B.Aˣ) : B.A))) := by
-          rw [h1, mul_one]
-      _ = _ := by ring
-  · rintro x y z ⟨u, hu⟩ ⟨v, hv⟩
-    exact ⟨u * v, by rw [hv, hu, Units.val_mul, map_mul]; ring⟩
-
-theorem conjRel_equiv (G : Type) [Group G] :
-    Equivalence (fun x y : G => ∃ g, y = g⁻¹ * x * (MonoidHom.id G) g) := by
-  refine ⟨fun x => ⟨1, by simp⟩, ?_, ?_⟩
-  · rintro x y ⟨g, rfl⟩
-    exact ⟨g⁻¹, by simp [mul_assoc]⟩
-  · rintro x y z ⟨g, rfl⟩ ⟨h, rfl⟩
-    exact ⟨g * h, by simp [mul_assoc]⟩
-
 theorem cast_finsum {α : Type*} (f : α → ℚ) : ((∑ᶠ a, f a : ℚ) : ℂ) = ∑ᶠ a, (f a : ℂ) := by
   by_cases h : (Function.support f).Finite
   · exact map_finsum (Rat.castHom ℂ) h

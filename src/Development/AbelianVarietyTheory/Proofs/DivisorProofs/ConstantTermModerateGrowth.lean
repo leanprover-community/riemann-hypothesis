@@ -59,7 +59,6 @@ theorem continuous_mapInf : Continuous (Matrix.GeneralLinearGroup.map (n := Fin 
 theorem continuous_mapFin : Continuous (Matrix.GeneralLinearGroup.map (n := Fin a) (pFin E)) :=
   Continuous.units_map _ (continuous_id.matrix_map (continuous_snd : Continuous (pFin E)))
 
-
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem height_mul_left_le {Ω : Set (GL (Fin a) (Cinf E))} (hΩ : IsCompact Ω) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ c ∈ Ω, ∀ y : GL (Fin a) (Cinf E), height (c * y) ≤ B * height y := by
@@ -130,34 +129,6 @@ theorem uniform_growth (φ : Sm E a) (hopen : IsOpen {k | finRep E a k φ = φ})
     _ ≤ (∑ t ∈ T, |C (finGL E a t)| * B ^ N (finGL E a t)) * height y ^ (∑ t ∈ T, N (finGL E a t)) :=
         mul_le_mul_of_nonneg_right (Finset.single_le_sum (f := fun t => |C (finGL E a t)| * B ^ N (finGL E a t))
           (fun _ _ => mul_nonneg (abs_nonneg _) (pow_nonneg hB0 _)) htT) (pow_nonneg (by linarith) _)
-
-theorem norm_constTerm_le : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a r : ℕ)
-    [MeasurableSpace (BlockIx a r → Ad E)] [BorelSpace (BlockIx a r → Ad E)] (μ : Measure (BlockIx a r → Ad E))
-    (𝓕 : Set (BlockIx a r → Ad E)), μ.IsAddHaarMeasure → IsAddFundamentalDomain (ratN E a r) 𝓕 μ → μ 𝓕 = 1 →
-    ∀ φ : Sm E a, (∀ γ g, φ.1 (ratGL E a γ * g) = φ.1 g) → IsOpen {k | finRep E a k φ = φ} →
-    (∀ g, ∃ (C : ℝ) (N : ℕ), ∀ y, ‖φ.1 (g * infGL E a y)‖ ≤ C * height y ^ N) →
-    ∀ g, ∃ (C : ℝ) (N : ℕ), ∀ y, ‖∫ x in 𝓕, φ.1 (unip x * (g * infGL E a y)) ∂μ‖ ≤ C * height y ^ N := by
-  intro E _ _ _ a r _ _ μ 𝓕 _ _ h1 φ hleft hopen hgr g
-  obtain ⟨K, hK, hcov⟩ := GlobalTheory.ConstNotCusp.exists_compact_ratN E a r
-  have hc : Continuous fun x : BlockIx a r → Ad E => unip x * g :=
-    GlobalTheory.CuspRep.CuspidalL2GL.continuous_unip.mul continuous_const
-  obtain ⟨C, N, hC⟩ := uniform_growth φ hopen hgr (hK.image hc)
-  refine ⟨C, N, fun y => ?_⟩
-  have hb : ∀ x : BlockIx a r → Ad E, ‖φ.1 (unip x * (g * infGL E a y))‖ ≤ C * height y ^ N := by
-    intro x
-    obtain ⟨γ, ⟨z, rfl⟩, hγ⟩ := hcov x
-    have hu : unip ((AddMonoidHom.compLeft (algebraMap E (Ad E)).toAddMonoidHom (BlockIx a r)) z) =
-        ratGL E a (unip z) := unip_algebraMap z
-    have e : φ.1 (unip (AddMonoidHom.compLeft (algebraMap E (Ad E)).toAddMonoidHom (BlockIx a r) z + x) * g *
-        infGL E a y) = φ.1 (unip x * (g * infGL E a y)) := by
-      rw [unip_add, hu]
-      simp only [mul_assoc]
-      exact hleft _ _
-    rw [← e]
-    exact hC _ ⟨_, hγ, rfl⟩ y
-  have hfin : μ 𝓕 < ⊤ := by rw [h1]; exact ENNReal.one_lt_top
-  calc _ ≤ C * height y ^ N * (μ 𝓕).toReal := norm_setIntegral_le_of_norm_le_const hfin (fun x _ => hb x)
-    _ = C * height y ^ N := by rw [h1]; simp
 
 end GlobalTheory.ConstTermGrowth
 

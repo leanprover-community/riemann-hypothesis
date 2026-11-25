@@ -92,16 +92,6 @@ theorem dualNumberAlgHomMap_fst_snd_logDerivative (R D D' : Type) [CommRing R] [
   have : φ (v : D) = ((Units.map (φ : D →* D') v : D'ˣ) : D') := rfl
   rw [this, Ring.inverse_unit]
   rfl
-theorem evalSectionAtPointOrZero_schemeHom_app (Y Z : Scheme.{0}) (D : Type) [CommRing D] (x : Sp D ⟶ Y) (q : Y ⟶ Z) (U : Z.Opens) (a : Γ(Z, U)) : evU x (q ⁻¹ᵁ U) ((q.app U).hom a) = evU (x ≫ q) U a := by
-  unfold evU
-  by_cases h : ⊤ ≤ x ⁻¹ᵁ (q ⁻¹ᵁ U)
-  · have h' : ⊤ ≤ (x ≫ q) ⁻¹ᵁ U := h
-    rw [dite_eq_left h, dite_eq_left h']
-    unfold GlobalTheory.Cris.evalAt
-    simp only [RingHom.comp_apply]
-    rw [Scheme.Hom.comp_appLE, CommRingCat.comp_apply]
-  · have h' : ¬ ⊤ ≤ (x ≫ q) ⁻¹ᵁ U := h
-    rw [dite_eq_right h, dite_eq_right h']
 
 theorem dualNumberPoint_preimage_top_of_reduction (Y : Scheme.{0}) (D : Type) [CommRing D] (y : Sp (DualNumber D) ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ (spMap (TrivSqZeroExt.fstHom D D D).toRingHom ≫ y) ⁻¹ᵁ U) : ⊤ ≤ y ⁻¹ᵁ U := by
   let f : DualNumber D →+* D := (TrivSqZeroExt.fstHom D D D).toRingHom
@@ -118,8 +108,5 @@ theorem dualNumberPoint_preimage_top_of_reduction (Y : Scheme.{0}) (D : Type) [C
     exact p.isPrime.mem_of_pow_mem 2 (hz₂ ▸ p.asIdeal.zero_mem)
   obtain ⟨q, hq⟩ := hp
   exact hq ▸ h (Set.mem_univ q)
-
-theorem evU_dl_rules : (∀ (Y : Scheme.{0}) (D D' : Type) [CommRing D] [CommRing D'] (φ : D →+* D') (x : Sp D ⟶ Y) (U : Y.Opens) (a : Γ(Y, U)), ⊤ ≤ x ⁻¹ᵁ U → evU (spMap φ ≫ x) U a = φ (evU x U a)) ∧ (∀ (Y : Scheme.{0}) (D : Type) [CommRing D] (x : Sp D ⟶ Y) (U V : Y.Opens) (h : V ≤ U) (a : Γ(Y, U)), ⊤ ≤ x ⁻¹ᵁ V → evU x V ((Y.presheaf.map (homOfLE h).op).hom a) = evU x U a) ∧ (∀ (Y Z : Scheme.{0}) (D : Type) [CommRing D] (x : Sp D ⟶ Y) (q : Y ⟶ Z) (U : Z.Opens) (a : Γ(Z, U)), evU x (q ⁻¹ᵁ U) ((q.app U).hom a) = evU (x ≫ q) U a) ∧ (∀ (D : Type) [CommRing D] (u u' : DualNumber D), IsUnit u → IsUnit u' → dl (u * u') = dl u + dl u') ∧ (∀ (R D D' : Type) [CommRing R] [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'] (φ : D →ₐ[R] D') (u : DualNumber D), (epsHom φ u).fst = φ u.fst ∧ (epsHom φ u).snd = φ u.snd ∧ (IsUnit u → dl (epsHom φ u) = φ (dl u))) ∧ ∀ (Y : Scheme.{0}) (D : Type) [CommRing D] (y : Sp (DualNumber D) ⟶ Y) (U : Y.Opens), ⊤ ≤ (spMap (TrivSqZeroExt.fstHom D D D).toRingHom ≫ y) ⁻¹ᵁ U → ⊤ ≤ y ⁻¹ᵁ U :=
-  ⟨evalSectionAtPointOrZero_specMap_comp, evalSectionAtPointOrZero_restriction, evalSectionAtPointOrZero_schemeHom_app, dualNumberSndMulInverseFst_mul_units, dualNumberAlgHomMap_fst_snd_logDerivative, dualNumberPoint_preimage_top_of_reduction⟩
 
 end GlobalTheory.PtExt

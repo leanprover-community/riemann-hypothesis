@@ -587,7 +587,6 @@ namespace GlobalTheory.CompFin
 section
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-
 omit [NumberField E] [IsCMField E] in
 theorem castFrame_castFrame {Ψ Ψ' : Finset (E →+* ℂ)} (h : Ψ = Ψ') (x : Frame Ψ' r) :
     castFrame h (castFrame h.symm x) = x := rfl
@@ -628,7 +627,6 @@ theorem toComp_inj (v w : C → M.dom → ℂ) (h : ∀ c, toComp M c v = toComp
 end
 
 end GlobalTheory.CompFin
-
 
 open GlobalTheory.CompFin in
 theorem GlobalTheory.cusp_finite_of_comp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite C] [MulAction U C] (M : TwoLevels E r U C) (ka : Wt M.Ψ r), (∀ c : C, FiniteDimensional ℂ (Submodule.span ℂ ((fun f : Frame (M.comp c).Ψ r → ℂ => fun x : (M.comp c).dom => f x) '' (M.comp c).SS (castWt (M.comp_Ψ c) ka)))) → Module.Finite ℂ (M.cusp ka) := by
@@ -686,9 +684,6 @@ def cut (M : TwoLevels E r U C) (c : C) : (C → M.dom → ℂ) →ₗ[ℂ] (C �
     intro t a
     funext c' x
     by_cases h : c' = c <;> simp [h]
-
-theorem cut_apply (M : TwoLevels E r U C) (c : C) (v : C → M.dom → ℂ) (c' : C) :
-    cut M c v c' = if c' = c then v c' else 0 := rfl
 
 theorem cutF_mem_SS (M : TwoLevels E r U C) (la : Wt M.Ψ r) (c : C) {F : C → Frame M.Ψ r → ℂ}
     (hF : F ∈ M.SS la) : (fun c' => if c' = c then F c' else 0) ∈ M.SS la := by
@@ -780,7 +775,6 @@ theorem pullRep_onComp (M : TwoLevels E r U C) (la : Wt M.Ψ r) (ρ : Representa
     exact (onComp M (g⁻¹ • c)).smul_mem t (ihx hx')
 
 end GlobalTheory.ShareOn.Decomp
-
 
 open GlobalTheory.ShareOn.Decomp in
 theorem GlobalTheory.ShareOn.cusp_decomp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite C]

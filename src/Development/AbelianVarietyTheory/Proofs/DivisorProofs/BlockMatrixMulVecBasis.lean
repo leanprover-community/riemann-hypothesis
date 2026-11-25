@@ -74,47 +74,14 @@ def MonicFactorFiniteMod : Prop :=
     (∀ u, ∀ x ∈ M', c u x - p u (q u x) ∈ K) →
     ∀ v ∈ M', FinMod K (Algebra.adjoin ℂ (Set.range c)) v → FinMod K (Algebra.adjoin ℂ (Set.range p)) v
 
-theorem coeff_mem_span {d : ℕ} {a : ℕ → M} {p : ℂ → M} (hp : ∀ u, p u = ∑ i ∈ Finset.range (d + 1), u ^ i • a i)
-    {i : ℕ} (hi : i < d + 1) : a i ∈ Submodule.span ℂ (Set.range p) := by
-  set W := Submodule.span ℂ (Set.range p)
-  have hdual : ∀ f : Module.Dual ℂ (M ⧸ W), f (W.mkQ (a i)) = 0 := by
-    intro f
-    let P : Polynomial ℂ :=
-      ∑ j ∈ Finset.range (d + 1), Polynomial.C (f (W.mkQ (a j))) * Polynomial.X ^ j
-    have hP : P = 0 := by
-      apply Polynomial.funext
-      intro u
-      have h0 : W.mkQ (p u) = 0 :=
-        (Submodule.Quotient.mk_eq_zero W).2 (Submodule.subset_span ⟨u, rfl⟩)
-      have h1 : f (W.mkQ (p u)) = ∑ j ∈ Finset.range (d + 1), u ^ j * f (W.mkQ (a j)) := by
-
-        rw [hp u, map_sum, map_sum]
-        refine Finset.sum_congr rfl fun j _ => ?_
-        rw [map_smul, map_smul, smul_eq_mul]
-      rw [h0, map_zero] at h1
-      simp only [P, Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C,
-        Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_zero]
-      rw [h1]
-      exact Finset.sum_congr rfl fun j _ => mul_comm _ _
-    have hc := congrArg (fun q : Polynomial ℂ => q.coeff i) hP
-    simp only [P, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow,
-      Polynomial.coeff_zero] at hc
-    rw [Finset.sum_ite_eq] at hc
-    simpa [Finset.mem_range.2 hi] using hc
-  have hq : W.mkQ (a i) = 0 := (Module.forall_dual_apply_eq_zero_iff ℂ _).1 hdual
-  exact (Submodule.Quotient.mk_eq_zero W).1 hq
-
 end Alg
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E}
 
-
-
 variable (σ J) in
 def IsLineOf {w : InfinitePlace F} (τ : EmbOver E w) (Z : Matrix (Fin n) (Fin n) ℂ) (γ : ℝ → GAd σ J) : Prop :=
   ∀ t : ℝ, ∃ y : GArch σ J w, γ t = embArch σ J w y ∧ GlobalTheory.Orb.archMat σ J τ y = NormedSpace.exp (t • Z)
-
 
 variable {w : InfinitePlace F} {τ : EmbOver E w} {Z : Matrix (Fin n) (Fin n) ℂ} {γ : ℝ → GAd σ J}
 
@@ -147,9 +114,6 @@ omit [NumberField F] [NumberField E] in
 theorem isUnit_det_map (hJ : IsHermND σ J) (τ : E →+* ℂ) : IsUnit (J.map τ).det := isUnit_det_map_of_det_ne_zero hJ.2 τ
 
 variable {n₁ : ℕ}
-
-
-
 
 end GlobalTheory.LeviHC
 

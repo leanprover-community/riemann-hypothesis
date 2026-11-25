@@ -54,14 +54,6 @@ open scoped GlobalTheory.VacAny
 
 namespace GlobalTheory.WeylFour
 
-
-open Classical in
-theorem factor_isAddHaar (F : Type) [Field F] [NumberField F] :
-    ((Measure.pi fun _ : {w : InfinitePlace F // w.IsReal} => (volume : Measure ℝ)).prod
-      (Measure.pi fun _ : {w : InfinitePlace F // w.IsComplex} => (volume : Measure ℂ))).IsAddHaarMeasure :=
-  Measure.prod.instIsAddHaarMeasure _ _
-
-
 open Classical in
 instance measI_isAddHaar (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] :
     (measI F κ).IsAddHaarMeasure := by

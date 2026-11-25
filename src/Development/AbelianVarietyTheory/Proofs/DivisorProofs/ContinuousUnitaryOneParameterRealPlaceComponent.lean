@@ -79,13 +79,6 @@ theorem continuous_piInf {w : InfinitePlace F} (τ : EmbOver E w) : Continuous (
       map_smul' := fun a x => by rw [piInf_smul]; rfl }
   exact IsModuleTopology.continuous_of_linearMap L
 
-theorem contmap {σ : E →ₐ[F] E} {β : Type} [Fintype β] [DecidableEq β] {J : Matrix β β (AE F E)}
-    (γ : Multiplicative ℝ →* UG (cA σ) J) (hγ : Continuous γ) (w : InfinitePlace F) (τ : EmbOver E w) :
-    Continuous (fun t : ℝ => ((γ (Multiplicative.ofAdd t)).1 : Matrix β β (AE F E)).map (piInf τ)) := by
-  have h1 : Continuous (fun t : ℝ => ((γ (Multiplicative.ofAdd t)).1 : Matrix β β (AE F E))) :=
-    Units.continuous_val.comp (continuous_subtype_val.comp (hγ.comp continuous_ofAdd))
-  exact h1.matrix_map (continuous_piInf τ)
-
 end GlobalTheory.ContMapReal
 
 end

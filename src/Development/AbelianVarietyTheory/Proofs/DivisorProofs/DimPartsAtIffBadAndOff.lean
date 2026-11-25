@@ -90,10 +90,6 @@ def resMap {E : Type} [Field E] [NumberField E] (p : ℕ) (PP : Pl E) (h : (p : 
 def idx {Pg : Finset (Pl D.host.E)} (h : IsRecPlaces D Pg) (PP : ↥Pg) : (Σ k : Fin 2, D.nd.PlG k) :=
   ((h PP.1).1 PP.2).choose
 
-theorem idx_spec {Pg : Finset (Pl D.host.E)} (h : IsRecPlaces D Pg) (PP : ↥Pg) :
-    D.naut.plGw (idx h PP).1 (idx h PP).2 = PP.1 :=
-  ((h PP.1).1 PP.2).choose_spec
-
 theorem idx_mem {Pg : Finset (Pl D.host.E)} (h : IsRecPlaces D Pg) (PP : ↥Pg) :
     ((D.host.g (idx h PP).1 : ℕ) : 𝓞 D.host.E) ∈ PP.1.asIdeal := by
   have h1 := D.naut.plGw_over (idx h PP).1 (idx h PP).2
@@ -434,7 +430,6 @@ def sqEquiv (D : D7) : (Σ k : Fin 2, D.nd.PlG k) ≃ LevelCuspCharacters.Sq D.h
 section Match
 
 variable {Pg : Finset (Pl D.host.E)} (h : LinearCoefficientData.IsRecPlaces D Pg)
-
 
 end Match
 

@@ -240,9 +240,6 @@ def formOfFamily (φ : J → J → (𝓞 E →ₗ[ℤ] ℤ)) : LinearMap.BilinFo
     (by intro y z z'; simp [map_add (f := _), mul_add, Finset.sum_add_distrib])
     (by intro c y z; simp only [Pi.smul_apply, map_zsmul, mul_smul_comm, Finset.smul_sum])
 
-theorem formOfFamily_apply (φ : J → J → (𝓞 E →ₗ[ℤ] ℤ)) (y z : J → 𝓞 E) :
-    formOfFamily H J φ y z = ∑ i, ∑ j, φ i j (H.bar (y i) * z j) := rfl
-
 theorem formOfFamily_mem (φ : J → J → (𝓞 E →ₗ[ℤ] ℤ)) : formOfFamily H J φ ∈ balBil H.bar (J → 𝓞 E) := by
   intro a y z
   simp only [formOfFamily_apply, Pi.smul_apply, smul_eq_mul, map_mul]
@@ -320,8 +317,6 @@ variable (H : Host E) (X : Type) [AddCommGroup X] [Module (𝓞 E) X]
 def rtMul : X →ₗ[ℤ] X := (DistribSMul.toAddMonoidHom X H.rt).toIntLinearMap
 
 variable {H X}
-
-theorem rtMul_apply (y : X) : rtMul H X y = H.rt • y := rfl
 
 theorem rt_smul_rt_smul (y : X) : H.rt • H.rt • y = -((H.d : ℤ) • y) := by
   rw [smul_smul, ← sq, H.rt_sq, neg_smul, ← Int.cast_natCast, Int.cast_smul_eq_zsmul]

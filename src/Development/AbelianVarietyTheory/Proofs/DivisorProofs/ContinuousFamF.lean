@@ -1119,8 +1119,6 @@ theorem muK_univ (ε : Fin n → Bool) : muK ε Set.univ = 1 := by
   unfold Formalism.REAL.muK
   exact Measure.haarMeasure_self
 
-theorem toM_mul (ε : Fin n → Bool) (a b : UJ ε) : toM (a * b) = toM a * toM b := rfl
-
 theorem continuous_toM (ε : Fin n → Bool) : Continuous fun g : UJ ε => toM g :=
   Units.continuous_val.comp continuous_subtype_val
 

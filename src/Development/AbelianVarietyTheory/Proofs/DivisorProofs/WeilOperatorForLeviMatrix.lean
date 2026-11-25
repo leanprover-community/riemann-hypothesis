@@ -77,9 +77,6 @@ def homeo {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S] (g 
   continuous_toFun := Continuous.matrix_mulVec continuous_const continuous_id
   continuous_invFun := Continuous.matrix_mulVec continuous_const continuous_id
 
-theorem homeo_apply {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S] (g : F →+* S)
-    (A : Matrix κ κ F) (hA : IsUnit A.det) (x : κ → S) : homeo g A hA x = A⁻¹.map g *ᵥ x := rfl
-
 def linEquiv {S : Type} [CommRing S] [Algebra ℝ S] [TopologicalSpace S] [IsTopologicalRing S] (g : F →+* S)
     (A : Matrix κ κ F) (hA : IsUnit A.det) : (κ → S) ≃L[ℝ] (κ → S) where
   toFun x := A⁻¹.map g *ᵥ x
@@ -98,12 +95,5 @@ variable [NumberField F]
 
 def evIr : AF F →+* mixedEmbedding.mixedSpace F :=
   (InfiniteAdeleRing.ringEquiv_mixedSpace F).toRingHom.comp (RingHom.fst _ _)
-
-theorem mulVec_mem {v : Pl (F := F)} (M : Matrix κ κ F)
-    (hM : ∀ i j, algebraMap F (Fv F v) (M i j) ∈ v.adicCompletionIntegers F) (x : κ → Fv F v)
-    (hx : ∀ i, x i ∈ v.adicCompletionIntegers F) (i : κ) :
-    (M.map (algebraMap F (Fv F v)) *ᵥ x) i ∈ v.adicCompletionIntegers F := by
-  simp only [Matrix.mulVec, dotProduct, Matrix.map_apply]
-  exact sum_mem fun j _ => mul_mem (hM i j) (hx j)
 
 end GlobalTheory.LeviOp

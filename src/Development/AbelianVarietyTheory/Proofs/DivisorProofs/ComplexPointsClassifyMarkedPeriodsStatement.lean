@@ -175,7 +175,6 @@ noncomputable section
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 open GlobalTheory.TorusRM.LamAdd GlobalTheory.ProdUnifSq in
 theorem GlobalTheory.TorusRM.lbIso_lam_of_same_form : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A → IsProjOver A.hom →
     ∀ (M M' : LB A.left) (u : HolUnif A M g) (u' : HolUnif A M' g) (Hm : Matrix (Fin g) (Fin g) ℂ)
@@ -381,7 +380,6 @@ theorem exists_of_polAV (P P' : Out.PolAV (Sp ℂ)) (n n' : ℕ) (v : HolUnif P.
     thetaUnifAV_all P P' P.L P'.L v v' F hF
   exact ⟨f, hf, hfe⟩
 
-
 open GlobalTheory.HolUnifEnd GlobalTheory.HolUnifHom in
 theorem exists_isMonHom_of_map_lattice (A A' : Over (Sp ℂ)) [GrpObj A] [GrpObj A'] (g g' : ℕ)
     (hA : IsAbelianScheme A) (hA' : IsAbelianScheme A') (hgA : SmoothOfRelativeDimension g A.hom)
@@ -465,13 +463,6 @@ open scoped Matrix
 open GlobalTheory.UPel.HT
 
 namespace GlobalTheory.HTIso
-
-theorem one_comp_monHom {S : Scheme.{0}} {A A' : Over S} [GrpObj A] [GrpObj A'] (f : A ⟶ A') [IsMonHom f] :
-    (1 : A ⟶ A) ≫ f = 1 := by
-  rw [Hom.one_def, Hom.one_def, Category.assoc, IsMonHom.one_hom]
-
-theorem comp_one' {S : Scheme.{0}} {A A' : Over S} [GrpObj A'] (f : A ⟶ A') : f ≫ (1 : A' ⟶ A') = 1 := by
-  rw [Hom.one_def, Hom.one_def, ← Category.assoc, comp_toUnit]
 
 theorem pull_birig : ∀ (S : Scheme.{0}) (A A' : Over S) [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A']
     (f : A ⟶ A'), IsMonHom f → ∀ P : LB (G2 A').left, P.IsLB →

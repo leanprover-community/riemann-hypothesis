@@ -393,20 +393,9 @@ structure RigPull {φ : R →+* R'} {G : Over (Spec (CommRingCat.of R))} [GrpObj
 
 variable {I : Ideal R} {I' : Ideal R'}
 
-omit [IsDomain R] [IsDomain R'] in
-lemma pow_le_comap {φ : R →+* R'} (hI : I ≤ I'.comap φ) (n : ℕ) :
-    I ^ n ≤ (I' ^ n).comap φ :=
-  (Ideal.pow_right_mono hI n).trans (Ideal.le_comap_pow φ n)
-
 abbrev thickSpec {φ : R →+* R'} (hI : I ≤ I'.comap φ) (e : ℕ) :
     Spec (CommRingCat.of (R' ⧸ I' ^ (e + 1))) ⟶ Spec (CommRingCat.of (R ⧸ I ^ (e + 1))) :=
   Spec.map (CommRingCat.ofHom (Ideal.quotientMap (I' ^ (e + 1)) φ (pow_le_comap hI (e + 1))))
-
-omit [IsDomain R] [IsDomain R'] in
-lemma thickSpec_comp {φ : R →+* R'} (hI : I ≤ I'.comap φ) (e : ℕ) :
-    thick R' I' e ≫ specOf φ = thickSpec hI e ≫ thick R I e := by
-  simp only [thick, thickSpec, specOf, ← Spec.map_comp, ← CommRingCat.ofHom_comp,
-    Ideal.quotientMap_comp_mk]
 
 def GrpPull.thickF {φ : R →+* R'} {G : Over (Spec (CommRingCat.of R))} [GrpObj G]
     {G' : Over (Spec (CommRingCat.of R'))} [GrpObj G'] (pG : GrpPull φ G G')
@@ -449,7 +438,6 @@ def GenericInPsiLocus (φ : R →+* R') (D : DegPre R) : Prop :=
     g ≫ W.ι = jK R' ≫ specOf φ
 
 end Pull
-
 
 open scoped CategoryTheory.Obj in
 def UnifBaseChange : Prop :=
@@ -511,7 +499,6 @@ omit [IsDomain R] [IsDomain R'] in
 theorem isGrpPullback_of_bc (bc : G' ≅ (Over.pullback (specOf φ)).obj G) (hbc : IsMonHom bc.hom) :
     IsGrpPullback G' G (specOf φ) (bc.hom.left ≫ pullback.fst G.hom (specOf φ)) :=
   ((isGrpPullback_of_iso bc).comp (isGrpPullback_pullback G (specOf φ))).congr (Category.id_comp _) rfl
-
 
 variable [IsCommMonObj G] [IsCommMonObj G']
 
