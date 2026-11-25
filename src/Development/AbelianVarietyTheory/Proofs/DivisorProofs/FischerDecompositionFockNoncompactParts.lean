@@ -45,8 +45,6 @@ import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial GlobalTheory.JointHarm
 
 namespace GlobalTheory.FischerParts

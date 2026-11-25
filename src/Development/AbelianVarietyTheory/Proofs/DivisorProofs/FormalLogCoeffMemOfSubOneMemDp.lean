@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 @[expose] public section
 
-noncomputable section
-
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
   GlobalTheory.FormalCalc
 

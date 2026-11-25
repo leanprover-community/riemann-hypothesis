@@ -18,8 +18,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.Mum
 
-noncomputable section
-
 namespace GlobalTheory.PullDegUniqAny
 
 open GlobalTheory.ArcPull GlobalTheory.ArcQ GlobalTheory.PullDegUniq

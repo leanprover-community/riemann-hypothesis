@@ -22,8 +22,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.MBLow GlobalTheory.SecJet
 open scoped CategoryTheory.Obj
 
-noncomputable section
-
 namespace GlobalTheory.MBLow.GtVec
 
 open ReciprocityTheory.ChartRestriction.G.DVR
@@ -161,5 +159,3 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (D : Deg
     exact ⟨_, hp _ _ h x⟩
 
 end GlobalTheory.MBLow.GtVec
-
-end

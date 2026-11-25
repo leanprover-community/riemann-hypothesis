@@ -22,8 +22,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-noncomputable section
-
 namespace GlobalTheory.SqTower.Normal
 
 open MeasureTheory Matrix
@@ -243,5 +241,3 @@ theorem bottom_const_normal : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : Glo
     field_simp
 
 end GlobalTheory.SqTower
-
-end

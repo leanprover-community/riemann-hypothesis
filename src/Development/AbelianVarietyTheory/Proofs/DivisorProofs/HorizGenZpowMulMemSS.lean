@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemCon
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.FlatCore.HorizMul
 
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt

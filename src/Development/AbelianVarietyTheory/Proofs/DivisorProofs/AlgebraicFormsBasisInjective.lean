@@ -7,8 +7,6 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthCond
 
 @[expose] public section
 
-noncomputable section
-
 open Module NumberField IsDedekindDomain
 open scoped InnerProductSpace
 
@@ -68,5 +66,3 @@ theorem isForm_tw {K X E : Type} [Field K] [AddCommGroup X] [Module K X] [Normed
 end Real
 
 end GlobalTheory.TwistPlacesObj
-
-end

@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroO
 open NumberField
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.FrameCS
 
 theorem norm_sum_sq_le {N : ℕ} (A : Matrix (Fin N) (Fin N) ℂ) (hA : A.det ≠ 0) (X lam : Fin N → ℂ) :

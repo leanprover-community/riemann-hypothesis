@@ -41,8 +41,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleE
 
 set_option synthInstance.maxHeartbeats 400000
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR.Links ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop
 open scoped TensorProduct
 
@@ -101,5 +99,3 @@ theorem exists_emb_image_latW : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (P
       exact ⟨f, (key f).2 (hx' ▸ hx), hx'⟩
 
 end GlobalTheory.CovTop.SupImage
-
-end

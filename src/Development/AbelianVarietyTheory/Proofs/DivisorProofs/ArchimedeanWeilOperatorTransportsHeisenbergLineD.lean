@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 open scoped TensorProduct
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 
-noncomputable section
-
 namespace GlobalTheory.HeisTransport
 
 theorem actsD_heisLine_transport : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)

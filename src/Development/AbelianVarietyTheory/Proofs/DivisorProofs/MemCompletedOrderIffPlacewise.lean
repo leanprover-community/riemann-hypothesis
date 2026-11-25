@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStron
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.Euler
 
 namespace GlobalTheory.CMVal.HatPlace

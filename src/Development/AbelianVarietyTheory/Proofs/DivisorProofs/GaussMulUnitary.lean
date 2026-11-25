@@ -18,7 +18,6 @@ open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism
 open GlobalTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-noncomputable section
 namespace GlobalTheory.VacKInf.LeviFix
 
 variable {D : D7}
@@ -31,5 +30,3 @@ theorem compAt_adj' {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what₂.Tau) {m 
   rfl
 
 end GlobalTheory.VacKInf.LeviFix
-
-end

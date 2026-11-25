@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicI
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial CategoryTheory
 
 namespace GlobalTheory.DualLabel

@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Class
 
 @[expose] public section
 
-noncomputable section
-
 open Module NumberField
 open scoped InnerProductSpace Matrix
 open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV Formalism.IndefR.Cx Formalism.BasicNotions Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult

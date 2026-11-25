@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
-noncomputable section
 namespace GlobalTheory.EtC.ConeTgt
 
 variable {R : Type} [CommRing R]

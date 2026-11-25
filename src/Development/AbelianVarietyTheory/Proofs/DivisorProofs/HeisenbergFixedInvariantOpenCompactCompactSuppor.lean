@@ -14,8 +14,6 @@ open IsDedekindDomain NumberField MeasureTheory
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix ENNReal Classical
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-noncomputable section
-
 namespace GlobalTheory.WeilAdm
 
 open Filter Topology
@@ -136,5 +134,3 @@ theorem fixed_invariant_compactSupport : ∀ (D : D7) (ψ : AddChar (AF D.host.F
   exact fixed_schroedinger_invariant_compactSupport_bounded_annihilator ψ (GlobalTheory.ScalarAnnih.exists_compact_of_annih D ψ hψ) κ M hM
 
 end GlobalTheory.WeilAdm
-
-end

@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.WeilM
 
 namespace GlobalTheory.ThKOp

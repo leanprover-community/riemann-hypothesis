@@ -61,8 +61,6 @@ open GlobalTheory.ConjTwist GlobalTheory.ExportSeries GlobalTheory.SeriesTie Glo
 open Formalism.IndefR.Fin Formalism.IndefR.Fin.LevelGroupLemmas
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.DilScalar
 
 variable {D : D7}

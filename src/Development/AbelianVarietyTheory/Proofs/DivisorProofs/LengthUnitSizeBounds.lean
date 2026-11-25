@@ -10,8 +10,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CfgTop
 @[expose] public section
 
 
-noncomputable section
-
 open GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.SlopeRec GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.RefSum
 
 namespace GlobalTheory.RefSum.SizeTZ
@@ -127,5 +125,3 @@ theorem lenT_mul_le_b {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {
   exact ceil_mul_le_b T
 
 end GlobalTheory.RefSum.SizeTZ
-
-end

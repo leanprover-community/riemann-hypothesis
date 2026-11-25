@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NatDegreeMin
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.LKMid GlobalTheory.LKTrip GlobalTheory.LKRes
 open scoped TensorProduct
 

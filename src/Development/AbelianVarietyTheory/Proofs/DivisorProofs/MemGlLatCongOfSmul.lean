@@ -13,7 +13,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Matrix MeasureTheory GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.SplitWeil.Model ValuativeRel
 open scoped Pointwise
 
-noncomputable section
 namespace GlobalTheory.FrameDepth
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

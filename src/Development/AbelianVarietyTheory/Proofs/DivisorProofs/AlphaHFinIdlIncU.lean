@@ -15,8 +15,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl finIdl_incU)
 
-noncomputable section
-
 namespace GlobalTheory.BottomReal
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)

@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.IwLine
 
 open scoped TensorProduct Matrix

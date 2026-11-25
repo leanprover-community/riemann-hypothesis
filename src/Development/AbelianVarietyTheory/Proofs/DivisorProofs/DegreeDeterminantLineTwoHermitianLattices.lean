@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.LatDetDeg
 
 open NumberField IsDedekindDomain Module Formalism.BasicNotions GlobalTheory.FlatLine

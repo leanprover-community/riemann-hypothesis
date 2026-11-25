@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open scoped NNReal Pointwise
 open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU
 
-noncomputable section
-
 namespace GlobalTheory.UnitaryVol
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

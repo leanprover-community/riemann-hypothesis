@@ -7,8 +7,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory Limits AlgebraicGeometry NumberField MonObj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.LineNorm
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv actR)
@@ -100,5 +98,3 @@ theorem eq_of_comb {S : Type} [CommRing S] {x : Sp S ⟶ X} {m : ℕ} (T : Fin m
   rw [this]
 
 end GlobalTheory.FlatModel.Proj
-
-end

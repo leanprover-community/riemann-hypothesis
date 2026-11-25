@@ -23,8 +23,6 @@ open ReciprocityTheory.ChartRestriction.G.Chart (sp)
 open GlobalTheory.ZH.CrdCalc (valR_spMap)
 open TrivSqZeroExt (inl inr)
 
-noncomputable section
-
 namespace GlobalTheory.Heat.TangentTranslation
 
 variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G] {n : ℕ}

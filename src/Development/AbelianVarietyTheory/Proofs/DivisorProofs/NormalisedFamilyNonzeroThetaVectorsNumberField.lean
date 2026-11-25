@@ -11,8 +11,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 theorem GlobalTheory.ColNorms.familyVectors : GlobalTheory.ColNorms.FamilyVectors := by

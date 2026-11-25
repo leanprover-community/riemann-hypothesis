@@ -49,8 +49,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.LawDer
 
-noncomputable section
-
 namespace GlobalTheory.LawDer
 
 theorem atZero_subst_of_unit (R : Type) [CommRing R] (d : ℕ)

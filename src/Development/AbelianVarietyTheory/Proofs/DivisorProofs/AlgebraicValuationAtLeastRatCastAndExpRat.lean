@@ -15,8 +15,6 @@ open scoped Classical MatrixGroups nonZeroDivisors
 open GlobalTheory.LatVal (Sz)
 open GlobalTheory.LatJet (EisExp IsEis FR)
 
-noncomputable section
-
 namespace GlobalTheory.SizeRat
 
 theorem norm_ratCast (l : ℕ) [Fact l.Prime] (q : ℚ) : ‖(q : ℂ_[l])‖ = (padicNorm l q : ℝ) := by

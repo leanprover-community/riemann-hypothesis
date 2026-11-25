@@ -20,8 +20,6 @@ open IsDedekindDomain NumberField Matrix MvPolynomial
 open scoped TensorProduct nonZeroDivisors
 open GlobalTheory.SignedHC GlobalTheory.ChiGrid Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.FunObj
 
-noncomputable section
-
 namespace GlobalTheory.HatPullback
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ}

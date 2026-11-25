@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOf
 
 open GlobalTheory.UPel.HT
 
-noncomputable section
-
 namespace GlobalTheory.TateTransportPrimeToP
 
 theorem exists_torsLift {G H : Type} [Group G] [Group H] (p : ℕ) (ρ : G →* H)

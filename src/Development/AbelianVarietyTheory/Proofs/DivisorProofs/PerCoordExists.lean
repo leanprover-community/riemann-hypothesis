@@ -19,8 +19,6 @@ open GlobalTheory.PeriodCoord (realMap realMap_apply realMap_inj det_ne_zero_of_
 
 namespace GlobalTheory.PerCoordU
 
-noncomputable section
-
 variable {g : ℕ}
 
 theorem coords_sum {d : ℕ} (π : Matrix (Fin g) (Fin g) ℂ →ₗ[ℂ] (Fin d → ℂ)) (S : Matrix (Fin g) (Fin g) ℂ) (k : Fin d) :
@@ -156,7 +154,5 @@ theorem perCoord_exists : ∀ (O : Type) [Ring O] (bar : O → O) (g : ℕ) (ρ 
     intro b _
     simpa only [Matrix.mul_apply, Matrix.transpose_apply] using
       (coords_sum π (((colMat α (P b))⁻¹ * colMat β (P b))ᵀ * M₀) k)
-
-end
 
 end GlobalTheory.PerCoordU

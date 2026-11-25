@@ -55,8 +55,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 namespace GlobalTheory.FunObj.StdDatum.LiftCoset
 
 theorem globalIntegralMatrix_mem_stdThetaLattice (D : D7) (δ : ℂ) {a d : ℕ} (x : Matrix (Fin d) (Fin a) D.host.E)
@@ -132,5 +130,3 @@ theorem om_cosetV_eq : ∀ (D : D7) (δ : ℂ), Crv D ⊤ δ → ∀ {a d : ℕ}
     rw [W.smul r 1 _ _ hF, hl]
 
 end GlobalTheory.FunObj.StdDatum.LiftCoset
-
-end

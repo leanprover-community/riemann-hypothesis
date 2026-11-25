@@ -15,8 +15,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open GlobalTheory.Doubling (absE)
 
-noncomputable section
-
 namespace GlobalTheory.LeviModulus
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -74,5 +72,3 @@ theorem topUA {n : ℕ} (J : Matrix (Fin n) (Fin n) E) :
     inferInstanceAs (T2Space (UG (cA σ) (incM F J)))⟩
 
 end GlobalTheory.LeviModulus
-
-end

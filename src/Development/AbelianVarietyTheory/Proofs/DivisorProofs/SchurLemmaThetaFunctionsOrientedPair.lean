@@ -15,8 +15,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.WeilParts MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct ComplexOrder
 
@@ -134,5 +132,3 @@ theorem schur : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-
     rw [this, map_zero, smul_zero]
 
 end GlobalTheory.ThetaSchur
-
-end

@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.DlogRatioVol
 
 open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 
-noncomputable section
-
 namespace GlobalTheory.PD
 
 variable (k K : Type) [Field k] [Field K] [Algebra k K]

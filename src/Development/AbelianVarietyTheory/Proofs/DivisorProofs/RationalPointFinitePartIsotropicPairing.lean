@@ -13,7 +13,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links
 open IsDedekindDomain NumberField Matrix MvPolynomial
 open GlobalTheory.SignedHC GlobalTheory.ChiGrid Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.FunObj
-noncomputable section
 
 namespace GlobalTheory.RatFinIso
 
@@ -40,5 +39,3 @@ theorem isotropic : ∀ {D : D7} (S T : HSp D) (v : Matrix (Fin T.rank) (Fin S.r
   fun S T v => symplOH_ratW_finRat_neg S T v
 
 end GlobalTheory.RatFinIso
-
-end

@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboun
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
 namespace GlobalTheory.Katz.SubstCalc

@@ -29,8 +29,6 @@ open GlobalTheory.StdLoc (glVol blockIdx)
 
 open GlobalTheory.NormRatio
 
-noncomputable section
-
 namespace GlobalTheory.NormRatio.ChrFin
 
 open Formalism.L2.JoinChr

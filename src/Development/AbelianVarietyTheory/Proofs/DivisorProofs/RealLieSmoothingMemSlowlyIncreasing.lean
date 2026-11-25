@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrowthOfTame
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory Filter Topology
 
 namespace GlobalTheory.AutGrowth

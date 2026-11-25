@@ -10,8 +10,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField GlobalTheory.ShFam.Pad AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open scoped CategoryTheory.Obj

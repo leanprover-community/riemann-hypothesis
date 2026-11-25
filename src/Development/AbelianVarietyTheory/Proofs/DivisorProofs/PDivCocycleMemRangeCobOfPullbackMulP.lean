@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMulPEq
 
 open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-noncomputable section
-
 namespace GlobalTheory
 
 namespace PDivGroup

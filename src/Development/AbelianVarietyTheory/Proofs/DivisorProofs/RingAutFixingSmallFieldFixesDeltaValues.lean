@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions Formalism.IndefR.Links Formalism.L2.Host GlobalTheory.SeriesTie
 open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
 open Formalism.L2.JoinChr (IsPlIdem locE)
@@ -108,5 +106,3 @@ theorem aut_fixes_delta_values : ∀ {D : D7} (ρ : Setup D.ntw), ρ.Good → �
   exact this
 
 end GlobalTheory.DeltaFixed
-
-end

@@ -43,8 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
 open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
 open scoped TensorProduct nonZeroDivisors Pointwise
@@ -245,5 +243,3 @@ theorem isSBHalf_cosLoc : ∀ {D : D7} (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
     rw [mul_comm (a * c), ← smul_smul, ← smul_smul a c t]
 
 end GlobalTheory.FunObj.CosSB
-
-end

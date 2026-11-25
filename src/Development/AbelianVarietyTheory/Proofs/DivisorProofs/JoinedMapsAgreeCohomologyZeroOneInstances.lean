@@ -5,8 +5,6 @@ import Mathlib.Tactic.NormNum.LegendreSymbol
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory
 
 namespace GlobalTheory.CxCoh

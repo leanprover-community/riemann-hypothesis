@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory.DI GlobalTheory.LogDR GlobalTheory.Cartier
 
-noncomputable section
-
 namespace GlobalTheory.RoundEqn
 
 open GlobalTheory.Cartier.CartierDiv

@@ -52,8 +52,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
-noncomputable section
-
 namespace GlobalTheory.CobHom
 
 open GlobalTheory.HomogCob

@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelection
 open Matrix NumberField IsDedekindDomain GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.OrbFinAf
 open scoped TensorProduct Classical
 
-noncomputable section
 namespace GlobalTheory.OrbFinAf
 
 variable {p : ℕ} [Fact p.Prime]

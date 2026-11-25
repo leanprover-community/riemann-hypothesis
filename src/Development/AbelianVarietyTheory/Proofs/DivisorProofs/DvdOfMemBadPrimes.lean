@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.NonnegOfMemCStar
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.SlopeRec GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.RefSum
 
 namespace GlobalTheory.BadLog
@@ -94,5 +92,3 @@ theorem dvd_of_mem_badPrimes {T : Core D} (hQ : T.Q.Pins) {j : ℕ} {Y : Deep T 
     exact absurd (Nat.dvd_one.1 h') hp.ne_one
 
 end GlobalTheory.BadLog
-
-end

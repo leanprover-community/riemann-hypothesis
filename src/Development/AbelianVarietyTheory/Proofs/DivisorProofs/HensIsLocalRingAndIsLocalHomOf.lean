@@ -13,8 +13,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open IsLocalRing
 
-noncomputable section
-
 namespace GlobalTheory.Henselisation
 
 namespace LocalLimit
@@ -87,5 +85,3 @@ theorem hens_isLocalRing_and_isLocalHom_of :
     LocalLimit.isLocalHom_of⟩
 
 end GlobalTheory.Henselisation
-
-end

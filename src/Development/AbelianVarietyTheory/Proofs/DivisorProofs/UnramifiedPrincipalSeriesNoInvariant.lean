@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmb
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel
 
 namespace GlobalTheory.PrinTwo.NoFix

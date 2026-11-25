@@ -12,8 +12,6 @@ import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.L2DbarEstimates (V cHess)

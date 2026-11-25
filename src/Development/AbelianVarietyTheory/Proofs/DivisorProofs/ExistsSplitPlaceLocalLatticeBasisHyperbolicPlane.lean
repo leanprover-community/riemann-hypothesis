@@ -52,8 +52,6 @@ open scoped TensorProduct Matrix nonZeroDivisors
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.PlaneSkew
 
-noncomputable section
-
 namespace GlobalTheory.PlaneSkewBasis
 
 open GlobalTheory.AdelicU GlobalTheory.PlaneBasis

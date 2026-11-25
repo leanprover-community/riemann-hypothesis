@@ -8,8 +8,6 @@ open CategoryTheory AlgebraicGeometry KaehlerDifferential MonoidalCategory Carte
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs
 
-noncomputable section
-
 namespace GlobalTheory.Obs
 
 theorem smul_mem_map_eq_zero {R B : Type} [CommRing R] [CommRing B] [Algebra R B] {I : Ideal R} (hI : I ^ 2 = 0)

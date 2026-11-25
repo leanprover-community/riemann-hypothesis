@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LowDat GlobalTheory.LowFilt
 
-noncomputable section
-
 namespace GlobalTheory.LowFilt
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}

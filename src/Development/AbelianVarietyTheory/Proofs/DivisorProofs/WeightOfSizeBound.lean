@@ -42,8 +42,6 @@ import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
@@ -166,5 +164,3 @@ theorem maxWt_le {L : SizeData₂ D} (hs : GlobalTheory.IndefiniteRowSideFullHec
 end Arith
 
 end GlobalTheory.BigTop.Fun
-
-end

@@ -9,7 +9,6 @@ import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
 
-noncomputable section
 namespace GlobalTheory.FockCasimir
 
 theorem sum_mul_normal_order {A ι κ : Type} [Ring A] [Algebra ℂ A] [Fintype ι] [Fintype κ]

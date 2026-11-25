@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Ramificat
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 namespace GlobalTheory.KFinLoc

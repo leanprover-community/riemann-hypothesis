@@ -20,8 +20,6 @@ open CompanionTheory.D.DSIC (KRel KUnit KStab IsSmMod)
 open CompanionTheory.D.LK (IsKMod IsMin)
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.KFinIrr
 
 theorem smE_eq {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]

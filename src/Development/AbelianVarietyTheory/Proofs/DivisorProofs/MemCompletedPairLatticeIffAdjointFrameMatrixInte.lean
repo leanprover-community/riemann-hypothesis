@@ -20,8 +20,6 @@ open Classical
 
 
 
-noncomputable section
-
 namespace GlobalTheory.QHalfLat
 
 variable {D : D7}

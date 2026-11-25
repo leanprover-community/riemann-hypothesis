@@ -14,8 +14,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 theorem GlobalTheory.card_congRep_le : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)), 𝔪 ≠ ⊥ → ∀ (a : ℕ) (R : Finset (GA D a)), (∀ r ∈ R, r ∈ intG D a) → (∀ k ∈ intG D a, ∃! r, r ∈ R ∧ CongOne D 𝔪 (r⁻¹ * k)) → R.card ≤ Ideal.absNorm 𝔪 ^ (a ^ 2) := by
   intro D 𝔪 h𝔪 a R hR huniq
   classical
@@ -40,5 +38,3 @@ theorem GlobalTheory.card_congRep_le : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E
   calc R.card ≤ Nat.card Q := hc
     _ = (congLev D 𝔪 a).relIndex (intG D a) := rfl
     _ ≤ _ := hle
-
-end

@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CuspidalIdempotentCharacters
 
 open Formalism.L2.DIV GlobalTheory.FinGL NumberField

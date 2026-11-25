@@ -55,8 +55,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField Matrix MvPolynomial
 open GlobalTheory.SignedHC GlobalTheory.ChiGrid Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.FunObj
 
-noncomputable section
-
 namespace GlobalTheory.SemicharTrace
 
 open Formalism.MainNotions.TaylorLogMetric

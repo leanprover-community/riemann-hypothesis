@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAd
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Points
 
-noncomputable section
-
 namespace GlobalTheory.CoverDeg
 
 theorem etale_morphismRestrict_of_goodCover {k : Type} [CommRing k] {X Y : Scheme.{0}}

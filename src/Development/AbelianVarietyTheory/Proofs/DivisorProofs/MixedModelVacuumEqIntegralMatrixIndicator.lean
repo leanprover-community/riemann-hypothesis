@@ -27,8 +27,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
 
-noncomputable section
-
 namespace GlobalTheory.MixVacBig
 
 open GlobalTheory.BigDat
@@ -120,5 +118,3 @@ theorem mix_vac : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.Chi
         from fun h' => hl (key.2 h')), mul_zero]
 
 end GlobalTheory.MixVacBig
-
-end

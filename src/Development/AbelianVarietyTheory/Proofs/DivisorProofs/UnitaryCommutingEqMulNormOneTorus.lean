@@ -46,8 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField GlobalTheory.UnitaryBC IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep Formalism.UG GlobalTheory.BCT GlobalTheory.KapLat GlobalTheory.KapOrb
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.KapTorus
 
 theorem mul_of_comm_gen {K : GlobalTheory.UnitLemma.UQ} (B : GlobalTheory.UnitLemma.InvAlg K) (u : B.A)

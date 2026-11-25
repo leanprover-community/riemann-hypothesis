@@ -18,7 +18,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.Hk3 (Core Good IsSF SchurAll TwoSided FixAll EEc Wcc eH IsLab HoweUnram SphOp hyp)
 open GlobalTheory.StdFrame (StdPsi)
 
-noncomputable section
 namespace GlobalTheory.BaseVec
 
 section Levels

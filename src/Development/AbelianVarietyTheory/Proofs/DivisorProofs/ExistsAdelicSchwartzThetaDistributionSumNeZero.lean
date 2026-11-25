@@ -14,8 +14,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySub
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped Matrix TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.ThetaSumNe
 
 theorem exists_mem_schA_thetaSum_ne_zero : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ],
@@ -23,5 +21,3 @@ theorem exists_mem_schA_thetaSum_ne_zero : ∀ (F : Type) [Field F] [NumberField
   apply GlobalTheory.CompanionTheory.ThetaAdm.exists_thetaSum_ne_zero
 
 end GlobalTheory.ThetaSumNe
-
-end

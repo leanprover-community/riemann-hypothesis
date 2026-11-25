@@ -9,7 +9,6 @@ open MeasureTheory ValuativeRel Matrix
 open scoped Pointwise
 open GlobalTheory.SplitFlip GlobalTheory.FlipMatch GlobalTheory.FlipMatch.FieldTransport GlobalTheory.PureMatch.Transport
 
-noncomputable section
 namespace GlobalTheory.PureMatch.Transport
 
 theorem latCorr_smul {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

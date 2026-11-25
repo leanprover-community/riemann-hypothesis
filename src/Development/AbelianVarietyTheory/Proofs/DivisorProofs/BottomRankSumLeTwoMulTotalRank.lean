@@ -15,8 +15,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.IndefR Formalism.Ind
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.SqTop GlobalTheory.NormSum
 open Formalism.L2.Host (HChar)
 
-noncomputable section
-
 namespace GlobalTheory.SqTop.BotSmallProof
 
 theorem eq_of_dvd_absNorm {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) {ℓ p : ℕ}

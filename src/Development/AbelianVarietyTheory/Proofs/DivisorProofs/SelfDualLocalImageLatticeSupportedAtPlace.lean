@@ -16,8 +16,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
-
 namespace GlobalTheory.LatVac.DualLoc
 
 variable {F : Type} [Field F] [NumberField F]

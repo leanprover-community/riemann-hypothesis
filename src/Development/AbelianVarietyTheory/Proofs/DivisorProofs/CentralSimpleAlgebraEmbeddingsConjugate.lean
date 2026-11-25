@@ -15,8 +15,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TwOrbMEqTwOrbUOfNor
 open MeasureTheory Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKDef
 open scoped TensorProduct Classical
 
-noncomputable section
-
 namespace GlobalTheory.VanishNonEll
 
 open GlobalTheory.BCT GlobalTheory.BCT.OrbProd GlobalTheory.LKCount GlobalTheory.LKCount.OrbKProd

@@ -48,7 +48,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
-noncomputable section
 namespace GlobalTheory.EtC.ChernSpec
 
 open GlobalTheory.EtC.ClsSpec
@@ -226,5 +225,3 @@ theorem _root_.GlobalTheory.EtC.firstChernClassTateTwist_cocycle_naturality_addi
   intro q _
   exact ⟨fun L hE => firstChernClassTateTwist_cocycle_representative q hE L, fun f L hE' => GlobalTheory.EtC.ChernSpec.firstChernClassTateTwist_pullback q f L hE',
     fun L M N hE hN => GlobalTheory.EtC.ChernSpec.isOneCochain_add q L M N hE hN⟩
-
-end

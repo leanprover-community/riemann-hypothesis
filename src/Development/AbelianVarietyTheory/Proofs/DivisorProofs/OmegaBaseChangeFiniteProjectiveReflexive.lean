@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingle
 
 @[expose] public section
 
-noncomputable section
-
 open TensorProduct
 
 namespace GlobalTheory

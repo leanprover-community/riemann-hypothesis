@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubstMemInte
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-noncomputable section
-
 namespace GlobalTheory.Katz.WDer
 
 theorem X_mem_intBy (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] {τ : Type}

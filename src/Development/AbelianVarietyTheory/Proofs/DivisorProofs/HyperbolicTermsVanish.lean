@@ -16,8 +16,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPo
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
 
-noncomputable section
-
 namespace GlobalTheory.SplitTorusZero
 
 open GlobalTheory.TruncKer GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt GlobalTheory.Chamber GlobalTheory.Cusp

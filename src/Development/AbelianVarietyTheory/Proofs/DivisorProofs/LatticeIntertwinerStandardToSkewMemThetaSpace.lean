@@ -16,8 +16,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 namespace GlobalTheory.SkewTheta
 
 theorem semiChar_of_nice {D : D7} {T : Tor D} {N N' : ℕ} {A : AddSubgroup (VC D N N')}

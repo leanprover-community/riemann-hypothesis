@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DUnitMemRang
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Dieu
 
-noncomputable section
-
 namespace GlobalTheory.PDivGroup
 
 theorem cotMap_comp_eq_zero_of_kerIdeal_le {k A B C : Type} [Field k] [CommRing A] [CommRing B]

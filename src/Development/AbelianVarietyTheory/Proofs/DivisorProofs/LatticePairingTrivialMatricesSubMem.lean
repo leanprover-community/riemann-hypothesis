@@ -18,8 +18,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
-
 namespace GlobalTheory.VacShapeBd
 
 variable {D : D7} {a a' : ℕ}
@@ -111,5 +109,3 @@ theorem bd_sub : ∀ {D : D7} {a a' : ℕ} (Bs : GlobalTheory.IndefiniteRowSideF
   exact h1
 
 end GlobalTheory.VacShapeBd
-
-end

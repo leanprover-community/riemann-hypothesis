@@ -11,7 +11,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open NumberField IsDedekindDomain
 
-noncomputable section
 open scoped Classical
 
 namespace GlobalTheory.WeilM

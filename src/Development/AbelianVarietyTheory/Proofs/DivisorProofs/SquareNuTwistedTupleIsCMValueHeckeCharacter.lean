@@ -48,8 +48,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.SqTop.TwVal
 
 open Formalism.BasicNotions Formalism.IndefR.Links

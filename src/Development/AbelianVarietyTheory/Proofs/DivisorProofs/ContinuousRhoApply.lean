@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSch
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Complex
 open scoped Matrix Real RealInnerProductSpace InnerProductSpace
 

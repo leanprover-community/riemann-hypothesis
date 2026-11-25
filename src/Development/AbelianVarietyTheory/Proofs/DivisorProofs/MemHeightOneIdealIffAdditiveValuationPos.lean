@@ -12,8 +12,6 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.Places
 
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField Classical
 
-noncomputable section
-
 namespace GlobalTheory.TypeLoss
 
 open IsDedekindDomain
@@ -192,5 +190,3 @@ theorem arith_bound (δ v e lg f m b L N η C₁ C₂ cg CY B : ℝ) (hB : B = f
   nlinarith
 
 end GlobalTheory.TypeLoss
-
-end

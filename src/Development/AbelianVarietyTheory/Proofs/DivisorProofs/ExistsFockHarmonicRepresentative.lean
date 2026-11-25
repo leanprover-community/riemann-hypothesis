@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LineMatri
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions.TH GlobalTheory.FockAlg MvPolynomial GlobalTheory.FockDeg
 
 namespace GlobalTheory.FockAlg.HarmLift

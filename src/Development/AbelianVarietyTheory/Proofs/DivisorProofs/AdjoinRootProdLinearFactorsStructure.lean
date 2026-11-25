@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PreEig
 
 open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HermitianPreEigenvalues Polynomial Module
 
-noncomputable section
 namespace GlobalTheory.RingFacts
 
 variable {O : Type} [CommRing O] {S : Type} [Fintype S] [DecidableEq S]

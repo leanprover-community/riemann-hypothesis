@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace GlobalTheory.BCChar
 
 open scoped GroundTheory.Global.AdicLiesOver
@@ -44,5 +42,3 @@ theorem normU_comp_normU {K M L : Type} [Field K] [NumberField K] [Field M]
   exact Algebra.norm_norm (R := v.adicCompletion K) (S := u.adicCompletion M) (a := (x : w.adicCompletion L))
 
 end GlobalTheory.BCChar
-
-end

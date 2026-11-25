@@ -15,8 +15,6 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 open Module NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColRows
 open scoped ComplexOrder Matrix
 
-noncomputable section
-
 namespace GlobalTheory.LastPeriod
 
 open GlobalTheory.IndefiniteRowSideFullHecke.OrthogonalNormSquareSum GlobalTheory.ColNorms GlobalTheory.PeriodClassSum
@@ -98,5 +96,3 @@ theorem re_inv_mul (w : ℕ) (z : ℂ) : ((w : ℂ)⁻¹ * z).re = (w : ℝ)⁻�
   rfl
 
 end GlobalTheory.LastPeriod
-
-end

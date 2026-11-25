@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.WeierstrassPAdd
 open NumberField IsDedekindDomain WeierstrassCurve GlobalTheory GlobalTheory.Published GlobalTheory.CMModel Formalism.L2.Th1.F
 open scoped IntermediateField BigOperators Topology
 
-noncomputable section
-
 namespace GlobalTheory.CMModel.SqNe
 
 theorem natMul_mem {p : ℕ} {F : IntermediateField ℚ ℂ} {L : PeriodPair} {t : ℂ} (h : Datum p F L t) :

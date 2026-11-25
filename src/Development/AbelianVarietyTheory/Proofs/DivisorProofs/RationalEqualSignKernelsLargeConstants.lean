@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbLLMem
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat
 open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.SumSize GlobalTheory.KerConjMean
@@ -73,5 +71,3 @@ theorem ratTopAt_big : BigC fun _ ch _ _ => RatTopAt ch := by
     rwa [Normal.kkIn, LinearMap.toMatrix_apply] at h
 
 end GlobalTheory.KerConjMean
-
-end

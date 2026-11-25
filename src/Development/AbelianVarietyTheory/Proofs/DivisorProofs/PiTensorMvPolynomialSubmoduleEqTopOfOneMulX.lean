@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open scoped TensorProduct Matrix Classical
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
 
@@ -73,5 +71,3 @@ theorem tensor_submodule_eq_top : ∀ {ι σ : Type} [Fintype ι] [DecidableEq �
   exact key Finset.univ f (fun i hi => absurd (Finset.mem_univ i) hi)
 
 end GlobalTheory.RealLift
-
-end

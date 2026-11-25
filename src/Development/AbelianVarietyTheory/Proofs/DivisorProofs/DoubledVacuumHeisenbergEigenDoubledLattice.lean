@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTrac
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped TensorProduct Matrix
 
-noncomputable section
-
 namespace GlobalTheory.DblVacEigen
 
 section Alg
@@ -169,5 +167,3 @@ theorem doubled_vac_eigen : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
   exact hbox
 
 end GlobalTheory.DblVacEigen
-
-end

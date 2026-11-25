@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.CMVal
 
 namespace GlobalTheory.CMVal.Conv

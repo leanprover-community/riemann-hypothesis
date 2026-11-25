@@ -17,7 +17,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.UT GlobalTheory.ZH
 open GlobalTheory.Poinc.Tors
 
-noncomputable section
 namespace GlobalTheory.Poinc.Tors.OneOver
 
 theorem exists_frm_pow {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F]

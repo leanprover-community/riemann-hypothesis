@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolEqMultiDiff
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
   ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechPic GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.FibreProj
 

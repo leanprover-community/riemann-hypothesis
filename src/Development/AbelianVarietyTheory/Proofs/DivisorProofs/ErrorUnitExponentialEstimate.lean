@@ -7,8 +7,6 @@ import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ColNorms.NumMean
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms

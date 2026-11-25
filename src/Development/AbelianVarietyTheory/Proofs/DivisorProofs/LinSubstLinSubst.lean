@@ -14,8 +14,6 @@ public import Mathlib.NumberTheory.NumberField.ProductFormula
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry NumberField GlobalTheory.ChowHt GlobalTheory.Adelic MvPolynomial ReciprocityTheory.MultiplicativeHeights
 
 namespace GlobalTheory.HeightUnique

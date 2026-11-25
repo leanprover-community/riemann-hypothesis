@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsEulerContr
 
 open GlobalTheory GlobalTheory.LogDR
 
-noncomputable section
-
 namespace GlobalTheory.LogDR.StabD
 
 variable {K : Type} [Field K]

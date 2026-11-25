@@ -47,8 +47,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-noncomputable section
-
 namespace GlobalTheory.WeilSchrodinger
 
 theorem matchPair_cA_eq_sigR (D : D7) (x : AE D) :
@@ -153,5 +151,3 @@ theorem match_pair : ∀ (D : D7) (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T
   exact ⟨⟨G, hGm⟩, ⟨a.1, matchPair_memT D T JA hA a⟩, rfl, hG⟩
 
 end GlobalTheory.WeilSchrodinger
-
-end

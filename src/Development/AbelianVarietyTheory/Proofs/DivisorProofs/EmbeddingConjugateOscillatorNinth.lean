@@ -17,8 +17,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.GalOne.IoCmp
 
 section Letters
@@ -86,5 +84,3 @@ open GlobalTheory.OneMapRef GlobalTheory.WeilParts GlobalTheory.IndefiniteRowSid
 open GlobalTheory.OneMapRef.IoCmp
 
 end GlobalTheory.GalOne.IoCmp
-
-end

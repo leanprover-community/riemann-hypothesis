@@ -10,8 +10,6 @@ open GlobalTheory GlobalTheory.VB GlobalTheory.LieVB GlobalTheory.QCoh GlobalThe
 open GlobalTheory.Twist (resM)
 open scoped CategoryTheory.Obj RatFunc
 
-noncomputable section
-
 namespace GlobalTheory.Nef
 
 theorem exists_stalk_fac {X : Scheme.{0}} (x : X) {R : CommRingCat.{0}} [IsLocalRing R] (f : Spec R ⟶ X)

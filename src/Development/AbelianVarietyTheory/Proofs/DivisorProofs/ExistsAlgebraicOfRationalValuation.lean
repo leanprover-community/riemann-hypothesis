@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.LatVal (Sz)
 
 namespace GlobalTheory.QFam

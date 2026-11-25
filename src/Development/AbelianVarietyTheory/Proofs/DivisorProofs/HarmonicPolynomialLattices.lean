@@ -12,8 +12,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsSplitOfMe
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain
 open NumberField Matrix GlobalTheory.ExportSeries GlobalTheory.SeriesTie
 open Formalism.IndefR.Links (PolF labLL)
@@ -144,5 +142,3 @@ theorem isLattice_latAt {S T : HSp D} {B : Base S T} (hF : B.F.Good) (h : Bridge
   exact Formalism.UG.P.csGlob_lattice _ (Module.Finite.iff_fg.2 hF.sdS.1.fg) hspan _
 
 end GlobalTheory.SmallSpan
-
-end

@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingletonCons
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup Coalgebra Bialgebra TensorProduct
 
 namespace GlobalTheory.PDiv.FrobKerOrder

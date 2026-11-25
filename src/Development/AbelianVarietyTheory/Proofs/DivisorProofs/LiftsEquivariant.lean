@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 
 namespace GlobalTheory.AdjBlock
@@ -31,5 +29,3 @@ variable {R} {F : Face D A}
 end Record
 
 end GlobalTheory.AdjBlock
-
-end

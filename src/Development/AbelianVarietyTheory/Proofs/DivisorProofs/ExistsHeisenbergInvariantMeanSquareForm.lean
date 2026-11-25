@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.WeilParts
 open scoped TensorProduct Topology
 
@@ -91,5 +89,3 @@ theorem exists_invariant_form : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S
   rw [map_mul, mul_mul_mul_comm, h0, one_mul]
 
 end GlobalTheory.ThetaMeanSquareForm
-
-end

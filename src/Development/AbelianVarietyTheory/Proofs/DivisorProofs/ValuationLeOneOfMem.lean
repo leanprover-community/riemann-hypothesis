@@ -52,8 +52,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links
 open IsDedekindDomain NumberField Matrix
 open scoped TensorProduct nonZeroDivisors Pointwise
@@ -396,5 +394,3 @@ theorem locGrid_isGood {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ 
   ⟨fun _ hw => isGood_of_notMem hL W hw (badInt_notMem hL hde hc hw), under_injOn hL G t⟩
 
 end GlobalTheory.FunObj.Good
-
-end

@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWei
 
 @[expose] public section
 
-noncomputable section
-
 open Filter Topology MeasureTheory GlobalTheory.HSAmp
 open scoped ComplexOrder Matrix
 

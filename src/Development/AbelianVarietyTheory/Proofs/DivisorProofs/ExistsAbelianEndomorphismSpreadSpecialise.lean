@@ -10,8 +10,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-noncomputable section
-
 namespace GlobalTheory.Spread
 
 theorem eta_pullback_fst {S S' : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G] (j : S' ⟶ S)

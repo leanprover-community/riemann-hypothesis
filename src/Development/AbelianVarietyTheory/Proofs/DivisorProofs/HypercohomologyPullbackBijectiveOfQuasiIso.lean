@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleSheafCo
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
-noncomputable section
 namespace GlobalTheory.EtC.KInjPull
 
 variable {C : Type*} [Category C] [Abelian C]

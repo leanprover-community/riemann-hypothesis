@@ -16,8 +16,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open scoped TensorProduct Matrix
 open scoped GlobalTheory.VacAny
 
-noncomputable section
-
 namespace GlobalTheory.DblVacLine
 
 theorem norm_psiAt_le {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (hψ : Continuous ψ) (v : Pl (F := F))

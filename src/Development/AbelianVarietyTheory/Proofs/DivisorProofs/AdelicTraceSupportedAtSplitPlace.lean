@@ -19,8 +19,6 @@ open ValuativeRel
 open scoped GlobalTheory.VacAny
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
-
 namespace GlobalTheory.SplitAdeleTrace
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

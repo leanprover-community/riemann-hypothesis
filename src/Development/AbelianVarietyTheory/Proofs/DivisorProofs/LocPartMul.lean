@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockParOpp
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.OrbDesc
 
 variable {H : Type} [Group H]

@@ -9,8 +9,6 @@ import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry KaehlerDifferential GlobalTheory.CatCoh GlobalTheory.CechDR
 
 namespace GlobalTheory.CatCoh.Desc.Basis

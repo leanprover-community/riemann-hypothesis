@@ -46,7 +46,6 @@ open GlobalTheory.Doubling (absE)
 open Formalism.UG (cT)
 open Matrix
 
-noncomputable section
 namespace GlobalTheory.ResidueEisenstein.FrameLeviFacts
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -104,4 +103,3 @@ theorem frame_levi_facts : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
   exact ⟨B, e, hB⟩
 
 end GlobalTheory.ResidueEisenstein
-end

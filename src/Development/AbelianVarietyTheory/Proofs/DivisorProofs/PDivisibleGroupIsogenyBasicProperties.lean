@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigExtMapRelFrobCom
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Dieu
 
 namespace GlobalTheory.Dieu

@@ -13,7 +13,6 @@ open scoped Matrix NNReal TensorProduct
 open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.WeilM GlobalTheory.LocIntw
 open GlobalTheory GlobalTheory.LFun GlobalTheory.ThK GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.SWLit
 
-noncomputable section
 namespace GlobalTheory.AwayFix.Chart
 
 open GlobalTheory.AwayFix

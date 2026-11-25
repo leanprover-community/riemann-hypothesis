@@ -20,8 +20,6 @@ open NumberField Matrix Complex MeasureTheory IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum
 open scoped TensorProduct Classical ComplexConjugate ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.FockVecInj
 
 open GlobalTheory.FockCompare GlobalTheory.OrientedHeis
@@ -285,5 +283,3 @@ theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
     pureTensorO_injective_of_on ψ θ V W hψ hθ sV BV s BW pV pW hBV hBW f hf hvac hf0
 
 end GlobalTheory.FockVecInj
-
-end

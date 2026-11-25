@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam
 open scoped Classical MatrixGroups nonZeroDivisors
 

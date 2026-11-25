@@ -5,8 +5,6 @@ public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountUpSt
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField ReciprocityTheory.GeometryOfNumbersTheory GlobalTheory.ChowHt GlobalTheory.HermTools
 
 namespace GlobalTheory.HilbertSamuel

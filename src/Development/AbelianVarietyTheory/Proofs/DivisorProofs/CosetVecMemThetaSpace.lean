@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField Polynomial
 open scoped Pointwise nonZeroDivisors
 open Formalism.L2.Host (HChar embTau)

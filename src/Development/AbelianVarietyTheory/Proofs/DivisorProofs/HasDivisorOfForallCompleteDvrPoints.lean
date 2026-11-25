@@ -17,8 +17,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory.UPoinc GlobalTheory.Ex.OneGen
 open scoped CategoryTheory.Obj
 
-noncomputable section
-
 namespace GlobalTheory.ValCmp
 
 variable {k Ω : Type} [CommRing k] [Field Ω] [Algebra k Ω]

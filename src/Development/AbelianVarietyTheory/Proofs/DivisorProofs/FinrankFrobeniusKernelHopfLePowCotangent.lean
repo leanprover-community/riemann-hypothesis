@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingletonCons
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
 namespace GlobalTheory.PDiv.FrobKerOrder

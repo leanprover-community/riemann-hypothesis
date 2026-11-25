@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HopfOrderPullbackAl
 
 @[expose] public section
 
-noncomputable section
-
 open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum GlobalTheory.LKTrip GlobalTheory.LKMid
 open scoped TensorProduct Classical RestrictedProduct
 

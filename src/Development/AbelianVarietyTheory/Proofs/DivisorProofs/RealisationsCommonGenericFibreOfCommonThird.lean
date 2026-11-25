@@ -13,8 +13,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
 
-noncomputable section
-
 namespace GlobalTheory.Poinc.SameComb
 
 theorem sp_endo_eq_id {o K : Type} [CommRing o] [Field K] [Algebra o K] (R : Subalgebra o K)

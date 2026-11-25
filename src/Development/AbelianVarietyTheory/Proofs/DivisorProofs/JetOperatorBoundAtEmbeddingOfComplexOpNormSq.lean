@@ -17,8 +17,6 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TopPlaceLogTheta
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.JetBase
 
 open MvPolynomial GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry
@@ -114,5 +112,3 @@ theorem GlobalTheory.coefOpLe_jetOp_of_opNormSqLe : ∀ (K : Type) [Field K] [Ch
   refine le_of_eq_of_le (GlobalTheory.JetBase.sqAt_eq σ lam' _ _ ?_) h
   rw [GlobalTheory.JetPoint.coe_jetOp _ _ _ _ _ (hC _ _ (Subtype.prop _)), GlobalTheory.JetPoint.coe_jetOp _ _ _ _ _ (hK _ _ x.2)]
   exact (GlobalTheory.JetBase.map_jetMap_eq σ lam nu lam' hw J J' hJ _ x.2).symm
-
-end

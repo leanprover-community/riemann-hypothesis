@@ -10,8 +10,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.ThetaDerivQuasi
 
 open Formalism.IndefR.DatumF
@@ -29,5 +27,3 @@ theorem symplOHF_add_right' (σ : E →ₐ[F] E) {nS nT : ℕ} (JS : Matrix (Fin
   simp only [symplOHF, symplOF, hOF, Matrix.add_apply, mul_add, add_mul, Finset.sum_add_distrib, map_add (f := _)]
 
 end GlobalTheory.ThetaDerivQuasi
-
-end

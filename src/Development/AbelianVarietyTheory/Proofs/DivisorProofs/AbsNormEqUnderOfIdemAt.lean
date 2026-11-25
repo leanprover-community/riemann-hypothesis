@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Pointwise
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
 open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
@@ -98,5 +96,3 @@ theorem absNorm_condE : ∀ {D : D7} {T : Type} {L : LevCh D T} (P : Places L), 
   rw [map_pow, absNorm_w P hv]
 
 end GlobalTheory.FunObj.NormLevel
-
-end

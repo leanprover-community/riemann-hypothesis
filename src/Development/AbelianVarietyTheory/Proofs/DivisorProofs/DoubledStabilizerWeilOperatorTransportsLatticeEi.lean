@@ -11,8 +11,6 @@ import Mathlib.Tactic.Linter.Style
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped TensorProduct Matrix
 
-noncomputable section
-
 namespace GlobalTheory.DblVacTransport
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -147,5 +145,3 @@ theorem transport : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
   rw [← h1, GlobalTheory.VacTransport.tens_smul]
 
 end GlobalTheory.DblVacTransport
-
-end

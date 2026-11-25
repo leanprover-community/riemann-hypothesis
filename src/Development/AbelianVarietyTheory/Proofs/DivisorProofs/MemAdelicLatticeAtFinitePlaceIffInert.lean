@@ -9,7 +9,6 @@ import Mathlib.Tactic.Linter.Style
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped TensorProduct Matrix
 
-noncomputable section
 namespace GlobalTheory.InertSphLat
 
 open GlobalTheory.InertLocField InertChart

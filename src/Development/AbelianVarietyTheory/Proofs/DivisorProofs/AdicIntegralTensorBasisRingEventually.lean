@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TwOrbMEqTwOrbUOfNor
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount IsDedekindDomain GlobalTheory.AdicSpan
 open scoped TensorProduct Classical
 
-noncomputable section
-
 namespace GlobalTheory.AdicSpan
 
 theorem isIntB_one_mul_eventually : ∀ (A : Type) [Ring A] [Algebra ℚ A] [FiniteDimensional ℚ A] (κ : Type)

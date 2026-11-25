@@ -47,8 +47,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Filter GlobalTheory.BCT
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.TwOrbGood
 
 theorem avg_const {H : Type} [Group H] (c : ℂ) : GlobalTheory.BCT.avg (fun _ : H => c) = c := by

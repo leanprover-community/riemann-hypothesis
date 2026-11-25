@@ -13,8 +13,6 @@ public import Mathlib.RingTheory.DedekindDomain.Factorization
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount IsDedekindDomain GlobalTheory.AdicSpan
 open scoped TensorProduct Classical
 
-noncomputable section
-
 namespace GlobalTheory.AdicSpan
 
 theorem rat_mem_adicCompletionIntegers_eventually (x : ℚ) :

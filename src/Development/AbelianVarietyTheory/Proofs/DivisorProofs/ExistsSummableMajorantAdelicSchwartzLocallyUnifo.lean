@@ -51,8 +51,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open scoped Classical
 

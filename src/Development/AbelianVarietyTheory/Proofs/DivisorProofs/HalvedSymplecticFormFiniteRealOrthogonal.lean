@@ -14,7 +14,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.RealWeil GlobalTheory.RealWeilF
 open Classical
 
-noncomputable section
 namespace GlobalTheory.WeilDatumF
 
 theorem fst_symplOF_eq_zero {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {nS nT : ℕ}

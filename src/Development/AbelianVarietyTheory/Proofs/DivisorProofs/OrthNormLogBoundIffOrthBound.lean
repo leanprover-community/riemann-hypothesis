@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ScaledCoi
 open scoped ComplexOrder Matrix
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col
 
-noncomputable section
-
 namespace GlobalTheory.BrNormCompare
 
 open GlobalTheory.IndefiniteRowSideFullHecke

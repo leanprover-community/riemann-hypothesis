@@ -15,8 +15,6 @@ open scoped ENNReal NNReal
 
 open scoped Matrix.Norms.Elementwise
 
-noncomputable section
-
 namespace GlobalTheory.SUVol
 
 /-- The exponential chart compares the two Haar normalizations on one neighborhood. -/

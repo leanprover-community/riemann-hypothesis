@@ -9,8 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HSCore GlobalTheory.HSChoice
 open Polynomial (nthRootsFinset)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)

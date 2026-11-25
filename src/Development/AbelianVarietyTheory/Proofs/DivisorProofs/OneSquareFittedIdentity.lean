@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmal
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.BigTop GlobalTheory.BigTop.Fun GlobalTheory.SqTop NumberField
 open Formalism.L2.Indef.Tree
 
@@ -21,4 +19,3 @@ theorem big_std : GlobalTheory.RowClaim.Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => 
     rw [hi.weil.ψ]; exact s.std⟩⟩
 
 end GlobalTheory.BigTop.Fun.OneSqTie
-

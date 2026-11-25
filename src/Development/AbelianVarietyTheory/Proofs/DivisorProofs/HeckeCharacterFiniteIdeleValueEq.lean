@@ -24,8 +24,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 
 open GlobalTheory.StdRead
 
-noncomputable section
-
 open scoped TensorProduct
 
 namespace GlobalTheory.FinIdlRead

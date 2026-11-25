@@ -11,8 +11,6 @@ open IsDedekindDomain NumberField MeasureTheory
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix Formalism.IndefR.Datum
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-noncomputable section
-
 namespace GlobalTheory.ThetaRatInv
 
 theorem invOf_two_eq' {F : Type} [Field F] [NumberField F] [Invertible (2 : AF F)] :
@@ -61,5 +59,3 @@ theorem norm_thetaSum_schr_ratPair_add : ∀ (F : Type) [Field F] [NumberField F
   rw [thetaSum_schr_rat_add ψ hψ.2.2.1 Φ a b w, norm_mul, hψ.2.1, one_mul]
 
 end GlobalTheory.ThetaRatInv
-
-end

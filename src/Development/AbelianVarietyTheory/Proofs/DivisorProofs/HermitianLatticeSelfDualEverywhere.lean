@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.AdelicU
 
-noncomputable section
-
 namespace GlobalTheory.HermSelfDualLoc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -49,5 +47,3 @@ theorem isSelfDualAt_transpose : ∀ (F E : Type) [Field F] [NumberField F] [Fie
   simp only [hE_transpose, isIntegral_iff_mem_range]
 
 end GlobalTheory.HermSelfDualLoc
-
-end

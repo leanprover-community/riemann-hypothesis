@@ -16,8 +16,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 namespace GlobalTheory.FunObj.SqNum.NuCond
 
 open GlobalTheory.Mem.Col2.SplitChar GlobalTheory.Mem.Chr
@@ -128,5 +126,3 @@ theorem GlobalTheory.FunObj.SqNum.heckeU_nuInv_eq_one_of_cong : ∀ {D : D7} {T 
   refine (hlev v).inv x hxu ?_
   rw [hx, vl_sub_one]
   exact hval v
-
-end

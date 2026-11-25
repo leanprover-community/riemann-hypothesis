@@ -13,8 +13,6 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix
 open scoped InnerProductSpace
 
@@ -233,5 +231,3 @@ theorem polyCoefIrrep_hasDerivedAction :
     rfl
 
 end GlobalTheory.PsCo.PcEF
-
-end

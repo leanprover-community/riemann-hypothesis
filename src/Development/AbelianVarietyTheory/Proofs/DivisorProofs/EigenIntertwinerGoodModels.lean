@@ -17,7 +17,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open GlobalTheory.Doubling (absE)
 
-noncomputable section
 namespace GlobalTheory.EvAdm
 open scoped Classical
 
@@ -31,5 +30,3 @@ theorem exists_sum_finprod {g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ} (hg
   PositivityTheory.ThKF0.Span.exists_sum_finprod hg
 
 end GlobalTheory.EvAdm
-
-end

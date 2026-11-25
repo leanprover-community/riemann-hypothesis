@@ -20,8 +20,6 @@ open Classical
 
 
 
-noncomputable section
-
 namespace GlobalTheory.HalfLatInt
 
 variable {D : D7}

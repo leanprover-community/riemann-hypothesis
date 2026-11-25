@@ -55,8 +55,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix ValuativeRel
 open scoped NNReal Topology Kronecker
 
@@ -79,5 +77,3 @@ theorem invariant_comp_mulVec [Fintype κ] [DecidableEq κ] (m : ((κ → F) →
 variable [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ] [Invertible (2 : F)]
 
 end GlobalTheory.WeilM
-
-end

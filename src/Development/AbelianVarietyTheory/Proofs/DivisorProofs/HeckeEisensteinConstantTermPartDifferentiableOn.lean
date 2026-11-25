@@ -11,8 +11,6 @@ open NumberField Complex
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
 
-noncomputable section
-
 namespace GlobalTheory.HeckeTwo.APart
 
 variable {F : Type} [Field F] [NumberField F]

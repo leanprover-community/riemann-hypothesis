@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HasBoundedPo
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
 open GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.HermTools GlobalTheory.ChowHt GlobalTheory.Vanishing

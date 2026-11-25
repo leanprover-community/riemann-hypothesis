@@ -11,8 +11,6 @@ public import Mathlib.RingTheory.Flat.TorsionFree
 
 open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 
-noncomputable section
-
 namespace GlobalTheory.PD
 
 theorem smul_mem_omB_regForms {k K : Type} [Field k] [Field K] [Algebra k K] (B : Subalgebra k K) (q : ℕ)

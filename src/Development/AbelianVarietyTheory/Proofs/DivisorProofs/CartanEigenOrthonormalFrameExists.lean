@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBasisA
 
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
-
 namespace GlobalTheory.RealLift.HermitianFrameExistence
 
 open Matrix

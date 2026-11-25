@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GaloisCoverDescentAn
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT
 
-noncomputable section
 namespace GlobalTheory.UPel.HT.Hecke
 
 theorem epi_of_isPullback_galois {X Y P Q : Scheme.{0}} {Ga : Type} [Group Ga] {ρ : Ga → (X ⟶ X)} {π : X ⟶ Y}

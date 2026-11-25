@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePa
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount GlobalTheory.LKCx
 open scoped TensorProduct Classical
 
-noncomputable section
-
 namespace GlobalTheory.LKCx
 
 theorem herm_laws : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ), sh G β = β →

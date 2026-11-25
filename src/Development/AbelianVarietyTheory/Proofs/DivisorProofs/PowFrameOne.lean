@@ -20,8 +20,6 @@ open GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.ThetaDvr.Scale
 
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.TorusExt GlobalTheory.ZH.TestVal
@@ -146,4 +144,3 @@ theorem exists_scale : Laws → Laws2 → ∀ (o Ω : Type) [CommRing o] [Field 
     exact b
 
 end GlobalTheory.ThetaDvr.Scale
-end

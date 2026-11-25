@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct
 
@@ -50,5 +48,3 @@ theorem exists_loc (V : HSp D) (f : Formalism.L2.Theta.AE D) : ∃ L : Subgroup 
     fun _ => Iff.rfl⟩
 
 end GlobalTheory.HeckeKeep
-
-end

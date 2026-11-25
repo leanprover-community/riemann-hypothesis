@@ -10,8 +10,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.Mum
 
-noncomputable section
-
 namespace GlobalTheory.Mum.TermLocus
 
 theorem nonzeroLocus_eq : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (Y : Ext D) (k : ℕ) (α : D.X) (b : D.SecB k α)

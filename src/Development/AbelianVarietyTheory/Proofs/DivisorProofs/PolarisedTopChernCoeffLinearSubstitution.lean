@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.EndValuedFor
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Matrix
 
 namespace GlobalTheory.GoodTop

@@ -14,7 +14,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace GlobalTheory.EtC.ExtQis
@@ -64,5 +63,3 @@ theorem quasiIso_extAug : ∀ (Q q : ℕ) [NeZero Q] (hq : q ∣ Q) (i : ℤ),
   exact quasiIso_comp (hφ := h2) (hφ' := h1) _ _
 
 end GlobalTheory.EtC.ExtQis
-
-end

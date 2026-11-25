@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CondEIsCopri
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Pointwise
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
 open GlobalTheory.ChiGrid GlobalTheory.FunObj.SqNum

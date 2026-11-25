@@ -15,8 +15,6 @@ open GlobalTheory.UPoinc
 open GlobalTheory
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.UPoinc.UTrait
 
 theorem finrank_le_min : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H)

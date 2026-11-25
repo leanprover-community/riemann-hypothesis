@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-noncomputable section
-
 namespace GlobalTheory
 
 namespace PDivGroup

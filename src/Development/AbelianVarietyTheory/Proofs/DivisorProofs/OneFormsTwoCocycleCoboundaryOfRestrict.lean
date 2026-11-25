@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocalizati
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential GlobalTheory.CatCoh GlobalTheory.CechDR
 
-noncomputable section
-
 namespace GlobalTheory.CechDR.FormExt
 
 attribute [local instance] GlobalTheory.Cris.opModule GlobalTheory.Cris.isCentralScalar_kaehler GlobalTheory.Cris.isScalarTower_kaehler

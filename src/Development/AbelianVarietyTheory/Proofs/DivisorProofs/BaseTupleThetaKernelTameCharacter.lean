@@ -15,8 +15,6 @@ open GlobalTheory.FormTies GlobalTheory.OnTies GlobalTheory.TraceClassRank
 open scoped TensorProduct Matrix
 open GlobalTheory.OnCmp GlobalTheory.BigOn GlobalTheory.RealIndexBound
 
-noncomputable section
-
 namespace GlobalTheory.OnBaseKer
 
 
@@ -86,5 +84,3 @@ theorem kerDat_of_isBaseKernel : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (
       norm_num at h1
 
 end GlobalTheory.OnBaseKer
-
-end

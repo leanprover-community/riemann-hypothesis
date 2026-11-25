@@ -17,8 +17,6 @@ open GlobalTheory GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.KeyEven
 open scoped CategoryTheory.Obj
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.GlueRat
 
 variable {S : Scheme.{0}} [IsIntegral S]

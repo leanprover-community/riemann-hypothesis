@@ -12,8 +12,6 @@ public import Mathlib.Analysis.Calculus.MeanValue
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace MonoidalCategory CartesianMonoidalCategory MonObj Filter Topology
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 

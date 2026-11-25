@@ -17,8 +17,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ha
 
 open scoped GlobalTheory.VacAny
 
-noncomputable section
-
 namespace GlobalTheory.SchrSBFin
 
 theorem isLocallyConstant_addChar {K : Type} [AddCommGroup K] [TopologicalSpace K] [NonarchimedeanAddGroup K]

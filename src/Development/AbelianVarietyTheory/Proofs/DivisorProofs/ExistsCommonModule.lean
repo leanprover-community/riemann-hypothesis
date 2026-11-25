@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Finit
 
 @[expose] public section
 
-noncomputable section
-
 open IsLocalRing GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.Poinc
 
 namespace GlobalTheory.Poinc

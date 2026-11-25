@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrowthOfTame
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory Filter Topology
 open scoped ContDiff
 
@@ -181,5 +179,3 @@ theorem lieD_smoothing_eq_dens : ∀ (E : Type) [Field E] [NumberField E] [_root
   fun _ _ _ _ _ ν _ _ hα _ hψ X g => lieD_smoothing ν hα hψ X g
 
 end GlobalTheory.AutGrowth
-
-end

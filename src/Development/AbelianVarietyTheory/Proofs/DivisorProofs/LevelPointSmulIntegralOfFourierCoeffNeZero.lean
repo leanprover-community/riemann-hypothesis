@@ -20,8 +20,6 @@ open scoped TensorProduct Classical ComplexConjugate
 
 namespace GlobalTheory.HatInt
 
-noncomputable section
-
 theorem omegaK_congr {D : D7} {a b : ℕ} (Pg : Finset (Formalism.L2.DIV.Pl D.host.E))
     (y y' : ∀ PP : Formalism.L2.DIV.Pl D.host.E, Matrix (Fin b) (Fin a) (Formalism.L2.DIV.kP PP))
     (h : ∀ PP ∈ Pg, y PP = y' PP) : omegaK Pg y = omegaK Pg y' := by
@@ -164,7 +162,5 @@ theorem smul_eq_of_hatC_ne_zero : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
     have : Dw.EF (s • (cSep l₂ • levRep (q b))) y = -Dw.EF y (s • (cSep l₂ • levRep (q b))) := by linarith
     rw [this]; exact h3.neg_right)
   exact ⟨z, by rw [hz, natCast_zsmul]⟩
-
-end
 
 end GlobalTheory.HatInt

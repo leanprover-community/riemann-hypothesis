@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVecEq
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Pointwise
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
 open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
@@ -70,5 +68,3 @@ theorem mem_congLev_iff : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) (N : ℕ) 
   | inv x _ hx => exact ⟨inv_mem hx.1, congOne_inv hx.1 hx.2⟩
 
 end GlobalTheory.FunObj.StdDatum
-
-end

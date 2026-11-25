@@ -11,8 +11,6 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.LocRatPt
 
 open scoped ComplexOrder Matrix.Norms.L2Operator

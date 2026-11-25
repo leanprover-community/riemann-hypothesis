@@ -53,8 +53,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open MvPolynomial
 
-noncomputable section
-
 namespace GlobalTheory.Chow
 
 theorem exists_mul_pow_mem_incidenceIdeal_of_generic {σ β K F : Type*} [Fintype σ] [CommRing K]

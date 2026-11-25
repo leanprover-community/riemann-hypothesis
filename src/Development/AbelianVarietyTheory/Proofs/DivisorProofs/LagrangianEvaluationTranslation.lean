@@ -13,8 +13,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 open GlobalTheory.ThK.EvAt0
 open GlobalTheory.ThK.EvAt0.PolD
 
-noncomputable section
-
 namespace GlobalTheory.ThK.EvAt0.ZPartArc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

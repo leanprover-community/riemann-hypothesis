@@ -5,8 +5,6 @@ public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDeri
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.L2DbarEstimates (V cHess leviV)

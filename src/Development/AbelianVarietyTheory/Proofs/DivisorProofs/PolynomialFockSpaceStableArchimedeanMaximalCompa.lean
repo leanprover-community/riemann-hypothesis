@@ -13,8 +13,6 @@ open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 
-noncomputable section
-
 namespace GlobalTheory.KInfPol
 
 open GlobalTheory.RealLift
@@ -117,5 +115,3 @@ theorem pol_stable_kInf : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
   exact hle hf
 
 end GlobalTheory.KInfPol
-
-end

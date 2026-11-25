@@ -12,8 +12,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open GlobalTheory.Doubling (absE)
 
-noncomputable section
-
 namespace GlobalTheory.EvNonzero
 
 theorem pure_ne_zero {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (f : SInf F κ) (hf : f ≠ 0)
@@ -82,5 +80,3 @@ theorem exists_mem_schA_ev_ne_zero : ∀ (F E : Type) [Field F] [NumberField F] 
   exact pure_ne_zero (ei f) hf M₁.vac (fun v => (hM₁.vac v).2.1) hM₁.std
 
 end GlobalTheory.EvNonzero
-
-end

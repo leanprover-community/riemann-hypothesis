@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.DivPowerComp
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.CxCoh GlobalTheory.PDA GlobalTheory.PDForm GlobalTheory.SmoothLift
 
 namespace GlobalTheory.PDForm

@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemW
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory Matrix
 
 namespace GlobalTheory.GLProj

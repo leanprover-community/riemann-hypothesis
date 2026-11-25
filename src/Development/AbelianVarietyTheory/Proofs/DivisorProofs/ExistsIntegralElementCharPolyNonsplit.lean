@@ -48,7 +48,6 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-noncomputable section
 namespace GlobalTheory.ExInertUnit
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}

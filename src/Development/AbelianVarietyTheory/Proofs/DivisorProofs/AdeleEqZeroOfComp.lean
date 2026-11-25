@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySub
 
 @[expose] public section
 
-noncomputable section
-
 open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.Doubling

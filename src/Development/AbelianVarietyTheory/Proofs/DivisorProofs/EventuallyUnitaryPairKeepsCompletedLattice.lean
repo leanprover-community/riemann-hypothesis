@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.WeilParts
 open scoped TensorProduct Topology
 
@@ -110,5 +108,3 @@ theorem eventually_actO : ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
   exact AddSubgroup.subset_closure ⟨α, hα, 1, rfl⟩
 
 end GlobalTheory.LatNhds
-
-end

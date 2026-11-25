@@ -13,8 +13,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
-noncomputable section
-
 namespace GlobalTheory.QLogDiff
 
 theorem restr_inL_inR {R : Type} [CommRing R] {d : ℕ} (f : MvPowerSeries (Fin d) R) (i : Fin d) :

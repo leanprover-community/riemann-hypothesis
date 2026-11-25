@@ -44,8 +44,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Filter Topology
 
 namespace GlobalTheory.CMVal.Fibre

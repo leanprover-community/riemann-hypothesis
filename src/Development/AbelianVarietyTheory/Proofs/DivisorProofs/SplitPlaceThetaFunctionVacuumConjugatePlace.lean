@@ -47,8 +47,6 @@ open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHeck
 open Formalism.IndefR.DatumF
 open MeasureTheory
 
-noncomputable section
-
 namespace GlobalTheory.SplitVacF
 
 open GlobalTheory.SplitInvFormF
@@ -129,5 +127,3 @@ theorem heisOF_add_half {e : AEF F E} (he : IsSplitIdemF σ e) {x y : WOF F E nS
   rw [heisOF_heisOF, symplOHF_half he hx hy, AddChar.map_zero_eq_one, one_smul]
 
 end GlobalTheory.SplitVacF
-
-end

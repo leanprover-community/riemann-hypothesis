@@ -5,7 +5,6 @@ public import Mathlib.Algebra.Homology.ShortComplex.Ab
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex TensorProduct GlobalTheory.EtC
 
 namespace GlobalTheory.EtC.WExactProd
@@ -71,5 +70,3 @@ theorem wexact_of_prod (T : Type 1) [Category.{0} T] (U : T) (X : CosimplicialOb
     exact hπ (X.obj (SimplexCategory.mk k))
 
 end GlobalTheory.EtC.WExactProd
-
-end

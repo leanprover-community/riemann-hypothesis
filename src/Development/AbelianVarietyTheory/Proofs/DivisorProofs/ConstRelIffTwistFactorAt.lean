@@ -46,8 +46,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.TwistFactorCompare
 
 open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain
@@ -66,5 +64,3 @@ theorem eq_one_of_chrEq_one {D : D7} {χ : (AE D)ˣ →* Circle} (h : ChrEq χ 1
     (Finset.prod_eq_one fun P _ => rfl))
 
 end GlobalTheory.TwistFactorCompare
-
-end

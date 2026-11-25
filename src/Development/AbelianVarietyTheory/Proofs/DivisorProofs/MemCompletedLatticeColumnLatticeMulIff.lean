@@ -19,8 +19,6 @@ open GlobalTheory.SignedHC GlobalTheory.ChiGrid Formalism.L2.DIV Formalism.L2.Ke
 
 
 
-noncomputable section
-
 namespace GlobalTheory.LatMulAd
 
 variable {D : D7}

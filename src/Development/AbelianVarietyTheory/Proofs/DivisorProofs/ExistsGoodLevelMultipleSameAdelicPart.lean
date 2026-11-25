@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLev
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped Pointwise
 

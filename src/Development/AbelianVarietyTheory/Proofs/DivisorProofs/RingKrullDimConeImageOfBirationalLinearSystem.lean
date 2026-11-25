@@ -14,8 +14,6 @@ open NumberField MvPolynomial GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adel
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 
-noncomputable section
-
 namespace GlobalTheory.Adelic.ConeDim
 
 variable {k Ω : Type} [Field k] [Field Ω] [Algebra k Ω] {N : ℕ}

@@ -10,8 +10,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDede
 open scoped Matrix
 open scoped GlobalTheory.VacAny
 
-noncomputable section
-
 namespace GlobalTheory.SwapAtPlace
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

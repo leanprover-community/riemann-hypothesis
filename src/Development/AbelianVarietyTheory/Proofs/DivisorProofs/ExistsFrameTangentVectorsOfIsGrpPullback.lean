@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetra
 @[expose] public section
 
 
-noncomputable section
-
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open AlgebraicGeometry CategoryTheory GlobalTheory.DeRham GlobalTheory.Cris
 open MonoidalCategory CartesianMonoidalCategory MonObj

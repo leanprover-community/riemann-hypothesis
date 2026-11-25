@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolEqMultiDiff
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.FibreProj
 
 namespace GlobalTheory.MultPull
@@ -78,4 +76,3 @@ theorem ord_fnMap {X Y : Scheme.{0}} [IsIntegral X] [IsIntegral Y] [IsLocallyNoe
   omega
 
 end GlobalTheory.MultPull
-

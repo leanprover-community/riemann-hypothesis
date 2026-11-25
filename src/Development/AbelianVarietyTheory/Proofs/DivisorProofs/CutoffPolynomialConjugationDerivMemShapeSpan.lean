@@ -17,8 +17,6 @@ open MvPolynomial
 open scoped ContDiff
 open GlobalTheory.PsCo.Pc1
 
-noncomputable section
-
 namespace GlobalTheory.PsCo.Pc1.B
 
 theorem sb_derivcut (H : ℝ → ℝ) (hH : IsCutFn H) : IsCutFn (deriv H) := by

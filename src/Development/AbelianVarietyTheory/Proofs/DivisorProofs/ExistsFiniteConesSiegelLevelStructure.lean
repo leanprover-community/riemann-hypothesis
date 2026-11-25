@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 
 open IsLocalRing GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.Poinc
 
-noncomputable section
-
 namespace GlobalTheory.Poinc.Cells
 
 theorem finite_families : ∀ (F : Type) (S : Set F), S.Finite →

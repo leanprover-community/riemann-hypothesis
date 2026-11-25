@@ -13,8 +13,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open Formalism.IndefR.DatumF MeasureTheory GlobalTheory.FinWeil
 
-noncomputable section
-
 namespace GlobalTheory.FinLatF
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -67,5 +65,3 @@ theorem rhoFF_real {σ : E →ₐ[F] E} {JS : Matrix (Fin nS) (Fin nS) E} {JT : 
   rw [hL, hR]
 
 end GlobalTheory.FinLatF
-
-end

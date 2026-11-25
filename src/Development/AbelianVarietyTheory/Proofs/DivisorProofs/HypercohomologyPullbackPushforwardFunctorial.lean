@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleHyperco
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
-noncomputable section
 namespace GlobalTheory.EtC.ZcFun
 
 variable {R : Type} [CommRing R]

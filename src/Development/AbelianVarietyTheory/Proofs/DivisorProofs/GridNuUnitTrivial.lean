@@ -14,8 +14,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 namespace GlobalTheory.BotPairSmall.CondNu
 variable {D : D7}
 
@@ -122,5 +120,3 @@ theorem nuH_inv_eq_one_of_cong : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : C
   rw [hμ, hχ]
   simp
 end GlobalTheory.BotPairSmall.CondNu
-
-end

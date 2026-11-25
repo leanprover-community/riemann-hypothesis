@@ -15,8 +15,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 open GlobalTheory.ThK.EvAt0
 open GlobalTheory.ThK.EvAt0.PolD
 
-noncomputable section
-
 open scoped Classical
 
 namespace GlobalTheory.ThK.EvAt0.PolEv

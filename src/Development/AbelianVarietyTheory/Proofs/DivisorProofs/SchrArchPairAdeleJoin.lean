@@ -17,7 +17,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 
 open scoped Classical
 
-noncomputable section
 open MeasureTheory
 namespace GlobalTheory.WeilL2Words
 variable (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ]

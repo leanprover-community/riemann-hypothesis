@@ -20,8 +20,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.L2.Pj Formalism.IndefR.FWT Formalism.IndefR GlobalTheory.HolDict
 open scoped TensorProduct InnerProductSpace ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.RatCount
 
 theorem exists_nat_den {E : Type} [Field E] [NumberField E] {κ : Type} [Finite κ] (A : κ → E) :
@@ -269,5 +267,3 @@ theorem ncard_rational_le : ∀ (D : D7) (θ : InfFam D) (V : HSp D), IsInfFam �
   exact_mod_cast (Set.ncard_le_ncard hsub (hT1.image _)).trans (Set.ncard_image_le hT1)
 
 end GlobalTheory.RatCount
-
-end

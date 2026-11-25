@@ -18,8 +18,6 @@ open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto
 open scoped CategoryTheory.Obj
 open GlobalTheory.MBLow.Cl Matrix
 
-noncomputable section
-
 namespace GlobalTheory.MBLow.Cl.SymFrame
 open ReciprocityTheory.ChartRestriction.G.TB.ValAt ReciprocityTheory.ChartRestriction.G.PullbackSections
 
@@ -171,5 +169,3 @@ theorem sym_of_geo : AllC fun {R} _ _ {D} _ {N} ν => ∀ (g : ℕ) (d : AB N.to
   simpa using hc
 
 end GlobalTheory.MBLow.Cl
-
-end

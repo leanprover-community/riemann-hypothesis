@@ -13,7 +13,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockDa
 
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
 
-noncomputable section
 namespace GlobalTheory.IrrTensor
 
 section General

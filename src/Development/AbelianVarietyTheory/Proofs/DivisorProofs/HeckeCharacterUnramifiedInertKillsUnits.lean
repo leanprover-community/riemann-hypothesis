@@ -20,8 +20,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 open GlobalTheory.Mem.Col2.SplitChar
 
 namespace GlobalTheory.UnrKill

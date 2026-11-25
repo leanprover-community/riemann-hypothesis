@@ -17,8 +17,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.MBLow GlobalTheory.SecJet
 open scoped CategoryTheory.Obj
 
-noncomputable section
-
 namespace GlobalTheory.MBLow.AbKey
 
 theorem exists_unit_sec {X : Scheme.{0}} (L : LB X) (F : X ⟶ X) (hF : F = 𝟙 X) (t : LB.Gen (L.pull F)) (ht : t.IsGen) :
@@ -116,5 +114,3 @@ theorem exists_bKey : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V] [I
   · exact ⟨1, ⟨fun e => (hg e).elim, fun _ _ th hth _ _ hf _ => (hex ⟨th, hth, hf⟩).elim⟩, norm_one⟩
 
 end GlobalTheory.MBLow.AbKey
-
-end

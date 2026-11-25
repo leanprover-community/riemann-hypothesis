@@ -61,8 +61,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaPair
 
 open NumberField IsDedekindDomain Polynomial GlobalTheory.HenQ
 
-noncomputable section
-
 namespace GlobalTheory.HenQ.Regroup
 
 open IsDedekindDomain NumberField in

@@ -45,8 +45,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.LevelEquivCompare
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD

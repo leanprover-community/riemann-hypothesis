@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GaloisCoverDescentAn
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT
 
-noncomputable section
-
 namespace GlobalTheory.HomDescent
 
 variable {S : Scheme.{0}}

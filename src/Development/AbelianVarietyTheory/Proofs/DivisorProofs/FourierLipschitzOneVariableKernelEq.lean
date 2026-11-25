@@ -57,8 +57,6 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TraceDualDiffere
 open NumberField nonZeroDivisors MeasureTheory GlobalTheory.LipschitzTR GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent
 open scoped FourierTransform RealInnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.LipschitzTR
 
 open Set Filter Topology

@@ -17,8 +17,6 @@ open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier G
 open MeasureTheory GlobalTheory.Points
 open scoped ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.ArchPull
 
 open Set

@@ -17,8 +17,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ha
 
 open scoped GlobalTheory.VacAny
 
-noncomputable section
-
 namespace GlobalTheory.VacBridge
 
 theorem rho_acts_locCo : ∀ {F : Type} [Field F] [NumberField F] {W : Type} [AddCommGroup W] [Module (AF F) W]

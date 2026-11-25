@@ -47,8 +47,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSplitChartSpli
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SmGL GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
   GlobalTheory.UAut GlobalTheory.SiegelSet GlobalTheory.ThK.SquareIntegrability GlobalTheory.LFun.SplitTie
 open Formalism.UG (cT)
@@ -132,5 +130,3 @@ end Adele
 
 
 end GlobalTheory.BlockForms.LeviLoc
-
-end

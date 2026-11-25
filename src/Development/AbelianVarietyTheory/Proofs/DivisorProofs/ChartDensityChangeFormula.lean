@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.ChartMeasApp
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Set Topology
 open ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y
 open scoped ENNReal

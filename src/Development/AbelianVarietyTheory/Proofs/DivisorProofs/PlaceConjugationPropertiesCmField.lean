@@ -14,8 +14,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.ConjAtPlace
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

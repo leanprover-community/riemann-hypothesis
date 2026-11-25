@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Eventuall
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ThK.ConeEuler
 
 open scoped TensorProduct NNReal Matrix ENNReal
@@ -47,5 +45,3 @@ theorem eventually_unitAt_mem_unitsAt (F E : Type) [Field F] [NumberField F] [Fi
   · rwa [← map_inv, compFin_unitAt_self]
 
 end GlobalTheory.ThK.ConeEuler
-
-end

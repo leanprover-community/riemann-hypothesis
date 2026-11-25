@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 open TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.KerTensor
 
 theorem exists_factor {O σ A M : Type} [CommRing O] [CommRing A] [Algebra O A] [AddCommGroup M] [Module O M]

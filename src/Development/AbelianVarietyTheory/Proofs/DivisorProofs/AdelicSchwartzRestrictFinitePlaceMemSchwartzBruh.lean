@@ -19,8 +19,6 @@ open ValuativeRel
 open scoped GlobalTheory.VacAny
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
-
 namespace GlobalTheory.LatVac
 
 theorem restrict_liftV_mem_SB : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)),
@@ -50,5 +48,3 @@ theorem restrict_liftV_mem_SB : ∀ {F : Type} [Field F] [NumberField F] {κ : T
   | smul a x _ hx => exact Submodule.smul_mem _ a hx
 
 end GlobalTheory.LatVac
-
-end

@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TraceLatt
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.BigTop GlobalTheory.BigOn
@@ -94,5 +92,3 @@ theorem conjPl_mem_twPl (hC : (R2 p).Char (F2 p)) {w : HeightOneSpectrum (𝓞 D
 end Point
 
 end GlobalTheory.BigOn
-
-end

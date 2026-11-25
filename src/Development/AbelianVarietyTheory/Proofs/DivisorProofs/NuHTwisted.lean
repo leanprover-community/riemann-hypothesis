@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmal
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.BigTop GlobalTheory.BigTop.Fun GlobalTheory.SqTop NumberField IsDedekindDomain
 open GlobalTheory.FunObj.SqNum (nuH halfRank IsTor)
 
-noncomputable section
-
 namespace GlobalTheory.ThmAUpper
 
 section

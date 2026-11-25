@@ -17,8 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUni
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.RatGen
 
 open scoped TensorProduct Matrix ComplexOrder
@@ -273,5 +271,3 @@ theorem rational_points_generate : ∀ (D : D7) (V : HSp D) (c : CoefA V), V.IsP
     exact h1 (hU ⟨γ, hγ⟩ ⟨x, hx, rfl⟩)
 
 end GlobalTheory.RatGen
-
-end

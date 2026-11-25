@@ -8,7 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Matrix MeasureTheory GlobalTheory.SplitFlip GlobalTheory.SplitWeil ValuativeRel
 open scoped Pointwise
 
-noncomputable section
 namespace GlobalTheory.SplitFlip.FourierDepth
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

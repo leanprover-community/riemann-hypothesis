@@ -6,8 +6,6 @@ import Mathlib.Topology.Connected.Separation
 
 @[expose] public section
 
-noncomputable section
-
 open MvPowerSeries
 
 namespace GlobalTheory.PSChain

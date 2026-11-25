@@ -12,8 +12,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffCo
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.EulerTwRestr
 
 open GlobalTheory.EulerTw
@@ -79,4 +77,3 @@ theorem mem_orb_iff (u w : Pl E) :
     exact (GlobalTheory.SplitPts.conjSrc_conjSrc_cm w).symm
 
 end GlobalTheory.EulerTwRestr
-

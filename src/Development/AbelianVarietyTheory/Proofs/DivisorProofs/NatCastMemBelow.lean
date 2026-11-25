@@ -14,8 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BoundedDe
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.BasicNotions GlobalTheory.CMVal GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.ChiGrid
 
 namespace GlobalTheory.SqTop.FieldDatPf
@@ -174,5 +172,3 @@ theorem fieldDat : FieldDat := by
     GlobalTheory.ToricDenomBridge.isIntLattice_of D.host.hyp.2.1 (by have := D.host.hyp.2.2.2.1; omega) rfl rfl⟩
 
 end GlobalTheory.SqTop
-
-end

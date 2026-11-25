@@ -15,8 +15,6 @@ open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHeck
 open Formalism.IndefR.DatumF
 open MeasureTheory
 
-noncomputable section
-
 namespace GlobalTheory.ThetaSchurUnitF
 
 

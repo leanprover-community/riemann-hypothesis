@@ -8,8 +8,6 @@ import GroundTheory.GlobalFields.KummerTheory.LocalIndex
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 
 namespace GlobalTheory.AutGrowth

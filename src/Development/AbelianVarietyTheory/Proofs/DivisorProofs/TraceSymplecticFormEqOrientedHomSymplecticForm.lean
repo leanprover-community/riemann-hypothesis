@@ -46,8 +46,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-noncomputable section
-
 namespace GlobalTheory.WeilSchrodinger
 
 theorem cA_eq_sigR (D : D7) (z : AE D) :
@@ -92,5 +90,3 @@ theorem symp_eq_symplO : ∀ (D : D7) (S T : HSp D) (JA : Matrix (Fin T.rank) (F
     _ = _ := by rw [hB']; ring
 
 end GlobalTheory.WeilSchrodinger
-
-end

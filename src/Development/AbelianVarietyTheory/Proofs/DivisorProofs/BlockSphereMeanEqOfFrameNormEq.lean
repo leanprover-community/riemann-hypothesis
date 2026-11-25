@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemCon
 
 @[expose] public section
 
-noncomputable section
-
 open MvPolynomial NumberField Module GlobalTheory.ChowHt GlobalTheory.CompHt MeasureTheory
 
 namespace GlobalTheory.SphereMeanFrame

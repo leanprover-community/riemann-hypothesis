@@ -18,8 +18,6 @@ open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 open scoped TensorProduct
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.Poinc.CompletedStalk
 
 theorem essFiniteType_int_stalk {o' Ω : Type} [CommRing o'] [Field Ω] [Algebra o' Ω] [hA : ArithBase o' Ω]

@@ -11,7 +11,6 @@ open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
 open scoped TensorProduct nonZeroDivisors
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
 
-noncomputable section
 namespace GlobalTheory.FunObj
 variable {D : D7} {a b : ℕ}
 
@@ -127,5 +126,3 @@ theorem exists_finset_cosetReps : ∀ {D : D7} {a b : ℕ} (β' : GL (Fin b) (Le
     rw [this]
 
 end GlobalTheory.FunObj
-
-end

@@ -11,8 +11,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTh
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSAmp
 
-noncomputable section
-
 namespace GlobalTheory.ArithFnField
 
 theorem charZero_and_trdeg_functionField : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X]

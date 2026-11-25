@@ -7,8 +7,6 @@ public import GroundTheory.LocalFields.FilteredSurj
 
 open Polynomial Matrix Formalism.UG
 
-noncomputable section
-
 open Filter Topology
 
 namespace GlobalTheory.NormEq.Cmpl

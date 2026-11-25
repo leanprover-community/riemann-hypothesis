@@ -13,8 +13,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat Global
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
 open scoped ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.CovTop.VolUp.OneMeasure
 
 open Filter Topology

@@ -10,8 +10,6 @@ open NumberField IsDedekindDomain MeasureTheory ReciprocityTheory.ChartRestricti
 
 
 
-noncomputable section
-
 namespace GlobalTheory.FlatTw.PetTw
 
 theorem homN_mul_sig_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}

@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published
 open scoped TensorProduct
 open Filter Topology
@@ -136,5 +134,3 @@ theorem mem_closure_supp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
   rw [add_sub_cancel_left, smul_smul, he]
 
 end GlobalTheory.SUTrunc
-
-end

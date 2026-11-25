@@ -41,8 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 
 namespace GlobalTheory.AdjBlock
@@ -136,5 +134,3 @@ theorem mem_range_adjoint_tw {E E' : Type} [NormedAddCommGroup E] [InnerProductS
   exact Iff.rfl
 
 end GlobalTheory.AdjBlock
-
-end

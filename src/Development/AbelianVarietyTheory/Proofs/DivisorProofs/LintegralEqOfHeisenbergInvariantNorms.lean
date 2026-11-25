@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 
 @[expose] public section
 
-noncomputable section
-
 open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.RealWeil GlobalTheory.RealWeilF
@@ -62,5 +60,3 @@ theorem lintegral_eq_of_normsF : ∀ (F E : Type) [Field F] [NumberField F] [Fie
   exact lintegral_rhoBF hψ μ 𝓕 hμ h𝓕 _ G
 
 end GlobalTheory.RealWeilF
-
-end

@@ -9,7 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
 open scoped TensorProduct NNReal Matrix ContDiff
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
 namespace GlobalTheory.ThK.RealLineGrowthDerivative
 open GlobalTheory.SiegelSet GlobalTheory.ThK.SquareIntegrability
 
@@ -72,5 +71,3 @@ theorem differentiableAt_foldr_lineDer {f : GAd σ J → ℂ} (hf : GlobalTheory
   rw [e]; exact h'
 
 end GlobalTheory.ThK.RealLineGrowthDerivative
-
-end

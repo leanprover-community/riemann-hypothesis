@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasTotalBiCh
 open CategoryTheory Limits Opposite AlgebraicTopology GlobalTheory.EZ
 universe u v
 
-noncomputable section
 namespace GlobalTheory.EZ.AWChain
 
 theorem bop_comp {n m p q r s : ℕ} (α : SimplexCategory.mk p ⟶ SimplexCategory.mk n)

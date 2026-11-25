@@ -54,8 +54,6 @@ public import Mathlib.FieldTheory.Galois.Basic
 open Polynomial GlobalTheory.CuspGL GlobalTheory.BI GlobalTheory.Shin SemidirectProduct
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.Shin.NrmBasic
 
 section General
@@ -170,5 +168,3 @@ theorem main : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F']
     exact nrmG_mul _ _ _ _ _ fun i j => h _ _
 
 end GlobalTheory.Shin.NrmBasic
-
-end

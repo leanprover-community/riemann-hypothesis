@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 
 open NumberField MvPowerSeries IsLocalRing ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.FactorDepth GlobalTheory.IndefiniteRowSideFullHecke.TypedPartSplitPrimes GlobalTheory.PrimePart
 
-noncomputable section
-
 namespace GlobalTheory.PrimePart
 
 open Formalism.MainNotions.ModuliIntegralCharts.H1.FrTanDirAlg

@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.OneMemH0WeightZero
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.QSA GlobalTheory.Published
 open Matrix
 open scoped Quaternion Topology TensorProduct
@@ -209,5 +207,3 @@ theorem exists_approx_notMem : ∀ (F : Type) [Field F] [NumberField F], ∀ (S�
   exact hV (Set.mk_mem_prod hd₁ (hf₂M q hq))
 
 end GlobalTheory.AddApproxPlaces
-
-end

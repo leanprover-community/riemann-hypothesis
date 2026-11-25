@@ -20,8 +20,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open Formalism.IndefR.DatumF
 
-noncomputable section
-
 namespace GlobalTheory.LagrThetaAdm
 
 open GlobalTheory.ThetaTrCont
@@ -245,5 +243,3 @@ theorem exists_admitted_eq_diagonalLagrangian_thetaIntegral_alt : ∀ (F E : Typ
   · exact hlL _ (hmem f)
 
 end GlobalTheory.LagrThetaAdm
-
-end

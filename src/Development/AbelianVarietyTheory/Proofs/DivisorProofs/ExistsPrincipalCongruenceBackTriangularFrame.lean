@@ -63,8 +63,6 @@ open NumberField AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestric
 open GlobalTheory.Dict (castFr)
 open scoped Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CongrOrbit
 
 

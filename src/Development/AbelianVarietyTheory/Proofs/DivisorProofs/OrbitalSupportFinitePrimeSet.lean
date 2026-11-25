@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntCZero
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount GlobalTheory.LKCx GlobalTheory.AwayOrb GlobalTheory.FinClsLoc
 open scoped TensorProduct Classical
 

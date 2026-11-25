@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Intertwin
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT GlobalTheory.BCT.TrKer
 open scoped Classical TensorProduct Topology
 
-noncomputable section
-
 namespace GlobalTheory.BCT.TrKer
 
 theorem continuous_coef_piTensorMap {X ι : Type} [TopologicalSpace X] [Fintype ι] {M : ι → Type}

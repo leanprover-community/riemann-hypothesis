@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ComponentMassSum
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.KeyArchNorm
 
 section Value

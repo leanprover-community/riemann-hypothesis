@@ -10,8 +10,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open scoped Classical TensorProduct
 open GlobalTheory.BCT
 
-noncomputable section
-
 namespace GlobalTheory.BCT.StTw2Add
 
 section Generic

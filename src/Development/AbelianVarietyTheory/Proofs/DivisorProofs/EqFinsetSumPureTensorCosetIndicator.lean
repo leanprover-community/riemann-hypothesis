@@ -10,8 +10,6 @@ open IsDedekindDomain NumberField MeasureTheory
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix ENNReal Classical
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-noncomputable section
-
 namespace GlobalTheory.WeilAdm
 
 theorem eq_sum_pureA_coset_indicator : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (U : AddSubgroup (κ → FiniteAdeleRing (𝓞 F) F))
@@ -103,5 +101,3 @@ theorem eq_sum_pureA_coset_indicator : ∀ (F : Type) [Field F] [NumberField F] 
     rw [Set.indicator_of_notMem hm, mul_zero]
 
 end GlobalTheory.WeilAdm
-
-end

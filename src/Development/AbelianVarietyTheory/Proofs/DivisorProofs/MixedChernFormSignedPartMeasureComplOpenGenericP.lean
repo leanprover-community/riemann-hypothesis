@@ -14,8 +14,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.R
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ChartGlue GlobalTheory.Mix
 
-noncomputable section
-
 namespace GlobalTheory.MixNull
 
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)

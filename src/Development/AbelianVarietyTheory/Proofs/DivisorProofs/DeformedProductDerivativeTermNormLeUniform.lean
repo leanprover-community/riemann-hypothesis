@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProdNormSq
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates GlobalTheory.DeformedSum
 
 namespace GlobalTheory.DeformedSum.Bound

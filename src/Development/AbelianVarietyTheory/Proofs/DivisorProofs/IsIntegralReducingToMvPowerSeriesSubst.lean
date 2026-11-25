@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-noncomputable section
-
 namespace GlobalTheory
 
 namespace Katz

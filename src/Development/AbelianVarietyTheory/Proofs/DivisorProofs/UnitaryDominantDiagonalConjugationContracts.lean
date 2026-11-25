@@ -52,8 +52,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Formalism.UG GlobalTheory.SatakeWeyl
 
-noncomputable section
-
 namespace GlobalTheory.SatakeWeyl.ContractProof
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {r : ℕ}
@@ -155,5 +153,3 @@ theorem contract : GlobalTheory.SatakeWeyl.Contract := by
     nlinarith
 
 end GlobalTheory.SatakeWeyl.ContractProof
-
-end

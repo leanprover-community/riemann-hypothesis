@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SWQ GlobalTheory.ThetaTransform
 open scoped Matrix Classical
 
-noncomputable section
-
 namespace GlobalTheory.LevelSchwartz
 
 theorem mem_schA_of_level : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (Φ : (Fin N → AF F) → ℂ),
@@ -101,5 +99,3 @@ theorem mem_schA_of_level : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (
   exact QuotientAddGroup.eq.1 (by rw [hq, QuotientAddGroup.out_eq'])
 
 end GlobalTheory.LevelSchwartz
-
-end

@@ -11,8 +11,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.RealWeil GlobalTheory.RealWeilF
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.RealWeilF.MCont
 
 theorem continuous_fstA (F : Type) [Field F] [NumberField F] : Continuous (fstA F) := continuous_fst
@@ -42,5 +40,3 @@ theorem continuous_comp_infPartF {F E : Type} [Field F] [NumberField F] [Field E
   exact continuous_finsetSum _ fun i _ => (hg.comp ((continuous_apply i).comp hrep)).mul continuous_const
 
 end GlobalTheory.RealWeilF.MCont
-
-end

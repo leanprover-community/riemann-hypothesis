@@ -18,8 +18,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 namespace GlobalTheory.SplitWeight
 
 theorem exps_eq_zero {L I : Type} [Field L] [NumberField L] [Fintype I] (φ : I → L →+* ℂ)

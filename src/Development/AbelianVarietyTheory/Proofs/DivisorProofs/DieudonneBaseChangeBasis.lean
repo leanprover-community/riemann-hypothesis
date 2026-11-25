@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DieudonneRan
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Dieu
 
-noncomputable section
-
 namespace GlobalTheory.Dieu.Base
 
 

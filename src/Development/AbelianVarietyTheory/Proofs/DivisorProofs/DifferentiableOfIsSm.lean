@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.UAut
 open scoped TensorProduct ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.UAut
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -85,5 +83,3 @@ theorem foldr_smul (l : List (ℝ → GAd σ J)) (a : ℂ) (f : GAd σ J → ℂ
 
 
 end GlobalTheory.UAut
-
-end

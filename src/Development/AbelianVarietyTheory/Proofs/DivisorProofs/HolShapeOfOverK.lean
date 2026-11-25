@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadingsExistRow
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
@@ -151,5 +149,3 @@ theorem proj_apply (R : RealDat D A Ks) (hg : R.models_gW) (i : Fin D.R.m) (σ :
 
 
 end GlobalTheory.GalLift.ProjLift
-
-end

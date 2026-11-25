@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
 
-noncomputable section
-
 namespace GlobalTheory.HilbAff
 
 variable (A B : Type) [CommRing A] [CommRing B] [Algebra A B]

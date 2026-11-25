@@ -9,7 +9,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open MeasureTheory ValuativeRel Matrix
 
-noncomputable section
 namespace GlobalTheory.FunObj
 open GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx
 

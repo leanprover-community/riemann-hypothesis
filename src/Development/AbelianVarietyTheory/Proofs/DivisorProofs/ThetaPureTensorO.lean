@@ -61,8 +61,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
 
-noncomputable section
-
 namespace GlobalTheory.GalLift.Vec
 
 section Mat
@@ -191,5 +189,3 @@ theorem theta_pureTensorO {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} (hψ 
       (GlobalTheory.OrientedHeis.theta_smul _ (GlobalTheory.OrientedHeis.theta_dRho hθ hψ k.1 _ hg))), rfl⟩) f hf P).1
 
 end GlobalTheory.GalLift.Vec
-
-end

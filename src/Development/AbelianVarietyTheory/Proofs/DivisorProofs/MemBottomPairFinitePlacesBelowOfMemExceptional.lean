@@ -23,8 +23,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
-noncomputable section
-
 namespace GlobalTheory.BottomIPData
 
 private theorem mem_bottomPairFinitePlacesBelow_of_mem_exceptional {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (t : T)
@@ -113,5 +111,3 @@ theorem _root_.GlobalTheory.T.unramifiedInnerProductData_definiteBottom_largeGri
     unrOff_betaB_div_alphaB G hL i j t, hs, hs⟩
 
 end GlobalTheory.BottomIPData
-
-end

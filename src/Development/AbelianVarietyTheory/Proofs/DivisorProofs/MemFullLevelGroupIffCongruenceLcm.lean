@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSelfDualTr
 
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-noncomputable section
-
 namespace GlobalTheory.EqCovol.FullLevel
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

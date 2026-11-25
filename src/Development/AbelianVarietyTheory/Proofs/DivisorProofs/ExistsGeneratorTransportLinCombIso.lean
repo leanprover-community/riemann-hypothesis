@@ -14,8 +14,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.Mum
 
-noncomputable section
-
 namespace GlobalTheory.Mum.GenTransport
 
 theorem exists_unflat {X X' Y : Scheme.{0}} {L : LB X} {J K : Type} [Fintype J] [Fintype K]
@@ -54,5 +52,3 @@ theorem exists_transport : ∀ {X X' Y : Scheme.{0}} {L : LB X} {L' : LB X'} {J 
     ⟨hI''.mem φ' r, hI'.mem φ' r⟩
 
 end GlobalTheory.Mum.GenTransport
-
-end

@@ -21,8 +21,6 @@ open ValuativeRel
 open scoped GlobalTheory.VacAny
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-noncomputable section
-
 open scoped Classical
 
 namespace GlobalTheory.RestWitness

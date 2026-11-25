@@ -24,8 +24,6 @@ open GlobalTheory.UPoinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 open GlobalTheory
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.PullAction
 
 section

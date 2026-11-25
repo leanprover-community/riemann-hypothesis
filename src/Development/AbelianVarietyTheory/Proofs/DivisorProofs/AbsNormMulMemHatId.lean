@@ -14,8 +14,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-noncomputable section
-
 namespace GlobalTheory.BotPairSmall.BlockIdx
 
 variable (D : D7) (𝔪 : Ideal (𝓞 D.host.E))

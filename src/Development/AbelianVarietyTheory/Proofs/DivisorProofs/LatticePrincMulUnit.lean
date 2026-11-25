@@ -9,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DTermOrigin
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates GlobalTheory.DeformedSum
 
 namespace GlobalTheory.ClassInv

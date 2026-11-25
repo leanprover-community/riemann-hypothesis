@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ActPMemLocPNabSt
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.DualWeyl GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.DefPt MvPolynomial
 open scoped Matrix
 
-noncomputable section
 namespace GlobalTheory.DefPt
 
 theorem evalAt_mul_intVec {n : ℕ} (la : Fin n → ℕ) {K S : Type} [Field K] [CharZero K] [CommRing S] (φ : K →+* S)

@@ -13,8 +13,6 @@ open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal GlobalT
 open GlobalTheory.ToricTransport (coordIn)
 open scoped nonZeroDivisors
 
-noncomputable section
-
 namespace GlobalTheory.UpIdeleMod
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (finiteCompletionMap finiteCompletionMap_coe finiteCompletionMap_mapsTo)

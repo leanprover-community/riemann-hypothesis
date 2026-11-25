@@ -16,8 +16,6 @@ open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNu
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 open GlobalTheory.SqTop (twPl Qn modT)
 
-noncomputable section
-
 namespace GlobalTheory.SqTop
 
 theorem modT_sup_conj : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}, L.Is μ₀ → ∀ (G : GridData L sc) (t : T),
@@ -80,5 +78,3 @@ theorem modT_sup_conj : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {�
       Ideal.IsMaximal.coprime_of_ne w.isMaximal (hmax' w') (hBB w hw w' hw')
 
 end GlobalTheory.SqTop
-
-end

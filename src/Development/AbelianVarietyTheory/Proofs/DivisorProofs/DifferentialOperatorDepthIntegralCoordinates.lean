@@ -11,8 +11,6 @@ namespace GlobalTheory.FGDepth.Coord
 
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
 
-noncomputable section
-
 variable {C : Type} [Field C]
 
 open MvPowerSeries in
@@ -157,7 +155,5 @@ theorem _root_.GlobalTheory.FGDepth.Coord.depth_in_coords : ∀ (C : Type) [Fiel
       hΦ0⟩ ?_
     rw [← subst_comp_subst_apply hΨS hES, subst_comp_subst_apply hΦS hΨS, hround, subst_self]
     rfl
-
-end
 
 end GlobalTheory.FGDepth.Coord

@@ -15,8 +15,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationP
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped Matrix TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.AdelicSvN
 
 variable {F : Type} [Field F] [NumberField F]

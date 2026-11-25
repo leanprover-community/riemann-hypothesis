@@ -20,8 +20,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 
-noncomputable section
-
 namespace GlobalTheory.Poinc.GSetup
 
 open GlobalTheory.ThetaSysOfObj

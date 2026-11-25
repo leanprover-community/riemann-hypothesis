@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTenso
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 
-noncomputable section
-
 open Matrix
 namespace GlobalTheory.AdelMatLatRight
 
@@ -34,5 +32,3 @@ theorem _root_.GlobalTheory.AdelMatLatRight.transpose_mem_latAtV {F E : Type} [F
   | neg u _ hu => simpa [transpose_neg] using neg_mem hu
 
 end GlobalTheory.AdelMatLatRight
-
-end

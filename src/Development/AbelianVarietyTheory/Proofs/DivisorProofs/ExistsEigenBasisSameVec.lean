@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEqu
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.BdryUnit
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField

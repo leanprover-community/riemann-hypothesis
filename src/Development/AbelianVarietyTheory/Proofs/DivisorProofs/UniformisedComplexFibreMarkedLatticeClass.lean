@@ -54,8 +54,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped Matrix
 open GlobalTheory.UPel.HT
 
-noncomputable section
-
 namespace GlobalTheory.UPel.HT
 
 section ExpLemmas

@@ -11,8 +11,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.UPel.HT
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField

@@ -20,8 +20,6 @@ open ValuativeRel
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped GlobalTheory.VacAny
 
-noncomputable section
-
 namespace GlobalTheory.StdCharUnrF
 
 open GlobalTheory.Idele WithZero

@@ -16,8 +16,6 @@ open CategoryTheory AlgebraicGeometry NumberField IsDedekindDomain ReciprocityTh
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj GlobalTheory GlobalTheory.Cartier GlobalTheory.CechPic GlobalTheory.ArInt GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.Mean4O GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.VertForm GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.TrueCx
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.FrameGlue.Pull
 
 open GlobalTheory.Cartier GlobalTheory.TrueGeo.SmallSec
@@ -44,5 +42,3 @@ theorem unitAt_fnMap {y : Y} {t : X.functionField} (h : UnitAt (j y) t) : UnitAt
 end
 
 end GlobalTheory.FrameGlue.Pull
-
-end

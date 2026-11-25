@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.MemMixedTsub
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.QLog GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta
 
 namespace GlobalTheory.WinLift

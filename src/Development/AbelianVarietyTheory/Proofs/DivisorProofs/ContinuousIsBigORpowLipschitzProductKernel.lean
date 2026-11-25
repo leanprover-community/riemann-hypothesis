@@ -12,8 +12,6 @@ import Mathlib.Analysis.Fourier.Notation
 open NumberField nonZeroDivisors MeasureTheory GlobalTheory.LipschitzTR GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent
 open scoped FourierTransform RealInnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.LipschitzTR
 
 theorem mul_im_pos_of_sign_mul_pos {w : ℂ} {t : ℝ} (h : 0 < (SignType.sign w.im : ℝ) * t) :

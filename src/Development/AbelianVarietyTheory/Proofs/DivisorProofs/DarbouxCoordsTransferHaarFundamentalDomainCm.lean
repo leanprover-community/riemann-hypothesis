@@ -13,8 +13,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open Formalism.IndefR.DatumF
 
-noncomputable section
-
 namespace GlobalTheory.RatDarbouxTransferF
 
 theorem finDim (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] :
@@ -99,5 +97,3 @@ theorem onto (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [A
 open scoped Pointwise
 
 end GlobalTheory.RatDarbouxTransferF
-
-end

@@ -13,8 +13,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.HeisDerivCM
 
 open Formalism.IndefR.DatumF

@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.UPel.GeometricLevelExistence
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField

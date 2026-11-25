@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmal
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField
 open GlobalTheory.ChiGrid GlobalTheory.SqTop
 
-noncomputable section
-
 namespace GlobalTheory.BotTripleUnr
 
 theorem unramAt_mul {D : D7} {ε : AF D.host.F} {χ₁ χ₂ : (AE D)ˣ →* Circle}
@@ -53,5 +51,3 @@ theorem unramAt_mu : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} (G :
     · exact hQ P' hq ((under_eq_of_isConjPl hc).trans hP)
 
 end GlobalTheory.BotTripleUnr
-
-end

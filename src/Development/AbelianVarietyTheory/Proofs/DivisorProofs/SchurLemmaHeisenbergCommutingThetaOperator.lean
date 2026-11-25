@@ -17,8 +17,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
@@ -159,5 +157,3 @@ theorem prod_eq (hψ : IsCharAF F ψ)
 end Lemmas
 
 end GlobalTheory.ThetaSchurF
-
-end

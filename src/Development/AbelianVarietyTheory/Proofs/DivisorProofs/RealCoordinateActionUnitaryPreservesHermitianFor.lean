@@ -12,8 +12,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.RealWeil GlobalTheory.RealWeilF
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.RealWeilF
 
 section Unitary
@@ -67,5 +65,3 @@ theorem compAtF_mul_inv (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) {
 end Unitary
 
 end GlobalTheory.RealWeilF
-
-end

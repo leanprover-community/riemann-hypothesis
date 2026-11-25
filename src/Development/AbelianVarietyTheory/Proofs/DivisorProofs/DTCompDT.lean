@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open CategoryTheory Limits Opposite AlgebraicTopology GlobalTheory.EZ
 
-noncomputable section
-
 namespace GlobalTheory.EZ.TotSq
 
 theorem bop_comp {n m p q r s : ℕ} (α : SimplexCategory.mk p ⟶ SimplexCategory.mk n)

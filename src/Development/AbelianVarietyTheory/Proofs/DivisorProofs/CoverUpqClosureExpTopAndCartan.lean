@@ -9,8 +9,6 @@ public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurj
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions.TH GlobalTheory.RealPar Matrix
 
 namespace GlobalTheory.CoverExp
@@ -134,5 +132,3 @@ theorem closure_expt_eq_top_and_cartan : ∀ (p q : ℕ), 1 ≤ p + q → ∀ T 
     exact h1
 
 end GlobalTheory.CoverExp
-
-end

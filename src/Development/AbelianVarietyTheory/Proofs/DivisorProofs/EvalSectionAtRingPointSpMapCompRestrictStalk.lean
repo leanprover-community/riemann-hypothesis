@@ -10,7 +10,6 @@ open GlobalTheory GlobalTheory.VB GlobalTheory.LieVB GlobalTheory.QCoh GlobalThe
 open GlobalTheory.Twist (resM)
 open scoped CategoryTheory.Obj RatFunc
 
-noncomputable section
 namespace GlobalTheory.Nef
 
 theorem evAt_eq_comp {R : Type} [CommRing R] {X : Scheme.{0}} (b : Sp R ⟶ X) {U : X.Opens} (h : ⊤ ≤ b ⁻¹ᵁ U) :

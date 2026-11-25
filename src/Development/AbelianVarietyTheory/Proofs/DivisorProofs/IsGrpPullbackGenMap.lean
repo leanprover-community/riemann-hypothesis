@@ -32,8 +32,6 @@ open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 open scoped TensorProduct
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.TauFormHom
 
 open GlobalTheory.IndefiniteRowSideFullHecke.GeneratorValues GlobalTheory.TauForm

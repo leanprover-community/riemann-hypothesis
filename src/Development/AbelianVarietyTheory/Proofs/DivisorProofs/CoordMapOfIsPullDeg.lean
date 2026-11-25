@@ -19,8 +19,6 @@ open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 open scoped TensorProduct
 open Classical
 
-noncomputable section
-
 namespace GlobalTheory.Poinc.Eq8.PullUnif
 
 theorem coordMap_of_isPullDeg {R V : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [CommRing V] [IsDomain V]

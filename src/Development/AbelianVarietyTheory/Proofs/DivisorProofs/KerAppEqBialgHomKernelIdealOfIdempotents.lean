@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingle
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-noncomputable section
-
 namespace GlobalTheory
 
 namespace PDivGroup

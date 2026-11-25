@@ -13,8 +13,6 @@ open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup G
 open ReciprocityTheory.DiscreteGroups.LocalClassField
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.LKGeo.DenEnd
 
 variable {p : ℕ} [Fact p.Prime]

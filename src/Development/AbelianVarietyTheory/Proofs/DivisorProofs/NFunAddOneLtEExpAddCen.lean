@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain Formalism.FrobeniusOrbits
 open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
 open GlobalTheory.ChiGrid Formalism.L2.Host
@@ -51,5 +49,3 @@ theorem nFun_add_one_lt_eExp_add_cen (C : ℝ) (j a : Fin D.R.m) (g : D.R.Psi) :
   linarith
 
 end GlobalTheory.BigTop.Fun
-
-end

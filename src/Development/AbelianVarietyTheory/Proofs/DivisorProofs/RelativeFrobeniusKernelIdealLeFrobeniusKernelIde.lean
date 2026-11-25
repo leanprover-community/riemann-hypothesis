@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobTwistBas
 
 @[expose] public section
 
-noncomputable section
-
 open Coalgebra Bialgebra
 
 namespace GlobalTheory.PDiv

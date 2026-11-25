@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount GlobalTheory.LKCx
 open scoped TensorProduct Classical
 
-noncomputable section
-
 namespace GlobalTheory.CxUnfold
 
 theorem minpoly_units_conj {F A : Type*} [Field F] [Ring A] [Algebra F A] (u : Aˣ) (x : A) :

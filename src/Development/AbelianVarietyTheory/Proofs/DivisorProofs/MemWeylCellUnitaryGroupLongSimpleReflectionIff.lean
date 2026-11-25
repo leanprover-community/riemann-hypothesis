@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasBoundedSumsOn
 
 open MeasureTheory GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SatakeBound GlobalTheory.WeylCell Formalism.UG
 
-noncomputable section
-
 namespace GlobalTheory
 
 namespace WeylCellRankOne

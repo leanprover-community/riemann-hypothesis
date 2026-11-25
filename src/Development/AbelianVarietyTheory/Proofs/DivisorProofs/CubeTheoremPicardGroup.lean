@@ -10,7 +10,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory CategoryTheory.Hom.group
 
-noncomputable section
 namespace GlobalTheory.CubeThm
 
 variable {S : Scheme.{0}} (B : Over S) [GrpObj B] [IsCommMonObj B]

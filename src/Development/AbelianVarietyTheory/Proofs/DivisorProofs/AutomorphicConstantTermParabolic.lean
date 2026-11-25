@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeAppro
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.UAut
 open GlobalTheory.AutomorphicL2Unitary (LeftInv)
 open GlobalTheory.Cusp (Cocompact constTermOn)
@@ -43,5 +41,3 @@ theorem hasDerivAt_foldr (h : IsCMExt F E σ) {φ : GAd σ J → ℂ} (hs : IsSm
   exact h2
 
 end GlobalTheory.UAut.ConstAut
-
-end

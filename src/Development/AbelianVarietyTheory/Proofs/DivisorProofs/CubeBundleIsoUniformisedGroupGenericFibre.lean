@@ -12,7 +12,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-noncomputable section
 namespace GlobalTheory.Mum.Two
 open GlobalTheory.CechPic GlobalTheory.ZH.EndoExtend
 

@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.AbLaw GlobalTheory.FormalAlg
 
-noncomputable section
 namespace GlobalTheory.FormalAlg
 
 theorem ker_specMap_quotientMk (R : Type) [CommRing R] (J : Ideal R) :
