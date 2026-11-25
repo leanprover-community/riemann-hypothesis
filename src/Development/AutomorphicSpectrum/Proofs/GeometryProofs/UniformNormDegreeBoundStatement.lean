@@ -513,7 +513,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Plug.Count
 
 theorem cmType_nonempty {E : Type} [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     Nonempty (CMType H) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.cm_nonempty <;> assumption
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.cm_nonempty
 
 end GlobalTheory.CompanionTheory.Ar.Plug.Count
 
@@ -546,7 +546,7 @@ theorem small_shift {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι
   have hq' : (q : ℝ) ≠ 0 := by positivity
   have e1 : (Small.shiftH A ((q : ℝ) * (Real.log c / (τ * q)))).h z ^ τ = c * A.h z ^ τ := by
     show (Real.exp ((q : ℝ) * (Real.log c / (τ * q))) * A.h z) ^ τ = _
-    rw [mul_pow, ← Real.exp_nat_mul]
+    rw [mul_pow, ← Real.exp_natCast_mul]
     have : (τ : ℝ) * ((q : ℝ) * (Real.log c / (τ * q))) = Real.log c := by field_simp
     rw [this, Real.exp_log hc]
   rw [e1]
@@ -1180,7 +1180,7 @@ theorem degOf_nsmul {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reci
 
 theorem nonempty_cmType {E : Type} [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     Nonempty (CMType H) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Plug.Count.cmType_nonempty <;> assumption
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Plug.Count.cmType_nonempty
 
 theorem dimFl_pos {Ψ : Type} [Fintype Ψ] [Nonempty Ψ] {N : ℕ} (hN : 2 ≤ N) : 1 ≤ Top.dimFl Ψ N := by
   have h1 : 0 < Fintype.card Ψ := Fintype.card_pos
@@ -1396,7 +1396,6 @@ theorem vdm_inst (la : GlobalTheory.AllWt.Weight Dw) :
 theorem dimFlag_eq [DecidableEq (CMType H)] :
     GlobalTheory.CompHt.dimFlag Dw = Top.dimFl (CMType H) (Dw.p + Dw.q) := by
   simp only [GlobalTheory.CompHt.dimFlag, Formalism.DegreeFormula.dimFl, Top.dimFl]
-  first | (congr 1; convert rfl)
 
 variable {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}
 

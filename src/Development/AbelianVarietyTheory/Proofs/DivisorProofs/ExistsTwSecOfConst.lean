@@ -170,7 +170,7 @@ theorem twSec_of_flat (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Re
   have hδ := finite_sum_flDefect (Dw := Dw) (c := c) w
   obtain ⟨s, hdeg⟩ : ∃ s : ConstSec U x Z (parWt Dw w) (∑ τ, (-w τ) • flDefect_vw Dw c τ),
       s.deg = ∑ τ, (w τ : ℝ) * c1 U x τ :=
-    ⟨(FlatSec.shift hp sF w).copy rfl (by congr; exact Subsingleton.elim _ _), (hF.deg_shift hp sF w).trans (by congr; exact Subsingleton.elim _ _)⟩
+    ⟨(FlatSec.shift hp sF w).copy rfl rfl, (hF.deg_shift hp sF w).trans rfl⟩
   obtain ⟨t, -, h2, h3, -, h5⟩ := exists_twSec_of_const hK hU hpq hB Z w _ s hδ
   have key := lineDeg_mul (r := 1) (fun _ => one_pos) s.cInf_pos hδ s.finite_rho
   rw [one_mul] at key

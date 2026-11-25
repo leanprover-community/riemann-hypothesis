@@ -126,7 +126,7 @@ theorem exists_twSec_par (hK : Nonempty (GlobalTheory.ShFam.KeySec Xo c)) (hU : 
   obtain ⟨τ₀⟩ := psi_nonempty (H := H)
   have hp : HasPts U Z := (sF τ₀).hasPts
   let s : ConstSec U x Z (parWt Dw w) (∑ τ, (-w τ) • flDefect_vw Dw c τ) :=
-    (FlatSec.shift hp sF w).copy rfl (by congr; exact Subsingleton.elim _ _)
+    (FlatSec.shift hp sF w).copy rfl rfl
   refine ⟨TwSec.ofConst s (GlobalTheory.FlatTwisting.finite_sum_flDefect w) (GlobalTheory.FlatTwisting.mul_sig_mem_cuspOn hK hU hpq s)
     fun G hG f hf => ?_⟩
   have h := GlobalTheory.FlatTwisting.mul_sig_mem_cuspOn hK hU hpq (w := -w) (s.symm.copy rfl rfl)

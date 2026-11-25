@@ -520,7 +520,7 @@ theorem mem_of_dense_of_isOpen {X : Type*} [TopologicalSpace X] [TopologicalSpac
     rw [← e]
     exact hg.def.symm
   let T : Set X := ⋃ C ∈ irreducibleComponents X \ {closure {x}}, C
-  have hT : IsClosed T := Set.Finite.isClosed_biUnion (hfin.subset Set.diff_subset)
+  have hT : IsClosed T := Set.Finite.isClosed_biUnion (hfin.subset Set.sdiff_subset)
     fun C hC => isClosed_of_mem_irreducibleComponents C hC.1
   have hxT : x ∈ Tᶜ := by
     intro h
@@ -757,7 +757,6 @@ theorem errX_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reciproc
     GlobalTheory.CovHt.errX s u g = (Real.log (GlobalTheory.CovHt.bndB u g) + s) * GlobalTheory.CovHt.l1 u + (Dw.q : ℝ) * Top.spread (reW u) := by
   unfold GlobalTheory.CovHt.errX Top.spread reW
   congr 2
-  convert rfl
 
 end GlobalTheory.CompanionTheory.Ar.Plug.MeanTop
 

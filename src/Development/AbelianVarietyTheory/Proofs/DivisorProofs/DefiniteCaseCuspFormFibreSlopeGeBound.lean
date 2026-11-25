@@ -308,7 +308,7 @@ theorem mem_range_of_le_one {w : HeightOneSpectrum (𝓞 c.F)} {T : CDVR} {io : 
 theorem map_tval {T : Type} [Fintype T] [DecidableEq T] {N : T → ℕ} (la : ∀ t, Fin (N t) → ℕ) {S S' : Type} [CommRing S]
     [CommRing S'] (φ : S →+* S') (x : TIdx la → S) (y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) S) :
     φ (tval la x y) = tval la (fun I => φ (x I)) fun t => (y t).map φ := by
-  apply _root_.GlobalTheory.DefPt.ReadsPt.tval_map <;> assumption
+  apply _root_.GlobalTheory.DefPt.ReadsPt.tval_map
 
 theorem val_nonneg {Z : Comp Xo c} (P : PtData Z) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {x : TIdx (part Dw a) → c.F} {f : Rul Xo c}
     (hr : Reads Z P.y₀ a n x f) (hx : x ∈ locLat (P.matA a n)) (w : HeightOneSpectrum (𝓞 c.F)) :
@@ -438,7 +438,7 @@ theorem exists_ortho {σ : c.F →+* ℂ} {r : ℕ} {U : Unf Xo c σ r} {ξ : �
     have hs : ρ = Real.exp (-(1 / 2) * Real.log (2 * Real.pi * ξ)) := by
       rw [hρ, Real.sqrt_eq_rpow, Real.rpow_def_of_pos hκ, ← Real.exp_neg]
       congr 1; ring
-    simp only [hs, ← Real.exp_nat_mul]
+    simp only [hs, ← Real.exp_natCast_mul]
     rw [← Real.exp_sum, lieFac, ← Finset.sum_mul]
     congr 1
     rw [Fintype.sum_sigma]
@@ -616,7 +616,7 @@ theorem exists_notMem_mul_le (P u : HeightOneSpectrum (𝓞 K)) (y : K) (h : u �
   have hy0 : u.valuation K y ≠ 0 := fun h0 => hy (by rw [h0]; exact zero_le_one)
   have hnle : ¬ u.asIdeal ≤ P.asIdeal := fun hle =>
     hne (HeightOneSpectrum.ext (u.isMaximal.eq_of_le P.isPrime.ne_top hle))
-  obtain ⟨π, hπu, hπP⟩ := SetLike.not_le_iff_exists.1 hnle
+  obtain ⟨π, hπu, hπP⟩ := IsConcreteLE.not_le_iff_exists.1 hnle
   have hlt : u.valuation K (π : K) < 1 := (HeightOneSpectrum.valuation_lt_one_iff_mem u π).2 hπu
   obtain ⟨N, hN⟩ := exists_pow_lt₀ hlt (Units.mk0 _ hy0)⁻¹
   refine ⟨π ^ N, fun hm => hπP (P.isPrime.mem_of_pow_mem N hm), ?_⟩
@@ -657,7 +657,7 @@ theorem finite_not_intAt {ι : Type} [Fintype ι] (M : Matrix ι ι K) :
     {w : HeightOneSpectrum (𝓞 K) | ¬ IntAt w M}.Finite := by
   refine (Set.finite_iUnion fun p : ι × ι => HeightOneSpectrum.Support.finite (𝓞 K) (M p.1 p.2)).subset ?_
   intro w hw
-  simp only [IntAt, Set.mem_setOf_eq, not_forall, not_le] at hw
+  simp only [IntAt, Set.mem_ofPred_eq, not_forall, not_le] at hw
   obtain ⟨i, j, hij⟩ := hw
   exact Set.mem_iUnion.2 ⟨(i, j), hij⟩
 
@@ -671,7 +671,7 @@ theorem exists_locBasis_inv : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ)
   obtain ⟨s, hs, hint⟩ := exists_denom_notMem (fun w => A w * (A P)⁻¹)
     ((hfin.union (finite_not_intAt (A P)⁻¹)).subset fun w hw => by
       by_contra hn
-      simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at hn
+      simp only [Set.mem_union, Set.mem_ofPred_eq, not_or, not_not] at hn
       exact hw (intAt_mul hn.1.1 hn.2)) P (by
       intro i j
       rw [Matrix.mul_nonsing_inv _ hu]
@@ -683,7 +683,7 @@ theorem exists_locBasis_inv : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ)
   · rw [Matrix.mulVec_smul, Matrix.mulVec_mulVec, ← Matrix.smul_mulVec]
     exact GlobalTheory.LocMatLat.mulVec_le w (hint w) (hone w j) i
   · have h1 : LinearIndependent K (A P)⁻¹.col :=
-      Matrix.linearIndependent_cols_iff_isUnit.2 (Matrix.isUnit_nonsing_inv_iff.2 ((Matrix.isUnit_iff_isUnit_det _).2 hu))
+      Matrix.linearIndependent_col_iff_isUnit.2 (Matrix.isUnit_nonsing_inv_iff.2 ((Matrix.isUnit_iff_isUnit_det _).2 hu))
     have h2 : LinearIndependent K (fun j => (s : K) • (A P)⁻¹.col j) :=
       h1.units_smul fun _ => Units.mk0 (s : K) hs0
     convert h2 using 3 with j
@@ -861,9 +861,7 @@ theorem log_relIndex {n : ℕ} (A : HeightOneSpectrum (𝓞 K) → Matrix (Fin n
     refine ⟨hmem, ?_, fun x _ => ?_⟩
     · have := (Pi.basisFun K (Fin n)).linearIndependent.units_smul (fun _ => Units.mk0 (t : K) htK)
       convert this using 1
-      all_goals first
-        | rfl
-        | (funext i; simp [Pi.basisFun_apply])
+      funext i; simp [Pi.basisFun_apply]
     · have hx : x = ∑ i, (x i / t) • ((t : K) • (Pi.single i 1 : Fin n → K)) := by
         funext j
         simp [Finset.sum_apply, Pi.single_apply]
@@ -929,9 +927,7 @@ theorem GlobalTheory.LocMatSlope.slope_sq_locLat : ∀ (K : Type) [Field K] [Num
     have := ((Pi.basisFun K ι).linearIndependent.comp eqv.symm eqv.symm.injective).units_smul
       (fun _ => Units.mk0 (d : K) hdK)
     convert this using 1
-    all_goals first
-      | rfl
-      | (funext k; simp [he, Pi.basisFun_apply])
+    funext k; simp [he, Pi.basisFun_apply]
   have hle : Submodule.span (𝓞 K) (Set.range e) ≤ locLat A :=
     Submodule.span_le.2 (by rintro _ ⟨k, rfl⟩; exact smul_single_mem A d hd _)
   have hspan : Submodule.span K (locLat A : Set (ι → K)) = ⊤ := by
@@ -992,7 +988,7 @@ theorem GlobalTheory.LocMatSlope.slope_sq_locLat : ∀ (K : Type) [Field K] [Num
     linarith
   have hsd : ∑ σ : K →+* ℂ, Real.log ‖σ (d : K)‖ = 2 * ∑ v : InfinitePlace K, Real.log ‖v.embedding (d : K)‖ :=
     GlobalTheory.SlopeMink.sum_embeddings_eq_two_mul (fun σ => Real.log ‖σ (d : K)‖) (fun σ => by
-      simp [RingHom.comp_apply, Complex.norm_conj])
+      simp [RingHom.comp_apply])
   have hsY : ∑ σ : K →+* ℂ, Real.log ‖(Y σ).det‖ = 2 * ∑ v : InfinitePlace K, Real.log ‖(Y v.embedding).det‖ :=
     GlobalTheory.SlopeMink.sum_embeddings_eq_two_mul (fun σ => Real.log ‖(Y σ).det‖) (fun σ => by simp only [hconj])
   have hnum := lineDeg_num hdK
@@ -1270,7 +1266,7 @@ theorem valuation_det_le {ι : Type} [Fintype ι] [DecidableEq ι] (w : HeightOn
   rw [Matrix.det_apply']
   refine Valuation.map_sum_le _ fun σ _ => ?_
   rw [map_mul, map_prod]
-  refine mul_le_one' ?_ (Finset.prod_le_one' fun i _ => hM _ _)
+  refine mul_le_one' ?_ (Finset.prod_le_one fun i _ => hM _ _)
   rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
 
 theorem finite_vAdd_det {ι : Type} [Fintype ι] [DecidableEq ι] {A : HeightOneSpectrum (𝓞 K) → Matrix ι ι K}
@@ -1281,7 +1277,7 @@ theorem finite_vAdd_det {ι : Type} [Fintype ι] [DecidableEq ι] {A : HeightOne
   rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv', map_inv₀] at h2
   have h0 : w.valuation K (A w).det ≠ 0 := by simpa using hA.1 w
   have h3 : w.valuation K (A w).det = 1 :=
-    le_antisymm h1 ((inv_le_one₀ (zero_lt_iff.2 h0)).1 h2)
+    le_antisymm h1 ((inv_le_one₀ (pos_iff_ne_zero.2 h0)).1 h2)
   simp [vAdd, h3]
 
 end Val
@@ -1749,7 +1745,6 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Recip
     rw [← Fintype.sum_subtype_add_sum_subtype (fun τ : E →+* ℂ => τ (H.rt : E) = H.rt0) f,
       Finset.sum_eq_zero (s := Finset.univ) (f := fun τ : {τ : E →+* ℂ // ¬ τ (H.rt : E) = H.rt0} => f τ.1)
         fun τ _ => hf _ (by rw [Datum.mult, ite_eq_right τ.2, h.q]), add_zero]
-    convert rfl
   have h1 : ∑ τ, (Dw.mult τ : ℝ) = (Fintype.card (Psi H) : ℝ) * Dw.p := by
     rw [hsub _ fun τ h => by rw [h, Nat.cast_zero],
       Finset.sum_congr rfl fun (τ : Psi H) _ => show (Dw.mult τ.1 : ℝ) = Dw.p by rw [Datum.mult, ite_eq_left τ.2]]

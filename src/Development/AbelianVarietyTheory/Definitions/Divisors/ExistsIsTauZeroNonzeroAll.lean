@@ -729,7 +729,6 @@ theorem shift_sig (h : HasPts U Z) (s : ∀ τ, FlatSec U x Z τ) (m : ℕ) :
   simp only [h1]
   rw [Finset.prod_mul_distrib, Finset.prod_const, ← _root_.mul_assoc, ← pow_succ',
     (show IsIdempotentElem (idem Z) from idem_mul_idem Z).pow_succ_eq]
-  convert rfl
 
 theorem pow_mem_secZ {e : Ix Dw → ℤ} {f : Rul Xo c} (hf : f ∈ secZ Xo c e) (m : ℕ) : f ^ m ∈ secZ Xo c (m • e) := by
   induction m with

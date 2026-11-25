@@ -153,7 +153,6 @@ theorem weightHyp_reW_of_wtGap {Dw : Datum H} (u : GlobalTheory.AllWt.Weight Dw)
 theorem bound_eq_root_weight_bound {Dw : Datum H} (u : GlobalTheory.AllWt.Weight Dw) (g : ℝ) :
     GlobalTheory.CovHt.bndB u g = Top.bigB0 (reW u) g := by
   simp only [GlobalTheory.CovHt.bndB, Top.bigB0, norm_wt_eq_iSup, reW]
-  rw [Fintype.card_eq_nat_card, Fintype.card_eq_nat_card]
 
 theorem covHt_l1_eq_l1_reW {Dw : Datum H} (u : GlobalTheory.AllWt.Weight Dw) : GlobalTheory.CovHt.l1 u = Top.l1 (reW u) := by
   unfold GlobalTheory.CovHt.l1 Top.l1 reW
@@ -171,7 +170,6 @@ theorem integer_weights_vocab : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     · simp [nOf, Top.RootModel.coef]
     · simp [nOf, Top.RootModel.coef, reW]
   · simp only [GlobalTheory.CompHt.dimFlag, Formalism.DegreeFormula.dimFl, Top.dimFl]
-    rw [Fintype.card_eq_nat_card, Fintype.card_eq_nat_card]
   · have e : ∀ w : GlobalTheory.AllWt.Weight Dw, ((GlobalTheory.CompHt.vdm w : ℤ) : ℝ) = GlobalTheory.CompHt.vdm (reW w) :=
       fun w => vdm_cast _ _ w
     rw [e, e]
