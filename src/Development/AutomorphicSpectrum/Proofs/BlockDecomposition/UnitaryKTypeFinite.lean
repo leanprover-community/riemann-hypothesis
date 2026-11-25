@@ -414,7 +414,6 @@ def stdG (G : Set (Matrix (Fin n) (Fin n) ℂ)) [hG : Fact (GlobalTheory.LinRed.
           rw [h1]; simp only [Matrix.mul_assoc, Matrix.one_mul]
       _ = _ := by simp only [Matrix.mul_assoc]
 
-
 omit hG in
 theorem admissible_of_polynomial_identity (h1 : FinOfPI) (h2 : GoodPI) (h3 : Transfer) (h4 : ExistsAvg)
     (hLR : GlobalTheory.LinRed.IsLinRed G) (h5 : PositivityTheory.Tls2.Iua.IwaOn G) : PositivityTheory.Tls2.Iua.AdmG G := by
@@ -605,25 +604,6 @@ theorem blk_inv (e : Fin a × ι ≃ Fin n) {M : Matrix (Fin a) (Fin a) (ι → 
     (blk e M)⁻¹ = blk e M⁻¹ := by
   refine Matrix.inv_eq_right_inv ?_
   rw [← blk_mul, Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 hM), blk_one]
-
-theorem isLinRed_blkG (e : Fin a × ι ≃ Fin n) : GlobalTheory.LinRed.IsLinRed (blkG e) := by
-  refine
-    { one_mem := ⟨1, isUnit_one, blk_one e⟩
-      mul_mem := ?_
-      isUnit := fun g hg => ((mem_blkG_iff e).1 hg).1
-      inv_mem := ?_
-      closed := fun g hg hcl => (mem_blkG_iff e).2 ⟨hg, blk_unblk_of_mem_closure e hcl⟩
-      connected := isPreconnected_blkG e
-      star_mem := ?_ }
-  · rintro _ ⟨M, hM, rfl⟩ _ ⟨N, hN, rfl⟩
-    exact ⟨M * N, IsUnit.mul hM hN, blk_mul e M N⟩
-  · rintro _ ⟨M, hM, rfl⟩
-    refine ⟨M⁻¹, ?_, (blk_inv e hM).symm⟩
-    exact (Matrix.isUnit_nonsing_inv_iff).2 hM
-  · rintro _ ⟨M, hM, rfl⟩
-    refine ⟨Mᴴ, ?_, blk_conjTranspose e M⟩
-    have : IsUnit (star M) := IsUnit.star hM
-    exact this
 
 end GlobalTheory.CompanionTheory.AdmGL
 
@@ -1110,7 +1090,6 @@ open Matrix Topology Filter
 
 namespace GlobalTheory.CompanionTheory.Unitary.ExpUpper
 
-
 open scoped Matrix.Norms.L2Operator in
 theorem blockTriangular_exp {n : ℕ} (T : Matrix (Fin n) (Fin n) ℂ)
     (hT : T.BlockTriangular id) : (NormedSpace.exp T).BlockTriangular id := by
@@ -1523,7 +1502,6 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.AdmGL
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {a n : ℕ}
-
 
 open scoped Classical in
 def toGL (M : Matrix (Fin a) (Fin a) (ι → ℂ)) : GL (Fin a) (ι → ℂ) :=

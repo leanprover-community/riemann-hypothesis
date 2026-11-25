@@ -66,18 +66,6 @@ theorem thetaL_eq_one {h : ℕ} (d : Fin h → ℕ) {x : Levi A (fun a => Fin (d
   rw [h1, map_one] at h2
   exact h2.symm
 
-theorem thetaL_surjective {h : ℕ} (d : Fin h → ℕ) : Function.Surjective (thetaL (A := A) d) := by
-  intro y
-  refine ⟨fun b => thetaW A (d b) (cast (by show GL (Fin (d (Fin.rev (Fin.rev b)))) A = _; rw [Fin.rev_rev]) (y (Fin.rev b))), ?_⟩
-  funext a
-  show thetaW A (d (Fin.rev a)) (thetaW A (d (Fin.rev a)) (cast _ (y (Fin.rev (Fin.rev a))))) = y a
-  rw [GlobalTheory.CompanionTheory.ThetaInv.thetaW_thetaW_ring]
-  have : ∀ (c : Fin h) (hc : c = a) (hh : GL (Fin (d (Fin.rev c))) A = GL (Fin (d (Fin.rev a))) A),
-      cast hh (y c) = y a := by
-    rintro c rfl hh
-    rfl
-  exact this _ (Fin.rev_rev a) _
-
 theorem thetaW_mem_unipRad_iff {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (hd' : ∑ a, d (Fin.rev a) = N)
     (g : GL (Fin N) A) :
     thetaW A N g ∈ unipRad A (stdBlocks (fun a => d (Fin.rev a)) hd') ↔ g ∈ unipRad A (stdBlocks d hd) := by
@@ -144,34 +132,7 @@ def jacCompThetaW {h N : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (hd' : �
     rw [Submodule.quotEquivOfEq_mk, jac_mk, jac_mk, map_smul, Submodule.quotEquivOfEq_mk, deltaHalf_thetaL]
     simp only [MonoidHom.comp_apply, thetaW_leviEmb d hd hd' g]
 
-theorem jm_comp_theta_eq_dual_reverse (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hGK : GKLocal k) {h N : ℕ}
-    (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N) (π : Representation ℂ (GL (Fin N) k) V) :
-    jm x hd (π.comp (thetaW k N)) = jm (dualRev hA x) (sum_dualRev hA x hd) π := by
-  have hd' : ∑ a, (x (Fin.rev a)).1 = N := sum_dualRev hA x hd
-  have T1 := piTensorRevEquiv (fun a => (x a).rep)
-  have T2 := compEquiv (piTensorEquiv fun a => blockEquiv hA hGK x a) (revPi fun a => GL (Fin (x a).1) k)
-  have T3 := equivOfEq (piTensor_comp_thetaL (k := k) (fun a => (x a).1) fun a => (dualRev hA x a).rep)
-  have T := (T1.trans T2).trans T3
-  unfold jm
-  rw [jhMult_congr_right _ (jacCompThetaW (fun a => (x a).1) hd hd' π), jhMult_congr_left T]
-  exact GlobalTheory.SmGL.EmptyBlocks.jhMult_comp_surjective (thetaL fun a => (x a).1) (thetaL_surjective _) _ _
-
-theorem jm_comp_thetaW (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hGK : GKLocal k) {h N : ℕ}
-    (x y : Fin h → IrrGL (k := k)) (hy : y = fun a => dualCl (x (Fin.rev a))) (hd : ∑ a, (x a).1 = N)
-    (hd' : ∑ a, (y a).1 = N) (π : Representation ℂ (GL (Fin N) k) V) :
-    jm x hd (π.comp (thetaW k N)) = jm y hd' π := by
-  rw [← dualRev_eq hA x] at hy
-  subst hy
-  exact jm_comp_theta_eq_dual_reverse hA hGK x hd π
-
 end Jacquet
-
-theorem jmTheta : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k],
-    GlobalTheory.Published.IrreducibleAdmissibleGL → GlobalTheory.BZSeg.JmTheta k := by
-  intro k _ _ _ _ hA N V _ _ π _ _ a b hd hd'
-  refine jm_comp_thetaW hA (GlobalTheory.CompanionTheory.GKLocalProof.gkLocal hA) _ _ ?_ hd hd' π
-  funext i
-  fin_cases i <;> rfl
 
 end GlobalTheory.CompanionTheory.JmThetaInv
 

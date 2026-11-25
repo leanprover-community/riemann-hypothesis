@@ -422,9 +422,6 @@ variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 def dualFam (E : Fin n → Fin n → Module.End ℂ V) : Fin n → Fin n → Module.End ℂ (Module.Dual ℂ V) :=
   fun a b => (E b a).dualMap
 
-theorem dualFam_apply (E : Fin n → Fin n → Module.End ℂ V) (a b : Fin n) (φ : Module.Dual ℂ V) (v : V) :
-    dualFam E a b φ v = φ (E b a v) := rfl
-
 theorem glRel_dualFam {E : Fin n → Fin n → Module.End ℂ V} (hE : Formalism.REAL.GlRel E) :
     Formalism.REAL.GlRel (dualFam E) := by
   intro a b c d
@@ -669,7 +666,6 @@ theorem zpow_contDiffOn {f : Mat n → ℂ} {s : Set (Mat n)} (hf : ContDiffOn �
   · simp only [_root_.zpow_neg, zpow_natCast]
     exact (hf.pow k).inv fun x hx => pow_ne_zero k (h x hx)
 
-
 theorem muZ_antitone {lam : Fin n → ℤ} {lev : Fin n → ℕ} (hlam : Antitone lam) (hlev : Monotone lev) :
     Antitone (muZ lam lev) := by
   intro a b hab
@@ -699,7 +695,6 @@ theorem lm_ne_zero (j : Fin n) (hj : ¬ (j : ℕ) + 1 < n) {g : Mat n} (hg : g �
 end GlobalTheory.CompanionTheory.ModelS.FMem
 
 namespace GlobalTheory.CompanionTheory.ModelS
-
 
 open FMem in
 theorem fRaw_mem_SmF : ∀ (n : ℕ) (lam : Fin n → ℤ), Antitone lam → ∀ lev : Fin n → ℕ, IsLev lam lev →
@@ -1012,7 +1007,6 @@ theorem integrable_of_cont {f : Matrix.unitaryGroup (Fin n) ℂ → ℂ} (hf : C
 end Int
 
 end GlobalTheory.CompanionTheory.ModelS.KHerm
-
 
 open GlobalTheory.CompanionTheory.ModelS.KHerm in
 theorem GlobalTheory.CompanionTheory.ModelS.ipK_Kf_transpose : ∀ (n : ℕ) [MeasurableSpace (Matrix.unitaryGroup (Fin n) ℂ)] [BorelSpace (Matrix.unitaryGroup (Fin n) ℂ)] (κ : Measure (Matrix.unitaryGroup (Fin n) ℂ)) [IsFiniteMeasure κ], (∀ u : Mat n → ℂ, ContDiffOn ℝ ∞ u (GLs n) → ∀ X : Mat n, Xᴴ = -X → ∫ k : Matrix.unitaryGroup (Fin n) ℂ, Rd X u k.1 ∂κ = 0) → ∀ (a b : Fin n) (x y : GlobalTheory.CompanionTheory.ModelS.SmF n), GlobalTheory.CompanionTheory.ModelS.ipK κ (GlobalTheory.CompanionTheory.ModelS.Kf a b x) y = GlobalTheory.CompanionTheory.ModelS.ipK κ x (GlobalTheory.CompanionTheory.ModelS.Kf b a y) := by

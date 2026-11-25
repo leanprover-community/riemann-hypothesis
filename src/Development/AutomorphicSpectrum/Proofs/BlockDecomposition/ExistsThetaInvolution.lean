@@ -65,8 +65,6 @@ def adjH : Lie E n →L[ℝ] Lie E n :=
       map_smul' := fun t X => by
         rw [show Matrix.of (t • X) = t • Matrix.of X from rfl, Matrix.conjTranspose_smul, star_trivial]; rfl }
 
-theorem adjH_apply (X : Lie E n) (i j : Fin n) : adjH X i j = star (X j i) := rfl
-
 theorem map_thetaR {R S : Type} [CommRing R] [CommRing S] (p : R →+* S) (c : R →+* R) (c' : S →+* S)
     (h : ∀ x, p (c x) = c' (p x)) (g : GL (Fin n) R) :
     GeneralLinearGroup.map p (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map p g) := by
@@ -83,25 +81,6 @@ theorem thetaA_infGL (y : GL (Fin n) (Cinf E)) :
 theorem thetaA_finGL (k : GL (Fin n) (Af E)) : thetaA E n (finGL E n k) = finGL E n (thetaF E n k) :=
   ga_ext (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_finGL, pInf_finGL, map_one])
     (by rw [pFin_finGL]; rfl)
-
-theorem thetaA_kAt (w : InfinitePlace E) (c : UU n) : thetaA E n (kAt w c) = kAt w c := by
-  classical
-  have e : kAt w c = infGL E n (locInf w (Unitary.toUnits c)) := rfl
-  rw [e, thetaA_infGL]
-  congr 1
-  refine Units.ext ?_
-  ext i j v
-  rw [thetaR_val, ← map_inv, ← map_inv]
-  change star ((locInf w (Unitary.toUnits c)⁻¹ : GL (Fin n) (Cinf E)).val j i v) = _
-  rw [locInf_apply, locInf_apply]
-  by_cases hv : v = w
-  · simp only [hv, if_true]
-    change star ((star c.1 : Matrix (Fin n) (Fin n) ℂ) j i) = c.1 i j
-    simp [Matrix.star_apply]
-  · simp only [hv, if_false]
-    by_cases hij : i = j
-    · subst hij; simp
-    · simp [Matrix.one_apply_ne hij, Matrix.one_apply_ne (Ne.symm hij)]
 
 theorem toL_thetaR (y : GL (Fin n) (Cinf E)) :
     toL (thetaR (starRingEnd (Cinf E)) n y).val = adjH (GlobalTheory.ThetaPull.invL (toL y.val)) := by
@@ -131,40 +110,7 @@ theorem lieD_theta (X : Lie E n) {φ : GA E n → ℂ} (hφ : φ ∈ Sm E n) (g 
   rw [e.fderiv_eq, h2.fderiv]
   simp
 
-
-open ComplexConjugate in
-theorem atEmb_conjugate (w : InfinitePlace E) (z : ℂ) :
-    atEmb (ComplexEmbedding.conjugate w.embedding) z = atEmb w.embedding (conj z) := by
-  have hne : w.embedding ≠ ComplexEmbedding.conjugate w.embedding := fun h =>
-    (InfinitePlace.isComplex_iff.1 (IsTotallyComplex.isComplex w)) (ComplexEmbedding.isReal_iff.2 h.symm)
-  unfold atEmb
-  rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg hne, if_pos rfl]
-
-
-open ComplexConjugate in
-theorem star_atEmb (w : InfinitePlace E) (z : ℂ) : star (atEmb w.embedding z) = atEmb w.embedding (conj z) := by
-  funext v
-  simp only [atEmb, InfinitePlace.mk_embedding, if_true, Pi.star_apply]
-  by_cases hv : v = w
-  · subst hv; simp
-  · classical
-    rw [Pi.single_eq_of_ne hv, Pi.single_eq_of_ne hv, star_zero]
-
 def sg (w : InfinitePlace E) (a b : Fin n) (z : ℂ) : Lie E n := toL (Matrix.single a b (atEmb w.embedding z))
-
-open ComplexConjugate in
-theorem adjH_sg (w : InfinitePlace E) (a b : Fin n) (z : ℂ) : adjH (sg w a b z) = sg w b a (conj z) := by
-  funext i j
-  rw [adjH_apply]
-  change star (Matrix.single a b (atEmb w.embedding z) j i) = Matrix.single b a (atEmb w.embedding (conj z)) i j
-  rw [Matrix.single_apply, Matrix.single_apply]
-  by_cases h : a = j ∧ b = i
-  · rw [if_pos h, if_pos h.symm, star_atEmb]
-  · rw [if_neg h, if_neg fun h' => h h'.symm, star_zero]
-
-theorem Eop_apply (τ : E →+* ℂ) (a b : Fin n) (φ : Sm E n) (g : GA E n) :
-    (Eop τ a b φ).1 g = (1 / 2 : ℂ) * (lieD (toL (Matrix.single a b (atEmb τ 1))) φ.1 g -
-      Complex.I * lieD (toL (Matrix.single a b (atEmb τ Complex.I))) φ.1 g) := rfl
 
 def thV (π : CuspSub E n) (h : ThetaFix π) : Module.End ℂ π.V where
   toFun ψ := ⟨(h.2 ψ.1 ψ.2).choose, (h.2 ψ.1 ψ.2).choose_spec.1⟩

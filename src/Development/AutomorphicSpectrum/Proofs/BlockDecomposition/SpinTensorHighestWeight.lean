@@ -156,12 +156,6 @@ open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
 
 namespace GlobalTheory.CompanionTheory.PresRho
 
-theorem eq_zero_of_sum_weightVec {ι κ A : Type} [DecidableEq ι] [AddCommGroup A] [Module ℂ A]
-    (T : κ → Module.End ℂ A) (f : ι → κ → ℂ) (hf : Function.Injective f) (s : Finset ι) :
-    ∀ v : ι → A, (∀ i ∈ s, ∀ k, T k (v i) = f i k • v i) → ∑ i ∈ s, v i = 0 →
-      ∀ i ∈ s, v i = 0 :=
-  _root_.UpperTheory.Reformulated.B.P6.r14a.GlobalTheory.CompanionTheory.PresRho.eq_zero_of_sum_weightVec T f hf s
-
 def wtPart {n : ℕ} (x : U n) (w : Fin n → ℤ) : U n :=
   ∑ m ∈ (pbw.repr x).support.filter (fun m => wt m = w), pbw.repr x m • canon m
 
@@ -1140,8 +1134,6 @@ theorem tw_rel {A : Type*} [Ring A] {E : Fin n → Fin n → A} (h : Formalism.R
 
 def wd {A : Type*} [Ring A] (T : Fin n → Fin n → A) (l : List (Fin n × Fin n)) : A :=
   (l.map fun p => T p.1 p.2).prod
-
-@[simp] theorem wd_nil {A : Type*} [Ring A] (T : Fin n → Fin n → A) : wd T [] = 1 := rfl
 
 @[simp] theorem wd_cons {A : Type*} [Ring A] (T : Fin n → Fin n → A) (p : Fin n × Fin n)
     (l : List (Fin n × Fin n)) : wd T (p :: l) = T p.1 p.2 * wd T l := by

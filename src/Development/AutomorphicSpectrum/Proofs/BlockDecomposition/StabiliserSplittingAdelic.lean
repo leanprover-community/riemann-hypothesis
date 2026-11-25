@@ -237,7 +237,6 @@ theorem blk_mul_stabG {g h : GL (Fin (M + 2)) A} (hg : g ∈ stabG s J) (hh : h 
   rw [Units.val_mul]
   exact blk_mul (stabG_rest_zero hg) (stabG_row hh)
 
-
 variable (s J) in
 def piG : stabG s J →* GL (Fin M) A :=
   MonoidHom.mk' (fun g =>
@@ -271,13 +270,6 @@ def nM (s : A →+* A) (J : Matrix (Fin M) (Fin M) A) (w : Fin M → A) (z : A) 
   Matrix.of (Fin.cons (Fin.cons 1 (Fin.cons z fun j => -rowv s J w j))
     (Fin.cons (Fin.cons 0 (Fin.cons 1 fun _ => 0))
       fun i => Fin.cons 0 (Fin.cons (w i) ((1 : Matrix (Fin M) (Fin M) A) i))))
-
-section NEntries
-variable (s J) (w : Fin M → A) (z : A)
-@[simp] theorem nM_rest_one (i : Fin M) : nM s J w z i.succ.succ 1 = w i := rfl
-@[simp] theorem nM_rest_rest (i j : Fin M) :
-    nM s J w z i.succ.succ j.succ.succ = (1 : Matrix (Fin M) (Fin M) A) i j := rfl
-end NEntries
 
 theorem rowv_add (s : A →+* A) (J : Matrix (Fin M) (Fin M) A) (w w' : Fin M → A) (b : Fin M) :
     rowv s J (w + w') b = rowv s J w b + rowv s J w' b := by

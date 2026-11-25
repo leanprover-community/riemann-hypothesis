@@ -168,11 +168,6 @@ def bk (n k : ℕ) : Fin n → FreeAlgebra ℂ (Fin n) :=
   Nat.rec (fun _ => 1) (fun _ f a => f a * (FreeAlgebra.ι ℂ a + algebraMap ℂ _ ((a : ℕ) : ℂ)) -
     ∑ c ∈ Finset.Iio a, f c) k
 
-theorem bk_zero (a : Fin n) : bk n 0 a = 1 := rfl
-
-theorem bk_succ (k : ℕ) (a : Fin n) : bk n (k + 1) a =
-    bk n k a * (FreeAlgebra.ι ℂ a + algebraMap ℂ _ ((a : ℕ) : ℂ)) - ∑ c ∈ Finset.Iio a, bk n k c := rfl
-
 theorem sum_three {M : Type} [AddCommMonoid M] (f : Fin n → M) (a : Fin n) :
     ∑ c, f c = ∑ c ∈ Finset.Iio a, f c + f a + ∑ c ∈ Finset.Ioi a, f c := by
   have h : (Finset.univ : Finset (Fin n)) = insert a (Finset.Iio a ∪ Finset.Ioi a) := by
@@ -512,7 +507,6 @@ theorem chain_list (E : Fin n → Fin n → Module.End ℂ V) (hE : GlRel E) (j 
     rw [e, hw2, map_add (f := _), map_smul, hz1, CompanionTheory.D.LK.lift_bd T E E hTE, map_add (f := _), map_smul, smul_add, smul_smul, add_assoc]
 
 end
-
 
 end GlobalTheory.CompanionTheory.RealMult.Kost
 end -- clump:auto
@@ -900,7 +894,6 @@ theorem isN2_of_gelfand_values_eq (lam : Fin n → ℤ) (lev : Fin n → ℕ) (B
     simp only [Function.comp_apply, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at h1 ⊢
     rw [h1]
     ring
-
 
 open CompanionTheory.D.LK (LocFin) in
 theorem van_cn {lam : Fin n → ℤ} {lev : Fin n → ℕ} {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]

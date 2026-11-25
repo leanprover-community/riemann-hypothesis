@@ -73,19 +73,6 @@ theorem one_le_lgArg {n : ℕ} (p : Mat n × Mat n) : 1 ≤ lgArg p := by
     Finset.sum_nonneg fun a _ => Finset.sum_nonneg fun b _ => by positivity
   linarith
 
-theorem entry_sq_le_lgArg {n : ℕ} (p : Mat n × Mat n) (a b : Fin n) :
-    ‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2 ≤ lgArg p := by
-  unfold lgArg
-  have h1 : ‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2 ≤ ∑ b, (‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2) :=
-    Finset.single_le_sum (f := fun b => ‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2)
-      (fun b _ => by positivity) (Finset.mem_univ b)
-  have h2 : ∑ b, (‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2) ≤ ∑ a, ∑ b, (‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2) :=
-    Finset.single_le_sum (f := fun a => ∑ b, (‖p.1 a b‖ ^ 2 + ‖p.2 a b‖ ^ 2))
-      (fun a _ => Finset.sum_nonneg fun b _ => by positivity) (Finset.mem_univ a)
-  linarith
-
-theorem lg_eq_log_lgArg {n : ℕ} (y : Mat n) : lg y = Real.log (lgArg (y, y⁻¹)) := rfl
-
 theorem continuousOn_matInv {n : ℕ} : ContinuousOn (fun y : Mat n => y⁻¹) (GLs n) := by
   have hdet : ContinuousOn (fun y : Mat n => (y.det)⁻¹) (GLs n) :=
     (continuous_id.matrix_det).continuousOn.inv₀ fun y hy => hy
@@ -103,23 +90,6 @@ theorem continuousOn_lg {n : ℕ} : ContinuousOn (lg (n := n)) (GLs n) := by
   exact ContinuousOn.log h fun y _ => (lt_of_lt_of_le one_pos (one_le_lgArg (y, y⁻¹))).ne'
 
 def pairOf {n : ℕ} (y : G n) : Mat n × Mat n := (y.val, (y⁻¹ : G n).val)
-
-theorem pairOf_isInducing {n : ℕ} : Topology.IsInducing (pairOf (n := n)) := by
-  have h := (Units.isEmbedding_embedProduct (M := Mat n)).isInducing
-  have h2 : Topology.IsInducing (fun p : Mat n × (Mat n)ᵐᵒᵖ => (p.1, p.2.unop)) :=
-    ((Homeomorph.refl (Mat n)).prodCongr MulOpposite.opHomeomorph.symm).isInducing
-  exact h2.comp h
-
-theorem isCompact_entryBox {n : ℕ} (r : ℝ) : IsCompact {m : Mat n | ∀ a b, ‖m a b‖ ≤ r} := by
-  have h : IsCompact (Set.pi Set.univ fun _ : Fin n =>
-      Set.pi Set.univ fun _ : Fin n => Metric.closedBall (0 : ℂ) r) :=
-    isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_closedBall _ _
-  have e : {m : Fin n → Fin n → ℂ | ∀ a b, ‖m a b‖ ≤ r} = Set.pi Set.univ fun _ : Fin n =>
-      Set.pi Set.univ fun _ : Fin n => Metric.closedBall (0 : ℂ) r := by
-    ext m
-    simp [Set.mem_pi]
-  have h' : IsCompact {m : Fin n → Fin n → ℂ | ∀ a b, ‖m a b‖ ≤ r} := e ▸ h
-  exact h'
 
 theorem isCompact_lg_le {n : ℕ} (R : ℝ) : IsCompact {y : G n | lg y.val ≤ R} := by
   apply GlobalTheory.CompanionTheory.LengthGL.isCompact_G

@@ -63,9 +63,6 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 noncomputable def halfProj (T : V →ₗ[ℂ] V) (s : ℂ) : V →ₗ[ℂ] V :=
   (1 / 2 : ℂ) • (LinearMap.id + s • T)
 
-theorem halfProj_apply (T : V →ₗ[ℂ] V) (s : ℂ) (x : V) :
-    halfProj T s x = (1 / 2 : ℂ) • (x + s • T x) := rfl
-
 theorem map_halfProj {T : V →ₗ[ℂ] V} (hT2 : ∀ x, T (T x) = x) {s : ℂ} (hs2 : s * s = 1) (x : V) :
     T (halfProj T s x) = s • halfProj T s x := by
   have e : (s * s) • T x = T x := by rw [hs2, one_smul]

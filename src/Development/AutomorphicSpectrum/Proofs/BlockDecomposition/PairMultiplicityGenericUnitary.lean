@@ -232,14 +232,6 @@ theorem tw_swap {i j : Ix n} (h : i ≠ j) : tw j i = -tw i j := by
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem liftR_apply {V' : Type} [AddCommGroup V'] [Module ℂ V'] (T : V →ₗ[ℂ] V') (x : Cr n V)
-    (A : Finset (Ix n)) : liftR n T x A = T (x A) := rfl
-
-theorem br_lift_lift (T S : Module.End ℂ V) :
-    br (liftR n T : Module.End ℂ (Cr n V)) (liftR n S) = liftR n (br T S) := by
-  refine LinearMap.ext fun x => funext fun A => ?_
-  simp [br, liftR_apply]
-
 end Car
 
 section Coefficients
@@ -1339,7 +1331,6 @@ theorem freeQ (n : ℕ) : ∃ (W : Type) (_ : AddCommGroup W) (_ : Module ℂ W)
       (Submodule.smul_mem _ _ (hF.d_mem _ k z hz))
   · intro i z hz
     simp [d', hF.d_zero _ z hz]
-
 
 open scoped TensorProduct in
 theorem coverQ (lev : Fin n → ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (E1 E2 : Fin n → Fin n → Module.End ℂ V)
