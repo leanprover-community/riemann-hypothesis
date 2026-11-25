@@ -70,14 +70,6 @@ theorem glueU {J : Type} (V : X.Opens) (W : J → X.Opens) (hW : ∀ i, W i ≤ 
   refine ⟨Units.mkOfMulEqOne (s : Γ(X, V)) t hst, fun i => Units.ext ?_⟩
   exact hs i
 
-theorem gU_cocycle {L : LB X} (hL : L.IsLB) {i j k : L.ι} (x : X) (hi : x ∈ L.U i) (hj : x ∈ L.U j)
-    (hk : x ∈ L.U k) :
-    gU x (⟨hi, hj⟩ : x ∈ L.U i ⊓ L.U j) (L.g i j) * gU x (⟨hj, hk⟩ : x ∈ L.U j ⊓ L.U k) (L.g j k) =
-      gU x (⟨hi, hk⟩ : x ∈ L.U i ⊓ L.U k) (L.g i k) := by
-  have e := congrArg (gU x (⟨⟨hi, hj⟩, hk⟩ : x ∈ L.U i ⊓ L.U j ⊓ L.U k)) (hL.cocycle i j k)
-  exact (congrArg₂ (· * ·) (_root_.ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison.gU_res _ _ _ _) (_root_.ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison.gU_res _ _ _ _)).symm.trans
-    ((map_mul _ _ _).symm.trans (e.trans (_root_.ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison.gU_res _ _ _ _)))
-
 theorem gU_self {L : LB X} (hL : L.IsLB) {i : L.ι} (x : X) (hi : x ∈ L.U i) :
     gU x (⟨hi, hi⟩ : x ∈ L.U i ⊓ L.U i) (L.g i i) = 1 := by
   exact (_root_.ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison.gU_res _ _ _ _).symm.trans ((congrArg (gU x hi) (hL.g_self i)).trans (map_one _))

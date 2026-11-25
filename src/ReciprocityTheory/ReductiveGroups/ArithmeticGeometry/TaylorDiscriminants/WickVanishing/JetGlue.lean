@@ -14,11 +14,6 @@ namespace ReciprocityTheory.ChartRestriction.G.TB.JGPf
 
 universe u
 
-theorem specMap_stalkCongr {X : Scheme.{u}} {x y : X} (e : x = y) :
-    Spec.map (X.presheaf.stalkCongr (Inseparable.of_eq e)).hom ≫ X.fromSpecStalk x = X.fromSpecStalk y := by
-  subst e
-  simp
-
 
 
 theorem ext_of_fromSpecStalk {Y X : Scheme.{u}} (f g : Y ⟶ X)
