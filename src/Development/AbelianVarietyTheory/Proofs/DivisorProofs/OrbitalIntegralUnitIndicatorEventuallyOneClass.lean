@@ -29,12 +29,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-theorem _root_.GlobalTheory.T.compactPart_centralizer_le_conj_integralUnitary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E)
-    (P₀ : (w.adicCompletionIntegers E)[X]), IsCoprime P₀ (derivative P₀) →
-    ∀ γ : UL n w, γ.1.val.charpoly = P₀.map (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)) →
-    ∀ g : UL n w, g⁻¹ * γ * g ∈ KL n w →
-    cptPart (twCent (MonoidHom.id (UL n w)) γ) ≤ (KL n w).map (MulAut.conj g).toMonoidHom := by
-  first | exact @GlobalTheory.CptCent.cptPart_le_conj_KL
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompactPartCentralizerLeConjIntegralUnitaryStatement =====
@@ -855,7 +849,7 @@ theorem orbUnit_ae : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr
   have hγ' : γ.1.val.charpoly = P₀.map (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)) := by
     rw [hγ, hmap]
   refine ⟨?_, ?_, ?_⟩
-  · exact twOrb_unit (KL n w) γ (GlobalTheory.BCT.OrbitT.orbit_main E n w hσσ hv P₀ hcop γ hγ') (GlobalTheory.T.compactPart_centralizer_le_conj_integralUnitary E n w P₀ hcop γ hγ')
+  · exact twOrb_unit (KL n w) γ (GlobalTheory.BCT.OrbitT.orbit_main E n w hσσ hv P₀ hcop γ hγ') (GlobalTheory.CptCent.cptPart_le_conj_KL E n w P₀ hcop γ hγ')
   · rw [← hγ]; exact GlobalTheory.T.localSign_full_charpoly_eq_one E n w hv γ.1
   · rintro Q₁ hQ ⟨g, hg⟩
     rw [← GlobalTheory.T.localSign_kernel_charFactor_conj_invariant E n w hv Q₁ γ g]

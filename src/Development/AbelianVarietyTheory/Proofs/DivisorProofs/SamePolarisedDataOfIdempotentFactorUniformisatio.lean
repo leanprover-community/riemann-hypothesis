@@ -191,9 +191,6 @@ namespace GlobalTheory.Mum.FactorPol
 
 open GlobalTheory.CechPic GlobalTheory.ZH.EndoExtend GlobalTheory.Mum.Two GlobalTheory.UT
 
-theorem lbIso_star : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ (O : Type) [Ring O] [StarRing O] [Module O D.toPre.X] (o : D.toPre.OAct O) (oA : A.OAct O) (oG : RingAct G O), U.toUnifPre.OLinear O o oA oG → ∀ a : O, LBIso (cubeLB G ![fst G G ≫ oG.act a, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ oG.act (star a)] U.LG.L) := by
-  exact _root_.GlobalTheory.Mum.UnifAdjoint.lbIso_cubeLB_star_ring
-
 section Comp
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D₁ D₂ D₃ : DegData R I}
@@ -254,8 +251,6 @@ theorem lbIso_proj {S : Scheme.{0}} {G G' : Over S} [GrpObj G] [IsCommMonObj G] 
   exact (cls_eq_iff (LB.isLB_linComb hL _ _) (LB.isLB_linComb hL' _ _)).1
     ((cls_cubeLB G _ hL).trans (e₃.trans (e₄.symm.trans (cls_cubeLB G' _ hL').symm)))
 
-
-
 theorem samePol_of_unif_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D D' : DegData R (maximalIdeal R)) (F : Factor D.toPre D'.toPre) (A' : PolAV (Sp (FractionRing R))) (G' : Over (Sp R)) [GrpObj G'] [IsCommMonObj G'], IsSemiAbelian G' → ∀ (U' : Unif (maximalIdeal R) D' A' G') (oA : A'.OAct F.O) (oG : RingAct G' F.O), U'.toUnifPre.OLinear F.O F.o oA oG → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (inc : G ⟶ G') (pr : G' ⟶ G), IsMonHom inc → IsMonHom pr → inc ≫ pr = 𝟙 G → pr ≫ inc = oG.act F.e → ∀ (D₀ : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (U : Unif (maximalIdeal R) D₀ A G), LBIso (abelian₂ G U.LG.L) ((abelian₂ G' U'.LG.L).pull (lift (fst G G ≫ inc) (snd G G ≫ inc ≫ oG.act F.f) : G2 G ⟶ G2 G').left) → SamePol D.toPre D₀.toPre := by
   intro R _ _ _ hR D D' F A' G' _ _ hG' U' oA oG lin G _ _ hG inc pr hinc hpr ip pi D₀ A U H
   have := hR.2
@@ -276,10 +271,10 @@ theorem samePol_of_unif_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLoc
   have hk : ∀ χ, h (k χ) = star F.e • χ := congrFun ((un' _).2 _ _ (pi ▸ onTorus_comp th tk) (il _))
   have hinj : Function.Injective h := Function.LeftInverse.injective kh
   have L : Lin U'.toUnifPre U.toUnifPre pr prB h := ⟨hpr, hprB, qpr, th⟩
-  have C := GlobalTheory.T.torusCoordinates_compare_normalisedGenerators R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr prB h L
+  have C := GlobalTheory.Mum.Two.coord_of_lin R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr prB h L
   obtain ⟨c, hc, gc⟩ : ∃ c : A'.A ⟶ A.A, IsMonHom c ∧ Gen₀ U'.toUnifPre U.toUnifPre pr c :=
     ⟨U'.gen.inv ≫ (Over.pullback (jK R)).map pr ≫ U.gen.hom, inferInstance, by simp [Gen₀]⟩
-  have adj := lbIso_star R hA D' A' G' hG' U' F.O F.o oA oG lin
+  have adj := GlobalTheory.Mum.UnifAdjoint.lbIso_cubeLB_star_ring R hA D' A' G' hG' U' F.O F.o oA oG lin
   have ex := fun x => (functorial_of_unif R _ hA D' A' G' hG' U').1 (oG.act x) (oA.act x) (oG.hom x) (oA.hom x) (lin.ext x)
   obtain ⟨E, eG, eA⟩ := ex (star (F.f * F.e) * F.e)
   obtain ⟨E', eG', -⟩ := ex (star (star (F.f * F.e) * F.e))

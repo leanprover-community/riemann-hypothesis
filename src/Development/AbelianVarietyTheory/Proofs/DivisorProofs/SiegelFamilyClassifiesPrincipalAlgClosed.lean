@@ -510,7 +510,6 @@ theorem exists_isPolForm {R : Type} [CommRing R] {I : Ideal R} {κ : DividedPowe
   have hm : ∀ c, c ∈ prim κ t A := fun c ↦ C.allPrim ▸ trivial
   exact ⟨_, n, fun k ↦ ⟨a k, hm _⟩, fun k ↦ ⟨b k, hm _⟩, hz, rfl⟩
 
-
 open GlobalTheory.Published.GrothendieckMessing in
 theorem exists_lift_lam : ∀ (R R₀ : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [CommRing R₀] [IsLocalRing R₀] (π : R →+* R₀), Function.Surjective π → RingHom.ker π ^ 2 = ⊥ → ∀ (Y₀ : Over (Sp R₀)) [GrpObj Y₀], IsAbelianScheme Y₀ → ∀ L₀ : LB Y₀.left, L₀.IsLB → RelAmple Y₀ L₀ → KTriv Y₀ L₀ → ∃ (Y : Over (Sp R)) (_ : GrpObj Y) (i : Y₀.left ⟶ Y.left) (l : (Y₀ ⊗ Y₀).left ⟶ (Y ⊗ Y).left) (Q : LB (Y ⊗ Y).left), IsAbelianScheme Y ∧ IsGrpPullback Y₀ Y (spMap π) i ∧ IsSquare i l ∧ Q.IsLB ∧ GlobalTheory.AbDual.IsAdditive Q ∧ GlobalTheory.AbDual.IsAdditive (GlobalTheory.AbDual.swap Q) ∧ LBIso (Q.pull l) (abelian₂ Y₀ L₀) := by
   intro R R₀ _ _ _ _ _ π hπ hI2 Y₀ _ hY₀ L₀ hL₀ hamp hK
@@ -638,8 +637,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
-
-
 
 theorem GlobalTheory.Mum.exists_lift_of_lam_lift_sq : ∀ (R R₀ : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [CommRing R₀] [IsLocalRing R₀] (π : R →+* R₀), Function.Surjective π → RingHom.ker π ^ 2 = ⊥ → ∀ (Y₀ : Over (Sp R₀)) [GrpObj Y₀] (Y : Over (Sp R)) [GrpObj Y] (i : Y₀.left ⟶ Y.left) (l : (Y₀ ⊗ Y₀).left ⟶ (Y ⊗ Y).left), IsAbelianScheme Y₀ → IsAbelianScheme Y → IsGrpPullback Y₀ Y (spMap π) i → IsSquare i l → ∀ (L₀ : LB Y₀.left) (Q : LB (Y ⊗ Y).left), L₀.IsLB → Q.IsLB → GlobalTheory.AbDual.IsAdditive Q → GlobalTheory.AbDual.IsAdditive (GlobalTheory.AbDual.swap Q) → LBIso (Q.pull l) (abelian₂ Y₀ L₀) → ∃ L : LB Y.left, L.IsLB ∧ LBIso L₀ (L.pull i) := by
   intro R R₀ _ _ _ _ _ π hπ hI Y₀ _ Y _ i l hY₀ hY hgp hsq L₀ Q hL₀ hQ _ _ hΛ
@@ -828,7 +825,6 @@ theorem relAmple_diag_lam {R : Type} [CommRing R] [IsLocalRing R] [IsNoetherianR
   refine Eq.trans ?_ (eq_neg_of_add_eq_zero_left h₂.symm).symm
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   abel
-
 
 end GlobalTheory.EighthPowerLocal
 
@@ -1416,24 +1412,10 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.SiegelFieldClass
 
-theorem dense_generic {A V : Type} [CommRing A] [CommRing V] [IsDomain V] (β : A →+* V)
-    (hβ : Function.Injective β) : Dense {x : Sp V | (spMap β x).asIdeal = ⊥} := by
-  let ξ : Sp V := (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum V)
-  have hξ : ξ ∈ {x : Sp V | (spMap β x).asIdeal = ⊥} := by
-    show (PrimeSpectrum.comap (CommRingCat.ofHom β).hom ⟨⊥, Ideal.isPrime_bot⟩).asIdeal = ⊥
-    simp only [PrimeSpectrum.comap_asIdeal, CommRingCat.hom_ofHom]
-    exact (RingHom.injective_iff_ker_eq_bot β).1 hβ
-  have hd : Dense ({ξ} : Set (Sp V)) := by
-    rw [dense_iff_closure_eq]
-    show closure ({(⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum V)} : Set (PrimeSpectrum V)) = Set.univ
-    rw [PrimeSpectrum.closure_singleton]
-    exact PrimeSpectrum.zeroLocus_bot
-  exact hd.mono (Set.singleton_subset_iff.2 hξ)
-
 theorem classifies_algClosed : ∀ (g n : ℕ), 1 ≤ g → 3 ≤ n → Odd n → ∀ F : SFam g n (zetaAway n), ∀ (K : Type) [Field K] [IsAlgClosed K] (β : cycAway n →+* K) (c : SiegPre g n (zetaAway n) (spMap β)), c.Principal → ∃ f : Sp K ⟶ F.X, f ≫ F.s = spMap β ∧ SiegPB c F.univ f := by
   intro g n hg hn hodd F K _ _ β c hc
   obtain ⟨V, _, _, βV, π, cV, hinj, hcomp, hpr, hpb⟩ := _root_.GlobalTheory.SiegLift0.exists_lift_domain g n hg hn hodd K β c hc
-  obtain ⟨f, hf, hfpb⟩ := F.rep (Sp V) (spMap βV) cV inferInstance (dense_generic βV hinj) hpr
+  obtain ⟨f, hf, hfpb⟩ := F.rep (Sp V) (spMap βV) cV inferInstance (GlobalTheory.SiegelFamilyBaseChange.dense_generic βV hinj) hpr
   refine ⟨spMap π ≫ f, ?_, GlobalTheory.SiegelPullComp.pb_comp hfpb hpb⟩
   rw [Category.assoc, hf, ← hcomp]
   simp [spMap, CommRingCat.ofHom_comp, Spec.map_comp]

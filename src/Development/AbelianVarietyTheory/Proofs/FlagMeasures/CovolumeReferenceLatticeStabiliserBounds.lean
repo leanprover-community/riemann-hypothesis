@@ -1526,10 +1526,6 @@ private lemma Hpk_esI_apply' (a : Fin r) (i : Fin (2 * r + k + 1)) :
   simp only [Hpk, esI, eI, Fin.ext_iff, Fin.val_mk]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-theorem herm_esI (u : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
-    herm (Hpk k r) u (bvec (esI k r a)) = u (eI k r a) := by
-  simp [herm, bvec, dotProduct, Matrix.mulVec, Pi.single_apply, Hpk_esI_apply']
-
 theorem coord_eq_zero {g : Mat k r} (hg : g ∈ UH (Hpk k r))
     (hX : ∀ a : Fin r, a.val < j → g⁻¹ *ᵥ bvec (eI k r a) ∈ XstJ k r j ∧ g *ᵥ bvec (eI k r a) ∈ XstJ k r j)
     {u : Fin (2 * r + k + 1) → ℂ} (hu : ∀ a : Fin r, a.val < j → herm (Hpk k r) u (g⁻¹ *ᵥ bvec (eI k r a)) = 0)
@@ -1590,7 +1586,7 @@ theorem coord_eq_zero {g : Mat k r} (hg : g ∈ UH (Hpk k r))
     | zero => simp [herm]
     | add x₁ x₂ _ _ h₁ h₂ => rw [Matrix.mulVec_add, GlobalTheory.DegVol.RealMat.herm_add_right, h₁, h₂, add_zero]
     | smul c y _ h => rw [Matrix.mulVec_smul, GlobalTheory.DegVol.RealMat.herm_smul_right, h, mul_zero]
-  rw [← herm_esI u b, ← hxe, Matrix.mulVecLin_apply]
+  rw [← GlobalTheory.Amp.NfMid.herm_es u b, ← hxe, Matrix.mulVecLin_apply]
   exact hzero x hx
 
 theorem inWb_of_mem_Wn : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : HermSpace K V) (r : ℕ) (N : NF H r) (k : ℕ) (σ : K →+* ℂ) (ρ : ℝ) (β : Fin r → ℕ) (Φ : V → Fin (2 * r + k + 1) → ℂ) (z z' : Fin (2 * r + k + 1) → ℂ) (g : Mat k r), 0 < ρ → IsFrameOf N k σ ρ β Φ z z' g → ∀ w ∈ N.Wn, inWb k r (Φ w) := by
@@ -1630,7 +1626,7 @@ theorem inWb_of_mem_Wn : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K]
   have hhi : ∀ b : Fin r, N.j ≤ b.val → Φ w (eI k r b) = 0 := by
     intro b hb
     have h1 := hiso w (N.ist b)
-    rw [hist b hb, GlobalTheory.DegVol.RealMat.herm_smul_right, herm_esI, hBist b hb, map_zero] at h1
+    rw [hist b hb, GlobalTheory.DegVol.RealMat.herm_smul_right, GlobalTheory.Amp.NfMid.herm_es, hBist b hb, map_zero] at h1
     exact (mul_eq_zero.1 h1).resolve_left
       (star_ne_zero.2 (Complex.ofReal_ne_zero.2 (inv_ne_zero (pow_pos hρ _).ne')))
 

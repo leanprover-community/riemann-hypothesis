@@ -57,8 +57,8 @@ theorem twOrb_restr_eq_finprod : ∀ {X V : Type} {Y : V → Type} [Group X] [To
   rw [GlobalTheory.EulerAbs.twOrb_eq_finsum_twTerm]
   simp only [GlobalTheory.EulerAbs.twOrb_eq_finsum_twTerm]
   exact GlobalTheory.T.finsum_doubleCoset_restrictedProduct_eq_prod pf K hX (twCent θ δ) (fun v => twCent (θv v) (pf v δ)) (GlobalTheory.T.mem_twistedCentralizer_restrictedProduct_iff pf K hX θ θv hθ δ) _ _
-    (GlobalTheory.T.twistedOrbitalTerm_eq_finprod_localTerms pf K hX θ θv hθ hθK δ f fv hf hcomm hidx hcpt (hev.mono fun v h => ⟨h.1, h.2.1, h.2.2.1⟩))
-    (fun v t ht y k hk => GlobalTheory.T.twistedOrbitalIntegralPointTerm_doubleCoset_invariant _ _ _ _ (hcomm v) (hidx v) t ht y k hk)
+    (GlobalTheory.EulerAbs.twTerm_eq_finprod pf K hX θ θv hθ hθK δ f fv hf hcomm hidx hcpt (hev.mono fun v h => ⟨h.1, h.2.1, h.2.2.1⟩))
+    (fun v t ht y k hk => GlobalTheory.EulerAbs.twTerm_inv _ _ _ _ (hcomm v) (hidx v) t ht y k hk)
     (fun v => (hfin v).subset fun q hq => GlobalTheory.T.exists_ne_zero_of_twistedOrbitalPointTerm_ne_zero _ _ _ _ _ hq)
     (hev.mono fun v h => ⟨by rw [h.1]; exact _root_.GlobalTheory.EulerAbs.twTerm_one_eq_one _ _ _ (hθK v) h.2.1 h.2.2.1, fun y hy => by
         obtain ⟨k, hk, hne⟩ := _root_.GlobalTheory.EulerAbs.exists_ne_zero_of_twTerm_ne_zero _ _ _ _ _ hy

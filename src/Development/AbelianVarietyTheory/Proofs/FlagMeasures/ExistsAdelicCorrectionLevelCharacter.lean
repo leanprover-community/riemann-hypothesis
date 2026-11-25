@@ -130,10 +130,6 @@ theorem prV_sum_IE_not (S : Finset (HeightOneSpectrum (𝓞 F)))
   rw [map_sum]
   exact Finset.sum_eq_zero fun v hv => afsplit_prV_IE_ne v w (fun h => hw (h ▸ hv)) (u v)
 
-private theorem prV_mem_of_mem_OAd (v : HeightOneSpectrum (𝓞 F)) {a : E ⊗[F] Ad F} (ha : a ∈ OAd F E) :
-    prV (E := E) v a ∈ intV E v := by
-  apply _root_.GlobalTheory.St.G.FrLoc.prV_OAd <;> assumption
-
 theorem prVec_span (v : HeightOneSpectrum (𝓞 F)) {k : ℕ} (b : Fin k → Fin n → E ⊗[F] Ad F) (T : Set (Fin k))
     {x : Fin n → E ⊗[F] Ad F} (hx : x ∈ Submodule.span (OAd F E) (b '' T)) :
     prVec v x ∈ Submodule.span (intV E v) ((fun j => prVec v (b j)) '' T) := by
@@ -154,7 +150,7 @@ theorem prVec_span (v : HeightOneSpectrum (𝓞 F)) {k : ℕ} (b : Fin k → Fin
     rw [h0]
     exact Submodule.add_mem _ hz hw
   | smul c z _ hz =>
-    have h0 : prVec v (c • z) = (⟨prV (E := E) v c, prV_mem_of_mem_OAd v c.2⟩ : intV E v) • prVec v z := by
+    have h0 : prVec v (c • z) = (⟨prV (E := E) v c, GlobalTheory.St.G.FrLoc.prV_OAd v c.2⟩ : intV E v) • prVec v z := by
       funext i
       show prV (E := E) v ((c : E ⊗[F] Ad F) * z i) = prV (E := E) v c * prV (E := E) v (z i)
       exact map_mul _ _ _
@@ -442,7 +438,7 @@ theorem chi_local (Fr : AdFrame σ J (hat F L) (gp 0 * gp 1) k) (hp : ∀ i, (gp
       exact Subring.zero_mem _
     · rw [Finset.sum_eq_zero (fun v hv => afsplit_prV_eps_ne v w (fun h => hw (h ▸ hv))), sub_zero, one_mul,
         ha, map_mul, prV_algebraMap]
-      exact Subring.mul_mem _ (unit_mem w _ (fun h => hw ((hmemS w).mpr h))) (prV_mem_of_mem_OAd w hsup)
+      exact Subring.mul_mem _ (unit_mem w _ (fun h => hw ((hmemS w).mpr h))) (GlobalTheory.St.G.FrLoc.prV_OAd w hsup)
   have hsplit : a = ∑ v ∈ S, afsplitEps E v * a + (1 - ∑ v ∈ S, afsplitEps E v) * a := by
     rw [← Finset.sum_mul]
     ring
@@ -725,7 +721,6 @@ section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F]
 
-
 omit [NumberField F] in
 theorem not_both_mem {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) (v : HeightOneSpectrum (𝓞 F))
     (h1 : (p : 𝓞 F) ∈ v.asIdeal) (h2 : (q : 𝓞 F) ∈ v.asIdeal) : False := by
@@ -753,7 +748,6 @@ theorem finite_mem {p : ℕ} (hp : p ≠ 0) : {v : HeightOneSpectrum (𝓞 F) | 
 
 variable {E : Type} [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-
 omit [NumberField E] in
 theorem prVec_sub_one_mulVec (v : HeightOneSpectrum (𝓞 F)) (y : GL (Fin n) (E ⊗[F] Ad F))
     (x : Fin n → E ⊗[F] Ad F) :
@@ -773,8 +767,6 @@ theorem mem_hat_of_loc {L : Submodule (𝓞 E) (Fin n → E)} (hL : IsLat L) (v 
   · rw [GlobalTheory.St.G.Carry.prVec_single_ne v w hw]; exact Submodule.zero_mem _
 
 end SlopeTestRemainingChoices
-
-
 
 theorem level_conj_frame : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (cm : CMData F E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHerm (cm.sig : E →+* E) J → J.det ≠ 0 → ∀ (T f t k a sk fc : ℕ) (gp : Fin 2 → ℕ) (S : StepLevel F E cm.sig J T f {v : HeightOneSpectrum (𝓞 F) | (gp 0 : 𝓞 F) ∈ v.asIdeal ∨ (gp 1 : 𝓞 F) ∈ v.asIdeal}) (G : GLoc F E cm.sig gp) (Gl : GLev S G a t 0 sk fc false), k = n → a = n → sk = n → fc = n → T.Prime → (∀ i, (gp i).Prime) → gp 0 ≠ gp 1 → (∀ i, T ≠ gp i) → (∀ i, SplitsIn E (gp i)) → SplitsIn E T → Module.finrank ℚ E = 2 * f → ∀ (Fr : AdFrame cm.sig J (hat F S.Lb) (gp 0 * gp 1) k), ∃ κ : UPts cm.sig J (Ad F), κ.1 ∈ stabGL (hat F S.Lb) ∧ ∀ y : UPts cm.sig J (Ad F), (Fr.InK y.1 ↔ ((κ⁻¹ * y * κ : UPts cm.sig J (Ad F)) : GL _ _) ∈ S.U) ∧ ∀ hy : ((κ⁻¹ * y * κ : UPts cm.sig J (Ad F)) : GL _ _) ∈ S.U, Fr.chi y.1 = ((S.chi ⟨_, hy⟩ : ℂˣ) : ℂ) := by
   intro F E _ _ _ _ _ _ cm n J hJ hdet T f t k a sk fc gp S G Gl hk ha hsk hfc hT hgp hne hTg hsplit hsplitT hdeg Fr

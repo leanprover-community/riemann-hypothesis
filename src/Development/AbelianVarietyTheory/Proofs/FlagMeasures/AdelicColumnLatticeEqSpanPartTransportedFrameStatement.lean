@@ -61,8 +61,6 @@ section -- clump:auto
 open MeasureTheory NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict GlobalTheory.St GlobalTheory.St.G
 open scoped TensorProduct InnerProductSpace
 
-
-
 namespace GlobalTheory.St.G
 
 theorem latTransport : ∀ (D : D7) (X : HidaSetting D) (ιA : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F ≃+* D.host.E ⊗[D.host.F] Ad D.host.F), IsAdeleIso X ιA → ∀ w : Fin X.B.I.n → D.host.E ⊗[D.host.F] Ad D.host.F, w ∈ hat D.host.F ((VS D).L0.comap ((Fintype.linearCombination D.host.E X.bas).restrictScalars (𝓞 D.host.E))) ↔ (fun i => ιA.symm (w i)) ∈ X.B.I.Lf := by
@@ -223,9 +221,6 @@ noncomputable section
 
 namespace GlobalTheory.St.G.MHat
 
-
-
-
 variable {D : D7}
 
 theorem sum_swap4 {α β γ δ R : Type} [Fintype α] [Fintype β] [Fintype γ] [Fintype δ] [AddCommMonoid R]
@@ -273,7 +268,7 @@ theorem hform_cols (I : Formalism.MainNotions.S.AutInst) {ι : Type} [Fintype ι
 theorem frame_indep (X : HidaSetting D) (u : D.what₂.Word) (wt : (VS D).V ≃ₗ[D.host.E] (VS D).V)
     (hW : WittX X u wt) {R : Type} [CommRing R] (φ : X.B.I.E →+* R) (c : Fin (D.R.N 0) → R)
     (h : ∀ i, ∑ j, c j * φ (X.crd (qFr wt j) i) = 0) : c = 0 := by
-  obtain ⟨Q, Qi, G', -, hQiQ, hq, -, -, -, -, -⟩ := GlobalTheory.T.columnWittFrame_basis_blockGram D X u wt hW
+  obtain ⟨Q, Qi, G', -, hQiQ, hq, -, -, -, -, -⟩ := GlobalTheory.St.qFrame_basis_gram D X u wt hW
   let v : (Fin (D.R.N 0) ⊕ (Fin D.R.rS ⊕ Fin D.R.rS ⊕ Unit)) → R := Sum.elim c 0
   have h0 : (Q.map φ) *ᵥ v = 0 := by
     funext i
@@ -321,7 +316,7 @@ theorem hform_qFr (X : HidaSetting D) (u : D.what₂.Word) (wt : (VS D).V ≃ₗ
     (hW : WittX X u wt) (i j : Fin (D.R.N 0)) :
     Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.crd (qFr wt i)) (X.crd (qFr wt j)) =
       X.ιE.symm (Formalism.L2.Forms.gramN D 0 (Nat.zero_le _) i j) := by
-  obtain ⟨Q, Qi, G', -, -, hq, -, -, -, -, hG⟩ := GlobalTheory.T.columnWittFrame_basis_blockGram D X u wt hW
+  obtain ⟨Q, Qi, G', -, -, hq, -, -, -, -, hG⟩ := GlobalTheory.St.qFrame_basis_gram D X u wt hW
   have hc : ∀ j, X.crd (qFr wt j) = fun k => Q k (Sum.inl j) := fun j => funext fun k => (hq j k).symm
   rw [hc, hc, hform_cols, hG, Matrix.fromBlocks_apply₁₁, Matrix.map_apply]
 
@@ -354,7 +349,7 @@ theorem hform_orth (X : HidaSetting D) (u : D.what₂.Word) (wt : (VS D).V ≃�
     (∀ a, Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.eR a) (X.crd (qFr wt j)) = 0) ∧
     (∀ a, Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.fR a) (X.crd (qFr wt j)) = 0) ∧
     Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.zR u) (X.crd (qFr wt j)) = 0 := by
-  obtain ⟨Q, Qi, G', -, -, hq, he, hf, hz, -, hG⟩ := GlobalTheory.T.columnWittFrame_basis_blockGram D X u wt hW
+  obtain ⟨Q, Qi, G', -, -, hq, he, hf, hz, -, hG⟩ := GlobalTheory.St.qFrame_basis_gram D X u wt hW
   have hc : X.crd (qFr wt j) = fun k => Q k (Sum.inl j) := funext fun k => (hq j k).symm
   refine ⟨fun a => ?_, fun a => ?_, ?_⟩
   · have : X.eR a = fun k => Q k (Sum.inr (Sum.inl a)) := funext fun k => (he a k).symm

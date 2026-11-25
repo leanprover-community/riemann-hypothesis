@@ -420,18 +420,13 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTh
 
 namespace LateralTheory.E.EmptyH₂
 
-theorem sec_subsingleton {R : Type} [CommRing R] (F : Shv R) (Y : Scheme.{0}) [IsEmpty Y] :
-    Subsingleton (Sec F Y) := by
-  have hT := Sheaf.isTerminalOfBotCover F Y (Scheme.bot_mem_grothendieckTopology (P := @Etale) Y)
-  exact (ModuleCat.isZero_iff_subsingleton).1 hT.isZero
-
 theorem h_empty (hH : Hyp) {R : Type} [CommRing R] (F : Shv R) (Y : Scheme.{0}) [IsEmpty Y] (n : ℤ)
     (x : H R (sch.obj Y) F n) : x = 0 := by
   rcases lt_trichotomy n 0 with hn | rfl | hn
   · have := (hH.a9 R F).1 (sch.obj Y) n hn
     exact Subsingleton.elim _ _
   · obtain ⟨e, -, -⟩ := (hH.a9 R F).2
-    have := sec_subsingleton F Y
+    have := LateralTheory.E.GluePf.sec_sub F Y
     rw [← (e Y).apply_symm_apply x, Subsingleton.elim ((e Y).symm x) 0, map_zero]
   · obtain ⟨Z, f, -, -, hf⟩ := hH.a5 R Y F n hn x
     have : IsIso (sch.map f) := inferInstance
@@ -1681,13 +1676,11 @@ theorem chow_lemma_normalization : LateralTheory.E.ChowCut.Norm := LateralTheory
 
 theorem e2Cut_chow : LateralTheory.E.t_E2Cut.Chow := LateralTheory.E.ChowCut.goal_of _root_.LateralTheory.E.ImgPf.Img_of chow_lemma_projective_cover chow_lemma_normalization
 
-
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC LateralTheory.E.t_E2Cut in
 theorem towers (H : Hyp) (q : ℕ) (i : ℤ) (B : Type) [CommRing B] [IsLocalRing B] (hB : SH B) (hq : IsUnit (q : B))
     {Y : Scheme.{0}} (r : Y ⟶ Spec (CommRingCat.of B)) (hr : IT r) : PB q i r := by
   have h := tower H n1 n9 n45 n49 n52 n74 proper_base_change_affine_space proper_base_change_integral_pullback proper_base_change_stein_factorization proper_base_change_fibre q i B hB hq r hr (𝟙 Y) inferInstance
   simpa using h
-
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC LateralTheory.E.t_E2Cut in
 theorem main (H : Hyp) : E2 := by

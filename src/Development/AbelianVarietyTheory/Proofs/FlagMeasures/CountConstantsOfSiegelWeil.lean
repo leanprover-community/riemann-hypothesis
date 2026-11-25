@@ -113,13 +113,6 @@ namespace GlobalTheory.GaussMean.RealDensityCc
 
 open GlobalTheory.GaussMean.RealDensity GlobalTheory.GaussMean.Density Filter Topology
 
-theorem selfDual_complex_eq {ι : Type} [Fintype ι] {n : ℕ} (d : ι → Fin n → ℝ) (hd : ∀ v i, d v i ≠ 0)
-    (μ : Measure (ι → Fin n → ℂ))
-    (h : SelfDual μ (fun x y => Complex.exp (2 * Real.pi * Complex.I *
-      ((∑ v, ∑ i, d v i * ((x v i).re * (y v i).re + (x v i).im * (y v i).im) : ℝ) : ℂ)))) :
-    μ = ENNReal.ofReal (∏ v, ∏ i, |d v i|) • (volume : Measure (ι → Fin n → ℂ)) := by
-  first | exact _root_.GlobalTheory.GaussMean.RealDensity.selfDual_complex | exact @_root_.GlobalTheory.GaussMean.RealDensity.selfDual_complex | apply _root_.GlobalTheory.GaussMean.RealDensity.selfDual_complex <;> assumption
-
 theorem eq_zero_of_cubes {ι : Type} [Fintype ι] {K : (ι → ℝ) → ℂ} {U : Set (ι → ℝ)} (hK : ContinuousOn K U)
     {b : ι → ℝ} (hU : U ∈ 𝓝 b)
     (h : ∀ r : ℝ, 0 < r → Set.Icc b (fun v => b v + r) ⊆ U → ∫ x in Set.Icc b (fun v => b v + r), K x = 0) :
@@ -256,7 +249,7 @@ theorem density_at_sign : ∀ (I : AutInst) (θ : InfinitePlace I.F → (Ainf I.
     split_ifs <;> ring
   have hν' := GlobalTheory.SelfDualDiagReal.eq_of_selfDual_diag _ lam hlam _ (selfDual_map a hν fun x y => by
     rw [hχ]; simp only [ha, Complex.ofReal_re, hmul])
-  have hμ' := selfDual_complex_eq (fun v i => lam v * (if I.ε v i then 2 else -2))
+  have hμ' := GlobalTheory.GaussMean.RealDensity.selfDual_complex (fun v i => lam v * (if I.ε v i then 2 else -2))
     (fun v i => mul_ne_zero (hlam v) (by split_ifs <;> norm_num)) _ (selfDual_map T hμ fun x y => by
       rw [hχ]; simp only [ha, Complex.ofReal_re, BR, Fin.sum_univ_one, htr, Finset.mul_sum, mul_assoc])
   have hc : (∏ v, ∏ i, |lam v * (if I.ε v i then 2 else -2)|) = ∏ v, (2 * |lam v|) ^ I.n := by
@@ -440,7 +433,6 @@ theorem const_eq {ι κ : Type} [Fintype κ] (q : ι → ℝ) (hq : ∀ u, 0 < q
   rw [h7]
   field_simp
 
-
 end GlobalTheory.SiegelWeilMean
 end -- clump:auto
 end -- clump:auto
@@ -599,7 +591,6 @@ theorem lintegral_lt_top_of_meanC {α : Type} [MeasurableSpace α] (μ : Measure
   exact ((integrable_toReal_iff hG.aemeasurable (Filter.Eventually.of_forall hfin)).1 (by simpa using h1.re)).lt_top
 
 variable (I : AutInst) (φ : InfinitePlace I.F → (Fin I.n → ℂ) → ℝ)
-
 
 open Classical in
 def term (x : I.GA) (y : Fin I.n → I.E) : ℝ :=
@@ -799,7 +790,7 @@ theorem siegelMeanCc_of_oneVectorCc : OneVectorCc → SiegelMeanCc := by
   have hsg : ∀ (R : Type) [CommRing R] [Algebra I.F R], algebraMap I.F R (sgn I.F s) = sgn R s := fun R _ _ => by
     cases s <;> simp [sgn]
   obtain ⟨⟨ψ, hψ⟩, hB⟩ := b1 hn (sgn I.F s) (hs1 _) _ b _ _ _ _ g1 g2 g3
-    ⟨GlobalTheory.T.isSchwartzBruhat_indicator_localLatticeCompletion I.F I.E I.n I.L hLfull, (_root_.GlobalTheory.AdelicU.Cofinite.eventually_latLoc_eq_latV I.F I.E I.n _ b I.L hLfull).mono fun v hv => by rw [hv],
+    ⟨GlobalTheory.LatticeIndicator.isSB_indicator_latLoc I.F I.E I.n I.L hLfull, (_root_.GlobalTheory.AdelicU.Cofinite.eventually_latLoc_eq_latV I.F I.E I.n _ b I.L hLfull).mono fun v hv => by rw [hv],
       _root_.GlobalTheory.AdelicU.indicator_latHat_eq_finprod I.F I.E I.n I.L hLfull⟩ fun _ => rfl
   obtain ⟨⟨μi, hμi⟩, ⟨νi, hνi⟩, ⟨μv, hμv⟩, ⟨νv, hνv⟩, hQ⟩ := ((hB ψ hψ).2 μ hμ).2 S hS
   obtain ⟨Fi, Fl, hFi, hFl, -, hmean⟩ := hQ μi νi μv νv hμi hνi hμv hνv

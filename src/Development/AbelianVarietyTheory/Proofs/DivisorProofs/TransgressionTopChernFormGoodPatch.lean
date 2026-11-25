@@ -435,7 +435,6 @@ private lemma fderiv_prod_logCutoff_coordVec {n : ℕ} (k : ℕ) (S : Finset (Fi
       exact hasDerivAt_const _ _
     exact h1.unique h2
 
-
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
 set_option autoImplicit false in
@@ -669,11 +668,6 @@ noncomputable section
 
 namespace GlobalTheory.GoodTop
 
-theorem integral_dbar_eq_zero_of_hasCompactSupport {n : ℕ} {G : V n → ℂ} (hG : ContDiff ℝ 1 G)
-    (hc : HasCompactSupport G) (u : V n) :
-    Integrable (fun v => dbar G v u) ∧ ∫ v, dbar G v u = 0 := by
-  apply _root_.GlobalTheory.CxForm.integrable_dbar_integral_eq_zero <;> assumption
-
 theorem setIntegral_dbar_eq_zero {n : ℕ} (U K : Set (V n)) (g : V n → ℂ) (ξ : V n)
     (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U) (hg : ContDiffOn ℝ 1 g U)
     (h0 : ∀ v ∈ U, v ∉ K → g v = 0) :
@@ -697,7 +691,7 @@ theorem setIntegral_dbar_eq_zero {n : ℕ} (U K : Set (V n)) (g : V n → ℂ) (
     · exact (hg.contDiffAt (hU.mem_nhds hv)).congr_of_eventuallyEq (hin v hv)
     · exact contDiffAt_const.congr_of_eventuallyEq (hout v fun h => hv (hKU h))
   have hc : HasCompactSupport G := HasCompactSupport.intro hK hz
-  obtain ⟨hI, hE⟩ := integral_dbar_eq_zero_of_hasCompactSupport hG hc ξ
+  obtain ⟨hI, hE⟩ := GlobalTheory.CxForm.integrable_dbar_integral_eq_zero hG hc ξ
   have heq : Set.EqOn (fun v => dbar G v ξ) (fun v => dbar g v ξ) U := fun v hv => by
     simp only [dbar_congr (hin v hv)]
   refine ⟨hI.integrableOn.congr_fun heq hU.measurableSet, ?_⟩
@@ -1194,7 +1188,6 @@ private lemma mixTop_slot_smul_sub_sub {n : ℕ} {r : Type} [Fintype r]
       s * _root_.GlobalTheory.GoodTop.mixTop (_root_.GlobalTheory.GoodTop.intersection_update_fsHerm_neg_one A (A - B) B j) +
         (-1) * _root_.GlobalTheory.GoodTop.mixTop (_root_.GlobalTheory.GoodTop.intersection_update_fsHerm_neg_one A D B j) := by
   rw [← _root_.GlobalTheory.GoodTop.mixTop_position_linear, neg_one_smul, ← sub_eq_add_neg]
-
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in

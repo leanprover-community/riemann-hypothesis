@@ -70,13 +70,6 @@ open scoped InnerProductSpace ENNReal
 
 namespace GlobalTheory.AdDens
 
-theorem volume_image_eq {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
-    [NormedAddCommGroup W] [InnerProductSpace ℝ W] [FiniteDimensional ℝ W]
-    [MeasurableSpace V] [BorelSpace V] [MeasurableSpace W] [BorelSpace W]
-    (L : V ≃ₗ[ℝ] W) (σ : V →ₗ[ℝ] V) (τ : W →ₗ[ℝ] W) (hσ : ∀ x, σ (σ x) = x) (hτ : ∀ x, τ (τ x) = x)
-    (h : ∀ x y, ⟪τ (L x), L y⟫_ℝ = ⟪σ x, y⟫_ℝ) (s : Set V) : volume (L '' s) = volume s := by
-  apply GlobalTheory.FrameIndep.volume_image_of_form <;> assumption
-
 abbrev EE (m : ℕ) := EuclideanSpace ℝ (Fin m × Fin m × Bool)
 
 def rl (m : ℕ) : Matrix (Fin m) (Fin m) ℂ ≃ₗ[ℝ] EE m where
@@ -147,9 +140,6 @@ theorem cj_mem {m : ℕ} {H H' A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B = 
       rw [cj_apply, unrealify_rl]
   exact hsub (Submodule.mem_map_of_mem hx)
 
-theorem isMatGroup_UH {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (hH : H * H = 1) : PI.IsMatGroup (UH H) := by
-  first | exact _root_.GlobalTheory.GramExp.isMatGroup_UH | exact @_root_.GlobalTheory.GramExp.isMatGroup_UH | apply _root_.GlobalTheory.GramExp.isMatGroup_UH <;> assumption
-
 def cjM {m : ℕ} {A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B = 1) : PI.MtM m ≃ₜ PI.MtM m where
   toFun x := Matrix.of.symm (A * Matrix.of x * B)
   invFun x := Matrix.of.symm (B * Matrix.of x * A)
@@ -163,12 +153,6 @@ def cjM {m : ℕ} {A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B = 1) : PI.MtM 
       _ = _ := by rw [hAB]; simp
   continuous_toFun := (continuous_const.matrix_mul (continuous_id (X := Matrix (Fin m) (Fin m) ℂ))).matrix_mul continuous_const
   continuous_invFun := (continuous_const.matrix_mul (continuous_id (X := Matrix (Fin m) (Fin m) ℂ))).matrix_mul continuous_const
-
-theorem measurable_lmulQ {m : ℕ} (s : Matrix (Fin m) (Fin m) ℂ) : Measurable (PI.lmulQ s) := by
-  have hc : Continuous (PI.lmulQ s) := by
-    unfold PI.lmulQ
-    exact Continuous.matrix_mul continuous_const continuous_id
-  exact hc.measurable
 
 theorem haar_map {m : ℕ} {H H' A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B = 1) (h : Bᴴ * H' * B = H)
     (h' : Aᴴ * H * A = H') {μ : Measure (PI.MtM m)} (hμ : PI.IsHaarOnM (UH H') μ) :
@@ -191,8 +175,8 @@ theorem haar_map {m : ℕ} {H H' A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B 
       show s * (A * Matrix.of x * B) = A * (B * s * A * Matrix.of x) * B
       calc s * (A * Matrix.of x * B) = (A * B) * s * (A * Matrix.of x * B) := by rw [hAB, Matrix.one_mul]
         _ = A * (B * s * A * Matrix.of x) * B := by simp only [Matrix.mul_assoc]
-    rw [Measure.map_map (measurable_lmulQ s) e.measurable, hcomm,
-      ← Measure.map_map e.measurable (measurable_lmulQ _), hinv _ (mem_UH_conj hAB h' hs)]
+    rw [Measure.map_map (GlobalTheory.Tube.meas_lmul s) e.measurable, hcomm,
+      ← Measure.map_map e.measurable (GlobalTheory.Tube.meas_lmul _), hinv _ (mem_UH_conj hAB h' hs)]
 
 def adL {m : ℕ} {H H' A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B = 1) (h : Bᴴ * H' * B = H)
     (h' : Aᴴ * H * A = H') : lieE (UH H) ≃ₗ[ℝ] lieE (UH H') :=
@@ -221,7 +205,7 @@ theorem volume_adL {m : ℕ} {H H' A B : Matrix (Fin m) (Fin m) ℂ} (hH : Hᴴ 
   have k2 : A * H' * Aᴴ = H := by
     calc A * H' * Aᴴ = (H * H) * (A * H' * Aᴴ) := by rw [hH2, Matrix.one_mul]
       _ = H := by rw [Matrix.mul_assoc, k1, Matrix.mul_one]
-  refine volume_image_eq (adL hAB h h') σ τ (fun x => Subtype.ext (cj_cj hH2 _))
+  refine GlobalTheory.FrameIndep.volume_image_of_form (adL hAB h h') σ τ (fun x => Subtype.ext (cj_cj hH2 _))
     (fun x => Subtype.ext (cj_cj hH2' _)) (fun x y => ?_) s
   rw [Submodule.coe_inner, Submodule.coe_inner]
   simp only [σ, τ, LinearMap.restrict_coe_apply, adL_coe]
@@ -270,8 +254,8 @@ theorem dens_map {m : ℕ} {H H' A B : Matrix (Fin m) (Fin m) ℂ} (hH : Hᴴ = 
   have hBA : B * A = 1 := mul_eq_one_comm.1 hAB
   set e := (cjM hAB).toMeasurableEquiv with he
   let L : lieE (UH H) ≃L[ℝ] lieE (UH H') := (adL hAB h h').toContinuousLinearEquiv
-  have hLie := (_root_.GlobalTheory.ClosedMatGroup.closed_subgroup m (UH H) (isMatGroup_UH H hH2)).1
-  have hmain := _root_.GlobalTheory.ChartDensity.density_in_chart m (UH H') μ c (isMatGroup_UH H' hH2') hμ hd (lieE (UH H))
+  have hLie := (_root_.GlobalTheory.ClosedMatGroup.closed_subgroup m (UH H) (GlobalTheory.OmegaFrobenius.isMatGroup_UH H hH2)).1
+  have hmain := _root_.GlobalTheory.ChartDensity.density_in_chart m (UH H') μ c (GlobalTheory.OmegaFrobenius.isMatGroup_UH H' hH2') hμ hd (lieE (UH H))
     (fun x => B * NormedSpace.exp (unrealify (x : EE m)) * A) L
     (by simp only [ZeroMemClass.coe_zero]; rw [show unrealify (0 : EE m) = 0 from
       (rl_symm (0 : EE m)).symm.trans (map_zero _), NormedSpace.exp_zero, Matrix.mul_one, hBA])
@@ -477,7 +461,7 @@ theorem schur_of_dens : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup H] [Inner
   have hD := _root_.GlobalTheory.AdDens.haar_dens_conj (2 * r + k + 1) (Formalism.QuantumDeterminants.Hpk k r) (Formalism.REAL.Jm ε) P hHk.1 hHk.2.1
     (Formalism.REAL.Jm_conjTranspose ε) (Formalism.REAL.Jm_mul_self ε) hP.1 hP.2 _ _ hcd.1 hcd.2
   obtain ⟨t, -, httop, hμt⟩ := (GlobalTheory.MatHaar.haar_unique_locFinite_openPos _ _ _
-    (GlobalTheory.AdDens.isMatGroup_UH _ hHk.2.1) hD.1).1 μG hμG
+    (GlobalTheory.OmegaFrobenius.isMatGroup_UH _ hHk.2.1) hD.1).1 μG hμG
   have hdt : HasDens (GG k r) μG (t * ENNReal.ofReal (volUn (2 * r + k + 1))⁻¹) := by
     have h := hasDens_smul hD.2 t.toNNReal
     rwa [ENNReal.smul_def, ENNReal.coe_toNNReal httop.ne, ← hμt] at h

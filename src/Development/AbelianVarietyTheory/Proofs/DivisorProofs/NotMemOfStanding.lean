@@ -112,7 +112,6 @@ theorem smallF_rows {A C C₁ : Type} [Fintype A] [DecidableEq A]
   rw [h2, gdet_mul, map_mul, Units.val_mul, apow_mul, apow_of_valuation_eq_one (valuation_gdet_of_mem_KO hg)]
   ring
 
-
 omit [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] in
 theorem exists_reindex_unit_val {C C₁ : Type} [Fintype C] [DecidableEq C] [Fintype C₁] [DecidableEq C₁]
     (τ eC : C ≃ C₁) :
@@ -205,7 +204,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chars Rep Acts SInf At piW psiLoc chrW)
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
-
 
 theorem _root_.GlobalTheory.T.bigZetaIntegral_eq_smul_smallZetaIntegral_of_integralChange : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (a : ℕ) (A' : Type) [Fintype A'] [DecidableEq A'] (C : Type) [Fintype C] [DecidableEq C]
       (C₁ : Type) [Fintype C₁] [DecidableEq C₁] (eC : C ≃ C₁) (σ : Fin a ⊕ A' ≃ C) (σ₁ : Fin a ⊕ A' ≃ C₁)
@@ -371,7 +369,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
 
-
 theorem _root_.GlobalTheory.T.exists_mixed_chart_through_W_coordinate : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G), SquareStanding G t →
     ∀ (e : Num G i j) (Bs : Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : Chars D.host.F D.host.E)
       (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W), IsTripleOf W M t i j e Bs Γ X →
@@ -427,7 +424,6 @@ theorem hatL_map {a b : ℕ} {Λ : Submodule (𝓞 E) (Fin a → E)} {Λ' : Subm
   | add x z _ _ hx hz => rw [map_add]; exact add_mem hx hz
   | smul r x _ hx => rw [map_smul]; exact Submodule.smul_mem _ r hx
 
-
 open GlobalTheory.Doubling in
 theorem pairVec_mem_hatL {a b c : ℕ} (e : Fin a ⊕ Fin b ≃ Fin c) {Λ : Submodule (𝓞 E) (Fin a → E)}
     {Λ' : Submodule (𝓞 E) (Fin b → E)} (x : Fin a → E ⊗[F] Formalism.L2.Herm.Af F) (y : Fin b → E ⊗[F] Formalism.L2.Herm.Af F) :
@@ -455,7 +451,6 @@ theorem pairVec_mem_hatL {a b c : ℕ} (e : Fin a ⊕ Fin b ≃ Fin c) {Λ : Sub
     convert add_mem h1 h2 using 1
     funext j
     obtain ⟨i | i, rfl⟩ := e.surjective j <;> simp [f₁, f₂]
-
 
 open GlobalTheory.Doubling in
 theorem isFrame_blkGL {a b c : ℕ} (e : Fin a ⊕ Fin b ≃ Fin c) {Λ : Submodule (𝓞 E) (Fin a → E)}
@@ -571,7 +566,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chars Rep Acts SInf At piW psiLoc chrW)
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
-
 
 theorem _root_.GlobalTheory.T.grid_frame_local_compact_membership : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (B : Frames G) (t : T) (i j : Fin D.R.m) (X : TriG G i j), SquareStanding G t →
       IsFrame X.rA.β (G.Λ (.grid (i + 1) (j + 1))) → IsFrame X.rA'.β (G.Λ (.grid i j)) → IsFrame X.rW.β (latX G i j) →
@@ -709,7 +703,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
 
-
 theorem _root_.GlobalTheory.T.splitPlace_halves_eq_linear_model_lagrangians : ∀ {D : D7} {v : Pl D.host.F} (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) (w : Pl D.host.E), splitPrime τ = w →
     ∀ {m k d : ℕ} (e : Fin d ≃ Fin k) (Gm : Matrix (Fin m) (Fin m) D.host.E), Gm.det ≠ 0 → ∀ u : Matrix (Fin m) (Fin k) (AE D),
       (IsHalf (atPl w 1) (HMul.hMul (uᵀ.submatrix e id) (incM Gm) : Matrix (Fin d) (Fin m) (AE D)) ↔
@@ -733,9 +726,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chars Rep Acts SInf At piW psiLoc chrW)
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
-
-
-
 
 namespace GlobalTheory.TopFlip.ChartB
 
@@ -807,7 +797,6 @@ theorem linB_ptB {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {
   rw [h4]
   exact reindex_blocks e _ _ _ _ _ _ _ _ c
 
-
 open GlobalTheory.FlipMatch.ChartOpp hiding isHalf_of_mulG in
 theorem exists_mixChart_linB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G), SquareStanding G t →
     ∀ (e : Num G i j) (Bs : Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : Chars D.host.F D.host.E)
@@ -846,7 +835,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chars Rep Acts SInf At piW psiLoc chrW)
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
-
 
 theorem _root_.GlobalTheory.T.square_standing_triple_theta_first : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G), SquareStanding G t →
     ∀ (e : Num G i j) (Bs : Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : Chars D.host.F D.host.E)
@@ -915,7 +903,6 @@ theorem isLocallyConstant_gfun' {ν : kˣ →* ℂˣ} {ϖ : kˣ} {n : ℕ} (c : 
 
 end GlobalTheory.StdPairSBDepth
 
-
 open GlobalTheory.StdPairCone ValuativeRel in
 theorem GlobalTheory.StdPairSBDepth.stdPair_mem_SB : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ν : kˣ →* ℂˣ) (ϖ : kˣ) (n c a a' : ℕ), IsUnif ϖ → CondLE ϖ n ν →
       GlobalTheory.StdPairCone.stdA ν ϖ c a a' ∈ GlobalTheory.WeilM.SB (Matrix (Fin a) (Fin (a + a')) k) ∧
@@ -960,7 +947,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chars Rep Acts SInf At piW psiLoc chrW)
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
-
 
 theorem _root_.GlobalTheory.T.standardPair_mem_schwartzBruhat_of_conductorExponentLE : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ν : kˣ →* ℂˣ) (ϖ : kˣ) (n c a a' : ℕ), IsUnif ϖ → CondLE ϖ n ν →
       GlobalTheory.StdPairCone.stdA ν ϖ c a a' ∈ GlobalTheory.WeilM.SB (Matrix (Fin a) (Fin (a + a')) k) ∧
@@ -1132,7 +1118,6 @@ theorem bigF_stdA_eq (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ) (hϖ : IsUn
 
 end GlobalTheory.StdPairZeta
 
-
 open GlobalTheory.StdPairZeta in
 theorem GlobalTheory.StdPairZeta.bigF_stdA : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     [MeasurableSpace k] [BorelSpace k] (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ), IsUnif ϖ →
@@ -1191,7 +1176,6 @@ theorem isGLO_of_mem_KO {n : ℕ} {g : GL (Fin n) k} (h : g ∈ KO k (Fin n)) : 
   ⟨((mem_KO_iff g).1 h).1, valuation_gdet_of_mem_KO h⟩
 
 end GlobalTheory.StdPairZetaB
-
 
 open GlobalTheory.StdPairZetaB in
 theorem GlobalTheory.StdPairZetaB.smallF_stdB : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -1334,7 +1318,6 @@ theorem blocks_rel {k : Type} [Field k] {a a' : ℕ} (h : GL (Fin (a + a')) k) :
 
 end GlobalTheory.StdZetaAgree
 
-
 open GlobalTheory.StdPairCone GlobalTheory.StdZetaAgree in
 theorem GlobalTheory.StdZetaAgree.bigZetaIntegral_stdA_eq_smallZetaIntegral_stdB : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν β : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ), IsUnif ϖ →
       bigP (haarVol (KO k (Fin a))) ϖ finSumFinEquiv ν β (GlobalTheory.StdPairCone.stdA ν ϖ c a a') =
@@ -1399,7 +1382,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chars Rep Acts SInf At piW psiLoc chrW)
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
-
 
 theorem _root_.GlobalTheory.T.zetaIntegral_standardPair_first_eq_second : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν β : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ), IsUnif ϖ →
       bigP (haarVol (KO k (Fin a))) ϖ finSumFinEquiv ν β (GlobalTheory.StdPairCone.stdA ν ϖ c a a') =
@@ -1502,8 +1484,6 @@ theorem notMem_of_standing {t : T} (hst : SquareStanding G t) {w : Pl D.host.E} 
       (D.host.d : 𝓞 D.host.E) * ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) := by push_cast; ring
   rw [e]; exact Ideal.mul_mem_left _ _ hmem)
 
-
-
 theorem local_charts (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t)
     {e : Num G i j} {Bs : Base D.host.F D.host.E} {Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j} {X : Chars D.host.F D.host.E}
     {om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W} {om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W} (h : IsTripleOf W M t i j e Bs Γ X) {R Rf}
@@ -1525,7 +1505,7 @@ theorem local_charts (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j 
   let v' : Bs.P := ⟨v, hT.chars.sub hvT⟩
   have hτ : splitPrime (Bs.τ v') = w := hti.1.2.2.2 v' w hw rfl
   obtain ⟨ιA, ιB, hA, hB, -, -, hz⟩ := hm.fin.zeta v' hvT
-  obtain ⟨jj, j1, j2, j3, j4⟩ := GlobalTheory.T.exists_placeIso_reading_components_characters hL W t i j X h.α h.β (Bs.τ v') w hτ
+  obtain ⟨jj, j1, j2, j3, j4⟩ := GlobalTheory.FlipMatch.exists_placeIso_chars hL W t i j X h.α h.β (Bs.τ v') w hτ
   let C0 : GL (Fin ((spW G i j).rank + (spW₁ G i j).rank)) (Kw w) :=
     ⟨basCols B e w, GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk e (loc w (B.β i (j + 1)))⁻¹.val (-(loc w (B.β (i + 1) j))⁻¹.val),
       by rw [basCols, GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk_mul, neg_mul_neg, Units.mul_inv, Units.mul_inv, GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk_one],
@@ -1546,21 +1526,21 @@ theorem local_charts (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j 
   have hstd : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsStd W.ψ := h.ψ ▸ hT.base.std
   rw [h.ψ] at hA hB
   obtain ⟨ι, i1, i2⟩ := exists_mixed (M := Γ.M) (ψ := W.ψ) hS.unif hS.cond j2 hξ j4 (h := invT cc) cA' hA.bij
-    (fun u hu h0 φ hφ φ₁ h₁ ha => (GlobalTheory.T.heisenbergOperator_isotropic_translation_char_split hT.base.cm Γ.V Γ.W hT.geo.hV.herm hT.geo.hW.skew dV dW Γ.M W.ψ hstd _ _ _ u hu h0
+    (fun u hu h0 φ hφ φ₁ h₁ ha => (GlobalTheory.HeisFlip.heis_trans_char hT.base.cm Γ.V Γ.W hT.geo.hV.herm hT.geo.hW.skew dV dW Γ.M W.ψ hstd _ _ _ u hu h0
       φ hφ φ₁ h₁ ha).1 ιA hA)
     fun x u hx hu => _root_.GlobalTheory.FlipMatch.SplitSymp.symp_at_split hT.base.cm Γ.V Γ.W hT.geo.hV.herm hT.geo.hW.skew W.ψ _ _ _ x u hx hu
   obtain ⟨ι', k1, k2⟩ := exists_mixed (M := Γ.M') (ψ := W.ψ) hS.unif hS.inv.cond j2 hξ (χ := fun x => psiLoc W.ψ v (-x))
     (fun x => by rw [j4, AddChar.inv_apply, map_neg, mul_neg]) cB hB.bij
-    (fun u hu h0 φ hφ φ₁ h₁ ha => (GlobalTheory.T.heisenbergOperator_isotropic_translation_char_split hT.base.cm Γ.V' Γ.W hT.geo.hV'.herm hT.geo.hW.skew dV' dW Γ.M' W.ψ hstd _ _ _ u hu
+    (fun u hu h0 φ hφ φ₁ h₁ ha => (GlobalTheory.HeisFlip.heis_trans_char hT.base.cm Γ.V' Γ.W hT.geo.hV'.herm hT.geo.hW.skew dV' dW Γ.M' W.ψ hstd _ _ _ u hu
       ((pairM_comm _ _).trans h0) φ hφ φ₁ h₁ ha).2 ιB hB)
     fun x u hx hu => by
       rw [_root_.GlobalTheory.FlipMatch.SplitSymp.symp_at_split hT.base.cm Γ.V' Γ.W hT.geo.hV'.herm hT.geo.hW.skew W.ψ (Bs.τ v') (Γ.V'.bas v) (Γ.W.bas v) x u hx hu, neg_sub]
   haveI := isHaarMeasure_haarVol (k := Kw w) (n := Fin (spW₁ G i j).rank) isOpen_KO le_rfl
   haveI := isHaarMeasure_haarVol (k := Fv D.host.F v) (n := Fin (spW₁ G i j).rank) isOpen_KO le_rfl
-  obtain ⟨l₂, hl₂, z₂⟩ := GlobalTheory.T.zetaIdentity_persists_row_column_changes (Kw w) _ _ (rankW G t i j w) _ _ _ _ (finCongr (rankW₁ G t i j w)) (colsEq t e w) finSumFinEquiv
+  obtain ⟨l₂, hl₂, z₂⟩ := GlobalTheory.FlipMatch.ZMat.bigZeta_eq_smallZeta_change (Kw w) _ _ (rankW G t i j w) _ _ _ _ (finCongr (rankW₁ G t i j w)) (colsEq t e w) finSumFinEquiv
     (stdSplit ((locGrid G t w).rank_square i j)) (haarVol (KO (Kw w) _)) (haarVol (KO (Kw w) _))
     (unifAt w) ((locGrid G t w).nu i j) 1 g g' cc hg
-  obtain ⟨l₁, hl₁, z₁⟩ := GlobalTheory.T.zetaIdentity_transport_localFieldIso (Fv D.host.F v) (Kw w) jj j2 (spW G i j).rank (Fin (spW₁ G i j).rank) _ finSumFinEquiv
+  obtain ⟨l₁, hl₁, z₁⟩ := GlobalTheory.FlipMatch.FieldTransport.zeta_identity_transport (Fv D.host.F v) (Kw w) jj j2 (spW G i j).rank (Fin (spW₁ G i j).rank) _ finSumFinEquiv
     (haarVol (KO _ _)) (haarVol (KO _ _)) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.unifAt v) (unifAt w) (exists_isUnif (k := Fv D.host.F v)).choose_spec
     hS.unif (chrW X.ν (Bs.τ v')) (chrW X.β (Bs.τ v')) _ 1 j3
   obtain ⟨ΘA, hΘA⟩ := exists_homeo jj (finCongr (rankW G t i j w)) (colsEq t e w) g (invT cc) j2.1 j2.2.1
@@ -1607,11 +1587,11 @@ theorem zeta_flip (hL : L.Is μ₀) (W : G.Weil) {t : T} (i j : Fin D.R.m) (hst 
   have key := smallP_haarVol h2.1 h2.2 (stdSplit ((locGrid G t w).rank_square i j)) ((locGrid G t w).nu i j)
     ((locGrid G t w).nu i j * 1)
   refine ⟨(key 0).1, fun n Φ hn hΦ => ?_⟩
-  rw [flipAt, squareFlip, GlobalTheory.T.partialFourierSum_inverse_of_latticeDepth _ _ _ _ _ _ _ hS.unif hS.inv.cond _ (by
+  rw [flipAt, squareFlip, GlobalTheory.FlipMatch.FourierInv.fourierSum_invFourierSum _ _ _ _ _ _ _ hS.unif hS.inv.cond _ (by
     rw [← latA_blockLat, ← Grid.alpha_div_beta]
     exact GlobalTheory.FrameDepth.hasDepth_phiA _ _ _ _ _ (hμ := hμ) _ _ _ _ _ _ hS.unif (hS.one_le.trans hn) (LocTensor.condLE_mono hS.unif hn hS.condν)
       (GlobalTheory.SplitFlip.FourierDepth.hasDepth_fourierSum hS.unif hS.cond n _ hΦ))]
-  exact (GlobalTheory.T.primitiveFrameDatum_zetaIntegral_eq_smaller (Kw w) _ _ _ _ _ _ 1 _ n _ _ hS.unif).trans (key _).2
+  exact (GlobalTheory.OneSquareZeta.bigZeta_phiA_eq_smallZeta (Kw w) _ _ _ _ _ _ 1 _ n _ _ hS.unif).trans (key _).2
 
 theorem zeta_std (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) {i j : Fin D.R.m} (X : TriG G i j) (hst : ∀ t, SquareStanding G t)
     (hA : IsFrame X.rA.β (G.Λ (.grid (i + 1) (j + 1)))) (hA' : IsFrame X.rA'.β (G.Λ (.grid i j))) (hX : IsFrame X.rW.β (latX G i j)) :

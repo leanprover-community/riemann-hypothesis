@@ -68,15 +68,6 @@ open Matrix Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
-namespace GlobalTheory.CapelliLocality
-
-variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-theorem capelliH_local : PI.UnitaryGroupMassFormula.CapelliEig.Loc := by
-  apply CompanionTheory.CapEig.capelli_localization
-
-end GlobalTheory.CapelliLocality
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -106,9 +97,6 @@ private theorem Tm_conj_eq_sum_conj_Tm {A : Type} [Ring A] [Algebra ℂ A] {n : 
   congr 1
   rw [← Finset.sum_smul, h1]
   by_cases h : a = b <;> simp [h]
-
-theorem capelli_transport_conj : PI.UnitaryGroupMassFormula.CapelliEig.CapTransport := by
-  apply _root_.CompanionTheory.CapEig.capelli_transport <;> assumption
 
 end GlobalTheory
 end -- clump:auto
@@ -214,8 +202,8 @@ theorem capEig_of_coefSm (hL : Loc) (hC : CoefSm) (hK : PI.KFinSmooth) : PI.Cape
     _ = Formalism.QuantumDeterminants.capP (fun s => (lam s : ℂ)) Y • f g := by rw [hrep g hg]
 
 theorem capEig (hK : PI.KFinSmooth) (hD : PI.DSInfCharCap.DSInfCharCap) : PI.CapelliEig.CapEig := by
-  have hCoef : CoefSm := coefSm_of _root_.GlobalTheory.capelli_transport_conj _root_.GlobalTheory.CapelliCoef.capelli_coef hD
-  exact capEig_of_coefSm _root_.GlobalTheory.CapelliLocality.capelliH_local hCoef hK
+  have hCoef : CoefSm := coefSm_of _root_.CompanionTheory.CapEig.capelli_transport _root_.GlobalTheory.CapelliCoef.capelli_coef hD
+  exact capEig_of_coefSm _root_.CompanionTheory.CapEig.capelli_localization hCoef hK
 
 end GlobalTheory.CapelliEigenvalue
 end -- clump:auto

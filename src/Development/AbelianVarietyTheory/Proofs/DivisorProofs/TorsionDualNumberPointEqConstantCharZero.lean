@@ -63,10 +63,6 @@ noncomputable section
 
 namespace GlobalTheory.TorsConst
 
-theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) :=
-  (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
-
 theorem ext_of_two {B C : Type} [CommRing B] [CommRing C] [IsLocalRing B] [IsLocalRing C]
     (d e : B →+* C) [IsLocalHom d] [IsLocalHom e] (hde : ∀ x y, d x = d y → e x = e y → x = y)
     {X : Scheme.{0}} (a b : Sp B ⟶ X) (h1 : spMap d ≫ a = spMap d ≫ b) (h2 : spMap e ≫ a = spMap e ≫ b) :
@@ -123,7 +119,7 @@ def ovH {B C : Type} [CommRing B] [Algebra K B] [CommRing C] [Algebra K C] (φ :
     ovO (K := K) C ⟶ ovO B :=
   Over.homMk (spMap φ.toRingHom) (by
     simp only [ovO, Over.mk_hom]
-    rw [sp_comp]
+    rw [GlobalTheory.spMap_comp_ring]
     congr 2
     exact φ.comp_algebraMap)
 

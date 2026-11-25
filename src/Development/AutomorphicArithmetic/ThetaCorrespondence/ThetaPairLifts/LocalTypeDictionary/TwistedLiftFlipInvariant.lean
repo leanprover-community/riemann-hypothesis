@@ -117,8 +117,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
 
-theorem _root_.GlobalTheory.T.localFlipStage_isTensor_placeDepth : GlobalTheory.RowClaim.Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (t : T) (Φ : ch.G.Datum), ∀ w ∈ locPl ch.G t, ∀ k, k ≤ D.R.m ^ 2 → (locGrid ch.G t w).IsTensor (unifAt w) (depthAt ch.G w) ((givenStage t w ch.S.B Φ).flips .one (psiAt ch.W w) (unifAt w) (depthAt ch.G w) ((flipOrder D.R.m).take k)).path ((givenStage t w ch.S.B Φ).flips .one (psiAt ch.W w) (unifAt w) (depthAt ch.G w) ((flipOrder D.R.m).take k)).tensor := by
-  first | exact @GlobalTheory.FlipRun.isTensor_flips_take
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalFlipStageIsTensorPlaceDepthStatement =====
@@ -170,7 +168,6 @@ theorem zip_given (W : G.Weil) (t : T) (ρ : G.RealVec) (q : ∀ j : ℕ, PolF D
 
 end GlobalTheory.FlipStart
 
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -211,9 +208,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
 
-
-theorem _root_.GlobalTheory.T.firstRow_cosetVectors_isLocalThetaVector : GlobalTheory.RowClaim.Big fun {D} _ _ _ _ {T} _ _ _ _ _ {_} ch => ∀ (t : T) (i : Fin D.R.m) (κ : ch.G.CosAt i), ∃ e, IsIdemSum e (locPl ch.G t) ∧ ∃ φ, IsLocVec ch.W (.chi (i : ℕ) 0) e (ch.W.vac i) φ (ch.W.cosVec i κ) := by
-  first | exact @GlobalTheory.RowLocVec.cosVec_isLocVec
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstRowCosetVectorsIsLocalThetaVectorStatement =====
@@ -225,7 +219,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
-
 
 end -- clump:auto
 end -- clump:auto
@@ -420,7 +413,6 @@ theorem isCuspFun_lift {θ : InfFam D} {V : HSp D} {S : D.what₂.Tau → SPar} 
     exact GlobalTheory.MultMem.isCuspFun_add (GlobalTheory.EndCusp.isAutFunSm_lift hT a).toIsAutFun
       (GlobalTheory.EndCusp.isAutFunSm_lift hT b).toIsAutFun ha hb
 
-
 end GlobalTheory.StartCusp
 end -- clump:auto
 end -- clump:auto
@@ -474,7 +466,7 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 namespace GlobalTheory.RowStart
 theorem theta_tower_first_occurrence_exists : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.LiftsCuspidal → GlobalTheory.RowClaim.Big fun {D} _ _ _ _ {T} _ _ _ _ _ {R} ch => ∀ (t : T) (Φ : ch.G.Datum) (M : Vol ch.G), M.Is t → ∀ y : (R.HX t).H, PathConv ch.W M (rowPath T 0 D.R.m) (rowDatum ch.W ch.ρ Φ) (ch.cv.lift t y) ∧ thetaChi ch.W ch.M ch.ρ Φ (ch.cv.lift t y) = liftP ch.W M (rowPath T 0 D.R.m) (rowDatum ch.W ch.ρ Φ) (ch.cv.lift t y) := by
   intro hP hLC
-  refine ((_root_.GlobalTheory.FlipRun.cuspStep_of_large_flipRun hLC hP).and ((_root_.GlobalTheory.StartCusp.cusp_lift_mem_cuspList hP hLC).and (GlobalTheory.T.firstRow_cosetVectors_isLocalThetaVector.and _root_.GlobalTheory.RowTheta.rowDatum_isThetaFunO))).imp fun CF0 h ε CF hC => ?_
+  refine ((_root_.GlobalTheory.FlipRun.cuspStep_of_large_flipRun hLC hP).and ((_root_.GlobalTheory.StartCusp.cusp_lift_mem_cuspList hP hLC).and (GlobalTheory.RowLocVec.cosVec_isLocVec.and _root_.GlobalTheory.RowTheta.rowDatum_isThetaFunO))).imp fun CF0 h ε CF hC => ?_
   obtain ⟨x₀, h⟩ := h ε CF hC
   refine ⟨x₀, fun D large₂ e hx Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch hsc t Φ M hM y => ?_⟩
   obtain ⟨hstep, hcusp, hloc, hth⟩ := h D large₂ e hx Γ Pl0 T A Ks R F s ch hch hsc
@@ -554,7 +546,7 @@ theorem zconv : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridD
       (((M.ν (.grid i (j + 1))).restrict (M.fd (.grid i (j + 1)))).prod ((M.ν (.grid i j)).restrict (M.fd (.grid i j)))) := by
   intro D T L sc G hK hP μ₀ hL W B ρ t i j hT M hM Θ Θ' hΘ F hF hFc hFl hB g₁
   obtain ⟨e, Bs, Γ, X, om, om', h, hTr, hv⟩ := hT M hM
-  obtain ⟨z, Φ, a, C₀, hz, hΦ, hid⟩ := GlobalTheory.T.translatedKernel_le_thetaFunction_routeBigVertex hL W B ρ t i j M hM Θ Θ' hΘ g₁ e Bs Γ X om om' h hTr hv
+  obtain ⟨z, Φ, a, C₀, hz, hΦ, hid⟩ := GlobalTheory.ZConvIdent.translates_kerSmall_le_theta hL W B ρ t i j M hM Θ Θ' hΘ g₁ e Bs Γ X om om' h hTr hv
   have dec := (hK.1 D.host.F D.host.E D.sp.cm.sig Bs _ _ Γ X om om' hTr).1
   obtain ⟨C, k, hC⟩ := (dec.2 Φ hΦ).1 0
   have hbd : ∀ g u, ‖translates z (kerSmall W Θ' g g₁) u‖ ≤
@@ -1315,7 +1307,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 
 namespace GlobalTheory.SquareComm
 
-
 theorem natCast_mem_w {D : D7} {T : Type} {L : LevCh D T} (P : Places L) {v : HeightOneSpectrum (𝓞 D.host.F)}
     (hv : v ∈ P.S0) {n : ℕ} (hn : (n : 𝓞 D.host.F) ∈ v.asIdeal) : (n : 𝓞 D.host.E) ∈ (P.w v).asIdeal := by
   rw [← P.under_w hv] at hn
@@ -1325,7 +1316,6 @@ theorem natCast_mem_w {D : D7} {T : Type} {L : LevCh D T} (P : Places L) {v : He
 end GlobalTheory.SquareComm
 
 namespace GlobalTheory.SquareComm
-
 
 theorem squareStanding_of_setting {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type}
     {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {large₂ : SizeData₂ D}
@@ -1406,7 +1396,7 @@ theorem GlobalTheory.FlipRun.twist_sign_flip_succ : _root_.GlobalTheory.FunPr.Th
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → ConstK → StepFlip := by
   intro hP hLC hWC hTI hCK
   obtain ⟨C0, H⟩ := (((((_root_.GlobalTheory.SquareComm.square_commutes_with_all hP hWC hTI).and (_root_.GlobalTheory.FlipRun.cuspStep_of_large_flipRun hLC hP)).and
-    (_root_.GlobalTheory.T.endCusp_leadingForm_listed hP)).and (_root_.GlobalTheory.FlipStart.flipSequence_start_condition hP hLC)).and GlobalTheory.T.localFlipStage_isTensor_placeDepth).and hCK
+    (_root_.GlobalTheory.T.endCusp_leadingForm_listed hP)).and (_root_.GlobalTheory.FlipStart.flipSequence_start_condition hP hLC)).and GlobalTheory.FlipRun.isTensor_flips_take).and hCK
   refine ⟨C0, fun ε CF h => ?_⟩
   obtain ⟨x₀, H⟩ := H ε CF h
   refine ⟨x₀, fun D large₂ e hx Γ _ _ Pl0 T A Ks _ _ _ R F s ch i j => ?_⟩

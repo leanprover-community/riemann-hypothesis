@@ -137,48 +137,9 @@ noncomputable section
 
 namespace GlobalTheory.Dec.CuspFrameOneType
 
-theorem one_mem_Kg (I : AutInst) (g : ℕ) : (1 : I.Gf) ∈ I.Kg g := by
-  refine ⟨(Formalism.UG.stabGL I.Lf).one_mem, fun y _ => ⟨0, I.Lf.zero_mem, ?_⟩⟩
-  have : I.fmat 1 = 1 := rfl
-  simp [this]
-
-theorem re_fixed (B : RowsAut) : ∀ k ∈ B.I.Kg B.g, (B.R (1, k)).comp B.Re = B.Re := by
-  intro k hk
-  obtain ⟨hT2, -, hsc, -⟩ := GlobalTheory.CongTop.adelic_topology B.I
-  obtain ⟨R1, Rm, Rn, -⟩ := GlobalTheory.RightRegFund.rightReg_unitary_continuous B
-  obtain ⟨-, -, -, -, -, hinv, -⟩ := B.e_adm
-  obtain ⟨-, hT⟩ := B.Re_spec
-  have p1 : (fun g : B.I.Gf => B.R (1, g)) 1 = 1 := R1
-  have pm : ∀ a b : B.I.Gf, B.R (1, a * b) = B.R (1, a) * B.R (1, b) := by
-    intro a b; rw [← Rm]; simp
-  have pn : ∀ (g : B.I.Gf) v, ‖B.R (1, g) v‖ = ‖v‖ := fun g v => Rn _ v
-  exact GlobalTheory.IdemProj.op_fixed B.μf (fun g => B.R (1, g)) p1 pm pn B.e B.Re hT k
-    (fun x => by simpa using hinv x k hk 1 (one_mem_Kg B.I B.g))
-
-theorem integrable_ph (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (h : ℝ) (hd : IsDSData B d)
-    (hl : LocDec B h) (hb : HBig B 40 h) : Integrable (ph B d) (muInf B.I) := by
-  obtain ⟨hc, hm, hi⟩ := GlobalTheory.Dec.PhMajProof.phMaj B d h hd hl
-  have h0 := hi 0 le_rfl (fun v => by
-    rcases Nat.eq_zero_or_pos (rkR (B.I.ε v)) with hq | hq
-    · exact Or.inl hq
-    · right
-      have hle : rkR (B.I.ε v) ≤ B.I.n := by
-        unfold rkR
-        refine (min_le_left _ _).trans ((Finset.card_filter_le _ _).trans (by simp))
-      have h1 : (0 : ℝ) < rkR (B.I.ε v) := by exact_mod_cast hq
-      have h2 : ((rkR (B.I.ε v) : ℕ) : ℝ) ≤ B.I.n := by exact_mod_cast hle
-      have h3 := Real.sqrt_pos.2 h1
-      have h4 := hb v
-      have h5 : (0 : ℝ) < B.I.n := h1.trans_le h2
-      have h6 : (B.I.n : ℝ) * rkR (B.I.ε v) ≤ (B.I.n : ℝ) ^ 2 := by rw [sq]; exact mul_le_mul_of_nonneg_left h2 h5.le
-      have h7 : 0 < (B.I.n : ℝ) ^ 2 * Real.sqrt (rkR (B.I.ε v)) := by positivity
-      linarith [mul_le_mul_of_nonneg_right h6 h3.le])
-  simp only [zero_mul, Real.exp_zero, mul_one] at h0
-  exact h0.mono' hc.aestronglyMeasurable (Filter.Eventually.of_forall hm)
-
 theorem cuspidal_frame : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (h : ℝ), IsDSData B d → (∀ v, Formalism.MainNotions.S.IsKTypeOf (B.I.ε v) (B.σ v) (Formalism.QuantumDeterminants.lowK (B.I.ε v) (B.lam v)) (Formalism.MainNotions.S.lowKSub (B.I.ε v) (B.lam v) (B.σ v))) → 1 ≤ B.g → (∀ v, 120 * (B.I.n : ℝ) * ((rkR (B.I.ε v) : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ h) → LocDec B h → HBig B 40 h → FiniteDimensional ℂ (B.I.eHom B.σs B.μf B.fund B.R B.Re) → ∃ Rφ : B.I.L2 B.μf B.fund →L[ℂ] B.I.L2 B.μf B.fund, B.I.IsRConv B.μf B.fund B.R (phe B d) Rφ ∧ ∃ T : Fin B.D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund), GlobalTheory.IndefiniteRowSideFullHecke.CuspidalFrames.IsCuspidalFrame B Rφ T := by
   intro B d h hd hS _ hgap hl hb hfin
-  obtain ⟨-, hcomm, ⟨Rφ, hR⟩, hP⟩ := GlobalTheory.GlobProj.globalProj_holds B d hd (integrable_ph B d h hd hl hb)
+  obtain ⟨-, hcomm, ⟨Rφ, hR⟩, hP⟩ := GlobalTheory.GlobProj.globalProj_holds B d hd (GlobalTheory.Dec.CuspAllKType.integrable_ph B d h hd hl hb)
   obtain ⟨hproj, hfix, hex, -, -⟩ := hP Rφ hR
   obtain ⟨hU, hirr, -, hw, -⟩ := GlobalTheory.Dec.tensorRep B d hd
   have hle : B.I.eHom B.σs B.μf B.fund B.R B.Re ≤ B.I.HomS B.σs B.μf B.fund B.R := by
@@ -208,7 +169,7 @@ theorem cuspidal_frame : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (h 
       exact (hSm _).1 this
   · obtain ⟨A, -, hA⟩ := hT i
     rw [← hA]
-    exact congrArg (fun C : B.I.L2 B.μf B.fund →L[ℂ] B.I.L2 B.μf B.fund => C (A u)) (re_fixed B k hk)
+    exact congrArg (fun C : B.I.L2 B.μf B.fund →L[ℂ] B.I.L2 B.μf B.fund => C (A u)) (GlobalTheory.Dec.CuspAllKType.re_fixed B k hk)
   · exact ⟨fun i => by rw [hn, hw], fun i j hij => ho i j hij _ _⟩
   · apply le_antisymm
     · rw [Submodule.span_le]
@@ -539,8 +500,6 @@ private theorem log_le_sqrt_of_one_le (x : ℝ) (hx : 1 ≤ x) :
     ring
   have h4 := Real.log_two_lt_d9
   linarith
-
-
 
 theorem gap_threshold_pays_far_terms : ∀ (Cg : ℝ) (n f q : ℕ) (rd g b : ℝ) (h t : ℝ), 0 ≤ Cg → 3 ≤ n → 1 ≤ f → 1 ≤ q → q ^ 2 ≤ n → 1 ≤ rd → Real.log f ≤ Real.sqrt n → 2 ≤ b → 1 ≤ g → g ≤ b ^ Cg → 8 * 10 ^ 14 * (Cg + 4) * (n : ℝ) ^ 19 * (f : ℝ) ^ 5 * Real.log (b * rd) ≤ h → ((n : ℝ) * f * rd * g * b)⁻¹ ^ (11 * q) ≤ t → t ≤ 1 / 2 → let ep : ℝ := 1 / 10 ^ 6 / ((n : ℝ) ^ 8 * (f : ℝ) ^ 2); 64 * (n : ℝ) ^ 2 ≤ h * ep ∧ 1 ≤ h * ep ^ 2 / 16 ∧ (3 * Real.sqrt n / t ^ 2) ^ (2 * (n ^ 2 * f)) * (2 * f * 3 ^ f * Real.exp (-(h * ep ^ 2 / 16))) ≤ Real.exp (-((n : ℝ) ^ 2 * f)) := by
   intro Cg n f q rd g b h t hCg hn hf hq hqn hrd hlogf hb hg1 hgb hh ht1 _ht2 ep
@@ -1249,18 +1208,6 @@ theorem exists_composition (a : ℕ) (j : Fin a → ℕ) (hj : ∀ i, 1 ≤ j i)
     simp [Composition.blocksFun]
     rfl
 
-theorem measurableSet_simplexH (a : ℕ) : MeasurableSet (simplexH a) := by
-  have : simplexH a = (⋂ i : Fin a, ⋂ k : Fin a, ⋂ _ : i < k, {τ : Fin a → ℝ | τ i < τ k}) ∩
-      ⋂ i : Fin a, ({τ : Fin a → ℝ | 0 < τ i} ∩ {τ : Fin a → ℝ | τ i < 1 / 2}) := by
-    ext τ
-    simp [simplexH, StrictMono]
-  rw [this]
-  refine MeasurableSet.inter ?_ ?_
-  · exact MeasurableSet.iInter fun i => MeasurableSet.iInter fun k => MeasurableSet.iInter fun _ =>
-      measurableSet_lt (measurable_pi_apply i) (measurable_pi_apply k)
-  · exact MeasurableSet.iInter fun i => (measurableSet_lt measurable_const (measurable_pi_apply i)).inter
-      (measurableSet_lt (measurable_pi_apply i) measurable_const)
-
 theorem mem_typeSet (I : AutInst) (p q : ℕ) (hs : HasSig I p q) (x : I.GA) (hx : stepLt I x (1 / 2) ≠ ⊥) :
     ∃ J ∈ Finset.Icc 1 q, ∃ c : Composition J, x ∈ typeSet I c.blocksFun (simplexH c.length) := by
   obtain ⟨⟨a, S, τ, hF⟩, -, h3⟩ := GlobalTheory.PointFlag.flag_spec I x
@@ -1317,7 +1264,7 @@ theorem nonzeroFlagBound : VolumeStep → NonzeroFlagBound := by
     obtain ⟨hJ1, hJq⟩ := Finset.mem_Icc.mp hJ
     have hsum := c.sum_blocksFun
     have hT := (_root_.GlobalTheory.FlagMeas.Bound.flagMeasureBound hV I μf fund hfund p q hs h2q c.length c.blocksFun
-      (c.length_pos_of_pos hJ1) c.one_le_blocksFun (by omega) _ (measurableSet_simplexH _) subset_rfl).2.2.2
+      (c.length_pos_of_pos hJ1) c.one_le_blocksFun (by omega) _ (GlobalTheory.FlagPush.simplex_meas _) subset_rfl).2.2.2
     have hD := _root_.GlobalTheory.DensityIntegral.lintegral_dens_le_one I.n I.f c.length c.blocksFun hf1 c.one_le_blocksFun (by omega)
     have hK := _root_.GlobalTheory.FlagMeas.constantBound I.E I.cm.cmUnram p q c.length c.blocksFun c.one_le_blocksFun (by omega)
       (by rw [hpq]; exact hn) (by rw [hpq]; exact hq) (by rw [hpq, hv]; exact hrd) (by rw [hpq, hfd]; exact hf)

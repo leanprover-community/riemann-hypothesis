@@ -56,10 +56,6 @@ namespace GlobalTheory.Amp.OnePiece
 
 variable {k r : ℕ}
 
-theorem continuous_conj (a : Mat k r) : Continuous (conjM a : Mt k r → Mt k r) := by
-  unfold conjM
-  exact (continuous_const.matrix_mul continuous_id.matrixOf).matrix_mul continuous_const
-
 def grp (k r : ℕ) : Set (Mt k r) := {x | Matrix.of x ∈ GG k r}
 
 theorem measurableSet_grp : MeasurableSet (grp k r) := by
@@ -215,7 +211,7 @@ theorem one_piece : ∀ (k r : ℕ) {Wp : Type} [NormedAddCommGroup Wp] [InnerPr
               = ∫⁻ n, f (rmulM (Matrix.of h * Matrix.of x) (conjM (Matrix.of h) n)) ∂μN :=
                 lintegral_congr fun n => congrArg f (key n)
             _ = ∫⁻ n, f (rmulM (Matrix.of h * Matrix.of x) n) ∂(μN.map (conjM (Matrix.of h))) :=
-                (lintegral_map (hf.comp hrc.measurable) (continuous_conj _).measurable).symm
+                (lintegral_map (hf.comp hrc.measurable) (Formalism.FourierDecayAlt.P.B2x1.conjM_cont _).measurable).symm
             _ = ∫⁻ n, f (rmulM (Matrix.of h * Matrix.of x) n) ∂μN := by rw [hinv]
             _ ≤ Vol := hVol _ (WeylGroupFacts.uh_mul hh.1 hxg)
         have hAEM : AEMeasurable (fun h : Mt k r =>

@@ -895,7 +895,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
       simp only [hn₁, hn₂, hdl]
       rw [ite_eq_right hsp]
       simp only [f]
-      rw [GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k]
+      rw [GlobalTheory.BCT.inertChar_muLocK E μ e hμ w hsp k]
       rfl
   have hS' : ∀ x : Pl E, ∃! s, s ∈ S ∧ s.under (𝓞 (maximalRealSubfield E)) = x.under (𝓞 (maximalRealSubfield E)) := hS
   have hfib := GlobalTheory.T.finprod_eq_finprod_mem_fibres_of_section' (fun x : Pl E => x.under (𝓞 (maximalRealSubfield E))) S f hS' hfin
@@ -976,7 +976,7 @@ theorem delta_eventually_one {E : Type} [Field E] [NumberField E] [IsCMField E] 
     rw [hres]
     simp only [hn₁, hn₂, hdl]
     rw [ite_eq_right hsp, h3, mul_one]
-    have := GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k
+    have := GlobalTheory.BCT.inertChar_muLocK E μ e hμ w hsp k
     rw [h1] at this
     simpa [k] using this.symm
 

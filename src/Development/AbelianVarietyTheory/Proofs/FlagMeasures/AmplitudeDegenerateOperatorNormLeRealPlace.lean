@@ -103,13 +103,7 @@ theorem hpk_unit : IsUnit (Hpk k r).det :=
 
 theorem GG_one : (1 : Mat k r) ∈ GG k r := (uHGroup _ _ _root_.GlobalTheory.Amp.NfMid.det_H).1
 
-theorem GG_mul {a b : Mat k r} (ha : a ∈ GG k r) (hb : b ∈ GG k r) : a * b ∈ GG k r :=
-  (uHGroup _ _ hpk_unit).2.1 a ha b hb
-
 theorem GG_inv {a : Mat k r} (ha : a ∈ GG k r) : a⁻¹ ∈ GG k r := ((uHGroup _ _ hpk_unit).2.2 a ha).2
-
-theorem N_sub_S (z : Fin (2 * r + k + 1) → ℂ) {n : Mat k r} (hn : n ∈ Nset k r) : n ∈ Sset k r z :=
-  ⟨1, ⟨GG_one, fun a => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩, Matrix.one_mulVec _⟩, n, hn, (one_mul n).symm⟩
 
 theorem continuous_two (a b : Mat k r) : Continuous (fun x : Mt k r => (a * Matrix.of x * b : Mat k r)) :=
   (continuous_const.matrix_mul (continuous_id (X := Mat k r))).matrix_mul continuous_const
@@ -163,7 +157,7 @@ theorem fibre_volume : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k 
   have hDe₀ : DeOK k r z z' g₀ De := by
     refine ⟨hDe.1, fun l hl => ?_⟩
     have := hDe.2 l hl
-    rwa [dInv k r z z' hz hz' n₁ (N_sub_S z hn₁) n₂ (N_sub_S z' hn₂)] at this
+    rwa [dInv k r z z' hz hz' n₁ (GlobalTheory.Amp.YInv.N_sub_S z hn₁) n₂ (GlobalTheory.Amp.YInv.N_sub_S z' hn₂)] at this
   have key := _root_.GlobalTheory.Amp.FibreNormal.fibre_volume k r j hj z z' g₀ β c hz hz' hT hg₀ h1 h2 De hDe₀ m hm a ha
   set A : Mat k r := uEmb k r (Matrix.diagonal fun b => (a b : ℂ)) * mEmb k r m with hA
   have hg' : g₁ = n₀ * A * κ := by rw [hg, hA]; simp only [Matrix.mul_assoc]
@@ -175,7 +169,7 @@ theorem fibre_volume : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k 
     have : A = n₀⁻¹ * g₁ * κ⁻¹ := by
       rw [hg', ← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ u₀, Matrix.one_mul,
         Matrix.mul_nonsing_inv_cancel_right _ _ uκ]
-    rw [this]; exact GG_mul (GG_mul (GG_inv hn₀.1) hg₁) (GG_inv hκ.1)
+    rw [this]; exact GlobalTheory.Amp.YInv.mul_mem (GlobalTheory.Amp.YInv.mul_mem (GG_inv hn₀.1) hg₁) (GG_inv hκ.1)
   have hH := _root_.GlobalTheory.Amp.NHaar.isHaarOn_lebN k r
   have hU := ((_root_.GlobalTheory.SgInf.unimodular_S_N_UW k r z hz hT (lebN k r)).2.1 hH).1
   set T := twoEquiv n₂ n₀ u₂ u₀ with hTdef
@@ -186,9 +180,9 @@ theorem fibre_volume : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k 
   have hY : ∀ n : Mt k r, Matrix.of n ∈ Nset k r →
       Yj k r hj z z' (n₁ * g₀ * n₂) (Matrix.of n * g₁) = Yj k r hj z z' g₀ (Matrix.of (T n) * A) := by
     intro n hn
-    rw [(_root_.GlobalTheory.Amp.YjInv.yj_invariant k r j hj z z' g₀ hz hz' hg₀.1 _ (GG_mul hn.1 hg₁)).2.1 n₁ hn₁ n₂ hn₂, hTof,
+    rw [(_root_.GlobalTheory.Amp.YjInv.yj_invariant k r j hj z z' g₀ hz hz' hg₀.1 _ (GlobalTheory.Amp.YInv.mul_mem hn.1 hg₁)).2.1 n₁ hn₁ n₂ hn₂, hTof,
       ← (_root_.GlobalTheory.Amp.YjInv.yj_invariant k r j hj z z' g₀ hz hz' hg₀.1 _
-        (GG_mul (GG_mul (GG_mul hn₂.1 hn.1) hn₀.1) hAG)).1 κ hκ, hg']
+        (GlobalTheory.Amp.YInv.mul_mem (GlobalTheory.Amp.YInv.mul_mem (GlobalTheory.Amp.YInv.mul_mem hn₂.1 hn.1) hn₀.1) hAG)).1 κ hκ, hg']
     simp only [Matrix.mul_assoc]
   refine ⟨?_, fun φ hφ R₀ y hR hy => ?_⟩
   · have h0 := key.1
@@ -203,10 +197,10 @@ theorem fibre_volume : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k 
       intro n hn
       have hx : Matrix.of (T n) * A ∈ GG k r := _root_.GlobalTheory.Amp.NfComp.G_mul (_root_.GlobalTheory.Amp.NfComp.G_mul (_root_.GlobalTheory.Amp.NfComp.G_mul hn₂.1 hn.1) hn₀.1) hAG
       have e1 : Sg2 k r z' (Matrix.of n * g₁) = Sg2 k r z' (Matrix.of (T n) * A) := by
-        rw [← (_root_.GlobalTheory.Amp.TwoSided.Sg2_invariant_continuousOn_one_le_bounds k r z' hz' hT').2.1 _ hx n₂⁻¹ (N_sub_S z' ((nSubgroup k r).2.2 _ hn₂)) κ hκ, hTof, hg']
+        rw [← (_root_.GlobalTheory.Amp.TwoSided.Sg2_invariant_continuousOn_one_le_bounds k r z' hz' hT').2.1 _ hx n₂⁻¹ (GlobalTheory.Amp.YInv.N_sub_S z' ((nSubgroup k r).2.2 _ hn₂)) κ hκ, hTof, hg']
         simp only [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ u₂, Matrix.one_mul]
       have e2 : Sg2 k r z (n₁ * g₀ * n₂ * (Matrix.of n * g₁)) = Sg2 k r z (g₀ * (Matrix.of (T n) * A)) := by
-        rw [← (_root_.GlobalTheory.Amp.TwoSided.Sg2_invariant_continuousOn_one_le_bounds k r z hz hT).2.1 _ (GG_mul hg₀.1 hx) n₁ (N_sub_S z hn₁) κ hκ, hTof, hg']
+        rw [← (_root_.GlobalTheory.Amp.TwoSided.Sg2_invariant_continuousOn_one_le_bounds k r z hz hT).2.1 _ (GlobalTheory.Amp.YInv.mul_mem hg₀.1 hx) n₁ (GlobalTheory.Amp.YInv.N_sub_S z hn₁) κ hκ, hTof, hg']
         simp only [Matrix.mul_assoc]
       simp only [Eset0, Set.mem_setOf_eq, of_rmulM]
       rw [e1, e2, hY n hn]
@@ -953,20 +947,13 @@ theorem Dj_eq {k r j : ℕ} (hj : j ≤ r) (z z' : Fin (2 * r + k + 1) → ℂ) 
 theorem unit_det {k r : ℕ} {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det ∧ g⁻¹ ∈ GG k r :=
   (uHGroup _ (Hpk k r) (Matrix.isUnit_det_of_left_inverse (hpkFacts k r).2.1)).2.2 g hg
 
-theorem mul_GG {k r : ℕ} {g h : Mat k r} (hg : g ∈ GG k r) (hh : h ∈ GG k r) : g * h ∈ GG k r :=
-  (uHGroup _ (Hpk k r) (Matrix.isUnit_det_of_left_inverse (hpkFacts k r).2.1)).2.1 g hg h hh
-
 theorem herm_adj {k r : ℕ} {g : Mat k r} (hg : g ∈ GG k r) (u v : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) u (g⁻¹ *ᵥ v) = herm (Hpk k r) (g *ᵥ u) v := by
   rw [← herm_UH _ hg, Matrix.mulVec_mulVec v, Matrix.mul_nonsing_inv _ (unit_det hg).1, Matrix.one_mulVec]
 
-theorem herm_adj' {k r : ℕ} {g : Mat k r} (hg : g ∈ GG k r) (u v : Fin (2 * r + k + 1) → ℂ) :
-    herm (Hpk k r) (g⁻¹ *ᵥ u) v = herm (Hpk k r) u (g *ᵥ v) := by
-  rw [← herm_UH _ hg, Matrix.mulVec_mulVec u, Matrix.mul_nonsing_inv _ (unit_det hg).1, Matrix.one_mulVec]
-
 theorem Zj_inv {k r j : ℕ} (hj : j ≤ r) {γ : Mat k r} (hγ : γ ∈ GG k r) : Zj k r hj γ⁻¹ = (Zj k r hj γ)ᴴ := by
   ext a b
-  rw [Matrix.conjTranspose_apply, Zj, Zj, herm_conj, herm_adj' hγ]
+  rw [Matrix.conjTranspose_apply, Zj, Zj, herm_conj, GlobalTheory.Amp.NfComp.herm_inv_left hγ]
 
 theorem mem_Ppos {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {γ x : Mat k r} {p : EuclideanSpace ℂ (Fin (2 * r + k + 1))}
     (hp : p ∈ Ppos k r z z' γ x) :
@@ -1001,7 +988,7 @@ theorem bound_of_split {k r j : ℕ} (hj : j ≤ r) {z z' : Fin (2 * r + k + 1) 
     {x : Mat k r} (hx : x ∈ GG k r) :
     Yj k r hj z z' γ x * Yj k r hj z' z γ⁻¹ (γ * x) * Dj k r hj z z' γ ≤ 2 ^ j := by
   have hγγ : γ⁻¹⁻¹ = γ := Matrix.nonsing_inv_nonsing_inv _ (unit_det hγ).1
-  have hγx := mul_GG hγ hx
+  have hγx := GlobalTheory.Amp.NfComp.G_mul hγ hx
   unfold Yj
   rw [Dj_eq, Dj_eq, Zj_inv hj hγ, Matrix.det_conjTranspose, norm_star]
   set Z := Zj k r hj γ with hZ
@@ -1024,7 +1011,7 @@ theorem bound_of_split {k r j : ℕ} (hj : j ≤ r) {z z' : Fin (2 * r + k + 1) 
   have hc : ∀ v, Low r v → herm (Hpk k r) h (γ *ᵥ v) = 0 := fun v hv => by
     rw [hh, herm_UH _ hγ]; exact herm_low a₀ hv
   have hc' : ∀ v, Low r v → herm (Hpk k r) h' (γ *ᵥ v) = 0 := fun v hv => by
-    rw [← herm_adj' hγ]; exact herm_low (fun a => by rw [herm_adj' hγ]; exact c₂ a) hv
+    rw [← GlobalTheory.Amp.NfComp.herm_inv_left hγ]; exact herm_low (fun a => by rw [GlobalTheory.Amp.NfComp.herm_inv_left hγ]; exact c₂ a) hv
   have sw : ∀ u v, herm (Hpk k r) u v = 0 → herm (Hpk k r) v u = 0 := fun u v e => by
     rw [← herm_conj, e, star_zero]
   have n₁ : herm (Hpk k r) h h = ⟪p, p⟫_ℂ := by
@@ -1065,7 +1052,7 @@ theorem bound_of_split {k r j : ℕ} (hj : j ≤ r) {z z' : Fin (2 * r + k + 1) 
     rwa [Matrix.mulVec_sub, herm_sub_l, sub_eq_zero] at this
   have r₂ : ∀ v, Low r v → herm (Hpk k r) y₂ (γ *ᵥ v) = herm (Hpk k r) u₂ (γ *ᵥ v) := fun v hv => by
     have := herm_low_low hv₂ hv
-    rwa [herm_adj' hγ, herm_sub_l, sub_eq_zero] at this
+    rwa [GlobalTheory.Amp.NfComp.herm_inv_left hγ, herm_sub_l, sub_eq_zero] at this
   have g₁ : γ *ᵥ u₁ = ∑ a, α a • (γ *ᵥ bvec (eI k r (Fin.castLE hj a))) := by
     rw [hα, Matrix.mulVec_sum]; simp only [Matrix.mulVec_smul]
   have k₁ : ∀ a : Fin j, star (x⁻¹ *ᵥ (γ⁻¹ *ᵥ bvec (eI k r (Fin.castLE hj a)))) ⬝ᵥ p.ofLp = (Z *ᵥ α) a := fun a => by
@@ -1104,7 +1091,7 @@ theorem gram_mul_minor_le : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r
     Yj k r hj z z' γ x * Yj k r hj z' z γ⁻¹ (γ * x) * Dj k r hj z z' γ ≤ 2 ^ j := by
   rintro k r j hj z z' γ s μR ⟨hz, -, hT, n₁, h₁, n₂, h₂, g, β, c, ⟨hg, hc, -, -, -, -, he, -⟩, rfl, -⟩ x hx
   have hc0 : c ≠ 0 := by rintro rfl; simp at hc
-  refine bound_of_split hj hz hT (mul_GG (mul_GG h₁.1 hg) h₂.1)
+  refine bound_of_split hj hz hT (GlobalTheory.Amp.NfComp.G_mul (GlobalTheory.Amp.NfComp.G_mul h₁.1 hg) h₂.1)
     (fun v hv => low_split hj h₁ h₂ c (fun a ha => (he a ha).1) hv) (fun v hv => ?_) hx
   rw [Matrix.mul_inv_rev, Matrix.mul_inv_rev, ← Matrix.mul_assoc]
   refine low_split hj ((nSubgroup k r).2.2 _ h₂) ((nSubgroup k r).2.2 _ h₁) c⁻¹ (fun a ha => ?_) hv
@@ -1179,12 +1166,6 @@ theorem eucl_Hpk (k r : ℕ) (v : Fin (2 * r + k + 1) → ℂ) : eucl (Hpk k r *
     EuclideanSpace.inner_toLp_toLp, Matrix.star_mulVec, dotProduct_comm, ← Matrix.dotProduct_mulVec,
     Matrix.mulVec_mulVec, (hpkFacts k r).1, (hpkFacts k r).2.1, Matrix.one_mulVec, dotProduct_comm]
 
-theorem herm_mulVec {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH H) (v w : Fin n → ℂ) :
-    herm H (g *ᵥ v) (g *ᵥ w) = herm H v w := by
-  have hg' : gᴴ * H * g = H := hg
-  unfold herm
-  rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hg']
-
 theorem one_le_Sg (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (x : Mat k r) : 1 ≤ Sg k r z x :=
   (Finset.le_fold_max _).2 (Or.inl le_rfl)
 
@@ -1216,7 +1197,7 @@ theorem norm_Dmin_le (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) {γ x : Ma
     have ha : a.val < r := lt_of_lt_of_le a.isLt hl
     have hb : b.val < r := lt_of_lt_of_le b.isLt hl
     rw [Matrix.of_apply, EuclideanSpace.inner_toLp_toLp, dotProduct_comm, Matrix.submatrix_apply, Zhat,
-      ← herm_mulVec (hinv _ hγx).2, Matrix.mulVec_mulVec, Matrix.mul_inv_rev, Matrix.mul_assoc,
+      ← GlobalTheory.Amp.NfComp.herm_iso (hinv _ hγx).2, Matrix.mulVec_mulVec, Matrix.mul_inv_rev, Matrix.mul_assoc,
       Matrix.nonsing_inv_mul _ (hinv _ hγ).1, Matrix.mul_one, fvec, fvec, dite_eq_left (by exact hb), dite_eq_left (by exact ha)]
     rfl
   rw [e]
@@ -1273,9 +1254,6 @@ namespace GlobalTheory.Amp.DegConv
 
 variable {k r : ℕ}
 
-theorem continuous_lmul (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) :=
-  continuous_const.matrix_mul (continuous_id (X := Mat k r))
-
 theorem lmul_inv_lmul {γ : Mat k r} (hγ : γ ∈ GG k r) (x : Mt k r) : lmulM γ⁻¹ (lmulM γ x) = x :=
   Matrix.nonsing_inv_mul_cancel_left γ (Matrix.of x) (isUnit_det_of_mem_GG hγ)
 
@@ -1297,7 +1275,7 @@ theorem quot_map {γ : Mat k r} (hγ : γ ∈ GG k r) {μG μR ν : Measure (Mt 
   refine lintegral_congr fun x => ?_
   have hm : Measurable fun s : Mt k r => f (rmulM (Matrix.of (lmulEquiv hγ x)) s) :=
     hf.comp (continuous_rmulM _).measurable
-  refine Eq.trans ?_ (lintegral_map hm (_root_.GlobalTheory.Amp.OnePiece.continuous_conj γ).measurable).symm
+  refine Eq.trans ?_ (lintegral_map hm (_root_.Formalism.FourierDecayAlt.P.B2x1.conjM_cont γ).measurable).symm
   refine lintegral_congr fun s => ?_
   congr 1
   show γ * (Matrix.of s * Matrix.of x) = γ * Matrix.of s * γ⁻¹ * (γ * Matrix.of x)
@@ -1442,7 +1420,7 @@ theorem deg_core : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r + k + 1)
     unfold Kc
     positivity
   have hsg := one_le_sgV z z' γ H₁
-  have me : Measurable (lmulM γ : Mt k r → Mt k r) := (continuous_lmul γ).measurable
+  have me : Measurable (lmulM γ : Mt k r → Mt k r) := (Formalism.FourierDecayAlt.P.B2x1.lmulM_cont γ).measurable
   have g1 := _root_.GlobalTheory.Amp.TwoSided.Sg2_invariant_continuousOn_one_le_bounds k r z o1.1 o1.2.1
   have g2 := _root_.GlobalTheory.Amp.TwoSided.Sg2_invariant_continuousOn_one_le_bounds k r z' o2.1 o2.2.1
   have main := _root_.GlobalTheory.Amp.OpNorm.integrable_and_norm_ampJ_le k r νR Φ Φ' γ c (16 * (κ / s * Kc k r j De * c) * (2 * H₁) ^ (16 * r ^ 3 + 4 * r) * De ^ 2 *

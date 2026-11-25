@@ -212,7 +212,7 @@ theorem linW_change (hB : B.IsGood σ) (hX : X.IsHerm σ B r s) (hW : W.IsSkew �
   have hψ1 : GlobalTheory.LatVac.psiAt B.ψ v ≠ 1 := GlobalTheory.PsiNontriv.psiAt_ne_one _ hB.std v
   have hsb := fun (u : Matrix (Fin n) (Fin d) (AE F E)) φ hφ =>
     GlobalTheory.SchrSB.schr_mem_SB B.ψ hB.std.1 v (GlobalTheory.LatVac.locCo M.co v u) φ hφ
-  have act := fun b c u hu hp φ hφ => (GlobalTheory.T.heisenbergOperator_isotropic_translation_char_split hB.cm X W hX.herm hW.skew (GlobalTheory.FinUniq.det_ne_zero_herm hX)
+  have act := fun b c u hu hp φ hφ => (GlobalTheory.HeisFlip.heis_trans_char hB.cm X W hX.herm hW.skew (GlobalTheory.FinUniq.det_ne_zero_herm hX)
     (GlobalTheory.FinUniq.det_ne_zero_skew hW) M B.ψ hB.std t b c u hu hp φ hφ _ (hsb u φ hφ)
     (GlobalTheory.VacBridge.rho_acts_locCo M.co B.ψ v u hu φ)).1
   choose zX hzX using fun Z => (_root_.GlobalTheory.FlipOnto.coX_coY_onto F E σ B hB n d _ _ _ _ X W hX hW v t (b * g) (c * k) Z).1
@@ -252,7 +252,7 @@ theorem linBar_change (hB : B.IsGood σ) (hX : X.IsHerm σ B r s) (hW : W.IsSkew
   have hψ1 : GlobalTheory.LatVac.psiAt B.ψ v ≠ 1 := GlobalTheory.PsiNontriv.psiAt_ne_one _ hB.std v
   have hsb := fun (u : Matrix (Fin n) (Fin d) (AE F E)) φ hφ =>
     GlobalTheory.SchrSB.schr_mem_SB B.ψ hB.std.1 v (GlobalTheory.LatVac.locCo M.co v u) φ hφ
-  have act := fun b c u hu hp φ hφ => (GlobalTheory.T.heisenbergOperator_isotropic_translation_char_split hB.cm X W hX.herm hW.skew (GlobalTheory.FinUniq.det_ne_zero_herm hX)
+  have act := fun b c u hu hp φ hφ => (GlobalTheory.HeisFlip.heis_trans_char hB.cm X W hX.herm hW.skew (GlobalTheory.FinUniq.det_ne_zero_herm hX)
     (GlobalTheory.FinUniq.det_ne_zero_skew hW) M B.ψ hB.std t b c u hu hp φ hφ _ (hsb u φ hφ)
     (GlobalTheory.VacBridge.rho_acts_locCo M.co B.ψ v u hu φ)).2
   choose zX hzX using fun Z => (_root_.GlobalTheory.FlipOnto.coX_coY_onto F E σ B hB n d _ _ _ _ X W hX hW v t (b * g) (c * k) Z).1
@@ -315,7 +315,6 @@ theorem valuation_kap (hG : G.IsGood B) (hG₂ : (reG G V V' Z).IsGood B) (v : B
     GlobalTheory.SplitFlip.valuation_gdet_of_mem_KO (mem_KO_of_bases (b₂ := V.bas v) (hG.hV.bas v) (hG₂.hV.bas v)),
     GlobalTheory.SplitFlip.valuation_gdet_of_mem_KO (mem_KO_of_bases (b₂ := V'.bas v) (hG.hV'.bas v) (hG₂.hV'.bas v)),
     GlobalTheory.SplitFlip.valuation_gdet_of_mem_KO (mem_KO_of_bases (b₂ := Z.bas v) (hG.hW.bas v) (hG₂.hW.bas v)), one_mul, one_mul]
-
 
 attribute [local instance high] GlobalTheory.SplitWeil.matrixMeasurableSpace in
 theorem zeta_rel (hB : B.IsGood σ) (hG : G.IsGood B) (hG₂ : (reG G V V' Z).IsGood B) {X : Chars F E}
@@ -412,7 +411,6 @@ theorem polMatch_iso {R R₃ : RealMaps F a a'} {Rf Rf₃ : FinMaps F a a'} {ψ�
       rw [Finset.prod_coe_sort, hΛT]
     simp only [lhs, rhs, ← Finset.smul_sum, h1]
 
-
 variable (B G V V' Z) in
 def kapId : (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))ˣ :=
   ∏ v : B.P, locIdele F (splitPrime (B.τ v))
@@ -424,7 +422,6 @@ theorem chr_kapId (χ : Chr F E) :
   exact map_prod Circle.coeHom _ _
 
 variable {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W}
-
 
 theorem acts_pureA {κ : Type} [Fintype κ] {T : ((κ → AF F) → ℂ) → (κ → AF F) → ℂ} {f f₁ : SInf F κ}
     (h : Acts (evI F) T f f₁) {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) : T (pureA F f g) = pureA F f₁ g := by

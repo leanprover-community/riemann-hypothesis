@@ -146,7 +146,7 @@ theorem UpperTheory.exists_eq_pure_vacuum_of_lattice_invariant :
       by_cases hv : ∀ w : HeightOneSpectrum (𝓞 E), ¬ Formalism.UG.IsInertAt F E v w
       · haveI := hB.unram
         obtain ⟨t⟩ := GlobalTheory.SplitDict.nonempty_emb hB.cm v hv
-        obtain ⟨γ₁, h₁, γ₂, h₂, rfl, e₁, e₂⟩ := GlobalTheory.T.tensorLatticeAtFinitePlace_eq_sum_splitPlace_parts hB.cm X W v t γ hγ
+        obtain ⟨γ₁, h₁, γ₂, h₂, rfl, e₁, e₂⟩ := GlobalTheory.LatSplit.latAtV_decomp hB.cm X W v t γ hγ
         exact add_mem (AddSubgroup.subset_closure (.inr ⟨h₁, _, e₁⟩)) (AddSubgroup.subset_closure (.inr ⟨h₂, _, e₂⟩))
       · obtain ⟨w, hw⟩ := not_forall_not.1 hv
         refine AddSubgroup.subset_closure (.inl ⟨⅟(2 : AF F) • γ, smul_mem_lat X W v (invTwo_mem v (hB.inert v w hw).1) hγ, ?_⟩)

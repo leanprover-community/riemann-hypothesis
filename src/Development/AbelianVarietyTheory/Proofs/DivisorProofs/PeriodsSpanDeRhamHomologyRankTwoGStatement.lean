@@ -175,8 +175,6 @@ theorem fst_phi {B O : Type} [CommRing B] [Algebra ℂ B] [CommRing O] [Algebra 
 theorem snd_phi {B O : Type} [CommRing B] [Algebra ℂ B] [CommRing O] [Algebra ℂ O] (α : B →ₐ[ℂ] O) (ℓ : Ω[B⁄ℂ] →+ (Fin g → O))
     (h : ∀ (b : B) ω, ℓ (b • ω) = α b • ℓ ω) (c : TrivSqZeroExt B Ω[B⁄ℂ]) : (phi α ℓ h c).snd = ℓ c.snd := zero_add _
 
-
-
 def Phi (U : A.left.affineOpens) (ℓ : Ω[Sec (str A) U.1⁄ℂ] →+ (Fin g → Hol (W u U.1)))
     (h : ∀ b ω, ℓ (b • ω) = valHom u U.1 b • ℓ ω) :
     (diagExt ℂ (Sec (str A) U.1)).thick (affPt (str A) U) (affPt_w _ U) ⟶ (rl u).obj ((ch u).jet U) :=
@@ -256,8 +254,6 @@ theorem jet_alg {B O : Type} [CommRing B] [Algebra ℂ B] [CommRing O] [Algebra 
   rw [snd_phi, TrivSqZeroExt.snd_sub (Charts.tszeSec d _), Pi.sub_apply, Charts.snd_tszeSec, hi] at z2
   exact z2.trans (sub_zero _)
 
-
-
 theorem jet_eq (f : Z1 (O (dp0 ℂ) (str A))) (U : A.left.affineOpens) (ℓ : Ω[Sec (str A) U.1⁄ℂ] →+ (Fin g → Hol (W u U.1)))
     (h : ∀ b ω, ℓ (b • ω) = valHom u U.1 b • ℓ ω)
     (hD : ∀ b a, ℓ (KaehlerDifferential.D ℂ _ b) a = dw a (valHom u U.1 b)) (G0 : Hol (W u U.1)) (Gj κ : TrivSqZeroExt (Hol (W u U.1)) (Fin g → Hol (W u U.1)))
@@ -283,8 +279,6 @@ theorem lift_fn (U : A.left.Opens) (ℓ : Ω[Sec (str A) U⁄ℂ] →+ (Fin g �
     rw [map_zero, map_zero, Pi.zero_apply, ← Hol.ev_apply p hp, map_zero]; rfl
   | add x y _ _ hx hy => rw [map_add (f := _), map_add (f := _), Pi.add_apply, Hol.fn_add _ _ hp, hx, hy]; rfl
   | smul b x _ hx => rw [h, e2, Pi.smul_apply, smul_eq_mul, Hol.fn_mul _ _ hp, hx, fn_valHom u U b hp]; rfl
-
-
 
 theorem main : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L : LB A.left) (u : HolUnif A L g), ∀ (c : FirstDeRham (str A)) (q : u.Λ →+ ℂ) (per : u.Λ →+ Hol (fibFam u).V), (∀ l, per l = algebraMap ℂ _ (q l)) → IsPeriod (fibUnif u) c per → IsPer u.ex u.Λ (cmp1 (str A) c) q := by
   intro A _ g L u c q per hper hP
@@ -628,8 +622,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CechDR GlobalTheory.CechPer
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.isPer_of_isPull1_of_isPer : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L : LB A.left) (u : HolUnif A L g), ∀ (A' : Over (Sp ℂ)) [GrpObj A'] (g' : ℕ) (L' : LB A'.left) (u' : HolUnif A' L' g') (φ : A' ⟶ A) (M : (Fin g' → ℂ) →ₗ[ℂ] (Fin g → ℂ)) (h : φ.left ≫ str A = str A' ≫ spMap (RingHom.id ℂ)), (∀ w, u.ex (M w) = u'.ex w ≫ φ) → ∀ (hM : ∀ l : u'.Λ, M l ∈ u.Λ) x x' q, IsPull1 h x x' → IsPer u.ex u.Λ x q → IsPer u'.ex u'.Λ x' fun l => q ⟨M l, hM l⟩ := by
-  first | exact @GlobalTheory.CechPer.Nat.isPer_pull
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPerPullStatement =====
@@ -655,7 +647,7 @@ theorem mem_primDR_of_isPer : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L : 
     intro φ M hw hM
     have hm := IsMor.of_over (dp0 ℂ) (φ := φ.left) (s := str A) (s' := str (A ⊗ A))
       (by rw [← Category.assoc, Over.w])
-    exact GlobalTheory.T.isPer_of_isPull1_of_isPer A g L u (A ⊗ A) n L' v φ M hm.w hw hM _ _ _ (comparison_pullback hm c) hp
+    exact GlobalTheory.CechPer.Nat.isPer_pull A g L u (A ⊗ A) n L' v φ M hm.w hw hM _ _ _ (comparison_pullback hm c) hp
   have hμ := key μ[A] (M₁ + M₂) h3 (fun l ↦ add_mem (hM1 l) (hM2 l))
   have hf := key (fst A A) M₁ h1 hM1
   have hs := key (snd A A) M₂ h2 hM2

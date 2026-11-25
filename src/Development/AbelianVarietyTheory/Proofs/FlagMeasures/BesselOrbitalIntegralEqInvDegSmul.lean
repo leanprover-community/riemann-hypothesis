@@ -270,7 +270,6 @@ theorem eucl_proj_le {H : Matrix (Fin n) (Fin n) ℂ} (hH : Hᴴ * H = 1) (b b' 
   rw [eucl_mulVec_of_unitary hH]
   exact mul_le_mul_of_nonneg_right (hM j) (eucl_nonneg _)
 
-
 omit [Fintype ι] in
 theorem sq_le_of_pos {H : Matrix (Fin n) (Fin n) ℂ} (hH : Hᴴ = H) (hH2 : H * H = 1)
     (b' : ι → Fin n → ℂ) (hpos : ∀ y, (∀ i, herm H y (b' i) = 0) → 0 ≤ (herm H y y).re)
@@ -530,9 +529,6 @@ theorem gram_det_unit : IsUnit (Hpk k r).det :=
 theorem mul_mem {g h : Mat k r} (hg : g ∈ GG k r) (hh : h ∈ GG k r) : g * h ∈ GG k r :=
   (unitary_group_holds _ _ gram_det_unit).2.1 g hg h hh
 
-theorem det_unit {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det :=
-  ((unitary_group_holds _ _ gram_det_unit).2.2 g hg).1
-
 theorem mem_of_S {z : Fin (2 * r + k + 1) → ℂ} {s : Mat k r} (hs : s ∈ Sset k r z) : s ∈ GG k r := by
   obtain ⟨h, hh, m, hm, rfl⟩ := hs
   exact mul_mem hh.1 hm.1
@@ -553,7 +549,7 @@ theorem left_bound (z z' : Fin (2 * r + k + 1) → ℂ) (C : Set (Mat k r)) (hz 
   have hxG : s * γ * s'⁻¹ ∈ GG k r := mul_mem (mul_mem hsG hγG) (_root_.GlobalTheory.SgInf.RegInv.inv_mem hs'G)
   have hx1 : 1 ≤ opn (s * γ * s'⁻¹) := (hN1 _ hxG).2
   have hxs : (s * γ * s'⁻¹) * s' = s * γ := by
-    rw [Matrix.mul_assoc, Matrix.nonsing_inv_mul _ (det_unit hs'G), Matrix.mul_one]
+    rw [Matrix.mul_assoc, Matrix.nonsing_inv_mul _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG hs'G), Matrix.mul_one]
   have h1' := h1 γ hγ s hs s' hs'
   have h5 := hN5 (s * γ * s'⁻¹)
   set X := opn (s * γ * s'⁻¹) with hX
@@ -594,7 +590,7 @@ theorem poly_proper : ∀ (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (C : 
   have hγG : γ ∈ GG k r := (hCr hγ).1
   have hxG : s * γ * s'⁻¹ ∈ GG k r := mul_mem (mul_mem hsG hγG) (_root_.GlobalTheory.SgInf.RegInv.inv_mem hs'G)
   have hinv : s' * γ⁻¹ * s⁻¹ = (s * γ * s'⁻¹)⁻¹ := by
-    rw [Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (det_unit hs'G),
+    rw [Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG hs'G),
       Matrix.mul_assoc]
   have ha := h1 γ hγ s hs s' hs'
   have hb := h2 γ⁻¹ ⟨γ, hγ, (_root_.GlobalTheory.SgInf.OpNormU.inv_eq hγG).symm⟩ s' hs' s hs
@@ -731,13 +727,6 @@ variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 variable {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
 variable {Wq : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
 
-theorem isUnit_det {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det := by
-  by_contra h
-  have h1 := (_root_.GlobalTheory.SgInf.opn_facts k r).1 g hg
-  rw [Matrix.nonsing_inv_apply_not_isUnit _ h] at h1
-  have h0 : opn (0 : Mat k r) = 0 := by simp [opn]
-  linarith [h1.1, h1.2]
-
 alias continuousOn_matInv := _root_.GlobalTheory.SgInf.BeForm.continuousOn_inv
 
 alias continuous_of := _root_.GlobalTheory.SgInf.BeForm.continuous_of
@@ -815,7 +804,7 @@ theorem coef_mul_left {σ : Mat k r → (H →L[ℂ] H)} [CompleteSpace H] (hG :
   have hi := hG.2.2.2.2 g hg
   have hv : σ g (σ g⁻¹ v) = v := by
     have := hσ.1.2 g hg _ hi
-    rw [Matrix.mul_nonsing_inv _ (isUnit_det hg), hσ.1.1] at this
+    rw [Matrix.mul_nonsing_inv _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG hg), hσ.1.1] at this
     simpa using (congrArg (fun T : H →L[ℂ] H => T v) this).symm
   have hiso : ∀ a b : H, ⟪σ g a, σ g b⟫_ℂ = ⟪a, b⟫_ℂ := fun a b =>
     (LinearIsometry.mk (σ g : H →ₗ[ℂ] H) (hσ.2.1 g hg)).inner_map_map a b
@@ -959,8 +948,8 @@ theorem integrable_triple {σ : Mat k r → (H →L[ℂ] H)} {w : H} {a : ℝ} {
     have hy' := hG.2.2.2.1 _ (hG.2.2.2.1 _ (hSc'.1 hs') _ hγi) _ hx
     have hr := rpow_bound hG hy hy' hb0 (show b ≤ a by linarith)
     have e2 : s * x * (s' * γ⁻¹ * x)⁻¹ = s * γ * s'⁻¹ := by
-      rw [Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (isUnit_det hγG),
-        Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ (isUnit_det hx), Matrix.mul_assoc]
+      rw [Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG hγG),
+        Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG hx), Matrix.mul_assoc]
     rw [e2] at hr
     have p1 : 0 ≤ opn (s * x) ^ (-a) := Real.rpow_nonneg (opn_nonneg _) _
     have p2 : 0 ≤ opn (s' * γ⁻¹ * x) ^ (-a) := Real.rpow_nonneg (opn_nonneg _) _
@@ -983,7 +972,6 @@ theorem integrable_triple {σ : Mat k r → (H →L[ℂ] H)} {w : H} {a : ℝ} {
           (mul_nonneg (mul_nonneg (abs_nonneg _) (abs_nonneg _)) (mul_nonneg m3 m4))
 
 end GlobalTheory.SgInf.OrbSchur
-
 
 open GlobalTheory.SgInf.OrbSchur in
 theorem GlobalTheory.SgInf.OO_eq_inv_deg_smul_Iint : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp] [CompleteSpace Wp] {Wq : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] [CompleteSpace Wq] (σ : Mat k r → (H →L[ℂ] H)) (w : H) (a : ℝ) (μG : Measure (Mt k r)) (d : ℝ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (π : Mat k r → (Wp →L[ℂ] Wp)) (μS : Measure (Mt k r)) (z' : Fin (2 * r + k + 1) → ℂ) (c' : Fin r → ℂ) (π' : Mat k r → (Wq →L[ℂ] Wq)) (μS' : Measure (Mt k r)) , Std σ w a μG d → Side z π μS → Side z' π' μS' → ∀ w₀ ∈ DD σ w, ∀ w₀' ∈ DD σ w, ∀ (ξ : Wp) (ξ' : Wq), ∀ γ ∈ Greg k r z z', Integrable (fun p : Mt k r × Mt k r => coef σ w₀' w₀ (Matrix.of (act2 γ p)) • rk1 (PiS (psiGen k r z c) π (Matrix.of p.1)⁻¹ ξ) (PiS (psiGen k r z' c') π' (Matrix.of p.2)⁻¹ ξ')) (μS.prod μS') ∧ Integrable (fun x : Mt k r => rk1 ((Afun (psiGen k r z c) π μS σ w w₀ ξ) (Matrix.of x)) ((Afun (psiGen k r z' c') π' μS' σ w w₀' ξ') (γ⁻¹ * Matrix.of x))) μG ∧ OO μG (Afun (psiGen k r z c) π μS σ w w₀ ξ) (Afun (psiGen k r z' c') π' μS' σ w w₀' ξ') γ = (d : ℂ)⁻¹ • Iint (psiGen k r z c) (psiGen k r z' c') π π' μS μS' σ w₀' w₀ ξ ξ' γ := by
@@ -1029,7 +1017,7 @@ theorem GlobalTheory.SgInf.OO_eq_inv_deg_smul_Iint : ∀ (k r : ℕ) {H : Type} 
     simp only [hF]
     rw [integral_smul_const, integral_coef_translate hG hσ hμ hSch hw w₀ w₀' (hSc.1 hp.1)
       (hG.2.2.2.1 _ (hSc'.1 hp.2) _ hγi), Matrix.mul_inv_rev,
-      Matrix.nonsing_inv_nonsing_inv _ (isUnit_det hγG), ← Matrix.mul_assoc, mul_smul]
+      Matrix.nonsing_inv_nonsing_inv _ (GlobalTheory.SgInf.isUnit_det_of_mem_GG hγG), ← Matrix.mul_assoc, mul_smul]
     rfl
   have hR : (fun x => ∫ p, F (p, x) ∂(μS.prod μS')) =ᵐ[μG] fun x =>
       rk1 ((Afun (psiGen k r z c) π μS σ w w₀ ξ) (Matrix.of x))

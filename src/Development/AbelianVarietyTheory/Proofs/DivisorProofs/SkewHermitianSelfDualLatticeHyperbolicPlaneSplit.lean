@@ -82,12 +82,6 @@ open scoped TensorProduct Matrix nonZeroDivisors
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.PlaneSkew
 
-namespace GlobalTheory.PlaneSkew.CartanInv
-
-theorem exists_isCartan : ∀ (n : ℕ) (M : Matrix (Fin n) (Fin n) ℂ) (r s : ℕ), HasSig M r s → ∃ θ, IsCartan M θ :=
-  GlobalTheory.CartanEx.exists_isCartan
-
-end GlobalTheory.PlaneSkew.CartanInv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCartanInvolutionHermitianSignature =====
@@ -415,13 +409,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.PlaneSkew
 
 namespace GlobalTheory.PlaneSkew
-
-theorem exists_ne_zero_smul_mem_of_mem_span {E : Type} [Field E] [NumberField E] {n : ℕ}
-    (L : Submodule (𝓞 E) (Fin n → E)) (x : Fin n → E)
-    (hx : x ∈ Submodule.span E (L : Set (Fin n → E))) :
-    ∃ d : 𝓞 E, d ≠ 0 ∧ d • x ∈ L := by
-  first
-  | (apply _root_.GlobalTheory.HermitianEigenvalueInequality.main <;> assumption)
 
 theorem isLattice_lowLat : ∀ (E : Type) [Field E] [NumberField E] (n n₁ : ℕ) (L : Submodule (𝓞 E) (Fin n → E))
     (ι : Matrix (Fin n) (Fin n₁) E), L.IsLattice E → Function.Injective ι.mulVec → (lowLat ι L).IsLattice E := by
@@ -939,7 +926,7 @@ theorem plane_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     have hspan : ι *ᵥ u ∈ Submodule.span E (Y.L : Set (Fin (n₁ + 2) → E)) := by
       rw [hY.lat.span_eq_top]
       trivial
-    obtain ⟨d, hd, hdu⟩ := exists_ne_zero_smul_mem_of_mem_span Y.L (ι *ᵥ u) hspan
+    obtain ⟨d, hd, hdu⟩ := ReciprocityTheory.MultiplicativeHeights.SemiPt.clear_denom Y.L (ι *ᵥ u) hspan
     have hd' : algebraMap (𝓞 E) E d ≠ 0 := fun h => hd ((FaithfulSMul.algebraMap_injective (𝓞 E) E) (by simpa using h))
     have hmem : d • u ∈ lowLat ι Y.L := by
       change ι *ᵥ (d • u) ∈ Y.L
@@ -963,7 +950,7 @@ theorem plane_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     rw [← gram_map _ (hτσ _)]
     exact _root_.GlobalTheory.PlaneSkewSig.hasSig_complement n₁ _ _ _ _ r s (hY.sig w) hr hs (hXX w) (hYY w) (by rw [hXY w]; exact Complex.I_ne_zero) (hO w)
       (inj_map _ ι hinjι)
-  choose θ₁ hθ₁ using fun w => _root_.GlobalTheory.PlaneSkew.CartanInv.exists_isCartan n₁ _ (r - 1) (s - 1) (hsig1 w)
+  choose θ₁ hθ₁ using fun w => _root_.GlobalTheory.CartanEx.exists_isCartan n₁ _ (r - 1) (s - 1) (hsig1 w)
   choose θW hθW using fun w => _root_.GlobalTheory.PlaneCartan.exists_cartan_hyperbolic_swap n₁ (Complex.I • Y.J.map (B.emb w).1) _ _ (ι.map (B.emb w).1) (θ₁ w)
     (herm_map _ (hτσ _) hY.skew) (hXX w) (hYY w) (hXY w) (hO w) (inj_map _ ι hinjι)
     (by rw [gram_map _ (hτσ _)]; exact hθ₁ w)

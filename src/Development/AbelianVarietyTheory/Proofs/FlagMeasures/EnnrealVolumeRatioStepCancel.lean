@@ -244,7 +244,6 @@ open MeasureTheory
 
 namespace GlobalTheory.StabUnfold
 
-
 open MeasureTheory in
 open scoped ENNReal in
 theorem _root_.GlobalTheory.StabUnfold.exists_cutoff_doubleCoset : ∀ (G H : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [LocallyCompactSpace H] [T2Space H] [SecondCountableTopology H] [MeasurableSpace H] [BorelSpace H] (μ : Measure G) [μ.IsHaarMeasure] (ν : Measure H) [ν.IsHaarMeasure] [ν.IsMulRightInvariant] (j : H →* G), Topology.IsClosedEmbedding j → ∀ (K : Subgroup G) (K' : Subgroup H) (x : G) (S : Set G), IsOpen (K : Set G) → IsOpen (K' : Set H) → IsCompact (K' : Set H) → (∀ h, h ∈ K' ↔ x⁻¹ * j h * x ∈ K) → (∀ g, g ∈ S ↔ ∃ h, ∃ k ∈ K, g = j h * x * k) → ∃ b : G → ENNReal, Measurable b ∧ (∀ g, ∫⁻ h, b (j h * g) ∂ν = 1) ∧ ∫⁻ g, S.indicator 1 g * b g ∂μ = μ K / ν K' := by
@@ -556,11 +555,6 @@ theorem covol_eq_of_strict {G : Type} [Group G] [MeasurableSpace G] [MeasurableM
           (measure_iUnion hdisj fun γ => (hmeas _ hF).inter hD).symm
       _ ≤ μ D := measure_mono (Set.iUnion_subset fun _ => Set.inter_subset_right)
 
-theorem isInvInvariant {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-    [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G)
-    [μ.IsHaarMeasure] [μ.IsMulRightInvariant] : μ.IsInvInvariant := by
-  apply GlobalTheory.CartanInt.isInvInvariant_of_right
-
 private lemma exists_nhds_one_inter_discrete_subgroup_eq_one {H : Type} [Group H] [TopologicalSpace H] (Γ : Subgroup H)
     [DiscreteTopology Γ] : ∃ V ∈ nhds (1 : H), ∀ γ ∈ Γ, γ ∈ V → γ = 1 := by
 
@@ -589,7 +583,7 @@ theorem covol_withDensity_eq : ∀ (G H : Type) [Group G] [TopologicalSpace G] [
   intro G H _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ μ _ ν _ _ j hj Γ _ Φ b hΦ hb hΦinv hb1
   classical
   have hjc : Continuous j := hj.continuous
-  have : ν.IsInvInvariant := isInvInvariant ν
+  have : ν.IsInvInvariant := GlobalTheory.CartanInt.isInvInvariant_of_right ν
 
   obtain ⟨hcnt, F, hFm, hF⟩ := GlobalTheory.exists_strict_measurable_fundamental_set_of_discrete G
     (Γ.map j) (exists_nhds_map j hj.toIsEmbedding Γ)

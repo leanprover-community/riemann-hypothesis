@@ -266,16 +266,11 @@ theorem different_ne_zero (F : Type) [Field F] [NumberField F] : differentIdeal 
   rw [h, map_zero] at this
   exact discr_ne_zero F (Int.natAbs_eq_zero.1 this.symm)
 
-theorem card_infinitePlace (D : D7) : Fintype.card (InfinitePlace D.host.E) = D.R.f := by
-  rw [← D.what₂.card_Tau]
-  exact (Fintype.card_of_bijective
-    ((Function.bijective_iff_existsUnique _).2 (GlobalTheory.RealPlaces.existsUnique_place D))).symm
-
 theorem rdE_pow (D : D7) :
     D.host.rdE ^ (2 * Fintype.card (InfinitePlace D.host.E)) = |(NumberField.discr D.host.F : ℝ)| ^ 2 := by
   obtain ⟨h1, -⟩ := GlobalTheory.cm_discr_sq D.host.F D.host.E D.sp.cm
   have hpos : Module.finrank ℚ D.host.E ≠ 0 := Module.finrank_pos.ne'
-  rw [card_infinitePlace, ← GlobalTheory.RealPlaces.finrank_E D]
+  rw [Formalism.MainNotions.LatticeGluingRadicals.d_card, ← GlobalTheory.RealPlaces.finrank_E D]
   unfold Host.rdE
   rw [one_div, Real.rpow_inv_natCast_pow (abs_nonneg _) hpos]
   have h3 : |(discr D.host.E : ℝ)| = (discr D.host.F : ℝ) ^ 2 := by exact_mod_cast h1

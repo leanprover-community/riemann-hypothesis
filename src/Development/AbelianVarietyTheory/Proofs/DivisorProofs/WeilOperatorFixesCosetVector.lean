@@ -97,16 +97,9 @@ theorem vl_le_of_mem_hatId' {I : Ideal (𝓞 D.host.E)} {PP : HeightOneSpectrum 
     (hI : I ≤ PP.asIdeal ^ n) {x : AE D} (hx : x ∈ hatId D I) : vl D PP x ≤ WithZero.exp (-(n : ℤ)) := by
   apply _root_.GlobalTheory.BotPairSmall.CondNu.vl_le_of_mem_hatId <;> assumption
 
-
-open GlobalTheory.Mem.Col2.SplitChar in
-theorem sgA_mem_hatId' {I : Ideal (𝓞 D.host.E)} {x : AE D} (hx : x ∈ hatId D I) :
-    sgA D x ∈ hatId D (D.host.conj • I) := by
-  apply _root_.GlobalTheory.BotPairSmall.CondNu.sgA_mem_hatId <;> assumption
-
 theorem conj_conj_smul (𝔪 : Ideal (𝓞 D.host.E)) : D.host.conj • D.host.conj • 𝔪 = 𝔪 := by
   have h : D.host.conj * D.host.conj = 1 := AlgEquiv.ext fun z => GlobalTheory.NormSum.UnramHecke.conj_conj D z
   rw [smul_smul, h, one_smul]
-
 
 open GlobalTheory.Mem.Col2.SplitChar in
 theorem vl_sub_le' {T : Type} {L : LevCh D T} (P : Places L) {y : AE D}
@@ -123,12 +116,11 @@ theorem vl_sub_le' {T : Type} {L : LevCh D T} (P : Places L) {y : AE D}
   · have e : c.toRingEquiv = D.host.conj.toRingEquiv := RingEquiv.ext hc
     rw [e] at h
     rw [← GlobalTheory.NormSum.UnramHecke.sgA_sgA D y, vl_sgA h]
-    have h3 := sgA_mem_hatId' h2
+    have h3 := GlobalTheory.BotPairSmall.CondNu.sgA_mem_hatId h2
     rw [conj_conj_smul] at h3
     exact vl_le_of_mem_hatId' hle h3
 
 end GlobalTheory.NuTrivSq
-
 
 end
 end -- clump:auto
@@ -157,8 +149,6 @@ theorem zeroAt_zero (q : ℕ) : ZeroAt D q 0 :=
 
 theorem trivAt_one {N : ℕ} (q : ℕ) : TrivAt D q ((1 : GA D N) : GL (Fin N) (AE D)) := fun i j => by
   simpa using zeroAt_zero (D := D) q
-
-
 
 theorem fix_of_prop {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (hT : P.e0 ∈ TT D (tor0 D ⊤ δ) P.a P.d) {g' : GA D P.d}
     {H : VC D P.a P.d → ℂ} {c : ℂ} (hc' : P.W.Om 1 g' P.e0 = c • H) :

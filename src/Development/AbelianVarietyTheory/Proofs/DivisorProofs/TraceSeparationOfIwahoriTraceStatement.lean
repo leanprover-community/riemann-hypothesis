@@ -547,8 +547,6 @@ open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.schur_admissible_alt : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K : Subgroup G), IsOpen (K : Set G) → IsCompact (K : Set G) → ∀ (N : Type) [AddCommGroup N] [Module ℂ N] (π : Representation ℂ G N), π.IsIrreducible → IsAdmissible π → ∀ φ : N →ₗ[ℂ] N, (∀ g x, φ (π g x) = π g (φ x)) → ∃ c : ℂ, φ = c • LinearMap.id := by
-  first | exact @GlobalTheory.SchurAdm.schur_admissible
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchurAdmissibleStatement =====
@@ -936,7 +934,7 @@ theorem hasTrace_update_eq_const_mul : ∀ (D : D7) (V : HSp D) (u : HeightOneSp
     rintro _ ⟨x, rfl⟩
     exact hs _ fun k hk hk1 => hHf x k hk hk1
   have hschur : ∀ φ : π.IntertwiningMap π, ∃ c : ℂ, φ.toLinearMap = c • LinearMap.id := fun φ =>
-    GlobalTheory.T.schur_admissible_alt (Gv V u) (Kv V u) (isOpen_stabLoc _ _ _ u) (isCompact_stabLoc _ _ _ u) N π hπi hπa
+    GlobalTheory.SchurAdm.schur_admissible (Gv V u) (Kv V u) (isOpen_stabLoc _ _ _ u) (isCompact_stabLoc _ _ _ u) N π hπi hπa
       φ.toLinearMap fun g x => Representation.IntertwiningMap.isIntertwining _ _ φ g x
   obtain ⟨c, hc⟩ := _root_.GlobalTheory.IsoTrace.trace_mul_isotypic (Gv V u) N W π (σ.comp (locFin V u)) hπi hschur hloc H
     (fun g x => hHc g x) hrange

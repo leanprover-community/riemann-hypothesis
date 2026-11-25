@@ -103,14 +103,11 @@ noncomputable section
 
 namespace GlobalTheory.SgInf.InnerInt
 
-theorem hpk_det_isUnit (k r : ℕ) : IsUnit (Hpk k r).det :=
-  Matrix.isUnit_det_of_left_inverse (hpkFacts k r).2.1
-
 theorem gg_mul {k r : ℕ} {a b : Mat k r} (ha : a ∈ GG k r) (hb : b ∈ GG k r) : a * b ∈ GG k r :=
-  (uHGroup _ (Hpk k r) (hpk_det_isUnit k r)).2.1 a ha b hb
+  (uHGroup _ (Hpk k r) (Formalism.FourierDecayAlt.P.B2x3.hpk_unit k r)).2.1 a ha b hb
 
 theorem gg_inv {k r : ℕ} {a : Mat k r} (ha : a ∈ GG k r) : IsUnit a.det ∧ a⁻¹ ∈ GG k r :=
-  (uHGroup _ (Hpk k r) (hpk_det_isUnit k r)).2.2 a ha
+  (uHGroup _ (Hpk k r) (Formalism.FourierDecayAlt.P.B2x3.hpk_unit k r)).2.2 a ha
 
 theorem inner_map_of_norm {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (T : H →L[ℂ] H)
     (hT : ∀ v, ‖T v‖ = ‖v‖) (u v : H) : ⟪T u, T v⟫_ℂ = ⟪u, v⟫_ℂ :=
@@ -148,7 +145,6 @@ theorem star_coef_mul_eq {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerPr
   rw [← i2]
 
 end GlobalTheory.SgInf.InnerInt
-
 
 open GlobalTheory.SgInf.InnerInt in
 theorem GlobalTheory.SgInf.inner_integral_eq_be : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp] [CompleteSpace Wp] (σ : Mat k r → (H →L[ℂ] H)) (w : H) (a : ℝ) (μG : Measure (Mt k r)) (d : ℝ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (π : Mat k r → (Wp →L[ℂ] Wp)) (μS : Measure (Mt k r)), Std σ w a μG d → Side z π μS → ∀ W : Mat k r → Wp, IsSPsiEquiv z (psiGen k r z c) π W → ∀ y ∈ GG k r, ∀ x : Mt k r, Matrix.of x ∈ GG k r → ∫ s, star (coef σ w w (y⁻¹ * (Matrix.of s * Matrix.of x))) • W (Matrix.of s * Matrix.of x) ∂μS = be (psiGen k r z c) π μS σ (σ y w) (σ (Matrix.of x) w) (W (Matrix.of x)) := by

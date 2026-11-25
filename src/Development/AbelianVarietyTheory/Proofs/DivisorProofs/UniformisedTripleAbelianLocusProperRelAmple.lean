@@ -122,7 +122,6 @@ theorem trivAlong_field {S : Scheme.{0}} {A : Over S} [GrpObj A] {L : LB A.left}
 
 end GlobalTheory.KTrivGenericPt
 
-
 open GlobalTheory.KTrivGenericPt in
 theorem GlobalTheory.KTrivGenericPt.kTriv_of_polAt_generic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [CharZero R] (t : SAB H (Sp R)), IsProper t.G.hom → RelAmple t.G t.PP.L → GlobalTheory.LN.PolAt t (jK R) → KTriv t.G t.PP.L := by
   intro E _ _ _ H R _ _ _ _ t hP ha hpol
@@ -249,10 +248,6 @@ theorem isIso_spMap {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (h
   infer_instance
 
 alias exists_pull := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.exists_sab
-
-theorem isProper_of_map {S S' : Scheme.{0}} {t : SAB H S} {t' : SAB H S'} {f : S' ⟶ S} (m : SABMap t' t f)
-    (hp : IsProper t.G.hom) : IsProper t'.G.hom :=
-  MorphismProperty.of_isPullback m.cart.1 hp
 
 end GlobalTheory.PolLocal
 
@@ -391,7 +386,6 @@ theorem exists_basicOpen_le {V : (Sp R).Opens} (hV : (q : Sp R) ∈ V) :
   obtain ⟨f, hf, hle⟩ := exists_basicOpen_le' hV
   exact ⟨f, hf, hle⟩
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem spMap_eq_fromSpecStalk (q : PrimeSpectrum R) :
     Spec.map (Spec.stalkIso (CommRingCat.of R) (q : Sp R)).hom ≫ (Sp R).fromSpecStalk (q : Sp R) =
@@ -403,7 +397,6 @@ theorem spMap_eq_fromSpecStalk (q : PrimeSpectrum R) :
     exact congrArg Spec.map (Spec.algebraMap_stalkIso_inv (R := CommRingCat.of R) (x := q)).symm
   refine (congrArg (Spec.map (Spec.stalkIso (CommRingCat.of R) (q : Sp R)).hom ≫ ·) e).trans ?_
   rw [← Category.assoc, ← Spec.map_comp, Iso.inv_hom_id, Spec.map_id, Category.id_comp]
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_isAffineOpen_preimage_basicOpen_of_stalk {x : Sp R} {p' : X' ⟶ Spec ((Sp R).presheaf.stalk x)}
@@ -646,7 +639,7 @@ theorem relAmple_local {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O] [IsN
   have hpV : GlobalTheory.LN.PolAt tV (Out.jK V) := GlobalTheory.PolNormal.polAt_generic_pull ρ hρ mV hpol
   obtain ⟨hAK, hKK⟩ := GlobalTheory.LocM.PolFibre.ample_kTriv_of_polAt mK hpV
   obtain ⟨hAV, hKV⟩ := GlobalTheory.PolDvr.relAmple_kTriv_of_generic_fibre GlobalTheory.HomExtExamples.homExtSt_holds GlobalTheory.allSixLaws.1
-    GlobalTheory.allSixLaws.2.1 E H V (FractionRing V) tV tK mK (GlobalTheory.PolLocal.isProper_of_map mV hprop) hAK hKK
+    GlobalTheory.allSixLaws.2.1 E H V (FractionRing V) tV tK mK (GlobalTheory.AbelianLocusNormalisation.isProper_pull mV hprop) hAK hKK
   obtain ⟨uk, ⟨mk⟩⟩ := GlobalTheory.PolLocal.exists_pull (spMap (IsLocalRing.residue V)) tV
   obtain ⟨hAk, hKk⟩ := GlobalTheory.PolLocal.pull_ample_kTriv mk hAV hKV
   obtain ⟨n, -⟩ := GlobalTheory.ObjMaps.exists_sab_comp mV mk
@@ -674,7 +667,7 @@ theorem relAmple_kTriv_of_generic {S : Type} [CommRing S] [IsDomain S] [CharZero
     have hi : Function.Injective (algebraMap S O) :=
       IsLocalization.injective O q.asIdeal.primeCompl_le_nonZeroDivisors
     have : CharZero O := charZero_of_injective_algebraMap hi
-    have hA := relAmple_local tO (GlobalTheory.PolLocal.isProper_of_map m hp) (GlobalTheory.PolNormal.polAt_generic_pull _ hi m hg)
+    have hA := relAmple_local tO (GlobalTheory.AbelianLocusNormalisation.isProper_pull m hp) (GlobalTheory.PolNormal.polAt_generic_pull _ hi m hg)
     obtain ⟨w, hw, -⟩ := m.lin
     exact GlobalTheory.AmpleSpreadAt.relAmple_spread_at S q t.G t.PP.L hp t.PP.isLB tO.G m.φ tO.PP.L m.cart.1 tO.PP.isLB
       ⟨w, hw⟩ hA
@@ -707,7 +700,7 @@ theorem isProper_relAmple_kTriv_of_abLocus : ∀ (E : Type) [Field E] [NumberFie
   obtain ⟨m', -⟩ := GlobalTheory.ArcObj.exists_sab_fac mf mx (g := IsOpenImmersion.lift _ x hr)
     (IsOpenImmersion.lift_fac _ _ hr).symm
   obtain ⟨w, hw, -⟩ := m'.lin
-  exact ⟨GlobalTheory.PolLocal.isProper_of_map m' hpf,
+  exact ⟨GlobalTheory.AbelianLocusNormalisation.isProper_pull m' hpf,
     GlobalTheory.AmpleLocalBase.relAmple_baseChange m'.cart.1 tf.PP.isLB t'.PP.isLB ⟨w, hw⟩ hA,
     kTriv_pull m'.cart tf.PP.isLB t'.PP.isLB ((isGen_iff w).1 hw) hK⟩
 

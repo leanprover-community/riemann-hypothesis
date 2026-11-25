@@ -256,7 +256,7 @@ namespace GlobalTheory
 
 theorem frame_action_mulEquiv : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (wt : (VS D).V ≃ₗ[D.host.E] (VS D).V) (ιA : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F ≃+* D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F), WittX X u wt → IsAdeleIso X ιA → (∀ a, ιA (sigA X.B.I a) = Formalism.UG.sigR (Formalism.L2.Forms.sigD D) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (ιA a)) → ∃ (Φ : Hfin X u ≃* Formalism.UG.UPts (Formalism.L2.Forms.sigD D) (Formalism.L2.Forms.gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)), (∀ (h : Hfin X u) y, RepF X wt ιA (h : X.B.I.Gf) y ↔ Φ h = y) := by
   intro D X u wt ιA hW hA hσ
-  obtain ⟨Q, Qi, G', h1, h2, hQl, hQe, hQf, hQz, hG', hD⟩ := GlobalTheory.T.columnWittFrame_basis_blockGram D X u wt hW
+  obtain ⟨Q, Qi, G', h1, h2, hQl, hQe, hQf, hQz, hG', hD⟩ := GlobalTheory.St.qFrame_basis_gram D X u wt hW
   set f : X.B.I.E →+* X.B.I.E ⊗[X.B.I.F] Af X.B.I.F := Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) with hf
   have hA1 : Q.map f * Qi.map f = 1 := by
     rw [← Matrix.map_mul, h1, Matrix.map_one _ (map_zero f) (map_one f)]

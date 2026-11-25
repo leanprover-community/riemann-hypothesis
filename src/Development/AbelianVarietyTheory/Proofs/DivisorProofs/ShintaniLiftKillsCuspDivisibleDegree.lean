@@ -590,11 +590,6 @@ theorem transfer {m : ℕ} [Fintype (GL (Fin m) F)] (Y : GL (Fin m) F → ℂ) (
 theorem detOne {m : ℕ} (u v : Fin m → F) : (1 + vecMulVec u v).det = 1 + v ⬝ᵥ u := by
   rw [vecMulVec_eq Unit, det_one_add_replicateCol_mul_replicateRow]
 
-theorem toG_val {m : ℕ} (u : GL (Fin m) F) : toG (u : Matrix (Fin m) (Fin m) F) = u := by
-  unfold toG
-  rw [dite_eq_left u.isUnit]
-  exact Units.ext (IsUnit.unit_spec _)
-
 theorem toG_coe {m : ℕ} (M : Matrix (Fin m) (Fin m) F) (h : IsUnit M) : ((toG M : GL (Fin m) F) : Matrix (Fin m) (Fin m) F) = M := by
   unfold toG
   rw [dite_eq_left h]
@@ -642,7 +637,7 @@ theorem sec1 (a b : ℕ) (f : Fin (a + b) → F) (hf : (fun i => f (Fin.castAdd 
     rw [hc]
     simp [vt, vecMulVec, hne]
   · unfold tlG
-    conv_rhs => rw [← toG_val u]
+    conv_rhs => rw [← GlobalTheory.Shin.HcUnit.toG_val u]
     congr 1
     ext i j
     unfold tl
@@ -650,7 +645,7 @@ theorem sec1 (a b : ℕ) (f : Fin (a + b) → F) (hf : (fun i => f (Fin.castAdd 
     conv_rhs => rw [hkey]
     simp [vt, vecMulVec, Matrix.one_apply, hfa]
   · unfold brG
-    rw [← toG_val (1 : GL (Fin b) F)]
+    rw [← GlobalTheory.Shin.HcUnit.toG_val (1 : GL (Fin b) F)]
     congr 1
     ext i j
     unfold br
@@ -685,14 +680,14 @@ theorem sec2 (a b : ℕ) (f : Fin (a + b) → F) (h0 : (fun i => f (Fin.castAdd 
     rw [hc]
     simp [vecMulVec, hne, h0']
   · unfold tlG
-    rw [← toG_val (1 : GL (Fin a) F)]
+    rw [← GlobalTheory.Shin.HcUnit.toG_val (1 : GL (Fin a) F)]
     congr 1
     ext i j
     unfold tl
     rw [ent_castAdd, hc]
     simp [vt, vecMulVec, Matrix.one_apply]
   · unfold brG
-    conv_rhs => rw [← toG_val u]
+    conv_rhs => rw [← GlobalTheory.Shin.HcUnit.toG_val u]
     congr 1
     ext i j
     unfold br

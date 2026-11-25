@@ -147,7 +147,7 @@ theorem UpperTheory.ConvolutionTheory.G2.deltaLoc :
         exact hsp ⟨x, hxw, hx⟩
       · rintro rfl
         rfl
-    rw [hfib, finprod_mem_singleton, hmu w, GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k]
+    rw [hfib, finprod_mem_singleton, hmu w, GlobalTheory.BCT.inertChar_muLocK E μ e hμ w hsp k]
     unfold delta
     simp only [hres]
     rw [ite_eq_right hsp]

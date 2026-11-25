@@ -78,21 +78,12 @@ theorem coeff_single_linear_substitution_pair {τ : Type} (c : MvPowerSeries (Fi
     · exact hu i
     · exact hv i
 
-theorem constantCoeff_subst0 {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ R}
-    (ha : ∀ i, constantCoeff (a i) = 0) (f : MvPowerSeries σ R) :
-    constantCoeff (subst a f) = constantCoeff f := by
-  have hs : HasSubst a := hasSubst_of_constantCoeff_zero ha
-  have h1 : f = (f - C (constantCoeff f)) + C (constantCoeff f) := by ring
-  conv_lhs => rw [h1]
-  rw [subst_add hs, map_add (f := _), constantCoeff_subst_eq_zero hs ha (by simp), subst_C, zero_add]
-  simp
-
 theorem constantCoeff_op {τ : Type} {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
     (hμ0 : ∀ i, constantCoeff (μ i) = 0) (u v : Fin d → MvPowerSeries τ R)
     (hu : ∀ i, constantCoeff (u i) = 0) (hv : ∀ i, constantCoeff (v i) = 0) (i : Fin d) :
     constantCoeff (op μ u v i) = 0 := by
   unfold op at2
-  rw [constantCoeff_subst0 (fun s => by cases s with | inl s => exact hu s | inr s => exact hv s)]
+  rw [GlobalTheory.Katz.SubstCalc.constantCoeff_subst_of_zero (fun s => by cases s with | inl s => exact hu s | inr s => exact hv s)]
   exact hμ0 i
 
 theorem coeff_single_op {τ : Type} {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
@@ -203,8 +194,8 @@ theorem start : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [P
         fun i => (Finsupp.single_ne_zero.mpr one_ne_zero).symm
       rw [coeff_zero_eq_constantCoeff_apply, map_sub]
       unfold cob1 inL inR
-      rw [map_sub, map_sub, constantCoeff_subst0 hμ0F, constantCoeff_subst0 (fun _ => constantCoeff_X _),
-        constantCoeff_subst0 (fun _ => constantCoeff_X _), ← coeff_zero_eq_constantCoeff_apply,
+      rw [map_sub, map_sub, GlobalTheory.Katz.SubstCalc.constantCoeff_subst_of_zero hμ0F, GlobalTheory.Katz.SubstCalc.constantCoeff_subst_of_zero (fun _ => constantCoeff_X _),
+        GlobalTheory.Katz.SubstCalc.constantCoeff_subst_of_zero (fun _ => constantCoeff_X _), ← coeff_zero_eq_constantCoeff_apply,
         ← coeff_zero_eq_constantCoeff_apply, coeff_lift, hcoeff]
       simp [hT, coeff_zero_eq_constantCoeff_apply, h0s]
     · rw [map_sub, coeff_lift, hclin, WittVector.teichmuller_zero, map_zero, sub_zero]
@@ -668,7 +659,6 @@ namespace GlobalTheory.SymCocAdd
 
 variable {R : Type} [CommRing R] {d : ℕ}
 
-
 variable (R d) in
 def PtGrp (τ : Type) : AddSubgroup (Fin d → MvPowerSeries τ R) where
   carrier := {u | ∀ i, constantCoeff (u i) = 0}
@@ -716,7 +706,6 @@ theorem subst_single {τ : Type} {a : Fin d → MvPowerSeries τ R} (ha : ∀ t,
   · subst h; exact subst_X hS i
   · rw [← coe_substAlgHom hS, map_zero]
 
-
 variable (R) in
 def corr (c : MvPowerSeries (Fin d ⊕ Fin d) R) : MvPowerSeries (Fin d) R :=
   ∑ m : Fin d, at2 c (∑ j ∈ Finset.univ.filter (· < m), Pi.single j (X j))
@@ -738,7 +727,6 @@ theorem subst_corr {τ : Type} {a : Fin d → MvPowerSeries τ R} (ha : ∀ t, c
 end GlobalTheory.SymCocAdd
 
 namespace GlobalTheory
-
 
 open GlobalTheory.SymCocAdd in
 theorem symmetricCocycle_additive_eq_coboundary_add_alt (R : Type) [CommRing R] (d : ℕ) (c : MvPowerSeries (Fin d ⊕ Fin d) R)
@@ -819,8 +807,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
-
-
 
 namespace GlobalTheory.LazardHomog
 

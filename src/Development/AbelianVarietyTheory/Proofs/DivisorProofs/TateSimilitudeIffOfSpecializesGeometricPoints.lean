@@ -84,14 +84,6 @@ open scoped CategoryTheory.Obj TensorProduct
 
 noncomputable section
 
-namespace GlobalTheory.TateTransportAlg
-
-theorem exists_torsLift {G H : Type} [Group G] [Group H] (p : ℕ) (ρ : G →* H)
-    (hi : ∀ n, 0 < n → n.Coprime p → ∀ g h : G, g ^ n = 1 → h ^ n = 1 → ρ g = ρ h → g = h) :
-    ∃ L : H → G, ∀ n, 0 < n → n.Coprime p → ∀ g : G, g ^ n = 1 → L (ρ g) = g := by
-  exact _root_.GlobalTheory.TateTransportPrimeToP.exists_torsLift p ρ hi
-
-end GlobalTheory.TateTransportAlg
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

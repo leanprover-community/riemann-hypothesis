@@ -883,20 +883,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto
 open scoped CategoryTheory.Obj
 
-
-namespace GlobalTheory.OpenPartUnit
-
-section General
-
-variable {X Y Y' G B Z : Scheme.{0}}
-
-theorem gs_appLE (r : Z ⟶ Y) (f : Y ⟶ X) (z : Z) (U : X.Opens) (W : Y.Opens) (e : W ≤ f ⁻¹ᵁ U) (h : r z ∈ W)
-    (a : Γ(X, U)) : gs r z W ((f.appLE U W e).hom a) = gs (r ≫ f) z U a :=
-  (gs_res r z e h _).trans (gs_pull r f z U (e h) a)
-
-end General
-
-end GlobalTheory.OpenPartUnit
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsConstMulEqUnitOnOpen =====
@@ -908,7 +894,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
 
 namespace GlobalTheory.VerticalUnit
 
@@ -1067,7 +1052,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
 
 namespace GlobalTheory.VerticalUnit
 
@@ -1307,10 +1291,10 @@ theorem exists_const_mul_eq_gen : ∀ (R K : Type) [CommRing R] [IsDomain R] [Is
       exact (germToFunctionField_res (le_top : ((M.pull φ).U fun _ => i) ≤ ⊤) _).symm.trans
         (congrArg _ (res_appLE_apply p _ _ _))
     show (gm (rr ≫ φ) z (M.U i) (u i)).val = _
-    rw [← gs_unit (rr ≫ φ) z _ hz, ← gs_unit rr z _ hm, ← GlobalTheory.OpenPartUnit.gs_appLE rr φ z _ _ h₂ hm, hW,
+    rw [← gs_unit (rr ≫ φ) z _ hz, ← gs_unit rr z _ hm, ← GlobalTheory.LinDescent.gs_appLE rr φ z _ _ h₂ hm, hW,
       gs_mul rr z _ hm]
     refine congrArg (· * _) ?_
-    exact GlobalTheory.OpenPartUnit.gs_appLE rr p z ⊤ _ _ hm _
+    exact GlobalTheory.LinDescent.gs_appLE rr p z ⊤ _ _ hm _
 
 end GlobalTheory.GlobalVerticalUnit
 end -- clump:auto

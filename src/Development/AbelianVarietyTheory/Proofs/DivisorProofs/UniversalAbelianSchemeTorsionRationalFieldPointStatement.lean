@@ -103,11 +103,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-theorem bar_bar (a : 𝓞 E) : H.bar (H.bar a) = a := by
-  apply RingOfIntegers.ext
-  rw [H.bar_eq, H.bar_eq]
-  exact IsCMField.complexConj_apply_apply E _
-
 theorem exists_twist (l : Level H) (L : ℤ) (hL : (l.A : ℤ) ∣ L - 1) :
     ∃ u w c : 𝓞 E, c ∈ l.Mb ∧ u = 1 + (l.A : 𝓞 E) * c ∧
       H.bar u * u = (L : 𝓞 E) + (l.M' : 𝓞 E) * w := by
@@ -117,7 +112,7 @@ theorem exists_twist (l : Level H) (L : ℤ) (hL : (l.A : ℤ) ∣ L - 1) :
   have hbn : H.bar n ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := Ideal.mem_map_of_mem _ hn
   have hbm : H.bar m ∈ l.Mb := by
     obtain ⟨m0, hm0, rfl⟩ := (Ideal.mem_map_iff_of_surjective _ H.bar.surjective).1 hm
-    simpa [bar_bar] using hm0
+    simpa [GlobalTheory.CompRat.ConjIsometry.bar_bar] using hm0
   have hbar1 : H.bar n + H.bar m = 1 := by rw [← map_add (f := _), hnm, map_one]
   have hxN : H.bar n - m ∈ l.Mb := by
     have e : H.bar n - m = n - H.bar m := by linear_combination hbar1 - hnm

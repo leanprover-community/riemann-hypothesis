@@ -55,11 +55,7 @@ noncomputable section
 
 namespace GlobalTheory.ShareEig
 
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-
-theorem castFrame_lact {Ψ Ψ' : Finset (E →+* ℂ)} (h : Ψ = Ψ') (γ : GL (Fin r) E) (x : Frame Ψ r) :
-    castFrame h (lact γ x) = lact γ (castFrame h x) := by subst h; rfl
 
 theorem castFrame_castFrame {Ψ Ψ' : Finset (E →+* ℂ)} (h : Ψ = Ψ') (y : Frame Ψ' r) :
     castFrame h (castFrame h.symm y) = y := by subst h; rfl
@@ -86,15 +82,6 @@ theorem mem_dom_iff (c : C) (x : Frame (M.comp c).Ψ r) :
   show castFrame _ x ∈ GG M.Ψ M.Gm M.p0 ↔ x ∈ GG (M.comp c).Ψ (M.comp c).Gm (M.comp c).p0
   rw [M.comp_Gm c, M.comp_basePoint c]
   exact castFrame_mem_GG _ _ _ _
-
-theorem inv_of_SS {la : Wt M.Ψ r} {F : C → Frame M.Ψ r → ℂ} (hF : F ∈ M.SS la) (c : C) {γ : GL (Fin r) E}
-    (hγ : γ ∈ (M.comp c).Γ) {z : Frame M.Ψ r} (hz : z ∈ M.dom) : F c (lact γ z) = F c z := by
-  have hxz : castFrame (M.comp_Ψ c) (castFrame (M.comp_Ψ c).symm z) = z := castFrame_castFrame _ _
-  have hx : castFrame (M.comp_Ψ c).symm z ∈ (M.comp c).dom := (mem_dom_iff M c _).1 (hxz ▸ hz)
-  have h := (hF c).1.1.2.2 γ hγ _ hx
-  dsimp only at h
-  rw [M.χ_one c _ γ hγ, one_mul, castFrame_lact, hxz] at h
-  exact h
 
 theorem continuous_castFrame {Ψ Ψ' : Finset (E →+* ℂ)} (h : Ψ = Ψ') : Continuous (castFrame (r := r) h) := by
   subst h; exact continuous_id
@@ -153,7 +140,7 @@ theorem pull_pull {la : Wt M.Ψ r} {F : C → Frame M.Ψ r → ℂ} (hF : F ∈ 
   have hγ : M.tr (h * g) c * β⁻¹ ∈ (M.comp ((h * g) • c)).Γ := M.tr_mul h g c
   have e2 : lact (M.tr h (g • c)) (lact (M.tr g c) z) = lact β z := (lact_mul _ _ _).symm
   have e : M.tr (h * g) c = (M.tr (h * g) c * β⁻¹) * β := by group
-  rw [e2, e, lact_mul (M.tr (h * g) c * β⁻¹) β z, inv_of_SS M hF _ hγ hw]
+  rw [e2, e, lact_mul (M.tr (h * g) c * β⁻¹) β z, GlobalTheory.TranslatesDet.ssLact M hF _ hγ hw]
 
 theorem pull_one {la : Wt M.Ψ r} {F : C → Frame M.Ψ r → ℂ} (hF : F ∈ M.SS la) (c : C)
     {z : Frame M.Ψ r} (hz : z ∈ M.dom) : M.pull 1 F c z = F c z := by
@@ -164,7 +151,7 @@ theorem pull_one {la : Wt M.Ψ r} {F : C → Frame M.Ψ r → ℂ} (hF : F ∈ M
     rwa [e] at h1
   have h3 : M.tr 1 c ∈ (M.comp c).Γ := by simpa using inv_mem h2
   simp only [TwoLevels.pull, one_smul]
-  exact inv_of_SS M hF c h3 hz
+  exact GlobalTheory.TranslatesDet.ssLact M hF c h3 hz
 
 end GlobalTheory.ShareEig
 

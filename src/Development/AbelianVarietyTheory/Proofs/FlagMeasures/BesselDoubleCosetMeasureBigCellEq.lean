@@ -529,12 +529,6 @@ theorem shell_rhs {z z' : Fin (2 * r + k + 1) → ℂ} {μsec : ℂ → Mb k} {�
       exact fun hle => h (lt_of_le_of_ne hle (Ne.symm hζ))
     simp only [this, ENNReal.ofReal_zero, zero_mul]
 
-theorem herm_isometry {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH H) (v u : Fin n → ℂ) :
-    herm H (g *ᵥ v) (g *ᵥ u) = herm H v u := by
-  have hg' : gᴴ * H * g = H := hg
-  simp only [herm, star_mulVec, dotProduct_mulVec, vecMul_vecMul]
-  rw [hg']
-
 theorem herm_last (m : Mat k r) (a b : ℝ) :
     herm (Hpk k r) (m *ᵥ ((a : ℂ) • bvec (wI k r (Fin.last k)))) ((b : ℂ) • bvec (wI k r (Fin.last k))) =
       -((a * b : ℝ) : ℂ) * m (wI k r (Fin.last k)) (wI k r (Fin.last k)) := by
@@ -584,7 +578,7 @@ theorem shell_lhs {z z' : Fin (2 * r + k + 1) → ℂ} {μb : Measure (Mt k r)}
     rw [mulVec_mulVec, Matrix.nonsing_inv_mul _ (hcl.unit _ hgm'), one_mulVec]
   have e2 : herm (Hpk k r) ((g * (Matrix.of m * g'⁻¹)) *ᵥ z') z =
       -((Real.sqrt (Tz k r z') * Real.sqrt (Tz k r z) : ℝ) : ℂ) * m (wI k r (Fin.last k)) (wI k r (Fin.last k)) := by
-    have e3 := herm_isometry hf.1 (Matrix.of m *ᵥ (g'⁻¹ *ᵥ z'))
+    have e3 := Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_UH hf.1 (Matrix.of m *ᵥ (g'⁻¹ *ᵥ z'))
       (((Real.sqrt (Tz k r z) : ℝ) : ℂ) • bvec (wI k r (Fin.last k)))
     rw [hf.2.2] at e3
     rw [← mulVec_mulVec, ← mulVec_mulVec, e3, e1, herm_last]

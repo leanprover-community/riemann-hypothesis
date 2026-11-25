@@ -179,8 +179,6 @@ theorem isUnit_det_map {K : Type} [Field K] [Algebra F K] (t : E →ₐ[F] K) {n
 
 variable {a a' : ℕ} {B : Base F E} {G : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a'} {X : Chars F E} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W}
 
-
-
 theorem exists_right_translate (hT : IsTriple B G X om om') (dV : G.V.J.det ≠ 0) (dW : G.W.J.det ≠ 0)
     {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} (t : E →ₐ[F] Fv F v) (b : GL (Fin a) (Fv F v)) (c : GL (Fin (a + a')) (Fv F v)) {ι}
     (hι : G.M.IsLinW B.ψ t b c ι) {h : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA σ G.W.J} (hh : h ∈ UAt σ G.W (evFin F v))
@@ -218,7 +216,7 @@ theorem exists_right_translate (hT : IsTriple B G X om om') (dV : G.V.J.det ≠ 
       pairM (coX t b c u) (coY σ G.V G.W t b c u) = 0 → ∀ φ ∈ GlobalTheory.WeilM.SB (Fin a × Fin (a + a') → Fv F v), ∀ Z,
       ι (schr (GlobalTheory.LatVac.psiAt B.ψ v) (GlobalTheory.LatVac.locCo G.M.co v u) φ) Z =
         GlobalTheory.LatVac.psiAt B.ψ v (pairM Z (coY σ G.V G.W t b c u)) * ι φ (Z + coX t b c u) := fun u hu h0 φ hφ =>
-    (GlobalTheory.T.heisenbergOperator_isotropic_translation_char_split hcm G.V G.W hT.geo.hV.herm hT.geo.hW.skew dV dW G.M B.ψ hstd t b c u hu h0 φ hφ _ (hsb u φ hφ)
+    (GlobalTheory.HeisFlip.heis_trans_char hcm G.V G.W hT.geo.hV.herm hT.geo.hW.skew dV dW G.M B.ψ hstd t b c u hu h0 φ hφ _ (hsb u φ hφ)
       (hbr u hu φ)).1 ι hι
   set H : GL (Fin (a + a')) (Fv F v) := c⁻¹ * k * c with hH
   have uV := isUnit_det_map t dV
@@ -368,8 +366,6 @@ theorem smul_blk_sub_one {R S : Type} [Ring S] [SMulZeroClass R S] {p q d : ℕ}
 
 attribute [local instance] GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.measFv GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv
 
-
-
 theorem mixed_compare : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (h : IsTripleOf W M t i j e Bs Γ X) (R : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.RealMaps D.host.F _ _) (Rf : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.FinMaps D.host.F _ _),
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched Bs Γ X om om' R Rf → IsTied t i j e Bs Γ X →
     ∀ w ∈ locPl G t, ∀ v (hv : w.under (𝓞 D.host.F) = v) (hP : v ∈ Bs.P) ιA,
@@ -388,7 +384,7 @@ theorem mixed_compare : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
   have hT := hm.triple
   let v' : Bs.P := ⟨v, hP⟩
   have hτ : splitPrime (Bs.τ v') = w := hti.2.2.2 v' w hw hv
-  obtain ⟨jj, j1, j2, -, j4⟩ := GlobalTheory.T.exists_placeIso_reading_components_characters hL W t i j X h.α h.β (Bs.τ v') w hτ
+  obtain ⟨jj, j1, j2, -, j4⟩ := GlobalTheory.FlipMatch.exists_placeIso_chars hL W t i j X h.α h.β (Bs.τ v') w hτ
   have back : ∀ {m n : Type} (A : Matrix m n (Kw w)), (A.map jj.symm).map jj = A := fun A => by ext; simp
   let C₁ := GeneralLinearGroup.map (jj.symm : Kw w →+* Fv D.host.F v) (loc w (B.β i (j + 1)))
   let C₂ := -GeneralLinearGroup.map (jj.symm : Kw w →+* Fv D.host.F v) (loc w (B.β (i + 1) j))
@@ -402,7 +398,7 @@ theorem mixed_compare : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
     congr 1
     · exact back _
     · exact (Matrix.map_neg _ (map_neg jj) _).trans (congrArg Neg.neg (back _))
-  obtain ⟨g, -, cA⟩ := GlobalTheory.T.exists_mixedLagrangian_chart_integral_rowChange hL W B t i j M e Bs Γ X om om' h hT hti v' w hτ jj j1 j2 cc hcc
+  obtain ⟨g, -, cA⟩ := GlobalTheory.FlipMatch.RowChart.exists_mixChart hL W B t i j M e Bs Γ X om om' h hT hti v' w hτ jj j1 j2 cc hcc
   have hb : ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ w.asIdeal := fun hmem => hst.2 w hw (by
     have e : ((D.host.QS * D.host.q * D.host.d * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) =
         (D.host.d : 𝓞 D.host.E) * ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) := by push_cast; ring
@@ -415,7 +411,7 @@ theorem mixed_compare : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
   have hA' := hA
   rw [h.ψ] at hA'
   obtain ⟨ι, i1, i2⟩ := exists_mixed (M := Γ.M) (ψ := W.ψ) hS.unif hS.cond j2 hξ j4 (h := invT cc) cA hA'.bij
-    (fun u hu h0 φ hφ φ₁ h₁ ha => (GlobalTheory.T.heisenbergOperator_isotropic_translation_char_split hT.base.cm Γ.V Γ.W hT.geo.hV.herm hT.geo.hW.skew dV dW Γ.M W.ψ hstd _ _ _ u hu h0
+    (fun u hu h0 φ hφ φ₁ h₁ ha => (GlobalTheory.HeisFlip.heis_trans_char hT.base.cm Γ.V Γ.W hT.geo.hV.herm hT.geo.hW.skew dV dW Γ.M W.ψ hstd _ _ _ u hu h0
       φ hφ φ₁ h₁ ha).1 ιA hA')
     fun x u hx hu => _root_.GlobalTheory.FlipMatch.SplitSymp.symp_at_split hT.base.cm Γ.V Γ.W hT.geo.hV.herm hT.geo.hW.skew W.ψ _ _ _ x u hx hu
   have h1 := GivenAdm.givenLevel_open hL hw ((i : ℕ), (j : ℕ))
@@ -476,21 +472,6 @@ theorem _root_.GlobalTheory.T.theta_triple_realization_square_class : ∀ {D : D
           Acts (evFin D.host.F v) (om (1, blkU _ _ e h.JWW g)) φ φ₃ ∧
           ∀ Z, ιA φ₃ Z = c' * ιA φ (Z * (c₀.1 * GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk e K₁.1 K₂.1 * (c₀⁻¹).1)) := by
   first | exact @GlobalTheory.MixCompare.mixed_compare
-
-theorem _root_.GlobalTheory.T.zetaIntegral_block_translate_of_flip_datum : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (h : IsTripleOf W M t i j e Bs Γ X) (R : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.RealMaps D.host.F _ _) (Rf : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.FinMaps D.host.F _ _),
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched Bs Γ X om om' R Rf → IsTied t i j e Bs Γ X →
-    ∀ w ∈ locPl G t, ∀ v (hv : w.under (𝓞 D.host.F) = v) (hP : v ∈ Bs.P),
-    ∀ g₀ : GL (Fin (spW G i j).rank) (Fv D.host.F v), ∀ c₀ : GL (Fin ((spW G i j).rank + (spW₁ G i j).rank)) (Fv D.host.F v),
-    ∀ Ψ ∈ GlobalTheory.WeilM.SB (Matrix (Fin (spW₁ G i j).rank) (Fin ((spW G i j).rank + (spW₁ G i j).rank)) (Fv D.host.F v)),
-    ∀ s : GL (Fin (spV G i j).rank) (Fv D.host.F v) → GL (Fin (spV₁ G i j).rank) (Fv D.host.F v) → ℂ, (∀ K₁ K₂, s K₁ K₂ ≠ 0) →
-    ∃ n Φ K₁ K₂, depthAt G w ≤ n ∧ IsNatDatum (unifAt w) n Φ ∧
-      bigP (haarVol (KO _ (Fin (spW G i j).rank))) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.unifAt v) finSumFinEquiv (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.chrW X.ν (Bs.τ ⟨v, hP⟩))
-          (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.chrW X.β (Bs.τ ⟨v, hP⟩))
-          (fun Z => s K₁ K₂ * GlobalTheory.SquareFlipReach.sqCore W t i j w n Φ
-            (GlobalTheory.SquareFlipReach.trA t hv e (g₀.1 * Z * c₀.1 * GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk e K₁.1 K₂.1))) =
-        smallP (haarVol (KO _ (Fin (spW₁ G i j).rank))) finSumFinEquiv (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.chrW X.ν (Bs.τ ⟨v, hP⟩))
-          (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.chrW X.α (Bs.τ ⟨v, hP⟩)) Ψ := by
-  first | exact @GlobalTheory.PureMatch.pure_match
 
 theorem GlobalTheory.SquareFlipReach.flip_reach_of (G1 : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (h : IsTripleOf W M t i j e Bs Γ X) (R : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.RealMaps D.host.F _ _) (Rf : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.FinMaps D.host.F _ _),
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched Bs Γ X om om' R Rf → IsTied t i j e Bs Γ X →
@@ -554,7 +535,7 @@ theorem GlobalTheory.SquareFlipReach.flip_reach : ∀ {D : D7} {T : Type} {L : L
     ∀ w ∈ locPl G t, ∀ v, w.under (𝓞 D.host.F) = v → ∀ φ₀ ∈ GlobalTheory.WeilM.SB _,
     ∃ n Φ φ₂ g φ₃, depthAt G w ≤ n ∧ IsNatDatum (unifAt w) n Φ ∧ IsLocFn W B t e Γ w v (flipAt W t i j w n Φ) φ₂ ∧
       φ₃ ∈ GlobalTheory.WeilM.SB _ ∧ Acts (evFin D.host.F v) (om (1, blkU _ _ e h.JWW g)) φ₂ φ₃ ∧ Rf.p v φ₃ = Rf.p v φ₀ :=
-  GlobalTheory.SquareFlipReach.flip_reach_of GlobalTheory.T.theta_triple_realization_square_class GlobalTheory.T.zetaIntegral_block_translate_of_flip_datum
+  GlobalTheory.SquareFlipReach.flip_reach_of GlobalTheory.T.theta_triple_realization_square_class GlobalTheory.PureMatch.pure_match
 
 theorem _root_.GlobalTheory.T.squareFlip_reaches_localQuotient_classes : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t)
     (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E)

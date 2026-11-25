@@ -318,7 +318,6 @@ open GlobalTheory.SplitFlip GlobalTheory.SplitWeil Matrix MeasureTheory
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-
 open Classical in
 theorem stdA_mul {ν : kˣ →* ℂˣ} {ϖ : kˣ} {c a a' : ℕ} {X : Matrix (Fin a) (Fin (a + a')) k} {g₀ : GL (Fin a) k}
     (hg₀ : g₀.val = blk₁ X) (g : GL (Fin a) k) :
@@ -368,7 +367,6 @@ namespace GlobalTheory.StdPairMatch
 open GlobalTheory.SplitFlip GlobalTheory.SplitWeil Matrix MeasureTheory
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
 
 open Classical in
 theorem stdB_mul {ν : kˣ →* ℂˣ} {ϖ : kˣ} {c a a' : ℕ} {Y : Matrix (Fin a') (Fin (a + a')) k} {g₀ : GL (Fin a') k}
@@ -420,7 +418,6 @@ open GlobalTheory.SplitFlip GlobalTheory.SplitWeil Matrix MeasureTheory
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable [MeasurableSpace k] [BorelSpace k]
-
 
 open Classical in
 theorem bigF_stdA {ν : kˣ →* ℂˣ} {ϖ : kˣ} (hϖ : IsUnif ϖ) (c : ℕ) {a a' : ℕ} {X : Matrix (Fin a) (Fin (a + a')) k}
@@ -474,7 +471,6 @@ theorem bigF_stdA_of_det_eq_zero (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c : ℕ) {a a
     rintro ⟨hd, -⟩
     exact hd (by rw [blk₁_mul, det_mul, hX, mul_zero])
   simp [bigF, shellSum, shell, h0]
-
 
 open Classical in
 theorem smallF_stdB {ν : kˣ →* ℂˣ} {ϖ : kˣ} (c : ℕ) {a a' : ℕ} {Y : Matrix (Fin a') (Fin (a + a')) k}
@@ -576,7 +572,6 @@ theorem matrixLastColumnBlock_standardFrame_eq_zero {a a' : ℕ} : blk₂ (X0 k 
 
 end GlobalTheory.StdPairMatch
 
-
 open Classical in
 theorem GlobalTheory.StdPairMatch.bigZetaIntegral_stdA_eq_smallZetaIntegral_stdB : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
     (α β ν : kˣ →* ℂˣ) (ϖ : kˣ) (c m a a' : ℕ), GlobalTheory.SplitFlip.IsUnif ϖ → ν = α / β → 1 ≤ c → GlobalTheory.SplitFlip.CondLE ϖ c ν →
@@ -657,10 +652,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.StdPairCone
 open GlobalTheory.Doubling (absE)
 
-theorem _root_.GlobalTheory.T.standardPair_members_mem_schwartzBruhat : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ν : kˣ →* ℂˣ) (ϖ : kˣ)
-    (c a a' : ℕ), GlobalTheory.SplitFlip.IsUnif ϖ → GlobalTheory.SplitFlip.CondLE ϖ c ν →
-      stdA ν ϖ c a a' ∈ SB (Matrix (Fin a) (Fin (a + a')) k) ∧ stdB ν ϖ c a a' ∈ SB (Matrix (Fin a') (Fin (a + a')) k) := by
-  first | exact @GlobalTheory.StdPairSB.stdPair_mem_SB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardPairMembersMemSchwartzBruhatStatement =====
@@ -752,12 +743,12 @@ theorem UpperTheory.exists_scaled_standardPairSections_of_maxCompact_translate :
             GlobalTheory.SplitFlip.smallP (GlobalTheory.SplitFlip.haarVol (GlobalTheory.SplitWeil.KO k (Fin a'))) finSumFinEquiv ν α Ψ := by
   intro k _ _ _ _ _ _ α β ν ϖ c m a a' hϖ hν hc hcν hα hβ nα nβ gA gB cc hgA
   obtain ⟨hz, -⟩ := _root_.GlobalTheory.StdPairMatch.bigZetaIntegral_stdA_eq_smallZetaIntegral_stdB α β ν ϖ c m a a' hϖ hν hc hcν hα hβ nα nβ
-  obtain ⟨hA, hB⟩ := GlobalTheory.T.standardPair_members_mem_schwartzBruhat ν ϖ c a a' hϖ hcν
+  obtain ⟨hA, hB⟩ := GlobalTheory.StdPairSB.stdPair_mem_SB ν ϖ c a a' hϖ hcν
   have hab : ν * β = α := by
     rw [hν]
     ext x
     simp
-  obtain ⟨lam, hl, H⟩ := GlobalTheory.T.zetaIdentity_persists_row_column_changes k a a rfl (Fin a') (Fin a') (Fin (a + a')) (Fin (a + a')) (Equiv.refl _)
+  obtain ⟨lam, hl, H⟩ := GlobalTheory.FlipMatch.ZMat.bigZeta_eq_smallZeta_change k a a rfl (Fin a') (Fin a') (Fin (a + a')) (Fin (a + a')) (Equiv.refl _)
     (Equiv.refl _) finSumFinEquiv finSumFinEquiv (GlobalTheory.SplitFlip.haarVol (GlobalTheory.SplitWeil.KO k (Fin a')))
     (GlobalTheory.SplitFlip.haarVol (GlobalTheory.SplitWeil.KO k (Fin a'))) ϖ ν β gA gB cc hgA
   rw [hab] at H
@@ -833,7 +824,6 @@ attribute [local instance] GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMod
 namespace GlobalTheory.BotMatch
 
 variable {D : D7}
-
 
 theorem local_pair {ψ : AddChar (AF D.host.F) ℂ} {W W₁ X : HSp D} {A : GlobalTheory.ChainFr.Fr W} {A₁ : GlobalTheory.ChainFr.Fr W₁}
     {B : GlobalTheory.ChainFr.Fr X} {α β : (AE D)ˣ →* Circle} {e : Fin (W.rank + W₁.rank) ≃ Fin X.rank} {Bs : Base D.host.F D.host.E}
@@ -943,7 +933,6 @@ theorem genP_subset (v : Pl D.host.F) : genP m Λ v ⊆ lattice₂ m Λ v := by
   exacts [nsmul_mem h 2, h.1]
 
 variable {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)} {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
-
 
 variable (ΛS ΛT) in
 abbrev latA : AddSubgroup (WO S T) := latO S T (ΛS : Set _) (ΛT : Set _) fun _ => True
@@ -1126,7 +1115,6 @@ theorem mem_localLattice_of_forall_addChar_eq_one (hS : IsSelfDualC S ΛS) (hT :
   have := h _ ⟨GlobalTheory.BigDat.smul_eq_zero_of_isHalf v hc1 hy, by
     rw [map_smul, m.apply_symm_apply]; exact GlobalTheory.LatticeStable.smul_mem_latO D _ _ _ _ _ _ hfc l hl⟩ hy
   rwa [hB, map_smul, m.apply_symm_apply, GlobalTheory.BigDat.symplO_cA_smul, GlobalTheory.BigDat.smul_of_isHalf hx'] at this
-
 
 theorem exists_pure (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {Bs : Base D.host.F D.host.E}
     (hψ : IsStdChar D Bs.ψ (-1)) (hBs : Bs.IsGood D.sp.cm.sig) {r s r' s' : ℕ}
@@ -1320,8 +1308,6 @@ theorem localLattice_le_latticeAtPlace {S T : HSp D} {ΛS : Submodule (𝓞 D.ho
   exact (congrArg (fun z => liftV v (1 : Fv D.host.F v) • z ∈ latAtV Xs Ws v) e2).mpr
     (GlobalTheory.BigDat.one_smul_gen_mem _ _ v hα (hLS s hs) (hLT _ (GlobalTheory.BigDat.smul_mem_scLat_of_mem ha ht)))
 
-
-
 theorem exists_pure_pair (ε : Bool) (M X : HSp D) {k : ℕ} (hk : k = X.rank) {Xs : Spc D.host.F D.host.E M.rank}
     {Ws : Spc D.host.F D.host.E k} (Mo : Model D.sp.cm.sig Xs Ws) (hJ : Xs.J = GlobalTheory.RealDict.sgE (D := D) ε • M.gram)
     (hJW : Ws.J = D.host.xi0 • (X.gramᵀ).submatrix (finCongr hk) (finCongr hk))
@@ -1409,7 +1395,6 @@ theorem exists_isHerm_lat {D : D7} (B : Base D.host.F D.host.E) (τf : InfiniteP
   · show GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsCartan (((-1 : D.host.E) • S.gram).map (B.emb w).1) _
     rw [eJ]
     exact GlobalTheory.TripleSpace.isCartan_neg_conj (hs _)
-
 
 open scoped ComplexOrder in
 theorem exists_isSkew_lat {D : D7} (B : Base D.host.F D.host.E) (τf : InfinitePlace D.host.F → D.what₂.Tau)

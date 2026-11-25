@@ -168,8 +168,6 @@ theorem over_comp {R : Type} [CommRing R] [IsDomain R] {J : Ideal R} {Da Db Dc :
   intro e
   rw [Functor.map_comp, Functor.map_comp, Category.assoc, hg e, ← Category.assoc, hf e, Category.assoc]
 
-
-
 theorem two_match {X : Scheme.{0}} (u : SAB H X) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
     (hc : IsAdicComplete (maximalIdeal V) V) {t₁ t₂ : SAB H (Sp V)} (P₁ : PELUnif (maximalIdeal V) t₁)
     (P₂ : PELUnif (maximalIdeal V) t₂) (y : Sp (FractionRing V) ⟶ X) (α₁ : P₁.A.A.left ⟶ u.G.left)
@@ -226,7 +224,7 @@ theorem two_match {X : Scheme.{0}} (u : SAB H X) (V : Type) [CommRing V] [IsDoma
         ← Category.assoc, l₁.ext, ← Category.assoc, gen, Category.assoc, hactA, Category.assoc]
     exact (GlobalTheory.SemiAbExtDomain.existsUnique_hom_extension_generic (FractionRing V) t₁.G t₂.G hG₁ hG₂
       ((Over.pullback (jK V)).map (a.hom ≫ t₂.act.toRingAct.act x))).unique ⟨inferInstance, h₀⟩ ⟨inferInstance, rfl⟩
-  obtain ⟨b, h, hbi, lin, coord⟩ := GlobalTheory.T.uniformisedGroupIso_abelianPart_character_isos V (maximalIdeal V) hA D₁ A₁ t₁.G U₁.toUnifPre D₂ A₂ t₂.G U₂.toUnifPre a ha
+  obtain ⟨b, h, hbi, lin, coord⟩ := GlobalTheory.TInj.iso_lin_coord V (maximalIdeal V) hA D₁ A₁ t₁.G U₁.toUnifPre D₂ A₂ t₂.G U₂.toUnifPre a ha
   have hb : IsMonHom b := lin.2.1
   have hov : Over₀ U₁.toUnifPre U₂.toUnifPre a.hom b := lin.2.2.1
   have uq := fun x => over₀_onTorus_unique V (maximalIdeal V) hA D₁ D₂ A₁ A₂ t₁.G t₂.G U₁.toUnifPre U₂.toUnifPre
@@ -279,7 +277,6 @@ theorem two_match {X : Scheme.{0}} (u : SAB H X) (V : Type) [CommRing V] [IsDoma
     · rw [Over.comp_left, Category.assoc, Over.w, Over.w, Over.w]
   refine ⟨p', _root_.GlobalTheory.TInj.qImg_lattice V (maximalIdeal V) hA D₁ D₂ b h.symm _ hM k p₁ p' hg', hg',
     (_root_.GlobalTheory.TInj.torsPt_exists_inj V (maximalIdeal V) hA D₂ A₂ t₂.G U₂ hG₂ _ k hk).2 p' p₂ x₂ (hxx ▸ hp') hq₂⟩
-
 
 open GlobalTheory.TorusExt GlobalTheory.Balanced in
 

@@ -375,7 +375,6 @@ variable {B} (hU : ∀ v, IsURepOn (UJset (B.I.ε v)) (B.σ v))
 
 include hU hd
 
-
 open Classical in
 theorem hasDerivAt_orbit_sum {P k : ℕ} (E : gInf B) (u : Fin k → ∀ v, B.H v)
     (hu : ∀ l v, u l v ∈ stepSpace (B.I.ε v) (B.lam v) (B.σ v) P) :
@@ -386,7 +385,6 @@ theorem hasDerivAt_orbit_sum {P k : ℕ} (E : gInf B) (u : Fin k → ∀ v, B.H 
   refine HasDerivAt.fun_sum fun l _ => ?_
   exact GlobalTheory.TensDer.hasDerivAt_orbit_tens B E (u l) _
     (fun v => (hd v P _ (hu l v) _ (E v).2).hasDerivAt) (fun v => (hU v).1.1)
-
 
 open Classical in
 theorem dAct_atPlace_sum {P k : ℕ} (v : InfinitePlace B.I.F) (X : gLie (B.I.ε v))
@@ -625,7 +623,6 @@ noncomputable section
 
 namespace GlobalTheory.OmegaLeast
 
-
 open scoped Matrix.Norms.L2Operator in
 theorem opNorm_le_sqrt_hs {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : ‖A‖ ≤ Real.sqrt (Formalism.REAL.hs A) := by
   rw [Matrix.l2_opNorm_def]
@@ -641,7 +638,6 @@ theorem opNorm_le_sqrt_hs {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : ‖A‖ �
   have h2 := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => ‖A i j‖) (fun j => ‖x j‖)
   refine le_trans ?_ h2
   exact pow_le_pow_left₀ (norm_nonneg _) h1 2
-
 
 open scoped Matrix.Norms.L2Operator in
 theorem opNorm_exp_le {n : ℕ} (hn : 1 ≤ n) (A : Matrix (Fin n) (Fin n) ℂ) :
@@ -878,14 +874,6 @@ theorem uMat_inj {n : ℕ} {ε : Fin n → Bool} {a b : Formalism.REAL.UJ ε} (h
 
 theorem uMat_mul' {n : ℕ} {ε : Fin n → Bool} (a b : Formalism.REAL.UJ ε) : uMat (a * b) = uMat a * uMat b := rfl
 
-theorem expU_add {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (s t : ℝ) :
-    expU ((s + t) • X) = expU (s • X) * expU (t • X) := by
-  apply uMat_inj
-  rw [uMat_mul', uMat_expU, uMat_expU, uMat_expU, add_smul, Submodule.coe_add]
-  apply Matrix.exp_add_of_commute
-  simp only [Submodule.coe_smul]
-  exact ((Commute.refl (X : Matrix (Fin n) (Fin n) ℂ)).smul_left s).smul_right t
-
 theorem expU_zero {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) : expU ((0 : ℝ) • X) = 1 := by
   apply uMat_inj
   rw [uMat_expU, zero_smul, Submodule.coe_zero, NormedSpace.exp_zero]
@@ -901,7 +889,7 @@ theorem pt_add (B : RowsAut) (E : gInf B) (z : B.I.GA) (s t : ℝ) :
   congr 1
   refine Prod.ext ?_ (by simp)
   funext v
-  exact expU_add _ _ _
+  exact GlobalTheory.SobolevBound.expU_add _ _ _
 
 theorem pt_zero (B : RowsAut) (E : gInf B) (z : B.I.GA) : pt B E z 0 = z := by
   unfold pt

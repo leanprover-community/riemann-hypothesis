@@ -38,8 +38,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.etale_near_point_of_etale_on_fibre_smooth : ∀ (T X Z : Scheme.{0}) (p : X ⟶ T) (q : Z ⟶ T) (h : X ⟶ Z) (hh : h ≫ q = p), Smooth p → Smooth q → ∀ (Ω : Type) [Field Ω] (x : Sp Ω ⟶ T) (W : (pullback p x).Opens) (w : ↥(pullback p x)), w ∈ W → Etale (W.ι ≫ pullback.map p x q x h (𝟙 _) (𝟙 _) (by simp [hh]) (by simp)) → ∃ V : X.Opens, pullback.fst p x w ∈ V ∧ Etale (V.ι ≫ h) := by
-  first | exact @GlobalTheory.Mum.etale_near_of_etale_fibre
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleNearPointOfEtaleOnFibreSmoothStatement =====
@@ -134,7 +132,7 @@ theorem isIso_of_isIso_fibres : ∀ (T X Z : Scheme.{0}) (p : X ⟶ T) (q : Z �
       obtain ⟨w, hw, -⟩ := Scheme.Pullback.exists_preimage_pullback (f := p) (g := x) z t ht.symm
       have hE : Etale ((⊤ : (pullback p x).Opens).ι ≫
           pullback.map p x q x h (𝟙 _) (𝟙 _) (by simp [hh]) (by simp)) := inferInstance
-      obtain ⟨V, hV, hVe⟩ := GlobalTheory.T.etale_near_point_of_etale_on_fibre_smooth T X Z p q h hh hp hq Ω x ⊤ w trivial hE
+      obtain ⟨V, hV, hVe⟩ := GlobalTheory.Mum.etale_near_of_etale_fibre T X Z p q h hh hp hq Ω x ⊤ w trivial hE
       exact ⟨V, hw ▸ hV, hVe⟩
     choose V hV hVe using hloc
     have : IsZariskiLocalAtSource @Etale := HasRingHomProperty.instIsZariskiLocalAtSource

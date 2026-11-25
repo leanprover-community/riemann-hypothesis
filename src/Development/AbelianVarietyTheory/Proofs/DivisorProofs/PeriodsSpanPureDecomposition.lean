@@ -650,8 +650,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Hecke
 
-theorem _root_.GlobalTheory.T.harrisTaylor_inverse_heckeTranslates_forget_level : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (g g' : D.La →ₗ[D.O] D.La) (c c' k N : ℕ), k.Coprime p → 3 ≤ N → N.Coprime p → (∀ x, g (g' x) = k • x) → (∀ x, g' (g x) = k • x) → c * c' = k ^ 2 → ∀ (hc : (N * k * k).Coprime p) (S : Scheme.{0}) (s : S ⟶ Sp R) (o : Obj b (N * k * k) s) (o₁ : Obj b (N * k) s) (o₂ : Obj b N s) (ψ₁ : o.A ⟶ o₁.A) (ψ₂ : o₁.A ⟶ o₂.A), IsHecke g' c' k (N * k) o o₁ ψ₁ → IsHecke g c k N o₁ o₂ ψ₂ → Nonempty (ObjMap (o.forget N ⟨k * k, by ring⟩ hc) o₂ (𝟙 S)) := by
-  first | (exact @GlobalTheory.UPel.HT.Hecke.Comp.nonempty_objMap_forget)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorInverseHeckeTranslatesForgetLevelStatement =====
@@ -680,7 +678,7 @@ theorem harrisTaylor_heckeMap_comp_forgetLevel_general {p : ℕ} [Fact p.Prime] 
   subst h₁
   obtain ⟨o₂', ⟨m⟩⟩ := GlobalTheory.HTPull.exists_objMap_pull p D R b N S₁ S₂ s₁ π₁ o₂
   obtain ⟨ψ', hψ'⟩ := _root_.GlobalTheory.UPel.HT.Hecke.PullHecke.isHecke_pull p D R b g c k N hk hN3 hNp S₁ S₂ s₁ π₁ u₁ o₂ ψ₂ o₁ o₂' hH₂ m₁ m
-  obtain ⟨n⟩ := GlobalTheory.T.harrisTaylor_inverse_heckeTranslates_forget_level p D R b g g' c c' k N hk hN3 hNp hgg' hg'g hcc hc S₂ (π₁ ≫ s₁) u₂ o₁ o₂'
+  obtain ⟨n⟩ := GlobalTheory.UPel.HT.Hecke.Comp.nonempty_objMap_forget p D R b g g' c c' k N hk hN3 hNp hgg' hg'g hcc hc S₂ (π₁ ≫ s₁) u₂ o₁ o₂'
     ψ₁ ψ' hH₁ hψ'
   obtain ⟨n₁⟩ := GlobalTheory.UPel.HT.objMap_comp p D R b N _ _ _ _ _ _ _ _ _ _ _ n m
   obtain ⟨n₂⟩ := GlobalTheory.UPel.HT.objMap_comp p D R b N _ _ _ _ _ _ _ _ _ _ _ n₁ m₂
@@ -1027,7 +1025,6 @@ alias unitOn_bij := _root_.GlobalTheory.ToricData.unitOn_bijective
 
 variable {R : Type} [CommRing R]
 
-
 open GlobalTheory.UPel.HT.Hecke in
 theorem tate_hecke_back {b : Base D R} (g : D.La →ₗ[D.O] D.La) (c k N : ℕ) (hc : c.Coprime p) (hk : k.Coprime p)
     (Npos : 0 < N) (hN : N.Coprime p) {S : Scheme.{0}} {s : S ⟶ Sp R}
@@ -1168,7 +1165,6 @@ theorem exists_immersion [IsNoetherianRing R] (gb : GBase D.toG R) (N : ℕ) (h3
   haveI : IsIso (spMap (RingHom.id R)) := by rw [spMap_id']; infer_instance
   refine ⟨j ≫ pullback.fst _ _, inferInstance, inferInstance, ?_, h4⟩
   rw [Category.assoc, pullback.condition, ← Category.assoc, h3, spMap_id', Category.comp_id]
-
 
 open GlobalTheory.UPel.HT.Hecke in
 theorem exists_gHeckeMap_finite_etale_surjective : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R' : Type) [CommRing R'] [Algebra ℚ R'] [IsNoetherianRing R'] (gb : GBase D.toG R') (g : D.La →ₗ[D.O] D.La) (c k N : ℕ), c.Coprime p → k.Coprime p → 3 ≤ N → N.Coprime p → (∀ x y, D.EF (g x) (g y) = c * D.EF x y) → (∀ x, ∃ y, g y = k • x) → c ∣ k ^ 2 → ∀ (X : GenModel gb N) (X' : GenModel gb (N * k)), ∃ π : X'.X ⟶ X.X, IsGHeckeMap g c k N X X' π ∧ IsFinite π ∧ Etale π ∧ Surjective π := by
