@@ -54,7 +54,10 @@ read instead: `batch/<anything>-on-<number>`, such as `batch/b11-on-1739`, is st
 number if it is such a batch. A batch can be stacked on more than one. Batches that say they are
 stacked on each other in a circle are taken to be stacked on none. Only git checks the claim:
 when a batch's branch shares no commit beyond main with the branch of a batch it says it is
-stacked on, the run warns about it.
+stacked on, the run warns about it. Batches whose branches are at the same commit contain the
+same pull requests, so whatever they say about each other, each is taken to be stacked on the one
+with the next lower number: the lowest holds what they contain, and the highest is the
+outermost. The run warns about them every time it sees them.
 
 What a batch contains of its own, its members, is every open pull request whose head commit is
 in its branch, queued or not, into main or into another branch, unless a batch it is stacked on,
@@ -817,18 +820,66 @@ def named_below(gh, ref, body, note):
     return named
 
 
+def twins(hand, log):
+    """Stack batches whose branches are at the same commit on one another, in number order.
+
+    Two such batches contain the same pull requests, and so does a branch that contains another's
+    head while the other contains its head: the two heads are one commit. Whatever they say about
+    each other, each is taken to be stacked on the one with the next lower number, which holds
+    what they share, and the one with the highest number is the outermost. What they say about
+    other batches still counts. Sets `same` on each batch, the batch it is stacked on for that
+    reason, and warns on every run that sees such batches.
+    """
+    for batch in hand:
+        batch["same"] = set()
+    heads = {}
+    for batch in hand:
+        heads.setdefault(batch["sha"], []).append(batch)
+    for head, group in sorted(heads.items(), key=lambda item: min(batch["number"] for batch in item[1])):
+        if len(group) < 2:
+            continue
+        group.sort(key=lambda batch: batch["number"])
+        numbers = {batch["number"] for batch in group}
+        for lower, upper in zip(group, group[1:]):
+            upper["same"] = {lower["number"]}
+        for batch in group:
+            batch["under"] = (batch["under"] - numbers) | batch["same"]
+            if not batch["under"] - batch["same"]:
+                batch["how"] = None
+        names = ", ".join(f"#{batch['number']}" for batch in group)
+        order = ", ".join(f"#{upper['number']} on #{lower['number']}" for lower, upper in zip(group, group[1:]))
+        log.append(f"warning: the batches {names} are at the same commit `{head[:10]}`: whatever they say about "
+                   f"each other, each is taken to be stacked on the one with the next lower number ({order})")
+
+
+def stacking(batch):
+    """Which batches a batch is stacked on directly, and why, in words, or "" when it is stacked on
+    none: "#1018, as its branch name says"."""
+    same = batch.get("same", set())
+    claimed = sorted(set(batch.get("under", ())) - same)
+    parts = []
+    if claimed:
+        parts.append(", ".join(f"#{number}" for number in claimed) + f", as {batch['how']} says")
+    if same:
+        parts.append(", ".join(f"#{number}" for number in sorted(same))
+                     + ", whose branch is at the same commit and whose number is lower")
+    return ", and on ".join(parts)
+
+
 def stack(gh, hand, pulls, log):
     """Put the open batches assembled by hand that are being built in order, the lowest first.
 
-    Sets on each `under`, the batches it is stacked on directly, `how`, where it says so, and
-    `below`, every batch under it, directly or not, all as numbers of batches in `hand`. Batches
-    that say they are stacked on each other in a circle are taken to be stacked on none, and the
-    run says so. Each batch comes after every batch under it.
+    Sets on each `under`, the batches it is stacked on directly, `how`, where it says so, `same`,
+    those of them it is stacked on because their branches are at the same commit (see `twins`),
+    and `below`, every batch under it, directly or not, all as numbers of batches in `hand`.
+    Batches that say they are stacked on each other in a circle are taken to be stacked on none,
+    except for `same`, and the run says so. Each batch comes after every batch under it.
     """
     numbers = {batch["number"] for batch in hand}
     by = {batch["number"]: batch for batch in hand}
     for batch in hand:
         batch["under"], batch["how"] = stacked_on(gh, pulls[batch["number"]], numbers)
+    twins(hand, log)
 
     def close():
         for batch in hand:
@@ -843,10 +894,12 @@ def stack(gh, hand, pulls, log):
     close()
     circle = sorted(batch["number"] for batch in hand if batch["number"] in batch["below"])
     if circle:
+        # What `twins` stacks never makes a circle by itself, so none is left once the rest goes.
         log.append("the batches " + ", ".join(f"#{number}" for number in circle) + " say they are stacked on "
-                   "each other in a circle: none of them is taken to be stacked on another batch")
+                   "each other in a circle: none of them is taken to be stacked on another batch"
+                   + (", except one at the same commit" if any(by[number]["same"] for number in circle) else ""))
         for number in circle:
-            by[number]["under"], by[number]["how"] = set(), None
+            by[number]["under"], by[number]["how"] = set(by[number]["same"]), None
         close()
     # A batch has more batches under it than any batch under it has.
     return sorted(hand, key=lambda batch: (len(batch["below"]), batch["number"]))
@@ -905,7 +958,7 @@ def kept(note, name):
 def save(gh, batch):
     """Write the note of a batch assembled by hand to this script's comment on its pull request,
     if it has changed. A note that cannot be written stops the run: everything else relies on it."""
-    text, comment = describe_by_hand(batch["note"], batch.get("under", ()), batch.get("how")), batch["comment"]
+    text, comment = describe_by_hand(batch["note"], stacking(batch)), batch["comment"]
     if comment is None:
         status, data = gh.write("POST", f"issues/{batch['number']}/comments", {"body": text})
         if status in (0, 201):
@@ -966,10 +1019,9 @@ def look_through(gh, batch, by, pulls, before, gone, log):
                 now.setdefault(key, commit)
         found = now
         if set(below) != set(note.get("below", {})):
-            log.append(f"#{number} is stacked on " + ", ".join(f"#{other}" for other in sorted(batch["under"]))
-                       + f", as {batch['how']} says" if batch["under"] else
+            log.append(f"#{number} is stacked on {stacking(batch)}" if batch["under"] else
                        f"#{number} is no longer stacked on another batch")
-        for other in sorted(batch["under"]):
+        for other in sorted(batch["under"] - batch.get("same", set())):
             if not shares(gh, batch, by[other], by, commits):
                 log.append(f"warning: #{number} says in {batch['how']} that it is stacked on #{other}, but its branch "
                            f"shares no commit with that of #{other} beyond `main`")
@@ -1287,14 +1339,13 @@ def tell_left_out(gh, batch, pulls, held, log):
     return True
 
 
-def describe_by_hand(note, under=(), how=None):
-    """The comment that records what a batch assembled by hand contains. `under` is the batches
-    it is stacked on directly, and `how` where it says so."""
+def describe_by_hand(note, under=""):
+    """The comment that records what a batch assembled by hand contains. `under` says which
+    batches it is stacked on directly, and why, as `stacking` puts it."""
     listed = ", ".join(f"#{key}" for key in sorted(note["members"], key=int)) or "nothing yet"
     stacked = ""
     if under:
-        names = ", ".join(f"#{number}" for number in sorted(under))
-        stacked = (f"This batch is stacked on {names}, as {how} says. A pull request that a batch under this one "
+        stacked = (f"This batch is stacked on {under}. A pull request that a batch under this one "
                    "contains is listed there, not here.\n\n")
     return (f"<!-- batch-queue-by-hand {dump_note(note)} -->\n"
             "While this pull request is open, the batch-queue workflow takes it to be a batch that is being built. "
@@ -1684,7 +1735,7 @@ def pushed(gh, number):
         return [f"#{number} is not open: nothing to do"]
     if pr["batch"]:
         return [f"#{number} holds a batch: the sync looks after it"]
-    hand = [{"number": other["number"], "note": read_record(gh, other["number"])[1]}
+    hand = [{"number": other["number"], "sha": other["sha"], "note": read_record(gh, other["number"])[1]}
             for other in sorted(pulls.values(), key=lambda other: other["number"])
             if by_hand(other) and BUILDING in other["labels"]]
     key = str(number)

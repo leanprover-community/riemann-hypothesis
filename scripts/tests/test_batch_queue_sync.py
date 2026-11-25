@@ -2249,6 +2249,103 @@ class StackedBatches(unittest.TestCase):
                       "taken to be stacked on another batch", log)
         self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING, LATEST}, {BUILDING, LATEST}])
 
+    def twins(self, lower="Assembled by hand.", upper="Assembled by hand.", ref="batch/copy"):
+        """#1018 and #1050 are two batches at the same commit, holding #11 and #12."""
+        gh = Fake()
+        queue(gh, 11, 12, 13)
+        by_hand(gh, 11, 12, body=lower)
+        by_hand(gh, 11, 12, number=1050, ref=ref, name="kim", body=upper)
+        return gh
+
+    TWINS = (f"warning: the batches #1018, #1050 are at the same commit `{short('kim')}`: whatever they say about "
+             "each other, each is taken to be stacked on the one with the next lower number (#1050 on #1018)")
+
+    def test_two_batches_at_the_same_commit_are_stacked_in_number_order(self):
+        gh = self.twins()
+        log = sync(gh)
+        self.assertIn(self.TWINS, log)
+        # Nothing is held twice: the lower number holds it all, and the higher one is the outermost.
+        self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, set()))
+        self.assertEqual(self.labels(gh, 11, 12, 13, 1018, 1050),
+                         [IN, IN, QF, {BUILDING}, {BUILDING, LATEST}])
+        # Each member is told once, by the batch that holds it.
+        self.assertEqual([self.frozen(gh, number) for number in (11, 12)], [[1018], [1018]])
+        self.assertIn("This batch is stacked on #1018, whose branch is at the same commit and whose number is lower.",
+                      self.record(gh, 1050))
+        self.assertEqual(note(self.record(gh, 1050))["below"], {"1018": sha("kim")})
+        # Every run warns again, and changes nothing.
+        for _ in range(2):
+            gh.writes = []
+            self.assertEqual(sync(gh), [self.TWINS])
+            self.assertEqual(gh.writes, [])
+
+    def test_what_they_say_about_each_other_does_not_change_the_order(self):
+        for lower, upper, ref in (("- [ ] depends on: #1050\n", "- [ ] depends on: #1018\n", "batch/copy"),
+                                  ("- [ ] depends on: #1050\n", "Assembled by hand.", "batch/copy"),
+                                  ("Assembled by hand.", "Assembled by hand.", UPPER)):
+            with self.subTest(lower=lower, upper=upper, ref=ref):
+                gh = self.twins(lower, upper, ref)
+                log = sync(gh)
+                self.assertIn(self.TWINS, log)
+                self.assertFalse([line for line in log if "circle" in line])
+                self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, set()))
+                self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING}, {BUILDING, LATEST}])
+
+    def test_a_batch_that_was_alone_takes_nothing_from_its_twin_and_no_label_changes(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        by_hand(gh, 11, 12, number=1050, ref="batch/copy", name="kim")
+        sync(gh)
+        self.assertEqual(self.own(gh, 1050), {"11", "12"})
+        # A second batch with a lower number appears at the same commit: what is held moves down
+        # to it, and keeps its labels, as when it moves down a stack.
+        by_hand(gh, 11, 12)
+        gh.writes = []
+        log = sync(gh)
+        self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, set()))
+        self.assertFalse([path for method, path, _ in gh.writes if "labels" in path
+                          and path.startswith(("issues/11/", "issues/12/"))])
+        self.assertEqual(self.labels(gh, 11, 12), [IN, IN])
+        self.assertFalse([body for body in gh.said(11) if body.startswith("<!-- batch-queue-dropped")])
+        # The one that was there first stays the outermost.
+        self.assertFalse([line for line in log if LATEST in line])
+        self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING}, {BUILDING, LATEST}])
+
+    def test_once_one_moves_on_what_it_says_counts_again(self):
+        gh = self.twins(ref=UPPER)
+        sync(gh)
+        by_hand(gh, 1018, 13, number=1050, ref=UPPER, name="b5")
+        log = sync(gh)
+        self.assertFalse([line for line in log if line.startswith("warning")])
+        self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, {"13"}))
+        self.assertIn("This batch is stacked on #1018, as its branch name says.", self.record(gh, 1050))
+        self.assertEqual(self.labels(gh, 11, 12, 13, 1018, 1050), [IN, IN, IN, {BUILDING}, {BUILDING, LATEST}])
+
+    def test_what_they_say_about_other_batches_still_counts(self):
+        gh = Fake()
+        queue(gh, 11, 13)
+        by_hand(gh, 11)
+        body = "- [ ] depends on: #1018\n"
+        by_hand(gh, 1018, 13, number=1050, ref="batch/b5", name="b5", body=body)
+        by_hand(gh, 1018, 13, number=1060, ref="batch/b5-copy", name="b5", body=body)
+        sync(gh)
+        self.assertEqual([self.own(gh, number) for number in (1018, 1050, 1060)], [{"11"}, {"13"}, set()])
+        self.assertEqual(self.labels(gh, 1018, 1050, 1060), [{BUILDING}, {BUILDING}, {BUILDING, LATEST}])
+        self.assertIn("This batch is stacked on #1018, as a `depends on` line says, and on #1050, whose branch is at "
+                      "the same commit and whose number is lower.", self.record(gh, 1060))
+
+    def test_a_circle_through_another_batch_keeps_the_order_of_twins(self):
+        gh = Fake()
+        queue(gh, 11, 21)
+        by_hand(gh, 11, body="- [ ] depends on: #2000\n")
+        by_hand(gh, 11, number=1050, ref="batch/copy", name="kim")
+        by_hand(gh, 21, number=2000, ref="batch/other", name="other", body="- [ ] depends on: #1050\n")
+        log = sync(gh)
+        self.assertIn("the batches #1018, #1050, #2000 say they are stacked on each other in a circle: none of them "
+                      "is taken to be stacked on another batch, except one at the same commit", log)
+        self.assertEqual([self.own(gh, number) for number in (1018, 1050, 2000)], [{"11"}, set(), {"21"}])
+        self.assertEqual(self.labels(gh, 1018, 1050, 2000), [{BUILDING}, {BUILDING, LATEST}, {BUILDING, LATEST}])
+
     def legacy(self):
         """A stack whose records were written before batches were stacked, and before members
         were told anything: the outer batch held the lower one and all it contained, and
