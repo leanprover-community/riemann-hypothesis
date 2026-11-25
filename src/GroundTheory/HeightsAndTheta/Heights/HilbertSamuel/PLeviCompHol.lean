@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
 
-noncomputable section
-
 theorem LeviCompHol.proof : LeviCompHol.Statement := by
   intro E F _ _ g φ x w hg hφ
   have hgev : ∀ᶠ y in 𝓝 x, AnalyticAt ℂ g y := hg.eventually_analyticAt
@@ -66,7 +64,5 @@ theorem LeviCompHol.proof : LeviCompHol.Statement := by
   simp only [add_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.compL_apply, ContinuousLinearMap.flip_apply, hGI, hG2II, map_neg, hGw]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

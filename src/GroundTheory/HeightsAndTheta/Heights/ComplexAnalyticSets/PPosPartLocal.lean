@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace PosPartLocal
 
 variable {n d : ℕ}
@@ -152,7 +150,5 @@ theorem PosPartLocal.proof : PosPartLocal.Statement := by
           by_contra h
           exact hz (by simp [Set.indicator_of_notMem h])
         exact ⟨hzE.1, hEW hzE.2⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

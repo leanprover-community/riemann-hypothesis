@@ -11,8 +11,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel.AnResBridge
 
 open ReciprocityTheory.ChartRestriction.G.Geo

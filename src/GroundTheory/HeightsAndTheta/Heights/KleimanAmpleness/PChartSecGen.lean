@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver secOver GeneratesOver)
 
-noncomputable section
-
 section Loc
 
 variable {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω]
@@ -362,7 +360,5 @@ theorem ChartSecGen.full : ChartSecGen.Statement := by
     · intro t ht
       exact mem_span_of_generatesOver_chartSec hy β η hgen I t ht
   · exact generatesOver_of_span_chartSec hy β η hη
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

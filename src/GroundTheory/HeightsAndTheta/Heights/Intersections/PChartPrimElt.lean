@@ -12,8 +12,6 @@ public import Mathlib.FieldTheory.PrimitiveElement
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Inter
 
 open Polynomial

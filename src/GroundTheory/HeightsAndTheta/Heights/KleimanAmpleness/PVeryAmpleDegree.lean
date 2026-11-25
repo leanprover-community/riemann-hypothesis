@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open Filter
 
-noncomputable section
-
 universe u w
 
 theorem VeryAmpleDegree.proof (hDim : VeryAmpleDim.Statement.{u, w})
@@ -41,7 +39,5 @@ theorem VeryAmpleDegree.proof (hDim : VeryAmpleDim.Statement.{u, w})
     rw [← hP, hPQ, hQ]
     rfl
   exact_mod_cast hnum
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

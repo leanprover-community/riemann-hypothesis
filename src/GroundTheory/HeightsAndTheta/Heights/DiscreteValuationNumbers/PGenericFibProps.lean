@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem weightedHomogeneousComponent_map {σ M R S : Type*} [AddCommMonoid M] [CommRing R]
@@ -69,7 +67,5 @@ theorem GenericFibProps.proof : GenericFibProps.Statement := by
       apply hsP
       rw [← hunder]
       exact h
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 
 open NumberField GroundTheory.Automorphic Module
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 
@@ -179,7 +177,5 @@ theorem ImaginaryLatticeCocompact.proof : ImaginaryLatticeCocompact.Statement F 
       exact mul_le_of_le_one_left (abs_nonneg _) this
     exact h1.trans (Finset.single_le_sum (f := fun w' => |L i w'|) (fun _ _ => abs_nonneg _)
       (Finset.mem_univ w))
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

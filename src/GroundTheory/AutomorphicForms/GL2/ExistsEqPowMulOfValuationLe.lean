@@ -13,8 +13,6 @@ import Mathlib.Topology.Algebra.Group.Units
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Automorphic
 
 namespace GodementJacquet

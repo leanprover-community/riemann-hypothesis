@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 section Homog
 
 variable {R : Type*} [CommRing R] {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} [∀ k, Fintype (ι k)]
@@ -170,7 +168,5 @@ theorem PFFibreSum.proof (hFD : FibreDimStatement) (hBij : PFFibreBij.Statement)
   refine finsum_mem_eq_of_bijOn (fibreOf κ G) (hBij K ι K' ι' κ v P' d (d + r + 1) G s hv hP' hP) ?_
   rintro W ⟨hW, hH, hI⟩
   rw [hMult K ι K' ι' κ v P' d (d + r + 1) G s W hv hP' hP hW hH hI]
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

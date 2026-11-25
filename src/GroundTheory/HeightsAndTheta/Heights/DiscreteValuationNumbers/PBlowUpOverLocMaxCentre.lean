@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem BlowUpOverLocMaxCentre.proof (h₁ : BlowUpOverLocCentreDom.Statement.{u})
@@ -97,7 +95,5 @@ theorem BlowUpOverLocMaxCentre.proof (h₁ : BlowUpOverLocCentreDom.Statement.{u
   finsum_eq_sum _ (weightedHomogeneousComponent_finsupp _), map_sum]
   exact Ideal.sum_mem _ fun b _ =>
     key b _ (weightedHomogeneousComponent_isWeightedHomogeneous _ _) (hWmh w hwW b)
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

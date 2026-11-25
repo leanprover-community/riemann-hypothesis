@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 attribute [local instance] MvPolynomial.gradedAlgebra
 
 theorem le_originIdeal_of_isHomogeneous {n : ℕ} {I : Ideal (MvPolynomial (Fin n) ℂ)}
@@ -54,7 +52,5 @@ theorem HomogDimZeroPow.proof : HomogDimZeroPow.Statement := by
   have hle := le_originIdeal_of_isHomogeneous (P.homogeneousCore 𝒜).isHomogeneous hmax.ne_top
   exact ((hmax.eq_of_le (originIdeal_isMaximal n).ne_top hle).symm.le).trans
     (Ideal.toIdeal_homogeneousCore_le 𝒜 P)
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

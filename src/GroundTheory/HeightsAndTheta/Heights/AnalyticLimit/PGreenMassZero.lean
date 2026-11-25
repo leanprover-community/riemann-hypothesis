@@ -18,8 +18,6 @@ open ReciprocityTheory.AnForm (levi)
 open ReciprocityTheory.AnForm.M (FinHolAtlas LocPot IsPotential IsPsh IsPosPot IsSection logNormSec mInt
   MIntegrable maMeasure maMeasure_thm logNormIntegrable mIntegrableCont)
 
-noncomputable section
-
 theorem continuousAt_of_charts {e : ℕ} {X : Type} [TopologicalSpace X] {E : Type}
     [TopologicalSpace E] (A : FinHolAtlas e X) {U : Set X} (hU : IsOpen U) (g : X → E)
     (hg : ∀ j, ContinuousOn (g ∘ (A.chart j).symm) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' U))
@@ -160,7 +158,5 @@ theorem GreenMassZero.proof : GreenMassZero.Statement := by
   have hεu : ε < u := lt_of_le_of_lt (hεle.trans (min_le_left _ _)) (by linarith)
   rw [hJ ε hε hε1 t]
   exact (hsub ⟨hε, hεu⟩).le
-
-end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

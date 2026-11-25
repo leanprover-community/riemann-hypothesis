@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace SectionMulInj
@@ -172,7 +170,5 @@ theorem SectionMulInj.proof : SectionMulInj.Statement.{u, w} := by
           rw [mul_assoc, mul_comm M', hM', mul_one]
       _ ≤ idealMod (x := x) pp I * M.sub I := by gcongr
   exact hle (Submodule.mem_span_singleton_self y)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

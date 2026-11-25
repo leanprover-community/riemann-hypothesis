@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 open scoped Pointwise
 
-noncomputable section
-
 namespace SectionsRank
 
 theorem sec_eq_span (o : Type*) [CommRing o] {Ω : Type*} [CommRing Ω] [Algebra o Ω] {ι : Type*}
@@ -140,7 +138,5 @@ theorem SectionsRank.proof : SectionsRank.Statement := by
   rw [AlgHom.toLinearMap_apply, Ideal.Quotient.mkₐ_eq_mk, Ideal.Quotient.eq_zero_iff_mem,
     AlgHom.toLinearMap_apply]
   exact mem_map_coordIdeal_iff x ((mem_homogeneousSubmodule n f).mp hf)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ComplexSets FieldNumbers
 
-noncomputable section
-
 theorem exists_finset_span_integral_of_div (hN : NoetherIntegralClosureFinite.Statement.{0}) {n : ℕ} {O Ω : Type}
     [CommRing O] [Field Ω] [Algebra O Ω] (φ : MvPolynomial (Fin n) ℂ →+* O)
     (hφ : ∀ o : O, ∃ f s, IsUnit (φ s) ∧ o * φ s = φ f)
@@ -133,7 +131,5 @@ theorem curveLocalRing_eq_div {n : ℕ} (I : Ideal (MvPolynomial (Fin n) ℂ)) (
     (IsLocalization.mk'_spec (Localization.AtPrime (RingHom.ker (eval q))) f s)
   rw [map_mul] at e
   exact e
-
-end
 
 end GroundTheory.Heights₂.Heights

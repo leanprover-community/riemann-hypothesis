@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial NumberField
 
-noncomputable section
-
 namespace StackedExceptionalCycle
 
 section Krull
@@ -277,7 +275,5 @@ theorem DualStackedExcCycle.proof (hR : DualStackedExcReduced.Statement) : DualS
       · obtain ⟨s, s', hs, hs', hsg, hsf⟩ := key _ h2
         exact absurd ⟨mem_minimalPrimes_of_mul_mem hs hs' hsg hsf h2.1, h2.2⟩ h1
       · rw [divCycle_of_not_mem h1, divCycle_of_not_mem h2]
-
-end
 
 end GroundTheory.Heights₂.Heights

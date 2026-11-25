@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem IntNumUnique.proof (h1 : CutRational.Statement.{u}) (h2 : IntNumBase.Statement.{u})
@@ -50,7 +48,5 @@ theorem IntNumUnique.proof (h1 : CutRational.Statement.{u}) (h2 : IntNumBase.Sta
           exact h4 F K ι P hP n hdim bg g hg hgP W hgW
         · exact h4 F K ι P hP n hdim bf f hf hfP W hfW
       simp only [ih W hsupp.1 hsupp.2]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

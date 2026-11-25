@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 namespace SemilocalIntegral
@@ -182,7 +180,5 @@ theorem proof (hC : ValuativeCentre.Statement.{u}) : SemilocalIntegral.Statement
   exact hpx
 
 end SemilocalIntegral
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

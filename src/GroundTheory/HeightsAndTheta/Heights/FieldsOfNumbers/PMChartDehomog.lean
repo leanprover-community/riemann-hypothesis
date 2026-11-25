@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem prod_pow_blockWeight {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {M : Type*}
@@ -60,7 +58,5 @@ theorem MChartDehomog.proof : MChartDehomog.Statement := by
 
   rw [map_sum, map_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl hmono
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

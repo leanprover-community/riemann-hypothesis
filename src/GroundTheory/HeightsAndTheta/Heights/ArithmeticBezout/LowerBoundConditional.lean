@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory NumberField
 
-noncomputable section
-
 section Lemmas
 
 variable {R : Type*} [CommRing R]
@@ -176,7 +174,5 @@ theorem chowHt_C_mul_prod (hMul : ChowHeightMul.Statement) (H : ArchData K n) {k
 
 end Height
 
-
-end
 
 end GroundTheory.Heights₂.Heights

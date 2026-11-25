@@ -28,8 +28,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem ringKrullDim_quotient_minimalPrime_add_one_of_fintype {σ : Type} [Fintype σ]
     {V W : Ideal (MvPolynomial σ ℂ)} [hVp : V.IsPrime]
     {f : MvPolynomial σ ℂ} (hf : f ∉ V) (hW : W ∈ (V ⊔ Ideal.span {f}).minimalPrimes)
@@ -187,7 +185,5 @@ theorem NormalModelGoodPointGeneric.proof (h₁ : NormalCodimOneCompleteIntersec
     exact RingHom.mem_ker.mp (hle hp)
   rw [hsplit W ((hmemT W).mpr hW), map_add (f := _), hwW _ (hrest W hW), add_zero, map_mul] at hFw
   exact hβ W hW w hwW (left_ne_zero_of_mul hFw)
-
-end
 
 end GroundTheory.Heights₂.Heights

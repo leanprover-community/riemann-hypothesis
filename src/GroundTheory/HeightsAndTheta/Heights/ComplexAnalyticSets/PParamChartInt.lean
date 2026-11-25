@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ContDiff
 
-noncomputable section
-
 theorem ParamChartInt.proof (hCA : ChartIntCountAdd.Statement) (hPI : ParamPieceInt.Statement)
     (hCN : ParamCritNull.Statement) (hOR : ParamOffRegularZero.Statement)
     (hRP : RegularInjectivePieces.Statement) (hDI : ParamDensIntegrable.Statement) :
@@ -121,7 +119,5 @@ theorem ParamChartInt.proof (hCA : ChartIntCountAdd.Statement) (hPI : ParamPiece
       rw [hf0 _ hwN, zero_mul]
   rw [hB]
   exact hL.unique hR
-
-end
 
 end GroundTheory.Heights₂.Heights

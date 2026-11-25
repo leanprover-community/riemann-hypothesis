@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 namespace BranchOffHypersurface
 
 theorem eval_eq_zero_of_mem_sup {n : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {b : MvPolynomial (Fin n) ℂ}
@@ -87,7 +85,5 @@ theorem proof (hF : HolomorphicFibreInfinite.Statement) : BranchOffHypersurface.
   exact ⟨hZ t ht, hty⟩
 
 end BranchOffHypersurface
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

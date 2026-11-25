@@ -12,8 +12,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-noncomputable section
-
 variable {K : FiniteSubfield}
 
 section Finite
@@ -85,7 +83,5 @@ theorem idelesLimitCohomologyEquiv_apply_inl (v : InfinitePlace K.1) (y : cohomo
   exact infLocalInfl_infiniteComponent_eq_infIdelesLocalRes (ι.inf v) p.1 n z
 
 end Components
-
-end
 
 end GroundTheory.ProfCoh

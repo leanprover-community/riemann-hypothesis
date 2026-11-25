@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory Filter Topology Matrix
 
-noncomputable section
-
 namespace StandardDualMassAtPoint
 
 variable {K : Type} [Field K] [NumberField K] {T : Type} [Fintype T] [DecidableEq T]
@@ -161,7 +159,5 @@ theorem DualStdMassAt.proof (hOn : DualPtsOnPlane.Statement) (hOf : DualPtsOfPla
   unfold ptsIntegralAt
   simp only [hint]
   rw [integral_const_mul, integral_maDensity_gbPot, mul_one]
-
-end
 
 end GroundTheory.Heights₂.Heights

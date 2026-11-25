@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 variable {n : ℕ}
 
 theorem leadForm_ne_zero {f : MvPolynomial (Fin n) ℂ} (hf : f ≠ 0) : leadForm f ≠ 0 := by
@@ -154,7 +152,5 @@ theorem LeadIdealDim.proof : LeadIdealDim.Statement := by
     _ = ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ Q) := hbQ.symm
     _ ≤ ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) :=
       ringKrullDim_le_of_surjective (Ideal.Quotient.factor hJQ) (Ideal.Quotient.factor_surjective hJQ)
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

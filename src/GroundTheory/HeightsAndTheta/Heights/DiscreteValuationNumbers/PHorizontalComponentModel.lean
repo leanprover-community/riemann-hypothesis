@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 universe u
 
 theorem sup_span_C_ne_top_of_multiHomog {O : Type*} [CommRing O] {K : Type} [DecidableEq K]
@@ -73,7 +71,5 @@ theorem HorizontalComponentModel.proof : HorizontalComponentModel.Statement := b
     (sup_span_C_ne_top_of_multiHomog ι hWh h0 hϖ.not_isUnit) (d + 1 + Fintype.card K)
     (by rw [hP.dim, show d + 1 + 1 + Fintype.card K = d + 1 + Fintype.card K + 1 by ring])
   exact ⟨⟨hWp, hWh, hrel⟩, h0, hdim⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

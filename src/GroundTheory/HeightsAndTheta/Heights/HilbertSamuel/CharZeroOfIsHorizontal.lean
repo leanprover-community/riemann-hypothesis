@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory Filter
 
-noncomputable section
-
 theorem charZero_of_isHorizontal {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     (y : (Σ k, ι k) → Ω) (h : IsHorizontal (mCoordIdeal y)) : CharZero Ω := by
   refine charZero_of_inj_zero fun n hn => ?_
@@ -29,7 +27,5 @@ theorem ArithmeticVolumeBig.proof (hB : G6.StatementB) (hZ : ArithmeticVolumeDeg
   · have : CharZero Ω := charZero_of_isHorizontal y har.2.2.1
     exact hB K ι Ω y D A P0 II hD hII har hb ⟨hP0, hs, hc, hnef, hbig⟩
   · exact hZ K ι Ω y D A P0 II hD hII har hb hP0 hs hnef hc (not_lt.mp hbig)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

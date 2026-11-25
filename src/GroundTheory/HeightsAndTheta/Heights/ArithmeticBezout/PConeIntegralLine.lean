@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Matrix
 
-noncomputable section
-
 variable {n : ℕ}
 
 theorem HermNorm.continuous_pointOf (h : HermNorm n) : Continuous h.pointOf := by
@@ -26,7 +24,5 @@ theorem HermNorm.pointOf_eq_zero (h : HermNorm n) {y : EuclideanSpace ℂ (Fin n
     Matrix.mulVec_injective_iff_isUnit.mpr hu (by simpa [HermNorm.pointOf] using hy)
   ext i
   simpa using congrFun hv i
-
-end
 
 end GroundTheory.Heights₂.Heights

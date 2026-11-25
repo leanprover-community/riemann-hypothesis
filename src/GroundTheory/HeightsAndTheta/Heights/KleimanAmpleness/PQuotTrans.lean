@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 namespace QuotTrans
@@ -162,7 +160,5 @@ theorem QuotTrans.proof : QuotTrans.Statement.{u, v, w} := by
   · intro I J K h h' m
     induction m using Submodule.Quotient.induction_on
     rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

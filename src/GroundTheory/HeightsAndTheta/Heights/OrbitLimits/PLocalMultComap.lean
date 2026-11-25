@@ -6,8 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLocalMultComap
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Targets
 
 open GroundTheory.Heights₂.Heights (localMult)

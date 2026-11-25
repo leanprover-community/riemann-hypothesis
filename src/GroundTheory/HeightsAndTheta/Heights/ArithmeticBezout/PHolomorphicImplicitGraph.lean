@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Module Function
 
-noncomputable section
-
 namespace HolomorphicImplicitGraph
 
 theorem exists_coordSplitting {n m : ℕ} (L : EuclideanSpace ℂ (Fin n) →ₗ[ℂ] (Fin (n - m) → ℂ))
@@ -232,7 +230,5 @@ theorem HolomorphicImplicitGraph.proof : HolomorphicImplicitGraph.Statement := b
           exact hu i
         rw [h2]
         simp [ι, h]
-
-end
 
 end GroundTheory.Heights₂.Heights

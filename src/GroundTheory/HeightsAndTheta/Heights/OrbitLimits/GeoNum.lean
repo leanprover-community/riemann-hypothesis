@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GroundTheory.Heights₂.Heights.FieldNumbers
 
-noncomputable section
-
 namespace GeoNumTarget
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -106,7 +104,5 @@ theorem geoNumStatement {K : Type} [Fintype K] (ι : K → Type) [∀ k, Fintype
   rw [← Bridge.intNum_map_eq_geoNum p n V hV hC hdim a]
   exact (IntNumUnique.full (ZMod p) K ι _ (isIntersectionTheory I hI) _
     (dvrIsMultiProjPrime hproj.1) n ((CutRegular.relDim_eq_natCast_iff _ n).mpr hproj.2) a).symm
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace IncidenceGeneric
 
 theorem hom_aeval {F σ R T : Type*} [Field F] [CommRing R] [CommRing T] [Algebra F R] [Algebra F T]
@@ -208,7 +206,5 @@ theorem proof (h₁ : FGNullstellensatz.Statement) : IncidenceGeneric.Statement 
   exact ⟨aeval_eq_zero_of_mem_incIdeal h₁ P c hc g, mem_incIdeal_of_aeval_eq_zero P c g⟩
 
 end IncidenceGeneric
-
-end
 
 end GroundTheory.Heights₂.Heights

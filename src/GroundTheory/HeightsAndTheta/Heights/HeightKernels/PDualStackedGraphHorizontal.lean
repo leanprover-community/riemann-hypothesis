@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial
 
-noncomputable section
-
 namespace StackedGraphHorizontal
 
 theorem mul_mem_of_mem_sup {A : Type*} [CommRing A] {I : Ideal A} {g s : A} (hsg : s * g ∈ I) :
@@ -151,7 +149,5 @@ theorem DualStackedGraphHorizontal.proof : DualStackedGraphHorizontal.Statement 
     rw [multAt_eq_of_mul_mem le_sup_left hs (mul_mem_of_mem_sup hsg),
       multAt_eq_of_mul_mem (le_sup_left : stackedGraph b' a ⊔ Ideal.span {C (a t) * graphFirst (T := T) t} ≤ _) hs'
         (mul_mem_of_mem_sup hsf), sup_right_comm]
-
-end
 
 end GroundTheory.Heights₂.Heights

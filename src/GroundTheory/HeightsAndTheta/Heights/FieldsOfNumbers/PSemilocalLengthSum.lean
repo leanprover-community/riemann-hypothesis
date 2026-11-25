@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 
@@ -63,7 +61,5 @@ theorem SemilocalLengthSum.proof (h1 : FibreFinite.Statement.{u})
   have := hne h hhP
   have := hne a haP
   field_simp
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

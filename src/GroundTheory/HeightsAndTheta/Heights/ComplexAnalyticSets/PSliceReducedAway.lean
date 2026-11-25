@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Matrix
 
-noncomputable section
-
 theorem exists_eval_ne_zero_of_isOpen_pi {σ : Type*} [Finite σ] {F : MvPolynomial σ ℂ} (hF : F ≠ 0)
     {S : Set (σ → ℂ)} (hS : IsOpen S) (hne : S.Nonempty) : ∃ y ∈ S, eval y F ≠ 0 := by
   obtain ⟨y₀, hy₀⟩ := hne
@@ -46,7 +44,5 @@ theorem SliceReducedAway.proof (hZ : SliceReducedAwayZariski.Statement) :
     obtain ⟨y, hyU, hyF⟩ :=
       exists_eval_ne_zero_of_isOpen_pi hF (hU.preimage hφ) ⟨e L₀, hL₀⟩
     exact ⟨φ y, hyU, hyF⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

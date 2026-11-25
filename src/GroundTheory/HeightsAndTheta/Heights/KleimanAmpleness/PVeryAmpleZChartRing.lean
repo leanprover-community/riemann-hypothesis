@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 namespace VeryAmpleZChartRing
@@ -98,7 +96,5 @@ theorem VeryAmpleZChartRing.proof : VeryAmpleZChartRing.Statement.{u, w} := by
     rw [← mul_assoc, ← pow_add, Nat.sub_add_cancel hM]
   rw [e3]
   exact mul_mem (pow_mem hcJ _) h2
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

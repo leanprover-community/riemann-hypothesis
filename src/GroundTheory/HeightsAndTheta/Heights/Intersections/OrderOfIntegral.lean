@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField
 
-noncomputable section
-
 theorem RegularityOrder.order_of_integral {F : Type*} [Field F] [NumberField F] (S : Subring F)
     (hint : ∀ x ∈ S, IsIntegral ℤ x) (hden : ∀ x : F, ∃ c ∈ S, c ≠ 0 ∧ x * c ∈ S) :
     Module.Finite ℤ S ∧ Module.Free ℤ S ∧ Module.finrank ℤ S = Module.finrank ℚ F := by
@@ -101,7 +99,5 @@ theorem RegularityOrder.proof (h₁ : RegularityFunctionFieldNumber.Statement) (
     exact ⟨c, fun W h1 h2 => (hc W h1 h2).1, hc0, fun W h1 h2 => (hc W h1 h2).2⟩
   obtain ⟨hfin, hfree, hrank⟩ := RegularityOrder.order_of_integral (F := funField P) (regRing P) hint hden
   exact ⟨hfree, hfin, fun _ _ => hrank⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

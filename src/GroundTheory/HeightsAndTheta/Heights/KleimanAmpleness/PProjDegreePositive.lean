@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GroundTheory.Heights₂.Heights.HilbertSamuel
 
-noncomputable section
-
 universe u
 
 namespace ProjDegreePositive
@@ -249,7 +247,5 @@ end ProjDegreePositive
 theorem ProjDegreePositive.proof : ProjDegreePositive.Statement.{u} := by
   intro F _ ι₀ _ q D hq hd
   exact ProjDegreePositive.pos D q hq hd
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets
 
-noncomputable section
-
 namespace VarIntAdd
 
 theorem ringKrullDim_eq_of_injective_finite {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)
@@ -93,7 +91,5 @@ theorem VarIntAdd.proof (hCM : ChartMassCompact.Statement) : VarIntAdd.Statement
     unfold chartInt
     rw [VarIntAdd.chartDens_add hfin, integral_add' (hint f hfc hfs) (hint g hgc hgs)]
   · simp
-
-end
 
 end GroundTheory.Heights₂.Heights

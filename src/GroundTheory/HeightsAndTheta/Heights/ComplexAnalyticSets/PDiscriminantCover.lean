@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 theorem DiscriminantCover.proof (hP : PrimitiveElementFibres.Statement) :
     DiscriminantCover.Statement := by
   intro n d J A hJ hdim hA
@@ -99,7 +97,5 @@ theorem DiscriminantCover.proof (hP : PrimitiveElementFibres.Statement) :
     · rintro ⟨w, hw, rfl⟩
       obtain ⟨hf, hℓg⟩ := hkey w hw
       exact ⟨hf.1, by rw [hf.2]; exact hw, by rw [hℓg]; exact (hψ w hw.1).1⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

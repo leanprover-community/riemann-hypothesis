@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace TwistIntersection
@@ -53,7 +51,5 @@ theorem ptsIntegral_add_locConst (P : Ideal (MRing ι)) {e : ℕ} {φ φ' : Fin 
   · rfl
 
 end TwistIntersection
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

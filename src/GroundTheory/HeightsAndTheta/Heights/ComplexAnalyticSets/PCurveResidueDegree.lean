@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ComplexSets
 
-noncomputable section
-
 theorem CurveResidueDegree.proof : CurveResidueDegree.Statement := by
   intro n I q _ hdim P
   have := P.isMaximal
@@ -114,7 +112,5 @@ theorem CurveResidueDegree.proof : CurveResidueDegree.Statement := by
   rw [LinearMap.toSpanSingleton_apply, Algebra.smul_def]
   change π r * x = y
   rw [hr, mul_assoc, inv_mul_cancel₀ hx, mul_one]
-
-end
 
 end GroundTheory.Heights₂.Heights

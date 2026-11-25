@@ -9,8 +9,6 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open MvPolynomial Finset
 
-noncomputable section
-
 
 open Coinv in
 theorem CoinvIdealRepresentation.proof : CoinvIdealRepresentation.Statement := by
@@ -47,7 +45,5 @@ theorem CoinvIdealRepresentation.proof : CoinvIdealRepresentation.Statement := b
     simp only [smul_eq_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun b _ => ?_
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights.RestTerms

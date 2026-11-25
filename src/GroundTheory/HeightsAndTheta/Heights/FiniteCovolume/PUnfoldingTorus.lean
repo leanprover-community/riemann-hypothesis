@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix MeasureTheory
 open scoped ENNReal
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -135,7 +133,5 @@ theorem UnfoldingTorus.proof (h : HermitianForm F E W) (v : Basis ι E W)
   by_cases hbT : b ∈ T
   · simp [Set.indicator_of_mem hbT]
   · simp [Set.indicator_of_notMem hbT]
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

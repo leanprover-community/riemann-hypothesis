@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Filter Topology ComplexSets
 
-noncomputable section
-
 namespace DivisorOneComponent
 
 theorem mem_zeroSet_iff {n : ℕ} (K : Ideal (MvPolynomial (Fin n) ℂ)) (q : Fin n → ℂ) :
@@ -119,7 +117,5 @@ theorem DivisorOneComponent.proof : DivisorOneComponent.Statement := by
       by_cases h : W'' = W
       · subst h; exact (mem_zeroSet_iff W'' x).2 hW''x
       · exact absurd ((mem_zeroSet_iff W'' x).2 hW''x) (Set.mem_iInter₂.1 hxU W'' ⟨hW'', h⟩)
-
-end
 
 end GroundTheory.Heights₂.Heights

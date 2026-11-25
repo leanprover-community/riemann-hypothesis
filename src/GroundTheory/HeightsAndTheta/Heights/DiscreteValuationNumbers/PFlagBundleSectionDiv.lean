@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace FlagBundleSectionDivProof
 
 theorem eq_of_lt_of_le_of_mem_minimalPrimes {A : Type*} [CommRing A] [IsNoetherianRing A]
@@ -184,7 +182,5 @@ theorem FlagBundleSectionDiv.proof (hDim : FlagBundleDim.Statement)
       rintro rfl
       exact hW ⟨hQ.isPrime, hQ.relevant, hPQ⟩
     simp [ratDiv, h0, hWQ]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

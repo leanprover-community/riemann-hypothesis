@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ContDiff
 
-noncomputable section
-
 theorem abs_finsum_le_finsum_abs {α : Type*} (f : α → ℝ) : |∑ᶠ i, f i| ≤ ∑ᶠ i, |f i| := by
   by_cases h : (Function.support f).Finite
   · have hs : Function.support (fun i => |f i|) ⊆ ↑h.toFinset := by
@@ -83,7 +81,5 @@ theorem CutOff.proof (hS : CutOffShape.Statement) (hT : CutOffTube.Statement)
       (lim _)
     rw [Real.norm_of_nonneg (chartAbsDens_nonneg _ _ _ _ y)]
     exact (hK n d J A P R φ k y hJ hdim hA).1
-
-end
 
 end GroundTheory.Heights₂.Heights

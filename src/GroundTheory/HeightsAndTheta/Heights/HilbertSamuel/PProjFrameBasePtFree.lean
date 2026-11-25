@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 namespace ProjFrameBasePtFree
 
 theorem linForm_projMat {κ : Type} [Fintype κ] {D : ℕ} (e : Fin (D + 1) → Ix κ) (k : Fin (D + 1)) :
@@ -108,7 +106,5 @@ theorem ProjFrameBasePtFree.proof : ProjFrameBasePtFree.Statement := by
     simp [linForm_projMat]
   rw [hspan, Fintype.prod_unique]
   exact hN
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace LocRingFrac
 
 set_option linter.unusedSectionVars false
@@ -71,7 +69,5 @@ theorem LocRingFrac.proof : LocRingFrac.Statement := by
       fun h => (hW.mem_or_mem h).elim hvW hvW', ?_⟩
     rw [map_mul, map_mul, map_mul, map_mul, ← e, ← e']
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace CurveRingFiniteAlt
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -125,7 +123,5 @@ theorem CurveRingFinite.proof : CurveRingFinite.Statement := by
       map_smul' := fun _ _ => rfl }
   exact Module.Finite.of_injective f fun a b h =>
     Subtype.ext (congrArg (fun w : integralClosure ℤ κ => ((w : κ) : Ω)) h)
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

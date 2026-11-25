@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1
 
-noncomputable section
-
 namespace OneBlockPointDeg
 
 variable {Φ Φ' : Type} [Field Φ] [Field Φ'] [Algebra Φ Φ'] {K : Type} [Fintype K] {ι : K → Type}
@@ -144,7 +142,5 @@ theorem OneBlockPointDeg.proof : OneBlockPointDeg.Statement := by
     rw [Inter.ChartRankAdjoin.proof K ι Φ Φ' w c hz hhom, e,
       ← IntermediateField.finrank_eq_finrank_subalgebra,
       IntermediateField.adjoin_toSubalgebra_of_isAlgebraic halg]
-
-end
 
 end GroundTheory.Heights₂.Heights

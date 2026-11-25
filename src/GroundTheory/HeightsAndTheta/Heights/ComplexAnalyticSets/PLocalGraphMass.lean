@@ -16,8 +16,6 @@ open MeasureTheory Function
 
 open scoped ENNReal
 
-noncomputable section
-
 namespace LocalGraphMass
 
 variable {n : ℕ}
@@ -266,7 +264,5 @@ theorem LocalGraphMass.proof (hPF : ProjectionFormula.Statement) : LocalGraphMas
           (fun _ => ⨆ y : I → ℂ, frameFibreCount b I S y) x ∂(μH[((2 * d : ℕ) : ℝ)]) :=
         lintegral_mono fun x => frameFibreCount_ball_le b I S R x
     _ = _ := lintegral_indicator_const Metric.isOpen_ball.measurableSet _
-
-end
 
 end GroundTheory.Heights₂.Heights

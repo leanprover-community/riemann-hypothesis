@@ -18,13 +18,9 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 theorem NormOfDividedFormSep.proof (hEval : NormFormEval.Statement) (hDvd : NormFormDvd.Statement)
     (hPrime : PrimeMapFractionRing.Statement) : NormOfDividedFormSep.Statement :=
   fun O B _ _ _ _ _ _ _ _ n η t P hsep hgen ht hP hdvd u =>
     NormOfDividedForm.det_mulLeft_eq hEval hDvd hPrime O B n η t P hsep hgen ht hP hdvd u
-
-end
 
 end GroundTheory.Heights₂.Heights

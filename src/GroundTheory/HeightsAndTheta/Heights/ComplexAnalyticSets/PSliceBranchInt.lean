@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ContDiff
 
-noncomputable section
-
 namespace SliceBranchInt
 
 open ReciprocityTheory.AnForm.A (hypIncl)
@@ -101,7 +99,5 @@ theorem SliceBranchInt.proof (hBP : IndefiniteRowSideFullHecke.ComplexSets.Branc
     refine ⟨Fin.tail t, ?_, show (γ b).toFun (hypIncl (Fin.tail t)) = _ by rw [h1]⟩
     rw [Metric.mem_ball, dist_zero_right] at ht ⊢
     exact h2.trans_lt ht
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -19,8 +19,6 @@ open MvPolynomial MeasureTheory Module
 
 open scoped ENNReal NNReal
 
-noncomputable section
-
 theorem coneSet_hausdorff_null_of_dim_lt {n : ℕ} (h : HermNorm n) (J : Ideal (MvPolynomial (Fin n) ℂ))
     (d : ℕ) (hd : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) < d) :
     Measure.hausdorffMeasure ((2 * d : ℕ) : ℝ) (coneSet h J) = 0 := by
@@ -88,7 +86,5 @@ theorem ConeGraphCover.proof (hDim : ConeFiniteFibreDim.Statement) (hTan : ConeT
     rw [hf] at hz
     obtain ⟨i, rfl⟩ := hz
     exact Set.mem_iUnion.2 ⟨i, hyz⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

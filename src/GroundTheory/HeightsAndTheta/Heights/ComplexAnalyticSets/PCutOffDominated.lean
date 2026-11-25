@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace CutOffDominated
 
 variable {n d : ℕ}
@@ -82,7 +80,5 @@ theorem CutOffDominated.proof : CutOffDominated.Statement := by
     · simpa using (hxl.mul_const (f x)).mul_const
         (ReciprocityTheory.AnForm.maDens (fun k => ψ k ∘ h.choose) y)
     · exact tendsto_const_nhds
-
-end
 
 end GroundTheory.Heights₂.Heights

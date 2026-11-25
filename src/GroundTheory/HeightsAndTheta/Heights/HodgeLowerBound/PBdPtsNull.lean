@@ -7,8 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPar
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo

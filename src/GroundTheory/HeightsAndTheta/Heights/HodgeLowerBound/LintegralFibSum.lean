@@ -8,8 +8,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Measurable
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 open MeasureTheory Set Filter Function ReciprocityTheory.ChartRestriction.G.Geo

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Matrix ComplexSets
 open scoped ENNReal
 
-noncomputable section
-
 theorem measurable_poincareDeepWeight : Measurable poincareDeepWeight := by
   have hn : Measurable fun z : ℂ => ‖z‖ ^ 2 := (continuous_norm.pow 2).measurable
   exact Measurable.ite (measurableSet_lt hn.log measurable_const) (hn.mul (hn.log.pow_const 2)).inv
@@ -104,7 +102,5 @@ theorem TubeDeepMass.proof (hR : TubeDeepRankOne.Statement) (hC : TubeDeepAreaCo
         exact congrArg _ (lintegral_congr fun z => ENNReal.ofReal_mul hc0)
     _ < ⊤ := ENNReal.mul_lt_top (ENNReal.natCast_lt_top N)
         (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hW d R))
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 open MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A
 open scoped ContDiff
 
-noncomputable section
-
 namespace PolydiscLelongLimit
 
 theorem hypIncl_mem_ball {d : ℕ} {r : ℝ} (w : Fin d → ℂ) :
@@ -165,7 +163,5 @@ theorem PolydiscLelongLimit.proof : PolydiscLelongLimit.Statement := by
     rw [hlogF, hL0.2, Int.cast_natCast]
   rw [hR, ← hlimF]
   exact hlim.congr' (eventually_mem_nhdsWithin.mono fun ε hε => (hgood ε hε).2.symm)
-
-end
 
 end GroundTheory.Heights₂.Heights

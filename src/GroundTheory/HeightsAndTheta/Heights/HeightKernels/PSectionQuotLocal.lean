@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
-noncomputable section
-
 theorem SectionQuotLocal.proof : SectionQuotLocal.Statement := by
   intro T _ K' _ _ y s hy hs hsP m t hm hrat a b hb hba
   have hx0 : aeval y s ≠ 0 := SectionQuotientFinite.aeval_ne_zero y hs hsP
@@ -27,7 +25,5 @@ theorem SectionQuotLocal.proof : SectionQuotLocal.Statement := by
     · exact hx0 h
   exact Targets.CurveSectionQuotLocal.proof Unit (fun _ => T) K' y s (fun _ => 1) hy hs hsP m
     (fun _ => t) hm (fun _ => hyt) (fun p => hrat p.2) a b hb (by simpa [Fintype.prod_unique] using hba)
-
-end
 
 end GroundTheory.Heights₂.Heights

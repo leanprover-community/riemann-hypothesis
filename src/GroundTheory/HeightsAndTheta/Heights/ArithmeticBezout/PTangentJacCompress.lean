@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Module
 
-noncomputable section
-
 theorem det_starProjection_compress {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [FiniteDimensional ℂ E] [NormedAddCommGroup F] [InnerProductSpace ℂ F] [FiniteDimensional ℂ F]
     (A : E →L[ℂ] F) (T : Submodule ℂ E) :
@@ -62,7 +60,5 @@ theorem TangentJacCompress.proof : TangentJacCompress.Statement := by
   unfold tangentJac
   have h := LinearMap.normDet_sq (𝕜 := ℂ) (U := T) (V := EuclideanSpace ℂ (Fin m)) ((linProjₗ π).comp T.subtype)
   exact h.trans (det_starProjection_compress (LinearMap.toContinuousLinearMap (linProjₗ π)) T).symm
-
-end
 
 end GroundTheory.Heights₂.Heights

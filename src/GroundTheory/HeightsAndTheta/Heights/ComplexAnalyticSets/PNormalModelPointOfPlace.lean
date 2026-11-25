@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ComplexSets
 
-noncomputable section
-
 theorem NormalModelPointOfPlace.proof (hLoc : NormalisationModelLocalization.Statement)
     (hMax : ModelLocalizationMaximalPoint.Statement) (hAt : LocalizationAtPrimeQuotient.Statement.{0}) :
     NormalModelPointOfPlace.Statement := by
@@ -49,7 +47,5 @@ theorem NormalModelPointOfPlace.proof (hLoc : NormalisationModelLocalization.Sta
   congr 1
   rw [RingEquiv.trans_apply, IsLocalization.ringEquivOfRingEquiv_eq, he, heAt]
   rfl
-
-end
 
 end GroundTheory.Heights₂.Heights

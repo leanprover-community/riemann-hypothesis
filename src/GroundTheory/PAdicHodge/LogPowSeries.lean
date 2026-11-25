@@ -8,8 +8,6 @@ public import Mathlib.Data.Nat.Cast.Field
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.PAdicHodge
 
 open PowerSeries

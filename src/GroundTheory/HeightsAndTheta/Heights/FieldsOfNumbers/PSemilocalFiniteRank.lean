@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 section Rank
@@ -102,7 +100,5 @@ theorem SemilocalFiniteRank.proof (h1 : FibreFinite.Statement.{u})
       rw [Set.mem_singleton_iff.mp hW₁]
       exact hW
     · exact h3 F K' ι' P' hP' (fibrePrimes j P' W) hfin (fun W' hW' => hW'.1)
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

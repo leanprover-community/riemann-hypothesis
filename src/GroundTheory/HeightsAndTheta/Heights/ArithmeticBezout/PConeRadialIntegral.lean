@@ -13,8 +13,6 @@ open MeasureTheory Set
 
 open scoped ENNReal Pointwise
 
-noncomputable section
-
 theorem ConeRadialIntegral.proof : ConeRadialIntegral.Statement := by
   intro n m hm C hC hfin f hf
   set d : ℝ := ((2 * m : ℕ) : ℝ) with hd_def
@@ -109,7 +107,5 @@ theorem ConeRadialIntegral.proof : ConeRadialIntegral.Statement := by
         refine lintegral_congr fun r => ?_
         simp only [Pi.mul_apply]
         exact mul_comm _ _
-
-end
 
 end GroundTheory.Heights₂.Heights

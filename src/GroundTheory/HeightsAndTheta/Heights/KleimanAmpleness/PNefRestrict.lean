@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 section Helpers
@@ -49,7 +47,5 @@ theorem NefRestrict.proof (hRT : RestrictTwist.Statement.{u, w})
     rw [Filter.map_congr heq]
   rw [hnum]
   exact hnef pp bot_le hx
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

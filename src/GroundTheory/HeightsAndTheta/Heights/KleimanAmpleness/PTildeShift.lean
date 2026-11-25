@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 section Tilde
@@ -76,7 +74,5 @@ theorem TildeShift.proof : TildeShift.Statement.{u, v, w} := by
     exact Submodule.smul_mem _ a hy'
 
 end Tilde
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

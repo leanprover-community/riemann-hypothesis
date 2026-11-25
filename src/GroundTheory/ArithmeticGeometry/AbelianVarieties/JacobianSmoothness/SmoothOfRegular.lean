@@ -20,8 +20,6 @@ open IsLocalRing TensorProduct
 
 universe u
 
-noncomputable section
-
 section Presentation
 
 variable {k : Type u} [Field k] {P S : Type u} [CommRing P] [CommRing S] [Algebra k P]
@@ -165,7 +163,5 @@ lemma ker_le_span_of_spanFinrank_le {κ : Type} [Fintype κ] (f : κ → P)
   exact Ideal.Quotient.eq_zero_iff_mem.1 (hinj (hx'.trans (map_zero ψ).symm))
 
 end Presentation
-
-end
 
 end GroundTheory.Arith.Jacobian

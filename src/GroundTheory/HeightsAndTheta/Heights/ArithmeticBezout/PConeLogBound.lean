@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory NumberField Matrix
 
-noncomputable section
-
 variable {n : ℕ}
 
 theorem HermNorm.norm_pairing_le (h : HermNorm n) (u y : Fin n → ℂ) :
@@ -77,7 +75,5 @@ theorem measurableSet_coneBall (h : HermNorm n) (W : Ideal (MvPolynomial (Fin n)
   convert this using 1
   ext y
   simp [coneBall, Metric.mem_ball]
-
-end
 
 end GroundTheory.Heights₂.Heights

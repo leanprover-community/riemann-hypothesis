@@ -11,8 +11,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField IdeleGroup Topology Filter
 open scoped GroundTheory.LocalField.Abstract
 
-noncomputable section
-
 namespace DirichletHecke
 
 open _root_.GroundTheory.Global.Cyclotomic GroundTheory.LocalField.Abstract RationalSymbol
@@ -33,7 +31,5 @@ theorem isOfFinOrder_heckeCharacter : IsOfFinOrder (heckeCharacter χ) :=
 end Level
 
 end DirichletHecke
-
-end
 
 end GroundTheory.Global

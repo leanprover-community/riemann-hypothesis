@@ -13,8 +13,6 @@ open scoped NumberField.AdeleRing ENNReal NNReal
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable (K : Type*) [Field K] [NumberField K]
 
 theorem countable_quotient_of_isOpen {G : Type*} [Group G] [TopologicalSpace G]
@@ -98,7 +96,5 @@ theorem hasSum_integral_ideleMeasure_of_invariant_finiteIntegralUnits {E : Type*
   have h := hasSum_integral_ideleMeasure_of_invariant (finiteIntegralUnits K)
     (isOpen_finiteIntegralUnits K) hFi hF
   simpa [finiteIdeleMeasure_finiteIntegralUnits] using h
-
-end
 
 end GroundTheory.Global

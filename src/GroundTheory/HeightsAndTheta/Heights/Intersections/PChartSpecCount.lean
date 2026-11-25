@@ -19,8 +19,6 @@ import Mathlib.RingTheory.MvPolynomial.Localization
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Inter
 
 open Polynomial

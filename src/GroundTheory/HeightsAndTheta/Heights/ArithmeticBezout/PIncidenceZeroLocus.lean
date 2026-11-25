@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace IncidenceZeroLocus
 
 theorem exists_det_submatrix_ne_zero {K ρ κ : Type*} [Field K] [Fintype ρ] [DecidableEq ρ]
@@ -259,7 +257,5 @@ theorem proof : IncidenceZeroLocus.Statement := by
   exact hDv (hv D hDinc)
 
 end IncidenceZeroLocus
-
-end
 
 end GroundTheory.Heights₂.Heights

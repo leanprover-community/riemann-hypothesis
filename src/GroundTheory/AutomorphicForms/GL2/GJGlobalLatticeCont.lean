@@ -10,8 +10,6 @@ open scoped NumberField.AdeleRing Classical nonZeroDivisors
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace GJGlobal
 
 open GroundTheory.Global GJMatrix
@@ -173,7 +171,5 @@ theorem continuous_tsum_GL {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
     continuous_snd_snd_coe)).continuousOn
 
 end GJGlobal
-
-end
 
 end GroundTheory.Automorphic

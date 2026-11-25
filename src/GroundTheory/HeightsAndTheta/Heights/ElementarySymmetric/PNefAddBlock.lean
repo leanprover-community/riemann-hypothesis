@@ -8,8 +8,6 @@ import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIf
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G

@@ -25,8 +25,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 open MvPolynomial
 
 theorem JacobianRankGeneric.kaehler_D_aeval {σ K : Type*} [Fintype σ] [Field K] [Algebra ℂ K] (x : σ → K)
@@ -134,7 +132,5 @@ theorem JacobianRankGeneric.proof : JacobianRankGeneric.Statement := by
     _ = n - d := by
       generalize Module.finrank K (LinearMap.ker Φ) = m at h2 ⊢
       omega
-
-end
 
 end GroundTheory.Heights₂.Heights

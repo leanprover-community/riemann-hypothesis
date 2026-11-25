@@ -22,8 +22,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
-noncomputable section
-
 universe u v w
 
 theorem SnapperFinite.closed : SnapperFinite.Statement.{u, v, w} :=
@@ -38,7 +36,5 @@ theorem SnapperQuotAdd.closed : SnapperQuotAdd.Statement.{u, v, w} :=
 
 theorem SnapperQuotDevissage.closed : SnapperQuotDevissage.Statement.{u, v, w} :=
   SnapperQuotDevissage.proof SnapperQuotFilt.proof SnapperQuotIso.proof SnapperQuotAdd.closed SubFamilyTwist.proof
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

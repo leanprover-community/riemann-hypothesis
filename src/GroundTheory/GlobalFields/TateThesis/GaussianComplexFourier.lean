@@ -9,8 +9,6 @@ namespace GroundTheory.Global
 open Complex MeasureTheory Set Real ComplexConjugate
 open scoped FourierTransform
 
-noncomputable section
-
 theorem complexFourier_mul_self {f : ℂ → ℂ} (hf : Integrable f complexPlaceMeasure)
     (hf' : Integrable (fun z ↦ ‖z‖ * ‖f z‖) complexPlaceMeasure) {w : ℂ} {D : ℂ →L[ℝ] ℂ}
     (hD : HasFDerivAt (complexFourier f) D w) :
@@ -160,7 +158,5 @@ theorem complexFourier_complexGaussian (m : ℤ) :
   · rw [complexGaussian_neg_natCast, complexFourier_conj_pow_mul_gaussian, neg_neg,
       complexGaussian_natCast]
     simp
-
-end
 
 end GroundTheory.Global

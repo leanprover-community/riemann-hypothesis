@@ -11,8 +11,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 namespace ChartParAlgebraic
 
 theorem proof : ChartParAlgebraic.Statement := by
@@ -79,7 +77,5 @@ theorem proof : ChartParAlgebraic.Statement := by
   exact ⟨fun y => (hη ▸ hle') (trivial : y ∈ ⊤)⟩
 
 end ChartParAlgebraic
-
-end
 
 end GroundTheory.Heights₂.Heights

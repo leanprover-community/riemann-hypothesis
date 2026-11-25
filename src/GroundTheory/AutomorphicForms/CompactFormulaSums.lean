@@ -11,8 +11,6 @@ open scoped ENNReal Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace UnitaryRep
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [MeasurableSpace G] [OpensMeasurableSpace G]
@@ -34,7 +32,5 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Loca
   (μ : Measure G) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
 
 end RightCosetSpace
-
-end
 
 end GroundTheory.Automorphic

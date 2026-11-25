@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial NumberField
 
-noncomputable section
-
 namespace StackedExceptionalBaseBound
 
 variable {K : Type} [Field K] [NumberField K] {i : ℕ} {F F' : HermLattice K i} {T : Type} [Fintype T]
@@ -47,7 +45,5 @@ theorem DualStackedExcBaseLe.proof (hBihom : DualStackedGraphBihomog.Statement)
       hLead K i F F' T b b' a hi hlt hcov hab k α M hres p.1 p.2 (g p) (hg p hp).1 (hg p hp).2
   · rw [Ideal.span_le, Set.range_subset_iff]
     exact centre_mem hab hres
-
-end
 
 end GroundTheory.Heights₂.Heights

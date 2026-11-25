@@ -14,8 +14,6 @@ namespace GroundTheory.ProfCoh
 
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.Global
 
-noncomputable section
-
 theorem isOpen_ker_ρ {k G : Type*} [CommRing k] [Group G] [TopologicalSpace G] (A : Rep k G) [IsDiscreteRep A]
     [Finite A] : IsOpen ((A.ρ.ker : Subgroup G) : Set G) := by
   have e : ((A.ρ.ker : Subgroup G) : Set G) = ⋂ a : A, (stabilizer A.ρ a : Set G) := by
@@ -29,7 +27,5 @@ theorem isOpen_ker_ρ {k G : Type*} [CommRing k] [Group G] [TopologicalSpace G] 
       exact LinearMap.ext fun a => h a
   rw [e]
   exact isOpen_iInter_of_finite fun a => isOpen_stabilizer A a
-
-end
 
 end GroundTheory.ProfCoh

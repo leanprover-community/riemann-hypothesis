@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR PFContracted
 
-noncomputable section
-
 universe u
 
 namespace ContractRelDimLe
@@ -114,7 +112,5 @@ theorem proof : ContractRelDimLe.Statement.{u} := by
   exact WithBot.coe_le_coe.mpr (WithTop.coe_le_coe.mpr (by omega))
 
 end ContractRelDimLe
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace FibreNormMax
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -261,7 +259,5 @@ theorem proof (h : FibreNormPullback.Statement) : FibreNormMax.Statement := by
         rw [mul_pow, ← pow_mul]
 
 end FibreNormMax
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

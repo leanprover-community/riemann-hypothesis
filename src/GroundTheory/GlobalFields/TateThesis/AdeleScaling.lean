@@ -14,8 +14,6 @@ open NumberField NumberField.mixedEmbedding NumberField.InfinitePlace IsDedekind
   MeasureTheory Measure
 open scoped NumberField.AdeleRing ENNReal NNReal Pointwise Classical
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 theorem det_mulLeft_mixedSpace (c : mixedSpace K) :
@@ -166,7 +164,5 @@ theorem adeleMeasure_smul (a : IdeleGroup K) (E : Set 𝔸[K]) :
   rw [← Set.preimage_smul_inv]
   convert h using 2
   rw [map_inv, Positive.coe_inv, inv_inv]
-
-end
 
 end GroundTheory.Global

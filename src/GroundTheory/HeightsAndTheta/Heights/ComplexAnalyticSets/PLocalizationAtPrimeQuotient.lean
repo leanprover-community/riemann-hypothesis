@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 universe u
 
-noncomputable section
-
 theorem LocalizationAtPrimeQuotient.proof : LocalizationAtPrimeQuotient.Statement.{u} := by
   intro A _ I T P _ W _ hP
   let Q := A ⧸ I
@@ -37,7 +35,5 @@ theorem LocalizationAtPrimeQuotient.proof : LocalizationAtPrimeQuotient.Statemen
     (IsScalarTower.algebraMap_apply Q (Localization T) (Localization.AtPrime P) _).symm
   rw [h2]
   exact e.commutes (Ideal.Quotient.mk I a)
-
-end
 
 end GroundTheory.Heights₂.Heights

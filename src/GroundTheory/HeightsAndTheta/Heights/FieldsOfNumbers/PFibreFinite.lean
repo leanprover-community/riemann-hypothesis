@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR PFContracted
 
-noncomputable section
-
 universe u
 
 theorem FibreFinite.proof : FibreFinite.Statement.{u} := by
@@ -60,7 +58,5 @@ theorem FibreFinite.proof : FibreFinite.Statement.{u} := by
   have hP'n' : (D : ℤ) - Fintype.card K' = (n + 1 : ℕ) := by exact_mod_cast hP'n
   have h4' : E + 1 + 1 ≤ D := by exact_mod_cast h4
   omega
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem IsChowForm.exists_pderiv_ne_zero {F : Type} [Field F] [IsAlgClosed F] {p : ℕ} [hp : Fact p.Prime]
     [CharP F p] {n k : ℕ} {P : Ideal (MvPolynomial (Fin n) F)} (hP : IsProjPrime P)
     {g : MvPolynomial (Fin (k + 1) × Fin n) F} (hg : IsChowForm P (k + 1) g) :
@@ -93,7 +91,5 @@ theorem ChowFormBirationalAlgClosed.proof : ChowFormBirationalAlgClosed.Statemen
   · exact ChowFormBirational.full F n k P g c hP hg hc
   obtain ⟨l, hl⟩ := IsChowForm.exists_pderiv_ne_zero (p := p) hP hg
   exact chowFormBirational_of_exists_pderiv_ne_zero IncidenceGeneric.full hP hg hc hl
-
-end
 
 end GroundTheory.Heights₂.Heights

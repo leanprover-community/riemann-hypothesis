@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Set MeasureTheory Manifold EmbeddingWeight
 
-noncomputable section
-
 namespace PiecesAdditiveAlt
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -144,7 +142,5 @@ theorem PiecesAdditive.proof (hInt : PtsIntegrableStatement) : PiecesAdditive.St
       (integrable_piece hInt hP hΨ.choose_spec hL hS hsm huniq i).const_mul (c i)]
     simp only [integral_const_mul]
   · simp
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

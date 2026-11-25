@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory Matrix
 
-noncomputable section
-
 namespace SupBoundCount
 
 theorem main {D : ℕ} {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type}
@@ -132,7 +130,5 @@ theorem SupBoundCount.proof : SupBoundCount.Statement := by
   refine ⟨h.1, ?_⟩
   rw [blockChi, dite_eq_left hex]
   exact h.2
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

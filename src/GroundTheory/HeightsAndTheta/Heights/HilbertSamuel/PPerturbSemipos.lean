@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace PerturbedSemipositivity
@@ -77,7 +75,5 @@ theorem PerturbSemipos.proof : PerturbSemipos.Statement := by
     change 0 ≤ ReciprocityTheory.AnForm.levi _ z w
     rw [ReciprocityTheory.AnForm.levi_congr hev, hadd, levi_const_mul (m : ℝ) hfM w]
     exact add_nonneg (mul_nonneg (Nat.cast_nonneg m) h1) (mul_nonneg (Nat.cast_nonneg n) h2)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

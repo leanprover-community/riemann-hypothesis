@@ -11,8 +11,6 @@ import Mathlib.Order.CompletePartialOrder
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
@@ -103,5 +101,3 @@ theorem BlockGraphDeg.proof (hGr : GraphStatement) (hImg : BlockGraphImage.State
   rw [ReciprocityTheory.ChartRestriction.G.AI.I4.fibreIdeal, hdeg, hbot, IntermediateField.finrank_bot, Nat.cast_one]
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel
-
-end

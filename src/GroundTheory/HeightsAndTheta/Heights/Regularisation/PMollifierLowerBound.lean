@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 open MeasureTheory Metric Set
 open ReciprocityTheory.AnForm.A
 
-noncomputable section
-
 theorem volume_real_closedBall_polydisc {D : ℕ} (x : Fin D → ℂ) {r : ℝ} (hr : 0 ≤ r) :
     volume.real (closedBall x r) = (Real.pi * r ^ 2) ^ D := by
   rw [Measure.real, volume_pi_closedBall x hr]
@@ -109,7 +107,5 @@ theorem MollifiedLowerBound.proof (h0 : SubMeanPolydiscStatement)
 
 theorem MollifiedLowerBound.closed : MollifiedLowerBound.Statement :=
   MollifiedLowerBound.proof subMeanPolydisc_thm polyMaxLogConvex_thm
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

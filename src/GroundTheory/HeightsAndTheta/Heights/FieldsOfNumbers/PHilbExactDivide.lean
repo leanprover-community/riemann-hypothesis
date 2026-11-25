@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 namespace HilbExactDivide
@@ -190,7 +188,5 @@ theorem closed : HilbExactDivide.Statement.{u} :=
   proof GradedFinite.proof
 
 end HilbExactDivide
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

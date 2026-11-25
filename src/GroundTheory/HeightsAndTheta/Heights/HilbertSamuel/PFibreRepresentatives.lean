@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace FibreRepresentatives
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -122,7 +120,5 @@ theorem FibreRepresentatives.proof (h : AvoidFormFinite.Statement) : FibreRepres
       exact ⟨i, fun h0 => hi (by simp [h0])⟩
     · obtain ⟨a, ha⟩ := hSh s hs
       rw [hinv, eval_smul ha (fun k => (r k)⁻¹), hS s hs, mul_zero]
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

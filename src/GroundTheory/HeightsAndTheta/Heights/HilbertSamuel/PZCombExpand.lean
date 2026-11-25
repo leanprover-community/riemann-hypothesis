@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI
 open GroundTheory.Heights₂.Heights.Inter (famExt famExt_apply famExt_basis famExt_symm)
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace ZCombExpand
@@ -166,7 +164,5 @@ theorem ZCombExpand.proof : ZCombExpand.Statement := by
         · rfl
     show _ * I P (n + 1) _ = _
     rw [hl2]
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

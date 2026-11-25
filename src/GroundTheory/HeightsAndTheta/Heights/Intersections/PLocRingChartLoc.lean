@@ -14,11 +14,7 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem LocRingChartLoc.proof : LocRingChartLoc.Statement := fun K _ ι _ P W hP hW hPW hrel =>
   LocRingNoeth.exists_chart_loc LocRingFrac.proof K ι P W hP hW hPW hrel
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

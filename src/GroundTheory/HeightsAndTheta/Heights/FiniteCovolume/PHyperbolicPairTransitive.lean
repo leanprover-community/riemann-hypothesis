@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 
 open NumberField GroundTheory.Automorphic Module
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E]
 variable {W : Type*} [AddCommGroup W] [Module E W]
@@ -123,7 +121,5 @@ theorem proof (h : HermitianForm F E W) [FiniteDimensional E W] :
       ← two_smul E w', smul_smul, inv_mul_cancel₀ two, one_smul]
 
 end HyperbolicPairTransitive
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI
 
-noncomputable section
-
 universe u
 
 namespace DiagPull
@@ -68,7 +66,5 @@ theorem locLen_cross {V : Ideal R} (hV : V.IsPrime) {f g u v : R} (hrel : f * v 
 end Ring
 
 end DiagPull
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

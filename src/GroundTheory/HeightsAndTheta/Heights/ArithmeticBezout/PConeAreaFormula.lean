@@ -17,8 +17,6 @@ open MeasureTheory Module
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem volume_null_of_hausdorff_null {m : ℕ} {s : Set (EuclideanSpace ℂ (Fin m))}
     (hs : Measure.hausdorffMeasure ((2 * m : ℕ) : ℝ) s = 0) : volume s = 0 := by
   have hdim : finrank ℝ (EuclideanSpace ℂ (Fin m)) = 2 * m := by
@@ -98,7 +96,5 @@ theorem ConeAreaFormula.proof (hCover : ConeGraphCover.Statement) (hArea : Graph
         rw [ENNReal.tsum_mul_left, ← lintegral_tsum
           (f := fun i w => (({y | y ∈ D i ∧ linProj π y = w}.encard : ℕ∞) : ℝ≥0∞) * g w)
           fun i => (hpiece i).1.mul hg.aemeasurable, lintegral_congr_ae hcount]
-
-end
 
 end GroundTheory.Heights₂.Heights

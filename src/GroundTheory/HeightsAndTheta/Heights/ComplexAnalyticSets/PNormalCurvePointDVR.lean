@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem NormalCurvePointDVR.proof : NormalCurvePointDVR.Statement := by
   intro σ _ I w hI hic hdim hw
   have : I.IsPrime := hI
@@ -58,7 +56,5 @@ theorem NormalCurvePointDVR.proof : NormalCurvePointDVR.Statement := by
   have hdom : IsDomain T := IsLocalization.isDomain_of_le_nonZeroDivisors T (M := P.primeCompl)
     P.primeCompl_le_nonZeroDivisors
   exact ⟨hdom, IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain A hP0 T⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

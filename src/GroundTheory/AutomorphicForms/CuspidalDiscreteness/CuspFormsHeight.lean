@@ -15,8 +15,6 @@ open scoped NumberField.AdeleRing Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace CuspidalSpectrum
 
 open AutomorphicForm
@@ -223,7 +221,5 @@ theorem exists_height_le_normOne {ω : Set (AdelicGLn.AdelicGL K n)} (hω : IsCo
     _ = c * (c * max Mb 1 * c₀ ^ e) * A ^ e := by rw [mul_pow]; ring
 
 end CuspidalSpectrum
-
-end
 
 end GroundTheory.Automorphic

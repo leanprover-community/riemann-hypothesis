@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 section Chart
 
 variable {F : Type} [Field F] {n e : ℕ} (I : Ideal (MvPolynomial (Fin n) F)) (t : Fin n → F)
@@ -197,7 +195,5 @@ theorem ChartNorm.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFirstMemInc
     (h₆ F n e I f p hI hf) hdvd (fun m => algebraMap F (Localization.AtPrime p) (u m))
   rw [eval_map_firstGroup, eval_map_firstGroup, ← chartLin_eq_sum] at key
   exact key
-
-end
 
 end GroundTheory.Heights₂.Heights

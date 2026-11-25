@@ -16,8 +16,6 @@ open Metric Filter Topology Set Complex MeasureTheory
 
 open scoped Real
 
-noncomputable section
-
 namespace ParametricCircleIntegralAnalytic
 
 theorem analyticOnNhd_of_differentiableOn_fd {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -85,7 +83,5 @@ theorem ParametricCircleIntegralAnalytic.proof : ParametricCircleIntegralAnalyti
         (hΦ.differentiableAt (hO.mem_nhds (hmem x (ball_subset_closedBall hx) θ))).hasFDerivAt
       exact (h1.comp x (hasFDerivAt_prodMk_left x (circleMap c r θ))).const_smul (circleMap 0 r θ * I)
   exact analyticOnNhd_of_differentiableOn_fd isOpen_ball hdiff x₀ (mem_ball_self hε)
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

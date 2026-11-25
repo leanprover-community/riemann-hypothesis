@@ -15,8 +15,6 @@ open MvPolynomial
 
 universe u
 
-noncomputable section
-
 section Saturation
 
 variable {K : Type*} {ι : K → Type} {J : Type} {R : Type*} [CommRing R]
@@ -164,7 +162,5 @@ theorem BlowUpHorizontalSat.full : BlowUpHorizontalSat.Statement.{u} := by
   · rintro ⟨s, hs, hsF⟩
     have h1 : liftForm s * F ∈ W := sup_le hBW Ideal.map_comap_le hsF
     exact (hWp.mem_or_mem h1).resolve_left hs
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

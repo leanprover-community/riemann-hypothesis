@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial Filter
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (secOver mIdealOver cechHc cechZc cechBc quotPart GlobalSectionsComparisonStatement)
 
-noncomputable section
-
 theorem altSum_eq_of_vanish (f : ℕ → ℕ) (B : ℕ) (h : ∀ i, 1 ≤ i → f i = 0) :
     ∑ i ∈ Finset.range (B + 1), (-1 : ℚ) ^ i * (f i : ℚ) = f 0 := by
   rw [Finset.sum_range_succ', Finset.sum_eq_zero fun i _ => by rw [h (i + 1) (by omega)]; simp]
@@ -61,7 +59,5 @@ theorem SectionsPoly.proof (hB : GlobalSectionsComparisonStatement) (hE : EulerP
     rfl
   · filter_upwards [hR F K ι Ω y k₀ hmod β] with c hc
     exact key _ hc
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

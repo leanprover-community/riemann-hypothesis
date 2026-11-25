@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Matrix
 
-noncomputable section
-
 namespace MCInvEntryBound
 
 theorem single_dot_mulVec_single {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℝ)
@@ -45,7 +43,5 @@ theorem InvEntryBound.proof : InvEntryBound.Statement := by
       _ ≤ c⁻¹ * c⁻¹ := mul_le_mul hj hl hl0 hci
       _ = c⁻¹ ^ 2 := (sq _).symm
   exact abs_le_of_sq_le_sq' hsq hci |> fun h => abs_le.mpr h
-
-end
 
 end GroundTheory.Heights₂.Heights

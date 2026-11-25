@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem DegZeroLocLocal.proof (h : DegZeroLocQuot.Statement.{u}) : DegZeroLocLocal.Statement.{u} := by
@@ -84,7 +82,5 @@ theorem DegZeroLocLocal.proof (h : DegZeroLocQuot.Statement.{u}) : DegZeroLocLoc
   · rw [Subalgebra.coe_add, hx, hy, div_add_div _ _ (hne g hgP) (hne g' hg'P)]
     set_option synthInstance.maxHeartbeats 200000 in
       simp only [map_add, map_mul]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

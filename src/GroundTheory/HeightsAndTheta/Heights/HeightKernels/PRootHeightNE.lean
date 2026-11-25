@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial Matrix
 
-noncomputable section
-
 theorem anchor_homog (f j m : ℕ) : IsMultiHomog (rootAnchorSection f j m) (fun _ => 1) := by
   classical
   intro μ hμ k
@@ -80,7 +78,5 @@ theorem RootHeight.proofNE (hA : RootArithVar.Statement) (hD : RootDivSuppEmpty.
     erw [hs]
     rw [norm_mul, norm_prod]
     field_simp
-
-end
 
 end GroundTheory.Heights₂.Heights

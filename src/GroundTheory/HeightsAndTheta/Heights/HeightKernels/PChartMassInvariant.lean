@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix MeasureTheory
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartMongeAmpereAffineInvariance
 
 variable {e : ℕ}
@@ -134,7 +132,5 @@ theorem ChartMassInvariant.proof : ChartMassInvariant.Statement := by
     _ = chartMass (diagonal d) := by rw [hD]
     _ = chartMass (T'ᴴ * diagonal d * T') := (chartMass_conj _ T' hDpos hT' hT'det).symm
     _ = chartMass 1 := by rw [h1]
-
-end
 
 end GroundTheory.Heights₂.Heights

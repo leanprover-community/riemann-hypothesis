@@ -18,8 +18,6 @@ open MvPolynomial Algebra Cardinal
 
 attribute [local instance] MvPolynomial.algebraMvPolynomial
 
-noncomputable section
-
 section Dimension
 
 variable {σ : Type} [Fintype σ] {L : Type} [CommRing L] [IsDomain L] [Algebra ℚ L]
@@ -60,7 +58,5 @@ theorem ringKrullDim_quotient_ker (φ : MvPolynomial σ ℤ →+* L) :
     rw [← hdim, hs1]
 
 end Dimension
-
-end
 
 end GroundTheory.Heights₂.Heights.TrdegAdjoin

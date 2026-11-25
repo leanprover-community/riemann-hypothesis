@@ -19,8 +19,6 @@ public import Mathlib.Algebra.MvPolynomial.Funext
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial Filter Topology ReciprocityTheory.ChartRestriction.G.Geo

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.HilbertSamuel.LiftBirationalAmple
 
-noncomputable section
-
 namespace CurveSectionQuotientLocal
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -153,7 +151,5 @@ theorem CurveSectionQuotLocal.proof : CurveSectionQuotLocal.Statement := by
     (Localization.AtPrime m)
   unfold locLen
   rw [dite_eq_left hm, dite_eq_left hm, E.length_eq]
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

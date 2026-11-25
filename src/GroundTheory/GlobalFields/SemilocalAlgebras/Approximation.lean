@@ -9,8 +9,6 @@ namespace GroundTheory.Global
 
 open IsDedekindDomain NumberField WithZeroMulInt WithZero Topology Filter
 
-noncomputable section
-
 namespace SemiLocal
 
 variable {L : Type*} [Field L] [NumberField L]
@@ -29,7 +27,5 @@ theorem denseRange_algebraMap_pi {ι : Type*} [Finite ι] (w : ι → HeightOneS
     reindex.continuous
 
 end SemiLocal
-
-end
 
 end GroundTheory.Global

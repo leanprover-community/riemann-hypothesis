@@ -14,8 +14,6 @@ import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights
 
 open MeasureTheory

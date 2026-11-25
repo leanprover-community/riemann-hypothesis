@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial Matrix ReciprocityTheory.AnForm ComplexSets
 open scoped ContDiff ComplexOrder
 
-noncomputable section
-
 namespace SheetComassAlt
 
 theorem sheetJac_eq_norm_det {n d : ℕ} (s : (Fin d → ℂ) → Fin n → ℂ) (y : Fin d → ℂ)
@@ -103,7 +101,5 @@ theorem SheetComass.proof : SheetComass.Statement := by
   unfold maDens
   rw [abs_mul, abs_of_nonneg (by positivity), mul_assoc _ (3 ^ d * c ^ d), mul_assoc (3 ^ d)]
   exact mul_le_mul_of_nonneg_left hm (by positivity)
-
-end
 
 end GroundTheory.Heights₂.Heights

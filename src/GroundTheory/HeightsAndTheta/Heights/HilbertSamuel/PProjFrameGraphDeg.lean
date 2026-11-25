@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 theorem ProjFrameGraphDeg.proof
     (hEU : ∀ (F : Type) [Field F] (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)],
       ExistsUniqueStatement F ι)
@@ -32,7 +30,5 @@ theorem ProjFrameGraphDeg.proof
   have hch := ProjFrameGraph.isChart_fibreChart G (e 0).2 (ProjFrameGraph.frame_ne_zero hF 0)
   refine ⟨G, J, hJ, ?_⟩
   rw [hJ.1 _ _ _ (hPt D Ω κ x e hP hF G) hch, hDeg D Ω κ x e hP hF G _ hch]
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

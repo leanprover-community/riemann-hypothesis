@@ -8,8 +8,6 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open MvPolynomial Finset Coinv
 
-noncomputable section
-
 theorem CoinvAboveTopGeneral.proof (h1 : CoinvAboveTop.Statement) :
     CoinvAboveTopGeneral.Statement := by
   intro K _ _ β ι _ _ _ _ d H hH hd
@@ -35,7 +33,5 @@ theorem CoinvAboveTopGeneral.proof (h1 : CoinvAboveTop.Statement) :
   rw [bps, map_sum, ← Equiv.sum_comp eι.symm]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [hψ]
-
-end
 
 end GroundTheory.Heights₂.Heights.RestTerms

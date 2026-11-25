@@ -13,8 +13,6 @@ open scoped NumberField.AdeleRing Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace CuspidalSpectrum
 
 open Reduction AutomorphicForm
@@ -188,7 +186,5 @@ theorem exists_natCast_conj_unipGL_mem (U : Subgroup (AdelicGLn.integralFiniteGL
     rfl
 
 end CuspidalSpectrum
-
-end
 
 end GroundTheory.Automorphic

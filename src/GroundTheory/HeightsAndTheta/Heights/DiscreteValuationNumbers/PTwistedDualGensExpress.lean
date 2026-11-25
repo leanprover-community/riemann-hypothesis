@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem TwistedDualGensExpress.sum_mul_mem_localized {R Ω : Type*} [CommRing R] [Field Ω] [Algebra R Ω]
     (A : Subalgebra R Ω) {f : Ω} (hf : f ∈ A) {r : ℕ} (a t : Fin r → Ω)
     (ha : ∀ q, ∃ n : ℕ, f ^ n * a q ∈ A) (ht : ∀ q, ∃ n : ℕ, f ^ n * t q ∈ A) :
@@ -108,7 +106,5 @@ theorem TwistedDualGensExpress.proof : TwistedDualGensExpress.Statement := by
   rw [mul_left_comm, ← Finset.prod_mul_distrib]
   congr 1
   exact Finset.prod_congr rfl fun k _ => by rw [← zpow_add₀ (hy k), sub_eq_add_neg]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

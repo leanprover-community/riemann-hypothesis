@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem BlowUpOverLocFibreMinimal.proof (h₁ : BlowUpOverLocPointLoc.Statement.{u})
@@ -102,7 +100,5 @@ theorem BlowUpOverLocFibreMinimal.proof (h₁ : BlowUpOverLocPointLoc.Statement.
     h₂ O K ι J P u Q₀ W' hQ₀p hQ₀h hQ₀r hQ₀le hW'p hW'h hW'r hW'le (le_antisymm hsup hsub)
   rw [← heq]
   exact hQ₀Q
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

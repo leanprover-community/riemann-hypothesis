@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial
 
-noncomputable section
-
 theorem specRest_map {R S T : Type*} [CommRing R] [CommRing S] [CommRing T] {n e : ℕ}
     (φ : R →+* S) (ψ : S →+* T) (f : MvPolynomial (Fin (e + 1) × Fin n) R) (y : Par e n → S) :
     (specRest φ f y).map ψ = specRest (ψ.comp φ) f (ψ ∘ y) := by
@@ -52,7 +50,5 @@ theorem ChowNormForm.proof (h₁ : ChowNormFormGeneric.Statement)
   rw [hQ', hy']
   refine ⟨hfin, φ c, (map_ne_zero φ).mpr hc, ?_⟩
   rw [← hnorm, ← hφC, ← specRest_map, heq, _root_.map_mul, map_C]
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

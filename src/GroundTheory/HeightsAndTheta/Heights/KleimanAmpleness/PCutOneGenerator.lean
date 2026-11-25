@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace CutOneGenerator
@@ -182,7 +180,5 @@ theorem CutOneGenerator.proof (hG : GlobalFunctionsIntegral.Statement.{u, w}) :
   have h0 : dimCl k (ρ ∘ h) = 0 := trdeg_eq_zero
   rw [← hdim, hdy] at h0
   exact Nat.succ_ne_zero n (Nat.cast_eq_zero.mp h0)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace PointLine
 
 variable {n : ℕ}
@@ -30,7 +28,5 @@ theorem smul_mem_zeroSet {W : Ideal (MvPolynomial (Fin n) ℂ)} (hW : IsHomogIde
 
 end PointLine
 
-
-end
 
 end GroundTheory.Heights₂.Heights

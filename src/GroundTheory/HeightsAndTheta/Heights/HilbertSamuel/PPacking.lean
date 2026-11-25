@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MeasureTheory Metric Module
 
-noncomputable section
-
 theorem card_le_of_separated_of_norm_le {W : Type*} [NormedAddCommGroup W] [NormedSpace ℝ W]
     [FiniteDimensional ℝ W] (s : Finset W) {lam r : ℝ} (hlam : 0 < lam) (hr : 0 ≤ r)
     (hs : ∀ x ∈ s, ‖x‖ ≤ r) (hsep : ∀ x ∈ s, ∀ y ∈ s, x ≠ y → lam ≤ ‖x - y‖) :
@@ -92,7 +90,5 @@ theorem Packing.proof : Packing.Statement := by
     _ = Module.finrank ℤ La * (b + Real.log 3) := by
         rw [Real.log_pow, Real.log_mul (by norm_num) (Real.exp_pos b).ne', Real.log_exp]
         ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

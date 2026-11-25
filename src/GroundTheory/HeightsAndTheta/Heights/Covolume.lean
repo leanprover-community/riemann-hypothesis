@@ -15,8 +15,6 @@ open NumberField NumberField.ComplexEmbedding TensorProduct ComplexAt Matrix Mea
 
 open scoped Kronecker
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 section Real
@@ -45,7 +43,5 @@ namespace HermitianExtension
 variable {E' E E'' : HermitianBundle K} (X : HermitianExtension E' E E'')
 
 end HermitianExtension
-
-end
 
 end GroundTheory.Heights₂.Heights

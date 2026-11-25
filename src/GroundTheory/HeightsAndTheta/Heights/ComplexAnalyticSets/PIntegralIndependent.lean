@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets
 
-noncomputable section
-
 namespace IntegralIndep
 
 variable {n d : ℕ}
@@ -93,7 +91,5 @@ theorem IntegralIndep.proof (h : PosPartIndep.Statement) : IntegralIndep.Stateme
   obtain ⟨iA', cA'⟩ := IntegralIndep.chartInt_eq_posParts hA' hf φ
   have hi' : Integrable (chartAbsDens J A' f φ) := iA'.2 (by rw [← e0, ← e1]; exact iA.1 hi)
   exact ⟨hi', by rw [cA hi, cA' hi', e0, e1]⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

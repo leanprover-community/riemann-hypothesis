@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem LocRingNoeth.exists_chart_loc (hF : LocRingFrac.Statement)
     (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)]
     (P W : Ideal (MRing ι)) (hP : P.IsPrime) (hW : W.IsPrime) (hPW : P ≤ W) (hrel : IsRelevant W) :
@@ -108,7 +106,5 @@ theorem LocRingNoeth.proof (hF : LocRingFrac.Statement) : LocRingNoeth.Statement
       exact ⟨(⟨a, ha⟩, ⟨⟨b, hb⟩, hunit⟩), Subtype.ext hzb⟩
     · rw [Subring.inclusion_injective hBS h]
   exact IsLocalization.isNoetherianRing M (locRing P W) hBN
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

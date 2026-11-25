@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
 theorem FibreNormPrimeBound.block_ne_zero {y : (Σ k, ι k) → Ω} {e : K → ℕ} {f : MRing ι}
@@ -136,7 +134,5 @@ theorem FibreNormPrimeBound.proof (hG : PullFormsGeneric.Statement) (hN : NormFo
       Module.finrank (pullField y L) Ω * S * q * τ := by ring
   rw [hn] at h
   exact h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

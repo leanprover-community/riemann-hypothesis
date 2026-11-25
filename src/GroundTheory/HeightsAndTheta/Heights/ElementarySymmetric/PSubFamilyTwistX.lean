@@ -9,8 +9,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
-noncomputable section
-
 universe u v w
 
 section
@@ -61,7 +59,5 @@ theorem SubFamilyTwist.proof : SubFamilyTwist.Statement.{u, v, w} := by
   intro S _ Ω _ _ N x E _ _ _ _ F Q hF
   exact ⟨F.twistFam Q.toSubFamily, rfl, fun I =>
     SubSystem.twist_sub_fg F.toSubSystem Q.toSubSystem I (hF I) (Q.fg I)⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

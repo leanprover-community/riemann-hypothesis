@@ -19,8 +19,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.Cha
 open GroundTheory.Heights₂.Heights.Inter (famExt famExt_apply famExt_basis hermZpow hermLine_eq_of isSmoothHerm_tensor
   isSmoothHerm_hermZpow fam_update_eq_snoc fam_snoc_zpow)
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace ZCombLimit
@@ -244,7 +242,5 @@ theorem ZCombLimit.proof (hM : MixedNumberPolynomial.Statement.{0}) : ZCombLimit
     have h := h₂ _ ht
     rw [← ZCombLimit.famExt_div ![A, B] k p q hq, ← hfullG] at h
     simpa [Jg, genDeg] using h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

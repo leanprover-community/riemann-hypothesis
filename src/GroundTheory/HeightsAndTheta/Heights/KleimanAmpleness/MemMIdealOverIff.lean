@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (mConeMapOver mIdealOver)
 
-noncomputable section
-
 section Homog
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -171,7 +169,5 @@ theorem CurveLift.full : CurveLift.Statement := by
       funext p
       rcases p with ⟨⟨⟩ | ⟨⟩, a⟩ <;> rfl
     rw [← hψu, ← comp_aeval_apply, h0, map_zero]
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

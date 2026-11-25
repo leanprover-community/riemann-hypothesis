@@ -19,8 +19,6 @@ import Mathlib.Topology.Separation.Connected
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Automorphic
 
 namespace GodementJacquet

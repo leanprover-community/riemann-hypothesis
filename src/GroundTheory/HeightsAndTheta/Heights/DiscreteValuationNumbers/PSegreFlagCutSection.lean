@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem SegreFlagCutSection.proof (hModel : SegreFlagClosureModel.Statement)
     (hForms : SegreFlagCutForms.Statement) (hDiv : SegreFlagCutDivisor.Statement)
     (hD0 : SegreFlagDegreeZero.Statement) : SegreFlagCutSection.Statement := by
@@ -79,7 +77,5 @@ theorem SegreFlagCutSection.proof (hModel : SegreFlagClosureModel.Statement)
     exact ⟨avoid f₃ hD₃.num_not_mem fun h' => Set.mem_union_left _ (Set.mem_union_left _ h'),
       avoid g₃ hD₃.den_not_mem fun h' => Set.mem_union_left _ (Set.mem_union_right _ h'),
       fun i => avoid _ (hlift i) fun h' => Set.mem_union_right _ (Set.mem_iUnion.2 ⟨i, h'⟩)⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

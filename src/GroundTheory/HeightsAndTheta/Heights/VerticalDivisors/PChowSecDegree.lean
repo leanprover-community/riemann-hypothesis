@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial
 
-noncomputable section
-
 theorem isHomogeneous_specRest {R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S) {n e d : ℕ}
     {g : MvPolynomial (Fin (e + 1) × Fin n) R} (hg : Heights.IsMultiHomog d g) (y : Par e n → S) :
     (specRest φ g y).IsHomogeneous d := by
@@ -89,7 +87,5 @@ theorem ChowSecDegree.proof (h1 : ChowNormForm.Statement) (h2 : ChowFormHomog.St
       (Module.finrank E (SecAlg QE y)) := by
     simpa using hN.C_mul c
   exact hCN.inj_right hG (mul_ne_zero (C_ne_zero.mpr hc) hN0)
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem HomLocRingIsLocal.proof (h : HomLocRingMem.Statement.{u}) : HomLocRingIsLocal.Statement.{u} := by
@@ -78,7 +76,5 @@ theorem HomLocRingIsLocal.proof (h : HomLocRingMem.Statement.{u}) : HomLocRingIs
   have e : x + y = ⟨_, hmem⟩ := Subtype.ext hsum
   rw [mem_nonunits_iff, e, key (b₁ + b₂) _ _ hnum hden hdenW hmem, not_not]
   exact W.add_mem (W.mul_mem_right _ hf₁W) (W.mul_mem_right _ hf₂W)
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

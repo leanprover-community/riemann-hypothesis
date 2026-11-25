@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo Filter
 
-noncomputable section
-
 theorem chartLat_le_chartLatNm {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
     {Ω : Type*} [Field Ω] (y : (Σ k, ι k) → Ω) (a : K → ℤ) (τ : ℕ) :
     chartLat y a τ ≤ chartLatNm y a τ := by
@@ -35,7 +33,5 @@ theorem smallSectionCount_mono_lattice {Ω : Type*} [CommRing Ω] (P : ℕ → �
   · rw [h0, Nat.cast_zero, Real.log_zero]
     exact Real.log_natCast_nonneg _
   · exact Real.log_le_log (by exact_mod_cast hpos) (by exact_mod_cast hc)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -13,8 +13,6 @@ open IsDedekindDomain NumberField NumberField.InfinitePlace NumberField.Infinite
   NumberField.ComplexEmbedding IdeleGroup
 open scoped NumberField.LiesOver
 
-noncomputable section
-
 variable {K K' : Type*} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
 
 theorem ideleNorm_infiniteEmbedding (v' : InfinitePlace K') (a : v'.Completionˣ) :
@@ -131,7 +129,5 @@ theorem restrictNormal_infiniteLocalSymbol_norm (v' : InfinitePlace K') (a : v'.
         hv (not_isReal_iff_isComplex.1 hv')]
       exact Complex.normSq_nonneg _
     · rw [infiniteLocalSymbol_of_not_isReal L _ hv, MonoidHom.one_apply]
-
-end
 
 end GroundTheory.Global

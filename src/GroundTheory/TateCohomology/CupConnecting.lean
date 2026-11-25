@@ -7,8 +7,6 @@ public import Mathlib.RepresentationTheory.Homological.GroupCohomology.LongExact
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 universe u
 
 open CategoryTheory MonoidalCategory TensorProduct groupCohomology Limits

@@ -24,8 +24,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.Cha
   ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M MeasureTheory Filter Topology Set
 open scoped ContDiff ENNReal
 
-noncomputable section
-
 theorem ResolutionMetricPair.isSmoothMetric_interp {κ : Type} [Fintype κ] {m₀ m₁ : ConeMetric ℂ (Ix κ)}
     (h₀ : IsSmoothMetric m₀) (h₁ : IsSmoothMetric m₁) (t : ℝ) : IsSmoothMetric (interp m₀ m₁ t) := by
   show ContDiffOn ℝ _ (fun z => m₀.ρ z ^ (1 - t) * m₁.ρ z ^ t) _
@@ -73,7 +71,5 @@ theorem ResolutionMetricPair.proof (h : BergmanDensChartSum.Statement) : Resolut
     rw [interp_rho, Real.log_mul (Real.rpow_pos_of_pos h0 _).ne' (Real.rpow_pos_of_pos h1 _).ne',
       Real.log_rpow h0, Real.log_rpow h1]
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
 
-noncomputable section
-
 theorem SemiposTwist.proof : SemiposTwist.Statement := by
   intro K _ ι _ P0 P L p q hL
   set U : Set ((Σ k, ι k) → ℂ) := {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} with hU
@@ -62,7 +60,5 @@ theorem SemiposTwist.proof : SemiposTwist.Statement := by
   have a1 := mul_nonneg (Nat.cast_nonneg (α := ℝ) q) hLz
   have a2 := mul_nonneg (Nat.cast_nonneg (α := ℝ) p) hHz
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

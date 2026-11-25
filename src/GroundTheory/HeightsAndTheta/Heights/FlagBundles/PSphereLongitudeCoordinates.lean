@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights.FlagBundles
 open MeasureTheory Set
 open scoped ENNReal Pointwise
 
-noncomputable section
-
 lemma SphereLongitudeCoordinates.norm_vector_three_eq_sqrt (u v w : ℝ) :
     ‖(!₂[u, v, w] : E3)‖ = Real.sqrt (u ^ 2 + v ^ 2 + w ^ 2) := by
   rw [EuclideanSpace.norm_eq, Fin.sum_univ_three]
@@ -339,7 +337,5 @@ theorem SphereLongitudeCoordinates.proof : SphereLongitudeCoordinates.Statement 
   unfold SphereLongitudeCoordinates.Statement sphereMeasure
   rw [Measure.map_smul, hM, huniv]
   exact measurable_subtype_coe.aemeasurable
-
-end
 
 end GroundTheory.Heights₂.Heights.FlagBundles

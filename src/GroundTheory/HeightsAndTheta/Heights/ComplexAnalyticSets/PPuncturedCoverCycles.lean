@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Filter Topology Matrix
 
-noncomputable section
-
 private theorem differentiable_update_pow (e k : ℕ) :
     Differentiable ℂ (fun s : Fin (e + 1) → ℂ => Function.update s 0 (s 0 ^ k)) := by
   rw [differentiable_pi]
@@ -101,7 +99,5 @@ theorem PuncturedCoverCycles.proof (hCov : FibreSectionsCovering.Statement)
     refine ⟨b, t.1, t.2, ?_⟩
     rw [hΨ b t.1 t.2]
     exact congrArg Subtype.val hbt
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

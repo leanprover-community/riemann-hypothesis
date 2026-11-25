@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial Topology
 
-noncomputable section
-
 namespace FiniteProjectionCluster
 
 variable {n d : ℕ}
@@ -116,7 +114,5 @@ theorem FiniteProjectionCluster.proof : FiniteProjectionCluster.Statement := by
   · refine (Metric.isBounded_closedBall (x := 0) (r := C)).subset fun x hx => ?_
     have hxr' : dist (A.mulVec x) (A.mulVec w) < min r0 1 := hx.2
     exact mem_closedBall_zero_iff.2 (hC x hx.1 (hxr'.le.trans (min_le_right _ _)))
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

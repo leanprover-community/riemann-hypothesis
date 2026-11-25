@@ -25,8 +25,6 @@ open scoped ContDiff
 open ReciprocityTheory.AnForm.A (Mollifier molli shrink)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Regular (errE errorWithLinear ell)
 
-noncomputable section
-
 theorem molli_contDiffAt {D : ℕ} (ρ : Mollifier D) {P : Set (Fin D → ℂ)} (hP : IsOpen P)
     {u : (Fin D → ℂ) → ℝ} (hu : ContinuousOn u P) {ε : ℝ} (hε : 0 < ε) {z : Fin D → ℂ}
     (hz : z ∈ shrink P ε) : ContDiffAt ℝ ∞ (molli ρ ε u) z := by
@@ -108,8 +106,6 @@ theorem tendstoUniformlyOn_of_norm_le {Y α : Type*} [SeminormedAddCommGroup α]
   filter_upwards [h, hβ.eventually (gt_mem_nhds he)] with t ht hβt y hy
   rw [dist_comm, dist_eq_norm]
   exact (ht y hy).trans_lt hβt
-
-end
 
 end ArgumentConvergenceLemmas
 

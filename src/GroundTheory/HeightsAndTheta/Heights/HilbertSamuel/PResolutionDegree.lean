@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M Filter Topology
 open scoped ContDiff
 
-noncomputable section
-
 namespace ResolutionDegree
 
 variable {D : ℕ} {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ]
@@ -58,7 +56,5 @@ theorem ResolutionDegree.proof (hPF : PullFSExtension.Statement) (hPM : ProjFSMa
     rfl (gbamix_smoothHerm_ofCone h₀) (gbamix_smoothHerm_ofCone hm) 1
     (fun _ _ _ => by show Real.log (m.ρ _) = (1 - 1) * Real.log (m₀.ρ _) + 1 * Real.log (m.ρ _); ring)]
   exact ResolutionDegree.mass_pullFS hPM d hfr h₀ hFS
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

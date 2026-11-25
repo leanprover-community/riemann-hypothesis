@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 Filter Topology
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -147,7 +145,5 @@ theorem G5.top_tensor_constLine (I : Ideal (MRing ι) → (n : ℕ) → (Fin n �
   have := step (D + 1) le_rfl
   rw [hall] at this
   rw [this]
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

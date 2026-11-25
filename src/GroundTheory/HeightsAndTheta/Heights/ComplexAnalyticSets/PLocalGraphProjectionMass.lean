@@ -16,8 +16,6 @@ open MeasureTheory Function
 
 open scoped ENNReal
 
-noncomputable section
-
 namespace LocalGraphProjectionMass
 
 variable {n : ℕ}
@@ -152,7 +150,5 @@ theorem LocalGraphProjectionMass.proof (hPF : ProjectionFormula.Statement) :
           exact (Finset.orderEmbOfFin_unique hcard
             (fun x => Finset.mem_image_of_mem t (Finset.mem_univ x)) hmono).symm
         · exact iSup_pos (Finset.mem_powersetCard.1 hI).2
-
-end
 
 end GroundTheory.Heights₂.Heights

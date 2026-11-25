@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers.ContractRelevant
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 theorem isRelevant_iff {R : Type*} [CommRing R] {K : Type*} {ι : K → Type*}
     (I : Ideal (MRing ι R)) :
     IsRelevant I ↔ ∀ k, ∃ v : Σ k, ι k, v.1 = k ∧ (X v : MRing ι R) ∉ I := by
@@ -93,7 +91,5 @@ theorem isMultiProjPrime_comap_rename (hj : Function.Injective j) (hg : Function
     refine ⟨v, hj (by rw [← hgj, hw]), ?_⟩
     rw [Ideal.mem_comap, rename_X]
     exact hwP
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers.ContractRelevant

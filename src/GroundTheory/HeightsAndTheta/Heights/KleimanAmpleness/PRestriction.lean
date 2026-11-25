@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 theorem zero_mem_ampleChart {S : Type u} [CommRing S] {E : Type w} [Field E] [Algebra S E] {M : ℕ}
@@ -238,7 +236,5 @@ theorem Restriction.proof : Restriction.Statement.{u, w} := by
     show ψ (ratio hj j) ≠ 0
     rw [algHom_ratio_self]; exact one_ne_zero
   exact exists_restrictData_isVeryAmpleBy hsp hxy (singleChart hyj) Nb h hV
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

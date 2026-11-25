@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace PointGenerated
@@ -82,7 +80,5 @@ theorem PointGenerated.proof : PointGenerated.Statement.{u, w} := by
     exact (hsecs y).mp hy
   · intro y hy
     exact Submodule.subset_span ((hsecs y).mpr hy)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

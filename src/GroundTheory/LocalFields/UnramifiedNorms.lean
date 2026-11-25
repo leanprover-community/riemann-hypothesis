@@ -11,8 +11,6 @@ public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.LocalField
 
 open ValuativeRel IsLocalRing

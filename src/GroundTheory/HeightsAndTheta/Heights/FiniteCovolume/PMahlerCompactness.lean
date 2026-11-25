@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology MeasureTheory
 open scoped Pointwise ComplexOrder ENNReal
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -96,7 +94,5 @@ theorem MahlerCompactness.proof (h : HermitianForm F E W) (v : Basis ι E W)
     · show M.len (invApply (archEmbed h v γ * g) (vecAt v ((rep (gr e)).2 a))) ≤ C
       rw [← hγ a, invApply_archEmbed_mul]
       exact heC a
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

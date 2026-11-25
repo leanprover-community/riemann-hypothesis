@@ -15,8 +15,6 @@ open Metric Set
 open ReciprocityTheory.AnForm.A (polyMax coordDiv limsupExt)
 open ReciprocityTheory.AnForm.M (FinHolAtlas)
 
-noncomputable section
-
 theorem PolyMaxLowerBound.exists_pos_le {n : ℕ} (f : Fin n → ℝ) (hf : ∀ j, 0 < f j) :
     ∃ δ, 0 < δ ∧ ∀ j, δ ≤ f j := by
   rcases isEmpty_or_nonempty (Fin n) with h | h
@@ -180,7 +178,5 @@ theorem PolyMaxLowerBound.proof : PolyMaxLowerBound.Statement := by
   · rw [Real.sSup_of_not_bddAbove hb]
     have : 0 ≤ C * Real.log ℓ := mul_nonneg hC0 (by linarith)
     linarith
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

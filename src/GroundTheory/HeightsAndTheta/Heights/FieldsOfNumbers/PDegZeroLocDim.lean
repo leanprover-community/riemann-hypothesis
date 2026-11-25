@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 section
@@ -76,7 +74,5 @@ theorem DegZeroLocDim.proof (h₁ : MChartHomog.Statement.{u}) (h₂ : MChartTrd
   show ringKrullDim (degZeroLoc P {W}) + ringKrullDim (MRing ι F ⧸ W) = ringKrullDim (MRing ι F ⧸ P)
   rw [h₃ F K ι P W hPW u hu, ← chart_ringKrullDim_add_card h₂ W hW.multiHomog u hu,
     ← chart_ringKrullDim_add_card h₂ P hP.multiHomog u huP, ← hform, add_assoc]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

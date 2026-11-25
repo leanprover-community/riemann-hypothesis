@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 theorem nefOnF_mono {F : Type} [Field F] {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {I : IFamily F ι} {V Q : Ideal (MRingOver F ι)} {α : K → ℤ} (hN : KH.NefOnF I V α) (hVQ : V ≤ Q) :
     KH.NefOnF I Q α :=
@@ -52,7 +50,5 @@ theorem KleimanScheme.proof (hVar : KleimanVarietyH1Generation.Statement) (hDev 
     ring
   rw [e] at h
   exact ampleV_of_nsmul (Nat.le_add_left 1 c₁) h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

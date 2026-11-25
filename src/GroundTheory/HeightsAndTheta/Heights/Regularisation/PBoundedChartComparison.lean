@@ -19,8 +19,6 @@ open Metric Set
 open ReciprocityTheory.AnForm.A (IsPsh polyMax molli mollify_thm polyMax_le' polyMax_mono' le_polyMax)
 open ReciprocityTheory.AnForm.M (FinHolAtlas)
 
-noncomputable section
-
 theorem exists_lipschitz_near_compact {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [ProperSpace E] [NormedAddCommGroup F] [NormedSpace ℝ F] {f : E → F} {K W : Set E}
     (hK : IsCompact K) (hW : IsOpen W) (hKW : K ⊆ W) (hf : ∀ y ∈ W, ContDiffAt ℝ 1 f y) :
@@ -203,7 +201,5 @@ theorem BoundedChartComparison.proof (h0 : MollifiedLowerBound.Statement)
     add_le_add (div_le_div_of_nonneg_right (le_max_left _ _) hℓ0.le)
       (mul_le_mul_of_nonneg_right (le_max_right _ _) ht.le)
   exact abs_sub_le_iff.2 ⟨(key j k x hx).trans hEC, (key k j x ⟨hx.2, hx.1⟩).trans hEC⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

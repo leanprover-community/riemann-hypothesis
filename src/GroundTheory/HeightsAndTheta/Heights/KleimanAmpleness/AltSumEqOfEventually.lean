@@ -21,8 +21,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial Filter
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (secOver mIdealOver)
 
-noncomputable section
-
 section Poly
 
 variable {K : Type}
@@ -117,7 +115,5 @@ theorem NumModel.proof (hT : TensorRealise.Statement) (hS : SectionsPoly.Stateme
     rw [hc T, hcard, hvec]
   unfold interNum
   exact (tendsto_const_nhds.congr' (hfin.mono fun c h => h.symm)).limUnder_eq
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

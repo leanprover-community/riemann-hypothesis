@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 section CutDimLowerAux
@@ -195,7 +193,5 @@ theorem CutDimLower.proof : CutDimLower.Statement.{u, w} := by
     _ ≤ ((n + 1 : ℕ) : WithBot ℕ∞) := ENat.WithBot.add_one_le_natCast_iff.mpr hlt
   have h2 : n + 1 + 1 ≤ n + 1 := by exact_mod_cast h1
   omega
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

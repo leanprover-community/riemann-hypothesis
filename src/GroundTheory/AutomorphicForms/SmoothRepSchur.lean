@@ -10,8 +10,6 @@ public import Mathlib.Analysis.Complex.Cardinality
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.Automorphic
 
 open Polynomial Cardinal

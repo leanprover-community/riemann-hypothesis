@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace H1VanishingDevissage
 
 variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type}
@@ -222,7 +220,5 @@ theorem H1VanishingDevissage.proof (hPF : KH.PrimeFiltStatement) (hSES : KH.Cech
     refine loc_subsingleton_of_kill (Submonoid.subset_closure ⟨k, i, hi, rfl⟩) fun y => ?_
     obtain ⟨p', rfl⟩ := Ideal.Quotient.mk_surjective y
     exact (Ideal.Quotient.eq_zero_iff_mem).2 (Ideal.mul_mem_right _ _ (hk i))
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

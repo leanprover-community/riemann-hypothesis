@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
-noncomputable section
-
 theorem VertPointSurj.proof (hC : CurveCharts.Statement) (hSQ : SectionQuotLocal.Statement) :
     VertPointSurj.Statement := by
   intro T _ K' _ _ y s hP hs hsP m hm hlen
@@ -28,7 +26,5 @@ theorem VertPointSurj.proof (hC : CurveCharts.Statement) (hSQ : SectionQuotLocal
     hs hsP m hm hfin (fun _ => t) (fun _ => hyt) (fun p => hrat p.2) fun a b hbx => by
     simp only [Fintype.prod_unique, pow_one] at hbx
     rwa [← hSQ T K' y s hP hs hsP m t hm.isPrime hrat a b b.2 hbx]
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem ChartDehomogPrime.proof : ChartDehomogPrime.Statement := by
   intro F _ n W t hW ht
   have := hW.isPrime
@@ -66,7 +64,5 @@ theorem ChartDehomogPrime.proof : ChartDehomogPrime.Statement := by
     exact Ideal.sub_mem _ (Ideal.mem_sup_left hGW) (Ideal.mem_sup_right hGg)
   rw [← le_antisymm hker hle]
   exact RingHom.ker_isPrime ψ
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -26,8 +26,6 @@ open MvPolynomial MeasureTheory Matrix
 
 open scoped ENNReal
 
-noncomputable section
-
 namespace MassFinite
 
 theorem exists_frame {n : ℕ} (U : Matrix (Fin n) (Fin n) ℂ)
@@ -239,7 +237,5 @@ theorem MassFinite.proof (hG : ComplexSets.GenericProjectionFinite.Statement)
         exact ⟨h.2.1, h.2.2⟩
       · have h := MassFinite.ball_lt_top (ι := I) R
         rwa [Fintype.card_coe, (Finset.mem_powersetCard.mp hI).2] at h
-
-end
 
 end GroundTheory.Heights₂.Heights

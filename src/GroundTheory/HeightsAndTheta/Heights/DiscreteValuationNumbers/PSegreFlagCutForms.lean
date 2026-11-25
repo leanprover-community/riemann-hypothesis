@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GenericProjClosureDivisor
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace SegreFlagCutForms
@@ -336,7 +334,5 @@ theorem SegreFlagCutForms.proof : SegreFlagCutForms.Statement := by
   · have := hβD j
     simp [vdeg, zetaSecond, liftPairDeg]
     omega
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

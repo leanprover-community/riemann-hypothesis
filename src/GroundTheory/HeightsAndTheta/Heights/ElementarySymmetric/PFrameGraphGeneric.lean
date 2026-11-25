@@ -10,8 +10,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 open MvPolynomial
 
 theorem FrameGraphGeneric.proof (hA : FrameJacobianGeneric.Statement) (hB : FrameImplicitGraph.Statement) :
@@ -40,7 +38,5 @@ theorem FrameGraphGeneric.proof (hA : FrameJacobianGeneric.Statement) (hB : Fram
     have h0 := RingHom.mem_ker.mp (hle (hgen p hp))
     rw [map_mul] at h0
     exact (mul_eq_zero.mp h0).resolve_left (hVW hxV)
-
-end
 
 end GroundTheory.Heights₂.Heights

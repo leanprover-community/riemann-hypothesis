@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 
 open ProjFrameFibrePt in
 theorem ProjFrameGenPtRel.proof : ProjFrameGenPtRel.Statement := by
@@ -84,7 +82,5 @@ theorem ProjFrameGenPtRel.proof : ProjFrameGenPtRel.Statement := by
     · rw [Subfield.closure_le]
       rintro _ ⟨k, rfl⟩
       exact ⟨G.x ⟨(), k⟩, (G.compat ⟨(), k⟩).symm⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

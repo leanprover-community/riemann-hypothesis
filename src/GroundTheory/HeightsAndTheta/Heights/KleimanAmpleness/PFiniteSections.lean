@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 section Tilde
@@ -230,7 +228,5 @@ theorem FiniteSections.proof (hE : Extension.Statement.{u, w, w}) (hT : TildeTai
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
   have := isNoetherian_span_of_finite S (Set.finite_range gen)
   exact Module.Finite.iff_fg.mpr (Submodule.FG.of_le_of_isNoetherian hle)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

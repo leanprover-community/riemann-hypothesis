@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR Cardinal
 
-noncomputable section
-
 theorem SegreDimGe.proof : SegreDimGe.Statement := by
   intro F _ K _ _ _ ι _ q e hq hdim
   have := hq.isPrime
@@ -102,7 +100,5 @@ theorem SegreDimGe.proof : SegreDimGe.Statement := by
   have hnm : n ≤ m + (Fintype.card K - 1) := by exact_mod_cast hcard
   rw [hm]
   exact_mod_cast (show e + 1 ≤ m by omega)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

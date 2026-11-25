@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR PFContracted
 
-noncomputable section
-
 universe u
 
 
@@ -122,7 +120,5 @@ theorem SemilocalMaxIdeals.proof (h1 : FibreFinite.Statement.{u}) (h2 : FibreRel
     have h' := congrArg Subtype.val hxy
     have hxy' : x = y := Subtype.ext h'
     rw [hxy']
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

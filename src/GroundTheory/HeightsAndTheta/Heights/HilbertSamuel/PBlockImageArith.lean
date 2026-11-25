@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace BlockImageArithmetic
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [CharZero Ω]
@@ -188,7 +186,5 @@ theorem BlockImageArith.proof : BlockImageArith.Statement := by
     ((ENat.add_le_add_iff_right (ENat.natCast_ne_top _)).mp h1.le)
     ((ENat.add_le_add_iff_right (ENat.natCast_ne_top _)).mp h1.ge)
   rw [Fintype.card_unit, Nat.cast_one, ← h2]; push_cast; rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

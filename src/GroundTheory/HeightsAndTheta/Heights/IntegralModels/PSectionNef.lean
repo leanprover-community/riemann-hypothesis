@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Model
 
 open MvPolynomial NumbersDVR
 
-noncomputable section
-
 section
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -189,7 +187,5 @@ theorem SectionNef.proof : SectionNef.Statement := by
       Matrix.cons_val_zero, diffStep]
     linarith
   · exact le_rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.Model

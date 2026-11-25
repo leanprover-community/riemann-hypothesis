@@ -23,8 +23,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace SheetOnlyNull
 
 variable {n d : ℕ}
@@ -211,7 +209,5 @@ theorem SheetOnlyNull.proof (h₁ : IndefiniteRowSideFullHecke.ComplexSets.Finit
   have hx : x ∈ ⋃ i ∈ T, W i := hTU ▸ Set.mem_iUnion.2 ⟨x, hxW x hxB.2.1⟩
   obtain ⟨i, hiT, hxi⟩ := Set.mem_iUnion₂.1 hx
   exact Set.mem_biUnion hiT ⟨x, ⟨hxB, hxi⟩, rfl⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

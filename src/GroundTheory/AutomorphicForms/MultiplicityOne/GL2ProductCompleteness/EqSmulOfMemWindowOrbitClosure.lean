@@ -13,8 +13,6 @@ open Set Function
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace GL2ProductCompleteness
 
 set_option linter.unusedSectionVars false
@@ -61,7 +59,5 @@ variable {v : V}
 
 
 end GL2ProductCompleteness
-
-end
 
 end GroundTheory.Automorphic

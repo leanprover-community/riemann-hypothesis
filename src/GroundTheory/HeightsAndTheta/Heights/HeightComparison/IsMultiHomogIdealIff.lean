@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Bridge
 
 open MvPolynomial
 
-noncomputable section
-
 variable {K : Type*} {ι : K → Type*} {R : Type*} [CommRing R]
 
 theorem isRelevant_iff (W : Ideal (NumbersDVR.MRing ι R)) :
@@ -184,7 +182,5 @@ theorem divCycle_eq [Fintype K] [∀ k, Fintype (ι k)] [IsNoetherianRing R]
   · rfl
 
 end Cycles
-
-end
 
 end GroundTheory.Heights₂.Heights.Bridge

@@ -18,8 +18,6 @@ open IsDedekindDomain NumberField Filter Topology ValuativeRel
 open AdeleBaseChange SemiLocal
 open scoped NumberField.LiesOver TensorProduct
 
-noncomputable section
-
 namespace IdeleNorm
 
 variable {K : Type*} [Field K] [NumberField K] {L : Type*} [Field L] [NumberField L] [Algebra K L]
@@ -148,7 +146,5 @@ theorem exists_norm_eq_of_ramificationIdx_eq_one (v : HeightOneSpectrum (𝓞 K)
   · rw [LocalField.coe_unitsIncl, ← LocalField.coe_normIntegerUnits, hg]
 
 end IdeleNorm
-
-end
 
 end GroundTheory.Global

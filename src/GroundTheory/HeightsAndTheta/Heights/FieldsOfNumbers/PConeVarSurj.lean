@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 
@@ -87,7 +85,5 @@ theorem ConeVarSurj.proof : ConeVarSurj.Statement.{u} := by
     rw [div_mul_div_cancel₀ (hπ _ fun h' => hUW d (hPW h')), div_self (hπ _ fun h' => hdW (hPW h'))]
   · rw [hQ, hQ, hgs]
     exact hxs
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

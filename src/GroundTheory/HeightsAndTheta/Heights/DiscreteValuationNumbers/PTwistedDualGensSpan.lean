@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem TwistedDualGensSpan.sum_mul_mem_localized {R Ω : Type*} [CommRing R] [Field Ω] [Algebra R Ω]
     (A : Subalgebra R Ω) {f : Ω} (hf : f ∈ A) {r : ℕ} (a t : Fin r → Ω)
     (ha : ∀ q, ∃ n : ℕ, f ^ n * a q ∈ A) (ht : ∀ q, t q ∈ A) :
@@ -100,7 +98,5 @@ theorem TwistedDualGensSpan.proof : TwistedDualGensSpan.Statement := by
     exact Submodule.smul_mem _ _ hmem
   rw [eq_top_iff, ← β.dualBasis.span_eq, Module.Basis.coe_dualBasis]
   exact Submodule.span_le.2 (by rintro _ ⟨q, rfl⟩; exact key q)
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

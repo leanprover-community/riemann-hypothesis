@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets Metric
 
-noncomputable section
-
 theorem primeTube_isClosed_zeroSet {n : ℕ} (J : Ideal (MvPolynomial (Fin n) ℂ)) : IsClosed (zeroSet J) := by
   have : zeroSet J = ⋂ q ∈ J, {x : Fin n → ℂ | eval x q = 0} := by ext x; simp [zeroSet]
   rw [this]
@@ -144,7 +142,5 @@ theorem PrimeTubeVolume.proof (hL : VarietyMassLower.Statement) (hM : MassFinite
   obtain ⟨C, hC, hCr⟩ := primeTube_exact hL hM hJ hd hK
   refine ⟨C, hC, fun r hr => (hCr r hr).trans (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ?_ hC))⟩
   exact zpow_le_zpow_right_of_le_one₀ hr.1 hr.2 (by omega)
-
-end
 
 end GroundTheory.Heights₂.Heights

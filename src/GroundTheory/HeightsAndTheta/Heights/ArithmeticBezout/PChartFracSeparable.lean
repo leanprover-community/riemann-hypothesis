@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem ChartFracSeparable.proof (h : ChartPointSeparable.Statement) : ChartFracSeparable.Statement := by
   intro F _ _ n e I f t p _ K L _ _ _ _ _ _ _ _ _ _ hI hf _
 
@@ -163,7 +161,5 @@ theorem ChartFracSeparable.proof (h : ChartPointSeparable.Statement) : ChartFrac
     rwa [hc] at h0
   exact h F n e K L u t η halg hK hη hU hT fun j₀ hj₀ =>
     Vertical.ChartPointTrdeg.full F L n e I f hI hf η j₀ hIη hj₀
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 attribute [local instance] MvPolynomial.algebraMvPolynomial
 
 theorem aeval_map_intRat_eq {σ : Type} (x : σ → ℂ) (f : MvPolynomial σ ℤ) :
@@ -76,7 +74,5 @@ theorem FibreNormBadPrimesFinite.proof : FibreNormBadPrimesFinite.Statement := b
   rw [CharP.intCast_eq_zero_iff (AlgebraicClosure (ZMod p)) p] at hNz
   simp only [Set.mem_iUnion, Set.mem_Iic]
   exact ⟨c, Nat.le_of_dvd (Int.natAbs_pos.2 (hN c)) (Int.natCast_dvd.1 hNz)⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 
@@ -79,7 +77,5 @@ theorem SemilocalLength.proof (h1 : SemilocalLengthSum.Statement.{u})
         exact hMW (hM0 W' hne)
       exact Finset.mem_filter.mpr ⟨hfin.mem_toFinset.mpr ⟨hWp, le_sup_left.trans hmin.1.2, hc⟩,
         hmin.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self _))⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

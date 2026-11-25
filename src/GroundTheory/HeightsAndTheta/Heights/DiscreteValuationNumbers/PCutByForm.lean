@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem weightedHomogeneousComponent_mem_span_of_isMultiHomog {R : Type*} [CommRing R] {K : Type*}
@@ -76,7 +74,5 @@ theorem CutByForm.proof (h1 : IntNumAssoc.Statement.{u}) (h2 : HilbFnCut.Stateme
     exact lt_of_le_of_lt hsucc hdim
 
   rw [hnum, h1 F K ι n J hJ hdimJ bs, divCycle_eq_idealCycle]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

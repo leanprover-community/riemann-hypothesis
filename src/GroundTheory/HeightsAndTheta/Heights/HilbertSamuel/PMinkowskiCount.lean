@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MeasureTheory Module Metric
 open scoped ENNReal
 
-noncomputable section
-
 namespace MinkowskiCount
 
 section Count
@@ -153,7 +151,5 @@ theorem proof : MinkowskiCount.Statement :=
   ⟨fun _ _ _ _ _ _ La _ _ ρ hρ => log_count La ρ hρ, cube_le_unitBallVolume⟩
 
 end MinkowskiCount
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

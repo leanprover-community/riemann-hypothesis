@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 
 open Metric Filter Topology Real
 
-noncomputable section
-
 theorem PuncturedExpOrder.proof : PuncturedExpOrder.Statement := by
   intro R ψ k M hR hψ hb
   have hSo : IsOpen (ball (0 : ℂ) R \ {0}) := isOpen_ball.sdiff isClosed_singleton
@@ -136,7 +134,5 @@ theorem PuncturedExpOrder.proof : PuncturedExpOrder.Statement := by
   · refine (hua.continuousAt.tendsto.mono_left nhdsWithin_le_nhds).congr' ?_
     filter_upwards [inter_mem_nhdsWithin ({(0 : ℂ)}ᶜ) (ball_mem_nhds (0 : ℂ) hε)] with x hx
     rw [hkey x hx.2 hx.1, hj, zpow_zero, one_mul]
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

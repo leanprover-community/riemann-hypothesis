@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial
 
-noncomputable section
-
 namespace FibreNormDehomCharpoly
 
 theorem finiteDimensional_pullField (hR : PullRatiosAlgebraic.Statement) {K : Type} [Fintype K] {ι : K → Type}
@@ -74,7 +72,5 @@ theorem FibreNormDehomCharpoly.proof (hG : PullFormsGeneric.Statement) (hR : Pul
     exact hI K ι Ω y D e L q hA hB he hL hz τ s hs k (hne k)
   obtain ⟨c, hc0, hch, hcp, hcn⟩ := hC Ω D l (pullField y L) rfl hgen j (q * τ) (s / l j ^ (q * τ)) hint
   exact ⟨c, ⟨hj, hfin, hc0, hch, hcp⟩, fun hs0 => hcn (div_ne_zero hs0 (pow_ne_zero _ hj))⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

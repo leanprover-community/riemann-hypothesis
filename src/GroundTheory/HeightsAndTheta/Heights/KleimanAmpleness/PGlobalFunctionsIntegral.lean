@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 theorem GlobalFunctionsIntegral.proof : GlobalFunctionsIntegral.Statement := by
   intro k _ K _ _ N y a hy ha
   classical
@@ -70,7 +68,5 @@ theorem GlobalFunctionsIntegral.proof : GlobalFunctionsIntegral.Statement := by
         rw [X_pow_eq_monomial, monomial_mul, mul_one, hsplit]
       rw [AlgHom.toLinearMap_apply, map_mul, ← hrel i, hmono, map_mul, map_pow, aeval_X]
       ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

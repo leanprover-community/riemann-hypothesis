@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 open MeasureTheory
 open scoped ContDiff
 
-noncomputable section
-
 theorem RadialPrimitive.primitive_contDiff (f : ℝ → ℝ) (hf : ContDiff ℝ ∞ f) (c : ℝ) :
     ContDiff ℝ ∞ (fun t => ∫ τ in c..t, f τ) ∧ deriv (fun t => ∫ τ in c..t, f τ) = f := by
   have hd : deriv (fun t => ∫ τ in c..t, f τ) = f :=
@@ -103,7 +101,5 @@ theorem RadialPrimitive.proof : RadialPrimitive.Statement := by
     push_cast
     field_simp
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights

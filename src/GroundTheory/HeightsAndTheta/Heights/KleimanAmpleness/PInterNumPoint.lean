@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 section InterNumPointLemmas
@@ -70,7 +68,5 @@ theorem InterNumPoint.proof (hHP : HilbertPoint.Statement.{u, w}) : InterNumPoin
     filter_upwards [hdim, hsecs] with n hn hs
     rw [interNumPoint_interSum_eq y hyj, hs, hn]
   exact (tendsto_const_nhds.congr' hev).limUnder_eq
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

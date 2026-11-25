@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix Filter Topology
 
-noncomputable section
-
 namespace ChartEnergySwapHessian
 
 open ChartMongeAmpereAffineInvariance
@@ -194,7 +192,5 @@ theorem det_fderiv_real {F : (Fin D → ℂ) → (Fin D → ℂ)} {y : Fin D →
   rw [ContinuousLinearMap.det, this, LinearMap.det_restrictScalars, Algebra.norm_complex_apply]
 
 end ChartEnergySwapHessian
-
-end
 
 end GroundTheory.Heights₂.Heights

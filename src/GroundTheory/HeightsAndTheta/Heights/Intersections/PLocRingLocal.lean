@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace LocRingLocal
 
 set_option linter.unusedSectionVars false
@@ -94,7 +92,5 @@ theorem LocRingLocal.proof (hF : LocRingFrac.Statement) : LocRingLocal.Statement
   intro hunit
   exact (key (x + y) _ _ (a + a') hnum (AvoidRing.isMultiHomog_mul hv hv') hvv' hsum).mp hunit
     (W.add_mem (W.mul_mem_right v' huW) (W.mul_mem_right v hu'W))
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

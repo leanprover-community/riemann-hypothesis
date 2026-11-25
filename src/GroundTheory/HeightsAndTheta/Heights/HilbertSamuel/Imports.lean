@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem ArithmeticVolumeDimensionOne.proof (hG6 : ArithmeticVolumeBigDimensionOne.Statement) : ArithmeticVolumeDimensionOne.Statement := by
   intro K _ ι _ Ω _ _ y M P0 II hII har hb hM hpos
   set T := II K ι (mCoordIdeal y) 1 (fun _ => M)
@@ -49,7 +47,5 @@ theorem ArithmeticVolumeDimensionOne.proof (hG6 : ArithmeticVolumeBigDimensionOn
     refine hle.trans (le_of_eq ?_)
     rw [constShift_h, mul_pow, e]
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

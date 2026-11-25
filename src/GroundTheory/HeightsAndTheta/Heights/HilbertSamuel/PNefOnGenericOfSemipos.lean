@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology
 
-noncomputable section
-
 namespace NefOnGenericOfSemipos
 
 theorem hasFDerivAt_eval {σ : Type*} [Fintype σ] (g : MvPolynomial σ ℂ) (z : σ → ℂ) :
@@ -81,7 +79,5 @@ theorem NefOnGenericOfSemipos.proof : NefOnGenericOfSemipos.Statement :=
 
 theorem ArithmeticVolumeBig.of_moriwakiBig_only (hM : MoriwakiBigStatement) : ArithmeticVolumeBig.Statement :=
   ArithmeticVolumeBig.of_moriwakiBig NefOnGenericOfSemipos.proof hM
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

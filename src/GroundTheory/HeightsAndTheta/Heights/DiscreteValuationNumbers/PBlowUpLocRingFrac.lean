@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem BlowUpLocRingFrac.of_mem {O : Type u} [CommRing O] [IsDomain O]
@@ -135,7 +133,5 @@ theorem BlowUpLocRingFrac.proof (hiso : BlowUpLocRingIso.Statement.{u})
   have : (blowUpOf P u).IsPrime := RingHom.ker_isPrime _
   obtain ⟨φ, hφ⟩ := hiso O K ι J P u W' hbl
   exact BlowUpLocRingFrac.of_mem hW'p hmh hW'rel hbl hW'W.le hL he hLQ φ hφ hz
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

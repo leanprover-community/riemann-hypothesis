@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace TwoBlockHorizDiv
 
 section Local
@@ -190,7 +188,5 @@ theorem TwoBlockHorizDiv.proof : TwoBlockHorizDiv.Statement := by
     rw [this]
     exact hd j₀
   · exact mul_mem_of_sup le_sup_left (num_rel hsp hl i₀)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

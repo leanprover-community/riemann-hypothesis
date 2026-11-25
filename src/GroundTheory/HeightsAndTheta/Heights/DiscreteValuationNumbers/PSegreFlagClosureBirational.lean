@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 section Lemmas
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} {Ω : Type*} [Field Ω]
@@ -151,7 +149,5 @@ theorem SegreFlagClosureBirational.proof : SegreFlagClosureBirational.Statement 
     have h2 := hprodΦ (c₂ (some ())) (c₂ none)
     linear_combination T ^ 2 * (algebraMap Ω Φ (α (c₂ (some ()))) * algebraMap Ω Φ (β (c₂ none))) * h1 -
       T ^ 2 * (algebraMap Ω Φ (α (c₁ (some ()))) * algebraMap Ω Φ (β (c₁ none))) * h2
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

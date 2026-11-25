@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo NumberField
 
-noncomputable section
-
 theorem DualTopSimpleSub.proof (hBasis : DualTopBasisChange.Statement)
     (hStep : DualTopSimpleStacked.Statement) (hDeg : DualStackedDegree.Statement) :
     DualTopSimpleSub.Statement := by
@@ -38,7 +36,5 @@ theorem DualTopSimpleSub.proof (hBasis : DualTopBasisChange.Statement)
   have h3 := hStep K i F F' T' b₁ hb₁ b₁' hb₁' a II hi hII hlt hcov hab
   have h4 := hDeg K i F F' T' b₁ b₁' a hle hab
   rw [h1, h3, h2, h4]
-
-end
 
 end GroundTheory.Heights₂.Heights

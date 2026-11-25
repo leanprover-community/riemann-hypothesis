@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace TwoBlockCoeffCycle
@@ -282,7 +280,5 @@ theorem TwoBlockCoeffCycle.proof (hA : CoordArithOfFnField.Statement) (hF : TwoB
   rw [e1, e0, ReciprocityTheory.ChartRestriction.G.AI.I2.recR_eq, ReciprocityTheory.ChartRestriction.G.AI.I2.recR_eq, cycR_split, cycR_split, hint, hhor,
     vertR_eq_vertCycleNum, vertR_eq_vertCycleNum, hdeg]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

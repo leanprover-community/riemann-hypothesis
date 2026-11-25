@@ -12,8 +12,6 @@ namespace GroundTheory.Global
 
 open IsDedekindDomain NumberField SemiLocal AdeleBaseChange IdeleGroup
 
-noncomputable section
-
 variable {K K' : Type*} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
 
 theorem ideleNorm_finiteEmbedding (v' : HeightOneSpectrum (𝓞 K')) (a : (v'.adicCompletion K')ˣ) :
@@ -87,7 +85,5 @@ theorem restrictNormal_localSymbol_norm (v : HeightOneSpectrum (𝓞 K))
   apply (algebraMap L' (u'.1.adicCompletion L')).injective
   rw [algebraMap_localSymbol_apply L' v' u', ← hj, ← hj, algebraMap_localSymbol_apply L v u,
     normResidueSymbol_norm j]
-
-end
 
 end GroundTheory.Global

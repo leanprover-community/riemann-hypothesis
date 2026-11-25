@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem RegularityDenominator.isMultiHomog_C {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)] (n : ℤ) :
     IsMultiHomog (C n : MRing ι) 0 := by
   intro m hm k
@@ -100,7 +98,5 @@ theorem RegularityDenominator.proof (hD : RegularityDivisorSupportClosed.Stateme
       simp only [mW, dite_eq_left hW]
       exact mul_mem hm (intCast_mem _ r)
     · exact mul_mem (frac_mem_locRing hPW hu hva hvW hxv) (intCast_mem _ M)
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 MvPolynomial
 
-noncomputable section
-
 namespace StackedExceptionalSecondGeometric
 
 variable {T : Type} [Fintype T] {k : Type} [Field k]
@@ -129,7 +127,5 @@ theorem DualStackedExcGeoSecond.proof (hLin : DualStackedExcLinear.Statement) (h
     ← Nat.card_eq_fintype_card, ← length_mul_log]
   push_cast
   rfl
-
-end
 
 end GroundTheory.Heights₂.Heights

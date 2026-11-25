@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace PullSectionIntegralInt
 
 theorem aeval_mem_of_forall {σ Ω : Type} [Field Ω] (V : Subring Ω) (y' : σ → Ω) (hy : ∀ p, y' p ∈ V)
@@ -97,7 +95,5 @@ theorem proof : PullSectionIntegralInt.Statement := by
   exact mul_mem hxV (pow_mem hMV _)
 
 end PullSectionIntegralInt
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

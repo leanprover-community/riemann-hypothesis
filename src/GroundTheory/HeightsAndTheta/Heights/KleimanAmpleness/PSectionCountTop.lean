@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 section Sections
@@ -128,7 +126,5 @@ theorem SectionCount.Top.proof (hHP : HilbertPositive.Statement.{u, w})
   rw [Nat.add_sub_cancel] at hn
   have := (abs_le.mp hn).1
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

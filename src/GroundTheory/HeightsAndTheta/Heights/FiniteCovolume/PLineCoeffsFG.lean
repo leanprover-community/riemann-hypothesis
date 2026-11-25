@@ -6,8 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolu
 
 namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 
-noncomputable section
-
 variable {E : Type*} [Field E]
 variable (W : Type*) [AddCommGroup W] [Module E W]
 
@@ -29,7 +27,5 @@ theorem LineCoeffsFG.proof : LineCoeffsFG.Statement (E := E) W := by
     Submodule.fg_of_fg_map_injective _ hf (hS.of_le hle)
   rw [Submodule.fg_iff_addSubgroup_fg] at hN
   simpa using hN
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

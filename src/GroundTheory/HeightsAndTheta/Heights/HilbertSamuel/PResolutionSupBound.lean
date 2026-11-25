@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory Filter Topology
 
-noncomputable section
-
 namespace ResolutionSupBound
 
 theorem eval_smul_homog {ι : Type*} {f : MvPolynomial ι ℂ} {n : ℕ} (hf : f.IsHomogeneous n) (c : ℂ)
@@ -62,7 +60,5 @@ theorem proof (hI : ResolutionImageSup.Statement) (hND : NonvanishingDense.State
   exact le_of_tendsto (hcont.tendsto.mono_left nhdsWithin_le_nhds) (eventually_nhdsWithin_of_forall key)
 
 end ResolutionSupBound
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial NumberField
 
-noncomputable section
-
 variable {K : Type} [Field K] [NumberField K]
 
 theorem exists_int_smul_mem_latticeDual {m : ℕ} (L : Submodule (𝓞 K) (Fin m → K)) (hL : L.FG)
@@ -51,7 +49,5 @@ variable {r N : ℕ}
 
 
 
-
-end
 
 end GroundTheory.Heights₂.Heights

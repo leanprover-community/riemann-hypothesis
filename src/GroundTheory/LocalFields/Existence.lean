@@ -11,8 +11,6 @@ public import GroundTheory.LocalFields.AbstractLocalReciprocity.NormGroups
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel GroundTheory.LocalField.FormalGroup
 
 namespace GroundTheory.LocalField

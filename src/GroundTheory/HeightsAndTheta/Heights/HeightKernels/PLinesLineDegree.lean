@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 open NumberField Matrix
 open scoped nonZeroDivisors
 
-noncomputable section
-
 namespace KLinesLineDegree
 
 variable {K : Type} [Field K] {n : ℕ}
@@ -27,7 +25,5 @@ theorem genIndex_map_of_injective {G G' : Type*} [AddCommGroup G] [AddCommGroup 
 
 end KLinesLineDegree
 
-
-end
 
 end GroundTheory.Heights₂.Heights

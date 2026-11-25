@@ -30,8 +30,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology MeasureTheory
 open scoped Pointwise ComplexOrder ENNReal NumberField.AdeleRing
 
-noncomputable section
-
 universe u
 
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
@@ -83,7 +81,5 @@ theorem ArithmeticCovolumeFinite.full (h : HermitianForm F E W) (v : Basis ι E 
     h v (TorusEmbedding.full h v) (LineEigenvalue.closed h v) (TorusModulus.full h v)
     (SemidirectHaar.proof _ _) (UnipotentCoordProper.proof h v) (UnipotentHorizontal.full h v)
     (UnipotentCentral.full h v)
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.AnForm Filter Topology
 
-noncomputable section
-
 theorem HessCCompPluri.fderiv_fderiv_comp_apply {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {F : ℝ → ℝ} {L : E → ℝ} {z : E} (hF : ContDiffAt ℝ 2 F (L z)) (hL : ContDiffAt ℝ 2 L z)
     (v u : E) :
@@ -66,7 +64,5 @@ theorem HessCCompPluri.proof : HessCCompPluri.Statement := by
   simp only [key, keyQ]
   push_cast at hij ⊢
   linear_combination (((deriv F (L z) : ℝ) : ℂ) - ((deriv (deriv F) (L z) : ℝ) : ℂ) * ((L z : ℝ) : ℂ)) * hij
-
-end
 
 end GroundTheory.Heights₂.Heights

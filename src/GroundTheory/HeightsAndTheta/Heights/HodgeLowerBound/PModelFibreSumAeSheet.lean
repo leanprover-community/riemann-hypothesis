@@ -17,8 +17,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeSheetCore
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 namespace ModelFibreSumAlmostEverywhere

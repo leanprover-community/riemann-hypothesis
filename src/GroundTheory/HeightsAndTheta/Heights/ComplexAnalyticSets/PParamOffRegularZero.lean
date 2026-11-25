@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 theorem ParamOffRegularZero.proof : ParamOffRegularZero.Statement := by
   intro n d W A σ r N hσ hZN f φ hfN
   set g : (Fin d → ℂ) → Fin d → ℂ := fun v => A *ᵥ σ v with hg
@@ -66,7 +64,5 @@ theorem ParamOffRegularZero.proof : ParamOffRegularZero.Statement := by
   refine measure_mono_null (fun y hy => ?_) hnull
   by_contra h
   exact hy (by simpa using hz y h)
-
-end
 
 end GroundTheory.Heights₂.Heights

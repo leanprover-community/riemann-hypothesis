@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial Cardinal
 
-noncomputable section
-
 theorem exists_ringHom_complex_ker_eq_of_isPrime {σ : Type} [Finite σ] (P : Ideal (MvPolynomial σ ℚ))
     [P.IsPrime] : ∃ φ : MvPolynomial σ ℚ →+* ℂ, ∀ f, φ f = 0 ↔ f ∈ P := by
   let Q := MvPolynomial σ ℚ ⧸ P
@@ -67,7 +65,5 @@ theorem PullConeNull.proof : PullConeNull.Statement := by
   have hle : n c ≤ Finset.univ.sup n := Finset.le_sup (Finset.mem_univ c)
   rw [← Nat.add_sub_cancel' hle, pow_add]
   exact I.mul_mem_right _ (hn c)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

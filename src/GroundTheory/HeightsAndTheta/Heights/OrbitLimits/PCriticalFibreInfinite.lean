@@ -17,12 +17,8 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 theorem CriticalFibreInfinite.proof : CriticalFibreInfinite.Statement :=
   fun _ _ _ _ hU hUne hf hninj =>
     IndefiniteRowSideFullHecke.ComplexSets.HolomorphicFibreInfinite.exists_infinite_fibre hU hUne hf hninj
-
-end
 
 end GroundTheory.Heights₂.Heights

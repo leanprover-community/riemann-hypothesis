@@ -15,8 +15,6 @@ open scoped Real FourierTransform Classical
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 theorem fourier_pow_mul_realGaussian {n : ℕ} (hn : n < 2) (y : ℝ) :
     𝓕 (fun t : ℝ ↦ (t : ℂ) ^ n * realGaussian t) y = (-I) ^ n * ((y : ℂ) ^ n * realGaussian y) := by
   rcases (show n = 0 ∨ n = 1 by omega) with rfl | rfl
@@ -119,7 +117,5 @@ theorem mixedFourier_infiniteSchwartz (y : mixedSpace K) :
   field_simp
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

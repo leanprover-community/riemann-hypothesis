@@ -12,8 +12,6 @@ open scoped NumberField.AdeleRing
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 theorem Subgroup.subset_of_isPreconnected {G : Type*} [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] (H : Subgroup G) (hH : IsOpen (H : Set G)) {s : Set G}
     (hs : IsPreconnected s) (h1 : (1 : G) ∈ s) : s ⊆ H :=
@@ -105,7 +103,5 @@ theorem Modulus.isOpen_map_congruenceSubgroup (𝔪 : Modulus K) :
     IsOpen (𝔪.congruenceSubgroup.map (IdeleClassGroup.mk K) : Set (IdeleClassGroup K)) := by
   rw [Subgroup.coe_map]
   exact IdeleClassGroup.isOpenMap_mk K _ 𝔪.isOpen_congruenceSubgroup
-
-end
 
 end GroundTheory.Global

@@ -10,8 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwi
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial

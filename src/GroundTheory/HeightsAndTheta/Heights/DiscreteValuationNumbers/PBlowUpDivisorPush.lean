@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 section Pullback
@@ -105,7 +103,5 @@ theorem BlowUpDivisorPush.proof (hvert : BlowUpVerticalPush.Statement.{u}) :
       (divCycle (blowUpOf P u) (liftForm (J := J) g)) _ _ (hfin _ _ _ _ _) (hfin _ _ _ _ _) hvertB,
     finsum_sub_mul_eq_of_support (divCycle P f) (divCycle P g) _ _ (hfin _ _ _ _ _)
       (hfin _ _ _ _ _) hD.vertical, e₁, e₂]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

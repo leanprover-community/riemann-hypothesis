@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 theorem ClosedPtChartUnit.proof : ClosedPtChartUnit.Statement := by
   classical
   intro S _ K _ ι _ P hP I hI hX f a hf hfP
@@ -74,7 +72,5 @@ theorem ClosedPtChartUnit.proof : ClosedPtChartUnit.Statement := by
       exact hpe
   · rw [NumbersDVR.component_mul_form_of_not_le hf' hae, add_zero] at hcomp
     exact absurd (hcomp ▸ hpe) (hTP htT)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

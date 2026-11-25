@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem JacobianRankOffHypersurface.eval_pderiv_sum_mul {σ ι : Type*} [Fintype ι] (w : σ → ℂ)
     (c g : ι → MvPolynomial σ ℂ) (hg : ∀ k, eval w (g k) = 0) (x : σ) :
     eval w (pderiv x (∑ k, c k * g k)) = ∑ k, eval w (c k) * eval w (pderiv x (g k)) := by
@@ -162,7 +160,5 @@ theorem JacobianRankOffHypersurface.proof_of_frame (hF : FrameJacobianGeneric.St
 theorem JacobianRankOffHypersurface.proof : JacobianRankOffHypersurface.Statement :=
   JacobianRankOffHypersurface.proof_of_frame
     (FrameJacobianGeneric.proof JacobianRankGeneric.proof ConormalGenerationGeneric.proof)
-
-end
 
 end GroundTheory.Heights₂.Heights

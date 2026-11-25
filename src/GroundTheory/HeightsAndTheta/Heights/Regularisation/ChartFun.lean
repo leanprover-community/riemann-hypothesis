@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 open Metric Filter Topology
 open ReciprocityTheory.AnForm.A (Mollifier tmax regMax le_tmax tmax_le regMax_ge regMax_le)
 
-noncomputable section
-
 namespace LogLogRegularisation
 
 variable {D : ℕ} {X : Type*} [TopologicalSpace X] {A : ReciprocityTheory.AnForm.M.FinHolAtlas D X}
@@ -36,7 +34,5 @@ theorem glue_le (P : PotentialCharts A) (a : Fin P.N → X → ℝ) {ε c : ℝ}
   linarith
 
 end LogLogRegularisation
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

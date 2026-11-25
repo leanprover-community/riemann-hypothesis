@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Topology Filter PrimeGermPrimitivePresentation
 
-noncomputable section
-
 namespace GermProjectionFunctionForm
 
 variable {σ : Type} [Fintype σ]
@@ -78,7 +76,5 @@ theorem GermProjectionFunctionForm.proof : GermProjectionFunctionForm.Statement 
     refine isGermCombination_of_mem p _ hF _ fun z => ?_
     rw [Finset.sum_image (fun x _ y _ h => e.injective h)]
     simp [Z, mkA, compA, Finset.sum_apply, Finset.prod_apply, e]
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

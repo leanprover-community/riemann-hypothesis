@@ -13,12 +13,8 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology
 
-noncomputable section
-
 namespace TwistIntersectionAnyDegree
 
 end TwistIntersectionAnyDegree
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

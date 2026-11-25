@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 namespace PFFibreMultProof
 
 theorem length_quot_map_of_surjective {L L' : Type*} [CommRing L] [CommRing L'] (θ : L →+* L')
@@ -241,7 +239,5 @@ theorem PFFibreMult.proof : PFFibreMult.Statement := by
   rw [dite_eq_left hQ, dite_eq_left hWp, ObjectsChow.VerticalPartMultiplicity.length_localizedModule_quotient,
     ObjectsChow.VerticalPartMultiplicity.length_localizedModule_quotient, hJ,
     length_quot_map_of_surjective θ hsurj _ hker]
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

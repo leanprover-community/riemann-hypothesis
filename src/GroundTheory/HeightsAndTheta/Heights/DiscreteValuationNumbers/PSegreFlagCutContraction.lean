@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace SegreFlagCutContraction
 
 theorem pullDeg_comp_of_eq_zero {K K' : Type*} (j : K ↪ K') (b : K' → ℤ)
@@ -128,7 +126,5 @@ theorem SegreFlagCutContraction.proof (hModel : SegreFlagClosureModel.Statement)
     · exact absurd ⟨none, rfl⟩ ho
     · exact hl0 b hb
     · exact absurd ⟨some o, rfl⟩ ho
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

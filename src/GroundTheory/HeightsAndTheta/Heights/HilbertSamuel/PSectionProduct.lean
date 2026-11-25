@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace SectionProduct
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -122,7 +120,5 @@ theorem SectionProduct.proof : SectionProduct.Statement := open SectionBoundedMu
       _ = cc * cc' ^ j * ‖ev H‖ * (A.h z ^ n * B.h z ^ j) *
             (‖ev (chartMono c N)‖ * ‖ev (chartMono c M)‖ ^ j) := by
           ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

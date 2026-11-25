@@ -19,8 +19,6 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
 open scoped ENNReal
 
-noncomputable section
-
 namespace SheetAreaCompare
 
 variable {n d : ℕ}
@@ -265,7 +263,5 @@ theorem SheetAreaCompare.proof (h₁ : SheetImageArea.Statement) : SheetAreaComp
         exact tsum_congr hpiece
     _ ≤ c * ∫⁻ z in zeroSetEuc J, ‖h (WithLp.ofLp z)‖ₑ ∂(μH[((2 * d : ℕ) : ℝ)]) :=
         mul_le_mul_of_nonneg_left (lintegral_mono_set hIsub) zero_le
-
-end
 
 end GroundTheory.Heights₂.Heights

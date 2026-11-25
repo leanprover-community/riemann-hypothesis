@@ -12,8 +12,6 @@ namespace GroundTheory.Automorphic.L2Kernel
 open MeasureTheory
 open scoped ENNReal
 
-noncomputable section
-
 section SlopeTestRemainingChoices
 
 theorem lintegral_mul_sq_le {α : Type*} [MeasurableSpace α] (μ : Measure α) {f g : α → ℝ≥0∞}
@@ -38,7 +36,5 @@ theorem lt_top_of_sq_lt_top {a : ℝ≥0∞} (h : a ^ 2 < ∞) : a < ∞ := by
   simpa only [ENNReal.pow_lt_top_iff, OfNat.ofNat_ne_zero, or_false] using h
 
 end SlopeTestRemainingChoices
-
-end
 
 end GroundTheory.Automorphic.L2Kernel

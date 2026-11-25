@@ -21,8 +21,6 @@ open scoped NumberField.AdeleRing
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace AutomorphicForm
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
@@ -55,7 +53,5 @@ theorem unipMeasure_unipFundamentalDomain (r : ℕ) :
   simp [GroundTheory.Global.adeleMeasure_fundamentalSet]
 
 end AutomorphicForm
-
-end
 
 end GroundTheory.Automorphic

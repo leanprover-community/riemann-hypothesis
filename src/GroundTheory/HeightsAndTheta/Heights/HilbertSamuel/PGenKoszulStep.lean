@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry KoszulCech
 
-noncomputable section
-
 namespace GenKoszulStep
 
 variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -102,7 +100,5 @@ theorem GenKoszulStep.proof (hB : KoszulCechComplex.Statement) (hC : KoszulCechE
   intro x hx hdx
   obtain ⟨y, hy, hdy⟩ := key n (fun _ => x) (fun J _ => by simpa using hx) (funext fun _ => hdx)
   exact ⟨y ⟨∅, Finset.card_empty⟩, by simpa using hy _ trivial, congrFun hdy _⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace ChartFracSeparableInhabited
 
 theorem chartLocDomain : ChartLocDomain.Statement :=
@@ -27,7 +25,5 @@ theorem chartLocDomain : ChartLocDomain.Statement :=
 end ChartFracSeparableInhabited
 
 
-
-end
 
 end GroundTheory.Heights₂.Heights

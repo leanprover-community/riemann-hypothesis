@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace SegreArithmetic
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {Ω : Type} [Field Ω]
@@ -104,7 +102,5 @@ theorem SegreArith.proof : SegreArith.Statement := by
     subst h3
     rw [Fintype.card_unit]
     norm_cast
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

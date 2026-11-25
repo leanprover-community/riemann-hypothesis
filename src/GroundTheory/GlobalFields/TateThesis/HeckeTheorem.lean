@@ -13,8 +13,6 @@ open scoped NumberField.AdeleRing ComplexConjugate Real
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 open IdeleGroup
@@ -200,7 +198,5 @@ theorem exists_LFunction_continuation_of_forall :
 end Trivial
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

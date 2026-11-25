@@ -7,8 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecondVeronese
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I4
@@ -86,5 +84,3 @@ theorem VeroneseGraphImage.proof : VeroneseGraphImage.Statement := by
     rw [hG, h, map_zero]
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel
-
-end

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.NineStatements
 open ReciprocityTheory.AnForm.A
 open MeasureTheory Metric Filter Topology Set Real
 
-noncomputable section
-
 variable {D : ℕ} {U : Set (Fin D → ℂ)} {φ : (Fin D → ℂ) → ℝ}
 
 theorem PshLocal.usc
@@ -132,7 +130,5 @@ theorem PshLocal.core (hU : IsOpen U)
   obtain ⟨h1, -, h3⟩ := step ε h.1 h.2
   rw [circleAverage_def, smul_eq_mul] at h3
   exact (h1 z hzK).1.trans h3
-
-end
 
 end GroundTheory.Heights₂.Heights.NineStatements

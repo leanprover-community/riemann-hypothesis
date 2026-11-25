@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Cardinal
 
-noncomputable section
-
 theorem exists_ringHom_complex_of_charZero (F : Type) [Field F] [CharZero F] (hF : #F ≤ 𝔠) :
     Nonempty (F →+* ℂ) := by
   let M := MvPolynomial ℂ F
@@ -90,7 +88,5 @@ theorem exists_mcPts_not_mem_mcPts {K : Type} [Fintype K] {ι : K → Type} [∀
   · rw [hev]
     exact (hker f).mpr hf
   · exact hgP ((hker g).mp (by rw [← hev]; exact hz.2 g hgJ))
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

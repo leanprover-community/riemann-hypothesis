@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open MvPolynomial Filter Topology Matrix Metric
 
-noncomputable section
-
 namespace IsolatedFibreOpenOfGeneric
 
 theorem isClosed_zeroLocus {n : ℕ} (J : Ideal (MvPolynomial (Fin n) ℂ)) : IsClosed (zeroLocus J) := by
@@ -165,7 +163,5 @@ theorem proof (hGen : GenericProjectionFinite.Statement) (hFin : FiniteMapOpen.S
   exact ⟨a, ⟨haS.1, (hcb haS.2).2⟩, hay⟩
 
 end IsolatedFibreOpenOfGeneric
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

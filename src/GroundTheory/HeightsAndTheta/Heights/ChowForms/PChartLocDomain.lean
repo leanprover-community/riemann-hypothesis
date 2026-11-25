@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace ChartLocDomain
 
 variable {F : Type} [Field F] {n : ℕ}
@@ -84,7 +82,5 @@ theorem ChartLocDomain.proof (h₁ : IncIdealBelow.Statement) (h₂ : ChartIncDo
   have hmem : linForm u ∈ RingHom.ker (chartX I t e) := hz
   rw [hker] at hmem
   exact ChartLocDomain.linForm_not_mem_sup hI ht hu hmem
-
-end
 
 end GroundTheory.Heights₂.Heights

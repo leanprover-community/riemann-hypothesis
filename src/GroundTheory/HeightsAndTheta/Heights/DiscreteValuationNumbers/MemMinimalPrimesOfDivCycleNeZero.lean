@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem mem_minimalPrimes_of_divCycle_ne_zero {K : Type*} {ι : K → Type*} {R : Type*}
@@ -125,7 +123,5 @@ theorem UniformiserCase.proof (h1 : ConservationOfNumberLE.Statement.{u})
     rwa [show d + 1 + 1 + Fintype.card K = d + 1 + Fintype.card K + 1 by omega] at this
   rw [ratDiv_one]
   exact (h1 O ϖ hϖ K ι W d ⟨hWprime, hWhom, hWrel⟩ (comap_C_eq_bot_of_not_mem hϖ W hϖW) hWdim L).symm
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

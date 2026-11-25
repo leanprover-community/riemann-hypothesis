@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial Matrix
 
-noncomputable section
-
 namespace RootDivisorSupportEmpty
 
 theorem isIntegral_of_pow_eq_one {z : ℂ} {k : ℕ} (hk : 0 < k) (hz : z ^ k = 1) : IsIntegral ℤ z :=
@@ -93,7 +91,5 @@ theorem RootDivSuppEmpty.proof : RootDivSuppEmpty.Statement := by
       rw [zero_pow (Nat.sub_ne_zero_of_lt (Finset.mem_range.1 hk)), mul_zero]
   have := hQp
   exact Ideal.Quotient.eq_zero_iff_mem.1 (eq_zero_of_pow_eq_zero hpow)
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -16,8 +16,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.I
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace SheetSumMeasurable
 
 variable {n d : ℕ}
@@ -228,7 +226,5 @@ theorem SheetSumMeasurable.proof : SheetSumMeasurable.Statement := by
     (continuous_fst.mul continuous_snd).measurable hg φ,
     SheetSumMeasurable.measurable_sheetSum hA (fun a b => |a * b|)
       (continuous_fst.mul continuous_snd).abs.measurable hg φ⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

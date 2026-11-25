@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 section Local
 
 variable {A : Type*} [CommRing A]
@@ -142,7 +140,5 @@ theorem IsVerticalDivisor.of_unit_off_special {P : Ideal (MRing ι O)} {ϖ : O} 
   rw [divCycle_eq_of_mul_sub_mem hu hv h, sub_self]
 
 end Vertical
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

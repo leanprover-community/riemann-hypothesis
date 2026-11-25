@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 open Vertical.SecPointSeparable in
 theorem ChartPointSeparable.proof (h : ChartFreeParAlgIndep.Statement) : ChartPointSeparable.Statement := by
   intro F _ _ n e K L _ _ _ _ _ _ u t η hu hK hη hrel hT htr
@@ -81,7 +79,5 @@ theorem ChartPointSeparable.proof (h : ChartFreeParAlgIndep.Statement) : ChartPo
     have hηz : η j = z j * η j₀ := by simp only [z, mul_assoc, inv_mul_cancel₀ hj₀, mul_one]
     rw [hηz, D.leibniz, hη₀, hDz, smul_zero, smul_zero, add_zero]
   exact Derivation.ext_of_adjoin_eq_top (Set.range η) hadj (by rintro _ ⟨j, rfl⟩; simpa using hηj j)
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -15,8 +15,6 @@ import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.PtsIntegrable
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial MeasureTheory Set Filter Topology ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.AnForm.M

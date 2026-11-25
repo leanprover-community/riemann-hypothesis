@@ -7,8 +7,6 @@ public import GroundTheory.TateCohomology.CochainReverse
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 universe u
 
 open CategoryTheory MonoidalCategory TensorProduct groupCohomology

@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 section CycEval
 
 variable {K : Type*} {ι : K → Type*} {R : Type*} [CommRing R]
@@ -245,7 +243,5 @@ theorem pairNum_cut_section (hC3 : CutByEffectiveDivisor.Statement.{0}) (hϖ : I
     rw [cycEval_mul_left _ _ _ (ratDiv_finite_support W (fs i) (gs i))]
 
 end Cut
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

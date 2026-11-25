@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Close
 open NumberField Matrix TensorProduct ComplexAt
 open scoped ComplexOrder nonZeroDivisors
 
-noncomputable section
-
 theorem LineDegreeBundle.sum_log_norm {L : Type*} [Field L] [NumberField L] {x : L} (hx : x ≠ 0) :
     ∑ σ : L →+* ℂ, Real.log ‖σ x‖ = Real.log |(Algebra.norm ℚ x : ℝ)| := by
   classical
@@ -43,7 +41,5 @@ theorem LineDegreeBundle.quad_pos {n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ} (hH
   refine ⟨?_, by simpa using hre⟩
   conv_lhs => rw [hQ]
   rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by simpa using hre)]
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Close

@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 theorem VeryAmpleProductPos.proof (hR : GenericPointSectionInput.Statement.{u, w}) (hP : PointDegreePos.Statement.{u, w})
@@ -59,7 +57,5 @@ theorem VeryAmpleProductPos.proof (hR : GenericPointSectionInput.Statement.{u, w
       split_ifs with h
       · exact (hterm qq h.1 h.2).le
       · exact le_rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

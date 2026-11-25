@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M MeasureTheory Filter Topology Set
 
-noncomputable section
-
 namespace AnResNullForm
 
 set_option linter.unusedSectionVars false
@@ -181,7 +179,5 @@ theorem AnResNullForm.proof (hND : NonvanishingDense.Statement) : AnResNullForm.
   refine measure_mono_null ?_ h
   rintro a ⟨ha, haS⟩
   exact ⟨(R.A.chart j).symm a, ⟨haS, (R.A.chart j).map_target ha⟩, (R.A.chart j).right_inv ha⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

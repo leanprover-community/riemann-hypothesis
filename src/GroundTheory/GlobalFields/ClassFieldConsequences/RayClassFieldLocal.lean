@@ -17,8 +17,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField ValuativeRel GroundTheory.LocalField SemiLocal WithZero
 open scoped Pointwise
 
-noncomputable section
-
 section Local
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -195,7 +193,5 @@ theorem splitsCompletely_iff_arithFrobAt_eq_one
     rw [hx, map_mul, h hu, mul_one, map_zpow, hF, h1, one_zpow]
 
 end Global
-
-end
 
 end GroundTheory.Global

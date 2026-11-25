@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 open ComplexSets ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A Matrix
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GradDensSheetBound
 
 theorem mdisc_cons_smul_tail {n : ℕ} (c : ℂ) (hc : c ≠ 0)
@@ -301,7 +299,5 @@ theorem GradDensSheetBound.proof : GradDensSheetBound.Statement := by
         mul_le_mul_of_nonneg_left key hN
     _ = 3 ^ (d + 1) * c ^ d * (Real.sqrt N * Real.sqrt P) * (Real.sqrt N * Real.sqrt Q) := by
         linear_combination (-(3 ^ (d + 1) * c ^ d * Real.sqrt P * Real.sqrt Q)) * sN
-
-end
 
 end GroundTheory.Heights₂.Heights

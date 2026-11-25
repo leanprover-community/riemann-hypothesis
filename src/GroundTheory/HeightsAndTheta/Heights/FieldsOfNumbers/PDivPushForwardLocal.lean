@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem exists_form_not_mem {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {F : Type u}
@@ -98,7 +96,5 @@ theorem DivPushForwardLocal.proof (h1 : DivCycleMinimal.Statement.{u})
         rw [Ideal.span_le, Set.singleton_subset_iff]
         exact hm.1.1.2 (Ideal.mem_sup_right (Ideal.subset_span rfl))
       · exact absurd rfl hD
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

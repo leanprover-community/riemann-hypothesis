@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G
 
-noncomputable section
-
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
 
@@ -77,7 +75,5 @@ theorem HeightRecR.proof (hV : OrbitDivVertical.Statement) (hF : OrbitFiniteSum.
   simp only [finiteTerm]
   linear_combination (-((Geo.degC (ι := blockIdx n) (orbitIdeal x) : ℝ) /
     Module.finrank ℚ (coordField x))) * hprod
-
-end
 
 end GroundTheory.Heights₂.Heights

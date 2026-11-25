@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem VocabDivCycle.proof : VocabDivCycle.Statement := by
@@ -30,7 +28,5 @@ theorem VocabDivCycle.proof : VocabDivCycle.Statement := by
     rw [ite_eq_right h, dite_eq_right h']
     rfl
   all_goals rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

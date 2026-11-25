@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Topology Metric Filter
 
-noncomputable section
-
 namespace CompactHolomorphicFibreFinite
 
 theorem sum_normSq_sub {k : ℕ} (v p : Fin k → ℂ) :
@@ -109,7 +107,5 @@ theorem proof (hCurve : NonIsolatedFibreCurve.Statement) : CompactHolomorphicFib
   exact (half_pos hr).ne' h0
 
 end CompactHolomorphicFibreFinite
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

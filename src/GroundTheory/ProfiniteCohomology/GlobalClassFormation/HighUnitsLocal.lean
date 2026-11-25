@@ -15,8 +15,6 @@ open CategoryTheory Limits NumberField IsDedekindDomain GroundTheory.Global Fini
 
 open scoped NumberField.LiesOver
 
-noncomputable section
-
 variable {K : FiniteSubfield}
 
 theorem subsingleton_localGaloisCohomology_inr_of_three_le (v : HeightOneSpectrum (𝓞 K.1)) {r : ℕ}
@@ -128,7 +126,5 @@ theorem natCard_localGaloisCohomology_of_isReal_of_even {r : ℕ} (hr0 : r ≠ 0
   exact Nat.card_congr e.toLinearEquiv.toEquiv
 
 end Real
-
-end
 
 end GroundTheory.ProfCoh

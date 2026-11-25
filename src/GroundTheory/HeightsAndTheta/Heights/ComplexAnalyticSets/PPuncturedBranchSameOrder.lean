@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ComplexSets Filter Topology
 
-noncomputable section
-
 namespace PuncturedBranchSameOrder
 
 theorem const_mem_ball_iff (τ : ℂ) (r : ℝ) :
@@ -218,7 +216,5 @@ theorem PuncturedBranchSameOrder.proof (hcut : PuncturedCurveDiscInverse.Stateme
   show analyticOrderAt (fun τ : ℂ ↦ eval (c.toFun fun _ ↦ τ) f) 0 =
     analyticOrderAt (fun τ : ℂ ↦ eval (d.toFun fun _ ↦ τ) f) 0
   rw [analyticOrderAt_congr hcong, analyticOrderAt_comp_of_deriv_ne_zero hga hgd, hg0]
-
-end
 
 end GroundTheory.Heights₂.Heights

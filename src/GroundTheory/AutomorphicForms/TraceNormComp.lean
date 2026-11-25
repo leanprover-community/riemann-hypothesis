@@ -10,8 +10,6 @@ namespace GroundTheory.Automorphic
 open scoped ENNReal InnerProductSpace InnerProduct
 open ContinuousLinearMap
 
-noncomputable section
-
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 theorem eq_zero_of_hsNormSq_eq_zero {T : H →L[ℂ] H} (h : hsNormSq T = 0) : T = 0 := by
@@ -59,7 +57,5 @@ theorem traceNorm_comp_le {A B : H →L[ℂ] H} (hA : IsHilbertSchmidt A)
     field_simp
     ring
   linarith
-
-end
 
 end GroundTheory.Automorphic

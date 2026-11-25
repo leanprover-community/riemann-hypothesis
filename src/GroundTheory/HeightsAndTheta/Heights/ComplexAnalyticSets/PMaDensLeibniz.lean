@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A Filter Topology
 
-noncomputable section
-
 namespace MaDensLeibniz
 
 variable {D : ℕ}
@@ -105,7 +103,5 @@ theorem proof : MaDensLeibniz.Statement := by
     ring
 
 end MaDensLeibniz
-
-end
 
 end GroundTheory.Heights₂.Heights

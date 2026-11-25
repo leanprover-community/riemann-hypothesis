@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M MeasureTheory Filter Topology
 
-noncomputable section
-
 namespace BlockResolutionInterpIntegral
 
 variable {D : ℕ} {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
@@ -184,7 +182,5 @@ theorem proof : BlockResolutionInterpIntegral.Statement := by
     (blockInterpPot d d.A A') (fun _ _ _ _ => rfl)
 
 end BlockResolutionInterpIntegral
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

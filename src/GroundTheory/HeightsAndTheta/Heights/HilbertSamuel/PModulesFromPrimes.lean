@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u v
 
 theorem degLT_diffStep {K : Type*} {n : ℕ} {f : (K → ℤ) → ℤ} (hf : DegLT f (n + 1))
@@ -208,7 +206,5 @@ theorem ModulesFromPrimes.proof (hF : MultigradedFiltration.Statement.{u, v})
     exact_mod_cast this
   rw [hfin, hcyc, Int.cast_sum, Finset.sum_div, ← Finset.sum_sub_distrib, Finset.sum_mul]
   exact (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun j _ => hAC j a (hA j))
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

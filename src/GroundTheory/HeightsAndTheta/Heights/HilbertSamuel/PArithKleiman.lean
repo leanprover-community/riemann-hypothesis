@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem ArithKleiman.trivial_hyps (P P0 : Ideal (MRing ι)) :
@@ -48,7 +46,5 @@ theorem ArithKleiman.proof (hMix : MixedKleiman.Statement) : ArithKleiman.Statem
   have hl : (fun i : Fin (D + 1) => if (i : ℕ) < D + 1 then A else constLine 0) = fun _ => A :=
     funext fun i => ite_eq_left i.isLt
   rwa [hl] at h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

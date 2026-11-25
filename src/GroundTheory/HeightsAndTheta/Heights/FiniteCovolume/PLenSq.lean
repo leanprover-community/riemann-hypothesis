@@ -9,8 +9,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix
 open scoped ComplexOrder
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -28,7 +26,5 @@ theorem LenSq.proof (h : HermitianForm F E W) (v : Basis ι E W) : LenSq.Stateme
   refine ⟨hw, ?_⟩
   unfold Majorant.len
   exact Real.sq_sqrt (Finset.sum_nonneg fun w _ => hw w)
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

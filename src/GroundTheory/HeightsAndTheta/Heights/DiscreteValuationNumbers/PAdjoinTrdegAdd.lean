@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open Algebra Cardinal Set
 
-noncomputable section
-
 theorem AdjoinTrdegAdd.trdeg_adjoin_eq_of_family {R L κ : Type} [CommRing R] [CommRing L] [IsDomain L]
     [Algebra R L] (u : Set L) (w : κ → L) (hwu : range w ⊆ u) (hw : AlgebraicIndependent R w)
     (halg : ∀ a ∈ u, IsAlgebraic (adjoin R (range w)) a) :
@@ -75,7 +73,5 @@ theorem AdjoinTrdegAdd.proof : AdjoinTrdegAdd.Statement := by
       (by rw [hrange]; exact union_subset (hxt.trans subset_union_right) (hbs.trans subset_union_left))
       hsum hst
   rw [h2, h1, mk_sum, lift_id, lift_id, mk_fintype, add_comm]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 theorem TwoBlockFnField.ratio_mem {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ] (x : Ix κ → Ω)
     (p q : Ix κ) : x p / x q ∈ blockFnField (ι := GlobalTheory κ) x :=
   IntermediateField.subset_adjoin ℚ _ ⟨p, q, Subsingleton.elim _ _, rfl⟩
@@ -70,7 +68,5 @@ theorem TwoBlockFnField.proof : TwoBlockFnField.Statement := by
     cases u; cases u'
     refine IntermediateField.subset_adjoin ℚ _ ⟨⟨0, i⟩, ⟨0, j⟩, rfl, ?_⟩
     simp [pair]
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

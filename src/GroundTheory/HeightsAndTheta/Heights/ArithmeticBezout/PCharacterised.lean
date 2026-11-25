@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory NumberField
 
-noncomputable section
-
 theorem not_isChowForm_zero (hPt : ProjPrimeHasPoint.Statement) {F : Type} [Field F] {n : ℕ}
     {W : Ideal (MvPolynomial (Fin n) F)} (hW : IsProjPrime W) (g : MvPolynomial (Fin 0 × Fin n) F) :
     ¬ IsChowForm W 0 g := by
@@ -28,7 +26,5 @@ theorem not_isChowForm_zero (hPt : ProjPrimeHasPoint.Statement) {F : Type} [Fiel
     ⟨x, hx, hxW, fun i => i.elim0⟩
   have := (hg.2 1).mpr hunit _ hinc
   simp at this
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 theorem AmpleOfGenTwist.proof (hGen : GenTwistGenerated.Statement) (hVan : GenTwistVanish.Statement) :
     AmpleOfGenTwist.Statement := by
   intro S _ K _ _ ι _ _ V α p q hV hα hp
@@ -30,7 +28,5 @@ theorem AmpleOfGenTwist.proof (hGen : GenTwistGenerated.Statement) (hVan : GenTw
       ring
     rw [hN]
     exact hc₀ (c * q) (c * p) (le_trans hc (Nat.le_mul_of_pos_right c hp))
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

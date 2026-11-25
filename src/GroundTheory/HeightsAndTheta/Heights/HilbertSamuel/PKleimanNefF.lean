@@ -21,8 +21,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace KleimanNefF
 
 variable {F : Type} [Field F] {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -151,7 +149,5 @@ theorem KleimanNefF.proof (hKA : KH.KAmpStatement) (hGP : GeneratedProductNonneg
     exact (mul_nonneg_iff_of_pos_left hprod).mp hB
   have h0 := Kleiman.nonneg_of_poly c key
   simpa [c] using h0
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

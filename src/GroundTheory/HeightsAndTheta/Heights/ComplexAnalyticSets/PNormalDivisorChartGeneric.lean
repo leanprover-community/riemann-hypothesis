@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace NormalDivisorChartGeneric
 
 theorem ringKrullDim_le_of_injective_isIntegral {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)
@@ -86,7 +84,5 @@ theorem proof (hUp : NormalModelDivisorChartGeneric.Statement) : NormalDivisorCh
     exact h
 
 end NormalDivisorChartGeneric
-
-end
 
 end GroundTheory.Heights₂.Heights

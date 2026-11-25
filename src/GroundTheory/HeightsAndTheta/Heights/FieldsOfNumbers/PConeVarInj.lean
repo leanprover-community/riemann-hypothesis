@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem ConeVarInj.proof (hNum : ConeVarNumerator.Statement.{u}) : ConeVarInj.Statement.{u} := by
@@ -60,7 +58,5 @@ theorem ConeVarInj.proof (hNum : ConeVarNumerator.Statement.{u}) : ConeVarInj.St
     simp only [Pi.add_apply] at this
     omega
   · exact fun hn => absurd (mem_support_iff.mpr hd) hn
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

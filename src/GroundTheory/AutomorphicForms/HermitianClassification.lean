@@ -8,8 +8,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.Automorphic
 
 open Module GroundTheory.LocalField ValuativeRel IsLocalRing Polynomial
@@ -62,5 +60,3 @@ end HermitianForm
 end Local
 
 end GroundTheory.Automorphic
-
-end

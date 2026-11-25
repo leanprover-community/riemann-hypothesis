@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem ringKrullDim_eq_of_relDim {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
@@ -52,7 +50,5 @@ theorem DegZeroLocalRing.proof (h1 : DegZeroLocLocal.Statement.{u})
   rw [ringKrullDim_eq_of_relDim hn1, ringKrullDim_eq_of_relDim hn,
     Nat.add_right_comm _ 1 (Fintype.card K), add_comm _ 1, Nat.cast_add 1, Nat.cast_one] at e
   exact ENat.WithBot.add_natCast_cancel.mp e
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

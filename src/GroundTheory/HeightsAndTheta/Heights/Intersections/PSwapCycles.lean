@@ -25,8 +25,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1
   ReciprocityTheory.ChartRestriction.G.AI.I1.SwapLoc
 
-noncomputable section
-
 namespace SwapCyclesAlt
 
 theorem not_lt_lt {R : Type*} [CommRing R] [IsNoetherianRing R] {V W W' : Ideal R} [V.IsPrime]
@@ -263,7 +261,5 @@ theorem SwapCycles.proof (hlen2 : LocalLengthMultiplicativity.{0}) : SwapCycles.
     exact coeff_eq hlen2 hPd hs hs' hnc
 
 theorem SwapCycles.full : SwapCycles.Statement := SwapCycles.proof length_two_generator_quotient
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

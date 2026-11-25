@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets
 
-noncomputable section
-
 theorem PosPartSplit.proof : PosPartSplit.Statement := by
   classical
   intro n d J A f φ E y hA hE hcov
@@ -41,7 +39,5 @@ theorem PosPartSplit.proof : PosPartSplit.Statement := by
   rw [ENNReal.ofReal_sum_of_nonneg (fun x _ => hT0 f x), Finset.sum_congr rfl hpt,
     ← Summable.tsum_finsetSum (fun _ _ => ENNReal.summable)]
   exact tsum_congr fun k => (ENNReal.ofReal_sum_of_nonneg (fun x _ => hT0 _ x)).symm
-
-end
 
 end GroundTheory.Heights₂.Heights

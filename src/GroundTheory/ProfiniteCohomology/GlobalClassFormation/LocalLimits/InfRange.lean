@@ -14,8 +14,6 @@ open NumberField GroundTheory.Global FiniteSubfield
 
 open scoped NumberField.LiesOver
 
-noncomputable section
-
 variable {K : FiniteSubfield} {v : NumberField.InfinitePlace K.1}
   (ι : AlgebraicClosure ℚ →ₐ[K.1] AlgebraicClosure v.Completion)
 
@@ -108,7 +106,5 @@ theorem exists_level_infCompletionEmbedding_surjective :
   refine ⟨p₀, fun p hp ↦ ?_⟩
   have hrp : r ∈ p.1.1 := (show p₀.1.1 ≤ p.1.1 from hp) hr₀
   exact infCompletionEmbedding_surjective ι p.1 (r := ⟨r, hrp⟩) (Subtype.ext hr)
-
-end
 
 end GroundTheory.ProfCoh

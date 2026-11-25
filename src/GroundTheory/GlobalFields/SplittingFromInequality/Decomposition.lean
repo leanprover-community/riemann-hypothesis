@@ -19,8 +19,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField Filter Module AdeleBaseChange SemiLocal IntermediateField
 open scoped Pointwise
 
-noncomputable section
-
 section FixedField
 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
@@ -151,7 +149,5 @@ theorem stabilizer_eq_zpowers_arithFrobAt (v : HeightOneSpectrum (𝓞 K))
   exact Subgroup.mem_zpowers_iff.2 ⟨k, hk'⟩
 
 end Frobenius
-
-end
 
 end GroundTheory.Global

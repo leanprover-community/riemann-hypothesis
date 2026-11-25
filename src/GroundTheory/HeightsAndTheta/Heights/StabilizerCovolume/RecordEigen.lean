@@ -6,8 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.RecordEige
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.NineStatements
 
 open NumberField IsDedekindDomain

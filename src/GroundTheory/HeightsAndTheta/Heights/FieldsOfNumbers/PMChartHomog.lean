@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {F : Type*} [Field F]
@@ -97,7 +95,5 @@ theorem MChartHomog.proof : MChartHomog.Statement.{u} := by
         chartMonomial u (b - Finsupp.weight (blockWeight ι) e) := by
       rw [← chartMonomial_add, add_tsub_cancel_of_le (hle e he)]
     rw [key, map_mul, map_mul, map_mul, map_mul, ← mul_assoc, chartMap_monomial_mul P u hu]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

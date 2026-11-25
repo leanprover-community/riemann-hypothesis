@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix MeasureTheory
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartEnergyCongruence
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
@@ -108,7 +106,5 @@ theorem ChartEnergy.proof (hI : ChartEnergyLinearInvariant.Statement) (hD : Char
       rw [← Real.log_mul hns.ne' hNpos.ne', ← hN're, Real.log_one]
     linarith
   rw [hlog]
-
-end
 
 end GroundTheory.Heights₂.Heights

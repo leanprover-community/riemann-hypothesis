@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology
 open GroundTheory.Heights₂.Heights.HilbertSamuel
 
-noncomputable section
-
 namespace NefCountAlongMultiples
 
 section Transport
@@ -119,7 +117,5 @@ theorem le_arithmeticVolume_of_alongMultiples {Ω : Type} [Field Ω] {Pr : ℕ �
   linarith
 
 end NefCountAlongMultiples
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

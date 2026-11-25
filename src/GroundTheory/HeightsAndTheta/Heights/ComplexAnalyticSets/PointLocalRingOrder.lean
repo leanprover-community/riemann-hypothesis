@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Topology
 
-noncomputable section
-
 variable {σ : Type*}
 
 theorem pointLocalRing_exists_mul_eq (I : Ideal (MvPolynomial σ ℂ)) (w : σ → ℂ) (x : pointLocalRing I w) :
@@ -101,7 +99,5 @@ theorem analyticAt_eval_disc [Fintype σ] {r : ℝ} (hr : 0 < r) {φ : (Fin 1 �
   have hd : DifferentiableOn ℂ (fun τ : ℂ ↦ eval (φ fun _ ↦ τ) g) (Metric.ball 0 r) :=
     (differentiable_eval_pointLocal g).comp_differentiableOn (hφ.comp hc hmaps)
   exact hd.analyticAt (Metric.ball_mem_nhds 0 hr)
-
-end
 
 end GroundTheory.Heights₂.Heights

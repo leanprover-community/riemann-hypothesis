@@ -8,7 +8,6 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry KHFree
-noncomputable section
 
 theorem KHFreeBadFinite.full : KHFreeBadFinite.Statement := by
   intro K _ ι _ e
@@ -30,5 +29,4 @@ theorem KHFreeBadFinite.full : KHFreeBadFinite.Statement := by
         simp only [abs_of_neg (hn _), Finset.sum_neg_distrib,
           abs_of_nonpos (Finset.sum_nonpos fun j _ => (hn j).le)]
 
-end
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -18,8 +18,6 @@ open scoped NumberField.AdeleRing RestrictedProduct SchwartzMap Classical ENNRea
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace GJStandardL
 
 open GodementJacquet GLnLocal
@@ -151,7 +149,5 @@ theorem exists_sphericalIntegrable (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.I
     rw [hS0 v v.2]
 
 end GJStandardL
-
-end
 
 end GroundTheory.Automorphic

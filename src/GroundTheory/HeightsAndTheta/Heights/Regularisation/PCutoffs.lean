@@ -23,8 +23,6 @@ open ReciprocityTheory.AnForm.M (FinHolAtlas IsCompatChart)
 open ReciprocityTheory.AnForm.M.PLAux (chartPush chartPush_eq_zero isCompact_symm_image smooth_chartPush
   contDiffOn_compat)
 
-noncomputable section
-
 theorem exists_smooth_bump_of_isCompact {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] {K V : Set E} (hK : IsCompact K) (hV : IsOpen V) (hKV : K ⊆ V) :
     ∃ g : E → ℝ, ContDiff ℝ ∞ g ∧ (∀ y, 0 ≤ g y ∧ g y ≤ 1) ∧ (∀ y ∈ K, g y = 1) ∧
@@ -133,7 +131,5 @@ theorem CutoffsExist.proof : CutoffsExist.Statement := by
           (fun j _ => Finset.sum_nonneg fun k _ => hC0 j k) (Finset.mem_univ j))
     have h2 : 0 ≤ ‖w‖ ^ 2 := by positivity
     nlinarith
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

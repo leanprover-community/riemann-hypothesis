@@ -18,8 +18,6 @@ open MvPolynomial MeasureTheory Module
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem mem_coneTangent_self {n : ℕ} (h : HermNorm n) {J : Ideal (MvPolynomial (Fin n) ℂ)}
     (hJ : IsProjPrime J) {y : EuclideanSpace ℂ (Fin n)} (hy : y ∈ coneSet h J) :
     y ∈ coneTangent h J y := by
@@ -91,7 +89,5 @@ theorem ConeTangentAverage.proof (hMass : ConeLocalMass.Statement)
     with y hy hyC
   simp only [← mul_assoc]
   exact hInv n m hm hmn _ hy y (mem_coneTangent_self h hJ hyC)
-
-end
 
 end GroundTheory.Heights₂.Heights

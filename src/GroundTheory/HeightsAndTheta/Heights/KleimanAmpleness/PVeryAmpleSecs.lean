@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace VeryAmpleSecs
@@ -133,7 +131,5 @@ theorem VeryAmpleSecs.proof : VeryAmpleSecs.Statement.{u, w} := by
       field_simp
     rw [hs, pow_add]
     exact Submodule.mul_mem_mul (Submodule.pow_mem_pow _ (hL I j) n) he
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver)
 
-noncomputable section
-
 section Between
 
 variable {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω]
@@ -142,7 +140,5 @@ theorem ModelOfBlockGen.proof : ModelOfBlockGen.Statement := by
     have hep := prod_notMem_prime_of_forall hp (fun k => y ⟨k, c k⟩ * w k (b k)) (fun k => hw k (c k) (b k)) hcb
     obtain ⟨P, hP, hPeq⟩ := exists_isPrime_locIn_eq hAB _ hle p hp hep
     exact ⟨c, hc, P, hP, hPeq.symm⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

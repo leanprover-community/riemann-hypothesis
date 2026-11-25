@@ -8,8 +8,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 
 open NumberField GroundTheory.Automorphic Module Matrix
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -31,7 +29,5 @@ theorem ArchInvariant.proof (h : HermitianForm F E W) (v : Basis ι E W) :
   rw [hct] at hmem
   show star (M *ᵥ y w) ⬝ᵥ (gramAt h v w *ᵥ (M *ᵥ z w)) = star (y w) ⬝ᵥ (gramAt h v w *ᵥ z w)
   rw [star_mulVec_dotProduct_mulVec_mulVec, hmem]
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

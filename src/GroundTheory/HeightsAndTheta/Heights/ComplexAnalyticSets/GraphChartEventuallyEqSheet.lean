@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open MvPolynomial MeasureTheory Filter Topology Matrix
 
-noncomputable section
-
 variable {n d : ℕ}
 
 theorem analyticOnNhd_of_differentiableOn {U : Set (Fin d → ℂ)} {s : (Fin d → ℂ) → Fin n → ℂ}
@@ -39,7 +37,5 @@ theorem maDens_congr_of_eventuallyEq {D : ℕ} {φ ψ : Fin D → (Fin D → ℂ
   unfold ReciprocityTheory.AnForm.maDens
   simp only [hH]
 
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

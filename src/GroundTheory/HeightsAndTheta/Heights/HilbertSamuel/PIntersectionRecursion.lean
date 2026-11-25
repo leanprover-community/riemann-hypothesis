@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem blockWeight_cast_eq_unitDeg {K : Type} [DecidableEq K] (ι : K → Type) (b : K) (i : ι b) :
@@ -78,7 +76,5 @@ theorem IntersectionRecursion.proof : IntersectionRecursion.Statement.{u} := by
     refine hW ⟨TopDimMinimal.full _ J W (d + Fintype.card K) hJW hJlt ?_, hWq.relevant⟩
     rw [hWd]
     exact lt_irrefl _
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

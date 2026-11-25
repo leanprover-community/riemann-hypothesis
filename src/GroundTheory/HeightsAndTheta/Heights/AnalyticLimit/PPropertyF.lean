@@ -14,8 +14,6 @@ open ReciprocityTheory.AnForm.A (regMax Mollifier)
 open ReciprocityTheory.AnForm.M (FinHolAtlas)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Regular (RegChartData RegCharts errE errorWithLinear ell)
 
-noncomputable section
-
 section C2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -44,7 +42,5 @@ theorem TendstoC2On.congr_open {F G : ℝ → E → ℝ} {f : E → ℝ} {L U : 
     exact h'.fderiv_eq.symm
 
 end C2
-
-end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

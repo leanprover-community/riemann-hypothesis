@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology MeasureTheory IsDedekindDomain
 open scoped Pointwise ComplexOrder ENNReal NumberField.AdeleRing
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -117,7 +115,5 @@ theorem AdelicCovolumeFinite.proof (h : HermitianForm F E W) (v : Basis ι E W)
       exact h₂ μ₁ D (L s) (hLD s))
     μ
   exact ⟨FD, hFD, hfin⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open Filter
 
-noncomputable section
-
 universe u v w
 
 namespace VeryAmpleZExtend
@@ -126,7 +124,5 @@ theorem proof : VeryAmpleZExtend.Statement.{u, v, w} := by
   exact (eventually_all.mpr key).mono fun M hM => (Submodule.mem_iInf _).mpr hM
 
 end VeryAmpleZExtend
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

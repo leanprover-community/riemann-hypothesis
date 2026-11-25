@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology MeasureTheory
 
-noncomputable section
-
 namespace IntegralAgainstPositive
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -98,7 +96,5 @@ theorem proof : IntegralAgainstPositive.Statement := by
   · exact le_rfl
 
 end IntegralAgainstPositive
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

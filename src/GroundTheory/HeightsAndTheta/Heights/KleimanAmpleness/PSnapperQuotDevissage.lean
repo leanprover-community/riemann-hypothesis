@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 section Lemmas
@@ -90,7 +88,5 @@ theorem SnapperQuotDevissage.proof (hF : SnapperQuotFilt.Statement.{u, v, w})
         hstep m (by omega), Finset.sum_range_succ, dite_eq_left (by omega), add_comm]
   rw [← hGr, ← hG0, ← hHeq r, ← hHeq 0, (key r le_rfl).2, ← Fin.sum_univ_eq_sum_range]
   exact Finset.sum_congr rfl fun i _ => by simp [i.2]
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

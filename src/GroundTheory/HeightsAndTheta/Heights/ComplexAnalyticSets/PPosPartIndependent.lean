@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets Matrix
 
-noncomputable section
-
 theorem PosPartIndep.proof (h : SheetOnlyNull.Statement) (hL : PosPartLocal.Statement)
     (hS : PosPartSplit.Statement) : PosPartIndep.Statement := by
   intro n d J A A' f φ hJ hd hA hA' hf hφ
@@ -75,7 +73,5 @@ theorem PosPartIndep.proof (h : SheetOnlyNull.Statement) (hL : PosPartLocal.Stat
   rw [hint A hA (hae A A' hA hA' hcov),
     hint A' hA' (hae A' A hA' hA fun x hx h1 h2 => hcov x hx h2 h1)]
   exact tsum_congr fun k => hWE (e k) (E k) (hEm k) (hEW k)
-
-end
 
 end GroundTheory.Heights₂.Heights

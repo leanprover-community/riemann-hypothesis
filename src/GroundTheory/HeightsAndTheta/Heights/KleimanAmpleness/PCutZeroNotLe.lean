@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 section CutZeroNotLeAux
@@ -79,7 +77,5 @@ theorem CutZeroNotLe.proof : CutZeroNotLe.Statement.{u, w} := by
   refine ⟨g, hg, fun hgp => hsy ?_⟩
   rw [hst]
   exact Submodule.subset_span ⟨g, t, n, hgp, ht, hgn, htn, rfl⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open MeasureTheory
 open scoped ENNReal NNReal
 
-noncomputable section
-
 theorem SemidirectHaar.proof (G T : Type*) [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
     [Group T] [TopologicalSpace T] [IsTopologicalGroup T] [LocallyCompactSpace T]
@@ -200,7 +198,5 @@ theorem SemidirectHaar.proof (G T : Type*) [Group G] [TopologicalSpace G] [IsTop
   rw [hsc, lintegral_smul_measure, ENNReal.smul_def, smul_eq_mul] at key
   rw [← key, ENNReal.coe_inv hc0, ← mul_assoc,
     ENNReal.inv_mul_cancel (by exact_mod_cast hc0) ENNReal.coe_ne_top, one_mul]
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

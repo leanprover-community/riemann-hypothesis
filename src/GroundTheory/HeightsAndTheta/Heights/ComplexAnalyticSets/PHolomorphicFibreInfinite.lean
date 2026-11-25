@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Topology Metric
 
-noncomputable section
-
 namespace HolomorphicFibreInfinite
 
 theorem kernel_eq_of_maximal {k d r : ℕ} (A : (Fin k → ℂ) →L[ℂ] (Fin d → ℂ)) (v : Fin r → Fin k → ℂ)
@@ -212,7 +210,5 @@ theorem proof : HolomorphicFibreInfinite.Statement := by
   exact hw0 (hinj (by simpa [map_zero] using hw))
 
 end HolomorphicFibreInfinite
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

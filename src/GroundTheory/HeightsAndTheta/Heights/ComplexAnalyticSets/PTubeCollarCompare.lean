@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial Matrix Filter Topology ReciprocityTheory.AnForm ComplexSets
 open scoped ContDiff ComplexOrder
 
-noncomputable section
-
 namespace TubeCollarComparison
 
 theorem contDiffAt_logSq_comp {n m : ℕ} (A : Matrix (Fin m) (Fin n) ℂ) (P : MvPolynomial (Fin m) ℂ)
@@ -179,7 +177,5 @@ theorem TubeCollarCompare.proof : TubeCollarCompare.Statement := by
     _ ≤ 3 ^ (d + 1) * c * |maDens (fun k => (fun _ : Fin (d + 1) => euclPot) k ∘ s) (A *ᵥ x)| := by
         rw [one_mul]
         exact mul_le_mul_of_nonneg_left (le_abs_self _) hC
-
-end
 
 end GroundTheory.Heights₂.Heights

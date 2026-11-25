@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 theorem InterNumTie.proof (hRL : RestrLenRestrict.Statement.{u, w}) : InterNumTie.Statement.{u, w} := by
@@ -113,7 +111,5 @@ theorem InterNumTie.of_restrictQuot (hRQ : PrimeFiltration.RestrictQuot.Statemen
   InterNumTie.proof (RestrLenRestrict.proof
     (SurjectiveClosed.proof Extension.full.{u, w, w} IdealTwistFamily.proof
       (TildeVanish.proof SerreVanish.full.{u, w})) hRQ)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

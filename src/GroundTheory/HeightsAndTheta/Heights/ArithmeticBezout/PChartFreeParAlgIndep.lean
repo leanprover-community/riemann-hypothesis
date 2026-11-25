@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Cardinal
 
-noncomputable section
-
 theorem ChartFreeParAlgIndep.proof (h : ChartParAlgebraic.Statement) : ChartFreeParAlgIndep.Statement := by
   intro F _ n e K L _ _ _ _ _ _ u t η hu hK hL hrel hchart j₀ hj₀ htr
   have halg := h F n e K L u t η hK hL hrel hchart j₀ hj₀
@@ -73,7 +71,5 @@ theorem ChartFreeParAlgIndep.proof (h : ChartParAlgebraic.Statement) : ChartFree
   have hz : Algebra.trdeg K L = 0 :=
     nonpos_iff_eq_zero.1 ((Cardinal.add_le_add_iff_of_lt_aleph0 hfin).1 h0)
   exact trdeg_eq_zero_iff.1 hz
-
-end
 
 end GroundTheory.Heights₂.Heights

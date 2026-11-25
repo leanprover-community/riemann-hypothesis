@@ -20,8 +20,6 @@ open Matrix ComplexSets
 open GroundTheory.Heights₂.Heights.LowerBoundFree.FubiniLevi
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace RegularizedLogDensityNonneg
 
 theorem hessC_logDistSq_comp_posSemidef {n e : ℕ} (x : Fin n → ℂ) (s : (Fin e → ℂ) → Fin n → ℂ)
@@ -63,7 +61,5 @@ theorem RegLogDensNonneg.proof : RegLogDensNonneg.Statement := by
     exact RegularizedDensityNonneg.hessC_logReg_comp_posSemidef u hε han
   · simp only [Matrix.cons_val_succ]
     exact RegularizedLogDensityNonneg.hessC_logDistSq_comp_posSemidef x s _ han (hsz.symm ▸ hzx)
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace CurveAffineCharts
 
 variable {T : Type} [Fintype T] {K' : Type} [Field K'] (y : (Σ _ : Unit, T) → K')
@@ -168,7 +166,5 @@ end CurveAffineCharts
 theorem CurveCharts.proof (hc : ClosedPointChart.Statement) : CurveCharts.Statement :=
   fun T _ K' _ _ y hy =>
     ⟨CurveAffineCharts.finite y hy, CurveAffineCharts.finrank_eq y hy, hc T K' y hy⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

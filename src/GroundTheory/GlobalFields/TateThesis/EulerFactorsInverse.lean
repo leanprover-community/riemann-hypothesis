@@ -13,8 +13,6 @@ open scoped Real
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 theorem eq_of_forall_exp_mul_I {a b : ℝ}
@@ -186,7 +184,5 @@ theorem infiniteWeight_inv_of_isComplex {w : InfinitePlace K} (hw : w.IsComplex)
   rw [infiniteWeight, infiniteParams_inv, ite_eq_right (not_isReal_iff_isComplex.2 hw)]
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

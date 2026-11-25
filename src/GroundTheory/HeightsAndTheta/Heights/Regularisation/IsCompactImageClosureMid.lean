@@ -17,8 +17,6 @@ open ReciprocityTheory.AnForm.A (IsPsh polyMax Mollifier molli shrink regMax tma
 open ReciprocityTheory.AnForm.M (FinHolAtlas)
 open ReciprocityTheory.AnForm (levi)
 
-noncomputable section
-
 theorem continuous_of_atlasSmooth {D : ℕ} {X : Type*} [TopologicalSpace X] {A : FinHolAtlas D X}
     {f : X → ℝ} (hf : A.Smooth f) : Continuous f := by
   rw [continuous_iff_continuousAt]
@@ -73,7 +71,5 @@ theorem exists_bound_q [CompactSpace X] {δ : ℝ}
     _ ≤ ∑ j, |Q j| := Finset.single_le_sum (fun i _ => abs_nonneg (Q i)) (Finset.mem_univ j)
 
 end PotentialCharts
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

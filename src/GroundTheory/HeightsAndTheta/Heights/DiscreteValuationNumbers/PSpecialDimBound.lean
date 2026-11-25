@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem withBotENat_lt_of_add_one_le {a : WithBot ℕ∞} {n : ℕ} (h : a + 1 ≤ (n : WithBot ℕ∞)) :
@@ -59,7 +57,5 @@ theorem SpecialDimBound.proof : SpecialDimBound.Statement := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P d hP
   have := hP.multiProj.isPrime
   exact withBotENat_lt_of_add_one_le (hP.dim ▸ special_dim_add_one_le hϖ P hP.noTorsion)
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

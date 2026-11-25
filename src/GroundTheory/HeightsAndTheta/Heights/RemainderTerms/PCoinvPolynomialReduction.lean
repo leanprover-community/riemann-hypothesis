@@ -8,8 +8,6 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open MvPolynomial Finset Coinv
 
-noncomputable section
-
 theorem CoinvPolynomialReduction.proof (h1 : CoinvMonomialReduction.Statement) :
     CoinvPolynomialReduction.Statement := by
   intro K _ _ f n H
@@ -26,7 +24,5 @@ theorem CoinvPolynomialReduction.proof (h1 : CoinvMonomialReduction.Statement) :
       rw [mul_sub, C_mul_monomial, mul_one, smul_eq_C_mul]
     rw [e1, e2]
     exact Ideal.sum_mem _ fun d _ => Ideal.mul_mem_left _ _ (hvI d)
-
-end
 
 end GroundTheory.Heights₂.Heights.RestTerms

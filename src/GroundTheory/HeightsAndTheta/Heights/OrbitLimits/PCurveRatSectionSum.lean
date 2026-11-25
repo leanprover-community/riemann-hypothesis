@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 namespace CurveRationalSectionSum
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -48,7 +46,5 @@ theorem arInt_eq_sum {P : Ideal (MRing ι)} (hP : IsArithVar P 1) {X : Reciproci
 
 end CurveRationalSectionSum
 
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

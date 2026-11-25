@@ -16,8 +16,6 @@ open Metric Filter Topology Set
 open ReciprocityTheory.AnForm.A (coordDiv limsupExt polyMax)
 open ReciprocityTheory.AnForm.M (FinHolAtlas IsCompatChart)
 
-noncomputable section
-
 namespace TruncTransfer
 
 theorem exists_lipschitz_near {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [ProperSpace E]
@@ -183,7 +181,5 @@ theorem TruncTransfer.proof : TruncTransfer.Statement := by
     linarith [mul_comm (max m 1) (c₀ j k)]
   · exact (by linarith [hL' (Set.mem_range_self (j, k))] : 2 * L₀ j k ≤ 2 * L').trans
       (le_max_right _ _)
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

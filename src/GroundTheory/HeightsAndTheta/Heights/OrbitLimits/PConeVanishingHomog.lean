@@ -8,8 +8,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Finset

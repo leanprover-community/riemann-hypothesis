@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MeasureTheory Metric Module ZSpan NumberField
 
-noncomputable section
-
 section Euclidean
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
@@ -39,7 +37,5 @@ variable {K : Type*} [Field K] [NumberField K] {E : Type*} [AddCommGroup E] [Mod
   [Module.Finite (𝓞 K) E] [Module.Projective (𝓞 K) E] (h : HermitianMetric K E)
 
 end Bundle
-
-end
 
 end GroundTheory.Heights₂.Heights

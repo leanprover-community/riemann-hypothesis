@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem LocalIntegralClosureFinite.proof (hN : NoetherIntegralClosureFinite.Statement.{u})
@@ -58,7 +56,5 @@ theorem LocalIntegralClosureFinite.proof (hN : NoetherIntegralClosureFinite.Stat
     IntermediateField.relfinrank_eq_finrank_of_le hEL] at hdeg
   exact exists_finset_integral_span hN (Set.finite_range _) A' L hRA hloc hEL
     (FiniteDimensional.of_finrank_pos (Nat.pos_of_ne_zero (right_ne_zero_of_mul hdeg)))
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

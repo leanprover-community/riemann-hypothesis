@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial IsLocalRing
 
-noncomputable section
-
 theorem isDiscreteValuationRing_localization_of_height_eq_one {A : Type*} [CommRing A] [IsDomain A]
     [IsNoetherianRing A] [IsIntegrallyClosed A] (q : Ideal A) [q.IsPrime] (hq : q.height = 1) :
     IsDiscreteValuationRing (Localization.AtPrime q) := by
@@ -178,7 +176,5 @@ theorem NormalCodimOneUniformiser.proof : NormalCodimOneUniformiser.Statement :=
     | zero => simp
     | add y z _ _ hy hz => rw [mul_add]; exact add_mem hy hz
     | smul r y _ hy => rw [smul_eq_mul, mul_left_comm]; exact Ideal.mul_mem_left _ r hy
-
-end
 
 end GroundTheory.Heights₂.Heights

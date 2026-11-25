@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace BoundedInverseCompact
 
 section SlopeTestRemainingChoices
@@ -201,7 +199,5 @@ theorem BoundedInverseCompact.proof (h : HermitianForm F E W) (v : Basis ι E W)
     rw [conjTranspose_apply, norm_star]
     exact hGi_le l k
   exact ⟨hG_le, hGi_le⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

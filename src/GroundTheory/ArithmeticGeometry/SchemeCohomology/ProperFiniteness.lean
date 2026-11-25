@@ -17,8 +17,6 @@ open AlgebraicGeometry CategoryTheory TopologicalSpace
 
 universe u
 
-noncomputable section
-
 attribute [local instance] algebraOfOver
 
 variable {A : Type u} [CommRing A] [IsNoetherianRing A]
@@ -33,7 +31,5 @@ theorem finite_H_of_isProper {X : Scheme.{u}} [X.Over (Spec (.of A))]
     [IsProper (X ↘ Spec (.of A))] (F : X.Modules) (hF : IsCoherent F) (p : ℕ) :
     Module.Finite A (Sheaf.H.{u} (modulesAb F) p) :=
   finiteH_of_isProper F hF p
-
-end
 
 end GroundTheory.Arith.SchemeCoh

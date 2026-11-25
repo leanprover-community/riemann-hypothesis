@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem aeval_scale_of_isWeightedHomogeneous {σ R A : Type*} [CommSemiring R] [CommSemiring A]
     [Algebra R A] {w : σ → ℕ} {p : MvPolynomial σ R} {a : ℕ} (hp : IsWeightedHomogeneous w p a)
     (t : A) (u : σ → A) : aeval (fun j => t ^ w j * u j) p = t ^ a * aeval u p := by
@@ -131,7 +129,5 @@ theorem IsChowForm.exists_multiHomog {P : Ideal (MvPolynomial (Fin n) F)}
   have hz := (hf.2 f).mpr dvd_rfl 0 (zero_mem_incidence hP k)
   rw [hC, aeval_C, map_eq_zero_iff _ (algebraMap F (AlgebraicClosure F)).injective] at hz
   exact hf.1 (by rw [hC, hz, C_0])
-
-end
 
 end GroundTheory.Heights₂.Heights

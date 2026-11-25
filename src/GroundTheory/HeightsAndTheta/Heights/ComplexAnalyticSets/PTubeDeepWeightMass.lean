@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MeasureTheory Filter Topology
 
-noncomputable section
-
 theorem measurable_poincareDeepWeight' : Measurable poincareDeepWeight := by
   have hn : Measurable fun z : ℂ => ‖z‖ ^ 2 := (continuous_norm.pow 2).measurable
   exact Measurable.ite (measurableSet_lt hn.log measurable_const) (hn.mul (hn.log.pow_const 2)).inv
@@ -126,7 +124,5 @@ theorem TubeDeepWeightMass.proof : TubeDeepWeightMass.Statement := by
   simp only [mul_one, Function.comp_apply] at this
   rw [this, Measure.restrict_univ, setLIntegral_one]
   exact ENNReal.mul_lt_top lintegral_poincareDeepWeight_lt_top hT
-
-end
 
 end GroundTheory.Heights₂.Heights

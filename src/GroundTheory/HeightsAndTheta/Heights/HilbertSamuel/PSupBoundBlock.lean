@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory Filter Topology
 
-noncomputable section
-
 section Invariance
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -112,7 +110,5 @@ theorem SupBoundBlock.proof (hS : SupNormAgainstL2.Statement) (hR : ResolutionPu
       (pow_ne_zero _ (d.A.pos z hz.1).ne')
   have := mem_closure_iff_nhdsWithin_neBot.1 hcl
   exact le_of_tendsto (hcont.tendsto.mono_left nhdsWithin_le_nhds) (eventually_nhdsWithin_of_forall hSM)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

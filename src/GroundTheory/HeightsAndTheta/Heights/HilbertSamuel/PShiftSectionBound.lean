@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter
 
-noncomputable section
-
 section Shift
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [CharZero Ω]
@@ -129,7 +127,5 @@ theorem ShiftSectionBound.proof (hfin : SectionLatticeFinite.Statement) (hQ : Sh
       rw [Finset.sum_mul]
       exact Finset.sum_le_sum fun i hi => hn i hi
     linarith
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

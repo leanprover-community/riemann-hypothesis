@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ContDiff
 
-noncomputable section
-
 namespace RegBallMass
 
 variable {n d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin (d + 1)) (Fin n) ℂ}
@@ -130,7 +128,5 @@ theorem RegBallMass.proof (hF : RegFixedBallMass.Statement) (hM : RegLelongMono.
     _ ≤ r ^ (2 * d) * max M 0 :=
       mul_le_mul_of_nonneg_left (hI2.trans (hIRle.trans (le_max_left _ _))) (pow_nonneg hr.1.le _)
     _ = max M 0 * r ^ (2 * d) := mul_comm _ _
-
-end
 
 end GroundTheory.Heights₂.Heights

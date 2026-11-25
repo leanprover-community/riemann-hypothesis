@@ -8,8 +8,6 @@ import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory

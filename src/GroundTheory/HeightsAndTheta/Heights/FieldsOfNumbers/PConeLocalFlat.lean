@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR IsLocalRing
 
-noncomputable section
-
 universe u
 
 
@@ -37,7 +35,5 @@ theorem ConeLocalFlat.proof (h : ConePolyLocalization.Statement.{u}) : ConeLocal
       ((maximalIdeal (degZeroLoc P {W})).map (C : degZeroLoc P {W} →+* MvPolynomial K _))
       (coneLocal P W hPW), Ideal.map_map, ← MvPolynomial.algebraMap_eq,
       ← IsScalarTower.algebraMap_eq]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -15,8 +15,6 @@ open MeasureTheory Set
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace RightCosetSpace
@@ -82,7 +80,5 @@ theorem isMulRightInvariant_normOneGL (μ : Measure (normOneGL (K := K) (n := n)
   exact RightCosetSpace.isMulRightInvariant_of_isFiniteMeasure_quotientMeasure (rationalGLOne (K := K) (n := n)) μ
 
 end Reduction
-
-end
 
 end GroundTheory.Automorphic

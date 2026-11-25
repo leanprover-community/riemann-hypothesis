@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem FibreNonempty.proof (h1 : SemilocalFiniteRank.Statement.{u})
@@ -68,7 +66,5 @@ theorem FibreNonempty.proof (h1 : SemilocalFiniteRank.Statement.{u})
     (isMultiProjPrime_contractPrime j ι' hP') W hW hle).2 n hc hWn
   rw [ringKrullDim_eq_zero_of_isField hA] at hdim
   exact zero_ne_one hdim
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

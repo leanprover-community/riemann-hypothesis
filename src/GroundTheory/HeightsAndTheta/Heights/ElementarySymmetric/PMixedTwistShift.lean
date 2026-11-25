@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 namespace MixedTwistShiftAlt
@@ -144,7 +142,5 @@ theorem MixedTwistShift.proof (hH : SnapperHyperplane.Statement.{u, w}) (hS : Sn
         exact ⟨0, Or.inl rfl, fun e c => by simp [hf, pieceChar_of_irrelevant qq hrel]⟩
     filter_upwards [hLhs] with c hc
     exact_mod_cast hc.trans (hzero hlow 1 _)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

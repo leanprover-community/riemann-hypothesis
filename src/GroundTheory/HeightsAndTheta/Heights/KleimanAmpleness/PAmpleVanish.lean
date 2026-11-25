@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 section Tilde
@@ -77,7 +75,5 @@ theorem AmpleVanish.proof (hC : VeryAmpleCech.Statement.{u, v, w}) (hE : Extensi
   have hv := hc₀ i hi a (by omega)
   rw [M.tildeSys_natCast_eq_twist a, ← hsys] at hv
   exact e.toEquiv.subsingleton
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

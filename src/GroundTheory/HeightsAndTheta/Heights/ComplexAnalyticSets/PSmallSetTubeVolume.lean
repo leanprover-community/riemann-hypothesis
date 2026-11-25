@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets
 
-noncomputable section
-
 theorem zeroSet_subset_biUnion_minimalPrimes {n : ℕ} (I : Ideal (MvPolynomial (Fin n) ℂ)) :
     zeroSet I ⊆ ⋃ P ∈ I.minimalPrimes, zeroSet P := by
   intro x hx
@@ -82,7 +80,5 @@ theorem SmallSetTubeVolume.proof (h : PrimeTubeVolume.Statement) : SmallSetTubeV
   obtain ⟨P, hP, hxP⟩ := Set.mem_iUnion₂.1 (zeroSet_subset_biUnion_minimalPrimes I hxI)
   rw [← hF] at hP
   exact Set.mem_iUnion₂.2 ⟨P, hP, hxP, hxK⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

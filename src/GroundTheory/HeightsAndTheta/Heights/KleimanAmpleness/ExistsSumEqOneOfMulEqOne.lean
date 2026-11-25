@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver)
 
-noncomputable section
-
 section Loc
 
 variable {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω]
@@ -255,7 +253,5 @@ theorem GraphModel.full : GraphModel.Statement := by
       rintro (⟨⟩ | ⟨⟩)
       · exact hi
       · exact hsj
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

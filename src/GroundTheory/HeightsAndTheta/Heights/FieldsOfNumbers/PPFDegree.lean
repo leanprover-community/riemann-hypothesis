@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 section Pull
@@ -218,7 +216,5 @@ theorem ProjectionFormulaDegree.proof (h1 : CutRational.Statement.{u})
     have hpg := h4 F K K' j ι' P' hP' n hdim hdimP bg g hg hgP (fun W' => intNum F W' (fun i => pullDeg j (Fin.init bs i)))
       (fun W => intNum F W (Fin.init bs)) hyp1 hyp2
     rw [hpull, hcutP', hcutP, cycEval_ratDiv, cycEval_ratDiv, mul_sub, hpf, hpg]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

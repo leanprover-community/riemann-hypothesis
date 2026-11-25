@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace ClosedPtSkyscraper
 
 set_option linter.unusedSectionVars false
@@ -117,7 +115,5 @@ theorem ClosedPtSkyscraper.proof (hU : ClosedPtChartUnit.Statement) : ClosedPtSk
     refine LocalizedModule.mk_eq.mpr ⟨1, ?_⟩
     simp only [one_smul, Submonoid.smul_def, smul_smul]
     exact (hcong _ _ (by rw [mul_comm]; exact htg I.1 I.2.1 hI) m).symm
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

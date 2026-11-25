@@ -13,8 +13,6 @@ namespace GroundTheory.Global
 
 open IsDedekindDomain NumberField IntermediateField WithZero
 
-noncomputable section
-
 section CharField
 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
@@ -37,7 +35,5 @@ variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Alge
 
 
 end Places
-
-end
 
 end GroundTheory.Global

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial NumberField
 
-noncomputable section
-
 namespace StackedExceptionalReduced
 
 variable {K : Type} [Field K] [NumberField K] {i : ℕ} {F' : HermLattice K i} {T : Type} [Fintype T]
@@ -98,7 +96,5 @@ theorem DualStackedExcReduced.proof (hC : DualStackedExcCoords.Statement) (hB : 
       multAt_eq_of_mul_mem ((hsub u).trans hbase) hs hN]
     have := hEp
     exact ReciprocityTheory.ChartRestriction.G.AI.I1.inh_multAt_self _
-
-end
 
 end GroundTheory.Heights₂.Heights

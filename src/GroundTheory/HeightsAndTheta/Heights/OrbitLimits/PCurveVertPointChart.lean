@@ -21,8 +21,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo CurveVerticalPointChart
 
-noncomputable section
-
 theorem CurveVertPointChart.of_single {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {Ω : Type} [Field Ω] {y : (Σ k, ι k) → Ω} {s : MRing ι} {d : K → ℕ}
     (hy : IsArithVar (mCoordIdeal y) 1) (hs : IsMultiHomog s d) (hsP : s ∉ mCoordIdeal y)
@@ -128,7 +126,5 @@ theorem CurveVertPointChart.proof (hF : CurveRingFinite.Statement) (hCP : CurveC
     CurveVertPointChart.Statement :=
   fun K _ ι _ Ω _ y _ _ hy hs hsP _ hW c hc =>
     CurveVertPointChart.of_single hy hs hsP (hF K ι Ω y hy) (hCP K ι Ω y hy) hW c hc
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

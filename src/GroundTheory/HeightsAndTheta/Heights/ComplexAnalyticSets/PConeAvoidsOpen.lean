@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 attribute [local instance] MvPolynomial.gradedAlgebra
 
 variable {n d : ℕ}
@@ -135,7 +133,5 @@ theorem ConeAvoidsOpen.proof : ConeAvoidsOpen.Statement := by
     rw [key]
     exact Ideal.sum_mem _ fun m'' _ =>
       Ideal.mul_mem_left _ _ (homogeneousComponent_mem_of_mem hhom (hI m'') N)
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

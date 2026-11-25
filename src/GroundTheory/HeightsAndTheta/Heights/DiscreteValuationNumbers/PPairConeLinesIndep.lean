@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 theorem PairConeLinesIndep.formMatrix_isUnit {Ω E : Type} [Field Ω] [AddCommGroup E] [Module Ω E] {N : ℕ}
     (e : Module.Basis (Fin N) Ω E) (ψ : Fin N → Module.Dual Ω E) (hψ : LinearIndependent Ω ψ) :
     IsUnit (Matrix.of fun i j => ψ i (e j)) := by
@@ -101,7 +99,5 @@ theorem PairConeLinesIndep.proof : PairConeLinesIndep.Statement := by
   · change σ (C g * X none) = X none
     simp only [σ, map_mul, aeval_C, aeval_X, Option.elim, MvPolynomial.algebraMap_eq]
     rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hg, C_1, one_mul]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Finset
 
-noncomputable section
-
 theorem sum_subsets_neg_one_pow_prod_indicator (n : ℕ) (a : Fin n → ℕ) :
     ∑ T : Finset (Fin n), (-1 : ℚ) ^ (n - T.card) * ∏ i, (if i ∈ T then (1 : ℚ) else 0) ^ a i =
       ∏ i, (1 - (0 : ℚ) ^ a i) := by
@@ -95,7 +93,5 @@ theorem SubsetDiffConst.proof : SubsetDiffConst.Statement := by
       have h2 := sum_exponents_lt_of_mem_support hQ' he
       rw [split] at h2
       omega
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

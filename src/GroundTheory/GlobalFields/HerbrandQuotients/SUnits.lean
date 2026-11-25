@@ -13,8 +13,6 @@ namespace GroundTheory.Global
 
 open NumberField IsDedekindDomain MulAction Module
 
-noncomputable section
-
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L]
 
@@ -71,7 +69,5 @@ theorem cycHerbrand_sUnitRep (hS : ∀ (g : L ≃ₐ[K] L), ∀ w ∈ S, g • w
   rw [h1, cycHerbrand_unitsRep hσ, cycHerbrand_funPermRep hσ,
     prod_card_stabilizer_finitePlace S hS]
   ring
-
-end
 
 end GroundTheory.Global

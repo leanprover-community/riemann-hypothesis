@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Polynomial.Eisenstein.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.LocalField
 
 open ValuativeRel Polynomial IsDiscreteValuationRing

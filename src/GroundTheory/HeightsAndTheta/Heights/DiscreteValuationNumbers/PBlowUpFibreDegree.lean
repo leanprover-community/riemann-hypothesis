@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem BlowUpFibreDegree.proof (ha : HomLocRingLocal.Statement.{u}) (hb : DivCycleHomLoc.Statement.{u})
@@ -90,7 +88,5 @@ theorem BlowUpFibreDegree.proof (ha : HomLocRingLocal.Statement.{u}) (hb : DivCy
     unfold divCycle
     split_ifs <;> positivity
   rw [Nat.cast_mul, Int.toNat_of_nonneg h0]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

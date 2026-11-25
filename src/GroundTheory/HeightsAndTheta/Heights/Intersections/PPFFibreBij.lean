@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 section Loc
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -240,7 +238,5 @@ theorem PFFibreBij.proof : PFFibreBij.Statement := by
         exact Ideal.mem_comap.mp hn
       rw [hPhor] at hn'
       exact hn'
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

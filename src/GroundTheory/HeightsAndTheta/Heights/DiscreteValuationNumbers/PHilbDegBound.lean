@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 namespace HilbDegBound
@@ -165,7 +163,5 @@ theorem HilbDegBound.proof (h1 : HilbFnVanishBlock.Statement.{u}) (h2 : HilbFnCu
     have := hp1
     have hd := h4 (MRing ι F) Q p.1 hlt
     exact lt_of_add_one_le_natCast (hd.trans hdimle)
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

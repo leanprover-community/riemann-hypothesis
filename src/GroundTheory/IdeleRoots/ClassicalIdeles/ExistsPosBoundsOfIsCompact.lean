@@ -16,8 +16,6 @@ open GroundTheory.Global GroundTheory.Global.IdeleGroup GroundTheory.Automorphic
 
 namespace GroundTheory.BlockD
 
-noncomputable section
-
 theorem exists_pos_bounds_of_isCompact {X : Type*} [TopologicalSpace X] {S : Set X} (hS : IsCompact S)
     {f : X → ℝ} (hf : Continuous f) (hpos : ∀ x, 0 < f x) :
     ∃ lo hi : ℝ, 0 < lo ∧ 0 < hi ∧ ∀ x ∈ S, lo ≤ f x ∧ f x ≤ hi := by
@@ -316,7 +314,5 @@ theorem siegelSetsSL2Adelic_holds : Formalism.D.siegelSetsSL2Adelic := by
       funext m
       fin_cases m <;> simp
     rw [hdiag, Matrix.mul_assoc (Matrix.diagonal ![1, algebraMap F 𝔸[F] δ⁻¹]) B, hX]
-
-end
 
 end GroundTheory.BlockD

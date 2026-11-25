@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open Filter
 
-noncomputable section
-
 universe u w
 
 namespace VeryAmpleHilbert
@@ -138,7 +136,5 @@ theorem VeryAmpleHilbert.proof (hS : VeryAmpleSnapper.Statement.{u, w}) : VeryAm
     rw [hlim, hsum c₀.toNat (by omega), hPe, mul_comm]
   · filter_upwards [hQ0] with n hn
     rw [hn, hPev]
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

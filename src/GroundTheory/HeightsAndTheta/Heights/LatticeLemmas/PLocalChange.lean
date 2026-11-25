@@ -19,8 +19,6 @@ open GroundTheory.Heights₂.Heights
 
 universe u v
 
-noncomputable section
-
 theorem finrank_submodule_eq {R M : Type*} [CommRing R] [IsDomain R] [AddCommGroup M] [Module R M]
     (F : Submodule R M) (hF : ∀ x : M, ∃ a : R, a ≠ 0 ∧ a • x ∈ F) :
     Module.finrank R F = Module.finrank R M := by
@@ -35,7 +33,5 @@ theorem finrank_submodule_eq {R M : Type*} [CommRing R] [IsDomain R] [AddCommGro
   have h := rank_quotient_add_rank_of_isDomain F
   rw [h0, zero_add] at h
   simp only [Module.finrank, h]
-
-end
 
 end GroundTheory.Heights₂.Heights.LatticeLemmas

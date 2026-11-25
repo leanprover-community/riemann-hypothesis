@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 open GroundTheory.Heights₂.Heights.Inter.AvoidRing (isMultiHomog_mul isMultiHomog_pow)
 
-noncomputable section
-
 namespace ClosedPtGenUniform
 
 variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type}
@@ -144,7 +142,5 @@ theorem ClosedPtGenUniform.proof (hG : GradedSubmodules.Statement) (hF : ClosedP
   funext k
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

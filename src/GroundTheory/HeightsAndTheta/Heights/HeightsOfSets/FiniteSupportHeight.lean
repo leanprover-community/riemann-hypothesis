@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial NumberField
 
-noncomputable section
-
 theorem evalCone_map {ι : Type} {n : ι → ℕ} {F F' : Type*} [CommRing F] [CommRing F'] (φ : F →+* F')
     (z : Cone n F) (f : MvPolynomial (Coord n) ℤ) :
     evalCone (fun k i ↦ φ (z k i)) f = φ (evalCone z f) := by
@@ -63,7 +61,5 @@ theorem HermitianBundle.degree_bot {K : Type} [Field K] [NumberField K] (E : Her
     subst hm
     simp [HermitianBundle.gramDet]
   simp [hg _ hz]
-
-end
 
 end GroundTheory.Heights₂.Heights

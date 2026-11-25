@@ -13,8 +13,6 @@ open scoped NumberField.AdeleRing
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace Anisotropic
 
 section Local
@@ -220,7 +218,5 @@ theorem exists_adelicNorm_aeval_le (hd : 0 < d) (P : Fin m → MvPolynomial (Fin
         (fun k _ => by positivity) (Finset.mem_univ k))
 
 end Anisotropic
-
-end
 
 end GroundTheory.Automorphic

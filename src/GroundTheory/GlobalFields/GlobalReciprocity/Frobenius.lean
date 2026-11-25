@@ -20,8 +20,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField ValuativeRel GroundTheory.LocalField SemiLocal
 open scoped Pointwise
 
-noncomputable section
-
 section Local
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -106,7 +104,5 @@ theorem ideleSymbol_finiteEmbedding_eq_arithFrobAt (he : w.asIdeal.ramificationI
   rw [ideleSymbol_finiteEmbedding, localSymbol_eq_arithFrobAt v w he hπ]
 
 end Global
-
-end
 
 end GroundTheory.Global

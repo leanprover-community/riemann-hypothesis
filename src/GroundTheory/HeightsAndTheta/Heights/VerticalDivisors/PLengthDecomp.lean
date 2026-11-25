@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open Module IsLocalRing LinearMap Submodule
 
-noncomputable section
-
 namespace LengthDecomp
 
 open Classical
@@ -147,7 +145,5 @@ theorem LengthDecomp.proof : LengthDecomp.Statement := by
   rw [Ring.ord, LengthDecomp.length_localizedModule_eq_of_isLocalizedModule n.asIdeal
     ((Ideal.span {b}).toLocalizedQuotient' (Localization.AtPrime n.asIdeal) n.asIdeal.primeCompl
       (Algebra.linearMap B (Localization.AtPrime n.asIdeal))), hspan]
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

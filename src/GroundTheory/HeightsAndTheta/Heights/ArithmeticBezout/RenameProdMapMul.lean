@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 section Swap
 
 variable {F : Type*} [Field F] {n k : ℕ}
@@ -84,7 +82,5 @@ theorem chowFormSwap : ChowFormSwap.Statement := by
     ring
 
 end Swap
-
-end
 
 end GroundTheory.Heights₂.Heights

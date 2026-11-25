@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (mConeMapOver mIdealOver chartRingOver)
 
-noncomputable section
-
 theorem exists_form_div_of_mem_chartRing {k : Type} [Field k] {N : ℕ} {Ω : Type} [Field Ω] [Algebra k Ω]
     {x : Fin (N + 1) → Ω} {i : Fin (N + 1)} (hi : x i ≠ 0) {a : Ω}
     (ha : a ∈ Kleiman.chartRing k x (Kleiman.singleChart hi)) :
@@ -117,7 +115,5 @@ theorem SectionRatio.full : SectionRatio.Statement := by
   dsimp only
   simp only [map_mul]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

@@ -10,8 +10,6 @@ public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.LocalField
 
 open ValuativeRel MeasureTheory Measure Topology Filter

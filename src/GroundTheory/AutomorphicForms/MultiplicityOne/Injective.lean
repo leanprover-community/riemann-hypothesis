@@ -11,8 +11,6 @@ open scoped NumberField.AdeleRing
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace MultiplicityOne
 
 open AutomorphicForm FourierWhittaker
@@ -105,7 +103,5 @@ theorem eq_zero_of_whittaker_eq_zero {ϕ : AdelicGLn.AdelicGL K n → ℂ} (hc :
     exact key n hn le_rfl g
 
 end MultiplicityOne
-
-end
 
 end GroundTheory.Automorphic

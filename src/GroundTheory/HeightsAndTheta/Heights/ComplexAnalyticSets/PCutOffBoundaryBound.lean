@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A
 open scoped ContDiff
 
-noncomputable section
-
 namespace CutOffBoundaryBound
 
 variable {n d : ℕ}
@@ -364,6 +362,5 @@ theorem CutOffBoundaryBound.proof (hM : ChartMassCompact.Statement) (hL : MaDens
     ((hf₁.sub hf₂).const_mul _)) fun y => key t ht y)
   exact (by simpa only [Real.norm_eq_abs] using norm_integral_le_integral_norm fun y => D₁ y - D₂ y :
     |∫ y, (D₁ y - D₂ y)| ≤ ∫ y, |D₁ y - D₂ y|)
-end
 
 end GroundTheory.Heights₂.Heights

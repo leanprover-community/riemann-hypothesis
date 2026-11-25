@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ContDiff
 
-noncomputable section
-
 namespace RegLelongMono
 
 variable {n d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin (d + 1)) (Fin n) ℂ}
@@ -48,7 +46,5 @@ theorem RegLelongMono.proof (hA : RegLelongAnnulus.Statement) (hL : RegLogDensNo
     mul_nonneg (pow_nonneg hr.le _) (pow_nonneg (hr.le.trans hrs) _)
   have := mul_nonneg hrs0 hτ
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights

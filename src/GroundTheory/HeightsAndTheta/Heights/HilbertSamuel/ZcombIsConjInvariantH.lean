@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -92,7 +90,5 @@ theorem G2.proof (hK : KodairaSection.Statement) (hS : SectionProduct.Statement)
   refine ⟨hmem, fun c hc => ?_⟩
   have h := hbd c (Real.exp C) hc heb
   rwa [← Real.exp_nat_mul] at h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

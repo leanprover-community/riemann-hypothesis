@@ -20,8 +20,6 @@ open ReciprocityTheory.AnForm.A (IsPsh Mollifier molli regMax shrink)
 open ReciprocityTheory.AnForm.M (FinHolAtlas IsCompatChart)
 open ReciprocityTheory.AnForm (levi levi_congr levi_comp levi_add_smul levi_re_analytic)
 
-noncomputable section
-
 namespace PotentialCharts
 
 variable {D : ℕ} {X : Type*} [TopologicalSpace X] {A : FinHolAtlas D X} (P : PotentialCharts A)
@@ -233,7 +231,5 @@ theorem BoundedGlue.proof : BoundedGlue.Statement :=
   fun _ _ _ _ _ _ B ρ η _ _ _ hcut ht hε hball hcmp =>
     B.glue_smooth_and_levi (B.smoothed ρ _) η hcut hε
       (fun j x hx => B.smoothed_local ρ ht j (hball j x (subset_closure hx))) hcmp
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

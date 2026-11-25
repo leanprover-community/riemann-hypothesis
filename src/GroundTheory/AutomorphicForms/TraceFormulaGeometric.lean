@@ -10,8 +10,6 @@ open scoped ENNReal Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace RightCosetSpace
 
 section Geometric
@@ -46,7 +44,5 @@ theorem eq_of_mul_mem_fundamentalDomain {η₁ η₂ : Γ} {y : G}
 end Geometric
 
 end RightCosetSpace
-
-end
 
 end GroundTheory.Automorphic

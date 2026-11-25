@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 theorem mul_mem_chartRing_of_mul_eq_one {S : Type u} [CommRing S] {Ω : Type w} [Field Ω]
@@ -277,7 +275,5 @@ theorem subset_support_of_redAt_ne_zero (hg : RedGood hxy Nb.toSubSystem g)
   intro i hi
   exact (mem_support y).mpr (Finset.prod_ne_zero_iff.mp (pow_ne_zero_iff
     (Finset.card_pos.mpr I₀.2.1).ne' |>.mp hJy) i hi)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

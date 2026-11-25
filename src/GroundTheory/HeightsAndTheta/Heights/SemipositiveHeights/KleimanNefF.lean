@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.ForSecondHalf
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 theorem KleimanNefF.kleimanNef_field_of_alt (hT : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2.NefProductNonneg.Statement) :
     KH.KleimanNefFStatement := by
   classical
@@ -53,7 +51,5 @@ theorem NefProductNonneg.unfolding_matrix_of_form (hS : GroundTheory.Heights₂.
   obtain ⟨N, _, x, Ms, _, hsub, _, hiff, hnum⟩ := hS F K ι Ω y d μs hy hd
   rw [← hnum]
   exact hA F Ω N x d _ Ms hsub fun j => (hiff j).2 (hnef j)
-
-end
 
 end GroundTheory.Heights₂.Heights.ForSecondHalf

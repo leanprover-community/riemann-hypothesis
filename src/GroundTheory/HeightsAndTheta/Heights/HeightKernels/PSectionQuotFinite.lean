@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace SectionQuotientFinite
 
 theorem aeval_ne_zero {T : Type} [Fintype T] {K' : Type} [Field K'] (y : (Σ _ : Unit, T) → K')
@@ -31,7 +29,5 @@ end SectionQuotientFinite
 theorem SectionQuotFinite.closed : SectionQuotFinite.Statement :=
   fun T _ K' _ _ y s hy hs hsP =>
     Targets.CurveSectionQuotFinite.proof Unit (fun _ => T) K' y s (fun _ => 1) hy hs hsP
-
-end
 
 end GroundTheory.Heights₂.Heights

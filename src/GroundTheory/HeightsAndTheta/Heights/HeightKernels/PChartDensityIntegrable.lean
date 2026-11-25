@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Matrix MeasureTheory Filter
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartDensityIntegrableAlt
 
 theorem exists_conjTranspose_mul_self {e : ℕ} {N : Matrix (Fin e) (Fin e) ℂ} (hN : N.PosDef) :
@@ -152,7 +150,5 @@ theorem ChartDensityIntegrable.proof : ChartDensityIntegrable.Statement := by
     ring
   rw [h]
   exact (integrable_comp_affine (integrable_fsDens e) c P hP).const_mul _
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 theorem isMultiHomog_prod_pow {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {R : Type*}
     [CommRing R] (i : ∀ k, ι k) (n : K → ℕ) :
     IsMultiHomog (∏ k, (X ⟨k, i k⟩ : MRing ι R) ^ n k) n := by
@@ -44,7 +42,5 @@ theorem ExistsForm.proof : ExistsForm.Statement := by
   funext k
   simp only
   omega
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -14,8 +14,6 @@ namespace GroundTheory.Global
 
 open NumberField IsDedekindDomain IntermediateField AdeleBaseChange Filter Topology Set
 
-noncomputable section
-
 universe u
 
 section Sums
@@ -268,7 +266,5 @@ theorem hasDirichletDensity_setOf_exists_arithFrobAt_mem (C : Set Gal(L/K))
     exact ⟨fun w' hw' ↦ (hv w' hw').1, w, hw, (hv w hw).2⟩
 
 end Main
-
-end
 
 end GroundTheory.Global

@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A
 open scoped ContDiff
 
-noncomputable section
-
 namespace RegRadialWeight
 
 variable {n : ℕ}
@@ -296,7 +294,5 @@ theorem RegRadialWeight.proof (hS : StokesOnChart.Statement) (hM : ChartMassComp
           congr 1
           funext y
           exact (hpt y).symm
-
-end
 
 end GroundTheory.Heights₂.Heights

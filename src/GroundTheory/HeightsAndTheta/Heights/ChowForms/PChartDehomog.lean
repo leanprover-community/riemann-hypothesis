@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem ChartDehomog.proof : ChartDehomog.Statement := by
   intro F _ n W t G d hW hH ht hG hmem
   set a : MvPolynomial (Fin n) F ⧸ W := Ideal.Quotient.mk W (linForm t) with ha_def
@@ -50,7 +48,5 @@ theorem ChartDehomog.proof : ChartDehomog.Statement := by
   have hinj : Function.Injective (algebraMap (MvPolynomial (Fin n) F ⧸ W) A) :=
     IsLocalization.injective A (powers_le_nonZeroDivisors_of_noZeroDivisors ha)
   exact Ideal.Quotient.eq_zero_iff_mem.mp (hinj (h1.trans (map_zero _).symm))
-
-end
 
 end GroundTheory.Heights₂.Heights

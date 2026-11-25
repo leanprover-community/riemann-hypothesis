@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace SurjectiveClosed
@@ -297,7 +295,5 @@ theorem proof (hExt : Extension.Statement.{u, w, w})
     ((Q.twist (twistSys S x c)).twist (idealSys x J')) (twist_idealSys_le _ J') hsub s hs hcompat
 
 end SurjectiveClosed
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

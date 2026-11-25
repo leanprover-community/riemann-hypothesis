@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial NumberField IsDedekindDomain
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
 theorem secIdealOf_eq_map (e : ℕ) (I : Ideal (MvPolynomial (Fin n) K)) (v : HeightOneSpectrum (𝓞 K))
@@ -94,7 +92,5 @@ theorem SpecMax.proof (h1 : SecBFinite.Statement) (h2 : SecIdealOfPrime.Statemen
     exact hWle
   refine ⟨W, ⟨hW, heq⟩, fun W₁ ⟨hW₁, heq₁⟩ => ?_⟩
   rw [← (h2 K n e I f v hI hf W₁ hW₁).2, ← (h2 K n e I f v hI hf W hW).2, heq, heq₁]
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

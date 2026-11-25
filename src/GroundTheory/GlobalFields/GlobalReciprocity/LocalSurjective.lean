@@ -12,8 +12,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField SemiLocal AdeleBaseChange IdeleGroup
 open scoped Pointwise
 
-noncomputable section
-
 section NormResidue
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -58,7 +56,5 @@ theorem mk_finiteEmbedding_normUnits (w : PlacesOver L v) (z : (w.1.adicCompleti
   rfl
 
 end Place
-
-end
 
 end GroundTheory.Global

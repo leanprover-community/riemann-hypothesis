@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.MCBounds
 
 open Matrix
 
-noncomputable section
-
 theorem dot_self_nonneg {ι : Type*} [Fintype ι] (v : ι → ℝ) : 0 ≤ v ⬝ᵥ v :=
   Finset.sum_nonneg fun i _ => mul_self_nonneg (v i)
 
@@ -158,7 +156,5 @@ theorem posSemidef_map_ofReal {ι : Type*} [Fintype ι] {A : Matrix ι ι ℝ} (
         exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by rw [hs]; ring
       rw [e, hsw, sub_self]
     exact Complex.nonneg_iff.mpr ⟨hre ▸ add_nonneg ha hb, him.symm⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.MCBounds

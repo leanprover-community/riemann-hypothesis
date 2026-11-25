@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace IdealTwistFamily
@@ -206,7 +204,5 @@ theorem proof : IdealTwistFamily.Statement := by
   exact (idealMod_fg J' hJ' I).mul (Q.fg I)
 
 end IdealTwistFamily
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

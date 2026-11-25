@@ -22,8 +22,6 @@ open MeasureTheory Module Set
 
 open scoped ENNReal
 
-noncomputable section
-
 namespace AreaFormulaLocal
 
 theorem normDet_comp_of_norm {E F G : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -227,7 +225,5 @@ theorem AreaFormulaLocal.proof : AreaFormulaLocal.Statement := by
     _ = _ := by
         refine setLIntegral_congr_fun hB fun x hx => ?_
         rw [hJ x (hBV hx), ENNReal.ofReal_mul (by unfold graphJac; exact Real.sqrt_nonneg _)]
-
-end
 
 end GroundTheory.Heights₂.Heights

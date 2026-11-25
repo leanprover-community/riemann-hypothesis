@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 
 open Metric Matrix Topology Filter
 
-noncomputable section
-
 theorem analyticAt_of_exp_eq {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {g h : E → ℂ}
     {z₀ : E} (hg : ContinuousAt g z₀) (hh : AnalyticAt ℂ h z₀)
     (he : ∀ᶠ z in 𝓝 z₀, Complex.exp (g z) = h z) : AnalyticAt ℂ g z₀ := by
@@ -315,7 +313,5 @@ theorem Tau0Holomorphic.proof (h0 : ExpQuadMonomial.Statement) : Tau0Holomorphic
   · ext p q
     simp only [hQe _ w hw]
     exact (polarise _ (P.tau_shifted_transpose hw) p q).symm
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

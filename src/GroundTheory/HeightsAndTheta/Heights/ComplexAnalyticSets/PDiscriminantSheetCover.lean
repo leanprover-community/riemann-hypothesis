@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Matrix ComplexSets Filter Topology
 
-noncomputable section
-
 namespace DiscriminantSheetCover
 
 theorem volume_zero_set {d : ℕ} (P : MvPolynomial (Fin d) ℂ) (hP : P ≠ 0) :
@@ -131,7 +129,5 @@ theorem DiscriminantSheetCover.proof (h₁ : ComplexSets.DiscriminantCover.State
     fun k => ⟨hWo _, MeasurableSet.disjointed (fun i => (hWo _).measurableSet) k, disjointed_le _ k, hs _⟩,
     disjoint_disjointed _, hcompl, measure_mono_null hcompl (DiscriminantSheetCover.volume_zero_set P hP),
     fun k => hsW (e k)⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

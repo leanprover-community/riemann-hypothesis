@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1
 
-noncomputable section
-
 namespace NefPlusAmpleDegree
 
 theorem genDeg_one_pos (hA : GenDegAmple.Statement) {K : Type} [Fintype K] {ι : K → Type}
@@ -84,7 +82,5 @@ theorem NefPlusAmpleDegree.proof (hK : KH.KleimanNefFStatement) (hA : GenDegAmpl
     ⟨∅, Finset.mem_univ _, ?_⟩
   rw [Finset.card_empty, pow_zero, one_mul, Finset.piecewise_empty]
   exact NefPlusAmpleDegree.genDeg_one_pos hA hP
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

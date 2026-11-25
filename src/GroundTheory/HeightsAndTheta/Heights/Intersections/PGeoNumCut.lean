@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 open MvPolynomial GroundTheory.Heights₂.Heights.Bridge GroundTheory.Heights₂.Heights.Bridge.GeoNum
   GroundTheory.Heights₂.Heights.NumbersDVR GroundTheory.Heights₂.Heights.FieldNumbers
 
-noncomputable section
-
 theorem C_charOf_mem {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     (V : Ideal (ReciprocityTheory.ChartRestriction.G.Geo.MRing ι)) :
     (C ((ReciprocityTheory.ChartRestriction.G.Geo.charOf V : ℕ) : ℤ) : ReciprocityTheory.ChartRestriction.G.Geo.MRing ι) ∈ V := by
@@ -74,7 +72,5 @@ theorem GeoNumCut.full : GeoNumCut.Statement := by
       exact intNum_eq_geoNum_comap p n W' hW'm hW'd a)
   rw [hcm] at hcut
   exact hcut
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem ConservationOfNumberLE.proof (h1 : IntNumAssoc.Statement.{u})
@@ -49,7 +47,5 @@ theorem ConservationOfNumberLE.proof (h1 : IntNumAssoc.Statement.{u})
     ENat.WithBot.add_one_le_natCast_iff.mp ((special_dim_add_one_le hϖ P hnt).trans hdim)
   rw [hg, h1 (IsLocalRing.ResidueField O) K ι d (specialIdeal P) (h5 O K ι P hhom) hsp a]
   exact h2 O ϖ hϖ K ι P (fun V => intNum (IsLocalRing.ResidueField O) V a)
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

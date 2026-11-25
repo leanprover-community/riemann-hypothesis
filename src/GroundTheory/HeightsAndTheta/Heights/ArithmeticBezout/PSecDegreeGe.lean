@@ -26,8 +26,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace SecDegreeGe
 
 variable {k R S : Type*} [CommRing k] [CommRing R] [CommRing S] {n e : ℕ}
@@ -149,7 +147,5 @@ theorem SecDegreeGe.proof (hFin : SecFiniteUnit.Statement) (hSpec : SecRankSpeci
       (Vertical.ChowFormHomog.full k n (e + 1) Q g hg)
   rw [hgen] at hle
   exact hdeg ▸ hle
-
-end
 
 end GroundTheory.Heights₂.Heights

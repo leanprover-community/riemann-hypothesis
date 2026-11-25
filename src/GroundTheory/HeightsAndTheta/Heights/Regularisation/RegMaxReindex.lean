@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 open MeasureTheory
 open ReciprocityTheory.AnForm.A (regMax tmax kθ)
 
-noncomputable section
-
 theorem abs_lt_of_kθ_ne_zero {x : ℝ} (h : kθ x ≠ 0) : |x| < 1 / 2 := by
   have hs : x ∈ Function.support kθ := h
   unfold kθ at hs
@@ -131,7 +129,5 @@ theorem regMax_of_injective {κ ι : Type} [Fintype κ] [Nonempty κ] [Fintype �
   · intro i hi
     obtain ⟨k, hk⟩ := hdom i fun k hk => hi ⟨k, hk⟩
     exact ⟨f k, Set.mem_range_self _, hk⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

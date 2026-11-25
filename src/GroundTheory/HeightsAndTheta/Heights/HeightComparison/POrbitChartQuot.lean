@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G
 
-noncomputable section
-
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
 
@@ -164,7 +162,5 @@ theorem OrbitChartQuot.proof : OrbitChartQuot.Statement := by
       Ideal.comap_map_of_surjective _ hsurj, ← RingHom.ker_eq_comap_bot, ker_chartEval x c hc,
       ← sup_assoc, sup_eq_left.mpr hV]
   exact ⟨(RingHom.quotientKerEquivOfSurjective hg).symm.trans (Ideal.quotEquivOfEq hker)⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

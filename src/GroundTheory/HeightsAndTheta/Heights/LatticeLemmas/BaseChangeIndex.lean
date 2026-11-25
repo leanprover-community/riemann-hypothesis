@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
 open NumberField TensorProduct
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K] (L : Type*) [Field L] [NumberField L] [Algebra K L]
 
 theorem finrank_integers : Module.finrank (𝓞 K) (𝓞 L) = Module.finrank K L :=
@@ -82,7 +80,5 @@ theorem sum_comp_algebraMap (f : (K →+* ℂ) → ℝ) :
   refine Finset.sum_congr rfl fun σ _ ↦ ?_
   rw [Finset.sum_congr rfl (fun τ hτ ↦ by rw [(Finset.mem_filter.mp hτ).2]), Finset.sum_const,
     nsmul_eq_mul, ← card_extensions L σ, Nat.card_eq_fintype_card, Fintype.card_subtype]
-
-end
 
 end GroundTheory.Heights₂.Heights.LatticeLemmas

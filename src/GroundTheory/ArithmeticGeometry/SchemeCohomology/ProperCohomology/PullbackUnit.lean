@@ -18,8 +18,6 @@ open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace Limits
 
 universe u
 
-noncomputable section
-
 section Affine
 
 variable {X : Scheme.{u}}
@@ -207,7 +205,5 @@ theorem bijective_unit_app_of_le (ψ : Y ⟶ X) (F : X.Modules) [F.IsQuasicohere
     hkill _ (by rw [hVtop]; exact hV) (hVtop.le.trans hVW) a ha m
 
 end Unit
-
-end
 
 end GroundTheory.Arith.SchemeCoh

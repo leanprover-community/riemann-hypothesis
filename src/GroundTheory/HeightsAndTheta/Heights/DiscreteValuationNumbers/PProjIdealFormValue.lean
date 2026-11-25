@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace ProjIdealFormValue
 
 theorem weight_blockWeight_apply {K : Type*} [DecidableEq K] {ι : K → Type*} (m : (Σ k, ι k) →₀ ℕ)
@@ -63,7 +61,5 @@ theorem proof : ProjIdealFormValue.Statement := by
   simp
 
 end ProjIdealFormValue
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

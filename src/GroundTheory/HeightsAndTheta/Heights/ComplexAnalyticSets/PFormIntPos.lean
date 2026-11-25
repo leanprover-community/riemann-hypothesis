@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets ReciprocityTheory.AnForm
 open scoped ContDiff
 
-noncomputable section
-
 namespace FormIntegralPositivity
 
 variable {n : ℕ}
@@ -29,7 +27,5 @@ theorem analyticAt_sheet {d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : M
 
 end FormIntegralPositivity
 
-
-end
 
 end GroundTheory.Heights₂.Heights

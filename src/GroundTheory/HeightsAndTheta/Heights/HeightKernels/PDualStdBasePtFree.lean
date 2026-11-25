@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 MvPolynomial NumberField Matrix
 
-noncomputable section
-
 namespace StandardDualBasePointFree
 
 open DualPointsOnPlane
@@ -136,7 +134,5 @@ theorem DualStdBasePtFree.proof : DualStdBasePtFree.Statement := by
     Ideal.sum_mem _ fun j _ => Ideal.mul_mem_right _ _ (Ideal.subset_span ⟨j, rfl⟩)
   have h := Ideal.add_mem _ (Ideal.mem_sup_left key) (Ideal.mem_sup_right hQ)
   rwa [sub_add_cancel] at h
-
-end
 
 end GroundTheory.Heights₂.Heights

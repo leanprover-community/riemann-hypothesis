@@ -9,8 +9,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume.GaussianPlane
 open NumberField GroundTheory.Automorphic Module Matrix MeasureTheory GroundTheory.Heights₂.Heights.FiniteCovolume
 open scoped Pointwise ComplexOrder ENNReal
 
-noncomputable section
-
 section General
 
 variable {F E W : Type*} [Field F] [Field E] [Algebra F E]
@@ -46,7 +44,5 @@ theorem lineIndex_smul {h : HermitianForm F E W} {La : AddSubgroup W} {γ : h.un
   rw [AddSubgroup.map_inf_eq _ _ f hf, h1, h2, h3]
 
 end General
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume.GaussianPlane

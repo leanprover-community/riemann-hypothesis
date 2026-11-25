@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 theorem HomLocRingMem.algebraMap_mk_ne_zero {K : Type*} {ι : K → Type*} {R : Type*} [CommRing R]
     (P : Ideal (MRing ι R)) [P.IsPrime] {g : MRing ι R} (hg : g ∉ P) :
     algebraMap (MRing ι R ⧸ P) (FractionRing (MRing ι R ⧸ P)) (Ideal.Quotient.mk P g) ≠ 0 := by
@@ -46,7 +44,5 @@ theorem HomLocRingMem.proof : HomLocRingMem.Statement := by
       rw [div_mul_div_comm]
   · intro hz
     exact Subring.subset_closure hz
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

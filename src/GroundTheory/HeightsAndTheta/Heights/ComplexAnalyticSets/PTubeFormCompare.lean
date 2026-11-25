@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial Matrix Filter Topology ReciprocityTheory.AnForm ComplexSets
 open scoped ContDiff ComplexOrder
 
-noncomputable section
-
 namespace TubeFormComparison
 
 theorem levi_eq_re {N : ℕ} (φ : (Fin N → ℂ) → ℝ) (z a : Fin N → ℂ) :
@@ -351,7 +349,5 @@ theorem TubeFormCompare.proof : TubeFormCompare.Statement := by
         gcongr
         exact key.trans (mul_le_mul_of_nonneg_left (le_abs_self _) hC)
     _ = _ := by ring
-
-end
 
 end GroundTheory.Heights₂.Heights

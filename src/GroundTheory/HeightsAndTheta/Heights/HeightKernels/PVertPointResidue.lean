@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
-noncomputable section
-
 namespace VerticalPointResidue
 
 variable {T : Type} [Fintype T]
@@ -55,7 +53,5 @@ theorem VertPointResidue.proof (hC : CurveCharts.Statement) : VertPointResidue.S
     hP hs hsP W hW fun m hm => by
       obtain ⟨t, hyt, hrat⟩ := (hC T K' y hP).2.2 m hm
       exact ⟨fun _ => t, fun _ => hyt, fun p => hrat p.2⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

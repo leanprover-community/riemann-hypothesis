@@ -12,8 +12,6 @@ open scoped NumberField.AdeleRing
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 namespace HeckeCharacter
@@ -51,7 +49,5 @@ theorem complexComponent_eq_one_of_isOfFinOrder (h : IsOfFinOrder χ) {w : Infin
   exact hpow (infiniteEmbedding w (complexUnitsHom hw (Units.mk0 y hy0)))
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

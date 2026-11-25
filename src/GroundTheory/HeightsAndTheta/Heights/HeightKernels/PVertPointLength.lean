@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial NumberField
 
-noncomputable section
-
 theorem VertPointLength.proof (hCh : VertPointChart.Statement)
     (hInj : VertPointInj.Statement) (hSurj : VertPointSurj.Statement)
     (hMC : VertPointMultChart.Statement) (hSQ : SectionQuotLocal.Statement) :
@@ -31,7 +29,5 @@ theorem VertPointLength.proof (hCh : VertPointChart.Statement)
     (fun W hW c hc a b hb hab => hMC T K' y s hP hs hsP W hW (c ()) (hc ()) a b hb (by simpa using hab))
     (fun m c hm _ hrat a b hb hab =>
       hSQ T K' y s hP hs hsP m (c ()) hm (fun u => hrat ⟨(), u⟩) a b hb (by simpa using hab))
-
-end
 
 end GroundTheory.Heights₂.Heights

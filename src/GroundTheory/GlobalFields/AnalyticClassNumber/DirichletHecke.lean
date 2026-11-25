@@ -12,8 +12,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField IdeleGroup Topology Filter
 open scoped GroundTheory.LocalField.Abstract
 
-noncomputable section
-
 namespace DirichletHecke
 
 open _root_.GroundTheory.Global.Cyclotomic GroundTheory.LocalField.Abstract RationalSymbol
@@ -46,7 +44,5 @@ theorem absNorm_asIdeal (v : HeightOneSpectrum (𝓞 ℚ)) : Ideal.absNorm v.asI
 variable {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N)
 
 end DirichletHecke
-
-end
 
 end GroundTheory.Global

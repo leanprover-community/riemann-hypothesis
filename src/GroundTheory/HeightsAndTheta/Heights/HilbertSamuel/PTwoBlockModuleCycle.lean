@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace TwoBlockModuleCycleAlt
 
 section General
@@ -232,7 +230,5 @@ theorem TwoBlockModuleCycle.proof : TwoBlockModuleCycle.Statement := by
     multAt_sup_range_eq (s := twoBlockDen c) (v := fun j : κ => (X ⟨1, j⟩ : MRing (FinTwoTypeFamily κ))) hW.1.1.1 hj
   rw [h1, h2, vert_weight_eq]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

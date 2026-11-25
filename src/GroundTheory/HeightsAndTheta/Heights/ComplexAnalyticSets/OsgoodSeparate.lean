@@ -17,8 +17,6 @@ open Complex Metric MeasureTheory Set Filter Topology ReciprocityTheory.AnForm.O
 
 open scoped Real
 
-noncomputable section
-
 namespace OsgoodSeparate
 
 theorem cons_mem_ball {n : ℕ} {c : Fin (n + 1) → ℂ} {R : ℝ} {x : ℂ} (hx : x ∈ ball (c 0) R)
@@ -117,7 +115,5 @@ theorem analyticOnNhd_of_continuousOn_of_separately {n : ℕ} {U : Set (Fin n �
   show ((2 * π * I : ℂ) ^ n)⁻¹ * fctl c (ε / 2) g (kern c (ε / 2) z) = g z
   rw [fctl_kern hr g hz, OsgoodSeparate.cauchy_torus n g c ε hcb hsb (ε / 2) hr hrε z hz, ← mul_assoc,
     inv_mul_cancel₀ hne, one_mul]
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

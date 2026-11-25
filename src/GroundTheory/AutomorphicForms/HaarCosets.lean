@@ -8,8 +8,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.Automorphic
 
 open Set Filter Topology MeasureTheory

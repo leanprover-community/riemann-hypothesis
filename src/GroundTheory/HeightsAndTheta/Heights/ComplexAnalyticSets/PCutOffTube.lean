@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Matrix ComplexSets
 
-noncomputable section
-
 theorem measurable_tubeWeight {m : ℕ} (Q : MvPolynomial (Fin m) ℂ) : Measurable (tubeWeight Q) := by
   have hl : Measurable (logAbsSq Q) :=
     Real.measurable_log.comp ((MvPolynomial.continuous_eval Q).norm.pow 2).measurable
@@ -48,7 +46,5 @@ theorem CutOffTube.proof (hC : TubeFormCompare.Statement) (hE : TubeEuclMass.Sta
     (measurable_tubeDens hA P R φ).aestronglyMeasurable (Eventually.of_forall fun y => ?_)
   rw [Real.norm_of_nonneg (tubeDens_nonneg J A P R φ y)]
   exact hCle y
-
-end
 
 end GroundTheory.Heights₂.Heights

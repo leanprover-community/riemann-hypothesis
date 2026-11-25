@@ -9,8 +9,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
-noncomputable section
-
 universe u w
 
 theorem GeneratedAmple.proof (hCover : AmpleCover.Statement.{u, w})
@@ -28,7 +26,5 @@ theorem GeneratedAmple.proof (hCover : AmpleCover.Statement.{u, w})
   have key := hn₀ ⟨c % A.m, Nat.mod_lt c hm⟩ j (c / A.m) hn I y
   simp only [hc'] at key
   exact key hy
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

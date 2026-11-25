@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology
 open scoped Pointwise
 
-noncomputable section
-
 theorem eq_zero_of_isIntegral_of_forall_place_lt_one {K : Type*} [Field K] [NumberField K] {c : K}
     (hc : IsIntegral ℤ c) (hlt : ∀ w : InfinitePlace K, w c < 1) : c = 0 := by
   by_contra hne
@@ -183,7 +181,5 @@ theorem ArchLatticeDiscrete.proof (h : HermitianForm F E W) (v : Basis ι E W) :
   exact hU.preimage hcont
 
 end Discrete
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

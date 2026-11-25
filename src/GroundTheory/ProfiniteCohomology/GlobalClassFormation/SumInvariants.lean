@@ -20,8 +20,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
 
 open scoped DirectSum GroundTheory.Global.SemiLocal
 
-noncomputable section
-
 variable {K : FiniteSubfield} (ι : LocalEmbeddings K)
 
 theorem exists_nsmul_eq_zero_unitsLimitRep (x : cohomology (unitsLimitRep K) 2) : ∃ m : ℕ, m ≠ 0 ∧ m • x = 0 := by
@@ -59,7 +57,5 @@ theorem brauerSumInv_eq_zero (x : cohomology (unitsLimitRep K) 2) : brauerSumInv
       χ hχ b
   have hx : x = x' + globalCupClass (iChar K) a₀ := by rw [hx', sub_add_cancel]
   rw [hx, map_add (f := _), h', brauerSumInv_globalCupClass_iChar, add_zero]
-
-end
 
 end GroundTheory.ProfCoh

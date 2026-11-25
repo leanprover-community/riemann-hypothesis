@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace CurveVerticalPointMultiplicity
 
 theorem length_localizedModule_quotient {R : Type*} [CommRing R] (p : Ideal R) [p.IsPrime] (I : Ideal R) :
@@ -209,7 +207,5 @@ theorem CurveVertPointMultChart.proof (hCh : CurveVertPointChart.Statement)
   obtain ⟨hmax, hrat, -⟩ := hCh K ι Ω y s d hP hs hsP W hW c hc
   exact CurveVertPointMultChart.of_single hs hW c hc a b hb hab hmax hrat
     (fun a' b' hb' hab' => hN K ι Ω y s d hP hs hsP W hW c hc a' b' hb' hab')
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

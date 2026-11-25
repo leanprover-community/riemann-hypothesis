@@ -8,8 +8,6 @@ import Mathlib.Order.CompletePartialOrder
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 open Filter Topology Metric ReciprocityTheory.ChartRestriction.G.Geo

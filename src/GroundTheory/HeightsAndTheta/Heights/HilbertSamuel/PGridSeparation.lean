@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace GridSeparation
 
 theorem norm_eval_le_of_torus {e : ℕ} (G : MvPolynomial (Fin e) ℤ) (ζ : Fin e → ℂ) (hζ : ∀ i, ‖ζ i‖ = 1) :
@@ -119,7 +117,5 @@ theorem proof (hNL : NormalLocusRep.Statement) (hFN : FibreNormBound.Statement)
   linarith
 
 end GridSeparation
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem ThroughTwoPointsTrdeg.proof (hT : TrdegAdjoinLe.Statement) : ThroughTwoPointsTrdeg.Statement := by
   intro K Ω _ _ n k _ _ _ hinj x c hcx y j hyj hprop hy
   let u : Fin k × Fin n → Ω := fun im => algebraMap (MvPolynomial (Fin k × Fin n) K) Ω (X im)
@@ -139,7 +137,5 @@ theorem ThroughTwoPointsTrdeg.proof (hT : TrdegAdjoinLe.Statement) : ThroughTwoP
     simp only [Nat.add_sub_cancel_left] at hle
     nlinarith
   · exact (Cardinal.natCast_lt_aleph0 (n := k)).le.trans hinf
-
-end
 
 end GroundTheory.Heights₂.Heights

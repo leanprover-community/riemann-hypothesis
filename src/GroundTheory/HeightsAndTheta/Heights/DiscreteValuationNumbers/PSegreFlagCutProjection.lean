@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace SegreFlagCutProjection
 
 theorem relDim_anti {F : Type*} [Field F] {K : Type*} [Fintype K] {ι : K → Type*} {I J : Ideal (MRing ι F)}
@@ -51,7 +49,5 @@ theorem SegreFlagCutProjection.proof (hLies : SegreFlagCutLiesOver.Statement)
       (hl1 cs ch s h hs hh hdeg hsP hhP hval W hϖW hW))) hd1
   · exact lt_of_le_of_lt (relDim_anti (specialIdeal_le_contractPrime _
       (hl2 cs ch s h hs hh hdeg hsP hhP hval W hϖW hW))) hd2
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

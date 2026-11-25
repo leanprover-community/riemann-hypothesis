@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem DivPushForward.proof (hC : ContractRelDimLe.Statement.{u})
@@ -107,7 +105,5 @@ theorem DivPushForward.proof (hC : ContractRelDimLe.Statement.{u})
     _ = ∑ᶠ W, (∑ᶠ W', D' W' * M W W') * N W := finsum_congr fun W => (finsum_mul _ _).symm
     _ = ∑ᶠ W, (relDeg j P' : ℤ) * (D W * N W) := finsum_congr fun W => by rw [step2]; ring
     _ = relDeg j P' * cycEval N D := (mul_finsum _ _).symm
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

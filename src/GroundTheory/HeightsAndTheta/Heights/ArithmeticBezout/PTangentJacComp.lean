@@ -15,8 +15,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 theorem TangentJacComp.real_inner_eq_re {d : ℕ} (x y : EuclideanSpace ℂ (Fin d)) :
     @inner ℝ _ _ x y = RCLike.re (@inner ℂ _ _ x y) := by
 
@@ -51,7 +49,5 @@ theorem TangentJacComp.proof : TangentJacComp.Statement := by
   rw [hr, hc, tangentJac, TangentJacComp.areaJacobian_eq]
   rw [mul_pow]
   rfl
-
-end
 
 end GroundTheory.Heights₂.Heights

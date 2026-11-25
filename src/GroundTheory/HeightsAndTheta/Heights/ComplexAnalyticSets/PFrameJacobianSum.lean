@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Matrix Finset Module
 
-noncomputable section
-
 namespace FrameJacobianSumAlt
 
 variable {d : ℕ} {ι : Type*} [Fintype ι]
@@ -94,7 +92,5 @@ theorem FrameJacobianSum.proof : FrameJacobianSum.Statement := by
     Finset.sum_subtype (univ.powersetCard d) (p := fun I : Finset (Fin n) => I.card = d)
       (fun I => by simp [mem_powersetCard])]
   exact Finset.sum_congr rfl fun I _ => (hI I.1 I.2).symm
-
-end
 
 end GroundTheory.Heights₂.Heights

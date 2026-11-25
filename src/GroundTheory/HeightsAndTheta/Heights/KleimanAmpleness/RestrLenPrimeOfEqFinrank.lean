@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 section Lemmas
@@ -88,7 +86,5 @@ theorem restrLen_primeOf_eq_finrank (y : Fin (N + 1) → K') {j : Fin (N + 1)} (
   apply GroundTheory.Heights₂.Heights.Kleiman.interNumPoint_restrLen_eq_finrank <;> assumption
 
 end Point
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

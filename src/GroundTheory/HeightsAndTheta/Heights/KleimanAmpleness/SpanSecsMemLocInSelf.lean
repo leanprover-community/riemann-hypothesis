@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver)
 
-noncomputable section
-
 section Local
 
 variable {F : Type} [Field F] {Ω : Type} [Field Ω] [Algebra F Ω]
@@ -158,7 +156,5 @@ theorem SpanSecs.proof : SpanSecs.Statement := by
       field_simp
     rw [e2]
     exact spanSecs_mul_step hg (spanSecs_exists_mul_mem _ _ q hCz T (h c hc))
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

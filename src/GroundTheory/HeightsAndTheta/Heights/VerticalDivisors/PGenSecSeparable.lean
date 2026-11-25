@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial
 
-noncomputable section
-
 namespace GenSecSeparable
 
 theorem genPar_algIndep (k : Type*) [Field k] (e n : ℕ) :
@@ -95,7 +93,5 @@ theorem GenSecSeparable.proof (h₁ : SecAlgFinite.Statement) (h₂ : GenSecDoma
     (isField_of_isIntegral_of_isField' (R := GenParField k e n) (Field.toIsField _)).toField
   exact h₄ k n e (GenSec k e Q) _ (adjoin_secCoord _ _) (secCoord_form _ _) (secCoord_chart _ _)
     fun j₀ hj₀ => h₃ k (GenSec k e Q) n e Q g hQ hg _ j₀ (aeval_secCoord k e Q) hj₀
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

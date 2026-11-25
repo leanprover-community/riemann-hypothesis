@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open MeasureTheory
 open scoped ENNReal
 
-noncomputable section
-
 variable {κ : Type*} [Fintype κ]
 
 private lemma weighted_sum_smul (q : κ → ℝ) (t : ℝ) (b : κ → ℂ) :
@@ -153,7 +151,5 @@ theorem TorusIntegralHomogeneous.proof (κ : Type*) [Fintype κ] :
       _ < ⊤ := ENNReal.mul_lt_top
           (ENNReal.prod_lt_top fun i _ => ENNReal.pow_lt_top ENNReal.ofReal_lt_top)
           (lt_of_le_of_lt (measure_mono hsub) measure_ball_lt_top)
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

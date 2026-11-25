@@ -14,8 +14,6 @@ open scoped NumberField.AdeleRing Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace CuspidalSpectrum
 
 open Reduction
@@ -272,7 +270,5 @@ theorem exists_encard_le_siegel {ω : Set (AdelicGLn.AdelicGL K n)} (hω : IsCom
       _ = Y.ncard := hYfin.cast_ncard_eq.symm
 
 end CuspidalSpectrum
-
-end
 
 end GroundTheory.Automorphic

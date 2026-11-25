@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem card_quot_span_mul {S : Type*} [CommRing S] [IsDomain S] (u v : S) (hu : u ≠ 0) :
     Nat.card (S ⧸ Ideal.span {u * v}) = Nat.card (S ⧸ Ideal.span {u}) * Nat.card (S ⧸ Ideal.span {v}) := by
   let f : S →+ S := AddMonoidHom.mulLeft u
@@ -213,7 +211,5 @@ theorem RegularityLocalProduct.proof (hN : RegularityFunctionFieldNumber.Stateme
         refine finsum_congr fun σ => ?_
         rw [map_mul, norm_mul, Real.log_mul (norm_ne_zero_iff.mpr (hσ x hx0 σ)) (norm_ne_zero_iff.mpr (hσ c hc0 σ))]
         ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

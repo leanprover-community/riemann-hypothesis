@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI
 
-noncomputable section
-
 namespace DiagonalDivisor
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -57,7 +55,5 @@ theorem divCycle_eq_ite {P : Ideal (MRing ι)} [P.IsPrime] {s u : MRing ι} (hu 
 
 end DiagonalDivisor
 
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace SegreFlagClosureTrdeg
 
 theorem sum_flagCoord {Ω : Type*} [Field Ω] {E : Type*} [AddCommGroup E] [Module Ω E] {Φ : Type*} [Field Φ]
@@ -78,7 +76,5 @@ theorem SegreFlagClosureTrdeg.proof (halg : SegreFlagConeAlg.Statement) : SegreF
     · rfl
   rw [← hxs] at hind'
   exact trdeg_pointIdeal_bundle_eq (z := z) hV (fun _ => rfl) AdjoinTrdegAdd.proof hind' hal
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

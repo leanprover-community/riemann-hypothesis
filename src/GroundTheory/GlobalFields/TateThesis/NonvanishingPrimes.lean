@@ -11,8 +11,6 @@ open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Complex Top
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 open IdeleGroup
@@ -212,7 +210,5 @@ theorem one_le_norm_dedekindZeta_pow_mul {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
     rw [χ.coeff_pow_asIdeal hv, mul_pow]
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

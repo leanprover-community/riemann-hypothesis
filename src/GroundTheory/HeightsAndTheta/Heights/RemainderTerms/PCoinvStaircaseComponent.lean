@@ -8,8 +8,6 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open MvPolynomial Coinv
 
-noncomputable section
-
 theorem CoinvStaircaseComponent.proof (h1 : CoinvStaircaseDegree.Statement) :
     CoinvStaircaseComponent.Statement := by
   intro K _ f n v hv
@@ -36,7 +34,5 @@ theorem CoinvStaircaseComponent.proof (h1 : CoinvStaircaseDegree.Statement) :
     obtain ⟨hx1, cx, hx2⟩ := hx
     refine ⟨fun d hd => by rw [map_smul, hx1 d hd, smul_zero], a * cx, ?_⟩
     rw [map_smul, hx2, smul_eq_C_mul, C_mul, mul_assoc]
-
-end
 
 end GroundTheory.Heights₂.Heights.RestTerms

@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory Filter Topology
 
-noncomputable section
-
 namespace UpperNormalisation
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -213,7 +211,5 @@ theorem UpperNormalisation.proof (h7 : G7.Statement) (hPack : PackingStatement) 
       rw [hratio]; ring
     _ ≤ (Ib + ε) * ((n : ℝ) ^ (D + 1) / F) :=
       mul_le_mul_of_nonneg_right h3.le (by positivity)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

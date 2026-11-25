@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology
 open GroundTheory.Heights₂.Heights.HilbertSamuel
 
-noncomputable section
-
 namespace NefBigCountAlongMultiples
 
 theorem two_zcomb_sub_one {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (M : ReciprocityTheory.ChartRestriction.G.Geo.HermLine ι)
@@ -120,7 +118,5 @@ theorem proof (hG2 : G2.Statement) (hAC : AmpleCountAlongMultiples.StatementAmpl
     (NefCountAlongMultiples.num_bound hε hqpos hC htop hdeg hqC)
 
 end NefBigCountAlongMultiples
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

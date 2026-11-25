@@ -18,8 +18,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.Cha
   Asymptotics
 open scoped ComplexConjugate Topology
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace BlockComplexGramMetricChange
@@ -253,7 +251,5 @@ theorem BlockComplexGramMetricChange.proof (hMC : MetricChange.Statement)
       (n : ℝ) ^ (D + 1) / (D.factorial : ℝ) * blockMetricInt d A' := by ring
   rw [e2] at hn
   exact hn
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 namespace VeryAmpleZFamily
@@ -220,7 +218,5 @@ theorem proof : VeryAmpleZFamily.Statement := by
     exact Iff.rfl
 
 end VeryAmpleZFamily
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

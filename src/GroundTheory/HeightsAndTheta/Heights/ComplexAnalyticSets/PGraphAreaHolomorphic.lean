@@ -20,8 +20,6 @@ open MeasureTheory Module
 
 open scoped ENNReal
 
-noncomputable section
-
 namespace GraphAreaHolomorphic
 
 theorem norm_sq_sumElim {𝕜 : Type*} [RCLike 𝕜] {ι κ ν : Type*} [Fintype ι] [Fintype κ] [Fintype ν]
@@ -206,7 +204,5 @@ theorem GraphAreaHolomorphic.proof (h : AreaGraph.Statement) : GraphAreaHolomorp
   simp only [ContinuousLinearMap.coe_coe]
   rw [hasFDerivAt_graphPt_apply e hFx hG v, norm_sq_sumElim]
   simp [hK]
-
-end
 
 end GroundTheory.Heights₂.Heights

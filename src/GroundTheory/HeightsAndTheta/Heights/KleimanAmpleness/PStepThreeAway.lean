@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace StepThree.Away
@@ -200,7 +198,5 @@ theorem proof : StepThree.Away.Statement.{u, w} := by
   exact Submodule.span_mono (Set.singleton_subset_iff.mpr hy) hrz
 
 end StepThree.Away
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

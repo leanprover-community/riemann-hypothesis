@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem DegZeroLocNoetherian.proof (h : DegZeroLocQuot.Statement.{u}) :
@@ -121,7 +119,5 @@ theorem DegZeroLocNoetherian.proof (h : DegZeroLocQuot.Statement.{u}) :
     rw [hz', hhom b f hf, hhom b g hg]
     field_simp
   exact IsLocalization.isNoetherianRing M _ inferInstance
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

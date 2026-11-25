@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem RegularityLocalize.exists_prime_over {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {P W : Ideal (MRing ι)} (hP : IsArithVar P 1) (hW : IsClosedPt W) :
     ∃ p : ℤ, Prime p ∧ ∀ k : ℤ, C k ∈ W ↔ p ∣ k := by
@@ -107,7 +105,5 @@ theorem RegularityLocalize.proof (h₁ : RegularityLocalPrime.Statement) : Regul
   · rw [hsc, hxc]
     simp only [Subring.coe_mul, Subring.coe_intCast, ← hys]
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 open Metric
 open ReciprocityTheory.AnForm.A (polyMax molli mollify_thm polyMax_le' polyMax_mono')
 
-noncomputable section
-
 theorem log_inv_facts {t a : ℝ} (ht : 0 < t) (ha : 0 ≤ a)
     (hta : t < Real.exp (-(Real.exp 1 + 2 * a))) :
     Real.exp 1 + 2 * a < Real.log t⁻¹ ∧ 1 < Real.log (Real.log t⁻¹) := by
@@ -123,7 +121,5 @@ theorem ChartComparison.proof (h0 : MollifiedLowerBound.Statement)
     rw [mul_div_assoc]
     nlinarith [div_nonneg (by linarith : 0 ≤ Lℓ) hℓ0.le]
   exact abs_sub_le_iff.2 ⟨(key j k x hx).trans hEC, (key k j x ⟨hx.2, hx.1⟩).trans hEC⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

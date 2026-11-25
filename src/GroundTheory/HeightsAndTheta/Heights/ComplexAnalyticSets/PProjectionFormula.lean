@@ -20,8 +20,6 @@ open MeasureTheory Module
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem graphPt_injective {d m n : ℕ} (e : Fin n ≃ Fin d ⊕ Fin m)
     (F : EuclideanSpace ℂ (Fin d) → EuclideanSpace ℂ (Fin m)) : Function.Injective (graphPt e F) := by
   intro x y h
@@ -125,7 +123,5 @@ theorem ProjectionFormula.proof (h1 : AreaMultiplicity.Statement) (h2 : FrameJac
       exact ⟨⟨x, hx, rfl⟩, by rw [← frameProjLin_apply, hxy]⟩
   unfold frameFibreCount
   rw [hset, (graphPt_injective e F).injOn.encard_image]
-
-end
 
 end GroundTheory.Heights₂.Heights

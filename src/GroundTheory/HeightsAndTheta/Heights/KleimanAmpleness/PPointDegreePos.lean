@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 section
@@ -87,7 +85,5 @@ theorem PointDegreePos.proof : PointDegreePos.Statement.{u, w} := by
   unfold FieldNumbers.resDeg
   rw [dite_eq_left hP.isPrime]
   exact Module.finrank_pos
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

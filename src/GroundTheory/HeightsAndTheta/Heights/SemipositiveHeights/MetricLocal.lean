@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.ForSecondHalf
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 namespace MetricLocal
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -119,7 +117,5 @@ theorem MetricLocal.full : MetricLocalStatement := by
           (fun j => ha j.castSucc) fun j z hz => hh j.castSucc z (MetricLocal.mcPts_mono hPW hz)
   intro P n L L' hP hL hL' ha hh
   exact key n P L L' hP hL hL' ha hh
-
-end
 
 end GroundTheory.Heights₂.Heights.ForSecondHalf

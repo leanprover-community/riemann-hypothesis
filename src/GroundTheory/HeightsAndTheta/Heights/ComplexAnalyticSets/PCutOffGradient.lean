@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Matrix ComplexSets ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A Filter Topology
 
-noncomputable section
-
 variable {n d : ℕ}
 
 theorem logLogCut_mem_Icc {m : ℕ} (Q : MvPolynomial (Fin m) ℂ) (k : ℕ) (y : Fin m → ℂ) :
@@ -118,7 +116,5 @@ theorem CutOffGradient.proof (hH : LogLogCutHess.Statement) : CutOffGradient.Sta
     show |logLogCut P k (A *ᵥ x)| ≤ 1
     rw [abs_of_nonneg hm.1]; exact hm.2
   · simp
-
-end
 
 end GroundTheory.Heights₂.Heights

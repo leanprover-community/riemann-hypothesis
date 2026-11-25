@@ -15,8 +15,6 @@ open AlgebraicGeometry CategoryTheory Limits Opposite
 
 universe u
 
-noncomputable section
-
 variable {P X Y Z : Scheme.{u}} {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z}
 
 theorem isPushout_app_of_isPullback (H : IsPullback fst snd f g) [IsAffine Y] [IsAffine Z]
@@ -39,7 +37,5 @@ theorem isPushout_app_of_isPullback (H : IsPullback fst snd f g) [IsAffine Y] [I
       Scheme.Opens.ι_appTop, Scheme.Hom.appLE]
     erw [Category.assoc, ← Functor.map_comp]
     rfl
-
-end
 
 end GroundTheory.Arith.SchemeCoh

@@ -19,8 +19,6 @@ open MeasureTheory Module Set
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem GraphAreaFibre.differentiableAt_graphPt {d m n : ℕ} (e : Fin n ≃ Fin d ⊕ Fin m)
     {Φ : EuclideanSpace ℂ (Fin d) → EuclideanSpace ℂ (Fin m)} {x : EuclideanSpace ℂ (Fin d)}
     (hΦ : DifferentiableAt ℂ Φ x) : DifferentiableAt ℂ (graphPt e Φ) x := by
@@ -124,7 +122,5 @@ theorem GraphAreaFibre.proof (hInt : GraphAreaIntegral.Statement) (hJac : Tangen
   rw [hc, Measure.smul_apply, lintegral_smul_measure]
   simp only [ENNReal.smul_def, smul_eq_mul]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights

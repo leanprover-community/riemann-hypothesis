@@ -15,8 +15,6 @@ open MvPolynomial MeasureTheory Module
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem real_smul_mem_coneSet {n : ℕ} (h : HermNorm n) {J : Ideal (MvPolynomial (Fin n) ℂ)}
     (hJ : IsProjPrime J) {y : EuclideanSpace ℂ (Fin n)} (hy : y ∈ coneSet h J) (t : ℝ) :
     t • y ∈ coneSet h J := by
@@ -172,7 +170,5 @@ theorem ConeFibreAverage.proof (hA : ConeAreaFormula.Statement) (hT : ConeTangen
               exact bot_le
     rw [ENNReal.mul_top (hkpos 1).ne', top_le_iff] at hge
     rw [hge, ENNReal.mul_top hc0]
-
-end
 
 end GroundTheory.Heights₂.Heights

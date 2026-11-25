@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 namespace CurveVerticalIndex
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -89,7 +87,5 @@ theorem CurveVertIndex.proof (hF : CurveSectionQuotFinite.Statement) (hV : Curve
   obtain ⟨hbij, hmult⟩ := hV K ι Ω y s d hP hs hsP
   exact CurveVertIndex.of_single hP hs hsP (hF K ι Ω y s d hP hs hsP) hbij hmult
     (fun W hW => hR K ι Ω y s d hP hs hsP W hW)
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

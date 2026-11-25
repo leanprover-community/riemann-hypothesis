@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology
 open scoped Pointwise
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -133,7 +131,5 @@ theorem UnipotentHorizontal.proof (h : HermitianForm F E W) (v : Basis ι E W)
     (hδw w).1, hdW w, add_smul]
   simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

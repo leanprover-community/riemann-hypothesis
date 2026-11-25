@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory ComplexSets Metric
 
-noncomputable section
-
 theorem volume_ball_pi_complex {n : ℕ} (c : Fin n → ℂ) {ρ : ℝ} (hρ : 0 < ρ) :
     volume (ball c ρ) = ENNReal.ofReal ((Real.pi * ρ ^ 2) ^ n) := by
   rw [ball_pi c hρ, volume_pi_pi]
@@ -92,7 +90,5 @@ theorem SmallSetBallCover.proof (h : SmallSetTubeVolume.Statement) : SmallSetBal
     _ = C * (16 / Real.pi) ^ n * r ^ 2 * ((Real.pi / 16) ^ n * r ^ (2 * n)) := by
       rw [mul_assoc, hz]
       linear_combination (-(C * r ^ (2 * n) * r ^ 2)) * he
-
-end
 
 end GroundTheory.Heights₂.Heights

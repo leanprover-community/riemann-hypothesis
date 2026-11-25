@@ -14,8 +14,6 @@ open NumberField NumberField.ComplexEmbedding TensorProduct ComplexAt Matrix
 open GroundTheory.Heights₂.Heights
 open scoped ComplexOrder MatrixOrder
 
-noncomputable section
-
 theorem re_det_le_of_posSemidef_smul_sub {n : Type*} [Fintype n] [DecidableEq n]
     {G G' : Matrix n n ℂ} (hG : G.PosDef) (hG' : G'.PosSemidef) (c : ℝ)
     (hc : (c • G - G').PosSemidef) : (det G').re ≤ c ^ Fintype.card n * (det G).re := by
@@ -96,7 +94,5 @@ theorem gramDet_le_of_norm_le {E : Type*} [AddCommGroup E] [Module (𝓞 K) E] [
   calc gramDet h' σ s ≤ (‖f‖ ^ 2) ^ r * gramDet h σ s := hmain
     _ ≤ (max A 0 ^ 2) ^ r * gramDet h σ s := by
       gcongr
-
-end
 
 end GroundTheory.Heights₂.Heights.LatticeLemmas

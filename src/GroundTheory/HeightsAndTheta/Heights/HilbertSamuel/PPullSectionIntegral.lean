@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace PullSectionIntegral
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -212,7 +210,5 @@ theorem proof : PullSectionIntegral.Statement := by
   exact mul_mem hxV (pow_mem hMV _)
 
 end PullSectionIntegral
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem module_finite_of_forall_mem_span {A A' B L : Type*} [CommRing A] [IsNoetherianRing A]
@@ -67,7 +65,5 @@ theorem SemilocalFinite.proof (h1 : SemilocalIntegral.Statement.{u})
     (fun _ _ => rfl) s fun b => ?_
   exact hs _ (mem_homFracDegZero_of_mem_degZeroLoc P' _ _ b.2)
     (IsIntegral.map_of_comp_eq φA B.val.toRingHom (RingHom.ext fun _ => rfl) (hint.isIntegral b))
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

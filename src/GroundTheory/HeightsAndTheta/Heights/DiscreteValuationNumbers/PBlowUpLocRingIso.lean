@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 section Abstract
@@ -151,7 +149,5 @@ theorem BlowUpLocRingIso.proof : BlowUpLocRingIso.Statement.{u} := by
   refine ⟨φ, ?_⟩
   intro b F G hF hG hGQ
   exact hφ ⟨(b, F, G), hF, hG, hGQ⟩ _
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

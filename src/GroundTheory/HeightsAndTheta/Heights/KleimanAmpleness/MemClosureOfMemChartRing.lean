@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver secOver)
 
-noncomputable section
-
 section Points
 
 variable {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] {N : ℕ}
@@ -61,7 +59,5 @@ theorem chartRingOver_oneBlock (x : Fin (N + 1) → Ω) (c : Unit → Fin (N + 1
     exact ⟨⟨(), a⟩, rfl⟩
 
 end Points
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

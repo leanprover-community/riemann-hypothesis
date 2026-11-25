@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 theorem Generated.proof (hE : Extension.Statement.{u, w, w}) : Generated.Statement.{u, w} := by
@@ -91,7 +89,5 @@ theorem Generated.proof (hE : Extension.Statement.{u, w, w}) : Generated.Stateme
     rw [smul_eq_mul, chartRing_smul_def, chartRing_smul_def, mul_assoc]
   rw [SetLike.mem_coe, this]
   exact T.smul_mem a (key y hy')
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

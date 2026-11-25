@@ -23,8 +23,6 @@ open MeasureTheory Module Set Filter Function
 
 open scoped ENNReal NNReal
 
-noncomputable section
-
 theorem areaJacobian_eq_abs_det_comp {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
     (φ : F ≃ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] F) :
@@ -214,7 +212,5 @@ theorem AreaMultiplicity.proof : AreaMultiplicity.Statement := by
     φ.toIsometryEquiv.measurePreserving_hausdorffMeasure _
   have hφe : MeasurableEmbedding φ := φ.toHomeomorph.measurableEmbedding
   exact (hφ.lintegral_comp_emb hφe (fun z => (({x ∈ A | g x = z}.encard : ℕ∞) : ℝ≥0∞))).symm
-
-end
 
 end GroundTheory.Heights₂.Heights

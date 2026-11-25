@@ -23,8 +23,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace ChartChangeSheetNull
 
 variable {n d : ℕ}
@@ -193,7 +191,5 @@ theorem ChartChangeSheetNull.proof (h₁ : IndefiniteRowSideFullHecke.ComplexSet
   by_cases hux : linEval u x = 0
   · exact Or.inr ⟨x, ⟨hxZ, hux⟩, rfl⟩
   · exact Or.inl ⟨x, ⟨hxZ, hxs, hux, fun h => hnot ⟨hux, h⟩⟩, rfl⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

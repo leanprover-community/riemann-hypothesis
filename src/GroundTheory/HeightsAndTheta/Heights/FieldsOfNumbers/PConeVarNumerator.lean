@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 
@@ -96,7 +94,5 @@ theorem ConeVarNumerator.proof (hDZ : DegZeroLocQuot.Statement.{u}) :
   refine Finset.sum_congr rfl fun d hd => ?_
   rw [mul_div_right_comm, ← hD d hd]
   rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

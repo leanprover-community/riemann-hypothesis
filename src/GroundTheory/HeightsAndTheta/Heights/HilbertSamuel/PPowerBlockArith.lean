@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 namespace PowerBlockArith
 
 variable {K : Type} [Fintype K] {ι : K → Type}
@@ -76,7 +74,5 @@ theorem PowerBlockArith.proof (hF : CoordArithOfFnField.Statement) : PowerBlockA
       | none => exact ⟨j₀, hj₀⟩
       | some k => exact ⟨c k, hc k⟩)
     (blockFnField_addBlock c hc hv).symm hy
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

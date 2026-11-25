@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 section Symmetry
@@ -90,7 +88,5 @@ theorem GenericPointSectionInput.proof (hE : InterNumEventual.Statement.{u, w})
   · exact hA k Ω N x n pp L i L' L'' hW
   · exact hC k Ω N x n pp L Lc s hW hs hne
   · exact hP k Ω N x pp hW
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

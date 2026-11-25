@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace LiftBirationalNef
@@ -81,7 +79,5 @@ theorem aeval_scale {y : (Σ k, ι k) → Ω} (lam : K → Ω) {G : MRing ι} {d
 
 end LiftBirationalNef
 
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

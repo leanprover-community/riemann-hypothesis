@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix MeasureTheory Filter Topology ChartIntegrationByPartsSymmetry
 open scoped ComplexOrder
 
-noncomputable section
-
 theorem ChartIbpSymm.proof (hCut : ChartIbpCutoff.Statement) : ChartIbpSymm.Statement := by
   intro n A B C D T hA hB hC hD hT
   have hF := integrable_pot_mul_maDensity hA hB hC hD hT
@@ -53,7 +51,5 @@ theorem ChartIbpSymm.proof (hCut : ChartIbpCutoff.Statement) : ChartIbpSymm.Stat
   have h0 := tendsto_nhds_unique hlim (hCut n A B C D T hA hB hC hD hT)
   rw [integral_sub hF hG] at h0
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights

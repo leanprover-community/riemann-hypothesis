@@ -19,8 +19,6 @@ open ReciprocityTheory.AnForm (levi levi_congr levi_comp levi_zero levi_smul_dir
 open ReciprocityTheory.AnForm.M (FinHolAtlas LocPot IsPotential IsPosPot chartIdx)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Regular (RegChartData)
 
-noncomputable section
-
 theorem two_le_smooth_kb : (2 : WithTop ℕ∞) ≤ ∞ := by norm_cast
 
 variable {D : ℕ} {X : Type} [TopologicalSpace X]
@@ -164,7 +162,5 @@ theorem levi_abs_le_global (A : FinHolAtlas D X) (hX : IsCompact (Set.univ : Set
     (le_abs_self (m p)).trans (Finset.single_le_sum (fun i _ => abs_nonneg (m i)) hpt)
   rw [htr θ hθ hqθ hqp.1, htr om hom hqom hqp.2]
   nlinarith
-
-end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

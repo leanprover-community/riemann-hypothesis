@@ -11,8 +11,6 @@ import Mathlib.Algebra.Order.Star.Real
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology

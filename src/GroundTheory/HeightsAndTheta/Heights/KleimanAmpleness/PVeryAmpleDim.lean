@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial AmpleAffineGen
 
-noncomputable section
-
 universe u w
 
 namespace VeryAmpleDim
@@ -143,7 +141,5 @@ theorem VeryAmpleDim.proof : VeryAmpleDim.Statement.{u, w} := by
   rw [← hdx]
   unfold dimCl
   rw [hfield]
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

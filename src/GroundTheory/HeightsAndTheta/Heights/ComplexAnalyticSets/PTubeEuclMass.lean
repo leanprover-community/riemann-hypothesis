@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Matrix ComplexSets
 
-noncomputable section
-
 theorem TubeEuclMass.proof (hC : TubeCollarMass.Statement) (hD : TubeDeepMass.Statement) :
     TubeEuclMass.Statement := by
   intro n d J A P R hJ hdim hA hP
@@ -24,7 +22,5 @@ theorem TubeEuclMass.proof (hC : TubeCollarMass.Statement) (hD : TubeDeepMass.St
   have h := (hC n d J A P R hJ hdim hA hP).add (hD n d J A P R hJ hdim hA hP)
   rw [hS, Set.indicator_self_add_compl] at h
   exact h
-
-end
 
 end GroundTheory.Heights₂.Heights

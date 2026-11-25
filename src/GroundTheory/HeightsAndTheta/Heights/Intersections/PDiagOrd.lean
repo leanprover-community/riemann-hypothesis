@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI
 
-noncomputable section
-
 namespace DiagonalOrder
 
 section Orders
@@ -54,7 +52,5 @@ end Orders
 
 end DiagonalOrder
 
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

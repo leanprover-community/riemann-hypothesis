@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory Filter Topology
 
-noncomputable section
-
 namespace BlockResolutionSupBound
 
 section Invariance
@@ -83,7 +81,5 @@ theorem proof (hI : BlockResolutionImageSup.Statement) (hN : NonvanishingDense.S
   exact le_of_tendsto (hcont.tendsto.mono_left nhdsWithin_le_nhds) (eventually_nhdsWithin_of_forall hSM)
 
 end BlockResolutionSupBound
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

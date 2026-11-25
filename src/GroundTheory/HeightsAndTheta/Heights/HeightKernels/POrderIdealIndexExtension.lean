@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open NumberField
 
-noncomputable section
-
 namespace OrderIdealIndexExtensionAlt
 
 theorem index_ne_zero_of_zsmul_mem {M : Type*} [AddCommGroup M] [Module.Finite ℤ M] (H : AddSubgroup M)
@@ -347,7 +345,5 @@ theorem OrderIdealIndexExtension.proof : OrderIdealIndexExtension.Statement := b
       _ = (J ⊓ F).relIndex F := (AddSubgroup.inf_relIndex_right _ _).symm
       _ = IF.relIndex F := by rw [hinf]
       _ = _ := hIFidx
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -21,8 +21,6 @@ open Metric Filter Topology Set Complex MeasureTheory
 
 open scoped Real
 
-noncomputable section
-
 namespace RiemannExtensionAnalytic
 
 theorem analyticOnNhd_of_differentiableOn {k : ℕ} {O : Set (Fin k → ℂ)} {f : (Fin k → ℂ) → ℂ}
@@ -265,7 +263,5 @@ theorem RiemannExtensionAnalytic.proof : RiemannExtensionAnalytic.Statement := b
       (key τ₀ hτ₀)).differentiableWithinAt
   · rw [(key τ hτ.1).self_of_nhds]
     exact hFlf τ hτ.1 τ (mem_of_mem_nhds (hW τ hτ.1)) hτ.1 hτ.2
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

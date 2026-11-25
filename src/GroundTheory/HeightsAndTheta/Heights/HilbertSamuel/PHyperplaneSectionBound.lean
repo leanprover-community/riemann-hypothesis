@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter
 
-noncomputable section
-
 section Mul
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [CharZero Ω]
@@ -69,7 +67,5 @@ theorem finrank_chartLatQ_le (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (b : K → ℤ) 
   rw [← Submodule.finrank_quotient_add_finrank (chartDivSec y c b), ← hφ, add_comm]
 
 end Mul
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

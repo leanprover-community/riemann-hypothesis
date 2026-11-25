@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem homLocRing_form_not_mem {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
@@ -71,7 +69,5 @@ theorem HomLocRingLocal.proof (hloc : HomLocRingIsLocal.Statement.{u})
     have h3 : (1 : ℕ∞) ≤ (IsLocalRing.maximalIdeal (homLocRing P W)).height :=
       le_trans le_add_self h2
     exact_mod_cast h3
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

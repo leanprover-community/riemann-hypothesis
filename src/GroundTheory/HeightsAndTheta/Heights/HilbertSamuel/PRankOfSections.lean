@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 namespace RankOfSections
 
 theorem position_nsmul {d : ℕ} {A : Type*} [AddCommGroup A] (f : (Fin d → A) → ℤ)
@@ -102,7 +100,5 @@ theorem proof (hP : HilbertPrime.Statement.{0}) (hM : MixedNumberPolynomial.Stat
   ring
 
 end RankOfSections
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

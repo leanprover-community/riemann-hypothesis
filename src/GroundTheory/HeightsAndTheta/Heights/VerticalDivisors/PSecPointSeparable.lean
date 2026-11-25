@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial
 
-noncomputable section
-
 namespace SecPointSeparable
 
 theorem isSeparable_of_derivation_eq_zero {K L : Type} [Field K] [Field L] [Algebra K L]
@@ -97,7 +95,5 @@ theorem SecPointSeparable.proof (h₁ : GenericFormsKer.Statement) (h₂ : Deriv
     have hxz : x j = z j * x j₀ := by simp only [z, mul_assoc, inv_mul_cancel₀ hj₀, mul_one]
     rw [hxz, D.leibniz, hx₀, hDz, smul_zero, smul_zero, add_zero]
   exact Derivation.ext_of_adjoin_eq_top (Set.range x) hx (by rintro _ ⟨j, rfl⟩; simpa using hxj j)
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

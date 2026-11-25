@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 
 open NumberField GroundTheory.Automorphic Module Matrix Topology
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 variable {W : Type*} [AddCommGroup W] [Module E W] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -91,7 +89,5 @@ theorem UnipRadicalOfRational.proof (h : HermitianForm F E W) (v : Basis ι E W)
     exact Finset.sum_congr rfl fun j _ => by ring
   rw [e1, e2, e3, hℓ]
   simp [vecAt]
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

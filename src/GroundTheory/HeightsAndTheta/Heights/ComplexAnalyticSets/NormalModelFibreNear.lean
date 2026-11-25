@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Filter Topology ComplexSets Metric
 
-noncomputable section
-
 namespace NormalModelFibre
 
 variable {n : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} (M : IndefiniteRowSideFullHecke.ComplexSets.NormalModel J)
@@ -89,7 +87,5 @@ theorem eventually_mem_of_fibre_subset {q : Fin n → ℂ} {U : Set (Fin n ⊕ F
   exact hwN.2 ⟨w, ⟨⟨hw, hwN.1⟩, hwU⟩, rfl⟩
 
 end NormalModelFibre
-
-end
 
 end GroundTheory.Heights₂.Heights

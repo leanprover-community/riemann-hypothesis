@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem geoNum_zero_nonneg {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)] (W : Ideal (MRing ι))
     (b : Fin 0 → K → ℤ) : 0 ≤ geoNum 0 W b := by
   unfold geoNum
@@ -50,7 +48,5 @@ theorem regularityLocalCardinality_holds.proof (hD : regularityLocalDimension_ho
   rw [hg]
   push_cast
   rw [Real.log_pow, Real.log_pow]
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

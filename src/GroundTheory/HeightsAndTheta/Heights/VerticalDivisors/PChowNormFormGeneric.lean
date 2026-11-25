@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial
 
-noncomputable section
-
 theorem genPar_algebraicIndependent (k : Type*) [Field k] (e n : ℕ) :
     AlgebraicIndependent k (genPar k e n) := by
   have hinj : Function.Injective (IsScalarTower.toAlgHom k (MvPolynomial (Par e n) k)
@@ -71,7 +69,5 @@ theorem ChowNormFormGeneric.proof (h₁ : SecAlgFinite.Statement) (h₂ : GenSec
   · exact absurd hN hirr.not_isUnit
   obtain ⟨c, hc, rfl⟩ := (MvPolynomial.isUnit_iff_eq_C_of_isReduced).mp hu'
   exact ⟨c, hc.ne_zero, by rw [hu, mul_comm]⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

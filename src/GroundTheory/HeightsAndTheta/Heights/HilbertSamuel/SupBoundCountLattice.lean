@@ -21,8 +21,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory Filter Topology Matrix
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace SupBoundCount
@@ -483,7 +481,5 @@ theorem finrank_secM {y : (Σ k, ι k) → Ω} {k₀ : K} {n r : ℕ} {b : Fin r
   rw [e.toIntLinearEquiv.finrank_eq, finrank_span_eq_card hb.2.1, Fintype.card_fin]
 
 end SupBoundCount
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

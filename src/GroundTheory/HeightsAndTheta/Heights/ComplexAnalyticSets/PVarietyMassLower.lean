@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory
 open scoped ENNReal
 
-noncomputable section
-
 theorem VarietyMassLower.proof (hG : VarietyTangentGraphDense.Statement)
     (hL : TangentGraphLowerDensity.Statement) (hM : VarietyLelongMono.Statement) :
     VarietyMassLower.Statement := by
@@ -67,7 +65,5 @@ theorem VarietyMassLower.proof (hG : VarietyTangentGraphDense.Statement)
     _ ≤ ENNReal.ofReal ((1 / 2) * (ρ / 2) ^ (2 * d)) * τ := by gcongr
     _ ≤ μH[((2 * d : ℕ) : ℝ)] (zeroSetEuc J ∩ Metric.ball (g w₀) (ρ / 2)) := key'
     _ ≤ μH[((2 * d : ℕ) : ℝ)] (zeroSetEuc J ∩ Metric.ball z ρ) := h3
-
-end
 
 end GroundTheory.Heights₂.Heights

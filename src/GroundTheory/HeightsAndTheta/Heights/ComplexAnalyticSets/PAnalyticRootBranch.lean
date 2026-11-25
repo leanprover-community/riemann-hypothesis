@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Filter Topology
 
-noncomputable section
-
 theorem AnalyticRootBranch.proof : AnalyticRootBranch.Statement := by
   intro d N a t₀ τ₀ ha hsep hroot
   set p : Polynomial ℂ := Polynomial.X ^ N + ∑ j, Polynomial.C (a j t₀) * Polynomial.X ^ (j : ℕ) with hp
@@ -54,7 +52,5 @@ theorem AnalyticRootBranch.proof : AnalyticRootBranch.Statement := by
   refine ⟨O, ψ, hOo, ht₀O, ?_, hψt, fun t ht => (hOsub t ht).1.trans hroot⟩
   refine RiemannExtensionAnalytic.analyticOnNhd_of_differentiableOn hOo fun t ht => ?_
   exact ((hOsub t ht).2.differentiableAt one_ne_zero).differentiableWithinAt
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

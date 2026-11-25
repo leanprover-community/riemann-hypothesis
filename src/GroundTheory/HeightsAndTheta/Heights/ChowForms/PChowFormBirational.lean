@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem pderiv_aeval_eq_sum {F K : Type*} [CommRing F] [CommRing K] [Algebra F K]
     {σ τ : Type*} [Fintype σ] (ψ : σ → MvPolynomial τ K) (i : τ) (g : MvPolynomial σ F) :
     pderiv i (aeval ψ g) = ∑ j, aeval ψ (pderiv j g) * pderiv i (ψ j) := by
@@ -139,7 +137,5 @@ theorem ChowFormBirational.proof (h₁ : IncidenceGeneric.Statement)
     simp only [coeff_pderiv, AddMonoidAlgebra.coeff_zero, tsub_add_cancel_of_le hle] at hcoeff
     exact mul_ne_zero (mem_support_iff.1 hs) (Nat.cast_add_one_ne_zero _) hcoeff
   exact chowFormBirational_of_exists_pderiv_ne_zero h₁ hP hg hc hne
-
-end
 
 end GroundTheory.Heights₂.Heights

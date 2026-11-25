@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace DivisorGeneralPointBranches
 
 theorem quotient_inf_dim_lt {R : Type*} [CommRing R] {I₁ I₂ : Ideal R} {d : ℕ}
@@ -54,7 +52,5 @@ theorem proof (hOne : DivisorOneComponent.Statement) (hBr : DivisorBranches.Stat
   simpa [linForm, linEval] using hx0
 
 end DivisorGeneralPointBranches
-
-end
 
 end GroundTheory.Heights₂.Heights

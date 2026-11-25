@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 section
 
 variable {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} [∀ k, Fintype (ι k)]
@@ -47,7 +45,5 @@ theorem GradedFinite.proof : GradedFinite.Statement := by
   unfold hilbFn
   rw [ite_eq_left fun k => Int.natCast_nonneg (m k)]
   simp only [Int.toNat_natCast]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -24,8 +24,6 @@ open MeasureTheory Module Matrix
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem SheetImageAreaSet.proof : SheetImageAreaSet.Statement := by
   classical
   intro n d A U s hU hs hA B hB hBU
@@ -126,7 +124,5 @@ theorem SheetImageAreaSet.proof : SheetImageAreaSet.Statement := by
       ← SheetImageAreaSet.areaJacobian_comp_endo]
     rw [← ContinuousLinearMap.toLinearMap_comp, ← ContinuousLinearMap.toLinearMap_comp, hM]
   rw [hJ, hJ2, mul_comm (areaJacobian _), ENNReal.ofReal_mul (abs_nonneg _)]
-
-end
 
 end GroundTheory.Heights₂.Heights

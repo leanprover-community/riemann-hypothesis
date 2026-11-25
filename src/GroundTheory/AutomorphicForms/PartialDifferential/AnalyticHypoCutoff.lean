@@ -11,8 +11,6 @@ namespace GroundTheory.Automorphic.Sobolev
 open MeasureTheory
 open scoped ContDiff Nat
 
-noncomputable section
-
 section Finite
 
 variable {ι : Type*} [Fintype ι]
@@ -205,7 +203,5 @@ theorem exists_norm_iteratedFDeriv_pow_le {χ : EuclideanSpace ℝ (Fin n) → �
   · exact (hDj j (hj.trans hiL) x).trans (le_self_pow₀ hD1 (by omega))
 
 end Cutoff
-
-end
 
 end GroundTheory.Automorphic.Sobolev

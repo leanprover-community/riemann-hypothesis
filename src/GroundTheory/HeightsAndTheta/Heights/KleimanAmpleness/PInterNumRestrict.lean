@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 namespace InterNumRestrict
@@ -67,7 +65,5 @@ theorem proof (hRL : RestrLenRestrict.Statement.{u, w}) : InterNumRestrict.State
   rw [Filter.map_congr hall]
 
 end InterNumRestrict
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

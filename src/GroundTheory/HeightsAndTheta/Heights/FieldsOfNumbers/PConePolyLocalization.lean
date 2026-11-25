@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR IsLocalRing
 
-noncomputable section
-
 universe u
 
 
@@ -43,7 +41,5 @@ theorem ConePolyLocalization.proof (h₀ : DegZeroLocLocal.Statement.{u}) (h₁ 
     exact ⟨⟨p, ⟨q, (hQ q).mpr ⟨e, he⟩⟩⟩, hz⟩
   · refine ⟨1, ?_⟩
     rw [h₃ F K ι P hP W hW hPW v hv hxy]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

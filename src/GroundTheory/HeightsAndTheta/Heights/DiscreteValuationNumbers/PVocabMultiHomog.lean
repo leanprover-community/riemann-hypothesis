@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem weight_blockWeight_apply {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
@@ -30,7 +28,5 @@ theorem VocabMultiHomog.proof : VocabMultiHomog.Statement := by
   · intro h m hm k
     rw [← weight_blockWeight_apply]
     exact congrFun (h (MvPolynomial.mem_support_iff.mp hm)) k
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

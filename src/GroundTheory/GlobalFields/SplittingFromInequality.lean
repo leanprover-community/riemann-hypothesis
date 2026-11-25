@@ -16,8 +16,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField Filter Topology
 open SemiLocal IdeleNorm
 
-noncomputable section
-
 section Approximation
 
 variable {K : Type*} [Field K] [NumberField K] {L : Type*} [Field L] [NumberField L] [Algebra K L]
@@ -104,7 +102,5 @@ theorem FirstInequality.finrank_eq_one_of_eventually_splitsCompletely (hFI : Fir
   hFI.finrank_eq_one_of_sup_eq_top (ideleNorm_range_sup_eq_top_of_eventually_splitsCompletely h)
 
 end Cyclic
-
-end
 
 end GroundTheory.Global

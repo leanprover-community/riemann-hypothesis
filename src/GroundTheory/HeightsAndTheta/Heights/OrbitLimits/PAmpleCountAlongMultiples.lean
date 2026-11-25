@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory Filter
 open GroundTheory.Heights₂.Heights.HilbertSamuel
 
-noncomputable section
-
 theorem charZero_of_isArithVar_mCoordIdeal {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type}
     [Field Ω] {y : (Σ k, ι k) → Ω} {d : ℕ} (h : IsArithVar (mCoordIdeal y) d) : CharZero Ω := by
   refine charZero_of_inj_zero fun n hn => ?_
@@ -43,7 +41,5 @@ theorem AmpleCountAlongMultiples.proofAmple (hL : LiftModel.Statement) (hC : Lif
     ring
   rw [key]
   exact hk
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

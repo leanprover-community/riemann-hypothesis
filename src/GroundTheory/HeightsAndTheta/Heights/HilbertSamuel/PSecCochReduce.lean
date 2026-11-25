@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 theorem SecCochReduce.map_map_int {K : Type} {ι : K → Type} (p : ℕ) (f : MRing ι) :
     MvPolynomial.map (Int.castRingHom (ZMod p)) (MvPolynomial.map (Int.castRingHom ℤ) f) =
       MvPolynomial.map (Int.castRingHom (ZMod p)) f := by
@@ -35,7 +33,5 @@ theorem SecCochReduce.proof : SecCochReduce.Statement := by
       congr 1
       exact Subtype.ext (SecCochReduce.map_map_int p _)
     exact hrep.unique (GenOnFibres.secCoch_spec hs J hz)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

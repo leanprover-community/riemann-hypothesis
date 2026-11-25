@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter
 open GroundTheory.Heights₂.Heights.CoordinateConeArithVar
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 section Coordinates
@@ -27,7 +25,5 @@ theorem chartLatQ_eq_smul_one (y : (Σ k, ι k) → Ω) (a : K → ℤ) (τ : �
   simp only [Pi.smul_apply, smul_eq_mul, Nat.cast_one, one_mul]
 
 end Coordinates
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

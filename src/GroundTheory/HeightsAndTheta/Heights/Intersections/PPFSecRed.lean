@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 theorem PFSecRed.exists_form_not_mem {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {P : Ideal (MRing ι)} {n : ℕ} (hP : IsArithVar P n) (c : K → ℕ) :
     ∃ s : MRing ι, IsMultiHomog s c ∧ s ∉ P :=
@@ -91,7 +89,5 @@ theorem PFSecRed.proof
   rw [f0, key, e1, e2, hJadd]
   push_cast
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 theorem LinearNoetherNormalization.ringKrullDim_quotient_le {R : Type*} [CommRing R] (J : Ideal R)
     (k : WithBot ℕ∞) (h : ∀ W ∈ J.minimalPrimes, ringKrullDim (R ⧸ W) ≤ k) :
     ringKrullDim (R ⧸ J) ≤ k :=
@@ -165,7 +163,5 @@ theorem LinearNoetherNormalization.proof : LinearNoetherNormalization.Statement 
     rw [show (projHom J A).toRingHom.comp (algebraMap ℂ (MvPolynomial (Fin d) ℂ)) =
       algebraMap ℂ (MvPolynomial (Fin n) ℂ ⧸ J) from (projHom J A).comp_algebraMap]
     exact RingHom.finiteType_algebraMap.mpr inferInstance
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

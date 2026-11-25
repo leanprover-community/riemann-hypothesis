@@ -14,8 +14,6 @@ open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace Limits
 
 universe u
 
-noncomputable section
-
 attribute [local instance] algebraOfOver
 
 section Sum
@@ -75,7 +73,5 @@ lemma reesCoefFam_reesMul (r : reesAlgebra I) (N : ℕ) (x : cechH (reesPre I F)
   · rw [map_sum]
     exact Finset.sum_eq_zero fun ij _ => by
       rw [← push_d, ← CechFamily.cochain_d, hσ, map_zero, map_zero]
-
-end
 
 end GroundTheory.Arith.SchemeCoh

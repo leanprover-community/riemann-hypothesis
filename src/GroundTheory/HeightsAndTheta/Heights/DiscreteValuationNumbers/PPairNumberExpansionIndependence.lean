@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 section ClassNumPairDiff
 
 variable {K : Type*} [DecidableEq K] {ι : K → Type*}
@@ -128,7 +126,5 @@ theorem PairNumberExpansionIndependence.proof (hC2 : VerticalDivisorsCommute.Sta
     simp only [← Finset.sum_neg_distrib]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => hF i j
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

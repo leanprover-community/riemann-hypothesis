@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace SegreFlagClosureModel
 
 theorem exists_flag_ne_zero {Ω : Type*} [Field Ω] {E : Type*} [AddCommGroup E] [Module Ω E]
@@ -155,7 +153,5 @@ theorem SegreFlagClosureModel.proof (hTr : SegreFlagClosureTrdeg.Statement) :
     · exact hg₁ h
   · rw [show g₁ * f₀ - f₁ * g₀ = f₀ * g₁ - f₁ * g₀ by ring]
     exact hp₀.cross hp₁
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

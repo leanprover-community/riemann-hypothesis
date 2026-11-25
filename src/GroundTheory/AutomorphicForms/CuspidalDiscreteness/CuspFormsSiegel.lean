@@ -19,8 +19,6 @@ open scoped NumberField.AdeleRing Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace CuspidalSpectrum
 
 open AutomorphicForm
@@ -278,7 +276,5 @@ theorem exists_norm_le_of_mem_cuspForms {φ : AdelicGLn.AdelicGL K n → ℂ}
   rwa [pow_zero, inv_one, mul_one, hφ.1.isLeftInvariant γ x] at h
 
 end CuspidalSpectrum
-
-end
 
 end GroundTheory.Automorphic

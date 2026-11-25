@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR PFContracted
 
-noncomputable section
-
 universe u
 
 theorem FibreRelDim.proof : FibreRelDim.Statement.{u} := by
@@ -53,7 +51,5 @@ theorem FibreRelDim.proof : FibreRelDim.Statement.{u} := by
   congr 2
   push_cast at hP'z
   omega
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

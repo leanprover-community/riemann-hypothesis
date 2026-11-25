@@ -17,8 +17,6 @@ open MvPolynomial
 open scoped Pointwise
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver secOver GeneratesOver)
 
-noncomputable section
-
 section FirstTyping
 
 variable {S : Type} [CommRing S] {N : ℕ} {Ω : Type} [Field Ω] [Algebra S Ω] {x : Fin (N + 1) → Ω}
@@ -141,7 +139,5 @@ theorem mem_secOver_iff_charts (y : (Σ k, ι k) → Ω) (δ : K → ℤ) (t : �
     Subalgebra.mem_toSubmodule]
 
 end SecondTyping
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

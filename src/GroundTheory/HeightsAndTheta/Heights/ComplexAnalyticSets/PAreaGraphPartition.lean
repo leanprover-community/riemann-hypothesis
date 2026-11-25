@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 open scoped ENNReal NNReal
 open Set Metric
 
-noncomputable section
-
 theorem AreaGraphPartition.proof : AreaGraphPartition.Statement := by
   intro k m U F hU hF r hr
 
@@ -69,7 +67,5 @@ theorem AreaGraphPartition.proof : AreaGraphPartition.Statement := by
   · intro n x hx
     rw [← NNReal.coe_le_coe, coe_nnnorm]
     exact hεD (c n) x (disjointed_subset B n hx)
-
-end
 
 end GroundTheory.Heights₂.Heights

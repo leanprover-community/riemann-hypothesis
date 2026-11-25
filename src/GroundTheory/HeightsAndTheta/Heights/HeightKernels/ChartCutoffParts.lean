@@ -25,8 +25,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A Matrix MeasureTheory Filter Topology
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartIntegrationByPartsSymmetry
 
 section Potentials
@@ -337,7 +335,5 @@ theorem integrable_pot_mul_maDensity {A B C D : Matrix (Fin (n + 1 + 1)) (Fin (n
 end Chart
 
 end ChartIntegrationByPartsSymmetry
-
-end
 
 end GroundTheory.Heights₂.Heights

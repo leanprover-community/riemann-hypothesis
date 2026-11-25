@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (mConeMapOver mIdealOver chartRingOver)
 
-noncomputable section
-
 section Units
 
 variable {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω]
@@ -284,7 +282,5 @@ theorem ModelCurvesLift.proof : ModelCurvesLift.Statement := by
     rw [← not_iff_not, e1]
     change _ ↔ aeval vb g ∉ q'
     rw [e2, unit_mul_pow_iff htR ht0 hti]
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

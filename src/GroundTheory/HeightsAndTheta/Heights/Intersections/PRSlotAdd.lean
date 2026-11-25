@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory Filter
 open scoped Topology ContDiff
 
-noncomputable section
-
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 
@@ -159,7 +157,5 @@ theorem RPositionAdd.proof (hFF : FibreFiniteStatement) (hInt : PtsIntegrableSta
   rw [e, e, e, finsum_mem_congr rfl key, finsum_mem_add_distrib (divSupp_finite P s),
     arInt_snoc_tensor hFF hInt L hP hL hA hC hB hs]
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

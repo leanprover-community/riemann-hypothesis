@@ -21,8 +21,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace TwoBlockModuleFinite
@@ -204,7 +202,5 @@ theorem TwoBlockModuleFinite.proof : TwoBlockModuleFinite.Statement := by
     rw [hpA.2.2.2, Fintype.card_fin, show D + 1 + 2 = D + 2 + 1 by omega] at h
     rw [Fintype.card_fin]
     exact le_of_add_one_le' h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

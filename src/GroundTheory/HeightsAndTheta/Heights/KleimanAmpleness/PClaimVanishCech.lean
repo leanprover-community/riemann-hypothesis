@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 namespace Cech
@@ -172,7 +170,5 @@ theorem subsingleton_H_one_of_smul (F' G : SubSystem S x Ω) (σ : Ω) (hσ : σ
   rw [← mul_assoc, mul_inv_cancel₀ hσ, one_mul]
 
 end SubSystem
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

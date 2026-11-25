@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial MeasureTheory
 
-noncomputable section
-
 namespace PtsIntegralZeroLowerNEAux
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -169,7 +167,5 @@ theorem PtsIntegralZeroLowerNE.proof : PtsIntegralZeroLowerNE.Statement := by
     (fun w hw => density_ge hc ((Set.Finite.mem_toFinset hF).mp hw))
   rw [nsmul_eq_mul] at h
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights

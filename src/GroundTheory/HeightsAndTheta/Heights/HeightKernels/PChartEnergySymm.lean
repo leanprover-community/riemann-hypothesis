@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix MeasureTheory
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartEnergySymmetry
 
 theorem cxHessian_sub {D : ℕ} {f g : (Fin D → ℂ) → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g)
@@ -104,7 +102,5 @@ theorem ChartEnergySymm.proof (hI : ChartIbpSymm.Statement) : ChartEnergySymm.St
       (ChartEnergySwapHessian.contDiff_hermChartPot Y hY), ← Inter.maDensity_comp_perm _ σ, update_comp_swap]
   simp_rw [hdiff C D hC hD, hdiff A B hA hB]
   exact hI n A B C D T' hA hB hC hD hT'
-
-end
 
 end GroundTheory.Heights₂.Heights

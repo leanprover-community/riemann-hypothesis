@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace NormalLocusRep
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -184,7 +182,5 @@ theorem NormalLocusRep.proof : NormalLocusRep.Statement := by
     linear_combination (s * aeval y (H c)) * key
   · simp only [map_mul, map_prod, map_pow, map_X, eval_X]
     exact mul_ne_zero hHz (Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hzc k))
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

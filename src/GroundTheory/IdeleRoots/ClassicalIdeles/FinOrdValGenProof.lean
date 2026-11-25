@@ -7,8 +7,6 @@ import Mathlib.RingTheory.RootsOfUnity.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.BlockD
 
 variable {L : Type} [Field L] [NumberField L]

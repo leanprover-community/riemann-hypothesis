@@ -9,8 +9,6 @@ import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory TensorProduct

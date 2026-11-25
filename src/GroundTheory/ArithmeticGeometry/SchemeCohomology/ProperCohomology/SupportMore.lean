@@ -16,8 +16,6 @@ open scoped ZeroObject
 
 universe w' u
 
-noncomputable section
-
 variable {X : Scheme.{u}}
 
 lemma eq_zero_of_isTerminal {T : AddCommGrpCat.{u}} (hT : IsTerminal T) (s : T) : s = 0 := by
@@ -130,7 +128,5 @@ theorem FiniteH.of_isZero (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)] {F : X
   Module.Finite.of_finite
 
 end Cohomology
-
-end
 
 end GroundTheory.Arith.SchemeCoh

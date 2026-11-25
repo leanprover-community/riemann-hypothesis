@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G
 
-noncomputable section
-
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
 theorem ConeTrdeg.mConeMap_of_isMultiHomog (y : (Σ k, ι k) → Ω) {g : Geo.MRing ι} {d : K → ℕ}
@@ -88,7 +86,5 @@ theorem ConeTrdeg.proof : ConeTrdeg.Statement := by
   have hSB := trdeg_add_eq ℤ S (A := MvPolynomial K Ω)
   rw [trdeg_eq_zero (R := S) (A := MvPolynomial K Ω), add_zero] at hSB
   rw [hA, hSB, hB]
-
-end
 
 end GroundTheory.Heights₂.Heights

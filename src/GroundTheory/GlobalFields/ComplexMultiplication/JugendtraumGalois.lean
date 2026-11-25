@@ -19,8 +19,6 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.Global
 namespace Elliptic
 
-noncomputable section
-
 open NumberField Module IsDedekindDomain IntermediateField IdeleGroup WeierstrassCurve GroundTheory.Arith.Abelian
 open GroundTheory.LocalField (restrictAb le_maximalAbelianExtension maximalAbelianExtension)
 open scoped nonZeroDivisors
@@ -145,8 +143,6 @@ theorem mk_mem_map_standardOpenSubgroup_of_apply_j_eq (σ : ℂ ≃ₐ[K] ℂ) (
   exact (forall_rayClassField_apply_eq_iff σ s hs Modulus.one).1 hfix
 
 end Hilbert
-
-end
 
 end Elliptic
 end GroundTheory.Global

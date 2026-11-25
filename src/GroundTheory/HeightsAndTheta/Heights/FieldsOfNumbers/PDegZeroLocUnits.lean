@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem DegZeroLocUnits.proof : DegZeroLocUnits.Statement.{u} := by
@@ -55,7 +53,5 @@ theorem DegZeroLocUnits.proof : DegZeroLocUnits.Statement.{u} := by
       refine ⟨_, div_mem_degZeroLoc P 𝒲 hg hf hfP hfW, ?_⟩
       rw [hx', div_mul_div_comm, mul_comm (algebraMap _ _ _),
         div_self (mul_ne_zero (hne g hgP) (hne f hfP))]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

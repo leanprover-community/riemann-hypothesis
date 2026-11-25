@@ -13,8 +13,6 @@ open scoped ENNReal NNReal Pointwise
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace RightCosetSpace
 
 section Unimodular
@@ -88,7 +86,5 @@ theorem inv_eq_self_of_isMulRightInvariant (ν : Measure H) [ν.IsHaarMeasure]
 end Unimodular
 
 end RightCosetSpace
-
-end
 
 end GroundTheory.Automorphic

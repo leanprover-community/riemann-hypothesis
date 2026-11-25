@@ -13,8 +13,6 @@ namespace RestTerms
 
 open Finset
 
-noncomputable section
-
 theorem XBound.intersectionNumber_baseChange : XBound.Statement := by
   intro r a hN
   have hN' : (2 : ℝ) ≤ ((r + a : ℕ) : ℝ) := by exact_mod_cast hN
@@ -161,8 +159,6 @@ theorem ChebyshevThetaBound.intersectionNumber_baseChange : ChebyshevThetaBound.
     _ ≤ x * Real.log 4 := by
         apply mul_le_mul_of_nonneg_right (Nat.floor_le hx)
         exact Real.log_nonneg (by norm_num)
-
-end
 
 end RestTerms
 

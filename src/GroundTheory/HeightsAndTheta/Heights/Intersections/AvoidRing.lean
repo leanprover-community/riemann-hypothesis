@@ -9,8 +9,6 @@ import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIf
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace GroundTheory.Heights₂.Heights.Inter.AvoidRing

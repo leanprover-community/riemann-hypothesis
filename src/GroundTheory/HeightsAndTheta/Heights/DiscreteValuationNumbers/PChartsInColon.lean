@@ -10,8 +10,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 open scoped Pointwise
@@ -123,7 +121,5 @@ theorem ChartsInColon.proof : ChartsInColon.Statement.{u} := by
   | zero => rw [mul_zero]; exact zero_mem _
   | add x y _ _ hx hy => rw [mul_add]; exact add_mem hx hy
   | smul c x _ hx => rw [mul_smul_comm]; exact Submodule.smul_mem _ c hx
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

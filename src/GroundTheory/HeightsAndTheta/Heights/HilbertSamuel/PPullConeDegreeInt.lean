@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial BlockImageHilb
 
-noncomputable section
-
 namespace PullConeDegreeInt
 
 section Lemmas
@@ -122,7 +120,5 @@ theorem proof : PullConeDegreeInt.Statement := by
   rw [coeff_mul_monomial', ite_eq_left hle, hsub, coeff_mConeMap]
 
 end PullConeDegreeInt
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

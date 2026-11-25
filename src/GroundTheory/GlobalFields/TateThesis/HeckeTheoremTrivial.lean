@@ -14,8 +14,6 @@ open scoped NumberField.AdeleRing
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 open IdeleGroup
@@ -81,7 +79,5 @@ theorem testFunction_zero_of_forall : χ.testFunction 0 = 1 := by
     finiteTestFun_zero_of_forall hτ, one_mul]
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

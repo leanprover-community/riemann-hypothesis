@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem nefOnGenericDeg_of_semipos (hN : NefOnGenericOfSemipos.Statement)
@@ -53,7 +51,5 @@ theorem KodairaSection.proof (hN : NefOnGenericOfSemipos.Statement)
   obtain ⟨C, hC0, hB⟩ := hS K ι Ω y (HermLine.zcomb M (fsH ι) k (-1)) 1 ((n : Ω) * e)
     (continuousOn_zcomb_fsH hM.semipos.1 k) (by rw [ha]; exact hne)
   exact ⟨k, (n : Ω) * e, C, hk, hC0, mul_ne_zero (Nat.cast_ne_zero.mpr (by omega)) he0, hne, hB⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

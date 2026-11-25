@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem length_localizedModule_eq_of_surjective {S T : Type*} [CommRing S] [CommRing T]
@@ -119,7 +117,5 @@ theorem SpecialMultAt.proof : SpecialMultAt.Statement.{u} := by
     rw [← map_mul]
     rfl
   exact length_localizedModule_eq_of_surjective π hπ (specialIdeal W) W hWc _ _ e.toAddEquiv he
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

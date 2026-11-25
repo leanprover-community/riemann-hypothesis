@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open GroundTheory.Heights₂.Heights InvertibleIdealIndexAlt
 
-noncomputable section
-
 namespace InvertibleIndexMultiplicative
 
 variable {Ω : Type} [Field Ω]
@@ -137,7 +135,5 @@ theorem InvertibleIndexMul.proof (h1 : LocalGenFamily.Statement) (h2 : LocallyPr
   refine ⟨by positivity, by positivity, ?_⟩
   push_cast
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

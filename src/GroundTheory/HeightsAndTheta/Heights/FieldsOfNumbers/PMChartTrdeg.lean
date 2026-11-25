@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 namespace MChartTrdeg
@@ -213,7 +211,5 @@ theorem MChartTrdeg.proof (hH : MChartHomog.Statement.{u}) : MChartTrdeg.Stateme
   rw [show Algebra.trdeg F (MRing ι F ⧸ chartIdeal P u) = Algebra.trdeg F A₀ from
       (Ideal.quotientKerEquivRange (chartMap P u)).trdeg_eq, ← h1, trdeg_add_eq F A₀ (A := L),
     GroundTheory.Arith.Abelian.Jacobian.trdeg_eq_of_isFractionRing (k := F) (A := R) L]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

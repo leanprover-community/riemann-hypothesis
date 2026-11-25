@@ -12,8 +12,6 @@ open scoped ENNReal Pointwise NumberField.AdeleRing
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace UnitaryRep
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [MeasurableSpace G] [BorelSpace G]
@@ -92,7 +90,5 @@ theorem exists_isHilbertSum_isIrreducible_cuspidal :
   UnitaryRep.exists_isHilbertSum_isIrreducible (isCompactOperator_cuspRep μ)
 
 end CuspidalSpectrum
-
-end
 
 end GroundTheory.Automorphic

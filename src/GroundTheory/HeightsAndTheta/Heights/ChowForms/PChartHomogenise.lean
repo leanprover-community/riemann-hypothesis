@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace ChartHomogenise
 
 attribute [local instance] MvPolynomial.gradedAlgebra
@@ -73,7 +71,5 @@ theorem proof : ChartHomogenise.Statement := by
     exact Ideal.homogeneousCore_mono _ hJQ
 
 end ChartHomogenise
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -20,8 +20,6 @@ open Matrix ComplexSets
 open GroundTheory.Heights₂.Heights.LowerBoundFree.FubiniLevi
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace RegularizedDensityNonneg
 
 theorem half_log_eq_phi (a : ℂ) {ε : ℝ} (hε : 0 ≤ ε) :
@@ -73,7 +71,5 @@ theorem RegDensNonneg.proof : RegDensNonneg.Statement := by
       funext w; simp [euclPot, Complex.normSq_eq_norm_sq]
     rw [ReciprocityTheory.AnForm.A.hessC_comp _ _ _ han hE, e, ReciprocityTheory.AnForm.A.hessC_sum_normSq]
     exact GradDensSheetBound.posSemidef_transpose_mul_mul_conj _ PosSemidef.one
-
-end
 
 end GroundTheory.Heights₂.Heights

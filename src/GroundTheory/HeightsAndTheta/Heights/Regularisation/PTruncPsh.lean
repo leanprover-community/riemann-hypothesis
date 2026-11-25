@@ -16,8 +16,6 @@ open Metric Filter Topology Set
 open ReciprocityTheory.AnForm.A (IsPsh coordDiv limsupExt)
 open ReciprocityTheory.AnForm.M (FinHolAtlas)
 
-noncomputable section
-
 namespace RegChartData
 
 variable {D : ℕ} {X : Type*} [TopologicalSpace X] {A : FinHolAtlas D X} (R : RegChartData A)
@@ -105,7 +103,5 @@ theorem TruncPsh.proof : TruncPsh.Statement := by
     have : R.u j y = R.q j y + R.ph ((R.chart j).symm y) := rfl
     rw [this]
     linarith [le_abs_self (M j), le_abs_self R.Cph]
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

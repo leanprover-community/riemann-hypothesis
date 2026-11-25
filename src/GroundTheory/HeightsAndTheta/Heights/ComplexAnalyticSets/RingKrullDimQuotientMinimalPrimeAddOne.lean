@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Filter Topology ComplexSets
 
-noncomputable section
-
 theorem graphChart_of_eq_on_open {n d : ℕ} {Y Y' U : Set (Fin n → ℂ)} {q : Fin n → ℂ}
     (hU : IsOpen U) (hqU : q ∈ U) (hYU : Y' ∩ U = Y ∩ U)
     (h : ∃ (A : (Fin n → ℂ) →L[ℂ] (Fin d → ℂ)) (O : Set (Fin d → ℂ)) (V : Set (Fin n → ℂ))
@@ -172,7 +170,5 @@ theorem graphChart_of_frameGraphGeneric (hG : FrameGraphGeneric.Statement) {n e 
       · show T (S (g (Ψ y))) ∈ V
         rw [hTS]
         exact hmem.2
-
-end
 
 end GroundTheory.Heights₂.Heights

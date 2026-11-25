@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 open Filter Topology
 open scoped ContDiff
 
-noncomputable section
-
 theorem AnalyticSimpleRootBranch.proof : AnalyticSimpleRootBranch.Statement := by
   intro d N a y τ ha hroot hder
   set p : Polynomial ℂ := Polynomial.X ^ N + ∑ j, Polynomial.C (a j y) * Polynomial.X ^ (j : ℕ) with hp
@@ -56,7 +54,5 @@ theorem AnalyticSimpleRootBranch.proof : AnalyticSimpleRootBranch.Statement := b
   change F (y', s) = 0 ↔ s = ψ y'
   rw [← hF0, h]
   exact eq_comm
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

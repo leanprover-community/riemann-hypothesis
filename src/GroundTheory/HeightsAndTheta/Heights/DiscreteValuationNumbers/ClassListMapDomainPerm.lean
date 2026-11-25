@@ -12,8 +12,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.NumbersDVR.BundleExamples
 
 open MvPolynomial

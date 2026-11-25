@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 namespace SnapperSubquotientFinite
@@ -130,7 +128,5 @@ theorem SnapperSubquotFinite.proof (hfin : SnapperFinite.Statement.{u, v, w}) :
     (LinearMap.exact_iff.2 (by rw [LinearMap.ker_rangeRestrict]; exact LinearMap.exact_iff.1 hgδ))
     δ.surjective_rangeRestrict
   exact (hdegTopEquiv _ _ i).finiteDimensional
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

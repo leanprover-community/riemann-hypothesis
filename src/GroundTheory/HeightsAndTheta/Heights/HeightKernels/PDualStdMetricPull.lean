@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 NumberField Matrix
 
-noncomputable section
-
 namespace StandardDualMetricPullback
 
 variable {K : Type} [Field K] [NumberField K] {i : ℕ} {T : Type} [Fintype T] [DecidableEq T]
@@ -75,7 +73,5 @@ theorem DualStdMetricPull.proof : DualStdMetricPull.Statement := by
   congr 1
   rw [Finset.sum_eq_single σ (fun τ _ hτ => by simp [W, hσ τ hτ]) (by simp)]
   exact Finset.sum_congr rfl fun j _ => by rw [← hy j]
-
-end
 
 end GroundTheory.Heights₂.Heights

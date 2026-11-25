@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory Filter
 
-noncomputable section
-
 namespace ArithmeticVolumeDegreeZero
 
 theorem arithmeticVolume_nonneg {Ω : Type*} [CommRing Ω] (P : ℕ → Ω → Prop) (La : ℕ → AddSubgroup Ω) (a D : ℕ) :
@@ -97,7 +95,5 @@ theorem ArithmeticVolumeDegreeZero.proof (hB : G6.StatementB) (hN : ShiftNefBig.
     exact (hB K ι Ω y D _ P0 II hD hII har hb (hN K ι Ω y D A P0 hD har hb hP0 hs hnef hc q hq)).trans (hC q hq)
   rw [← hpc]
   exact ArithmeticVolumeDegreeZero.coeff_le_of_eval_le_mul p r hC0 hpdeg hrdeg (by rw [hrc]; exact_mod_cast hdeg) hbound
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR IsLocalRing
 
-noncomputable section
-
 universe u
 
 
@@ -57,7 +55,5 @@ theorem ConeLocalLength.proof (h₁ : LocalizedQuotientLength.Statement.{u, u})
   unfold multAt
   rw [h₁ _ P W a (coneLocal P W hPW) inferInstance, hspan]
   exact key (degZeroLoc P {W}) (coneLocal P W hPW) hmax α
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial NumberField
 
-noncomputable section
-
 namespace StackedExceptionalLinearForms
 
 variable {K : Type} [Field K] [NumberField K] {i : ℕ} {F F' : HermLattice K i} {T : Type} [Fintype T]
@@ -66,7 +64,5 @@ theorem DualStackedExcLinear.proof (hEx : DualStackedExcResidueExists.Statement)
   have h2 : linPrime α M ≤ E := hLe K i F F' T b b' a hi hlt hcov hab k α M hD E hE.1.1.1 hE.1.1.2 hE.2
   have hprime : (linPrime α M).IsPrime := RingHom.ker_isPrime _
   exact ⟨k, hk, hkf, α, M, span_alpha hD, linFormsIndep hD, le_antisymm (hE.1.2 ⟨hprime, h1⟩ h2) h2, hcard⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem DegZeroLocFrac.proof : DegZeroLocFrac.Statement.{u} := by
@@ -72,7 +70,5 @@ theorem DegZeroLocFrac.proof : DegZeroLocFrac.Statement.{u} := by
     div_ne_zero (hq0 _ fun h' => (hP.isPrime.mem_or_mem h').elim hgP hmP) (hq0 _ hhP), ?_⟩
   simp only [map_mul]
   rw [div_div_div_cancel_right₀ (hq0 _ hhP), mul_div_mul_right _ _ (hq0 _ hmP)]
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

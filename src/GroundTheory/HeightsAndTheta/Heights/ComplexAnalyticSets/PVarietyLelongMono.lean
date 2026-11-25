@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Matrix ComplexSets
 open scoped ENNReal
 
-noncomputable section
-
 theorem zeroSetEuc_subsingleton_of_dim_zero {n : ℕ} (J : Ideal (MvPolynomial (Fin n) ℂ)) (hJ : J.IsPrime)
     (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = ((0 : ℕ) : WithBot ℕ∞))
     {z : EuclideanSpace ℂ (Fin n)} (hz : z ∈ zeroSetEuc J) :
@@ -76,7 +74,5 @@ theorem VarietyLelongMono.proof (hN : ComplexSets.LinearNoetherNormalization.Sta
           (fun _ => euclPot) y) := mul_le_mul_of_nonneg_left key hc.le
       _ = r ^ (2 * (d + 1)) * (c * ∫ y, chartDens J A ((euclBall (WithLp.ofLp z) s).indicator fun _ => 1)
           (fun _ => euclPot) y) := by ring
-
-end
 
 end GroundTheory.Heights₂.Heights

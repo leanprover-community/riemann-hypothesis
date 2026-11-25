@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace GenFibreHomog
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -97,7 +95,5 @@ theorem GenFibreHomog.proof : GenFibreHomog.Statement := by
     rw [coeff_map, h0, map_zero]
   intro f hf b
   exact weightedHomogeneousComponent_mem_of_mem ℚ _ hJ hf b
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

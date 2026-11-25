@@ -20,8 +20,6 @@ theorem index_map_mul_relIndex_ker {f : G →* C} (hf : Function.Surjective f) (
 
 end GroupLemma
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 namespace IdeleGroup
@@ -40,7 +38,5 @@ theorem index_map_mul_index_comap (h : (diagonal K).range ⊔ sIdeles S = ⊤)
   exact index_map_mul_relIndex_ker ((sIdelesToIdeleClassGroup_surjective_iff S).2 h) W
 
 end IdeleGroup
-
-end
 
 end GroundTheory.Global

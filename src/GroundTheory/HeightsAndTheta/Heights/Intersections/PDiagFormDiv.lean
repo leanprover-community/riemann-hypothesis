@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI
 
-noncomputable section
-
 namespace DiagonalFormDivisor
 
 set_option linter.unusedSectionVars false
@@ -35,7 +33,5 @@ end Generic
 
 end DiagonalFormDivisor
 
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

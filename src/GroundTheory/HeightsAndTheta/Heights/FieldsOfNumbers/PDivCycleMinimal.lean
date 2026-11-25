@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem DivCycleMinimal.ringKrullDim_eq {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
@@ -60,7 +58,5 @@ theorem DivCycleMinimal.proof : DivCycleMinimal.Statement.{u} := by
     have h6 := ENat.natCast_le_natCast.mp h5
     omega
   exact ⟨hmin, length_localizedQuot_ne_top _ _ hmin⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

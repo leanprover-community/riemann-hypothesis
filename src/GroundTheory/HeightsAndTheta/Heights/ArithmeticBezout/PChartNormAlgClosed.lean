@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem ChartNormAlgClosed.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFirstMemIncIdeal.Statement)
     (h₃ : LocalizationPrimeDVR.Statement) (h₄ : ChartFinite.Statement) (h₅ : ChartLocDomain.Statement)
     (h₆ : ChartFirstGroupPrime.Statement) (h₇ : ChartFirstGroupDvd.Statement)
@@ -34,7 +32,5 @@ theorem ChartNormAlgClosed.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFi
       (FractionRing.isScalarTower_liftAlgebra _ _) _ hI hf htI
   rw [eval_map_firstGroup, eval_map_firstGroup, ← chartLin_eq_sum] at key
   exact key
-
-end
 
 end GroundTheory.Heights₂.Heights

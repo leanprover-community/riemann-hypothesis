@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial Matrix Filter Topology ReciprocityTheory.AnForm ComplexSets
 open scoped ContDiff ComplexOrder
 
-noncomputable section
-
 namespace RegularizedFormComparison
 
 open TubeFormComparison
@@ -145,7 +143,5 @@ theorem RegFormCompare.proof : RegFormCompare.Statement := by
       _ = _ := by ring
   · rw [image_eq_zero_of_notMem_tsupport hxf, mul_zero, zero_mul, abs_zero]
     exact mul_nonneg hC (mul_nonneg (hw x) hE)
-
-end
 
 end GroundTheory.Heights₂.Heights

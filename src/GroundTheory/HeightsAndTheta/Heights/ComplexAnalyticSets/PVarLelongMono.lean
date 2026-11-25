@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Matrix ComplexSets
 
-noncomputable section
-
 namespace LelongNumberMonotone
 
 variable {n d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin (d + 1)) (Fin n) ℂ}
@@ -59,7 +57,5 @@ theorem VarLelongMono.proof (hA : VarLelongAnnulus.Statement) : VarLelongMono.St
     mul_nonneg (pow_nonneg hr.le _) (pow_nonneg (hr.le.trans hrs) _)
   have := mul_nonneg hrs0 hτ
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights

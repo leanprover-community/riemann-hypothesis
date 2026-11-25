@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 section Lemmas
@@ -198,7 +196,5 @@ theorem Snapper.proof (hD : SnapperDevissage.Statement.{u, v, w}) (hH : SnapperH
   · rw [heq t L n c, ← hev n c]
     push_cast
     rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ChangeOfLattice
 
-noncomputable section
-
 namespace MetricTransportSmooth
 
 theorem matActC_one {J : Type} [Fintype J] [DecidableEq J] (z : J → ℂ) : matActC (1 : Matrix J J ℚ) z = z := by
@@ -38,7 +36,5 @@ theorem proof : MetricTransportSmooth.Statement := by
   exact (hm.comp (contDiff_matActC B').contDiffOn hmaps).congr fun w _ => heq w
 
 end MetricTransportSmooth
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

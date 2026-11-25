@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 section Chart
@@ -87,7 +85,5 @@ theorem CutNonempty.proof (hO : CutOneGenerator.Statement.{u, w}) : CutNonempty.
   by_contra hne
   push Not at hne
   exact hO k Ω N x n pp L s hW hL hs (sub_le_twist_sup_span hW.homog L s hne)
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -7,8 +7,6 @@ import Mathlib.Tactic.TypeStar
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 open WittVector Filter Topology
 
 namespace GroundTheory.PAdicHodge

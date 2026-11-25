@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open NumberField
 
-noncomputable section
-
 namespace DualStackedDegreeAlt
 
 variable {K : Type} [Field K] [NumberField K] {i : ℕ}
@@ -89,7 +87,5 @@ theorem DualStackedDegree.proof (hIdx : DualLatticeIndex.Statement) : DualStacke
   have ha : ∀ t, a t ≠ 0 := fun t ht => b.ne_zero t (Subtype.ext (by rw [hab t, ht, zero_smul]; rfl))
   rw [degree_sub F F' h, ← hIdx K i F F' h, relIndex_stacked h b b' a hab,
     Real.log_prod (fun t _ => abs_ne_zero.mpr (Int.cast_ne_zero.mpr (ha t)))]
-
-end
 
 end GroundTheory.Heights₂.Heights

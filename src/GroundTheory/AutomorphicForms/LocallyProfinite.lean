@@ -5,8 +5,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.Automorphic
 
 open Set Filter Topology

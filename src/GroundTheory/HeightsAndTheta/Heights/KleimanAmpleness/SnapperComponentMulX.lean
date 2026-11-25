@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (cechHc quotPart CechC)
 
-noncomputable section
-
 section Lemmas
 
 variable {F : Type} [Field F] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -122,7 +120,5 @@ theorem EulerPoly.proof (hS : ReciprocityTheory.ChartRestriction.G.ArakelovGeome
         linarith
   obtain ⟨p, hp⟩ := key V hV
   exact ⟨∑ k, (Fintype.card (ι k) - 1), p, hfin V hV, fun m i hi => snapper_top V m i hi, hp⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

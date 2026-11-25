@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial
 open scoped nonZeroDivisors
 
-noncomputable section
-
 namespace NormOfDividedForm
 
 variable {O B K L : Type} [CommRing O] [IsDomain O] [CommRing B] [Algebra O B] [Field K] [Field L] [Algebra O K]
@@ -143,7 +141,5 @@ theorem NormOfDividedForm.proof (hEval : NormFormEval.Statement) (hDvd : NormFor
   have : FiniteDimensional (FractionRing O) (FractionRing B) := .of_isLocalization O B O⁰
   exact det_mulLeft_eq hEval hDvd hPrime O B n η t P Algebra.IsAlgebraic.isSeparable_of_perfectField
     hgen ht hP hdvd u
-
-end
 
 end GroundTheory.Heights₂.Heights

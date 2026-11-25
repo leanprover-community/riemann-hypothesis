@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M MeasureTheory Filter Topology
 
-noncomputable section
-
 namespace ResolutionInterpIntegral
 
 theorem proof : ResolutionInterpIntegral.Statement := by
@@ -34,7 +32,5 @@ theorem proof : ResolutionInterpIntegral.Statement := by
         Real.log_rpow (d.m.pos _ hz), Real.log_rpow (m₁.pos _ hz)]
 
 end ResolutionInterpIntegral
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

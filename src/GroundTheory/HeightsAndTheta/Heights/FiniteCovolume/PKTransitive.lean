@@ -9,8 +9,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open GroundTheory.Automorphic Matrix
 open scoped ComplexOrder
 
-noncomputable section
-
 theorem KTransitive.proof (ι : Type*) [Fintype ι] [DecidableEq ι]
     (h₁ : IsotropicSplit.Statement ι) (h₂ : EigenReflectionMaps.Statement ι)
     (h₃ : PhaseOnMinus.Statement ι) :
@@ -102,7 +100,5 @@ theorem KTransitive.proof (ι : Type*) [Fintype ι] [DecidableEq ι]
   · show M *ᵥ z' = ((t : ℂ)⁻¹ * α) • z
     rw [mulVec_smul] at hMz
     rw [mul_smul, ← hMz, smul_smul, inv_mul_cancel₀ htc, one_smul]
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

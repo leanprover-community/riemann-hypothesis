@@ -17,8 +17,6 @@ open scoped NumberField.AdeleRing MatrixGroups ModularForm Manifold
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace GL2Classical
 
 open AdelicGLn AutomorphicForm Reduction GroundTheory.Global GroundTheory.Global.IdeleGroup
@@ -67,7 +65,5 @@ theorem ideleModule_eq_realPart_of_mem {u : IdeleGroup ℚ} (hu : u ∈ positive
 end Rational
 
 end GL2Classical
-
-end
 
 end GroundTheory.Automorphic

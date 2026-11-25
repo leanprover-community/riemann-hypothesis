@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 open MvPolynomial ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo
 open GroundTheory.Heights₂.Heights.HilbertSamuel
 
-noncomputable section
-
 namespace BoundedSectionTransfer
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -51,7 +49,5 @@ theorem aeval_xpow [DecidableEq K] {Ω : Type} [Field Ω] (y : (Σ k, ι k) → 
   simp [ArakelovGeometry.xpow, map_prod]
 
 end BoundedSectionTransfer
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Regular
 
 open Metric
 
-noncomputable section
-
 theorem PolyMaxOscillation.proof (h0 : ReciprocityTheory.AnForm.A.PolyMaxLogConvexStatement) :
     PolyMaxOscillation.Statement := by
   intro D U u z δ t C₁ hU hu hδ ht hC hCt
@@ -44,7 +42,5 @@ theorem PolyMaxOscillation.proof (h0 : ReciprocityTheory.AnForm.A.PolyMaxLogConv
 
 theorem PolyMaxOscillation.proof_closed : PolyMaxOscillation.Statement :=
   PolyMaxOscillation.proof ReciprocityTheory.AnForm.A.polyMaxLogConvex_thm
-
-end
 
 end GroundTheory.Heights₂.Heights.Regular

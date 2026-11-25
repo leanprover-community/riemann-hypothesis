@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
 
-noncomputable section
-
 namespace FibreNormCharpoly
 
 theorem aeval_mul_of_isHomogeneous {σ' Ω : Type*} [Field Ω] [CharZero Ω] {p : MvPolynomial σ' ℚ} {d : ℕ}
@@ -40,7 +38,5 @@ namespace ProjLine
 open ProjLine
 
 end ProjLine
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

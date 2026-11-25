@@ -20,8 +20,6 @@ open GroundTheory.Automorphic.GodementSection (localChar coe_localChar adeleAtS 
   toIdele_ofFinite_partAt finiteComponent_awayPart)
 open scoped NumberField.AdeleRing ENNReal NNReal
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 theorem sqrt_natCast_prod {ι : Type*} (s : Finset ι) (f : ι → ℕ) :
@@ -280,7 +278,5 @@ theorem finiteFourier_mul_eq_finprod_localEpsilon {δ : (FiniteAdeleRing (𝓞 K
   linear_combination ((χ.toIdele (ofFinite δ) : ℂ) * (∏ v ∈ S, s v) * ∏ v ∈ S, I v) * hdisc
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

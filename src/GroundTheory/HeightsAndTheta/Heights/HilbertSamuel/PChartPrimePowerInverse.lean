@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
-noncomputable section
-
 theorem aeval_mul_blockScale_of_isMultiHomog {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
     {Ω : Type*} [CommRing Ω] {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (t : K → Ω)
     (y : (Σ k, ι k) → Ω) :
@@ -146,7 +144,5 @@ theorem ChartPrimePowerInverse.proof : ChartPrimePowerInverse.Statement := by
     ring
   rw [e1]
   exact Subring.mul_mem _ (Subring.pow_mem _ (natCast_mem _ p) _) (ha c hc)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

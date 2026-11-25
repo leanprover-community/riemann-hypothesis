@@ -22,8 +22,6 @@ namespace BlockRealGramComparison
 open MvPolynomial MeasureTheory Filter Asymptotics Module ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 open scoped ComplexOrder ComplexConjugate Matrix
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 variable {D : ℕ} {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -332,8 +330,6 @@ theorem proof (hR : BlockResolutionSupBound.Statement) (hS : SupBoundBlock.State
       ≤ (finrank ℤ (secM d.y (blockDeg d.k₀ n)) : ℝ) * (Real.log 2 + Real.log Kc + D * Real.log n) := hK n hn
     _ ≤ (A * (n : ℝ) ^ D) * (B * Real.log ((n : ℝ) + 1)) := mul_le_mul (hA n hn) hL hL0 (by positivity)
     _ = A * B * ((n : ℝ) ^ D * Real.log ((n : ℝ) + 1)) := by ring
-
-end
 
 end BlockRealGramComparison
 

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
 
-noncomputable section
-
 variable {J : Type} [Fintype J]
 
 theorem fderiv_fderiv_add_apply {f g : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffAt ℝ 2 f z)
@@ -79,7 +77,5 @@ theorem LeviLogFlat.proof : LeviLogFlat.Statement := by
     ring
   rw [leviForm_log hF hFpos, leviForm_log hP hpos, hL, hlevi, hd, hd, hdw, hdiw, hu0]
   simp
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

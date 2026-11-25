@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 attribute [local instance] MvPolynomial.gradedAlgebra
@@ -69,7 +67,5 @@ theorem QuotSectionsFinite.proof (hE : Extension.Statement.{u, w, w})
   have hH1 : Module.Finite k ((Q.toSubSystem.twist (idealSys x J)).H 1) := by
     rw [← h1]; exact hT k Ω N x M' 1 0
   exact hQ k Ω N x Ω Q.toSubSystem (Q.toSubSystem.twist (idealSys x J)) hle hH0 hH1
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

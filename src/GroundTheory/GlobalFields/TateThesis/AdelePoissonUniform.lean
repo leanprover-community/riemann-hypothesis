@@ -15,8 +15,6 @@ open NumberField NumberField.mixedEmbedding IsDedekindDomain IsDedekindDomain.He
   MeasureTheory Filter Topology
 open scoped NumberField.AdeleRing SchwartzMap Classical nonZeroDivisors Pointwise
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 theorem exists_mul_mem_integralFiniteAdeles_of_isCompact {S : Set 𝔸ᶠ[K]} (hS : IsCompact S) :
@@ -213,7 +211,5 @@ theorem exists_summable_bound_smul_algebraMap {F : 𝔸[K] → ℂ} (hF : F ∈ 
     refine ⟨fun ξ ↦ ‖r‖ * u ξ, hu.mul_left _, fun a ha ξ ↦ ?_⟩
     rw [Pi.smul_apply, smul_eq_mul, norm_mul]
     exact mul_le_mul_of_nonneg_left (hGu a ha ξ) (norm_nonneg r)
-
-end
 
 end GroundTheory.Global

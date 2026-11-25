@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.CoordinateConeArithVar
 
-noncomputable section
-
 namespace CurveSectionQuotientFinite
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -151,7 +149,5 @@ theorem CurveSectionQuotFinite.proof : CurveSectionQuotFinite.Statement := by
   rw [natCast_zsmul, ← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero, Submodule.mem_comap,
     Submodule.subtype_apply]
   simpa [nsmul_eq_mul] using hnm
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

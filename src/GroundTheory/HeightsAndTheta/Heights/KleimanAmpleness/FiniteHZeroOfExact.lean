@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w v₁ v₂ v₃
 
 namespace Cech
@@ -143,7 +141,5 @@ theorem QuotientH0Finite.proof : QuotientH0Finite.Statement.{u, v, w} := by
       fun ⟨a, ha⟩ => (Submodule.Quotient.mk_eq_zero (SubSystem.quotSub F G I)).mpr (ha ▸ a.2)⟩)
     hF hG
   exact key
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

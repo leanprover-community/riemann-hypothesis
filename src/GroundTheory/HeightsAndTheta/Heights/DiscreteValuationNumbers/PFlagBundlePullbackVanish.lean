@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace FlagBundlePullbackVanish
 
 theorem liftDeg_eq_pullDeg {K : Type*} (L : K → ℤ) :
@@ -81,7 +79,5 @@ theorem proof (hPF : FieldNumbers.ProjectionFormulaContracted.Statement.{0})
   simp [liftDeg_eq_pullDeg]
 
 end FlagBundlePullbackVanish
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

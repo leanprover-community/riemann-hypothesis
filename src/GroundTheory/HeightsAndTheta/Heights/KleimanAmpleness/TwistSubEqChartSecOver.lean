@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver secOver GeneratesOver)
 
-noncomputable section
-
 namespace ModelTwistGenerated
 
 variable {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] {K : Type} [Fintype K] {ι : K → Type}
@@ -188,7 +186,5 @@ theorem ModelTwistGenerated.proof (hCG : ChartSecGen.Statement) : ModelTwistGene
   refine ⟨U.card, η, hη, (hCG S K ι Ω y k₀ N e hM _ U.card η hη).mpr fun I => ?_⟩
   rw [hrange, hUspan I]
   exact twist_sub_eq_chartSecOver e β Q hQ m I
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

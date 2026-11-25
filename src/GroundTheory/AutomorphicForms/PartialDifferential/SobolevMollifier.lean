@@ -11,8 +11,6 @@ namespace GroundTheory.Automorphic.Sobolev
 open TemperedDistribution MeasureTheory FourierTransform
 open scoped SchwartzMap ENNReal ContDiff
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -76,7 +74,5 @@ variable {s : ℝ}
 end SobolevSpace
 
 end Mollifier
-
-end
 
 end GroundTheory.Automorphic.Sobolev

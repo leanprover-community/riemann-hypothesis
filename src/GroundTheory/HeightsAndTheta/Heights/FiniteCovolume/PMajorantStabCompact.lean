@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module Matrix Topology
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace MajorantStabCompact
 
 theorem form_mulVec {ι : Type*} [Fintype ι] {P A : Matrix ι ι ℂ}
@@ -71,7 +69,5 @@ theorem MajorantStabCompact.proof (h : HermitianForm F E W) (v : Basis ι E W) :
   rw [heq]
   exact Finset.single_le_sum (f := fun a => M.len (vecAt v (e a)))
     (fun b _ => Real.sqrt_nonneg _) (Finset.mem_univ a)
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

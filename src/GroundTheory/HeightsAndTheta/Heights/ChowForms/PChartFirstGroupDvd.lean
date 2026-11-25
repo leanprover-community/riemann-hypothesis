@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace ChartFirstGroupDvd
 
 theorem dvd_sub_aeval {R : Type*} [CommRing R] {n : ℕ} (a : MvPolynomial (Fin n) R)
@@ -134,7 +132,5 @@ theorem proof (h₁ : IncidenceGeneric.Statement) : ChartFirstGroupDvd.Statement
   exact this
 
 end ChartFirstGroupDvd
-
-end
 
 end GroundTheory.Heights₂.Heights

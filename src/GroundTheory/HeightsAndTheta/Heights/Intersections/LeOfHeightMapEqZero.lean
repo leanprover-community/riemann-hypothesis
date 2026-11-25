@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem RegularityDivisorSupportClosed.le_of_height_map_eq_zero {A : Type*} [CommRing A] {P Q : Ideal A} [P.IsPrime]
     (h : (Q.map (Ideal.Quotient.mk P)).height = 0) : Q ≤ P := by
   intro x hx
@@ -62,7 +60,5 @@ theorem RegularityDivisorSupportClosed.proof : RegularityDivisorSupportClosed.St
       hsP (RegularityDivisorSupportClosed.le_of_height_map_eq_zero h0 (hsW' hQ.2))
     rw [← e2] at e1
     exact RegularityDivisorSupportClosed.not_add_add ha hb (by rw [e1, Nat.add_comm])
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

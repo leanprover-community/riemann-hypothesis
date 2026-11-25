@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial Cardinal
 
-noncomputable section
-
 namespace FreeParAlgIndep
 
 theorem genPar_algIndep (k : Type*) [Field k] (e n : ℕ) :
@@ -154,7 +152,5 @@ theorem proof : FreeParAlgIndep.Statement := by
     Sum.inl Sum.inl_injective
 
 end FreeParAlgIndep
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

@@ -8,8 +8,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
-noncomputable section
-
 universe u v w
 
 namespace Cech
@@ -66,7 +64,5 @@ theorem Transport.proof : Transport.Statement.{u, v, w} := by
     exact Subtype.ext hwz
 
 end Cech
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

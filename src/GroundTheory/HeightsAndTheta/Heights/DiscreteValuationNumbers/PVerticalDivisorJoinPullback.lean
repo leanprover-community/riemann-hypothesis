@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 section JoinPullback
 
 variable {K K' : Type} {ι : K → Type} {ι' : K' → Type}
@@ -90,7 +88,5 @@ theorem VerticalDivisorJoinPullback.proof : VerticalDivisorJoinPullback.Statemen
     refine ⟨joinForm u, joinForm v, hu, hv, ?_⟩
     have := (joinForm_mem_pointIdeal_iff O y y' _).mpr huv
     simpa [hφ, map_sub, map_mul] using this
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open MvPolynomial Finset
 
-noncomputable section
-
 open Coinv
 
 theorem CoinvStepReduction.proof : CoinvStepReduction.Statement := by
@@ -82,7 +80,5 @@ theorem CoinvStepReduction.proof : CoinvStepReduction.Statement := by
       simp only [map_neg, neg_mul, mul_neg, Finset.sum_neg_distrib, sub_neg_eq_add]
     rw [hdiff]
     exact Ideal.mul_mem_left _ _ hc
-
-end
 
 end GroundTheory.Heights₂.Heights.RestTerms

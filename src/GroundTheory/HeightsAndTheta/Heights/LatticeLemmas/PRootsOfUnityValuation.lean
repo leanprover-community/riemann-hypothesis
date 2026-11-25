@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Finset
 
-noncomputable section
-
 namespace RootsOfUnityValuation
 
 variable {A : Type*} [CommRing A] [IsDomain A]
@@ -39,7 +37,5 @@ theorem one_sub_pow_associated {l : ℕ} (hl : l.Prime) {ζ : A} (hζ : IsPrimit
   simpa only [neg_sub] using (hζ.associated_sub_one_pow_sub_one_of_coprime hcop).neg_neg
 
 end RootsOfUnityValuation
-
-end
 
 end GroundTheory.Heights₂.Heights

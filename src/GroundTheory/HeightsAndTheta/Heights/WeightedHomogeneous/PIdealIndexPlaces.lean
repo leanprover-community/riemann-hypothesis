@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open NumberField
 
-noncomputable section
-
 namespace IdealIndexPlaces
 
 theorem genIndex_comap {G G' : Type*} [AddCommGroup G] [AddCommGroup G'] (f : G' →+ G)
@@ -188,7 +186,5 @@ theorem IdealIndexPlaces.proof : IdealIndexPlaces.Statement := by
   rw [div_mul_eq_mul_div, div_eq_one_iff_eq hIn]
   apply mul_left_cancel₀ hJn
   linear_combination |((Algebra.norm ℤ c : ℤ) : ℝ)| * hP - hnorm
-
-end
 
 end GroundTheory.Heights₂.Heights

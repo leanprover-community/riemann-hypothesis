@@ -10,8 +10,6 @@ import Mathlib.Tactic.TypeStar
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace GroundTheory.Automorphic

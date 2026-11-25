@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace NormalCurveRegularPoint
 
 theorem fderiv_eval_single {σ : Type} [Fintype σ] [DecidableEq σ] (g : MvPolynomial σ ℂ) (z : σ → ℂ) (i : σ) :
@@ -78,7 +76,5 @@ theorem NormalCurveRegularPoint.proof (hJ : NormalCurveJacobian.Statement) : Nor
     have h0 : eval z (D * q) = 0 := hspan (hgen q hq)
     rw [eval_mul] at h0
     exact (mul_eq_zero.mp h0).resolve_left (hVW hzV)
-
-end
 
 end GroundTheory.Heights₂.Heights

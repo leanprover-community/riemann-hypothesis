@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1
 
-noncomputable section
-
 theorem GenericFibreVar.proof : GenericFibreVar.Statement := by
   intro K _ ι _ Ω _ y D hP
   obtain ⟨-, ⟨hPp, ⟨S, hS, hPS⟩, hrel⟩, hhor, hdim⟩ := hP
@@ -43,7 +41,5 @@ theorem GenericFibreVar.proof : GenericFibreVar.Statement := by
     rw [hform, hdim, show D + 1 + Fintype.card K = (D + Fintype.card K) + 1 by omega]
     push_cast
     rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

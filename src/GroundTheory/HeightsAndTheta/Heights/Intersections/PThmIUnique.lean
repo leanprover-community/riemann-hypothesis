@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 namespace ThmIUnique
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -155,7 +153,5 @@ theorem ThmIUnique.proof (h₀ : ArithVarZeroStatement) : ThmIUnique.Statement :
   intro P n L hn hP hL
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
   exact key m P L hP hL
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

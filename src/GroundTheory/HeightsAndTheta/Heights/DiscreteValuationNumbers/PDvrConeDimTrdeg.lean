@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 namespace DvrConeDimTrdeg
 
 attribute [local instance] MvPolynomial.algebraMvPolynomial
@@ -98,7 +96,5 @@ theorem proof : Statement := by
   rfl
 
 end DvrConeDimTrdeg
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

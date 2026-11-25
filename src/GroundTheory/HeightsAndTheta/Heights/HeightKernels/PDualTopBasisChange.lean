@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial NumberField
 
-noncomputable section
-
 namespace TopDualBasisChange
 
 theorem hermLine_ext {ι : Unit → Type} [∀ k, Fintype (ι k)] {A B : ReciprocityTheory.ChartRestriction.G.Geo.HermLine ι}
@@ -159,7 +157,5 @@ theorem DualTopBasisChange.proof (hChange : IntCoordChange.Statement) : DualTopB
     (fun _ => (DualLineSemipositive.proof K i F T₂ b₂ hb₂).1)
   rw [ideal_map hAB (basis_coe b b₂), line_eq hb hb₂ (basis_coe b b₂)] at h
   exact h.symm
-
-end
 
 end GroundTheory.Heights₂.Heights

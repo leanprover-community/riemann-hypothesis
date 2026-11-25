@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
 open NumberField TensorProduct ComplexAt GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 section GramDet
 
 variable {K : Type*} [Field K] [NumberField K] {L : Type*} [Field L] [NumberField L] [Algebra K L]
@@ -96,7 +94,5 @@ theorem BaseChange.proof : BaseChange.Statement := by
     Real.log_pow, Nat.cast_mul]
   field_simp
   ring
-
-end
 
 end GroundTheory.Heights₂.Heights.LatticeLemmas

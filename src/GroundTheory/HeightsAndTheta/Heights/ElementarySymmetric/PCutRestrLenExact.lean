@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-noncomputable section
-
 universe u w
 
 namespace CutRestrLenExact
@@ -267,7 +265,5 @@ theorem proof (hSC : SurjectiveClosed.Statement.{u, w}) (hFS : FiniteSections.St
   ring
 
 end CutRestrLenExact
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

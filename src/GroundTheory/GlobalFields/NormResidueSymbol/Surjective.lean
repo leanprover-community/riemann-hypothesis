@@ -13,8 +13,6 @@ namespace GroundTheory.Global
 
 open IsDedekindDomain NumberField IdeleGroup IntermediateField
 
-noncomputable section
-
 section Trivial
 
 variable {K : Type*} [Field K] [NumberField K] (L : Type*) [Field L] [NumberField L] [Algebra K L]
@@ -110,7 +108,5 @@ theorem ideleSymbol_surjective : Function.Surjective (ideleSymbol K L) := by
   exact hσN (htop ▸ Subgroup.mem_top σ)
 
 end Surjective
-
-end
 
 end GroundTheory.Global

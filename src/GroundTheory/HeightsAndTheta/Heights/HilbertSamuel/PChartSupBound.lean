@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MeasureTheory Set Metric
 
-noncomputable section
-
 theorem ChartSupBound.proof : ChartSupBound.Statement := by
   intro D V K ψ ν hV hK hKV hψ hν hν0
   rcases K.eq_empty_or_nonempty with hKe | hKne
@@ -157,7 +155,5 @@ theorem ChartSupBound.proof : ChartSupBound.Statement := by
           ENNReal.ofReal (k * (‖F w‖ ^ 2 * ((n : ℝ) ^ D)⁻¹ * P)) := by
         rw [← ENNReal.ofReal_mul hC0, heq]
     _ ≤ _ := by gcongr
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

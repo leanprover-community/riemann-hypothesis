@@ -12,8 +12,6 @@ open MeasureTheory
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace GJStandardL
 
 open GodementJacquet GLnLocal Parabolic
@@ -90,7 +88,5 @@ theorem zetaIntegral_inv_sphericalCoeff_of_integrable [NeZero n]
   (zetaIntegral_inv_sphericalCoeff_of_integrable' π hπ μ hℓ₀K hℓ₀ hI).choose_spec.2.2.2
 
 end GJStandardL
-
-end
 
 end GroundTheory.Automorphic

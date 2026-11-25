@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace RatNoetherFrame
 
 section Normalization
@@ -300,7 +298,5 @@ theorem proof : RatNoetherFrame.Statement := by
     exact isIntegral_algebraMap (R := A.range) (A := Polynomial Ω) (x := ⟨_, hm⟩)
 
 end RatNoetherFrame
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

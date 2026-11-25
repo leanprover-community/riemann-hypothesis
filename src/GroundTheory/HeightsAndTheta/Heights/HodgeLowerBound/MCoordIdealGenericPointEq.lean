@@ -7,8 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveComplexPo
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree.ComponentDataEquivalence
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo

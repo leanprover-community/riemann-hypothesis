@@ -10,8 +10,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
-noncomputable section
-
 universe u v w
 
 namespace VeryAmpleZChartSpan
@@ -101,7 +99,5 @@ theorem proof : VeryAmpleZChartSpan.Statement := by
     exact Finset.sum_congr rfl fun y _ => by rw [← smul_assoc, Algebra.smul_def]
 
 end VeryAmpleZChartSpan
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

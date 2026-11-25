@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory Filter
 
-noncomputable section
-
 theorem maDensity_fin_zero (φ : Fin 0 → (Fin 0 → ℂ) → ℝ) (y : Fin 0 → ℂ) : maDensity φ y = 1 := by
   simp [maDensity, mixedDisc]
 
@@ -103,7 +101,5 @@ theorem regularityPointsSum_holds.proof : regularityPointsSum_holds.Statement :=
     unfold sheetDensity
     rw [dite_eq_left hγ, maDensity_fin_zero, mul_one]
     simp only [pick, dite_eq_left hγ]
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

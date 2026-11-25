@@ -16,8 +16,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.Cha
   ReciprocityTheory.AnForm.M
 open BlockResolutionMetricPair
 
-noncomputable section
-
 namespace ResolutionPullback
 
 theorem normRatio_torus {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -59,7 +57,5 @@ theorem proof : ResolutionPullback.Statement := by
   field_simp
 
 end ResolutionPullback
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

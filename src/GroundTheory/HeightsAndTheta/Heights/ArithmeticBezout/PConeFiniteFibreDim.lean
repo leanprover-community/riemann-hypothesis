@@ -25,8 +25,6 @@ open MvPolynomial MeasureTheory
 
 open scoped Matrix
 
-noncomputable section
-
 theorem exists_mem_zeroSet_mulVec_eq {n d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)}
     {B : Matrix (Fin d) (Fin n) ℂ} (hB : ComplexSets.IsFiniteProjection J B) (x : Fin d → ℂ) :
     ∃ z ∈ ComplexSets.zeroSet J, B *ᵥ z = x := by
@@ -162,7 +160,5 @@ theorem ConeFiniteFibreDim.proof : ConeFiniteFibreDim.Statement := by
   have hinj : Function.Injective y := fun c₁ c₂ he => by
     rw [← hyc c₁, ← hyc c₂, he]
   exact (Set.infinite_of_injective_forall_mem hinj hy).encard_eq
-
-end
 
 end GroundTheory.Heights₂.Heights

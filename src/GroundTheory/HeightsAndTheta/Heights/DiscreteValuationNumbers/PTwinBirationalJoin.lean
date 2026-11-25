@@ -6,8 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Inha
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open ReciprocityTheory.ChartRestriction.G.Geo (chartRing)

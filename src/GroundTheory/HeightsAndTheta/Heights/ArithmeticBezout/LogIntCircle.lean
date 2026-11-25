@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MeasureTheory Set
 
-noncomputable section
-
 namespace LogInt
 
 theorem lintegral_abs_log_circle_le (P : Polynomial ℂ) (D d0 : ℕ) (M : ℝ)
@@ -208,7 +206,5 @@ theorem circle_lemma {V : Type*} [MeasurableSpace V] (μ : Measure V) [SFinite �
     simpa using h3
 
 end LogInt
-
-end
 
 end GroundTheory.Heights₂.Heights

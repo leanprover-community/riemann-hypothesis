@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace LocalRep
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -77,7 +75,5 @@ theorem proof : LocalRep.Statement := by
     exact Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hzc k)
 
 end LocalRep
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

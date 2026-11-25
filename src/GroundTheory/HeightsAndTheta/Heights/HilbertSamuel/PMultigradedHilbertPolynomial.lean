@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem MultigradedHilbertPolynomial.proof (h : EventualPolynomial.Statement) :
@@ -26,7 +24,5 @@ theorem MultigradedHilbertPolynomial.proof (h : EventualPolynomial.Statement) :
   have hdeg : DegLT (hilbFn q) (d + 1) :=
     HilbDegBound.full F K ι (d + 1) q hq.isPrime hq.multiHomog hlt
   exact h K d (hilbFn q) hdeg
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
 
-noncomputable section
-
 universe u
 
 theorem ConeVarUnit.proof (hDZ : DegZeroLocQuot.Statement.{u})
@@ -87,7 +85,5 @@ theorem ConeVarUnit.proof (hDZ : DegZeroLocQuot.Statement.{u})
     rw [Subalgebra.coe_mul, Subalgebra.coe_algebraMap, Subalgebra.coe_algebraMap, himg,
       div_mul_cancel₀ _ (hne g hgW)]
   exact isUnit_of_mul_isUnit_left (heq ▸ hunit N hNW)
-
-end
 
 end GroundTheory.Heights₂.Heights.FieldNumbers

@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 theorem GenTwistVanish.proof (hS : KH.TheoremSStatement) (hG : QuotPartGraded.Statement)
     (hK : GenKoszulStep.Statement) : GenTwistVanish.Statement := by
   intro S _ K _ _ ι _ _ V α hV hα e
@@ -69,7 +67,5 @@ theorem GenTwistVanish.proof (hS : KH.TheoremSStatement) (hG : QuotPartGraded.St
     push_cast
     ring
   rwa [heq] at h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

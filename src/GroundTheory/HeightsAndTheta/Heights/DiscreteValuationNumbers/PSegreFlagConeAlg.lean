@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 namespace SegreFlagConeAlg
 
 theorem sum_castLE {M : Type*} [AddCommMonoid M] {N k : ℕ} (hkN : k ≤ N) (s : Fin N → M)
@@ -179,7 +177,5 @@ theorem SegreFlagConeAlg.proof : SegreFlagConeAlg.Statement := by
     l m' hm' hdet _ (fun q => Algebra.subset_adjoin (Or.inl ⟨q, rfl⟩))
     (fun i => Algebra.subset_adjoin (Or.inr ⟨Sum.inl i, rfl⟩))
     (Algebra.subset_adjoin (Or.inr ⟨Sum.inr (), rfl⟩))⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

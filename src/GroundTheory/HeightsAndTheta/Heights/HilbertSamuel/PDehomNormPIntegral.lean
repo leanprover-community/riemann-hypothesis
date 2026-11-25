@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial
 
-noncomputable section
-
 namespace DehomNormPIntegral
 
 theorem padicValRat_nonneg_of_mem {p : ℕ} [Fact p.Prime] {q : ℚ}
@@ -203,7 +201,5 @@ theorem DehomNormPIntegral.proof : DehomNormPIntegral.Statement := by
     rw [← hy]
     exact y.2
   exact padicValRat_nonneg_of_mem (coeff_mem_of_dehom_coeff_mem hgen j (hchom) V.toSubring hGc μ)
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

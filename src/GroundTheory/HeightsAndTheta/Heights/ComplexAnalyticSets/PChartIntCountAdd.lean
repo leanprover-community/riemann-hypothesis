@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 namespace ChartIntCountAdd
 
 variable {n d : ℕ}
@@ -141,7 +139,5 @@ theorem ChartIntCountAdd.proof (hCM : ChartMassCompact.Statement) : ChartIntCoun
     (ae_of_all _ fun y => (habs y).summable)
     (by rw [hsum]; exact hdom)
     (ae_of_all _ hdens)
-
-end
 
 end GroundTheory.Heights₂.Heights

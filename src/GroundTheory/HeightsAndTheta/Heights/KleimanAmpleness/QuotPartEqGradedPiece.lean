@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial Filter ReciprocityTheory.ChartRestriction.G.Geo
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (cechHc cechZc cechBc cechCc locPart quotPart Cell cellMon)
 
-noncomputable section
-
 theorem quotPart_eq_gradedPiece {F : Type} [Field F] {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
     [∀ k, Fintype (ι k)] (V : Ideal (MvPolynomial (Σ k, ι k) F)) (m : K → ℤ) (hm : ∀ k, 0 ≤ m k) :
     quotPart F V m = NumbersDVR.gradedPiece V (fun k => (m k).toNat) := by
@@ -90,7 +88,5 @@ theorem MultiSerre.proof (hS : ReciprocityTheory.ChartRestriction.G.ArakelovGeom
   have hm0 : ∀ k, 0 ≤ m k := fun k => le_trans (by omega) (hk k)
   rw [e2.finrank_eq, ← (LinearEquiv.ofBijective φ ⟨hinj, hsurj⟩).finrank_eq, NumbersDVR.hilbFn, ite_eq_left hm0,
     quotPart_eq_gradedPiece V m hm0]
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

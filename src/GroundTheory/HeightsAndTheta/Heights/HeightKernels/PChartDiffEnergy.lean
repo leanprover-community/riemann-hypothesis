@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A Matrix MeasureTheory Filter Topology
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartEnergyDifferenceBound
 
 theorem cross_le {u U χ a p G : ℝ} (hU : |u| ≤ U) (hχ : 0 ≤ χ) (hp : 0 ≤ p) (hG : 0 ≤ G)
@@ -137,7 +135,5 @@ theorem ChartDiffEnergy.proof (hE : ChartCutoffEnergy.Statement) : ChartDiffEner
   refine ⟨hGc.aestronglyMeasurable, ?_⟩
   rw [hasFiniteIntegral_iff_ofReal (Eventually.of_forall hG0)]
   exact lt_of_le_of_lt (le_of_tendsto' hlim hbd) ENNReal.ofReal_lt_top
-
-end
 
 end GroundTheory.Heights₂.Heights

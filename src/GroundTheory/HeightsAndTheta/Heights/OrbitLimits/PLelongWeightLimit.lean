@@ -15,8 +15,6 @@ public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial Filter Topology Matrix Set

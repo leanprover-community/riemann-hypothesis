@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M Filter Topology
 open scoped ContDiff
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace BlockResolutionDegreeIntegral
@@ -131,7 +129,5 @@ theorem BlockResolutionDegreeIntegral.proof (hGG : GenDegGeomDeg.Statement) :
   intro D K _ _ ι _ Ω _ _ d A₀ A₁ h0 h1 hs0 hs1 t _
   rw [BlockResolutionDegreeIntegral.mass_eq d.R (h1.trans h0.symm) hs0 hs1 t (fun _ _ _ => rfl)]
   exact BlockResolutionDegreeIntegral.mass_potOf hGG d h0 hs0
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

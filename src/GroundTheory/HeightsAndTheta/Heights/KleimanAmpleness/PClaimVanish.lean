@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 section ClaimLemmas
@@ -130,7 +128,5 @@ theorem ClaimVanish.proof (h₁ : StepTwo.Statement.{u, w, w}) (h₂ : TwistVani
       rwa [coordGraded_tildeSys_twist] at hy'
     · exact SubSystem.subsingleton_H_one_of_smul _ _ T.si T.si_ne (hseq b c)
         (ih (c + T.c₁) (le_trans hc (by linarith [T.c₁_pos])))
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 attribute [local instance] MvPolynomial.gradedAlgebra
 
 variable {n : ℕ}
@@ -71,7 +69,5 @@ theorem ConeAvoidsExists.proof (hlead : LeadIdealDim.Statement) (hcut : LinearFo
   rw [Nat.sub_self, Nat.cast_zero] at hA
   obtain ⟨N, hN⟩ := hpow n _ ((leadIdeal_isHomogeneous J).sup (linIdeal_isHomogeneous A)) hA
   exact ⟨A, N, hN⟩
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

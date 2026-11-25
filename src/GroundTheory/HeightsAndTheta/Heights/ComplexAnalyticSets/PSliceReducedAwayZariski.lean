@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem eq_ker_eval_of_X_sub_C_mem {n : ℕ} (q : Fin n → ℂ) (P : Ideal (MvPolynomial (Fin n) ℂ))
     (hP : P.IsPrime) (h : ∀ k, X k - C (q k) ∈ P) : P = RingHom.ker (eval q) := by
   have hext : Ideal.Quotient.mk P = ((Ideal.Quotient.mk P).comp C).comp (eval q) := by
@@ -44,7 +42,5 @@ theorem SliceReducedAwayZariski.proof (hG : GenericFibreRadicalAway.Statement)
   obtain ⟨m, hm⟩ := hk' g hg
   refine ⟨(X k - C (q k)) ^ m, fun h => hk (hP.mem_of_pow_mem m h), ?_⟩
   simpa using hm
-
-end
 
 end GroundTheory.Heights₂.Heights

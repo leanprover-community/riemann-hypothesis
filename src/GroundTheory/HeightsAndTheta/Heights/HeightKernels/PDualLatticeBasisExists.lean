@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Matrix NumberField
 
-noncomputable section
-
 namespace DualLatticeBasisExistsAlt
 
 variable {K : Type} [Field K] [NumberField K] {i : ℕ}
@@ -80,7 +78,5 @@ theorem DualLatticeBasisExists.proof : DualLatticeBasisExists.Statement := by
   have : Module.Finite ℤ (dualLattice F) := Module.Finite.iff_fg.mpr (dualLattice_fg F)
   exact ⟨Module.Free.ChooseBasisIndex ℤ (dualLattice F), inferInstance, inferInstance,
     ⟨Module.Free.chooseBasis ℤ (dualLattice F)⟩⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

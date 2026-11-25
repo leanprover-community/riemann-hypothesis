@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem ratDiv_support_finite (h4 : DivCycleFiniteSupport.Statement.{u}) {O : Type u} [CommRing O]
@@ -129,7 +127,5 @@ theorem VerticalDivisorsCommute.proof (h1 : CutByEffectiveDivisor.Statement.{u})
         · simp [hW]
         · beta_reduce
           rw [ite_eq_left (hD'.vertical W hW)]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

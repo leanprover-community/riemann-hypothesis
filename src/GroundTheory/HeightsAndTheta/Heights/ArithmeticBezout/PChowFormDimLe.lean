@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 namespace ChowFormDimLe
 
 theorem coeff_zero_eq_zero_of_mem {F : Type} [Field F] {n : ℕ} {I : Ideal (MvPolynomial (Fin n) F)}
@@ -161,7 +159,5 @@ theorem proof : ChowFormDimLe.Statement := by
   rw [eval_map, ← aeval_def, ((hf.2 f).mpr dvd_rfl) u (hall u), map_zero, map_zero]
 
 end ChowFormDimLe
-
-end
 
 end GroundTheory.Heights₂.Heights

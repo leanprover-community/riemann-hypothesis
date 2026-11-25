@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
 open NumberField IsDedekindDomain TensorProduct Module
 
-noncomputable section
-
 section Card
 
 variable {K : Type*} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K))
@@ -181,7 +179,5 @@ theorem LocalLatticeIndex.index_eq_det (A B : Submodule (v.adicCompletionInteger
   exact Finset.prod_congr rfl fun i _ => LocalLatticeIndex.card_quot_span v (ha i)
 
 end General
-
-end
 
 end GroundTheory.Heights₂.Heights.LatticeLemmas

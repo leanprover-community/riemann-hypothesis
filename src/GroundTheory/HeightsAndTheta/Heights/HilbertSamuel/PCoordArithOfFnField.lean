@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 GroundTheory.Heights₂.Heights.CoordinateConeArithVar
 
-noncomputable section
-
 namespace CoordArithOfFnField
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [CharZero Ω]
@@ -85,7 +83,5 @@ theorem CoordArithOfFnField.proof : CoordArithOfFnField.Statement := by
     ((ENat.add_le_add_iff_right (ENat.natCast_ne_top (Fintype.card K))).mp h1.le)
     ((ENat.add_le_add_iff_right (ENat.natCast_ne_top (Fintype.card K))).mp h1.ge)
   rw [add_right_comm, he]; push_cast; rfl
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

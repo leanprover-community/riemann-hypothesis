@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem trdeg_pointIdeal_bundle_eq {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     {Ω : Type} [Field Ω] [Algebra O Ω] {K : Type} [Fintype K] [DecidableEq K]
     {ι : K → Type} [∀ k, Fintype (ι k)] {y : (Σ k, ι k) → Ω} {d : ℕ}
@@ -124,7 +122,5 @@ theorem PairBundleTrdeg.proof (hadd : AdjoinTrdegAdd.Statement) (hind : PairCone
     halg O ϖ hϖ Ω K ι y d hV N hN E B B' hB M M' a₀ a₀' φ φ' hφ hφ' Φ e t ht
   exact trdeg_pointIdeal_bundle_eq (z := pairProjCoord y e φ φ' t) hV (fun _ => rfl) hadd
     (hind Ω Φ K N E e (φ ∘ l) hl t ht _ hm') hal
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

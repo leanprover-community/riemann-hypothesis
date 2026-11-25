@@ -16,8 +16,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
-noncomputable section
-
 open IsLocalRing KaehlerDifferential TensorProduct
 
 theorem PolyDerivationsDetectSquare.of_perfectField
@@ -77,7 +75,5 @@ theorem PolyDerivationsDetectSquare.proof (h₁ : PerfectFieldExtensionFormallyS
     exact PolyDerivationsDetectSquare.of_perfectField h₁ h₂ (ZMod q) k n p g hg hD
   · have : CharZero k := CharP.charP_to_charZero k
     exact PolyDerivationsDetectSquare.of_perfectField h₁ h₂ ℚ k n p g hg hD
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

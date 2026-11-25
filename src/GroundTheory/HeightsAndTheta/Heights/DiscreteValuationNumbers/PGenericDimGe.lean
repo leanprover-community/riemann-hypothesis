@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 namespace GenericDimGe
@@ -219,7 +217,5 @@ theorem proof : Statement.{u} := by
     _ ≤ Order.krullDim Z' + 1 := add_le_add (Order.krullDim_le_of_strictMono Φ hΦ) le_rfl
 
 end GenericDimGe
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

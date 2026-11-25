@@ -14,8 +14,6 @@ public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial IntermediateField.algebraAdjoinAdjoin

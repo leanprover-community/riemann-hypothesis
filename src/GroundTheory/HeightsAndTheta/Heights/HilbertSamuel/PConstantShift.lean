@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 Filter Topology MeasureTheory
 
-noncomputable section
-
 namespace ConstantShift
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -149,7 +147,5 @@ theorem proof : ConstantShift.Statement := by
   ring
 
 end ConstantShift
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

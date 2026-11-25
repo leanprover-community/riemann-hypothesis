@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ}
@@ -85,7 +83,5 @@ theorem AmpleCover.proof : AmpleCover.Statement.{u, w} := by
   have hb1 : (b : Ω) = 1 := hb
   have hbn : b ^ n • y ∈ G := hn
   rwa [Algebra.smul_def, map_pow, show algebraMap R Ω b = 1 from hb1, one_pow, one_mul] at hbn
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace ShiftedNefBig
@@ -61,7 +59,5 @@ theorem ShiftNefBig.proof (hD : GroundTheory.Heights₂.Heights.Inter.DegreeGene
     exact add_nonneg (mul_nonneg (Nat.cast_nonneg q) (hnef W hW hPW hch hdim)) (geoNum_one_one_nonneg W)
   · rw [ha]
     exact hB K ι (mCoordIdeal y) D A.a har (nefOnGenericDeg_of_semipos NefOnGenericOfSemipos.proof hD hP0 hs) q
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

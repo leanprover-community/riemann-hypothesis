@@ -10,8 +10,6 @@ open scoped NumberField.AdeleRing ComplexConjugate Real
 
 namespace GroundTheory.Global
 
-noncomputable section
-
 variable {K : Type*} [Field K] [NumberField K]
 
 open IdeleGroup
@@ -56,7 +54,5 @@ theorem differentiable_gammaFactor_inv : Differentiable ℂ fun s ↦ (χ.gammaF
   · exact differentiable_Gammaℂ_inv.comp ((differentiable_id.add_const _).add_const _)
 
 end HeckeCharacter
-
-end
 
 end GroundTheory.Global

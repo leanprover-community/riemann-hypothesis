@@ -8,8 +8,6 @@ public import GroundTheory.AutomorphicForms.MacdonaldHecke
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.BlockD
 
 namespace SatakeBound

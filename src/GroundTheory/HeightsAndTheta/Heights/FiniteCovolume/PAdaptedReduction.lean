@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.FiniteCovolume
 open NumberField GroundTheory.Automorphic Module
 open scoped Pointwise
 
-noncomputable section
-
 variable {F E : Type*} [Field F] [Field E] [Algebra F E] [Algebra.IsQuadraticExtension F E]
 variable {W : Type*} [AddCommGroup W] [Module E W]
 
@@ -136,7 +134,5 @@ theorem AdaptedReduction.proof (h : HermitianForm F E W) [FiniteDimensional E W]
     hD' _ (isDIntegral_inv_smul g hLa) hsplit⟩
   rw [hI, hJ]
   exact hK
-
-end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

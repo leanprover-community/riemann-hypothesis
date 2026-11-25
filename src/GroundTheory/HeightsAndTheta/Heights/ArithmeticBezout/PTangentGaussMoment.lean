@@ -16,8 +16,6 @@ open MeasureTheory
 
 open scoped ENNReal
 
-noncomputable section
-
 theorem linProj_smul_left {m n : ℕ} (π : Fin m → Fin n → ℂ) (c : ℂ) (y : EuclideanSpace ℂ (Fin n)) :
     linProj π (c • y) = c • linProj π y :=
   (linProjₗ π).map_smul c y
@@ -161,7 +159,5 @@ theorem TangentGaussMoment.proof (hA : LeadPlaneJac.Statement) (hB : LeadBlockGa
           setLIntegral_mono' measurableSet_Ioi hle
       _ ≤ ∫⁻ r, ENNReal.ofReal (2 * m * max C 0 * (1 + r ^ 2)⁻¹) := setLIntegral_le_lintegral _ _
       _ < ⊤ := (integrable_inv_one_add_sq.const_mul _).lintegral_lt_top
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.ComplexSets
 
 open MvPolynomial
 
-noncomputable section
-
 theorem eval_pullback {n d : ℕ} (A : Matrix (Fin d) (Fin n) ℂ) (P : MvPolynomial (Fin d) ℂ)
     (x : Fin n → ℂ) : eval x (pullback A P) = eval (A.mulVec x) P := by
   have h : ∀ i, eval x (linPoly A i) = A.mulVec x i := by
@@ -62,7 +60,5 @@ theorem BadSetSmaller.proof : BadSetSmaller.Statement := by
       ringKrullDim_le_of_surjective (Ideal.Quotient.factor hQ.1.2)
         (Ideal.Quotient.factor_surjective hQ.1.2)
     exact lt_of_le_of_lt h2 (ENat.WithBot.add_one_le_natCast_iff.mp h1)
-
-end
 
 end GroundTheory.Heights₂.Heights.ComplexSets

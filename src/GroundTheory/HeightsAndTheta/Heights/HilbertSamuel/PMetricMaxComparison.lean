@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem MetricMaxComparison.proof : MetricMaxComparison.Statement := by
   intro K _ ι _ A hA
 
@@ -67,7 +65,5 @@ theorem MetricMaxComparison.proof : MetricMaxComparison.Statement := by
     exact (le_abs_self _).trans (h1.trans (le_max_left _ _))
   rw [hmax, hz', mul_comm (max C0 1)]
   exact mul_le_mul_of_nonneg_left hbw hpos
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

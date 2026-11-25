@@ -14,8 +14,6 @@ namespace GroundTheory.Global
 
 open IsDedekindDomain NumberField Filter Module AdeleBaseChange
 
-noncomputable section
-
 section Tower
 
 variable {K K' L : Type*} [Field K] [NumberField K] [Field K'] [NumberField K'] [Field L]
@@ -78,7 +76,5 @@ theorem FirstInequality.finrank_eq_one_of_splitsCompletely_of_finite_of_isGalois
     (eventually_cofinite.2 (hT.subset fun v hv ↦ by_contra fun hvT ↦ hv (h v hvT)))
 
 end Galois
-
-end
 
 end GroundTheory.Global

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open MeasureTheory Set Metric ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M GroundTheory.Heights₂.Heights
 open scoped ContDiff
 
-noncomputable section
-
 namespace ChartTaylorCover
 
 theorem inv_sum_pos {ι : Type*} (t : Finset ι) (a : ι → ℝ) (ha : ∀ i, 0 < a i) :
@@ -164,7 +162,5 @@ theorem proof : ChartTaylorCover.Statement := by
           (fun k _ => by positivity) hpt
 
 end ChartTaylorCover
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

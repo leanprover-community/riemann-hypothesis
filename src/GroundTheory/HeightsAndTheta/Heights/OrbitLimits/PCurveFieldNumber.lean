@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.Inter
 
-noncomputable section
-
 theorem CurveFieldNumber.proof (hR1 : RegularityFunctionFieldNumber.Statement) : CurveFieldNumber.Statement := by
   intro K _ ι _ Ω _ y hA hB
   set P := mCoordIdeal y with hPdef
@@ -80,7 +78,5 @@ theorem CurveFieldNumber.proof (hR1 : RegularityFunctionFieldNumber.Statement) :
     ((Subring.equivMapOfInjective (funField P) Φ Φ.injective).trans (RingEquiv.subringCongr heq)).trans
       (RingEquiv.ofBijective c.rangeRestrict ⟨hc, c.rangeRestrict_surjective⟩).symm
   exact @NumberField.of_ringEquiv _ _ hF.toField _ e hN
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

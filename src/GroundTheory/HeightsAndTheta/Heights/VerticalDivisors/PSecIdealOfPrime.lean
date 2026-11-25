@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace SecIdealOfPrime
 
 theorem secAlg_of_ratFunc {k E : Type} [Field k] [Field E] (n e : ℕ) (φ : k →+* E) (y : Par e n → E)
@@ -245,7 +243,5 @@ theorem SecIdealOfPrime.proof (hDim : SpecCompDim.Statement) (hExist : ChowFormE
     rw [← Ideal.mem_comap, Ideal.comap_map_of_surjective _ hπ, ← RingHom.ker_eq_comap_bot,
       MvPolynomial.ker_map, Ideal.ker_algebraMap_residueField,
       sup_eq_left.mpr (le_sup_right.trans hJW)]
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

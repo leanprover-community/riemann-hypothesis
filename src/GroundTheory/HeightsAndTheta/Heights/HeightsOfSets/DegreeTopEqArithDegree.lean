@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open NumberField
 
-noncomputable section
-
 theorem HermitianBundle.degree_top_eq_arithDegree {K : Type*} [Field K] [NumberField K]
     (E : HermitianBundle K) : E.degree ⊤ = E.arithDegree := by
   obtain ⟨s, hs⟩ := exists_linearIndependent_fin (K := K) (E := E.carrier)
@@ -108,7 +106,5 @@ theorem slopeMaxExtension : SlopeMaxExtension.Statement := by
       _ = m * (E'.rank (F.comap X.incl) + E''.rank (F.map X.proj)) := by ring
   rw [hMm]
   exact EReal.coe_le_coe_iff.mpr hs
-
-end
 
 end GroundTheory.Heights₂.Heights

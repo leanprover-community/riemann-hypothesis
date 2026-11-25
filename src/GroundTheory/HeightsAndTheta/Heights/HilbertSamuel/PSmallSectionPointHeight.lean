@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace SmallSectionPointHeight
@@ -181,7 +179,5 @@ theorem SmallSectionPointHeight.proof (hOrd : SectionOrderAtPoint.Statement) :
     linarith
   have hτ0 : (0 : ℝ) < τ := by exact_mod_cast hτ
   exact le_of_mul_le_mul_left (by rw [mul_zero]; exact hτI) hτ0
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

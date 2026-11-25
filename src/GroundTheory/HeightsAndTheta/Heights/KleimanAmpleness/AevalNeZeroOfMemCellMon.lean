@@ -17,8 +17,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 open scoped Pointwise
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (secOver GeneratesOver chartRingOver cellMon)
 
-noncomputable section
-
 namespace RowLocCover
 
 section Poly
@@ -498,7 +496,5 @@ theorem proof (hGen : ChartSecGen.Statement) (hMul : ChartSecMul.Statement) (hSu
   rwa [show Pi.single k (-(r : ℤ)) + (γ + Pi.single k (r : ℤ)) = γ by rw [Pi.single_neg]; abel] at this
 
 end RowLocCover
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

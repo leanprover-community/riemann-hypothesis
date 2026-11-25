@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory Filter Topology
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace Mono
@@ -174,7 +172,5 @@ theorem chartLat_le_nm (y : (Σ k, ι k) → Ω) (a : K → ℤ) (τ : ℕ) : ch
 
 end Mono
 
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

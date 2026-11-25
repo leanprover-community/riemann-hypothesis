@@ -10,8 +10,6 @@ public import GroundTheory.PAdicHodge.BCrisEigen
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.PAdicHodge
 
 open Module

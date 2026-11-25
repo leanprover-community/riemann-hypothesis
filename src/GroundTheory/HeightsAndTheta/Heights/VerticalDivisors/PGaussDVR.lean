@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Vertical
 
 open MvPolynomial NumberField IsDedekindDomain WithZero
 
-noncomputable section
-
 section Dedekind
 
 variable {A : Type*} [CommRing A] [IsDedekindDomain A] (v : HeightOneSpectrum A)
@@ -188,7 +186,5 @@ theorem GaussDVR.proof (h1 : ParDVRIsDVR.Statement) : GaussDVR.Statement := by
   have hN : (Ideal.absNorm v.asIdeal : ℝ) ≠ 0 := by
     exact_mod_cast (NumberField.HeightOneSpectrum.absNorm_ne_zero v)
   rw [hord, ENat.toNat_natCast, hK, inv_pow, inv_mul_cancel₀ (pow_ne_zero _ hN)]
-
-end
 
 end GroundTheory.Heights₂.Heights.Vertical

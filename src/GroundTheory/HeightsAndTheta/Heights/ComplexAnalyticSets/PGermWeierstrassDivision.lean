@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Topology Filter
 
-noncomputable section
-
 theorem WeierstrassDivision.proof (hP : WeierstrassPreparation.Statement)
     (hD : WeierstrassPolynomialDivision.Statement) : WeierstrassDivision.Statement := by
   intro σ _ d f g hf hg hord
@@ -20,7 +18,5 @@ theorem WeierstrassDivision.proof (hP : WeierstrassPreparation.Statement)
   refine ⟨fun x => q x / e x, a, hq.div he he0, ha, ?_⟩
   filter_upwards [hfe, hgq, he.continuousAt.eventually_ne he0] with x hfx hgx hex
   rw [hgx, hfx, div_mul_eq_mul_div, mul_left_comm, mul_div_cancel_left₀ _ hex]
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

@@ -7,8 +7,6 @@ public import GroundTheory.GlobalFields.Adele.BaseChange.AdeleEquiv
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 open scoped TensorProduct NumberField.AdeleRing
 open NumberField IsDedekindDomain HeckeCharacterZeroLocus.ThmBIn GroundTheory.Global GroundTheory.Global.AdeleBaseChange
   GroundTheory.Global.SemiLocal

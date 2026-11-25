@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 theorem divSupp_disjoint_of_not_mem {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
     {P : Ideal (MRing ι)} {u a : MRing ι} (h : ∀ W ∈ divSupp P u, a ∉ W) :
     ∀ W, W ∈ divSupp P u → W ∉ divSupp P a :=
@@ -87,7 +85,5 @@ theorem WellDefined.proof (h₁ : Swap.Statement) (h₂ : RPositionAdd.Statement
   have hLeq : L = Fin.snoc (Fin.init L) M := (Fin.snoc_init_self L).symm
   rw [hLeq]
   linarith
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

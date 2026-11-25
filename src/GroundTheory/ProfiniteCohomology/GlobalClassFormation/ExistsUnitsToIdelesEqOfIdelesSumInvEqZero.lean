@@ -16,8 +16,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
 
 open scoped DirectSum GroundTheory.Global.SemiLocal
 
-noncomputable section
-
 theorem idelesToClasses_idelesResField (K E : FiniteSubfield) [Fact (K ≤ E)] (y : cohomology (limitRep K) 2) :
     (idelesToClasses E 2).hom ((idelesResField K E 2).hom y) =
       (classResField K E 2).hom ((idelesToClasses K 2).hom y) := by
@@ -147,7 +145,5 @@ theorem sumPlaceInv_eq_zero_iff (y : ⨁ v : Place K.1, localGaloisCohomology K 
     exact ⟨x, by rw [brauerLocal_apply, hx, AddEquiv.apply_symm_apply]⟩
   · rintro ⟨x, rfl⟩
     exact brauerSumInv_eq_zero ι x
-
-end
 
 end GroundTheory.ProfCoh

@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 
-noncomputable section
-
 theorem BranchIntDecompose.proof (hPr : IndefiniteRowSideFullHecke.ComplexSets.BranchProperAtPoint.Statement)
     (hGen : ComplexSets.GenericProjectionFinite.Statement) (hSum : ChartIntSumOffHyperplane.Statement)
     (hBr : BranchChartInt.Statement) : BranchIntDecompose.Statement := by
@@ -58,7 +56,5 @@ theorem BranchIntDecompose.proof (hPr : IndefiniteRowSideFullHecke.ComplexSets.B
   rw [hvar, hSum n (d + 1) J hex.choose u m f (fun b => (γ b).image.indicator f) ψ hJ hdim hAf hu hpt
     (fun b => (hbr b).1)]
   exact Finset.sum_congr rfl fun b _ => (hbr b).2
-
-end
 
 end GroundTheory.Heights₂.Heights

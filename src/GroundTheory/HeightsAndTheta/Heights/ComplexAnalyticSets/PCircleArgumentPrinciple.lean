@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open Topology Filter Metric Complex Real
 
-noncomputable section
-
 theorem CircleArgumentPrinciple.differentiable_prod_sub (Z : Multiset ℂ) :
     Differentiable ℂ fun s : ℂ => (Z.map fun a => s - a).prod := by
   induction Z using Multiset.induction_on with
@@ -247,7 +245,5 @@ theorem CircleArgumentPrinciple.proof : CircleArgumentPrinciple.Statement := by
   have heq : h =ᶠ[𝓝 s] fun w => (Z.map fun a => w - a).prod * u w :=
     Filter.eventually_of_mem (hO.mem_nhds hsO) hfac
   simp only [heq.deriv_eq, hfac s hsO]
-
-end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

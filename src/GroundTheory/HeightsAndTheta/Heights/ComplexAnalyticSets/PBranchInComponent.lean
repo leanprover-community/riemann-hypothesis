@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial ComplexSets Metric Filter Topology Set
 
-noncomputable section
-
 namespace BranchInComponent
 
 theorem differentiable_eval {n : ℕ} (g : MvPolynomial (Fin n) ℂ) :
@@ -90,7 +88,5 @@ theorem proof : BranchInComponent.Statement := by
   exact hV x hx (pow_eq_zero_iff'.1 h0).1
 
 end BranchInComponent
-
-end
 
 end GroundTheory.Heights₂.Heights

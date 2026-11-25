@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix MeasureTheory Filter
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace ChartEnergyIntegrableAlt
 
 theorem quad_pos {e : ℕ} {M : Matrix (Fin (e + 1)) (Fin (e + 1)) ℂ} (hM : M.PosDef) (y : Fin e → ℂ) :
@@ -121,7 +119,5 @@ theorem ChartEnergyIntegrable.proof (hCmp : HermFormCompare.Statement) (hHess : 
     exact abs_maDensity_mix_le k C y (hC y).1.posSemidef (hC₀ y).1.posSemidef (hC y).2
   exact hmix.bdd_mul ((measurable_hermChartPot M).sub (measurable_hermChartPot N)).aestronglyMeasurable
     (Eventually.of_forall hK)
-
-end
 
 end GroundTheory.Heights₂.Heights

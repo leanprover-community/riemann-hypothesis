@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter
 
-noncomputable section
-
 namespace BigIffGenDeg
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -34,7 +32,5 @@ theorem coord_ne_zero_of_isArithVar {y : (Σ k, ι k) → Ω} {d : ℕ} (h : IsA
   simp [mConeMap, h0]
 
 end BigIffGenDeg
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

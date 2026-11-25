@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
 open scoped ENNReal
 
-noncomputable section
-
 namespace ChartMassCompact
 
 variable {n d : ℕ}
@@ -132,7 +130,5 @@ theorem ChartMassCompact.proof (hC : ChartMassCompare.Statement) (hMF : MassFini
   rw [Real.norm_eq_abs, abs_of_nonneg (chartAbsDens_nonneg _ _ _ _ _)]
   exact chartAbsDens_le J A f ψ hR (fun x hx => (Real.norm_eq_abs (f x) ▸ hM x hx).trans (le_max_left _ _))
     (le_max_right _ _) hvan y (FibreBound.proof n d J A hJ hd hA y).2.1
-
-end
 
 end GroundTheory.Heights₂.Heights

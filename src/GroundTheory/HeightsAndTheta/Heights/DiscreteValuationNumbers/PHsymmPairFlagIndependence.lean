@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 theorem HsymmPairFlagIndependence.proof (hExp : PairNumberExpansionIndependence.Statement)
     (hClos : GenericProjClosureModel.Statement) (hSeg : SegreClosureNumber.Statement) :
     HsymmPairFlagIndependence.Statement := by
@@ -52,7 +50,5 @@ theorem HsymmPairFlagIndependence.proof (hExp : PairNumberExpansionIndependence.
         hZ f₀ g₀ hD₀ hD₀gen n z z' fz gz hz a r R hR As hAs Cs hCs Q hQ,
       hSeg O ϖ hϖ Ω K ι y d hV N hN E B B' hBB' v v' u u' f₂ g₂ hF2 M M' a₀ a₀' φ φ' hφ hφ' Φ w t ht
         hZ f₀ g₀ hD₀ hD₀gen n z z' fz gz hz a r R hR Bs hBs Cs hCs Q hQ]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

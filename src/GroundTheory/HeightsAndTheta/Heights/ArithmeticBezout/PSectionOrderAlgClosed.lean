@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 theorem SectionOrderAlgClosed.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFirstMemIncIdeal.Statement)
     (h₃ : ChartChoiceAlgClosed.Statement) (h₄ : Vertical.SpecFirstNeField.Statement)
     (h₅ : LocalizationPrimeDVR.Statement) (h₆ : EmultiplicityOrd.Statement) (h₇ : ChartFinite.Statement)
@@ -29,7 +27,5 @@ theorem SectionOrderAlgClosed.proof (h₁ : IncIdealBelow.Statement) (h₂ : Spe
   exact SectionOrder.proof_of_chart hI hf hu h₁ h₂ (fun q => h₃ F n e I f q hI hf)
     (h₄ F n e I f u hI hf hu) h₅ h₆ h₇ h₈ (fun t p _ h htp => h₉ F n e I f t p hI hf h htp u)
     (fun t q p _ => h₁₀ F n e I f t u q p hI hf hu) h₁₁
-
-end
 
 end GroundTheory.Heights₂.Heights

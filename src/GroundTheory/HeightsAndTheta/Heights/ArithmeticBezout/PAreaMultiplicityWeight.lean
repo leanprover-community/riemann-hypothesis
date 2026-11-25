@@ -17,8 +17,6 @@ open MeasureTheory Module Set Filter Function
 
 open scoped ENNReal NNReal
 
-noncomputable section
-
 theorem AreaMultiplicityWeight.setLIntegral_comp_mul_abs_det₀ {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
     (μ : Measure E) [μ.IsAddHaarMeasure] {s : Set E} {f : E → E} {f' : E → E →L[ℝ] E}
@@ -29,7 +27,5 @@ theorem AreaMultiplicityWeight.setLIntegral_comp_mul_abs_det₀ {E : Type*} [Nor
 
 theorem AreaMultiplicityWeight.proof : AreaMultiplicityWeight.Statement :=
   fun _ _ _ _ _ _ μ _ _ _ _ hA hf' => lintegral_comp_mul_abs_det_eq_lintegral_encard μ hA hf'
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -13,8 +13,6 @@ namespace GroundTheory.Global
 open IsDedekindDomain NumberField Filter
 open AdeleBaseChange SemiLocal
 
-noncomputable section
-
 namespace IdeleNorm
 
 variable {K : Type*} [Field K] [NumberField K] {L : Type*} [Field L] [NumberField L] [Algebra K L]
@@ -80,7 +78,5 @@ theorem mem_range_ideleNorm_of_forall (x : IdeleGroup K)
   (mem_range_ideleNorm_iff_forall L x).2 ⟨hfin, hinf⟩
 
 end IdeleNorm
-
-end
 
 end GroundTheory.Global

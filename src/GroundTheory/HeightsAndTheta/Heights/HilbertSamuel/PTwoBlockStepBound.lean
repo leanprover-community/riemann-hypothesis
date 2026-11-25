@@ -20,8 +20,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Module
 
-noncomputable section
-
 namespace TwoBlockStepBound
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ]
@@ -137,7 +135,5 @@ theorem TwoBlockStepBound.proof (hRank : RankOfSections.Statement) : TwoBlockSte
     _ ≤ R * ((a + b + 1 : ℕ) : ℝ) ^ D * Real.log M :=
         mul_le_mul_of_nonneg_right (hR _ (by omega)) hlogM
     _ = R * Real.log M * ((a + b + 1 : ℕ) : ℝ) ^ D := by ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

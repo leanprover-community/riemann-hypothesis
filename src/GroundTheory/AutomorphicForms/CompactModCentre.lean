@@ -11,8 +11,6 @@ public import Mathlib.MeasureTheory.Group.Measure
 
 @[expose] public section
 
-noncomputable section
-
 set_option linter.unusedSectionVars false
 
 namespace GroundTheory.Automorphic

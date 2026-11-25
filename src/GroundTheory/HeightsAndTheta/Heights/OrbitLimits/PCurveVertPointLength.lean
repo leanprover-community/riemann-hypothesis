@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Targets
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
 
-noncomputable section
-
 theorem CurveVertPointLength.of_single
     {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     {y : (Σ k, ι k) → Ω} {s : MRing ι} {d : K → ℕ}
@@ -73,7 +71,5 @@ theorem CurveVertPointLength.proof (hCh : CurveVertPointChart.Statement) (hInj :
       (fun m hm hne => hSurj K ι Ω y s d hP hs hsP m hm hne)
       (fun W hW c hc a b hb hab => hMC K ι Ω y s d hP hs hsP W hW c hc a b hb hab)
       (fun m c hm hyc hrat a b hb hab => hSQ K ι Ω y s d hP hs hsP m c hm hyc hrat a b hb hab)
-
-end
 
 end GroundTheory.Heights₂.Heights.Targets

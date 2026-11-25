@@ -23,8 +23,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
 
-noncomputable section
-
 universe u
 
 section PolynomialHeights
@@ -195,7 +193,5 @@ theorem ComponentDim.proof : ComponentDim.Statement := by
     exact hWp.ne_top
   exact ringKrullDim_quotient_eq_of_minimalPrime_of_sup_ne_top hϖ hfP hWmin hWϖ (d + Fintype.card K)
     (by rw [hP.dim, show d + Fintype.card K + 1 = d + 1 + Fintype.card K by ring])
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

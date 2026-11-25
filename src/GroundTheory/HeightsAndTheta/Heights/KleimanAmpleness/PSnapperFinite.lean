@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u v w
 
 theorem SnapperFinite.proof (hE : Extension.Statement.{u, v, w}) (hEL : Extension.Statement.{u, w, w})
@@ -67,7 +65,5 @@ theorem SnapperFinite.proof (hE : Extension.Statement.{u, v, w}) (hEL : Extensio
   obtain ⟨P, hP⟩ := hpows t L n
   rw [hP, ← hS k Ω N x E P c]
   exact hF k Ω N x E P i c
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

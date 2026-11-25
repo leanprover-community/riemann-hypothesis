@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial
 
-noncomputable section
-
 universe u w
 
 namespace AmpleTwistLocal
@@ -119,7 +117,5 @@ theorem proof (hA : AmpleAffineGen.Statement.{u, w}) : AmpleTwistLocal.Statement
   exact Submodule.mul_mem_mul (Submodule.subset_span (hglob t)) (hg t)
 
 end AmpleTwistLocal
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

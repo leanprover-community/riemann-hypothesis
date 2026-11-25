@@ -18,8 +18,6 @@ open MeasureTheory Set Filter Topology Metric
 
 namespace GroundTheory.Automorphic
 
-noncomputable section
-
 namespace PseudoEisenstein
 
 theorem differentiableOn_integral_of_bound {α : Type*} [MeasurableSpace α] {μ : Measure α}
@@ -81,7 +79,5 @@ theorem differentiableOn_integral_of_bound {α : Type*} [MeasurableSpace α] {μ
 
 
 end PseudoEisenstein
-
-end
 
 end GroundTheory.Automorphic

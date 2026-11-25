@@ -24,8 +24,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial GenericProjClosureDivisor
 
-noncomputable section
-
 theorem SegreFlagClosureCut.proof (hC3 : CutByEffectiveDivisor.Statement.{0})
     (hExp : PairNumberExpansionIndependence.Statement) (hMod : SegreFlagClosureModel.Statement)
     (hSec : SegreFlagCutSection.Statement) (hCon : SegreFlagCutContraction.Statement) :
@@ -393,7 +391,5 @@ theorem SegreFlagClosureCut.proof (hC3 : CutByEffectiveDivisor.Statement.{0})
     · rw [hG]
       simp only [ite_eq_left hϖW, mul_zero]
     · rw [hdiv W hϖW, ite_eq_right (fun h' => hW h'.2), zero_mul]
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -12,8 +12,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry KHFree
 open GroundTheory.Heights₂.Heights.HilbertSamuel.GenTwistGenerated (cellRes_mk cellMon_mono isMultiHomog_monomial)
 
-noncomputable section
-
 namespace KHFreeEmbed
 
 set_option linter.unusedSectionVars false
@@ -175,7 +173,5 @@ theorem full : KHFreeEmbed.Statement := by
   exact ⟨fun n f => embed_comm a n f, fun c d h n f => embed_mem a c d h n f, monoFrac_of_nonneg a⟩
 
 end KHFreeEmbed
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

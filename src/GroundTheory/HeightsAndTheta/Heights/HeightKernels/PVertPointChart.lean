@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
-noncomputable section
-
 theorem VertPointChart.proof (hC : CurveCharts.Statement) : VertPointChart.Statement := by
   intro T _ K' _ _ y s hy hs hsP W hW t ht
   have hCB := hC T K' y hy
@@ -23,7 +21,5 @@ theorem VertPointChart.proof (hC : CurveCharts.Statement) : VertPointChart.State
     hW (fun _ => t) (fun _ => ht)
   refine ⟨hmax, fun u => hrat ⟨(), u⟩, fun d g hg => ?_⟩
   simpa only [Fintype.prod_unique] using hiff (fun _ => d) g hg
-
-end
 
 end GroundTheory.Heights₂.Heights

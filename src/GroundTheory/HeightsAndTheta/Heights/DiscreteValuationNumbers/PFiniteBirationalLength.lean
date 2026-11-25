@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open Module IsLocalRing
 
-noncomputable section
-
 universe u
 
 namespace FiniteBirationalLength
@@ -56,7 +54,5 @@ theorem full : FiniteBirationalLength.Statement.{u} := by
   rw [length_quot_maximal_eq_inertiaDeg, Ring.ord]
 
 end FiniteBirationalLength
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

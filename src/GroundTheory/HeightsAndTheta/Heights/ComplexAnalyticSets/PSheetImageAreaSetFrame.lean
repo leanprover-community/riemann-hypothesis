@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Module
 
-noncomputable section
-
 namespace SheetImageAreaSet
 
 theorem exists_adapted_frame {n d : ℕ}
@@ -105,7 +103,5 @@ theorem areaJacobian_comp_endo {E F : Type*} [NormedAddCommGroup E] [InnerProduc
     LinearMap.normDet_eq_abs_det]
 
 end SheetImageAreaSet
-
-end
 
 end GroundTheory.Heights₂.Heights

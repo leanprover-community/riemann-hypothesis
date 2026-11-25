@@ -21,8 +21,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
-noncomputable section
-
 namespace SecMRankBound
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
@@ -157,7 +155,5 @@ theorem proof (h : GenericFibreVar.Statement) : SecMRankBound.Statement := by
 theorem full : SecMRankBound.Statement := proof GenericFibreVar.proof
 
 end SecMRankBound
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

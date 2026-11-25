@@ -10,8 +10,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry KHFree
 
-noncomputable section
-
 namespace KHFreeIndep
 
 variable {S : Type} [CommRing S] {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -137,7 +135,5 @@ theorem KHFreeIndep.full : KHFreeIndep.Statement := by
   have hJ := KHFreeIndep.eq_zero_of_sum_smul_monoFrac J.1.1 A g (fun b _ hb => dite_eq_right hb) hsum a ha
   rw [show g a = f a J from dite_eq_left J.2] at hJ
   simpa using hJ
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman

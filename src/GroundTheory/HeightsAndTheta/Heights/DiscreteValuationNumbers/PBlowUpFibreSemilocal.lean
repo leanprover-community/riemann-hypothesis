@@ -15,8 +15,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 theorem length_quot_span_ringEquiv {R R' : Type*} [CommRing R] [CommRing R'] (ψ : R ≃+* R') (r : R) :
@@ -107,7 +105,5 @@ theorem BlowUpFibreSemilocal.proof (ha : HomLocRingLocal.Statement.{u})
     rfl
   rw [length_quot_span_ringEquiv ψ, hψ]
   exact hlen
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

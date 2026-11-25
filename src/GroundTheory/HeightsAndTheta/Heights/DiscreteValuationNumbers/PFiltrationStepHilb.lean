@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 universe u
 
 namespace FiltrationStepHilb
@@ -184,7 +182,5 @@ theorem FiltrationStepHilb.proof : FiltrationStepHilb.Statement.{u} := by
     unfold hilbFn
     simp only [ite_eq_right hm, ite_eq_right hm']
     simp
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

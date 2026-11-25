@@ -11,8 +11,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
 
-noncomputable section
-
 section Shift
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -131,7 +129,5 @@ theorem G4.proof (hG6 : ArithmeticVolumeBig.Statement) (hCS : ConstantShift.Stat
     refine hle.trans (le_of_eq ?_)
     rw [constShift_h, mul_pow, e]
     ring
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

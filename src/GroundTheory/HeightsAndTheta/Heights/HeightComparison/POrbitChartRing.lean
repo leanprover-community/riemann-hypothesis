@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G
 
-noncomputable section
-
 variable {ι : Type} {n : ι → ℕ}
 
 theorem mem_closure_chartRatio (x : Cone n (AlgebraicClosure ℚ)) (c : (k : ι) → Fin (n k + 1))
@@ -57,7 +55,5 @@ theorem OrbitChartRing.proof : OrbitChartRing.Statement := by
       change z * b = a
       rw [← hab, div_mul_cancel₀ _ hb0]
   · rw [Subtype.val_injective h]
-
-end
 
 end GroundTheory.Heights₂.Heights

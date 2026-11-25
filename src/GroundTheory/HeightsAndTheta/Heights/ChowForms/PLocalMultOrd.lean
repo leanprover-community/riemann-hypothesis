@@ -8,8 +8,6 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
-noncomputable section
-
 theorem LocalMultOrd.proof : LocalMultOrd.Statement := by
   intro A _ _ I W x _ hW
   set J := I ⊔ Ideal.span {x} with hJ
@@ -126,7 +124,5 @@ theorem LocalMultOrd.proof : LocalMultOrd.Statement := by
     rw [dite_eq_left hWp]
   rw [hloc, hlen, hord]
   exact ENat.natCast_toNat hfin
-
-end
 
 end GroundTheory.Heights₂.Heights

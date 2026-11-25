@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-noncomputable section
-
 section Helpers
 
 variable {F : Type*} [Field F] {n k : ℕ}
@@ -144,7 +142,5 @@ theorem ChowFormReduced.proof_of_prime_separate (hPrime : IncIdealPrime.Statemen
   · rw [← mem_incIdeal_iff, hqspan W hW, Ideal.mem_span_singleton]
   · rw [Finset.prod_congr rfl fun W hW => by rw [fundCycle_apply_of_isRadical hJr hW, pow_one],
       ← hu, hur, mul_comm]
-
-end
 
 end GroundTheory.Heights₂.Heights

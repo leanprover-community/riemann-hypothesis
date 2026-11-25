@@ -20,8 +20,6 @@ namespace GroundTheory.Global
 
 open IsDedekindDomain NumberField WithZero
 
-noncomputable section
-
 namespace SemiLocal
 
 section Integers
@@ -281,7 +279,5 @@ theorem ramificationIdx_mul_inertiaDeg_le_finrank :
   simpa using this
 
 end SemiLocal
-
-end
 
 end GroundTheory.Global

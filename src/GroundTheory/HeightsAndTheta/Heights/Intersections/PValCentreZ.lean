@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo regularityEmbedding_holds
 
-noncomputable section
-
 theorem ValCentreZ.proof : ValCentreZ.Statement := by
   intro K _ ι _ P hP
   have := hP.1
@@ -110,7 +108,5 @@ theorem ValCentreZ.proof : ValCentreZ.Statement := by
     refine ⟨(R.valuation_le_one_iff _).mp ?_, Iff.rfl⟩
     rw [map_div₀, hvg, div_one]
     exact (R.valuation_le_one_iff _).mpr (hmem f)
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter

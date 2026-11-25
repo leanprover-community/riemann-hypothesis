@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1
 
-noncomputable section
-
 namespace NefAmpleGeneric
 
 attribute [local instance] MvPolynomial.algebraMvPolynomial
@@ -100,7 +98,5 @@ theorem NefAmpleGeneric.proof (hKA : KH.KAmpStatement)
     exact_mod_cast h1
   have h := hKA ℚ K ι I (KH.genIdeal y) D M.a b a hI (isProjVarF_map_of_isArithVar hV) hnef hb ha
   rwa [← natCast_zsmul] at h
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open Algebra Cardinal Set AlgebraicIndependent
 
-noncomputable section
-
 section TrdegRank
 
 variable {K Ω : Type*} [Field K] [Field Ω] [Algebra K Ω]
@@ -60,7 +58,5 @@ theorem TrdegAdjoinLe.proof : TrdegAdjoinLe.Statement := by
     _ ≤ M.cRk s + #(range t) := by gcongr; exact M.cRk_le_cardinalMk _
     _ ≤ M.cRk s + #ι := by gcongr; exact mk_range_le
     _ = M.cRk s + Fintype.card ι := by rw [mk_fintype]
-
-end
 
 end GroundTheory.Heights₂.Heights

@@ -19,8 +19,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter
 
-noncomputable section
-
 namespace HyperplaneQuotientBound
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [CharZero Ω]
@@ -214,7 +212,5 @@ theorem HyperplaneQuotientBound.proof (hR : HyperplaneRegularSection.Statement)
     ring
   rw [hpow] at h3
   nlinarith
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

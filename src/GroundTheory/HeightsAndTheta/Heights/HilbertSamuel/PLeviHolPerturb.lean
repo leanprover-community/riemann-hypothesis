@@ -17,8 +17,6 @@ namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 open ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
 open scoped ContDiff
 
-noncomputable section
-
 namespace LeviHolPerturb
 
 variable {J : Type} [Fintype J]
@@ -190,7 +188,5 @@ theorem proof : LeviHolPerturb.Statement := by
   ring
 
 end LeviHolPerturb
-
-end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

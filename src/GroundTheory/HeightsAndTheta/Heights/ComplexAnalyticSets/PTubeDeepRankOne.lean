@@ -22,8 +22,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial Matrix ComplexSets ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A Filter Topology
 
-noncomputable section
-
 namespace TubeDeepRankOne
 
 theorem mdisc_vecMulVec {D : ℕ} (u : Fin D → Fin D → ℂ) :
@@ -239,7 +237,5 @@ theorem proof : TubeDeepRankOne.Statement := by
   field_simp
 
 end TubeDeepRankOne
-
-end
 
 end GroundTheory.Heights₂.Heights

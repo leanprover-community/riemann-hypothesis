@@ -16,8 +16,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 open MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (mIdealOver mConeMapOver chartRingOver secOver secMOver)
 
-noncomputable section
-
 section OneBlock
 
 variable {F : Type} [Field F] {Ω : Type} [Field Ω] [Algebra F Ω]
@@ -138,7 +136,5 @@ theorem isSubvar_iff_relDim (x : Fin (N + 1) → Ω) (e : ℕ) :
   rw [isSubvar_primeOf_iff, relDim_oneBlock_eq_iff, mIdealOver_oneBlock, HilbertPositive.ringKrullDim_primeOfOne]
 
 end FirstTyping
-
-end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

@@ -9,8 +9,6 @@ import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 set_option maxSynthPendingDepth 1
 
-noncomputable section
-
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory groupCohomology GroundTheory.GroupCoh

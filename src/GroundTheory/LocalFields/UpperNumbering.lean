@@ -8,8 +8,6 @@ import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
-noncomputable section
-
 namespace GroundTheory.LocalField
 
 open ValuativeRel

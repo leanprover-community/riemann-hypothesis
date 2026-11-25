@@ -13,8 +13,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 open MvPolynomial
 
-noncomputable section
-
 theorem isHomogeneous_multiset_prod_map {σ : Type*} (φ : ℕ → MvPolynomial σ ℤ)
     (hφ : ∀ b, (φ b).IsHomogeneous b) (t : Multiset ℕ) : ((t.map φ).prod).IsHomogeneous t.sum := by
   induction t using Multiset.induction_on with
@@ -194,7 +192,5 @@ theorem FlagIndependence.proof (hExp : PairNumberExpansionIndependence.Statement
   congr 1
   have h := tele μ.parts 0 1 (isHomogeneous_one _ _) (by rw [μ.parts_sum, zero_add])
   simpa only [one_mul] using h
-
-end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

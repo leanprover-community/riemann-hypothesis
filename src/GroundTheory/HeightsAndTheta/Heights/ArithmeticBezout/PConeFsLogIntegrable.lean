@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Set Matrix Filter
 
-noncomputable section
-
 namespace ConeFsLog
 
 variable {n : ℕ}
@@ -126,7 +124,5 @@ theorem ConeFsLogIntegrable.proof (hfin : ConeBallFinite.Statement)
   refine lt_of_le_of_lt (lintegral_mono hle) ?_
   rw [lintegral_add_left measurable_const, lintegral_const, Measure.restrict_apply_univ]
   exact ENNReal.add_lt_top.mpr ⟨ENNReal.mul_lt_top ENNReal.ofReal_lt_top hS, hG⟩
-
-end
 
 end GroundTheory.Heights₂.Heights

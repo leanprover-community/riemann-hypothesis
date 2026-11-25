@@ -18,8 +18,6 @@ namespace GroundTheory.Heights₂.Heights.Inter
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-noncomputable section
-
 section SlopeTestRemainingChoices
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -88,7 +86,5 @@ theorem PFStep.proof (hSec : PFSecRed.Statement) (hVert : PFVert.Statement) (hIn
   · rw [ite_eq_right hh, ite_eq_right (fun h => hh h.1),
       hVert K ι K' ι' κ v P' d r L L' (Fin.init N) s a W hv hP1 hP hL' hs hsP hW hh]
     simp
-
-end
 
 end GroundTheory.Heights₂.Heights.Inter
