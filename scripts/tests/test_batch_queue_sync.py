@@ -1696,9 +1696,21 @@ class OlderRecords(unittest.TestCase):
         self.assertEqual([gh.pulls[n]["labels"] for n in (21, 22, 23)], [set(), set(), set()])
         self.assertIn("the record of the batch #1018 is older than the notices of what a batch leaves out: "
                       "what its description leaves out now, 3 pull request(s), is taken as told", log)
-        # The members are labelled and told that they are frozen as usual.
+        # The members are labelled, but not told that they are frozen: the batch was under way.
         self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12)], [IN, IN])
+        self.assertEqual([[b for b in gh.said(n) if b.startswith("<!-- batch-queue-frozen")] for n in (11, 12)], [[], []])
+        self.assertIn("the record of the batch #1018 is older than the notices that a pull request is frozen: "
+                      "its 2 pull request(s) are labelled but not told", log)
         self.assertEqual(sorted(note(gh.said(1018)[0])["left"]), ["21", "22", "23"])
+
+    def test_a_pull_request_that_joins_afterwards_is_told_it_is_frozen(self):
+        gh = self.built()
+        sync(gh)
+        gh.add_pull(13, "head13")
+        by_hand(gh, 11, 12, 13, name="kim-with-13")
+        sync(gh)
+        frozen = lambda n: [b for b in gh.said(n) if b.startswith("<!-- batch-queue-frozen")]
+        self.assertEqual([len(frozen(n)) for n in (11, 12, 13)], [0, 0, 1])
 
     def test_only_what_is_added_or_changed_afterwards_is_told(self):
         gh = self.built()
@@ -1816,8 +1828,8 @@ class Notes(unittest.TestCase):
         self.assertEqual(gh.writes, [])
 
     def test_a_record_written_before_members_were_told_is_carried_on(self):
-        # As R0's `dump_note` wrote it: members and `queued` only, so the members are labelled and
-        # told now, once.
+        # As R0's `dump_note` wrote it: members and `queued` only, so the members are labelled, but
+        # not told: the batch was under way before anyone was told.
         gh = Fake()
         queue(gh, 11, 12)
         gh.add_pull(14, "head14")
@@ -1830,7 +1842,7 @@ class Notes(unittest.TestCase):
         gh.label(12, remove=QUEUED)
         sync(gh)
         self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [IN, IN, IN])
-        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14)], [1, 1, 1])
+        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14)], [0, 0, 0])
         self.assertEqual(note(gh.said(1018)[0])["queued"], ["11", "12"])
         gh.writes = []
         self.assertEqual(sync(gh), ["nothing to do"])

@@ -64,12 +64,16 @@ stays on them. The quote puts the pull requests it names in code spans, so that 
 mention each of them. A pull request this batch told before, whatever its entry and heading say
 now, or another batch told it is left out under the same heading, is not told again: that comment
 is brought up to date instead, which notifies nobody.
-One whose entry is removed from the description is told that too. A batch whose record is older
-than these notices tells nobody what its description leaves out when this script first reads it,
-only what is added or changed after that. After every run, `frozen` is
-put on each open pull request a maintainer's `batch` stands for, and `frozen` and
-`batch-building` are taken off any that is neither queued nor in a batch being built. Which pull requests a batch
-contains is read from its branch, never from its description. The names of the labels are in
+One whose entry is removed from the description is told that too.
+
+A batch whose record is older than these notices was under way before this script told anyone
+anything. When this script first reads it, it labels the pull requests the batch contains but
+tells none of them they are frozen, and tells nobody what its description leaves out: only pull
+requests that join it, and entries added or changed, after that.
+
+After every run, `frozen` is put on each open pull request a maintainer's `batch` stands for, and
+`frozen` and `batch-building` are taken off any that is neither queued nor in a batch being built.
+Which pull requests a batch contains is read from its branch, never from its description. The names of the labels are in
 `batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
 should do for all this to work.
 
@@ -842,9 +846,18 @@ def hold(gh, batch, pulls, held, main, log):
                 if key in pulls and str(key) not in found}
         log.append(f"the record of the batch #{number} is older than the notices of what a batch leaves out: "
                    f"what its description leaves out now, {len(left)} pull request(s), is taken as told")
+    told = {key: commit for key, commit in kept(note, "told").items() if found.get(key) == commit}
+    if batch["comment"] is not None and "told" not in note:
+        # A record from before members were told they are frozen. The batch was being built before
+        # this script told anyone, so its members are labelled but not told: hundreds of comments
+        # at once, about batches already under way, would only be noise. Pull requests that join
+        # it from here on are told.
+        told = dict(found)
+        log.append(f"the record of the batch #{number} is older than the notices that a pull request is frozen: "
+                   f"its {len(told)} pull request(s) are labelled but not told")
     batch["note"] = note = {
         "head": batch["sha"], "members": found, "queued": sorted(queued, key=int), "labelled": labelled,
-        "told": {key: commit for key, commit in kept(note, "told").items() if found.get(key) == commit},
+        "told": told,
         "pushed": {key: commit for key, commit in kept(note, "pushed").items() if found.get(key) == commit},
         "left": left}
     if batch["resumed"]:

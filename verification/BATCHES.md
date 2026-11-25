@@ -120,6 +120,11 @@ batch being built.
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
 of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.
 
+A batch that was already being built before the workflow first told anyone (its record on the
+pull request is older than these notices) is not announced afresh: its pull requests are
+labelled, but neither told they are frozen nor told what the description leaves out. Pull requests
+that join it later, and entries added or changed later, are.
+
 ## Several batches at once
 
 A batch whose branch contains the head of another batch's pull request is built as part of it.
