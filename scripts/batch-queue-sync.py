@@ -557,6 +557,10 @@ def read_record(gh, number):
 #             that commit, and labelled `awaiting-author`.
 #   left      {number: digest}: the pull requests told that the description leaves them out, with
 #             a digest of the entry they were told about (see `tell_left_out`).
+#   telling   true from just before the first comment of a round of telling (`tell_members` and
+#             `tell_left_out`) until the round is over. A run that finds it still set looks for
+#             each comment before it posts it (see `announce`): the run before was cut short, and
+#             may have posted comments its note does not show.
 #
 # An entry of `told` or `pushed` counts only while its commit is the member's: `hold` drops the
 # others. On GitHub, where a comment holds at most 65,536 characters, the note is compact JSON and
@@ -592,6 +596,8 @@ def dump_note(note):
         shorter("told", counting(note["told"]))
     if "pushed" in note:
         kept["pushed"] = sorted(int(key) for key in counting(note["pushed"]))
+    if note.get("telling"):
+        kept["telling"] = True
     return json.dumps(kept, sort_keys=True, separators=(",", ":"))
 
 
@@ -632,6 +638,8 @@ def load_note(text):
         note["pushed"] = {key: found[key] for key in sorted(numbers("pushed"), key=int) if key in found}
     elif isinstance(kept.get("pushed"), dict):
         note["pushed"] = mapping("pushed")
+    if kept.get("telling") is True:
+        note["telling"] = True
     return note
 
 
@@ -780,12 +788,16 @@ def hold(gh, batch, pulls, held, main, log):
     that they were pushed to afterwards (`pushed`, which also labels them `awaiting-author`), or
     what the description says about them being left out (`left`, see `tell_left_out`). Only what
     GitHub took counts as done, so what was refused or cut short is tried again by the next run,
-    and nothing is done twice. A member is labelled once: a label taken off by hand stays off,
+    and nothing is done twice: a round of telling is marked in the note before its first comment
+    (`telling`), and a run that finds the mark looks for each comment before it posts it, in case
+    the note was not saved after it. A member is labelled once: a label taken off by hand stays off,
     except that a pull request queued again swaps `batch queue` for the labels of the batch. The
     note's keys are described above `dump_note`.
     """
     note, number, requeued = batch["note"], batch["number"], False
     found, queued, new = members(note), queued_before(note), set()
+    # A round of telling that the last run started and did not finish.
+    batch["resumed"] = bool(note.get("telling"))
     if note.get("head") != batch["sha"]:
         commits = batch.get("commits")
         if commits is None:
@@ -833,6 +845,8 @@ def hold(gh, batch, pulls, held, main, log):
         "told": {key: commit for key, commit in kept(note, "told").items() if found.get(key) == commit},
         "pushed": {key: commit for key, commit in kept(note, "pushed").items() if found.get(key) == commit},
         "left": left}
+    if batch["resumed"]:
+        note["telling"] = True
     save(gh, batch)
 
     try:
@@ -849,8 +863,9 @@ def hold(gh, batch, pulls, held, main, log):
                     labelled.append(key)
                 log.append(f"#{key} is in the batch #{number}: now `{MEMBER}` and `{FROZEN}`")
         labelled.sort(key=int)
-        tell_members(gh, batch, pulls, main, log)
-        tell_left_out(gh, batch, pulls, log)
+        if tell_members(gh, batch, pulls, main, log) and tell_left_out(gh, batch, pulls, log):
+            # The round is over: the note shows everything it said.
+            note.pop("telling", None)
     finally:
         save(gh, batch)
     return requeued
@@ -858,7 +873,8 @@ def hold(gh, batch, pulls, held, main, log):
 
 def tell_members(gh, batch, pulls, main, log):
     """Tell each pull request in a batch assembled by hand, once, that it is frozen, and once that
-    it was pushed to after the batch took it, if it was. The note remembers it."""
+    it was pushed to after the batch took it, if it was. The note remembers it. Returns whether
+    everything was told, False when the run is cut short."""
     note, number, since = batch["note"], batch["number"], 0
     told, pushed = note["told"], note["pushed"]
     for key, commit in sorted(note["members"].items(), key=lambda entry: int(entry[0])):
@@ -868,9 +884,9 @@ def tell_members(gh, batch, pulls, main, log):
         if gh.short():
             log.append(f"only {gh.remaining} requests left this hour: stopped telling what is in the batch #{number}, "
                        "and the next run carries on")
-            return
-        if told.get(key) != commit and say(gh, pr["number"], FROZEN_NOTE.format(number=number, sha=commit),
-                                            frozen_text(number, commit, pr, main)):
+            return False
+        if told.get(key) != commit and announce(gh, batch, pr["number"], FROZEN_NOTE.format(number=number, sha=commit),
+                                                 frozen_text(number, commit, pr, main)):
             told[key], since = commit, since + 1
             log.append(f"told #{key} that it is frozen while the batch #{number} is built")
         if pr["sha"] != commit and pushed.get(key) != commit and tell_pushed(gh, number, commit, pr, main, log):
@@ -878,6 +894,22 @@ def tell_members(gh, batch, pulls, main, log):
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
+    return True
+
+
+def announce(gh, batch, number, marker, text):
+    """Leave a comment on a pull request for the batch assembled by hand `batch`, in a round of
+    telling, and return whether it is there. The note is marked `telling` and saved before the
+    round's first comment. In a round that the last run started and did not finish, the pull
+    request's comments are read first, and one the workflow already left counts as told: that
+    run may have posted it and then failed to save its note."""
+    if not batch["note"].get("telling"):
+        batch["note"]["telling"] = True
+        save(gh, batch)
+    if batch.get("resumed") and any((comment.get("body") or "").startswith(marker)
+                                    for comment in gh.pages(f"issues/{number}/comments") if by_workflow(comment)):
+        return True
+    return say(gh, number, marker, text)
 
 
 def tell_pushed(gh, number, commit, pr, main, log):
@@ -979,7 +1011,8 @@ def tell_left_out(gh, batch, pulls, log):
     told that, if this batch's comment told it. What the batch contains is never told it is left
     out. The note's `left` remembers, for each pull request, a digest of the entry it was last
     told about for this batch, and is brought up to date as each is told. `hold` fills it in
-    without telling anyone for a batch whose record is older than `left`.
+    without telling anyone for a batch whose record is older than `left`. Returns whether
+    everything was told, False when the run is cut short.
     """
     note, number, since = batch["note"], batch["number"], 0
     found, left = note["members"], note["left"]
@@ -997,7 +1030,7 @@ def tell_left_out(gh, batch, pulls, log):
         if gh.short():
             log.append(f"only {gh.remaining} requests left this hour: stopped telling what the batch #{number} leaves "
                        "out, and the next run carries on")
-            return
+            return False
         comments = gh.pages(f"issues/{key}/comments")
         latest, previous = None, None
         for comment in comments:
@@ -1028,13 +1061,14 @@ def tell_left_out(gh, batch, pulls, log):
                     "PATCH", f"issues/comments/{latest['id']}", {"body": body})[0] in (0, 200):
                 left[key] = seen
                 log.append(f"brought up to date what #{key} was told about being left out, for the batch #{number}")
-        elif say(gh, pr["number"], marker, body[len(marker) + 1:].rstrip("\n")):
+        elif announce(gh, batch, pr["number"], marker, body[len(marker) + 1:].rstrip("\n")):
             left[key], since = seen, since + 1
             relabel(gh, pr, add=WAITING)
             log.append(f"told #{key} that the batch #{number} leaves it out: now `{WAITING}`")
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
+    return True
 
 
 def told_left_out(comment, number):

@@ -1338,6 +1338,42 @@ class Robustness(unittest.TestCase):
         sync(gh)
         self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [1, 1, 1])
 
+    def test_a_round_whose_note_was_not_saved_tells_no_one_twice(self):
+        gh = self.built()
+        # The rate limit refuses the comment to #12, and every save of the note after the comment
+        # to #11: the note on GitHub does not show that #11 was told.
+        said = gh.say
+
+        def say(number, body, login=BOT):
+            if number == 11 and body.startswith("<!-- batch-queue-frozen"):
+                gh.fail("PATCH", r"issues/comments/\d+", 429)
+            return said(number, body, login)
+
+        gh.say = say
+        gh.fail("POST", r"issues/12/comments", 429)
+        with self.assertRaises(batch.Refused):
+            sync(gh)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [1, 0, 0])
+        stored = note(gh.said(1018)[0])
+        self.assertEqual((stored.get("telling"), stored.get("told")), (True, {}))
+        # The next run finds the round unfinished, and looks before it tells.
+        gh.say, gh.reads = said, []
+        sync(gh)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [1, 1, 1])
+        self.assertIn("issues/11/comments?per_page=100&page=1", gh.reads)
+        stored = note(gh.said(1018)[0])
+        self.assertEqual((stored.get("telling"), sorted(stored["told"])), (None, ["11", "12", "14"]))
+        # The round is over: the run after that reads no member's comments.
+        gh.reads = []
+        self.assertEqual(sync(gh), ["nothing to do"])
+        self.assertEqual([path for path in gh.reads if path.startswith(("issues/11/", "issues/12/", "issues/14/"))], [])
+
+    def test_a_round_that_was_finished_leaves_no_mark(self):
+        gh = self.built()
+        sync(gh)
+        self.assertNotIn("telling", note(gh.said(1018)[0]))
+        self.assertNotIn('"telling"', gh.said(1018)[0])
+
     def test_a_record_that_cannot_be_saved_stops_the_run_before_anything_is_said(self):
         gh = self.built()
         gh.fail("POST", r"issues/1018/comments", 403, times=5)
