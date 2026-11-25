@@ -112,7 +112,9 @@ of batches, what the branch shares with a batch it is stacked on belongs to that
 The workflow also compares the description with the branch, and says where they disagree in a
 comment of its own on the batch's pull request. It names:
 
-- pull requests listed as included that are closed;
+- pull requests listed as included that are closed, and which of them are still in the branch.
+  The changes of those land with the batch, but GitHub does not mark a closed pull request
+  merged;
 - pull requests listed as included whose head commit is not in the branch. That includes one
   pushed to after it was merged in but before the workflow first looked through the batch: the
   workflow cannot count its old commit as in the batch. Merge its new head in, or take it off the

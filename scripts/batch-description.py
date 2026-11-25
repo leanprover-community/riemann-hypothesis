@@ -146,8 +146,9 @@ def description_check(number, body, repo, note, pulls):
     `batch-queue-sync.py` reads them.
 
     It names what the description lists as included, under any heading but one that leaves pull
-    requests out, that is not in the branch: closed pull requests, and open ones whose head commit
-    is not there. It names what is in the branch that the description does not list at all, unless
+    requests out, that is closed, saying which of those are still in the branch and so land with
+    it although GitHub will not mark them merged; and what it lists as included that is open but
+    whose head commit is not in the branch. It names what is in the branch that the description does not list at all, unless
     the description lists nothing as included or it holds a batch itself; what is in the branch that
     it lists as left out; and what the branch reverts, which is named for that alone. What is in
     the branch is what the note records, at the commit it was found at, so a pull request pushed
@@ -158,7 +159,9 @@ def description_check(number, body, repo, note, pulls):
     included = {entry for entry, heading, _ in entries if heading and not leaves_out(heading)} - {number}
     anywhere = {entry for entry, _, _ in entries}
     out = {entry for entry, heading, _ in entries if leaves_out(heading)}
-    closed = sorted(entry for entry in included - found if entry not in pulls)
+    # A closed pull request stays in the note while its commit is in the branch.
+    closed = sorted(entry for entry in included if entry not in pulls)
+    landing = [entry for entry in closed if entry in found]
     missing = sorted(entry for entry in included - found if entry in pulls)
     undone = sorted((int(key), undo) for key, undo in note["reverted"].items() if int(key) in pulls)
     found -= {entry for entry, _ in undone}
@@ -173,6 +176,10 @@ def description_check(number, body, repo, note, pulls):
              "to date when either of them changes. See `verification/BATCHES.md`."]
     if closed:
         lines += ["", f"Listed as included, but closed: {links(closed)}."]
+        if landing:
+            lines[-1] += (f" Of these, {links(landing)} {'is' if len(landing) == 1 else 'are'} still in this branch, "
+                          "so their changes land with it, although GitHub does not mark a closed pull request merged. "
+                          "Rebuild the branch without any that should not land.")
     if missing:
         lines += ["", f"Listed as included, but their head commit is not in this branch: {links(missing)}. Merge the head "
                   "commit of each into the branch, or take it off the list. One whose earlier commit is in the branch, "

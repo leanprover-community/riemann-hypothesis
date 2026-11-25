@@ -1619,6 +1619,19 @@ class DescriptionCheck(unittest.TestCase):
         self.assertNotIn("head commit is not in this branch", check)
         self.assertIn("posted on the batch #1018 what its description and its branch disagree on", log)
 
+    def test_a_member_closed_without_being_merged_is_named_and_said_to_land(self):
+        gh = self.built(LISTED.replace("- #12 Prune", "- #15 Gone (@dan)\n- #12 Prune"))
+        gh.add_pull(15, "head15")
+        gh.close(15)
+        sync(gh)
+        gh.close(12)  # its commit is still in the branch, and the note still holds it
+        sync(gh)
+        self.assertIn("12", note(self.record(gh))["members"])
+        [check] = self.checks(gh)
+        self.assertIn("Listed as included, but closed: #12, #15. Of these, #12 is still in this branch, so their "
+                      "changes land with it, although GitHub does not mark a closed pull request merged.", check)
+        self.assertNotIn("head commit is not in this branch", check)
+
     def test_an_open_pull_request_listed_but_not_in_the_branch_is_named(self):
         gh = self.built(WITH_13)
         sync(gh)
