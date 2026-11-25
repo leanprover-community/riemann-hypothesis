@@ -376,6 +376,6 @@ tables, which may change shape or be shortened:
 - `left_out`: for each batch, by its number as a string, the numbers of the open pull requests its
   description leaves out.
 
-`--` inside the JSON is written `--`, so that nothing in it ends the comment. A JSON parser
+`--` inside the JSON is written `-\u002d`, so that nothing in it ends the comment. A JSON parser
 reads it back as `--`. In the unlikely case that the block alone would take up half of what
 GitHub allows, it is `{"truncated":true}` instead, and the description is cut off at the end.
