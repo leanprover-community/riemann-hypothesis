@@ -1,0 +1,64 @@
+name: batch status
+
+# Keeps the batch status issue up to date: the batches being built, outermost first as far as is
+# known, the pull requests each contains and leaves out, and the batch queue, split into those
+# ready, those pushed to since they were approved and those with conflicts. Its description starts
+# with `<!-- batch-status -->`, and with a hidden JSON block for agents and scripts to read instead
+# of the tables. `scripts/batch-status.py` has the details and `verification/BATCHES.md` ("The
+# status issue") the format.
+#
+# The script opens the issue, titled "Batch status", the first time. A maintainer pins it by
+# hand. Each run reads the open pull requests, the batches' descriptions and the batch queue sync's
+# notes on them through GraphQL, in a few requests, and the label colours in one REST request. It
+# writes the issue at most once, and only when what it says has changed.
+#
+# It runs every fifteen minutes, at minutes no other workflow's schedule uses, after every run of
+# the batch queue workflow and of the conflict labels workflow, which change what the issue says,
+# and when started by hand. A workflow that does not exist yet is simply never followed.
+# workflow_run and schedule run this file and the script from the default branch, and nothing
+# from a pull request is checked out or run.
+
+on:
+  schedule:
+    - cron: '3,18,33,48 * * * *'
+  workflow_run:
+    workflows: [batch queue, conflict labels]
+    types: [completed]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  status:
+    name: Bring the batch status issue up to date
+    # Forks with Actions turned on would otherwise run against themselves. Most batch queue runs
+    # are comments that start no job at all, and those runs are skipped here too.
+    if: >-
+      ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
+          github.event_name != 'workflow_run' ||
+          contains(fromJSON('["success", "failure"]'), github.event.workflow_run.conclusion)) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # One run at a time. A run still waiting when a newer one arrives can be dropped, and that
+    # loses nothing: each run reads everything from GitHub again.
+    concurrency:
+      group: batch-status
+      cancel-in-progress: false
+    # `issues: write` to open and edit the issue, `pull-requests: read` to read the pull requests
+    # and the comments on batches, `contents: read` for the checkout.
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    steps:
+      - name: Check out this workflow's own copy of the scripts
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        # No `ref`: the default is the commit GitHub runs this workflow from.
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Bring the issue up to date
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: python3 scripts/batch-status.py --repo "$REPO" --summary "$GITHUB_STEP_SUMMARY"

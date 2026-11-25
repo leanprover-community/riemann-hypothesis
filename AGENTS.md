@@ -32,6 +32,11 @@ To check that it compiles, bring your branch up to date with `main`, fetch the c
 `lake build`. Lake rebuilds the files you changed and every file that imports them, so this also
 catches a lemma you removed that is still used somewhere else. It must finish without errors.
 
+To see which batches are being built, what they contain and leave out, and what is in the batch
+queue, read the JSON block `<!-- batch-status {...} -->` at the top of the "Batch status" issue's
+description (see [verification/BATCHES.md](verification/BATCHES.md#the-status-issue)), not its
+tables.
+
 Keep each pull request to one change. Small pull requests are quicker to review and easier to
 combine into a batch than one large one.
 

@@ -131,3 +131,56 @@ A batch whose branch contains the head of another batch's pull request is built 
 The other batch is treated as one of the pull requests it contains. The workflow cannot yet tell
 a batch that is being built from one that waits for another to land: every open batch assembled
 by hand counts as being built.
+
+## The status issue
+
+The issue titled "Batch status" shows, in one place, which batches are being built and what each
+contains, which pull requests are in the batch queue, and what each batch leaves out. The batch
+status workflow (`.github/workflows/batch-status.yml`, which runs `scripts/batch-status.py`) keeps
+it up to date. It looks every 15 minutes and after each run of the batch queue and conflict labels
+workflows, and rewrites the description only when what it says changes. The time in its footer is
+when that last happened. The workflow opens the issue the first time, and a maintainer pins it by
+hand. It is found by `<!-- batch-status -->` at the start of its description, in an issue the
+workflow opened.
+
+- **Batches being built** are the open pull requests from a `batch/...` branch of this
+  repository that are labelled `building`. The batch labelled `latest batch` comes first, then the
+  others by number, newest first: that order is approximate. What a batch contains is read from
+  the batch queue workflow's record comment on its pull request, so it is what is in its branch,
+  not what its description says. A batch that contains another batch being built lists only the
+  pull requests it adds.
+- **The batch queue** is the open pull requests labelled `batch queue` that no batch being built
+  contains, in three groups. Each goes in the first that applies: *Pushed to since approval*
+  (`changed after frozen`), *Conflicts* (`batch-conflict` or `main-conflict`), and *Ready*
+  otherwise. `priority` pull requests come first in each group. `priority` and `awaiting-author`
+  show as badges and do not change the group.
+- **Left out** lists, for each batch, the open pull requests its description lists as left out
+  (see rule 7), by heading. The reasons are not repeated: they are in the batch's description and
+  in the comment on each pull request.
+
+Each section links to the same search on GitHub, which is live where the issue is a snapshot.
+When the description would be longer than GitHub allows, it is shortened, and says so at the top:
+first badges become plain label names, then titles are cut shorter, then tables become lists of
+numbers, and last the end is cut off.
+
+### The block for agents and scripts
+
+The description's second line is a hidden comment holding compact JSON. Read it rather than the
+tables, which may change shape or be shortened:
+
+```
+<!-- batch-status {"batches":[...],"queue":[...],"left_out":{...}} -->
+```
+
+- `batches`: outermost first, as far as is known. Each is `{"number", "branch", "head",
+  "latest", "members", "contains"}`: `head` is the full commit id of the batch's head, `latest`
+  whether it is labelled `latest batch`, `members` the numbers of every pull request it contains,
+  those in the batches it contains included, and `contains` the batches being built among them.
+- `queue`: in the order shown, each `{"number", "group", "priority"}`, where `group` is `"ready"`,
+  `"changed"` (pushed to since approval) or `"conflict"`.
+- `left_out`: for each batch, by its number as a string, the numbers of the open pull requests its
+  description leaves out.
+
+`--` inside the JSON is written `--`, so that nothing in it ends the comment. A JSON parser
+reads it back as `--`. In the unlikely case that the block alone would take up half of what
+GitHub allows, it is `{"truncated":true}` instead, and the description is cut off at the end.
