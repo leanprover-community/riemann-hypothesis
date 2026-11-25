@@ -1,20 +1,21 @@
 """Read the lines of a pull request's description that say which pull requests it depends on.
 
 `conflict-labels.py` and `dependency-ticks.py` load this file. A line declares dependencies when
-it starts with `depends on`, `depend on`, `depends upon`, `depend upon`, `blocked by`, `requires`
-or `needs`, in any letter case, optionally after any of `-`, `*`, `+` and `>` and a task box such
-as `[ ]` or `[x]`, with or without a `:` after the words. It declares every pull request of the
-repository that the rest of the line names: `#123`, `owner/name#123` or the pull request's
-address. A full stop or semicolon straight after a number ends the line, so that a sentence after
-it is not read. For example:
+it starts with `depends on`, `depend on`, `depends upon` or `depend upon`, in any letter case,
+optionally after any of `-`, `*`, `+` and `>` and a task box such as `[ ]` or `[x]`, with or
+without a `:` after the words. `blocked by`, `requires` and `needs` count too, but only on a line
+with a task box or a list marker (`-`, `*` or `+` and a space), since a sentence in the text often
+starts with them. A declaring line declares every pull request of the repository that the rest of
+it names: `#123`, `owner/name#123` or the pull request's address. A full stop or semicolon straight
+after a number ends the line, so that a sentence after it is not read. For example:
 
     - [ ] depends on: #123, #124
-    > blocked by https://github.com/owner/name/pull/125
+    > - blocked by https://github.com/owner/name/pull/125
 
 These are the forms that descriptions of dependent pull requests commonly use, beyond the
 `depends on` line that AGENTS.md asks for. Text that GitHub does not show as text is not read:
-HTML comments, fenced code blocks, and code spans such as `#123` in backticks. Pull requests of
-other repositories are left out.
+HTML comments, fenced code blocks, code indented by four spaces as above, and code spans such as
+`#123` in backticks. Pull requests of other repositories are left out.
 """
 from __future__ import annotations
 
@@ -22,9 +23,13 @@ from dataclasses import dataclass
 import re
 
 # The start of a declaring line, after code and comments have been blanked out (see `_visible`).
-# Group 1 is the character in the task box, if there is a box: ` `, `x`, `X` or nothing.
-DECLARES = re.compile(r"[ \t>*+-]*(?:\[([ xX]?)\][ \t]*)?"
-                      r"(?:depends?[ \t]+(?:up)?on|blocked[ \t]+by|requires|needs)\b[ \t]*:?", re.IGNORECASE)
+# `box` is the character in the task box, if there is a box: ` `, `x`, `X` or nothing. `depends`
+# is set for the `depends on` wordings, which count on any line.
+DECLARES = re.compile(r"(?P<marks>[ \t>*+-]*)(?:\[(?P<box>[ xX]?)\][ \t]*)?"
+                      r"(?:(?P<depends>depends?[ \t]+(?:up)?on)|blocked[ \t]+by|requires|needs)\b[ \t]*:?",
+                      re.IGNORECASE)
+# A list marker among the marks before the words: `-`, `*` or `+` followed by a space or a tab.
+LIST_MARKER = re.compile(r"[-*+][ \t]")
 # A full stop or semicolon straight after a number, followed by a space or the end of the line.
 SENTENCE = re.compile(r"(?<=\d)[.;](?:\s|$)")
 # A pull request named on such a line: `owner/name#123`, `#123` or the pull request's address.
@@ -35,6 +40,8 @@ REFERENCE = re.compile(r"(?<![\w/&.-])([\w.-]+/[\w.-]+)#(\d+)\b"
 # The opening line of a fenced code block, and the backtick runs that open and close code spans.
 FENCE = re.compile(r"[ \t]*(`{3,}|~{3,})(.*)")
 TICKS = re.compile(r"`+")
+# A line that starts a list item, after up to three spaces.
+LIST_ITEM = re.compile(r" {0,3}(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$)")
 
 
 @dataclass(frozen=True)
@@ -77,13 +84,27 @@ def _lines(text):
         start = end + 1
 
 
+def _indent(line):
+    """How far a line is indented, counting a tab as reaching the next multiple of four."""
+    width = 0
+    for char in line:
+        if char == " ":
+            width += 1
+        elif char == "\t":
+            width += 4 - width % 4
+        else:
+            break
+    return width
+
+
 def _visible(body):
     """`body` with everything GitHub does not show as plain text blanked out: HTML comments, fenced
-    code blocks and code spans. Each blanked character becomes a space, apart from line endings,
-    so every position in the result is the same as in `body`.
+    code blocks, code blocks indented by four spaces and code spans. Each blanked character becomes
+    a space, apart from line endings, so every position in the result is the same as in `body`.
 
     A comment or code block that is never closed runs to the end, as on GitHub. Code spans are read
-    within one line.
+    within one line. An indented code block starts after a blank line, or at the start, and not
+    within a list, where indenting continues a list item instead.
     """
     out = list(body)
 
@@ -93,8 +114,24 @@ def _visible(body):
                 out[at] = " "
 
     fence, comment = None, False
+    # Whether the line before was blank, or there was none; whether it was in an indented code
+    # block; and whether a list item has started and not ended.
+    after_blank, indented, in_list = True, False, False
     for start, end in _lines(body):
         line = body[start:end]
+        if not fence and not comment:
+            if not line.strip():
+                after_blank = True
+                continue
+            if _indent(line) >= 4 and (indented or (after_blank and not in_list)):
+                indented, after_blank = True, False
+                blank(start, end)
+                continue
+            if LIST_ITEM.match(line):
+                in_list = True
+            elif after_blank and _indent(line) < 2:
+                in_list = False
+            indented, after_blank = False, False
         if fence:
             blank(start, end)
             close = re.fullmatch(r"[ \t]*(%s{%d,})[ \t]*" % (re.escape(fence[0]), len(fence)), line)
@@ -151,6 +188,9 @@ def declarations(body, repo):
         match = DECLARES.match(shown, start, end)
         if not match:
             continue
+        box = match.group("box")
+        if not match.group("depends") and box is None and not LIST_MARKER.search(match.group("marks")):
+            continue
         rest = shown[match.end():end]
         stop = SENTENCE.search(rest)
         if stop:
@@ -162,8 +202,7 @@ def declarations(body, repo):
                 value = int(number or bare or url_number)
                 if value not in numbers:
                     numbers.append(value)
-        box = match.group(1)
-        found.append(Declaration(index, start, end, box, match.start(1) if box is not None else None,
+        found.append(Declaration(index, start, end, box, match.start("box") if box is not None else None,
                                  tuple(numbers)))
     return found
 
