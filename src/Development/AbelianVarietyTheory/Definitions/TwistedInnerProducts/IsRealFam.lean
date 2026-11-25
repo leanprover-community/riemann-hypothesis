@@ -49,7 +49,7 @@ open scoped NNReal
 
 namespace GlobalTheory.RowVal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar borelKw borelSpaceKw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable def NIter {ι : Type} [DecidableEq ι] {H : ι → Type} [∀ i, Group (H i)] [∀ i, MeasurableSpace (H i)] {R : ∀ i, Subgroup (H i)}
     (ρ : ∀ i, Measure (R i)) (μ : ∀ i, Measure (H i)) (q : (∀ i, H i) → ℂ) : List ι → (∀ i, H i) → ℂ → Prop

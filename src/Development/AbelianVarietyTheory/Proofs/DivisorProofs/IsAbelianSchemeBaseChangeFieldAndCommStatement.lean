@@ -61,11 +61,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Published.AbVarRed
 
-theorem isAbelianScheme_baseChange_field_and_comm : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A → IsAbelianScheme ((Over.pullback (spMap (algebraMap K L))).obj A) ∧ IsCommMonObj ((Over.pullback (spMap (algebraMap K L))).obj A) := by
-  intro K L _ _ _ A _ _ hA
-  have hB := GlobalTheory.isAbelianScheme_pullback_obj (spMap (algebraMap K L)) A hA
-  exact ⟨hB, hB.comm⟩
-
 end GlobalTheory.Published.AbVarRed
 end -- clump:auto
 end -- clump:auto
@@ -82,8 +77,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.HTLat GlobalTheory.Published GlobalTheory.Published.AbVarRed IsLocalRing
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.isAbelianScheme_and_comm_baseChange_field : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A → IsAbelianScheme ((Over.pullback (spMap (algebraMap K L))).obj A) ∧ IsCommMonObj ((Over.pullback (spMap (algebraMap K L))).obj A) := by
-  first | exact @GlobalTheory.Published.AbVarRed.isAbelianScheme_baseChange_field_and_comm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAbelianSchemeBaseChangeFieldAndCommStatement =====

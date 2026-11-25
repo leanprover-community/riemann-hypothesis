@@ -102,12 +102,6 @@ section Elementary
 
 variable {A : Type} [CommRing A] (π : A)
 
-theorem smodEq_span_iff {M : Type} [AddCommGroup M] [Module A M] (n : ℕ) (x y : M) :
-    x ≡ y [SMOD (Ideal.span {π} ^ n • ⊤ : Submodule A M)] ↔ ∃ z : M, π ^ n • z = x - y := by
-  rw [SModEq.sub_mem, Ideal.span_singleton_pow, Submodule.ideal_span_singleton_smul,
-    Submodule.mem_smul_pointwise_iff_exists]
-  simp
-
 theorem isAdicComplete_span_iff {M : Type} [AddCommGroup M] [Module A M] :
     IsAdicComplete (Ideal.span {π}) M ↔
       (∀ x : M, (∀ n : ℕ, ∃ z : M, π ^ n • z = x) → x = 0) ∧

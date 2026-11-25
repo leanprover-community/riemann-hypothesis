@@ -165,14 +165,14 @@ private theorem exceptionalVar_of_mem (hU : IsAffineOpen U) (Z : X.IdealSheafDat
     (cc : EtaleChart p U m) (SS : Finset (Fin m)) (ss : Fin m) (j : Fin m)
     (h : j ∈ SS.erase ss) :
     exceptionalVar hU Z cc SS ss j = MvPolynomial.X ⟨j, h⟩ :=
-  dite_eq_left h
+  dif_pos h
 
 private theorem exceptionalVar_of_not_mem (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (cc : EtaleChart p U m) (SS : Finset (Fin m)) (ss : Fin m) (j : Fin m)
     (h : j ∉ SS.erase ss) :
     exceptionalVar hU Z cc SS ss j =
       MvPolynomial.C ((Ideal.Quotient.mk (Z.ideal ⟨U, hU⟩)) (cc.coord j)) :=
-  dite_eq_right h
+  dif_neg h
 
 private def exceptionalEvalHom (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (cc : EtaleChart p U m) (SS : Finset (Fin m)) (ss : Fin m) :
@@ -206,13 +206,13 @@ private theorem exceptionalEval_coordRelation (hU : IsAffineOpen U) (Z : X.Ideal
   have hsnot : s ∉ S.erase s := fun hc => (Finset.mem_erase.mp hc).1 rfl
   rw [hpr]
   by_cases h : i ∈ S ∧ i ≠ s
-  · rw [ite_eq_left h, map_sub, map_mul, exceptionalEval_X, exceptionalEval_X, exceptionalEval_C,
+  · rw [if_pos h, map_sub, map_mul, exceptionalEval_X, exceptionalEval_X, exceptionalEval_C,
       exceptionalVar_of_not_mem hU Z c S s s hsnot,
       mk_coord_eq_zero_of_mem hU Z hZ s hs, mk_coord_eq_zero_of_mem hU Z hZ i h.1, map_zero,
       mul_zero, sub_zero]
   · have hnot : i ∉ S.erase s := fun hc =>
       h ⟨(Finset.mem_erase.mp hc).2, (Finset.mem_erase.mp hc).1⟩
-    rw [ite_eq_right h, map_sub, exceptionalEval_X, exceptionalEval_C,
+    rw [if_neg h, map_sub, exceptionalEval_X, exceptionalEval_C,
       exceptionalVar_of_not_mem hU Z c S s i hnot, sub_self]
 
 private theorem exceptionalEval_eq_zero_of_mem_span_coordRelation (hU : IsAffineOpen U) (Z : X.IdealSheafData)
@@ -221,8 +221,10 @@ private theorem exceptionalEval_eq_zero_of_mem_span_coordRelation (hU : IsAffine
   have hsub : Ideal.span (Set.range B.coordRelation) ≤ RingHom.ker (exceptionalEvalHom hU Z c S s) := by
     rw [Ideal.span_le]
     rintro x ⟨i, rfl⟩
-    simpa only [SetLike.mem_coe, RingHom.mem_ker] using exceptionalEval_coordRelation hU Z hZ B hs i
-  exact fun a ha => RingHom.mem_ker.mp (hsub ha)
+    simp only [SetLike.mem_coe, RingHom.mem_ker]
+    exact exceptionalEval_coordRelation hU Z hZ B hs i
+  intro a ha
+  exact RingHom.mem_ker.mp (hsub ha)
 
 private def exceptionalHomOfChart (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (hZ : restrictIdeal Z U = c.coordIdeal S) (B : BlowupChart π c S s) (hs : s ∈ S)
@@ -471,10 +473,13 @@ theorem totalDegree_zero {T : Type*} : totalDegree (0 : T →₀ ℕ) = 0 := by
   simp [totalDegree]
 
 theorem totalDegree_add {T : Type*} (f g : T →₀ ℕ) : totalDegree (f + g) = totalDegree f + totalDegree g := by
+  show (f + g).sum (fun _ n => n) = f.sum (fun _ n => n) + g.sum (fun _ n => n)
   exact Finsupp.sum_add_index' (fun _ => rfl) (fun _ _ _ => rfl)
 
 theorem totalDegree_single {T : Type*} [DecidableEq T] (t : T) (n : ℕ) :
-    totalDegree (Finsupp.single t n) = n := Finsupp.sum_single_index rfl
+    totalDegree (Finsupp.single t n) = n := by
+  show (Finsupp.single t n).sum (fun _ m => m) = n
+  exact Finsupp.sum_single_index rfl
 
 def powProd {A : Type*} [CommRing A] {T : Type*} (x : T → A) (f : T →₀ ℕ) : A :=
   f.prod fun t n => x t ^ n
@@ -491,6 +496,7 @@ theorem powProd_add {A : Type*} [CommRing A] {T : Type*} (x : T → A) (f g : T 
 
 theorem powProd_single {A : Type*} [CommRing A] {T : Type*} [DecidableEq T] (x : T → A)
     (t : T) (n : ℕ) : powProd x (Finsupp.single t n) = x t ^ n := by
+  show (Finsupp.single t n).prod (fun t m => x t ^ m) = x t ^ n
   exact Finsupp.prod_single_index (pow_zero (x t))
 
 theorem map_powProd {A B : Type*} [CommRing A] [CommRing B] {T : Type*} (φ : A →+* B)
@@ -612,7 +618,8 @@ private theorem mul_coord_mem_chartMonomialIdeal_succ {A : Type*} [CommRing A] {
       exact chartMonomial_mul_coord_self_mem_chartMonomialIdeal_succ x S s c f hf
     · exact chartMonomial_mul_coord_mem_chartMonomialIdeal_succ x S s c f hf ⟨i, Finset.mem_erase.mpr ⟨his, hi⟩⟩
   have h := key hr
-  rwa [Submodule.mem_comap, LinearMap.mulRight_apply] at h
+  rw [Submodule.mem_comap, LinearMap.mulRight_apply] at h
+  exact h
 
 private theorem mul_mem_chartMonomialIdeal_succ {A : Type*} [CommRing A] {m : ℕ} (x : Fin m → A)
     (S : Finset (Fin m)) (s : Fin m) (c : ℕ) (r : A) (hr : r ∈ chartMonomialIdeal x S s c)
@@ -627,10 +634,11 @@ private theorem mul_mem_chartMonomialIdeal_succ {A : Type*} [CommRing A] {m : �
     exact mul_coord_mem_chartMonomialIdeal_succ x S s c i (Finset.mem_coe.mp hi) r hr
   have h := key hy
   rw [Submodule.mem_comap, LinearMap.mulRight_apply] at h
-  rwa [mul_comm r y]
+  rw [mul_comm r y]
+  exact h
 
 theorem pow_span_image_le_chartMonomialIdeal {A : Type*} [CommRing A] {m : ℕ} (x : Fin m → A)
-    (S : Finset (Fin m)) (s : Fin m) (_hs : s ∈ S) (c : ℕ) :
+    (S : Finset (Fin m)) (s : Fin m) (c : ℕ) :
     Ideal.span (x '' (S : Set (Fin m))) ^ c ≤ chartMonomialIdeal x S s c := by
   induction c with
   | zero =>
@@ -642,34 +650,17 @@ theorem pow_span_image_le_chartMonomialIdeal {A : Type*} [CommRing A] {m : ℕ} 
   | succ c ih =>
       rw [pow_succ]
       refine Ideal.mul_le.mpr ?_
-      exact fun r hr y hy => mul_mem_chartMonomialIdeal_succ x S s c r (ih hr) y hy
-
-private theorem map_C_eq_ker_map_quotientMk {R : Type*} [CommRing R] (P : Ideal R)
-    (σ : Type*) :
-    Ideal.map (MvPolynomial.C : R →+* MvPolynomial σ R) P =
-      RingHom.ker (MvPolynomial.map (Ideal.Quotient.mk P) :
-        MvPolynomial σ R →+* MvPolynomial σ (R ⧸ P)) := by
-  rw [MvPolynomial.ker_map, Ideal.mk_ker]
+      intro r hr y hy
+      exact mul_mem_chartMonomialIdeal_succ x S s c r (ih hr) y hy
 
 theorem isPrime_map_C {R : Type*} [CommRing R] (P : Ideal R) [P.IsPrime] (σ : Type*) :
     (Ideal.map (MvPolynomial.C : R →+* MvPolynomial σ R) P).IsPrime := by
-  have hdom : IsDomain (R ⧸ P) := inferInstance
-  have hdom2 : IsDomain (MvPolynomial σ (R ⧸ P)) := inferInstance
-  rw [map_C_eq_ker_map_quotientMk P σ]
-  refine ⟨?_, ?_⟩
-  · rw [Ideal.ne_top_iff_one]
-    intro hmem
-    have h1 : (MvPolynomial.map (Ideal.Quotient.mk P) :
-        MvPolynomial σ R →+* MvPolynomial σ (R ⧸ P)) 1 = 0 := RingHom.mem_ker.mp hmem
-    rw [map_one] at h1
-    have h2 := congrArg (fun f : MvPolynomial σ (R ⧸ P) => MvPolynomial.constantCoeff f) h1
-    simp only [map_one, map_zero] at h2
-    exact one_ne_zero h2
-  · intro x y hxy
-    rw [RingHom.mem_ker, map_mul] at hxy
-    rcases mul_eq_zero.mp hxy with h | h
-    · exact Or.inl (RingHom.mem_ker.mpr h)
-    · exact Or.inr (RingHom.mem_ker.mpr h)
+  have hker : Ideal.map (MvPolynomial.C : R →+* MvPolynomial σ R) P =
+      RingHom.ker (MvPolynomial.map (Ideal.Quotient.mk P) :
+        MvPolynomial σ R →+* MvPolynomial σ (R ⧸ P)) := by
+    rw [MvPolynomial.ker_map, Ideal.mk_ker]
+  rw [hker]
+  exact RingHom.ker_isPrime _
 
 private theorem C_coeff_mem_of_minimal_prime {R : Type*} [CommRing R] {σ : Type*}
     (Pp : Ideal (MvPolynomial σ R)) [Pp.IsPrime]
@@ -709,19 +700,10 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
     (hmap : Ideal.map φ J ≤ Ideal.span {y s ^ c} * J') :
     J ≤ Ideal.comap φ P ^ (c + 1) := by
   classical
-  obtain ⟨Ψ, hΨsurj, hΨ⟩ :
-      ∃ Ψ : B →+* MvPolynomial ↥(S.erase s) (A ⧸ Ideal.span (x '' (S : Set (Fin m)))),
-        Function.Surjective Ψ ∧
-          ∀ b : B, Ψ b = e (Ideal.Quotient.mk (Ideal.span {y s}) b) := by
-    refine ⟨e.toRingHom.comp (Ideal.Quotient.mk (Ideal.span {y s})), ?_, ?_⟩
-    · intro q
-      obtain ⟨z, hz⟩ := e.surjective q
-      obtain ⟨b, hb⟩ := Ideal.Quotient.mk_surjective z
-      refine ⟨b, ?_⟩
-      show e (Ideal.Quotient.mk (Ideal.span {y s}) b) = q
-      rw [hb, hz]
-    · intro b
-      simp
+  let Ψ : B →+* MvPolynomial ↥(S.erase s) (A ⧸ Ideal.span (x '' (S : Set (Fin m)))) :=
+    e.toRingHom.comp (Ideal.Quotient.mk (Ideal.span {y s}))
+  have hΨsurj : Function.Surjective Ψ := e.surjective.comp Ideal.Quotient.mk_surjective
+  have hΨ : ∀ b : B, Ψ b = e (Ideal.Quotient.mk (Ideal.span {y s}) b) := fun _ => rfl
   have hΨ0 : Ψ (y s) = 0 := by
     rw [hΨ, Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton_self (y s)), map_zero]
   have hΨC : ∀ a : A, Ψ (φ a)
@@ -746,35 +728,9 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
     exact Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hyP)
       (Ideal.Quotient.eq_zero_iff_mem.mp hb1)
   have hcomapP : Ideal.comap Ψ (Ideal.map Ψ P) ≤ P := by
-    intro b hb
-    obtain ⟨p0, hp0P, hp0b⟩ :=
-      (Ideal.mem_map_iff_of_surjective Ψ hΨsurj).mp (Ideal.mem_comap.mp hb)
-    have hkb : b - p0 ∈ RingHom.ker Ψ := by
-      rw [RingHom.mem_ker, map_sub, hp0b, sub_self]
-    have hsum2 : (b - p0) + p0 ∈ P := P.add_mem (hkerP hkb) hp0P
-    simpa using hsum2
-  have hPprime : (Ideal.map Ψ P).IsPrime := by
-    constructor
-    · intro htop
-      have h1 : (1 : MvPolynomial ↥(S.erase s) (A ⧸ Ideal.span (x '' (S : Set (Fin m)))))
-          ∈ Ideal.map Ψ P := by
-        rw [htop]
-        exact Submodule.mem_top
-      have h2 : (1 : B) ∈ Ideal.comap Ψ (Ideal.map Ψ P) := by
-        rwa [Ideal.mem_comap, map_one]
-      have hPtop : P = ⊤ := by
-        rw [Ideal.eq_top_iff_one]
-        exact hcomapP h2
-      exact Ideal.IsPrime.ne_top ‹P.IsPrime› hPtop
-    · intro p q hpq
-      obtain ⟨b, rfl⟩ := hΨsurj p
-      obtain ⟨b', rfl⟩ := hΨsurj q
-      have hb : b * b' ∈ P := by
-        apply hcomapP
-        rwa [Ideal.mem_comap, map_mul]
-      rcases Ideal.IsPrime.mem_or_mem ‹P.IsPrime› hb with h | h
-      · exact Or.inl (Ideal.mem_map_of_mem Ψ h)
-      · exact Or.inr (Ideal.mem_map_of_mem Ψ h)
+    rw [Ideal.comap_map_of_surjective' Ψ hΨsurj]
+    exact sup_le le_rfl hkerP
+  have hPprime : (Ideal.map Ψ P).IsPrime := Ideal.map_isPrime_of_surjective hΨsurj hkerP
   have hmin : ∀ K : Ideal (MvPolynomial ↥(S.erase s)
       (A ⧸ Ideal.span (x '' (S : Set (Fin m))))),
       K.IsPrime → K ≤ Ideal.map Ψ P → Ideal.map Ψ P ≤ K := by
@@ -790,7 +746,8 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
     intro i hi
     rw [Ideal.mem_comap]
     by_cases h : i = s
-    · rwa [h, hφs]
+    · rw [h, hφs]
+      exact hyP
     · rw [hφ i hi h]
       exact Ideal.mul_mem_left _ _ hyP
   have hmonQ : ∀ f : ↥(S.erase s) →₀ ℕ, totalDegree f ≤ c →
@@ -802,16 +759,18 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
       powProd_mem_pow_totalDegree (fun t : ↥(S.erase s) => x t.1) (Ideal.comap φ P)
         (fun t => hxQ t.1 (Finset.mem_of_mem_erase t.2)) f
     have h3 := Ideal.mul_mem_mul h1 h2
-    rwa [← pow_add, Nat.sub_add_cancel hf] at h3
+    rw [← pow_add, Nat.sub_add_cancel hf] at h3
+    exact h3
   intro a ha
   have haM : a ∈ chartMonomialIdeal x S s c :=
-    pow_span_image_le_chartMonomialIdeal x S s hs c (hJ ha)
+    pow_span_image_le_chartMonomialIdeal x S s c (hJ ha)
   have haspan : a ∈ Submodule.span A
       {b : A | ∃ f : ↥(S.erase s) →₀ ℕ, totalDegree f ≤ c ∧ b = chartMonomial x S s c f} := haM
   obtain ⟨cf, hcfsupp, hcfsum⟩ := Submodule.mem_span_set.mp haspan
   have hex : ∀ g ∈ cf.support, ∃ f : ↥(S.erase s) →₀ ℕ,
       totalDegree f ≤ c ∧ g = chartMonomial x S s c f := by
-    exact fun g hg => hcfsupp (Finset.mem_coe.mpr hg)
+    intro g hg
+    exact hcfsupp (Finset.mem_coe.mpr hg)
   choose! fsel hfdeg hfeq using hex
   have hinj : ∀ g ∈ cf.support, ∀ g' ∈ cf.support, fsel g = fsel g' → g = g' := by
     intro g hg g' hg' hgg
@@ -866,7 +825,7 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
           (Ideal.Quotient.mk (Ideal.span (x '' (S : Set (Fin m)))) (cf g))) (fsel g₀) = 0 := by
       intro g hg hne
       have hne' : fsel g ≠ fsel g₀ := fun hh => hne (hinj g hg g₀ hg₀ hh)
-      rw [MvPolynomial.coeff_monomial, ite_eq_right hne']
+      rw [MvPolynomial.coeff_monomial, if_neg hne']
     rw [MvPolynomial.coeff_sum, Finset.sum_eq_single_of_mem g₀ hg₀ hstep,
       MvPolynomial.coeff_monomial]
     simp
@@ -879,7 +838,8 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
     have h2 := C_coeff_mem_of_minimal_prime (Ideal.map Ψ P) hmin h1 (fsel g)
     rw [hcoeff g hg] at h2
     have h3 : Ψ (φ (cf g)) ∈ Ideal.map Ψ P := by
-      rwa [hΨC]
+      rw [hΨC]
+      exact h2
     exact Ideal.mem_comap.mpr (hcomapP (Ideal.mem_comap.mpr h3))
   rw [ha']
   refine Ideal.sum_mem _ ?_
@@ -903,7 +863,8 @@ private theorem mem_support_iff_ideal_le_primeIdealOf {X : Scheme.{u}} (I : X.Id
     {U : X.Opens} (hU : IsAffineOpen U) (x : ↥U) :
     (x : X) ∈ I.support ↔ I.ideal ⟨U, hU⟩ ≤ (hU.primeIdealOf x).asIdeal := by
   constructor
-  · exact fun hx => ideal_le_primeIdealOf I hU x.2 hx
+  · intro hx
+    exact ideal_le_primeIdealOf I hU x.2 hx
   · intro hx
     rw [mem_support_iff_stalkIdeal_le_maximalIdeal, stalkIdeal_eq_map_germ I (x : X) ⟨U, hU⟩ x.2]
     exact le_trans (Ideal.map_mono hx) (map_germ_primeIdealOf_le_maximalIdeal hU x)
@@ -925,7 +886,8 @@ private theorem exists_primeIdealOf_eq {X : Scheme.{u}} {U : X.Opens}
     (hU : IsAffineOpen U) (q : PrimeSpectrum Γ(X, U)) :
     ∃ y : ↥U, hU.primeIdealOf y = q := by
   refine ⟨hU.isoSpec.inv.base q, ?_⟩
-  exact congrArg (fun f : Spec Γ(X, U) ⟶ Spec Γ(X, U) => f.base q) hU.isoSpec.inv_hom_id
+  have h0 := congrArg (fun f : Spec Γ(X, U) ⟶ Spec Γ(X, U) => f.base q) hU.isoSpec.inv_hom_id
+  exact h0
 
 theorem controlledTransform_not_subset_support {k : Type u} [Field k] [CharZero k]
     {X X₁ : Scheme.{u}} (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]
@@ -957,7 +919,8 @@ theorem controlledTransform_not_subset_support {k : Type u} [Field k] [CharZero 
   have hzZ : π.base ξ ∈ Z.support := by
     have h1 : ξ ∈ (Z.comap π).support := by
       rw [← Blowup.exceptionalIdeal_eq_comap π Z]; exact hξE
-    rwa [AlgebraicGeometry.Scheme.IdealSheafData.support_comap] at h1
+    rw [AlgebraicGeometry.Scheme.IdealSheafData.support_comap] at h1
+    exact h1
   obtain ⟨U, hU, m, cc, S, hzU, hspan⟩ :=
     exists_chart_ideal_eq_span_coord p Z (π.base ξ) hzZ
   have hZU : restrictIdeal Z U = cc.coordIdeal S :=
@@ -980,7 +943,8 @@ theorem controlledTransform_not_subset_support {k : Type u} [Field k] [CharZero 
     (mem_support_iff_ideal_le_primeIdealOf J' hV ⟨ξ, hξV⟩).mp hξJ
   have hφs : φ (cc.coord s) = B.chart.coord s := B.appLE_coord_self
   have hφ : ∀ i ∈ S, i ≠ s → φ (cc.coord i) = B.chart.coord i * B.chart.coord s := by
-    exact fun i hi his => B.appLE_coord_of_mem i hi his
+    intro i hi his
+    exact B.appLE_coord_of_mem i hi his
   have hy : B.chart.coord s ∈ nonZeroDivisors Γ(X₁, B.domain) :=
     coord_mem_nonZeroDivisors hV B.chart s
   set e0 := exceptionalQuotientEquivOfIsBlowup hU hπ hZU hs with he0
@@ -1054,7 +1018,8 @@ theorem controlledTransform_not_subset_support {k : Type u} [Field k] [CharZero 
     exact le_of_eq (hord x hx).symm
   have hJpow : J.ideal ⟨U, hU⟩ ≤ Ideal.span (cc.coord '' (S : Set (Fin m))) ^ c := by
     have h := ideal_le_pow_of_restrictIdeal_eq_coordIdeal p hU cc Z S hZU c J hcosupp
-    rwa [hspan] at h
+    rw [hspan] at h
+    exact h
   have hmap : Ideal.map φ (J.ideal ⟨U, hU⟩)
       ≤ Ideal.span {B.chart.coord s ^ c} * J'.ideal ⟨B.domain, hV⟩ := by
     have h1 : (J.comap π).ideal ⟨B.domain, hV⟩ = Ideal.map φ (J.ideal ⟨U, hU⟩) :=
@@ -1081,12 +1046,14 @@ theorem controlledTransform_not_subset_support {k : Type u} [Field k] [CharZero 
     rw [Ideal.mem_comap]
     by_cases his : i = s
     · subst his
-      rwa [hφs]
+      rw [hφs]
+      exact hyP
     · rw [hφ i hiS his]
       exact Ideal.mul_mem_left _ _ hyP
   have horder : ((c + 1 : ℕ) : ℕ∞) ≤ orderAt J (pt' : X) := by
     refine le_orderAt_of_ideal_le_pow J hU pt' (c + 1) ?_
-    rwa [hpt'q]
+    rw [hpt'q]
+    exact hle
   rw [hord _ hz'Z] at horder
   have hcc : c + 1 ≤ c := by exact_mod_cast horder
   omega

@@ -282,7 +282,7 @@ theorem sigZero (hAll : ∀ m : ℕ, S7.PsiAllStatement m) : Lap.SigZeroStatemen
     rw [hz, norm_zero] at h1
     exact zero_ne_one h1
   have hc1 : ((‖uniformisationL2 ε Ψ T.w T.w‖ ^ 2 : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (pow_ne_zero 2 (norm_ne_zero_iff.2 (datumEmbedding_highest_ne_zero hP hv₀)))
+    Complex.ofReal_ne_zero.2 (pow_ne_zero 2 (norm_ne_zero_iff.2 (datumEmbedding_highest_ne_zero hgap hP hv₀)))
   obtain ⟨C, hC⟩ := dec_gN_sigLam hgap hP hv₀ hq1 hdec v₁ v₁
   refine ⟨fun μG hμG => fdegB_of_isDS hPc hDS μG hμG,
     ⟨h / (8 * Real.sqrt (2 * (S7.q0 ε : ℝ))), C, hthr, fun g hg => ?_⟩,

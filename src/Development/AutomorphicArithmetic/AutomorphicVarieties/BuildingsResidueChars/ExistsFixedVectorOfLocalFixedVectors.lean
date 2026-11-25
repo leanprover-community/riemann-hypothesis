@@ -90,7 +90,7 @@ theorem UpperTheory.exists_fixed_vector_in_locally_stable_subspace :
           exact hn ⟨v, h, hv⟩
         rw [hv', map_zero]
         exact Submodule.zero_mem _)
-      (fun z hz _ _ => by rw [(Submodule.mem_bot ℂ).1 hz, map_zero]) ⟨φ, hφ⟩
+      ⟨φ, hφ⟩
       (fun k hk => Subtype.ext (hφK k.1 hk)) (by rw [htop]; exact Submodule.mem_top)
     exact hφ0 (congrArg Subtype.val ((Submodule.mem_bot ℂ).1 key))
   obtain ⟨v, hvW, hv0, hv⟩ := UpperTheory.V.Af.GlobalFixedVectors.sub_fixed τ.ρ hirr ρ

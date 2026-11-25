@@ -2669,7 +2669,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 theorem univFrameL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) : UnivFrameL D HW := by
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) : UnivFrameL D HW := by
   intro l _ K LL hG hA h5 _
   obtain ⟨⟨hdom, hdvr, hfrac⟩, -⟩ := Formalism.MainNotions.N.T2.litGoodO l LL
   exact UnivF.univFrame_of _ (hAdm.2.2.2 l K LL hG hA h5).1 (h9 l K 1 LL hG) (hH l K 1 LL hG)
@@ -2688,7 +2688,7 @@ theorem univLiftL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
 
 theorem universal_general_of_sections (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hSec : UnivSecL D HW)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hSec : UnivSecL D HW)
     (hGen : UnivGenL D HW) : UniversalComponentCaseA D HW F Cm :=
   universal_general_of_frame_sections D HW F Cm hAdm h9 (univFrameL_of D HW F Cm hAdm h9 hH hDR) hSec hGen
     (univLiftL_of D HW F Cm hAdm h9)
@@ -2705,7 +2705,7 @@ def SecRestL (D : D7) (HW : HWOf D.loc) : Prop :=
 
 theorem univSecL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hRest : SecRestL D HW) : UnivSecL D HW := by
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hRest : SecRestL D HW) : UnivSecL D HW := by
   intro l _ K LL hG hA h5 _
   obtain ⟨⟨hdom, hdvr, hfrac⟩, -⟩ := Formalism.MainNotions.N.T2.litGoodO l LL
   have hR := ring_condition_uniformizer_polynomial D HW F h9 l K LL hA
@@ -2717,7 +2717,7 @@ theorem univSecL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
 
 theorem universal_general_of_restriction (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hRest : SecRestL D HW)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hRest : SecRestL D HW)
     (hGen : UnivGenL D HW) : UniversalComponentCaseA D HW F Cm :=
   universal_general_of_sections D HW F Cm hAdm h9 hH hDR (univSecL_of D HW F Cm hAdm h9 hH hRest) hGen
 
@@ -2732,7 +2732,7 @@ def KillWinL (D : D7) (HW : HWOf D.loc) : Prop :=
 
 theorem secRestL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hKW : KillWinL D HW) : SecRestL D HW := by
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hKW : KillWinL D HW) : SecRestL D HW := by
   intro l _ K LL hG hA h5 _
   obtain ⟨⟨hdom, hdvr, hfrac⟩, -⟩ := Formalism.MainNotions.N.T2.litGoodO l LL
   have hR := ring_condition_uniformizer_polynomial D HW F h9 l K LL hA
@@ -2741,7 +2741,7 @@ theorem secRestL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
 
 theorem universal_general_of_window (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hKW : KillWinL D HW)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hKW : KillWinL D HW)
     (hGen : UnivGenL D HW) : UniversalComponentCaseA D HW F Cm :=
   universal_general_of_restriction D HW F Cm hAdm h9 hH hDR (secRestL_of D HW F Cm hAdm h9 hH hKW) hGen
 

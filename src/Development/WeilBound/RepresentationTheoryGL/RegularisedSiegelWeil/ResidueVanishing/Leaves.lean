@@ -131,7 +131,6 @@ def K4 : Prop :=
 
 section Target
 
-open scoped ComplexConjugate Matrix NNReal
 open IsDedekindDomain NumberField GlobalTheory.Cusp
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta)

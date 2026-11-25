@@ -52,8 +52,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitFlip GlobalTheory.SplitWeil
 
-attribute [local instance] borelKw borelSpaceKw
-
 namespace GlobalTheory.RowVal
 
 theorem givenLevel_inner {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (t : T) (w : Pl D.host.E) :

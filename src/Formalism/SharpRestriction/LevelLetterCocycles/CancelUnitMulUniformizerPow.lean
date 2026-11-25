@@ -683,7 +683,7 @@ theorem isUnit_pred (l : ℕ) [hl : Fact l.Prime] (LL : FinExt l) : IsUnit ((l -
   simpa using h3.map (algebraMap ℤ_[l] ↥(OL LL))
 
 theorem cutDataL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (hAdm : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW)
+    (hAdm : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F)
     (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW) (hX : Split.DDExactL D HW) :
     Split.CutDataL D HW := by
   obtain ⟨-, h9, -, hJ, -, hF1, hRel, hArc⟩ := hAdm
@@ -705,7 +705,7 @@ namespace Formalism.MainNotions.UnusedSlot80
 open Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem splitting_of_lifting_chain (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW)
+    (Cm : CmpOf D.loc D.locA HW F) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F)
     (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW) (hX : Split.DDExactL D HW)
     (hS : Split.SplitShapeL D HW) : SplittingTheoremArcLifting D HW F Cm := by
   unfold SplittingTheoremArcLifting
@@ -714,7 +714,7 @@ theorem splitting_of_lifting_chain (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D
 
 theorem splitting_general_of_exactness (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW)
     (hX : Split.DDExactL D HW) (hS : Split.SplitShapeL D HW) : SplittingArcLifting D HW F Cm := by
   exact splitting_of_lifting_chain D HW F Cm h6 hH hTr hWX hX hS hAdm
 

@@ -366,7 +366,7 @@ theorem hasSmoothCoordCodim_add_of_smooth_graphMorphism (hsm : AffineSpaceIsSmoo
     rw [hLfac]; exact hGsmooth
   set P : (projLeft k M q ⁻¹ᵁ U₀).toScheme ⟶ affineSpaceIndexedBy k (ULift.{u, 0} (Fin c ⊕ Fin q)) :=
     prodMapOnPreimage k M q c U₀ q₀ with hPdef
-  have hPsmooth : Smooth P := smooth_prodMapOnPreimage k M q c U₀ q₀ hq₀o
+  have hPsmooth : Smooth P := smooth_prodMapOnPreimage hsm k M q c U₀ q₀ hq₀o
   set chart : U.toScheme ⟶ affineSpaceIndexedBy k (ULift.{u, 0} (Fin (c + q))) :=
     L ≫ P ≫ (affineSpaceIsoOfEquiv (uliftFinSumEquiv.{u} c q) (Spec (CommRingCat.of k))).hom
     with hchartdef

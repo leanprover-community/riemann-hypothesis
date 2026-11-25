@@ -6,6 +6,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.DecCyc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CompIne
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.ProjFacts
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WildEqOneOfCharpolyUnipotentModL
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -101,18 +102,6 @@ private theorem quadEx_cls {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure �
   rw [hu, ZMod.val_natCast, ← pow_eq_pow_mod _ hζ]
   exact h1
 
-private theorem quadEx_val {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {p q : ℕ} (h : p.Coprime q)
-    (hq : A.valuation (q : Ω) < 1) : ¬ A.valuation (p : Ω) < 1 := fun hp => by
-  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 h
-  have hv : ∀ n : ℤ, A.valuation (n : Ω) ≤ 1 := fun n => (A.valuation_le_one_iff _).mpr (intCast_mem A n)
-  have h1 : A.valuation ((a : Ω) * (p : Ω) + (b : Ω) * (q : Ω)) < 1 := by
-    refine Valuation.map_add_lt _ ?_ ?_
-    · rw [map_mul]; exact lt_of_le_of_lt (mul_le_of_le_one_left' (hv a)) hp
-    · rw [map_mul]; exact lt_of_le_of_lt (mul_le_of_le_one_left' (hv b)) hq
-  have h2 : (a : Ω) * (p : Ω) + (b : Ω) * (q : Ω) = 1 := by exact_mod_cast congrArg (Int.cast : ℤ → Ω) hab
-  rw [h2, map_one] at h1
-  exact lt_irrefl _ h1
-
 theorem UpperTheory.V.Ws.quadEx :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (s : ℤˣ) (S : Finset ℕ), (∀ q ∈ S, q.Prime) → ∃ (p : ℕ) (η : G ℚ Ω →* ℤˣ), QuadAt p s S η := by
   intro Ω _ _ _ s S hS
@@ -152,7 +141,8 @@ theorem UpperTheory.V.Ws.quadEx :
   · have hne : p ≠ q := fun h => hpS (h ▸ hqS)
     have hc : p.Coprime q := (Nat.coprime_primes hp.out (hS q hqS)).2 hne
     obtain ⟨-, -, γ, -, hD, hγ⟩ := Chr.decCyc Ω q A (hS q hqS) hA
-    refine hD.trans (Subgroup.topologicalClosure_minimal _ (sup_le ?_ ((hine A (quadEx_val A hc hA)).trans hle))
+    have hkn := (hine A (GlobalTheory.WildKill.not_lt_one_of_coprime A hc hA)).trans hle
+    refine hD.trans (Subgroup.topologicalClosure_minimal _ (sup_le ?_ hkn)
       (Subgroup.isClosed_of_isOpen _ hopn))
     rw [Subgroup.zpowers_le, MonoidHom.mem_ker]
     refine Units.ext ?_

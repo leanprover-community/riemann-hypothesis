@@ -405,7 +405,7 @@ theorem exists_chart_coords_of_rsp {X : Scheme.{0}} {k : Type} [Field k] [CharZe
   have : IsScalarTower k (X.presheaf.stalk x) (IsLocalRing.ResidueField (X.presheaf.stalk x)) :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl
   have : Algebra.FormallySmooth k (IsLocalRing.ResidueField (X.presheaf.stalk x)) :=
-    formallySmooth_residueField k p x
+    formallySmooth_residueField k p x rfl
   have : IsRegularLocalRing (X.presheaf.stalk x) := isRegularLocalRing_stalk_of_smooth p x
   let s : Fin n → Γ(X, U₀) := fun i => (X.presheaf.map (homOfLE hU₀U).op).hom (f i)
   have hgerm : ∀ i, algebraMap Γ(X, U₀) (X.presheaf.stalk x) (s i) = X.presheaf.germ U.1 x hx (f i) := by

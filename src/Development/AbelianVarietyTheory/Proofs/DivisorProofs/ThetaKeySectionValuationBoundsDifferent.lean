@@ -187,15 +187,6 @@ theorem exists_lie_matrices {R O : Type} [CommRing R] [CommRing O] {G : Over (Sp
     rw [hw', Lie.isLieComb_iff, b.sum_equivFun]
     rfl
 
-theorem isTan_iff_isTangent {V : Type} [CommRing V] {G : Over (Sp V)} [GrpObj G] (w : epsR V ⟶ G) :
-    IsTan (V := V) (R := V) (G := G) w ↔ IsTangent w := by
-  have : (1 : ptOver V V ⟶ G).left = η[G].left := by
-    show spMap (algebraMap V V) ≫ _ = _
-    rw [show spMap (algebraMap V V) = 𝟙 _ from Spec.map_id _]
-    exact Category.id_comp _
-  unfold IsTan IsTangent
-  rw [this]
-
 end Lie
 
 section Model

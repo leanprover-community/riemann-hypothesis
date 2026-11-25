@@ -133,7 +133,7 @@ theorem fdeg_gap : ∀ (cd : CDHaar) (sc : ∀ n : ℕ, (Fin n → Bool) → NNR
     exact ⟨T, _, (ReciprocityTheory.ChartRestriction.DS.Lap.Base.psiFor N ε μ h T m hμ hm hμg hq0 h8).1⟩
   obtain ⟨w, hw⟩ := exists_ne (0 : H)
   have hdim : fdegOf (ReciprocityTheory.ChartRestriction.DS.muCD ε) σ w = ReciprocityTheory.ChartRestriction.DS.dimVlam lam :=
-    ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp1 hq1 hlam hgap hh' hσ hw
+    ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp1 hq1 hlam hgap hh' hΨ hσ hw
   obtain ⟨d, hd⟩ := Formalism.MainNotions.BridgeCSchur.fdeg_of_DS lam σ hσ
   have hpos : (0 : ℝ) < (sc N ε : ℝ) := by
     rcases (sc N ε).coe_nonneg.lt_or_eq with hlt | heq

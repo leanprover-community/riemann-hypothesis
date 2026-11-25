@@ -49,18 +49,6 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory.G UpperTheory.ConvolutionTheory.T4
 open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Global GroundTheory.Global.AdeleBaseChange PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Loc
 
-private theorem cenClosed {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] (g : G) :
-    IsClosed ((Subgroup.centralizer {g} : Subgroup G) : Set G) := by
-  have h : ((Subgroup.centralizer {g} : Subgroup G) : Set G) = {x | g * x = x * g} := by
-    ext x
-    exact Subgroup.mem_centralizer_singleton_iff.trans eq_comm
-  rw [h]
-  exact isClosed_eq (continuous_const.mul continuous_id) (continuous_id.mul continuous_const)
-
-private theorem cenLC {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
-    [LocallyCompactSpace G] (g : G) : LocallyCompactSpace (Subgroup.centralizer {g} : Subgroup G) :=
-  (cenClosed g).isClosedEmbedding_subtypeVal.locallyCompactSpace
-
 private theorem diag_mem {E : Type} [Field E] [NumberField E] {n : ℕ} (δ : GL (Fin n) E) :
     detModule E n (AdelicGLn.diagonal E n δ) = 1 :=
   mem_normOneGL_iff_detModule.1 (rationalGL_le_normOneGL ⟨δ, rfl⟩)
@@ -81,14 +69,16 @@ theorem UpperTheory.globalOrbitalComparison_of_split :
       ⟨hUF, Topology.IsClosedEmbedding.id, hUF⟩ hl eF eF (MonoidHom.id _) (fun _ => rfl)).1.1
   intro γ γ₁ hγ hreg ν hν
   obtain ⟨⟨eT, heT⟩, j, hj, hjv⟩ := hG γ γ₁ hγ
-  haveI : LocallyCompactSpace (Subgroup.centralizer {γ₁} : Subgroup (G1 F n)) := cenLC γ₁
+  haveI : LocallyCompactSpace (Subgroup.centralizer {γ₁} : Subgroup (G1 F n)) :=
+    (Set.isClosed_centralizer ({γ₁} : Set _)).isClosedEmbedding_subtypeVal.locallyCompactSpace
   haveI : SecondCountableTopology (Subgroup.centralizer {γ₁} : Subgroup (G1 F n)) :=
     TopologicalSpace.Subtype.secondCountableTopology _
-  haveI : LocallyCompactSpace (TA γ) := cenLC _
+  haveI : LocallyCompactSpace (TA γ) :=
+    (Set.isClosed_centralizer _).isClosedEmbedding_subtypeVal.locallyCompactSpace
   haveI : SecondCountableTopology (TA γ) := TopologicalSpace.Subtype.secondCountableTopology _
   have hUν : Uni ν := (hU _ ν hν).2 ((hT F n γ hreg).2.2.2 γ₁ hγ)
   have hPF : Pair μF (Subgroup.centralizer {γ₁} : Subgroup (G1 F n)).subtype ν :=
-    ⟨hUF, (cenClosed γ₁).isClosedEmbedding_subtypeVal, hUν⟩
+    ⟨hUF, (Set.isClosed_centralizer ({γ₁} : Set _)).isClosedEmbedding_subtypeVal, hUν⟩
   have sF := hS (G1 F n) (Subgroup.centralizer {γ₁} : Subgroup (G1 F n)) _ (GA F n) (TA γ) μF
     (Subgroup.centralizer {γ₁} : Subgroup (G1 F n)).subtype ν l hPF hl eF eT (TA γ).subtype
     (fun x => heT x)

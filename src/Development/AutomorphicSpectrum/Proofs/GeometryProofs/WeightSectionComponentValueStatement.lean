@@ -812,14 +812,6 @@ theorem IsChart.crd_bor (hC : IsChart Y hU v₀) [Algebra c.F R] {t : Ix Dw → 
   ext j i
   exact congrFun ((hC.isBas f).unique ((hC.isBas f).comb hg (h3 i)) (hu i)) j
 
-theorem isTan_iff {A : Over (Sp R)} [GrpObj A] (w : epsR R ⟶ A) : IsTan (V := R) (R := R) w ↔ IsTangent w := by
-  have e : (1 : ptOver R R ⟶ A).left = η[A].left := by
-    show spMap (RingHom.id R) ≫ η[A].left = _
-    have : spMap (RingHom.id R) = 𝟙 _ := Spec.map_id _
-    rw [this, Category.id_comp]
-  unfold IsTan IsTangent
-  rw [e]
-
 theorem IsChart.integral (hExt : GlobalTheory.Published.SemiAbelianHomExtension) (hC : IsChart Y hU v₀) {T : CDVR}
     {io : c.F →+* T.Fr} (y : IntFr Xo c T io) (f₀ : Γ(Y.X, U) →+* T.V)
     (hf : letI := io.toAlgebra; Small.ptY Y y.1 = spMap ((algebraMap T.V T.Fr).comp f₀) ≫ hU.fromSpec)
@@ -853,8 +845,8 @@ theorem IsChart.integral (hExt : GlobalTheory.Published.SemiAbelianHomExtension)
   obtain ⟨u, hu, hp⟩ := exists_prim hb
     (I := {q : 𝓞 E × T.V // algebraMap T.V T.Fr q.2 = io (embK c τ q.1)})
     (fun q => G.act.act q.1.1) (fun q => G.act.hom _) (fun q => q.1.2) (ub τ)
-    (fun i => (isTan_iff _).1 (htan τ i)) (fun i q => heig τ i _ _ q.2)
-    (fun w hw he => hbasis τ w ((isTan_iff _).2 hw) fun a z hz => he ⟨(a, z), hz⟩)
+    (fun i => (isTan_iff_isTangent _).1 (htan τ i)) (fun i q => heig τ i _ _ q.2)
+    (fun w hw he => hbasis τ w ((isTan_iff_isTangent _).2 hw) fun a z hz => he ⟨(a, z), hz⟩)
   refine ⟨u, hp, fun i => ?_⟩
   have h1 : Crd Y hU v₀ f₀ (fun j => u j i) ((ub τ i).left ≫ Ψ) := by
     have := (gc_iff hΨ _ _ _).1 (hu i)

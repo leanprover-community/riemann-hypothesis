@@ -797,6 +797,8 @@ theorem fdc_cd {ε : Fin n → Bool} (hp : 1 ≤ pOf ε) (hq : 1 ≤ qOf ε) {la
 
 theorem fdCons_cd {ε : Fin n → Bool} (hp : 1 ≤ pOf ε) (hq : 1 ≤ qOf ε) {lam : Fin n → ℝ} (hlam : IsHCParam lam)
     {h : ℝ} (hgap : GapAtLeast ε lam h) (hh : thrStar ε + 1 < h)
+    (hΨ : ∀ μ : Fin n → ℝ, IsHCParam μ → GapAtLeast ε μ h →
+      ∃ (T : KType ε (lowK ε μ)) (Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)), IsPsiFor ε μ T Ψ)
     {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : Formalism.MainNotions.S.IsDS ε lam σ) {v : H} (hv : v ≠ 0) :
     Formalism.MainNotions.S.fdegOf (muCD ε) σ v = dimVlam lam := by
@@ -821,7 +823,7 @@ theorem fdCons_muG (n : ℕ) (ε : Fin n → Bool) : ∃ c : ℝ, 0 < c ∧
     Measure.isMulLeftInvariant_eq_smul (muCD ε) (Formalism.REAL.muG ε)
   refine ⟨κ, hκpos, ?_⟩
   intro lam H _ _ _ σ v hlam hσ h hgap hh hp hq hΨ hv
-  have hcd := fdCons_cd hp hq hlam hgap hh hσ hv
+  have hcd := fdCons_cd hp hq hlam hgap hh hΨ hσ hv
   have hfd : Formalism.QuantumDeterminants.fdegHC lam = dimVlam lam := rfl
   rw [hκ] at hcd
   delta Formalism.MainNotions.S.fdegOf at hcd ⊢

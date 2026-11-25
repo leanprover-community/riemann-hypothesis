@@ -212,7 +212,7 @@ theorem step1 (L : LocalNG Cl Nu) (hU : L.Unfold) (S : Finset (Cl × Nu)) :
     simp only [h]
 
 theorem core (hS4 : Formalism.HermitianLatticeCounting.S4.Step4) (L : LocalNG Cl Nu) (κ : ℕ) (Xp Yp : L.P → ℝ)
-    (hX : ∀ p, 1 ≤ Xp p) (hb : L.Basic)
+    (hX : ∀ p, 1 ≤ Xp p) (hY : ∀ p, 1 ≤ Yp p) (hb : L.Basic)
     (h1 : ∀ p ∈ L.Om, ∑ d, L.wt p d * ‖L.aN p d‖ ^ 2 ≤ Xp p * ((L.q p : ℝ) ^ κ)⁻¹ * L.nn p)
     (h2 : ∀ p, ∑ d, L.wt p d * ‖L.aZ p d‖ ^ 2 ≤ Xp p * L.nn p)
     (h3 : ∀ p, L.nn p ≤ Yp p * L.ngen p) :
@@ -291,7 +291,7 @@ theorem mean (hS4 : Formalism.HermitianLatticeCounting.S4.Step4) (L : LocalNG Cl
   have hV0 : 0 ≤ L.V0 := hb'.2.2.2.2.2.1
   have hng : 0 ≤ ∏ p, L.ngen p := Finset.prod_nonneg (fun p _ => ngen_nonneg L C0 r hb hM p)
   have hfin := finish L Xp Yp hX hY e h
-  have hcore := core hS4 L κ Xp Yp hX hb h1 h2 h3
+  have hcore := core hS4 L κ Xp Yp hX hY hb h1 h2 h3
   have hstep := step1 L hU S
   have hk : 0 ≤ ((2 : ℝ) ^ κ)⁻¹ := by positivity
   calc ∑ x ∈ S, L.a2 x.1 x.2 ≤ L.V0 * ∑ d, (∏ p, L.wt p (d p)) * ‖L.ampNG d‖ ^ 2 := hstep
@@ -697,7 +697,7 @@ lemma hk {c t m5 f : ℝ} (hc : 0 ≤ c) (hf : 0 ≤ f) (ht : t ≤ m5) : c * (f
   rw [mul_comm m5 f]
   exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ht hf) hc
 
-lemma core (A : ℕ) (CB CSt Cg CT : ℝ) (hCSt : 0 ≤ CSt) (hCg : 0 ≤ Cg) (hCT : 0 ≤ CT)
+lemma core (A : ℕ) (CB CSt Cg CT : ℝ) (_hCB : 0 ≤ CB) (hCSt : 0 ≤ CSt) (hCg : 0 ≤ Cg) (hCT : 0 ≤ CT)
     (r f : ℕ) (b rd g TT cSt e1 m M : ℝ) (hm : m = 2 * (r : ℝ) + 2) (hM : M = m ^ 5 * f)
     (hf : 1 ≤ f) (hb : 16 ≤ b) (hrd0 : 0 < rd) (hrd : rd ≤ b) (hg1 : 1 ≤ g) (hg : g ≤ b ^ Cg)
     (hTT0 : 0 < TT) (hTT : TT ≤ b ^ (2 * CT * m)) (hc0 : 0 ≤ cSt) (hc : cSt ≤ b ^ (CSt * m ^ 3 * f))
@@ -797,7 +797,7 @@ theorem t_NGNumbers : NGNumbers := by
   intro r f b rd g TT cSt e1 hS
   unfold NGSizes at hS
   obtain ⟨hf, hb, hrd0, hrd, hg1, hg, hTT0, hTT, hc0, hc, he0, he⟩ := hS
-  have h := core A CB CSt Cg CT hCSt hCg hCT r f b rd g TT cSt e1 (((2 * r + 2 : ℕ) : ℝ))
+  have h := core A CB CSt Cg CT hCB hCSt hCg hCT r f b rd g TT cSt e1 (((2 * r + 2 : ℕ) : ℝ))
     (((2 * r + 2 : ℕ) : ℝ) ^ 5 * f) (by push_cast <;> ring) rfl hf hb hrd0 hrd hg1 hg hTT0 hTT hc0 hc
     he0 he
   have e : ∀ K : ℝ, K * (((2 * r + 2 : ℕ) : ℝ) ^ 5 * f) * Real.log b =

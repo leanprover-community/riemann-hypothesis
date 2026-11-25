@@ -55,30 +55,12 @@ private noncomputable def abH : (A ℚ)ˣ →* ℝ where
   map_one' := by simp [ab]
   map_mul' a b := by simp [ab, map_mul]
 
-private theorem ab_idl (v : H.P ℚ) (x : (H.Kv v)ˣ) : ab (H.idl v x) = ‖(x : H.Kv v)‖ := by
-  obtain ⟨h1, h2⟩ := localIdele_isSupportedAt ℚ v x
-  show ((IdeleGroup.ideleModule ℚ (localIdele ℚ v x) : {r : ℝ // 0 < r}) : ℝ) = _
-  rw [IdeleGroup.ideleModule_eq]
-  have e1 : ∏ w : InfinitePlace ℚ, ‖((localIdele ℚ v x : (A ℚ)ˣ) : A ℚ).1 w‖ ^ w.mult = 1 :=
-    Finset.prod_eq_one fun w _ => by rw [h1 w, norm_one, one_pow]
-  rw [e1, one_mul]
-  refine (finprod_eq_single _ v fun u hu => ?_).trans ?_
-  · rw [h2 u hu, norm_one]
-  · rw [localIdele_snd_self]
-
-private theorem norm_unif (v : H.P ℚ) :
-    ‖((atFin v (unif v) : (H.Kv v)ˣ) : H.Kv v)‖ = ((normV v : ℕ) : ℝ)⁻¹ := by
-  have h : Valued.v ((atFin v (unif v) : (H.Kv v)ˣ) : H.Kv v) = WithZero.exp (-1 : ℤ) := unif_spec v
-  have h2 : v.valuation ℚ (unif v : ℚ) = WithZero.exp (-1 : ℤ) := by
-    rwa [← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
-  have h3 := FinitePlace.norm_embedding' v (unif v : ℚ)
-  rw [h2] at h3
-  have h4 : ‖((atFin v (unif v) : (H.Kv v)ˣ) : H.Kv v)‖ = ‖FinitePlace.embedding v (unif v : ℚ)‖ := rfl
-  rw [h4, h3, GlobalTheory.TwAtt.normV_eq, WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
-  simp
-
 private theorem ab_pv (v : H.P ℚ) : ab (pv v) = ((normV v : ℕ) : ℝ)⁻¹ := by
-  rw [pv, ab_idl, norm_unif]
+  have h : pv v = IdeleGroup.finiteEmbedding v (atFin v (unif v)) := Units.ext rfl
+  rw [ab, h, IdeleGroup.ideleModule_finiteEmbedding, NumberField.FinitePlace.norm_def,
+    unif_spec v, GlobalTheory.TwAtt.normV_eq,
+    WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
+  simp
 
 private theorem normV_surj {p : ℕ} (hp : p.Prime) : ∃ w : H.P ℚ, normV w = p := by
   have hN : Ideal.absNorm (Ideal.span {((p : ℕ) : 𝓞 ℚ)}) = p := by
@@ -88,7 +70,8 @@ private theorem normV_surj {p : ℕ} (hp : p.Prime) : ∃ w : H.P ℚ, normV w =
   · intro h
     rw [h, Ideal.absNorm_bot] at hN
     exact hp.ne_zero hN.symm
-  · rwa [GlobalTheory.TwAtt.normV_eq]
+  · rw [GlobalTheory.TwAtt.normV_eq]
+    exact hN
 
 private theorem supp_fin (n : ℕ) :
     (Function.mulSupport fun v : H.P ℚ => pv v ^ (n.factorization (normV v))).Finite := by
@@ -96,7 +79,8 @@ private theorem supp_fin (n : ℕ) :
   by_contra h
   apply hv
   have h0 : n.factorization (normV v) = 0 := by
-    rwa [← Finsupp.notMem_support_iff, Nat.support_factorization]
+    rw [← Finsupp.notMem_support_iff, Nat.support_factorization]
+    exact h
   simp [h0]
 
 private theorem prod_norm {n : ℕ} (hn : 0 < n) :
@@ -112,7 +96,8 @@ private theorem prod_norm {n : ℕ} (hn : 0 < n) :
     · rintro ⟨-, h⟩
       refine ⟨?_, h⟩
       rw [← Nat.support_factorization, Finsupp.mem_support_iff]
-      exact fun h0 => h (by simp [hg, h0])
+      intro h0
+      exact h (by simp [hg, h0])
     · rintro ⟨hp, h⟩
       exact ⟨normV_surj (Nat.prime_of_mem_primeFactors hp), h⟩
   have h3 : ∏ p ∈ n.primeFactors, g p = (n : ℝ)⁻¹ := by
@@ -136,22 +121,11 @@ private theorem ab_pin {n : ℕ} (hn : 0 < n) : ab (pin n) = (n : ℝ)⁻¹ := b
   exact ab_pv v
 
 private theorem pin_fst (n : ℕ) : ((pin n : (A ℚ)ˣ) : A ℚ).1 = 1 := by
-  refine finprod_induction (p := fun x : (A ℚ)ˣ => (x : A ℚ).1 = 1) rfl ?_ ?_
-  · intro x y hx hy
-    simp [Units.val_mul, hx, hy]
-  · intro v
-    have h : ((pv v : (A ℚ)ˣ) : A ℚ).1 = 1 := by
-      funext w
-      exact (localIdele_isSupportedAt ℚ v _).1 w
-    have hk : ∀ k : ℕ, (((pv v ^ k : (A ℚ)ˣ)) : A ℚ).1 = 1 := by
-      intro k
-      induction k with
-      | zero => rfl
-      | succ k ih =>
-        rw [pow_succ, Units.val_mul]
-        show (((pv v ^ k : (A ℚ)ˣ)) : A ℚ).1 * ((pv v : (A ℚ)ˣ) : A ℚ).1 = 1
-        rw [ih, h, one_mul]
-    exact hk _
+  have h := ((RingHom.fst (InfiniteAdeleRing ℚ) (FiniteAdeleRing (𝓞 ℚ) ℚ)).toMonoidHom.comp
+    (Units.coeHom (A ℚ))).map_finprod (supp_fin n)
+  refine h.trans (finprod_eq_one_of_forall_eq_one fun v => ?_)
+  rw [map_pow]
+  exact one_pow _
 
 private theorem re_one_of {x : A ℚ} (h : x.1 = 1) : re x = 1 := by
   show (TR.infEq ℚ).symm x.1 Rat.infinitePlace = 1
@@ -159,7 +133,7 @@ private theorem re_one_of {x : A ℚ} (h : x.1 = 1) : re x = 1 := by
   rfl
 
 private theorem iy_val {r : ℝ} (hr : r ≠ 0) : ∃ d : (TR.Rinf ℚ)ˣ, iy r = TR.infId ℚ d ∧ ∀ w, d.val w = r :=
-  ⟨_, dite_eq_right hr, fun _ => rfl⟩
+  ⟨_, dif_neg hr, fun _ => rfl⟩
 
 private theorem re_iy {r : ℝ} (hr : r ≠ 0) : re (iy r : A ℚ) = r := by
   obtain ⟨d, hd, hw⟩ := iy_val hr
@@ -174,16 +148,12 @@ private theorem ab_iy {r : ℝ} (hr : r ≠ 0) : ab (iy r) = |r| := by
   simp [hw]
 
 private theorem ab_UU {t : (A ℚ)ˣ} (ht : t ∈ UU) : ab t = 1 := by
-  show ((IdeleGroup.ideleModule ℚ t : {r : ℝ // 0 < r}) : ℝ) = _
-  rw [IdeleGroup.ideleModule_eq]
+  rw [ab, IdeleGroup.ideleModule_eq]
   have e1 : ∏ w : InfinitePlace ℚ, ‖(t : A ℚ).1 w‖ ^ w.mult = 1 :=
-    Finset.prod_eq_one fun w _ => by rw [ht.1]; exact (by rw [show (1 : InfiniteAdeleRing ℚ) w = 1 from rfl, norm_one, one_pow])
+    Finset.prod_eq_one fun w _ => by
+      rw [ht.1, show (1 : InfiniteAdeleRing ℚ) w = 1 from rfl, norm_one, one_pow]
   rw [e1, one_mul]
-  refine finprod_eq_one_of_forall_eq_one fun v => ?_
-  have h := ht.2 v
-  have h' : Valued.v ((t : A ℚ).2 v) = 1 := h
-  refine le_antisymm (Valued.toNormedField.norm_le_one_iff.2 h'.le) (not_lt.1 fun hlt => ?_)
-  exact (Valued.toNormedField.norm_lt_one_iff.1 hlt).ne h'
+  exact finprod_eq_one_of_forall_eq_one fun v => Valued.toNormedField.norm_eq_one_iff.2 (ht.2 v)
 
 theorem UpperTheory.ratIdeleAbs_realIdele_natIdele_unitIdeles :
     (∀ r : ℝ, r ≠ 0 → ab (iy r) = |r|) ∧ (∀ n : ℕ, 0 < n → ab (pin n) = (n : ℝ)⁻¹) ∧ (∀ t ∈ UU, ab t = 1) ∧

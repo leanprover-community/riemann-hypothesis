@@ -64,7 +64,6 @@ open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj Globa
 open Formalism.L2.Host (HChar)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open MeasureTheory GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames
-attribute [local instance] borelKw borelSpaceKw
 
 noncomputable section
 

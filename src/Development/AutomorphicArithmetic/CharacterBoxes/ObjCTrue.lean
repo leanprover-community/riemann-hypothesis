@@ -1045,7 +1045,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Fo
 
 namespace UpperTheory.Top
 
-open GlobalTheory.Fc
 
 theorem kitS : ∀ (Q : Par → PtProp) (la : ℝ) (G : FReq), DC.HostWW la G.req → ObjCP Q →
     KitCPW la (fun κ => ((withDuty (Q κ)).and DC.WallPt).and G.pt) := by

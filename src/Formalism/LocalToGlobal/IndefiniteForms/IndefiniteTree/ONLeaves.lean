@@ -625,12 +625,6 @@ theorem card_Pm (hG : IsLevelGroups kf n Pm Uv) (v : ι) :
   rw [card_Uv_uni hG v, ← _root_.PI.MirabolicIndex₂.mirabIndex (kf v) n]
   exact Nat.card_congr (Equiv.subtypeEquivRight (hG.1 v))
 
-theorem index_Uv (hG : IsLevelGroups kf n Pm Uv) (v : ι) :
-    (Uv v).index = ∏ i ∈ Finset.Ico 1 (n + 1), (Fintype.card (kf v) ^ i - 1) := by
-  have h1 := Subgroup.card_mul_index (Uv v)
-  rw [card_Pm hG v] at h1
-  exact Nat.eq_of_mul_eq_mul_left Nat.card_pos h1
-
 theorem card_piU : Nat.card (Subgroup.pi Set.univ Uv) = ∏ v, Nat.card (Uv v) := by
   rw [← Nat.card_pi]
   exact Nat.card_congr

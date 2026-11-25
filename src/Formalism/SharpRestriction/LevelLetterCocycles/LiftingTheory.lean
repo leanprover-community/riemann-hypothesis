@@ -479,7 +479,7 @@ def WachResultConstant (D : D7) (HW : HWOf D.loc) (C : ℝ) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreWR ((HW l).W K s LL h) C
 
-def ConclusionH (D : D7) (HW : HWOf D.loc) : Prop :=
+def ConclusionH (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreH ((HW l).W K s LL h)
 
@@ -516,7 +516,7 @@ def LiftTheoremAllCases (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (
   LiftTheoremCaseA D HW ∧ LiftTheoremCaseB D HW ∧ LiftBracketR D HW ∧ LiftExponentShapes D HW CA CB CK ∧ LiftGaloisDescent D HW
 
 def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C CA CB CK : ℝ) : Prop :=
-  ConclusionL D HW ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW ∧ WachExponentRecursionAll D HW ∧ WachResultConstant D HW C ∧ ConclusionH D HW ∧ ExistsUnitClasses D HW ∧ LiftTheoremAllCases D HW F CA CB CK
+  ConclusionL D HW ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW ∧ WachExponentRecursionAll D HW ∧ WachResultConstant D HW C ∧ ConclusionH D HW F ∧ ExistsUnitClasses D HW ∧ LiftTheoremAllCases D HW F CA CB CK
 
 def adm1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.WachLatticeFreeGlobal D HW F
 

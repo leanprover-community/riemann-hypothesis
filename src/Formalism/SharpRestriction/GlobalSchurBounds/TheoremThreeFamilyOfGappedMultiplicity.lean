@@ -481,7 +481,7 @@ theorem fdeg_cd_gap {n : ℕ} {ε : Fin n → Bool} (hp : 1 ≤ ReciprocityTheor
     obtain ⟨T⟩ := ReciprocityTheory.ChartRestriction.DS.HW.kType_exists ε μ hμ
     obtain ⟨m, hm⟩ := ReciprocityTheory.ChartRestriction.DS.Lap.LemK.exists_isMu hμ
     exact ⟨T, _, (ReciprocityTheory.ChartRestriction.DS.Lap.Base.psiFor _ _ μ h T m hμ hm hgμ hq0 h8).1⟩
-  exact ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp hq hlam hgap hh hσ hv
+  exact ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp hq hlam hgap hh hΨ hσ hv
 
 theorem hCFdegRGap_holds : HCFdegRGap := by
   intro cd s hc N ε lam h hp hq hlam hgap hh H _ _ σ w hσ hw

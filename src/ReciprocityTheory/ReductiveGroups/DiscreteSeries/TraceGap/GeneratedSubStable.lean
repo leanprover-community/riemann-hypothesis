@@ -74,7 +74,7 @@ theorem psiDatum_std {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) (h : 
     have h1 := T.w_norm
     rw [h0, norm_zero] at h1
     exact zero_ne_one h1
-  have hN0 : ‖uniformisationL2 ε Ψ T.w T.w‖ ≠ 0 := norm_ne_zero_iff.mpr (datumEmbedding_highest_ne_zero hP hv₀)
+  have hN0 : ‖uniformisationL2 ε Ψ T.w T.w‖ ≠ 0 := norm_ne_zero_iff.mpr (datumEmbedding_highest_ne_zero hstd hP hv₀)
   set c : ℂ := ((‖uniformisationL2 ε Ψ T.w T.w‖⁻¹ : ℝ) : ℂ) with hc
   have hc0 : c ≠ 0 := by rw [hc]; exact_mod_cast inv_ne_zero hN0
   let j : T.V →ₗ[ℂ] datumV ε Ψ T.w :=

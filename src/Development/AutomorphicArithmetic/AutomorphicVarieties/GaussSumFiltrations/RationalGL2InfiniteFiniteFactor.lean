@@ -157,8 +157,6 @@ theorem ratGL_real_fin : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal
 
 end GlobalTheory.HilbertThetaSeries.RatPts
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto

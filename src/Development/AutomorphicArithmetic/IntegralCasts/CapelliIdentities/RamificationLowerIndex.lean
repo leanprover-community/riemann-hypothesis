@@ -169,25 +169,6 @@ private lemma dvd_prod {S : Type*} [CommRing S]
   simpa only [Polynomial.map_prod, Polynomial.map_sub, map_prod, map_sub, coe_evalRingHom, map_X,
     map_C, eval_X, eval_C, h3, sub_zero] using h2
 
-private lemma addVal_algebraMap {T S : Type*} [CommRing T] [CommRing S] [IsDomain T] [IsDomain S]
-    [IsDiscreteValuationRing T] [IsDiscreteValuationRing S] [Algebra T S] (e : ℕ) (he : e ≠ 0)
-    (h : (maximalIdeal T).map (algebraMap T S) = maximalIdeal S ^ e) (z : T) :
-    addVal S (algebraMap T S z) = e * addVal T z := by
-  by_cases hz : z = 0
-  · subst hz
-    rw [map_zero, addVal_zero, addVal_zero, ENat.mul_top (by exact_mod_cast he)]
-  obtain ⟨π, hπ⟩ := exists_irreducible T
-  obtain ⟨ϖ, hϖ⟩ := exists_irreducible S
-  rw [hπ.maximalIdeal_eq, hϖ.maximalIdeal_eq, Ideal.map_span, Set.image_singleton,
-    Ideal.span_singleton_pow, Ideal.span_singleton_eq_span_singleton] at h
-  obtain ⟨w, hw⟩ := h.symm
-  obtain ⟨n, u, rfl⟩ := eq_unit_mul_pow_irreducible hz hπ
-  rw [addVal_def' u hπ n, ← Nat.cast_mul]
-  refine addVal_def _ (Units.map (algebraMap T S : T →* S) u * w ^ n) hϖ _ ?_
-  rw [map_mul, map_pow, ← hw]
-  simp only [Units.val_mul, Units.coe_map, MonoidHom.coe_coe, Units.val_pow_eq_pow_val]
-  ring
-
 private lemma addVal_prod {S : Type*} [CommRing S] [IsDomain S] [IsDiscreteValuationRing S]
     {H : Type*} (F : Finset H) (b : H → S) :
     addVal S (∏ t ∈ F, b t) = ∑ t ∈ F, addVal S (b t) := by
@@ -210,8 +191,6 @@ theorem UpperTheory.Reformulated.B.RamificationLowerIndex.ramificationIndex_mul_
         ∑ τ : Gal(L/↥M), GroundTheory.LocalField.lowerIndex K L (σ * AlgEquiv.restrictScalars K τ) := by
   intro K L _ _ _ _ _ _ _ _ _ _ _ M _ _ σ
   obtain ⟨x, hx⟩ := exists_generator (R := 𝒪[K]) (S := 𝒪[L]) _ (map_maximalIdeal K L).ge
-  have hv := addVal_algebraMap (T := 𝒪[M]) (S := 𝒪[L]) _ (ramificationIndex_pos M L).ne'
-    (map_maximalIdeal M L)
   set σ' : Gal(M/K) := AlgEquiv.restrictNormalHom M σ with hσ'
   let r : Gal(L/M) → (𝒪[L] ≃ₐ[𝒪[K]] 𝒪[L]) := fun τ => integerAlgEquiv K L (τ.restrictScalars K)
   let s := integerAlgEquiv K L σ
@@ -242,7 +221,7 @@ theorem UpperTheory.Reformulated.B.RamificationLowerIndex.ramificationIndex_mul_
   obtain ⟨y₀, hy₀⟩ := ENat.exists_eq_iInf
     (fun y : 𝒪[M] => addVal 𝒪[M] (integerAlgEquiv K M σ' y - y))
   have hy₁ : lowerIndex K M σ' = addVal 𝒪[M] (integerAlgEquiv K M σ' y₀ - y₀) := hy₀.symm
-  rw [hsum, hy₁, ← hv]
+  rw [hsum, hy₁, ← addVal_algebraMap_integer M L]
   apply le_antisymm
   · rw [addVal_le_iff_dvd, ← ha1]
     refine dvd_prod a 1 _ (s : 𝒪[L] →+* 𝒪[L]) fun i => ?_

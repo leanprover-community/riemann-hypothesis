@@ -47,7 +47,7 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 
 namespace GlobalTheory.RowClaim.TermVolDef
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar borelKw borelSpaceKw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {T : Type}
 

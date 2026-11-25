@@ -4150,7 +4150,7 @@ theorem lifting_all_parts_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.lo
   exact ⟨hA, hB, lifting_bracket_units_times_powers D HW F, lifting_exponent_shapes D HW F, lifting_descent_to_subfields D HW F hA hB a20⟩
 
 theorem local_parts_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) :
-    ConclusionL D HW ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW ∧ WachExponentRecursionAll D HW ∧ WachResultConstant D HW 10 ∧ ConclusionH D HW ∧ ExistsUnitClasses D HW ∧ LiftBracketR D HW ∧
+    ConclusionL D HW ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW ∧ WachExponentRecursionAll D HW ∧ WachResultConstant D HW 10 ∧ ConclusionH D HW F ∧ ExistsUnitClasses D HW ∧ LiftBracketR D HW ∧
       LiftExponentShapes D HW 23 32 32 := by
   have a9 : adm9 D HW F := h.2.2.2.2.2.2.2.2.1
   have a22 : adm22 D HW := h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1

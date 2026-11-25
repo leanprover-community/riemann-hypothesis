@@ -199,7 +199,6 @@ theorem GlobalTheory.HomStab.groupHomology_map_conj : ∀ (k G H : Type) [CommRi
     Category.comp_id]
 
 section
-open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab
 end
 end -- clump:auto
 end -- clump:auto

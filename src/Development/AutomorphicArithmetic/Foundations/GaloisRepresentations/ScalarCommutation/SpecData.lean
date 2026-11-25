@@ -1539,7 +1539,6 @@ theorem module_props (R : Type*) [CommRing R] [TopologicalSpace R] [IsTopologica
 
 section UPts
 
-open GlobalTheory.LKTrip
 
 variable {C : Type} [Ring C] [Algebra ℚ C] [Module.Finite ℚ C] (star : C →+* Cᵐᵒᵖ)
 
@@ -1580,7 +1579,6 @@ end GlobalTheory.GfTop
 
 namespace GlobalTheory.GfTop
 
-open GlobalTheory.LKTrip IsDedekindDomain
 
 section AfP
 

@@ -21,8 +21,6 @@ structure SymmetricTwistedColumnsCompatible {D : D7} {cf : Formalism.L2.Host.Cha
   forms : TwFormsTiedS D Tw ch chJ cols.forms
   lv : SymmetricTwistedLevelData forms
 
-  same : TwLvSameS forms
-
   lvJ : SymmetricTwistedJointForms ch cols.forms
 
 structure SymmetricTwistedColumnsAtPrimes {D : D7} {cf : Formalism.L2.Host.CharFrame D} {nch : NChoice D} (tp : Formalism.L2.Host.TupTied D cf nch)

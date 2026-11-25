@@ -111,7 +111,7 @@ theorem formulaF (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v�
       (rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q) + uniformisationL2 ε Ψ v₀ q := (sub_add_cancel _ _).symm
   rw [hdec, inner_add_right, inner_eq_zero_symm.1 (hxj v'), zero_add, hqv, ffa_form hP]
 
-theorem datumEmbedding_highest_ne_zero (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : uniformisationL2 ε Ψ v₀ T.w ≠ 0 := by
+theorem datumEmbedding_highest_ne_zero (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : uniformisationL2 ε Ψ v₀ T.w ≠ 0 := by
   intro h
   have hz : uniformisationL2 ε Ψ v₀ (0 : T.V) = 0 := by
     simpa using datumEmbedding_smul hP v₀ (0 : ℂ) (0 : T.V)

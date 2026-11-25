@@ -163,7 +163,7 @@ theorem puniq_psi_eq (hgap : StdGap ε lam) {Ψ' : Matrix (Fin n) (Fin n) ℂ �
       ← U'.inner_map_map (xv v') (sigLam ε Ψ v₀ g (xv v)), hUi g hg, Submodule.coe_inner,
       sigLam_coe hgap hP' hv₀ hg]
   have hr : ((‖uniformisationL2 ε Ψ v₀ T.w‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
-    have := datumEmbedding_highest_ne_zero hP hv₀
+    have := datumEmbedding_highest_ne_zero hgap hP hv₀
     exact_mod_cast pow_ne_zero 2 (norm_ne_zero_iff.mpr this)
   have h1 : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := by
     show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * Jm ε * 1 = Jm ε

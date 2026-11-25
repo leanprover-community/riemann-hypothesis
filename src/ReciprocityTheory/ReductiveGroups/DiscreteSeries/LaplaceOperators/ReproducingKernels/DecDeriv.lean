@@ -120,7 +120,7 @@ theorem repro_real (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) :
   obtain ⟨α, hα1, hα2, hα⟩ := exists_smooth_convolution_fixing_lowest hgap hP hv₀
   refine ⟨α, hα1, hα2, fun g hg v₁ v₂ => ?_⟩
   have hc : ((‖uniformisationL2 ε Ψ T.w T.w‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
-    have := datumEmbedding_highest_ne_zero hP hv₀
+    have := datumEmbedding_highest_ne_zero hgap hP hv₀
     exact_mod_cast pow_ne_zero 2 (norm_ne_zero_iff.2 this)
   have hF : ∀ x ∈ UJset ε, ((‖uniformisationL2 ε Ψ T.w T.w‖ ^ 2 : ℝ) : ℂ) * ⟪v₂, Ψ x v₁⟫_ℂ =
       ⟪(⟨uniformisationL2 ε Ψ T.w v₂, datumEmbedding_mem_Hlam hP v₂⟩ : Hlam ε Ψ T.w),

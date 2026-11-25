@@ -1048,7 +1048,6 @@ theorem UpperTheory.local_unimodular_of_exists_haar_measure :
       have h2 : Measurable fun g : G => fun v : S => p v g :=
         Measurable.of_eval fun v => (hRP.cp v).measurable
       exact h1.prodMk h2
-    have hU : MeasurableSet (US p K S : Set G) := (hRP.opnU S).measurableSet
     have h1 := inv_all ((μ.restrict (US p K S : Set G)).map (prS q p S))
       (inv_map_sub μ (US p K S) (prS q p S) hf) (A ×ˢ Set.pi Set.univ B)
     have hset : (A ×ˢ Set.pi Set.univ B)⁻¹ = A⁻¹ ×ˢ Set.pi Set.univ (fun v => (B v)⁻¹) := by

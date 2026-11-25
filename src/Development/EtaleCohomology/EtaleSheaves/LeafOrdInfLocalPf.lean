@@ -112,7 +112,6 @@ theorem LeafOrdInfHom_of (hO : LeafOrdInfLocal) (hG : LeafLocGlobInf) : ∀ (k B
     rw [hp, map_zero]
   exact hG k L T hT _ h h0 hint hloc
 
-open Polynomial
 
 def lgiDen {k L : Type} [Field k] [Field L] [Algebra k L] (R : Subalgebra k L) (c : L) (hc : c ∈ R) :
     Subalgebra k L where

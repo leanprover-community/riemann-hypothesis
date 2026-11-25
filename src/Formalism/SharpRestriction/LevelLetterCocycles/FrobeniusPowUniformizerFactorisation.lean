@@ -1750,7 +1750,7 @@ def GammaSubSolutionsExist (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreHex ((HW l).W K s LL h)
 
-theorem gamma_equation_clause_of_solutions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (hex : GammaSubSolutionsExist D HW) : ConclusionH D HW := fun l _ K s LL h =>
+theorem gamma_equation_clause_of_solutions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (hex : GammaSubSolutionsExist D HW) : ConclusionH D HW F := fun l _ K s LL h =>
   coreH_of_ex _ (h9 l K s LL h) (fun hA => coreH_val_holds D HW l K s LL h hA) (coreH_leg_holds D HW l K)
     (fun y => ((D.loc l).v_O LL _).2 y.2)
     (fun x hx => ⟨⟨x, ((D.loc l).v_O LL x).1 hx⟩, rfl⟩) (hex l K s LL h)
@@ -1767,7 +1767,7 @@ theorem gamma_sub_solutions_exist (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.
     (uniformizer_ring_and_module_clauses _ (h9 l K s LL h) hA T hT).1 T (uniformizer_ring_and_module_clauses _ (h9 l K s LL h) hA T hT).2
     (coreH_val_holds D HW l K s LL h hA) i b hb z hz c₀
 
-theorem gamma_equation_clause_of_uniformizer (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : ConclusionH D HW := gamma_equation_clause_of_solutions D HW F h9 (gamma_sub_solutions_exist D HW F h9)
+theorem gamma_equation_clause_of_uniformizer (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : ConclusionH D HW F := gamma_equation_clause_of_solutions D HW F h9 (gamma_sub_solutions_exist D HW F h9)
 
 end Formalism.MainNotions.LiftingTheory
 

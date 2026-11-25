@@ -21,7 +21,7 @@ theorem link : LinkStatement := by
     have h1 := T.w_norm
     rw [h, norm_zero] at h1
     exact zero_ne_one h1
-  have hN0 : ‖uniformisationL2 ε Ψ T.w T.w‖ ≠ 0 := norm_ne_zero_iff.mpr (datumEmbedding_highest_ne_zero hP hv₀)
+  have hN0 : ‖uniformisationL2 ε Ψ T.w T.w‖ ≠ 0 := norm_ne_zero_iff.mpr (datumEmbedding_highest_ne_zero hgap hP hv₀)
   obtain ⟨c, hc⟩ : ∃ c : ℂ, c = ((‖uniformisationL2 ε Ψ T.w T.w‖⁻¹ : ℝ) : ℂ) := ⟨_, rfl⟩
   have h0 : uniformisationL2 ε Ψ T.w 0 = 0 := by simpa using datumEmbedding_smul hP T.w 0 T.w
   have hmem := datumEmbedding_mem_smooth hP T.w (c • T.w)

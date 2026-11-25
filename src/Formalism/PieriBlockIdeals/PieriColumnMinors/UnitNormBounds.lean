@@ -35,19 +35,19 @@ lemma label_vl_le_one {l : ℕ} {n : ℤ} (h0 : 0 < n) (h1 : n < (l : ℤ) ^ 2) 
   have := Int.le_of_dvd h0 hdvd
   linarith
 
-lemma label_vl_le_ind {l : ℕ} (hl : l.Prime) {n : ℤ} (h0 : 0 < n) (h1 : n < (l : ℤ) ^ 2) :
+lemma label_vl_le_ind {l : ℕ} {n : ℤ} (h0 : 0 < n) (h1 : n < (l : ℤ) ^ 2) :
     (vl l n : ℝ) ≤ if (l : ℤ) ∣ n then 1 else 0 := by
   split_ifs with hd
   · exact_mod_cast label_vl_le_one h0 h1
   · have h : vl l n = 0 := padicValInt.eq_zero_of_not_dvd hd
     simp [h]
 
-lemma label_sum_le_filter {l : ℕ} (hl : l.Prime) (s : Finset ℤ) (mB : ℤ) (c : ℤ → ℝ)
+lemma label_sum_le_filter {l : ℕ} (s : Finset ℤ) (mB : ℤ) (c : ℤ → ℝ)
     (hc : ∀ x ∈ s, 0 ≤ c x) (hr : ∀ x ∈ s, 0 < x - mB ∧ x - mB < (l : ℤ) ^ 2) :
     ∑ x ∈ s, c x * (vl l (x - mB) : ℝ) ≤ ∑ x ∈ s.filter (fun x => (l : ℤ) ∣ x - mB), c x := by
   rw [Finset.sum_filter]
   refine Finset.sum_le_sum fun x hx => ?_
-  have h := label_vl_le_ind hl (hr x hx).1 (hr x hx).2
+  have h := label_vl_le_ind (hr x hx).1 (hr x hx).2
   calc c x * (vl l (x - mB) : ℝ) ≤ c x * (if (l : ℤ) ∣ x - mB then 1 else 0) :=
         mul_le_mul_of_nonneg_left h (hc x hx)
     _ = if (l : ℤ) ∣ x - mB then c x else 0 := by split_ifs <;> simp
@@ -178,7 +178,7 @@ lemma label_second {l k t h : ℕ} {i : ℝ} {xm mB : ℤ} (hl : l.Prime) (hi : 
     intro ct hct
     rw [Finset.mem_Ioo] at hct
     exact ⟨by omega, by linarith [hct.2]⟩
-  have step1 := label_sum_le_filter hl (Finset.Ioo mB xm) mB
+  have step1 := label_sum_le_filter (Finset.Ioo mB xm) mB
     (fun ct => min (min (k : ℝ) (t : ℝ)) (i / ((xm - ct : ℤ) : ℝ))) hc hr
   refine le_trans step1 ?_
   obtain ⟨S, hS⟩ : ∃ S, S = (Finset.Ioo mB xm).filter (fun x => (l : ℤ) ∣ x - mB) := ⟨_, rfl⟩
@@ -268,7 +268,7 @@ theorem labelSumLe_holds : LabelSum := by
   have hlpos : 0 < l := hl.pos
   have hhZ : (h : ℤ) < (l : ℤ) ^ 2 := by exact_mod_cast hh
   have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg _
-  have hA := label_sum_le_filter hl (Finset.Icc xm xp) mB (fun _ => (k : ℝ))
+  have hA := label_sum_le_filter (Finset.Icc xm xp) mB (fun _ => (k : ℝ))
     (fun _ _ => hk) (fun x hx => by
       rw [Finset.mem_Icc] at hx
       exact ⟨by omega, by linarith [hx.2]⟩)
@@ -542,12 +542,7 @@ theorem depth_valuation_sum_holds : DnValSum := by
       mu t (M - w) i (dual M lam) ((x : ℤ) - ((k + j : ℕ) : ℤ)) *
         vl l (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) := by
     intro x _
-    by_cases h : (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) = 0
-    · have hc : ((x : ℤ) - ((k + j : ℕ) : ℤ)) = ((M - w : ℕ) : ℤ) := by omega
-      rw [hc, ld_mu_w]
-      simp
-    · unfold vl
-      exact padicValInt_pow_eq_mul l _ _
+    exact padicValInt_pow_eq_mul l _ _
   rw [padicValInt_prod_eq_sum l _ _ hne, Finset.sum_congr rfl hterm]
   refine Finset.sum_bij_ne_zero
     (fun x _ _ => maxB t w + (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ)))) ?_ ?_ ?_ ?_

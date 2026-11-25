@@ -587,7 +587,7 @@ theorem ind_gen (em : ZMod d → O →+* C) (hint : ∀ a x, V.Ge 0 (em a x))
     simp only [P, mfac, Finset.prod_apply]
   refine hlim (fun k => P ^ (V.l ^ k)) _ (fun k => hpowM P hP _) ?_
   intro K s n
-  obtain ⟨hint0, hcg⟩ := entry_cg em hint xs hδ0 hδ1 hfrob hxs a (ty n) s
+  obtain ⟨-, hcg⟩ := entry_cg em hint xs hδ0 hδ1 hfrob hxs a (ty n) s
   have hε : (if ty n = a + (s : ZMod d) then (1 : C) else 0) = 0 ∨
       (if ty n = a + (s : ZMod d) then (1 : C) else 0) = 1 := by
     split_ifs <;> simp

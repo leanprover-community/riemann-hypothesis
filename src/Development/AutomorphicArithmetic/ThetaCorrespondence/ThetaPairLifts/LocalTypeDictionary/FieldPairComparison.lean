@@ -123,7 +123,8 @@ theorem branching_D1_le_weight_difference (n : ℕ) (lam : DomWeight (n + 1)) (s
     exact Finset.sum_range_sub' g n
   have a0 : g 0 = lam.w 0 := by simp [g]
   have an : g n = lam.w (Fin.last n) := by simp [g]; rfl
-  rwa [h2, a0, an] at h1
+  rw [h2, a0, an] at h1
+  exact h1
 
 end GlobalTheory.BranchBound
 
@@ -454,7 +455,7 @@ theorem log_prod_le {ι : Type} [Fintype ι] (a : ι → ℝ) (c : ℝ) (hc : 0 
   · obtain ⟨i, hi⟩ := hz
     rw [Finset.prod_eq_zero (Finset.mem_univ i) hi, Real.log_zero]
     positivity
-  · push Not at hz
+  · push_neg at hz
     rw [Real.log_prod (fun i _ => hz i)]
     calc ∑ i, Real.log (a i) ≤ ∑ _i : ι, c := Finset.sum_le_sum fun i _ => h i
       _ = Fintype.card ι * c := by simp
@@ -563,12 +564,14 @@ private theorem funEquiv_symm_mapVV {K ι : Type} [Field K] [CharZero K] [Fintyp
     rwa [LinearEquiv.apply_symm_apply] at this
   have h2 := GlobalTheory.BrRat.isFunForm_map φ σ h1
   have h3 := (isFunForm_iff_eq σ _ _).1 h2
-  rwa [LinearEquiv.symm_apply_eq]
+  rw [LinearEquiv.symm_apply_eq]
+  exact h3
 
 theorem _root_.GlobalTheory.T.branchingPairing_extendScalars : ∀ {K ι : Type} [Field K] [CharZero K] [Fintype ι] {n N : ℕ} (φ : K →+* ℂ) (σ : ι → DomWeight n) (hN : N = n + 1)
     (Λ : ι → DomWeight N) (u : VV K Λ) (v : VV K fun τ => (σ τ).dual),
     GlobalTheory.FunObj.brPair σ hN Λ (GlobalTheory.CoefModel.mapVV φ Λ u) (GlobalTheory.CoefModel.mapVV φ (fun τ => (σ τ).dual) v) =
-      φ (GlobalTheory.BrPairF.brPairF σ hN Λ u v) := GlobalTheory.BrPairF.brPair_mapVV
+      φ (GlobalTheory.BrPairF.brPairF σ hN Λ u v) :=
+  _root_.GlobalTheory.BrPairF.brPair_mapVV
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BranchingPairingExtendScalarsStatement =====
@@ -612,7 +615,8 @@ theorem funEquiv_symm_mem_nabAt_of_nabAtr : ∀ {E K ι : Type} [Field E] [Numbe
   have e2 : GlobalTheory.FunObj.funEquiv σ (s • rhoK σ B⁻¹ F) = s • rhoK (fun τ => (σ τ).dual) (invTrK B⁻¹) v := by
     rw [LinearMapClass.map_smul_of_tower, GlobalTheory.FunObj.funEquiv_rhoK, hF, LinearEquiv.apply_symm_apply]
   have h3 : (s • rhoK σ B⁻¹ F).1 ∈ nabStd K σ := by
-    rwa [GlobalTheory.FunObj.funEquiv_mem_nabStd, e2]
+    rw [GlobalTheory.FunObj.funEquiv_mem_nabStd, e2]
+    exact hsv
   exact h3
 
 end GlobalTheory
@@ -660,7 +664,8 @@ theorem mem_dualFr_span_iff_dualsum {K : Type} [Field K] [NumberField K] {n : �
     (φ : Fin n → K) :
     φ ∈ dualFr (Submodule.span (𝓞 K) S) ↔ ∀ x ∈ S, φ ⬝ᵥ x ∈ (1 : Submodule (𝓞 K) K) := by
   constructor
-  · exact fun h x hx => h x (Submodule.subset_span hx)
+  · intro h x hx
+    exact h x (Submodule.subset_span hx)
   · intro h x hx
     induction hx using Submodule.span_induction with
     | mem x hx => exact h x hx
@@ -817,7 +822,8 @@ theorem latLast_isLattice : ∀ {E : Type} [Field E] [NumberField E] {n N : ℕ}
   refine ⟨?_, ?_⟩
   · rw [hLeq]
     exact Submodule.FG.sup (hM.fg.map _) (Submodule.fg_span_singleton e)
-  · exact fun s hs hli => (LinearIndependent.iff_fractionRing _ _).mp hli
+  · intro s hs hli
+    exact (LinearIndependent.iff_fractionRing _ _).mp hli
 end GlobalTheory
 end -- clump:auto
 end -- clump:auto
@@ -1006,7 +1012,7 @@ private theorem exZ_le_of_width {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone �
       Formalism.CohomologicalDescent.UnitNormBounds.UN n (extN ν) a ≤ 0 + (w : ℤ) := by
     intro a ha
     have h := hw ⟨a, ha⟩
-    simp only [Formalism.CohomologicalDescent.UnitNormBounds.UN, extN, ha, dite_eq_left]
+    simp only [Formalism.CohomologicalDescent.UnitNormBounds.UN, extN, ha, dif_pos]
     simp only at h
     constructor <;> omega
   have h := Formalism.CohomologicalDescent.E.exIntervalLt_of_exCut GlobalTheory.LeviCut.exCut n (extN ν) hanti l hl 0 w hI
@@ -1021,7 +1027,7 @@ private theorem natW_wtOf_add_le (n : ℕ) (E : Finset ℚ) (lo hi : ℝ) (hE : 
   split_ifs with h
   · obtain ⟨z, hz⟩ := GlobalTheory.SignedHC.highestWeight_int h.1 h.2 a
     obtain ⟨z', hz'⟩ := GlobalTheory.SignedHC.highestWeight_int h.1 h.2 ⟨n - 1, by omega⟩
-    simp only [Formalism.BasicNotions.DomWeight.natW, Formalism.BasicNotions.DomWeight.detShift, dite_eq_left hpos, hz, hz', Int.floor_intCast]
+    simp only [Formalism.BasicNotions.DomWeight.natW, Formalism.BasicNotions.DomWeight.detShift, dif_pos hpos, hz, hz', Int.floor_intCast]
     have e1 : (z : ℚ) = GlobalTheory.SignedHC.descEnum E h.1 a - (((n : ℚ) - 1) / 2 - ((a : ℕ) : ℚ)) := hz.symm
     have e2 : (z' : ℚ) = GlobalTheory.SignedHC.descEnum E h.1 ⟨n - 1, by omega⟩ -
         (((n : ℚ) - 1) / 2 - ((n - 1 : ℕ) : ℚ)) := hz'.symm
@@ -1143,7 +1149,7 @@ private theorem entries_top_bound (D : D7) (large₂ : SizeData₂ D) (hS : Glob
     have e : G.v i = ⌊(D.hc τ).v ⟨i - 2, hi⟩⌋ := by
       show GlobalTheory.SignedHC.GridData.extend 2 (D.hc τ).v i = _
       unfold GlobalTheory.SignedHC.GridData.extend
-      rw [dite_eq_left hi]
+      rw [dif_pos hi]
     rw [e]
     have f1 : ((⌊(D.hc τ).v ⟨i - 2, hi⟩⌋ : ℤ) : ℚ) ≤ (D.hc τ).v ⟨i - 2, hi⟩ := Int.floor_le _
     have f2 : (D.hc τ).v ⟨i - 2, hi⟩ < ((⌊(D.hc τ).v ⟨i - 2, hi⟩⌋ : ℤ) : ℚ) + 1 := Int.lt_floor_add_one _
@@ -1158,7 +1164,7 @@ private theorem entries_top_bound (D : D7) (large₂ : SizeData₂ D) (hS : Glob
     have e : G.e l = ⌊(D.hc τ).e ⟨l - 1, hl⟩⌋ := by
       show GlobalTheory.SignedHC.GridData.extend 1 (D.hc τ).e l = _
       unfold GlobalTheory.SignedHC.GridData.extend
-      rw [dite_eq_left hl]
+      rw [dif_pos hl]
     rw [e]
     have hpos : (0 : ℚ) < (D.hc τ).e ⟨l - 1, hl⟩ := by
       have h0 : (0 : ℚ) < (D.hc τ).b ⟨l - 1, hl⟩ := by exact_mod_cast hc.1
@@ -1295,7 +1301,8 @@ private theorem exponent_bound : ∃ CF0 : ℝ, ∀ CF : ℝ, CF0 ≤ CF → ∃
           ≤ ∑ _τ : D.what₂.Tau, ((ch.G.V (.top D.R.m)).rank).choose 2 * Nat.log p W :=
             Finset.sum_le_sum fun τ _ => (hτ τ).1
         _ = _ := by rw [Finset.sum_const, Finset.card_univ, smul_eq_mul, mul_assoc]
-    · exact fun hWp => Finset.sum_eq_zero fun τ _ => (hτ τ).2 hWp
+    · intro hWp
+      exact Finset.sum_eq_zero fun τ _ => (hτ τ).2 hWp
   obtain ⟨Dn, h0, hdvd, hlog⟩ := exists_prod_bound W _
     (fun p => ∑ τ, Formalism.CohomologicalDescent.LA.exZ _ _ le_rfl (wt ch.G (.top D.R.m) τ).natW p) hex
   refine ⟨by linarith, Dn, h0, hdvd, ?_⟩
@@ -1358,7 +1365,8 @@ private theorem isLattice_comap_gl {R K : Type} [CommRing R] [Field K] [Algebra 
   have h : M.comap (g.1.mulVecLin.restrictScalars R) = M.map ((e.symm : (n → K) →ₗ[K] (n → K)).restrictScalars R) := by
     ext x
     constructor
-    · exact fun hx => ⟨e x, hx, e.symm_apply_apply x⟩
+    · intro hx
+      exact ⟨e x, hx, e.symm_apply_apply x⟩
     · rintro ⟨y, hy, rfl⟩
       have : e (e.symm y) ∈ M := by rw [e.apply_symm_apply]; exact hy
       exact this
@@ -1546,14 +1554,16 @@ theorem vw_lw_arith : ∀ {K : Type} [Field K] [NumberField K] [StarRing K],
       ∑ w ∈ s, Formalism.DivisionValues.lw w * (Formalism.DivisionValues.vw w (d : K) : ℝ) ≤ Real.log d) := by
   intro K _ _ _
   refine ⟨?_, ?_, ?_, ?_⟩
-  · exact fun w a b ha hb => Formalism.DivisionValues.ValuationRepresentative.vw_mul w a b ha hb
+  · intro w a b ha hb
+    exact Formalism.DivisionValues.ValuationRepresentative.vw_mul w a b ha hb
   · intro w m d hd hmd
     obtain ⟨k, rfl⟩ := hmd
     have hm0 : m ≠ 0 := by rintro rfl; simp at hd
     have hk0 : k ≠ 0 := by rintro rfl; simp at hd
     have hnn : ∀ n : ℕ, 0 ≤ Formalism.DivisionValues.vw w (n : K) := by
       intro n
-      simpa using Formalism.DivisionValues.ValuationRepresentative.vw_int_nonneg w ((n : ℕ) : 𝓞 K)
+      have h := Formalism.DivisionValues.ValuationRepresentative.vw_int_nonneg w ((n : ℕ) : 𝓞 K)
+      simpa using h
     refine ⟨hnn m, ?_⟩
     rw [Nat.cast_mul, Formalism.DivisionValues.ValuationRepresentative.vw_mul w _ _ (by exact_mod_cast hm0) (by exact_mod_cast hk0)]
     linarith [hnn k]
@@ -1561,8 +1571,11 @@ theorem vw_lw_arith : ∀ {K : Type} [Field K] [NumberField K] [StarRing K],
     have hf := FractionalIdeal.finite_factors (K := K)
       (FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 K)) (d : K))
     rw [Filter.eventually_cofinite] at hf
-    exact hf.subset (fun w hw => hw)
-  · exact fun d hd s => Formalism.EigenvalueLevelCeiling.sum_lw_vw_natCast_le s d hd.ne'
+    refine hf.subset ?_
+    intro w hw
+    exact hw
+  · intro d hd s
+    exact Formalism.EigenvalueLevelCeiling.sum_lw_vw_natCast_le s d hd.ne'
 
 end GlobalTheory
 end -- clump:auto
@@ -1636,7 +1649,8 @@ private theorem full_grid_corner {D : D7} {T : Type} {L : LevCh D T} {sc : Const
       e.symm '' (Formalism.UG.CS.globLat (finG (G.V (.grid D.R.m D.R.m)) y) (G.Λ (.grid D.R.m D.R.m)) : Set _) := by
     ext x
     constructor
-    · exact fun hx => ⟨e x, hx, e.symm_apply_apply x⟩
+    · intro hx
+      exact ⟨e x, hx, e.symm_apply_apply x⟩
     · rintro ⟨z, hz, rfl⟩
       change e (e.symm z) ∈ Formalism.UG.CS.globLat (finG (G.V (.grid D.R.m D.R.m)) y) (G.Λ (.grid D.R.m D.R.m))
       simpa using hz
@@ -1659,7 +1673,9 @@ theorem finPair : FinPairK := by
   refine ⟨fun w => (Formalism.DivisionValues.vw w ((Dn : ℕ) : D.what₂.LL) : ℝ), ⟨fun w => ?_, ?_, fun s => ?_⟩, ?_⟩
   · show (0 : ℝ) ≤ (Formalism.DivisionValues.vw w ((Dn : ℕ) : D.what₂.LL) : ℝ)
     exact_mod_cast (h5div w Dn Dn hDn dvd_rfl).1
-  · exact (h5fin Dn hDn).subset fun w hw => fun h0 => hw (by simp [h0])
+  · refine (h5fin Dn hDn).subset fun w hw => ?_
+    intro h0
+    exact hw (by simp [h0])
   · refine (h5sum Dn hDn s).trans (hlog.trans ?_)
     unfold bOne
     have e1 : 0 ≤ (D.R.f : ℝ) * (bigN D : ℝ) ^ 2 * large₂.sc.b * Real.log large₂.sc.b := by positivity

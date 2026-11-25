@@ -216,8 +216,7 @@ theorem det_eq_mul_X_pow {k ι : Type} [Field k] (n r e : ℕ) (t : ℕ → Matr
 open Module in
 private theorem index_span_matrix_eq_val_det (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] (W : Type) [AddCommGroup W] [Module O W] (l n : ℕ)
-    (bs : Fin n → W) (m : Matrix (Fin n) (Fin n) O) (hbs : LinearIndependent O bs)
-    :
+    (bs : Fin n → W) (m : Matrix (Fin n) (Fin n) O) (hbs : LinearIndependent O bs) :
     Formalism.MainNotions.IntegralHeckeForms.sIdx l (Submodule.span O (Set.range bs))
       (Submodule.span O (Set.range fun a => ∑ c, m c a • bs c)) =
         Formalism.MainNotions.BlochKatoReduction.Gen.nval O l m.det := by

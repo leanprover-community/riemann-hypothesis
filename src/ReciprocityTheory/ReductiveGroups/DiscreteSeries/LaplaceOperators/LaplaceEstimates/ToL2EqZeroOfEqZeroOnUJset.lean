@@ -555,7 +555,7 @@ theorem closed_irreducible_lowest_type_data (ε : Fin n → Bool) (lam' : Fin n 
     exact hw0 ((Submodule.mem_bot ℂ).1 hw)
   obtain ⟨φ, hφK, hφI⟩ := KTypeIsomorphism.exists_phi hσ hD hirr hσ hD hV2
   have huniv := rigid_universal hσ hD hirr hcas hK hσ hD hc2 hstd φ hφK hφI
-  have hjw := datumEmbedding_highest_ne_zero hP hv₀
+  have hjw := datumEmbedding_highest_ne_zero hstd hP hv₀
   have hstab := closGen_stable hσ hD hirr hcas
   obtain ⟨U0, hU0⟩ := data_unitary_equiv hstd hσ hD hirr hcas hK hW0 hσ hD hV2 hc2 hVK2
   let U : closGen (smE ε (rreg ε)) W' ≃ₗᵢ[ℂ] Hlam ε (S7.PsiM T' μ') T'.w := U0

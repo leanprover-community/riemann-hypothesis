@@ -733,14 +733,8 @@ namespace CrystallineSemistableComparison.Pb
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
-theorem bW_phi (r : Res l K) (M : Model l K) (n j : ℕ) (y : (HSW r M j).M n) :
-    phiM r M n j (bW r M n j y) = bW r M n j ((Wc.phiS l (B.schFn M.p) r.ρ j).f n y) := by apply _root_.GlobalTheory.CompanionTheory.BaseChangeFrob.phiM_bW
-
 theorem bW_gal (r : Res l K) (M : Model l K) (σ : Gal(PadicAlgCl l/K)) (hσ : ∀ w, ACris.galCris σ (r.w w) = r.w w) (n j : ℕ)
     (y : (HSW r M j).M n) : galM r M σ hσ n j (bW r M n j y) = bW r M n j y := by apply _root_.GlobalTheory.CompanionTheory.BWGal.bW_gal
-
-theorem bW_pull (r : Res l K) {M N : Model l K} (u : M.X ⟶ N.X) (hu : u ≫ N.p = M.p) (n j : ℕ) (y : (HSW r N j).M n) :
-    pullM r u hu n j (bW r N n j y) = bW r M n j ((Wc.pullS l r.ρ (B.schMap u hu) j).f n y) := by apply _root_.GlobalTheory.CompanionTheory.CrisBase.pullM_bW
 
 theorem nu_red (r : Res l K) {N : ℕ} (hT : Mid.TeichmullerCongruence r N) (M : Model l K) (n j : ℕ)
     (x : B.Hc (B.schFn M.p) (okToOC l K) true (n + 1) j) :

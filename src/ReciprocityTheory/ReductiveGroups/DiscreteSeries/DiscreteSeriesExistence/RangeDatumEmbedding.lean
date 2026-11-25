@@ -58,7 +58,7 @@ theorem anyF (hDS : Formalism.MainNotions.S.IsDS ε lam σ) (hgap : StdGap ε la
     rw [h0, norm_zero] at h1
     exact zero_ne_one h1
   obtain ⟨U, hU⟩ := equiv_sigLam_of_isDS hDS hgap hP hw
-  have hc0 := datumEmbedding_highest_ne_zero hP hw
+  have hc0 := datumEmbedding_highest_ne_zero hgap hP hw
   set c : ℝ := ‖uniformisationL2 ε Ψ T.w T.w‖ with hc
   have hcne : (c : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (norm_ne_zero_iff.2 hc0)
   let jl : T.V →ₗ[ℂ] H := ((c : ℂ)⁻¹) • (U.toLinearEquiv.toLinearMap ∘ₗ datumEmbedding hP T.w)

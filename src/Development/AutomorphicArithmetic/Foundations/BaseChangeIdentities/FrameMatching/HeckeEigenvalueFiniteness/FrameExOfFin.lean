@@ -123,17 +123,17 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : Rd.R
   {S : Finset (Pl E)} (F₀ : Frame0 hR π S) (T' : Finset (Pl E)) (c : Pl E → (Fin n → ℤ) →₀ ℂ) (e : ∀ w : Pl E, GLw n w → ℂ)
   (b : ∀ w : Pl E, GLw n w)
 
-theorem loc_KU_eq_iwU_of_mem {w : Pl E} (hw : w ∈ T') : (F₀.loc T' c e b).KU w = iwU n w (b w) := ite_eq_left hw
+theorem loc_KU_eq_iwU_of_mem {w : Pl E} (hw : w ∈ T') : (F₀.loc T' c e b).KU w = iwU n w (b w) := if_pos hw
 
 theorem KU_off {w : Pl E} (hw : w ∉ T') : (F₀.loc T' c e b).KU w = F₀.d₀.KU w := by
   have h0 : w ∉ F₀.d₀.T := by rw [F₀.T₀]; exact Finset.notMem_empty w
   unfold LocData.KU
-  rw [ite_eq_right hw, ite_eq_right h0]
+  rw [if_neg hw, if_neg h0]
 
 theorem KU_eq_KL_of_not_mem_bad {w : Pl E} (h1 : w ∉ F₀.d₀.S₀) (h2 : w ∉ F₀.d₀.Bad) : F₀.d₀.KU w = KL n w := by
   have h0 : w ∉ F₀.d₀.T := by rw [F₀.T₀]; exact Finset.notMem_empty w
   unfold LocData.KU
-  rw [ite_eq_right h0, ite_eq_right h1, ite_eq_right h2]
+  rw [if_neg h0, if_neg h1, if_neg h2]
 
 theorem levOff (hT : ∀ w ∈ T', w ∈ F₀.Sec ∧ IsWitt n w (b w)) :
     U.LevelOff F₀.Sec (F₀.loc T' c e b).B (F₀.loc T' c e b).KU := by
@@ -194,9 +194,9 @@ theorem eig_B (hG : GcHecke) (hP : PowEig) (hA : LocAlg) (hdis : ∀ w ∈ T', �
     rintro K' g rfl rfl hH ⟨y, hy0, hy⟩
     exact ⟨y, hy0, hP E n w (σ w) _ (hlev w) _ hH y hy m⟩
   by_cases h1 : w ∈ T'
-  · exact key _ _ (ite_eq_left h1) (ite_eq_left h1) (hG E n w (hdis w h1).1 _ _ _) (hT w h1)
+  · exact key _ _ (if_pos h1) (if_pos h1) (hG E n w (hdis w h1).1 _ _ _) (hT w h1)
   by_cases h2 : w ∈ F₀.d₀.S₀
-  · exact key _ _ ((ite_eq_right h1).trans (ite_eq_left h2)) ((ite_eq_right h1).trans (ite_eq_left h2)) (hS w h2).1 (hS w h2).2
+  · exact key _ _ ((if_neg h1).trans (if_pos h2)) ((if_neg h1).trans (if_pos h2)) (hS w h2).1 (hS w h2).2
   have h3 : w ∈ F₀.d₀.Bad := by
     rcases Finset.mem_union.1 hw with h | h
     · exact absurd (Finset.mem_union.1 h) (not_or.2 ⟨h1, h2⟩)
@@ -204,7 +204,7 @@ theorem eig_B (hG : GcHecke) (hP : PowEig) (hA : LocAlg) (hdis : ∀ w ∈ T', �
   have h0 : IsHecke ((F₀.loc T' c e b).KU w) (0 : UL n w → ℂ) := ⟨HasCompactSupport.zero, fun _ _ _ => ⟨rfl, rfl⟩⟩
   have hL := (hA E n w (σ w) _ (hlev w) 0 0 h0 h0).2.2.2.2.2.2
   obtain ⟨y, hy, hy0⟩ := (Submodule.ne_bot_iff _).1 (hne w h3)
-  refine key _ (U.lone ((F₀.loc T' c e b).KU w)) rfl ((ite_eq_right h1).trans (ite_eq_right h2)) hL.1
+  refine key _ (U.lone ((F₀.loc T' c e b).KU w)) rfl ((if_neg h1).trans (if_neg h2)) hL.1
     ⟨⟨y, hy⟩, fun h => hy0 (congrArg Subtype.val h), ?_⟩
   exact (LinearMap.congr_fun hL.2 _).trans rfl
 
@@ -274,7 +274,7 @@ theorem frameEx_of (hUS : USide) (hSph : SphOne) (hSpec : SpecTrace) (hA : LocAl
     · exact ⟨0, 0, fun h => absurd h hw⟩
     obtain ⟨k, Dl, hDl⟩ := hD w hw
     have hwT : w ∉ T' := fun h => (hT' w h).2.2.2.2.1 hw
-    have hK : (F₀.loc T' 0 0 b).KU w = (F₀.d₀.K' w).subgroupOf (UL n w) := (ite_eq_right hwT).trans (ite_eq_left hw)
+    have hK : (F₀.loc T' 0 0 b).KU w = (F₀.d₀.K' w).subgroupOf (UL n w) := (if_neg hwT).trans (if_pos hw)
     have hfix := ((fam.comp i₀).2.2.2 w (F₀.S₀ w hw).1).2.1
     rw [hK] at hfix
     obtain ⟨ew, P, h1, h2, h3, h4, h5⟩ := hLE E n w (F₀.S₀ w hw).2 _ (F₀.ok₀.K' w hw).1 (F₀.ok₀.K' w hw).2.1 (F₀.K'_lev w hw)
@@ -411,7 +411,8 @@ theorem peakCone : PeakCone := by
     refine ⟨Finsupp.single (fun i : Fin n => |M| * ((n : ℤ) - (i : ℕ)))
       (((∏ i, α i ^ (|M| * ((n : ℤ) - (i : ℕ))) : ℂˣ)⁻¹ : ℂˣ) : ℂ), ?_, ?_, by simp⟩
     · intro z hz
-      rwa [Finset.mem_singleton.1 (Finsupp.support_single_subset hz)]
+      rw [Finset.mem_singleton.1 (Finsupp.support_single_subset hz)]
+      exact hx0
     · unfold evalGL
       rw [Finsupp.sum_single_index (by simp)]
       exact Units.inv_mul _
@@ -521,11 +522,13 @@ private theorem exists_ex (hE : ShufEx) (n a : ℕ) (s : Finset (Fin (n / 2))) (
       have hk : k ∈ symIdx n (a % 2 = 1) s ∪ symIdx n ((n - a) % 2 = 1) sᶜ := hcov ▸ Finset.mem_univ k
       rcases Finset.mem_union.1 hk with hk | hk
       · have hr : k ∈ Set.range ((symIdx n (a % 2 = 1) s).orderEmbOfFin h.2.1) := by
-          rwa [Finset.range_orderEmbOfFin]
+          rw [Finset.range_orderEmbOfFin]
+          exact hk
         obtain ⟨i, hi⟩ := hr
         exact ⟨.inl i, hi⟩
       · have hr : k ∈ Set.range ((symIdx n ((n - a) % 2 = 1) sᶜ).orderEmbOfFin h.2.2) := by
-          rwa [Finset.range_orderEmbOfFin]
+          rw [Finset.range_orderEmbOfFin]
+          exact hk
         obtain ⟨j, hj⟩ := hr
         exact ⟨.inr j, hj⟩
   exact ⟨Equiv.ofBijective f hf, fun i => rfl, fun j => rfl⟩
@@ -623,20 +626,20 @@ theorem mok0 {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : 
   have hlev : ∀ w ∈ F₀.d₀.Bad, GlobalTheory.BCT.IsLevel (MonoidHom.id _) (KL n w) (F₀.d₀.KB w) := fun w hw => by
     have h := F₀.levFam.1 w
     have e : F₀.d₀.KU w = F₀.d₀.KB w :=
-      (ite_eq_right (h0 w)).trans ((ite_eq_right fun h' => Finset.disjoint_left.1 F₀.ok₀.disj.2.2 h' hw).trans (ite_eq_left hw))
+      (if_neg (h0 w)).trans ((if_neg fun h' => Finset.disjoint_left.1 F₀.ok₀.disj.2.2 h' hw).trans (if_pos hw))
     rwa [e] at h
   refine ⟨fun w hw => absurd hw (h0 w), fun w hw => ⟨(F₀.S₀ w hw).2, fun g => ?_, F₀.K'_lev w hw⟩,
     fun w hw hs => ⟨hlev w hw, fun a ha => ?_⟩, fun w hw hs => ⟨F₀.kB w, F₀.kB_pos w hw hs, hlev w hw, fun γ => ?_, fun a ha => ?_⟩⟩
   · unfold UL
-    rw [ite_eq_left (F₀.S₀ w hw).2]
+    rw [if_pos (F₀.S₀ w hw).2]
     exact Subgroup.mem_top g
-  · rw [F₀.fix_def a ha w, ite_eq_left hw, ite_eq_left hs]
+  · rw [F₀.fix_def a ha w, if_pos hw, if_pos hs]
   · have e : {γ : UL n w | γ.1 ∈ MB.congK n w (F₀.kB w)} =
         (((GlobalTheory.PrincCong.congSub w n (F₀.kB w)).subgroupOf (UL n w) : Subgroup (UL n w)) : Set (UL n w)) :=
       Set.ext fun x => (GlobalTheory.PrincCong.mem_congSub_iff w n (F₀.kB w) x.1).symm
-    rw [F₀.KB_def w, ite_eq_left hw, ite_eq_right hs, e, Subgroup.closure_eq]
+    rw [F₀.KB_def w, if_pos hw, if_neg hs, e, Subgroup.closure_eq]
     exact GlobalTheory.PrincCong.mem_congSub_iff w n (F₀.kB w) γ.1
-  · rw [F₀.fix_def a ha w, ite_eq_left hw, ite_eq_right hs]
+  · rw [F₀.fix_def a ha w, if_pos hw, if_neg hs]
 
 end UpperTheory.HeckeLevelFrameExistence
 
@@ -762,7 +765,8 @@ theorem specTrace : UModel → LocAlg → SpecTrace := by
       show twTr (σ i w).ρ (KL n w) (K' w) (f w) LinearMap.id =
         twTr (σ i w).ρ (KL n w) (KL n w) (f w) LinearMap.id
       rw [hKB w hwS hwB]
-  · exact fun i₀ hi => h3 i₀ fun w => hi w.1 w.2
+  · intro i₀ hi
+    exact h3 i₀ fun w => hi w.1 w.2
 
 end GlobalTheory.CompanionTheory.SpecModel
 
@@ -984,7 +988,8 @@ theorem uModel : UModel := by
       rw [LinearMap.toMatrix_mulVec_repr, (hy i₀ w rfl).2]
     have hne : ∀ w, ∃ x, a i₀ w x ≠ 0 := by
       intro w
-      by_contra! hcon
+      by_contra hcon
+      push_neg at hcon
       apply (hy i₀ w rfl).1
       apply (bs i₀ w).repr.map_eq_zero_iff.mp
       ext x
@@ -995,7 +1000,7 @@ theorem uModel : UModel := by
     refine h3 i₀ v ?_ ?_ ?_
     · intro h0
       have h1 := congrFun h0 ⟨i₀, x⟩
-      simp only [v, ite_true, Pi.zero_apply] at h1
+      simp only [v, if_true, Pi.zero_apply] at h1
       exact (Finset.prod_ne_zero_iff.mpr fun w _ => hx w) h1
     · funext ⟨i, α⟩
       simp only [A]
@@ -1085,9 +1090,11 @@ theorem monoRes : MonoRes := by
     rw [Units.val_mul, norm_mul, Units.val_inv_eq_inv_val, norm_inv, hsg k, inv_one, mul_one]
   constructor
   · intro i j hij
-    simpa only [hn] using hξ _ _ (s.monoL.monotone hij)
+    simp only [hn]
+    exact hξ _ _ (s.monoL.monotone hij)
   · intro i j hij
-    simpa only [hn] using hξ _ _ (s.monoR.monotone hij)
+    simp only [hn]
+    exact hξ _ _ (s.monoR.monotone hij)
 
 end PositivityTheory.Rg.BcB.F.Tail
 
@@ -1118,8 +1125,10 @@ open PositivityTheory.Rg.BcB.F
 theorem candIndep : CandIndep := by
   intro hR E _ _ _ n π S F₀ T' c c' e e' b b' i s₁ s₂ Pa Pb D
   constructor
-  · exact fun h => ⟨h.ctx, h.leaves₁, h.leaves₂, h.inf₁, h.inf₂, h.vec⟩
-  · exact fun h => ⟨h.ctx, h.leaves₁, h.leaves₂, h.inf₁, h.inf₂, h.vec⟩
+  · intro h
+    exact ⟨h.ctx, h.leaves₁, h.leaves₂, h.inf₁, h.inf₂, h.vec⟩
+  · intro h
+    exact ⟨h.ctx, h.leaves₁, h.leaves₂, h.inf₁, h.inf₂, h.vec⟩
 
 end PositivityTheory.Rg.BcB.F.FX
 
@@ -1169,7 +1178,8 @@ theorem exTbOf : ExTbOf := by
   · intro w hw
     dsimp only
     rw [dite_eq_right (fun h => hw h.1)]
-  · exact fun w hw hu hs => Finset.mem_insert_of_mem (Finset.mem_filter.2 ⟨hw, hu, hs⟩)
+  · intro w hw hu hs
+    exact Finset.mem_insert_of_mem (Finset.mem_filter.2 ⟨hw, hu, hs⟩)
 
 end PositivityTheory.Rg.BcB.F.FX
 
@@ -1230,7 +1240,8 @@ end StandardSymmetricSums
 
 open StandardSymmetricSums
 
-theorem coneTwo : ConeTwo := PositivityTheory.Rg.BcB.F.Choice.IndefiniteRowSideFullHecke.coneTwo'
+theorem coneTwo : ConeTwo :=
+  _root_.PositivityTheory.Rg.BcB.F.Choice.IndefiniteRowSideFullHecke.coneTwo'
 
 end PositivityTheory.Rg.BcB.F.Choice
 
@@ -1400,7 +1411,8 @@ theorem xi_map (β : Fin (n / 2) → ℂˣ) : Finset.univ.val.map (xiOf n β) = 
     ext k
     simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_map]
     constructor
-    · exact fun h => ⟨⟨k.val, h⟩, Fin.ext rfl⟩
+    · intro h
+      exact ⟨⟨k.val, h⟩, Fin.ext rfl⟩
     · rintro ⟨i, rfl⟩
       exact i.isLt
   have e2 : ((Finset.univ : Finset (Fin n)).filter (fun k => ¬ k.val < n / 2)).filter
@@ -1645,7 +1657,7 @@ theorem satCompAt : SatCompAt := by
     exact hex.choose_spec.2 x
   have hUL : ∀ g, g ∈ UL n w ↔ g ∈ UJ (cj w) (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) := by
     intro g
-    rw [UL, ite_eq_right hw]
+    rw [UL, if_neg hw]
   obtain ⟨e, he⟩ := GlobalTheory.DefU.Inert.locU_equiv E n w (cj w) hcj hI.2.1
   let f := conjU (cj w) b hb (UL n w) hUL
   let u : locU n w → UL n w := fun x => ⟨(e x).1, (hUL _).2 (e x).2⟩
@@ -1677,7 +1689,8 @@ theorem satCompAt : SatCompAt := by
     have h1 : p (e.symm ⟨g.1, (hUL _).1 g.2⟩) = f g := by rw [hpf, hu]
     have h0 : p0 (e.symm ⟨g.1, (hUL _).1 g.2⟩) = g := by rw [hp0u, hu]
     have := T.isIntertwining' (e.symm ⟨g.1, (hUL _).1 g.2⟩)
-    rwa [MonoidHom.comp_apply, MonoidHom.comp_apply, h1, h0] at this
+    rw [MonoidHom.comp_apply, MonoidHom.comp_apply, h1, h0] at this
+    exact this
 
   have hne : (ϖ : w.adicCompletion E) ≠ 0 := ϖ.ne_zero
   have hunif : IsUnifAt ϖ := by

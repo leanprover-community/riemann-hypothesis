@@ -1393,10 +1393,6 @@ end GlobalTheory.CompanionTheory.Ar.PairIsoK
 
 namespace PositivityTheory.UnitarySelfGeneration
 
-open MvPolynomial AlgebraicGeometry CategoryTheory NumberField Filter Topology ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cmp
-open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
-open ReciprocityTheory.ChartRestriction.G.AI.I4 (IsPullHerm imageZ blockFnField)
-open scoped ComplexOrder
 
 alias pair_iso := _root_.GlobalTheory.CompanionTheory.Ar.PairIsoK.pair_iso
 

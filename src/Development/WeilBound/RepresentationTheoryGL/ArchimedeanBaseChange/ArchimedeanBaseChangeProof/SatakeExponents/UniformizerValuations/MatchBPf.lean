@@ -53,7 +53,6 @@ open scoped Classical
 namespace PositivityTheory.Rg.BcB.F.MB
 
 open PositivityTheory.Rg.BcB.F.U (lpow lone)
-open PositivityTheory.Rg.BcN.F2 (mconv)
 open PositivityTheory.Rg.BcB.F.MT (MatchLin)
 
 section SlopeTestRemainingChoices

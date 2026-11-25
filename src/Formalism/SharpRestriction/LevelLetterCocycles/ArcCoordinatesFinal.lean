@@ -1261,7 +1261,7 @@ theorem ddExactL_of_litFont (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA H
   refine ⟨fun x => (hker _).2 ⟨x, rfl⟩, fun x hx => hinj (by rw [hx, map_zero]), fun u hu => (hker u).1 hu⟩
 
 theorem splitting_of_literature_exactness (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (hA : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW)
+    (hA : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F)
     (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW) (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F)
     (hS : Split.SplitShapeL D HW) : SplittingArcLifting D HW F Cm :=
   splitting_general_of_exactness D HW F Cm hA h6 hH hTr hWX (ddExactL_of_litFont D HW F hFont) hS
@@ -1296,7 +1296,7 @@ theorem arc_coordinates_of_frobenius_levels (D : D7) (HW : HWOf D.loc) (F : FonO
 theorem split_case_A_of_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hA : AdmSplitA D HW F Cm) (hArc : AdmArcA D HW F Cm)
     (h4 : Formalism.MainNotions.DeltaInvariantLattices.P4 D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW)
     (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW) (h17 : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm9 D)
     (h2 : LevelZeroModPRefinedLocal D HW) : SplittingArcLifting D HW F Cm :=
   splitting_of_literature_exactness D HW F Cm hA h6 hH hTr hWX hFont

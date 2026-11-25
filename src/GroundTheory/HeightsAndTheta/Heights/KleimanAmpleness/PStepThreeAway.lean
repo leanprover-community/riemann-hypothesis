@@ -70,27 +70,10 @@ theorem homogeneousComponent_homog_mul {σ R : Type*} [CommRing R] {P : MvPolyno
     (hP : P.IsHomogeneous l) (G : MvPolynomial σ R) (d : ℕ) :
     homogeneousComponent d (P * G) =
       if l ≤ d then P * homogeneousComponent (d - l) G else 0 := by
-  conv_lhs => rw [← sum_homogeneousComponent G, Finset.mul_sum]
-
-  rw [map_sum]
-  have hterm : ∀ i, homogeneousComponent d (P * homogeneousComponent i G) =
-      if d = l + i then P * homogeneousComponent i G else 0 := fun i =>
-    homogeneousComponent_of_mem ((hP.mul (homogeneousComponent_isHomogeneous i G)))
-  simp_rw [hterm]
-  by_cases h : l ≤ d
-  · rw [ite_eq_left h]
-    have h2 : ∀ i, (if d = l + i then P * homogeneousComponent i G else 0) =
-        if d - l = i then P * homogeneousComponent i G else 0 := fun i => by
-      split_ifs <;> first | rfl | (exfalso; omega)
-    simp_rw [h2]
-    rw [Finset.sum_ite_eq]
-    split_ifs with hm
-    · rfl
-    · rw [homogeneousComponent_eq_zero, mul_zero]
-      simp only [Finset.mem_range] at hm
-      omega
-  · rw [ite_eq_right h]
-    exact Finset.sum_eq_zero fun i _ => ite_eq_right (by omega)
+  let _ := MvPolynomial.gradedAlgebra (σ := σ) (R := R)
+  simp_rw [← decomposition.decompose'_apply]
+  exact DirectSum.coe_decompose_mul_of_left_mem (homogeneousSubmodule σ R) d (b := G)
+    ((mem_homogeneousSubmodule l P).mpr hP)
 
 theorem span_singleton_pow_eq {R A : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] (a : A)
     (n : ℕ) : Submodule.span R {a} ^ n = Submodule.span R {a ^ n} := by
@@ -195,7 +178,7 @@ theorem idealMod_zeroIdeal_mul_le (D : SubSystem S x Ω) (σ : Ω) (I : Chart x)
   | mem a ha =>
     obtain ⟨f, s, e, hf, hs, hfe, hse, rfl⟩ := ha
     have h := homogeneousComponent_mul_mem D σ I hi hf e δ hδ
-    rw [homogeneousComponent_of_mem hfe, ite_eq_left rfl] at h
+    rw [homogeneousComponent_of_mem hfe, if_pos rfl] at h
     obtain ⟨t, ht⟩ := Submodule.mem_span_singleton.mp h
     have hs0 := eval_ne_zero_of_mem_monos I hs
     rw [Submodule.mem_span_singleton]

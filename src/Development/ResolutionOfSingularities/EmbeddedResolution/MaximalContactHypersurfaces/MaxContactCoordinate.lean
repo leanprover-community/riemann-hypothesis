@@ -323,7 +323,7 @@ theorem exists_isMaxContactCoord (I : X.IdealSheafData) {m : ℕ} (hm : 1 ≤ m)
       (IsLocalRing.ResidueField ↑(X.presheaf.stalk x)) :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl
   have : Algebra.FormallySmooth k (IsLocalRing.ResidueField ↑(X.presheaf.stalk x)) :=
-    formallySmooth_residueField k p x
+    formallySmooth_residueField k p x rfl
   have hli := linearIndependent_one_tmul_D_of_notMem_maximalIdeal_sq k ↑(X.presheaf.stalk x)
     ((X.presheaf.germ U x hxU).hom s) hs1 hs2
   have hne : (1 : IsLocalRing.ResidueField ↑(X.presheaf.stalk x)) ⊗ₜ[↑(X.presheaf.stalk x)]

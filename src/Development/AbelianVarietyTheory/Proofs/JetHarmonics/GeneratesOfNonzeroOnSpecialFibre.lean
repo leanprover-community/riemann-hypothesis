@@ -421,15 +421,6 @@ theorem flat_of_injective {A V : Type} [CommRing A] [IsDomain A] [IsPrincipalIde
   show Module.Flat A V
   infer_instance
 
-theorem isTan_iff_isTangent {V : Type} [CommRing V] {G : Over (Sp V)} [GrpObj G] (w : epsR V ⟶ G) :
-    IsTan (V := V) (R := V) (G := G) w ↔ IsTangent w := by
-  have : (1 : ptOver V V ⟶ G).left = η[G].left := by
-    show spMap (algebraMap V V) ≫ _ = _
-    rw [show spMap (algebraMap V V) = 𝟙 _ from Spec.map_id _]
-    exact Category.id_comp _
-  unfold IsTan IsTangent
-  rw [this]
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 theorem sec_cancel {S S' S'' : Scheme.{0}} {t : SAB H S} {G : SAB H S'} {t' : SAB H S''} {f : S' ⟶ S} {g : S'' ⟶ S'}

@@ -730,7 +730,7 @@ theorem mem_N_of_map_mem : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc)
     · rw [(D.loc l).PD_p K]
       exact GlobalTheory.EtaleExact.sep_RW LL
   have key := _root_.GlobalTheory.NL.FrobeniusMatrixUniqueness.main D HW F l K s LL h T₀ h0
-  obtain ⟨hinj, hexact, hsurj⟩ : Function.Injective (W.map ι) ∧ Function.Exact (W.map ι) (W.map π) ∧
+  obtain ⟨hinj, hexact, -⟩ : Function.Injective (W.map ι) ∧ Function.Exact (W.map ι) (W.map π) ∧
       Function.Surjective (W.map π) := hex
   haveI := GlobalTheory.EtaleExact.finite_OL LL
   haveI : IsNoetherianRing ↥(OL LL) := IsNoetherianRing.of_finite ℤ_[l] ↥(OL LL)

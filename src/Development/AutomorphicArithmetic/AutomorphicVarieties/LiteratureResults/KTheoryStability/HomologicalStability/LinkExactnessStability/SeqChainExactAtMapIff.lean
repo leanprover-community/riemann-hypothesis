@@ -77,7 +77,6 @@ theorem chains_map {V W : Type} (e : V → W) (F : Set (List V)) (q : ℕ) :
 end GlobalTheory.SeqCxMap
 
 section
-open GlobalTheory.SeqCx Matrix
 theorem _root_.GlobalTheory.T.seqChain_exactAt_map_iff : ∀ (V W : Type) (e : V → W), Function.Injective e → ∀ (F : Set (List V)) (p : ℕ), ExactAt (List.map e '' F) p ↔ ExactAt F p := by
   intro V W e he F p
   have hinj : Function.Injective (Finsupp.lmapDomain ℤ ℤ (List.map e)) := by

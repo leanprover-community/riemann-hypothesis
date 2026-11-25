@@ -112,8 +112,6 @@ theorem finite_tp_box : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal 
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -204,8 +202,6 @@ theorem hasQ_mul : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (f
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto

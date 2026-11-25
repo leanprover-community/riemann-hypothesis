@@ -62,33 +62,18 @@ variable {A : Type} (R : Type) [CommRing A] [CommRing R] [Algebra A R] {e n : �
 private def PP (M : Matrix (Fin n) (Fin n) A) (Z : Fin e → Matrix (Fin n) (Fin n) A) : Matrix (Fin n) (Fin n) (DD R e) :=
   Matrix.of fun a b => ⟨algebraMap A R (M a b), fun j => algebraMap A R (Z j a b), 0, 0⟩
 
-private theorem sum_a {ι : Type} (s : Finset ι) (f : ι → DD R e) : (∑ i ∈ s, f i).a = ∑ i ∈ s, (f i).a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => simp [Finset.sum_insert ha, ih]
-
-private theorem sum_ep {ι : Type} (s : Finset ι) (f : ι → DD R e) (j) : (∑ i ∈ s, f i).ep j = ∑ i ∈ s, (f i).ep j := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => simp [Finset.sum_insert ha, ih]
-
-private theorem sum_ep' {ι : Type} (s : Finset ι) (f : ι → DD R e) (j) : (∑ i ∈ s, f i).ep' j = ∑ i ∈ s, (f i).ep' j := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => simp [Finset.sum_insert ha, ih]
-
-private theorem sum_eta {ι : Type} (s : Finset ι) (f : ι → DD R e) : (∑ i ∈ s, f i).eta = ∑ i ∈ s, (f i).eta := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => simp [Finset.sum_insert ha, ih]
-
-private theorem congruenceCondition_mul (M M' : Matrix (Fin n) (Fin n) A) (Z Z' : Fin e → Matrix (Fin n) (Fin n) A) :
+private theorem congruenceCondition_mul (M M' : Matrix (Fin n) (Fin n) A)
+    (Z Z' : Fin e → Matrix (Fin n) (Fin n) A) :
     PP R M Z * PP R M' Z' = PP R (M * M') (fun j => M * Z' j + Z j * M') := by
-  ext a b j <;> simp [PP, Matrix.mul_apply, sum_a, sum_ep, sum_ep', sum_eta, Finset.sum_add_distrib]
+  have ha : ∀ f : Fin n → DD R e, (∑ k, f k).a = ∑ k, (f k).a := fun f =>
+    map_sum ({ toFun := DD.a, map_zero' := rfl, map_add' := fun _ _ => rfl } : DD R e →+ R) f _
+  have hep : ∀ j (f : Fin n → DD R e), (∑ k, f k).ep j = ∑ k, (f k).ep j := fun j f =>
+    map_sum ({ toFun := (·.ep j), map_zero' := rfl, map_add' := fun _ _ => rfl } : DD R e →+ R) f _
+  have hep' : ∀ j (f : Fin n → DD R e), (∑ k, f k).ep' j = ∑ k, (f k).ep' j := fun j f =>
+    map_sum ({ toFun := (·.ep' j), map_zero' := rfl, map_add' := fun _ _ => rfl } : DD R e →+ R) f _
+  have heta : ∀ f : Fin n → DD R e, (∑ k, f k).eta = ∑ k, (f k).eta := fun f =>
+    map_sum ({ toFun := DD.eta, map_zero' := rfl, map_add' := fun _ _ => rfl } : DD R e →+ R) f _
+  ext a b j <;> simp [PP, Matrix.mul_apply, ha, hep, hep', heta, Finset.sum_add_distrib]
 
 private theorem pair_matrix_transpose (M : Matrix (Fin n) (Fin n) A) (Z : Fin e → Matrix (Fin n) (Fin n) A) :
     (PP R M Z)ᵀ = PP R Mᵀ (fun j => (Z j)ᵀ) := rfl
@@ -140,15 +125,6 @@ private theorem ev_od {a : ℕ} {Z M : Matrix (Fin n) (Fin n) A} (hZ : Z ∈ Od 
   by_cases hk : ((i : ℕ) < a) ↔ ((k : ℕ) < a)
   · rw [(Submodule.mem_bot A).1 ((hZ k j).1 (by tauto)), mul_zero]
   · rw [(Submodule.mem_bot A).1 ((hM i k).2 hk), zero_mul]
-
-private theorem tri_mul {M N : Matrix (Fin n) (Fin n) A} (hM : ∀ i j, j < i → M i j = 0) (hN : ∀ i j, j < i → N i j = 0) :
-    ∀ i j, j < i → (M * N) i j = 0 := by
-  intro i j hij
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  by_cases hk : k < i
-  · rw [hM i k hk, zero_mul]
-  · rw [hN k j (lt_of_lt_of_le hij (not_lt.1 hk)), mul_zero]
 
 end P
 
@@ -257,7 +233,8 @@ theorem UpperTheory.V.Pa.rho1Tri :
           simp only [Matrix.mul_assoc]
           rw [← Matrix.mul_assoc (x.wX x.A v), h1, one_mul]
         rw [e]
-        exact tri_mul (k.loc j v g).1 (h4 g).1 a b hab
+        exact Matrix.BlockTriangular.mul (b := id)
+          (fun _ _ => (k.loc j v g).1 _ _) (fun _ _ => (h4 g).1 _ _) hab
       · rw [PP_apply, (h4 g).2 a]
         · rfl
         intro j

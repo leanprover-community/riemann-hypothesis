@@ -459,8 +459,6 @@ end GlobalTheory.CompanionTheory.Ar.Cmp.CoordK
 
 namespace PositivityTheory.UnitarySelfGeneration
 
-open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.PB Filter Topology
-open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
 
 end PositivityTheory.UnitarySelfGeneration
 end -- clump:auto

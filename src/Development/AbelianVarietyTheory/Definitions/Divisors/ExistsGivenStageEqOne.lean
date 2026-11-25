@@ -140,13 +140,9 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 abbrev Kw (w : Pl D.host.E) : Type := w.adicCompletion D.host.E
 
-@[reducible] def borelKw (w : Pl D.host.E) : MeasurableSpace (Kw w) := borel _
+@[reducible] instance borelKw (w : Pl D.host.E) : MeasurableSpace (Kw w) := borel _
 
-attribute [local instance] borelKw
-
-theorem borelSpaceKw (w : Pl D.host.E) : BorelSpace (Kw w) := ⟨rfl⟩
-
-attribute [local instance] borelSpaceKw
+instance borelSpaceKw (w : Pl D.host.E) : BorelSpace (Kw w) := ⟨rfl⟩
 
 def unifAt (w : Pl D.host.E) : (Kw w)ˣ := atFin w (unif w)
 

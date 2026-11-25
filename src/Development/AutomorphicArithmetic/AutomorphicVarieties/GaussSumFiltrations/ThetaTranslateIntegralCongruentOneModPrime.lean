@@ -463,8 +463,6 @@ theorem GlobalTheory.HilbertThetaSeries.wC_near_one : ∀ (F : Type) [Field F] [
   rw [hRe, Rat.cast_mul, Rat.cast_pow, Rat.cast_pow, Rat.cast_inv]
   exact near_mul (near_pow (near_inv hr) n) (fermat _ hqn)
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -714,8 +712,6 @@ theorem good_wT : ∀ (F : Type) [Field F] [NumberField F] (p : ℕ) [Fact p.Pri
 
 end GlobalTheory.HilbertThetaSeries.GoodInv
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -819,8 +815,6 @@ theorem good_mul_et_QF : ∀ (F : Type) [Field F] [NumberField F] (p : ℕ) [Fac
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -913,8 +907,6 @@ theorem isSB_range_finite : ∀ (F : Type) [Field F] [NumberField F] (κ : Type)
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -981,8 +973,6 @@ theorem th_congr_one : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -1089,8 +1079,6 @@ theorem theta_translates_integral_one : ∀ (F : Type) [Field F] [NumberField F]
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto

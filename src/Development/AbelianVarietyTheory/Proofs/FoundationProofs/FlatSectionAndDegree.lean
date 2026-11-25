@@ -245,6 +245,24 @@ theorem eig_localization {R R' O L L' : Type} [CommRing R] [CommRing R'] [Algebr
   simp only [Pi.sub_apply, sub_smul, Finset.sum_sub_distrib]
   rw [← hc', ← h3, sub_self]
 
+theorem chart_dualMapS_left (R L : Type) [CommRing R] [CommRing L] [Algebra R L] :
+    (Chart.spMap (Chart.dualMapS (S := R) (Algebra.ofId R L))).left =
+      spMap (Chart.dualMapR (algebraMap R L)) := by
+  rw [Chart.spMap_left]
+  congr 2
+  refine RingHom.ext fun a => TrivSqZeroExt.ext ?_ ?_
+  · change (Chart.dualMapS (Algebra.ofId R L) a).fst = _
+    rw [Chart.dualMapS_fst]
+    simp [Chart.dualMapR]
+  · change (Chart.dualMapS (Algebra.ofId R L) a).snd = _
+    rw [Chart.dualMapS_snd]
+    simp [Chart.dualMapR, Algebra.smul_def, TrivSqZeroExt.algebraMap_eq_inl]
+
+theorem chart_scaleS_left (R L : Type) [CommRing R] [CommRing L] [Algebra R L] (c : L) :
+    (Chart.spMap (Chart.scaleS (S := R) c)).left = spMap (epsScaleR c) := by
+  rw [Chart.spMap_left]
+  congr 2
+
 theorem isEigBasis_atPrime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Geo.Tor.Host E) (R : Type) [CommRing R] (p : Ideal R) [p.IsPrime] (t : SAB H (Sp R)) (t' : SAB H (Sp (Localization.AtPrime p))) (n : SABMap t' t (spMap (algebraMap R (Localization.AtPrime p)))) (χ : 𝓞 E →+* R) (m : ℕ) (v : Fin m → (epsR R ⟶ t.G)) (v' : Fin m → (epsR (Localization.AtPrime p) ⟶ t'.G)), EigenvectorLieDegree.IsEigBasis t.act χ v → (∀ i, IsVecOver (algebraMap R (Localization.AtPrime p)) n.φ (v i) (v' i)) → EigenvectorLieDegree.IsEigBasis t'.act ((algebraMap R (Localization.AtPrime p)).comp χ) v' := by
   intro E _ _ _ H R _ p _ t t' n χ m v v' hv hv'
   have := t.semi.smooth
@@ -283,11 +301,12 @@ theorem isEigBasis_atPrime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     refine ⟨q, hq, Serre.Lie.mk _ w ((Chart.isTan_iff _).1 hw), (hf _ _).2 ?_⟩
     have := congrArg (fun z => z.left) hwy
     simp only [Over.comp_left, he] at this
+    rw [chart_scaleS_left, chart_dualMapS_left] at this
     exact (Category.assoc _ _ _).trans this.symm
   have uniq : ∀ x, f x = 0 → ∃ q ∈ p.primeCompl, q • x = 0 := fun x hx => by
     obtain ⟨q, hq, h⟩ := Chart.tan_prime_uniq p (w := x.hom) ((Chart.isTan_iff _).2 x.isTangent)
       (Over.OverMorphism.ext (by
-        rw [← map_one e, he]
+        rw [← map_one e, he, Over.comp_left, chart_dualMapS_left]
         exact ((hf _ _).1 hx).symm))
     exact ⟨q, hq, Serre.Lie.ext h⟩
   let y : Fin m → Serre.Lie t.act := fun i => Serre.Lie.mk _ (v i) (hv.1 i).1
@@ -339,7 +358,7 @@ theorem hom_ext_of_loc {R : Type} [CommRing R] {X : Scheme.{0}} {f g : Sp R ⟶ 
   have : Epi (Sigma.desc q) := Flat.epi_of_flat_of_surjective _
   rw [← cancel_epi (Sigma.desc q)]
   refine Sigma.hom_ext _ _ fun p => ?_
-  rw [Sigma.ι_desc_assoc, Sigma.ι_desc_assoc]
+  rw [Sigma.ι_comp_desc_assoc, Sigma.ι_comp_desc_assoc]
   exact h p.asIdeal
 
 section Res
@@ -420,7 +439,9 @@ theorem exists_smul_eq_zero {R O : Type} [CommRing R] [CommRing O] {A : Over (Sp
   have : ∀ s : R, Smooth (Chart.Gs A s).hom := fun s => show Smooth (pullback.snd A.hom _) from inferInstance
   obtain ⟨q, hq, hs⟩ := Chart.tan_prime_uniq (G := A) p (w := w.hom) ((Chart.isTan_iff _).2 w.isTangent) (by
     rw [← MonObj.comp_one (Chart.spMap (Chart.dualMapS (Algebra.ofId R (Localization.AtPrime p))))]
-    exact Over.OverMorphism.ext h)
+    refine Over.OverMorphism.ext ?_
+    rw [Over.comp_left, Over.comp_left, GlobalTheory.EigBasisPrime.chart_dualMapS_left]
+    exact h)
   exact ⟨q, hq, Lie.ext (Over.OverMorphism.ext (congrArg (fun u => u.left) hs))⟩
 
 theorem eq_zero_of_loc {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] {w : M}

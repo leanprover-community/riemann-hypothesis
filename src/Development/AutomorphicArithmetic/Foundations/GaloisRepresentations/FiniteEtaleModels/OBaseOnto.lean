@@ -256,7 +256,8 @@ private theorem idem_core {A : Type} [CommRing A] (bar : A ≃+* A) (ω : A) (tr
     exact ⟨b, hb, by rw [← hab, add_sub_cancel_right]; exact ha⟩
   choose ε hεv hεu using ex
   refine ⟨ε, fun e => ⟨hεu e, pv e _ (hεv e), ?_, ?_, ?_, ?_⟩⟩
-  · exact fun x hx => dv e _ (Ideal.mul_mem_left _ _ hx) (Ideal.mul_mem_right _ _ (hεv e))
+  · intro x hx
+    exact dv e _ (Ideal.mul_mem_left _ _ hx) (Ideal.mul_mem_right _ _ (hεv e))
   · apply dv e
     · have h3 := Ideal.sub_mem _ (pv e _ (hεv e)) (hεu e)
       convert h3 using 1
@@ -315,7 +316,9 @@ private theorem exists_sep {A : Type} [CommRing A] [IsDedekindDomain A] (u 𝔞 
   refine ⟨s, t, hs, hst, fun 𝔪 hm hum ha => ?_⟩
   have hne : 𝔪 ≠ ⊥ := fun h => hu (le_bot_iff.1 (h ▸ hum))
   let v : IsDedekindDomain.HeightOneSpectrum A := ⟨𝔪, hm.isPrime, hne⟩
-  have hv : v ∈ S := Finset.mem_filter.2 ⟨hfin.mem_toFinset.2 (Ideal.dvd_iff_le.2 hum), ha⟩
+  have hv : v ∈ S := by
+    refine Finset.mem_filter.2 ⟨hfin.mem_toFinset.2 ?_, ha⟩
+    exact Ideal.dvd_iff_le.2 hum
   exact Ideal.le_of_dvd (Finset.dvd_prod_of_mem (fun v : IsDedekindDomain.HeightOneSpectrum A => v.asIdeal) hv) ht
 
 private theorem sup_range_pow {A M : Type} [CommRing A] [AddCommGroup M] [Module A M] [Module.Finite A M]
@@ -421,14 +424,16 @@ theorem UpperTheory.Gal.FiniteEtaleModels.O.liftUnit :
       obtain ⟨y, rfl⟩ := N.mkQ_surjective y
       have h1 : x - g y ∈ N := (Submodule.Quotient.eq N).1 (show N.mkQ x = N.mkQ (g y) by rw [hlift, hy])
       have h2 : x - g y ∈ (𝔪 • ⊤ : Submodule A M) := Submodule.smul_mono_left ha h1
-      simpa using Submodule.add_mem_sup (LinearMap.mem_range_self g y) h2
+      have h3 := Submodule.add_mem_sup (LinearMap.mem_range_self g y) h2
+      simpa using h3
     · have htm := ht 𝔪 hm hum ha
       have h1 : x - g x = t • (x - g' x) := by
         rw [hgv, hs1, sub_smul, one_smul, smul_sub]; abel
       have h2 : x - g x ∈ (𝔪 • ⊤ : Submodule A M) := by
         rw [h1]
         exact Submodule.smul_mem_smul htm trivial
-      simpa using Submodule.add_mem_sup (LinearMap.mem_range_self g x) h2
+      have h3 := Submodule.add_mem_sup (LinearMap.mem_range_self g x) h2
+      simpa using h3
   choose h hh using fun e => exists_inv g (u ^ e) (sup_range_pow g u hmax e)
   exact ⟨g, h, hlift, fun e x => hh e x⟩
 end -- clump:auto
@@ -632,7 +637,8 @@ theorem qSys : QSys := by
     exact this)
   have adjA : ∀ (c : 𝓞 D.F) (x y : D.La), D.EF (c • x) y = D.EF x (D.bar c • y) := fun c x y => by
     have := D.adj (algebraMap _ _ c) x y
-    rwa [D.star_F, MulOpposite.unop_op] at this
+    rw [D.star_F, MulOpposite.unop_op] at this
+    exact this
   have hP : (wSub D 𝔞 1).restrictScalars (𝓞 D.F) = 𝔞 • (⊤ : Submodule (𝓞 D.F) D.La) := by
     apply le_antisymm
     · intro x hx
@@ -640,11 +646,13 @@ theorem qSys : QSys := by
       · rintro _ ⟨c, hc, z, rfl⟩
         exact Submodule.smul_mem_smul (by rwa [pow_one] at hc) Submodule.mem_top
       · exact zero_mem _
-      · exact fun a b _ _ ha hb => add_mem ha hb
+      · intro a b _ _ ha hb
+        exact add_mem ha hb
       · intro b a _ ha
         obtain ⟨c, rfl⟩ := hbij.2 b
         exact Submodule.smul_mem _ c ha
-    · exact Submodule.smul_le.2 fun c hc x _ => Submodule.subset_span ⟨c, by rwa [pow_one], x, rfl⟩
+    · refine Submodule.smul_le.2 fun c hc x _ => ?_
+      exact Submodule.subset_span ⟨c, by rwa [pow_one], x, rfl⟩
   have hu : ES.uIdeal D r ≠ ⊥ := by
     intro h0
     have h1 := ES.p_mem_uIdeal D r
@@ -794,13 +802,10 @@ private theorem cop_pow {q n : ℕ} (hq : q.Prime) (hn : n ≠ 0) :
     (q ^ n.factorization q).Coprime (n / q ^ n.factorization q) :=
   Nat.Coprime.pow_left _ (Nat.coprime_ordCompl hq hn)
 
-private theorem prod_eq (q n : ℕ) : q ^ n.factorization q * (n / q ^ n.factorization q) = n :=
-  Nat.ordProj_mul_ordCompl_eq_self n q
-
 private theorem cg_split {M : Type} [AddCommGroup M] {q n : ℕ} (hq : q.Prime) (hn : n ≠ 0) {x y : M}
     (h₁ : Cg (q ^ n.factorization q) x y) (h₂ : Cg (n / q ^ n.factorization q) x y) : Cg n x y := by
   have h := cg_mul (cop_pow hq hn) h₁ h₂
-  rwa [prod_eq] at h
+  rwa [Nat.ordProj_mul_ordCompl_eq_self] at h
 
 private theorem sys_of {O M : Type} [Ring O] [AddCommGroup M] [Module O M] (B : LinearMap.BilinForm ℤ M)
     {q : ℕ} (hq : q.Prime) (G : ℕ → M →+ M)
@@ -837,7 +842,7 @@ private theorem sys_of {O M : Type} [Ring O] [AddCommGroup M] [Module O M] (B : 
     intro n hn D h1 h2
     have hc := Nat.isCoprime_iff_coprime.mpr (cop_pow hq hn)
     have h := hc.mul_dvd h1 h2
-    rwa [← Nat.cast_mul, prod_eq] at h
+    rwa [← Nat.cast_mul, Nat.ordProj_mul_ordCompl_eq_self] at h
   refine ⟨g, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro n hn c x
     have hn0 : n ≠ 0 := hn.ne'
@@ -889,8 +894,10 @@ private theorem sys_of {O M : Type} [Ring O] [AddCommGroup M] [Module O M] (B : 
       rw [Nat.ordCompl_mul] at e1
       exact cg_trans (cg_of_dvd (dvd_mul_right _ _) e1) (cg_symm (hg n hn0 x).2)
     exact cg_split hq hn0 ha hb
-  · exact fun n hn x => (hg n hn.ne' x).1
-  · exact fun n hn x => (hg n hn.ne' x).2
+  · intro n hn x
+    exact (hg n hn.ne' x).1
+  · intro n hn x
+    exact (hg n hn.ne' x).2
 
 private theorem pow_mem_of {A : Type} [CommRing A] (I : Ideal A) {q a c f : ℕ} (hc : c.Coprime q)
     (hn : ((q ^ a * c : ℕ) : A) ∈ I) (hf : (q : A) ^ f ∈ I) : (q : A) ^ a ∈ I := by
@@ -924,13 +931,15 @@ theorem UpperTheory.Gal.FiniteEtaleModels.O.liftSys :
     have hv : N₀.factorization q = 0 := Nat.factorization_eq_zero_of_not_dvd hnd
     intro x
     have h := h7 N₀ (Nat.pos_of_ne_zero hN) x
-    rwa [hv, pow_zero, Nat.div_one] at h
+    rw [hv, pow_zero, Nat.div_one] at h
+    exact h
   · intro n hn hmem x
     have hn0 : n ≠ 0 := hn.ne'
     obtain ⟨f, hf⟩ := hpow
     have hqf : (q : 𝓞 D.F) ^ f ∈ 𝔞 := hf (Ideal.pow_mem_pow (GlobalTheory.UPel.HT.ES.p_mem_uIdeal D r) f)
     have hn' : ((q ^ n.factorization q * (n / q ^ n.factorization q) : ℕ) : 𝓞 D.F) ∈ 𝔞 := by
-      rwa [prod_eq]
+      rw [Nat.ordProj_mul_ordCompl_eq_self]
+      exact hmem
     have hqa : (q : 𝓞 D.F) ^ n.factorization q ∈ 𝔞 :=
       pow_mem_of 𝔞 (Nat.coprime_ordCompl hq hn0).symm hn' hqf
     rw [← (hG (n.factorization q)).2.2.2 hqa x]
@@ -978,16 +987,16 @@ theorem tResim : TResim := by
             isom := ?_ }, ?_⟩
   · intro n x y
     by_cases h0 : 0 < n
-    · simp only [ite_eq_left h0, map_add (f := _), I.add]
-    · simp only [ite_eq_right h0, I.add]
+    · simp only [if_pos h0, map_add (f := _), I.add]
+    · simp only [if_neg h0, I.add]
   · intro n b x
     by_cases h0 : 0 < n
-    · simp only [ite_eq_left h0]
+    · simp only [if_pos h0]
       obtain ⟨z, hz⟩ := hg.lin n h0 b x
       rw [hz, hadd n h0, I.lin]
-    · simp only [ite_eq_right h0, I.lin]
+    · simp only [if_neg h0, I.lin]
   · intro n h0 x
-    simp only [ite_eq_left h0]
+    simp only [if_pos h0]
     rw [I.ker n h0]
     constructor
     · rintro ⟨y, hy⟩
@@ -995,7 +1004,7 @@ theorem tResim : TResim := by
     · rintro ⟨v, rfl⟩
       exact ⟨g n v, map_nsmul (g n) n v⟩
   · intro n h0 q
-    simp only [ite_eq_left h0]
+    simp only [if_pos h0]
     rw [I.onto n h0]
     constructor
     · rintro ⟨x, rfl⟩
@@ -1005,12 +1014,12 @@ theorem tResim : TResim := by
       exact ⟨g n x, hx⟩
   · intro n m hn0 hm0 x
     have h0 : 0 < n * m := Nat.mul_pos hn0 hm0
-    simp only [ite_eq_left h0, ite_eq_left hn0]
+    simp only [if_pos h0, if_pos hn0]
     rw [I.tower n m hn0 hm0]
     obtain ⟨z, hz⟩ := hg.tow n m hn0 hm0 x
     rw [hz, hadd n hn0]
   · intro n h0 x y
-    simp only [ite_eq_left h0]
+    simp only [if_pos h0]
     have h := I.isom n h0 (g n x) (g n y)
     obtain ⟨c, hc⟩ := hg.iso n h0 x y
     have hz : I.ζ n ^ (n : ℤ) = 1 := by
@@ -1020,9 +1029,10 @@ theorem tResim : TResim := by
       have : 2 * G.EF (g n x) (g n y) = 2 * G.EF x y + (n : ℤ) * (2 * c) := by
         linarith [hc]
       rw [this, zpow_add, zpow_mul (I.ζ n) (n : ℤ), hz, one_zpow, mul_one]
-    rwa [hE] at h
+    rw [hE] at h
+    exact h
   · intro n h0 x
-    simp only [ite_eq_left h0]
+    simp only [if_pos h0]
 
 end UpperTheory.Gal.FiniteEtaleModels.O
 end -- clump:auto
@@ -1256,7 +1266,9 @@ theorem clsAt : ClsAt := by
     obtain ⟨z1, hz1⟩ := glin N hpos (algebraMap (𝓞 D.F) D.O a) y'
     have hq := gq N hpos (nat_mem_of_isGen hgen) y'
     have hdiff : g N y' - liftAct g₀ y' ∈ wSub D 𝔞 1 := by
-      rwa [← Submodule.Quotient.eq, mk_liftAct]
+      rw [← Submodule.Quotient.eq]
+      rw [mk_liftAct]
+      exact hq
     obtain ⟨z2, hz2⟩ := ((UpperTheory.lattice_generation q D a N 𝔞 hpos hgen).1 _).mpr hdiff
     have hsplit : algebraMap (𝓞 D.F) D.O a • g N y' =
         algebraMap (𝓞 D.F) D.O a • liftAct g₀ y' + N • z2 := by
@@ -1311,7 +1323,8 @@ theorem UpperTheory.Gal.FiniteEtaleModels.O.baseOnto :
     rw [hn', ← Category.assoc]
     refine (congrArg (· ≫ C.m.φ) (m.eta _)).trans ?_
     refine (Category.assoc _ _ _).trans ?_
-    exact (congrArg (x ≫ ·) (C.lv v)).trans (Category.assoc _ _ _).symm
+    refine (congrArg (x ≫ ·) (C.lv v)).trans ?_
+    exact (Category.assoc _ _ _).symm
   have hu := (hCls q (datAt S.atq S.sp) (Ow w) E S.b gb (algebraMap (Ow w) E) S.mat M.1 S.N₀ c a S.𝔞 hnum.1 hpos
     S.std.three S.std.cop hnum.2 S.Y (Sp Ω) σ o).2 ⟨x ≫ C.j, hov, n', hlv⟩ C'
   exact ⟨x, hu.1.trans hC', hxs⟩

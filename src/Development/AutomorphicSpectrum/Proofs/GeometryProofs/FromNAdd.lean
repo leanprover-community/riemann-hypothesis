@@ -51,7 +51,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.TestPt
 
-open GlobalTheory.CompanionTheory.Ar.BT
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {O₀ : Type} [CommRing O₀] {β : O₀ →+* c.F} {Y : Model Xo c β} {S : Finset ℕ}

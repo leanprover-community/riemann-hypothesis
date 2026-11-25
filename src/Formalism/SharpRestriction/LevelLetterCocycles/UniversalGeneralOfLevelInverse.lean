@@ -994,7 +994,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 theorem universal_general_of_inverse_levels (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (h15 : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (h15 : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D)
     (hInv : AtCaseA fun l _ K LL hG => Formalism.MainNotions.UnusedSlot80.CutU.InvLevCore ((HW l).W K 1 LL hG))
     (hUG : UnivGenL D HW) : UniversalComponentCaseA D HW F Cm :=
   universal_general_of_window D HW F Cm hAdm h9 hH h15 (killWinL_of D HW F Cm hAdm h9 hInv) hUG
@@ -1040,7 +1040,7 @@ theorem univGenL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
 
 theorem universal_general_of_level_inverse (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (h15 : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (h15 : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D)
     (hInv : AtCaseA fun l _ K LL hG => Formalism.MainNotions.UnusedSlot80.CutU.InvLevCore ((HW l).W K 1 LL hG)) :
     UniversalComponentCaseA D HW F Cm :=
   universal_general_of_inverse_levels D HW F Cm hAdm h9 hH h15 hInv (univGenL_of D HW F Cm hAdm h9 hInv)

@@ -55,8 +55,6 @@ namespace PositivityTheory.PlacePermOperatorBicommutantSpan
 
 variable {F : Type} [Field F] [NumberField F] {ι : Type} [Fintype ι]
 
-theorem oh_mul {x y : A F} (hx : x ∈ Oh F) (hy : y ∈ Oh F) : x * y ∈ Oh F := fun v => mul_mem (hx v) (hy v)
-
 theorem oh_nat (N : ℕ) : (N : A F) ∈ Oh F := by
   induction N with
   | zero => exact fun v => by rw [Nat.cast_zero]; exact zero_mem _
@@ -72,12 +70,5 @@ def LN (F ι : Type) [Field F] [NumberField F] (N : ℕ) : AddSubgroup (ι → A
   neg_mem' := fun ha i => by
     obtain ⟨y, hy, e⟩ := ha i
     exact ⟨-y, fun v => neg_mem (hy v), by rw [Pi.neg_apply, e, mul_neg]⟩
-
-theorem orbit_adelic [MeasurableSpace (A F)] {ψ : AddChar (A F) ℂ} {h : A F} {B : Matrix ι ι (A F)}
-    {μ : Measure (ι → A F)} (H : NAQuad ψ h B μ) {φ : (ι → A F) → ℂ} (hφ : SB φ) :
-    ∃ (L' : AddSubgroup (ι → A F)) (s : Finset (ι → A F)) (C : ℝ), CO L' ∧ ∀ k : SL(2, A F), (∀ i j, k i j ∈ Oh F) →
-      ∀ T, Impl ψ h B μ k T → (∀ u, ‖T φ u‖ ≤ C) ∧
-        ∃ c : (ι → A F) → ℂ, (∀ a, ‖c a‖ ≤ C) ∧ T φ = ∑ a ∈ s, c a • ind a L' := by
-  apply _root_.CompanionTheory.PlacePermOperatorBicommutantSpan.orbit_adelic <;> assumption
 
 end PositivityTheory.PlacePermOperatorBicommutantSpan

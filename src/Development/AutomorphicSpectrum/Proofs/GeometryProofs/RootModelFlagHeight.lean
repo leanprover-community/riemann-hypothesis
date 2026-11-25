@@ -278,7 +278,6 @@ theorem core_expand {V : Type} [AddCommGroup V] [Module ℂ V] {Ix : Type} [Fint
 
 section Geo
 
-open AlgebraicGeometry CategoryTheory
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : Sp Ω ⟶ X}
   {Li : Type} [AddCommGroup Li] [Module Ω Li]
