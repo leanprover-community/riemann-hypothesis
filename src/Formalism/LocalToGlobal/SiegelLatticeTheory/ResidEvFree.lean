@@ -11,8 +11,6 @@ public import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk
 
-noncomputable section
-
 namespace Formalism.L2.SG.ResidEvFree
 
 section
@@ -102,5 +100,3 @@ theorem residEv_closed_free (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => S.ResidE
   Closed.of_class fun Fm _ _ => residEv_free Fm
 
 end Formalism.L2.SG.ResidEvFree
-
-end

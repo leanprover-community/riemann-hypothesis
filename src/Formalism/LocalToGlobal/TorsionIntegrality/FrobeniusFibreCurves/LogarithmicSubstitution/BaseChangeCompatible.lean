@@ -8,8 +8,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Th1.B.Map
 
 open Formalism.InvariantFactorPaths.G7 (at1 cob)

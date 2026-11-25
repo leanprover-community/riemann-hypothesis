@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.NumFie
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta MeasureTheory NumberField
 
 namespace Formalism.IndefR.Eqv
@@ -41,5 +39,3 @@ theorem fundDomExists_holds : FundDomExists D := fun V => by
   exact _root_.Bl.SecondBlockLemmaC.goal1 (GQ V)
 
 end Formalism.IndefR.Eqv
-
-end

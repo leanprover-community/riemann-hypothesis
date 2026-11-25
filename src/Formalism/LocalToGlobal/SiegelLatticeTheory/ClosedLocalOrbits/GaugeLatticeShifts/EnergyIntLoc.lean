@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 open Formalism.L2.SG.RealObj.EnergyIntTor
 open scoped InnerProductSpace ENNReal

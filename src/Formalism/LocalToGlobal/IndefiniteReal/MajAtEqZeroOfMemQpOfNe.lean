@@ -11,8 +11,6 @@ import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 open Module NumberField IsDedekindDomain Polynomial
 open scoped Matrix ComplexOrder InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.IndefR.Cx
 
 open Formalism.DivisionValues Formalism.L2 Formalism.L2.Indef Formalism.L2.DIV Formalism.IndefR.Cx.GroupActionMatrices

@@ -12,8 +12,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
 open scoped Matrix
 

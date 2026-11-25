@@ -8,8 +8,6 @@ public import Mathlib.Algebra.Polynomial.Derivation
 
 @[expose] public section
 
-noncomputable section
-
 open PowerSeries
 
 namespace Formalism.L2.Th1.C

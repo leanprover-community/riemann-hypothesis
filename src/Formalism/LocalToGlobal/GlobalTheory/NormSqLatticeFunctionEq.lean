@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory
 
 open Formalism.BasicNotions Formalism.MainNotions NumberField
@@ -32,5 +30,3 @@ theorem is_theta_zero_iff (d : ℕ) (Λ : AddSubgroup ℂ) (G : ℂ → ℂ) : G
     exact h2 x hx z
 
 end Formalism.L2.GlobalTheoryTheory
-
-end

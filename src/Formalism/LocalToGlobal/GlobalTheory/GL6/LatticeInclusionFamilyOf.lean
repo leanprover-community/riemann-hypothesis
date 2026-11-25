@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothPar
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 
 open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts

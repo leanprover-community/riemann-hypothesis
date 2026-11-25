@@ -11,8 +11,6 @@ import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.Cnt
 
 section S1

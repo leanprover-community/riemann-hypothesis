@@ -10,8 +10,6 @@ import Formalism.MirabolicMackeyTheory.StatementT
 open Module NumberField IsDedekindDomain
 open scoped BigOperators
 
-noncomputable section
-
 namespace Formalism.L2.DIV
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.DworkPowerSeriesWeights

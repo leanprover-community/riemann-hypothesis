@@ -9,8 +9,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.WeightedUniformRotatedOfExp
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.BesselExpansion
 
 open MeasureTheory Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.BesselShellMomentBounds Formalism.MainNotions.RotatedPoints Formalism.MainNotions.S.Pv.Frames

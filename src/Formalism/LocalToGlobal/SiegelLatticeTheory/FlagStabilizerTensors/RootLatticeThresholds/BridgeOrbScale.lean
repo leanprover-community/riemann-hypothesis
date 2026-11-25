@@ -6,8 +6,6 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZe
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix MeasureTheory NumberField Formalism.BasicNotions
 
 namespace Formalism.L2.SG.Pf.Bridge

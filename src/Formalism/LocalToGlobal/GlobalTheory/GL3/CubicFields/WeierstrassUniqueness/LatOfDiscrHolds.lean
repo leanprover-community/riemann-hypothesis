@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.EpsteinZeta.J
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5
 
 open NumberField Classical
@@ -215,5 +213,3 @@ theorem latOfDiscr_holds : LatOfDiscr := by
   exact ⟨dg_discrete Λ hr H, dg_span Λ h hr H⟩
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5
-
-end

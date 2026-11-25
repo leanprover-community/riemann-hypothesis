@@ -11,8 +11,6 @@ import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.abelian₂
 
 open NumberField Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions Formalism.L2.LamCM

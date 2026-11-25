@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 
 namespace Formalism.L2.SG.NGCut.SplitEmbedding

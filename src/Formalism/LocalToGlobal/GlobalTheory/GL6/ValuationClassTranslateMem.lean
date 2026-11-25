@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG
@@ -132,5 +130,3 @@ theorem adelic_function_ext (S : StepLevel F E σ J T f bad) (emb : ι → E →
 end Gen
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
-
-end

@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.Peters
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped Pointwise
 
@@ -35,5 +33,3 @@ theorem rightInv_holds : RightInv := by
       _ = ∫ h in 𝓕, ψ h ∂ν := h2.setIntegral_eq h𝓕 hψ'
 
 end Formalism.IndefR.Eqv
-
-end

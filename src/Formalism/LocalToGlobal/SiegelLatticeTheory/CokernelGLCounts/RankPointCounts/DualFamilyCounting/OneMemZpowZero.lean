@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Matrix
 
 namespace Formalism.L2.SG.Pf.NcReal.JX.NOf

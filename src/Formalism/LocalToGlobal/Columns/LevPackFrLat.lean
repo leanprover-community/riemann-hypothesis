@@ -10,8 +10,6 @@ public import Formalism.LocalToGlobal.Columns.LocalLevelIsKOneAtT
 open NumberField IsDedekindDomain Module Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.UG

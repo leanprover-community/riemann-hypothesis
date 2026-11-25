@@ -20,8 +20,6 @@ import Formalism.LocalToGlobal.PtKOfReal
 
 @[expose] public section
 
-noncomputable section
-
 open Module NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.MainNotions.Pk Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2 Formalism.L2.Indef Formalism.L2.DIV Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links
   Formalism.IndefR.Cx Formalism.L2.Top3 Formalism.L2.Top4 Formalism.L2.RowDataTransport Formalism.L2.DIV.Arith4S
@@ -50,5 +48,3 @@ variable {𝒜 : FamClass} {sel : Formalism.L2.TSel 𝒜} {selS : SelS 𝒜 sel}
   {selC : ColumnCompatibleSelection 𝒜 sel selP} {selK : SelK 𝒜 sel}
 
 end Formalism.L2.DIV.FunSharpTop
-
-end

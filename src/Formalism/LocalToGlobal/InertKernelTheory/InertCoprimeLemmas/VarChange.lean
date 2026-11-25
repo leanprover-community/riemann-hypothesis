@@ -12,8 +12,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.W
 
 open PowerSeries
 
-noncomputable section
-
 namespace Formalism.L2.KerInert.VC
 
 open Formalism.L2.Th1.A

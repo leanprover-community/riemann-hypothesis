@@ -14,8 +14,6 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 open MeasureTheory Matrix
 open scoped InnerProductSpace ENNReal ComplexConjugate
 
-noncomputable section
-
 
 
 namespace Formalism.MainNotions.BridgeCS3dBOW

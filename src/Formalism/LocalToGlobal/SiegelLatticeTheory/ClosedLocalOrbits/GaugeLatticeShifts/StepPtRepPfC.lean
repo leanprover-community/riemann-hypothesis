@@ -6,8 +6,6 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Formalism.MainNotions.S
 open scoped ComplexOrder
 

@@ -6,8 +6,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MeasUpq
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 open scoped TensorProduct
 
@@ -84,5 +82,3 @@ theorem isCompact_GinfC (hS : V.SigOK) (hD : V.IsDefinite) : IsCompact (GinfC V 
   exact (isCompact_univ.prod isCompact_singleton).image (UI.brg (MF.toFrames F)).continuous
 
 end Formalism.IndefR.Eqv
-
-end

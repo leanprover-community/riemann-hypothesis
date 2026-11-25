@@ -12,8 +12,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLat
 open MeasureTheory Matrix
 open scoped ENNReal
 
-noncomputable section
-
 namespace Formalism.MainNotions.S.Pv.AmpDDPf.CC
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.FourierDecayAlt.C2

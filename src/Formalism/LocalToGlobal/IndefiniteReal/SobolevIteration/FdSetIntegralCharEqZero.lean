@@ -12,8 +12,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMa
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped Pointwise
 
@@ -79,5 +77,3 @@ theorem fd_setIntegral_char_eq_zero (h𝓕 : IsAddFundamentalDomain Λ 𝓕 μ) 
 end Gen
 
 end Formalism.IndefR.Tow
-
-end

@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.Bounded
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.PairingIndexBounds.Rec
 
 open IsDedekindDomain

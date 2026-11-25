@@ -7,8 +7,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarPairOrthogonal.XL
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 namespace Formalism.L2.SG.Pf.ScalarFramePf

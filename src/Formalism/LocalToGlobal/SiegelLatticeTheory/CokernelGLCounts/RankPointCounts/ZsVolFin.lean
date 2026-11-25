@@ -15,8 +15,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.ZsVolFin
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal PI.UnitaryGroupMassFormula.CntFormula
@@ -109,5 +107,3 @@ theorem orbitFinite_holds : Formalism.L2.SG.Pf.ZsVolOrb.OrbFinE M δ u u' F0 wha
   exact ⟨F'', hF'', rfl⟩
 
 end Formalism.L2.SG.Pf.ZsVolFin
-
-end

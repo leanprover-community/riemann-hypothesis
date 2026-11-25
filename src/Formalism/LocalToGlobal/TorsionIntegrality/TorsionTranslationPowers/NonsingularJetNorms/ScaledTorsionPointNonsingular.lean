@@ -10,8 +10,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Th1.E
 
 namespace ScaledTorsionTransport

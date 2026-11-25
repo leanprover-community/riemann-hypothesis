@@ -11,8 +11,6 @@ import Mathlib.Tactic.Lemma
 
 open NumberField Module
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.G8
 
 open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt

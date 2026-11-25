@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.Divisibility.ClassSum
 open Module NumberField IsDedekindDomain
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace Formalism.L2.DIV.CSD
 
 open Formalism.DivisionValues

@@ -6,8 +6,6 @@ import Mathlib.Algebra.AffineMonoid.Basic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Ideal
 
 namespace Formalism.L2.Host

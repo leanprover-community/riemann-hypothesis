@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementS
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.LamCM
 
 open NumberField IsDedekindDomain IsLocalRing Matrix

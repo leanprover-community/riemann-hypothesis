@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBas
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes

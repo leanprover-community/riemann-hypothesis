@@ -9,7 +9,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 
 namespace Formalism.L2.AlgTh

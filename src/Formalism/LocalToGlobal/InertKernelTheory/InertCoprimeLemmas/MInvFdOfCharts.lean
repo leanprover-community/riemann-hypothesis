@@ -14,8 +14,6 @@ import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoeffProdRename
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G.Pend Formalism.MainNotions Formalism.L2.Ker
 open scoped TensorProduct
 

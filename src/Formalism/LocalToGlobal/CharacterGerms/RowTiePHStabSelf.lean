@@ -6,8 +6,6 @@ import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

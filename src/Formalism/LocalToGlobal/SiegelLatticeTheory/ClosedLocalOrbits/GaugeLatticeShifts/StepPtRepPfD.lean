@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Formalism.MainNotions.S
 open scoped ComplexOrder
 

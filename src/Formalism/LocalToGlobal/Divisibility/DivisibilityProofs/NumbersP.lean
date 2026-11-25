@@ -9,8 +9,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.DIV
 
 open Formalism.BasicNotions Formalism.FrobeniusOrbits NumberField IsDedekindDomain

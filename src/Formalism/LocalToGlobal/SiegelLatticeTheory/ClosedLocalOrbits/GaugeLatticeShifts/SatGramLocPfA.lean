@@ -12,8 +12,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open scoped TensorProduct
 
@@ -158,5 +156,3 @@ theorem split_prime_local_holds : SplitPrimeLoc := by
       ← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']; congr 1; exact (map_natCast (algebraMap F (v.adicCompletion F)) p).symm)
 
 end Formalism.L2.SG.Pf.SatGramLoc
-
-end

@@ -15,8 +15,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationChang
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical Matrix
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc
 

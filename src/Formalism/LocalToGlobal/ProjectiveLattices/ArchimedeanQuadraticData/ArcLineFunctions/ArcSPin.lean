@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.SectionOfLineBundleOne
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.QAt
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj

@@ -8,8 +8,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 
 set_option linter.unusedVariables false
 
-noncomputable section
-
 open MeasureTheory Filter Topology
 open scoped ENNReal
 

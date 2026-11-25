@@ -7,8 +7,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions IsDedekindDomain NumberField Formalism.L2.Theta
 
 namespace Formalism.IndefR.Fin

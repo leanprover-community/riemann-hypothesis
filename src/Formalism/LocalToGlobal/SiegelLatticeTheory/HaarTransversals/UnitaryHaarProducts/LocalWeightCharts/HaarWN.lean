@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.Unita
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 
 namespace WlocSk

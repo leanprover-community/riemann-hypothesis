@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full
 
 namespace Formalism.L2.SG.NGCut.VanishingOrbitalPoints

@@ -11,8 +11,6 @@ import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Finset
 
 namespace Formalism.L2.KerInert.SecondKernelHermitian

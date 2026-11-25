@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj
 
 open NumberField AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor

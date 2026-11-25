@@ -12,8 +12,6 @@ import Formalism.SharpRestriction.AdmissibleParameterJoins.SumLogPrimeFactorsLe
 open Module NumberField IsDedekindDomain
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace Formalism.L2.DIV
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef
@@ -95,5 +93,3 @@ theorem inEta3_num (L : SizeData₂ D) (A3 : FamIn3 D.what₂.LL G Pl0 I0 Ty T m
 end N
 
 end Formalism.L2.DIV
-
-end

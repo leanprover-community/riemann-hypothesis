@@ -12,8 +12,6 @@ import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Th1.B.E2
 
 open Formalism.DworkPowerSeriesWeights (Integral)

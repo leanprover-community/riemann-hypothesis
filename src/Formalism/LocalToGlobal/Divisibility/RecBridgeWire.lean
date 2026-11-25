@@ -10,8 +10,6 @@ import Formalism.SharpRestriction.Divisibility.HookProducts.RBTieFrame
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.DIV.Wire
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.MainNotions.DIV
@@ -25,5 +23,3 @@ theorem za_of (Fm : Formalism.MainNotions.FamP eps) : ∃ x0 : ℝ, ∀ x ≥ x0
   ⟨Fm.x1 + 1, fun x hx i => Formalism.MainNotions.WeightDegreeSizes.zero_gain_above_family Fm x (by linarith) i⟩
 
 end Formalism.L2.DIV.Wire
-
-end

@@ -11,8 +11,6 @@ public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped ENNReal
 
@@ -81,5 +79,3 @@ theorem pi_reindex_scale {ι κ : Type*} [Fintype ι] [Fintype κ] (e : ι ≃ �
     Finset.card_univ, Fintype.card_congr e]
 
 end Formalism.L2.SG.PiMeasureScaling
-
-end

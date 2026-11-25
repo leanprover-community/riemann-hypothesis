@@ -8,8 +8,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadical
 
 @[expose] public section
 
-noncomputable section
-
 open Module
 open Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.BasicNotions Formalism.L2.SG.TermOp
 

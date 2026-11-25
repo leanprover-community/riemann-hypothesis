@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmBc
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.G.Cmp
 
 open Formalism.MainNotions.G Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix
@@ -105,5 +103,3 @@ theorem CmpTie.val_equiv {S : StepLevel F E σ J T f bad} {emb : Tau → E →+*
   simp
 
 end Formalism.L2.G.Cmp
-
-end

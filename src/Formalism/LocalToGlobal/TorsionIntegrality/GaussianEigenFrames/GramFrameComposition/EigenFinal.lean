@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.Sta
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 open NumberField
 

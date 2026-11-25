@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauE
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta
 open scoped TensorProduct
 
@@ -48,5 +46,3 @@ theorem oneP_mem (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ)
 end Comm
 
 end Formalism.IndefR.Eqv.Act
-
-end

@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyD
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions
 
 namespace Formalism.L2.G.StabilizerCardinality
@@ -17,5 +15,3 @@ theorem card_stab0_mem (D : D7) (lev : LevelData D) (u : D.what₂.Word) (c : (D
   exact Nat.card_eq_one_iff_unique.2 ⟨inferInstance, ⟨1⟩⟩
 
 end Formalism.L2.G.StabilizerCardinality
-
-end

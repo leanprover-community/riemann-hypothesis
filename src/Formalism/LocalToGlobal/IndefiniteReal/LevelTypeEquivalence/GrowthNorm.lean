@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
   IsDedekindDomain NumberField
 open scoped TensorProduct
@@ -21,5 +19,3 @@ theorem mt_one (V : HSp D) : mt V 1 = 1 := by
   simp only [Formalism.L2.Theta.mt, map_one, Units.val_one]
 
 end Formalism.IndefR.Eqv
-
-end

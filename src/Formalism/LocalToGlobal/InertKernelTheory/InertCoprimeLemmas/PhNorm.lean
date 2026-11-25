@@ -30,8 +30,6 @@ import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.Logarithm
 
 open PowerSeries
 
-noncomputable section
-
 namespace Formalism.L2.KerInert.PN
 
 open Formalism.L2.KerInert.VC

@@ -12,8 +12,6 @@ public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped InnerProductSpace
 

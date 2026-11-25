@@ -11,8 +11,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLat
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Matrix
 
 namespace Formalism.L2.S.L6.UnitaryStandardVectors

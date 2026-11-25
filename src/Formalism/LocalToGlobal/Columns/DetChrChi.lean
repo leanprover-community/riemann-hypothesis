@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open scoped TensorProduct
 

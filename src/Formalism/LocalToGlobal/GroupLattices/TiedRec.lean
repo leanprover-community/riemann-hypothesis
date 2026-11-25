@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GroupLattices.CloudFilling.FillInstRecEqWj
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G NumberField
 
 namespace Formalism.L2.G

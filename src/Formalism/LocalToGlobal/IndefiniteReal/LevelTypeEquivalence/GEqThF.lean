@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GEqTie
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues Polynomial
 open scoped TensorProduct InnerProductSpace
@@ -60,5 +58,3 @@ theorem extV_apply (i : Fin D.R.m) (t : T) (y : (R.HV i t).H) (h : GA D (Vc D i)
     R.extV i t y h = (R.cV i).ext ((R.HV i t).e y) h := rfl
 
 end Formalism.IndefR.Eqv.Act
-
-end

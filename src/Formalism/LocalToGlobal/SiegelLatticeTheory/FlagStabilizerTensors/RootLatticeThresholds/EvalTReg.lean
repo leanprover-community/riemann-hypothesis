@@ -13,8 +13,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped InnerProductSpace ComplexConjugate
 
@@ -67,5 +65,3 @@ theorem reg_toLp_X (f0 : X.B.I.GA → ℂ) (hinv : ∀ γ ∈ X.B.I.GFset, ∀ y
 end X
 
 end Formalism.L2.SG.EvalTReg
-
-end

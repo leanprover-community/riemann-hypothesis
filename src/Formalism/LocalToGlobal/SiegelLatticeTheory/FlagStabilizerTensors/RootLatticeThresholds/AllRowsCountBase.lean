@@ -10,8 +10,6 @@ import Mathlib.Algebra.AffineMonoid.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.AllRowsCountBase
 
 open Finset Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.AllRowsOf

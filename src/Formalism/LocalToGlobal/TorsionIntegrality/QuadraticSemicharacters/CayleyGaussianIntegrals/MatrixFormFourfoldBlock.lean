@@ -8,7 +8,6 @@ public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators ComplexConjugate
 
 namespace Formalism.L2.Th1.H

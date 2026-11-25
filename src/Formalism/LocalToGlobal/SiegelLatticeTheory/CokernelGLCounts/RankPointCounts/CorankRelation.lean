@@ -10,8 +10,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open scoped Matrix

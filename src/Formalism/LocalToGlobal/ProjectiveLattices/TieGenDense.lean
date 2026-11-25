@@ -17,8 +17,6 @@ import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD

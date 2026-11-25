@@ -10,8 +10,6 @@ import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 
 set_option linter.unusedVariables false
 
-noncomputable section
-
 open MeasureTheory Filter Topology Matrix
 open scoped ENNReal
 

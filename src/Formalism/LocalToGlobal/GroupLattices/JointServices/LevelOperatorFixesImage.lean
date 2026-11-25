@@ -9,8 +9,6 @@ open Module NumberField IsDedekindDomain
 open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace Formalism.L2.G.ServJoint
 
 section CSD
@@ -68,5 +66,3 @@ theorem image_mem_nabla_iff {s : ℕ} (hOk : A.fam.Ok s) (P : Subgroup G) (ψ : 
 end Fam
 
 end Formalism.L2.G.ServJoint
-
-end

@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LengthInverseBou
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.Br
 
 open NumberField Formalism.UG Matrix

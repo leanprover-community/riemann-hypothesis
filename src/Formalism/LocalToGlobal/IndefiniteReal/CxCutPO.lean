@@ -11,8 +11,6 @@ import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ConjugateWeightLa
 open Module NumberField IsDedekindDomain Polynomial
 open scoped Matrix ComplexOrder InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.IndefR.Cx
 
 open Formalism.DivisionValues Formalism.L2 Formalism.L2.Indef Formalism.L2.DIV Formalism.L2.DIV.CyclotomicLifting Formalism.IndefR.Cx.EigenprojectionMatrices

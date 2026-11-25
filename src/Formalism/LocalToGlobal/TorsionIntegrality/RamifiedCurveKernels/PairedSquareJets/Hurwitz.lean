@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 open Finset
 

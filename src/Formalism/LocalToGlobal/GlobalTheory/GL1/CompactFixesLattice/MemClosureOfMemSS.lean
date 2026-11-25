@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.Exist
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix TensorProduct NumberField IsDedekindDomain
 
 namespace Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory
@@ -79,5 +77,3 @@ theorem coord_mem_of_mem_SS {ι : Type} (b : Module.Basis ι F E) (D : 𝓞 F)
   | neg u _ hu => rw [map_neg, smul_neg]; exact neg_mem hu
 
 end Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory
-
-end

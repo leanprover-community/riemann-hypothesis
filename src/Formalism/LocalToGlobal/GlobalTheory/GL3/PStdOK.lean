@@ -14,7 +14,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators ComplexConjugate
 open NumberField Formalism.BasicNotions Classical
 
@@ -39,5 +38,3 @@ theorem fourth_power_le_closure_embeddings (Λ : AddSubgroup ℂ) : pow4 (lamMM 
   apply GlobalTheory.FourthRootStd.fourth_power_le_closure_embeddings
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO
-
-end

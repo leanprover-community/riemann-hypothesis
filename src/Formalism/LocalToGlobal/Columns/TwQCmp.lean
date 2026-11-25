@@ -10,8 +10,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 open NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 section Cmp

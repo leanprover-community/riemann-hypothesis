@@ -9,8 +9,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChar
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

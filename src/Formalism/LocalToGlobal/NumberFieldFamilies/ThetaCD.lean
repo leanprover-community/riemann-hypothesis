@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCR
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct ContDiff
 
@@ -55,5 +53,3 @@ theorem emb_fin {k : GA D B} (hk : k ∈ GfC B) : s k ∈ GfC A := by
 end Emb
 
 end Formalism.L2.Fam.ThC
-
-end

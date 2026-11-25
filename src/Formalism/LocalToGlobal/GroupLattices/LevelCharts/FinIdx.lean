@@ -9,8 +9,6 @@ public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG
 open scoped TensorProduct
 

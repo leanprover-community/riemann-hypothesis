@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
@@ -92,5 +90,3 @@ theorem idemSum_orth (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (e : AE D) (he 
     · exact idem_orth_conj (_root_.Formalism.IndefR.Fin.idemAt_split (hes PP hPP)) (hes PP hPP) (hes PP' hPP') hcj
 
 end Formalism.IndefR.Fin
-
-end

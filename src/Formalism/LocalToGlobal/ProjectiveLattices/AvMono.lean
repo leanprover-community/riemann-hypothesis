@@ -14,8 +14,6 @@ public import Mathlib.RingTheory.Nakayama
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial IsLocalRing
 
 namespace Formalism.L2.Pj.AvAlg

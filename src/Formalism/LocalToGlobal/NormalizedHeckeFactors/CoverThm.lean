@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LocsCoverTw
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Module Module.End
 
 namespace Formalism.L2

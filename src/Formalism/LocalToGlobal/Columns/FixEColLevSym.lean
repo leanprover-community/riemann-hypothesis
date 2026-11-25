@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.Columns.RecLevelDiv
 
 open NumberField IsDedekindDomain Module Matrix
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Ker

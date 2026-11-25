@@ -7,8 +7,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.LamCM
 
 open NumberField IsDedekindDomain

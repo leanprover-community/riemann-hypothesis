@@ -8,8 +8,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterMod
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Module Formalism.MainNotions.S
 open Classical
 

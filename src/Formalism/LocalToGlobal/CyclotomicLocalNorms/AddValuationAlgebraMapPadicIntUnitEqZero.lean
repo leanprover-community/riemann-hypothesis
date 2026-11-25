@@ -6,8 +6,6 @@ import ReciprocityTheory.ClassFieldTheory.LocalClassField.HerbrandA
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.LocGap.Gal
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.DiscreteGroups Filter Topology

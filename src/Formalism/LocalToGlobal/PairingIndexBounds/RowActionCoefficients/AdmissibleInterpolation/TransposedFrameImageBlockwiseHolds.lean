@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.A
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.PairingIndexBounds.Ent
 
 open Formalism.GradedWeylDivisibility Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G.Pend Formalism.L2.G.Model.TS

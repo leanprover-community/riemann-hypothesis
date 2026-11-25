@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 open Matrix
 open scoped Matrix
 
-noncomputable section
-
 namespace Formalism.IndefR.Links.EvTie
 
 open Formalism.L2.DIV Formalism.IndefR.Cx
@@ -102,5 +100,3 @@ theorem evTie_real {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
 end Ok
 
 end Formalism.IndefR.Links.EvTie
-
-end

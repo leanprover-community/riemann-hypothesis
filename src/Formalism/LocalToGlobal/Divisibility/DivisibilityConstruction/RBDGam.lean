@@ -11,8 +11,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearCardBound.
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-noncomputable section
-
 namespace Formalism.L2.DIV.Cons
 
 open Formalism.L2.DIV
@@ -226,5 +224,3 @@ theorem dGamSize_record_one {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m :
   exact h
 
 end Formalism.L2.DIV.Cons
-
-end

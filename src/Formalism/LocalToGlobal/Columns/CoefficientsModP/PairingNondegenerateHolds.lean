@@ -18,8 +18,6 @@ import Mathlib.Tactic.Lemma
 open MvPolynomial
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace Formalism.L2.DIV
 
 open Formalism.BasicNotions

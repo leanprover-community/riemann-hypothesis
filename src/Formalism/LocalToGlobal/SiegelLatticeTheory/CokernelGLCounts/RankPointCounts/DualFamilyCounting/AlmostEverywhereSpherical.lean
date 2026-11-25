@@ -14,8 +14,6 @@ import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentati
 
 open NumberField Module
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.G1
 
 open Formalism.HermitianLattices.Ext.L3 Formalism.HermitianLattices.Ext.L3.U0 Formalism.HermitianLattices.Ext.L3.WA

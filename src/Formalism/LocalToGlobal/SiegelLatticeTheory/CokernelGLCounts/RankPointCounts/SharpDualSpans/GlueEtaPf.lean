@@ -8,8 +8,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalGluing.MemOfProjEq
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA
 
 namespace PI.LocCntLat.GE

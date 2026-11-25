@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Matrix
 open scoped BigOperators
 

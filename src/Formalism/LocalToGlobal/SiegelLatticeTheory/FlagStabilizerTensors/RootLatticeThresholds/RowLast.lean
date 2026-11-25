@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix
 
 namespace Formalism.L2.S.L6.UnitaryStandardVectors

@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
 
 open NumberField IsDedekindDomain IntermediateField
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.L2.Host Formalism.L2.DIV Formalism.FrobeniusOrbits

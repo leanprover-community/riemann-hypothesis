@@ -5,8 +5,6 @@ import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.MainNotions.S.Loc
 
 namespace Formalism.L2.SG.LocalCountModules.LocCntCommon

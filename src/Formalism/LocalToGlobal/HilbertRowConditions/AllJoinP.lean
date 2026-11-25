@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.ConcNWeight
 
 @[expose] public section
 
-noncomputable section
-
 set_option linter.dupNamespace false
 
 namespace Formalism.L2.GlobalTheoryTheory.AllJoin
@@ -28,5 +26,3 @@ theorem weight_of_join {A : AllRows D} (hL : admLq D) (hA : TieAdmG D) (hR : Ran
 end One
 
 end Formalism.L2.GlobalTheoryTheory.AllJoin
-
-end

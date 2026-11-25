@@ -6,8 +6,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.L2.SG.Full Formalism.L2.SG.KappaOffDiagonal
 
 namespace Formalism.L2.SG.KappaOffDiagonal

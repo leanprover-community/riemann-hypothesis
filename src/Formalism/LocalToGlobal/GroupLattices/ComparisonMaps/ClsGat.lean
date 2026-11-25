@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.RepTie
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG Formalism.MainNotions.G
 open scoped TensorProduct
 

@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Matrix
 
 namespace Formalism.L2.SG.Pf.StabilizerIndexVolumes

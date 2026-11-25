@@ -7,8 +7,6 @@ import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
 open scoped InnerProductSpace ComplexConjugate ENNReal
 

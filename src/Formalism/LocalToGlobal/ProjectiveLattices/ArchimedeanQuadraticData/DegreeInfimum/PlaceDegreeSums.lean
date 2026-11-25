@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.FractionalIdeal.Norm
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.QAt.PlaceDegreeSums
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.FreeQuotientRank

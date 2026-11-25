@@ -9,8 +9,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open MvPolynomial Formalism.BasicNotions Formalism.GradedWeylDivisibility Formalism.MainNotions.flipTwoThree
@@ -50,5 +48,3 @@ theorem delSq_fd {n : ℕ} (sg : DomWeight n) : FiniteDimensional ℂ (delSq ℂ
   exact dualWeyl_fd n n _
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
-
-end

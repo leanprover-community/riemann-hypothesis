@@ -16,8 +16,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalVolumeIndices.Help
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.RhoSurjW
 
 open NumberField IsDedekindDomain Matrix

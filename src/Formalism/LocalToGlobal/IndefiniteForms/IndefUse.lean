@@ -14,8 +14,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open Module NumberField IsDedekindDomain
 open scoped Matrix ComplexOrder InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.L2.Indef
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling

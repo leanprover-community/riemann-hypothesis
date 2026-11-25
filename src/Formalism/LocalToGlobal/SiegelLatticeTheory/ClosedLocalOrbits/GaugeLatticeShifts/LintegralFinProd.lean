@@ -6,8 +6,6 @@ public import Mathlib.Algebra.BigOperators.Fin
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped ENNReal
 

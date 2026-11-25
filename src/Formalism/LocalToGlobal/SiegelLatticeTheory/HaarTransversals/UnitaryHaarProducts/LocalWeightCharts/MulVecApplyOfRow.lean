@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.Unita
 
 open Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S
 
-noncomputable section
-
 namespace WlocSk.UnitaryGroupBasics
 
 variable {k r : ℕ}

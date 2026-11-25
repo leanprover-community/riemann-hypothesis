@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp
 
 @[expose] public section
 
-noncomputable section
 open UpperHalfPlane hiding I
 open EisensteinSeries Complex SummationFilter ModularGroup
 open scoped Real

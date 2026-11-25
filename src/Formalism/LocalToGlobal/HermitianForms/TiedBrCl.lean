@@ -7,8 +7,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Forms
 
 open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts Matrix

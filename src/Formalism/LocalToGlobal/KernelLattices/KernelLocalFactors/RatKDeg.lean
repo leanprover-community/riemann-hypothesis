@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 open NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace Formalism.L2.Ker
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Th1.H Formalism.MainNotions

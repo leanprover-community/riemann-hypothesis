@@ -7,8 +7,6 @@ import Mathlib.RingTheory.Unramified.LocalStructure
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.CompSplitPfD
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Topology

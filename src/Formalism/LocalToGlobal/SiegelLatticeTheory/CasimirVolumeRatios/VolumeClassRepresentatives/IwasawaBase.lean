@@ -6,8 +6,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasu
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.S.S7.IwasawaBase
 
 open MeasureTheory NumberField
@@ -21,5 +19,3 @@ theorem muA_right (μf : Measure I.Gf) [SigmaFinite μf] [μf.IsHaarMeasure] : (
   exact rr_muA_right I μf
 
 end Formalism.L2.S.S7.IwasawaBase
-
-end

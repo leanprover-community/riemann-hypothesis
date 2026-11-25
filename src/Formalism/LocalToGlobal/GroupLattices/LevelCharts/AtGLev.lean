@@ -7,8 +7,6 @@ public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix NumberField IsDedekindDomain Formalism.UG
 open scoped TensorProduct
 

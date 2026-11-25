@@ -5,8 +5,6 @@ public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.FrobeniusOrbits
 
 namespace Formalism.IndefR.Conj
@@ -84,5 +82,3 @@ theorem labExists : LabExists D := by
     rw [mul_assoc (γ * (D.eTau τ).1), cc_mul_cc, mul_one]
 
 end Formalism.IndefR.Conj
-
-end

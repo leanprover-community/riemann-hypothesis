@@ -14,8 +14,6 @@ import Mathlib.RingTheory.TotallySplit
 open Module NumberField IsDedekindDomain
 open scoped Matrix ComplexOrder InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.IndefR.Cx
 
 open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV

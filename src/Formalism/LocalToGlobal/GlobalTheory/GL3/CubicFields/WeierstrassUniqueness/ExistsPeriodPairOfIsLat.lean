@@ -5,8 +5,6 @@ public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5
 
 open NumberField Classical
@@ -70,5 +68,3 @@ theorem g2_g3_eq_periodPair (Λ : AddSubgroup ℂ) (L : PeriodPair) (hL : (L.lat
     rw [eisG_eq_G_of_lattice Λ L hL 3 (by norm_num)]
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5
-
-end

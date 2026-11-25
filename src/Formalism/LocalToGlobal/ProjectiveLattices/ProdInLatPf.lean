@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.AxHLAM
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj
 
 open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.T0

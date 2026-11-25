@@ -7,7 +7,6 @@ import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 
 namespace Formalism.L2.Th1.H

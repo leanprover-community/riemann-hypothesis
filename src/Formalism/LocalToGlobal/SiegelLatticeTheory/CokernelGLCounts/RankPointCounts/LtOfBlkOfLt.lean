@@ -6,8 +6,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.BlockPermutation
 
 open Formalism.MainNotions.S Formalism.L2.SG.PtCell Formalism.L2.SG.RealObj

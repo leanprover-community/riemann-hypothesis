@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.ConjLemmas
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.FrobeniusOrbits Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Links Formalism.IndefR.Mult Finset
 
 namespace Formalism.IndefR.Fock.KV
@@ -35,5 +33,3 @@ theorem sig_Wc (i : Fin D.R.m) (τ : D.what₂.Tau) : (Wc D i).sig (tauE D τ) =
   D.sp.W_sigval _ (Nat.le_add_left _ _) i.2 _
 
 end Formalism.IndefR.Fock.KV
-
-end

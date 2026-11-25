@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaS
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Finset
 open scoped ComplexConjugate
 

@@ -11,8 +11,6 @@ public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 
 set_option linter.style.haveILetI false
 
-noncomputable section
-
 namespace Formalism.IndefR.Fin.Four
 
 variable {W V : Type*} [AddCommGroup W] [AddCommGroup V] [Module ℂ V]
@@ -336,5 +334,3 @@ theorem term_support_finite {Φ : W → ℂ} (h : IsSB L X Φ) :
 end Main
 
 end Formalism.IndefR.Fin.Four
-
-end

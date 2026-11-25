@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.BesselDiscreteSeries
 
 open Formalism.FourierDecayAlt.ThreeDimData

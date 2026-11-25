@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassD
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 namespace Formalism.L2.SG.RhoPf

@@ -8,8 +8,6 @@ import Mathlib.Tactic.TypeStar
 open Module
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.IndefR.Cx
 
 open Formalism.L2.Indef

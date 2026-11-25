@@ -11,8 +11,6 @@ import Formalism.LocalRingCardinality.DataAmbForm
 open Module NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.DV
 
-noncomputable section
-
 namespace Formalism.L2.G.ServJoint
 
 theorem vw_resChar (D : D7) (w : D.what₂.places.Pl) :
@@ -31,5 +29,3 @@ theorem plc_plEq (D : D7) (w : D.what₂.places.Pl) : Formalism.EigenvalueLevelC
   omega
 
 end Formalism.L2.G.ServJoint
-
-end

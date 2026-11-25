@@ -5,8 +5,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittExtensionThe
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting
 

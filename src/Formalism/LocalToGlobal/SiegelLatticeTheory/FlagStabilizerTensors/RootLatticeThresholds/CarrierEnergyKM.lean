@@ -5,8 +5,6 @@ import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.Pf.Carrier
 
 namespace Formalism.L2.SG.Pf.Carrier.EnergyKM

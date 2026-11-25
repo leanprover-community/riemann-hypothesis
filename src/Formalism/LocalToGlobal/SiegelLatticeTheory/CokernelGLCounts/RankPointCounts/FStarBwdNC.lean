@@ -7,8 +7,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.BwdNA

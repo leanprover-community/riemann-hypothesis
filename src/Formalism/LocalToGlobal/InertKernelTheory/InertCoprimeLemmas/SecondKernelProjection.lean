@@ -6,8 +6,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.KerInert.SecondKernelProjection
 
 open Formalism.MainNotions.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Classical

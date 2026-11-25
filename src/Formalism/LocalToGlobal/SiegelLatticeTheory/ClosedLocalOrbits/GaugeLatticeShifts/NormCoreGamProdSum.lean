@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 
 open Finset
 
-noncomputable section
-
 open Classical
 
 open Formalism.L2.SG.GGMirabolic in

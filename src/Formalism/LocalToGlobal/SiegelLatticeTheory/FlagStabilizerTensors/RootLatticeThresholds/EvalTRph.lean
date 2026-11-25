@@ -6,8 +6,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.ProjRows
 open scoped InnerProductSpace
 
@@ -84,5 +82,3 @@ theorem rph_fix_of_coef
   exact (sub_eq_zero.1 (inner_self_eq_zero.1 h0)).symm
 
 end Formalism.L2.SG.EvalTRph
-
-end

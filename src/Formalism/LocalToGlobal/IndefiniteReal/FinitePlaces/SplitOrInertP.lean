@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
@@ -45,5 +43,3 @@ theorem splitOrInert (D : D7) : LevelGroupLemmas.SplitOrInert D := by
     exact h ⟨e, he, hne⟩
 
 end Formalism.IndefR.Fin
-
-end

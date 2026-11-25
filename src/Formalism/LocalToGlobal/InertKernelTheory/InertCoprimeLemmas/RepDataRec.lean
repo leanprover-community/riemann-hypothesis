@@ -7,8 +7,6 @@ import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFi
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.KerInert.RepRec
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker

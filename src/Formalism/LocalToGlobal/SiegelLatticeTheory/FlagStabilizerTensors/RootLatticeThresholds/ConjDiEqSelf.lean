@@ -8,8 +8,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.B
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf.Carrier.CarPinTor

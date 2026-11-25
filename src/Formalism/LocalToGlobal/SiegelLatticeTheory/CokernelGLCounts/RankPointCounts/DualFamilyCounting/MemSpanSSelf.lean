@@ -8,8 +8,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 open Module
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.G3
 
 open Formalism.HermitianLattices.Ext.L3 Formalism.HermitianLattices.Ext.L3.U0 Formalism.HermitianLattices.Ext.L3.WA

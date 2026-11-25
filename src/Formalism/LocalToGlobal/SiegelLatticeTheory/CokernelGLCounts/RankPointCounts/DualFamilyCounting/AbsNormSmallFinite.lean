@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical ValuativeRel
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.Cnt
 
 open Formalism.HermitianLattices.Ext.L3

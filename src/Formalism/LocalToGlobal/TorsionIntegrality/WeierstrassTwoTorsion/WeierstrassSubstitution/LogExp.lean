@@ -9,8 +9,6 @@ open PowerSeries
 
 universe u
 
-noncomputable section
-
 namespace Formalism.L2.Th1.A
 
 section SlopeTestRemainingChoices

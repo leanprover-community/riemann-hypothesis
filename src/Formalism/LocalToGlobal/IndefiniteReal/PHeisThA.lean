@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Heis
   IsDedekindDomain NumberField Formalism.IndefR.PHeisFC
 open scoped TensorProduct ContDiff
@@ -74,5 +72,3 @@ theorem cA_smul (c : AF D.host.F) (z : AE D) : cA D (c • z) = c • cA D z := 
 end Sympl
 
 end Formalism.IndefR.PHeisTh
-
-end

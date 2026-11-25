@@ -6,7 +6,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-noncomputable section
 open scoped Topology
 
 namespace Formalism.L2.Th1.F

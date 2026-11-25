@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
 
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG

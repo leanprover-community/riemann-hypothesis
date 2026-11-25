@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Module Module.End Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
 namespace Formalism.L2.Fam.NPC

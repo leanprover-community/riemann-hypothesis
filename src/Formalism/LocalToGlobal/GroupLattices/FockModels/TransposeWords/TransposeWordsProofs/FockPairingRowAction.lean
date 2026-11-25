@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.Model.TS
 
 open Formalism.GradedWeylDivisibility

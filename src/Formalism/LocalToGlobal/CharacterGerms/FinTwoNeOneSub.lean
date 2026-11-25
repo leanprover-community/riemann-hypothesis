@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.BlockMembershipNormOne
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

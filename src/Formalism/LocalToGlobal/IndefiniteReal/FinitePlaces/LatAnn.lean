@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PairingRankOne
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
@@ -50,5 +48,3 @@ theorem lat_ann (hψ : IsStdChar D ψ (-1)) (S T : HSp D) {ΛS : Submodule (𝓞
   | neg x' _ h => rw [symplO_neg_left, AddChar.map_neg_eq_inv, h, inv_one]
 
 end Formalism.IndefR.Fin
-
-end

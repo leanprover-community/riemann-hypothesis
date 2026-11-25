@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.LemB
 
 open MvPolynomial
@@ -106,5 +104,3 @@ theorem duCount_holds : ∀ (D : Formalism.BasicNotions.D7) (u : D.what₂.Word)
     | rfl
 
 end Formalism.L2.GlobalTheoryTheory.LemB
-
-end

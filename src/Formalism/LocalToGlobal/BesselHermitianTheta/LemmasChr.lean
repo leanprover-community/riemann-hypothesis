@@ -5,8 +5,6 @@ import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory
 open scoped TensorProduct
 
@@ -98,5 +96,3 @@ theorem rank_Y_ne (X : ThetaX D) (j : ℕ) (hj : j < D.R.m) : (D.sp.Y (j + 1)).r
   omega
 
 end Formalism.L2.Theta
-
-end

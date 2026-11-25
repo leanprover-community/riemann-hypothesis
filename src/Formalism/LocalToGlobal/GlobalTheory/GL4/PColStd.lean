@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.MainNotions.flipTwoThree
@@ -18,5 +16,3 @@ theorem translate_span_eq : TSpanEqVV := by
   rfl
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
-
-end

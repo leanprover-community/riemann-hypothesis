@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceAt
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix NumberField
 
 namespace Formalism.IndefR.Fin
@@ -17,5 +15,3 @@ theorem placeModelAtF (D : Formalism.BasicNotions.D7) : PlaceModelAt D := placeM
 theorem latLevelF (D : Formalism.BasicNotions.D7) : LatLevel D := latLevel_of (latSelfDual D)
 
 end Formalism.IndefR.Fin
-
-end

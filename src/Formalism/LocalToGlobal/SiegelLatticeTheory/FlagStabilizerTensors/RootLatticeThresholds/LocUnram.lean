@@ -49,8 +49,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 namespace Formalism.L2.SG.Pf.LocUnramP

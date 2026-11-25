@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 
 namespace Formalism.L2.Fam.DivCQ
@@ -21,5 +19,3 @@ theorem unrAt_one {L : Type} [Field L] [NumberField L] (w : HeightOneSpectrum (ð
   fun _ _ => rfl
 
 end Formalism.L2.Fam.DivCQ
-
-end

@@ -9,8 +9,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 open Module Matrix
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp

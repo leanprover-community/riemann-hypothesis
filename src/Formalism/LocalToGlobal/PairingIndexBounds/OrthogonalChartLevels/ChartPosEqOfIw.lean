@@ -12,8 +12,6 @@ import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoeffProdRename
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.G.Pend Formalism.MainNotions Formalism.MainNotions.G.CmpJ
 open Formalism.L2.Forms Formalism.L2.KerInert.SecondKernelInstances
 
@@ -31,5 +29,3 @@ theorem sigD_conj (x : D.host.E) : sigD D (D.host.conj x) = x := by
 end Gen
 
 end Formalism.L2.PairingIndexBounds.F
-
-end

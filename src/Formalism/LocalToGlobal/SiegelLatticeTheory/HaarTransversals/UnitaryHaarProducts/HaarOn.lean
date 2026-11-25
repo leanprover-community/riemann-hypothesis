@@ -6,8 +6,6 @@ import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Measure Topology
 open scoped ENNReal
 

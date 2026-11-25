@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.PtKOfReal
 
 @[expose] public section
 
-noncomputable section
-
 open Module NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2 Formalism.L2.Indef Formalism.L2.DIV Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
   Formalism.L2.RowDataTransport
@@ -23,5 +21,3 @@ theorem muMax_heq {P : RowSideFamily ex} {Z1 Z2 : DefSub P.A3.fam3.amb3} (h : Z1
   rfl
 
 end Formalism.L2.DIV.FunSharpTop
-
-end

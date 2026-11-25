@@ -16,8 +16,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoAF
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.NcS.KfOrbPf
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.LocVol NumberField IsDedekindDomain

@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.ZsVolKey
 
 open Formalism.L2.SG.Pf.StabilizerIndexVolumes Matrix
@@ -169,5 +167,3 @@ theorem nlam_of_frames (F : Formalism.MainNotions.S.FlagG S r T) (F' : Formalism
     exact sL_orth' (F := F) (F' := F') hG hQ hZH hrel (loUni_inv hQl) x hx
 
 end Formalism.L2.SG.Pf.ZsVolKey
-
-end

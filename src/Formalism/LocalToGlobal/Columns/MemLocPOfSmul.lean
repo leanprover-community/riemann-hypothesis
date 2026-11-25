@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified
 open NumberField IsDedekindDomain Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 namespace DetChrL

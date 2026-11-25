@@ -10,8 +10,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommuta
 open MeasureTheory Matrix Filter Topology
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX

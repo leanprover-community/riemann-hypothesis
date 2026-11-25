@@ -12,8 +12,6 @@ import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 open NumberField IsDedekindDomain Module
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.DivisionValues

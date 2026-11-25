@@ -4,8 +4,6 @@ public import Formalism.LocalRingCardinality.DataTheta
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH
 
 namespace Formalism.L2.Theta
@@ -44,5 +42,3 @@ theorem xi_zero_im_pos (D : D7) (τ : D.what₂.Tau) : 0 < (tauE D τ D.host.xi0
   exact div_pos one_pos hc0
 
 end Formalism.L2.Theta
-
-end

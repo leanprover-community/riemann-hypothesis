@@ -12,8 +12,6 @@ import Formalism.LocalRingCardinality.Params
 open MvPolynomial
 open scoped Matrix
 
-noncomputable section
-
 namespace Formalism.L2.DIV
 
 open Formalism.BasicNotions

@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions

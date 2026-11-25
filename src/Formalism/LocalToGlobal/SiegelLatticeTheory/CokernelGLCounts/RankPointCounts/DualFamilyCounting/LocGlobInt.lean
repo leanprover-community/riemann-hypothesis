@@ -8,8 +8,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityUnder
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.Cnt.DualityBasisChange
 
 theorem mem_integer_iff_vle {K : Type} [Field K] [ValuativeRel K] (x : K) : x ∈ 𝒪[K] ↔ x ≤ᵥ 1 := by

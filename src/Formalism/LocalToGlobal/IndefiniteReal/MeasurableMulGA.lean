@@ -8,8 +8,6 @@ import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory
 open Formalism.L2.Theta
 
@@ -69,5 +67,3 @@ theorem petPos (V : HSp D) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (hH : �
   exact hUpos.ne' hU0
 
 end Formalism.IndefR.PeterssonHilbertSpace
-
-end

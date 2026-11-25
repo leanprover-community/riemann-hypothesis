@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.RowDict
 open Formalism.L2.SG.ProjRows Formalism.MainNotions.S
 open scoped InnerProductSpace
@@ -41,5 +39,3 @@ variable {S : D.what₂.Tau → SPar} (M : DSModel (D.sp.Y 0) S) (E : Submodule 
 variable {X M E G ι t v₀}
 
 end Formalism.L2.SG.EvalTOnto
-
-end

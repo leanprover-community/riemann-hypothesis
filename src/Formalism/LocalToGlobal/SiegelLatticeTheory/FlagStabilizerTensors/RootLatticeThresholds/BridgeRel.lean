@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix MeasureTheory NumberField Formalism.BasicNotions
 
 namespace Formalism.L2.SG.Pf.Bridge

@@ -6,8 +6,6 @@ import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
   IsDedekindDomain NumberField
 open scoped TensorProduct
@@ -76,5 +74,3 @@ theorem wo_fin_iff (w : WO S T) : w.map (infPart D) = 0 ↔ eFin D • w = w := 
     exact (infPart_eq_zero_iff_smul (w i j)).mpr (congrFun (congrFun h i) j)
 
 end Formalism.IndefR.Eqv
-
-end

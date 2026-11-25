@@ -9,8 +9,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField
 
 namespace Formalism.L2.S.Pv.DdTraceCore

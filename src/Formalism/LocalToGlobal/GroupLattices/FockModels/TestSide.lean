@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideLat
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.Model
 
 open Formalism.MainNotions.G Formalism.GradedWeylDivisibility Formalism.MainNotions.G.LatticeSystems

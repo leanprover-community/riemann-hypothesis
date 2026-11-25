@@ -7,8 +7,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalGluing.Exis
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel Matrix
 
 namespace Formalism.L2.SG.LsDatumA

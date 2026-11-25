@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ExistsOnOfPosDef
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.Br
 
 open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Matrix

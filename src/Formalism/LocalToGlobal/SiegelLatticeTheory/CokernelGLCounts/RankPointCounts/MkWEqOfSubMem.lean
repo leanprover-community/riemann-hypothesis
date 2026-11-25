@@ -7,8 +7,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel Matrix
 
 namespace Formalism.L2.SG.LsDatumA

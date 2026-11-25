@@ -22,8 +22,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.Forma
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.KerInert.GenusOneDatumExistence
 
 open Formalism.MainNotions.GL3Theta Formalism.L2.G.Pend PowerSeries

@@ -9,8 +9,6 @@ import Mathlib.Analysis.Normed.Ring.Ultra
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Th1.B.Crv
 
 open Formalism.DworkPowerSeriesWeights (Integral)

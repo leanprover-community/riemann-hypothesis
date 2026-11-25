@@ -9,7 +9,6 @@ public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 
 namespace Formalism.L2.Th1.D

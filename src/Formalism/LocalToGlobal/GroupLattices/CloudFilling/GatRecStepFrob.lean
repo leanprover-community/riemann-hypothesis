@@ -6,8 +6,6 @@ public import Formalism.LocalRingCardinality.SpanPowerMembership.GatTies
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.UG Formalism.MainNotions.G Formalism.FrobeniusOrbits
 open scoped TensorProduct
 

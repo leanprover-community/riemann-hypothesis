@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.Columns.MtHeckeLoc
 open NumberField IsDedekindDomain Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.UG Formalism.UG.P

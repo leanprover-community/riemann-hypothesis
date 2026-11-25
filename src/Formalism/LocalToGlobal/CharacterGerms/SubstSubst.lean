@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

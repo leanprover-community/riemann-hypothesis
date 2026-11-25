@@ -6,8 +6,6 @@ import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.G.Cmp
 
 open Formalism.MainNotions.G Formalism.BasicNotions Formalism.L2.Forms NumberField

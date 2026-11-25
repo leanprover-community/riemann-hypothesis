@@ -6,8 +6,6 @@ import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.Br
 
 open Formalism.BasicNotions NumberField

@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.GroupLattices.JointServices.LevelOperatorFixesIma
 open Module NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions.G Formalism.MainNotions.WeilJacquetShalikaLaw Formalism.L2.DIV Formalism.L2.Indef
 
-noncomputable section
-
 namespace Formalism.L2.G.ServJointF
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {K : Formalism.MainNotions.G.Consts}
@@ -47,5 +45,3 @@ theorem brTied_of {Zs : DefSub A3.fam3.amb3} {S0 : IndefData (A3.side3 P0 ψ0 Zs
 end Gen
 
 end Formalism.L2.G.ServJointF
-
-end

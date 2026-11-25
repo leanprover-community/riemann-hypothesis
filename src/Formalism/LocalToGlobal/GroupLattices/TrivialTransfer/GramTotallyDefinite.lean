@@ -10,8 +10,6 @@ import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG Formalism.MainNotions.G
 open scoped TensorProduct
 
@@ -93,5 +91,3 @@ theorem stabZero_rec (D : D7) (lev : LevelData D) (u : D.what₂.Word) : (D.mem 
 end Record
 
 end Formalism.L2.G.Triv
-
-end

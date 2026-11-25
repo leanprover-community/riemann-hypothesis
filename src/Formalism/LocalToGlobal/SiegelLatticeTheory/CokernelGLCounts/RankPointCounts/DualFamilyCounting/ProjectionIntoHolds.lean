@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 open NumberField Module
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.G6
 
 open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt

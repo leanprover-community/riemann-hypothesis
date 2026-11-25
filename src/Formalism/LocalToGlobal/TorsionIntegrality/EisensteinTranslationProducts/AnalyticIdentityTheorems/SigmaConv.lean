@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Pow
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators ComplexConjugate
 open Filter
 

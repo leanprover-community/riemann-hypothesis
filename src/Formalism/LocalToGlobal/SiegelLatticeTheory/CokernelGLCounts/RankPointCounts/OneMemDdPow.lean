@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.ZsVolLat
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Matrix IsDedekindDomain
@@ -71,5 +69,3 @@ theorem coef_spanO {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) {v : (VS D).V}
   exact ⟨c a, by rw [hyy]⟩
 
 end Formalism.L2.SG.Pf.ZsVolLat
-
-end

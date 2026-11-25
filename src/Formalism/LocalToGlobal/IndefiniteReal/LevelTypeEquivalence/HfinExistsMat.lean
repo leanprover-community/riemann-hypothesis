@@ -11,8 +11,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open scoped TensorProduct
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-noncomputable section
-
 namespace Formalism.IndefR.Eqv.G5
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

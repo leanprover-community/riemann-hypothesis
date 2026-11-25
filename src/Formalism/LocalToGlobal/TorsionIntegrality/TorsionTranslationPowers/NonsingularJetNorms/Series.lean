@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPower
 
 open PowerSeries Finset
 
-noncomputable section
-
 namespace Formalism.L2.Th1.E
 
 namespace Ser

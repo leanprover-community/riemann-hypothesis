@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.CoordRat
 open Module NumberField
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.IndefR.Rat
 
 open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV Formalism.IndefR.Cx Formalism.IndefR.Cx.CxData

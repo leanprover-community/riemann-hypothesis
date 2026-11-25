@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ThIndep
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric
@@ -19,5 +17,3 @@ theorem theta_operator_isometry : ∀ D : D7, ∀ cc : Ideal (𝓞 D.host.K), Is
   IopIso_of_parts hermitian_form_integral_values self_dual_lattice
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
-
-end

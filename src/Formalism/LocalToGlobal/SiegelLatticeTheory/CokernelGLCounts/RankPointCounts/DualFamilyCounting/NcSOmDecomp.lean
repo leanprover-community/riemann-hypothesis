@@ -20,8 +20,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.NcS.OmDecompPf
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.Volumes Formalism.L2.SG.LocVol

@@ -8,8 +8,6 @@ import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 open NumberField ValuativeRel IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups

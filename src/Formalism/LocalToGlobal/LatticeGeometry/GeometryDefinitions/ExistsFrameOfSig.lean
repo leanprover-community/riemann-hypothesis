@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.ClsSum
 
 @[expose] public section
 
-noncomputable section
-
 open Module Matrix NumberField IsDedekindDomain Formalism.UG Formalism.BasicNotions Formalism.HN
 open scoped TensorProduct
 

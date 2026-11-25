@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramePairCoordinates
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 namespace Formalism.L2.SG.GoodFamilyMass

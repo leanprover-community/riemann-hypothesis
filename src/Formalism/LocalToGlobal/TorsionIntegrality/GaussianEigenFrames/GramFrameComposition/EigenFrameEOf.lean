@@ -8,7 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Bool
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 open NumberField
 

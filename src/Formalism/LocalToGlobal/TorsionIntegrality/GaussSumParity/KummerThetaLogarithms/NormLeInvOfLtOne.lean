@@ -9,7 +9,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 
 namespace Formalism.L2.Th1.D

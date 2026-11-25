@@ -11,8 +11,6 @@ import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
 open NumberField IsDedekindDomain Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.UG Formalism.UG.P Formalism.L2.DIV

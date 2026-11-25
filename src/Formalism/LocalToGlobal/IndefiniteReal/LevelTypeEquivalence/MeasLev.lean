@@ -15,8 +15,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodGA
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 
 namespace Formalism.IndefR.Eqv
@@ -169,5 +167,3 @@ theorem measFDExists_holds : MeasFDExists D := fun V hS K hK => by
   exact ⟨μ, 𝓕, hμ, h𝓕 μ⟩
 
 end Formalism.IndefR.Eqv
-
-end

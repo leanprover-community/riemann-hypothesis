@@ -15,8 +15,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.ThB Formalism.MainNotions.BesselShellMomentBounds Formalism.MainNotions.LatticeGluingRadicals Formalism.MainNotions.BridgeLemma
   Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.FourierDecayAlt Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.NGCut
@@ -147,5 +145,3 @@ theorem ptUnifG : Formalism.L2.SG.Pf.BDat.PtUnifG := by
   simp [Full.tO, tOf, Gt, GTerm.G, h0]
 
 end Formalism.L2.SG.PointUniformity
-
-end

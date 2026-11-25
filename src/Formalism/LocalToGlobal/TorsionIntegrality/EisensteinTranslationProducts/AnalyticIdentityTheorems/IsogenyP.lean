@@ -8,7 +8,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-noncomputable section
 open Filter Topology
 
 namespace Formalism.L2.Th1.F

@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.Divisibility.InertPartitionLePartF
 open Module NumberField IsDedekindDomain Polynomial
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace Formalism.L2.DIV
 
 open Formalism.DivisionValues Formalism.L2.Indef

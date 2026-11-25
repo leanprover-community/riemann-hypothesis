@@ -12,8 +12,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open NumberField IsDedekindDomain Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.L2.DIV (Pl kP)

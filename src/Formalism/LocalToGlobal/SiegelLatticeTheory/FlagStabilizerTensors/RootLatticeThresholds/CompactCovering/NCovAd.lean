@@ -6,8 +6,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFinit
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Metric
 
 namespace Formalism.L2.SG.Pf.RescaleCore.NCov

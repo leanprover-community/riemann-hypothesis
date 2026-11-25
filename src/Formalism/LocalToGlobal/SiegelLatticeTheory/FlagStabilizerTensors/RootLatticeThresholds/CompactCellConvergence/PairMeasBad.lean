@@ -9,8 +9,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.SpanMemOfImage
 open MeasureTheory Matrix
 open scoped ENNReal
 
-noncomputable section
-
 namespace Formalism.MainNotions.S.Pv.AmpDDPf.CC
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S

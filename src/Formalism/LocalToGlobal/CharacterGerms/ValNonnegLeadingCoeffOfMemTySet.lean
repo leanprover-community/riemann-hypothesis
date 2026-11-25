@@ -7,8 +7,6 @@ import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

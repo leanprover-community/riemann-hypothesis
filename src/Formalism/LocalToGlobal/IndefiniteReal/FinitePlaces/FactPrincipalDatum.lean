@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProo
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField FractionalIdeal
 
 namespace Formalism.IndefR.Fin
@@ -28,5 +26,3 @@ theorem factPrincipalDatum : Formalism.BasicNotions.FactPrincipalDatum :=
   Formalism.BasicNotions.factPrincipalDatum_of diffKPrincipal ccNorm
 
 end Formalism.IndefR.Fin
-
-end

@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 
 open NumberField Matrix
 
-noncomputable section
-
 namespace Formalism.L2.Col
 section TieFormsSym
 

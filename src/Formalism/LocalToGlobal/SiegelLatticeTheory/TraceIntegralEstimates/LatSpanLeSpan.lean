@@ -8,8 +8,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.Heis
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 namespace Formalism.L2.S.Pv.ClassCounting
@@ -165,5 +163,3 @@ theorem exists_partner (z : S.V) (hzL : z ∈ L) (hzz : S.hT z z ≠ 0)
 end Gen
 
 end Formalism.L2.S.Pv.ClassCounting
-
-end

@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.Stabiliser
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.UnramifiedDiagonal
 
 open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Formalism.L2.GlobalTheoryTheory.LocalLatticeBases Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0 NumberField IsDedekindDomain Matrix Formalism.UG
@@ -94,5 +92,3 @@ theorem diaFun_same (T : Forms0 D u) (v : (D.mem u).A.vT) (k : ℤ)
         (congrArg (fun a : (D.mem u).A.Fv v => k • a) (T.fv0 v c ⟨z, hz⟩ h1).symm)))
 
 end Formalism.L2.GlobalTheoryTheory.UnramifiedDiagonal
-
-end

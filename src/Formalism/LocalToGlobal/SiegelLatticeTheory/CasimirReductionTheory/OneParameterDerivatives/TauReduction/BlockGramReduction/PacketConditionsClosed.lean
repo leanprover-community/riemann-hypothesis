@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OnePar
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Matrix
 open scoped ComplexOrder
 

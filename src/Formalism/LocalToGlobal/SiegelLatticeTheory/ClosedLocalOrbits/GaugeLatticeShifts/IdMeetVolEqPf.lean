@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLattic
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.IdMeet
 
 open scoped Classical ENNReal

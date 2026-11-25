@@ -13,8 +13,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 open Module NumberField TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Geo.ExtensionFiltration.ExtInvS7cd
 
 open Formalism.BasicNotions Formalism.HN Formalism.HermitianLatticesTheory Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Geo.ExtensionFiltration.ExtInvSk

@@ -8,8 +8,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LocGlue
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel
 
 namespace Formalism.L2.SG.LsDatumA

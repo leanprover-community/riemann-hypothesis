@@ -6,8 +6,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 open ValuativeRel
 

@@ -10,8 +10,6 @@ public import Mathlib.RingTheory.LocalRing.Module
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.LocFrM
 
 open TensorProduct

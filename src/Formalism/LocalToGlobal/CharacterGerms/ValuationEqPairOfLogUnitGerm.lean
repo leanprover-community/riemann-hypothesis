@@ -10,8 +10,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

@@ -7,8 +7,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField
 
 namespace Formalism.L2.SG.NGCut.TorsionTotientBound

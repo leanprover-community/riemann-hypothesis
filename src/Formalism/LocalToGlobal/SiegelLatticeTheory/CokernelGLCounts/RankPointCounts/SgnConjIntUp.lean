@@ -10,8 +10,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationChang
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical Matrix
 
 namespace Formalism.L2.SG.Pf.FibQ

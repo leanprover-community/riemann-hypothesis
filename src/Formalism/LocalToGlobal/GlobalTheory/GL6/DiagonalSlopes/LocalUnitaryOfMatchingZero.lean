@@ -9,8 +9,6 @@ import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Ideal IsDedekindDomain
 open scoped TensorProduct
 
@@ -275,5 +273,3 @@ theorem matching_move_mem_level_zero (T : Forms0 D u) (v : (D.mem u).A.vT)
 end OnForms0
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
-
-end

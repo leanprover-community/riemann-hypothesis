@@ -6,8 +6,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.F
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 
 namespace Formalism.L2.SG.RealObj.EnergyIntTor

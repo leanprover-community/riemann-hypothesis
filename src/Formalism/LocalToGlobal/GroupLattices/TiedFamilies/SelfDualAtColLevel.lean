@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain
 
 namespace Formalism.L2.G

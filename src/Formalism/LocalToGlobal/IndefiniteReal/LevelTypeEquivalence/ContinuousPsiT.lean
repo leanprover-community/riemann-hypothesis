@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.Contin
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
   IsDedekindDomain NumberField Filter Topology
 open scoped TensorProduct ContDiff ENNReal
@@ -31,5 +29,3 @@ theorem continuous_psiT (τ : D.what₂.Tau) : Continuous (psiT D τ) := by
     (((continuous_gW (D := D) _).comp (hf.comp (hc 1))).mul continuous_const)
 
 end Formalism.IndefR.Eqv
-
-end

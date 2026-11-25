@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.PosCompatOfB
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField Formalism.MainNotions.G Formalism.FrobeniusOrbits
 
 namespace Formalism.L2.G

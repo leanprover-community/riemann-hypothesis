@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain
 
 namespace Formalism.L2

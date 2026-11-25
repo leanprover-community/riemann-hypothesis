@@ -8,8 +8,6 @@ import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Topology
 open scoped ComplexConjugate ENNReal NNReal Pointwise
 

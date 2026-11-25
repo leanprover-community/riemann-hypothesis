@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ExtendedPointBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps NumberField IsDedekindDomain

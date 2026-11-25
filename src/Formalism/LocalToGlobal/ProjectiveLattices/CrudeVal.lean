@@ -9,8 +9,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.Crude
 
 open NumberField IsDedekindDomain Formalism.L2.Pj

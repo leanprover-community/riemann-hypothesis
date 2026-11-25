@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.W
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.PairingIndexBounds.Ent
 
 theorem interpolation_holds : Interp := by

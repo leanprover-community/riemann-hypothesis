@@ -8,8 +8,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.Rig
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix MeasureTheory NumberField Formalism.BasicNotions
 
 namespace Formalism.L2.SG.Pf.Carrier.CarPinTor

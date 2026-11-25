@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module

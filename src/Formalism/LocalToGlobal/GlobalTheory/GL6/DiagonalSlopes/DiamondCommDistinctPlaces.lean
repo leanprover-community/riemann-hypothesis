@@ -6,8 +6,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
 
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG
@@ -75,5 +73,3 @@ theorem diamond_comm_distinct_places (Tf : Forms0 D u) (hE : DiamondElementsExis
   simp only [mul_assoc, hcomm]
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
-
-end

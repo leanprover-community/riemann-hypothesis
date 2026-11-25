@@ -8,8 +8,6 @@ public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

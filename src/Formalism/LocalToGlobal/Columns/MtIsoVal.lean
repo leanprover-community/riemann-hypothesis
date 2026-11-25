@@ -5,8 +5,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
-noncomputable section
-
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 
 namespace Formalism.L2.Col

@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.KernelLattices.ColumnData.DetIdealsKernelN
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Matrix
@@ -18,5 +16,3 @@ theorem character_unit_on_determinant (D : D7) (χ : IdE D → ℂ) (hχ : IsChi
   chi_unit_of_det_norm_one D (relative_determinant_norm_one D) χ hχ
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
-
-end

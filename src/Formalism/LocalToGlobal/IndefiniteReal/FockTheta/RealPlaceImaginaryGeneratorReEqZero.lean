@@ -6,8 +6,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.UnitBracket
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix
 open scoped ComplexOrder
 
@@ -73,5 +71,3 @@ theorem theta_function_linear_combination {ψ : AddChar (AF D.host.F) ℂ} {S T 
     (hg : IsThetaFunO ψ S T g) (a b : ℂ) : IsThetaFunO ψ S T (a • f + b • g) := theta_add (theta_smul hf a) (theta_smul hg b)
 
 end Formalism.IndefR.Fock.CCR
-
-end

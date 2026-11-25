@@ -4,8 +4,6 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions
 
 namespace Formalism.L2

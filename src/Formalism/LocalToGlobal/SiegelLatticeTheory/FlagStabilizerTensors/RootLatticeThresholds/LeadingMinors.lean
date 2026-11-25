@@ -13,8 +13,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.BridgeLemma Formalism.MainNotions.LatticeGluingRadicals
 
@@ -56,5 +54,3 @@ theorem atSomeAll_holds : Formalism.L2.SG.TermTieOf.AtSomeAll := by
   | rfl
 
 end Formalism.L2.SG.LeadingMinorsNonvanishing
-
-end

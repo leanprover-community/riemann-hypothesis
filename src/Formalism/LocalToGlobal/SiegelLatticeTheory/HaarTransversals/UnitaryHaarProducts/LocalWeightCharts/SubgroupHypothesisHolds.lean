@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.Unita
 
 open Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S WlocSk.UnitaryGroupBasics
 
-noncomputable section
-
 theorem subgroup_hypothesis_holds : WlocSk.SGrp := by
   intro k r z c hz _
   refine ⟨fun h hh => hh.1, fun m hm => hm.1, ?_, ?_, ?_⟩

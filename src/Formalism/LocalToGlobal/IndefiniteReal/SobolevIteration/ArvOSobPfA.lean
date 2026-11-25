@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Mult
   MeasureTheory Matrix Filter Topology
 open scoped ContDiff
@@ -175,5 +173,3 @@ theorem foldCont_holds : FoldCont := by
 
 
 end Formalism.IndefR.Tow.SobPf
-
-end

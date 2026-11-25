@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.L2.Forms Formalism.UG NumberField Matrix
 
 namespace Formalism.L2.G

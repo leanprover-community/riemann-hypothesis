@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApp
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta
 
 namespace Formalism.IndefR.Eqv.Act
@@ -93,5 +91,3 @@ theorem levelGroupAction_mul_of_lifts (hL : LiftsExist V β L) (g1 g2 : Formalis
   field_simp
 
 end Formalism.IndefR.Eqv.Act
-
-end

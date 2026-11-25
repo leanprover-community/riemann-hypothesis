@@ -11,8 +11,6 @@ import Mathlib.RingTheory.Ideal.Norm.RelNorm
 
 open NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace Formalism.L2.Ker
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col

@@ -8,8 +8,6 @@ open PowerSeries
 
 universe u v
 
-noncomputable section
-
 namespace Formalism.L2.Th1.A
 
 namespace CurveSer

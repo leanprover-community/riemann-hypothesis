@@ -11,8 +11,6 @@ public import Mathlib.LinearAlgebra.Matrix.ToLin
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.IndefR.Rat
 
 open Matrix

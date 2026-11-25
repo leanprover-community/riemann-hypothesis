@@ -10,8 +10,6 @@ import Formalism.FockPairing
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.Model.TS
 
 open Formalism.GradedWeylDivisibility

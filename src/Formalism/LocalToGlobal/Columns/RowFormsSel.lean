@@ -9,8 +9,6 @@ import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 
 open NumberField IsDedekindDomain Module
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.EigenvalueLevelCeiling

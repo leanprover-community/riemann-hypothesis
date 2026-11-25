@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.IndefR.FWT
 
 open NumberField IsDedekindDomain Matrix
@@ -76,5 +74,3 @@ theorem hχ_of (hchi : ∀ PP ∈ R.Pg, ∀ u, ∃ a, ((R.chi ((i : ℕ) + 1) PP
 end Place
 
 end Formalism.IndefR.FWT
-
-end

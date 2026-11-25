@@ -7,7 +7,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators ComplexConjugate
 open Formalism.L2.Th1.CM (omegaK HasCMBy)
 

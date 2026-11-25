@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Inh
 
 namespace Formalism.L2.SG.Pf.WuBL

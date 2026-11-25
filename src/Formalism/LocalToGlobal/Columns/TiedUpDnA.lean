@@ -9,8 +9,6 @@ public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
 open NumberField IsDedekindDomain Module Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.UG

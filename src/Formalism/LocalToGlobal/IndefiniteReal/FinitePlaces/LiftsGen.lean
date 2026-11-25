@@ -6,8 +6,6 @@ import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.IndefR.Fin.Lifts
 
 section Gen
@@ -137,5 +135,3 @@ theorem redSurj_sd (hc : CMData F E) {J : Matrix (Fin n) (Fin n) E} {L : Submodu
 end Gen
 
 end Formalism.IndefR.Fin.Lifts
-
-end

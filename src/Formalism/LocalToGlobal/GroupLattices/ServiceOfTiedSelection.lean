@@ -5,8 +5,6 @@ import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.G.ServT
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk Formalism.L2
@@ -20,5 +18,3 @@ theorem closed_imp_class {𝒞 : FamClass} {P Q : ∀ {eps : ℝ}, FamP eps → 
   exact ⟨K, fun Fm CH hc hL => h Fm CH hc (hK Fm CH hc hL)⟩
 
 end Formalism.L2.G.ServT
-
-end

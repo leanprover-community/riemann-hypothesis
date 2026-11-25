@@ -12,7 +12,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators ComplexConjugate
 
 namespace Formalism.L2.Th1.H

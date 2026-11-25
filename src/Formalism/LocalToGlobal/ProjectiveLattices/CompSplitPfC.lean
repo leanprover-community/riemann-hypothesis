@@ -12,8 +12,6 @@ public import Mathlib.RingTheory.Ideal.MinimalPrime.Localization
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.CompSplitPfC
 
 open TensorProduct

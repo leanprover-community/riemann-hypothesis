@@ -6,8 +6,6 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain Module
 
 namespace Formalism.L2.N.ExtNRows3
@@ -72,5 +70,3 @@ theorem adjoint_injective {V W : Type} [NormedAddCommGroup V] [InnerProductSpace
   exact inner_self_eq_zero.mp h1.symm
 
 end Formalism.L2.N.ExtNRows3
-
-end

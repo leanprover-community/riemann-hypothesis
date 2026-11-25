@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Th1.C
 
 namespace Dict

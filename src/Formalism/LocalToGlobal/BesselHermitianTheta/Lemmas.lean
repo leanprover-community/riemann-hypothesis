@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory
 open scoped TensorProduct
 
@@ -94,5 +92,3 @@ theorem VolTieG.volTie (h : VolTieG D) : Formalism.MainNotions.StandardLattice.V
   exact h'
 
 end Formalism.L2.Theta
-
-end

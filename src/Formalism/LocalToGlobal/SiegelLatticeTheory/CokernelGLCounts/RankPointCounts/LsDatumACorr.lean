@@ -7,8 +7,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalGluing.MemOfProjEq
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel Matrix
 
 namespace Formalism.L2.SG.LsDatumA

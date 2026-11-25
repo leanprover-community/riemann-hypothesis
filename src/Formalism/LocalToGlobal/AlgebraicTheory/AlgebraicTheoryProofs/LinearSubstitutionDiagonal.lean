@@ -10,7 +10,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators ComplexConjugate
 
 namespace Formalism.L2.AlgTh

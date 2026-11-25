@@ -13,8 +13,6 @@ public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 
 open Polynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.IntCl
 
 private theorem sModEq_ideal_smul_top_map {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M]

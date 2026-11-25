@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix
 open scoped TensorProduct
 
@@ -27,5 +25,3 @@ theorem psi_neg_one (ψ : AddChar (AF D.host.F) ℂ) {a : AF D.host.F} (h : ψ a
 variable (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D)
 
 end Formalism.IndefR.Fin
-
-end

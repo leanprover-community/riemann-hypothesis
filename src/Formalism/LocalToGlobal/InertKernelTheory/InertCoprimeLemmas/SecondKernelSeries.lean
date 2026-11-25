@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.TieSerPin
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Finset
 
 namespace Formalism.L2.KerInert.SecondKernelSeries

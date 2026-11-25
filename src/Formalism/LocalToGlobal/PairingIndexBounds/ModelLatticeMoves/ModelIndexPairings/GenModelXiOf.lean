@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.Model
 
 @[expose] public section
 
-noncomputable section
 open scoped BigOperators
 
 namespace Formalism.L2.PairingIndexBounds.Mv

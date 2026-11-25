@@ -10,8 +10,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.Top
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 open Formalism.L2.SG.Pf.WuBL
 open scoped InnerProductSpace ENNReal

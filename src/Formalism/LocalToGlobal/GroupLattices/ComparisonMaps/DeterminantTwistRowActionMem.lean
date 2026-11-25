@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.GroupLattices.FockModels.OperatorsPreserve
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.Cmp
 
 open Formalism.MainNotions.G Formalism.GradedWeylDivisibility Formalism.MainNotions.G.LatticeSystems Formalism.L2.G.Model

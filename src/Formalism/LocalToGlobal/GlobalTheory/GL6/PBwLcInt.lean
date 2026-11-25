@@ -7,8 +7,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField
 
 namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

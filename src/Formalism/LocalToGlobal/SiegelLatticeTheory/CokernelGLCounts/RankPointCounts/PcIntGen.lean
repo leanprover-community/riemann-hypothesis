@@ -6,8 +6,6 @@ import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel Formalism.MainNotions.S Formalism.BasicNotions Formalism.L2.SG.TermLoc
 
 namespace Formalism.L2.SG.Pf.PCount

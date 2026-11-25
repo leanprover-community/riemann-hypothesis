@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MaxVSpanSingl
 
 open NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV

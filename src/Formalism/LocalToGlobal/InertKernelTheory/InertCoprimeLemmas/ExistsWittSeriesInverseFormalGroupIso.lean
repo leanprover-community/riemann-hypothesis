@@ -21,8 +21,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.Forma
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.KerInert.BeCob
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D

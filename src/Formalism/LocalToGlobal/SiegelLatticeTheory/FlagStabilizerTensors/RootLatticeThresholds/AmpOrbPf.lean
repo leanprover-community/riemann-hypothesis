@@ -13,8 +13,6 @@ set_option linter.unusedVariables false
 open MeasureTheory Matrix
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.L2.SG.AmpOrbPf
 
 open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S

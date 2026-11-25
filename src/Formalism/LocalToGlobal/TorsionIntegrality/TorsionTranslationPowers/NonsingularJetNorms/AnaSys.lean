@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.C
 
 open PowerSeries
 
-noncomputable section
-
 namespace Formalism.L2.Th1.E
 
 namespace AnaSys

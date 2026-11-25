@@ -10,8 +10,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Topology Filter
 open scoped ContDiff InnerProductSpace
 
@@ -98,5 +96,3 @@ lemma sm_isURepOn_bridge (ε : Fin n → Bool) {H : Type} [NormedAddCommGroup H]
 end Gen
 
 end Formalism.IndefR.PeterssonHilbertSpace
-
-end

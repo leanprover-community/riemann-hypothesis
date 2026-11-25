@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IntAll
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.PjFree
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor

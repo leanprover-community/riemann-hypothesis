@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.Saturation
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Indef.Tree.DepthTie
 
 open NumberField IsDedekindDomain

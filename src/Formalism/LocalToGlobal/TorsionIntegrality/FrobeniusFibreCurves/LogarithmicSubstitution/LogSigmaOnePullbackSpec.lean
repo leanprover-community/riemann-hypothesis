@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.Lo
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Th1.B.Ph
 
 open PowerSeries

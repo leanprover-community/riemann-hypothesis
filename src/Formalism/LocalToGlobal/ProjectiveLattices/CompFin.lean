@@ -8,8 +8,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Pj.CompFin
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor

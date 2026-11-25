@@ -5,8 +5,6 @@ public import Formalism.LocalRingCardinality.DataLevel
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField Formalism.UG
 
 namespace Formalism.L2.G

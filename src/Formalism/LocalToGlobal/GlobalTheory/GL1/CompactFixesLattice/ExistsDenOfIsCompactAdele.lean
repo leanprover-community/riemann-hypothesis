@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.Adele
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix TensorProduct NumberField IsDedekindDomain
 
 namespace Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory
@@ -31,5 +29,3 @@ theorem mem_range_of_mem_intAd (u : F) (h : algebraMap F (AF F) u ∈ intAd F) :
   Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.AdeleIntA.mem_of_isInt (R := 𝓞 F) u h
 
 end Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory
-
-end

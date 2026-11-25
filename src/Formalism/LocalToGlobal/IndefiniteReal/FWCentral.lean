@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.OneMapT
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Module Matrix
 open scoped TensorProduct InnerProductSpace
 

@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.LinQRawRange
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel
 
 namespace Formalism.L2.SG.LsDatumA

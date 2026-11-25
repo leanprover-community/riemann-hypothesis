@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.GlobalThet
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.IndefR.Datum Matrix
 open scoped ComplexOrder
 
@@ -121,5 +119,3 @@ theorem isCompact_KAt {G s : Matrix (Fin n) (Fin n) ℂ} (hs : IsCartanInv G s) 
     _ ≤ _ := Real.abs_le_sqrt hsq
 
 end Formalism.IndefR.Tow.SobPf
-
-end

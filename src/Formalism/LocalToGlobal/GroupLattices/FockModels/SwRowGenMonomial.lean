@@ -17,8 +17,6 @@ import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.Transpose
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.Model
 
 open Formalism.GradedWeylDivisibility

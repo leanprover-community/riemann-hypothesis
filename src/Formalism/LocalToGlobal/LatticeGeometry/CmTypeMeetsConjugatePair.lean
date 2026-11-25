@@ -5,8 +5,6 @@ public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 namespace Formalism.L2.Geo

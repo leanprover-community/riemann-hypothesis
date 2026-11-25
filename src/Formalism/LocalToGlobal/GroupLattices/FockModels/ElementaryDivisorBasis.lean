@@ -13,8 +13,6 @@ import Mathlib.RingTheory.TotallySplit
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.G.Model
 
 open Formalism.MainNotions.G Formalism.GradedWeylDivisibility Formalism.MainNotions.G.LatticeSystems

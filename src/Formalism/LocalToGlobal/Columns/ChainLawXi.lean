@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeOneAd
 
 open NumberField IsDedekindDomain Module
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Ker

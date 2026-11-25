@@ -9,8 +9,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
@@ -93,5 +91,3 @@ theorem char_mem {P : HeightOneSpectrum (𝓞 D.host.E)} {q : ℕ} (hq : q.Prime
   simpa using h0
 
 end Formalism.IndefR.Fin
-
-end

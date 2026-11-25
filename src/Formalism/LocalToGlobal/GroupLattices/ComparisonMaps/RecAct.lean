@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.G.Cmp
 
 open Formalism.BasicNotions Formalism.MainNotions.G Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix
@@ -96,5 +94,3 @@ theorem locAt_std (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.ho
   exact hB.1
 
 end Formalism.L2.G.Cmp
-
-end

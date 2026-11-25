@@ -12,8 +12,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.CxPass
 open Module NumberField IsDedekindDomain
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace Formalism.IndefR.U2
 
 open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV Formalism.L2.Col Formalism.IndefR.Cx Formalism.IndefR.CxPass

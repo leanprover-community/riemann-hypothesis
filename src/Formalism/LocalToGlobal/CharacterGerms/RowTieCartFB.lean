@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 
 @[expose] public section
 
-noncomputable section
-
 open scoped BigOperators
 open Classical
 

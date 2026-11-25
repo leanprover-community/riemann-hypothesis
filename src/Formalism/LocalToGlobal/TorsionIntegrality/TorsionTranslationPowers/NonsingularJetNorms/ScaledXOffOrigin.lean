@@ -11,8 +11,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 open PowerSeries
 
-noncomputable section
-
 namespace Formalism.L2.Th1.E
 
 namespace Main

@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
 
 open Formalism.BasicNotions Formalism.L2.Forms

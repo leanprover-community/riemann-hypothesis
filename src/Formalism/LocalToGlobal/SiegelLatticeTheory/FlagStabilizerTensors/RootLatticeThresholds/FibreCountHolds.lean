@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full
 
 namespace Formalism.L2.SG.Pf.FibreCounting

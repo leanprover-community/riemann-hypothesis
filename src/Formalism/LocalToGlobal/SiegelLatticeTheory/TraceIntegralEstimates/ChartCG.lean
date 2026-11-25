@@ -15,8 +15,6 @@ import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Matrix Classical
 open MeasureTheory Finset NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj
   Formalism.L2.SG.LocWSOf
@@ -88,5 +86,3 @@ theorem chartC_holds : Formalism.L2.SG.NGCut.StabilizerCovolume.ChartC := by
       group
 
 end Formalism.L2.S.Pv.Chart
-
-end

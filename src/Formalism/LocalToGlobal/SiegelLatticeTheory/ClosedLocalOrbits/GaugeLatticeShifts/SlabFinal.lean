@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarP
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf
 
 open Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.Pf.Slab

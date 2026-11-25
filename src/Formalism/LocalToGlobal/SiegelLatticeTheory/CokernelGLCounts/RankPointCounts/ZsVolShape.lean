@@ -9,8 +9,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.SG.Pf.ZsVolShape
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.PairVal
@@ -43,5 +41,3 @@ theorem mem_stZSet_iff (hA : ∀ p, Agree δ M p) (Z L : MatR D) (a : GLR D) :
     exact ⟨_, _, h.1, h.2, Formalism.L2.SG.Pf.StabShape.move δ M u u' (hA p) _ _ hlo hb⟩
 
 end Formalism.L2.SG.Pf.ZsVolShape
-
-end

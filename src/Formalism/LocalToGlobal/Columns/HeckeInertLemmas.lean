@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.Columns.HeckeInert
 
 @[expose] public section
 
-noncomputable section
-
 namespace Formalism.L2.Col
 
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise

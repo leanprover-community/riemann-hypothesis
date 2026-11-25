@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
 
 open MvPolynomial
 
-noncomputable section
-
 namespace Formalism.L2.PairingIndexBounds.Ent
 
 open Formalism.GradedWeylDivisibility Formalism.L2.G.Model.TS Formalism.L2.G.Pend
