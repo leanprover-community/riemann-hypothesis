@@ -90,13 +90,12 @@ theorem BranchContainsNormalPoint.proof (hirr : NormalLocallyIrreducible.Stateme
   have hG : Tendsto (fun z => fun j => g j z) (𝓝[P] w) (𝓝 t₀) :=
     tendsto_pi_nhds.mpr fun j => (((hg j).continuousWithinAt ⟨hw, hwB'⟩).mono hPsub).tendsto
   have hφc : ContinuousAt φ t₀ := (hφd.differentiableAt (Metric.isOpen_ball.mem_nhds ht₀Δ)).continuousAt
-  have h1 : Tendsto (fun z => φ (fun j => g j z)) (𝓝[P] w) (𝓝 (φ t₀)) := hφc.tendsto.comp hG
   have h2 : Tendsto (fun z => φ (fun j => g j z)) (𝓝[P] w) (𝓝 w) := by
     refine (tendsto_id.mono_left nhdsWithin_le_nhds).congr' ?_
     filter_upwards [self_mem_nhdsWithin] with z hz
     have hgz : (fun j => g j z) = ψ z := funext fun j => hgeq j hz
     rw [hgz, (hPψ z hz).2]
     rfl
-  exact tendsto_nhds_unique h1 h2
+  exact tendsto_nhds_unique (hφc.tendsto.comp hG) h2
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

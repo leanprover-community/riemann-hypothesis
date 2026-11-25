@@ -27,8 +27,7 @@ theorem rootPoly_natDegree : (rootPoly xs).natDegree = xs.card := by
 
 theorem rootPoly_eval (t : K) : (rootPoly xs).eval t = ∏ x ∈ xs, (t - x) := by
   unfold rootPoly
-  rw [eval_prod]
-  simp
+  simp [eval_prod]
 
 theorem rootPoly_eval_ne {t : K} (ht : t ∉ xs) : (rootPoly xs).eval t ≠ 0 := by
   rw [rootPoly_eval, Finset.prod_ne_zero_iff]

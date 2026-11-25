@@ -73,9 +73,8 @@ theorem valuation_sqrt_absNorm_eq_one :
       rintro rfl; rw [addOrderOf_zero] at hx; exact hp.one_lt.ne' hx.symm
     have hpx : (p : 𝓞 K ⧸ P.asIdeal) * x = 0 := by
       rw [← nsmul_eq_mul, ← hx, addOrderOf_nsmul_eq_zero]
-    have hp0 : (p : 𝓞 K ⧸ P.asIdeal) = 0 := (mul_eq_zero.mp hpx).resolve_right hx0
     apply hpP
-    rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]; exact hp0
+    rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]; exact (mul_eq_zero.mp hpx).resolve_right hx0
   have hcop : Nat.Coprime N p := (Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd hp).mpr hpN))
 
   have hbez : (N : ℤ) * Nat.gcdA N p + (p : ℤ) * Nat.gcdB N p = 1 := by
@@ -86,8 +85,7 @@ theorem valuation_sqrt_absNorm_eq_one :
     push_cast at this; exact this
   have hpnu : ¬ IsUnit (p : A) := by
     rw [ValuationSubring.valuation_eq_one_iff]
-    have := (ValuationSubring.mem_nonunits_iff A).mp hpA
-    push_cast; exact this.ne
+    push_cast; exact ((ValuationSubring.mem_nonunits_iff A).mp hpA).ne
   have hNu : IsUnit (N : A) := by
     rcases IsLocalRing.isUnit_or_isUnit_of_add_one hbezA with h | h
     · exact isUnit_of_mul_isUnit_left h

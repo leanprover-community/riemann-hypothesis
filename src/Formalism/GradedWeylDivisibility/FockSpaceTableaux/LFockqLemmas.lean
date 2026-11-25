@@ -72,10 +72,9 @@ lemma lfockq_self_pos (f : MvPolynomial σ ℚ) (hf : f ≠ 0) : 0 < fockQ f f :
     intro he
     exact hf (MvPolynomial.support_eq_empty.mp he)
   refine Finset.sum_pos (fun m hm => ?_) hne
-  have hc : f.coeff m ≠ 0 := MvPolynomial.mem_support_iff.mp hm
   have hw : (0 : ℚ) < ((∏ k ∈ m.support, (m k).factorial : ℕ) : ℚ) :=
     Nat.cast_pos.mpr (Finset.prod_pos (fun k _ => Nat.factorial_pos _))
-  exact mul_pos (mul_self_pos.mpr hc) hw
+  exact mul_pos (mul_self_pos.mpr (MvPolynomial.mem_support_iff.mp hm)) hw
 
 lemma lfockq_add_left (f f' g : MvPolynomial σ ℚ) :
     fockQ (f + f') g = fockQ f g + fockQ f' g :=

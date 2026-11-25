@@ -38,13 +38,12 @@ theorem coeff_one_l_ne (hex0 : PowerSeries.constantCoeff ex = 0)
     (hinv : PowerSeries.subst ex l = PowerSeries.X) : PowerSeries.coeff 1 l ≠ 0 := by
   intro h1
   have hl0 := l_const hex0 hinv
-  have hX2 : (PowerSeries.X : PowerSeries ℂ_[p]) ^ 2 ∣ l := by
+  obtain ⟨q, hq⟩ : (PowerSeries.X : PowerSeries ℂ_[p]) ^ 2 ∣ l := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
     interval_cases m
     · simpa using hl0
     · exact h1
-  obtain ⟨q, hq⟩ := hX2
   obtain ⟨e', he'⟩ := PowerSeries.X_dvd_iff.mpr hex0
   have hs : PowerSeries.HasSubst ex := PowerSeries.HasSubst.of_constantCoeff_zero' hex0
   have key : PowerSeries.subst ex l = (PowerSeries.X : PowerSeries ℂ_[p]) ^ 2 *

@@ -52,8 +52,7 @@ theorem cycloSimple : CycloSimpleStatement := by
       Polynomial.derivative_map, Polynomial.aeval_map_algebraMap]
   obtain ⟨G, hG⟩ := PowerSeries.X_dvd_iff.2 h0
   have hGc : constantCoeff (derivative (Polynomial.aeval y Φ)) = constantCoeff G := by
-    rw [hG]
-    simp [Derivation.leibniz, derivative_X, smul_eq_mul]
+    simp [hG, Derivation.leibniz, derivative_X, smul_eq_mul]
   have hGu : IsUnit G := by
     rw [PowerSeries.isUnit_iff_constantCoeff, ← hGc, h1]
     exact hu.mul hζu

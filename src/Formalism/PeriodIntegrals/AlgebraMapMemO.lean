@@ -36,12 +36,11 @@ theorem algebraMap_mem_O (L : LocE F E) (a : 𝒪[F]) : algebraMap F E a ∈ L.O
   mem_O_of_quad L _ a 0 (by simp)
 
 theorem mem_OF_of_mem_O [Nontrivial E] (L : LocE F E) (a : F) (h : algebraMap F E a ∈ L.O) : a ∈ 𝒪[F] := by
-  have hE : Function.Injective (algebraMap F E) := (algebraMap F E).injective
   rw [L.O_def] at h
   have hF : IsIntegral 𝒪[F] a := by
     obtain ⟨p, hp, he⟩ := h
     refine ⟨p, hp, ?_⟩
-    apply hE
+    apply ((algebraMap F E).injective)
     have hc : (algebraMap F E).comp (algebraMap 𝒪[F] F) = algebraMap 𝒪[F] E := by
       ext r
       rfl

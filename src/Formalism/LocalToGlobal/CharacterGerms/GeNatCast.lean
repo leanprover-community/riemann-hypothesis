@@ -76,8 +76,7 @@ theorem ge_l : V.Ge 1 (V.l : C) := (le_of_eq WithTop.coe_one).trans V.v_l.symm.l
 theorem l_ne_zero : (V.l : C) ≠ 0 := by
   intro h
   have h1 := V.v_l
-  rw [h, AddValuation.map_zero] at h1
-  simp at h1
+  simp [h, AddValuation.map_zero] at h1
 
 theorem ge_natCast (n : ℕ) : V.Ge 0 (n : C) := by
   induction n with

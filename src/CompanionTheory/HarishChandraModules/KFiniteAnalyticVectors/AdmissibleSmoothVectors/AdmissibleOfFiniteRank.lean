@@ -81,8 +81,7 @@ theorem admissible_of_finite_rank (h1 : FinOfPI) (h2 : GoodPI) (h3 : Transfer) (
     refine ⟨(continuous_const.matrix_mul continuous_toM).matrix_mul continuous_const, fun g => ?_,
       Fin.val, Fin.val_injective, fun s hs i j hij => hs hij⟩
     show Uᴴ * toM (st g) * U = (Uᴴ * toM g * U)ᴴ
-    rw [hst]
-    simp [Matrix.mul_assoc]
+    simp [hst, Matrix.mul_assoc]
   have hinj : Function.Injective (stdU ε hU) := by
     intro a b hab
     have h1 : U * Uᴴ = 1 := Matrix.mem_unitaryGroup_iff.1 hU
@@ -157,9 +156,8 @@ theorem kFinSmooth_of (h1 : FinOfPI) (h2 : GoodPI) (h3 : Transfer) (h4 : ExistsA
   intro k r ε lam H _ _ _ σ _ hσ v hv
   obtain ⟨P, hP, hDS⟩ := hσ
   obtain ⟨S, hSf, hvS, hS⟩ := hv
-  have hPP : Pᴴ * P = 1 := Matrix.mem_unitaryGroup_iff'.1 hP.2
   have hPP' : P * Pᴴ = 1 := Matrix.mem_unitaryGroup_iff.1 hP.2
-  have hinv : P⁻¹ = Pᴴ := Matrix.inv_eq_left_inv hPP
+  have hinv : P⁻¹ = Pᴴ := Matrix.inv_eq_left_inv (Matrix.mem_unitaryGroup_iff'.1 hP.2)
   refine smoothOnH_conj hP.1.1 hP.1.2 (smooth_of_adm (admissible_of_finite_rank h1 h2 h3 h4 (h5 k r ε P hP)) h6
     (σ := fun g => σ (P⁻¹ * g * P)) hDS.2.2.1 hDS.2.2.2.1 ⟨S, hSf, hvS, fun g hg x hx => hS _ ⟨?_, ?_⟩ x hx⟩)
   · have hg' : gᴴ * Jm ε * g = Jm ε := Kset_sub hg

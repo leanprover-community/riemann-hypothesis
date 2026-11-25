@@ -127,7 +127,6 @@ theorem isIrreducible_outer_tprod :
     change S.toSubmodule = ⊤
     refine eq_top_iff.2 fun y _ => ?_
     obtain ⟨f, hf⟩ := Module.Projective.exists_dual_eq_one ℂ hx0
-    have := h3 (f.smulRight y) x hx
-    simpa [hf] using this
+    simpa [hf] using h3 (f.smulRight y) x hx
 
 end GlobalTheory.OuterTensor

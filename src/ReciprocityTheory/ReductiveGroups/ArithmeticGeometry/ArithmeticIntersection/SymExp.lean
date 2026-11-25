@@ -83,7 +83,6 @@ theorem symm_expand {V : Type*} [AddCommGroup V] [Module ℝ V] {n : ℕ}
   have h4 := Finset.sum_powerset_apply_card (f := fun k => c ^ k * I (mix k x y))
     (x := (Finset.univ : Finset (Fin n)))
   rw [Finset.powerset_univ, Finset.card_univ, Fintype.card_fin] at h4
-  rw [h4]
-  simp only [nsmul_eq_mul, mul_assoc]
+  simp only [h4, nsmul_eq_mul, mul_assoc]
 
 end ReciprocityTheory.ChartRestriction.G.AI

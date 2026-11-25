@@ -57,12 +57,11 @@ theorem levelvsplit_unitary (τ : B →+* B) (φ : B ≃+* K × K)
         J'.map ((RingHom.fst K K).comp φ.toRingHom) *
         (h : Matrix n n B).map ((RingHom.fst K K).comp φ.toRingHom) =
       J'.map ((RingHom.fst K K).comp φ.toRingHom) := by
-  have hh' : Formalism.UG.cT τ (h : Matrix n n B) * J' * (h : Matrix n n B) = J' := hh
   have key : (Formalism.UG.cT τ (h : Matrix n n B)).map ((RingHom.fst K K).comp φ.toRingHom) =
       ((h : Matrix n n B).map ((RingHom.snd K K).comp φ.toRingHom))ᵀ := by
     ext i j
     simp [Formalism.UG.cT, hτ, Formalism.UG.swapR]
-  have h2 := congrArg (fun M : Matrix n n B => M.map ((RingHom.fst K K).comp φ.toRingHom)) hh'
+  have h2 := congrArg (fun M : Matrix n n B => M.map ((RingHom.fst K K).comp φ.toRingHom)) hh
   simp only [Matrix.map_mul] at h2
   rwa [key] at h2
 

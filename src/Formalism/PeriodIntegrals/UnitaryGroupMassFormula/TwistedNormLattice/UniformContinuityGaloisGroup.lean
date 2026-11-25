@@ -64,9 +64,8 @@ theorem qE_ne_zero (hp : (Ideal.absNorm P.asIdeal).Prime) : qE P ≠ 0 := by
 
 theorem uniform_continuity_galois_group (hq : ((Ideal.absNorm P.asIdeal : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) {r : 𝓞 E} (hr : r ∈ P.asIdeal) :
     ∃ s t : 𝓞 E, s ∉ P.asIdeal ∧ t * ((Ideal.absNorm P.asIdeal : ℕ) : 𝓞 E) = s * r := by
-  have hqP : ((Ideal.absNorm P.asIdeal : ℕ) : 𝓞 E) ∈ P.asIdeal := Ideal.absNorm_mem P.asIdeal
   have hle : Ideal.span {((Ideal.absNorm P.asIdeal : ℕ) : 𝓞 E)} ≤ P.asIdeal :=
-    (Ideal.span_singleton_le_iff_mem _).mpr hqP
+    (Ideal.span_singleton_le_iff_mem _).mpr (Ideal.absNorm_mem P.asIdeal)
   obtain ⟨J, hJ⟩ := Ideal.dvd_iff_le.mpr hle
   have hJP : ¬ J ≤ P.asIdeal := by
     intro hJ'

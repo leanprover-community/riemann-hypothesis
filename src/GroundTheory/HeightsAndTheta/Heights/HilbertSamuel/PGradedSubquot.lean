@@ -39,9 +39,8 @@ theorem iSupIndep_map_of_ker_le {R N Q : Type*} [Ring R] [AddCommGroup N] [AddCo
   rw [Submodule.disjoint_def]
   intro y hy hy'
   obtain ⟨x, hx, rfl⟩ := hy
-  have hy2 : f x ∈ (⨆ (j) (_ : j ≠ i), p j).map f := by
+  obtain ⟨z, hz, hzx⟩ : f x ∈ (⨆ (j) (_ : j ≠ i), p j).map f := by
     simpa only [Submodule.map_iSup] using hy'
-  obtain ⟨z, hz, hzx⟩ := hy2
   have hk : x - z ∈ LinearMap.ker f := by
     rw [LinearMap.mem_ker, map_sub, hzx, sub_self]
   have hk' := hL hk

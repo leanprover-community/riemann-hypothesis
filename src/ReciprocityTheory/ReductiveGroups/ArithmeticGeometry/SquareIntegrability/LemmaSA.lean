@@ -49,8 +49,7 @@ lemma lemSJ_det : |LinearMap.det (lemSJ : EuclideanSpace ℂ ι →ₗ[ℝ] _)| 
 
 lemma lemS_Hf_sum {n : ℕ} (c : Fin n → ℤ) (v : Fin n → EuclideanSpace ℂ ι) (y : EuclideanSpace ℂ ι) :
     (Hf (∑ i, c i • v i) y).im = ∑ i, (c i : ℝ) * (Hf (v i) y).im := by
-  rw [lemS_Hf_im]
-  simp only [lemS_Hf_im, Finset.smul_sum, inner_sum]
+  simp only [lemS_Hf_im, lemS_Hf_im, Finset.smul_sum, inner_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [smul_comm, ← Int.cast_smul_eq_zsmul ℝ, real_inner_smul_right]
 

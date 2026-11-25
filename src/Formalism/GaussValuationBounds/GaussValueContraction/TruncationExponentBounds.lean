@@ -10,12 +10,11 @@ namespace Formalism.NOK
 theorem powMemSpanOfLe : RelVanish := by
   intro A _ ℓ X u p E M j r hM hE
   rw [Ideal.mem_span_singleton, mul_pow, mul_pow, ← Finset.prod_pow, mul_assoc]
-  have h1 : X ^ M ∣ X ^ r := pow_dvd_pow X hM
   have h2 : ∏ s ∈ Finset.range j, p s ^ E ∣ ∏ s ∈ Finset.range j, (p s ^ (ℓ - 1)) ^ r :=
     Finset.prod_dvd_prod_of_dvd _ _ fun s _ => by
       rw [← pow_mul]
       exact pow_dvd_pow _ hE
-  exact Dvd.dvd.mul_left (mul_dvd_mul h1 h2) _
+  exact Dvd.dvd.mul_left (mul_dvd_mul (pow_dvd_pow X hM) h2) _
 
 private theorem prime_sub_one_mul_padicValNat_factorial_le (ℓ : ℕ) [Fact ℓ.Prime] (r : ℕ) :
     ((ℓ : ℝ) - 1) * (padicValNat ℓ r.factorial : ℝ) ≤ r := by

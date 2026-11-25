@@ -91,8 +91,7 @@ theorem PrimitiveFormSheetedPointsNear.proof (hmin : PrimitiveFormMinimalFactorP
       by rw [Set.mem_preimage, hℓz]; exact hτBP⟩, ?_, fun t ht => (key t ht).2.1, ?_⟩
   · rintro t ⟨⟨⟨htm, _⟩, _⟩, htE, htδ⟩
     obtain ⟨-, -, -, -, -, -, hqt⟩ := hEsub htE
-    have hδt : AnalyticAt ℂ δ t := (hEsub htE).2.2.2.2.2.1
-    refine AnalyticAt.pi fun i => AnalyticAt.fun_div ?_ hδt htδ
+    refine AnalyticAt.pi fun i => AnalyticAt.fun_div ?_ ((hEsub htE).2.2.2.2.2.1) htδ
     exact Finset.analyticAt_fun_sum _ fun j _ => (hqt i j).mul ((hψman t htm).pow _)
   · ext z'
     constructor

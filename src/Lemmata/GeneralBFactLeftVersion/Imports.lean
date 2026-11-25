@@ -33,8 +33,7 @@ theorem goal1
   | smul k y _ hy =>
     obtain ⟨b, hb, hby⟩ := hy
     obtain ⟨⟨n, d⟩, rfl⟩ := IsLocalization.mk'_surjective (nonZeroDivisors O) k
-    have hd : (d : O) ≠ 0 := nonZeroDivisors.coe_ne_zero d
-    refine ⟨b * d, mul_ne_zero hb hd, ?_⟩
+    refine ⟨b * d, mul_ne_zero hb (nonZeroDivisors.coe_ne_zero d), ?_⟩
     have key : (d : O) • (IsLocalization.mk' (Formalism.MainNotions.G.KK O) n d • y) = n • y := by
       rw [← smul_assoc, Algebra.smul_def, IsLocalization.mk'_spec', algebraMap_smul]
     rw [mul_smul, key, smul_comm]

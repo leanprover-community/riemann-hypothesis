@@ -88,13 +88,11 @@ theorem _root_.GlobalTheory.ClassFin.ss_range_toMatrix_iff_isSemisimpleRepresent
     obtain ⟨W', hW', hc⟩ := hS _ (hmap p.toSubmodule p.apply_mem_toSubmodule)
     refine ⟨⟨W'.comap (e : V →ₗ[ℂ] (ι → ℂ)), hcomap W' hW'⟩, ?_⟩
     rw [subrepresentation_isCompl_iff]
-    have := (Φ.symm.isCompl_iff).1 hc
-    simpa [Φ, Submodule.comap_map_eq_of_injective e.injective] using this
+    simpa [Φ, Submodule.comap_map_eq_of_injective e.injective] using (Φ.symm.isCompl_iff).1 hc
   · intro hC W hW
     obtain ⟨q, hq⟩ := hC.exists_isCompl ⟨W.comap (e : V →ₗ[ℂ] (ι → ℂ)), hcomap W hW⟩
     refine ⟨q.toSubmodule.map (e : V →ₗ[ℂ] (ι → ℂ)), hmap _ q.apply_mem_toSubmodule, ?_⟩
     rw [subrepresentation_isCompl_iff] at hq
-    have := (Φ.isCompl_iff).1 hq
-    simpa [Φ, Submodule.map_comap_eq_of_surjective e.surjective] using this
+    simpa [Φ, Submodule.map_comap_eq_of_surjective e.surjective] using (Φ.isCompl_iff).1 hq
 
 end GlobalTheory.ClassFin

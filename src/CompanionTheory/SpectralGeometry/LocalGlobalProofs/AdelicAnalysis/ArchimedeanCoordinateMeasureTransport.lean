@@ -66,8 +66,7 @@ theorem map_swap_volume (ι κ : Type) [Fintype ι] [Fintype κ] :
   have h1 : ((volume : Measure (ι → κ → ℝ)).map s) B = 1 := by
     rw [Measure.map_apply hs.measurable hB, hpre, vB']
   have hc1 : c = 1 := by
-    rw [hc] at h1
-    simp only [Measure.smul_apply, vB] at h1
+    simp only [hc, Measure.smul_apply, vB] at h1
     simpa using h1
   rwa [hc1, one_smul] at hc
 
@@ -107,8 +106,7 @@ end GlobalTheory.CompanionTheory.SW.BB.InfPush
 open GlobalTheory.CompanionTheory.SW.BB.InfPush in
 theorem GlobalTheory.CompanionTheory.SW.BB.infPush : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M d : ℕ) (b : Module.Basis (Fin d) F E) (e : Ainf F ≃+* (InfinitePlace F → ℝ)), IsHomeomorph e → ∀ (laminf : Measure (Ainf F)), laminf.IsAddHaarMeasure → laminf.map e = ENNReal.ofReal (Real.sqrt |(discr F : ℝ)|)⁻¹ • (volume : Measure (InfinitePlace F → ℝ)) → (coordW (Ainf F) b laminf 1 M).map (fun X w => xw e b X w) = ENNReal.ofReal ((Real.sqrt |(discr F : ℝ)|)⁻¹ ^ (M * d)) • (volume : Measure (InfinitePlace F → Fin M × Fin d → ℝ)) := by
   intro F E _ _ _ _ _ σ hσ M d b e he laminf hH hmap
-  have hloc := _root_.GlobalTheory.CompanionTheory.SW.isLocR_Ainf F hσ.1
-  obtain ⟨h1, h2, h3, h4, -⟩ := hloc
+  obtain ⟨h1, h2, h3, h4, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.isLocR_Ainf F hσ.1
   haveI := h1
   haveI := h2
   haveI := h3

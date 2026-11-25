@@ -68,7 +68,7 @@ theorem qdet_eq_sum_words {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n
     (u : ℂ) : ∃ l : List (ℂ × List (Fin n × Fin n)),
       Formalism.REAL.qdet E u = (l.map fun c => c.1 • (c.2.map fun p => E p.1 p.2).prod).sum := by
   have hE : ∀ a b : Fin n, E a b ∈ anyAdjWordAlg E := fun a b => ⟨[(1, [(a, b)])], by simp [anyAdjWSum]⟩
-  have h : Formalism.REAL.qdet E u ∈ anyAdjWordAlg E := by
+  obtain ⟨l, hl⟩ : Formalism.REAL.qdet E u ∈ anyAdjWordAlg E := by
     unfold Formalism.REAL.qdet Formalism.REAL.qminor
     refine Subalgebra.sum_mem _ fun σ _ => Subalgebra.mul_mem _ (intCast_mem _ _) ?_
     refine list_prod_mem fun x hx => ?_
@@ -79,7 +79,6 @@ theorem qdet_eq_sum_words {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n
     split_ifs
     · exact Subalgebra.algebraMap_mem _ _
     · exact Subalgebra.zero_mem _
-  obtain ⟨l, hl⟩ := h
   exact ⟨l, hl⟩
 
 end ReciprocityTheory.ChartRestriction.DS

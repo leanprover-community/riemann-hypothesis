@@ -41,7 +41,6 @@ theorem ComplexFormsOnPoints.proof (hR : PrimeComplexRadical.Statement)
   have hv : F * map (Int.castRingHom ℂ) h0 ∈ vanishingIdeal ℂ (zeroLocus ℂ Q) := by
     rw [mem_vanishingIdeal_iff]
     intro z hz
-    have hz : ∀ p ∈ Q, eval z p = 0 := hz
     change eval z _ = 0
     have hzh : eval z (map (Int.castRingHom ℂ) h0) = ∏ k, z ⟨k, i k⟩ := by
       simp [h0, map_prod]

@@ -77,10 +77,9 @@ theorem tof_span_condition [IsCMField E] {X : PT E} (I : Submodule ℤ (Vsp X.di
   have huniq : ∀ x w, IsU I x w → w = uMap I x := by
     rintro x w ⟨hw, hwa⟩
     have hu := isU_uMap I x
-    have hd : w - uMap I x ∈ IR I := (IR I).sub_mem hw hu.1
     have horth : ∀ b ∈ IR I, inner ℝ (w - uMap I x) b = 0 := fun b hb => by
       rw [inner_sub_left, hwa b hb, hu.2 b hb, sub_self]
-    exact sub_eq_zero.mp (inner_self_eq_zero (𝕜 := ℝ).mp (horth _ hd))
+    exact sub_eq_zero.mp (inner_self_eq_zero (𝕜 := ℝ).mp (horth _ ((IR I).sub_mem hw hu.1)))
   have hset : {w | ∃ j, ∃ α : 𝓞 E, IsU I (act α (((r1 : ℂ) ^ 2) • a j - ((r1 : ℂ) ^ 2) • yb j)) w} =
       Set.range (fun p : Fin X.r × 𝓞 E =>
         uMap I (act p.2 (((r1 : ℂ) ^ 2) • a p.1 - ((r1 : ℂ) ^ 2) • yb p.1))) := by

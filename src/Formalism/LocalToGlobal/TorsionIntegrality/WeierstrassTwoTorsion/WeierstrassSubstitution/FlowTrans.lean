@@ -57,8 +57,7 @@ theorem der_slope (W : WeierstrassCurve A) (d : Derivation ℤ A A) {x y xP yP t
   obtain ⟨hα, -⟩ := chord_rel hE' hEP' ht hL
   have hdt : d t = -t ^ 2 * d (x - xP) := der_inv d ht
   have hdxs : d (x - xP) = d x := by rw [map_sub, hxP, sub_zero]
-  rw [der_mul, map_sub, hyP, sub_zero, hdt, hdxs, hx, hy]
-  simp only [WeierstrassCurve.Affine.addX]
+  simp only [der_mul, map_sub, hyP, sub_zero, hdt, hdxs, hx, hy, WeierstrassCurve.Affine.addX]
   linear_combination (x - (((y - yP) * t) ^ 2 + W.a₁ * ((y - yP) * t) - W.a₂ - x - xP)) * ht + t * hα
 
 theorem flowTranslation : FlowTranslate.{u} := by

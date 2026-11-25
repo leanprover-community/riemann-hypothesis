@@ -67,9 +67,8 @@ theorem exists_form_pair {P H : Ideal (MRing ι R)} [hP : P.IsPrime] [hH : H.IsP
       have e2 : g * (u * v' - u' * v) = u' * (u * f - v * g) - u * (u' * f - v' * g) := by ring
       rw [e2]
       exact P.sub_mem (P.mul_mem_left _ h) (P.mul_mem_left _ hc)
-    have h3 : u * v' - u' * v ∈ H := hPH ((hP.mem_or_mem h2).resolve_left hgP)
     have h4 : u' * v ∈ H := by
-      have h5 := H.sub_mem (H.mul_mem_left u hv') h3
+      have h5 := H.sub_mem (H.mul_mem_left u hv') (hPH ((hP.mem_or_mem h2).resolve_left hgP))
       rwa [sub_sub_cancel] at h5
     exact (hH.mem_or_mem h4).elim he hv
   · rw [ite_eq_right hle, sub_zero] at hc

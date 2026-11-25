@@ -127,10 +127,9 @@ lemma real_smul_smul (t : ℝ) (μ : ℂ) (e : V n) : t • (μ • e) = ((t : �
 lemma deriv_slice {Ω : Set (V n)} {F : V n → ℂ} (hΩ : IsOpen Ω) (hF : DifferentiableOn ℂ F Ω)
     {z e : V n} {l : ℂ} (hw : z + l • e ∈ Ω) :
     deriv (fun m : ℂ => F (z + m • e)) l = fderiv ℂ F (z + l • e) e := by
-  have hd : DifferentiableAt ℂ F (z + l • e) := hF.differentiableAt (hΩ.mem_nhds hw)
   have hl : HasDerivAt (fun m : ℂ => z + m • e) e l := by
     simpa using ((hasDerivAt_id l).smul_const e).const_add z
-  exact (hd.hasFDerivAt.comp_hasDerivAt l hl).deriv
+  exact ((hF.differentiableAt (hΩ.mem_nhds hw)).hasFDerivAt.comp_hasDerivAt l hl).deriv
 
 lemma hasDerivAt_line {Ω : Set (V n)} {F : V n → ℂ} (hΩ : IsOpen Ω) (hF : DifferentiableOn ℂ F Ω)
     {z : V n} (hz : z ∈ Ω) (e : V n) (μ : ℂ) :

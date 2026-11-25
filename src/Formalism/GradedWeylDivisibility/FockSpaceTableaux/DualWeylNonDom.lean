@@ -122,8 +122,7 @@ theorem nd_main [IsDomain R] [CharZero R] (ν : Fin n → ℕ) {l j : Fin n} (hl
     | succ d ih =>
       intro k hk
       exact hstep k (ih (k + 1) (by rw [show k + 1 + d = k + (d + 1) by omega]; exact hk))
-  have := hdown (ν l + 1) 0 (by simpa using hN)
-  simpa [hG] using this
+  simpa [hG] using hdown (ν l + 1) 0 (by simpa using hN)
 
 theorem dualWeylModuleNonDominant : DualWeylNonDom := by
   intro R _ _ _ r n ν ⟨l, j, hlj, hν⟩

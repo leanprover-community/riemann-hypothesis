@@ -44,8 +44,7 @@ theorem exists_eq_unit_mul_pow_adicCompletion {R : Type*} [CommRing R] [IsDomain
     exact Submodule.mem_top
   obtain ⟨n, hn⟩ := Nat.exists_eq_succ_of_ne_zero hk0
   have hxn : x ∈ maximalIdeal (AdicCompletion (maximalIdeal R) R) ^ n := by
-    have := Nat.find_min hex (show n < Nat.find hex by omega)
-    simpa using this
+    simpa using Nat.find_min hex (show n < Nat.find hex by omega)
   rw [hMpow, Ideal.mem_span_singleton'] at hxn
   obtain ⟨y, hy⟩ := hxn
   have hyu : IsUnit y := by

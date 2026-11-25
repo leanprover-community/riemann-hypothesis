@@ -68,11 +68,9 @@ theorem main : ∀ {G : Type u_1} [inst : Group G] {V : Type u_2} [inst_1 : AddC
       let σ : Subrepresentation ρ := ⟨U, fun g v hv => hU g v hv⟩
       rcases h.eq_bot_or_eq_top σ with h1 | h1
       · left
-        have := congrArg Subrepresentation.toSubmodule h1
-        exact this
+        exact congrArg Subrepresentation.toSubmodule h1
       · right
-        have := congrArg Subrepresentation.toSubmodule h1
-        exact this
+        exact congrArg Subrepresentation.toSubmodule h1
   · rintro ⟨hV, hU⟩
     haveI : Nontrivial (Subrepresentation ρ) := by
       refine ⟨⟨⊥, ⊤, fun h => ?_⟩⟩

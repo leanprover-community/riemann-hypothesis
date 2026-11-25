@@ -26,7 +26,7 @@ namespace CompanionTheory.PlacePermOperatorBicommutantSpan
 
 theorem lower : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (P : Subgroup G) (ν : Measure G) [SFinite ν], (∀ p ∈ P, ν.map (fun g => p * g) = ν) → (∀ U ∈ 𝓝 (1 : G), ν U ≠ 0) → ∀ C : Set G, IsCompact C → ∀ φ : G → ℝ≥0∞, Continuous φ → (∀ c ∈ C, φ c ≠ 0) → ∃ m : ℝ≥0∞, m ≠ 0 ∧ m ≠ ⊤ ∧ ∀ p ∈ P, ∀ c ∈ C, m ≤ ∫⁻ q, φ (q⁻¹ * (p * c)) ∂ν := by
   intro G _ _ _ _ _ _ _ _ P ν _ hν hU C hC φ hφ hφC
-  have key : ∃ m : ℝ≥0∞, m ≠ 0 ∧ m ≠ ⊤ ∧ ∀ c ∈ C, m ≤ ∫⁻ q, φ (q⁻¹ * c) ∂ν := by
+  obtain ⟨m, h1, h2, h3⟩ : ∃ m : ℝ≥0∞, m ≠ 0 ∧ m ≠ ⊤ ∧ ∀ c ∈ C, m ≤ ∫⁻ q, φ (q⁻¹ * c) ∂ν := by
     refine hC.induction_on (p := fun s => ∃ m : ℝ≥0∞, m ≠ 0 ∧ m ≠ ⊤ ∧ ∀ c ∈ s, m ≤ ∫⁻ q, φ (q⁻¹ * c) ∂ν)
       ⟨1, one_ne_zero, ENNReal.one_ne_top, fun _ h => h.elim⟩
       (fun s t hst ⟨m, h1, h2, h3⟩ => ⟨m, h1, h2, fun c hc => h3 c (hst hc)⟩)
@@ -47,7 +47,6 @@ theorem lower : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGrou
       exact (hsub (Set.mk_mem_prod (interior_subset hq) hc)).le
     · rw [Set.indicator_of_notMem hq]
       exact zero_le
-  obtain ⟨m, h1, h2, h3⟩ := key
   refine ⟨m, h1, h2, fun p hp c hc => (h3 c hc).trans (le_of_eq ?_)⟩
   conv_rhs => rw [← hν p hp]
   rw [lintegral_map (f := fun q => φ (q⁻¹ * (p * c))) (hφ.measurable.comp (measurable_inv.mul_const _)) (measurable_const_mul p)]

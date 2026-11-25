@@ -63,8 +63,7 @@ theorem hasDerivAt_log_det {r : ℕ} (G : ℝ → Matrix (Fin r) (Fin r) ℂ)
     HasDerivAt (fun s => Real.log (G s).det.re) ((G t)⁻¹ * G').trace.re t := by
   have hd := hasDerivAt_det G G' t hG
   have hre : HasDerivAt (fun s => (G s).det.re) ((G t).adjugate * G').trace.re t := by
-    have := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t hd
-    simpa [Function.comp_def] using this
+    simpa [Function.comp_def] using Complex.reCLM.hasFDerivAt.comp_hasDerivAt t hd
   have hdpos : 0 < (G t).det := hpos.det_pos
   have hre0 : 0 < (G t).det.re ∧ (G t).det.im = 0 := by
     have := Complex.lt_def.1 hdpos

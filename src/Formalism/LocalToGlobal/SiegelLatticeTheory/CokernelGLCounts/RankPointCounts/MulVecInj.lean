@@ -66,8 +66,7 @@ theorem mu_e (Z : M.Mat (m + 1)) :
       (Pi.single (Fin.last m) (1 : E) : Fin (m + 1) → E) := by
     funext i
     by_cases h : i = Fin.last m <;> simp [h]
-  rw [e, Matrix.mulVec_single]
-  simp
+  simp [e, Matrix.mulVec_single]
 
 def headK (Z : M.Mat (m + 1)) : Submodule M.R (Fin (m + 1) → M.R) :=
   (LinearMap.ker (LinearMap.proj (R := M.R) (φ := fun _ : Fin (m + 1) => M.R) (Fin.last m))).map Z.Z.mulVecLin

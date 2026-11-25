@@ -59,13 +59,12 @@ theorem mem_of_projection_germ_injective {σ : Type} [Fintype σ] {X : Set (σ �
       ∀ᶠ y in 𝓝 (A x), h y = 0) : x ∈ X := by
   by_contra hx
   obtain ⟨N, k, f, hNo, hxN, hf, hXN⟩ := hX
-  have hne : ∃ i, f i x ≠ 0 := by
+  obtain ⟨i, hi⟩ : ∃ i, f i x ≠ 0 := by
     by_contra hall
     push Not at hall
     have hmem : x ∈ {z | z ∈ N ∧ ∀ i, f i z = 0} := ⟨hxN, hall⟩
     rw [← hXN] at hmem
     exact hx hmem.1
-  obtain ⟨i, hi⟩ := hne
   have hev : ∀ᶠ z in 𝓝 x, z ∈ X → (fun _ : Fin d → ℂ => (1 : ℂ)) (A z) = 0 := by
     filter_upwards [(hf i x hxN).continuousAt.eventually_ne hi, hNo.mem_nhds hxN] with z hz1 hz2 hzX
     have hmem : z ∈ X ∩ N := ⟨hzX, hz2⟩

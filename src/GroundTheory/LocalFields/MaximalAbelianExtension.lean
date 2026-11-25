@@ -144,8 +144,7 @@ theorem ext_restrictAb {σ τ : maximalAbelianExtension F Ω ≃ₐ[F] maximalAb
     σ = τ := by
   ext x
   obtain ⟨L, hL1, hL2, hxL⟩ := exists_finite_abelian_mem x.2
-  have := congrArg (fun ρ : L ≃ₐ[F] L => ((ρ ⟨x, hxL⟩ : L) : Ω)) (h L)
-  simpa only [restrictAb_apply] using this
+  simpa only [restrictAb_apply] using congrArg (fun ρ : L ≃ₐ[F] L => ((ρ ⟨x, hxL⟩ : L) : Ω)) (h L)
 
 end Finite
 

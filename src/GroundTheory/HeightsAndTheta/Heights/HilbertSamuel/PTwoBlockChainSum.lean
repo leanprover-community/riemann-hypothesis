@@ -80,9 +80,8 @@ theorem GridSum.pow_sub_pow_le (x y : ℝ) (k : ℕ) (hy : 0 ≤ y) (hxy : y ≤
                 mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hy hxy _) (pow_nonneg hx _)
             _ = x ^ (k - 1) := by rw [← pow_add, hl']
       _ = k * x ^ (k - 1) := by simp
-  have hd : 0 ≤ x - y := sub_nonneg.mpr hxy
   calc (∑ l ∈ range k, x ^ l * y ^ (k - 1 - l)) * (x - y) ≤ (k * x ^ (k - 1)) * (x - y) :=
-        mul_le_mul_of_nonneg_right hs hd
+        mul_le_mul_of_nonneg_right hs (sub_nonneg.mpr hxy)
     _ = k * (x - y) * x ^ (k - 1) := by ring
 
 theorem GridSum.proof : GridSum.Statement := by

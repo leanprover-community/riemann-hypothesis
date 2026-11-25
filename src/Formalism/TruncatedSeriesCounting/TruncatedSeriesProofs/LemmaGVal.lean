@@ -25,8 +25,7 @@ theorem g_coeff_valuation_statement : LemmaGVal := by
   have hmem : ∀ j ∈ S₂, ((b : ℤ) + 1 ≤ j ∧ j ≤ (b : ℤ) + S + a) ∨
       (1 - (η : ℤ) ≤ j ∧ j ≤ (η : ℤ) + a) := by
     intro j hj
-    have := hS₂ hj
-    simpa only [Finset.mem_union, Finset.mem_Icc] using this
+    simpa only [Finset.mem_union, Finset.mem_Icc] using hS₂ hj
   set T₁ : Finset ℤ := (Finset.Icc ((b : ℤ) - a + 1) b).erase j₀ ∪
     S₂.filter (fun j => (b : ℤ) < j) with hT₁
   set T₂ : Finset ℤ := S₂.filter (fun j => ¬ (b : ℤ) < j) with hT₂

@@ -73,14 +73,12 @@ theorem UpperTheory.Ru.crystallineComparison.quotAdd :
       (S.f.app (T.B i)).hom ((S.X₁.map (T.f i)).hom z) =
         (S.X₂.map (T.f i)).hom ((S.f.app A).hom z) := by
     intro i z
-    have := congrArg (fun φ => φ.hom z) (S.f.naturality (T.f i))
-    simpa using this
+    simpa using congrArg (fun φ => φ.hom z) (S.f.naturality (T.f i))
   have natg : ∀ (i : T.ι) (y : S.X₂.obj A),
       (S.g.app (T.B i)).hom ((S.X₂.map (T.f i)).hom y) =
         (S.X₃.map (T.f i)).hom ((S.g.app A).hom y) := by
     intro i y
-    have := congrArg (fun φ => φ.hom y) (S.g.naturality (T.f i))
-    simpa using this
+    simpa using congrArg (fun φ => φ.hom y) (S.g.naturality (T.f i))
   have inj0 : ∀ x : S.X₃.obj A, (∀ i, (S.X₃.map (T.f i)).hom x = 0) → x = 0 := by
     intro x hx
     obtain ⟨y, rfl⟩ := (ex A).2.2 x

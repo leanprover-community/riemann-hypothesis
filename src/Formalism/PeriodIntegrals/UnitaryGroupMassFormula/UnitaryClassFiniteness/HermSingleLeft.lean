@@ -141,8 +141,7 @@ theorem sub_finite (N : Submodule (𝓞 E) (Fin M → E)) (hN : N.FG) (n : ℕ) 
     rw [← hG] at hx hns
     rw [← hG'] at hns' ⊢
     have hts : t ∈ G := by
-      have := G.sub_mem hx (hns z hz)
-      simpa using this
+      simpa using G.sub_mem hx (hns z hz)
     have hts' : t ∈ s' ∩ T := heq ▸ ⟨(show t ∈ s by rw [← hG]; exact hts), ht⟩
     rw [← hG'] at hts'
     exact G'.add_mem hts'.1 (hns' z hz)

@@ -79,7 +79,7 @@ theorem VerticalDivisorsCommute.proof (h1 : CutByEffectiveDivisor.Statement.{u})
         vNum W (Matrix.vecCons (fun k => (c'' k : ℤ)) L) := by
     intro W hW
     have hϖW : (C ϖ : MRing ι O) ∈ W := hD.vertical W hW
-    have hWdata : IsMultiHomogIdeal W ∧ W.IsPrime ∧ P ≤ W := by
+    obtain ⟨hWm, hWp, hPW⟩ : IsMultiHomogIdeal W ∧ W.IsPrime ∧ P ≤ W := by
       by_cases hWf : divCycle P f W = 0
       · have hWg : divCycle P g W ≠ 0 := by
           intro hWg; apply hW; simp [ratDiv, hWf, hWg]
@@ -87,7 +87,6 @@ theorem VerticalDivisorsCommute.proof (h1 : CutByEffectiveDivisor.Statement.{u})
         exact ⟨hm, hmin.1.1, le_sup_left.trans hmin.1.2⟩
       · obtain ⟨hm, hmin, -⟩ := hmh f bf hbf W hWf
         exact ⟨hm, hmin.1.1, le_sup_left.trans hmin.1.2⟩
-    obtain ⟨hWm, hWp, hPW⟩ := hWdata
     have := hWp
     have hlt : P < W := lt_of_le_of_ne hPW (fun e => hϖP (e ▸ hϖW))
     have hdrop := h10 (MRing ι O) P W hlt

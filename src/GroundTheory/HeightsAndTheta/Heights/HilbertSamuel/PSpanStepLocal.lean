@@ -76,10 +76,9 @@ theorem SpanStepLocal.proof (hR : RelLatticeFinite.Statement) : SpanStepLocal.St
       rw [mul_assoc, hquot]
     have hinvS : (v c j)⁻¹ ∈ S := hinv ▸ S.sum_mem fun i _ =>
       S.mul_mem (hRS _ (hu i)) (hPS _ (Algebra.subset_adjoin ⟨i, rfl⟩))
-    have hgv : g * v c j ^ n ∈ S := hRS _ (by rw [← pow_twist]; exact hg c hc)
     have e : g = g * v c j ^ n * (v c j)⁻¹ ^ n := by
       rw [mul_assoc, ← mul_pow, mul_inv_cancel₀ (hv0 c hc), one_pow, mul_one]
-    rw [e]; exact S.mul_mem hgv (S.pow_mem hinvS n)
+    rw [e]; exact S.mul_mem (hRS _ (by rw [← pow_twist]; exact hg c hc)) (S.pow_mem hinvS n)
   have incl₂ : ∀ g ∈ relChartLat P y (fun _ => 0) 0, ∃ n : ℕ, g * w j ^ n ∈ chartLat y a n := by
     intro g hg
     have hE : ∀ c, ∃ E : ℕ, (∀ k, y ⟨k, c k⟩ ≠ 0) → g * v c j ^ E ∈ chartRingZ y c := by

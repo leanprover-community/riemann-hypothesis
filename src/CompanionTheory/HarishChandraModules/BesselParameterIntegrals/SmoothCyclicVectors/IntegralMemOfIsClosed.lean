@@ -88,9 +88,8 @@ theorem mulR_apply (g x : Mat n) : mulR g x = x * g := rfl
 theorem hasDerivAt_ex_neg_mul (X g : Mat n) (t : ℝ) :
     HasDerivAt (fun s => ex X (-s) * g) (-(X * (ex X (-t) * g))) t := by
   have h0 : HasDerivAt (ex X) X 0 := by simpa using hasDerivAt_mul_ex 1 X
-  have h1 : HasDerivAt (fun s : ℝ => t - s) (-1) t := (hasDerivAt_id t).const_sub t
   have h2 : HasDerivAt (fun s => ex X (t - s)) ((-1 : ℝ) • X) t :=
-    HasDerivAt.scomp_of_eq t h0 h1 (sub_self t).symm
+    HasDerivAt.scomp_of_eq t h0 ((hasDerivAt_id t).const_sub t) (sub_self t).symm
   have h3 := (mulR (ex X (-t) * g)).hasFDerivAt.comp_hasDerivAt t h2
   have e : (fun s => ex X (-s) * g) = mulR (ex X (-t) * g) ∘ fun s => ex X (t - s) := by
     ext1 s
@@ -135,8 +134,7 @@ theorem IsSm.hasDerivAt (h : RepOn G σ) {u : H} (hu : IsSm G σ u) {X : Mat n}
     (hX : ∀ t, ex X t ∈ G) (t : ℝ) :
     HasDerivAt (fun s => σ (ex X s) u) (σ (ex X t) (ds σ X u)) t := by
   have h0 := (hu.differentiableAt h hX).hasDerivAt
-  have h1 : HasDerivAt (fun s : ℝ => s - t) 1 t := (hasDerivAt_id t).sub_const t
-  have h2 := HasDerivAt.scomp_of_eq t h0 h1 (sub_self t).symm
+  have h2 := HasDerivAt.scomp_of_eq t h0 ((hasDerivAt_id t).sub_const t) (sub_self t).symm
   have h3 := ((σ (ex X t)).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt t h2
   have e : (fun s => σ (ex X s) u) = ((σ (ex X t)).restrictScalars ℝ) ∘
       ((fun t : ℝ => σ (ex X t) u) ∘ fun s => s - t) := by

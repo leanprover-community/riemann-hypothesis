@@ -73,8 +73,7 @@ theorem UpperTheory.Lit.Cusp.isBand_of_compact :
     have h := integral_map_equiv (μ := ν) (MeasurableEquiv.mulLeft m) (fun x => ψ (g * x))
     have h2 : ν.map (MeasurableEquiv.mulLeft m) = ν := hinv m hm
     rw [h2] at h
-    rw [h]
-    simp [mul_assoc]
+    simp [h, mul_assoc]
   have hex : ∀ g, (∫ m, ψ (g * m) ∂ν) ≠ 0 → ∃ m ∈ N, g * m ∈ tsupport ψ := by
     intro g hg
     by_contra hne
@@ -96,5 +95,4 @@ theorem UpperTheory.Lit.Cusp.isBand_of_compact :
   · obtain ⟨R, hR⟩ := (IsCompact.image hc hray.contH.abs).bddAbove
     refine ⟨R, fun g hg => ?_⟩
     obtain ⟨m, hm, hs⟩ := hex g hg
-    have := hR ⟨g * m, hs, rfl⟩
-    simpa only [hray.inv g m hm] using this
+    simpa only [hray.inv g m hm] using hR ⟨g * m, hs, rfl⟩

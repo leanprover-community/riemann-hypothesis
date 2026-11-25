@@ -44,8 +44,7 @@ theorem exists_chart_partition {X : Type*} [TopologicalSpace X] [T2Space X] [Com
         exact ⟨e k p, subset_tsupport g hp, (e k).left_inv hps⟩
       · simp only [hG, ite_eq_right hps] at hp
         exact absurd rfl hp
-    have hts : tsupport G ⊆ T := closure_minimal hsupp hTc.isClosed
-    refine ⟨hts.trans hTs, fun j => ?_⟩
+    refine ⟨(closure_minimal hsupp hTc.isClosed).trans hTs, fun j => ?_⟩
     apply contDiffOn_of_locally_contDiffOn
     intro y hy
     by_cases hp : (e j).symm y ∈ (e k).source

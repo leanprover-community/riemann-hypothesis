@@ -79,9 +79,8 @@ theorem eq_exp_of_continuous_oneParameter (g : ℝ → Matrix (l ⊕ l) (l ⊕ l
   letI : NormedAlgebra ℝ (Matrix (l ⊕ l) (l ⊕ l) ℝ) := Matrix.linftyOpNormedAlgebra
   haveI : CompleteSpace (Matrix (l ⊕ l) (l ⊕ l) ℝ) := FiniteDimensional.complete ℝ _
   have hsm := GlobalTheory.contDiff_of_continuous_oneParameter (Matrix (l ⊕ l) (l ⊕ l) ℝ) g hc h0 hadd
-  have hdiff : Differentiable ℝ g := hsm.differentiable (by simp)
   set Z := deriv g 0 with hZ
-  have hd0 : HasDerivAt g Z 0 := (hdiff 0).hasDerivAt
+  have hd0 : HasDerivAt g Z 0 := ((hsm.differentiable (by simp)) 0).hasDerivAt
   have hdt : ∀ t, HasDerivAt g (g t * Z) t := by
     intro t
     have h1 : HasDerivAt (fun s => g (s - t)) Z t := by

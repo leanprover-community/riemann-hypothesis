@@ -188,8 +188,7 @@ lemma qh_N_mem (s : ℕ) (hs : s ≤ n) (J : Fin s → Fin n) :
   have h3 : ∀ a : Fin n, ((u a ^ (if a.val < s then (1 : ℤ) else 0) : R'ˣ) : R') =
       if a.val < s then (u a : R') else 1 := by
     intro a; split_ifs <;> simp
-  rw [Units.coe_prod]
-  simp only [h3]
+  simp only [Units.coe_prod, h3]
   rw [← qh_prod_castLE hs (fun a : Fin n => if a.val < s then (u a : R') else 1)
     (fun a ha => ite_eq_right (by omega))]
   apply Finset.prod_congr rfl

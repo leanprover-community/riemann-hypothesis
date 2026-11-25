@@ -61,8 +61,7 @@ theorem wq_mem {S : Subring ℂ_[p]} {W : WeierstrassCurve ℂ_[p]} {wq : PowerS
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     have hc := congrArg (PowerSeries.coeff n) h
-    rw [hc]
-    simp only [map_add (f := _), t1, coeff_termS, PowerSeries.coeff_one]
+    simp only [hc, map_add (f := _), t1, coeff_termS, PowerSeries.coeff_one]
     refine S.add_mem (S.add_mem (S.add_mem (S.add_mem (S.add_mem ?_ ?_) ?_) ?_) ?_) ?_
     · split_ifs
       · exact S.one_mem

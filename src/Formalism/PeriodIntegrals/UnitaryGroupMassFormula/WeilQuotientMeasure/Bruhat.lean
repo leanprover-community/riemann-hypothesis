@@ -134,7 +134,6 @@ theorem stepBruhat : StepBruhat := by
       (fun n => measurable_one.indicator (hUo n).measurableSet)
       (fun n => measurableSet_lt measurable_const (hAm n)) hex
   let a : G → ℝ≥0∞ := fun g => ∫⁻ h, b (g * (h : G)) ∂ν
-  have ham : Measurable a := measurable_avg ν hbm
   have hainv : ∀ g (k : H), a (g * k) = a g := fun g k => avg_mul_right ν b g k
   have haA : ∀ g, a g = A (n₀ g) g := fun g => by
     refine lintegral_congr fun h => ?_
@@ -142,7 +141,7 @@ theorem stepBruhat : StepBruhat := by
     simp only [hn₀inv]
   have ha0 : ∀ g, a g ≠ 0 := fun g => by rw [haA]; exact (hspec g).ne'
   have hat : ∀ g, a g ≠ ⊤ := fun g => by rw [haA]; exact (hAfin _ g).ne
-  refine ⟨fun g => b g * (a g)⁻¹, hbm.mul ham.inv, fun g => ?_⟩
+  refine ⟨fun g => b g * (a g)⁻¹, hbm.mul (measurable_avg ν hbm).inv, fun g => ?_⟩
   have hbg : Measurable (fun h : H => b (g * (h : G))) :=
     hbm.comp (continuous_const.mul continuous_subtype_val).measurable
   calc ∫⁻ h, b (g * (h : G)) * (a (g * (h : G)))⁻¹ ∂ν

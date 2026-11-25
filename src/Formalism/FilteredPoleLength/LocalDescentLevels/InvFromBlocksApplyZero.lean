@@ -45,8 +45,7 @@ open Module Matrix MeasureTheory
 theorem complexHadamard : ComplexHadamard := by
   intro n M A hA
   have h1 := _root_.Bl.DetNormLeProdRows.goal1 n M.transpose
-  rw [Matrix.det_transpose] at h1
-  simp only [Matrix.transpose_apply] at h1
+  simp only [Matrix.det_transpose, Matrix.transpose_apply] at h1
   have hprod : (∏ j, Real.sqrt (∑ i, ‖M i j‖ ^ 2)) ^ 2 = ∏ j, ∑ i, ‖M i j‖ ^ 2 := by
     rw [← Finset.prod_pow]
     exact Finset.prod_congr rfl fun j _ =>

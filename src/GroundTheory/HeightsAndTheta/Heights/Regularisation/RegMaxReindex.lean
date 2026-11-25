@@ -35,8 +35,7 @@ theorem tmax_le {ι : Type*} [Fintype ι] [Nonempty ι] {t : ι → ℝ} {c : �
 theorem tmax_comp_equiv {κ ι : Type*} [Fintype κ] [Nonempty κ] [Fintype ι] [Nonempty ι]
     (e : κ ≃ ι) (t : ι → ℝ) : tmax (t ∘ e) = tmax t := by
   refine le_antisymm (tmax_le fun k => le_tmax t (e k)) (tmax_le fun i => ?_)
-  have := le_tmax (t ∘ e) (e.symm i)
-  simpa using this
+  simpa using le_tmax (t ∘ e) (e.symm i)
 
 theorem regMax_comp_equiv {κ ι : Type} [Fintype κ] [Nonempty κ] [Fintype ι] [Nonempty ι]
     (e : κ ≃ ι) (η : ℝ) (t : ι → ℝ) : regMax η (t ∘ e) = regMax η t := by

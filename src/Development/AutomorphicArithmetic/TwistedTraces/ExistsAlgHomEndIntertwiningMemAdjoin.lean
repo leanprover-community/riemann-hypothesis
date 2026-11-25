@@ -127,8 +127,7 @@ theorem UpperTheory.exists_algHom_end_intertwining_mem_adjoin :
       rw [← LinearMap.ker_eq_top, eq_top_iff, ← hM]
       refine iSup₂_le fun f hf => ?_
       rintro _ ⟨x, rfl⟩
-      have := LinearMap.congr_fun (hcomm q q.2 f hf) x
-      simpa [h1] using this
+      simpa [h1] using LinearMap.congr_fun (hcomm q q.2 f hf) x
     exact Subtype.ext (Prod.ext h1 h2)
   have hmap₁ : Q.map π₁ = Algebra.adjoin ℂ (Prod.fst '' P) := AlgHom.map_adjoin π₁ P
   have hmap₂ : Q.map π₂ = Algebra.adjoin ℂ (Prod.snd '' P) := AlgHom.map_adjoin π₂ P
@@ -140,8 +139,7 @@ theorem UpperTheory.exists_algHom_end_intertwining_mem_adjoin :
     exact ⟨p.1, hmap₁ ▸ Algebra.subset_adjoin ⟨p, hp, rfl⟩, rfl⟩
   have hsurj : Function.Surjective φ := by
     intro t
-    have ht : t ∈ Q.map π₁ := by rw [htop]; trivial
-    obtain ⟨q, hq, rfl⟩ := ht
+    obtain ⟨q, hq, rfl⟩ : t ∈ Q.map π₁ := by rw [htop]; trivial
     exact ⟨⟨q, hq⟩, rfl⟩
   let e : Q ≃ₐ[ℂ] Module.End ℂ S := AlgEquiv.ofBijective φ ⟨hinj, hsurj⟩
   have he : ∀ t, ((e.symm t : Q) : Module.End ℂ S × Module.End ℂ X).1 = t := fun t => e.apply_symm_apply t

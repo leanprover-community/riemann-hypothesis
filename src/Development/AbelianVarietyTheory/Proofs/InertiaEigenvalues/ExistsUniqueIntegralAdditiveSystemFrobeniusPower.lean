@@ -86,8 +86,7 @@ theorem gsum_eq_add_gsum_update {F : Type*} [NormedField F] {m : Type*} [Fintype
     (q D : ℕ) (U : ℕ → Matrix m m F) (y : m → F) :
     gsum q D U y = y + gsum q D (fun n => if n = 0 then U 0 - 1 else U n) y := by
   unfold gsum
-  rw [Finset.sum_range_succ', Finset.sum_range_succ']
-  simp [Matrix.sub_mulVec]
+  simp [Finset.sum_range_succ', Finset.sum_range_succ', Matrix.sub_mulVec]
   abel
 
 theorem existsUnique_integral_gsum_eq (F : Type) [NontriviallyNormedField F] [IsUltrametricDist F] [CompleteSpace F]

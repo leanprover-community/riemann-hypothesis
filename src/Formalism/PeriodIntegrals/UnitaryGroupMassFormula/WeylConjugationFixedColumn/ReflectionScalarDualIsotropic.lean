@@ -226,8 +226,7 @@ lemma reflection_hermitian_value (c : ℂ) :
   rw [herm_bvec, ← Matrix.mulVec_mulVec, hge, mulVec_bvec]
   simp only [Matrix.mulVec, dotProduct, hpk_e_row, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
     Finset.mem_univ, ↓reduceIte]
-  rw [weyl_lift_eq_pair, sw_e, al_e]
-  simp
+  simp [weyl_lift_eq_pair, sw_e, al_e]
 
 end G
 

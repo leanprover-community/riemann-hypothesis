@@ -395,9 +395,8 @@ theorem lhwline_vanish [Infinite K] (g : MvPolynomial (Fin r × Fin n) K)
     · rw [hx0, mul_zero]
     · have hx : ∀ (s : ℕ) (hr : s + 1 ≤ r) (hn : s + 1 ≤ n), eval x (lpMinor K (s + 1) hr hn) ≠ 0 := by
         intro s hr hn
-        have hs : s < min r n := lt_min hr hn
         simp only [Q, map_prod] at hx0
-        exact (Finset.prod_ne_zero_iff.mp hx0) ⟨s, hs⟩ (Finset.mem_univ _)
+        exact (Finset.prod_ne_zero_iff.mp hx0) ⟨s, (lt_min hr hn)⟩ (Finset.mem_univ _)
       have hinv := lhwline_elim_inv (fun z : Fin r × Fin n → K => eval z g)
         (lhwline_RInv_of g hR) (lhwline_CInv_of g hC) (min r n) x
       rw [show eval x g = eval (lhwline_elim (min r n) x) g from hinv.symm, hD _ (fun a j h => lhwline_elim_offdiag x hx a j h), zero_mul]

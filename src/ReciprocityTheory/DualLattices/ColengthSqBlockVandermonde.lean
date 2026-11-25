@@ -81,8 +81,7 @@ lemma v_det_vandermonde_sq {n : ℕ} (a : Fin n → C) :
     intro τ
     rw [Finset.disjoint_left]
     exact fun x h1 h2 => lt_asymm (Finset.mem_Ioi.1 h1) (Finset.mem_Iio.1 h2)
-  rw [Matrix.det_vandermonde, discr]
-  simp only [map_prod]
+  simp only [Matrix.det_vandermonde, discr, map_prod]
   have h1 : ∏ τ : Fin n, ∏ τ' ∈ Finset.univ.erase τ, v (a τ - a τ') =
       (∏ τ : Fin n, ∏ τ' ∈ Finset.Ioi τ, v (a τ - a τ')) *
         ∏ τ : Fin n, ∏ τ' ∈ Finset.Iio τ, v (a τ - a τ') := by

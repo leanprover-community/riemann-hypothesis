@@ -26,8 +26,7 @@ theorem matroid_subalgebra_eq_comap (S : Subalgebra K Ω) :
     AlgebraicIndependent.matroid K S = (AlgebraicIndependent.matroid K Ω).comap ((↑) : S → Ω) := by
   refine Matroid.ext_indep (by simp) fun I _ => ?_
   have hinj : InjOn ((↑) : S → Ω) I := Subtype.val_injective.injOn
-  rw [Matroid.comap_indep_iff, matroid_indep_iff, matroid_indep_iff]
-  simp only [hinj, and_true]
+  simp only [Matroid.comap_indep_iff, matroid_indep_iff, matroid_indep_iff, hinj, and_true]
   change AlgebraicIndependent K (fun i : I => (i : S)) ↔
     AlgebraicIndependent K (fun x : (((↑) : S → Ω) '' I) => (x : Ω))
   rw [← algebraicIndependent_image hinj]

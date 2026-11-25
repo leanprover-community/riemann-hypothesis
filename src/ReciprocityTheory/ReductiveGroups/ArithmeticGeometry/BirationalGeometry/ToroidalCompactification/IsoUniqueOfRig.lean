@@ -92,7 +92,6 @@ theorem iso_unique_of_rig (hG : Out.GlobalFnsSt) {S X₀ : Scheme.{0}} (A : Over
       try dsimp only
       rw [map_div, map_div, div_eq_one]
       exact apply_default_eq_of_prod_eq_of_unique _ _ E
-  have hc' : (eSec A).appTop.hom (u : Γ(A.left, ⊤)) = 1 := congrArg Units.val hc
   obtain ⟨v, hv⟩ := (hG S A hA).2 (u : Γ(A.left, ⊤))
   have hw : eSec A ≫ A.hom = (𝟙_ (Over S)).hom := Over.w _
   have key : (eSec A).appTop.hom (A.hom.appTop.hom v) = v := by
@@ -100,7 +99,7 @@ theorem iso_unique_of_rig (hG : Out.GlobalFnsSt) {S X₀ : Scheme.{0}} (A : Over
       rfl
     rw [h3, hw]
     rfl
-  have hv1 : v = 1 := by rw [← key, hv]; exact hc'
+  have hv1 : v = 1 := by rw [← key, hv]; exact congrArg Units.val hc
   have hu1 : u = 1 := Units.ext (by rw [← hv, hv1, map_one, Units.val_one])
   have hq : ∀ q, w₁.s q = w₂.s q := fun q => by
     have h := hu q

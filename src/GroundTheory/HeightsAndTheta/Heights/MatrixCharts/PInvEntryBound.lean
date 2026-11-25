@@ -23,9 +23,8 @@ theorem single_dot_mulVec_single {ι : Type*} [Fintype ι] [DecidableEq ι] (A :
 theorem inv_diag_bounds {ι : Type*} [Fintype ι] [DecidableEq ι] {Y : Matrix ι ι ℝ} {c : ℝ}
     (hc : 0 < c) (h : (Y - c • (1 : Matrix ι ι ℝ)).PosSemidef) (j : ι) :
     0 ≤ Y⁻¹ j j ∧ Y⁻¹ j j ≤ c⁻¹ := by
-  have hinv : (Y⁻¹).PosSemidef := (MCBounds.posDef_of_ge hc h).inv.posSemidef
   have hle := MCBounds.quad_nonneg (MCBounds.inv_le_of_ge hc h) (Pi.single j 1)
-  have hge := MCBounds.quad_nonneg hinv (Pi.single j 1)
+  have hge := MCBounds.quad_nonneg ((MCBounds.posDef_of_ge hc h).inv.posSemidef) (Pi.single j 1)
   rw [single_dot_mulVec_single] at hle hge
   refine ⟨hge, ?_⟩
   simpa [Matrix.sub_apply, Matrix.smul_apply] using hle

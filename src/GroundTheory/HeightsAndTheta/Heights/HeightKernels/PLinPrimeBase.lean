@@ -121,8 +121,7 @@ theorem chart_equiv (α : T → k) (M : T → Fin 1 → k) (hα : Submodule.span
   have hIle : I ≤ RingHom.ker φ := by
     refine sup_le (fun x hx => ?_) (hJ.trans (Ideal.span_le.mpr ?_))
     · rw [linPrime, RingHom.mem_ker] at hx
-      rw [RingHom.mem_ker]
-      simp [hφ, chartEval, hx]
+      simp [RingHom.mem_ker, hφ, chartEval, hx]
     · rintro x (rfl | rfl)
       · rw [SetLike.mem_coe, RingHom.mem_ker, map_sub, map_one, hφ, chartEval_first, mul_inv_cancel₀ h₁,
           sub_self]

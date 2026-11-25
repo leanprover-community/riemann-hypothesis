@@ -48,8 +48,7 @@ lemma cs_identity (D sig : ZMod d → ℝ) (x : ZMod d → ℕ → ℝ) :
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by ring
   simp only [mul_sub, mul_add, Finset.sum_sub_distrib, Finset.sum_add_distrib]
-  rw [hA, in_reindex_mul]
-  simp only [mul_one]
+  simp only [hA, in_reindex_mul, mul_one]
   unfold Formalism.IncomingBounds.flowVal
   rw [show ∑ s : ZMod d, D s * sig s = ∑ s : ZMod d, sig s * D s from
     Finset.sum_congr rfl fun _ _ => mul_comm _ _]

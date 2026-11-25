@@ -39,8 +39,7 @@ theorem LinearFormCut.proof : LinearFormCut.Statement := by
     have hle : originIdeal n ≤ Q.1 := by
       rw [originIdeal, Ideal.span_le]
       rintro _ ⟨j, rfl⟩
-      have : Pi.single j 1 ∈ p Q := htop ▸ Submodule.mem_top
-      simpa [p, formMap, Pi.single_apply] using this
+      simpa [p, formMap, Pi.single_apply] using (htop ▸ Submodule.mem_top : Pi.single j 1 ∈ p Q)
     exact ((originIdeal_isMaximal n).eq_of_le Q.2.1.1.1.ne_top hle).symm
   obtain ⟨a, ha⟩ := Submodule.exists_forall_notMem_of_forall_ne_top p hp
   let B : Matrix (Fin 1) (Fin n) ℂ := Matrix.of fun _ j => a j

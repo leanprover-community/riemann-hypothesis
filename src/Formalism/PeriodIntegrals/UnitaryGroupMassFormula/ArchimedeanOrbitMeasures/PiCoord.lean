@@ -65,8 +65,7 @@ theorem measurePreserving_of_normSq {ι V : Type} [Fintype ι] [Fintype V] {α :
     intro z z' h
     funext v
     ext a
-    have := congrArg (fun w : EuclideanSpace ℝ (Σ v, α v) => w ⟨v, a⟩) h
-    exact this
+    exact congrArg (fun w : EuclideanSpace ℝ (Σ v, α v) => w ⟨v, a⟩) h
   have hFs : Function.Surjective F := fun w => ⟨fun v => WithLp.toLp 2 (fun a => w ⟨v, a⟩), rfl⟩
   have hGs : Function.Surjective G := (hFs.comp hbij.2)
   let Ge := LinearIsometryEquiv.ofSurjective G hGs

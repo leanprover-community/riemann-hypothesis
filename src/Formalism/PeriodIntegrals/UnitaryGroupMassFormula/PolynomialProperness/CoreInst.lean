@@ -23,8 +23,7 @@ theorem coreInst_of (hC : IsoCore) (hI : HpkInvol) (hN : GNFacts) (h1 : Formalis
     set M0 : Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) ℂ :=
       Matrix.fromBlocks 1 0 0 (-1) with hM0
     have hsq : M0 * M0 = 1 := by
-      rw [hM0, Matrix.fromBlocks_multiply]
-      simp [Matrix.fromBlocks_one]
+      simp [hM0, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
     have hM0u : IsUnit M0.det :=
       IsUnit.of_mul_eq_one (b := M0.det) (by rw [← Matrix.det_mul, hsq, Matrix.det_one])
     rw [← hQG, Matrix.det_mul, Matrix.det_mul] at hM0u

@@ -311,8 +311,7 @@ theorem coeff_law_of_zero (h : IsLogPair l linv) (d : Fin 2 →₀ ℕ) (hd : d 
       · simpa using hd
       · simpa using h1
     · intro h1
-      rw [h1]
-      simp
+      simp [h1]
   · intro d' hd'
     by_cases h0 : d' 0 = 0
     · have h1 : d' 1 ≠ d 1 := by

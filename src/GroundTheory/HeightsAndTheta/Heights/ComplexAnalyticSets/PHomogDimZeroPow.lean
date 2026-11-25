@@ -46,11 +46,10 @@ theorem HomogDimZeroPow.proof : HomogDimZeroPow.Statement := by
   rw [Ideal.radical_eq_sInf]
   refine le_sInf fun P ⟨hKP, hP⟩ => ?_
   set 𝒜 := homogeneousSubmodule (Fin n) ℂ
-  have hcP : (P.homogeneousCore 𝒜).toIdeal.IsPrime := hP.homogeneousCore
   have hKc : K ≤ (P.homogeneousCore 𝒜).toIdeal := by
     rw [← hK.toIdeal_homogeneousCore_eq_self]
     exact Ideal.homogeneousCore_mono 𝒜 hKP
-  have hmax := isMaximal_of_isPrime_of_quotient_dim_le_zero hdim hcP hKc
+  have hmax := isMaximal_of_isPrime_of_quotient_dim_le_zero hdim hP.homogeneousCore hKc
   have hle := le_originIdeal_of_isHomogeneous (P.homogeneousCore 𝒜).isHomogeneous hmax.ne_top
   exact ((hmax.eq_of_le (originIdeal_isMaximal n).ne_top hle).symm.le).trans
     (Ideal.toIdeal_homogeneousCore_le 𝒜 P)

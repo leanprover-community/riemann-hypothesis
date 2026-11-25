@@ -401,12 +401,11 @@ theorem exists_pt_of_isMaximal [FiniteDimensional K V] (hinj : Function.Injectiv
     simp only [Subalgebra.coe_val] at e
     rw [← e]
     simpa using hP
-  have hu : IsUnit (P.coeff 0) := by
+  obtain ⟨u, hu'⟩ : IsUnit (P.coeff 0) := by
     rw [coeff_zero_eq_eval_zero, eval_prod]
     refine Finset.prod_induction _ IsUnit (fun a b ha hb => ha.mul hb) isUnit_one fun ψ hψ => ?_
     simp only [eval_pow, eval_sub, eval_X, eval_C, zero_sub]
     exact ((ht ψ hψ).neg).pow _
-  obtain ⟨u, hu'⟩ := hu
   have key := congrArg (aeval t) (X_mul_divX_add P)
   rw [hPT, map_add (f := _), map_mul, aeval_X, aeval_C, ← hu'] at key
   have e : t * aeval t P.divX = - algebraMap O _ (u : O) := eq_neg_of_add_eq_zero_left key

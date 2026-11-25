@@ -31,8 +31,7 @@ theorem herm (x y : α) : conj (P.K y x) = P.K x y := by
   have h := (P.psd {x, y}).1
   have hx : x ∈ ({x, y} : Finset α) := by simp
   have hy : y ∈ ({x, y} : Finset α) := by simp
-  have := congrFun (congrFun h ⟨x, hx⟩) ⟨y, hy⟩
-  simpa [Matrix.conjTranspose_apply, Matrix.of_apply] using this
+  simpa [Matrix.conjTranspose_apply, Matrix.of_apply] using congrFun (congrFun h ⟨x, hx⟩) ⟨y, hy⟩
 
 theorem fm_add_left (f₁ f₂ g : α →₀ ℂ) : P.fm (f₁ + f₂) g = P.fm f₁ g + P.fm f₂ g := by
   unfold fm

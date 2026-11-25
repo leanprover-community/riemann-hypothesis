@@ -68,8 +68,7 @@ theorem weylProd : PI.WeylProd := by
       ring
     · have h' : ¬ (i : ℕ) < (j : ℕ) := h
       rw [ite_eq_right h, ite_eq_right h', Rat.cast_one]
-  rw [Rat.cast_prod]
-  simp only [Rat.cast_prod]
+  simp only [Rat.cast_prod, Rat.cast_prod]
   rw [Finset.prod_congr rfl (fun i _ => Finset.prod_congr rfl (fun j _ => hterm i j))]
   have e1 : ∀ i : ℕ, ∏ j : Fin n, wg (shiftSeq w) i (j : ℕ) = ∏ j ∈ range n, wg (shiftSeq w) i j :=
     fun i => Fin.prod_univ_eq_prod_range (wg (shiftSeq w) i) n

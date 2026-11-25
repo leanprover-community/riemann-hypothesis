@@ -32,8 +32,7 @@ theorem repr_inclR {F E : Type} [Field F] [Field E] [Algebra F E] {d : ℕ} (b :
     (R : Type) [CommRing R] [Algebra F R] (x : E) (k : Fin d) :
     (Algebra.TensorProduct.basis R b).repr (inclR R x) k = algebraMap F R (b.repr x k) := by
   change (Algebra.TensorProduct.basis R b).repr ((1 : R) ⊗ₜ[F] x) k = _
-  rw [Algebra.TensorProduct.basis_repr_tmul]
-  simp
+  simp [Algebra.TensorProduct.basis_repr_tmul]
 
 theorem rational_integral_units : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E), (∀ x : E, ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr (inclR (Fv F v) x) k ∈ v.adicCompletionIntegers F) ∧ ∀ x : F, x ≠ 0 → ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, Valued.v (algebraMap F (Fv F v) x) = 1 := by
   intro F E _ _ _ _ _ σ _ d b

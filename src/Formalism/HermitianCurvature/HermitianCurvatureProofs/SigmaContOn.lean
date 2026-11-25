@@ -77,8 +77,7 @@ theorem sigma_contOn {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin 
           rw [← Matrix.mul_assoc P⁻¹ P, hPP, Matrix.one_mul]
       _ = PI.UpqRep.Jm ε := by rw [hg', hJ]
   have hcont : Continuous (fun g : Mx k r => P * g * P⁻¹) := by fun_prop
-  have := hc.comp hcont.continuousOn hmaps
-  refine this.congr ?_
+  refine (hc.comp hcont.continuousOn hmaps).congr ?_
   intro g _
   show σ g v = σ (P⁻¹ * (P * g * P⁻¹) * P) v
   congr 2

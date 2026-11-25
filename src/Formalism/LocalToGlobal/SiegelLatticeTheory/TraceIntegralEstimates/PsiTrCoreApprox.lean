@@ -37,8 +37,7 @@ private theorem exists_integer_approx_valuation (v : HeightOneSpectrum (𝓞 F))
   have hxm : x ∈ v.asIdeal ^ m := by
     rw [← intValuation_le_pow_iff_mem, hX, ← hvy]
     exact mul_le_of_le_one_left' hk
-  have hdvd : v.asIdeal ^ m ∣ Ideal.span {y} := (intValuation_le_pow_iff_dvd v y m).mp hvy.le
-  obtain ⟨J, hJ⟩ := hdvd
+  obtain ⟨J, hJ⟩ : v.asIdeal ^ m ∣ Ideal.span {y} := (intValuation_le_pow_iff_dvd v y m).mp hvy.le
   have hJv : ¬ J ≤ v.asIdeal := by
     intro hJv
     have hy1 : y ∈ v.asIdeal ^ m * J := hJ ▸ Ideal.mem_span_singleton_self y

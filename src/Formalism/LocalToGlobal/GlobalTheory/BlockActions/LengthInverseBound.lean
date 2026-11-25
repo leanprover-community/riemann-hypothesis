@@ -82,10 +82,9 @@ theorem length_inverse_bound (σ : E →+* E) (hσ : ∀ (φ : E →+* ℂ) (x :
       rw [hc] at h0
       rw [h0, mul_zero, zero_add] at hk'
       exact (pow_eq_one_iff_of_nonneg hn0 two_ne_zero).1 hk'
-  have hne : Nonempty (E →+* ℂ) := by
+  obtain ⟨φ0⟩ : Nonempty (E →+* ℂ) := by
     rw [← Fintype.card_pos_iff, NumberField.Embeddings.card E ℂ]
     exact Module.finrank_pos
-  obtain ⟨φ0⟩ := hne
   have hc0z : (c0 : E) = 0 := by
     by_contra hc
     obtain ⟨m, hm, hpow⟩ := NumberField.Embeddings.pow_eq_one_of_norm_le_one E ℂ hc

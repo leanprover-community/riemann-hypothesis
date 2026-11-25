@@ -124,8 +124,7 @@ theorem coef_kronecker (A : Matrix ι ι ℂ) (B : Matrix ι' ι' ℂ) (a b : ι
     funext p
     simp only [mulVec, dotProduct, Fintype.sum_prod_type, Finset.sum_mul_sum, kroneckerMap_apply]
     exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
-  rw [this]
-  simp only [dotProduct, Fintype.sum_prod_type, Finset.sum_mul_sum]
+  simp only [this, dotProduct, Fintype.sum_prod_type, Finset.sum_mul_sum]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
 def coefAlg (st : G → G) (S : Set G) (C : Set G) : StarSubalgebra ℂ C(C, ℂ) where
@@ -262,8 +261,7 @@ theorem isFam_rep [SecondCountableTopology K] (he : Continuous e) {V : Type} [No
     simp
   refine ⟨ℓ.continuous.comp (h2 u), fun l => ℓ.continuous.comp (h2 _), fun x => key x u, fun a l x => ?_⟩
   simp only [List.map_cons, word_cons, Module.End.mul_apply]
-  rw [key]
-  simp
+  simp [key]
 
 end Bound
 

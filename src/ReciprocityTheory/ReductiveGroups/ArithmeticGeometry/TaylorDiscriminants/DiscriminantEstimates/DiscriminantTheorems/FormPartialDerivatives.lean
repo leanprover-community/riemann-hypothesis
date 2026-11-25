@@ -22,8 +22,7 @@ theorem perpVec_perp (R : Type) [CommRing R] (V : Type) [AddCommGroup V] [Module
       if a = c then (hMat h e e').det else 0 := by
     intro a
     have hk := congrFun (congrFun (Matrix.adjugate_mul (hMat h e e')) a) c
-    rw [Matrix.mul_apply] at hk
-    simp only [hentry] at hk
+    simp only [Matrix.mul_apply, hentry] at hk
     rw [hk, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
     split_ifs <;> simp
 

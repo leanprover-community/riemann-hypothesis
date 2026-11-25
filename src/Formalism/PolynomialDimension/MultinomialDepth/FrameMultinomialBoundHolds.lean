@@ -46,8 +46,7 @@ theorem gram_choose_prod (a' : ℕ) : ∀ n : ℕ,
   induction n with
   | zero => simp
   | succ n ih =>
-    rw [Fin.prod_univ_castSucc]
-    simp only [Fin.val_castSucc, Fin.val_last]
+    simp only [Fin.prod_univ_castSucc, Fin.val_castSucc, Fin.val_last]
     rw [← ih]
     have h := Nat.add_one_mul_choose_eq (a' + n) n
     have h' : ((a' + n : ℝ) + 1) * (((a' + n).choose n : ℕ) : ℝ) =

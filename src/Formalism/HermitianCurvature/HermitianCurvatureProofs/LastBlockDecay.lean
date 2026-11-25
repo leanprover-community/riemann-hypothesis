@@ -134,8 +134,7 @@ theorem tendsto_dil_cpt (g : ℂ → E) (hgc : Continuous g) (hgs : HasCompactSu
         calc max R 0 ≤ ‖ζ‖ / 2 * (2 * max R 0 / ‖ζ‖) := by field_simp; rfl
           _ < ‖ζ‖ / 2 * ‖z‖ := by gcongr
           _ ≤ ‖ζ‖ * ‖z‖ := by gcongr; linarith
-      rw [e1, e2]
-      simp
+      simp [e1, e2]
   · exact (integrableOn_const measure_closedBall_lt_top.ne).integrable_indicator
       Metric.isClosed_closedBall.measurableSet
   · refine Filter.Eventually.of_forall fun z => ?_

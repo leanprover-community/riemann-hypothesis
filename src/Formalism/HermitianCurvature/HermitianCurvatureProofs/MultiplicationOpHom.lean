@@ -27,8 +27,7 @@ theorem model_nontrivial : Formalism.FourierDecayAlt.M.ModelNontrivial := by
   intro P
   have key : ∀ w : Pr P.r, sc P w = 0 → w = 0 := by
     intro w h
-    have := congrFun (congrFun h (fun _ => 0)) (fun _ => 0)
-    simpa [sc] using this
+    simpa [sc] using congrFun (congrFun h (fun _ => 0)) (fun _ => 0)
   refine ⟨⟨⟨0, 1, fun h => ?_⟩⟩, fun f fb h => ?_⟩
   · have h1 : (1 : Pr P.r) = 0 := key 1 (by unfold sc; rw [map_one]; exact h.symm)
     have h2 : (1 : Op P.r) (1 : Fn P.r) = (0 : Op P.r) 1 :=

@@ -74,11 +74,10 @@ theorem adicVal_eq_one_iff (K : UQ) (a : K.O) : adicVal K (algebraMap K.O K.E a)
 theorem adicVal_map (h : IsUnrExt K K' d φ) (x : K.E) : adicVal K' (φ x) = adicVal K x := by
   rcases eq_or_ne x 0 with rfl | hx
   · simp
-  have hφ : φ x ≠ 0 := (map_ne_zero φ).2 hx
   have h1 := h.2.2.1 x
   unfold val at h1
   have h2 := neg_inj.1 h1
-  have a1 : adicVal K' (φ x) ≠ 0 := (Valuation.ne_zero_iff _).2 hφ
+  have a1 : adicVal K' (φ x) ≠ 0 := (Valuation.ne_zero_iff _).2 ((map_ne_zero φ).2 hx)
   have a2 : adicVal K x ≠ 0 := (Valuation.ne_zero_iff _).2 hx
   rw [← WithZero.exp_log a1, ← WithZero.exp_log a2]
   exact congrArg WithZero.exp h2

@@ -50,12 +50,11 @@ end GrassmannianRootBound
 open GrassmannianRootBound in
 theorem GrassLeRoot.proof : GrassLeRoot.Statement := by
   intro f j m ζ g hg
-  have h0 : mConeMap (grassCoord f j m) g = 0 := hg
   have h1 : cone (grassPolyCoord f j m) g = 0 := by
     apply MvPolynomial.map_injective (algebraMap (MvPolynomial (Fin f × Fin j × Fin m) ℚ) (GrassField f j m))
       (IsFractionRing.injective _ _)
     rw [map_cone, map_zero]
-    exact h0
+    exact hg
   have h2 := congrArg (MvPolynomial.map
     (aeval fun q : Fin f × Fin j × Fin m => ζ q.1 q.2.1 q.2.2).toRingHom) h1
   rw [map_cone, map_zero] at h2

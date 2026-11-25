@@ -112,10 +112,9 @@ theorem succ_le_ringKrullDim_of_isLocalization {A B : Type*} [CommRing A] [CommR
   let φ : PrimeSpectrum B → PrimeSpectrum A := fun q => ⟨q.asIdeal.comap (algebraMap A B), inferInstance⟩
   have hsm : StrictMono φ := fun a b hab => by
     refine lt_of_le_of_ne (Ideal.comap_mono hab.le) fun e => hab.ne ?_
-    have e' : (φ a).asIdeal = (φ b).asIdeal := congrArg PrimeSpectrum.asIdeal e
     ext1
     rw [← IsLocalization.map_under M B a.asIdeal, ← IsLocalization.map_under M B b.asIdeal]
-    exact congrArg (Ideal.map (algebraMap A B)) e'
+    exact congrArg (Ideal.map (algebraMap A B)) (congrArg PrimeSpectrum.asIdeal e)
   obtain ⟨p, hp⟩ := Order.le_krullDim_iff.mp h
   let p' := p.map φ hsm
   have hdisj : Disjoint (M : Set A) (p'.last.asIdeal : Set A) :=

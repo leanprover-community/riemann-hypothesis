@@ -173,8 +173,7 @@ theorem hensel_main (μ : Measure V) (ν : Measure X) [μ.IsAddHaarMeasure] [ν.
       · exact fun c => ((hHo (m + 1)).preimage (continuous_const.add continuous_id)).measurableSet
     have hc0 : (Fintype.card C : ENNReal) ≠ 0 := by
       exact_mod_cast (Fintype.card_ne_zero : Fintype.card C ≠ 0)
-    have hct : (Fintype.card C : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top _
-    apply (ENNReal.mul_right_inj hc0 hct).1
+    apply (ENNReal.mul_right_inj hc0 (ENNReal.natCast_ne_top _)).1
     calc (Fintype.card C : ENNReal) * (μ (hlev (Λ 0) (H (m + 1)) G y h) * ν (H 0))
         = μ (hlev (Λ 0) (H m) G y h) * ν (H 0) := by rw [hμ, mul_assoc]
       _ = μ (Λ 0) * ν (H m) := ih

@@ -70,13 +70,12 @@ theorem BlowUpDivisorPush.proof (hvert : BlowUpVerticalPush.Statement.{u}) :
       divCycle (blowUpOf P u) (liftForm (J := J) g) W ≠ 0 → (C ϖ : MRing (extIdx ι J) O) ∈ W := by
     intro W hW
     by_contra hϖW
-    have hsupp : W.IsPrime ∧ blowUpOf P u ≤ W ∧ IsRelevant W := by
+    obtain ⟨hWp, hBW, hWrel⟩ : W.IsPrime ∧ blowUpOf P u ≤ W ∧ IsRelevant W := by
       by_cases h1 : divCycle (blowUpOf P u) (liftForm (J := J) f) W = 0
       · have h2 : divCycle (blowUpOf P u) (liftForm (J := J) g) W ≠ 0 := by
           intro h2; apply hW; rw [h1, h2, sub_zero]
         exact le_and_isRelevant_of_divCycle_ne_zero h2
       · exact le_and_isRelevant_of_divCycle_ne_zero h1
-    obtain ⟨hWp, hBW, hWrel⟩ := hsupp
     let W₀ : Ideal (MRing ι O) := W.comap (liftForm (ι := ι) (J := J) (R := O))
     have hW₀ : W₀.IsPrime := Ideal.comap_isPrime _ _
     have hPW₀ : P ≤ W₀ := fun p hp => hBW (liftForm_mem_blowUpOf_of_mem P u hp)

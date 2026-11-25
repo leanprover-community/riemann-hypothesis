@@ -356,8 +356,7 @@ theorem exists_maps (j0 : Fin (N + 1)) (v : Fin (N + 1) → Ω) (x : Fin N → �
     refine ⟨a b * β y, ?_⟩
     rw [map_mul, hα1, ← RingHom.comp_apply α β, hαβ, Algebra.TensorProduct.algebraMap_apply]
     show (_ ⊗ₜ _) * ((1 : K') ⊗ₜ y) = _
-    rw [Algebra.TensorProduct.tmul_mul_tmul]
-    simp
+    simp [Algebra.TensorProduct.tmul_mul_tmul]
 
 end Comp
 

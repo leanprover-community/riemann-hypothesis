@@ -75,10 +75,9 @@ theorem fderiv_fderiv_re_analytic (G : (Fin D → ℂ) → ℂ) (z : Fin D → �
     Complex.reCLM.contDiff.contDiffAt.comp z ((hG.contDiffAt).restrict_scalars ℝ)
   have hdΦ : DifferentiableAt ℝ (fderiv ℝ (fun w => (G w).re)) z :=
     (hΦ.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
-  have hA : ∀ᶠ w in 𝓝 z, AnalyticAt ℂ G w := hG.eventually_analyticAt
   have hE : (fun w => fderiv ℝ (fun w => (G w).re) w u) =ᶠ[𝓝 z]
       fun w => (fderiv ℂ G w u).re :=
-    hA.mono fun w hw => fderiv_re_apply_lemma G w hw.differentiableAt u
+    hG.eventually_analyticAt.mono fun w hw => fderiv_re_apply_lemma G w hw.differentiableAt u
   have hdG : DifferentiableAt ℂ (fun w => fderiv ℂ G w u) z :=
     (hG.fderiv.differentiableAt).clm_apply (differentiableAt_const u)
   have h1 : fderiv ℝ (fderiv ℝ (fun w => (G w).re)) z v u =

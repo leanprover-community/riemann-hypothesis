@@ -31,8 +31,7 @@ lemma finite_sep {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDi
     intro x hx
     have hx' : x ∈ Metric.closedBall (0 : V) R := by
       rw [mem_closedBall_zero_iff]; exact hx.2
-    have := hcov hx'
-    simpa only [Set.mem_iUnion, Metric.mem_ball, exists_prop] using this
+    simpa only [Set.mem_iUnion, Metric.mem_ball, exists_prop] using hcov hx'
   choose! f hf hfx using hT
   refine Set.Finite.of_finite_image (f := f) (htfin.subset ?_) ?_
   · rintro _ ⟨x, hx, rfl⟩

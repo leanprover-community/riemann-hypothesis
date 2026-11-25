@@ -123,11 +123,10 @@ theorem exists_stab_compl {A : Set (Module.End ℂ W)}
   obtain ⟨⟨hCs, hCK⟩, hCm⟩ := hCmax
   refine ⟨C, hCs, hCK, ?_⟩
   by_contra hne
-  have hex : ∃ T, MinStab A T ∧ ¬ T ≤ C ⊔ K := by
+  obtain ⟨T, ⟨hTs, hTmin⟩, hTn⟩ : ∃ T, MinStab A T ∧ ¬ T ≤ C ⊔ K := by
     by_contra h
     simp only [not_exists, not_and, not_not] at h
     exact hne (top_unique (by rw [← htop]; exact sSup_le fun T hT => h T hT))
-  obtain ⟨T, ⟨hTs, hTmin⟩, hTn⟩ := hex
   have hI : Stab A (T ⊓ (C ⊔ K)) := fun a ha x hx =>
     ⟨hTs a ha x hx.1, hsup C K hCs hK a ha x hx.2⟩
   rcases hTmin _ hI inf_le_left with h | h
@@ -148,8 +147,7 @@ theorem exists_stab_compl {A : Set (Module.End ℂ W)}
       rw [add_zero] at hxK ⊢
       have hc' : c ∈ C ⊓ K := ⟨hc, hxK⟩
       rwa [hCK] at hc'
-    have hle : C ⊔ T ≤ C := hCm hmem le_sup_left
-    exact hTn ((le_sup_right.trans hle).trans le_sup_left)
+    exact hTn ((le_sup_right.trans (hCm hmem le_sup_left)).trans le_sup_left)
   · exact hTn (inf_eq_left.mp h)
 
 end HeadKill

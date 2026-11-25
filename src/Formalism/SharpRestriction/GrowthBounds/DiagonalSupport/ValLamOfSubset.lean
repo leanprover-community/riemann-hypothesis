@@ -36,8 +36,7 @@ theorem notMem_sDegs_iff (LL : Letters ι) (S : Set ι) (j : Fin n) (G : MvPolyn
     refine ⟨m, ?_, Finsupp.mem_support_iff.2 hm⟩
     rw [mem_support_iff]
     intro h0
-    rw [h0] at hm
-    simp at hm
+    simp [h0] at hm
   · rintro h ⟨m, _, hm⟩
     exact (Finsupp.mem_support_iff.1 hm) (h m)
 

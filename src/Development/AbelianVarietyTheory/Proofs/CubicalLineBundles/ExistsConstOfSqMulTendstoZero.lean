@@ -289,8 +289,7 @@ lemma _root_.GlobalTheory.PeriodicWeierstrass.exists_eq_of_sq_mul_tendsto (L : P
     have hd1 : HasDerivAt Q (deriv Q 0 * -1) 0 :=
       (hQ0.comp 0 (hasDerivAt_neg 0)).congr_of_eventuallyEq heven
     have hd2 : deriv Q 0 = 0 := by
-      have := hd1.deriv
-      linear_combination this / 2
+      linear_combination hd1.deriv / 2
     have := hQa.differentiableAt.hasDerivAt.tendsto_slope_zero
     rw [hd2] at this
     refine this.congr' ?_

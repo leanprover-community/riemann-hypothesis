@@ -31,8 +31,7 @@ theorem cone_homog (a : ι → E) {f : MvPolynomial ι R} {d : ℕ} (hf : f.IsHo
   rw [map_sum, map_sum, map_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hd : ∑ i ∈ m.support, m i = d := by
-    have := hf (mem_support_iff.mp hm)
-    simpa [Finsupp.weight_apply, Finsupp.sum] using this
+    simpa [Finsupp.weight_apply, Finsupp.sum] using hf (mem_support_iff.mp hm)
   have hp : (m.prod fun i k => (Polynomial.C (a i) * Polynomial.X) ^ k) =
       Polynomial.C (m.prod fun i k => a i ^ k) * Polynomial.X ^ d := by
     simp only [Finsupp.prod, mul_pow, Finset.prod_mul_distrib, map_prod, map_pow,

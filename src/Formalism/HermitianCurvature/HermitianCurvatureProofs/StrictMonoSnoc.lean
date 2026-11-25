@@ -113,8 +113,7 @@ theorem herm_bvec_sum (k r : ℕ) (yb : Fin (2 * r + k + 1) → ℂ) (hyb : inWb
     intro w _
     split_ifs with h
     · have hw := w.isLt
-      rw [Fin.ext_iff] at h
-      simp only at h
+      simp only [Fin.ext_iff] at h
       exact absurd ⟨by omega, by omega⟩ hp
     · exact mul_zero _
 

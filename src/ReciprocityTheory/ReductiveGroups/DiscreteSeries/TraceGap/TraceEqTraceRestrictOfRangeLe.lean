@@ -80,8 +80,7 @@ theorem str_eq_str_ker (Dl Γ B : Y →ₗ[ℂ] Y) (hD : ∀ x y, inner ℂ (Dl 
     intro v hv
     have hv' : (v : Y) ∈ LinearMap.ker Dl := by
       rw [LinearMap.mem_ker]
-      have := congrArg Subtype.val (LinearMap.mem_ker.1 hv)
-      simpa using this
+      simpa using congrArg Subtype.val (LinearMap.mem_ker.1 hv)
     exact Subtype.ext (Submodule.disjoint_def.1 hkr.disjoint _ hv' v.2)
   set e := LinearEquiv.ofInjectiveEndo (Dl.restrict hDV) hinj
   have hconj : e.conj ((Γ ∘ₗ B).restrict hV) = -((Γ ∘ₗ B).restrict hV) := by

@@ -124,10 +124,9 @@ theorem trdeg_residue_le {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] (D : 
     rintro ⟨q, hq0, hq⟩
     have hcv : ∀ j, q.coeff j ≠ 0 → v ((q.coeff j : Ω)) = 0 := by
       intro j hj
-      have hmem : (q.coeff j : Ω) ∈ (MvPolynomial.aeval (R := K) t).range := by
+      obtain ⟨p, hp⟩ : (q.coeff j : Ω) ∈ (MvPolynomial.aeval (R := K) t).range := by
         rw [← Algebra.adjoin_range_eq_range_aeval K t]
         exact (q.coeff j).2
-      obtain ⟨p, hp⟩ := hmem
       have hp0 : p ≠ 0 := by
         rintro rfl
         apply hj

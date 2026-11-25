@@ -108,8 +108,7 @@ theorem fg_of_unifDiscrete [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (Nf 
   have hΨ : ∀ x : P, ‖Ψ x‖ < ε / C → x = 0 := fun x hx => Subtype.ext (key x x.2 hx)
   have hinj : Function.Injective Ψ := by
     intro x y hxy
-    have : x - y = 0 := hΨ _ (by rw [map_sub, hxy, sub_self, norm_zero]; exact hδ)
-    exact sub_eq_zero.mp this
+    exact sub_eq_zero.mp (hΨ _ (by rw [map_sub, hxy, sub_self, norm_zero]; exact hδ) : x - y = 0)
   have : DiscreteTopology (LinearMap.range Ψ) := by
     refine discreteTopology_iff_isOpen_singleton.mpr (fun z => Metric.isOpen_singleton_iff.mpr
       ⟨ε / C, hδ, fun y hy => ?_⟩)

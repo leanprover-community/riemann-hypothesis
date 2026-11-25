@@ -300,11 +300,10 @@ theorem exists_truncation {R L : Type} [CommRing R] [Finite R] [Field L] (ψ : R
     intro j
     rw [hA', Polynomial.finsetSum_coeff]
     simp
-  have hQ : X ^ d0 ∣ P - C π * A' := by
+  obtain ⟨V, hV⟩ : X ^ d0 ∣ P - C π * A' := by
     rw [Polynomial.X_pow_dvd_iff]
     intro j hj
     rw [Polynomial.coeff_sub, Polynomial.coeff_C_mul, hc j hj, hA'coeff, ite_eq_left hj, sub_self]
-  obtain ⟨V, hV⟩ := hQ
   have hV0 : V.coeff 0 = P.coeff d0 := by
     have h1 : (X ^ d0 * V).coeff d0 = V.coeff 0 := by
       rw [Polynomial.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self]

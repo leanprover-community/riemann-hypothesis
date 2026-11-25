@@ -164,8 +164,7 @@ theorem _root_.GlobalTheory.ComplexPoints.top_le_preimage_basicOpen_iff (x : _ro
   constructor
   · intro hs h0
     have hz : x.appLE U ⊤ h f = 0 := by
-      have := congrArg (Scheme.ΓSpecIso (.of ℂ)).inv.hom h0
-      simpa using this
+      simpa using congrArg (Scheme.ΓSpecIso (.of ℂ)).inv.hom h0
     rw [hz, Scheme.basicOpen_zero] at hs
     obtain ⟨a⟩ := (inferInstance : Nonempty (Spec (.of ℂ)))
     exact (hs (show a ∈ (⊤ : (Spec (.of ℂ)).Opens) from trivial)).elim

@@ -33,7 +33,6 @@ theorem VLim.mul_right {V : VF C} {N : Type} {m : ℕ → ℕ → N → C} {m' :
       simp only [Pi.mul_apply]; ring
     rw [e]
     have hyr : V.Ge r (y s n) := by unfold VF.Ge; rw [← hr]
-    have := (hk0 k hk).mul hyr
-    simpa using this
+    simpa using (hk0 k hk).mul hyr
 
 end Formalism.L2.FormalSeriesBounds

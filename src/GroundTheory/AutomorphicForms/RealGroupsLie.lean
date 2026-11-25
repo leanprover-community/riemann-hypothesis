@@ -115,9 +115,8 @@ theorem contDiffOn_expPartialHomeomorph_symm {n : WithTop ℕ∞} :
     ContDiffOn 𝕂 n (expPartialHomeomorph 𝕂 𝔸).symm (expPartialHomeomorph 𝕂 𝔸).target := by
   intro y hy
   set e := expPartialHomeomorph 𝕂 𝔸
-  have hs : e.symm y ∈ e.source := e.map_target hy
   have hu : IsUnit (fderiv 𝕂 (exp : 𝔸 → 𝔸) (e.symm y)) :=
-    expPartialHomeomorph_source_subset 𝕂 𝔸 hs
+    expPartialHomeomorph_source_subset 𝕂 𝔸 (e.map_target hy)
   refine (e.contDiffAt_symm (f₀' := ContinuousLinearEquiv.unitsEquiv 𝕂 𝔸 hu.unit) hy ?_
     ?_).contDiffWithinAt
   · have h1 : ((ContinuousLinearEquiv.unitsEquiv 𝕂 𝔸 hu.unit : 𝔸 ≃L[𝕂] 𝔸) : 𝔸 →L[𝕂] 𝔸) =

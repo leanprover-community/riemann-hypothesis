@@ -82,8 +82,7 @@ private theorem eq_mul_of_commuting_idempotents_conjA_swap (e f : MonoidAlgebra 
     have h1 : f * (e * f) = e * f := by rw [← mul_assoc, hc, mul_assoc, hf]
     have h2 : e * f * e = e * f := by rw [mul_assoc, hc, ← mul_assoc, he]
     have h3 : e * f * (e * f) = e * f := by rw [← mul_assoc, h2, mul_assoc, hf]
-    rw [sub_mul, mul_sub, mul_sub, h1, h3, h2, hc]
-    simp
+    simp [sub_mul, mul_sub, mul_sub, h1, h3, h2, hc]
   exact sub_eq_zero.mp (eq_zero_of_conjA_mul_self_eq_zero _ hx)
 
 theorem selfadj_of_central_idem (e : MonoidAlgebra ℂ G) (hid : e * e = e) (hc : ∀ y, e * y = y * e) :

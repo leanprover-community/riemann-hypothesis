@@ -111,8 +111,7 @@ theorem iteratedFDeriv_integral_eq (F : P → α → F')
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (k + 1) => P) F').toLinearIsometry
       (fun a => iter F (k + 1) Y a)
     simp only [LinearIsometryEquiv.coe_toLinearIsometry] at e
-    rw [e]
-    simp
+    simp [e]
 
 theorem contDiff_integral_of_iteratedFDeriv (F : P → α → F')
     (hF : ∀ a, ContDiff ℝ ∞ (fun Y => F Y a))

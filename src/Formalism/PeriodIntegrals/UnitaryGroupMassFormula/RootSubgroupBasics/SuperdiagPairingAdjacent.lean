@@ -132,8 +132,7 @@ theorem super_diff (hσ : ∀ i, σ (σ i) = i) (hZ : ∀ i j, Z i j = if j = σ
     exact (mul_eq_zero.mp h).resolve_left (hζ _)
   · have h := relB hσ hZ hu' hud' hrel i1 (σ i)
     rw [hσ, inv_upper hu' hud' (show id (σ i) < id (σ i1) from hlt), mul_zero] at h
-    have := (mul_eq_zero.mp h).resolve_right (hζ _)
-    exact star_eq_zero.mp this
+    exact star_eq_zero.mp ((mul_eq_zero.mp h).resolve_right (hζ _))
 
 end Rel
 

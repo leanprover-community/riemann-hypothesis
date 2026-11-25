@@ -200,8 +200,7 @@ theorem tendsto_shift (s : ℕ) (hs : 1 ≤ s) (σ : ℂ) :
   rcases eq_or_ne σ 0 with rfl | hσ
   · refine tendsto_const_nhds.congr' ?_
     filter_upwards [Formalism.FourierDecayAlt.P.PBK.rhoR_eq_eventually s 0] with x hx
-    rw [hx]
-    simp
+    simp [hx]
   ·
     have hφ : HasDerivAt (fun e : ℂ => (1 - e) ^ a) (-a) 0 := by
       have h1 : HasDerivAt (fun e : ℂ => 1 - e) (-1) 0 := by

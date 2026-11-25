@@ -275,8 +275,7 @@ theorem sumBd_frame {Z : Matrix (Fin p) (Fin q) ℂ} (hZ : (1 - Z * Zᴴ).PosDef
     rw [fromBlocks_multiply, toBlocks_fromBlocks₂₂]; simp only [Matrix.add_mul, Matrix.mul_assoc]
   have hW : mob g Z = (g * fromBlocks S1 (Z * S2) (Zᴴ * S1) S2).toBlocks₁₂ *
       ((g * fromBlocks S1 (Z * S2) (Zᴴ * S1) S2).toBlocks₂₂)⁻¹ := by
-    rw [hM12, hM22, Matrix.mul_inv_rev, mob]
-    simp only [Matrix.mul_assoc]
+    simp only [hM12, hM22, Matrix.mul_inv_rev, mob, Matrix.mul_assoc]
     rw [← Matrix.mul_assoc S2, hS2i, Matrix.one_mul]
   rw [dpow, hW, (sumBd_weight hM).2]
 

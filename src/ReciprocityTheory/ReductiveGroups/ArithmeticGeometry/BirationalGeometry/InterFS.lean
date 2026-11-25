@@ -37,8 +37,7 @@ theorem maDensity_one (f : (Fin 1 → ℂ) → ℝ) (y : Fin 1 → ℂ) :
   have hre : ∀ u v : ℝ, ((((u : ℂ) + Complex.I * (v : ℂ)) / 4).re) = u / 4 := by
     intro u v
     simp [Complex.div_ofNat_re]
-  rw [maDensity, mixedDisc_one]
-  simp only [cxHessian, hre]
+  simp only [maDensity, mixedDisc_one, cxHessian, hre]
   have := Real.pi_pos
   simp
   field_simp

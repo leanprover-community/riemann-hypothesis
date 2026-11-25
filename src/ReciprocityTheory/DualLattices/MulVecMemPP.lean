@@ -78,10 +78,9 @@ lemma phi_x_grade (hS : HodgeTateSetting p v R O σ cp) (D : Lifts H U X) (k : I
     have hv : v (algebraMap R C (U.sg (D.κ k) (D.b k') - U.sg (D.κ j') (D.b k'))) = 1 := by
       rw [← neg_sub, map_neg, Valuation.map_neg]
       exact hk'
-    have hunit : IsUnit (U.sg (D.κ k) (D.b k') - U.sg (D.κ j') (D.b k')) := by
+    obtain ⟨u, hu⟩ : IsUnit (U.sg (D.κ k) (D.b k') - U.sg (D.κ j') (D.b k')) := by
       refine hS.integers.isUnit_of_one ?_ hv
       exact Ne.isUnit fun h0 => by rw [h0, Valuation.map_zero] at hv; exact zero_ne_one hv
-    obtain ⟨u, hu⟩ := hunit
     have h3 := Submodule.smul_mem _ (↑u⁻¹ : R) h2
     rwa [← hu, smul_smul, Units.inv_mul, one_smul] at h3
   · push Not at hτκ

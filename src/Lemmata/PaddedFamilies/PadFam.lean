@@ -94,8 +94,7 @@ theorem goal1 :
     intro g hg
     simp only [SetLike.mem_coe, Submodule.mem_comap, scale, LinearMap.smul_apply, LinearMap.id_apply]
     have hsum := congrArg Subtype.val (b.sum_repr ⟨g, Submodule.subset_span hg⟩)
-    rw [Submodule.coe_sum] at hsum
-    simp only [Submodule.coe_smul] at hsum
+    simp only [Submodule.coe_sum, Submodule.coe_smul] at hsum
     rw [← hsum, Finset.smul_sum]
     refine Submodule.sum_mem _ fun j _ => ?_
     obtain ⟨r, hr⟩ := hm (⟨g, hg⟩, j)

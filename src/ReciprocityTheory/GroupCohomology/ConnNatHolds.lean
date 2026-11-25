@@ -96,11 +96,10 @@ def pS (hs : SES i p) (n : ℕ) : S i n →ₗ[R] C.H n :=
 
 theorem θ_apply (hs : SES i p) (n : ℕ) (b : S i n) (a : A.X (n + 1)) (ha : A.d (n + 1) a = 0)
     (h : B.d n b = i.f (n + 1) a) : θ i p hs n b = A.cls (n + 1) a ha := by
-  have e : pre i p hs n b = a := pre_eq i p hs n b a h
   unfold θ Cx.cls
   rw [LinearMap.comp_apply, Submodule.mkQ_apply]
   congr 1
-  exact Subtype.ext e
+  exact Subtype.ext (pre_eq i p hs n b a h)
 
 theorem pS_apply (hs : SES i p) (n : ℕ) (b : S i n) : pS i p hs n b = C.cls n (p.f n b) (pS_mem i p hs n b) := rfl
 

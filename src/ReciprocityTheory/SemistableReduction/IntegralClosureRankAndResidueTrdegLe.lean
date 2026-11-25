@@ -37,9 +37,8 @@ theorem integralClosureRank (O F L : Type) [CommRing O] [IsDomain O] [IsDiscrete
     rw [IsDedekindDomain.mem_primesOverFinset_iff hm C]
     constructor
     · intro hQ
-      have hu : (Q.under O).IsMaximal := Ideal.IsMaximal.under O Q
       refine ⟨hQ.isPrime, ⟨?_⟩⟩
-      exact (IsLocalRing.eq_maximalIdeal hu).symm
+      exact (IsLocalRing.eq_maximalIdeal (Ideal.IsMaximal.under O Q)).symm
     · rintro ⟨hP, hl⟩
       refine hP.isMaximal ?_
       rintro rfl

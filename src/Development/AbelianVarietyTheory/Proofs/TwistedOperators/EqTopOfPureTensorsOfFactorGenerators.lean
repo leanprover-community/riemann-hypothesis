@@ -71,8 +71,7 @@ lemma _root_.GlobalTheory.TensHead.piOp_tprod_update {ι : Type} [DecidableEq ι
     (y : ∀ j, M j) (x : M i) :
     _root_.GlobalTheory.TensHead.piOp i g (PiTensorProduct.tprod ℂ (Function.update y i x)) =
       PiTensorProduct.tprod ℂ (Function.update y i (g x)) := by
-  rw [piOp_tprod]
-  simp
+  simp [piOp_tprod]
 
 open scoped TensorProduct in
 private lemma apply_tmul_mem_of_stab_left {ι : Type} [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀]
@@ -162,8 +161,7 @@ theorem _root_.GlobalTheory.TensHead.eq_top_of_pure_generators :
       · have hx : y i ∈ S := by
           rw [hT]
           trivial
-        have := (hS _).1 hx a y (fun j hj hji => hy j (by simp [hji, hj]))
-        simpa using this
+        simpa using (hS _).1 hx a y (fun j hj hji => hy j (by simp [hji, hj]))
       · intro x hx
         rw [hS]
         exact fun b z _ => hRel i x hx b z

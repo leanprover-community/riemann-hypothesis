@@ -36,8 +36,7 @@ theorem InvertibleIndexCharP.proof : InvertibleIndexCharP.Statement := by
     have hb0 : b ≠ 0 := fun h => hb (h ▸ m.zero_mem)
     obtain ⟨b', hb'⟩ := hfield.mul_inv_cancel hb0
     refine ⟨b', ?_⟩
-    have := congrArg Subtype.val hb'
-    simpa [mul_comm] using this
+    simpa [mul_comm] using congrArg Subtype.val hb'
 
   have hXeq : (X : Set Ω) = (fun y => f i * y) '' (B : Set Ω) := by
     ext z

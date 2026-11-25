@@ -147,8 +147,7 @@ private lemma toLin'_mem_nilRad_lowSub_iff {d a : ℕ} (N : Matrix (Fin d) (Fin 
   · rintro ⟨h1, h2⟩ i j
     by_cases hi : a ≤ i.val
     · left
-      have := h1 (Pi.single j 1) i hi
-      simpa [Matrix.mulVec_single_one] using this
+      simpa [Matrix.mulVec_single_one] using h1 (Pi.single j 1) i hi
     by_cases hj : a ≤ j.val
     · exact Or.inr ⟨by omega, hj⟩
     · left
@@ -156,8 +155,7 @@ private lemma toLin'_mem_nilRad_lowSub_iff {d a : ℕ} (N : Matrix (Fin d) (Fin 
         intro k hk
         have : k ≠ j := fun h => hj (h ▸ hk)
         simp [this]
-      have := congrFun (h2 _ hx) i
-      simpa [Matrix.mulVec_single_one] using this
+      simpa [Matrix.mulVec_single_one] using congrFun (h2 _ hx) i
   · intro h
     refine ⟨fun x i hi => ?_, fun x hx => ?_⟩
     · rw [Matrix.mulVec, dotProduct]

@@ -233,8 +233,7 @@ theorem kCasBound_of (hd : KDecomp) (hc : KCasSpan) (ho : KOrth) : KCasBound := 
     push_cast
     exact h
   have key2 := key (fun i => ((ckv ε (μ i) : ℝ) : ℂ))
-  rw [hC, key2]
-  simp only [hvv]
+  simp only [hC, key2, hvv]
   have hre : (∑ i, ((ckv ε (μ i) : ℝ) : ℂ) * ((‖(v i : V)‖ ^ 2 : ℝ) : ℂ)).re =
       ∑ i, ckv ε (μ i) * ‖(v i : V)‖ ^ 2 := by
     simp only [← Complex.ofReal_mul, ← Complex.ofReal_sum, Complex.ofReal_re]

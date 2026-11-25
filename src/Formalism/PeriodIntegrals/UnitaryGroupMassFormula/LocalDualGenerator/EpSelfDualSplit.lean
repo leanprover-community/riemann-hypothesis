@@ -67,8 +67,7 @@ theorem repr_pair (s t : K) :
     (bas hr e he h0 h1).repr (s • e + t • (1 - e)) 1 = t := by
   have : s • e + t • (1 - e) = s • bas hr e he h0 h1 0 + t • bas hr e he h0 h1 1 := by
     rw [bas0, bas1]
-  rw [this]
-  simp
+  simp [this]
 
 theorem mul_decomp (z w : L) :
     z * w = ((bas hr e he h0 h1).repr z 0 * (bas hr e he h0 h1).repr w 0) • e +

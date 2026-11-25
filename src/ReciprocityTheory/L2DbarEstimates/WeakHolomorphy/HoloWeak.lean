@@ -20,7 +20,6 @@ theorem holoWeak : HoloWeakStatement := by
   have hK : IsCompact (tsupport g) := hgc
   have huK : ContinuousOn u (tsupport g) := hu.continuousOn.mono hgΩ
   have hg1 : ContDiff ℝ 1 g := hgs.of_le (by exact_mod_cast le_top)
-  have hgd : Differentiable ℝ g := hg1.differentiable one_ne_zero
   have hg'c : ∀ w : V n, Continuous fun x => fderiv ℝ g x w := fun w =>
     (hg1.continuous_fderiv one_ne_zero).clm_apply continuous_const
   have hzero : ∀ x, x ∉ tsupport g → g x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
@@ -47,7 +46,7 @@ theorem holoWeak : HoloWeakStatement := by
     · exact hint _ (hg'c w) (hzero' w)
     · exact hint _ hgs.continuous hzero
     · exact fun x hx => ((hu x (hgΩ hx)).differentiableAt (hΩ.mem_nhds (hgΩ hx))).restrictScalars ℝ
-    · exact fun x _ => hgd x
+    · exact fun x _ => (hg1.differentiable one_ne_zero) x
   have hlin : ∀ x, fderiv ℝ u x (I • v) * g x = I * (fderiv ℝ u x v * g x) := by
     intro x
     by_cases hx : x ∈ tsupport g

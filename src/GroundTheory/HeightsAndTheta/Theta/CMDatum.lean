@@ -72,8 +72,7 @@ theorem conj_eq_complexConj (x : E) :
     intro h
     apply IsCMField.complexConj_ne_one E
     ext y
-    have := congrArg (fun g : E ≃ₐ[F] E => g y) h
-    simpa [complexConjOver_apply] using this
+    simpa [complexConjOver_apply] using congrArg (fun g : E ≃ₐ[F] E => g y) h
   have huniq := (Nat.card_eq_two_iff' (1 : E ≃ₐ[F] E)).1 hcard
   have := huniq.unique (conj_ne_one F E) hσ
   rw [this, complexConjOver_apply]

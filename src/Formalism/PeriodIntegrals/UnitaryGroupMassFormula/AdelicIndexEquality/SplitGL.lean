@@ -98,8 +98,7 @@ theorem proj_bijective (J : Matrix n n R) (hJ : Formalism.UG.cT σ J = J) (hdet 
         simpa only [Matrix.mul_assoc] using this
       have e' := congrArg (fun X => X * (J.map (p1 π))⁻¹) e
       simp only [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hJ1, Matrix.mul_one] at e'
-      have := congrArg Matrix.transpose e'
-      simpa only [Matrix.transpose_transpose] using this
+      simpa only [Matrix.transpose_transpose] using congrArg Matrix.transpose e'
     exact Subtype.ext (Units.ext (mat_ext_p π h1 h2))
   · intro A
     let J1 : Matrix n n k := J.map (p1 π)

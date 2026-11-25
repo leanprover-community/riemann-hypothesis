@@ -57,8 +57,7 @@ theorem exists_signed_basis {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteD
   split_ifs with hij
   · subst hij
     have hsq : Real.sqrt (s * B (v i) (v i)) ^ 2 = s * B (v i) (v i) := Real.sq_sqrt (hpos' i).le
-    have hst : s * B (v i) (v i) ≠ 0 := (hpos' i).ne'
-    have ht : B (v i) (v i) ≠ 0 := right_ne_zero_of_mul hst
+    have ht : B (v i) (v i) ≠ 0 := right_ne_zero_of_mul ((hpos' i).ne')
     simp only [w]
     rw [← mul_assoc, ← sq, inv_pow, hsq, mul_inv, mul_assoc, inv_mul_cancel₀ ht, mul_one]
     exact inv_eq_of_mul_eq_one_right hs

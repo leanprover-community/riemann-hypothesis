@@ -229,8 +229,7 @@ theorem blockMat_apply (hj : j ≤ n) (h : Matrix (Fin j) (Fin j) R) (a b : Fin 
 
 theorem blockMat_mul (hj : j ≤ n) (h₁ h₂ : Matrix (Fin j) (Fin j) R) :
     blockMat hj (h₁ * h₂) = blockMat hj h₁ * blockMat hj h₂ := by
-  rw [blockMat, blockMat, blockMat, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-  simp
+  simp [blockMat, blockMat, blockMat, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
 
 theorem blockMat_one (hj : j ≤ n) : blockMat hj (1 : Matrix (Fin j) (Fin j) R) = 1 := by
   rw [blockMat, Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]

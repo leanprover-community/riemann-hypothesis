@@ -22,11 +22,10 @@ theorem ofReal_cpow_eq_exp {r : ℝ} (hr : 0 < r) (u : ℂ) :
 theorem existsUnique_cpow_of_pos (χ : {x : ℝ // 0 < x} →ₜ* ℂˣ) :
     ∃! s : ℂ, ∀ x : {x : ℝ // 0 < x}, (χ x : ℂ) = ((x : ℝ) : ℂ) ^ s := by
   let e : ℝ → {x : ℝ // 0 < x} := fun t => ⟨Real.exp t, Real.exp_pos t⟩
-  have econt : Continuous e := Real.continuous_exp.subtype_mk _
   have hlog : ∀ x : {x : ℝ // 0 < x}, e (Real.log x) = x :=
     fun x => Subtype.ext (Real.exp_log x.2)
   obtain ⟨s, hs, -⟩ := existsUnique_exp_of_continuous (fun t => χ (e t))
-    (χ.continuous.comp econt)
+    (χ.continuous.comp (Real.continuous_exp.subtype_mk _))
     (fun a b => by rw [← map_mul]; congr 1; exact Subtype.ext (Real.exp_add a b))
   have hs' : ∀ t : ℝ, (χ (e t) : ℂ) = Complex.exp (s * t) := hs
   refine ⟨s, fun x => ?_, fun s' h' => eq_of_forall_exp_mul_eq fun t => ?_⟩

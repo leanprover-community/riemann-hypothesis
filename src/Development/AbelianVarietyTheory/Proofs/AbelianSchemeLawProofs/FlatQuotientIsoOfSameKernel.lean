@@ -64,8 +64,7 @@ attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 lemma _root_.GlobalTheory.FlatQuotient.epi_of_flat_surjective {X Y : Over S} (f : X ⟶ Y) [Flat f.left] [Surjective f.left] :
     Epi f := by
-  have hepi : Epi f.left := Flat.epi_of_flat_of_surjective f.left
-  exact (Over.forget S).epi_of_epi_map hepi
+  exact (Over.forget S).epi_of_epi_map (Flat.epi_of_flat_of_surjective f.left)
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in

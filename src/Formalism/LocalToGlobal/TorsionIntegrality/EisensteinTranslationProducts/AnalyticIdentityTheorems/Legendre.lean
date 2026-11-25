@@ -39,8 +39,7 @@ lemma e2Summand_succ (z : ℍ) (a : ℕ) : e2Summand ((a : ℤ) + 1) z =
     push_cast
     ring
   simp only [e1]
-  rw [H]
-  simp only [hq, pow_one]
+  simp only [H, hq, pow_one]
   set S := ∑' n : ℕ+, ((n : ℕ) : ℂ) * cexp (2 * π * I * z) ^ ((a + 1) * (n : ℕ))
   simp only [Nat.factorial, Nat.cast_one, div_one, Nat.mul_one, Nat.succ_eq_add_one, zero_add]
   linear_combination (4 * (π : ℂ) ^ 2 * S) * Complex.I_sq

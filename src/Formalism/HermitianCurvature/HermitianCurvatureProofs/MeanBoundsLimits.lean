@@ -42,8 +42,7 @@ theorem lim_sum' {Λ ι : Type} (LIM : (Λ → ℂ) → ℂ)
   classical
   induction T using Finset.induction_on with
   | empty =>
-    have := h2 0 0 bdd_zero'
-    simpa using this
+    simpa using h2 0 0 bdd_zero'
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha, h1 _ _ (hf a) (bdd_sum' s f hf), ih]
 

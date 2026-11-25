@@ -243,8 +243,7 @@ theorem exists_close_of_hasseDeriv (x : PadicAlgCl p) {ρ : ℝ}
   have hne : (Q.map f).roots ≠ 0 := by
     intro h0
     have := hQcard
-    rw [h0, hQdeg] at this
-    simp at this
+    simp [h0, hQdeg] at this
     omega
   have hprod : ((Q.map f).roots.map fun b => ‖x - b‖).prod ≤
       ρ ^ (d - q) / ‖((Nat.choose d q : ℕ) : PadicAlgCl p)‖ := by

@@ -56,9 +56,8 @@ namespace GlobalTheory.NatCastUnitNorm
 theorem norm_natCast_eq_one_of_not_dvd {K : Type u_1} [inst : NormedField K] [IsUltrametricDist K]
     {l m : ℕ} (hl : Nat.Prime l) (hlt : ‖(l : K)‖ < (1 : ℝ)) (hm : ¬ l ∣ m) :
     ‖(m : K)‖ = (1 : ℝ) := by
-  have hle : ‖(m : K)‖ ≤ 1 := IsUltrametricDist.norm_natCast_le_one K m
   by_contra hne
-  have hmlt : ‖(m : K)‖ < 1 := lt_of_le_of_ne hle hne
+  have hmlt : ‖(m : K)‖ < 1 := lt_of_le_of_ne (IsUltrametricDist.norm_natCast_le_one K m) hne
   have hcop : Nat.Coprime l m := (Nat.Prime.coprime_iff_not_dvd hl).2 hm
   obtain ⟨a, b, hab⟩ : IsCoprime (l : ℤ) (m : ℤ) := Nat.isCoprime_iff_coprime.2 hcop
   have hK : (a : K) * (l : K) + (b : K) * (m : K) = 1 := by

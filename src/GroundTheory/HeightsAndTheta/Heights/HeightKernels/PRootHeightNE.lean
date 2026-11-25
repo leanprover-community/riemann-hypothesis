@@ -63,8 +63,7 @@ theorem RootHeight.proofNE (hA : RootArithVar.Statement) (hD : RootDivSuppEmpty.
       simp [recR, hD f j m ζ hζ]
     rw [this] at hR
     show II _ _ _ 1 _ ≤ _
-    rw [hR]
-    simp only [arInt]
+    simp only [hR, arInt]
     have := hlow
     nlinarith
   · intro u z hu hz

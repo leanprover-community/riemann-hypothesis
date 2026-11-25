@@ -53,8 +53,7 @@ theorem re_det_le_re_det_add {A P : Matrix n n 𝕜} (hA : A.PosSemidef) (hP : P
     exact isUnit_iff_ne_zero.mpr (star_ne_zero.mpr hBdet)
   set Q := (B⁻¹)ᴴ * P * B⁻¹ with hQdef
   have hQ : Q.PosSemidef := by
-    have := hP.mul_mul_conjTranspose_same ((B⁻¹)ᴴ)
-    simpa [hQdef, conjTranspose_conjTranspose] using this
+    simpa [hQdef, conjTranspose_conjTranspose] using hP.mul_mul_conjTranspose_same ((B⁻¹)ᴴ)
   have hAP : A + P = Bᴴ * (1 + Q) * B := by
     rw [hQdef, Matrix.mul_add, Matrix.add_mul, Matrix.mul_one, ← hB]
     congr 1

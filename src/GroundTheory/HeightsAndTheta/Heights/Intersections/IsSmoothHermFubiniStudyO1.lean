@@ -61,8 +61,7 @@ theorem isArithVar_bot (n : ℕ) : IsArithVar (⊥ : Ideal (MRing (GlobalTheory 
 
 theorem isMultiHomog_Xb (n : ℕ) (i : Fin n) : IsMultiHomog (Xb n i) fun _ => 1 := by
   intro m hm k
-  rw [support_X] at hm
-  simp only [Finset.mem_singleton] at hm
+  simp only [support_X, Finset.mem_singleton] at hm
   subst hm
   cases k
   simp [Finsupp.single_apply]

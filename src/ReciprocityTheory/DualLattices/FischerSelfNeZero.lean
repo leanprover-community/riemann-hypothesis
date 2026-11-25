@@ -35,8 +35,7 @@ theorem fischer_self_ne_zero (P : MvPolynomial (Fin ν × ι) ℂ) (hP : P ≠ 0
     rw [Finset.union_self]
     push_cast
     refine Finset.sum_congr rfl fun A _ => ?_
-    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-    simp only [Finsupp.prod]
+    simp only [Complex.mul_conj, Complex.normSq_eq_norm_sq, Finsupp.prod]
     push_cast
     ring
   have hne : P.support.Nonempty :=

@@ -126,14 +126,13 @@ theorem levi_bound_compact {φ : (J → ℂ) → ℝ} {U Q : Set (J → ℂ)} (h
     _ = _ := by ring
 
 theorem norm_mul_self_le_sum (v : J → ℂ) : ‖v‖ * ‖v‖ ≤ ∑ p, ‖v p‖ ^ 2 := by
-  have hS : 0 ≤ ∑ p, ‖v p‖ ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have h : ‖v‖ ≤ Real.sqrt (∑ p, ‖v p‖ ^ 2) := by
     refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun p => ?_
     exact (le_abs_self _).trans (Real.abs_le_sqrt (Finset.single_le_sum (f := fun p => ‖v p‖ ^ 2)
       (fun _ _ => sq_nonneg _) (Finset.mem_univ p)))
   calc ‖v‖ * ‖v‖ ≤ Real.sqrt (∑ p, ‖v p‖ ^ 2) * Real.sqrt (∑ p, ‖v p‖ ^ 2) :=
         mul_self_le_mul_self (norm_nonneg _) h
-    _ = _ := Real.mul_self_sqrt hS
+    _ = _ := Real.mul_self_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)
 
 theorem log_rho_eq_phi (x : J → ℂ) : Real.log ((fsMetric (ι := J)).ρ x) = phi x := by
   have h : (fsMetric (ι := J)).ρ x = Real.sqrt (sqSum x) := by

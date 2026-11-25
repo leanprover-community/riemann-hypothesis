@@ -196,8 +196,7 @@ theorem smith_form_p_adic_integers : SmithZp := by
   let a : Fin n → ℤ_[p] := S.a ∘ e.symm
   have hy : ∀ j, M.mulVec (b j) = a j • b' j := by
     intro j
-    have := S.hy (e.symm j)
-    simpa [b, b', a, y, Matrix.toLin'_apply] using this
+    simpa [b, b', a, y, Matrix.toLin'_apply] using S.hy (e.symm j)
   let std := Pi.basisFun ℤ_[p] (Fin n)
   let Q := std.toMatrix b
   let P := std.toMatrix b'

@@ -131,8 +131,7 @@ theorem zetaInvBound_statement : ZetaInvBound := by
       ≤ ∑' n, ‖term (fun n => ((moebius n : ℤ) : ℂ)) s n‖ := norm_tsum_le_tsum_norm hsμ
     _ ≤ ∑' n, ‖term (1 : ℕ → ℂ) s n‖ := Summable.tsum_le_tsum (norm_term_moebius_le s) hsμ hs1
     _ = ∑' n : ℕ, ((n : ℝ) + 1) ^ (-(s.re - 1) - 1) := by
-      rw [hs1.tsum_eq_zero_add]
-      simp only [LSeries.term_zero, norm_zero, zero_add, norm_term_one_succ]
+      simp only [hs1.tsum_eq_zero_add, LSeries.term_zero, norm_zero, zero_add, norm_term_one_succ]
     _ ≤ 1 + 1 / (s.re - 1) := tsum_rpow_le hσ
     _ = s.re / (s.re - 1) := by
       field_simp

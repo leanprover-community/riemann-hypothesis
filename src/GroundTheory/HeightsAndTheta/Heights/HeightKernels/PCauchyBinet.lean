@@ -40,8 +40,7 @@ theorem minor_mul (A : Matrix (Fin j) (Fin N) R) (B : Matrix (Fin N) (Fin j) R)
   have h : A.submatrix id (I.1.orderEmbOfFin I.2 ∘ w) = (colsOf A I).submatrix id w := by
     ext a b
     rfl
-  rw [h, det_permute']
-  simp only [rowsOf, submatrix_apply, id]
+  simp only [h, det_permute', rowsOf, submatrix_apply, id]
   ring
 
 theorem sum_reindex {M : Type*} [AddCommMonoid M] (g : (Fin j → Fin N) → M)

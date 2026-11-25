@@ -92,7 +92,6 @@ theorem char_complex {G V : Type} [Group G] [Finite G] [AddCommGroup V] [Module 
       LinearMap.trace ℂ V (ρ g⁻¹) = star (LinearMap.trace ℂ V (ρ g)) ∧
       ‖LinearMap.trace ℂ V (ρ g)‖ ≤ (finrank ℂ V : ℝ) := by
   obtain ⟨I, hI, μ, hcard, hμ, htr, htr'⟩ := eigen_data ρ g
-  have hn : orderOf g ≠ 0 := (orderOf_pos g).ne'
   refine ⟨?_, ?_, ?_⟩
   · rw [htr]
     refine IsIntegral.sum _ fun i _ => ?_
@@ -105,7 +104,7 @@ theorem char_complex {G V : Type} [Group G] [Finite G] [AddCommGroup V] [Module 
     calc ‖∑ i, μ i‖ ≤ ∑ i, ‖μ i‖ := norm_sum_le _ _
       _ = ∑ _i : I, (1 : ℝ) := Finset.sum_congr rfl fun i _ => by
           have h1 : ‖μ i‖ ^ orderOf g = 1 := by rw [← norm_pow, hμ i, norm_one]
-          exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn).1 h1
+          exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) ((orderOf_pos g).ne')).1 h1
       _ = (finrank ℂ V : ℝ) := by simp [hcard]
 
 def repC {K : Type} [Field K] (σ : K →+* ℂ) {G : Type} [Group G] {T : Type} [AddCommGroup T]

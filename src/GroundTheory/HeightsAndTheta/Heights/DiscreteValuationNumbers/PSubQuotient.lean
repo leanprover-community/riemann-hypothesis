@@ -216,9 +216,8 @@ theorem SubQuotient.proof (hF : FlagIndependence.Statement) : SubQuotient.Statem
       have hu : u = u' := hj (add_right_cancel h)
       rw [hu]
     · intro z
-      have hz : z - s (π z) ∈ LinearMap.range j := by
+      obtain ⟨u, hu⟩ : z - s (π z) ∈ LinearMap.range j := by
         rw [hjπ, LinearMap.mem_ker, map_sub, hπs, sub_self]
-      obtain ⟨u, hu⟩ := hz
       exact ⟨(u, π z), by simp [LinearMap.coprod_apply, hu]⟩
   set φ : (U × V) ≃ₗ[Ω] E := LinearEquiv.ofBijective _ hbij with hφdef
   have hφ : ∀ p : U × V, φ p = j p.1 + s p.2 := fun p => rfl

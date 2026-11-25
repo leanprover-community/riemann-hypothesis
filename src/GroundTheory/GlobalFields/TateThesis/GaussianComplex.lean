@@ -43,8 +43,7 @@ theorem complexFourier_eq_two_mul_fourier (f : ℂ → ℂ) (w : ℂ) :
   congr 2
   funext z
   congr 3
-  rw [Complex.inner]
-  simp [Complex.mul_re]
+  simp [Complex.inner, Complex.mul_re]
   ring
 
 theorem complexFourier_complexGaussian_zero :

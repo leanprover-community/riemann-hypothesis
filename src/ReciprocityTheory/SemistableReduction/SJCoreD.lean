@@ -42,8 +42,7 @@ theorem gauss_pair {n : ℕ} (hn : 0 < n) (c : EuclideanSpace ℂ (Fin n)) (hc :
     refine Finset.sum_congr rfl fun i _ => ?_
     simp [hvdef, RCLike.inner_apply] <;> ring
   have hvn : ‖v‖ = ‖c‖ := by
-    rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
-    simp [hvdef]
+    simp [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, hvdef]
   have hc0 : 0 < ‖c‖ := norm_pos_iff.mpr hc
   set u0 : EuclideanSpace ℂ (Fin (m + 1)) := ((‖c‖⁻¹ : ℝ) : ℂ) • v with hu0
   have hu0n : ‖u0‖ = 1 := by

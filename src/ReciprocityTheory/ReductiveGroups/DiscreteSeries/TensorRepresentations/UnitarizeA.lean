@@ -84,8 +84,7 @@ theorem int_norm_le {a b : G → ℂ} (ha : MemLp a 2 μ) (hb : MemLp b 2 μ) :
     rw [MeasureTheory.L2.inner_def]
     apply integral_congr_ae
     filter_upwards [hA.coeFn_toLp, hB.coeFn_toLp] with x hx1 hx2
-    rw [hx1, hx2, RCLike.inner_apply, norm_mul, norm_star]
-    simp only [starRingEnd_apply, star_trivial]
+    simp only [hx1, hx2, RCLike.inner_apply, norm_mul, norm_star, starRingEnd_apply, star_trivial]
     ring
   rw [h1]
   calc inner ℝ (hA.toLp _) (hB.toLp _) ≤ ‖hA.toLp _‖ * ‖hB.toLp _‖ := real_inner_le_norm _ _

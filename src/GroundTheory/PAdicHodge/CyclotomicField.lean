@@ -47,9 +47,8 @@ instance finiteDimensional_cycl (n : ℕ) : FiniteDimensional ℚ_[p] (cycl p n)
 theorem exists_isPrimitiveRoot (n : ℕ) : ∃ ζ : PadicAlgCl p, IsPrimitiveRoot ζ (p ^ n) := by
   haveI : NeZero ((p ^ n : ℕ) : PadicAlgCl p) :=
     ⟨Nat.cast_ne_zero.2 (pow_ne_zero n (Fact.out : p.Prime).ne_zero)⟩
-  have hpos : 0 < p ^ n := pow_pos (Fact.out : p.Prime).pos n
   obtain ⟨ζ, hζ⟩ := IsAlgClosed.exists_root (cyclotomic (p ^ n) (PadicAlgCl p))
-    (degree_cyclotomic_pos (p ^ n) (PadicAlgCl p) hpos).ne'
+    (degree_cyclotomic_pos (p ^ n) (PadicAlgCl p) (pow_pos (Fact.out : p.Prime).pos n)).ne'
   exact ⟨ζ, (isRoot_cyclotomic_iff).1 hζ⟩
 
 theorem cycl_eq_adjoin {n : ℕ} {ζ : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ (p ^ n)) :

@@ -143,8 +143,7 @@ theorem mem_JJ_of {E : Fin n → Fin n → Module.End ℂ V} (hE : GlRel E) {t p
     | smul c x _ hx => rw [map_smul]; exact Submodule.smul_mem _ c hx
   have h3 : (JJ E).mkQ t = (JJ E).mkQ p := (Submodule.Quotient.eq _).mpr h
   rw [← h3] at h2
-  have := (Submodule.disjoint_def.mp hd) _ h1 h2
-  exact (Submodule.Quotient.mk_eq_zero _).mp this
+  exact (Submodule.Quotient.mk_eq_zero _).mp ((Submodule.disjoint_def.mp hd) _ h1 h2)
 
 theorem ev_ι (E : Fin n → Fin n → Module.End ℂ V) (p : Fin n × Fin n) :
     ev E (FreeAlgebra.ι ℂ p) = E p.1 p.2 := by
@@ -297,7 +296,6 @@ theorem hcdec : CompanionTheory.D.LK.HCdec := by
   have h0 : adH E (ev E a - evd (fun c => E c c) b) = 0 := by
     rw [map_sub, adH_evd hE, sub_zero, adH_apply, sub_eq_zero]
     exact (Commute.sum_left _ _ _ fun c _ => (ha V E hE c).smul_left _).eq
-  have := mem_JJ_of hE h0 (hb V E hE) (by simpa using h V E hE)
-  exact this x
+  exact (mem_JJ_of hE h0 (hb V E hE) (by simpa using h V E hE)) x
 
 end GlobalTheory.CompanionTheory.HCdecomp

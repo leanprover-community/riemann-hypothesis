@@ -80,8 +80,7 @@ theorem E_Pn (x d : I → S → 𝒰) (hxx : ∀ a s b t, x a s * x b t = x b t 
     unfold Pn
     rw [sum_fun_succ]
     refine Finset.sum_congr rfl fun t _ => Finset.sum_congr rfl fun s _ => ?_
-    rw [xw_succ, dw_succ]
-    simp only [Fin.cons_zero, Fin.cons_succ, mul_assoc]
+    simp only [xw_succ, dw_succ, Fin.cons_zero, Fin.cons_succ, mul_assoc]
   have second : ∀ j : Fin k, (if r j = b then Pn x d (Function.update r j a) g else 0) =
       ∑ t, ∑ s : Fin k → S,
         (if r j = b ∧ s j = t then xw x (Function.update r j a) s else 0) * dw d g s := by

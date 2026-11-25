@@ -72,8 +72,7 @@ theorem inh_divCycle_of_supp_empty (P : Ideal (MRingOver F ι)) (s : MRingOver F
     (hsupp : divSupp P s = ∅) : divCycle P s = 0 := by
   classical
   ext W
-  rw [divCycle, Finsupp.ofSupportFinite_coe, hsupp]
-  simp
+  simp [divCycle, Finsupp.ofSupportFinite_coe, hsupp]
 
 theorem inh_divCycle_one (P : Ideal (MRingOver F ι)) : divCycle P 1 = 0 := by
   apply inh_divCycle_of_supp_empty

@@ -127,8 +127,7 @@ theorem herm_proj_left (H : Matrix (Fin n) (Fin n) ℂ) (Γi : Matrix ι ι ℂ)
     (hG : gramOf H p * Γi = 1) (y : Fin n → ℂ) (j : ι) :
     herm H (proj H Γi p y) (p j) = herm H y (p j) := by
   unfold proj
-  rw [herm_sum_left]
-  simp only [herm_smul_left]
+  simp only [herm_sum_left, herm_smul_left]
   have e : (∑ i, coef H Γi p y i * herm H (p i) (p j)) = (gramOf H p *ᵥ coef H Γi p y) j := by
     simp only [Matrix.mulVec, dotProduct, gramOf, Matrix.of_apply]
     exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)

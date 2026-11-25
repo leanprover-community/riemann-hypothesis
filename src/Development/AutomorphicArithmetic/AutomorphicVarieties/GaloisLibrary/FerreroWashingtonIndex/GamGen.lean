@@ -54,8 +54,7 @@ private theorem padic_val_one_add_mul_pow_pow_sub_one (l : ℕ) (hl : l.Prime) (
   have hp : Prime (l : ℤ) := Nat.prime_iff_prime_int.mp hl
   have hfl : ¬ (l : ℤ) ∣ (f : ℤ) := by
     intro hd
-    have hd' : l ∣ f := Int.natCast_dvd_natCast.mp hd
-    exact hl.one_lt.ne' (Nat.Coprime.eq_one_of_dvd hf.symm hd')
+    exact hl.one_lt.ne' (Nat.Coprime.eq_one_of_dvd hf.symm (Int.natCast_dvd_natCast.mp hd))
   have hq : emultiplicity (l : ℤ) ((f : ℤ) * (l : ℤ) ^ ee l) = (ee l : ℕ∞) := by
     rw [emultiplicity_mul hp, emultiplicity_pow_self_of_prime hp, emultiplicity_eq_zero.mpr hfl,
       zero_add]
@@ -65,8 +64,7 @@ private theorem padic_val_one_add_mul_pow_pow_sub_one (l : ℕ) (hl : l.Prime) (
     have h2 : (l : ℤ) ∣ (f : ℤ) * (l : ℤ) ^ ee l :=
       Dvd.dvd.mul_left (dvd_pow_self _ (by omega)) _
     have h3 : (l : ℤ) ∣ 1 := by
-      have := dvd_sub hd h2
-      simpa using this
+      simpa using dvd_sub hd h2
     have h4 : l ∣ 1 := by exact_mod_cast h3
     exact hl.one_lt.ne' (Nat.dvd_one.mp h4)
   have key : emultiplicity (l : ℤ) ((1 + (f : ℤ) * (l : ℤ) ^ ee l) ^ l ^ j - 1)

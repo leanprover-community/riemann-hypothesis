@@ -85,7 +85,6 @@ lemma lattice_iff (L : PeriodPair) (z : ℂ) : z ∈ L.lattice ↔ ∃ p q : ℤ
     simp [zsmul_eq_mul, Complex.real_smul]
   · rintro ⟨p, q, h⟩
     refine ⟨p, q, ?_⟩
-    rw [h]
-    simp [zsmul_eq_mul, Complex.real_smul]
+    simp [h, zsmul_eq_mul, Complex.real_smul]
 
 end PI.UnitaryGroupMassFormula.UnimodLocStd

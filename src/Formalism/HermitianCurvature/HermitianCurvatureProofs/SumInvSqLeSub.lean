@@ -467,8 +467,7 @@ theorem vandermondeTop : Formalism.FourierDecayAlt.Sz.VandTop := by
       (4 * c.Del) ^ (c.k - 2) * ((c.k - 2).factorial : ℝ) := by
     rw [← prod_refl (c.k - 2)]
     simp only [v_sub]
-    rw [Finset.prod_mul_distrib, Finset.prod_const, Nat.card_Icc]
-    simp
+    simp [Finset.prod_mul_distrib, Finset.prod_const, Nat.card_Icc]
   rw [h2, e] at h
   rw [h]; ring
 

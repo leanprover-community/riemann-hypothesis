@@ -61,8 +61,7 @@ theorem mul_ne_zero_AG {Z : Comp Xo c} {G G' : WTZ E} {f g : AC Z} (hf : f ∈ A
   have hs : s ≠ 0 := by
     rintro rfl
     exact hg0 (by simp)
-  rw [AddMonoidAlgebra.single_mul_single]
-  simp [hr, hs]
+  simp [AddMonoidAlgebra.single_mul_single, hr, hs]
 
 def valC (h : GenFrEx Xo c) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) : ∀ Z : Comp Xo c, AC Z :=
   fun Z => AddMonoidAlgebra.single (wtZ a n) (evC h Z f)

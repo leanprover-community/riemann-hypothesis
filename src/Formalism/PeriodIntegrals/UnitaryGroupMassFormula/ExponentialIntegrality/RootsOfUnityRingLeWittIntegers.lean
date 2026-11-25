@@ -74,8 +74,7 @@ theorem frob_congr (y : ℂ_[p]) (hy : y ∈ S0 p) :
     rw [← map_pow, Ideal.Quotient.eq, Ideal.mem_span_singleton] at h
     obtain ⟨z, hz⟩ := h
     refine ⟨f, hf, z, z.2, ?_⟩
-    have := congrArg Subtype.val hz
-    simpa using this
+    simpa using congrArg Subtype.val hz
   have hp0 : ((p : ℕ) : S0 p ⧸ I) = 0 := by
     rw [← map_natCast (Ideal.Quotient.mk I) p]
     exact Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.subset_span rfl)

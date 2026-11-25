@@ -51,8 +51,7 @@ def secW (s : Σ κ, stackedBlocks T κ) : ℕ := Sum.elim (fun _ => 0) (fun _ =
 
 theorem sum_eq_bideg (m : (Σ κ, stackedBlocks T κ) →₀ ℕ) :
     ∑ s, m s = (bideg m).1 + (bideg m).2 := by
-  rw [Fintype.sum_sigma, Fintype.sum_sum_type]
-  simp only [Fintype.sum_unique, bideg]
+  simp only [Fintype.sum_sigma, Fintype.sum_sum_type, Fintype.sum_unique, bideg]
   rfl
 
 theorem sum_secW_eq_bideg (m : (Σ κ, stackedBlocks T κ) →₀ ℕ) :

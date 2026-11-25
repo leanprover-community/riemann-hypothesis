@@ -182,8 +182,7 @@ theorem finiteIndex_of_index_map_le {U : Subgroup ℤ_[l]ˣ} (hU : IsClosed (U :
     have hxm : x ∈ U ⊔ princ l (max b n₀) := hstab _ (le_max_right _ _) hx
     obtain ⟨u, hu, z, hz, rfl⟩ := Subgroup.mem_sup.mp hxm
     refine ⟨u, hu, ?_⟩
-    have hz' : z ∈ princ l b := princ_anti (le_max_left b n₀) hz
-    have hz1 : redPow l b z = 1 := MonoidHom.mem_ker.mp hz'
+    have hz1 : redPow l b z = 1 := MonoidHom.mem_ker.mp (princ_anti (le_max_left b n₀) hz)
     rw [map_mul, hz1, mul_one]
   have hEq : U ⊔ princ l n₀ = U := le_antisymm hsub le_sup_left
   rw [← hEq]
@@ -200,9 +199,8 @@ theorem isOpen_galImage [NumberField E] : IsOpen (galImage l E : Set ℤ_[l]ˣ) 
   have hcard := Subgroup.index_mul_card ((galImage l E).map (redPow l n))
   rw [card_map_redPow_galImage, Nat.card_eq_fintype_card, ZMod.card_units_eq_totient] at hcard
   have htot := totient_le_finrank_mul (l := l) (E := E) n
-  have hpos : 0 < Module.finrank E (adjoinRoots E (l ^ n)) := Module.finrank_pos
   rw [← hcard] at htot
-  exact Nat.le_of_mul_le_mul_right htot hpos
+  exact Nat.le_of_mul_le_mul_right htot Module.finrank_pos
 
 end KStar.TotallyRealRoots
 end -- clump:auto

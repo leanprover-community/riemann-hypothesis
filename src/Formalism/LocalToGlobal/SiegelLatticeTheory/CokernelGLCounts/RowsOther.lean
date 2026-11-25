@@ -60,8 +60,7 @@ theorem noId_idSet : (noId X).idSet = ∅ := by
 
 theorem noId_idZero : (noId X).IdZero := by
   unfold PB.Terms.IdZero PB.Terms.part
-  rw [noId_idSet]
-  simp
+  simp [noId_idSet]
 
 theorem nonIdentity_K0 (one : H) (h : IdOne X one) : (noId X).K0 = X.K0 - one := by
   have h0 : (noId X).part (noId X).idSet = 0 := noId_idZero X

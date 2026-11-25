@@ -177,8 +177,7 @@ theorem phiRG_psd (Y : Finset H) (κ : H → H → ℂ) (hκ : TB.PSDOn Y κ) (U
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun h hh => Finset.sum_congr rfl fun h' hh' => ?_
     congr 1
-    have := hκ.1.apply ⟨h, hh⟩ ⟨h', hh'⟩
-    simpa using this
+    simpa using hκ.1.apply ⟨h, hh⟩ ⟨h', hh'⟩
   unfold TB.PSDOn
   have hfin := hL.conjTranspose_mul_mul_same R
   rw [Matrix.mul_assoc] at hfin

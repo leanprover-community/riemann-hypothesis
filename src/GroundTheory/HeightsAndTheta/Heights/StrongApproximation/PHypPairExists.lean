@@ -18,7 +18,7 @@ open Matrix ReciprocityTheory.ChartRestriction.G.SA
 theorem HypPairExists.proof : HypPairExists.Statement := by
   intro E _ σ hσ h2 N J hJ hdet e he0 hee
 
-  have hw : ∃ j, ∑ i, e i * J i j ≠ 0 := by
+  obtain ⟨j, hj⟩ : ∃ j, ∑ i, e i * J i j ≠ 0 := by
     by_contra h
     simp only [not_exists, not_not] at h
     have h0 : e ᵥ* J = 0 := by
@@ -28,7 +28,6 @@ theorem HypPairExists.proof : HypPairExists.Statement := by
     calc e = e ᵥ* (J * J⁻¹) := by rw [mul_nonsing_inv J hdet, vecMul_one]
       _ = (e ᵥ* J) ᵥ* J⁻¹ := by rw [vecMul_vecMul]
       _ = 0 := by rw [h0, zero_vecMul]
-  obtain ⟨j, hj⟩ := hw
   have hsingle : hf σ J e (Pi.single j 1) = ∑ i, e i * J i j := by
     simp only [hf]
     refine Finset.sum_congr rfl fun i _ => ?_

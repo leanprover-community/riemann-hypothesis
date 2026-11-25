@@ -28,8 +28,7 @@ theorem exists_jacobi_neg_one (m t : ℕ) (ht : Odd t) (hsq : Squarefree t) (h1 
     exact (Nat.not_even_iff_odd.mpr ht) (even_two_mul t')
   have hpt' : ¬ p ∣ t' := by
     rintro ⟨k, rfl⟩
-    have := hsq p ⟨k, by ring⟩
-    exact hp.one_lt.ne' (Nat.isUnit_iff.mp this)
+    exact hp.one_lt.ne' (Nat.isUnit_iff.mp (hsq p ⟨k, by ring⟩))
   have hcp : p.Coprime t' := (Nat.Prime.coprime_iff_not_dvd hp).mpr hpt'
   have hpm : p.Coprime m := Nat.Coprime.coprime_dvd_left (Dvd.intro t' rfl) hc
   obtain ⟨a, ha⟩ := FiniteField.exists_nonsquare (F := ZMod p)

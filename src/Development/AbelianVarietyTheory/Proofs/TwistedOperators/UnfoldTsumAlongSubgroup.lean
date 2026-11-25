@@ -74,9 +74,8 @@ theorem unfold_tsum_along_subgroup : ∀ (G H : Type) [Group G] [Group H] [Measu
     have hqq : q = q' := by rw [← hq q δ, ← hq q' δ', h]
     subst hqq
     have h2 := mul_left_cancel h
-    have h3 : ι δ = ι δ' := congrArg Subtype.val h2
     rw [Prod.mk.injEq]
-    exact ⟨rfl, Subtype.ext (hι h3)⟩
+    exact ⟨rfl, Subtype.ext (hι (congrArg Subtype.val h2))⟩
   have he_surj : Function.Surjective e := by
     intro γ
     set q : Γ ⧸ ι.range.subgroupOf Γ := QuotientGroup.mk γ with hqdef
@@ -89,8 +88,7 @@ theorem unfold_tsum_along_subgroup : ∀ (G H : Type) [Group G] [Group H] [Measu
     refine ⟨(q, ⟨y, hyΓ⟩), ?_⟩
     apply Subtype.ext
     show ((q.out : Γ) : G) * ι y = γ
-    rw [hy]
-    simp
+    simp [hy]
   let eq := Equiv.ofBijective e ⟨he_inj, he_surj⟩
   let F : Γ → H → ℂ := fun γ h => f ((γ : G) * ι h) * φ h
   let g : Γ ⧸ ι.range.subgroupOf Γ → H → ℂ := fun q => F (Quotient.out q)

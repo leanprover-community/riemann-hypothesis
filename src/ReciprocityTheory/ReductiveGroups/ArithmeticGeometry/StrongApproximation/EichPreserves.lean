@@ -202,8 +202,7 @@ theorem eich_det {e u : ι → R} {c : R} (he : hf σ J e e = 0) (hue : hf σ J 
     have h3 : ∀ A B C : Matrix ι ι R, (1 + A) * (1 - B) * (1 + C)
         = 1 + A - B + C - A * B + A * C - B * C - A * B * C := by
       intro A B C; noncomm_ring
-    rw [h3, hAB, hAC, hBC]
-    simp [eich, α, β]
+    simp [h3, hAB, hAC, hBC, eich, α, β]
   have hB : (1 : Matrix ι ι R) - vecMulVec e β = 1 + vecMulVec (-e) β := by
     ext i j; simp [vecMulVec_apply, sub_eq_add_neg]
   have hC : c • vecMulVec e α = vecMulVec (c • e) α := by

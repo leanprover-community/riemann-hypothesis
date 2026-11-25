@@ -150,15 +150,13 @@ theorem bm_mkX (hh : hᴴ * h = (hankel a).map (algebraMap F E)) (hd : IsUnit h.
 
 theorem mom_mkX (hh : hᴴ * h = (hankel a).map (algebraMap F E)) (hd : IsUnit h.det) (j : Fin r) :
     mom (mkX a h).toGl j = algebraMap F E (a.2.1 j) := by
-  have h0 : 0 < r := j.pos
   simp only [mom, Hn.toGl]
   rw [mkX_snd_fst, pow_mulVec_mkX hh hd, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, hh]
-  have he : star (e1 : Fin r → E) = Pi.single (⟨0, h0⟩ : Fin r) 1 := by
+  have he : star (e1 : Fin r → E) = Pi.single (⟨0, j.pos⟩ : Fin r) 1 := by
     ext i; by_cases hi : (i : ℕ) = 0 <;> simp [e1, hi, Pi.single_apply, Fin.ext_iff]
   rw [he, Matrix.mulVec_single_one, single_one_dotProduct]
   simp only [Matrix.col_apply, Matrix.map_apply]
-  rw [hankel_apply']
-  simp
+  simp [hankel_apply']
 end Herm
 
 section Top

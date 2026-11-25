@@ -93,8 +93,7 @@ theorem UpperTheory.Reformulated.B.H13.aux6 :
     apply Units.ext
     simp only [Units.val_mul]
     exact (Matrix.scalar_commute (c : k) (fun x => Commute.all _ _) (A : Matrix (Fin n) (Fin n) k)).eq.symm
-  rw [map_mul, map_mul, map_mul]
-  simp only [mul_assoc]
+  simp only [map_mul, map_mul, map_mul, mul_assoc]
   rw [← mul_assoc (r s), hc, mul_assoc]
 
 noncomputable def UpperTheory.Reformulated.B.H13.tw :
@@ -157,11 +156,10 @@ theorem UpperTheory.Reformulated.B.H13.schur_twist_holds :
     refine LinearMap.ext fun v => ?_
     rw [Units.val_mul, Units.val_mul, Matrix.toLin'_apply, Matrix.toLin'_apply,
       ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hgv, hgv, Matrix.mulVec_smul]
-  have hn : Nonempty (Fin n) := by
+  obtain ⟨i⟩ : Nonempty (Fin n) := by
     by_contra h
     rw [not_nonempty_iff] at h
     exact not_subsingleton (Fin n → k) inferInstance
-  obtain ⟨i⟩ := hn
   refine MonoidHom.ext fun s => ?_
   have h := hg' s
   rw [hcent, mul_left_inj, mul_eq_right] at h

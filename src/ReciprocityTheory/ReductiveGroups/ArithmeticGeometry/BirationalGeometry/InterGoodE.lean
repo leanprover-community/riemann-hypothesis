@@ -39,8 +39,7 @@ theorem intOver_trans {R : Type*} [CommRing R] [Algebra k R] {r : ℕ} (ℓ : Fi
     intro p
     induction p using MvPolynomial.induction_on with
     | C a =>
-      have := hB (C a)
-      simpa [f'] using this
+      simpa [f'] using hB (C a)
     | add p q hp hq => rw [map_add (f := _)]; exact Cl.add_mem hp hq
     | mul_X p j hp => rw [map_mul, aeval_X]; exact Cl.mul_mem hp (hmem j)
   obtain ⟨p, hpm, hp⟩ := hx

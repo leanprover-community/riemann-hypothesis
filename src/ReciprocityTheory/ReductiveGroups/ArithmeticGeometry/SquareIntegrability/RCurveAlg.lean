@@ -50,9 +50,8 @@ theorem quotientMap_bijective_of_loc {A B : Type*} [CommRing A] [CommRing B] [Al
     obtain ⟨M, k, hk, e⟩ := key _ hz
     rw [← map_mul] at e
     have hM : h ^ M * a ∈ K := hinj e ▸ hk
-    have h1 : (1 - h ^ M) * a ∈ K := K.mul_mem_right _ (one_sub_pow_mem h K hK M)
     have : a = h ^ M * a + (1 - h ^ M) * a := by ring
-    rw [this]; exact K.add_mem hM h1
+    rw [this]; exact K.add_mem hM (K.mul_mem_right _ (one_sub_pow_mem h K hK M))
   · intro z
     obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective z
     obtain ⟨m, a, hb⟩ := hB b

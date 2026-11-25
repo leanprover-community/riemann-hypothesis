@@ -85,10 +85,9 @@ theorem UnitApprox.proof : UnitApprox.Statement := by
           exact_mod_cast (Finset.card_erase_le).trans (le_of_eq Finset.card_univ)
     · exact (he_ne w hw).trans (le_mul_of_one_le_left hR0 hcard)
   intro sg
-  have hm : (1 : ℝ) ≤ mult (InfinitePlace.mk sg) := one_le_mult
   have h4 : |Real.log ‖sg ((ε : 𝓞 F) : F)‖ - n * u sg| ≤ |e (InfinitePlace.mk sg)| := by
     simp only [e, abs_mul, hu_mk sg, InfinitePlace.apply, Nat.abs_cast]
-    exact le_mul_of_one_le_left (abs_nonneg _) hm
+    exact le_mul_of_one_le_left (abs_nonneg _) one_le_mult
   exact h4.trans (he _)
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

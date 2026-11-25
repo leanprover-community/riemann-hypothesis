@@ -75,11 +75,9 @@ theorem UpperTheory.exists_pow_dvd_sub_of_two_pow_dvd_sub_one :
   | succ n ih =>
     by_cases hne : n + 1 ≤ e
     · refine ⟨0, ?_⟩
-      have h1 : (2 : ℤ) ^ (n + 1) ∣ 2 ^ e := pow_dvd_pow 2 hne
-      have h2 : (2 : ℤ) ^ (n + 1) ∣ c - 1 := h1.trans hc
       have h3 : Q ^ 0 - c = -(c - 1) := by ring
       rw [h3]
-      exact (dvd_neg).2 h2
+      exact (dvd_neg).2 ((pow_dvd_pow 2 hne).trans hc)
     · obtain ⟨i, t, ht⟩ := ih
       obtain ⟨u, hu, hQu⟩ := hL (n - e)
       rw [show e + (n - e) = n by omega] at hQu

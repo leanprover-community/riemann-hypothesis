@@ -50,9 +50,8 @@ lemma comm_img (g : V ≃ₗ[ℂ] V) {S Λ : AddSubgroup V}
     (hg1 : relIdx S (imgLat (g : V →ₗ[ℂ] V) S) ≠ 0) (hg2 : relIdx (imgLat (g : V →ₗ[ℂ] V) S) S ≠ 0)
     (h1 : relIdx S Λ ≠ 0) (h2 : relIdx Λ S ≠ 0) :
     relIdx S (imgLat (g : V →ₗ[ℂ] V) Λ) ≠ 0 ∧ relIdx (imgLat (g : V →ₗ[ℂ] V) Λ) S ≠ 0 := by
-  have hinj : Function.Injective (g : V →ₗ[ℂ] V).toAddMonoidHom := g.injective
   have hm : ∀ A B : AddSubgroup V, relIdx (imgLat (g : V →ₗ[ℂ] V) A) (imgLat (g : V →ₗ[ℂ] V) B) = relIdx A B :=
-    fun A B => AddSubgroup.relIndex_map_map_of_injective A B hinj
+    fun A B => AddSubgroup.relIndex_map_map_of_injective A B g.injective
   refine ⟨?_, ?_⟩
   · exact AddSubgroup.relIndex_ne_zero_trans hg1 (by rw [← hm S Λ] at h1; exact h1)
   · exact AddSubgroup.relIndex_ne_zero_trans (by rw [← hm Λ S] at h2; exact h2) hg2

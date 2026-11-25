@@ -86,8 +86,7 @@ theorem linIndep_of_isUnit_det (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin
     intro b
     have e := congrArg (hLin R σ J (X b)) hg
 
-    rw [map_sum, map_zero] at e
-    simp only [map_smul, smul_eq_mul] at e
+    simp only [map_sum, map_zero, map_smul, smul_eq_mul] at e
     exact e
   have hv : Matrix.mulVec (gramR R σ J X) g = 0 := by
     funext b

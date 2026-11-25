@@ -134,8 +134,7 @@ theorem discr_ne_of_pos (w₁ w₂ : ℂ) (h : 0 < ((starRingEnd ℂ) w₁ * w�
     simp at h
   have hτ : 0 < (w₂ / w₁).im := by
     have e : (w₂ / w₁).im = ((starRingEnd ℂ) w₁ * w₂).im / Complex.normSq w₁ := by
-      rw [Complex.div_im]
-      simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im]
+      simp only [Complex.div_im, Complex.mul_im, Complex.conj_re, Complex.conj_im]
       ring
     rw [e]
     exact div_pos h (Complex.normSq_pos.mpr hw)

@@ -18,8 +18,7 @@ theorem mem_gr_iff (φ : GIso F G) (m : Deg k) (x : F.M) : φ.e x ∈ G.gr m ↔
   rw [← φ.map_gr m]
   constructor
   · rintro ⟨y, hy, hxy⟩
-    have : y = x := φ.e.injective hxy
-    exact this ▸ hy
+    exact (φ.e.injective hxy : y = x) ▸ hy
   · intro hx
     exact ⟨x, hx, rfl⟩
 

@@ -155,8 +155,7 @@ theorem isTopologicalBasis :
       have hyb : (e y).2 ∈ b := hVb fun v ↦ by
         rw [← finiteProj_eq]
         exact hyV v
-      have := hab (Set.mk_mem_prod hya hyb)
-      simpa using this
+      simpa using hab (Set.mk_mem_prod hya hyb)
 
 end IdeleGroup
 

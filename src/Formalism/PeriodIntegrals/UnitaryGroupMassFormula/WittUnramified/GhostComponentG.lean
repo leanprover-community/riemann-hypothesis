@@ -154,7 +154,6 @@ theorem G_coeff_integral (hinj : Function.Injective (algebraMap W Qq)) (x : W) (
     simp only [map_sum, map_mul, map_pow, map_natCast]
     exact Finset.sum_congr rfl fun i hi => by rw [hbk i hi]
   rw [hsum] at hs
-  have hpk : (p : Qq) ^ (k + 1) ≠ 0 := pow_ne_zero _ (Invertible.ne_zero (p : Qq))
   have key : (p : Qq) ^ (k + 1) * (G p Qq F x).coeff (k + 1) =
       (p : Qq) ^ (k + 1) * algebraMap W Qq d := by
     have e2 : algebraMap W Qq ((F^[k + 1]) x -
@@ -163,7 +162,7 @@ theorem G_coeff_integral (hinj : Function.Injective (algebraMap W Qq)) (x : W) (
       rw [hd, map_mul, map_pow, map_natCast]
     rw [← e2, map_sub, ← hs]
     ring
-  exact mul_left_cancel₀ hpk key
+  exact mul_left_cancel₀ (pow_ne_zero _ (Invertible.ne_zero (p : Qq))) key
 
 def sFun (hinj : Function.Injective (algebraMap W Qq)) (x : W) : WittVector p W :=
   WittVector.mk p fun n => (G_coeff_integral p Qq F hF hinj x n).choose

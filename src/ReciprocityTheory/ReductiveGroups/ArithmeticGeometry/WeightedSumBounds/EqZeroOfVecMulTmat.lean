@@ -26,8 +26,7 @@ theorem sum_smul_tangent (γ : Fin d → Fin d → PowerSeries C) (x : Fin d →
 theorem tmat_det_ne_zero {γ : Fin d → Fin d → PowerSeries C} (hdet : v (tmat γ).det = 0) :
     (tmat γ).det ≠ 0 := by
   intro h
-  rw [h] at hdet
-  simp at hdet
+  simp [h] at hdet
 
 theorem tmat_isUnit_det {γ : Fin d → Fin d → PowerSeries C} (hdet : v (tmat γ).det = 0) :
     IsUnit (tmat γ).det := isUnit_iff_ne_zero.mpr (tmat_det_ne_zero hdet)

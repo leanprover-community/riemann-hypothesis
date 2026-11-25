@@ -153,8 +153,7 @@ theorem testEx_kernel (μ : Measure W) [μ.IsAddHaarMeasure] (χ : W → W → �
   let Φ : W → ℂ := fun x => φ (x + t) - φ x
   have hΦc : Continuous Φ := (hφc.comp (continuous_id.add continuous_const)).sub hφc
   have hΦs : HasCompactSupport Φ := by
-    have h1 : HasCompactSupport fun x => φ (x + t) := hφs.comp_homeomorph (Homeomorph.addRight t)
-    exact h1.sub hφs
+    exact (hφs.comp_homeomorph (Homeomorph.addRight t)).sub hφs
   have hT : ∀ y, ∫ x, Φ x * χ x y ∂μ = 0 := by
     intro y
     let g : W → ℂ := fun x => φ x * χ x y

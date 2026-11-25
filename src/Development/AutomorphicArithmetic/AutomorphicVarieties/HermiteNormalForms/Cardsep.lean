@@ -66,16 +66,14 @@ theorem UpperTheory.V.KT.cardsep :
       have h := congrFun hac i
       simp only [f] at h
       rw [map_sub, Pi.sub_apply]
-      have := (ZMod.intCast_eq_intCast_iff_dvd_sub _ _ _).mp h.symm
-      simpa using this
+      simpa using (ZMod.intCast_eq_intCast_iff_dvd_sub _ _ _).mp h.symm
     refine hS a ha c hc (bs.equivFun.symm fun i => bs.equivFun (a - c) i / q) ?_
     apply bs.equivFun.injective
     rw [map_nsmul, LinearEquiv.apply_symm_apply]
     funext i
     simp only [Pi.smul_apply, nsmul_eq_mul]
     exact (Int.mul_ediv_cancel' (hdvd i)).symm
-  have himg : (f '' S).Finite := Set.toFinite _
-  have hfin : S.Finite := Set.Finite.of_finite_image himg hinj
+  have hfin : S.Finite := Set.Finite.of_finite_image (Set.toFinite _) hinj
   refine ⟨hfin, ?_⟩
   rw [← hinj.ncard_image]
   calc (f '' S).ncard ≤ (Set.univ : Set (Fin r → ZMod q)).ncard :=

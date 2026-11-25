@@ -70,8 +70,7 @@ theorem hform_sum_left {ι : Type} (t : Finset ι) (c : ι → S) (v : ι → Fi
 theorem hform_conj (hs : ∀ z, s (s z) = z) (hJ : IsHerm s J) (x y : Fin n → S) :
     s (hform s J x y) = hform s J y x := by
   have hJ' : ∀ i j, s (J i j) = J j i := fun i j => by
-    have := congrFun (congrFun hJ j) i
-    simpa [cT] using this
+    simpa [cT] using congrFun (congrFun hJ j) i
 
   simp only [hform, map_sum, map_mul, hs, hJ']
   rw [Finset.sum_comm]

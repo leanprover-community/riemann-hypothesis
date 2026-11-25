@@ -16,7 +16,6 @@ theorem isOpen_fiber_of_isOpen_ker {A B : Type*} [Group A] [TopologicalSpace A] 
     (φ : A →* B) (h : IsOpen (φ.ker : Set A)) (b : B) : IsOpen {a | φ a = b} := by
   rw [isOpen_iff_mem_nhds]
   intro a ha
-  have ha' : φ a = b := ha
   have hO : IsOpen ((fun y : A => a⁻¹ * y) ⁻¹' (φ.ker : Set A)) := h.preimage (continuous_const.mul continuous_id)
   refine Filter.mem_of_superset (hO.mem_nhds ?_) ?_
   · show a⁻¹ * a ∈ φ.ker
@@ -24,7 +23,7 @@ theorem isOpen_fiber_of_isOpen_ker {A B : Type*} [Group A] [TopologicalSpace A] 
   · intro y hy
     have hy' : φ (a⁻¹ * y) = 1 := hy
     rw [map_mul, map_inv, inv_mul_eq_one] at hy'
-    exact hy'.symm.trans ha'
+    exact hy'.symm.trans ha
 
 theorem isOpen_ker_abRestrict (h : IsFiniteAbelian F L) :
     IsOpen ((abRestrict F L h).ker : Set (Field.absoluteGaloisGroupAbelianization F)) := by

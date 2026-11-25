@@ -31,8 +31,7 @@ theorem exists_proj_mat (K : Submodule E (Fin n → E)) :
   · rw [LinearMap.toMatrix'_mulVec]
     exact (Submodule.linearProjOfIsCompl K K' hK x).2
   · rw [LinearMap.toMatrix'_mulVec, LinearMap.comp_apply]
-    have := Submodule.linearProjOfIsCompl_apply_left hK ⟨x, hx⟩
-    exact congrArg Subtype.val this
+    exact congrArg Subtype.val (Submodule.linearProjOfIsCompl_apply_left hK ⟨x, hx⟩)
 
 variable {R}
 

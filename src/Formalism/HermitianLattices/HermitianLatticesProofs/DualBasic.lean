@@ -44,8 +44,7 @@ theorem dualBasic : DualBasic := by
   · intro L x hx
     rw [dualBasic_mem_dual]
     intro y hy
-    have h1 : h x y ∈ (1 : Submodule R K) := (dualBasic_mem_dual h L y).1 hy x hx
-    have h2 := starOne _ h1
+    have h2 := starOne _ ((dualBasic_mem_dual h L y).1 hy x hx)
     have h3 := hs.eq x y
     simp only [starRingEnd_apply] at h3
     rwa [h3] at h2

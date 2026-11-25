@@ -168,8 +168,7 @@ lemma t_act (χ : D.X) (jt : Fin 4 → D.P.L.ι) (hjt : LB.Coh D.P.L (D.Oφ g.pG
   have hW1 : W' ≤ LB.wchart D.P.L (fun k => (lift (fst (Te D I e) (thickObj R I e G) ≫ g.i)
       (snd (Te D I e) (thickObj R I e G)) ≫ μ[thickObj R I e G]).left ≫ D.Oφ g.pG χ k) jt := by
     intro x hx
-    have h1 : (act g).left.base x ∈ ⋂ k, (D.Oφ g.pG χ k).base ⁻¹' (D.P.L.U (jt k) : Set _) := ha hx
-    exact Set.mem_iInter.2 fun k => Set.mem_iInter.1 h1 k
+    exact Set.mem_iInter.2 fun k => Set.mem_iInter.1 (ha hx) k
   have hW2 : W' ≤ LB.wchart D.P.L
       (Sum.elim PEmpty.elim fun k => (snd (Te D I e) (thickObj R I e G)).left ≫ D.Oφ g.pG χ k)
       (Sum.elim PEmpty.elim jt) := by

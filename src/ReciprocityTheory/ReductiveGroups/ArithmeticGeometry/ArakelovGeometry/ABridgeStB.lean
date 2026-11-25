@@ -96,8 +96,7 @@ theorem nilp_coeff_eq_zero {Ω : Type} [Field Ω] [CharZero Ω] {r : ℕ} {s : F
   funext k
   have hk : cA k ∈ (⊥ : Ideal A).jacobson := Ideal.mem_sInf.2 (fun J hJ => hmax J hJ.2 k)
   rw [hjac] at hk
-  have h0 : cA k = 0 := (Submodule.mem_bot _).1 hk
-  exact congrArg Subtype.val h0
+  exact congrArg Subtype.val ((Submodule.mem_bot _).1 hk)
 
 section Poly
 

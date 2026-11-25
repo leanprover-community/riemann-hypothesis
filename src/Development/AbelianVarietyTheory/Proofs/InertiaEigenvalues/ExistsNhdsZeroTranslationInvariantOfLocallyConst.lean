@@ -60,8 +60,7 @@ theorem isTest_nhds_inv : ∀ (X : Type) [AddCommGroup X] [TopologicalSpace X] [
     have hy : ∀ᶠ z in 𝓝 y, f z = f y := (IsLocallyConstant.iff_eventually_eq f).1 hlc y
     have hc : Filter.Tendsto (fun p : X × X => p.2 + p.1) (𝓝 ((0 : X), y)) (𝓝 y) := by
       have hcont : Continuous fun p : X × X => p.2 + p.1 := continuous_snd.add continuous_fst
-      have := hcont.tendsto ((0 : X), y)
-      simpa only [add_zero] using this
+      simpa only [add_zero] using hcont.tendsto ((0 : X), y)
     have h2 : Filter.Tendsto (fun p : X × X => p.2) (𝓝 ((0 : X), y)) (𝓝 y) :=
       (continuous_snd.tendsto ((0 : X), y))
     filter_upwards [hc.eventually hy, h2.eventually hy] with p hp1 hp2

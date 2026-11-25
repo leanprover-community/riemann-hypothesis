@@ -572,8 +572,7 @@ theorem nonStationary_main : NonStationary := by
       exact ⟨r, hr, by rw [e, hν]⟩)
     have hP : ∏ i, ((ϖ : K) ^ a * xi i) ∈ R := R.prod_mem fun i _ => hxiR i
     have eP : ∏ i, ((ϖ : K) ^ a * xi i) = (ϖ : K) ^ (a * m) * ∏ i, xi i := by
-      rw [Finset.prod_mul_distrib]
-      simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+      simp only [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
       ring
     have hZ : (D' : K) * (∏ i, xi i) * μ ^ 2 * ρ * ti ∈ R := by
       have e3 : (D' : K) * (∏ i, xi i) * μ ^ 2 * ρ * ti =

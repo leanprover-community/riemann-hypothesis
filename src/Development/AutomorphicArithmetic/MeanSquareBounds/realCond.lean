@@ -75,8 +75,7 @@ private theorem conductor_le_of_quadratic_squares {N M : ℕ} [NeZero N] (χ : D
     have huv : (u : ZMod N) = v ^ 2 := by
       rw [hv, ← ha, ha']; push_cast; ring
     have hvu : IsUnit v := by
-      have : IsUnit (v ^ 2) := huv ▸ u.isUnit
-      exact (isUnit_pow_iff two_ne_zero).mp this
+      exact (isUnit_pow_iff two_ne_zero).mp (huv ▸ u.isUnit : IsUnit (v ^ 2))
     ext
     rw [MulChar.coe_toUnitHom, huv, map_pow, ← MulChar.pow_apply' χ two_ne_zero, h2,
       MulChar.one_apply hvu, Units.val_one]
@@ -133,8 +132,7 @@ theorem real_cond :
     have hk3 : k ≤ 3 := by
       by_contra hc
       exact real_cond_two χ hp h2 ((pow_dvd_pow 2 (by omega)).trans hk)
-    have : 2 ^ k ∣ 8 := pow_dvd_pow 2 hk3
-    exact ((this.trans h8).mul_right q).mul_right d
+    exact (((pow_dvd_pow 2 hk3 : 2 ^ k ∣ 8).trans h8).mul_right q).mul_right d
   · have hk1 : k ≤ 1 := by
       by_contra hc
       exact real_cond_odd χ hp h2 hpp hp2 ((pow_dvd_pow p (by omega)).trans hk)

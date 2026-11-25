@@ -81,8 +81,7 @@ theorem SmoothVolume.isOpenPosMeasure (dV : SmoothVolume A) : dV.μ.IsOpenPosMea
   have hxO : A.chart j x ∈ O :=
     ⟨(A.chart j).map_source hx, by simpa [(A.chart j).left_inv hx] using hxU⟩
   have hOt : O ⊆ (A.chart j).target := inter_subset_left
-  have hmeas : Measurable (U.indicator (1 : X → ℝ≥0∞)) := measurable_one.indicator hU.measurableSet
-  have h1 := dV.chart_lintegral j _ hmeas
+  have h1 := dV.chart_lintegral j _ (measurable_one.indicator hU.measurableSet)
   have hL : ∫⁻ y in (A.chart j).source, U.indicator (1 : X → ℝ≥0∞) y ∂dV.μ = 0 := by
     rw [lintegral_indicator_one hU.measurableSet, Measure.restrict_apply hU.measurableSet]
     exact measure_mono_null inter_subset_left hzero

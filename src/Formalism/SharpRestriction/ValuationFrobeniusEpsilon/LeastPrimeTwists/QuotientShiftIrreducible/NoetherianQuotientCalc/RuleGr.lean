@@ -120,14 +120,13 @@ theorem Std.isNoetherianRing [IsLocalRing B] [GradedAlgebra 𝒜] (h : Std 𝒜)
       exact S.algebraMap_mem b
     | succ n ih =>
       intro m hm hs
-      have hex : ∃ i, 0 < m i := by
+      obtain ⟨i, hi⟩ : ∃ i, 0 < m i := by
         by_contra hcon
         push Not at hcon
         have : ∑ i, m i ≤ 0 := Finset.sum_nonpos (fun i _ => hcon i)
         rw [hs] at this
         push_cast at this
         omega
-      obtain ⟨i, hi⟩ := hex
       have hm' : 0 ≤ m - e i := by
         intro j
         by_cases hj : j = i

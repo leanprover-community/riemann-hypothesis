@@ -150,8 +150,7 @@ theorem li_map {K L : Type*} [Field K] [Field L] (σ : K →+* L) {n m : Type*} 
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at h0
     have h1 := congrArg σ h0
 
-    rw [map_sum] at h1
-    simp only [map_mul] at h1
+    simp only [map_sum, map_mul] at h1
     rw [h1, Pi.single_apply]
     split_ifs <;> simp
   rw [Fintype.linearIndependent_iff]

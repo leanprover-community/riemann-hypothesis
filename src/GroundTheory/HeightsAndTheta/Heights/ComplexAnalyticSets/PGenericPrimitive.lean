@@ -72,8 +72,7 @@ theorem GenericPrimitive.proof : GenericPrimitive.Statement := by
   · intro c hc
     by_contra hne
     rw [map_prod, Finset.prod_ne_zero_iff] at hc
-    have hmem : IntermediateField.adjoin K {∑ j, c j • x j} ∈ S := Finset.mem_filter.2 ⟨Finset.mem_univ _, hne⟩
-    apply hc _ hmem
+    apply hc _ (Finset.mem_filter.2 ⟨Finset.mem_univ _, hne⟩)
     rw [eval_linearFormPoly]
     apply (hφ _ hne).2
     show f c ∈ IntermediateField.adjoin K {∑ j, c j • x j}

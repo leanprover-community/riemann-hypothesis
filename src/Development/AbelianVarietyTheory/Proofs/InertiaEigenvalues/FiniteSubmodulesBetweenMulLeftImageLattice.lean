@@ -67,9 +67,8 @@ theorem finite_between_mulLat (K : UQ) (B : InvAlg K) (L : Submodule K.O B.A) (h
     {M : Submodule K.O B.A | mulLat K.O (algebraMap K.O B.A c) L ≤ M ∧ M ≤ L}.Finite := by
   haveI := finite_quot_span_of_ne_zero K.O c hc
   haveI : Module.Finite K.O L := Module.Finite.iff_fg.mpr hL.1
-  have hfg : (⊤ : Submodule K.O L).FG := Module.Finite.fg_top
   set S : Submodule K.O L := Ideal.span {c} • (⊤ : Submodule K.O L) with hS
-  haveI : Finite (L ⧸ S) := Submodule.finite_quotient_smul _ hfg
+  haveI : Finite (L ⧸ S) := Submodule.finite_quotient_smul _ Module.Finite.fg_top
   haveI : Finite (Submodule K.O (L ⧸ S)) :=
     Finite.of_injective (fun P : Submodule K.O (L ⧸ S) => (P : Set (L ⧸ S))) SetLike.coe_injective
   let f : Submodule K.O B.A → Submodule K.O (L ⧸ S) := fun M => (M.comap L.subtype).map S.mkQ
@@ -78,11 +77,10 @@ theorem finite_between_mulLat (K : UQ) (B : InvAlg K) (L : Submodule K.O B.A) (h
     rw [hS, Submodule.smul_le]
     intro r hr x _
     obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.1 hr
-    have hx : algebraMap K.O B.A c * (x : B.A) ∈ M := hM ⟨x, x.2, rfl⟩
     have : ((a * c) • x : L) = (a • (algebraMap K.O B.A c * (x : B.A)) : B.A) := by
       rw [Submodule.coe_smul, ← Algebra.smul_def, smul_smul]
     rw [Submodule.mem_comap, Submodule.subtype_apply, this]
-    exact M.smul_mem a hx
+    exact M.smul_mem a (hM ⟨x, x.2, rfl⟩)
   refine Set.Finite.of_finite_image (f := f) (Set.toFinite _) ?_
   intro M₁ h₁ M₂ h₂ heq
   have e1 : M₁.comap L.subtype = M₂.comap L.subtype := by

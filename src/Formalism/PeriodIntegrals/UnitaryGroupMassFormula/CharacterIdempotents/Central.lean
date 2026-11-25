@@ -23,8 +23,7 @@ theorem coeff_charIdem (V : FDRep ℂ G) (g : G) :
 private theorem charIdem_mul_single_one_comm (V : FDRep ℂ G) (h : G) :
     PI.CharIdem.charIdem V * MonoidAlgebra.single h (1 : ℂ) = MonoidAlgebra.single h (1 : ℂ) * PI.CharIdem.charIdem V := by
   unfold PI.CharIdem.charIdem
-  rw [Finset.sum_mul, Finset.mul_sum]
-  simp only [MonoidAlgebra.single_mul_single, mul_one, one_mul]
+  simp only [Finset.sum_mul, Finset.mul_sum, MonoidAlgebra.single_mul_single, mul_one, one_mul]
   let e : G ≃ G := ⟨fun g => h⁻¹ * g * h, fun g => h * g * h⁻¹, fun g => by group, fun g => by group⟩
   refine Fintype.sum_equiv e _ _ (fun g => ?_)
   have he : h * e g = g * h := by

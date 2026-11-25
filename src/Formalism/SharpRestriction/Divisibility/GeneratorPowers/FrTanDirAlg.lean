@@ -87,8 +87,7 @@ theorem decomp_of_inv (ρ : 𝓞 E →+* Module.End R M) (χ : ι → (𝓞 E �
       rw [← hAC σ' τ]; exact Finset.sum_congr rfl fun i _ => mul_comm _ _]
     split_ifs <;> simp
   have h0 : Q σ (∑ σ', mσ σ') = 0 := by
-    rw [hsum]
-    simp [hQ]
+    simp [hsum, hQ]
   rw [hlin] at h0
   simpa [hQe] using h0
 

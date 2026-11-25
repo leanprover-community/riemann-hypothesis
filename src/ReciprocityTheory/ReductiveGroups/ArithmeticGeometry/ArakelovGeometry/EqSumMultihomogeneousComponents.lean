@@ -27,8 +27,7 @@ open Classical in
 theorem coeff_i2comp (a : K → ℕ) (h : MRing ι) (m : (Σ k, ι k) →₀ ℕ) :
     AddMonoidAlgebra.coeff (i2comp a h) m = if i2bdeg m = a then AddMonoidAlgebra.coeff h m else 0 := by
   unfold i2comp
-  rw [coeff_sum]
-  simp only [coeff_monomial]
+  simp only [coeff_sum, coeff_monomial]
   rw [Finset.sum_ite_eq']
   by_cases h0 : AddMonoidAlgebra.coeff h m = 0 <;> by_cases e : i2bdeg m = a <;> simp [Finset.mem_filter, mem_support_iff, h0, e]
 

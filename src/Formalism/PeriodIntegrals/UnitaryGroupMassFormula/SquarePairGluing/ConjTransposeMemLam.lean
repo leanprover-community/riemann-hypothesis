@@ -128,8 +128,7 @@ theorem mem_of_local {V : Type*} [AddCommGroup V] (Y : AddSubgroup V) (x : V)
     have hp := Nat.minFac_prime hna
     obtain ⟨t, ht, htY⟩ := h _ hp
     apply ht
-    have hpn : ((n.natAbs.minFac : ℕ) : ℤ) ∣ n := Int.ofNat_dvd_left.2 (Nat.minFac_dvd _)
-    exact hpn.trans ((hmem t).1 htY)
+    exact (Int.ofNat_dvd_left.2 (Nat.minFac_dvd _)).trans ((hmem t).1 htY)
   have := (hmem 1).2 h1
   rwa [one_smul] at this
 

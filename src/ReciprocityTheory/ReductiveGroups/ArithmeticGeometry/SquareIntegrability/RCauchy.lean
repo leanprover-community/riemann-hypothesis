@@ -51,8 +51,7 @@ theorem iter_step_bound {N : ℕ} (F : (Fin N → ℂ) → ℂ) (hF : Differenti
     set g : ℂ → ℂ := fun w => A (x + w • e) v with hg
     have hpath : ∀ w0 : ℂ, HasDerivAt (fun w : ℂ => x + w • e) e w0 := by
       intro w0
-      have := ((hasDerivAt_id w0).smul_const e).const_add x
-      simpa using this
+      simpa using ((hasDerivAt_id w0).smul_const e).const_add x
     have hgd : ∀ w0 : ℂ, HasDerivAt g (fderiv ℂ A (x + w0 • e) e v) w0 := by
       intro w0
       have h1 := (hD (x + w0 • e)).hasFDerivAt.comp_hasDerivAt w0 (hpath w0)

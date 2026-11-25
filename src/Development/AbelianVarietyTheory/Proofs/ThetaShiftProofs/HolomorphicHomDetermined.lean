@@ -429,8 +429,7 @@ omit [GrpObj G] in
 theorem IsDerivAt.over {a : V → (Over.mk y ⟶ G)} {z w : V} {v : Sp (DualNumber ℂ) ⟶ G.left}
     (h : IsDerivAt (fun t => (a t).left) z w v) : v ≫ G.hom = (epsPt y).hom := by
   have h1 := h.comp G.hom
-  have h2 : (fun t => (a t).left ≫ G.hom) = fun _ => y := funext fun t => Over.w (a t)
-  exact (h2 ▸ h1).unique (isDerivAt_const y z w)
+  exact ((funext fun t => Over.w (a t)) ▸ h1).unique (isDerivAt_const y z w)
 
 
 omit [GrpObj G] in
@@ -659,8 +658,7 @@ theorem differentiableOn_linear {P : Type} [NormedAddCommGroup P] [NormedSpace �
   refine (hI.clm_comp hN).congr_of_eventuallyEq ?_
   filter_upwards [hinv, eventually_all.2 hmn] with b hb hb'
   ext1 z
-  have : M b (h b z) = N b z := funext fun i => hb' i z
-  exact (hb.inverse_apply_eq.2 this.symm).symm
+  exact (hb.inverse_apply_eq.2 (funext fun i => hb' i z : M b (h b z) = N b z).symm).symm
 
 end Linear
 

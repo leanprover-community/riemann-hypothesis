@@ -34,10 +34,9 @@ theorem IrreducibleFiniteGermProjectionOpenAt.proof
       isClosed_closedBall isClosed_singleton
   have hKV : A '' K ⊆ A '' (X ∩ V) := by
     refine image_mono fun z hz => ?_
-    have hzN : z ∈ N := (hcb hz.1).2
     have hzX : z ∈ X ∩ N := by
       rw [hXN]
-      exact ⟨hzN, fun i => by simpa using ((mem_iInter.mp hz.2) i).2⟩
+      exact ⟨((hcb hz.1).2), fun i => by simpa using ((mem_iInter.mp hz.2) i).2⟩
     exact ⟨hzX.1, (hcb hz.1).1⟩
   have hball : ∀ z ∈ X ∩ ball x r', z ∈ K := by
     intro z hz

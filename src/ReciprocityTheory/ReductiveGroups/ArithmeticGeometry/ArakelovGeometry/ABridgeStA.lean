@@ -29,8 +29,7 @@ theorem eval_smul_of_homog {R : Type*} [CommRing R] {φ : MvPolynomial J R} {d :
   simp only [map_sum, Finset.mul_sum, eval_monomial]
   refine Finset.sum_congr rfl fun s hs => ?_
   have hd : ∑ i ∈ s.support, s i = d := by
-    have := hφ (mem_support_iff.mp hs)
-    simpa [Finsupp.weight_apply, Finsupp.sum] using this
+    simpa [Finsupp.weight_apply, Finsupp.sum] using hφ (mem_support_iff.mp hs)
   simp only [Finsupp.prod, Pi.smul_apply, smul_eq_mul, mul_pow, Finset.prod_mul_distrib,
     Finset.prod_pow_eq_pow_sum, hd]
   ring

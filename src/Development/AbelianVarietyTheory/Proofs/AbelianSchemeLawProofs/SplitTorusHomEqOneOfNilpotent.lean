@@ -373,8 +373,7 @@ theorem isIso_torusPt_of :
       congr 2
       apply ringHom_ext_int_torus
       intro y
-      rw [h1]
-      simp
+      simp [h1]
     · exact (Over.w _).trans hp.isoPullback_hom_snd.symm
   rw [this]
   exact hp.isoPullback.isIso_hom
@@ -488,8 +487,7 @@ theorem splitTorus_hom_eq_one_of_nilpotent (A : Type) [CommRing A] [IsLocalRing 
     | zero =>
       intro a
       rw [← hφ, ← pt_one j ε hε, ← Category.assoc, ← spm_comp] at h0
-      have := AlgHom.congr_fun (pt_injective j h0) a
-      exact Ideal.Quotient.eq.1 this
+      exact Ideal.Quotient.eq.1 (AlgHom.congr_fun (pt_injective j h0) a)
     | succ k ih =>
       intro a
       have hd : ∀ (g : X →+ X × X) a, (dm A X g).comp φ a - algebraMap A _ (ε a) =

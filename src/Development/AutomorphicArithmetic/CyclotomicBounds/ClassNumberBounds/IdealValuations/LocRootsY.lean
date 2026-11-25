@@ -71,12 +71,10 @@ private theorem pow_congr {l : ℕ} [Fact (Nat.Prime l)] {x : PadicAlgCl l} (hx 
     ∃ n : ℕ, 0 < n ∧ ‖x ^ n - 1‖ < 1 := by
   have hint : IsIntegral ℚ_[l] x := (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
   let F := IntermediateField.adjoin ℚ_[l] {x}
-  have hF : FiniteDimensional ℚ_[l] F := IntermediateField.adjoin.finiteDimensional hint
   let V : Submodule ℚ_[l] (PadicAlgCl l) := F.toSubalgebra.toSubmodule
-  have hV : FiniteDimensional ℚ_[l] V := hF
+  have hV : FiniteDimensional ℚ_[l] V := IntermediateField.adjoin.finiteDimensional hint
   have hP : ProperSpace V := FiniteDimensional.proper ℚ_[l] V
-  have hxF : x ∈ F := IntermediateField.mem_adjoin_simple_self ℚ_[l] x
-  let u : ℕ → V := fun n => ⟨x ^ n, pow_mem hxF n⟩
+  let u : ℕ → V := fun n => ⟨x ^ n, pow_mem (IntermediateField.mem_adjoin_simple_self ℚ_[l] x) n⟩
   have hu : ∀ n, u n ∈ Metric.closedBall (0 : V) 1 := by
     intro n
     rw [mem_closedBall_zero_iff]

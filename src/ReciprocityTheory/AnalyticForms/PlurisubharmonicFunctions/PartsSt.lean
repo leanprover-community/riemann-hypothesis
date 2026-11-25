@@ -212,8 +212,7 @@ theorem det_single_add {n : ℕ} (j : Fin (n + 1)) (M : Matrix (Fin (n + 1)) (Fi
   · have hs : ((M.updateRow j (Pi.single j 1)).submatrix j.succAbove j.succAbove) =
         M.submatrix j.succAbove j.succAbove := by
       ext a b; simp
-    rw [hs]
-    simp [Even.neg_one_pow ⟨(j : ℕ), rfl⟩]
+    simp [hs, Even.neg_one_pow ⟨(j : ℕ), rfl⟩]
   · intro k _ hk; simp [hk]
   · simp
 

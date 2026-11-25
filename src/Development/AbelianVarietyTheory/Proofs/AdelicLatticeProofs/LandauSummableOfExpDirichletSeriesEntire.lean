@@ -76,8 +76,7 @@ private theorem hasSum_prod_fin_pow {ι : Type} (z : ι → ℂ) (g : ℂ)
     have key : ∀ x : ι × (Fin n → ι), (∏ k, z (e x k)) = z x.1 * ∏ k, z (x.2 k) := by
       intro x
       change ∏ k, z ((Fin.cons x.1 x.2 : Fin (n + 1) → ι) k) = _
-      rw [Fin.prod_univ_succ]
-      simp only [Fin.cons_zero, Fin.cons_succ]
+      simp only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
     have hfun : (fun f : Fin (n + 1) → ι => ∏ k, z (f k)) ∘ e =
         fun x : ι × (Fin n → ι) => z x.1 * ∏ k, z (x.2 k) := funext key
     have hnorm : (fun f : Fin (n + 1) → ι => ‖∏ k, z (f k)‖) ∘ e =
@@ -322,8 +321,7 @@ theorem _root_.GlobalTheory.landau_exp_summable : ∀ (ι : Type) (a l : ι → 
     (summable_prod_of_nonneg (fun q => hT 2 (by norm_num) q.swap)).mpr
       ⟨fun n => hK 2 (by norm_num) n, hS2⟩
   have hall' : Summable (T 2) := by
-    have := hall.prod_symm
-    simpa using this
+    simpa using hall.prod_symm
   have hbsum : Summable b := by
     have := ((summable_prod_of_nonneg (hT 2 (by norm_num))).mp hall').2
     simp only [fun p => (hfib 2 p).tsum_eq, sub_self, mul_zero, neg_zero, Real.exp_zero,

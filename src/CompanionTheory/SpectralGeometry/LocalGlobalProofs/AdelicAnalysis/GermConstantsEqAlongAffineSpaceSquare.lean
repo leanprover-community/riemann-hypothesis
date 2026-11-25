@@ -80,8 +80,7 @@ theorem hform_single' (i j : n) :
   have : σ ∘ (Pi.single i 1 : n → A) = Pi.single i 1 := by
     funext k
     by_cases h : k = i <;> simp [h]
-  rw [hform_eq_dot, this]
-  simp
+  simp [hform_eq_dot, this]
 
 theorem qrMat_isometry (hσ : ∀ a, σ (σ a) = a) (hJ : ∀ i j, σ (J j i) = J i j) (d : n → A) (c : A)
     (hc : c + σ c = c * σ c * hform σ J d d) :
@@ -149,8 +148,7 @@ theorem exists_unitary_carry (A : Type) [CommRing A] (σ : A →+* A) (hσ : ∀
     rw [← mulVec_mulVec, h2, h3]
   · intro z hxz hyz
     have hdz : hform σ J d z = 0 := by
-      rw [hd, hform_sub_left, hxz, hyz]
-      simp
+      simp [hd, hform_sub_left, hxz, hyz]
     show (qrMat σ J y ((1 - σ ε) * bi) * qrMat σ J d ui) *ᵥ z = z
     have h2 : qrMat σ J d ui *ᵥ z = z := by
       rw [qrMat_mulVec, hdz, mul_zero, zero_smul, sub_zero]

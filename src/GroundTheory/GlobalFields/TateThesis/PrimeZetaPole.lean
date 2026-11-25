@@ -258,8 +258,7 @@ theorem sum_rpow_neg_le_dedekindZetaReal (T : Finset (Ideal (𝓞 K))) {s : ℝ}
 
 theorem one_le_dedekindZetaReal {s : ℝ} (hζ : Summable (dedekindZetaTerm K s)) :
     1 ≤ dedekindZetaReal K s := by
-  have := sum_rpow_neg_le_dedekindZetaReal {(⊤ : Ideal (𝓞 K))} hζ
-  simpa using this
+  simpa using sum_rpow_neg_le_dedekindZetaReal {(⊤ : Ideal (𝓞 K))} hζ
 
 theorem dedekindZetaReal_le_exp {s : ℝ} (hs : 1 < s) :
     dedekindZetaReal K s ≤

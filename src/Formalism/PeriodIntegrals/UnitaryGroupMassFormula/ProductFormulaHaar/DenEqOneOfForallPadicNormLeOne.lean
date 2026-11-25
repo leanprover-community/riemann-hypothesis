@@ -19,12 +19,11 @@ private theorem padicNorm_le_one_iff_not_dvd_den {q : ℕ} [Fact q.Prime] (r : �
     rw [← padicNorm.mul, Rat.mul_den_eq_num]
   constructor
   · intro h hd
-    have h1 : padicNorm q (r.den : ℚ) < 1 := (padicNorm.nat_lt_one_iff _).2 hd
     have h2 : padicNorm q (r.num : ℚ) < 1 := by
       rw [← hmul]
       calc padicNorm q r * padicNorm q (r.den : ℚ) ≤ 1 * padicNorm q (r.den : ℚ) :=
             mul_le_mul_of_nonneg_right h (padicNorm.nonneg _)
-        _ < 1 := by rw [one_mul]; exact h1
+        _ < 1 := by rw [one_mul]; exact (padicNorm.nat_lt_one_iff _).2 hd
     have h4 : q ∣ r.num.natAbs := Int.natCast_dvd.1 ((padicNorm.int_lt_one_iff _).1 h2)
     have h5 := Nat.dvd_gcd h4 hd
     rw [r.reduced.gcd_eq_one] at h5

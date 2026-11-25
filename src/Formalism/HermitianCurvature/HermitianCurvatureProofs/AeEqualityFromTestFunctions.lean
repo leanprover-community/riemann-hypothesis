@@ -236,10 +236,9 @@ lemma integrable_test {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {w�
     (h₂ : IsTest w₂) {h : ℝ × ℝ → E} (hh : ContinuousOn h Quad) :
     Integrable (fun τ : ℝ × ℝ => (w₁ τ.1 * w₂ τ.2) • h τ) (volume.restrict Quad) := by
   have hK : IsCompact (tsupport w₁ ×ˢ tsupport w₂) := h₁.2.1.isCompact.prod h₂.2.1.isCompact
-  have hKQ : tsupport w₁ ×ˢ tsupport w₂ ⊆ Quad := prod_mono h₁.2.2 h₂.2.2
   have hc : ContinuousOn (fun τ : ℝ × ℝ => (w₁ τ.1 * w₂ τ.2) • h τ) (tsupport w₁ ×ˢ tsupport w₂) :=
     (((h₁.1.continuous.comp continuous_fst).mul (h₂.1.continuous.comp continuous_snd)).continuousOn).smul
-      (hh.mono hKQ)
+      (hh.mono (prod_mono h₁.2.2 h₂.2.2))
   have hs : Function.support (fun τ : ℝ × ℝ => (w₁ τ.1 * w₂ τ.2) • h τ) ⊆ tsupport w₁ ×ˢ tsupport w₂ := by
     intro τ hτ
     refine ⟨subset_tsupport _ fun h0 => hτ ?_, subset_tsupport _ fun h0 => hτ ?_⟩

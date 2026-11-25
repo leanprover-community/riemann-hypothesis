@@ -177,10 +177,9 @@ theorem proof : Statement.{u} := by
       let qZ : Z := ⟨⟨q', hq'p⟩, (memZ _).2 (((memZ _).1 q.1.2).trans hqq'.le)⟩
       let qU : U := ⟨qZ, comap_C_eq_bot hϖ q' hq'x⟩
       refine ⟨qU, hq'r, ?_⟩
-      have hlt : q < qU := (ltU _ _).2 hqq'
       calc ((n + 1 : ℕ) : ℕ∞) = (n : ℕ∞) + 1 := by push_cast; rfl
         _ ≤ Order.height q + 1 := add_le_add hq le_rfl
-        _ ≤ Order.height qU := Order.height_add_one_le hlt
+        _ ≤ Order.height qU := Order.height_add_one_le ((ltU _ _).2 hqq')
   have hbound : ∀ r : Z, Order.height r ≤ (⨆ q : U, Order.height q) + 1 := by
     intro r
     refine ENat.forall_natCast_le_iff_le.1 fun m hm => ?_

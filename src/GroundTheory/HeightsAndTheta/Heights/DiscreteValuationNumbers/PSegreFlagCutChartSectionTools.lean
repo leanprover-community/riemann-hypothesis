@@ -94,8 +94,7 @@ theorem bind₁_scale_of (o₀ : K₁) (u : MRing ι₂ O) (h : (Σ k, ι₁ k) 
     rw [← hmd, Finsupp.weight_apply, Finsupp.sum, Finset.sum_apply]
     refine Finset.sum_congr rfl fun v _ => ?_
     simp [mul_comm]
-  rw [bind₁_monomial, bind₁_monomial]
-  simp only [mul_pow, Finset.prod_mul_distrib, ← pow_mul]
+  simp only [bind₁_monomial, bind₁_monomial, mul_pow, Finset.prod_mul_distrib, ← pow_mul]
   rw [Finset.prod_pow_eq_pow_sum, hs]
   ring
 

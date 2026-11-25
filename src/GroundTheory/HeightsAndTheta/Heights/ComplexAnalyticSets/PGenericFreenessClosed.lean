@@ -115,8 +115,7 @@ theorem isLocalizedModule_powers_mul (a c : A) {M N P : Type*} [AddCommGroup M] 
     refine ⟨⟨(a * c) ^ (i + j), i + j, rfl⟩, ?_⟩
     simp only [Submonoid.smul_def] at hi ⊢
     have : (a * c) ^ (i + j) = a ^ j * c ^ i * (a ^ i * c ^ j) := by ring
-    rw [this]
-    simp only [mul_smul (a ^ j * c ^ i), mul_smul (a ^ i) (c ^ j), hi]
+    simp only [this, mul_smul (a ^ j * c ^ i), mul_smul (a ^ i) (c ^ j), hi]
 
 theorem free_away_mul {f : A} (g : A) {M : Type*} [AddCommGroup M] [Module A M]
     (hf : Module.Free (Localization.Away f) (LocalizedModule (Submonoid.powers f) M)) :

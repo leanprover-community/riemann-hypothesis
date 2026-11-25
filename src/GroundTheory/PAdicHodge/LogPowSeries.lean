@@ -71,8 +71,7 @@ theorem PowerSeries.log_subst_one_add_X_pow_sub_one (q : ℕ) :
   · have h0 : constantCoeff U = 0 := by simp [hU]
     have h1 : constantCoeff ((log ℚ).subst U) = 0 :=
       constantCoeff_subst_eq_zero h0 _ constantCoeff_log
-    rw [h1]
-    simp
+    simp [h1]
 
 theorem one_add_X_pow_sub_one_eq_coe (q : ℕ) :
     ((1 + X : ℚ⟦X⟧) ^ q - 1) =

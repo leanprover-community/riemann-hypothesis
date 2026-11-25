@@ -34,8 +34,7 @@ theorem prod_ofFn_update_eq {p : ℕ} (f : Fin p → 𝒰) (j : Fin p) :
         simp only [Function.update_apply, Fin.succ_inj]
       have e2 : Function.update f j'.succ v 0 = f 0 := by
         simp only [Function.update_apply, (Fin.succ_ne_zero j').symm, ite_false]
-      rw [List.ofFn_succ, List.prod_cons, e1, e2, h]
-      simp only [mul_assoc]
+      simp only [List.ofFn_succ, List.prod_cons, e1, e2, h, mul_assoc]
 
 theorem comm_prod_ofFn (y : 𝒰) {p : ℕ} (f : Fin p → 𝒰) :
     y * (List.ofFn f).prod - (List.ofFn f).prod * y =

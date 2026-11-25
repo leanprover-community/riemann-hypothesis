@@ -133,8 +133,7 @@ theorem homog : Homog := by
   set k : ℝ → F := fun s => s ^ q • w (s • p) v with hkdef
   have hscale : ∀ s : ℝ, w (s • p) (fun i => s • v i) = k s := by
     intro s
-    rw [ContinuousAlternatingMap.map_smul_univ]
-    simp [k, Finset.prod_const]
+    simp [ContinuousAlternatingMap.map_smul_univ, k, Finset.prod_const]
   have hk : ∀ s ∈ Set.Ioi (0 : ℝ), HasDerivAt k 0 s := by
     intro s hs
     have hs0 : s ≠ 0 := ne_of_gt hs
@@ -158,7 +157,6 @@ theorem homog : Homog := by
   have hconst := isOpen_Ioi.is_const_of_deriv_eq_zero isPreconnected_Ioi
     (fun s hs => (hk s hs).differentiableAt.differentiableWithinAt)
     (fun s hs => (hk s hs).deriv) (Set.mem_Ioi.mpr ht) (Set.mem_Ioi.mpr one_pos)
-  rw [hscale, hconst]
-  simp [k]
+  simp [hscale, hconst, k]
 
 end UpperTheory.V.Lit.Dr

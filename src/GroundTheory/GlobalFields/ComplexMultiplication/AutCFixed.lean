@@ -42,9 +42,8 @@ theorem exists_algEquiv_apply_eq_of_transcendental {x y : Ω} (hx : Transcendent
   obtain ⟨t₁, hxt, ht₁⟩ := exists_isTranscendenceBasis_superset (ind x hx)
   obtain ⟨t₂, hyt, ht₂⟩ := exists_isTranscendenceBasis_superset (ind y hy)
   have hx₁ : x ∈ t₁ := Set.singleton_subset_iff.mp hxt
-  have hy₂ : y ∈ t₂ := Set.singleton_subset_iff.mp hyt
   obtain ⟨f⟩ := Cardinal.eq.1 (ht₁.cardinalMk_eq_trdeg.trans ht₂.cardinalMk_eq_trdeg.symm)
-  let φ : t₁ ≃ t₂ := f.trans (Equiv.swap (f ⟨x, hx₁⟩) ⟨y, hy₂⟩)
+  let φ : t₁ ≃ t₂ := f.trans (Equiv.swap (f ⟨x, hx₁⟩) ⟨y, (Set.singleton_subset_iff.mp hyt)⟩)
   obtain ⟨σ, hσF, hσv⟩ :=
     exists_ringEquiv_extend_of_isTranscendenceBasis (RingEquiv.refl F) ht₁ ht₂ φ
   refine ⟨AlgEquiv.ofRingEquiv (f := σ) fun a => hσF a, ?_⟩

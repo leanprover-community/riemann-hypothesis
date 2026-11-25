@@ -81,8 +81,7 @@ theorem rowPart_single {r n : ℕ} (k : ℕ) (b : Fin r) (s : Fin n) :
   classical
   unfold rowPart
   simp only [rowDeg_single]
-  rw [Finset.sum_ite_eq]
-  simp
+  simp [Finset.sum_ite_eq]
 
 def rowTot {r n : ℕ} (m : Fin r × Fin n →₀ ℕ) : ℕ := ∑ a : Fin r, rowDeg m a
 

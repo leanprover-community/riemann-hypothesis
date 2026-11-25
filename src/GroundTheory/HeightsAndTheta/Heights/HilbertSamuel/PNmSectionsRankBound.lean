@@ -119,8 +119,7 @@ theorem proof (h₁ : NmSectionsFinite.Statement) (h₂ : SecMRankBound.Statemen
       ((AddMonoidHom.mulLeft u).comp (chartLatNm y a τ).subtype).codRestrict _
         (fun x => shift_mem y c a _ τ τ' ex hex x.2)
     refine ⟨F.toIntLinearMap, fun x x' hxx => ?_⟩
-    have h : u * (x : Ω) = u * x' := congrArg Subtype.val hxx
-    exact Subtype.ext (mul_left_cancel₀ hu h)
+    exact Subtype.ext (mul_left_cancel₀ hu (congrArg Subtype.val hxx))
   refine ⟨fun τ => ?_, Fintype.card J * C * ((τ₁ : ℝ) + 1) ^ D, by positivity, fun τ => ?_⟩
   · obtain ⟨f, hf⟩ := hmap τ
     have := (hbig (max τ τ₁) (le_max_right _ _)).1

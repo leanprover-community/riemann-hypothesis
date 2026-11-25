@@ -348,8 +348,7 @@ theorem eq_zero_iff (L : Submodule ℤ W) [DiscreteTopology L] [IsZLattice ℝ L
       push_cast
       simp only [mul_comm (m _ : ℂ), neg_mul])
   ext x
-  have := key (ω.repr x)
-  simpa using this
+  simpa using key (ω.repr x)
 
 end Lattice
 

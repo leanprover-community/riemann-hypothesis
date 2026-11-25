@@ -258,13 +258,11 @@ omit [IsAdicComplete (span {(p : R)}) R] in
 theorem p_dvd_sub_teich (x : Ainf p R) : (p : Ainf p R) ∣ x - teich p (x.coeff 0) := by
   rw [p_dvd_iff]
   change WittVector.constantCoeff (x - teich p (x.coeff 0)) = 0
-  rw [map_sub]
-  simp
+  simp [map_sub]
 
 theorem coeff_zero_xi (ϖ : PFlat p R) : (xi ϖ).coeff 0 = -ϖ.1 := by
   change WittVector.constantCoeff (xi ϖ) = _
-  rw [xi, map_sub, map_natCast]
-  simp
+  simp [xi, map_sub, map_natCast]
 
 
 omit [IsAdicComplete (span {(p : R)}) R] in

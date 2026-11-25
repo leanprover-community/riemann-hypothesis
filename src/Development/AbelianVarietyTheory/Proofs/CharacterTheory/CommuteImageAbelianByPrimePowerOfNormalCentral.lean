@@ -113,8 +113,7 @@ theorem _root_.GlobalTheory.BI.commute_all : ∀ (G : Type) [Group G] [Finite G]
       rw [map_mul, map_mul, mul_assoc, ← mul_assoc (φ b1), hb1, mul_assoc, ← mul_assoc,
         ← map_mul, ← zpow_add]
     rw [key i j b1 b2 hb1, key j i b2 b1 hb2, add_comm, hb1 b2]
-  have hgC : g ∈ C := Subgroup.mem_zpowers_iff.mpr ⟨1, by simp [hg]⟩
-  have hgZ : g ∈ Z := (hZ g).2 (hyp C hCn hCc g hgC)
+  have hgZ : g ∈ Z := (hZ g).2 (hyp C hCn hCc g (Subgroup.mem_zpowers_iff.mpr ⟨1, by simp [hg]⟩))
   apply hz1
   apply Subtype.ext
   rw [← hg]

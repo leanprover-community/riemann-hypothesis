@@ -116,8 +116,7 @@ theorem rdLin_of (h : RdExt) : RdLin := by
       eX, h n ε f' F' U' g X hU' hgU' hg hF' hfF' hX]
     have hD : HasFDerivAt (fun x => F x + c * F' x) (fderiv ℝ F g + c • fderiv ℝ F' g) g :=
       hFd.hasFDerivAt.add (hFd'.hasFDerivAt.const_mul c)
-    rw [hD.fderiv]
-    simp
+    simp [hD.fderiv]
 
 theorem right_derivative_linear : RdLin := rdLin_of right_derivative_extends
 

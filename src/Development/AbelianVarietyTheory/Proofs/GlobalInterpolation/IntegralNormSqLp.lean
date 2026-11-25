@@ -62,9 +62,8 @@ theorem fourier_ae_eq {f : ℝ → ℂ} (hf : Integrable f) (h2 : MemLp f 2) :
   refine ae_eq_of_integral_contDiff_smul_eq (continuous_fourier hf).locallyIntegrable
     ((Lp.memLp _).locallyIntegrable (by norm_num)) ?_
   intro g hg hc
-  have hc' : HasCompactSupport (fun x => (g x : ℂ)) := hc.comp_left (g := fun r : ℝ => (r : ℂ)) rfl
   have hg' := Complex.ofRealCLM.contDiff.comp hg
-  set φ : 𝓢(ℝ, ℂ) := hc'.toSchwartzMap hg' with hφ
+  set φ : 𝓢(ℝ, ℂ) := (hc.comp_left (g := fun r : ℝ => (r : ℂ)) rfl).toSchwartzMap hg' with hφ
   have hφx : ∀ x, φ x = (g x : ℂ) := fun x => rfl
   have h1 := congrArg (fun D => D φ) (Lp.fourier_toTemperedDistribution_eq (h2.toLp f))
   simp only [TemperedDistribution.fourier_apply, Lp.toTemperedDistribution_apply] at h1
@@ -80,8 +79,7 @@ theorem fourier_ae_eq {f : ℝ → ℂ} (hf : Integrable f) (h2 : MemLp f 2) :
 
 theorem integral_norm_sq_Lp (F : Lp ℂ 2 (volume : Measure ℝ)) : ∫ x, ‖F x‖ ^ 2 = ‖F‖ ^ 2 := by
   have := L2.inner_def (𝕜 := ℂ) F F
-  rw [inner_self_eq_norm_sq_to_K] at this
-  simp only [inner_self_eq_norm_sq_to_K] at this
+  simp only [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at this
   have h : ((∫ x, ‖F x‖ ^ 2 : ℝ) : ℂ) = ((‖F‖ ^ 2 : ℝ) : ℂ) := by
     rw [← integral_complex_ofReal]
     push_cast

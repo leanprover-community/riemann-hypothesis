@@ -229,8 +229,7 @@ theorem hessian_determinant : Formalism.FourierDecayAlt.G.HessDet := by
   have hJ : (Matrix.of fun _ _ => (1 : ℂ) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) =
       Matrix.replicateCol Unit (fun _ => (1 : ℂ)) * Matrix.replicateRow Unit (fun _ => (1 : ℂ)) := by
     ext i j; simp [Matrix.mul_apply]
-  rw [hJ, Matrix.det_one_add_replicateCol_mul_replicateRow]
-  simp [dotProduct]
+  simp [hJ, Matrix.det_one_add_replicateCol_mul_replicateRow, dotProduct]
   ring
 
 theorem gradient_lower_bound : Formalism.FourierDecayAlt.G.GradLower := by

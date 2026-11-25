@@ -86,8 +86,7 @@ theorem _root_.GlobalTheory.exists_representatives_mod_nsmul : ∀ (X : Type) [A
     rw [Equiv.symm_apply_apply]
     funext j
     have h : b.repr χ j = d i j + k * b.repr m j := by
-      have := congrArg (fun z => b.repr z j) hm
-      simpa only [coord, rep] using this
+      simpa only [coord, rep] using congrArg (fun z => b.repr z j) hm
     have hd : d i j < k := by
       show ((finFunctionFinEquiv.symm i j : ℕ) : ℤ) < k
       exact_mod_cast (finFunctionFinEquiv.symm i j).isLt

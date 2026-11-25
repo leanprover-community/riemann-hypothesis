@@ -56,8 +56,7 @@ theorem pshShift_local (A : FinHolAtlas e X) (Ω : LocPot X) (hΩ : IsPotential 
     refine hpos p j q.1 (hsub hq.1) q.2 ?_
     intro h0
     have h1 := hq.2
-    rw [h0] at h1
-    simp at h1
+    simp [h0] at h1
   have hg : ContinuousOn
       (fun q : (Fin e → ℂ) × (Fin e → ℂ) => levi ψ q.1 q.2 / levi φ q.1 q.2) K :=
     (hLψ.mono hKS).div (hLφ.mono hKS) (fun q hq => (hposK q hq).ne')

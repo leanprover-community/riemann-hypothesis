@@ -179,8 +179,7 @@ theorem isKFinite_derivOp {v : E} (hv : h.IsSmoothVector π v) (hK : π.IsKFinit
       conv_lhs => rw [← b.sum_repr Y]
       show h.derivEndL π (∑ i, b.repr Y i • b i) = _
 
-      rw [map_sum]
-      simp only [map_smul]
+      simp only [map_sum, map_smul]
       rfl
     rw [e, LinearMap.sum_apply]
     refine Submodule.sum_mem _ fun i _ => ?_

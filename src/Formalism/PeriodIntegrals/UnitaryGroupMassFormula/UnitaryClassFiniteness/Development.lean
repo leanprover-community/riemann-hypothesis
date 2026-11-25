@@ -43,8 +43,7 @@ def emb : UJ (σ : E →+* E) J →* HA (AF F) σ J where
   map_mul' a b := Subtype.ext (map_mul _ _ _)
 
 theorem emb_mem (g : UJ (σ : E →+* E) J) : emb σ J g ∈ GamG σ J := by
-  have : (show HR (AF F) σ J from emb σ J g).1 ∈ HFin (AF F) σ J := ⟨g.1, g.2, rfl⟩
-  exact this
+  exact ⟨g.1, g.2, rfl⟩
 
 theorem finMat_emb (g : UJ (σ : E →+* E) J) :
     finMat σ J (emb σ J g) = ((g : GL (Fin M) E) : Matrix (Fin M) (Fin M) E).map (inclR (Af F)) := by

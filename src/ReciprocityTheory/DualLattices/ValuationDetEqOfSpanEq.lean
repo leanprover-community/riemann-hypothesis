@@ -95,8 +95,7 @@ theorem valuation_det_eq_of_span_eq (v : Valuation C NNReal) (hv : v.Integers R)
     choose w hw hBw using hcol
     have hBP : B = B' * Matrix.of fun x j => w j x := by
       ext x j
-      have := congrFun (hBw j) x
-      simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct] using this
+      simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct] using congrFun (hBw j) x
     have hle1 : v (Matrix.of fun x j => w j x).det ≤ 1 :=
       valuation_det_le_one v hv _ fun x j => hw j x
     rw [hBP, Matrix.det_mul, map_mul]

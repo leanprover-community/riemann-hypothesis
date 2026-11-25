@@ -146,14 +146,13 @@ theorem compat_trans {e : ℕ} (A : FinHolAtlas e X) {ψ₁ ψ₂ : OpenPartialH
     (h₁ : IsCompatChart A ψ₁) (h₂ : IsCompatChart A ψ₂) {v : Fin e → ℂ} (hv : v ∈ ψ₁.target)
     (hv2 : ψ₁.symm v ∈ ψ₂.source) : AnalyticAt ℂ (ψ₂ ∘ ψ₁.symm) v := by
   obtain ⟨j, hj⟩ := A.cover (ψ₁.symm v)
-  have ha : AnalyticAt ℂ (A.chart j ∘ ψ₁.symm) v := (h₁ j).2 v ⟨hv, hj⟩
   have hb : AnalyticAt ℂ (ψ₂ ∘ (A.chart j).symm) ((A.chart j ∘ ψ₁.symm) v) := by
     apply (h₂ j).1
     refine ⟨(A.chart j).map_source hj, ?_⟩
     show (A.chart j).symm ((A.chart j) (ψ₁.symm v)) ∈ ψ₂.source
     rw [(A.chart j).left_inv hj]
     exact hv2
-  have hc := hb.comp ha
+  have hc := hb.comp ((h₁ j).2 v ⟨hv, hj⟩)
   apply hc.congr
   have hn : ψ₁.symm ⁻¹' (A.chart j).source ∈ 𝓝 v :=
     (ψ₁.continuousAt_symm hv).preimage_mem_nhds ((A.chart j).open_source.mem_nhds hj)

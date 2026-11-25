@@ -54,8 +54,7 @@ private theorem sigL_zero' {K : Type} [Field K] (Δ τ : K) : sigL (0 : EL Δ τ
 
 private theorem herm_pair_zero_eq {K : Type} [Field K] (Δ τ : K) (c : K) (m : EL Δ τ) (x : Sp Δ τ) (a : Lsq K Δ) :
     herm c m x ((a, 0) : Sp Δ τ) = algebraMap K (Lsq K Δ) c * x.1 * star a := by
-  rw [herm.eq_1]
-  simp [sigL_zero']
+  simp [herm.eq_1, sigL_zero']
 
 theorem UpperTheory.V.Z.Sym.Loc.One.fst :
     ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] (Δ τ : K), IsLoc O Δ →
@@ -68,8 +67,7 @@ theorem UpperTheory.V.Z.Sym.Loc.One.fst :
     intro S hS b hb
     rw [← hS.stab]
     refine ⟨(b, 0), hb, ?_⟩
-    rw [semi.eq_1]
-    simp [sigL_zero']
+    simp [semi.eq_1, sigL_zero']
   have hsq : ∀ S : Set (Sp Δ τ), IsFix O c d m S → ∀ b : Lsq K Δ,
       ((b, 0) : Sp Δ τ) ∈ S → IsInt O (algebraMap K (Lsq K Δ) c * b * b) := by
     intro S hS b hb

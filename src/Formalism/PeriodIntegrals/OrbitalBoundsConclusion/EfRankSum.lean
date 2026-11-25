@@ -26,9 +26,8 @@ theorem isTorsionFree_alg (O : Type) [CommRing O] [IsDomain O]
     Module.IsTorsionFree O A := by
   refine ⟨fun r hr a b hab => ?_⟩
   have hab' : r • a = r • b := hab
-  have hr0 : r ≠ 0 := hr.ne_zero
   have hK : algebraMap O K r ≠ 0 := by
-    simpa using (IsFractionRing.injective O K).ne hr0
+    simpa using (IsFractionRing.injective O K).ne hr.ne_zero
   have h1 : (algebraMap O K r) • a = (algebraMap O K r) • b := by
     rwa [algebraMap_smul, algebraMap_smul]
   calc a = ((algebraMap O K r)⁻¹ * algebraMap O K r) • a := by rw [inv_mul_cancel₀ hK, one_smul]

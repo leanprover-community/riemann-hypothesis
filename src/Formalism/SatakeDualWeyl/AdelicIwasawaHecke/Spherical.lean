@@ -126,8 +126,7 @@ private lemma exists_GLint_mul_clears_below_diag_from {n : ℕ} (M : Matrix (Fin
         · exact Subring.one_mem _
         · exact Subring.zero_mem _)
       have hdiag : (M * (k1 : Matrix (Fin n) (Fin n) (v.adicCompletion F))) i0 i0 = M i0 i0 + M i0 p := by
-        rw [hk1eq, mul_column_operation_apply]
-        simp [Ne.symm hpi0]
+        simp [hk1eq, mul_column_operation_apply, Ne.symm hpi0]
       refine ⟨k1, hk1, ?_, ?_, ?_⟩
       · intro i j hi hj
         rw [hk1eq, mul_column_operation_apply, hM i j hi hj, hM i p hi (lt_of_le_of_lt hp hi)]

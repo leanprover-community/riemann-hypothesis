@@ -107,10 +107,9 @@ theorem det_one_sub_smul_mem_of_nilpotent {A ι : Type*} [CommRing A] [Fintype �
         have hga : (1 - a) * g = 1 := by
           rw [hg, mul_neg_geom_sum, haN, sub_zero]
         set y : Matrix ι ι A := B + t • C with hy
-        have hyM : y ∈ AddSubmonoid.closure S := add_mem hB (hM2 C hC)
         have hgy : g * y ∈ AddSubmonoid.closure S := by
           rw [hg, Finset.sum_mul]
-          exact sum_mem fun j _ => hM3 a haS j y hyM
+          exact sum_mem fun j _ => hM3 a haS j y (add_mem hB (hM2 C hC))
         have hC' : C + (t ^ e • s) * (g * y) ∈ AddSubmonoid.closure S :=
           add_mem hC (hM1 _ (hpow _ _ hs) _ hgy)
         have h1 := ihB _ hC'
@@ -223,7 +222,7 @@ theorem coeff_det_generic_sum_mem_of_charpoly_coeff_mem :
     rfl
   let T' : Subring (MvPolynomial (Fin m) (X → O)) :=
     (MvPolynomial.map (σ := Fin m) T.toSubring.subtype).range
-  have main := Amitsur.det_sum_smul_mem T'
+  obtain ⟨p, hp⟩ := Amitsur.det_sum_smul_mem T'
     (Set.range fun a => (ρ a).map (MvPolynomial.C (σ := Fin m))) (by
       rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
       exact ⟨a * b, by simp only [hρ, Matrix.map_mul]⟩) (by
@@ -232,7 +231,6 @@ theorem coeff_det_generic_sum_mem_of_charpoly_coeff_mem :
       exact ⟨MvPolynomial.C ⟨_, hch a j⟩, MvPolynomial.map_C _ _⟩)
     Finset.univ (fun k => MvPolynomial.X k) (fun k => (ρ (g k)).map MvPolynomial.C)
     (fun k => ⟨MvPolynomial.X k, by simp⟩) (fun k => ⟨g k, rfl⟩)
-  obtain ⟨p, hp⟩ := main
   have h1 : AddMonoidAlgebra.coeff (MvPolynomial.map T.toSubring.subtype p) d ∈ T := by
     rw [MvPolynomial.coeff_map]
     exact (AddMonoidAlgebra.coeff p d).2

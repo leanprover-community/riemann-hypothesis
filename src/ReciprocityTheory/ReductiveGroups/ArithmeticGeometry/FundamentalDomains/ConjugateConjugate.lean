@@ -28,12 +28,11 @@ theorem d4l2_dual_int (t : E) (h : ∀ γ : 𝓞 E, ∃ k : ℤ, Algebra.trace �
     refine RingHom.mem_range.2 ⟨k, ?_⟩
     rw [Algebra.traceForm_apply]
     simpa using hk.symm
-  have h1 : (1 : E) ∈ (1 : Submodule (𝓞 E) E) := Submodule.mem_one.2 ⟨1, map_one _⟩
   have hb : ∀ i, IsIntegral ℤ (NumberField.integralBasis E i) := fun i => by
     rw [NumberField.integralBasis_apply]
     exact NumberField.RingOfIntegers.isIntegral_coe _
   have key := isIntegral_discr_mul_of_mem_traceDual (A := ℤ) (K := ℚ)
-    (1 : Submodule (𝓞 E) E) hb h1 ht
+    (1 : Submodule (𝓞 E) E) hb (Submodule.mem_one.2 ⟨1, map_one _⟩) ht
   have e : Algebra.discr ℚ (NumberField.integralBasis E) • (1 : E) * t =
       (NumberField.discr E : E) * t := by
     rw [← NumberField.coe_discr, Algebra.smul_def, mul_one]

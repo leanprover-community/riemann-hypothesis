@@ -78,8 +78,7 @@ theorem isUpperTriangular_conjTranspose_iff {A : Matrix n n 𝕜} :
     Aᴴ.IsUpperTriangular ↔ A.IsLowerTriangular := by
   constructor
   · intro h i j hij
-    have := h (i := j) (j := i) (OrderDual.toDual_lt_toDual.1 hij)
-    simpa [conjTranspose_apply] using this
+    simpa [conjTranspose_apply] using h (i := j) (j := i) (OrderDual.toDual_lt_toDual.1 hij)
   · intro h i j hij
     have := h (show OrderDual.toDual i < OrderDual.toDual j from hij)
     simp [conjTranspose_apply, this]

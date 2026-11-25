@@ -152,8 +152,7 @@ theorem valC_ne_zero {h : GenFrEx Xo c} {a : (E →+* ℂ) × ℕ → ℕ} {n : 
     (hf : evC h Z f ≠ 0) : valC h a n f Z ≠ 0 := by
   intro hz
   apply hf
-  have := congrArg (fun x : AC Z => x.coeff (wtZ a n)) hz
-  simpa [valC, AddMonoidAlgebra.coeff_single] using this
+  simpa [valC, AddMonoidAlgebra.coeff_single] using congrArg (fun x : AC Z => x.coeff (wtZ a n)) hz
 
 section AxHOf
 

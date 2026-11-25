@@ -214,8 +214,7 @@ theorem smg2 {g : ℂ → ℝ} {r : ℝ} {F : Finset ℂ} (hr : 0 < r) (hF0 : (0
   have hsumle : ∀ ζ ∈ closedBall (0 : ℂ) r \ ↑F,
       ∑ f ∈ F, log ‖ζ - f‖ ≤ (F.card : ℝ) * log (2 * r) := by
     intro ζ hζ
-    have := Finset.sum_le_sum (fun f hf => hlog2r ζ hζ f hf)
-    simpa using this
+    simpa using Finset.sum_le_sum (fun f hf => hlog2r ζ hζ f hf)
   obtain ⟨η, hη, hηp⟩ := hgrow ε hε0
     (k 0 - BΦ - δ * r ^ 2 - ε * ((F.card : ℝ) * |log (2 * r)|))
   apply mp_core (k := k) (c := 0) (ζ0 := 0) (r := r) (E := F) (η := η)
