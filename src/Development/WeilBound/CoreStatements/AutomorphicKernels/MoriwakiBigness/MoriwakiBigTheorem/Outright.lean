@@ -1317,8 +1317,7 @@ open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction
 theorem hsChain (hResK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement) (hAIS : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement)
     (hDBH : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet.DenseBoundedHeight.Statement) :
     GroundTheory.Heights₂.Heights.HilbertSamuel.ArithmeticVolumeBig.Statement ∧ GroundTheory.Heights₂.Heights.Targets.MoriwakiBigCurve.Statement ∧
-      GroundTheory.Heights₂.Heights.HilbertSamuel.ArithKleiman.Statement ∧ GroundTheory.Heights₂.Heights.HilbertSamuel.G7.Statement ∧
-      GroundTheory.Heights₂.Heights.HilbertSamuel.ArithmeticVolumeNef.Statement := by
+      GroundTheory.Heights₂.Heights.HilbertSamuel.ArithKleiman.Statement := by
   have s1 := GroundTheory.Heights₂.Heights.HilbertSamuel.NefOnGenericOfSemipos.proof
   have s2 := GroundTheory.Heights₂.Heights.HilbertSamuel.ChartDenominator.proof
   have s3 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionSupBound.proof
@@ -1457,49 +1456,7 @@ theorem hsChain (hResK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   have s136 := GroundTheory.Heights₂.Heights.HilbertSamuel.MixedKleimanTop.proof s123 s124 s131 s134 s135
   have s137 := GroundTheory.Heights₂.Heights.HilbertSamuel.MixedKleiman.proof s122 s136
   have s138 := GroundTheory.Heights₂.Heights.HilbertSamuel.ArithKleiman.proof s137
-  have s139 := GroundTheory.Heights₂.Heights.HilbertSamuel.SuccessiveMinimaSpan.full
-  have s140 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionPointValue.proof
-  have s141 := GroundTheory.Heights₂.Heights.HilbertSamuel.PrimeComplexRadical.proof
-  have s142 := GroundTheory.Heights₂.Heights.HilbertSamuel.ComplexMinimalPrimesContract.proof
-  have s143 := GroundTheory.Heights₂.Heights.HilbertSamuel.ComplexFormsOnPoints.proof s141 s142
-  have s144 := GroundTheory.Heights₂.Heights.HilbertSamuel.IndependentModBaseChange.proof
-  have s145 := GroundTheory.Heights₂.Heights.HilbertSamuel.RealFormsOnPoints.proof s143 s144
-  have s146 := GroundTheory.Heights₂.Heights.HilbertSamuel.L2GramLattice.proof
-  have s147 := GroundTheory.Heights₂.Heights.HilbertSamuel.NmSectionsRankBound.full
-  have s148 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionL2Lattice.proof s140 s145 s146 s147 s3
-  have s149 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionSpanStep.full
-  have s150 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionRingFinite.proof s84 s149
-  have s151 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockVeronese.proof s150
-  have s152 := GroundTheory.Heights₂.Heights.HilbertSamuel.GenOnFibres.full
-  have s153 := GroundTheory.Heights₂.Heights.HilbertSamuel.GeneratedRestrict.full
-  have s154 := GroundTheory.Heights₂.Heights.HilbertSamuel.GeneratedNefGeneric.proof s152 s153 s75
-  have s155 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerHeightsirational.proof s154 (_root_.GlobalTheory.CompanionTheory.Relay.kodaira_generic_of_ample_section_count (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.1 (_root_.GlobalTheory.CompanionTheory.Relay.kleiman_input_nef_ample_section_count _root_.GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput).2.2) s2
-  have s156 := GroundTheory.Heights₂.Heights.HilbertSamuel.CoordArithOfFnField.proof
-  have s157 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockArith.proof s156
-  have s158 := GroundTheory.Heights₂.Heights.HilbertSamuel.LeviLogFlat.proof
-  have s159 := GroundTheory.Heights₂.Heights.HilbertSamuel.LeviHolPerturb.proof
-  have s160 := GroundTheory.Heights₂.Heights.HilbertSamuel.LeviCompHol.proof
-  have s161 := GroundTheory.Heights₂.Heights.HilbertSamuel.LeviFSInvariant.proof
-  have s162 := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionNormSqExtension.proof s158 s159 s160 s161
-  have s163 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.proof s162
-  have s164 := GroundTheory.Heights₂.Heights.HilbertSamuel.LocalRep.full
-  have s165 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockPointNorm.proof s140 s164
-  have s166 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockOldPartSurj.proof
-  have s167 := GroundTheory.Heights₂.Heights.HilbertSamuel.PrimeZariskiDense.proof s143 s141 s142
-  have s168 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMeasure.proof s165 s166 s167
-  have s169 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockDatum.proof (GlobalTheory.T.resolution_exists_of_resolution_statement hResK) s60 s151 s155 s157 s163 s168
-  have s170 := GroundTheory.Heights₂.Heights.HilbertSamuel.BlockChiCovolume.proof
-  have s171 := GroundTheory.Heights₂.Heights.HilbertSamuel.TensorPowerL2Degree.proof s169 s68 s170 (PositivityTheory.LocalParametersCuspidal.MB.HSM.theoremHSMBlock hAIS hResK)
-  have s172 := GroundTheory.Heights₂.Heights.HilbertSamuel.EuclideanSectionsPower.proof s148 s171
-  have s173 := GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionsNonzero.proof
-  have s174 := GroundTheory.Heights₂.Heights.Targets.SublatticeDegree.full
-  have s175 := GroundTheory.Heights₂.Heights.HilbertSamuel.EuclideanSections.proof s172 s173 s174 s139
-  have s176 := GroundTheory.Heights₂.Heights.HilbertSamuel.G7.proof s139 s175
-  have s177 := GroundTheory.Heights₂.Heights.HilbertSamuel.MonomialShift.proof (_root_.MultiProjectiveCoordinates.packing_statement)
-  have s178 := GroundTheory.Heights₂.Heights.HilbertSamuel.PerturbMonomial.full
-  have s179 := GroundTheory.Heights₂.Heights.HilbertSamuel.UpperNormalisation.proof s176 (_root_.MultiProjectiveCoordinates.packing_statement) s83
-  have s180 := GroundTheory.Heights₂.Heights.HilbertSamuel.ArithmeticVolumeNef.proof s177 s178 s179
-  exact ⟨s90, s119, s138, s176, s180⟩
+  exact ⟨s90, s119, s138⟩
 
 theorem moriwakiBig_of_classicalTheorems (hResK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement) (hAIS : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement)
     (hDBH : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet.DenseBoundedHeight.Statement) :
@@ -1507,8 +1464,7 @@ theorem moriwakiBig_of_classicalTheorems (hResK : ReciprocityTheory.ChartRestric
   GroundTheory.Heights₂.Heights.Targets.MoriwakiBig.of_found (hsChain hResK hAIS hDBH).1 (hsChain hResK hAIS hDBH).2.1
 
 def HSUse : Prop :=
-  GroundTheory.Heights₂.Heights.HilbertSamuel.ArithKleiman.Statement ∧ GroundTheory.Heights₂.Heights.HilbertSamuel.G7.Statement ∧
-    GroundTheory.Heights₂.Heights.HilbertSamuel.ArithmeticVolumeNef.Statement
+  GroundTheory.Heights₂.Heights.HilbertSamuel.ArithKleiman.Statement
 
 theorem hsUse_of_hypotheses (hResK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement) (hAIS : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement)
     (hDBH : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet.DenseBoundedHeight.Statement) : HSUse :=

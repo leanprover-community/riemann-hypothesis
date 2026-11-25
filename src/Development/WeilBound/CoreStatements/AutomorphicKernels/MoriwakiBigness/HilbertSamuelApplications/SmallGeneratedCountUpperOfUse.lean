@@ -12,12 +12,10 @@ namespace PositivityTheory.MbHsUse
 open GroundTheory.Heights₂.Heights.HilbertSamuel
 
 def HSUse : Prop :=
-  ArithKleiman.Statement ∧ G7.Statement ∧ ArithmeticVolumeNef.Statement
-
-theorem HSUse.g7 (h : HSUse) : G7.Statement := h.2.1
+  ArithKleiman.Statement
 
 theorem HSUse.z1 (h : HSUse) : ReciprocityTheory.ChartRestriction.G.Geo.SuccessiveMinimaLowerBound :=
-  G5.proof' h.1 CurvePointsFinite.proof
+  G5.proof' h CurvePointsFinite.proof
 
 end PositivityTheory.MbHsUse
 
