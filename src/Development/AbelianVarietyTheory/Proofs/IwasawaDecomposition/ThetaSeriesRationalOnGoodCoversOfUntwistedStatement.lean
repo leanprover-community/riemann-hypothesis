@@ -192,8 +192,6 @@ namespace GlobalTheory.UnitRootCong
 
 open Formalism.MainNotions.StandardLattice
 
-
-
 theorem exists_adele_unit_congr_one : ∀ (D : D7) (m : ℕ), Odd m → ∀ (z y : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ), (y : Af D.host.F ⊗[D.host.F] D.host.E) ∈ intAE D → ((y⁻¹ : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ) : Af D.host.F ⊗[D.host.F] D.host.E) ∈ intAE D → (y : Af D.host.F ⊗[D.host.F] D.host.E) = z * sigR (Af D.host.F) D.sp.cm.sig (y : Af D.host.F ⊗[D.host.F] D.host.E) → (∃ w ∈ intAE D, (z : Af D.host.F ⊗[D.host.F] D.host.E) - 1 = m • w) → ∃ (b : (Af D.host.F)ˣ) (y' : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ), (y' : Af D.host.F ⊗[D.host.F] D.host.E) = (y : Af D.host.F ⊗[D.host.F] D.host.E) * ((b : Af D.host.F) ⊗ₜ[D.host.F] (1 : D.host.E)) ∧ (y' : Af D.host.F ⊗[D.host.F] D.host.E) ∈ intAE D ∧ ((y'⁻¹ : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ) : Af D.host.F ⊗[D.host.F] D.host.E) ∈ intAE D ∧ ∃ w ∈ intAE D, (y' : Af D.host.F ⊗[D.host.F] D.host.E) - 1 = m • w := by
   classical
   intro D m hm z y hyI hyiI hyz hzw
@@ -357,8 +355,6 @@ abbrev swapEquiv (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E ≃+* Formalism.I
 theorem swapEquiv_apply (D : D7) (w : Af D.host.F ⊗[D.host.F] D.host.E) :
     swapEquiv D w = Formalism.IndefR.Lev.swapAE D w := rfl
 
-
-
 theorem exists_int_unit_root : ∀ (D : D7) (z : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ),
     (z : Af D.host.F ⊗[D.host.F] D.host.E) ∈ intAE D →
     (∃ y₀ : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ, (y₀ : Af D.host.F ⊗[D.host.F] D.host.E) =
@@ -490,21 +486,6 @@ def iF (F : Type) [Field F] [NumberField F] : Af F →ₗ[F] AF F where
 def jI (D : D7) : Ainf D.host.F ⊗[D.host.F] D.host.E →ₗ[D.host.F] AE D := TensorProduct.map (iI D.host.F) LinearMap.id
 def jF (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E →ₗ[D.host.F] AE D := TensorProduct.map (iF D.host.F) LinearMap.id
 
-theorem recon (x : AE D) : jI D (infPart D x) + jF D (finPart D x) = x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul p q =>
-    show iI D.host.F (fstA D.host.F p) ⊗ₜ q + iF D.host.F (sndA D.host.F p) ⊗ₜ q = p ⊗ₜ q
-    rw [← TensorProduct.add_tmul]
-    congr 1
-    show ((p.1, 0) : Ainf D.host.F × Af D.host.F) + ((0, p.2) : Ainf D.host.F × Af D.host.F) = p
-    rw [Prod.mk_add_mk, add_zero, zero_add]
-    rfl
-  | add p q hp hq =>
-    rw [RingHom.map_add (f := _), RingHom.map_add (f := _), LinearMap.map_add (f := _), LinearMap.map_add (f := _)]
-    conv_rhs => rw [← hp, ← hq]
-    abel
-
 theorem infPart_jI (a : Ainf D.host.F ⊗[D.host.F] D.host.E) : infPart D (jI D a) = a := by
   induction a using TensorProduct.induction_on with
   | zero => simp
@@ -599,8 +580,6 @@ theorem finPart_det (V : HSp D) (u : GA D V) :
 end GlobalTheory.TwistRat.Right
 
 namespace GlobalTheory.TwistRat.Right
-
-
 
 theorem exists_root_one {D : D7} {V : HSp D} {M pd : ℕ} {k : Type} [Field k] {σ : k →+* ℂ}
     {δ : Formalism.L2.Host.HChar D.host.E} {δc : (AE D)ˣ →* Circle} (hA : IsAuxiliarySplitSquarefreeLevel D M pd) (hT : IsTwist pd σ δ δc)
@@ -870,11 +849,6 @@ theorem eq_one_of_finPart (c : (AE D)ˣ →* Circle) (n : ℕ) (hn : 0 < n) (hpo
   obtain ⟨e, he, -, -⟩ := GlobalTheory.AdSplit.exists_adele_equiv D.host.F D.host.E
   obtain ⟨V, hV⟩ := exists_pow_of_snd e (Formalism.IndefR.Eqv.splitEquiv D) n hn x ((he _).2.trans hx)
   rw [hV, map_pow, hpow]
-
-theorem exists_global_approx : ∀ (L : Type) [Field L] [NumberField L] (R : Finset (HeightOneSpectrum (𝓞 L))) (z : ∀ P : HeightOneSpectrum (𝓞 L), P.adicCompletion L), (∀ P ∈ R, z P ≠ 0) → ∃ k : Lˣ, ∀ P ∈ R, Valued.v (z P - algebraMap L (P.adicCompletion L) (k : L)) ≤ WithZero.exp (-1 : ℤ) * Valued.v (z P) :=
-  _root_.GlobalTheory.WeakApprox.exists_units_approx
-
-
 
 open Formalism.L2.Host in
 theorem mem_of_infPart {k : Type} [Field k] (σ : k →+* ℂ) (δ : Formalism.L2.Host.HChar D.host.E) (δc : (AE D)ˣ →* Circle)
@@ -1164,7 +1138,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaSeriesRationalOnGoodCoversOfUntwistedStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaSeriesRationalOnGoodCoversOfUntwisted\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 end -- clump:auto
 end -- clump:auto

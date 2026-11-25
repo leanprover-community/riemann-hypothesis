@@ -775,10 +775,6 @@ def detMul (K : Type) [CommRing K] {T : Type} [Fintype T] (N : ℕ) (k : T → �
     ((T → Matrix (Fin N) (Fin N) K) → K) →+ ((T → Matrix (Fin N) (Fin N) K) → K) :=
   AddMonoidHom.mulLeft (fun y => ∏ τ, (y τ).det ^ k τ)
 
-theorem detMul_apply (K : Type) [CommRing K] {T : Type} [Fintype T] (N : ℕ) (k : T → ℕ)
-    (F : (T → Matrix (Fin N) (Fin N) K) → K) (y : T → Matrix (Fin N) (Fin N) K) :
-    detMul K N k F y = (∏ τ, (y τ).det ^ k τ) * F y := rfl
-
 theorem delW_le_range (p : ℕ) [Fact p.Prime] (T : Type) [Fintype T] (N : ℕ) (ν : T → Fin N → ℕ) :
     DelW p T N ν ≤ (polFunAdd ℂ_[p] T N).range := by
   unfold DelW

@@ -204,9 +204,6 @@ abbrev swi (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Alg
     E ⊗[F] FiniteAdeleRing (𝓞 F) F →+* FiniteAdeleRing (𝓞 F) F ⊗[F] E :=
   (Algebra.TensorProduct.comm F (FiniteAdeleRing (𝓞 F) F) E).symm.toAlgHom.toRingHom
 
-theorem swi_sw (z : FiniteAdeleRing (𝓞 F) F ⊗[F] E) : swi F E (sw F E z) = z :=
-  (Algebra.TensorProduct.comm F (FiniteAdeleRing (𝓞 F) F) E).symm_apply_apply z
-
 theorem swi_tmul (a : FiniteAdeleRing (𝓞 F) F) (x : E) : swi F E (x ⊗ₜ[F] a) = a ⊗ₜ[F] x := by
   show (Algebra.TensorProduct.comm F (FiniteAdeleRing (𝓞 F) F) E).symm (x ⊗ₜ[F] a) = a ⊗ₜ[F] x
   rw [AlgEquiv.symm_apply_eq]; rfl
@@ -763,8 +760,6 @@ def wtCast (X : Stages) :
     VV X.toD7.what₂.LL X.B.wts.sgTrue ≃ₗ[X.toD7.what₂.LL] VV X.toD7.what₂.LL (fun τ => Bridge.lamRdef (Ptw X.toD7) τ) :=
   vvCast (RowAd.rank_X' X).symm _ _ (sameWt_true X)
 
-
-
 theorem exists_coef : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)), I.Ok → ∀ (cX : CoefA X.toD7.sp.X') (gramR : Matrix (Fin X.toD7.sp.X'.rank) (Fin X.toD7.sp.X'.rank) X.toD7.host.E)
     (c0R : VV X.toD7.what₂.LL (fun τ => Bridge.lamRdef (Ptw X.toD7) τ) →ₛₗ[X.toD7.what₂.embLL] cX.W),
     cX.Is → (gramR = X.toD7.sp.X'.gram ∨ gramR = -X.toD7.sp.X'.gram) →
@@ -968,7 +963,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-
 noncomputable section
 
 namespace GlobalTheory.Mem.R3.RowStdGrp
@@ -1033,7 +1027,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
-
 
 noncomputable section
 
@@ -1202,8 +1195,6 @@ theorem redG_ptE_of (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px) {
         (Formalism.L2.DIV.redFn L.βX w.1 (Formalism.UG.bc (swapAE X.toD7) ((h : Bridge.Gf X.toD7.sp.X') : GL _ _))) :=
   redAt_reindex (finCongr (rank_X' X)) L.βX hL.beta.2 _ hSt (Formalism.L2.Col.congruence_subgroup_le_stabilizer _ _ _ hz) w.1
 
-
-
 theorem mem_J_of_redG_mem_grp : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)), I.Ok → LevOf X I U L →
     ∀ (t : TupU I U) (h : Bridge.Gf X.toD7.sp.X') (hz : RowAd.ptE X h ∈ Formalism.L2.Col.J0 X.toD7.sp.cm (X.B.R.N X.B.R.m - 1) ∅),
@@ -1323,8 +1314,6 @@ theorem formRho_colGl (C : Formalism.L2.Col.CoefPk Xf n (Formalism.L2.Col.DecoSe
 
 end Generic
 
-
-
 theorem standard_level_element_hat_eq_one (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r) (t : TupU I U)
     (k : (levEnv X.toD7.sp.X' L.βX (L.datXt t)).J) :
@@ -1336,16 +1325,12 @@ theorem standard_level_element_hat_eq_one (X : Stages) (px : PreX X.B.toPre) (I 
     (congrArg eG.symm h1).trans (map_one eG.symm)
   exact (congrArg (Formalism.L2.Col.unipotentGroupBlockEmbedding (X.B.primes px) I.sel t.1 (Formalism.L2.Col.r_le_X' X.B.R)) h2).trans (map_one _)
 
-
-
 theorem deco_surj (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (hI : I.Ok) (hL : LevOf X I U L) (t : TupU I U) :
     Formalism.L2.Col.DecoPtSurj X.toD7.sp.cm (X.B.R.N X.B.R.m - 1) ∅ (Formalism.L2.Col.rowSG (X.B.primes px) I.sel t.1) :=
   Formalism.L2.Col.decoPtSurj_of _ _ _ _ (Formalism.L2.Col.unimodGenus_holds _ _) Formalism.L2.DIV.reduction_surjective_bis
     (by classical convert GlobalTheory.Mem.R3.LiftBrg.isSplitSet_sgL X px I U L hI hL t using 1; exact Finset.empty_union _)
     (Finset.disjoint_empty_left _)
-
-
 
 theorem lev_iff (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r) (hI : I.Ok) (hL : LevOf X I U L)
@@ -1363,8 +1348,6 @@ theorem lev_iff (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : 
   · rintro ⟨hz, hg⟩
     exact _root_.GlobalTheory.Mem.R3.RowDeco.mem_J_of_redG_mem_grp X px I U L hI hL t h hz hg
 
-
-
 theorem chi_eq : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r),
     I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG →
@@ -1380,8 +1363,6 @@ theorem chi_eq : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) 
   have h1 := _root_.GlobalTheory.Mem.R3.RowChr.chr_eq_ch X px I U L eG hI hV hL hG t ⟨k.1, (levEnv X.toD7.sp.X' L.βX (L.datXt t)).J_le k.2⟩ hz hu
   exact chr_of_inv_mul (Xf := X.B.fields) (Formalism.L2.Col.rowTyKK I.Ch I.sel t.1).inv X.B.embLL _ _ hb hg hu _
     (h1.trans (congrArg Units.val ((levEnv X.toD7.sp.X' L.βX (L.datXt t)).ch_J k)))
-
-
 
 theorem lev_eq_map (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι)
     (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r) (hI : I.Ok) (hL : LevOf X I U L)
@@ -1414,8 +1395,6 @@ def levE {G G' : Type} [Group G] [Group G'] (e : G ≃* G') (J : Subgroup G) (J'
 
 theorem levE_coe {G G' : Type} [Group G] [Group G'] (e : G ≃* G') (J : Subgroup G) (J' : Subgroup G')
     (hJ : J' = J.map e.toMonoidHom) (k : J) : ((levE e J J' hJ k : J') : G') = e k := rfl
-
-
 
 theorem exists_pres : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → L.βX = 1 → ∀ (cX : CoefA X.toD7.sp.X') (c : VV X.B.fields.K X.B.wts.sgTrue →ₛₗ[X.B.embLL] cX.W), (∀ (γ : GQ X.toD7.sp.X') (γE : GL (Fin X.toD7.sp.X'.rank) X.toD7.host.E) (g : GL (Fin (X.B.R.N X.B.R.m - 1)) X.B.fields.E), Bridge.IsRatMat X.toD7.sp.X' γ γE → MatEq γE g → ∀ v, c (rhoV X.B.fields.emb X.B.wts.sgTrue g v) = cX.coef.ρ γ (c v)) → LinearIndependent ℂ (fun i => c (bVV X.B.fields.K X.B.wts.sgTrue i)) → Submodule.span ℂ (Set.range fun i => c (bVV X.B.fields.K X.B.wts.sgTrue i)) = ⊤ → (∀ x y, inner ℂ (c x) (c y) = X.B.embLL (pairV X.B.fields.emb X.B.wts.sgTrue 1 x y)) → ∀ t, ∃ P : Bridge.ClassPres (Bridge.ratF X.toD7.sp.X') ((famR X I hX U Xg tr).A.MtildeCSD t) X.toD7.what₂.embLL cX.coef.ρ (levEnv X.toD7.sp.X' L.βX (L.datXt t)).J (levEnv X.toD7.sp.X' L.βX (L.datXt t)).χ, (∀ x, P.coef x = c x) ∧ (∀ c', RowAd.decoAd X I t (P.y c') = (Formalism.L2.Col.mtildeKGSD (Pr := X.B.primes px) X.B.wts I.Ch I.sel t.1).outSec.rep c') ∧ ∀ (f : ((famR X I hX U Xg tr).A.MtildeCSD t).Forms) (h : Bridge.Gf X.toD7.sp.X'), P.ext (f : _ → _) h = c ((((Formalism.L2.Col.mtildeKGSD (Pr := X.B.primes px) X.B.wts I.Ch I.sel t.1).res (Formalism.L2.Col.mtildeKOk _ _ _ _ hX)).symm f).1 (RowAd.decoAd X I t h)) := by
   intro X px I hX U Xg tr L eG hI hV hL hG hβ cX c hint hli hspan hpair t
@@ -1572,8 +1551,6 @@ open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory
 
 namespace GlobalTheory.Mem.R3.RowStd
 
-
-
 theorem exists_std_wtCast : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → ∀ (cX : CoefA X.toD7.sp.X') (gramR : Matrix (Fin X.toD7.sp.X'.rank) (Fin X.toD7.sp.X'.rank) X.toD7.host.E)
     (c0R : VV X.toD7.what₂.LL (fun τ => Bridge.lamRdef (Ptw X.toD7) τ) →ₛₗ[X.toD7.what₂.embLL] cX.W),
     cX.Is → (gramR = X.toD7.sp.X'.gram ∨ gramR = -X.toD7.sp.X'.gram) →
@@ -1596,7 +1573,6 @@ theorem exists_std_wtCast : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.Col
   refine ⟨c, hc0, hli, hsp, hinn, hInter, fun t => ?_⟩
   obtain ⟨P, hPc, hPy, hPe⟩ := _root_.GlobalTheory.Mem.R3.RowStdPres.exists_pres X px I hX U Xg tr L eG hI hV hL hG hb cX c hInter hli hsp hinn t
   exact ⟨P, hPe, hT t P hPc hPy⟩
-
 
 end GlobalTheory.Mem.R3.RowStd
 end -- clump:auto

@@ -332,7 +332,6 @@ private lemma polyDeriv_comp_linearMap_add_of_analyticAt {σ W W' : Type*} [Norm
   rw [map_zero, zero_add, List.map_map]
   rfl
 
-
 open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.polyDeriv_pairing_eq_zero_of_isHeat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)) (n N : ℕ) (D : _root_.GlobalTheory.SW.CM Ψ N N → _root_.GlobalTheory.SW.CM Ψ n N → _root_.GlobalTheory.SW.CM Ψ n N → ℂ), _root_.GlobalTheory.SW.IsHeat Ψ D → (∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, D Z 0 0 = 0) → ∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, ∀ s : MvPolynomial (Ψ × Fin N × Fin N) ℂ, _root_.ReciprocityTheory.ChartRestriction.G.I2.polyDeriv (MvPolynomial.aeval (fun v : Ψ × Fin N × Fin N => ∑ k, (MvPolynomial.X (v.1, false, k, v.2.1) * MvPolynomial.X (v.1, true, k, v.2.2) : MvPolynomial (Ψ × Bool × Fin n × Fin N) ℂ)) s) (fun v => (Pi.single v 1 : Ψ × Bool × Fin n × Fin N → ℂ)) (fun w : Ψ × Bool × Fin n × Fin N → ℂ => D Z (fun τ => Matrix.of fun k a => w (τ, false, k, a)) (fun τ => Matrix.of fun k a => w (τ, true, k, a))) 0 = 0 := by
@@ -604,9 +603,6 @@ def act (c : T → Bool → Matrix (Fin n) (Fin n) ℂ) : (Ell T n r → ℂ) �
       map_add' := fun x y => by funext v; simp [mul_add, Finset.sum_add_distrib]
       map_smul' := fun a x => by funext v; simp [Finset.mul_sum, mul_left_comm] }
 
-theorem act_apply (c : T → Bool → Matrix (Fin n) (Fin n) ℂ) (y : Ell T n r → ℂ) (v : Ell T n r) :
-    act c y v = ∑ l, c v.1 v.2.1 v.2.2.1 l * y (v.1, v.2.1, l, v.2.2.2) := rfl
-
 theorem dotProduct_act (c : T → Bool → Matrix (Fin n) (Fin n) ℂ) (x y : Ell T n r → ℂ) :
     x ⬝ᵥ act c y = act (fun t b => (c t b)ᵀ) x ⬝ᵥ y := by
   simp only [dotProduct, act_apply, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul,
@@ -692,7 +688,6 @@ theorem eval_barP {σ : Type} (y : σ → ℂ) (P : MvPolynomial σ ℂ) :
   | C a => simp [barP]
   | add P Q hP hQ => simp only [barP, map_add (f := _)] at *; rw [hP, hQ]
   | mul_X P l hP => simp only [barP, map_mul, map_X, eval_X, conj_conj] at *; rw [hP]
-
 
 omit [Fintype T] in
 theorem invFam_eval {P : J → Harm.Poly ℂ T p q (Fin n)} (hP : InvFam P)
@@ -1157,7 +1152,6 @@ theorem toCols_eq_zero {E : Type} [Field E] {n N : ℕ} {γ T : M2 E N} (hγ : I
 
 end DblVan
 
-
 open DblVan in
 theorem weil_dbl_zero_eq_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ φ₁ φ₂ : TF n g, IsSB φ₁ → IsSB φ₂ → ∀ ξ : Fin r → E, (∃ (s : Finset (Fin n → E)) (a : (Fin n → E) → ℂ), ∑ v ∈ s, a v ≠ 0 ∧ ∑ v ∈ s, a v • heisG X bas (vecMulVec v ξ) φ₁ = 0) → ∀ γ ∈ UU E r, Sum.elim ξ 0 ᵥ* dblT X ∈ botSpan γ → weil X.Ψ γ (dbl X bas idx φ₁ φ₂) 0 = 0 := by
   intro E _ _ _ r X g bas idx n hs hn φ₁ φ₂ h₁ h₂ ξ hker γ hγ hξ
@@ -1387,7 +1381,6 @@ private theorem bd_sum_prod_lemma_4 {W : Type} [NormedAddCommGroup W] [NormedSpa
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [KernSum.bd_const_mul P (barP P) u (wv k) fun p => analyticAt_mul_conj_comp_star_prod (hf k) (hh k) p,
       KernSum.bd_prod P P u hu (hf k) (hh k)]
-
 
 open KernSum in
 theorem kernel_identity : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g q0 : ℕ) (hr : X.p0 + q0 = r) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → 4 * r < n → ∀ (M : ℕ) (Δ : Subgroup (GL (Fin r) E)) (𝓛 : Set (Lt E r)) (Φ : Lt E r → Lt E n → TF n g) (μ : GL (Fin r) E → Lt E r → ℂ), 0 < M → IsSystem X bas idx M Δ 𝓛 Φ μ → ∃ a : ℂ, a ≠ 0 ∧ ∀ (c : X.Ψ → Fin q0 → ℕ) (c' : X.Ψ → Fin X.p0 → ℕ), ∀ (m : ℕ) (P : Fin m → Harm.Poly ℂ X.Ψ q0 X.p0 (Fin n)), (∀ j, P j ∈ Harm.rowHighest ℂ c c') → InvFam P → ∀ L₁ ∈ 𝓛, ∀ L₂ ∈ 𝓛, ∀ x₁ ∈ X.dom, ∀ x₂ ∈ X.dom, HasSum (fun γ : Δ => a * classSum M (fun Λ => ip (Φ L₁ Λ) (Φ (mapL γ L₂) Λ)) * conj (μ γ L₂) * kern X hr idx P x₁ (lact γ x₂)) (classSum M (fun Λ => ∑ j, thP X hr bas idx (Φ L₁ Λ) (P j) x₁ * conj (thP X hr bas idx (Φ L₂ Λ) (P j) x₂))) := by

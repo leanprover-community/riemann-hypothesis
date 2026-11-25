@@ -181,7 +181,6 @@ theorem prod_sizes {M : Type} [CommMonoid M] (g : ℕ → M) (hg : g 0 = 1) (n :
   unfold shapeDeg
   omega
 
-
 open scoped Pointwise in
 theorem bidet_reorder (R : Type) [CommRing R] (n : ℕ) {K K' : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n)
     (sz' : Fin K' → ℕ) (hsz' : ∀ k, sz' k ≤ n) (h : shapeDeg (n := n) sz = shapeDeg sz')
@@ -307,25 +306,6 @@ theorem ten_gdet {K ι : Type} [Field K] [Fintype ι] (n : ℕ) (e : ι → ℕ)
   congr 1
   ext1 a s
   simp [blockEmb]
-
-theorem aeval_nablaX {K ι : Type} [Field K] [Fintype ι] [DecidableEq ι] (n : ℕ) (ν : ι → YoungDiagram)
-    (hν : ∀ s, (ν s).colLen 0 ≤ n) (J : KM.ColChoice n ν) :
-    MvPolynomial.aeval (R := ℤ) (fun v : ι × ℕ × Fin n =>
-        if h : v.2.1 < n then (X (v.1, v.2.2, (⟨v.2.1, h⟩ : Fin n)) : Pol K ι n) else 0) (KM.nablaX n ν J) =
-      ten fun s => colProd K n (ν s) (hν s) (J s) := by
-  unfold KM.nablaX ten colProd bideterminant
-  rw [map_prod]
-  refine Finset.prod_congr rfl fun s _ => ?_
-  rw [map_prod, map_prod]
-  refine Finset.prod_congr rfl fun c _ => ?_
-  unfold initMinor
-  rw [AlgHom.map_det, AlgHom.map_det, ← Matrix.det_transpose]
-  congr 1
-  ext1 p q
-  have hq : (q : ℕ) < n := lt_of_lt_of_le q.2 (colLen_le (hν s) c)
-  simp only [Matrix.transpose_apply, AlgHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, aeval_X,
-    dif_pos hq, blockEmb, rename_X]
-  rfl
 
 theorem fockB_ten {K ι : Type} [Field K] [Fintype ι] {n : ℕ} (f g : ι → MvPolynomial (Fin n × Fin n) K) :
     fockB (ten f) (ten g) = ∏ τ, fockB (f τ) (g τ) :=

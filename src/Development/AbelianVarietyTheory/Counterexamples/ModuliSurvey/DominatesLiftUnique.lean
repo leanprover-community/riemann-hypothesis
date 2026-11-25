@@ -42,17 +42,3 @@ import Mathlib.Tactic.NormNum.RealSqrt
 @[expose] public section
 
 noncomputable section
-
-namespace GlobalTheory.ModelRelProbe
-
-open AlgebraicGeometry CategoryTheory Limits NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
-  {Xo : Moduli D l} {c : Coeff l}
-
-theorem spMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp]; rfl
-
-end GlobalTheory.ModelRelProbe

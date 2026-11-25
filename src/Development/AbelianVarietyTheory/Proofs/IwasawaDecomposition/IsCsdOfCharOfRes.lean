@@ -111,11 +111,6 @@ variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 local notation "𝐅" => maximalRealSubfield L
 local notation "𝐜" => AlgEquiv.toRingEquiv (IsCMField.complexConj L)
 
-theorem exists_norm (k : Lˣ) : ∃ t : (𝐅)ˣ, upF 𝐅 t = k * cU 𝐜 k := by
-  have h : (k : L) * IsCMField.complexConj L k ∈ 𝐅 :=
-    (IsCMField.complexConj_eq_self_iff L _).1 (by rw [map_mul, IsCMField.complexConj_apply_apply, mul_comm])
-  exact ⟨Units.mk0 ⟨_, h⟩ fun e => (k * cU 𝐜 k).ne_zero (congrArg Subtype.val e), Units.ext rfl⟩
-
 theorem mem_aboveF_iff (v Q : HeightOneSpectrum (𝓞 L)) :
     Q ∈ aboveF (L := L) 𝐅 (v.under (𝓞 𝐅)) ↔ Q = v ∨ ConjPl 𝐜 v Q := by
   rw [← under_eq_iff_conjPl (IsCMField.complexConj L) (Algebra.IsQuadraticExtension.finrank_eq_two _ _)
@@ -181,7 +176,6 @@ theorem etaInf_norm {k : Lˣ} {t : (𝐅)ˣ} (ht : upF 𝐅 t = k * cU 𝐜 k) (
   exact Complex.normSq_nonneg _
 
 end GlobalTheory.CuspRep.NormTriv
-
 
 open GlobalTheory.CuspRep.NormTriv in
 theorem GlobalTheory.CuspRep.isCsd_ofChar_of_res : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E),

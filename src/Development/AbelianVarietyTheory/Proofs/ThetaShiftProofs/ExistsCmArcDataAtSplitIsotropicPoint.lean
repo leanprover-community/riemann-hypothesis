@@ -287,8 +287,6 @@ theorem tau_defect (hφ : Function.Injective φ) (hD : IsPullDeg φ D D') (a b :
   rw [c a ha, c b hb, c (a + b) (by rw [cPoint_add, ha, hb, _root_.mul_one]), hr z J hJ, val_one] at e
   simpa using e.symm
 
-
-
 theorem bimult_defect (hG : GlobalFnsSt) (hφ : Function.Injective φ) (hD : IsPullDeg φ D D') (a a' b : D'.X) :
     ∃ r : (FractionRing R)ˣ, ∀ (y : (TK R').left) J', Good D'.P.L y J' →
       val (D'.tau (a + a') b) (𝟙 _) y J' * th D' (T := TK R') y J' (cP D' _ a) (cP D' _ a') (cP D' _ b) =
@@ -690,7 +688,6 @@ theorem exists_pair (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X
       simp [FD.cc]
     · exact he x y
 
-
 omit [IsCMField E] in
 theorem exists_nsmul_mem (𝔄 : Submodule (𝓞 E) E) (h : 𝔄 ≠ ⊥) {J : Type} [Fintype J] (c : J → E) :
     ∃ n : ℕ, 0 < n ∧ ∀ i, (n : E) * c i ∈ 𝔄 := by
@@ -845,7 +842,6 @@ theorem eq_zero_of_trace {z : E} (h : ∀ b : 𝓞 E, Algebra.trace ℚ E ((b : 
   rw [smul_mul_assoc, inv_mul_cancel₀ hz, map_zsmul, ← map_one (algebraMap ℚ E), Algebra.trace_algebraMap] at this
   simp [hn, Module.finrank_pos.ne'] at this
 
-
 omit [IsCMField E] in
 theorem eq_zero_of_rank_one {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] [Module (𝓞 E) X]
     (hrk : Module.finrank (𝓞 E) X = 1) (ξ : Module.Dual ℤ X) (hξ : ξ ≠ 0) {y : X} (hy : ∀ b : 𝓞 E, ξ (b • y) = 0) :
@@ -876,7 +872,6 @@ theorem eq_zero_of_rank_one {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Mod
     have h2 := hy (-(u * s))
     rw [← h1, map_nsmul] at h2
     simp [hn, hx] at h2
-
 
 omit [IsCMField E] in
 theorem apply_eq_zero {g g' : ℕ} {M : Type} (ty : Fin g → (E →+* ℂ)) (ty' : Fin g' → (E →+* ℂ))
@@ -1144,49 +1139,6 @@ theorem spMap_int (j : K →+* K') {σ : K →+* ℂ} {σ' : K' →+* ℂ} (h : 
       spMap (σ.comp (algebraMap (𝓞 K) K)) := by
   rw [spMap_comp', ← h]
   rfl
-
-theorem exists_cmObj_extend {ρ : 𝓞 K} {σ : K →+* ℂ} {p q : ℕ} (X : CMObj H K ρ σ p q) (j : K →+* K') (σ' : K' →+* ℂ)
-    (h : σ'.comp j = σ) :
-    ∃ (X' : CMObj H K' (RingOfIntegers.mapRingHom j ρ) σ' p q)
-      (a : ∀ b, SABMap (X'.A b).t (X.A b).t (spMap (RingOfIntegers.mapRingHom j)))
-      (mb : SABMap X'.B.t X.B.t (spMap (RingOfIntegers.mapRingHom j))),
-      X'.hh = X.hh ∧ ∀ i, (X'.φ i).left ≫ mb.φ = (a i.isLeft).φ ≫ (X.φ i).left := by
-  set f := RingOfIntegers.mapRingHom j with hf
-  have hinj : Function.Injective f := fun a b e => Subtype.ext (j.injective (congrArg Subtype.val e))
-  choose A' a _ using fun b => PAT.exists_pullback E H _ _ (spMap f) (X.A b)
-  obtain ⟨B', mb, -⟩ := PAT.exists_pullback E H _ _ (spMap f) X.B
-  have hmon : ∀ i, IsMonHom (X.φ i) := fun i => (X.lin i).1
-  choose φ' hφm hφ using fun i : Fin p ⊕ Fin q => PairingFibre.exists_hom (a i.isLeft).cart mb.cart (X.φ i)
-  have hpt := spMap_int j h
-  refine ⟨{ split := ((splits_basic E).2.2 K).2.2 K' j X.split |>.1
-            ρ_sq := by rw [← map_pow, X.ρ_sq, map_neg, map_natCast]
-            A := A', B := B'
-            typeP := (hasType_baseChange E H _ _ f _ _ (a true) ρ 1 0).1 hinj X.typeP
-            typeM := (hasType_baseChange E H _ _ f _ _ (a false) ρ 0 1).1 hinj X.typeM
-            typeB := (hasType_baseChange E H _ _ f _ _ mb ρ p q).1 hinj X.typeB
-            hh := X.hh, φ := φ', lin := fun i => ?_, onto := fun y => ?_, weil := fun i => ?_ }, a, mb, rfl, hφ⟩
-  · refine ⟨hφm i, fun c => Over.OverMorphism.ext (pt_ext mb ?_ (by rw [Over.w, Over.w]))⟩
-    have e := congrArg Over.Hom.left ((X.lin i).2 c)
-    simp only [Over.comp_left] at e
-    rw [Over.comp_left, Over.comp_left, Category.assoc, Category.assoc, hφ, mb.act, ← Category.assoc,
-      (a i.isLeft).act, Category.assoc, e, ← Category.assoc, ← hφ, Category.assoc]
-  · obtain ⟨pB, hB⟩ := exists_ptEquiv mb hpt
-    choose pA hA using fun b => exists_ptEquiv (a b) hpt
-    obtain ⟨x, hx⟩ := X.onto (pB y)
-    refine ⟨fun i => (pA i.isLeft).symm (x i), pB.injective ?_⟩
-    rw [hx, map_list_prod, List.map_ofFn]
-    congr 2
-    funext i
-    apply Over.OverMorphism.ext
-    simp only [Function.comp_apply]
-    rw [hB, Over.comp_left, Over.comp_left, Category.assoc]
-    erw [hφ]
-    rw [← Category.assoc, ← hA, MulEquiv.apply_symm_apply]
-  · refine (PairingFibre.weilEq_iff (a i.isLeft).cart (a i.isLeft).cart mb.cart (a i.isLeft).cart X.B.t.PP.isLB
-      (X.A i.isLeft).t.PP.isLB B'.t.PP.isLB (A' i.isLeft).t.PP.isLB (sab_lbIso mb) (sab_lbIso (a i.isLeft)) (hφ i) (hφ i)
-      ((a i.isLeft).act _) (g₂ := 𝟙 _) (by simp) _).2 ?_
-    rw [hpt]
-    exact X.weil i
 
 end Extend
 

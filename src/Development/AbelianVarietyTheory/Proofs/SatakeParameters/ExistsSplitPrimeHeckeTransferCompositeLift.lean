@@ -191,11 +191,6 @@ theorem prod_alt (h σ : ℂ) (hh : h ≠ 0) (m : ℕ) (hm : Even m) (d : ℕ) :
 
 variable {D : D7}
 
-theorem opOf_eq {V : HSp D} {M : Type} [AddCommGroup M] [Module ℂ M] (π : GA D V →* Module.End ℂ M) (P : Pl D.host.E)
-    (c : List ℤ →₀ ℂ) : opOf π P c = Finsupp.linearCombination ℂ (fun d => ∑ γ ∈ rep V P d, π γ) c := rfl
-
-theorem dualC_eq (c : List ℤ →₀ ℂ) : dualC c = Finsupp.lmapDomain ℂ ℂ dualLab c := rfl
-
 theorem dualC_dualC (c : List ℤ →₀ ℂ) : dualC (dualC c) = c := by
   unfold dualC
   rw [← Finsupp.mapDomain_comp]
@@ -270,7 +265,6 @@ theorem step_match {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE
   split_ifs with hj
   · rw [hs, mul_pow ν, ← mul_assoc, mul_assoc _ (ν ^ (l - j)), ← pow_add, Nat.sub_add_cancel hj]
   · rfl
-
 
 open Formalism.L2.JoinChr in
 theorem val_conj {χ : (AE D)ˣ →* Circle} {n : ℕ} (hχ : ResEta D χ n) {P : Pl D.host.E} (u : UnrPl P χ)

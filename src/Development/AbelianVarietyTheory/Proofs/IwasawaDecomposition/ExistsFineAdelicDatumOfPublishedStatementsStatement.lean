@@ -146,8 +146,6 @@ noncomputable section
 
 namespace GlobalTheory.StandardWeightCharacter
 
-
-
 theorem charW_seed_std : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr₀ : TrI X.B px) (C : Formalism.L2.Pj.CoreJ X.toD7) [Algebra C.Q.c.F X.toD7.what₂.LL] (R₀ : RealDat3 X.toD7 (famR X I hX U Xg tr₀) C.Q.c.F) (cG : G0 R₀.Pg X.toD7.R.r ≃* G0g X.toD7.nd), Inputs X.toD7 → IdemClass (D := X.toD7) (famR X I hX U Xg tr₀).A → (∀ R : RealDat X.toD7 (famR X I hX U Xg tr₀).A C.Q.c.F, R.Pre1 (face0 X I hX U Xg tr₀).lv2 → R.IsChainW → R.IsThPW → R.FullY → R.FullP → R.ExAt) → GeoExV (famR X I hX U Xg tr₀) C (face0 X I hX U Xg tr₀).lv2 → Formalism.L2.Host.ValLL X.toD7 R₀.C → C.pb = R₀.C.P.pb → R₀.toRealDat.Pre0 (face0 X I hX U Xg tr₀).lv2 → R₀.IsInert → R₀.IsTup → R₀.AllPlaces → Keep R₀.toRealDat (face0 X I hX U Xg tr₀).lv2 cG → ∃ (tr : TrI X.B px) (dict : _) (mu : _) (chiW : _) (x₀ : _) (cE : _) (R : RealDat3 X.toD7 (famR X I hX U Xg tr) C.Q.c.F) (cG' : G0 R.Pg X.toD7.R.r ≃* G0g X.toD7.nd), Pins R (face0 X I hX U Xg tr) cG' ∧ R.toRealDat.ExAt ∧ R.toRealDat.toLevCh = R₀.toRealDat.toLevCh ∧ HEq R.eG R₀.eG ∧ HEq cG' cG ∧ R.ψ = R₀.ψ ∧ R.mu = R₀.mu ∧ R.twPl = R₀.twPl ∧ (BrgStd X I hX U Xg tr₀ R₀.toRealDat → BrgStd X I hX U Xg tr R.toRealDat) ∧ Nonempty (@GlobalTheory.RealGeo.GeoHalf X.toD7 _ _ _ _ _ (famR X I hX U Xg tr).A (GlobalTheory.RealGeo.reCore C dict mu chiW x₀ cE) (inferInstanceAs (Algebra C.Q.c.F X.toD7.what₂.LL)) R.toRealDat fun _ => 1) := by
   intro X px I hX U Xg tr₀ C _ R₀ cG hI hXi hEx hGeo hVal hpb p0 i0 t0 a0 k0
   classical
@@ -282,8 +280,6 @@ section Data
 
 variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
 
-
-
 theorem exists_phi (hR : GlobalTheory.RealGeo.PreChar R) (hV : VStd D i) (t : T0) {La : Type} [AddCommGroup La]
     [Module (𝓞 D.host.E) La] (ι : La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E)) (hι : LatEmb (Wc D i) ι) :
     ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ ∀ M' : IntermediateField ℚ ℂ, M ≤ M' →
@@ -305,8 +301,6 @@ theorem exists_phi (hR : GlobalTheory.RealGeo.PreChar R) (hV : VStd D i) (t : T0
   exact GlobalTheory.LevelDatum.omega_congr _ _ _ _ _ _ _ fun PP hPP => exists_datum (Vc D i) (Wc D i) hV.1 _ hβ (R.βW i) e ι hi J PP (hJ PP hPP) x _
     fun b => (Submodule.Quotient.eq _).1 (Quotient.out_eq _)
 
-
-
 theorem exists_thAd (hR : R.IsModels) (t : T0) {K' : Type} [Field K'] {σ' : K' →+* ℂ}
     (c0' : VsV D i K' →ₛₗ[σ'] (R.cV i).W) {Cl : Type} (h : Cl → GA D (Vc D i)) {J' : Subgroup (Bridge.Gf (Vc D i))}
     (hle : J' ≤ levJ R i t) (hr : Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => FWT.fin _ (h k)))
@@ -320,8 +314,6 @@ theorem exists_thAd (hR : R.IsModels) (t : T0) {K' : Type} [Field K'] {σ' : K' 
   have hx : ∃ y, Place R i t h c0' y x := ⟨y, hy⟩
   simp only [dif_pos hx]
   rw [huniq _ _ _ hx.choose_spec hy]
-
-
 
 theorem exists_coef (hF : R.IsFam) (hM : R.IsModels) (K' : Type) [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ)
     (hσ : σ'.comp jL = D.what₂.embLL)
@@ -341,7 +333,6 @@ end Data
 section Level
 
 variable (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F)
-
 
 open GlobalTheory.LevelAction in
 theorem exists_levIs (hT : LawsJ T) (hL : R.toLevCh.Is A.μ0) (hpb : T.pb = R.C.P.pb) (i : Fin D.R.m) :
@@ -365,7 +356,6 @@ theorem exists_levIs (hT : LawsJ T) (hL : R.toLevCh.Is A.μ0) (hpb : T.pb = R.C.
   choose f hf using fun g => exists_endo (iotaW T i) (GlobalTheory.LevelAction.latEmb_iotaW T hT i) hM
     (finCong_of_mem_St hβ (parLev_St (hk g).2.1))
   exact ⟨f, fun g => ⟨k g, hk g, fun a _ => hf g a⟩⟩
-
 
 open GlobalTheory.LevelActAnyField in
 theorem actLev_of_levIs (hT : LawsJ T) (hL : R.toLevCh.Is A.μ0) (hO : T.pb = R.C.P.pb) (i : Fin D.R.m)
@@ -396,7 +386,6 @@ theorem actLev_of_levIs (hT : LawsJ T) (hL : R.toLevCh.Is A.μ0) (hO : T.pb = R.
     fun g g' => mem_of_half (lev (g * g') - lev g ∘ₗ lev g') (hm g g')
 
 end Level
-
 
 open GlobalTheory.RealGeo in
 
@@ -473,7 +462,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 noncomputable section
 
 namespace GlobalTheory.RealGeo.RowAll
@@ -495,8 +483,6 @@ variable {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {
   (lev : G → (C.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (C.Q.Dw ((i : ℕ) + 1)).La)
   (io₃ : VsV D i c₃.F →ₗ[c₃.F] MvPolynomial (LtN (C.Q.Dw ((i : ℕ) + 1)) (Vc D i).rank) c₃.F) (hw₃ : VsV D i c₃.F)
   (u : J → c₃.F) (h : ∀ j, (src j).Cl' () → GA D (Vc D i)) (v₀ : (R.MW i (sg0 D A)).Vec)
-
-
 
 theorem pins_merge (hR : R.IsModels) {κ : WeightFamilies.Wt D ((i : ℕ) + 1)} {ι x₀}
     (hv : ∀ t PP, PP ∈ R.Pg ∨ PP ∈ R.Q t → ∀ (ξ : (kP PP)ˣ →* ℂˣ) (x : (kP PP)ˣ), ((ξ x : ℂˣ) : ℂ) ∈ c₃.F)
@@ -535,8 +521,6 @@ section Row
 
 variable {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {i : Fin D.R.m} {κ : WeightFamilies.Wt D ((i : ℕ) + 1)}
   {v₀ : (R.MW i (sg0 D A)).Vec}
-
-
 
 theorem exists_extension [Finite T0] (hR : R.IsModels) {ι x₀}
     (O : OMDat T.toCore R i Unit (fun _ => A.μ0)) (O' : OMDat T.toCore R i T0 id) (hle : O.c'.F ≤ O'.c'.F)
@@ -648,8 +632,6 @@ theorem isRat_act (hE : O.EquivAt κ cc) {chi : G →* D.what₂.LLˣ} (hχ : Ch
       O.phi cc (f k : C.R ((i : ℕ) + 1)) (x * hk.choose))) * e3
   · exact IsRat.zero O κ cc
 
-
-
 theorem phRat_of_before (hE : O.EquivAt κ cc) {chi : G →* D.what₂.LLˣ} (hχ : ChiIs R i chi) (hG : R.thP_thG) (ph : ℂ)
     (h : ∀ x : A.fam.amb.FL i A.μ0, IsRat O κ cc (ph • R.thF i A.μ0 (jVx R i A.μ0 x) v₀)) : O.PhRat κ v₀ cc ph := by
   intro x
@@ -674,8 +656,6 @@ section Main
 
 variable {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F}
   {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec} {i : Fin D.R.m}
-
-
 
 theorem oneMapOf_of_serOf (hR : PreChar R) (hT : TieIn T R κ v₀) {O : OMDat T.toCore R i Unit (fun _ => A.μ0)}
     (hF : O.c'.F = D.what₂.embLL.toRatAlgHom.fieldRange) {ι x₀} (hP : O.Pins (κ i) (v₀ i (sg0 D A)) ι x₀) {cc}
@@ -713,8 +693,6 @@ theorem oneMapOf_of_serOf (hR : PreChar R) (hT : TieIn T R κ v₀) {O : OMDat T
     have e2 : ∀ j, O.phi cc (fs j : T.R ((i : ℕ) + 1)) g = cc (O.dict g).1 * O.mu g *
         rdU (T.U ((i : ℕ) + 1) O.s0) (fs j : T.R ((i : ℕ) + 1)) (O.dict g).1 (O.dict g).2 := fun j => rfl
     exact this.trans (GlobalTheory.PhRatCommon.sum_shape e1 (fun j => hb (as j)) e2)
-
-
 
 theorem exists_common [Finite T0] (hR : PreChar R) (hT : TieIn T R κ v₀) {ι x₀}
     (hof : ∀ (Tp : Type) (tup : Tp → T0) (M : OMDat T.toCore R i Tp tup), M.Pins (κ i) (v₀ i (sg0 D A)) ι x₀ →
@@ -836,15 +814,11 @@ section Weak
 variable {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F}
   {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec}
 
-
-
 theorem exists_core (hR : PreChar R) (hT : TieIn T R κ v₀) : ∃ F : Face D A, GlobalTheory.Hk3.Core (topR T R κ v₀) F := by
   have h := Half.preChar_updFW R (nTop T κ) (fun i => formsN T R κ v₀ i (nTop T κ i)) hR
   obtain ⟨F, hF⟩ := exists_face (topR T R κ v₀) h.record h.fam.roots
   exact ⟨F, h.lev, ⟨h.red_R, h.red_L, hF, h.record,
     fun i g => (Half.chiIs_chiTop_of_tie T R κ v₀ hR.lev hT i g).trans (Units.coe_prod _ _)⟩, h.fam, h.models, h.chain, h.thP⟩
-
-
 
 theorem exists_serOf (hR : PreChar R) (hT : TieIn T R κ v₀) (hio : IoExt R) (i : Fin D.R.m) (Tp : Type) (tup : Tp → T0)
     (M : OMDat T.toCore R i Tp tup) (hM : M.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) T.σ₀)) :
@@ -870,8 +844,6 @@ namespace GlobalTheory.RealGeo
 open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.FWT ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.RealGeo
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 
 theorem exists_const_oneMapOf_all : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec) (O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0)), PreChar R → TieIn T R κ v₀ → T.pb = R.C.P.pb → Finite T0 → QGuard R → IoExt R → ∀ i, VStd D i → OMPins T R κ v₀ O i → ∃ cc : (T.U ((i : ℕ) + 1) T.σ₀).Comp → ℂ, (O i).OneMapOf (κ i) (v₀ i (sg0 D A)) cc 1 ∧ ∃ O' : OMDat T.toCore R i T0 id, D.what₂.embLL.toRatAlgHom.fieldRange ≤ O'.c'.F ∧ O'.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) O'.s0) ∧ O'.OneMapOf (κ i) (v₀ i (sg0 D A)) cc 1 := by
   intro D G _ _ Pl0 T0 A T _ R κ v₀ O hR hT hpb hfin hG hio i hV hO
@@ -1036,9 +1008,6 @@ theorem isUnit_det_of_x0Orth {X : Data E r} {x₀ : (E →+* ℂ) → Matrix (Fi
 def pass (Ψ : Finset (E →+* ℂ)) (x₀ x₁ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) : Frame Ψ r :=
   fun τ => ((x₀ τ.1)⁻¹ * x₁ τ.1 : Matrix (Fin r) (Fin r) ℂ)
 
-theorem mat_lact {Ψ : Finset (E →+* ℂ)} (γ : GL (Fin r) E) (x : Frame Ψ r) (τ : Ψ) :
-    mat (lact γ x) τ = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ := rfl
-
 theorem mat_pass {Ψ : Finset (E →+* ℂ)} (x₀ x₁ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (τ : Ψ) :
     mat (pass Ψ x₀ x₁) τ = (x₀ τ.1)⁻¹ * x₁ τ.1 := rfl
 
@@ -1163,8 +1132,6 @@ theorem orth_of_arch {V : HSp D} {hr : V.rank = r} {X : Data D.host.E r} (hW : M
   · exact h₀ τ.1 τ.2
   · rw [gm_map hW]
     exact (unitary_iff _ _).2 (GlobalTheory.RecDictModel.archM_unitary V (hth τ) g)
-
-
 
 theorem exists_dict_of_x0Orth : ∀ (D : D7) (T : CoreJ D) (x₀ : ℕ → (T.Q.c.F →+* ℂ) → (D.host.E →+* ℂ) → Matrix (Fin D.R.r) (Fin D.R.r) ℂ), VolTieG D → LawsJ T → LawsCore T.toCore → (∀ j, InR D j → ∀ σ, GoodEmb T.Q.c σ → ∀ k, IsOrthogonalFrame ((T.U j σ).X k) (x₀ j σ)) → ∃ dict, LawsJ (reCore T dict T.mu T.chiW x₀ T.cE) ∧ LawsCore (reCore T dict T.mu T.chiW x₀ T.cE).toCore := by
   intro D T x₀ hv hJ hC hx
@@ -1380,8 +1347,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RealGeo
 
-
-
 theorem omDat_updFW : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec) (nW : Fin D.R.m → ℕ) (FW : ∀ i, Arith.FormsL D.what₂.LL T.Q.c.F (Fin (nW i) → D.what₂.LL) (fun σ => (R.HW i σ).H) G) (i : Fin D.R.m) (Tp : Type) (tup : Tp → T0) (O : OMDat T.toCore R i Tp tup), ∃ O' : OMDat T.toCore (updFW R nW FW) i Tp tup, O'.c' = O.c' ∧ O'.lev = O.lev ∧ (O.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) T.σ₀) → O'.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) T.σ₀)) ∧ ∀ (cc : (T.U ((i : ℕ) + 1) T.σ₀).Comp → ℂ) (ph : ℂ), O.OneMapOf (κ i) (v₀ i (sg0 D A)) cc ph → O'.OneMapOf (κ i) (v₀ i (sg0 D A)) cc ph := by
   intro D G _ _ Pl0 T0 A T _ R κ v₀ nW FW i Tp tup O
   refine ⟨{ O with }, rfl, rfl, fun h => ?_, fun cc ph h => h⟩
@@ -1448,8 +1413,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.R3.GeoExProof
-
-
 
 theorem geoExV_of_top : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T0 : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T0 D.R.m) (C : CoreJ D) [Algebra C.Q.c.F D.what₂.LL] (F : Face D A3.A), VolTieG D → LawsJ C → LawsCore C.toCore → AlgTie C → Finite T0 → (∀ i, VStd D i) → 8 * D.R.f * D.R.r + 4 ≤ D.R.nV → GlobalTheory.Mem.R3.GeoExV A3 C F := by
   intro hRD D G _ _ Pl0 I0 T0 A3 C _ F hVol hL hLC hA hT hVS hn R cG hVal hPre _hlev hpb hK
@@ -1534,8 +1497,6 @@ theorem trans_eq_of_heq' (X : Stages) {px : PreX X.B.toPre} {Pg Pg' : Finset (Pl
   obtain rfl := eq_of_heq h
   obtain rfl := eq_of_heq hc
   rfl
-
-
 
 theorem datExS_evLg (h1 : GlobalTheory.Published.DiscreteSeriesCover) (h2 : GlobalTheory.Published.HarishChandraModules) (h3 : GlobalTheory.Published.CuspRapidDecay)
     (h4 : GlobalTheory.Published.CasselmanWallach) (h5 : GlobalTheory.Published.WeilRepresentationUnitaryPair) (h6 : GlobalTheory.Published.DiscreteSeriesExists)

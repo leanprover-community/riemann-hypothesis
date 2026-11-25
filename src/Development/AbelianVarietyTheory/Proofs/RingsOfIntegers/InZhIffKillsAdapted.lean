@@ -64,10 +64,6 @@ theorem Kl.mul {b : Matrix (Fin n) (Fin n) O} {u : Fin n → M} (h : Kl b u) (a 
   rw [Finset.sum_comm]
   simp only [← Finset.smul_sum, h _, smul_zero, Finset.sum_const_zero]
 
-theorem Kl.smul {b : Matrix (Fin n) (Fin n) O} {u : Fin n → M} (h : Kl b u) (a : O) : Kl (a • b) u := by
-  intro i
-  simp only [Matrix.smul_apply, smul_eq_mul, mul_smul, ← Finset.smul_sum, h i, smul_zero]
-
 theorem Kl.cancel {b : Matrix (Fin n) (Fin n) O} {u : Fin n → M} {a ℓ : O} (hc : IsCoprime a ℓ)
     (hu : ∀ j, ∃ e : ℕ, ℓ ^ e • u j = 0) (h : Kl (a • b) u) : Kl b u := by
   obtain ⟨e, he⟩ : ∃ e : ℕ, ∀ j, ℓ ^ e • u j = 0 := by

@@ -210,10 +210,6 @@ def omSub : G →* Module.End ℂ ↥(OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω) 
   map_one' := by ext φ : 1; apply Subtype.ext; simp
   map_mul' p q := by ext φ : 1; apply Subtype.ext; simp [map_mul]
 
-theorem omSub_apply (q : G) (φ : ↥(OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω)) :
-    ((omSub om fV yv νV 𝓕V νW 𝓕W ψ ω q φ : ↥(OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω)) :
-      TauV →ₗ[ℂ] (WO V W → ℂ)) = valAct1 ω q φ := rfl
-
 theorem good_of_mem {φ} (hφ : φ ∈ OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω) : Good om fV yv νV 𝓕V νW 𝓕W φ := by
   simpa using (hφ 1).2
 

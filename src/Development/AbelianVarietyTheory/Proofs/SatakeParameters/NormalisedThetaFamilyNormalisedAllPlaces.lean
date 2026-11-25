@@ -437,45 +437,6 @@ namespace GlobalTheory.ThLoc.LocStd
 
 open Formalism.L2.Th1.H (Sesq IsSelfDual IsHerm dualLat altE Th alphaQ blk4 pow4 slice imgLat)
 open Formalism.L2.Th1.F (cmTheta)
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
-
-theorem hermitianSelfDual_of_fourfoldBlock {n : Type} [Fintype n] [DecidableEq n] (h : Matrix n n ℂ) (Λ : AddSubgroup (n → ℂ))
-    (hsd : IsSelfDual (matH (blk4 h)) (pow4 Λ)) : IsSelfDual (matH h) Λ := by
-  have key : ∀ (x : n → ℂ) (y : Fin 4 × n → ℂ),
-      altE (matH (blk4 h)) (Formalism.L2.Th1.H.CmData.embA 0 x) y = altE (matH h) x (slice 0 y) := by
-    intro x y
-    simp only [altE, Formalism.L2.Th1.H.matrixForm_fourfoldBlock, Formalism.L2.Th1.H.CmData.slice_embA]
-    rw [Finset.sum_eq_single (0 : Fin 4)]
-    · simp
-    · intro b _ hb
-      simp [hb]
-    · intro hh
-      exact absurd (Finset.mem_univ _) hh
-  ext x
-  constructor
-  · intro hx
-    have h1 : Formalism.L2.Th1.H.CmData.embA 0 x ∈ dualLat (matH (blk4 h)) (pow4 Λ) := by
-      intro y hy
-      obtain ⟨m, hm⟩ := hx (slice 0 y) (hy 0)
-      exact ⟨m, by rw [key, hm]⟩
-    rw [hsd] at h1
-    have h2 := h1 0
-    rwa [Formalism.L2.Th1.H.CmData.slice_embA, if_pos rfl] at h2
-  · intro hx y hy
-    have h1 : Formalism.L2.Th1.H.CmData.embA 0 x ∈ dualLat (matH (blk4 h)) (pow4 Λ) := by
-      rw [hsd]
-      exact Formalism.L2.Th1.H.CmData.embA_mem Λ 0 hx
-    obtain ⟨m, hm⟩ := h1 _ (Formalism.L2.Th1.H.CmData.embA_mem Λ 0 hy)
-    refine ⟨m, ?_⟩
-    rw [key, Formalism.L2.Th1.H.CmData.slice_embA, if_pos rfl] at hm
-    exact hm
-
-end GlobalTheory.ThLoc.LocStd
-
-namespace GlobalTheory.ThLoc.LocStd
-
-open Formalism.L2.Th1.H (Sesq IsSelfDual IsHerm dualLat altE Th alphaQ blk4 pow4 slice imgLat)
-open Formalism.L2.Th1.F (cmTheta)
 
 section Reindex₂
 
@@ -777,7 +738,6 @@ def tPullEquiv (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (γ : Matrix.unitaryGroup
       rw [tPull_comp, Matrix.mem_unitaryGroup_iff.mp γ.2, Matrix.mem_unitaryGroup_iff.mp γ'.2, tPull_one])
 
 end GlobalTheory.ThLoc.AllPlaces
-
 
 open GlobalTheory.ThLoc.AllPlaces in
 attribute [local instance] Formalism.BasicNotions.Host.cmStar in

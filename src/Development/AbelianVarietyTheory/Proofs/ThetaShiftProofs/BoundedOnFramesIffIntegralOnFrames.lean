@@ -113,18 +113,10 @@ abbrev EntryIndex (m n : ι → Type*) : Type _ := Σ s, m s × n s
 def entries {α : Type*} (b : ∀ s, Matrix (m s) (n s) α) : EntryIndex m n → α :=
   fun k => b k.1 k.2.1 k.2.2
 
-omit [∀ s, Fintype (m s)] in
-@[simp] theorem entries_apply {α : Type*} (b : ∀ s, Matrix (m s) (n s) α) (s : ι) (i : m s)
-    (j : n s) : entries b ⟨s, i, j⟩ = b s i j := rfl
-
-
-
-
 end Semiring
 
 variable [Fintype ι] {r : ι → ℕ} [Field K] [∀ s, AddCommGroup (V s)] [∀ s, Module K (V s)]
   {W : Type*} [AddCommGroup W] [Module K W]
-
 
 end Frames
 
@@ -250,11 +242,6 @@ theorem infinite_residueField_of_isAlgClosed [IsAlgClosed C] :
   rw [map_pow, map_sub, map_one, hq, FiniteField.pow_card] at h3
   simp [eq_sub_iff_add_eq] at h3
 
-
-
-
-
-
 end
 
 theorem exists_lt_norm_lt_one_of_isAlgClosed {C : Type*} [NontriviallyNormedField C]
@@ -341,13 +328,6 @@ noncomputable def discEvalAway : A →+* K :=
   IsLocalization.Away.lift (PowerSeries.C π * PowerSeries.X : O⟦X⟧) (g := discEval i hi ht) (by
     rw [isUnit_iff_ne_zero, map_mul, discEval_C, discEval_X]
     exact mul_ne_zero hπ ht0)
-
-@[simp] theorem discEvalAway_algebraMap (f : O⟦X⟧) :
-    discEvalAway π A i hi hπ ht0 ht (algebraMap O⟦X⟧ A f) = discEval i hi ht f :=
-  IsLocalization.Away.lift_eq _ _ f
-
-variable {π A}
-
 
 end Value
 
@@ -550,7 +530,6 @@ section Finite
 
 variable {O : Type*} [CommRing O] [Algebra ℤ_[p] O] (i : O →+* ℂ_[p]) (hi : ∀ x, ‖i x‖ ≤ 1)
 
-
 include hi in
 theorem map_algebraMap_padicInt (z : ℤ_[p]) :
     i (algebraMap ℤ_[p] O z) = algebraMap ℚ_[p] ℂ_[p] z :=
@@ -631,7 +610,6 @@ theorem finiteDimensional_genField {T : Set ℂ_[p]} (hT : T.Finite) :
 
 variable (L : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] L]
 
-
 omit [Module.Finite ℤ_[p] O] in
 theorem finite_of_intEmb_eq {j : O →+* integralClosure ℤ_[p] L} (hj : ∀ a, intEmb L (j a) = i a) :
     j.Finite := by
@@ -656,8 +634,6 @@ theorem norm_map_eq_one_iff (hinj : Function.Injective i) (x : O) : ‖i x‖ = 
   have := isLocalHom_of_intEmb_eq i hi _ hinj hj
   rw [← hj, ← isUnit_iff_norm, isUnit_map_iff]
 
-
-
 end Finite
 
 theorem exists_injective_norm_le_one (O : Type*) [CommRing O] [IsDomain O] [Algebra ℤ_[p] O]
@@ -672,13 +648,11 @@ variable {O : Type*} [CommRing O] (i : O →+* ℂ_[p]) (hi : ∀ x, ‖i x‖ �
   (A : Type*) [CommRing A] [Algebra O⟦X⟧ A]
   [IsLocalization.Away (PowerSeries.C π * PowerSeries.X : O⟦X⟧) A]
 
-
 end Points
 
 section Frames
 
 open MvPolynomial
-
 
 variable (p) in
 def algInt : Subring ℂ_[p] where
@@ -701,7 +675,6 @@ variable {i hi hπ} {F : MvPolynomial (EntryIndex n n) A}
 end Frames
 
 end Padic
-
 
 end GlobalTheory.DiscEval
 end -- clump:auto

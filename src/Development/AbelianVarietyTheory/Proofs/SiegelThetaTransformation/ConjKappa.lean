@@ -93,8 +93,6 @@ theorem transport {m : Type} [Fintype m] [DecidableEq m] (A B G D : Matrix m m �
     _ = Aᵀ * (D * Aᵀ⁻¹) * G := by
       rw [Matrix.nonsing_inv_mul _ hB', Matrix.mul_one]; simp only [Matrix.mul_assoc]
 
-theorem of_row {m n : Type} (f : m → n → ℂ) (k : m) : Matrix.of f k = f k := rfl
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
 
 theorem cc_kappa : cc X.κ0 = -X.κ0 := by

@@ -109,29 +109,6 @@ theorem quot_ae {k r : ℕ} {μG μS νq : Measure (Formalism.QuantumDeterminant
   simp only [lintegral_const, one_mul, Pi.zero_apply, Measure.measure_univ_eq_zero] at hx
   exact h0 hx
 
-theorem piInv_contOn {k r : ℕ} {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    {z : Fin (2 * r + k + 1) → ℂ} {u : Fin k → ℝ} {π : Mx k r → (Wp →L[ℂ] Wp)}
-    (hT : 0 < Formalism.QuantumDeterminants.Tz k r z) (hπ : PI.UpqRep.IsHCTypeW k r z u π) (ξ : Wp) :
-    ContinuousOn (fun p1 : Formalism.QuantumDeterminants.Mt k r => π (Matrix.of p1)⁻¹ ξ)
-      {p1 : Formalism.QuantumDeterminants.Mt k r | Matrix.of p1 ∈ Formalism.QuantumDeterminants.UWset k r z} := by
-  have hm : Continuous (fun p1 : Formalism.QuantumDeterminants.Mt k r =>
-      Formalism.QuantumDeterminants.Hpk k r * (Matrix.of p1 : Mx k r)ᴴ * Formalism.QuantumDeterminants.Hpk k r) :=
-    (continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul continuous_const
-  have hmaps : Set.MapsTo (fun p1 : Formalism.QuantumDeterminants.Mt k r =>
-      Formalism.QuantumDeterminants.Hpk k r * (Matrix.of p1 : Mx k r)ᴴ * Formalism.QuantumDeterminants.Hpk k r)
-      {p1 : Formalism.QuantumDeterminants.Mt k r | Matrix.of p1 ∈ Formalism.QuantumDeterminants.UWset k r z} (Formalism.QuantumDeterminants.UWset k r z) := by
-    intro p1 hp1
-    have e : (Matrix.of p1 : Mx k r)⁻¹ = Formalism.QuantumDeterminants.Hpk k r * (Matrix.of p1 : Mx k r)ᴴ * Formalism.QuantumDeterminants.Hpk k r :=
-      PI.HwUniqW.inv_eq_UH hp1.1
-    show Formalism.QuantumDeterminants.Hpk k r * (Matrix.of p1 : Mx k r)ᴴ * Formalism.QuantumDeterminants.Hpk k r ∈ Formalism.QuantumDeterminants.UWset k r z
-    rw [← e]; exact (uw_inv hp1).1
-  refine ((piW_cont hT hπ ξ).comp hm.continuousOn hmaps).congr ?_
-  intro p1 hp1
-  have e : (Matrix.of p1 : Mx k r)⁻¹ = Formalism.QuantumDeterminants.Hpk k r * (Matrix.of p1 : Mx k r)ᴴ * Formalism.QuantumDeterminants.Hpk k r :=
-    PI.HwUniqW.inv_eq_UH hp1.1
-  simp only [Function.comp]
-  rw [e]
-
 def kern {k r : ℕ} (R : Rep k r) {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     (z : Fin (2 * r + k + 1) → ℂ) (π : Mx k r → (Wp →L[ℂ] Wp)) (v w : R.H) (ξ : Wp)
     (y : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r)) : ℂ :=
@@ -141,44 +118,5 @@ def kern {k r : ℕ} (R : Rep k r) {Wp : Type} [NormedAddCommGroup Wp] [InnerPro
 def good (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) :
     Set (Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r)) :=
   {y | Matrix.of y.1 ∈ GG k r ∧ Matrix.of y.2.1 ∈ Formalism.QuantumDeterminants.UWset k r z ∧ Matrix.of y.2.2 ∈ GG k r}
-
-theorem good_meas (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : MeasurableSet (good k r z) := by
-  have h1 : Continuous (fun q : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      (Matrix.of q.2.1 : Mx k r)) := continuous_fst.comp continuous_snd
-  have h2 : Continuous (fun q : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      (Matrix.of q.2.2 : Mx k r)) := continuous_snd.comp continuous_snd
-  have h3 : Continuous (fun q : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      (Matrix.of q.1 : Mx k r)) := continuous_fst
-  exact ((isClosed_UH.preimage h3).inter (((isClosed_UW z).preimage h1).inter
-    (isClosed_UH.preimage h2))).measurableSet
-
-theorem kern_meas {k r : ℕ} (R : Rep k r) {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    {z : Fin (2 * r + k + 1) → ℂ} {u : Fin k → ℝ} {π : Mx k r → (Wp →L[ℂ] Wp)}
-    (hT : 0 < Formalism.QuantumDeterminants.Tz k r z) (hπ : PI.UpqRep.IsHCTypeW k r z u π) (v w : R.H) (ξ : Wp)
-    (hc : ContinuousOn (fun g => R.σ g w) (GG k r)) :
-    Measurable ((good k r z).indicator (kern R z π v w ξ)) := by
-  classical
-  have h1 : Continuous (fun q : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      (Matrix.of q.2.1 : Mx k r)) := continuous_fst.comp continuous_snd
-  have h2 : Continuous (fun q : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      (Matrix.of q.2.2 : Mx k r)) := continuous_snd.comp continuous_snd
-  have h3 : Continuous (fun q : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      (Matrix.of q.1 : Mx k r)) := continuous_fst
-  have a1 : ContinuousOn (fun y : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      R.σ (Matrix.of y.1) w) (good k r z) := hc.comp h3.continuousOn (fun y hy => hy.1)
-  have a2 : ContinuousOn (fun y : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      R.σ (Matrix.of y.2.1 * Matrix.of y.2.2 * Matrix.of y.1) w) (good k r z) :=
-    hc.comp ((h1.matrix_mul h2).matrix_mul h3).continuousOn
-      (fun y hy => DDSmoothness.uh_mul (DDSmoothness.uh_mul hy.2.1.1 hy.2.2) hy.1)
-  have a3 : ContinuousOn (fun y : Formalism.QuantumDeterminants.Mt k r × (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r) =>
-      π (Matrix.of y.2.1)⁻¹ ξ) (good k r z) :=
-    (piInv_contOn hT hπ ξ).comp (continuous_fst.comp continuous_snd).continuousOn (fun y hy => hy.2.1)
-  have hK : ContinuousOn (kern R z π v w ξ) (good k r z) :=
-    ((continuousOn_const.inner a1).mul (continuous_star.comp_continuousOn (continuousOn_const.inner a2))).mul
-      (((psi_cont z _).comp h2).continuousOn.mul (a3.inner continuousOn_const))
-  have := ContinuousOn.measurable_piecewise hK (continuousOn_const (c := (0 : ℂ))) (good_meas k r z)
-  rw [← Set.piecewise_eq_indicator]
-  exact this
-
 
 end GlobalTheory.BesselNorm

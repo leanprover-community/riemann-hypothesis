@@ -123,34 +123,6 @@ theorem symIdx_cases (k rS i : ℕ) : (i < k ∧ symIdx k rS i = i + rS) ∨
 theorem symmetricBlockBoundary_cases (k rS s : ℕ) : (s = rS + k ∧ bd5 k rS s = rS) ∨ (s ≠ rS + k ∧ bd5 k rS s = s) := by
   unfold bd5; split_ifs <;> omega
 
-theorem block {n a t : ℕ} (hn : a + t ≤ n) (A B : ℕ → ℕ → κ)
-    (hA : ∀ l l', l < n → l' < a → a ≤ l → A l l' = 0)
-    (hB : ∀ l l', l < n → l' < a + t → a + t ≤ l → B l l' = 0)
-    (hAB : ∀ p p', p < n → p' < n →
-      ∑ l ∈ Finset.range n, A p l * B l p' = if p = p' then 1 else 0) :
-    (Matrix.of fun s s' : Fin t => A (a + s.1) (a + s'.1)).det *
-      (Matrix.of fun s s' : Fin t => B (a + s.1) (a + s'.1)).det = 1 := by
-  rw [← Matrix.det_mul]
-  convert Matrix.det_one (n := Fin t) (R := κ)
-  ext s s'
-  have hs := s.2
-  have hs' := s'.2
-  rw [Matrix.mul_apply]
-  simp only [Matrix.of_apply]
-  rw [Fin.sum_univ_eq_sum_range (fun l => A (a + s.1) (a + l) * B (a + l) (a + s'.1)) t]
-  have h := hAB (a + s.1) (a + s'.1) (by omega) (by omega)
-  obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
-  rw [Finset.sum_range_add, Finset.sum_range_add, Finset.sum_eq_zero (s := Finset.range a),
-    Finset.sum_eq_zero (s := Finset.range m), zero_add, add_zero] at h
-  · rw [h, Matrix.one_apply]
-    simp [Fin.ext_iff]
-  · intro l hl
-    rw [Finset.mem_range] at hl
-    rw [hB _ _ (by omega) (by omega) (by omega), mul_zero]
-  · intro l hl
-    rw [Finset.mem_range] at hl
-    rw [hA _ _ (by omega) (by omega) (by omega), zero_mul]
-
 end Comb
 
 section Main
@@ -180,7 +152,6 @@ theorem entB_zero (k₀ n : ℕ) (ex : ℕ → ℕ) (g : HomE E (n + 0) (n + 0))
   unfold entB mat
   rw [fIdx_zero, fIdx_zero, scE_lt _ hp, scE_lt _ hp']
   simp
-
 
 variable {P q}
 

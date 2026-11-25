@@ -691,7 +691,6 @@ section Pt
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
   {mu : Tup X.F X.E X.K S} {u : Pr.Word} {j : ℕ}
 
-
 open Classical in
 theorem frsF_mem (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) (x : Sp X.E (R.N j)) :
     frsF sel mu p P x ∈ p.deco.1.at P.1 ↔ x ∈ stdAt X.E (R.N j) P.1 := by
@@ -702,7 +701,6 @@ theorem frsF_mem (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) (hP : P.1 
 theorem frsF_symm_mem (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) (v : Sp X.E (R.N j)) :
     (frsF sel mu p P).symm v ∈ stdAt X.E (R.N j) P.1 ↔ v ∈ p.deco.1.at P.1 := by
   rw [← frsF_mem p P hP, LinearEquiv.apply_symm_apply]
-
 
 open Classical in
 theorem cosetIn_eq {cst : LocCst X (rowSG Pr sel mu)} (q : PtAt R sel mu cst u j) {y : Sp X.E (R.N j)}
@@ -995,8 +993,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.framesExact_of_isAdelicPointOfFramedLattice : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] {ST SG Q : Finset (Pl E)} {K : Type} [Field K] {Θ : LevQFam E K n Q} (q : QLoc hc n Q Θ), (∀ P : Q, conjPrime₂ P.1 ≠ P.1) → ∀ {g : GL (Fin n) (AfE F E)} {p : DecoF E n ST SG Q}, IsPtOf hc g p → g ∈ UAd hc n ∧ FrExact q g p := by
-  first | exact @GlobalTheory.Mem.Col2.ChEx.frExact_of_isPtOf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FramesExactOfIsAdelicPointOfFramedLatticeStatement =====
@@ -1013,7 +1009,6 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 noncomputable section
 
 namespace GlobalTheory.Mem.Col2.ChEx
-
 
 open Classical in
 
@@ -1174,8 +1169,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.levelAtTwistPrimes_isOpen : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Chars X Pr R.m} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))} {G : ChGlob X R.m} {m2 : ℕ}, L.Ok Ch sel mu cst G m2 → (∀ P ∈ QE sel (mu : Chr X.F X.E X.K), P ∉ Pr.vGs) → ∀ (j : ℕ) (b : L.β j), ThetaOpen (L.levQ j b) := by
-  first | exact @GlobalTheory.Mem.Col2.ChEx.thetaOpen_levQ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelAtTwistPrimesIsOpenStatement =====
@@ -1373,7 +1366,6 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 
 namespace GlobalTheory.Mem.Col2.ChEx
 
-
 open Classical in
 theorem ptDet_cqOf : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
     {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ},
@@ -1476,10 +1468,6 @@ theorem thetaOpen_cutQ {K : Type} [Field K] (Θ : LevQFam E K n Q) (hΘ : ThetaO
     (hC : ∀ P : Q, C P = ∅ ∨ ∃ (z : Sp E n) (c : E), c ≠ 0 ∧ C P = {x | c⁻¹ • (x - z) ∈ stdAt E n P.1}) : ThetaOpen (cutQ Θ C) :=
   _root_.GlobalTheory.Mem.Col2.ChEx.thetaOpen_cutQ Θ hΘ C hC
 
-theorem frExact_of_isPtOf {K : Type} [Field K] {Θ : LevQFam E K n Q} (q : QLoc hc n Q Θ) (hQ : ∀ P : Q, conjPrime₂ P.1 ≠ P.1)
-    {g : GL (Fin n) (AfE F E)} {p : DecoF E n ST SG Q} (h : IsPtOf hc g p) : g ∈ UAd hc n ∧ FrExact q g p :=
-  GlobalTheory.T.framesExact_of_isAdelicPointOfFramedLattice hc n q hQ h
-
 end Gen
 
 end GlobalTheory.Mem.Col2.ChExM
@@ -1522,18 +1510,6 @@ theorem cosetIn_iff (hd : ∀ P ∈ QE sel (mu : Chr X.F X.E X.K), P ∉ Pr.vGs)
 alias exists_pt_inv := _root_.GlobalTheory.Mem.Col2.ChEx.TwLift.exists_ptAt_bar_cq_eq
 
 end PtL
-
-section Open
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Chars X Pr R.m}
-    {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S}
-    {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))} {G : ChGlob X R.m} {m2 : ℕ}
-
-theorem thetaOpen_levQ (hL : L.Ok Ch sel mu cst G m2) (hd : ∀ P ∈ QE sel (mu : Chr X.F X.E X.K), P ∉ Pr.vGs) (j : ℕ) (b : L.β j) :
-    ThetaOpen (L.levQ j b) :=
-  GlobalTheory.T.levelAtTwistPrimes_isOpen hL hd j b
-
-end Open
 
 end GlobalTheory.Mem.Col2.ChExM
 
@@ -1620,8 +1596,6 @@ section Main3
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 variable {B : Base} {X : PreX B.toPre} (I : TC B X)
-
-
 
 theorem chart_of (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι)
     (Q' : Finset (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (i : ℕ) (hi : i ≤ B.R.m) (hm : i < B.R.m)
@@ -1726,7 +1700,6 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 
 variable {B : Base} {X : PreX B.toPre} (I : TC B X)
 
-
 theorem lev_at (hI : I.Ok) (hPr : (B.primes X).Ok) {u : B.Word} {a : I.ι} {i : ℕ} (c : (I.stp u a i).Cl) (b : (I.stp u a i).β) (hb : c.1 = b)
     (C : ∀ w : (B.primes X).vGs, Set (Fin (B.R.N i) → 𝓞 B.fields.E ⧸ w.1.asIdeal)) (hC : bar (rpT I u a i c) = C)
     (D : ∀ P : I.Q a, Set (Sp B.fields.E (B.R.N i))) (hD : cqOf (rpT I u a i c) = D)
@@ -1740,7 +1713,6 @@ theorem lev_at (hI : I.Ok) (hPr : (B.primes X).Ok) {u : B.Word} {a : I.ι} {i : 
   have hd := q_disj I hI a
   refine (_root_.GlobalTheory.Mem.Col2.ChEx.lev_iff_frames B.sp.cm cqOf (_root_.GlobalTheory.Mem.Col2.ChEx.invActs_cqOf hd) (lvG I a i c.1) (lvQ I a i c.1) (rpT I u a i c) C hC D hD q hg hx p e e').trans ?_
   exact exists_congr fun κ => and_congr Iff.rfl (and_congr Iff.rfl (cosetIn_iff hd (hqG hPr) _ _).symm)
-
 
 theorem chr_at {u : B.Word} {a : I.ι} {i : ℕ} (c : (I.stp u a i).Cl) (b : (I.stp u a i).β) (hb : c.1 = b)
     (C : ∀ w : (B.primes X).vGs, Set (Fin (B.R.N i) → 𝓞 B.fields.E ⧸ w.1.asIdeal))
@@ -1756,8 +1728,6 @@ theorem chr_at {u : B.Word} {a : I.ι} {i : ℕ} (c : (I.stp u a i).Cl) (b : (I.
   have h := _root_.GlobalTheory.Mem.Col2.ChEx.chr_frames (X := B.fields) B.sp.cm B.embLL (lvG I a i c.1) (lvQ I a i c.1) (rpT I u a i c) C D q z hg κ h1 e e'
   rw [h]
   rfl
-
-
 
 theorem exists_charts : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι) (Q : Finset (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (i : ℕ) (hi : i ≤ B.R.m), 1 ≤ i → i < B.R.m → (∀ v, v ∈ Q ↔ I.UnderQ a v) → ∀ k : GlobalTheory.Mem.Col2.TC.ChTw.Chart I u a i → GA B (B.R.N i), GlobalTheory.Mem.Col2.TC.ChTw.AdmK I u a i k → ∃ K : ∀ β : GlobalTheory.Mem.Col2.TC.ChTw.Chart I u a i, LevelChart (I.rec7 l Z) (B.T u) (badQ (I.rec7 l Z) Q) i hi (fun c : {c // GlobalTheory.Mem.Col2.TC.ChTw.chartOf I u a i c = β} => (I.chain l u a).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c.1)), I.Reads u a i (GlobalTheory.Mem.Col2.TC.ChTw.chartOf I u a i) (fun β => (K β).lev.Lb) (fun β => (K β).lev.U) (fun β => (K β).lev.chi) (fun c => ((K (GlobalTheory.Mem.Col2.TC.ChTw.chartOf I u a i c)).y ⟨c, rfl⟩).1) (fun c s => ((K (GlobalTheory.Mem.Col2.TC.ChTw.chartOf I u a i c)).stabI ⟨c, rfl⟩ s).1) k ∧ ∀ β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K β).lev.chi κ ^ n = 1 := by
   intro B X I hI hP l Z u a Q i hi _ hm hQ k hk

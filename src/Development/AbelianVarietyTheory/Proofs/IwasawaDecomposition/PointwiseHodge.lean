@@ -384,7 +384,6 @@ open GlobalTheory.PointChern Filter Topology
 open scoped Matrix
 open scoped ComplexOrder
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChernCurvatureModelGramConjMulTransposeInvStatement =====
@@ -648,7 +647,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory
 
-
 open scoped MatrixOrder in
 theorem posDef_eq_conjTranspose_mul_self_of_isUnit_det :
     ∀ {p : ℕ} (P : Matrix (Fin p) (Fin p) ℂ), P.PosDef →
@@ -798,7 +796,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.PosDefSwap
 
-
 open scoped Matrix.Norms.L2Operator in
 theorem one_sub_mul_conjTranspose_posDef {p q : ℕ} (z : Matrix (Fin p) (Fin q) ℂ)
     (h : (1 - zᴴ * z).PosDef) : (1 - z * zᴴ).PosDef := by
@@ -831,9 +828,6 @@ namespace GlobalTheory.PointChernScale
 open Matrix
 open scoped ComplexOrder
 
-theorem chernPoly_reindex {n a b : ℕ} (e : Fin a ≃ Fin b) (F : ReciprocityTheory.L2DbarEstimates.V n → Matrix (Fin a) (Fin a) ℂ)
-    (v : ReciprocityTheory.L2DbarEstimates.V n) (k : ℕ) : chernPoly (fun u => reindex e e (F u)) v k = chernPoly F v k := _root_.GlobalTheory.ChernReindex.chernPoly_reindex e F v k
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 def zLin {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllWt.Psi H × Fin Dw.p × Fin Dw.q)
@@ -841,9 +835,6 @@ def zLin {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllW
   toFun u := coordOf ix u σ
   map_add' u v := by ext i j; simp [coordOf]
   map_smul' c u := by ext i j; simp [coordOf]
-
-theorem zLin_apply {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllWt.Psi H × Fin Dw.p × Fin Dw.q)
-    (σ : GlobalTheory.AllWt.Psi H) (u : ReciprocityTheory.L2DbarEstimates.V n) : zLin ix σ u = coordOf ix u σ := rfl
 
 def jMat {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllWt.Psi H × Fin Dw.p × Fin Dw.q)
     (A : GlobalTheory.AllWt.Psi H → Matrix (Fin Dw.p) (Fin Dw.p) ℂ) (B : GlobalTheory.AllWt.Psi H → Matrix (Fin Dw.q) (Fin Dw.q) ℂ) :
@@ -956,7 +947,6 @@ theorem chernPoly_model_eq_subst {H : Host E} (Dw : Datum H) {n : ℕ}
       split_ifs <;> simp
 
 end GlobalTheory.PointChernScale
-
 
 open GlobalTheory.PointChernScale in
 theorem GlobalTheory.PointChern.chernTop_model_eq_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) {n : ℕ}

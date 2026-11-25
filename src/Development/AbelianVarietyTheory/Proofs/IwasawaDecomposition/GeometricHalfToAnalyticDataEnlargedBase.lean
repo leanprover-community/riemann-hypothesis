@@ -104,8 +104,6 @@ theorem stepW_rank_large (p : WP) :
     StepW p fun _ _ _ _ w => ∀ Z : w.Lt, 8 * (w.st Z).toD7.R.f * (w.st Z).toD7.R.r + 4 ≤ (w.st Z).toD7.R.nV :=
   Step.of_evG ((evG_of_ev GlobalTheory.Mem.StdSize.vstd_size_ev).imp fun _ _ _ _ _ H _ _ _ hO _ _ _ w _ Z => (H (w.st Z) hO).2)
 
-
-
 theorem inGeo_stepW (hP : GlobalTheory.Published.CuspRapidDecay) (p : WP) :
     StepW p fun _ B' _ _ w' => ∀ (Z' : w'.Lt) (hX' : B'.fields.Ok) (U : Set w'.I.ι) (core' : CoreJ (w'.st Z').toD7)
       (alg' : Algebra core'.Q.c.F (w'.st Z').toD7.what₂.LL), letI := alg'; ∀ (Xg : Finset (Gc B' w'.px → B'.LL)) (tr : TrI B' w'.px)
@@ -128,7 +126,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField
@@ -149,8 +146,6 @@ theorem levOver_cast' {D : D7} {G : Type} [Group G] {i : Fin D.R.m} {Pg₁ Pg₂
     LevOver D i Pg₂ β₂ e₂ l Dw ι lev := by
   cases hP; cases hβ; cases he
   exact h
-
-
 
 theorem exists_bc_stages (X X' : Stages) (hP : X'.B.toPre = X.B.toPre) (hLL : Set.range X.B.embLL ⊆ Set.range X'.B.embLL)
     {G : Type} [Group G] [Fintype G] {Pl0 T0 Pl0' T0' : Type} {A : FamIn X.toD7.what₂.LL G Pl0 T0 X.toD7.R.m}
@@ -361,8 +356,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.R3.Rw.OmExt
 
-
-
 theorem exists_omPins_enl : ∀ {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre} {T : TwDat B} {T' : TwDat B'} {w : ColW B f T}
     {w' : ColW B' f' T'} {Z : w.Lt} {Z' : w'.Lt} {hX : B.fields.Ok} {hX' : B'.fields.Ok} {Wt : Set B.places.Pl} {Wt' : Set B'.places.Pl}
     (z : Dat (w.st Z) w.I hX T Wt), Enl0 B B' → HEq f' f → HEq w'.px w.px → z.Std →
@@ -431,7 +424,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField
@@ -469,12 +461,6 @@ def RepsOver (D : D7) (i : Fin D.R.m) (Pg Q : Finset (Formalism.L2.DIV.Pl D.host
     Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => fin _ (h k)) ∧
     ∀ k, SplitOffBad (Vc D i) bad (h k) ∧ Lh k = Bridge.hLat (Vc D i) (fin _ (h k)) ∧
       gam k = Nat.card (Bridge.stab (Bridge.ratF (Vc D i)) J' (fin _ (h k)))
-
-theorem repsOver_cast {D : D7} {i : Fin D.R.m} {Pg₁ Pg₂ Q₁ Q₂ : Finset (Formalism.L2.DIV.Pl D.host.E)} {β₁ β₂} {K' : Type} [Field K'] {bad : ℕ}
-    {Cl : Type} {h : Cl → GA D (Vc D i)} {J' Lh gam} {vol : K'} (hP : HEq Pg₂ Pg₁) (hQ₁ : Q₁ = ∅) (hQ₂ : Q₂ = ∅) (hβ : HEq β₂ β₁)
-    (H : RepsOver D i Pg₁ Q₁ β₁ bad h J' Lh gam vol) : RepsOver D i Pg₂ Q₂ β₂ bad h J' Lh gam vol := by
-  cases hP; cases hβ; subst hQ₁ hQ₂
-  exact H
 
 private theorem repsOver_cast_stages (X X' : Stages) (hPre : X'.B.toPre = X.B.toPre)
     {i : Fin X.toD7.R.m} {i' : Fin X'.toD7.R.m} (hi : (i : ℕ) = i')
@@ -530,8 +516,6 @@ theorem normalisedData_coefficientMap_injective {D : D7} {G : Type} [Group G] [F
     exact ⟨x, Subtype.ext ((RingHom.congr_fun hO.lift.field x).trans hx)⟩
   obtain ⟨g, r, c0L, hT, hbc⟩ := hO.lift.c0
   exact inj_of_li (lamV D i) O.jL sj hbc (hT.mapL i).2.1
-
-
 
 theorem omOver_of_isBCOf (X X' : Stages) (hP : X'.B.toPre = X.B.toPre)
     {G : Type} [Group G] [Fintype G] {Pl0 T0 Pl0' T0' : Type} {A : FamIn X.toD7.what₂.LL G Pl0 T0 X.toD7.R.m}
@@ -686,7 +670,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.IndefR.p
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult
 
-
 noncomputable section
 namespace GlobalTheory.Mem.R3.Rw.EqvMove
 
@@ -763,38 +746,6 @@ theorem equivAt_iff {Tp : Type} {tup : Tp → T0} (O : OMDat T.toCore R i Tp tup
     rw [phi_eq_phiAt, phi_eq_phiAt, h2 x, ← hχ i g]
 
 end Gen
-
-section Congr
-
-variable {D : D7} (T : CoreJ D) (i : Fin D.R.m)
-
-theorem eqAtP_congr {a a' : (D.host.E →+* ℂ) × ℕ → ℕ} (ha : a' = a) {n n' : ℕ} (hn : n' = n) {σ σ' : T.Q.c.F →+* ℂ} (hσ : σ' = σ)
-    (hV : T.V ((i : ℕ) + 1) σ = Wc D i) (hV' : T.V ((i : ℕ) + 1) σ' = Wc D i)
-    {c : (T.U ((i : ℕ) + 1) σ).Comp → ℂ} {c' : (T.U ((i : ℕ) + 1) σ').Comp → ℂ} (hc : HEq c' c)
-    {G G' : Type} [iG : Group G] [iG' : Group G'] (hG : G' = G) (hi : HEq iG' iG)
-    {lev : G → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La}
-    {lev' : G' → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La} (hl : HEq lev' lev)
-    {β β' : GL (Fin (Wc D i).rank) (EAf D)} (hβ : β' = β) {Pg Pg' : Finset (Pl D.host.E)} (hP : Pg' = Pg)
-    {eG : G → G0 Pg D.R.r} {eG' : G' → G0 Pg' D.R.r} (he : HEq eG' eG) {X : G → ℂ} {X' : G' → ℂ} (hX : HEq X' X) :
-    EqAtP T i σ' hV' c' a' n' lev' β' Pg' eG' X' ↔ EqAtP T i σ hV c a n lev β Pg eG X := by
-  subst ha hn hσ hG hβ hP
-  cases hi; cases hc; cases hl; cases he; cases hX
-  rfl
-
-theorem equivP_congr {a a' : (D.host.E →+* ℂ) × ℕ → ℕ} (ha : a' = a) {n n' : ℕ} (hn : n' = n) {σ σ' : T.Q.c.F →+* ℂ} (hσ : σ' = σ)
-    (hV : T.V ((i : ℕ) + 1) σ = Wc D i) (hV' : T.V ((i : ℕ) + 1) σ' = Wc D i)
-    {c : (T.U ((i : ℕ) + 1) σ).Comp → ℂ} {c' : (T.U ((i : ℕ) + 1) σ').Comp → ℂ} (hc : HEq c' c)
-    {G G' : Type} [iG : Group G] [iG' : Group G'] (hG : G' = G) (hi : HEq iG' iG)
-    {lev : G → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La}
-    {lev' : G' → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La} (hl : HEq lev' lev)
-    {β β' : GL (Fin (Wc D i).rank) (EAf D)} (hβ : β' = β) {Pg Pg' : Finset (Pl D.host.E)} (hP : Pg' = Pg)
-    {eG : G → G0 Pg D.R.r} {eG' : G' → G0 Pg' D.R.r} (he : HEq eG' eG) {X : G → ℂ} {X' : G' → ℂ} (hX : HEq X' X) :
-    EquivP T i σ' hV' c' a' n' lev' β' Pg' eG' X' ↔ EquivP T i σ hV c a n lev β Pg eG X := by
-  subst ha hn hσ hG hβ hP
-  cases hi; cases hc; cases hl; cases he; cases hX
-  rfl
-
-end Congr
 
 theorem heq_fun_of {G G' : Type} {Y : Type} (hG : G' = G) (X : G → Y) (X' : G' → Y)
     (h : ∀ g' g, HEq g' g → X' g' = X g) : HEq X' X := by
@@ -1209,7 +1160,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.IndefR.p
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
 
-
 noncomputable section
 namespace UpperTheory.RhoMove
 
@@ -1500,8 +1450,6 @@ theorem center_map {G G' : Type} [Group G] [Group G'] (φ : G ≃* G') {z : G} (
   obtain ⟨g, rfl⟩ := φ.surjective g
   rw [← map_mul, ← map_mul, hz g]
 
-
-
 theorem oneMapOf_two (hR : PreChar R') (hchi : R'.grp_chiW) (hT : TieIn T' R' κ' v₀')
     (O' : OMDat T'.toCore R' i' Unit (fun _ => A'.μ0)) (hF : O'.c'.F = D'.what₂.embLL.toRatAlgHom.fieldRange)
     (hP' : O'.Pins (κ' i') (v₀' i' (sg0 D' A')) (iotaW T' i') (T'.x₀ ((i' : ℕ) + 1) O'.s0))
@@ -1539,8 +1487,6 @@ theorem preChar_of {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T0 : Type}
     (R : RealDat3 D A3 Ks) (F : Face3 D A3) (hch : R.WeakCharacterisation F) (hEx : R.toRealDat.ExAt) : PreChar R.toRealDat :=
   ⟨hch.base.lev, hch.base.grp.red_R, hch.base.grp.red_L, hch.base.grp.record, hch.base.fam, hch.base.models,
     RealDat.chain_of_weak hch.base.chain hEx, RealDat.thP_of_weak hch.base.thP hEx⟩
-
-
 
 theorem cpt : ∀ {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre} {T : TwDat B} {T' : TwDat B'} (w : ColW B f T) (w' : ColW B' f' T')
     (Z : w.Lt) (Z' : w'.Lt) (hX : B.fields.Ok) (hX' : B'.fields.Ok) (Wt : Set B.places.Pl) (Wt' : Set B'.places.Pl)

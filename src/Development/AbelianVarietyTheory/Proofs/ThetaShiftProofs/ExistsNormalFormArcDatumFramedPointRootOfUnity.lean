@@ -106,12 +106,6 @@ theorem exists_lift {T : Over (Sp S)} (v : T.left ⟶ Xo.univ.t.G.left) (hv : v 
     ∃ w : T ⟶ t'.G, w.left ≫ m.φ = v :=
   ⟨Over.homMk (m.cart.1.lift v T.hom hv) (m.cart.1.lift_snd _ _ _), m.cart.1.lift_fst _ _ _⟩
 
-theorem push_prod {n : ℕ} (u : Fin n → (epsR S ⟶ t'.G)) :
-    ((List.ofFn u).prod).left ≫ m.φ = ((List.ofFn fun i => pushHom m.cart (epsR S) (u i)).prod).left := by
-  have := map_list_prod (pushHom m.cart (epsR S)) (List.ofFn u)
-  rw [List.map_ofFn] at this
-  exact congrArg (fun q => q.left) this
-
 theorem comb_iff {n : ℕ} (v : Fin n → (epsR S ⟶ t'.G)) (cf : Fin n → S) (w : epsR S ⟶ t'.G) :
     IsCombAt x (fun i => (v i).left ≫ m.φ) cf (w.left ≫ m.φ) ↔ IsLieComb cf v w := by
   apply GlobalTheory.ArcQ.ExFr.comb_iff
@@ -471,7 +465,6 @@ theorem algZ_of_pow {S : Type} [CommRing S] {ζ : S} {N : ℕ} (hN : 0 < N) (h :
   IsIntegral.isAlgebraic (R := ℤ) (IsIntegral.of_pow hN (by rw [h]; exact isIntegral_one))
 
 end GlobalTheory.ArcQ.NormalForm
-
 
 open GlobalTheory.ArcQ.NormalForm in
 theorem GlobalTheory.ArcQ.exists_normalForm : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [Algebra c.F K₁] [Algebra c.F (ArcS Dw K₁)] (d : ArcDatum Xo c K₁), ∃ (ζ : K₁) (N : ℕ), 0 < N ∧ ζ ^ N = 1 ∧ ((∀ τ k, GtTanR (d.e τ k)) → d.Normal ζ) ∧ ∃ (e₀ : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt (d.a.restrict (c.V d.Wp).subtype).D₀ (epsR K₁)) (y₀ : FrPt Xo c (ArcS Dw K₁)), (∀ τ k, GtComb (Pi.single k (1 : K₁)) (d.e τ) (e₀ τ k)) ∧ IsArcFr d.W e₀ d.th (arcι Dw K₁) y₀ ∧ FrChg (letM Dw K₁) (GlobalTheory.ArcQ.cst Dw ζ) y₀ d.yF := by

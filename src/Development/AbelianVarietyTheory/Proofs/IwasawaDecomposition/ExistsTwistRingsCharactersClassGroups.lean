@@ -133,7 +133,6 @@ private theorem block_val_mul_sqrt_normV_zpow_neg_eq_mul_inv {E : Type} [Field E
   rw [hcast, hpow, zpow_neg, zpow_natCast, Complex.ofReal_pow, mul_assoc,
     mul_inv_cancel₀ (pow_ne_zero _ (by exact_mod_cast hs)), mul_one]
 
-
 open NumberField IsDedekindDomain Polynomial in
 theorem _root_.GlobalTheory.BlockVal.block_val_ae : ∀ {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ)
     (μ η : _root_.Formalism.L2.Host.HChar E),
@@ -170,8 +169,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
 
-theorem _root_.GlobalTheory.T.eventually_block_val_at_and_exists_inv_eq : ∀ {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ) (μ η : HChar E), AlmostIn ε μ → η.ValuesIn (1 / 2) ε → ∀ {r : ℕ}, Odd r → ∀ (μH ηH : Formalism.L2.NC.HC E), μH.χ = (μ : Ideles E →* ℂˣ) → ηH.χ = (η : Ideles E →* ℂˣ) → ∀ᶠ v in Filter.cofinite, (μH * ηH⁻¹).At v ((((block μ η r).val v : ℂˣ) : ℂ) * (Real.sqrt (normV v) : ℂ) ^ (-(r : ℤ))) ∧ ∃ y : K, ε y = (((block μ η r).val v : ℂˣ) : ℂ)⁻¹ := by
-  first | exact @GlobalTheory.BlockVal.block_val_ae
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockValAeStatement =====
@@ -274,7 +271,6 @@ theorem finiteDimensional_muK_one (l : ℕ) [Fact l.Prime] : FiniteDimensional �
   have := hfin.to_subtype
   show FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] {x : PadicAlgCl l | x ^ (l ^ 1) = 1})
   exact IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
-
 
 open Classical in
 def bridgeLow (D : D7) (l : ℕ) [Fact l.Prime] (w : HeightOneSpectrum (𝓞 D.host.E)) : Loc.FinExt l :=
@@ -542,34 +538,11 @@ theorem placesOver_nonempty (E : Type) [Field E] [NumberField E] (p : ℕ) (hp :
   rw [h, Ideal.mem_bot] at hmem
   exact hp.ne_zero (by exact_mod_cast hmem)
 
-theorem exists_ringEquiv_over (K Ω₁ Ω₂ : Type) [Field K] [NumberField K] [Field Ω₁] [Field Ω₂] [IsAlgClosed Ω₁]
-    [IsAlgClosed Ω₂] [CharZero Ω₁] [CharZero Ω₂] (a : K →+* Ω₁) (b : K →+* Ω₂)
-    (hc : Cardinal.mk Ω₁ = Cardinal.mk Ω₂) (hu : Cardinal.aleph0 < Cardinal.mk Ω₁) :
-    ∃ ι : Ω₁ ≃+* Ω₂, ∀ x, ι (a x) = b x :=
-  _root_.GlobalTheory.AlgClosedIsoOverNumberField.exists_ringEquiv_comp_eq K Ω₁ Ω₂ a b hc hu
-
 theorem card_padicAlgCl (l : ℕ) [Fact l.Prime] : Cardinal.mk (PadicAlgCl l) = Cardinal.mk ℂ :=
   (_root_.GlobalTheory.PadicCard.card_padicAlgCl_padicComplex l).1
 
 theorem card_padicComplex (l : ℕ) [Fact l.Prime] : Cardinal.mk ℂ_[l] = Cardinal.mk ℂ :=
   (_root_.GlobalTheory.PadicCard.card_padicAlgCl_padicComplex l).2
-
-theorem mem_OL_iff (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) (x : ↥K.1) :
-    x ∈ Loc.OL K ↔ ‖(x : PadicAlgCl l)‖ ≤ 1 :=
-  _root_.GlobalTheory.IntNormFinExt.mem_OL_iff_norm_le_one l K x
-
-theorem mem_maximalIdeal_OL_iff (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) [IsLocalRing ↥(Loc.OL K)]
-    (y : ↥(Loc.OL K)) : y ∈ IsLocalRing.maximalIdeal ↥(Loc.OL K) ↔ ‖((y : ↥K.1) : PadicAlgCl l)‖ < 1 :=
-  _root_.GlobalTheory.IntMaxFinExt.mem_maximalIdeal_iff_norm_lt_one l K y
-
-theorem exists_equiv_intOf (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) :
-    ∃ e : ↥(Loc.OL K) ≃+* ↥(intOf l K.1), ∀ y, (e y : PadicAlgCl l) = ((y : ↥K.1) : PadicAlgCl l) :=
-  _root_.GlobalTheory.IntOfFinExt.exists_ringEquiv_intOf l K
-
-theorem exists_toClC (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) :
-    ∃ f : ↥(Loc.OL K₀) →+* ↥(clC l (Kt l K₀ L)),
-      ∀ y, (f y : ℂ_[l]) = algebraMap (PadicAlgCl l) ℂ_[l] ((y : ↥K₀.1) : PadicAlgCl l) :=
-  _root_.GlobalTheory.HeightCounting.ToClC.exists_toClC l K₀ L
 
 theorem ok_laws (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) (k : ℕ) :
     letI := (Subring.inclusion (clC_mono l (le_sup_left : Kt l K₀ L ≤ Kt l K₀ L ⊔ muK l k))).toAlgebra
@@ -580,11 +553,6 @@ theorem ok_laws (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) (k : ℕ) :
           x * algebraMap _ (FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k))) (algebraMap _ ↥(clC l (Kt l K₀ L ⊔ muK l k)) d) =
             algebraMap _ (FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k))) (Polynomial.aeval (z : ↥(clC l (Kt l K₀ L ⊔ muK l k))) p) :=
   _root_.GlobalTheory.CycLayers.finite_primitive_root l K₀ L k _
-
-theorem hc_at {E : Type} [Field E] [NumberField E] (χ : HChar E) (h : Formalism.L2.NC.HC E)
-    (hh : h.χ = (χ : Ideles E →* ℂˣ)) (v : HeightOneSpectrum (𝓞 E)) :
-    (χ.UnrAt v → h.At v (χ.val v)) ∧ (χ.UnrAt v ↔ h.Unr v) :=
-  _root_.GlobalTheory.HeckeUnifVal.at_val_and_unr_iff χ h hh v
 
 end GlobalTheory.TwRing
 
@@ -604,19 +572,6 @@ theorem placesOver_inj (E : Type) [Field E] [NumberField E] {p q : ℕ} (hp : p.
   have : ((a : 𝓞 E) * (p : 𝓞 E) + (b : 𝓞 E) * (q : 𝓞 E)) = 1 := by exact_mod_cast congrArg (Int.cast (R := 𝓞 E)) hab
   rw [← this]
   exact v.asIdeal.add_mem (v.asIdeal.mul_mem_left _ hv) (v.asIdeal.mul_mem_left _ hv')
-
-theorem eta_unitArg {R : Ranks} (H : Host R) (χ : HChar H.E) (hχ : IsEtaT H χ) (h : Formalism.L2.NC.HC H.E)
-    (hh : h.χ = (χ : Ideles H.E →* ℂˣ)) (g : R.Psi) :
-    h.IsUnitArg (H.emb (g : R.GG)) :=
-  _root_.GlobalTheory.EtaUnitArg.etaT_isUnitArg H χ hχ h hh g
-
-theorem vals_block {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ) (μ η : HChar E)
-    (hμ : AlmostIn ε μ) (hη : η.ValuesIn (1 / 2) ε) {r : ℕ} (hr : Odd r) (μH ηH : Formalism.L2.NC.HC E)
-    (hμH : μH.χ = (μ : Ideles E →* ℂˣ)) (hηH : ηH.χ = (η : Ideles E →* ℂˣ)) :
-    ∀ᶠ v in Filter.cofinite, (μH * ηH⁻¹).At v ((((block μ η r).val v : ℂˣ) : ℂ) *
-      (Real.sqrt (normV v) : ℂ) ^ (-(r : ℤ))) ∧
-      ∃ y : K, ε y = (((block μ η r).val v : ℂˣ) : ℂ)⁻¹ :=
-  GlobalTheory.T.eventually_block_val_at_and_exists_inv_eq ε μ η hμ hη hr μH ηH hμH hηH
 
 theorem vals_zero {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ) (χ : HChar E)
     (hv : χ.ValuesIn 0 ε) (χH : Formalism.L2.NC.HC E) (hH : χH.χ = (χ : Ideles E →* ℂˣ)) :

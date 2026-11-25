@@ -60,40 +60,6 @@ variable {S : Type} [Ring S] {st : S →+ S}
 
 def cay (M : ℕ) (y : S) : S := (1 + y) * ∑ j ∈ Finset.range M, y ^ j
 
-theorem cay_unitary (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x) = x) {M : ℕ} {y : S}
-    (h0 : y ^ M = 0) (hy : st y = -y) : st (cay M y) * cay M y = 1 ∧ cay M y * st (cay M y) = 1 := by
-  have h1 : st 1 = 1 := GlobalTheory.TwoStepUnipotent.st_one hm hi
-  unfold cay
-  generalize hG : ∑ j ∈ Finset.range M, y ^ j = G
-  have a1 : (1 - y) * G = 1 := by rw [← hG, mul_neg_geom_sum, h0, sub_zero]
-  have a2 : G * (1 - y) = 1 := by rw [← hG, geom_sum_mul_neg, h0, sub_zero]
-  have b1 : st G * (1 + y) = 1 := by
-    have := congrArg st a1
-    rwa [hm, map_sub, h1, hy, sub_neg_eq_add] at this
-  have b2 : (1 + y) * st G = 1 := by
-    have := congrArg st a2
-    rwa [hm, map_sub, h1, hy, sub_neg_eq_add] at this
-  have c1 : st ((1 + y) * G) * ((1 + y) * G) = 1 := by
-    rw [hm, map_add (f := _), h1, hy]
-    calc st G * (1 + -y) * ((1 + y) * G) = (st G * (1 + y)) * ((1 - y) * G) := by noncomm_ring
-      _ = 1 := by rw [a1, b1, one_mul]
-  have c2 : ((1 + y) * G) * ((1 - y) * st G) = 1 := by
-    rw [mul_assoc, ← mul_assoc G, a2, one_mul, b2]
-  refine ⟨c1, ?_⟩
-  rw [left_inv_eq_right_inv c1 c2, c2]
-
-theorem cay_sub {M : ℕ} {y : S} (h0 : y ^ M = 0) :
-    cay M y - 1 - (y + y) = (y + y) * ∑ j ∈ Finset.range M, y ^ (j + 1) := by
-  unfold cay
-  have e : ∑ j ∈ Finset.range M, y ^ (j + 1) = y * ∑ j ∈ Finset.range M, y ^ j := by
-    rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun j _ => pow_succ' y j
-  rw [e]
-  generalize hG : ∑ j ∈ Finset.range M, y ^ j = G
-  have a1 : (1 - y) * G = 1 := by rw [← hG, mul_neg_geom_sum, h0, sub_zero]
-  calc (1 + y) * G - 1 - (y + y) = (y + y) * (y * G) + ((1 - y) * G - 1) + (y + y) * ((1 - y) * G - 1) := by
-        noncomm_ring
-    _ = _ := by rw [a1]; simp
-
 variable {ι : Type} [Fintype ι] (ε : ι → S) (w : ι → ℤ)
 
 def raise (i : ℕ) : AddSubgroup S where

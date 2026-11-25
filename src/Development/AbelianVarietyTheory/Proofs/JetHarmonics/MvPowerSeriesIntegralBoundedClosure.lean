@@ -60,11 +60,6 @@ omit [IsUltrametricDist K] in
 theorem Le.nonneg {c : ℝ} {S : MvPowerSeries σ K} (h : Le c S) : 0 ≤ c :=
   (norm_nonneg _).trans (h 0)
 
-theorem Le.add {c d : ℝ} {S T : MvPowerSeries σ K} (h : Le c S) (h' : Le d T) :
-    Le (max c d) (S + T) := fun ν => by
-  rw [map_add (f := _)]
-  exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le_max (h ν) (h' ν))
-
 theorem Le.mul {c d : ℝ} {S T : MvPowerSeries σ K} (h : Le c S) (h' : Le d T) :
     Le (c * d) (S * T) := fun ν => by
   classical
@@ -83,7 +78,6 @@ theorem le_C (a : K) : Le ‖a‖ (MvPowerSeries.C a : MvPowerSeries σ K) := fu
 theorem intg_mul {S T : MvPowerSeries σ K} (h : Intg S) (h' : Intg T) : Intg (S * T) := by
   have := Le.mul (c := 1) (d := 1) h h'
   rwa [one_mul] at this
-
 
 omit [IsUltrametricDist K] in
 theorem intg_C {a : K} (ha : ‖a‖ ≤ 1) : Intg (MvPowerSeries.C a : MvPowerSeries σ K) :=
@@ -207,7 +201,6 @@ private lemma le_finset_sum {ι : Type*} {c : ℝ} (hc : 0 ≤ c) (t : Finset ι
 
   rw [map_sum]
   exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hc fun i hi => h i hi ν
-
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K] {σ : Type} in
 theorem _root_.GlobalTheory.BddAlg.bdd_alg : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] (σ : Type), (∀ S T : MvPowerSeries σ K, _root_.GlobalTheory.ConvSer.Intg S → _root_.GlobalTheory.ConvSer.Intg T → _root_.GlobalTheory.ConvSer.Intg (S + T) ∧ _root_.GlobalTheory.ConvSer.Intg (S - T) ∧ _root_.GlobalTheory.ConvSer.Intg (S * T)) ∧ (∀ S T : MvPowerSeries σ K, _root_.GlobalTheory.ConvSer.Bdd S → _root_.GlobalTheory.ConvSer.Bdd T → _root_.GlobalTheory.ConvSer.Bdd (S + T) ∧ _root_.GlobalTheory.ConvSer.Bdd (S - T) ∧ _root_.GlobalTheory.ConvSer.Bdd (S * T)) ∧ (∀ (S : MvPowerSeries σ K) (n : ℕ), (_root_.GlobalTheory.ConvSer.Intg S → _root_.GlobalTheory.ConvSer.Intg (S ^ n)) ∧ (_root_.GlobalTheory.ConvSer.Bdd S → _root_.GlobalTheory.ConvSer.Bdd (S ^ n)) ∧ (_root_.GlobalTheory.ConvSer.Intg S → _root_.GlobalTheory.ConvSer.Bdd S)) ∧ (∀ a : K, _root_.GlobalTheory.ConvSer.Bdd (MvPowerSeries.C a : MvPowerSeries σ K) ∧ (‖a‖ ≤ 1 → _root_.GlobalTheory.ConvSer.Intg (MvPowerSeries.C a : MvPowerSeries σ K)) ∧ (‖a‖ < 1 → _root_.GlobalTheory.ConvSer.Small (MvPowerSeries.C a : MvPowerSeries σ K))) ∧ (∀ i : σ, _root_.GlobalTheory.ConvSer.Small (MvPowerSeries.X i : MvPowerSeries σ K)) ∧ (∀ (ι : Type) (t : Finset ι) (f : ι → MvPowerSeries σ K), ((∀ i ∈ t, _root_.GlobalTheory.ConvSer.Intg (f i)) → _root_.GlobalTheory.ConvSer.Intg (∏ i ∈ t, f i) ∧ _root_.GlobalTheory.ConvSer.Intg (∑ i ∈ t, f i)) ∧ ((∀ i ∈ t, _root_.GlobalTheory.ConvSer.Bdd (f i)) → _root_.GlobalTheory.ConvSer.Bdd (∏ i ∈ t, f i) ∧ _root_.GlobalTheory.ConvSer.Bdd (∑ i ∈ t, f i))) ∧ (∀ (ρ : Type) [Fintype ρ] (a : ρ → MvPowerSeries σ K) (S : MvPowerSeries ρ K), (∀ j, _root_.GlobalTheory.ConvSer.Intg (a j)) → (∀ j, MvPowerSeries.constantCoeff (a j) = 0) → (_root_.GlobalTheory.ConvSer.Intg S → _root_.GlobalTheory.ConvSer.Intg (MvPowerSeries.subst a S)) ∧ (_root_.GlobalTheory.ConvSer.Bdd S → _root_.GlobalTheory.ConvSer.Bdd (MvPowerSeries.subst a S))) ∧ (∀ (a : MvPowerSeries σ K) (f : PowerSeries K), _root_.GlobalTheory.ConvSer.Intg a → MvPowerSeries.constantCoeff a = 0 → (_root_.GlobalTheory.ConvSer.Intg f → _root_.GlobalTheory.ConvSer.Intg (f.subst a)) ∧ (_root_.GlobalTheory.ConvSer.Bdd f → _root_.GlobalTheory.ConvSer.Bdd (f.subst a))) ∧ (∀ (k ι : Type) [CommRing k] (φ : k →+* K) (a : ι → MvPowerSeries σ K) (A : MvPolynomial ι k), (∀ j, _root_.GlobalTheory.ConvSer.Bdd (a j)) → _root_.GlobalTheory.ConvSer.Bdd (MvPolynomial.eval₂ ((MvPowerSeries.C : K →+* MvPowerSeries σ K).comp φ) a A)) ∧ (∀ f : PowerSeries K, (_root_.GlobalTheory.ConvSer.Intg f ↔ ∀ n, ‖PowerSeries.coeff n f‖ ≤ 1) ∧ (_root_.GlobalTheory.ConvSer.Bdd f ↔ ∃ C : ℝ, ∀ n, ‖PowerSeries.coeff n f‖ ≤ C)) := by

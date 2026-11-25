@@ -231,13 +231,6 @@ theorem overBase_of_ne (hpq : Dw.p ≠ Dw.q) (hA : l.A = 1) (d : DeltaDat Xo c n
   rw [cancel_epi] at h1
   rw [← cancel_mono (Sp (KA l)).toSpecΓ, Scheme.toSpecΓ_naturality, Scheme.toSpecΓ_naturality, h1]
 
-theorem coe_incl {S T : IntermediateField ℚ ℂ} (h : S ≤ T) (t : S) :
-    (((IntermediateField.inclusion h).toRingHom t : T) : ℂ) = (t : ℂ) := rfl
-
-theorem eq_incl {S T : IntermediateField ℚ ℂ} (h : S ≤ T) (j : S →+* T) (hj : ∀ t, ((j t : T) : ℂ) = (t : ℂ)) :
-    j = (IntermediateField.inclusion h).toRingHom := by
-  exact RingHom.ext fun t => Subtype.ext ((hj t).trans (coe_incl h t).symm)
-
 section Reads
 
 variable {σ : c.F →+* ℂ} (U : Formalism.L2.PjFree.Unf Xo c σ r) (W : UW U) (k : U.Comp) {a : (E →+* ℂ) × ℕ → ℕ}

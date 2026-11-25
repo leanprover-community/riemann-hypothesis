@@ -59,7 +59,6 @@ def IsConjDual (c : Ω ≃+* Ω) (r : G E Ω →* GL (Fin a) k) (μ : G E Ω →
       (μ g : k) • ((P : Matrix (Fin a) (Fin a) k) * (r g⁻¹ : Matrix (Fin a) (Fin a) k)ᵀ *
         ((P⁻¹ : GL (Fin a) k) : Matrix (Fin a) (Fin a) k))
 
-
 variable (E Ω) in
 def cycBar (l : ℕ) [Fact l.Prime] : G E Ω →* (Qbar l)ˣ :=
   (Units.map ((algebraMap ℚ_[l] (Qbar l)).comp PadicInt.Coe.ringHom).toMonoidHom).comp (cycZ E Ω l)
@@ -111,18 +110,6 @@ def Reading : Prop :=
 variable {A}
 
 variable {i : N.Loc} {a : ℕ} {π : A.CG a} {s : ℝ} {r : G H.E N.Om →* GL (Fin a) (Qbar (N.l i))}
-
-theorem IsAttached.frob (h : IsAttached A i π s r) {w : PlE H} (hw : w ∉ placesOver H.E (N.l i))
-    (hu : A.unr (A.locG π w)) :
-    (∀ σ ∈ Ine (F := H.E) (N.plOm.1 w), r σ = 1) ∧
-    ∀ (B : ValuationSubring N.Om) (σ : G H.E N.Om), IsPlaceOver (F := H.E) B w →
-      IsFrob (F := H.E) B (normV w) σ →
-      (r σ : Matrix (Fin a) (Fin a) (Qbar (N.l i))).charpoly.map (A.iotaQC i).toRingHom =
-        galPol A (A.lpTw (A.locG π w) (s + (1 - (a : ℝ)) / 2)) := by
-  have h1 : A.unr (A.wdOf i r w) := by rw [h.away w hw]; exact (A.unr_tw _ _).2 hu
-  refine ⟨(A.wdOf_unr i r w hw h.cont).1 h1, fun B σ hB hσ => ?_⟩
-  rw [A.wdOf_frob i r w hw h.cont h1 B σ hB hσ, h.away w hw]
-  rfl
 
 end Record
 

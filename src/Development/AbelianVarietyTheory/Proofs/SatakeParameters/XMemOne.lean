@@ -70,7 +70,6 @@ def ratioSec (i j : Fin (d + 1)) : Γ(PSpace ℂ d, chart d i) :=
 
 variable {d} {Z : Scheme.{0}} [IsIntegral Z]
 
-
 open Classical in
 def rat (φ : Z ⟶ PSpace ℂ d) (i j : Fin (d + 1)) : Z.functionField :=
   if h : genericPoint Z ∈ φ ⁻¹ᵁ chart d i then
@@ -83,7 +82,5 @@ def fld (φ : Z ⟶ PSpace ℂ d) : IntermediateField ℂ Z.functionField := Int
 
 def crd (φ : Z ⟶ PSpace ℂ d) : Fin (d + 1) → fld φ := fun j =>
   ⟨rat φ 0 j, IntermediateField.subset_adjoin ℂ _ ⟨j, rfl⟩⟩
-
-theorem crd_val (φ : Z ⟶ PSpace ℂ d) (j : Fin (d + 1)) : ((crd φ j : fld φ) : Z.functionField) = rat φ 0 j := rfl
 
 end GlobalTheory.PD.XCover

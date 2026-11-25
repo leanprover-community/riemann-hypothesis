@@ -166,10 +166,6 @@ theorem leviW_mul {z : Fin (2 * r + k + 1) → ℂ} {h n : Mat k r} (hh : h ∈ 
     · rw [row_out hh (i := i) (by tauto) j, if_neg h2]
     · rw [col_out hh hj i, if_neg h2]
 
-theorem measurable_lmulM (a : Mat k r) : Measurable (lmulM a : Mt k r → Mt k r) := by
-  apply Continuous.measurable
-  exact continuous_const.matrix_mul continuous_id
-
 end GlobalTheory.IndefiniteRowSideFullHecke.FormalDegreeHaarQuotient
 
 end

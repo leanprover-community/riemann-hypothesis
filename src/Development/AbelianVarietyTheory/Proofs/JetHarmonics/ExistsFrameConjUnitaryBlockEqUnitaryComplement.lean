@@ -69,36 +69,6 @@ open Formalism.FourierDecayAlt.P.SettingConstruction
 section forms
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι ℂ)
 
-lemma quasi_reflection (hH : Hᴴ = H) (u v : ι → ℂ)
-    (huv : Formalism.QuantumDeterminants.herm H u u = Formalism.QuantumDeterminants.herm H v v)
-    (hne : Formalism.QuantumDeterminants.herm H u u ≠ Formalism.QuantumDeterminants.herm H u v) :
-    ∃ g : Matrix ι ι ℂ, gᴴ * H * g = H ∧ g *ᵥ u = v ∧
-      ∀ x, Formalism.QuantumDeterminants.herm H x u = 0 → Formalism.QuantumDeterminants.herm H x v = 0 → g *ᵥ x = x := by
-  set d := u - v with hd
-  set s := Formalism.QuantumDeterminants.herm H u d with hs
-  have hs' : s = Formalism.QuantumDeterminants.herm H u u - Formalism.QuantumDeterminants.herm H u v := by rw [hs, hd, herm_sub_right]
-  have hs0 : s ≠ 0 := by rw [hs']; exact sub_ne_zero.mpr hne
-  have hss : star s = Formalism.QuantumDeterminants.herm H u u - Formalism.QuantumDeterminants.herm H v u := by
-    rw [hs, herm_symm H hH, hd, herm_sub_left]
-  have hq : Formalism.QuantumDeterminants.herm H d d = s + star s := by
-    rw [hss, hs', hd]
-    simp only [herm_sub_left, herm_sub_right]
-    linear_combination -huv
-  set a : ℂ := s⁻¹ with ha'
-  have ha : a * s = 1 := inv_mul_cancel₀ hs0
-  have hsa : star a * star s = 1 := by rw [← star_mul', ha, star_one]
-  refine ⟨rk H d 1 (-a), unitary_of_form H _ fun x y => ?_, ?_, fun x hxu hxv => ?_⟩
-  · rw [rk_mulVec, rk_mulVec]
-    have hY : star (Formalism.QuantumDeterminants.herm H y d) = Formalism.QuantumDeterminants.herm H d y := herm_symm H hH y d
-    simp only [herm_add_left, herm_add_right, herm_smul_left, herm_smul_right, star_mul', hY, hq,
-      star_neg, star_one]
-    linear_combination (star a * Formalism.QuantumDeterminants.herm H x d * Formalism.QuantumDeterminants.herm H d y) * ha +
-      (a * Formalism.QuantumDeterminants.herm H x d * Formalism.QuantumDeterminants.herm H d y) * hsa
-  · rw [rk_mulVec, ← hs, neg_mul, ha, hd]
-    simp
-  · rw [rk_mulVec, hd, herm_sub_right, hxu, hxv]
-    simp
-
 lemma exists_isometry (hH : Hᴴ = H) (u v : ι → ℂ)
     (huv : Formalism.QuantumDeterminants.herm H u u = Formalism.QuantumDeterminants.herm H v v) (h0 : Formalism.QuantumDeterminants.herm H u u ≠ 0) :
     ∃ g : Matrix ι ι ℂ, gᴴ * H * g = H ∧ g *ᵥ u = v ∧

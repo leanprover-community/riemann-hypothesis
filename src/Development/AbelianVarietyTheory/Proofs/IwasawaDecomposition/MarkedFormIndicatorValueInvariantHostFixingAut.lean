@@ -127,9 +127,6 @@ def twForm (σ : 𝓞 E ≃+* 𝓞 E) (n : ℕ) :
     simp only [RingEquiv.symm_apply_apply]
   map_add' _ _ := LinearMap.ext₂ fun a b => by simp
 
-@[simp] theorem twForm_apply (σ : 𝓞 E ≃+* 𝓞 E) (n : ℕ) (β : LinearMap.BilinForm ℤ (Fin n → 𝓞 E)) (a b : Fin n → 𝓞 E) :
-    twForm σ n β a b = β (fun j => σ (a j)) (fun j => σ (b j)) := rfl
-
 end Twist
 
 section Main

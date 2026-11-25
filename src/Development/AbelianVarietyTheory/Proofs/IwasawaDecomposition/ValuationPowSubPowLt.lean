@@ -138,11 +138,6 @@ theorem isHeckeOf_heckeOf (ha : IsGlobalArtin art) (r : G E Ω →* ℂˣ) (hr :
 
 variable {r : G E Ω →* ℂˣ} {χ : HChar E} {v : HeightOneSpectrum (𝓞 E)} {A : ValuationSubring Ω}
 
-theorem IsHeckeOf.unique (h : IsHeckeOf art r χ) {χ' : HChar E} (h' : IsHeckeOf art r χ') : χ = χ' :=
-  Subtype.ext (MonoidHom.ext fun x => by
-    obtain ⟨σ, hσ⟩ := toAb_surjective (art x)
-    rw [h x σ hσ.symm, h' x σ hσ.symm])
-
 theorem IsHeckeOf.orderDvd (h : IsHeckeOf art r χ) {m : ℕ} (hm : ∀ σ, r σ ^ m = 1) : χ.OrderDvd m :=
   Subtype.ext (MonoidHom.ext fun x => by
     obtain ⟨σ, hσ⟩ := toAb_surjective (art x)

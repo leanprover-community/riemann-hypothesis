@@ -111,9 +111,6 @@ def imForm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
     (fun c y a => by
       simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, Complex.smul_im])
 
-theorem imForm_apply {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
-    imForm Hm z w = (hermForm Hm z w).im := rfl
-
 theorem entry_eq {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (p q : Fin g) :
     Hm p q = ((imForm Hm (stdR g ⟨p, 1⟩) (stdR g ⟨q, 0⟩) : ℝ) : ℂ) +
       ((imForm Hm (stdR g ⟨p, 0⟩) (stdR g ⟨q, 0⟩) : ℝ) : ℂ) * Complex.I := by
@@ -787,7 +784,6 @@ theorem smoothOn_of_locally {σ : c.F →+* ℂ} (G : EigMet Z σ) (S : Set (CxP
   · exact congrArg Complex.im (heq j y hy)
 
 end GlobalTheory.ShFam.EigMetLocal
-
 
 theorem GlobalTheory.LieBase.hodgeMet_smoothOn : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Z : Model Xo c β) [SmoothOfRelativeDimension Dw.dim (genStr Z)] (σ : c.F →+* ℂ) (U : Formalism.L2.PjFree.Unf Xo c σ (Dw.p + Dw.q)), Formalism.L2.PjFree.GoodEmb c σ → Formalism.L2.PjFree.IsUnf U → (hodgeMet Z U).SmoothOn (manifold Z σ) {y | ¬ LiesIn y (genBd Z)} := by
   intro E _ _ _ H Dw l Xo c O _ β Z _ σ U hσ hU

@@ -86,10 +86,6 @@ namespace GlobalTheory.CurveDictionary
 
 open NumberField Formalism.BasicNotions
 
-theorem sgStar_lattice (L : PeriodPair) :
-    Formalism.MainNotions.TaylorLogMetric.sgStar L.lattice.toAddSubgroup = Formalism.L2.Th1.F.sgStar L := by
-  rw [GlobalTheory.OddTheta.sgStar_eq L L.lattice.toAddSubgroup (fun _ => Iff.rfl), GlobalTheory.Mem.Col2.ThetaVec.sgStar_eq]
-
 theorem s2_in_unramified_closure (hTor : Formalism.L2.Th1.CM.CM4) (dK : ℕ) (L : PeriodPair) (hsq : Squarefree dK) (h4 : dK % 4 = 3)
     (hcm : Formalism.L2.Th1.CM.HasCMBy dK L) (l : ℕ) [Fact l.Prime] (hl5 : 5 ≤ l) (hld : ¬ l ∣ dK)
     (ι : ℂ ≃+* ℂ_[l]) (lam : ℂ_[l]) (hlam : lam ≠ 0)

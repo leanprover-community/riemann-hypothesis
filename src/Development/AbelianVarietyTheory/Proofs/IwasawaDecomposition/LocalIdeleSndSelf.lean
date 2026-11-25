@@ -97,15 +97,11 @@ def finPart : Ideles F →* (FiniteAdeleRing (𝓞 F) F)ˣ :=
 
 variable {F}
 
-theorem infDiag_parts (k : Fˣ) : infPart F (infDiag k) = infPart F (diagUnits F k) ∧ finPart F (infDiag k) = 1 :=
-  _root_.GlobalTheory.Mem.Chr.CharModel.infDiag_parts k
-
 end Parts
 
 section Product
 
 variable {F : Type} [Field F] [NumberField F]
-
 
 open Classical in
 def cut (a : FiniteAdeleRing (𝓞 F) F) (T : Finset (HeightOneSpectrum (𝓞 F))) : FiniteAdeleRing (𝓞 F) F :=
@@ -119,16 +115,6 @@ def cut (a : FiniteAdeleRing (𝓞 F) F) (T : Finset (HeightOneSpectrum (𝓞 F)
 
 theorem tendsto_cut (a : FiniteAdeleRing (𝓞 F) F) : Filter.Tendsto (cut a) Filter.atTop (nhds a) := by
   apply GlobalTheory.Mem.Chr.CharModel.tendsto_cut
-
-theorem prod_local (k : Fˣ) (T : Finset (HeightOneSpectrum (𝓞 F))) :
-    ((infDiag k * ∏ v ∈ T, localIdele F v (atFin v k) : Ideles F) : AdeleRing (𝓞 F) F) =
-      (((diagUnits F k : Ideles F) : AdeleRing (𝓞 F) F).1, cut ((diagUnits F k : Ideles F) : AdeleRing (𝓞 F) F).2 T) :=
-  _root_.GlobalTheory.Mem.Chr.CharModel.prod_local k T
-
-theorem tendsto_prod_local (k : Fˣ) :
-    Filter.Tendsto (fun T : Finset (HeightOneSpectrum (𝓞 F)) => infDiag k * ∏ v ∈ T, localIdele F v (atFin v k))
-      Filter.atTop (nhds (diagUnits F k)) := by
-  apply GlobalTheory.Mem.Chr.CharModel.tendsto_prod_local
 
 theorem locK_unr (χ : HChar F) {v : HeightOneSpectrum (𝓞 F)} (h : χ.UnrAt v) (k : Fˣ) :
     χ.locK v k = χ.val v ^ ordF v k := by

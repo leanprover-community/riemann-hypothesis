@@ -102,9 +102,6 @@ def cutGL {R : Type} [CommRing R] {n : ℕ} {e : R} (he : e * e = e) : GL (Fin n
           Matrix.one_mul, he, h1, h2, mul_comm (1 - e) e, zero_smul, add_zero, zero_add, smul_add] }
   Units.map f
 
-theorem cutGL_val {R : Type} [CommRing R] {n : ℕ} {e : R} (he : e * e = e) (g : GL (Fin n) R) :
-    (cutGL he g).val = e • g.val + (1 - e) • (1 : Matrix (Fin n) (Fin n) R) := rfl
-
 theorem cutGL_mem {R : Type} [CommRing R] {n : ℕ} {e : R} (he : e * e = e) (c : R →+* R) (hc : c e = e)
     (J : Matrix (Fin n) (Fin n) R) {g : GL (Fin n) R} (hg : g ∈ Formalism.UG.UJ c J) : cutGL he g ∈ Formalism.UG.UJ c J := by
   have hg' : Formalism.UG.cT c g.val * J * g.val = J := hg

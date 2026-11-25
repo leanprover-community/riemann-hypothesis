@@ -294,7 +294,6 @@ theorem rowLie_X (τ : ι) (k l : Fin m) (v : ι × Fin m × Fin n) :
     rw [pderiv_X_of_ne (by simp [hb.symm]), mul_zero]
   · simp
 
-
 open Classical in
 theorem rowLie_diag_comm (t t' : ι) (i k l : Fin m) :
     rowLie n t i i * rowLie n t' k l - rowLie n t' k l * rowLie n t i i =
@@ -772,7 +771,6 @@ theorem fockInner_colSub [Fintype ι] (τ : ι) (g : Matrix.unitaryGroup (Fin n)
 
 end Compl
 
-
 open Compl in
 theorem exists_colStable_disjoint (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X]
     [FiniteDimensional ℂ X] (U W : Submodule ℂ (X →ₗ[ℂ] Pol ι m n))
@@ -937,7 +935,6 @@ end GlobalTheory.DefLift.ColComb
 
 namespace GlobalTheory.DefLift
 
-
 open ColComb in
 theorem colLie_eq_sum_colSub : ∀ (ι : Type) [Fintype ι] (m n d : ℕ) (τ : ι) (k l : Fin n),
     ∃ (s : Finset (Matrix.unitaryGroup (Fin n) ℂ)) (c : Matrix.unitaryGroup (Fin n) ℂ → ℂ),
@@ -1070,7 +1067,6 @@ theorem exists_bound {σ X : Type} [AddCommGroup X] [Module ℂ X] [FiniteDimens
   exact Finset.le_sup (f := fun i => (Φ (b i)).totalDegree) (Finset.mem_univ i)
 
 end ColHigh
-
 
 open ColHigh in
 theorem exists_colHighest (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X]
@@ -1305,8 +1301,6 @@ def utr {k : ℕ} (u : Matrix.unitaryGroup (Fin k) ℂ) : Matrix.unitaryGroup (F
     rw [Matrix.transpose_mul, Matrix.transpose_one] at h
     exact h⟩
 
-theorem utr_utr {k : ℕ} (u : Matrix.unitaryGroup (Fin k) ℂ) : utr (utr u) = u := rfl
-
 variable [Fintype ι] {X : Type} [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X]
 
 theorem mem_of_intertwiner (hnm : n ≤ m) {π : ι → Matrix.unitaryGroup (Fin m) ℂ → Module.End ℂ X} (hπ : IrrFam π)
@@ -1466,8 +1460,6 @@ theorem exists_trilinear {G H S P Ds : Type} [MeasurableSpace H] [AddCommGroup S
     rw [← map_smul]; congr 1; funext h; simp [mul_left_comm]
 
 variable {D : D7}
-
-
 
 theorem ioExists_definite {V W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSModel V S) (M' : DSModel W S')
     {θ : InfFam D} {ψ : AddChar (AF D.host.F) ℂ} {χS χT : (AE D)ˣ →* Circle}
