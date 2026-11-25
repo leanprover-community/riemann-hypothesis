@@ -8,6 +8,7 @@ too, in `if:` and `env:`: rename a label there as well, and on GitHub before eit
 `tests/test_label_names.py` checks that every label name a workflow writes is one of these or
 another label the workflows know, and that `verification/BATCHES.md` lists these.
 """
+import os
 
 # Wanted in an upcoming batch: a maintainer commented `batch` on the pull request.
 QUEUED = "batch queue"
@@ -38,6 +39,14 @@ BATCH_CONFLICT = "batch-conflict"
 # `included_in` there), so that it never tells the author of a pull request whose changes a batch
 # carries to merge that batch's branch.
 CONFLICT_LABELS_ON = True
+
+
+def conflict_labels_on():
+    """Whether the conflict-labels workflow keeps `main-conflict` and `batch-conflict` up to date:
+    `CONFLICT_LABELS_ON` is set, and so is the repository variable `CONFLICT_LABELS`, to `on`.
+    The variable lets a maintainer look at a dry run before the workflow writes anything; the
+    workflows pass it to the scripts in the environment variable of the same name."""
+    return CONFLICT_LABELS_ON and os.environ.get("CONFLICT_LABELS") == "on"
 
 # What a pull request in a batch assembled by hand carries, `building` from before the batch's
 # pull request and its members were labelled differently included.

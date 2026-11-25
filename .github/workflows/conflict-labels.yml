@@ -1,5 +1,12 @@
 name: conflict labels
 
+# Switched off by the repository variable `CONFLICT_LABELS`: the job runs only when it is `on`,
+# except for a dry run started by hand. To switch it on, start the workflow by hand with `dry_run`
+# ticked (the default) and no pull request number, read what the run says it would do in its
+# summary, and then set the variable to `on` (Settings → Secrets and variables → Actions →
+# Variables). Until then the batch queue neither starts this workflow nor leaves to it the pull
+# requests a batch's description lists under a heading about conflicts.
+#
 # Keeps two labels on the open pull requests into main that are not drafts and not batches:
 # `main-conflict` on those that GitHub says conflict with main, and `batch-conflict` on those that
 # conflict with a batch being built, that is a `batch/...` branch of this repository whose pull
@@ -9,10 +16,11 @@ name: conflict labels
 # line such as `- [ ] depends on: #123`, does not get `main-conflict`: it is expected to carry
 # the batch's changes and so to conflict with main until the batch lands.
 #
-# The first time a pull request gets `batch-conflict` for a batch, it is also labelled
-# `awaiting-author` and told in a comment which files conflict and what to do: merge the batch's
-# branch into its own, add the `depends on` line and comment `ready`, or wait until the batch has
-# landed and then merge main. `main-conflict` comes with no comment, because GitHub already shows
+# Each time a pull request gets `batch-conflict`, the first time or again after it was fixed, it
+# is also labelled `awaiting-author` and told in a comment which files conflict and what to do:
+# merge the batch's branch into its own, add the `depends on` line and comment `ready`, or wait
+# until the batch has landed and then merge main. While it keeps the label, it is told about each
+# batch it conflicts with once. `main-conflict` comes with no comment, because GitHub already shows
 # the conflict. Both labels come off as soon as their reason has gone, whoever put them on;
 # `awaiting-author` never does here. `verification/BATCHES.md` says this for authors, and
 # `scripts/conflict-labels.py` has the exact rules.
@@ -28,14 +36,20 @@ name: conflict labels
 # A sweep also looks for pull requests that merged a batch's branch and still carry the commits of a
 # pull request the batch was then rebuilt without, and tells each once for each head of the batch.
 #
-# pull_request_target gives the token write access for pull requests from forks. Nothing from a
-# pull request is checked out or run: the script comes from the same trusted commit as this
-# workflow, pull requests are read through GitHub's API, and their commits are fetched as git
-# objects without file contents and compared with `git merge-tree`. Only the files that both
-# sides of a comparison change, and the Lean files whose import lines are read, are fetched.
+# pull_request_target gives the token write access for pull requests from forks, so it runs only
+# for pull requests into main: the batches' own pull requests are, and the script leaves every other
+# pull request alone anyway. A pull request based on a `batch/...` branch would otherwise run that
+# branch's copy of this workflow and the scripts with a write token, and a batch assembled by hand
+# takes pull requests without review. One whose base is changed away from main loses its labels in
+# the next sweep. Nothing from a pull request is checked out or run: the script comes from the same
+# trusted commit as this workflow, pull requests are read through GitHub's API, and their commits
+# are fetched as git objects without file contents and compared with `git merge-tree`. Only the
+# files that both sides of a comparison change, and the Lean files whose import lines are read, are
+# fetched.
 
 on:
   pull_request_target:
+    branches: [main]
     types: [opened, reopened, synchronize, ready_for_review, edited, closed, labeled, unlabeled]
   push:
     branches: [main]
@@ -47,6 +61,10 @@ on:
         description: Pull request to look at (optional; without one, every open pull request is)
         type: number
         required: false
+      dry_run:
+        description: Only say what would change. Allowed whether or not the workflow is switched on.
+        type: boolean
+        default: true
 
 permissions: {}
 
@@ -56,8 +74,10 @@ jobs:
     # pull request start a sweep; label changes count only for `building` and `latest batch`.
     # Events on any other pull request start a run for it alone; an edit counts only if it changed the description,
     # where the `depends on` lines are, or the base.
+    # Only when switched on by the repository variable, except for a dry run started by hand.
     if: >-
-      ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
+      ${{ github.repository == 'leanprover-community/riemann-hypothesis' &&
+          (vars.CONFLICT_LABELS == 'on' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)) && (
           contains(fromJSON('["schedule", "push", "workflow_dispatch"]'), github.event_name) ||
           (github.event_name == 'pull_request_target' &&
            startsWith(github.event.pull_request.head.ref, 'batch/') &&
@@ -77,9 +97,10 @@ jobs:
     concurrency:
       group: conflict-labels-${{ (github.event_name == 'pull_request_target' && !(startsWith(github.event.pull_request.head.ref, 'batch/') && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number) || inputs.pr || 'sweep' }}
       cancel-in-progress: false
+    # `pull-requests: write` covers labels and comments on pull requests, through the issues API
+    # too, as in inbox.yml.
     permissions:
       contents: read
-      issues: write
       pull-requests: write
     steps:
       - name: Check out this workflow's own copy of the scripts
@@ -96,7 +117,10 @@ jobs:
           REPO: ${{ github.repository }}
           # Empty for a sweep.
           PR: ${{ (github.event_name == 'pull_request_target' && !(startsWith(github.event.pull_request.head.ref, 'batch/') && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number) || inputs.pr }}
+          # `true` only for a dry run started by hand.
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
         run: |
-          one=()
-          if [ -n "$PR" ]; then one=(--pr "$PR"); fi
-          python3 scripts/conflict-labels.py --repo "$REPO" "${one[@]}" --summary "$GITHUB_STEP_SUMMARY"
+          options=()
+          if [ -n "$PR" ]; then options+=(--pr "$PR"); fi
+          if [ "$DRY_RUN" = true ]; then options+=(--dry-run); fi
+          python3 scripts/conflict-labels.py --repo "$REPO" "${options[@]}" --summary "$GITHUB_STEP_SUMMARY"

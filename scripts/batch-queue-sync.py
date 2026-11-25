@@ -1382,8 +1382,9 @@ def tell_left_out(gh, batch, pulls, held, main, log):
     and taken off the note. What a batch being built contains, this one or another, as `held`
     says, is never told it is left out: the lower batch of a stack usually lists as left out what
     the batch on top of it takes. Neither is a pull request into `main` that is not a draft and is
-    listed under a heading about conflicts: the conflict-labels workflow tells those itself, if git
-    finds the conflict. The note's `left` remembers, for each pull request, a digest of the entry
+    listed under a heading about conflicts, while the conflict labels are switched on (see
+    `conflict_labels_on` in `batch-labels.py`): the conflict-labels workflow tells those itself, if
+    git finds the conflict. The note's `left` remembers, for each pull request, a digest of the entry
     it was last told about for this batch, and is brought up to date as each is told.
     `keep_in_step` fills it in without telling anyone for a batch whose record is older than
     `left`. Returns whether everything was told, False when the run is cut short.
@@ -1404,7 +1405,7 @@ def tell_left_out(gh, batch, pulls, held, main, log):
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
         # The conflict-labels workflow looks only at pull requests into main that are not drafts.
-        left_to_it = (_labels.CONFLICT_LABELS_ON and int(key) in conflicts and pr is not None
+        left_to_it = (_labels.conflict_labels_on() and int(key) in conflicts and pr is not None
                       and pr["base"] == main and not pr.get("draft"))
         if pr is None or key in found or held.get(key) or pr["batch"] or left_to_it or key in moved:
             left.pop(key, None)
@@ -1609,11 +1610,13 @@ def start_conflict_labels(gh, main, log):
     """Start the conflict-labels workflow, which compares pull requests with the batches being
     built, the outermost of each stack (see `conflict-labels.py`). A label put on with this
     workflow's token starts no run, so without this they would wait for its next sweep. Returns
-    whether GitHub took it. Nothing is started while those labels are switched off
-    (`CONFLICT_LABELS_ON` in `batch-labels.py`)."""
-    if not _labels.CONFLICT_LABELS_ON:
+    whether GitHub took it. Nothing is started while those labels are switched off (see
+    `conflict_labels_on` in `batch-labels.py`). The run is a real one: a run started by hand is a
+    dry run unless it says otherwise."""
+    if not _labels.conflict_labels_on():
         return False
-    status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches", {"ref": main})
+    status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches",
+                         {"ref": main, "inputs": {"dry_run": "false"}})
     log.append(f"started {CONFLICT_WORKFLOW}" if status in (0, 204)
                else f"could not start {CONFLICT_WORKFLOW} ({status}): its next sweep looks at the batches")
     return status in (0, 204)
