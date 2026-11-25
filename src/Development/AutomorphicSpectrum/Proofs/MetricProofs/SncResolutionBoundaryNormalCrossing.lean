@@ -354,7 +354,7 @@ theorem ideal_sup_le_of_mem (P D : Ideal (MvPolynomial (Σ k, ι k) ℂ)) (p : (
         rw [mem_map_renR_iff, hs]
         exact hc
       exact hw0 _ (hI hm)
-    obtain ⟨hcone, h1, -⟩ := conePts_of_chartIdeal p w' hchart
+    obtain ⟨hcone, h1, -⟩ := conePts_of_chartIdeal hP p w' hchart
     have hlift : (fun q => eval w (SncRes.lift p q)) = w' := by
       funext q
       unfold SncRes.lift

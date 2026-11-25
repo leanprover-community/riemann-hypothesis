@@ -1236,7 +1236,7 @@ open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
-private lemma isUnit_algebraMap_uniformizer {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) :
+private lemma isUnit_algebraMap_uniformizer (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) :
     IsUnit (algebraMap F E (ϖ : F)) := by
   have h0 : (ϖ : F) ≠ 0 := fun h => hϖ.ne_zero (Subtype.ext h)
   exact (IsUnit.mk0 _ h0).map _
@@ -1272,7 +1272,7 @@ private lemma exists_coprime_combination_pi_cj (L : _root_.Formalism.MainNotions
   have hu : IsUnit ((δ : E) * p * q) := by
     apply isUnit_of_mul_isUnit_left (y := (δ : E))
     rw [show (δ : E) * p * q * δ = algebraMap F E (ϖ : F) by rw [← hN, hq', hp']; ring]
-    exact isUnit_algebraMap_uniformizer hϖ
+    exact isUnit_algebraMap_uniformizer L hϖ
   have h1 : (a : E) * δ = 1 := by
     have : ((δ : E) * p * q) * ((a : E) * δ) = ((δ : E) * p * q) * 1 := by
       rw [mul_one]

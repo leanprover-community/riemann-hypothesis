@@ -204,7 +204,7 @@ section Main3
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}
 
-theorem Q_mulVec_col (I : Set (Fin r))
+theorem Q_mulVec_col (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) (I : Set (Fin r))
     {C : Matrix (Fin n) (Fin r) E} (hC : P σ J X Y I * C = C * diagonal (ind I : Fin r → E)) {i : Fin r} (hi : i ∈ I) :
     adMat F (P σ J X Y I) *ᵥ (adMat F C)ᵀ i = (adMat F C)ᵀ i := by
   classical
@@ -221,9 +221,9 @@ theorem Q_fix_span (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame
   have hle : colSpan F X I ⊔ colSpan F Y I ≤ S := by
     refine sup_le (Submodule.span_le.2 ?_) (Submodule.span_le.2 ?_)
     · rintro _ ⟨i, hi, rfl⟩
-      exact Q_mulVec_col I (proj_mul_X hCM hJ hW I) hi
+      exact Q_mulVec_col hCM hJ hW I (proj_mul_X hCM hJ hW I) hi
     · rintro _ ⟨i, hi, rfl⟩
-      exact Q_mulVec_col I (proj_mul_Y hW I) hi
+      exact Q_mulVec_col hCM hJ hW I (proj_mul_Y hW I) hi
   exact hle hy
 
 theorem Q_mul_init {T : Finset (Fin r)}

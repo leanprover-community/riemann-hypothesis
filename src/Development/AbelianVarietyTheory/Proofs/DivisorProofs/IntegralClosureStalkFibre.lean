@@ -516,7 +516,7 @@ variable {o₁ Ω₁ o₂ Ω₂ : Type} [CommRing o₁] [Field Ω₁] [Algebra o
   [Algebra Ω₁ Ω₂] {M₁ : RatModel o₁ Ω₁} {M₂ : RatModel o₂ Ω₂} {q : M₂.Z ⟶ M₁.Z} {z₁ : M₁.Z}
   [Algebra (M₁.Z.presheaf.stalk z₁) Ω₂]
 
-theorem mem_OO_of_ext
+theorem mem_OO_of_ext (halg : ∀ x, algebraMap (M₁.Z.presheaf.stalk z₁) Ω₂ x = algebraMap Ω₁ Ω₂ (M₁.stalkHom z₁ x))
     (p : ℕ) [Fact p.Prime] (y₁ : Sp (OO p) ⟶ M₁.Z) (hy₁ : y₁ (cPt p) = z₁)
     (e : integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂ →+* PadicAlgCl p)
     (he : ∀ a, e (algebraMap (M₁.Z.presheaf.stalk z₁) _ a) = M₁.val (gPt p ≫ y₁) (M₁.stalkHom z₁ a))
@@ -553,7 +553,7 @@ theorem lift_point (hN : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalSc
     (RingHom.id Ω₂).restrict _ _ fun c hc =>
       (mem_integralClosure_iff _ _).2 (isIntegral_of_mem_ringOn hF hg halg hU hz hc)
   let e₀ : M₂.ringOn ((q ⁻¹ᵁ U : M₂.Z.Opens) : Set M₂.Z) →+* OO p :=
-    (e.comp ψ).codRestrict (OO p) fun c => mem_OO_of_ext p y₁ hy₁ e he (ψ c)
+    (e.comp ψ).codRestrict (OO p) fun c => mem_OO_of_ext halg p y₁ hy₁ e he (ψ c)
   let φ : Γ(M₂.Z, q ⁻¹ᵁ U) ⟶ CommRingCat.of (OO p) :=
     CommRingCat.ofHom (e₀.comp (M₂.sectionsEquiv _ hne₂).toRingHom)
   let y : Sp (OO p) ⟶ M₂.Z := Spec.map φ ≫ hU₂.fromSpec

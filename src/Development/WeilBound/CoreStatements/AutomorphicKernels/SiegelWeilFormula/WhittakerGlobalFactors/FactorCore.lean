@@ -365,7 +365,7 @@ theorem herm_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF
     fun p => gi p.1 * (HS.intHR σ bs n S).indicator fS p.2 with hΦ
   have e1 : ∫ b in UH σ bs n S, gi (HS.hInfR σ b) * ∏ v ∈ S, g v (HS.hV σ v (HS.hFinR σ b)) ∂ν =
       ∫ b, Φ (HS.hInfR σ b, HS.hFinR σ b) ∂ν := by
-    rw [← integral_indicator (measurableSet_UH σ bs n S)]
+    rw [← integral_indicator (measurableSet_UH σ hCM bs n S)]
     refine integral_congr_ae (Filter.Eventually.of_forall fun b => ?_)
     by_cases hb : b ∈ UH σ bs n S
     · have hb' : HS.hFinR σ b ∈ HS.intHR σ bs n S := hb
@@ -1315,10 +1315,10 @@ theorem tendsto_UH (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d : ℕ} (bs : M
     Tendsto (fun S : Finset (HeightOneSpectrum (𝓞 F)) => ∫ b in UH σ bs n S, f b ∂ν) atTop (nhds (∫ b, f b ∂ν)) := by
   haveI := _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum F
   have he : ∀ S, ∫ b in UH σ bs n S, f b ∂ν = ∫ b, (UH σ bs n S).indicator f b ∂ν := fun S =>
-    (integral_indicator (measurableSet_UH σ bs n S)).symm
+    (integral_indicator (measurableSet_UH σ hCM bs n S)).symm
   simp_rw [he]
   refine tendsto_integral_filter_of_dominated_convergence (fun y => ‖f y‖) ?_ ?_ hf.norm ?_
-  · exact Filter.Eventually.of_forall fun S => hf.aestronglyMeasurable.indicator (measurableSet_UH σ bs n S)
+  · exact Filter.Eventually.of_forall fun S => hf.aestronglyMeasurable.indicator (measurableSet_UH σ hCM bs n S)
   · refine Filter.Eventually.of_forall fun S => Filter.Eventually.of_forall fun y => ?_
     by_cases h : y ∈ UH σ bs n S
     · simp [Set.indicator_of_mem h]
@@ -1390,7 +1390,7 @@ theorem factor_core (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M n d : ℕ) (J
   filter_upwards [eventually_ge_atTop (S₀ ∪ S₁)] with S hS
   have h0 : S₀ ⊆ S := fun v hv => hS (Finset.mem_union_left _ hv)
   have h1 : S₁ ⊆ S := fun v hv => hS (Finset.mem_union_right _ hv)
-  rw [setIntegral_congr_fun (measurableSet_UH σ bs n S) (fun b hb => hS₁ S h1 b hb)]
+  rw [setIntegral_congr_fun (measurableSet_UH σ hCM bs n S) (fun b hb => hS₁ S h1 b hb)]
   exact hS₀ S h0 _ _ (fun v _ => (hIv v).aestronglyMeasurable)
 
 theorem factorX : FactorX := by

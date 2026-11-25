@@ -667,7 +667,7 @@ theorem sncChart_of_regular_parameters : ∀ (K : Type) [Fintype K] (J : K → T
   have hchart : ∀ t ∈ Metric.ball (0 : Fin n → ℂ) 1,
       gm t ∈ ReciprocityTheory.AnForm.R.conePts (pC P) ∧ ∀ k, gm t ⟨k, c k⟩ = 1 := by
     intro t ht
-    have h1 := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal c (gm t)
+    have h1 := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal hP c (gm t)
       (eval_unren_eq_zero _ _ (hzs t ht))
     exact ⟨h1.1, h1.2.1⟩
   have hcoord : ∀ t ∈ Metric.ball (0 : Fin n → ℂ) 1,
@@ -1046,7 +1046,7 @@ theorem snc_params : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype
     have hzc : ∀ g ∈ CI, eval v' g = 0 := fun g hg => by
       rw [← hev']
       exact hv _ (hrenI g hg)
-    have hcone := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal c v' (by rw [← hCI]; exact hzc)
+    have hcone := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal hPh c v' (by rw [← hCI]; exact hzc)
     have hvP : v' ∈ mcPts (mCoordIdeal y) := (mem_mcPts_iff_conePts_pC _ _).2 hcone.1
     obtain ⟨φ, hφ⟩ := hhom ℂ (eval v') hzc (isUnit_iff_ne_zero.2 (by rw [← hev']; exact hvF))
     have hvφ : ∀ i, φ (z i) * eval v Fr ^ kk i = eval v (Zr i) := by

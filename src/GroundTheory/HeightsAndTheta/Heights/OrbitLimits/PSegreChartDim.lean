@@ -177,7 +177,7 @@ theorem SegreChartDim.proof : SegreChartDim.Statement := by
     simp [hT, MvPolynomial.mem_zeroLocus_iff]
   have hsegT : ∀ y ∈ T, (fun a => segre y (σ a)) ∈ S := by
     intro y hy
-    obtain ⟨hc, h1, -⟩ := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal i y ((hTmem y).1 hy)
+    obtain ⟨hc, h1, -⟩ := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal hPCh i y ((hTmem y).1 hy)
     exact ⟨y, (mem_mcPts_iff y).2 hc, by simp [segre, h1], rfl⟩
   have hlift_apply : ∀ z : (Σ k, ι k) → ℂ, segre z i = 1 →
       chartLift σ i (fun a => segre z (σ a)) = ReciprocityTheory.AnForm.R.affCoord i z := by
@@ -198,7 +198,7 @@ theorem SegreChartDim.proof : SegreChartDim.Statement := by
     rw [segre_chartLift σ i z hzi]
   have hliftSeg : ∀ y ∈ T, chartLift σ i (fun a => segre y (σ a)) = y := by
     intro y hy
-    obtain ⟨-, h1, -⟩ := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal i y ((hTmem y).1 hy)
+    obtain ⟨-, h1, -⟩ := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal hPCh i y ((hTmem y).1 hy)
     have hyi : segre y i = 1 := by simp [segre, h1]
     funext q
     rw [chartLift_segre_apply σ i y hyi q.1 q.2, h1, inv_one, mul_one]
