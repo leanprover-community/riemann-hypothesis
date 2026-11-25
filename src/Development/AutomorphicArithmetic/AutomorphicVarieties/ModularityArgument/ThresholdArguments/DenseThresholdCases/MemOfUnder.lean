@@ -269,7 +269,7 @@ theorem UpperTheory.V.Z.Sym.W.aboveWeight : _root_.UpperTheory.V.Z.Sym.W.AboveWe
   have hex : ∀ w : Plc L, ∃ τ, π.IsLocComp w τ := fun w => (_root_.UpperTheory.V.Af.local_comp_complex_of_printed_results PA L 2 π w).1
   have hpt : ∀ (w : Plc L) τ, π.IsLocComp w τ → UpperTheory.V.Z.Sym.W.PT τ := fun w τ hτ => by
     obtain ⟨A, hA⟩ : ∃ A : ValuationSubring Ω, IsPlaceOver A w := exists_isPlaceOver Ω w
-    obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt hA
+    obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt PA.litN hA
     exact (hg w A hA rc hrc τ hτ).1
   have hb : ∀ φ : L →+* Qbar l, ∃ b : ℤ, HT φ = {b, b + m} := fun φ => by
     have hw : ((l : ℕ) : 𝓞 L) ∈ (GlobalTheory.EvExtend.placeOf φ).asIdeal := by
@@ -321,7 +321,7 @@ theorem UpperTheory.V.Z.Sym.W.aboveWeight : _root_.UpperTheory.V.Z.Sym.W.AboveWe
     exact (Ideal.finite_factors h0).subset fun v hv => Ideal.dvd_span_singleton.mpr hv
   have hfix : ∀ w : Plc L, (M : 𝓞 L) ∉ w.asIdeal → ∀ τ, π.IsLocComp w τ → Af.HasFixed τ.ρ (GlobalTheory.LFun.KGL w (n := 2)) := fun w hw τ hτ => by
     obtain ⟨A, hA⟩ : ∃ A : ValuationSubring Ω, IsPlaceOver A w := exists_isPlaceOver Ω w
-    obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt hA
+    obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt PA.litN hA
     have hl' := mt (hlm w) hw
     have hq := hg w A hA rc hrc τ hτ
     exact _root_.UpperTheory.V.Z.Desc.W.sphT_alt PA.litN L Ω l ι 2 r hc w hl' A hA (hr.unr A fun h => hw ((hA _).1 (by simpa only [map_natCast] using h))) rc hrc τ hq.1
@@ -731,7 +731,7 @@ theorem UpperTheory.V.Z.Sym.W.away_w_statement :
   refine ⟨ψ, hψ, ⟨e⟩, ?_⟩
   intro j hj ε hε hlk
   obtain ⟨A, h⟩ := ReciprocityTheory.Gal.exists_isPlaceOver Ω w
-  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt h
+  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt P.litN h
   have gd : Gd (rc (algNorm τ)) := Gu.plainGd L Ω A w h rc hrc 2 τ hT
   have hx : IsWDOf ι r (rc (algNorm τ)) := ((hg A h rc hrc).1 hl).isWDOf gd
   obtain ⟨a, ha, -⟩ := id hrc
@@ -814,7 +814,7 @@ end UpperTheory.V.Z.Sym.W.GoodWeilCharpoly
 theorem UpperTheory.V.Z.Sym.W.good_w_statement :
     _root_.UpperTheory.V.Z.Sym.W.GoodWAlt := by
   intro P L Ω _ _ _ _ _ l _ ι r w hlw hunr ⟨s, ⟨A, hA, hF⟩, hs⟩ τ hτ hPT
-  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt hA
+  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt P.litN hA
   obtain ⟨a, ha, -⟩ := hrc
   obtain ⟨ψ, hψs, ⟨e⟩, -⟩ := _root_.UpperTheory.V.Z.Sym.W.principal_series_of_statement_w P.litN L 2 w τ hPT
   have hsub : IsSubquotient τ.ρ (prinSeries ψ) := by

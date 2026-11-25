@@ -78,7 +78,7 @@ def ArchimedeanSignatureMatching : Prop :=
   ∀ (A : Type) [CommRing A] [IsDomain A] [UniqueFactorizationMonoid A] (σ : Type) (w : A), Irreducible w →
     ∀ F G : MvPolynomial σ A, C w ∣ F * G → C w ∣ F ∨ C w ∣ G
 
-def adm5 : Prop :=
+def adm5 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] (n : ℕ)
     (E : GLOps n K V), IsGLRep E → ∀ mu : Fin n → ℤ,
       (∀ a b : Fin n, a < b → 1 ≤ mu a - mu b + ((b : ℤ) - (a : ℤ))) →
@@ -87,7 +87,7 @@ def adm5 : Prop :=
         (∀ x ∈ weightSp E mu, x ∈ nMinus E → pp E mu ord T x = 0) ∧
         (∀ x ∈ weightSp E mu, (∀ a b : Fin n, a < b → E a b x = 0) → pp E mu ord T x = x)
 
-def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5
+def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5 D
 
 def InvariantProjectionField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),

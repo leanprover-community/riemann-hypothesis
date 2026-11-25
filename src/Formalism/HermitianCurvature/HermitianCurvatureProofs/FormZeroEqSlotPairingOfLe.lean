@@ -74,9 +74,9 @@ theorem pairS_embed {V : Type} [AddCommGroup V] [Module ℂ V] {S S' : Type} [Fi
     have : ¬ ∃ a, ι a = z := fun ⟨a, ha⟩ => hz (Finset.mem_image.2 ⟨a, Finset.mem_univ a, ha⟩)
     rw [Function.extend_apply' _ _ _ this, Pi.zero_apply, hβ]
 
-def ixEmb {m n : ℕ} (e : Ix (Fin m)) : Ix (Fin n) := fun t => if ht : t.val < m then e ⟨t, ht⟩ else 0
+def ixEmb {m n : ℕ} (h : m ≤ n) (e : Ix (Fin m)) : Ix (Fin n) := fun t => if ht : t.val < m then e ⟨t, ht⟩ else 0
 
-theorem ixEmb_inj {m n : ℕ} (h : m ≤ n) : Function.Injective (ixEmb) := by
+theorem ixEmb_inj {m n : ℕ} (h : m ≤ n) : Function.Injective (ixEmb h) := by
   intro e e' he
   funext t
   have := congrFun he ⟨t.val, by omega⟩
@@ -111,16 +111,16 @@ theorem form_zero_eq_position_pairing_of_le (hThm : ThmPOn (S := Fin n) P z z' �
     (Y₁ Y₂ : Ix (Fin m) → RadSp P.k P.r z z' π π') (h₁ : ∀ a, Y₁ a ∈ K 0) (h₂ : ∀ a, Y₂ a ∈ K 0) :
     form μ 0 Y₁ Y₂ 0 = pairS (bet μ) Y₁ Y₂ := by
   have extK : ∀ v : Ix (Fin m) → RadSp P.k P.r z z' π π', (∀ a, v a ∈ K 0) →
-      ∀ z, Function.extend (ixEmb) v 0 z ∈ K 0 := by
+      ∀ z, Function.extend (ixEmb hmn) v 0 z ∈ K 0 := by
     intro v hv z
-    by_cases hz : ∃ a, ixEmb a = z
+    by_cases hz : ∃ a, ixEmb hmn a = z
     · obtain ⟨a, rfl⟩ := hz
       rw [(ixEmb_inj hmn).extend_apply]; exact hv a
     · rw [Function.extend_apply' _ _ _ hz]; exact (K 0).zero_mem
-  have e1 := form_embed μ (ixEmb) (ixEmb_inj hmn) Y₁ Y₂ 0
-  have e2 := form_zero_eq_position_pairing hThm (Function.extend (ixEmb) Y₁ 0) (Function.extend (ixEmb) Y₂ 0)
+  have e1 := form_embed μ (ixEmb hmn) (ixEmb_inj hmn) Y₁ Y₂ 0
+  have e2 := form_zero_eq_position_pairing hThm (Function.extend (ixEmb hmn) Y₁ 0) (Function.extend (ixEmb hmn) Y₂ 0)
     (extK _ h₁) (extK _ h₂)
-  have e3 := pairS_embed (V := RadSp P.k P.r z z' π π') (bet μ) (fun v => bet_zero μ v) (ixEmb) (ixEmb_inj hmn) Y₁ Y₂
+  have e3 := pairS_embed (V := RadSp P.k P.r z z' π π') (bet μ) (fun v => bet_zero μ v) (ixEmb hmn) (ixEmb_inj hmn) Y₁ Y₂
   exact e1.symm.trans (e2.trans e3)
 
 end EmbData

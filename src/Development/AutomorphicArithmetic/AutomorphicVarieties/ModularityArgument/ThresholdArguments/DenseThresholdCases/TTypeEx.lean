@@ -1157,7 +1157,7 @@ private theorem te_loc (P : _root_.GlobalTheory.Mem.LiteralAutomorphy.Literature
       ∀ π : SmIrr (GLw n w), (∃ y : Fin m → π.V, y ≠ 0 ∧ ∀ (k : KO (w.adicCompletion L) (Fin n)) i,
         ∑ a, algebraMap O ℂ (τ k i a) • π.ρ k (y a) = y i) ↔
         ∀ rc, _root_.UpperTheory.Zero.LLC.IsRecT h rc → IsTypeWD h (fun i => (χ i).comp (Subgroup.inclusion (Ine_le_Dec A))) (rc (algNorm π)) := by
-  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt h
+  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt P h
   have hsm : ∀ i, IsSmooth (h := h) ((χ i).comp (Subgroup.inclusion (Weil_le_Dec h))) := fun i =>
     (ho i).preimage (f := Subgroup.inclusion (Ine_le_Dec (F := L) A)) (continuous_inclusion (Ine_le_Dec (F := L) A))
   have hT := NZ L Ω A w h rc hrc n χ ho

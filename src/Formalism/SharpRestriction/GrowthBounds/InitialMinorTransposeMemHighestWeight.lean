@@ -826,7 +826,7 @@ namespace Formalism.MainNotions.G.Joints
 
 open Formalism.MainNotions.G
 
-theorem joint_types_corollary_sentences (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.FilteredProjectionCriterion := by
+theorem joint_types_corollary_sentences (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.FilteredProjectionCriterion D := by
   intro p n' O _ _ _ S hG n _ ι _ LL N Ss hmono
   exact ⟨F6.c1 O n ι LL, F6.c2 O n ι LL, F6.c3 p n' O S hG n ι LL N Ss, fun ee hee =>
     ⟨F7.clause4 D p n' O S hG n ι LL N Ss hmono ee hee, F7.clause5 D p n' O S hG n ι LL N Ss hmono ee hee,
@@ -838,7 +838,7 @@ namespace Formalism.MainNotions.G.Joints
 
 open Formalism.MainNotions.G Formalism.MainNotions.tableLineDegreeFive
 
-theorem coarse_units_lemma (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.adm22 := by
+theorem coarse_units_lemma (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.adm22 D := by
   intro p _ h5 t
   exact ⟨F2.coarse_unit_product_prime_power p t, F2.padic_log_unit_factor_series p (fun s f h => F1.plog_prod p s f h) t, F3.padic_val_harmonic_lower_bound p t, F3.power_sum_polynomial_exists,
     F3.padic_val_harmonic_term_bound p h5 t, F4.binomial_decay_unit_factor p t, F4.binomial_decay_unit_factor_inv p t, F4.binomial_decay_second_factor p t, F5.binomial_basis_approximation p⟩
@@ -1766,7 +1766,7 @@ theorem top_right_division_lift (hL : Lift) (hB2 : HBLin) (hB3 : HBMul) (hB4 : H
     rw [e, hk]; ring
 
 theorem sizes_bound_of_log_estimates (D : Formalism.BasicNotions.D7) (hL : Lift) (hB2 : HBLin) (hB3 : HBMul) (hB4 : HBDet) (hC1 : RedBasic)
-    (hC2 : RedHB) (hC3 : RedKer) (hC4 : TopRightDivisionDomain) (hC5 : TopRightCancelConstant) : Formalism.MainNotions.flipOneThree.adm5 := by
+    (hC2 : RedHB) (hC3 : RedKer) (hC4 : TopRightDivisionDomain) (hC5 : TopRightCancelConstant) : Formalism.MainNotions.flipOneThree.adm5 D := by
   intro O _ _ _ r c ka f h a hr hf ha hd
   obtain ⟨w, hw⟩ := IsDiscreteValuationRing.exists_irreducible O
   obtain ⟨m, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible ha hw
@@ -2423,7 +2423,7 @@ theorem sum_finrank_shifted_eq (hF : FinrankHB) (K : Type) [Field K] (r : ℕ) (
       omega
 
 theorem restriction_dimension_of_division (D : Formalism.BasicNotions.D7) (hC4 : TopRightDivisionDomain) (hB2 : HBLin) (hB3 : HBMul) (hB4 : HBDet) (hF : FinrankHB)
-    (hD : Diff) : Formalism.MainNotions.flipOneThree.adm6 := by
+    (hD : Diff) : Formalism.MainNotions.flipOneThree.adm6 D := by
   intro K _ _ r c ka h1 hc
   obtain ⟨r', rfl⟩ : ∃ r', r = r' + 1 := ⟨r - 1, by omega⟩
   obtain ⟨N, hN1, hN2⟩ := exists_shift_nonneg c ka
@@ -2456,7 +2456,7 @@ namespace Formalism.MainNotions.G.Joints.KP
 open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree
 
 theorem lattice_count_of_highest_weight (D : Formalism.BasicNotions.D7) (hA : PolyHB) (hB1 : BideterminantInHighestWeight) (hB2 : HBLin) (hB3 : HBMul) (hB4 : HBDet)
-    (hC4 : TopRightDivisionDomain) : Formalism.MainNotions.flipOneThree.adm6 :=
+    (hC4 : TopRightDivisionDomain) : Formalism.MainNotions.flipOneThree.adm6 D :=
   restriction_dimension_of_division D hC4 hB2 hB3 hB4 (finrankHB_of hA hB1 hB2 hB3 hB4 (shift_of br)) (diff_of br)
 
 end Formalism.MainNotions.G.Joints.KP
@@ -2467,7 +2467,7 @@ open KP
 
 theorem kp_lift : Lift := lift_of polyHB bidetHB hbLin hbMul hbDet redBasic
 
-theorem saturated_restriction_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.flipOneThree.adm5 :=
+theorem saturated_restriction_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.flipOneThree.adm5 D :=
   sizes_bound_of_log_estimates D kp_lift hbLin hbMul hbDet redBasic redHB redKer kp1Dom g0rCancel
 
 end Formalism.MainNotions.G.Joints
@@ -2476,7 +2476,7 @@ namespace Formalism.MainNotions.G.Joints
 
 open KP
 
-theorem restriction_dimension_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.flipOneThree.adm6 :=
+theorem restriction_dimension_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.flipOneThree.adm6 D :=
   lattice_count_of_highest_weight D polyHB bidetHB hbLin hbMul hbDet kp1Dom
 
 end Formalism.MainNotions.G.Joints

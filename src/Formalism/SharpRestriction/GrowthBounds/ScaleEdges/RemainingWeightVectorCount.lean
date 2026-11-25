@@ -14,7 +14,7 @@ namespace Formalism.MainNotions.Pf14
 
 open Formalism.MainNotions.G Formalism.CountingSumsFrames
 
-theorem dimV_eq (D : Formalism.BasicNotions.D7) (h35 : tableLineDegreeFive.FewBadOrbits) (Kf : Type) [Field Kf] {n' m : ℕ}
+theorem dimV_eq (D : Formalism.BasicNotions.D7) (h35 : tableLineDegreeFive.FewBadOrbits D) (Kf : Type) [Field Kf] {n' m : ℕ}
     (lam0 : Fin n' → Fin (m + 1) → ℤ) (hdom : IsDominant lam0) :
     ((dimV Kf lam0 : ℕ) : ℚ) = ∏ s : Fin n', weylDim (m + 1) (lam0 s) := by
   rw [h35 Kf n' m lam0 hdom]
@@ -88,7 +88,7 @@ theorem top_count {n' m : ℕ} (hm : 2 ≤ m) {TT : Finset (Fin n')} {aT bT : Fi
   rw [e1, e2, e3]
   exact h1
 
-theorem count_of_exact (D : Formalism.BasicNotions.D7) (h35 : tableLineDegreeFive.FewBadOrbits) {C : ℝ} (hC : 2 ≤ C) {p n' m r : ℕ}
+theorem count_of_exact (D : Formalism.BasicNotions.D7) (h35 : tableLineDegreeFive.FewBadOrbits D) {C : ℝ} (hC : 2 ≤ C) {p n' m r : ℕ}
     {TT : Finset (Fin n')} {L₁ L₂ : ℕ} {de h x : ℝ} {lam0 : Fin n' → Fin (m + 1) → ℤ} {aT bT : Fin n' → ℤ} {a Y : ℝ}
     {cpp c0 Dp cStar : ℕ} (H : Hyps C p n' m r TT L₁ L₂ de h x lam0 aT bT a Y cpp c0 Dp cStar)
     (Kf : Type) [Field Kf] (n2 : ℕ) (hn2 : (n2 : ℚ) = remainingWeightVectorCount TT lam0) :

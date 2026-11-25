@@ -75,7 +75,7 @@ theorem stCount_eq_dGT (n : ℕ) (μ : Fin n → ℤ) (hμ : Antitone μ) :
   rw [← (_root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.standard_count_gt n μ hμ).2]
   exact Nat.card_congr (Equiv.subtypeEquivRight fun I => Formalism.MainNotions.G.ColumnFamilies.restStd n 0 (fun _ => μ) I)
 
-theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.admB3 := by
+theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.admB3 D := by
   intro n N mu hdom
   have e : Nat.card {I : ℤ → Finset (Fin n) // IsSt mu I} =
       Nat.card {I : ℤ → Finset (Fin n) // Formalism.InvariantFactorPaths.GelfandTsetlinBases.IsStd (pEnd mu) I} :=
@@ -83,7 +83,7 @@ theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Form
   rw [e, (_root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.standard_count_gt n (pEnd mu) hdom).2]
   exact Formalism.L2.G.Model.weylQ n (pEnd mu) hdom
 
-theorem branching_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.ColumnFamilyLowerSet := by
+theorem branching_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.ColumnFamilyLowerSet D := by
   intro m ν hν
   rw [stCount_eq_dGT (m + 1) ν hν]
   simp only [Formalism.InvariantFactorPaths.GelfandTsetlinBases.dGT, Formalism.InvariantFactorPaths.GelfandTsetlinBases.gtBox]
@@ -108,7 +108,7 @@ theorem strip_down_antitone {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (h : HSt
 
 
 open Classical in
-theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.GenericProjectionCriterion := by
+theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.GenericProjectionCriterion D := by
   intro m ν b hν
   obtain ⟨hup, hdown⟩ := _root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.gelfand_tsetlin_pieri (m + 1) ν b hν
   have hc : (m + 1 + b - 1).choose b = (b + m).choose m := by

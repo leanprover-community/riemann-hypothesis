@@ -15,7 +15,7 @@ namespace Formalism.MainNotions.SelectionLemmas
 
 open Formalism.MainNotions.G
 
-def Conclusion2 (CLa Ck Crk Cdeg : ℝ) : Prop :=
+def Conclusion2 (_D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
   ∀ (p n' : ℕ) [NeZero n'] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (jW : W →+* O) (w : O),
@@ -81,20 +81,20 @@ def admB2 (_D : Formalism.BasicNotions.D7) : Prop :=
 def stCount (n : ℕ) (mu : Fin n → ℤ) : ℕ :=
   Nat.card {I : ℤ → Finset (Fin n) // IsSt (N := 0) (fun _ => mu) I}
 
-def admB3 : Prop :=
+def admB3 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (n N : ℕ) (mu : Fin (N + 1) → Fin n → ℤ), Dominant (pEnd mu) →
     ((Nat.card {I : ℤ → Finset (Fin n) // IsSt mu I} : ℕ) : ℚ) = ∏ i : Fin n, ∏ j : Fin n,
       if i < j then (((pEnd mu i : ℤ) : ℚ) - ((pEnd mu j : ℤ) : ℚ) + ((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) /
         (((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) else 1
 
-def ColumnFamilyLowerSet : Prop :=
+def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (m : ℕ) (ν : Fin (m + 1) → ℤ), Dominant ν →
     stCount (m + 1) ν =
       ∑ μ ∈ Fintype.piFinset (fun i : Fin m => Finset.Icc (ν i.succ) (ν i.castSucc)), stCount m μ
 
 
 open Classical in
-def GenericProjectionCriterion : Prop :=
+def GenericProjectionCriterion (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (m : ℕ) (ν : Fin (m + 1) → ℤ) (b : ℕ), Dominant ν →
     (stCount (m + 1) ν * Nat.choose (b + m) m =
       ∑ μ ∈ (Fintype.piFinset fun i : Fin (m + 1) => Finset.Icc (ν i) (ν i + b)).filter (fun μ => HStrip ν μ b),
@@ -103,7 +103,7 @@ def GenericProjectionCriterion : Prop :=
       ∑ μ ∈ (Fintype.piFinset fun i : Fin (m + 1) => Finset.Icc (ν i - b) (ν i)).filter (fun μ => HStrip μ ν b),
         stCount (m + 1) μ)
 
-def ColumnFamilyClosure : Prop :=
+def ColumnFamilyClosure (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (FF : Type) [Field FF] [Fintype FF] (k r : ℕ), r ≤ k → Fintype.card FF ^ (r * (k - r)) ≤ nPl FF k r
 
 def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.HyperplaneRank D
@@ -255,11 +255,11 @@ theorem space_criterion_clause (O : Type) [CommRing O] (n' r K : ℕ) [NeZero n'
   exact ⟨Submodule.subset_span ⟨A, G, M, hA, hG, hc, rfl⟩, ho⟩
 
 def AdmB (D : Formalism.BasicNotions.D7) : Prop :=
-  PathPairCorrespondence ∧ admB2 D ∧ admB3 ∧ ColumnFamilyLowerSet ∧ GenericProjectionCriterion ∧ ColumnFamilyClosure ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧
+  PathPairCorrespondence ∧ admB2 D ∧ admB3 D ∧ ColumnFamilyLowerSet D ∧ GenericProjectionCriterion D ∧ ColumnFamilyClosure D ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧
     NestedTypeBound D ∧ TypeDecompositionsCommute D
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop :=
   AdmB D → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ CLa Ck : ℝ, C₀ ≤ CLa → C₀ ≤ Ck →
-    ∃ Crk Cdeg : ℝ, 0 < Crk ∧ 0 < Cdeg ∧ Conclusion2 CLa Ck Crk Cdeg
+    ∃ Crk Cdeg : ℝ, 0 < Crk ∧ 0 < Cdeg ∧ Conclusion2 D CLa Ck Crk Cdeg
 
 end Formalism.MainNotions.SelectionLemmas

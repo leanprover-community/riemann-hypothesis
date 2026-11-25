@@ -207,12 +207,12 @@ def ArchimedeanSignatureMatching (_D : Formalism.BasicNotions.D7) : Prop :=
     (f : Formalism.MainNotions.G.GLCoord O (r + 1)), 1 ≤ r → f ∈ HB O r c ka → g0r O r ∣ f →
     ∃ f₁ ∈ HB O r (c - 1) ka, f = g0r O r * f₁
 
-def adm5 : Prop :=
+def adm5 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (r : ℕ) (c : ℤ) (ka : Fin r → ℤ)
     (f h : Formalism.MainNotions.G.GLCoord O (r + 1)) (a : O), 1 ≤ r → f ∈ HB O r c ka → a ≠ 0 →
     g0r O r ∣ f - algebraMap O _ a * h → ∃ f' ∈ HB O r c ka, g0r O r ∣ h - f'
 
-def adm6 : Prop :=
+def adm6 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (K : Type) [Field K] [CharZero K] (r : ℕ) (c : ℤ) (ka : Fin r → ℤ) (h1 : 1 ≤ r), ka ⟨0, by omega⟩ ≤ c →
     Module.finrank K (Submodule.span K
         ((Ideal.Quotient.mk (Ideal.span {g0r K r})) '' HB K r c ka)) +
@@ -294,8 +294,8 @@ def adm11 (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ
           Formalism.MainNotions.ColumnSystems.symDim (X.L.m + 1) ((X.S C0 CE1 CE2).bPlus : ℤ)
 
 def admitted (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs : ℝ) (X : Inst) : Prop :=
-  adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm2 D X ∧ adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ ArchimedeanSignatureMatching D ∧ adm5 ∧
-    adm6 ∧ adm7 D ∧ adm8 D X ∧ adm9 D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs X ∧
+  adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm2 D X ∧ adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧
+    adm6 D ∧ adm7 D ∧ adm8 D X ∧ adm9 D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs X ∧
     adm10 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
 
 def Conclusion1 (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : Inst) : Prop :=

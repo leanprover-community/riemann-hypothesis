@@ -327,7 +327,7 @@ theorem yv_pres (G : GAtP p) (v : Fin G.P.nV)
     · have := hlat u
       rwa [hne L L'' u huv] at this
 
-theorem operators_preserve_lattices (D : Formalism.BasicNotions.D7) (G : GAtP p) : Formalism.MainNotions.FormalGroupSystem.adm12 G := by
+theorem operators_preserve_lattices (D : Formalism.BasicNotions.D7) (G : GAtP p) : Formalism.MainNotions.FormalGroupSystem.adm12 D G := by
   refine ⟨fun v => ?_, fun v => ?_⟩
   · exact yv_pres G v (fun u Lu => Hten G.O (G.P.lam0 u) fun s => extO G.O (G.P.ι u) (G.P.σ u) s.val Lu)
       (fun e he => steps_gen G v (fun lam Λ => H0 G.O G.P.m lam Λ)

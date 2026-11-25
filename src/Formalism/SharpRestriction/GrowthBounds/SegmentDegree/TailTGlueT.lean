@@ -69,7 +69,7 @@ theorem finite_St {N n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) : ({I | IsSt 
   · exact congrFun h ⟨c, hc⟩
   · rw [hI.1 c hc, hI'.1 c hc]
 
-theorem wt_eq (D : Formalism.BasicNotions.D7) (h3 : admB3) {N n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) (hd : Dominant (pEnd mu)) :
+theorem wt_eq (D : Formalism.BasicNotions.D7) (h3 : admB3 D) {N n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) (hd : Dominant (pEnd mu)) :
     ({I | IsSt mu I} : Set (ℤ → Finset (Fin n))).ncard = stCount n (pEnd mu) := by
   have h1 := h3 n N mu hd
   have h2 := h3 n 0 (fun _ => pEnd mu) hd
@@ -78,7 +78,7 @@ theorem wt_eq (D : Formalism.BasicNotions.D7) (h3 : admB3) {N n : ℕ} (mu : Fin
   rw [← Nat.card_coe_set_eq]
   exact_mod_cast h4
 
-theorem stCount_zero (D : Formalism.BasicNotions.D7) (h3 : admB3) (n : ℕ) : stCount n (0 : Fin n → ℤ) = 1 := by
+theorem stCount_zero (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (n : ℕ) : stCount n (0 : Fin n → ℤ) = 1 := by
   have h2 := h3 n 0 (fun _ => (0 : Fin n → ℤ)) (fun _ _ _ => le_rfl)
   have h4 : ((stCount n (0 : Fin n → ℤ) : ℕ) : ℚ) = 1 := by
     unfold stCount
@@ -98,7 +98,7 @@ theorem stCount_cast {n n' : ℕ} (h : n = n') (la : Fin n' → ℤ) :
   subst h; rfl
 
 open Classical in
-theorem pieri_vec (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriterion) (n : ℕ) (hn : 0 < n) (ν : Fin n → ℤ) (b : ℕ) (hd : Dominant ν) :
+theorem pieri_vec (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriterion D) (n : ℕ) (hn : 0 < n) (ν : Fin n → ℤ) (b : ℕ) (hd : Dominant ν) :
     stCount n ν * Nat.choose (b + n - 1) (n - 1) =
       ∑ μ ∈ (Fintype.piFinset fun i : Fin n => Finset.Icc (ν i) (ν i + b)).filter (fun μ => HStrip ν μ b),
         stCount n μ := by
@@ -106,7 +106,7 @@ theorem pieri_vec (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriteri
   exact (h5 m ν b hd).1
 
 open Classical in
-theorem pieri_cov (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriterion) (n : ℕ) (hn : 0 < n) (ν : Fin n → ℤ) (b : ℕ) (hd : Dominant ν) :
+theorem pieri_cov (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriterion D) (n : ℕ) (hn : 0 < n) (ν : Fin n → ℤ) (b : ℕ) (hd : Dominant ν) :
     stCount n ν * Nat.choose (b + n - 1) (n - 1) =
       ∑ μ ∈ (Fintype.piFinset fun i : Fin n => Finset.Icc (ν i - b) (ν i)).filter (fun μ => HStrip μ ν b),
         stCount n μ := by

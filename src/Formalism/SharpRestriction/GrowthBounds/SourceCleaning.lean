@@ -337,7 +337,7 @@ def GoodOrbitPositions : Prop :=
 
     (∀ y : ℤ, ((Finset.Ico y (y + L₂)).filter fun t => posOf n' t ∈ TT).card ≤ r - 1)
 
-def BlochKatoExtensionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5
+def BlochKatoExtensionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5 D
 
 def InvariantProjectionLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.InvariantProjectionField
 
@@ -408,7 +408,7 @@ def SpaceCriterionModuloUniformiser (_D : Formalism.BasicNotions.D7) : Prop :=
     ∃ P ∈ XX' O r K Fr j m th o,
       MvPolynomial.map (IsLocalRing.residue O) P = plEmb (FF O) r K A * nmEmb (FF O) r K G)
 
-def admG2 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg
+def admG2 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg
 
 def admitted (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
   GoodOrbitPositions ∧ BlochKatoExtensionCriterion D ∧ InvariantProjectionLemma D ∧ NablaDeltaComparison D ∧ IsotypicProjectorTheorem D ∧ TranslateCorollary D ∧ FilteredProjectorCorollary D ∧ ValuationLemma D ∧ ValuationsOfProducts D ∧ PathColumnBasis D ∧

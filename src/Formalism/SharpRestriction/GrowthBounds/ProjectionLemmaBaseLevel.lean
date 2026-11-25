@@ -72,7 +72,7 @@ def tI (C₀ C : ℝ) (p n' m : ℕ) (TT : Finset (Fin n')) (G' N₁ : ℕ) (a b
     C * N * N₁ * (a / (p : ℝ) ^ 2 + b' / p + La * a / (p * k) + La * b' / k) +
     C * N * (Q * c + k * Q + k * Real.logb p a + ccl) + 2 * n' * ccl
 
-def Conclusion2 (C₀ CH C : ℝ) : Prop :=
+def Conclusion2 (_D : Formalism.BasicNotions.D7) (C₀ CH C : ℝ) : Prop :=
   ∀ (p n' m : ℕ) (TT : Finset (Fin n')) (G' N₁ : ℕ) (Y Yb a b' bl bu : ℝ) (ccl Dp cStar : ℕ),
     HypI C₀ CH p n' m TT G' N₁ Y Yb a b' bl bu ccl Dp cStar →
     ∃ κ : (TT → ℤ) → (TT → ℤ) → ℝ,
@@ -187,9 +187,9 @@ def GenericProjectionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formali
 
 def ColumnFamilyClosure (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField ∧ Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField
 
-def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5
+def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5 D
 
-def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching D ∧ adm5 ∧ adm6 ∧ adm7 D
+def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D
 
 def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 
@@ -248,12 +248,12 @@ def ClosedP (P : ℝ → ℝ → ℝ → Prop) : Prop :=
 
 def AdmBE (D : Formalism.BasicNotions.D7) : Prop := ClosedA (AdmB D)
 
-def projection_lemma_base_level (D : Formalism.BasicNotions.D7) : Prop := ClosedP (Conclusion2)
+def projection_lemma_base_level (D : Formalism.BasicNotions.D7) : Prop := ClosedP (Conclusion2 D)
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop := AdmBE D → projection_lemma_base_level D
 
 def Conclusion2Family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C₀ CH C : ℝ) : Prop :=
-  ∀ x (i : Fm.Ix x), Conclusion2 C₀ CH C
+  ∀ x (i : Fm.Ix x), Conclusion2 (Fm.D x i) C₀ CH C
 
 end Formalism.MainNotions.flipOneThree
 

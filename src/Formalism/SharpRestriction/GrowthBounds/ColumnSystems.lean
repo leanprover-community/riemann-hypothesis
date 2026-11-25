@@ -145,7 +145,7 @@ def Conclusion4 (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
 
 def adm1 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm1 D
 
-def adm2 : Prop :=
+def adm2 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : Fin (n + 1) → ℕ), Antitone lam →
     Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K (n + 1) (n + 1) lam) =
       ∑ mu ∈ (Fintype.piFinset (fun _ : Fin n => Finset.range (lam 0 + 1))).filter
@@ -229,7 +229,7 @@ def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.Covari
 def adm20 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity
 
 def admitted (D : Formalism.BasicNotions.D7) : Prop :=
-  adm1 D ∧ adm2 ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧
+  adm1 D ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧
     adm12 D ∧ adm13 D ∧ adm14 D ∧ adm15 D ∧ adm16 ∧ adm17 ∧ adm18 ∧ adm19 D ∧ adm20 D
 
 def Closed (P : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop) : Prop :=

@@ -1426,7 +1426,7 @@ theorem restYB (D : Formalism.BasicNotions.D7) : RestYB :=
 theorem raising_operators_kill_image (D : Formalism.BasicNotions.D7) : SimpleRaisingKillsExtremalProjector :=
   raising_kill_of_interface restConn restComm (restYB D) restKill
 
-theorem extremal_projector_statement (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.adm5 := sizes_bound_of_log_estimates D (raising_operators_kill_image D)
+theorem extremal_projector_statement (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.adm5 D := sizes_bound_of_log_estimates D (raising_operators_kill_image D)
 
 end Formalism.MainNotions.G.ExtremalProjector
 end -- clump:auto

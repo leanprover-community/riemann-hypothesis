@@ -1507,7 +1507,7 @@ theorem link_of_local_closed (𝒞 : FamClass) (h : Loc)
     Closed 𝒞 fun Fm _ => LinkG Fm :=
   (((((((((second_theorem_closed_form 𝒞 (second_theorem_absolute_constant (extremal_projector_tools_of_loc) (local_model_results h))).and
     (first_theorem_closed_form 𝒞 (first_theorem_threshold_functions (extremal_projector_tools_of_loc)
-      (loc8All_of (local_model_results h) (local_flatness_results))))).and (signs_closed 𝒞)).and
+      (loc8All_of (extremal_projector_tools_of_loc) (local_model_results h) (local_flatness_results))))).and (signs_closed 𝒞)).and
     (ones_closed 𝒞)).and (cb_closed 𝒞)).and hE).and hS).and hd).and (TopChoiceBounds.family_log_bound_closed 𝒞)).imp
     fun Fm _ _ h => linkG_fam_noKer Fm h.1.1.1.1.1.1.1.1 h.1.1.1.1.1.1.1.2 h.1.1.1.1.1.1.2.1
       h.1.1.1.1.1.2.2.2 h.1.1.1.1.2 h.1.1.1.2 h.1.1.2 h.1.2 h.2

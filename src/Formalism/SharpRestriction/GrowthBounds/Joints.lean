@@ -105,7 +105,7 @@ theorem second_decomposition_gives_orbit_count (D : Formalism.BasicNotions.D7)  
 theorem lattice_index_gives_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DerivativeLemma D) :
     Formalism.MainNotions.tableLineDegreeFive.FrobeniusExpansionCongruence D := h
 
-theorem rank_degree_bounds_give_orbit_count (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h : Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg) :
+theorem rank_degree_bounds_give_orbit_count (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h : Formalism.MainNotions.SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg) :
     Formalism.MainNotions.tableLineDegreeFive.adm26 D CLa Ck Crk Cdeg := h
 
 theorem first_degree_bound_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion) :
@@ -231,7 +231,7 @@ theorem second_decomposition_gives_localiser (D : Formalism.BasicNotions.D7)  (h
 theorem lattice_index_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DerivativeLemma D) :
     Formalism.MainNotions.SourceCleaning.DividedDerivativeLemma D := h
 
-theorem rank_degree_bounds_give_localiser (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h : Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg) :
+theorem rank_degree_bounds_give_localiser (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h : Formalism.MainNotions.SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg) :
     Formalism.MainNotions.SourceCleaning.admG2 D CLa Ck Crk Cdeg := h
 
 theorem integral_form_exponent_le_ceil (p a r n : ℕ) (hn : n + 1 ≤ r) (l : ℕ) (hl : l ≤ 8 * a) :
@@ -1318,7 +1318,7 @@ theorem kappa_share_of_least_serving (D : D7) (L : SizeData₂ D) (X : Inst D L)
 theorem type_one_hypothesis_of_segments (D : D7) (L : SizeData₂ D) (X : Inst D L) (K : Consts) (Cm CH C : ℝ) (hX : KapIDef X K)
     (hK : K.Nonneg) (hCH0 : 0 ≤ CH) (hCHk : CH ≤ K.kI) (hCHD : CH ≤ K.DI) (hCHr : 2 * CH ≤ K.rho) (hC0 : 0 ≤ C)
     (hCt1 : 2 * C ≤ K.kappaThresholdOne) (hCt2 : C ≤ K.kappaThresholdTwo) (hCm : C ≤ Cm) (hc : 0 ≤ cG L) (hOrb : OrbitSegs D L)
-    (h : Formalism.MainNotions.flipOneThree.Conclusion2 K.La CH C) : Formalism.MainNotions.AuxBlock8.adm8 D L X K Cm := by
+    (h : Formalism.MainNotions.flipOneThree.Conclusion2 D K.La CH C) : Formalism.MainNotions.AuxBlock8.adm8 D L X K Cm := by
   intro p n' hp TT hG hL2 hG3 hp0 hpX hband hH
   refine ⟨fun a b => (hX.mem_Icc p n' TT a b).1, ?_⟩
   have hseg := hOrb n' TT hG hL2 hG3
@@ -1654,7 +1654,7 @@ theorem scale_pow_mono {O Kf X : Type*} [CommRing O] [Field Kf] [Algebra O Kf] [
 theorem type_one_hypothesis_of_bounds (D : D7) (L : SizeData₂ D) (X : Inst D L) (K : Consts) (Cm CH C : ℝ) (hX : KapIDef X K)
     (hK : K.Nonneg) (hCH0 : 0 ≤ CH) (hCHk : CH ≤ K.kI) (hCHD : CH ≤ K.DI) (hCHr : 2 * CH ≤ K.rho) (hC0 : 0 ≤ C)
     (hCt1 : 2 * C ≤ K.kappaThresholdOne) (hCt2 : C ≤ K.kappaThresholdTwo) (hCm : C ≤ Cm) (hc : 0 ≤ cG L)
-    (h : Formalism.MainNotions.flipOneThree.Conclusion2 K.La CH C) : Formalism.MainNotions.AuxBlock8.adm8 D L X K Cm :=
+    (h : Formalism.MainNotions.flipOneThree.Conclusion2 D K.La CH C) : Formalism.MainNotions.AuxBlock8.adm8 D L X K Cm :=
   type_one_hypothesis_of_segments D L X K Cm CH C hX hK hCH0 hCHk hCHD hCHr hC0 hCt1 hCt2 hCm hc
     (Formalism.MainNotions.G.TopChoiceBounds.orbit_segments D L) h
 

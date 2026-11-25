@@ -760,7 +760,7 @@ def ErrorExponentStatement (D : Formalism.BasicNotions.D7) : Prop :=
 
 def adm9 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion1 G
 
-def adm12 {p : ℕ} (G : GAtP p) : Prop :=
+def adm12 (_D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop :=
   (∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna) ∧ ∀ v, ∀ F ∈ G.M, G.yv v F ∈ G.M
 
 def adm13 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.adm2 G
@@ -784,7 +784,7 @@ def LemmaVVolumeGeneral (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X :
 
 def RamifiedSublatticeVolumeOfAdmissible (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (K : Consts) : Prop :=
   (∀ (u : D.what₂.Word) (w : D.what₂.places.Pl) (h : Formalism.BasicNotions.GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
-    adm9 D (D.gat u w h) ∧ adm12 (D.gat u w h) ∧ adm13 D (D.gat u w h) ∧ Formalism.MainNotions.SelectionLemmas.adm3 (D.gat u w h)) →
+    adm9 D (D.gat u w h) ∧ adm12 D (D.gat u w h) ∧ adm13 D (D.gat u w h) ∧ Formalism.MainNotions.SelectionLemmas.adm3 (D.gat u w h)) →
     LemmaVVolumeGeneral D L X Y K
 
 end Formalism.MainNotions.FormalGroupSystem

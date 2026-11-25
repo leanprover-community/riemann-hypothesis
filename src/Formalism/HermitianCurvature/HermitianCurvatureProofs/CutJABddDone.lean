@@ -259,14 +259,14 @@ theorem scal_bound_of_ubl (D : B.RealPlaceData k r Wp Wq) (φ : B.Mat k r → �
     nlinarith [mul_le_mul_of_nonneg_left hl' hγ, mul_le_mul_of_nonneg_left hm1 he,
       mul_le_mul_of_nonneg_right hBg (by linarith : (0 : ℝ) ≤ m)]
 
-theorem dlast_pos (D : B.RealPlaceData k r Wp Wq) {ε : ℝ} {g : B.Mat k r} (hg : ε ≤ Gf k r D.z D.z' g) :
+theorem dlast_pos (D : B.RealPlaceData k r Wp Wq) {ε : ℝ} (hε : 0 < ε) {g : B.Mat k r} (hg : ε ≤ Gf k r D.z D.z' g) :
     ε ≤ Complex.normSq (Dmin k r D.z D.z' g (Fin.last (r + 1))) :=
   Formalism.FourierDecayAlt.P.gram_function_last_minor k r D.z D.z' D.T_pos.le D.T'_pos.le g ε hg
 
 theorem dlast_ne (D : B.RealPlaceData k r Wp Wq) {g : B.Mat k r} (hg : g ∈ B.GPos D) :
     Dmin k r D.z D.z' g (Fin.last (r + 1)) ≠ 0 := by
   intro h
-  have := dlast_pos D (le_refl _)
+  have := dlast_pos D hg.2 (le_refl _)
   rw [h, map_zero] at this
   linarith [hg.2]
 
@@ -299,7 +299,7 @@ theorem phiR_le (D : B.RealPlaceData k r Wp Wq) {ε : ℝ} (hε : 0 < ε) :
   have hT0 : 0 < T := mul_pos D.T_pos D.T'_pos
   refine ⟨1 + 1 / T, fun g hg => ?_⟩
   have hG := hg.2
-  have h1 := dlast_pos D hG
+  have h1 := dlast_pos D hε hG
   have hpos : 0 < Complex.normSq (Dmin k r D.z D.z' g (Fin.last (r + 1))) := lt_of_lt_of_le hε h1
   unfold Gf at hG
   set a := Complex.normSq (Dmin k r D.z D.z' g ⟨r, by omega⟩)
@@ -327,7 +327,7 @@ theorem ubl_phiR (D : B.RealPlaceData k r Wp Wq) {ε : ℝ} (hε : 0 < ε) (n : 
     have := Formalism.FourierDecayAlt.P.minor_polynomial_property k r D.z D.z' (Fin.last (r + 1))
     simpa using this
   have ha := ubl_poly hP0 (regE D ε) (regE_sub D ε) n (r + 1)
-  have hb := ubl_invpow hP1 (regE_sub D ε) hε (fun g hg => dlast_pos D hg.2) 1 n
+  have hb := ubl_invpow hP1 (regE_sub D ε) hε (fun g hg => dlast_pos D hε hg.2) 1 n
   have hm := ubl_mul (regE_sub D ε) ha hb
   have e : phiR k r D.z D.z' = fun g => Dmin k r D.z D.z' g ⟨r, by omega⟩ *
       (Dmin k r D.z D.z' g (Fin.last (r + 1)))⁻¹ ^ 1 := by
@@ -343,7 +343,7 @@ theorem ubl_phiD (D : B.RealPlaceData k r Wp Wq) {ε : ℝ} (hε : 0 < ε) (n : 
   have hP2 := Formalism.FourierDecayAlt.P.CutMP.jdh_pd_star hP1
   have ha := ubl_poly hP1 (regE D ε) (regE_sub D ε) n (r + 1)
   have hb := ubl_invpow hP2 (regE_sub D ε) hε
-    (fun g hg => by simpa [Complex.star_def] using dlast_pos D hg.2) 1 n
+    (fun g hg => by simpa [Complex.star_def] using dlast_pos D hε hg.2) 1 n
   have hm := ubl_mul (regE_sub D ε) ha hb
   have e : phiD k r D.z D.z' = fun g => Dmin k r D.z D.z' g (Fin.last (r + 1)) *
       (star (Dmin k r D.z D.z' g (Fin.last (r + 1))))⁻¹ ^ 1 := by

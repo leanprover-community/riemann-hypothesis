@@ -659,7 +659,7 @@ theorem inputs : Loc8All := by
 
 theorem rangeOne_abs :
     ∃ (T0 : ℝ) (T2 C : ℝ → ℝ), 0 < T0 ∧ ∀ C₀ : ℝ, T0 ≤ C₀ → 0 < T2 C₀ ∧ 0 < C C₀ ∧ ∀ CH : ℝ, T2 C₀ ≤ CH →
-      ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.flipOneThree.Conclusion2 C₀ CH (C C₀) :=
+      ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.flipOneThree.Conclusion2 D C₀ CH (C C₀) :=
   first_theorem_threshold_functions tools inputs
 
 end GlobalTheory.EX.RangeOne

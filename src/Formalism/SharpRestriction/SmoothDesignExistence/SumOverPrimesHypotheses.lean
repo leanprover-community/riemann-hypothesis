@@ -1523,7 +1523,7 @@ theorem sum_over_primes_service (𝒞 : FamClass) (hD : Closed 𝒞 fun Fm _ => 
   have hpdv := h.pdv
   have h01 : OrbitPlaces.OrbitLetterBoundsAll 11 1 := DIV.Bridge.DworkPowerSeriesWeights.split_bound_eleven_one
   refine closed_large_pos ⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩
-    (hD.and (h.twU.and (hpdv.and (G.num_closed 𝒞))))
+    (hD.and (h.twU.and (hpdv.and (G.num_closed 𝒞 FormalGroupSystem.Pf.stmtNumE))))
     fun {eps} Fm CH hpos hL ⟨hDg, ⟨xb, hb⟩, ⟨xc, hc⟩, ⟨xn, hnum⟩⟩ => ?_
   have hpr1 : 1 ≤ Fm.GK.Pr1 := le_of_eq Fm.fixed.1.symm
   have hCL : OrbitPlaces.CLarge 11 1 Fm.GK Fm.cX.err :=

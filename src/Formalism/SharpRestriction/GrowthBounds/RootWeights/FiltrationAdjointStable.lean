@@ -212,7 +212,7 @@ private theorem operatorsShiftWeightsByRoots_of_isGLRep {n : ℕ} {K V : Type*} 
   rw [hc, Pi.add_apply, Int.cast_add, add_smul]
   exact add_comm _ _
 
-theorem sizes_bound_of_log_estimates (D : Formalism.BasicNotions.D7) (h : SimpleRaisingKillsExtremalProjector) : adm5 := by
+theorem sizes_bound_of_log_estimates (D : Formalism.BasicNotions.D7) (h : SimpleRaisingKillsExtremalProjector) : adm5 D := by
   intro K V _ _ _ _ _ n E hE mu hmu ord hord T hT
   have hs : OperatorsShiftWeightsByRoots E := operatorsShiftWeightsByRoots_of_isGLRep E hE
   have hlt : ∀ ab ∈ ord, ab.1 < ab.2 := by

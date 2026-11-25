@@ -341,10 +341,10 @@ theorem weylV_proved : Formalism.MainNotions.flipOneThree.WeylV := by
     ring
   · rfl
 
-theorem fewBadOrbits (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.FewBadOrbits := by
+theorem fewBadOrbits (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.FewBadOrbits D := by
   exact weylV_proved
 
-theorem gl_branching_dimension (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ColumnSystems.adm2 := by
+theorem gl_branching_dimension (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ColumnSystems.adm2 D := by
   intro K _ _ n lam hlam
   simp only [finrank_dualWeyl]
   simp only [dGT]

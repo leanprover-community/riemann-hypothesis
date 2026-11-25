@@ -64,7 +64,7 @@ section
 variable {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} {od : Fin N → Fin N} {bb : Fin N → ℝ} {a La : ℝ} {p : ℕ}
 
 open Classical in
-theorem tau_count (D : Formalism.BasicNotions.D7) (h3 : admB3) (h4 : ColumnFamilyLowerSet) (H : HypT N n0 r K LL B od bb a La p)
+theorem tau_count (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (h4 : ColumnFamilyLowerSet D) (H : HypT N n0 r K LL B od bb a La p)
     (hfin : (SAll (r := r) (K := K) LL n0 B).Finite) :
     ∀ (t s : ℕ) (hst : s + t = N) (_ht : t ≤ r) (μ0 : Fin (N + 1) → Fin (r + K) → ℤ), VP LL n0 B s μ0 →
       (Af hfin s μ0).card = stCount (K + t) (tailT t (μ0 ⟨s, by omega⟩)) := by
@@ -267,7 +267,7 @@ section
 variable {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} {od : Fin N → Fin N} {bb : Fin N → ℝ} {a La : ℝ} {p : ℕ}
 
 open Classical in
-theorem pre_count (D : Formalism.BasicNotions.D7) (h3 : admB3) (h4 : ColumnFamilyLowerSet) (h5 : GenericProjectionCriterion)
+theorem pre_count (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (h4 : ColumnFamilyLowerSet D) (h5 : GenericProjectionCriterion D)
     (H : HypT N n0 r K LL B od bb a La p) (hfin : (SAll (r := r) (K := K) LL n0 B).Finite) :
     ∀ (u s : ℕ) (hsu : s + u = n0) (μ0 : Fin (N + 1) → Fin (r + K) → ℤ), VP LL n0 B s μ0 →
       (Af hfin s μ0).card = stCount (r + K) (μ0 ⟨s, by have := H.hN; omega⟩) * prodFrom r K n0 B s := by
@@ -335,7 +335,7 @@ theorem pre_count (D : Formalism.BasicNotions.D7) (h3 : admB3) (h4 : ColumnFamil
 
 end
 
-theorem path_weight_eq_rank (D : Formalism.BasicNotions.D7) (h3 : admB3) (h4 : ColumnFamilyLowerSet) (h5 : GenericProjectionCriterion) : PathWeightEqRank := by
+theorem path_weight_eq_rank (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (h4 : ColumnFamilyLowerSet D) (h5 : GenericProjectionCriterion D) : PathWeightEqRank := by
   classical
   intro N n0 r K _ _ LL B od bb a La p H
   have hfin := finite_SAll H
@@ -522,7 +522,7 @@ theorem toL_IsPATH (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ} (P
     show beA n0 B = ∑ i ∈ Finset.Icc 1 (toL r K LL B).n0, (toL r K LL B).B i
     rw [hn0, beta_eq_sum_thresholds LL B n0 (by omega)]
 
-theorem toL_wt (D : Formalism.BasicNotions.D7) (h3 : admB3) (μ : Fin (N + 1) → Fin (r + K) → ℤ)
+theorem toL_wt (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (μ : Fin (N + 1) → Fin (r + K) → ℤ)
     (hd : Dominant (pEnd (tanPart μ))) :
     (({I | IsSt (tanPart μ) I} : Set (ℤ → Finset (Fin K))).ncard : ℝ) = BranchingDimensions.Letters.wt (D := toL r K LL B) μ := by
   have h1 := h3 K N (tanPart μ) hd
@@ -730,7 +730,7 @@ theorem typ_of_Typical [NeZero r] (H : HypT N n0 r K LL B od bb a La p) {dd : Fi
 
 end
 
-theorem atypical_path_small_weight (D : Formalism.BasicNotions.D7) (h3 : admB3) : AtypicalPathSmallWeight := by
+theorem atypical_path_small_weight (D : Formalism.BasicNotions.D7) (h3 : admB3 D) : AtypicalPathSmallWeight := by
   intro N n0 r K _ _ LL B od bb a La p H μ hμ hnT
   obtain ⟨dd, hP⟩ := hμ
   obtain ⟨P, rfl⟩ := hP.path

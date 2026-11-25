@@ -1309,7 +1309,7 @@ theorem invariant_projection_of_product_formula (D : Formalism.BasicNotions.D7) 
   intro p n' O _ _ _ S hG n V _ _ _ _ _ E hE M hM hMQ Inv hInv
   exact ⟨h p n' O S hG n V E hE M hM hMQ Inv hInv, invariantProjectionDenominator D p n' O S hG n V E hE M hM hMQ Inv hInv⟩
 
-theorem product_formula_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5) : InvariantProductFormula := by
+theorem product_formula_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5 D) : InvariantProductFormula := by
   intro p n' O _ _ _ S hG n V _ _ _ _ _ E hE M hM hMQ Inv hInv π hπ ord hord T hT
   haveI := dvr_fraction_field_charZero_prime S hG.prime
   exact invariant_projection_extremal_formula D (weight_condition_from_integral_form D) h5 E hE Inv hInv π hπ ord hord T hT
@@ -1319,7 +1319,7 @@ theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (h : In
       ⟨invariant_projection_of_product_formula D h, nabla_delta_comparison_field D, isotypic_projector_theorem_field D, translate_corollary_field D, filtered_projector_corollary_field D⟩,
      valuation_field D, support_coprimality_lemma_holds D, section_five_lemmas_hold D, lattice_index_lemma_holds D⟩
 
-theorem part_one_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5) : Conclusion1 D := counting_statement_of_block_form D (product_formula_of_extremal_projector D h5)
+theorem part_one_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5 D) : Conclusion1 D := counting_statement_of_block_form D (product_formula_of_extremal_projector D h5)
 
 theorem problem_holds (D : Formalism.BasicNotions.D7) : IntegralityFromMetric D := fun hA => part_one_of_extremal_projector D (show admitted D from hA).2.2.2.2
 

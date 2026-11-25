@@ -15,7 +15,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem invariant_projection_extremal_formula (D : Formalism.BasicNotions.D7) (h2 : adm2) (h5 : adm5) {K V : Type} [Field K] [CharZero K]
+theorem invariant_projection_extremal_formula (D : Formalism.BasicNotions.D7) (h2 : adm2) (h5 : adm5 D) {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] [FiniteDimensional K V] {n : ℕ} (E : GLOps n K V) (hE : IsGLRep E)
     (Inv : Module.End K V) (hInv : IsInvProj E Inv) (π : Module.End K V) (hπ : IsWtProj E 0 π)
     (ord : List (Fin n × Fin n)) (hord : NormalOrder n ord) (T : ℕ) (hT : Module.finrank K V ≤ T) :
