@@ -35,16 +35,16 @@ theorem ratio_shortExact_l (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S 
     (hl : ∃ r : ℕ, ∀ m : T.X₂, (ℓ ^ r) • m = 0) :
     haveI : Finite S := hS
     gsEulerRatio S T.X₂ ιr = gsEulerRatio S T.X₁ ιr * gsEulerRatio S T.X₃ ιr := by
-  haveI : Finite S := hS
-  haveI : Fintype S := Fintype.ofFinite S
+  have : Finite S := hS
+  have : Fintype S := Fintype.ofFinite S
   have hℓ : ℓ.Prime := Fact.out
-  haveI : Nonempty S := nonempty_of_natCast_mem_of_ne_one (N := ℓ) S hℓ.one_lt.ne' hSl
+  have : Nonempty S := nonempty_of_natCast_mem_of_ne_one (N := ℓ) S hℓ.one_lt.ne' hSl
   obtain ⟨r, hr⟩ := hl
   have hinj : Function.Injective T.f.hom := (Rep.mono_iff_injective _).1 hT.mono_f
   have hsurj : Function.Surjective T.g.hom := (Rep.epi_iff_surjective _).1 hT.epi_g
-  haveI : Finite T.X₁ := Finite.of_injective _ hinj
-  haveI : Finite T.X₃ := Finite.of_surjective _ hsurj
-  haveI : NeZero (ℓ ^ r) := ⟨pow_ne_zero _ hℓ.ne_zero⟩
+  have : Finite T.X₁ := Finite.of_injective _ hinj
+  have : Finite T.X₃ := Finite.of_surjective _ hsurj
+  have : NeZero (ℓ ^ r) := ⟨pow_ne_zero _ hℓ.ne_zero⟩
   have hSN : ∀ v : HeightOneSpectrum (𝓞 K.1), (((ℓ ^ r : ℕ)) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S := by
     intro v hv
     apply hSl v

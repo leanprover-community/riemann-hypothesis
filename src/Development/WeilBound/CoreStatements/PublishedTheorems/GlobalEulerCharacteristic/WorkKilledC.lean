@@ -120,7 +120,7 @@ theorem eq_one_of_forall_isCyclic (hmult : MultKilled l χ) (hpos : PosKilled l 
     χ (infl Q ρ) = 1 := by
   apply rat_eq_one_of_padicValRat (hpos _ (fun m => nsmul_eq_zero_of_zmod (l := l) (X := X) m))
   intro p hp
-  haveI : Fact p.Prime := ⟨hp⟩
+  have : Fact p.Prime := ⟨hp⟩
   exact (valFun Q hmult hpos p).toFun_eq_zero_of_forall_isCyclic ρ (fun D hD => by
     show padicValRat p (χ (infl Q _)) = 0
     rw [h D hD]
@@ -217,7 +217,7 @@ theorem finite_quot_gs (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.
     (L : FiniteSubfield) [Fact (K ≤ L)]
     (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) :
     Finite (galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) := by
-  haveI := finiteIndex_gsOpenSubgroup S hL
+  have := finiteIndex_gsOpenSubgroup S hL
   exact Subgroup.finite_quotient_of_finiteIndex
 
 end GSAux

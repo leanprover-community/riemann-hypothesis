@@ -117,9 +117,9 @@ theorem coind_eq_infl_funRep (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (
   have hπ : Function.Surjective (QuotientGroup.mk' (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) :=
     QuotientGroup.mk'_surjective _
   let E := cosetEquiv _ hπ D _ hW
-  letI i1 : Module (ULift.{0} ℤ) ((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) → M) :=
+  let i1 : Module (ULift.{0} ℤ) ((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) → M) :=
     (funDiagRep (galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) M).hV2
-  letI i2 : Module (ULift.{0} ℤ) (((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) ⧸ D) → M) :=
+  let i2 : Module (ULift.{0} ℤ) (((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) ⧸ D) → M) :=
     (W_killed_c.infl (gsOpenSubgroup S hL) (funRep ((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) ⧸ D) ρ)).hV2
   let eqv : (funDiagRep (galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) M).ρ.Equiv
       (W_killed_c.infl (gsOpenSubgroup S hL) (funRep ((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) ⧸ D) ρ)).ρ :=
@@ -136,7 +136,7 @@ theorem coind_eq_infl_funRep (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (
         congr 2
         have := cosetEquiv_symm_smul _ hπ D _ hW g⁻¹ y
         exact this.symm }
-  haveI := W_killed_c.isDiscreteRep_infl (gsOpenSubgroup S hL) (funRep ((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) ⧸ D) ρ)
+  have := W_killed_c.isDiscreteRep_infl (gsOpenSubgroup S hL) (funRep ((galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) ⧸ D) ρ)
   exact gsEulerRatio_eq_of_iso S _ ιr (coindResIsoFunDiagRep (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) M ≪≫ Rep.mkIso eqv)
 
 end PositivityTheory.Lit1.GEN.W_coinf_b
@@ -197,7 +197,7 @@ theorem quotient_representation_open (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSub
   let ρ : Representation (ZMod ℓ) (galUnramifiedOutside K.1 ℚ̄ S ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) M :=
     QuotientGroup.lift _ (zmodRep ℓ (addAct M)) hker
   refine ⟨ρ, fun g m => rfl, ?_⟩
-  haveI := isDiscreteRep_infl (gsOpenSubgroup S hL) ρ
+  have := isDiscreteRep_infl (gsOpenSubgroup S hL) ρ
   obtain ⟨e⟩ := nonempty_iso_of_addEquiv (k := ULift.{0} ℤ) (fun c => ⟨c.down, rfl⟩) M (infl (gsOpenSubgroup S hL) ρ)
     (AddEquiv.refl M) (fun _ _ => rfl)
   exact gsEulerRatio_eq_of_iso S M ιr e
@@ -213,7 +213,7 @@ theorem quot_rep (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (Hei
       (∀ (g : galUnramifiedOutside K.1 ℚ̄ S) (m : M), ρ (QuotientGroup.mk g) m = M.ρ g m) ∧
       gsEulerRatio S M ιr = (haveI := isDiscreteRep_infl (gsOpenSubgroup S hL) ρ; gsEulerRatio S (infl (gsOpenSubgroup S hL) ρ) ιr) := by
   have : NeZero ℓ := ⟨(Fact.out : ℓ.Prime).ne_zero⟩
-  letI inst : Module (ZMod ℓ) M := AddCommGroup.zmodModule hℓ
+  let inst : Module (ZMod ℓ) M := AddCommGroup.zmodModule hℓ
   exact ⟨inst, quotient_representation_open ℓ K S ιr L hL M htriv⟩
 
 end PositivityTheory.Lit1.GEN.QuotientActionGlobalEulerCharacteristic
@@ -247,8 +247,8 @@ theorem ratio_eq_one_of_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield)
       (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ≤ (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) → IsCyclic ((gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) →
       gsEulerRatio S (Rep.coind (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subtype (Rep.res (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subtype M)) ιr = 1) :
     gsEulerRatio S M ιr = 1 := by
-  haveI := hN
-  haveI := finite_quot_gs K S L hL
+  have := hN
+  have := finite_quot_gs K S L hL
   obtain ⟨inst, ρ, hρ, he⟩ := QuotientActionGlobalEulerCharacteristic.quot_rep ℓ K S ιr L hL M hℓ htriv
   rw [he]
   exact eq_one_of_forall_isCyclic (gsOpenSubgroup S hL) (gs_multKilled ℓ K S hS hSℓ ιr)
@@ -324,7 +324,7 @@ theorem ending_lemmaX (hX : GlobalEulerCharCoprime) (ℓ : ℕ) [Fact ℓ.Prime]
     ext τ
     rw [Subgroup.mem_comap, Subgroup.mem_subgroupOf]
     exact mem_gsOpenSubgroup_placesOver_iff S K' L hK' hL hL'' τ
-  haveI hfin : Finite (resTo S K' hK' M) := (inferInstanceAs (Finite M))
+  have hfin : Finite (resTo S K' hK' M) := (inferInstanceAs (Finite M))
   refine hX K' (placesOver S) (placesOver_finite hS) ℓ (natCast_not_mem_of_not_mem_placesOver hSℓ) L hL''
     ?_ ?_ hζ hc ιr' (resTo S K' hK' M) ?_ ?_
   · rw [hcomap]
@@ -377,7 +377,7 @@ theorem exists_prime_to_part (ℓ : ℕ) [Fact ℓ.Prime]
     change (gsEmbedding (S := S) hL).fieldRange.fixingSubgroup.index ≠ 0
     rw [← IntermediateField.finrank_eq_fixingSubgroup_index,
       ← (gsEmbedding (S := S) hL).equivFieldRange.toLinearEquiv.finrank_eq]
-    haveI : Module.IsTorsionFree K.1 L.1 := DivisionSemiring.to_moduleIsTorsionFree
+    have : Module.IsTorsionFree K.1 L.1 := DivisionSemiring.to_moduleIsTorsionFree
     exact (Module.finrank_pos (R := K.1) (M := L.1)).ne'
   have hUo : IsOpen (((gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) :
       Set (galUnramifiedOutside K.1 ℚ̄ S)) := (gsOpenSubgroup S hL).isOpen
@@ -628,11 +628,11 @@ theorem ratio_coind_stage_pow (ℓ : ℕ) [Fact ℓ.Prime]
   classical
   have hp : ℓ.Prime := Fact.out
   let W : OpenSubgroup (galUnramifiedOutside K.1 ℚ̄ S) := gsOpenSubgroup S hL'
-  haveI : CompactSpace (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) := compactSpace_openSubgroup (gsOpenSubgroup S hL')
+  have : CompactSpace (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) := compactSpace_openSubgroup (gsOpenSubgroup S hL')
   let H : OpenSubgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) :=
     ⟨(gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)), (gsOpenSubgroup S hK'').isOpen.preimage continuous_subtypeVal⟩
-  haveI : (H : Subgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))).Normal := inferInstanceAs ((gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))).Normal
-  haveI : IsCyclic ((gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (H : Subgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)))) :=
+  have : (H : Subgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))).Normal := inferInstanceAs ((gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))).Normal
+  have : IsCyclic ((gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (H : Subgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)))) :=
     inferInstanceAs (IsCyclic ((gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))))
   have hχ := isMultiplicativeOn_ratio_coind ℓ K S hS hSℓ ιr L' hL'
   have hPdvd : ∀ m n, m ∣ n → (∃ k, n = ℓ ^ k) → (∃ k, m = ℓ ^ k) := by
@@ -645,7 +645,7 @@ theorem ratio_coind_stage_pow (ℓ : ℕ) [Fact ℓ.Prime]
   have hcM : ∃ k, Nat.card M = ℓ ^ k := by
     refine ⟨_, Nat.eq_prime_pow_of_unique_prime_dvd Nat.card_pos.ne' ?_⟩
     intro d hd hdvd
-    haveI : Fact d.Prime := ⟨hd⟩
+    have : Fact d.Prime := ⟨hd⟩
     obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card' d hdvd
     have : addOrderOf x ∣ ℓ := addOrderOf_dvd_of_nsmul_eq_zero (hℓ x)
     rw [hx] at this
@@ -715,13 +715,13 @@ theorem ratio_coind_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S 
 
   classical
   have hp : ℓ.Prime := Fact.out
-  haveI := hN
+  have := hN
   have : Finite S := hS
   obtain ⟨K'', hKK'', hK'', hUle, hle'', hcyc'', hcop, hnorm, hcycW, a, hcard⟩ :=
     exists_prime_to_part ℓ K S L hL L' hL' hle hcyc
-  haveI := hKK''
-  haveI := hnorm
-  haveI := hcycW
+  have := hKK''
+  have := hnorm
+  have := hcycW
   obtain ⟨ιr'', h3⟩ := exists_ratio_coind_eq_resTo K S ιr K'' hK'' M
   have h1 : gsEulerRatio (placesOver S) (W_killed_a.resTo S K'' hK'' M) ιr'' = 1 :=
     hK K'' hK'' hUle hcyc'' hcop ιr''
@@ -731,7 +731,7 @@ theorem ratio_coind_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S 
   have hcM : ∃ k, Nat.card M = ℓ ^ k := by
     refine ⟨_, Nat.eq_prime_pow_of_unique_prime_dvd Nat.card_pos.ne' ?_⟩
     intro d hd hdvd
-    haveI : Fact d.Prime := ⟨hd⟩
+    have : Fact d.Prime := ⟨hd⟩
     obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card' d hdvd
     have : addOrderOf x ∣ ℓ := addOrderOf_dvd_of_nsmul_eq_zero (hℓ x)
     rw [hx] at this
@@ -908,7 +908,7 @@ theorem ratioOneKilled_of_lemmaX (ℓ : ℕ) [Fact ℓ.Prime] (hX : GlobalEulerC
     RatioOneKilled ℓ (fun _ => True) := by
   intro K S hS hSℓ _ ιr M _ _ hℓ
   obtain ⟨L, hKL, hsplit⟩ := W_split.exists_split ℓ K S hS hSℓ M
-  letI := hKL
+  let := hKL
   obtain ⟨hL, hN, hζ, hc, htriv⟩ := hsplit
   exact ratio_eq_one_of_coprime_cyclic' ℓ K S hS hSℓ ιr L hL hN M hℓ htriv
     (W_endx.ending_lemmaX hX ℓ K S hS hSℓ ιr L hL hN M hℓ htriv hζ hc)
@@ -941,7 +941,7 @@ theorem ratioOne_of_killed_l (ℓ : ℕ) [Fact ℓ.Prime] (P : FiniteSubfield �
       rw [ha, hb]⟩
     exact gsEulerRatio_eq_one_of_subsingleton S M ιr
   | succ r ih =>
-    letI : Module (ULift.{0} ℤ) M := M.hV2
+    let : Module (ULift.{0} ℤ) M := M.hV2
     let T : Module.End (ULift.{0} ℤ) M := (ℓ : Module.End (ULift.{0} ℤ) M)
     have hTx : ∀ x : M, T x = ℓ • x := fun x => natCast_apply_eq_smul ℓ x
     have hT : ∀ g, Commute T (M.ρ g) := fun g => Nat.cast_commute ℓ _
@@ -1190,7 +1190,7 @@ theorem places_transport (K : FiniteSubfield) (τ : Ω ≃+* AlgebraicClosure �
         ∀ v' : HeightOneSpectrum (𝓞 K.1), (n : 𝓞 K.1) ∈ v'.asIdeal → v' ∈ S') ∧
       ∀ x : Ω, x ∈ maxUnramifiedOutside F Ω (S : Set (HeightOneSpectrum (𝓞 F))) ↔
         τ x ∈ maxUnramifiedOutside K.1 (AlgebraicClosure ℚ) S' := by
-  haveI : IsGalois F Ω := IsAlgClosure.isGalois F Ω
+  have : IsGalois F Ω := IsAlgClosure.isGalois F Ω
   classical
   have he : ∀ x : F, τ (algebraMap F Ω x) = algebraMap K.1 (AlgebraicClosure ℚ) (σ x) :=
     fun x => (hτ x).trans rfl
@@ -1395,11 +1395,11 @@ theorem exists_fieldTransport :
       @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
   let K : FiniteSubfield := ⟨σ0.fieldRange,
     LinearEquiv.finiteDimensional (AlgEquiv.ofInjectiveField σ0).toLinearEquiv⟩
-  letI : Algebra F (AlgebraicClosure ℚ) := σ0.toRingHom.toAlgebra
-  haveI : IsScalarTower ℚ F (AlgebraicClosure ℚ) :=
+  let : Algebra F (AlgebraicClosure ℚ) := σ0.toRingHom.toAlgebra
+  have : IsScalarTower ℚ F (AlgebraicClosure ℚ) :=
     IsScalarTower.of_algebraMap_eq fun q => (σ0.commutes q).symm
-  haveI : Algebra.IsAlgebraic F (AlgebraicClosure ℚ) := Algebra.IsAlgebraic.tower_top (K := ℚ) F
-  haveI : IsAlgClosure F (AlgebraicClosure ℚ) := ⟨inferInstance, inferInstance⟩
+  have : Algebra.IsAlgebraic F (AlgebraicClosure ℚ) := Algebra.IsAlgebraic.tower_top (K := ℚ) F
+  have : IsAlgClosure F (AlgebraicClosure ℚ) := ⟨inferInstance, inferInstance⟩
   let τ : Ω ≃ₐ[F] AlgebraicClosure ℚ := IsAlgClosure.equiv F Ω (AlgebraicClosure ℚ)
   refine ⟨K, τ.toRingEquiv, (AlgEquiv.ofInjectiveField σ0).toRingEquiv, fun x => ?_⟩
   show τ (algebraMap F Ω x) = _
@@ -1492,7 +1492,7 @@ theorem galEquiv_transport (K : FiniteSubfield) (τ : Ω ≃+* AlgebraicClosure 
     ∃ θ : galUnramifiedOutside F Ω S ≃ₜ* galUnramifiedOutside K.1 (AlgebraicClosure ℚ) S',
       ∀ (g : G F Ω) (g' : G K.1 (AlgebraicClosure ℚ)), (∀ x : Ω, g' (τ x) = τ (g x)) →
         θ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) S g) = PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := AlgebraicClosure ℚ) S' g' := by
-  haveI : IsGalois F Ω := IsAlgClosure.isGalois F Ω
+  have : IsGalois F Ω := IsAlgClosure.isGalois F Ω
   obtain ⟨h1, h2⟩ := continuous_galTransport K τ σ hτ S S' hmem
   refine ⟨{ galTransport K τ σ hτ S S' hmem with continuous_toFun := h1, continuous_invFun := h2 },
     fun g g' hg => ?_⟩
@@ -1592,8 +1592,8 @@ theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
             (Nat.card {a : A // A.ρ (PositivityTheory.Lit1.GEN.W_dictfwd_b.resS (Ω := Ω) (S : Set (HeightOneSpectrum (𝓞 F))) (c' w.1)) a = a} : ℚ) := by
   obtain ⟨K, S', hS', θ, ιr, c', e, hl, hc', hcard, hfix⟩ := transport_data (Ω := Ω) S hS
   refine ⟨c', hc', fun A _ _ r hA => ?_⟩
-  haveI := IsDiscreteRep.res (φ := θ.symm.toMulEquiv.toMonoidHom) θ.symm.continuous A
-  haveI hBf : Finite (Rep.res θ.symm.toMulEquiv.toMonoidHom A) := inferInstanceAs (Finite A)
+  have := IsDiscreteRep.res (φ := θ.symm.toMulEquiv.toMonoidHom) θ.symm.continuous A
+  have hBf : Finite (Rep.res θ.symm.toMulEquiv.toMonoidHom A) := inferInstanceAs (Finite A)
   have h1 := h K S' hS' hl trivial ιr (Rep.res θ.symm.toMulEquiv.toMonoidHom A) ⟨r, hA⟩
   have hχ := eulerChar_res_continuousMulEquiv θ.symm A
   unfold gsEulerRatio at h1
