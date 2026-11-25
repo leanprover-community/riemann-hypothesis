@@ -43,8 +43,8 @@ name: batch queue
 # rewritten. While its pull request is open, the sync job labels it `building`, labels
 # `batch-building` and `frozen` each open pull request whose head commit is in that branch,
 # queued or not, asks each of them once not to push until the batch has landed, and records them
-# in a comment there. The pull requests its description lists as left out are told why and
-# labelled `awaiting-author`. When the batch is merged, what it contained loses its labels; what
+# in a comment there. The pull requests its description lists as left out are told why, unless
+# they are labelled `deferred`; no label changes for that. When the batch is merged, what it contained loses its labels; what
 # was pushed to since is told what landed, and what targets another branch than main is closed.
 # When it is closed without being merged, what it contained loses its labels too, and the ones
 # that were queued go back to `batch queue`. The sync job runs when that pull request is opened,

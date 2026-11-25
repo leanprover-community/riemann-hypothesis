@@ -99,8 +99,8 @@ with a comment saying where its commit went, since GitHub does not mark it merge
 
 The description of a batch assembled by hand lists pull requests under headings ending with a
 colon. Those listed under a heading that says "left out" or "not included" are told so in a
-comment quoting the heading and their entry, and are labelled `awaiting-author`. `batch queue`
-stays on them. The quote puts the pull requests it names in code spans, so that it does not
+comment quoting the heading and their entry. The comment only informs: no label changes, and
+`batch queue` stays on them. One labelled `deferred` is not told. The quote puts the pull requests it names in code spans, so that it does not
 mention each of them. A pull request this batch told before, whatever its entry and heading say
 now, or another batch told it is left out under the same heading, is not told again: that comment
 is brought up to date instead, which notifies nobody.
@@ -175,6 +175,9 @@ LATEST = _labels.LATEST
 PRIORITY, WAITING = _labels.PRIORITY, _labels.WAITING
 # What a pull request in a batch assembled by hand carries (see `batch-labels.py`).
 IN_BATCH = _labels.IN_BATCH
+# A pull request the maintainers want left out of batches for now, labelled by hand (see the
+# `## Batches` section of AGENTS.md). It is never told that a batch leaves it out.
+DEFERRED = "deferred"
 PREFIX = _labels.PREFIX
 # The name `start` gives a batch branch. Any other `batch/...` branch is not this script's.
 OWN_BATCH = re.compile(r"batch/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}(?:-[0-9]+)?")
@@ -1391,8 +1394,10 @@ def left_out_digest(heading, entry):
 def tell_left_out(gh, batch, pulls, held, log):
     """Tell each open pull request a batch's description lists as left out what it says.
 
-    The comment quotes the heading and the pull request's entry, and the pull request is
-    labelled `awaiting-author`. One that this batch told before is not told again, whatever its
+    The comment quotes the heading and the pull request's entry, and only informs: it asks
+    nothing of the author, whose pull request is not handed back, since many headings give a
+    reason the author cannot act on. One labelled `deferred` is not told at all. One that this
+    batch told before is not told again, whatever its
     entry or its heading now says, and neither is one whose latest such comment, from another
     batch, was for the same kind of reason (the same heading, see `left_out_digest`): that
     comment is brought up to date with what the description says now, which notifies nobody, so
@@ -1423,7 +1428,7 @@ def tell_left_out(gh, batch, pulls, held, log):
         moved = []
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
-        if pr is None or key in found or held.get(key) or pr["batch"] or key in moved:
+        if pr is None or key in found or held.get(key) or pr["batch"] or key in moved or DEFERRED in pr["labels"]:
             left.pop(key, None)
             continue
         entry = listed.get(int(key))
@@ -1454,16 +1459,14 @@ def tell_left_out(gh, batch, pulls, held, log):
             # record, is not told that it no longer is either.
             if ours is not None and tell(
                     gh, pr["number"], comments, NO_LONGER_LEFT_OUT.format(number=number),
-                    f"The description of batch #{number} no longer lists this pull request as left out. If you were "
-                    "waiting on that, comment `ready`."):
+                    f"The description of batch #{number} no longer lists this pull request as left out."):
                 log.append(f"told #{key} that the batch #{number} no longer lists it as left out")
             left.pop(key, None)
             continue
         heading, text = (unlinked(part, gh.repo) for part in entry)
         marker = f"<!-- batch-queue-left-out {json.dumps({'batch': number, 'digest': digest}, sort_keys=True)} -->"
         body = (f"{marker}\nBatch #{number} leaves this pull request out. Its description says:\n\n> {heading}\n>\n"
-                f"> {text}\n\nOnce you have dealt with that, comment `ready` to hand this pull request back to the "
-                "maintainers.\n")
+                f"> {text}\n\nThis is for your information: it changes no label of this pull request.\n")
         # This batch's own comment is brought up to date whatever its entry now says, its heading
         # too. So is another batch's for the same kind of reason.
         earlier = ours if ours is not None else latest if previous == digest else None
@@ -1474,8 +1477,7 @@ def tell_left_out(gh, batch, pulls, held, log):
                 log.append(f"brought up to date what #{key} was told about being left out, for the batch #{number}")
         elif announce(gh, batch, pr["number"], marker, body[len(marker) + 1:].rstrip("\n")):
             left[key], since = seen, since + 1
-            relabel(gh, pr, add=WAITING)
-            log.append(f"told #{key} that the batch #{number} leaves it out: now `{WAITING}`")
+            log.append(f"told #{key} that the batch #{number} leaves it out")
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
