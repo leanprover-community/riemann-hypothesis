@@ -1257,9 +1257,9 @@ def tell_members(gh, batch, pulls, main, log):
     batch already has, as when the merge of `main` that the batch was built from is pushed to the
     pull request afterwards. The batch is asked first (see `takes`). If it has the new head, and the
     new head has the commit in the note in it, the new head becomes the member's commit in the
-    note, and no new comment is posted: if it was told it is frozen at the old one, that comment is edited to name the new head, and so is a comment of
-    `pushed` about the old one, which also takes off the `awaiting-author` it put on (see
-    `retell`). If they cannot be edited, the member stays at the old commit until the next run."""
+    note, and no new comment is posted: if it was told it is frozen at the old one, that comment is
+    edited to name the new head, and so is a comment of `pushed` about the old one, which also
+    takes off the `awaiting-author` it put on (see `retell`). If they cannot be edited, the member stays at the old commit until the next run."""
     note, number, since = batch["note"], batch["number"], 0
     found, told, pushed, waiting = note["members"], note["told"], note["pushed"], note["waiting"]
     for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
@@ -1660,8 +1660,8 @@ def describe_by_hand(note, under=""):
             "in step: each open pull request whose head commit is in this branch, and in no batch this one is "
             f"stacked on, is now `{MEMBER}` and `{FROZEN}`, in place of `{QUEUED}` if it had that, and is asked not "
             f"to push until this has landed. Those this description lists as left out are told why, unless they "
-            f"are `{DEFERRED}` or a batch being built contains them: the comment only informs. When this is merged the pull requests in it lose "
-            f"`{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, and the ones that "
+            f"are `{DEFERRED}` or a batch being built contains them: the comment only informs. When this is "
+            f"merged the pull requests in it lose `{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, and the ones that "
             f"were queued go back to `{QUEUED}`, except those that a batch stacked on this one still holds. See "
             "`verification/BATCHES.md`.\n\n"
             f"{stacked}In this batch: {listed}.\n")
