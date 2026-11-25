@@ -73,20 +73,6 @@ theorem twist_ok_local : ∀ v, TwistedAt (DL x L) v → IntegralHeckeForms.TwOK
     Lean.Elab.Tactic.elabTerm (Lean.mkIdent `l.c.ok) none
 
 
-theorem thetaTie_yStructureLocal_nonempty : Nonempty (GlobalTheory.GeoTie.ThetaTie (_root_.GlobalTheory.HeightCounting.Fin3.yStructureLocal L l) (datL x L).geo.fw (DL x L).nth) := by
-  obtain ⟨g⟩ := l.b.geo
-  refine ⟨{ side := ?_, isUnramified₂ := ?_ }⟩
-  · intro i j b
-    let side := g.side (i :) (j :) b
-    refine { pt := ?_, cover := ?_, ev_eq := ?_, fmUr := ?_, hk := ?_, hk_none := ?_ }
-    -- The transported fields have definitionally equal types. The kernel
-    -- checks them in the resulting record without elaborator unification.
-    run_tac
-      for field in [`side.pt, `side.cover, `side.ev_eq, `side.fmUr, `side.hk, `side.hk_none] do
-        Lean.Elab.Tactic.closeMainGoalUsing `thetaTieField fun _ _ =>
-          Lean.Elab.Tactic.elabTerm (Lean.mkIdent field) none
-  · exact (g.isUnramified₂ :)
-
 theorem kept_characterChoiceLocal : Kept l.c.ch (_root_.GlobalTheory.HeightCounting.Fin3.characterChoiceLocal L l) :=
   ⟨sameGaloisL L, twistDataAgreeAcrossCoefficients_localized L, sameFormsL L, HEq.refl (Dof x).ntwbr, HEq.refl l.c.ch.twI, HEq.refl l.c.ch.sd,
     HEq.refl l.c.ch.Q, HEq.refl l.c.ch.k', HEq.refl l.c.ch.psi'⟩

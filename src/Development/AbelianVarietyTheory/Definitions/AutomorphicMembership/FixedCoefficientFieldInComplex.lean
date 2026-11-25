@@ -376,11 +376,6 @@ theorem valueField_le_iff {χ : HChar E} {s : ℝ} {M : IntermediateField ℚ �
     obtain ⟨y, hy⟩ := h v hv
     exact hz ▸ hy ▸ y.2⟩
 
-theorem valuesIn_iff {χ : HChar E} {s : ℝ} {C : Type} [Field C] [NumberField C] (e : C →+* ℂ) :
-    χ.ValuesIn s e ↔ valueField χ s ≤ imField e := by
-  rw [valueField, IntermediateField.adjoin_le_iff]
-  exact ⟨fun h z ⟨v, hv, hz⟩ => hz ▸ h v hv, fun h v hv => h ⟨v, hv, rfl⟩⟩
-
 end Sub
 
 section Curve
@@ -576,9 +571,6 @@ theorem mem_KsC {z : ℂ} : z ∈ B.KsC ↔ ∃ x ∈ B.Ks, B.embLL x = z := Iff
 theorem KsC_le_LL0C : B.KsC ≤ B.fixedCoefficientFieldInComplex := fun _ ⟨x, hx, h⟩ => ⟨x, B.Ks_le hx, h⟩
 
 theorem fixedField_le_coefficientField : B.fixedCoefficientFieldInComplex ≤ B.LLC := fun _ ⟨x, _, h⟩ => ⟨x, h⟩
-
-theorem imField_KstoC : imField B.KstoC = B.KsC :=
-  le_antisymm (fun _ ⟨x, h⟩ => ⟨x.1, x.2, h⟩) fun _ ⟨x, hx, h⟩ => ⟨⟨x, hx⟩, h⟩
 
 theorem imField_le_KsC : imField B.host.φ₀ ≤ B.KsC :=
   (imField_le_iff _).2 fun x => ⟨B.embE x, B.E_le_Ks x, RingHom.congr_fun B.embE_φ₀ x⟩

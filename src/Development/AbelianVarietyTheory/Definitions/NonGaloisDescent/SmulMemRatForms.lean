@@ -93,34 +93,7 @@ theorem cuspOf_mem_sec (j : Fin D.R.m) (x : NX.FmK S ((j : ℕ) + 1)) :
     (cuspOf YS fw j x : T0.R ((j : ℕ) + 1)) ∈ sec (T0.Q.Xo ((j : ℕ) + 1)) T0.Q.c (wtA (κ j)) (κ j).n :=
   cusp_le_sec _ _ _ _ _ (cuspOf YS fw j x).2
 
-theorem evW_eq_phiC (j : Fin D.R.m) (hV : T0.V ((j : ℕ) + 1) (res T0 (sg0 D A3.A)) = Wc D j)
-    (hev : fw.Evaluates) (x : NX.FmK S ((j : ℕ) + 1)) :
-    GlobalTheory.SeriesTie.evW YS v₀ j (Subtype.val x) = phiC T0 hV (wtA (κ j)) (cuspOf YS fw j x : T0.R ((j : ℕ) + 1)) := by
-  have h := hev j (sg0 D A3.A) (base_embedding_good T0 Rl.toRealDat fw.alg_eq fw.laws.pins.2.2.1) hV (cuspOf YS fw j x)
-  refine Eq.trans ?_ h
-  change _ = (Rl.HW j _).e ((Rl.FW j).j _ (fw.e j (cuspOf YS fw j x) : Fin (Rl.nW j) → D.what₂.LL)) (v₀ j _)
-  rw [e_cuspOf]
-  rfl
-
-theorem realRd_eq_phiC {ρ : GlobalTheory.SeriesTie.Setup D.ntw} (hρ : ρ.Good) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) (ν : ℂ)
-    (hV : T0.V ((j : ℕ) + 1) (res T0 (sg0 D A3.A)) = Wc D j) (hev : fw.Evaluates) (a : NX.KB S i b)
-    (x : NX.FmK S ((j : ℕ) + 1)) :
-    GlobalTheory.SeriesTie.realRd YS v₀ hρ i j b ν
-                 ((YS.eF i _ b (Nat.le_add_left _ _) j.2).symm (a ⊗ₜ[S.Ks] x : NX.KB S i b ⊗[S.Ks] _)) =
-      (ν⁻¹ * ρ.e i b a) • phiC T0 hV (wtA (κ j)) (cuspOf YS fw j x : T0.R ((j : ℕ) + 1)) := by
-  rw [GlobalTheory.SeriesTie.realRd_tmul, evW_eq_phiC YS fw j hV hev]
-
 def charAt (P : PlE D.host) : ℕ := ringChar (𝓞 D.host.E ⧸ P.asIdeal)
-
-theorem charAt_mem (P : PlE D.host) : (charAt P : 𝓞 D.host.E) ∈ P.asIdeal := by
-  rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
-  exact ringChar.Nat.cast_ringChar
-
-theorem charAt_prime (P : PlE D.host) : (charAt P).Prime := by
-  have := P.isPrime
-  have : Finite (𝓞 D.host.E ⧸ P.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ P.ne_bot
-  exact (CharP.char_is_prime_or_zero (𝓞 D.host.E ⧸ P.asIdeal) _).resolve_right
-    (CharP.char_ne_zero_of_finite (𝓞 D.host.E ⧸ P.asIdeal) _)
 
 section Side
 
@@ -153,20 +126,6 @@ variable {iC b}
 
 theorem valAt_tmul (j : Fin D.R.m) (z : FrC YS iC b ((j : ℕ) + 1)) (a : NX.KB S i b) (x : NX.FmK S ((j : ℕ) + 1)) :
     valAt YS fw j z (a ⊗ₜ[S.Ks] x : NX.KB S i b ⊗[S.Ks] _) = iC a * valC z (cuspOf YS fw j x : T0.R ((j : ℕ) + 1)) := rfl
-
-theorem valAt_smul (j : Fin D.R.m) (z : FrC YS iC b ((j : ℕ) + 1)) (a : FractionRing (D.ntw.O i))
-    (x : NX.Fm S i ((j : ℕ) + 1) b) : valAt YS fw j z (a • x) = iC a * valAt YS fw j z x := by
-  have key : ∀ (a : NX.KB S i b) (x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)),
-      valAt YS fw j z (a • x) = iC a * valAt YS fw j z x := fun a x => by
-    induction x using TensorProduct.induction_on with
-    | zero => rw [smul_zero]; exact (map_zero _).trans ((congrArg _ (map_zero _)).trans (mul_zero _)).symm
-    | add x y hx hy =>
-      rw [smul_add]
-      exact (map_add _ _ _).trans (by rw [hx, hy, ← mul_add]; exact congrArg _ (map_add _ _ _).symm)
-    | tmul a' f =>
-      rw [TensorProduct.smul_tmul', valAt_tmul, valAt_tmul, ← mul_assoc]
-      exact congrArg (· * _) (map_mul iC a a')
-  exact key a x
 
 def wtChar (κj : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) {j : ℕ} {φ : T0.Q.c.F →+* ℂ_[D.ntw.l i]} (t : Ix (T0.Q.Dw j) → (PAt φ)ˣ) :
     ℂ_[D.ntw.l i] := toCp φ (wchar (ex (T0.Q.Dw j) κj n) t)
@@ -211,9 +170,6 @@ def HeckeIs (k : ℕ) (P : PlE D.host) (u : ℂ_[D.ntw.l i]) : Prop :=
     (∀ C, IsHkQuot P.asIdeal (charAt P) k z.1 C (quot C)) → ∀ f : D.nexp.Fm i ((j : ℕ) + 1) b,
       valAt YS fw j z.1 (YS.eF i _ b (Nat.le_add_left _ _) j.2 (D.nexp.hkF i _ b k P f)) =
         u * ∑ᶠ C, valAt YS fw j (quot C) (YS.eF i _ b (Nat.le_add_left _ _) j.2 f)
-
-def HeckeGeo : Prop :=
-  ∀ k P, HkIdx i k P → ∃ s : T0.Q.c.F, ‖embC YS iC b s‖ = 1 ∧ HeckeIs YS fw iC b j k P (embC YS iC b s)
 
 def HeckeStable : Prop := ∀ k P, HkIdx i k P → ∀ (z : Pts YS iC b ((j : ℕ) + 1)) (C : HkKer P.asIdeal (charAt P) k z.1),
   ∃ z' : Pts YS iC b ((j : ℕ) + 1), IsHkQuot P.asIdeal (charAt P) k z.1 C z'.1

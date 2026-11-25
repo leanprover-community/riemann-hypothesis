@@ -110,13 +110,6 @@ def placeAt [NumberField F] : HeightOneSpectrum (𝓞 F) where
       exact norm_p_lt_one
     exact (Fact.out : p.Prime).ne_zero (by exact_mod_cast (Ideal.mem_bot.1 h1))
 
-theorem mem_placeAt [NumberField F] (a : 𝓞 F) : a ∈ (placeAt φ).asIdeal ↔ ‖φ (a : F)‖ < 1 := Iff.rfl
-
-theorem natCast_mem_placeAt [NumberField F] : ((p : ℕ) : 𝓞 F) ∈ (placeAt φ).asIdeal := by
-  have e : (((p : ℕ) : 𝓞 F) : F) = (p : F) := by simp
-  rw [mem_placeAt, e, map_natCast]
-  exact norm_p_lt_one
-
 def kurC : Subfield ℂ_[p] := (φ.fieldRange ⊔ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p).topologicalClosure
 
 def PAt (_φ : F →+* ℂ_[p]) : Type := ℂ_[p]
@@ -126,8 +119,6 @@ instance : IsAlgClosed (PAt φ) := inferInstanceAs (IsAlgClosed ℂ_[p])
 instance : Algebra F (PAt φ) := φ.toAlgebra
 
 def toCp : PAt φ →+* ℂ_[p] := RingHom.id ℂ_[p]
-
-theorem toCp_algebraMap (a : F) : toCp φ (algebraMap F (PAt φ) a) = φ a := rfl
 
 structure IsReading (T : CDVR) (io : F →+* T.Fr) (k : T.Fr →+* ℂ_[p]) : Prop where
   comp : ∀ a, k (io a) = φ a

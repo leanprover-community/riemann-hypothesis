@@ -177,13 +177,12 @@ private theorem listPin_thetaTwist {K : Ctx} {B : Base} {f : Fr B.toPre}
 
 open GlobalTheory.Mem.R3.Tr in
 theorem points_step_alt_alt : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → SerN → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, ∀ cDep : ℝ, _root_.GlobalTheory.HeightCounting.Up.ModuliPointsExistList' hL cDep := by
-  intro hPr hSer hL cDep
-  refine StepW.trans (_root_.GlobalTheory.HeightCounting.Up.geoLaws_at_levelB1_states hPr hSer hL) (StepW.of_all ?_)
-  intro K B f T w _ _ hq P x l
-  have hlaw := hq P x l
-  let th := GlobalTheory.GeoTie.geoNTh hlaw
+  intro _ _ hL cDep
+  refine StepW.of_all ?_
+  intro K B f T w _ _ _ P x l
+  let th := GlobalTheory.GeoTie.geoNTh (YS := l.b.YS) (fw := x.m.z.geo.fw) (T := (Dof x).nth)
   obtain ⟨x', hl', ho, hLc⟩ :=
-    _root_.GlobalTheory.HeightCounting.Up.exists_levelB2_twisted_state_of_thetaTie hL x l th (GlobalTheory.GeoTie.geoTie hlaw)
+    _root_.GlobalTheory.HeightCounting.Up.exists_levelB2_twisted_state_of_thetaTie hL x l th
   refine ⟨x', hl', fun hLs => ?_⟩
   exact listPin_of_stage_eq (a := x'.o.Z) (b := (oTw x (thTw (Dof x) th)).Z)
     (congrArg (fun o : P.q.Over => o.Z) ho) hLc

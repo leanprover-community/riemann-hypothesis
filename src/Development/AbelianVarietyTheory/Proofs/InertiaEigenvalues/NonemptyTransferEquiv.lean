@@ -220,22 +220,4 @@ namespace GlobalTheory.HeckeCount
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G GlobalTheory.IndefiniteRowSideFullHecke.HeckeIsogenyKernels GlobalTheory.HeckeCompare
 
-theorem card_hkKer_const : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H)
-    (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (P : Ideal (𝓞 E)) (q i : ℕ),
-    GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.IsHeckePrime l P q → ∃ n : ℕ, ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] [Algebra c.F Ω]
-      (z : FrPt Xo c Ω), Nonempty (Fin n ≃ hkKer (Xo := Xo) P q i Ω z) := by
-  intro E _ _ _ H Dw l Xo c P q i hP
-  refine ⟨Nat.card (LatCount Dw q (conjIdeal H P) (Ideal.absNorm P ^ i)), fun Ω _ _ _ z => ?_⟩
-  have hs : IsSplitPrimeOff l q P := (splitPrime_iff l q P).2 (GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.isHeckePrime_iff.1 hP)
-  have : CharZero Ω := charZero_of_injective_ringHom (Spec.preimage (z.x ≫ Xo.s)).hom.injective
-  obtain ⟨o, ⟨m⟩⟩ := exists_fibre_obj Xo z.x z.x rfl
-  obtain ⟨eT⟩ := nonempty_transfer_equiv Xo.univ m P q i
-  obtain ⟨eL⟩ := nonempty_datum_equiv GlobalTheory.firstFiveLaws.1 o hs i
-  let e : hkKer (Xo := Xo) P q i Ω z ≃ LatCount Dw q (conjIdeal H P) (Ideal.absNorm P ^ i) :=
-    eT.symm.trans ((heckeKerEquivDatum GlobalTheory.firstFiveLaws.1 o hs i).trans eL)
-  have : Finite (hkKer (Xo := Xo) P q i Ω z) :=
-    GlobalTheory.HeckePointLaw.finite_heckeKer hs.1.pos hs.2.2.1 i z.x
-  have : Finite (LatCount Dw q (conjIdeal H P) (Ideal.absNorm P ^ i)) := Finite.of_equiv _ e
-  exact ⟨(Finite.equivFin _).symm.trans e.symm⟩
-
 end GlobalTheory.HeckeCount

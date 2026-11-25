@@ -57,7 +57,6 @@ structure SeriesData (a : _root_.GlobalTheory.HeightCounting.HeightCountingBaseD
   tau : TauTrue Bs.exp
 structure ModuliPointsData (a : _root_.GlobalTheory.HeightCounting.HeightCountingBaseData hL D cf (repOf Y)) (n : InRat Y cG) (PV : ∀ i : Fin D.R.m, principalLevelFrame.RowPsi (Vc D i) D.R.nV)
     (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) : Type 1 extends toSeriesState : _root_.GlobalTheory.HeightCounting.SeriesData g a n PV Pq where
-  geo : Nonempty (GlobalTheory.GeoTie.ThetaTie YS g.fw D.nth)
 variable {g}
 structure HeightCountingCharacterData {a : _root_.GlobalTheory.HeightCounting.HeightCountingBaseData hL D cf (repOf Y)} {n : InRat Y cG} {xi : D.what₂.Tup → HChar D.host.E}
     {Q : D.what₂.places.Pl → Finset (PlE D.host)} (m : InMt Y cf xi Q)
@@ -81,7 +80,6 @@ structure RealExpansionExtraData {nch : NChoice D} {tp : TupTied D cf nch} {a : 
   eig : ∃ Sb e, (∀ i, Sb ⊆ D.ntw.S0 i) ∧ HEq a.nt.eig e ∧ EigAd Y Sb e
   ser : SerAt r.nexp g.v₀ a.all.exp ad.PV cf a.Pq
   tau : TauTrue a.all.exp
-  geo : Nonempty (GlobalTheory.GeoTie.ThetaTie r.nexp g.fw D.nth)
   ok : ∀ w, TwistedAt D w → IntegralHeckeForms.TwOK (nch.twI w) (nch.k' w) (nch.Q w) ((nch.psi' w).comp (D.ntw.art (nch.twI w) (nch.Q w)))
   th : EMtTheta Y r.nexp nch
   xd : XdAll xd

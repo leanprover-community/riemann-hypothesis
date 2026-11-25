@@ -819,8 +819,7 @@ theorem exists_nonempty_nMore_upL (hL : _root_.UpperTheory.Zero.LLC.RecTExists) 
   have e9 : Pq' = row_cast% a.Pq := eq_of_heq (row_cast% s2)
   subst e8 e9
   obtain ⟨kKs, hk, nexp, hecke, grp, rowLoc, S_eq, hL_eq, rep_eq⟩ := r
-  obtain ⟨ad, fi, hrow, cHk, eig, ser, tau, geo, ok, th, xda, large, labc, zeta, pht⟩ := e
-  obtain ⟨geo⟩ := geo
+  obtain ⟨ad, fi, hrow, cHk, eig, ser, tau, ok, th, xda, large, labc, zeta, pht⟩ := e
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, IL', _, _, _, eFT', _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨eW', _⟩, _⟩ := Y'
   have e10 : eW' = row_cast% t.r.Y.mj.eW := eq_of_heq (row_cast% hs.eW)
   subst e10
@@ -912,14 +911,6 @@ theorem exists_nonempty_nMore_upL (hL : _root_.UpperTheory.Zero.LLC.RecTExists) 
     (row_cast% ser'
     )
     ?_
-    ⟨@_root_.GlobalTheory.GeoTie.ThetaTie.mk (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_)
-    (side := fun x1 x2 x3 =>
-      let s := @_root_.GlobalTheory.GeoTie.ThetaTie.side (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) geo (row_cast% x1) (row_cast% x2) (row_cast% x3)
-      @_root_.GlobalTheory.GeoTie.SideTie.mk (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_) (_)
-        (pt := row_cast% s.pt) (cover := row_cast% s.cover) (ev_eq := row_cast% s.ev_eq)
-        (fmUr := row_cast% s.fmUr) (hk := row_cast% s.hk) (hk_none := row_cast% s.hk_none))
-    (isUnramified₂ := row_cast% geo.isUnramified₂)
-    ⟩
     (row_cast% ok) (row_cast% th) (row_cast% xda) (row_cast% ((mvOf w Z S' N h).large large)) (row_cast% inner'.1) (row_cast% inner'.2.1) (row_cast% inner'.2.2)⟩⟩
   row_exact ((mvOf w Z S' N h).tauTrue_alt (a := a.all) tau)
 end GlobalTheory.LayerMove

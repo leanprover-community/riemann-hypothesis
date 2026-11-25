@@ -1005,7 +1005,6 @@ theorem nonempty_nMore_of_xdAll {xd : ThData (Dof x)} (hxd : XdAll xd) : Nonempt
            eig := ⟨_root_.GlobalTheory.HeightCounting.Fin3.smallPlaceSet L l, _root_.GlobalTheory.HeightCounting.Fin3.localEigenvalueDegree L l, (by with_unfolding_all exact (l.b.Sb_le :)), (by with_unfolding_all exact ((HEq.refl l.rat.In.eig) :)), _root_.GlobalTheory.HeightCounting.Fin3.eigAd_smallPlaceSet_of_yRel L l Y hY⟩
            ser := (by with_unfolding_all exact (ser' :))
            tau := (by with_unfolding_all exact ((al.exp.tau l.b.tau) :))
-           geo := _root_.GlobalTheory.HeightCounting.Fin3.thetaTie_yStructureLocal_nonempty L l
            ok := _root_.GlobalTheory.HeightCounting.Fin3.twist_ok_local L l
            th := _root_.GlobalTheory.HeightCounting.Fin3.emtTheta_L_alt L l Y hY
            xd := xdD_all L hxd

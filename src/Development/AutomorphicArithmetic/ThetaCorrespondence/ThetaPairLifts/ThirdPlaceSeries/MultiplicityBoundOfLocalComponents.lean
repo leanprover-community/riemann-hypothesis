@@ -1569,16 +1569,14 @@ namespace GlobalTheory.HeightCounting.Up
 open GlobalTheory.Mem.R3.Tr in
 theorem points_preserved_under_level_transfer_alt : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → SerN → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, AllSt fun _ _ _ _ _ P x => ∀ D0 : D7, _root_.GlobalTheory.HeightCounting.Up.SecondIntermediateLevel hL x →
     Carried D0 (Dof x) → ∃ x' : St P, Nonempty (_root_.GlobalTheory.HeightCounting.Up.ThirdIntermediateLevel hL x') ∧ Carried D0 (Dof x') ∧ ∀ cDep : ℝ, ListSt cDep x → ListSt cDep x' := by
-  intro hPr hSer hL
-  refine StepW.trans (_root_.GlobalTheory.HeightCounting.Up.geoLaws_at_levelB1_states hPr hSer hL) ?_
+  intro _ _ hL
   refine StepW.of_all ?_
-  intro K B f T w _ _ hq P x D0 l hC
-  have hlaw := hq P x l
-  obtain ⟨x', hl', ho, hLc⟩ := _root_.GlobalTheory.HeightCounting.Up.exists_levelB2_twisted_state_of_thetaTie hL x l (GlobalTheory.GeoTie.geoNTh hlaw) (GlobalTheory.GeoTie.geoTie hlaw)
+  intro K B f T w _ _ _ P x D0 l hC
+  obtain ⟨x', hl', ho, hLc⟩ := _root_.GlobalTheory.HeightCounting.Up.exists_levelB2_twisted_state_of_thetaTie hL x l (GlobalTheory.GeoTie.geoNTh (YS := l.b.YS) (fw := x.m.z.geo.fw) (T := (Dof x).nth))
   obtain ⟨o', fits', G_eq', etaF', bk', m', copy', coh', s', r', pin'⟩ := x'
   dsimp only at ho
   subst ho
-  refine ⟨⟨oTw x (thTw (Dof x) (GlobalTheory.GeoTie.geoNTh hlaw)), fits', G_eq', etaF', bk', m', copy', coh', s', r', pin'⟩, hl',
+  refine ⟨⟨oTw x (thTw (Dof x) (GlobalTheory.GeoTie.geoNTh (YS := l.b.YS) (fw := x.m.z.geo.fw) (T := (Dof x).nth))), fits', G_eq', etaF', bk', m', copy', coh', s', r', pin'⟩, hl',
     carried_thTw D0 (Dof x) _ hC, fun cDep hLs => ?_⟩
   have hgen (D : D7) (th : NTh D.R D.host D.what₂ D.LL0 D.nd D.ntw D.nexp)
       (Z : GlobalTheory.LamTie.LamDat D) : GlobalTheory.LamTie.IsLamTieFull D.ntw Z →
@@ -1593,7 +1591,7 @@ theorem points_preserved_under_level_transfer_alt : _root_.GlobalTheory.HeightCo
       ⟨h1.values, h1.roots⟩, ?_⟩
     exact hN (BigTop.Fun.lamOf G) h2
   have eL : m'.z.R.toRealDat.toLevCh =
-      (levCh (a := x.o.Z) (oTw x (thTw (Dof x) (GlobalTheory.GeoTie.geoNTh hlaw))).Z x.m.z.R.toRealDat.toLevCh) := eq_of_heq hLc
+      (levCh (a := x.o.Z) (oTw x (thTw (Dof x) (GlobalTheory.GeoTie.geoNTh (YS := l.b.YS) (fw := x.m.z.geo.fw) (T := (Dof x).nth)))).Z x.m.z.R.toRealDat.toLevCh) := eq_of_heq hLc
   show ListPin _ m'.z.R.toRealDat.toLevCh cDep K.s.b
   rw [eL]
   exact htrans x _ (fun Z h => hgen _ _ Z h) _ _ _ hLs

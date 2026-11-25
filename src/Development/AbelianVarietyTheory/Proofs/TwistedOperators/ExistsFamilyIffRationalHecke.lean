@@ -79,14 +79,6 @@ theorem isSplitPl_iff (P : PlE D.host) :
     rw [this] at hyP
     exact hyP
 
-theorem level_notMem {P : PlE D.host} (h : ∃ i', P ∉ D.ntw.S0 i') :
-    ((D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal := by
-  obtain ⟨i', hi⟩ := h
-  intro hm
-  rw [Nat.cast_mul] at hm
-  rcases P.isPrime.mem_or_mem hm with h | h
-  · exact hi (D.ntw.placesOver_subset_exceptional i' 0 h)
-  · exact hi (D.ntw.placesOver_subset_exceptional i' 1 h)
 
 theorem exists_family (t : ∀ i : Fin D.R.m, ℕ → PlE D.host → Module.End D.what₂.LL (Fin (R.nW i) → D.what₂.LL)) :
     ∃ hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (WL j),

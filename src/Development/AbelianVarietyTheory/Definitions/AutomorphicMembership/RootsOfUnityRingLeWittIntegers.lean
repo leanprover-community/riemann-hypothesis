@@ -77,40 +77,12 @@ theorem frBor_one {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recipr
   ((GlobalTheory.Frames.frBor_calculus E H Dw l Xo c _ w w w).1 1).2 ⟨fun _ => 1, fun _ _ _ h => Matrix.one_apply_ne h.ne,
     fun _ _ => Matrix.one_apply_eq _, (GlobalTheory.Frames.frChg_refl_and_comp E H Dw l Xo c _ w w w).1⟩
 
-def IsUnitDiag {p : ℕ} [Fact p.Prime] {F ι : Type} [Field F] {φ : F →+* ℂ_[p]} (t : ι → (PAt φ)ˣ) : Prop :=
-  ∀ a, ‖toCp φ (t a)‖ = 1
-
-theorem isUnitDiag_one {p : ℕ} [Fact p.Prime] {F ι : Type} [Field F] {φ : F →+* ℂ_[p]} : IsUnitDiag (1 : ι → (PAt φ)ˣ) :=
-  fun _ => by simp
-
 abbrev toK {i : D.ntw.Tw} (j : Fin D.R.m) (b : Bool) :
     D.nexp.Fm i ((j : ℕ) + 1) b ≃ₗ[FractionRing (D.ntw.O i)] NX.Fm S i ((j : ℕ) + 1) b :=
   YS.eF i _ b (Nat.le_add_left _ _) j.2
 
 variable (T : NTh D.R D.host D.what₂ D.LL0 D.nd D.ntw D.nexp)
 
-structure SideTie (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) where
-
-  pt : T.Pt i ((j : ℕ) + 1) → Option (Pts YS (T.iC i) b ((j : ℕ) + 1))
-
-  cover : ∀ z : Pts YS (T.iC i) b ((j : ℕ) + 1), ∃ y z' t, pt y = some z' ∧ IsUnitDiag t ∧ FrBor t z'.1 z.1
-
-  ev_eq : ∀ f y, T.ev i _ b f y = (pt y).elim 0 fun z => valAt YS fw j z.1 (toK YS j b f)
-
-  fmUr : ∀ f, f ∈ T.FmUr i _ b ↔ toK YS j b f ∈ ratForms S _ b (kurAt YS (T.iC i) b)
-
-  hk : ∀ k P, HkIdx i k P → ∃ s : T0.Q.c.F, ‖embC YS (T.iC i) b s‖ = 1 ∧ ∀ y z, pt y = some z →
-    ∃ e : T.hkIdx i ((j : ℕ) + 1) k P ≃ HkKer P.asIdeal (charAt P) k z.1, ∀ c, ∃ z' t w,
-      pt (T.hkMove i _ k P c y) = some z' ∧ IsHkQuot P.asIdeal (charAt P) k z.1 (e c) w ∧ IsUnitDiag t ∧ FrBor t z'.1 w ∧
-        T.hkU i _ b k P c y = embC YS (T.iC i) b s * wtChar (wtA (κ j)) (κ j).n t
-
-  hk_none : ∀ k P, HkIdx i k P → ∀ y, pt y = none → ∀ c, ‖T.hkU i _ b k P c y‖ = 1
-
-structure ThetaTie where
-
-  side : ∀ i j b, SideTie YS fw T i j b
-
-  isUnramified₂ : ∀ i, T.MaximalUnramifiedExtension i = kurAt YS (T.iC i) true ⊓ kurAt YS (T.iC i) false
 
 section Record
 
@@ -134,15 +106,6 @@ def atSide {P : Bool → Type} (b : Bool) (y : Σ b', P b') : Option (P b) := if
 theorem atSide_same {P : Bool → Type} (b : Bool) (z : P b) : atSide b (⟨b, z⟩ : Σ b', P b') = some z := dite_eq_left rfl
 
 theorem atSide_other {P : Bool → Type} {b : Bool} {y : Σ b', P b'} (h : y.1 ≠ b) : atSide b y = none := dite_eq_right h
-
-theorem eq_of_atSide {P : Bool → Type} {b : Bool} {y : Σ b', P b'} {z : P b} (h : atSide b y = some z) : y = ⟨b, z⟩ := by
-  obtain ⟨b', z'⟩ := y
-  by_cases e : b' = b
-  · subst e
-    rw [atSide_same, Option.some.injEq] at h
-    rw [h]
-  · rw [atSide_other e] at h
-    cases h
 
 variable {i : D.ntw.Tw} (iC : FractionRing (D.ntw.O i) →+* ℂ_[D.ntw.l i])
 
@@ -174,35 +137,7 @@ open Classical in
 def hkUnit (j : Fin D.R.m) (b : Bool) (k : ℕ) (P : PlE D.host) : ℂ_[D.ntw.l i] :=
   if h : ∃ s : T0.Q.c.F, ‖embC YS iC b s‖ = 1 ∧ HeckeIs YS fw iC b j k P (embC YS iC b s) then embC YS iC b h.choose else 1
 
-structure GeoLaws : Prop where
-  hecke : ∀ b j, HeckeGeo YS fw iC b j
-  stable : ∀ b j, HeckeStable YS iC b j
-  count : ∀ j, HeckeCount YS iC j
-  off : ∀ j, j ∉ Finset.Icc 1 D.R.m → ∀ b, Subsingleton (D.nexp.Fm i j b)
-
 variable {YS fw iC}
-
-theorem GeoLaws.move (h : GeoLaws YS fw iC) {j : Fin D.R.m} {k P} (hk : HkIdx i k P) (b : Bool) (z : Pts YS iC b ((j : ℕ) + 1)) :
-    ∃ (e : Fin (kerNum YS iC ((j : ℕ) + 1) k P) ≃ HkKer P.asIdeal (charAt P) k z.1)
-      (q : HkKer P.asIdeal (charAt P) k z.1 → Pts YS iC b ((j : ℕ) + 1)),
-      (∀ C, IsHkQuot P.asIdeal (charAt P) k z.1 C (q C).1) ∧ ∀ c, allMove YS iC _ k P c ⟨b, z⟩ = ⟨b, q (e c)⟩ := by
-  have h1 : Nonempty (Fin (kerNum YS iC ((j : ℕ) + 1) k P) ≃ HkKer P.asIdeal (charAt P) k z.1) := by
-    rw [kerNum, dite_eq_left (h.count j k P hk)]
-    exact (h.count j k P hk).choose_spec b z
-  have h2 := h.stable b j k P hk z
-  exact ⟨h1.some, fun C => (h2 C).choose, fun C => (h2 C).choose_spec, fun c => dite_eq_left ⟨h1, h2⟩⟩
-
-theorem GeoLaws.hkUnit_spec (h : GeoLaws YS fw iC) {j : Fin D.R.m} {k P} (hk : HkIdx i k P) (b : Bool) :
-    ‖hkUnit YS fw iC j b k P‖ = 1 ∧ HeckeIs YS fw iC b j k P (hkUnit YS fw iC j b k P) := by
-  rw [hkUnit, dite_eq_left (h.hecke b j k P hk)]
-  exact (h.hecke b j k P hk).choose_spec
-
-theorem exists_hkUnit_eq (j : Fin D.R.m) (b : Bool) (k : ℕ) (P : PlE D.host) :
-    ∃ s : T0.Q.c.F, hkUnit YS fw iC j b k P = embC YS iC b s := by
-  unfold hkUnit
-  split_ifs
-  · exact ⟨_, rfl⟩
-  · exact ⟨1, (map_one _).symm⟩
 
 theorem allEv_same {j : Fin D.R.m} {b : Bool} (f : D.nexp.Fm i ((j : ℕ) + 1) b) (z : Pts YS iC b ((j : ℕ) + 1)) :
     allEv YS fw iC j b f ⟨b, z⟩ = valAt YS fw j z.1 (toK YS j b f) :=
@@ -217,36 +152,18 @@ variable (YS fw) in
 def evN (j : ℕ) : ∀ b, D.nexp.Fm i j b →+ (AllPts YS iC j → ℂ_[D.ntw.l i]) :=
   extLift (α := fun j => ∀ b, D.nexp.Fm i j b →+ (AllPts YS iC j → ℂ_[D.ntw.l i])) (allEv YS fw iC) (fun _ _ => 0) j
 
-theorem evN_succ (j : Fin D.R.m) : evN YS fw (iC := iC) ((j : ℕ) + 1) = allEv YS fw iC j := extLift_succ _ _ j
-
-
 variable (YS iC) in
 def fmUrN (j : ℕ) : ∀ b, AddSubgroup (D.nexp.Fm i j b) :=
   extLift (α := fun j => ∀ b, AddSubgroup (D.nexp.Fm i j b))
     (fun j b => (ratForms S _ b (kurAt YS iC b)).comap (toK YS j b).toAddEquiv.toAddMonoidHom) (fun _ _ => ⊤) j
 
-theorem mem_fmUrN (j : Fin D.R.m) (b : Bool) (f) :
-    f ∈ fmUrN YS iC ((j : ℕ) + 1) b ↔ toK YS j b f ∈ ratForms S _ b (kurAt YS iC b) := by
-  rw [fmUrN, extLift_succ]; rfl
-
-
 variable (YS fw iC) in
 def hkUnitN (j : ℕ) (b : Bool) (k : ℕ) (P : PlE D.host) : ℂ_[D.ntw.l i] :=
   extLift (α := fun _ => ℂ_[D.ntw.l i]) (fun j => hkUnit YS fw iC j b k P) (fun _ => 1) j
 
-theorem hkUnitN_succ (j : Fin D.R.m) (b : Bool) (k : ℕ) (P : PlE D.host) :
-    hkUnitN YS fw iC ((j : ℕ) + 1) b k P = hkUnit YS fw iC j b k P := extLift_succ (α := fun _ => ℂ_[D.ntw.l i]) _ _ j
-
-namespace GeoLaws
-
-variable (h : GeoLaws YS fw iC)
-include h
-
-end GeoLaws
-
 variable {T}
 
-def geoNTh (h : ∀ i, GeoLaws YS fw (T.iC i)) : NTh D.R D.host D.what₂ D.LL0 D.nd D.ntw D.nexp :=
+def geoNTh : NTh D.R D.host D.what₂ D.LL0 D.nd D.ntw D.nexp :=
   { T with
     Pt := fun i j => AllPts YS (T.iC i) j
     ev := fun _ j => evN YS fw j
@@ -260,35 +177,6 @@ def geoNTh (h : ∀ i, GeoLaws YS fw (T.iC i)) : NTh D.R D.host D.what₂ D.LL0 
     hkU := fun i j b k P _ _ => hkUnitN YS fw (T.iC i) j b k P
     MaximalUnramifiedExtension := fun i => kurAt YS (T.iC i) true ⊓ kurAt YS (T.iC i) false
     FmUr := fun i => fmUrN YS (T.iC i) }
-
-theorem GeoLaws.hk_tie (h : GeoLaws YS fw iC) (j : Fin D.R.m) (b : Bool) {k P} (hk : HkIdx i k P) :
-    ∃ s : T0.Q.c.F, ‖embC YS iC b s‖ = 1 ∧ ∀ (y : AllPts YS iC ((j : ℕ) + 1)) (z : Pts YS iC b ((j : ℕ) + 1)), atSide b y = some z →
-      ∃ e : Fin (kerNum YS iC ((j : ℕ) + 1) k P) ≃ HkKer P.asIdeal (charAt P) k z.1, ∀ c,
-        ∃ (z' : Pts YS iC b ((j : ℕ) + 1)) (t : Ix (T0.Q.Dw ((j : ℕ) + 1)) → (PAt (embC YS iC b))ˣ) (w : FrC YS iC b ((j : ℕ) + 1)),
-          atSide b (allMove YS iC _ k P c y) = some z' ∧ IsHkQuot P.asIdeal (charAt P) k z.1 (e c) w ∧ IsUnitDiag t ∧
-            FrBor t z'.1 w ∧ hkUnitN YS fw iC ((j : ℕ) + 1) b k P = embC YS iC b s * wtChar (wtA (κ j)) (κ j).n t := by
-  obtain ⟨s, hs⟩ := exists_hkUnit_eq (YS := YS) (fw := fw) (iC := iC) j b k P
-  refine ⟨s, hs ▸ (h.hkUnit_spec (j := j) hk b).1, fun y z hy => ?_⟩
-  obtain rfl := eq_of_atSide hy
-  obtain ⟨e, q, hq, hm⟩ := h.move hk b z
-  refine ⟨e, fun c => ⟨q (e c), 1, (q (e c)).1, by rw [hm, atSide_same], hq _, isUnitDiag_one, frBor_one _, ?_⟩⟩
-  rw [hkUnitN_succ, hs]
-  simp only [wtChar, wchar, Pi.one_apply, Units.val_one, one_pow, Finset.prod_const_one, map_one, mul_one]
-
-theorem evN_eq (j : Fin D.R.m) (b : Bool) (f : D.nexp.Fm i ((j : ℕ) + 1) b) (y : AllPts YS iC ((j : ℕ) + 1)) :
-    evN YS fw ((j : ℕ) + 1) b f y = (atSide b y).elim 0 fun z => valAt YS fw j z.1 (toK YS j b f) := by
-  rw [evN_succ]
-  rfl
-
-def geoTie (h : ∀ i, GeoLaws YS fw (T.iC i)) : ThetaTie YS fw (geoNTh h) where
-  side i j b :=
-    { pt := atSide (P := fun b => Pts YS (T.iC i) b ((j : ℕ) + 1)) b
-      cover := fun z => ⟨⟨b, z⟩, z, 1, atSide_same (P := fun b => Pts YS (T.iC i) b ((j : ℕ) + 1)) b z, isUnitDiag_one, frBor_one _⟩
-      ev_eq := evN_eq j b
-      fmUr := mem_fmUrN j b
-      hk := fun _ _ hk => (h i).hk_tie j b hk
-      hk_none := fun k P hk _ _ _ => (congrArg norm (hkUnitN_succ j b k P)).trans ((h i).hkUnit_spec hk b).1 }
-  isUnramified₂ _ := rfl
 
 end Record
 
@@ -394,7 +282,6 @@ structure SeriesState (a : StA hL D cf (repOf Y)) (n : InRat Y cG) (PV : ∀ i :
 
 structure ModuliPointsState (a : StA hL D cf (repOf Y)) (n : InRat Y cG) (PV : ∀ i : Fin D.R.m, principalLevelFrame.RowPsi (Vc D i) D.R.nV)
     (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) : Type 1 extends SeriesState g a n PV Pq where
-  geo : Nonempty (GlobalTheory.GeoTie.ThetaTie YS g.fw D.nth)
 
 variable {g}
 
