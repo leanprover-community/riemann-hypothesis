@@ -463,11 +463,19 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch):
                          " (exit 3: some modules would need compiling)")
 
 
-def baseline_record(identity, fetcher=fetch):
+def baseline_record(identity, fetcher=fetch, *, project=None):
     """Pinned compiled baseline for this toolchain, never a historic cross-version fallback."""
     if identity["toolchain"] != settings.TOOLCHAIN or settings.BASELINE is None:
         return None, {}
     revision = settings.REVISION
+    if project is not None:
+        # A known baseline with another src tree cannot satisfy this checkout.
+        # A shallow clone may lack that commit and can still use the published manifest.
+        tree = subprocess.run(["git", "-C", str(project), "rev-parse", "--verify", "--quiet", revision + ":src"],
+                              env={**os.environ, "GIT_NO_LAZY_FETCH": "1", "GIT_ALLOW_PROTOCOL": ""},
+                              capture_output=True, text=True)
+        if tree.returncode == 0 and tree.stdout.strip() != identity["source_tree"]:
+            return None, {}
     map_key = f"revisions/{REPOSITORY}/tc/{settings.TOOLCHAIN_DIR}/{revision}.jsonl"
     manifest_key = f"bootstrap/{revision}/modules.jsonl.gz"
     contents, manifest = fetcher(map_key, MAX_JSON), fetcher(manifest_key, MAX_JSON)
@@ -501,7 +509,7 @@ def main():
     record = find_record(root, identity, args.ancestor_limit)
     cached = {}
     if record is None:
-        record, cached = baseline_record(identity)
+        record, cached = baseline_record(identity, project=root)
     if record is None:
         print("No equivalent successful cache found for the current build inputs.", flush=True)
         return 3

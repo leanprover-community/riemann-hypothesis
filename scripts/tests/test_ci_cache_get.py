@@ -9,7 +9,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 HERE = Path(__file__).resolve().parent
 
@@ -141,12 +141,24 @@ revisionEndpoint = "https://example.invalid/revisions"
         baseline_objects = {baseline_map: mapping, baseline_manifest: manifest}
         with patch.multiple(client.settings, BASELINE={"revision": head}, REVISION=head,
                             MAP_SHA=client.digest(mapping), MANIFEST_SHA=client.digest(manifest)):
-            selected_base, cached = client.baseline_record(identity, lambda key, maximum: baseline_objects.get(key))
+            other = dict(identity, source_tree="0" * 40)
+            no_fetch = Mock(side_effect=AssertionError("unrelated baseline fetch"))
+            assert client.baseline_record(other, no_fetch, project=root) == (None, {})
+            no_fetch.assert_not_called()
+            selected_base, cached = client.baseline_record(identity, lambda key, maximum: baseline_objects.get(key),
+                                                          project=root)
             assert selected_base["map_key"] == baseline_map and cached == baseline_objects
             client.validated_blobs(selected_base, identity, lambda key, maximum: cached.get(key))
             # Toolchain mismatch never fetches the historic baseline.
             mismatched = {**identity, "toolchain": "leanprover/lean4:v0.0.0"}
             assert client.baseline_record(mismatched, lambda *_: (_ for _ in ()).throw(AssertionError("cross-toolchain fetch"))) == (None, {})
+            # A treeless clone must use the SHA-checked metadata without lazily fetching a Git tree.
+            partial = root / "treeless"
+            run(root, "git", "config", "uploadpack.allowFilter", "true")
+            run(root, "git", "clone", "-q", "--no-checkout", "--filter=tree:0", root.as_uri(), str(partial))
+            fallback = Mock(side_effect=lambda key, maximum: baseline_objects.get(key))
+            assert client.baseline_record(other, fallback, project=partial) == (None, {})
+            assert fallback.call_count == 2
             baseline_objects[baseline_manifest] = manifest + b"corrupt"
             rejects(lambda: client.baseline_record(identity, lambda key, maximum: baseline_objects.get(key)))
 
