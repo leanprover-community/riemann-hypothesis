@@ -1738,13 +1738,15 @@ def landed(gh, batch, key, pr, main, main_sha, log):
         return
     if pr["sha"] != commit:
         again = look(gh, pr, {})[0] == pr["sha"]
+        # The labels first, so that a run cut short between the two leaves them rather than the
+        # comment without them: the next run finds the comment and does not post it again.
+        relabel(gh, pr, add=(WAITING, QUEUED, FROZEN) if again else WAITING)
         tell(gh, pr["number"], None, LANDED_BEFORE_PUSH.format(number=number, sha=commit),
              f"Batch #{number} has landed on `{main}` with commit `{commit[:10]}` of this pull request. What was "
              f"pushed here after it, up to `{pr['sha'][:10]}`, has not landed, so this pull request stays open. "
              + (f"That commit was queued, so it is back in the batch queue." if again else
                 f"Merge `{main}` into this branch and comment `ready`, or close this pull request if nothing is left "
                 "to change."))
-        relabel(gh, pr, add=(WAITING, QUEUED, FROZEN) if again else WAITING)
         log.append(f"#{key} was pushed to after the batch #{number} took it: told what landed, now `{WAITING}`"
                    + (f" and `{QUEUED}` again" if again else ""))
     else:
