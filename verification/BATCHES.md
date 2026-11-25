@@ -108,6 +108,9 @@ of batches, what the branch shares with a batch it is stacked on belongs to that
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
 labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
+If the batch's branch has the new head already, as when the merge of `main` the batch was built
+from is pushed to the pull request afterwards, nothing is said, and the batch's record takes the
+new head.
 If its new head is merged into the branch, the batch holds that one instead, and
 `awaiting-author` comes off again, as it does when the pull request is pushed back to the commit
 the batch took. Only a label the workflow put on for the push comes off: one a person put on

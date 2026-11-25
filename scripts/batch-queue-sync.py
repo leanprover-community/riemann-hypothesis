@@ -87,7 +87,9 @@ line or branch name to match.
 
 A pull request that is pushed to after the batch took its commit is still in the batch, at that
 commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`, as
-soon as the push comes in (see `pushed`) or else by the next sync. If the batch then takes its
+soon as the push comes in (see `pushed`) or else by the next sync, unless the batch's branch has
+the new head already, as when the merge of main the batch was built from is pushed to the pull
+request afterwards: then nothing is said, and the record takes the new head. If the batch then takes its
 new head, or it is pushed back to the commit the batch took, `awaiting-author` comes off again,
 but only if this workflow put it on along with that comment: a label a person put on stays. When
 the batch is merged, GitHub marks merged each pull request whose head commit is in it and whose
@@ -1176,10 +1178,16 @@ def keep_in_step(gh, batch, pulls, held, main, log):
 def tell_members(gh, batch, pulls, main, log):
     """Tell each pull request in a batch assembled by hand, once, that it is frozen, and once that
     it was pushed to after the batch took it, if it was. The note remembers it. Returns whether
-    everything was told, False when the run is cut short."""
+    everything was told, False when the run is cut short.
+
+    A member whose head is not the commit the note holds may have been pushed to with a commit the
+    batch already has, as when the merge of `main` that the batch was built from is pushed to the
+    pull request afterwards. The batch is asked first (see `has_head`). If it has the new head, that
+    becomes the member's commit in the note, it counts as told it is frozen if it was told so at
+    the old one, and nothing is said."""
     note, number, since = batch["note"], batch["number"], 0
-    told, pushed, waiting = note["told"], note["pushed"], note["waiting"]
-    for key, commit in sorted(note["members"].items(), key=lambda entry: int(entry[0])):
+    found, told, pushed, waiting = note["members"], note["told"], note["pushed"], note["waiting"]
+    for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
         pr = pulls.get(int(key))
         if pr is None or by_hand(pr) or (told.get(key) == commit and (pr["sha"] == commit or pushed.get(key) == commit)):
             continue
@@ -1187,6 +1195,21 @@ def tell_members(gh, batch, pulls, main, log):
             log.append(f"only {gh.remaining} requests left this hour: stopped telling what is in the batch #{number}, "
                        "and the next run carries on")
             return False
+        if pr["sha"] != commit and pushed.get(key) != commit:
+            inside = has_head(gh, batch, pr["sha"])
+            if inside is None:
+                log.append(f"GitHub did not say whether the batch #{number} has the new head of #{key}: "
+                           "the next run asks again")
+                continue
+            if inside:
+                found[key] = pr["sha"]
+                if told.get(key) == commit:
+                    told[key] = pr["sha"]
+                commit, since = pr["sha"], since + 1
+                log.append(f"#{key} was pushed to with `{commit[:10]}`, which the batch #{number} has already: "
+                           "recorded at that commit, and nothing said")
+                if told.get(key) == commit:
+                    continue
         if told.get(key) != commit and announce(gh, batch, pr["number"], FROZEN_NOTE.format(number=number, sha=commit),
                                                  frozen_text(number, commit, pr, main)):
             told[key], since = commit, since + 1
@@ -1202,6 +1225,14 @@ def tell_members(gh, batch, pulls, main, log):
             save(gh, batch)
             since = 0
     return True
+
+
+def has_head(gh, batch, sha):
+    """Whether the branch of `batch` has the commit `sha`: from its commits, when this run listed
+    them, or else with one request. None when GitHub did not say."""
+    if batch.get("commits") is not None:
+        return sha in batch["commits"]
+    return contains(gh, batch["sha"], sha)
 
 
 def announce(gh, batch, number, marker, text):
@@ -1846,8 +1877,10 @@ def pushed(gh, number):
     It reads the open pull requests and the records of the batches assembled by hand that are being
     built. The pull request's own batch is the lowest of them, in the order `stack` puts them in,
     whose record holds it: a record written before batches were stacked may hold it too, and
-    otherwise one record does. If that batch holds it at another commit than its head, it is told
-    so and labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If it was pushed
+    otherwise one record does. If that batch holds it at another commit than its head, and its
+    branch does not have the new head as well (one request, see `has_head`), it is told so and
+    labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If the branch has the
+    new head, nothing is said, and the next sync records it at that commit. If it was pushed
     back to that commit instead, `awaiting-author` comes off, if the workflow put it on when it told
     it so, as `unwait` does. Its labels are then
     brought in step, as `reconcile` does for every open pull request. The batches' notes are left
@@ -1870,7 +1903,15 @@ def pushed(gh, number):
         if commit is None:
             continue
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
-            tell_pushed(gh, batch["number"], commit, pr, main, log)
+            inside = has_head(gh, batch, pr["sha"])
+            if inside:
+                log.append(f"#{key} was pushed to with `{pr['sha'][:10]}`, which the batch #{batch['number']} has "
+                           "already: nothing to say")
+            elif inside is None:
+                log.append(f"GitHub did not say whether the batch #{batch['number']} has the new head of #{key}: "
+                           "the next sync asks again")
+            else:
+                tell_pushed(gh, batch["number"], commit, pr, main, log)
         elif commit == pr["sha"] and WAITING in pr["labels"] and (
                 key in (batch["note"].get("waiting") or ()) or key not in kept(batch["note"], "pushed")
                 and handed_back(gh, batch["number"], key, [commit])):

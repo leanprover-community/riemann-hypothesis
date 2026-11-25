@@ -1729,6 +1729,48 @@ class Pushed(unittest.TestCase):
         self.assertIn("told #12 that it was pushed to after the batch #1018 took it: now `awaiting-author`", log)
         self.assertEqual(len(self.pushes(gh, 12)), 1)
 
+    def held_already(self, gh):
+        """#12 is pushed to with a commit that the batch's branch already has, as when the merge of
+        `main` that the batch was built from is pushed to the pull request afterwards."""
+        merged = sha("head12-merged")
+        gh.inside[gh.pulls[1018]["sha"]].add(merged)
+        gh.push(12, "head12-merged")
+        return merged
+
+    def test_a_push_of_a_commit_the_batch_has_already_is_not_told(self):
+        gh = self.built()
+        merged = self.held_already(gh)
+        log = batch.pushed(gh, 12)
+        self.assertEqual(log, [f"#12 was pushed to with `{merged[:10]}`, which the batch #1018 has already: nothing "
+                               "to say"])
+        self.assertEqual((gh.writes, self.pushes(gh, 12)), ([], []))
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        # The sync records the new commit, says nothing, and asks no more once it has.
+        log = sync(gh)
+        self.assertIn(f"#12 was pushed to with `{merged[:10]}`, which the batch #1018 has already: recorded at that "
+                      "commit, and nothing said", log)
+        record = note(gh.said(1018)[0])
+        self.assertEqual((record["members"]["12"], record["told"]["12"]), (merged, merged))
+        self.assertEqual([body for body in gh.said(12) if not body.startswith("<!-- batch-queue-frozen 1018")], [])
+        gh.reads = []
+        sync(gh)
+        self.assertFalse([path for path in gh.reads if path.startswith("compare/")])
+        # A later push that the batch does not have is told, at the commit now recorded.
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        [said] = self.pushes(gh, 12)
+        self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1018 {merged} -->"))
+
+    def test_the_sync_alone_does_not_tell_a_push_the_batch_has_already(self):
+        gh = self.built()
+        merged = self.held_already(gh)
+        gh.reads = []
+        sync(gh)
+        self.assertEqual(self.pushes(gh, 12), [])
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        self.assertEqual(note(gh.said(1018)[0])["members"]["12"], merged)
+        self.assertEqual(len([path for path in gh.reads if path.startswith("compare/")]), 1)
+
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
         self.assertEqual(batch.pushed(gh, 1018), ["#1018 holds a batch: the sync looks after it"])
