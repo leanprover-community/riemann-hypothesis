@@ -90,11 +90,6 @@ theorem exists_of_idele (a : GlobalTheory.Mem.Chr.Ideles H.E) : ∃ x : Formalis
     exact (mul_comm _ _).trans hz
   · exact Units.ext (by simp)
 
-theorem normOneFiniteAdeleDetClass_surjective (SQ : Finset (HeightOneSpectrum (𝓞 H.E))) : Function.Surjective (u1Dt H SQ) := fun t => by
-  obtain ⟨a, rfl⟩ := QuotientGroup.mk_surjective t
-  obtain ⟨x, hx⟩ := exists_of_idele H a
-  exact ⟨x, normOneFiniteAdeleDetClass_of_isDetLift H SQ x a hx⟩
-
 end GlobalTheory.Mem.Col2.FullDt
 
 end

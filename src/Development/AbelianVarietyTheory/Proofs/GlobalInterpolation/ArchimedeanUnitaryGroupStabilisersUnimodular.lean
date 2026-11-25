@@ -538,14 +538,4 @@ theorem unimodularOver_of_artinian [LocallyCompactSpace R] [SecondCountableTopol
 
 end Points
 
-theorem unimodularOver_infinite : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → UnimodularOver (Ainf F) σ J := by
-  intro F E _ _ _ _ _ σ hσ M J hJ
-  have : T2Space (Ainf F) := inferInstanceAs (T2Space ((v : NumberField.InfinitePlace F) → v.Completion))
-  have hsc : ∀ v : NumberField.InfinitePlace F, SecondCountableTopology v.Completion := fun v =>
-    (NumberField.InfinitePlace.Completion.isometry_extensionEmbedding v).isEmbedding.secondCountableTopology
-  have : SecondCountableTopology (Ainf F) :=
-    inferInstanceAs (SecondCountableTopology ((v : NumberField.InfinitePlace F) → v.Completion))
-  have : IsArtinianRing (Ainf F) := inferInstanceAs (IsArtinianRing ((v : NumberField.InfinitePlace F) → v.Completion))
-  exact unimodularOver_of_artinian (Ainf F) hσ hJ
-
 end GlobalTheory.ArchUnitaryUnimod

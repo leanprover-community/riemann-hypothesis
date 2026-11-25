@@ -133,12 +133,6 @@ open GlobalTheory.Asc
 
 noncomputable section
 
-namespace GlobalTheory.Asc
-
-theorem conjRead_holds : ConjRead := GlobalTheory.Asc.FamilyModel.conjRead
-
-end GlobalTheory.Asc
-
 end
 end -- clump:auto
 end -- clump:auto

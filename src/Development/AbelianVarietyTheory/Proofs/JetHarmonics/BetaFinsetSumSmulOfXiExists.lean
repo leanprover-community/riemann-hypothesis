@@ -58,19 +58,10 @@ variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
 
 variable [FiniteDimensional ℂ Wp]
 
-
 open Finset MeasureTheory Filter in
 open scoped ComplexConjugate in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] in
-variable [FiniteDimensional ℂ Wp] in
-theorem _root_.GlobalTheory.BetaSum.beta_sesq (hXi : _root_.Formalism.FourierDecayAlt.B.XiExists) (D : _root_.Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) {A : ℝ}
-    (hA : _root_.Formalism.FourierDecayAlt.B.AB k r ≤ A)
-    {F F' G : _root_.Formalism.FourierDecayAlt.B.Mat k r → (Wq →L[ℂ] Wp)} (hF : _root_.Formalism.FourierDecayAlt.B.InCC A 5 F) (hF' : _root_.Formalism.FourierDecayAlt.B.InCC A 5 F')
-    (hG : _root_.Formalism.FourierDecayAlt.B.InCC A 5 G) (c : ℂ) :
-    _root_.Formalism.FourierDecayAlt.B.beta D (F + c • F') G = _root_.Formalism.FourierDecayAlt.B.beta D F G + c * _root_.Formalism.FourierDecayAlt.B.beta D F' G ∧
-      _root_.Formalism.FourierDecayAlt.B.beta D G (F + c • F') = _root_.Formalism.FourierDecayAlt.B.beta D G F + conj c * _root_.Formalism.FourierDecayAlt.B.beta D G F' :=
-  _root_.Formalism.FourierDecayAlt.P.JCx2.sq_beta_sesq D hA hF hF' hG c
 
 end GlobalTheory.BetaSum
 
@@ -135,7 +126,6 @@ private lemma beta_sum_smul_right (D : _root_.Formalism.FourierDecayAlt.B.RealPl
   rw [beta_eq_star_beta_swap, beta_sum_smul_left D hA s c Fi hFi hG, star_sum]
   refine Finset.sum_congr rfl fun i _ ↦ ?_
   rw [star_mul', beta_eq_star_beta_swap D G (Fi i)]
-
 
 open Finset MeasureTheory in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

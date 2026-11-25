@@ -175,8 +175,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -201,8 +199,6 @@ section BaseLevels₂
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
-
-
 
 theorem GlobalTheory.Core.DefKer.stdRd_keep {B : Base} {X : PreX B.toPre} (I : TC B X) (hOk : I.Ok) (l : I.Laws) (Z : TC.Later B (I.cols l))
     {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {Gi : G.Inst (I.rec7 l Z) L} {Gl : G.LatInst (I.rec7 l Z)} {K : G.Consts}
@@ -236,7 +232,6 @@ theorem GlobalTheory.Core.DefKer.stdRd_keep {B : Base} {X : PreX B.toPre} (I : T
   · exact fun u a => ⟨I.kerRd l Z u a, HEq.rfl, fun _ _ => rfl, fun _ _ _ _ _ => rfl⟩
   · exact fun u a => I.kerRd_top l Z hm u a
 
-
 end BaseLevels₂
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Core GlobalTheory.Core.Cls NumberField IsDedekindDomain GlobalTheory.Mem.Db Formalism.L2 Formalism.L2.Ker Formalism.L2.Forms
@@ -252,8 +247,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 
 theorem GlobalTheory.Mem.Top.Bl.WPt.exists_kerTie : ∀ (𝒮 : Slots) (K : Ctx) (q : WPt 𝒮 K), EntC q.x.ker → ∃ t : Formalism.L2.Ker.KerEntTied q.O.ex, KPin q t ∧ GlobalTheory.Svd.StdAt q.w.I q.w.l q.w.l0 q.Z q.O t ∧ GlobalTheory.Pdv.StdRd q.w.I q.w.l q.Z t := by
   intro 𝒮 K q hE
@@ -344,13 +337,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Top.Bl
 
-
 theorem ColW.cf_eq {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) :
     Fr.at (w.st Z) f = TC.cf w.I w.l Z := by
   have h := w.C_eq
   have : Fr.at (w.st Z) w.I.C = TC.cf w.I w.l Z := rfl
   rw [← this, h]
-
 
 end GlobalTheory.Mem.Top.Bl
 end -- clump:auto
@@ -765,14 +756,6 @@ variable (ι : Qb →+* ℂ)
 theorem qb_eq_of_map {L : Fld} {M : IntermediateField ℚ ℂ} (h : L.map ι.toRatAlgHom = M) : qb ι M = L := by
   rw [← h, qb, IntermediateField.comap_map]
 
-theorem map_qb (M : IntermediateField ℚ ℂ) [Algebra.IsAlgebraic ℚ M] : (qb ι M).map ι.toRatAlgHom = M := by
-  refine IntermediateField.map_comap_eq_self fun z hz => ?_
-  exact exists_eq_of_isAlgebraic ι
-    (IntermediateField.isAlgebraic_iff.1 (Algebra.IsAlgebraic.isAlgebraic (R := ℚ) (⟨z, hz⟩ : M)))
-
-theorem discr_qb (M : IntermediateField ℚ ℂ) [NumberField M] [NumberField (qb ι M)] : discr (qb ι M) = discr M :=
-  discr_eq_discr_of_ringEquiv _ (qbEquiv ι M)
-
 theorem qb_imField {E : Type} [Field E] [NumberField E] (j : E →ₐ[ℚ] Qb) (φ : E →+* ℂ) (h : ∀ x, ι (j x) = φ x) :
     qb ι (imField φ) = j.fieldRange := by
   ext x
@@ -781,17 +764,6 @@ theorem qb_imField {E : Type} [Field E] [NumberField E] (j : E →ₐ[ℚ] Qb) (
     exact ⟨y, ι.injective ((h y).trans hy)⟩
   · rintro ⟨y, rfl⟩
     exact ⟨y, (h y).symm⟩
-
-theorem qb_cycField {n : ℕ} (hn : n ≠ 0) : qb ι (cycField n) = muFld n := by
-  refine qb_eq_of_map ι ?_
-  rw [muFld, IntermediateField.adjoin_map]
-  refine le_antisymm (IntermediateField.adjoin_le_iff.2 ?_) (cycField_le_iff.2 ?_)
-  · rintro _ ⟨x, hx, rfl⟩
-    exact mem_cycField hn (by rw [← map_pow, show x ^ n = 1 from hx, map_one])
-  · have h1 : rootOne n ^ n = 1 := (Complex.isPrimitiveRoot_exp n hn).pow_eq_one
-    obtain ⟨x, hx⟩ := exists_eq_of_isAlgebraic ι (z := rootOne n)
-      (IsAlgebraic.of_pow (Nat.pos_of_ne_zero hn) (h1 ▸ isAlgebraic_one))
-    exact IntermediateField.subset_adjoin ℚ _ ⟨x, ι.injective (by rw [map_pow, hx, h1, map_one]), hx⟩
 
 theorem qb_KC (d : ℕ) : qb ι (KC d) = KQ d := by
   refine qb_eq_of_map ι ?_
@@ -877,48 +849,6 @@ theorem ray_qb (hA : GlobalArtinReciprocity) {P : Pre} (δ : FieldDat P) (T : Fr
   refine RayDiscr.natAbs_discr_dvd hA.rayClassFieldSt _ _ _ (squarefree_modulus P) ?_ hR
   exact (((coprime_discr _ (P.g_cond 0)).mul_left (coprime_discr _ (P.g_cond 1))).mul_left
     (coprime_discr _ P.pde_cond.1)).mul_left (coprime_discr _ P.pde_cond.2)
-
-theorem kPsi_qb {P : Pre} (δ : FieldDat P) (T : Frame P.host) :
-    ∃ S : Fin P.R.m → Finset Qb, (∀ j, (S j).card ≤ Nat.log 2 (classNumber P.host.E)) ∧
-      (∀ j, ∀ y ∈ S j, ∃ n : ℕ, 0 < n ∧ n ∣ classNumber P.host.E ∧ y ^ n ∈ T.j.fieldRange) ∧
-      qb T.ι (⨆ j ∈ Set.Icc 1 P.R.m, δ.KPsi j) =
-        T.j.fieldRange ⊔ muFld (classNumber P.host.E) ⊔ IntermediateField.adjoin ℚ (⋃ j, (S j : Set Qb)) := by
-  choose S hc hy hK using fun j : ℕ =>
-    exists_kPsiField_generators P.R P.host δ.basis (P.R.sigW j).1 (P.R.sigW j).2
-  have hE := qb_imField T.ι T.j P.host.φ₀ T.phi0
-  have hal : ∀ j, ∀ y ∈ S j, IsAlgebraic ℚ y := fun j y h => by
-    obtain ⟨n, hn, -, x, hx⟩ := hy j y h
-    exact IsAlgebraic.of_pow hn (hx ▸ (Algebra.IsAlgebraic.isAlgebraic x).algHom P.host.φ₀.toRatAlgHom)
-  refine ⟨fun j => (S (j + 1)).preimage T.ι T.ι.injective.injOn, fun j => le_trans ?_ (hc (j + 1)), fun j y h => ?_, ?_⟩
-  · exact Finset.card_le_card_of_injOn T.ι (fun y h => Finset.mem_preimage.1 h) T.ι.injective.injOn
-  · obtain ⟨n, hn, hd, h⟩ := hy _ _ (Finset.mem_preimage.1 h)
-    exact ⟨n, hn, hd, hE ▸ mem_qb.2 (by rwa [map_pow])⟩
-  · have hm := P.R.two_le_m
-    have : Algebra.IsAlgebraic ℚ (imField P.host.φ₀) :=
-      (AlgEquiv.ofInjectiveField P.host.φ₀.toRatAlgHom).isAlgebraic
-    have h0 := classNumber_ne_zero P.host.E
-    have : Algebra.IsAlgebraic ℚ (cycField (classNumber P.host.E)) :=
-      IntermediateField.isAlgebraic_adjoin_simple (IsIntegral.of_pow (Nat.pos_of_ne_zero h0) (by
-        rw [(Complex.isPrimitiveRoot_exp _ h0).pow_eq_one]; exact isIntegral_one))
-    refine qb_eq_of_map _ ?_
-    rw [← hE, ← qb_cycField T.ι h0, IntermediateField.map_sup, IntermediateField.map_sup, map_qb, map_qb,
-      IntermediateField.adjoin_map, Set.image_iUnion]
-    have hi : ∀ j, T.ι.toRatAlgHom '' ((S j).preimage T.ι T.ι.injective.injOn : Set Qb) = S j := fun j => by
-      rw [Finset.coe_preimage]
-      exact Set.image_preimage_eq_of_subset fun z hz => exists_eq_of_isAlgebraic _ (hal j z hz)
-    simp only [hi, FieldDat.KPsi, hK]
-    refine le_antisymm (sup_le ?_ (IntermediateField.adjoin_le_iff.2 (Set.iUnion_subset fun j => ?_)))
-      (iSup₂_le fun j hj => sup_le_sup_left (IntermediateField.adjoin.mono _ _ _ ?_) _)
-    · exact le_iSup₂_of_le 1 ⟨le_rfl, by omega⟩ le_sup_left
-    · exact IntermediateField.adjoin_le_iff.1 (le_iSup₂_of_le (j + 1) ⟨by omega, j.2⟩ le_sup_right)
-    · refine Set.subset_iUnion_of_subset ⟨j - 1, by have := hj.1; have := hj.2; omega⟩ ?_
-      rw [Nat.sub_add_cancel hj.1]
-
-theorem exists_twelfth_root (M : Fld) [NumberField M] {y : Qb} (hy : y ∈ M) :
-    ∃ h : y ^ 12 ∈ M, (∃ I : FractionalIdeal (𝓞 M)⁰ M,
-      FractionalIdeal.spanSingleton (𝓞 M)⁰ (⟨y ^ 12, h⟩ : M) = I ^ 12) ∧ M = M ⊔ IntermediateField.adjoin ℚ {y} :=
-  ⟨pow_mem hy 12, ⟨FractionalIdeal.spanSingleton _ ⟨y, hy⟩, by rw [FractionalIdeal.spanSingleton_pow]; rfl⟩,
-    (sup_eq_left.2 (IntermediateField.adjoin_simple_le_iff.2 hy)).symm⟩
 
 theorem exists_pieces : GlobalArtinReciprocity → WeberRayFieldSt → ∀ (X : Stages) (f : Fr X.B.toPre)
     (δ : FieldDat X.B.toPre) (T : HostTied X.toD7), ∃ P : KsPieces X.toD7 T,
@@ -1123,8 +1053,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
@@ -1146,8 +1074,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TiedDataSAssemble", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CoreAltAltBis\npublic import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColsTwTied\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DtTiedTrue\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTiedDataReciprocity\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExtraTiedCol\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NatCardCodeWordStagesFiniteGroupEq\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NTiedAllAtWit\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
@@ -1223,8 +1149,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TiedDataSAssembleStatement =====
@@ -1287,8 +1211,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
@@ -1310,8 +1232,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TiedSKAtWitnesses", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CoreAltAltBis\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowerMapTie\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TiedSKAtWitnesses\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TiedSKOfStd\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.JointsSTrue\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LowerMapTieTw\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
@@ -1377,8 +1297,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -1405,8 +1323,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsRecPinEStatement =====
@@ -1415,8 +1331,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsLinkedOfEq", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.EventuallyAllScaleContextsAndOfBoth\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TwistedBundle\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevExOfOver\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelTiedOfLevEx\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsBdRecOfEq\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsRecPinEStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StrictHenselianAcyclic\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
@@ -1467,8 +1381,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsLinkedOfEqStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.EventuallyAllScaleContextsAndOfBoth\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TwistedBundle\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsLinkedOfEq\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StrictHenselianAcyclic\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain

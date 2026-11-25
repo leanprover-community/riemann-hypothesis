@@ -275,10 +275,6 @@ theorem isWeight_root {E : Fin n → Fin n → Module.End ℂ W} (hE : GlRel E) 
     (hu : IsWeight E μ u) (a b : Fin n) : IsWeight E (μ + root a b) (E a b u) := by
   apply _root_.GlobalTheory.CompanionTheory.DSHighestOfKType.isWeight_apply <;> assumption
 
-private theorem sum_mul_root_eq_sub' {n : ℕ} (i j : Fin n) :
-    ∑ k : Fin n, ((k : ℕ) : ℝ) * Formalism.REAL.root i j k = ((i : ℕ) : ℝ) - ((j : ℕ) : ℝ) := by
-  simp [Formalism.REAL.root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
-
 theorem not_cdom (Λ : Fin n → ℝ) {a b : Fin n} (hab : a < b) : ¬ CDom ε (Λ + root a b) Λ := by
   apply _root_.ReciprocityTheory.ChartRestriction.DS.not_cdom_add_root <;> assumption
 

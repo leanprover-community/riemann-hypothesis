@@ -93,43 +93,6 @@ def actV : GG E K n →* Module.End ℂ (ValC (Gr emb σ n) lam) where
     show trFr emb σ (a.1.1 * b.1.1) (a.2.1 * b.2.1) y.1 x = trFr emb σ a.1.1 a.2.1 (trFr emb σ b.1.1 b.2.1 y.1) x
     simp only [trFr_apply, map_mul, _root_.mul_inv_rev, frMul_mul, Units.val_mul, mul_assoc]
 
-theorem ipVal_trFr (hF : FOk emb σ) (h : GG E K n) {f f' : Fr emb σ n → ℂ} (hf : f ∈ ValC (Gr emb σ n) lam)
-    (hf' : f' ∈ ValC (Gr emb σ n) lam) :
-    ipVal emb σ lam (trFr emb σ h.1.1 h.2.1 f) (trFr emb σ h.1.1 h.2.1 f') = ipVal emb σ lam f f' := by
-  obtain ⟨⟨γ, hγ⟩, ⟨c, hc⟩⟩ := h
-  obtain ⟨P, -, rfl⟩ := hf
-  obtain ⟨Q, -, rfl⟩ := hf'
-  have hG : ∀ τ, Gr emb σ n τ = 1 := fun τ => by simp [gramC]
-  have e0 : (1 : ι → Matrix (Fin n) (Fin n) ℂ) = fun τ => ((fr0 emb σ n).1 τ)⁻¹ := funext fun τ => inv_one.symm
-  have h0 : ∀ τ, ((fr0 emb σ n).1 τ)ᴴ * Gr emb σ n τ * (fr0 emb σ n).1 τ = 1 := fun τ => by
-    rw [hG]; show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * 1 * 1 = 1; simp
-  let o := frMul emb σ γ (fr0 emb σ n)
-  have ho : ∀ τ, o.1 τ = (γ : Matrix (Fin n) (Fin n) E).map (embAt σ emb τ) := fun τ => Matrix.mul_one _
-  have h1 : ∀ τ, (o.1 τ)ᴴ * Gr emb σ n τ * o.1 τ = 1 := fun τ => by
-    rw [hG, ho, Matrix.mul_one, ← Matrix.conjTranspose_map _ (fun x => hF.conjE _ x), ← Matrix.map_mul,
-      show (γ : Matrix (Fin n) (Fin n) E)ᴴ * (γ : Matrix (Fin n) (Fin n) E) = 1 from hγ]
-    simp
-  have hi : ∀ τ, (o.1 τ)⁻¹ = ((γ⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E).map (embAt σ emb τ) := fun τ => by
-    rw [ho]
-    apply Matrix.inv_eq_left_inv
-    rw [← Matrix.map_mul, Units.inv_mul]
-    simp
-  have ht : ∀ P, trFr emb σ γ c (fnOf (Gr emb σ n) (shiftOf lam) 1 P) =
-      σ c • fnOf (Gr emb σ n) (shiftOf lam) (fun τ => (o.1 τ)⁻¹) P := fun P => by
-    funext y
-    rw [trFr_apply, Pi.smul_apply, smul_eq_mul]
-    congr 1
-    simp only [hi, fnOf, LinearMap.coe_mk, AddHom.coe_mk, frMul, Pi.one_apply, Matrix.one_mul]
-  have hn : starRingEnd ℂ (σ c) * σ c = 1 := by
-    obtain ⟨m, hm, e⟩ := isOfFinOrder_iff_pow_eq_one.1 hc
-    have e1 : (σ c) ^ m = 1 := by rw [← map_pow, ← Units.val_pow_eq_pow_val, e]; simp
-    have e2 : ‖σ c‖ = 1 := Complex.norm_eq_one_of_pow_eq_one e1 hm.ne'
-    rw [Complex.conj_mul', e2]; simp
-  show ipVal emb σ lam (trFr emb σ γ c _) (trFr emb σ γ c _) = _
-  rw [ht, ht, map_smul, map_smulₛₗ, LinearMap.smul_apply, smul_smul, mul_comm, hn, one_smul]
-  unfold ipVal
-  rw [ipFr_fnOf _ _ _ _ h0 h1, e0, ipFr_fnOf _ _ _ _ h0 h0]
-
 def ipV : ValC (Gr emb σ n) lam →ₗ⋆[ℂ] ValC (Gr emb σ n) lam →ₗ[ℂ] ℂ :=
   ((ipVal emb σ lam).comp (ValC (Gr emb σ n) lam).subtype).compl₂ (ValC (Gr emb σ n) lam).subtype
 
@@ -362,34 +325,6 @@ theorem fv_redL (hl : A.Laws T) (P : ST) (c : S.Cl) {x : Fin n → E} (hx : x �
   · exact h1.choose_spec
   · exact absurd rfl h0
 
-theorem mem_ker (b : S.β) (d : S.D b) (P : ST) (x : Fin n → E) :
-    x ∈ (prs h sp b d P).ker ↔ x ∈ localization₂ P.1.asIdeal (A.dnN b d P) := by
-  rw [h.t.dnN_eq]
-  exact mem_pair_ker _ ((tAt sp).ne P) _ x
-
-include h sp in
-theorem redL_te (hl : A.Laws T) (P : ST) (c : S.Cl) (e : Fin n → E) (he : A.f c.1 (S.rep c) P e = 1) :
-    redL (A.dnN c.1 (S.rep c) P) P.1 ((T : E) • e) = A.te T P c := by
-  have h0 := hl.te_ne P c
-  unfold TDat.te at h0 ⊢
-  split_ifs at h0 ⊢ with h1
-  swap
-  · exact absurd rfl h0
-  obtain ⟨e', he', hf, ht⟩ := h1.choose_spec
-  generalize h1.choose = t at ht
-  let p := prs h sp c.1 (S.rep c) P
-  have m1 : e ∈ p.1.L := mem_of_f_ne p (by show A.f c.1 (S.rep c) P e ≠ 0; rw [he]; exact one_ne_zero)
-  have m2 : e' ∈ p.1.L := le_locP P.1 _ he'
-  have m3 : e + (-1 : GlobalTheory.LvT.Inh.valO P.1) • e' ∈ p.ker := ⟨p.1.L.add_mem m1 (p.1.L.smul_mem _ m2), by
-    rw [p.2.add _ m1 _ (p.1.L.smul_mem _ m2), p.2.smul _ _ m2, map_neg, map_one]
-    show A.f c.1 (S.rep c) P e + -1 * A.f c.1 (S.rep c) P e' = 0
-    rw [he, hf]; ring⟩
-  rw [mem_ker] at m3
-  have e1 : (T : E) • e = toO P.1 T • (e + (-1 : GlobalTheory.LvT.Inh.valO P.1) • e') + (t : Fin n → E) := by
-    rw [ht, toO_smul, neg_one_smul, ← smul_add, neg_add_cancel_right, ← algebraMap_smul E (T : 𝓞 E), map_natCast]
-  rw [e1, redL_add ((locO P.1 _).smul_mem _ m3) (le_locP P.1 _ t.2), redL_smul _ m3, resP_toO,
-    Ideal.Quotient.eq_zero_iff_mem.2 (sp.T_mem P P.2), zero_smul, zero_add, redL_coe]
-
 theorem up_spec (hl : A.Laws T) (P : ST) (c : S.Cl) (x : Fin n → E) (p₁ : LocF.PP (locF ((tAt sp).unif P)) n)
     (hf : A.f c.1 (S.rep c) P x = 1) (hp : (prs h sp c.1 (S.rep c) P).IsUp x p₁) :
     (sp.off c.1).r (S.rep c) (A.upPt P c (redL _ P.1 x)) ∧ prs h sp c.1 (A.upPt P c (redL _ P.1 x)) P = p₁ ∧
@@ -411,44 +346,6 @@ theorem up_spec (hl : A.Laws T) (P : ST) (c : S.Cl) (x : Fin n → E) (p₁ : Lo
   · refine Eq.trans ?_ (pair_up_ne (tAt sp) (h.t.ok _ _) hQ z.2 hu)
     unfold prs
     congr 1
-
-theorem dn_spec (P : ST) (c : S.Cl) (γ : Module.Dual (Res P.1) (A.lk P c)) (p₀ : LocF.PP (locF ((tAt sp).unif P)) n)
-    (hp : (p₀.1.L : Set (Fin n → E)) = (prs h sp c.1 (S.rep c) P).ker)
-    (hf : ∀ x ∈ p₀.1.L, p₀.1.f x = γ (redL _ P.1 x)) :
-    (sp.off c.1).r (S.rep c) (A.dnPt P c γ) ∧ prs h sp c.1 (A.dnPt P c γ) P = p₀ ∧
-      ∀ Q, Q ≠ P → prs h sp c.1 (A.dnPt P c γ) Q = prs h sp c.1 (S.rep c) Q := by
-  unfold TDat.dnPt
-  have hL : ∀ x, x ∈ localization₂ P.1.asIdeal (A.dnN c.1 (S.rep c) P) ↔ x ∈ p₀.1.L := fun x => by
-    rw [← mem_ker h sp, ← hp]; rfl
-  have e0 : TDat.extF (A.dnN c.1 (S.rep c) P) P.1 γ = p₀.1.f := by
-    funext x
-    by_cases hx : x ∈ localization₂ P.1.asIdeal (A.dnN c.1 (S.rep c) P)
-    · rw [extF_of_mem γ hx, hf x ((hL x).1 hx)]
-    · rw [extF_of_notMem γ hx, p₀.2.off x fun h' => hx ((hL x).2 h')]
-  rw [e0]
-  have hok := dn_ok (tAt sp) (h.t.ok c.1 (S.rep c)) P p₀ hp
-  have hd := h.t.dn_deco c.1 (S.rep c) P _ hok
-  refine ⟨sp.off_dn _ _ P _ hok, ?_, fun Q hQ => ?_⟩
-  · refine Eq.trans ?_ (pair_dn (tAt sp) (h.t.ok _ _) P p₀ hp hok)
-    unfold prs
-    congr 1
-  · refine Eq.trans ?_ (pair_dn_ne (tAt sp) (h.t.ok _ _) hQ hok)
-    unfold prs
-    congr 1
-
-theorem dil_spec (P : ST) (c : S.Cl) (a : (Res P.1)ˣ) (p' : LocF.PP (locF ((tAt sp).unif P)) n)
-    (hp : LocF.PP.IsDil (a : Res P.1) (prs h sp c.1 (S.rep c) P) p') :
-    (sp.off c.1).r (S.rep c) (A.diaPt P a c) ∧ prs h sp c.1 (A.diaPt P a c) P = p' ∧
-      ∀ Q, Q ≠ P → prs h sp c.1 (A.diaPt P a c) Q = prs h sp c.1 (S.rep c) Q := by
-  unfold TDat.diaPt
-  have hN := h.a.dia_N c.1 P a (S.rep c)
-  refine ⟨sp.off_dia _ _ P a, pp_ext (fun x => ?_) fun x _ => ?_, fun Q hQ => ?_⟩
-  · rw [hp.1]
-    show x ∈ localization₂ P.1.asIdeal (A.N _ _) ↔ x ∈ localization₂ P.1.asIdeal (A.N _ _)
-    rw [hN]
-  · rw [hp.2]
-    exact h.a.dia_f c.1 P a _ x
-  · exact pair_congr _ _ _ (congrArg (localization₂ Q.1.asIdeal) hN) (sp.dia_deco _ _ P Q a hQ)
 
 end Pts
 

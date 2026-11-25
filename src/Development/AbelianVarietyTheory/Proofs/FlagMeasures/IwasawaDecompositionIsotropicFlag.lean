@@ -181,9 +181,6 @@ theorem Hb_sq : Hb k * Hb k = 1 := by
   unfold Hb; rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
   congr 1; funext j; split_ifs <;> simp
 
-theorem sg_sq (j : Fin (k + 1)) : sg k j * sg k j = 1 := by
-  unfold sg; split_ifs <;> simp
-
 theorem Hpk_sq : Hpk k r * Hpk k r = 1 := by
   first
   | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self
@@ -303,7 +300,6 @@ theorem exists_K (c u : Fin r → EuclideanSpace ℂ (Fin (2 * r + k + 1))) (hc 
   · show κᴴ * Hpk k r * κ = Hpk k r
     rw [Matrix.mul_assoc, ← hcomm, ← Matrix.mul_assoc, hunit, Matrix.one_mul]
   · rw [← hκc, ← WithLp.toLp_ofLp 2 (c a), ← hκ]
-
 
 open InnerProductSpace in
 theorem iwasawa : ∀ (k r : ℕ), ∀ g ∈ GG k r, ∃ n ∈ Nset k r, ∃ a : Fin r → ℝ, (∀ b, 0 < a b) ∧ ∃ m ∈ UH (Hb k), ∃ κ ∈ (GG k r ∩ (Matrix.unitaryGroup (Fin (2 * r + k + 1)) ℂ : Set (Mat k r))), g = n * uEmb k r (Matrix.diagonal fun b => (a b : ℂ)) * mEmb k r m * κ := by

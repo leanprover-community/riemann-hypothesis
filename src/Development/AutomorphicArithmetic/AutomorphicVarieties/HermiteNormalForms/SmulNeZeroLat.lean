@@ -63,8 +63,6 @@ def Psd : Set (HS L N) := {h | open ComplexOrder in ∀ w, (mat h w).PosSemidef}
 
 variable {L N}
 
-@[simp] theorem qc_apply (y : NZ L N) (h : HS L N) : qc L N y h = q h y.1 := rfl
-
 theorem poly_qc : ConeExtensionAcyclic.poly (qc L N) = Ry L N := by
   ext h; exact ⟨fun H y hy => H ⟨y, hy⟩, fun H y => H y.1 y.2⟩
 

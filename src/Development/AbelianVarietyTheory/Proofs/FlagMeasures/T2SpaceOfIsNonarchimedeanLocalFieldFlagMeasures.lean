@@ -83,8 +83,6 @@ theorem localField_isCompact_integer : IsCompact (𝒪[F] : Set F) := IsNonarchi
 
 variable {F}
 
-theorem isOpen_mul_integer {c : F} (hc : c ≠ 0) : IsOpen ((fun x => c * x) '' (𝒪[F] : Set F)) := (Homeomorph.mulLeft₀ c hc).isOpenMap _ (localField_isOpen_integer F)
-
 theorem isCompact_mul_integer (c : F) : IsCompact ((fun x => c * x) '' (𝒪[F] : Set F)) := (localField_isCompact_integer F).image (continuous_const.mul continuous_id)
 
 omit [TopologicalSpace F] [IsNonarchimedeanLocalField F] in

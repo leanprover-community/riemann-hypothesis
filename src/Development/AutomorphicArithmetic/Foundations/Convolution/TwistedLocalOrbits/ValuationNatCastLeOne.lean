@@ -122,8 +122,6 @@ end Bound
 
 variable {E : Type} [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] {n : ℕ}
 
-theorem ball_mono {r s : ValueGroupWithZero E} (h : r ≤ s) : ball n r ⊆ ball n s := fun _ hg i j => (hg i j).trans h
-
 def ballSub (n : ℕ) (r : ValueGroupWithZero E) (hr : r < 1) : Subgroup (GL (Fin n) E) where
   carrier := ball n r
   one_mem' := fun i j => by simp

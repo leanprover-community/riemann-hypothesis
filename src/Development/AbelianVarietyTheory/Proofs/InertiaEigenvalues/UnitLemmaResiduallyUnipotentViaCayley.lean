@@ -132,53 +132,6 @@ theorem adjoin_stable {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (a : 
   | add x y _ _ hx hy => intro w hw; rw [add_mul]; exact L.add_mem (hx w hw) (hy w hw)
   | mul x y _ _ hx hy => intro w hw; rw [mul_assoc]; exact hx _ (hy w hw)
 
-theorem mem_adjoin_both {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (g Y : A) (s ε : O) (Q : O[X])
-    (hQm : Q.Monic) (hQ : aeval g Q = 0) (hQs : IsUnit (Q.eval (-s))) (hs : IsUnit s) (hε : IsUnit ε)
-    (h2 : IsUnit (2 : O))
-    (hY : Y * (g + algebraMap O A s) = algebraMap O A ε * (g - algebraMap O A s)) :
-    Y ∈ Algebra.adjoin O ({g} : Set A) ∧ g ∈ Algebra.adjoin O ({Y} : Set A) := by
-  constructor
-  · obtain ⟨w, hw, hgw⟩ := sub_inv_mem g (-s) Q hQ hQs
-    rw [map_neg, sub_neg_eq_add] at hgw
-    have e : Y = algebraMap O A ε * (g - algebraMap O A s) * w := by
-      linear_combination (-Y) * hgw + w * hY
-    rw [e]
-    exact mul_mem (mul_mem (Subalgebra.algebraMap_mem _ _)
-      (sub_mem (Algebra.subset_adjoin rfl) (Subalgebra.algebraMap_mem _ _))) hw
-  · set n := Q.natDegree
-    let R : O[X] := ∑ i ∈ Finset.range (n + 1), C (Q.coeff i) * (C s * (C ε + X)) ^ i * (C ε - X) ^ (n - i)
-    have hgY : g * (algebraMap O A ε - Y) = algebraMap O A s * (algebraMap O A ε + Y) := by
-      linear_combination (-1 : A) * hY
-    have hR : aeval Y R = 0 := by
-      have : aeval Y R = (algebraMap O A ε - Y) ^ n * aeval g Q := by
-        conv_rhs => rw [aeval_eq_sum_range, Finset.mul_sum]
-
-        simp only [R, map_sum, map_mul, map_pow, aeval_C, map_add (f := _), map_sub, aeval_X]
-        refine Finset.sum_congr rfl fun i hi => ?_
-        have hin : i ≤ n := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)
-        rw [← hgY, mul_pow, Algebra.smul_def]
-        have : (algebraMap O A ε - Y) ^ n = (algebraMap O A ε - Y) ^ i * (algebraMap O A ε - Y) ^ (n - i) := by
-          rw [← pow_add, Nat.add_sub_cancel' hin]
-        rw [this]; ring
-      rw [this, hQ, mul_zero]
-    have hRe : R.eval ε = (s * (ε + ε)) ^ n := by
-      simp only [R, eval_finsetSum, eval_mul, eval_C, eval_pow, eval_add, eval_sub, eval_X, sub_self]
-      rw [Finset.sum_eq_single n]
-      · simp [n, hQm.coeff_natDegree]
-      · intro i hi hin
-        have : 0 < n - i := Nat.sub_pos_of_lt (lt_of_le_of_ne (Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)) hin)
-        rw [zero_pow this.ne', mul_zero]
-      · intro h; exact absurd (Finset.mem_range.2 (Nat.lt_succ_self n)) h
-    have hRu : IsUnit (R.eval ε) := by
-      rw [hRe, ← two_mul]
-      exact (hs.mul (h2.mul hε)).pow _
-    obtain ⟨v, hv, hYv⟩ := sub_inv_mem Y ε R hR hRu
-    have e : g = -(algebraMap O A s * (algebraMap O A ε + Y)) * v := by
-      linear_combination (-g) * hYv - v * hgY
-    rw [e]
-    exact mul_mem (neg_mem (mul_mem (Subalgebra.algebraMap_mem _ _)
-      (add_mem (Subalgebra.algebraMap_mem _ _) (Algebra.subset_adjoin rfl)))) hv
-
 theorem stable_iff {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (g Y : A)
     (h : Y ∈ Algebra.adjoin O ({g} : Set A) ∧ g ∈ Algebra.adjoin O ({Y} : Set A)) (L : Submodule O A) :
     (∀ y ∈ L, g * y ∈ L) ↔ (∀ y ∈ L, Y * y ∈ L) :=
@@ -251,41 +204,11 @@ theorem separable_of_adjoin {E A : Type} [Field E] [CharZero E] [CommRing A] [Al
 
 variable {K : UQ}
 
-theorem exists_eps (K : UQ) : ∃ ε : K.O, IsUnit ε ∧ K.c (algebraMap K.O K.E ε) = -algebraMap K.O K.E ε := by
-  obtain ⟨x, y, hxy, hm⟩ := K.c_res
-  refine ⟨x - y, ?_, ?_⟩
-  · by_contra h; exact hm ((IsLocalRing.mem_maximalIdeal _).2 h)
-  · have : K.c (algebraMap K.O K.E y) = algebraMap K.O K.E x := by rw [← hxy, K.c_c]
-    simp only [map_sub, hxy, this]; ring
-
 def withG (B : InvAlg K) (Y : B.A) : InvAlg K := { B with g := Y }
 
 theorem σ_algebraMap (B : InvAlg K) (a : K.O) :
     B.σ (algebraMap K.O B.A a) = algebraMap K.E B.A (K.c (algebraMap K.O K.E a)) := by
   rw [IsScalarTower.algebraMap_apply K.O K.E B.A, B.σ_alg]
-
-theorem cayley_selfadj (B : InvAlg K) (s ε : K.O) (Y : B.A) (hu : B.g * B.σ B.g = 1)
-    (hs : algebraMap K.O K.E s * K.c (algebraMap K.O K.E s) = 1)
-    (hε : K.c (algebraMap K.O K.E ε) = -algebraMap K.O K.E ε)
-    (w : B.A) (hw : (B.g + algebraMap K.O B.A s) * w = 1)
-    (hY : Y * (B.g + algebraMap K.O B.A s) = algebraMap K.O B.A ε * (B.g - algebraMap K.O B.A s)) :
-    B.σ Y = Y := by
-  have h1 := congrArg B.σ hY
-  simp only [map_mul, map_add (f := _), map_sub, σ_algebraMap, hε, map_neg] at h1
-  have he : algebraMap K.E B.A (algebraMap K.O K.E ε) = algebraMap K.O B.A ε :=
-    (IsScalarTower.algebraMap_apply _ _ _ _).symm
-  rw [he] at h1
-  have hs0 : algebraMap K.O B.A s * algebraMap K.E B.A (K.c (algebraMap K.O K.E s)) = 1 := by
-    rw [IsScalarTower.algebraMap_apply K.O K.E B.A s, ← map_mul, hs, map_one]
-  set s' := algebraMap K.O B.A s
-  set t := algebraMap K.E B.A (K.c (algebraMap K.O K.E s))
-  have hs' : s' * t = 1 := hs0
-  set ε' := algebraMap K.O B.A ε
-  have key : (B.σ Y - Y) * (B.g + s') = 0 := by
-    linear_combination (B.g * s') * h1 - hY - (s' * B.σ Y + s' * ε') * hu - (B.g * B.σ Y - B.g * ε') * hs'
-  calc B.σ Y = B.σ Y * ((B.g + s') * w) := by rw [hw, mul_one]
-    _ = Y * ((B.g + s') * w) + (B.σ Y - Y) * (B.g + s') * w := by ring
-    _ = Y := by rw [key, hw]; ring
 
 theorem aeval_P (B : InvAlg K) : aeval B.g B.P = 0 := by
   have h := LinearMap.aeval_self_charpoly (LinearMap.mulLeft K.E B.g)
@@ -309,18 +232,6 @@ theorem lift_factor (B₁ B₂ : InvAlg K) (hsep : (B₁.P * B₂.P).Separable) 
   refine ⟨Q₁, Q₂, map_injective _ hinj (by rw [Polynomial.map_mul, e₁, e₂, hQ]), e₁, e₂, ?_, ?_, hm⟩
   · rw [← aeval_map_algebraMap K.E, e₁, aeval_P]
   · rw [← aeval_map_algebraMap K.E, e₂, aeval_P]
-
-theorem eval_neg_isUnit (hodd : K.Odd) (Q : K.O[X]) (s : K.Oˣ)
-    (hQr : Q.map (IsLocalRing.residue K.O) = (X - C (IsLocalRing.residue K.O s)) ^ Q.natDegree) :
-    IsUnit (Q.eval (-(s : K.O))) := by
-  rw [← IsLocalRing.residue_ne_zero_iff_isUnit, ← eval₂_hom, ← eval_map, hQr]
-  simp only [eval_pow, eval_sub, eval_X, eval_C, map_neg]
-  apply pow_ne_zero
-  have h2 : IsLocalRing.residue K.O 2 ≠ 0 := (IsLocalRing.residue_ne_zero_iff_isUnit _).2 hodd
-  have hs : IsLocalRing.residue K.O s ≠ 0 := (IsLocalRing.residue_ne_zero_iff_isUnit _).2 s.isUnit
-  rw [show -(IsLocalRing.residue K.O s) - IsLocalRing.residue K.O s =
-    -(IsLocalRing.residue K.O 2 * IsLocalRing.residue K.O s) by rw [map_ofNat]; ring]
-  exact neg_ne_zero.2 (mul_ne_zero h2 hs)
 
 theorem X_withG (B : InvAlg K) (Y : B.A)
     (h : ∀ L : Submodule K.O B.A, (∀ y ∈ L, B.g * y ∈ L) ↔ (∀ y ∈ L, Y * y ∈ L)) (x : B.A) :
@@ -346,78 +257,6 @@ theorem kapSum_withG (B₁ B₂ : InvAlg K) (Y₁ : B₁.A) (Y₂ : B₂.A)
   show ∑ᶠ k : (B₁.prod B₂).Cl, K.eta (B₁.gramDet (InvAlg.Cl.rep k).1) * (withG (B₁.prod B₂) (Y₁, Y₂)).N k.rep =
     ∑ᶠ k : (B₁.prod B₂).Cl, K.eta (B₁.gramDet (InvAlg.Cl.rep k).1) * (B₁.prod B₂).N k.rep
   exact finsum_congr fun k => by rw [N_withG (B₁.prod B₂) (Y₁, Y₂) h]
-
-theorem identity_of_residually_unipotent : UnitLemmaLie → ∀ (K : UQ), K.Odd → ∀ B₁ B₂ : InvAlg K,
-    B₁.g * B₁.σ B₁.g = 1 → B₂.g * B₂.σ B₂.g = 1 → (B₁.P * B₂.P).Separable → ∀ s : K.Oˣ,
-    algebraMap K.O K.E s * K.c (algebraMap K.O K.E s) = 1 →
-    (∃ Q : K.O[X], Q.map (algebraMap K.O K.E) = B₁.P * B₂.P ∧
-      Q.map (IsLocalRing.residue K.O) = (X - C (IsLocalRing.residue K.O s)) ^ Q.natDegree) →
-    InvAlg.Identity B₁ B₂ := by
-  intro hL K hodd B₁ B₂ hu₁ hu₂ hsep s hs ⟨Q, hQ, hQr⟩
-  have hinj := IsFractionRing.injective K.O K.E
-  obtain ⟨ε, hεu, hεc⟩ := exists_eps K
-  obtain ⟨Q₁, Q₂, hQQ, e₁, e₂, a₁, a₂, hm⟩ := lift_factor B₁ B₂ hsep Q hQ
-  have hQs := eval_neg_isUnit hodd Q s hQr
-  have hQs₁ : IsUnit (Q₁.eval (-(s : K.O))) := by
-    rw [hQQ, eval_mul] at hQs; exact isUnit_of_mul_isUnit_left hQs
-  have hQs₂ : IsUnit (Q₂.eval (-(s : K.O))) := by
-    rw [hQQ, eval_mul] at hQs; exact isUnit_of_mul_isUnit_right hQs
-  have hm₁ : Q₁.Monic := monic_of_injective hinj (e₁ ▸ LinearMap.charpoly_monic _)
-  have hm₂ : Q₂.Monic := monic_of_injective hinj (e₂ ▸ LinearMap.charpoly_monic _)
-  obtain ⟨w₁, -, hw₁⟩ := sub_inv_mem B₁.g (-(s : K.O)) Q₁ a₁ hQs₁
-  obtain ⟨w₂, -, hw₂⟩ := sub_inv_mem B₂.g (-(s : K.O)) Q₂ a₂ hQs₂
-  rw [map_neg, sub_neg_eq_add] at hw₁ hw₂
-  set Y₁ := algebraMap K.O B₁.A ε * (B₁.g - algebraMap K.O B₁.A s) * w₁ with hY₁d
-  set Y₂ := algebraMap K.O B₂.A ε * (B₂.g - algebraMap K.O B₂.A s) * w₂ with hY₂d
-  have hY₁ : Y₁ * (B₁.g + algebraMap K.O B₁.A s) = algebraMap K.O B₁.A ε * (B₁.g - algebraMap K.O B₁.A s) := by
-    rw [hY₁d]; linear_combination (algebraMap K.O B₁.A ε * (B₁.g - algebraMap K.O B₁.A s)) * hw₁
-  have hY₂ : Y₂ * (B₂.g + algebraMap K.O B₂.A s) = algebraMap K.O B₂.A ε * (B₂.g - algebraMap K.O B₂.A s) := by
-    rw [hY₂d]; linear_combination (algebraMap K.O B₂.A ε * (B₂.g - algebraMap K.O B₂.A s)) * hw₂
-  have adj₁ := mem_adjoin_both B₁.g Y₁ (s : K.O) ε Q₁ hm₁ a₁ hQs₁ s.isUnit hεu hodd hY₁
-  have adj₂ := mem_adjoin_both B₂.g Y₂ (s : K.O) ε Q₂ hm₂ a₂ hQs₂ s.isUnit hεu hodd hY₂
-  have aQ : aeval ((B₁.g, B₂.g) : B₁.A × B₂.A) Q = 0 := by
-    have f1 := aeval_algHom_apply (AlgHom.fst K.O B₁.A B₂.A) ((B₁.g, B₂.g) : B₁.A × B₂.A) Q
-    have f2 := aeval_algHom_apply (AlgHom.snd K.O B₁.A B₂.A) ((B₁.g, B₂.g) : B₁.A × B₂.A) Q
-    refine Prod.ext ?_ ?_
-    · change AlgHom.fst K.O B₁.A B₂.A _ = 0
-      rw [← f1]; change aeval B₁.g Q = 0
-      rw [hQQ, map_mul, a₁, zero_mul]
-    · change AlgHom.snd K.O B₁.A B₂.A _ = 0
-      rw [← f2]; change aeval B₂.g Q = 0
-      rw [hQQ, map_mul, a₂, mul_zero]
-  have hYp : ((Y₁, Y₂) : B₁.A × B₂.A) * ((B₁.g, B₂.g) + algebraMap K.O (B₁.A × B₂.A) s) =
-      algebraMap K.O (B₁.A × B₂.A) ε * ((B₁.g, B₂.g) - algebraMap K.O (B₁.A × B₂.A) s) :=
-    Prod.ext hY₁ hY₂
-  have adjP := mem_adjoin_both ((B₁.g, B₂.g) : B₁.A × B₂.A) (Y₁, Y₂) (s : K.O) ε Q hm aQ hQs s.isUnit hεu hodd hYp
-  have st₁ := stable_iff B₁.g Y₁ adj₁
-  have st₂ := stable_iff B₂.g Y₂ adj₂
-  have stP := stable_iff ((B₁.g, B₂.g) : B₁.A × B₂.A) (Y₁, Y₂) adjP
-
-  have sa₁ := cayley_selfadj B₁ (s : K.O) ε Y₁ hu₁ hs hεc w₁ hw₁ hY₁
-  have sa₂ := cayley_selfadj B₂ (s : K.O) ε Y₂ hu₂ hs hεc w₂ hw₂ hY₂
-  have hsepP : (LinearMap.mulLeft K.E ((B₁.g, B₂.g) : B₁.A × B₂.A)).charpoly.Separable := by
-    have := Orbit.prod_P B₁ B₂
-    rw [← this] at hsep; exact hsep
-  have hsepC : ((withG B₁ Y₁).P * (withG B₂ Y₂).P).Separable := by
-    rw [← Orbit.prod_P]
-    have := separable_of_adjoin (E := K.E) (A := B₁.A × B₂.A) (B₁.g, B₂.g) (Y₁, Y₂)
-      (mem_adjoin_of_mem (O := K.O) adjP.1) (mem_adjoin_of_mem (O := K.O) adjP.2) hsepP
-    exact this
-  have hId := hL K (withG B₁ Y₁) (withG B₂ Y₂) sa₁ sa₂ hsepC
-
-  have hr : resultant B₁.P B₂.P ≠ 0 :=
-    ((isUnit_resultant_iff_isCoprime (LinearMap.charpoly_monic _)).2 hsep.isCoprime).ne_zero
-  have hr' : resultant (withG B₁ Y₁).P (withG B₂ Y₂).P ≠ 0 :=
-    ((isUnit_resultant_iff_isCoprime (LinearMap.charpoly_monic _)).2 hsepC.isCoprime).ne_zero
-  obtain ⟨M₁, l₁, s₁⟩ := exists_stable_lat (E := K.E) B₁.g ⟨Q₁, hm₁, a₁⟩
-  obtain ⟨M₂, l₂, s₂⟩ := exists_stable_lat (E := K.E) B₂.g ⟨Q₂, hm₂, a₂⟩
-  have hv : val K.O (resultant B₁.P B₂.P) = val K.O (resultant (withG B₁ Y₁).P (withG B₂ Y₂).P) :=
-    val_res_eq (O := K.O) (E := K.E) B₁.g Y₁ B₂.g Y₂ hr hr' st₁ st₂ stP M₁ M₂ l₁ l₂ s₁ s₂
-  unfold InvAlg.Identity at hId ⊢
-  rw [kapSum_withG B₁ B₂ Y₁ Y₂ stP, stSum_withG B₁ Y₁ st₁, stSum_withG B₂ Y₂ st₂] at hId
-  change (-(K.q : ℚ)) ^ (-val K.O (resultant B₁.P B₂.P)) * _ = _
-  rw [hv]
-  exact hId
 
 end GlobalTheory.UnitLemma.CayleyCase
 end -- clump:auto

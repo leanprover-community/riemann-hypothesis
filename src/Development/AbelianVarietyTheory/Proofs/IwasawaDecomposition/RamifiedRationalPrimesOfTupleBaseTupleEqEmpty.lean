@@ -92,10 +92,6 @@ namespace GlobalTheory.Mem.HD.ReQ
 
 variable {D : D7} {C : CharFrame D} {nch : NChoice D}
 
-theorem mem_aboveF_iff {v : HeightOneSpectrum (𝓞 D.host.F)} {P : HeightOneSpectrum (𝓞 D.host.E)} :
-    P ∈ aboveF (L := D.host.E) D.host.F v ↔ P.under (𝓞 D.host.F) = v := by
-  rw [aboveF, Set.Finite.mem_toFinset]; rfl
-
 theorem prime_eq_of_overP {p q : ℕ} (hp : p.Prime) (hq : q.Prime) {w : HeightOneSpectrum (𝓞 D.host.E)}
     (h1 : OverP D.host p w) (h2 : OverP D.host q w) : p = q := by
   by_contra hne

@@ -98,7 +98,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formal
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenKerNormOneFiniteAdeleDetClassStatement =====
@@ -133,7 +132,6 @@ theorem mem_u1int_iff_entry (u : GL (Fin 1) (AfE F E)) :
   refine forall_congr' fun y => ?_
   rw [hl, hl]
   simp [Matrix.mulVec, dotProduct]
-
 
 omit [StarRing E] in
 theorem rInt_mul_iff {c d : AfE F E} (hcd : c * d = 1) :
@@ -193,7 +191,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.FullDt ReciprocityTheory.Neutral.Bridge.HCFR Neutral.B1
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto
@@ -308,14 +305,7 @@ theorem detPt_of_reads (hI : I.Ok) (u : B.Word) (i : ℕ) {Ch : Type} {chOf : (I
   rw [_root_.GlobalTheory.Mem.Col2.RefTup.twistPrimes_reference_tuple_eq_empty B X I] at hQ
   exact absurd hQ (Finset.notMem_empty Q)
 
-theorem det_reGL {a b : ℕ} (h : a = b) {A : Type} [CommRing A] (g : GL (Fin a) A) :
-    Matrix.GeneralLinearGroup.det (reGL h A g) = Matrix.GeneralLinearGroup.det g := by
-  subst h
-  refine Units.ext ?_
-  simp [reGL, Matrix.GeneralLinearGroup.det]
-
 variable (l : I.Laws) (Z : TC.Later B (I.cols l)) (C : ColsTiedSym (I.rec7 l Z))
-
 
 def hermS (_hI : I.Ok) (_hS : I.StdC l Z C) : Formalism.L2.Herm.SymmetricHermitianColumns (I.rec7 l Z) :=
   { C.herm.base with

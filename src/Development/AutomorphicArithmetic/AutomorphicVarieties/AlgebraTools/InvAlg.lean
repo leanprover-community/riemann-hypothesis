@@ -101,8 +101,6 @@ instance : Mul Φ.Ext := ⟨fun z w => Φ.el (z.ev * w.ev + Φ.be z.od w.od) (z.
 
 @[simp] theorem ev_one : (1 : Φ.Ext).ev = 1 := rfl
 @[simp] theorem od_one : (1 : Φ.Ext).od = 0 := rfl
-@[simp] theorem ev_zero : (0 : Φ.Ext).ev = 0 := rfl
-@[simp] theorem od_zero : (0 : Φ.Ext).od = 0 := rfl
 @[simp] theorem ev_add (z w : Φ.Ext) : (z + w).ev = z.ev + w.ev := rfl
 @[simp] theorem od_add (z w : Φ.Ext) : (z + w).od = z.od + w.od := rfl
 @[simp] theorem ev_smul (c : B) (z : Φ.Ext) : (c • z).ev = c * z.ev := rfl

@@ -417,13 +417,6 @@ theorem exists_pow_smul_int (L : LocE F E) {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ)
   rw [hk, pow_add, map_mul, Matrix.smul_apply, smul_eq_mul, mul_assoc]
   exact L.O.mul_mem (pow_mem L ϖ k) (he (i, j))
 
-omit [IsNonarchimedeanLocalField F] [CharZero F] in
-theorem isIntM_mul {A B : Matrix (Fin m) (Fin m) E} (hA : IsIntM L A) (hB : IsIntM L B) :
-    IsIntM L (A * B) := fun i j => by
-  rw [Matrix.mul_apply]
-  exact L.O.sum_mem fun k _ => L.O.mul_mem (hA i k) (hB k j)
-
-
 omit [CharZero F] in
 theorem exists_conj_int (L : LocE F E) {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ)
     {A : Matrix (Fin m) (Fin m) E} (hA : IsUnit A.det) :
@@ -473,7 +466,6 @@ theorem rel_equiv (K : Subgroup ((Fin n → E) ≃ₗ[E] (Fin n → E))) (x : Fi
     Equivalence (Rel K x) :=
   ⟨fun _ => (torb_equiv K).refl _, fun h => (torb_equiv K).symm h,
     fun h h' => (torb_equiv K).trans h h'⟩
-
 
 omit [IsNonarchimedeanLocalField F] [CharZero F] in
 theorem rel_iff (Λs : Submodule L.O (Fin n → E)) (x : Fin m → Fin n → E)

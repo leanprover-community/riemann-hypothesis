@@ -258,25 +258,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 
-theorem smooth_comb {ε : Fin n → Bool} {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ} (c : ℂ)
-    (hf : SmoothOnG ε f) (hf' : SmoothOnG ε f') : SmoothOnG ε (fun h => f h + c * f' h) := by
-  intro g hg
-  obtain ⟨U, F, hU, hgU, hF, e⟩ := hf g hg
-  obtain ⟨U', F', hU', hgU', hF', e'⟩ := hf' g hg
-  refine ⟨U ∩ U', fun h => F h + c * F' h, hU.inter hU', ⟨hgU, hgU'⟩,
-    (hF.mono Set.inter_subset_left).add (contDiffOn_const.mul (hF'.mono Set.inter_subset_right)), ?_⟩
-  intro x hx hxJ
-  simp only [e x hx.1 hxJ, e' x hx.2 hxJ]
-
-theorem smooth_word {ε : Fin n → Bool} {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : SmoothOnG ε f)
-    (w : List (Fin n × Fin n)) : SmoothOnG ε (Eword ε w f) := by
-  induction w with
-  | nil => exact hf
-  | cons p w ih =>
-    have hc := complex_parts_mem_lie_algebra_holds n ε (Matrix.single p.1 p.2 1)
-    exact smooth_comb Complex.I (rdSmooth_of right_derivative_extends n ε _ _ ih hc.1)
-      (rdSmooth_of right_derivative_extends n ε _ _ ih hc.2.1)
-
 theorem word_comb {ε : Fin n → Bool} {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ} (c : ℂ)
     (hf : SmoothOnG ε f) (hf' : SmoothOnG ε f') (w : List (Fin n × Fin n)) :
     ∀ g, inUJ ε g → Eword ε w (fun h => f h + c * f' h) g = Eword ε w f g + c * Eword ε w f' g := by
@@ -406,7 +387,6 @@ private theorem posDef_conjTranspose_mul_exp_mul {ε : Fin n → Bool} {m X : Ma
   intro a b hab
   have := congrArg (fun x => (mᴴ).mulVec x) hab
   simpa only [Matrix.mulVec_mulVec, hu, Matrix.one_mulVec] using this
-
 
 lemma compress_of_formula (hF : FormulaGap) {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type} [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hlam : IsHCParam lam) (hσ : IsDS ε lam σ)

@@ -200,7 +200,6 @@ theorem map_mem_of_normal (L : Fld) (h : j.fieldRange ≤ L) (hn : letI := algTh
   have h1 : ((s'.restrictNormal L ⟨x, hx⟩ : L) : Qb) = s x := AlgEquiv.restrictNormal_commutes s' L ⟨x, hx⟩
   exact h1 ▸ (s'.restrictNormal L ⟨x, hx⟩).2
 
-
 omit j in
 theorem hilbert_qb : GlobalArtinReciprocity → ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
     (j : E →ₐ[ℚ] Qb) (ι : Qb →+* ℂ) (M : IntermediateField ℚ ℂ), IsRayFieldIn (ι.comp j.toRingHom) ⊤ M →
@@ -222,24 +221,6 @@ theorem hilbert_qb : GlobalArtinReciprocity → ∀ (E : Type) [Field E] [Number
     obtain ⟨ψ⟩ := GlobalTheory.UnramInRay.nonempty_algHom_rayField H E L (qb ι M) ⊤ top_ne_bot hR
       ((GlobalTheory.UnramDiscr.unramIn_iff_natAbs_discr E L).2 hd)
     exact le_of_algHom j hL h inferInstance ψ
-
-
-omit j in
-theorem hilbert_qb_aut : GlobalArtinReciprocity → ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-    (j : E →ₐ[ℚ] Qb) (ι : Qb →+* ℂ) (M : IntermediateField ℚ ℂ), IsRayFieldIn (ι.comp j.toRingHom) ⊤ M →
-    ∃ _ : NumberField (qb ι M), j.fieldRange ≤ qb ι M ∧
-      (∀ s ∈ GalOf j.fieldRange, ∀ x ∈ qb ι M, s x ∈ qb ι M) ∧
-      (∀ s ∈ GalOf j.fieldRange, ∀ t ∈ GalOf j.fieldRange, ∀ x ∈ qb ι M, s (t x) = t (s x)) ∧
-      (discr (qb ι M)).natAbs = (discr E).natAbs ^ (Module.finrank ℚ (qb ι M) / Module.finrank ℚ E) ∧
-      ∀ (L : Fld) [NumberField L], j.fieldRange ≤ L →
-        (∀ s ∈ GalOf j.fieldRange, ∀ t ∈ GalOf j.fieldRange, ∀ x ∈ L, s (t x) = t (s x)) →
-        (discr L).natAbs = (discr E).natAbs ^ (Module.finrank ℚ L / Module.finrank ℚ E) → L ≤ qb ι M := by
-  intro H E _ _ _ j ι M hM
-  obtain ⟨hN, h, hab, hd, hmax⟩ := hilbert_qb H E j ι M hM
-  refine ⟨hN, h, map_mem_of_normal j _ h ?_, (isAbelianGalois_iff j _ h).1 hab, hd,
-    fun L _ hL hc => hmax L hL ((isAbelianGalois_iff j L hL).2 hc)⟩
-  let := algThrough j _ h
-  infer_instance
 
 end GlobalTheory.HilbertInClosure
 

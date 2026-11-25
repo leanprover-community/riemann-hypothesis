@@ -79,13 +79,6 @@ private lemma hpk_apply_of_outer {i : Fin (2 * r + k + 1)} (hi : i.val < r ∨ r
   simp only [Formalism.QuantumDeterminants.Hpk, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-private lemma hpk_apply_of_middle {i : Fin (2 * r + k + 1)} (hi : r ≤ i.val ∧ i.val ≤ r + k) (l : Fin (2 * r + k + 1)) :
-    Hpk k r i l = if i = l then (if i.val = r + k then -1 else 1) else 0 := by
-  have := i.isLt
-  have := l.isLt
-  simp only [Formalism.QuantumDeterminants.Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
 private lemma hpk_mul_hpk : Hpk k r * Hpk k r = 1 := by
   first
   | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self

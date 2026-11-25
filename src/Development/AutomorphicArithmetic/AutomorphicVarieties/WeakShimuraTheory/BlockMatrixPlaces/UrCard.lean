@@ -70,51 +70,8 @@ private def NI (ρ : Representation k D M) (I : Subgroup D) : Submodule k M wher
   add_mem' := fun {a b} ha hb s hs => by rw [map_add (f := _), ha s hs, hb s hs]
   smul_mem' c a ha s hs := by rw [map_smul, ha s hs]
 
-private theorem NI_stable (ρ : Representation k D M) (I : Subgroup D) [hI : I.Normal] (g : D) {m : M}
-    (hm : m ∈ NI ρ I) : ρ g m ∈ NI ρ I := by
-  intro s hs
-  have h1 := hm (g⁻¹ * s * g) (by simpa using hI.conj_mem s hs g⁻¹)
-  calc ρ s (ρ g m) = ρ g (ρ (g⁻¹ * s * g) m) := by
-        rw [← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul]
-        congr 2
-        group
-    _ = ρ g m := by rw [h1]
-
 private theorem inv_apply (ρ : Representation k D M) (g : D) (m : M) : ρ g⁻¹ (ρ g m) = m := by
   rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
-
-private theorem apply_inv (ρ : Representation k D M) (g : D) (m : M) : ρ g (ρ g⁻¹ m) = m := by
-  rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
-
-variable [TopologicalSpace D] [IsTopologicalGroup D]
-
-private theorem all_of_closed {I : Subgroup D} {σ : D}
-    (hd : (I ⊔ Subgroup.zpowers σ).topologicalClosure = ⊤) (H : Subgroup D) (hH : IsClosed (H : Set D))
-    (hI : I ≤ H) (hσ : σ ∈ H) (g : D) : g ∈ H := by
-  have := Subgroup.topologicalClosure_minimal (I ⊔ Subgroup.zpowers σ)
-    (sup_le hI ((Subgroup.zpowers_le).2 hσ)) hH
-  rw [hd] at this
-  exact this (Subgroup.mem_top g)
-
-private theorem exists_hom {E : Type} [Group E] [Finite E] {I : Subgroup D} {φ : D}
-    (hd : ∀ n : ℕ, 0 < n → ∃ d : D →* Multiplicative (ZMod n), IsLocallyConstant d ∧ (∀ s ∈ I, d s = 1) ∧
-      d φ = Multiplicative.ofAdd 1) (e : E) :
-    ∃ w : D →* E, IsLocallyConstant w ∧ (∀ s ∈ I, w s = 1) ∧ w φ = e := by
-  have hn : 0 < orderOf e := orderOf_pos e
-  haveI : NeZero (orderOf e) := ⟨hn.ne'⟩
-  obtain ⟨d, hdl, hdI, hdφ⟩ := hd (orderOf e) hn
-  let f : Multiplicative (ZMod (orderOf e)) →* E :=
-    MonoidHom.mk' (fun x => e ^ (Multiplicative.toAdd x).val) (by
-      intro a b
-      simp only [toAdd_mul, ZMod.val_add, pow_mod_orderOf, pow_add])
-  have hf1 : f (Multiplicative.ofAdd 1) = e := by
-    show e ^ (1 : ZMod (orderOf e)).val = e
-    rw [ZMod.val_one_eq_one_mod, pow_mod_orderOf, pow_one]
-  refine ⟨f.comp d, hdl.comp f, fun s hs => by simp [hdI s hs], ?_⟩
-  show f (d φ) = e
-  rw [hdφ, hf1]
-
-variable [TopologicalSpace M] [DiscreteTopology M]
 
 end UpperTheory.V.Ws.Bl.UnramifiedCardinality
 

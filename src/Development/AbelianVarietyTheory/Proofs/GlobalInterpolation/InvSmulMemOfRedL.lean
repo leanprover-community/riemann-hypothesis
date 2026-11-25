@@ -118,7 +118,6 @@ section Gen
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-
 omit [StarRing E] in
 theorem exists_mul_mem_span (P : HeightOneSpectrum (𝓞 E)) {q : 𝓞 E} (hq : q ∈ P.asIdeal)
     (hq2 : q ∉ P.asIdeal ^ 2) : ∃ s ∉ P.asIdeal, ∀ r ∈ P.asIdeal, ∃ t, s * r = q * t := by
@@ -157,7 +156,6 @@ namespace GlobalTheory.GO.SplitGlue
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 
-
 omit [StarRing E] in
 theorem exists_smul_le {N N' : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsFullLattice E N)
     (hN' : Submodule.IsLattice E N') : ∃ a : 𝓞 E, a ≠ 0 ∧ ∀ x ∈ N', a • x ∈ N := by
@@ -180,7 +178,6 @@ theorem exists_smul_le {N N' : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsFu
   | add y z _ _ hy hz => rw [smul_add]; exact N.add_mem hy hz
   | smul c y _ hy => rw [smul_comm]; exact N.smul_mem _ hy
 
-
 omit [StarRing E] in
 theorem mem_of_forall (N : Submodule (𝓞 E) (Sp E n)) {x : Sp E n}
     (h : ∀ w : HeightOneSpectrum (𝓞 E), ∃ s ∉ w.asIdeal, s • x ∈ N) : x ∈ N := by
@@ -193,7 +190,6 @@ theorem mem_of_forall (N : Submodule (𝓞 E) (Sp E n)) {x : Sp E n}
   have hm0 : m ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField E)
   obtain ⟨s, hs, hsx⟩ := h ⟨m, hm.isPrime, hm0⟩
   exact hs (hle (by simpa using hsx))
-
 
 omit [StarRing E] in
 theorem eq_of_sameAt {N N' : Submodule (𝓞 E) (Sp E n)} (h : ∀ w, SameAt w N N') : N = N' := by
@@ -539,7 +535,6 @@ theorem f_osmul {P : HeightOneSpectrum (𝓞 E)} {M : Submodule (𝓞 E) (Fin n 
 theorem toO_smul (P : HeightOneSpectrum (𝓞 E)) (r : 𝓞 E) (x : Fin n → E) : toO P r • x = r • x :=
   algebraMap_smul E r x
 
-
 open Classical in
 def redL (M : Submodule (𝓞 E) (Fin n → E)) (P : HeightOneSpectrum (𝓞 E)) (x : Fin n → E) : TDat.Red M P :=
   if h : ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ s • x ∈ M then
@@ -699,10 +694,8 @@ theorem TAt.ne (h : TAt T ST) (P : ST) : conjPrime₂ P.1 ≠ P.1 := (h.st P P).
 theorem TAt.move (h : TAt T ST) (P : ST) : MoveHyp ST ∅ P :=
   ⟨h.ne P, h.st P, fun w => absurd w.2 (Finset.notMem_empty _)⟩
 
-
 variable (ST) in
 def OffT (w : HeightOneSpectrum (𝓞 E)) : Prop := ∀ P : ST, w ≠ P.1 ∧ w ≠ conjPrime₂ P.1
-
 
 variable (ST) in
 def AgreeOff (N N' : Submodule (𝓞 E) (Sp E n)) : Prop := ∀ w, OffT ST w → localization₂ w.asIdeal N = localization₂ w.asIdeal N'
@@ -774,8 +767,6 @@ def pair {P : ST} (h : Unif T P.1) (d : Deco E n ST SG) (hd : d.Ok) : LocF.PP (l
 theorem mem_pair_L {P : ST} (h : Unif T P.1) (d : Deco E n ST SG) (hd : d.Ok) (x : Sp E n) :
     x ∈ (pair h d hd).1.L ↔ x ∈ localization₂ P.1.asIdeal d.N := Iff.rfl
 
-theorem pair_f {P : ST} (h : Unif T P.1) (d : Deco E n ST SG) (hd : d.Ok) : (pair h d hd).1.f = d.f P := rfl
-
 theorem mem_pair_ker {P : ST} (h : Unif T P.1) (hne : conjPrime₂ P.1 ≠ P.1) {d : Deco E n ST SG} (hd : d.Ok) (x : Sp E n) :
     x ∈ (pair h d hd).ker ↔ x ∈ localization₂ P.1.asIdeal (d.dnN P) := by
   rw [(hd.dnN_spec P hne).2.2.2]
@@ -824,35 +815,6 @@ theorem pair_up_ne (h : TAt T ST) {d : Deco E n ST ∅} (hd : d.Ok) {P Q : ST} (
     (hu : (d.up P (T : 𝓞 E) x').Ok) : pair (h.unif Q) _ hu = pair (h.unif Q) d hd :=
   pair_congr _ hu hd (((upN_spec hd.lat hd.uni P.1 (h.ne P) hx').2.2.1 Q.1 (fun e => hQ (Subtype.ext e)) (h.st P Q)).localization_eq)
     (d.up_f_ne P _ x' hQ)
-
-theorem dn_ok (h : TAt T ST) {d : Deco E n ST ∅} (hd : d.Ok) (P : ST) (p₀ : LocF.PP (locF (h.unif P)) n)
-    (hp : (p₀.1.L : Set (Sp E n)) = (pair (h.unif P) d hd).ker) : (d.dn P p₀.1.f).Ok := by
-  have hL : ∀ x, x ∈ localization₂ P.1.asIdeal (d.dnN P) ↔ x ∈ p₀.1.L := fun x => by
-    rw [← mem_pair_ker (h.unif P) (h.ne P) hd, ← hp]; rfl
-  have hs : ∀ (a : 𝓞 E), ∀ x ∈ localization₂ P.1.asIdeal (d.dnN P),
-      p₀.1.f (a • x) = Ideal.Quotient.mk P.1.asIdeal a * p₀.1.f x := fun a x hx => by
-    rw [← toO_smul P.1, ← resP_toO]
-    exact p₀.2.smul _ _ ((hL x).1 hx)
-  refine hd.dn P (h.move P) (fun x hx y hy => p₀.2.add x ((hL x).1 hx) y ((hL y).1 hy)) hs
-    (fun x hx => p₀.2.off x fun h' => hx ((hL x).2 h')) ?_
-  obtain ⟨x, hx⟩ := p₀.2.ne
-  have hx' := (hL x).2 (mem_of_f_ne p₀ hx)
-  obtain ⟨s, hs', hx''⟩ := (memLoc _ _ _).1 hx'
-  exact ⟨_, hx'', by rw [hs s x hx']; exact mul_ne_zero (mk_ne_zero hs') hx⟩
-
-theorem pair_dn (h : TAt T ST) {d : Deco E n ST ∅} (hd : d.Ok) (P : ST) (p₀ : LocF.PP (locF (h.unif P)) n)
-    (hp : (p₀.1.L : Set (Sp E n)) = (pair (h.unif P) d hd).ker) (hu : (d.dn P p₀.1.f).Ok) :
-    pair (h.unif P) _ hu = p₀ := by
-  refine pp_ext (fun x => ?_) fun x _ => ?_
-  · rw [mem_pair_L]
-    show x ∈ localization₂ P.1.asIdeal (d.dnN P) ↔ _
-    rw [← mem_pair_ker (h.unif P) (h.ne P) hd, ← hp]; rfl
-  · rw [pair_f]; simp [Deco.dn]
-
-theorem pair_dn_ne (h : TAt T ST) {d : Deco E n ST ∅} (hd : d.Ok) {P Q : ST} (hQ : Q ≠ P) {g : Sp E n → Res P.1}
-    (hu : (d.dn P g).Ok) : pair (h.unif Q) _ hu = pair (h.unif Q) d hd :=
-  pair_congr _ hu hd (((hd.dnN_spec P (h.ne P)).2.2.1 Q.1 (fun e => hQ (Subtype.ext e)) (h.st P Q)).localization_eq)
-    (by classical exact Function.update_of_ne hQ _ _)
 
 theorem deco_ext (h : TAt T ST) {d d' : Deco E n ST ∅} (hd : d.Ok) (hd' : d'.Ok) (ho : AgreeOff ST d.N d'.N)
     (hp : ∀ P, pair (h.unif P) d hd = pair (h.unif P) d' hd') : d = d' := by

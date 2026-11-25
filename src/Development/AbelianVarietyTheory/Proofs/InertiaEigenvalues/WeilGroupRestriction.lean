@@ -81,7 +81,6 @@ theorem normV_eq_pow_of_isPlaceOver {A : ValuationSubring Ω} {v : HeightOneSpec
   simp only [normV, ← Submodule.cardQuot_apply, ← Ideal.absNorm_apply]
   exact (Ideal.absNorm_pow_inertiaDeg v.asIdeal v'.asIdeal).symm
 
-
 variable (K) in
 def resG : G L Ω →* G K Ω where
   toFun σ := σ.restrictScalars K
@@ -161,10 +160,5 @@ theorem isSmooth_comp_resWeil [Algebra.IsIntegral L Ω] (h : IsPlaceOver A v) (h
   exact hf.preimage continuous_resIne
 
 end
-
-theorem weil_restrict : ∀ (K L Ω : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] [Algebra L Ω] [IsAlgClosure L Ω] [Algebra K L] [IsScalarTower K L Ω] (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 K)) (v' : HeightOneSpectrum (𝓞 L)) (h : IsPlaceOver A v) (h' : IsPlaceOver A v'), ∃ r : Weil h' →* Weil h, (∀ (σ : Weil h') (z : Ω), (r σ : G K Ω) z = (σ : G L Ω) z) ∧ ∀ (M : Type) [Monoid M] (f : Weil h →* M), GlobalTheory.WeilDeligne.IsSmooth f → GlobalTheory.WeilDeligne.IsSmooth (f.comp r) := by
-  intro K L Ω _ _ _ _ _ _ _ _ _ _ _ A v v' h h'
-  haveI : Algebra.IsIntegral L Ω := (IsAlgClosure.isAlgebraic (R := L) (K := Ω)).isIntegral
-  exact ⟨resWeil h h', resWeil_apply h h', fun M _ f hf => isSmooth_comp_resWeil h h' hf⟩
 
 end GlobalTheory.WeilRestrict

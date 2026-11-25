@@ -82,34 +82,8 @@ section Hyp
 
 variable {X : Data E r}
 
-
 open Classical in
 def unitVec (e : Ent X) : Fin (nd X) → ℂ := fun k => if (Fintype.equivFin (Ent X)).symm k = e then 1 else 0
-
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
-variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
-private lemma norm_dmin_cpt_last_eq_one {x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hx0 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0)
-    (w : _root_.ReciprocityTheory.L2DbarEstimates.V (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) (τ : X.Ψ) :
-    ‖_root_.ReciprocityTheory.ChartRestriction.G.FD.dmin X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x0 w) τ (Fin.last r)‖ = 1 := by
-  rw [_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.dmin_cpt_orth X hx0, _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor_last]
-  have hN : (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nmat X w) τ).det = 1 := by
-    rw [Matrix.det_of_lowerTriangular]
-    · refine Finset.prod_eq_one fun i _ => ?_
-      simp [_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nmat, _root_.ReciprocityTheory.ChartRestriction.G.FD.mat]
-    · intro a b hab
-      have h' : a < b := hab
-      simp [_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nmat, _root_.ReciprocityTheory.ChartRestriction.G.FD.mat, not_lt.2 h'.le, h'.ne]
-  have h0 := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.norm_lminor_zero X τ (Fin.last r)
-  rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.lminor_last, _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.Gw_zero] at h0
-  have hmap : ((_root_.ReciprocityTheory.ChartRestriction.G.FD.mat (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nmat X w) τ).map (starRingEnd ℂ)).det = 1 := by
-    have h := RingHom.map_det (starRingEnd ℂ) (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nmat X w) τ)
-    rw [hN, map_one] at h
-    exact h.symm
-  unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.Gw
-  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hN, hmap, one_mul, mul_one, h0]
 
 open NumberField in
 open MeasureTheory Topology Asymptotics Filter Metric in
@@ -149,7 +123,6 @@ private lemma sum_mul_norm_unitVec_sq_eq (c : _root_.ReciprocityTheory.ChartRest
     simp [_root_.GlobalTheory.DivisionVolume.unitVec, hb]
   · intro h
     exact absurd (Finset.mem_univ e) h
-
 
 open NumberField in
 open MeasureTheory Topology Asymptotics Filter Metric in

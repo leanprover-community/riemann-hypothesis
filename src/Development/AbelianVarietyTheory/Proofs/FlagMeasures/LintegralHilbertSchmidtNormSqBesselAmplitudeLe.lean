@@ -151,21 +151,6 @@ noncomputable section
 
 namespace GlobalTheory.SgInf.ProjLine
 
-theorem mul_mem_GG_iff {k r : ℕ} {s x : Mat k r} (hs : s ∈ GG k r) : s * x ∈ GG k r ↔ x ∈ GG k r := by
-  simp only [GG, UH, Set.mem_setOf_eq] at hs ⊢
-  have e : (s * x)ᴴ * Hpk k r * (s * x) = xᴴ * (sᴴ * Hpk k r * s) * x := by
-    simp only [conjTranspose_mul, Matrix.mul_assoc]
-  rw [e, hs]
-
-theorem Sset_subset_GG {k r : ℕ} (z : Fin (2 * r + k + 1) → ℂ) : Sset k r z ⊆ GG k r := by
-  rintro s ⟨h, hh, m, hm, rfl⟩
-  exact (mul_mem_GG_iff hh.1).2 hm.1
-
-theorem isClosed_GG (k r : ℕ) : IsClosed {x : Mt k r | (Matrix.of x : Mat k r) ∈ GG k r} := by
-  have hc : Continuous fun x : Mat k r => xᴴ * Hpk k r * x :=
-    ((continuous_id.matrix_conjTranspose).matrix_mul continuous_const).matrix_mul continuous_id
-  exact isClosed_eq (X := Mt k r) hc continuous_const
-
 theorem rankOneInnerOperator_self_apply {Wp : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] (x y : Wp) :
     rk1 y x x = ((‖x‖ ^ 2 : ℝ) : ℂ) • y := by
   rw [rankOneInnerOperator_apply, inner_self_eq_norm_sq_to_K]; push_cast; rfl

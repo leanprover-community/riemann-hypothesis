@@ -714,14 +714,6 @@ open Formalism.REAL Matrix
 
 namespace GlobalTheory.OnbSum
 
-theorem conjTranspose_eq_of_inG {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ}
-    (h : inG ε X) : Xᴴ = -(Jm ε * X * Jm ε) := by
-  have h' : Xᴴ * Jm ε + Jm ε * X = 0 := h
-  have h1 : Xᴴ * Jm ε = -(Jm ε * X) := eq_neg_of_add_eq_zero_left h'
-  calc Xᴴ = Xᴴ * (Jm ε * Jm ε) := by rw [Jm_mul_self, Matrix.mul_one]
-    _ = Xᴴ * Jm ε * Jm ε := (Matrix.mul_assoc _ _ _).symm
-    _ = -(Jm ε * X * Jm ε) := by rw [h1, Matrix.neg_mul]
-
 theorem trace_im_eq_zero {n : ℕ} {ε : Fin n → Bool} {A B : Matrix (Fin n) (Fin n) ℂ}
     (hA : inG ε A) (hB : inG ε B) : (Matrix.trace (A * Bᴴ)).im = 0 := by
   apply _root_.GlobalTheory.ProductChart.trace_im_eq_zero <;> assumption

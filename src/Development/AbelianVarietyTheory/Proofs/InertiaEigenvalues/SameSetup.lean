@@ -46,17 +46,12 @@ open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
 
-
-
-
 namespace GlobalTheory.TwInputs.Move
 
 variable {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0}
 
 def CopyTw.cm (h : CopyTw D D' ι e) (j : Fin D.R.m) : Fin D'.R.m :=
   Fin.cast (congrArg Ranks.m h.gal.R) j
-
-theorem CopyTw.cm_val (h : CopyTw D D' ι e) (j : Fin D.R.m) : ((h.cm j : Fin D'.R.m) : ℕ) = j := rfl
 
 abbrev SameSetup (ρ : Setup D.ntw) (ρ' : Setup D'.ntw) : Prop := SameData ρ ρ'
 

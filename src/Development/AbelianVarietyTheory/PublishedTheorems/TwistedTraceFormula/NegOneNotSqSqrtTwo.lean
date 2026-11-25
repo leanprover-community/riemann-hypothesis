@@ -77,7 +77,6 @@ theorem _root_.GlobalTheory.QuadSymbol.Model.numberField [NumberField K] :
   haveI : Module.Finite ℚ (QuadraticAlgebra K d 0) := Module.Finite.trans K _
   exact ⟨⟩
 
-
 open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] (d : K) [Fact (∀ r : K, r ^ 2 ≠ d + 0 * r)] in
 theorem _root_.GlobalTheory.QuadSymbol.Model.mem_normGroup_sqrt {A : Type} [CommRing A] [Algebra K A] {x : Aˣ} :
@@ -88,27 +87,6 @@ theorem _root_.GlobalTheory.QuadSymbol.Model.mem_normGroup_sqrt {A : Type} [Comm
   · ext <;> simp [QuadraticAlgebra.basis]
 
 end Quad
-
-section Real
-variable {K : Type} [Field K] [Fact (∀ r : K, r ^ 2 ≠ -1 + 0 * r)]
-
-
-open NumberField IsDedekindDomain in
-variable {K : Type} [Field K] [Fact (∀ r : K, r ^ 2 ≠ -1 + 0 * r)] in
-theorem _root_.GlobalTheory.QuadSymbol.Model.eta_real_place (w : InfinitePlace K) (hw : w.IsReal) :
-    _root_.GlobalTheory.QuadSymbol.eta K (QuadraticAlgebra K (-1) 0) w.Completion
-      (_root_.GlobalTheory.QuadSymbol.infDiag K (-1) w) = -1 := by
-  rw [_root_.GlobalTheory.QuadSymbol.eta_eq_neg_one_iff, _root_.GlobalTheory.QuadSymbol.Model.mem_normGroup_sqrt]
-  rintro ⟨a, b, h⟩
-  have h' : (-1 : w.Completion) = a ^ 2 + b ^ 2 := by
-    rw [map_neg, map_one] at h
-    simpa [_root_.GlobalTheory.QuadSymbol.infDiag, _root_.GlobalTheory.QuadSymbol.toUnits, sub_eq_add_neg] using h
-  have := congrArg (InfinitePlace.Completion.ringEquivRealOfIsReal hw) h'
-  simp only [map_neg, map_one, map_add (f := _), map_pow] at this
-  nlinarith [sq_nonneg (InfinitePlace.Completion.ringEquivRealOfIsReal hw a),
-    sq_nonneg (InfinitePlace.Completion.ringEquivRealOfIsReal hw b)]
-
-end Real
 
 section Tower
 variable {F K : Type} [Field F] [Field K] [Algebra F K] (d : F)

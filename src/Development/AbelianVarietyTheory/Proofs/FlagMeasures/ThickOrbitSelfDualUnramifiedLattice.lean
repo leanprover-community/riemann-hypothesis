@@ -74,10 +74,6 @@ namespace GlobalTheory.PowMulMem
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 
-theorem alg_mem (L : LocE F E) (a : 𝒪[F]) : algebraMap F E (a : F) ∈ L.O := by
-  rw [L.O_def]
-  exact isIntegral_algebraMap (R := 𝒪[F]) (A := E) (x := a)
-
 theorem exists_pow_mul_mem [IsNonarchimedeanLocalField F] (L : LocE F E) {ϖ : 𝒪[F]}
     (hϖ : Irreducible ϖ) (e : E) : ∃ k : ℕ, algebraMap F E ((ϖ : F) ^ k) * e ∈ L.O := by
   apply GlobalTheory.PowSmulMemLattice.exists_pow_mul_mem_O <;> assumption
