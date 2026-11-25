@@ -174,7 +174,7 @@ theorem log_endo (G : FGLaw C d) (lg : Pt C 1 d) (hlin : LinN lg)
       intro k
 
       rw [map_sub, map_sum]
-      simp only [coeff_C_mul, linN_coeff hlin, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq',
+      simp only [coeff_C_mul, linN_coeff hlin, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
         Finset.mem_univ, ite_true]
 
       rw [← cc_pderiv, show comp1 lg φ i = ev ![φ] (lg i) from rfl]
