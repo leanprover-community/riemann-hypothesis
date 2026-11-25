@@ -4,9 +4,10 @@ name: batch queue
 # `b`, on it.
 # This records the commit that was the pull request's head when the comment was posted, and adds
 # the `batch queue` and `frozen` labels. `batch <commit>`, with the full id of the head commit,
-# names the commit outright. The label on its own queues nothing, and commits pushed later wait
-# for another `batch`. Commenting `p`, or `p <commit>`, queues a pull request the way `batch` does
-# and labels it `priority` as well.
+# names the commit outright. The label on its own queues nothing, and the approval covers that
+# commit only: a commit pushed later is not approved until someone comments `batch` again.
+# Commenting `p`, or `p <commit>`, queues a pull request the way `batch` does and labels it
+# `priority` as well.
 #
 # The batch queue is a list of approvals: maintainers assemble batches from it by hand. The sync
 # job used to assemble a batch of its own from the queue as well, a `batch/<date-time>` branch
