@@ -72,10 +72,7 @@ theorem exists_compact_entries {F E : Type} [Field F] [NumberField F] [Field E] 
 
   let f : Fin n → Fin n → (Fin n → Fin n → Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F ⊗[F] E) → Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F ⊗[F] E :=
     fun i j a => ∑ l, (∑ k, b i k * a k l) * c l j
-  have hf : ∀ i j, Continuous (f i j) := fun i j =>
-    continuous_finsetSum _ fun l _ =>
-      (continuous_finsetSum _ fun k _ =>
-        continuous_const.mul ((continuous_apply l).comp (continuous_apply k))).mul continuous_const
+  have hf : ∀ i j, Continuous (f i j) := by fun_prop
   have hS : IsCompact (Set.univ.pi fun _ : Fin n => Set.univ.pi fun _ : Fin n => C0) :=
     isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => hC0
   refine ⟨⋃ i, ⋃ j, f i j '' Set.univ.pi (fun _ : Fin n => Set.univ.pi fun _ : Fin n => C0),

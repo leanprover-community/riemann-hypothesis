@@ -58,10 +58,7 @@ theorem leviV_normSq_comp {g : V n → ℂ} {x : V n} (hg : ContDiffAt ℂ 2 g x
 
   have hwdk : ∀ k, wd n k g =ᶠ[𝓝 x] fun y => fderiv ℂ g y (bas n k) :=
     fun k => hdC.mono fun y hy => wd_of_differentiableAt hy
-  have hfd : ∀ k, DifferentiableAt ℂ (fun y => fderiv ℂ g y (bas n k)) x := by
-    intro k
-    have h1 : ContDiffAt ℂ 1 (fderiv ℂ g) x := hg.fderiv_right (by norm_num)
-    exact (h1.differentiableAt (by norm_num)).clm_apply (differentiableAt_const _)
+  have hfd : ∀ k, DifferentiableAt ℂ (fun y => fderiv ℂ g y (bas n k)) x := by fun_prop
   have hwdbwd : ∀ j k, wdb n j (wd n k g) x = 0 :=
     fun j k => (wdb_congr (hwdk k)).trans (wdb_of_differentiableAt (hfd k))
   have hwdR : ∀ k, DifferentiableAt ℝ (wd n k g) x :=

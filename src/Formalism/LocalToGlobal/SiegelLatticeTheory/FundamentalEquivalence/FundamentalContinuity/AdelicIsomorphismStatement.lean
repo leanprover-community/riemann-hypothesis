@@ -1158,10 +1158,7 @@ theorem continuous_FmF : Continuous (FmF I) := by
   have hmm : 1 ≤ g * mm I ^ 2 := by
     calc 1 = 1 * 1 := rfl
       _ ≤ g * mm I ^ 2 := Nat.mul_le_mul hg (Nat.one_le_pow _ _ (mm_pos I))
-  have hcont : Continuous fun h : HAd I => hmat I h := by
-    show Continuous fun h : HAd I =>
-      ((matHom I h : GL (Fin I.n) (TT I)) : Matrix (Fin I.n) (Fin I.n) (TT I))
-    exact Units.continuous_val.comp (continuous_matHom I)
+  have hcont : Continuous fun h : HAd I => hmat I h := by fun_prop
   have hent : ∀ i j, Continuous fun h : HAd I => (hmat I h - 1) i j := fun i j =>
     (hcont.sub continuous_const).matrix_elem i j
 

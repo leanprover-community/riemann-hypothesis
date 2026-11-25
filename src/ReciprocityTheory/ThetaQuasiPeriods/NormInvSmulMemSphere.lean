@@ -249,12 +249,7 @@ theorem thetaMTest_holds : ThetaMTestStatement := by
   classical
   let Mf : (ι → ℂ) × (ι → ι → ℂ) → Matrix ι ι ℝ :=
     fun p => (of p.2).map Complex.im + ((of p.2).map Complex.im)ᵀ
-  have hc : Continuous Mf := by
-    refine continuous_pi fun i => continuous_pi fun j => ?_
-    exact (Complex.continuous_im.comp ((continuous_apply j).comp
-      ((continuous_apply i).comp continuous_snd))).add
-      (Complex.continuous_im.comp ((continuous_apply i).comp
-        ((continuous_apply j).comp continuous_snd)))
+  have hc : Continuous Mf := by fun_prop
   obtain ⟨c, hc0, hcK⟩ := quad_lower Mf hc K hK (fun p hp => hKd p hp)
   obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn (f := fun p => p.1) continuous_fst.continuousOn
   refine ⟨fun l => ∏ i, Real.exp (-((Real.pi * c / 2) / 4) * (l i : ℝ) ^ 2 +

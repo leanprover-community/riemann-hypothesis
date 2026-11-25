@@ -64,10 +64,7 @@ theorem continuous_shearGL (n : ℕ) {r : kˣ} (hr : valuation k (r : k) < 1) :
   have hne : ∀ b : (GlobalTheory.CompanionTheory.BZOnto.PerpSmall.box (n + 1) r : Set (Fin (n + 1) → k)), 1 + b.1 (Fin.last n) ≠ 0 :=
     fun b => GlobalTheory.CompanionTheory.MirPair.ShearOrbit.one_add_ne_zero_of_mem_box n hr b.2
   have hv : Continuous fun b : (GlobalTheory.CompanionTheory.BZOnto.PerpSmall.box (n + 1) r : Set (Fin (n + 1) → k)) =>
-      vecMulVec (GlobalTheory.BZMir.eLast k n) b.1 :=
-    continuous_matrix fun i j => by
-      simp only [vecMulVec_apply]
-      exact continuous_const.mul ((continuous_apply j).comp continuous_subtype_val)
+      vecMulVec (GlobalTheory.BZMir.eLast k n) b.1 := by fun_prop
   rw [Units.continuous_iff]
   constructor
   · exact (continuous_const.add hv).congr fun b => (GlobalTheory.CompanionTheory.MirPair.ShearOrbit.shearGL_val n b.1 (hne b)).symm

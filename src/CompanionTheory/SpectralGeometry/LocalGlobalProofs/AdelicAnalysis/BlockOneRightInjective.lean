@@ -303,11 +303,7 @@ lemma isEmbedding_iotaHom : IsEmbedding (iotaHom R σ J s) := by
       Matrix (Fin M) (Fin M) (R ⊗[F] E) × (Matrix (Fin M) (Fin M) (R ⊗[F] E))ᵐᵒᵖ :=
     fun p => (p.1.submatrix Fin.succ Fin.succ,
       MulOpposite.op ((MulOpposite.unop p.2).submatrix Fin.succ Fin.succ))
-  have hP : Continuous P := by
-    refine Continuous.prodMk ?_ ?_
-    · exact continuous_fst.matrix_submatrix _ _
-    · exact MulOpposite.continuous_op.comp
-        ((MulOpposite.continuous_unop.comp continuous_snd).matrix_submatrix _ _)
+  have hP : Continuous P := by fun_prop
   refine IsEmbedding.of_comp (continuous_iotaHom R σ J s) (hP.comp hp) ?_
   have : (P ∘ pairMap R σ (blockOne s J)) ∘ iotaHom R σ J s = pairMap R σ J := by
     funext u

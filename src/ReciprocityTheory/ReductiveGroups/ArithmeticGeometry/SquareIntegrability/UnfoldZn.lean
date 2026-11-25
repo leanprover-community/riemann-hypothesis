@@ -82,10 +82,7 @@ theorem gauss_lin {d : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace
   set G : (Fin d → ℝ) → ENNReal := fun y =>
     ENNReal.ofReal (Real.exp (-(2 * Real.pi) * ‖(WithLp.toLp 2 y : EuclideanSpace ℝ (Fin d))‖ ^ 2))
     with hG
-  have hGm : Measurable G := by
-    refine (Continuous.measurable ?_)
-    exact ENNReal.continuous_ofReal.comp (Real.continuous_exp.comp
-      (continuous_const.mul ((PiLp.continuous_toLp 2 _).norm.pow 2)))
+  have hGm : Measurable G := by fun_prop
   have hL : (fun a : Fin d → ℝ =>
       ENNReal.ofReal (Real.exp (-(2 * Real.pi) * ‖∑ j, a j • u j‖ ^ 2))) =
       fun a => G (Matrix.toLin' M a) := by

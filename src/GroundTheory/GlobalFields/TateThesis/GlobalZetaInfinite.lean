@@ -37,10 +37,7 @@ theorem mult_le_two (w : InfinitePlace K) : (w.mult : ℝ) ≤ 2 := by
 
 theorem lintegral_one_add_norm_rpow_neg_lt_top (w : InfinitePlace K) {r : ℝ} (hr : 2 < r) :
     ∫⁻ z, ENNReal.ofReal ((1 + ‖z‖) ^ (-r)) ∂infinitePlaceMeasure w < ∞ := by
-  have hm : Measurable fun z : w.Completion ↦ ENNReal.ofReal ((1 + ‖z‖) ^ (-r)) :=
-    ENNReal.measurable_ofReal.comp
-      ((continuous_const.add continuous_norm).rpow_const fun z ↦
-        Or.inl (add_pos_of_pos_of_nonneg one_pos (norm_nonneg z)).ne').measurable
+  have hm : Measurable fun z : w.Completion ↦ ENNReal.ofReal ((1 + ‖z‖) ^ (-r)) := by fun_prop
   by_cases hw : w.IsReal
   · rw [infinitePlaceMeasure_of_isReal hw,
       lintegral_map hm (isometryEquivRealOfIsReal hw).symm.continuous.measurable]

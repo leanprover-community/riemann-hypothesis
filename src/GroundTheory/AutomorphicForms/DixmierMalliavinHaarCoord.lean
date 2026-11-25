@@ -303,10 +303,7 @@ theorem contDiff_integral_comp_of_hasCompactSupport {X : Type*} [MeasurableSpace
     intro W F _ _ _ _ _ Ξ hΞ hc
     set Ξ' : V × W → (W →L[ℝ] F) := fun q => (fderiv ℝ Ξ q).comp (ContinuousLinearMap.inr ℝ V W)
       with hΞ'def
-    have hΞ'c : ContDiff ℝ ∞ Ξ' :=
-      ContDiff.clm_comp (𝕜 := ℝ) (g := fun q => fderiv ℝ Ξ q)
-        (f := fun _ => ContinuousLinearMap.inr ℝ V W)
-        (hΞ.fderiv_right (m := ∞) (by simp)) contDiff_const
+    have hΞ'c : ContDiff ℝ ∞ Ξ' := by fun_prop
     have hΞ's : HasCompactSupport Ξ' :=
       (hc.fderiv (𝕜 := ℝ)).comp_left (g := fun L : V × W →L[ℝ] F => L.comp (ContinuousLinearMap.inr ℝ V W))
         (ContinuousLinearMap.zero_comp _)

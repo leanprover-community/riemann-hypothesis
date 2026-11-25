@@ -371,11 +371,7 @@ theorem ns_meas_heis0 (k r' : ℕ) :
   exact h.measurable
 
 theorem ns_meas_G (k r' : ℕ) (d : ℝ) :
-    Measurable (fun x : HPar k r' => ENNReal.ofReal ((1 + ∑ i, Complex.normSq (x.1 i) + x.2 ^ 2) ^ (-(d / 2)))) := by
-  have h : Continuous (fun x : HPar k r' => 1 + ∑ i, Complex.normSq (x.1 i) + x.2 ^ 2) :=
-    (continuous_const.add (continuous_finsetSum _ fun i _ =>
-      Complex.continuous_normSq.comp ((continuous_apply i).comp continuous_fst))).add (continuous_snd.pow 2)
-  exact (h.measurable.pow_const _).ennreal_ofReal
+    Measurable (fun x : HPar k r' => ENNReal.ofReal ((1 + ∑ i, Complex.normSq (x.1 i) + x.2 ^ 2) ^ (-(d / 2)))) := by fun_prop
 
 theorem ns_sigmaFinite {k r : ℕ} {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) :
     SigmaFinite μ := by

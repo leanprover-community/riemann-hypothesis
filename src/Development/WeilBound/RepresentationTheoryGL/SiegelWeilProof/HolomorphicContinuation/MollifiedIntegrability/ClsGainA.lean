@@ -60,14 +60,8 @@ theorem continuous_of' : Continuous fun B : MC n => Matrix.of B :=
   continuous_matrix fun i j => continuous_apply_apply i j
 
 theorem isOpen_OmS (s : ℂ) : IsOpen (OmS (n := n) s) := by
-  have g1 : Continuous fun B : MC n => 1 - (Complex.I * s) • Matrix.of B :=
-    continuous_matrix fun i j => by
-      simp only [Matrix.sub_apply, Matrix.smul_apply, of_apply, smul_eq_mul]
-      exact continuous_const.sub (continuous_const.mul (continuous_apply_apply i j))
-  have g2 : Continuous fun B : MC n => 1 + (Complex.I * s) • Matrix.of B :=
-    continuous_matrix fun i j => by
-      simp only [Matrix.add_apply, Matrix.smul_apply, of_apply, smul_eq_mul]
-      exact continuous_const.add (continuous_const.mul (continuous_apply_apply i j))
+  have g1 : Continuous fun B : MC n => 1 - (Complex.I * s) • Matrix.of B := by fun_prop
+  have g2 : Continuous fun B : MC n => 1 + (Complex.I * s) • Matrix.of B := by fun_prop
   have g3 : Continuous fun B : MC n => 1 + Matrix.of B * Matrix.of B :=
     continuous_const.add (continuous_of'.mul continuous_of')
   have h1 : Continuous fun B : MC n => (1 - (Complex.I * s) • Matrix.of B).det := g1.matrix_det

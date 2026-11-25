@@ -64,10 +64,7 @@ theorem lintegral_tuple_first_coord (m : Measure T) [SigmaFinite m] (n M : ℕ)
   have h₄ := h₃.comp h₂
   let g : (Fin n → T) × (Fin n → Fin M → T) → Fin n → Fin (M + 1) → T :=
     fun p a => e₁.symm (p.1 a, p.2 a)
-  have hg : Measurable g := by
-    refine measurable_pi_iff.2 fun a => e₁.symm.measurable.comp ?_
-    exact ((measurable_pi_apply a).comp measurable_fst).prodMk
-      ((measurable_pi_apply a).comp measurable_snd)
+  have hg : Measurable g := by fun_prop
   have hgi : ∀ Y, g ((MeasurableEquiv.arrowProdEquivProdArrow T (Fin M → T) (Fin n) ∘
       fun Y a => e₁ (Y a)) Y) = Y := by
     intro Y

@@ -214,12 +214,7 @@ theorem aemeasurable_coneIntegrand {e n : ℕ} {U D : Set (Fin e → ℂ)}
     · simpa [gramVecs] using
         (measurable_fderiv_apply_const (𝕜 := ℂ) (f := v) (Pi.single j (1 : ℂ))).aemeasurable
   have hΦ : Continuous fun W : Fin (e + 1) → Fin n → ℂ =>
-      (Matrix.det (Matrix.of fun a b => ∑ i, star (W a i) * W b i)).re := by
-    refine Complex.continuous_re.comp (Continuous.matrix_det ?_)
-    refine continuous_pi fun a => continuous_pi fun b => ?_
-    simp only [Matrix.of_apply]
-    refine continuous_finsetSum _ fun i _ => ?_
-    fun_prop
+      (Matrix.det (Matrix.of fun a b => ∑ i, star (W a i) * W b i)).re := by fun_prop
   have hg : AEMeasurable (gramVol v) (volume.restrict D) := hΦ.measurable.comp_aemeasurable hW
   have h1 : AEMeasurable (fun q : (Fin e → ℂ) × ℂ => q.2 • WithLp.toLp 2 (v q.1))
       ((volume.restrict D).prod volume) :=

@@ -307,14 +307,7 @@ private theorem killsKernel_rowShear_invariant_lemma_10 (ν : Measure k) [ν.IsA
     let f : ↥it → (↥it → k) → k := fun p a =>
       if p.1.1 = Sum.inr i₀ then s * X a (Sum.inr j) p.1.2 else 0
     let rk : ↥it → ℕ := fun p => Sum.elim (fun _ => 0) (fun r : Fin c => c - (r : ℕ)) p.1.1
-    have hfm : ∀ p, Measurable (f p) := by
-      intro p
-      by_cases hp : p.1.1 = Sum.inr i₀
-      · simp only [f, hp, ite_true]
-        exact (continuous_const.mul ((continuous_apply _).comp
-          ((continuous_apply _).comp hXc))).measurable
-      · simp only [f, hp, ite_false]
-        exact measurable_const
+    have hfm : ∀ p, Measurable (f p) := by fun_prop
     have hfd : ∀ (p : ↥it) (x y : ↥it → k), (∀ q, rk q < rk p → x q = y q) → f p x = f p y := by
       intro p x y hxy
       by_cases hp : p.1.1 = Sum.inr i₀
@@ -635,12 +628,7 @@ theorem red_rowAdd (ν : Measure k) [ν.IsAddHaarMeasure] (ev it : Finset (m × 
     · exact measurable_pi_apply _
     · exact measurable_const
     · exact measurable_const
-  have hvm : Measurable v := by
-    refine Measurable.of_eval fun e => ?_
-    show Measurable fun α => if e.1.1 = r₀ then a * fill ev it β t α r₁ e.1.2 else 0
-    split_ifs
-    · exact (hfm e.1.2).const_mul a
-    · exact measurable_const
+  have hvm : Measurable v := by fun_prop
   have h0' : ∀ (α : {e : m × m' // e ∈ it} → k) (e : {e : m × m' // e ∈ it}), e.1.1 ≠ r₀ → v α e = 0 := by
     intro α e he
     simp [v, he]

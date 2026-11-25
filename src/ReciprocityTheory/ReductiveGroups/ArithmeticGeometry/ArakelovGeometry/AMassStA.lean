@@ -101,12 +101,7 @@ theorem gaM_lintegral_pi (D : ℕ) : ∀ (a : ℝ), 0 < a → ∀ j : ℕ,
     have hmp := volume_preserving_piFinSuccAbove (fun _ : Fin (D + 1) => ℂ) 0
     set F : (Fin (D + 1) → ℂ) → ℝ≥0∞ := fun y =>
       ENNReal.ofReal (((a + ∑ i, ‖y i‖ ^ 2) ^ (D + 1 + j + 1))⁻¹) with hF
-    have hFm : Measurable F := by
-      have : Continuous fun y : Fin (D + 1) → ℂ => ((a + ∑ i, ‖y i‖ ^ 2) ^ (D + 1 + j + 1))⁻¹ := by
-        refine Continuous.inv₀ (by fun_prop) fun y => ?_
-        have : 0 < a + ∑ i, ‖y i‖ ^ 2 := by positivity
-        positivity
-      exact ENNReal.measurable_ofReal.comp this.measurable
+    have hFm : Measurable F := by fun_prop
     have h1 := hmp.lintegral_comp_emb (MeasurableEquiv.measurableEmbedding _)
       (fun p => F ((MeasurableEquiv.piFinSuccAbove (fun _ : Fin (D + 1) => ℂ) 0).symm p))
     simp only [MeasurableEquiv.symm_apply_apply] at h1

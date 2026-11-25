@@ -23,14 +23,7 @@ variable {n : ℕ}
 
 theorem cont_triple {A B : Type*} [TopologicalSpace A] [TopologicalSpace B] [Group B]
     [IsTopologicalGroup B] (F : A × B → ℝ) (c : B → ℝ) (hF : Continuous F) (hc : Continuous c) :
-    Continuous fun z : A × (B × B) => F (z.1, z.2.1) * F (z.1, z.2.2) * c (z.2.1⁻¹ * z.2.2) ^ 2 := by
-  have h1 : Continuous fun z : A × (B × B) => F (z.1, z.2.1) :=
-    hF.comp (continuous_fst.prodMk (continuous_fst.comp continuous_snd))
-  have h2 : Continuous fun z : A × (B × B) => F (z.1, z.2.2) :=
-    hF.comp (continuous_fst.prodMk (continuous_snd.comp continuous_snd))
-  have h3 : Continuous fun z : A × (B × B) => c (z.2.1⁻¹ * z.2.2) :=
-    hc.comp (((continuous_fst.comp continuous_snd).inv).mul (continuous_snd.comp continuous_snd))
-  exact (h1.mul h2).mul (h3.pow 2)
+    Continuous fun z : A × (B × B) => F (z.1, z.2.1) * F (z.1, z.2.2) * c (z.2.1⁻¹ * z.2.2) ^ 2 := by fun_prop
 
 theorem cont_slice {A B : Type*} [TopologicalSpace A] [TopologicalSpace B] (f : A × B → ℝ)
     (hf : Continuous f) (a : A) : Continuous fun b : B => f (a, b) :=

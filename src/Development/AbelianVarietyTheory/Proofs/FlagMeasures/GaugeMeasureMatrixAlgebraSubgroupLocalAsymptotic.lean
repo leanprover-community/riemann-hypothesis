@@ -841,10 +841,7 @@ theorem gauge_local_asymptotics : ∀ (n : ℕ) (ε : Fin n → Bool) (A : Submo
   simp only [GlobalTheory.GaugeConst.sqrt_hs] at hlip hsurj
   set ψ : Formalism.REAL.UJ ε → EuclideanSpace ℝ (Fin d) :=
     fun g => WithLp.toLp 2 (fun i => (((uMat g - 1) * (E i)ᴴ).trace).re) with hψdef
-  have hψ : Continuous ψ := by
-    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => Complex.continuous_re.comp ?_)
-    exact (((GlobalTheory.GaugeConst.continuous_uMat ε).sub continuous_const).matrix_mul
-      continuous_const).matrix_trace
+  have hψ : Continuous ψ := by fun_prop
   obtain ⟨δ, hδ, h2⟩ := hlip 2 one_lt_two
   obtain ⟨s₀, ⟨hs1, -⟩, hs2, hs3⟩ :=
     ((eventually_bounds hμ one_lt_two).and (Ioo_mem_nhdsGT hδ)).exists

@@ -304,10 +304,7 @@ theorem isOpen_setOf_conj_eq (M : TRep R G) [DiscreteTopology M.V] (N : Subgroup
     apply Continuous.subtype_mk
     exact (continuous_fst.inv.mul (continuous_subtype_val.comp continuous_snd)).mul continuous_fst
   have hΦ : Continuous (fun p : G × N =>
-      M.rho p.1 (f (cj N p.1 p.2)) - f p.2 - (M.rho (p.2 : G) m - m)) := by
-    refine ((hact.comp (continuous_fst.prodMk (hf.comp hcj))).sub (hf.comp continuous_snd)).sub ?_
-    exact (hact.comp ((continuous_subtype_val.comp continuous_snd).prodMk continuous_const)).sub
-      continuous_const
+      M.rho p.1 (f (cj N p.1 p.2)) - f p.2 - (M.rho (p.2 : G) m - m)) := by fun_prop
   have hO : IsOpen {p : G × N | M.rho p.1 (f (cj N p.1 p.2)) - f p.2 - (M.rho (p.2 : G) m - m) = 0} :=
     hΦ.isOpen_preimage {0} (isOpen_discrete _)
   rw [isOpen_iff_mem_nhds]

@@ -71,10 +71,7 @@ theorem tendsto_shearGL_zero (n : ℕ) :
     have h2 := (valuation k).map_one_add_of_lt hb
     rw [h, map_zero] at h2
     exact zero_ne_one h2
-  have hv : Continuous fun b : Fin (n + 1) → k => vecMulVec (GlobalTheory.BZMir.eLast k n) b :=
-    continuous_matrix fun i j => by
-      simp only [vecMulVec_apply]
-      exact continuous_const.mul (continuous_apply j)
+  have hv : Continuous fun b : Fin (n + 1) → k => vecMulVec (GlobalTheory.BZMir.eLast k n) b := by fun_prop
   have hv0 : vecMulVec (GlobalTheory.BZMir.eLast k n) (0 : Fin (n + 1) → k) = 0 := by
     ext i j
     simp [vecMulVec_apply]

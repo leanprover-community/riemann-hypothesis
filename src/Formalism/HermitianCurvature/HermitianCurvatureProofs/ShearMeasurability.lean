@@ -53,10 +53,7 @@ lemma lvl_mp {ρ : ι → ℕ} {F : (ι → ℂ) → ι → ℂ} (hFm : Measurab
   let x0 : ({q // p q} → ℂ) → ι → ℂ := fun z => e.symm (z, 0)
   let φ : ({q // p q} → ℂ) → {q // ¬ p q} → ℂ := fun z q => F (x0 z) q - x0 z q
   have hx0 : Measurable x0 := e.symm.measurable.comp (measurable_id.prodMk measurable_const)
-  have hφ : Measurable φ := by
-    apply measurable_pi_lambda
-    intro q
-    exact ((measurable_pi_apply _).comp (hFm.comp hx0)).sub ((measurable_pi_apply _).comp hx0)
+  have hφ : Measurable φ := by fun_prop
   let T : ({q // p q} → ℂ) × ({q // ¬ p q} → ℂ) → ({q // p q} → ℂ) × ({q // ¬ p q} → ℂ) :=
     fun pr => (pr.1, pr.2 + φ pr.1)
   have hT : MeasurePreserving T ((volume : Measure ({q // p q} → ℂ)).prod volume)

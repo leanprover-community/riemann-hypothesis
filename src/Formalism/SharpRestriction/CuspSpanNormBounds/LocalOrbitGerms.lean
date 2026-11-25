@@ -189,20 +189,8 @@ theorem measurePreserving_of_card (ρ : ι → ℕ) (N : ℕ) : ∀ (g : (ι →
     let S : ι → Prop := fun i => ρ i = N
     let g1 : (ι → E) → ι → E := fun x i => if ρ i = N then g x i else 0
     let g0 : (ι → E) → ι → E := fun x i => if ρ i < N then g x i else 0
-    have hg1 : Measurable g1 := by
-      refine measurable_pi_iff.2 fun i => ?_
-      by_cases h : ρ i = N
-      · simp only [g1, h, ite_true]
-        exact (measurable_pi_apply i).comp hg
-      · simp only [g1, h, ite_false]
-        exact measurable_const
-    have hg0 : Measurable g0 := by
-      refine measurable_pi_iff.2 fun i => ?_
-      by_cases h : ρ i < N
-      · simp only [g0, h, ite_true]
-        exact (measurable_pi_apply i).comp hg
-      · simp only [g0, h, ite_false]
-        exact measurable_const
+    have hg1 : Measurable g1 := by fun_prop
+    have hg0 : Measurable g0 := by fun_prop
     have hdep1 : ∀ x x', (∀ j, ¬ S j → x j = x' j) → g1 x = g1 x' := by
       intro x x' h
       funext i

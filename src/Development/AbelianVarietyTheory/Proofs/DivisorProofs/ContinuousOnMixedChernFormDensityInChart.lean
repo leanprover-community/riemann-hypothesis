@@ -39,11 +39,7 @@ theorem continuousOn_dens : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X 
         simpa only [mem_preimage, c.e.left_inv hy.1] using mem_iInter.1 hy.2 a⟩
   let F : CxPts p σ → ℝ := fun y => (Real.pi ^ D)⁻¹ * (∑ τ : Equiv.Perm (Fin D),
     (Matrix.of fun j l => c.hess (L (τ l)).φ (i (τ l)) y j l).det).re
-  have hF : ContinuousOn F S := by
-    refine continuousOn_const.mul (Complex.continuous_re.comp_continuousOn
-      (continuousOn_finsetSum _ fun τ _ => ?_))
-    refine (continuous_id.matrix_det).comp_continuousOn ?_
-    exact continuousOn_pi.2 fun j => continuousOn_pi.2 fun l => hH (τ l) j l
+  have hF : ContinuousOn F S := by fun_prop
   have he : ∀ y ∈ S, dens L c y = F y := by
     intro y hy
     have hm : ∀ τ : Equiv.Perm (Fin D),

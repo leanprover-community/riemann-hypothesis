@@ -41,10 +41,7 @@ theorem fdExistsH_holds : FDExistsH := by
       HFinIn (AF X.B.I.F) X.B.I.cm.sig X.B.I.J := fun x =>
     ⟨((x : Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u)) : HA (AF X.B.I.F) X.B.I.cm.sig X.B.I.J),
       Subgroup.mem_comap.1 x.2⟩
-  have hf : Continuous f :=
-    ((continuous_subtype_val.comp continuous_subtype_val :
-      Continuous fun x : ratOf (K := Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u)) =>
-        ((x : Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u)) : HA (AF X.B.I.F) X.B.I.cm.sig X.B.I.J))).subtype_mk _
+  have hf : Continuous f := by fun_prop
   have hinj : Function.Injective f := by
     intro x y hxy
     have e := congrArg Subtype.val hxy

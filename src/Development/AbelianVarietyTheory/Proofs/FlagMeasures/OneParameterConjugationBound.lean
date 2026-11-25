@@ -146,10 +146,7 @@ lemma torus_lipschitz_l2_bound {G ι : Type} [Fintype ι] [TopologicalSpace G] [
   have hq : ∀ i, Integrable (q i) μ ∧ ∫ g, q i g ∂μ ≤ B i := by
     intro i
     set f : ℝ → G → ℝ := fun u g => β g * ‖Φ i (s * u) g‖ ^ 2 with hf
-    have hmeas : Measurable (Function.uncurry f) := by
-      have hc : Continuous fun p : ℝ × G => Φ i (s * p.1) p.2 :=
-        (hΦ i).comp ((continuous_const.mul continuous_fst).prodMk continuous_snd)
-      exact (hβ.comp measurable_snd).mul (hc.measurable.norm.pow_const 2)
+    have hmeas : Measurable (Function.uncurry f) := by fun_prop
     have hint : Integrable (Function.uncurry f)
         ((MeasureTheory.volume.restrict (Set.uIoc (0:ℝ) 1)).prod μ) := by
       rw [integrable_prod_iff hmeas.aestronglyMeasurable]

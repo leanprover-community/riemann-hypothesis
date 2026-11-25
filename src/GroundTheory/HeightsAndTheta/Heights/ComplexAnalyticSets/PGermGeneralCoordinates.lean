@@ -21,11 +21,7 @@ theorem exists_lastCoord_ne_zero_of_mem_nhds {σ : Type} {U : Set (Option σ →
     (hU : U ∈ 𝓝 w) : ∃ v ∈ U, v none ≠ 0 := by
   classical
   let g : ℂ → Option σ → ℂ := fun s => Function.update w none s
-  have hg : Continuous g := by
-    refine continuous_pi fun o => ?_
-    cases o with
-    | none => simpa [g] using continuous_id'
-    | some i => simpa [g] using continuous_const
+  have hg : Continuous g := by fun_prop
   have hgw : g (w none) = w := Function.update_eq_self none w
   have hev : ∀ᶠ s in 𝓝 (w none), g s ∈ U := by
     have := hg.tendsto (w none)

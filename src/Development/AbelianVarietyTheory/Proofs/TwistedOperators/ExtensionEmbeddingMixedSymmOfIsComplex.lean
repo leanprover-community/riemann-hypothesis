@@ -209,10 +209,7 @@ theorem exists_smooth_mul_extension_of_continuous_char :
     rw [Units.inv_mul]
     exact h1
   have h4 : ContDiffAt ℝ ∞
-      (fun z : mixedSpace K => φ u * φ ((u⁻¹ : (mixedSpace K)ˣ) * z)) (u : mixedSpace K) :=
-    contDiffAt_const.mul (h3.comp (u : mixedSpace K)
-      (f := fun z : mixedSpace K => ((u⁻¹ : (mixedSpace K)ˣ) : mixedSpace K) * z)
-      (contDiffAt_const.mul contDiffAt_id))
+      (fun z : mixedSpace K => φ u * φ ((u⁻¹ : (mixedSpace K)ˣ) * z)) (u : mixedSpace K) := by fun_prop
   rw [← h2] at h4
   exact h4.contDiffWithinAt
 

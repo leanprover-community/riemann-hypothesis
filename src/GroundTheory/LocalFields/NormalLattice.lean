@@ -425,12 +425,7 @@ theorem isOpen_normalLattice (hπ : Irreducible π) (hθ : LinearIndependent K f
   have hπ0 : algebraMap K L (π : K) ≠ 0 := by
     rw [ne_eq, map_eq_zero_iff _ (algebraMap K L).injective]
     exact fun h => hπ.ne_zero (Subtype.ext h)
-  have hcont : Continuous fun c : Gal(L/K) → 𝒪[K] => π ^ s • ∑ σ, c σ • σ θ := by
-    simp_rw [integer_smul_eq, Finset.mul_sum]
-    refine continuous_finsetSum _ fun σ _ => ?_
-    simp_rw [← Algebra.smul_def, smul_smul]
-    refine Continuous.smul ?_ continuous_const
-    exact continuous_const.mul (continuous_subtype_val.comp (continuous_apply σ))
+  have hcont : Continuous fun c : Gal(L/K) → 𝒪[K] => π ^ s • ∑ σ, c σ • σ θ := by fun_prop
   have hcpt : IsCompact (normalLattice π θ s : Set L) := by
     have : (normalLattice π θ s : Set L) = Set.range fun c : Gal(L/K) → 𝒪[K] =>
         π ^ s • ∑ σ, c σ • σ θ := by

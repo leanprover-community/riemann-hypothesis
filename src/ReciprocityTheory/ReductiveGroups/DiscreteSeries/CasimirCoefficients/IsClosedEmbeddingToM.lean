@@ -91,10 +91,7 @@ lemma isClosedEmbedding_toM (ε : Fin n → Bool) : IsClosedEmbedding (fun g : U
   refine ⟨?_, by rw [range_toM]; exact isClosed_inUJ ε⟩
   let F : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ × (Matrix (Fin n) (Fin n) ℂ)ᵐᵒᵖ :=
     fun A => (A, MulOpposite.op (Jm ε * Aᴴ * Jm ε))
-  have hF : Continuous F :=
-    continuous_id.prodMk (MulOpposite.continuous_op.comp
-      ((continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul
-        continuous_const))
+  have hF : Continuous F := by fun_prop
   refine IsEmbedding.of_comp (continuous_toM ε) hF ?_
   have heq : F ∘ (fun g : UJ ε => toM g) =
       Units.embedProduct (Matrix (Fin n) (Fin n) ℂ) ∘ Subtype.val := by

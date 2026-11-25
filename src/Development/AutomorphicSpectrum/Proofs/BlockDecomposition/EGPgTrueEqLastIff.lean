@@ -132,12 +132,7 @@ theorem exists_rowSec {N : ℕ} (a : Fin N) : ∃ b : (Fin N → k) → GL (Fin 
       ∀ y : Fin N → k, y a ≠ 0 → (b y : Matrix (Fin N) (Fin N) k) = (1 : Matrix (Fin N) (Fin N) k).updateRow a y := by
   classical
   let M : (Fin N → k) → Matrix (Fin N) (Fin N) k := fun y => (1 : Matrix (Fin N) (Fin N) k).updateRow a y
-  have hM : Continuous M := by
-    refine continuous_matrix fun c d => ?_
-    by_cases h : c = a
-    · subst h
-      simpa [M] using continuous_apply d
-    · simpa [M, Matrix.updateRow_ne h] using continuous_const
+  have hM : Continuous M := by fun_prop
   have hdet : ∀ y, (M y).det = y a := fun y => det_updateRow_one a y
   let b : (Fin N → k) → GL (Fin N) k := fun y =>
     if h : y a ≠ 0 then Matrix.GeneralLinearGroup.mkOfDetNeZero (M y) (by rw [hdet]; exact h) else 1

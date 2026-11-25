@@ -22,10 +22,7 @@ theorem exists_continuous_modulus :
       (∀ y, a 1 y = y) → (∀ s t y, a (s * t) y = a s (a t y)) →
       ∃ χ : T →* ℝ≥0, Continuous χ ∧ ∀ t, μ.map (a t) = χ t • μ := by
   intro V _ _ _ _ _ _ _ _ μ _ T _ _ _ _ a ha hinv h1 hmul
-  have hat : ∀ t, Continuous (a t) := fun t => by
-    have h := ha.comp (continuous_const.prodMk (continuous_id (X := V)) :
-      Continuous fun y : V => (t, y))
-    exact h
+  have hat : ∀ t, Continuous (a t) := by fun_prop
   have hleft : ∀ t y, a t⁻¹ (a t y) = y := by
     intro t y
     rw [← hmul, inv_mul_cancel, h1]

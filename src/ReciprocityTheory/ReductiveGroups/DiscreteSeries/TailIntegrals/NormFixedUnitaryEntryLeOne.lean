@@ -158,13 +158,7 @@ lemma rot (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {φ 
     rw [Matrix.conjTranspose_mul, ← Matrix.mulVec_mulVec, hRv, Matrix.mulVec_add,
       Matrix.mulVec_smul, Matrix.mulVec_smul, mulVec_bvec_eq_fun_apply, mulVec_bvec_eq_fun_apply]
     simp [Matrix.conjTranspose_apply, hx0]
-  have hcont : Continuous (fun x : Mt k 0 => ((Matrix.of x)ᴴ *ᵥ v) (iW k)) := by
-    first
-    | (simp only [Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply, Matrix.of_apply]
-       exact continuous_finset_sum _ fun j _ =>
-        (continuous_star.comp ((continuous_apply (iW k)).comp (continuous_apply j))).mul
-          continuous_const)
-    | fun_prop
+  have hcont : Continuous (fun x : Mt k 0 => ((Matrix.of x)ᴴ *ᵥ v) (iW k)) := by fun_prop
   have hmeasF : Measurable (fun x : Mt k 0 => φ (((Matrix.of x)ᴴ *ᵥ v) (iW k))) :=
     hφ.comp hcont.measurable
   calc ∫⁻ x, φ (((Matrix.of x)ᴴ *ᵥ v) (iW k)) ∂ν
@@ -277,10 +271,7 @@ lemma bnd (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {s :
       rw [e, hsc, Complex.normSq_neg, Complex.normSq_mul, Complex.normSq_ofReal,
         Complex.normSq_eq_norm_sq, ← ht, hρ]
       field_simp
-    have hφ : Measurable (fun z : ℂ => ENNReal.ofReal (lam * ‖z + b‖) ^ (-s)) := by
-      first
-      | exact (ENNReal.continuous_ofReal.comp
-          (continuous_const.mul (continuous_id.add continuous_const).norm)).measurable.pow_const _
+    have hφ : Measurable (fun z : ℂ => ENNReal.ofReal (lam * ‖z + b‖) ^ (-s)) := by fun_prop
     have hrot := rot hk hν hφ v c hc hvc
     refine hrot.trans_le ?_
     have hmeasC : Measurable (fun x : Mt k 0 => (‖1 - x (iW k) (iW k)‖₊ : ℝ≥0∞) ^ (-s)) := by
@@ -369,10 +360,7 @@ lemma haarIntegralConstant_lt_top (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : 
     simp only [hpt]
     rw [← hmp.setLIntegral_comp_preimage hBm (measurable_PsiF _ _ _), hpre]
   have hcont : Continuous fun p : (Fin (2 * 0 + k + 1) → ℂ) × Mt k 0 =>
-      ((Matrix.of p.2)ᴴ *ᵥ p.1) (iW k) := by
-    have h2 : Continuous fun p : (Fin (2 * 0 + k + 1) → ℂ) × Mt k 0 => (Matrix.of p.2 : Mat k 0) :=
-      continuous_snd
-    exact (continuous_apply _).comp (h2.matrix_conjTranspose.matrix_mulVec continuous_fst)
+      ((Matrix.of p.2)ᴴ *ᵥ p.1) (iW k) := by fun_prop
   have hden : Measurable fun p : (Fin (2 * 0 + k + 1) → ℂ) × Mt k 0 => (tW (iK k) p.1 : ℂ) :=
     (Complex.continuous_ofReal.comp ((continuous_tW (iK k)).comp continuous_fst)).measurable
   have hmeas : Measurable (Function.uncurry G) :=

@@ -100,10 +100,7 @@ theorem key (Φ : V → ℂ) (hc : Continuous Φ) (hs : HasCompactSupport Φ) (z
     have hb : Integrable (fun p : V × V => (1 : ℝ) * ‖Φ p.2‖) ((μ.restrict (M : Set V)).prod μ) :=
       Integrable.mul_prod (integrable_const (1 : ℝ)) hΦi.norm
     refine hb.mono' ?_ ?_
-    · have hcont : Continuous (Function.uncurry fun (y x : V) => Φ x * χ (x + z) y) := by
-        show Continuous fun p : V × V => Φ p.2 * χ (p.2 + z) p.1
-        exact (hc.comp continuous_snd).mul
-          (hχc.comp ((continuous_snd.add continuous_const).prodMk continuous_fst))
+    · have hcont : Continuous (Function.uncurry fun (y x : V) => Φ x * χ (x + z) y) := by fun_prop
       exact hcont.aestronglyMeasurable
     · filter_upwards with p
       simp [Function.uncurry, hn]

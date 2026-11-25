@@ -58,11 +58,7 @@ variable {m n : ℕ} {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGro
   {sec I : PX m n →ₗ[ℂ] (G → ℂ)} {Λ : Set ((G → ℂ) → ℂ)}
 
 theorem continuous_arg (hιc : Continuous ι) {a b : GR n} {nb : (Fin n → Fin n → ℝ) → GR n} (hnbc : Continuous nb)
-    (g : G) : Continuous (fun y : KR n × (Fin n → Fin n → ℝ) => g * ι ((y.1 : GR n) * a * nb y.2 * b)) := by
-  have h1 : Continuous (fun y : KR n × (Fin n → Fin n → ℝ) => (y.1 : GR n) * a * nb y.2 * b) :=
-    (((continuous_subtype_val.comp continuous_fst).mul continuous_const).mul (hnbc.comp continuous_snd)).mul
-      continuous_const
-  exact continuous_const.mul (hιc.comp h1)
+    (g : G) : Continuous (fun y : KR n × (Fin n → Fin n → ℝ) => g * ι ((y.1 : GR n) * a * nb y.2 * b)) := by fun_prop
 
 private theorem integrable_integral_mul_of_continuous_uncurry [MeasurableSpace (KR n)] [BorelSpace (KR n)] [CompactSpace (KR n)]
     (μ : Measure (KR n)) [IsFiniteMeasure μ] (hD : CayleyBlocksInvertible) {ψ : (Fin n → Fin n → ℝ) → ℂ} (hψc : Continuous ψ)

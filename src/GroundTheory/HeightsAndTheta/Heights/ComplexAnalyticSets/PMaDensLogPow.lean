@@ -147,10 +147,7 @@ theorem hessC_log_comp {p : (Fin D → ℂ) → ℝ} {y : Fin D → ℂ} (hp : C
       have : 0 ≤ Real.smoothTransition ((t - c / 2) / (c / 2)) * (t - c / 2) :=
         mul_nonneg this (by linarith)
       simp only [hh]; linarith
-  have hhc : ContDiff ℝ 2 h := by
-    have hs : ContDiff ℝ 2 Real.smoothTransition := Real.smoothTransition.contDiff (n := 2)
-    exact contDiff_const.add ((hs.comp ((contDiff_id.sub contDiff_const).div_const _)).mul
-      (contDiff_id.sub contDiff_const))
+  have hhc : ContDiff ℝ 2 h := by fun_prop
   set F : ℝ → ℝ := Real.log ∘ h with hF
   have hFc : ContDiff ℝ 2 F := hhc.log fun t => (hhpos t).ne'
   have hFeq : F =ᶠ[𝓝 (p y)] Real.log := by

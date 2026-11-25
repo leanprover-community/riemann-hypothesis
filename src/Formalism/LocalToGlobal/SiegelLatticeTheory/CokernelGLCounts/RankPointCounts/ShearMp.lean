@@ -30,10 +30,7 @@ private theorem measurePreserving_pi_shear_of_indep {P : Type} [Fintype P]
     refine Measurable.of_eval (fun i => ?_)
     exact (hd i.1).comp (e.symm.measurable.comp (measurable_id.prodMk measurable_const))
   have hgm : Measurable (Function.uncurry fun (x : ∀ i : {q // ¬ S q}, α i)
-      (y : ∀ i : {q // ¬ ¬ S q}, α i) => fun i => y i + v x i) := by
-    refine Measurable.of_eval (fun i => ?_)
-    exact Measurable.add ((measurable_pi_apply i).comp measurable_snd)
-      ((measurable_pi_apply i).comp (hv.comp measurable_fst))
+      (y : ∀ i : {q // ¬ ¬ S q}, α i) => fun i => y i + v x i) := by fun_prop
   have hgae : ∀ᵐ x ∂(Measure.pi fun i : {q // ¬ S q} => μ i),
       Measure.map (fun y : ∀ i : {q // ¬ ¬ S q}, α i => fun i => y i + v x i)
         (Measure.pi fun i : {q // ¬ ¬ S q} => μ i) = Measure.pi fun i : {q // ¬ ¬ S q} => μ i :=

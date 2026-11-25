@@ -162,14 +162,7 @@ theorem ptsIntegralAt_eq {Ψ : (((k : Fin 1) → plBlocks 1 1 n k) → ℂ) →�
     funext i
     rw [hMapp, fin_one_fun_eq_const]
   have hMdiff : Differentiable ℂ fun v => M v := (LinearMap.toContinuousLinearMap M.toLinearMap).differentiable
-  have hcons : Differentiable ℂ fun y' : Fin n → ℂ => (Fin.cons 1 y' : Fin (n + 1) → ℂ) := by
-    rw [differentiable_pi]
-    intro c
-    refine Fin.cases ?_ (fun i => ?_) c
-    · simp only [Fin.cons_zero]
-      exact differentiable_const _
-    · simp only [Fin.cons_succ]
-      exact differentiable_apply i
+  have hcons : Differentiable ℂ fun y' : Fin n → ℂ => (Fin.cons 1 y' : Fin (n + 1) → ℂ) := by fun_prop
   set γ0 : (Fin n → ℂ) → (Σ _ : Fin 1, PlIdx 1 n) → ℂ := fun y' => blockLift (M (Fin.cons 1 y')) with hγ0
   have hγ0d : ∀ y', DifferentiableAt ℂ γ0 y' := by
     intro y'

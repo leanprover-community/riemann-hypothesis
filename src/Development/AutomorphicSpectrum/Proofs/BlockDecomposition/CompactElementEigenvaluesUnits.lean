@@ -16,12 +16,7 @@ theorem valued_eq_one_of_isCompact_closure_zpowers (E : Type) [Field E] [NumberF
     Valued.v (s i : w.adicCompletion E) = 1 := by
   set φ : H → w.adicCompletion E :=
     fun x => ((p⁻¹ * x.1 * p : GLw n w) : Matrix (Fin n) (Fin n) _) i i with hφdef
-  have hφ : Continuous φ := by
-    have h1 : Continuous fun x : H => (p⁻¹ * x.1 * p : GLw n w) :=
-      (continuous_const.mul continuous_subtype_val).mul continuous_const
-    have h2 : Continuous fun x : H => ((p⁻¹ * x.1 * p : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E)) :=
-      Units.continuous_val.comp h1
-    exact (continuous_apply i).comp ((continuous_apply i).comp h2)
+  have hφ : Continuous φ := by fun_prop
   have hpow : ∀ m : ℤ, φ (g ^ m) = ((s i ^ m : (w.adicCompletion E)ˣ) : w.adicCompletion E) := by
     intro m
     have h1 : p⁻¹ * ((g ^ m : H) : GLw n w) * p = GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) (s ^ m) := by

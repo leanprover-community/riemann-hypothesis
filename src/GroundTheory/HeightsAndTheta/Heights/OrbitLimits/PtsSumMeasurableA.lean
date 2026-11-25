@@ -26,10 +26,7 @@ theorem measurable_maDensity {D : ℕ} (φ : Fin D → (Fin D → ℂ) → ℝ) 
         H (Complex.I • Pi.single i 1) (Complex.I • Pi.single j 1) : ℝ) +
       Complex.I * ((H (Pi.single i 1) (Complex.I • Pi.single j 1) -
         H (Complex.I • Pi.single i 1) (Pi.single j 1) : ℝ))) / 4 with hMdef
-  have hM : Continuous M := continuous_pi fun i => continuous_pi fun j => by
-    simp only [hMdef]
-    set_option synthInstance.maxHeartbeats 200000 in
-      fun_prop
+  have hM : Continuous M := by fun_prop
   have hdisc : Continuous fun B : Fin D → Matrix (Fin D) (Fin D) ℂ => (mixedDisc B).re := by
     unfold mixedDisc
     exact Complex.continuous_re.comp (continuous_const.mul (continuous_finsetSum _ fun S _ =>

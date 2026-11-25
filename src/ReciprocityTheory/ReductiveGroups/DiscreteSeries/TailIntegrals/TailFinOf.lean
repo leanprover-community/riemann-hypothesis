@@ -112,13 +112,7 @@ lemma split_cons {p : ℕ} {R : Type*} [MeasureSpace R] [SFinite (volume : Measu
     ∫⁻ z, G z = ∫⁻ w : ℂ, ∫⁻ q : (Fin p → ℂ) × R, G (Fin.cons w q.1, q.2) := by
   have hpi := (MeasureTheory.measurePreserving_piFinSuccAbove (fun _ : Fin (p + 1) => (volume : Measure ℂ)) 0).symm
   have hF : Measurable fun x : Fin (p + 1) → ℂ => ∫⁻ r : R, G (x, r) := hG.lintegral_prod_right'
-  have hcons : ∀ w : ℂ, Measurable (fun q : (Fin p → ℂ) × R => ((Fin.cons w q.1 : Fin (p + 1) → ℂ), q.2)) := by
-    intro w
-    have hm : Measurable (fun q : (Fin p → ℂ) × R =>
-        ((MeasurableEquiv.piFinSuccAbove (fun _ : Fin (p + 1) => ℂ) 0).symm (w, q.1), q.2)) := by
-      first
-      | exact ((MeasurableEquiv.measurable _).comp (measurable_const.prodMk measurable_fst)).prodMk measurable_snd
-    simpa only [cons_symm] using hm
+  have hcons : ∀ w : ℂ, Measurable (fun q : (Fin p → ℂ) × R => ((Fin.cons w q.1 : Fin (p + 1) → ℂ), q.2)) := by fun_prop
   calc ∫⁻ z, G z = ∫⁻ x : Fin (p + 1) → ℂ, ∫⁻ r : R, G (x, r) := MeasureTheory.lintegral_prod _ hG.aemeasurable
     _ = ∫⁻ y : ℂ × (Fin p → ℂ), (∫⁻ r : R, G ((MeasurableEquiv.piFinSuccAbove (fun _ : Fin (p + 1) => ℂ) 0).symm y, r))
           ∂((volume : Measure ℂ).prod (volume : Measure (Fin p → ℂ))) := (hpi.lintegral_comp hF).symm
@@ -139,10 +133,7 @@ lemma split_cons' {p : ℕ} {R : Type*} [MeasureSpace R] [SFinite (volume : Meas
   apply MeasureTheory.lintegral_lintegral_swap
   apply Measurable.aemeasurable
   have hm : Measurable (fun x : ℂ × ((Fin p → ℂ) × R) =>
-      ((MeasurableEquiv.piFinSuccAbove (fun _ : Fin (p + 1) => ℂ) 0).symm (x.1, x.2.1), x.2.2)) := by
-    first
-    | exact ((MeasurableEquiv.measurable _).comp (measurable_fst.prodMk (measurable_fst.comp measurable_snd))).prodMk
-        (measurable_snd.comp measurable_snd)
+      ((MeasurableEquiv.piFinSuccAbove (fun _ : Fin (p + 1) => ℂ) 0).symm (x.1, x.2.1), x.2.2)) := by fun_prop
   have h2 := hG.comp hm
   simp only [cons_symm] at h2
   exact h2
@@ -457,12 +448,7 @@ lemma cont_bco {p m : ℕ} (l : Fin (p + 1)) : Continuous fun x : Xp p m => bco 
 lemma cont_de {p m : ℕ} (l : Fin (p + 1)) : Continuous fun x : Xp p m => de x l :=
   Real.continuous_sqrt.comp (((cont_lsq l).mul (cont_rhoSq l)).add ((cont_bco l).norm.pow 2))
 
-lemma cont_cons {p : ℕ} : Continuous fun q : ℂ × (Fin p → ℂ) => (Fin.cons q.1 q.2 : Fin (p + 1) → ℂ) := by
-  refine continuous_pi fun j => ?_
-  refine Fin.cases ?_ (fun i => ?_) j
-  · simpa using continuous_fst
-  · simp only [Fin.cons_succ]
-    exact (continuous_apply i).comp continuous_snd
+lemma cont_cons {p : ℕ} : Continuous fun q : ℂ × (Fin p → ℂ) => (Fin.cons q.1 q.2 : Fin (p + 1) → ℂ) := by fun_prop
 
 lemma cont_tailPt {p m : ℕ} :
     Continuous (tailPt : (Fin (p + 1) → ℂ) × (Fin p → ℂ) × (Fin m → ℂ) × ℝ → Xp (p + 1) m) := by

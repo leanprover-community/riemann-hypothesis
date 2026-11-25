@@ -81,11 +81,7 @@ theorem conj_eq_of_path (hH : Hm.det ≠ 0) (hP : P.det ≠ 0) (ha : a.det ≠ 0
     (u : ℝ → Mt n) (hu : Continuous u) (h0 : u 0 = 1) (hm : ∀ s, u s ∈ Formalism.QuantumDeterminants.UH Hm) :
     a⁻¹ * u 1 * a = u 1 := by
   let F : ℝ → Mt n := fun s => P * u s * (a⁻¹ * (Hm⁻¹ * (u s)ᴴ * Hm) * a * P⁻¹)
-  have hF : Continuous F := by
-    have := hu.matrix_conjTranspose
-    refine (continuous_const.matrix_mul hu).matrix_mul ?_
-    exact ((continuous_const.matrix_mul ((continuous_const.matrix_mul this).matrix_mul
-      continuous_const)).matrix_mul continuous_const).matrix_mul continuous_const
+  have hF : Continuous F := by fun_prop
   have hinv : ∀ s, u s * (Hm⁻¹ * (u s)ᴴ * Hm) = 1 := fun s => by
     have h1 : (u s)ᴴ * Hm * u s = Hm := hm s
     rw [mul_eq_one_comm, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc _ Hm, h1,

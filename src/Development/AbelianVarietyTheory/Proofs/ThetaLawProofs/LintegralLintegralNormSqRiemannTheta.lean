@@ -220,13 +220,7 @@ theorem integral_norm_sq_thetaChar :
   set f : (Fin g → ℝ) × (Fin g → ℝ) → ℝ := fun q =>
     ‖riemannTheta a b τ ((fun i => (q.1 i : ℂ)) + τ *ᵥ fun i => (q.2 i : ℂ))‖ ^ 2 *
       Real.exp (-2 * π * (q.2 ⬝ᵥ τ.map Complex.im *ᵥ q.2)) with hf
-  have hfc : Continuous f := by
-    refine Continuous.mul (((hθ.comp ?_).norm).pow 2) ?_
-    · refine continuous_pi fun i => ?_
-      simp only [Pi.add_apply, dotProduct, mulVec]
-      fun_prop
-    · simp only [dotProduct, mulVec]
-      fun_prop
+  have hfc : Continuous f := by fun_prop
   have hmp := volume_measurePreserving_sumPiEquivProdPi (fun _ : Fin g ⊕ Fin g => ℝ)
   set C := Set.univ.pi fun _ : Fin g => Set.Ico (0 : ℝ) 1 with hC
   have hpre : Set.pi Set.univ (fun _ : Fin g ⊕ Fin g => Set.Ico (0 : ℝ) 1) =

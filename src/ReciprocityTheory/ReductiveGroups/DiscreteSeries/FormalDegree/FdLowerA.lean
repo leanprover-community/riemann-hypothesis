@@ -45,10 +45,7 @@ theorem fdl_inner_continuous {ε : Fin n → Bool} (lam : Fin n → ℝ) {Λ : F
     (continuous_subtype_val.comp T.cont).comp continuous_snd
   have hF : Continuous fun p : (PCoord ε → ℂ) × KG ε =>
       ((Real.exp (-Ph lam (toMK p.2⁻¹ * pmat p.1 * toMK p.2)) : ℝ) : ℂ) *
-        (⟪T.op p.2 T.w, v⟫_ℂ * ⟪u, T.op p.2 T.w⟫_ℂ) :=
-    (Complex.continuous_ofReal.comp (Real.continuous_exp.comp hPh.neg)).mul
-      (((hop.clm_apply continuous_const).inner continuous_const).mul
-        (continuous_const.inner (hop.clm_apply continuous_const)))
+        (⟪T.op p.2 T.w, v⟫_ℂ * ⟪u, T.op p.2 T.w⟫_ℂ) := by fun_prop
   have := CompactHaarProbability.dk_isProb ε
   have hI := continuous_parametric_integral_of_continuous (μ := dk ε)
     (f := fun (z : PCoord ε → ℂ) (k : KG ε) =>

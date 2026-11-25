@@ -101,11 +101,7 @@ theorem isClopen_latV (a M : ℕ) : IsClopen (latV (M := M) (n := a) b v) := by
 theorem isCompact_latV (a M : ℕ) : IsCompact (latV (M := M) (n := a) b v) := by
   let L : (Fin a → Fin M → Fin d → Fv F v) → (Fin a → Fin M → Fv F v ⊗[F] E) :=
     fun c x i => ∑ k, c x i k • ((1 : Fv F v) ⊗ₜ[F] b k)
-  have hL : Continuous L := by
-    refine continuous_pi fun x => continuous_pi fun i => continuous_finsetSum _ fun k _ => ?_
-    exact continuous_smul.comp
-      (((continuous_apply k).comp ((continuous_apply i).comp (continuous_apply x))).prodMk
-        continuous_const)
+  have hL : Continuous L := by fun_prop
   let K : Set (Fin a → Fin M → Fin d → Fv F v) :=
     Set.pi Set.univ fun _ => Set.pi Set.univ fun _ => Set.pi Set.univ fun _ =>
       (v.adicCompletionIntegers F : Set (v.adicCompletion F))

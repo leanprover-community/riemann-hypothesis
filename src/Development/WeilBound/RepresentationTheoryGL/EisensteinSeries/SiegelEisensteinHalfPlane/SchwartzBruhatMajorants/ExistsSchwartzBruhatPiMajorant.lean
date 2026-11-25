@@ -349,10 +349,7 @@ theorem exists_bound (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ}
 
 theorem integrable_exp_neg_abs_log {δ : ℝ} (hδ : 0 < δ) :
     Integrable (fun t : {x : ℝ // 0 < x} ↦ Real.exp (-(δ * |Real.log t|))) posRealMeasure := by
-  have hc : Continuous fun t : {x : ℝ // 0 < x} ↦ Real.exp (-(δ * |Real.log t|)) := by
-    have : Continuous fun t : {x : ℝ // 0 < x} ↦ Real.log t :=
-      continuous_subtype_val.log fun r ↦ r.2.ne'
-    fun_prop
+  have hc : Continuous fun t : {x : ℝ // 0 < x} ↦ Real.exp (-(δ * |Real.log t|)) := by fun_prop
   rw [posRealMeasure_eq_map_expPos,
     integrable_map_measure hc.aestronglyMeasurable measurable_expPos.aemeasurable]
   have h1 : IntegrableOn (fun s : ℝ ↦ Real.exp (-(δ * |s|))) (Set.Ioi 0) := by

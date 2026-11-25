@@ -67,11 +67,7 @@ theorem aemeasurable_coneTerm {e n : ℕ} {U D : Set (Fin e → ℂ)} {v : (Fin 
       (ha.prodMk (measurable_fderiv ℂ v).aemeasurable)
     simpa only [Function.comp_def, ← gramVol_eq_gramForm] using h
   have hmeas : Measurable fun p : (Fin e → ℂ) × ℂ => F (p.2 • WithLp.toLp 2 (ha.mk v p.1)) *
-      ENNReal.ofReal (‖p.2‖ ^ (2 * e) * hg.mk _ p.1) := by
-    refine (hF.comp (measurable_snd.smul ((PiLp.continuous_toLp 2 _).measurable.comp
-      (ha.measurable_mk.comp measurable_fst)))).mul ?_
-    exact ENNReal.measurable_ofReal.comp
-      ((measurable_snd.norm.pow_const _).mul (hg.measurable_mk.comp measurable_fst))
+      ENNReal.ofReal (‖p.2‖ ^ (2 * e) * hg.mk _ p.1) := by fun_prop
   refine ⟨_, hmeas.lintegral_prod_right' (ν := (volume : Measure ℂ)), ?_⟩
   filter_upwards [ha.ae_eq_mk, hg.ae_eq_mk] with x h1 h2
   simp only [h1, h2]

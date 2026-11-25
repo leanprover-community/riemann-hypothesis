@@ -42,10 +42,7 @@ theorem exists_rational_solution {F K V : Type} [Field F] [Field K] [Algebra F K
     exact e2
   let φ : (Fin k → K) → (Fin k → K) := fun x i =>
     x i - ∑ j, algebraMap F K (T (s j) i) * x j + algebraMap F K (T z i)
-  have hφ : Continuous φ := by
-    refine continuous_pi fun i => ?_
-    simp only [φ]
-    fun_prop
+  have hφ : Continuous φ := by fun_prop
   have hφa : φ a = a := by
     funext i
     have := h ((LinearMap.proj i).comp T)

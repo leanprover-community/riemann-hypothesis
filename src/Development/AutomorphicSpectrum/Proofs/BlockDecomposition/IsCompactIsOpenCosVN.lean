@@ -100,11 +100,7 @@ theorem exists_box_combN {n M : ℕ} (g : (Fin n → Fin M → Af F ⊗[F] E) �
   have hU := invariant_mem_nhds hg.1 hg.2
   let Lc : (Fin n → Fin M → Fin d → Af F) → (Fin n → Fin M → Af F ⊗[F] E) :=
     fun c x i => ∑ k, c x i k • ((1 : Af F) ⊗ₜ[F] b k)
-  have hL : Continuous Lc := by
-    refine continuous_pi fun x => continuous_pi fun i => continuous_finsetSum _ fun k _ => ?_
-    exact continuous_smul.comp
-      (((continuous_apply k).comp ((continuous_apply i).comp (continuous_apply x))).prodMk
-        continuous_const)
+  have hL : Continuous Lc := by fun_prop
   have hL0 : Lc (fun _ _ _ => 0) = 0 := by
     funext x i
     simp [Lc]

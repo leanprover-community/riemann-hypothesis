@@ -48,10 +48,7 @@ lemma circle_fubini {Φ : (Fin D → ℂ) → ℝ} (hΦm : Measurable Φ) (hΦi 
   set μθ : Measure ℝ := volume.restrict (Ioc 0 (2 * π)) with hμθ
   set f : ℝ → (Fin D → ℂ) → ℝ := fun θ y => k y * Φ (P (circleMap 0 1 θ) y) with hf
   have hcm : ∀ θ, ‖circleMap 0 1 θ‖ = 1 := fun θ => by simp
-  have hfm : Measurable (Function.uncurry f) := by
-    have h1 : Continuous fun q : ℝ × (Fin D → ℂ) => P (circleMap 0 1 q.1) q.2 :=
-      hP.comp (((continuous_circleMap 0 1).comp continuous_fst).prodMk continuous_snd)
-    exact (hk.measurable.comp measurable_snd).mul (hΦm.comp h1.measurable)
+  have hfm : Measurable (Function.uncurry f) := by fun_prop
   have hsec : ∀ θ, Integrable (f θ) ∧ ∫ y, ‖f θ y‖ ≤ M * ∫ y, |Φ y| := by
     intro θ
     obtain ⟨he, hee⟩ := hPm _ (hcm θ)

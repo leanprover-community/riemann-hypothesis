@@ -79,10 +79,7 @@ theorem transl_nB_preserves : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypD
 
   let v : UX D ρ → Mx D ρ S₀.rank := fun u => ((u.1)⁻¹ : GL (Fin ρ) (AE D)).1 ⬝ b'
   refine ⟨fun p => (p.1, (v p.1 + p.2.1, cComm S₀ (v p.1) p.2.1 + p.2.2)), ?_, ?_⟩
-  · have hvm : Measurable v := by
-      have hinv : Continuous fun u : UX D ρ => (((u.1)⁻¹ : GL (Fin ρ) (AE D)) : Matrix (Fin ρ) (Fin ρ) (AE D)) :=
-        Units.continuous_coe_inv.comp continuous_subtype_val
-      exact (hinv.matrix_mul continuous_const).measurable
+  · have hvm : Measurable v := by fun_prop
 
     have hplus : Continuous fun b : Mx D ρ S₀.rank => plus S₀ b := by
       show Continuous fun b : Mx D ρ S₀.rank => giA S₀ ⬝ adj b

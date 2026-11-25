@@ -56,11 +56,7 @@ theorem proof (h : HermitianForm F E W) (v : Basis ι E W) (h0 : RationalUnipote
 
   let f : (InfinitePlace E → ι → ℂ) → InfinitePlace E → ℂ := fun k w =>
     star (vecAt v w₀ w) ⬝ᵥ (gramAt h v w *ᵥ k w) + star (k w) ⬝ᵥ (gramAt h v w *ᵥ k w) / 2
-  have hf : Continuous f := by
-    refine continuous_pi fun w => ?_
-    have hk : Continuous fun k : InfinitePlace E → ι → ℂ => k w := continuous_apply w
-    exact (continuous_const.dotProduct (continuous_const.matrix_mulVec hk)).add
-      ((hk.star.dotProduct (continuous_const.matrix_mulVec hk)).div_const 2)
+  have hf : Continuous f := by fun_prop
   obtain ⟨B, hB⟩ := hK₁.exists_bound_of_continuousOn hf.continuousOn
 
   let box : Set ℂ := (fun p : ℝ × ℝ => (p.1 : ℂ) + p.2 * Complex.I) ''

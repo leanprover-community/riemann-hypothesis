@@ -168,11 +168,7 @@ theorem polarHyp : PolarHyp := by
   have hTT : 0 < T * T' := mul_pos hT hT'
   set H : ℝ → ℝ≥0∞ := fun ρ => ∫⁻ θ in Ioc 0 (2 * Real.pi),
     g ρ ((Real.sqrt (ρ ^ 2 + T') : ℂ) * Complex.exp (θ * Complex.I)) with hHdef
-  have hH : Measurable H := by
-    have hm : Measurable fun p : ℝ × ℝ =>
-        g p.1 ((Real.sqrt (p.1 ^ 2 + T') : ℂ) * Complex.exp (p.2 * Complex.I)) :=
-      hg.comp (measurable_fst.prodMk (by fun_prop))
-    exact hm.lintegral_prod_right'
+  have hH : Measurable H := by fun_prop
   have eL : hypMeas k T' (fun v => g ‖(WithLp.equiv 2 (Fin k → ℂ)).symm v.1‖ v.2) =
       1 / 2 * ∫⁻ y : EuclideanSpace ℂ (Fin k), H ‖y‖ := rfl
   rw [eL, lintegral_norm_ck k hk H hH]
@@ -184,10 +180,7 @@ theorem polarHyp : PolarHyp := by
     exact Measurable.ite (measurableSet_le measurable_const Complex.continuous_normSq.measurable)
       ((Complex.continuous_normSq.sub continuous_const).pow _).measurable measurable_const
   have hΨ : Measurable fun ζ : ℂ => ENNReal.ofReal (zWeight k T T' ζ) *
-      g (Real.sqrt ((Complex.normSq ζ - T * T') / T)) (-(ζ / (Real.sqrt T : ℂ))) := by
-    refine (ENNReal.measurable_ofReal.comp hw).mul (hg.comp (Measurable.prodMk ?_ ?_))
-    · exact (Real.continuous_sqrt.comp ((Complex.continuous_normSq.sub continuous_const).div_const T)).measurable
-    · exact (continuous_id.div_const _).neg.measurable
+      g (Real.sqrt ((Complex.normSq ζ - T * T') / T)) (-(ζ / (Real.sqrt T : ℂ))) := by fun_prop
   rw [lintegral_polar _ hΨ]
   have eP : ∀ R ∈ Ioi (0 : ℝ), ENNReal.ofReal R * ∫⁻ φ in Ioo (-Real.pi) Real.pi,
       ENNReal.ofReal (zWeight k T T' (R * (Real.cos φ + Real.sin φ * Complex.I))) *

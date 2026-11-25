@@ -25,13 +25,7 @@ theorem continuous_thV : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) [Inv
     le_trans (mul_nonneg (norm_nonneg _) (pow_nonneg (by linarith [GlobalTheory.SumMaj.sz_nonneg (0 : Fin N → AF F)]) k))
       (hC 0)
   have hterm : ∀ ξ : Fin N → F, Continuous fun w : VA F N =>
-      ψ (rat ξ ⬝ᵥ w.2 + ⅟(2 : AF F) * (w.1 ⬝ᵥ w.2)) * Φ (rat ξ + w.1) := by
-    intro ξ
-    refine Continuous.mul (hψc.comp ?_) (hc.comp (continuous_const.add continuous_fst))
-    refine Continuous.add ?_ (continuous_const.mul ?_)
-    · exact continuous_finsetSum _ fun i _ => continuous_const.mul ((continuous_apply i).comp continuous_snd)
-    · exact continuous_finsetSum _ fun i _ =>
-        ((continuous_apply i).comp continuous_fst).mul ((continuous_apply i).comp continuous_snd)
+      ψ (rat ξ ⬝ᵥ w.2 + ⅟(2 : AF F) * (w.1 ⬝ᵥ w.2)) * Φ (rat ξ + w.1) := by fun_prop
   have heq : thV ψ Φ = fun w : VA F N => ∑' ξ : Fin N → F,
       ψ (rat ξ ⬝ᵥ w.2 + ⅟(2 : AF F) * (w.1 ⬝ᵥ w.2)) * Φ (rat ξ + w.1) := by
     funext w

@@ -69,10 +69,7 @@ theorem GridProductLowerBound.proof : GridProductLowerBound.Statement := by
     by_cases hk : k ≤ N
     · rcases (Set.univ.pi fun _ : Fin k => K).eq_empty_or_nonempty with he | hne
       · exact ⟨1, one_pos, fun _ v hv => by simp [he] at hv⟩
-      have hgc : Continuous (g k) := Continuous.finset_sup'_apply
-        (f := fun (u : σ → Fin (N + 1)) (v : Fin k → σ → ℂ) => ‖∏ m, ∑ i, ((u i : ℕ) : ℂ) * v m i‖) _
-        fun u _ => continuous_norm.comp (continuous_finsetProd _ fun m _ => continuous_finsetSum _ fun i _ =>
-          continuous_const.mul ((continuous_apply i).comp (continuous_apply m)))
+      have hgc : Continuous (g k) := by fun_prop
       obtain ⟨v₀, hv₀, hmin⟩ := (isCompact_univ_pi fun _ => hKc).exists_isMinOn hne hgc.continuousOn
       obtain ⟨u, hu⟩ := GridProductLowerBound.exists_grid_prod_ne_zero hk v₀
         fun m => hK0 _ (hv₀ m (Set.mem_univ _))

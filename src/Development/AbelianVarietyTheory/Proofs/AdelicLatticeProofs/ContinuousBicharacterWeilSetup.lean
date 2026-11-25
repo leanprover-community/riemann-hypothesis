@@ -385,10 +385,7 @@ theorem exists_theta : ∀ (G V : Type) [AddCommGroup G] [TopologicalSpace G] [I
   · rw [continuous_iff_continuousAt]
     intro w
     have hc1 : Continuous fun x : G => p (x - w) := hpc.comp (continuous_id.sub continuous_const)
-    have hc2 : Continuous fun x : G => β (w + ι (p (x - w))) ((x - w) - ι (p (x - w))) :=
-      hβc.comp (f := fun x : G => (w + ι (p (x - w)), (x - w) - ι (p (x - w))))
-        ((continuous_const.add (hιc.comp hc1)).prodMk
-          ((continuous_id.sub continuous_const).sub (hιc.comp hc1)))
+    have hc2 : Continuous fun x : G => β (w + ι (p (x - w))) ((x - w) - ι (p (x - w))) := by fun_prop
     have hc3 : Continuous fun x : G => (β (w + ι (p (x - w))) ((x - w) - ι (p (x - w))))⁻¹ *
         series p ι β om J Γ χ a (w + ι (p (x - w))) :=
       (hc2.inv₀ fun x => hne _ _).mul ((hsmooth w).continuous.comp hc1)

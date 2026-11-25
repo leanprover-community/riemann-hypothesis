@@ -62,10 +62,7 @@ theorem _root_.GlobalTheory.ExpBallNhds.exp_ballU_mem_nhds : ∀ (P Q : ℕ) (r 
   have hJunit : IsUnit J := ⟨⟨J, J, hJJ, hJJ⟩, rfl⟩
   set σ : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ → Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ :=
     fun X => -(J * Xᴴ * J) with hσ
-  have hσc : Continuous σ := by
-    rw [hσ]
-    exact ((continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul
-      continuous_const).neg
+  have hσc : Continuous σ := by fun_prop
   have hσ0 : σ 0 = 0 := by simp [hσ]
   set N : Set (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) := {X | ∑ i, ∑ j, ‖X i j‖ < r} with hN
   have hNo : IsOpen N := isOpen_lt (by fun_prop) continuous_const
