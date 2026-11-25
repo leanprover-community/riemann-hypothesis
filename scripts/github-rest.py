@@ -4,8 +4,9 @@
 through its `load`. Each keeps a subclass of `GitHub` with what only it needs, such as the GraphQL queries
 that read its pull requests.
 
-The workflows' token may make 1,000 REST requests an hour, shared with every other workflow here.
-So `call` remembers how many GitHub says are left, `short` says when that is nearly used up, and
+The workflows' token has an hourly allowance of REST requests, shared with every other workflow
+here. GitHub says in each answer how many are left, and a run's log ends with that count. So `call`
+remembers how many GitHub says are left, `short` says when that is nearly used up, and
 `write` spaces requests that change something a second apart and stops the run when GitHub refuses
 one for going too fast. GraphQL has an allowance of its own.
 """

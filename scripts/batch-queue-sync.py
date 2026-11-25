@@ -50,7 +50,8 @@ everything in it once the batch is merged or closed. Those that had `batch queue
 back, unless the batch was merged.
 
 A pull request that is pushed to after the batch took its commit is still in the batch, at that
-commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`. When
+commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`, as
+soon as the push comes in (see `pushed`) or else by the next sync. When
 the batch is merged, GitHub marks merged each pull request whose head commit is in it and whose
 base is main. One whose head has moved on stays open: it is told what landed and what did not,
 and keeps `awaiting-author`. One whose head landed but whose base is another branch is closed,
@@ -93,9 +94,11 @@ request is reopened, `batch queue` comes back if this workflow was the last to t
 and the pull request was not taken out of the queue with `-batch` meanwhile. A label a person
 took off stays off.
 
-The workflow's token may make 1,000 requests an hour, shared with every other workflow here. A
-note in each batch pull request's text therefore remembers what was merged and which pull
-requests were already looked at. The note is a cache: it is used only while the batch's head
+The workflow's token has an hourly allowance of requests, shared with every other workflow here:
+what is left of it is the "left this hour" at the end of each run's log. A sync costs a few
+hundred, so a push to a frozen pull request runs `pushed`, at about ten, instead of a whole sync.
+A note in each batch pull request's text remembers what was merged and which pull requests were
+already looked at. The note is a cache: it is used only while the batch's head
 and each pull request's update time are what they were, and everything in it can be read again
 from the branch and the comments.
 """
@@ -170,6 +173,7 @@ STAYS = "<!-- batch-queue-stays {branch} -->"
 BY_HAND = re.compile(r"<!-- batch-queue-by-hand (\{.*\}) -->")
 # Comments this script leaves on what a batch assembled by hand contains or leaves out.
 FROZEN_NOTE = "<!-- batch-queue-frozen {number} {sha} -->"
+# `sha` is the commit the batch took, so that a member is told this once for each commit.
 PUSHED = "<!-- batch-queue-pushed-while-frozen {number} {sha} -->"
 DROPPED = "<!-- batch-queue-dropped {number} {sha} -->"
 UNFROZEN = "<!-- batch-queue-unfrozen {number} -->"
@@ -869,18 +873,33 @@ def tell_members(gh, batch, pulls, main, log):
                                             frozen_text(number, commit, pr, main)):
             told[key], since = commit, since + 1
             log.append(f"told #{key} that it is frozen while the batch #{number} is built")
-        if pr["sha"] != commit and pushed.get(key) != commit and say(
-                gh, pr["number"], PUSHED.format(number=number, sha=pr["sha"]),
-                f"This pull request was pushed to after batch #{number} took its commit `{commit[:10]}`. The batch "
-                f"builds and lands `{commit[:10]}` only, not `{pr['sha'][:10]}`, so when it lands this pull request "
-                f"stays open with what came after `{commit[:10]}`. Once the batch has landed, merge `{main}` into "
-                "this branch and comment `ready`, or close this pull request if nothing is left to change."):
+        if pr["sha"] != commit and pushed.get(key) != commit and tell_pushed(gh, number, commit, pr, main, log):
             pushed[key], since = commit, since + 1
-            relabel(gh, pr, add=WAITING)
-            log.append(f"told #{key} that it was pushed to after the batch #{number} took it: now `{WAITING}`")
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
+
+
+def tell_pushed(gh, number, commit, pr, main, log):
+    """Tell a pull request that it was pushed to after the batch `number` took its commit `commit`,
+    and label it `awaiting-author`, unless the workflow has told it so before. The label goes on
+    first, so that a run cut short between the two leaves the label rather than the comment
+    without it. Its comments are read to look for an earlier one: `pushed` tells it as soon as the
+    push comes in, without writing the batch's note, and the sync takes that into its note.
+    Returns whether it has been told."""
+    marker = PUSHED.format(number=number, sha=commit)
+    if any((comment.get("body") or "").startswith(marker)
+           for comment in gh.pages(f"issues/{pr['number']}/comments") if by_workflow(comment)):
+        return True
+    relabel(gh, pr, add=WAITING)
+    if not say(gh, pr["number"], marker,
+               f"This pull request was pushed to after batch #{number} took its commit `{commit[:10]}`. The batch "
+               f"builds and lands `{commit[:10]}` only, not `{pr['sha'][:10]}`, so when it lands this pull request "
+               f"stays open with what came after `{commit[:10]}`. Once the batch has landed, merge `{main}` into "
+               "this branch and comment `ready`, or close this pull request if nothing is left to change."):
+        return False
+    log.append(f"told #{pr['number']} that it was pushed to after the batch #{number} took it: now `{WAITING}`")
+    return True
 
 
 def frozen_text(number, commit, pr, main):
@@ -1342,6 +1361,42 @@ def approvals(gh, pulls, main, approved, log):
             approved[pr["number"]] = sha
 
 
+def pushed(gh, number):
+    """What a push to a `frozen` pull request calls for, without a whole sync: the workflow runs this
+    for each such push, and a sync costs a few hundred requests. This costs about ten.
+
+    It reads the open pull requests and the records of the batches assembled by hand that are being
+    built. A batch that holds the pull request at another commit than its head tells it so and
+    labels it `awaiting-author`, as `tell_members` does (see `tell_pushed`). Its labels are then
+    brought in step, as `reconcile` does for every open pull request. The batches' notes are left
+    alone, so that this can run alongside a sync: the next sync finds the comment and notes it.
+    Returns lines saying what was done."""
+    log = []
+    main = gh.get("")["default_branch"]
+    pulls = open_pulls(gh)
+    pr = pulls.get(number)
+    if pr is None:
+        return [f"#{number} is not open: nothing to do"]
+    if pr["batch"]:
+        return [f"#{number} holds a batch: the sync looks after it"]
+    hand = [{"number": other["number"], "note": read_record(gh, other["number"])[1]}
+            for other in sorted(pulls.values(), key=lambda other: other["number"])
+            if by_hand(other) and BUILDING in other["labels"]]
+    # As in `assemble`: a batch that another one contains is built as part of that one.
+    contained = holders(hand)
+    hand = [batch for batch in hand if str(batch["number"]) not in contained]
+    key = str(number)
+    for batch in hand:
+        commit = members(batch["note"]).get(key)
+        if commit is None or commit == pr["sha"] or kept(batch["note"], "pushed").get(key) == commit:
+            continue
+        tell_pushed(gh, batch["number"], commit, pr, main, log)
+    approved = {}
+    approvals(gh, {number: pr}, main, approved, log)
+    reconcile(gh, {number: pr}, holders(hand), approved, log)
+    return log or [f"#{number}: nothing to do"]
+
+
 def sync(gh, now=None):
     """Bring batches and labels up to date. Returns lines saying what was done."""
     log, approved, pulls, held = assemble(gh, now)
@@ -1523,12 +1578,19 @@ def main():
     parser.add_argument("--summary", type=Path, help="append what was done to this file")
     parser.add_argument("--reopened", type=int, metavar="NUMBER",
                         help="only put `batch queue` back on this reopened pull request if it lost it when closed")
+    parser.add_argument("--pushed", type=int, metavar="NUMBER",
+                        help="only deal with a push to this frozen pull request, without a whole sync")
     args = parser.parse_args()
 
     gh = GitHub(args.repo, args.dry_run)
     failure = None
     try:
-        log = reopened(gh, args.reopened) if args.reopened else sync(gh)
+        if args.reopened:
+            log = reopened(gh, args.reopened)
+        elif args.pushed:
+            log = pushed(gh, args.pushed)
+        else:
+            log = sync(gh)
     except Refused as error:
         log, failure = [str(error)], 1
     left = f"; {gh.remaining} left this hour" if gh.remaining is not None else ""

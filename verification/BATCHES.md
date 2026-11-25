@@ -96,8 +96,9 @@ head commit is in the branch is labelled `batch-building` and `frozen`, in place
 closed. The workflow lists them in a comment of its own on the batch's pull request.
 
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
-commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`. If
-its new head is merged into the branch, the batch holds that one instead.
+commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
+labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
+If its new head is merged into the branch, the batch holds that one instead.
 
 When the batch is merged, what it contained loses `batch-building` and `frozen`. A pull request
 whose head has moved on since the batch took it stays open, and is told what landed and what did

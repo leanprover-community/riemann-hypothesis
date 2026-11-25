@@ -48,7 +48,8 @@ name: batch queue
 # was pushed to since is told what landed, and what targets another branch than main is closed.
 # When it is closed without being merged, what it contained loses its labels too, and the ones
 # that were queued go back to `batch queue`. The sync job runs when that pull request is opened,
-# edited, pushed to, closed or reopened, and when a `frozen` pull request is pushed to. A pull
+# edited, pushed to, closed or reopened. When a `frozen` pull request is pushed to, the `pushed`
+# job tells it, if a batch took an earlier commit of it, without a whole sync. A pull
 # request labelled `batch queue` that holds a batch like this waits in the queue like any other.
 # `verification/BATCHES.md` says how to assemble such a batch, and `scripts/batch-labels.py`
 # names the labels; the `if:` of the sync job below names some of them too.
@@ -377,14 +378,54 @@ jobs:
             echo "restored=true" >> "$GITHUB_OUTPUT"
           fi
 
+  pushed:
+    name: Tell a frozen pull request that was pushed to what that means
+    # A push to a `frozen` pull request that does not hold a batch. A batch that took an earlier
+    # commit of it tells it that the batch lands only that commit, and labels it `awaiting-author`;
+    # its labels are brought in step. This reads the open pull requests and the records of the
+    # batches being built, about ten requests, where a sync costs a few hundred: the frozen pull
+    # requests are many, and a sync for each push would use up the hour's allowance. The sync
+    # job does the same for every member on its next run, so nothing is lost if this is skipped.
+    if: >-
+      ${{ github.event_name == 'pull_request_target' && github.event.action == 'synchronize' &&
+          contains(github.event.pull_request.labels.*.name, 'frozen') &&
+          !(startsWith(github.event.pull_request.head.ref, 'batch/') &&
+            github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # It writes no batch's note, so it can run alongside the sync. Pushes to one pull request
+    # wait for each other.
+    concurrency:
+      group: batch-queue-pushed-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Check out this workflow's own copy of the scripts
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      # Reads the pull request, the open pull requests and the batches' records through the API.
+      # Nothing from the pull request is checked out or run.
+      - name: Tell it, if a batch took an earlier commit of it
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: python3 scripts/batch-queue-sync.py --repo "$REPO" --pushed "$PR" --summary "$GITHUB_STEP_SUMMARY"
+
   sync:
     name: Keep the labels in step with the batches
     needs: [label, reopened]
     # After a pull request was queued, unqueued or given its label back, after a batch was
-    # opened, edited, pushed to, merged or closed, after a labelled pull request was closed, after
-    # a `frozen` one was pushed to, or when started by hand. The label names here are those of
-    # `scripts/batch-labels.py`. Tidying up does not depend on the `pull_request_target` event:
-    # every run does it, so it only happens sooner with the event.
+    # opened, edited, pushed to, merged or closed, after a labelled pull request was closed, or
+    # when started by hand. A push to a `frozen` pull request starts the `pushed` job instead.
+    # The label names here are those of `scripts/batch-labels.py`. Tidying up does not depend on
+    # the `pull_request_target` event: every run does it, so it only happens sooner with the
+    # event.
     if: >-
       ${{ always() && (
           github.event_name == 'workflow_dispatch' ||
@@ -393,8 +434,6 @@ jobs:
           (github.event_name == 'pull_request_target' &&
            ((startsWith(github.event.pull_request.head.ref, 'batch/') &&
              github.event.pull_request.head.repo.full_name == github.repository) ||
-            (github.event.action == 'synchronize' &&
-             contains(github.event.pull_request.labels.*.name, 'frozen')) ||
             (github.event.action == 'closed' &&
              (contains(github.event.pull_request.labels.*.name, 'batch queue') ||
               contains(github.event.pull_request.labels.*.name, 'building') ||

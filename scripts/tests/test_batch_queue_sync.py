@@ -1468,6 +1468,81 @@ class Reconciling(unittest.TestCase):
         self.assertEqual(sync(gh), ["nothing to do"])
 
 
+class Pushed(unittest.TestCase):
+    """`--pushed`: what the workflow does for a push to a frozen pull request, without a sync."""
+
+    def built(self):
+        gh = Fake()
+        queue(gh, 11, 12, 13)
+        gh.add_pull(14, "head14")
+        by_hand(gh, 11, 12, 14)
+        sync(gh)
+        gh.reads, gh.writes, gh.calls = [], [], 0
+        return gh
+
+    def pushes(self, gh, number):
+        return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-pushed-while-frozen")]
+
+    def test_a_member_pushed_to_is_told_once_and_handed_back(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        log = batch.pushed(gh, 12)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        [said] = self.pushes(gh, 12)
+        self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1018 {sha('head12')} -->"))
+        self.assertIn(f"builds and lands `{short('head12')}` only, not `{short('head12-later')}`", said)
+        self.assertEqual(log, ["told #12 that it was pushed to after the batch #1018 took it: now `awaiting-author`"])
+        # The label first, then the comment, and nothing else: the batch's note is left to the sync.
+        self.assertEqual([(method, path) for method, path, _ in gh.writes],
+                         [("POST", "issues/12/labels"), ("POST", "issues/12/comments")])
+        self.assertLessEqual(gh.calls, 10)
+        # A second push, and then the sync: nobody is told again, and the sync notes it.
+        gh.label(12, remove=WAITING)  # the author commented `ready`
+        gh.push(12, "head12-again")
+        self.assertEqual(batch.pushed(gh, 12), ["#12: nothing to do"])
+        sync(gh)
+        self.assertEqual(len(self.pushes(gh, 12)), 1)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        self.assertEqual(note(gh.said(1018)[0])["pushed"], {"12": sha("head12")})
+
+    def test_one_the_sync_told_already_is_not_told_again(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        sync(gh)
+        gh.writes = []
+        self.assertEqual(batch.pushed(gh, 12), ["#12: nothing to do"])
+        self.assertEqual((gh.writes, len(self.pushes(gh, 12))), ([], 1))
+
+    def test_a_pull_request_only_queued_is_left_alone(self):
+        gh = self.built()
+        gh.push(13, "head13-later")
+        self.assertEqual(batch.pushed(gh, 13), ["#13: nothing to do"])
+        self.assertEqual((gh.writes, gh.said(13)), ([], []))
+
+    def test_one_frozen_for_nothing_loses_the_labels(self):
+        gh = self.built()
+        gh.add_pull(32, "head32", labels=[FROZEN])
+        self.assertEqual(batch.pushed(gh, 32), ["#32 is neither queued nor in a batch being built: `frozen` removed"])
+        self.assertEqual(gh.pulls[32]["labels"], set())
+
+    def test_in_stacked_batches_the_outer_one_tells_it(self):
+        gh = self.built()
+        by_hand(gh, 1018, 13, number=1100, ref="batch/b5-on-1018", name="kim-b5")
+        gh.inside[sha("kim-b5")] |= gh.inside[sha("kim")]
+        sync(gh)
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        [said] = self.pushes(gh, 12)
+        self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1100 {sha('head12')} -->"))
+
+    def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
+        gh = self.built()
+        self.assertEqual(batch.pushed(gh, 1018), ["#1018 holds a batch: the sync looks after it"])
+        gh.close(14)
+        self.assertEqual(batch.pushed(gh, 14), ["#14 is not open: nothing to do"])
+        self.assertEqual(gh.writes, [])
+
+
 class LeftOutDigests(unittest.TestCase):
     def test_the_kind_of_reason_is_its_heading_up_to_any_parenthesis(self):
         digest = batch.left_out_digest
@@ -2203,6 +2278,13 @@ class Workflow(unittest.TestCase):
         self.assertIn('labels=(-f "labels[]=$LABEL" -f "labels[]=$FROZEN")', label)
         self.assertIn('labels+=(-f "labels[]=$PRIORITY")', label)
         self.assertIn('echo "queued=true" >> "$GITHUB_OUTPUT"', label)
+
+    def test_a_push_to_a_frozen_pull_request_starts_the_cheap_job_not_a_sync(self):
+        pushed, sync_job = self.job("pushed"), self.job("sync")
+        self.assertIn("github.event.action == 'synchronize'", pushed)
+        self.assertIn("contains(github.event.pull_request.labels.*.name, 'frozen')", pushed)
+        self.assertIn('--pushed "$PR"', pushed)
+        self.assertNotIn("synchronize", sync_job)
 
     def test_queuing_still_compares_with_the_rest_of_the_queue(self):
         conflicts = self.job("conflicts")

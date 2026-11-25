@@ -323,8 +323,9 @@ def head_of(repo, number):
 def open_pulls(repo):
     """Every open pull request as {number: (head commit, labels, whether it is a batch)}.
 
-    One listing answers for all of them. The workflow's token is allowed 1,000 requests an hour,
-    shared with every other workflow, so nothing here asks GitHub about pull requests one by one.
+    One listing answers for all of them. The workflow's token has an hourly allowance of
+    requests, shared with every other workflow, so nothing here asks GitHub about pull requests
+    one by one.
     """
     rows = gh("--paginate", f"repos/{repo}/pulls?state=open&per_page=100", "--jq",
               '.[] | [.number, .head.sha, .head.ref, (.head.repo.full_name // ""), ([.labels[].name] | join("|"))] | @tsv')
