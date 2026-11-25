@@ -1272,7 +1272,8 @@ def tell_left_out(gh, batch, pulls, held, main, log):
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
         # The conflict-labels workflow looks only at pull requests into main that are not drafts.
-        left_to_it = int(key) in conflicts and pr is not None and pr["base"] == main and not pr.get("draft")
+        left_to_it = (_labels.CONFLICT_LABELS_ON and int(key) in conflicts and pr is not None
+                      and pr["base"] == main and not pr.get("draft"))
         if pr is None or key in found or held.get(key) or pr["batch"] or left_to_it:
             left.pop(key, None)
             continue
@@ -1477,7 +1478,10 @@ def start_conflict_labels(gh, main, log):
     """Start the conflict-labels workflow, which compares pull requests with the batches being
     built, the outermost of each stack (see `conflict-labels.py`). A label put on with this
     workflow's token starts no run, so without this they would wait for its next sweep. Returns
-    whether GitHub took it."""
+    whether GitHub took it. Nothing is started while those labels are switched off
+    (`CONFLICT_LABELS_ON` in `batch-labels.py`)."""
+    if not _labels.CONFLICT_LABELS_ON:
+        return False
     status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches", {"ref": main})
     log.append(f"started {CONFLICT_WORKFLOW}" if status in (0, 204)
                else f"could not start {CONFLICT_WORKFLOW} ({status}): its next sweep looks at the batches")
