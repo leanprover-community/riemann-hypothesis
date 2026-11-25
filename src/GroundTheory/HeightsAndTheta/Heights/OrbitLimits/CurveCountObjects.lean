@@ -40,30 +40,14 @@ section Lemmas
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
-
-open Classical in
-theorem sum_single_chart_apply (k' : K) (j : ι k') (b : ℕ) (k : K) :
-    ∑ i, (Finsupp.single (⟨k', j⟩ : Σ k, ι k) b) ⟨k, i⟩ = if k' = k then b else 0 := by
-  classical
-  by_cases h : k' = k
-  · subst h
-    simp [Finsupp.single_apply]
-  · rw [if_neg h]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro he
-    exact h (Sigma.mk.inj_iff.mp he).1
-
 theorem isMultiHomog_curveChartMono (c : ∀ k, ι k) (d : K → ℕ) :
     IsMultiHomog (curveChartMono c d) d :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_chartMono c d
-
 
 omit [∀ k, Fintype (ι k)] in
 theorem aeval_curveChartMono (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (d : K → ℕ) :
     aeval y (curveChartMono c d) = chartUnit y c (fun k => (d k : ℤ)) 1 := by
   simp [curveChartMono, chartUnit, map_prod]
-
 
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 theorem ne_zero_of_X_notMem {y : (Σ k, ι k) → Ω} {p : Σ k, ι k}
@@ -72,7 +56,6 @@ theorem ne_zero_of_X_notMem {y : (Σ k, ι k) → Ω} {p : Σ k, ι k}
   apply hp
   show X p ∈ RingHom.ker (mConeMap y)
   rw [RingHom.mem_ker, mConeMap, aeval_X, h0, map_zero, zero_mul]
-
 
 omit [∀ k, Fintype (ι k)] in
 theorem curveChartMono_notMem {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k} (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (d : K → ℕ) :

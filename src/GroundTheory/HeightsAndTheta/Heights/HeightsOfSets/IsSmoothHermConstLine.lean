@@ -73,9 +73,6 @@ theorem isMultiHomog_mul {p q : MRing ι} {a b : K → ℕ} (hp : IsMultiHomog p
 theorem isMultiHomog_one : IsMultiHomog (1 : MRing ι) 0 :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_one
 
-theorem isMultiHomog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) :=
-  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X p
-
 theorem isMultiHomog_pow {p : MRing ι} {a : K → ℕ} (hp : IsMultiHomog p a) (e : ℕ) :
     IsMultiHomog (p ^ e) (e • a) :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_pow hp e

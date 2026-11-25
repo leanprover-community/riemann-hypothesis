@@ -73,18 +73,6 @@ abbrev formalα (n : ℕ) : Sheaf.H.{u} (modulesAb (idealPow I F (n + 1))) q →
 def formalK (n : ℕ) : Submodule A (Sheaf.H.{u} (modulesAb F) q) :=
   LinearMap.range (formalα I F q n)
 
-omit [IsNoetherianRing A] in
-private lemma H.range_linearMap_le_of_comp {F₁ F₂ F₃ : X.Modules}
-    (f : F₁ ⟶ F₂) (g : F₂ ⟶ F₃) (h : F₁ ⟶ F₃) (hf : f ≫ g = h) :
-    LinearMap.range (H.linearMap.{u} A h q) ≤ LinearMap.range (H.linearMap.{u} A g q) := by
-  rw [← hf, H.linearMap_comp.{u} A f g q]
-  exact LinearMap.range_comp_le_range (H.linearMap.{u} A f q) (H.linearMap.{u} A g q)
-
-lemma formalK_antitone : Antitone (formalK I F q) :=
-  antitone_nat_of_succ_le fun n =>
-    H.range_linearMap_le_of_comp (q := q) (idealPowSucc I F (n + 1))
-      (idealPowι I F (n + 1)) (idealPowι I F (n + 1 + 1)) (idealPowSucc_ι I F (n + 1))
-
 abbrev formalβ (n : ℕ) : Sheaf.H.{u} (modulesAb F) q →ₗ[A]
     Sheaf.H.{u} (modulesAb (quotPow I F n)) q :=
   H.linearMap A (quotPowπ I F n) q
@@ -115,10 +103,6 @@ lemma formalK_le_ker_formalβ (n : ℕ) : formalK I F q n ≤ LinearMap.ker (for
 def formalι (n : ℕ) : (Sheaf.H.{u} (modulesAb F) q ⧸ formalK I F q n) →ₗ[A]
     Sheaf.H.{u} (modulesAb (quotPow I F n)) q :=
   (formalK I F q n).liftQ (formalβ I F q n) (formalK_le_ker_formalβ I F q n)
-
-lemma formalι_injective (n : ℕ) : Function.Injective (formalι I F q n) :=
-  LinearMap.ker_eq_bot.mp
-    (Submodule.ker_liftQ_eq_bot' (formalK I F q n) (formalβ I F q n) (ker_formalβ I F q n).symm)
 
 def formalπ (n : ℕ) : Sheaf.H.{u} (modulesAb (quotPow I F n)) q →ₗ[A] formalQ I F q n :=
   (formalδ I F q n).rangeRestrict

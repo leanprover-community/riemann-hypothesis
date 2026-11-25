@@ -78,7 +78,6 @@ theorem ofUnitaryMulModulePow_bijective :
   · obtain ⟨χ, σ, h⟩ := ψ.exists_ofUnitary_mul_modulePow
     exact ⟨(χ, Multiplicative.ofAdd σ), h⟩
 
-
 variable (K) in
 def unitaryDecomposition : QuasiCharacter K ≃* HeckeCharacter K × Multiplicative ℝ :=
   (MulEquiv.ofBijective _ ofUnitaryMulModulePow_bijective).symm
@@ -88,15 +87,6 @@ variable (ψ : QuasiCharacter K)
 def unitaryPart : HeckeCharacter K := (unitaryDecomposition K ψ).1
 
 def exponent : ℝ := (unitaryDecomposition K ψ).2.toAdd
-
-theorem ofUnitary_unitaryPart_mul_modulePow_exponent :
-    ofUnitary ψ.unitaryPart * modulePow (ψ.exponent : ℂ) = ψ :=
-  MulEquiv.ofBijective_apply_symm_apply (n := ψ) ofUnitaryMulModulePow ofUnitaryMulModulePow_bijective
-
-theorem norm_apply (c : IdeleClassGroup K) :
-    ‖((ψ c : ℂˣ) : ℂ)‖ = (IdeleClassGroup.ideleModule K c : ℝ) ^ ψ.exponent := by
-  conv_lhs => rw [← ψ.ofUnitary_unitaryPart_mul_modulePow_exponent]
-  exact norm_ofUnitary_mul_modulePow _ _ _
 
 end QuasiCharacter
 

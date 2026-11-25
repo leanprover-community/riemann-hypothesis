@@ -30,15 +30,6 @@ local instance : ProperSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.p
 
 section Bump
 
-theorem sum_sq_norm_eq_trace (A : Matrix (Fin n) (Fin n) ℂ) :
-    ∑ i, ∑ j, ‖A i j‖ ^ 2 = (trace (Aᴴ * A)).re := by
-  simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.conjTranspose_apply, Complex.re_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  simp only [Complex.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.sq_norm,
-    Complex.normSq_apply]
-  ring
-
 theorem hsOne_conj {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matrix.unitaryGroup (Fin n) ℂ)
     (g : Matrix (Fin n) (Fin n) ℂ) : _root_.ReciprocityTheory.ChartRestriction.DS.hsdA (k * g * star k) = _root_.ReciprocityTheory.ChartRestriction.DS.hsdA g :=
   by apply _root_.ReciprocityTheory.ChartRestriction.DS.hsdA_conj; assumption

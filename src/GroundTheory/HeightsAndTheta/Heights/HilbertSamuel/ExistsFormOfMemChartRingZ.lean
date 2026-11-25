@@ -37,9 +37,6 @@ open Classical in
 theorem mh_X (k : K) (i : ι k) : IsMultiHomog (X ⟨k, i⟩ : MRing ι) (Pi.single k 1) :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X ⟨k, i⟩
 
-theorem mh_pow {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (n : ℕ) : IsMultiHomog (f ^ n) (n • a) :=
-  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_pow hf n
-
 theorem mh_coordProd (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k) d :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_chartMono c d
 
@@ -48,7 +45,6 @@ theorem coordProd_add (c : ∀ k, ι k) (d e : K → ℕ) :
       (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k) * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ e k := by
   rw [← Finset.prod_mul_distrib]
   simp [pow_add]
-
 
 open Classical in
 theorem exists_form_of_mem_chartRingZ {Ω : Type} [Field Ω] {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k}

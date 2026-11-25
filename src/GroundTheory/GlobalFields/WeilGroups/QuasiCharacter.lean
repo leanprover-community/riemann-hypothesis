@@ -90,11 +90,6 @@ theorem modulePow_apply (s : ℂ) (c : IdeleClassGroup K) :
     ((modulePow s c : ℂˣ) : ℂ) = Complex.exp (s * Real.log (IdeleClassGroup.ideleModule K c : ℝ)) :=
   rfl
 
-@[simp]
-theorem modulePow_zero : modulePow (0 : ℂ) = (1 : QuasiCharacter K) := by
-  ext c
-  simp [modulePow_apply]
-
 theorem modulePow_add (s t : ℂ) :
     modulePow (s + t) = (modulePow s * modulePow t : QuasiCharacter K) := by
   ext c

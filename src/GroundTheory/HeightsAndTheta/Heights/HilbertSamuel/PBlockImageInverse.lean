@@ -48,9 +48,6 @@ theorem isMultiHomog_add {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a
     IsMultiHomog (f + g) a :=
   isMultiHomog_iff_weighted.mpr ((isMultiHomog_iff_weighted.mp hf).add (isMultiHomog_iff_weighted.mp hg))
 
-theorem isMultiHomog_neg {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) : IsMultiHomog (-f) a :=
-  isMultiHomog_iff_weighted.mpr (isMultiHomog_iff_weighted.mp hf).neg
-
 theorem isMultiHomog_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
     IsMultiHomog (f - g) a :=
   isMultiHomog_iff_weighted.mpr ((isMultiHomog_iff_weighted.mp hf).sub (isMultiHomog_iff_weighted.mp hg))
@@ -190,8 +187,6 @@ theorem sum_mul_sum {α β γ : Type*} [Fintype β] [Fintype γ] {S : Type*} [Co
 end Forms
 
 end BlockImageInverse
-
-
 
 open BlockImageInverse in
 theorem BlockImageInverse.proof : BlockImageInverse.Statement := by

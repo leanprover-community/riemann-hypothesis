@@ -31,10 +31,6 @@ def act (hW : W ≤ Module.annihilator (MRingOver S ι) M) :
 theorem act_mk (hW : W ≤ Module.annihilator (MRingOver S ι) M) (r : MRingOver S ι) (m : M) :
     act hW (Ideal.Quotient.mk W r) m = r • m := rfl
 
-theorem act_smulS (hW : W ≤ Module.annihilator (MRingOver S ι) M) (c : S) (a : MRingOver S ι ⧸ W) (m : M) :
-    act hW (c • a) m = c • act hW a m := by
-  rw [LinearMap.map_smul_of_tower, LinearMap.smul_apply]
-
 variable (T : Submonoid (MRingOver S ι))
 
 def locMulFun (hW : W ≤ Module.annihilator (MRingOver S ι) M) (x : LocalizedModule T (MRingOver S ι ⧸ W))
@@ -99,11 +95,6 @@ theorem locMul_mk (hW : W ≤ Module.annihilator (MRingOver S ι) M) (a : MRingO
     (t : T) : locMul T hW (LocalizedModule.mk a s) (LocalizedModule.mk m t) =
       LocalizedModule.mk (act hW a m) (s * t) :=
   locMulFun_mk T hW a s m t
-
-theorem locMul_smulS (hW : W ≤ Module.annihilator (MRingOver S ι) M) (c : S) (x y) :
-    locMul T hW (c • x) y = c • locMul T hW x y ∧ locMul T hW x (c • y) = c • locMul T hW x y := by
-  refine ⟨?_, LinearMap.map_smul_of_tower _ _ _⟩
-  rw [LinearMap.map_smul_of_tower, LinearMap.smul_apply]
 
 variable {T}
 

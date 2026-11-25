@@ -60,9 +60,6 @@ theorem isMultiHomog_mul {f g : MRingOver ℂ ι} {a b : K → ℕ} (hf : IsMult
     (hg : IsMultiHomog g b) : IsMultiHomog (f * g) (a + b) :=
   isMultiHomog_iff_weighted.mpr ((isMultiHomog_iff_weighted.mp hf).mul (isMultiHomog_iff_weighted.mp hg))
 
-theorem isMultiHomog_one : IsMultiHomog (1 : MRingOver ℂ ι) 0 :=
-  isMultiHomog_iff_weighted.mpr (isWeightedHomogeneous_one ℂ wt)
-
 theorem isMultiHomog_pow {f : MRingOver ℂ ι} {a : K → ℕ} (hf : IsMultiHomog f a) (n : ℕ) :
     IsMultiHomog (f ^ n) (n • a) :=
   isMultiHomog_iff_weighted.mpr ((isMultiHomog_iff_weighted.mp hf).pow n)
@@ -70,9 +67,6 @@ theorem isMultiHomog_pow {f : MRingOver ℂ ι} {a : K → ℕ} (hf : IsMultiHom
 theorem isMultiHomog_add {f g : MRingOver ℂ ι} {a : K → ℕ} (hf : IsMultiHomog f a)
     (hg : IsMultiHomog g a) : IsMultiHomog (f + g) a :=
   isMultiHomog_iff_weighted.mpr ((isMultiHomog_iff_weighted.mp hf).add (isMultiHomog_iff_weighted.mp hg))
-
-theorem isMultiHomog_zero (a : K → ℕ) : IsMultiHomog (0 : MRingOver ℂ ι) a :=
-  isMultiHomog_iff_weighted.mpr (isWeightedHomogeneous_zero ℂ wt a)
 
 theorem isMultiHomog_C_mul {f : MRingOver ℂ ι} {a : K → ℕ} (hf : IsMultiHomog f a) (c : ℂ) :
     IsMultiHomog (C c * f) a :=
@@ -387,7 +381,6 @@ theorem phi_smul {G : MRingOver ℂ ι} {e : K → ℕ} (hG : IsMultiHomog G e) 
     rw [Pi.smul_apply, smul_eq_mul, mul_comm, pow_mul]
   rw [hpow, mul_pow, mul_div_mul_left _ _ (pow_ne_zero _ hP)]
 
-
 open Classical in
 theorem isMultiHomog_X (k : K) (a : ι k) :
     IsMultiHomog (X ⟨k, a⟩ : MRingOver ℂ ι) (fun k' => if k' = k then 1 else 0) := by
@@ -456,7 +449,6 @@ theorem exists_sep {e : K → ℕ} (he : ∀ k, 1 ≤ e k) {z w : (Σ k, ι k) �
       exact Finset.prod_ne_zero_iff.2 fun k' _ => pow_ne_zero _ (hj k')
 
 end AvoidFormFinite
-
 
 open AvoidFormFinite in
 theorem AvoidFormFinite.proof : AvoidFormFinite.Statement := by

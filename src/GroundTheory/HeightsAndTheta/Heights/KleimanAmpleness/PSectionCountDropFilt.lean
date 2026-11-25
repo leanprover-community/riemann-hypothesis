@@ -33,14 +33,6 @@ section Ideals
 
 variable {S : Type u} [CommRing S] {N : ℕ}
 
-theorem homogeneousComponent_mul_mem_span {g : Poly S N} {e : ℕ} (hg : g.IsHomogeneous e)
-    (r : Poly S N) (d : ℕ) : homogeneousComponent d (r * g) ∈ Ideal.span {g} := by
-  let := MvPolynomial.gradedAlgebra (σ := Fin (N + 1)) (R := S)
-  exact homogeneousComponent_mem_of_mem
-    (Ideal.homogeneous_span (homogeneousSubmodule (Fin (N + 1)) S) {g}
-      (by rintro _ rfl; exact ⟨e, hg⟩))
-    (Ideal.mul_mem_left _ r (Ideal.mem_span_singleton_self g)) d
-
 theorem hom_span {T : Set (Poly S N)} (hT : ∀ g ∈ T, ∃ e, g.IsHomogeneous e) :
     ∀ f ∈ Ideal.span T, ∀ d : ℕ, homogeneousComponent d f ∈ Ideal.span T := by
   let := MvPolynomial.gradedAlgebra (σ := Fin (N + 1)) (R := S)
@@ -155,7 +147,6 @@ theorem finrank_le_of_step {K V W : Type*} [Field K] [AddCommGroup V] [Module K 
   omega
 
 end SectionCount.Drop.Filt
-
 
 open SectionCount.Drop.Filt in
 theorem SectionCount.Drop.Filt.proof (hK : SectionCount.Drop.Filt.Kernel.Statement.{u, w})

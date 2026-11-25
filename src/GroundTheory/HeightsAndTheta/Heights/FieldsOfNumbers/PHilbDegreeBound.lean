@@ -26,15 +26,10 @@ variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {F : Type u} [
 
 attribute [local instance] MvPolynomial.weightedGradedAlgebra
 
-theorem isHomogeneous_of_isMultiHomogIdeal {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I) :
-    I.IsHomogeneous (weightedHomogeneousSubmodule F (blockWeight ι)) := by
-  apply GroundTheory.Heights₂.Heights.NumbersDVR.HilbDegBound.isHomogeneous_of_isMultiHomogIdeal <;> assumption
-
 theorem isMultiHomogIdeal_sup_span {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I)
     {s : MRing ι F} {c : K → ℕ} (hs : IsMultiHomog s c) :
     IsMultiHomogIdeal (I ⊔ Ideal.span {s}) :=
   HilbDegBound.isMultiHomogIdeal_sup_span hI hs
-
 
 omit [Fintype K] [DecidableEq K] in
 theorem colon_span_eq_of_isPrime {P : Ideal (MRing ι F)} (hP : P.IsPrime) {s : MRing ι F}
@@ -42,7 +37,6 @@ theorem colon_span_eq_of_isPrime {P : Ideal (MRing ι F)} (hP : P.IsPrime) {s : 
   ext x
   rw [Ideal.mem_colon_span_singleton]
   exact ⟨fun h => (hP.mem_or_mem h).resolve_right hs, fun h => P.mul_mem_right s h⟩
-
 
 omit [Fintype K] [DecidableEq K] in
 theorem ringKrullDim_sup_span_add_one_le {P : Ideal (MRing ι F)} [P.IsPrime] {s : MRing ι F}

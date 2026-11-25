@@ -143,11 +143,6 @@ theorem eventually_mem_twKer_NO {V : Type} [AddCommGroup V] [Module ℂ V]
     rw [map_smul]
     exact Submodule.smul_mem _ a h1
 
-theorem isClosed_zero : IsClosed ({0} : Set k) := isClosed_singleton
-
-theorem isOpen_KO : IsOpen (KO k (Fin n) : Set (GL (Fin n) k)) :=
-  Subgroup.isOpen_mono GlobalTheory.StepData.KOne_le_KO GlobalTheory.StepData.isOpen_KOne
-
 end UpperTheory.TNZ.Grp.JacquetKernel
 
 namespace UpperTheory.TNZ.Grp

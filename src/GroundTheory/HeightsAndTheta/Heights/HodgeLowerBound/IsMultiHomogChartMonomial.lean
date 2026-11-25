@@ -24,16 +24,6 @@ variable {κ : Type} [Fintype κ] {ι : κ → Type} [∀ k, Fintype (ι k)]
 theorem isMultiHomog_C (c : ℤ) : IsMultiHomog (C c : MRing ι) 0 :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_C c
 
-theorem isMultiHomog_prod {σ : Type} (s : Finset σ) (f : σ → MRing ι) (d : σ → κ → ℕ)
-    (h : ∀ a ∈ s, IsMultiHomog (f a) (d a)) : IsMultiHomog (∏ a ∈ s, f a) (∑ a ∈ s, d a) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using ProjLine.isMultiHomog_one
-  | insert a s ha ih =>
-    rw [Finset.prod_insert ha, Finset.sum_insert ha]
-    exact ProjLine.mhMul (h a (Finset.mem_insert_self a s))
-      (ih fun b hb => h b (Finset.mem_insert_of_mem hb))
-
 theorem isMultiHomog_chartMonomial (c : ∀ k, ι k) :
     IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRing ι)) (fun _ => 1) := by
   simpa using GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_chartMono (R := ℤ) c (fun _ => 1)
@@ -147,7 +137,6 @@ theorem RegularAt.sum {σ : Type} (s : Finset σ) {a : σ → Ω} (h : ∀ i ∈
   | insert i s hi ih =>
     rw [Finset.sum_insert hi]
     exact (h i (Finset.mem_insert_self i s)).add (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
-
 
 omit [Fintype κ] [∀ k, Fintype (ι k)] in
 theorem eval_conj (f : MRing ι) (z : (Σ k, ι k) → ℂ) :

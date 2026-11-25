@@ -46,7 +46,6 @@ theorem nsmul_res_galRootsOfUnity_eq_zero (hn : (n : K) ≠ 0) (W : Subgroup Gal
     (d : Rep.res W.subtype (galRootsOfUnity.{0} K Ksep n)) : n • d = 0 :=
   nsmul_eq_zero_of_nonempty_addEquiv (nonempty_addEquiv_galRootsOfUnity (Ksep := Ksep) hn) d
 
-
 omit [IsSepClosure K Ksep] in
 theorem bockSeq_kummerSeqOpen_compat₁₂ (W : Subgroup Gal(Ksep/K)) :
     ((bockSeq W n).f ⊗ₘ 𝟙 (kummerSeqOpen (K := K) (Ksep := Ksep) n W).X₂) ≫
@@ -137,8 +136,6 @@ def unitsInvariantOpen (W : Subgroup Gal(Ksep/K)) (a : (fixedField W)ˣ) :
     (Representation.mem_invariants _ _).2 fun σ =>
       congrArg Additive.ofMul (Units.ext ((mem_fixedField_iff _ _).1 (a : fixedField W).2 σ σ.2))⟩
 
-
-
 omit [IsSepClosure K Ksep] in
 theorem exists_unitsInvariantOpen_eq (W : Subgroup Gal(Ksep/K))
     (v : (Rep.res W.subtype (galUnits.{0} K Ksep)).ρ.invariants) :
@@ -208,7 +205,6 @@ theorem exists_δ_unitsInvariantOpen_eq (hn : (n : K) ≠ 0) (U : OpenSubgroup G
   obtain ⟨a, rfl⟩ := exists_unitsInvariantOpen_eq (U : Subgroup Gal(Ksep/K)) v
   exact ⟨a, hv⟩
 
-
 variable (n) in
 def openChar (U : OpenSubgroup Gal(Ksep/K)) (z : cocycles (zmodRep.{0} (U : Subgroup Gal(Ksep/K)) n) 1) :
     Additive Gal(Ksep/fixedField (U : Subgroup Gal(Ksep/K))) →ₜ+ QZ where
@@ -231,7 +227,6 @@ theorem openChar_apply (U : OpenSubgroup Gal(Ksep/K))
     (σ : Additive Gal(Ksep/fixedField (U : Subgroup Gal(Ksep/K)))) :
     openChar n U z σ = zmodToQZ n (zmodCocycleHom z (galFixedFieldEquivOpen U (Additive.toMul σ))) :=
   rfl
-
 
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
 theorem res_galUnits_ρ_galFixedFieldEquivOpen (U : OpenSubgroup Gal(Ksep/K))
@@ -271,7 +266,6 @@ theorem cupPairing_δ_unitsInvariantOpen_eq_zero_iff (hn : (n : K) ≠ 0) (U : O
     (charAdd (openChar n U z)) (fun σ => rfl)]
   rfl
 
-
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
 theorem zmodCocycleHom_eq_zero_of_charKer_eq_top (hn : (n : K) ≠ 0) (U : OpenSubgroup Gal(Ksep/K))
     (z : cocycles (zmodRep.{0} (U : Subgroup Gal(Ksep/K)) n) 1)
@@ -282,7 +276,6 @@ theorem zmodCocycleHom_eq_zero_of_charKer_eq_top (hn : (n : K) ≠ 0) (U : OpenS
   have hσ : σ ∈ charKer (charAdd (openChar n U z)) := h ▸ Subgroup.mem_top σ
   rw [mem_charKer, charAdd_apply, openChar_apply, AddEquiv.map_eq_zero_iff] at hσ
   exact zmodToQZ_injective (hσ.trans (map_zero _).symm)
-
 
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
 theorem exists_cocycle_charKer_eq (hn : (n : K) ≠ 0) (U : OpenSubgroup Gal(Ksep/K))
@@ -340,7 +333,6 @@ open IntermediateField GroundTheory.LocalField
 variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {Ω : Type*} [Field Ω] [Algebra F Ω] [IsSepClosure F Ω]
 
-
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [IsSepClosure F Ω] in
 theorem exists_norm_iff_mem_range_normUnits (E : IntermediateField F Ω) [FiniteDimensional F E]
     (a : Fˣ) : (∃ y : E, Algebra.norm F y = (a : F)) ↔ a ∈ (normUnits F E).range := by
@@ -353,7 +345,6 @@ theorem exists_norm_iff_mem_range_normUnits (E : IntermediateField F Ω) [Finite
     exact ⟨Units.mk0 y hy0, Units.ext (by simp [hy])⟩
   · rintro ⟨u, rfl⟩
     exact ⟨u, rfl⟩
-
 
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [IsSepClosure F Ω] in
 theorem exists_norm_of_eq {E₁ E₂ : IntermediateField F Ω} (h : E₁ = E₂) {a : F}
@@ -489,16 +480,6 @@ attribute [local irreducible] localClassFormationOfIsSepClosure
 
 variable {K Ksep : Type} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   [Field Ksep] [Algebra K Ksep] [IsSepClosure K Ksep] {n : ℕ}
-
-omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [IsSepClosure K Ksep] in
-theorem unitsInvariantOpen_mul (W : Subgroup Gal(Ksep/K)) (a b : (fixedField W)ˣ) :
-    unitsInvariantOpen W (a * b) = unitsInvariantOpen W a + unitsInvariantOpen W b := by
-  apply Subtype.ext
-  change Additive.ofMul (Units.map (algebraMap (fixedField W) Ksep : fixedField W →* Ksep) (a * b)) =
-    Additive.ofMul (Units.map (algebraMap (fixedField W) Ksep : fixedField W →* Ksep) a) +
-      Additive.ofMul (Units.map (algebraMap (fixedField W) Ksep : fixedField W →* Ksep) b)
-  rw [map_mul, ofMul_mul]
-
 
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [IsSepClosure K Ksep] in
 theorem natCast_fixedField_ne_zero (hn : (n : K) ≠ 0) (W : Subgroup Gal(Ksep/K)) :

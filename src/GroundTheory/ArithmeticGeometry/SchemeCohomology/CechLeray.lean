@@ -489,12 +489,6 @@ variable {ι : Type w} [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCom
 variable {S : ShortComplex (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})}
   (hS : S.ShortExact) [Injective S.X₂]
 
-include hS in
-theorem nonempty_cechH_one_equiv (U : ι → Opens X) (hU : iSup U = ⊤)
-    (hC : IsCechShortExact U S.f.hom S.g.hom) (hI : CechAcyclic S.X₂.obj U) :
-    Nonempty (cechH S.X₁.obj U 1 ≃+ Sheaf.H.{w'} S.X₁ 1) :=
-  ⟨cechHOneEquiv U hU hS hC hI⟩
-
 theorem nonempty_cechH_equiv (hC : IsCoverSystem B Good) (U : ι → Opens X) (hU : iSup U = ⊤)
     (hUB : ∀ {n : ℕ} (i : Fin (n + 1) → ι), B (inter U i)) (n : ℕ)
     (G : Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}) (hG : GoodAcyclic B Good G) :

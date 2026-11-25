@@ -44,10 +44,6 @@ noncomputable def freeYonedaHomAddEquiv (U : C) (P : Cᵒᵖ ⥤ AddCommGrpCat.{
   toEquiv := ((AddCommGrpCat.adj.whiskerRight Cᵒᵖ).homEquiv (yoneda.obj U) P).trans yonedaEquiv
   map_add' _ _ := rfl
 
-lemma freeYonedaHomAddEquiv_apply (U : C) (P : Cᵒᵖ ⥤ AddCommGrpCat.{v})
-    (g : yoneda.obj U ⋙ AddCommGrpCat.free.{v} ⟶ P) :
-    freeYonedaHomAddEquiv U P g = g.app (op U) (FreeAddCommGroup.of (𝟙 U)) := rfl
-
 variable [HasSheafify J AddCommGrpCat.{v}]
 
 noncomputable abbrev freeSheaf (J : GrothendieckTopology C) [HasSheafify J AddCommGrpCat.{v}]
@@ -71,11 +67,6 @@ variable [HasExt.{w'} (Sheaf J AddCommGrpCat.{v})]
 noncomputable def H'.equiv₀ (F : Sheaf J AddCommGrpCat.{v}) (U : C) :
     F.H' 0 U ≃+ F.obj.obj (op U) :=
   (Ext.addEquiv₀ (X := freeSheaf J U) (Y := F)).trans (freeSheafHomAddEquiv U F)
-
-lemma cohomologyPresheafFunctor_map_app_apply {F G : Sheaf J AddCommGrpCat.{v}} (φ : F ⟶ G)
-    (n : ℕ) (U : C) (x : F.H' n U) :
-    ((Sheaf.cohomologyPresheafFunctor J n).map φ).app (op U) x =
-      (show Ext (freeSheaf J U) F n from x).comp (Ext.mk₀ φ) (add_zero n) := rfl
 
 lemma H'.equiv₀_naturality {F G : Sheaf J AddCommGrpCat.{v}} (φ : F ⟶ G) (U : C)
     (x : F.H' 0 U) :
@@ -120,7 +111,6 @@ noncomputable def H.δ (n₀ n₁ : ℕ) (h : n₀ + 1 = n₁) : Sheaf.H S.X₃ 
 
 lemma H.δ_apply (n₀ n₁ : ℕ) (h : n₀ + 1 = n₁) (x : Sheaf.H S.X₃ n₀) :
     H.δ hS n₀ n₁ h x = x.comp hS.extClass h := rfl
-
 
 theorem H.exact₃ {n₀ n₁ : ℕ} (h : n₀ + 1 = n₁) (y : Sheaf.H S.X₃ n₀)
     (hy : H.δ hS n₀ n₁ h y = 0) : ∃ x : Sheaf.H S.X₂ n₀, Sheaf.H.map S.g n₀ x = y :=

@@ -156,7 +156,6 @@ instance resField.algebraBase (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k)
     (p : Ideal (chartRingOver S y c)) [p.IsPrime] : Algebra S (ResField S y c p) :=
   inferInstanceAs (Algebra S (FractionRing (chartRingOver S y c ⧸ p)))
 
-
 open Classical in
 def residue (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (p : Ideal (chartRingOver S y c)) [p.IsPrime]
     (u : Ω) : ResField S y c p :=
@@ -392,166 +391,12 @@ theorem pnPt_ne_zero (N : ℕ) (p : Σ k, pnIdx N k) : pnPt F N p ≠ 0 :=
   (map_ne_zero_iff _ (IsFractionRing.injective (MvPolynomial (Σ k, pnIdx N k) F)
     (pnField F N))).mpr (MvPolynomial.X_ne_zero p)
 
-theorem mIdealOver_pnPt (N : ℕ) : mIdealOver F (pnPt F N) = ⊥ := by
-  rw [eq_bot_iff]
-  intro f hf
-  rw [Ideal.mem_bot]
-  have hcomp : ((MvPolynomial.aeval (R := pnField F N) (fun _ : Unit => (1 : pnField F N))).restrictScalars F).comp
-      (ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.mConeMapOver F (pnPt F N)) =
-      IsScalarTower.toAlgHom F (MvPolynomial (Σ k, pnIdx N k) F) (pnField F N) := by
-    apply MvPolynomial.algHom_ext
-    intro p
-    simp [ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.mConeMapOver, pnPt]
-  have h1 := AlgHom.congr_fun hcomp f
-  have hf' : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.mConeMapOver F (pnPt F N) f = 0 := hf
-  rw [AlgHom.comp_apply, hf', map_zero] at h1
-  exact (IsFractionRing.injective _ (pnField F N)) (by rw [IsScalarTower.toAlgHom_apply] at h1; rw [← h1, map_zero])
-
-theorem relDim_pnPt (N : ℕ) :
-    relDim (mIdealOver F (pnPt F N)) = ((N : ℕ) : WithBot (WithTop ℤ)) := by
-  rw [mIdealOver_pnPt]
-  exact GroundTheory.Heights₂.Heights.FieldNumbers.relDim_projectiveSpace N
-
 theorem isModelWithBase_pnPt (N : ℕ) : IsModelWithBase F (pnPt F N) () :=
   ⟨fun _ => ⟨0, pnPt_ne_zero F N _⟩, rfl⟩
 
-theorem pnPt_mem_secOver (N : ℕ) (j : Fin (N + 1)) :
-    pnPt F N ⟨(), j⟩ ∈ secOver F (pnPt F N) (baseDeg ()) := by
-  simp only [secOver, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.mulRight_apply,
-    Subalgebra.mem_toSubmodule]
-  intro c _
-  have e : pnPt F N ⟨(), j⟩ * ∏ k, pnPt F N ⟨k, c k⟩ ^ (-baseDeg () k) =
-      pnPt F N ⟨(), j⟩ / pnPt F N ⟨(), c ()⟩ := by
-    simp [baseDeg, div_eq_mul_inv]
-  rw [e]
-  exact Algebra.subset_adjoin ⟨⟨(), j⟩, rfl⟩
-
-theorem pnPt_generates (N : ℕ) :
-    GeneratesOver F (pnPt F N) (baseDeg ()) (fun j : Fin (N + 1) => pnPt F N ⟨(), j⟩) := by
-  intro c hc
-  refine ⟨fun j => if j = c () then 1 else 0, fun j => ?_, ?_⟩
-  · show (if j = c () then (1 : pnField F N) else 0) ∈ _
-    split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  · simp [baseDeg, Finset.sum_ite_eq']
-    exact mul_inv_cancel₀ (hc ())
-
-theorem veryAmple_pnPt (N : ℕ) : VeryAmple F (pnPt F N) (baseDeg ()) :=
-  ⟨N + 1, fun j => pnPt F N ⟨(), j⟩, pnPt_mem_secOver F N, pnPt_generates F N, rfl⟩
-
-theorem isNef_zero {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
-    {Ω : Type} [Field Ω] [Algebra F Ω] (y : (Σ k, ι k) → Ω) : IsNef F y (0 : K → ℤ) := by
-  intro W _ _ _
-  rw [(GroundTheory.Heights₂.Heights.FieldNumbers.IntNumZeroSlot.full F K ι W).1 1 ![0] 0 rfl]
-
-theorem isNefIdeal_zero {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
-    [∀ k, Fintype (ι k)] (P : Ideal (MRing ι F)) : IsNefIdeal F P (0 : K → ℤ) := by
-  intro W _ _ _
-  rw [(GroundTheory.Heights₂.Heights.FieldNumbers.IntNumZeroSlot.full F K ι W).1 1 ![0] 0 rfl]
-
-theorem dominates_self {S : Type} [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] {K : Type}
-    {ι : K → Type} (y : (Σ k, ι k) → Ω) : Dominates S y y :=
-  fun z hz => ⟨z, hz, le_rfl, fun _ _ h => h⟩
-
 def ptOne : (Σ _ : Unit, Fin 1) → F := fun _ => 1
 
-theorem isField_subalgebra_self (A : Subalgebra F F) : IsField A := by
-  refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, ?_⟩
-  intro a ha
-  refine ⟨⟨(a : F)⁻¹, by simpa using A.algebraMap_mem (a : F)⁻¹⟩, Subtype.ext ?_⟩
-  exact mul_inv_cancel₀ (fun h => ha (Subtype.ext h))
-
-theorem isBirational_ptOne : IsBirational F (ptOne F) := by
-  intro c _
-  rw [eq_top_iff]
-  intro u _
-  exact Subfield.subset_closure (by simpa using (chartRingOver F (ptOne F) c).algebraMap_mem u)
-
-theorem isNormalModel_ptOne : IsNormalModel F (ptOne F) := by
-  intro c _
-  let _ : Field (chartRingOver F (ptOne F) c) := (isField_subalgebra_self F _).toField
-  exact Field.instIsIntegrallyClosed _
-
-theorem isModelWithBase_ptOne : IsModelWithBase F (ptOne F) () :=
-  ⟨fun _ => ⟨0, one_ne_zero⟩, rfl⟩
-
-theorem Domination.hypotheses_example :
-    (IsNoetherianRing F ∧ (∀ k, ∃ i, pnPt F 1 ⟨k, i⟩ ≠ 0) ∧ IsModelWithBase F (pnPt F 1) () ∧
-      Dominates F (pnPt F 1) (pnPt F 1) ∧ IsFractionRing F F ∧ SameModel F (pnPt F 1) (pnPt F 1)) ∧
-    (IsNoetherianRing F ∧ (∀ k, ∃ i, ptOne F ⟨k, i⟩ ≠ 0) ∧ IsModelWithBase F (ptOne F) () ∧
-      Dominates F (ptOne F) (ptOne F) ∧ IsBirational F (ptOne F) ∧ IsNormalModel F (ptOne F)) :=
-  ⟨⟨inferInstance, fun _ => ⟨0, pnPt_ne_zero F 1 _⟩, isModelWithBase_pnPt F 1, dominates_self _,
-      IsFractionRing.self_iff_nonZeroDivisors_le_isUnit.mpr
-        (fun x hx => show IsUnit x from isUnit_iff_ne_zero.mpr (nonZeroDivisors.ne_zero hx)), rfl⟩,
-    ⟨inferInstance, fun _ => ⟨0, one_ne_zero⟩, isModelWithBase_ptOne F, dominates_self _,
-      isBirational_ptOne F, isNormalModel_ptOne F⟩⟩
-
-theorem SurjectiveClosed.hypotheses_example :
-    IsNoetherianRing F ∧ IsModelWithBase F (pnPt F 1) () ∧
-      ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomogIdeal (mIdealOver F (pnPt F 1)) ∧
-      mIdealOver F (pnPt F 1) ≤ mIdealOver F (pnPt F 1) := by
-  refine ⟨inferInstance, isModelWithBase_pnPt F 1, ?_, le_rfl⟩
-  rw [mIdealOver_pnPt]
-  exact ⟨∅, fun _ h => absurd h (Set.notMem_empty _), by rw [Ideal.span_empty]⟩
-
-theorem multipleVeryAmple_pnPt :
-    MultipleVeryAmple F (pnPt F 1) (0 : Unit → ℤ) (baseDeg ()) 1 :=
-  ⟨1, 1, le_rfl, by norm_num, by simpa using veryAmple_pnPt F 1⟩
-
-theorem isStepData_example :
-    IsStepData F (pnPt F 1) () 1 0 (1 / 2) 2 1 1 1 := by
-  refine ⟨isModelWithBase_pnPt F 1, relDim_pnPt F 1, isNef_zero F _, by norm_num, by norm_num,
-    by norm_num, le_rfl, ?_, one_ne_zero⟩
-  have e : stepL () (0 : Unit → ℤ) 2 1 - ((1 : ℕ) : ℤ) • baseDeg () = 0 := by
-    funext k
-    simp [stepL, baseDeg]
-  rw [e]
-  simp only [secOver, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.mulRight_apply,
-    Subalgebra.mem_toSubmodule]
-  intro c _
-  simp
-
-theorem isAmpleByFiniteMap_pnPt (N : ℕ) : IsAmpleByFiniteMap F (pnPt F N) (baseDeg ()) := by
-  refine ⟨1, N + 1, fun j => pnPt F N ⟨(), j⟩, le_rfl, ?_, ?_, ?_⟩
-  · simpa using pnPt_mem_secOver F N
-  · simpa using pnPt_generates F N
-  · intro j _
-    refine ⟨1, ![1], fun _ => by simp, ?_⟩
-    intro s hs
-    have hs' : s ∈ chartRingOver F (joinVec (pnPt F N) (oneBlock fun j => pnPt F N ⟨(), j⟩))
-        (joinChart (fun _ => j) (fun _ : Unit => j)) := by
-      unfold preimRing at hs
-      exact Algebra.mem_iInf.mp (Algebra.mem_iInf.mp hs (fun _ => j)) (fun _ => pnPt_ne_zero F N _)
-    have hle : chartRingOver F (joinVec (pnPt F N) (oneBlock fun j => pnPt F N ⟨(), j⟩))
-        (joinChart (fun _ => j) (fun _ : Unit => j)) ≤
-        ReciprocityTheory.ChartRestriction.G.Geo.chartRing F (fun j => pnPt F N ⟨(), j⟩) j := by
-      apply Algebra.adjoin_le
-      rintro _ ⟨⟨k | k, i⟩, rfl⟩
-      · exact Algebra.subset_adjoin ⟨i, rfl⟩
-      · exact Algebra.subset_adjoin ⟨i, rfl⟩
-    have hs'' := hle hs'
-    have h1 : (1 : pnField F N) ∈ Submodule.span
-        (ReciprocityTheory.ChartRestriction.G.Geo.chartRing F (fun j => pnPt F N ⟨(), j⟩) j) (Set.range ![(1 : pnField F N)]) :=
-      Submodule.subset_span ⟨0, rfl⟩
-    have := Submodule.smul_mem _ (⟨s, hs''⟩ : ReciprocityTheory.ChartRestriction.G.Geo.chartRing F (fun j => pnPt F N ⟨(), j⟩) j) h1
-    simpa [Subalgebra.smul_def] using this
-
-theorem NefProductNonneg.hypotheses_example :
-    (∀ k, ∃ i, pnPt F 1 ⟨k, i⟩ ≠ 0) ∧
-      relDim (mIdealOver F (pnPt F 1)) = ((1 : ℕ) : WithBot (WithTop ℤ)) ∧
-      ∀ j, IsNef F (pnPt F 1) ((![0] : Fin 1 → Unit → ℤ) j) := by
-  refine ⟨fun _ => ⟨0, pnPt_ne_zero F 1 _⟩, relDim_pnPt F 1, fun j => ?_⟩
-  rw [Subsingleton.elim j 0]
-  exact isNef_zero F _
-
 end Examples
-
-theorem NefGeneric.hypotheses_example :
-    IsModelOver (⊥ : Ideal (MRing (fun _ : Unit => Fin 2) (PowerSeries ℚ))) 1 ∧
-      IsNefIdeal (IsLocalRing.ResidueField (PowerSeries ℚ))
-        (specialIdeal (⊥ : Ideal (MRing (fun _ : Unit => Fin 2) (PowerSeries ℚ)))) 0 :=
-  ⟨GroundTheory.Heights₂.Heights.NumbersDVR.isModelOver_projectiveSpace 1, isNefIdeal_zero _ _⟩
 
 section Fit
 

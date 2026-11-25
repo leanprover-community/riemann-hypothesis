@@ -22,13 +22,6 @@ theorem mem_lowDeg {f : ι → σ} {t : ℕ} {R : MvPolynomial σ K} :
   rw [mem_restrictSupport_iff]
   exact ⟨fun h m hm => h (Finset.mem_coe.mpr hm), fun h m hm => h m (Finset.mem_coe.mp hm)⟩
 
-theorem eq_zero_of_mem_lowDeg_zero {f : ι → σ} {R : MvPolynomial σ K}
-    (h : R ∈ lowDeg f 0) : R = 0 := by
-  rw [mem_lowDeg] at h
-  by_contra hR
-  obtain ⟨m, hm⟩ := Finset.nonempty_of_ne_empty (mt MvPolynomial.support_eq_empty.mp hR)
-  exact absurd (h m hm) (Nat.not_lt_zero _)
-
 theorem pderiv_mem_lowDeg {f : ι → σ} {t : ℕ} (k : σ) {R : MvPolynomial σ K}
     (h : R ∈ lowDeg f t) : pderiv k R ∈ lowDeg f t :=
   _root_.PI.WickFormula.Gen.pderiv_mem_lowDeg k h

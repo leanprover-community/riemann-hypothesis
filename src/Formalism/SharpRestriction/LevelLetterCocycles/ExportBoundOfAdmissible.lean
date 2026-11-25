@@ -351,7 +351,6 @@ theorem lA_lt_lStar : lA L < lStar L := by
       mul_le_mul_of_nonneg_right h1C hU18.le, mul_le_mul_of_nonneg_right hm2 hb0]
   exact lt_of_le_of_lt hA hlow
 
-
 theorem exc_pt {l : ℕ} (hl : lStar L < l) :
     bbB L C + lenB L C l ≤ 1000 * (C + 1) ^ 2 * Ub L C ^ 9 := by
   have hls := seven_lt_lStar L P
@@ -839,7 +838,6 @@ section Point
 variable {C : ℝ} (hC : 0 < C) (P : ParameterChoice' D L) (hPar : ParametersPolynomiallyBounded L C P) (hL : Large L.sc.x L.sc.eps C)
 include hC P hPar hL
 
-
 open Classical in
 theorem point_bound (tb : Tab L) (hA : AdmT L tb C P) (S : Finset ℕ) (hS : ∀ l ∈ S, l.Prime) :
     6 + UpperTheory.KStar.nuBudget D + Real.log (Formalism.MainNotions.N.hE D.host : ℝ) + Real.log (D.what₂.restRowsFiniteGroupCard : ℝ) +
@@ -955,21 +953,6 @@ theorem Nc_nonneg : 0 ≤ L.Nc := by
   apply div_nonneg
   · exact mul_nonneg (mul_nonneg (by positivity) (Real.exp_pos _).le) (Real.rpow_nonneg hx0.le _)
   · exact mul_nonneg (by positivity) (mul_nonneg (by positivity) (Real.rpow_nonneg hx0.le _))
-
-theorem gset_ne_two (P : ParameterChoice' D L) : ∀ l ∈ gset D, l ≠ 2 := by
-  obtain ⟨Y, hY1, -, -, hY4⟩ := P.g_Y
-  have hk := k_ge_five D
-  have hb := one_le_b L
-  have h8 : (2 : ℝ) < ((D.R.k : ℝ) * L.sc.b) ^ 8 := by
-    have : (5 : ℝ) ≤ (D.R.k : ℝ) * L.sc.b := by nlinarith only [hk, hb]
-    have : (5 : ℝ) ^ 8 ≤ ((D.R.k : ℝ) * L.sc.b) ^ 8 := by gcongr
-    linarith
-  intro l hl h2
-  unfold gset at hl
-  have hg : ∀ i, (2 : ℝ) < D.host.g i := fun i => by linarith [(hY4 i).1]
-  rcases Finset.mem_insert.1 hl with h | h
-  · have := hg 0; rw [← h, h2] at this; norm_num at this
-  · have := hg 1; rw [← Finset.mem_singleton.1 h, h2] at this; norm_num at this
 
 theorem export_bound_of_admissible (P : ParameterChoice' D L) {C : ℝ} (hL : Large L.sc.x L.sc.eps C) (hAdm : admitted L P C) :
     aux₃ L (2000 * (|C| + 1) ^ 3) := by
